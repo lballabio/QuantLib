@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2026 Aaditya Panikath
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,67 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file zabr.hpp
-    \brief ZABR functions
-    Reference: Andreasen, Huge: ZABR - Expansions for the masses, Preliminary
-               Version, December 2011, http://ssrn.com/abstract=1980726
-*/
+#ifndef quantlib_experimental_zabr_hpp
+#define quantlib_experimental_zabr_hpp
 
-#ifndef quantlib_zabr_hpp
-#define quantlib_zabr_hpp
+// Deprecated in version 1.38
+#pragma message("Warning: this file will disappear in a future release; include <ql/termstructures/volatility/zabr.hpp> instead.")
 
-#include <ql/types.hpp>
-#include <ql/math/statistics/incrementalstatistics.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/math/interpolations/cubicinterpolation.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
-#include <vector>
-
-namespace QuantLib {
-
-class ZabrModel {
-
-  public:
-    ZabrModel(Real expiryTime, Real forward, Real alpha, Real beta, Real nu, Real rho, Real gamma);
-
-    Real localVolatility(Real f) const;
-    std::vector<Real> localVolatility(const std::vector<Real> &f) const;
-
-    Real fdPrice(Real strike) const;
-    std::vector<Real> fdPrice(const std::vector<Real> &strikes) const;
-
-    Real fullFdPrice(Real strike) const;
-
-    Real lognormalVolatility(Real strike) const;
-    std::vector<Real> lognormalVolatility(const std::vector<Real> &strikes) const;
-
-    Real normalVolatility(Real strike) const;
-    std::vector<Real> normalVolatility(const std::vector<Real> &strikes) const;
-
-    Real forward() const { return forward_; }
-    Real expiryTime() const { return expiryTime_; }
-    Real alpha() const { return alpha_; }
-    Real beta() const { return beta_; }
-    Real nu() const { return nu_; }
-    Real rho() const { return rho_; }
-    Real gamma() const { return gamma_; }
-
-  private:
-    const Real expiryTime_, forward_;
-    const Real alpha_, beta_, nu_, rho_,
-        gamma_; // nu_ here is a tranformed version of the input nu !
-
-    Real x(Real strike) const;
-    std::vector<Real> x(const std::vector<Real> &strikes) const;
-
-    Real y(Real strike) const;
-
-    Real F(Real y, Real u) const;
-
-    Real lognormalVolatilityHelper(Real strike, Real x) const;
-    Real normalVolatilityHelper(Real strike, Real x) const;
-    Real localVolatilityHelper(Real f, Real x) const;
-};
-}
+#include <ql/termstructures/volatility/zabr.hpp>
 
 #endif

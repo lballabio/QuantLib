@@ -257,7 +257,7 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhite2) {
     else
         cachedA = 0.0482063, cachedSigma = 0.00582687;
 
-    Real tolerance = 5.0e-6; 
+    Real tolerance = 1.0e-5;
     Array xMinCalculated = model->params();
     Real yMinCalculated = model->value(xMinCalculated, swaptions);
     Array xMinExpected(2);

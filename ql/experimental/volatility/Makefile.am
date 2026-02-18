@@ -42,8 +42,7 @@ cpp_files = \
     sabrvolsurface.cpp \
     sviinterpolatedsmilesection.cpp \
     svismilesection.cpp \
-    volcube.cpp \
-    zabr.cpp
+    volcube.cpp
 
 if UNITY_BUILD
 

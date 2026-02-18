@@ -1119,6 +1119,9 @@
     <ClInclude Include="ql\math\interpolations\xabrinterpolation.hpp">
       <Filter>math\interpolations</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\interpolations\zabrinterpolation.hpp">
+      <Filter>math\interpolations</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\statistics\all.hpp">
       <Filter>math\statistics</Filter>
     </ClInclude>
@@ -2002,6 +2005,15 @@
       <Filter>termstructures\volatility</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\volatilitytype.hpp">
+      <Filter>termstructures\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\zabr.hpp">
+      <Filter>termstructures\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\zabrinterpolatedsmilesection.hpp">
+      <Filter>termstructures\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\zabrsmilesection.hpp">
       <Filter>termstructures\volatility</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\capfloor\all.hpp">
@@ -5573,6 +5585,9 @@
     <ClCompile Include="ql\termstructures\volatility\spreadedsmilesection.cpp">
       <Filter>termstructures\volatility</Filter>
     </ClCompile>
+    <ClCompile Include="ql\termstructures\volatility\zabr.cpp">
+      <Filter>termstructures\volatility</Filter>
+    </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\capfloor\capfloortermvolatilitystructure.cpp">
       <Filter>termstructures\volatility\capfloor</Filter>
     </ClCompile>
@@ -6342,9 +6357,6 @@
       <Filter>experimental\volatility</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\volatility\volcube.cpp">
-      <Filter>experimental\volatility</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\volatility\zabr.cpp">
       <Filter>experimental\volatility</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\callablebonds\blackcallablebondengine.cpp">

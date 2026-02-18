@@ -4,6 +4,7 @@
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2006, 2008 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
+ Copyright (C) 2026 Aaditya Panikath
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,7 +30,7 @@
 #include <ql/termstructures/volatility/swaption/zabrswaptionvolatilitycube.hpp>
 #include <ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp>
 #include <ql/termstructures/volatility/sabrsmilesection.hpp>
-#include <ql/experimental/volatility/zabrsmilesection.hpp>
+#include <ql/termstructures/volatility/zabrsmilesection.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -53,6 +54,22 @@ struct CommonVars {
     bool vegaWeighedSmileFit;
 
     // utilities
+    std::vector<std::vector<Handle<Quote>>> makeZabrParametersGuess(
+            Real alpha, Real beta, Real nu, Real rho, Real gamma) const {
+        Size n = cube.tenors.options.size() * cube.tenors.swaps.size();
+        std::vector<std::vector<Handle<Quote>>> guess(n);
+        for (Size i = 0; i < n; ++i) {
+            guess[i] = {
+                Handle<Quote>(ext::make_shared<SimpleQuote>(alpha)),
+                Handle<Quote>(ext::make_shared<SimpleQuote>(beta)),
+                Handle<Quote>(ext::make_shared<SimpleQuote>(nu)),
+                Handle<Quote>(ext::make_shared<SimpleQuote>(rho)),
+                Handle<Quote>(ext::make_shared<SimpleQuote>(gamma))
+            };
+        }
+        return guess;
+    }
+
     void makeAtmVolTest(const SwaptionVolatilityCube& volCube,
                         Real tolerance) {
 
@@ -581,22 +598,10 @@ BOOST_AUTO_TEST_CASE(testZabrVols) {
     CommonVars vars;
 
     // ZABR requires 5 parameters: alpha, beta, nu, rho, gamma
-    std::vector<std::vector<Handle<Quote> > >
-        parametersGuess(vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size());
-    for (Size i=0; i<vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size(); i++) {
-        parametersGuess[i] = std::vector<Handle<Quote> >(5);
-        parametersGuess[i][0] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));   // alpha
-        parametersGuess[i][1] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));   // beta
-        parametersGuess[i][2] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));   // nu
-        parametersGuess[i][3] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));   // rho
-        parametersGuess[i][4] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0)));   // gamma (1.0 = SABR-like)
-    }
+    // gamma=1.0 gives SABR-like behaviour
+    auto parametersGuess = vars.makeZabrParametersGuess(0.2, 0.5, 0.4, 0.0, 1.0);
     std::vector<bool> isParameterFixed(5, false);
+    isParameterFixed[1] = true;  // Fix beta (standard practice, as in SABR)
     isParameterFixed[4] = true;  // Fix gamma for stability
 
     ZabrSwaptionVolatilityCube volCube(vars.atmVolMatrix,
@@ -612,14 +617,10 @@ BOOST_AUTO_TEST_CASE(testZabrVols) {
                              true);
 
     // ZABR should recover ATM vols with reasonable tolerance
-    // Note: ZABR uses slightly higher tolerance (5.0e-4) than SABR (3.0e-4) due to
-    // additional gamma parameter flexibility in the optimization
     Real tolerance = 5.0e-4;
     vars.makeAtmVolTest(volCube, tolerance);
 
     // ZABR should also recover vol spreads with reasonable tolerance
-    // Note: ZABR spread tolerance (15.0e-4) is slightly higher than SABR (12.0e-4)
-    // due to additional optimization complexity with gamma parameter
     tolerance = 15.0e-4;
     vars.makeVolSpreadsTest(volCube, tolerance);
 
@@ -629,7 +630,7 @@ BOOST_AUTO_TEST_CASE(testZabrVols) {
     // Test smile section retrieval
     ext::shared_ptr<SmileSection> smileSection =
         volStructure->smileSection(Period(10,Years), Period(2,Years));
-    BOOST_CHECK(smileSection != nullptr);
+    BOOST_REQUIRE(smileSection != nullptr);
 
     // Test volatility at ATM
     Rate atmStrike = volCube.atmStrike(Period(10,Years), Period(2,Years));
@@ -643,22 +644,9 @@ BOOST_AUTO_TEST_CASE(testZabrSmileSection) {
 
     CommonVars vars;
 
-    std::vector<std::vector<Handle<Quote> > >
-        parametersGuess(vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size());
-    for (Size i=0; i<vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size(); i++) {
-        parametersGuess[i] = std::vector<Handle<Quote> >(5);
-        parametersGuess[i][0] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
-        parametersGuess[i][1] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
-        parametersGuess[i][2] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
-        parametersGuess[i][3] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
-        parametersGuess[i][4] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0)));
-    }
+    auto parametersGuess = vars.makeZabrParametersGuess(0.2, 0.5, 0.4, 0.0, 1.0);
     std::vector<bool> isParameterFixed(5, false);
+    isParameterFixed[1] = true;  // Fix beta (standard practice)
     isParameterFixed[4] = true;
 
     ZabrSwaptionVolatilityCube volCube(vars.atmVolMatrix,
@@ -680,7 +668,7 @@ BOOST_AUTO_TEST_CASE(testZabrSmileSection) {
     ext::shared_ptr<SmileSection> smileSection =
         volStructure->smileSection(Period(5,Years), Period(5,Years));
 
-    BOOST_CHECK(smileSection != nullptr);
+    BOOST_REQUIRE(smileSection != nullptr);
     BOOST_CHECK(smileSection->atmLevel() > 0.0);
 
     // Test volatility at different strikes
@@ -700,22 +688,9 @@ BOOST_AUTO_TEST_CASE(testZabrParameters) {
 
     CommonVars vars;
 
-    std::vector<std::vector<Handle<Quote> > >
-        parametersGuess(vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size());
-    for (Size i=0; i<vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size(); i++) {
-        parametersGuess[i] = std::vector<Handle<Quote> >(5);
-        parametersGuess[i][0] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
-        parametersGuess[i][1] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
-        parametersGuess[i][2] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
-        parametersGuess[i][3] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
-        parametersGuess[i][4] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0)));
-    }
+    auto parametersGuess = vars.makeZabrParametersGuess(0.2, 0.5, 0.4, 0.0, 1.0);
     std::vector<bool> isParameterFixed(5, false);
+    isParameterFixed[1] = true;  // Fix beta (standard practice)
     isParameterFixed[4] = true;
 
     ZabrSwaptionVolatilityCube volCube(vars.atmVolMatrix,
@@ -780,6 +755,51 @@ BOOST_AUTO_TEST_CASE(testZabrParameters) {
                     "\nexpected at 3Y = " << io::volatility(vol12) <<
                     "\nobserved at 3Y = " << io::volatility(vol3));
     }
+
+    // Downcast to access individual calibrated ZABR parameters,
+    // mirroring testSabrParameters which checks alpha/beta/rho/nu directly.
+    // This catches bugs such as parameters stored in wrong order in params vector.
+    using ZabrSection = ZabrSmileSection<ZabrShortMaturityLognormal>;
+    auto zs1 = ext::dynamic_pointer_cast<ZabrSection>(smileSection1);
+    auto zs2 = ext::dynamic_pointer_cast<ZabrSection>(smileSection2);
+    auto zs3 = ext::dynamic_pointer_cast<ZabrSection>(smileSection3);
+    BOOST_REQUIRE(zs1 != nullptr);
+    BOOST_REQUIRE(zs2 != nullptr);
+    BOOST_REQUIRE(zs3 != nullptr);
+
+    // alpha interpolation
+    Real alpha1 = zs1->model()->alpha(), alpha2 = zs2->model()->alpha();
+    Real alpha3 = zs3->model()->alpha();
+    if (std::abs(alpha3 - 0.5*(alpha1+alpha2)) > tolerance)
+        BOOST_ERROR("\nChecking interpolation of ZABR alpha:"
+                    "\nalpha at 2Y = " << alpha1 <<
+                    "\nalpha at 4Y = " << alpha2 <<
+                    "\nexpected at 3Y = " << 0.5*(alpha1+alpha2) <<
+                    "\nobserved at 3Y = " << alpha3);
+
+    // nu interpolation
+    Real nu1 = zs1->model()->nu(), nu2 = zs2->model()->nu();
+    Real nu3 = zs3->model()->nu();
+    if (std::abs(nu3 - 0.5*(nu1+nu2)) > tolerance)
+        BOOST_ERROR("\nChecking interpolation of ZABR nu:"
+                    "\nnu at 2Y = " << nu1 <<
+                    "\nnu at 4Y = " << nu2 <<
+                    "\nexpected at 3Y = " << 0.5*(nu1+nu2) <<
+                    "\nobserved at 3Y = " << nu3);
+
+    // rho interpolation
+    Real rho1 = zs1->model()->rho(), rho2 = zs2->model()->rho();
+    Real rho3 = zs3->model()->rho();
+    if (std::abs(rho3 - 0.5*(rho1+rho2)) > tolerance)
+        BOOST_ERROR("\nChecking interpolation of ZABR rho:"
+                    "\nrho at 2Y = " << rho1 <<
+                    "\nrho at 4Y = " << rho2 <<
+                    "\nexpected at 3Y = " << 0.5*(rho1+rho2) <<
+                    "\nobserved at 3Y = " << rho3);
+
+    // Note: beta and gamma interpolation are not tested here because both
+    // parameters are fixed (isParameterFixed[1]=true, isParameterFixed[4]=true),
+    // so their layer values do not change between sections.
 }
 
 BOOST_AUTO_TEST_CASE(testZabrWithNonUnitGamma) {
@@ -789,22 +809,9 @@ BOOST_AUTO_TEST_CASE(testZabrWithNonUnitGamma) {
     CommonVars vars;
 
     // ZABR with gamma = 0.75 (different from SABR-like gamma=1.0)
-    std::vector<std::vector<Handle<Quote> > >
-        parametersGuess(vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size());
-    for (Size i=0; i<vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size(); i++) {
-        parametersGuess[i] = std::vector<Handle<Quote> >(5);
-        parametersGuess[i][0] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));   // alpha
-        parametersGuess[i][1] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));   // beta
-        parametersGuess[i][2] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));   // nu
-        parametersGuess[i][3] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));   // rho
-        parametersGuess[i][4] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.75))); // gamma != 1.0
-    }
+    auto parametersGuess = vars.makeZabrParametersGuess(0.2, 0.5, 0.4, 0.0, 0.75);
     std::vector<bool> isParameterFixed(5, false);
+    isParameterFixed[1] = true;  // Fix beta (standard practice)
     isParameterFixed[4] = true;  // Fix gamma to test non-unit value behavior
 
     ZabrSwaptionVolatilityCube volCube(vars.atmVolMatrix,
@@ -829,7 +836,7 @@ BOOST_AUTO_TEST_CASE(testZabrWithNonUnitGamma) {
     ext::shared_ptr<SmileSection> smileSection =
         volStructure->smileSection(Period(5,Years), Period(5,Years));
 
-    BOOST_CHECK(smileSection != nullptr);
+    BOOST_REQUIRE(smileSection != nullptr);
 
     // Test volatility smile shape - with gamma < 1, expect different curvature
     Rate atmStrike = smileSection->atmLevel();
@@ -848,22 +855,8 @@ BOOST_AUTO_TEST_CASE(testZabrWithFreeGamma) {
 
     CommonVars vars;
 
-    std::vector<std::vector<Handle<Quote> > >
-        parametersGuess(vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size());
-    for (Size i=0; i<vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size(); i++) {
-        parametersGuess[i] = std::vector<Handle<Quote> >(5);
-        parametersGuess[i][0] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
-        parametersGuess[i][1] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
-        parametersGuess[i][2] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
-        parametersGuess[i][3] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
-        parametersGuess[i][4] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0)));  // initial gamma guess
-    }
-    // gamma (index 4) is NOT fixed — optimizer should calibrate it
+    // gamma=1.0 is only the initial guess; optimizer will calibrate it freely
+    auto parametersGuess = vars.makeZabrParametersGuess(0.2, 0.5, 0.4, 0.0, 1.0);
     std::vector<bool> isParameterFixed(5, false);
     isParameterFixed[1] = true;   // fix beta
 
@@ -893,9 +886,12 @@ BOOST_AUTO_TEST_CASE(testZabrWithFreeGamma) {
 
     Real calibratedGamma = zabrSection->model()->gamma();
 
-    // Gamma should be within reasonable bounds
+    // Gamma should be within valid bounds: ZabrSpecs::direct() caps gamma at 1.9
     BOOST_CHECK(calibratedGamma > 0.1);
-    BOOST_CHECK(calibratedGamma < 5.0);
+    BOOST_CHECK(calibratedGamma < 1.9);
+
+    // Verify gamma actually moved from the initial guess of 1.0
+    BOOST_CHECK(std::abs(calibratedGamma - 1.0) > 1e-6);
 
     // Verify ATM vol is positive
     Rate atmStrike = section->atmLevel();
@@ -903,29 +899,37 @@ BOOST_AUTO_TEST_CASE(testZabrWithFreeGamma) {
     BOOST_CHECK(atmVol > 0.0);
 }
 
-BOOST_AUTO_TEST_CASE(testZabrVsSabrComparison) {
 
-    BOOST_TEST_MESSAGE("Testing ZABR (gamma=1) vs SABR comparison...");
+BOOST_AUTO_TEST_CASE(testZabrShiftedVolThrows) {
+
+    BOOST_TEST_MESSAGE("Testing that ZABR cube throws for non-zero ATM vol shift...");
 
     CommonVars vars;
 
-    // Create SABR cube with 4 parameters
-    std::vector<std::vector<Handle<Quote> > >
-        sabrParametersGuess(vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size());
-    for (Size i=0; i<vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size(); i++) {
-        sabrParametersGuess[i] = std::vector<Handle<Quote> >(4);
-        sabrParametersGuess[i][0] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
-        sabrParametersGuess[i][1] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
-        sabrParametersGuess[i][2] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
-        sabrParametersGuess[i][3] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
-    }
-    std::vector<bool> sabrIsParameterFixed(4, false);
+    // Build an ATM vol matrix with a uniform 2% shift.
+    // ZABR does not support shifted lognormal vols (QL_REQUIRE in createSmileSection).
+    Size nOpts = vars.atm.tenors.options.size();
+    Size nSwps = vars.atm.tenors.swaps.size();
+    std::vector<std::vector<Real>> shifts(nOpts, std::vector<Real>(nSwps, 0.02));
 
-    SabrSwaptionVolatilityCube sabrCube(vars.atmVolMatrix,
+    Handle<SwaptionVolatilityStructure> shiftedAtmVol(
+        ext::make_shared<SwaptionVolatilityMatrix>(
+            vars.conventions.calendar,
+            vars.conventions.optionBdc,
+            vars.atm.tenors.options,
+            vars.atm.tenors.swaps,
+            vars.atm.volsHandle,
+            vars.conventions.dayCounter,
+            false,
+            ShiftedLognormal,
+            shifts));
+
+    auto parametersGuess = vars.makeZabrParametersGuess(0.2, 0.5, 0.4, 0.0, 1.0);
+    std::vector<bool> isParameterFixed(5, false);
+    isParameterFixed[1] = true;
+    isParameterFixed[4] = true;
+
+    ZabrSwaptionVolatilityCube volCube(shiftedAtmVol,
                              vars.cube.tenors.options,
                              vars.cube.tenors.swaps,
                              vars.cube.strikeSpreads,
@@ -933,30 +937,40 @@ BOOST_AUTO_TEST_CASE(testZabrVsSabrComparison) {
                              vars.swapIndexBase,
                              vars.shortSwapIndexBase,
                              vars.vegaWeighedSmileFit,
-                             sabrParametersGuess,
-                             sabrIsParameterFixed,
+                             parametersGuess,
+                             isParameterFixed,
                              true);
 
-    // Create ZABR cube with gamma = 1.0 (SABR-like)
-    std::vector<std::vector<Handle<Quote> > >
-        zabrParametersGuess(vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size());
-    for (Size i=0; i<vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size(); i++) {
-        zabrParametersGuess[i] = std::vector<Handle<Quote> >(5);
-        zabrParametersGuess[i][0] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
-        zabrParametersGuess[i][1] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
-        zabrParametersGuess[i][2] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
-        zabrParametersGuess[i][3] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
-        zabrParametersGuess[i][4] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0)));  // gamma = 1.0
-    }
-    std::vector<bool> zabrIsParameterFixed(5, false);
-    zabrIsParameterFixed[4] = true;  // Fix gamma = 1.0
+    // Querying the cube triggers lazy calibration and must throw
+    // because the ATM vol structure has non-zero shift
+    Rate strike = volCube.atmStrike(vars.cube.tenors.options[0],
+                                    vars.cube.tenors.swaps[0]);
+    BOOST_CHECK_THROW(
+        volCube.volatility(vars.cube.tenors.options[0],
+                           vars.cube.tenors.swaps[0], strike, true),
+        QuantLib::Error);
+}
 
-    ZabrSwaptionVolatilityCube zabrCube(vars.atmVolMatrix,
+BOOST_AUTO_TEST_CASE(testZabrAlternativeKernel) {
+
+    BOOST_TEST_MESSAGE("Testing ZABR cube with ZabrShortMaturityNormal kernel...");
+
+    CommonVars vars;
+
+    auto parametersGuess = vars.makeZabrParametersGuess(0.2, 0.5, 0.4, 0.0, 1.0);
+    std::vector<bool> isParameterFixed(5, false);
+    isParameterFixed[1] = true;
+    isParameterFixed[4] = true;
+
+    // Instantiate with a non-default kernel — this exercises the kernel
+    // template parameter added in zabrswaptionvolatilitycube.hpp.
+    // Note: ZabrLocalVolatility and ZabrFullFd kernels are not covered here
+    // due to the high cost of finite-difference evaluation.
+    typedef XabrSwaptionVolatilityCube<
+        SwaptionVolCubeZabrModel<ZabrShortMaturityNormal>
+    > ZabrNormalKernelCube;
+
+    ZabrNormalKernelCube volCube(vars.atmVolMatrix,
                              vars.cube.tenors.options,
                              vars.cube.tenors.swaps,
                              vars.cube.strikeSpreads,
@@ -964,32 +978,75 @@ BOOST_AUTO_TEST_CASE(testZabrVsSabrComparison) {
                              vars.swapIndexBase,
                              vars.shortSwapIndexBase,
                              vars.vegaWeighedSmileFit,
-                             zabrParametersGuess,
-                             zabrIsParameterFixed,
+                             parametersGuess,
+                             isParameterFixed,
                              true);
 
-    // Compare ATM volatilities between SABR and ZABR(gamma=1)
-    // They should be reasonably close (within tolerance) as gamma=1 makes ZABR behave
-    // similarly to SABR, though not identically due to different kernel implementations
-    Real tolerance = 5.0e-3;  // 50 bps tolerance for model comparison
+    // Smoke test: cube constructs and returns positive vol at ATM
+    ext::shared_ptr<SmileSection> section =
+        volCube.smileSection(Period(5, Years), Period(5, Years));
+    BOOST_REQUIRE(section != nullptr);
 
-    for (auto& option : vars.atm.tenors.options) {
-        for (auto& swap : vars.atm.tenors.swaps) {
-            Rate strike = sabrCube.atmStrike(option, swap);
-            Volatility sabrVol = sabrCube.volatility(option, swap, strike, true);
-            Volatility zabrVol = zabrCube.volatility(option, swap, strike, true);
-            Volatility diff = std::abs(sabrVol - zabrVol);
+    Rate atmStrike = section->atmLevel();
+    BOOST_CHECK(atmStrike > 0.0);
+    BOOST_CHECK(section->volatility(atmStrike) > 0.0);
+}
 
-            if (diff > tolerance)
-                BOOST_ERROR("\nZABR(gamma=1) vs SABR comparison failed:"
-                            "\nexpiry time = " << option <<
-                            "\nswap length = " << swap <<
-                            "\n   SABR vol = " << io::volatility(sabrVol) <<
-                            "\n   ZABR vol = " << io::volatility(zabrVol) <<
-                            "\n difference = " << io::volatility(diff) <<
-                            "\n  tolerance = " << tolerance);
+BOOST_AUTO_TEST_CASE(testZabrObservability) {
+
+    BOOST_TEST_MESSAGE("Testing ZABR volatility cube observability...");
+
+    CommonVars vars;
+
+    auto parametersGuess = vars.makeZabrParametersGuess(0.2, 0.5, 0.4, 0.0, 1.0);
+    std::vector<bool> isParameterFixed(5, false);
+    isParameterFixed[1] = true;
+    isParameterFixed[4] = true;
+
+    // VolCube created before reference date change
+    auto volCube0 = ext::make_shared<ZabrSwaptionVolatilityCube>(
+        vars.atmVolMatrix, vars.cube.tenors.options, vars.cube.tenors.swaps,
+        vars.cube.strikeSpreads, vars.cube.volSpreadsHandle,
+        vars.swapIndexBase, vars.shortSwapIndexBase,
+        vars.vegaWeighedSmileFit, parametersGuess, isParameterFixed, true);
+
+    Date referenceDate = Settings::instance().evaluationDate();
+    Settings::instance().evaluationDate() =
+        vars.conventions.calendar.advance(referenceDate, Period(1, Days),
+                                          vars.conventions.optionBdc);
+
+    // VolCube created after reference date change
+    auto volCube1 = ext::make_shared<ZabrSwaptionVolatilityCube>(
+        vars.atmVolMatrix, vars.cube.tenors.options, vars.cube.tenors.swaps,
+        vars.cube.strikeSpreads, vars.cube.volSpreadsHandle,
+        vars.swapIndexBase, vars.shortSwapIndexBase,
+        vars.vegaWeighedSmileFit, parametersGuess, isParameterFixed, true);
+
+    // Both cubes must give identical volatilities: the cube defined relative
+    // to today re-calibrates when the reference date advances
+    Rate dummyStrike = 0.03;
+    for (Size i = 0; i < vars.cube.tenors.options.size(); ++i) {
+        for (Size j = 0; j < vars.cube.tenors.swaps.size(); ++j) {
+            for (Size k = 0; k < vars.cube.strikeSpreads.size(); ++k) {
+                Volatility v0 = volCube0->volatility(
+                    vars.cube.tenors.options[i], vars.cube.tenors.swaps[j],
+                    dummyStrike + vars.cube.strikeSpreads[k], false);
+                Volatility v1 = volCube1->volatility(
+                    vars.cube.tenors.options[i], vars.cube.tenors.swaps[j],
+                    dummyStrike + vars.cube.strikeSpreads[k], false);
+                if (std::fabs(v0 - v1) > 1e-14)
+                    BOOST_ERROR("ZABR cube observability failed:"
+                                " option tenor = " << vars.cube.tenors.options[i] <<
+                                " swap tenor = " << vars.cube.tenors.swaps[j] <<
+                                " strike = " << io::rate(dummyStrike + vars.cube.strikeSpreads[k]) <<
+                                "  v0 = " << io::volatility(v0) <<
+                                "  v1 = " << io::volatility(v1) <<
+                                "  error = " << std::fabs(v0 - v1));
+            }
         }
     }
+
+    Settings::instance().evaluationDate() = referenceDate;
 }
 
 BOOST_AUTO_TEST_SUITE_END()
