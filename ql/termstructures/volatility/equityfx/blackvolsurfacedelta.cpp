@@ -20,7 +20,7 @@
 
 #include <ql/errors.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/experimental/fx/blackdeltacalculator.hpp>
+#include <ql/pricingengines/blackdeltacalculator.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvolsurfacedelta.hpp>
@@ -36,14 +36,14 @@ namespace QuantLib {
         const std::vector<Real>& callDeltas, bool hasAtm, const Matrix& blackVolMatrix, const DayCounter& dayCounter,
         const Calendar& cal, const Handle<Quote>& spot, const Handle<YieldTermStructure>& domesticTS,
         const Handle<YieldTermStructure>& foreignTS, DeltaVolQuote::DeltaType dt, DeltaVolQuote::AtmType at,
-        ext::optional<DeltaVolQuote::DeltaType> atmDeltaType, const Period& switchTenor, DeltaVolQuote::DeltaType ltdt,
-        DeltaVolQuote::AtmType ltat, ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType,
-        SmileInterpolationMethod im, bool flatStrikeExtrapolation, BlackVolTimeExtrapolation timeExtrapolation)
+        ext::optional<DeltaVolQuote::DeltaType> atmDeltaType, SmileInterpolationMethod im,
+        bool flatStrikeExtrapolation, BlackVolTimeExtrapolation timeExtrapolation, const Period& switchTenor,
+        DeltaVolQuote::DeltaType ltdt, DeltaVolQuote::AtmType ltat, ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType)
         : BlackVolatilityTermStructure(referenceDate, cal, Following, dayCounter), dates_(dates), times_(dates.size(), 0),
         putDeltas_(putDeltas), callDeltas_(callDeltas), hasAtm_(hasAtm), spot_(spot), domesticTS_(domesticTS),
-        foreignTS_(foreignTS), dt_(dt), at_(at), atmDeltaType_(atmDeltaType), switchTenor_(switchTenor), ltdt_(ltdt),
-        ltat_(ltat), longTermAtmDeltaType_(longTermAtmDeltaType), interpolationMethod_(im),
-        flatStrikeExtrapolation_(flatStrikeExtrapolation), timeExtrapolation_(timeExtrapolation) {
+        foreignTS_(foreignTS), dt_(dt), at_(at), atmDeltaType_(atmDeltaType),
+        interpolationMethod_(im), flatStrikeExtrapolation_(flatStrikeExtrapolation), timeExtrapolation_(timeExtrapolation),
+        switchTenor_(switchTenor), ltdt_(ltdt), ltat_(ltat), longTermAtmDeltaType_(longTermAtmDeltaType) {
 
         // If ATM delta type is not given, set it to dt
         if (!atmDeltaType_)

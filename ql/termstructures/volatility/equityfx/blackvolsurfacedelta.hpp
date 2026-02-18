@@ -2,7 +2,6 @@
  Copyright (C) 2019 Quaternion Risk Management Ltd
  Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
  Copyright (C) 2025 Paolo D'Elia
- All rights reserved.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,7 +24,7 @@
 #ifndef quantlib_black_variance_surface_delta_hpp
 #define quantlib_black_variance_surface_delta_hpp
 
-#include <ql/experimental/fx/deltavolquote.hpp>
+#include <ql/quotes/deltavolquote.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
@@ -74,15 +73,15 @@ namespace QuantLib {
             \param dt               delta convention (Spot or Fwd, premium-adjusted, ...)
             \param at               ATM convention used when extracting/constructing ATM quote
             \param atmDeltaType     optional override delta-type for ATM computation
-            \param switchTenor      tenor after which long-term delta/ATM conventions apply
-            \param ltdt             long-term delta type (used for expiries beyond switchTenor)
-            \param ltat             long-term ATM convention (used beyond switchTenor)
-            \param longTermAtmDeltaType optional override for long-term ATM delta-type
             \param interpolationMethod interpolation used to build SmileSection for each expiry
                                        can be choosen across the following interpolation methods:
                                        Linear, NaturalCubic, FinancialCubic, CubicSpline
             \param flatStrikeExtrapolation enable flat-vol extrapolation in strike dimension
             \param timeExtrapolation policy for extrapolating/interpolating in time
+            \param switchTenor      tenor after which long-term delta/ATM conventions apply
+            \param ltdt             long-term delta type (used for expiries beyond switchTenor)
+            \param ltat             long-term ATM convention (used beyond switchTenor)
+            \param longTermAtmDeltaType optional override for long-term ATM delta-type
         */
         BlackVolatilitySurfaceDelta(Date referenceDate, const std::vector<Date>& dates, const std::vector<Real>& putDeltas,
                                     const std::vector<Real>& callDeltas, bool hasAtm, const Matrix& blackVolMatrix,
@@ -92,15 +91,15 @@ namespace QuantLib {
                                     DeltaVolQuote::DeltaType dt = DeltaVolQuote::DeltaType::Spot,
                                     DeltaVolQuote::AtmType at = DeltaVolQuote::AtmType::AtmDeltaNeutral,
                                     ext::optional<DeltaVolQuote::DeltaType> atmDeltaType = ext::nullopt,
-                                    const Period& switchTenor = 0 * Days,
-                                    DeltaVolQuote::DeltaType ltdt = DeltaVolQuote::DeltaType::Fwd,
-                                    DeltaVolQuote::AtmType ltat = DeltaVolQuote::AtmType::AtmDeltaNeutral,
-                                    ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType = ext::nullopt,
                                     SmileInterpolationMethod interpolationMethod =
                                         SmileInterpolationMethod::Linear,
                                     bool flatStrikeExtrapolation = false,
                                     BlackVolTimeExtrapolation timeExtrapolation =
-                                        BlackVolTimeExtrapolation::FlatVolatility);
+                                        BlackVolTimeExtrapolation::FlatVolatility,
+                                    const Period& switchTenor = 0 * Days,
+                                    DeltaVolQuote::DeltaType ltdt = DeltaVolQuote::DeltaType::Fwd,
+                                    DeltaVolQuote::AtmType ltat = DeltaVolQuote::AtmType::AtmDeltaNeutral,
+                                    ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType = ext::nullopt);
         //@}
 
         //! \name TermStructure interface
@@ -178,14 +177,15 @@ namespace QuantLib {
         DeltaVolQuote::DeltaType dt_;
         DeltaVolQuote::AtmType at_;
         ext::optional<DeltaVolQuote::DeltaType> atmDeltaType_;
-        Period switchTenor_;
-        DeltaVolQuote::DeltaType ltdt_;
-        DeltaVolQuote::AtmType ltat_;
-        ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType_;
 
         SmileInterpolationMethod interpolationMethod_;
         bool flatStrikeExtrapolation_;
         BlackVolTimeExtrapolation timeExtrapolation_;
+
+        Period switchTenor_;
+        DeltaVolQuote::DeltaType ltdt_;
+        DeltaVolQuote::AtmType ltat_;
+        ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType_;
         Real switchTime_;
 
         // calculate forward for time $t$
