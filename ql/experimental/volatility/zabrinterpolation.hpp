@@ -21,7 +21,7 @@
 #ifndef quantlib_experimental_zabr_interpolation_hpp
 #define quantlib_experimental_zabr_interpolation_hpp
 
-// Deprecated in version 1.38
+// Deprecated in version 1.42
 #pragma message("Warning: this file will disappear in a future release; include <ql/math/interpolations/zabrinterpolation.hpp> instead.")
 
 #include <ql/math/interpolations/zabrinterpolation.hpp>
