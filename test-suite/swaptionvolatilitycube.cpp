@@ -877,7 +877,7 @@ BOOST_AUTO_TEST_CASE(testZabrWithFreeGamma) {
     Period swapTenor = vars.cube.tenors.swaps[0];
     ext::shared_ptr<SmileSection> section =
         cube.smileSection(optionTenor, swapTenor);
-    BOOST_CHECK(section != nullptr);
+    BOOST_REQUIRE(section != nullptr);
 
     // Downcast to ZabrSmileSection to access calibrated gamma
     auto zabrSection =

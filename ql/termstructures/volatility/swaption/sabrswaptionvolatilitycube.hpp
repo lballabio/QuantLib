@@ -421,7 +421,7 @@ namespace QuantLib {
         Matrix betas(alphas);
         Matrix nus(alphas);
         Matrix rhos(alphas);
-        Matrix gammas(alphas);  // For 5+ param models (e.g. ZABR); unused for 4-param models
+        Matrix gammas(alphas);  // Zero-initialized; populated and used only for 5+ param models (ZABR).
         Matrix forwards(alphas);
         Matrix errors(alphas);
         Matrix maxErrors(alphas);
@@ -471,7 +471,8 @@ namespace QuantLib {
                 betas      [j][k] = sabrInterpolation->beta();
                 nus        [j][k] = sabrInterpolation->nu();
                 rhos       [j][k] = sabrInterpolation->rho();
-                gammas     [j][k] = Traits::extractGamma(sabrInterpolation);
+                if constexpr (Traits::nParams >= 5)
+                    gammas[j][k] = Traits::extractGamma(sabrInterpolation);
                 forwards   [j][k] = atmForward;
                 errors     [j][k] = rmsError;
                 maxErrors  [j][k] = maxError;
@@ -1008,6 +1009,13 @@ namespace QuantLib {
         for (Size k=0;k<nLayers_;k++) {
             ext::shared_ptr<Interpolation2D> interpolation;
             transposedPoints_.push_back(transpose(points[k]));
+            // k<=4 applies BackwardflatLinear to layers 0..4. This covers all
+            // model-parameter layers for both 4-param models (SABR: params 0-3)
+            // and 5-param models (ZABR: params 0-4). Side-effect: for 4-param
+            // models the forward-rate metadata layer (4) also gets BackwardflatLinear,
+            // while for 5-param models the forward-rate layer (5) gets Bilinear.
+            // To make this consistent across models the threshold would need to be
+            // Model::nParams, but Cube is a nested class that does not see Traits.
             if (k <= 4 && backwardFlat_)
                 interpolation =
                     ext::make_shared<BackwardflatLinearInterpolation>(
