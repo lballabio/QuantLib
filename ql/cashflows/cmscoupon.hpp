@@ -50,7 +50,8 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false,
-                  const Date& exCouponDate = Date());
+                  const Date& exCouponDate = Date(),
+                  BusinessDayConvention fixingConvention = Preceding);
         //! \name Inspectors
         //@{
         const ext::shared_ptr<SwapIndex>& swapIndex() const {
@@ -86,6 +87,7 @@ namespace QuantLib {
         CmsLeg& withFloors(const std::vector<Rate>& floors);
         CmsLeg& inArrears(bool flag = true);
         CmsLeg& withZeroPayments(bool flag = true);
+        CmsLeg& withFixingConvention(BusinessDayConvention);
         CmsLeg& withExCouponPeriod(const Period&,
                                    const Calendar&,
                                    BusinessDayConvention,
@@ -102,6 +104,7 @@ namespace QuantLib {
         std::vector<Spread> spreads_;
         std::vector<Rate> caps_, floors_;
         bool inArrears_ = false, zeroPayments_ = false;
+        BusinessDayConvention fixingConvention_ = Preceding;
         Period exCouponPeriod_;
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_ = Following;
