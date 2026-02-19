@@ -74,7 +74,6 @@ namespace QuantLib {
               constructors (e.g., NoArbSabr, ZABR) should specialize this
               traits class.
 
-        \ingroup swaptionvol
     */
     template <class Model>
     struct XabrModelTraits {
@@ -83,7 +82,7 @@ namespace QuantLib {
         template <class I1, class I2>
         static ext::shared_ptr<typename Model::Interpolation> createInterpolation(
             const I1& xBegin, const I1& xEnd, const I2& yBegin,
-            Time t, Real forward,
+            Time t, const Real& forward,
             const std::vector<Real>& params,
             const std::vector<bool>& paramIsFixed,
             bool vegaWeighted,
