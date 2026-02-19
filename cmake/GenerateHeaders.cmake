@@ -75,6 +75,13 @@ function(generate_dir_headers source_dir binary_dir)
         list(FILTER children_hpp EXCLUDE REGEX "deltavolquote.hpp")
     endif ()
 
+    if (${source_dir} MATCHES "experimental" AND ${source_dir} MATCHES "volatility")
+        list(FILTER children_hpp EXCLUDE REGEX "zabr.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "zabrinterpolatedsmilesection.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "zabrinterpolation.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "zabrsmilesection.hpp")
+    endif ()
+
     file(GLOB children_dir RELATIVE ${source_dir} "${source_dir}/*")
     list(FILTER children_dir EXCLUDE REGEX "CMakeFiles")
     list(FILTER children_dir EXCLUDE REGEX "^\\..*")
