@@ -44,6 +44,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/utilities/null.hpp>
 #include <utility>
+#include <cmath>
 
 namespace QuantLib::detail {
 
@@ -135,7 +136,6 @@ class XABRInterpolationImpl final : public Interpolation::templateImpl<I1, I2>,
     }
 
     void update() override {
-
         this->updateModelInstance();
 
         // we should also check that y contains positive values only
@@ -186,7 +186,6 @@ class XABRInterpolationImpl final : public Interpolation::templateImpl<I1, I2>,
             Real tmpInterpolationError;
 
             do {
-
                 if (iterations > 0) {
                     const auto& s = halton.nextSequence();
                     Model().guess(guess, this->paramIsFixed_, this->forward_,

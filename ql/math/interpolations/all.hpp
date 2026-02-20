@@ -22,4 +22,5 @@
 #include <ql/math/interpolations/multicubicspline.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/interpolations/xabrinterpolation.hpp>
+#include <ql/math/interpolations/zabrinterpolation.hpp>
 

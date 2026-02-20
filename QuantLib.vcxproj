@@ -1063,6 +1063,7 @@
     <ClInclude Include="ql\math\interpolations\multicubicspline.hpp" />
     <ClInclude Include="ql\math\interpolations\sabrinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\xabrinterpolation.hpp" />
+    <ClInclude Include="ql\math\interpolations\zabrinterpolation.hpp" />
     <ClInclude Include="ql\math\kernelfunctions.hpp" />
     <ClInclude Include="ql\math\linearleastsquaresregression.hpp" />
     <ClInclude Include="ql\math\matrix.hpp" />
@@ -1770,7 +1771,11 @@
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvoldiscrete.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvolmatrix.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvolstructure.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\swaption\zabrswaptionvolatilitycube.hpp" />
     <ClInclude Include="ql\termstructures\volatility\volatilitytype.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\zabr.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\zabrinterpolatedsmilesection.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\zabrsmilesection.hpp" />
     <ClInclude Include="ql\termstructures\voltermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yield\all.hpp" />
     <ClInclude Include="ql\termstructures\yield\bondhelpers.hpp" />
@@ -2130,7 +2135,6 @@
     <ClCompile Include="ql\experimental\volatility\sviinterpolatedsmilesection.cpp" />
     <ClCompile Include="ql\experimental\volatility\svismilesection.cpp" />
     <ClCompile Include="ql\experimental\volatility\volcube.cpp" />
-    <ClCompile Include="ql\experimental\volatility\zabr.cpp" />
     <ClCompile Include="ql\indexes\bmaindex.cpp" />
     <ClCompile Include="ql\indexes\equityindex.cpp" />
     <ClCompile Include="ql\indexes\ibor\bibor.cpp" />
@@ -2774,6 +2778,7 @@
     <ClCompile Include="ql\termstructures\volatility\smilesection.cpp" />
     <ClCompile Include="ql\termstructures\volatility\smilesectionutils.cpp" />
     <ClCompile Include="ql\termstructures\volatility\spreadedsmilesection.cpp" />
+    <ClCompile Include="ql\termstructures\volatility\zabr.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\cmsmarket.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\cmsmarketcalibration.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\gaussian1dswaptionvolatility.cpp" />

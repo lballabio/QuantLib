@@ -20,7 +20,10 @@ this_include_HEADERS = \
     smilesection.hpp \
     smilesectionutils.hpp \
     spreadedsmilesection.hpp \
-    volatilitytype.hpp
+    volatilitytype.hpp \
+    zabr.hpp \
+    zabrinterpolatedsmilesection.hpp \
+    zabrsmilesection.hpp
 
 cpp_files = \
     abcd.cpp \
@@ -35,7 +38,8 @@ cpp_files = \
     sabrsmilesection.cpp \
     smilesection.cpp \
     smilesectionutils.cpp \
-    spreadedsmilesection.cpp
+    spreadedsmilesection.cpp \
+    zabr.cpp
 
 if UNITY_BUILD
 
