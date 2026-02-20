@@ -10,6 +10,7 @@ this_include_HEADERS = \
     blackconstantvol.hpp \
     blackvariancecurve.hpp \
     blackvariancesurface.hpp \
+    blackvariancesurfacefromsmilesections.hpp \
     blackvoltermstructure.hpp \
     fixedlocalvolsurface.hpp \
     gridmodellocalvolsurface.hpp \
@@ -27,6 +28,7 @@ cpp_files = \
     andreasenhugevolatilityadapter.cpp \
     blackvariancecurve.cpp \
     blackvariancesurface.cpp \
+    blackvariancesurfacefromsmilesections.cpp \
     blackvoltermstructure.cpp \
     fixedlocalvolsurface.cpp \
     gridmodellocalvolsurface.cpp \
