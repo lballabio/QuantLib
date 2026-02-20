@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     ForwardRateStructure::ForwardRateStructure(const DayCounter& dc)
-    : YieldTermStructure(dc) {}
+    : ZeroYieldStructure(dc) {}
 
     ForwardRateStructure::ForwardRateStructure(
                                     const Date& refDate,
@@ -32,7 +32,7 @@ namespace QuantLib {
                                     const DayCounter& dc,
                                     const std::vector<Handle<Quote> >& jumps,
                                     const std::vector<Date>& jumpDates)
-    : YieldTermStructure(refDate, cal, dc, jumps, jumpDates) {}
+    : ZeroYieldStructure(refDate, cal, dc, jumps, jumpDates) {}
 
     ForwardRateStructure::ForwardRateStructure(
                                     Natural settlDays,
@@ -40,7 +40,7 @@ namespace QuantLib {
                                     const DayCounter& dc,
                                     const std::vector<Handle<Quote> >& jumps,
                                     const std::vector<Date>& jumpDates)
-    : YieldTermStructure(settlDays, cal, dc, jumps, jumpDates) {}
+    : ZeroYieldStructure(settlDays, cal, dc, jumps, jumpDates) {}
 
     Rate ForwardRateStructure::zeroYieldImpl(Time t) const {
         if (t == 0.0)
