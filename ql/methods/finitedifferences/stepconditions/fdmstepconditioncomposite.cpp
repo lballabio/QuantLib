@@ -124,8 +124,11 @@ namespace QuantLib {
                    || exercise->type() == Exercise::Bermudan,
                    "exercise type is not supported");
         if (exercise->type() == Exercise::American) {
+            const Time exerciseStart =
+                dayCounter.yearFraction(refDate, exercise->date(0));
             stepConditions.push_back(ext::shared_ptr<StepCondition<Array> >(
-                          new FdmAmericanStepCondition(mesher,calculator)));
+                          new FdmAmericanStepCondition(mesher, calculator,
+                                                      exerciseStart)));
         }
         else if (exercise->type() == Exercise::Bermudan) {
             ext::shared_ptr<FdmBermudanStepCondition> bermudanCondition(

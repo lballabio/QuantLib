@@ -2179,6 +2179,94 @@ BOOST_AUTO_TEST_CASE(testSingleBjerksundStenslandGreeks) {
         BOOST_FAIL("American exercise type expected");
 }
 
+BOOST_AUTO_TEST_CASE(testFdEarliestExerciseDate) {
+    BOOST_TEST_MESSAGE(
+        "Testing FD engine respects AmericanExercise earliest date...");
+
+    // A deep ITM American put where early exercise is valuable.
+    // Restricting the exercise window should reduce the price toward
+    // the European value.
+
+    const Date today(15, January, 2025);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+
+    const Real S0 = 80.0;
+    const Real K = 100.0;
+    const Volatility sigma = 0.25;
+    const Rate r = 0.05;
+    const Rate q = 0.0;
+
+    Handle<Quote> spot(ext::make_shared<SimpleQuote>(S0));
+    Handle<YieldTermStructure> qTS(flatRate(today, q, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, sigma, dc));
+
+    auto bsmProcess = ext::make_shared<BlackScholesMertonProcess>(
+        spot, qTS, rTS, volTS);
+
+    const Date maturity = today + Period(1, Years);
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, K);
+
+    // Full American exercise
+    auto fullExercise = ext::make_shared<AmericanExercise>(today, maturity);
+    VanillaOption fullOption(payoff, fullExercise);
+    auto fdEngine = ext::make_shared<FdBlackScholesVanillaEngine>(
+        bsmProcess, 200, 200, 0);
+    fullOption.setPricingEngine(fdEngine);
+    const Real fullPrice = fullOption.NPV();
+
+    // European benchmark
+    auto euroExercise = ext::make_shared<EuropeanExercise>(maturity);
+    VanillaOption euroOption(payoff, euroExercise);
+    auto euroEngine = ext::make_shared<AnalyticEuropeanEngine>(bsmProcess);
+    euroOption.setPricingEngine(euroEngine);
+    const Real euroPrice = euroOption.NPV();
+
+    const Real earlyExPremium = fullPrice - euroPrice;
+    BOOST_TEST_MESSAGE("  Full American: " << fullPrice);
+    BOOST_TEST_MESSAGE("  European:      " << euroPrice);
+    BOOST_TEST_MESSAGE("  Early-ex premium: " << earlyExPremium);
+
+    // Sanity: the early exercise premium should be significant
+    // for this deep ITM put with 5% rates
+    BOOST_CHECK(earlyExPremium > 1.0);
+
+    // Restricted exercise: only last 3 months
+    const Date lateStart = maturity - Period(3, Months);
+    auto lateExercise = ext::make_shared<AmericanExercise>(lateStart, maturity);
+    VanillaOption lateOption(payoff, lateExercise);
+    lateOption.setPricingEngine(fdEngine);
+    const Real latePrice = lateOption.NPV();
+    BOOST_TEST_MESSAGE("  Last 3M only:  " << latePrice);
+
+    // The restricted option should be worth less than full American
+    BOOST_CHECK_MESSAGE(fullPrice - latePrice > 0.01,
+        "Restricting exercise window should reduce price: "
+        "full=" << fullPrice << " late=" << latePrice);
+
+    // The restricted option should be worth more than European
+    // (it still has some early exercise value in the last 3 months)
+    BOOST_CHECK_MESSAGE(latePrice > euroPrice + 0.01,
+        "Restricted American should exceed European: "
+        "late=" << latePrice << " euro=" << euroPrice);
+
+    // Monotonicity: longer exercise window -> higher price
+    const Date midStart = maturity - Period(6, Months);
+    auto midExercise = ext::make_shared<AmericanExercise>(midStart, maturity);
+    VanillaOption midOption(payoff, midExercise);
+    midOption.setPricingEngine(fdEngine);
+    const Real midPrice = midOption.NPV();
+    BOOST_TEST_MESSAGE("  Last 6M only:  " << midPrice);
+
+    BOOST_CHECK_MESSAGE(midPrice >= latePrice - 1e-8,
+        "Wider window should give higher price: "
+        "6M=" << midPrice << " 3M=" << latePrice);
+    BOOST_CHECK_MESSAGE(fullPrice >= midPrice - 1e-8,
+        "Full window should give highest price: "
+        "full=" << fullPrice << " 6M=" << midPrice);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
