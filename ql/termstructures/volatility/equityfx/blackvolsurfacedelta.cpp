@@ -2,7 +2,6 @@
  Copyright (C) 2019 Quaternion Risk Management Ltd
  Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
  Copyright (C) 2025 Paolo D'Elia
- All rights reserved.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
