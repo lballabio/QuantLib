@@ -82,7 +82,7 @@ namespace QuantLib {
 
       A bad fit to the initial yield term structure may be due to a non suitable
       input smile or accumulating numerical errors in very long term calibrations.
-      The former point is adressed by smile pretreatment options. The latter point
+      The former point is addressed by smile pretreatment options. The latter point
       may be tackled by higher values for the numerical parameters possibly
       together with NTL high precision computing.
 
@@ -262,12 +262,12 @@ namespace QuantLib {
             Period tenor_;
             std::vector<Date> paymentDates_;
             std::vector<Real> yearFractions_;
-            Real atm_;
-            Real annuity_;
+            Real atm_ = Null<Real>();
+            Real annuity_ = Null<Real>();
             ext::shared_ptr<SmileSection> smileSection_;
             ext::shared_ptr<SmileSection> rawSmileSection_;
-            Real minRateDigital_;
-            Real maxRateDigital_;
+            Real minRateDigital_ = Null<Real>();
+            Real maxRateDigital_ = Null<Real>();
         };
 
 // utility macro to write messages to the model outputs
@@ -378,11 +378,11 @@ namespace QuantLib {
         zerobondImpl(Time T, Time t, Real y, const Handle<YieldTermStructure>& yts) const override;
 
         void generateArguments() override {
-            // if calculate triggers performCalculations, updateNumeraireTabulations
-            // is called twice. If we can not check the lazy object status this seem
-            // hard to avoid though.
-            calculate();
-            updateNumeraireTabulation();
+            ext::static_pointer_cast<MfStateProcess>(stateProcess_)->setVols(sigma_.params());
+            if(isCalculated())
+                updateNumeraireTabulation();
+            else
+                calculate();
             notifyObservers();
         }
 

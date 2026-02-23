@@ -858,7 +858,7 @@ BOOST_AUTO_TEST_CASE(testTodayIsDividendDate) {
     BOOST_CHECK_THROW(option.theta(), QuantLib::Error);
 
     Real diffNpv = std::abs(escrowedNpv - spotNpv);
-    Real tol = 5e-2;
+    const Real tol = 5e-2;
 
     if (diffNpv > tol) {
         BOOST_FAIL("failed to compare American option NPV with "
@@ -871,7 +871,6 @@ BOOST_AUTO_TEST_CASE(testTodayIsDividendDate) {
 
     const Real diffDelta = std::abs(escrowedDelta - spotDelta);
 
-    tol = 1e-3;
     if (diffDelta > tol) {
         BOOST_FAIL("failed to compare American option Delta with "
                    "escrowed and spot dividend model "
@@ -909,7 +908,6 @@ BOOST_AUTO_TEST_CASE(testTodayIsDividendDate) {
     BOOST_CHECK_NO_THROW(option.theta());
 
     diffNpv = std::abs(escrowedNpv - spotNpv);
-    tol = 5e-2;
 
     if (diffNpv > tol) {
         BOOST_FAIL("failed to compare American option NPV with "

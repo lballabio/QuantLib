@@ -33,8 +33,7 @@
 namespace QuantLib {
 
     namespace detail {
-        template<class I1, class I2, class I> class LogInterpolationImpl;
-        template<class I1, class I2, class IN1, class IN2> class LogMixedInterpolationImpl;
+        template <class I1, class I2> class LogInterpolationImpl;
     }
 
     //! %log-linear interpolation between discrete points
@@ -48,9 +47,8 @@ namespace QuantLib {
         template <class I1, class I2>
         LogLinearInterpolation(const I1& xBegin, const I1& xEnd,
                                const I2& yBegin) {
-            impl_ = ext::shared_ptr<Interpolation::Impl>(new
-                detail::LogInterpolationImpl<I1, I2, Linear>(xBegin, xEnd,
-                                                             yBegin));
+            impl_ = ext::make_shared<detail::LogInterpolationImpl<I1, I2>>(
+                xBegin, xEnd, yBegin, Linear());
             impl_->update();
         }
     };
@@ -82,12 +80,11 @@ namespace QuantLib {
                               Real leftConditionValue,
                               CubicInterpolation::BoundaryCondition rightC,
                               Real rightConditionValue) {
-            impl_ = ext::shared_ptr<Interpolation::Impl>(new
-                detail::LogInterpolationImpl<I1, I2, Cubic>(
-                    xBegin, xEnd, yBegin,
-                    Cubic(da, monotonic,
-                          leftC, leftConditionValue,
-                          rightC, rightConditionValue)));
+            impl_ = ext::make_shared<detail::LogInterpolationImpl<I1, I2>>(
+                xBegin, xEnd, yBegin,
+                Cubic(da, monotonic,
+                      leftC, leftConditionValue,
+                      rightC, rightConditionValue));
             impl_->update();
         }
     };
@@ -255,12 +252,11 @@ namespace QuantLib {
                                          Real leftConditionValue,
                                          CubicInterpolation::BoundaryCondition rightC,
                                          Real rightConditionValue) {
-            impl_ = ext::shared_ptr<Interpolation::Impl>(new
-                detail::LogInterpolationImpl<I1, I2, MixedLinearCubic>(
-                    xBegin, xEnd, yBegin,
-                    MixedLinearCubic(n, behavior, da, monotonic,
-                                     leftC, leftConditionValue,
-                                     rightC, rightConditionValue)));
+            impl_ = ext::make_shared<detail::LogInterpolationImpl<I1, I2>>(
+                xBegin, xEnd, yBegin,
+                MixedLinearCubic(n, behavior, da, monotonic,
+                                 leftC, leftConditionValue,
+                                 rightC, rightConditionValue));
             impl_->update();
         }
     };
@@ -353,15 +349,16 @@ namespace QuantLib {
 
     namespace detail {
 
-        template <class I1, class I2, class Interpolator>
-        class LogInterpolationImpl
-            : public Interpolation::templateImpl<I1,I2> {
+        template <class I1, class I2>
+        class LogInterpolationImpl final
+            : public Interpolation::templateImpl<I1, I2> {
           public:
+            template <class Interpolator>
             LogInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                  const I2& yBegin,
-                                 const Interpolator& factory = Interpolator())
-            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin,
-                                                 Interpolator::requiredPoints),
+                                 const Interpolator& factory)
+            : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin,
+                                                  Interpolator::requiredPoints),
               logY_(xEnd-xBegin) {
                 interpolation_ = factory.interpolate(this->xBegin_,
                                                      this->xEnd_,

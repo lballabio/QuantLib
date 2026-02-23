@@ -60,7 +60,7 @@ namespace QuantLib {
 
                             const std::vector<Real>& alpha,
                             bool lowestRoot,
-                            bool useFullAprox,
+                            bool useFullApprox,
 
                             Size numberOfFactors,
                             //Size maxIterations,
@@ -84,7 +84,7 @@ namespace QuantLib {
                    ") must be greater than zero");
 
         Natural failures = 0;
-        Real extraMultiplier = useFullAprox ? 1.0 : 0.0;
+        Real extraMultiplier = useFullApprox ? 1.0 : 0.0;
 
         // factor reduction
         std::vector<Matrix> corrPseudo(corr.times().size());

@@ -734,36 +734,6 @@ BOOST_AUTO_TEST_CASE(test131BootstrapRegression) {
     BOOST_CHECK_NO_THROW(curve.nodes());
 }
 
-BOOST_AUTO_TEST_CASE(testDeprecatedHelper) {
-    BOOST_TEST_MESSAGE("Testing deprecated DatedOISRateHelper class...");
-
-    Date today(11, December, 2012);
-    Settings::instance().evaluationDate() = today;
-
-    auto estr = ext::make_shared<Estr>();
-
-    std::vector<ext::shared_ptr<RateHelper>> helpers;
-    helpers.push_back(ext::make_shared<OISRateHelper>(2, 1 * Weeks, makeQuoteHandle(0.070/100), estr));
-    QL_DEPRECATED_DISABLE_WARNING
-    helpers.push_back(ext::make_shared<DatedOISRateHelper>(Date(16, January, 2013), Date(13, February, 2013), makeQuoteHandle(0.046/100), estr));
-    QL_DEPRECATED_ENABLE_WARNING
-
-    auto curve = ext::make_shared<PiecewiseYieldCurve<ForwardRate,BackwardFlat>>(0, TARGET(), helpers, Actual365Fixed());
-    BOOST_CHECK_NO_THROW(curve->nodes());
-
-    estr = ext::make_shared<Estr>(Handle<YieldTermStructure>(curve));
-    ext::shared_ptr<OvernightIndexedSwap> swap =
-        MakeOIS(Period(), estr, 0.046/100, 0 * Days)
-        .withEffectiveDate(Date(16, January, 2013))
-        .withTerminationDate(Date(13, February, 2013))
-        .withDiscountingTermStructure(Handle<YieldTermStructure>(curve));
-
-    if (std::fabs(swap->NPV()) > 1.0e-10) {
-        BOOST_ERROR("npv is not at par:\n"
-                    << "    swap value: " << swap->NPV());
-    }
-}
-
 BOOST_AUTO_TEST_CASE(testBootstrapWithDifferentCalendars) {
     BOOST_TEST_MESSAGE("Testing OIS bootstrap when the swap maturity is not a fixing day for the index...");
 

@@ -20,12 +20,12 @@
 #ifndef quantlib_saddle_point_lossmodel_hpp
 #define quantlib_saddle_point_lossmodel_hpp
 
-#include <ql/tuple.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/newton.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
+#include <tuple>
 
 namespace QuantLib {
 
@@ -804,7 +804,7 @@ namespace QuantLib {
         //
         Probability pMaxName = copula_->conditionalDefaultProbabilityInvP(
             invUncondPs[iNamMax], iNamMax, mktFactor);
-        // aproximates the  saddle pt corresponding to this minimum; finds 
+        // approximates the  saddle pt corresponding to this minimum; finds 
         //   it by using only the smallest logistic term and thus this is 
         //   smaller than the true value:
         Real saddleMin = 1./(lgds[iNamMax]/remainingNotional_) * 

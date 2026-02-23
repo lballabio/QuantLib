@@ -23,8 +23,8 @@
 #include <ql/errors.hpp>
 #include <ql/exercise.hpp>
 #include <ql/experimental/barrieroption/perturbativebarrieroptionengine.hpp>
-#include <ql/functional.hpp>
 #include <ql/types.hpp>
+#include <functional>
 #include <algorithm>
 #include <cmath>
 #include <utility>

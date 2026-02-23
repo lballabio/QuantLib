@@ -4,6 +4,7 @@
  Copyright (C) 2006, 2007 Giorgio Facchinetti
  Copyright (C) 2014, 2015 Peter Caspers
  Copyright (C) 2023 Ignacio Anguita
+ Copyright (C) 2026 Aaditya Panikath
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,6 +39,7 @@
 #include <ql/quote.hpp>
 #include <ql/termstructures/volatility/sabrsmilesection.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
+#include <string>
 #include <utility>
 
 
@@ -48,19 +50,83 @@
     #define SWAPTIONVOLCUBE_TOL 100.0e-4
 #endif
 
-namespace QuantLib {    
+namespace QuantLib {
 
     class Interpolation2D;
     class EndCriteria;
     class OptimizationMethod;
 
+    //! Traits class for XABR model customization points
+    /*! This traits class provides default implementations for model
+        operations used by XabrSwaptionVolatilityCube. The defaults
+        assume a 4-parameter SABR-like model with the standard
+        SABRInterpolation constructor signature.
+
+        Custom models can specialize this template to override:
+        - \c nParams: number of model parameters (default: 4)
+        - \c createInterpolation: factory for smile interpolation
+        - \c extractGamma: extract gamma parameter (default: 0)
+        - \c createSmileSection: factory for smile sections
+
+        \note The primary template works for any model whose Interpolation
+              type accepts the same constructor signature as SABRInterpolation
+              (4 params, shift, volatilityType). Models with different
+              constructors (e.g., NoArbSabr, ZABR) should specialize this
+              traits class.
+
+    */
+    template <class Model>
+    struct XabrModelTraits {
+        static constexpr Size nParams = 4;
+
+        template <class I1, class I2>
+        static ext::shared_ptr<typename Model::Interpolation> createInterpolation(
+            const I1& xBegin, const I1& xEnd, const I2& yBegin,
+            Time t, const Real& forward,
+            const std::vector<Real>& params,
+            const std::vector<bool>& paramIsFixed,
+            bool vegaWeighted,
+            const ext::shared_ptr<EndCriteria>& endCriteria,
+            const ext::shared_ptr<OptimizationMethod>& optMethod,
+            Real errorAccept, bool useMaxError, Size maxGuesses,
+            Real shift, VolatilityType volatilityType) {
+            return ext::make_shared<typename Model::Interpolation>(
+                xBegin, xEnd, yBegin, t, forward,
+                params[0], params[1], params[2], params[3],
+                paramIsFixed[0], paramIsFixed[1], paramIsFixed[2], paramIsFixed[3],
+                vegaWeighted, endCriteria, optMethod,
+                errorAccept, useMaxError, maxGuesses, shift, volatilityType);
+        }
+
+        static Real extractGamma(
+            const ext::shared_ptr<typename Model::Interpolation>& /* interp */) {
+            return 0.0;
+        }
+
+        static ext::shared_ptr<typename Model::SmileSection> createSmileSection(
+            Time optionTime, Real forward,
+            const std::vector<Real>& params,
+            Real shift, VolatilityType volatilityType) {
+            return ext::make_shared<typename Model::SmileSection>(
+                optionTime, forward, params, shift, volatilityType);
+        }
+    };
+
     //! XABR Swaption Volatility Cube
     /*! This class implements the XABR Swaption Volatility Cube
-        which is a generic for different SABR, ZABR and 
+        which is a generic for different SABR, ZABR and
         different smile models that can be used to instantiate concrete cubes.
+
+        Model customization is handled through XabrModelTraits<Model>.
+        The Model type must define at minimum:
+        - \c Interpolation: the interpolation type
+        - \c SmileSection: the smile section type
+
+        \see XabrModelTraits for customization points
     */
     template<class Model>
     class XabrSwaptionVolatilityCube : public SwaptionVolatilityCube {
+        using Traits = XabrModelTraits<Model>;
         class Cube { // NOLINT(cppcoreguidelines-special-member-functions)
           public:
             Cube() = default;
@@ -114,6 +180,7 @@ namespace QuantLib {
             mutable std::vector< ext::shared_ptr<Interpolation2D> > interpolators_;
          };
       public:
+        using SwaptionVolatilityStructure::smileSection;
         XabrSwaptionVolatilityCube(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& optionTenors,
@@ -273,7 +340,7 @@ namespace QuantLib {
 
     template<class Model> void XabrSwaptionVolatilityCube<Model>::registerWithParametersGuess()
     {
-        for (Size i=0; i<4; i++)
+        for (Size i=0; i<Traits::nParams; i++)
             for (Size j=0; j<nOptionTenors_; j++)
                 for (Size k=0; k<nSwapTenors_; k++)
                     privateObserver_->registerWith(parametersGuessQuotes_[j*nSwapTenors_+k][i]);
@@ -283,10 +350,10 @@ namespace QuantLib {
 
         //! set parametersGuess_ by parametersGuessQuotes_
         parametersGuess_ = Cube(optionDates_, swapTenors_,
-                                optionTimes_, swapLengths_, 4,
+                                optionTimes_, swapLengths_, Traits::nParams,
                                 true, backwardFlat_);
         Size i;
-        for (i=0; i<4; i++)
+        for (i=0; i<Traits::nParams; i++)
             for (Size j=0; j<nOptionTenors_ ; j++)
                 for (Size k=0; k<nSwapTenors_; k++) {
                     parametersGuess_.setElement(i, j, k,
@@ -353,6 +420,7 @@ namespace QuantLib {
         Matrix betas(alphas);
         Matrix nus(alphas);
         Matrix rhos(alphas);
+        Matrix gammas(alphas);  // Zero-initialized; populated and used only for 5+ param models (ZABR).
         Matrix forwards(alphas);
         Matrix errors(alphas);
         Matrix maxErrors(alphas);
@@ -381,24 +449,19 @@ namespace QuantLib {
                     parametersGuess_(optionTimes[j], swapLengths[k]);
 
                 const ext::shared_ptr<typename Model::Interpolation> sabrInterpolation =
-                    ext::shared_ptr<typename Model::Interpolation>(new
-                                          (typename Model::Interpolation)(strikes.begin(), strikes.end(),
-                                          volatilities.begin(),
-                                          optionTimes[j], atmForward,
-                                          guess[0], guess[1],
-                                          guess[2], guess[3],
-                                          isParameterFixed_[0],
-                                          isParameterFixed_[1],
-                                          isParameterFixed_[2],
-                                          isParameterFixed_[3],
-                                          vegaWeightedSmileFit_,
-                                          endCriteria_,
-                                          optMethod_,
-                                          errorAccept_,
-                                          useMaxError_,
-                                          maxGuesses_,
-                                          shiftTmp,
-                                          volatilityType_));
+                    Traits::createInterpolation(strikes.begin(), strikes.end(),
+                                                volatilities.begin(),
+                                                optionTimes[j], atmForward,
+                                                guess,
+                                                isParameterFixed_,
+                                                vegaWeightedSmileFit_,
+                                                endCriteria_,
+                                                optMethod_,
+                                                errorAccept_,
+                                                useMaxError_,
+                                                maxGuesses_,
+                                                shiftTmp,
+                                                volatilityType_);
                 sabrInterpolation->update();
 
                 Real rmsError = sabrInterpolation->rmsError();
@@ -407,10 +470,18 @@ namespace QuantLib {
                 betas      [j][k] = sabrInterpolation->beta();
                 nus        [j][k] = sabrInterpolation->nu();
                 rhos       [j][k] = sabrInterpolation->rho();
+                if constexpr (Traits::nParams >= 5)
+                    gammas[j][k] = Traits::extractGamma(sabrInterpolation);
                 forwards   [j][k] = atmForward;
                 errors     [j][k] = rmsError;
                 maxErrors  [j][k] = maxError;
                 endCriteria[j][k] = sabrInterpolation->endCriteria();
+
+                // Build gamma diagnostic string only for models that have gamma (ZABR).
+                // if constexpr guarantees dead-branch elimination for 4-param models.
+                std::string gammaInfo;
+                if constexpr (Traits::nParams >= 5)
+                    gammaInfo = "\n   gamma = " + std::to_string(gammas[j][k]);
 
                 QL_ENSURE(endCriteria[j][k] != Integer(EndCriteria::MaxIterations),
                           "global swaptions calibration failed: "
@@ -419,10 +490,10 @@ namespace QuantLib {
                           "swap tenor = " << swapTenors[k] << ", \n" <<
                           "rms error = " << io::rate(errors[j][k])  << ", \n" <<
                           "max error = " << io::rate(maxErrors[j][k]) << ", \n" <<
-                          "   alpha = " <<  alphas[j][k] << "n" <<
+                          "   alpha = " <<  alphas[j][k] << "\n" <<
                           "   beta = " <<  betas[j][k] << "\n" <<
                           "   nu = " <<  nus[j][k]   << "\n" <<
-                          "   rho = " <<  rhos[j][k]  << "\n"
+                          "   rho = " <<  rhos[j][k]  << gammaInfo << "\n"
                           );
 
                 QL_ENSURE((useMaxError_ ? maxError : rmsError) < maxErrorTolerance_,
@@ -435,23 +506,29 @@ namespace QuantLib {
                               << "swap tenor = " << swapTenors[k] << ", \n"
                               << "rms error = " << io::rate(errors[j][k]) << ", \n"
                               << "max error = " << io::rate(maxErrors[j][k]) << ", \n"
-                              << "   alpha = " << alphas[j][k] << "n"
+                              << "   alpha = " << alphas[j][k] << "\n"
                               << "   beta = " << betas[j][k] << "\n"
                               << "   nu = " << nus[j][k] << "\n"
-                              << "   rho = " << rhos[j][k] << "\n");
+                              << "   rho = " << rhos[j][k] << gammaInfo << "\n");
             }
         }
+        // Cube has Traits::nParams parameter layers + 4 metadata layers
+        // (forwards, errors, maxErrors, endCriteria)
         Cube sabrParametersCube(optionDates, swapTenors,
-                                optionTimes, swapLengths, 8,
+                                optionTimes, swapLengths, Traits::nParams + 4,
                                 true, backwardFlat_);
         sabrParametersCube.setLayer(0, alphas);
         sabrParametersCube.setLayer(1, betas);
         sabrParametersCube.setLayer(2, nus);
         sabrParametersCube.setLayer(3, rhos);
-        sabrParametersCube.setLayer(4, forwards);
-        sabrParametersCube.setLayer(5, errors);
-        sabrParametersCube.setLayer(6, maxErrors);
-        sabrParametersCube.setLayer(7, endCriteria);
+        // For models with 5+ params (e.g., ZABR), store gamma in layer 4
+        if constexpr (Traits::nParams >= 5)
+            sabrParametersCube.setLayer(4, gammas);
+        // Metadata layers start at Traits::nParams
+        sabrParametersCube.setLayer(Traits::nParams, forwards);
+        sabrParametersCube.setLayer(Traits::nParams + 1, errors);
+        sabrParametersCube.setLayer(Traits::nParams + 2, maxErrors);
+        sabrParametersCube.setLayer(Traits::nParams + 3, endCriteria);
 
         return sabrParametersCube;
 
@@ -471,7 +548,7 @@ namespace QuantLib {
                            swapTenor) - swapTenors.begin();
         QL_REQUIRE(k != swapTenors.size(), "swap tenor not found");
 
-        std::vector<Real> calibrationResult(8,0.);
+        std::vector<Real> calibrationResult(Traits::nParams + 4, 0.);
         const std::vector<Matrix>& tmpMarketVolCube = marketVolCube.points();
 
         std::vector<Real> strikes(strikeSpreads_.size());
@@ -493,24 +570,20 @@ namespace QuantLib {
             const std::vector<Real>& guess =
                 parametersGuess_(optionTimes[j], swapLengths[k]);
 
-                const ext::shared_ptr<typename Model::Interpolation> sabrInterpolation =
-                    ext::shared_ptr<typename Model::Interpolation>(new
-                                          (typename Model::Interpolation)(strikes.begin(), strikes.end(),
-                                      volatilities.begin(),
-                                      optionTimes[j], atmForward,
-                                      guess[0], guess[1],
-                                      guess[2], guess[3],
-                                      isParameterFixed_[0],
-                                      isParameterFixed_[1],
-                                      isParameterFixed_[2],
-                                      isParameterFixed_[3],
-                                      vegaWeightedSmileFit_,
-                                      endCriteria_,
-                                      optMethod_,
-                                      errorAccept_,
-                                      useMaxError_,
-                                      maxGuesses_,
-                                      shiftTmp));
+            const ext::shared_ptr<typename Model::Interpolation> sabrInterpolation =
+                Traits::createInterpolation(strikes.begin(), strikes.end(),
+                                            volatilities.begin(),
+                                            optionTimes[j], atmForward,
+                                            guess,
+                                            isParameterFixed_,
+                                            vegaWeightedSmileFit_,
+                                            endCriteria_,
+                                            optMethod_,
+                                            errorAccept_,
+                                            useMaxError_,
+                                            maxGuesses_,
+                                            shiftTmp,
+                                            volatilityType_);
 
             sabrInterpolation->update();
             Real interpolationError = sabrInterpolation->rmsError();
@@ -518,37 +591,48 @@ namespace QuantLib {
             calibrationResult[1]=sabrInterpolation->beta();
             calibrationResult[2]=sabrInterpolation->nu();
             calibrationResult[3]=sabrInterpolation->rho();
-            calibrationResult[4]=atmForward;
-            calibrationResult[5]=interpolationError;
-            calibrationResult[6]=sabrInterpolation->maxError();
-            calibrationResult[7]=sabrInterpolation->endCriteria();
+            if constexpr (Traits::nParams >= 5)
+                calibrationResult[4] = Traits::extractGamma(sabrInterpolation);
+            // Metadata stored after model parameters
+            calibrationResult[Traits::nParams]=atmForward;
+            calibrationResult[Traits::nParams + 1]=interpolationError;
+            calibrationResult[Traits::nParams + 2]=sabrInterpolation->maxError();
+            calibrationResult[Traits::nParams + 3]=sabrInterpolation->endCriteria();
 
-            QL_ENSURE(calibrationResult[7] != Integer(EndCriteria::MaxIterations),
+            // Build gamma diagnostic string only for models that have gamma (ZABR).
+            // if constexpr guarantees dead-branch elimination for 4-param models.
+            std::string gammaInfo;
+            if constexpr (Traits::nParams >= 5)
+                gammaInfo = ", gamma " + std::to_string(calibrationResult[4]);
+
+            QL_ENSURE(calibrationResult[Traits::nParams + 3] != Integer(EndCriteria::MaxIterations),
                       "section calibration failed: "
                       "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
                       ": max iteration (" <<
                       endCriteria_->maxIterations() << ")" <<
-                          ", alpha " <<  calibrationResult[0]<<
-                          ", beta "  <<  calibrationResult[1] <<
-                          ", nu "    <<  calibrationResult[2]   <<
-                          ", rho "   <<  calibrationResult[3]  <<
-                          ", max error " << calibrationResult[6] <<
-                          ", error " <<  calibrationResult[5]
-                          );
-
-            QL_ENSURE((useMaxError_ ? calibrationResult[6] : calibrationResult[5]) < maxErrorTolerance_,
-                      "section calibration failed: "
-                      "option tenor " << optionDates[j] <<
-                      ", swap tenor " << swapTenors[k] <<
-                      (useMaxError_ ? ": max error " : ": error ") <<
-                      (useMaxError_ ? calibrationResult[6] : calibrationResult[5]) <<
                           ", alpha " <<  calibrationResult[0] <<
                           ", beta "  <<  calibrationResult[1] <<
                           ", nu "    <<  calibrationResult[2] <<
                           ", rho "   <<  calibrationResult[3] <<
-                      (useMaxError_ ? ": error" : ": max error ") <<
-                      (useMaxError_ ? calibrationResult[5] : calibrationResult[6])
+                          gammaInfo <<
+                          ", max error " << calibrationResult[Traits::nParams + 2] <<
+                          ", error " <<  calibrationResult[Traits::nParams + 1]
+                          );
+
+            QL_ENSURE((useMaxError_ ? calibrationResult[Traits::nParams + 2] : calibrationResult[Traits::nParams + 1]) < maxErrorTolerance_,
+                      "section calibration failed: "
+                      "option tenor " << optionDates[j] <<
+                      ", swap tenor " << swapTenors[k] <<
+                      (useMaxError_ ? ": max error " : ": error ") <<
+                      (useMaxError_ ? calibrationResult[Traits::nParams + 2] : calibrationResult[Traits::nParams + 1]) <<
+                          ", alpha " <<  calibrationResult[0] <<
+                          ", beta "  <<  calibrationResult[1] <<
+                          ", nu "    <<  calibrationResult[2] <<
+                          ", rho "   <<  calibrationResult[3] <<
+                          gammaInfo <<
+                      (useMaxError_ ? ", error " : ", max error ") <<
+                      (useMaxError_ ? calibrationResult[Traits::nParams + 1] : calibrationResult[Traits::nParams + 2])
             );
 
             parametersCube.setPoint(optionDates[j], swapTenors[k],
@@ -778,11 +862,16 @@ namespace QuantLib {
                                    const Cube& sabrParametersCube) const {
 
         calculate();
-        const std::vector<Real> sabrParameters =
+        const std::vector<Real> allParameters =
             sabrParametersCube(optionTime, swapLength);
-        Real shiftTmp = atmVol_->shift(optionTime,swapLength);
-        return ext::shared_ptr<SmileSection>(new (typename Model::SmileSection)(
-                          optionTime, sabrParameters[4], sabrParameters,shiftTmp, volatilityType_));
+        // Forward rate is stored at index Traits::nParams (after the model parameters)
+        Real forward = allParameters[Traits::nParams];
+        // Extract only the model parameters (first nParams elements) for SmileSection
+        std::vector<Real> modelParams(allParameters.begin(),
+                                       allParameters.begin() + Traits::nParams);
+        Real shiftTmp = atmVol_->shift(optionTime, swapLength);
+        return Traits::createSmileSection(
+            optionTime, forward, modelParams, shiftTmp, volatilityType_);
     }
 
     template<class Model> ext::shared_ptr<SmileSection>
@@ -919,6 +1008,13 @@ namespace QuantLib {
         for (Size k=0;k<nLayers_;k++) {
             ext::shared_ptr<Interpolation2D> interpolation;
             transposedPoints_.push_back(transpose(points[k]));
+            // k<=4 applies BackwardflatLinear to layers 0..4. This covers all
+            // model-parameter layers for both 4-param models (SABR: params 0-3)
+            // and 5-param models (ZABR: params 0-4). Side-effect: for 4-param
+            // models the forward-rate metadata layer (4) also gets BackwardflatLinear,
+            // while for 5-param models the forward-rate layer (5) gets Bilinear.
+            // To make this consistent across models the threshold would need to be
+            // Model::nParams, but Cube is a nested class that does not see Traits.
             if (k <= 4 && backwardFlat_)
                 interpolation =
                     ext::make_shared<BackwardflatLinearInterpolation>(
@@ -1163,10 +1259,13 @@ namespace QuantLib {
     //                      SabrSwaptionVolatilityCube                      //
     //======================================================================//
 
-    //! Swaption Volatility Cube SABR 
+    //! Swaption Volatility Cube SABR Model
     /*! This struct defines the types used by SABR Volatility cubes
         for interpolation (SABRInterpolation) and for modeling the
         smile (SabrSmileSection).
+
+        Uses the default XabrModelTraits<> which provides 4-parameter
+        model support with shift and volatilityType.
     */
     struct SwaptionVolCubeSabrModel {
         typedef SABRInterpolation Interpolation;

@@ -490,4 +490,36 @@ namespace QuantLib {
 
         return discount_ * temp2;
     }
+
+    //! Sensitivity of vega to spot (Vanna)
+    Real BlackCalculator::vanna(Real spot, Time maturity) const {
+        QL_REQUIRE(spot > 0.0, "positive spot value required: " << spot << " not allowed");
+        QL_REQUIRE(maturity >= 0.0, "negative maturity not allowed");
+
+        if (stdDev_ <= QL_EPSILON) {
+            return 0.0;
+        }
+
+        // Calculate Vega
+        Real vega = this->vega(maturity);
+
+        // d2 = d1 - stdDev_
+        // Vanna = -d2 / (spot * stdDev_) * Vega
+        return -d2_ / (spot * stdDev_) * vega;
+    }
+
+    //! Sensitivity of vega to volatility (Volga/Vomma)
+    Real BlackCalculator::volga(Time maturity) const {
+        QL_REQUIRE(maturity >= 0.0, "negative maturity not allowed");
+
+        if (stdDev_ <= QL_EPSILON) {
+            return 0.0;
+        }
+
+        // Calculate Vega
+        Real vega = this->vega(maturity);
+
+        // Volga = Vega * d1 * d2 / stdDev_
+        return vega * d1_ * d2_ / stdDev_;
+    }
 }

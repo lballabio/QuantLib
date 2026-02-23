@@ -41,7 +41,6 @@ set(QL_TEST_SOURCES
     convertiblebonds.cpp
     covariance.cpp
     creditdefaultswap.cpp
-    creditriskplus.cpp
     crosscurrencyratehelpers.cpp
     currency.cpp
     curvestates.cpp
@@ -72,6 +71,7 @@ set(QL_TEST_SOURCES
     forwardoption.cpp
     forwardrateagreement.cpp
     functions.cpp
+    fxforward.cpp
     garch.cpp
     gaussianquadratures.cpp
     gjrgarchmodel.cpp
@@ -148,7 +148,6 @@ set(QL_TEST_SOURCES
     sofrfutures.cpp
     softbarrieroption.cpp
     solvers.cpp
-    spreadoption.cpp
     squarerootclvmodel.cpp
     stats.cpp
     svivolatility.cpp
@@ -163,7 +162,6 @@ set(QL_TEST_SOURCES
     timeseries.cpp
     tqreigendecomposition.cpp
     tracing.cpp
-    transformedgrid.cpp
     twoassetbarrieroption.cpp
     twoassetcorrelationoption.cpp
     ultimateforwardtermstructure.cpp

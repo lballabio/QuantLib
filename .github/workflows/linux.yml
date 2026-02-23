@@ -49,9 +49,9 @@ jobs:
             cc: clang
             cxx: clang++
             tests: true
-          - name: "Clang 20"
-            shortname: clang20
-            tag: plucky
+          - name: "Clang 21"
+            shortname: clang21
+            tag: resolute
             cc: clang
             cxx: clang++
             tests: true
@@ -150,7 +150,7 @@ jobs:
             tests: true
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:

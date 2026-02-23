@@ -17,57 +17,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file ql/functional.hpp
-    \brief Maps function, bind and cref to either the boost or std implementation
-*/
-
 #ifndef quantlib_functional_hpp
 #define quantlib_functional_hpp
 
-#include <ql/qldefines.hpp>
+// Deprecated in version 1.41
+#pragma message("Warning: this file is empty and will disappear in a future release; use #include <functional> instead.")
+
 #include <functional>
-
-namespace QuantLib::ext {
-
-        /*! \deprecated Use std::function instead.
-                        Deprecated in version 1.36.
-        */
-        template <typename... Ts>
-        using function [[deprecated("Use std::function instead")]] = std::function<Ts...>;     // NOLINT(misc-unused-using-decls)
-
-        /*! \deprecated Use std::bind instead.
-                        Deprecated in version 1.36.
-        */
-        using std::bind;                           // NOLINT(misc-unused-using-decls)
-
-        /*! \deprecated Use std::ref instead.
-                        Deprecated in version 1.36.
-        */
-        using std::ref;                            // NOLINT(misc-unused-using-decls)
-
-        /*! \deprecated Use std::cref instead.
-                        Deprecated in version 1.36.
-        */
-        using std::cref;                           // NOLINT(misc-unused-using-decls)
-
-#if defined(__GNUC__) && (__GNUC__ <= 9)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wattributes"
-#endif
-
-        /*! \deprecated Use the std::placeholders namespace instead.
-                        Deprecated in version 1.36.
-        */
-        namespace [[deprecated("Use the std::placeholders namespace instead")]] placeholders {  // NOLINT(modernize-concat-nested-namespaces)
-            using namespace std::placeholders;     // NOLINT(misc-unused-using-decls)
-        }
-
-#if defined(__GNUC__) && (__GNUC__ <= 9)
-#pragma GCC diagnostic pop
-#endif
-
-    }
-
 
 #endif
 

@@ -8,7 +8,7 @@ jobs:
   filelists:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Setup
       run: |
         sudo rm /etc/apt/sources.list.d/microsoft-prod.list

@@ -137,42 +137,66 @@ Rate calculateExtrapolatedForward(Time t, Time fsp, Rate llfr, Rate ufr, Real al
     return ufr + (llfr - ufr) * beta;
 }
 
-
-BOOST_AUTO_TEST_CASE(testDutchCentralBankRates) {
-    BOOST_TEST_MESSAGE("Testing DNB replication of UFR zero annually compounded rates...");
-
+void checkDutchBankRates(const std::vector<Datum>& expectedRates,
+                         const ext::optional<Integer>& rounding = ext::nullopt,
+                         Compounding compounding = Compounded,
+                         Frequency frequency = Annual,
+                         Real tolerance = 1.0e-4) {
     CommonVars vars;
 
     ext::shared_ptr<Quote> llfr = calculateLLFR(vars.ftkCurveHandle, vars.fsp);
 
-    ext::shared_ptr<YieldTermStructure> ufrTs(
-        new UltimateForwardTermStructure(vars.ftkCurveHandle, Handle<Quote>(llfr),
-                                         Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
+    ext::shared_ptr<YieldTermStructure> ufrTs(new UltimateForwardTermStructure(
+        vars.ftkCurveHandle, Handle<Quote>(llfr), Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha,
+        rounding, compounding, frequency));
 
-    // Official annually compounded zero rates published
-    // by the Dutch Central Bank: https://statistiek.dnb.nl/
-    Datum expectedZeroes[] = {{10, Years, 0.00477}, {20, Years, 0.01004}, {30, Years, 0.01223},
-                              {40, Years, 0.01433}, {50, Years, 0.01589}, {60, Years, 0.01702},
-                              {70, Years, 0.01785}, {80, Years, 0.01849}, {90, Years, 0.01899},
-                              {100, Years, 0.01939}};
-
-    Real tolerance = 1.0e-4;
-    Size nRates = std::size(expectedZeroes);
+    Size nRates = std::size(expectedRates);
 
     for (Size i = 0; i < nRates; ++i) {
-        Period p = expectedZeroes[i].n * expectedZeroes[i].units;
+        Period p = expectedRates[i].n * expectedRates[i].units;
         Date maturity = vars.settlement + p;
 
-        Rate actual = ufrTs->zeroRate(maturity, vars.dayCount, Compounded, Annual).rate();
-        Rate expected = expectedZeroes[i].rate;
+        Rate actual = ufrTs->zeroRate(maturity, vars.dayCount, compounding, frequency).rate();
+        Rate expected = expectedRates[i].rate;
 
         if (std::fabs(actual - expected) > tolerance)
             BOOST_ERROR("unable to reproduce zero yield rate from the UFR curve\n"
-                        << std::setprecision(5) 
-                        << "    calculated: " << actual << "\n"
+                        << std::setprecision(5) << "    calculated: " << actual << "\n"
                         << "    expected:   " << expected << "\n"
                         << "    tenor:       " << p << "\n");
     }
+}
+
+BOOST_AUTO_TEST_CASE(testDutchCentralBankRates) {
+    BOOST_TEST_MESSAGE("Testing DNB replication of UFR zero annually compounded rates...");
+
+    std::vector<Datum> expectedRates{
+        {10, Years, 0.00477}, {20, Years, 0.01004}, {30, Years, 0.01223}, {40, Years, 0.01433},
+        {50, Years, 0.01589}, {60, Years, 0.01702}, {70, Years, 0.01785}, {80, Years, 0.01849},
+        {90, Years, 0.01899}, {100, Years, 0.01939}};
+    checkDutchBankRates(expectedRates);
+}
+
+BOOST_AUTO_TEST_CASE(testDutchCentralBankRatesWithRounding) {
+    BOOST_TEST_MESSAGE(
+        "Testing DNB replication of UFR zero annually compounded rates with rounding...");
+    std::vector<Datum> expectedRates{{10, Years, 0.005}, {20, Years, 0.01},   {30, Years, 0.012},
+                                     {40, Years, 0.014}, {50, Years, 0.016}, {60, Years, 0.017},
+                                     {70, Years, 0.018}, {80, Years, 0.018}, {90, Years, 0.019},
+                                     {100, Years, 0.019}};
+
+    checkDutchBankRates(expectedRates, 3, Compounded, Annual, 1.e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testDutchCentralBankRatesWithRoundingAndContinuousCompounding) {
+    BOOST_TEST_MESSAGE(
+        "Testing DNB replication of UFR zero continuously compounded rates with rounding...");
+    std::vector<Datum> expectedRates{
+        {10, Years, 0.00477}, {20, Years, 0.01002}, {30, Years, 0.01211}, {40, Years, 0.01417},
+        {50, Years, 0.01571}, {60, Years, 0.01683}, {70, Years, 0.01766}, {80, Years, 0.01829},
+        {90, Years, 0.01878}, {100, Years, 0.01917}};
+
+    checkDutchBankRates(expectedRates, 5, Continuous, NoFrequency, 1.e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testExtrapolatedForward) {

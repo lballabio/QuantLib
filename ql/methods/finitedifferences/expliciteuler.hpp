@@ -28,42 +28,14 @@
 
 namespace QuantLib {
 
-    //! %Forward Euler scheme for finite difference methods
-    /*! See sect. \ref findiff for details on the method.
+    QL_DEPRECATED_DISABLE_WARNING
 
-        In this implementation, the passed operator must be derived
-        from either TimeConstantOperator or TimeDependentOperator.
-        Also, it must implement at least the following interface:
-
-        \code
-        typedef ... array_type;
-
-        // copy constructor/assignment
-        // (these will be provided by the compiler if none is defined)
-        Operator(const Operator&);
-        Operator& operator=(const Operator&);
-
-        // inspectors
-        Size size();
-
-        // modifiers
-        void setTime(Time t);
-
-        // operator interface
-        array_type applyTo(const array_type&);
-        static Operator identity(Size size);
-
-        // operator algebra
-        Operator operator*(Real, const Operator&);
-        Operator operator-(const Operator&, const Operator&);
-        \endcode
-
-        \todo add Richardson extrapolation
-
-        \ingroup findiff
+    /*! \deprecated Part of the old FD framework; copy this function
+                    in your codebase if needed.
+                    Deprecated in version 1.42.
     */
     template <class Operator>
-    class ExplicitEuler : public MixedScheme<Operator> {
+    class [[deprecated("Part of the old FD framework; copy this function in your codebase if needed")]] ExplicitEuler : public MixedScheme<Operator> {
       public:
         // typedefs
         typedef OperatorTraits<Operator> traits;
@@ -77,6 +49,8 @@ namespace QuantLib {
                       const std::vector<ext::shared_ptr<bc_type> >& bcs)
         : MixedScheme<Operator>(L, 0.0, bcs) {}
     };
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 

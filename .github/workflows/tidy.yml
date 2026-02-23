@@ -7,7 +7,7 @@ jobs:
   check:
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Setup
       run: |
         sudo apt-get update
@@ -17,7 +17,7 @@ jobs:
         cmake --preset linux-ci-build-with-clang-tidy
         cd build/linux-ci-build-with-clang-tidy
         cmake --build . -j1
-    - uses: peter-evans/create-pull-request@v7
+    - uses: peter-evans/create-pull-request@v8
       if: ${{ always() }}
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}

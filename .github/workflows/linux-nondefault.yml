@@ -112,7 +112,12 @@ jobs:
             cxx: clang++
           - name: "Clang 20"
             shortname: clang20
-            tag: plucky
+            tag: questing
+            cc: clang
+            cxx: clang++
+          - name: "Clang 21"
+            shortname: clang21
+            tag: resolute
             cc: clang
             cxx: clang++
           - name: "C++17 mode"
@@ -159,7 +164,7 @@ jobs:
             configureflags: --enable-openmp
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Compiler version
       run: |
         ${{ matrix.cc }} --version

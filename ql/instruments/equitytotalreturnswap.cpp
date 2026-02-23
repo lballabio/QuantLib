@@ -49,7 +49,7 @@ namespace QuantLib {
         }
 
         template <typename IndexType, typename LegType>
-        Leg createInterestLeg(Schedule schedule,
+        Leg createInterestLeg(const Schedule& schedule,
                               const ext::shared_ptr<IndexType>& interestRateIndex,
                               Real nominal,
                               const DayCounter& dayCounter,

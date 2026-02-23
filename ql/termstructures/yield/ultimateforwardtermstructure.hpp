@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2020 Marcin Rybacki
+ Copyright (C) 2020, 2025 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,6 +24,8 @@
 #ifndef quantlib_ultimate_forward_term_structure_hpp
 #define quantlib_ultimate_forward_term_structure_hpp
 
+#include <ql/math/rounding.hpp>
+#include <ql/optional.hpp>
 #include <ql/quote.hpp>
 #include <ql/termstructures/yield/zeroyieldstructure.hpp>
 #include <utility>
@@ -40,13 +42,18 @@ namespace QuantLib {
         Bank website:
 
         FTK term structure documentation (Financieel toetsingskader):
-        https://www.toezicht.dnb.nl/binaries/50-212329.pdf
+        https://www.dnb.nl/media/4lmprzrk/vaststelling_methode_rentetermijnstructuur_ftk.pdf
 
-        UFR 2015 term structure documentation:
-        https://www.toezicht.dnb.nl/binaries/50-234028.pdf
+        UFR 2013-2019 term structure documentation:
+        https://www.dnb.nl/media/0vmbxaf4/methodologie-dnb.pdf
 
-        UFR 2019 term structure documentation:
-        https://www.rijksoverheid.nl/documenten/kamerstukken/2019/06/11/advies-commissie-parameters
+        UFR 2023 term structure documentation (p.46):
+        https://www.tweedekamer.nl/downloads/document?id=2022D50944
+
+        Optionally, computed zero rates may be rounded.
+        The specified number of decimal places will affect the rate
+        in decimal format; for example, rounding a rate of 1.5555%
+        to 5 decimal places results in 0.015555 becoming 0.01556, or 1.556%.
 
         This term structure will remain linked to the original
         structure, i.e., any changes in the latter will be
@@ -65,6 +72,7 @@ namespace QuantLib {
         - incorrect input for cut-off point should raise an exception.
         - observability against changes in the underlying term
           structure and the additional components is checked.
+        - rounding of output rate with predefined compounding.
     */
 
     class UltimateForwardTermStructure : public ZeroYieldStructure {
@@ -73,7 +81,10 @@ namespace QuantLib {
                                      Handle<Quote> lastLiquidForwardRate,
                                      Handle<Quote> ultimateForwardRate,
                                      const Period& firstSmoothingPoint,
-                                     Real alpha);
+                                     Real alpha,
+                                     const ext::optional<Integer>& roundingDigits = ext::nullopt,
+                                     Compounding compounding = Compounded,
+                                     Frequency frequency = Annual);
         //! \name YieldTermStructure interface
         //@{
         DayCounter dayCounter() const override;
@@ -91,11 +102,18 @@ namespace QuantLib {
         Rate zeroYieldImpl(Time) const override;
         //@}
       private:
+        //! applies rounding on zero rate with required compounding
+        Rate applyRounding(Rate r, Time t) const;
+        //@}
+
         Handle<YieldTermStructure> originalCurve_;
         Handle<Quote> llfr_;
         Handle<Quote> ufr_;
         Period fsp_;
         Real alpha_;
+        ext::optional<Integer> roundingDigits_;
+        Compounding compounding_;
+        Frequency frequency_;
     };
 
     // inline definitions
@@ -105,9 +123,13 @@ namespace QuantLib {
         Handle<Quote> lastLiquidForwardRate,
         Handle<Quote> ultimateForwardRate,
         const Period& firstSmoothingPoint,
-        Real alpha)
+        Real alpha,
+        const ext::optional<Integer>& roundingDigits,
+        Compounding compounding,
+        Frequency frequency)
     : originalCurve_(std::move(h)), llfr_(std::move(lastLiquidForwardRate)),
-      ufr_(std::move(ultimateForwardRate)), fsp_(firstSmoothingPoint), alpha_(alpha) {
+      ufr_(std::move(ultimateForwardRate)), fsp_(firstSmoothingPoint), alpha_(alpha),
+      roundingDigits_(roundingDigits), compounding_(compounding), frequency_(frequency) {
         QL_REQUIRE(fsp_.length() > 0,
                    "first smoothing point must be a period with positive length");
         if (!originalCurve_.empty())
@@ -149,6 +171,25 @@ namespace QuantLib {
         }
     }
 
+    inline Rate UltimateForwardTermStructure::applyRounding(Rate r, Time t) const {
+        if (!roundingDigits_.has_value()) {
+            return r;
+        }
+        // Input rate is continuously compounded by definition.
+        // Hence, in case this is also the selected compounding method for rounding,
+        // it is not required to calculate equivalent rates, and rounding
+        // may be applied directly.
+        Rate equivalentRate = compounding_ == Continuous ?
+                                  r :
+                                  InterestRate(r, dayCounter(), Continuous, NoFrequency)
+                                      .equivalentRate(compounding_, frequency_, t);
+        Rate rounded = ClosestRounding(*roundingDigits_)(equivalentRate);
+        return compounding_ == Continuous ?
+                   rounded :
+                   InterestRate(rounded, dayCounter(), compounding_, frequency_)
+                       .equivalentRate(Continuous, NoFrequency, t);
+    }
+
     inline Rate UltimateForwardTermStructure::zeroYieldImpl(Time t) const {
         Time cutOffTime = originalCurve_->timeFromReference(referenceDate() + fsp_);
         Time deltaT = t - cutOffTime;
@@ -167,9 +208,9 @@ namespace QuantLib {
             InterestRate baseRate = originalCurve_->zeroRate(cutOffTime, Continuous, NoFrequency);
             Real beta = (1.0 - std::exp(-alpha_ * deltaT)) / (alpha_ * deltaT);
             Rate extrapolatedForward = ufr_->value() + (llfr_->value() - ufr_->value()) * beta;
-            return (cutOffTime * baseRate + deltaT * extrapolatedForward) / t;
+            return applyRounding((cutOffTime * baseRate + deltaT * extrapolatedForward) / t, t);
         }
-        return originalCurve_->zeroRate(t, Continuous, NoFrequency);
+        return applyRounding(originalCurve_->zeroRate(t, Continuous, NoFrequency), t);
     }
 }
 

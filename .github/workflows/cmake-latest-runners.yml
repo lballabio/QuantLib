@@ -19,7 +19,6 @@ jobs:
             { os: windows-latest, cc: cl,       cxx: cl }
 
             ##### This is the full set of currently available runners and compilers. #####
-            # { os: macos-13,       cc: clang,    cxx: clang++ },
             # { os: macos-14,       cc: clang,    cxx: clang++ },
             # { os: macos-15,       cc: clang,    cxx: clang++ },
             #
@@ -48,7 +47,7 @@ jobs:
     runs-on: ${{ matrix.settings.os }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Determine ccache variant
         shell: bash
@@ -90,13 +89,13 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $BoostUri = "https://downloads.sourceforge.net/project/boost/boost-binaries/1.89.0/boost_1_89_0-msvc-14.3-64.exe"
+          $BoostUri = "https://archives.boost.io/release/1.90.0/binaries/boost_1_90_0-msvc-14.3-64.exe"
           Start-BitsTransfer -Source $BoostUri -Destination $env:RUNNER_TEMP\boost.exe
           Start-Process -Wait -FilePath "$env:RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=$env:RUNNER_TEMP\boost"
 
           choco install -y ninja
 
-          Write "Boost_DIR=$env:RUNNER_TEMP\boost\lib64-msvc-14.3\cmake\Boost-1.89.0"   >> $env:GITHUB_ENV
+          Write "Boost_DIR=$env:RUNNER_TEMP\boost\lib64-msvc-14.3\cmake\Boost-1.90.0"   >> $env:GITHUB_ENV
 
       - name: Set up Visual Studio shell on Windows
         if: runner.os == 'Windows'

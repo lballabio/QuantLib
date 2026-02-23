@@ -33,18 +33,6 @@ namespace QuantLib {
 
     EquityIndex::EquityIndex(std::string name,
                              Calendar fixingCalendar,
-                             Handle<YieldTermStructure> interest,
-                             Handle<YieldTermStructure> dividend,
-                             Handle<Quote> spot)
-    : EquityIndex(std::move(name),
-                  std::move(fixingCalendar),
-                  Currency(),
-                  std::move(interest),
-                  std::move(dividend),
-                  std::move(spot)) {}
-
-    EquityIndex::EquityIndex(std::string name,
-                             Calendar fixingCalendar,
                              Currency currency,
                              Handle<YieldTermStructure> interest,
                              Handle<YieldTermStructure> dividend,

@@ -24,13 +24,13 @@
 #ifndef quantlib_tr_bdf2_scheme_hpp
 #define quantlib_tr_bdf2_scheme_hpp
 
-#include <ql/functional.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/matrixutilities/gmres.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
 #include <ql/methods/finitedifferences/operatortraits.hpp>
 #include <ql/methods/finitedifferences/schemes/boundaryconditionschemehelper.hpp>
+#include <functional>
 #include <utility>
 
 namespace QuantLib {

@@ -3123,9 +3123,30 @@ BOOST_AUTO_TEST_CASE(testChinaSSE) {
     expectedHol.emplace_back(7, Oct, 2025);
     expectedHol.emplace_back(8, Oct, 2025);
 
+    // China Shanghai Securities Exchange holiday list in the year 2026
+    expectedHol.emplace_back(1, Jan, 2026);
+    expectedHol.emplace_back(2, Jan, 2026);
+    expectedHol.emplace_back(16, Feb, 2026);
+    expectedHol.emplace_back(17, Feb, 2026);
+    expectedHol.emplace_back(18, Feb, 2026);
+    expectedHol.emplace_back(19, Feb, 2026);
+    expectedHol.emplace_back(20, Feb, 2026);
+    expectedHol.emplace_back(23, Feb, 2026);
+    expectedHol.emplace_back(6, April, 2026);
+    expectedHol.emplace_back(1, May, 2026);
+    expectedHol.emplace_back(4, May, 2026);
+    expectedHol.emplace_back(5, May, 2026);
+    expectedHol.emplace_back(19, Jun, 2026);
+    expectedHol.emplace_back(25, Sep, 2026);
+    expectedHol.emplace_back(1, Oct, 2026);
+    expectedHol.emplace_back(2, Oct, 2026);
+    expectedHol.emplace_back(5, Oct, 2026);
+    expectedHol.emplace_back(6, Oct, 2026);
+    expectedHol.emplace_back(7, Oct, 2026);
+
     Calendar c = China(China::SSE);
     checkHolidays(
-        c.holidayList(Date(1, January, 2014), Date(31, December, 2025)),
+        c.holidayList(Date(1, January, 2014), Date(31, December, 2026)),
         expectedHol);
 }
 
@@ -3232,9 +3253,17 @@ BOOST_AUTO_TEST_CASE(testChinaIB) {
     expectedWorkingWeekEnds.emplace_back(28, Sep, 2025);
     expectedWorkingWeekEnds.emplace_back(11, Oct, 2025);
 
+    // China Inter Bank working weekends list in the year 2026
+    expectedWorkingWeekEnds.emplace_back(4, Jan, 2026);
+    expectedWorkingWeekEnds.emplace_back(14, Feb, 2026);
+    expectedWorkingWeekEnds.emplace_back(28, Feb, 2026);
+    expectedWorkingWeekEnds.emplace_back(9, May, 2026);
+    expectedWorkingWeekEnds.emplace_back(20, Sep, 2026);
+    expectedWorkingWeekEnds.emplace_back(10, Oct, 2026);
+
     Calendar c = China(China::IB);
     Date start(1, Jan, 2014);
-    Date end(31, Dec, 2025);
+    Date end(31, Dec, 2026);
 
     Size k = 0;
 
@@ -3831,15 +3860,20 @@ BOOST_AUTO_TEST_CASE(testDayLists) {
     Calendar germany = Germany();
     Date firstDate = Settings::instance().evaluationDate(), endDate = firstDate + 1 * Years;
 
-    // Test that same day holidayList and businessDayList does not throw an error
-    germany.holidayList(firstDate, firstDate, true);
-    germany.businessDayList(firstDate, firstDate);
+    // Test that a crossed range returns an empty vector
+    BOOST_CHECK_EQUAL(germany.holidayList(endDate, firstDate, true).size(), 0);
+    BOOST_CHECK_EQUAL(germany.businessDayList(endDate, firstDate).size(), 0);
+    // Test that the range is inclusive on both sides
+    BOOST_CHECK_EQUAL(germany.holidayList(firstDate, firstDate, true).size(),
+                      static_cast<size_t>(germany.isHoliday(firstDate)));
+    BOOST_CHECK_EQUAL(germany.businessDayList(firstDate, firstDate).size(),
+                      static_cast<size_t>(germany.isBusinessDay(firstDate)));
 
     std::vector<Date> holidays = germany.holidayList(firstDate, endDate, true);
     std::vector<Date> businessDays = germany.businessDayList(firstDate, endDate);
 
     auto it_holidays = holidays.begin(), it_businessDays = businessDays.begin();
-    for (Date d = firstDate; d < endDate; d++) {
+    for (Date d = firstDate; d <= endDate; d++) {
         if (it_holidays != holidays.end() && it_businessDays != businessDays.end() &&
             d == *it_holidays && d == *it_businessDays) {
             BOOST_FAIL("Date " << d << "is both holiday and business day.");

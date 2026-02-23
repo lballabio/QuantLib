@@ -32,8 +32,7 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
-
-#include <ql/tuple.hpp>
+#include <tuple>
 #include <utility>
 
 namespace QuantLib {

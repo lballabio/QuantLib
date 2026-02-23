@@ -23,7 +23,6 @@
   based on fourier transformation
 */
 
-#include <ql/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/integrals/exponentialintegrals.hpp>
@@ -37,10 +36,9 @@
 #include <ql/math/functional.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
-
 #include <boost/math/tools/minima.hpp>
 #include <boost/math/special_functions/sign.hpp>
-
+#include <functional>
 #include <cmath>
 #include <limits>
 #include <utility>

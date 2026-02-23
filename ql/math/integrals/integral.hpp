@@ -23,7 +23,7 @@
 #define quantlib_math_integrator_hpp
 
 #include <ql/types.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 
 namespace QuantLib {
 

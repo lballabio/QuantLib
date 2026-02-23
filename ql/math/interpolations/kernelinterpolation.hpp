@@ -34,7 +34,7 @@ namespace QuantLib {
     namespace detail {
 
         template <class I1, class I2, class Kernel>
-        class KernelInterpolationImpl
+        class KernelInterpolationImpl final
             : public Interpolation::templateImpl<I1,I2> {
           public:
             KernelInterpolationImpl(const I1& xBegin,

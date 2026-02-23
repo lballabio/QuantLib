@@ -398,7 +398,7 @@ namespace QuantLib {
     /*
     Bugs here???. The max min on the tranche looks 
     wrong. It is better to have a tranche function since that way we can avoid 
-    adding up losses over all the posible losses rather than just over the 
+    adding up losses over all the possible losses rather than just over the 
     tranche limits.
     */
     //! Portfolio loss conditional to the market factor value

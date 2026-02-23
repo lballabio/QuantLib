@@ -144,7 +144,7 @@ quantlib.hpp: Makefile.am
 	echo >> ${srcdir}/$@
 	echo "#include <ql/qldefines.hpp>" >> ${srcdir}/$@
 	echo "#include <ql/version.hpp>" >> ${srcdir}/$@
-	echo "#ifdef BOOST_MSVC" >> ${srcdir}/$@
+	echo "#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)" >> ${srcdir}/$@
 	echo "#  include <ql/auto_link.hpp>" >> ${srcdir}/$@
 	echo "#endif" >> ${srcdir}/$@
 	echo >> ${srcdir}/$@
@@ -156,6 +156,9 @@ quantlib.hpp: Makefile.am
 			qldefines.hpp)     continue;; \
 			quantlib.hpp)      continue;; \
 			version.hpp)       continue;; \
+			functional.hpp)       continue;; \
+			tuple.hpp)       continue;; \
+			grid.hpp)       continue;; \
 			*.hpp)             ;; \
 		esac; \
 		echo "#include <${subdir}/$$i>" >> ${srcdir}/$@; \

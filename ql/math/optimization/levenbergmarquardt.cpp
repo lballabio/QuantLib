@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Klaus Spanderen
  Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2026 Aaditya Panikath
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,7 +22,8 @@
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/lmdif.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/functional.hpp>
+#include <cmath>
+#include <functional>
 #include <memory>
 
 namespace QuantLib {
@@ -79,12 +81,12 @@ namespace QuantLib {
         // call lmdif to minimize the sum of the squares of m functions
         // in n variables by the Levenberg-Marquardt algorithm.
         MINPACK::LmdifCostFunction lmdifCostFunction =
-            [this](const auto m, const auto n, const auto x, const auto fvec, const auto iflag) {
+            [this](const auto m, const auto n, const auto x, const auto fvec, [[maybe_unused]] const auto iflag) {
                 this->fcn(m, n, x, fvec);
             };
         MINPACK::LmdifCostFunction lmdifJacFunction =
             useCostFunctionsJacobian_
-                ? [this](const auto m, const auto n, const auto x, const auto fjac, const auto iflag) {
+                ? [this](const auto m, const auto n, const auto x, const auto fjac, [[maybe_unused]] const auto iflag) {
                     this->jacFcn(m, n, x, fjac);
                 }
                 : MINPACK::LmdifCostFunction();
@@ -140,30 +142,52 @@ namespace QuantLib {
     void LevenbergMarquardt::fcn(int, int n, Real* x, Real* fvec) {
         Array xt(n);
         std::copy(x, x+n, xt.begin());
-        // constraint handling needs some improvement in the future:
-        // starting point should not be close to a constraint violation
         if (currentProblem_->constraint().test(xt)) {
             const Array& tmp = currentProblem_->values(xt);
-            std::copy(tmp.begin(), tmp.end(), fvec);
-        } else {
-            std::copy(initCostValues_.begin(), initCostValues_.end(), fvec);
+            bool valid = true;
+            for (double i : tmp) {
+                if (!std::isfinite(i)) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
+                std::copy(tmp.begin(), tmp.end(), fvec);
+                return;
+            }
         }
+        // Constraint violated or evaluation produced non-finite values:
+        // return a large, uniform penalty so the optimizer steers away.
+        // A fixed constant is used instead of the initial cost values because
+        // the latter can be very small (even zero) when the starting point is
+        // near-optimal, which would fail to deter the optimizer from exploring
+        // infeasible regions.
+        std::fill(fvec, fvec + initCostValues_.size(), 1.0e10);
     }
 
     void LevenbergMarquardt::jacFcn(int m, int n, Real* x, Real* fjac) {
         Array xt(n);
         std::copy(x, x+n, xt.begin());
-        // constraint handling needs some improvement in the future:
-        // starting point should not be close to a constraint violation
         if (currentProblem_->constraint().test(xt)) {
             Matrix tmp(m,n);
             currentProblem_->costFunction().jacobian(tmp, xt);
-            Matrix tmpT = transpose(tmp);
-            std::copy(tmpT.begin(), tmpT.end(), fjac);
-        } else {
-            Matrix tmpT = transpose(initJacobian_);
-            std::copy(tmpT.begin(), tmpT.end(), fjac);
+            bool valid = true;
+            for (double & it : tmp) {
+                if (!std::isfinite(it)) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
+                Matrix tmpT = transpose(tmp);
+                std::copy(tmpT.begin(), tmpT.end(), fjac);
+                return;
+            }
         }
+        // Constraint violated or Jacobian produced non-finite values:
+        // return initial Jacobian so the optimizer doesn't diverge
+        Matrix tmpT = transpose(initJacobian_);
+        std::copy(tmpT.begin(), tmpT.end(), fjac);
     }
 
 }

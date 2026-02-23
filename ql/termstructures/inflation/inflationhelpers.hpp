@@ -42,7 +42,18 @@ namespace QuantLib {
             const Date& maturity,
             Calendar calendar, // index may have null calendar as valid on every day
             BusinessDayConvention paymentConvention,
-            const DayCounter& dayCounter,
+            DayCounter dayCounter,
+            const ext::shared_ptr<ZeroInflationIndex>& zii,
+            CPI::InterpolationType observationInterpolation);
+
+        ZeroCouponInflationSwapHelper(
+            const Handle<Quote>& quote,
+            const Period& swapObsLag, // lag on swap observation of index
+            const Date& startDate,
+            const Date& endDate,
+            Calendar calendar, // index may have null calendar as valid on every day
+            BusinessDayConvention paymentConvention,
+            DayCounter dayCounter,
             const ext::shared_ptr<ZeroInflationIndex>& zii,
             CPI::InterpolationType observationInterpolation);
 
@@ -72,7 +83,7 @@ namespace QuantLib {
         void initializeDates() override;
 
         Period swapObsLag_;
-        Date maturity_;
+        Date startDate_, maturity_;
         Calendar calendar_;
         BusinessDayConvention paymentConvention_;
         DayCounter dayCounter_;
@@ -81,6 +92,18 @@ namespace QuantLib {
         ext::shared_ptr<ZeroCouponInflationSwap> zciis_;
         Handle<YieldTermStructure> nominalTermStructure_;
         RelinkableHandle<ZeroInflationTermStructure> termStructureHandle_;
+      private:
+        ZeroCouponInflationSwapHelper(
+            const Handle<Quote>& quote,
+            const Period& swapObsLag,
+            const Date& startDate,
+            const Date& endDate,
+            Calendar calendar,
+            BusinessDayConvention paymentConvention,
+            DayCounter dayCounter,
+            const ext::shared_ptr<ZeroInflationIndex>& zii,
+            CPI::InterpolationType observationInterpolation,
+            Handle<YieldTermStructure> nominalTermStructure);
     };
 
 
@@ -98,17 +121,15 @@ namespace QuantLib {
                                       CPI::InterpolationType interpolation,
                                       Handle<YieldTermStructure> nominalTermStructure);
 
-        /*! \deprecated Use the overload that passes an interpolation type instead.
-                        Deprecated in version 1.36.
-        */
-        [[deprecated("Use the overload that passes an interpolation type instead")]]
         YearOnYearInflationSwapHelper(const Handle<Quote>& quote,
                                       const Period& swapObsLag,
-                                      const Date& maturity,
+                                      const Date& startDate,
+                                      const Date& endDate,
                                       Calendar calendar,
                                       BusinessDayConvention paymentConvention,
                                       DayCounter dayCounter,
                                       const ext::shared_ptr<YoYInflationIndex>& yii,
+                                      CPI::InterpolationType interpolation,
                                       Handle<YieldTermStructure> nominalTermStructure);
 
         void setTermStructure(YoYInflationTermStructure*) override;
@@ -122,7 +143,7 @@ namespace QuantLib {
         void initializeDates() override;
 
         Period swapObsLag_;
-        Date maturity_;
+        Date startDate_, maturity_;
         Calendar calendar_;
         BusinessDayConvention paymentConvention_;
         DayCounter dayCounter_;

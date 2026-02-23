@@ -29,7 +29,7 @@
 #include <ql/types.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/math/integrals/integral.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 
 namespace QuantLib {
 

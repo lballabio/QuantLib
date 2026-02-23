@@ -99,7 +99,7 @@ int main(int, char* []) {
          *********************/
 
         // RateHelpers are built from the above quotes together with
-        // other instrument dependant infos.  Quotes are passed in
+        // other instrument-dependent infos.  Quotes are passed in
         // relinkable handles which could be relinked to some other
         // data source later.
 

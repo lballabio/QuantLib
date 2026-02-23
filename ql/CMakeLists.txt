@@ -1,6 +1,7 @@
 set(QL_SOURCES
     cashflow.cpp
     cashflows/averagebmacoupon.cpp
+    cashflows/blackovernightindexedcouponpricer.cpp
     cashflows/capflooredcoupon.cpp
     cashflows/capflooredinflationcoupon.cpp
     cashflows/cashflows.cpp
@@ -48,9 +49,6 @@ set(QL_SOURCES
     exercise.cpp
     experimental/asian/analytic_cont_geom_av_price_heston.cpp
     experimental/asian/analytic_discr_geom_av_price_heston.cpp
-    experimental/averageois/arithmeticaverageois.cpp
-    experimental/averageois/arithmeticoisratehelper.cpp
-    experimental/averageois/makearithmeticaverageois.cpp
     experimental/barrieroption/mcdoublebarrierengine.cpp
     experimental/barrieroption/discretizeddoublebarrieroption.cpp
     experimental/barrieroption/perturbativebarrieroptionengine.cpp
@@ -126,7 +124,6 @@ set(QL_SOURCES
     experimental/exoticoptions/continuousarithmeticasianvecerengine.cpp
     experimental/exoticoptions/everestoption.cpp
     experimental/exoticoptions/himalayaoption.cpp
-    experimental/exoticoptions/kirkspreadoptionengine.cpp
     experimental/exoticoptions/mceverestengine.cpp
     experimental/exoticoptions/mchimalayaengine.cpp
     experimental/exoticoptions/mcpagodaengine.cpp
@@ -178,8 +175,6 @@ set(QL_SOURCES
     experimental/processes/gemanroncoroniprocess.cpp
     experimental/processes/klugeextouprocess.cpp
     experimental/processes/vegastressedblackscholesprocess.cpp
-    experimental/risk/creditriskplus.cpp
-    experimental/risk/sensitivityanalysis.cpp
     experimental/shortrate/generalizedhullwhite.cpp
     experimental/shortrate/generalizedornsteinuhlenbeckprocess.cpp
     experimental/swaptions/haganirregularswaptionengine.cpp
@@ -210,7 +205,6 @@ set(QL_SOURCES
     experimental/volatility/sviinterpolatedsmilesection.cpp
     experimental/volatility/svismilesection.cpp
     experimental/volatility/volcube.cpp
-    experimental/volatility/zabr.cpp
     index.cpp
     indexes/bmaindex.cpp
     indexes/equityindex.cpp
@@ -281,6 +275,7 @@ set(QL_SOURCES
     instruments/forwardrateagreement.cpp
     instruments/forwardvanillaoption.cpp
     instruments/futures.cpp
+    instruments/fxforward.cpp
     instruments/holderextensibleoption.cpp
     instruments/impliedvolatility.cpp
     instruments/inflationcapfloor.cpp
@@ -432,7 +427,6 @@ set(QL_SOURCES
     math/statistics/histogram.cpp
     math/statistics/incrementalstatistics.cpp
     methods/finitedifferences/boundarycondition.cpp
-    methods/finitedifferences/bsmoperator.cpp
     methods/finitedifferences/meshers/concentrating1dmesher.cpp
     methods/finitedifferences/meshers/exponentialjump1dmesher.cpp
     methods/finitedifferences/meshers/fdmblackscholesmesher.cpp
@@ -718,6 +712,7 @@ set(QL_SOURCES
     pricingengines/exotic/analyticsimplechooserengine.cpp
     pricingengines/exotic/analytictwoassetcorrelationengine.cpp
     pricingengines/exotic/analyticwriterextensibleoptionengine.cpp
+    pricingengines/forward/discountingfxforwardengine.cpp
     pricingengines/forward/mcforwardeuropeanbsengine.cpp
     pricingengines/forward/mcforwardeuropeanhestonengine.cpp
     pricingengines/futures/discountingperpetualfuturesengine.cpp
@@ -759,6 +754,7 @@ set(QL_SOURCES
     pricingengines/vanilla/batesengine.cpp
     pricingengines/vanilla/bjerksundstenslandengine.cpp
     pricingengines/vanilla/coshestonengine.cpp
+    pricingengines/vanilla/cashdividendeuropeanengine.cpp
     pricingengines/vanilla/discretizedvanillaoption.cpp
     pricingengines/vanilla/exponentialfittinghestonengine.cpp
     pricingengines/vanilla/fdbatesvanillaengine.cpp
@@ -818,7 +814,9 @@ set(QL_SOURCES
     termstructures/credit/hazardratestructure.cpp
     termstructures/credit/survivalprobabilitystructure.cpp
     termstructures/defaulttermstructure.cpp
+    termstructures/globalbootstrap.cpp
     termstructures/globalbootstrapvars.cpp
+    termstructures/multicurve.cpp
     termstructures/inflation/inflationhelpers.cpp
     termstructures/inflation/seasonality.cpp
     termstructures/inflationtermstructure.cpp
@@ -862,6 +860,7 @@ set(QL_SOURCES
     termstructures/volatility/smilesection.cpp
     termstructures/volatility/smilesectionutils.cpp
     termstructures/volatility/spreadedsmilesection.cpp
+    termstructures/volatility/zabr.cpp
     termstructures/volatility/swaption/cmsmarket.cpp
     termstructures/volatility/swaption/cmsmarketcalibration.cpp
     termstructures/volatility/swaption/gaussian1dswaptionvolatility.cpp
@@ -958,6 +957,7 @@ set(QL_HEADERS
     auto_link.hpp
     cashflow.hpp
     cashflows/averagebmacoupon.hpp
+    cashflows/blackovernightindexedcouponpricer.hpp
     cashflows/capflooredcoupon.hpp
     cashflows/capflooredinflationcoupon.hpp
     cashflows/cashflows.hpp
@@ -988,7 +988,6 @@ set(QL_HEADERS
     cashflows/rateaveraging.hpp
     cashflows/replication.hpp
     cashflows/simplecashflow.hpp
-    cashflows/subperiodcoupon.hpp
     cashflows/timebasket.hpp
     cashflows/yoyinflationcoupon.hpp
     cashflows/zeroinflationcashflow.hpp
@@ -1015,7 +1014,6 @@ set(QL_HEADERS
     experimental/asian/analytic_discr_geom_av_price_heston.hpp
     experimental/averageois/arithmeticaverageois.hpp
     experimental/averageois/arithmeticoisratehelper.hpp
-    experimental/averageois/averageoiscouponpricer.hpp
     experimental/averageois/makearithmeticaverageois.hpp
     experimental/barrieroption/mcdoublebarrierengine.hpp
     experimental/barrieroption/binomialdoublebarrierengine.hpp
@@ -1350,7 +1348,6 @@ set(QL_HEADERS
     instruments/doublebarriertype.hpp
     instruments/equitytotalreturnswap.hpp
     instruments/europeanoption.hpp
-    instruments/fixedratebondforward.hpp
     instruments/fixedvsfloatingswap.hpp
     instruments/floatfloatswap.hpp
     instruments/floatfloatswaption.hpp
@@ -1358,6 +1355,7 @@ set(QL_HEADERS
     instruments/forwardrateagreement.hpp
     instruments/forwardvanillaoption.hpp
     instruments/futures.hpp
+    instruments/fxforward.hpp
     instruments/holderextensibleoption.hpp
     instruments/impliedvolatility.hpp
     instruments/inflationcapfloor.hpp
@@ -1489,6 +1487,7 @@ set(QL_HEADERS
     math/interpolations/multicubicspline.hpp
     math/interpolations/sabrinterpolation.hpp
     math/interpolations/xabrinterpolation.hpp
+    math/interpolations/zabrinterpolation.hpp
     math/kernelfunctions.hpp
     math/linearleastsquaresregression.hpp
     math/matrix.hpp
@@ -1561,7 +1560,6 @@ set(QL_HEADERS
     math/randomnumbers/zigguratgaussianrng.hpp
     math/richardsonextrapolation.hpp
     math/rounding.hpp
-    math/sampledcurve.hpp
     math/solver1d.hpp
     math/solvers1d/bisection.hpp
     math/solvers1d/brent.hpp
@@ -1585,14 +1583,12 @@ set(QL_HEADERS
     mathconstants.hpp
     methods/finitedifferences/boundarycondition.hpp
     methods/finitedifferences/bsmoperator.hpp
-    methods/finitedifferences/bsmtermoperator.hpp
     methods/finitedifferences/cranknicolson.hpp
     methods/finitedifferences/dminus.hpp
     methods/finitedifferences/dplus.hpp
     methods/finitedifferences/dplusdminus.hpp
     methods/finitedifferences/dzero.hpp
     methods/finitedifferences/expliciteuler.hpp
-    methods/finitedifferences/fdtypedefs.hpp
     methods/finitedifferences/finitedifferencemodel.hpp
     methods/finitedifferences/impliciteuler.hpp
     methods/finitedifferences/meshers/concentrating1dmesher.hpp
@@ -1638,7 +1634,6 @@ set(QL_HEADERS
     methods/finitedifferences/operators/secondordermixedderivativeop.hpp
     methods/finitedifferences/operators/triplebandlinearop.hpp
     methods/finitedifferences/operatortraits.hpp
-    methods/finitedifferences/parallelevolver.hpp
     methods/finitedifferences/pde.hpp
     methods/finitedifferences/pdebsm.hpp
     methods/finitedifferences/schemes/boundaryconditionschemehelper.hpp
@@ -1948,6 +1943,7 @@ set(QL_HEADERS
     pricingengines/exotic/analyticsimplechooserengine.hpp
     pricingengines/exotic/analytictwoassetcorrelationengine.hpp
     pricingengines/exotic/analyticwriterextensibleoptionengine.hpp
+    pricingengines/forward/discountingfxforwardengine.hpp
     pricingengines/forward/forwardengine.hpp
     pricingengines/forward/forwardperformanceengine.hpp
     pricingengines/forward/mcforwardeuropeanbsengine.hpp
@@ -2000,6 +1996,7 @@ set(QL_HEADERS
     pricingengines/vanilla/batesengine.hpp
     pricingengines/vanilla/binomialengine.hpp
     pricingengines/vanilla/bjerksundstenslandengine.hpp
+    pricingengines/vanilla/cashdividendeuropeanengine.hpp
     pricingengines/vanilla/coshestonengine.hpp
     pricingengines/vanilla/discretizedvanillaoption.hpp
     pricingengines/vanilla/exponentialfittinghestonengine.hpp
@@ -2010,10 +2007,8 @@ set(QL_HEADERS
     pricingengines/vanilla/fdcevvanillaengine.hpp
     pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp
     pricingengines/vanilla/fdhestonvanillaengine.hpp
-    pricingengines/vanilla/fdmultiperiodengine.hpp
     pricingengines/vanilla/fdsabrvanillaengine.hpp
     pricingengines/vanilla/fdsimplebsswingengine.hpp
-    pricingengines/vanilla/fdvanillaengine.hpp
     pricingengines/vanilla/hestonexpansionengine.hpp
     pricingengines/vanilla/integralengine.hpp
     pricingengines/vanilla/jumpdiffusionengine.hpp
@@ -2079,6 +2074,7 @@ set(QL_HEADERS
     termstructures/defaulttermstructure.hpp
     termstructures/globalbootstrap.hpp
     termstructures/globalbootstrapvars.hpp
+    termstructures/multicurve.hpp
     termstructures/inflation/inflationhelpers.hpp
     termstructures/inflation/inflationtraits.hpp
     termstructures/inflation/interpolatedyoyinflationcurve.hpp
@@ -2139,6 +2135,9 @@ set(QL_HEADERS
     termstructures/volatility/smilesection.hpp
     termstructures/volatility/smilesectionutils.hpp
     termstructures/volatility/spreadedsmilesection.hpp
+    termstructures/volatility/zabr.hpp
+    termstructures/volatility/zabrinterpolatedsmilesection.hpp
+    termstructures/volatility/zabrsmilesection.hpp
     termstructures/volatility/swaption/cmsmarket.hpp
     termstructures/volatility/swaption/cmsmarketcalibration.hpp
     termstructures/volatility/swaption/gaussian1dswaptionvolatility.hpp
@@ -2150,6 +2149,7 @@ set(QL_HEADERS
     termstructures/volatility/swaption/swaptionvoldiscrete.hpp
     termstructures/volatility/swaption/swaptionvolmatrix.hpp
     termstructures/volatility/swaption/swaptionvolstructure.hpp
+    termstructures/volatility/swaption/zabrswaptionvolatilitycube.hpp
     termstructures/volatility/volatilitytype.hpp
     termstructures/voltermstructure.hpp
     termstructures/yield/bondhelpers.hpp

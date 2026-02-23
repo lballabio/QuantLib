@@ -686,7 +686,6 @@
     <ClCompile Include="convertiblebonds.cpp" />
     <ClCompile Include="covariance.cpp" />
     <ClCompile Include="creditdefaultswap.cpp" />
-    <ClCompile Include="creditriskplus.cpp" />
     <ClCompile Include="crosscurrencyratehelpers.cpp" />
     <ClCompile Include="currency.cpp" />
     <ClCompile Include="curvestates.cpp" />
@@ -717,6 +716,7 @@
     <ClCompile Include="fdmlinearop.cpp" />
     <ClCompile Include="forwardoption.cpp" />
     <ClCompile Include="forwardrateagreement.cpp" />
+    <ClCompile Include="fxforward.cpp" />
     <ClCompile Include="garch.cpp" />
     <ClCompile Include="gaussianquadratures.cpp" />
     <ClCompile Include="gjrgarchmodel.cpp" />
@@ -793,7 +793,6 @@
     <ClCompile Include="sofrfutures.cpp" />
     <ClCompile Include="softbarrieroption.cpp" />
     <ClCompile Include="solvers.cpp" />
-    <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="svivolatility.cpp" />
@@ -808,7 +807,6 @@
     <ClCompile Include="timeseries.cpp" />
     <ClCompile Include="tqreigendecomposition.cpp" />
     <ClCompile Include="tracing.cpp" />
-    <ClCompile Include="transformedgrid.cpp" />
     <ClCompile Include="twoassetbarrieroption.cpp" />
     <ClCompile Include="twoassetcorrelationoption.cpp" />
     <ClCompile Include="ultimateforwardtermstructure.cpp" />

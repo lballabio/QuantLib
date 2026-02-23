@@ -49,6 +49,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/time/calendars/target.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -2010,11 +2011,10 @@ BOOST_AUTO_TEST_CASE(testLevyEngine) {
                                                                                           Handle<YieldTermStructure>(rTS),
                                                                                           Handle<BlackVolTermStructure>(volTS)));
 
-        ext::shared_ptr<PricingEngine> engine(
-            new ContinuousArithmeticAsianLevyEngine(
-                stochProcess, Handle<Quote>(average), startDate));
+        auto engine = ext::make_shared<ContinuousArithmeticAsianLevyEngine>(
+                stochProcess, Handle<Quote>(average));
 
-        ContinuousAveragingAsianOption option(averageType,
+        ContinuousAveragingAsianOption option(averageType, startDate,
                                               payoff, exercise);
         option.setPricingEngine(engine);
 
@@ -2634,6 +2634,123 @@ BOOST_AUTO_TEST_CASE(testChoiAsianEngineSpecialCases) {
             "value", Average::Arithmetic, runningAccumulator, pastFixingsCount,
             fixingDates, payoff, exercise, process->x0(),
             0.075, 0.2, today, 0.5, expected, calculated, tol);
+}
+
+BOOST_AUTO_TEST_CASE(testContinuousSeasonedAsianOptions) {
+    BOOST_TEST_MESSAGE("Testing seasoned continuous averaging Asian options...");
+
+    DayCounter dc = Actual365Fixed();
+    Date today(15, November, 2025);
+    Date settlementDate(17, November, 2025);
+    Settings::instance().evaluationDate() = today;
+
+    // Market data
+    Real spot = 100.0;
+    Spread dividendYield = 0.03;
+    Rate riskFreeRate = 0.06;
+    Volatility volatility = 0.20;
+    Date maturity(17, November, 2026);
+    Date startDate(17, August, 2025);  // Started 3 months ago
+
+    Handle<Quote> underlyingH = makeQuoteHandle(spot);
+    Handle<YieldTermStructure> flatTermStructure(
+        ext::make_shared<FlatForward>(settlementDate, riskFreeRate, dc));
+    Handle<YieldTermStructure> flatDividendTS(
+        ext::make_shared<FlatForward>(settlementDate, dividendYield, dc));
+    Handle<BlackVolTermStructure> flatVolTS(
+        ext::make_shared<BlackConstantVol>(settlementDate, TARGET(), volatility, dc));
+
+    ext::shared_ptr<BlackScholesMertonProcess> bsmProcess =
+        ext::make_shared<BlackScholesMertonProcess>(
+            underlyingH, flatDividendTS, flatTermStructure, flatVolTS);
+
+    Real strike = 100.0;
+    ext::shared_ptr<StrikedTypePayoff> payoff =
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
+    ext::shared_ptr<Exercise> europeanExercise =
+        ext::make_shared<EuropeanExercise>(maturity);
+
+    // Test 1: Fresh (unseasoned) continuous arithmetic option
+    ContinuousAveragingAsianOption freshOption(
+        Average::Arithmetic,
+        settlementDate,
+        payoff,
+        europeanExercise);
+
+    freshOption.setPricingEngine(
+        ext::make_shared<ContinuousArithmeticAsianLevyEngine>(
+            bsmProcess, makeQuoteHandle(0.0)));
+
+    Real freshNPV = freshOption.NPV();
+
+    // Test 2: Seasoned continuous arithmetic option
+    // startDate goes in the option (contract term), currentAverage goes in the engine (market data)
+    Real currentAverage = 98.5;  // Running average below spot
+    ContinuousAveragingAsianOption seasonedOption(
+        Average::Arithmetic,
+        startDate,
+        payoff,
+        europeanExercise);
+
+    seasonedOption.setPricingEngine(
+        ext::make_shared<ContinuousArithmeticAsianLevyEngine>(
+            bsmProcess, makeQuoteHandle(currentAverage)));
+
+    Real seasonedNPV = seasonedOption.NPV();
+
+    // Seasoned option should be worth less than fresh option for a put
+    // when current average is below strike
+    if (seasonedNPV >= freshNPV) {
+        BOOST_ERROR("Seasoned Asian put option NPV (" << seasonedNPV
+                    << ") should be less than fresh option NPV (" << freshNPV
+                    << ") when current average (" << currentAverage
+                    << ") is below strike (" << strike << ")");
+    }
+
+    // Test 3: Seasoned option with high current average
+    Real highAverage = 102.0;  // Running average above strike
+    ContinuousAveragingAsianOption seasonedHighOption(
+        Average::Arithmetic,
+        startDate,
+        payoff,
+        europeanExercise);
+
+    seasonedHighOption.setPricingEngine(
+        ext::make_shared<ContinuousArithmeticAsianLevyEngine>(
+            bsmProcess, makeQuoteHandle(highAverage)));
+
+    Real seasonedHighNPV = seasonedHighOption.NPV();
+
+    // Seasoned option with higher average should be worth even less
+    if (seasonedHighNPV >= seasonedNPV) {
+        BOOST_ERROR("Seasoned Asian put with higher average (" << highAverage
+                    << ") should have lower NPV (" << seasonedHighNPV
+                    << ") than seasoned option with lower average ("
+                    << currentAverage << ", NPV=" << seasonedNPV << ")");
+    }
+
+    // Test 4: Continuous geometric should fail for seasoned options (not yet implemented)
+    ContinuousAveragingAsianOption seasonedGeometric(
+        Average::Geometric,
+        startDate,
+        payoff,
+        europeanExercise);
+
+    seasonedGeometric.setPricingEngine(
+        ext::make_shared<AnalyticContinuousGeometricAveragePriceAsianEngine>(bsmProcess));
+
+    bool caughtExpectedError = false;
+    try {
+        Real npv = seasonedGeometric.NPV();
+        (void)npv;  // Suppress unused variable warning
+    } catch (Error&) {
+        caughtExpectedError = true;
+    }
+
+    if (!caughtExpectedError) {
+        BOOST_ERROR("Seasoned continuous geometric Asian options should "
+                    "throw an error (not yet implemented)");
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

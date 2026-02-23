@@ -39,9 +39,9 @@ namespace QuantLib {
     /*! \ingroup processes */
     class GsrProcess : public ForwardMeasureProcess1D {
       public:
-        GsrProcess(const Array& times,
-                   const Array& vols,
-                   const Array& reversions,
+        GsrProcess(Array times,
+                   Array vols,
+                   Array reversions,
                    Real T = 60.0,
                    const Date& referenceDate = Date(),
                    DayCounter dc = DayCounter());
@@ -56,19 +56,26 @@ namespace QuantLib {
         Real time(const Date& d) const override;
         //@}
         //! \name ForwardMeasureProcess1D interface
+        //@{
         void setForwardMeasureTime(Time t) override;
         //@}
         //! additional inspectors
+        //@{
         Real sigma(Time t) const;
         Real reversion(Time t) const;
         Real y(Time t) const;
         Real G(Time t, Time T, Real x) const;
+        //@}
         //! reset cache
         void flushCache() const;
 
       private:
+        friend class Gsr;
+        void setTimes(Array times) { core_.setTimes(std::move(times)); }
+        void setVols(Array vols) { core_.setVols(std::move(vols)); }
+        void setReversions(Array reversions) { core_.setReversions(std::move(reversions)); }
         void checkT(Time t) const;
-        const detail::GsrProcessCore core_;
+        detail::GsrProcessCore core_;
         Date referenceDate_;
         DayCounter dc_;
     };

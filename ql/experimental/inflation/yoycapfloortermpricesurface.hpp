@@ -55,24 +55,6 @@ namespace QuantLib {
                                     const Matrix& cPrice,
                                     const Matrix& fPrice);
 
-        /*! \deprecated Use the overload that passes an interpolation type instead.
-                        Deprecated in version 1.36.
-        */
-        [[deprecated("Use the overload that passes an interpolation type instead")]]
-        YoYCapFloorTermPriceSurface(Natural fixingDays,
-                                    const Period& yyLag,
-                                    const ext::shared_ptr<YoYInflationIndex>& yii,
-                                    Rate baseRate,
-                                    Handle<YieldTermStructure> nominal,
-                                    const DayCounter& dc,
-                                    const Calendar& cal,
-                                    const BusinessDayConvention& bdc,
-                                    const std::vector<Rate>& cStrikes,
-                                    const std::vector<Rate>& fStrikes,
-                                    const std::vector<Period>& cfMaturities,
-                                    const Matrix& cPrice,
-                                    const Matrix& fPrice);
-
         bool indexIsInterpolated() const;
         virtual Period observationLag() const;
         virtual Frequency frequency() const;
@@ -184,27 +166,6 @@ namespace QuantLib {
                       const Interpolator2D &interpolator2d = Interpolator2D(),
                       const Interpolator1D &interpolator1d = Interpolator1D());
 
-        /*! \deprecated Use the overload that passes an interpolation type instead.
-                        Deprecated in version 1.36.
-        */
-        [[deprecated("Use the overload that passes an interpolation type instead")]]
-        InterpolatedYoYCapFloorTermPriceSurface(
-                      Natural fixingDays,
-                      const Period &yyLag,  // observation lag
-                      const ext::shared_ptr<YoYInflationIndex>& yii,
-                      Rate baseRate,
-                      const Handle<YieldTermStructure> &nominal,
-                      const DayCounter &dc,
-                      const Calendar &cal,
-                      const BusinessDayConvention &bdc,
-                      const std::vector<Rate> &cStrikes,
-                      const std::vector<Rate> &fStrikes,
-                      const std::vector<Period> &cfMaturities,
-                      const Matrix &cPrice,
-                      const Matrix &fPrice,
-                      const Interpolator2D &interpolator2d = Interpolator2D(),
-                      const Interpolator1D &interpolator1d = Interpolator1D());
-
         //! inflation term structure interface
         //@{
         Date maxDate() const override { return yoy_->maxDate(); }
@@ -233,8 +194,7 @@ namespace QuantLib {
             // work in terms of maturity-of-instruments
             // so ask for rate with observation lag
             Period p = (obsLag == Period(-1, Days)) ? observationLag() : obsLag;
-            // Third parameter = force linear interpolation of yoy
-            return yoy_->yoyRate(d, p, false, extrapolate);
+            return yoy_->yoyRate(d - p, extrapolate);
         }
         //@}
 
@@ -315,30 +275,6 @@ namespace QuantLib {
       interpolator2d_(interpolator2d), interpolator1d_(interpolator1d) {
         performCalculations();
     }
-
-    template<class I2D, class I1D>
-    InterpolatedYoYCapFloorTermPriceSurface<I2D,I1D>::
-    InterpolatedYoYCapFloorTermPriceSurface(
-                                    Natural fixingDays,
-                                    const Period &yyLag,
-                                    const ext::shared_ptr<YoYInflationIndex>& yii,
-                                    Rate baseRate,
-                                    const Handle<YieldTermStructure> &nominal,
-                                    const DayCounter &dc,
-                                    const Calendar &cal,
-                                    const BusinessDayConvention &bdc,
-                                    const std::vector<Rate> &cStrikes,
-                                    const std::vector<Rate> &fStrikes,
-                                    const std::vector<Period> &cfMaturities,
-                                    const Matrix &cPrice,
-                                    const Matrix &fPrice,
-                                    const I2D &interpolator2d,
-                                    const I1D &interpolator1d)
-    : InterpolatedYoYCapFloorTermPriceSurface(fixingDays, yyLag, yii, CPI::AsIndex,
-                                              nominal, dc, cal, bdc,
-                                              cStrikes, fStrikes, cfMaturities,
-                                              cPrice, fPrice,
-                                              interpolator2d, interpolator1d) {}
 
     #endif
 

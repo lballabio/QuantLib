@@ -391,6 +391,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
     // first check that the quoted swaps are repriced correctly
 
     const Real eps = 1.0e-7;
+    const Spread basisPoint = 1.0e-4;
     auto engine = ext::make_shared<DiscountingSwapEngine>(nominalTS);
 
     for (const auto& datum: zcData) {
@@ -408,7 +409,25 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
                             "zero-coupon inflation swap does not reprice to zero"
                             << "\n    NPV:      " << nzcis.NPV()
                             << "\n    maturity: " << nzcis.maturityDate()
-                            << "\n    rate:     " << datum.rate/100.0);
+                            << "\n    rate:     " << nzcis.fixedRate());
+
+        ZeroCouponInflationSwap nzcisBumped(Swap::Payer,
+                                            1000000.0,
+                                            evaluationDate,
+                                            datum.date,
+                                            calendar, bdc, dc,
+                                            datum.rate/100.0 + basisPoint,
+                                            ii, observationLag,
+                                            CPI::AsIndex);
+        nzcisBumped.setPricingEngine(engine);
+
+        const Real expected = nzcisBumped.legNPV(0) - nzcis.legNPV(0);
+        BOOST_CHECK_MESSAGE(std::fabs(nzcis.fixedLegBPS() - expected) < eps,
+                            "zero-coupon inflation swap does not have correct fixedLegBPS"
+                            << "\n    actual:   " << nzcis.fixedLegBPS()
+                            << "\n    expected: " << expected
+                            << "\n    maturity: " << nzcis.maturityDate()
+                            << "\n    rate:     " << nzcis.fixedRate());
     }
 
     //===========================================================================================
@@ -425,7 +444,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
     Date bd = hz->baseDate();
     Real bf = ii->fixing(bd);
     for (const auto& d : testIndex) {
-        Real z = hz->zeroRate(d, Period(0, Days));
+        Real z = hz->zeroRate(d);
         Real t = hz->dayCounter().yearFraction(bd, inflationPeriod(d, ii->frequency()).first);
         Real calc = bf * std::pow(1+z, t);
         if (t<=0)

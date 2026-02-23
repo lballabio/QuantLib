@@ -103,10 +103,10 @@ namespace QuantLib {
 
     bool Bond::isExpired() const {
         // this is the Instrument interface, so it doesn't use
-        // BondFunctions, and includeSettlementDateFlows is true
-        // (unless QL_TODAY_PAYMENTS will set it to false later on)
+        // BondFunctions.  We pass nullopt as includeSettlementDateFlows
+        // so that CashFlows::isExpired uses the default setting.
         return CashFlows::isExpired(cashflows_,
-                                    true,
+                                    ext::nullopt,
                                     Settings::instance().evaluationDate());
     }
 

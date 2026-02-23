@@ -265,6 +265,78 @@ namespace QuantLib {
         return d;
     }
 
+    NaturalCubicFitting::NaturalCubicFitting(
+        const std::vector<Time>& knotTimes,
+        const Array& weights,
+        const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
+        const Array& l2,
+        Real minCutoffTime,
+        Real maxCutoffTime,
+        Constraint constraint)
+    : FittedBondDiscountCurve::FittingMethod(true, weights, optimizationMethod, l2,
+                                             minCutoffTime, maxCutoffTime, std::move(constraint)),
+      knotTimes_(knotTimes) {
+        knotTimes_.push_back(0.0);
+        std::sort(knotTimes_.begin(), knotTimes_.end());
+
+        auto last = std::unique(knotTimes_.begin(), knotTimes_.end(),
+                                [](Time a, Time b){ return std::fabs(a - b) <= 1e-14; });
+        knotTimes_.erase(last, knotTimes_.end());
+
+        QL_REQUIRE(knotTimes_.size() >= 2,
+                   "NaturalCubicFitting: at least two knot times required");
+
+        const Size n = knotTimes_.size();
+        size_ = n - 1;
+
+        for (Size i = 0; i + 1 < n; ++i) {
+            Real h = knotTimes_[i+1] - knotTimes_[i];
+            QL_REQUIRE(h > 1e-14,
+                       "NaturalCubicFitting: knot times must be strictly increasing (non-zero spacing)");
+            QL_REQUIRE(std::isfinite(h),
+                       "NaturalCubicFitting: non-finite knot spacing");
+        }
+    }
+
+    NaturalCubicFitting::NaturalCubicFitting(
+        const std::vector<Time>& knotTimes,
+        const Array& weights,
+        const Array& l2,
+        Real minCutoffTime,
+        Real maxCutoffTime,
+        Constraint constraint)
+    : NaturalCubicFitting(knotTimes, weights, {}, l2,
+                          minCutoffTime, maxCutoffTime, std::move(constraint)) {}
+
+    std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
+    NaturalCubicFitting::clone() const {
+        return std::make_unique<NaturalCubicFitting>(*this);
+    }
+
+    Size NaturalCubicFitting::size() const {
+        return size_;
+    }
+
+    DiscountFactor NaturalCubicFitting::discountFunction(const Array& x, Time t) const {
+        const Size n = knotTimes_.size();
+        const Size expected = size();
+        QL_REQUIRE(x.size() == expected,
+                   "NaturalCubicFitting::discountFunction(): parameter size mismatch: expected "
+                   << expected << " got " << x.size());
+
+        Array y(n);
+        y[0] = 1.0;
+        for (Size i = 1; i < n; ++i)
+            y[i] = x[i - 1];
+
+        for (Size i = 0; i < n; ++i)
+            QL_REQUIRE(std::isfinite(y[i]), "NaturalCubicFitting::discountFunction(): non-finite nodal value");
+
+        CubicNaturalSpline spline(knotTimes_.begin(), knotTimes_.end(), y.begin());
+        spline.update();
+        return spline(std::clamp(t, knotTimes_.front(), knotTimes_.back()));
+    }
+
 
     SimplePolynomialFitting::SimplePolynomialFitting(
         Natural degree,

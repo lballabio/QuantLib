@@ -6,6 +6,7 @@
  Copyright (C) 2014 Peter Caspers
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
+ Copyright (C) 2025 Paolo D'Elia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,7 +35,11 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
 
+
 namespace QuantLib {
+
+    class OvernightIndexedCouponPricer;
+    class CompoundingOvernightIndexedCouponPricer;
 
     //! overnight coupon
     /*! %Coupon paying the interest, depending on the averaging convention,
@@ -64,7 +69,10 @@ namespace QuantLib {
                     RateAveraging::Type averagingMethod = RateAveraging::Compound,
                     Natural lookbackDays = Null<Natural>(),
                     Natural lockoutDays = 0,
-                    bool applyObservationShift = false);
+                    bool applyObservationShift = false,
+                    bool compoundSpread = false,
+                    const Date& rateComputationStartDate = Date(),
+                    const Date& rateComputationEndDate = Date());
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded
@@ -83,6 +91,19 @@ namespace QuantLib {
         Natural lockoutDays() const { return lockoutDays_; }
         //! apply observation shift
         bool applyObservationShift() const { return applyObservationShift_; }
+        //! is the spread compounded daily or added after compounding?
+        bool compoundSpreadDaily() const { return compoundSpreadDaily_; }
+        /*! effectiveSpread and effectiveIndexFixing are set such that
+            coupon amount = notional * accrualPeriod * ( gearing * effectiveIndexFixing + effectiveSpread )
+            notice that
+              - gearing = 1 is required if compoundSpreadDaily = true
+              - effectiveSpread = spread() if compoundSpreadDaily = false */
+        Real effectiveSpread() const;
+        Real effectiveIndexFixing() const;
+        //! rate computation start date
+        const Date& rateComputationStartDate() const { return rateComputationStartDate_; }
+        //! rate computation end date
+        const Date& rateComputationEndDate() const { return rateComputationEndDate_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
@@ -113,14 +134,83 @@ namespace QuantLib {
         RateAveraging::Type averagingMethod_;
         Natural lockoutDays_;
         bool applyObservationShift_;
+        bool compoundSpreadDaily_;
+        Date rateComputationStartDate_, rateComputationEndDate_;
 
         Rate averageRate(const Date& date) const;
+    };
+
+    //! capped floored overnight indexed coupon
+    class CappedFlooredOvernightIndexedCoupon : public FloatingRateCoupon {
+    public:
+        /*! capped / floored compounded, backward-looking on coupon.  The cap can be applied to the
+            effective period rate (the default) or to the daily rates. */
+        explicit CappedFlooredOvernightIndexedCoupon(const ext::shared_ptr<OvernightIndexedCoupon>& underlying,
+                                            Real cap = Null<Real>(),
+                                            Real floor = Null<Real>(), 
+                                            bool nakedOption = false,
+                                            bool dailyCapFloor = false);
+
+        //! \name Observer interface
+        //@{
+        void deepUpdate() override;
+        //@}
+        //! \name LazyObject interface
+        //@{
+        void performCalculations() const override;
+        void alwaysForwardNotifications();
+        //@}
+        //! \name Coupon interface
+        //@{
+        Rate rate() const override;
+        Rate convexityAdjustment() const override;
+        //@}
+        //! \name FloatingRateCoupon interface
+        //@{
+        Date fixingDate() const override { return underlying_->fixingDate(); }
+        //@}
+        //! cap
+        Rate cap() const;
+        //! floor
+        Rate floor() const;
+        //! effective cap of fixing
+        Rate effectiveCap() const;
+        //! effective floor of fixing
+        Rate effectiveFloor() const;
+        //! effective caplet volatility
+        Real effectiveCapletVolatility() const;
+        //! effective floorlet volatility
+        Real effectiveFloorletVolatility() const;
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&) override;
+
+        bool isCapped() const { return cap_ != Null<Real>(); }
+        bool isFloored() const { return floor_ != Null<Real>(); }
+
+        void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) override; 
+
+        ext::shared_ptr<OvernightIndexedCoupon> underlying() const { return underlying_; }
+        bool nakedOption() const { return nakedOption_; }
+        bool dailyCapFloor() const { return dailyCapFloor_; }
+        bool compoundSpreadDaily() const { return underlying_->compoundSpreadDaily(); }
+        //! averaging method
+        RateAveraging::Type averagingMethod() const { return underlying_->averagingMethod(); }
+
+    protected:
+        ext::shared_ptr<OvernightIndexedCoupon> underlying_;
+        Rate cap_, floor_;
+        bool nakedOption_;
+        bool dailyCapFloor_;
+        mutable Real effectiveCapletVolatility_;
+        mutable Real effectiveFloorletVolatility_;
     };
 
     //! helper class building a sequence of overnight coupons
     class OvernightLeg {
       public:
-        OvernightLeg(Schedule schedule, ext::shared_ptr<OvernightIndex> overnightIndex);
+        OvernightLeg(Schedule  schedule, const ext::shared_ptr<OvernightIndex>& overnightIndex);
         OvernightLeg& withNotionals(Real notional);
         OvernightLeg& withNotionals(const std::vector<Real>& notionals);
         OvernightLeg& withPaymentDayCounter(const DayCounter&);
@@ -136,6 +226,20 @@ namespace QuantLib {
         OvernightLeg& withLookbackDays(Natural lookbackDays);
         OvernightLeg& withLockoutDays(Natural lockoutDays);
         OvernightLeg& withObservationShift(bool applyObservationShift = true);
+        OvernightLeg& compoundingSpreadDaily(bool compoundSpreadDaily = true);
+        OvernightLeg& withLookback(const Period& lookback);
+        OvernightLeg& withCaps(Rate cap);
+        OvernightLeg& withCaps(const std::vector<Rate>& caps);
+        OvernightLeg& withFloors(Rate floor);
+        OvernightLeg& withFloors(const std::vector<Rate>& floors);
+        OvernightLeg& withNakedOption(bool nakedOption);
+        OvernightLeg& withDailyCapFloor(bool dailyCapFloor = true);
+        OvernightLeg& inArrears(bool inArrears);
+        OvernightLeg& withLastRecentPeriod(const ext::optional<Period>& lastRecentPeriod);
+        OvernightLeg& withLastRecentPeriodCalendar(const Calendar& lastRecentPeriodCalendar);
+        OvernightLeg& withPaymentDates(const std::vector<Date>& paymentDates);
+        OvernightLeg& withCouponPricer(const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer);
+
         operator Leg() const;
       private:
         Schedule schedule_;
@@ -152,6 +256,15 @@ namespace QuantLib {
         Natural lookbackDays_ = Null<Natural>();
         Natural lockoutDays_ = 0;
         bool applyObservationShift_ = false;
+        bool compoundSpreadDaily_ = false;
+        std::vector<Rate> caps_, floors_;
+        bool nakedOption_ = false;
+        bool dailyCapFloor_ = false;
+        bool inArrears_ = true;
+        ext::optional<Period> lastRecentPeriod_;
+        Calendar lastRecentPeriodCalendar_;
+        std::vector<Date> paymentDates_;
+        ext::shared_ptr<OvernightIndexedCouponPricer> couponPricer_;
     };
 
 }

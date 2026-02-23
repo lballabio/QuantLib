@@ -26,7 +26,7 @@
 
 #include <ql/math/integrals/integral.hpp>
 #include <ql/shared_ptr.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 #include <utility>
 
 namespace QuantLib {
