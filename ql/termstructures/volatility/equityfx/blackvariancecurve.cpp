@@ -68,9 +68,9 @@ namespace QuantLib {
             return std::max(varianceCurve_(t, true), 0.0);
         } else if (timeExtrapolation_ == BlackVolTimeExtrapolation::FlatVolatility) {
             // extrapolate with flat vol
-            return timeExtrapolatationBlackVarianceFlat(t, times_, varianceCurve_);
+            return timeExtrapolationBlackVarianceFlat(t, times_, varianceCurve_);
         } else if (timeExtrapolation_ == BlackVolTimeExtrapolation::UseInterpolatorVolatility) {
-            return timeExtrapolatationBlackVarianceInVolatility(t, times_, varianceCurve_);
+            return timeExtrapolationBlackVarianceInVolatility(t, times_, varianceCurve_);
         } else {
             QL_FAIL("Unknown time extrapolation method");
         }

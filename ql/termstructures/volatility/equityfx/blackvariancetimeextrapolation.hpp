@@ -49,12 +49,12 @@ namespace QuantLib {
 
 
     //! Extrapolate black variance using flat vol extrapolation in time direction
-    Real timeExtrapolatationBlackVarianceFlat(const Time t, const std::vector<double>& times,
+    Real timeExtrapolationBlackVarianceFlat(const Time t, const std::vector<double>& times,
         const Interpolation& varianceCurve);
 
     //! Extrapolate black variance using flat vol extrapolation in time direction
     template <typename F>
-    Real timeExtrapolatationBlackVarianceFlat(const Time t, const Real strike, const std::vector<double>& times,
+    Real timeExtrapolationBlackVarianceFlat(const Time t, const Real strike, const std::vector<double>& times,
                                             const F& varianceSurface) {
         return std::max(varianceSurface(times.back(), strike, true), 0.0) / times.back() * t;
     }
@@ -63,14 +63,14 @@ namespace QuantLib {
     //! Extrapolate black variance in vol space and time direction using interpolation
     //! Takes black variances convert them to volatilities and then linearly extrapolates
     //! the volatilities in time direction
-    Real timeExtrapolatationBlackVarianceInVolatility(const Time t, const std::vector<double>& times,
+    Real timeExtrapolationBlackVarianceInVolatility(const Time t, const std::vector<double>& times,
         const Interpolation& varianceCurve);
 
     //! Extrapolate black variance in vol space and time direction using interpolation
     //! Takes black variances convert them to volatilities and then linearly extrapolates
     //! the volatilities in time direction
     template <typename F>
-    Real timeExtrapolatationBlackVarianceInVolatility(const Time t, const Real strike, const std::vector<double>& times,
+    Real timeExtrapolationBlackVarianceInVolatility(const Time t, const Real strike, const std::vector<double>& times,
                                                     const F& varianceSurface) {
         Size ind1 = times.size() - 2;
         Size ind2 = times.size() - 1;
@@ -82,12 +82,12 @@ namespace QuantLib {
         return v * v * t;
     }
 
-    inline Real timeExtrapolatationBlackVarianceFlat(const Time t, const std::vector<double>& times,
+    inline Real timeExtrapolationBlackVarianceFlat(const Time t, const std::vector<double>& times,
                                                     const Interpolation& varianceCurve) {
         return std::max(varianceCurve(times.back(), true), 0.0) / times.back() * t;
     }
 
-    inline Real timeExtrapolatationBlackVarianceInVolatility(const Time t, const std::vector<double>& times,
+    inline Real timeExtrapolationBlackVarianceInVolatility(const Time t, const std::vector<double>& times,
                                                             const Interpolation& varianceCurve) {
         Size ind1 = times.size() - 2;
         Size ind2 = times.size() - 1;
