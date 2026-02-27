@@ -326,6 +326,9 @@
     <ClCompile Include="period.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="piecewiseblackvariancesurface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="piecewiseyieldcurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
