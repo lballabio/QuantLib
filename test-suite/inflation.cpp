@@ -24,6 +24,7 @@
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/indexes/inflation/ukhicp.hpp>
+#include <ql/indexes/inflation/uscpi.hpp>
 #include <ql/indexes/inflation/aucpi.hpp>
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
@@ -32,6 +33,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
@@ -42,6 +44,7 @@
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/zeroinflationcashflow.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
+#include <ql/termstructures/globalbootstrap.hpp>
 #include <functional>
 
 using boost::unit_test_framework::test_suite;
@@ -1879,6 +1882,478 @@ BOOST_AUTO_TEST_CASE(testExtrapolationRegression) {
     pYYTS->enableExtrapolation();
 
     BOOST_CHECK_NO_THROW(pYYTS->yoyRate(10.0));
+}
+
+BOOST_AUTO_TEST_CASE(testUsCpiLinearBootstrapAtMonthStart) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing US CPI bootstrap with CPI::Linear across evaluation dates...");
+
+    /* US CPI zero-coupon inflation swaps use daily linear interpolation
+     * between monthly index values (matching TIPS conventions).
+     * With sub-annual helpers, the pillar assignment must account for
+     * interpolation weight to avoid "root not bracketed" failures
+     * at month-start.  See https://github.com/lballabio/QuantLib/issues/2454
+     *
+     * Conventions: T+2 settlement (US GovernmentBond calendar),
+     * 3-month observation lag, unadjusted maturity dates. */
+
+    struct SwapData { Period tenor; Rate rate; };
+    std::vector<SwapData> swapData = {
+        {3*Months,   0.0285}, {4*Months,   0.0268},
+        {5*Months,   0.0252}, {6*Months,   0.0241},
+        {7*Months,   0.0237}, {8*Months,   0.0232},
+        {9*Months,   0.0229}, {10*Months,  0.0225},
+        {11*Months,  0.0223}, {1*Years,    0.0221},
+        {18*Months,  0.0230}, {2*Years,    0.0238},
+        {5*Years,    0.0245}, {10*Years,   0.0252},
+        {30*Years,   0.0260},
+    };
+
+    Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
+    Period observationLag(3, Months);
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
+    Date baseDate(1, November, 2025);
+
+    // US CPI-U (NSA) monthly fixings, approximate 2025 values
+    std::vector<std::pair<Date, Real>> fixings = {
+        {Date(1,January,2025), 309.685}, {Date(1,February,2025), 310.326},
+        {Date(1,March,2025), 311.054},   {Date(1,April,2025), 311.538},
+        {Date(1,May,2025), 311.862},     {Date(1,June,2025), 312.104},
+        {Date(1,July,2025), 312.332},    {Date(1,August,2025), 312.558},
+        {Date(1,September,2025), 312.816},{Date(1,October,2025), 313.025},
+        {Date(1,November,2025), 313.314},{Date(1,December,2025), 313.580}
+    };
+
+    Size failureCount = 0;
+    Size total = 0;
+
+    for (Date evalDate(1, February, 2026);
+         evalDate <= Date(28, February, 2026); evalDate++) {
+
+        total++;
+        Settings::instance().evaluationDate() = evalDate;
+
+        RelinkableHandle<ZeroInflationTermStructure> hz;
+        auto index = ext::make_shared<USCPI>(hz);
+
+        for (auto& [d, v] : fixings)
+            index->addFixing(d, v);
+
+        std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure>>> helpers;
+        Date startDate = calendar.advance(evalDate, 2*Days);
+        for (auto& s : swapData) {
+            Date endDate = startDate + s.tenor;
+            helpers.push_back(ext::make_shared<ZeroCouponInflationSwapHelper>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(s.rate)),
+                observationLag, startDate, endDate, calendar, ModifiedFollowing,
+                dc, index, CPI::Linear));
+        }
+
+        try {
+            auto curve = ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
+                evalDate, baseDate, Monthly, dc, helpers);
+            hz.linkTo(curve);
+            curve->zeroRate(evalDate + 1*Years);
+        } catch (const std::exception&) {
+            failureCount++;
+            BOOST_TEST_MESSAGE("  US CPI failed on " << io::iso_date(evalDate));
+        }
+
+        index->clearFixings();
+    }
+
+    BOOST_TEST_MESSAGE("  US CPI: succeeded " << (total - failureCount)
+                       << ", failed " << failureCount
+                       << " out of " << total << " dates");
+    BOOST_CHECK_EQUAL(failureCount, (Size)0);
+}
+
+BOOST_AUTO_TEST_CASE(testEuHicpFlatBootstrapAtMonthStart) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing EU HICP bootstrap with CPI::Flat across evaluation dates...");
+
+    /* EUR HICP zero-coupon inflation swaps use flat (monthly)
+     * observation — no daily interpolation between monthly fixings.
+     * With CPI::Flat the pillar is always the left node and the
+     * helper has full sensitivity, so month-start is not an issue.
+     * This test confirms no regression with the pillar assignment
+     * changes and that GlobalBootstrap works for EUR conventions.
+     *
+     * Conventions: T+2 settlement (TARGET calendar),
+     * 3-month observation lag, unadjusted maturity dates. */
+
+    struct SwapData { Period tenor; Rate rate; };
+    std::vector<SwapData> swapData = {
+        {1*Years,    0.0182}, {2*Years,    0.0178},
+        {3*Years,    0.0185}, {4*Years,    0.0188},
+        {5*Years,    0.0190}, {7*Years,    0.0195},
+        {10*Years,   0.0201}, {15*Years,   0.0210},
+        {20*Years,   0.0218}, {30*Years,   0.0229},
+    };
+
+    Calendar calendar = TARGET();
+    Period observationLag(3, Months);
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
+    Date baseDate(1, December, 2025);
+
+    // EU HICP ex-tobacco monthly fixings, approximate 2025 values
+    std::vector<std::pair<Date, Real>> fixings = {
+        {Date(1,January,2025), 126.42}, {Date(1,February,2025), 126.81},
+        {Date(1,March,2025), 127.19}, {Date(1,April,2025), 127.51},
+        {Date(1,May,2025), 127.62}, {Date(1,June,2025), 127.85},
+        {Date(1,July,2025), 127.23}, {Date(1,August,2025), 127.58},
+        {Date(1,September,2025), 128.07}, {Date(1,October,2025), 128.41},
+        {Date(1,November,2025), 128.62}, {Date(1,December,2025), 128.89}
+    };
+
+    Size failureCount = 0;
+    Size globalFailureCount = 0;
+    Size total = 0;
+
+    for (Date evalDate(1, February, 2026);
+         evalDate <= Date(28, February, 2026); evalDate++) {
+
+        total++;
+        Settings::instance().evaluationDate() = evalDate;
+
+        RelinkableHandle<ZeroInflationTermStructure> hz;
+        auto index = ext::make_shared<EUHICPXT>(hz);
+
+        for (auto& [d, v] : fixings)
+            index->addFixing(d, v);
+
+        std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure>>> helpers;
+        Date startDate = calendar.advance(evalDate, 2*Days);
+        for (auto& s : swapData) {
+            Date endDate = startDate + s.tenor;
+            helpers.push_back(ext::make_shared<ZeroCouponInflationSwapHelper>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(s.rate)),
+                observationLag, startDate, endDate, calendar, ModifiedFollowing,
+                dc, index, CPI::Flat));
+        }
+
+        // IterativeBootstrap
+        try {
+            auto curve = ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
+                evalDate, baseDate, Monthly, dc, helpers);
+            hz.linkTo(curve);
+            curve->zeroRate(evalDate + 1*Years);
+        } catch (const std::exception&) {
+            failureCount++;
+            BOOST_TEST_MESSAGE("  EU HICP iterative failed on "
+                               << io::iso_date(evalDate));
+        }
+
+        hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+
+        // GlobalBootstrap
+        try {
+            auto curve = ext::make_shared<
+                PiecewiseZeroInflationCurve<Linear, GlobalBootstrap>>(
+                evalDate, baseDate, Monthly, dc, helpers);
+            hz.linkTo(curve);
+            curve->zeroRate(evalDate + 1*Years);
+        } catch (const std::exception& e) {
+            globalFailureCount++;
+            BOOST_TEST_MESSAGE("  EU HICP global failed on "
+                               << io::iso_date(evalDate) << ": " << e.what());
+        }
+
+        index->clearFixings();
+    }
+
+    BOOST_TEST_MESSAGE("  EU HICP iterative: succeeded "
+                       << (total - failureCount) << "/" << total);
+    BOOST_TEST_MESSAGE("  EU HICP global:    succeeded "
+                       << (total - globalFailureCount) << "/" << total);
+    BOOST_CHECK_EQUAL(failureCount, (Size)0);
+    BOOST_CHECK_EQUAL(globalFailureCount, (Size)0);
+}
+
+BOOST_AUTO_TEST_CASE(testUkRpiFlatBootstrapAtMonthStart) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing UK RPI bootstrap with CPI::Flat across evaluation dates...");
+
+    /* UK RPI zero-coupon inflation swaps use flat (monthly)
+     * observation with a 2-month observation lag (shorter than the
+     * 3-month lag used for EUR and US).  UK market convention is
+     * T+0 settlement on the London calendar.
+     *
+     * This test confirms bootstrap stability across the month with
+     * UK-specific conventions.  As with EUR, CPI::Flat avoids the
+     * pillar sensitivity issue, but this exercises the different lag
+     * and settlement. */
+
+    struct SwapData { Period tenor; Rate rate; };
+    std::vector<SwapData> swapData = {
+        {1*Years,    0.0335}, {2*Years,    0.0328},
+        {3*Years,    0.0322}, {5*Years,    0.0318},
+        {7*Years,    0.0316}, {10*Years,   0.0315},
+        {15*Years,   0.0320}, {20*Years,   0.0325},
+        {30*Years,   0.0330}, {50*Years,   0.0332},
+    };
+
+    Calendar calendar = UnitedKingdom();
+    Period observationLag(2, Months);
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
+    Date baseDate(1, December, 2025);
+
+    // UK RPI monthly fixings, approximate 2025 values
+    std::vector<std::pair<Date, Real>> fixings = {
+        {Date(1,January,2025), 378.2}, {Date(1,February,2025), 379.1},
+        {Date(1,March,2025), 380.3},   {Date(1,April,2025), 381.5},
+        {Date(1,May,2025), 382.0},     {Date(1,June,2025), 382.4},
+        {Date(1,July,2025), 381.8},    {Date(1,August,2025), 382.1},
+        {Date(1,September,2025), 383.0},{Date(1,October,2025), 383.5},
+        {Date(1,November,2025), 383.9},{Date(1,December,2025), 384.2}
+    };
+
+    Size failureCount = 0;
+    Size globalFailureCount = 0;
+    Size total = 0;
+
+    for (Date evalDate(1, February, 2026);
+         evalDate <= Date(28, February, 2026); evalDate++) {
+
+        total++;
+        Settings::instance().evaluationDate() = evalDate;
+
+        RelinkableHandle<ZeroInflationTermStructure> hz;
+        auto index = ext::make_shared<UKRPI>(hz);
+
+        for (auto& [d, v] : fixings)
+            index->addFixing(d, v);
+
+        std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure>>> helpers;
+        // UK RPI: T+0 settlement
+        Date startDate = evalDate;
+        for (auto& s : swapData) {
+            Date endDate = startDate + s.tenor;
+            helpers.push_back(ext::make_shared<ZeroCouponInflationSwapHelper>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(s.rate)),
+                observationLag, startDate, endDate, calendar, ModifiedFollowing,
+                dc, index, CPI::Flat));
+        }
+
+        // IterativeBootstrap
+        try {
+            auto curve = ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
+                evalDate, baseDate, Monthly, dc, helpers);
+            hz.linkTo(curve);
+            curve->zeroRate(evalDate + 1*Years);
+        } catch (const std::exception&) {
+            failureCount++;
+            BOOST_TEST_MESSAGE("  UK RPI iterative failed on "
+                               << io::iso_date(evalDate));
+        }
+
+        hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+
+        // GlobalBootstrap
+        try {
+            auto curve = ext::make_shared<
+                PiecewiseZeroInflationCurve<Linear, GlobalBootstrap>>(
+                evalDate, baseDate, Monthly, dc, helpers);
+            hz.linkTo(curve);
+            curve->zeroRate(evalDate + 1*Years);
+        } catch (const std::exception& e) {
+            globalFailureCount++;
+            BOOST_TEST_MESSAGE("  UK RPI global failed on "
+                               << io::iso_date(evalDate) << ": " << e.what());
+        }
+
+        index->clearFixings();
+    }
+
+    BOOST_TEST_MESSAGE("  UK RPI iterative: succeeded "
+                       << (total - failureCount) << "/" << total);
+    BOOST_TEST_MESSAGE("  UK RPI global:    succeeded "
+                       << (total - globalFailureCount) << "/" << total);
+    BOOST_CHECK_EQUAL(failureCount, (Size)0);
+    BOOST_CHECK_EQUAL(globalFailureCount, (Size)0);
+}
+
+BOOST_AUTO_TEST_CASE(testUsCpiLinearGlobalBootstrapAtMonthStart) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing US CPI bootstrap with GlobalBootstrap across evaluation dates...");
+
+    /* GlobalBootstrap solves all curve nodes simultaneously via
+     * Levenberg-Marquardt.  For CPI::Linear with sub-annual helpers,
+     * this provides additional robustness: if two helpers map to the
+     * same pillar date, GlobalBootstrap deduplicates pillars and
+     * treats both helpers as separate error terms rather than
+     * hard-failing on duplicate pillar dates. */
+
+    struct SwapData { Period tenor; Rate rate; };
+    std::vector<SwapData> swapData = {
+        {3*Months,   0.0285}, {4*Months,   0.0268},
+        {5*Months,   0.0252}, {6*Months,   0.0241},
+        {7*Months,   0.0237}, {8*Months,   0.0232},
+        {9*Months,   0.0229}, {10*Months,  0.0225},
+        {11*Months,  0.0223}, {1*Years,    0.0221},
+        {18*Months,  0.0230}, {2*Years,    0.0238},
+        {5*Years,    0.0245}, {10*Years,   0.0252},
+        {30*Years,   0.0260},
+    };
+
+    Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
+    Period observationLag(3, Months);
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
+    Date baseDate(1, November, 2025);
+
+    // US CPI-U (NSA) monthly fixings
+    std::vector<std::pair<Date, Real>> fixings = {
+        {Date(1,January,2025), 309.685}, {Date(1,February,2025), 310.326},
+        {Date(1,March,2025), 311.054},   {Date(1,April,2025), 311.538},
+        {Date(1,May,2025), 311.862},     {Date(1,June,2025), 312.104},
+        {Date(1,July,2025), 312.332},    {Date(1,August,2025), 312.558},
+        {Date(1,September,2025), 312.816},{Date(1,October,2025), 313.025},
+        {Date(1,November,2025), 313.314},{Date(1,December,2025), 313.580}
+    };
+
+    Size failureCount = 0;
+    Size total = 0;
+
+    for (Date evalDate(1, February, 2026);
+         evalDate <= Date(28, February, 2026); evalDate++) {
+
+        total++;
+        Settings::instance().evaluationDate() = evalDate;
+
+        RelinkableHandle<ZeroInflationTermStructure> hz;
+        auto index = ext::make_shared<USCPI>(hz);
+
+        for (auto& [d, v] : fixings)
+            index->addFixing(d, v);
+
+        std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure>>> helpers;
+        Date startDate = calendar.advance(evalDate, 2*Days);
+        for (auto& s : swapData) {
+            Date endDate = startDate + s.tenor;
+            helpers.push_back(ext::make_shared<ZeroCouponInflationSwapHelper>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(s.rate)),
+                observationLag, startDate, endDate, calendar, ModifiedFollowing,
+                dc, index, CPI::Linear));
+        }
+
+        try {
+            auto curve = ext::make_shared<
+                PiecewiseZeroInflationCurve<Linear, GlobalBootstrap>>(
+                evalDate, baseDate, Monthly, dc, helpers);
+            hz.linkTo(curve);
+            curve->zeroRate(evalDate + 1*Years);
+        } catch (const std::exception& e) {
+            failureCount++;
+            BOOST_TEST_MESSAGE("  US CPI global failed on "
+                               << io::iso_date(evalDate) << ": " << e.what());
+        }
+
+        index->clearFixings();
+    }
+
+    BOOST_TEST_MESSAGE("  US CPI global: succeeded "
+                       << (total - failureCount) << "/" << total);
+    BOOST_CHECK_EQUAL(failureCount, (Size)0);
+}
+
+BOOST_AUTO_TEST_CASE(testPillarCollisionWithDifferentMonthLengths) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing CPI::Linear pillar assignment across months of different length...");
+
+    /* With T+0 settlement and sub-annual helpers including a 13-month
+     * tenor, consecutive helpers can mature in months of different
+     * length.  When the maturity day is near mid-month (day 15-16),
+     * the interpolation weight can cross the 0.5 threshold in one
+     * month but not another — e.g. day 16 in February (28 days,
+     * w = 15/28 = 0.536 → RIGHT) vs March (31 days, w = 15/31 =
+     * 0.484 → LEFT).  If pillar assignment used the maturity date,
+     * this would cause two helpers to map to the same pillar,
+     * crashing IterativeBootstrap.
+     *
+     * The fix uses startDate_ (shared across all helpers) for the
+     * weight calculation, so all helpers switch LEFT/RIGHT in sync.
+     *
+     * We loop February and March with T+0 settlement and a 13M
+     * helper.  Without the startDate_ fix, Feb 16 and Mar 16 fail.
+     * See https://github.com/lballabio/QuantLib/issues/2454 */
+
+    struct SwapData { Period tenor; Rate rate; };
+    std::vector<SwapData> swapData = {
+        {3*Months,   0.0285}, {4*Months,   0.0268},
+        {5*Months,   0.0252}, {6*Months,   0.0241},
+        {7*Months,   0.0237}, {8*Months,   0.0232},
+        {9*Months,   0.0229}, {10*Months,  0.0225},
+        {11*Months,  0.0223}, {1*Years,    0.0221},
+        {13*Months,  0.0220},
+        {18*Months,  0.0230}, {2*Years,    0.0238},
+        {5*Years,    0.0245}, {10*Years,   0.0252},
+        {30*Years,   0.0260},
+    };
+
+    Calendar calendar = NullCalendar();
+    Period observationLag(3, Months);
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
+    Date baseDate(1, November, 2025);
+
+    std::vector<std::pair<Date, Real>> fixings = {
+        {Date(1,January,2025), 309.685}, {Date(1,February,2025), 310.326},
+        {Date(1,March,2025), 311.054},   {Date(1,April,2025), 311.538},
+        {Date(1,May,2025), 311.862},     {Date(1,June,2025), 312.104},
+        {Date(1,July,2025), 312.332},    {Date(1,August,2025), 312.558},
+        {Date(1,September,2025), 312.816},{Date(1,October,2025), 313.025},
+        {Date(1,November,2025), 313.314},{Date(1,December,2025), 313.580},
+        {Date(1,January,2026), 314.012}, {Date(1,February,2026), 314.382},
+        {Date(1,March,2026), 314.715},
+    };
+
+    Size failureCount = 0;
+    Size total = 0;
+
+    // Loop February and March with T+0 settlement
+    for (Date evalDate(1, February, 2026);
+         evalDate <= Date(31, March, 2026); evalDate++) {
+
+        total++;
+        Settings::instance().evaluationDate() = evalDate;
+
+        RelinkableHandle<ZeroInflationTermStructure> hz;
+        auto index = ext::make_shared<USCPI>(hz);
+
+        for (auto& [d, v] : fixings)
+            index->addFixing(d, v);
+
+        std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure>>> helpers;
+        Date startDate = evalDate;  // T+0 settlement
+        for (auto& s : swapData) {
+            Date endDate = startDate + s.tenor;
+            helpers.push_back(ext::make_shared<ZeroCouponInflationSwapHelper>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(s.rate)),
+                observationLag, startDate, endDate, calendar, Unadjusted,
+                dc, index, CPI::Linear));
+        }
+
+        try {
+            auto curve = ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
+                evalDate, baseDate, Monthly, dc, helpers);
+            hz.linkTo(curve);
+            curve->zeroRate(evalDate + 1*Years);
+        } catch (const std::exception&) {
+            failureCount++;
+            BOOST_TEST_MESSAGE("  T+0 failed on " << io::iso_date(evalDate));
+        }
+
+        index->clearFixings();
+    }
+
+    BOOST_TEST_MESSAGE("  T+0 Feb+Mar (with 13M): succeeded "
+                       << (total - failureCount) << ", failed "
+                       << failureCount << " out of " << total);
+    BOOST_CHECK_EQUAL(failureCount, (Size)0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
