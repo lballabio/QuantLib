@@ -39,6 +39,7 @@
 #include <ql/math/interpolations/kernelinterpolation2d.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolations/mixedinterpolation.hpp>
 #include <ql/math/interpolations/multicubicspline.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/kernelfunctions.hpp>
@@ -1239,6 +1240,38 @@ BOOST_AUTO_TEST_CASE(testForwardFlat) {
                 << "\n    calculated: " << calculated
                 << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testMixedLinearCubicMatchDerivatives) {
+    Size n = 6;
+    Size k = 2;
+
+    std::vector<Real> x, y;
+    x = xRange(-2.0, 2.0, n);
+    y = parabolic(x);
+
+    MixedLinearCubicInterpolation f(
+        x.begin(), x.end(), y.begin(),
+        k, MixedInterpolation::SplitRanges,
+        CubicInterpolation::Spline, false,
+        CubicInterpolation::FirstDerivative, Null<Real>(),
+        CubicInterpolation::SecondDerivative, 0.0);
+    f.update();
+
+    Real tolerance = 1.0e-12;
+    Real eps = tolerance / 10;
+
+    Real leftSide = f.derivative(x[k] - eps);
+    Real rightSide = f.derivative(x[k] + eps);
+    if (std::fabs(leftSide - rightSide) > tolerance) {
+        BOOST_ERROR(
+            "derivatives at the switch point do not match"
+            << std::fixed
+            << "\n    left side:  " << leftSide
+            << "\n    right side: " << rightSide
+            << std::scientific
+            << "\n    error:      " << std::fabs(leftSide - rightSide));
     }
 }
 
