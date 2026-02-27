@@ -139,6 +139,8 @@ namespace QuantLib {
 
     template <class T>
     Date InterpolatedYoYInflationCurve<T>::maxDate() const {
+        if (this->maxDate_ != Date())
+            return this->maxDate_;
         return dates_.back();
     }
 
