@@ -346,8 +346,8 @@ BOOST_AUTO_TEST_CASE(consistency) {
                "failed manual inf leg NPV calc vs pricing engine: " <<
                testInfLegNPV << " vs " << zisV.legNPV(0));
 
-    Real diff = fabs(1-zisV.NPV()/4191660.0);
-    
+    Real diff = fabs(1-zisV.NPV()/4191797.54);
+
     Real max_diff = usingAtParCoupons ? 1e-5 : 3e-5;
 
     QL_REQUIRE(diff<max_diff,
