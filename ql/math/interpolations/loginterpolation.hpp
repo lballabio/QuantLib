@@ -123,7 +123,10 @@ namespace QuantLib {
 
     // convenience classes
 
-    class DefaultLogCubic : public LogCubic {
+    /*! \deprecated Use KrugerLog instead.
+                    Deprecated in version 1.42.
+    */
+    class [[deprecated("Use KrugerLog instead")]] DefaultLogCubic : public LogCubic {
       public:
         DefaultLogCubic()
         : LogCubic(CubicInterpolation::Kruger) {}
@@ -300,7 +303,11 @@ namespace QuantLib {
 
     // convenience classes
     
-    class DefaultLogMixedLinearCubic : public LogMixedLinearCubic {
+    /*! \deprecated Use KrugerLogMixedLinearCubic instead.
+                    Deprecated in version 1.42.
+    */
+    class [[deprecated("Use KrugerLogMixedLinearCubic instead")]] DefaultLogMixedLinearCubic
+        : public LogMixedLinearCubic {
       public:
         explicit DefaultLogMixedLinearCubic(const Size n,
                                             MixedInterpolation::Behavior behavior
