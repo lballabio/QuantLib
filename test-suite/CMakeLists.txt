@@ -17,6 +17,7 @@ set(QL_TEST_SOURCES
     blackdeltacalculator.cpp
 	blackcalculator.cpp
     blackformula.cpp
+    blackvolsurfacedelta.cpp
     bondforward.cpp
     bonds.cpp
     brownianbridge.cpp
@@ -90,6 +91,7 @@ set(QL_TEST_SOURCES
     instruments.cpp
     integrals.cpp
     interestrates.cpp
+    interpolatedsmilesection.cpp
     interpolations.cpp
     jumpdiffusion.cpp
     lazyobject.cpp

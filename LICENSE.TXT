@@ -127,7 +127,7 @@ Copyright (C) 2016 Nicholas Bertocchi
 Copyright (C) 2016 Stefano Fondi
 Copyright (C) 2016, 2017 Fabrice Lecuyer
 Copyright (C) 2016, 2019, 2020 Eisuke Tani
-Copyright (C) 2016, 2020, 2022 Quaternion Risk Management Ltd
+Copyright (C) 2016, 2019, 2020, 2022 Quaternion Risk Management Ltd
 
 Copyright (C) 2017 BN Algorithms Ltd
 Copyright (C) 2017 Joseph Jeisman
@@ -153,11 +153,11 @@ Copyright (C) 2020 Piotr Siejda
 Copyright (C) 2020, 2021 Jack Gillett
 Copyright (C) 2020, 2021 Lew Wei Hao
 Copyright (C) 2020, 2021, 2022, 2023, 2025 Marcin Rybacki
+Copyright (C) 2020, 2021, 2022, 2023, 2024 Skandinaviska Enskilda Banken AB (publ)
 
 Copyright (C) 2021 Anubhav Pandey
 Copyright (C) 2021 Magnus Mencke
 Copyright (C) 2021, 2022, 2023, 2024 Ralf Konrad Eckel
-Copyright (C) 2021, 2022, 2023, 2024 Skandinaviska Enskilda Banken AB (publ)
 
 Copyright (C) 2022, 2023 Ignacio Anguita
 Copyright (C) 2022, 2023 Jonghee Lee
@@ -171,6 +171,7 @@ Copyright (C) 2023 Paul Xi Cao
 Copyright (C) 2024 Jacques du Toit
 Copyright (C) 2024 Jongbong An
 
+Copyright (C) 2025 AcadiaSoft Inc.
 Copyright (C) 2025 Eugene Toder
 Copyright (C) 2025 Hiroto Ogawa
 Copyright (C) 2025 Kareem Fareed

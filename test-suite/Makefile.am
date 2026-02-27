@@ -18,6 +18,7 @@ QL_TEST_SRCS = \
 	blackcalculator.cpp \
 	blackdeltacalculator.cpp \
 	blackformula.cpp \
+	blackvolsurfacedelta.cpp \
 	bondforward.cpp \
 	bonds.cpp \
 	brownianbridge.cpp \
@@ -91,6 +92,7 @@ QL_TEST_SRCS = \
 	instruments.cpp \
 	integrals.cpp \
 	interestrates.cpp \
+	interpolatedsmilesection.cpp \
 	interpolations.cpp \
 	jumpdiffusion.cpp \
 	lazyobject.cpp \

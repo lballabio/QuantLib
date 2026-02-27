@@ -50,6 +50,9 @@
     <ClCompile Include="blackformula.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="blackvolsurfacedelta.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="bonds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -222,6 +225,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="interestrates.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="interpolatedsmilesection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="interpolations.cpp">

@@ -1724,6 +1724,8 @@
     <ClInclude Include="ql\termstructures\volatility\equityfx\blackconstantvol.hpp" />
     <ClInclude Include="ql\termstructures\volatility\equityfx\blackvariancecurve.hpp" />
     <ClInclude Include="ql\termstructures\volatility\equityfx\blackvariancesurface.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\equityfx\blackvariancetimeextrapolation.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\equityfx\blackvolsurfacedelta.hpp" />
     <ClInclude Include="ql\termstructures\volatility\equityfx\blackvoltermstructure.hpp" />
     <ClInclude Include="ql\termstructures\volatility\equityfx\fixedlocalvolsurface.hpp" />
     <ClInclude Include="ql\termstructures\volatility\equityfx\gridmodellocalvolsurface.hpp" />
@@ -2752,6 +2754,7 @@
     <ClCompile Include="ql\termstructures\volatility\equityfx\andreasenhugevolatilityinterpl.cpp" />
     <ClCompile Include="ql\termstructures\volatility\equityfx\blackvariancecurve.cpp" />
     <ClCompile Include="ql\termstructures\volatility\equityfx\blackvariancesurface.cpp" />
+    <ClCompile Include="ql\termstructures\volatility\equityfx\blackvolsurfacedelta.cpp" />
     <ClCompile Include="ql\termstructures\volatility\equityfx\blackvoltermstructure.cpp" />
     <ClCompile Include="ql\termstructures\volatility\equityfx\fixedlocalvolsurface.cpp" />
     <ClCompile Include="ql\termstructures\volatility\equityfx\gridmodellocalvolsurface.cpp" />
