@@ -93,7 +93,7 @@
    a single day.  Intraday datetime resolution is experimental.
 */
 #ifndef QL_HIGH_RESOLUTION_DATE
-//#    define QL_HIGH_RESOLUTION_DATE
+#define QL_HIGH_RESOLUTION_DATE
 #endif
 
 /* If defined, lazy objects will raise an exception when they detect a
