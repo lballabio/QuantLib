@@ -140,7 +140,7 @@ namespace QuantLib {
 
         // Introspection
         Handle<Quote> spot() const { return spot_; };
-        Handle<Quote> atm() const { return atm_; };
+        Handle<Quote> atm() const { calculate(); return atm_; };
         Real forward() const {calculate(); return fwd_; };
         Handle<YieldTermStructure> foriegnDiscount() const { return foreignDiscount_; };
         Handle<YieldTermStructure> domesticDiscount() const { return domesticDiscount_; };
@@ -184,6 +184,12 @@ namespace QuantLib {
         Handle<YieldTermStructure> foreignDiscount_;
         Handle<YieldTermStructure> domesticDiscount_;
 
+        // Immutable inputs: set once at construction, never modified.
+        // atmInput_ holds the market ATM quote for the RR/BF input path.
+        // quotesInput_ holds the full set of DeltaVolQuotes for the DeltaVolQuote input path.
+        const Handle<Quote> atmInput_;
+        const std::vector<Handle<DeltaVolQuote>> quotesInput_;
+
         friend class fxStrangleHelper<fxSmileSection>;
 
       protected:
@@ -195,6 +201,9 @@ namespace QuantLib {
         mutable Real maxStrike_;
         mutable Real minStrike_;
 
+        // Computed state: rebuilt on every calibration in stripDeltaVolQuotes().
+        // atm_ is always set from atmInput_ (RR/BF path) or by calculateAtm() (DeltaVolQuote path).
+        // quotes_ is always a workspace populated before each call to calibrate().
         mutable Handle<Quote> atm_;
         mutable std::vector<Handle<DeltaVolQuote>> quotes_;
 
