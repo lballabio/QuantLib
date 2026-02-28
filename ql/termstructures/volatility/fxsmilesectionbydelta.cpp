@@ -125,7 +125,7 @@ namespace QuantLib {
                         return delta - d - dfor_ * k / fwd_;
 
                     } else {
-                        delta -d - k / fwd_;
+                        return delta -d - k / fwd_;
                     }
                 };
 
