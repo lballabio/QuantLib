@@ -108,7 +108,7 @@ namespace QuantLib {
                 // for other strikes we need to adjust the call delta to a put delta
                 // however, we do not know the strike at which this conversion takes 
                 // place, so estimate that through another root finding procedure
-                Real pdx;
+                Real pdx = delta;
                 if (deltaType() == DeltaVolQuote::PaSpot) {
                     pdx -= dfor_ * minStrike() / fwd_;
                 
@@ -125,7 +125,7 @@ namespace QuantLib {
                         return delta - d - dfor_ * k / fwd_;
 
                     } else {
-                        return delta -d - k / fwd_;
+                        return delta - d - k / fwd_;
                     }
                 };
 
