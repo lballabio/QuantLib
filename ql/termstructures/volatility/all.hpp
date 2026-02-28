@@ -6,6 +6,10 @@
 #include <ql/termstructures/volatility/atmadjustedsmilesection.hpp>
 #include <ql/termstructures/volatility/atmsmilesection.hpp>
 #include <ql/termstructures/volatility/flatsmilesection.hpp>
+#include <ql/termstructures/volatility/fxcostsmilesection.hpp>
+#include <ql/termstructures/volatility/fxsmilesection.hpp>
+#include <ql/termstructures/volatility/fxsmilesectionbystrike.hpp>
+#include <ql/termstructures/volatility/fxsmilesectionbydelta.hpp>
 #include <ql/termstructures/volatility/gaussian1dsmilesection.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
 #include <ql/termstructures/volatility/kahalesmilesection.hpp>
