@@ -108,7 +108,7 @@ namespace QuantLib {
                                        atm()->value() * sqrt(exerciseTime()))
                       .strikeFromDelta(delta);
         Rate kmin = (premiumAdjust() && parity==Option::Call) ? minStrike() : QL_EPSILON;
-        Rate kmax = k0 * 10; // maxStrike();
+        Rate kmax = k0 * 10;
 
         auto deltaError = [&](Real strike) {
             Volatility v = volByStrike(strike);

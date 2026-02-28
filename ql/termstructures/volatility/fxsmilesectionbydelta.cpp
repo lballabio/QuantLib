@@ -108,18 +108,16 @@ namespace QuantLib {
                 // for other strikes we need to adjust the call delta to a put delta
                 // however, we do not know the strike at which this conversion takes 
                 // place, so estimate that through another root finding procedure
-                Real pdx = delta;
-                if (deltaType() == DeltaVolQuote::PaSpot) {
-                    pdx -= dfor_ * minStrike() / fwd_;
-                
-                } else {
-                    pdx -= minStrike() / fwd_;
-                }
+                Real k_atm = BlackDeltaCalculator(Option::Type::Put, deltaType(), spot()->value(),
+                                                  ddom_, dfor_, v * sqrt(exerciseTime())).atmStrike(atmType());
+                Real pdx = delta - (deltaType() == DeltaVolQuote::PaSpot
+                                    ? dfor_ * k_atm / fwd_
+                                    : k_atm / fwd_);
 
                 auto deltaError = [&](Real d) {
                     Volatility v = volByDelta(d, Option::Type::Put);
                     Real k = BlackDeltaCalculator(Option::Type::Put, deltaType(), spot()->value(),
-                                                ddom_, dfor_, v * sqrt(exerciseTime()))
+                                                  ddom_, dfor_, v * sqrt(exerciseTime()))
                                .strikeFromDelta(d);
                     if (deltaType() == DeltaVolQuote::PaSpot) {
                         return delta - d - dfor_ * k / fwd_;
@@ -171,8 +169,6 @@ namespace QuantLib {
             case DeltaVolQuote::PaFwd:
                 dmin = 10000. * d0;
         }
-
-        //Rate dmax = -0.001;
 
         auto strikeError = [&](Real delta) {
             Volatility v = volByDelta(delta, Option::Type::Put);
