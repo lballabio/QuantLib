@@ -15,11 +15,12 @@ namespace QuantLib {
                                    FlyType flyType,
                                    const DayCounter& dayCounter,
                                    const Date& referenceDate)
-    : SmileSection(exerciseDate, dayCounter, referenceDate, ShiftedLognormal, 0.0), 
-      spot_(spot), atm_(atm), rrs_(rrs), bfs_(bfs), deltas_(deltas), 
-      foreignDiscount_(foreignDiscount), domesticDiscount_(domesticDiscount), 
+    : SmileSection(exerciseDate, dayCounter, referenceDate, ShiftedLognormal, 0.0),
+      spot_(spot), rrs_(rrs), bfs_(bfs), deltas_(deltas),
+      foreignDiscount_(foreignDiscount), domesticDiscount_(domesticDiscount),
       deltaType_(deltaType), atmType_(atmType), flyType_(flyType), isDeltaVolQuote_(false),
-      quotes_(), maxStrike_(QL_MAX_REAL), minStrike_(QL_EPSILON)
+      atmInput_(atm), quotesInput_(),
+      atm_(), quotes_(), maxStrike_(QL_MAX_REAL), minStrike_(QL_EPSILON)
     {
         QL_REQUIRE(rrs.size() == deltas.size(),
                    "risk reversal quotes must be the same size as deltas");
@@ -39,11 +40,12 @@ namespace QuantLib {
                                    DeltaVolQuote::AtmType atmType,
                                    FlyType flyType,
                                    const DayCounter& dayCounter)
-    : SmileSection(exerciseTime, dayCounter, ShiftedLognormal, 0.0), 
-      spot_(spot), atm_(atm), rrs_(rrs), bfs_(bfs), deltas_(deltas), 
-      foreignDiscount_(foreignDiscount), domesticDiscount_(domesticDiscount), 
+    : SmileSection(exerciseTime, dayCounter, ShiftedLognormal, 0.0),
+      spot_(spot), rrs_(rrs), bfs_(bfs), deltas_(deltas),
+      foreignDiscount_(foreignDiscount), domesticDiscount_(domesticDiscount),
       deltaType_(deltaType), atmType_(atmType), flyType_(flyType), isDeltaVolQuote_(false),
-      quotes_(), maxStrike_(QL_MAX_REAL), minStrike_(QL_EPSILON)
+      atmInput_(atm), quotesInput_(),
+      atm_(), quotes_(), maxStrike_(QL_MAX_REAL), minStrike_(QL_EPSILON)
     {
         QL_REQUIRE(rrs.size() == deltas.size(),
                    "risk reversal quotes must be the same size as deltas");
@@ -61,11 +63,12 @@ namespace QuantLib {
                                    FlyType flyType,
                                    const DayCounter& dayCounter,
                                    const Date& referenceDate)
-    : SmileSection(exerciseDate, dayCounter, referenceDate, ShiftedLognormal, 0.0), 
-      spot_(spot), quotes_(quotes), 
-      foreignDiscount_(foreignDiscount), domesticDiscount_(domesticDiscount), 
-      deltaType_(deltaType), atmType_(atmType), flyType_(flyType), isDeltaVolQuote_(true), 
-      maxStrike_(QL_MAX_REAL), minStrike_(QL_EPSILON) 
+    : SmileSection(exerciseDate, dayCounter, referenceDate, ShiftedLognormal, 0.0),
+      spot_(spot),
+      foreignDiscount_(foreignDiscount), domesticDiscount_(domesticDiscount),
+      deltaType_(deltaType), atmType_(atmType), flyType_(flyType), isDeltaVolQuote_(true),
+      atmInput_(), quotesInput_(quotes),
+      atm_(), quotes_(), maxStrike_(QL_MAX_REAL), minStrike_(QL_EPSILON)
     {
         registerWithMarketData();
     }
@@ -79,11 +82,12 @@ namespace QuantLib {
                                    DeltaVolQuote::AtmType atmType,
                                    FlyType flyType,
                                    const DayCounter& dayCounter)
-    : SmileSection(exerciseTime, dayCounter, ShiftedLognormal, 0.0), 
-      spot_(spot), quotes_(quotes), 
-      foreignDiscount_(foreignDiscount), domesticDiscount_(domesticDiscount), 
-      deltaType_(deltaType), atmType_(atmType), flyType_(flyType), isDeltaVolQuote_(true), 
-      maxStrike_(QL_MAX_REAL), minStrike_(QL_EPSILON) 
+    : SmileSection(exerciseTime, dayCounter, ShiftedLognormal, 0.0),
+      spot_(spot),
+      foreignDiscount_(foreignDiscount), domesticDiscount_(domesticDiscount),
+      deltaType_(deltaType), atmType_(atmType), flyType_(flyType), isDeltaVolQuote_(true),
+      atmInput_(), quotesInput_(quotes),
+      atm_(), quotes_(), maxStrike_(QL_MAX_REAL), minStrike_(QL_EPSILON)
     {
         registerWithMarketData();
     }
@@ -95,10 +99,10 @@ namespace QuantLib {
         registerWith(domesticDiscount_);
         
         if (isDeltaVolQuote()) {
-            for (auto& q : quotes_) registerWith(q);
-        } 
+            for (auto& q : quotesInput_) registerWith(q);
+        }
         else {
-            registerWith(atm_);
+            registerWith(atmInput_);
             for (auto& r : rrs_) registerWith(r);
             for (auto& b : bfs_) registerWith(b);
         }
@@ -136,27 +140,34 @@ namespace QuantLib {
     void fxSmileSection::stripDeltaVolQuotes() const {
 
         if (isDeltaVolQuote()) {
-            // if the input is a set of delta vol quotes (as opposed to RR and flies)
-            // then simply call the calibration routine!
+            // Copy the immutable input quotes into the mutable workspace so that
+            // calibrate() always reads from quotes_ regardless of which path we are on.
+            quotes_ = quotesInput_;
             calibrate();
 
-            // when calibrating from quotes the atm is not set. so explicitly set it
+            // When calibrating from delta-vol quotes the atm is not known a priori,
+            // so derive it from the fitted smile.
             calculateAtm();
-        } 
+        }
         else if (flyType() == FlyType::MarketStrangle) {
-            // calibrate form RR and flies but flies are broker flies!
+            // atm_ is the market input for this path.
+            atm_ = atmInput_;
+
+            // calibrate from RR and flies but flies are broker flies!
             // Broker flies - run a three/five point calibration to get the smile strangles
             if (deltas_.size() == 1) {
                 // three point calibration
-            } 
+            }
             else {
                 // five point calibration
             }
-        } 
+        }
         else {
-            // Calibrate from RRs and flies, where the flies are smile strangles
-            // This is easily handled algebraically. Convert to a set of delta-vol
-            // quotes and then call the calibration routine!
+            // Calibrate from RRs and flies, where the flies are smile strangles.
+            // This is easily handled algebraically: convert to delta-vol quotes
+            // (stored in the mutable workspace quotes_) then call calibrate().
+            // atm_ is the market input for this path.
+            atm_ = atmInput_;
             quotes_.clear();
 
             // handle the atm
