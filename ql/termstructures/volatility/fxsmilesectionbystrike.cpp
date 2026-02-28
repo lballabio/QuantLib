@@ -190,7 +190,7 @@ namespace QuantLib {
                              foreignDiscount, domesticDiscount,
                              deltaType, atmType, flyType, dayCounter, referenceDate)
     {
-        params_.reserve(4);
+        params_.reserve(3);
     }
 
     polynomialSmileSection::polynomialSmileSection(Time exerciseTime,
@@ -206,7 +206,7 @@ namespace QuantLib {
                              foreignDiscount, domesticDiscount,
                              deltaType, atmType, flyType, dayCounter)
     {
-        params_.reserve(4);
+        params_.reserve(3);
     }
 
     Volatility polynomialSmileSection::_volByStrike(Rate strike, 
@@ -215,8 +215,8 @@ namespace QuantLib {
                                                     const std::vector<Real>& params) const 
     {
         CumulativeNormalDistribution f;
-        Real x = f(std::log(fwd / strike) / (params[0] * std::sqrt(tau)));
-        return std::exp(params[1] * x * x + params[2] * x + params[3]);
+        Real x = f(std::log(fwd / strike) / (atm_->value() * std::sqrt(tau)));
+        return std::exp(params[0] * x * x + params[1] * x + params[2]);
     }
     //@}
 

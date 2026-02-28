@@ -79,7 +79,7 @@ namespace QuantLib {
         //@}
 
       protected:
-        std::vector<Real> params_;
+        mutable std::vector<Real> params_;
     };
 
     typedef boost::shared_ptr<fxSmileSectionByDelta> fxSmileSectionByDeltaPtr;

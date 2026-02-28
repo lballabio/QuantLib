@@ -237,16 +237,16 @@ namespace QuantLib {
         
         Real ncp_dn = normedCallPrice(strike - fwd_ * eps);
         Real ncp_up = normedCallPrice(strike + fwd_ * eps);
-        return (ncp_up - ncp_dn) / (2. * eps);
+        return (ncp_dn - ncp_up) / (2. * eps);
     }
 
     Rate fxSmileSection::strikeFromNormProb(Real q) const {
-        QL_REQUIRE((q > -1.) && (q < 0.), "q should be between -1 and 0");
+        QL_REQUIRE((q > 0.) && (q < 1.), "q should be between 0 and 1.");
 
         calculate();
 
         auto normProbError = [&](Rate strike) { 
-            return 100 * (normedProbability(strike) + abs(q));
+            return 100 * (normedProbability(strike) - abs(q));
         };
 
         Bisection solver;
