@@ -29,6 +29,7 @@
 #include <ql/types.hpp>
 #include <ql/handle.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/utilities/null.hpp>
 
 namespace QuantLib {
 
@@ -65,11 +66,13 @@ namespace QuantLib {
         Handle<Quote> futuresQuote_;
         Handle<Quote> volatility_;
         Handle<Quote> meanReversion_;
+        mutable Real rate_ = Null<Real>();
     };
 
     // inline
 
-    inline void FuturesConvAdjustmentQuote::update(){
+    inline void FuturesConvAdjustmentQuote::update() {
+        rate_ = Null<Real>();
         notifyObservers();
     }
 

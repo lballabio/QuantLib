@@ -184,7 +184,7 @@ namespace QuantLib {
         RelinkableHandle<YoYInflationTermStructure> hYoY(
                                        YoYCapFloorTermPriceSurface_->YoYTS());
         ext::shared_ptr<YoYInflationIndex> anIndex(
-                                           new YYGenericCPI(frequency_, false,
+                                           new YYGenericCPI(frequency_,
                                                             false, lag_,
                                                             Currency(), hYoY));
 
