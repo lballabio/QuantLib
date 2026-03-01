@@ -42,7 +42,7 @@ namespace QuantLib {
 
             void operator()(Interpolation& left, Interpolation& right, Real x) const {
                 if (!enable_) return;
-                static_cast<CubicInterpolation&>(right).updateLeftConditionValue(
+                dynamic_cast<CubicInterpolation&>(right).updateLeftConditionValue(
                     left.derivative(x));
             }
         };
