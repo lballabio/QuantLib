@@ -76,6 +76,7 @@ namespace QuantLib {
         MakeOIS& withEndOfMonth(bool flag = true);
         MakeOIS& withFixedLegEndOfMonth(bool flag = true);
         MakeOIS& withOvernightLegEndOfMonth(bool flag = true);
+        MakeOIS& withMaturityEndOfMonth(bool flag = true);
 
         MakeOIS& withFixedLegDayCount(const DayCounter& dc);
 
@@ -117,6 +118,7 @@ namespace QuantLib {
         DateGeneration::Rule fixedRule_ = DateGeneration::Backward;
         DateGeneration::Rule overnightRule_ = DateGeneration::Backward;
         bool fixedEndOfMonth_ = false, overnightEndOfMonth_ = false, isDefaultEOM_ = true;
+        ext::optional<bool> maturityEndOfMonth_;
 
         Swap::Type type_ = Swap::Payer;
         Real nominal_ = 1.0;
