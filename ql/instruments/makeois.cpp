@@ -317,8 +317,7 @@ namespace QuantLib {
     }
 
     MakeOIS& MakeOIS::withEndOfMonth(bool flag) {
-        return withFixedLegEndOfMonth(flag).withOvernightLegEndOfMonth(flag).withMaturityEndOfMonth(
-            flag);
+        return withFixedLegEndOfMonth(flag).withOvernightLegEndOfMonth(flag);
     }
 
     MakeOIS& MakeOIS::withFixedLegEndOfMonth(bool flag) {
