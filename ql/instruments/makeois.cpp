@@ -84,7 +84,7 @@ namespace QuantLib {
         else {
             fixedEndOfMonth = fixedEndOfMonth_;
             overnightEndOfMonth = overnightEndOfMonth_;
-            maturityEndOfMonth = maturityEndOfMonth_;
+            maturityEndOfMonth = maturityEndOfMonth_ ? *maturityEndOfMonth_ : overnightEndOfMonth_;
         }
 
         Date endDate = terminationDate_;
@@ -92,8 +92,7 @@ namespace QuantLib {
             endDate = startDate + swapTenor_;
             if (maturityEndOfMonth && allowsEndOfMonth(swapTenor_) &&
                 overnightCalendar_.isEndOfMonth(startDate))
-                endDate = maturityEndOfMonthCalendarDate_ ? Date::endOfMonth(endDate) :
-                                                            overnightCalendar_.endOfMonth(endDate);
+                endDate = overnightCalendar_.endOfMonth(endDate);
         }
 
         Frequency fixedPaymentFrequency, overnightPaymentFrequency;
@@ -337,11 +336,6 @@ namespace QuantLib {
     MakeOIS& MakeOIS::withMaturityEndOfMonth(bool flag) {
         maturityEndOfMonth_ = flag;
         isDefaultEOM_ = false;
-        return *this;
-    }
-
-    MakeOIS& MakeOIS::withMaturityEndOfMonthCalendarDate(bool flag) {
-        maturityEndOfMonthCalendarDate_ = flag;
         return *this;
     }
 
