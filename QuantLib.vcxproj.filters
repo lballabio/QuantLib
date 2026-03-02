@@ -822,6 +822,15 @@
     <ClInclude Include="ql\instruments\creditdefaultswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\crossccybasisswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\crossccyfixfloatswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\crossccyswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\dividendschedule.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -2725,6 +2734,9 @@
       <Filter>pricingengines\bond</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\swap\all.hpp">
+      <Filter>pricingengines\swap</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\swap\crossccyswapengine.hpp">
       <Filter>pricingengines\swap</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\swap\cvaswapengine.hpp">
@@ -4787,6 +4799,15 @@
     <ClCompile Include="ql\instruments\creditdefaultswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\crossccybasisswap.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\crossccyfixfloatswap.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\crossccyswap.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
     <ClCompile Include="ql\instruments\europeanoption.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
@@ -6037,6 +6058,9 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\bond\discretizedconvertible.cpp">
       <Filter>pricingengines\bond</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\swap\crossccyswapengine.cpp">
+      <Filter>pricingengines\swap</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\swap\cvaswapengine.cpp">
       <Filter>pricingengines\swap</Filter>
