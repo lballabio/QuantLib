@@ -143,7 +143,6 @@ namespace QuantLib {
     }
 
     inline Rate ZeroSpreadedTermStructure::zeroYieldImpl(Time t) const {
-        // to be fixed: user-defined daycounter should be used
         InterestRate zeroRate =
             originalCurve_->zeroRate(t, comp_, freq_, true);
         InterestRate spreadedRate(zeroRate + spread_->value(),

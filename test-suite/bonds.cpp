@@ -321,18 +321,17 @@ BOOST_AUTO_TEST_CASE(testZspread) {
                             // Clean price
                             Bond::Price price = {
                                 BondFunctions::cleanPrice(bond, *discountCurve,
-                                                          spread, bondDayCount, n,
-                                                          frequency),
+                                                          spread, n, frequency),
                                 Bond::Price::Clean
                             };
                             Spread calculated = BondFunctions::zSpread(
-                                bond, price, *discountCurve, bondDayCount, n, frequency, Date(),
+                                bond, price, *discountCurve, n, frequency, Date(),
                                 tolerance, maxEvaluations);
 
                             if (std::fabs(spread - calculated) > tolerance) {
                                 // the difference might not matter
                                 Real price2 = BondFunctions::cleanPrice(
-                                    bond, *discountCurve, calculated, bondDayCount, n, frequency);
+                                    bond, *discountCurve, calculated, n, frequency);
                                 if (std::fabs(price.amount() - price2) / price.amount() > tolerance) {
                                     BOOST_ERROR("\nZ-spread recalculation failed:"
                                                 "\n    issue:     " << issue <<
@@ -351,18 +350,18 @@ BOOST_AUTO_TEST_CASE(testZspread) {
                             // Dirty price
                             price = {
                                 BondFunctions::dirtyPrice(bond, *discountCurve, spread,
-                                                          bondDayCount, n, frequency),
+                                                          n, frequency),
                                 Bond::Price::Dirty
                             };
 
                             calculated = BondFunctions::zSpread(
-                                bond, price, *discountCurve, bondDayCount, n, frequency, Date(),
+                                bond, price, *discountCurve, n, frequency, Date(),
                                 tolerance, maxEvaluations);
 
                             if (std::fabs(spread - calculated) > tolerance) {
                                 // the difference might not matter
                                 Real price2 = BondFunctions::dirtyPrice(
-                                    bond, *discountCurve, calculated, bondDayCount, n, frequency);
+                                    bond, *discountCurve, calculated, n, frequency);
                                 if (std::fabs(price.amount() - price2) / price.amount() > tolerance) {
                                     BOOST_ERROR("\nZ-spread recalculation failed:"
                                                 "\n    issue:        " << issue <<
