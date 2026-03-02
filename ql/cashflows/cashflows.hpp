@@ -27,8 +27,8 @@
 #ifndef quantlib_cashflows_hpp
 #define quantlib_cashflows_hpp
 
-#include <ql/cashflows/duration.hpp>
 #include <ql/cashflow.hpp>
+#include <ql/cashflows/duration.hpp>
 #include <ql/interestrate.hpp>
 #include <ql/shared_ptr.hpp>
 
@@ -53,6 +53,7 @@ namespace QuantLib {
 
             Real operator()(Rate y) const;
             Real derivative(Rate y) const;
+
           private:
             void checkSign() const;
 
@@ -64,6 +65,7 @@ namespace QuantLib {
             ext::optional<bool> includeSettlementDateFlows_;
             Date settlementDate_, npvDate_;
         };
+
       public:
         CashFlows() = delete;
         CashFlows(CashFlows&&) = delete;
@@ -122,10 +124,9 @@ namespace QuantLib {
                        const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
                        Date settlementDate = Date());
 
-        static Real
-        nominal(const Leg& leg,
-                const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
-                Date settlementDate = Date());
+        static Real nominal(const Leg& leg,
+                            const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
+                            Date settlementDate = Date());
         static Date
         accrualStartDate(const Leg& leg,
                          const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
@@ -191,11 +192,12 @@ namespace QuantLib {
         /*! The NPV and BPS of the cash flows calculated
             together for performance reason
         */
-        static std::pair<Real, Real> npvbps(const Leg& leg,
-                                            const YieldTermStructure& discountCurve,
-                                            const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
-                                            Date settlementDate = Date(),
-                                            Date npvDate = Date());
+        static std::pair<Real, Real>
+        npvbps(const Leg& leg,
+               const YieldTermStructure& discountCurve,
+               const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
+               Date settlementDate = Date(),
+               Date npvDate = Date());
 
         //! At-the-money rate of the cash flows.
         /*! The result is the fixed rate for which a fixed rate cash flow
@@ -285,10 +287,9 @@ namespace QuantLib {
                           Date npvDate = Date(),
                           Real accuracy = 1.0e-10,
                           Rate guess = 0.05) {
-            IrrFinder objFunction(leg, npv, dayCounter, compounding,
-                                  frequency, includeSettlementDateFlows,
-                                  settlementDate, npvDate);
-            return solver.solve(objFunction, accuracy, guess, guess/10.0);
+            IrrFinder objFunction(leg, npv, dayCounter, compounding, frequency,
+                                  includeSettlementDateFlows, settlementDate, npvDate);
+            return solver.solve(objFunction, accuracy, guess, guess / 10.0);
         }
 
         //! Cash-flow duration.
@@ -357,38 +358,42 @@ namespace QuantLib {
         /*! Obtained by setting dy = 0.0001 in the 2nd-order Taylor
             series expansion.
         */
-        static Real basisPointValue(const Leg& leg,
-                                    const InterestRate& yield,
-                                    const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
-                                    Date settlementDate = Date(),
-                                    Date npvDate = Date());
-        static Real basisPointValue(const Leg& leg,
-                                    Rate yield,
-                                    const DayCounter& dayCounter,
-                                    Compounding compounding,
-                                    Frequency frequency,
-                                    const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
-                                    Date settlementDate = Date(),
-                                    Date npvDate = Date());
+        static Real
+        basisPointValue(const Leg& leg,
+                        const InterestRate& yield,
+                        const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
+                        Date settlementDate = Date(),
+                        Date npvDate = Date());
+        static Real
+        basisPointValue(const Leg& leg,
+                        Rate yield,
+                        const DayCounter& dayCounter,
+                        Compounding compounding,
+                        Frequency frequency,
+                        const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
+                        Date settlementDate = Date(),
+                        Date npvDate = Date());
 
         //! Yield value of a basis point
         /*! The yield value of a one basis point change in price is
             the derivative of the yield with respect to the price
             multiplied by 0.01
         */
-        static Real yieldValueBasisPoint(const Leg& leg,
-                                         const InterestRate& yield,
-                                         const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
-                                         Date settlementDate = Date(),
-                                         Date npvDate = Date());
-        static Real yieldValueBasisPoint(const Leg& leg,
-                                         Rate yield,
-                                         const DayCounter& dayCounter,
-                                         Compounding compounding,
-                                         Frequency frequency,
-                                         const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
-                                         Date settlementDate = Date(),
-                                         Date npvDate = Date());
+        static Real
+        yieldValueBasisPoint(const Leg& leg,
+                             const InterestRate& yield,
+                             const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
+                             Date settlementDate = Date(),
+                             Date npvDate = Date());
+        static Real
+        yieldValueBasisPoint(const Leg& leg,
+                             Rate yield,
+                             const DayCounter& dayCounter,
+                             Compounding compounding,
+                             Frequency frequency,
+                             const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
+                             Date settlementDate = Date(),
+                             Date npvDate = Date());
         //@}
 
         //! \name Z-spread functions
@@ -399,10 +404,21 @@ namespace QuantLib {
         //@{
         //! NPV of the cash flows.
         /*! The NPV is the sum of the cash flows, each discounted
-            according to the z-spreaded term structure.  The result
-            is affected by the choice of the z-spread compounding
-            and the relative frequency and day counter.
+            according to the z-spreaded term structure.  The spread
+            is expressed in terms of the underlying curve's day counter.
         */
+        static Real npv(const Leg& leg,
+                        const ext::shared_ptr<YieldTermStructure>& discount,
+                        Spread zSpread,
+                        Compounding compounding,
+                        Frequency frequency,
+                        const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
+                        Date settlementDate = Date(),
+                        Date npvDate = Date());
+        /*! \deprecated Use the overload without a day counter.
+                        Deprecated in version 1.42.
+        */
+        [[deprecated("Use the overload without a day counter")]]
         static Real npv(const Leg& leg,
                         const ext::shared_ptr<YieldTermStructure>& discount,
                         Spread zSpread,
@@ -416,6 +432,21 @@ namespace QuantLib {
         static Spread zSpread(const Leg& leg,
                               Real npv,
                               const ext::shared_ptr<YieldTermStructure>&,
+                              Compounding compounding,
+                              Frequency frequency,
+                              const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
+                              Date settlementDate = Date(),
+                              Date npvDate = Date(),
+                              Real accuracy = 1.0e-10,
+                              Size maxIterations = 100,
+                              Rate guess = 0.0);
+        /*! \deprecated Use the overload without a day counter.
+                        Deprecated in version 1.42.
+        */
+        [[deprecated("Use the overload without a day counter")]]
+        static Spread zSpread(const Leg& leg,
+                              Real npv,
+                              const ext::shared_ptr<YieldTermStructure>&,
                               const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,
@@ -426,7 +457,6 @@ namespace QuantLib {
                               Size maxIterations = 100,
                               Rate guess = 0.0);
         //@}
-
     };
 
 }

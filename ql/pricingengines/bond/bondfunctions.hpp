@@ -27,11 +27,11 @@
 #ifndef quantlib_bond_functions_hpp
 #define quantlib_bond_functions_hpp
 
+#include <ql/cashflow.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/duration.hpp>
-#include <ql/cashflow.hpp>
-#include <ql/interestrate.hpp>
 #include <ql/instruments/bond.hpp>
+#include <ql/interestrate.hpp>
 #include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
@@ -56,51 +56,33 @@ namespace QuantLib {
         //@{
         static Date startDate(const Bond& bond);
         static Date maturityDate(const Bond& bond);
-        static bool isTradable(const Bond& bond,
-                               Date settlementDate = Date());
+        static bool isTradable(const Bond& bond, Date settlementDate = Date());
         //@}
 
         //! \name CashFlow inspectors
         //@{
-        static Leg::const_reverse_iterator
-        previousCashFlow(const Bond& bond,
-                         Date refDate = Date());
-        static Leg::const_iterator nextCashFlow(const Bond& bond,
-                                                Date refDate = Date());
-        static Date previousCashFlowDate(const Bond& bond,
-                                         Date refDate = Date());
-        static Date nextCashFlowDate(const Bond& bond,
-                                     Date refDate = Date());
-        static Real previousCashFlowAmount(const Bond& bond,
-                                           Date refDate = Date());
-        static Real nextCashFlowAmount(const Bond& bond,
-                                       Date refDate = Date());
+        static Leg::const_reverse_iterator previousCashFlow(const Bond& bond,
+                                                            Date refDate = Date());
+        static Leg::const_iterator nextCashFlow(const Bond& bond, Date refDate = Date());
+        static Date previousCashFlowDate(const Bond& bond, Date refDate = Date());
+        static Date nextCashFlowDate(const Bond& bond, Date refDate = Date());
+        static Real previousCashFlowAmount(const Bond& bond, Date refDate = Date());
+        static Real nextCashFlowAmount(const Bond& bond, Date refDate = Date());
         //@}
 
         //! \name Coupon inspectors
         //@{
-        static Rate previousCouponRate(const Bond& bond,
-                                       Date settlementDate = Date());
-        static Rate nextCouponRate(const Bond& bond,
-                                   Date settlementDate = Date());
-        static Date accrualStartDate(const Bond& bond,
-                                     Date settlementDate = Date());
-        static Date accrualEndDate(const Bond& bond,
-                                   Date settlementDate = Date());
-        static Date referencePeriodStart(const Bond& bond,
-                                         Date settlementDate = Date());
-        static Date referencePeriodEnd(const Bond& bond,
-                                       Date settlementDate = Date());
-        static Time accrualPeriod(const Bond& bond,
-                                  Date settlementDate = Date());
-        static Date::serial_type accrualDays(const Bond& bond,
-                                             Date settlementDate = Date());
-        static Time accruedPeriod(const Bond& bond,
-                                  Date settlementDate = Date());
-        static Date::serial_type accruedDays(const Bond& bond,
-                                             Date settlementDate = Date());
-        static Real accruedAmount(const Bond& bond,
-                                  Date settlementDate = Date());
+        static Rate previousCouponRate(const Bond& bond, Date settlementDate = Date());
+        static Rate nextCouponRate(const Bond& bond, Date settlementDate = Date());
+        static Date accrualStartDate(const Bond& bond, Date settlementDate = Date());
+        static Date accrualEndDate(const Bond& bond, Date settlementDate = Date());
+        static Date referencePeriodStart(const Bond& bond, Date settlementDate = Date());
+        static Date referencePeriodEnd(const Bond& bond, Date settlementDate = Date());
+        static Time accrualPeriod(const Bond& bond, Date settlementDate = Date());
+        static Date::serial_type accrualDays(const Bond& bond, Date settlementDate = Date());
+        static Time accruedPeriod(const Bond& bond, Date settlementDate = Date());
+        static Date::serial_type accruedDays(const Bond& bond, Date settlementDate = Date());
+        static Real accruedAmount(const Bond& bond, Date settlementDate = Date());
         //@}
 
         //! \name YieldTermStructure functions
@@ -123,27 +105,23 @@ namespace QuantLib {
 
         //! \name Yield (a.k.a. Internal Rate of Return, i.e. IRR) functions
         //@{
-        static Real cleanPrice(const Bond& bond,
-                               const InterestRate& yield,
-                               Date settlementDate = Date());
+        static Real
+        cleanPrice(const Bond& bond, const InterestRate& yield, Date settlementDate = Date());
         static Real cleanPrice(const Bond& bond,
                                Rate yield,
                                const DayCounter& dayCounter,
                                Compounding compounding,
                                Frequency frequency,
                                Date settlementDate = Date());
-        static Real dirtyPrice(const Bond& bond,
-                               const InterestRate& yield,
-                               Date settlementDate = Date());
+        static Real
+        dirtyPrice(const Bond& bond, const InterestRate& yield, Date settlementDate = Date());
         static Real dirtyPrice(const Bond& bond,
                                Rate yield,
                                const DayCounter& dayCounter,
                                Compounding compounding,
                                Frequency frequency,
                                Date settlementDate = Date());
-        static Real bps(const Bond& bond,
-                        const InterestRate& yield,
-                        Date settlementDate = Date());
+        static Real bps(const Bond& bond, const InterestRate& yield, Date settlementDate = Date());
         static Real bps(const Bond& bond,
                         Rate yield,
                         const DayCounter& dayCounter,
@@ -173,8 +151,8 @@ namespace QuantLib {
                 settlementDate = bond.settlementDate();
 
             QL_REQUIRE(BondFunctions::isTradable(bond, settlementDate),
-                       "non tradable at " << settlementDate <<
-                       " (maturity being " << bond.maturityDate() << ")");
+                       "non tradable at " << settlementDate << " (maturity being "
+                                          << bond.maturityDate() << ")");
 
             Real amount = price.amount();
 
@@ -184,33 +162,30 @@ namespace QuantLib {
             amount /= 100.0 / bond.notional(settlementDate);
 
             return CashFlows::yield<Solver>(solver, bond.cashflows(), amount, dayCounter,
-                                            compounding,
-                                            frequency, false, settlementDate,
+                                            compounding, frequency, false, settlementDate,
                                             settlementDate, accuracy, guess);
         }
         static Time duration(const Bond& bond,
                              const InterestRate& yield,
                              Duration::Type type = Duration::Modified,
-                             Date settlementDate = Date() );
+                             Date settlementDate = Date());
         static Time duration(const Bond& bond,
                              Rate yield,
                              const DayCounter& dayCounter,
                              Compounding compounding,
                              Frequency frequency,
                              Duration::Type type = Duration::Modified,
-                             Date settlementDate = Date() );
-        static Real convexity(const Bond& bond,
-                              const InterestRate& yield,
-                              Date settlementDate = Date());
+                             Date settlementDate = Date());
+        static Real
+        convexity(const Bond& bond, const InterestRate& yield, Date settlementDate = Date());
         static Real convexity(const Bond& bond,
                               Rate yield,
                               const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,
                               Date settlementDate = Date());
-        static Real basisPointValue(const Bond& bond,
-                                    const InterestRate& yield,
-                                    Date settlementDate = Date());
+        static Real
+        basisPointValue(const Bond& bond, const InterestRate& yield, Date settlementDate = Date());
         static Real basisPointValue(const Bond& bond,
                                     Rate yield,
                                     const DayCounter& dayCounter,
@@ -233,6 +208,16 @@ namespace QuantLib {
         static Real cleanPrice(const Bond& bond,
                                const ext::shared_ptr<YieldTermStructure>& discount,
                                Spread zSpread,
+                               Compounding compounding,
+                               Frequency frequency,
+                               Date settlementDate = Date());
+        /*! \deprecated Use the overload without a day counter.
+                        Deprecated in version 1.42.
+        */
+        [[deprecated("Use the overload without a day counter")]]
+        static Real cleanPrice(const Bond& bond,
+                               const ext::shared_ptr<YieldTermStructure>& discount,
+                               Spread zSpread,
                                const DayCounter& dayCounter,
                                Compounding compounding,
                                Frequency frequency,
@@ -240,10 +225,33 @@ namespace QuantLib {
         static Real dirtyPrice(const Bond& bond,
                                const ext::shared_ptr<YieldTermStructure>& discount,
                                Spread zSpread,
+                               Compounding compounding,
+                               Frequency frequency,
+                               Date settlementDate = Date());
+        /*! \deprecated Use the overload without a day counter.
+                        Deprecated in version 1.42.
+        */
+        [[deprecated("Use the overload without a day counter")]]
+        static Real dirtyPrice(const Bond& bond,
+                               const ext::shared_ptr<YieldTermStructure>& discount,
+                               Spread zSpread,
                                const DayCounter& dayCounter,
                                Compounding compounding,
                                Frequency frequency,
                                Date settlementDate = Date());
+        static Spread zSpread(const Bond& bond,
+                              Bond::Price price,
+                              const ext::shared_ptr<YieldTermStructure>&,
+                              Compounding compounding,
+                              Frequency frequency,
+                              Date settlementDate = Date(),
+                              Real accuracy = 1.0e-10,
+                              Size maxIterations = 100,
+                              Rate guess = 0.0);
+        /*! \deprecated Use the overload without a day counter.
+                        Deprecated in version 1.42.
+        */
+        [[deprecated("Use the overload without a day counter")]]
         static Spread zSpread(const Bond& bond,
                               Bond::Price price,
                               const ext::shared_ptr<YieldTermStructure>&,
@@ -255,7 +263,6 @@ namespace QuantLib {
                               Size maxIterations = 100,
                               Rate guess = 0.0);
         //@}
-
     };
 
 }
