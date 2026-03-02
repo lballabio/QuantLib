@@ -1144,7 +1144,6 @@ namespace QuantLib {
     Real CashFlows::npv(const Leg& leg,
                         const ext::shared_ptr<YieldTermStructure>& discountCurve,
                         Spread zSpread,
-                        const DayCounter& dc,
                         Compounding comp,
                         Frequency freq,
                         const ext::optional<bool>& includeSettlementDateFlows,
@@ -1173,10 +1172,22 @@ namespace QuantLib {
                    settlementDate, npvDate);
     }
 
+    Real CashFlows::npv(const Leg& leg,
+                        const ext::shared_ptr<YieldTermStructure>& discountCurve,
+                        Spread zSpread,
+                        const DayCounter&,
+                        Compounding comp,
+                        Frequency freq,
+                        const ext::optional<bool>& includeSettlementDateFlows,
+                        Date settlementDate,
+                        Date npvDate) {
+        return CashFlows::npv(leg, discountCurve, zSpread, comp, freq,
+                              includeSettlementDateFlows, settlementDate, npvDate);
+    }
+
     Spread CashFlows::zSpread(const Leg& leg,
                               Real npv,
                               const ext::shared_ptr<YieldTermStructure>& discount,
-                              const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,
                               const ext::optional<bool>& includeSettlementDateFlows,
@@ -1209,6 +1220,23 @@ namespace QuantLib {
         solver.setMaxEvaluations(maxIterations);
         Real step = 0.01;
         return solver.solve(objFunction, accuracy, guess, step);
+    }
+
+    Spread CashFlows::zSpread(const Leg& leg,
+                              Real npv,
+                              const ext::shared_ptr<YieldTermStructure>& discount,
+                              const DayCounter&,
+                              Compounding compounding,
+                              Frequency frequency,
+                              const ext::optional<bool>& includeSettlementDateFlows,
+                              Date settlementDate,
+                              Date npvDate,
+                              Real accuracy,
+                              Size maxIterations,
+                              Rate guess) {
+        return CashFlows::zSpread(leg, npv, discount, compounding, frequency,
+                                  includeSettlementDateFlows, settlementDate, npvDate,
+                                  accuracy, maxIterations, guess);
     }
 
 }
