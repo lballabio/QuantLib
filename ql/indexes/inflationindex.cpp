@@ -229,6 +229,10 @@ namespace QuantLib {
         Rate Z1 = zeroInflation_->zeroRate(firstDateInPeriod, false);
         Time t1 = inflationYearFraction(frequency_, false, zeroInflation_->dayCounter(),
                                         baseDate, firstDateInPeriod);
+        // During bootstrapping, extrapolated rates can temporarily go below -1.
+        // Guard against pow of a negative base with non-integer exponent.
+        if (Z1 <= -1.0)
+            return 0.0;
         return baseFixing * std::pow(1.0 + Z1, t1);
     }
 
