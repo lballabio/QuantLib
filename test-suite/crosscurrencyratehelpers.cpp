@@ -66,7 +66,12 @@ namespace {
             .backwards();
     }
 
-    Leg appendNotionalExchange(Leg& leg, Real notional, Natural paymentLag, const Calendar& cal, BusinessDayConvention convention) {
+    Leg appendNotionalExchange(Leg& leg,
+                               Real notional,
+                               Natural paymentLag,
+                               const Calendar& cal,
+                               BusinessDayConvention convention,
+                               bool onlyFinal) {
         Date initialPaymentDate = CashFlows::startDate(leg);
         Date lastPaymentDate = CashFlows::maturityDate(leg);
 
@@ -75,7 +80,8 @@ namespace {
             lastPaymentDate = cal.advance(lastPaymentDate, paymentLag, Days, convention);
         }
 
-        leg.push_back(ext::make_shared<SimpleCashFlow>(-notional, initialPaymentDate));
+        if (!onlyFinal)
+            leg.push_back(ext::make_shared<SimpleCashFlow>(-notional, initialPaymentDate));
         leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
         return leg;
     }
@@ -84,40 +90,43 @@ namespace {
                             const ext::shared_ptr<IborIndex>& idx,
                             Real notional = 1.0,
                             Spread basis = 0.0,
-                            Natural paymentLag = 0) {
+                            Natural paymentLag = 0,
+                            bool onlyFinal = false) {
         Leg leg = IborLeg(sch, idx)
                       .withNotionals(notional)
                       .withSpreads(basis)
                       .withPaymentLag(paymentLag);
 
         return appendNotionalExchange(leg, notional, paymentLag, sch.calendar(),
-                                      sch.businessDayConvention());
+                                      sch.businessDayConvention(), onlyFinal);
     }
 
     Leg constantNotionalLeg(const Schedule& sch,
                             const ext::shared_ptr<OvernightIndex>& idx,
                             Real notional = 1.0,
                             Spread basis = 0.0,
-                            Natural paymentLag = 0) {
+                            Natural paymentLag = 0,
+                            bool onlyFinal = false) {
         Leg leg = OvernightLeg(sch, idx).withNotionals(notional).withSpreads(basis).withPaymentLag(
             paymentLag);
 
         return appendNotionalExchange(leg, notional, paymentLag, sch.calendar(),
-                                      sch.businessDayConvention());
+                                      sch.businessDayConvention(), onlyFinal);
     }
 
     Leg constantNotionalLeg(const Schedule& sch,
                             Rate rate,
                             const DayCounter& dayCount,
                             Real notional = 1.0,
-                            Natural paymentLag = 0) {
+                            Natural paymentLag = 0,
+                            bool onlyFinal = false) {
         Leg leg = FixedRateLeg(sch)
                       .withNotionals(notional)
                       .withCouponRates(rate, dayCount)
                       .withPaymentLag(paymentLag);
 
         return appendNotionalExchange(leg, notional, paymentLag, sch.calendar(),
-                                      sch.businessDayConvention());
+                                      sch.businessDayConvention(), onlyFinal);
     }
 }
 
@@ -837,6 +846,7 @@ BOOST_AUTO_TEST_CASE(
     Integer paymentLag = 0;
     Integer fxFixingDelay = 0;
     bool collateralOnFixedLeg = true;
+    bool onlyFinal = true;
 
     std::vector<std::pair<Period, Real>> quotes = {
         {Period(5, Years), 0.04},  {Period(7, Years), 0.041}, {Period(10, Years), 0.042},
@@ -861,8 +871,8 @@ BOOST_AUTO_TEST_CASE(
     for (auto& [tenor, q] : quotes) {
         auto sch = schedule(today, tenor, paymentFreq, fixingDays, cal, bdc, endOfMonth);
 
-        Leg fixedLeg = constantNotionalLeg(sch, q, fixedDC, 1.0, paymentLag);
-        Leg floatingLeg = constantNotionalLeg(sch, eonia, 1.0, 0.0, paymentLag);
+        Leg fixedLeg = constantNotionalLeg(sch, q, fixedDC, 1.0, paymentLag, onlyFinal);
+        Leg floatingLeg = constantNotionalLeg(sch, eonia, 1.0, 0.0, paymentLag, onlyFinal);
 
         Swap fixedProxy(std::vector<Leg>(1, fixedLeg), std::vector<bool>(1, true));
         Swap floatProxy(std::vector<Leg>(1, floatingLeg), std::vector<bool>(1, false));

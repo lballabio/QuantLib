@@ -107,9 +107,9 @@ namespace QuantLib {
 
         std::pair<Real, Real>
         npvbpsConstNotionalLeg(const Leg& leg,
-                               const Date& initialNotionalExchangeDate,
+                               const Handle<YieldTermStructure>& discountCurveHandle,
                                const Date& finalNotionalExchangeDate,
-                               const Handle<YieldTermStructure>& discountCurveHandle) {
+                               const Date& initialNotionalExchangeDate = Date()) {
             const Spread basisPoint = 1.0e-4;
             Date refDt = discountCurveHandle->referenceDate();
             const YieldTermStructure& discountRef = **discountCurveHandle;
@@ -117,7 +117,8 @@ namespace QuantLib {
             auto [npv, bps] =
                 CashFlows::npvbps(leg, discountRef, includeSettleDtFlows, refDt, refDt);
             // Include NPV of the notional exchange at start and maturity.
-            npv += (-1.0) * discountRef.discount(initialNotionalExchangeDate);
+            if (initialNotionalExchangeDate != Date())
+                npv += (-1.0) * discountRef.discount(initialNotionalExchangeDate);
             npv += discountRef.discount(finalNotionalExchangeDate);
             bps /= basisPoint;
             return {npv, bps};
@@ -273,7 +274,6 @@ namespace QuantLib {
 
         std::pair<Real, Real>
         npvbpsNonDeliverableConstNotionalLeg(const Leg& leg,
-                                             const Date& initialNotionalExchangeDate,
                                              const Date& finalNotionalExchangeDate,
                                              Integer fxFixingDelay,
                                              Integer paymentLag,
@@ -290,8 +290,6 @@ namespace QuantLib {
             Leg legWithNotionals;
             legWithNotionals.reserve(2 + leg.size());
 
-            legWithNotionals.emplace_back(
-                ext::make_shared<SimpleCashFlow>(-1.0, initialNotionalExchangeDate));
             legWithNotionals.emplace_back(
                 ext::make_shared<SimpleCashFlow>(1.0, finalNotionalExchangeDate));
 
@@ -434,11 +432,11 @@ namespace QuantLib {
         QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
 
         auto [npvBaseCcy, bpsBaseCcy] =
-            npvbpsConstNotionalLeg(baseCcyIborLeg_, initialNotionalExchangeDate_,
-                                   finalNotionalExchangeDate_, baseCcyLegDiscountHandle());
+            npvbpsConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle(),
+                                   finalNotionalExchangeDate_, initialNotionalExchangeDate_);
         auto [npvQuoteCcy, bpsQuoteCcy] =
-            npvbpsConstNotionalLeg(quoteCcyIborLeg_, initialNotionalExchangeDate_,
-                                   finalNotionalExchangeDate_, quoteCcyLegDiscountHandle());
+            npvbpsConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle(),
+                                   finalNotionalExchangeDate_, initialNotionalExchangeDate_);
 
         Real bps = isBasisOnFxBaseCurrencyLeg_ ? -bpsBaseCcy : bpsQuoteCcy;
 
@@ -493,14 +491,15 @@ namespace QuantLib {
         auto [npvBaseCcy, bpsBaseCcy] =
             isFxBaseCurrencyLegResettable_ ?
                 npvbpsResettingLeg(baseCcyIborLeg_, paymentLag_, calendar_, convention_,
-                                   baseCcyLegDiscountHandle(), quoteCcyLegDiscountHandle(), earliestDate_) :
-                npvbpsConstNotionalLeg(baseCcyIborLeg_, initialNotionalExchangeDate_,
-                                       finalNotionalExchangeDate_, baseCcyLegDiscountHandle());
+                                   baseCcyLegDiscountHandle(), quoteCcyLegDiscountHandle(),
+                                   earliestDate_) :
+                npvbpsConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle(),
+                                       finalNotionalExchangeDate_, initialNotionalExchangeDate_);
 
         auto [npvQuoteCcy, bpsQuoteCcy] =
             isFxBaseCurrencyLegResettable_ ?
-                npvbpsConstNotionalLeg(quoteCcyIborLeg_, initialNotionalExchangeDate_,
-                                       finalNotionalExchangeDate_, quoteCcyLegDiscountHandle()) :
+                npvbpsConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle(),
+                                       finalNotionalExchangeDate_, initialNotionalExchangeDate_) :
                 npvbpsResettingLeg(quoteCcyIborLeg_, paymentLag_, calendar_, convention_,
                                    quoteCcyLegDiscountHandle(), baseCcyLegDiscountHandle(),
                                    earliestDate_);
@@ -577,12 +576,12 @@ namespace QuantLib {
         QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
 
         auto [fixedNpv, fixedBps] =
-            npvbpsConstNotionalLeg(fixedLeg_, initialNotionalExchangeDate_,
-                                   finalNotionalExchangeDate_, fixedLegDiscountHandle());
+            npvbpsConstNotionalLeg(fixedLeg_, fixedLegDiscountHandle(), finalNotionalExchangeDate_,
+                                   initialNotionalExchangeDate_);
 
         auto [floatNpv, floatBps] =
-            npvbpsConstNotionalLeg(floatLeg_, initialNotionalExchangeDate_,
-                                   finalNotionalExchangeDate_, floatingLegDiscountHandle());
+            npvbpsConstNotionalLeg(floatLeg_, floatingLegDiscountHandle(),
+                                   finalNotionalExchangeDate_, initialNotionalExchangeDate_);
 
         QL_REQUIRE(std::fabs(fixedBps) > 0.0, "null fixed-leg BPS");
 
@@ -634,21 +633,17 @@ namespace QuantLib {
 
         auto [fixedNpv, fixedBps] =
             collateralOnFixedLeg_ ?
-                npvbpsConstNotionalLeg(fixedLeg_, initialNotionalExchangeDate_,
-                                       finalNotionalExchangeDate_, collateralHandle_) :
-                npvbpsNonDeliverableConstNotionalLeg(fixedLeg_, initialNotionalExchangeDate_,
-                                                     finalNotionalExchangeDate_, fxFixingDelay_,
-                                                     paymentLag_, calendar_, collateralHandle_,
-                                                     termStructureHandle_, earliestDate_);
+                npvbpsConstNotionalLeg(fixedLeg_, collateralHandle_, finalNotionalExchangeDate_) :
+                npvbpsNonDeliverableConstNotionalLeg(
+                    fixedLeg_, finalNotionalExchangeDate_, fxFixingDelay_, paymentLag_, calendar_,
+                    collateralHandle_, termStructureHandle_, earliestDate_);
 
         auto [floatNpv, floatBps] =
             !collateralOnFixedLeg_ ?
-                npvbpsConstNotionalLeg(floatLeg_, initialNotionalExchangeDate_,
-                                       finalNotionalExchangeDate_, collateralHandle_) :
-                npvbpsNonDeliverableConstNotionalLeg(floatLeg_, initialNotionalExchangeDate_,
-                                                     finalNotionalExchangeDate_, fxFixingDelay_,
-                                                     paymentLag_, calendar_, collateralHandle_,
-                                                     termStructureHandle_, earliestDate_);
+                npvbpsConstNotionalLeg(floatLeg_, collateralHandle_, finalNotionalExchangeDate_) :
+                npvbpsNonDeliverableConstNotionalLeg(
+                    floatLeg_, finalNotionalExchangeDate_, fxFixingDelay_, paymentLag_, calendar_,
+                    collateralHandle_, termStructureHandle_, earliestDate_);
 
         QL_REQUIRE(std::fabs(fixedBps) > 0.0, "null fixed-leg BPS");
 
