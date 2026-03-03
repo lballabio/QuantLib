@@ -32,7 +32,6 @@ namespace QuantLib {
     class Extrapolator {
       public:
         Extrapolator() = default;
-        virtual ~Extrapolator() = default;
         //! \name modifiers
         //@{
         //! enable extrapolation in subsequent calls
