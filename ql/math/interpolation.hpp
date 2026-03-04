@@ -153,6 +153,7 @@ namespace QuantLib {
                        << impl_->xMin() << ", " << impl_->xMax()
                        << "]: extrapolation at " << x << " not allowed");
         }
+        friend class MixedLinearCubicInterpolation;
     };
 
 }
