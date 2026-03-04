@@ -233,6 +233,16 @@ namespace QuantLib {
         static Real cleanPrice(const Bond& bond,
                                const ext::shared_ptr<YieldTermStructure>& discount,
                                Spread zSpread,
+                               Compounding compounding,
+                               Frequency frequency,
+                               Date settlementDate = Date());
+        /*! \deprecated Use the overload without a day counter.
+                        Deprecated in version 1.42.
+        */
+        [[deprecated("Use the overload without a day counter")]]
+        static Real cleanPrice(const Bond& bond,
+                               const ext::shared_ptr<YieldTermStructure>& discount,
+                               Spread zSpread,
                                const DayCounter& dayCounter,
                                Compounding compounding,
                                Frequency frequency,
@@ -240,10 +250,33 @@ namespace QuantLib {
         static Real dirtyPrice(const Bond& bond,
                                const ext::shared_ptr<YieldTermStructure>& discount,
                                Spread zSpread,
+                               Compounding compounding,
+                               Frequency frequency,
+                               Date settlementDate = Date());
+        /*! \deprecated Use the overload without a day counter.
+                        Deprecated in version 1.42.
+        */
+        [[deprecated("Use the overload without a day counter")]]
+        static Real dirtyPrice(const Bond& bond,
+                               const ext::shared_ptr<YieldTermStructure>& discount,
+                               Spread zSpread,
                                const DayCounter& dayCounter,
                                Compounding compounding,
                                Frequency frequency,
                                Date settlementDate = Date());
+        static Spread zSpread(const Bond& bond,
+                              Bond::Price price,
+                              const ext::shared_ptr<YieldTermStructure>&,
+                              Compounding compounding,
+                              Frequency frequency,
+                              Date settlementDate = Date(),
+                              Real accuracy = 1.0e-10,
+                              Size maxIterations = 100,
+                              Rate guess = 0.0);
+        /*! \deprecated Use the overload without a day counter.
+                        Deprecated in version 1.42.
+        */
+        [[deprecated("Use the overload without a day counter")]]
         static Spread zSpread(const Bond& bond,
                               Bond::Price price,
                               const ext::shared_ptr<YieldTermStructure>&,
