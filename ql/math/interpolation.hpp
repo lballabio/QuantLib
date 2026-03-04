@@ -116,7 +116,6 @@ namespace QuantLib {
         };
 
         Interpolation() = default;
-        ~Interpolation() override = default;
         bool empty() const { return !impl_; }
         Real operator()(Real x, bool allowExtrapolation = false) const {
             checkRange(x,allowExtrapolation);

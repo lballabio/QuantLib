@@ -41,7 +41,6 @@ namespace QuantLib {
             Size n, const std::function<Real(Real)>& f,
             PointsType pointsType = SecondKind);
 
-        ~ChebyshevInterpolation() override = default;
         explicit ChebyshevInterpolation(const ChebyshevInterpolation&) = delete;
         explicit ChebyshevInterpolation(ChebyshevInterpolation&&) = delete;
         ChebyshevInterpolation& operator=(const ChebyshevInterpolation&) = delete;
