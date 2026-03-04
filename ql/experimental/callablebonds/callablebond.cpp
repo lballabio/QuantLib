@@ -476,27 +476,6 @@ namespace QuantLib {
     }
 
 
-    Real CallableBond::accrued(Date settlement) const {
-
-        if (settlement == Date()) settlement = settlementDate();
-
-        const bool IncludeToday = false;
-        for (const auto& cashflow : cashflows_) {
-            // the first coupon paying after d is the one we're after
-            if (!cashflow->hasOccurred(settlement, IncludeToday)) {
-                ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(cashflow);
-                if (coupon != nullptr)
-                    // !!!
-                    return coupon->accruedAmount(settlement) /
-                           notional(settlement) * 100.0;
-                else
-                    return 0.0;
-            }
-        }
-        return 0.0;
-    }
-
-
     CallableFixedRateBond::CallableFixedRateBond(
                               Natural settlementDays,
                               Real faceAmount,
