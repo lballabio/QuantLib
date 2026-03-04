@@ -31,23 +31,9 @@
 namespace QuantLib {
 
     namespace detail {
-
         template <class I1, class I2, class SwitchFn>
         class MixedInterpolationImpl;
-
-        class MatchDerivatives {
-            bool enable_;
-          public:
-            explicit MatchDerivatives(bool enable): enable_(enable) {}
-
-            void operator()(Interpolation& left, Interpolation& right, Real x) const {
-                if (!enable_) return;
-                static_cast<CubicInterpolation&>(right).updateLeftConditionValue(
-                    left.derivative(x));
-            }
-        };
     }
-
 
     struct MixedInterpolation {
         enum Behavior {
@@ -87,14 +73,19 @@ namespace QuantLib {
                                     leftConditionValue == Null<Real>();
             QL_REQUIRE(!matchDerivatives || behavior == MixedInterpolation::SplitRanges,
                        "matching derivatives is only supported with SplitRanges");
-            impl_ = ext::make_shared<detail::MixedInterpolationImpl<I1, I2,
-                                                                    detail::MatchDerivatives>>(
+
+            auto switchFn = [=](Interpolation& left, Interpolation& right, Real x) {
+                if (!matchDerivatives) return;
+                auto& cubicImpl = dynamic_cast<detail::CubicInterpolationBaseImpl&>(*right.impl_);
+                cubicImpl.leftValue_ = left.derivative(x);
+            };
+            impl_ = ext::make_shared<detail::MixedInterpolationImpl<I1, I2, decltype(switchFn)>>(
                 xBegin, xEnd, yBegin, n, behavior,
                 Linear(),
                 Cubic(da, monotonic,
                       leftC, leftConditionValue,
                       rightC, rightConditionValue),
-                detail::MatchDerivatives(matchDerivatives));
+                std::move(switchFn));
             impl_->update();
         }
     };
