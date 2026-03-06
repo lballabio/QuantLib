@@ -4254,6 +4254,9 @@
     <ClInclude Include="ql\termstructures\volatility\equityfx\noexceptlocalvolsurface.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\equityfx\piecewiseblackvariancesurface.hpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\polynomialmathfunction.hpp">
       <Filter>math</Filter>
     </ClInclude>
@@ -5622,6 +5625,9 @@
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\equityfx\localvoltermstructure.cpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\termstructures\volatility\equityfx\piecewiseblackvariancesurface.cpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\optionlet\constantoptionletvol.cpp">

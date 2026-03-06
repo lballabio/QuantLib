@@ -773,6 +773,7 @@
     <ClCompile Include="pathgenerator.cpp" />
     <ClCompile Include="period.cpp" />
     <ClCompile Include="perpetualfutures.cpp" />
+    <ClCompile Include="piecewiseblackvariancesurface.cpp" />
     <ClCompile Include="piecewiseyieldcurve.cpp" />
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp" />
     <ClCompile Include="preconditions.cpp" />
