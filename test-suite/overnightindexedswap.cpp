@@ -1026,7 +1026,7 @@ BOOST_AUTO_TEST_CASE(testMakeOISDefaultSettlementDays) {
 
 BOOST_AUTO_TEST_CASE(testMakeOisEndOfMonthRegression2453) {
 
-    /* See https://github.com/lballabio/QuantLib/issues/2453. Before the fix, The swap will roll
+    /* See https://github.com/lballabio/QuantLib/issues/2453. Before the fix, the swap will roll
      * backwards from 18 December 2028 (instead of 17 December 2028) and create a front stub. */
 
     BOOST_TEST_MESSAGE("Testing end of month regression in MakeOIS...");
