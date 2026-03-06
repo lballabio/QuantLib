@@ -1024,6 +1024,25 @@ BOOST_AUTO_TEST_CASE(testMakeOISDefaultSettlementDays) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testMakeOisEndOfMonthRegression2453) {
+
+    /* See https://github.com/lballabio/QuantLib/issues/2453. Before the fix, The swap will roll
+     * backwards from 18 December 2028 (instead of 17 December 2028) and create a front stub. */
+
+    BOOST_TEST_MESSAGE("Testing end of month regression in MakeOIS...");
+
+    Date today(16, December, 2025);
+    Settings::instance().evaluationDate() = today;
+
+    auto aonia =
+        ext::make_shared<Aonia>(Handle<YieldTermStructure>(flatRate(0.03, Actual365Fixed())));
+    OvernightIndexedSwap swap =
+        MakeOIS(3 * Years, aonia).withSettlementDays(1).withEndOfMonth(true);
+
+    BOOST_CHECK_EQUAL(swap.overnightSchedule()[0], Date(17, December, 2025));
+    BOOST_CHECK_EQUAL(swap.overnightSchedule()[1], Date(17, December, 2026));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
