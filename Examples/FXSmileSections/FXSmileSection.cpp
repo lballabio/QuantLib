@@ -72,6 +72,7 @@ int main(int, char*[]) {
             std::cout << z[i] << ":\t" << c(z[i]) << std::endl;
         }*/
 
+        /*
         Date refDate(14, February, 2025, 20, 30, 00);
 
         Handle<Quote> spot = makeQuoteHandle(1.7554);
@@ -161,12 +162,12 @@ int main(int, char*[]) {
         std::cout << t << std::endl;
         std::cout << eventCurve->tradingTime(d) << std::endl;
         std::cout << eventCurve->tradingTime(t) << std::endl;
-
+        */
         
         /*********************
          ***  MARKET DATA  ***
          *********************/
-        /*
+        
         Date todaysDate(2, January, 2024);
         Date expiryDate(2, January, 2025);
         Settings::instance().evaluationDate() = todaysDate;
@@ -224,7 +225,7 @@ int main(int, char*[]) {
         std::cout << "IVol:" << ss.atm()->value() << std::endl;
         std::cout << "IVol:" << ss.volByDelta(0.25, Option::Call) << std::endl;
         std::cout << "IVol:" << ss.volByDelta(0.10, Option::Call) << std::endl;
-        */
+        
 
         return 0;
 
