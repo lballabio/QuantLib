@@ -122,7 +122,7 @@ namespace QuantLib {
         // This will clearly break down with other day counters!
         Real eventWeight = 0, holidayWeight = 0;
         for (Size i = 0; i < eventTimes_.size(); i++) {
-            if (eventTimes_[i] < t)
+            if (eventTimes_[i] <= t)
                 eventWeight += events_[i]->value();
         }
 
