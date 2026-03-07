@@ -85,11 +85,11 @@ namespace QuantLib {
 
     Real tradingTimeTermStructure::tradingTime(const Date& d1, const Date& d2) const {
         // get the business days between the two dates - ignore beginning and ending dates
-        Time bizDays = calendar_.businessDaysBetween(d1, d2, false, false);
+        Time bizDays = calendar().businessDaysBetween(d1, d2, false, false);
         
         // adjust for the beginning and ending day
-        bizDays += (calendar_.isBusinessDay(d1)) ? 1. - d1.fractionOfDay() : 0.0;
-        bizDays += (calendar_.isBusinessDay(d2)) ? d2.fractionOfDay() : 0.0;
+        bizDays += (calendar().isBusinessDay(d1)) ? 1. - d1.fractionOfDay() : 0.0;
+        bizDays += (calendar().isBusinessDay(d2)) ? d2.fractionOfDay() : 0.0;
 
         Time totalDays = daysBetween(d1, d2);  // this already accounts for intraday time!
 

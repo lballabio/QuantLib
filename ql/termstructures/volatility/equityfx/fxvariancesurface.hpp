@@ -56,9 +56,9 @@ namespace QuantLib {
         void update() override;
         //@}
 
-        virtual Rate minStrike() const { return QL_MIN_POSITIVE_REAL; };
-        virtual Rate maxStrike() const { return QL_MAX_REAL; };
-        virtual Date maxDate() const { return maxDate_; };
+        virtual Rate minStrike() const override { return QL_MIN_POSITIVE_REAL; };
+        virtual Rate maxStrike() const override { return QL_MAX_REAL; };
+        virtual Date maxDate() const override { return maxDate_; };
 
         Real atmVar(Date d) const;  // atm variance
         Real atmVol(Date d) const;  // atm vol
@@ -76,7 +76,7 @@ namespace QuantLib {
         void registerWithMarketData();
         void getTradingTimes();
 
-        virtual Handle<T> interpolatedSmileSection(Time t, Real wt, T ssInit, T ssFinal) const = 0;
+        virtual Handle<T> interpolatedSmileSection(Time t, Real wt, const T& ssInit, const T& ssFinal) const = 0;
         Real blackVarianceImpl(Time t, Real strike) const;  // smile variance
 
         const Handle<Quote> spot_;
@@ -144,12 +144,13 @@ namespace QuantLib {
         if (tau <= times_.back()) {
             // before final expiry...
 
-            if (tau <= times_.front()) {
+            if (tau <= times_[1]) {
                 // before first expiry
                 Real vol = smileSections_.front().atm()->value();
                 return (vol * vol * tau) / times_.front();
             } 
-            else {
+            else 
+            {
                 // interpolate between two smiles
                 Size i = 0;
                 while (times_[i + 1] < tau)
@@ -185,7 +186,7 @@ namespace QuantLib {
         if (tau <= times_.back()) {
             // before final expiry...
 
-            if (t <= times_.front()) {
+            if (t <= times_[1]) {
                 // if its before first expiry - interpolate from 0!
                 QL_FAIL("smile before first expiry - not implemented!");
             } 
@@ -266,7 +267,7 @@ namespace QuantLib {
                                bool forceMonotoneVariance = true);
 
       private:
-        Handle<T> interpolatedSmileSection(Time t, Real wt, T ssInit, T ssFinal) const;
+        Handle<T> interpolatedSmileSection(Time t, Real wt, const T& ssInit, const T& ssFinal) const;
     };
 
     template <class T>
@@ -292,8 +293,8 @@ namespace QuantLib {
     template <class T>
     Handle<T> fxVarianceSurfaceClark<T>::interpolatedSmileSection(Time t,
                                                                   Real wt,
-                                                                  T ssInit,
-                                                                  T ssFinal) const {
+                                                                  const T& ssInit,
+                                                                  const T& ssFinal) const {
         // Implementation of flat forward smile interpolation in variance [Clark].
         // Interpolate ATM, 25d and 10d strikes for a given weight (w) to get five
         // points on the interpolated smile. Calibrate and return the smile.
@@ -357,7 +358,7 @@ namespace QuantLib {
                              bool forceMonotoneVariance = true);
 
       private:
-        Handle<T> interpolatedSmileSection(Time t, Real wt, T ssInit, T ssFinal) const;
+        Handle<T> interpolatedSmileSection(Time t, Real wt, const T& ssInit, const T& ssFinal) const;
     };
 
 
@@ -384,8 +385,8 @@ namespace QuantLib {
     template <class T>
     Handle<T> fxVarianceSurfaceNCP<T>::interpolatedSmileSection(Time t, 
                                                                 Real wt, 
-                                                                T ssInit, 
-                                                                T ssFinal) const {
+                                                                const T& ssInit, 
+                                                                const T& ssFinal) const {
         // Implementation of interpolation in probability space using normed call
         // prices [Gope, Fries 2011].
 
@@ -421,7 +422,9 @@ namespace QuantLib {
                 // create a call
                 d = BlackDeltaCalculator(Option::Call, ssFinal.deltaType(), spt, ddom, dfor, iw)
                         .deltaFromStrike(k);
-            } else {
+            } 
+            else 
+            {
                 d = BlackDeltaCalculator(Option::Put, ssFinal.deltaType(), spt, ddom, dfor, iw)
                         .deltaFromStrike(k);
             }

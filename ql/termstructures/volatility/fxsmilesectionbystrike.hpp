@@ -87,8 +87,7 @@ namespace QuantLib {
 
     };
 
-    typedef boost::shared_ptr<fxSmileSectionByStrike> fxSmileSectionByStrikePtr;
-
+    typedef ext::shared_ptr<fxSmileSectionByStrike> fxSmileSectionByStrikePtr;
 
 
     class polynomialSmileSection : public fxSmileSectionByStrike {

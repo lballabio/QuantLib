@@ -86,7 +86,7 @@ namespace QuantLib {
         mutable std::vector<Real> params_;
     };
 
-    typedef boost::shared_ptr<fxSmileSectionByDelta> fxSmileSectionByDeltaPtr;
+    typedef ext::shared_ptr<fxSmileSectionByDelta> fxSmileSectionByDeltaPtr;
 
 
     //! Quadratic smile section parameterized by put delta.

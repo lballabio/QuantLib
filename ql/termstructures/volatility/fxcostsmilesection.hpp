@@ -101,7 +101,6 @@ namespace QuantLib {
 
     };
 
-
     class fxCostSmileSectionFlatDynamics : public fxCostSmileSection {
       public:
         // ctor from market quotes for specific date

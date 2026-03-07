@@ -245,7 +245,7 @@ namespace QuantLib {
         Handle<Quote> spot() const { return spot_; };
         Handle<Quote> atm() const { calculate(); return atm_; };
         Real forward() const {calculate(); return fwd_; };
-        Handle<YieldTermStructure> foriegnDiscount() const { return foreignDiscount_; };
+        Handle<YieldTermStructure> foreignDiscount() const { return foreignDiscount_; };
         Handle<YieldTermStructure> domesticDiscount() const { return domesticDiscount_; };
         bool isDeltaVolQuote() const { return isDeltaVolQuote_; };
 
@@ -317,7 +317,7 @@ namespace QuantLib {
         LazyObject::update();
     }
 
-    typedef boost::shared_ptr<fxSmileSection> fxSmileSectionPtr;
+    typedef ext::shared_ptr<fxSmileSection> fxSmileSectionPtr;
 
 }  // namespace QuantLib
 
