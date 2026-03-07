@@ -147,7 +147,7 @@ namespace QuantLib {
             if (tau <= times_[1]) {
                 // before first expiry
                 Real vol = smileSections_.front().atm()->value();
-                return (vol * vol * tau) / times_.front();
+                return (vol * vol * tau) / times_[1];
             } 
             else 
             {
@@ -186,7 +186,7 @@ namespace QuantLib {
         if (tau <= times_.back()) {
             // before final expiry...
 
-            if (t <= times_[1]) {
+            if (tau <= times_[1]) {
                 // if its before first expiry - interpolate from 0!
                 QL_FAIL("smile before first expiry - not implemented!");
             } 
