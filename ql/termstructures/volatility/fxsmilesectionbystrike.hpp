@@ -1,6 +1,7 @@
 #ifndef quantlib_axl_fx_smile_section_strike_hpp
 #define quantlib_axl_fx_smile_section_strike_hpp
 
+#include <ql/math/array.hpp>
 #include <ql/termstructures/volatility/fxsmilesection.hpp>
 
 namespace QuantLib {
@@ -68,9 +69,9 @@ namespace QuantLib {
         //@}
 
       private:
-        virtual Volatility _volByStrike(Real strike, 
-                                        Real fwd, 
-                                        Time tau, 
+        virtual Volatility _volByStrike(Real strike,
+                                        Real fwd,
+                                        Time tau,
                                         const std::vector<Real>& params) const = 0;
 
         //! \name fxSmileSection interface
@@ -79,6 +80,9 @@ namespace QuantLib {
         //@}
 
       protected:
+        //! Initial parameter guess for calibration.
+        virtual Array initialParams() const = 0;
+
         mutable std::vector<Real> params_;
 
     };
@@ -146,14 +150,17 @@ namespace QuantLib {
         Real b() const { return params_[1]; };
         Real c() const { return params_[2]; };
 
-      private : 
+      private:
         //! \name fxSmileSectionByStrike interface
         //@{
-        virtual Volatility _volByStrike(Real strike,
-                                        Real fwd,
-                                        Time tau,
-                                        const std::vector<Real>& params) const override;
+        Volatility _volByStrike(Real strike,
+                                Real fwd,
+                                Time tau,
+                                const std::vector<Real>& params) const override;
         //@}
+
+      protected:
+        Array initialParams() const override;
     };
 
 
@@ -220,12 +227,14 @@ namespace QuantLib {
       private:
         //! \name fxSmileSectionByStrike interface
         //@{
-        virtual Volatility _volByStrike(Real strike,
-                                        Real fwd,
-                                        Time tau,
-                                        const std::vector<Real>& params) const override;
+        Volatility _volByStrike(Real strike,
+                                Real fwd,
+                                Time tau,
+                                const std::vector<Real>& params) const override;
         //@}
 
+      protected:
+        Array initialParams() const override;
     };
 
 } // namespace QuantLib
