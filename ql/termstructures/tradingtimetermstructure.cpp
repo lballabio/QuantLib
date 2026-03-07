@@ -127,7 +127,7 @@ namespace QuantLib {
         }
 
         for (Size j = 0; j < holidayTimes_.size(); j++) {
-            if (holidayTimes_[j] < t)
+            if (holidayTimes_[j] <= t)
                 holidayWeight += (weekendWeight_ - 1.);
         }
 
