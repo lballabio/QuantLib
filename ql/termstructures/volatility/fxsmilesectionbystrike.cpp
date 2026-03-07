@@ -378,4 +378,107 @@ namespace QuantLib {
     }
     //@}
 
+
+    //! \name SVI smile section
+    //@{
+    fxSviSmileSection::fxSviSmileSection(const Date& exerciseDate,
+                                         const Handle<Quote>& spot,
+                                         const Handle<Quote>& atm,
+                                         const std::vector<Handle<Quote>>& rrs,
+                                         const std::vector<Handle<Quote>>& bfs,
+                                         const std::vector<Real>& deltas,
+                                         const Handle<YieldTermStructure>& foreignDiscount,
+                                         const Handle<YieldTermStructure>& domesticDiscount,
+                                         DeltaVolQuote::DeltaType deltaType,
+                                         DeltaVolQuote::AtmType atmType,
+                                         fxSmileSection::FlyType flyType,
+                                         const DayCounter& dayCounter,
+                                         const Date& referenceDate)
+    : fxSmileSectionByStrike(exerciseDate, spot, atm, rrs, bfs, deltas,
+                             foreignDiscount, domesticDiscount,
+                             deltaType, atmType, flyType, dayCounter, referenceDate)
+    {
+        params_.reserve(5);
+    }
+
+    fxSviSmileSection::fxSviSmileSection(Time exerciseTime,
+                                         const Handle<Quote>& spot,
+                                         const Handle<Quote>& atm,
+                                         const std::vector<Handle<Quote>>& rrs,
+                                         const std::vector<Handle<Quote>>& bfs,
+                                         const std::vector<Real>& deltas,
+                                         const Handle<YieldTermStructure>& foreignDiscount,
+                                         const Handle<YieldTermStructure>& domesticDiscount,
+                                         DeltaVolQuote::DeltaType deltaType,
+                                         DeltaVolQuote::AtmType atmType,
+                                         fxSmileSection::FlyType flyType,
+                                         const DayCounter& dayCounter)
+    : fxSmileSectionByStrike(exerciseTime, spot, atm, rrs, bfs, deltas,
+                             foreignDiscount, domesticDiscount,
+                             deltaType, atmType, flyType, dayCounter)
+    {
+        params_.reserve(5);
+    }
+
+    fxSviSmileSection::fxSviSmileSection(const Date& exerciseDate,
+                                         const Handle<Quote>& spot,
+                                         const std::vector<Handle<DeltaVolQuote>>& quotes,
+                                         const Handle<YieldTermStructure>& foreignDiscount,
+                                         const Handle<YieldTermStructure>& domesticDiscount,
+                                         DeltaVolQuote::DeltaType deltaType,
+                                         DeltaVolQuote::AtmType atmType,
+                                         fxSmileSection::FlyType flyType,
+                                         const DayCounter& dayCounter,
+                                         const Date& referenceDate)
+    : fxSmileSectionByStrike(exerciseDate, spot, quotes,
+                             foreignDiscount, domesticDiscount,
+                             deltaType, atmType, flyType, dayCounter, referenceDate)
+    {
+        params_.reserve(5);
+    }
+
+    fxSviSmileSection::fxSviSmileSection(Time exerciseTime,
+                                         const Handle<Quote>& spot,
+                                         const std::vector<Handle<DeltaVolQuote>>& quotes,
+                                         const Handle<YieldTermStructure>& foreignDiscount,
+                                         const Handle<YieldTermStructure>& domesticDiscount,
+                                         DeltaVolQuote::DeltaType deltaType,
+                                         DeltaVolQuote::AtmType atmType,
+                                         fxSmileSection::FlyType flyType,
+                                         const DayCounter& dayCounter)
+    : fxSmileSectionByStrike(exerciseTime, spot, quotes,
+                             foreignDiscount, domesticDiscount,
+                             deltaType, atmType, flyType, dayCounter)
+    {
+        params_.reserve(5);
+    }
+
+    Array fxSviSmileSection::initialParams() const
+    {
+        // SVI raw: w(k) = a + b*(rho*(k-m) + sqrt((k-m)^2 + sigma^2))
+        // At ATM k=0: w(0) = a + b*(rho*(-m) + sqrt(m^2 + sigma^2))
+        // Start with m=0, rho=0: w(0) = a + b*sigma = atm_vol^2 * tau
+        Real atmVar = atm_->value() * atm_->value();
+        Array guess(5);
+        guess[0] = atmVar;  // a: base variance level
+        guess[1] = 0.1;     // b: slope
+        guess[2] = 0.0;     // rho: skew
+        guess[3] = 0.0;     // m: translation
+        guess[4] = 0.1;     // sigma: curvature
+        return guess;
+    }
+
+    Volatility fxSviSmileSection::_volByStrike(Rate strike,
+                                                Real fwd,
+                                                Time tau,
+                                                const std::vector<Real>& params) const
+    {
+        Real k = std::log(strike / fwd);
+        Real km = k - params[3];
+        Real totalVar = params[0] + params[1] * (params[2] * km +
+                        std::sqrt(km * km + params[4] * params[4]));
+        return std::sqrt(std::max(totalVar, 0.0) / tau);
+    }
+    //@}
+
 }

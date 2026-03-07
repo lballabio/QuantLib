@@ -237,6 +237,89 @@ namespace QuantLib {
         Array initialParams() const override;
     };
 
+
+    //! SVI (Stochastic Volatility Inspired) smile section.
+    /*! Total implied variance is given by the SVI raw parameterization:
+        \f$ w(k) = a + b \left( \rho (k - m) + \sqrt{(k - m)^2 + \sigma^2} \right) \f$
+        where \f$ k = \log(K / F) \f$ is the log-moneyness.
+        Implied volatility is \f$ \sigma_{impl} = \sqrt{w(k) / \tau} \f$.
+
+        Parameters: a, b, rho, m, sigma (5 parameters).
+    */
+    class fxSviSmileSection : public fxSmileSectionByStrike {
+      public:
+        // ctor from market quotes for specific date
+        fxSviSmileSection(const Date& exerciseDate,
+                          const Handle<Quote>& spot,
+                          const Handle<Quote>& atm,
+                          const std::vector<Handle<Quote>>& rrs,
+                          const std::vector<Handle<Quote>>& bfs,
+                          const std::vector<Real>& deltas,
+                          const Handle<YieldTermStructure>& foreignDiscount,
+                          const Handle<YieldTermStructure>& domesticDiscount,
+                          DeltaVolQuote::DeltaType deltaType,
+                          DeltaVolQuote::AtmType atmType,
+                          fxSmileSection::FlyType flyType,
+                          const DayCounter& dayCounter = DayCounter(),
+                          const Date& referenceDate = Date());
+
+        // ctor from market quotes with expiry time - floats with evaluation date
+        fxSviSmileSection(Time exerciseTime,
+                          const Handle<Quote>& spot,
+                          const Handle<Quote>& atm,
+                          const std::vector<Handle<Quote>>& rrs,
+                          const std::vector<Handle<Quote>>& bfs,
+                          const std::vector<Real>& deltas,
+                          const Handle<YieldTermStructure>& foreignDiscount,
+                          const Handle<YieldTermStructure>& domesticDiscount,
+                          DeltaVolQuote::DeltaType deltaType,
+                          DeltaVolQuote::AtmType atmType,
+                          fxSmileSection::FlyType flyType,
+                          const DayCounter& dayCounter = DayCounter());
+
+        // ctor from derived quotes for specific date
+        fxSviSmileSection(const Date& exerciseDate,
+                          const Handle<Quote>& spot,
+                          const std::vector<Handle<DeltaVolQuote>>& quotes,
+                          const Handle<YieldTermStructure>& foreignDiscount,
+                          const Handle<YieldTermStructure>& domesticDiscount,
+                          DeltaVolQuote::DeltaType deltaType,
+                          DeltaVolQuote::AtmType atmType,
+                          FlyType flyType,
+                          const DayCounter& dayCounter = DayCounter(),
+                          const Date& referenceDate = Date());
+
+        // ctor from derived quotes for expiry time - floats with evaluation date
+        fxSviSmileSection(Time exerciseTime,
+                          const Handle<Quote>& spot,
+                          const std::vector<Handle<DeltaVolQuote>>& quotes,
+                          const Handle<YieldTermStructure>& foreignDiscount,
+                          const Handle<YieldTermStructure>& domesticDiscount,
+                          DeltaVolQuote::DeltaType deltaType,
+                          DeltaVolQuote::AtmType atmType,
+                          FlyType flyType,
+                          const DayCounter& dayCounter = DayCounter());
+
+        // Introspection
+        Real a() const { return params_[0]; };
+        Real b() const { return params_[1]; };
+        Real rho() const { return params_[2]; };
+        Real m() const { return params_[3]; };
+        Real sigma() const { return params_[4]; };
+
+      private:
+        //! \name fxSmileSectionByStrike interface
+        //@{
+        Volatility _volByStrike(Real strike,
+                                Real fwd,
+                                Time tau,
+                                const std::vector<Real>& params) const override;
+        //@}
+
+      protected:
+        Array initialParams() const override;
+    };
+
 } // namespace QuantLib
 
 #endif
