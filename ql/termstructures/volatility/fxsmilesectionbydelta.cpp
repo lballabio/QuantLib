@@ -208,16 +208,22 @@ namespace QuantLib {
         std::vector<Real> targetVols(quotes_.size());
         std::vector<Real> deltas(quotes_.size());
 
-        for (Size i = 0; i < quotes_.size(); ++i) {
+        for (Size i = 0; i < quotes_.size(); ++i) 
+        {
             targetVols[i] = quotes_[i]->value();
 
-            if (quotes_[i]->atmType() != DeltaVolQuote::AtmNull) {
+            if (quotes_[i]->atmType() != DeltaVolQuote::AtmNull) 
+            {
                 // ATM quote: use a conventional put delta of -0.5
                 deltas[i] = -0.5;
-            } else {
+            } 
+            else 
+            {
                 Real d = quotes_[i]->delta();
+
                 // Convert call delta to put delta if needed
-                if (d > 0) {
+                if (d > 0) 
+                {
                     switch (deltaType()) {
                     case DeltaVolQuote::Spot:
                         deltas[i] = d - dfor_;
@@ -233,7 +239,9 @@ namespace QuantLib {
                         deltas[i] = d;
                         break;
                     }
-                } else {
+                } 
+                else 
+                {
                     deltas[i] = d;
                 }
             }
@@ -243,7 +251,8 @@ namespace QuantLib {
         auto costValues = [&](const Array& x) -> Array {
             std::vector<Real> p(x.begin(), x.end());
             Array residuals(quotes_.size());
-            for (Size i = 0; i < quotes_.size(); ++i) {
+            for (Size i = 0; i < quotes_.size(); ++i) 
+            {
                 residuals[i] = _volByDelta(deltas[i], fwd, tau, p) - targetVols[i];
             }
             return residuals;

@@ -92,7 +92,7 @@ namespace QuantLib {
         //! \name fxSmileSection interface
         //@{
         // force child classes to redefine the calibration routine!
-        // for cost models this can be done epxlicitly while the base
+        // for cost models this can be done explicitly while the base
         // class uses optimization routines. So redefine explicitly!
         virtual void calibrate() const = 0;
         //@}

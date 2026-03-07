@@ -140,7 +140,8 @@ namespace QuantLib {
 
     void fxSmileSection::stripDeltaVolQuotes() const {
 
-        if (isDeltaVolQuote()) {
+        if (isDeltaVolQuote()) 
+        {
             // Copy the immutable input quotes into the mutable workspace so that
             // calibrate() always reads from quotes_ regardless of which path we are on.
             quotes_ = quotesInput_;
@@ -150,7 +151,8 @@ namespace QuantLib {
             // so derive it from the fitted smile.
             calculateAtm();
         }
-        else if (flyType() == FlyType::MarketStrangle) {
+        else if (flyType() == FlyType::MarketStrangle) 
+        {
             // atm_ is the market input for this path.
             atm_ = atmInput_;
 
@@ -176,10 +178,12 @@ namespace QuantLib {
             const Size maxOuterIter = 20;
             const Real tol = 1.0e-10;
 
-            for (Size iter = 0; iter < maxOuterIter; ++iter) {
+            for (Size iter = 0; iter < maxOuterIter; ++iter) 
+            {
                 Real maxErr = 0.0;
 
-                for (Size i = 0; i < deltas_.size(); ++i) {
+                for (Size i = 0; i < deltas_.size(); ++i) 
+                {
                     // Objective: find smileStrangles[i] such that
                     // the smile reproduces the market strangle price.
                     auto error = [&](Real ss) -> Real {
@@ -187,12 +191,11 @@ namespace QuantLib {
 
                         // Rebuild delta-vol quotes from current smile strangles
                         quotes_.clear();
-                        quotes_.push_back(Handle<DeltaVolQuote>(
-                            ext::make_shared<DeltaVolQuote>(
-                                DeltaVolQuote(atm(), deltaType(),
-                                              exerciseTime(), atmType()))));
+                        quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(DeltaVolQuote(atm(), deltaType(),
+                                                                                                                exerciseTime(), atmType()))));
 
-                        for (Size j = 0; j < deltas_.size(); ++j) {
+                        for (Size j = 0; j < deltas_.size(); ++j) 
+                        {
                             Real d = std::fabs(deltas_[j]);
                             Real rr = rrs_[j]->value();
                             Real bf = smileStrangles[j];
@@ -200,14 +203,10 @@ namespace QuantLib {
                             Volatility cVol = atm_->value() + bf + rr / 2.;
                             Volatility pVol = atm_->value() + bf - rr / 2.;
 
-                            quotes_.push_back(Handle<DeltaVolQuote>(
-                                ext::make_shared<DeltaVolQuote>(DeltaVolQuote(
-                                    d, makeQuoteHandle(cVol),
-                                    exerciseTime(), deltaType_))));
-                            quotes_.push_back(Handle<DeltaVolQuote>(
-                                ext::make_shared<DeltaVolQuote>(DeltaVolQuote(
-                                    -d, makeQuoteHandle(pVol),
-                                    exerciseTime(), deltaType_))));
+                            quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(DeltaVolQuote(d, makeQuoteHandle(cVol),
+                                                                                                                    exerciseTime(), deltaType_))));
+                            quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(DeltaVolQuote(-d, makeQuoteHandle(pVol),
+                                                                                                                    exerciseTime(), deltaType_))));
                         }
 
                         calibrate();
@@ -217,8 +216,7 @@ namespace QuantLib {
                     Brent solver;
                     solver.setMaxEvaluations(1000);
                     Real guess = smileStrangles[i];
-                    smileStrangles[i] = solver.solve(
-                        error, 1.0e-12, guess, guess * 0.1, guess * 5.0);
+                    smileStrangles[i] = solver.solve(error, 1.0e-12, guess, guess * 0.1, guess * 5.0);
 
                     maxErr = std::max(maxErr, std::fabs(helpers[i].flyError()));
                 }
@@ -229,10 +227,8 @@ namespace QuantLib {
 
             // Final calibration with converged smile strangles
             quotes_.clear();
-            quotes_.push_back(Handle<DeltaVolQuote>(
-                ext::make_shared<DeltaVolQuote>(
-                    DeltaVolQuote(atm(), deltaType(),
-                                  exerciseTime(), atmType()))));
+            quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(DeltaVolQuote(atm(), deltaType(),
+                                                                                    exerciseTime(), atmType()))));
 
             for (Size i = 0; i < deltas_.size(); ++i) {
                 Real d = std::fabs(deltas_[i]);
@@ -242,14 +238,10 @@ namespace QuantLib {
                 Volatility cVol = atm_->value() + bf + rr / 2.;
                 Volatility pVol = atm_->value() + bf - rr / 2.;
 
-                quotes_.push_back(Handle<DeltaVolQuote>(
-                    ext::make_shared<DeltaVolQuote>(DeltaVolQuote(
-                        d, makeQuoteHandle(cVol),
-                        exerciseTime(), deltaType_))));
-                quotes_.push_back(Handle<DeltaVolQuote>(
-                    ext::make_shared<DeltaVolQuote>(DeltaVolQuote(
-                        -d, makeQuoteHandle(pVol),
-                        exerciseTime(), deltaType_))));
+                quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(DeltaVolQuote(d, makeQuoteHandle(cVol),
+                                                                                                        exerciseTime(), deltaType_))));
+                quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(DeltaVolQuote(-d, makeQuoteHandle(pVol),
+                                                                                                        exerciseTime(), deltaType_))));
             }
 
             calibrate();
@@ -263,10 +255,11 @@ namespace QuantLib {
             quotes_.clear();
 
             // handle the atm
-            quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(
-                DeltaVolQuote(atm(), deltaType(), exerciseTime(), atmType()))));
+            quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(DeltaVolQuote(atm(), deltaType(), 
+                                                                                                    exerciseTime(), atmType()))));
 
-            for (Size i = 0; i < deltas_.size(); ++i) {
+            for (Size i = 0; i < deltas_.size(); ++i) 
+            {
                 Real d = std::fabs(deltas_[i]);
                 Real rr = rrs_[i]->value();
                 Real bf = bfs_[i]->value();
@@ -274,10 +267,10 @@ namespace QuantLib {
                 Volatility cVol = atm_->value() + bf + rr / 2.;
                 Volatility pVol = atm_->value() + bf - rr / 2.;
 
-                quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(
-                    DeltaVolQuote(d, makeQuoteHandle(cVol), exerciseTime(), deltaType_))));
-                quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(
-                    DeltaVolQuote(-d, makeQuoteHandle(pVol), exerciseTime(), deltaType_))));
+                quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(DeltaVolQuote(d, makeQuoteHandle(cVol), 
+                                                                                                        exerciseTime(), deltaType_))));
+                quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(DeltaVolQuote(-d, makeQuoteHandle(pVol), 
+                                                                                                        exerciseTime(), deltaType_))));
             }
 
             calibrate();

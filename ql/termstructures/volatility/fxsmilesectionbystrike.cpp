@@ -144,20 +144,20 @@ namespace QuantLib {
         std::vector<Real> targetVols(quotes_.size());
         std::vector<Real> strikes(quotes_.size());
 
-        for (Size i = 0; i < quotes_.size(); ++i) {
+        for (Size i = 0; i < quotes_.size(); ++i) 
+        {
             Real vol = quotes_[i]->value();
             Real w = vol * htau;
             targetVols[i] = vol;
 
-            if (quotes_[i]->atmType() == DeltaVolQuote::AtmNull) {
-                Option::Type ot =
-                    (quotes_[i]->delta() < 0) ? Option::Put : Option::Call;
-                strikes[i] = BlackDeltaCalculator(ot, dt, spotVal, ddom, dfor, w)
-                                 .strikeFromDelta(quotes_[i]->delta());
-            } else {
-                strikes[i] =
-                    BlackDeltaCalculator(Option::Call, dt, spotVal, ddom, dfor, w)
-                        .atmStrike(quotes_[i]->atmType());
+            if (quotes_[i]->atmType() == DeltaVolQuote::AtmNull) 
+            {
+                Option::Type ot = (quotes_[i]->delta() < 0) ? Option::Put : Option::Call;
+                strikes[i] = BlackDeltaCalculator(ot, dt, spotVal, ddom, dfor, w).strikeFromDelta(quotes_[i]->delta());
+            } 
+            else 
+            {
+                strikes[i] = BlackDeltaCalculator(Option::Call, dt, spotVal, ddom, dfor, w).atmStrike(quotes_[i]->atmType());
             }
         }
 
@@ -165,7 +165,8 @@ namespace QuantLib {
         auto costValues = [&](const Array& x) -> Array {
             std::vector<Real> p(x.begin(), x.end());
             Array residuals(quotes_.size());
-            for (Size i = 0; i < quotes_.size(); ++i) {
+            for (Size i = 0; i < quotes_.size(); ++i) 
+            {
                 residuals[i] = _volByStrike(strikes[i], fwd, tau, p) - targetVols[i];
             }
             return residuals;

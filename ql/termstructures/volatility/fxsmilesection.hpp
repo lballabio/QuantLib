@@ -84,26 +84,28 @@ namespace QuantLib {
     template <class SS>
     fxStrangleHelper<SS>::fxStrangleHelper(Handle<Quote> brokerFlyQuote, Real delta)
     : quote_(std::move(brokerFlyQuote)), delta_(delta), smileSection_(nullptr),
-      callStrike_(0.0), putStrike_(0.0), marketStranglePrice_(0.0),
-      initialized_(false) {
+      callStrike_(0.0), putStrike_(0.0), marketStranglePrice_(0.0), initialized_(false) 
+    {
         registerWith(quote_);
     }
 
     template <class SS>
     fxStrangleHelper<SS>::fxStrangleHelper(Real brokerFlyQuote, Real delta)
-    : quote_(makeQuoteHandle(brokerFlyQuote)), delta_(delta),
-      smileSection_(nullptr), callStrike_(0.0), putStrike_(0.0),
-      marketStranglePrice_(0.0), initialized_(false) {}
+    : quote_(makeQuoteHandle(brokerFlyQuote)), delta_(delta), smileSection_(nullptr), 
+      callStrike_(0.0), putStrike_(0.0), marketStranglePrice_(0.0), initialized_(false) 
+    {}
 
     template <class SS>
-    void fxStrangleHelper<SS>::setSmileSection(SS* ss) {
+    void fxStrangleHelper<SS>::setSmileSection(SS* ss) 
+    {
         QL_REQUIRE(ss != nullptr, "null smile section given");
         smileSection_ = ss;
         initialized_ = false;
     }
 
     template <class SS>
-    void fxStrangleHelper<SS>::initialize() {
+    void fxStrangleHelper<SS>::initialize() 
+    {
         QL_REQUIRE(smileSection_ != nullptr, "smile section not set");
 
         Real atmVol = smileSection_->atm_->value();
@@ -122,15 +124,15 @@ namespace QuantLib {
         putStrike_ = BlackDeltaCalculator(Option::Put, dt, spotVal, ddom, dfor, w)
                          .strikeFromDelta(-delta_);
 
-        marketStranglePrice_ =
-            BlackCalculator(Option::Call, callStrike_, fwd, w).value() +
-            BlackCalculator(Option::Put, putStrike_, fwd, w).value();
+        marketStranglePrice_ = BlackCalculator(Option::Call, callStrike_, fwd, w).value() +
+                                 BlackCalculator(Option::Put, putStrike_, fwd, w).value();
 
         initialized_ = true;
     }
 
     template <class SS>
-    Real fxStrangleHelper<SS>::impliedQuote() const {
+    Real fxStrangleHelper<SS>::impliedQuote() const 
+    {
         QL_REQUIRE(initialized_, "fxStrangleHelper not initialized");
 
         Real htau = std::sqrt(smileSection_->exerciseTime());
@@ -141,9 +143,8 @@ namespace QuantLib {
         Real vc = smileSection_->volByStrike(callStrike_);
         Real vp = smileSection_->volByStrike(putStrike_);
 
-        Real smileStranglePrice =
-            BlackCalculator(Option::Call, callStrike_, fwd, vc * htau).value() +
-            BlackCalculator(Option::Put, putStrike_, fwd, vp * htau).value();
+        Real smileStranglePrice = BlackCalculator(Option::Call, callStrike_, fwd, vc * htau).value() +
+                                    BlackCalculator(Option::Put, putStrike_, fwd, vp * htau).value();
 
         // Convert back to a broker-fly vol: find sigma_bf such that
         // strangle priced at atm + sigma_bf = smileStranglePrice
