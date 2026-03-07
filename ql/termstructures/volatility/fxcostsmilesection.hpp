@@ -1,6 +1,7 @@
 #ifndef quantlib_axl_cost_fx_smile_section_hpp
 #define quantlib_axl_cost_fx_smile_section_hpp
 
+#include <ql/math/array.hpp>
 #include <ql/math/polynomialmathfunction.hpp>
 #include <ql/math/quadratic.hpp>
 #include <ql/termstructures/volatility/fxsmilesectionbystrike.hpp>
@@ -162,16 +163,19 @@ namespace QuantLib {
       private:
         //! \name fxSmileSectionByStrike interface
         //@{
-        virtual Volatility _volByStrike(Real strike,
-                                        Real fwd,
-                                        Time tau,
-                                        const std::vector<Real>& params) const;
+        Volatility _volByStrike(Real strike,
+                                Real fwd,
+                                Time tau,
+                                const std::vector<Real>& params) const override;
         //@}
 
         //! \name fxCostSmileSection interface
         //@{
-        virtual void calibrate() const;
+        void calibrate() const override;
         //@}
+
+      protected:
+        Array initialParams() const override;
 
     };
 
@@ -236,16 +240,19 @@ namespace QuantLib {
       private:
         //! \name fxSmileSectionByStrike interface
         //@{
-        virtual Volatility _volByStrike(Real strike, 
-                                        Real fwd, 
-                                        Time tau, 
-                                        const std::vector<Real>& params) const;
+        Volatility _volByStrike(Real strike,
+                                Real fwd,
+                                Time tau,
+                                const std::vector<Real>& params) const override;
         //@}
 
         //! \name fxCostSmileSection interface
         //@{
-        virtual void calibrate() const;
+        void calibrate() const override;
         //@}
+
+      protected:
+        Array initialParams() const override;
     };
 
 } // namespace QuantLib

@@ -1,3 +1,4 @@
+#include <ql/math/solvers1d/brent.hpp>
 #include <ql/termstructures/volatility/fxsmilesection.hpp>
 
 namespace QuantLib {
@@ -153,14 +154,105 @@ namespace QuantLib {
             // atm_ is the market input for this path.
             atm_ = atmInput_;
 
-            // calibrate from RR and flies but flies are broker flies!
-            // Broker flies - run a three/five point calibration to get the smile strangles
-            if (deltas_.size() == 1) {
-                // three point calibration
+            // Create a strangle helper for each delta level.
+            std::vector<fxStrangleHelper<fxSmileSection>> helpers;
+            helpers.reserve(deltas_.size());
+            for (Size i = 0; i < deltas_.size(); ++i) {
+                helpers.emplace_back(bfs_[i], std::fabs(deltas_[i]));
+                helpers.back().setSmileSection(const_cast<fxSmileSection*>(this));
+                helpers.back().initialize();
             }
-            else {
-                // five point calibration
+
+            // Initial guess: smile strangles = broker flies
+            std::vector<Real> smileStrangles(deltas_.size());
+            for (Size i = 0; i < deltas_.size(); ++i) {
+                smileStrangles[i] = bfs_[i]->value();
             }
+
+            // Iteratively solve for each smile strangle.  In the
+            // three-point case (one delta) this converges in a single
+            // pass; with two or more deltas we iterate until the
+            // strangle errors are all within tolerance.
+            const Size maxOuterIter = 20;
+            const Real tol = 1.0e-10;
+
+            for (Size iter = 0; iter < maxOuterIter; ++iter) {
+                Real maxErr = 0.0;
+
+                for (Size i = 0; i < deltas_.size(); ++i) {
+                    // Objective: find smileStrangles[i] such that
+                    // the smile reproduces the market strangle price.
+                    auto error = [&](Real ss) -> Real {
+                        smileStrangles[i] = ss;
+
+                        // Rebuild delta-vol quotes from current smile strangles
+                        quotes_.clear();
+                        quotes_.push_back(Handle<DeltaVolQuote>(
+                            ext::make_shared<DeltaVolQuote>(
+                                DeltaVolQuote(atm(), deltaType(),
+                                              exerciseTime(), atmType()))));
+
+                        for (Size j = 0; j < deltas_.size(); ++j) {
+                            Real d = std::fabs(deltas_[j]);
+                            Real rr = rrs_[j]->value();
+                            Real bf = smileStrangles[j];
+
+                            Volatility cVol = atm_->value() + bf + rr / 2.;
+                            Volatility pVol = atm_->value() + bf - rr / 2.;
+
+                            quotes_.push_back(Handle<DeltaVolQuote>(
+                                ext::make_shared<DeltaVolQuote>(DeltaVolQuote(
+                                    d, makeQuoteHandle(cVol),
+                                    exerciseTime(), deltaType_))));
+                            quotes_.push_back(Handle<DeltaVolQuote>(
+                                ext::make_shared<DeltaVolQuote>(DeltaVolQuote(
+                                    -d, makeQuoteHandle(pVol),
+                                    exerciseTime(), deltaType_))));
+                        }
+
+                        calibrate();
+                        return helpers[i].flyError();
+                    };
+
+                    Brent solver;
+                    solver.setMaxEvaluations(1000);
+                    Real guess = smileStrangles[i];
+                    smileStrangles[i] = solver.solve(
+                        error, 1.0e-12, guess, guess * 0.1, guess * 5.0);
+
+                    maxErr = std::max(maxErr, std::fabs(helpers[i].flyError()));
+                }
+
+                if (maxErr < tol)
+                    break;
+            }
+
+            // Final calibration with converged smile strangles
+            quotes_.clear();
+            quotes_.push_back(Handle<DeltaVolQuote>(
+                ext::make_shared<DeltaVolQuote>(
+                    DeltaVolQuote(atm(), deltaType(),
+                                  exerciseTime(), atmType()))));
+
+            for (Size i = 0; i < deltas_.size(); ++i) {
+                Real d = std::fabs(deltas_[i]);
+                Real rr = rrs_[i]->value();
+                Real bf = smileStrangles[i];
+
+                Volatility cVol = atm_->value() + bf + rr / 2.;
+                Volatility pVol = atm_->value() + bf - rr / 2.;
+
+                quotes_.push_back(Handle<DeltaVolQuote>(
+                    ext::make_shared<DeltaVolQuote>(DeltaVolQuote(
+                        d, makeQuoteHandle(cVol),
+                        exerciseTime(), deltaType_))));
+                quotes_.push_back(Handle<DeltaVolQuote>(
+                    ext::make_shared<DeltaVolQuote>(DeltaVolQuote(
+                        -d, makeQuoteHandle(pVol),
+                        exerciseTime(), deltaType_))));
+            }
+
+            calibrate();
         }
         else {
             // Calibrate from RRs and flies, where the flies are smile strangles.
@@ -264,39 +356,6 @@ namespace QuantLib {
         solver.setMaxEvaluations(10000);
         return solver.solve([&](Rate strike) { return normProbError(strike); }, 
                                 1e-12, fwd_, fwd_ / 10., fwd_ * 10.);
-    }
-
-    template <class SS>
-    Real fxStrangleHelper<SS>::brokerFly() {
-
-        // TODO: This requires work!
-        QL_REQUIRE(smileSection_ != nullptr, "smile section not set");
-
-        smileSection_->quotes_.clear();
-
-        // handle the atm
-        smileSection_->quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(
-            DeltaVolQuote(smileSection_->atm(), smileSection_->deltaType(),
-                          smileSection_->exerciseTime(), smileSection_->atmType()))));
-
-        Real alpha = quote_->value() / smileSection_->bfs_[0]->value();
-
-        for (Size i = 0; i < deltas_.size(); ++i) {
-            Real d = std::fabs(smileSection_->deltas_[i]);
-            Real rr = smileSection_->rrs_[i]->value();
-            Real bf = smileSection_->bfs_[i]->value();
-
-            Volatility cVol = smileSection_->atm_->value() + alpha * bf + rr / 2.;
-            Volatility pVol = smileSection_->atm_->value() + alpha * bf - rr / 2.;
-
-            smileSection_->quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(
-                DeltaVolQuote(d, makeQuoteHandle(cVol), exerciseTime(), deltaType_))));
-            smileSection_->quotes_.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(
-                DeltaVolQuote(-d, makeQuoteHandle(pVol), exerciseTime(), deltaType_))));
-        }
-
-        smileSection_->calibrate();
-
     }
 
 }

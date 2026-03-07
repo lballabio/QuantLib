@@ -1,3 +1,6 @@
+#include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/endcriteria.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/fxsmilesectionbydelta.hpp>
@@ -192,13 +195,71 @@ namespace QuantLib {
         return d;
     }
 
-    void fxSmileSectionByDelta::calibrate() const 
+    void fxSmileSectionByDelta::calibrate() const
     {
-        // TODO:
-        // Uses deltaVolQuotes_ to calibrate the params!
-        // Called repeatedly when ajsuting smile strangles!
-        // 1. get initial parameters - define another abstract function?
-        // 2. minimize the error - what optimization to use?
+        QL_REQUIRE(!quotes_.empty(), "no delta-vol quotes to calibrate against");
+
+        const Real fwd = fwd_;
+        const Time tau = exerciseTime();
+
+        // Precompute target vols and deltas from delta-vol quotes.
+        // For a delta-parameterized smile the natural coordinates are
+        // put deltas, so convert call deltas to the put-delta equivalent.
+        std::vector<Real> targetVols(quotes_.size());
+        std::vector<Real> deltas(quotes_.size());
+
+        for (Size i = 0; i < quotes_.size(); ++i) {
+            targetVols[i] = quotes_[i]->value();
+
+            if (quotes_[i]->atmType() != DeltaVolQuote::AtmNull) {
+                // ATM quote: use a conventional put delta of -0.5
+                deltas[i] = -0.5;
+            } else {
+                Real d = quotes_[i]->delta();
+                // Convert call delta to put delta if needed
+                if (d > 0) {
+                    switch (deltaType()) {
+                    case DeltaVolQuote::Spot:
+                        deltas[i] = d - dfor_;
+                        break;
+                    case DeltaVolQuote::Fwd:
+                        deltas[i] = d - 1.0;
+                        break;
+                    default:
+                        // For premium-adjusted deltas the call-to-put
+                        // conversion is strike-dependent and handled
+                        // implicitly through _volByDelta, so just use
+                        // the raw put delta.
+                        deltas[i] = d;
+                        break;
+                    }
+                } else {
+                    deltas[i] = d;
+                }
+            }
+        }
+
+        // Cost function: residual = model_vol(delta_i) - target_vol_i
+        auto costValues = [&](const Array& x) -> Array {
+            std::vector<Real> p(x.begin(), x.end());
+            Array residuals(quotes_.size());
+            for (Size i = 0; i < quotes_.size(); ++i) {
+                residuals[i] = _volByDelta(deltas[i], fwd, tau, p) - targetVols[i];
+            }
+            return residuals;
+        };
+
+        SimpleCostFunction<decltype(costValues)> costFunction(costValues);
+        NoConstraint constraint;
+        Array guess = initialParams();
+
+        Problem problem(costFunction, constraint, guess);
+        LevenbergMarquardt lm;
+        EndCriteria endCriteria(1000, 100, 1.0e-12, 1.0e-12, 1.0e-12);
+        lm.minimize(problem, endCriteria);
+
+        const Array& solution = problem.currentValue();
+        params_.assign(solution.begin(), solution.end());
     }
 
 }
