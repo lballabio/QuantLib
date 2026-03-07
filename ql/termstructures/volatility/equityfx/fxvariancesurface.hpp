@@ -10,6 +10,7 @@
 #include <ql/termstructures/volatility/fxsmilesection.hpp>
 #include <ql/termstructures/volatility/fxcostsmilesection.hpp>
 #include <ql/quote.hpp>
+#include <map>
 
 namespace QuantLib {
 
@@ -90,6 +91,11 @@ namespace QuantLib {
 
         mutable std::vector<T> smileSections_;
 
+        // Cache for interpolated smile sections, keyed by discretized trading time.
+        // Precision matches the pillar-snapping tolerance of 1/(365*8).
+        static long tauKey(Time tau) { return std::lround(tau * 365 * 8); }
+        mutable std::map<long, Handle<T>> smileCache_;
+
     };
 
     template <class T>
@@ -131,8 +137,9 @@ namespace QuantLib {
     }
 
     template<class T>
-    inline void fxVarianceSurface<T>::update() 
+    inline void fxVarianceSurface<T>::update()
     {
+        smileCache_.clear();
         BlackVarianceTermStructure::update();
         getTradingTimes();
     }
@@ -211,10 +218,14 @@ namespace QuantLib {
                     return (vol * vol * t);
                 } 
 
-                // now we have to interpolate!
-                Real w = (tau - times_[i]) / (times_[i + 1] - times_[i]);
-                Handle<T> ss = interpolatedSmileSection(t, w, smileSections_[i - 1], smileSections_[i]);
-                vol = ss->volByStrike(strike);
+                // now we have to interpolate - check cache first!
+                long key = tauKey(tau);
+                auto it = smileCache_.find(key);
+                if (it == smileCache_.end()) {
+                    Real w = (tau - times_[i]) / (times_[i + 1] - times_[i]);
+                    it = smileCache_.emplace(key, interpolatedSmileSection(t, w, smileSections_[i - 1], smileSections_[i])).first;
+                }
+                vol = it->second->volByStrike(strike);
                 return (vol * vol * t);
             }
         } 
