@@ -77,7 +77,7 @@ namespace QuantLib {
         void registerWithMarketData();
         void getTradingTimes();
 
-        virtual Handle<T> interpolatedSmileSection(Time t, Real wt, const T& ssInit, const T& ssFinal) const = 0;
+        virtual Handle<T> interpolatedSmileSection(Time t, Real wInit, const T& ssInit, Real wFinal, const T& ssFinal) const = 0;
         Real blackVarianceImpl(Time t, Real strike) const;  // smile variance
 
         const Handle<Quote> spot_;
@@ -190,51 +190,65 @@ namespace QuantLib {
     template <class T>
     Real fxVarianceSurface<T>::blackVarianceImpl(Time t, Real strike) const {
         Real tau = timeTs_->tradingTime(t);
+
+        // helper: look up or create an interpolated smile and return vol^2 * t
+        auto cachedVariance = [&](long key, auto buildSmile) {
+            auto it = smileCache_.find(key);
+            if (it == smileCache_.end())
+                it = smileCache_.emplace(key, buildSmile()).first;
+            Volatility vol = it->second->volByStrike(strike);
+            return (vol * vol * t);
+        };
+
+        if (tau <= times_[1]) {
+            // before first expiry — scale down the first smile
+            if (tau < (1. / (365 * 8)))
+                return 0.0;
+
+            long key = tauKey(tau);
+            Real wFinal = tau / times_[1];
+            return cachedVariance(key, [&] {
+                return interpolatedSmileSection(t, 0.0, smileSections_.front(),
+                                                wFinal, smileSections_.front());
+            });
+        }
+
         if (tau <= times_.back()) {
-            // before final expiry...
+            // between two pillar smiles
+            Size i = 0;
+            while (times_[i + 1] < tau)
+                i++;
 
-            if (tau <= times_[1]) {
-                // if its before first expiry - interpolate from 0!
-                QL_FAIL("smile before first expiry - not implemented!");
-            } 
-            else {
-                // interpolate between two smiles
-                Size i = 0;
-                while (times_[i + 1] < tau)
-                    i++;
+            // times_ starts at 0 but there is no smile section
+            // so adjust i accordingly when accessing smileSections_
 
-                // times_ starts at 0 but there is no smile section
-                // so adjust i accordingly when accessing smileSections_
-
-                Volatility vol;
-                // check if the expiry is at one of the pillar dates!
-                if ((tau - times_[i]) < (1. / (365 * 8))) {
-                    vol = smileSections_[i - 1].volByStrike(strike);
-                    return (vol * vol * t);
-                } 
-
-                if ((times_[i + 1] - tau) < (1. / (365 * 8))) {
-                    vol = smileSections_[i].volByStrike(strike);
-                    return (vol * vol * t);
-                } 
-
-                // now we have to interpolate - check cache first!
-                long key = tauKey(tau);
-                auto it = smileCache_.find(key);
-                if (it == smileCache_.end()) {
-                    Real w = (tau - times_[i]) / (times_[i + 1] - times_[i]);
-                    it = smileCache_.emplace(key, interpolatedSmileSection(t, w, smileSections_[i - 1], smileSections_[i])).first;
-                }
-                vol = it->second->volByStrike(strike);
+            // check if the expiry is at one of the pillar dates
+            if ((tau - times_[i]) < (1. / (365 * 8))) {
+                Volatility vol = smileSections_[i - 1].volByStrike(strike);
                 return (vol * vol * t);
             }
-        } 
-        else {
-            // extrapolate with flat vol in trading time!
-            // there might be events beyond the last expiry - this should
-            // account for that as we are working in trading time!
-            QL_FAIL("smile extrapolation - not implemented!");
+
+            if ((times_[i + 1] - tau) < (1. / (365 * 8))) {
+                Volatility vol = smileSections_[i].volByStrike(strike);
+                return (vol * vol * t);
+            }
+
+            // interpolate — check cache first
+            long key = tauKey(tau);
+            Real w = (tau - times_[i]) / (times_[i + 1] - times_[i]);
+            return cachedVariance(key, [&] {
+                return interpolatedSmileSection(t, 1.0 - w, smileSections_[i - 1],
+                                                w, smileSections_[i]);
+            });
         }
+
+        // beyond final expiry — scale up the last smile
+        long key = tauKey(tau);
+        Real wInit = tau / times_.back();
+        return cachedVariance(key, [&] {
+            return interpolatedSmileSection(t, wInit, smileSections_.back(),
+                                            0.0, smileSections_.back());
+        });
     }
 
     template <class T>
@@ -278,7 +292,7 @@ namespace QuantLib {
                                bool forceMonotoneVariance = true);
 
       private:
-        Handle<T> interpolatedSmileSection(Time t, Real wt, const T& ssInit, const T& ssFinal) const;
+        Handle<T> interpolatedSmileSection(Time t, Real wInit, const T& ssInit, Real wFinal, const T& ssFinal) const;
     };
 
     template <class T>
@@ -303,18 +317,22 @@ namespace QuantLib {
 
     template <class T>
     Handle<T> fxVarianceSurfaceClark<T>::interpolatedSmileSection(Time t,
-                                                                  Real wt,
+                                                                  Real wInit,
                                                                   const T& ssInit,
+                                                                  Real wFinal,
                                                                   const T& ssFinal) const {
         // Implementation of flat forward smile interpolation in variance [Clark].
-        // Interpolate ATM, 25d and 10d strikes for a given weight (w) to get five
+        // Interpolate ATM, 25d and 10d strikes for given weights to get five
         // points on the interpolated smile. Calibrate and return the smile.
-        auto flatFwdVar = [wt](Volatility v1, Volatility v2) {
-            Volatility v = v1 * v1 * (1 - wt) + v2 * v2 * wt;
-            return std::sqrt(v);
+        //
+        // For interpolation between two pillars: wInit = 1-w, wFinal = w.
+        // For scaling a single smile (before first / after last pillar):
+        // one weight is 0, the other is the variance scaling factor.
+        auto flatFwdVar = [wInit, wFinal](Volatility v1, Volatility v2) {
+            return std::sqrt(v1 * v1 * wInit + v2 * v2 * wFinal);
         };
 
-        Handle<Quote> atm = makeQuoteHandle(flatFwdVar(ssInit.atm()->value(), 
+        Handle<Quote> atm = makeQuoteHandle(flatFwdVar(ssInit.atm()->value(),
                                                        ssFinal.atm()->value()));
 
         // 25 delta
@@ -334,13 +352,13 @@ namespace QuantLib {
         Handle<Quote> bf10 = makeQuoteHandle((v10c + v10p) / 2. - atm->value());
 
         // create and return the smile section
-        return Handle<T>(ext::make_shared<T>(t, this->spot(), atm, 
+        return Handle<T>(ext::make_shared<T>(t, this->spot(), atm,
                                              std::vector<Handle<Quote>>{rr25, rr10},
-                                             std::vector<Handle<Quote>>{bf25, bf10}, 
+                                             std::vector<Handle<Quote>>{bf25, bf10},
                                              std::vector<Real>{0.25, 0.10},
-                                             this->foreignDiscountCurve(), 
-                                             this->domesticDiscountCurve(), 
-                                             ssInit.deltaType(), ssInit.atmType(), 
+                                             this->foreignDiscountCurve(),
+                                             this->domesticDiscountCurve(),
+                                             ssInit.deltaType(), ssInit.atmType(),
                                              ssInit.flyType(), this->dayCounter()));
     }
     //@}
@@ -369,7 +387,7 @@ namespace QuantLib {
                              bool forceMonotoneVariance = true);
 
       private:
-        Handle<T> interpolatedSmileSection(Time t, Real wt, const T& ssInit, const T& ssFinal) const;
+        Handle<T> interpolatedSmileSection(Time t, Real wInit, const T& ssInit, Real wFinal, const T& ssFinal) const;
     };
 
 
@@ -394,19 +412,46 @@ namespace QuantLib {
 
 
     template <class T>
-    Handle<T> fxVarianceSurfaceNCP<T>::interpolatedSmileSection(Time t, 
-                                                                Real wt, 
-                                                                const T& ssInit, 
+    Handle<T> fxVarianceSurfaceNCP<T>::interpolatedSmileSection(Time t,
+                                                                Real wInit,
+                                                                const T& ssInit,
+                                                                Real wFinal,
                                                                 const T& ssFinal) const {
-        // Implementation of interpolation in probability space using normed call
-        // prices [Gope, Fries 2011].
+        // Scaling case: same smile on both sides — scale variance rather than
+        // interpolating in probability space.
+        if (&ssInit == &ssFinal) {
+            Real s = std::sqrt(wInit + wFinal); // vol scaling factor
 
-        // calculate the forward for the intrpolated smile
+            Handle<Quote> atm = makeQuoteHandle(ssInit.atm()->value() * s);
+
+            // 25 delta
+            Volatility v25c = ssInit.volByDelta(0.25, Option::Call) * s;
+            Volatility v25p = ssInit.volByDelta(-0.25, Option::Put) * s;
+            Handle<Quote> rr25 = makeQuoteHandle(v25c - v25p);
+            Handle<Quote> bf25 = makeQuoteHandle((v25c + v25p) / 2. - atm->value());
+
+            // 10 delta
+            Volatility v10c = ssInit.volByDelta(0.10, Option::Call) * s;
+            Volatility v10p = ssInit.volByDelta(-0.10, Option::Put) * s;
+            Handle<Quote> rr10 = makeQuoteHandle(v10c - v10p);
+            Handle<Quote> bf10 = makeQuoteHandle((v10c + v10p) / 2. - atm->value());
+
+            return Handle<T>(ext::make_shared<T>(t, this->spot(), atm,
+                                                 std::vector<Handle<Quote>>{rr25, rr10},
+                                                 std::vector<Handle<Quote>>{bf25, bf10},
+                                                 std::vector<Real>{0.25, 0.10},
+                                                 this->foreignDiscountCurve(),
+                                                 this->domesticDiscountCurve(),
+                                                 ssInit.deltaType(), ssInit.atmType(),
+                                                 ssInit.flyType(), this->dayCounter()));
+        }
+
+        // Interpolation in probability space using normed call prices [Gope, Fries 2011].
         Real ddom = this->domesticDiscountCurve()->discount(t);
         Real dfor = this->foreignDiscountCurve()->discount(t);
         Real spt = this->spot()->value();
 
-        auto interpNcp = [t, wt, ssInit, ssFinal, spt, ddom, dfor](Real k2) {
+        auto interpNcp = [t, wInit, wFinal, ssInit, ssFinal, spt, ddom, dfor](Real k2) {
             Real np = ssFinal.normedProbability(k2); // normed probability
             Real k1 = ssInit.strikeFromNormProb(np); // strike on first smile with same norm prob
 
@@ -417,12 +462,12 @@ namespace QuantLib {
 
             // interpolated values
             Real fwd = spt * dfor / ddom;
-            Real k = fwd * ((1. - wt) * m1 + wt * m2);     // strike
-            Real c = fwd * ((1. - wt) * ncp1 + wt * ncp2); // prem
+            Real k = fwd * (wInit * m1 + wFinal * m2);     // strike
+            Real c = fwd * (wInit * ncp1 + wFinal * ncp2); // prem
 
             Brent solver;
             solver.setMaxEvaluations(10000);
-            Real iw = solver.solve([&](Real w) { return BlackCalculator(Option::Call, k, fwd, w).value() - c; }, 
+            Real iw = solver.solve([&](Real w) { return BlackCalculator(Option::Call, k, fwd, w).value() - c; },
                                     1e-12, 0.1, 0.01, 0.5);
 
             Real v = iw / std::sqrt(t); // black calculator uses total vol so scale by sqrt(time)
@@ -430,11 +475,10 @@ namespace QuantLib {
             // convert the (strike, vol) to a (delta, vol) to create a DeltaVolQuote
             Real d;
             if (k > fwd) {
-                // create a call
                 d = BlackDeltaCalculator(Option::Call, ssFinal.deltaType(), spt, ddom, dfor, iw)
                         .deltaFromStrike(k);
-            } 
-            else 
+            }
+            else
             {
                 d = BlackDeltaCalculator(Option::Put, ssFinal.deltaType(), spt, ddom, dfor, iw)
                         .deltaFromStrike(k);
@@ -465,10 +509,10 @@ namespace QuantLib {
         quotes.push_back(Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(interpNcp(k_c10))));
 
         // create and return the smile section
-        return Handle<T>(ext::make_shared<T>(t, this->spot(), quotes, 
+        return Handle<T>(ext::make_shared<T>(t, this->spot(), quotes,
                                              this->foreignDiscountCurve(),
-                                             this->domesticDiscountCurve(), 
-                                             ssInit.deltaType(), ssInit.atmType(), 
+                                             this->domesticDiscountCurve(),
+                                             ssInit.deltaType(), ssInit.atmType(),
                                              ssInit.flyType(), this->dayCounter()));
     }
     //@}
