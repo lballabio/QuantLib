@@ -88,6 +88,83 @@ namespace QuantLib {
 
     typedef boost::shared_ptr<fxSmileSectionByDelta> fxSmileSectionByDeltaPtr;
 
+
+    //! Quadratic smile section parameterized by put delta.
+    /*! Implied volatility is a quadratic function of put delta:
+        \f$ \sigma(\Delta) = a \Delta^2 + b \Delta + c \f$
+    */
+    class quadraticSmileSection : public fxSmileSectionByDelta {
+      public:
+        // ctor from market quotes for specific date
+        quadraticSmileSection(const Date& exerciseDate,
+                              const Handle<Quote>& spot,
+                              const Handle<Quote>& atm,
+                              const std::vector<Handle<Quote>>& rrs,
+                              const std::vector<Handle<Quote>>& bfs,
+                              const std::vector<Real>& deltas,
+                              const Handle<YieldTermStructure>& foreignDiscount,
+                              const Handle<YieldTermStructure>& domesticDiscount,
+                              DeltaVolQuote::DeltaType deltaType,
+                              DeltaVolQuote::AtmType atmType,
+                              fxSmileSection::FlyType flyType,
+                              const DayCounter& dayCounter = DayCounter(),
+                              const Date& referenceDate = Date());
+
+        // ctor from market quotes with expiry time - floats with evaluation date
+        quadraticSmileSection(Time exerciseTime,
+                              const Handle<Quote>& spot,
+                              const Handle<Quote>& atm,
+                              const std::vector<Handle<Quote>>& rrs,
+                              const std::vector<Handle<Quote>>& bfs,
+                              const std::vector<Real>& deltas,
+                              const Handle<YieldTermStructure>& foreignDiscount,
+                              const Handle<YieldTermStructure>& domesticDiscount,
+                              DeltaVolQuote::DeltaType deltaType,
+                              DeltaVolQuote::AtmType atmType,
+                              fxSmileSection::FlyType flyType,
+                              const DayCounter& dayCounter = DayCounter());
+
+        // ctor from derived quotes for specific date
+        quadraticSmileSection(const Date& exerciseDate,
+                              const Handle<Quote>& spot,
+                              const std::vector<Handle<DeltaVolQuote>>& quotes,
+                              const Handle<YieldTermStructure>& foreignDiscount,
+                              const Handle<YieldTermStructure>& domesticDiscount,
+                              DeltaVolQuote::DeltaType deltaType,
+                              DeltaVolQuote::AtmType atmType,
+                              FlyType flyType,
+                              const DayCounter& dayCounter = DayCounter(),
+                              const Date& referenceDate = Date());
+
+        // ctor from derived quotes for expiry time - floats with evaluation date
+        quadraticSmileSection(Time exerciseTime,
+                              const Handle<Quote>& spot,
+                              const std::vector<Handle<DeltaVolQuote>>& quotes,
+                              const Handle<YieldTermStructure>& foreignDiscount,
+                              const Handle<YieldTermStructure>& domesticDiscount,
+                              DeltaVolQuote::DeltaType deltaType,
+                              DeltaVolQuote::AtmType atmType,
+                              FlyType flyType,
+                              const DayCounter& dayCounter = DayCounter());
+
+        // Introspection
+        Real a() const { return params_[0]; };
+        Real b() const { return params_[1]; };
+        Real c() const { return params_[2]; };
+
+      private:
+        //! \name fxSmileSectionByDelta interface
+        //@{
+        Volatility _volByDelta(Real delta,
+                               Real fwd,
+                               Time tau,
+                               const std::vector<Real>& params) const override;
+        //@}
+
+      protected:
+        Array initialParams() const override;
+    };
+
 } // namespace QuantLib
 
 #endif

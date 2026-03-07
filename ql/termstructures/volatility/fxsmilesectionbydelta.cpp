@@ -262,4 +262,101 @@ namespace QuantLib {
         params_.assign(solution.begin(), solution.end());
     }
 
+
+    //! \name Quadratic smile section (delta-parameterized)
+    //@{
+    quadraticSmileSection::quadraticSmileSection(const Date& exerciseDate,
+                                                 const Handle<Quote>& spot,
+                                                 const Handle<Quote>& atm,
+                                                 const std::vector<Handle<Quote>>& rrs,
+                                                 const std::vector<Handle<Quote>>& bfs,
+                                                 const std::vector<Real>& deltas,
+                                                 const Handle<YieldTermStructure>& foreignDiscount,
+                                                 const Handle<YieldTermStructure>& domesticDiscount,
+                                                 DeltaVolQuote::DeltaType deltaType,
+                                                 DeltaVolQuote::AtmType atmType,
+                                                 fxSmileSection::FlyType flyType,
+                                                 const DayCounter& dayCounter,
+                                                 const Date& referenceDate)
+    : fxSmileSectionByDelta(exerciseDate, spot, atm, rrs, bfs, deltas,
+                            foreignDiscount, domesticDiscount,
+                            deltaType, atmType, flyType, dayCounter, referenceDate)
+    {
+        params_.reserve(3);
+    }
+
+    quadraticSmileSection::quadraticSmileSection(Time exerciseTime,
+                                                 const Handle<Quote>& spot,
+                                                 const Handle<Quote>& atm,
+                                                 const std::vector<Handle<Quote>>& rrs,
+                                                 const std::vector<Handle<Quote>>& bfs,
+                                                 const std::vector<Real>& deltas,
+                                                 const Handle<YieldTermStructure>& foreignDiscount,
+                                                 const Handle<YieldTermStructure>& domesticDiscount,
+                                                 DeltaVolQuote::DeltaType deltaType,
+                                                 DeltaVolQuote::AtmType atmType,
+                                                 fxSmileSection::FlyType flyType,
+                                                 const DayCounter& dayCounter)
+    : fxSmileSectionByDelta(exerciseTime, spot, atm, rrs, bfs, deltas,
+                            foreignDiscount, domesticDiscount,
+                            deltaType, atmType, flyType, dayCounter)
+    {
+        params_.reserve(3);
+    }
+
+    quadraticSmileSection::quadraticSmileSection(const Date& exerciseDate,
+                                                 const Handle<Quote>& spot,
+                                                 const std::vector<Handle<DeltaVolQuote>>& quotes,
+                                                 const Handle<YieldTermStructure>& foreignDiscount,
+                                                 const Handle<YieldTermStructure>& domesticDiscount,
+                                                 DeltaVolQuote::DeltaType deltaType,
+                                                 DeltaVolQuote::AtmType atmType,
+                                                 fxSmileSection::FlyType flyType,
+                                                 const DayCounter& dayCounter,
+                                                 const Date& referenceDate)
+    : fxSmileSectionByDelta(exerciseDate, spot, quotes,
+                            foreignDiscount, domesticDiscount,
+                            deltaType, atmType, flyType, dayCounter, referenceDate)
+    {
+        params_.reserve(3);
+    }
+
+    quadraticSmileSection::quadraticSmileSection(Time exerciseTime,
+                                                 const Handle<Quote>& spot,
+                                                 const std::vector<Handle<DeltaVolQuote>>& quotes,
+                                                 const Handle<YieldTermStructure>& foreignDiscount,
+                                                 const Handle<YieldTermStructure>& domesticDiscount,
+                                                 DeltaVolQuote::DeltaType deltaType,
+                                                 DeltaVolQuote::AtmType atmType,
+                                                 fxSmileSection::FlyType flyType,
+                                                 const DayCounter& dayCounter)
+    : fxSmileSectionByDelta(exerciseTime, spot, quotes,
+                            foreignDiscount, domesticDiscount,
+                            deltaType, atmType, flyType, dayCounter)
+    {
+        params_.reserve(3);
+    }
+
+    Array quadraticSmileSection::initialParams() const
+    {
+        // vol = a*delta^2 + b*delta + c
+        // ATM put delta is conventionally -0.5, so at ATM:
+        //   atm_vol = a*0.25 + b*(-0.5) + c
+        // Start with a=0, b=0, c=atm_vol
+        Array guess(3);
+        guess[0] = 0.0;
+        guess[1] = 0.0;
+        guess[2] = atm_->value();
+        return guess;
+    }
+
+    Volatility quadraticSmileSection::_volByDelta(Real delta,
+                                                   Real fwd,
+                                                   Time tau,
+                                                   const std::vector<Real>& params) const
+    {
+        return params[0] * delta * delta + params[1] * delta + params[2];
+    }
+    //@}
+
 }
