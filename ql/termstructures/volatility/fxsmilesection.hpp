@@ -4,58 +4,160 @@
 #include <ql/experimental/fx/blackdeltacalculator.hpp>
 #include <ql/experimental/fx/deltavolquote.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/quote.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/option.hpp>
 #include <ql/math/solvers1d/bisection.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 
 
 namespace QuantLib {
 
+    //! Helper for broker-fly / market-strangle calibration.
+    /*! Models the rate-helper pattern: each helper corresponds to one
+        delta level and computes the broker-fly implied by the current
+        calibrated smile.  The residual flyError() = market broker fly
+        minus implied broker fly is driven to zero by the outer solver.
+
+        \warning Being a pointer and not a shared_ptr, the smile
+                 section is not guaranteed to remain allocated for the
+                 whole life of the strangle helper. It is the
+                 responsibility of the programmer to ensure that the
+                 pointer remains valid. It is advised that this method
+                 is called only inside the fx smile section being
+                 calibrated, setting the pointer to <b>this</b>,
+                 i.e., the smile section itself.
+    */
     template <class SS>
     class fxStrangleHelper : public Observer, public Observable {
       public:
-        explicit fxStrangleHelper(Handle<Quote> quote);
-        explicit fxStrangleHelper(Real quote);
+        fxStrangleHelper(Handle<Quote> brokerFlyQuote, Real delta);
+        fxStrangleHelper(Real brokerFlyQuote, Real delta);
         ~fxStrangleHelper() override = default;
 
+        //! The market broker-fly quote.
         const Handle<Quote>& quote() const { return quote_; }
-        virtual Real brokerFly();
-        Real flyError() const { return quote_->value() - brokerFly(); }
 
-        //! sets the smile section to be used for pricing
-        /*! \warning Being a pointer and not a shared_ptr, the smile
-                     section is not guaranteed to remain allocated
-                     for the whole life of the strangle helper. It is
-                     responsibility of the programmer to ensure that
-                     the pointer remains valid. It is advised that
-                     this method is called only inside the fx smile
-                     section being calibrated, setting the pointer
-                     to <b>this</b>, i.e., the term structure itself.
+        //! The delta level this helper calibrates (e.g. 0.25).
+        Real delta() const { return delta_; }
+
+        //! Sets the smile section used for pricing.
+        void setSmileSection(SS* ss);
+
+        //! Precomputes market strangle strikes and price.
+        /*! Must be called after setSmileSection() and after the smile
+            section's forward / discount data are available (i.e. after
+            calculateForward()).
         */
-        virtual void setSmileSection(SS* ss);
+        void initialize();
 
-      protected:
+        //! Broker fly implied by the current calibrated smile.
+        /*! Analogous to BootstrapHelper::impliedQuote().  Computes the
+            strangle price from the calibrated smile at the market
+            strangle strikes and converts it back to an equivalent
+            broker-fly volatility.
+        */
+        Real impliedQuote() const;
+
+        //! Residual: market broker fly - implied broker fly.
+        Real flyError() const { return quote_->value() - impliedQuote(); }
+
+      private:
         Handle<Quote> quote_;
+        Real delta_;
         SS* smileSection_;
+
+        // Cached market strangle data (set by initialize())
+        Real callStrike_;
+        Real putStrike_;
+        Real marketStranglePrice_;
+        bool initialized_;
     };
 
+    // ---------------------------------------------------------------
+    //  fxStrangleHelper inline / template implementation
+    // ---------------------------------------------------------------
+
     template <class SS>
-    fxStrangleHelper<SS>::fxStrangleHelper(Handle<Quote> quote)
-    : quote_(std::move(quote)), smileSection_(nullptr) {
+    fxStrangleHelper<SS>::fxStrangleHelper(Handle<Quote> brokerFlyQuote, Real delta)
+    : quote_(std::move(brokerFlyQuote)), delta_(delta), smileSection_(nullptr),
+      callStrike_(0.0), putStrike_(0.0), marketStranglePrice_(0.0),
+      initialized_(false) {
         registerWith(quote_);
     }
 
     template <class SS>
-    fxStrangleHelper<SS>::fxStrangleHelper(Real quote)
-    : quote_(makeQuoteHandle(quote)), smileSection_(nullptr) {}
+    fxStrangleHelper<SS>::fxStrangleHelper(Real brokerFlyQuote, Real delta)
+    : quote_(makeQuoteHandle(brokerFlyQuote)), delta_(delta),
+      smileSection_(nullptr), callStrike_(0.0), putStrike_(0.0),
+      marketStranglePrice_(0.0), initialized_(false) {}
 
     template <class SS>
     void fxStrangleHelper<SS>::setSmileSection(SS* ss) {
-        QL_REQUIRE(ss != nullptr, "null smile section gives");
+        QL_REQUIRE(ss != nullptr, "null smile section given");
         smileSection_ = ss;
+        initialized_ = false;
+    }
+
+    template <class SS>
+    void fxStrangleHelper<SS>::initialize() {
+        QL_REQUIRE(smileSection_ != nullptr, "smile section not set");
+
+        Real atmVol = smileSection_->atm_->value();
+        Real strdVol = atmVol + quote_->value();
+        Real htau = std::sqrt(smileSection_->exerciseTime());
+        Real w = strdVol * htau;
+
+        Real spotVal = smileSection_->spot()->value();
+        Real ddom = smileSection_->ddom_;
+        Real dfor = smileSection_->dfor_;
+        Real fwd = smileSection_->fwd_;
+        DeltaVolQuote::DeltaType dt = smileSection_->deltaType();
+
+        callStrike_ = BlackDeltaCalculator(Option::Call, dt, spotVal, ddom, dfor, w)
+                          .strikeFromDelta(delta_);
+        putStrike_ = BlackDeltaCalculator(Option::Put, dt, spotVal, ddom, dfor, w)
+                         .strikeFromDelta(-delta_);
+
+        marketStranglePrice_ =
+            BlackCalculator(Option::Call, callStrike_, fwd, w).value() +
+            BlackCalculator(Option::Put, putStrike_, fwd, w).value();
+
+        initialized_ = true;
+    }
+
+    template <class SS>
+    Real fxStrangleHelper<SS>::impliedQuote() const {
+        QL_REQUIRE(initialized_, "fxStrangleHelper not initialized");
+
+        Real htau = std::sqrt(smileSection_->exerciseTime());
+        Real fwd = smileSection_->fwd_;
+        Real atmVol = smileSection_->atm_->value();
+
+        // Price the strangle using the calibrated smile
+        Real vc = smileSection_->volByStrike(callStrike_);
+        Real vp = smileSection_->volByStrike(putStrike_);
+
+        Real smileStranglePrice =
+            BlackCalculator(Option::Call, callStrike_, fwd, vc * htau).value() +
+            BlackCalculator(Option::Put, putStrike_, fwd, vp * htau).value();
+
+        // Convert back to a broker-fly vol: find sigma_bf such that
+        // strangle priced at atm + sigma_bf = smileStranglePrice
+        auto priceError = [&](Real bf) {
+            Real w = (atmVol + bf) * htau;
+            return BlackCalculator(Option::Call, callStrike_, fwd, w).value() +
+                   BlackCalculator(Option::Put, putStrike_, fwd, w).value() -
+                   smileStranglePrice;
+        };
+
+        Brent solver;
+        solver.setMaxEvaluations(1000);
+        Real guess = quote_->value();
+        return solver.solve(priceError, 1.0e-12, guess, guess * 0.5, guess * 2.0);
     }
 
 

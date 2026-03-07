@@ -1,6 +1,7 @@
 #ifndef quantlib_axl_fx_smile_section_delta_hpp
 #define quantlib_axl_fx_smile_section_delta_hpp
 
+#include <ql/math/array.hpp>
 #include <ql/termstructures/volatility/fxsmilesection.hpp>
 
 namespace QuantLib {
@@ -79,6 +80,9 @@ namespace QuantLib {
         //@}
 
       protected:
+        //! Initial parameter guess for calibration.
+        virtual Array initialParams() const = 0;
+
         mutable std::vector<Real> params_;
     };
 

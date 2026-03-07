@@ -1,4 +1,7 @@
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/endcriteria.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
@@ -125,13 +128,60 @@ namespace QuantLib {
         return k;
     }
 
-    void fxSmileSectionByStrike::calibrate() const 
+    void fxSmileSectionByStrike::calibrate() const
     {
-        // TODO: 
-        // Uses deltaVolQuotes_ to calibrate the params!
-        // Called repeatedly when ajsuting smile strangles!
-        // 1. get initial parameters - define another abstract function?
-        // 2. minimize the error - what optimization to use?
+        QL_REQUIRE(!quotes_.empty(), "no delta-vol quotes to calibrate against");
+
+        const Real htau = std::sqrt(exerciseTime());
+        const Real spotVal = spot()->value();
+        const Real fwd = fwd_;
+        const Real ddom = ddom_;
+        const Real dfor = dfor_;
+        const DeltaVolQuote::DeltaType dt = deltaType();
+        const Time tau = exerciseTime();
+
+        // Precompute target vols and strikes from delta-vol quotes
+        std::vector<Real> targetVols(quotes_.size());
+        std::vector<Real> strikes(quotes_.size());
+
+        for (Size i = 0; i < quotes_.size(); ++i) {
+            Real vol = quotes_[i]->value();
+            Real w = vol * htau;
+            targetVols[i] = vol;
+
+            if (quotes_[i]->atmType() == DeltaVolQuote::AtmNull) {
+                Option::Type ot =
+                    (quotes_[i]->delta() < 0) ? Option::Put : Option::Call;
+                strikes[i] = BlackDeltaCalculator(ot, dt, spotVal, ddom, dfor, w)
+                                 .strikeFromDelta(quotes_[i]->delta());
+            } else {
+                strikes[i] =
+                    BlackDeltaCalculator(Option::Call, dt, spotVal, ddom, dfor, w)
+                        .atmStrike(quotes_[i]->atmType());
+            }
+        }
+
+        // Cost function: residual = model_vol(strike_i) - target_vol_i
+        auto costValues = [&](const Array& x) -> Array {
+            std::vector<Real> p(x.begin(), x.end());
+            Array residuals(quotes_.size());
+            for (Size i = 0; i < quotes_.size(); ++i) {
+                residuals[i] = _volByStrike(strikes[i], fwd, tau, p) - targetVols[i];
+            }
+            return residuals;
+        };
+
+        SimpleCostFunction<decltype(costValues)> costFunction(costValues);
+        NoConstraint constraint;
+        Array guess = initialParams();
+
+        Problem problem(costFunction, constraint, guess);
+        LevenbergMarquardt lm;
+        EndCriteria endCriteria(1000, 100, 1.0e-12, 1.0e-12, 1.0e-12);
+        lm.minimize(problem, endCriteria);
+
+        const Array& solution = problem.currentValue();
+        params_.assign(solution.begin(), solution.end());
     }
 
 
@@ -209,10 +259,21 @@ namespace QuantLib {
         params_.reserve(3);
     }
 
-    Volatility polynomialSmileSection::_volByStrike(Rate strike, 
-                                                    Real fwd, 
-                                                    Time tau, 
-                                                    const std::vector<Real>& params) const 
+    Array polynomialSmileSection::initialParams() const
+    {
+        // vol = exp(a*x^2 + b*x + c), at ATM x = Phi(0) = 0.5
+        // with a=b=0, c = log(atm_vol)
+        Array guess(3);
+        guess[0] = 0.0;
+        guess[1] = 0.0;
+        guess[2] = std::log(atm_->value());
+        return guess;
+    }
+
+    Volatility polynomialSmileSection::_volByStrike(Rate strike,
+                                                    Real fwd,
+                                                    Time tau,
+                                                    const std::vector<Real>& params) const
     {
         CumulativeNormalDistribution f;
         Real x = f(std::log(fwd / strike) / (atm_->value() * std::sqrt(tau)));
@@ -295,16 +356,24 @@ namespace QuantLib {
         params_.reserve(3);
     }
 
-    Volatility fxSabrSmileSection::_volByStrike(Rate strike, 
-                                                Real fwd, 
-                                                Time tau, 
-                                                const std::vector<Real>& params) const 
+    Array fxSabrSmileSection::initialParams() const
     {
-        // TODO: ensure parameters are good!
-        return unsafeShiftedSabrVolatility(strike, fwd, tau, 
+        // SABR params: alpha, nu, rho (beta fixed at 1)
+        Array guess(3);
+        guess[0] = atm_->value();  // alpha ~ atm vol for beta=1
+        guess[1] = 0.5;            // nu
+        guess[2] = 0.0;            // rho
+        return guess;
+    }
+
+    Volatility fxSabrSmileSection::_volByStrike(Rate strike,
+                                                Real fwd,
+                                                Time tau,
+                                                const std::vector<Real>& params) const
+    {
+        return unsafeShiftedSabrVolatility(strike, fwd, tau,
                                            params[0], 1.0, params[1], params[2],
                                            0.0, volatilityType());
-        
     }
     //@}
 

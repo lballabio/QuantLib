@@ -355,6 +355,14 @@ namespace QuantLib {
         return w / std::sqrt(tau);
     }
 
+    Array fxCostSmileSectionFlatDynamics::initialParams() const
+    {
+        // Not used — calibration is algebraic (SVD).
+        Array guess(4, 0.0);
+        guess[0] = 1.0;
+        return guess;
+    }
+
     void fxCostSmileSectionFlatDynamics::calibrate() const {
 
         // TODO:
@@ -504,6 +512,14 @@ namespace QuantLib {
             w = z;
 
         return std::sqrt(w / tau);
+    }
+
+    Array fxCostSmileSectionScaledDynamics::initialParams() const
+    {
+        // Not used — calibration is algebraic (SVD).
+        Array guess(4, 0.0);
+        guess[0] = 1.0;
+        return guess;
     }
 
     void fxCostSmileSectionScaledDynamics::calibrate() const {
