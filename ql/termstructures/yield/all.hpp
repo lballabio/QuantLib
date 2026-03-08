@@ -12,6 +12,7 @@
 #include <ql/termstructures/yield/forwardstructure.hpp>
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
 #include <ql/termstructures/yield/interpolatedsimplezerocurve.hpp>
+#include <ql/termstructures/yield/multipleresetsswaphelper.hpp>
 #include <ql/termstructures/yield/nonlinearfittingmethods.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
 #include <ql/termstructures/yield/overnightindexfutureratehelper.hpp>

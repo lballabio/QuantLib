@@ -283,12 +283,14 @@ set(QL_SOURCES
     instruments/makecapfloor.cpp
     instruments/makecds.cpp
     instruments/makecms.cpp
+    instruments/makemultipleresetsswap.cpp
     instruments/makeois.cpp
     instruments/makeswaption.cpp
     instruments/makevanillaswap.cpp
     instruments/makeyoyinflationcapfloor.cpp
     instruments/margrabeoption.cpp
     instruments/multiassetoption.cpp
+    instruments/multipleresetsswap.cpp
     instruments/nonstandardswap.cpp
     instruments/nonstandardswaption.cpp
     instruments/oneassetoption.cpp
@@ -876,6 +878,7 @@ set(QL_SOURCES
     termstructures/yield/fittedbonddiscountcurve.cpp
     termstructures/yield/flatforward.cpp
     termstructures/yield/forwardstructure.cpp
+    termstructures/yield/multipleresetsswaphelper.cpp
     termstructures/yield/nonlinearfittingmethods.cpp
     termstructures/yield/oisratehelper.cpp
     termstructures/yield/overnightindexfutureratehelper.cpp
@@ -1363,12 +1366,14 @@ set(QL_HEADERS
     instruments/makecapfloor.hpp
     instruments/makecds.hpp
     instruments/makecms.hpp
+    instruments/makemultipleresetsswap.hpp
     instruments/makeois.hpp
     instruments/makeswaption.hpp
     instruments/makevanillaswap.hpp
     instruments/makeyoyinflationcapfloor.hpp
     instruments/margrabeoption.hpp
     instruments/multiassetoption.hpp
+    instruments/multipleresetsswap.hpp
     instruments/nonstandardswap.hpp
     instruments/nonstandardswaption.hpp
     instruments/oneassetoption.hpp
@@ -2162,6 +2167,7 @@ set(QL_HEADERS
     termstructures/yield/forwardstructure.hpp
     termstructures/yield/impliedtermstructure.hpp
     termstructures/yield/interpolatedsimplezerocurve.hpp
+    termstructures/yield/multipleresetsswaphelper.hpp
     termstructures/yield/nonlinearfittingmethods.hpp
     termstructures/yield/oisratehelper.hpp
     termstructures/yield/overnightindexfutureratehelper.hpp

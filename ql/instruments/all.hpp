@@ -40,12 +40,14 @@
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/instruments/makecds.hpp>
 #include <ql/instruments/makecms.hpp>
+#include <ql/instruments/makemultipleresetsswap.hpp>
 #include <ql/instruments/makeois.hpp>
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/instruments/makeyoyinflationcapfloor.hpp>
 #include <ql/instruments/margrabeoption.hpp>
 #include <ql/instruments/multiassetoption.hpp>
+#include <ql/instruments/multipleresetsswap.hpp>
 #include <ql/instruments/nonstandardswap.hpp>
 #include <ql/instruments/nonstandardswaption.hpp>
 #include <ql/instruments/oneassetoption.hpp>

@@ -933,12 +933,14 @@
     <ClInclude Include="ql\instruments\makecapfloor.hpp" />
     <ClInclude Include="ql\instruments\makecds.hpp" />
     <ClInclude Include="ql\instruments\makecms.hpp" />
+    <ClInclude Include="ql\instruments\makemultipleresetsswap.hpp" />
     <ClInclude Include="ql\instruments\makeois.hpp" />
     <ClInclude Include="ql\instruments\makeswaption.hpp" />
     <ClInclude Include="ql\instruments\makevanillaswap.hpp" />
     <ClInclude Include="ql\instruments\makeyoyinflationcapfloor.hpp" />
     <ClInclude Include="ql\instruments\margrabeoption.hpp" />
     <ClInclude Include="ql\instruments\multiassetoption.hpp" />
+    <ClInclude Include="ql\instruments\multipleresetsswap.hpp" />
     <ClInclude Include="ql\instruments\nonstandardswap.hpp" />
     <ClInclude Include="ql\instruments\nonstandardswaption.hpp" />
     <ClInclude Include="ql\instruments\oneassetoption.hpp" />
@@ -1790,6 +1792,7 @@
     <ClInclude Include="ql\termstructures\yield\forwardstructure.hpp" />
     <ClInclude Include="ql\termstructures\yield\impliedtermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yield\interpolatedsimplezerocurve.hpp" />
+    <ClInclude Include="ql\termstructures\yield\multipleresetsswaphelper.hpp" />
     <ClInclude Include="ql\termstructures\yield\nonlinearfittingmethods.hpp" />
     <ClInclude Include="ql\termstructures\yield\oisratehelper.hpp" />
     <ClInclude Include="ql\termstructures\yield\overnightindexfutureratehelper.hpp" />
@@ -2212,12 +2215,14 @@
     <ClCompile Include="ql\instruments\makecapfloor.cpp" />
     <ClCompile Include="ql\instruments\makecds.cpp" />
     <ClCompile Include="ql\instruments\makecms.cpp" />
+    <ClCompile Include="ql\instruments\makemultipleresetsswap.cpp" />
     <ClCompile Include="ql\instruments\makeois.cpp" />
     <ClCompile Include="ql\instruments\makeswaption.cpp" />
     <ClCompile Include="ql\instruments\makevanillaswap.cpp" />
     <ClCompile Include="ql\instruments\makeyoyinflationcapfloor.cpp" />
     <ClCompile Include="ql\instruments\margrabeoption.cpp" />
     <ClCompile Include="ql\instruments\multiassetoption.cpp" />
+    <ClCompile Include="ql\instruments\multipleresetsswap.cpp" />
     <ClCompile Include="ql\instruments\nonstandardswap.cpp" />
     <ClCompile Include="ql\instruments\nonstandardswaption.cpp" />
     <ClCompile Include="ql\instruments\oneassetoption.cpp" />
@@ -2796,6 +2801,7 @@
     <ClCompile Include="ql\termstructures\yield\fittedbonddiscountcurve.cpp" />
     <ClCompile Include="ql\termstructures\yield\flatforward.cpp" />
     <ClCompile Include="ql\termstructures\yield\forwardstructure.cpp" />
+    <ClCompile Include="ql\termstructures\yield\multipleresetsswaphelper.cpp" />
     <ClCompile Include="ql\termstructures\yield\nonlinearfittingmethods.cpp" />
     <ClCompile Include="ql\termstructures\yield\oisratehelper.cpp" />
     <ClCompile Include="ql\termstructures\yield\overnightindexfutureratehelper.cpp" />
