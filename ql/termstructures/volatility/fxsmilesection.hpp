@@ -38,6 +38,11 @@ namespace QuantLib {
         fxStrangleHelper(Real brokerFlyQuote, Real delta);
         ~fxStrangleHelper() override = default;
 
+        //! \name Observer interface
+        //@{
+        void update() override { notifyObservers(); }
+        //@}
+
         //! The market broker-fly quote.
         const Handle<Quote>& quote() const { return quote_; }
 
