@@ -1892,6 +1892,60 @@ BOOST_AUTO_TEST_CASE(testFixingConvention) {
     BOOST_CHECK_EQUAL(couponF->fixingDate(), expectedFollowing);
 }
 
+BOOST_AUTO_TEST_CASE(testSimpleThenCompoundedLongFirstPeriod) {
+
+    BOOST_TEST_MESSAGE("Testing SimpleThenCompounded with a long first coupon period...");
+
+    // A semiannual bond with an 8-month first coupon period.  The ICMA
+    // specification requires simple discounting for the first period
+    // regardless of its length; the time-magnitude threshold in
+    // InterestRate::compoundFactor() produces the wrong result in this case.
+
+    Date settlement(15, January, 2023);
+    Settings::instance().evaluationDate() = settlement;
+
+    // Backward schedule with an explicit first coupon date produces a long
+    // (8-month) first stub: Jan 15 -> Sep 15 -> Mar 15 -> ... -> Mar 15, 2026
+    Schedule sch(settlement,
+                 Date(15, March, 2026),
+                 Period(Semiannual),
+                 NullCalendar(),
+                 Unadjusted, Unadjusted,
+                 DateGeneration::Backward,
+                 false,
+                 Date(15, September, 2023));
+
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
+    FixedRateBond bond(0, 100.0, sch, std::vector<Rate>(1, 0.06), dc);
+
+    InterestRate yield(0.05, dc, SimpleThenCompounded, Semiannual);
+
+    // Expected dirty price computed from the ICMA formula:
+    //   B1 = 1/(1 + 0.05*8/12) = 30/31  (simple for the long first period)
+    //   B_k = B1 * (1/1.025)^(k-1)      (compound for subsequent periods)
+    //   cash flows: 4, 3, 3, 3, 3, 103
+    Real expectedPrice = 102.8931;
+    Real tolerance = 1.0e-4;
+
+    Real calculated = BondFunctions::dirtyPrice(bond, yield, settlement);
+    if (std::fabs(calculated - expectedPrice) > tolerance)
+        BOOST_ERROR("failed to reproduce dirty price for long-first-period bond"
+                    << std::fixed << std::setprecision(6)
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expectedPrice
+                    << "\n    tolerance:  " << tolerance);
+
+    // Yield roundtrip: the implied yield must recover the input.
+    Bond::Price price{calculated, Bond::Price::Dirty};
+    Rate impliedYield = BondFunctions::yield(bond, price,
+                                             dc, SimpleThenCompounded, Semiannual,
+                                             settlement, 1.0e-10, 100, 0.05);
+    if (std::fabs(impliedYield - yield.rate()) > 1.0e-7)
+        BOOST_ERROR("yield roundtrip failed for long-first-period bond"
+                    << "\n    recovered: " << impliedYield
+                    << "\n    expected:  " << yield.rate());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
