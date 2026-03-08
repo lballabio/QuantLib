@@ -37,7 +37,7 @@ namespace QuantLib {
         const Date& maturity,
         Calendar calendar,
         BusinessDayConvention paymentConvention,
-        DayCounter dayCounter,
+        const DayCounter& dayCounter,
         const ext::shared_ptr<ZeroInflationIndex>& zii,
         CPI::InterpolationType observationInterpolation,
         Pillar::Choice pillar,
@@ -46,7 +46,7 @@ namespace QuantLib {
         quote, swapObsLag, Date(), maturity, std::move(calendar), paymentConvention,
         dayCounter, zii, observationInterpolation,
         Handle<YieldTermStructure>(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0, dayCounter)),
-        pillar, std::move(customPillarDate)) {}
+        pillar, customPillarDate) {}
 
     ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
         const Handle<Quote>& quote,
@@ -55,7 +55,7 @@ namespace QuantLib {
         const Date& endDate,
         Calendar calendar,
         BusinessDayConvention paymentConvention,
-        DayCounter dayCounter,
+        const DayCounter& dayCounter,
         const ext::shared_ptr<ZeroInflationIndex>& zii,
         CPI::InterpolationType observationInterpolation,
         Pillar::Choice pillar,
@@ -67,7 +67,7 @@ namespace QuantLib {
         // when calculating the fair rate, the equal discount factors
         // for the payments on the two legs will cancel out.
         Handle<YieldTermStructure>(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0, dayCounter)),
-        pillar, std::move(customPillarDate)) {}
+        pillar, customPillarDate) {}
 
     ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
         const Handle<Quote>& quote,
@@ -221,7 +221,7 @@ namespace QuantLib {
     : YearOnYearInflationSwapHelper(
         quote, swapObsLag, Date(), maturity, std::move(calendar), paymentConvention,
         std::move(dayCounter), yii, interpolation, std::move(nominalTermStructure),
-        pillar, std::move(customPillarDate)) {}
+        pillar, customPillarDate) {}
 
     YearOnYearInflationSwapHelper::YearOnYearInflationSwapHelper(
         const Handle<Quote>& quote,
