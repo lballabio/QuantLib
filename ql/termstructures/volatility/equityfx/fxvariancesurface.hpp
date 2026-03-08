@@ -191,64 +191,54 @@ namespace QuantLib {
     Real fxVarianceSurface<T>::blackVarianceImpl(Time t, Real strike) const {
         Real tau = timeTs_->tradingTime(t);
 
-        // helper: look up or create an interpolated smile and return vol^2 * t
-        auto cachedVariance = [&](long key, auto buildSmile) {
-            auto it = smileCache_.find(key);
-            if (it == smileCache_.end())
-                it = smileCache_.emplace(key, buildSmile()).first;
-            Volatility vol = it->second->volByStrike(strike);
-            return (vol * vol * t);
-        };
+        // near-zero trading time — return zero variance
+        if (tau < (1. / (365 * 8)))
+            return 0.0;
 
-        if (tau <= times_[1]) {
-            // before first expiry — scale down the first smile
-            if (tau < (1. / (365 * 8)))
-                return 0.0;
-
-            long key = tauKey(tau);
-            Real wFinal = tau / times_[1];
-            return cachedVariance(key, [&] {
-                return interpolatedSmileSection(t, 0.0, smileSections_.front(),
-                                                wFinal, smileSections_.front());
-            });
-        }
-
-        if (tau <= times_.back()) {
-            // between two pillar smiles
-            Size i = 0;
-            while (times_[i + 1] < tau)
-                i++;
-
-            // times_ starts at 0 but there is no smile section
-            // so adjust i accordingly when accessing smileSections_
-
-            // check if the expiry is at one of the pillar dates
-            if ((tau - times_[i]) < (1. / (365 * 8))) {
-                Volatility vol = smileSections_[i - 1].volByStrike(strike);
-                return (vol * vol * t);
-            }
-
-            if ((times_[i + 1] - tau) < (1. / (365 * 8))) {
-                Volatility vol = smileSections_[i].volByStrike(strike);
-                return (vol * vol * t);
-            }
-
-            // interpolate — check cache first
-            long key = tauKey(tau);
-            Real w = (tau - times_[i]) / (times_[i + 1] - times_[i]);
-            return cachedVariance(key, [&] {
-                return interpolatedSmileSection(t, 1.0 - w, smileSections_[i - 1],
-                                                w, smileSections_[i]);
-            });
-        }
-
-        // beyond final expiry — scale up the last smile
+        // check the cache for an interpolated smile at this trading time
         long key = tauKey(tau);
-        Real wInit = tau / times_.back();
-        return cachedVariance(key, [&] {
-            return interpolatedSmileSection(t, wInit, smileSections_.back(),
-                                            0.0, smileSections_.back());
-        });
+        auto it = smileCache_.find(key);
+
+        if (it == smileCache_.end()) {
+            // cache miss — build the interpolated smile
+
+            if (tau <= times_[1]) {
+                // before first expiry — scale down the first smile
+                Real wFinal = tau / times_[1];
+                it = smileCache_.emplace(key,
+                        interpolatedSmileSection(t, 0.0, smileSections_.front(),
+                                                 wFinal, smileSections_.front())).first;
+            } else if (tau <= times_.back()) {
+                // between two pillar smiles
+                Size i = 0;
+                while (times_[i + 1] < tau)
+                    i++;
+
+                // snap to pillar if within tolerance
+                if ((tau - times_[i]) < (1. / (365 * 8))) {
+                    Volatility vol = smileSections_[i - 1].volByStrike(strike);
+                    return (vol * vol * t);
+                }
+                if ((times_[i + 1] - tau) < (1. / (365 * 8))) {
+                    Volatility vol = smileSections_[i].volByStrike(strike);
+                    return (vol * vol * t);
+                }
+
+                Real w = (tau - times_[i]) / (times_[i + 1] - times_[i]);
+                it = smileCache_.emplace(key,
+                        interpolatedSmileSection(t, 1.0 - w, smileSections_[i - 1],
+                                                 w, smileSections_[i])).first;
+            } else {
+                // beyond final expiry — scale up the last smile
+                Real wInit = tau / times_.back();
+                it = smileCache_.emplace(key,
+                        interpolatedSmileSection(t, wInit, smileSections_.back(),
+                                                 0.0, smileSections_.back())).first;
+            }
+        }
+
+        Volatility vol = it->second->volByStrike(strike);
+        return (vol * vol * t);
     }
 
     template <class T>
