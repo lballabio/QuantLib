@@ -144,6 +144,7 @@ set(QL_TEST_SOURCES
     schedule.cpp
     settings.cpp
     shortratemodels.cpp
+    smilesectionblackvolsurface.cpp
     sofrfutures.cpp
     softbarrieroption.cpp
     solvers.cpp
