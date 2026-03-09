@@ -36,12 +36,12 @@ namespace QuantLib {
         const Calendar& cal, const Handle<Quote>& spot, const Handle<YieldTermStructure>& domesticTS,
         const Handle<YieldTermStructure>& foreignTS, DeltaVolQuote::DeltaType dt, DeltaVolQuote::AtmType at,
         ext::optional<DeltaVolQuote::DeltaType> atmDeltaType, SmileInterpolationMethod im,
-        bool flatStrikeExtrapolation, BlackVolTimeExtrapolation timeExtrapolation, const Period& switchTenor,
+        bool flatStrikeExtrapolation, BlackVolTimeExtrapolation::Type timeExtrapolationType, const Period& switchTenor,
         DeltaVolQuote::DeltaType ltdt, DeltaVolQuote::AtmType ltat, ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType)
         : BlackVolatilityTermStructure(referenceDate, cal, Following, dayCounter), dates_(dates), times_(dates.size(), 0),
         putDeltas_(putDeltas), callDeltas_(callDeltas), hasAtm_(hasAtm), spot_(spot), domesticTS_(domesticTS),
         foreignTS_(foreignTS), dt_(dt), at_(at), atmDeltaType_(atmDeltaType),
-        interpolationMethod_(im), flatStrikeExtrapolation_(flatStrikeExtrapolation), timeExtrapolation_(timeExtrapolation),
+        interpolationMethod_(im), flatStrikeExtrapolation_(flatStrikeExtrapolation), timeExtrapolationType_(timeExtrapolationType),
         switchTenor_(switchTenor), ltdt_(ltdt), ltat_(ltat), longTermAtmDeltaType_(longTermAtmDeltaType) {
 
         // If ATM delta type is not given, set it to dt
@@ -84,7 +84,7 @@ namespace QuantLib {
             // BlackVarianceCurve will make a local copy of vols and dates
             interpolators_.push_back(ext::make_shared<BlackVarianceCurve>(
                 referenceDate, dates, vols, dayCounter, forceMonotoneVariance,
-                timeExtrapolation));
+                timeExtrapolationType_));
         }
 
         // register
@@ -217,7 +217,7 @@ namespace QuantLib {
     Volatility BlackVolatilitySurfaceDelta::blackVolImpl(Time t, Real strike) const {
         // If asked for strike == 0, just return the ATM value.
         double tme =
-            (t > times_.back() && timeExtrapolation_ == BlackVolTimeExtrapolation::FlatVolatility) ? times_.back() : t;
+            (t > times_.back() && timeExtrapolationType_ == BlackVolTimeExtrapolation::Type::FlatVolatility) ? times_.back() : t;
 
         if (strike == 0 || strike == Null<Real>()) {
             if (hasAtm_) {

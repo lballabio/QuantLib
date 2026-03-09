@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2026 Paolo D'Elia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,8 +19,90 @@
 */
 
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
+#include <array>
+#include <ql/math/comparison.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 
 namespace QuantLib {
+
+    namespace detail {
+        Real linearExtrapolation(const double t, const std::array<double, 2>& times, const std::array<double, 2>& variances) {
+            QL_REQUIRE(t > times[1], "t must be greater than times[1]");
+            QL_REQUIRE(times[1] > times[0], "times must be sorted");
+            QL_REQUIRE(variances[1] >= variances[0], "variances must be non-decreasing");
+            std::array<double, 2> vols;
+            vols[0] = close_enough(times[0], 0.0) ? 0.0 : std::sqrt(variances[0] / times[0]);
+            vols[1] = close_enough(times[1], 0.0) ? 0.0 : std::sqrt(variances[1] / times[1]);
+            LinearInterpolation interpolation(times.begin(), times.end(), vols.begin());
+            return std::max(interpolation(t, true), 0.0);
+        }
+
+        template <typename F>
+        Real timeExtrapolationBlackVarianceFlat(const Time t, const Real strike, const std::vector<double>& times,
+                                                const F& varianceSurface) {
+            return std::max(varianceSurface(times.back(), strike, true), 0.0) / times.back() * t;
+        }
+
+        Real timeExtrapolationBlackVarianceFlat(const Time t, const std::vector<double>& times,
+                                                        const Interpolation& varianceCurve) {
+            return std::max(varianceCurve(times.back(), true), 0.0) / times.back() * t;
+        }
+
+        template <typename F>
+        Real timeExtrapolationBlackVarianceLinear(const Time t, const Real strike, const std::vector<double>& times,
+                                                        const F& varianceSurface) {
+            Size ind1 = times.size() - 2;
+            Size ind2 = times.size() - 1;
+            std::array<Real, 2> xs{times[ind1], times[ind2]};
+            std::array<Real, 2> variances;
+            variances[0] = varianceSurface(xs[0], strike, true);
+            variances[1] = varianceSurface(xs[1], strike, true);
+            Real v = detail::linearExtrapolation(t, xs, variances);
+            return v * v * t;
+        }
+
+        Real timeExtrapolationBlackVarianceLinear(const Time t, const std::vector<double>& times,
+                                                                const Interpolation& varianceCurve) {
+            Size ind1 = times.size() - 2;
+            Size ind2 = times.size() - 1;
+            std::array<Real, 2> xs{times[ind1], times[ind2]};
+            std::array<Real, 2> variances;
+            variances[0] = varianceCurve(xs[0], true);
+            variances[1] = varianceCurve(xs[1], true);
+            Real v = detail::linearExtrapolation(t, xs, variances);
+            return v * v * t;
+        }
+    }
+
+    // BlackVolTimeExtrapolation implementation
+    template<class F>
+    Real BlackVolTimeExtrapolation::extrapolate(Type type, const Time t, const Real strike, const std::vector<Time>& times, const F& varianceSurface) {
+        switch (type) {
+            case FlatVolatility:
+                return detail::timeExtrapolationBlackVarianceFlat(t, times, strike, varianceSurface);
+            case UseInterpolatorVariance:
+                return std::max(varianceSurface(t, strike, true), 0.0);
+            case LinearVariance: 
+                return detail::timeExtrapolationBlackVarianceLinear(t, strike, times, varianceSurface);
+            default:
+                QL_FAIL("unknown extrapolation type");
+        }
+    }
+
+    Real BlackVolTimeExtrapolation::extrapolate(Type type, const Time t, const std::vector<Time>& times, const Interpolation& varianceCurve) {
+        switch (type) {
+            case FlatVolatility:
+                return detail::timeExtrapolationBlackVarianceFlat(t, times, varianceCurve);
+            case UseInterpolatorVariance:
+                return std::max(varianceCurve(t, true), 0.0);
+            case LinearVariance: {
+                QL_REQUIRE(times.size() >= 2, "at least two times required for volatility extrapolation");
+                return detail::timeExtrapolationBlackVarianceLinear(t, times, varianceCurve);
+            }
+            default:
+                QL_FAIL("unknown extrapolation type");
+        }
+    }
 
     BlackVolTermStructure::BlackVolTermStructure(BusinessDayConvention bdc,
                                                  const DayCounter& dc)

@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2026 Paolo D'Elia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -51,7 +52,7 @@ namespace QuantLib {
                            const std::vector<Volatility>& blackVolCurve,
                            DayCounter dayCounter,
                            bool forceMonotoneVariance = true,
-                           BlackVolTimeExtrapolation timeExtrapolation = BlackVolTimeExtrapolation::FlatVolatility);
+                           BlackVolTimeExtrapolation::Type timeExtrapolationType = BlackVolTimeExtrapolation::Type::FlatVolatility);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const override { return dayCounter_; }
@@ -85,7 +86,7 @@ namespace QuantLib {
         std::vector<Time> times_;
         std::vector<Real> variances_;
         Interpolation varianceCurve_;
-        BlackVolTimeExtrapolation timeExtrapolation_;
+        BlackVolTimeExtrapolation::Type timeExtrapolationType_;
     };
 
 

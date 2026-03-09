@@ -94,8 +94,8 @@ namespace QuantLib {
                                     SmileInterpolationMethod interpolationMethod =
                                         SmileInterpolationMethod::Linear,
                                     bool flatStrikeExtrapolation = false,
-                                    BlackVolTimeExtrapolation timeExtrapolation =
-                                        BlackVolTimeExtrapolation::FlatVolatility,
+                                    BlackVolTimeExtrapolation::Type timeExtrapolationType =
+                                        BlackVolTimeExtrapolation::Type::FlatVolatility,
                                     const Period& switchTenor = 0 * Days,
                                     DeltaVolQuote::DeltaType ltdt = DeltaVolQuote::DeltaType::Fwd,
                                     DeltaVolQuote::AtmType ltat = DeltaVolQuote::AtmType::AtmDeltaNeutral,
@@ -180,7 +180,7 @@ namespace QuantLib {
 
         SmileInterpolationMethod interpolationMethod_;
         bool flatStrikeExtrapolation_;
-        BlackVolTimeExtrapolation timeExtrapolation_;
+        BlackVolTimeExtrapolation::Type timeExtrapolationType_;
 
         Period switchTenor_;
         DeltaVolQuote::DeltaType ltdt_;

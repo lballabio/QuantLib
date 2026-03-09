@@ -10,7 +10,6 @@ this_include_HEADERS = \
     blackconstantvol.hpp \
     blackvariancecurve.hpp \
     blackvariancesurface.hpp \
-    blackvariancetimeextrapolation.hpp \
     blackvolsurfacedelta.hpp \
     blackvoltermstructure.hpp \
     fixedlocalvolsurface.hpp \

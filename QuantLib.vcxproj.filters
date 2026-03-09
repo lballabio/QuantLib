@@ -2052,9 +2052,6 @@
     <ClInclude Include="ql\termstructures\volatility\equityfx\blackvariancesurface.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClInclude>
-    <ClInclude Include="ql\termstructures\volatility\equityfx\blackvariancetimeextrapolation.hpp">
-      <Filter>termstructures\volatility\equityfx</Filter>
-    </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\equityfx\blackvolsurfacedelta.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClInclude>
