@@ -157,6 +157,9 @@ namespace QuantLib {
     */
     Date previousTwentieth(const Date& d, DateGeneration::Rule rule);
 
+    //! returns true for (non-zero) tenor with unit Months or Years
+    bool allowsEndOfMonth(const Period& tenor);
+
     // inline definitions
 
     inline const Date& Schedule::date(Size i) const {

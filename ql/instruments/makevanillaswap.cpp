@@ -83,13 +83,12 @@ namespace QuantLib {
 
         Date endDate = terminationDate_;
         if (endDate == Date()) {
-            if (floatEndOfMonth_)
-                endDate = floatCalendar_.advance(startDate,
-                                                 swapTenor_,
-                                                 ModifiedFollowing,
-                                                 floatEndOfMonth_);
-            else
-                endDate = startDate + swapTenor_;
+            endDate = startDate + swapTenor_;
+            bool maturityEndOfMonth =
+                maturityEndOfMonth_ ? *maturityEndOfMonth_ : floatEndOfMonth_;
+            if (maturityEndOfMonth && allowsEndOfMonth(swapTenor_) &&
+                floatCalendar_.isEndOfMonth(startDate))
+                endDate = floatCalendar_.endOfMonth(endDate);
         }
 
         const Currency& curr = iborIndex_->currency();
@@ -324,6 +323,11 @@ namespace QuantLib {
 
     MakeVanillaSwap& MakeVanillaSwap::withFloatingLegEndOfMonth(bool flag) {
         floatEndOfMonth_ = flag;
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withMaturityEndOfMonth(bool flag) {
+        maturityEndOfMonth_ = flag;
         return *this;
     }
 
