@@ -77,7 +77,7 @@ namespace QuantLib {
                                        can be choosen across the following interpolation methods:
                                        Linear, NaturalCubic, FinancialCubic, CubicSpline
             \param flatStrikeExtrapolation enable flat-vol extrapolation in strike dimension
-            \param timeExtrapolation policy for extrapolating/interpolating in time
+            \param timeExtrapolationType policy for extrapolating in time
             \param switchTenor      tenor after which long-term delta/ATM conventions apply
             \param ltdt             long-term delta type (used for expiries beyond switchTenor)
             \param ltat             long-term ATM convention (used beyond switchTenor)
