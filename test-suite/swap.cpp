@@ -35,6 +35,9 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/instruments/makevanillaswap.hpp>
+#include <ql/indexes/ibor/bbsw.hpp>
+#include <ql/indexes/ibor/gbplibor.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -368,6 +371,121 @@ BOOST_AUTO_TEST_CASE(testNotifications) {
 
     if (!flag.isUp())
         BOOST_FAIL("swap was not notified of curve change");
+}
+
+BOOST_AUTO_TEST_CASE(testFixedTenorInferenceWithTerminationDate) {
+    BOOST_TEST_MESSAGE("Testing MakeVanillaSwap fixed tenor inference "
+                       "with explicit termination date...");
+
+    SavedSettings backup;
+    Date today(15, January, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    RelinkableHandle<YieldTermStructure> yts;
+    yts.linkTo(flatRate(0.03, Actual365Fixed()));
+
+    auto gbpIndex = ext::make_shared<GBPLibor>(6 * Months, yts);
+    auto audIndex = ext::make_shared<Bbsw>(6 * Months, yts);
+
+    Date startDate(19, January, 2026);
+
+    // GBP 10Y: should infer Semiannual (6M) fixed tenor
+    Date endDate10Y = startDate + 10 * Years;
+    ext::shared_ptr<VanillaSwap> gbp10Y =
+        MakeVanillaSwap(10 * Years, gbpIndex, 0.03)
+            .withEffectiveDate(startDate)
+            .withTerminationDate(endDate10Y);
+    Size gbp10YPeriods = gbp10Y->fixedSchedule().size() - 1;
+    if (gbp10YPeriods != 20)
+        BOOST_FAIL("GBP 10Y swap via withTerminationDate: expected 20 "
+                   "fixed periods (Semiannual), got " << gbp10YPeriods);
+
+    // GBP 6M: should infer Annual (1Y) fixed tenor
+    Date endDate6M = startDate + 6 * Months;
+    ext::shared_ptr<VanillaSwap> gbp6M =
+        MakeVanillaSwap(6 * Months, gbpIndex, 0.03)
+            .withEffectiveDate(startDate)
+            .withTerminationDate(endDate6M);
+    Size gbp6MPeriods = gbp6M->fixedSchedule().size() - 1;
+    if (gbp6MPeriods != 1)
+        BOOST_FAIL("GBP 6M swap via withTerminationDate: expected 1 "
+                   "fixed period (Annual), got " << gbp6MPeriods);
+
+    // AUD 5Y: should infer Semiannual (6M) fixed tenor
+    Date endDate5Y = startDate + 5 * Years;
+    ext::shared_ptr<VanillaSwap> aud5Y =
+        MakeVanillaSwap(5 * Years, audIndex, 0.03)
+            .withEffectiveDate(startDate)
+            .withTerminationDate(endDate5Y);
+    Size aud5YPeriods = aud5Y->fixedSchedule().size() - 1;
+    if (aud5YPeriods != 10)
+        BOOST_FAIL("AUD 5Y swap via withTerminationDate: expected 10 "
+                   "fixed periods (Semiannual), got " << aud5YPeriods);
+
+    // AUD 2Y: should infer Quarterly (3M) fixed tenor
+    Date endDate2Y = startDate + 2 * Years;
+    ext::shared_ptr<VanillaSwap> aud2Y =
+        MakeVanillaSwap(2 * Years, audIndex, 0.03)
+            .withEffectiveDate(startDate)
+            .withTerminationDate(endDate2Y);
+    Size aud2YPeriods = aud2Y->fixedSchedule().size() - 1;
+    if (aud2YPeriods != 8)
+        BOOST_FAIL("AUD 2Y swap via withTerminationDate: expected 8 "
+                   "fixed periods (Quarterly), got " << aud2YPeriods);
+
+    // AUD 4Y (boundary): should infer Semiannual (6M) fixed tenor
+    Date endDate4Y = startDate + 4 * Years;
+    ext::shared_ptr<VanillaSwap> aud4Y =
+        MakeVanillaSwap(4 * Years, audIndex, 0.03)
+            .withEffectiveDate(startDate)
+            .withTerminationDate(endDate4Y);
+    Size aud4YPeriods = aud4Y->fixedSchedule().size() - 1;
+    if (aud4YPeriods != 8)
+        BOOST_FAIL("AUD 4Y swap via withTerminationDate: expected 8 "
+                   "fixed periods (Semiannual), got " << aud4YPeriods);
+
+    // AUD 3Y: should infer Quarterly (3M) fixed tenor
+    Date endDate3Y = startDate + 3 * Years;
+    ext::shared_ptr<VanillaSwap> aud3Y =
+        MakeVanillaSwap(3 * Years, audIndex, 0.03)
+            .withEffectiveDate(startDate)
+            .withTerminationDate(endDate3Y);
+    Size aud3YPeriods = aud3Y->fixedSchedule().size() - 1;
+    if (aud3YPeriods != 12)
+        BOOST_FAIL("AUD 3Y swap via withTerminationDate: expected 12 "
+                   "fixed periods (Quarterly), got " << aud3YPeriods);
+
+    // GBP 10Y without withEffectiveDate (settlement-derived start date)
+    Date endDateSettlement = today + 10 * Years;
+    ext::shared_ptr<VanillaSwap> gbpNoEffDate =
+        MakeVanillaSwap(10 * Years, gbpIndex, 0.03)
+            .withTerminationDate(endDateSettlement);
+    Size gbpNoEffPeriods = gbpNoEffDate->fixedSchedule().size() - 1;
+    if (gbpNoEffPeriods != 20)
+        BOOST_FAIL("GBP 10Y without withEffectiveDate: expected 20 "
+                   "fixed periods (Semiannual), got " << gbpNoEffPeriods);
+
+    // withTerminationDate clears the constructor tenor, so the
+    // date-based inference should use the 10Y span, not the 6M arg
+    ext::shared_ptr<VanillaSwap> gbpMismatch =
+        MakeVanillaSwap(6 * Months, gbpIndex, 0.03)
+            .withEffectiveDate(startDate)
+            .withTerminationDate(endDate10Y);
+    Size mismatchPeriods = gbpMismatch->fixedSchedule().size() - 1;
+    if (mismatchPeriods != 20)
+        BOOST_FAIL("GBP 10Y dates with 6M constructor tenor: expected 20 "
+                   "fixed periods (Semiannual), got " << mismatchPeriods);
+
+    // Explicit withFixedLegTenor should always take precedence
+    ext::shared_ptr<VanillaSwap> gbpOverride =
+        MakeVanillaSwap(10 * Years, gbpIndex, 0.03)
+            .withEffectiveDate(startDate)
+            .withTerminationDate(endDate10Y)
+            .withFixedLegTenor(3 * Months);
+    Size overridePeriods = gbpOverride->fixedSchedule().size() - 1;
+    if (overridePeriods != 40)
+        BOOST_FAIL("GBP 10Y with explicit 3M fixed tenor: expected 40 "
+                   "fixed periods (Quarterly), got " << overridePeriods);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
