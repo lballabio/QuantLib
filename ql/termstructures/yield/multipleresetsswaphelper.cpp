@@ -36,21 +36,16 @@ namespace QuantLib {
         Frequency fixedFrequency,
         DayCounter fixedDayCount,
         BusinessDayConvention fixedConvention)
-    : RelativeDateRateHelper(fixedRate),
-      settlementDays_(settlementDays), tenor_(tenor),
-      resetsPerCoupon_(resetsPerCoupon),
-      averagingMethod_(averagingMethod), spread_(spread),
+    : RelativeDateRateHelper(fixedRate), settlementDays_(settlementDays), tenor_(tenor),
+      resetsPerCoupon_(resetsPerCoupon), averagingMethod_(averagingMethod), spread_(spread),
       fixedFrequency_(fixedFrequency),
-      fixedDayCount_(!fixedDayCount.empty() ? std::move(fixedDayCount) :
-                                              iborIndex->dayCounter()),
-      fixedConvention_(fixedConvention),
-      discountHandle_(std::move(discountingCurve)) {
+      fixedDayCount_(!fixedDayCount.empty() ? std::move(fixedDayCount) : iborIndex->dayCounter()),
+      fixedConvention_(fixedConvention), discountHandle_(std::move(discountingCurve)) {
 
         // Clone the index so it forwards rates from termStructureHandle_,
         // but don't register the clone as an observer of termStructureHandle_
         // (that would interfere with bootstrapping).
-        iborIndex_ = ext::dynamic_pointer_cast<IborIndex>(
-            iborIndex->clone(termStructureHandle_));
+        iborIndex_ = ext::dynamic_pointer_cast<IborIndex>(iborIndex->clone(termStructureHandle_));
         iborIndex_->unregisterWith(termStructureHandle_);
 
         registerWith(iborIndex_);
@@ -59,21 +54,21 @@ namespace QuantLib {
     }
 
     void MultipleResetsSwapRateHelper::initializeDates() {
-        swap_ = MakeMultipleResetsSwap(tenor_, iborIndex_, resetsPerCoupon_, 0.0)
-            .withSettlementDays(settlementDays_)
-            .withFixedLegFrequency(fixedFrequency_)
-            .withFixedLegDayCount(fixedDayCount_)
-            .withFixedLegConvention(fixedConvention_)
-            .withFloatingLegSpread(spread_)
-            .withAveragingMethod(averagingMethod_)
-            .withDiscountingTermStructure(discountRelinkableHandle_);
+        swap_ = MakeMultipleResetsSwap(tenor_, iborIndex_, resetsPerCoupon_)
+                    .withFixedRate(0.0)
+                    .withSettlementDays(settlementDays_)
+                    .withFixedLegFrequency(fixedFrequency_)
+                    .withFixedLegDayCount(fixedDayCount_)
+                    .withFixedLegConvention(fixedConvention_)
+                    .withFloatingLegSpread(spread_)
+                    .withAveragingMethod(averagingMethod_)
+                    .withDiscountingTermStructure(discountRelinkableHandle_);
 
         simplifyNotificationGraph(*swap_, true);
 
         earliestDate_ = swap_->startDate();
         latestRelevantDate_ = latestDate_ =
-            std::max(swap_->fixedLeg().back()->date(),
-                     swap_->floatingLeg().back()->date());
+            std::max(swap_->fixedLeg().back()->date(), swap_->floatingLeg().back()->date());
     }
 
     void MultipleResetsSwapRateHelper::setTermStructure(YieldTermStructure* t) {

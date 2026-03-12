@@ -18,8 +18,8 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/instruments/makemultipleresetsswap.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/instruments/makemultipleresetsswap.hpp>
 #include <ql/termstructures/yield/multipleresetsswaphelper.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -50,10 +50,10 @@ struct CommonVars {
         euribor3m->addFixing(Date(11, January, 2024), 0.05);
     }
 
-    ext::shared_ptr<MultipleResetsSwap> makeSwap(Rate fixedRate,
-                                                  RateAveraging::Type method =
-                                                      RateAveraging::Compound) {
-        return MakeMultipleResetsSwap(2 * Years, euribor3m, 2, fixedRate)
+    ext::shared_ptr<MultipleResetsSwap>
+    makeSwap(Rate fixedRate, RateAveraging::Type method = RateAveraging::Compound) {
+        return MakeMultipleResetsSwap(2 * Years, euribor3m, 2)
+            .withFixedRate(fixedRate)
             .withSettlementDays(0)
             .withNominal(1.0e6)
             .withAveragingMethod(method);
@@ -78,6 +78,13 @@ BOOST_AUTO_TEST_CASE(testFairRate) {
     // Cross-check: fixed-leg NPV + floating-leg NPV equals total NPV.
     Real npvCheck = swap->fixedLegNPV() + swap->floatingLegNPV();
     BOOST_CHECK_SMALL(npvCheck - swap->NPV(), 1.0e-10);
+
+    // Omitting withFixedRate triggers auto-computation; NPV must be zero.
+    ext::shared_ptr<MultipleResetsSwap> autoFair =
+        MakeMultipleResetsSwap(2 * Years, vars.euribor3m, 2)
+            .withSettlementDays(0)
+            .withNominal(1.0e6);
+    BOOST_CHECK_SMALL(autoFair->NPV(), 1.0e-8);
 }
 
 
@@ -88,7 +95,8 @@ BOOST_AUTO_TEST_CASE(testConsistencyWithLeg) {
 
     for (auto type : {Swap::Payer, Swap::Receiver}) {
         ext::shared_ptr<MultipleResetsSwap> swap =
-            MakeMultipleResetsSwap(2 * Years, vars.euribor3m, 2, 0.05)
+            MakeMultipleResetsSwap(2 * Years, vars.euribor3m, 2)
+                .withFixedRate(0.05)
                 .withSettlementDays(0)
                 .withNominal(1.0e6)
                 .withType(type);
@@ -106,7 +114,7 @@ BOOST_AUTO_TEST_CASE(testAveragingVsCompounding) {
 
     Rate fixedRate = 0.05;
     auto swapCompound = vars.makeSwap(fixedRate, RateAveraging::Compound);
-    auto swapAverage  = vars.makeSwap(fixedRate, RateAveraging::Simple);
+    auto swapAverage = vars.makeSwap(fixedRate, RateAveraging::Simple);
 
     BOOST_CHECK(std::abs(swapCompound->fairRate() - swapAverage->fairRate()) > 1.0e-10);
 }
@@ -123,13 +131,11 @@ BOOST_AUTO_TEST_CASE(testRateHelper) {
     std::vector<ext::shared_ptr<RateHelper>> helpers;
     for (const auto& tenor : {1 * Years, 2 * Years, 3 * Years}) {
         helpers.push_back(ext::make_shared<MultipleResetsSwapRateHelper>(
-            0, tenor,
-            Handle<Quote>(ext::make_shared<SimpleQuote>(inputRate)),
-            vars.euribor3m, 2));
+            0, tenor, Handle<Quote>(ext::make_shared<SimpleQuote>(inputRate)), vars.euribor3m, 2));
     }
 
-    auto curve = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(
-        vars.today, helpers, vars.dayCount);
+    auto curve = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(vars.today, helpers,
+                                                                            vars.dayCount);
 
     RelinkableHandle<YieldTermStructure> bootstrapped;
     bootstrapped.linkTo(curve);
@@ -137,11 +143,11 @@ BOOST_AUTO_TEST_CASE(testRateHelper) {
 
     const Real tolerance = 1.0e-6;
     for (const auto& tenor : {1 * Years, 2 * Years, 3 * Years}) {
-        ext::shared_ptr<MultipleResetsSwap> check =
-            MakeMultipleResetsSwap(tenor, indexOnCurve, 2, 0.0)
-                .withSettlementDays(0)
-                .withNominal(1.0e6)
-                .withDiscountingTermStructure(bootstrapped);
+        ext::shared_ptr<MultipleResetsSwap> check = MakeMultipleResetsSwap(tenor, indexOnCurve, 2)
+                                                        .withFixedRate(0.0)
+                                                        .withSettlementDays(0)
+                                                        .withNominal(1.0e6)
+                                                        .withDiscountingTermStructure(bootstrapped);
         Rate implied = check->fairRate();
         BOOST_CHECK_SMALL(implied - inputRate, tolerance);
     }

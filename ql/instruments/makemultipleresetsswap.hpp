@@ -40,9 +40,7 @@ namespace QuantLib {
       public:
         MakeMultipleResetsSwap(const Period& tenor,
                                const ext::shared_ptr<IborIndex>& iborIndex,
-                               Size resetsPerCoupon,
-                               Rate fixedRate = Null<Rate>(),
-                               const Period& fwdStart = 0 * Days);
+                               Size resetsPerCoupon);
 
         operator MultipleResetsSwap() const;
         operator ext::shared_ptr<MultipleResetsSwap>() const;
@@ -50,24 +48,24 @@ namespace QuantLib {
         MakeMultipleResetsSwap& receiveFixed(bool flag = true);
         MakeMultipleResetsSwap& withType(Swap::Type type);
         MakeMultipleResetsSwap& withNominal(Real n);
+        MakeMultipleResetsSwap& withFixedRate(Rate fixedRate);
         MakeMultipleResetsSwap& withSettlementDays(Natural settlementDays);
         MakeMultipleResetsSwap& withEffectiveDate(const Date&);
         MakeMultipleResetsSwap& withTerminationDate(const Date&);
+        MakeMultipleResetsSwap& withForwardStart(const Period& fwdStart);
         MakeMultipleResetsSwap& withFixedLegFrequency(Frequency f);
         MakeMultipleResetsSwap& withFixedLegDayCount(const DayCounter& dc);
         MakeMultipleResetsSwap& withFixedLegConvention(BusinessDayConvention bdc);
         MakeMultipleResetsSwap& withFloatingLegSpread(Spread sp);
         MakeMultipleResetsSwap& withAveragingMethod(RateAveraging::Type m);
-        MakeMultipleResetsSwap& withDiscountingTermStructure(
-                               const Handle<YieldTermStructure>&);
-        MakeMultipleResetsSwap& withPricingEngine(
-                               const ext::shared_ptr<PricingEngine>&);
+        MakeMultipleResetsSwap& withDiscountingTermStructure(const Handle<YieldTermStructure>&);
+        MakeMultipleResetsSwap& withPricingEngine(const ext::shared_ptr<PricingEngine>&);
 
       private:
         Period tenor_;
         ext::shared_ptr<IborIndex> iborIndex_;
         Size resetsPerCoupon_;
-        Rate fixedRate_;
+        Rate fixedRate_ = Null<Rate>();
         Period forwardStart_;
 
         Natural settlementDays_ = Null<Natural>();

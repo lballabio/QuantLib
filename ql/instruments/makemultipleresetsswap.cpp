@@ -25,14 +25,10 @@
 
 namespace QuantLib {
 
-    MakeMultipleResetsSwap::MakeMultipleResetsSwap(
-        const Period& tenor,
-        const ext::shared_ptr<IborIndex>& iborIndex,
-        Size resetsPerCoupon,
-        Rate fixedRate,
-        const Period& fwdStart)
+    MakeMultipleResetsSwap::MakeMultipleResetsSwap(const Period& tenor,
+                                                   const ext::shared_ptr<IborIndex>& iborIndex,
+                                                   Size resetsPerCoupon)
     : tenor_(tenor), iborIndex_(iborIndex), resetsPerCoupon_(resetsPerCoupon),
-      fixedRate_(fixedRate), forwardStart_(fwdStart),
       fixedDayCount_(iborIndex->dayCounter()) {}
 
     MakeMultipleResetsSwap::operator MultipleResetsSwap() const {
@@ -44,51 +40,46 @@ namespace QuantLib {
         Calendar cal = iborIndex_->fixingCalendar();
         BusinessDayConvention bdc = iborIndex_->businessDayConvention();
 
+        QL_REQUIRE(effectiveDate_ == Date() || settlementDays_ == Null<Natural>(),
+                   "withEffectiveDate and withSettlementDays are mutually exclusive");
+
         Date startDate;
         if (effectiveDate_ != Date()) {
             startDate = effectiveDate_;
         } else {
-            Natural settlDays = settlementDays_ != Null<Natural>() ?
-                                settlementDays_ : iborIndex_->fixingDays();
+            Natural settlDays =
+                settlementDays_ != Null<Natural>() ? settlementDays_ : iborIndex_->fixingDays();
             Date refDate = Settings::instance().evaluationDate();
             startDate = cal.advance(cal.adjust(refDate), settlDays * Days);
             startDate = cal.advance(startDate, forwardStart_,
-                                   forwardStart_.length() < 0 ? Preceding : Following);
+                                    forwardStart_.length() < 0 ? Preceding : Following);
         }
 
-        Date endDate = terminationDate_ != Date() ?
-                       terminationDate_ :
-                       cal.advance(startDate, tenor_, bdc);
+        Date endDate =
+            terminationDate_ != Date() ? terminationDate_ : cal.advance(startDate, tenor_, bdc);
 
         Period resetTenor = iborIndex_->tenor();
-        // Fixed coupon period: resetsPerCoupon consecutive reset periods.
-        // If not overridden, derive the fixed frequency from the coupon period.
         Frequency fixedFreq = fixedFrequency_;
         if (fixedFreq == NoFrequency) {
             Period couponTenor(resetsPerCoupon_ * resetTenor.length(), resetTenor.units());
             fixedFreq = couponTenor.frequency();
         }
 
-        Schedule fixedSchedule(startDate, endDate, Period(fixedFreq),
-                               cal, fixedConvention_, fixedConvention_,
-                               DateGeneration::Backward, false);
+        Schedule fixedSchedule(startDate, endDate, Period(fixedFreq), cal, fixedConvention_,
+                               fixedConvention_, DateGeneration::Backward, false);
 
-        Schedule fullResetSchedule(startDate, endDate, resetTenor,
-                                   cal, bdc, bdc,
+        Schedule fullResetSchedule(startDate, endDate, resetTenor, cal, bdc, bdc,
                                    DateGeneration::Backward, false);
 
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
-            MultipleResetsSwap temp(type_, nominal_,
-                                    fixedSchedule, 0.0, fixedDayCount_,
-                                    fullResetSchedule, iborIndex_, resetsPerCoupon_,
-                                    spread_, averagingMethod_);
+            MultipleResetsSwap temp(type_, nominal_, fixedSchedule, 0.0, fixedDayCount_,
+                                    fullResetSchedule, iborIndex_, resetsPerCoupon_, spread_,
+                                    averagingMethod_);
             if (engine_ == nullptr) {
-                Handle<YieldTermStructure> disc =
-                    iborIndex_->forwardingTermStructure();
+                Handle<YieldTermStructure> disc = iborIndex_->forwardingTermStructure();
                 QL_REQUIRE(!disc.empty(),
-                           "null term structure set to this instance of "
-                           << iborIndex_->name());
+                           "null term structure set to this instance of " << iborIndex_->name());
                 temp.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(disc, false));
             } else {
                 temp.setPricingEngine(engine_);
@@ -97,10 +88,8 @@ namespace QuantLib {
         }
 
         auto swap = ext::make_shared<MultipleResetsSwap>(
-            type_, nominal_,
-            fixedSchedule, usedFixedRate, fixedDayCount_,
-            fullResetSchedule, iborIndex_, resetsPerCoupon_,
-            spread_, averagingMethod_);
+            type_, nominal_, fixedSchedule, usedFixedRate, fixedDayCount_, fullResetSchedule,
+            iborIndex_, resetsPerCoupon_, spread_, averagingMethod_);
 
         if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc = iborIndex_->forwardingTermStructure();
@@ -128,9 +117,13 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeMultipleResetsSwap& MakeMultipleResetsSwap::withFixedRate(Rate fixedRate) {
+        fixedRate_ = fixedRate;
+        return *this;
+    }
+
     MakeMultipleResetsSwap& MakeMultipleResetsSwap::withSettlementDays(Natural settlementDays) {
         settlementDays_ = settlementDays;
-        effectiveDate_ = Date();
         return *this;
     }
 
@@ -146,6 +139,11 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeMultipleResetsSwap& MakeMultipleResetsSwap::withForwardStart(const Period& fwdStart) {
+        forwardStart_ = fwdStart;
+        return *this;
+    }
+
     MakeMultipleResetsSwap& MakeMultipleResetsSwap::withFixedLegFrequency(Frequency f) {
         fixedFrequency_ = f;
         return *this;
@@ -156,7 +154,8 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeMultipleResetsSwap& MakeMultipleResetsSwap::withFixedLegConvention(BusinessDayConvention bdc) {
+    MakeMultipleResetsSwap&
+    MakeMultipleResetsSwap::withFixedLegConvention(BusinessDayConvention bdc) {
         fixedConvention_ = bdc;
         return *this;
     }
@@ -171,14 +170,14 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeMultipleResetsSwap& MakeMultipleResetsSwap::withDiscountingTermStructure(
-                                const Handle<YieldTermStructure>& d) {
+    MakeMultipleResetsSwap&
+    MakeMultipleResetsSwap::withDiscountingTermStructure(const Handle<YieldTermStructure>& d) {
         engine_ = ext::make_shared<DiscountingSwapEngine>(d, false);
         return *this;
     }
 
-    MakeMultipleResetsSwap& MakeMultipleResetsSwap::withPricingEngine(
-                                const ext::shared_ptr<PricingEngine>& engine) {
+    MakeMultipleResetsSwap&
+    MakeMultipleResetsSwap::withPricingEngine(const ext::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
         return *this;
     }
