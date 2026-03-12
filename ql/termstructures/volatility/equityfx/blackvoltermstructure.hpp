@@ -28,66 +28,10 @@
 #define quantlib_black_vol_term_structures_hpp
 
 #include <ql/termstructures/voltermstructure.hpp>
-#include <ql/math/interpolation.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvoltimeextrapolation.hpp>
 #include <ql/patterns/visitor.hpp>
-#include <array>
-#include <ql/math/comparison.hpp>
-#include <ql/math/interpolations/interpolation2d.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
 
 namespace QuantLib {
-
-    namespace detail {
-        Real linearExtrapolation(const double t, const std::array<double, 2>& times, const std::array<double, 2>& variances);
-
-        //! Extrapolate black variance using flat vol extrapolation in time direction
-        Real timeExtrapolationBlackVarianceFlat(const Time t, const std::vector<double>& times,
-            const Interpolation& varianceCurve);
-
-        //! Extrapolate black variance using flat vol extrapolation in time direction
-        template <typename F>
-        Real timeExtrapolationBlackVarianceFlat(const Time t, const Real strike, const std::vector<double>& times,
-                                                const F& varianceSurface);
-
-        //! Extrapolate black variance in vol space and time direction using interpolation
-        //! Takes black variances convert them to volatilities and then linearly extrapolates
-        //! the volatilities in time direction
-        Real timeExtrapolationBlackVarianceLinear(const Time t, const std::vector<double>& times,
-            const Interpolation& varianceCurve);
-
-        //! Extrapolate black variance in vol space and time direction using interpolation
-        //! Takes black variances convert them to volatilities and then linearly extrapolates
-        //! the volatilities in time direction
-        template <typename F>
-        Real timeExtrapolationBlackVarianceLinear(const Time t, const Real strike, const std::vector<double>& times,
-                                                        const F& varianceSurface);
-    };
-
-    //! Time-extrapolation strategies for Black volatility term structures.
-    /*! BlackVolTimeExtrapolation provides static methods to extrapolate variance
-        beyond the last pillar of a BlackVolTermStructure, supporting both
-        surface (strike-dependent) and curve (ATM) cases.
-
-        Three extrapolation strategies are available via the Type enum:
-        - FlatVolatility
-        - UseInterpolatorVariance: Delegates to the underlying interpolator,
-                                allowing it to extrapolate variance directly.
-        - LinearVariance: Extrapolates variance linearly in time from the
-                                last pillar
-
-        \note The two overloads of extrapolate() handle the surface case
-            (templated on a bivariate callable F taking (Time, Real) for the
-            variance surface) and the curve case (taking a univariate
-            QuantLib::Interpolation for an ATM variance curve).
-    */
-    class BlackVolTimeExtrapolation {
-        public:
-            enum Type {FlatVolatility, UseInterpolatorVariance, LinearVariance};
-            
-            template<class F>
-            static Real extrapolate(Type type, const Time t, const Real strike, const std::vector<Time>& times, const F& varianceSurface);
-            static Real extrapolate(Type type, const Time t, const std::vector<Time>& times, const Interpolation& varianceCurve);
-    }; 
 
     //! Black-volatility term structure
     /*! This abstract class defines the interface of concrete

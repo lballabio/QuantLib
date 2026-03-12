@@ -12,6 +12,7 @@ this_include_HEADERS = \
     blackvariancesurface.hpp \
     blackvolsurfacedelta.hpp \
     blackvoltermstructure.hpp \
+    blackvoltimeextrapolation.hpp \
     fixedlocalvolsurface.hpp \
     gridmodellocalvolsurface.hpp \
     hestonblackvolsurface.hpp \
@@ -30,6 +31,7 @@ cpp_files = \
     blackvariancesurface.cpp \
     blackvolsurfacedelta.cpp \
     blackvoltermstructure.cpp \
+    blackvoltimeextrapolation.cpp \
     fixedlocalvolsurface.cpp \
     gridmodellocalvolsurface.cpp \
     hestonblackvolsurface.cpp \
