@@ -488,6 +488,56 @@ BOOST_AUTO_TEST_CASE(testFixedTenorInferenceWithTerminationDate) {
                    "fixed periods (Quarterly), got " << overridePeriods);
 }
 
+BOOST_AUTO_TEST_CASE(testSettlementDaysEffectiveDateConflict) {
+    BOOST_TEST_MESSAGE("Testing MakeVanillaSwap rejects both "
+                       "settlementDays and effectiveDate...");
+
+    SavedSettings backup;
+    Date today(15, January, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    RelinkableHandle<YieldTermStructure> yts;
+    yts.linkTo(flatRate(0.03, Actual365Fixed()));
+
+    auto index = ext::make_shared<Euribor6M>(yts);
+    Date effectiveDate(19, January, 2026);
+
+    // settlementDays first, then effectiveDate
+    BOOST_CHECK_EXCEPTION(
+        ext::shared_ptr<VanillaSwap> swap =
+            MakeVanillaSwap(5 * Years, index, 0.03)
+                .withSettlementDays(2)
+                .withEffectiveDate(effectiveDate),
+        Error,
+        ExpectedErrorMessage("cannot set both"));
+
+    // effectiveDate first, then settlementDays
+    BOOST_CHECK_EXCEPTION(
+        ext::shared_ptr<VanillaSwap> swap =
+            MakeVanillaSwap(5 * Years, index, 0.03)
+                .withEffectiveDate(effectiveDate)
+                .withSettlementDays(2),
+        Error,
+        ExpectedErrorMessage("cannot set both"));
+
+    // withSettlementDays alone works
+    ext::shared_ptr<VanillaSwap> swap1 =
+        MakeVanillaSwap(5 * Years, index, 0.03)
+            .withSettlementDays(2);
+    BOOST_CHECK(swap1->startDate() != Date());
+
+    // withEffectiveDate alone works
+    ext::shared_ptr<VanillaSwap> swap2 =
+        MakeVanillaSwap(5 * Years, index, 0.03)
+            .withEffectiveDate(effectiveDate);
+    BOOST_CHECK_EQUAL(swap2->startDate(), effectiveDate);
+
+    // neither set (constructor defaults) works
+    ext::shared_ptr<VanillaSwap> swap3 =
+        MakeVanillaSwap(5 * Years, index, 0.03);
+    BOOST_CHECK(swap3->startDate() != Date());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
