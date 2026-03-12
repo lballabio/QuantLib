@@ -21,6 +21,7 @@
 #include <ql/termstructures/volatility/equityfx/blackvoltimeextrapolation.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/errors.hpp>
+#include <array>
 
 namespace QuantLib {
 
