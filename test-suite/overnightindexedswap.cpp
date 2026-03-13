@@ -1043,6 +1043,56 @@ BOOST_AUTO_TEST_CASE(testMakeOisEndOfMonthRegression2453) {
     BOOST_CHECK_EQUAL(swap.overnightSchedule()[1], Date(17, December, 2026));
 }
 
+BOOST_AUTO_TEST_CASE(testSettlementDaysEffectiveDateConflict) {
+    BOOST_TEST_MESSAGE("Testing MakeOIS rejects both "
+                       "settlementDays and effectiveDate...");
+
+    SavedSettings backup;
+    Date today(5, February, 2009);
+    Settings::instance().evaluationDate() = today;
+
+    RelinkableHandle<YieldTermStructure> yts;
+    yts.linkTo(flatRate(today, 0.05, Actual365Fixed()));
+
+    auto index = ext::make_shared<Estr>(yts);
+    Date effectiveDate(9, February, 2009);
+
+    // settlementDays first, then effectiveDate
+    BOOST_CHECK_EXCEPTION(
+        ext::shared_ptr<OvernightIndexedSwap> swap =
+            MakeOIS(5 * Years, index, 0.03)
+                .withSettlementDays(2)
+                .withEffectiveDate(effectiveDate),
+        Error,
+        ExpectedErrorMessage("cannot set both"));
+
+    // effectiveDate first, then settlementDays
+    BOOST_CHECK_EXCEPTION(
+        ext::shared_ptr<OvernightIndexedSwap> swap =
+            MakeOIS(5 * Years, index, 0.03)
+                .withEffectiveDate(effectiveDate)
+                .withSettlementDays(2),
+        Error,
+        ExpectedErrorMessage("cannot set both"));
+
+    // withSettlementDays alone works
+    ext::shared_ptr<OvernightIndexedSwap> swap1 =
+        MakeOIS(5 * Years, index, 0.03)
+            .withSettlementDays(2);
+    BOOST_CHECK(swap1->startDate() != Date());
+
+    // withEffectiveDate alone works
+    ext::shared_ptr<OvernightIndexedSwap> swap2 =
+        MakeOIS(5 * Years, index, 0.03)
+            .withEffectiveDate(effectiveDate);
+    BOOST_CHECK_EQUAL(swap2->startDate(), effectiveDate);
+
+    // neither set (constructor defaults) works
+    ext::shared_ptr<OvernightIndexedSwap> swap3 =
+        MakeOIS(5 * Years, index, 0.03);
+    BOOST_CHECK(swap3->startDate() != Date());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
