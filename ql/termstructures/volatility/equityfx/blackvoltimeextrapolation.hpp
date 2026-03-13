@@ -39,25 +39,24 @@ namespace QuantLib {
     */
     class BlackVolTimeExtrapolation {
       public:
-        //! Time-extrapolation strategy
+        //! Time-extrapolation strategy for Black volatility
         enum Type {
-            FlatVolatility,           /*!< Flat extrapolation of the latest available volatility. */
-            UseInterpolatorVariance,  /*!< Delegate extrapolation to the underlying interpolator,
-                                           whatever it is. */
-            LinearVariance            /*!< Linear extrapolation of variance from the last two
-                                           available nodes. */
+            FlatVolatility,    /*!< Flat extrapolation of the latest available volatility. */
+            UseInterpolator,   /*!< Delegate extrapolation to the underlying curve or surface,
+                                    whatever the method it uses. */
+            LinearVariance     /*!< Linear extrapolation of variance from the last two
+                                    available nodes. */
         };
 
         //! extrapolate a surface to a given time and strike
-        static Real extrapolate(Type type, Time t, Real strike, const std::vector<Time>& times,
-                                const std::function<Real(Time t, Real k)>& varianceSurface);
+        static Real extrapolatedVariance(Type type, Time t, Real strike, const std::vector<Time>& times,
+                                         const std::function<Real(Time t, Real k)>& varianceSurface);
         //! extrapolate an ATM curve to a given time
-        static Real extrapolate(Type type, Time t, const std::vector<Time>& times,
-                                const std::function<Real(Time t)>& varianceCurve);
-    }; 
+        static Real extrapolatedVariance(Type type, Time t, const std::vector<Time>& times,
+                                         const std::function<Real(Time t)>& varianceCurve);
+    };
 
 }
 
 
 #endif
-

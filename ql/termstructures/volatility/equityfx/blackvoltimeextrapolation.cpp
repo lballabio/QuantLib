@@ -19,7 +19,6 @@
 */
 
 #include <ql/termstructures/volatility/equityfx/blackvoltimeextrapolation.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/errors.hpp>
 #include <array>
 
@@ -27,15 +26,12 @@ namespace QuantLib {
 
     namespace {
 
-        Real linearExtrapolation(Time t, const std::array<Time, 2>& times, const std::array<Real, 2>& variances) {
-            QL_REQUIRE(t > times[1], "t must be greater than times[1]");
-            QL_REQUIRE(times[1] > times[0], "times must be sorted");
-            QL_REQUIRE(variances[1] >= variances[0], "variances must be non-decreasing");
-            std::array<Real, 2> vols;
-            vols[0] = close_enough(times[0], 0.0) ? 0.0 : std::sqrt(variances[0] / times[0]);
-            vols[1] = close_enough(times[1], 0.0) ? 0.0 : std::sqrt(variances[1] / times[1]);
-            LinearInterpolation interpolation(times.begin(), times.end(), vols.begin());
-            return std::max(interpolation(t, true), 0.0);
+        Real linearExtrapolation(Time t, Time t1, Time t2, Real v1, Real v2) {
+            QL_REQUIRE(t > 0.0, "t must be greater than 0.0");
+            QL_REQUIRE(t > t2, "t must be greater than times[1]");
+            QL_REQUIRE(t2 > t1, "times must be sorted");
+            QL_REQUIRE(v2 >= v1, "variances must be non-decreasing");
+            return v1 + (t - t1) * (v2 - v1) / (t2 - t1);
         }
 
         Real timeExtrapolationBlackVarianceFlat(Time t, Real strike, const std::vector<double>& times,
@@ -50,35 +46,28 @@ namespace QuantLib {
 
         Real timeExtrapolationBlackVarianceLinear(Time t, Real strike, const std::vector<double>& times,
                                                   const std::function<Real(Time t, Real k)>& varianceSurface) {
-            Size ind1 = times.size() - 2;
-            Size ind2 = times.size() - 1;
-            std::array<Real, 2> xs{times[ind1], times[ind2]};
-            std::array<Real, 2> variances;
-            variances[0] = varianceSurface(xs[0], strike);
-            variances[1] = varianceSurface(xs[1], strike);
-            Real v = linearExtrapolation(t, xs, variances);
-            return v * v * t;
+            Size N = times.size();
+            Time t1 = times[N-2], t2 = times[N-1];
+            Real var1 = varianceSurface(t1, strike), var2 = varianceSurface(t2, strike);
+            return linearExtrapolation(t, t1, t2, var1, var2);
         }
 
         Real timeExtrapolationBlackVarianceLinear(Time t, const std::vector<double>& times,
                                                   const std::function<Real(Time t)>& varianceCurve) {
-            Size ind1 = times.size() - 2;
-            Size ind2 = times.size() - 1;
-            std::array<Real, 2> xs{times[ind1], times[ind2]};
-            std::array<Real, 2> variances;
-            variances[0] = varianceCurve(xs[0]);
-            variances[1] = varianceCurve(xs[1]);
-            Real v = linearExtrapolation(t, xs, variances);
-            return v * v * t;
+            Size N = times.size();
+            Time t1 = times[N-2], t2 = times[N-1];
+            Real var1 = varianceCurve(t1), var2 = varianceCurve(t2);
+            return linearExtrapolation(t, t1, t2, var1, var2);
         }
 
     }
 
-    Real BlackVolTimeExtrapolation::extrapolate(Type type, Time t, Real strike, const std::vector<Time>& times, const std::function<Real(Time t, Real k)>& varianceSurface) {
+    Real BlackVolTimeExtrapolation::extrapolatedVariance(Type type, Time t, Real strike, const std::vector<Time>& times,
+                                                         const std::function<Real(Time t, Real k)>& varianceSurface) {
         switch (type) {
           case FlatVolatility:
             return timeExtrapolationBlackVarianceFlat(t, strike, times, varianceSurface);
-          case UseInterpolatorVariance:
+          case UseInterpolator:
             return std::max(varianceSurface(t, strike), 0.0);
           case LinearVariance: 
             return timeExtrapolationBlackVarianceLinear(t, strike, times, varianceSurface);
@@ -87,11 +76,12 @@ namespace QuantLib {
         }
     }
 
-    Real BlackVolTimeExtrapolation::extrapolate(Type type, Time t, const std::vector<Time>& times, const std::function<Real(Time t)>& varianceCurve) {
+    Real BlackVolTimeExtrapolation::extrapolatedVariance(Type type, Time t, const std::vector<Time>& times,
+                                                         const std::function<Real(Time t)>& varianceCurve) {
         switch (type) {
           case FlatVolatility:
             return timeExtrapolationBlackVarianceFlat(t, times, varianceCurve);
-          case UseInterpolatorVariance:
+          case UseInterpolator:
             return std::max(varianceCurve(t), 0.0);
           case LinearVariance: {
               QL_REQUIRE(times.size() >= 2, "at least two times required for volatility extrapolation");
