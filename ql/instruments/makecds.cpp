@@ -25,19 +25,18 @@
 
 namespace QuantLib {
 
-    MakeCreditDefaultSwap::MakeCreditDefaultSwap(const Period &tenor,
-                                                 const Real couponRate)
-        : side_(Protection::Buyer), nominal_(1.0), tenor_(tenor),
-          couponTenor_(3 * Months), couponRate_(couponRate), upfrontRate_(0.0),
-          dayCounter_(Actual360()), lastPeriodDayCounter_(Actual360(true)),
-          rule_(DateGeneration::CDS), cashSettlementDays_(3) {}
+    MakeCreditDefaultSwap::MakeCreditDefaultSwap(const Period& tenor,
+                                                 Rate runningSpread)
+    : tenor_(tenor), runningSpread_(runningSpread) {}
 
-    MakeCreditDefaultSwap::MakeCreditDefaultSwap(const Date &termDate,
-                                                 const Real couponRate)
-        : side_(Protection::Buyer), nominal_(1.0), termDate_(termDate),
-          couponTenor_(3 * Months), couponRate_(couponRate), upfrontRate_(0.0),
-          dayCounter_(Actual360()), lastPeriodDayCounter_(Actual360(true)),
-          rule_(DateGeneration::CDS), cashSettlementDays_(3) {}
+    MakeCreditDefaultSwap::MakeCreditDefaultSwap(const Date& termDate,
+                                                 Rate runningSpread)
+    : termDate_(termDate), runningSpread_(runningSpread) {}
+
+    MakeCreditDefaultSwap::MakeCreditDefaultSwap(const Schedule& schedule,
+                                                 Rate runningSpread)
+    : schedule_(schedule), runningSpread_(runningSpread) {}
+
 
     MakeCreditDefaultSwap::operator CreditDefaultSwap() const {
         ext::shared_ptr<CreditDefaultSwap> swap = *this;
@@ -46,47 +45,51 @@ namespace QuantLib {
 
     MakeCreditDefaultSwap::operator ext::shared_ptr<CreditDefaultSwap>() const {
 
-        Date tradeDate = (tradeDate_ != Date()) ? tradeDate_ : Settings::instance().evaluationDate();
-        Date upfrontDate = WeekendsOnly().advance(tradeDate, cashSettlementDays_, Days);
+        Date tradeDate = tradeDate_ != Date() ? tradeDate_ : Settings::instance().evaluationDate();
+        Date upfrontDate = upfrontDate_ != Date() ? upfrontDate_ : WeekendsOnly().advance(tradeDate, cashSettlementDays_, Days);
 
-        Date protectionStart;
-        if (rule_ == DateGeneration::CDS2015 || rule_ == DateGeneration::CDS) {
-            protectionStart = tradeDate;
-        } else {
-            protectionStart = tradeDate + 1;
-        }
-
-        Date end;
-        if (tenor_) { // NOLINT(readability-implicit-bool-conversion)
-            if (rule_ == DateGeneration::CDS2015 || rule_ == DateGeneration::CDS || rule_ == DateGeneration::OldCDS) {
-                end = cdsMaturity(tradeDate, *tenor_, rule_);
+        Date protectionStart = protectionStart_;
+        if (protectionStart == Date()) {
+            if (schedule_) { // NOLINT(readability-implicit-bool-conversion)
+                protectionStart = schedule_->at(0);
             } else {
-                end = tradeDate + *tenor_;
+                if (rule_ == DateGeneration::CDS2015 || rule_ == DateGeneration::CDS) {
+                    protectionStart = tradeDate;
+                } else {
+                    protectionStart = tradeDate + 1;
+                }
             }
-        } else {
-            // we have two exclusive constructors; if we don't have a tenor, we have a term date
-            end = *termDate_; // NOLINT(bugprone-unchecked-optional-access)
         }
 
-        Schedule schedule(protectionStart, end, couponTenor_, WeekendsOnly(), Following,
-                          Unadjusted, rule_, false);
+        // schedule, tenor and term date come from different constructors; exactly one of them is not null.
+        Schedule schedule;
+        if (schedule_) { // NOLINT(readability-implicit-bool-conversion)
+            schedule = *schedule_;
+        } else {
+            Date end;
+            if (tenor_) { // NOLINT(readability-implicit-bool-conversion)
+                if (rule_ == DateGeneration::CDS2015 || rule_ == DateGeneration::CDS || rule_ == DateGeneration::OldCDS) {
+                    end = cdsMaturity(tradeDate, *tenor_, rule_);
+                } else {
+                    end = tradeDate + *tenor_;
+                }
+            } else {
+                end = *termDate_; // NOLINT(bugprone-unchecked-optional-access)
+            }
 
-        ext::shared_ptr<CreditDefaultSwap> cds =
-            ext::make_shared<CreditDefaultSwap>(
-                side_, nominal_, upfrontRate_, couponRate_, schedule, Following,
-                dayCounter_, true, true, protectionStart, upfrontDate,
-                ext::shared_ptr<Claim>(), lastPeriodDayCounter_, true, tradeDate, cashSettlementDays_);
+            schedule = Schedule(protectionStart, end, couponTenor_, WeekendsOnly(), convention_,
+                                Unadjusted, rule_, false);
+        }
+
+        auto cds = ext::make_shared<CreditDefaultSwap>(
+            side_, nominal_, upfrontRate_, runningSpread_, schedule, convention_,
+            dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart, upfrontDate,
+            claim_, lastPeriodDayCounter_, rebatesAccrual_, tradeDate, cashSettlementDays_);
 
         cds->setPricingEngine(engine_);
         return cds;
-
     }
 
-    MakeCreditDefaultSwap &
-    MakeCreditDefaultSwap::withUpfrontRate(Real upfrontRate) {
-        upfrontRate_ = upfrontRate;
-        return *this;
-    }
 
     MakeCreditDefaultSwap &
     MakeCreditDefaultSwap::withSide(Protection::Side side) {
@@ -100,25 +103,74 @@ namespace QuantLib {
     }
 
     MakeCreditDefaultSwap &
+    MakeCreditDefaultSwap::withUpfrontRate(Real upfrontRate) {
+        upfrontRate_ = upfrontRate;
+        return *this;
+    }
+
+    MakeCreditDefaultSwap &
     MakeCreditDefaultSwap::withCouponTenor(Period couponTenor) {
         couponTenor_ = couponTenor;
         return *this;
     }
 
+    MakeCreditDefaultSwap& MakeCreditDefaultSwap::withDateGenerationRule(DateGeneration::Rule rule) {
+        rule_ = rule;
+        return *this;
+    }
+
+    MakeCreditDefaultSwap& MakeCreditDefaultSwap::withConvention(BusinessDayConvention convention) {
+        convention_ = convention;
+        return *this;
+    }
+
     MakeCreditDefaultSwap &
-    MakeCreditDefaultSwap::withDayCounter(DayCounter &dayCounter) {
+    MakeCreditDefaultSwap::withDayCounter(const DayCounter& dayCounter) {
         dayCounter_ = dayCounter;
         return *this;
     }
 
+    MakeCreditDefaultSwap &
+    MakeCreditDefaultSwap::settleAccrual(bool b) {
+        settlesAccrual_ = b;
+        return *this;
+    }
+
+    MakeCreditDefaultSwap &
+    MakeCreditDefaultSwap::payAtDefaultTime(bool b) {
+        paysAtDefaultTime_ = b;
+        return *this;
+    }
+
+    MakeCreditDefaultSwap& MakeCreditDefaultSwap::withProtectionStart(Date d) {
+        protectionStart_ = d;
+        return *this;
+    }
+
+    MakeCreditDefaultSwap& MakeCreditDefaultSwap::withUpfrontDate(Date d) {
+        upfrontDate_ = d;
+        return *this;
+    }
+
+    MakeCreditDefaultSwap& MakeCreditDefaultSwap::withClaim(ext::shared_ptr<Claim> claim) {
+        claim_ = claim;
+        return *this;
+    }
+
     MakeCreditDefaultSwap &MakeCreditDefaultSwap::withLastPeriodDayCounter(
-        DayCounter &lastPeriodDayCounter) {
+        const DayCounter& lastPeriodDayCounter) {
         lastPeriodDayCounter_ = lastPeriodDayCounter;
         return *this;
     }
 
-    MakeCreditDefaultSwap& MakeCreditDefaultSwap::withDateGenerationRule(DateGeneration::Rule rule) {
-        rule_ = rule;
+    MakeCreditDefaultSwap &
+    MakeCreditDefaultSwap::rebateAccrual(bool b) {
+        rebatesAccrual_ = b;
+        return *this;
+    }
+
+    MakeCreditDefaultSwap& MakeCreditDefaultSwap::withTradeDate(Date tradeDate) {
+        tradeDate_ = tradeDate;
         return *this;
     }
 
@@ -128,13 +180,8 @@ namespace QuantLib {
     }
 
     MakeCreditDefaultSwap &MakeCreditDefaultSwap::withPricingEngine(
-        const ext::shared_ptr<PricingEngine> &engine) {
+                               const ext::shared_ptr<PricingEngine> &engine) {
         engine_ = engine;
-        return *this;
-    }
-
-    MakeCreditDefaultSwap& MakeCreditDefaultSwap::withTradeDate(const Date& tradeDate) {
-        tradeDate_ = tradeDate;
         return *this;
     }
 
