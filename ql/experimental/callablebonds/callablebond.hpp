@@ -146,15 +146,6 @@ namespace QuantLib {
         // helper class for option adjusted spread calculations
         class NPVSpreadHelper;
 
-      private:
-        /*  Used internally.
-            same as Bond::accruedAmount() but with enable early
-            payments true.  Forces accrued to be calculated in a
-            consistent way for future put/ call dates, which can be
-            problematic in lattice engines when option dates are also
-            coupon dates.
-        */
-        Real accrued(Date settlement) const;
     };
 
     class CallableBond::arguments : public Bond::arguments {

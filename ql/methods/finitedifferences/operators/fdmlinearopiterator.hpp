@@ -63,6 +63,10 @@ namespace QuantLib {
             return *this;
         }
 
+        bool operator==(const FdmLinearOpIterator& iterator) const {
+            return index_ == iterator.index_;
+        }
+
         bool operator!=(const FdmLinearOpIterator& iterator) const {
             return index_ != iterator.index_;
         }

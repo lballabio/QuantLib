@@ -21,7 +21,8 @@ this_include_HEADERS = \
     localvolcurve.hpp \
     localvolsurface.hpp \
     localvoltermstructure.hpp \
-    noexceptlocalvolsurface.hpp
+    noexceptlocalvolsurface.hpp \
+    piecewiseblackvariancesurface.hpp
 
 cpp_files = \
     andreasenhugelocalvoladapter.cpp \
@@ -36,7 +37,8 @@ cpp_files = \
     gridmodellocalvolsurface.cpp \
     hestonblackvolsurface.cpp \
     localvolsurface.cpp \
-    localvoltermstructure.cpp
+    localvoltermstructure.cpp \
+    piecewiseblackvariancesurface.cpp
 
 if UNITY_BUILD
 

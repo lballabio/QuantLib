@@ -68,9 +68,6 @@ namespace QuantLib {
     /*! An American option can be exercised at any time between two
         predefined dates; the first date might be omitted, in which
         case the option can be exercised at any time before the expiry.
-
-        \todo check that everywhere the American condition is applied
-              from earliestDate and not earlier
     */
     class AmericanExercise : public EarlyExercise {
       public:

@@ -26,10 +26,17 @@
 namespace QuantLib {
 
     FdmAmericanStepCondition::FdmAmericanStepCondition(
-        ext::shared_ptr<FdmMesher> mesher, ext::shared_ptr<FdmInnerValueCalculator> calculator)
-    : mesher_(std::move(mesher)), calculator_(std::move(calculator)) {}
+        ext::shared_ptr<FdmMesher> mesher,
+        ext::shared_ptr<FdmInnerValueCalculator> calculator,
+        Time exerciseStart)
+    : mesher_(std::move(mesher)),
+      calculator_(std::move(calculator)),
+      exerciseStart_(exerciseStart) {}
 
     void FdmAmericanStepCondition::applyTo(Array& a, Time t) const {
+        if (t < exerciseStart_)
+            return;
+
         QL_REQUIRE(mesher_->layout()->size() == a.size(),
                    "inconsistent array dimensions");
 

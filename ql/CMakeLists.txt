@@ -841,6 +841,7 @@ set(QL_SOURCES
     termstructures/volatility/equityfx/hestonblackvolsurface.cpp
     termstructures/volatility/equityfx/localvolsurface.cpp
     termstructures/volatility/equityfx/localvoltermstructure.cpp
+    termstructures/volatility/equityfx/piecewiseblackvariancesurface.cpp
     termstructures/volatility/flatsmilesection.cpp
     termstructures/volatility/gaussian1dsmilesection.cpp
     termstructures/volatility/inflation/constantcpivolatility.cpp
@@ -2113,6 +2114,7 @@ set(QL_HEADERS
     termstructures/volatility/equityfx/localvolsurface.hpp
     termstructures/volatility/equityfx/localvoltermstructure.hpp
     termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp
+    termstructures/volatility/equityfx/piecewiseblackvariancesurface.hpp
     termstructures/volatility/flatsmilesection.hpp
     termstructures/volatility/gaussian1dsmilesection.hpp
     termstructures/volatility/inflation/constantcpivolatility.hpp

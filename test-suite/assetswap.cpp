@@ -1513,7 +1513,7 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // bond's frequency + coumpounding and daycounter of the YC...
     Real fixedBondCleanPrice1 = BondFunctions::cleanPrice(
          *fixedBond1, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          fixedBondSettlementDate1);
     Real tolerance = 1.0e-13;
     Real error1 = std::fabs(fixedBondImpliedValue1-fixedBondCleanPrice1);
@@ -1550,7 +1550,7 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real fixedBondCleanPrice2 = BondFunctions::cleanPrice(
          *fixedBond2, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          fixedBondSettlementDate2);
     Real error3 = std::fabs(fixedBondImpliedValue2-fixedBondCleanPrice2);
     if (error3>tolerance) {
@@ -1592,7 +1592,7 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice1 = BondFunctions::cleanPrice(
         *floatingBond1, *vars.termStructure, vars.spread,
-        Actual365Fixed(), vars.compounding, Semiannual,
+        vars.compounding, Semiannual,
         fixedBondSettlementDate1);
     Real error5 = std::fabs(floatingBondImpliedValue1-floatingBondCleanPrice1);
     if (error5>tolerance) {
@@ -1633,7 +1633,7 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice2 = BondFunctions::cleanPrice(
         *floatingBond2, *vars.termStructure,
-        vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
+        vars.spread, vars.compounding, Semiannual,
         fixedBondSettlementDate1);
     Real error7 = std::fabs(floatingBondImpliedValue2-floatingBondCleanPrice2);
     if (error7>tolerance) {
@@ -1674,7 +1674,7 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real cmsBondCleanPrice1 = BondFunctions::cleanPrice(
         *cmsBond1, *vars.termStructure, vars.spread,
-        Actual365Fixed(), vars.compounding, Annual,
+        vars.compounding, Annual,
         cmsBondSettlementDate1);
     Real error9 = std::fabs(cmsBondImpliedValue1-cmsBondCleanPrice1);
     if (error9>tolerance) {
@@ -1714,7 +1714,7 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real cmsBondCleanPrice2 = BondFunctions::cleanPrice(
          *cmsBond2, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          cmsBondSettlementDate2);
     Real error11 = std::fabs(cmsBondImpliedValue2-cmsBondCleanPrice2);
     if (error11>tolerance) {
@@ -1746,7 +1746,6 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
         BondFunctions::cleanPrice(*zeroCpnBond1,
                               *vars.termStructure,
                               vars.spread,
-                              Actual365Fixed(),
                               vars.compounding, Annual,
                               zeroCpnBondSettlementDate1);
     Real error13 = std::fabs(zeroCpnBondImpliedValue1-zeroCpnBondCleanPrice1);
@@ -1780,7 +1779,6 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
         BondFunctions::cleanPrice(*zeroCpnBond2,
                               *vars.termStructure,
                               vars.spread,
-                              Actual365Fixed(),
                               vars.compounding, Annual,
                               zeroCpnBondSettlementDate2);
     Real error15 = std::fabs(zeroCpnBondImpliedValue2-zeroCpnBondCleanPrice2);
@@ -2701,7 +2699,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real fixedBondCleanPrice1 = BondFunctions::cleanPrice(
          *fixedBond1, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          fixedBondSettlementDate1);
     Real tolerance = 1.0e-13;
     Real error1 = std::fabs(fixedBondImpliedValue1-fixedBondCleanPrice1);
@@ -2745,7 +2743,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
 
     Real fixedBondCleanPrice2 = BondFunctions::cleanPrice(
          *fixedBond2, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          fixedBondSettlementDate2);
     Real error3 = std::fabs(fixedBondImpliedValue2-fixedBondCleanPrice2);
     if (error3>tolerance) {
@@ -2792,7 +2790,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice1 = BondFunctions::cleanPrice(
         *floatingBond1, *vars.termStructure,
-        vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
+        vars.spread, vars.compounding, Semiannual,
         fixedBondSettlementDate1);
     Real error5 = std::fabs(floatingBondImpliedValue1-floatingBondCleanPrice1);
     if (error5>tolerance) {
@@ -2840,7 +2838,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice2 = BondFunctions::cleanPrice(
         *floatingBond2, *vars.termStructure,
-        vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
+        vars.spread, vars.compounding, Semiannual,
         fixedBondSettlementDate1);
     Real error7 = std::fabs(floatingBondImpliedValue2-floatingBondCleanPrice2);
     if (error7>tolerance) {
@@ -2888,7 +2886,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real cmsBondCleanPrice1 = BondFunctions::cleanPrice(
          *cmsBond1, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          cmsBondSettlementDate1);
     Real error9 = std::fabs(cmsBondImpliedValue1-cmsBondCleanPrice1);
     if (error9>tolerance) {
@@ -2934,7 +2932,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real cmsBondCleanPrice2 = BondFunctions::cleanPrice(
          *cmsBond2, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          cmsBondSettlementDate2);
     Real error11 = std::fabs(cmsBondImpliedValue2-cmsBondCleanPrice2);
     if (error11>tolerance) {
@@ -2969,7 +2967,6 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
         BondFunctions::cleanPrice(*zeroCpnBond1,
                               *vars.termStructure,
                               vars.spread,
-                              Actual365Fixed(),
                               vars.compounding, Annual,
                               zeroCpnBondSettlementDate1);
     Real error13 = std::fabs(zeroCpnBondImpliedValue1-zeroCpnBondCleanPrice1);
@@ -3006,7 +3003,6 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
         BondFunctions::cleanPrice(*zeroCpnBond2,
                               *vars.termStructure,
                               vars.spread,
-                              Actual365Fixed(),
                               vars.compounding, Annual,
                               zeroCpnBondSettlementDate2);
     Real error15 = std::fabs(zeroCpnBondImpliedValue2-zeroCpnBondCleanPrice2);

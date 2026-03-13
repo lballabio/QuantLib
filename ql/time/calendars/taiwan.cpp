@@ -460,6 +460,45 @@ namespace QuantLib {
                 return false;
         }
 
+        if (y == 2025) {
+            // Dragon Boat Festival falls on Saturday
+            if (// adjusted holiday
+                (d >= 23 && d <= 24 && m == January)
+                // Lunar New Year
+                || (d >= 27 && d <= 31 && m == January)
+                // adjusted holiday
+                || (d == 3 && m == April)
+                // Children's Day & Tomb-sweeping Day
+                || (d == 4 && m == April)
+                // adjusted holiday
+                || (d == 30 && m == May)
+                // Mid-Autumn Festival
+                || (d == 6 && m == October)
+                )
+                return false;
+        }
+
+        if (y == 2026) {
+            if (// adjusted holiday
+                (d >= 12 && d <= 13 && m == February)
+                // Lunar New Year
+                || (d >= 16 && d <= 20 && m == February)
+                // adjusted holiday (Peace Memorial Day falls on Saturday)
+                || (d == 27 && m == February)
+                // adjusted holiday
+                || (d == 3 && m == April)
+                // adjusted holiday (Tomb-sweeping Day falls on Sunday)
+                || (d == 6 && m == April)
+                // Dragon Boat Festival
+                || (d == 19 && m == June)
+                // Mid-Autumn Festival
+                || (d == 25 && m == September)
+                // adjusted holiday (National Day falls on Saturday)
+                || (d == 9 && m == October)
+                )
+                return false;
+        }
+
         return true;
     }
 

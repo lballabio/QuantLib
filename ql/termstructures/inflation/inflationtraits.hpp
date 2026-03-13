@@ -101,12 +101,20 @@ namespace QuantLib {
             if (i==1)
                 data[0] = level; // the first point is updated as well
         }
+        // transformation to add constraints to an unconstrained optimization
+        template <class C>
+        static Real transformDirect(Real x, Size, const C*) {
+            return x;
+        }
+        template <class C>
+        static Real transformInverse(Real x, Size, const C*) {
+            return x;
+        }
         // upper bound for convergence loop
-        // calibration is trivial, should be immediate
-        static Size maxIterations() { return 5; }
+        static Size maxIterations() { return 40; }
     };
 
-    //! Bootstrap traits to use for PiecewiseZeroInflationCurve
+    //! Bootstrap traits to use for PiecewiseYoYInflationCurve
     class YoYInflationTraits {
       public:
         // helper class
@@ -168,6 +176,15 @@ namespace QuantLib {
                                 Rate level,
                                 Size i) {
             data[i] = level;
+        }
+        // transformation to add constraints to an unconstrained optimization
+        template <class C>
+        static Real transformDirect(Real x, Size, const C*) {
+            return x;
+        }
+        template <class C>
+        static Real transformInverse(Real x, Size, const C*) {
+            return x;
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 40; }
