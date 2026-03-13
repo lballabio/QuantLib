@@ -835,7 +835,9 @@ set(QL_SOURCES
     termstructures/volatility/equityfx/andreasenhugevolatilityinterpl.cpp
     termstructures/volatility/equityfx/blackvariancecurve.cpp
     termstructures/volatility/equityfx/blackvariancesurface.cpp
+    termstructures/volatility/equityfx/blackvolsurfacedelta.cpp
     termstructures/volatility/equityfx/blackvoltermstructure.cpp
+    termstructures/volatility/equityfx/blackvoltimeextrapolation.cpp
     termstructures/volatility/equityfx/fixedlocalvolsurface.cpp
     termstructures/volatility/equityfx/gridmodellocalvolsurface.cpp
     termstructures/volatility/equityfx/hestonblackvolsurface.cpp
@@ -2105,7 +2107,9 @@ set(QL_HEADERS
     termstructures/volatility/equityfx/blackconstantvol.hpp
     termstructures/volatility/equityfx/blackvariancecurve.hpp
     termstructures/volatility/equityfx/blackvariancesurface.hpp
+    termstructures/volatility/equityfx/blackvolsurfacedelta.hpp
     termstructures/volatility/equityfx/blackvoltermstructure.hpp
+    termstructures/volatility/equityfx/blackvoltimeextrapolation.hpp
     termstructures/volatility/equityfx/fixedlocalvolsurface.hpp
     termstructures/volatility/equityfx/gridmodellocalvolsurface.hpp
     termstructures/volatility/equityfx/hestonblackvolsurface.hpp
