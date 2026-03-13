@@ -45,12 +45,14 @@ this_include_HEADERS = \
     makecapfloor.hpp \
     makecds.hpp \
     makecms.hpp \
+    makemultipleresetsswap.hpp \
     makeois.hpp \
     makeswaption.hpp \
     makevanillaswap.hpp \
     makeyoyinflationcapfloor.hpp \
     margrabeoption.hpp \
     multiassetoption.hpp \
+    multipleresetsswap.hpp \
     nonstandardswap.hpp \
     nonstandardswaption.hpp \
     oneassetoption.hpp \
@@ -119,12 +121,14 @@ cpp_files = \
     makecapfloor.cpp \
     makecds.cpp \
     makecms.cpp \
+    makemultipleresetsswap.cpp \
     makeois.cpp \
     makeswaption.cpp \
     makevanillaswap.cpp \
     makeyoyinflationcapfloor.cpp \
     margrabeoption.cpp \
     multiassetoption.cpp \
+    multipleresetsswap.cpp \
     nonstandardswap.cpp \
     nonstandardswaption.cpp \
     oneassetoption.cpp \

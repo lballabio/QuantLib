@@ -504,6 +504,9 @@
     <ClCompile Include="multipleresetscoupons.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="multipleresetsswap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="zerocouponswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

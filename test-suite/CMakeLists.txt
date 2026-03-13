@@ -111,6 +111,7 @@ set(QL_TEST_SOURCES
     mersennetwister.cpp
     money.cpp
     multipleresetscoupons.cpp
+    multipleresetsswap.cpp
     noarbsabr.cpp
     normalclvmodel.cpp
     nthorderderivativeop.cpp

@@ -15,6 +15,7 @@ this_include_HEADERS = \
     forwardstructure.hpp \
     impliedtermstructure.hpp \
     interpolatedsimplezerocurve.hpp \
+    multipleresetsswaphelper.hpp \
     nonlinearfittingmethods.hpp \
     oisratehelper.hpp \
     overnightindexfutureratehelper.hpp \
@@ -36,6 +37,7 @@ cpp_files = \
     fittedbonddiscountcurve.cpp \
     flatforward.cpp \
     forwardstructure.cpp \
+    multipleresetsswaphelper.cpp \
     nonlinearfittingmethods.cpp \
     oisratehelper.cpp \
     overnightindexfutureratehelper.cpp \
