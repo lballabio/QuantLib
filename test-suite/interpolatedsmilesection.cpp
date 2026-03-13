@@ -41,7 +41,7 @@ static Real linearInterp(Real x, Real x1, Real y1, Real x2, Real y2) {
 }
 
 BOOST_AUTO_TEST_CASE(testInterpolationAndVariance) {
-    BOOST_TEST_MESSAGE("Testing basic behaviour of Linear Interpolated Smile Section");
+    BOOST_TEST_MESSAGE("Testing basic behaviour of linearly interpolated smile section...");
     // basic scenario: sorted strikes, constructor taking stdDevs (total std devs)
     Time expiry = 0.25; // 3 months
     Real sqrtT = std::sqrt(expiry);
@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(testInterpolationAndVariance) {
 }
 
 BOOST_AUTO_TEST_CASE(testExtrapolationWhenAllowed) {
-    BOOST_TEST_MESSAGE("Testing extrapolation behavior of Linear Interpolated Smile Section");
+    BOOST_TEST_MESSAGE("Testing extrapolation behavior of linearly interpolated smile section...");
     // test extrapolation behavior when flatStrikeExtrapolation=false
     Time expiry = 0.25;
     Real sqrtT = std::sqrt(expiry);
@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_CASE(testExtrapolationWhenAllowed) {
 }
 
 BOOST_AUTO_TEST_CASE(testHandlesUpdatePropagates) {
-    BOOST_TEST_MESSAGE("Testing construction of Linear Interpolated Smile Section using Quote Handles for vols and updating them");
+    BOOST_TEST_MESSAGE("Testing that linearly interpolated smile section observes its quotes...");
     // construct via Quote handles and verify changing the underlying quote updates the section
     Time expiry = 0.25;
     Real sqrtT = std::sqrt(expiry);
@@ -147,7 +147,7 @@ BOOST_AUTO_TEST_CASE(testHandlesUpdatePropagates) {
 }
 
 BOOST_AUTO_TEST_CASE(testFlatStrikeExtrapolation) {
-    BOOST_TEST_MESSAGE("Testing flat strike extrapolation in Interpolated Smile Section");
+    BOOST_TEST_MESSAGE("Testing flat strike extrapolation in interpolated smile section...");
     // construct via Quote handles and verify changing the underlying quote updates the section
     Time expiry = 0.25;
     Real sqrtT = std::sqrt(expiry);
@@ -190,7 +190,7 @@ BOOST_AUTO_TEST_CASE(testFlatStrikeExtrapolation) {
 }
 
 BOOST_AUTO_TEST_CASE(testErrorThrowingWhenNonSortedStrikes) {
-    BOOST_TEST_MESSAGE("Testing throwin QuantLib::Error when creating Interpolated Smile section with non-sorted strikes");
+    BOOST_TEST_MESSAGE("Testing that creation of interpolated smile section with non-sorted strikes throws...");
     // basic scenario: sorted strikes, constructor taking stdDevs (total std devs)
     Time expiry = 0.25; // 3 months
     Real sqrtT = std::sqrt(expiry);
@@ -213,4 +213,3 @@ BOOST_AUTO_TEST_CASE(testErrorThrowingWhenNonSortedStrikes) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
-
