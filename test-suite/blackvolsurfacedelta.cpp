@@ -38,10 +38,10 @@ BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaConstantVol) {
 
     BOOST_TEST_MESSAGE("Testing BlackVolatilitySurfaceDelta...");
 
-    Volatility constVol = 0.10; // 10%
-
     Date refDate(1, Jan, 2010);
     Settings::instance().evaluationDate() = refDate;
+
+    Volatility constVol = 0.10; // 10%
 
     // Setup a 2x2
     vector<Date> dates = { Date(1, Jan, 2011), Date(1, Jan, 2012) };
@@ -56,7 +56,6 @@ BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaConstantVol) {
     Handle<YieldTermStructure> fts(ext::make_shared<FlatForward>(0, TARGET(), 0.012, ActualActual(ActualActual::ISDA)));
 
     // build a vol surface
-    BOOST_TEST_MESSAGE("Build Surface");
     BlackVolatilitySurfaceDelta surface(refDate, dates, putDeltas, callDeltas, hasAtm, blackVolMatrix, ActualActual(ActualActual::ISDA),
                                         TARGET(), spot, dts, fts);
 
@@ -74,19 +73,19 @@ BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaNonConstantVol) {
 
     BOOST_TEST_MESSAGE("Testing BlackVolatilitySurfaceDelta with non constant vol surface...");
 
-    std::vector<std::vector<Volatility>> vols = {
+    Date refDate(1, Jan, 2010);
+    Settings::instance().evaluationDate() = refDate;
+
+    Matrix vols = {
         {0.15, 0.13, 0.135}, // 1M
         {0.14, 0.11, 0.125}, // 6M
         {0.13, 0.10, 0.12}, // 1Y
         {0.125, 0.095, 0.115}, // 2Y
     };
 
-    Date refDate(1, Jan, 2010);
-    Settings::instance().evaluationDate() = refDate;
-
     // Setup a 4x3
-    vector<Date> dates = { 
-        refDate + Period(1, Months), 
+    vector<Date> dates = {
+        refDate + Period(1, Months),
         refDate + Period(6, Months),
         refDate + Period(1, Years),
         refDate + Period(2, Years)
@@ -94,13 +93,6 @@ BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaNonConstantVol) {
     vector<Real> putDeltas = { -0.25 };
     vector<Real> callDeltas = { 0.25 };
     bool hasAtm = true;
-    Matrix blackVolMatrix(4, 3);
-
-    for (Size i = 0; i < vols.size(); ++i) {
-        for (Size j = 0; j < vols.at(0).size(); ++j) {
-            blackVolMatrix[i][j] = vols[i][j];
-        }
-    }
 
     // dummy spot and zero yield curve
     Handle<Quote> spot(ext::make_shared<SimpleQuote>(1.18));
@@ -108,8 +100,7 @@ BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaNonConstantVol) {
     Handle<YieldTermStructure> fts(ext::make_shared<FlatForward>(0, TARGET(), 0.035, ActualActual(ActualActual::ISDA)));
 
     // build a vol surface
-    BOOST_TEST_MESSAGE("Build Surface");
-    BlackVolatilitySurfaceDelta surface(refDate, dates, putDeltas, callDeltas, hasAtm, blackVolMatrix, ActualActual(ActualActual::ISDA),
+    BlackVolatilitySurfaceDelta surface(refDate, dates, putDeltas, callDeltas, hasAtm, vols, ActualActual(ActualActual::ISDA),
                                         TARGET(), spot, dts, fts);
 
     // Testing ATM strike
@@ -118,12 +109,12 @@ BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaNonConstantVol) {
     // ask for volatility at 1M (present in the matrix)
     auto smile1M = surface.blackVolSmile(refDate + Period(1, Months));
     BOOST_CHECK_CLOSE(smile1M->volatility(atmStrike), 0.13010360399, 1e-8);
-    
-    // ask for volatility at 15D (using time extrapolation) should be the same as the 1M
+
+    // ask for volatility at 15D (using time interpolation) should be the same as the 1M
     auto smile15D = surface.blackVolSmile(refDate + Period(15, Days));
     BOOST_CHECK_CLOSE(smile15D->volatility(atmStrike), 0.13007226607, 1e-8);
 
-    // ask for volatility at 3M (using time extrapolation)
+    // ask for volatility at 3M (using time interpolation)
     auto smile3M = surface.blackVolSmile(refDate + Period(3, Months));
     BOOST_CHECK_CLOSE(smile3M->volatility(atmStrike), 0.115077252583, 1e-8);
 
@@ -134,6 +125,80 @@ BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaNonConstantVol) {
     auto smile6M = surface.blackVolSmile(refDate + Period(6, Months));
     BOOST_CHECK_CLOSE(smile6M->volatility(lowStrike), 0.1411379628132, 1e-8);
     BOOST_CHECK_CLOSE(smile6M->volatility(highStrike), 0.136291154962, 1e-8);
+}
+
+
+BOOST_AUTO_TEST_CASE(testTimeExtrapolation) {
+
+    BOOST_TEST_MESSAGE("Testing time extrapolation of BlackVolatilitySurfaceDelta...");
+
+    Date refDate(1, Jan, 2010);
+    Settings::instance().evaluationDate() = refDate;
+
+    Matrix vols = {
+        {0.15, 0.13, 0.135}, // 1M
+        {0.14, 0.11, 0.125}, // 6M
+        {0.13, 0.10, 0.12}, // 1Y
+        {0.125, 0.095, 0.115}, // 2Y
+    };
+
+    vector<Date> dates = {
+        refDate + Period(1, Months),
+        refDate + Period(6, Months),
+        refDate + Period(1, Years),
+        refDate + Period(2, Years)
+    };
+    vector<Real> putDeltas = { -0.25 };
+    vector<Real> callDeltas = { 0.25 };
+    bool hasAtm = true;
+    Real atmStrike = 1.18;
+
+    Handle<Quote> spot(ext::make_shared<SimpleQuote>(1.18));
+    Handle<YieldTermStructure> dts(ext::make_shared<FlatForward>(0, TARGET(), 0.02, ActualActual(ActualActual::ISDA)));
+    Handle<YieldTermStructure> fts(ext::make_shared<FlatForward>(0, TARGET(), 0.035, ActualActual(ActualActual::ISDA)));
+
+    // flat volatility extrapolation
+
+    BlackVolatilitySurfaceDelta surface1(refDate, dates, putDeltas, callDeltas, hasAtm, vols, ActualActual(ActualActual::ISDA),
+                                         TARGET(), spot, dts, fts, DeltaVolQuote::DeltaType::Spot, DeltaVolQuote::AtmType::AtmSpot,
+                                         ext::nullopt, BlackVolatilitySurfaceDelta::SmileInterpolationMethod::Linear, false,
+                                         BlackVolTimeExtrapolation::FlatVolatility);
+
+    BOOST_CHECK_CLOSE(surface1.blackVol(refDate + Period(2, Years), atmStrike), 0.095, 1e-8);
+    BOOST_CHECK_CLOSE(surface1.blackVol(refDate + Period(2, Years), atmStrike - 0.1), 0.11684859871, 1e-8);
+    BOOST_CHECK_CLOSE(surface1.blackVol(refDate + Period(2, Years), atmStrike + 0.1), 0.11438709864, 1e-8);
+    BOOST_CHECK_CLOSE(surface1.blackVol(refDate + Period(3, Years), atmStrike), 0.095, 1e-8);
+    BOOST_CHECK_CLOSE(surface1.blackVol(refDate + Period(3, Years), atmStrike - 0.1), 0.11684859871, 1e-8);
+    BOOST_CHECK_CLOSE(surface1.blackVol(refDate + Period(3, Years), atmStrike + 0.1), 0.11438709864, 1e-8);
+
+    // linear variance extrapolation
+
+    BlackVolatilitySurfaceDelta surface2(refDate, dates, putDeltas, callDeltas, hasAtm, vols, ActualActual(ActualActual::ISDA),
+                                         TARGET(), spot, dts, fts, DeltaVolQuote::DeltaType::Spot, DeltaVolQuote::AtmType::AtmSpot,
+                                         ext::nullopt, BlackVolatilitySurfaceDelta::SmileInterpolationMethod::Linear, false,
+                                         BlackVolTimeExtrapolation::LinearVariance);
+
+    BOOST_CHECK_CLOSE(surface2.blackVol(refDate + Period(2, Years), atmStrike), 0.095, 1e-8);
+    BOOST_CHECK_CLOSE(surface2.blackVol(refDate + Period(2, Years), atmStrike - 0.1), 0.11684859871, 1e-8);
+    BOOST_CHECK_CLOSE(surface2.blackVol(refDate + Period(2, Years), atmStrike + 0.1), 0.11438709864, 1e-8);
+    BOOST_CHECK_CLOSE(surface2.blackVol(refDate + Period(3, Years), atmStrike), 0.09327379053, 1e-8);
+    BOOST_CHECK_CLOSE(surface2.blackVol(refDate + Period(3, Years), atmStrike - 0.1), 0.11174756764, 1e-8);
+    BOOST_CHECK_CLOSE(surface2.blackVol(refDate + Period(3, Years), atmStrike + 0.1), 0.11128755593, 1e-8);
+
+    // delegate to underlying interpolator (also linear variance)
+
+    BlackVolatilitySurfaceDelta surface3(refDate, dates, putDeltas, callDeltas, hasAtm, vols, ActualActual(ActualActual::ISDA),
+                                         TARGET(), spot, dts, fts, DeltaVolQuote::DeltaType::Spot, DeltaVolQuote::AtmType::AtmSpot,
+                                         ext::nullopt, BlackVolatilitySurfaceDelta::SmileInterpolationMethod::Linear, false,
+                                         BlackVolTimeExtrapolation::UseInterpolator);
+    surface3.enableExtrapolation();
+
+    BOOST_CHECK_CLOSE(surface3.blackVol(refDate + Period(2, Years), atmStrike), 0.095, 1e-8);
+    BOOST_CHECK_CLOSE(surface3.blackVol(refDate + Period(2, Years), atmStrike - 0.1), 0.11684859871, 1e-8);
+    BOOST_CHECK_CLOSE(surface3.blackVol(refDate + Period(2, Years), atmStrike + 0.1), 0.11438709864, 1e-8);
+    BOOST_CHECK_CLOSE(surface3.blackVol(refDate + Period(3, Years), atmStrike), 0.09327379053, 1e-8);
+    BOOST_CHECK_CLOSE(surface3.blackVol(refDate + Period(3, Years), atmStrike - 0.1), 0.11174756764, 1e-8);
+    BOOST_CHECK_CLOSE(surface3.blackVol(refDate + Period(3, Years), atmStrike + 0.1), 0.11128755593, 1e-8);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
