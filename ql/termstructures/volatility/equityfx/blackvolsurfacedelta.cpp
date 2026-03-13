@@ -34,21 +34,22 @@ namespace QuantLib {
         Date referenceDate, const std::vector<Date>& dates, const std::vector<Real>& putDeltas,
         const std::vector<Real>& callDeltas, bool hasAtm, const Matrix& blackVolMatrix, const DayCounter& dayCounter,
         const Calendar& cal, const Handle<Quote>& spot, const Handle<YieldTermStructure>& domesticTS,
-        const Handle<YieldTermStructure>& foreignTS, DeltaVolQuote::DeltaType dt, DeltaVolQuote::AtmType at,
+        const Handle<YieldTermStructure>& foreignTS, DeltaVolQuote::DeltaType deltaType, DeltaVolQuote::AtmType atmType,
         ext::optional<DeltaVolQuote::DeltaType> atmDeltaType, SmileInterpolationMethod im,
         bool flatStrikeExtrapolation, BlackVolTimeExtrapolation::Type timeExtrapolationType, const Period& switchTenor,
-        DeltaVolQuote::DeltaType ltdt, DeltaVolQuote::AtmType ltat, ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType)
-        : BlackVolatilityTermStructure(referenceDate, cal, Following, dayCounter), dates_(dates), times_(dates.size(), 0),
-        putDeltas_(putDeltas), callDeltas_(callDeltas), hasAtm_(hasAtm), spot_(spot), domesticTS_(domesticTS),
-        foreignTS_(foreignTS), dt_(dt), at_(at), atmDeltaType_(atmDeltaType),
-        interpolationMethod_(im), flatStrikeExtrapolation_(flatStrikeExtrapolation), timeExtrapolationType_(timeExtrapolationType),
-        switchTenor_(switchTenor), ltdt_(ltdt), ltat_(ltat), longTermAtmDeltaType_(longTermAtmDeltaType) {
+        DeltaVolQuote::DeltaType longTermDeltaType, DeltaVolQuote::AtmType longTermAtmType,
+        ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType)
+    : BlackVolatilityTermStructure(referenceDate, cal, Following, dayCounter), dates_(dates), times_(dates.size(), 0),
+      putDeltas_(putDeltas), callDeltas_(callDeltas), hasAtm_(hasAtm), spot_(spot), domesticTS_(domesticTS),
+      foreignTS_(foreignTS), deltaType_(deltaType), atmType_(atmType), atmDeltaType_(atmDeltaType),
+      interpolationMethod_(im), flatStrikeExtrapolation_(flatStrikeExtrapolation), timeExtrapolationType_(timeExtrapolationType),
+      switchTenor_(switchTenor), longTermDeltaType_(longTermDeltaType), longTermAtmType_(longTermAtmType),
+      longTermAtmDeltaType_(longTermAtmDeltaType) {
 
-        // If ATM delta type is not given, set it to dt
         if (!atmDeltaType_)
-            atmDeltaType_ = dt_;
+            atmDeltaType_ = deltaType_;
         if (!longTermAtmDeltaType_)
-            longTermAtmDeltaType_ = ltdt_;
+            longTermAtmDeltaType_ = longTermDeltaType_;
 
         // set switch time
         switchTime_ = switchTenor_ == 0 * Days ? QL_MAX_REAL : timeFromReference(optionDateFromTenor(switchTenor));
@@ -104,12 +105,12 @@ namespace QuantLib {
         DeltaVolQuote::DeltaType dt;
         DeltaVolQuote::DeltaType atmDt;
         if (t < switchTime_ && !close_enough(t, switchTime_)) {
-            at = at_;
-            dt = dt_;
+            at = atmType_;
+            dt = deltaType_;
             atmDt = *atmDeltaType_;
         } else {
-            at = ltat_;
-            dt = ltdt_;
+            at = longTermAtmType_;
+            dt = longTermDeltaType_;
             atmDt = *longTermAtmDeltaType_;
         }
 

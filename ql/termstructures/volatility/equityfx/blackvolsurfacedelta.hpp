@@ -58,38 +58,38 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         /*! \brief Construct a delta-parametrized Black vol surface
-            \param referenceDate    reference date for the term structure (valuation date)
-            \param dates            vector of option expiry dates (must be increasing)
-            \param putDeltas        vector of put-side deltas corresponding to matrix columns
-            \param callDeltas       vector of call-side deltas corresponding to matrix columns
-            \param hasAtm           true if an ATM column is present in the vol matrix
-            \param blackVolMatrix   matrix of Black volatilities (rows = expiries,
-                                    columns = deltas/ATM). Rows must match `dates`.
-            \param dayCounter       day-count convention used to convert dates to times
-            \param cal              calendar used for date adjustments where needed
-            \param spot             handle to spot quote (used for delta->strike conversion)
-            \param domesticTS       handle to domestic yield curve (discounting / forward)
-            \param foreignTS        handle to foreign yield curve (for FX forward)
-            \param dt               delta convention (Spot or Fwd, premium-adjusted, ...)
-            \param at               ATM convention used when extracting/constructing ATM quote
-            \param atmDeltaType     optional override delta-type for ATM computation
-            \param interpolationMethod interpolation used to build SmileSection for each expiry
-                                       can be choosen across the following interpolation methods:
-                                       Linear, NaturalCubic, FinancialCubic, CubicSpline
-            \param flatStrikeExtrapolation enable flat-vol extrapolation in strike dimension
-            \param timeExtrapolationType policy for extrapolating in time
-            \param switchTenor      tenor after which long-term delta/ATM conventions apply
-            \param ltdt             long-term delta type (used for expiries beyond switchTenor)
-            \param ltat             long-term ATM convention (used beyond switchTenor)
-            \param longTermAtmDeltaType optional override for long-term ATM delta-type
+            \param referenceDate            reference date for the term structure (valuation date)
+            \param dates                    vector of option expiry dates (must be increasing)
+            \param putDeltas                vector of put-side deltas corresponding to matrix columns
+            \param callDeltas               vector of call-side deltas corresponding to matrix columns
+            \param hasAtm                   true if an ATM column is present in the vol matrix
+            \param blackVolMatrix           matrix of Black volatilities (rows = expiries,
+                                            columns = deltas/ATM). Rows must match `dates`.
+            \param dayCounter               day-count convention used to convert dates to times
+            \param cal                      calendar used for date adjustments where needed
+            \param spot                     handle to spot quote (used for delta->strike conversion)
+            \param domesticTS               handle to domestic yield curve (discounting / forward)
+            \param foreignTS                handle to foreign yield curve (for FX forward)
+            \param deltaType                delta convention (Spot or Fwd, premium-adjusted, ...)
+            \param atmType                  ATM convention used when extracting/constructing ATM quote
+            \param atmDeltaType             optional override delta-type for ATM computation
+            \param interpolationMethod      interpolation used to build SmileSection for each expiry
+                                            can be chosen across the following interpolation methods:
+                                            Linear, NaturalCubic, FinancialCubic, CubicSpline
+            \param flatStrikeExtrapolation  enable flat-vol extrapolation in strike dimension
+            \param timeExtrapolationType    policy for extrapolating in time
+            \param switchTenor              tenor after which long-term delta/ATM conventions apply
+            \param longTermDeltaType        long-term delta type (used for expiries beyond switchTenor)
+            \param longTermAtmType          long-term ATM convention (used beyond switchTenor)
+            \param longTermAtmDeltaType     optional override for long-term ATM delta-type
         */
         BlackVolatilitySurfaceDelta(Date referenceDate, const std::vector<Date>& dates, const std::vector<Real>& putDeltas,
                                     const std::vector<Real>& callDeltas, bool hasAtm, const Matrix& blackVolMatrix,
                                     const DayCounter& dayCounter, const Calendar& cal, const Handle<Quote>& spot,
                                     const Handle<YieldTermStructure>& domesticTS,
                                     const Handle<YieldTermStructure>& foreignTS,
-                                    DeltaVolQuote::DeltaType dt = DeltaVolQuote::DeltaType::Spot,
-                                    DeltaVolQuote::AtmType at = DeltaVolQuote::AtmType::AtmDeltaNeutral,
+                                    DeltaVolQuote::DeltaType deltaType = DeltaVolQuote::DeltaType::Spot,
+                                    DeltaVolQuote::AtmType atmType = DeltaVolQuote::AtmType::AtmDeltaNeutral,
                                     ext::optional<DeltaVolQuote::DeltaType> atmDeltaType = ext::nullopt,
                                     SmileInterpolationMethod interpolationMethod =
                                         SmileInterpolationMethod::Linear,
@@ -97,8 +97,8 @@ namespace QuantLib {
                                     BlackVolTimeExtrapolation::Type timeExtrapolationType =
                                         BlackVolTimeExtrapolation::FlatVolatility,
                                     const Period& switchTenor = 0 * Days,
-                                    DeltaVolQuote::DeltaType ltdt = DeltaVolQuote::DeltaType::Fwd,
-                                    DeltaVolQuote::AtmType ltat = DeltaVolQuote::AtmType::AtmDeltaNeutral,
+                                    DeltaVolQuote::DeltaType longTermDeltaType = DeltaVolQuote::DeltaType::Fwd,
+                                    DeltaVolQuote::AtmType longTermAtmType = DeltaVolQuote::AtmType::AtmDeltaNeutral,
                                     ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType = ext::nullopt);
         //@}
 
@@ -174,8 +174,8 @@ namespace QuantLib {
         Handle<YieldTermStructure> domesticTS_;
         Handle<YieldTermStructure> foreignTS_;
 
-        DeltaVolQuote::DeltaType dt_;
-        DeltaVolQuote::AtmType at_;
+        DeltaVolQuote::DeltaType deltaType_;
+        DeltaVolQuote::AtmType atmType_;
         ext::optional<DeltaVolQuote::DeltaType> atmDeltaType_;
 
         SmileInterpolationMethod interpolationMethod_;
@@ -183,8 +183,8 @@ namespace QuantLib {
         BlackVolTimeExtrapolation::Type timeExtrapolationType_;
 
         Period switchTenor_;
-        DeltaVolQuote::DeltaType ltdt_;
-        DeltaVolQuote::AtmType ltat_;
+        DeltaVolQuote::DeltaType longTermDeltaType_;
+        DeltaVolQuote::AtmType longTermAtmType_;
         ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType_;
         Real switchTime_;
 

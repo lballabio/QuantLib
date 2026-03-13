@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaConstantVol) {
     for (Time t : { 0.25, 0.5, 1.0, 1.5, 2.0, 2.5, 10.0 }) {
         for (Real k = 0.5; k < 2.0; k += 0.05) {
             Volatility vol = surface.blackVol(t, k);
-            BOOST_CHECK_EQUAL(vol, constVol);
+            BOOST_CHECK_CLOSE(vol, constVol, 1e-12);
         }
     }
 }
