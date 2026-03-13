@@ -227,16 +227,7 @@ namespace QuantLib {
     template <class Interpolator>
     Real InterpolatedSmileSection<Interpolator>::varianceImpl(Real strike) const {
         calculate();
-        Real v = interpolation_(strike, true);
-
-        if (flatStrikeExtrapolation_) {
-            if (strike < minStrike()) {
-                v = interpolation_(minStrike(), true);                
-            } else if (strike > maxStrike()) {
-                v = interpolation_(maxStrike(), true);
-            }
-        }
-
+        Real v = volatilityImpl(strike);
         return v * v * exerciseTime();
     }
 
@@ -252,7 +243,7 @@ namespace QuantLib {
             }
         }
 
-        return interpolation_(strike, true);
+        return std::max(interpolation_(strike, true), 0.0);
     }
 
     template <class Interpolator>
