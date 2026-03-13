@@ -95,7 +95,7 @@ namespace QuantLib {
                                         SmileInterpolationMethod::Linear,
                                     bool flatStrikeExtrapolation = false,
                                     BlackVolTimeExtrapolation::Type timeExtrapolationType =
-                                        BlackVolTimeExtrapolation::Type::FlatVolatility,
+                                        BlackVolTimeExtrapolation::FlatVolatility,
                                     const Period& switchTenor = 0 * Days,
                                     DeltaVolQuote::DeltaType ltdt = DeltaVolQuote::DeltaType::Fwd,
                                     DeltaVolQuote::AtmType ltat = DeltaVolQuote::AtmType::AtmDeltaNeutral,
