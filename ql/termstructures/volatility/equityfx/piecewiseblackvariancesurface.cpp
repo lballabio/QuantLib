@@ -67,6 +67,17 @@ namespace QuantLib {
         }
     }
 
+    PiecewiseBlackVarianceSurface::PiecewiseBlackVarianceSurface(
+            const Date& referenceDate,
+            const Date& date,
+            ext::shared_ptr<SmileSection> smileSection,
+            DayCounter dayCounter)
+    : PiecewiseBlackVarianceSurface(
+          referenceDate,
+          std::vector<Date>{date},
+          std::vector<ext::shared_ptr<SmileSection>>{std::move(smileSection)},
+          std::move(dayCounter)) {}
+
     Real PiecewiseBlackVarianceSurface::sectionVariance(
             Size i, Real strike) const {
         const auto& s = smileSections_[i];

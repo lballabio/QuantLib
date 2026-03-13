@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2026 Rich Amaya
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,16 @@
 #include <ql/termstructures/volatility/equityfx/piecewiseblackvariancesurface.hpp>
 #include <ql/termstructures/volatility/flatsmilesection.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
+#include <ql/termstructures/volatility/sabrsmilesection.hpp>
+#include <ql/experimental/volatility/sabrvoltermstructure.hpp>
+#include <ql/experimental/volatility/svismilesection.hpp>
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <iomanip>
 
@@ -554,7 +565,8 @@ BOOST_AUTO_TEST_CASE(testConstructorValidation) {
 
     // empty dates
     BOOST_CHECK_EXCEPTION(
-        PiecewiseBlackVarianceSurface(today, {}, {}, dc),
+        PiecewiseBlackVarianceSurface(today, std::vector<Date>{},
+                                      std::vector<ext::shared_ptr<SmileSection>>{}, dc),
         Error,
         ExpectedErrorMessage("at least one date"));
 
@@ -860,6 +872,236 @@ BOOST_AUTO_TEST_CASE(testRaggedStrikeGrids) {
                        << "\n    var(dMid): " << std::setprecision(16)
                        << std::scientific << var_dMid
                        << "\n    var(d2):   " << var_d2);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSingleSectionConstructor) {
+    BOOST_TEST_MESSAGE(
+        "Testing single-section constructor...");
+
+    Date today(15, January, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+
+    Date expiry = today + 6*Months;
+    Volatility vol = 0.20;
+
+    auto smile = ext::make_shared<FlatSmileSection>(expiry, vol, dc, today);
+    PiecewiseBlackVarianceSurface surface(today, expiry, smile, dc);
+    surface.enableExtrapolation();
+
+    Real tol = 1.0e-12;
+    Real strike = 100.0;
+
+    // Vol should be constant at any maturity (flat vol extrapolation)
+    std::vector<Period> tenors = { 1*Months, 3*Months, 6*Months, 1*Years, 2*Years };
+    for (const auto& tenor : tenors) {
+        Date d = today + tenor;
+        Volatility calculated = surface.blackVol(d, strike, true);
+        if (std::fabs(calculated - vol) > tol) {
+            BOOST_FAIL("single-section constructor vol mismatch at " << tenor
+                       << std::fixed << std::setprecision(12)
+                       << "\n    calculated: " << calculated
+                       << "\n    expected:   " << vol
+                       << "\n    tolerance:  " << tol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSabrEquivalence) {
+    BOOST_TEST_MESSAGE(
+        "Testing equivalence with SABRVolTermStructure...");
+
+    Date today(15, January, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+
+    // SABR parameters
+    Real alpha = 0.2;
+    Real beta = 0.8;
+    Real nu = 0.4;
+    Real rho = -0.3;
+    Real s0 = 100.0;
+    Real r = 0.05;
+
+    // Build SABRVolTermStructure
+    SABRVolTermStructure sabrSurface(alpha, beta, nu, rho, s0, r, today, dc);
+
+    Real tol = 1.0e-10;
+    std::vector<Real> strikes = { 80.0, 90.0, 100.0, 110.0, 120.0 };
+    std::vector<Period> tenors = { 3*Months, 6*Months, 1*Years, 2*Years };
+
+    for (const auto& tenor : tenors) {
+        Date expiry = today + tenor;
+        Time t = dc.yearFraction(today, expiry);
+        Real fwd = s0 * std::exp(r * t);
+
+        std::vector<Real> sabrParams = { alpha, beta, nu, rho };
+        auto smile = ext::make_shared<SabrSmileSection>(
+            t, fwd, sabrParams);
+
+        PiecewiseBlackVarianceSurface adapterSurface(today, expiry, smile, dc);
+
+        for (Real strike : strikes) {
+            Volatility expected = sabrSurface.blackVol(expiry, strike, true);
+            Volatility calculated = adapterSurface.blackVol(expiry, strike);
+
+            if (std::fabs(calculated - expected) > tol) {
+                BOOST_FAIL("SABR equivalence failed"
+                           << "\n    tenor:      " << tenor
+                           << "\n    strike:     " << strike
+                           << std::fixed << std::setprecision(12)
+                           << "\n    SABRVolTS:  " << expected
+                           << "\n    adapter:    " << calculated
+                           << "\n    difference: " << std::fabs(calculated - expected)
+                           << "\n    tolerance:  " << tol);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSviSmileSection) {
+    BOOST_TEST_MESSAGE(
+        "Testing with SVI smile section...");
+
+    Date today(15, January, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+
+    Real forward = 100.0;
+    Date expiry = today + 6*Months;
+    Time T = dc.yearFraction(today, expiry);
+
+    // SVI parameters: a, b, sigma, rho, m
+    std::vector<Real> sviParams = { 0.04, 0.1, 0.3, -0.4, 0.0 };
+
+    auto sviSmile = ext::make_shared<SviSmileSection>(T, forward, sviParams);
+
+    PiecewiseBlackVarianceSurface surface(today, expiry, sviSmile, dc);
+
+    // Verify the surface reproduces the smile at its expiry
+    Real tol = 1.0e-10;
+    std::vector<Real> strikes = { 80.0, 90.0, 100.0, 110.0, 120.0 };
+
+    for (Real strike : strikes) {
+        Volatility fromSmile = sviSmile->volatility(strike);
+        Volatility fromSurface = surface.blackVol(expiry, strike);
+
+        if (std::fabs(fromSmile - fromSurface) > tol) {
+            BOOST_FAIL("SVI smile/surface mismatch"
+                       << "\n    strike:     " << strike
+                       << std::fixed << std::setprecision(12)
+                       << "\n    smile:      " << fromSmile
+                       << "\n    surface:    " << fromSurface
+                       << "\n    difference: " << std::fabs(fromSmile - fromSurface)
+                       << "\n    tolerance:  " << tol);
+        }
+    }
+
+    // Verify smile produces a non-flat surface (SVI has skew)
+    Volatility volLow = surface.blackVol(expiry, 80.0);
+    Volatility volAtm = surface.blackVol(expiry, 100.0);
+    Volatility volHigh = surface.blackVol(expiry, 120.0);
+
+    if (std::fabs(volLow - volAtm) < 1.0e-6 && std::fabs(volHigh - volAtm) < 1.0e-6) {
+        BOOST_FAIL("SVI surface appears flat — expected a smile"
+                   << std::fixed << std::setprecision(6)
+                   << "\n    vol(80):  " << volLow
+                   << "\n    vol(100): " << volAtm
+                   << "\n    vol(120): " << volHigh);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testLocalVolFdPricingFromSabrSmiles) {
+    BOOST_TEST_MESSAGE(
+        "Testing FD local-vol pricing from SABR smile surface...");
+
+    Date today(15, January, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+
+    Real s0 = 100.0;
+    Rate r = 0.03;
+    Rate q = 0.01;
+
+    auto spot = ext::make_shared<SimpleQuote>(s0);
+    auto rTS = Handle<YieldTermStructure>(
+        ext::make_shared<FlatForward>(today, r, dc));
+    auto qTS = Handle<YieldTermStructure>(
+        ext::make_shared<FlatForward>(today, q, dc));
+
+    // SABR parameters
+    Real alpha = 0.3;
+    Real beta = 0.7;
+    Real nu = 0.4;
+    Real rho = -0.4;
+    std::vector<Real> sabrParams = { alpha, beta, nu, rho };
+
+    // Build multi-tenor SABR surface
+    std::vector<Period> tenors = { 3*Months, 6*Months, 1*Years, 2*Years };
+    std::vector<Date> dates;
+    std::vector<ext::shared_ptr<SmileSection>> smiles;
+
+    for (const auto& tenor : tenors) {
+        Date expiry = today + tenor;
+        Time t = dc.yearFraction(today, expiry);
+        Real fwd = s0 * std::exp((r - q) * t);
+        dates.push_back(expiry);
+        smiles.push_back(
+            ext::make_shared<SabrSmileSection>(t, fwd, sabrParams));
+    }
+
+    auto volSurface = ext::make_shared<PiecewiseBlackVarianceSurface>(
+        today, dates, std::move(smiles), dc);
+    volSurface->enableExtrapolation();
+
+    auto volHandle = Handle<BlackVolTermStructure>(volSurface);
+
+    // Build BS process and FD engine with local vol
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), qTS, rTS, volHandle);
+
+    auto fdEngine = ext::make_shared<FdBlackScholesVanillaEngine>(
+        process, 100, 200, 0,
+        FdmSchemeDesc::Douglas(), true);  // localVol = true
+
+    // Also build analytic engine for comparison
+    auto analyticEngine = ext::make_shared<AnalyticEuropeanEngine>(process);
+
+    // Price European options at various strikes and maturities
+    Real tol = 0.01;  // 1 cent tolerance for FD vs analytic
+
+    std::vector<Real> strikes = { 90.0, 100.0, 110.0 };
+    std::vector<Period> optionTenors = { 6*Months, 1*Years };
+
+    for (const auto& tenor : optionTenors) {
+        Date expiry = today + tenor;
+        auto exercise = ext::make_shared<EuropeanExercise>(expiry);
+
+        for (Real strike : strikes) {
+            auto payoff = ext::make_shared<PlainVanillaPayoff>(
+                Option::Call, strike);
+            VanillaOption option(payoff, exercise);
+
+            option.setPricingEngine(analyticEngine);
+            Real analyticPrice = option.NPV();
+
+            option.setPricingEngine(fdEngine);
+            Real fdPrice = option.NPV();
+
+            Real diff = std::fabs(fdPrice - analyticPrice);
+
+            if (diff > tol) {
+                BOOST_FAIL("FD local-vol price deviates from analytic"
+                           << "\n    tenor:     " << tenor
+                           << "\n    strike:    " << strike
+                           << std::fixed << std::setprecision(6)
+                           << "\n    analytic:  " << analyticPrice
+                           << "\n    FD:        " << fdPrice
+                           << "\n    diff:      " << diff
+                           << "\n    tolerance: " << tol);
+            }
+        }
     }
 }
 

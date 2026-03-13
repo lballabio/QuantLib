@@ -47,6 +47,12 @@ namespace QuantLib {
             std::vector<ext::shared_ptr<SmileSection>> smileSections,
             DayCounter dayCounter = DayCounter());
 
+        PiecewiseBlackVarianceSurface(
+            const Date& referenceDate,
+            const Date& date,
+            ext::shared_ptr<SmileSection> smileSection,
+            DayCounter dayCounter = DayCounter());
+
         DayCounter dayCounter() const override;
         Date maxDate() const override;
         Real minStrike() const override;
