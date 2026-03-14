@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install test test-verbose lint format typecheck precommit clean ci
+.PHONY: help install test test-verbose test-cov lint format typecheck precommit clean ci
 
 help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
@@ -13,6 +13,9 @@ test: ## Run all tests
 
 test-verbose: ## Run tests with verbose output
 	python -m pytest tests/ -v || test $$? -eq 5
+
+test-cov: ## Run tests with coverage
+	python -m pytest tests/ --cov=quantlib --cov-report=term-missing || test $$? -eq 5
 
 lint: ## Run linter (ruff check + format check)
 	ruff check .

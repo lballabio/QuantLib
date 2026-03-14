@@ -1,0 +1,77 @@
+name: Auto-Advance Dependencies
+
+on:
+  issues:
+    types: [closed]
+
+jobs:
+  advance-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Advance dependent issues to status/ready
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const closedIssue = context.payload.issue;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            // Find all open issues with status/backlog
+            const backlogIssues = await github.rest.issues.listForRepo({
+              owner, repo,
+              state: 'open',
+              labels: 'status/backlog',
+              per_page: 100,
+            });
+
+            for (const issue of backlogIssues.data) {
+              const body = issue.body || '';
+
+              // Parse AGENT-META depends-on field
+              const metaMatch = body.match(/<!-- AGENT-META[\s\S]*?-->/);
+              if (!metaMatch) continue;
+
+              const depsMatch = metaMatch[0].match(/depends-on:\s*(.+)/);
+              if (!depsMatch) continue;
+
+              const depsStr = depsMatch[1].trim();
+              if (depsStr === 'none') continue;
+
+              // Parse issue numbers from depends-on
+              const depNumbers = depsStr.match(/#(\d+)/g);
+              if (!depNumbers) continue;
+
+              const deps = depNumbers.map(d => parseInt(d.replace('#', '')));
+
+              // Check if all dependencies are closed
+              let allClosed = true;
+              for (const dep of deps) {
+                try {
+                  const depIssue = await github.rest.issues.get({
+                    owner, repo, issue_number: dep,
+                  });
+                  if (depIssue.data.state !== 'closed') {
+                    allClosed = false;
+                    break;
+                  }
+                } catch (e) {
+                  allClosed = false;
+                  break;
+                }
+              }
+
+              if (allClosed) {
+                // Remove status/backlog, add status/ready
+                try {
+                  await github.rest.issues.removeLabel({
+                    owner, repo, issue_number: issue.number, name: 'status/backlog',
+                  });
+                } catch (e) { /* label might not exist */ }
+
+                await github.rest.issues.addLabels({
+                  owner, repo, issue_number: issue.number, labels: ['status/ready'],
+                });
+
+                console.log(`Issue #${issue.number} advanced to status/ready (all deps closed)`);
+              }
+            }

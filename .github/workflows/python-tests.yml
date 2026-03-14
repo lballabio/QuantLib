@@ -8,6 +8,7 @@ on:
       - 'tests/**'
       - 'pyproject.toml'
       - 'Makefile'
+      - '.github/workflows/python-tests.yml'
   pull_request:
     branches: [master]
     paths:
@@ -15,6 +16,7 @@ on:
       - 'tests/**'
       - 'pyproject.toml'
       - 'Makefile'
+      - '.github/workflows/python-tests.yml'
 
 jobs:
   test:
@@ -40,5 +42,5 @@ jobs:
       - name: Type check
         run: make typecheck
 
-      - name: Test
-        run: make test
+      - name: Test with coverage
+        run: make test-cov

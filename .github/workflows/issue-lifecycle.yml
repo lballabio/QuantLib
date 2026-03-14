@@ -1,0 +1,110 @@
+name: Issue Lifecycle
+
+on:
+  pull_request:
+    types: [opened]
+  issues:
+    types: [closed]
+
+permissions:
+  issues: write
+
+jobs:
+  pr-links-issue:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Move linked issues to status/review
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const body = pr.body || '';
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            // Find "Closes #N" references
+            const closes = body.match(/[Cc]loses?\s+#(\d+)/g) || [];
+            for (const match of closes) {
+              const num = parseInt(match.match(/#(\d+)/)[1]);
+              try {
+                const issue = await github.rest.issues.get({ owner, repo, issue_number: num });
+                const labels = issue.data.labels.map(l => l.name);
+
+                if (labels.includes('status/in-progress')) {
+                  await github.rest.issues.removeLabel({
+                    owner, repo, issue_number: num, name: 'status/in-progress',
+                  });
+                  await github.rest.issues.addLabels({
+                    owner, repo, issue_number: num, labels: ['status/review'],
+                  });
+                  console.log(`Issue #${num} moved to status/review`);
+                }
+              } catch (e) {
+                console.log(`Could not update issue #${num}: ${e.message}`);
+              }
+            }
+
+  auto-close-epic:
+    if: github.event_name == 'issues' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close epic if all sub-issues are done
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const closedIssue = context.payload.issue;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            // Check if this issue has a parent (is a sub-issue)
+            const query = `query($owner: String!, $repo: String!, $number: Int!) {
+              repository(owner: $owner, name: $repo) {
+                issue(number: $number) {
+                  parentIssue { number id state
+                    subIssues(first: 50) {
+                      nodes { number state }
+                    }
+                  }
+                }
+              }
+            }`;
+
+            try {
+              const result = await github.graphql(query, {
+                owner, repo, number: closedIssue.number
+              });
+
+              const parent = result.repository.issue.parentIssue;
+              if (!parent || parent.state !== 'OPEN') return;
+
+              const openSubs = parent.subIssues.nodes.filter(s => s.state === 'OPEN');
+              if (openSubs.length === 0) {
+                // All sub-issues closed — close the epic
+                await github.rest.issues.update({
+                  owner, repo, issue_number: parent.number, state: 'closed',
+                });
+
+                // Update labels
+                try {
+                  await github.rest.issues.removeLabel({
+                    owner, repo, issue_number: parent.number, name: 'status/review',
+                  });
+                } catch (e) { /* might not have this label */ }
+                try {
+                  await github.rest.issues.removeLabel({
+                    owner, repo, issue_number: parent.number, name: 'status/in-progress',
+                  });
+                } catch (e) { /* might not have this label */ }
+
+                await github.rest.issues.addLabels({
+                  owner, repo, issue_number: parent.number, labels: ['status/done'],
+                });
+
+                console.log(`Epic #${parent.number} auto-closed (all sub-issues done)`);
+              } else {
+                console.log(`Epic #${parent.number} still has ${openSubs.length} open sub-issue(s)`);
+              }
+            } catch (e) {
+              console.log(`GraphQL error: ${e.message}`);
+            }
