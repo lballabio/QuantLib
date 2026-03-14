@@ -3,6 +3,8 @@ from __future__ import annotations
 import datetime as _dt
 
 from quantlib.time.month import Month
+from quantlib.time.period import Period
+from quantlib.time.timeunit import TimeUnit
 from quantlib.time.weekday import Weekday
 
 
@@ -268,6 +270,117 @@ class Date:
     def __ge__(self, other: Date) -> bool:
         return self._serial >= other._serial
 
+    # Date algebra
+    def __add__(self, other: int | Period) -> Date:
+        if isinstance(other, int):
+            return Date(self._serial + other)
+        if isinstance(other, Period):
+            return Date._advance(self, other.length(), other.units())
+        return NotImplemented
+
+    def __radd__(self, other: int) -> Date:
+        return self.__add__(other)
+
+    def __sub__(self, other: int | Period | Date) -> Date | int:
+        if isinstance(other, int):
+            return Date(self._serial - other)
+        if isinstance(other, Period):
+            return Date._advance(self, -other.length(), other.units())
+        if isinstance(other, Date):
+            return self._serial - other._serial
+        return NotImplemented
+
+    def __iadd__(self, other: int | Period) -> Date:
+        if isinstance(other, int):
+            serial = self._serial + other
+            Date._check_serial_number(serial)
+            self._serial = serial
+        elif isinstance(other, Period):
+            self._serial = Date._advance(self, other.length(), other.units())._serial
+        else:
+            return NotImplemented
+        return self
+
+    def __isub__(self, other: int | Period) -> Date:
+        if isinstance(other, int):
+            serial = self._serial - other
+            Date._check_serial_number(serial)
+            self._serial = serial
+        elif isinstance(other, Period):
+            self._serial = Date._advance(self, -other.length(), other.units())._serial
+        else:
+            return NotImplemented
+        return self
+
+    @staticmethod
+    def _advance(date: Date, n: int, units: TimeUnit) -> Date:
+        if units == TimeUnit.Days:
+            return Date(date._serial + n)
+        elif units == TimeUnit.Weeks:
+            return Date(date._serial + 7 * n)
+        elif units == TimeUnit.Months:
+            d = date.dayOfMonth()
+            m = int(date.month()) + n
+            y = date.year()
+            while m > 12:
+                m -= 12
+                y += 1
+            while m < 1:
+                m += 12
+                y -= 1
+            if y < 1901 or y > 2199:
+                raise ValueError(f"year {y} out of bounds. It must be in [1901,2199]")
+            length = Date._month_length(m, Date.isLeap(y))
+            if d > length:
+                d = length
+            return Date(d, Month(m), y)
+        elif units == TimeUnit.Years:
+            d = date.dayOfMonth()
+            m = date.month()
+            y = date.year() + n
+            if y < 1901 or y > 2199:
+                raise ValueError(f"year {y} out of bounds. It must be in [1901,2199]")
+            if d == 29 and m == Month.February and not Date.isLeap(y):
+                d = 28
+            return Date(d, m, y)
+        else:
+            raise ValueError("undefined time units")
+
+    @staticmethod
+    def startOfMonth(d: Date) -> Date:
+        return Date(1, d.month(), d.year())
+
+    @staticmethod
+    def isStartOfMonth(d: Date) -> bool:
+        return d.dayOfMonth() == 1
+
+    @staticmethod
+    def endOfMonth(d: Date) -> Date:
+        m = d.month()
+        y = d.year()
+        return Date(Date._month_length(int(m), Date.isLeap(y)), m, y)
+
+    @staticmethod
+    def isEndOfMonth(d: Date) -> bool:
+        return d.dayOfMonth() == Date._month_length(int(d.month()), Date.isLeap(d.year()))
+
+    @staticmethod
+    def nextWeekday(d: Date, dayOfWeek: Weekday) -> Date:
+        wd = int(d.weekday())
+        dow = int(dayOfWeek)
+        return d + ((7 if wd > dow else 0) - wd + dow)
+
+    @staticmethod
+    def nthWeekday(nth: int, dayOfWeek: Weekday, m: Month, y: int) -> Date:
+        if nth < 1:
+            raise ValueError("zeroth day of week in a given (month, year) is undefined")
+        if nth > 5:
+            raise ValueError("no more than 5 weekday in a given (month, year)")
+        first = int(Date(1, m, y).weekday())
+        dow = int(dayOfWeek)
+        skip = nth - (1 if dow >= first else 0)
+        return Date((1 + dow + skip * 7) - first, m, y)
+
     def __bool__(self) -> bool:
         return self._serial != 0
 
@@ -283,3 +396,7 @@ class Date:
         if self._serial == 0:
             return "null date"
         return f"{self.month().name} {self.dayOfMonth()}, {self.year()}"
+
+
+def daysBetween(d1: Date, d2: Date) -> float:
+    return float(d2.serialNumber() - d1.serialNumber())

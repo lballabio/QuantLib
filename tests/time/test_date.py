@@ -1,10 +1,12 @@
-"""Tests for Date class — constructors and inspectors.
+"""Tests for Date class — constructors, inspectors, algebra, and comparisons.
 
-Transpiled from upstream/test-suite/dates.cpp (testConsistency, null date).
+Transpiled from upstream/test-suite/dates.cpp.
 """
 
-from quantlib.time.date import Date
+from quantlib.time.date import Date, daysBetween
 from quantlib.time.month import Month
+from quantlib.time.period import Period
+from quantlib.time.timeunit import TimeUnit
 from quantlib.time.weekday import Weekday
 
 
@@ -182,3 +184,107 @@ class TestComparison:
         d2 = Date(1, Month.January, 2020)
         s = {d1, d2}
         assert len(s) == 1
+
+
+class TestDateAlgebraDays:
+    def test_add_days(self):
+        d = Date(1, Month.January, 2020)
+        d2 = d + 10
+        assert d2 == Date(11, Month.January, 2020)
+
+    def test_subtract_days(self):
+        d = Date(11, Month.January, 2020)
+        d2 = d - 10
+        assert d2 == Date(1, Month.January, 2020)
+
+    def test_iadd_days(self):
+        d = Date(1, Month.January, 2020)
+        d += 10
+        assert d == Date(11, Month.January, 2020)
+
+    def test_isub_days(self):
+        d = Date(11, Month.January, 2020)
+        d -= 10
+        assert d == Date(1, Month.January, 2020)
+
+    def test_date_difference(self):
+        d1 = Date(1, Month.January, 2020)
+        d2 = Date(11, Month.January, 2020)
+        assert d2 - d1 == 10
+
+    def test_days_between(self):
+        d1 = Date(1, Month.January, 2020)
+        d2 = Date(11, Month.January, 2020)
+        assert daysBetween(d1, d2) == 10.0
+
+
+class TestDateAlgebraPeriods:
+    def test_add_months(self):
+        d = Date(31, Month.January, 2020)
+        d2 = d + Period(1, TimeUnit.Months)
+        # Jan 31 + 1M = Feb 29 (2020 is leap)
+        assert d2 == Date(29, Month.February, 2020)
+
+    def test_add_months_non_leap(self):
+        d = Date(31, Month.January, 2019)
+        d2 = d + Period(1, TimeUnit.Months)
+        # Jan 31 + 1M = Feb 28 (2019 is not leap)
+        assert d2 == Date(28, Month.February, 2019)
+
+    def test_add_years(self):
+        d = Date(29, Month.February, 2020)
+        d2 = d + Period(1, TimeUnit.Years)
+        # Feb 29 + 1Y = Feb 28 (2021 is not leap)
+        assert d2 == Date(28, Month.February, 2021)
+
+    def test_add_weeks(self):
+        d = Date(1, Month.January, 2020)
+        d2 = d + Period(2, TimeUnit.Weeks)
+        assert d2 == Date(15, Month.January, 2020)
+
+    def test_subtract_period(self):
+        d = Date(15, Month.March, 2020)
+        d2 = d - Period(1, TimeUnit.Months)
+        assert d2 == Date(15, Month.February, 2020)
+
+    def test_iadd_period(self):
+        d = Date(15, Month.January, 2020)
+        d += Period(1, TimeUnit.Months)
+        assert d == Date(15, Month.February, 2020)
+
+    def test_isub_period(self):
+        d = Date(15, Month.February, 2020)
+        d -= Period(1, TimeUnit.Months)
+        assert d == Date(15, Month.January, 2020)
+
+
+class TestStaticDateMethods:
+    def test_start_of_month(self):
+        d = Date(15, Month.March, 2020)
+        assert Date.startOfMonth(d) == Date(1, Month.March, 2020)
+
+    def test_is_start_of_month(self):
+        assert Date.isStartOfMonth(Date(1, Month.March, 2020))
+        assert not Date.isStartOfMonth(Date(15, Month.March, 2020))
+
+    def test_end_of_month(self):
+        d = Date(15, Month.February, 2020)
+        assert Date.endOfMonth(d) == Date(29, Month.February, 2020)
+
+        d = Date(15, Month.February, 2019)
+        assert Date.endOfMonth(d) == Date(28, Month.February, 2019)
+
+    def test_is_end_of_month(self):
+        assert Date.isEndOfMonth(Date(29, Month.February, 2020))
+        assert not Date.isEndOfMonth(Date(28, Month.February, 2020))
+        assert Date.isEndOfMonth(Date(28, Month.February, 2019))
+
+    def test_next_weekday(self):
+        # Tuesday Jan 15 2002 → next Friday = Jan 18
+        d = Date(15, Month.January, 2002)
+        assert Date.nextWeekday(d, Weekday.Friday) == Date(18, Month.January, 2002)
+
+    def test_nth_weekday(self):
+        # 4th Thursday of March 1998 = March 26
+        d = Date.nthWeekday(4, Weekday.Thursday, Month.March, 1998)
+        assert d == Date(26, Month.March, 1998)
