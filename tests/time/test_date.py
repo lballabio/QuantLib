@@ -288,3 +288,35 @@ class TestStaticDateMethods:
         # 4th Thursday of March 1998 = March 26
         d = Date.nthWeekday(4, Weekday.Thursday, Month.March, 1998)
         assert d == Date(26, Month.March, 1998)
+
+
+class TestDateFormatting:
+    def test_iso_date(self):
+        d = Date(15, Month.January, 2006)
+        assert d.iso_date() == "2006-01-15"
+
+    def test_iso_date_null(self):
+        assert Date().iso_date() == "null date"
+
+    def test_short_date(self):
+        d = Date(15, Month.January, 2006)
+        assert d.short_date() == "01/15/2006"
+
+    def test_short_date_null(self):
+        assert Date().short_date() == "null date"
+
+    def test_str_format(self):
+        d = Date(15, Month.January, 2006)
+        assert str(d) == "January 15, 2006"
+
+    def test_repr_format(self):
+        d = Date(15, Month.January, 2006)
+        assert repr(d) == "Date(15, <Month.January: 1>, 2006)"
+
+    def test_iso_date_padding(self):
+        d = Date(1, Month.March, 2020)
+        assert d.iso_date() == "2020-03-01"
+
+    def test_short_date_padding(self):
+        d = Date(1, Month.March, 2020)
+        assert d.short_date() == "03/01/2020"

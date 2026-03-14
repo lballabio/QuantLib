@@ -397,6 +397,18 @@ class Date:
             return "null date"
         return f"{self.month().name} {self.dayOfMonth()}, {self.year()}"
 
+    def iso_date(self) -> str:
+        """ISO format: yyyy-mm-dd"""
+        if self._serial == 0:
+            return "null date"
+        return f"{self.year()}-{int(self.month()):02d}-{self.dayOfMonth():02d}"
+
+    def short_date(self) -> str:
+        """Short format: mm/dd/yyyy"""
+        if self._serial == 0:
+            return "null date"
+        return f"{int(self.month()):02d}/{self.dayOfMonth():02d}/{self.year()}"
+
 
 def daysBetween(d1: Date, d2: Date) -> float:
     return float(d2.serialNumber() - d1.serialNumber())
