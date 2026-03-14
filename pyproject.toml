@@ -30,7 +30,7 @@ exclude = ["upstream"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP"]
-ignore = ["N802", "N803"]  # camelCase methods/args required for QuantLib API compatibility
+ignore = ["N801", "N802", "N803"]  # naming conventions relaxed for QuantLib API compatibility
 
 [tool.pyright]
 pythonVersion = "3.10"
