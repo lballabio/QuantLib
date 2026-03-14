@@ -1,0 +1,67 @@
+name: Check Sub-Issues Before Close
+
+on:
+  issues:
+    types: [closed]
+
+jobs:
+  check-subissues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for open sub-issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+
+            // Query sub-issues via GraphQL
+            const query = `query($owner: String!, $repo: String!, $number: Int!) {
+              repository(owner: $owner, name: $repo) {
+                issue(number: $number) {
+                  subIssues(first: 50) {
+                    nodes {
+                      number
+                      title
+                      state
+                    }
+                  }
+                }
+              }
+            }`;
+
+            const result = await github.graphql(query, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              number: issue.number
+            });
+
+            const subIssues = result.repository.issue.subIssues.nodes;
+            if (subIssues.length === 0) {
+              console.log('No sub-issues found, OK to close.');
+              return;
+            }
+
+            const openSubIssues = subIssues.filter(si => si.state === 'OPEN');
+            if (openSubIssues.length > 0) {
+              const list = openSubIssues.map(si => `- #${si.number}: ${si.title}`).join('\n');
+
+              // Reopen the issue
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'open'
+              });
+
+              // Add a comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `Cannot close this issue — the following sub-issues are still open:\n\n${list}\n\nPlease close all sub-issues first.`
+              });
+
+              core.setFailed(`Issue #${issue.number} has ${openSubIssues.length} open sub-issue(s).`);
+            } else {
+              console.log('All sub-issues are closed, OK to close parent.');
+            }
