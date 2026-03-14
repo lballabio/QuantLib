@@ -15,7 +15,7 @@ include = ["quantlib*"]
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0",
-    "ruff>=0.4",
+    "ruff>=0.15,<0.16",
     "pyright>=1.1",
     "pre-commit>=3.0",
 ]
