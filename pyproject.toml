@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quantlib-python"
+version = "0.1.0"
+description = "Pure Python drop-in replacement for QuantLib"
+requires-python = ">=3.10"
+license = "BSD-3-Clause"
+
+[tool.setuptools.packages.find]
+include = ["quantlib*"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.4",
+    "pyright>=1.1",
+    "pre-commit>=3.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+exclude = ["upstream"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.pyright]
+pythonVersion = "3.10"
+typeCheckingMode = "basic"
