@@ -118,9 +118,9 @@ BOOST_AUTO_TEST_CASE(testHandlesUpdatePropagates) {
     ext::shared_ptr<SimpleQuote> q1(new SimpleQuote(0.15 * sqrtT));
     ext::shared_ptr<SimpleQuote> q2(new SimpleQuote(0.18 * sqrtT));
     std::vector<Handle<Quote>> stdDevHandles;
-    stdDevHandles.emplace_back(Handle<Quote>(q0));
-    stdDevHandles.emplace_back(Handle<Quote>(q1));
-    stdDevHandles.emplace_back(Handle<Quote>(q2));
+    stdDevHandles.emplace_back(q0);
+    stdDevHandles.emplace_back(q1);
+    stdDevHandles.emplace_back(q2);
 
     ext::shared_ptr<SimpleQuote> atm(new SimpleQuote(95.0));
     Handle<Quote> atmHandle(atm);
@@ -158,9 +158,9 @@ BOOST_AUTO_TEST_CASE(testFlatStrikeExtrapolation) {
     ext::shared_ptr<SimpleQuote> q1(new SimpleQuote(0.15 * sqrtT));
     ext::shared_ptr<SimpleQuote> q2(new SimpleQuote(0.18 * sqrtT));
     std::vector<Handle<Quote>> stdDevHandles;
-    stdDevHandles.emplace_back(Handle<Quote>(q0));
-    stdDevHandles.emplace_back(Handle<Quote>(q1));
-    stdDevHandles.emplace_back(Handle<Quote>(q2));
+    stdDevHandles.emplace_back(q0);
+    stdDevHandles.emplace_back(q1);
+    stdDevHandles.emplace_back(q2);
 
     ext::shared_ptr<SimpleQuote> atm(new SimpleQuote(95.0));
     Handle<Quote> atmHandle(atm);

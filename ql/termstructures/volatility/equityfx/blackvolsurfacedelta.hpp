@@ -113,7 +113,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&) override;
+        void accept(AcyclicVisitor&) override;
         //@}
 
         //! \name Inspectors
@@ -159,7 +159,7 @@ namespace QuantLib {
         ext::shared_ptr<SmileSection> blackVolSmile(const Date& d) const;
 
     protected:
-        virtual Volatility blackVolImpl(Time t, Real strike) const override;
+        Volatility blackVolImpl(Time t, Real strike) const override;
 
     private:
         std::vector<Date> dates_;
@@ -195,8 +195,8 @@ namespace QuantLib {
     // inline definitions
 
     inline void BlackVolatilitySurfaceDelta::accept(AcyclicVisitor& v) {
-        Visitor<BlackVolatilitySurfaceDelta>* v1 = dynamic_cast<Visitor<BlackVolatilitySurfaceDelta>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<BlackVolatilitySurfaceDelta>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             BlackVolatilityTermStructure::accept(v);
