@@ -25,6 +25,7 @@
 
 #include <ql/cashflows/coupon.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmaffinemodeltermstructure.hpp>
@@ -41,10 +42,25 @@ namespace QuantLib {
       public:
         FdmAffineModelSwapInnerValue(ext::shared_ptr<ModelType> disModel,
                                      ext::shared_ptr<ModelType> fwdModel,
-                                     const ext::shared_ptr<FixedVsFloatingSwap>& swap,
+                                     const ext::shared_ptr<VanillaSwap>& swap,
                                      std::map<Time, Date> exerciseDates,
                                      ext::shared_ptr<FdmMesher> mesher,
                                      Size direction);
+
+        FdmAffineModelSwapInnerValue(ext::shared_ptr<ModelType> disModel,
+                                     ext::shared_ptr<ModelType> fwdModel,
+                                     const ext::shared_ptr<OvernightIndexedSwap>& swap,
+                                     std::map<Time, Date> exerciseDates,
+                                     ext::shared_ptr<FdmMesher> mesher,
+                                     Size direction);
+
+        static ext::shared_ptr<FdmAffineModelSwapInnerValue<ModelType>>
+        create(ext::shared_ptr<ModelType> disModel,
+               ext::shared_ptr<ModelType> fwdModel,
+               const ext::shared_ptr<FixedVsFloatingSwap>& swap,
+               std::map<Time, Date> exerciseDates,
+               ext::shared_ptr<FdmMesher> mesher,
+               Size direction);
 
         Real innerValue(const FdmLinearOpIterator& iter, Time t) override;
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override;
@@ -68,7 +84,7 @@ namespace QuantLib {
     inline FdmAffineModelSwapInnerValue<ModelType>::FdmAffineModelSwapInnerValue(
         ext::shared_ptr<ModelType> disModel,
         ext::shared_ptr<ModelType> fwdModel,
-        const ext::shared_ptr<FixedVsFloatingSwap>& swap,
+        const ext::shared_ptr<VanillaSwap>& swap,
         std::map<Time, Date> exerciseDates,
         ext::shared_ptr<FdmMesher> mesher,
         Size direction)
@@ -84,6 +100,60 @@ namespace QuantLib {
                                           swap->floatingDayCount(),
                                           swap->paymentConvention())),
       exerciseDates_(std::move(exerciseDates)), mesher_(std::move(mesher)), direction_(direction) {}
+
+    template <class ModelType>
+    inline FdmAffineModelSwapInnerValue<ModelType>::FdmAffineModelSwapInnerValue(
+        ext::shared_ptr<ModelType> disModel,
+        ext::shared_ptr<ModelType> fwdModel,
+        const ext::shared_ptr<OvernightIndexedSwap>& swap,
+        std::map<Time, Date> exerciseDates,
+        ext::shared_ptr<FdmMesher> mesher,
+        Size direction)
+    : disModel_(std::move(disModel)), fwdModel_(std::move(fwdModel)), index_(swap->overnightIndex()),
+      swap_([&]() {
+          auto clonedIndex = ext::dynamic_pointer_cast<OvernightIndex>(
+              swap->overnightIndex()->clone(fwdTs_));
+          QL_REQUIRE(clonedIndex, "failed to clone OvernightIndex");
+          return ext::make_shared<OvernightIndexedSwap>(
+              swap->type(),
+              swap->nominal(),
+              swap->fixedSchedule(),
+              swap->fixedRate(),
+              swap->fixedDayCount(),
+              swap->overnightSchedule(),
+              clonedIndex,
+              swap->spread(),
+              0, // paymentLag not yet exposed as inspector
+              swap->paymentConvention(),
+              Calendar(), // paymentCalendar not yet exposed
+              false, // telescopicValueDates not yet exposed
+              swap->averagingMethod(),
+              swap->lookbackDays(),
+              swap->lockoutDays(),
+              swap->applyObservationShift());
+      }()),
+      exerciseDates_(std::move(exerciseDates)), mesher_(std::move(mesher)), direction_(direction) {}
+
+    template <class ModelType>
+    inline ext::shared_ptr<FdmAffineModelSwapInnerValue<ModelType>>
+    FdmAffineModelSwapInnerValue<ModelType>::create(
+        ext::shared_ptr<ModelType> disModel,
+        ext::shared_ptr<ModelType> fwdModel,
+        const ext::shared_ptr<FixedVsFloatingSwap>& swap,
+        std::map<Time, Date> exerciseDates,
+        ext::shared_ptr<FdmMesher> mesher,
+        Size direction) {
+        auto ois = ext::dynamic_pointer_cast<OvernightIndexedSwap>(swap);
+        if (ois)
+            return ext::make_shared<FdmAffineModelSwapInnerValue<ModelType>>(
+                std::move(disModel), std::move(fwdModel),
+                ois, std::move(exerciseDates), std::move(mesher), direction);
+        auto vanilla = ext::dynamic_pointer_cast<VanillaSwap>(swap);
+        QL_REQUIRE(vanilla, "unsupported swap type");
+        return ext::make_shared<FdmAffineModelSwapInnerValue<ModelType>>(
+            std::move(disModel), std::move(fwdModel),
+            vanilla, std::move(exerciseDates), std::move(mesher), direction);
+    }
 
     template <class ModelType> inline
     Real FdmAffineModelSwapInnerValue<ModelType>::innerValue(

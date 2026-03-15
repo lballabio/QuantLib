@@ -96,10 +96,9 @@ namespace QuantLib {
             new G2(fwdTs, model_->a(), model_->sigma(),
                    model_->b(), model_->eta(), model_->rho()));
 
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-             new FdmAffineModelSwapInnerValue<G2>(
+        auto calculator = FdmAffineModelSwapInnerValue<G2>::create(
                  model_.currentLink(), fwdModel,
-                 arguments_.swap, t2d, mesher, 0));
+                 arguments_.swap, t2d, mesher, 0);
 
         // 4. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions =

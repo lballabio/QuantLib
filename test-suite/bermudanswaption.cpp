@@ -24,8 +24,10 @@
 #include "utilities.hpp"
 #include <ql/cashflows/coupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/indexes/ibor/eonia.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
+#include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/models/shortrate/twofactormodels/g2.hpp>
@@ -368,6 +370,322 @@ BOOST_AUTO_TEST_CASE(testTreeEngineTimeSnapping) {
             }
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testBermudanOISSwaptionWithHW) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing Bermudan swaption with OIS underlying and HW model...");
+
+    CommonVars vars;
+
+    vars.today = Date(15, February, 2002);
+    Settings::instance().evaluationDate() = vars.today;
+    vars.settlement = Date(19, February, 2002);
+
+    vars.termStructure.linkTo(flatRate(vars.settlement,
+                                       0.04875825,
+                                       Actual365Fixed()));
+
+    // Build OIS with same economics as the VanillaSwap test
+    auto overnightIndex = ext::make_shared<Eonia>(vars.termStructure);
+
+    Date start = vars.calendar.advance(vars.settlement, vars.startYears, Years);
+    Date maturity = vars.calendar.advance(start, vars.length, Years);
+
+    Schedule fixedSchedule(start, maturity,
+                           Period(vars.fixedFrequency),
+                           vars.calendar,
+                           vars.fixedConvention,
+                           vars.fixedConvention,
+                           DateGeneration::Forward, false);
+    Schedule overnightSchedule(start, maturity,
+                               Period(vars.floatingFrequency),
+                               vars.calendar,
+                               vars.floatingConvention,
+                               vars.floatingConvention,
+                               DateGeneration::Forward, false);
+
+    // Under a flat single curve, the VanillaSwap ATM rate equals the OIS ATM rate
+    Rate atmRate = vars.makeSwap(0.0)->fairRate();
+
+    auto makeOIS = [&](Rate fixedRate) {
+        auto ois = ext::make_shared<OvernightIndexedSwap>(
+            vars.type, vars.nominal,
+            fixedSchedule, fixedRate, vars.fixedDayCount,
+            overnightSchedule, overnightIndex, 0.0);
+        ois->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(vars.termStructure));
+        return ois;
+    };
+
+    auto itmOIS = makeOIS(0.8 * atmRate);
+    auto atmOIS = makeOIS(atmRate);
+    auto otmOIS = makeOIS(1.2 * atmRate);
+
+    // Build Bermudan exercise from fixed leg
+    std::vector<Date> exerciseDates;
+    for (const auto& cf : atmOIS->fixedLeg()) {
+        auto coupon = ext::dynamic_pointer_cast<Coupon>(cf);
+        exerciseDates.push_back(coupon->accrualStartDate());
+    }
+    auto exercise = ext::make_shared<BermudanExercise>(exerciseDates);
+
+    Real a = 0.048696, sigma = 0.0058904;
+    auto model = ext::make_shared<HullWhite>(vars.termStructure, a, sigma);
+    auto fdmEngine = ext::make_shared<FdHullWhiteSwaptionEngine>(model);
+
+    // Price OIS Bermudan swaptions
+    Swaption itmSwaption(itmOIS, exercise);
+    itmSwaption.setPricingEngine(fdmEngine);
+    Real itmValue = itmSwaption.NPV();
+
+    Swaption atmSwaption(atmOIS, exercise);
+    atmSwaption.setPricingEngine(fdmEngine);
+    Real atmValue = atmSwaption.NPV();
+
+    Swaption otmSwaption(otmOIS, exercise);
+    otmSwaption.setPricingEngine(fdmEngine);
+    Real otmValue = otmSwaption.NPV();
+
+    // OIS Bermudan should produce positive values
+    if (itmValue <= 0.0)
+        BOOST_ERROR("ITM OIS Bermudan swaption has non-positive value: "
+                    << itmValue);
+    if (atmValue <= 0.0)
+        BOOST_ERROR("ATM OIS Bermudan swaption has non-positive value: "
+                    << atmValue);
+    if (otmValue <= 0.0)
+        BOOST_ERROR("OTM OIS Bermudan swaption has non-positive value: "
+                    << otmValue);
+
+    // ITM > ATM > OTM monotonicity
+    if (itmValue <= atmValue)
+        BOOST_ERROR("ITM OIS Bermudan (" << itmValue
+                    << ") should exceed ATM (" << atmValue << ")");
+    if (atmValue <= otmValue)
+        BOOST_ERROR("ATM OIS Bermudan (" << atmValue
+                    << ") should exceed OTM (" << otmValue << ")");
+
+    // Compare with VanillaSwap Bermudan - under HW, difference should be small
+    auto itmVanilla = vars.makeSwap(0.8 * atmRate);
+    auto atmVanilla = vars.makeSwap(atmRate);
+    auto otmVanilla = vars.makeSwap(1.2 * atmRate);
+
+    Swaption itmVS(itmVanilla, exercise);
+    itmVS.setPricingEngine(fdmEngine);
+    Swaption atmVS(atmVanilla, exercise);
+    atmVS.setPricingEngine(fdmEngine);
+    Swaption otmVS(otmVanilla, exercise);
+    otmVS.setPricingEngine(fdmEngine);
+
+    // Under single-factor HW with flat curve, VanillaSwap and OIS
+    // Bermudans should be close (floating leg ≈ par in both cases).
+    // Allow up to 5% relative difference.
+    Real relTol = 0.05;
+
+    auto relDiff = [](Real a, Real b) {
+        return std::fabs(a - b) / std::max(std::fabs(b), 1e-10);
+    };
+    Real itmDiff = relDiff(itmValue, itmVS.NPV());
+    Real atmDiff = relDiff(atmValue, atmVS.NPV());
+    Real otmDiff = relDiff(otmValue, otmVS.NPV());
+
+    if (itmDiff > relTol)
+        BOOST_ERROR("ITM OIS vs VanillaSwap Bermudan difference too large: "
+                    << std::setprecision(16) << std::scientific
+                    << itmValue << " vs " << itmVS.NPV()
+                    << " (rel diff " << itmDiff << ")");
+    if (atmDiff > relTol)
+        BOOST_ERROR("ATM OIS vs VanillaSwap Bermudan difference too large: "
+                    << std::setprecision(16) << std::scientific
+                    << atmValue << " vs " << atmVS.NPV()
+                    << " (rel diff " << atmDiff << ")");
+    if (otmDiff > relTol)
+        BOOST_ERROR("OTM OIS vs VanillaSwap Bermudan difference too large: "
+                    << std::setprecision(16) << std::scientific
+                    << otmValue << " vs " << otmVS.NPV()
+                    << " (rel diff " << otmDiff << ")");
+}
+
+BOOST_AUTO_TEST_CASE(testBermudanOISSwaptionWithG2) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing Bermudan swaption with OIS underlying and G2 model...");
+
+    CommonVars vars;
+
+    vars.today = Date(15, February, 2002);
+    Settings::instance().evaluationDate() = vars.today;
+    vars.settlement = Date(19, February, 2002);
+
+    vars.termStructure.linkTo(flatRate(vars.settlement,
+                                       0.04875825,
+                                       Actual365Fixed()));
+
+    auto overnightIndex = ext::make_shared<Eonia>(vars.termStructure);
+
+    Date start = vars.calendar.advance(vars.settlement, vars.startYears, Years);
+    Date maturity = vars.calendar.advance(start, vars.length, Years);
+
+    Schedule fixedSchedule(start, maturity,
+                           Period(vars.fixedFrequency),
+                           vars.calendar,
+                           vars.fixedConvention,
+                           vars.fixedConvention,
+                           DateGeneration::Forward, false);
+    Schedule overnightSchedule(start, maturity,
+                               Period(vars.floatingFrequency),
+                               vars.calendar,
+                               vars.floatingConvention,
+                               vars.floatingConvention,
+                               DateGeneration::Forward, false);
+
+    // Under a flat single curve, the VanillaSwap ATM rate equals the OIS ATM rate
+    Rate atmRate = vars.makeSwap(0.0)->fairRate();
+
+    auto atmOIS = ext::make_shared<OvernightIndexedSwap>(
+        vars.type, vars.nominal,
+        fixedSchedule, atmRate, vars.fixedDayCount,
+        overnightSchedule, overnightIndex, 0.0);
+    atmOIS->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(vars.termStructure));
+
+    std::vector<Date> exerciseDates;
+    for (const auto& cf : atmOIS->fixedLeg()) {
+        auto coupon = ext::dynamic_pointer_cast<Coupon>(cf);
+        exerciseDates.push_back(coupon->accrualStartDate());
+    }
+    auto exercise = ext::make_shared<BermudanExercise>(exerciseDates);
+
+    auto model = ext::make_shared<G2>(vars.termStructure);
+    auto fdmEngine = ext::make_shared<FdG2SwaptionEngine>(model);
+
+    Swaption oisSwaption(atmOIS, exercise);
+    oisSwaption.setPricingEngine(fdmEngine);
+    Real oisValue = oisSwaption.NPV();
+
+    if (oisValue <= 0.0)
+        BOOST_ERROR("ATM OIS Bermudan swaption (G2) has non-positive value: "
+                    << oisValue);
+
+    // Compare with VanillaSwap Bermudan
+    auto atmVanilla = vars.makeSwap(atmRate);
+    Swaption vsSwaption(atmVanilla, exercise);
+    vsSwaption.setPricingEngine(fdmEngine);
+    Real vsValue = vsSwaption.NPV();
+
+    Real relDiff = std::fabs(oisValue - vsValue) / std::max(std::fabs(vsValue), 1e-10);
+    Real relTol = 0.05;
+    if (relDiff > relTol)
+        BOOST_ERROR("ATM OIS vs VanillaSwap Bermudan (G2) difference too large: "
+                    << std::setprecision(16) << std::scientific
+                    << oisValue << " vs " << vsValue
+                    << " (rel diff " << relDiff << ")");
+}
+
+BOOST_AUTO_TEST_CASE(testBermudanOISSwaptionPreservesFeatures) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing that Bermudan OIS swaption preserves averaging and lockout...");
+
+    CommonVars vars;
+
+    vars.today = Date(15, February, 2002);
+    Settings::instance().evaluationDate() = vars.today;
+    vars.settlement = Date(19, February, 2002);
+
+    vars.termStructure.linkTo(flatRate(vars.settlement,
+                                       0.04875825,
+                                       Actual365Fixed()));
+
+    auto overnightIndex = ext::make_shared<Eonia>(vars.termStructure);
+
+    Date start = vars.calendar.advance(vars.settlement, vars.startYears, Years);
+    Date maturity = vars.calendar.advance(start, vars.length, Years);
+
+    Schedule fixedSchedule(start, maturity,
+                           Period(vars.fixedFrequency),
+                           vars.calendar,
+                           vars.fixedConvention,
+                           vars.fixedConvention,
+                           DateGeneration::Forward, false);
+    Schedule overnightSchedule(start, maturity,
+                               Period(vars.floatingFrequency),
+                               vars.calendar,
+                               vars.floatingConvention,
+                               vars.floatingConvention,
+                               DateGeneration::Forward, false);
+
+    // Under a flat single curve, the VanillaSwap ATM rate equals the OIS ATM rate
+    Rate atmRate = vars.makeSwap(0.0)->fairRate();
+
+    auto makeOIS = [&](RateAveraging::Type avg, Natural lockout) {
+        auto ois = ext::make_shared<OvernightIndexedSwap>(
+            vars.type, vars.nominal,
+            fixedSchedule, atmRate, vars.fixedDayCount,
+            overnightSchedule, overnightIndex, 0.0,
+            0,                    // paymentLag
+            vars.floatingConvention,
+            Calendar(),           // paymentCalendar
+            false,                // telescopicValueDates
+            avg,
+            Null<Natural>(),      // lookbackDays
+            lockout);
+        ois->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(vars.termStructure));
+        return ois;
+    };
+
+    // Build exercise from fixed leg
+    auto refOIS = makeOIS(RateAveraging::Compound, 0);
+    std::vector<Date> exerciseDates;
+    for (const auto& cf : refOIS->fixedLeg()) {
+        auto coupon = ext::dynamic_pointer_cast<Coupon>(cf);
+        exerciseDates.push_back(coupon->accrualStartDate());
+    }
+    auto exercise = ext::make_shared<BermudanExercise>(exerciseDates);
+
+    Real a = 0.048696, sigma = 0.0058904;
+    auto model = ext::make_shared<HullWhite>(vars.termStructure, a, sigma);
+    auto fdmEngine = ext::make_shared<FdHullWhiteSwaptionEngine>(model);
+
+    // Price with compound averaging (default)
+    auto compoundOIS = makeOIS(RateAveraging::Compound, 0);
+    Swaption compoundSwaption(compoundOIS, exercise);
+    compoundSwaption.setPricingEngine(fdmEngine);
+    Real compoundValue = compoundSwaption.NPV();
+
+    // Price with simple averaging — should differ meaningfully
+    auto simpleOIS = makeOIS(RateAveraging::Simple, 0);
+    Swaption simpleSwaption(simpleOIS, exercise);
+    simpleSwaption.setPricingEngine(fdmEngine);
+    Real simpleValue = simpleSwaption.NPV();
+
+    // Simple vs compound averaging produces ~9-10% difference at 5% rate
+    // level (arithmetic vs geometric compounding over semi-annual periods).
+    // Use a conservative 0.1% floor to avoid false passes.
+    Real avgDiff = std::fabs(compoundValue - simpleValue)
+                   / std::max(compoundValue, 1e-10);
+    if (avgDiff < 0.001)
+        BOOST_ERROR("Simple vs compound OIS Bermudan should differ,"
+                    << " got " << std::setprecision(16) << std::scientific
+                    << avgDiff * 100 << "% (compound=" << compoundValue
+                    << ", simple=" << simpleValue << ")");
+
+    // Price with lockout — should differ from plain compound
+    auto lockoutOIS = makeOIS(RateAveraging::Compound, 5);
+    Swaption lockoutSwaption(lockoutOIS, exercise);
+    lockoutSwaption.setPricingEngine(fdmEngine);
+    Real lockoutValue = lockoutSwaption.NPV();
+
+    // Lockout freezes the last N fixings, producing a small but
+    // non-zero change. Use relative tolerance rather than exact equality.
+    Real lockDiff = std::fabs(lockoutValue - compoundValue)
+                    / std::max(compoundValue, 1e-10);
+    if (lockDiff < 1e-8)
+        BOOST_ERROR("5-day lockout OIS Bermudan should differ from plain,"
+                    << " rel diff = " << std::setprecision(16) << std::scientific
+                    << lockDiff
+                    << " (lockout=" << lockoutValue
+                    << ", plain=" << compoundValue << ")");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
