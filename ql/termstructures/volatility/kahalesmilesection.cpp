@@ -224,7 +224,7 @@ namespace QuantLib {
     }
 
     Real KahaleSmileSection::optionPrice(Rate strike, Option::Type type,
-                                         Real discount) const {
+                                         Real discount, Real) const {
         // option prices are directly available, so implement this function
         // rather than use smileSection
         // standard implementation

@@ -57,19 +57,19 @@ void NoArbSabrSmileSection::init() {
 }
 
 Real NoArbSabrSmileSection::optionPrice(Rate strike, Option::Type type,
-                                        Real discount) const {
+                                        Real discount, Real) const {
     Real call = model_->optionPrice(strike);
     return discount *
            (type == Option::Call ? call : call - (forward_ - strike));
 }
 
 Real NoArbSabrSmileSection::digitalOptionPrice(Rate strike, Option::Type type,
-                                               Real discount, Real) const {
+                                               Real discount, Real, Real) const {
     Real call = model_->digitalOptionPrice(strike);
     return discount * (type == Option::Call ? call : 1.0 - call);
 }
 
-Real NoArbSabrSmileSection::density(Rate strike, Real discount, Real) const {
+Real NoArbSabrSmileSection::density(Rate strike, Real discount, Real, Real) const {
     return discount * model_->density(strike);
 }
 

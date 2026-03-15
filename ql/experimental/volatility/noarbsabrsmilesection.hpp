@@ -49,12 +49,15 @@ class NoArbSabrSmileSection : public SmileSection {
     Real maxStrike() const override { return QL_MAX_REAL; }
     Real atmLevel() const override { return forward_; }
     Real
-    optionPrice(Rate strike, Option::Type type = Option::Call, Real discount = 1.0) const override;
+    optionPrice(Rate strike, Option::Type type = Option::Call, Real discount = 1.0,
+                Real forward = Null<Real>()) const override;
     Real digitalOptionPrice(Rate strike,
                             Option::Type type = Option::Call,
                             Real discount = 1.0,
-                            Real gap = 1.0e-5) const override;
-    Real density(Rate strike, Real discount = 1.0, Real gap = 1.0E-4) const override;
+                            Real gap = 1.0e-5,
+                            Real forward = Null<Real>()) const override;
+    Real density(Rate strike, Real discount = 1.0, Real gap = 1.0E-4,
+                 Real forward = Null<Real>()) const override;
 
     ext::shared_ptr<NoArbSabrModel> model() { return model_; }
 
