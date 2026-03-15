@@ -82,7 +82,7 @@ namespace QuantLib {
                    "reference date of forward and discount curve must match");
 
         auto fwdModel = ext::make_shared<HullWhite>(fwdTs, model_->a(), model_->sigma());
-        auto calculator = ext::make_shared<FdmAffineModelSwapInnerValue<HullWhite>>(
+        auto calculator = FdmAffineModelSwapInnerValue<HullWhite>::create(
                  model_.currentLink(), fwdModel,
                  arguments_.swap, t2d, mesher, 0);
 
