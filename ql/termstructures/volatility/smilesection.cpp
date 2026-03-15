@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Mario Pucci
  Copyright (C) 2013, 2015 Peter Caspers
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -71,10 +72,12 @@ namespace QuantLib {
 
     Real SmileSection::optionPrice(Rate strike,
                                    Option::Type type,
-                                   Real discount) const {
-        Real atm = atmLevel();
+                                   Real discount,
+                                   Real forward) const {
+        Real atm = forward != Null<Real>() ? forward : atmLevel();
         QL_REQUIRE(atm != Null<Real>(),
-                   "smile section must provide atm level to compute option price");
+                   "smile section must provide atm level "
+                   "or forward must be passed to compute option price");
         // if lognormal or shifted lognormal,
         // for strike at -shift, return option price even if outside
         // minstrike, maxstrike interval
@@ -88,28 +91,32 @@ namespace QuantLib {
     Real SmileSection::digitalOptionPrice(Rate strike,
                                           Option::Type type,
                                           Real discount,
-                                          Real gap) const {
+                                          Real gap,
+                                          Real forward) const {
         Real m = volatilityType() == ShiftedLognormal ? Real(-shift()) : -QL_MAX_REAL;
         Real kl = std::max(strike-gap/2.0,m);
         Real kr = kl+gap;
         return (type==Option::Call ? 1.0 : -1.0) *
-            (optionPrice(kl,type,discount)-optionPrice(kr,type,discount)) / gap;
+            (optionPrice(kl,type,discount,forward)-optionPrice(kr,type,discount,forward)) / gap;
     }
 
-    Real SmileSection::density(Rate strike, Real discount, Real gap) const {
+    Real SmileSection::density(Rate strike, Real discount, Real gap,
+                               Real forward) const {
         Real m = volatilityType() == ShiftedLognormal ? Real(-shift()) : -QL_MAX_REAL;
         Real kl = std::max(strike-gap/2.0,m);
         Real kr = kl+gap;
-        return (digitalOptionPrice(kl,Option::Call,discount,gap) -
-                digitalOptionPrice(kr,Option::Call,discount,gap)) / gap;
+        return (digitalOptionPrice(kl,Option::Call,discount,gap,forward) -
+                digitalOptionPrice(kr,Option::Call,discount,gap,forward)) / gap;
     }
 
-    Real SmileSection::vega(Rate strike, Real discount) const {
-        Real atm = atmLevel();
+    Real SmileSection::vega(Rate strike, Real discount,
+                            Real forward) const {
+        Real atm = forward != Null<Real>() ? forward : atmLevel();
         QL_REQUIRE(atm != Null<Real>(),
-                   "smile section must provide atm level to compute option vega");
+                   "smile section must provide atm level "
+                   "or forward must be passed to compute option vega");
         if (volatilityType() == ShiftedLognormal)
-            return blackFormulaVolDerivative(strike,atmLevel(),
+            return blackFormulaVolDerivative(strike,atm,
                                              sqrt(variance(strike)),
                                              exerciseTime(),discount,shift())*0.01;
         else

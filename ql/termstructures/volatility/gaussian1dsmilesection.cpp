@@ -73,7 +73,7 @@ namespace QuantLib {
 Real Gaussian1dSmileSection::atmLevel() const { return atm_; }
 
 Real Gaussian1dSmileSection::optionPrice(Rate strike, Option::Type type,
-                                         Real discount) const {
+                                         Real discount, Real) const {
 
     if (swapIndex_ != nullptr) {
         Swaption s = MakeSwaption(swapIndex_, fixingDate_, strike)
