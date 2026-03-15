@@ -36,7 +36,7 @@ using namespace QuantLib;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(CrossCurrencyFixFloatSwapTest)
+BOOST_AUTO_TEST_SUITE(CrossCcyFixFloatSwapTest)
 
 #define CHECK_XCCY_SWAP_RESULT(what, calculated, expected, tolerance)   \
     if (std::fabs(calculated-expected) > tolerance) { \

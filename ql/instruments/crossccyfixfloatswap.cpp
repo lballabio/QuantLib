@@ -87,25 +87,13 @@ CrossCcyFixFloatSwap::CrossCcyFixFloatSwap(
     auto maturityDate = std::max(CashFlows::maturityDate(floatLeg),
                                  CashFlows::maturityDate(fixedLeg));
 
-    // Initial notional exchange on float Leg
-    Date aDate = floatPaymentCalendar_.advance(earliestDate, floatPaymentLag_, Days, floatPaymentBdc_);
-    ext::shared_ptr<CashFlow> aCashflow = ext::make_shared<SimpleCashFlow>(-floatNominal_, aDate);
-    floatLeg.insert(floatLeg.begin(), aCashflow);
-
-    // Final notional exchange on float Leg
-    aDate = floatPaymentCalendar_.advance(maturityDate, floatPaymentLag_, Days, floatPaymentBdc_);
-    aCashflow = ext::make_shared<SimpleCashFlow>(floatNominal_, aDate);
-    floatLeg.push_back(aCashflow);
-
-    // Initial notional exchange
-    aDate = fixedPaymentCalendar_.advance(earliestDate, fixedPaymentLag_, Days, fixedPaymentBdc_);
-    aCashflow = ext::make_shared<SimpleCashFlow>(-fixedNominal_, aDate);
-    fixedLeg.insert(fixedLeg.begin(), aCashflow);
-
-    // Final notional exchange
-    aDate = fixedPaymentCalendar_.advance(maturityDate, fixedPaymentLag_, Days, fixedPaymentBdc_);
-    aCashflow = ext::make_shared<SimpleCashFlow>(fixedNominal_, aDate);
-    fixedLeg.push_back(aCashflow);
+    // Add notional exchanges on float Leg
+    CrossCcySwap::addNotionalExchangesToLeg(floatLeg, floatPaymentCalendar_, earliestDate, maturityDate,
+                                            floatPaymentLag_, floatPaymentBdc_, floatNominal_);
+    
+    // Add notional exchanges on fixed leg
+    CrossCcySwap::addNotionalExchangesToLeg(fixedLeg, fixedPaymentCalendar_, earliestDate, maturityDate,
+                                            fixedPaymentLag_, fixedPaymentBdc_, fixedNominal_);
 
     // Deriving from cross currency swap where:
     //   First leg should hold the pay flows

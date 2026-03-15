@@ -30,6 +30,8 @@
 
 #include <ql/currency.hpp>
 #include <ql/instruments/swap.hpp>
+#include <ql/time/calendar.hpp>
+#include <ql/time/businessdayconvention.hpp>
 
 namespace QuantLib {
 
@@ -116,6 +118,10 @@ protected:
     //@{
     void setupExpired() const override;
     //@}
+
+    static void addNotionalExchangesToLeg(Leg& leg, const Calendar& calendar, 
+        const Date earliestDate, const Date maturityDate, const Natural paymentLag, 
+        const BusinessDayConvention legBdc, Real nominal);
 
     std::vector<Currency> currencies_;
 

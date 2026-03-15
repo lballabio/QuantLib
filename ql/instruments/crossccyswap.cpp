@@ -20,6 +20,7 @@
 */
 
 #include <ql/instruments/crossccyswap.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 
 namespace QuantLib {
 
@@ -105,4 +106,19 @@ void CrossCcySwap::results::reset() {
     inCcyLegBPS.clear();
     npvDateDiscounts.clear();
 }
+
+void CrossCcySwap::addNotionalExchangesToLeg(Leg& leg, const Calendar& calendar, 
+    const Date earliestDate, const Date maturityDate, const Natural paymentLag, 
+    const BusinessDayConvention legBdc, Real nominal) {
+    // Initial notional exchange
+    Date aDate = calendar.advance(earliestDate, paymentLag, Days, legBdc);
+    ext::shared_ptr<CashFlow> aCashflow = ext::make_shared<SimpleCashFlow>(-nominal, aDate);
+    leg.insert(leg.begin(), aCashflow);
+
+    // Final notional exchange
+    aDate = calendar.advance(maturityDate, paymentLag, Days, legBdc);
+    aCashflow = ext::make_shared<SimpleCashFlow>(nominal, aDate);
+    leg.push_back(aCashflow);
+}
+
 } // namespace QuantLib

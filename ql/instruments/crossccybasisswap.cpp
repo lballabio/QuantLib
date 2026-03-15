@@ -20,6 +20,7 @@
 */
 
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/instruments/crossccybasisswap.hpp>
@@ -72,14 +73,6 @@ void CrossCcyBasisSwap::initialize() {
     }
     payer_[0] = -1.0;
     currencies_[0] = payCurrency_;
-    // Pay leg notional exchange at start.
-    Date initialPayDate = paySchedule_.dates().front();
-    ext::shared_ptr<CashFlow> initialPayCF(new SimpleCashFlow(-payNominal_, initialPayDate));
-    legs_[0].insert(legs_[0].begin(), initialPayCF);
-    // Pay leg notional exchange at end.
-    Date finalPayDate = paySchedule_.dates().back();
-    ext::shared_ptr<CashFlow> finalPayCF(new SimpleCashFlow(payNominal_, finalPayDate));
-    legs_[0].push_back(finalPayCF);
 
     // Receive leg
     if (auto on = ext::dynamic_pointer_cast<OvernightIndex>(recIndex_)) {
@@ -105,14 +98,19 @@ void CrossCcyBasisSwap::initialize() {
     }
     payer_[1] = +1.0;
     currencies_[1] = recCurrency_;
-    // Receive leg notional exchange at start.
-    Date initialRecDate = recSchedule_.dates().front();
-    ext::shared_ptr<CashFlow> initialRecCF(new SimpleCashFlow(-recNominal_, initialRecDate));
-    legs_[1].insert(legs_[1].begin(), initialRecCF);
-    // Receive leg notional exchange at end.
-    Date finalRecDate = recSchedule_.dates().back();
-    ext::shared_ptr<CashFlow> finalRecCF(new SimpleCashFlow(recNominal_, finalRecDate));
-    legs_[1].push_back(finalRecCF);
+
+    auto earliestDate = std::min(CashFlows::startDate(legs_[0]),
+                                 CashFlows::startDate(legs_[1]));
+    auto maturityDate = std::max(CashFlows::maturityDate(legs_[0]),
+                                 CashFlows::maturityDate(legs_[1]));
+
+    // Add notional exchanges on payLeg
+    CrossCcySwap::addNotionalExchangesToLeg(legs_[0], paySchedule_.calendar(), earliestDate, maturityDate,
+                                            payPaymentLag_, paySchedule_.businessDayConvention(), payNominal_);
+
+    // Add notional exchanges on recLeg
+    CrossCcySwap::addNotionalExchangesToLeg(legs_[1], recSchedule_.calendar(), earliestDate, maturityDate,
+                                            recPaymentLag_, recSchedule_.businessDayConvention(), recNominal_);
 
     // Register the instrument with all cashflows on each leg.
     for (Size legNo = 0; legNo < 2; legNo++) {
