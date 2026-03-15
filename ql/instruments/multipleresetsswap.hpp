@@ -41,7 +41,7 @@ namespace QuantLib {
       public:
         MultipleResetsSwap(Type type,
                            Real nominal,
-                           Schedule fixedSchedule,
+                           const Schedule& fixedSchedule,
                            Rate fixedRate,
                            DayCounter fixedDayCount,
                            Schedule fullResetSchedule,

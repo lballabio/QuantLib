@@ -21,6 +21,7 @@
 #include <ql/instruments/makecds.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
+#include <utility>
 
 
 namespace QuantLib {
@@ -153,7 +154,7 @@ namespace QuantLib {
     }
 
     MakeCreditDefaultSwap& MakeCreditDefaultSwap::withClaim(ext::shared_ptr<Claim> claim) {
-        claim_ = claim;
+        claim_ = std::move(claim);
         return *this;
     }
 

@@ -34,12 +34,12 @@ namespace QuantLib {
         RateAveraging::Type averagingMethod,
         Spread spread,
         Frequency fixedFrequency,
-        DayCounter fixedDayCount,
+        const DayCounter& fixedDayCount,
         BusinessDayConvention fixedConvention)
     : RelativeDateRateHelper(fixedRate), settlementDays_(settlementDays), tenor_(tenor),
       resetsPerCoupon_(resetsPerCoupon), averagingMethod_(averagingMethod), spread_(spread),
       fixedFrequency_(fixedFrequency),
-      fixedDayCount_(!fixedDayCount.empty() ? std::move(fixedDayCount) : iborIndex->dayCounter()),
+      fixedDayCount_(!fixedDayCount.empty() ? fixedDayCount : iborIndex->dayCounter()),
       fixedConvention_(fixedConvention), discountHandle_(std::move(discountingCurve)) {
 
         // Clone the index so it forwards rates from termStructureHandle_,

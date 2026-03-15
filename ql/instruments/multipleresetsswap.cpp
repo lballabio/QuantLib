@@ -37,7 +37,7 @@ namespace QuantLib {
 
     MultipleResetsSwap::MultipleResetsSwap(
         Type type, Real nominal,
-        Schedule fixedSchedule, Rate fixedRate, DayCounter fixedDayCount,
+        const Schedule& fixedSchedule, Rate fixedRate, DayCounter fixedDayCount,
         Schedule fullResetSchedule,
         const ext::shared_ptr<IborIndex>& iborIndex, Size resetsPerCoupon,
         Spread spread, RateAveraging::Type averagingMethod,
