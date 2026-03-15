@@ -3,20 +3,8 @@ name: Python Tests
 on:
   push:
     branches: [master]
-    paths:
-      - 'quantlib/**'
-      - 'tests/**'
-      - 'pyproject.toml'
-      - 'Makefile'
-      - '.github/workflows/python-tests.yml'
   pull_request:
     branches: [master]
-    paths:
-      - 'quantlib/**'
-      - 'tests/**'
-      - 'pyproject.toml'
-      - 'Makefile'
-      - '.github/workflows/python-tests.yml'
 
 jobs:
   test:
