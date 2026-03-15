@@ -69,8 +69,21 @@ Work narrow and deep. Complete one area end-to-end before starting the next. Nev
 
 GitHub Actions workflow (`.github/workflows/python-tests.yml`) runs on all PRs:
 - Python 3.10, 3.11, 3.12 matrix
-- `make lint` → `make typecheck` → `make test`
+- `make lint` → `make typecheck` → `make test-cov`
 - All checks must pass before merge
+- PRs auto-merge when CI passes (auto-merge enabled)
+- Dependent issues auto-advance to `status/ready` when deps close
+
+### Model Selection
+
+Use the cheapest model that can reliably complete each task. See `.claude/model-selection.md` for the full guide.
+- **haiku**: GitHub ops, label changes, git commands, CI monitoring, simple enums
+- **sonnet**: Test transpilation, pattern-following implementations, new calendars/day counters
+- **opus**: Complex algorithms, architecture, debugging, new patterns
+
+### Module Context
+
+Per-module context files at `.claude/memory/modules/<module>.md` provide architecture snapshots. Read before starting work on a module to avoid re-analyzing code.
 
 ---
 
