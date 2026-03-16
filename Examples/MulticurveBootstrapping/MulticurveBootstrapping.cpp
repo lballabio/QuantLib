@@ -46,7 +46,6 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 
 #include <iostream>
@@ -191,7 +190,7 @@ int main(int, char* []) {
 
         // curve
 
-        auto eoniaTermStructure = ext::make_shared<PiecewiseYieldCurve<Discount, Cubic>>(
+        auto eoniaTermStructure = ext::make_shared<PiecewiseYieldCurve<Discount, MonotonicLogCubic>>(
                 todaysDate, eoniaInstruments, termStructureDayCounter);
 
         eoniaTermStructure->enableExtrapolation();
@@ -296,10 +295,10 @@ int main(int, char* []) {
         // The tolerance is passed in an explicit bootstrap object. Depending on
         // the bootstrap algorithm, it's possible to pass other parameters.
         double tolerance = 1.0e-15;
-        auto euribor6MTermStructure = ext::make_shared<PiecewiseYieldCurve<Discount, Cubic>>(
+        auto euribor6MTermStructure = ext::make_shared<PiecewiseYieldCurve<Discount, MonotonicLogCubic>>(
                 settlementDate, euribor6MInstruments,
                 termStructureDayCounter,
-                PiecewiseYieldCurve<Discount, Cubic>::bootstrap_type(tolerance));
+                PiecewiseYieldCurve<Discount, MonotonicLogCubic>::bootstrap_type(tolerance));
 
         // This curve will be used for forward-rate forecasting
 
