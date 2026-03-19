@@ -156,6 +156,10 @@ namespace QuantLib {
         Real spot = process_->stateVariable()->value();
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
+        QL_REQUIRE(forwardPrice > 0.0,
+                   "negative forward price (" << forwardPrice
+                   << ") not allowed: the Barone-Adesi-Whaley approximation "
+                   << "does not support negative interest rates");
         BlackCalculator black(payoff, forwardPrice, std::sqrt(variance),
                               riskFreeDiscount);
 
