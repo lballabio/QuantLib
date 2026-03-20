@@ -1178,14 +1178,16 @@ BOOST_AUTO_TEST_CASE(testBurley2020SobolRsgOutputBounds) {
     BOOST_TEST_MESSAGE(
         "Testing Burley2020SobolRsg output is strictly in (0,1)...");
 
-    Burley2020SobolRsg rsg(10, 42, SobolRsg::Jaeckel, 43);
-    for (Size i = 0; i < 8192; ++i) {
-        const auto& seq = rsg.nextSequence();
-        for (Size k = 0; k < 10; ++k) {
-            BOOST_CHECK_GT(seq.value[k], 0.0);
-            BOOST_CHECK_LT(seq.value[k], 1.0);
-        }
-    }
+    // With these parameters, sample 986977 produces a zero in the
+    // integer sequence at dimension 25.  Without the +0.5 offset in
+    // nextSequence() this would map to 0.0.
+    Burley2020SobolRsg rsg(50, 42, SobolRsg::Jaeckel, 33);
+    const auto& intSeq = rsg.skipTo(986977);
+    BOOST_CHECK_EQUAL(intSeq[25], 0u);
+
+    const auto& seq = rsg.nextSequence();
+    BOOST_CHECK_GT(seq.value[25], 0.0);
+    BOOST_CHECK_LT(seq.value[25], 1.0);
 }
 
 
