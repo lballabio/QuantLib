@@ -282,27 +282,82 @@ also exist and can change over time; header/file-list touches should stay green 
 
 ## 5. Extending QuantLib Safely
 
-### 5.1 New Instrument
+### 5.1 Registering New Files in the Build Systems
+
+Every new `.hpp` or `.cpp` file must be added to **all three** build systems. CI enforces consistency via `tools/check_filelists.sh` (run by `.github/workflows/filelists.yml`), which diffs the actual source tree against every build-system file list and fails on any mismatch.
+
+#### CMake
+
+Add entries to explicit lists in `ql/CMakeLists.txt` (paths relative to `ql/`):
+
+- Headers → `set(QL_HEADERS ...)` — e.g. `instruments/myinstrument.hpp`
+- Sources → `set(QL_SOURCES ...)` — e.g. `instruments/myinstrument.cpp`
+
+For test files, use `test-suite/CMakeLists.txt`:
+
+- Test sources → `set(QL_TEST_SOURCES ...)`
+- Test headers → `set(QL_TEST_HEADERS ...)`
+
+#### Autotools
+
+Each subdirectory under `ql/` has its own `Makefile.am`. Add to the one matching your file's directory:
+
+- Headers → `this_include_HEADERS` variable
+- Sources → `cpp_files` variable
+
+For test files, use `test-suite/Makefile.am`:
+
+- Test sources → `QL_TEST_SRCS`
+- Test headers → `QL_TEST_HDRS`
+
+#### Visual Studio
+
+Add entries to `QuantLib.vcxproj` (paths use backslashes, relative to repo root):
+
+- Headers → `<ClInclude Include="ql\path\myfile.hpp" />`
+- Sources → `<ClCompile Include="ql\path\myfile.cpp" />`
+
+And add matching entries in `QuantLib.vcxproj.filters` so files appear in the correct Solution Explorer folder:
+
+```xml
+<ClInclude Include="ql\instruments\myinstrument.hpp">
+  <Filter>instruments</Filter>
+</ClInclude>
+<ClCompile Include="ql\instruments\myinstrument.cpp">
+  <Filter>instruments</Filter>
+</ClCompile>
+```
+
+For test files, update `test-suite/testsuite.vcxproj` and `test-suite/testsuite.vcxproj.filters` analogously (test paths are relative to `test-suite/`, filter is typically `Source Files` or `Header Files`).
+
+#### Local Verification
+
+Run the same check CI uses:
+
+```bash
+./autogen.sh && ./configure && ./tools/check_filelists.sh
+```
+
+### 5.2 New Instrument
 
 1. Add instrument class in `ql/instruments/` (override `isExpired()`, implement `setupArguments()`/`fetchResults()`).
 2. Add engine in `ql/pricingengines/<domain>/` using `GenericEngine<arguments, results>`.
 3. Add tests in `test-suite/`.
-4. Update build lists (`ql/CMakeLists.txt`, `ql/Makefile.am`, and test-suite build lists as needed).
-5. If adding source/test files, also update MSVC project files used by Windows CI (`QuantLib.vcxproj`, `QuantLib.vcxproj.filters`, `test-suite/testsuite.vcxproj`, `test-suite/testsuite.vcxproj.filters`).
+4. Register all new files per §5.1.
 
-### 5.2 New Term Structure
+### 5.3 New Term Structure
 
 - Inherit appropriate base (yield/vol/default/inflation).
 - Implement required `*Impl()` method.
 - Choose fixed-date or moving-date reference mode.
 - Register with dependent handles.
 
-### 5.3 New Calendar/DayCounter
+### 5.4 New Calendar/DayCounter
 
 - Calendar: add impl in `ql/time/calendars/` with `name()` and `isBusinessDay()`.
 - DayCounter: add impl in `ql/time/daycounters/` with `dayCount()` and `yearFraction()`.
 
-### 5.4 Experimental Work
+### 5.5 Experimental Work
 
 Prefer `ql/experimental/<topic>/` for unstable/new APIs, but keep coding quality and tests high.
 
