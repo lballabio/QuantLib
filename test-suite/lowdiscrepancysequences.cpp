@@ -1174,6 +1174,21 @@ BOOST_AUTO_TEST_CASE(testHighDimensionalIntegrals, *precondition(if_speed(Slow))
 }
 
 
+BOOST_AUTO_TEST_CASE(testBurley2020SobolRsgOutputBounds) {
+    BOOST_TEST_MESSAGE(
+        "Testing Burley2020SobolRsg output is strictly in (0,1)...");
+
+    Burley2020SobolRsg rsg(10, 42, SobolRsg::Jaeckel, 43);
+    for (Size i = 0; i < 8192; ++i) {
+        const auto& seq = rsg.nextSequence();
+        for (Size k = 0; k < 10; ++k) {
+            BOOST_CHECK_GT(seq.value[k], 0.0);
+            BOOST_CHECK_LT(seq.value[k], 1.0);
+        }
+    }
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
