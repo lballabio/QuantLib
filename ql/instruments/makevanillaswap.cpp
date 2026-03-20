@@ -56,6 +56,10 @@ namespace QuantLib {
 
     MakeVanillaSwap::operator ext::shared_ptr<VanillaSwap>() const {
 
+        QL_REQUIRE(effectiveDate_ == Date() || settlementDays_ == Null<Natural>(),
+                   "cannot set both an explicit effective date and settlement days; "
+                   "use one or the other");
+
         Date startDate;
         if (effectiveDate_ != Date())
             startDate = effectiveDate_;
@@ -83,13 +87,12 @@ namespace QuantLib {
 
         Date endDate = terminationDate_;
         if (endDate == Date()) {
-            if (floatEndOfMonth_)
-                endDate = floatCalendar_.advance(startDate,
-                                                 swapTenor_,
-                                                 ModifiedFollowing,
-                                                 floatEndOfMonth_);
-            else
-                endDate = startDate + swapTenor_;
+            endDate = startDate + swapTenor_;
+            bool maturityEndOfMonth =
+                maturityEndOfMonth_ ? *maturityEndOfMonth_ : floatEndOfMonth_;
+            if (maturityEndOfMonth && allowsEndOfMonth(swapTenor_) &&
+                floatCalendar_.isEndOfMonth(startDate))
+                endDate = floatCalendar_.endOfMonth(endDate);
         }
 
         const Currency& curr = iborIndex_->currency();
@@ -97,18 +100,26 @@ namespace QuantLib {
         if (fixedTenor_ != Period())
             fixedTenor = fixedTenor_;
         else {
+            // When swapTenor_ was cleared by withTerminationDate(),
+            // use the actual swap length for currency-dependent inference.
+            Period tenor = swapTenor_;
+            if (tenor == Period() && endDate > startDate) {
+                // approximate months = days * 12/365, rounded (182 = 365/2)
+                Integer months = (12 * (endDate - startDate) + 182) / 365;
+                tenor = months * Months;
+            }
             if ((curr == EURCurrency()) ||
                 (curr == USDCurrency()) ||
                 (curr == CHFCurrency()) ||
                 (curr == SEKCurrency()) ||
-                (curr == GBPCurrency() && swapTenor_ <= 1 * Years))
+                (curr == GBPCurrency() && tenor <= 1 * Years))
                 fixedTenor = Period(1, Years);
-            else if ((curr == GBPCurrency() && swapTenor_ > 1 * Years) ||
+            else if ((curr == GBPCurrency() && tenor > 1 * Years) ||
                 (curr == JPYCurrency()) ||
-                (curr == AUDCurrency() && swapTenor_ >= 4 * Years))
+                (curr == AUDCurrency() && tenor >= 4 * Years))
                 fixedTenor = Period(6, Months);
             else if ((curr == HKDCurrency() ||
-                     (curr == AUDCurrency() && swapTenor_ < 4 * Years)))
+                     (curr == AUDCurrency() && tenor < 4 * Years)))
                 fixedTenor = Period(3, Months);
             else
                 QL_FAIL("unknown fixed leg default tenor for " << curr);
@@ -201,7 +212,6 @@ namespace QuantLib {
 
     MakeVanillaSwap& MakeVanillaSwap::withSettlementDays(Natural settlementDays) {
         settlementDays_ = settlementDays;
-        effectiveDate_ = Date();
         return *this;
     }
 
@@ -324,6 +334,11 @@ namespace QuantLib {
 
     MakeVanillaSwap& MakeVanillaSwap::withFloatingLegEndOfMonth(bool flag) {
         floatEndOfMonth_ = flag;
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withMaturityEndOfMonth(bool flag) {
+        maturityEndOfMonth_ = flag;
         return *this;
     }
 

@@ -488,20 +488,28 @@ namespace QuantLib {
     Real BondFunctions::cleanPrice(const Bond& bond,
                                    const ext::shared_ptr<YieldTermStructure>& d,
                                    Spread zSpread,
-                                   const DayCounter& dc,
                                    Compounding comp,
                                    Frequency freq,
                                    Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
 
-        return dirtyPrice(bond, d, zSpread, dc, comp, freq, settlement) - bond.accruedAmount(settlement);
+        return dirtyPrice(bond, d, zSpread, comp, freq, settlement) - bond.accruedAmount(settlement);
+    }
+
+    Real BondFunctions::cleanPrice(const Bond& bond,
+                                   const ext::shared_ptr<YieldTermStructure>& d,
+                                   Spread zSpread,
+                                   const DayCounter&,
+                                   Compounding comp,
+                                   Frequency freq,
+                                   Date settlement) {
+        return BondFunctions::cleanPrice(bond, d, zSpread, comp, freq, settlement);
     }
 
     Real BondFunctions::dirtyPrice(const Bond& bond,
                                    const ext::shared_ptr<YieldTermStructure>& d,
                                    Spread zSpread,
-                                   const DayCounter& dc,
                                    Compounding comp,
                                    Frequency freq,
                                    Date settlement) {
@@ -513,16 +521,25 @@ namespace QuantLib {
                    " (maturity being " << bond.maturityDate() << ")");
 
         Real dirtyPrice = CashFlows::npv(bond.cashflows(), d,
-                                         zSpread, dc, comp, freq,
+                                         zSpread, comp, freq,
                                          false, settlement) *
             100.0 / bond.notional(settlement);
         return dirtyPrice;
     }
 
+    Real BondFunctions::dirtyPrice(const Bond& bond,
+                                   const ext::shared_ptr<YieldTermStructure>& d,
+                                   Spread zSpread,
+                                   const DayCounter&,
+                                   Compounding comp,
+                                   Frequency freq,
+                                   Date settlement) {
+        return BondFunctions::dirtyPrice(bond, d, zSpread, comp, freq, settlement);
+    }
+
     Spread BondFunctions::zSpread(const Bond& bond,
                                   Bond::Price price,
                                   const ext::shared_ptr<YieldTermStructure>& d,
-                                  const DayCounter& dayCounter,
                                   Compounding compounding,
                                   Frequency frequency,
                                   Date settlement,
@@ -545,8 +562,22 @@ namespace QuantLib {
         return CashFlows::zSpread(bond.cashflows(),
                                   dirtyPrice,
                                   d,
-                                  dayCounter, compounding, frequency,
+                                  compounding, frequency,
                                   false, settlement, settlement,
                                   accuracy, maxIterations, guess);
+    }
+
+    Spread BondFunctions::zSpread(const Bond& bond,
+                                  Bond::Price price,
+                                  const ext::shared_ptr<YieldTermStructure>& d,
+                                  const DayCounter&,
+                                  Compounding compounding,
+                                  Frequency frequency,
+                                  Date settlement,
+                                  Real accuracy,
+                                  Size maxIterations,
+                                  Rate guess) {
+        return BondFunctions::zSpread(bond, price, d, compounding, frequency,
+                                      settlement, accuracy, maxIterations, guess);
     }
 }

@@ -399,10 +399,21 @@ namespace QuantLib {
         //@{
         //! NPV of the cash flows.
         /*! The NPV is the sum of the cash flows, each discounted
-            according to the z-spreaded term structure.  The result
-            is affected by the choice of the z-spread compounding
-            and the relative frequency and day counter.
+            according to the z-spreaded term structure.  The spread
+            is expressed in terms of the underlying curve's day counter.
         */
+        static Real npv(const Leg& leg,
+                        const ext::shared_ptr<YieldTermStructure>& discount,
+                        Spread zSpread,
+                        Compounding compounding,
+                        Frequency frequency,
+                        const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
+                        Date settlementDate = Date(),
+                        Date npvDate = Date());
+        /*! \deprecated Use the overload without a day counter.
+                        Deprecated in version 1.42.
+        */
+        [[deprecated("Use the overload without a day counter")]]
         static Real npv(const Leg& leg,
                         const ext::shared_ptr<YieldTermStructure>& discount,
                         Spread zSpread,
@@ -413,6 +424,21 @@ namespace QuantLib {
                         Date settlementDate = Date(),
                         Date npvDate = Date());
         //! implied Z-spread.
+        static Spread zSpread(const Leg& leg,
+                              Real npv,
+                              const ext::shared_ptr<YieldTermStructure>&,
+                              Compounding compounding,
+                              Frequency frequency,
+                              const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
+                              Date settlementDate = Date(),
+                              Date npvDate = Date(),
+                              Real accuracy = 1.0e-10,
+                              Size maxIterations = 100,
+                              Rate guess = 0.0);
+        /*! \deprecated Use the overload without a day counter.
+                        Deprecated in version 1.42.
+        */
+        [[deprecated("Use the overload without a day counter")]]
         static Spread zSpread(const Leg& leg,
                               Real npv,
                               const ext::shared_ptr<YieldTermStructure>&,

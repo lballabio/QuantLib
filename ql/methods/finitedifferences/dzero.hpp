@@ -28,32 +28,19 @@
 
 namespace QuantLib {
 
-    //! \f$ D_{0} \f$ matricial representation
-    /*! The differential operator \f$ D_{0} \f$ discretizes the
-        first derivative with the second-order formula
-        \f[ \frac{\partial u_{i}}{\partial x} \approx
-            \frac{u_{i+1}-u_{i-1}}{2h} = D_{0} u_{i}
-        \f]
-
-        \ingroup findiff
-
-        \test the correctness of the returned values is tested by
-              checking them against numerical calculations.
+    /*! \deprecated Part of the old FD framework; copy this function
+                    in your codebase if needed.
+                    Deprecated in version 1.42.
     */
-    class DZero : public TridiagonalOperator {
+    class [[deprecated("Part of the old FD framework; copy this function in your codebase if needed")]] DZero : public TridiagonalOperator {
       public:
-        DZero(Size gridPoints, Real h);
+        DZero(Size gridPoints, Real h)
+        : TridiagonalOperator(gridPoints) {
+            setFirstRow(-1/h,1/h);                  // linear extrapolation
+            setMidRows(-1/(2*h),0.0,1/(2*h));
+            setLastRow(-1/h,1/h);                   // linear extrapolation
+        }
     };
-
-
-    // inline definitions
-
-    inline DZero::DZero(Size gridPoints, Real h)
-    : TridiagonalOperator(gridPoints) {
-        setFirstRow(-1/h,1/h);                  // linear extrapolation
-        setMidRows(-1/(2*h),0.0,1/(2*h));
-        setLastRow(-1/h,1/h);                   // linear extrapolation
-    }
 
 }
 

@@ -21,6 +21,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     NeumannBC::NeumannBC(Real value, NeumannBC::Side side)
     : value_(value), side_(side) {}
 
@@ -116,5 +118,7 @@ namespace QuantLib {
     }
 
     void DirichletBC::applyAfterSolving(Array&) const {}
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }

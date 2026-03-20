@@ -50,6 +50,9 @@
     <ClCompile Include="blackformula.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="blackvolsurfacedelta.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="bonds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -224,6 +227,9 @@
     <ClCompile Include="interestrates.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="interpolatedsmilesection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="interpolations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -326,6 +332,9 @@
     <ClCompile Include="period.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="piecewiseblackvariancesurface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="piecewiseyieldcurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -377,9 +386,6 @@
     <ClCompile Include="solvers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="spreadoption.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="squarerootclvmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -414,9 +420,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tracing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="transformedgrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="twoassetbarrieroption.cpp">
@@ -516,6 +519,9 @@
     <ClCompile Include="multipleresetscoupons.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="multipleresetsswap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="zerocouponswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -544,6 +550,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bacheliercalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fxforward.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -42,11 +42,13 @@ namespace QuantLib {
                                            const Date& refPeriodEnd,
                                            DayCounter dayCounter,
                                            bool isInArrears,
-                                           const Date& exCouponDate)
+                                           const Date& exCouponDate,
+                                           BusinessDayConvention fixingConvention)
     : Coupon(paymentDate, nominal, startDate, endDate, refPeriodStart, refPeriodEnd, exCouponDate),
       index_(index), dayCounter_(std::move(dayCounter)),
       fixingDays_(fixingDays == Null<Natural>() ? (index ? index->fixingDays() : 0) : fixingDays),
-      gearing_(gearing), spread_(spread), isInArrears_(isInArrears) {
+      gearing_(gearing), spread_(spread), isInArrears_(isInArrears),
+      fixingConvention_(fixingConvention) {
         QL_REQUIRE(index_, "no index provided");
         QL_REQUIRE(gearing_!=0, "Null gearing not allowed");
 
@@ -80,7 +82,7 @@ namespace QuantLib {
         // if isInArrears_ fix at the end of period
         Date refDate = isInArrears_ ? accrualEndDate_ : accrualStartDate_;
         return index_->fixingCalendar().advance(refDate,
-            -static_cast<Integer>(fixingDays_), Days, Preceding);
+            -static_cast<Integer>(fixingDays_), Days, fixingConvention_);
     }
 
     Rate FloatingRateCoupon::rate() const {

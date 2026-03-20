@@ -46,6 +46,10 @@ namespace QuantLib {
 
     MakeOIS::operator ext::shared_ptr<OvernightIndexedSwap>() const {
 
+        QL_REQUIRE(effectiveDate_ == Date() || settlementDays_ == Null<Natural>(),
+                   "cannot set both an explicit effective date and settlement days; "
+                   "use one or the other");
+
         Date startDate;
         if (effectiveDate_ != Date())
             startDate = effectiveDate_;
@@ -77,24 +81,22 @@ namespace QuantLib {
                 startDate = overnightCalendar_.adjust(startDate, Following);
         }
 
-        // OIS end of month default
-        bool fixedEndOfMonth, overnightEndOfMonth;
+        bool fixedEndOfMonth, overnightEndOfMonth, maturityEndOfMonth;
         if (isDefaultEOM_)
-            fixedEndOfMonth = overnightEndOfMonth = overnightCalendar_.isEndOfMonth(startDate);
+            fixedEndOfMonth = overnightEndOfMonth = maturityEndOfMonth =
+                overnightCalendar_.isEndOfMonth(startDate);
         else {
             fixedEndOfMonth = fixedEndOfMonth_;
             overnightEndOfMonth = overnightEndOfMonth_;
+            maturityEndOfMonth = maturityEndOfMonth_ ? *maturityEndOfMonth_ : overnightEndOfMonth_;
         }
 
         Date endDate = terminationDate_;
         if (endDate == Date()) {
-            if (overnightEndOfMonth)
-                endDate = overnightCalendar_.advance(startDate,
-                                                     swapTenor_,
-                                                     ModifiedFollowing,
-                                                     overnightEndOfMonth);
-            else
-                endDate = startDate + swapTenor_;
+            endDate = startDate + swapTenor_;
+            if (maturityEndOfMonth && allowsEndOfMonth(swapTenor_) &&
+                overnightCalendar_.isEndOfMonth(startDate))
+                endDate = overnightCalendar_.endOfMonth(endDate);
         }
 
         Frequency fixedPaymentFrequency, overnightPaymentFrequency;
@@ -197,7 +199,6 @@ namespace QuantLib {
 
     MakeOIS& MakeOIS::withSettlementDays(Natural settlementDays) {
         settlementDays_ = settlementDays;
-        effectiveDate_ = Date();
         return *this;
     }
 
@@ -330,6 +331,12 @@ namespace QuantLib {
 
     MakeOIS& MakeOIS::withOvernightLegEndOfMonth(bool flag) {
         overnightEndOfMonth_ = flag;
+        isDefaultEOM_ = false;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withMaturityEndOfMonth(bool flag) {
+        maturityEndOfMonth_ = flag;
         isDefaultEOM_ = false;
         return *this;
     }

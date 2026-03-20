@@ -74,6 +74,7 @@ namespace QuantLib {
                                                    BusinessDayConvention bdc);
         MakeVanillaSwap& withFloatingLegRule(DateGeneration::Rule r);
         MakeVanillaSwap& withFloatingLegEndOfMonth(bool flag = true);
+        MakeVanillaSwap& withMaturityEndOfMonth(bool flag = true);
         MakeVanillaSwap& withFloatingLegFirstDate(const Date& d);
         MakeVanillaSwap& withFloatingLegNextToLastDate(const Date& d);
         MakeVanillaSwap& withFloatingLegDayCount(const DayCounter& dc);
@@ -104,6 +105,7 @@ namespace QuantLib {
         DateGeneration::Rule fixedRule_ = DateGeneration::Backward,
                              floatRule_ = DateGeneration::Backward;
         bool fixedEndOfMonth_ = false, floatEndOfMonth_ = false;
+        ext::optional<bool> maturityEndOfMonth_;
         Date fixedFirstDate_, fixedNextToLastDate_;
         Date floatFirstDate_, floatNextToLastDate_;
         Spread floatSpread_ = 0.0;

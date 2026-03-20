@@ -116,7 +116,6 @@ namespace QuantLib {
         };
 
         Interpolation() = default;
-        ~Interpolation() override = default;
         bool empty() const { return !impl_; }
         Real operator()(Real x, bool allowExtrapolation = false) const {
             checkRange(x,allowExtrapolation);
@@ -154,6 +153,7 @@ namespace QuantLib {
                        << impl_->xMin() << ", " << impl_->xMax()
                        << "]: extrapolation at " << x << " not allowed");
         }
+        friend class MixedLinearCubicInterpolation;
     };
 
 }

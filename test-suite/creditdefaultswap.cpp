@@ -19,6 +19,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/instruments/makecds.hpp>
@@ -957,6 +958,123 @@ BOOST_AUTO_TEST_CASE(testIsdaCalculatorReconcileSingleWithIssueDateInThePast) {
 
     QL_CHECK_CLOSE(calculated_accrual, expected_accrual, tolerance);
 }
+
+BOOST_AUTO_TEST_CASE(testDefaultConventions) {
+    BOOST_TEST_MESSAGE("Testing default conventions for CDS factory class...");
+
+    Date today(6, March, 2026); // a Friday
+
+    Settings::instance().evaluationDate() = today;
+
+    ext::shared_ptr<CreditDefaultSwap> cds =
+        MakeCreditDefaultSwap(5 * Years, 0.01);
+
+    BOOST_CHECK_EQUAL(cds->runningSpread(), 0.01); // not actually a default
+
+    BOOST_CHECK_EQUAL(cds->notional(), 1.0);
+    BOOST_CHECK_EQUAL(*(cds->upfront()), 0.0);
+
+    BOOST_CHECK_EQUAL(cds->tradeDate(), today);
+    BOOST_CHECK_EQUAL(cds->cashSettlementDays(), 3U);
+    BOOST_CHECK_EQUAL(cds->upfrontPayment()->date(), today + 5); // 3 cash settlement days plus the weekend
+    BOOST_CHECK_EQUAL(cds->protectionStartDate(), today);
+    BOOST_CHECK_EQUAL(cds->protectionEndDate(), cdsMaturity(today, 5 * Years, DateGeneration::CDS));
+
+    BOOST_CHECK_EQUAL(cds->coupons().size(), 21U); // 5Y quarterly, modulo CDS conventions
+
+    BOOST_CHECK_EQUAL(cds->settlesAccrual(), true);
+    BOOST_CHECK_EQUAL(cds->paysAtDefaultTime(), true);
+    BOOST_CHECK_EQUAL(cds->rebatesAccrual(), true);
+
+    auto first = ext::dynamic_pointer_cast<Coupon>(cds->coupons().front());
+    auto last = ext::dynamic_pointer_cast<Coupon>(cds->coupons().back());
+
+    BOOST_CHECK_EQUAL(first->dayCounter().name(), "Actual/360");
+    BOOST_CHECK_EQUAL(last->dayCounter().name(), "Actual/360 (inc)");
+
+    Date termDate = cdsMaturity(today, 3 * Years, DateGeneration::CDS2015);
+    cds = MakeCreditDefaultSwap(termDate, 0.01);
+    BOOST_CHECK_EQUAL(cds->protectionEndDate(), termDate);
+
+    termDate = cdsMaturity(today - 4, 10 * Years, DateGeneration::CDS2015);
+    Schedule schedule(today - 4, termDate, 3 * Months, WeekendsOnly(),
+                      Following, Unadjusted, DateGeneration::CDS2015, false);
+    cds = MakeCreditDefaultSwap(schedule, 0.01);
+    BOOST_CHECK_EQUAL(cds->protectionStartDate(), schedule.front());
+    BOOST_CHECK_EQUAL(cds->protectionEndDate(), schedule.back());
+
+    // override the defaults
+
+    cds = MakeCreditDefaultSwap(5 * Years, 0.01)
+        .withNominal(10000.0)
+        .withUpfrontRate(0.02);
+
+    BOOST_CHECK_EQUAL(cds->notional(), 10000.0);
+    first = ext::dynamic_pointer_cast<Coupon>(cds->coupons().front());
+    BOOST_CHECK_EQUAL(first->nominal(), 10000.0);
+
+    BOOST_CHECK_EQUAL(*(cds->upfront()), 0.02);
+    BOOST_CHECK_EQUAL(cds->upfrontPayment()->amount(), 200.0);
+
+    cds = MakeCreditDefaultSwap(5 * Years, 0.01)
+        .withCashSettlementDays(2);
+    BOOST_CHECK_EQUAL(cds->cashSettlementDays(), 2U);
+    BOOST_CHECK_EQUAL(cds->upfrontPayment()->date(), today + 4);
+
+    cds = MakeCreditDefaultSwap(5 * Years, 0.01)
+        .withCashSettlementDays(2)
+        .withUpfrontDate(today + 7);
+    BOOST_CHECK_EQUAL(cds->cashSettlementDays(), 2U);
+    BOOST_CHECK_EQUAL(cds->upfrontPayment()->date(), today + 7);
+
+    cds = MakeCreditDefaultSwap(5 * Years, 0.01)
+        .withProtectionStart(today + 2);
+    BOOST_CHECK_EQUAL(cds->protectionStartDate(), today + 2);
+
+    cds = MakeCreditDefaultSwap(5 * Years, 0.01)
+        .withCouponTenor(6 * Months);
+    BOOST_CHECK_EQUAL(cds->coupons().size(), 11U); // 5Y semiannually, modulo CDS conventions
+
+    cds = MakeCreditDefaultSwap(5 * Years, 0.01)
+        .withTradeDate(today + 3);
+
+    BOOST_CHECK_EQUAL(cds->tradeDate(), today + 3);
+    BOOST_CHECK_EQUAL(cds->cashSettlementDays(), 3U);
+    BOOST_CHECK_EQUAL(cds->upfrontPayment()->date(), today + 6);
+    BOOST_CHECK_EQUAL(cds->protectionStartDate(), today + 3);
+
+    cds = MakeCreditDefaultSwap(5 * Years, 0.01)
+        .settleAccrual(false);
+    BOOST_CHECK_EQUAL(cds->settlesAccrual(), false);
+
+    cds = MakeCreditDefaultSwap(5 * Years, 0.01)
+        .payAtDefaultTime(false);
+    BOOST_CHECK_EQUAL(cds->paysAtDefaultTime(), false);
+
+    cds = MakeCreditDefaultSwap(5 * Years, 0.01)
+        .rebateAccrual(false);
+    BOOST_CHECK_EQUAL(cds->rebatesAccrual(), false);
+
+    cds = MakeCreditDefaultSwap(5 * Years, 0.01)
+        .withDayCounter(Actual365Fixed());
+
+    first = ext::dynamic_pointer_cast<Coupon>(cds->coupons().front());
+    last = ext::dynamic_pointer_cast<Coupon>(cds->coupons().back());
+
+    BOOST_CHECK_EQUAL(first->dayCounter().name(), "Actual/365 (Fixed)");
+    BOOST_CHECK_EQUAL(last->dayCounter().name(), "Actual/360 (inc)");
+
+    cds = MakeCreditDefaultSwap(5 * Years, 0.01)
+        .withLastPeriodDayCounter(Actual365Fixed());
+
+    first = ext::dynamic_pointer_cast<Coupon>(cds->coupons().front());
+    last = ext::dynamic_pointer_cast<Coupon>(cds->coupons().back());
+
+    BOOST_CHECK_EQUAL(first->dayCounter().name(), "Actual/360");
+    BOOST_CHECK_EQUAL(last->dayCounter().name(), "Actual/365 (Fixed)");
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

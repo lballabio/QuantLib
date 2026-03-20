@@ -17,45 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file pdebsm.hpp
-    \brief Black-Scholes-Merton PDE
-*/
-
 #ifndef quantlib_pdebsm_hpp
 #define quantlib_pdebsm_hpp
 
-#include <ql/methods/finitedifferences/pde.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/math/array.hpp>
+#include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
+#include <ql/math/array.hpp>
+#include <functional>
+#include <numeric>
 #include <utility>
 
-namespace QuantLib {
+/* Deprecated in version 1.42 */
 
-    QL_DEPRECATED_DISABLE_WARNING
-
-    /*! \deprecated Part of the old FD framework; copy this function
-                    in your codebase if needed.
-                    Deprecated in version 1.37.
-    */
-    class [[deprecated("Part of the old FD framework; copy this function in your codebase if needed")]] PdeBSM : public PdeSecondOrderParabolic {
-      public:
-        typedef ext::shared_ptr<GeneralizedBlackScholesProcess> argument_type;
-        typedef LogGrid grid_type;
-        PdeBSM(argument_type process) : process_(std::move(process)){};
-        Real diffusion(Time t, Real x) const override { return process_->diffusion(t, x); }
-        Real drift(Time t, Real x) const override { return process_->drift(t, x); }
-        Real discount(Time t, Real) const override {
-            if (std::fabs(t) < 1e-8) t = 0;
-            return process_->riskFreeRate()->
-                forwardRate(t,t,Continuous,NoFrequency,true);
-        }
-
-    private:
-        const argument_type process_;
-    };
-
-    QL_DEPRECATED_ENABLE_WARNING
-
-}
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 
 #endif

@@ -34,6 +34,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
 #include <set>
+#include <map>
 
 #if !defined(QL_USE_STD_SHARED_PTR) && BOOST_VERSION < 107400
 
@@ -96,11 +97,12 @@ namespace QuantLib {
 
         bool updatesEnabled() const { return updatesEnabled_; }
         bool updatesDeferred() const { return updatesDeferred_; }
+        bool runningDeferredUpdates() const { return runningDeferredUpdates_; }
 
       private:
         ObservableSettings() = default;
 
-        typedef std::set<Observer*> set_type;
+        typedef std::map<Observer*, bool> set_type;
         typedef set_type::iterator iterator;
 
         void registerDeferredObservers(const Observable::set_type& observers);
@@ -109,6 +111,7 @@ namespace QuantLib {
         set_type deferredObservers_;
 
         bool updatesEnabled_ = true, updatesDeferred_ = false;
+        bool runningDeferredUpdates_ = false;
     };
 
     //! Object that gets notified when a given observable changes
@@ -160,12 +163,20 @@ namespace QuantLib {
 
     inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         if (updatesDeferred()) {
-            deferredObservers_.insert(observers.begin(), observers.end());
+            for (Observer* obs : observers)
+                deferredObservers_.emplace(obs, true);
         }
     }
 
     inline void ObservableSettings::unregisterDeferredObserver(Observer* o) {
-        deferredObservers_.erase(o);
+        if (updatesDeferred())
+            deferredObservers_.erase(o);
+        else
+        {
+            auto it = deferredObservers_.find(o);
+            if (it != deferredObservers_.end())
+                it->second = false;
+        }
     }
 
     inline Observable::Observable(const Observable&) {
@@ -195,7 +206,8 @@ namespace QuantLib {
     }
 
     inline Size Observable::unregisterObserver(Observer* o) {
-        if (ObservableSettings::instance().updatesDeferred())
+        if (ObservableSettings::instance().updatesDeferred() ||
+            ObservableSettings::instance().runningDeferredUpdates())
             ObservableSettings::instance().unregisterDeferredObserver(o);
 
         return observers_.erase(o);

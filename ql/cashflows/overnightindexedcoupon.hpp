@@ -184,7 +184,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&) override;
+        void accept(AcyclicVisitor&) override;
 
         bool isCapped() const { return cap_ != Null<Real>(); }
         bool isFloored() const { return floor_ != Null<Real>(); }
@@ -210,7 +210,7 @@ namespace QuantLib {
     //! helper class building a sequence of overnight coupons
     class OvernightLeg {
       public:
-        OvernightLeg(const Schedule& schedule, const ext::shared_ptr<OvernightIndex>& overnightIndex);
+        OvernightLeg(Schedule  schedule, const ext::shared_ptr<OvernightIndex>& overnightIndex);
         OvernightLeg& withNotionals(Real notional);
         OvernightLeg& withNotionals(const std::vector<Real>& notionals);
         OvernightLeg& withPaymentDayCounter(const DayCounter&);
@@ -231,9 +231,9 @@ namespace QuantLib {
         OvernightLeg& withCaps(const std::vector<Rate>& caps);
         OvernightLeg& withFloors(Rate floor);
         OvernightLeg& withFloors(const std::vector<Rate>& floors);
-        OvernightLeg& withNakedOption(const bool nakedOption);
-        OvernightLeg& withDailyCapFloor(const bool dailyCapFloor = true);
-        OvernightLeg& withInArrears(const bool inArrears);
+        OvernightLeg& withNakedOption(bool nakedOption);
+        OvernightLeg& withDailyCapFloor(bool dailyCapFloor = true);
+        OvernightLeg& inArrears(bool inArrears);
         OvernightLeg& withLastRecentPeriod(const ext::optional<Period>& lastRecentPeriod);
         OvernightLeg& withLastRecentPeriodCalendar(const Calendar& lastRecentPeriodCalendar);
         OvernightLeg& withPaymentDates(const std::vector<Date>& paymentDates);

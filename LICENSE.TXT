@@ -126,7 +126,7 @@ Copyright (C) 2015, 2016 Andres Hernandez
 Copyright (C) 2016 Nicholas Bertocchi
 Copyright (C) 2016 Stefano Fondi
 Copyright (C) 2016, 2017 Fabrice Lecuyer
-Copyright (C) 2016, 2018, 2020, 2022 Quaternion Risk Management Ltd
+Copyright (C) 2016, 2018, 2019, 2020, 2022 Quaternion Risk Management Ltd
 Copyright (C) 2016, 2019, 2020 Eisuke Tani
 
 Copyright (C) 2017 BN Algorithms Ltd
@@ -152,12 +152,12 @@ Copyright (C) 2020 Leonardo Arcari
 Copyright (C) 2020 Piotr Siejda
 Copyright (C) 2020, 2021 Jack Gillett
 Copyright (C) 2020, 2021 Lew Wei Hao
+Copyright (C) 2020, 2021, 2022, 2023, 2024 Skandinaviska Enskilda Banken AB (publ)
 Copyright (C) 2020, 2021, 2022, 2023, 2025 Marcin Rybacki
 
 Copyright (C) 2021 Anubhav Pandey
 Copyright (C) 2021 Magnus Mencke
 Copyright (C) 2021, 2022, 2023, 2024 Ralf Konrad Eckel
-Copyright (C) 2021, 2022, 2023, 2024 Skandinaviska Enskilda Banken AB (publ)
 
 Copyright (C) 2022, 2023 Ignacio Anguita
 Copyright (C) 2022, 2023 Jonghee Lee
@@ -171,13 +171,20 @@ Copyright (C) 2023 Paul Xi Cao
 Copyright (C) 2024 Jacques du Toit
 Copyright (C) 2024 Jongbong An
 
+Copyright (C) 2025 AcadiaSoft Inc.
 Copyright (C) 2025 Eugene Toder
 Copyright (C) 2025 Hiroto Ogawa
 Copyright (C) 2025 Kareem Fareed
-Copyright (C) 2025 Paolo D'Elia
 Copyright (C) 2025 Sotirios Papathanasopoulos
 Copyright (C) 2025 Uzair Beg
 Copyright (C) 2025 William Day
+Copyright (C) 2025, 2026 Paolo D'Elia
+
+Copyright (C) 2026 Aaditya Panikath
+Copyright (C) 2026 Chirag Desai
+Copyright (C) 2026 Rich Amaya
+Copyright (C) 2026 Yassine Idyiahia
+Copyright (C) 2026 Zain Mughal
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".

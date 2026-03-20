@@ -17,7 +17,6 @@
 #include <ql/exchangerate.hpp>
 #include <ql/exercise.hpp>
 #include <ql/event.hpp>
-#include <ql/grid.hpp>
 #include <ql/handle.hpp>
 #include <ql/index.hpp>
 #include <ql/instrument.hpp>

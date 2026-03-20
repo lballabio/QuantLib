@@ -26,6 +26,7 @@
 #define quantlib_makecds_hpp
 
 #include <ql/instruments/creditdefaultswap.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/optional.hpp>
 
 namespace QuantLib {
@@ -36,38 +37,53 @@ namespace QuantLib {
     */
     class MakeCreditDefaultSwap {
       public:
-        MakeCreditDefaultSwap(const Period& tenor, Real couponRate);
-        MakeCreditDefaultSwap(const Date& termDate, Real couponRate);
+        MakeCreditDefaultSwap(const Period& tenor, Rate runningSpread);
+        MakeCreditDefaultSwap(const Date& termDate, Rate runningSpread);
+        MakeCreditDefaultSwap(const Schedule& schedule, Rate runningSpread);
 
         operator CreditDefaultSwap() const;
         operator ext::shared_ptr<CreditDefaultSwap>() const;
 
-        MakeCreditDefaultSwap& withUpfrontRate(Real);
         MakeCreditDefaultSwap& withSide(Protection::Side);
         MakeCreditDefaultSwap& withNominal(Real);
+        MakeCreditDefaultSwap& withUpfrontRate(Real);
         MakeCreditDefaultSwap& withCouponTenor(Period);
-        MakeCreditDefaultSwap& withDayCounter(DayCounter&);
-        MakeCreditDefaultSwap& withLastPeriodDayCounter(DayCounter&);
-        MakeCreditDefaultSwap& withDateGenerationRule(DateGeneration::Rule rule);
-        MakeCreditDefaultSwap& withCashSettlementDays(Natural cashSettlementDays);
+        MakeCreditDefaultSwap& withDateGenerationRule(DateGeneration::Rule);
+        MakeCreditDefaultSwap& withConvention(BusinessDayConvention);
+        MakeCreditDefaultSwap& withDayCounter(const DayCounter&);
+        MakeCreditDefaultSwap& settleAccrual(bool b = true);
+        MakeCreditDefaultSwap& payAtDefaultTime(bool b = true);
+        MakeCreditDefaultSwap& withProtectionStart(Date);
+        MakeCreditDefaultSwap& withUpfrontDate(Date);
+        MakeCreditDefaultSwap& withClaim(ext::shared_ptr<Claim>);
+        MakeCreditDefaultSwap& withLastPeriodDayCounter(const DayCounter&);
+        MakeCreditDefaultSwap& rebateAccrual(bool b = true);
+        MakeCreditDefaultSwap& withTradeDate(Date);
+        MakeCreditDefaultSwap& withCashSettlementDays(Natural);
 
         MakeCreditDefaultSwap& withPricingEngine(const ext::shared_ptr<PricingEngine>&);
 
-        MakeCreditDefaultSwap& withTradeDate(const Date& tradeDate);
-
       private:
-        Protection::Side side_;
-        Real nominal_;
         ext::optional<Period> tenor_;
         ext::optional<Date> termDate_;
-        Period couponTenor_;
-        Real couponRate_;
-        Real upfrontRate_;
-        DayCounter dayCounter_;
-        DayCounter lastPeriodDayCounter_;
-        DateGeneration::Rule rule_;
-        Natural cashSettlementDays_;
+        ext::optional<Schedule> schedule_;
+        Real runningSpread_;
+        Protection::Side side_ = Protection::Buyer;
+        Real nominal_ = 1.0;
+        Real upfrontRate_ = 0.0;
+        Period couponTenor_ = 3 * Months;
+        DateGeneration::Rule rule_ = DateGeneration::CDS;
+        BusinessDayConvention convention_ = Following;
+        DayCounter dayCounter_ = Actual360();
+        bool settlesAccrual_ = true;
+        bool paysAtDefaultTime_ = true;
+        Date protectionStart_;
+        Date upfrontDate_;
+        ext::shared_ptr<Claim> claim_;
+        DayCounter lastPeriodDayCounter_ = Actual360(true);
+        bool rebatesAccrual_ = true;
         Date tradeDate_;
+        Natural cashSettlementDays_ = 3;
 
         ext::shared_ptr<PricingEngine> engine_;
     };

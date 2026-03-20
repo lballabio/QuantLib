@@ -64,24 +64,6 @@ namespace QuantLib {
                              const DayCounter& dayCounter = DayCounter(),
                              const Date& exCouponDate = Date());
 
-        /*! \deprecated Use the other constructor.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use the other constructor")]]
-        MultipleResetsCoupon(const Date& paymentDate,
-                             Real nominal,
-                             const Date& startDate,
-                             const Date& endDate,
-                             Natural fixingDays,
-                             const ext::shared_ptr<IborIndex>& index,
-                             Real gearing = 1.0,
-                             Rate couponSpread = 0.0,
-                             Rate rateSpread = 0.0,
-                             const Date& refPeriodStart = Date(),
-                             const Date& refPeriodEnd = Date(),
-                             const DayCounter& dayCounter = DayCounter(),
-                             const Date& exCouponDate = Date());
-
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded
@@ -111,12 +93,6 @@ namespace QuantLib {
         Rate rateSpread_;
     };
 
-    /*! \deprecated Renamed to MultipleResetsCoupon.
-                    Deprecated in version 1.37.
-    */
-    [[deprecated("Renamed to MultipleResetsCoupon")]]
-    typedef MultipleResetsCoupon SubPeriodsCoupon;
-
 
     class MultipleResetsPricer: public FloatingRateCouponPricer {
       public:
@@ -132,33 +108,15 @@ namespace QuantLib {
         std::vector<Real> subPeriodFixings_;
     };
 
-    /*! \deprecated Renamed to MultipleResetsPricer.
-                    Deprecated in version 1.37.
-    */
-    [[deprecated("Renamed to MultipleResetsPricer")]]
-    typedef MultipleResetsPricer SubPeriodsPricer;
-
     class AveragingMultipleResetsPricer: public MultipleResetsPricer {
       public:
         Real swapletRate() const override;
     };
 
-    /*! \deprecated Renamed to AveragingMultipleResetsPricer.
-                    Deprecated in version 1.37.
-    */
-    [[deprecated("Renamed to AveragingMultipleResetsPricer")]]
-    typedef AveragingMultipleResetsPricer AveragingRatePricer;
-
     class CompoundingMultipleResetsPricer: public MultipleResetsPricer {
       public:
         Real swapletRate() const override;
     };
-
-    /*! \deprecated Renamed to CompoundingMultipleResetsPricer.
-                    Deprecated in version 1.37.
-    */
-    [[deprecated("Renamed to CompoundingMultipleResetsPricer")]]
-    typedef CompoundingMultipleResetsPricer CompoundingRatePricer;
 
 
     //! helper class building a sequence of multiple-reset coupons
@@ -214,52 +172,6 @@ namespace QuantLib {
         bool exCouponEndOfMonth_ = false;
     };
 
-
-    /*! \deprecated Use MultipleResetsLeg instead.
-                    Deprecated in version 1.37.
-    */
-    class [[deprecated("Use MultipleResetsLeg instead")]] SubPeriodsLeg {
-      public:
-        SubPeriodsLeg(Schedule schedule, ext::shared_ptr<IborIndex> index);
-        SubPeriodsLeg& withNotionals(Real notional);
-        SubPeriodsLeg& withNotionals(const std::vector<Real>& notionals);
-        SubPeriodsLeg& withPaymentDayCounter(const DayCounter&);
-        SubPeriodsLeg& withPaymentAdjustment(BusinessDayConvention);
-        SubPeriodsLeg& withPaymentCalendar(const Calendar&);
-        SubPeriodsLeg& withPaymentLag(Integer lag);
-        SubPeriodsLeg& withFixingDays(Natural fixingDays);
-        SubPeriodsLeg& withFixingDays(const std::vector<Natural>& fixingDays);
-        SubPeriodsLeg& withGearings(Real gearing);
-        SubPeriodsLeg& withGearings(const std::vector<Real>& gearings);
-        SubPeriodsLeg& withCouponSpreads(Spread spread);
-        SubPeriodsLeg& withCouponSpreads(const std::vector<Spread>& spreads);
-        SubPeriodsLeg& withRateSpreads(Spread spread);
-        SubPeriodsLeg& withRateSpreads(const std::vector<Spread>& spreads);
-        SubPeriodsLeg& withExCouponPeriod(const Period&,
-                                          const Calendar&,
-                                          BusinessDayConvention,
-                                          bool endOfMonth = false);
-        SubPeriodsLeg& withAveragingMethod(RateAveraging::Type averagingMethod);
-        operator Leg() const;
-
-      private:
-        Schedule schedule_;
-        ext::shared_ptr<IborIndex> index_;
-        std::vector<Real> notionals_;
-        DayCounter paymentDayCounter_;
-        Calendar paymentCalendar_;
-        BusinessDayConvention paymentAdjustment_ = Following;
-        Integer paymentLag_ = 0;
-        std::vector<Natural> fixingDays_;
-        std::vector<Real> gearings_;
-        std::vector<Spread> couponSpreads_;
-        std::vector<Spread> rateSpreads_;
-        RateAveraging::Type averagingMethod_ = RateAveraging::Compound;
-        Period exCouponPeriod_;
-        Calendar exCouponCalendar_;
-        BusinessDayConvention exCouponAdjustment_ = Unadjusted;
-        bool exCouponEndOfMonth_ = false;
-    };
 }
 
 #endif

@@ -58,10 +58,9 @@ namespace QuantLib {
             bool isInRange(Real x, Real y) const override {
                 return decoratedInterp_->isInRange(x,y);
             }
-            void update() {
+            void calculate() override {
                 decoratedInterp_->update();
             }
-            void calculate() override {}
             Real value(Real x, Real y) const override {
                 x = bindX(x);
                 y = bindY(y);

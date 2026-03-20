@@ -28,6 +28,8 @@
 
 namespace QuantLib {
 
+    class MarkovFunctional;
+
     //! Markov functional state process class
     /*! This class describes the process governed by
         \f[ dx = \sigma(t) e^{at} dW(t) \f]
@@ -35,7 +37,7 @@ namespace QuantLib {
     */
     class MfStateProcess : public StochasticProcess1D {
       public:
-        MfStateProcess(Real reversion, const Array &times, const Array &vols);
+        MfStateProcess(Real reversion, Array times, Array vols);
 
         //! \name StochasticProcess interface
         //@{
@@ -46,11 +48,16 @@ namespace QuantLib {
         Real stdDeviation(Time t0, Real x0, Time dt) const override;
         Real variance(Time t0, Real x0, Time dt) const override;
         //@}
+
       private:
+        friend class MarkovFunctional;
+        void setTimes(Array times);
+        void setVols(Array vols);
+        void checkTimesVols() const;
         Real reversion_;
         bool reversionZero_ = false;
-        const Array &times_;
-        const Array &vols_;
+        Array times_;
+        Array vols_;
     };
 }
 

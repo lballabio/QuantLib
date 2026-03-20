@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2026 Paolo D'Elia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,9 +29,10 @@ namespace QuantLib {
                                            const std::vector<Date>& dates,
                                            const std::vector<Volatility>& blackVolCurve,
                                            DayCounter dayCounter,
-                                           bool forceMonotoneVariance)
+                                           bool forceMonotoneVariance,
+                                           BlackVolTimeExtrapolation::Type timeExtrapolationType)
     : BlackVarianceTermStructure(referenceDate), dayCounter_(std::move(dayCounter)),
-      maxDate_(dates.back()) {
+      maxDate_(dates.back()), timeExtrapolationType_(timeExtrapolationType) {
 
         QL_REQUIRE(dates.size()==blackVolCurve.size(),
                    "mismatch between date vector and black vol vector");
@@ -62,12 +64,11 @@ namespace QuantLib {
     }
 
     Real BlackVarianceCurve::blackVarianceImpl(Time t, Real) const {
-        if (t<=times_.back()) {
-            return varianceCurve_(t, true);
-        } else {
-            // extrapolate with flat vol
-            return varianceCurve_(times_.back(), true)*t/times_.back();
-        }
+        if (t <= times_.back())
+            return std::max(varianceCurve_(t, true), 0.0);
+        else
+            return BlackVolTimeExtrapolation::extrapolatedVariance(timeExtrapolationType_, t, times_,
+                                                                   [&](Real t){ return varianceCurve_(t, true); });
     }
 
 }

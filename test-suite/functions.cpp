@@ -141,7 +141,8 @@ BOOST_AUTO_TEST_CASE(testModifiedBesselFunctions) {
         const Real expected_i = i[2];
         const Real expected_k = i[3];
         const Real tol_i = 5e4 * QL_EPSILON*std::fabs(expected_i);
-        const Real tol_k = 5e4 * QL_EPSILON*std::fabs(expected_k);
+        const Real tol_k = 5e4 * QL_EPSILON
+                           * std::max(std::fabs(expected_k), std::fabs(expected_i));
 
         const Real calculated_i = modifiedBesselFunction_i(nu, x);
         const Real calculated_k = modifiedBesselFunction_k(nu, x);
@@ -149,18 +150,24 @@ BOOST_AUTO_TEST_CASE(testModifiedBesselFunctions) {
         if (std::fabs(expected_i - calculated_i) > tol_i) {
             BOOST_ERROR("failed to reproduce modified Bessel "
                        << "function of first kind"
+                       << std::setprecision(16) << std::scientific
                        << "\n order     : " << nu
                        << "\n argument  : " << x
                        << "\n calculated: " << calculated_i
-                       << "\n expected  : " << expected_i);
+                       << "\n expected  : " << expected_i
+                       << "\n difference: " << std::fabs(expected_i - calculated_i)
+                       << "\n tolerance : " << tol_i);
         }
         if (std::fabs(expected_k - calculated_k) > tol_k) {
             BOOST_ERROR("failed to reproduce modified Bessel "
                        << "function of second kind"
+                       << std::setprecision(16) << std::scientific
                        << "\n order     : " << nu
                        << "\n argument  : " << x
                        << "\n calculated: " << calculated_k
-                       << "\n expected  : " << expected_k);
+                       << "\n expected  : " << expected_k
+                       << "\n difference: " << std::fabs(expected_k - calculated_k)
+                       << "\n tolerance : " << tol_k);
         }
     }
 

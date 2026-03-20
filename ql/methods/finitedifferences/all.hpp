@@ -2,7 +2,6 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/methods/finitedifferences/boundarycondition.hpp>
-#include <ql/methods/finitedifferences/bsmoperator.hpp>
 #include <ql/methods/finitedifferences/cranknicolson.hpp>
 #include <ql/methods/finitedifferences/dminus.hpp>
 #include <ql/methods/finitedifferences/dplus.hpp>
@@ -13,8 +12,6 @@
 #include <ql/methods/finitedifferences/impliciteuler.hpp>
 #include <ql/methods/finitedifferences/mixedscheme.hpp>
 #include <ql/methods/finitedifferences/operatortraits.hpp>
-#include <ql/methods/finitedifferences/pde.hpp>
-#include <ql/methods/finitedifferences/pdebsm.hpp>
 #include <ql/methods/finitedifferences/stepcondition.hpp>
 #include <ql/methods/finitedifferences/trbdf2.hpp>
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>

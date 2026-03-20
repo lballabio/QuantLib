@@ -32,6 +32,7 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -54,7 +55,7 @@ namespace QuantLib {
 
         explicit OvernightIndexedCouponPricer(
           Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
-          const bool effectiveVolatilityInput = false);
+          bool effectiveVolatilityInput = false);
 
         void initialize(const FloatingRateCoupon& coupon) override;
 
@@ -89,6 +90,7 @@ namespace QuantLib {
 
         virtual Rate capletRate(Rate effectiveCap, bool dailyCapFloor) const = 0;
         virtual Rate floorletRate(Rate effectiveCap, bool dailyCapFloor) const = 0;
+        virtual Rate averageRate(const Date& date) const = 0;
 
       protected:
         const OvernightIndexedCoupon* coupon_ = nullptr;
@@ -103,7 +105,7 @@ namespace QuantLib {
       public:
         explicit CompoundingOvernightIndexedCouponPricer(
           Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
-          const bool effectiveVolatilityInput = false);
+          bool effectiveVolatilityInput = false);
         //! \name FloatingRateCoupon interface
         //@{
         //void initialize(const FloatingRateCoupon& coupon) override;
@@ -120,7 +122,7 @@ namespace QuantLib {
         Rate floorletRate([[maybe_unused]] Rate effectiveCap, [[maybe_unused]] bool dailyCapFloor) const override {
           QL_FAIL("CompoundingOvernightIndexedCouponPricer::floorletRate(Rate, bool) not implemented");
         }
-        Rate averageRate(const Date& date) const;
+        Rate averageRate(const Date& date) const override;
         Rate effectiveSpread() const;
         Rate effectiveIndexFixing() const;
 
@@ -141,7 +143,7 @@ namespace QuantLib {
             bool byApprox = false, // TRUE to use Katsumi Takada approximation
             Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
             const bool effectiveVolatilityInput = false)
-        : OvernightIndexedCouponPricer(v, effectiveVolatilityInput),
+        : OvernightIndexedCouponPricer(std::move(v), effectiveVolatilityInput),
          byApprox_(byApprox), mrs_(meanReversion), vol_(volatility) {}
 
         explicit ArithmeticAveragedOvernightIndexedCouponPricer(
@@ -162,6 +164,7 @@ namespace QuantLib {
         Rate floorletRate([[maybe_unused]] Rate effectiveCap, [[maybe_unused]] bool dailyCapFloor) const override {
           QL_FAIL("ArithmeticAveragedOvernightIndexedCouponPricer::floorletRate(Rate, bool) not implemented");
         }
+        Rate averageRate(const Date& date) const override;
       protected:
         Real convAdj1(Time ts, Time te) const;
         Real convAdj2(Time ts, Time te) const;

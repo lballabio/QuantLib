@@ -30,9 +30,7 @@ namespace QuantLib {
     }
 
     void IndexManager::setHistory(const std::string& name, TimeSeries<Real> history) {
-        QL_DEPRECATED_DISABLE_WARNING
         notifier(name)->notifyObservers();
-        QL_DEPRECATED_ENABLE_WARNING
         data_[name] = std::move(history);
     }
 
@@ -61,17 +59,13 @@ namespace QuantLib {
     }
 
     void IndexManager::clearHistory(const std::string& name) {
-        QL_DEPRECATED_DISABLE_WARNING
         notifier(name)->notifyObservers();
-        QL_DEPRECATED_ENABLE_WARNING
         data_.erase(name);
     }
 
     void IndexManager::clearHistories() {
-        QL_DEPRECATED_DISABLE_WARNING
         for (auto const& d : data_)
             notifier(d.first)->notifyObservers();
-        QL_DEPRECATED_ENABLE_WARNING
         data_.clear();
     }
 

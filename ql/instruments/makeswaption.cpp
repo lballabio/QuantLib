@@ -53,14 +53,16 @@ namespace QuantLib {
 
     MakeSwaption::operator ext::shared_ptr<Swaption>() const {
 
-        const Calendar& fixingCalendar = swapIndex_->fixingCalendar();
+        const Calendar& calendar = exerciseCalendar_.empty()
+            ? swapIndex_->fixingCalendar()
+            : exerciseCalendar_;
         Date refDate = Settings::instance().evaluationDate();
         // if the evaluation date is not a business day
         // then move to the next business day
-        refDate = fixingCalendar.adjust(refDate);
+        refDate = calendar.adjust(refDate);
         if (fixingDate_ == Date())
-            fixingDate_ = fixingCalendar.advance(refDate, optionTenor_,
-                                                 optionConvention_);
+            fixingDate_ = calendar.advance(refDate, optionTenor_,
+                                           optionConvention_);
         if (exerciseDate_ == Date()) {
             exercise_ = ext::shared_ptr<Exercise>(new
                 EuropeanExercise(fixingDate_));
@@ -162,6 +164,11 @@ namespace QuantLib {
 
     MakeSwaption& MakeSwaption::withExerciseDate(const Date& date) {
         exerciseDate_ = date;
+        return *this;
+    }
+
+    MakeSwaption& MakeSwaption::withExerciseCalendar(const Calendar& cal) {
+        exerciseCalendar_ = cal;
         return *this;
     }
 

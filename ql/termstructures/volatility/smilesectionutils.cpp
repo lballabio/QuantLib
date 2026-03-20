@@ -134,8 +134,8 @@ namespace QuantLib {
         // shift central index to the right if necessary
         // (sometimes even the atm point lies in an arbitrageable area)
 
-        while (!af(centralIndex, centralIndex, centralIndex + 1) &&
-               centralIndex < k_.size() - 1)
+        while (centralIndex < k_.size() - 1 &&
+               !af(centralIndex, centralIndex, centralIndex + 1))
             centralIndex++;
 
         QL_REQUIRE(centralIndex < k_.size(),
@@ -175,14 +175,16 @@ namespace QuantLib {
                 k_.erase(k_.begin() + leftIndex_ - 1);
                 c_.erase(c_.begin() + leftIndex_ - 1);
                 leftIndex_--;
-                rightIndex_--;
+                if (rightIndex_ > 0)
+                    rightIndex_--;
                 done = false;
             }
             if (deleteArbitragePoints && rightIndex_ < k_.size() - 1) {
                 m_.erase(m_.begin() + rightIndex_ + 1);
                 k_.erase(k_.begin() + rightIndex_ + 1);
                 c_.erase(c_.begin() + rightIndex_ + 1);
-                rightIndex_--;
+                if (rightIndex_ > 0)
+                    rightIndex_--;
                 done = false;
             }
         }

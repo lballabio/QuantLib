@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2026 Aaditya Panikath
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/volatility/zabr.hpp>
+#include <ql/termstructures/volatility/zabr.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 #include <ql/errors.hpp>
 #include <ql/math/comparison.hpp>

@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        tag: [plucky, questing]
+        tag: [plucky, questing, resolute]
     steps:
     - uses: actions/checkout@v6
     - name: Build CI images
@@ -28,7 +28,7 @@ jobs:
             docker tag ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }} ghcr.io/lballabio/quantlib-devenv:rolling
         fi
     - name: Login to GitHub Container Registry
-      uses: docker/login-action@v3
+      uses: docker/login-action@v4
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}

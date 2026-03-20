@@ -77,6 +77,11 @@ namespace QuantLib {
         compoundSpreadDaily_(compoundSpreadDaily),
         rateComputationStartDate_(rateComputationStartDate),
         rateComputationEndDate_(rateComputationEndDate) {
+        
+        // ctor guard prevents construction of an object with illogically ordered dates. 
+        QL_REQUIRE(paymentDate >= endDate, 
+        "Payment date cannot be earlier than accrual end date");
+
         Date valueStart = rateComputationStartDate_ == Null<Date>() ? startDate : rateComputationStartDate_;
         Date valueEnd = rateComputationEndDate_ == Null<Date>() ? endDate : rateComputationEndDate_;
         if (lookbackDays != Null<Natural>()) {
@@ -217,9 +222,9 @@ namespace QuantLib {
     Rate OvernightIndexedCoupon::averageRate(const Date& d) const {
         QL_REQUIRE(pricer_, "pricer not set");
         pricer_->initialize(*this);
-        if (const auto compoundingPricer =
-                ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(pricer_)) {
-            return compoundingPricer->averageRate(d);
+        if (const auto overnightIndexedPricer =
+            ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer_)) {
+            return overnightIndexedPricer->averageRate(d);
         }
         return pricer_->swapletRate();
     }
@@ -401,8 +406,8 @@ namespace QuantLib {
     }
 
     void CappedFlooredOvernightIndexedCoupon::accept(AcyclicVisitor& v) {
-        Visitor<CappedFlooredOvernightIndexedCoupon>* v1 = dynamic_cast<Visitor<CappedFlooredOvernightIndexedCoupon>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<CappedFlooredOvernightIndexedCoupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             FloatingRateCoupon::accept(v);
@@ -416,8 +421,8 @@ namespace QuantLib {
 
     // OvernightLeg implementation
 
-    OvernightLeg::OvernightLeg(const Schedule& schedule, const ext::shared_ptr<OvernightIndex>& i)
-    : schedule_(std::move(schedule)), overnightIndex_(std::move(i)), paymentCalendar_(schedule_.calendar()) {
+    OvernightLeg::OvernightLeg(Schedule  schedule, const ext::shared_ptr<OvernightIndex>& i)
+    : schedule_(std::move(schedule)), overnightIndex_(i), paymentCalendar_(schedule_.calendar()) {
         QL_REQUIRE(overnightIndex_, "no index provided");
     }
 
@@ -530,7 +535,7 @@ namespace QuantLib {
         return *this;
     }
 
-    OvernightLeg& OvernightLeg::withInArrears(const bool inArrears) {
+    OvernightLeg& OvernightLeg::inArrears(const bool inArrears) {
         inArrears_ = inArrears;
         return *this;
     }

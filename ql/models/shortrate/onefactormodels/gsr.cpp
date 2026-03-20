@@ -90,8 +90,10 @@ namespace QuantLib {
     }
 
 void Gsr::update() {
-    if (stateProcess_ != nullptr)
+    if (stateProcess_ != nullptr) {
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+        ext::static_pointer_cast<GsrProcess>(stateProcess_)->notifyObservers();
+    }
     LazyObject::update();
 }
 
@@ -110,14 +112,17 @@ void Gsr::updateTimes() const {
                            << volsteptimes_[j - 1] << "@" << (j - 1) << ", "
                            << volsteptimes_[j] << "@" << j << ")");
     }
-    if (stateProcess_ != nullptr)
+    if (stateProcess_ != nullptr) {
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+        ext::static_pointer_cast<GsrProcess>(stateProcess_)->setTimes(volsteptimesArray_);
+    }
 }
 
 void Gsr::updateVolatility() {
     for (Size i = 0; i < sigma_.size(); i++) {
         sigma_.setParam(i, volatilities_[i]->value());
     }
+    ext::static_pointer_cast<GsrProcess>(stateProcess_)->setVols(sigma_.params());
     update();
 }
 
@@ -125,6 +130,7 @@ void Gsr::updateReversion() {
     for (Size i = 0; i < reversion_.size(); i++) {
         reversion_.setParam(i, reversions_[i]->value());
     }
+    ext::static_pointer_cast<GsrProcess>(stateProcess_)->setReversions(reversion_.params());
     update();
 }
 
@@ -186,8 +192,7 @@ Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
         return yts.empty() ? this->termStructure()->discount(T, true)
                            : yts->discount(T, true);
 
-    ext::shared_ptr<GsrProcess> p =
-        ext::dynamic_pointer_cast<GsrProcess>(stateProcess_);
+    ext::shared_ptr<GsrProcess> p = ext::static_pointer_cast<GsrProcess>(stateProcess_);
 
     Real x = y * stateProcess_->stdDeviation(0.0, 0.0, t) +
              stateProcess_->expectation(0.0, 0.0, t);
@@ -206,8 +211,7 @@ Real Gsr::numeraireImpl(const Time t, const Real y,
 
     calculate();
 
-    ext::shared_ptr<GsrProcess> p =
-        ext::dynamic_pointer_cast<GsrProcess>(stateProcess_);
+    ext::shared_ptr<GsrProcess> p = ext::static_pointer_cast<GsrProcess>(stateProcess_);
 
     if (t == 0)
         return yts.empty()

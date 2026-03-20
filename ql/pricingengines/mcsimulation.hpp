@@ -26,7 +26,6 @@
 #ifndef quantlib_montecarlo_engine_hpp
 #define quantlib_montecarlo_engine_hpp
 
-#include <ql/grid.hpp>
 #include <ql/methods/montecarlo/montecarlomodel.hpp>
 
 namespace QuantLib {

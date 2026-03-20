@@ -23,6 +23,7 @@
 */
 
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -51,11 +52,11 @@ namespace QuantLib {
     }
 
     void OvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
-        if (auto cfCoupon = dynamic_cast<const CappedFlooredOvernightIndexedCoupon*>(&coupon)) {
-            auto underlying = cfCoupon->underlying().get();
+        if (const auto *cfCoupon = dynamic_cast<const CappedFlooredOvernightIndexedCoupon*>(&coupon)) {
+            auto *underlying = cfCoupon->underlying().get();
             QL_REQUIRE(underlying, "OvernightIndexedCouponPricer: CappedFlooredOvernightIndexedCoupon underlying coupon not defined");
             coupon_ = cfCoupon->underlying().get();
-        } else if (auto onCoupon = dynamic_cast<const OvernightIndexedCoupon*>(&coupon)) {
+        } else if (const auto *onCoupon = dynamic_cast<const OvernightIndexedCoupon*>(&coupon)) {
             coupon_ = onCoupon;
         } else {
             QL_FAIL("OvernightIndexedCouponPricer: unsupported coupon type");
@@ -77,7 +78,7 @@ namespace QuantLib {
     CompoundingOvernightIndexedCouponPricer::CompoundingOvernightIndexedCouponPricer(
             Handle<OptionletVolatilityStructure> v,
             const bool effectiveVolatilityInput)
-        : OvernightIndexedCouponPricer(v, effectiveVolatilityInput) {}
+        : OvernightIndexedCouponPricer(std::move(v), effectiveVolatilityInput) {}
 
     Rate CompoundingOvernightIndexedCouponPricer::swapletRate() const {
         auto [swapletRate, effectiveSpread, effectiveIndexFixing] = compute(coupon_->accrualEndDate());
@@ -258,14 +259,21 @@ namespace QuantLib {
     }
 
     Rate ArithmeticAveragedOvernightIndexedCouponPricer::swapletRate() const {
+        return averageRate(coupon_->accrualEndDate());
+    }
+
+    Rate ArithmeticAveragedOvernightIndexedCouponPricer::averageRate(const Date& date) const {
 
         ext::shared_ptr<OvernightIndex> index =
             ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
 
         const auto& fixingDates = coupon_->fixingDates();
+        const auto& interestDates = coupon_->interestDates();
         const auto& dt = coupon_->dt();
+        const bool applyObservationShift = coupon_->applyObservationShift();
 
-        Size n = dt.size(), i = 0;
+        Size i = 0;
+        const Size n = determineNumberOfFixings(interestDates, date, applyObservationShift);
 
         Real accumulatedRate = 0.0;
 
@@ -278,7 +286,10 @@ namespace QuantLib {
             Rate pastFixing = pastFixings[fixingDates[i]];
             QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " << index->name() << " fixing for " << fixingDates[i]);
-            accumulatedRate += pastFixing * dt[i];
+            Time span = (date >= interestDates[i + 1] ?
+                         dt[i] :
+                         index->dayCounter().yearFraction(interestDates[i], date));
+            accumulatedRate += pastFixing * span;
             ++i;
         }
 
@@ -288,7 +299,10 @@ namespace QuantLib {
             try {
                 Rate pastFixing = pastFixings[fixingDates[i]];
                 if (pastFixing != Null<Real>()) {
-                    accumulatedRate += pastFixing * dt[i];
+                    Time span = (date >= interestDates[i + 1] ?
+                                 dt[i] :
+                                 index->dayCounter().yearFraction(interestDates[i], date));
+                    accumulatedRate += pastFixing * span;
                     ++i;
                 } else {
                     ; // fall through and forecast
@@ -338,7 +352,7 @@ namespace QuantLib {
             }
         }
 
-        Rate rate = accumulatedRate / coupon_->accrualPeriod();
+        Rate rate = accumulatedRate / coupon_->accruedPeriod(date);
         return coupon_->gearing() * rate + coupon_->spread();
     }
 

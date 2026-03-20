@@ -662,6 +662,7 @@
     <ClCompile Include="blackcalculator.cpp" />
     <ClCompile Include="blackdeltacalculator.cpp" />
     <ClCompile Include="blackformula.cpp" />
+    <ClCompile Include="blackvolsurfacedelta.cpp" /> 
     <ClCompile Include="bondforward.cpp" />
     <ClCompile Include="bonds.cpp" />
     <ClCompile Include="brownianbridge.cpp" />
@@ -718,6 +719,7 @@
     <ClCompile Include="fdmlinearop.cpp" />
     <ClCompile Include="forwardoption.cpp" />
     <ClCompile Include="forwardrateagreement.cpp" />
+    <ClCompile Include="fxforward.cpp" />
     <ClCompile Include="garch.cpp" />
     <ClCompile Include="gaussianquadratures.cpp" />
     <ClCompile Include="gjrgarchmodel.cpp" />
@@ -737,6 +739,7 @@
     <ClCompile Include="instruments.cpp" />
     <ClCompile Include="integrals.cpp" />
     <ClCompile Include="interestrates.cpp" />
+    <ClCompile Include="interpolatedsmilesection.cpp" />
     <ClCompile Include="interpolations.cpp" />
     <ClCompile Include="jumpdiffusion.cpp" />
     <ClCompile Include="lazyobject.cpp" />
@@ -758,6 +761,7 @@
     <ClCompile Include="mersennetwister.cpp" />
     <ClCompile Include="money.cpp" />
     <ClCompile Include="multipleresetscoupons.cpp" />
+    <ClCompile Include="multipleresetsswap.cpp" />
     <ClCompile Include="noarbsabr.cpp" />
     <ClCompile Include="normalclvmodel.cpp" />
     <ClCompile Include="nthtodefault.cpp" />
@@ -775,6 +779,7 @@
     <ClCompile Include="pathgenerator.cpp" />
     <ClCompile Include="period.cpp" />
     <ClCompile Include="perpetualfutures.cpp" />
+    <ClCompile Include="piecewiseblackvariancesurface.cpp" />
     <ClCompile Include="piecewiseyieldcurve.cpp" />
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp" />
     <ClCompile Include="preconditions.cpp" />
@@ -793,7 +798,6 @@
     <ClCompile Include="sofrfutures.cpp" />
     <ClCompile Include="softbarrieroption.cpp" />
     <ClCompile Include="solvers.cpp" />
-    <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="svivolatility.cpp" />
@@ -808,7 +812,6 @@
     <ClCompile Include="timeseries.cpp" />
     <ClCompile Include="tqreigendecomposition.cpp" />
     <ClCompile Include="tracing.cpp" />
-    <ClCompile Include="transformedgrid.cpp" />
     <ClCompile Include="twoassetbarrieroption.cpp" />
     <ClCompile Include="twoassetcorrelationoption.cpp" />
     <ClCompile Include="ultimateforwardtermstructure.cpp" />

@@ -45,7 +45,8 @@ namespace QuantLib {
                            const Period& exCouponPeriod,
                            const Calendar& exCouponCalendar,
                            const BusinessDayConvention exCouponConvention,
-                           bool exCouponEndOfMonth)
+                           bool exCouponEndOfMonth,
+                           BusinessDayConvention fixingConvention)
     : Bond(settlementDays, schedule.calendar(), issueDate) {
 
         maturityDate_ = schedule.endDate();
@@ -60,7 +61,8 @@ namespace QuantLib {
             .withCaps(caps)
             .withFloors(floors)
             .inArrears(inArrears)
-            .withExCouponPeriod(exCouponPeriod, exCouponCalendar, exCouponConvention, exCouponEndOfMonth);
+            .withExCouponPeriod(exCouponPeriod, exCouponCalendar, exCouponConvention, exCouponEndOfMonth)
+            .withFixingConvention(fixingConvention);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));
 

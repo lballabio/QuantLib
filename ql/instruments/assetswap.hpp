@@ -70,21 +70,6 @@ namespace QuantLib {
                   Real nonParRepayment = Null<Real>(),
                   Date dealMaturity = Date());
 
-        /*! \deprecated Use the other overload.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use the other overload")]]
-        AssetSwap(bool parAssetSwap,
-                  ext::shared_ptr<Bond> bond,
-                  Real bondCleanPrice,
-                  Real nonParRepayment,
-                  Real gearing,
-                  const ext::shared_ptr<IborIndex>& iborIndex,
-                  Spread spread = 0.0,
-                  const DayCounter& floatingDayCount = DayCounter(),
-                  Date dealMaturity = Date(),
-                  bool payBondCoupon = false);
-
         // results
         Spread fairSpread() const;
         Real floatingLegBPS() const;

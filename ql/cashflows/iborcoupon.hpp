@@ -52,7 +52,8 @@ namespace QuantLib {
                    const Date& refPeriodEnd = Date(),
                    const DayCounter& dayCounter = DayCounter(),
                    bool isInArrears = false,
-                   const Date& exCouponDate = Date());
+                   const Date& exCouponDate = Date(),
+                   BusinessDayConvention fixingConvention = Preceding);
         //! \name Inspectors
         //@{
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
@@ -157,6 +158,7 @@ namespace QuantLib {
                                     const Calendar&,
                                     BusinessDayConvention,
                                     bool endOfMonth = false);
+        IborLeg& withFixingConvention(BusinessDayConvention);
         IborLeg& withIndexedCoupons(ext::optional<bool> b = true);
         IborLeg& withAtParCoupons(bool b = true);
         operator Leg() const;
@@ -174,6 +176,7 @@ namespace QuantLib {
         std::vector<Spread> spreads_;
         std::vector<Rate> caps_, floors_;
         bool inArrears_ = false, zeroPayments_ = false;
+        BusinessDayConvention fixingConvention_ = Preceding;
         Period exCouponPeriod_;
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_ = Unadjusted;

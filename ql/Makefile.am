@@ -158,6 +158,7 @@ quantlib.hpp: Makefile.am
 			version.hpp)       continue;; \
 			functional.hpp)       continue;; \
 			tuple.hpp)       continue;; \
+			grid.hpp)       continue;; \
 			*.hpp)             ;; \
 		esac; \
 		echo "#include <${subdir}/$$i>" >> ${srcdir}/$@; \

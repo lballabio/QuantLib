@@ -39,7 +39,8 @@ namespace QuantLib {
                          underlying->referencePeriodEnd(),
                          underlying->dayCounter(),
                          underlying->isInArrears(),
-                         underlying->exCouponDate()),
+                         underlying->exCouponDate(),
+                         underlying->fixingConvention()),
       underlying_(underlying) {
 
         if (gearing_ > 0) {

@@ -28,29 +28,19 @@
 
 namespace QuantLib {
 
-    //! \f$ D_{-} \f$ matricial representation
-    /*! The differential operator \f$ D_{-} \f$ discretizes the
-        first derivative with the first-order formula
-        \f[ \frac{\partial u_{i}}{\partial x} \approx
-            \frac{u_{i}-u_{i-1}}{h} = D_{-} u_{i}
-        \f]
-
-        \ingroup findiff
+    /*! \deprecated Part of the old FD framework; copy this function
+                    in your codebase if needed.
+                    Deprecated in version 1.42.
     */
-    class DMinus : public TridiagonalOperator {
+    class [[deprecated("Part of the old FD framework; copy this function in your codebase if needed")]] DMinus : public TridiagonalOperator {
       public:
-        DMinus(Size gridPoints, Real h);
+        DMinus(Size gridPoints, Real h)
+        : TridiagonalOperator(gridPoints) {
+            setFirstRow(-1/h,1/h);                  // linear extrapolation
+            setMidRows(-1/h,1/h,0.0);
+            setLastRow(-1/h,1/h);
+        }
     };
-
-
-    // inline definitions
-
-    inline DMinus::DMinus(Size gridPoints, Real h)
-    : TridiagonalOperator(gridPoints) {
-        setFirstRow(-1/h,1/h);                  // linear extrapolation
-        setMidRows(-1/h,1/h,0.0);
-        setLastRow(-1/h,1/h);
-    }
 
 }
 

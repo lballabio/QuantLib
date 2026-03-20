@@ -23,7 +23,8 @@ this_include_HEADERS = \
 	mixedinterpolation.hpp \
 	multicubicspline.hpp \
 	sabrinterpolation.hpp \
-	xabrinterpolation.hpp
+	xabrinterpolation.hpp \
+	zabrinterpolation.hpp
 
 cpp_files = \
 	chebyshevinterpolation.cpp
