@@ -120,14 +120,12 @@ BOOST_AUTO_TEST_CASE(testContractedForwardRate) {
     FxForward fwd1(usdNominal, vars.usd, sgdNominal, vars.sgd, vars.maturityDate, true);
 
     BOOST_CHECK_CLOSE(fwd1.forwardRate(), expectedRate, 1.0e-10);
-    BOOST_TEST_MESSAGE("Contracted rate (from nominals): " << fwd1.forwardRate());
 
     // Test with rate constructor
     Real inputRate = 1.36;
     FxForward fwd2(usdNominal, vars.usd, vars.sgd, inputRate, vars.maturityDate, true);
 
     BOOST_CHECK_CLOSE(fwd2.forwardRate(), inputRate, 1.0e-10);
-    BOOST_TEST_MESSAGE("Contracted rate (from rate constructor): " << fwd2.forwardRate());
 
     // Verify contracted rate differs from fair forward rate
     auto engine = ext::make_shared<DiscountingFxForwardEngine>(
@@ -136,9 +134,6 @@ BOOST_AUTO_TEST_CASE(testContractedForwardRate) {
 
     Real fairRate = fwd1.fairForwardRate();
     Real contractedRate = fwd1.forwardRate();
-
-    BOOST_TEST_MESSAGE("Contracted rate: " << contractedRate);
-    BOOST_TEST_MESSAGE("Fair forward rate: " << fairRate);
 
     // These should generally be different unless the contract is at fair value
     BOOST_CHECK(contractedRate != fairRate);
@@ -182,9 +177,6 @@ BOOST_AUTO_TEST_CASE(testDiscountingFxForwardEngine) {
     // Check that fair forward rate is computed
     Real fairRate = fwd.fairForwardRate();
     BOOST_CHECK(fairRate > 0.0);
-
-    BOOST_TEST_MESSAGE("NPV: " << npv);
-    BOOST_TEST_MESSAGE("Fair Forward Rate: " << fairRate);
 }
 
 
@@ -218,13 +210,6 @@ BOOST_AUTO_TEST_CASE(testFairForwardRate) {
     Real calculatedFairRate = fwd.fairForwardRate();
 
     BOOST_CHECK_CLOSE(calculatedFairRate, expectedFairRate, 1.0e-4); // 0.0001% tolerance
-
-    BOOST_TEST_MESSAGE("Settlement Date: " << settlementDate);
-    BOOST_TEST_MESSAGE("Spot FX: " << spotFx);
-    BOOST_TEST_MESSAGE("DF USD (settlement to maturity): " << dfUsd);
-    BOOST_TEST_MESSAGE("DF SGD (settlement to maturity): " << dfSgd);
-    BOOST_TEST_MESSAGE("Expected Fair Rate: " << expectedFairRate);
-    BOOST_TEST_MESSAGE("Calculated Fair Rate: " << calculatedFairRate);
 }
 
 
@@ -255,9 +240,6 @@ BOOST_AUTO_TEST_CASE(testAtTheMoney) {
     Real dfSgd = vars.sgdCurveHandle->discount(vars.maturityDate) / 
                  vars.sgdCurveHandle->discount(settlementDate);
 
-    // The fair forward rate (for reference)
-    Real fairForwardRate = spotFx * dfSgd / dfUsd;
-
     // Create a forward at the ATM strike
     // ATM condition: targetNominal = sourceNominal * dfSource * spotFx / dfTarget
     Real sgdNominal = usdNominal * dfUsd * spotFx / dfSgd;
@@ -271,15 +253,6 @@ BOOST_AUTO_TEST_CASE(testAtTheMoney) {
 
     // At-the-money forward should have NPV close to zero
     Real npv = fwd.NPV();
-
-    BOOST_TEST_MESSAGE("Settlement Date: " << settlementDate);
-    BOOST_TEST_MESSAGE("Spot FX: " << spotFx);
-    BOOST_TEST_MESSAGE("DF USD (settlement to maturity): " << dfUsd);
-    BOOST_TEST_MESSAGE("DF SGD (settlement to maturity): " << dfSgd);
-    BOOST_TEST_MESSAGE("Fair Forward Rate: " << fairForwardRate);
-    BOOST_TEST_MESSAGE("USD Nominal: " << usdNominal);
-    BOOST_TEST_MESSAGE("SGD Nominal (ATM): " << sgdNominal);
-    BOOST_TEST_MESSAGE("ATM NPV: " << npv);
 
     BOOST_CHECK_SMALL(npv, 1.0e-4); // NPV should be essentially zero
 }
@@ -310,9 +283,6 @@ BOOST_AUTO_TEST_CASE(testPositionDirection) {
 
     // Long and short positions should have opposite NPVs
     BOOST_CHECK_CLOSE(npvLong, -npvShort, 1.0e-4); // 0.0001% tolerance
-
-    BOOST_TEST_MESSAGE("Long USD NPV: " << npvLong);
-    BOOST_TEST_MESSAGE("Short USD NPV: " << npvShort);
 }
 
 
@@ -341,10 +311,6 @@ BOOST_AUTO_TEST_CASE(testIRCurveSensitivity) {
     vars.usdCurveHandle.linkTo(flatRate(vars.today, 0.05, Actual365Fixed()));
     vars.sgdCurveHandle.linkTo(flatRate(vars.today, 0.036, Actual365Fixed()));
     Real npvSgdUp = fwd.NPV();
-
-    BOOST_TEST_MESSAGE("Base NPV: " << npvBase);
-    BOOST_TEST_MESSAGE("NPV with USD +10bp: " << npvUsdUp);
-    BOOST_TEST_MESSAGE("NPV with SGD +10bp: " << npvSgdUp);
 
     // When paying USD (source) and receiving SGD (target):
     // - Higher USD rates -> lower DF for USD leg -> less negative PV for paying USD -> NPV
@@ -381,10 +347,6 @@ BOOST_AUTO_TEST_CASE(testSpotFxSensitivity) {
     // Decrease spot FX (USD weakens / SGD strengthens)
     vars.spotFxHandle.linkTo(ext::make_shared<SimpleQuote>(1.30));
     Real npvSpotDown = fwd.NPV();
-
-    BOOST_TEST_MESSAGE("Base NPV (spot=1.35): " << npvBase);
-    BOOST_TEST_MESSAGE("NPV with spot=1.40: " << npvSpotUp);
-    BOOST_TEST_MESSAGE("NPV with spot=1.30: " << npvSpotDown);
 
     // Spot FX convention: spotFx = SGD/USD (1 USD = spotFx SGD)
     // When paying USD (source) and receiving SGD (target):
@@ -425,11 +387,6 @@ BOOST_AUTO_TEST_CASE(testAdditionalResults) {
     Real dfSource = ext::any_cast<Real>(additionalResults.at("sourceCurrencyDiscountFactor"));
     Real dfTarget = ext::any_cast<Real>(additionalResults.at("targetCurrencyDiscountFactor"));
 
-    BOOST_TEST_MESSAGE("Additional Results:");
-    BOOST_TEST_MESSAGE("  Spot FX: " << spotFx);
-    BOOST_TEST_MESSAGE("  Source Currency DF: " << dfSource);
-    BOOST_TEST_MESSAGE("  Target Currency DF: " << dfTarget);
-
     BOOST_CHECK_CLOSE(spotFx, 1.35, 1.0e-4); // 0.0001% tolerance
     BOOST_CHECK(dfSource > 0.0 && dfSource < 1.0);
     BOOST_CHECK(dfTarget > 0.0 && dfTarget < 1.0);
@@ -462,10 +419,6 @@ BOOST_AUTO_TEST_CASE(testSettlementDays) {
                       vars.maturityDate, true);  // default is 2
     BOOST_CHECK_EQUAL(spotFwd.settlementDays(), 2);
     BOOST_CHECK_EQUAL(spotFwd.settlementDate(), vars.today + 2);
-
-    BOOST_TEST_MESSAGE("Overnight settlement date: " << overnightFwd.settlementDate());
-    BOOST_TEST_MESSAGE("TomNext settlement date: " << tomNextFwd.settlementDate());
-    BOOST_TEST_MESSAGE("Spot settlement date: " << spotFwd.settlementDate());
 }
 
 
@@ -490,10 +443,6 @@ BOOST_AUTO_TEST_CASE(testSettlementDaysWithCalendar) {
 
     Date expectedSettlementDate = cal.advance(friday, 2, Days);
     BOOST_CHECK_EQUAL(fwd.settlementDate(), expectedSettlementDate);
-
-    BOOST_TEST_MESSAGE("Evaluation date (Friday): " << friday);
-    BOOST_TEST_MESSAGE("Settlement date (should skip weekend): " << fwd.settlementDate());
-    BOOST_TEST_MESSAGE("Expected settlement date: " << expectedSettlementDate);
 
     // Restore evaluation date
     Settings::instance().evaluationDate() = vars.today;

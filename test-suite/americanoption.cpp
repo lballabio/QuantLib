@@ -85,8 +85,7 @@ struct AmericanOptionData {
 
 BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValues) {
 
-    BOOST_TEST_MESSAGE("Testing Barone-Adesi and Whaley approximation "
-                       "for American options...");
+    BOOST_TEST_MESSAGE("Testing Barone-Adesi and Whaley approximation for American options...");
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -185,8 +184,7 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValues) {
 
 BOOST_AUTO_TEST_CASE(testBjerksundStenslandValues) {
 
-    BOOST_TEST_MESSAGE("Testing Bjerksund and Stensland approximation "
-                       "for American options...");
+    BOOST_TEST_MESSAGE("Testing Bjerksund and Stensland approximation for American options...");
 
     AmericanOptionData values[] = {
         //      type, strike,   spot,    q,    r,    t,  vol,   value, tol
@@ -377,8 +375,7 @@ BOOST_AUTO_TEST_CASE(testJuValues) {
 
 BOOST_AUTO_TEST_CASE(testFdValues) {
 
-    BOOST_TEST_MESSAGE("Testing finite-difference and QR+ engine "
-                       "for American options...");
+    BOOST_TEST_MESSAGE("Testing finite-difference and QR+ engine for American options...");
 
     Date today = Date::todaysDate();
     DayCounter dc = Actual360();
@@ -1369,8 +1366,7 @@ BOOST_AUTO_TEST_CASE(testQdAmericanEngines) {
 }
 
 BOOST_AUTO_TEST_CASE(testQdFpIterationScheme) {
-    BOOST_TEST_MESSAGE("Testing Legendre and tanh-sinh iteration "
-                       "scheme for QD+ fixed-point American engine...");
+    BOOST_TEST_MESSAGE("Testing Legendre and tanh-sinh iteration scheme for QD+ fixed-point American engine...");
 
     const Real tol = 1e-8;
     const Size l=32, m=6, n=18, p=36;
@@ -1396,8 +1392,7 @@ BOOST_AUTO_TEST_CASE(testQdFpIterationScheme) {
 }
 
 BOOST_AUTO_TEST_CASE(testAndersenLakeHighPrecisionExample) {
-    BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
-                        "high precision example...");
+    BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden high precision example...");
 
     // Example and results are taken from
     //    Leif Andersen, Mark Lake and Dimitri Offengenden (2015)
@@ -1492,8 +1487,7 @@ BOOST_AUTO_TEST_CASE(testAndersenLakeHighPrecisionExample) {
 }
 
 BOOST_AUTO_TEST_CASE(testQdEngineStandardExample) {
-    BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
-                        "standard example...");
+    BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden standard example...");
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(1, June, 2022);
@@ -1583,8 +1577,7 @@ class QdFpGaussLobattoScheme: public QdFpIterationScheme {
 
 
 BOOST_AUTO_TEST_CASE(testBulkQdFpAmericanEngine) {
-    BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
-                        "bulk examples...");
+    BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden bulk examples...");
 
     // Examples are taken from
     //    Leif Andersen, Mark Lake and Dimitri Offengenden (2015)
@@ -1693,7 +1686,7 @@ BOOST_AUTO_TEST_CASE(testBulkQdFpAmericanEngine) {
 
 BOOST_AUTO_TEST_CASE(testQdEngineWithLobattoIntegral) {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
-                        "with high precision Gauss-Lobatto integration...");
+                       "with high precision Gauss-Lobatto integration...");
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(5, November, 2022);
@@ -1830,8 +1823,7 @@ BOOST_AUTO_TEST_CASE(testQdNegativeDividendYield) {
 }
 
 BOOST_AUTO_TEST_CASE(testBjerksundStenslandEuropeanGreeks) {
-    BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland greeks when early "
-                       "exercise is not optimal...");
+    BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland greeks when early exercise is not optimal...");
 
     const Date today = Date(5, November, 2022);
     Settings::instance().evaluationDate() = today;
@@ -2181,7 +2173,7 @@ BOOST_AUTO_TEST_CASE(testSingleBjerksundStenslandGreeks) {
 
 BOOST_AUTO_TEST_CASE(testFdEarliestExerciseDate) {
     BOOST_TEST_MESSAGE(
-        "Testing FD engine respects AmericanExercise earliest date...");
+        "Testing that the FD engine respects the earliest date for American exercise...");
 
     // A deep ITM American put where early exercise is valuable.
     // Restricting the exercise window should reduce the price toward
@@ -2224,9 +2216,6 @@ BOOST_AUTO_TEST_CASE(testFdEarliestExerciseDate) {
     const Real euroPrice = euroOption.NPV();
 
     const Real earlyExPremium = fullPrice - euroPrice;
-    BOOST_TEST_MESSAGE("  Full American: " << fullPrice);
-    BOOST_TEST_MESSAGE("  European:      " << euroPrice);
-    BOOST_TEST_MESSAGE("  Early-ex premium: " << earlyExPremium);
 
     // Sanity: the early exercise premium should be significant
     // for this deep ITM put with 5% rates
@@ -2238,7 +2227,6 @@ BOOST_AUTO_TEST_CASE(testFdEarliestExerciseDate) {
     VanillaOption lateOption(payoff, lateExercise);
     lateOption.setPricingEngine(fdEngine);
     const Real latePrice = lateOption.NPV();
-    BOOST_TEST_MESSAGE("  Last 3M only:  " << latePrice);
 
     // The restricted option should be worth less than full American
     BOOST_CHECK_MESSAGE(fullPrice - latePrice > 0.01,
@@ -2257,7 +2245,6 @@ BOOST_AUTO_TEST_CASE(testFdEarliestExerciseDate) {
     VanillaOption midOption(payoff, midExercise);
     midOption.setPricingEngine(fdEngine);
     const Real midPrice = midOption.NPV();
-    BOOST_TEST_MESSAGE("  Last 6M only:  " << midPrice);
 
     BOOST_CHECK_MESSAGE(midPrice >= latePrice - 1e-8,
         "Wider window should give higher price: "
