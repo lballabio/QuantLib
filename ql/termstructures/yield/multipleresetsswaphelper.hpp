@@ -45,7 +45,7 @@ namespace QuantLib {
             RateAveraging::Type averagingMethod = RateAveraging::Compound,
             Spread spread = 0.0,
             Frequency fixedFrequency = NoFrequency,
-            DayCounter fixedDayCount = DayCounter(),
+            const DayCounter& fixedDayCount = DayCounter(),
             BusinessDayConvention fixedConvention = ModifiedFollowing);
 
         Real impliedQuote() const override;

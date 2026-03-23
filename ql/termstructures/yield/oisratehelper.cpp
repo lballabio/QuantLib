@@ -131,7 +131,6 @@ namespace QuantLib {
         //    be assigned a curve later; use a RelinkableHandle here
         auto tmp = MakeOIS(tenor_, overnightIndex_, 0.0, forwardStart_)
             .withDiscountingTermStructure(discountRelinkableHandle_)
-            .withSettlementDays(settlementDays_)  // resets effectiveDate
             .withEffectiveDate(startDate_)
             .withTerminationDate(endDate_)
             .withTelescopicValueDates(telescopicValueDates_)
@@ -158,6 +157,9 @@ namespace QuantLib {
         if (!overnightCalendar_.empty()) {
             tmp.withOvernightLegCalendar(overnightCalendar_);
         }
+        // only set settlementDays when no explicit start date, to avoid conflict
+        if (startDate_ == Date() && settlementDays_ != Null<Natural>())
+            tmp.withSettlementDays(settlementDays_);
         swap_ = tmp;
 
         if (pricer_)

@@ -549,7 +549,6 @@ namespace QuantLib {
         // 2. input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
         auto tmp = MakeVanillaSwap(tenor_, iborIndex_, 0.0, fwdStart_)
-            .withSettlementDays(settlementDays_)  // resets effectiveDate
             .withEffectiveDate(startDate_)
             .withTerminationDate(endDate_)
             .withDiscountingTermStructure(discountRelinkableHandle_)
@@ -566,6 +565,9 @@ namespace QuantLib {
             tmp.withFloatingLegConvention(*floatConvention_)
                .withFloatingLegTerminationDateConvention(*floatConvention_);
         }
+        // only set settlementDays when no explicit start date, to avoid conflict
+        if (startDate_ == Date() && settlementDays_ != Null<Natural>())
+            tmp.withSettlementDays(settlementDays_);
         swap_ = tmp;
 
         simplifyNotificationGraph(*swap_, true);

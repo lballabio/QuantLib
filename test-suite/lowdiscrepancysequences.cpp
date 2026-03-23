@@ -1174,6 +1174,25 @@ BOOST_AUTO_TEST_CASE(testHighDimensionalIntegrals, *precondition(if_speed(Slow))
 }
 
 
+BOOST_AUTO_TEST_CASE(testBurley2020SobolRsgOutputBounds) {
+    BOOST_TEST_MESSAGE(
+        "Testing Burley2020SobolRsg output is strictly in (0,1)...");
+
+    // With enough dimensions the scrambling occasionally maps to
+    // zero.  Without the +0.5 offset this would give 0.0 in the
+    // double sequence, which breaks InverseCumulativeNormal.
+    Burley2020SobolRsg rsg(1551, 42, SobolRsg::JoeKuoD7, 43);
+    for (Size i = 0; i < 100000; ++i) {
+        const auto& seq = rsg.nextSequence();
+        for (Size j = 0; j < seq.value.size(); ++j) {
+            if (seq.value[j] <= 0.0 || seq.value[j] >= 1.0)
+                BOOST_ERROR("output " << seq.value[j]
+                            << " at sample " << i << ", dim " << j);
+        }
+    }
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

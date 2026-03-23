@@ -27,8 +27,11 @@
 #include "utilities.hpp"
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/swaption.hpp>
+#include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/instruments/makeois.hpp>
+#include <ql/indexes/swap/euriborswap.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -1141,6 +1144,52 @@ BOOST_AUTO_TEST_CASE(testSwaptionDeltaInBachelierModel) {
     BOOST_TEST_MESSAGE("Testing swaption delta in Bachelier model...");
 
     checkSwaptionDelta<BachelierSwaptionEngine>(true);
+}
+
+BOOST_AUTO_TEST_CASE(testMakeSwaptionWithExerciseCalendar) {
+
+    BOOST_TEST_MESSAGE("Testing MakeSwaption with exercise calendar override...");
+
+    // Use a specific date where TARGET and US Settlement diverge:
+    // 1Y advance from Oct 9, 2015 gives Oct 10, 2016 (TARGET)
+    // vs Oct 11, 2016 (US), because Oct 10 is Columbus Day.
+    Date today(9, October, 2015);
+    Settings::instance().evaluationDate() = today;
+    RelinkableHandle<YieldTermStructure> termStructure;
+    termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
+
+    auto swapIndex = ext::make_shared<EuriborSwapIsdaFixA>(5*Years, termStructure);
+    Calendar targetCalendar = swapIndex->fixingCalendar();
+    Calendar usCalendar = UnitedStates(UnitedStates::Settlement);
+
+    // Default uses swap index's fixing calendar (TARGET)
+    Swaption defaultSwaption =
+        MakeSwaption(swapIndex, 1*Years, 0.05);
+    Date defaultExercise = defaultSwaption.exercise()->dates().front();
+
+    Date expected = targetCalendar.advance(
+        targetCalendar.adjust(today), 1*Years, ModifiedFollowing);
+    BOOST_CHECK_EQUAL(defaultExercise, expected);
+
+    // With custom calendar, exercise date differs
+    Swaption customSwaption =
+        MakeSwaption(swapIndex, 1*Years, 0.05)
+            .withExerciseCalendar(usCalendar);
+    Date customExercise = customSwaption.exercise()->dates().front();
+
+    Date expectedCustom = usCalendar.advance(
+        usCalendar.adjust(today), 1*Years, ModifiedFollowing);
+    BOOST_CHECK_EQUAL(customExercise, expectedCustom);
+    BOOST_CHECK_NE(customExercise, defaultExercise);
+
+    // Explicit withExerciseDate takes precedence over calendar
+    Date explicitDate = targetCalendar.advance(today, 6*Months);
+    Date fixingDate = targetCalendar.advance(today, 1*Years);
+    Swaption explicitSwaption =
+        MakeSwaption(swapIndex, fixingDate, 0.05)
+            .withExerciseCalendar(usCalendar)
+            .withExerciseDate(explicitDate);
+    BOOST_CHECK_EQUAL(explicitSwaption.exercise()->dates().front(), explicitDate);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
