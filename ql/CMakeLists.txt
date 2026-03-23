@@ -2060,6 +2060,7 @@ set(QL_HEADERS
     quotes/futuresconvadjustmentquote.hpp
     quotes/impliedstddevquote.hpp
     quotes/lastfixingquote.hpp
+    quotes/multicompositequote.hpp
     quotes/simplequote.hpp
     rebatedexercise.hpp
     settings.hpp

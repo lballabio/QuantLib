@@ -19,16 +19,19 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/math/array.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/quotes/derivedquote.hpp>
 #include <ql/quotes/compositequote.hpp>
 #include <ql/quotes/forwardvaluequote.hpp>
 #include <ql/quotes/impliedstddevquote.hpp>
+#include <ql/quotes/multicompositequote.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <numeric>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -45,6 +48,10 @@ Real add(Real x, Real y) { return x+y; }
 Real mul(Real x, Real y) { return x*y; }
 Real sub(Real x, Real y) { return x-y; }
 
+Real addAll(const Array& x) { return std::accumulate(x.begin(), x.end(), 0.0); }
+Real mulAll(const Array& x) {
+    return std::accumulate(x.begin(), x.end(), 1.0, [](Real x, Real y) { return x*y; });
+}
 
 BOOST_AUTO_TEST_CASE(testObservable) {
 
@@ -117,6 +124,36 @@ BOOST_AUTO_TEST_CASE(testComposite) {
         if (std::fabs(x-y) > 1.0e-10)
             BOOST_FAIL("composite quote yields " << x << "\n"
                        << "function result is " << y);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testMultiComposite) {
+
+    BOOST_TEST_MESSAGE("Testing multi composite quotes...");
+
+    typedef Real (*array_f)(const Array&);
+    static const array_f funcs[] = { addAll, mulAll, Norm2 };
+
+    for (auto& func : funcs) {
+        std::vector<ext::shared_ptr<SimpleQuote>> mes;
+        std::vector<Handle<Quote>> handles;
+        for (int i = 0; i < 3; i++) {
+            mes.push_back(ext::make_shared<SimpleQuote>(i + 1));
+            handles.push_back(Handle<Quote>(mes.back()));
+            MultiCompositeQuote<array_f> composite(handles, func);
+            for (int j = 0; j <= i; j++) {
+                mes[j]->setValue(j * 10 + 1);
+                Array args(mes.size());
+                for (Size k = 0; k < mes.size(); k++)
+                    args[k] = mes[k]->value();
+                Real x = composite.value(), y = func(args);
+                if (std::fabs(x-y) > 1.0e-10)
+                    BOOST_FAIL("composite quote yields " << x << "\n"
+                               << "function result is " << y);
+                for (Size k = 0; k < mes.size(); k++)
+                    BOOST_CHECK_EQUAL(composite.inputValue(k), mes[k]->value());
+            }
+        }
     }
 }
 

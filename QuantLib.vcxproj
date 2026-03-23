@@ -1678,6 +1678,7 @@
     <ClInclude Include="ql\quotes\futuresconvadjustmentquote.hpp" />
     <ClInclude Include="ql\quotes\impliedstddevquote.hpp" />
     <ClInclude Include="ql\quotes\lastfixingquote.hpp" />
+    <ClInclude Include="ql\quotes\multicompositequote.hpp" />
     <ClInclude Include="ql\quotes\simplequote.hpp" />
     <ClInclude Include="ql\termstructures\all.hpp" />
     <ClInclude Include="ql\termstructures\bootstraperror.hpp" />
