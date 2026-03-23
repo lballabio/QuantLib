@@ -21,7 +21,6 @@
 #include <ql/termstructures/yield/overnightindexfutureratehelper.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/utilities/null_deleter.hpp>
-
 namespace QuantLib {
 
     namespace {
@@ -51,7 +50,9 @@ namespace QuantLib {
         const Date& maturityDate,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
         const Handle<Quote>& convexityAdjustment,
-        RateAveraging::Type averagingMethod)
+        RateAveraging::Type averagingMethod,
+        Pillar::Choice pillar,
+        const Date& customPillarDate)
     : RateHelper(price) {
         ext::shared_ptr<OvernightIndex> index =
             ext::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
@@ -60,6 +61,28 @@ namespace QuantLib {
         registerWithObservables(future_);
         earliestDate_ = valueDate;
         latestDate_ = maturityDate;
+        switch (pillar) {
+            case Pillar::MaturityDate:
+              pillarDate_ = maturityDate;
+              break;
+          
+            case Pillar::LastRelevantDate:
+              pillarDate_ = latestDate_;
+              break;
+          
+            case Pillar::CustomDate:
+              QL_REQUIRE(customPillarDate != Date(),
+                  "custom pillar date must be provided");
+              QL_REQUIRE(customPillarDate >= earliestDate_,
+                  "custom pillar date before start of reference period");
+              QL_REQUIRE(customPillarDate <= latestDate_,
+                  "custom pillar date after end of reference period");
+              pillarDate_ = customPillarDate;
+              break;
+          
+            default:
+              QL_FAIL("unknown Pillar::Choice");
+          }
     }
 
     Real OvernightIndexFutureRateHelper::impliedQuote() const {
@@ -90,19 +113,21 @@ namespace QuantLib {
         return future_->convexityAdjustment();
     }
 
-
+    
     SofrFutureRateHelper::SofrFutureRateHelper(
         const Handle<Quote>& price,
         Month referenceMonth,
         Year referenceYear,
         Frequency referenceFreq,
-        const Handle<Quote>& convexityAdjustment)
+        const Handle<Quote>& convexityAdjustment,
+        Pillar::Choice pillar,
+        const Date& customPillarDate)
     : OvernightIndexFutureRateHelper(price,
             getSofrStart(referenceMonth, referenceYear, referenceFreq),
             getSofrEnd(referenceMonth, referenceYear, referenceFreq),
             ext::make_shared<Sofr>(),
             convexityAdjustment,
-            referenceFreq == Quarterly ? RateAveraging::Compound : RateAveraging::Simple) {
+            referenceFreq == Quarterly ? RateAveraging::Compound : RateAveraging::Simple, pillar, customPillarDate) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
             "only monthly and quarterly SOFR futures accepted");
     }
@@ -112,14 +137,16 @@ namespace QuantLib {
         Month referenceMonth,
         Year referenceYear,
         Frequency referenceFreq,
-        Real convexityAdjustment)
+        Real convexityAdjustment,
+        Pillar::Choice pillar,
+        const Date& customPillarDate)
     : OvernightIndexFutureRateHelper(
             Handle<Quote>(ext::make_shared<SimpleQuote>(price)),
             getSofrStart(referenceMonth, referenceYear, referenceFreq),
             getSofrEnd(referenceMonth, referenceYear, referenceFreq),
             ext::make_shared<Sofr>(),
             Handle<Quote>(ext::make_shared<SimpleQuote>(convexityAdjustment)),
-            referenceFreq == Quarterly ? RateAveraging::Compound : RateAveraging::Simple) {
+            referenceFreq == Quarterly ? RateAveraging::Compound : RateAveraging::Simple, pillar, customPillarDate) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
             "only monthly and quarterly SOFR futures accepted");
     }

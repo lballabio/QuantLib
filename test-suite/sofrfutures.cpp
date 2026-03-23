@@ -170,6 +170,52 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithJuneteenth) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testPillarDates) {
+    BOOST_TEST_MESSAGE("Testing pillar date support in SOFR futures helpers...");
+
+    Date today(15, March, 2024);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<Quote> price(ext::make_shared<SimpleQuote>(99.0));
+    auto index = ext::make_shared<Sofr>();
+
+    Date valueDate(20, March, 2024);
+    Date maturityDate(20, June, 2024);
+
+    // Default pillar (LastRelevantDate)
+    OvernightIndexFutureRateHelper h1(price, valueDate, maturityDate, index);
+    BOOST_CHECK_EQUAL(h1.pillarDate(), maturityDate);
+
+    // maturity pillar
+    OvernightIndexFutureRateHelper h2(
+        price, valueDate, maturityDate, index,
+        {}, RateAveraging::Compound, Pillar::MaturityDate);
+    BOOST_CHECK_EQUAL(h2.pillarDate(), maturityDate);
+
+    // Custom pillar
+    Date custom(20, April, 2024);
+    OvernightIndexFutureRateHelper h3(
+        price, valueDate, maturityDate, index,
+        {}, RateAveraging::Compound, Pillar::CustomDate, custom);
+    BOOST_CHECK_EQUAL(h3.pillarDate(), custom);
+    
+    // Invalid custom pillar (after maturity)
+    Date badCustom(20, July, 2024);
+    BOOST_CHECK_EXCEPTION(
+        OvernightIndexFutureRateHelper(
+            price, valueDate, maturityDate, index,
+            {}, RateAveraging::Compound, Pillar::CustomDate, badCustom),
+        Error,
+        ExpectedErrorMessage("after end of reference period"));
+
+    // SOFR helper custom pillar
+    Date sofrCustom(15, July, 2024);
+    SofrFutureRateHelper sh(
+        price, June, 2024, Quarterly, {},
+        Pillar::CustomDate, sofrCustom);
+    BOOST_CHECK_EQUAL(sh.pillarDate(), sofrCustom);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
