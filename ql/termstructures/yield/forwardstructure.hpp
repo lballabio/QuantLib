@@ -44,10 +44,10 @@ namespace QuantLib {
 
         Forward rates are assumed to be annual continuous compounding.
 
-        \ingroup yieldtermstructures
+        \deprecated Use ZeroYieldStructure instead.
+                    Deprecated in version 1.42.
     */
-    class [[deprecated("Use ZeroYieldStructure instead")]]
-    ForwardRateStructure : public ZeroYieldStructure {
+    class [[deprecated("Use ZeroYieldStructure instead")]] ForwardRateStructure : public ZeroYieldStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
