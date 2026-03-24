@@ -86,17 +86,21 @@ BOOST_AUTO_TEST_CASE(testDerived) {
     BOOST_TEST_MESSAGE("Testing derived quotes...");
 
     typedef Real (*unary_f)(Real);
-    unary_f funcs[3] = { add10, mul10, sub10 };
+    static const unary_f funcs[] = { add10, mul10, sub10 };
+    static const Real values[] = { 12, 23, 34 };
 
-    ext::shared_ptr<Quote> me(new SimpleQuote(17.0));
+    auto me = ext::make_shared<SimpleQuote>();
     Handle<Quote> h(me);
 
     for (auto& func : funcs) {
         DerivedQuote<unary_f> derived(h, func);
-        Real x = derived.value(), y = func(me->value());
-        if (std::fabs(x-y) > 1.0e-10)
-            BOOST_FAIL("derived quote yields " << x << "\n"
-                       << "function result is " << y);
+        for (Real value : values) {
+            me->setValue(value);
+            Real x = derived.value(), y = func(value);
+            if (std::fabs(x-y) > 1.0e-10)
+                BOOST_FAIL("derived quote yields " << x << "\n"
+                           << "function result is " << y);
+        }
     }
 }
 
@@ -105,18 +109,23 @@ BOOST_AUTO_TEST_CASE(testComposite) {
     BOOST_TEST_MESSAGE("Testing composite quotes...");
 
     typedef Real (*binary_f)(Real,Real);
-    binary_f funcs[3] = { add, mul, sub };
+    static const binary_f funcs[] = { add, mul, sub };
+    static const Real values[] = { 12, 23, 34 };
 
-    ext::shared_ptr<Quote> me1(new SimpleQuote(12.0)),
-                             me2(new SimpleQuote(13.0));
+    auto me1 = ext::make_shared<SimpleQuote>(),
+         me2 = ext::make_shared<SimpleQuote>();
     Handle<Quote> h1(me1), h2(me2);
 
     for (auto& func : funcs) {
         CompositeQuote<binary_f> composite(h1, h2, func);
-        Real x = composite.value(), y = func(me1->value(), me2->value());
-        if (std::fabs(x-y) > 1.0e-10)
-            BOOST_FAIL("composite quote yields " << x << "\n"
-                       << "function result is " << y);
+        for (Real value : values) {
+            me1->setValue(value);
+            me2->setValue(value + 1);
+            Real x = composite.value(), y = func(value, value + 1);
+            if (std::fabs(x-y) > 1.0e-10)
+                BOOST_FAIL("composite quote yields " << x << "\n"
+                           << "function result is " << y);
+        }
     }
 }
 
