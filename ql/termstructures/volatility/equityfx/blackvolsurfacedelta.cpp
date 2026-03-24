@@ -217,7 +217,7 @@ namespace QuantLib {
 
     Volatility BlackVolatilitySurfaceDelta::blackVolImpl(Time t, Real strike) const {
         // If asked for strike == 0, just return the ATM value.
-        double tme =
+        Time tme =
             (t > times_.back() && timeExtrapolationType_ == BlackVolTimeExtrapolation::FlatVolatility) ? times_.back() : t;
 
         if (strike == 0 || strike == Null<Real>()) {
