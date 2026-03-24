@@ -400,7 +400,25 @@ Prefer `ql/experimental/<topic>/` for unstable/new APIs, but keep coding quality
 
 ---
 
-## 7. Validation Checklist for Agents
+## 7. Deprecation and Backward Compatibility
+
+QuantLib follows a convention-driven deprecation strategy: deprecated features are kept for a predictable grace period (deprecated in release **N** are removed in release **N + 5**), then removed in bulk. There is no single formal compatibility-policy document; the operational practice is encoded in source annotations, release notes, and a consistent removal cadence.
+
+**Deprecation mechanics** (defined in `ql/qldefines.hpp`): prefer `[[deprecated("message")]]` on methods, typedefs, classes, data members; use the `QL_DEPRECATED` macro only for constructors (older MSVC compatibility). Suppress internal warnings with `QL_DEPRECATED_DISABLE_WARNING` / `QL_DEPRECATED_ENABLE_WARNING`. Always pair with a Doxygen `\deprecated` comment stating the replacement and "Deprecated in version X.YZ" (this anchors the N+5 removal timeline).
+
+**Agent checklist** for deprecating an API:
+
+- [ ] **DO NOT** change public API, only deprecate with the replacement API in place.
+- [ ] Add `[[deprecated("message")]]` (or `QL_DEPRECATED` for constructors) to the declaration.
+- [ ] Add `\deprecated` Doxygen comment with replacement API and "Deprecated in version X.YZ."
+- [ ] Provide an overload/replacement so callers have a migration path.
+- [ ] Wrap internal library usage with `QL_DEPRECATED_DISABLE_WARNING` / `QL_DEPRECATED_ENABLE_WARNING`.
+- [ ] Update tests and examples to use the replacement API.
+- [ ] Document in `News.md` under "Removals and deprecations."
+
+---
+
+## 8. Validation Checklist for Agents
 
 Before finishing a change:
 
@@ -423,7 +441,7 @@ For source-of-truth verification, consult:
 
 ---
 
-## 8. Quick Reference (Read First)
+## 9. Quick Reference (Read First)
 
 - `ql/instrument.hpp` — Instrument lifecycle and engine calls
 - `ql/pricingengine.hpp` — Engine interface and generic engine
@@ -438,7 +456,7 @@ For source-of-truth verification, consult:
 
 ---
 
-## 9. Keep This File Lean
+## 10. Keep This File Lean
 
 Update `AGENTS.md` when build/test entry points, workflow files, major conventions, or core architecture references change.
 
