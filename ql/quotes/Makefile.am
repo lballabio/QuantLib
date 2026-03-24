@@ -13,6 +13,7 @@ this_include_HEADERS = \
     futuresconvadjustmentquote.hpp \
     impliedstddevquote.hpp \
     lastfixingquote.hpp \
+    multicompositequote.hpp \
     simplequote.hpp
 
 cpp_files = \
