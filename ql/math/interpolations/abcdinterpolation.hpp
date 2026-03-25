@@ -172,7 +172,8 @@ namespace QuantLib {
                           const ext::shared_ptr<EndCriteria>& endCriteria
                               = ext::shared_ptr<EndCriteria>(),
                           const ext::shared_ptr<OptimizationMethod>& optMethod
-                              = ext::shared_ptr<OptimizationMethod>()) {
+                              = ext::shared_ptr<OptimizationMethod>(),
+                          bool update = true) {
 
             impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::AbcdInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
@@ -182,7 +183,8 @@ namespace QuantLib {
                                                      vegaWeighted,
                                                      endCriteria,
                                                      optMethod));
-            impl_->update();
+            if (update)
+                impl_->update();
         }
         //! \name Inspectors
         //@{
@@ -225,13 +227,13 @@ namespace QuantLib {
           optMethod_(std::move(optMethod)) {}
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
-                                  const I2& yBegin) const {
+                                  const I2& yBegin, bool update = true) const {
             return AbcdInterpolation(xBegin, xEnd, yBegin,
                                      a_, b_, c_, d_,
                                      aIsFixed_, bIsFixed_,
                                      cIsFixed_, dIsFixed_,
                                      vegaWeighted_,
-                                     endCriteria_, optMethod_);
+                                     endCriteria_, optMethod_, update);
         }
         static const bool global = true;
         static const Size requiredPoints = 2;

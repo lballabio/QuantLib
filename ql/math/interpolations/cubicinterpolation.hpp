@@ -167,7 +167,8 @@ namespace QuantLib {
                            CubicInterpolation::BoundaryCondition leftCond,
                            Real leftConditionValue,
                            CubicInterpolation::BoundaryCondition rightCond,
-                           Real rightConditionValue) {
+                           Real rightConditionValue,
+                           bool update = true) {
             impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::CubicInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
                                                       da,
@@ -176,7 +177,8 @@ namespace QuantLib {
                                                       leftConditionValue,
                                                       rightCond,
                                                       rightConditionValue));
-            impl_->update();
+            if (update)
+                impl_->update();
         }
         const std::vector<Real>& primitiveConstants() const {
             return baseImpl().primitiveConst_;
@@ -351,11 +353,12 @@ namespace QuantLib {
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin,
                                   const I1& xEnd,
-                                  const I2& yBegin) const {
+                                  const I2& yBegin,
+                                  bool update = true) const {
             return CubicInterpolation(xBegin, xEnd, yBegin,
                                       da_, monotonic_,
                                       leftType_, leftValue_,
-                                      rightType_, rightValue_);
+                                      rightType_, rightValue_, update);
         }
         static const bool global = true;
         static const Size requiredPoints = 2;

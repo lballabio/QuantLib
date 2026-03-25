@@ -68,7 +68,8 @@ namespace QuantLib {
                                       CubicInterpolation::BoundaryCondition leftC,
                                       Real leftConditionValue,
                                       CubicInterpolation::BoundaryCondition rightC,
-                                      Real rightConditionValue) {
+                                      Real rightConditionValue,
+                                      bool update = true) {
             bool matchDerivatives = leftC == CubicInterpolation::FirstDerivative &&
                                     leftConditionValue == Null<Real>();
             QL_REQUIRE(!matchDerivatives || behavior == MixedInterpolation::SplitRanges,
@@ -86,7 +87,8 @@ namespace QuantLib {
                       leftC, leftConditionValue,
                       rightC, rightConditionValue),
                 std::move(switchFn));
-            impl_->update();
+            if (update)
+                impl_->update();
         }
     };
 
@@ -109,12 +111,13 @@ namespace QuantLib {
           leftValue_(leftConditionValue), rightValue_(rightConditionValue) {}
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
-                                  const I2& yBegin) const {
+                                  const I2& yBegin, bool update = true) const {
             return MixedLinearCubicInterpolation(xBegin, xEnd,
                                                  yBegin, n_, behavior_,
                                                  da_, monotonic_,
                                                  leftType_, leftValue_,
-                                                 rightType_, rightValue_);
+                                                 rightType_, rightValue_,
+                                                 update);
         }
         // fix below
         static const bool global = true;
@@ -243,20 +246,16 @@ namespace QuantLib {
 
                 switch (behavior) {
                   case MixedInterpolation::ShareRanges:
-                    interpolation1_ = factory1.interpolate(this->xBegin_,
-                                                           this->xEnd_,
-                                                           this->yBegin_);
-                    interpolation2_ = factory2.interpolate(this->xBegin_,
-                                                           this->xEnd_,
-                                                           this->yBegin_);
+                    interpolation1_ = detail::interpolateWithoutUpdate(
+                        factory1, this->xBegin_, this->xEnd_, this->yBegin_);
+                    interpolation2_ = detail::interpolateWithoutUpdate(
+                        factory2, this->xBegin_, this->xEnd_, this->yBegin_);
                     break;
                   case MixedInterpolation::SplitRanges:
-                    interpolation1_ = factory1.interpolate(this->xBegin_,
-                                                           this->xBegin2_ + 1,
-                                                           this->yBegin_);
-                    interpolation2_ = factory2.interpolate(this->xBegin2_,
-                                                           this->xEnd_,
-                                                           this->yBegin_ + n);
+                    interpolation1_ = detail::interpolateWithoutUpdate(
+                        factory1, this->xBegin_, this->xBegin2_ + 1, this->yBegin_);
+                    interpolation2_ = detail::interpolateWithoutUpdate(
+                        factory2, this->xBegin2_, this->xEnd_, this->yBegin_ + n);
                     break;
                   default:
                     QL_FAIL("unknown mixed-interpolation behavior: " << behavior);

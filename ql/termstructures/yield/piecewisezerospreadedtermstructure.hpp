@@ -120,6 +120,8 @@ namespace QuantLib {
         registerWith(originalCurve_);
         for (auto& spread : spreads_)
             registerWith(spread);
+        interpolator_ = detail::interpolateWithoutUpdate(
+            factory_, times_.begin(), times_.end(), spreadValues_.begin());
         if (!originalCurve_.empty())
             updateInterpolation();
     }
@@ -181,9 +183,9 @@ namespace QuantLib {
     inline Spread
     InterpolatedPiecewiseZeroSpreadedTermStructure<T>::calcSpread(Time t) const {
         if (t <= times_.front()) {
-            return spreads_.front()->value();
+            return spreadValues_.front();
         } else if (t >= times_.back()) {
-            return spreads_.back()->value();
+            return spreadValues_.back();
         } else {
             return interpolator_(t, true);
         }
@@ -210,9 +212,7 @@ namespace QuantLib {
             times_[i] = timeFromReference(dates_[i]);
             spreadValues_[i] = spreads_[i]->value();
         }
-        interpolator_ = factory_.interpolate(times_.begin(),
-                                             times_.end(),
-                                             spreadValues_.begin());
+        interpolator_.update();
     }
 
 }
