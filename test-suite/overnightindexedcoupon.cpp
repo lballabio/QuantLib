@@ -1009,8 +1009,8 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithGearingsAndSpreads) {
         auto oisCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(leg[i]);
         BOOST_CHECK(oisCoupon != nullptr);
         if (oisCoupon) {
-            BOOST_CHECK_CLOSE(oisCoupon->gearing(), gearings[i], 1e-12);
-            BOOST_CHECK_CLOSE(oisCoupon->spread(), spreads[i], 1e-12);
+            QL_CHECK_CLOSE(oisCoupon->gearing(), gearings[i], 1e-12);
+            QL_CHECK_CLOSE(oisCoupon->spread(), spreads[i], 1e-12);
         }
     }
 }
@@ -1059,8 +1059,8 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithCapsAndFloors) {
         auto cappedFlooredCoupon = ext::dynamic_pointer_cast<CappedFlooredOvernightIndexedCoupon>(leg[i]);
         BOOST_CHECK(cappedFlooredCoupon != nullptr);
         if (cappedFlooredCoupon) {
-            BOOST_CHECK_CLOSE(cappedFlooredCoupon->cap(), caps[i], 1e-12);
-            BOOST_CHECK_CLOSE(cappedFlooredCoupon->floor(), floors[i], 1e-12);
+            QL_CHECK_CLOSE(cappedFlooredCoupon->cap(), caps[i], 1e-12);
+            QL_CHECK_CLOSE(cappedFlooredCoupon->floor(), floors[i], 1e-12);
             BOOST_CHECK(cappedFlooredCoupon->isCapped());
             BOOST_CHECK(cappedFlooredCoupon->isFloored());
         }

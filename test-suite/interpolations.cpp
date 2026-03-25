@@ -2613,10 +2613,10 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m1);
 
-    BOOST_CHECK_CLOSE(m1(0, 0), 1.0, tol);
-    BOOST_CHECK_CLOSE(m1(0, 2), 4.0, tol);
-    BOOST_CHECK_CLOSE(m1(2, 0), 5.0, tol);
-    BOOST_CHECK_CLOSE(m1(2, 1), 3.0, tol);
+    QL_CHECK_CLOSE(m1(0, 0), 1.0, tol);
+    QL_CHECK_CLOSE(m1(0, 2), 4.0, tol);
+    QL_CHECK_CLOSE(m1(2, 0), 5.0, tol);
+    QL_CHECK_CLOSE(m1(2, 1), 3.0, tol);
 
     // inner point
 
@@ -2628,8 +2628,8 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m2);
 
-    BOOST_CHECK_CLOSE(m2(1, 1), 4.5, tol);
-    BOOST_CHECK_CLOSE(m2(2, 1), 3.0, tol);
+    QL_CHECK_CLOSE(m2(1, 1), 4.5, tol);
+    QL_CHECK_CLOSE(m2(2, 1), 3.0, tol);
 
     // boundaries
 
@@ -2641,7 +2641,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m3);
 
-    BOOST_CHECK_CLOSE(m3(0, 1), 2.5, tol);
+    QL_CHECK_CLOSE(m3(0, 1), 2.5, tol);
 
     Matrix m4 = {
         {1.0, 2.0, 4.0},
@@ -2651,7 +2651,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m4);
 
-    BOOST_CHECK_CLOSE(m4(1, 0), 3.0, tol);
+    QL_CHECK_CLOSE(m4(1, 0), 3.0, tol);
 
     Matrix m5 = {
         {1.0, 2.0, 4.0},
@@ -2661,7 +2661,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m5);
 
-    BOOST_CHECK_CLOSE(m5(2, 1), 3.5, tol);
+    QL_CHECK_CLOSE(m5(2, 1), 3.5, tol);
 
     Matrix m6 = {
         {1.0, 2.0, 4.0},
@@ -2671,7 +2671,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m6);
 
-    BOOST_CHECK_CLOSE(m6(1, 2), 3.0, tol);
+    QL_CHECK_CLOSE(m6(1, 2), 3.0, tol);
 
     // corners
 
@@ -2683,7 +2683,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m7);
 
-    BOOST_CHECK_CLOSE(m7(0, 0), 4.0, tol);
+    QL_CHECK_CLOSE(m7(0, 0), 4.0, tol);
 
     Matrix m8 = {
         {1.0, 2.0, 4.0},
@@ -2693,7 +2693,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m8);
 
-    BOOST_CHECK_CLOSE(m8(2, 0), 4.5, tol);
+    QL_CHECK_CLOSE(m8(2, 0), 4.5, tol);
 
     Matrix m9 = {
         {1.0, 2.0, 4.0},
@@ -2703,7 +2703,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m9);
 
-    BOOST_CHECK_CLOSE(m9(2, 2), 5.0, tol);
+    QL_CHECK_CLOSE(m9(2, 2), 5.0, tol);
 
     Matrix m10 = {
         {1.0, 2.0, na},
@@ -2713,7 +2713,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m10);
 
-    BOOST_CHECK_CLOSE(m10(0, 2), 4.5, tol);
+    QL_CHECK_CLOSE(m10(0, 2), 4.5, tol);
 
     // one dim (col vector)
 
@@ -2721,9 +2721,9 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m20);
 
-    BOOST_CHECK_CLOSE(m20(0, 0), 3.0, tol);
-    BOOST_CHECK_CLOSE(m20(1, 0), 3.0, tol);
-    BOOST_CHECK_CLOSE(m20(5, 0), 7.0, tol);
+    QL_CHECK_CLOSE(m20(0, 0), 3.0, tol);
+    QL_CHECK_CLOSE(m20(1, 0), 3.0, tol);
+    QL_CHECK_CLOSE(m20(5, 0), 7.0, tol);
 
     // one dim (row vector)
 
@@ -2731,9 +2731,9 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m21);
 
-    BOOST_CHECK_CLOSE(m21(0, 0), 3.0, tol);
-    BOOST_CHECK_CLOSE(m21(0, 1), 3.0, tol);
-    BOOST_CHECK_CLOSE(m21(0, 5), 7.0, tol);
+    QL_CHECK_CLOSE(m21(0, 0), 3.0, tol);
+    QL_CHECK_CLOSE(m21(0, 1), 3.0, tol);
+    QL_CHECK_CLOSE(m21(0, 5), 7.0, tol);
 
     // non equidistant grid, inner point
 
@@ -2745,7 +2745,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m30, {1.0, 2.0, 4.0}, {1.0, 2.0, 4.0});
 
-    BOOST_CHECK_CLOSE(m30(1, 1), 26.0 / 6.0, tol);
+    QL_CHECK_CLOSE(m30(1, 1), 26.0 / 6.0, tol);
 
     // non equidistant grid, boundaries
 
@@ -2757,7 +2757,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m31, {1.0, 2.0, 4.0}, {1.0, 2.0, 4.0});
 
-    BOOST_CHECK_CLOSE(m31(0, 1), 6.0 / 3.0, tol);
+    QL_CHECK_CLOSE(m31(0, 1), 6.0 / 3.0, tol);
 
     Matrix m32 = {
         {1.0, 2.0, 4.0},
@@ -2767,7 +2767,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m32, {1.0, 2.0, 4.0}, {1.0, 2.0, 4.0});
 
-    BOOST_CHECK_CLOSE(m32(1, 0), 7.0 / 3.0, tol);
+    QL_CHECK_CLOSE(m32(1, 0), 7.0 / 3.0, tol);
 
     Matrix m33 = {
         {1.0, 2.0, 4.0},
@@ -2777,7 +2777,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m33, {1.0, 2.0, 4.0}, {1.0, 2.0, 4.0});
 
-    BOOST_CHECK_CLOSE(m33(2, 1), 12.0 / 3.0, tol);
+    QL_CHECK_CLOSE(m33(2, 1), 12.0 / 3.0, tol);
 
     Matrix m34 = {
         {1.0, 2.0, 4.0},
@@ -2787,7 +2787,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m34, {1.0, 2.0, 4.0}, {1.0, 2.0, 4.0});
 
-    BOOST_CHECK_CLOSE(m34(1, 2), 10.0 / 3.0, tol);
+    QL_CHECK_CLOSE(m34(1, 2), 10.0 / 3.0, tol);
 
     // non equidistant grid, corners
 
@@ -2799,7 +2799,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m35, {1.0, 2.0, 4.0}, {1.0, 3.0, 7.0});
 
-    BOOST_CHECK_CLOSE(m35(0, 0), 10.0 / 3.0, tol);
+    QL_CHECK_CLOSE(m35(0, 0), 10.0 / 3.0, tol);
 
     Matrix m36 = {
         {1.0, 2.0, 4.0},
@@ -2809,7 +2809,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m36, {1.0, 2.0, 4.0}, {1.0, 3.0, 7.0});
 
-    BOOST_CHECK_CLOSE(m36(2, 0), 18.0 / 5.0, tol);
+    QL_CHECK_CLOSE(m36(2, 0), 18.0 / 5.0, tol);
 
     Matrix m37 = {
         {1.0, 2.0, 4.0},
@@ -2819,7 +2819,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m37, {1.0, 2.0, 4.0}, {1.0, 3.0, 7.0});
 
-    BOOST_CHECK_CLOSE(m37(2, 2), 13.0 / 3.0, tol);
+    QL_CHECK_CLOSE(m37(2, 2), 13.0 / 3.0, tol);
 
     Matrix m38 = {
         {1.0, 2.0, na},
@@ -2829,7 +2829,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m38, {1.0, 2.0, 4.0}, {1.0, 2.0, 3.0});
 
-    BOOST_CHECK_CLOSE(m38(0, 2), 16.0 / 3.0, tol);
+    QL_CHECK_CLOSE(m38(0, 2), 16.0 / 3.0, tol);
 
     // single point with given value
 
@@ -2839,7 +2839,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m50);
 
-    BOOST_CHECK_CLOSE(m50(0, 0), 1.0, tol);
+    QL_CHECK_CLOSE(m50(0, 0), 1.0, tol);
 
     // single point with missing value
 
@@ -2849,12 +2849,12 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     laplaceInterpolation(m51);
 
-    BOOST_CHECK_CLOSE(m51(0, 0), 0.0, tol);
+    QL_CHECK_CLOSE(m51(0, 0), 0.0, tol);
 
     // no point
 
     LaplaceInterpolation l0([](const std::vector<Size>&) { return Null<Real>(); }, {});
-    BOOST_CHECK_CLOSE(l0({}), 0.0, tol);
+    QL_CHECK_CLOSE(l0({}), 0.0, tol);
 
     // single test cases from actual issues observed in the field
 
@@ -2878,7 +2878,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
     laplaceInterpolation(m52, tx, ty, 1E-6, 100);
 
     for (auto const& v : m52) {
-        BOOST_CHECK_CLOSE(v, 1.0, 0.1);
+        QL_CHECK_CLOSE(v, 1.0, 0.1);
     }
 
 }
