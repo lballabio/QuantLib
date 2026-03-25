@@ -18,6 +18,7 @@
 */
 
 #include "toplevelfixture.hpp"
+#include "utilities.hpp"
 #include <boost/make_shared.hpp>
 #include <boost/test/unit_test.hpp>
 #include <ql/quotes/simplequote.hpp>
