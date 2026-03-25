@@ -145,7 +145,10 @@ namespace QuantLib {
     : FixedVsFloatingSwap(type, std::move(fixedNominals), std::move(fixedSchedule), fixedRate, std::move(fixedDC),
                           overnightNominals, std::move(overnightSchedule), overnightIndex,
                           spread, DayCounter(), ext::nullopt, paymentLag, paymentCalendar),
-                          overnightIndex_(overnightIndex), averagingMethod_(averagingMethod),
+                          overnightIndex_(overnightIndex),
+                          paymentLag_(paymentLag), paymentCalendar_(paymentCalendar),
+                          telescopicValueDates_(telescopicValueDates),
+                          averagingMethod_(averagingMethod),
                           lookbackDays_(lookbackDays), lockoutDays_(lockoutDays),
                           applyObservationShift_(applyObservationShift) {
         legs_[1] =
