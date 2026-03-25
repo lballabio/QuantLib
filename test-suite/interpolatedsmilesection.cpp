@@ -65,11 +65,11 @@ BOOST_AUTO_TEST_CASE(testInterpolationAndVariance) {
     Real expectedVol = linearInterp(strike, 90.0, v90, 100.0, v100);
 
     Real tol = 1e-12;
-    BOOST_CHECK_CLOSE(section->volatilityImpl(strike), expectedVol, tol);
+    QL_CHECK_CLOSE(section->volatilityImpl(strike), expectedVol, tol);
 
     // variance should be vol^2 * T
     Real expectedVar = expectedVol * expectedVol * expiry;
-    BOOST_CHECK_CLOSE(section->varianceImpl(strike), expectedVar, tol);
+    QL_CHECK_CLOSE(section->varianceImpl(strike), expectedVar, tol);
 }
 
 BOOST_AUTO_TEST_CASE(testExtrapolationWhenAllowed) {
@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE(testExtrapolationWhenAllowed) {
     Real expectedLow = linearInterp(strikeLow, 90.0, v90, 100.0, v100);
 
     Real tol = 1e-12;
-    BOOST_CHECK_CLOSE(section->volatilityImpl(strikeLow), expectedLow, tol);
+    QL_CHECK_CLOSE(section->volatilityImpl(strikeLow), expectedLow, tol);
 
     // extrapolate above max strike, e.g., 120 using last segment 110-100
     Real v110 = stdDevs[2] / sqrtT;
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(testExtrapolationWhenAllowed) {
     // use last two points (110, v110) and (100, v100) for extrapolation;
     // linearInterp works for extrapolation as well
     Real expectedHigh = linearInterp(strikeHigh, 110.0, v110, 100.0, v100);
-    BOOST_CHECK_CLOSE(section->volatilityImpl(strikeHigh), expectedHigh, tol);
+    QL_CHECK_CLOSE(section->volatilityImpl(strikeHigh), expectedHigh, tol);
 }
 
 BOOST_AUTO_TEST_CASE(testHandlesUpdatePropagates) {
@@ -135,7 +135,7 @@ BOOST_AUTO_TEST_CASE(testHandlesUpdatePropagates) {
     Real expectedBefore = linearInterp(95.0, 90.0, v90, 100.0, v100);
 
     Real tol = 1e-12;
-    BOOST_CHECK_CLOSE(section->volatilityImpl(95.0), expectedBefore, tol);
+    QL_CHECK_CLOSE(section->volatilityImpl(95.0), expectedBefore, tol);
 
     // now change the middle quote q1 from 0.15 to 0.20
     q1->setValue(0.20 * sqrtT);
@@ -143,7 +143,7 @@ BOOST_AUTO_TEST_CASE(testHandlesUpdatePropagates) {
     // after changing the quote, the section should reflect the new vol
     Real v90_after = q1->value() / sqrtT;
     Real expectedAfter = linearInterp(95.0, 90.0, v90_after, 100.0, v100);
-    BOOST_CHECK_CLOSE(section->volatilityImpl(95.0), expectedAfter, tol);
+    QL_CHECK_CLOSE(section->volatilityImpl(95.0), expectedAfter, tol);
 }
 
 BOOST_AUTO_TEST_CASE(testFlatStrikeExtrapolation) {
@@ -175,18 +175,18 @@ BOOST_AUTO_TEST_CASE(testFlatStrikeExtrapolation) {
     Real strikeLow = 85.0;
 
     Real tol = 1e-12;
-    BOOST_CHECK_CLOSE(section->volatilityImpl(strikeLow), v90, tol);
+    QL_CHECK_CLOSE(section->volatilityImpl(strikeLow), v90, tol);
 
     // Check with strike higher than maxStrike()
     Real v110 = q2->value() / sqrtT;
     Real strikeHigh = 120.0;
 
-    BOOST_CHECK_CLOSE(section->volatilityImpl(strikeHigh), v110, tol);
+    QL_CHECK_CLOSE(section->volatilityImpl(strikeHigh), v110, tol);
 
     //Change minStrike vol quote and check if out-of-bounds vol is the same
     q0->setValue(0.21 * sqrtT);
     Real v90_after = q0->value() / sqrtT;
-    BOOST_CHECK_CLOSE(section->volatilityImpl(strikeLow), v90_after, tol);
+    QL_CHECK_CLOSE(section->volatilityImpl(strikeLow), v90_after, tol);
 }
 
 BOOST_AUTO_TEST_CASE(testErrorThrowingWhenNonSortedStrikes) {

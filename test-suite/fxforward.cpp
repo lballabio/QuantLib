@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE(testFxForwardConstructionWithRate) {
                   true); // sell USD
 
     BOOST_CHECK_EQUAL(fwd.sourceNominal(), nominal);
-    BOOST_CHECK_CLOSE(fwd.targetNominal(), nominal * forwardRate, 1.0e-4); // 0.0001% tolerance
+    QL_CHECK_CLOSE(fwd.targetNominal(), nominal * forwardRate, 1.0e-4); // 0.0001% tolerance
     BOOST_CHECK(fwd.sourceCurrency() == vars.usd);
     BOOST_CHECK(fwd.targetCurrency() == vars.sgd);
 }
@@ -119,13 +119,13 @@ BOOST_AUTO_TEST_CASE(testContractedForwardRate) {
 
     FxForward fwd1(usdNominal, vars.usd, sgdNominal, vars.sgd, vars.maturityDate, true);
 
-    BOOST_CHECK_CLOSE(fwd1.forwardRate(), expectedRate, 1.0e-10);
+    QL_CHECK_CLOSE(fwd1.forwardRate(), expectedRate, 1.0e-10);
 
     // Test with rate constructor
     Real inputRate = 1.36;
     FxForward fwd2(usdNominal, vars.usd, vars.sgd, inputRate, vars.maturityDate, true);
 
-    BOOST_CHECK_CLOSE(fwd2.forwardRate(), inputRate, 1.0e-10);
+    QL_CHECK_CLOSE(fwd2.forwardRate(), inputRate, 1.0e-10);
 
     // Verify contracted rate differs from fair forward rate
     auto engine = ext::make_shared<DiscountingFxForwardEngine>(
@@ -209,7 +209,7 @@ BOOST_AUTO_TEST_CASE(testFairForwardRate) {
 
     Real calculatedFairRate = fwd.fairForwardRate();
 
-    BOOST_CHECK_CLOSE(calculatedFairRate, expectedFairRate, 1.0e-4); // 0.0001% tolerance
+    QL_CHECK_CLOSE(calculatedFairRate, expectedFairRate, 1.0e-4); // 0.0001% tolerance
 }
 
 
@@ -254,7 +254,7 @@ BOOST_AUTO_TEST_CASE(testAtTheMoney) {
     // At-the-money forward should have NPV close to zero
     Real npv = fwd.NPV();
 
-    BOOST_CHECK_SMALL(npv, 1.0e-4); // NPV should be essentially zero
+    QL_CHECK_SMALL(npv, 1.0e-4); // NPV should be essentially zero
 }
 
 
@@ -282,7 +282,7 @@ BOOST_AUTO_TEST_CASE(testPositionDirection) {
     Real npvShort = shortUsd.NPV();
 
     // Long and short positions should have opposite NPVs
-    BOOST_CHECK_CLOSE(npvLong, -npvShort, 1.0e-4); // 0.0001% tolerance
+    QL_CHECK_CLOSE(npvLong, -npvShort, 1.0e-4); // 0.0001% tolerance
 }
 
 
@@ -387,7 +387,7 @@ BOOST_AUTO_TEST_CASE(testAdditionalResults) {
     Real dfSource = ext::any_cast<Real>(additionalResults.at("sourceCurrencyDiscountFactor"));
     Real dfTarget = ext::any_cast<Real>(additionalResults.at("targetCurrencyDiscountFactor"));
 
-    BOOST_CHECK_CLOSE(spotFx, 1.35, 1.0e-4); // 0.0001% tolerance
+    QL_CHECK_CLOSE(spotFx, 1.35, 1.0e-4); // 0.0001% tolerance
     BOOST_CHECK(dfSource > 0.0 && dfSource < 1.0);
     BOOST_CHECK(dfTarget > 0.0 && dfTarget < 1.0);
 }
