@@ -2254,6 +2254,49 @@ BOOST_AUTO_TEST_CASE(testFdEarliestExerciseDate) {
         "full=" << fullPrice << " 6M=" << midPrice);
 }
 
+BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyNegativeRates) {
+
+    BOOST_TEST_MESSAGE("Testing Barone-Adesi-Whaley engine with negative rates...");
+
+    // Issue #1291: BAW crashes with a cryptic error when rates are negative.
+    // Verify that it now throws a clear error message instead.
+
+    Date today = Date::todaysDate();
+    DayCounter dc = Actual360();
+
+    auto spot = ext::make_shared<SimpleQuote>(36.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(-0.012);
+    auto vol = ext::make_shared<SimpleQuote>(0.20);
+
+    auto stochProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot),
+        Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 40.0);
+    Date exDate = today + Period(1, Years);
+    auto exercise = ext::make_shared<AmericanExercise>(today, exDate);
+
+    VanillaOption option(payoff, exercise);
+    option.setPricingEngine(
+        ext::make_shared<BaroneAdesiWhaleyApproximationEngine>(stochProcess));
+
+    BOOST_CHECK_EXCEPTION(option.NPV(), Error,
+                          ExpectedErrorMessage("negative interest rates"));
+
+    // also verify with a call and positive dividends
+    auto callPayoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 40.0);
+    qRate->setValue(0.06);
+    VanillaOption callOption(callPayoff, exercise);
+    callOption.setPricingEngine(
+        ext::make_shared<BaroneAdesiWhaleyApproximationEngine>(stochProcess));
+
+    BOOST_CHECK_EXCEPTION(callOption.NPV(), Error,
+                          ExpectedErrorMessage("negative interest rates"));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
