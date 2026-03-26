@@ -24,25 +24,40 @@ namespace QuantLib {
     ArithmeticASOPathPricer::ArithmeticASOPathPricer(Option::Type type,
                                                      DiscountFactor discount,
                                                      Real runningSum,
-                                                     Size pastFixings)
+                                                     Size pastFixings,
+                                                     Size fixingCount)
     : type_(type), discount_(discount),
-      runningSum_(runningSum), pastFixings_(pastFixings) {}
+      runningSum_(runningSum), pastFixings_(pastFixings),
+      fixingCount_(fixingCount) {}
 
 
     Real ArithmeticASOPathPricer::operator()(const Path& path) const  {
         Size n = path.length();
         QL_REQUIRE(n > 1, "the path cannot be empty");
 
+        // When fixingCount_ is set, the path may include an extra point
+        // at the exercise date beyond the last fixing date.  Average
+        // only over the fixing points; use path.back() for the spot
+        // at exercise.
+        Size nFixings = (fixingCount_ != Null<Size>()) ? fixingCount_ : n;
+        QL_REQUIRE(nFixings <= n, "fixingCount (" << nFixings
+                   << ") exceeds path length (" << n << ")");
+
         Real averageStrike;
         if (path.timeGrid().mandatoryTimes()[0]==0.0) {
-            // include initial fixing
+            // include initial fixing (T=0 is a fixing date)
             averageStrike =
-                std::accumulate(path.begin(),path.end(),runningSum_) /
-                (pastFixings_ + n);
+                std::accumulate(path.begin(),
+                                path.begin() + nFixings,
+                                runningSum_) /
+                (pastFixings_ + nFixings);
         } else {
+            // first path point is T=0 (not a fixing), skip it
             averageStrike =
-                std::accumulate(path.begin()+1,path.end(),runningSum_) /
-                (pastFixings_ + n - 1);
+                std::accumulate(path.begin()+1,
+                                path.begin() + nFixings,
+                                runningSum_) /
+                (pastFixings_ + nFixings - 1);
         }
 
         return discount_
