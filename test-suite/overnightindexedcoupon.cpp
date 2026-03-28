@@ -1125,6 +1125,36 @@ BOOST_AUTO_TEST_CASE(testOvernightIndexedCouponPaymentBeforeAccrualEnd) {
     );
 }
 
+BOOST_AUTO_TEST_CASE(testOvernightLegDegeneratePeriod) {
+    BOOST_TEST_MESSAGE("Testing overnight leg with degenerate weekend stub period...");
+
+    Date today(1, March, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> h(
+        ext::make_shared<FlatForward>(today, 0.04, Actual360()));
+    ext::shared_ptr<OvernightIndex> sofr =
+        ext::make_shared<Sofr>(h);
+
+    // March 28, 2026 is a Saturday, March 30 is a Monday.
+    // The period [March 28, March 30] is degenerate: both dates
+    // adjust to Monday March 30 under the SOFR fixing calendar.
+    std::vector<Date> dates = {
+        Date(27, March, 2026),
+        Date(28, March, 2026),
+        Date(30, March, 2026),
+        Date(30, June, 2026)
+    };
+    Schedule schedule(dates);
+
+    Leg leg = OvernightLeg(schedule, sofr)
+        .withNotionals(10000.0)
+        .withPaymentDayCounter(Actual360());
+
+    // The degenerate period is skipped; 2 coupons instead of 3.
+    BOOST_CHECK_EQUAL(leg.size(), Size(2));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
