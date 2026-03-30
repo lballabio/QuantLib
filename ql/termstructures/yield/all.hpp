@@ -24,6 +24,7 @@
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/spreadbootstraptraits.hpp>
 #include <ql/termstructures/yield/spreaddiscountcurve.hpp>
+#include <ql/termstructures/yield/spreadzerocurve.hpp>
 #include <ql/termstructures/yield/ultimateforwardtermstructure.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>

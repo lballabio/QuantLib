@@ -5,6 +5,7 @@
 
 #include <ql/termstructures/yield/bootstraptraits.hpp>
 #include <ql/termstructures/yield/spreaddiscountcurve.hpp>
+#include <ql/termstructures/yield/spreadzerocurve.hpp>
 
 namespace QuantLib::detail {
 
@@ -19,6 +20,33 @@ namespace QuantLib::detail {
         struct curve {
             typedef InterpolatedSpreadDiscountCurve<Interpolator> type;
         };
+    };
+
+    //! Spread Zero-curve traits
+    template <>
+    struct SpreadTraits<ZeroYield> : ZeroYield {
+        // interpolated curve type
+        template <class Interpolator>
+        struct curve {
+            typedef InterpolatedSpreadZeroCurve<Interpolator> type;
+        };
+
+        // value at reference date: zero spread
+        static Real initialValue(const YieldTermStructure*) {
+            return 0.0;
+        }
+
+        // guesses
+        template <class C>
+        static Real guess(Size i,
+                          const C* c,
+                          bool validData,
+                          Size) // firstAliveHelper
+        {
+            if (validData) // previous iteration value
+                return c->data()[i];
+            return 0.0;
+        }
     };
 
 }

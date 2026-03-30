@@ -1,0 +1,5 @@
+add_executable(SpreadCurve SpreadCurve.cpp)
+target_link_libraries(SpreadCurve ql_library ${QL_THREAD_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS SpreadCurve RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()
