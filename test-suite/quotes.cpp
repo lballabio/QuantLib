@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE(testDerived) {
     auto me = ext::make_shared<SimpleQuote>();
     Handle<Quote> h(me);
 
-    for (auto& func : funcs) {
+    for (const auto& func : funcs) {
         DerivedQuote<unary_f> derived(h, func);
         for (Real value : values) {
             me->setValue(value);
@@ -123,7 +123,7 @@ BOOST_AUTO_TEST_CASE(testComposite) {
          me2 = ext::make_shared<SimpleQuote>();
     Handle<Quote> h1(me1), h2(me2);
 
-    for (auto& func : funcs) {
+    for (const auto& func : funcs) {
         CompositeQuote<binary_f> composite(h1, h2, func);
         for (Real value : values) {
             me1->setValue(value);
@@ -143,12 +143,12 @@ BOOST_AUTO_TEST_CASE(testMultiComposite) {
     typedef Real (*array_f)(const Array&);
     static const array_f funcs[] = { addAll, mulAll, Norm2 };
 
-    for (auto& func : funcs) {
+    for (const auto& func : funcs) {
         std::vector<ext::shared_ptr<SimpleQuote>> mes;
         std::vector<Handle<Quote>> handles;
         for (int i = 0; i < 3; i++) {
             mes.push_back(ext::make_shared<SimpleQuote>(i + 1));
-            handles.push_back(Handle<Quote>(mes.back()));
+            handles.emplace_back(mes.back());
             MultiCompositeQuote<array_f> composite(handles, func);
             for (int j = 0; j <= i; j++) {
                 mes[j]->setValue(j * 10 + 1);
