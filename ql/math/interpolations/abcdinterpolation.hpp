@@ -201,6 +201,7 @@ namespace QuantLib {
         }
       private:
         const detail::AbcdCoeffHolder& coeffs() const {
+          // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
           return *static_cast<detail::AbcdCoeffHolder*>(impl_.get());
         }
     };

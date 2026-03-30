@@ -41,15 +41,10 @@ namespace QuantLib {
         ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType)
     : BlackVolatilityTermStructure(referenceDate, cal, Following, dayCounter), dates_(dates), times_(dates.size(), 0),
       putDeltas_(putDeltas), callDeltas_(callDeltas), hasAtm_(hasAtm), spot_(spot), domesticTS_(domesticTS),
-      foreignTS_(foreignTS), deltaType_(deltaType), atmType_(atmType), atmDeltaType_(atmDeltaType),
+      foreignTS_(foreignTS), deltaType_(deltaType), atmType_(atmType), atmDeltaType_(atmDeltaType ? *atmDeltaType : deltaType),
       interpolationMethod_(im), flatStrikeExtrapolation_(flatStrikeExtrapolation), timeExtrapolationType_(timeExtrapolationType),
       switchTenor_(switchTenor), longTermDeltaType_(longTermDeltaType), longTermAtmType_(longTermAtmType),
-      longTermAtmDeltaType_(longTermAtmDeltaType) {
-
-        if (!atmDeltaType_)
-            atmDeltaType_ = deltaType_;
-        if (!longTermAtmDeltaType_)
-            longTermAtmDeltaType_ = longTermDeltaType_;
+      longTermAtmDeltaType_(longTermAtmDeltaType ? *longTermAtmDeltaType : longTermDeltaType) {
 
         // set switch time
         switchTime_ = switchTenor_ == 0 * Days ? QL_MAX_REAL : timeFromReference(optionDateFromTenor(switchTenor));
@@ -107,11 +102,11 @@ namespace QuantLib {
         if (t < switchTime_ && !close_enough(t, switchTime_)) {
             at = atmType_;
             dt = deltaType_;
-            atmDt = *atmDeltaType_;
+            atmDt = atmDeltaType_;
         } else {
             at = longTermAtmType_;
             dt = longTermDeltaType_;
-            atmDt = *longTermAtmDeltaType_;
+            atmDt = longTermAtmDeltaType_;
         }
 
         // Store smile section in map. Use strikes as key and vols as values for automatic sorting by strike.

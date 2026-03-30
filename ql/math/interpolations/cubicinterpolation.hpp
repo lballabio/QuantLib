@@ -195,6 +195,7 @@ namespace QuantLib {
         }
       private:
         detail::CubicInterpolationBaseImpl& baseImpl() const {
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
             return *static_cast<detail::CubicInterpolationBaseImpl*>(impl_.get());
         }
     };
