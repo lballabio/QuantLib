@@ -38,6 +38,7 @@
 #include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <cmath>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -118,7 +119,7 @@ BOOST_AUTO_TEST_CASE(testInterpolation) {
 
     // test at midpoint between the two tenors
     Time tMid = 0.5 * (t1 + t2);
-    Date dMid = today + Integer(tMid * 365 + 0.5);
+    Date dMid = today + Integer(std::lround(tMid * 365));
     Time tMidActual = dc.yearFraction(today, dMid);
     Real alpha = (tMidActual - t1) / (t2 - t1);
     Real expectedVar = var1 + (var2 - var1) * alpha;

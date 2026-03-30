@@ -75,7 +75,7 @@ std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
 }
 
 
-struct CommonVars {
+struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
     // common data
     
     Size length;

@@ -54,7 +54,7 @@ namespace QuantLib {
 
     Handle<YieldTermStructure>
     MultiCurve::addCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
-                         ext::shared_ptr<YieldTermStructure>&& curve) {
+                         ext::shared_ptr<YieldTermStructure>&& curve) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         internalHandle.linkTo(ext::shared_ptr<YieldTermStructure>(curve.get(), null_deleter()),
                               false);
         Handle<YieldTermStructure> externalHandle(ext::shared_ptr<YieldTermStructure>(
