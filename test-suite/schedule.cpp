@@ -1229,8 +1229,8 @@ BOOST_AUTO_TEST_CASE(testTruncation) {
 BOOST_AUTO_TEST_CASE(testBackwardRegularFirstPeriodWithFirstDate) {
 
     BOOST_TEST_MESSAGE(
-        "Testing that Backward schedule marks regular first period correctly "
-        "when firstDate is provided...");
+        "Testing that backward schedule marks regular first period correctly "
+        "when the first date is provided...");
 
     // Reproduces issue #405: Backward generation with firstDate and
     // endOfMonth incorrectly marked the first period as irregular even

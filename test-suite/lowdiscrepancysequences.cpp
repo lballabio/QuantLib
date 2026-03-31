@@ -1176,7 +1176,7 @@ BOOST_AUTO_TEST_CASE(testHighDimensionalIntegrals, *precondition(if_speed(Slow))
 
 BOOST_AUTO_TEST_CASE(testBurley2020SobolRsgOutputBounds) {
     BOOST_TEST_MESSAGE(
-        "Testing Burley2020SobolRsg output is strictly in (0,1)...");
+        "Testing that the output of Burley 2020 is strictly in (0,1)...");
 
     // With enough dimensions the scrambling occasionally maps to
     // zero.  Without the +0.5 offset this would give 0.0 in the

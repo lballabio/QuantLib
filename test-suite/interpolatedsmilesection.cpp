@@ -41,7 +41,7 @@ static Real linearInterp(Real x, Real x1, Real y1, Real x2, Real y2) {
 }
 
 BOOST_AUTO_TEST_CASE(testInterpolationAndVariance) {
-    BOOST_TEST_MESSAGE("Testing basic behaviour of linearly interpolated smile section...");
+    BOOST_TEST_MESSAGE("Testing basic behavior of linearly interpolated smile section...");
     // basic scenario: sorted strikes, constructor taking stdDevs (total std devs)
     Time expiry = 0.25; // 3 months
     Real sqrtT = std::sqrt(expiry);

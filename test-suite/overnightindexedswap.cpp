@@ -1029,7 +1029,7 @@ BOOST_AUTO_TEST_CASE(testMakeOisEndOfMonthRegression2453) {
     /* See https://github.com/lballabio/QuantLib/issues/2453. Before the fix, the swap will roll
      * backwards from 18 December 2028 (instead of 17 December 2028) and create a front stub. */
 
-    BOOST_TEST_MESSAGE("Testing end of month regression in MakeOIS...");
+    BOOST_TEST_MESSAGE("Testing end-of-month regression in MakeOIS...");
 
     Date today(16, December, 2025);
     Settings::instance().evaluationDate() = today;
@@ -1044,8 +1044,8 @@ BOOST_AUTO_TEST_CASE(testMakeOisEndOfMonthRegression2453) {
 }
 
 BOOST_AUTO_TEST_CASE(testSettlementDaysEffectiveDateConflict) {
-    BOOST_TEST_MESSAGE("Testing MakeOIS rejects both "
-                       "settlementDays and effectiveDate...");
+    BOOST_TEST_MESSAGE("Testing that MakeOIS rejects "
+                       "settlementDays and effectiveDate together...");
 
     SavedSettings backup;
     Date today(5, February, 2009);

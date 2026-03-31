@@ -62,7 +62,7 @@ struct CommonVars {
 
 
 BOOST_AUTO_TEST_CASE(testFairRate) {
-    BOOST_TEST_MESSAGE("Testing MultipleResetsSwap fair rate...");
+    BOOST_TEST_MESSAGE("Testing fair rate of multiple-resets swap...");
 
     CommonVars vars;
 
@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE(testFairRate) {
 
 
 BOOST_AUTO_TEST_CASE(testConsistencyWithLeg) {
-    BOOST_TEST_MESSAGE("Testing MultipleResetsSwap NPV consistency with legs...");
+    BOOST_TEST_MESSAGE("Testing that multiple-resets swap NPV is consistent with legs NPV...");
 
     CommonVars vars;
 
@@ -108,7 +108,7 @@ BOOST_AUTO_TEST_CASE(testConsistencyWithLeg) {
 
 
 BOOST_AUTO_TEST_CASE(testAveragingVsCompounding) {
-    BOOST_TEST_MESSAGE("Testing MultipleResetsSwap averaging vs compounding...");
+    BOOST_TEST_MESSAGE("Testing averaging vs compounding in multiple-resets swaps...");
 
     CommonVars vars;
 
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE(testAveragingVsCompounding) {
 
 
 BOOST_AUTO_TEST_CASE(testRateHelper) {
-    BOOST_TEST_MESSAGE("Testing MultipleResetsSwapRateHelper bootstrapping...");
+    BOOST_TEST_MESSAGE("Testing bootstrapping using multiple-resets swap helpers...");
 
     CommonVars vars;
 

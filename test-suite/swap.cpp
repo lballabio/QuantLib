@@ -374,7 +374,7 @@ BOOST_AUTO_TEST_CASE(testNotifications) {
 }
 
 BOOST_AUTO_TEST_CASE(testFixedTenorInferenceWithTerminationDate) {
-    BOOST_TEST_MESSAGE("Testing MakeVanillaSwap fixed tenor inference "
+    BOOST_TEST_MESSAGE("Testing MakeVanillaSwap fixed-tenor inference "
                        "with explicit termination date...");
 
     SavedSettings backup;
@@ -489,8 +489,8 @@ BOOST_AUTO_TEST_CASE(testFixedTenorInferenceWithTerminationDate) {
 }
 
 BOOST_AUTO_TEST_CASE(testSettlementDaysEffectiveDateConflict) {
-    BOOST_TEST_MESSAGE("Testing MakeVanillaSwap rejects both "
-                       "settlementDays and effectiveDate...");
+    BOOST_TEST_MESSAGE("Testing that MakeVanillaSwap rejects "
+                       "settlementDays and effectiveDate together...");
 
     SavedSettings backup;
     Date today(15, January, 2026);
