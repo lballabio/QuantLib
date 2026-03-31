@@ -324,7 +324,7 @@ BOOST_AUTO_TEST_CASE(testStrikeDependence) {
     Real tol = 1.0e-12;
 
     // check that variance matches at each strike point
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         Real expected = section->variance(strike);
         Real calculated = surface.blackVariance(d1, strike);
         Real diff = std::fabs(calculated - expected);
@@ -388,7 +388,7 @@ BOOST_AUTO_TEST_CASE(testMultiTenorSmileInterpolation) {
     Real alpha = (tMid - t1) / (t2 - t1);
     Real tol = 1.0e-12;
 
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         Real var1 = section1->variance(strike);
         Real var2 = section2->variance(strike);
         Real expected = var1 + (var2 - var1) * alpha;
@@ -417,7 +417,7 @@ BOOST_AUTO_TEST_CASE(testMultiTenorSmileInterpolation) {
                    << "\n    var(120): " << varMid120);
 
     // calendar arbitrage check: total variance must be non-decreasing in time
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         Real var_d1 = surface.blackVariance(d1, strike);
         Real var_dMid = surface.blackVariance(dMid, strike);
         Real var_d2 = surface.blackVariance(d2, strike);
@@ -442,7 +442,7 @@ BOOST_AUTO_TEST_CASE(testMultiTenorSmileInterpolation) {
     std::vector<Real> butterflyStrikes = {85.0, 90.0, 95.0, 100.0,
                                           105.0, 110.0, 115.0};
 
-    for (double K : butterflyStrikes) {
+    for (Real K : butterflyStrikes) {
         Real w   = surface.blackVariance(dMid, K);
         Real w_p = surface.blackVariance(dMid, K + dK);
         Real w_m = surface.blackVariance(dMid, K - dK);
@@ -806,7 +806,7 @@ BOOST_AUTO_TEST_CASE(testRaggedStrikeGrids) {
     Real tol = 1.0e-12;
 
     // exact repricing at each tenor's own strike grid
-    for (double i : strikes1) {
+    for (Real i : strikes1) {
         Real expected = section1->variance(i);
         Real calculated = surface.blackVariance(d1, i);
         Real diff = std::fabs(calculated - expected);
@@ -817,7 +817,7 @@ BOOST_AUTO_TEST_CASE(testRaggedStrikeGrids) {
                        << std::scientific << calculated
                        << "\n    expected:   " << expected);
     }
-    for (double i : strikes2) {
+    for (Real i : strikes2) {
         Real expected = section2->variance(i);
         Real calculated = surface.blackVariance(d2, i);
         Real diff = std::fabs(calculated - expected);
@@ -855,7 +855,7 @@ BOOST_AUTO_TEST_CASE(testRaggedStrikeGrids) {
 
     // calendar arbitrage: variance non-decreasing across tenors
     std::vector<Real> testStrikes = {70.0, 80.0, 90.0, 100.0, 110.0, 120.0, 130.0};
-    for (double testStrike : testStrikes) {
+    for (Real testStrike : testStrikes) {
         Real var_d1 = surface.blackVariance(d1, testStrike, true);
         Real var_dMid = surface.blackVariance(dMid, testStrike, true);
         Real var_d2 = surface.blackVariance(d2, testStrike, true);
