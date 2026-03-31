@@ -48,9 +48,9 @@ Real add(Real x, Real y) { return x+y; }
 Real mul(Real x, Real y) { return x*y; }
 Real sub(Real x, Real y) { return x-y; }
 
-Real addAll(const Array& x) { return std::accumulate(x.begin(), x.end(), 0.0); }
+Real addAll(const Array& x) { return std::accumulate(x.begin(), x.end(), Real(0.0)); }
 Real mulAll(const Array& x) {
-    return std::accumulate(x.begin(), x.end(), 1.0, [](Real x, Real y) { return x*y; });
+    return std::accumulate(x.begin(), x.end(), Real(1.0), [](Real x, Real y) -> Real { return x*y; });
 }
 
 BOOST_AUTO_TEST_CASE(testObservable) {
