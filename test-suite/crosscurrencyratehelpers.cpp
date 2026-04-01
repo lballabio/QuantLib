@@ -115,7 +115,8 @@ struct CommonVars {
                             bool isFxBaseCurrencyLegResettable,
                             Frequency paymentFrequency = NoFrequency,
                             Integer paymentLag = 0,
-                            bool useOvernightIndex = false) const {
+                            bool useOvernightIndex = false,
+                            Frequency quoteCcyPaymentFrequency = NoFrequency) const {
         Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
         Period tenor(q.n, q.units);
         ext::shared_ptr<IborIndex> baseIndex, quoteIndex;
@@ -130,7 +131,8 @@ struct CommonVars {
         return ext::shared_ptr<RateHelper>(new MtMCrossCurrencyBasisSwapRateHelper(
                 quoteHandle, tenor, instrumentSettlementDays, calendar, businessConvention, endOfMonth,
             baseIndex, quoteIndex, collateralHandle, isFxBaseCurrencyCollateralCurrency,
-                isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, paymentFrequency, paymentLag));
+                isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, paymentFrequency, paymentLag,
+                quoteCcyPaymentFrequency));
     }
 
     std::vector<ext::shared_ptr<RateHelper> >
@@ -141,14 +143,16 @@ struct CommonVars {
                                   bool isFxBaseCurrencyLegResettable,
                                   Frequency paymentFrequency = NoFrequency,
                                   Integer paymentLag = 0,
-                                  bool useOvernightQuoteIndex = false) const {
+                                  bool useOvernightQuoteIndex = false,
+                                  Frequency quoteCcyPaymentFrequency = NoFrequency) const {
         std::vector<ext::shared_ptr<RateHelper> > instruments;
         instruments.reserve(xccyData.size());
         for (const auto& i : xccyData) {
             instruments.push_back(resettingXccyRateHelper(
                     i, collateralHandle, isFxBaseCurrencyCollateralCurrency,
                     isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable,
-                    paymentFrequency, paymentLag, useOvernightQuoteIndex));
+                    paymentFrequency, paymentLag, useOvernightQuoteIndex,
+                    quoteCcyPaymentFrequency));
         }
 
         return instruments;
@@ -311,7 +315,8 @@ void testResettingCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurrency,
                                      bool isFxBaseCurrencyLegResettable,
                                      Frequency paymentFrequency = NoFrequency,
                                      Integer paymentLag = 0,
-                                     bool useOvernightIndex = false) {
+                                     bool useOvernightIndex = false,
+                                     Frequency quoteCcyPaymentFrequency = NoFrequency) {
 
     CommonVars vars;
 
@@ -322,7 +327,7 @@ void testResettingCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurrency,
         vars.buildResettingXccyRateHelpers(
             vars.basisData, collateralHandle, isFxBaseCurrencyCollateralCurrency,
             isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, paymentFrequency, paymentLag,
-            useOvernightIndex);
+            useOvernightIndex, quoteCcyPaymentFrequency);
 
     std::vector<ext::shared_ptr<RateHelper> > constNotionalInstruments =
         vars.buildConstantNotionalXccyRateHelpers(vars.basisData, collateralHandle,
@@ -461,6 +466,19 @@ BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithArbitraryFreq) {
     testResettingCrossCurrencySwaps(isFxBaseCurrencyCollateralCurrency, isBasisOnFxBaseCurrencyLeg,
                                     isFxBaseCurrencyLegResettable,
                                     Weekly);
+}
+
+BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithAsymmetricFrequencies) {
+    BOOST_TEST_MESSAGE(
+        "Testing resetting basis swaps with different payment frequencies per leg...");
+
+    bool isFxBaseCurrencyCollateralCurrency = false;
+    bool isFxBaseCurrencyLegResettable = false;
+    bool isBasisOnFxBaseCurrencyLeg = true;
+
+    testResettingCrossCurrencySwaps(isFxBaseCurrencyCollateralCurrency, isBasisOnFxBaseCurrencyLeg,
+                                    isFxBaseCurrencyLegResettable, Semiannual, 0, false,
+                                    Quarterly);
 }
 
 BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithPaymentLag) {
