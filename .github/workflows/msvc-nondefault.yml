@@ -23,9 +23,9 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Setup MSVC++ environment
-      uses: ilammy/msvc-dev-cmd@v1
+      uses: microsoft/setup-msbuild@v3
       with:
-        arch: x64
+        msbuild-architecture: x64
     - name: Setup Boost
       run: |
         $Url = "https://archives.boost.io/release/1.${{ matrix.boost_version }}.0/source/boost_1_${{ matrix.boost_version }}_0.zip"
