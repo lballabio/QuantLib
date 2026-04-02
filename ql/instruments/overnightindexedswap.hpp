@@ -120,6 +120,10 @@ namespace QuantLib {
         const ext::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
         const Leg& overnightLeg() const { return floatingLeg(); }
 
+        Integer paymentLag() const { return paymentLag_; }
+        const Calendar& paymentCalendar() const { return paymentCalendar_; }
+        bool telescopicValueDates() const { return telescopicValueDates_; }
+
         RateAveraging::Type averagingMethod() const { return averagingMethod_; }
         Natural lookbackDays() const { return lookbackDays_; }
         Natural lockoutDays() const { return lockoutDays_; }
@@ -135,6 +139,9 @@ namespace QuantLib {
         void setupFloatingArguments(arguments* args) const override;
 
         ext::shared_ptr<OvernightIndex> overnightIndex_;
+        Integer paymentLag_;
+        Calendar paymentCalendar_;
+        bool telescopicValueDates_;
         RateAveraging::Type averagingMethod_;
         Natural lookbackDays_;
         Natural lockoutDays_;

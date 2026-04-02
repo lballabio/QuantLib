@@ -172,16 +172,18 @@ Copyright (C) 2024 Jacques du Toit
 Copyright (C) 2024 Jongbong An
 
 Copyright (C) 2025 AcadiaSoft Inc.
-Copyright (C) 2025 Eugene Toder
 Copyright (C) 2025 Hiroto Ogawa
 Copyright (C) 2025 Kareem Fareed
+Copyright (C) 2025 Shubham Gaur
 Copyright (C) 2025 Sotirios Papathanasopoulos
 Copyright (C) 2025 Uzair Beg
 Copyright (C) 2025 William Day
+Copyright (C) 2025, 2026 Eugene Toder
 Copyright (C) 2025, 2026 Paolo D'Elia
 
 Copyright (C) 2026 Aaditya Panikath
 Copyright (C) 2026 Chirag Desai
+Copyright (C) 2026 David Korczynski
 Copyright (C) 2026 Rich Amaya
 Copyright (C) 2026 Yassine Idyiahia
 Copyright (C) 2026 Zain Mughal

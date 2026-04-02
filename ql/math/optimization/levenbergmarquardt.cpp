@@ -145,7 +145,7 @@ namespace QuantLib {
         if (currentProblem_->constraint().test(xt)) {
             const Array& tmp = currentProblem_->values(xt);
             bool valid = true;
-            for (double i : tmp) {
+            for (Real i : tmp) {
                 if (!std::isfinite(i)) {
                     valid = false;
                     break;
@@ -172,7 +172,7 @@ namespace QuantLib {
             Matrix tmp(m,n);
             currentProblem_->costFunction().jacobian(tmp, xt);
             bool valid = true;
-            for (double & it : tmp) {
+            for (Real & it : tmp) {
                 if (!std::isfinite(it)) {
                     valid = false;
                     break;

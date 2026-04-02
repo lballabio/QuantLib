@@ -1778,7 +1778,7 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapInstrumentWeights) {
 
     // check that both approaches result in the same curve
 
-    BOOST_CHECK_CLOSE(curve1->discount(0.3), curve2->discount(0.3), 1E-13);
+    QL_CHECK_CLOSE(curve1->discount(0.3), curve2->discount(0.3), 1E-13);
 }
 
 template <template<class C> class Bootstrap>

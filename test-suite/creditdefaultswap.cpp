@@ -972,7 +972,8 @@ BOOST_AUTO_TEST_CASE(testDefaultConventions) {
     BOOST_CHECK_EQUAL(cds->runningSpread(), 0.01); // not actually a default
 
     BOOST_CHECK_EQUAL(cds->notional(), 1.0);
-    BOOST_CHECK_EQUAL(*(cds->upfront()), 0.0);
+    BOOST_CHECK(cds->upfront().has_value());
+    BOOST_CHECK_EQUAL(*(cds->upfront()), 0.0); // NOLINT(bugprone-unchecked-optional-access)
 
     BOOST_CHECK_EQUAL(cds->tradeDate(), today);
     BOOST_CHECK_EQUAL(cds->cashSettlementDays(), 3U);
@@ -1013,7 +1014,8 @@ BOOST_AUTO_TEST_CASE(testDefaultConventions) {
     first = ext::dynamic_pointer_cast<Coupon>(cds->coupons().front());
     BOOST_CHECK_EQUAL(first->nominal(), 10000.0);
 
-    BOOST_CHECK_EQUAL(*(cds->upfront()), 0.02);
+    BOOST_CHECK(cds->upfront().has_value());
+    BOOST_CHECK_EQUAL(*(cds->upfront()), 0.02); // NOLINT(bugprone-unchecked-optional-access)
     BOOST_CHECK_EQUAL(cds->upfrontPayment()->amount(), 200.0);
 
     cds = MakeCreditDefaultSwap(5 * Years, 0.01)

@@ -10,5 +10,6 @@
 #include <ql/quotes/futuresconvadjustmentquote.hpp>
 #include <ql/quotes/impliedstddevquote.hpp>
 #include <ql/quotes/lastfixingquote.hpp>
+#include <ql/quotes/multicompositequote.hpp>
 #include <ql/quotes/simplequote.hpp>
 

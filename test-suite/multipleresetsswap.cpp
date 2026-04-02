@@ -62,7 +62,7 @@ struct CommonVars {
 
 
 BOOST_AUTO_TEST_CASE(testFairRate) {
-    BOOST_TEST_MESSAGE("Testing MultipleResetsSwap fair rate...");
+    BOOST_TEST_MESSAGE("Testing fair rate of multiple-resets swap...");
 
     CommonVars vars;
 
@@ -73,23 +73,23 @@ BOOST_AUTO_TEST_CASE(testFairRate) {
 
     // Rebuilding at the fair rate must give zero NPV.
     ext::shared_ptr<MultipleResetsSwap> fairSwap = vars.makeSwap(fair);
-    BOOST_CHECK_SMALL(fairSwap->NPV(), 1.0e-8);
+    QL_CHECK_SMALL(fairSwap->NPV(), 1.0e-8);
 
     // Cross-check: fixed-leg NPV + floating-leg NPV equals total NPV.
     Real npvCheck = swap->fixedLegNPV() + swap->floatingLegNPV();
-    BOOST_CHECK_SMALL(npvCheck - swap->NPV(), 1.0e-10);
+    QL_CHECK_SMALL(npvCheck - swap->NPV(), 1.0e-10);
 
     // Omitting withFixedRate triggers auto-computation; NPV must be zero.
     ext::shared_ptr<MultipleResetsSwap> autoFair =
         MakeMultipleResetsSwap(2 * Years, vars.euribor3m, 2)
             .withSettlementDays(0)
             .withNominal(1.0e6);
-    BOOST_CHECK_SMALL(autoFair->NPV(), 1.0e-8);
+    QL_CHECK_SMALL(autoFair->NPV(), 1.0e-8);
 }
 
 
 BOOST_AUTO_TEST_CASE(testConsistencyWithLeg) {
-    BOOST_TEST_MESSAGE("Testing MultipleResetsSwap NPV consistency with legs...");
+    BOOST_TEST_MESSAGE("Testing that multiple-resets swap NPV is consistent with legs NPV...");
 
     CommonVars vars;
 
@@ -102,13 +102,13 @@ BOOST_AUTO_TEST_CASE(testConsistencyWithLeg) {
                 .withType(type);
 
         Real legSum = swap->fixedLegNPV() + swap->floatingLegNPV();
-        BOOST_CHECK_SMALL(legSum - swap->NPV(), 1.0e-10);
+        QL_CHECK_SMALL(legSum - swap->NPV(), 1.0e-10);
     }
 }
 
 
 BOOST_AUTO_TEST_CASE(testAveragingVsCompounding) {
-    BOOST_TEST_MESSAGE("Testing MultipleResetsSwap averaging vs compounding...");
+    BOOST_TEST_MESSAGE("Testing averaging vs compounding in multiple-resets swaps...");
 
     CommonVars vars;
 
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE(testAveragingVsCompounding) {
 
 
 BOOST_AUTO_TEST_CASE(testRateHelper) {
-    BOOST_TEST_MESSAGE("Testing MultipleResetsSwapRateHelper bootstrapping...");
+    BOOST_TEST_MESSAGE("Testing bootstrapping using multiple-resets swap helpers...");
 
     CommonVars vars;
 
@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE(testRateHelper) {
                                                         .withNominal(1.0e6)
                                                         .withDiscountingTermStructure(bootstrapped);
         Rate implied = check->fairRate();
-        BOOST_CHECK_SMALL(implied - inputRate, tolerance);
+        QL_CHECK_SMALL(implied - inputRate, tolerance);
     }
 }
 

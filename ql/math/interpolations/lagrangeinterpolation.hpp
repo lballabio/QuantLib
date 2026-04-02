@@ -34,21 +34,18 @@ namespace QuantLib {
     */
 
     namespace detail {
-        class UpdatedYInterpolation {
+        class UpdatedYInterpolation : public Interpolation::Impl {
           public:
-            virtual ~UpdatedYInterpolation() = default;
-            virtual Real value(const Array& yValues, Real x) const = 0;
+            virtual Real updatedValue(const Array& yValues, Real x) const = 0;
         };
 
         template <class I1, class I2>
         class LagrangeInterpolationImpl final
-            : public Interpolation::templateImpl<I1,I2>,
-              public UpdatedYInterpolation {
-
+            : public Interpolation::templateImpl<I1, I2, UpdatedYInterpolation> {
           public:
             LagrangeInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                       const I2& yBegin)
-            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
+            : Interpolation::templateImpl<I1, I2, UpdatedYInterpolation>(xBegin, xEnd, yBegin),
               n_(std::distance(xBegin, xEnd)),
               lambda_(n_) {
                 #if defined(QL_EXTRA_SAFETY_CHECKS)
@@ -108,7 +105,9 @@ namespace QuantLib {
                         "is not implemented");
             }
 
-            Real value(const Array& y, Real x) const override { return _value(y.begin(), x); }
+            Real updatedValue(const Array& y, Real x) const override {
+                return _value(y.begin(), x);
+            }
 
           private:
             template <class Iterator>
@@ -151,8 +150,8 @@ namespace QuantLib {
 
         // interpolate with new set of y values for a new x value
         Real value(const Array& y, Real x) const {
-            return ext::dynamic_pointer_cast<detail::UpdatedYInterpolation>
-                (impl_)->value(y, x);
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
+            return static_cast<detail::UpdatedYInterpolation&>(*impl_).updatedValue(y, x);
         }
     };
 

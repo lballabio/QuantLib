@@ -498,6 +498,9 @@
     <ClCompile Include="fittedbonddiscountcurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="floatfloatswap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ultimateforwardtermstructure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

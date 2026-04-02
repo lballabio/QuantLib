@@ -42,6 +42,11 @@ namespace QuantLib {
         DiscountFactor dividendDiscount,
         Real variance, Real tolerance) {
 
+        QL_REQUIRE(riskFreeDiscount <= 1.0,
+                   "the Barone-Adesi-Whaley approximation is not applicable "
+                   "with negative interest rates "
+                   "(risk-free discount factor: " << riskFreeDiscount << ")");
+
         // Calculation of seed value, Si
         Real n= 2.0*std::log(dividendDiscount/riskFreeDiscount)/(variance);
         Real m=-2.0*std::log(riskFreeDiscount)/(variance);

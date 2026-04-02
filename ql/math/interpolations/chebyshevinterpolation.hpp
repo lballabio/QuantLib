@@ -45,6 +45,7 @@ namespace QuantLib {
         explicit ChebyshevInterpolation(ChebyshevInterpolation&&) = delete;
         ChebyshevInterpolation& operator=(const ChebyshevInterpolation&) = delete;
         ChebyshevInterpolation& operator=(ChebyshevInterpolation&&) = delete;
+        ~ChebyshevInterpolation() = default;
 
         void updateY(const Array& y);
 

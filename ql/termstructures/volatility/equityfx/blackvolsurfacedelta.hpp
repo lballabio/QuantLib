@@ -176,7 +176,7 @@ namespace QuantLib {
 
         DeltaVolQuote::DeltaType deltaType_;
         DeltaVolQuote::AtmType atmType_;
-        ext::optional<DeltaVolQuote::DeltaType> atmDeltaType_;
+        DeltaVolQuote::DeltaType atmDeltaType_;
 
         SmileInterpolationMethod interpolationMethod_;
         bool flatStrikeExtrapolation_;
@@ -185,7 +185,7 @@ namespace QuantLib {
         Period switchTenor_;
         DeltaVolQuote::DeltaType longTermDeltaType_;
         DeltaVolQuote::AtmType longTermAtmType_;
-        ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType_;
+        DeltaVolQuote::DeltaType longTermAtmDeltaType_;
         Real switchTime_;
 
         // calculate forward for time $t$

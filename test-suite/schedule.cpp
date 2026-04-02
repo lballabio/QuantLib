@@ -1226,6 +1226,72 @@ BOOST_AUTO_TEST_CASE(testTruncation) {
     BOOST_CHECK(t.isRegular().front() == true);
 }
 
+BOOST_AUTO_TEST_CASE(testBackwardRegularFirstPeriodWithFirstDate) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing that backward schedule marks regular first period correctly "
+        "when the first date is provided...");
+
+    // Reproduces issue #405: Backward generation with firstDate and
+    // endOfMonth incorrectly marked the first period as irregular even
+    // when effectiveDate + tenor == firstDate.
+
+    NullCalendar calendar;
+
+    // Regular first period: Sep 30 + 6M = Mar 31 (with endOfMonth)
+    Schedule backward(
+        Date(30, September, 2017),   // effectiveDate
+        Date(30, September, 2024),   // terminationDate
+        Period(Semiannual),
+        calendar, Unadjusted, Unadjusted,
+        DateGeneration::Backward, true,
+        Date(31, March, 2018));      // firstDate
+
+    // First period should be regular
+    BOOST_CHECK_MESSAGE(backward.isRegular(1),
+        "First period should be regular (effectiveDate + 6M == firstDate)");
+
+    // Forward generation should agree
+    Schedule forward(
+        Date(30, September, 2017),
+        Date(30, September, 2024),
+        Period(Semiannual),
+        calendar, Unadjusted, Unadjusted,
+        DateGeneration::Forward, true,
+        Date(31, March, 2018));
+
+    BOOST_CHECK_MESSAGE(forward.isRegular(1),
+        "Forward first period should also be regular");
+
+    // Genuinely irregular first period: effective date does NOT align
+    // with firstDate by one tenor
+    Schedule irregular(
+        Date(3, September, 2017),    // effectiveDate (not end-of-month)
+        Date(30, September, 2024),
+        Period(Semiannual),
+        calendar, Unadjusted, Unadjusted,
+        DateGeneration::Backward, true,
+        Date(31, March, 2018));
+
+    BOOST_CHECK_MESSAGE(!irregular.isRegular(1),
+        "First period should be irregular (effectiveDate + 6M != firstDate)");
+
+    // Forward nextToLastDate: off-grid nextToLastDate triggers
+    // the insertion path and should be marked irregular
+    Schedule forwardNTLIrreg(
+        Date(30, September, 2017),
+        Date(30, September, 2024),
+        Period(Semiannual),
+        calendar, Unadjusted, Unadjusted,
+        DateGeneration::Forward, true,
+        Date(),
+        Date(15, March, 2024));        // off-grid, not one tenor from neighbors
+
+    Size n = forwardNTLIrreg.size();
+    BOOST_CHECK_MESSAGE(!forwardNTLIrreg.isRegular(n - 2),
+        "Period ending at off-grid nextToLastDate should be irregular");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -76,7 +76,8 @@ namespace QuantLib {
 
             auto switchFn = [=](Interpolation& left, Interpolation& right, Real x) {
                 if (!matchDerivatives) return;
-                auto& cubicImpl = dynamic_cast<detail::CubicInterpolationBaseImpl&>(*right.impl_);
+                // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
+                auto& cubicImpl = static_cast<detail::CubicInterpolationBaseImpl&>(*right.impl_);
                 cubicImpl.leftValue_ = left.derivative(x);
             };
             impl_ = ext::make_shared<detail::MixedInterpolationImpl<I1, I2, decltype(switchFn)>>(
