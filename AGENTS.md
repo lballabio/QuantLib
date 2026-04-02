@@ -257,7 +257,10 @@ Frequently used configure flags (`configure.ac`):
 quantlib-test-suite --log_level=message
 
 # Specific suite (run from build/)
-./test-suite/quantlib-test-suite --run_test=EuropeanOptionTests
+./test-suite/quantlib-test-suite --log_level=message --run_test=QuantLibTests/EuropeanOptionTests
+
+# Single test case (run from build/)
+./test-suite/quantlib-test-suite --log_level=message --run_test=QuantLibTests/EuropeanOptionTests/testValues
 
 # CTest path
 ctest -V
