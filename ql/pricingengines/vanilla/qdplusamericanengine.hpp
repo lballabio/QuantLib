@@ -83,6 +83,39 @@ namespace QuantLib {
             const ext::shared_ptr<Interpolation> q_z_;
             const CumulativeNormalDistribution Phi_;
         };
+
+        // Shared helpers for double-boundary American engines (QdFp, QdPlus)
+
+        Real sigmaHat(Rate r, Rate q, Time tau);
+
+        struct SigmaHatDerivatives {
+            Real dSigmaHat_dTau, dSigmaHat_dR, dSigmaHat_dQ;
+        };
+
+        SigmaHatDerivatives sigmaHatDerivatives(Rate r, Rate q, Time tau);
+
+        struct TauHatSensitivities {
+            Real dTauHat_dSigma, dTauHat_dR, dTauHat_dQ;
+        };
+
+        TauHatSensitivities computeTauHatSensitivities(Rate r, Rate q, Time tauHat);
+
+        Time computeTauHat(Rate r, Rate q, Volatility vol, Time T);
+
+        struct QdAddOnSetup {
+            Real t, dr, dq, v, b_t, dp, dm;
+            bool valid;
+
+            QdAddOnSetup(Real z,
+                         Time T,
+                         Time tauTilde,
+                         Real S,
+                         Rate r,
+                         Rate q,
+                         Volatility vol,
+                         Real xmax,
+                         const Interpolation& q_z);
+        };
     }
 
 

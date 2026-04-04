@@ -164,91 +164,70 @@ namespace QuantLib {
     }
 
 
-    namespace {
-        Real sigmaHat(Rate r, Rate q, Time tau) {
-            if (tau < QL_EPSILON)
-                return QL_MAX_REAL;
-            const Real erT = std::exp(r * tau);
-            const Real eqT = std::exp(q * tau);
-            if (erT >= 1.0 || eqT >= 1.0)
-                return QL_MAX_REAL; // tau too small for FP; σ̂ → ∞ as τ → 0
-            const InverseCumulativeNormal PhiInv;
-            return std::abs(PhiInv(eqT) - PhiInv(erT)) / std::sqrt(tau);
+    Real detail::sigmaHat(Rate r, Rate q, Time tau) {
+        if (tau < QL_EPSILON)
+            return QL_MAX_REAL;
+        const Real erT = std::exp(r * tau);
+        const Real eqT = std::exp(q * tau);
+        if (erT >= 1.0 || eqT >= 1.0)
+            return QL_MAX_REAL;
+        const InverseCumulativeNormal PhiInv;
+        return std::abs(PhiInv(eqT) - PhiInv(erT)) / std::sqrt(tau);
+    }
+
+    detail::SigmaHatDerivatives detail::sigmaHatDerivatives(Rate r, Rate q, Time tau) {
+        const Real sqrtTau = std::sqrt(tau);
+        const Real erT = std::exp(r * tau);
+        const Real eqT = std::exp(q * tau);
+        const InverseCumulativeNormal PhiInv;
+        const NormalDistribution phi;
+        const Real gr = PhiInv(erT), gq = PhiInv(eqT);
+        const Real N = gr - gq;
+        const Real sign = (N > 0) ? 1.0 : -1.0;
+        const Real phi_gr = phi(gr), phi_gq = phi(gq);
+        const Real gr_tau = r * erT / phi_gr;
+        const Real gq_tau = q * eqT / phi_gq;
+        const Real N_tau = gr_tau - gq_tau;
+        return {sign * (2 * tau * N_tau - N) / (2 * tau * sqrtTau),
+                sign * tau * erT / (phi_gr * sqrtTau), -sign * tau * eqT / (phi_gq * sqrtTau)};
+    }
+
+    detail::TauHatSensitivities detail::computeTauHatSensitivities(Rate r, Rate q, Time tauHat) {
+        const auto d = sigmaHatDerivatives(r, q, tauHat);
+        const Real inv = 1.0 / d.dSigmaHat_dTau;
+        return {inv, -d.dSigmaHat_dR * inv, -d.dSigmaHat_dQ * inv};
+    }
+
+    Time detail::computeTauHat(Rate r, Rate q, Volatility vol, Time T) {
+        if (sigmaHat(r, q, T) > vol)
+            return T;
+        Brent solver;
+        solver.setMaxEvaluations(100);
+        return solver.solve([&](Real tau) { return sigmaHat(r, q, tau) - vol; }, 1e-10, 0.5 * T,
+                            QL_EPSILON, T);
+    }
+
+    detail::QdAddOnSetup::QdAddOnSetup(Real z,
+                                       Time T,
+                                       Time tauTilde,
+                                       Real S,
+                                       Rate r,
+                                       Rate q,
+                                       Volatility vol,
+                                       Real xmax,
+                                       const Interpolation& q_z)
+    : t(z * z),
+      dr(std::exp(-r * t)),
+      dq(std::exp(-q * t)),
+      v(vol * std::sqrt(t)),
+      b_t(xmax * std::exp(-std::sqrt(std::max(0.0,
+              q_z(2 * std::sqrt(std::max(0.0, T - t) / tauTilde) - 1, true))))),
+      dp(0), dm(0),
+      valid(v >= QL_EPSILON && b_t > QL_EPSILON) {
+        if (valid) {
+            dp = std::log(S * dq / (b_t * dr)) / v + 0.5 * v;
+            dm = dp - v;
         }
-
-        // Derivatives of σ̂ at a given τ, for computing dτ̂/dp via IFT.
-        struct SigmaHatDerivatives {
-            Real dSigmaHat_dTau, dSigmaHat_dR, dSigmaHat_dQ;
-        };
-
-        SigmaHatDerivatives sigmaHatDerivatives(Rate r, Rate q, Time tau) {
-            const Real sqrtTau = std::sqrt(tau);
-            const Real erT = std::exp(r * tau);
-            const Real eqT = std::exp(q * tau);
-            const InverseCumulativeNormal PhiInv;
-            const NormalDistribution phi;
-            const Real gr = PhiInv(erT), gq = PhiInv(eqT);
-            const Real N = gr - gq;
-            const Real sign = (N > 0) ? 1.0 : -1.0;
-            const Real phi_gr = phi(gr), phi_gq = phi(gq);
-            const Real gr_tau = r * erT / phi_gr;
-            const Real gq_tau = q * eqT / phi_gq;
-            const Real N_tau = gr_tau - gq_tau;
-            return {sign * (2 * tau * N_tau - N) / (2 * tau * sqrtTau),
-                    sign * tau * erT / (phi_gr * sqrtTau), -sign * tau * eqT / (phi_gq * sqrtTau)};
-        }
-
-        struct TauHatSensitivities {
-            Real dTauHat_dSigma, dTauHat_dR, dTauHat_dQ;
-        };
-
-        TauHatSensitivities computeTauHatSensitivities(Rate r, Rate q, Time tauHat) {
-            const auto d = sigmaHatDerivatives(r, q, tauHat);
-            const Real inv = 1.0 / d.dSigmaHat_dTau;
-            return {inv, -d.dSigmaHat_dR * inv, -d.dSigmaHat_dQ * inv};
-        }
-
-        // sigma_hat decreases from ∞ (tau→0) to sigma* (tau→∞).
-        // If sigma_hat(T) > vol, boundaries exist throughout [0,T], return T.
-        // Otherwise solve sigma_hat(tau_hat) = vol; boundaries merge at tau_hat < T.
-        Time computeTauHat(Rate r, Rate q, Volatility vol, Time T) {
-            if (sigmaHat(r, q, T) > vol)
-                return T;
-            QuantLib::Brent solver;
-            solver.setMaxEvaluations(100);
-            return solver.solve([&](Real tau) { return sigmaHat(r, q, tau) - vol; }, 1e-10, 0.5 * T,
-                                QL_EPSILON, T);
-        }
-
-        // Common setup for all Greek integrand classes
-        struct QdAddOnSetup {
-            Real t, dr, dq, v, b_t, dp, dm;
-            bool valid;
-
-            QdAddOnSetup(Real z,
-                         Time T,
-                         Time tauTilde,
-                         Real S,
-                         Rate r,
-                         Rate q,
-                         Volatility vol,
-                         Real xmax,
-                         const Interpolation& q_z) {
-                t = z * z;
-                const Real qv = q_z(2 * std::sqrt(std::max(0.0, T - t) / tauTilde) - 1, true);
-                b_t = xmax * std::exp(-std::sqrt(std::max(0.0, qv)));
-
-                dr = std::exp(-r * t);
-                dq = std::exp(-q * t);
-                v = vol * std::sqrt(t);
-
-                valid = (v >= QL_EPSILON && b_t > QL_EPSILON);
-                if (valid) {
-                    dp = std::log(S * dq / (b_t * dr)) / v + 0.5 * v;
-                    dm = dp - v;
-                }
-            }
-        };
     }
 
     detail::QdPutCallParityEngine::QdPutCallParityEngine(
@@ -297,17 +276,17 @@ namespace QuantLib {
             results_.value = res.value;
             // delta_call = d/dS [Put(K,S,q,r)] = strikeSensitivity_put
             results_.delta = res.strikeSensitivity;
-            // gamma_call = d²/dS² [Put(K,S,q,r)] = strikeGamma_put
+            // gamma_call = d^2/dS^2 [Put(K,S,q,r)] = strikeGamma_put
             results_.gamma = res.strikeGamma;
             // vega is symmetric
             results_.vega = res.vega;
-            // rho_call: r appears as q_put → rho_call = dividendRho_put
+            // rho_call: r appears as q_put -> rho_call = dividendRho_put
             results_.rho = res.dividendRho;
-            // dividendRho_call: q appears as r_put → dividendRho_call = rho_put
+            // dividendRho_call: q appears as r_put -> dividendRho_call = rho_put
             results_.dividendRho = res.rho;
             // theta is symmetric
             results_.theta = res.theta;
-            // strikeSensitivity_call: K appears as S_put → delta_put
+            // strikeSensitivity_call: K appears as S_put -> delta_put
             results_.strikeSensitivity = res.delta;
         } else
             QL_FAIL("unknown option type");
@@ -472,8 +451,8 @@ namespace QuantLib {
                     try {
                         x = buildInSolver(eval, QuantLib::Brent(), S, K, 10 * maxIter_, x);
                     } catch (...) {
-                        // For double-boundary case (q<r<0) with large τ,
-                        // boundary B→0 and solver may fail to bracket.
+                        // For double-boundary case (q<r<0) with large tau,
+                        // boundary B->0 and solver may fail to bracket.
                         // Return small fraction of xmax to keep interpolation stable.
                         if (r < 0.0 && q < r)
                             x = 0.01 * eval.xmax();
@@ -512,7 +491,7 @@ namespace QuantLib {
         Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
 
         const bool doubleBoundary = (r < 0.0 && q < r);
-        const Real tauHat = doubleBoundary ? computeTauHat(r, q, vol, T) : 0.0;
+        const Real tauHat = doubleBoundary ? detail::computeTauHat(r, q, vol, T) : 0.0;
         const Time tauTilde = doubleBoundary ? tauHat : T;
 
         detail::QdPutResults res;
@@ -579,7 +558,7 @@ namespace QuantLib {
                 },
                 ChebyshevInterpolation::SecondKind);
 
-            // Y add-on: integrate over calendar time t ∈ [T-τ̂, T]
+            // Y add-on: integrate over calendar time t in [T-tauHat, T]
             const Real zYlo = std::sqrt(std::max(0.0, T - tauHat));
             const Real zYhi = std::sqrt(T);
             auto yAddOnIntegrand = [&](Real z) -> Real {
@@ -635,7 +614,7 @@ namespace QuantLib {
 
         // Delta add-on (B boundary)
         const Real deltaAddOn = integrate([&](Real z) -> Real {
-            const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
+            const detail::QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
             if (!s.valid)
                 return 0.0;
             return 2 * z *
@@ -646,7 +625,7 @@ namespace QuantLib {
 
         // Gamma add-on (B boundary)
         const Real gammaAddOn = integrate([&](Real z) -> Real {
-            const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
+            const detail::QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
             if (!s.valid)
                 return 0.0;
             return 2 * z *
@@ -709,8 +688,8 @@ namespace QuantLib {
         }
 
         // Analytical vega, rho, dividendRho via implicit function theorem.
-        // The QdPlus boundary solves eval(B;p) = 0 at each τ.
-        // By the IFT: dB/dp = -(∂eval/∂p) / (∂eval/∂B)
+        // The QdPlus boundary solves eval(B;p) = 0 at each tau.
+        // By the IFT: dB/dp = -(deval/dp) / (deval/dB)
         {
             const Real eps_sigma = vol * 1e-6;
             const Real eps_r = std::max(std::abs(r), 1.0) * 1e-6;
@@ -747,21 +726,21 @@ namespace QuantLib {
             const auto si_r = makeBoundarySensInterp(eps_r, 0, 0);
             const auto si_q = makeBoundarySensInterp(0, eps_q, 0);
 
-            // ∂f/∂B = 2z/(B·v) · [rK·dr·φ(dm) − qS·dq·φ(dp)]
-            auto dfdb = [&](Real z, const QdAddOnSetup& s) -> Real {
+            // df/dB = 2z/(B*v) * [rK*dr*phi(dm) - qS*dq*phi(dp)]
+            auto dfdb = [&](Real z, const detail::QdAddOnSetup& s) -> Real {
                 return 2 * z / (s.b_t * s.v) *
                        (r * K * s.dr * phi(s.dm) - q * S * s.dq * phi(s.dp));
             };
 
             // Lookup dB/dp from interpolation
-            auto lookupDBdp = [&](const QdAddOnSetup& s, const ChebyshevInterpolation& si) -> Real {
+            auto lookupDBdp = [&](const detail::QdAddOnSetup& s, const ChebyshevInterpolation& si) -> Real {
                 const Real zc = 2 * std::sqrt(std::max(0.0, T - s.t) / tauTilde) - 1;
                 return si(zc, true);
             };
 
-            // Vega: ∂f/∂σ|_B + ∂f/∂B · dB/dσ
+            // Vega: df/dsigma|_B + df/dB * dB/dsigma
             const Real vegaAddOn = integrate([&](Real z) -> Real {
-                const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
+                const detail::QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
                 if (!s.valid)
                     return 0.0;
                 const Real partial = (2 * z / vol) * (r * K * s.dr * phi(s.dm) * s.dp -
@@ -770,9 +749,9 @@ namespace QuantLib {
             });
             res.vega = bc.vega(T) + vegaAddOn;
 
-            // Rho: ∂f/∂r|_B + ∂f/∂B · dB/dr
+            // Rho: df/dr|_B + df/dB * dB/dr
             const Real rhoAddOn = integrate([&](Real z) -> Real {
-                const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
+                const detail::QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
                 if (!s.valid)
                     return 0.0;
                 const Real partial =
@@ -783,9 +762,9 @@ namespace QuantLib {
             });
             res.rho = bc.rho(T) + rhoAddOn;
 
-            // DividendRho: ∂f/∂q|_B + ∂f/∂B · dB/dq
+            // DividendRho: df/dq|_B + df/dB * dB/dq
             const Real divRhoAddOn = integrate([&](Real z) -> Real {
-                const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
+                const detail::QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
                 if (!s.valid)
                     return 0.0;
                 const Real partial =
@@ -831,7 +810,7 @@ namespace QuantLib {
                 const auto siY_r = makeYSensInterp(eps_r, 0, 0);
                 const auto siY_q = makeYSensInterp(0, eps_q, 0);
 
-                // ∂f_Y/∂Y = 2z/(Y·v) · [rK·dr·φ(dm) − qS·dq·φ(dp)]
+                // df_Y/dY = 2z/(Y*v) * [rK*dr*phi(dm) - qS*dq*phi(dp)]
                 auto dfdy = [&](Real z, Real y_t, Real dr_, Real v_, Real dp_, Real dm_) -> Real {
                     return 2 * z / (y_t * v_) *
                            (r * K * dr_ * phi(dm_) - q * S * std::exp(-q * z * z) * phi(dp_));
@@ -888,13 +867,13 @@ namespace QuantLib {
             }
 
             // --- Leibniz boundary correction for vega/rho/divRho ---
-            // When τ̂ < T, the integration lower limit z₀ = √(T−τ̂) depends on
-            // σ, r, q through τ̂. By Leibniz rule: correction = [f_B(z₀)−f_Y(z₀)]·dτ̂/dp/(2z₀)
+            // When tauHat < T, the integration lower limit z0 = sqrt(T-tauHat) depends on
+            // sigma, r, q through tauHat. By Leibniz rule: correction = [f_B(z0)-f_Y(z0)]*dtauHat/dp/(2z0)
             if (doubleBoundary && tauTilde < T - QL_EPSILON) {
                 const Real z0 = std::sqrt(T - tauHat);
                 const Real fB_z0 = aov(z0);
 
-                // Evaluate Y integrand at z₀
+                // Evaluate Y integrand at z0
                 Real fY_z0 = 0.0;
                 if (interpY) {
                     const Real t0 = z0 * z0;
@@ -913,7 +892,7 @@ namespace QuantLib {
 
                 const Real fNet = fB_z0 - fY_z0;
                 if (std::abs(fNet) > QL_EPSILON) {
-                    const auto ths = computeTauHatSensitivities(r, q, tauHat);
+                    const auto ths = detail::computeTauHatSensitivities(r, q, tauHat);
                     const Real leibnizFactor = fNet / (2 * z0);
                     res.vega += leibnizFactor * ths.dTauHat_dSigma;
                     res.rho += leibnizFactor * ths.dTauHat_dR;
@@ -922,10 +901,10 @@ namespace QuantLib {
             }
         }
 
-        // StrikeSensitivity add-on: total d/dK, using B ∝ K
-        // dp = [log(S/K) - log(g) + (r-q)t]/v + v/2, so ∂dp/∂K = -1/(Kv)
+        // StrikeSensitivity add-on: total d/dK, using B proportional to K
+        // dp = [log(S/K) - log(g) + (r-q)t]/v + v/2, so ddp/dK = -1/(Kv)
         const Real strikeSensAddOn = integrate([&](Real z) -> Real {
-            const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
+            const detail::QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
             if (!s.valid)
                 return 0.0;
             return 2 * z *
@@ -934,9 +913,9 @@ namespace QuantLib {
         });
         res.strikeSensitivity = bc.strikeSensitivity() + strikeSensAddOn;
 
-        // StrikeGamma add-on: d²f/dK²
+        // StrikeGamma add-on: d^2f/dK^2
         const Real strikeGammaAddOn = integrate([&](Real z) -> Real {
-            const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
+            const detail::QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *q_z);
             if (!s.valid)
                 return 0.0;
             return 2 * z *
@@ -945,7 +924,7 @@ namespace QuantLib {
         });
         res.strikeGamma = bc.strikeGamma() + strikeGammaAddOn;
 
-        // Theta: Leibniz rule → f(√T) / (2√T)
+        // Theta: Leibniz rule -> f(sqrt(T)) / (2*sqrt(T))
         const Real sqrtT = std::sqrt(T);
         res.theta = bc.theta(S, T) + aov(sqrtT) / (2 * sqrtT);
 
