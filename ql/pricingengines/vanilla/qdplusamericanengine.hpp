@@ -37,6 +37,13 @@ namespace QuantLib {
 
     namespace detail {
 
+        struct QdPutResults {
+            Real value = 0.0;
+            Real delta = 0.0, gamma = 0.0;
+            Real vega = 0.0, rho = 0.0, dividendRho = 0.0, theta = 0.0;
+            Real strikeSensitivity = 0.0, strikeGamma = 0.0;
+        };
+
         class QdPutCallParityEngine: public VanillaOption::engine {
           public:
             explicit QdPutCallParityEngine(
@@ -45,19 +52,20 @@ namespace QuantLib {
             void calculate() const override;
 
           protected:
-            virtual Real calculatePut(
-                Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const = 0;
+            virtual QdPutResults
+            calculatePut(Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const = 0;
 
             const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
 
           private:
-            Real calculatePutWithEdgeCases(
-               Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
+            QdPutResults
+            calculatePutWithEdgeCases(Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
         };
 
         class QdPlusAddOnValue {
           public:
             QdPlusAddOnValue(Time T,
+                             Time tauTilde,
                              Real S,
                              Real K,
                              Rate r,
@@ -68,7 +76,7 @@ namespace QuantLib {
 
             Real operator()(Real z) const;
           private:
-            const Time T_;
+            const Time T_, tauTilde_;
             const Real S_, K_, xmax_;
             const Rate r_, q_;
             const Volatility vol_;
@@ -110,8 +118,8 @@ namespace QuantLib {
         static Real xMax(Real K, Rate r, Rate q);
 
       protected:
-        Real calculatePut(
-            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const override;
+        detail::QdPutResults
+        calculatePut(Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const override;
 
       private:
         template <class Solver>

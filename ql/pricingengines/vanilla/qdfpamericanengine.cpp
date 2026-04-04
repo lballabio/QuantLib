@@ -25,6 +25,7 @@
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/integrals/tanhsinhintegral.hpp>
 #include <ql/math/interpolations/chebyshevinterpolation.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/qdfpamericanengine.hpp>
 #include <utility>
@@ -115,6 +116,119 @@ namespace QuantLib {
 #endif
     }
 
+
+    namespace {
+        // Critical volatility at which double-boundary boundaries merge.
+        // sigma_hat(tau) = |Phi^{-1}(e^{q*tau}) - Phi^{-1}(e^{r*tau})| / sqrt(tau)
+        Real sigmaHat(Rate r, Rate q, Time tau) {
+            if (tau < QL_EPSILON)
+                return QL_MAX_REAL;
+            const Real erT = std::exp(r * tau);
+            const Real eqT = std::exp(q * tau);
+            if (erT >= 1.0 || eqT >= 1.0)
+                return QL_MAX_REAL; // tau too small for FP; σ̂ → ∞ as τ → 0
+            const InverseCumulativeNormal PhiInv;
+            return std::abs(PhiInv(eqT) - PhiInv(erT)) / std::sqrt(tau);
+        }
+
+        // Derivatives of σ̂ at a given τ, for computing dτ̂/dp via IFT.
+        // Returns {σ̂'(τ), ∂σ̂/∂r, ∂σ̂/∂q} at the given τ.
+        struct SigmaHatDerivatives {
+            Real dSigmaHat_dTau; // σ̂'(τ)
+            Real dSigmaHat_dR;   // ∂σ̂/∂r at fixed τ
+            Real dSigmaHat_dQ;   // ∂σ̂/∂q at fixed τ
+        };
+
+        SigmaHatDerivatives sigmaHatDerivatives(Rate r, Rate q, Time tau) {
+            const Real sqrtTau = std::sqrt(tau);
+            const Real erT = std::exp(r * tau);
+            const Real eqT = std::exp(q * tau);
+
+            const InverseCumulativeNormal PhiInv;
+            const NormalDistribution phi;
+
+            const Real gr = PhiInv(erT);
+            const Real gq = PhiInv(eqT);
+            const Real N = gr - gq; // > 0 for q < r < 0
+            const Real sign = (N > 0) ? 1.0 : -1.0;
+
+            // φ(Φ⁻¹(x)) = pdf at the quantile
+            const Real phi_gr = phi(gr);
+            const Real phi_gq = phi(gq);
+
+            // g_α'(τ) = α·e^{ατ} / φ(g_α)
+            const Real gr_tau = r * erT / phi_gr;
+            const Real gq_tau = q * eqT / phi_gq;
+            const Real N_tau = gr_tau - gq_tau;
+
+            // σ̂(τ) = |N(τ)|/√τ → σ̂'(τ) = sign·[2τ·N'−N] / (2τ^{3/2})
+            const Real dSigmaHat_dTau = sign * (2 * tau * N_tau - N) / (2 * tau * sqrtTau);
+
+            // ∂σ̂/∂r = sign · (∂g_r/∂r) / √τ = sign · τ·e^{rτ}/φ(g_r) / √τ
+            const Real dSigmaHat_dR = sign * tau * erT / (phi_gr * sqrtTau);
+
+            // ∂σ̂/∂q = −sign · (∂g_q/∂q) / √τ = −sign · τ·e^{qτ}/φ(g_q) / √τ
+            const Real dSigmaHat_dQ = -sign * tau * eqT / (phi_gq * sqrtTau);
+
+            return {dSigmaHat_dTau, dSigmaHat_dR, dSigmaHat_dQ};
+        }
+
+        // Derivatives dτ̂/dp via IFT: σ̂(τ̂) = σ.
+        // dτ̂/dσ = 1/σ̂'(τ̂), dτ̂/dr = −(∂σ̂/∂r)/σ̂'(τ̂), dτ̂/dq = −(∂σ̂/∂q)/σ̂'(τ̂)
+        struct TauHatSensitivities {
+            Real dTauHat_dSigma;
+            Real dTauHat_dR;
+            Real dTauHat_dQ;
+        };
+
+        TauHatSensitivities computeTauHatSensitivities(Rate r, Rate q, Time tauHat) {
+            const auto d = sigmaHatDerivatives(r, q, tauHat);
+            const Real inv = 1.0 / d.dSigmaHat_dTau;
+            return {inv, -d.dSigmaHat_dR * inv, -d.dSigmaHat_dQ * inv};
+        }
+
+        // Find tau_hat where sigma_hat(r, q, tau_hat) = vol.
+        // sigma_hat decreases from ∞ (tau→0) to sigma* (tau→∞).
+        // If sigma_hat(T) > vol, boundaries exist throughout [0,T], return T.
+        // Otherwise solve sigma_hat(tau_hat) = vol; boundaries merge at tau_hat < T.
+        Time computeTauHat(Rate r, Rate q, Volatility vol, Time T) {
+            if (sigmaHat(r, q, T) > vol)
+                return T;
+            Brent solver;
+            solver.setMaxEvaluations(100);
+            return solver.solve([&](Real tau) { return sigmaHat(r, q, tau) - vol; }, 1e-10, 0.5 * T,
+                                QL_EPSILON, T);
+        }
+
+        struct QdAddOnSetup {
+            Real t, dr, dq, v, b_t, dp, dm;
+            bool valid;
+
+            QdAddOnSetup(Real z,
+                         Time T,
+                         Time tauTilde,
+                         Real S,
+                         Rate r,
+                         Rate q,
+                         Volatility vol,
+                         Real xmax,
+                         const Interpolation& q_z) {
+                t = z * z;
+                const Real qv = q_z(2 * std::sqrt(std::max(0.0, T - t) / tauTilde) - 1, true);
+                b_t = xmax * std::exp(-std::sqrt(std::max(0.0, qv)));
+
+                dr = std::exp(-r * t);
+                dq = std::exp(-q * t);
+                v = vol * std::sqrt(t);
+
+                valid = (v >= QL_EPSILON && b_t > QL_EPSILON);
+                if (valid) {
+                    dp = std::log(S * dq / (b_t * dr)) / v + 0.5 * v;
+                    dm = dp - v;
+                }
+            }
+        };
+    }
 
     class DqFpEquation {
       public:
@@ -426,25 +540,28 @@ namespace QuantLib {
         return scheme;
     }
 
-    Real QdFpAmericanEngine::calculatePut(
-            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
+    detail::QdPutResults
+    QdFpAmericanEngine::calculatePut(Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
 
-        if (r < 0.0 && q < r)
-            QL_FAIL("double-boundary case q<r<0 for a put option is given");
+        const bool doubleBoundary = (r < 0.0 && q < r);
+        const Real tauHat = doubleBoundary ? computeTauHat(r, q, vol, T) : 0.0;
+        const Time tauTilde = doubleBoundary ? tauHat : T;
+
+        detail::QdPutResults res;
 
         const Real xmax =  QdPlusAmericanEngine::xMax(K, r, q);
         const Size n = iterationScheme_->getNumberOfChebyshevInterpolationNodes();
 
+        // --- Lower boundary B: computed over [0, tauTilde] ---
         const ext::shared_ptr<ChebyshevInterpolation> interp =
-            QdPlusAmericanEngine(
-                    process_, n+1, QdPlusAmericanEngine::Halley, 1e-8)
-                .getPutExerciseBoundary(S, K, r, q, vol, T);
+            QdPlusAmericanEngine(process_, n + 1, QdPlusAmericanEngine::Halley, 1e-8)
+                .getPutExerciseBoundary(S, K, r, q, vol, tauTilde);
 
         const Array z = interp->nodes();
-        const Array x = 0.5*std::sqrt(T)*(1.0+z);
+        const Array x = 0.5 * std::sqrt(tauTilde) * (1.0 + z);
 
-        const auto B = [xmax, T, &interp](Real tau) -> Real {
-            const Real z = 2*std::sqrt(std::abs(tau)/T)-1;
+        const auto B = [xmax, tauTilde, &interp](Real tau) -> Real {
+            const Real z = 2 * std::sqrt(std::abs(tau) / tauTilde) - 1;
             return xmax*std::exp(-std::sqrt(std::max(Real(0), (*interp)(z, true))));
         };
 
@@ -503,18 +620,631 @@ namespace QuantLib {
             interp->updateY(y);
         }
 
-        const detail::QdPlusAddOnValue aov(T, S, K, r, q, vol, xmax, interp);
-        const Real addOn =
-           (*iterationScheme_->getExerciseBoundaryToPriceIntegrator())(
-               aov, 0.0, std::sqrt(T));
+        // --- Upper boundary Y (double-boundary case only) ---
+        ext::shared_ptr<ChebyshevInterpolation> interpY;
+        Real ymax = 0.0;
+        std::function<Real(Real)> Y;   // Y(tau) → upper boundary value
+        std::function<Real(Real)> h_y; // h_y(fv) = log(fv/ymax)²
+        ext::shared_ptr<DqFpEquation> eqnY;
+        Array xY, yY;
 
-        const Real europeanValue = BlackCalculator(
-            Option::Put, K, S*std::exp((r-q)*T),
-            vol*std::sqrt(T), std::exp(-r*T)).value();
+        if (doubleBoundary && tauHat > QL_EPSILON) {
+            ymax = K * r / q;
+            const Real bAtTauHat = B(tauHat);
 
-        return std::max(europeanValue, 0.0) + std::max(0.0, addOn);
+            h_y = [ymax](Real fv) -> Real { return squared(std::log(fv / ymax)); };
+
+            // Initial guess: interpolate between Y(0)=ymax and B(tauHat)
+            interpY = ext::make_shared<ChebyshevInterpolation>(
+                n + 1,
+                [&](Real zz) -> Real {
+                    const Real tau = 0.25 * tauHat * squared(1 + zz);
+                    const Real frac = std::sqrt(tau / tauHat);
+                    const Real yGuess = ymax * (1 - frac) + bAtTauHat * frac;
+                    return h_y(std::max(QL_EPSILON, yGuess));
+                },
+                ChebyshevInterpolation::SecondKind);
+
+            Y = [ymax, tauHat, &interpY](Real tau) -> Real {
+                const Real z = 2 * std::sqrt(std::abs(tau) / tauHat) - 1;
+                return ymax * std::exp(-std::sqrt(std::max(Real(0), (*interpY)(z, true))));
+            };
+
+            // FP equation for Y: same DqFpEquation_B structure, Y as boundary
+            eqnY = ext::shared_ptr<DqFpEquation>(
+                new DqFpEquation_B(K, r, q, vol, Y, iterationScheme_->getFixedPointIntegrator()));
+
+            const Array zY = interpY->nodes();
+            xY = 0.5 * std::sqrt(tauHat) * (1.0 + zY);
+            yY = Array(xY.size());
+            yY[0] = 0.0;
+
+            // Jacobi-Newton steps for Y
+            for (Size k = 0; k < n_newton; ++k) {
+                for (Size i = 1; i < xY.size(); ++i) {
+                    const Real tau = squared(xY[i]);
+                    const Real yv = Y(tau);
+
+                    const auto results = eqnY->f(tau, yv);
+                    const Real N = std::get<0>(results);
+                    const Real D = std::get<1>(results);
+                    const Real fv = std::get<2>(results);
+
+                    if (tau < QL_EPSILON)
+                        yY[i] = h_y(fv);
+                    else {
+                        const auto ndd = eqnY->NDd(tau, yv);
+                        const Real Nd = std::get<0>(ndd);
+                        const Real Dd = std::get<1>(ndd);
+                        const Real fd = K * std::exp(-(r - q) * tau) * (Nd / D - Dd * N / (D * D));
+                        yY[i] = h_y(yv - (fv - yv) / (fd - 1));
+                    }
+                }
+                interpY->updateY(yY);
+            }
+
+            // Naive FP steps for Y
+            for (Size k = 0; k < n_fp; ++k) {
+                for (Size i = 1; i < xY.size(); ++i) {
+                    const Real tau = squared(xY[i]);
+                    yY[i] = h_y(std::get<2>(eqnY->f(tau, Y(tau))));
+                }
+                interpY->updateY(yY);
+            }
+        }
+
+        const detail::QdPlusAddOnValue aov(T, tauTilde, S, K, r, q, vol, xmax, interp);
+        const auto integrator = iterationScheme_->getExerciseBoundaryToPriceIntegrator();
+
+        auto integrate = [&](const auto& f) {
+            return (*integrator)(f, std::sqrt(T - tauTilde), std::sqrt(T));
+        };
+
+        const Real addOn = integrate(aov);
+
+        // Y add-on: subtract upper boundary contribution.
+        // Y exists for time-to-expiry τ ∈ [0, τ̂], i.e. calendar time
+        // t ∈ [T−τ̂, T]. Integration variable z = √t.
+        Real addOnY = 0.0;
+        if (doubleBoundary && tauHat > QL_EPSILON) {
+            const NormalDistribution phiY;
+            const CumulativeNormalDistribution PhiY;
+
+            addOnY = (*integrator)(
+                [&](Real z) -> Real {
+                    const Real t = z * z;
+                    const Real tau = T - t; // time-to-expiry
+                    if (tau < QL_EPSILON || tau > tauHat + QL_EPSILON)
+                        return 0.0;
+
+                    // Evaluate Y at time-to-expiry tau
+                    const Real zc = 2 * std::sqrt(std::min(tau, tauHat) / tauHat) - 1;
+                    const Real qv = (*interpY)(zc, true);
+                    const Real y_t = ymax * std::exp(-std::sqrt(std::max(0.0, qv)));
+
+                    const Real dr_ = std::exp(-r * t);
+                    const Real dq_ = std::exp(-q * t);
+                    const Real v_ = vol * std::sqrt(t);
+
+                    if (v_ < QL_EPSILON || y_t < QL_EPSILON)
+                        return 0.0;
+
+                    const Real dp_ = std::log(S * dq_ / (y_t * dr_)) / v_ + 0.5 * v_;
+                    return 2 * z * (r * K * dr_ * PhiY(-(dp_ - v_)) - q * S * dq_ * PhiY(-dp_));
+                },
+                std::sqrt(std::max(0.0, T - tauHat)), std::sqrt(T));
+        }
+
+        const Real fwd = S * std::exp((r - q) * T);
+        const Real stdDev = vol * std::sqrt(T);
+        const Real df = std::exp(-r * T);
+        BlackCalculator bc(Option::Put, K, fwd, stdDev, df);
+
+        // Pricing formula depends on S location (paper step 6):
+        // S > B(0)=xmax: eq(15), only B add-on
+        // S < Y(0)=ymax: eq(16), V = K - S - addOnY
+        // Otherwise: eq(12) with both boundaries, or exercise
+        if (doubleBoundary && tauHat > QL_EPSILON) {
+            // Check if S is in the immediate exercise region at τ=T (now).
+            // Boundaries only exist for τ ≤ tauHat; at τ=T the exercise
+            // region is [Y(T), B(T)] if T ≤ tauHat, otherwise empty.
+            if (T <= tauHat) {
+                const Real B_T = B(T);
+                const Real Y_T = Y(T);
+                if (S >= Y_T && S <= B_T) {
+                    res.value = K - S;
+                    res.delta = -1.0;
+                    // gamma, vega, rho, divRho, theta all zero
+                    res.strikeSensitivity = 1.0;
+                    return res;
+                }
+            }
+            if (S >= xmax) {
+                // Eq (15): upper continuation region, only B
+                res.value = std::max(0.0, bc.value()) + std::max(0.0, addOn);
+            } else if (S <= ymax) {
+                // Eq (16): lower continuation region
+                res.value = std::max(0.0, K - S - addOnY);
+            } else {
+                // Between ymax and xmax but outside [Y(T), B(T)]
+                res.value = std::max(0.0, bc.value()) + std::max(0.0, addOn - addOnY);
+            }
+        } else {
+            res.value = std::max(0.0, bc.value()) + std::max(0.0, addOn - addOnY);
+        }
+
+        const NormalDistribution phi;
+        const CumulativeNormalDistribution Phi;
+
+        // Delta add-on
+        const Real deltaAddOn = integrate([&](Real z) -> Real {
+            const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
+            if (!s.valid)
+                return 0.0;
+            return 2 * z *
+                   (-r * K * s.dr * phi(s.dm) / (S * s.v) - q * s.dq * Phi(-s.dp) +
+                    q * s.dq * phi(s.dp) / s.v);
+        });
+        res.delta = bc.delta(S) + deltaAddOn;
+
+        // Gamma add-on
+        const Real gammaAddOn = integrate([&](Real z) -> Real {
+            const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
+            if (!s.valid)
+                return 0.0;
+            return 2 * z *
+                   (r * K * s.dr * phi(s.dm) * s.dp / (S * S * s.v * s.v) -
+                    q * s.dq * phi(s.dp) * s.dm / (S * s.v * s.v));
+        });
+        res.gamma = bc.gamma(S) + gammaAddOn;
+
+        // --- Y boundary contributions to delta, gamma (double-boundary) ---
+        // The Y add-on uses the same integrand form as B but with the upper
+        // boundary y_t, and is subtracted from the total.
+        // Y boundary setup: evaluates Y at integration point z
+        auto yBoundarySetup =
+            [&](Real z) -> std::tuple<bool, Real, Real, Real, Real, Real, Real, Real> {
+            const Real t = z * z;
+            const Real tau = T - t;
+            if (tau < QL_EPSILON || tau > tauHat + QL_EPSILON)
+                return {false, 0, 0, 0, 0, 0, 0, 0};
+            const Real zc = 2 * std::sqrt(std::min(tau, tauHat) / tauHat) - 1;
+            const Real qv = (*interpY)(zc, true);
+            const Real y_t = ymax * std::exp(-std::sqrt(std::max(0.0, qv)));
+            const Real dr_ = std::exp(-r * t);
+            const Real dq_ = std::exp(-q * t);
+            const Real v_ = vol * std::sqrt(t);
+            if (v_ < QL_EPSILON || y_t < QL_EPSILON)
+                return {false, 0, 0, 0, 0, 0, 0, 0};
+            const Real dp_ = std::log(S * dq_ / (y_t * dr_)) / v_ + 0.5 * v_;
+            const Real dm_ = dp_ - v_;
+            return {true, t, dr_, dq_, v_, y_t, dp_, dm_};
+        };
+
+        const Real zYlo = std::sqrt(std::max(0.0, T - tauHat));
+        const Real zYhi = std::sqrt(T);
+        auto integrateY = [&](const auto& f) -> Real {
+            if (!doubleBoundary || tauHat <= QL_EPSILON)
+                return 0.0;
+            return (*integrator)(f, zYlo, zYhi);
+        };
+
+        if (doubleBoundary && tauHat > QL_EPSILON) {
+            const Real deltaYAddOn = integrateY([&](Real z) -> Real {
+                const auto [valid, t, dr_, dq_, v_, y_t, dp_, dm_] = yBoundarySetup(z);
+                if (!valid)
+                    return 0.0;
+                return 2 * z *
+                       (-r * K * dr_ * phi(dm_) / (S * v_) - q * dq_ * Phi(-dp_) +
+                        q * dq_ * phi(dp_) / v_);
+            });
+            res.delta -= deltaYAddOn;
+
+            const Real gammaYAddOn = integrateY([&](Real z) -> Real {
+                const auto [valid, t, dr_, dq_, v_, y_t, dp_, dm_] = yBoundarySetup(z);
+                if (!valid)
+                    return 0.0;
+                return 2 * z *
+                       (r * K * dr_ * phi(dm_) * dp_ / (S * S * v_ * v_) -
+                        q * dq_ * phi(dp_) * dm_ / (S * v_ * v_));
+            });
+            res.gamma -= gammaYAddOn;
+        }
+
+        // Analytical vega, rho, dividendRho via tangent linear FP iteration.
+        // dV/dp = ∂V/∂p|_B + ∫ (∂f/∂B)·(dB/dp) dz
+        // where dB/dp is obtained by differentiating the FP equation.
+        {
+            const Array y_orig(y);
+            const Size nNodes = x.size();
+            const Size m = nNodes - 1;
+
+            // Determine FP equation type consistently
+            const bool useFpA =
+                (fpEquation_ == FP_A || (fpEquation_ == Auto && std::abs(r - q) < 0.001));
+
+            // Use GaussLegendre for sensitivity equations to avoid
+            // GaussLobatto max-iteration failures with bumped parameters
+            auto makeSensEqn = [&](Rate r_, Rate q_,
+                                   Volatility vol_) -> ext::shared_ptr<DqFpEquation> {
+                auto sensInteg = ext::make_shared<GaussLegendreIntegrator>(25);
+                if (useFpA)
+                    return ext::shared_ptr<DqFpEquation>(
+                        new DqFpEquation_A(K, r_, q_, vol_, B, std::move(sensInteg)));
+                else
+                    return ext::shared_ptr<DqFpEquation>(
+                        new DqFpEquation_B(K, r_, q_, vol_, B, std::move(sensInteg)));
+            };
+
+            // Compute y_fp = h(G(B;p)) explicitly. This differs from y_orig
+            // by the FP residual; using y_orig in finite differences would
+            // amplify this residual by 1/eps, corrupting the sensitivities.
+            Array y_fp(nNodes);
+            y_fp[0] = 0.0;
+            for (Size i = 1; i < nNodes; ++i) {
+                const Real tau = squared(x[i]);
+                y_fp[i] = h(std::get<2>(eqn->f(tau, B(tau))));
+            }
+
+            // Step 1: ∂G/∂p — central difference for O(eps²) accuracy
+            const Real eps_sigma = vol * 1e-4;
+            const Real eps_r = std::max(std::abs(r), 1.0) * 1e-4;
+            const Real eps_q = std::max(std::abs(q), 1.0) * 1e-4;
+
+            const auto eqn_sv_up = makeSensEqn(r, q, vol + eps_sigma);
+            const auto eqn_sv_dn = makeSensEqn(r, q, vol - eps_sigma);
+            const auto eqn_rv_up = makeSensEqn(r + eps_r, q, vol);
+            const auto eqn_rv_dn = makeSensEqn(r - eps_r, q, vol);
+            const auto eqn_qv_up = makeSensEqn(r, q + eps_q, vol);
+            const auto eqn_qv_dn = makeSensEqn(r, q - eps_q, vol);
+
+            Array g_sigma(m), g_r(m), g_q(m);
+            for (Size i = 1; i < nNodes; ++i) {
+                const Real tau = squared(x[i]);
+                const Real b = B(tau);
+                g_sigma[i - 1] =
+                    (h(std::get<2>(eqn_sv_up->f(tau, b))) - h(std::get<2>(eqn_sv_dn->f(tau, b)))) /
+                    (2 * eps_sigma);
+                g_r[i - 1] =
+                    (h(std::get<2>(eqn_rv_up->f(tau, b))) - h(std::get<2>(eqn_rv_dn->f(tau, b)))) /
+                    (2 * eps_r);
+                g_q[i - 1] =
+                    (h(std::get<2>(eqn_qv_up->f(tau, b))) - h(std::get<2>(eqn_qv_dn->f(tau, b)))) /
+                    (2 * eps_q);
+            }
+
+            // Step 2: Sensitivity FP iteration — same contraction as boundary
+            Array s_sigma(g_sigma), s_r(g_r), s_q(g_q);
+            const Real eps_fd = std::sqrt(QL_EPSILON);
+
+            auto iterateSens = [&](Array& s_p, const Array& g_p) {
+                Array y_pert(y_orig);
+                for (Size i = 1; i < nNodes; ++i)
+                    y_pert[i] = y_orig[i] + eps_fd * s_p[i - 1];
+                interp->updateY(y_pert);
+
+                for (Size i = 1; i < nNodes; ++i) {
+                    const Real tau = squared(x[i]);
+                    const Real b = B(tau);
+                    s_p[i - 1] = g_p[i - 1] + (h(std::get<2>(eqn->f(tau, b))) - y_fp[i]) / eps_fd;
+                }
+                interp->updateY(y_orig);
+            };
+
+            for (Size k = 0; k < n_fp; ++k) {
+                iterateSens(s_sigma, g_sigma);
+                iterateSens(s_r, g_r);
+                iterateSens(s_q, g_q);
+            }
+
+            // Step 3: Convert dy/dp → dB/dp at nodes, then interpolate dB/dp
+            // dB = B · (-1/(2√y)) · dy avoids amplification by interpolating
+            // the smooth function dB/dp directly.
+            auto makeBoundarySensInterp = [&](const Array& s_p) {
+                Array db_dp(nNodes);
+                db_dp[0] = 0.0;
+                for (Size i = 1; i < nNodes; ++i) {
+                    const Real yi = y_orig[i];
+                    if (yi < QL_EPSILON) {
+                        db_dp[i] = 0.0;
+                    } else {
+                        const Real Bi = B(squared(x[i]));
+                        db_dp[i] = Bi * (-1.0 / (2 * std::sqrt(yi))) * s_p[i - 1];
+                    }
+                }
+                return ext::make_shared<ChebyshevInterpolation>(db_dp,
+                                                                ChebyshevInterpolation::SecondKind);
+            };
+
+            const auto si_sigma = makeBoundarySensInterp(s_sigma);
+            const auto si_r = makeBoundarySensInterp(s_r);
+            const auto si_q = makeBoundarySensInterp(s_q);
+
+            // When τ̂ < T, dB/dp has two parts:
+            //  (a) FP sensitivity at fixed τ̂ (from the tangent-linear iteration)
+            //  (b) grid remapping: the Chebyshev coordinate z_c = 2√(τ/τ̂)−1
+            //      shifts when τ̂ changes with p.
+            //      dB_remap/dp = (∂B/∂z_c)·(∂z_c/∂τ̂)·(dτ̂/dp)
+            // For vega, |dτ̂/dσ| is small so (b) is negligible.
+            // For rho/divRho, |dτ̂/dr| ≈ 30×|dτ̂/dσ| so (b) is significant.
+
+            // Compute τ̂ sensitivities (needed for grid remapping and Leibniz)
+            const bool hasMerge = doubleBoundary && tauTilde < T - QL_EPSILON;
+            TauHatSensitivities ths{0, 0, 0};
+            if (hasMerge)
+                ths = computeTauHatSensitivities(r, q, tauHat);
+
+            // B boundary: FP sensitivity lookup
+            auto lookupDBdp = [&](Real t_val, const ChebyshevInterpolation& si) -> Real {
+                const Real tau = T - t_val;
+                const Real zc = 2 * std::sqrt(std::max(0.0, tau / tauTilde)) - 1;
+                return si(zc, true);
+            };
+
+            // Vega add-on
+            const Real vegaAddOn = integrate([&](Real z) -> Real {
+                const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
+                if (!s.valid)
+                    return 0.0;
+                const Real dBds = lookupDBdp(s.t, *si_sigma);
+                const Real ddp_ds = -s.dm / vol - dBds / (s.b_t * s.v);
+                const Real ddm_ds = -s.dp / vol - dBds / (s.b_t * s.v);
+                return 2 * z *
+                       (-r * K * s.dr * phi(s.dm) * ddm_ds + q * S * s.dq * phi(s.dp) * ddp_ds);
+            });
+            res.vega = bc.vega(T) + vegaAddOn;
+
+            // Rho add-on
+            const Real rhoAddOn = integrate([&](Real z) -> Real {
+                const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
+                if (!s.valid)
+                    return 0.0;
+                const Real dBdr = lookupDBdp(s.t, *si_r);
+                const Real ddp_dr = s.t / s.v - dBdr / (s.b_t * s.v);
+                return 2 * z *
+                       ((1 - r * s.t) * K * s.dr * Phi(-s.dm) - r * K * s.dr * phi(s.dm) * ddp_dr +
+                        q * S * s.dq * phi(s.dp) * ddp_dr);
+            });
+            res.rho = bc.rho(T) + rhoAddOn;
+
+            // DividendRho add-on
+            const Real divRhoAddOn = integrate([&](Real z) -> Real {
+                const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
+                if (!s.valid)
+                    return 0.0;
+                const Real dBdq = lookupDBdp(s.t, *si_q);
+                const Real ddp_dq = -s.t / s.v - dBdq / (s.b_t * s.v);
+                return 2 * z *
+                       (-r * K * s.dr * phi(s.dm) * ddp_dq - (1 - q * s.t) * S * s.dq * Phi(-s.dp) +
+                        q * S * s.dq * phi(s.dp) * ddp_dq);
+            });
+            res.dividendRho = bc.dividendRho(T) + divRhoAddOn;
+
+            // --- Y boundary sensitivity for vega/rho/divRho ---
+            if (doubleBoundary && tauHat > QL_EPSILON) {
+                const Array yY_orig(yY);
+                const Size nYNodes = xY.size();
+                const Size mY = nYNodes - 1;
+
+                // Y FP baseline values
+                Array y_fp_Y(nYNodes);
+                y_fp_Y[0] = 0.0;
+                for (Size i = 1; i < nYNodes; ++i) {
+                    const Real tau = squared(xY[i]);
+                    y_fp_Y[i] = h_y(std::get<2>(eqnY->f(tau, Y(tau))));
+                }
+
+                // Bumped FP equations for Y (always use FP_B for Y boundary)
+                auto makeSensEqnY = [&](Rate r_, Rate q_,
+                                        Volatility vol_) -> ext::shared_ptr<DqFpEquation> {
+                    auto sensInteg = ext::make_shared<GaussLegendreIntegrator>(25);
+                    return ext::shared_ptr<DqFpEquation>(
+                        new DqFpEquation_B(K, r_, q_, vol_, Y, std::move(sensInteg)));
+                };
+
+                const auto eqnY_sv_up = makeSensEqnY(r, q, vol + eps_sigma);
+                const auto eqnY_sv_dn = makeSensEqnY(r, q, vol - eps_sigma);
+                const auto eqnY_rv_up = makeSensEqnY(r + eps_r, q, vol);
+                const auto eqnY_rv_dn = makeSensEqnY(r - eps_r, q, vol);
+                const auto eqnY_qv_up = makeSensEqnY(r, q + eps_q, vol);
+                const auto eqnY_qv_dn = makeSensEqnY(r, q - eps_q, vol);
+
+                // ∂G_Y/∂p via central difference
+                Array gY_sigma(mY), gY_r(mY), gY_q(mY);
+                for (Size i = 1; i < nYNodes; ++i) {
+                    const Real tau = squared(xY[i]);
+                    const Real yt = Y(tau);
+                    gY_sigma[i - 1] = (h_y(std::get<2>(eqnY_sv_up->f(tau, yt))) -
+                                       h_y(std::get<2>(eqnY_sv_dn->f(tau, yt)))) /
+                                      (2 * eps_sigma);
+                    gY_r[i - 1] = (h_y(std::get<2>(eqnY_rv_up->f(tau, yt))) -
+                                   h_y(std::get<2>(eqnY_rv_dn->f(tau, yt)))) /
+                                  (2 * eps_r);
+                    gY_q[i - 1] = (h_y(std::get<2>(eqnY_qv_up->f(tau, yt))) -
+                                   h_y(std::get<2>(eqnY_qv_dn->f(tau, yt)))) /
+                                  (2 * eps_q);
+                }
+
+                // Sensitivity FP iteration for Y
+                Array sY_sigma(gY_sigma), sY_r(gY_r), sY_q(gY_q);
+
+                auto iterateSensY = [&](Array& s_p, const Array& g_p) {
+                    Array yY_pert(yY_orig);
+                    for (Size i = 1; i < nYNodes; ++i)
+                        yY_pert[i] = yY_orig[i] + eps_fd * s_p[i - 1];
+                    interpY->updateY(yY_pert);
+
+                    for (Size i = 1; i < nYNodes; ++i) {
+                        const Real tau = squared(xY[i]);
+                        const Real yt = Y(tau);
+                        s_p[i - 1] =
+                            g_p[i - 1] + (h_y(std::get<2>(eqnY->f(tau, yt))) - y_fp_Y[i]) / eps_fd;
+                    }
+                    interpY->updateY(yY_orig);
+                };
+
+                for (Size k = 0; k < n_fp; ++k) {
+                    iterateSensY(sY_sigma, gY_sigma);
+                    iterateSensY(sY_r, gY_r);
+                    iterateSensY(sY_q, gY_q);
+                }
+
+                // Convert dy_Y/dp → dY/dp
+                auto makeYBoundarySensInterp = [&](const Array& s_p) {
+                    Array dy_dp(nYNodes);
+                    dy_dp[0] = 0.0;
+                    for (Size i = 1; i < nYNodes; ++i) {
+                        const Real yi = yY_orig[i];
+                        if (yi < QL_EPSILON) {
+                            dy_dp[i] = 0.0;
+                        } else {
+                            const Real Yi = Y(squared(xY[i]));
+                            dy_dp[i] = Yi * (-1.0 / (2 * std::sqrt(yi))) * s_p[i - 1];
+                        }
+                    }
+                    return ext::make_shared<ChebyshevInterpolation>(
+                        dy_dp, ChebyshevInterpolation::SecondKind);
+                };
+
+                const auto siY_sigma = makeYBoundarySensInterp(sY_sigma);
+                const auto siY_r = makeYBoundarySensInterp(sY_r);
+                const auto siY_q = makeYBoundarySensInterp(sY_q);
+
+                // Y boundary: FP sensitivity lookup
+                auto lookupDYdp = [&](Real t_val, const ChebyshevInterpolation& si) -> Real {
+                    const Real tau = T - t_val;
+                    const Real zc =
+                        2 * std::sqrt(std::max(0.0, std::min(tau, tauHat)) / tauHat) - 1;
+                    return si(zc, true);
+                };
+
+                // Vega Y add-on (subtracted)
+                const Real vegaYAddOn = integrateY([&](Real z) -> Real {
+                    const auto [valid, t, dr_, dq_, v_, y_t, dp_, dm_] = yBoundarySetup(z);
+                    if (!valid)
+                        return 0.0;
+                    const Real dYds = lookupDYdp(t, *siY_sigma);
+                    const Real ddp_ds = -dm_ / vol - dYds / (y_t * v_);
+                    const Real ddm_ds = -dp_ / vol - dYds / (y_t * v_);
+                    return 2 * z *
+                           (-r * K * dr_ * phi(dm_) * ddm_ds + q * S * dq_ * phi(dp_) * ddp_ds);
+                });
+                res.vega -= vegaYAddOn;
+
+                // Rho Y add-on (subtracted)
+                const Real rhoYAddOn = integrateY([&](Real z) -> Real {
+                    const auto [valid, t, dr_, dq_, v_, y_t, dp_, dm_] = yBoundarySetup(z);
+                    if (!valid)
+                        return 0.0;
+                    const Real dYdr = lookupDYdp(t, *siY_r);
+                    const Real ddp_dr = t / v_ - dYdr / (y_t * v_);
+                    return 2 * z *
+                           ((1 - r * t) * K * dr_ * Phi(-dm_) - r * K * dr_ * phi(dm_) * ddp_dr +
+                            q * S * dq_ * phi(dp_) * ddp_dr);
+                });
+                res.rho -= rhoYAddOn;
+
+                // DividendRho Y add-on (subtracted)
+                const Real divRhoYAddOn = integrateY([&](Real z) -> Real {
+                    const auto [valid, t, dr_, dq_, v_, y_t, dp_, dm_] = yBoundarySetup(z);
+                    if (!valid)
+                        return 0.0;
+                    const Real dYdq = lookupDYdp(t, *siY_q);
+                    const Real ddp_dq = -t / v_ - dYdq / (y_t * v_);
+                    return 2 * z *
+                           (-r * K * dr_ * phi(dm_) * ddp_dq - (1 - q * t) * S * dq_ * Phi(-dp_) +
+                            q * S * dq_ * phi(dp_) * ddp_dq);
+                });
+                res.dividendRho -= divRhoYAddOn;
+            }
+
+            // --- Leibniz boundary correction for vega/rho/divRho ---
+            // When τ̂ < T, the integration lower limit z₀ = √(T−τ̂) depends on
+            // σ, r, q through τ̂. By Leibniz rule: correction = [f_B(z₀)−f_Y(z₀)]·dτ̂/dp/(2z₀)
+            if (doubleBoundary && tauTilde < T - QL_EPSILON) {
+                const Real z0 = std::sqrt(T - tauHat);
+                const Real fB_z0 = aov(z0);
+
+                // Evaluate Y integrand at z₀
+                Real fY_z0 = 0.0;
+                if (interpY) {
+                    const Real t0 = z0 * z0;
+                    const Real tau0 = T - t0;
+                    const Real zc = 2 * std::sqrt(std::min(tau0, tauHat) / tauHat) - 1;
+                    const Real qv = (*interpY)(zc, true);
+                    const Real y0 = ymax * std::exp(-std::sqrt(std::max(0.0, qv)));
+                    const Real dr0 = std::exp(-r * t0);
+                    const Real dq0 = std::exp(-q * t0);
+                    const Real v0 = vol * std::sqrt(t0);
+                    if (v0 >= QL_EPSILON && y0 > QL_EPSILON) {
+                        const Real dp0 = std::log(S * dq0 / (y0 * dr0)) / v0 + 0.5 * v0;
+                        fY_z0 = 2 * z0 * (r * K * dr0 * Phi(-(dp0 - v0)) - q * S * dq0 * Phi(-dp0));
+                    }
+                }
+
+                const Real fNet = fB_z0 - fY_z0;
+                if (std::abs(fNet) > QL_EPSILON) {
+                    const Real leibnizFactor = fNet / (2 * z0);
+                    res.vega += leibnizFactor * ths.dTauHat_dSigma;
+                    res.rho += leibnizFactor * ths.dTauHat_dR;
+                    res.dividendRho += leibnizFactor * ths.dTauHat_dQ;
+                }
+            }
+        }
+
+        // StrikeSensitivity add-on: total d/dK, using B ∝ K
+        // dp = [log(S/K) - log(g) + (r-q)t]/v + v/2, so ∂dp/∂K = -1/(Kv)
+        const Real strikeSensAddOn = integrate([&](Real z) -> Real {
+            const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
+            if (!s.valid)
+                return 0.0;
+            return 2 * z *
+                   (r * s.dr * (Phi(-s.dm) + phi(s.dm) / s.v) -
+                    q * S * s.dq * phi(s.dp) / (K * s.v));
+        });
+        res.strikeSensitivity = bc.strikeSensitivity() + strikeSensAddOn;
+
+        // StrikeGamma add-on: d²f/dK²
+        const Real strikeGammaAddOn = integrate([&](Real z) -> Real {
+            const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
+            if (!s.valid)
+                return 0.0;
+            return 2 * z *
+                   (r * s.dr * phi(s.dm) * s.dp / (K * s.v * s.v) -
+                    q * S * s.dq * phi(s.dp) * s.dm / (K * K * s.v * s.v));
+        });
+        res.strikeGamma = bc.strikeGamma() + strikeGammaAddOn;
+
+        // --- Y boundary contributions to strikeSens, strikeGamma ---
+        // Y = K·r/q ∝ K, so dY/dK = r/q. The Y integrand also depends on K
+        // directly through the rK·dr·Φ(−d−) term. ∂dp/∂K = −1/(K·v).
+        if (doubleBoundary && tauHat > QL_EPSILON) {
+            const Real strikeSensYAddOn = integrateY([&](Real z) -> Real {
+                const auto [valid, t, dr_, dq_, v_, y_t, dp_, dm_] = yBoundarySetup(z);
+                if (!valid)
+                    return 0.0;
+                return 2 * z *
+                       (r * dr_ * (Phi(-dm_) + phi(dm_) / v_) - q * S * dq_ * phi(dp_) / (K * v_));
+            });
+            res.strikeSensitivity -= strikeSensYAddOn;
+
+            const Real strikeGammaYAddOn = integrateY([&](Real z) -> Real {
+                const auto [valid, t, dr_, dq_, v_, y_t, dp_, dm_] = yBoundarySetup(z);
+                if (!valid)
+                    return 0.0;
+                return 2 * z *
+                       (r * dr_ * phi(dm_) * dp_ / (K * v_ * v_) -
+                        q * S * dq_ * phi(dp_) * dm_ / (K * K * v_ * v_));
+            });
+            res.strikeGamma -= strikeGammaYAddOn;
+        }
+
+        // Theta: Leibniz rule → f(√T) / (2√T)
+        const Real sqrtT = std::sqrt(T);
+        res.theta = bc.theta(S, T) + aov(sqrtT) / (2 * sqrtT);
+
+        return res;
     }
-
 }
 
 
