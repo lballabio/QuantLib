@@ -808,12 +808,6 @@ namespace QuantLib {
                 const auto siY_r = makeYSensInterp(eps_r, 0, 0);
                 const auto siY_q = makeYSensInterp(0, eps_q, 0);
 
-                // df_Y/dY = 2z/(Y*v) * [rK*dr*phi(dm) - qS*dq*phi(dp)]
-                auto dfdy = [&](Real z, Real y_t, Real dr_, Real v_, Real dp_, Real dm_) -> Real {
-                    return 2 * z / (y_t * v_) *
-                           (r * K * dr_ * phi(dm_) - q * S * std::exp(-q * z * z) * phi(dp_));
-                };
-
                 auto lookupDYdp = [&](Real t_val, const ChebyshevInterpolation& si) -> Real {
                     const Real tau = T - t_val;
                     const Real zc =
