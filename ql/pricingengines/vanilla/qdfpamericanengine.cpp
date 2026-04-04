@@ -1053,7 +1053,8 @@ namespace QuantLib {
 
             // --- Leibniz boundary correction for vega/rho/divRho ---
             // When tauHat < T, the integration lower limit z0 = sqrt(T-tauHat) depends on
-            // sigma, r, q through tauHat. By Leibniz rule: correction = [f_B(z0)-f_Y(z0)]*dtauHat/dp/(2z0)
+            // sigma, r, q through tauHat. By Leibniz rule: correction =
+            // [f_B(z0)-f_Y(z0)]*dtauHat/dp/(2z0)
             if (doubleBoundary && tauTilde < T - QL_EPSILON) {
                 const Real z0 = std::sqrt(T - tauHat);
                 const Real fB_z0 = aov(z0);

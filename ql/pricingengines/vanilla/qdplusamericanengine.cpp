@@ -216,14 +216,10 @@ namespace QuantLib {
                                        Volatility vol,
                                        Real xmax,
                                        const Interpolation& q_z)
-    : t(z * z),
-      dr(std::exp(-r * t)),
-      dq(std::exp(-q * t)),
-      v(vol * std::sqrt(t)),
-      b_t(xmax * std::exp(-std::sqrt(std::max(0.0,
-              q_z(2 * std::sqrt(std::max(0.0, T - t) / tauTilde) - 1, true))))),
-      dp(0), dm(0),
-      valid(v >= QL_EPSILON && b_t > QL_EPSILON) {
+    : t(z * z), dr(std::exp(-r * t)), dq(std::exp(-q * t)), v(vol * std::sqrt(t)),
+      b_t(xmax * std::exp(-std::sqrt(std::max(
+                     0.0, q_z(2 * std::sqrt(std::max(0.0, T - t) / tauTilde) - 1, true))))),
+      dp(0), dm(0), valid(v >= QL_EPSILON && b_t > QL_EPSILON) {
         if (valid) {
             dp = std::log(S * dq / (b_t * dr)) / v + 0.5 * v;
             dm = dp - v;
@@ -733,7 +729,8 @@ namespace QuantLib {
             };
 
             // Lookup dB/dp from interpolation
-            auto lookupDBdp = [&](const detail::QdAddOnSetup& s, const ChebyshevInterpolation& si) -> Real {
+            auto lookupDBdp = [&](const detail::QdAddOnSetup& s,
+                                  const ChebyshevInterpolation& si) -> Real {
                 const Real zc = 2 * std::sqrt(std::max(0.0, T - s.t) / tauTilde) - 1;
                 return si(zc, true);
             };
@@ -868,7 +865,8 @@ namespace QuantLib {
 
             // --- Leibniz boundary correction for vega/rho/divRho ---
             // When tauHat < T, the integration lower limit z0 = sqrt(T-tauHat) depends on
-            // sigma, r, q through tauHat. By Leibniz rule: correction = [f_B(z0)-f_Y(z0)]*dtauHat/dp/(2z0)
+            // sigma, r, q through tauHat. By Leibniz rule: correction =
+            // [f_B(z0)-f_Y(z0)]*dtauHat/dp/(2z0)
             if (doubleBoundary && tauTilde < T - QL_EPSILON) {
                 const Real z0 = std::sqrt(T - tauHat);
                 const Real fB_z0 = aov(z0);
