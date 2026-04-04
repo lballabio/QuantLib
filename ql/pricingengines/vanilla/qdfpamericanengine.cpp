@@ -27,6 +27,7 @@
 #include <ql/math/interpolations/chebyshevinterpolation.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/qdfpamericanengine.hpp>
+#include <iostream>
 #include <utility>
 #ifndef QL_BOOST_HAS_TANH_SINH
 #    include <ql/math/integrals/gausslobattointegral.hpp>
@@ -665,12 +666,32 @@ namespace QuantLib {
         } else {
             res.value = std::max(0.0, bc.value()) + std::max(0.0, addOn - addOnY);
         }
+        // Greek add-on integrator: in the near-European regime (small early
+        // exercise premium) the Greek integrands are smooth O(1) functions
+        // while the value integrand is O(addOn). TanhSinh's adaptive
+        // refinement can over-probe the endpoints trying to resolve the
+        // smooth integrand to high relative precision. GaussLegendre with
+        // sufficient order handles this regime robustly. When the early
+        // exercise premium is material, TanhSinh's endpoint handling is
+        // appropriate for potential integrand singularities near tau->0.
+        const Real netAddOn = std::abs(addOn - addOnY);
+        const Real euroVal = std::max(QL_EPSILON, bc.value());
+        const bool useGaussLegendre = (netAddOn < 1e-4 * euroVal);
+
+        const auto glIntegrator = ext::make_shared<GaussLegendreIntegrator>(25);
+        const Real zLo = std::sqrt(T - tauTilde);
+        const Real zHi = std::sqrt(T);
+        auto integrateGreek = [&](const auto& f) {
+            if (useGaussLegendre)
+                return (*glIntegrator)(f, zLo, zHi);
+            return (*integrator)(f, zLo, zHi);
+        };
 
         const NormalDistribution phi;
         const CumulativeNormalDistribution Phi;
 
         // Delta add-on
-        const Real deltaAddOn = integrate([&](Real z) -> Real {
+        const Real deltaAddOn = integrateGreek([&](Real z) -> Real {
             const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
             if (!s.valid)
                 return 0.0;
@@ -681,7 +702,7 @@ namespace QuantLib {
         res.delta = bc.delta(S) + deltaAddOn;
 
         // Gamma add-on
-        const Real gammaAddOn = integrate([&](Real z) -> Real {
+        const Real gammaAddOn = integrateGreek([&](Real z) -> Real {
             const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
             if (!s.valid)
                 return 0.0;
@@ -875,7 +896,7 @@ namespace QuantLib {
             };
 
             // Vega add-on
-            const Real vegaAddOn = integrate([&](Real z) -> Real {
+            const Real vegaAddOn = integrateGreek([&](Real z) -> Real {
                 const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
                 if (!s.valid)
                     return 0.0;
@@ -888,7 +909,7 @@ namespace QuantLib {
             res.vega = bc.vega(T) + vegaAddOn;
 
             // Rho add-on
-            const Real rhoAddOn = integrate([&](Real z) -> Real {
+            auto rhoIntegrand = [&](Real z) -> Real {
                 const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
                 if (!s.valid)
                     return 0.0;
@@ -897,11 +918,12 @@ namespace QuantLib {
                 return 2 * z *
                        ((1 - r * s.t) * K * s.dr * Phi(-s.dm) - r * K * s.dr * phi(s.dm) * ddp_dr +
                         q * S * s.dq * phi(s.dp) * ddp_dr);
-            });
+            };
+            const Real rhoAddOn = integrateGreek(rhoIntegrand);
             res.rho = bc.rho(T) + rhoAddOn;
 
             // DividendRho add-on
-            const Real divRhoAddOn = integrate([&](Real z) -> Real {
+            auto divRhoIntegrand = [&](Real z) -> Real {
                 const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
                 if (!s.valid)
                     return 0.0;
@@ -910,7 +932,8 @@ namespace QuantLib {
                 return 2 * z *
                        (-r * K * s.dr * phi(s.dm) * ddp_dq - (1 - q * s.t) * S * s.dq * Phi(-s.dp) +
                         q * S * s.dq * phi(s.dp) * ddp_dq);
-            });
+            };
+            const Real divRhoAddOn = integrateGreek(divRhoIntegrand);
             res.dividendRho = bc.dividendRho(T) + divRhoAddOn;
 
             // --- Y boundary sensitivity for vega/rho/divRho ---
@@ -1088,7 +1111,7 @@ namespace QuantLib {
 
         // StrikeSensitivity add-on: total d/dK, using B proportional to K
         // dp = [log(S/K) - log(g) + (r-q)t]/v + v/2, so ddp/dK = -1/(Kv)
-        const Real strikeSensAddOn = integrate([&](Real z) -> Real {
+        const Real strikeSensAddOn = integrateGreek([&](Real z) -> Real {
             const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
             if (!s.valid)
                 return 0.0;
@@ -1099,7 +1122,7 @@ namespace QuantLib {
         res.strikeSensitivity = bc.strikeSensitivity() + strikeSensAddOn;
 
         // StrikeGamma add-on: d^2f/dK^2
-        const Real strikeGammaAddOn = integrate([&](Real z) -> Real {
+        const Real strikeGammaAddOn = integrateGreek([&](Real z) -> Real {
             const QdAddOnSetup s(z, T, tauTilde, S, r, q, vol, xmax, *interp);
             if (!s.valid)
                 return 0.0;
