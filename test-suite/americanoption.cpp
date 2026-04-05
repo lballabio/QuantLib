@@ -1576,7 +1576,7 @@ class QdFpGaussLobattoScheme: public QdFpIterationScheme {
 };
 
 
-BOOST_AUTO_TEST_CASE(testBulkQdFpAmericanEngine) {
+BOOST_AUTO_TEST_CASE(testBulkQdFpAmericanEngine, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden bulk examples...");
 
     // Examples are taken from
@@ -1684,7 +1684,7 @@ BOOST_AUTO_TEST_CASE(testBulkQdFpAmericanEngine) {
                 << "\n    tol     : " << tolMax);
 }
 
-BOOST_AUTO_TEST_CASE(testQdEngineWithLobattoIntegral) {
+BOOST_AUTO_TEST_CASE(testQdEngineWithLobattoIntegral, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                        "with high precision Gauss-Lobatto integration...");
 
@@ -2297,7 +2297,7 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyNegativeRates) {
                           ExpectedErrorMessage("negative interest rates"));
 }
 
-BOOST_AUTO_TEST_CASE(testQdAmericanGreeks) {
+BOOST_AUTO_TEST_CASE(testQdAmericanGreeks, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing QD+ and QdFp American option greeks "
                        "against bump and revalue...");
 
