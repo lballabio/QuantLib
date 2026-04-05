@@ -32,7 +32,6 @@
 #include <ql/pricingengines/vanilla/qdplusamericanengine.hpp>
 #include <ql/utilities/null.hpp>
 #include <algorithm>
-#include <iostream>
 #ifndef QL_BOOST_HAS_TANH_SINH
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #endif
@@ -93,6 +92,140 @@ namespace QuantLib {
         Real xmin() const { return xMin; }
         Real xmax() const { return xMax; }
         Size evaluations() const { return nrEvaluations; }
+
+        // Analytical partial derivatives of eval w.r.t. sigma, r, q at fixed S.
+        // Returns {deval/dsigma, deval/dr, deval/dq}.
+        std::tuple<Real, Real, Real> parameterDerivatives(Real S) const {
+            if (S != sc)
+                preCalculate(S);
+
+            const Real sqrtTau = std::sqrt(tau);
+            const Real phi_dm = phi(dm);
+            const Real P = K - S - npv;
+
+            // --- constructor-level derivatives ---
+
+            // dr, dq
+            const Real dr_r = -tau * dr;
+            const Real dq_q = -tau * dq;
+
+            // ddr = r/(1-dr)
+            Real ddr_r;
+            if (std::abs(r * tau) > 1e-5)
+                ddr_r = ((1 - dr) - r * tau * dr) / squared(1 - dr);
+            else
+                ddr_r = 0.5 + r * tau / 6.0;
+
+            // omega = 2(r-q)/sigma^2
+            const Real omega_s = -2 * omega / sigma;
+            const Real omega_r = 2.0 / sigma2;
+            const Real omega_q = -2.0 / sigma2;
+
+            // D = (omega-1)^2 + 8*ddr/sigma^2, sqrtD = sqrt(D)
+            // Note: 2*lambda + omega - 1 = -sqrtD
+            const Real D = squared(omega - 1) + 8 * ddr / sigma2;
+            const Real sqrtD = std::sqrt(D);
+
+            const Real D_s = 2 * (omega - 1) * omega_s - 16 * ddr / (sigma2 * sigma);
+            const Real D_r = 2 * (omega - 1) * omega_r + 8 * ddr_r / sigma2;
+            const Real D_q = 2 * (omega - 1) * omega_q;
+
+            const Real sqrtD_s = D_s / (2 * sqrtD);
+            const Real sqrtD_r = D_r / (2 * sqrtD);
+            const Real sqrtD_q = D_q / (2 * sqrtD);
+
+            // lambda = 0.5*(-(omega-1) - sqrtD)
+            const Real lambda_s = 0.5 * (-omega_s - sqrtD_s);
+            const Real lambda_r = 0.5 * (-omega_r - sqrtD_r);
+            const Real lambda_q = 0.5 * (-omega_q - sqrtD_q);
+
+            // alpha = -2*dr/(sigma^2*sqrtD)
+            // Using quotient rule on num=-2*dr, den=sigma^2*sqrtD
+            const Real a_den = sigma2 * sqrtD;
+            const Real a_den2 = a_den * a_den;
+            const Real a_den_s = 2 * sigma * sqrtD + sigma2 * sqrtD_s;
+            const Real a_den_r = sigma2 * sqrtD_r;
+            const Real a_den_q = sigma2 * sqrtD_q;
+
+            const Real alpha_s = 2 * dr * a_den_s / a_den2;
+            const Real alpha_r = (-2 * dr_r * a_den + 2 * dr * a_den_r) / a_den2;
+            const Real alpha_q = 2 * dr * a_den_q / a_den2;
+
+            // lambdaPrime = 2*ddr^2/(sigma^2*sqrtD)
+            // Quotient rule: num=2*ddr^2, den=sigma^2*sqrtD (same den as alpha)
+            const Real lp_num = 2 * ddr * ddr;
+            const Real lp_num_r = 4 * ddr * ddr_r;
+
+            const Real lp_s = -lp_num * a_den_s / a_den2;
+            const Real lp_r = (lp_num_r * a_den - lp_num * a_den_r) / a_den2;
+            const Real lp_q = -lp_num * a_den_q / a_den2;
+
+            // beta = alpha*(ddr - lambdaPrime/sqrtD) - lambda
+            const Real lp_over_sqrtD = lambdaPrime / sqrtD;
+            const Real inner = ddr - lp_over_sqrtD;
+
+            const Real lpos_s = (lp_s * sqrtD - lambdaPrime * sqrtD_s) / D;
+            const Real lpos_r = (lp_r * sqrtD - lambdaPrime * sqrtD_r) / D;
+            const Real lpos_q = (lp_q * sqrtD - lambdaPrime * sqrtD_q) / D;
+
+            const Real inner_s = -lpos_s;
+            const Real inner_r = ddr_r - lpos_r;
+            const Real inner_q = -lpos_q;
+
+            const Real beta_s = alpha_s * inner + alpha * inner_s - lambda_s;
+            const Real beta_r = alpha_r * inner + alpha * inner_r - lambda_r;
+            const Real beta_q = alpha_q * inner + alpha * inner_q - lambda_q;
+
+            // --- preCalculate-level derivatives at fixed S ---
+
+            // dp, dm
+            const Real dp_s = -dm / sigma;
+            const Real dp_r = sqrtTau / sigma;
+            const Real dp_q = -sqrtTau / sigma;
+
+            const Real dm_s = -dp / sigma;
+            // dm_r = dp_r, dm_q = dp_q (since dm = dp - v and v is independent of r,q)
+
+            // Phi(-dp), Phi(-dm): d(Phi(-x))/dp = -phi(x)*dx/dp
+            const Real Phidp_s = -phi_dp * dp_s;
+            const Real Phidp_r = -phi_dp * dp_r;
+            const Real Phidp_q = -phi_dp * dp_q;
+
+            const Real Phidm_s = -phi_dm * dm_s;
+            const Real Phidm_r = -phi_dm * dp_r;
+            const Real Phidm_q = -phi_dm * dp_q;
+
+            // npv = dr*K*Phi_dm - S*dq*Phi_dp
+            const Real npv_s = K * dr * Phidm_s - S * dq * Phidp_s;
+            const Real npv_r = K * (dr_r * Phi_dm + dr * Phidm_r) - S * dq * Phidp_r;
+            const Real npv_q = K * dr * Phidm_q - S * (dq_q * Phi_dp + dq * Phidp_q);
+
+            // theta = r*K*dr*Phi_dm - q*S*dq*Phi_dp - sigma*S*dq*phi_dp/(2*sqrtTau)
+            const Real theta_s = r * K * dr * Phidm_s - q * S * dq * Phidp_s -
+                                 S * dq * phi_dp * (1 + dp * dm) / (2 * sqrtTau);
+            const Real theta_r = K * dr * (1 - r * tau) * Phi_dm + r * K * dr * Phidm_r -
+                                 q * S * dq * Phidp_r + S * dq * dp * phi_dp / 2;
+            const Real theta_q = r * K * dr * Phidm_q - S * dq * (1 - q * tau) * Phi_dp -
+                                 q * S * dq * Phidp_q - S * dq * phi_dp * dm / 2;
+
+            // --- assemble d(eval)/dp ---
+            // eval = (1-dq*Phi_dp)*S - beta*P + alpha*theta/dr
+            // d(eval)/dp = S*d(-dq*Phi_dp)/dp - d(beta)/dp*P + beta*d(npv)/dp
+            //            + [d(alpha)/dp*theta + alpha*d(theta)/dp]/dr
+            //            + alpha*theta*d(1/dr)/dp
+
+            const Real eval_s = S * (-dq * Phidp_s) - beta_s * P + beta * npv_s +
+                                (alpha_s * theta + alpha * theta_s) / dr;
+
+            // d(1/dr)/dr = tau/dr (since d(dr)/dr = -tau*dr)
+            const Real eval_r = S * (-dq * Phidp_r) - beta_r * P + beta * npv_r +
+                                (alpha_r * theta + alpha * theta_r) / dr + alpha * theta * tau / dr;
+
+            const Real eval_q = S * (-(dq_q * Phi_dp + dq * Phidp_q)) - beta_q * P + beta * npv_q +
+                                (alpha_q * theta + alpha * theta_q) / dr;
+
+            return {eval_s, eval_r, eval_q};
+        }
 
       private:
         void preCalculate(Real S) const {
@@ -688,40 +821,53 @@ namespace QuantLib {
         // The QdPlus boundary solves eval(B;p) = 0 at each tau.
         // By the IFT: dB/dp = -(deval/dp) / (deval/dB)
         {
-            const Real eps_sigma = vol * 1e-6;
-            const Real eps_r = std::max(std::abs(r), 1.0) * 1e-6;
-            const Real eps_q = std::max(std::abs(q), 1.0) * 1e-6;
+            // Build Chebyshev interpolations of dB/dp using analytical derivatives
+            auto makeBoundarySensInterps =
+                [&]() -> std::tuple<ext::shared_ptr<ChebyshevInterpolation>,
+                                    ext::shared_ptr<ChebyshevInterpolation>,
+                                    ext::shared_ptr<ChebyshevInterpolation>> {
+                const Array chebNodes = ChebyshevInterpolation::nodes(
+                    interpolationPoints_, ChebyshevInterpolation::SecondKind);
+                Array db_ds(interpolationPoints_);
+                Array db_dr(interpolationPoints_);
+                Array db_dq(interpolationPoints_);
 
-            // Build Chebyshev interpolations of dB/dp at each node
-            auto makeBoundarySensInterp =
-                [&](Real dr_, Real dq_, Real dvol_) -> ext::shared_ptr<ChebyshevInterpolation> {
-                const Real bump = (dvol_ != 0.0) ? dvol_ : ((dr_ != 0.0) ? dr_ : dq_);
-                return ext::make_shared<ChebyshevInterpolation>(
-                    interpolationPoints_,
-                    [&, dr_, dq_, dvol_, bump](Real z) -> Real {
-                        const Real tau = 0.25 * tauTilde * squared(1 + z);
-                        if (tau < QL_EPSILON)
-                            return 0.0;
+                for (Size i = 0; i < interpolationPoints_; ++i) {
+                    const Real z = chebNodes[i];
+                    const Real tau = 0.25 * tauTilde * squared(1 + z);
+                    if (tau < QL_EPSILON) {
+                        db_ds[i] = db_dr[i] = db_dq[i] = 0.0;
+                        continue;
+                    }
 
-                        const Real b = xmax * std::exp(-std::sqrt(std::max(0.0, (*q_z)(z, true))));
+                    const Real b = xmax * std::exp(-std::sqrt(std::max(0.0, (*q_z)(z, true))));
 
-                        const QdPlusBoundaryEvaluator eval0(S, K, r, q, vol, tau, T);
-                        const Real evalDeriv = eval0.derivative(b);
-                        if (std::abs(evalDeriv) < QL_EPSILON)
-                            return 0.0;
+                    const QdPlusBoundaryEvaluator eval0(S, K, r, q, vol, tau, T);
+                    const Real evalDeriv = eval0.derivative(b);
+                    if (std::abs(evalDeriv) < QL_EPSILON) {
+                        db_ds[i] = db_dr[i] = db_dq[i] = 0.0;
+                        continue;
+                    }
 
-                        const QdPlusBoundaryEvaluator evalBump(S, K, r + dr_, q + dq_, vol + dvol_,
-                                                               tau, T);
-                        const Real dEval = evalBump(b) / bump;
+                    const auto [dEval_ds, dEval_dr, dEval_dq] = eval0.parameterDerivatives(b);
 
-                        return -dEval / evalDeriv;
-                    },
-                    ChebyshevInterpolation::SecondKind);
+                    db_ds[i] = -dEval_ds / evalDeriv;
+                    db_dr[i] = -dEval_dr / evalDeriv;
+                    db_dq[i] = -dEval_dq / evalDeriv;
+                }
+
+                return {ext::make_shared<ChebyshevInterpolation>(
+                            db_ds, ChebyshevInterpolation::SecondKind),
+                        ext::make_shared<ChebyshevInterpolation>(
+                            db_dr, ChebyshevInterpolation::SecondKind),
+                        ext::make_shared<ChebyshevInterpolation>(
+                            db_dq, ChebyshevInterpolation::SecondKind)};
             };
 
-            const auto si_sigma = makeBoundarySensInterp(0, 0, eps_sigma);
-            const auto si_r = makeBoundarySensInterp(eps_r, 0, 0);
-            const auto si_q = makeBoundarySensInterp(0, eps_q, 0);
+            const auto bSensInterps = makeBoundarySensInterps();
+            const auto& si_sigma = std::get<0>(bSensInterps);
+            const auto& si_r = std::get<1>(bSensInterps);
+            const auto& si_q = std::get<2>(bSensInterps);
 
             // df/dB = 2z/(B*v) * [rK*dr*phi(dm) - qS*dq*phi(dp)]
             auto dfdb = [&](Real z, const detail::QdAddOnSetup& s) -> Real {
@@ -775,38 +921,55 @@ namespace QuantLib {
 
             // --- Y boundary contributions to vega, rho, divRho (double-boundary) ---
             if (doubleBoundary && tauHat > QL_EPSILON && interpY) {
-                // Build Y boundary sensitivity interpolations via IFT
-                auto makeYSensInterp = [&](Real dr_, Real dq_,
-                                           Real dvol_) -> ext::shared_ptr<ChebyshevInterpolation> {
-                    const Real bump = (dvol_ != 0.0) ? dvol_ : ((dr_ != 0.0) ? dr_ : dq_);
-                    return ext::make_shared<ChebyshevInterpolation>(
-                        interpolationPoints_,
-                        [&, dr_, dq_, dvol_, bump](Real zz) -> Real {
-                            const Real tau = 0.25 * tauHat * squared(1 + zz);
-                            if (tau < QL_EPSILON)
-                                return 0.0;
+                // Build Y boundary sensitivity interpolations using analytical derivatives
+                auto makeYSensInterps =
+                    [&]() -> std::tuple<ext::shared_ptr<ChebyshevInterpolation>,
+                                        ext::shared_ptr<ChebyshevInterpolation>,
+                                        ext::shared_ptr<ChebyshevInterpolation>> {
+                    const Array yChebNodes = ChebyshevInterpolation::nodes(
+                        interpolationPoints_, ChebyshevInterpolation::SecondKind);
+                    Array dy_ds(interpolationPoints_);
+                    Array dy_dr(interpolationPoints_);
+                    Array dy_dq(interpolationPoints_);
 
-                            const Real zc = 2 * std::sqrt(std::min(tau, tauHat) / tauHat) - 1;
-                            const Real qv = (*interpY)(zc, true);
-                            const Real y = ymax * std::exp(-std::sqrt(std::max(0.0, qv)));
+                    for (Size i = 0; i < interpolationPoints_; ++i) {
+                        const Real zz = yChebNodes[i];
+                        const Real tau = 0.25 * tauHat * squared(1 + zz);
+                        if (tau < QL_EPSILON) {
+                            dy_ds[i] = dy_dr[i] = dy_dq[i] = 0.0;
+                            continue;
+                        }
 
-                            const QdPlusBoundaryEvaluator eval0(S, K, r, q, vol, tau, T);
-                            const Real evalDeriv = eval0.derivative(y);
-                            if (std::abs(evalDeriv) < QL_EPSILON)
-                                return 0.0;
+                        const Real zc = 2 * std::sqrt(std::min(tau, tauHat) / tauHat) - 1;
+                        const Real qv = (*interpY)(zc, true);
+                        const Real y = ymax * std::exp(-std::sqrt(std::max(0.0, qv)));
 
-                            const QdPlusBoundaryEvaluator evalBump(S, K, r + dr_, q + dq_,
-                                                                   vol + dvol_, tau, T);
-                            const Real dEval = evalBump(y) / bump;
+                        const QdPlusBoundaryEvaluator eval0(S, K, r, q, vol, tau, T);
+                        const Real evalDeriv = eval0.derivative(y);
+                        if (std::abs(evalDeriv) < QL_EPSILON) {
+                            dy_ds[i] = dy_dr[i] = dy_dq[i] = 0.0;
+                            continue;
+                        }
 
-                            return -dEval / evalDeriv;
-                        },
-                        ChebyshevInterpolation::SecondKind);
+                        const auto [dEval_ds, dEval_dr, dEval_dq] = eval0.parameterDerivatives(y);
+
+                        dy_ds[i] = -dEval_ds / evalDeriv;
+                        dy_dr[i] = -dEval_dr / evalDeriv;
+                        dy_dq[i] = -dEval_dq / evalDeriv;
+                    }
+
+                    return {ext::make_shared<ChebyshevInterpolation>(
+                                dy_ds, ChebyshevInterpolation::SecondKind),
+                            ext::make_shared<ChebyshevInterpolation>(
+                                dy_dr, ChebyshevInterpolation::SecondKind),
+                            ext::make_shared<ChebyshevInterpolation>(
+                                dy_dq, ChebyshevInterpolation::SecondKind)};
                 };
 
-                const auto siY_sigma = makeYSensInterp(0, 0, eps_sigma);
-                const auto siY_r = makeYSensInterp(eps_r, 0, 0);
-                const auto siY_q = makeYSensInterp(0, eps_q, 0);
+                const auto ySensInterps = makeYSensInterps();
+                const auto& siY_sigma = std::get<0>(ySensInterps);
+                const auto& siY_r = std::get<1>(ySensInterps);
+                const auto& siY_q = std::get<2>(ySensInterps);
 
                 auto lookupDYdp = [&](Real t_val, const ChebyshevInterpolation& si) -> Real {
                     const Real tau = T - t_val;

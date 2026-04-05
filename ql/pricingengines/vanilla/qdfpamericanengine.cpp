@@ -145,8 +145,8 @@ namespace QuantLib {
 
         virtual std::pair<Real, Real> NDd(Real tau, Real b) const = 0;
         virtual std::tuple<Real, Real, Real> f(Real tau, Real b) const = 0;
-        virtual FpParameterDerivatives fDerivatives(
-            Real tau, Real b, Real N, Real D, Real fv) const = 0;
+        virtual FpParameterDerivatives
+        fDerivatives(Real tau, Real b, Real N, Real D, Real fv) const = 0;
 
         virtual ~DqFpEquation() = default;
 
@@ -180,8 +180,8 @@ namespace QuantLib {
 
         std::pair<Real, Real> NDd(Real tau, Real b) const override;
         std::tuple<Real, Real, Real> f(Real tau, Real b) const override;
-        FpParameterDerivatives fDerivatives(
-            Real tau, Real b, Real N, Real D, Real fv) const override;
+        FpParameterDerivatives
+        fDerivatives(Real tau, Real b, Real N, Real D, Real fv) const override;
 
       private:
           const Real K;
@@ -198,8 +198,8 @@ namespace QuantLib {
 
         std::pair<Real, Real> NDd(Real tau, Real b) const override;
         std::tuple<Real, Real, Real> f(Real tau, Real b) const override;
-        FpParameterDerivatives fDerivatives(
-            Real tau, Real b, Real N, Real D, Real fv) const override;
+        FpParameterDerivatives
+        fDerivatives(Real tau, Real b, Real N, Real D, Real fv) const override;
 
       private:
           const Real K;
@@ -324,8 +324,8 @@ namespace QuantLib {
         return std::make_pair(Nd, Dd);
     }
 
-    FpParameterDerivatives DqFpEquation_A::fDerivatives(
-        Real tau, Real b, Real N, Real D, Real fv) const {
+    FpParameterDerivatives
+    DqFpEquation_A::fDerivatives(Real tau, Real b, Real N, Real D, Real fv) const {
 
         if (tau < squared(QL_EPSILON))
             return {0.0, 0.0, 0.0};
@@ -381,129 +381,142 @@ namespace QuantLib {
                 dK3ds += w_i[i] * stv * exp_r * phi_dm_m * (dm_m * dp_m - 1) / vol;
                 // d/dsigma of exp_q*[...] = exp_q*phi(dp)*[-dm*half/(sigma) + stv*(dp*dm-1)/sigma]
                 dK12ds += w_i[i] * exp_q * phi_dp_m *
-                    (-dm_m * half_tau_yp1 / vol + stv * (dp_m * dm_m - 1) / vol);
+                          (-dm_m * half_tau_yp1 / vol + stv * (dp_m * dm_m - 1) / vol);
 
                 // r: d/dr of stv*exp(r*(tau-m))*phi(dm) via product+chain rule
-                dK3dr += w_i[i] * stv * exp_r * phi_dm_m *
-                    ((tau - m) - dm_m * sqrt_m / vol);
+                dK3dr += w_i[i] * stv * exp_r * phi_dm_m * ((tau - m) - dm_m * sqrt_m / vol);
                 // K12 depends on r only through dp (exp_q independent of r)
-                dK12dr += w_i[i] * exp_q * phi_dp_m * (sqrt_m / vol) *
-                    (half_tau_yp1 - stv * dp_m);
+                dK12dr += w_i[i] * exp_q * phi_dp_m * (sqrt_m / vol) * (half_tau_yp1 - stv * dp_m);
 
                 // q: K3 depends on q only through dm (exp_r independent of q)
                 dK3dq += w_i[i] * stv * exp_r * phi_dm_m * dm_m * sqrt_m / vol;
                 // d/dq of exp(q*(tau-m))*[...]: both exp and dp depend on q
                 dK12dq += w_i[i] * exp_q *
-                    ((tau - m) * (half_tau_yp1 * Phi_dp_m + stv * phi_dp_m)
-                     + phi_dp_m * (sqrt_m / vol) * (-half_tau_yp1 + stv * dp_m));
+                          ((tau - m) * (half_tau_yp1 * Phi_dp_m + stv * phi_dp_m) +
+                           phi_dp_m * (sqrt_m / vol) * (-half_tau_yp1 + stv * dp_m));
             }
-        }
-        else {
+        } else {
             const Real sqrtTwoPI = M_SQRT2 * M_SQRTPI;
 
-            K3_val = (*integrator)([&, this](Real y) -> Real {
-                const Real m = 0.25 * tau * squared(1 + y);
-                const Real df = std::exp(r * tau - r * m);
-                if (y <= 5 * QL_EPSILON - 1) {
-                    if (close_enough(b, B(tau - m)))
-                        return df * stv / sqrtTwoPI;
-                    else
-                        return 0.0;
-                }
-                return df * stv * phi(d(m, b / B(tau - m)).second);
-            }, -1, 1);
+            K3_val = (*integrator)(
+                [&, this](Real y) -> Real {
+                    const Real m = 0.25 * tau * squared(1 + y);
+                    const Real df = std::exp(r * tau - r * m);
+                    if (y <= 5 * QL_EPSILON - 1) {
+                        if (close_enough(b, B(tau - m)))
+                            return df * stv / sqrtTwoPI;
+                        else
+                            return 0.0;
+                    }
+                    return df * stv * phi(d(m, b / B(tau - m)).second);
+                },
+                -1, 1);
 
-            K12_val = (*integrator)([&, this](Real y) -> Real {
-                const Real m = 0.25 * tau * squared(1 + y);
-                const Real df = std::exp(q * tau - q * m);
-                if (y <= 5 * QL_EPSILON - 1) {
-                    if (close_enough(b, B(tau - m)))
-                        return df * stv / sqrtTwoPI;
-                    else
-                        return 0.0;
-                }
-                const Real dp = d(m, b / B(tau - m)).first;
-                return df * (0.5 * tau * (y + 1) * Phi(dp) + stv * phi(dp));
-            }, -1, 1);
+            K12_val = (*integrator)(
+                [&, this](Real y) -> Real {
+                    const Real m = 0.25 * tau * squared(1 + y);
+                    const Real df = std::exp(q * tau - q * m);
+                    if (y <= 5 * QL_EPSILON - 1) {
+                        if (close_enough(b, B(tau - m)))
+                            return df * stv / sqrtTwoPI;
+                        else
+                            return 0.0;
+                    }
+                    const Real dp = d(m, b / B(tau - m)).first;
+                    return df * (0.5 * tau * (y + 1) * Phi(dp) + stv * phi(dp));
+                },
+                -1, 1);
 
             // sigma derivative integrals
-            dK3ds = (*integrator)([&, this](Real y) -> Real {
-                const Real m = 0.25 * tau * squared(1 + y);
-                const Real df = std::exp(r * (tau - m));
-                if (y <= 5 * QL_EPSILON - 1) {
-                    if (close_enough(b, B(tau - m)))
-                        return -df * stv / (vol * sqrtTwoPI);
-                    return 0.0;
-                }
-                const auto [dp_m, dm_m] = d(m, b / B(tau - m));
-                return stv * df * phi(dm_m) * (dm_m * dp_m - 1) / vol;
-            }, -1, 1);
+            dK3ds = (*integrator)(
+                [&, this](Real y) -> Real {
+                    const Real m = 0.25 * tau * squared(1 + y);
+                    const Real df = std::exp(r * (tau - m));
+                    if (y <= 5 * QL_EPSILON - 1) {
+                        if (close_enough(b, B(tau - m)))
+                            return -df * stv / (vol * sqrtTwoPI);
+                        return 0.0;
+                    }
+                    const auto [dp_m, dm_m] = d(m, b / B(tau - m));
+                    return stv * df * phi(dm_m) * (dm_m * dp_m - 1) / vol;
+                },
+                -1, 1);
 
-            dK12ds = (*integrator)([&, this](Real y) -> Real {
-                const Real m = 0.25 * tau * squared(1 + y);
-                const Real df = std::exp(q * (tau - m));
-                if (y <= 5 * QL_EPSILON - 1) {
-                    if (close_enough(b, B(tau - m)))
-                        return -df * stv / (vol * sqrtTwoPI);
-                    return 0.0;
-                }
-                const auto [dp_m, dm_m] = d(m, b / B(tau - m));
-                const Real half_tau_yp1 = 0.5 * tau * (y + 1);
-                return df * phi(dp_m) *
-                    (-dm_m * half_tau_yp1 / vol + stv * (dp_m * dm_m - 1) / vol);
-            }, -1, 1);
+            dK12ds = (*integrator)(
+                [&, this](Real y) -> Real {
+                    const Real m = 0.25 * tau * squared(1 + y);
+                    const Real df = std::exp(q * (tau - m));
+                    if (y <= 5 * QL_EPSILON - 1) {
+                        if (close_enough(b, B(tau - m)))
+                            return -df * stv / (vol * sqrtTwoPI);
+                        return 0.0;
+                    }
+                    const auto [dp_m, dm_m] = d(m, b / B(tau - m));
+                    const Real half_tau_yp1 = 0.5 * tau * (y + 1);
+                    return df * phi(dp_m) *
+                           (-dm_m * half_tau_yp1 / vol + stv * (dp_m * dm_m - 1) / vol);
+                },
+                -1, 1);
 
             // r derivative integrals
-            dK3dr = (*integrator)([&, this](Real y) -> Real {
-                const Real m = 0.25 * tau * squared(1 + y);
-                const Real df = std::exp(r * (tau - m));
-                if (y <= 5 * QL_EPSILON - 1) {
-                    if (close_enough(b, B(tau - m)))
-                        return df * stv * tau / sqrtTwoPI;
-                    return 0.0;
-                }
-                const auto [dp_m, dm_m] = d(m, b / B(tau - m));
-                const Real sqrt_m = std::sqrt(m);
-                return stv * df * phi(dm_m) * ((tau - m) - dm_m * sqrt_m / vol);
-            }, -1, 1);
+            dK3dr = (*integrator)(
+                [&, this](Real y) -> Real {
+                    const Real m = 0.25 * tau * squared(1 + y);
+                    const Real df = std::exp(r * (tau - m));
+                    if (y <= 5 * QL_EPSILON - 1) {
+                        if (close_enough(b, B(tau - m)))
+                            return df * stv * tau / sqrtTwoPI;
+                        return 0.0;
+                    }
+                    const auto [dp_m, dm_m] = d(m, b / B(tau - m));
+                    const Real sqrt_m = std::sqrt(m);
+                    return stv * df * phi(dm_m) * ((tau - m) - dm_m * sqrt_m / vol);
+                },
+                -1, 1);
 
-            dK12dr = (*integrator)([&, this](Real y) -> Real {
-                const Real m = 0.25 * tau * squared(1 + y);
-                if (y <= 5 * QL_EPSILON - 1)
-                    return 0.0;
-                const Real df = std::exp(q * (tau - m));
-                const auto [dp_m, dm_m] = d(m, b / B(tau - m));
-                const Real sqrt_m = std::sqrt(m);
-                const Real half_tau_yp1 = 0.5 * tau * (y + 1);
-                return df * phi(dp_m) * (sqrt_m / vol) * (half_tau_yp1 - stv * dp_m);
-            }, -1, 1);
+            dK12dr = (*integrator)(
+                [&, this](Real y) -> Real {
+                    const Real m = 0.25 * tau * squared(1 + y);
+                    if (y <= 5 * QL_EPSILON - 1)
+                        return 0.0;
+                    const Real df = std::exp(q * (tau - m));
+                    const auto [dp_m, dm_m] = d(m, b / B(tau - m));
+                    const Real sqrt_m = std::sqrt(m);
+                    const Real half_tau_yp1 = 0.5 * tau * (y + 1);
+                    return df * phi(dp_m) * (sqrt_m / vol) * (half_tau_yp1 - stv * dp_m);
+                },
+                -1, 1);
 
             // q derivative integrals
-            dK3dq = (*integrator)([&, this](Real y) -> Real {
-                const Real m = 0.25 * tau * squared(1 + y);
-                if (y <= 5 * QL_EPSILON - 1)
-                    return 0.0;
-                const Real df = std::exp(r * (tau - m));
-                const auto [dp_m, dm_m] = d(m, b / B(tau - m));
-                const Real sqrt_m = std::sqrt(m);
-                return stv * df * phi(dm_m) * dm_m * sqrt_m / vol;
-            }, -1, 1);
+            dK3dq = (*integrator)(
+                [&, this](Real y) -> Real {
+                    const Real m = 0.25 * tau * squared(1 + y);
+                    if (y <= 5 * QL_EPSILON - 1)
+                        return 0.0;
+                    const Real df = std::exp(r * (tau - m));
+                    const auto [dp_m, dm_m] = d(m, b / B(tau - m));
+                    const Real sqrt_m = std::sqrt(m);
+                    return stv * df * phi(dm_m) * dm_m * sqrt_m / vol;
+                },
+                -1, 1);
 
-            dK12dq = (*integrator)([&, this](Real y) -> Real {
-                const Real m = 0.25 * tau * squared(1 + y);
-                const Real df = std::exp(q * (tau - m));
-                if (y <= 5 * QL_EPSILON - 1) {
-                    if (close_enough(b, B(tau - m)))
-                        return df * tau * stv / sqrtTwoPI;
-                    return 0.0;
-                }
-                const auto [dp_m, dm_m] = d(m, b / B(tau - m));
-                const Real sqrt_m = std::sqrt(m);
-                const Real half_tau_yp1 = 0.5 * tau * (y + 1);
-                const Real Phi_dp_m = Phi(dp_m);
-                return df * ((tau - m) * (half_tau_yp1 * Phi_dp_m + stv * phi(dp_m))
-                    + phi(dp_m) * (sqrt_m / vol) * (-half_tau_yp1 + stv * dp_m));
-            }, -1, 1);
+            dK12dq = (*integrator)(
+                [&, this](Real y) -> Real {
+                    const Real m = 0.25 * tau * squared(1 + y);
+                    const Real df = std::exp(q * (tau - m));
+                    if (y <= 5 * QL_EPSILON - 1) {
+                        if (close_enough(b, B(tau - m)))
+                            return df * tau * stv / sqrtTwoPI;
+                        return 0.0;
+                    }
+                    const auto [dp_m, dm_m] = d(m, b / B(tau - m));
+                    const Real sqrt_m = std::sqrt(m);
+                    const Real half_tau_yp1 = 0.5 * tau * (y + 1);
+                    const Real Phi_dp_m = Phi(dp_m);
+                    return df * ((tau - m) * (half_tau_yp1 * Phi_dp_m + stv * phi(dp_m)) +
+                                 phi(dp_m) * (sqrt_m / vol) * (-half_tau_yp1 + stv * dp_m));
+                },
+                -1, 1);
         }
 
         // Assemble using product rule: d(r*K3)/dr = K3 + r*dK3/dr, etc.
@@ -612,8 +625,8 @@ namespace QuantLib {
         );
     }
 
-    FpParameterDerivatives DqFpEquation_B::fDerivatives(
-        Real tau, Real b, Real N, Real D, Real fv) const {
+    FpParameterDerivatives
+    DqFpEquation_B::fDerivatives(Real tau, Real b, Real N, Real D, Real fv) const {
 
         if (tau < squared(QL_EPSILON))
             return {0.0, 0.0, 0.0};
@@ -680,75 +693,90 @@ namespace QuantLib {
             dDdr += q * c * int_Ddr;
             dNdq += r * c * int_Ndq;
             dDdq += di_val + q * c * int_Ddq;
-        }
-        else {
+        } else {
             // Generic integrator path
-            ni_val = (*integrator)([&, this](Real u) -> Real {
-                const Real df = std::exp(r * u);
-                if (u >= tau * (1 - 5 * QL_EPSILON)) {
-                    if (close_enough(b, B(u)))
-                        return 0.5 * df;
-                    else
-                        return df * ((b < B(u) ? 0.0 : 1.0));
-                }
-                return df * Phi(d(tau - u, b / B(u)).second);
-            }, 0, tau);
-            di_val = (*integrator)([&, this](Real u) -> Real {
-                const Real df = std::exp(q * u);
-                if (u >= tau * (1 - 5 * QL_EPSILON)) {
-                    if (close_enough(b, B(u)))
-                        return 0.5 * df;
-                    else
-                        return df * ((b < B(u) ? 0.0 : 1.0));
-                }
-                return df * Phi(d(tau - u, b / B(u)).first);
-            }, 0, tau);
+            ni_val = (*integrator)(
+                [&, this](Real u) -> Real {
+                    const Real df = std::exp(r * u);
+                    if (u >= tau * (1 - 5 * QL_EPSILON)) {
+                        if (close_enough(b, B(u)))
+                            return 0.5 * df;
+                        else
+                            return df * ((b < B(u) ? 0.0 : 1.0));
+                    }
+                    return df * Phi(d(tau - u, b / B(u)).second);
+                },
+                0, tau);
+            di_val = (*integrator)(
+                [&, this](Real u) -> Real {
+                    const Real df = std::exp(q * u);
+                    if (u >= tau * (1 - 5 * QL_EPSILON)) {
+                        if (close_enough(b, B(u)))
+                            return 0.5 * df;
+                        else
+                            return df * ((b < B(u) ? 0.0 : 1.0));
+                    }
+                    return df * Phi(d(tau - u, b / B(u)).first);
+                },
+                0, tau);
 
             // sigma derivative integrals
-            const Real i_Nds = (*integrator)([&, this](Real u) -> Real {
-                if (u >= tau * (1 - 5 * QL_EPSILON))
-                    return 0.0;
-                const auto [dpu, dmu] = d(tau - u, b / B(u));
-                return std::exp(r * u) * phi(dmu) * (-dpu / vol);
-            }, 0, tau);
-            const Real i_Dds = (*integrator)([&, this](Real u) -> Real {
-                if (u >= tau * (1 - 5 * QL_EPSILON))
-                    return 0.0;
-                const auto [dpu, dmu] = d(tau - u, b / B(u));
-                return std::exp(q * u) * phi(dpu) * (-dmu / vol);
-            }, 0, tau);
+            const Real i_Nds = (*integrator)(
+                [&, this](Real u) -> Real {
+                    if (u >= tau * (1 - 5 * QL_EPSILON))
+                        return 0.0;
+                    const auto [dpu, dmu] = d(tau - u, b / B(u));
+                    return std::exp(r * u) * phi(dmu) * (-dpu / vol);
+                },
+                0, tau);
+            const Real i_Dds = (*integrator)(
+                [&, this](Real u) -> Real {
+                    if (u >= tau * (1 - 5 * QL_EPSILON))
+                        return 0.0;
+                    const auto [dpu, dmu] = d(tau - u, b / B(u));
+                    return std::exp(q * u) * phi(dpu) * (-dmu / vol);
+                },
+                0, tau);
 
             // r derivative integrals
-            const Real i_Ndr = (*integrator)([&, this](Real u) -> Real {
-                if (u >= tau * (1 - 5 * QL_EPSILON))
-                    return 0.0;
-                const auto [dpu, dmu] = d(tau - u, b / B(u));
-                const Real sqrt_s = std::sqrt(std::max(0.0, tau - u));
-                return std::exp(r * u) * (u * Phi(dmu) + phi(dmu) * sqrt_s / vol);
-            }, 0, tau);
-            const Real i_Ddr = (*integrator)([&, this](Real u) -> Real {
-                if (u >= tau * (1 - 5 * QL_EPSILON))
-                    return 0.0;
-                const auto [dpu, dmu] = d(tau - u, b / B(u));
-                const Real sqrt_s = std::sqrt(std::max(0.0, tau - u));
-                return std::exp(q * u) * phi(dpu) * sqrt_s / vol;
-            }, 0, tau);
+            const Real i_Ndr = (*integrator)(
+                [&, this](Real u) -> Real {
+                    if (u >= tau * (1 - 5 * QL_EPSILON))
+                        return 0.0;
+                    const auto [dpu, dmu] = d(tau - u, b / B(u));
+                    const Real sqrt_s = std::sqrt(std::max(0.0, tau - u));
+                    return std::exp(r * u) * (u * Phi(dmu) + phi(dmu) * sqrt_s / vol);
+                },
+                0, tau);
+            const Real i_Ddr = (*integrator)(
+                [&, this](Real u) -> Real {
+                    if (u >= tau * (1 - 5 * QL_EPSILON))
+                        return 0.0;
+                    const auto [dpu, dmu] = d(tau - u, b / B(u));
+                    const Real sqrt_s = std::sqrt(std::max(0.0, tau - u));
+                    return std::exp(q * u) * phi(dpu) * sqrt_s / vol;
+                },
+                0, tau);
 
             // q derivative integrals
-            const Real i_Ndq = (*integrator)([&, this](Real u) -> Real {
-                if (u >= tau * (1 - 5 * QL_EPSILON))
-                    return 0.0;
-                const auto [dpu, dmu] = d(tau - u, b / B(u));
-                const Real sqrt_s = std::sqrt(std::max(0.0, tau - u));
-                return std::exp(r * u) * phi(dmu) * (-sqrt_s / vol);
-            }, 0, tau);
-            const Real i_Ddq = (*integrator)([&, this](Real u) -> Real {
-                if (u >= tau * (1 - 5 * QL_EPSILON))
-                    return 0.0;
-                const auto [dpu, dmu] = d(tau - u, b / B(u));
-                const Real sqrt_s = std::sqrt(std::max(0.0, tau - u));
-                return std::exp(q * u) * (u * Phi(dpu) + phi(dpu) * (-sqrt_s / vol));
-            }, 0, tau);
+            const Real i_Ndq = (*integrator)(
+                [&, this](Real u) -> Real {
+                    if (u >= tau * (1 - 5 * QL_EPSILON))
+                        return 0.0;
+                    const auto [dpu, dmu] = d(tau - u, b / B(u));
+                    const Real sqrt_s = std::sqrt(std::max(0.0, tau - u));
+                    return std::exp(r * u) * phi(dmu) * (-sqrt_s / vol);
+                },
+                0, tau);
+            const Real i_Ddq = (*integrator)(
+                [&, this](Real u) -> Real {
+                    if (u >= tau * (1 - 5 * QL_EPSILON))
+                        return 0.0;
+                    const auto [dpu, dmu] = d(tau - u, b / B(u));
+                    const Real sqrt_s = std::sqrt(std::max(0.0, tau - u));
+                    return std::exp(q * u) * (u * Phi(dpu) + phi(dpu) * (-sqrt_s / vol));
+                },
+                0, tau);
 
             dNds += r * i_Nds;
             dDds += q * i_Dds;
