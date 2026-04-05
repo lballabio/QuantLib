@@ -27,8 +27,6 @@
 #include <ql/math/interpolations/chebyshevinterpolation.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/qdfpamericanengine.hpp>
-#include <iostream>
-#include <utility>
 #ifndef QL_BOOST_HAS_TANH_SINH
 #    include <ql/math/integrals/gausslobattointegral.hpp>
 #endif
@@ -124,6 +122,10 @@ namespace QuantLib {
         using detail::computeTauHatSensitivities;
     }
 
+    struct FpParameterDerivatives {
+        Real dfv_dSigma, dfv_dR, dfv_dQ;
+    };
+
     class DqFpEquation {
       public:
         DqFpEquation(Rate _r,
@@ -143,6 +145,8 @@ namespace QuantLib {
 
         virtual std::pair<Real, Real> NDd(Real tau, Real b) const = 0;
         virtual std::tuple<Real, Real, Real> f(Real tau, Real b) const = 0;
+        virtual FpParameterDerivatives fDerivatives(
+            Real tau, Real b, Real N, Real D, Real fv) const = 0;
 
         virtual ~DqFpEquation() = default;
 
@@ -176,6 +180,8 @@ namespace QuantLib {
 
         std::pair<Real, Real> NDd(Real tau, Real b) const override;
         std::tuple<Real, Real, Real> f(Real tau, Real b) const override;
+        FpParameterDerivatives fDerivatives(
+            Real tau, Real b, Real N, Real D, Real fv) const override;
 
       private:
           const Real K;
@@ -192,6 +198,8 @@ namespace QuantLib {
 
         std::pair<Real, Real> NDd(Real tau, Real b) const override;
         std::tuple<Real, Real, Real> f(Real tau, Real b) const override;
+        FpParameterDerivatives fDerivatives(
+            Real tau, Real b, Real N, Real D, Real fv) const override;
 
       private:
           const Real K;
@@ -316,6 +324,203 @@ namespace QuantLib {
         return std::make_pair(Nd, Dd);
     }
 
+    FpParameterDerivatives DqFpEquation_A::fDerivatives(
+        Real tau, Real b, Real N, Real D, Real fv) const {
+
+        if (tau < squared(QL_EPSILON))
+            return {0.0, 0.0, 0.0};
+
+        const Real alpha = K * std::exp(-(r - q) * tau);
+        const Real v = vol * std::sqrt(tau);
+        const Real stv = std::sqrt(tau) / vol;
+        const Real sqrtTau = std::sqrt(tau);
+        const Real vol2 = vol * vol;
+        const auto [dp0, dm0] = d(tau, b / K);
+        const Real phi_dp0 = phi(dp0);
+        const Real phi_dm0 = phi(dm0);
+
+        // Lead terms for N = phi(dm0)/v + r*K3
+        // d[phi(d)/v]/dsigma = phi(d)*(d*d_other - 1)/(v*sigma)
+        // d[phi(d)/v]/dr = -d*phi(d)/sigma^2
+        // d[phi(d)/v]/dq = d*phi(d)/sigma^2
+        Real dNds = phi_dm0 * (dm0 * dp0 - 1) / (v * vol);
+        Real dNdr = -dm0 * phi_dm0 / vol2;
+        Real dNdq = dm0 * phi_dm0 / vol2;
+
+        // Lead terms for D = phi(dp0)/v + Phi(dp0) + q*K12
+        // d[Phi(dp0)]/dsigma = phi(dp0)*(-dm0/sigma)
+        // d[Phi(dp0)]/dr = phi(dp0)*sqrtTau/sigma
+        // d[Phi(dp0)]/dq = phi(dp0)*(-sqrtTau/sigma)
+        Real dDds = phi_dp0 * (dp0 * dm0 - 1) / (v * vol) + phi_dp0 * (-dm0 / vol);
+        Real dDdr = -dp0 * phi_dp0 / vol2 + phi_dp0 * sqrtTau / vol;
+        Real dDdq = dp0 * phi_dp0 / vol2 + phi_dp0 * (-sqrtTau / vol);
+
+        // Integral terms for K3 and K12 plus their parameter derivatives
+        Real K3_val = 0, K12_val = 0;
+        Real dK3ds = 0, dK12ds = 0;
+        Real dK3dr = 0, dK12dr = 0;
+        Real dK3dq = 0, dK12dq = 0;
+
+        if (!x_i.empty()) {
+            for (Integer i = x_i.size() - 1; i >= 0; --i) {
+                const Real y = x_i[i];
+                const Real m = 0.25 * tau * squared(1 + y);
+                const auto [dp_m, dm_m] = d(m, b / B(tau - m));
+                const Real phi_dp_m = phi(dp_m);
+                const Real phi_dm_m = phi(dm_m);
+                const Real Phi_dp_m = Phi(dp_m);
+                const Real exp_r = std::exp(r * (tau - m));
+                const Real exp_q = std::exp(q * (tau - m));
+                const Real sqrt_m = std::sqrt(std::max(0.0, m));
+                const Real half_tau_yp1 = 0.5 * tau * (y + 1);
+
+                K3_val += w_i[i] * stv * exp_r * phi_dm_m;
+                K12_val += w_i[i] * exp_q * (half_tau_yp1 * Phi_dp_m + stv * phi_dp_m);
+
+                // sigma: d/dsigma of stv*exp_r*phi(dm) = stv*exp_r*phi(dm)*(dm*dp-1)/sigma
+                dK3ds += w_i[i] * stv * exp_r * phi_dm_m * (dm_m * dp_m - 1) / vol;
+                // d/dsigma of exp_q*[...] = exp_q*phi(dp)*[-dm*half/(sigma) + stv*(dp*dm-1)/sigma]
+                dK12ds += w_i[i] * exp_q * phi_dp_m *
+                    (-dm_m * half_tau_yp1 / vol + stv * (dp_m * dm_m - 1) / vol);
+
+                // r: d/dr of stv*exp(r*(tau-m))*phi(dm) via product+chain rule
+                dK3dr += w_i[i] * stv * exp_r * phi_dm_m *
+                    ((tau - m) - dm_m * sqrt_m / vol);
+                // K12 depends on r only through dp (exp_q independent of r)
+                dK12dr += w_i[i] * exp_q * phi_dp_m * (sqrt_m / vol) *
+                    (half_tau_yp1 - stv * dp_m);
+
+                // q: K3 depends on q only through dm (exp_r independent of q)
+                dK3dq += w_i[i] * stv * exp_r * phi_dm_m * dm_m * sqrt_m / vol;
+                // d/dq of exp(q*(tau-m))*[...]: both exp and dp depend on q
+                dK12dq += w_i[i] * exp_q *
+                    ((tau - m) * (half_tau_yp1 * Phi_dp_m + stv * phi_dp_m)
+                     + phi_dp_m * (sqrt_m / vol) * (-half_tau_yp1 + stv * dp_m));
+            }
+        }
+        else {
+            const Real sqrtTwoPI = M_SQRT2 * M_SQRTPI;
+
+            K3_val = (*integrator)([&, this](Real y) -> Real {
+                const Real m = 0.25 * tau * squared(1 + y);
+                const Real df = std::exp(r * tau - r * m);
+                if (y <= 5 * QL_EPSILON - 1) {
+                    if (close_enough(b, B(tau - m)))
+                        return df * stv / sqrtTwoPI;
+                    else
+                        return 0.0;
+                }
+                return df * stv * phi(d(m, b / B(tau - m)).second);
+            }, -1, 1);
+
+            K12_val = (*integrator)([&, this](Real y) -> Real {
+                const Real m = 0.25 * tau * squared(1 + y);
+                const Real df = std::exp(q * tau - q * m);
+                if (y <= 5 * QL_EPSILON - 1) {
+                    if (close_enough(b, B(tau - m)))
+                        return df * stv / sqrtTwoPI;
+                    else
+                        return 0.0;
+                }
+                const Real dp = d(m, b / B(tau - m)).first;
+                return df * (0.5 * tau * (y + 1) * Phi(dp) + stv * phi(dp));
+            }, -1, 1);
+
+            // sigma derivative integrals
+            dK3ds = (*integrator)([&, this](Real y) -> Real {
+                const Real m = 0.25 * tau * squared(1 + y);
+                const Real df = std::exp(r * (tau - m));
+                if (y <= 5 * QL_EPSILON - 1) {
+                    if (close_enough(b, B(tau - m)))
+                        return -df * stv / (vol * sqrtTwoPI);
+                    return 0.0;
+                }
+                const auto [dp_m, dm_m] = d(m, b / B(tau - m));
+                return stv * df * phi(dm_m) * (dm_m * dp_m - 1) / vol;
+            }, -1, 1);
+
+            dK12ds = (*integrator)([&, this](Real y) -> Real {
+                const Real m = 0.25 * tau * squared(1 + y);
+                const Real df = std::exp(q * (tau - m));
+                if (y <= 5 * QL_EPSILON - 1) {
+                    if (close_enough(b, B(tau - m)))
+                        return -df * stv / (vol * sqrtTwoPI);
+                    return 0.0;
+                }
+                const auto [dp_m, dm_m] = d(m, b / B(tau - m));
+                const Real half_tau_yp1 = 0.5 * tau * (y + 1);
+                return df * phi(dp_m) *
+                    (-dm_m * half_tau_yp1 / vol + stv * (dp_m * dm_m - 1) / vol);
+            }, -1, 1);
+
+            // r derivative integrals
+            dK3dr = (*integrator)([&, this](Real y) -> Real {
+                const Real m = 0.25 * tau * squared(1 + y);
+                const Real df = std::exp(r * (tau - m));
+                if (y <= 5 * QL_EPSILON - 1) {
+                    if (close_enough(b, B(tau - m)))
+                        return df * stv * tau / sqrtTwoPI;
+                    return 0.0;
+                }
+                const auto [dp_m, dm_m] = d(m, b / B(tau - m));
+                const Real sqrt_m = std::sqrt(m);
+                return stv * df * phi(dm_m) * ((tau - m) - dm_m * sqrt_m / vol);
+            }, -1, 1);
+
+            dK12dr = (*integrator)([&, this](Real y) -> Real {
+                const Real m = 0.25 * tau * squared(1 + y);
+                if (y <= 5 * QL_EPSILON - 1)
+                    return 0.0;
+                const Real df = std::exp(q * (tau - m));
+                const auto [dp_m, dm_m] = d(m, b / B(tau - m));
+                const Real sqrt_m = std::sqrt(m);
+                const Real half_tau_yp1 = 0.5 * tau * (y + 1);
+                return df * phi(dp_m) * (sqrt_m / vol) * (half_tau_yp1 - stv * dp_m);
+            }, -1, 1);
+
+            // q derivative integrals
+            dK3dq = (*integrator)([&, this](Real y) -> Real {
+                const Real m = 0.25 * tau * squared(1 + y);
+                if (y <= 5 * QL_EPSILON - 1)
+                    return 0.0;
+                const Real df = std::exp(r * (tau - m));
+                const auto [dp_m, dm_m] = d(m, b / B(tau - m));
+                const Real sqrt_m = std::sqrt(m);
+                return stv * df * phi(dm_m) * dm_m * sqrt_m / vol;
+            }, -1, 1);
+
+            dK12dq = (*integrator)([&, this](Real y) -> Real {
+                const Real m = 0.25 * tau * squared(1 + y);
+                const Real df = std::exp(q * (tau - m));
+                if (y <= 5 * QL_EPSILON - 1) {
+                    if (close_enough(b, B(tau - m)))
+                        return df * tau * stv / sqrtTwoPI;
+                    return 0.0;
+                }
+                const auto [dp_m, dm_m] = d(m, b / B(tau - m));
+                const Real sqrt_m = std::sqrt(m);
+                const Real half_tau_yp1 = 0.5 * tau * (y + 1);
+                const Real Phi_dp_m = Phi(dp_m);
+                return df * ((tau - m) * (half_tau_yp1 * Phi_dp_m + stv * phi(dp_m))
+                    + phi(dp_m) * (sqrt_m / vol) * (-half_tau_yp1 + stv * dp_m));
+            }, -1, 1);
+        }
+
+        // Assemble using product rule: d(r*K3)/dr = K3 + r*dK3/dr, etc.
+        dNds += r * dK3ds;
+        dDds += q * dK12ds;
+        dNdr += K3_val + r * dK3dr;
+        dDdr += q * dK12dr;
+        dNdq += r * dK3dq;
+        dDdq += K12_val + q * dK12dq;
+
+        const Real D2 = D * D;
+        const Real dfv_ds = alpha * (dNds * D - N * dDds) / D2;
+        const Real dfv_dr = -tau * fv + alpha * (dNdr * D - N * dDdr) / D2;
+        const Real dfv_dq = tau * fv + alpha * (dNdq * D - N * dDdq) / D2;
+
+        return {dfv_ds, dfv_dr, dfv_dq};
+    }
 
     DqFpEquation_B::DqFpEquation_B(Real K,
                                    Rate _r,
@@ -405,6 +610,160 @@ namespace QuantLib {
             phi(dpm.second) / (b*vol*std::sqrt(tau)),
             phi(dpm.first)  / (b*vol*std::sqrt(tau))
         );
+    }
+
+    FpParameterDerivatives DqFpEquation_B::fDerivatives(
+        Real tau, Real b, Real N, Real D, Real fv) const {
+
+        if (tau < squared(QL_EPSILON))
+            return {0.0, 0.0, 0.0};
+
+        const Real alpha = K * std::exp(-(r - q) * tau);
+        const Real sqrtTau = std::sqrt(tau);
+        const auto [dp0, dm0] = d(tau, b / K);
+        const Real phi_dp0 = phi(dp0);
+        const Real phi_dm0 = phi(dm0);
+
+        // Lead terms: derivatives of Phi(d0) w.r.t. sigma, r, q
+        Real dNds = phi_dm0 * (-dp0 / vol);
+        Real dDds = phi_dp0 * (-dm0 / vol);
+        Real dNdr = phi_dm0 * (sqrtTau / vol);
+        Real dDdr = phi_dp0 * (sqrtTau / vol);
+        Real dNdq = phi_dm0 * (-sqrtTau / vol);
+        Real dDdq = phi_dp0 * (-sqrtTau / vol);
+
+        // Integral terms accumulated over quadrature nodes.
+        // ni = integral of exp(ru)*Phi(d-) du, needed for d(r*ni)/dr = ni + r*dni/dr
+        // di = integral of exp(qu)*Phi(d+) du, needed for d(q*di)/dq = di + q*ddi/dq
+        Real ni_val = 0, di_val = 0;
+        Real int_Nds = 0, int_Dds = 0;
+        Real int_Ndr = 0, int_Ddr = 0;
+        Real int_Ndq = 0, int_Ddq = 0;
+
+        if (!x_i.empty()) {
+            const Real c = 0.5 * tau;
+
+            for (Integer i = x_i.size() - 1; i >= 0; --i) {
+                const Real u = c * x_i[i] + c;
+                const auto [dpu, dmu] = d(tau - u, b / B(u));
+                const Real phi_dpu = phi(dpu);
+                const Real phi_dmu = phi(dmu);
+                const Real Phi_dmu = Phi(dmu);
+                const Real Phi_dpu = Phi(dpu);
+                const Real exp_ru = std::exp(r * u);
+                const Real exp_qu = std::exp(q * u);
+                const Real sqrt_s = std::sqrt(std::max(0.0, tau - u));
+
+                ni_val += w_i[i] * exp_ru * Phi_dmu;
+                di_val += w_i[i] * exp_qu * Phi_dpu;
+
+                // sigma: dd+/dsigma = -d-/sigma, dd-/dsigma = -d+/sigma
+                int_Nds += w_i[i] * exp_ru * phi_dmu * (-dpu / vol);
+                int_Dds += w_i[i] * exp_qu * phi_dpu * (-dmu / vol);
+
+                // r: dd/dr = sqrt(tau-u)/sigma for both d+ and d-
+                // Also u*Phi from d(exp(ru))/dr = u*exp(ru)
+                int_Ndr += w_i[i] * exp_ru * (u * Phi_dmu + phi_dmu * sqrt_s / vol);
+                int_Ddr += w_i[i] * exp_qu * phi_dpu * sqrt_s / vol;
+
+                // q: dd/dq = -sqrt(tau-u)/sigma for both d+ and d-
+                // Also u*Phi from d(exp(qu))/dq = u*exp(qu)
+                int_Ndq += w_i[i] * exp_ru * phi_dmu * (-sqrt_s / vol);
+                int_Ddq += w_i[i] * exp_qu * (u * Phi_dpu + phi_dpu * (-sqrt_s / vol));
+            }
+            ni_val *= c;
+            di_val *= c;
+
+            dNds += r * c * int_Nds;
+            dDds += q * c * int_Dds;
+            dNdr += ni_val + r * c * int_Ndr;
+            dDdr += q * c * int_Ddr;
+            dNdq += r * c * int_Ndq;
+            dDdq += di_val + q * c * int_Ddq;
+        }
+        else {
+            // Generic integrator path
+            ni_val = (*integrator)([&, this](Real u) -> Real {
+                const Real df = std::exp(r * u);
+                if (u >= tau * (1 - 5 * QL_EPSILON)) {
+                    if (close_enough(b, B(u)))
+                        return 0.5 * df;
+                    else
+                        return df * ((b < B(u) ? 0.0 : 1.0));
+                }
+                return df * Phi(d(tau - u, b / B(u)).second);
+            }, 0, tau);
+            di_val = (*integrator)([&, this](Real u) -> Real {
+                const Real df = std::exp(q * u);
+                if (u >= tau * (1 - 5 * QL_EPSILON)) {
+                    if (close_enough(b, B(u)))
+                        return 0.5 * df;
+                    else
+                        return df * ((b < B(u) ? 0.0 : 1.0));
+                }
+                return df * Phi(d(tau - u, b / B(u)).first);
+            }, 0, tau);
+
+            // sigma derivative integrals
+            const Real i_Nds = (*integrator)([&, this](Real u) -> Real {
+                if (u >= tau * (1 - 5 * QL_EPSILON))
+                    return 0.0;
+                const auto [dpu, dmu] = d(tau - u, b / B(u));
+                return std::exp(r * u) * phi(dmu) * (-dpu / vol);
+            }, 0, tau);
+            const Real i_Dds = (*integrator)([&, this](Real u) -> Real {
+                if (u >= tau * (1 - 5 * QL_EPSILON))
+                    return 0.0;
+                const auto [dpu, dmu] = d(tau - u, b / B(u));
+                return std::exp(q * u) * phi(dpu) * (-dmu / vol);
+            }, 0, tau);
+
+            // r derivative integrals
+            const Real i_Ndr = (*integrator)([&, this](Real u) -> Real {
+                if (u >= tau * (1 - 5 * QL_EPSILON))
+                    return 0.0;
+                const auto [dpu, dmu] = d(tau - u, b / B(u));
+                const Real sqrt_s = std::sqrt(std::max(0.0, tau - u));
+                return std::exp(r * u) * (u * Phi(dmu) + phi(dmu) * sqrt_s / vol);
+            }, 0, tau);
+            const Real i_Ddr = (*integrator)([&, this](Real u) -> Real {
+                if (u >= tau * (1 - 5 * QL_EPSILON))
+                    return 0.0;
+                const auto [dpu, dmu] = d(tau - u, b / B(u));
+                const Real sqrt_s = std::sqrt(std::max(0.0, tau - u));
+                return std::exp(q * u) * phi(dpu) * sqrt_s / vol;
+            }, 0, tau);
+
+            // q derivative integrals
+            const Real i_Ndq = (*integrator)([&, this](Real u) -> Real {
+                if (u >= tau * (1 - 5 * QL_EPSILON))
+                    return 0.0;
+                const auto [dpu, dmu] = d(tau - u, b / B(u));
+                const Real sqrt_s = std::sqrt(std::max(0.0, tau - u));
+                return std::exp(r * u) * phi(dmu) * (-sqrt_s / vol);
+            }, 0, tau);
+            const Real i_Ddq = (*integrator)([&, this](Real u) -> Real {
+                if (u >= tau * (1 - 5 * QL_EPSILON))
+                    return 0.0;
+                const auto [dpu, dmu] = d(tau - u, b / B(u));
+                const Real sqrt_s = std::sqrt(std::max(0.0, tau - u));
+                return std::exp(q * u) * (u * Phi(dpu) + phi(dpu) * (-sqrt_s / vol));
+            }, 0, tau);
+
+            dNds += r * i_Nds;
+            dDds += q * i_Dds;
+            dNdr += ni_val + r * i_Ndr;
+            dDdr += q * i_Ddr;
+            dNdq += r * i_Ndq;
+            dDdq += di_val + q * i_Ddq;
+        }
+
+        const Real D2 = D * D;
+        const Real dfv_ds = alpha * (dNds * D - N * dDds) / D2;
+        const Real dfv_dr = -tau * fv + alpha * (dNdr * D - N * dDdr) / D2;
+        const Real dfv_dq = tau * fv + alpha * (dNdq * D - N * dDdq) / D2;
+
+        return {dfv_ds, dfv_dr, dfv_dq};
     }
 
     QdFpAmericanEngine::QdFpAmericanEngine(
@@ -773,58 +1132,26 @@ namespace QuantLib {
             const Size nNodes = x.size();
             const Size m = nNodes - 1;
 
-            // Determine FP equation type consistently
-            const bool useFpA =
-                (fpEquation_ == FP_A || (fpEquation_ == Auto && std::abs(r - q) < 0.001));
-
-            // Use GaussLegendre for sensitivity equations to avoid
-            // GaussLobatto max-iteration failures with bumped parameters
-            auto makeSensEqn = [&](Rate r_, Rate q_,
-                                   Volatility vol_) -> ext::shared_ptr<DqFpEquation> {
-                auto sensInteg = ext::make_shared<GaussLegendreIntegrator>(25);
-                if (useFpA)
-                    return ext::shared_ptr<DqFpEquation>(
-                        new DqFpEquation_A(K, r_, q_, vol_, B, std::move(sensInteg)));
-                else
-                    return ext::shared_ptr<DqFpEquation>(
-                        new DqFpEquation_B(K, r_, q_, vol_, B, std::move(sensInteg)));
-            };
-
-            // Compute y_fp = h(G(B;p)) explicitly. This differs from y_orig
-            // by the FP residual; using y_orig in finite differences would
-            // amplify this residual by 1/eps, corrupting the sensitivities.
-            Array y_fp(nNodes);
+            // Step 1: dG/dp via analytical derivatives of the FP equation.
+            // h(fv) = log(fv/xmax)^2, h'(fv) = 2*log(fv/xmax)/fv
+            // dG/dp = h'(fv) * dfv/dp
+            Array y_fp(nNodes), g_sigma(m), g_r(m), g_q(m);
             y_fp[0] = 0.0;
             for (Size i = 1; i < nNodes; ++i) {
                 const Real tau = squared(x[i]);
-                y_fp[i] = h(std::get<2>(eqn->f(tau, B(tau))));
-            }
-
-            // Step 1: dG/dp -- central difference for O(eps^2) accuracy
-            const Real eps_sigma = vol * 1e-4;
-            const Real eps_r = std::max(std::abs(r), 1.0) * 1e-4;
-            const Real eps_q = std::max(std::abs(q), 1.0) * 1e-4;
-
-            const auto eqn_sv_up = makeSensEqn(r, q, vol + eps_sigma);
-            const auto eqn_sv_dn = makeSensEqn(r, q, vol - eps_sigma);
-            const auto eqn_rv_up = makeSensEqn(r + eps_r, q, vol);
-            const auto eqn_rv_dn = makeSensEqn(r - eps_r, q, vol);
-            const auto eqn_qv_up = makeSensEqn(r, q + eps_q, vol);
-            const auto eqn_qv_dn = makeSensEqn(r, q - eps_q, vol);
-
-            Array g_sigma(m), g_r(m), g_q(m);
-            for (Size i = 1; i < nNodes; ++i) {
-                const Real tau = squared(x[i]);
                 const Real b = B(tau);
-                g_sigma[i - 1] =
-                    (h(std::get<2>(eqn_sv_up->f(tau, b))) - h(std::get<2>(eqn_sv_dn->f(tau, b)))) /
-                    (2 * eps_sigma);
-                g_r[i - 1] =
-                    (h(std::get<2>(eqn_rv_up->f(tau, b))) - h(std::get<2>(eqn_rv_dn->f(tau, b)))) /
-                    (2 * eps_r);
-                g_q[i - 1] =
-                    (h(std::get<2>(eqn_qv_up->f(tau, b))) - h(std::get<2>(eqn_qv_dn->f(tau, b)))) /
-                    (2 * eps_q);
+                const auto [N_i, D_i, fv_i] = eqn->f(tau, b);
+                y_fp[i] = h(fv_i);
+
+                if (tau < squared(QL_EPSILON) || fv_i < QL_EPSILON) {
+                    g_sigma[i - 1] = g_r[i - 1] = g_q[i - 1] = 0.0;
+                } else {
+                    const auto derivs = eqn->fDerivatives(tau, b, N_i, D_i, fv_i);
+                    const Real hp = 2.0 * std::log(fv_i / xmax) / fv_i;
+                    g_sigma[i - 1] = hp * derivs.dfv_dSigma;
+                    g_r[i - 1] = hp * derivs.dfv_dR;
+                    g_q[i - 1] = hp * derivs.dfv_dQ;
+                }
             }
 
             // Step 2: Sensitivity FP iteration -- same contraction as boundary
@@ -942,43 +1269,25 @@ namespace QuantLib {
                 const Size nYNodes = xY.size();
                 const Size mY = nYNodes - 1;
 
-                // Y FP baseline values
-                Array y_fp_Y(nYNodes);
+                // Step 1 for Y: analytical dG_Y/dp
+                // h_y(fv) = log(fv/ymax)^2, h_y'(fv) = 2*log(fv/ymax)/fv
+                Array y_fp_Y(nYNodes), gY_sigma(mY), gY_r(mY), gY_q(mY);
                 y_fp_Y[0] = 0.0;
                 for (Size i = 1; i < nYNodes; ++i) {
                     const Real tau = squared(xY[i]);
-                    y_fp_Y[i] = h_y(std::get<2>(eqnY->f(tau, Y(tau))));
-                }
-
-                // Bumped FP equations for Y (always use FP_B for Y boundary)
-                auto makeSensEqnY = [&](Rate r_, Rate q_,
-                                        Volatility vol_) -> ext::shared_ptr<DqFpEquation> {
-                    auto sensInteg = ext::make_shared<GaussLegendreIntegrator>(25);
-                    return ext::shared_ptr<DqFpEquation>(
-                        new DqFpEquation_B(K, r_, q_, vol_, Y, std::move(sensInteg)));
-                };
-
-                const auto eqnY_sv_up = makeSensEqnY(r, q, vol + eps_sigma);
-                const auto eqnY_sv_dn = makeSensEqnY(r, q, vol - eps_sigma);
-                const auto eqnY_rv_up = makeSensEqnY(r + eps_r, q, vol);
-                const auto eqnY_rv_dn = makeSensEqnY(r - eps_r, q, vol);
-                const auto eqnY_qv_up = makeSensEqnY(r, q + eps_q, vol);
-                const auto eqnY_qv_dn = makeSensEqnY(r, q - eps_q, vol);
-
-                // dG_Y/dp via central difference
-                Array gY_sigma(mY), gY_r(mY), gY_q(mY);
-                for (Size i = 1; i < nYNodes; ++i) {
-                    const Real tau = squared(xY[i]);
                     const Real yt = Y(tau);
-                    gY_sigma[i - 1] = (h_y(std::get<2>(eqnY_sv_up->f(tau, yt))) -
-                                       h_y(std::get<2>(eqnY_sv_dn->f(tau, yt)))) /
-                                      (2 * eps_sigma);
-                    gY_r[i - 1] = (h_y(std::get<2>(eqnY_rv_up->f(tau, yt))) -
-                                   h_y(std::get<2>(eqnY_rv_dn->f(tau, yt)))) /
-                                  (2 * eps_r);
-                    gY_q[i - 1] = (h_y(std::get<2>(eqnY_qv_up->f(tau, yt))) -
-                                   h_y(std::get<2>(eqnY_qv_dn->f(tau, yt)))) /
-                                  (2 * eps_q);
+                    const auto [NY_i, DY_i, fvY_i] = eqnY->f(tau, yt);
+                    y_fp_Y[i] = h_y(fvY_i);
+
+                    if (tau < squared(QL_EPSILON) || fvY_i < QL_EPSILON) {
+                        gY_sigma[i - 1] = gY_r[i - 1] = gY_q[i - 1] = 0.0;
+                    } else {
+                        const auto derivs = eqnY->fDerivatives(tau, yt, NY_i, DY_i, fvY_i);
+                        const Real hp = 2.0 * std::log(fvY_i / ymax) / fvY_i;
+                        gY_sigma[i - 1] = hp * derivs.dfv_dSigma;
+                        gY_r[i - 1] = hp * derivs.dfv_dR;
+                        gY_q[i - 1] = hp * derivs.dfv_dQ;
+                    }
                 }
 
                 // Sensitivity FP iteration for Y
