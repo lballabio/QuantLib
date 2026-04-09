@@ -1646,6 +1646,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\mcvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\qdfpamericanengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\qdplusamericanengine.hpp" />
+    <ClInclude Include="ql\pricingengines\vanilla\vnbinomialengine.hpp" />
     <ClInclude Include="ql\processes\all.hpp" />
     <ClInclude Include="ql\processes\batesprocess.hpp" />
     <ClInclude Include="ql\processes\blackscholesprocess.hpp" />
@@ -2708,6 +2709,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\mchestonhullwhiteengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\qdfpamericanengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\qdplusamericanengine.cpp" />
+    <ClCompile Include="ql\pricingengines\vanilla\vnbinomialengine.cpp" />
     <ClCompile Include="ql\processes\batesprocess.cpp" />
     <ClCompile Include="ql\processes\blackscholesprocess.cpp" />
     <ClCompile Include="ql\processes\coxingersollrossprocess.cpp" />
