@@ -200,23 +200,41 @@ namespace QuantLib {
 
             // todo add openmp support later on (as in gaussian1dswaptionengine)
 
+            // Precompute OAS discount factors (independent of state k)
+            Real zSpreadDf_step = Real(1.0);
+            std::vector<Real> oasFixedDf, oasFloatDf;
+            if (expiry0 > settlement && !oas_.empty()) {
+                zSpreadDf_step = std::exp(-oas_->value() *
+                    (expiry1Time != Null<Real>() ? (expiry1Time - expiry0Time) : 0.0));
+                const auto& dc = model_->termStructure()->dayCounter();
+                oasFixedDf.resize(arguments_.fixedCoupons.size());
+                for (Size l = j1; l < arguments_.fixedCoupons.size(); l++)
+                    oasFixedDf[l] = std::exp(-oas_->value() *
+                        dc.yearFraction(expiry0, arguments_.fixedPayDates[l]));
+                oasFloatDf.resize(arguments_.floatingCoupons.size());
+                for (Size l = k1; l < arguments_.floatingCoupons.size(); l++)
+                    oasFloatDf[l] = std::exp(-oas_->value() *
+                        dc.yearFraction(expiry0, arguments_.floatingPayDates[l]));
+            }
+
+            // payoff0 interpolates npv1 on the z grid — constant across
+            // all k, so build it ONCE before the loop.
+            CubicInterpolation payoff0(
+                z.begin(), z.end(), npv1.begin(),
+                CubicInterpolation::Spline, true,
+                CubicInterpolation::Lagrange, 0.0,
+                CubicInterpolation::Lagrange, 0.0);
+
             for (Size k = 0; k < (expiry0 > settlement ? npv0.size() : 1);
                  k++) {
 
                 Real price = 0.0;
                 if (expiry1Time != Null<Real>()) {
                     Real zSpreadDf =
-                        oas_.empty() ? Real(1.0)
-                                     : std::exp(-oas_->value() *
-                                                (expiry1Time - expiry0Time));
+                        oas_.empty() ? Real(1.0) : zSpreadDf_step;
                     Array yg = model_->yGrid(stddevs_, integrationPoints_,
                                              expiry1Time, expiry0Time,
                                              expiry0 > settlement ? z[k] : 0.0);
-                    CubicInterpolation payoff0(
-                        z.begin(), z.end(), npv1.begin(),
-                        CubicInterpolation::Spline, true,
-                        CubicInterpolation::Lagrange, 0.0,
-                        CubicInterpolation::Lagrange, 0.0);
                     for (Size i = 0; i < yg.size(); i++) {
                         p[i] = payoff0(yg[i], true);
                     }
@@ -359,17 +377,7 @@ namespace QuantLib {
                     Real floatingLegNpv = 0.0;
                     for (Size l = k1; l < arguments_.floatingCoupons.size();
                          l++) {
-                        Real zSpreadDf =
-                            oas_.empty()
-                                ? Real(1.0)
-                                : std::exp(
-                                      -oas_->value() *
-                                      (model_->termStructure()
-                                           ->dayCounter()
-                                           .yearFraction(
-                                                expiry0,
-                                                arguments_
-                                                    .floatingPayDates[l])));
+                        Real oasDf = oas_.empty() ? Real(1.0) : oasFloatDf[l];
                         Real amount;
                         if (arguments_.floatingIsRedemptionFlow[l])
                             amount = arguments_.floatingCoupons[l];
@@ -386,33 +394,24 @@ namespace QuantLib {
                             amount *
                             model_->zerobond(arguments_.floatingPayDates[l],
                                              expiry0, z[k], discountCurve_) *
-                            zSpreadDf;
+                            oasDf;
                     }
                     Real fixedLegNpv = 0.0;
                     for (Size l = j1; l < arguments_.fixedCoupons.size(); l++) {
-                        Real zSpreadDf =
-                            oas_.empty()
-                                ? Real(1.0)
-                                : std::exp(
-                                      -oas_->value() *
-                                      (model_->termStructure()
-                                           ->dayCounter()
-                                           .yearFraction(
-                                                expiry0,
-                                                arguments_.fixedPayDates[l])));
+                        Real oasDf = oas_.empty() ? Real(1.0) : oasFixedDf[l];
                         fixedLegNpv +=
                             arguments_.fixedCoupons[l] *
                             model_->zerobond(arguments_.fixedPayDates[l],
                                              expiry0, z[k], discountCurve_) *
-                            zSpreadDf;
+                            oasDf;
                     }
                     Real rebate = 0.0;
-                    Real zSpreadDf = 1.0;
+                    Real rebateOasDf = 1.0;
                     Date rebateDate = expiry0;
                     if (rebatedExercise != nullptr) {
                         rebate = rebatedExercise->rebate(idx);
                         rebateDate = rebatedExercise->rebatePaymentDate(idx);
-                        zSpreadDf =
+                        rebateOasDf =
                             oas_.empty()
                                 ? Real(1.0)
                                 : std::exp(
@@ -426,7 +425,7 @@ namespace QuantLib {
                              (floatingLegNpv - fixedLegNpv) +
                          rebate * model_->zerobond(rebateDate, expiry0, z[k],
                                                    discountCurve_) *
-                             zSpreadDf) /
+                             rebateOasDf) /
                         model_->numeraire(expiry0Time, z[k], discountCurve_);
 
                     // for probability computation
