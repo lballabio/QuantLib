@@ -698,18 +698,21 @@ namespace QuantLib {
                                 swapNpv += A_r[kr][p] * zb0S[ks][p];
 
                             Real invNum = num00 / (numR0[kr] * num0S[ks]);
-                            npv0[kr * N + ks] = swapNpv * invNum;
+                            Real exerciseValue = swapNpv * invNum;
 
                             if (rebatedExercise != nullptr) {
                                 Real rebate = rebatedExercise->rebate(idx);
                                 Date rebateDate =
                                     rebatedExercise->rebatePaymentDate(idx);
-                                npv0[kr * N + ks] =
+                                exerciseValue +=
                                     rebate *
                                     model_->discountZerobond(
                                         rebateDate, expiry0, z[kr], z[ks]) *
                                     invNum;
                             }
+
+                            // At the last exercise date, max(0, exercise)
+                            npv0[kr * N + ks] = std::max(0.0, exerciseValue);
                         }
                     }
                 }

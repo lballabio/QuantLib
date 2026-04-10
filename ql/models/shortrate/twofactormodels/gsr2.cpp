@@ -277,8 +277,8 @@ namespace QuantLib {
         };
 
         return (1.0 / (a_r * a_s)) *
-               (delta + expDiff(a_r, tau0, tau1) + expDiff(a_s, tau0, tau1)
-                      - expDiff(a_r + a_s, tau0, tau1));
+               (delta - expDiff(a_r, tau0, tau1) - expDiff(a_s, tau0, tau1)
+                      + expDiff(a_r + a_s, tau0, tau1));
     }
 
     Real Gsr2::crossVariance(Time t, Time T) const {
