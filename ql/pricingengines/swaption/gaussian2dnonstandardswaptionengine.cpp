@@ -132,6 +132,162 @@ namespace QuantLib {
     };
 
 
+    // ================================================================
+    // SplineEvaluator: precomputes LU factorization on a fixed uniform
+    // grid, then supports fast repeated solve + evaluate cycles.
+    // Matches CubicInterpolation(Spline, true, Lagrange, 0, Lagrange, 0)
+    // exactly — natural cubic spline with Hyman monotonicity filter.
+    //
+    // Usage: construct once with the grid, then for each new set of
+    // y-values call solve() followed by operator()(x).
+    // ================================================================
+
+    class SplineEvaluator {
+      public:
+        explicit SplineEvaluator(const Array& z)
+            : n_(z.size()), z_(z),
+              m_(n_, 0.0), rhs_(n_, 0.0),
+              lower_(n_, 0.0), diag_(n_, 0.0), upper_(n_, 0.0),
+              slopes_(n_, 0.0), S_(n_ - 1, 0.0),
+              ca_(n_ - 1, 0.0), cb_(n_ - 1, 0.0), cc_(n_ - 1, 0.0) {
+
+            QL_REQUIRE(n_ >= 3, "need at least 3 grid points");
+            h_ = z_[1] - z_[0];
+            h_inv_ = 1.0 / h_;
+            six_h_inv_ = 6.0 * h_inv_;
+            z0_ = z_[0];
+
+            Size inner = n_ - 2;
+            if (inner == 0) return;
+
+            for (Size i = 0; i < inner; i++) {
+                diag_[i] = 4.0 * h_;
+                lower_[i] = h_;
+                upper_[i] = h_;
+            }
+
+            for (Size i = 1; i < inner; i++) {
+                Real w = lower_[i] / diag_[i - 1];
+                diag_[i] -= w * upper_[i - 1];
+                lower_[i] = w;
+            }
+        }
+
+        //! Solve for spline coefficients from new y-values.
+        //! O(N) back-substitution + Hyman filter + coefficient computation.
+        void solve(const Array& values) const {
+            values_ = &values;
+            Size inner = n_ - 2;
+
+            // 1. Solve tridiagonal for second derivatives m_[]
+            for (Size i = 0; i < inner; i++)
+                rhs_[i] = six_h_inv_ * (values[i + 2] - 2.0 * values[i + 1] + values[i]);
+
+            for (Size i = 1; i < inner; i++)
+                rhs_[i] -= lower_[i] * rhs_[i - 1];
+
+            m_[0] = 0.0;
+            m_[n_ - 1] = 0.0;
+            if (inner > 0) {
+                m_[inner] = rhs_[inner - 1] / diag_[inner - 1];
+                for (int i = static_cast<int>(inner) - 2; i >= 0; i--)
+                    m_[i + 1] = (rhs_[i] - upper_[i] * m_[i + 2]) / diag_[i];
+            }
+
+            // 2. Compute secant slopes and first derivatives
+            for (Size i = 0; i < n_ - 1; i++)
+                S_[i] = (values[i + 1] - values[i]) * h_inv_;
+
+            for (Size i = 0; i < n_ - 1; i++)
+                slopes_[i] = S_[i] - h_ * (m_[i + 1] + 2.0 * m_[i]) / 6.0;
+            slopes_[n_ - 1] = S_[n_ - 2] + h_ * (2.0 * m_[n_ - 1] + m_[n_ - 2]) / 6.0;
+
+            // 3. Hyman monotonicity filter (matches CubicInterpolation exactly)
+            for (Size i = 0; i < n_; i++) {
+                if (i == 0) {
+                    if (slopes_[i] * S_[0] > 0.0) {
+                        Real correction = std::copysign(
+                            std::min(std::fabs(slopes_[i]), std::fabs(3.0 * S_[0])),
+                            slopes_[i]);
+                        slopes_[i] = correction;
+                    } else {
+                        slopes_[i] = 0.0;
+                    }
+                } else if (i == n_ - 1) {
+                    if (slopes_[i] * S_[n_ - 2] > 0.0) {
+                        Real correction = std::copysign(
+                            std::min(std::fabs(slopes_[i]), std::fabs(3.0 * S_[n_ - 2])),
+                            slopes_[i]);
+                        slopes_[i] = correction;
+                    } else {
+                        slopes_[i] = 0.0;
+                    }
+                } else {
+                    Real pm = (S_[i - 1] + S_[i]) * 0.5;
+                    Real M = 3.0 * std::min({std::fabs(S_[i - 1]),
+                                              std::fabs(S_[i]),
+                                              std::fabs(pm)});
+                    if (i > 1) {
+                        if ((S_[i - 1] - S_[i - 2]) * (S_[i] - S_[i - 1]) > 0.0) {
+                            Real pd = (S_[i - 1] * (2.0 * h_ + h_) - S_[i - 2] * h_) /
+                                      (h_ + h_);
+                            if (pm * pd > 0.0 && pm * (S_[i - 1] - S_[i - 2]) > 0.0) {
+                                M = std::max(M, 1.5 * std::min(std::fabs(pm),
+                                                                std::fabs(pd)));
+                            }
+                        }
+                    }
+                    if (i < n_ - 2) {
+                        if ((S_[i] - S_[i - 1]) * (S_[i + 1] - S_[i]) > 0.0) {
+                            Real pu = (S_[i] * (2.0 * h_ + h_) - S_[i + 1] * h_) /
+                                      (h_ + h_);
+                            if (pm * pu > 0.0 && -pm * (S_[i] - S_[i - 1]) > 0.0) {
+                                M = std::max(M, 1.5 * std::min(std::fabs(pm),
+                                                                std::fabs(pu)));
+                            }
+                        }
+                    }
+                    if (std::fabs(slopes_[i]) > M)
+                        slopes_[i] = std::copysign(M, slopes_[i]);
+                }
+            }
+
+            // 4. Cubic coefficients: P(x) = y_i + a*(x-x_i) + b*(x-x_i)^2 + c*(x-x_i)^3
+            for (Size i = 0; i < n_ - 1; i++) {
+                ca_[i] = slopes_[i];
+                cb_[i] = (3.0 * S_[i] - slopes_[i + 1] - 2.0 * slopes_[i]) * h_inv_;
+                cc_[i] = (slopes_[i + 1] + slopes_[i] - 2.0 * S_[i]) * h_inv_ * h_inv_;
+            }
+        }
+
+        //! Evaluate the spline at x. O(1) for uniform grid.
+        Real operator()(Real x, bool /*extrapolate*/ = false) const {
+            // O(1) interval lookup on uniform grid
+            Real t = (x - z0_) * h_inv_;
+            auto idx = static_cast<int>(t);
+            Size i = static_cast<Size>(std::max(0, std::min(idx, static_cast<int>(n_) - 2)));
+
+            Real dx = x - z_[i];
+            return (*values_)[i] + dx * (ca_[i] + dx * (cb_[i] + dx * cc_[i]));
+        }
+
+        //! Access stored coefficients after solve()
+        const Array& ca() const { return ca_; }
+        const Array& cb() const { return cb_; }
+        const Array& cc() const { return cc_; }
+
+      private:
+        Size n_;
+        const Array& z_;
+        Real h_, h_inv_, six_h_inv_, z0_;
+        mutable Array m_, rhs_;
+        Array lower_, diag_, upper_;
+        mutable Array slopes_, S_;
+        mutable Array ca_, cb_, cc_;  // cubic coefficients per interval
+        mutable const Array* values_ = nullptr;
+    };
+
+
     Real Gaussian2dNonstandardSwaptionEngine::underlyingNpv(
         const Date& expiry, const Real yRate, const Real ySpread) const {
 
@@ -413,6 +569,7 @@ namespace QuantLib {
                 Array yg_s_ref = model_->yGrid(
                     model_->spreadProcess(), stddevs_,
                     integrationPoints_, expiry1Time, expiry0Time, 0.0);
+                Real h_inv = 1.0 / (z[1] - z[0]);
                 Real slope_s = (integrationPoints_ > 0)
                     ? (yg_s_ref[integrationPoints_ + 1] - yg_s_ref[integrationPoints_]) /
                       (z[integrationPoints_ + 1] - z[integrationPoints_])
@@ -439,6 +596,17 @@ namespace QuantLib {
 
                 Real slopeTimesRho = slope_s * rho;
 
+                // SplineEvaluator + pre-allocated coefficient storage.
+                // Replaces N CubicInterpolation constructions per kr with
+                // N fast solve() calls (pre-factored LU, no allocation).
+                // Coefficients are stored per outer point i so the ks loop
+                // just does O(1) polynomial evaluations.
+                SplineEvaluator spreadEval(z);
+                Size nIntervals = N - 1;
+                std::vector<Array> spreadCA(N, Array(nIntervals));
+                std::vector<Array> spreadCB(N, Array(nIntervals));
+                std::vector<Array> spreadCC(N, Array(nIntervals));
+
                 for (Size kr = 0; kr < activeN; kr++) {
 
                     Array yg_r = model_->yGrid(
@@ -446,33 +614,41 @@ namespace QuantLib {
                         integrationPoints_, expiry1Time, expiry0Time,
                         expiry0 > settlement ? z[kr] : 0.0);
 
-                    std::vector<CubicInterpolation> spreadInterps;
-                    spreadInterps.reserve(N);
-
+                    // Evaluate rate interps and solve spread splines (once per kr)
                     for (Size i = 0; i < N; i++) {
                         for (Size j_s = 0; j_s < N; j_s++)
                             rateEvals[i][j_s] = rateInterps[j_s](yg_r[i], true);
 
-                        spreadInterps.emplace_back(
-                            z.begin(), z.end(), rateEvals[i].begin(),
-                            CubicInterpolation::Spline, true,
-                            CubicInterpolation::Lagrange, 0.0,
-                            CubicInterpolation::Lagrange, 0.0);
+                        spreadEval.solve(rateEvals[i]);
+                        // Store coefficients for this i
+                        for (Size s = 0; s < nIntervals; s++) {
+                            spreadCA[i][s] = spreadEval.ca()[s];
+                            spreadCB[i][s] = spreadEval.cb()[s];
+                            spreadCC[i][s] = spreadEval.cc()[s];
+                        }
                     }
+
+                    Real z0 = z[0];
 
                     for (Size ks = 0; ks < activeN; ks++) {
 
                         Real center_s = centerS[ks];
 
                         for (Size i = 0; i < N; i++) {
-                            // base_i = center_s + slope_s * rho * z[i]
-                            // depends on (ks, i) but not j
                             Real base_i = center_s + slopeTimesRho * z[i];
 
                             for (Size j = 0; j < N; j++) {
-                                // yg_s_eff = base_i + scaledZ[j]
-                                innerVals[j] = spreadInterps[i](
-                                    base_i + scaledZ[j], true);
+                                // O(1) evaluation from stored coefficients
+                                Real x = base_i + scaledZ[j];
+                                Real t = (x - z0) * h_inv;
+                                auto idx = static_cast<int>(t);
+                                Size si = static_cast<Size>(
+                                    std::max(0, std::min(idx, static_cast<int>(nIntervals) - 1)));
+                                Real dx = x - z[si];
+                                innerVals[j] = rateEvals[i][si] +
+                                    dx * (spreadCA[i][si] +
+                                          dx * (spreadCB[i][si] +
+                                                dx * spreadCC[i][si]));
                             }
 
                             outerVals[i] = integrator.integrate(
