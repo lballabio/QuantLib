@@ -71,6 +71,7 @@ namespace QuantLib {
 
       private:
         friend class Gsr;
+        friend class Gsr2;
         void setTimes(Array times) { core_.setTimes(std::move(times)); }
         void setVols(Array vols) { core_.setVols(std::move(vols)); }
         void setReversions(Array reversions) { core_.setReversions(std::move(reversions)); }

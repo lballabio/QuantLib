@@ -116,6 +116,40 @@ namespace QuantLib {
         init();
     }
 
+    NonstandardSwap::NonstandardSwap(const Swap::Type type,
+                                     std::vector<Real> fixedNominal,
+                                     std::vector<Real> floatingNominal,
+                                     Schedule fixedSchedule,
+                                     std::vector<Real> fixedRate,
+                                     DayCounter fixedDayCount,
+                                     Schedule floatingSchedule,
+                                     ext::shared_ptr<IborIndex> iborIndex,
+                                     std::vector<Real> gearing,
+                                     std::vector<Spread> spread,
+                                     std::vector<Real> caps,
+                                     std::vector<Real> floors,
+                                     DayCounter floatingDayCount,
+                                     const bool intermediateCapitalExchange,
+                                     const bool finalCapitalExchange,
+                                     ext::optional<BusinessDayConvention> paymentConvention)
+    : Swap(2), type_(type), fixedNominal_(std::move(fixedNominal)),
+      floatingNominal_(std::move(floatingNominal)), fixedSchedule_(std::move(fixedSchedule)),
+      fixedRate_(std::move(fixedRate)), fixedDayCount_(std::move(fixedDayCount)),
+      floatingSchedule_(std::move(floatingSchedule)), iborIndex_(std::move(iborIndex)),
+      spread_(std::move(spread)), gearing_(std::move(gearing)),
+      caps_(std::move(caps)), floors_(std::move(floors)),
+      singleSpreadAndGearing_(false),
+      floatingDayCount_(std::move(floatingDayCount)),
+      intermediateCapitalExchange_(intermediateCapitalExchange),
+      finalCapitalExchange_(finalCapitalExchange) {
+
+        if (paymentConvention) // NOLINT(readability-implicit-bool-conversion)
+            paymentConvention_ = *paymentConvention;
+        else
+            paymentConvention_ = floatingSchedule_.businessDayConvention();
+        init();
+    }
+
     void NonstandardSwap::init() {
 
         QL_REQUIRE(fixedNominal_.size() == fixedRate_.size(),
@@ -330,6 +364,17 @@ namespace QuantLib {
         }
 
         arguments->iborIndex = iborIndex();
+
+        // Populate cap/floor data if present
+        if (!caps_.empty()) {
+            arguments->floatingCaps = caps_;
+            // Pad with Null<Real>() if needed (for redemption flows)
+            arguments->floatingCaps.resize(floatingCoupons.size(), Null<Real>());
+        }
+        if (!floors_.empty()) {
+            arguments->floatingFloors = floors_;
+            arguments->floatingFloors.resize(floatingCoupons.size(), Null<Real>());
+        }
     }
 
     void NonstandardSwap::setupExpired() const { Swap::setupExpired(); }
