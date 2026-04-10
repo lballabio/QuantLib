@@ -194,6 +194,9 @@
     <ClCompile Include="gsr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gsr2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="hestonmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

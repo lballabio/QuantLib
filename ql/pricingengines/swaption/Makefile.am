@@ -11,6 +11,7 @@ this_include_HEADERS = \
     gaussian1djamshidianswaptionengine.hpp \
     gaussian1dnonstandardswaptionengine.hpp \
     gaussian1dswaptionengine.hpp \
+    gaussian2dnonstandardswaptionengine.hpp \
     g2swaptionengine.hpp \
     jamshidianswaptionengine.hpp \
     fdg2swaptionengine.hpp \
@@ -25,6 +26,7 @@ cpp_files = \
     gaussian1djamshidianswaptionengine.cpp \
     gaussian1dnonstandardswaptionengine.cpp \
     gaussian1dswaptionengine.cpp \
+    gaussian2dnonstandardswaptionengine.cpp \
     jamshidianswaptionengine.cpp \
     fdg2swaptionengine.cpp \
     fdhullwhiteswaptionengine.cpp \

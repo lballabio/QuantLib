@@ -1465,6 +1465,8 @@
     <ClInclude Include="ql\models\shortrate\twofactormodel.hpp" />
     <ClInclude Include="ql\models\shortrate\twofactormodels\all.hpp" />
     <ClInclude Include="ql\models\shortrate\twofactormodels\g2.hpp" />
+    <ClInclude Include="ql\models\shortrate\twofactormodels\gaussian2dmodel.hpp" />
+    <ClInclude Include="ql\models\shortrate\twofactormodels\gsr2.hpp" />
     <ClInclude Include="ql\models\volatility\all.hpp" />
     <ClInclude Include="ql\models\volatility\constantestimator.hpp" />
     <ClInclude Include="ql\models\volatility\garch.hpp" />
@@ -1600,6 +1602,7 @@
     <ClInclude Include="ql\pricingengines\swaption\gaussian1dfloatfloatswaptionengine.hpp" />
     <ClInclude Include="ql\pricingengines\swaption\gaussian1djamshidianswaptionengine.hpp" />
     <ClInclude Include="ql\pricingengines\swaption\gaussian1dnonstandardswaptionengine.hpp" />
+    <ClInclude Include="ql\pricingengines\swaption\gaussian2dnonstandardswaptionengine.hpp" />
     <ClInclude Include="ql\pricingengines\swaption\gaussian1dswaptionengine.hpp" />
     <ClInclude Include="ql\pricingengines\swaption\jamshidianswaptionengine.hpp" />
     <ClInclude Include="ql\pricingengines\swaption\treeswaptionengine.hpp" />
@@ -2571,6 +2574,8 @@
     <ClCompile Include="ql\models\shortrate\onefactormodels\vasicek.cpp" />
     <ClCompile Include="ql\models\shortrate\twofactormodel.cpp" />
     <ClCompile Include="ql\models\shortrate\twofactormodels\g2.cpp" />
+    <ClCompile Include="ql\models\shortrate\twofactormodels\gaussian2dmodel.cpp" />
+    <ClCompile Include="ql\models\shortrate\twofactormodels\gsr2.cpp" />
     <ClCompile Include="ql\models\volatility\constantestimator.cpp" />
     <ClCompile Include="ql\models\volatility\garch.cpp" />
     <ClCompile Include="ql\patterns\observable.cpp" />
@@ -2668,6 +2673,7 @@
     <ClCompile Include="ql\pricingengines\swaption\gaussian1dfloatfloatswaptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\gaussian1djamshidianswaptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\gaussian1dnonstandardswaptionengine.cpp" />
+    <ClCompile Include="ql\pricingengines\swaption\gaussian2dnonstandardswaptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\gaussian1dswaptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\jamshidianswaptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\treeswaptionengine.cpp" />

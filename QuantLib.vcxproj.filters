@@ -1908,6 +1908,12 @@
     <ClInclude Include="ql\models\shortrate\twofactormodels\g2.hpp">
       <Filter>models\shortrate\twofactorsmodels</Filter>
     </ClInclude>
+    <ClInclude Include="ql\models\shortrate\twofactormodels\gaussian2dmodel.hpp">
+      <Filter>models\shortrate\twofactorsmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\models\shortrate\twofactormodels\gsr2.hpp">
+      <Filter>models\shortrate\twofactorsmodels</Filter>
+    </ClInclude>
     <ClInclude Include="ql\models\volatility\all.hpp">
       <Filter>models\volatility</Filter>
     </ClInclude>
@@ -3472,6 +3478,9 @@
       <Filter>pricingengines\swaption</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\swaption\gaussian1dnonstandardswaptionengine.hpp">
+      <Filter>pricingengines\swaption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\swaption\gaussian2dnonstandardswaptionengine.hpp">
       <Filter>pricingengines\swaption</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\gaussian1dsmilesection.hpp">
@@ -5546,6 +5555,12 @@
     <ClCompile Include="ql\models\shortrate\twofactormodels\g2.cpp">
       <Filter>models\shortrate\twofactorsmodels</Filter>
     </ClCompile>
+    <ClCompile Include="ql\models\shortrate\twofactormodels\gaussian2dmodel.cpp">
+      <Filter>models\shortrate\twofactorsmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\models\shortrate\twofactormodels\gsr2.cpp">
+      <Filter>models\shortrate\twofactorsmodels</Filter>
+    </ClCompile>
     <ClCompile Include="ql\models\volatility\constantestimator.cpp">
       <Filter>models\volatility</Filter>
     </ClCompile>
@@ -6591,6 +6606,9 @@
       <Filter>pricingengines\swaption</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\swaption\gaussian1dnonstandardswaptionengine.cpp">
+      <Filter>pricingengines\swaption</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\swaption\gaussian2dnonstandardswaptionengine.cpp">
       <Filter>pricingengines\swaption</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\gaussian1dsmilesection.cpp">

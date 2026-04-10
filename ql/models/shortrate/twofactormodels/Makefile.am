@@ -4,10 +4,14 @@ AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    g2.hpp
+    g2.hpp \
+    gaussian2dmodel.hpp \
+    gsr2.hpp
 
 cpp_files = \
-    g2.cpp
+    g2.cpp \
+    gaussian2dmodel.cpp \
+    gsr2.cpp
 
 if UNITY_BUILD
 

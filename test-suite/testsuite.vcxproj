@@ -722,6 +722,7 @@
     <ClCompile Include="gaussianquadratures.cpp" />
     <ClCompile Include="gjrgarchmodel.cpp" />
     <ClCompile Include="gsr.cpp" />
+    <ClCompile Include="gsr2.cpp" />
     <ClCompile Include="hestonmodel.cpp" />
     <ClCompile Include="hestonslvmodel.cpp" />
     <ClCompile Include="himalayaoption.cpp" />
