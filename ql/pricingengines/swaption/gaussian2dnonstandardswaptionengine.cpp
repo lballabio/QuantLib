@@ -273,9 +273,10 @@ namespace QuantLib {
         Date expiry1 = Date();
         Time expiry1Time = Null<Real>(), expiry0Time;
 
-        // Reusable working arrays (pre-allocated once)
+        // Pre-allocated working arrays (reused across all iterations)
         Array outerVals(N), innerVals(N);
         std::vector<Array> rateEvals(N, Array(N));
+        std::vector<Array> rateColumns(N, Array(N));
 
         do {
             Date expiry0;
@@ -293,14 +294,7 @@ namespace QuantLib {
             Size activeN = (expiry0 > settlement ? N : 1);
 
             // ===========================================================
-            // PRECOMPUTE EXERCISE VALUES: Factor discountZerobond as
-            //   discountZB(p, t, yr, ys) = zbR0(yr, p) * zb0S(ys, p) / zb00(p)
-            //
-            // This holds for affine Gaussian models where the two factors
-            // contribute multiplicatively. It reduces N² × nCoupon model
-            // calls to 2 × N × nCoupon (one sweep per factor).
-            //
-            // Forward rates depend only on yr and are also precomputed.
+            // PRECOMPUTE EXERCISE VALUES
             // ===========================================================
 
             Size fixedIdx = 0, floatingIdx = 0;
@@ -317,45 +311,35 @@ namespace QuantLib {
 
             Size nFixed = arguments_.fixedResetDates.size() - fixedIdx;
             Size nFloat = arguments_.floatingResetDates.size() - floatingIdx;
+            Size nPay = nFixed + nFloat;
 
-            // Discount zerobond tables: zbR0[kr][p], zb0S[ks][p], zb00[p]
-            // p indexes over all relevant pay dates (fixed + floating)
-            std::vector<std::vector<Real>> zbR0, zb0S;
-            std::vector<Real> zb00;
-            // Forward rate table: fwdR[kr][f]
-            std::vector<std::vector<Real>> fwdR;
-            // Numeraire factors: numR0[kr], num0S[ks], num00
+            // Zerobond tables and separated exercise contributions
+            std::vector<Real> invZb00(nPay);
+            std::vector<std::vector<Real>> zb0S;
+            // A_r[kr][p]: rate-factor contribution per coupon, includes
+            //   zbR0, invZb00, fixedCoupon/floatAmount, and typeSign.
+            //   The ks loop just dots A_r[kr] with zb0S[ks].
+            std::vector<std::vector<Real>> A_r;
+            // Inverse numeraire factors: invNum[kr][ks] = num00/(numR0[kr]*num0S[ks])
             std::vector<Real> numR0(activeN), num0S(activeN);
             Real num00 = 1.0;
 
             if (expiry0 > settlement) {
-                Size nPay = nFixed + nFloat;
-                zb00.resize(nPay);
-                zbR0.resize(activeN, std::vector<Real>(nPay));
                 zb0S.resize(activeN, std::vector<Real>(nPay));
-                fwdR.resize(activeN, std::vector<Real>(nFloat));
+                A_r.resize(activeN, std::vector<Real>(nPay, 0.0));
 
-                // zb00: discountZerobond at (yr=0, ys=0) for each pay date
+                // zb00 → invZb00 (division replaced with multiplication)
                 for (Size p = 0; p < nFixed; p++)
-                    zb00[p] = model_->discountZerobond(
+                    invZb00[p] = 1.0 / model_->discountZerobond(
                         arguments_.fixedPayDates[fixedIdx + p], expiry0, 0.0, 0.0);
                 for (Size p = 0; p < nFloat; p++)
-                    zb00[nFixed + p] = model_->discountZerobond(
+                    invZb00[nFixed + p] = 1.0 / model_->discountZerobond(
                         arguments_.floatingPayDates[floatingIdx + p], expiry0, 0.0, 0.0);
 
-                // Numeraire at (0, 0)
                 num00 = model_->numeraire(expiry0Time, 0.0, 0.0);
 
                 for (Size k = 0; k < activeN; k++) {
-                    // Rate-factor sweep: zbR0[k][p] = discountZB(p, expiry, z[k], 0)
-                    for (Size p = 0; p < nFixed; p++)
-                        zbR0[k][p] = model_->discountZerobond(
-                            arguments_.fixedPayDates[fixedIdx + p], expiry0, z[k], 0.0);
-                    for (Size p = 0; p < nFloat; p++)
-                        zbR0[k][nFixed + p] = model_->discountZerobond(
-                            arguments_.floatingPayDates[floatingIdx + p], expiry0, z[k], 0.0);
-
-                    // Spread-factor sweep: zb0S[k][p] = discountZB(p, expiry, 0, z[k])
+                    // Spread-factor zerobonds (used as-is in dot product)
                     for (Size p = 0; p < nFixed; p++)
                         zb0S[k][p] = model_->discountZerobond(
                             arguments_.fixedPayDates[fixedIdx + p], expiry0, 0.0, z[k]);
@@ -363,17 +347,45 @@ namespace QuantLib {
                         zb0S[k][nFixed + p] = model_->discountZerobond(
                             arguments_.floatingPayDates[floatingIdx + p], expiry0, 0.0, z[k]);
 
-                    // Forward rates (rate factor only)
+                    // Rate-factor contribution: A_r[k][p]
+                    // Fixed leg: A_r = typeSign * (-fixedCoupon) * zbR0 * invZb00
+                    for (Size p = 0; p < nFixed; p++) {
+                        Real zbR0 = model_->discountZerobond(
+                            arguments_.fixedPayDates[fixedIdx + p], expiry0, z[k], 0.0);
+                        A_r[k][p] = -typeSign * arguments_.fixedCoupons[fixedIdx + p] *
+                                    zbR0 * invZb00[p];
+                    }
+                    // Floating leg: A_r = typeSign * amount(k) * zbR0 * invZb00
                     for (Size f = 0; f < nFloat; f++) {
-                        if (!arguments_.floatingIsRedemptionFlow[floatingIdx + f])
-                            fwdR[k][f] = model_->forwardRate(
-                                arguments_.floatingFixingDates[floatingIdx + f],
+                        Size fi = floatingIdx + f;
+                        Real amount;
+                        if (!arguments_.floatingIsRedemptionFlow[fi]) {
+                            Real fwdRate = model_->forwardRate(
+                                arguments_.floatingFixingDates[fi],
                                 expiry0, z[k], arguments_.swap->iborIndex());
-                        else
-                            fwdR[k][f] = 0.0;
+                            Real couponRate =
+                                arguments_.floatingGearings[fi] * fwdRate +
+                                arguments_.floatingSpreads[fi];
+                            if (!arguments_.floatingCaps.empty() &&
+                                arguments_.floatingCaps[fi] != Null<Real>())
+                                couponRate = std::min(couponRate,
+                                                      arguments_.floatingCaps[fi]);
+                            if (!arguments_.floatingFloors.empty() &&
+                                arguments_.floatingFloors[fi] != Null<Real>())
+                                couponRate = std::max(couponRate,
+                                                      arguments_.floatingFloors[fi]);
+                            amount = couponRate *
+                                     arguments_.floatingAccrualTimes[fi] *
+                                     arguments_.floatingNominal[fi];
+                        } else {
+                            amount = arguments_.floatingCoupons[fi];
+                        }
+                        Real zbR0 = model_->discountZerobond(
+                            arguments_.floatingPayDates[fi], expiry0, z[k], 0.0);
+                        A_r[k][nFixed + f] = typeSign * amount *
+                                             zbR0 * invZb00[nFixed + f];
                     }
 
-                    // Numeraire factors
                     numR0[k] = model_->numeraire(expiry0Time, z[k], 0.0);
                     num0S[k] = model_->numeraire(expiry0Time, 0.0, z[k]);
                 }
@@ -384,7 +396,6 @@ namespace QuantLib {
                 // BACKWARD INDUCTION
                 // ===========================================================
 
-                std::vector<Array> rateColumns(N, Array(N));
                 std::vector<CubicInterpolation> rateInterps;
                 rateInterps.reserve(N);
 
@@ -419,6 +430,15 @@ namespace QuantLib {
                 for (Size ks = 0; ks < N; ks++)
                     centerS[ks] = center_s_at_0 + d_center_dz * z[ks];
 
+                // Precompute the spread-dimension shift that doesn't depend
+                // on (kr, ks, i): scaled_z[j] = slope_s * sqrt(1-ρ²) * z[j]
+                Real slopeTimesOrtho = slope_s * sqrtOneMinusRhoSq;
+                std::vector<Real> scaledZ(N);
+                for (Size j = 0; j < N; j++)
+                    scaledZ[j] = slopeTimesOrtho * z[j];
+
+                Real slopeTimesRho = slope_s * rho;
+
                 for (Size kr = 0; kr < activeN; kr++) {
 
                     Array yg_r = model_->yGrid(
@@ -426,7 +446,6 @@ namespace QuantLib {
                         integrationPoints_, expiry1Time, expiry0Time,
                         expiry0 > settlement ? z[kr] : 0.0);
 
-                    // Evaluate rate interps at yg_r points → reuse rateEvals
                     std::vector<CubicInterpolation> spreadInterps;
                     spreadInterps.reserve(N);
 
@@ -446,10 +465,14 @@ namespace QuantLib {
                         Real center_s = centerS[ks];
 
                         for (Size i = 0; i < N; i++) {
+                            // base_i = center_s + slope_s * rho * z[i]
+                            // depends on (ks, i) but not j
+                            Real base_i = center_s + slopeTimesRho * z[i];
+
                             for (Size j = 0; j < N; j++) {
-                                Real eff = rho * z[i] + sqrtOneMinusRhoSq * z[j];
+                                // yg_s_eff = base_i + scaledZ[j]
                                 innerVals[j] = spreadInterps[i](
-                                    center_s + slope_s * eff, true);
+                                    base_i + scaledZ[j], true);
                             }
 
                             outerVals[i] = integrator.integrate(
@@ -463,43 +486,14 @@ namespace QuantLib {
 
                         npv0[kr * N + ks] = price;
 
-                        // Exercise decision using precomputed tables
+                        // Exercise: dot product A_r[kr] · zb0S[ks]
                         if (expiry0 > settlement) {
-                            Real invNum = num00 / (numR0[kr] * num0S[ks]);
-
-                            // Inline underlyingNpv using factored zerobonds
                             Real swapNpv = 0.0;
-                            for (Size p = 0; p < nFixed; p++) {
-                                Real zb = zbR0[kr][p] * zb0S[ks][p] / zb00[p];
-                                swapNpv -= arguments_.fixedCoupons[fixedIdx + p] * zb;
-                            }
-                            for (Size f = 0; f < nFloat; f++) {
-                                Size fi = floatingIdx + f;
-                                Real amount;
-                                if (!arguments_.floatingIsRedemptionFlow[fi]) {
-                                    Real couponRate =
-                                        arguments_.floatingGearings[fi] * fwdR[kr][f] +
-                                        arguments_.floatingSpreads[fi];
-                                    if (!arguments_.floatingCaps.empty() &&
-                                        arguments_.floatingCaps[fi] != Null<Real>())
-                                        couponRate = std::min(couponRate,
-                                                              arguments_.floatingCaps[fi]);
-                                    if (!arguments_.floatingFloors.empty() &&
-                                        arguments_.floatingFloors[fi] != Null<Real>())
-                                        couponRate = std::max(couponRate,
-                                                              arguments_.floatingFloors[fi]);
-                                    amount = couponRate *
-                                             arguments_.floatingAccrualTimes[fi] *
-                                             arguments_.floatingNominal[fi];
-                                } else {
-                                    amount = arguments_.floatingCoupons[fi];
-                                }
-                                Real zb = zbR0[kr][nFixed + f] * zb0S[ks][nFixed + f] /
-                                          zb00[nFixed + f];
-                                swapNpv += amount * zb;
-                            }
+                            for (Size p = 0; p < nPay; p++)
+                                swapNpv += A_r[kr][p] * zb0S[ks][p];
 
-                            Real exerciseValue = typeSign * swapNpv * invNum;
+                            Real invNum = num00 / (numR0[kr] * num0S[ks]);
+                            Real exerciseValue = swapNpv * invNum;
 
                             if (rebatedExercise != nullptr) {
                                 Real rebate = rebatedExercise->rebate(idx);
@@ -523,40 +517,12 @@ namespace QuantLib {
                     for (Size ks = 0; ks < activeN; ks++) {
                         npv0[kr * N + ks] = 0.0;
                         if (expiry0 > settlement) {
-                            Real invNum = num00 / (numR0[kr] * num0S[ks]);
-
                             Real swapNpv = 0.0;
-                            for (Size p = 0; p < nFixed; p++) {
-                                Real zb = zbR0[kr][p] * zb0S[ks][p] / zb00[p];
-                                swapNpv -= arguments_.fixedCoupons[fixedIdx + p] * zb;
-                            }
-                            for (Size f = 0; f < nFloat; f++) {
-                                Size fi = floatingIdx + f;
-                                Real amount;
-                                if (!arguments_.floatingIsRedemptionFlow[fi]) {
-                                    Real couponRate =
-                                        arguments_.floatingGearings[fi] * fwdR[kr][f] +
-                                        arguments_.floatingSpreads[fi];
-                                    if (!arguments_.floatingCaps.empty() &&
-                                        arguments_.floatingCaps[fi] != Null<Real>())
-                                        couponRate = std::min(couponRate,
-                                                              arguments_.floatingCaps[fi]);
-                                    if (!arguments_.floatingFloors.empty() &&
-                                        arguments_.floatingFloors[fi] != Null<Real>())
-                                        couponRate = std::max(couponRate,
-                                                              arguments_.floatingFloors[fi]);
-                                    amount = couponRate *
-                                             arguments_.floatingAccrualTimes[fi] *
-                                             arguments_.floatingNominal[fi];
-                                } else {
-                                    amount = arguments_.floatingCoupons[fi];
-                                }
-                                Real zb = zbR0[kr][nFixed + f] * zb0S[ks][nFixed + f] /
-                                          zb00[nFixed + f];
-                                swapNpv += amount * zb;
-                            }
+                            for (Size p = 0; p < nPay; p++)
+                                swapNpv += A_r[kr][p] * zb0S[ks][p];
 
-                            npv0[kr * N + ks] = typeSign * swapNpv * invNum;
+                            Real invNum = num00 / (numR0[kr] * num0S[ks]);
+                            npv0[kr * N + ks] = swapNpv * invNum;
 
                             if (rebatedExercise != nullptr) {
                                 Real rebate = rebatedExercise->rebate(idx);
