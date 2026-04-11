@@ -26,22 +26,28 @@
 #ifndef quantlib_forward_structure_hpp
 #define quantlib_forward_structure_hpp
 
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/yield/zeroyieldstructure.hpp>
 
 namespace QuantLib {
 
     //! %Forward-rate term structure
     /*! This abstract class acts as an adapter to YieldTermStructure allowing
         the programmer to implement only the <tt>forwardImpl(Time)</tt> method
-        in derived classes.
+        in derived classes. However, it is strongly recommended to inherit from
+        ZeroYieldStructure instead and implement <tt>zeroYieldImpl(Time)</tt>.
+        This class uses a highly inefficient and possibly wildly inaccurate
+        numerical integration to convert forwardImpl to zeroYieldImpl. Inherit
+        from ZeroYieldStructure and implement zeroYieldImpl directly when
+        possible.
 
         Zero yields and discounts are calculated from forwards.
 
         Forward rates are assumed to be annual continuous compounding.
 
-        \ingroup yieldtermstructures
+        \deprecated Use ZeroYieldStructure instead.
+                    Deprecated in version 1.42.
     */
-    class ForwardRateStructure : public YieldTermStructure {
+    class [[deprecated("Use ZeroYieldStructure instead")]] ForwardRateStructure : public ZeroYieldStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -80,33 +86,14 @@ namespace QuantLib {
             z(t) = \int_0^t f(\tau) d\tau
             \f]
 
-            \warning This default implementation uses an highly inefficient
-                     and possibly wildly inaccurate numerical integration.
-                     Derived classes should override it if a more efficient
-                     implementation is available.
+            \warning This implementation uses a highly inefficient and possibly
+                     wildly inaccurate numerical integration. Inherit from
+                     ZeroYieldStructure and implement zeroYieldImpl directly
+                     when possible.
         */
-        virtual Rate zeroYieldImpl(Time) const;
-        //@}
-
-        //! \name YieldTermStructure implementation
-        //@{
-        /*! Returns the discount factor for the given date calculating it
-            from the zero rate as \f$ d(t) = \exp \left( -z(t) t \right) \f$
-        */
-        DiscountFactor discountImpl(Time) const override;
+        Rate zeroYieldImpl(Time) const override;
         //@}
     };
-
-
-    // inline definitions
-
-    inline DiscountFactor ForwardRateStructure::discountImpl(Time t) const {
-        if (t == 0.0)     // this acts as a safe guard in cases where
-            return 1.0;   // zeroYieldImpl(0.0) would throw.
-
-        Rate r = zeroYieldImpl(t);
-        return DiscountFactor(std::exp(-r*t));
-    }
 
 }
 

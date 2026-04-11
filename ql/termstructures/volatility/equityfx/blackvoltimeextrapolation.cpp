@@ -34,17 +34,17 @@ namespace QuantLib {
             return v1 + (t - t1) * (v2 - v1) / (t2 - t1);
         }
 
-        Real timeExtrapolationBlackVarianceFlat(Time t, Real strike, const std::vector<double>& times,
+        Real timeExtrapolationBlackVarianceFlat(Time t, Real strike, const std::vector<Time>& times,
                                                 const std::function<Real(Time t, Real k)>& varianceSurface) {
             return std::max(varianceSurface(times.back(), strike), 0.0) / times.back() * t;
         }
 
-        Real timeExtrapolationBlackVarianceFlat(Time t, const std::vector<double>& times,
+        Real timeExtrapolationBlackVarianceFlat(Time t, const std::vector<Time>& times,
                                                 const std::function<Real(Time t)>& varianceCurve) {
             return std::max(varianceCurve(times.back()), 0.0) / times.back() * t;
         }
 
-        Real timeExtrapolationBlackVarianceLinear(Time t, Real strike, const std::vector<double>& times,
+        Real timeExtrapolationBlackVarianceLinear(Time t, Real strike, const std::vector<Time>& times,
                                                   const std::function<Real(Time t, Real k)>& varianceSurface) {
             Size N = times.size();
             Time t1 = times[N-2], t2 = times[N-1];
@@ -52,7 +52,7 @@ namespace QuantLib {
             return linearExtrapolation(t, t1, t2, var1, var2);
         }
 
-        Real timeExtrapolationBlackVarianceLinear(Time t, const std::vector<double>& times,
+        Real timeExtrapolationBlackVarianceLinear(Time t, const std::vector<Time>& times,
                                                   const std::function<Real(Time t)>& varianceCurve) {
             Size N = times.size();
             Time t1 = times[N-2], t2 = times[N-1];

@@ -27,6 +27,7 @@
 
 #include <ql/instruments/overnightindexfuture.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
+#include <variant>
 
 namespace QuantLib {
 
@@ -40,7 +41,9 @@ namespace QuantLib {
                                        const Date& maturityDate,
                                        const ext::shared_ptr<OvernightIndex>& overnightIndex,
                                        const Handle<Quote>& convexityAdjustment = {},
-                                       RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                                       RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                                       Pillar::Choice pillar = Pillar::LastRelevantDate,
+                                       const Date& customPillarDate = Date());
 
         //! \name RateHelper interface
         //@{
@@ -67,17 +70,13 @@ namespace QuantLib {
     */
     class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
       public:
-        SofrFutureRateHelper(const Handle<Quote>& price,
+        SofrFutureRateHelper(const std::variant<Rate, Handle<Quote>>& price,
                              Month referenceMonth,
                              Year referenceYear,
                              Frequency referenceFreq,
-                             const Handle<Quote>& convexityAdjustment = {});
-
-        SofrFutureRateHelper(Real price,
-                             Month referenceMonth,
-                             Year referenceYear,
-                             Frequency referenceFreq,
-                             Real convexityAdjustment = 0.0);
+                             const std::variant<Rate, Handle<Quote>>& convexityAdjustment = 0.0,
+                             Pillar::Choice pillar = Pillar::LastRelevantDate,
+                             const Date& customPillarDate = Date());
     };
 
 }

@@ -63,7 +63,8 @@ namespace QuantLib {
         ArithmeticASOPathPricer(Option::Type type,
                                 DiscountFactor discount,
                                 Real runningSum = 0.0,
-                                Size pastFixings = 0);
+                                Size pastFixings = 0,
+                                Size fixingCount = Null<Size>());
         Real operator()(const Path& path) const override;
 
       private:
@@ -71,6 +72,7 @@ namespace QuantLib {
         DiscountFactor discount_;
         Real runningSum_;
         Size pastFixings_;
+        Size fixingCount_;
     };
 
 
@@ -94,7 +96,10 @@ namespace QuantLib {
                                                               requiredSamples,
                                                               requiredTolerance,
                                                               maxSamples,
-                                                              seed) {}
+                                                              seed,
+                                                              Null<Size>(),
+                                                              Null<Size>(),
+                                                              true) {}
 
     template <class RNG, class S>
     inline
@@ -117,13 +122,35 @@ namespace QuantLib {
                 this->process_);
         QL_REQUIRE(process, "Black-Scholes process required");
 
+        // When the exercise date was added to the time grid (i.e., it
+        // falls after the last fixing), tell the path pricer how many
+        // grid points are fixings so it can exclude the exercise point
+        // from the average.
+        Size fixingCount = Null<Size>();
+        if (this->includeExerciseDate_) {
+            QL_REQUIRE(this->timeSteps_ == Null<Size>()
+                       && this->timeStepsPerYear_ == Null<Size>(),
+                       "extra time steps are not supported when "
+                       "includeExerciseDate is enabled");
+            TimeGrid grid = this->timeGrid();
+            Time lastFixing = process->time(
+                this->arguments_.fixingDates.back());
+            Time exerciseTime = process->time(exercise->lastDate());
+            if (exerciseTime > lastFixing) {
+                // exercise date was added to the grid; path has one
+                // extra point at the end that is NOT a fixing
+                fixingCount = grid.size() - 1;
+            }
+        }
+
         return ext::shared_ptr<typename
             MCDiscreteArithmeticASEngine<RNG,S>::path_pricer_type>(
                 new ArithmeticASOPathPricer(
                     payoff->optionType(),
                     process->riskFreeRate()->discount(exercise->lastDate()),
                     this->arguments_.runningAccumulator,
-                    this->arguments_.pastFixings));
+                    this->arguments_.pastFixings,
+                    fixingCount));
     }
 
 

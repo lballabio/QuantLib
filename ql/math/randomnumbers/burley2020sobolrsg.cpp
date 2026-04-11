@@ -145,7 +145,7 @@ namespace QuantLib {
         const std::vector<std::uint32_t>& v = nextInt32Sequence();
         // normalize to get a double in (0,1)
         for (Size k = 0; k < dimensionality_; ++k) {
-            sequence_.value[k] = static_cast<double>(v[k]) / 4294967296.0;
+            sequence_.value[k] = (static_cast<double>(v[k]) + 0.5) / 4294967296.0;
         }
         return sequence_;
     }

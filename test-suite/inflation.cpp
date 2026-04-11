@@ -1926,12 +1926,10 @@ BOOST_AUTO_TEST_CASE(testUsCpiLinearBootstrapAtMonthStart) {
     };
 
     Size failureCount = 0;
-    Size total = 0;
 
     for (Date evalDate(1, February, 2026);
          evalDate <= Date(28, February, 2026); evalDate++) {
 
-        total++;
         Settings::instance().evaluationDate() = evalDate;
 
         RelinkableHandle<ZeroInflationTermStructure> hz;
@@ -1957,15 +1955,11 @@ BOOST_AUTO_TEST_CASE(testUsCpiLinearBootstrapAtMonthStart) {
             curve->zeroRate(evalDate + 1*Years);
         } catch (const std::exception&) {
             failureCount++;
-            BOOST_TEST_MESSAGE("  US CPI failed on " << io::iso_date(evalDate));
         }
 
         index->clearFixings();
     }
 
-    BOOST_TEST_MESSAGE("  US CPI: succeeded " << (total - failureCount)
-                       << ", failed " << failureCount
-                       << " out of " << total << " dates");
     BOOST_CHECK_EQUAL(failureCount, (Size)0);
 }
 
@@ -2010,12 +2004,10 @@ BOOST_AUTO_TEST_CASE(testEuHicpFlatBootstrapAtMonthStart) {
 
     Size failureCount = 0;
     Size globalFailureCount = 0;
-    Size total = 0;
 
     for (Date evalDate(1, February, 2026);
          evalDate <= Date(28, February, 2026); evalDate++) {
 
-        total++;
         Settings::instance().evaluationDate() = evalDate;
 
         RelinkableHandle<ZeroInflationTermStructure> hz;
@@ -2042,8 +2034,6 @@ BOOST_AUTO_TEST_CASE(testEuHicpFlatBootstrapAtMonthStart) {
             curve->zeroRate(evalDate + 1*Years);
         } catch (const std::exception&) {
             failureCount++;
-            BOOST_TEST_MESSAGE("  EU HICP iterative failed on "
-                               << io::iso_date(evalDate));
         }
 
         hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
@@ -2055,19 +2045,13 @@ BOOST_AUTO_TEST_CASE(testEuHicpFlatBootstrapAtMonthStart) {
                 evalDate, baseDate, Monthly, dc, helpers);
             hz.linkTo(curve);
             curve->zeroRate(evalDate + 1*Years);
-        } catch (const std::exception& e) {
+        } catch (const std::exception&) {
             globalFailureCount++;
-            BOOST_TEST_MESSAGE("  EU HICP global failed on "
-                               << io::iso_date(evalDate) << ": " << e.what());
         }
 
         index->clearFixings();
     }
 
-    BOOST_TEST_MESSAGE("  EU HICP iterative: succeeded "
-                       << (total - failureCount) << "/" << total);
-    BOOST_TEST_MESSAGE("  EU HICP global:    succeeded "
-                       << (total - globalFailureCount) << "/" << total);
     BOOST_CHECK_EQUAL(failureCount, (Size)0);
     BOOST_CHECK_EQUAL(globalFailureCount, (Size)0);
 }
@@ -2113,12 +2097,10 @@ BOOST_AUTO_TEST_CASE(testUkRpiFlatBootstrapAtMonthStart) {
 
     Size failureCount = 0;
     Size globalFailureCount = 0;
-    Size total = 0;
 
     for (Date evalDate(1, February, 2026);
          evalDate <= Date(28, February, 2026); evalDate++) {
 
-        total++;
         Settings::instance().evaluationDate() = evalDate;
 
         RelinkableHandle<ZeroInflationTermStructure> hz;
@@ -2146,8 +2128,6 @@ BOOST_AUTO_TEST_CASE(testUkRpiFlatBootstrapAtMonthStart) {
             curve->zeroRate(evalDate + 1*Years);
         } catch (const std::exception&) {
             failureCount++;
-            BOOST_TEST_MESSAGE("  UK RPI iterative failed on "
-                               << io::iso_date(evalDate));
         }
 
         hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
@@ -2159,19 +2139,13 @@ BOOST_AUTO_TEST_CASE(testUkRpiFlatBootstrapAtMonthStart) {
                 evalDate, baseDate, Monthly, dc, helpers);
             hz.linkTo(curve);
             curve->zeroRate(evalDate + 1*Years);
-        } catch (const std::exception& e) {
+        } catch (const std::exception&) {
             globalFailureCount++;
-            BOOST_TEST_MESSAGE("  UK RPI global failed on "
-                               << io::iso_date(evalDate) << ": " << e.what());
         }
 
         index->clearFixings();
     }
 
-    BOOST_TEST_MESSAGE("  UK RPI iterative: succeeded "
-                       << (total - failureCount) << "/" << total);
-    BOOST_TEST_MESSAGE("  UK RPI global:    succeeded "
-                       << (total - globalFailureCount) << "/" << total);
     BOOST_CHECK_EQUAL(failureCount, (Size)0);
     BOOST_CHECK_EQUAL(globalFailureCount, (Size)0);
 }
@@ -2216,12 +2190,10 @@ BOOST_AUTO_TEST_CASE(testUsCpiLinearGlobalBootstrapAtMonthStart) {
     };
 
     Size failureCount = 0;
-    Size total = 0;
 
     for (Date evalDate(1, February, 2026);
          evalDate <= Date(28, February, 2026); evalDate++) {
 
-        total++;
         Settings::instance().evaluationDate() = evalDate;
 
         RelinkableHandle<ZeroInflationTermStructure> hz;
@@ -2246,17 +2218,13 @@ BOOST_AUTO_TEST_CASE(testUsCpiLinearGlobalBootstrapAtMonthStart) {
                 evalDate, baseDate, Monthly, dc, helpers);
             hz.linkTo(curve);
             curve->zeroRate(evalDate + 1*Years);
-        } catch (const std::exception& e) {
+        } catch (const std::exception&) {
             failureCount++;
-            BOOST_TEST_MESSAGE("  US CPI global failed on "
-                               << io::iso_date(evalDate) << ": " << e.what());
         }
 
         index->clearFixings();
     }
 
-    BOOST_TEST_MESSAGE("  US CPI global: succeeded "
-                       << (total - failureCount) << "/" << total);
     BOOST_CHECK_EQUAL(failureCount, (Size)0);
 }
 
@@ -2312,13 +2280,11 @@ BOOST_AUTO_TEST_CASE(testPillarCollisionWithDifferentMonthLengths) {
     };
 
     Size failureCount = 0;
-    Size total = 0;
 
     // Loop February and March with T+0 settlement
     for (Date evalDate(1, February, 2026);
          evalDate <= Date(31, March, 2026); evalDate++) {
 
-        total++;
         Settings::instance().evaluationDate() = evalDate;
 
         RelinkableHandle<ZeroInflationTermStructure> hz;
@@ -2344,15 +2310,11 @@ BOOST_AUTO_TEST_CASE(testPillarCollisionWithDifferentMonthLengths) {
             curve->zeroRate(evalDate + 1*Years);
         } catch (const std::exception&) {
             failureCount++;
-            BOOST_TEST_MESSAGE("  T+0 failed on " << io::iso_date(evalDate));
         }
 
         index->clearFixings();
     }
 
-    BOOST_TEST_MESSAGE("  T+0 Feb+Mar (with 13M): succeeded "
-                       << (total - failureCount) << ", failed "
-                       << failureCount << " out of " << total);
     BOOST_CHECK_EQUAL(failureCount, (Size)0);
 }
 

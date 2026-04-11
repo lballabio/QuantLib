@@ -646,11 +646,7 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFixedLeg) {
         Real npv = fixedProxy.NPV() + floatProxy.NPV();
         Real tolerance = 1e-10;
 
-        if (std::fabs(npv) > tolerance)
-            BOOST_ERROR("unable to price the fix-float const notional cross currency swap to par\n"
-                        << std::setprecision(5) << "    calculated NPV:    " << npv << "\n"
-                        << "    expected:    " << 0.0 << "\n"
-                        << "    tenor:    " << tenor << "\n");
+        QL_CHECK_SMALL(npv, tolerance);
     }
 }
 
@@ -753,7 +749,7 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFloatingLeg) {
         Real npv = fixedProxy.NPV() + floatProxy.NPV();
         Real tolerance = 1e-10;
 
-        BOOST_CHECK_SMALL(npv, tolerance);
+        QL_CHECK_SMALL(npv, tolerance);
     }
 }
 

@@ -2814,6 +2814,9 @@
     <ClInclude Include="ql\quotes\lastfixingquote.hpp">
       <Filter>quotes</Filter>
     </ClInclude>
+    <ClInclude Include="ql\quotes\multicompositequote.hpp">
+      <Filter>quotes</Filter>
+    </ClInclude>
     <ClInclude Include="ql\quotes\simplequote.hpp">
       <Filter>quotes</Filter>
     </ClInclude>

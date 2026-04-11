@@ -28,3 +28,24 @@ set_target_properties(AmortizedBondsFuzzer PROPERTIES
     LINK_FLAGS "${FUZZING_LINK_FLAGS}"
 )
 target_link_libraries(AmortizedBondsFuzzer ql_library ${QL_THREAD_LIBRARIES})
+
+add_executable(EuropeanOptionFuzzer fuzzeuropeanoption.cpp)
+set_target_properties(EuropeanOptionFuzzer PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(EuropeanOptionFuzzer ql_library ${QL_THREAD_LIBRARIES})
+
+add_executable(InterpolationsFuzzer fuzzinterpolations.cpp)
+set_target_properties(InterpolationsFuzzer PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(InterpolationsFuzzer ql_library ${QL_THREAD_LIBRARIES})
+
+add_executable(TimeFunctionsFuzzer fuzztimefunctions.cpp)
+set_target_properties(TimeFunctionsFuzzer PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(TimeFunctionsFuzzer ql_library ${QL_THREAD_LIBRARIES})

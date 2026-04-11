@@ -712,6 +712,7 @@
     <ClCompile Include="fdcev.cpp" />
     <ClCompile Include="fdsabr.cpp" />
     <ClCompile Include="fittedbonddiscountcurve.cpp" />
+    <ClCompile Include="floatfloatswap.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="fastfouriertransform.cpp" />
     <ClCompile Include="fdheston.cpp" />

@@ -26,9 +26,9 @@
 #ifndef quantlib_piecewise_forward_spreaded_term_structure_hpp
 #define quantlib_piecewise_forward_spreaded_term_structure_hpp
 
-#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolation.hpp>
 #include <ql/quote.hpp>
-#include <ql/termstructures/yield/forwardstructure.hpp>
+#include <ql/termstructures/yield/zeroyieldstructure.hpp>
 #include <utility>
 #include <vector>
 
@@ -46,7 +46,7 @@ namespace QuantLib {
   */
 
   template <class Interpolator>
-  class InterpolatedPiecewiseForwardSpreadedTermStructure : public ForwardRateStructure {
+  class InterpolatedPiecewiseForwardSpreadedTermStructure : public ZeroYieldStructure {
     public:
       InterpolatedPiecewiseForwardSpreadedTermStructure(Handle<YieldTermStructure>,
                                                      std::vector<Handle<Quote>> spreads,
@@ -73,7 +73,6 @@ namespace QuantLib {
     protected:
       //! returns the spreaded zero yield rate
       Rate zeroYieldImpl(Time) const override;
-      Rate forwardImpl(Time) const override;
       void update() override;
 
     private:
@@ -158,14 +157,6 @@ namespace QuantLib {
         Spread spreadPrimitive = calcSpreadPrimitive(t);
         InterestRate zeroRate = originalCurve_->zeroRate(t, Continuous, NoFrequency, true);
         return zeroRate + spreadPrimitive;
-    }
-
-    template <class T>
-    inline Rate
-    InterpolatedPiecewiseForwardSpreadedTermStructure<T>::forwardImpl(Time t) const {
-        Spread spread = calcSpread(t);
-        Rate forwardRate = originalCurve_->forwardRate(t, t, Continuous, NoFrequency, true);
-        return forwardRate + spread;
     }
 
     template <class T>
