@@ -1,4 +1,24 @@
-commit 2360004156a2dc48eefbff493ccab66009bb0718
+commit 87c844203ba1d1587f6328bf385242a1d6dbb58b
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Mon, 13 Apr 2026 06:06:07 +0000
+
+    Set version to 1.42
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 148aff0acbcfc3bbec0a4c200562d4749fcd60e0
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Wed, 1 Apr 2026 08:28:13 +0000
+
+    Update changelog
+
+ ChangeLog.txt | 4003 ++++++++++++++++++++++++++++++---------------------------
+ 1 file changed, 2124 insertions(+), 1879 deletions(-)
+
+commit 62f9db7020fc36e169e8c1979c5ec384f9f96d58
 Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
 Date:   Wed, 1 Apr 2026 08:28:13 +0000
 
