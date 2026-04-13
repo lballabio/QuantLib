@@ -5,6 +5,7 @@ on:
     # At 02:35 on Monday
     - cron: '35 2 * * 1'
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   cmake-build-and-test:
