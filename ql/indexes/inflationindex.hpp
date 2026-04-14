@@ -199,15 +199,6 @@ namespace QuantLib {
             const ext::shared_ptr<ZeroInflationIndex>& underlyingIndex,
             Handle<YoYInflationTermStructure> ts = {});
 
-        /*! \deprecated Use the similar overload without the interpolated parameter.
-                        Deprecated in version 1.38.
-        */
-        [[deprecated("Use the similar overload without the interpolated parameter")]]
-        YoYInflationIndex(
-            const ext::shared_ptr<ZeroInflationIndex>& underlyingIndex,
-            bool interpolated,
-            Handle<YoYInflationTermStructure> ts = {});
-
         //! Constructor for quoted year-on-year indices.
         /*! An index built with this constructor needs its past
             fixings (i.e., the past year-on-year values) to be stored
@@ -221,21 +212,6 @@ namespace QuantLib {
             const Period& availabilityLag,
             const Currency& currency,
             Handle<YoYInflationTermStructure> ts = {});
-
-        /*! \deprecated Use the similar overload without the interpolated parameter.
-                        Deprecated in version 1.38.
-        */
-        [[deprecated("Use the similar overload without the interpolated parameter")]]
-        YoYInflationIndex(
-            const std::string& familyName,
-            const Region& region,
-            bool revised,
-            bool interpolated,
-            Frequency frequency,
-            const Period& availabilityLag,
-            const Currency& currency,
-            Handle<YoYInflationTermStructure> ts = {});
-        //@}
 
         //! \name Index interface
         //@{

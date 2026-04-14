@@ -255,13 +255,6 @@ namespace QuantLib {
         registerWith(yoyInflation_);
     }
 
-    YoYInflationIndex::YoYInflationIndex(const ext::shared_ptr<ZeroInflationIndex>& underlyingIndex,
-                                         bool interpolated,
-                                         Handle<YoYInflationTermStructure> yoyInflation)
-    : YoYInflationIndex(underlyingIndex, std::move(yoyInflation)) {
-        interpolated_ = interpolated;
-    }
-
     YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
                                          const Region& region,
                                          bool revised,
@@ -272,18 +265,6 @@ namespace QuantLib {
     : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency),
       interpolated_(false), ratio_(false), yoyInflation_(std::move(yoyInflation)) {
         registerWith(yoyInflation_);
-    }
-
-    YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
-                                         const Region& region,
-                                         bool revised,
-                                         bool interpolated,
-                                         Frequency frequency,
-                                         const Period& availabilityLag,
-                                         const Currency& currency,
-                                         Handle<YoYInflationTermStructure> yoyInflation)
-    : YoYInflationIndex(familyName, region, revised, frequency, availabilityLag, currency, std::move(yoyInflation)) {
-        interpolated_ = interpolated;
     }
 
 
@@ -390,19 +371,13 @@ namespace QuantLib {
 
     ext::shared_ptr<YoYInflationIndex> YoYInflationIndex::clone(
                            const Handle<YoYInflationTermStructure>& h) const {
-        QL_DEPRECATED_DISABLE_WARNING
         if (ratio_) {
-            // NOLINTNEXTLINE(modernize-make-shared)
-            return ext::shared_ptr<YoYInflationIndex>(
-                new YoYInflationIndex(underlyingIndex_, interpolated_, h));
+            return ext::make_shared<YoYInflationIndex>(underlyingIndex_, h);
         } else {
-            // NOLINTNEXTLINE(modernize-make-shared)
-            return ext::shared_ptr<YoYInflationIndex>(
-                new YoYInflationIndex(familyName_, region_, revised_,
-                                      interpolated_, frequency_,
-                                      availabilityLag_, currency_, h));
+            return ext::make_shared<YoYInflationIndex>(familyName_, region_, revised_,
+                                                       frequency_, availabilityLag_,
+                                                       currency_, h);
         }
-        QL_DEPRECATED_ENABLE_WARNING
     }
 
 

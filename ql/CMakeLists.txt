@@ -1115,27 +1115,15 @@ set(QL_HEADERS
     experimental/credit/spotlosslatentmodel.hpp
     experimental/credit/spreadedhazardratecurve.hpp
     experimental/credit/syntheticcdo.hpp
-    experimental/exoticoptions/analyticholderextensibleoptionengine.hpp
-    experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp
-    experimental/exoticoptions/analyticpdfhestonengine.hpp
-    experimental/exoticoptions/analytictwoassetbarrierengine.hpp
-    experimental/exoticoptions/analytictwoassetcorrelationengine.hpp
-    experimental/exoticoptions/analyticwriterextensibleoptionengine.hpp
-    experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp
     experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp
     experimental/exoticoptions/everestoption.hpp
     experimental/exoticoptions/himalayaoption.hpp
-    experimental/exoticoptions/holderextensibleoption.hpp
     experimental/exoticoptions/kirkspreadoptionengine.hpp
     experimental/exoticoptions/mceverestengine.hpp
     experimental/exoticoptions/mchimalayaengine.hpp
     experimental/exoticoptions/mcpagodaengine.hpp
     experimental/exoticoptions/pagodaoption.hpp
-    experimental/exoticoptions/partialtimebarrieroption.hpp
     experimental/exoticoptions/spreadoption.hpp
-    experimental/exoticoptions/twoassetbarrieroption.hpp
-    experimental/exoticoptions/twoassetcorrelationoption.hpp
-    experimental/exoticoptions/writerextensibleoption.hpp
     experimental/finitedifferences/dynprogvppintrinsicvalueengine.hpp
     experimental/finitedifferences/fdextoujumpvanillaengine.hpp
     experimental/finitedifferences/fdklugeextouspreadengine.hpp
@@ -1293,7 +1281,6 @@ set(QL_HEADERS
     indexes/ibor/swestr.hpp
     indexes/ibor/thbfix.hpp
     indexes/ibor/tibor.hpp
-    indexes/ibor/tona.hpp
     indexes/ibor/tonar.hpp
     indexes/ibor/trlibor.hpp
     indexes/ibor/usdlibor.hpp
