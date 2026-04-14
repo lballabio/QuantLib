@@ -1469,6 +1469,7 @@ set(QL_HEADERS
     math/interpolations/convexmonotoneinterpolation.hpp
     math/interpolations/cubicinterpolation.hpp
     math/interpolations/extrapolation.hpp
+    math/interpolations/flatextrapolation.hpp
     math/interpolations/flatextrapolation2d.hpp
     math/interpolations/forwardflatinterpolation.hpp
     math/interpolations/interpolation2d.hpp

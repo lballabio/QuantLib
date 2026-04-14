@@ -34,6 +34,7 @@
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/chebyshevinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/math/interpolations/flatextrapolation.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation2d.hpp>
@@ -2881,6 +2882,122 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
         QL_CHECK_CLOSE(v, 1.0, 0.1);
     }
 
+}
+
+BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
+
+    BOOST_TEST_MESSAGE("Testing flat extrapolation of 1-D interpolation...");
+
+    const Real x[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+    const Real y[] = { 5.0, 3.0, 4.0, 2.0, 1.0 };
+    const Size N = std::size(x);
+
+    auto cubic = ext::make_shared<CubicInterpolation>(
+        std::begin(x), std::end(x), std::begin(y),
+        CubicInterpolation::Spline, false,
+        CubicInterpolation::SecondDerivative, 0.0,
+        CubicInterpolation::SecondDerivative, 0.0);
+    cubic->enableExtrapolation();
+
+    FlatExtrapolator f(cubic);
+
+    Real tolerance = 1.0e-12;
+
+    // extrapolation not allowed by default
+    try {
+        f(-1.0);
+        BOOST_ERROR("failed to throw when extrapolating without permission");
+    } catch (Error&) {
+        // expected
+    }
+
+    f.enableExtrapolation();
+
+    // in-range: must match underlying cubic at knots
+    for (Size i = 0; i < N; ++i) {
+        Real calculated = f(x[i]);
+        Real expected = y[i];
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("in-range mismatch at x=" << x[i]
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
+
+    // in-range at midpoints: must match underlying cubic
+    for (Size i = 0; i < N - 1; ++i) {
+        Real mid = (x[i] + x[i + 1]) / 2.0;
+        Real calculated = f(mid);
+        Real expected = (*cubic)(mid);
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("in-range mismatch at midpoint x=" << mid
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
+
+    // below range: flat at y[0]
+    for (Real p : { -2.0, -1.0, -0.01 }) {
+        Real calculated = f(p);
+        Real expected = y[0];
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("flat extrapolation below range failed at " << p
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
+
+    // above range: flat at y[N-1]
+    for (Real p : { 4.01, 5.0, 10.0 }) {
+        Real calculated = f(p);
+        Real expected = y[N - 1];
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("flat extrapolation above range failed at " << p
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
+
+    // derivative outside range is zero
+    Real calc = f.derivative(-1.0);
+    if (std::fabs(calc) > tolerance)
+        BOOST_ERROR("derivative should be zero below range"
+                    << "\n    calculated: " << calc);
+    calc = f.derivative(5.0);
+    if (std::fabs(calc) > tolerance)
+        BOOST_ERROR("derivative should be zero above range"
+                    << "\n    calculated: " << calc);
+
+    // second derivative outside range is zero
+    calc = f.secondDerivative(-1.0);
+    if (std::fabs(calc) > tolerance)
+        BOOST_ERROR("second derivative should be zero below range"
+                    << "\n    calculated: " << calc);
+    calc = f.secondDerivative(5.0);
+    if (std::fabs(calc) > tolerance)
+        BOOST_ERROR("second derivative should be zero above range"
+                    << "\n    calculated: " << calc);
+
+    // derivative inside range matches underlying
+    for (Real p : { 0.5, 1.5, 2.5, 3.5 }) {
+        Real calculated = f.derivative(p);
+        Real expected = cubic->derivative(p);
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("in-range derivative mismatch at x=" << p
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
