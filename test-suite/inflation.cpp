@@ -932,6 +932,7 @@ BOOST_AUTO_TEST_CASE(testQuotedYYIndex) {
     BOOST_TEST_MESSAGE("Testing quoted year-on-year inflation indices...");
 
     YYUKRPI yyukrpi;
+    QL_DEPRECATED_DISABLE_WARNING
     if (yyukrpi.name() != "UK YY_RPI"
         || yyukrpi.frequency() != Monthly
         || yyukrpi.revised()
@@ -946,6 +947,7 @@ BOOST_AUTO_TEST_CASE(testQuotedYYIndex) {
                     << yyukrpi.ratio() << ", "
                     << yyukrpi.availabilityLag() << ")");
     }
+    QL_DEPRECATED_ENABLE_WARNING
 }
 
 BOOST_AUTO_TEST_CASE(testQuotedYYIndexFutureFixing) {
@@ -990,6 +992,7 @@ BOOST_AUTO_TEST_CASE(testRatioYYIndex) {
     auto ukrpi = ext::make_shared<UKRPI>();
 
     YoYInflationIndex yyukrpir(ukrpi);
+    QL_DEPRECATED_DISABLE_WARNING
     if (yyukrpir.name() != "UK YYR_RPI"
         || yyukrpir.frequency() != Monthly
         || yyukrpir.revised()
@@ -1004,7 +1007,7 @@ BOOST_AUTO_TEST_CASE(testRatioYYIndex) {
                     << yyukrpir.ratio() << ", "
                     << yyukrpir.availabilityLag() << ")");
     }
-
+    QL_DEPRECATED_ENABLE_WARNING
 
     // Retrieval test.
     //----------------
