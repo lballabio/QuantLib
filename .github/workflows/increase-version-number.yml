@@ -1,10 +1,12 @@
 name: Increase version number
 on:
-  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   increase-version:
     runs-on: ubuntu-latest
+    if: ${{ github.event.release.prerelease == false }}
     steps:
     - uses: actions/checkout@v6
       with:
@@ -18,7 +20,7 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        export LATEST_RELEASE=`gh release list --json name,isLatest --jq '.[] | select(.isLatest)|.name'`
+        export LATEST_RELEASE=${{ github.ref_name }}
         echo ${LATEST_RELEASE} | awk -F '.' '{ print "LATEST_MINOR=" $2 }' | tee -a $GITHUB_ENV
         echo ${LATEST_RELEASE} | awk -F '.' '{ print "NEXT_MINOR=" $2 + 1 }' | tee -a $GITHUB_ENV
     - name: Update version numbers
@@ -34,7 +36,8 @@ jobs:
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib
-        branch: set-to-rc-${{ github.ref_name }}
+        branch: increase-version
         delete-branch: true
+        base: master
         title: 'Set version to 1.${{ env.NEXT_MINOR }}-dev'
         author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
