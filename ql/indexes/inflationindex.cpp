@@ -31,7 +31,9 @@ namespace QuantLib {
                            CPI::InterpolationType interpolationType) {
 
         switch (interpolationType) {
+          QL_DEPRECATED_DISABLE_WARNING
           case AsIndex:
+          QL_DEPRECATED_ENABLE_WARNING
           case Flat: {
               auto fixingPeriod = inflationPeriod(date - observationLag, index->frequency());
               return index->fixing(fixingPeriod.first);
@@ -68,9 +70,11 @@ namespace QuantLib {
                             CPI::InterpolationType interpolationType) {
 
         switch (interpolationType) {
+          QL_DEPRECATED_DISABLE_WARNING
           case AsIndex: {
               return index->fixing(date - observationLag);
           }
+          QL_DEPRECATED_ENABLE_WARNING
           case Flat: {
               auto fixingPeriod = inflationPeriod(date - observationLag, index->frequency());
               return index->fixing(fixingPeriod.first);
@@ -396,23 +400,25 @@ namespace QuantLib {
 
     CPI::InterpolationType
     detail::CPI::effectiveInterpolationType(const QuantLib::CPI::InterpolationType& type) {
+        QL_DEPRECATED_DISABLE_WARNING
         if (type == QuantLib::CPI::AsIndex) {
             return QuantLib::CPI::Flat;
         } else {
             return type;
         }
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     CPI::InterpolationType
     detail::CPI::effectiveInterpolationType(const QuantLib::CPI::InterpolationType& type,
                                             const ext::shared_ptr<YoYInflationIndex>& index) {
+        QL_DEPRECATED_DISABLE_WARNING
         if (type == QuantLib::CPI::AsIndex) {
-            QL_DEPRECATED_DISABLE_WARNING
             return index->interpolated() ? QuantLib::CPI::Linear : QuantLib::CPI::Flat;
-            QL_DEPRECATED_ENABLE_WARNING
         } else {
             return type;
         }
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     bool detail::CPI::isInterpolated(const QuantLib::CPI::InterpolationType& type) {

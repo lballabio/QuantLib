@@ -39,10 +39,13 @@ namespace QuantLib {
     struct CPI {
 
         //! when you observe an index, how do you interpolate between fixings?
+        /*! AsIndex was used to facilitate migration from the index to
+            the coupons using it.  Deprecated in version 1.43.
+        */
         enum InterpolationType {
-            AsIndex, //!< same interpolation as index
-            Flat,    //!< flat from previous fixing
-            Linear   //!< linearly between bracketing fixings
+            AsIndex [[deprecated("Use either Linear or Flat")]] = 0, //!< same interpolation as index
+            Flat = 1,    //!< flat from previous fixing
+            Linear = 2   //!< linearly between bracketing fixings
         };
 
         //! interpolated inflation fixing

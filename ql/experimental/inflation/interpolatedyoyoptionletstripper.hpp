@@ -113,7 +113,7 @@ namespace QuantLib {
         capfloor_ =
             MakeYoYInflationCapFloor(type, anIndex,
                                      (Size)std::floor(0.5+surf->timeFromReference(surf->minMaturity())),
-                                     surf->calendar(), lag, CPI::AsIndex)
+                                     surf->calendar(), lag, CPI::Flat)
             .withNominal(10000.0)
             .withStrike(K);
 
