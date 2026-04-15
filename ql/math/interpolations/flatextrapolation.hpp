@@ -44,7 +44,7 @@ namespace QuantLib {
                 std::move(decoratedInterpolation));
         }
       protected:
-        class FlatExtrapolatorImpl : public Interpolation::Impl {
+        class FlatExtrapolatorImpl final : public Interpolation::Impl {
           public:
             explicit FlatExtrapolatorImpl(ext::shared_ptr<Interpolation> decoratedInterpolation)
             : decoratedInterp_(std::move(decoratedInterpolation)) {
