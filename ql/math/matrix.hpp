@@ -128,7 +128,8 @@ namespace QuantLib {
         row_iterator operator[](Size);
         row_iterator at(Size);
         Array diagonal() const;
-        Real& operator()(Size i, Size j) const;
+        const Real& operator()(Size i, Size j) const;
+        Real& operator()(Size i, Size j);
         //@}
 
         //! \name Inspectors
@@ -497,7 +498,11 @@ namespace QuantLib {
         return tmp;
     }
 
-    inline Real &Matrix::operator()(Size i, Size j) const {
+    inline const Real& Matrix::operator()(Size i, Size j) const {
+        return data_[i*columns()+j];
+    }
+
+    inline Real& Matrix::operator()(Size i, Size j) {
         return data_[i*columns()+j];
     }
 
