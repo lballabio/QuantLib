@@ -1,6 +1,6 @@
 name: Prepare release
 on:
-  workflow_dispatch:
+  push:
 
 jobs:
   update-for-release:
