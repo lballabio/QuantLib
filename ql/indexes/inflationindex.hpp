@@ -39,10 +39,13 @@ namespace QuantLib {
     struct CPI {
 
         //! when you observe an index, how do you interpolate between fixings?
+        /*! AsIndex was used to facilitate migration from the index to
+            the coupons using it.  Deprecated in version 1.43.
+        */
         enum InterpolationType {
-            AsIndex, //!< same interpolation as index
-            Flat,    //!< flat from previous fixing
-            Linear   //!< linearly between bracketing fixings
+            AsIndex [[deprecated("Use either Linear or Flat")]] = 0, //!< same interpolation as index
+            Flat = 1,    //!< flat from previous fixing
+            Linear = 2   //!< linearly between bracketing fixings
         };
 
         //! interpolated inflation fixing
@@ -213,6 +216,10 @@ namespace QuantLib {
             const Currency& currency,
             Handle<YoYInflationTermStructure> ts = {});
 
+        QL_DEPRECATED_DISABLE_WARNING
+        ~YoYInflationIndex() = default;
+        QL_DEPRECATED_ENABLE_WARNING
+
         //! \name Index interface
         //@{
         /*! \warning the forecastTodaysFixing parameter (required by
@@ -225,6 +232,10 @@ namespace QuantLib {
         //! \name Other methods
         //@{
         Date lastFixingDate() const;
+        /*! \deprecated Indexes no longer interpolate, coupons do.
+                        Deprecated in version 1.43.
+        */
+        [[deprecated("Indexes no longer interpolate, coupons do")]]
         bool interpolated() const;
         bool ratio() const;
         ext::shared_ptr<ZeroInflationIndex> underlyingIndex() const;
@@ -235,7 +246,11 @@ namespace QuantLib {
         //@}
 
       protected:
-        bool interpolated_;
+        /*! \deprecated Indexes no longer interpolate, coupons do.
+                        Deprecated in version 1.43.
+        */
+        [[deprecated("Indexes no longer interpolate, coupons do")]]
+        bool interpolated_ = false;
 
       private:
         Rate forecastFixing(const Date& fixingDate) const;
@@ -301,9 +316,11 @@ namespace QuantLib {
         return zeroInflation_;
     }
 
+    QL_DEPRECATED_DISABLE_WARNING
     inline bool YoYInflationIndex::interpolated() const {
         return interpolated_;
     }
+    QL_DEPRECATED_ENABLE_WARNING
 
     inline bool YoYInflationIndex::ratio() const {
         return ratio_;

@@ -371,10 +371,11 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
     Period observationLag = Period(3, Months);
     DayCounter dc = Thirty360(Thirty360::BondBasis);
     Frequency frequency = Monthly;
+    CPI::InterpolationType interpolation = CPI::Flat;
 
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
         return ext::make_shared<ZeroCouponInflationSwapHelper>(
-            quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex);
+            quote, observationLag, maturity, calendar, bdc, dc, ii, interpolation);
     };
     auto helpers = makeHelpers<ZeroInflationTermStructure>(zcData, makeHelper);
 
@@ -405,7 +406,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
                                       calendar, bdc, dc,
                                       datum.rate/100.0,
                                       ii, observationLag,
-                                      CPI::AsIndex);
+                                      interpolation);
         nzcis.setPricingEngine(engine);
 
         BOOST_CHECK_MESSAGE(std::fabs(nzcis.NPV()) < eps,
@@ -421,7 +422,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
                                             calendar, bdc, dc,
                                             datum.rate/100.0 + basisPoint,
                                             ii, observationLag,
-                                            CPI::AsIndex);
+                                            interpolation);
         nzcisBumped.setPricingEngine(engine);
 
         const Real expected = nzcisBumped.legNPV(0) - nzcis.legNPV(0);
@@ -494,7 +495,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
                                       calendar, bdc, dc,
                                       datum.rate/100.0,
                                       ii, observationLag,
-                                      CPI::AsIndex);
+                                      interpolation);
         nzcis.setPricingEngine(engine);
 
         BOOST_CHECK_MESSAGE(std::fabs(nzcis.NPV()) < eps,
@@ -514,6 +515,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructureLazyBaseDate) {
     Calendar calendar = UnitedKingdom();
     BusinessDayConvention bdc = ModifiedFollowing;
     Period observationLag = Period(3, Months);
+    CPI::InterpolationType interpolation = CPI::Flat;
     DayCounter dc = Thirty360(Thirty360::BondBasis);
     Frequency frequency = Monthly;
     Date evaluationDate(13, August, 2007);
@@ -547,7 +549,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructureLazyBaseDate) {
         quotes.push_back(ext::make_shared<SimpleQuote>());
         helpers.push_back(ext::make_shared<ZeroCouponInflationSwapHelper>(
             Handle<Quote>(quotes.back()), observationLag, datum.date, calendar, bdc, dc,
-            ii, CPI::AsIndex));
+            ii, interpolation));
     }
 
     // Create a curve that will use lastFixingDate as the baseDate. The fixings
@@ -932,6 +934,7 @@ BOOST_AUTO_TEST_CASE(testQuotedYYIndex) {
     BOOST_TEST_MESSAGE("Testing quoted year-on-year inflation indices...");
 
     YYUKRPI yyukrpi;
+    QL_DEPRECATED_DISABLE_WARNING
     if (yyukrpi.name() != "UK YY_RPI"
         || yyukrpi.frequency() != Monthly
         || yyukrpi.revised()
@@ -946,6 +949,7 @@ BOOST_AUTO_TEST_CASE(testQuotedYYIndex) {
                     << yyukrpi.ratio() << ", "
                     << yyukrpi.availabilityLag() << ")");
     }
+    QL_DEPRECATED_ENABLE_WARNING
 }
 
 BOOST_AUTO_TEST_CASE(testQuotedYYIndexFutureFixing) {
@@ -990,6 +994,7 @@ BOOST_AUTO_TEST_CASE(testRatioYYIndex) {
     auto ukrpi = ext::make_shared<UKRPI>();
 
     YoYInflationIndex yyukrpir(ukrpi);
+    QL_DEPRECATED_DISABLE_WARNING
     if (yyukrpir.name() != "UK YYR_RPI"
         || yyukrpir.frequency() != Monthly
         || yyukrpir.revised()
@@ -1004,7 +1009,7 @@ BOOST_AUTO_TEST_CASE(testRatioYYIndex) {
                     << yyukrpir.ratio() << ", "
                     << yyukrpir.availabilityLag() << ")");
     }
-
+    QL_DEPRECATED_ENABLE_WARNING
 
     // Retrieval test.
     //----------------
@@ -1157,11 +1162,12 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
 
     Period observationLag = Period(2,Months);
     DayCounter dc = Thirty360(Thirty360::BondBasis);
+    CPI::InterpolationType interpolation = CPI::Flat;
 
     // now build the helpers ...
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
         return ext::make_shared<YearOnYearInflationSwapHelper>(
-            quote, observationLag, maturity, calendar, bdc, dc, iir, CPI::AsIndex,
+            quote, observationLag, maturity, calendar, bdc, dc, iir, interpolation,
             Handle<YieldTermStructure>(nominalTS));
     };
     auto helpers = makeHelpers<YoYInflationTermStructure>(yyData, makeHelper);
@@ -1208,7 +1214,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
                                      yoySchedule,
                                      iir,
                                      observationLag,
-                                     CPI::Flat,
+                                     interpolation,
                                      0.0,        //spread on index
                                      dc,
                                      UnitedKingdom());
@@ -1245,7 +1251,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
                                      yoySchedule,
                                      iir,
                                      observationLag,
-                                     CPI::Flat,
+                                     interpolation,
                                      0.0,        //spread on index
                                      dc,
                                      UnitedKingdom());
@@ -1401,6 +1407,7 @@ BOOST_AUTO_TEST_CASE(testCpiLinearInterpolation) {
     QL_CHECK_CLOSE(calculated, expected, 1e-8);
 }
 
+QL_DEPRECATED_DISABLE_WARNING
 BOOST_AUTO_TEST_CASE(testCpiAsIndexInterpolation) {
     BOOST_TEST_MESSAGE("Testing CPI as-index interpolation for inflation fixings...");
 
@@ -1435,6 +1442,7 @@ BOOST_AUTO_TEST_CASE(testCpiAsIndexInterpolation) {
 
     QL_CHECK_CLOSE(calculated, expected, 1e-8);
 }
+QL_DEPRECATED_ENABLE_WARNING
 
 BOOST_AUTO_TEST_CASE(testCpiYoYQuotedFlatInterpolation) {
     BOOST_TEST_MESSAGE("Testing CPI flat interpolation for year-on-year quoted rates...");
@@ -1660,10 +1668,11 @@ BOOST_AUTO_TEST_CASE(testExtrapolationRegression) {
     Period observationLag = Period(3, Months);
     DayCounter dc = Thirty360(Thirty360::BondBasis);
     Frequency frequency = Monthly;
+    CPI::InterpolationType interpolation = CPI::Flat;
 
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
         return ext::make_shared<ZeroCouponInflationSwapHelper>(
-            quote, observationLag, maturity, calendar, bdc, dc, rpi, CPI::AsIndex);
+            quote, observationLag, maturity, calendar, bdc, dc, rpi, interpolation);
     };
     auto helpers = makeHelpers<ZeroInflationTermStructure>(zcData, makeHelper);
 
@@ -1701,7 +1710,7 @@ BOOST_AUTO_TEST_CASE(testExtrapolationRegression) {
     // now build the helpers ...
     auto makeYoYHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
         return ext::make_shared<YearOnYearInflationSwapHelper>(
-            quote, observationLag, maturity, calendar, bdc, dc, yoy, CPI::AsIndex,
+            quote, observationLag, maturity, calendar, bdc, dc, yoy, interpolation,
             Handle<YieldTermStructure>(nominalTS));
     };
     auto yoyHelpers = makeHelpers<YoYInflationTermStructure>(yyData, makeYoYHelper);

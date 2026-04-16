@@ -112,7 +112,7 @@ namespace QuantLib {
                                     dc,
                                     lag,
                                     capFloorPrices->yoyIndex()->frequency(),
-                                    capFloorPrices->yoyIndex()->interpolated(),
+                                    false,
                                     volType,
                                     displacement),
       capFloorPrices_(capFloorPrices), yoyInflationCouponPricer_(std::move(pricer)),

@@ -251,7 +251,7 @@ struct CommonVars {
                                 dc,
                                 observationLag,
                                 frequency,
-                                iir->interpolated()));
+                                false));
 
         ext::shared_ptr<YoYInflationCouponPricer> pricer;
         switch (which) {
@@ -313,7 +313,7 @@ struct CommonVars {
                             dc,
                             observationLag,
                             frequency,
-                            iir->interpolated()));
+                            false));
 
 
         switch (which) {

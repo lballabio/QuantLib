@@ -215,7 +215,7 @@ struct CommonVars {
                                                        dc,
                                                        observationLag,
                                                        frequency,
-                                                       iir->interpolated()));
+                                                       false));
 
 
         switch (which) {
