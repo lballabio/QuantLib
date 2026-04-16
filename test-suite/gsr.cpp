@@ -342,6 +342,53 @@ BOOST_AUTO_TEST_CASE(testGsrProcessWithPathGenerator) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testGsrModelQuoteUpdate) {
+
+    BOOST_TEST_MESSAGE("Testing GSR model when updating quotes...");
+
+    Date refDate = Settings::instance().evaluationDate();
+
+    Real modelvol = 0.01;
+    Real reversion = 0.01;
+
+    std::vector<Date> stepDates;
+    std::vector<Real> vols = {modelvol};
+    std::vector<Real> reversions = {reversion};
+
+    auto rate = ext::make_shared<SimpleQuote>(0.03);
+
+    Handle<YieldTermStructure> yts(ext::make_shared<FlatForward>(0, TARGET(), Handle<Quote>(rate), Actual365Fixed()));
+    auto model = ext::make_shared<Gsr>(yts, stepDates, vols, reversions, 50.0);
+    auto hw = ext::make_shared<HullWhite>(yts, reversion, modelvol);
+
+    Date expiry = TARGET().advance(refDate, 5 * Years);
+    Period tenor = 10 * Years;
+    auto swpIdx = ext::make_shared<EuriborSwapIsdaFixA>(tenor, yts);
+    Real forward = swpIdx->fixing(expiry);
+
+    ext::shared_ptr<VanillaSwap> underlyingFixed =
+        MakeVanillaSwap(10 * Years, swpIdx->iborIndex(), forward)
+            .withEffectiveDate(swpIdx->valueDate(expiry))
+            .withFixedLegCalendar(swpIdx->fixingCalendar())
+            .withFixedLegDayCount(swpIdx->dayCounter())
+            .withFixedLegTenor(swpIdx->fixedLegTenor())
+            .withFixedLegConvention(swpIdx->fixedLegConvention())
+            .withFixedLegTerminationDateConvention(
+                 swpIdx->fixedLegConvention());
+    auto exercise = ext::make_shared<EuropeanExercise>(expiry);
+    auto stdswaption = ext::make_shared<Swaption>(underlyingFixed, exercise);
+
+    stdswaption->setPricingEngine(
+        ext::make_shared<Gaussian1dSwaptionEngine>(model, 64, 7.0, true, false));
+    BOOST_CHECK_NO_THROW(stdswaption->NPV());
+    Real before = stdswaption->NPV();
+
+    BOOST_CHECK_NO_THROW(rate->setValue(0.04));
+
+    Real after = stdswaption->NPV();
+    BOOST_CHECK(std::fabs(before - after) > 0.01);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
