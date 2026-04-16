@@ -65,13 +65,14 @@ namespace QuantLib {
                     bool applyObservationShift,
                     bool compoundSpreadDaily,
                     const Date& rateComputationStartDate,
-                    const Date& rateComputationEndDate)
+                    const Date& rateComputationEndDate,
+                    const Date& exCouponDate)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          lookbackDays,
                          overnightIndex,
                          gearing, spread,
                          refPeriodStart, refPeriodEnd,
-                         dayCounter, false), 
+                         dayCounter, false, exCouponDate),
         averagingMethod_(averagingMethod), lockoutDays_(lockoutDays),
         applyObservationShift_(applyObservationShift),
         compoundSpreadDaily_(compoundSpreadDaily),
@@ -79,19 +80,14 @@ namespace QuantLib {
         rateComputationEndDate_(rateComputationEndDate) {
         
         // ctor guard prevents construction of an object with illogically ordered dates. 
-        QL_REQUIRE(paymentDate >= endDate, 
+        QL_REQUIRE(startDate < endDate, "startDate must be less than endDate");
+        QL_REQUIRE(paymentDate >= endDate,
         "Payment date cannot be earlier than accrual end date");
 
-        Date valueStart = rateComputationStartDate_ == Null<Date>() ? startDate : rateComputationStartDate_;
-        Date valueEnd = rateComputationEndDate_ == Null<Date>() ? endDate : rateComputationEndDate_;
-        if (lookbackDays != Null<Natural>()) {
-            BusinessDayConvention bdc = lookbackDays > 0 ? Preceding : Following;
-            valueStart = overnightIndex->fixingCalendar().advance(valueStart, -static_cast<Integer>(lookbackDays), Days, bdc);
-            valueEnd = overnightIndex->fixingCalendar().advance(valueEnd, -static_cast<Integer>(lookbackDays), Days, bdc);
-        }
-        
+        const Date rateCalcStartDate = rateComputationStartDate_ == Date() ? startDate : rateComputationStartDate_;
+        const Date rateCalcEndDate = rateComputationEndDate_ == Date() ? endDate : rateComputationEndDate_;
         // value dates
-        Date tmpEndDate = endDate;
+        Date tmpEndDate = rateCalcEndDate;
 
         /* For the coupon's valuation only the first and last future valuation
            dates matter, therefore we can avoid to construct the whole series
@@ -104,38 +100,31 @@ namespace QuantLib {
         QL_REQUIRE(canApplyTelescopicFormula() || !telescopicValueDates,
                    "Telescopic formula cannot be applied for a coupon with lookback.");
 
+        const auto& fixingCal = overnightIndex->fixingCalendar();
         if (telescopicValueDates) {
-            // build optimised value dates schedule: front stub goes
-            // from start date to max(evalDate,startDate) + 7bd
+            // build optimised value dates schedule: front stub goes from rateCalcStartDate
+            // to min(max(rateCalcStartDate,evalDate) + 7bd, rateCalcEndDate)
             Date evalDate = Settings::instance().evaluationDate();
-            tmpEndDate = overnightIndex->fixingCalendar().advance(
-                std::max(startDate, evalDate), 7, Days, Following);
-            tmpEndDate = std::min(tmpEndDate, endDate);
+            tmpEndDate = fixingCal.advance(
+                std::max(rateCalcStartDate, evalDate), 7, Days, Following);
+            tmpEndDate = std::min(tmpEndDate, rateCalcEndDate);
         }
-        Schedule sch =
-            MakeSchedule()
-                .from(startDate)
-                // .to(endDate)
-                .to(tmpEndDate)
-                .withTenor(1 * Days)
-                .withCalendar(overnightIndex->fixingCalendar())
-                .withConvention(overnightIndex->businessDayConvention())
-                .backwards();
-        valueDates_ = sch.dates();
+        valueDates_ = fixingCal.businessDayList(
+            fixingCal.adjust(rateCalcStartDate, Preceding),
+            fixingCal.adjust(tmpEndDate, Following));
 
         if (telescopicValueDates) {
             // if lockout days are defined, we need to ensure that
             // the lockout period is covered by the value dates
-            tmpEndDate = overnightIndex->fixingCalendar().adjust(
-                endDate, overnightIndex->businessDayConvention());
-            Date tmpLockoutDate = overnightIndex->fixingCalendar().advance(
-                endDate, -std::max<Integer>(lockoutDays_, 1), Days, Preceding);
-            while (tmpLockoutDate <= tmpEndDate)
-            {
-                if (tmpLockoutDate > valueDates_.back())
-                    valueDates_.push_back(tmpLockoutDate);
-                tmpLockoutDate =
-                    overnightIndex->fixingCalendar().advance(tmpLockoutDate, 1, Days, Following);
+            tmpEndDate = fixingCal.adjust(rateCalcEndDate, Following);
+            const Date tmpLockoutDate = fixingCal.advance(rateCalcEndDate,
+                -std::max<Integer>(lockoutDays_, 1), Days);
+            Date nextValueDate = tmpLockoutDate > valueDates_.back()
+                                 ? tmpLockoutDate
+                                 : fixingCal.advance(valueDates_.back(), 1, Days);
+            while (nextValueDate <= tmpEndDate) {
+                valueDates_.push_back(nextValueDate);
+                nextValueDate = fixingCal.advance(nextValueDate, 1, Days);
             }
         }
 
@@ -144,6 +133,8 @@ namespace QuantLib {
         n_ = valueDates_.size() - 1;
 
         interestDates_ = vector<Date>(valueDates_.begin(), valueDates_.end());
+        interestDates_.front() = std::max(interestDates_.front(), rateCalcStartDate);
+        interestDates_.back() = std::min(interestDates_.back(), rateCalcEndDate);
 
         if (fixingDays_ == overnightIndex->fixingDays() && fixingDays_ == 0) {
             fixingDates_ = vector<Date>(valueDates_.begin(), valueDates_.end() - 1);
@@ -158,14 +149,6 @@ namespace QuantLib {
                 Date tmp = applyLookbackPeriod(overnightIndex, valueDates_[i], fixingDays_);
                 if (i < n_)
                     fixingDates_[i] = tmp;
-                if (applyObservationShift_)
-                    // Lookback (fixing days) with observation shift:
-                    // The date that the fixing rate is pulled from (the observation date)
-                    // is k business days before the date that interest is applied
-                    // (the interest date) and is applied for the number of calendar
-                    // days until the next business day following the observation date.
-                    // This means that the fixing dates periods align with value dates.
-                    interestDates_[i] = tmp;
                 if (fixingDays_ != overnightIndex->fixingDays())
                     // If fixing dates of the coupon deviate from fixing days in the index
                     // we need to correct the value dates such that they reflect dates
@@ -181,16 +164,16 @@ namespace QuantLib {
         if (lockoutDays_ != 0) {
             QL_REQUIRE(lockoutDays_ > 0 && lockoutDays_ < n_,
                        "Lockout period cannot be negative or exceed the number of fixing days.");
-            Date lockoutDate = fixingDates_[n_ - 1 - lockoutDays_];
-            for (Size i = n_ - 1; i > n_ - 1 - lockoutDays_; --i)
-                fixingDates_[i] = lockoutDate;
+            const Date lockoutDate = fixingDates_[n_ - 1 - lockoutDays_];
+            std::fill(fixingDates_.end() - lockoutDays_, fixingDates_.end(), lockoutDate);
         }
 
         // accrual (compounding) periods
         dt_.resize(n_);
         const DayCounter& dc = overnightIndex->dayCounter();
-        for (Size i=0; i<n_; ++i)
-            dt_[i] = dc.yearFraction(interestDates_[i], interestDates_[i + 1]);
+        const auto& accrualDates = (applyObservationShift_ && lookbackDays > 0) ? valueDates_ : interestDates_;
+        for (Size i = 0; i < n_; ++i)
+            dt_[i] = dc.yearFraction(accrualDates[i], accrualDates[i + 1]);
 
         switch (averagingMethod) {
           case RateAveraging::Simple:
