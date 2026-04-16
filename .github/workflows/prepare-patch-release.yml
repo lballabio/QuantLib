@@ -1,9 +1,9 @@
-name: Prepare release candidate
+name: Prepare release
 on:
   workflow_dispatch:
 
 jobs:
-  update-for-rc:
+  update-for-release:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v6
@@ -20,15 +20,16 @@ jobs:
       run: |
         export LATEST_RELEASE=`gh release list --json name,isLatest --jq '.[] | select(.isLatest)|.name'`
         echo LATEST_TAG=v${LATEST_RELEASE} | tee -a $GITHUB_ENV
-        echo ${LATEST_RELEASE} | awk -F '.' '{ print "NEXT_MINOR=" $2 + 1 }' | tee -a $GITHUB_ENV
+        echo ${LATEST_RELEASE} | awk -F '.' '{ print "LAST_MINOR=" $2 }' | tee -a $GITHUB_ENV
+        echo ${LATEST_RELEASE} | awk -F '.' '{ print "NEXT_PATCH=" $3 + 1 }' | tee -a $GITHUB_ENV
     - name: Update version numbers
       run: |
-        sed -i -e "s/^AC_INIT(\[QuantLib\].*$/AC_INIT([QuantLib], [1.${NEXT_MINOR}-rc],/g" configure.ac
-        sed -i -e "s/^#define QL_VERSION.*$/#define QL_VERSION \"1.${NEXT_MINOR}-rc\"/g" ql/version.hpp
-        sed -i -e "s/^#define QL_HEX_VERSION.*$/#define QL_HEX_VERSION 0x01${NEXT_MINOR}00c0/g" ql/version.hpp
-        sed -i -e "s/^set(PACKAGE_VERSION  .*$/set(PACKAGE_VERSION       \"1.${NEXT_MINOR}-rc\"\)/g" CMakeLists.txt
-        sed -i -e "s/^set(PACKAGE_VERSION_HEX.*$/set(PACKAGE_VERSION_HEX   \"0x01${NEXT_MINOR}00c0\"\)/g" CMakeLists.txt
-        git commit -a -m "Set version to 1.${NEXT_MINOR}-rc"
+        sed -i -e "s/^AC_INIT(\[QuantLib\].*$/AC_INIT([QuantLib], [1.${LAST_MINOR}.${NEXT_PATCH}],/g" configure.ac
+        sed -i -e "s/^#define QL_VERSION.*$/#define QL_VERSION \"1.${LAST_MINOR}.${NEXT_PATCH}\"/g" ql/version.hpp
+        sed -i -e "s/^#define QL_HEX_VERSION.*$/#define QL_HEX_VERSION 0x01${LAST_MINOR}0${NEXT_PATCH}f0/g" ql/version.hpp
+        sed -i -e "s/^set(PACKAGE_VERSION  .*$/set(PACKAGE_VERSION       \"1.${LAST_MINOR}.${NEXT_PATCH}\"\)/g" CMakeLists.txt
+        sed -i -e "s/^set(PACKAGE_VERSION_HEX.*$/set(PACKAGE_VERSION_HEX   \"0x01${LAST_MINOR}0${NEXT_PATCH}f0\"\)/g" CMakeLists.txt
+        git commit -a -m "Set version to 1.${LAST_MINOR}.${NEXT_PATCH}"
     - name: Update ChangeLog
       run: |
         git log --pretty=medium --date=rfc --stat --grep='Merge [^p]' --grep='[Mm]erged' --grep='[Pp]ull from' --invert-grep ${LATEST_TAG}.. > ChangeLog.txt
@@ -37,7 +38,7 @@ jobs:
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib
-        branch: set-to-rc-${{ github.ref_name }}
+        branch: update-version-for-release-${{ github.ref_name }}
         delete-branch: true
-        title: 'Set version to 1.${{ env.NEXT_MINOR }}-rc'
+        title: 'Set version to 1.${{ env.LAST_MINOR }}.${{ env.NEXT_PATCH }} final'
         author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>

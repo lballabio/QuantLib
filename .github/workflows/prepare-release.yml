@@ -19,7 +19,7 @@ jobs:
         GH_TOKEN: ${{ github.token }}
       run: |
         export LATEST_RELEASE=`gh release list --json name,isLatest --jq '.[] | select(.isLatest)|.name'`
-        echo ${LATEST_RELEASE} | awk -F '.' '{ print "LATEST_MINOR=" $2 }' | tee -a $GITHUB_ENV
+        echo LATEST_TAG=v${LATEST_RELEASE} | tee -a $GITHUB_ENV
         echo ${LATEST_RELEASE} | awk -F '.' '{ print "NEXT_MINOR=" $2 + 1 }' | tee -a $GITHUB_ENV
     - name: Update version numbers
       run: |
@@ -31,7 +31,7 @@ jobs:
         git commit -a -m "Set version to 1.${NEXT_MINOR}"
     - name: Update ChangeLog
       run: |
-        git log --pretty=medium --date=rfc --stat --grep='Merge [^p]' --grep='[Mm]erged' --grep='[Pp]ull from' --invert-grep v1.${LATEST_MINOR}... > ChangeLog.txt
+        git log --pretty=medium --date=rfc --stat --grep='Merge [^p]' --grep='[Mm]erged' --grep='[Pp]ull from' --invert-grep ${LATEST_TAG}.. > ChangeLog.txt
         git commit -a -m "Update changelog"
     - uses: peter-evans/create-pull-request@v8
       with:
