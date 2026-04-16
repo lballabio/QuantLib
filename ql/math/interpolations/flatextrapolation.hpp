@@ -25,6 +25,7 @@
 #define quantlib_flatextrapolation_hpp
 
 #include <ql/math/interpolation.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -89,11 +90,7 @@ namespace QuantLib {
             ext::shared_ptr<Interpolation> decoratedInterp_;
 
             Real bind(Real x) const {
-                if (x < xMin())
-                    return xMin();
-                if (x > xMax())
-                    return xMax();
-                return x;
+                return std::clamp(x, xMin(), xMax());
             }
 
             void calculate() { decoratedInterp_->update(); }
