@@ -4524,6 +4524,13 @@
     <ClInclude Include="ql\pricingengines\vanilla\cashdividendeuropeanengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\calendars\uzbekistan.hpp" />
+    <ClInclude Include="ql\time\calendars\malta.hpp" />
+    <ClInclude Include="ql\time\calendars\montenegro.hpp" />
+    <ClInclude Include="ql\time\calendars\northmacedonia.hpp" />
+    <ClInclude Include="ql\time\calendars\serbia.hpp" />
+    <ClInclude Include="ql\time\calendars\slovenia.hpp" />
+    <ClInclude Include="ql\time\calendars\croatia.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7351,5 +7358,12 @@
     <ClCompile Include="ql\pricingengines\vanilla\cashdividendeuropeanengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
+    <ClCompile Include="ql\time\calendars\uzbekistan.cpp" />
+    <ClCompile Include="ql\time\calendars\croatia.cpp" />
+    <ClCompile Include="ql\time\calendars\malta.cpp" />
+    <ClCompile Include="ql\time\calendars\montenegro.cpp" />
+    <ClCompile Include="ql\time\calendars\northmacedonia.cpp" />
+    <ClCompile Include="ql\time\calendars\serbia.cpp" />
+    <ClCompile Include="ql\time\calendars\slovenia.cpp" />
   </ItemGroup>
 </Project>
