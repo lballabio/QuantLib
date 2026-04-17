@@ -44,7 +44,7 @@ using namespace boost::unit_test_framework;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(CdoTests, *precondition(if_speed(Slow)))
+BOOST_AUTO_TEST_SUITE(CdoTests, *precondition(if_speed(Fast)))
 
 #ifndef QL_PATCH_SOLARIS
 
