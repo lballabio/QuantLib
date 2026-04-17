@@ -19,6 +19,7 @@
 
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/math/interpolations/flatextrapolation.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/models/shortrate/onefactormodels/markovfunctional.hpp>
 #include <ql/termstructures/volatility/atmadjustedsmilesection.hpp>
@@ -218,10 +219,12 @@ namespace QuantLib {
         discreteNumeraire_ = ext::make_shared<Matrix>(
             times_.size(), 2 * modelSettings_.yGridPoints_ + 1, 1.0);
         for (Size i = 0; i < times_.size(); i++) {
-            ext::shared_ptr<Interpolation> numInt(new CubicInterpolation(
+            auto cubicInt = ext::make_shared<CubicInterpolation>(
                 y_.begin(), y_.end(), discreteNumeraire_->row_begin(i),
                 CubicInterpolation::Spline, true, CubicInterpolation::Lagrange,
-                0.0, CubicInterpolation::Lagrange, 0.0));
+                0.0, CubicInterpolation::Lagrange, 0.0);
+            cubicInt->enableExtrapolation();
+            auto numInt = ext::make_shared<FlatExtrapolator>(cubicInt);
             numInt->enableExtrapolation();
             numeraire_.push_back(numInt);
         }
@@ -723,18 +726,10 @@ namespace QuantLib {
         Real dt = tb - ta;
 
         for (Size j = 0; j < y.size(); j++) {
-            Real yv = y[j];
-            if (yv < y_.front())
-                yv = y_.front();
-            // FIXME flat extrapolation should be incoperated into interpolation
-            // object, see above
-            if (yv > y_.back())
-                yv = y_.back();
-            Real na = (*numeraire_[i - 1])(yv);
-            Real nb = (*numeraire_[i])(yv);
+            Real na = (*numeraire_[i - 1])(y[j]);
+            Real nb = (*numeraire_[i])(y[j]);
             res[j] =
                 inverseNormalization / ((tz - ta) / nb + (tb - tz) / na) * dt;
-            // linear in reciprocal of normalized numeraire
         }
 
         return res;

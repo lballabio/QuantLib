@@ -140,6 +140,12 @@ namespace QuantLib {
         Real xMax() const {
             return impl_->xMax();
         }
+        std::vector<Real> xValues() const {
+            return impl_->xValues();
+        }
+        std::vector<Real> yValues() const {
+            return impl_->yValues();
+        }
         bool isInRange(Real x) const {
             return impl_->isInRange(x);
         }

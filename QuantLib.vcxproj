@@ -1041,6 +1041,7 @@
     <ClInclude Include="ql\math\interpolations\convexmonotoneinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\cubicinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\extrapolation.hpp" />
+    <ClInclude Include="ql\math\interpolations\flatextrapolation.hpp" />
     <ClInclude Include="ql\math\interpolations\flatextrapolation2d.hpp" />
     <ClInclude Include="ql\math\interpolations\forwardflatinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\interpolation2d.hpp" />
