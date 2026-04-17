@@ -223,6 +223,7 @@ set(QL_SOURCES
     indexes/ibor/shibor.cpp
     indexes/ibor/sofr.cpp
     indexes/ibor/sonia.cpp
+    indexes/ibor/zaronia.cpp
     indexes/iborindex.cpp
     indexes/indexmanager.cpp
     indexes/inflationindex.cpp
@@ -1285,6 +1286,7 @@ set(QL_HEADERS
     indexes/ibor/trlibor.hpp
     indexes/ibor/usdlibor.hpp
     indexes/ibor/wibor.hpp
+    indexes/ibor/zaronia.hpp
     indexes/ibor/zibor.hpp
     indexes/iborindex.hpp
     indexes/indexmanager.hpp

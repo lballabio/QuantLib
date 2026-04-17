@@ -44,6 +44,7 @@ this_include_HEADERS = \
     trlibor.hpp \
     usdlibor.hpp \
     wibor.hpp \
+    zaronia.hpp \
     zibor.hpp
 
 cpp_files = \
@@ -61,7 +62,8 @@ cpp_files = \
     saron.cpp \
     shibor.cpp \
     sofr.cpp \
-    sonia.cpp
+    sonia.cpp \
+    zaronia.cpp
 
 
 if UNITY_BUILD
