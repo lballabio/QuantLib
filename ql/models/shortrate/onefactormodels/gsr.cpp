@@ -159,8 +159,6 @@ void Gsr::initialize(Real T) {
         }
     }
 
-    // sigma_ =
-    // PiecewiseConstantParameter(volsteptimes_,PositiveConstraint());
     sigma_ = PiecewiseConstantParameter(volsteptimes_, NoConstraint());
     for (Size i = 0; i < sigma_.size(); i++) {
         sigma_.setParam(i, volatilities_[i]->value());
@@ -171,7 +169,9 @@ void Gsr::initialize(Real T) {
 
     registerWith(termStructure());
 
-    registerWith(stateProcess_);
+    // registering with stateProcess_ is not necessary (the Gsr model
+    // itself manages it) and in fact would lead to an infinite
+    // notification loop
 
     volatilityObserver_ = ext::make_shared<VolatilityObserver>(this);
     reversionObserver_ = ext::make_shared<ReversionObserver>(this);
