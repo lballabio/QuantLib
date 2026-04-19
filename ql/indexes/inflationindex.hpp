@@ -217,7 +217,7 @@ namespace QuantLib {
             Handle<YoYInflationTermStructure> ts = {});
 
         QL_DEPRECATED_DISABLE_WARNING
-        ~YoYInflationIndex() = default;
+        ~YoYInflationIndex() override = default;
         QL_DEPRECATED_ENABLE_WARNING
 
         //! \name Index interface
