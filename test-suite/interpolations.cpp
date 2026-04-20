@@ -22,7 +22,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
@@ -1877,7 +1876,7 @@ BOOST_AUTO_TEST_CASE(testRichardsonExtrapolation) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testNoArbSabrInterpolation, *precondition(if_speed(Fast))){
+BOOST_AUTO_TEST_CASE(testNoArbSabrInterpolation){
 
     BOOST_TEST_MESSAGE("Testing no-arbitrage Sabr interpolation...");
 

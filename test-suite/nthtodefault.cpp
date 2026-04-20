@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/currencies/europe.hpp>
@@ -96,7 +95,7 @@ hwDatumDist hwDataDist[] = {
 };
 
 
-BOOST_AUTO_TEST_CASE(testGauss, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testGauss) {
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
                        "with Gaussian copula...");
 
@@ -232,7 +231,7 @@ BOOST_AUTO_TEST_CASE(testGauss, *precondition(if_speed(Fast))) {
         }
     }
 }
-BOOST_AUTO_TEST_CASE(testStudent, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testStudent) {
 
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
                        "with Student copula...");

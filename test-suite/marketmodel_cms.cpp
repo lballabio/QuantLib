@@ -20,7 +20,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
@@ -426,7 +425,7 @@ checkCMSAndSwaptions(const SequenceStatisticsInc& stats,
 }
 
 
-BOOST_AUTO_TEST_CASE(testMultiStepCmSwapsAndSwaptions, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testMultiStepCmSwapsAndSwaptions) {
 
     BOOST_TEST_MESSAGE("Testing exact repricing of "
                        "multi-step constant maturity swaps and swaptions "

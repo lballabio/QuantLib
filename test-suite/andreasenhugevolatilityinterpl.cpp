@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/barrieroption.hpp>
@@ -421,7 +420,7 @@ BOOST_AUTO_TEST_CASE(testAndreasenHugeCall) {
     testAndreasenHugeVolatilityInterpolation(data, expected);
 }
 
-BOOST_AUTO_TEST_CASE(testAndreasenHugeCallPut, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testAndreasenHugeCallPut) {
 
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with instantaneous "
@@ -439,7 +438,7 @@ BOOST_AUTO_TEST_CASE(testAndreasenHugeCallPut, *precondition(if_speed(Fast))) {
     testAndreasenHugeVolatilityInterpolation(data, expected);
 }
 
-BOOST_AUTO_TEST_CASE(testLinearInterpolation, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testLinearInterpolation) {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with linear interpolation...");
 
@@ -455,7 +454,7 @@ BOOST_AUTO_TEST_CASE(testLinearInterpolation, *precondition(if_speed(Fast))) {
     testAndreasenHugeVolatilityInterpolation(data, expected);
 }
 
-BOOST_AUTO_TEST_CASE(testPiecewiseConstantInterpolation, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testPiecewiseConstantInterpolation) {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with piecewise constant interpolation...");
 
@@ -471,7 +470,7 @@ BOOST_AUTO_TEST_CASE(testPiecewiseConstantInterpolation, *precondition(if_speed(
     testAndreasenHugeVolatilityInterpolation(data, expected);
 }
 
-BOOST_AUTO_TEST_CASE(testTimeDependentInterestRates, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testTimeDependentInterestRates) {
 
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge volatility interpolation with "
@@ -701,7 +700,7 @@ BOOST_AUTO_TEST_CASE(testArbitrageFree) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testBarrierOptionPricing, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testBarrierOptionPricing) {
     BOOST_TEST_MESSAGE(
         "Testing Barrier option pricing with Andreasen-Huge "
          "local volatility surface...");
