@@ -150,7 +150,8 @@ namespace QuantLib {
                                     vols_.begin(),
                                     CubicInterpolation::Spline, false,
                                     CubicInterpolation::SecondDerivative, 0.0,
-                                    CubicInterpolation::SecondDerivative, 0.0);
+                                    CubicInterpolation::SecondDerivative, 0.0,
+                                    false);
     }
 
     void CapFloorTermVolCurve::update()
