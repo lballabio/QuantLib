@@ -181,6 +181,48 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValues) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyNegativeRates) {
+
+    BOOST_TEST_MESSAGE("Testing that the Barone-Adesi-Whaley approximation "
+                       "rejects negative interest rates...");
+
+    Date today = Date::todaysDate();
+    DayCounter dc = Actual360();
+
+    Real spot_val = 36.0;
+    Real strike = 40.0;
+    Rate r = -0.012;  // negative rate
+    Rate q = 0.0;
+    Volatility vol_val = 0.20;
+    Time t = 0.75;
+
+    auto spot = ext::make_shared<SimpleQuote>(spot_val);
+    auto qRate = ext::make_shared<SimpleQuote>(q);
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    auto rRate = ext::make_shared<SimpleQuote>(r);
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    auto vol = ext::make_shared<SimpleQuote>(vol_val);
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
+    Date exDate = today + timeToDays(t);
+    auto exercise = ext::make_shared<AmericanExercise>(today, exDate);
+
+    auto stochProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot),
+        Handle<YieldTermStructure>(qTS),
+        Handle<YieldTermStructure>(rTS),
+        Handle<BlackVolTermStructure>(volTS));
+
+    auto engine = ext::make_shared<BaroneAdesiWhaleyApproximationEngine>(stochProcess);
+
+    VanillaOption option(payoff, exercise);
+    option.setPricingEngine(engine);
+
+    // Should throw with a clear message, not crash with a cryptic error
+    BOOST_CHECK_EXCEPTION(option.NPV(), Error, ExpectedErrorMessage("negative forward price"));
+}
+
 BOOST_AUTO_TEST_CASE(testBjerksundStenslandValues) {
 
     BOOST_TEST_MESSAGE("Testing Bjerksund and Stensland approximation for American options...");
