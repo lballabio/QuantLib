@@ -22,10 +22,14 @@
 
 namespace QuantLib {
 
-    G2Process::G2Process(Real a, Real sigma, Real b, Real eta, Real rho)
+    G2Process::G2Process(const Handle<YieldTermStructure>& termStructure,
+                         Real a, Real sigma, Real b, Real eta, Real rho)
     : a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho),
       xProcess_(new QuantLib::OrnsteinUhlenbeckProcess(a, sigma, 0.0)),
-      yProcess_(new QuantLib::OrnsteinUhlenbeckProcess(b, eta, 0.0)) {}
+      yProcess_(new QuantLib::OrnsteinUhlenbeckProcess(b, eta, 0.0)),
+      termStructure_(termStructure) {
+        registerWith(termStructure_);
+    }
 
     Size G2Process::size() const {
         return 2;
@@ -123,11 +127,32 @@ namespace QuantLib {
         return rho_;
     }
 
+    const Handle<YieldTermStructure>& G2Process::termStructure() const {
+        return termStructure_;
+    }
 
-    G2ForwardProcess::G2ForwardProcess(Real a, Real sigma, Real b, Real eta, Real rho)
+    Real G2Process::phi(Time t) const {
+        QL_REQUIRE(!termStructure_.empty(),
+                   "no term structure given to G2Process");
+        Rate forward = termStructure_->forwardRate(t, t, Continuous, NoFrequency);
+        Real temp1 = sigma_*(1.0-std::exp(-a_*t))/a_;
+        Real temp2 = eta_ *(1.0-std::exp(-b_*t))/b_;
+        return 0.5*temp1*temp1 + 0.5*temp2*temp2 + rho_*temp1*temp2 + forward;
+    }
+
+    Rate G2Process::shortRate(Time t, Real x, Real y) const {
+        return x + y + phi(t);
+    }
+
+
+    G2ForwardProcess::G2ForwardProcess(const Handle<YieldTermStructure>& termStructure,
+                                       Real a, Real sigma, Real b, Real eta, Real rho)
     : a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho),
       xProcess_(new QuantLib::OrnsteinUhlenbeckProcess(a, sigma, 0.0)),
-      yProcess_(new QuantLib::OrnsteinUhlenbeckProcess(b, eta, 0.0)) {}
+      yProcess_(new QuantLib::OrnsteinUhlenbeckProcess(b, eta, 0.0)),
+      termStructure_(termStructure) {
+        registerWith(termStructure_);
+    }
 
     Size G2ForwardProcess::size() const {
         return 2;
@@ -219,6 +244,23 @@ namespace QuantLib {
         M += -(rho_*sigma_*eta_)/(a_*(a_+b_))
             * (std::exp(-a_*(T-t))-std::exp(-a_*T-b_*t+(a_+b_)*s));
         return M;
+    }
+
+    const Handle<YieldTermStructure>& G2ForwardProcess::termStructure() const {
+        return termStructure_;
+    }
+
+    Real G2ForwardProcess::phi(Time t) const {
+        QL_REQUIRE(!termStructure_.empty(),
+                   "no term structure given to G2ForwardProcess");
+        Rate forward = termStructure_->forwardRate(t, t, Continuous, NoFrequency);
+        Real temp1 = sigma_*(1.0-std::exp(-a_*t))/a_;
+        Real temp2 = eta_ *(1.0-std::exp(-b_*t))/b_;
+        return 0.5*temp1*temp1 + 0.5*temp2*temp2 + rho_*temp1*temp2 + forward;
+    }
+
+    Rate G2ForwardProcess::shortRate(Time t, Real x, Real y) const {
+        return x + y + phi(t);
     }
 
 }

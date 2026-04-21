@@ -718,6 +718,7 @@
     <ClCompile Include="forwardoption.cpp" />
     <ClCompile Include="forwardrateagreement.cpp" />
     <ClCompile Include="fxforward.cpp" />
+    <ClCompile Include="g2process.cpp" />
     <ClCompile Include="garch.cpp" />
     <ClCompile Include="gaussianquadratures.cpp" />
     <ClCompile Include="gjrgarchmodel.cpp" />
