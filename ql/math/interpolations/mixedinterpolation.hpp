@@ -79,7 +79,7 @@ namespace QuantLib {
                 if (!matchDerivatives) return;
                 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
                 auto& cubicImpl = static_cast<detail::CubicInterpolationBaseImpl&>(*right.impl_);
-                cubicImpl.leftValue_ = left.derivative(x);
+                cubicImpl.leftValue_ = left.derivative(x, true);
             };
             impl_ = ext::make_shared<detail::MixedInterpolationImpl<I1, I2, decltype(switchFn)>>(
                 xBegin, xEnd, yBegin, n, behavior,
