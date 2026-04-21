@@ -21,20 +21,27 @@
 #define quantlib_test_preconditions_hpp
 
 #include <boost/test/unit_test.hpp>
+#include <ql/qldefines.hpp>
 
-enum SpeedLevel {
+// Deprecated in version 1.43.
+enum [[deprecated("Not maintained going forward; run the whole test suite or use --run_test to select a subset of tests")]] SpeedLevel {
     Slow   = 0,
     Fast   = 1,
     Faster = 2
 };
 
-struct if_speed {
+QL_DEPRECATED_DISABLE_WARNING
+
+// Deprecated in version 1.43.
+struct [[deprecated("Not maintained going forward; run the whole test suite or use --run_test to select a subset of tests")]] if_speed {
     SpeedLevel speed;
 
     if_speed(SpeedLevel speed);
 
     boost::test_tools::assertion_result operator()(boost::unit_test::test_unit_id);
 };
+
+QL_DEPRECATED_ENABLE_WARNING
 
 struct usingAtParCoupons {
     boost::test_tools::assertion_result operator()(boost::unit_test::test_unit_id);

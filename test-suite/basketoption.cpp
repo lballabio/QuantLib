@@ -19,7 +19,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/basketoption.hpp>
@@ -431,7 +430,7 @@ BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testBarraquandThreeValues, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testBarraquandThreeValues) {
 
     BOOST_TEST_MESSAGE("Testing three-asset basket options "
                        "against Barraquand's values...");
@@ -751,7 +750,7 @@ BOOST_AUTO_TEST_CASE(testTavellaValues) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE(BasketOptionAmericanTest, *precondition(if_speed(Fast)))
+BOOST_AUTO_TEST_SUITE(BasketOptionAmericanTest)
 
 struct sliceOne     { static const int from{0}, to{5}; };
 struct sliceTwo     { static const int from{5}, to{11}; };

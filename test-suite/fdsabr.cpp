@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/vanillaoption.hpp>
@@ -140,7 +139,7 @@ Real OsterleeReferenceResults::data_[9][3] = {
 };
 
 
-BOOST_AUTO_TEST_CASE(testFdmSabrOp, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testFdmSabrOp) {
     BOOST_TEST_MESSAGE("Testing FDM SABR operator...");
 
     const Date today = Date(22, February, 2018);

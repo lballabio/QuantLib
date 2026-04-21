@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/statistics/discrepancystatistics.hpp>
@@ -1112,7 +1111,7 @@ BOOST_AUTO_TEST_CASE(testSobolBurleySkipping) {
         }
 }
 
-BOOST_AUTO_TEST_CASE(testHighDimensionalIntegrals, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testHighDimensionalIntegrals) {
     BOOST_TEST_MESSAGE("Testing high-dimensional integrals...");
 
     /* We are running "Integration test 1, results for high dimensions" (Figure 9) from:

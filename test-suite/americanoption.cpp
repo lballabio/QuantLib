@@ -19,7 +19,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/any.hpp>
@@ -554,7 +553,7 @@ BOOST_AUTO_TEST_CASE(testFdAmericanGreeks) {
     testFdGreeks<FdBlackScholesVanillaEngine>();
 }
 
-BOOST_AUTO_TEST_CASE(testFdShoutGreeks, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testFdShoutGreeks) {
     BOOST_TEST_MESSAGE("Testing finite-differences shout option greeks...");
     testFdGreeks<FdBlackScholesShoutEngine>();
 }

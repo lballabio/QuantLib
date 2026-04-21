@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/vanillaoption.hpp>
@@ -554,7 +553,7 @@ BOOST_AUTO_TEST_CASE(testSquareRootProcessRND) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testBlackScholesWithSkew, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testBlackScholesWithSkew) {
     BOOST_TEST_MESSAGE(
         "Testing probability density for a BSM process "
         "with strike dependent volatility vs local volatility...");
