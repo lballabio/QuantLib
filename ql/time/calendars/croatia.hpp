@@ -42,7 +42,7 @@ namespace QuantLib {
 		<li>Corpus Christi, June 19 th</li>
 		<li>Victory and Homeland Thanksgiving Day and the Day of Croatian Defenders August 5th</li>
 		<li>Assumption of Mary, August 15th</li>
-		<li>Remembrance Day for the Victims of the Vukovar and Škabrnja War Memorials, November 18th</li>
+		<li>Remembrance Day for the Victims of the Vukovar and kabrnja War Memorials, November 18th</li>
 		<li>Christmas Eve, December 24th</li>
 		<li>Christmas, December 25th</li>
 		<li>St. Stephen, December 26th</li>

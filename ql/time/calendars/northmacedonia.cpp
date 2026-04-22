@@ -30,7 +30,6 @@ namespace QuantLib {
 		Weekday w = date.weekday();
 		Day d = date.dayOfMonth();
 		Month m = date.month();
-		Year y = date.year();
 
 		// Observance rule: if a holiday falls on a Sunday, it is observed on Monday
 		const Date prev = date - 1;
@@ -38,31 +37,31 @@ namespace QuantLib {
 
 		// Holidays
 		if (isWeekend(w)
-			// January 1 – New Year
+			// January 1 New Year
 			|| (d == 1 && m == January)
-			// January 6 – Epiphany
+			// January 6 Epiphany
 			|| (d == 6 && m == January)
-			// January 7 – Orthodox Christmas
+			// January 7 Orthodox Christmas
 			|| (d == 7 && m == January)
-			// March 31 – (Ramadan Bajram (Eid al-Fitr)
+			// March 31 (Ramadan Bajram (Eid al-Fitr)
 			|| (d == 31 && m == March)
-			// April 18 – Good Friday
+			// April 18 Good Friday
 			|| (d == 18 && m == April)
-			// April 21 – Easter Monday
+			// April 21 Easter Monday
 			|| (d == 21 && m == April)
-			// May 1 – Labour Day
+			// May 1 Labour Day
 			|| (d == 1 && m == May)
-			// June 6 – religious holiday
+			// June 6 religious holiday
 			|| (d == 6 && m == June)
-			// August 28 – religious holiday
+			// August 28 religious holiday
 			|| (d == 28 && m == August)
-			// September 8 – Independence Day
+			// September 8 Independence Day
 			|| (d == 8 && m == September)
-			// October 23 – Uprising Day
+			// October 23 Uprising Day
 			|| (d == 23 && m == October)
-			// December 8 – Saint Clement of Ohrid
+			// December 8 Saint Clement of Ohrid
 			|| (d == 8 && m == December)
-			// December 31 – Non-trading day
+			// December 31 Non-trading day
 			|| (d == 31 && m == December)
 			// Observed holidays (if the fixed holiday was Sunday)
 			|| (sundayObserved && ((prev.dayOfMonth() == 1 && prev.month() == January) ||

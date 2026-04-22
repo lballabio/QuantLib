@@ -45,8 +45,11 @@ namespace QuantLib {
 			|| (d == 15 && m == February)
 			|| (d == 16 && m == February)
 			// Serbian Statehood Day (observed) 
-			// Serbia's Statehood Day (Sretenje) is officially observed on February 15 and February 16. However, since these dates fall on a Saturday and Sunday, the government designates Monday, February 17, as an additional non-working day. This practice ensures that citizens receive a weekday off when public holidays coincide with weekends.
-			|| (d == 17 && m == February) && (isWeekend(Date(15, February, y).weekday()) && isWeekend(Date(16, February, y).weekday()))
+			// Serbia's Statehood Day (Sretenje) is officially observed on February 15 and February 16. 
+			// However, since these dates fall on a Saturday and Sunday, the government designates Monday, 
+			// February 17, as an additional non-working day. This practice ensures that citizens receive a weekday off 
+			// when public holidays coincide with weekends.
+			|| ((d == 17 && m == February) && isWeekend(Date(15, February, y).weekday()) && isWeekend(Date(16, February, y).weekday()))
 			// Good Friday
 			|| (dd == em - 3 && y >= 2016)
 			// Easter Monday

@@ -83,7 +83,6 @@ namespace QuantLib {
 		Weekday w = date.weekday();
 		Day d = date.dayOfMonth();
 		Month m = date.month();
-		Year y = date.year();
 
 		if (isWeekend(w)
 			|| isRamazonHayit(date)

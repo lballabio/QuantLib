@@ -44,26 +44,26 @@ namespace QuantLib {
 		bool isJul14Weekend = isWeekend(jul14.weekday());
 
 		if (isWeekend(w)
-			// New Year and Orthodox Christmas period: Jan 1–8
+			// New Year and Orthodox Christmas period: Jan 1-8
 			|| (m == January && d >= 1 && d <= 8)
 			// Good Friday (Orthodox calendar)
 			|| (date.dayOfYear() == gf)
 			// Easter Monday
 			|| (date.dayOfYear() == em)
-			// Labour Day: May 1–2
+			// Labour Day: May 1-2
 			|| (d == 1 && m == May) ||
 			(d == 2 && m == May)
-			// Independence Day: May 21–22
+			// Independence Day: May 21-22
 			|| (d == 21 && m == May) || (d == 22 && m == May) ||
-			// Shift to 22–23 if 21st is a Sunday
+			// Shift to 22-23 if 21st is a Sunday
 			(d == 22 && m == May && wd21 == Sunday) || (d == 23 && m == May && wd21 == Sunday) ||
-			// Statehood Day: July 14–15 (per updated calendar)
+			// Statehood Day: July 14-15 (per updated calendar)
 			// Normal fixed case: 13 and/or 14 July
 			(d == 13 && m == July && !isJul13Weekend) ||
 			(d == 14 && m == July && !isJul14Weekend) ||
 			// Special case: both fall on weekend ? Monday 15th becomes observed holiday
 			(d == 15 && m == July && isJul13Weekend && isJul14Weekend)
-			// Njegoš Day: Nov 13–14
+			// Njegoï¿½ Day: Nov 13-14
 			|| (d == 13 && m == November) || (d == 14 && m == November)) {
 			return false;
 		}

@@ -33,13 +33,13 @@ namespace QuantLib {
 		<ul>
 		<li>Saturdays</li>
 		<li>Sundays</li>
-		<li>New Year, Christmas Eve and Christmas: Jan 1–8</li>
+		<li>New Year, Christmas Eve and Christmas: Jan 1-8</li>
 		<li>Good Friday</li>
 		<li>Orthodox Easter Monday</li>
-		<li>Labour Day: May 1–2</li>
-		<li>Independence Day: May 21–22</li>
+		<li>Labour Day: May 1-2</li>
+		<li>Independence Day: May 21-22</li>
 		<li>Statehood Day: July 14-15</li>
-		<li>Day of Njegoš, Montenegrin cultural holiday: November 13th and 14th</li>
+		<li>Day of Njego, Montenegrin cultural holiday: November 13th and 14th</li>
 		</ul>
 	*/
 	class Montenegro : public Calendar {
