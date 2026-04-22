@@ -3,21 +3,31 @@ on:
   push:
     branches-ignore:
       - 'dependabot/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   check-includes:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v6
-    - name: Check
-      run: |
-        shopt -s globstar
-        sed -i -E -e 's|#include *"(ql/.*\.hpp)"|#include <\1>|g' **/*.[hc]pp
-    - uses: peter-evans/create-pull-request@v8
-      with:
-        token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
-        push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib
-        branch: fix-include-in-quotes-${{ github.ref_name }}
-        delete-branch: true
-        commit-message: 'Fix inclusions of ql headers in double quotes'
-        title: 'Fix inclusions of ql headers in double quotes'
-        author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fix includes
+        shell: bash
+        run: |
+          shopt -s globstar
+          sed -i -E -e 's|#include "(ql/.\.hpp)"|#include <\1>|g' **/*.[hc]pp
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: fix-include-in-quotes-${{ github.ref_name }}
+          delete-branch: true
+          commit-message: "Fix inclusions of ql headers in double quotes"
+          title: "Fix inclusions of ql headers in double quotes"
+          body: "Automated fix of ql header inclusions."
