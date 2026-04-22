@@ -48,24 +48,28 @@ namespace QuantLib {
 
         Real optionPrice(Rate strike,
                          Option::Type type = Option::Call,
-                         Real discount = 1.0) const override {
-            return source_->optionPrice(adjustedStrike(strike), type, discount);
+                         Real discount = 1.0,
+                         Real forward = Null<Real>()) const override {
+            return source_->optionPrice(adjustedStrike(strike), type, discount, forward);
         }
 
         Real digitalOptionPrice(Rate strike,
                                 Option::Type type = Option::Call,
                                 Real discount = 1.0,
-                                Real gap = 1.0e-5) const override {
+                                Real gap = 1.0e-5,
+                                Real forward = Null<Real>()) const override {
             return source_->digitalOptionPrice(adjustedStrike(strike), type,
-                                               discount, gap);
+                                               discount, gap, forward);
         }
 
-        Real vega(Rate strike, Real discount = 1.0) const override {
-            return source_->vega(adjustedStrike(strike), discount);
+        Real vega(Rate strike, Real discount = 1.0,
+                  Real forward = Null<Real>()) const override {
+            return source_->vega(adjustedStrike(strike), discount, forward);
         }
 
-        Real density(Rate strike, Real discount = 1.0, Real gap = 1.0E-4) const override {
-            return source_->density(adjustedStrike(strike), discount, gap);
+        Real density(Rate strike, Real discount = 1.0, Real gap = 1.0E-4,
+                     Real forward = Null<Real>()) const override {
+            return source_->density(adjustedStrike(strike), discount, gap, forward);
         }
 
       protected:

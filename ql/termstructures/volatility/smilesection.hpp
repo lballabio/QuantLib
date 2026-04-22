@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Mario Pucci
  Copyright (C) 2013, 2015 Peter Caspers
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -67,16 +68,20 @@ namespace QuantLib {
         virtual const DayCounter& dayCounter() const { return dc_; }
         virtual Real optionPrice(Rate strike,
                                  Option::Type type = Option::Call,
-                                 Real discount=1.0) const;
+                                 Real discount=1.0,
+                                 Real forward=Null<Real>()) const;
         virtual Real digitalOptionPrice(Rate strike,
                                         Option::Type type = Option::Call,
                                         Real discount=1.0,
-                                        Real gap=1.0e-5) const;
+                                        Real gap=1.0e-5,
+                                        Real forward=Null<Real>()) const;
         virtual Real vega(Rate strike,
-                          Real discount=1.0) const;
+                          Real discount=1.0,
+                          Real forward=Null<Real>()) const;
         virtual Real density(Rate strike,
                              Real discount=1.0,
-                             Real gap=1.0E-4) const;
+                             Real gap=1.0E-4,
+                             Real forward=Null<Real>()) const;
         Volatility volatility(Rate strike, VolatilityType type, Real shift=0.0) const;
       protected:
         virtual void initializeExerciseTime() const;

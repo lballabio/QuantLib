@@ -59,7 +59,8 @@ class Gaussian1dSmileSection : public SmileSection {
     Real maxStrike() const override { return QL_MAX_REAL; }
 
     Real atmLevel() const override;
-    Real optionPrice(Rate strike, Option::Type = Option::Call, Real discount = 1.0) const override;
+    Real optionPrice(Rate strike, Option::Type = Option::Call, Real discount = 1.0,
+                     Real forward = Null<Real>()) const override;
 
   protected:
     Real volatilityImpl(Rate strike) const override;

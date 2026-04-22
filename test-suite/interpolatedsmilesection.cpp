@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2025 Paolo D'Elia
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,7 +20,9 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
+#include <ql/termstructures/volatility/flatsmilesection.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 
@@ -208,6 +211,82 @@ BOOST_AUTO_TEST_CASE(testErrorThrowingWhenNonSortedStrikes) {
         ),
         QuantLib::Error
     );
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(SmileSectionOptionalForward)
+
+BOOST_AUTO_TEST_CASE(testForwardAwareOptionPrice) {
+    BOOST_TEST_MESSAGE(
+        "Testing SmileSection methods with optional forward parameter...");
+
+    DayCounter dc = Actual365Fixed();
+    Volatility vol = 0.20;
+    Time T = 1.0;
+    Real forward = 100.0;
+    Real discount = 0.97;
+
+    // FlatSmileSection without atmLevel — simulates a forward-unaware smile
+    auto smile = ext::make_shared<FlatSmileSection>(T, vol, dc);
+
+    // The virtual optionPrice() without forward should fail (no atmLevel)
+    BOOST_CHECK_THROW(smile->optionPrice(100.0, Option::Call, discount),
+                      QuantLib::Error);
+
+    // With forward parameter it should work
+    Real tolerance = 1.0e-12;
+
+    // Compare against blackFormula directly
+    Real strike = 105.0;
+    Real stdDev = vol * std::sqrt(T);
+    Real expected = blackFormula(Option::Call, strike, forward,
+                                 stdDev, discount);
+    Real calculated = smile->optionPrice(strike, Option::Call,
+                                          discount, forward);
+
+    if (std::fabs(calculated - expected) > tolerance)
+        BOOST_FAIL("forward-aware optionPrice mismatch"
+                   << std::fixed << std::setprecision(12)
+                   << "\n    expected:   " << expected
+                   << "\n    calculated: " << calculated);
+
+    // digitalOptionPrice with forward
+    Real gap = 1.0e-5;
+    Real digital = smile->digitalOptionPrice(strike, Option::Call,
+                                              discount, gap, forward);
+    if (digital <= 0.0 || digital > 1.0 / discount)
+        BOOST_FAIL("forward-aware digitalOptionPrice out of range"
+                   << std::fixed << std::setprecision(12)
+                   << "\n    digital: " << digital);
+
+    // density with forward
+    Real dens = smile->density(strike, discount, 1.0e-4, forward);
+    if (dens <= 0.0)
+        BOOST_FAIL("forward-aware density should be positive"
+                   << std::fixed << std::setprecision(12)
+                   << "\n    density: " << dens);
+
+    // vega with forward
+    Real v = smile->vega(strike, discount, forward);
+    if (v <= 0.0)
+        BOOST_FAIL("forward-aware vega should be positive"
+                   << std::fixed << std::setprecision(12)
+                   << "\n    vega: " << v);
+
+    // Consistency: forward parameter should match atmLevel-based result
+    auto smileWithFwd = ext::make_shared<FlatSmileSection>(T, vol, dc,
+                                                            forward);
+    Real fromAtmLevel = smileWithFwd->optionPrice(strike, Option::Call,
+                                                   discount);
+    Real fromForward = smileWithFwd->optionPrice(strike, Option::Call,
+                                                  discount, forward);
+
+    if (std::fabs(fromAtmLevel - fromForward) > tolerance)
+        BOOST_FAIL("forward parameter inconsistent with atmLevel"
+                   << std::fixed << std::setprecision(12)
+                   << "\n    via atmLevel: " << fromAtmLevel
+                   << "\n    via forward:  " << fromForward);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

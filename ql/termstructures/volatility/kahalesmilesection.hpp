@@ -156,7 +156,8 @@ namespace QuantLib {
 
         Real optionPrice(Rate strike,
                          Option::Type type = Option::Call,
-                         Real discount = 1.0) const override;
+                         Real discount = 1.0,
+                         Real forward = Null<Real>()) const override;
 
       protected:
         Volatility volatilityImpl(Rate strike) const override;

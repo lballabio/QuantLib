@@ -62,7 +62,8 @@ template <typename Evaluation> class ZabrSmileSection : public SmileSection {
     Real maxStrike() const override { return QL_MAX_REAL; }
     Real atmLevel() const override { return model_->forward(); }
     Real
-    optionPrice(Rate strike, Option::Type type = Option::Call, Real discount = 1.0) const override {
+    optionPrice(Rate strike, Option::Type type = Option::Call, Real discount = 1.0,
+                Real forward = Null<Real>()) const override {
         return optionPrice(strike, type, discount, Evaluation());
     }
 
