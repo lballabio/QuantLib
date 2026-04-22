@@ -63,7 +63,7 @@ namespace QuantLib {
 			(d == 14 && m == July && !isJul14Weekend) ||
 			// Special case: both fall on weekend ? Monday 15th becomes observed holiday
 			(d == 15 && m == July && isJul13Weekend && isJul14Weekend)
-			// Njego� Day: Nov 13-14
+			// Njegos Day: Nov 13-14
 			|| (d == 13 && m == November) || (d == 14 && m == November)) {
 			return false;
 		}

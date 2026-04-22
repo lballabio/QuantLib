@@ -39,7 +39,7 @@ namespace QuantLib {
 		<li>Labour Day: May 1-2</li>
 		<li>Independence Day: May 21-22</li>
 		<li>Statehood Day: July 14-15</li>
-		<li>Day of Njego, Montenegrin cultural holiday: November 13th and 14th</li>
+		<li>Day of Njegos, Montenegrin cultural holiday: November 13th and 14th</li>
 		</ul>
 	*/
 	class Montenegro : public Calendar {
