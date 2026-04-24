@@ -20,6 +20,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
@@ -1958,19 +1959,25 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWeekendStub) {
             Date(30, March, 2026), // Monday
         }
     );
-    const Leg leg = OvernightLeg(schedule, vars.sofr).withNotionals(10000000.0);
+    const auto notional = 10000000.0;
+    const Leg leg = OvernightLeg(schedule, vars.sofr).withNotionals(notional);
     BOOST_CHECK_EQUAL(leg.size(), 2);
-    const auto& stubCpn = ext::static_pointer_cast<OvernightIndexedCoupon>(leg[0]);
-    auto fixing = vars.sofr->fixing(stubCpn->accrualStartDate());
-    auto oneDayInterest = fixing / 360.0 * stubCpn->nominal();
-    CHECK_OIS_COUPON_RESULT("stub amount", stubCpn->amount(), oneDayInterest, 1e-8);
-    const auto& weekendCpn = ext::static_pointer_cast<OvernightIndexedCoupon>(leg[1]);
-    BOOST_CHECK(vars.sofr->fixingCalendar().isHoliday(weekendCpn->accrualStartDate()));
-    CHECK_OIS_COUPON_RESULT("weekend amount",
-                            weekendCpn->amount(), 2.0 * oneDayInterest, 1e-8);
-    CHECK_OIS_COUPON_RESULT("weekend 1d accruedAmount",
-                            weekendCpn->accruedAmount(weekendCpn->accrualStartDate() + 1),
-                            oneDayInterest, 1e-8);
+    const auto oneDayInterest = vars.sofr->fixing(Date(27, March, 2026)) / 360.0 * notional;
+    struct TestCase {
+        Date valueDate;
+        Real accruedAmount;
+    };
+    const TestCase testCases[] = {
+        {Date(27, March, 2026), 0.0},
+        {Date(28, March, 2026), oneDayInterest},
+        {Date(29, March, 2026), oneDayInterest},
+        {Date(30, March, 2026), 2.0 * oneDayInterest},
+        {Date(31, March, 2026), 0.0},
+    };
+    for (auto& tc: testCases) {
+        CHECK_OIS_COUPON_RESULT("leg accruedAmount", CashFlows::accruedAmount(leg, true, tc.valueDate),
+                                tc.accruedAmount, 1e-8);
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
