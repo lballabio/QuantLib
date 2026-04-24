@@ -1947,6 +1947,32 @@ BOOST_AUTO_TEST_CASE(testRateComputationStartDateFixingHoliday) {
     CHECK_OIS_COUPON_RESULT("accruedAmount", coupon->accruedAmount(coupon->accrualStartDate() + 1), accrued, 1e-8);
 }
 
+BOOST_AUTO_TEST_CASE(testOvernightLegWeekendStub) {
+    BOOST_TEST_MESSAGE("Testing overnight leg with weekend stub period...");
+    CommonVars vars(Date(16, April, 2025));
+    vars.forecastCurve.linkTo(flatRate(0.04, Actual360()));
+    Schedule schedule(
+        {
+            Date(27, March, 2026), // Friday
+            Date(28, March, 2026), // Saturday
+            Date(30, March, 2026), // Monday
+        }
+    );
+    const Leg leg = OvernightLeg(schedule, vars.sofr).withNotionals(10000000.0);
+    BOOST_CHECK_EQUAL(leg.size(), 2);
+    const auto& stubCpn = ext::static_pointer_cast<OvernightIndexedCoupon>(leg[0]);
+    auto fixing = vars.sofr->fixing(stubCpn->accrualStartDate());
+    auto oneDayInterest = fixing / 360.0 * stubCpn->nominal();
+    CHECK_OIS_COUPON_RESULT("stub amount", stubCpn->amount(), oneDayInterest, 1e-8);
+    const auto& weekendCpn = ext::static_pointer_cast<OvernightIndexedCoupon>(leg[1]);
+    BOOST_CHECK(vars.sofr->fixingCalendar().isHoliday(weekendCpn->accrualStartDate()));
+    CHECK_OIS_COUPON_RESULT("weekend amount",
+                            weekendCpn->amount(), 2.0 * oneDayInterest, 1e-8);
+    CHECK_OIS_COUPON_RESULT("weekend 1d accruedAmount",
+                            weekendCpn->accruedAmount(weekendCpn->accrualStartDate() + 1),
+                            oneDayInterest, 1e-8);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
