@@ -27,6 +27,7 @@
 
 #include <ql/types.hpp>
 #include <functional>
+#include <vector>
 
 namespace QuantLib {
 
