@@ -32,8 +32,8 @@
 #include <ql/time/calendars/all.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/types.hpp>
-#include <ql/instruments/crossccybasisswap.hpp>
-#include <ql/pricingengines/swap/crossccyswapengine.hpp>
+#include <ql/instruments/constnotionalcrossccybasisswap.hpp>
+#include <ql/pricingengines/swap/constnotionalcrossccyswapengine.hpp>
 
 using namespace std;
 using namespace boost::unit_test_framework;
@@ -41,7 +41,7 @@ using namespace QuantLib;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(CrossCcyBasisSwapTest)
+BOOST_AUTO_TEST_SUITE(ConstNotionalCrossCcyBasisSwapTest)
 
 #define CHECK_XCCY_SWAP_RESULT(what, calculated, expected, tolerance)   \
     if (std::fabs(calculated-expected) > tolerance) { \
@@ -299,7 +299,7 @@ Handle<YieldTermStructure> GBPProjectionCurve() {
     return Handle<YieldTermStructure>(ext::make_shared<DiscountCurve>(dates, dfs, dayCounter));
 }
 
-ext::shared_ptr<CrossCcyBasisSwap> makeBasisXCCY(Rate spotFx, Spread GBPSpread) {
+ext::shared_ptr<ConstNotionalCrossCcyBasisSwap> makeBasisXCCY(Rate spotFx, Spread GBPSpread) {
 
     // USD nominal
     Real GBPNominal = 10000000.0;
@@ -318,13 +318,13 @@ ext::shared_ptr<CrossCcyBasisSwap> makeBasisXCCY(Rate spotFx, Spread GBPSpread) 
     auto GBPindex = ext::make_shared<GBPLibor>(3 * Months, GBPProjectionCurve());
 
     // Create swap
-    return ext::shared_ptr<CrossCcyBasisSwap>(new CrossCcyBasisSwap(
+    return ext::shared_ptr<ConstNotionalCrossCcyBasisSwap>(new ConstNotionalCrossCcyBasisSwap(
         GBPNominal, GBPCurrency(), schedule, GBPindex, GBPSpread, 1.0, 
 		GBPNominal * spotFx, USDCurrency(), schedule, USDindex, 0.0, 1.0));
 }
 
 
-ext::shared_ptr<CrossCcyBasisSwap> makeONBasisXCCY(Rate spotFx, Spread GBPSpread) {
+ext::shared_ptr<ConstNotionalCrossCcyBasisSwap> makeONBasisXCCY(Rate spotFx, Spread GBPSpread) {
 
     // USD nominal
     Real GBPNominal = 10000000.0;
@@ -343,7 +343,7 @@ ext::shared_ptr<CrossCcyBasisSwap> makeONBasisXCCY(Rate spotFx, Spread GBPSpread
     auto soniaIndex = ext::make_shared<Sonia>(GBPProjectionCurve());
 
     // Create swap
-    return ext::shared_ptr<CrossCcyBasisSwap>(new CrossCcyBasisSwap(
+    return ext::shared_ptr<ConstNotionalCrossCcyBasisSwap>(new ConstNotionalCrossCcyBasisSwap(
         GBPNominal, GBPCurrency(), schedule, soniaIndex, GBPSpread, 1.0, 
 		GBPNominal * spotFx, USDCurrency(), schedule, sofrIndex, 0.0, 1.0, 
         0, // payPaymentLag
@@ -374,7 +374,7 @@ BOOST_AUTO_TEST_CASE(testBasisXCCYSwapPricing) {
 
     // Attach pricing engine
     auto fxSpotQuote = makeQuoteHandle(spotFx);
-    auto engine = ext::make_shared<CrossCcySwapEngine>(
+    auto engine = ext::make_shared<ConstNotionalCrossCcySwapEngine>(
         USDCurrency(), USDDiscountCurve(), GBPCurrency(), GBPDiscountCurve(), fxSpotQuote);
 
     xccy->setPricingEngine(engine);
@@ -402,7 +402,7 @@ BOOST_AUTO_TEST_CASE(testBasisONXCCYSwapPricing) {
 
     // Attach pricing engine
     auto fxSpotQuote = makeQuoteHandle(spotFx);
-    auto engine = ext::make_shared<CrossCcySwapEngine>(
+    auto engine = ext::make_shared<ConstNotionalCrossCcySwapEngine>(
         USDCurrency(), USDDiscountCurve(), GBPCurrency(), GBPDiscountCurve(), fxSpotQuote);
 
     xccy->setPricingEngine(engine);

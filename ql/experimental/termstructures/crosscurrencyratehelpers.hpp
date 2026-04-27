@@ -26,7 +26,7 @@
 #define quantlib_crosscurrencyratehelpers_hpp
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
-#include <ql/instruments/crossccyfixfloatswap.hpp>
+#include <ql/instruments/constnotionalcrossccyfixfloatswap.hpp>
 
 namespace QuantLib {
 
@@ -223,7 +223,7 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> floatIndex_;
         bool collateralOnFixedLeg_;
 
-        ext::shared_ptr<CrossCcyFixFloatSwap> xccySwap_;
+        ext::shared_ptr<ConstNotionalCrossCcyFixFloatSwap> xccySwap_;
     };
 
 }

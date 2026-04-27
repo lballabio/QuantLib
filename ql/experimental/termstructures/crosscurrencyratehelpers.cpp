@@ -24,7 +24,7 @@
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
-#include <ql/pricingengines/swap/crossccyswapengine.hpp>
+#include <ql/pricingengines/swap/constnotionalcrossccyswapengine.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>
 
@@ -448,8 +448,8 @@ namespace QuantLib {
         Schedule floatSch = legSchedule(evaluationDate_, tenor_, floatFreqPeriod, fixingDays_, floatIndex_->fixingCalendar(),
                                     floatIndex_->businessDayConvention(), endOfMonth_);
 
-        xccySwap_ = ext::make_shared<CrossCcyFixFloatSwap>(
-            CrossCcyFixFloatSwap::Type::Payer,
+        xccySwap_ = ext::make_shared<ConstNotionalCrossCcyFixFloatSwap>(
+            ConstNotionalCrossCcyFixFloatSwap::Type::Payer,
             nominal,
             Currency(), 
             fixedSch,
@@ -467,7 +467,7 @@ namespace QuantLib {
             paymentLag_,
             calendar_
         );
-        auto engine = ext::make_shared<CrossCcySwapEngine>(
+        auto engine = ext::make_shared<ConstNotionalCrossCcySwapEngine>(
             floatIndex_->currency(), floatingLegDiscountHandle(),
             Currency(), fixedLegDiscountHandle(),
             makeQuoteHandle(1.0), true);
@@ -490,16 +490,8 @@ namespace QuantLib {
         QL_REQUIRE(!termStructureHandle_.empty(), "term structure not set");
         QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
         xccySwap_->deepUpdate();
-        
-        const Spread basisPoint = 1.0e-4;
-        Real fixedNpv = xccySwap_->inCcyLegNPV(0);
-        Real fixedBps = xccySwap_->inCcyLegBPS(0);
-        Real floatNpv = xccySwap_->inCcyLegNPV(1);
 
-        QL_REQUIRE(std::fabs(fixedBps) > 0.0, "null fixed-leg BPS");
-        auto impliedQuote = sample_fixed_rate + ((floatNpv + fixedNpv) / (-fixedBps / basisPoint));
-
-        return impliedQuote;
+        return xccySwap_->fairRate();
     }
 
     void ConstNotionalCrossCurrencySwapRateHelper::accept(AcyclicVisitor& v) {

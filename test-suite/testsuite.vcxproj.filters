@@ -507,13 +507,13 @@
     <ClCompile Include="basisswapratehelpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="crossccybasisswap.cpp">
+    <ClCompile Include="constnotionalcrossccybasisswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="crossccyfixfloatswap.cpp">
+    <ClCompile Include="constnotionalcrossccyfixfloatswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="crossccyswap.cpp">
+    <ClCompile Include="constnotionalcrossccyswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="crosscurrencyratehelpers.cpp">

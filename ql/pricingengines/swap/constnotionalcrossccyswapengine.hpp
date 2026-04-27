@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file ql/pricingengines/swap/crossccyswapengine.hpp
+/*! \file ql/pricingengines/swap/constnotionalcrossccyswapengine.hpp
     \brief Cross currency swap engine
 
         \ingroup engines
@@ -28,7 +28,7 @@
 #define quantlib_cross_ccy_swap_engine_hpp
 
 #include <ql/handle.hpp>
-#include <ql/instruments/crossccyswap.hpp>
+#include <ql/instruments/constnotionalcrossccyswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/optional.hpp>
 
@@ -43,13 +43,13 @@ namespace QuantLib {
 
    \ingroup engines
 */
-class CrossCcySwapEngine : public CrossCcySwap::engine {
+class ConstNotionalCrossCcySwapEngine : public ConstNotionalCrossCcySwap::engine {
 public:
     //! \name Constructors
     //@{
     /*! \param domesticCcy
                Currency 1
-        \param domesitcCcyDiscountCurve
+        \param domesticCcyDiscountCurve
                Discount curve for cash flows in currency 1
         \param foreignCcy
                Currency 2
@@ -70,7 +70,7 @@ public:
         \param spotFXSettleDate
                FX conversion as of this date if specified explicitly
     */
-    CrossCcySwapEngine(const Currency& domesticCcy, const Handle<YieldTermStructure>& domesitcCcyDiscountCurve,
+    ConstNotionalCrossCcySwapEngine(const Currency& domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountCurve,
                        const Currency& foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountCurve,
                        const Handle<Quote>& spotFX, ext::optional<bool> includeSettlementDateFlows = ext::nullopt,
                        const Date& settlementDate = Date(), const Date& npvDate = Date(), const Date& spotFXSettleDate = Date());
@@ -83,7 +83,7 @@ public:
 
     //! \name Inspectors
     //@{
-    const Handle<YieldTermStructure>& domesitcCcyDiscountCurve() const { return domesticCcyDiscountcurve_; }
+    const Handle<YieldTermStructure>& domesticCcyDiscountCurve() const { return domesticCcyDiscountcurve_; }
     const Handle<YieldTermStructure>& foreignCcyDiscountCurve() const { return foreignCcyDiscountcurve_; }
 
     const Currency& currency1() const { return domesticCcy_; }

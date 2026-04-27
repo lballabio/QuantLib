@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file crossccyswap.hpp
+/*! \file constnotionalcrossccyswap.hpp
     \brief Swap instrument with legs involving two currencies
 
         \ingroup instruments
@@ -35,13 +35,15 @@
 
 namespace QuantLib {
 
-//! Cross currency swap
-/*! The first leg holds the pay currency cashflows and second leg holds
+//! Constant-notional cross currency swap
+/*! The notional amounts are constant and exchanged at inception and maturity.
+
+    The first leg holds the pay currency cashflows and second leg holds
     the receive currency cashflows.
 
-            \ingroup instruments
+        \ingroup instruments
 */
-class CrossCcySwap : public QuantLib::Swap {
+class ConstNotionalCrossCcySwap : public Swap {
 public:
     class arguments;
     class results;
@@ -60,7 +62,7 @@ public:
         \note The notional amounts, payment schedules, and other details of each leg must be
             set up in the provided Leg objects before constructing the swap.
     */
-    CrossCcySwap(const Leg& firstLeg, const Currency& firstLegCcy, const Leg& secondLeg, const Currency& secondLegCcy);
+    ConstNotionalCrossCcySwap(const Leg& firstLeg, const Currency& firstLegCcy, const Leg& secondLeg, const Currency& secondLegCcy);
     //! Constructs a cross-currency swap with multiple legs and their respective currencies
     /*!
         Initializes a cross-currency swap with an arbitrary number of legs, each specified
@@ -77,7 +79,7 @@ public:
         \warning The notional amounts, payment schedules, and other details of each leg must be
                 set up in the provided Leg objects before constructing the swap.
     */
-    CrossCcySwap(const std::vector<Leg>& legs, const std::vector<bool>& payer, const std::vector<Currency>& currencies);
+    ConstNotionalCrossCcySwap(const std::vector<Leg>& legs, const std::vector<bool>& payer, const std::vector<Currency>& currencies);
     //@}
     //! \name Instrument interface
     //@{
@@ -112,7 +114,7 @@ protected:
     /*! This constructor can be used by derived classes that will
         build their legs themselves.
     */
-    explicit CrossCcySwap(Size legs);
+    explicit ConstNotionalCrossCcySwap(Size legs);
     //@}
     //! \name Instrument interface
     //@{
@@ -132,14 +134,14 @@ private:
 };
 
 //! \ingroup instruments
-class CrossCcySwap::arguments : public Swap::arguments {
+class ConstNotionalCrossCcySwap::arguments : public Swap::arguments {
 public:
     std::vector<Currency> currencies;
     void validate() const override;
 };
 
 //! \ingroup instruments
-class CrossCcySwap::results : public Swap::results {
+class ConstNotionalCrossCcySwap::results : public Swap::results {
 public:
     std::vector<Real> inCcyLegNPV;
     std::vector<Real> inCcyLegBPS;
@@ -148,7 +150,7 @@ public:
 };
 
 //! \ingroup instruments
-class CrossCcySwap::engine : public GenericEngine<CrossCcySwap::arguments, CrossCcySwap::results> {};
+class ConstNotionalCrossCcySwap::engine : public GenericEngine<ConstNotionalCrossCcySwap::arguments, ConstNotionalCrossCcySwap::results> {};
 } // namespace QuantLib
 
 #endif

@@ -22,11 +22,11 @@
 #include <ql/exchangerate.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
-#include <ql/pricingengines/swap/crossccyswapengine.hpp>
+#include <ql/pricingengines/swap/constnotionalcrossccyswapengine.hpp>
 
 namespace QuantLib {
 
-CrossCcySwapEngine::CrossCcySwapEngine(const Currency& domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountcurve,
+ConstNotionalCrossCcySwapEngine::ConstNotionalCrossCcySwapEngine(const Currency& domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountcurve,
                                        const Currency& foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountcurve,
                                        const Handle<Quote>& spotFX, ext::optional<bool> includeSettlementDateFlows,
                                        const Date& settlementDate, const Date& npvDate, const Date& spotFXSettleDate)
@@ -40,7 +40,7 @@ CrossCcySwapEngine::CrossCcySwapEngine(const Currency& domesticCcy, const Handle
     registerWith(spotFX_);
 }
 
-void CrossCcySwapEngine::calculate() const {
+void ConstNotionalCrossCcySwapEngine::calculate() const {
 
     QL_REQUIRE(!domesticCcyDiscountcurve_.empty() && !foreignCcyDiscountcurve_.empty(),
                "Discounting term structure handle is empty.");
@@ -89,7 +89,7 @@ void CrossCcySwapEngine::calculate() const {
     results_.legBPS.resize(numLegs);
     results_.startDiscounts.resize(numLegs);
     results_.endDiscounts.resize(numLegs);
-    // - CrossCcySwap::Results
+    // - ConstNotionalCrossCcySwap::Results
     results_.inCcyLegNPV.resize(numLegs);
     results_.inCcyLegBPS.resize(numLegs);
     results_.npvDateDiscounts.resize(numLegs);

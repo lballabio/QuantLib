@@ -19,13 +19,13 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/instruments/crossccyswap.hpp>
+#include <ql/instruments/constnotionalcrossccyswap.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/indexes/ibor/gbplibor.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
-#include <ql/pricingengines/swap/crossccyswapengine.hpp>
+#include <ql/pricingengines/swap/constnotionalcrossccyswapengine.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/time/calendars/all.hpp>
 #include <ql/currencies/all.hpp>
@@ -36,7 +36,7 @@ using namespace boost::unit_test_framework;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(CrossCcySwapTests)
+BOOST_AUTO_TEST_SUITE(ConstNotionalCrossCcySwapTests)
 
 #define CHECK_XCCY_SWAP_RESULT(what, calculated, expected, tolerance)   \
     if (std::fabs(calculated-expected) > tolerance) { \
@@ -429,7 +429,7 @@ Handle<YieldTermStructure> TRYDiscountCurve() {
 
 // Helper functions
 
-ext::shared_ptr<CrossCcySwap> makeFixFixXCCYSwap(Real leg1Nominal, Rate spotFx) {
+ext::shared_ptr<ConstNotionalCrossCcySwap> makeFixFixXCCYSwap(Real leg1Nominal, Rate spotFx) {
 	Calendar payCalendar = JointCalendar(UnitedStates(UnitedStates::Settlement), Switzerland());
 	
     CommonVars vars(payCalendar, Following, DateGeneration::Forward);
@@ -472,11 +472,11 @@ ext::shared_ptr<CrossCcySwap> makeFixFixXCCYSwap(Real leg1Nominal, Rate spotFx) 
     chfLeg.push_back(finalCHFCapitalFlow);
 	
 	// Create swap
-	return ext::shared_ptr<CrossCcySwap> (new CrossCcySwap(
+	return ext::shared_ptr<ConstNotionalCrossCcySwap> (new ConstNotionalCrossCcySwap(
 		usdLeg, USDCurrency(), chfLeg, CHFCurrency()));
 }
 
-ext::shared_ptr<CrossCcySwap> makeFixFloatXCCYSwap(Real leg1Nominal, Rate spotFx) {
+ext::shared_ptr<ConstNotionalCrossCcySwap> makeFixFloatXCCYSwap(Real leg1Nominal, Rate spotFx) {
 	Calendar payCalendar = JointCalendar(UnitedStates(UnitedStates::Settlement), UnitedKingdom(), Turkey());
 	
     CommonVars vars(payCalendar, ModifiedFollowing, DateGeneration::Backward);
@@ -530,11 +530,11 @@ ext::shared_ptr<CrossCcySwap> makeFixFloatXCCYSwap(Real leg1Nominal, Rate spotFx
 	usdLeg.push_back(finalUSDNotionalExchange);
 	
 	// Create swap
-	return ext::shared_ptr<CrossCcySwap>(new CrossCcySwap(
+	return ext::shared_ptr<ConstNotionalCrossCcySwap>(new ConstNotionalCrossCcySwap(
 		tryLeg, TRYCurrency(), usdLeg, USDCurrency()));
 }
 
-ext::shared_ptr<CrossCcySwap> makeFloatFloatXCCYSwap(Real leg1Nominal, Rate spotFx) {
+ext::shared_ptr<ConstNotionalCrossCcySwap> makeFloatFloatXCCYSwap(Real leg1Nominal, Rate spotFx) {
 	Calendar payCalendar = JointCalendar(UnitedStates(UnitedStates::Settlement), UnitedKingdom());
 	
     CommonVars vars(payCalendar, Following, DateGeneration::Forward);
@@ -574,7 +574,7 @@ ext::shared_ptr<CrossCcySwap> makeFloatFloatXCCYSwap(Real leg1Nominal, Rate spot
 	gbpLeg.push_back(finalGBPNotionalExchange);
 	
 	// Create swap
-	return ext::shared_ptr<CrossCcySwap> (new CrossCcySwap(
+	return ext::shared_ptr<ConstNotionalCrossCcySwap> (new ConstNotionalCrossCcySwap(
 		usdLeg, USDCurrency(), gbpLeg, GBPCurrency()));
 }
 
@@ -589,7 +589,7 @@ BOOST_AUTO_TEST_CASE(testFixFixXCCYSwapPricing) {
 
     // Attach pricing engine
 	auto fxSpotQuote = makeQuoteHandle(1.0 / spotFx);
-    auto engine = ext::make_shared<CrossCcySwapEngine>(
+    auto engine = ext::make_shared<ConstNotionalCrossCcySwapEngine>(
         USDCurrency(), USDDiscountCurve(), CHFCurrency(), CHFDiscountCurve(), fxSpotQuote);
 
     xccySwap->setPricingEngine(engine);
@@ -627,7 +627,7 @@ BOOST_AUTO_TEST_CASE(testFloatFixXCCYSwapPricing) {
 
     // Attach pricing engine
 	auto fxSpotQuote = makeQuoteHandle(1.0 / spotFx);
-    auto engine = ext::make_shared<CrossCcySwapEngine>(
+    auto engine = ext::make_shared<ConstNotionalCrossCcySwapEngine>(
         USDCurrency(), USDDiscountCurve(), TRYCurrency(), TRYDiscountCurve(), fxSpotQuote);
     xccySwap->setPricingEngine(engine);
 
@@ -665,7 +665,7 @@ BOOST_AUTO_TEST_CASE(testFloatFloatXCCYSwapPricing) {
 
     // Attach pricing engine
 	auto fxSpotQuote = makeQuoteHandle(1.0 / spotFx);
-    auto engine = ext::make_shared<CrossCcySwapEngine>(
+    auto engine = ext::make_shared<ConstNotionalCrossCcySwapEngine>(
         USDCurrency(), USDDiscountCurve(), GBPCurrency(), GBPDiscountCurve(), fxSpotQuote);
 
     xccySwap->setPricingEngine(engine);

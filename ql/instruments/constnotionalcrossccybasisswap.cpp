@@ -23,11 +23,11 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
-#include <ql/instruments/crossccybasisswap.hpp>
+#include <ql/instruments/constnotionalcrossccybasisswap.hpp>
 
 namespace QuantLib  {
 
-CrossCcyBasisSwap::CrossCcyBasisSwap(Real payNominal, const Currency& payCurrency, const Schedule& paySchedule,
+ConstNotionalCrossCcyBasisSwap::ConstNotionalCrossCcyBasisSwap(Real payNominal, const Currency& payCurrency, const Schedule& paySchedule,
                                      const ext::shared_ptr<IborIndex>& payIndex, Spread paySpread, Real payGearing,
                                      Real recNominal, const Currency& recCurrency, const Schedule& recSchedule,
                                      const ext::shared_ptr<IborIndex>& recIndex, Spread recSpread, Real recGearing,
@@ -36,7 +36,7 @@ CrossCcyBasisSwap::CrossCcyBasisSwap(Real payNominal, const Currency& payCurrenc
                                      ext::optional<bool> payIsAveraged, ext::optional<bool> recIncludeSpread,
                                      ext::optional<Natural> recLookback, ext::optional<Size> recLockoutDays,
                                      ext::optional<bool> recIsAveraged, const bool telescopicValueDates)
-    : CrossCcySwap(2), payNominal_(payNominal), payCurrency_(payCurrency), paySchedule_(paySchedule),
+    : ConstNotionalCrossCcySwap(2), payNominal_(payNominal), payCurrency_(payCurrency), paySchedule_(paySchedule),
       payIndex_(payIndex), paySpread_(paySpread), payGearing_(payGearing), recNominal_(recNominal),
       recCurrency_(recCurrency), recSchedule_(recSchedule), recIndex_(recIndex), recSpread_(recSpread),
       recGearing_(recGearing), payPaymentLag_(payPaymentLag), recPaymentLag_(recPaymentLag),
@@ -48,7 +48,7 @@ CrossCcyBasisSwap::CrossCcyBasisSwap(Real payNominal, const Currency& payCurrenc
     initialize();
 }
 
-void CrossCcyBasisSwap::initialize() {
+void ConstNotionalCrossCcyBasisSwap::initialize() {
     // Pay leg
     if (auto on = ext::dynamic_pointer_cast<OvernightIndex>(payIndex_)) {
         // ON leg
@@ -105,11 +105,11 @@ void CrossCcyBasisSwap::initialize() {
                                  CashFlows::maturityDate(legs_[1]));
 
     // Add notional exchanges on payLeg
-    CrossCcySwap::addNotionalExchangesToLeg(legs_[0], paySchedule_.calendar(), earliestDate, maturityDate,
+    ConstNotionalCrossCcySwap::addNotionalExchangesToLeg(legs_[0], paySchedule_.calendar(), earliestDate, maturityDate,
                                             payPaymentLag_, paySchedule_.businessDayConvention(), payNominal_);
 
     // Add notional exchanges on recLeg
-    CrossCcySwap::addNotionalExchangesToLeg(legs_[1], recSchedule_.calendar(), earliestDate, maturityDate,
+    ConstNotionalCrossCcySwap::addNotionalExchangesToLeg(legs_[1], recSchedule_.calendar(), earliestDate, maturityDate,
                                             recPaymentLag_, recSchedule_.businessDayConvention(), recNominal_);
 
     // Register the instrument with all cashflows on each leg.
@@ -121,14 +121,14 @@ void CrossCcyBasisSwap::initialize() {
     }
 }
 
-void CrossCcyBasisSwap::setupArguments(PricingEngine::arguments* args) const {
+void ConstNotionalCrossCcyBasisSwap::setupArguments(PricingEngine::arguments* args) const {
 
-    CrossCcySwap::setupArguments(args);
+    ConstNotionalCrossCcySwap::setupArguments(args);
 
-    CrossCcyBasisSwap::arguments* arguments = dynamic_cast<CrossCcyBasisSwap::arguments*>(args);
+    ConstNotionalCrossCcyBasisSwap::arguments* arguments = dynamic_cast<ConstNotionalCrossCcyBasisSwap::arguments*>(args);
 
-    /* Returns here if e.g. args is CrossCcySwap::arguments which
-       is the case if PricingEngine is a CrossCcySwap::engine. */
+    /* Returns here if e.g. args is ConstNotionalCrossCcySwap::arguments which
+       is the case if PricingEngine is a ConstNotionalCrossCcySwap::engine. */
     if (!arguments)
         return;
 
@@ -136,18 +136,18 @@ void CrossCcyBasisSwap::setupArguments(PricingEngine::arguments* args) const {
     arguments->recSpread = recSpread_;
 }
 
-void CrossCcyBasisSwap::fetchResults(const PricingEngine::results* r) const {
+void ConstNotionalCrossCcyBasisSwap::fetchResults(const PricingEngine::results* r) const {
 
-    CrossCcySwap::fetchResults(r);
+    ConstNotionalCrossCcySwap::fetchResults(r);
 
-    const CrossCcyBasisSwap::results* results = dynamic_cast<const CrossCcyBasisSwap::results*>(r);
+    const ConstNotionalCrossCcyBasisSwap::results* results = dynamic_cast<const ConstNotionalCrossCcyBasisSwap::results*>(r);
     if (results) {
         /* If PricingEngine::results are of type
-           CrossCcyBasisSwap::results */
+           ConstNotionalCrossCcyBasisSwap::results */
         fairPaySpread_ = results->fairPaySpread;
         fairRecSpread_ = results->fairRecSpread;
     } else {
-        /* If not, e.g. if the engine is a CrossCcySwap::engine */
+        /* If not, e.g. if the engine is a ConstNotionalCrossCcySwap::engine */
         fairPaySpread_ = Null<Spread>();
         fairRecSpread_ = Null<Spread>();
     }
@@ -164,20 +164,20 @@ void CrossCcyBasisSwap::fetchResults(const PricingEngine::results* r) const {
     }
 }
 
-void CrossCcyBasisSwap::setupExpired() const {
-    CrossCcySwap::setupExpired();
+void ConstNotionalCrossCcyBasisSwap::setupExpired() const {
+    ConstNotionalCrossCcySwap::setupExpired();
     fairPaySpread_ = Null<Spread>();
     fairRecSpread_ = Null<Spread>();
 }
 
-void CrossCcyBasisSwap::arguments::validate() const {
-    CrossCcySwap::arguments::validate();
+void ConstNotionalCrossCcyBasisSwap::arguments::validate() const {
+    ConstNotionalCrossCcySwap::arguments::validate();
     QL_REQUIRE(paySpread != Null<Spread>(), "Pay spread cannot be null");
     QL_REQUIRE(recSpread != Null<Spread>(), "Rec spread cannot be null");
 }
 
-void CrossCcyBasisSwap::results::reset() {
-    CrossCcySwap::results::reset();
+void ConstNotionalCrossCcyBasisSwap::results::reset() {
+    ConstNotionalCrossCcySwap::results::reset();
     fairPaySpread = Null<Spread>();
     fairRecSpread = Null<Spread>();
 }

@@ -41,9 +41,9 @@ set(QL_TEST_SOURCES
     convertiblebonds.cpp
     covariance.cpp
     creditdefaultswap.cpp
-    crossccybasisswap.cpp
-    crossccyfixfloatswap.cpp
-    crossccyswap.cpp
+    constnotionalcrossccybasisswap.cpp
+    constnotionalcrossccyfixfloatswap.cpp
+    constnotionalcrossccyswap.cpp
     crosscurrencyratehelpers.cpp
     currency.cpp
     curvestates.cpp

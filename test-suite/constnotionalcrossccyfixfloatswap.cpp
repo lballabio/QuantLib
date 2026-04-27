@@ -27,8 +27,8 @@
 #include <ql/time/calendars/all.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/types.hpp>
-#include <ql/instruments/crossccyfixfloatswap.hpp>
-#include <ql/pricingengines/swap/crossccyswapengine.hpp>
+#include <ql/instruments/constnotionalcrossccyfixfloatswap.hpp>
+#include <ql/pricingengines/swap/constnotionalcrossccyswapengine.hpp>
 
 using namespace std;
 using namespace boost::unit_test_framework;
@@ -36,7 +36,7 @@ using namespace QuantLib;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(CrossCcyFixFloatSwapTest)
+BOOST_AUTO_TEST_SUITE(ConstNotionalCrossCcyFixFloatSwapTest)
 
 #define CHECK_XCCY_SWAP_RESULT(what, calculated, expected, tolerance)   \
     if (std::fabs(calculated-expected) > tolerance) { \
@@ -216,7 +216,7 @@ Handle<YieldTermStructure> tryDiscountCurve() {
     return Handle<YieldTermStructure>(ext::make_shared<DiscountCurve>(dates, dfs, dayCounter));
 }
 
-ext::shared_ptr<CrossCcyFixFloatSwap> makeFixFloatXCCYSwap(Rate spotFx, Rate rate, Spread spread) {
+ext::shared_ptr<ConstNotionalCrossCcyFixFloatSwap> makeFixFloatXCCYSwap(Rate spotFx, Rate rate, Spread spread) {
 
     // USD nominal
     Real usdNominal = 10000000.0;
@@ -243,8 +243,8 @@ ext::shared_ptr<CrossCcyFixFloatSwap> makeFixFloatXCCYSwap(Rate spotFx, Rate rat
     auto index = ext::make_shared<USDLibor>(3 * Months, usdProjectionCurve());
 
     // Create swap
-    return ext::shared_ptr<CrossCcyFixFloatSwap>(
-        new CrossCcyFixFloatSwap(CrossCcyFixFloatSwap::Payer, usdNominal * spotFx, TRYCurrency(), fixedSchedule, rate,
+    return ext::shared_ptr<ConstNotionalCrossCcyFixFloatSwap>(
+        new ConstNotionalCrossCcyFixFloatSwap(ConstNotionalCrossCcyFixFloatSwap::Payer, usdNominal * spotFx, TRYCurrency(), fixedSchedule, rate,
                                  Actual360(), payConvention, payLag, payCalendar, usdNominal, USDCurrency(),
                                  floatSchedule, index, spread, payConvention, payLag, payCalendar));
 }
@@ -265,7 +265,7 @@ BOOST_AUTO_TEST_CASE(testFixFloatXCCYSwapPricing) {
 
     // Attach pricing engine
     auto fxSpotQuote = makeQuoteHandle(1.0 / spotFx);
-    auto engine = ext::make_shared<CrossCcySwapEngine>(
+    auto engine = ext::make_shared<ConstNotionalCrossCcySwapEngine>(
         USDCurrency(), usdDiscountCurve(), TRYCurrency(), tryDiscountCurve(), fxSpotQuote);
     xccy->setPricingEngine(engine);
 
@@ -292,7 +292,7 @@ BOOST_AUTO_TEST_CASE(testFixFloatXCCYSwapPricing) {
     Real expectedFairRate = usingAtParCoupons ? 0.253937551076 : 0.253937173908;
     Real expectedFairSpread = usingAtParCoupons ? -0.002740802104 : -0.002740592739;
 
-    CHECK_XCCY_SWAP_RESULT("Fair Fixed Rate", xccy->fairFixedRate(), expectedFairRate, 1e-10);
+    CHECK_XCCY_SWAP_RESULT("Fair Fixed Rate", xccy->fairRate(), expectedFairRate, 1e-10);
     CHECK_XCCY_SWAP_RESULT("Fair Spread", xccy->fairSpread(), expectedFairSpread, 1e-10);
 }
 

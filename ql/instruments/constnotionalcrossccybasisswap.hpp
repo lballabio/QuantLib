@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file crossccybasisswap.hpp
+/*! \file constnotionalcrossccybasisswap.hpp
     \brief Cross currency basis swap instrument
 
         \ingroup instruments
@@ -30,7 +30,7 @@
 
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/instruments/crossccyswap.hpp>
+#include <ql/instruments/constnotionalcrossccyswap.hpp>
 
 namespace QuantLib {
 
@@ -40,7 +40,7 @@ namespace QuantLib {
 
             \ingroup instruments
 */
-class CrossCcyBasisSwap : public CrossCcySwap {
+class ConstNotionalCrossCcyBasisSwap : public ConstNotionalCrossCcySwap {
 public:
     class arguments;
     class results;
@@ -75,7 +75,7 @@ public:
         \param recIsAveraged      If true, use arithmetic averaging of overnight rates instead of compounding when building the rec leg (defaul: 0).
         \param telescopicValueDates Flag indicating whether telescopic value dates are used (default: false).
     */
-    CrossCcyBasisSwap(
+    ConstNotionalCrossCcyBasisSwap(
         Real payNominal, const Currency& payCurrency, const Schedule& paySchedule,
         const ext::shared_ptr<IborIndex>& payIndex, Spread paySpread, Real payGearing, Real recNominal,
         const Currency& recCurrency, const Schedule& recSchedule, const ext::shared_ptr<IborIndex>& recIndex,
@@ -163,7 +163,7 @@ private:
 };
 
 //! \ingroup instruments
-class CrossCcyBasisSwap::arguments : public CrossCcySwap::arguments {
+class ConstNotionalCrossCcyBasisSwap::arguments : public ConstNotionalCrossCcySwap::arguments {
 public:
     Spread paySpread;
     Spread recSpread;
@@ -171,7 +171,7 @@ public:
 };
 
 //! \ingroup instruments
-class CrossCcyBasisSwap::results : public CrossCcySwap::results {
+class ConstNotionalCrossCcyBasisSwap::results : public ConstNotionalCrossCcySwap::results {
 public:
     Spread fairPaySpread;
     Spread fairRecSpread;

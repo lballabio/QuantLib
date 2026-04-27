@@ -19,12 +19,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/crossccyswap.hpp>
+#include <ql/instruments/constnotionalcrossccyswap.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 
 namespace QuantLib {
 
-CrossCcySwap::CrossCcySwap(const Leg& firstLeg, const Currency& firstLegCcy, const Leg& secondLeg,
+ConstNotionalCrossCcySwap::ConstNotionalCrossCcySwap(const Leg& firstLeg, const Currency& firstLegCcy, const Leg& secondLeg,
                            const Currency& secondLegCcy)
     : Swap(firstLeg, secondLeg), inCcyLegNPV_(2, 0.0), inCcyLegBPS_(2, 0.0), npvDateDiscounts_(2, 0.0) {
     currencies_.resize(2);
@@ -32,7 +32,7 @@ CrossCcySwap::CrossCcySwap(const Leg& firstLeg, const Currency& firstLegCcy, con
     currencies_[1] = secondLegCcy;
 }
 
-CrossCcySwap::CrossCcySwap(const std::vector<Leg>& legs, const std::vector<bool>& payer,
+ConstNotionalCrossCcySwap::ConstNotionalCrossCcySwap(const std::vector<Leg>& legs, const std::vector<bool>& payer,
                            const std::vector<Currency>& currencies)
     : Swap(legs, payer), currencies_(currencies), inCcyLegNPV_(legs.size(), 0.0), inCcyLegBPS_(legs.size(), 0.0), npvDateDiscounts_(legs.size(), 0.0)  {
     QL_REQUIRE(payer.size() == currencies_.size(), "Size mismatch "
@@ -41,25 +41,25 @@ CrossCcySwap::CrossCcySwap(const std::vector<Leg>& legs, const std::vector<bool>
                                                        << ")");
 }
 
-CrossCcySwap::CrossCcySwap(Size legs)
+ConstNotionalCrossCcySwap::ConstNotionalCrossCcySwap(Size legs)
     : Swap(legs), currencies_(legs), inCcyLegNPV_(legs, 0.0), inCcyLegBPS_(legs, 0.0), npvDateDiscounts_(legs, 0.0) {}
 
-void CrossCcySwap::setupArguments(PricingEngine::arguments* args) const {
+void ConstNotionalCrossCcySwap::setupArguments(PricingEngine::arguments* args) const {
 
     Swap::setupArguments(args);
 
-    CrossCcySwap::arguments* arguments = dynamic_cast<CrossCcySwap::arguments*>(args);
+    ConstNotionalCrossCcySwap::arguments* arguments = dynamic_cast<ConstNotionalCrossCcySwap::arguments*>(args);
     QL_REQUIRE(arguments, "The arguments are not of type "
                           "cross currency swap");
 
     arguments->currencies = currencies_;
 }
 
-void CrossCcySwap::fetchResults(const PricingEngine::results* r) const {
+void ConstNotionalCrossCcySwap::fetchResults(const PricingEngine::results* r) const {
 
     Swap::fetchResults(r);
 
-    const CrossCcySwap::results* results = dynamic_cast<const CrossCcySwap::results*>(r);
+    const ConstNotionalCrossCcySwap::results* results = dynamic_cast<const ConstNotionalCrossCcySwap::results*>(r);
     QL_REQUIRE(results, "The results are not of type "
                         "cross currency swap");
 
@@ -88,26 +88,26 @@ void CrossCcySwap::fetchResults(const PricingEngine::results* r) const {
     }
 }
 
-void CrossCcySwap::setupExpired() const {
+void ConstNotionalCrossCcySwap::setupExpired() const {
     Swap::setupExpired();
     std::fill(inCcyLegBPS_.begin(), inCcyLegBPS_.end(), 0.0);
     std::fill(inCcyLegNPV_.begin(), inCcyLegNPV_.end(), 0.0);
     std::fill(npvDateDiscounts_.begin(), npvDateDiscounts_.end(), 0.0);
 }
 
-void CrossCcySwap::arguments::validate() const {
+void ConstNotionalCrossCcySwap::arguments::validate() const {
     Swap::arguments::validate();
     QL_REQUIRE(legs.size() == currencies.size(), "Number of legs is not equal to number of currencies");
 }
 
-void CrossCcySwap::results::reset() {
+void ConstNotionalCrossCcySwap::results::reset() {
     Swap::results::reset();
     inCcyLegNPV.clear();
     inCcyLegBPS.clear();
     npvDateDiscounts.clear();
 }
 
-void CrossCcySwap::addNotionalExchangesToLeg(Leg& leg, const Calendar& calendar, 
+void ConstNotionalCrossCcySwap::addNotionalExchangesToLeg(Leg& leg, const Calendar& calendar, 
     const Date earliestDate, const Date maturityDate, const Natural paymentLag, 
     const BusinessDayConvention legBdc, Real nominal) {
     // Initial notional exchange

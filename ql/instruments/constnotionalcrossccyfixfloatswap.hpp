@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file ql/instruments/crossccyfixfloatswap.hpp
+/*! \file ql/instruments/constnotionalcrossccyfixfloatswap.hpp
     \brief Cross currency fixed vs float swap instrument
     \ingroup instruments
 */
@@ -29,16 +29,15 @@
 
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/instruments/crossccyswap.hpp>
+#include <ql/instruments/constnotionalcrossccyswap.hpp>
 
 namespace QuantLib {
 
 /*! Cross currency fixed vs float swap
     \ingroup instruments
 */
-class CrossCcyFixFloatSwap : public CrossCcySwap {
+class ConstNotionalCrossCcyFixFloatSwap : public ConstNotionalCrossCcySwap {
 public:
-    enum Type { Receiver = -1, Payer = 1 };
     class arguments;
     class results;
 
@@ -73,7 +72,7 @@ public:
         \param floatLockoutDays      Optional lockout period (in business days) before payment during which rate observations are frozen.
         \param floatIsAveraged       If true, use arithmetic averaging of overnight rates instead of compounding when building the floating leg.
     */
-    CrossCcyFixFloatSwap(Type type, Real fixedNominal, const Currency& fixedCurrency,
+    ConstNotionalCrossCcyFixFloatSwap(Type type, Real fixedNominal, const Currency& fixedCurrency,
                          const Schedule& fixedSchedule, Rate fixedRate,
                          const DayCounter& fixedDayCount, BusinessDayConvention fixedPaymentBdc,
                          Natural fixedPaymentLag, const Calendar& fixedPaymentCalendar,
@@ -124,7 +123,7 @@ public:
 
     //! \name Additional interface
     //@{
-    Rate fairFixedRate() const {
+    Rate fairRate() const {
         calculate();
         QL_REQUIRE(fairFixedRate_ != Null<Real>(), "Fair fixed rate is not available");
         return fairFixedRate_;
@@ -174,7 +173,7 @@ private:
 };
 
 //! \ingroup instruments
-class CrossCcyFixFloatSwap::arguments : public CrossCcySwap::arguments {
+class ConstNotionalCrossCcyFixFloatSwap::arguments : public ConstNotionalCrossCcySwap::arguments {
 public:
     Rate fixedRate;
     Spread spread;
@@ -182,7 +181,7 @@ public:
 };
 
 //! \ingroup instruments
-class CrossCcyFixFloatSwap::results : public CrossCcySwap::results {
+class ConstNotionalCrossCcyFixFloatSwap::results : public ConstNotionalCrossCcySwap::results {
 public:
     Rate fairFixedRate;
     Spread fairSpread;

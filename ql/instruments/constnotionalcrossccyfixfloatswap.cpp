@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/crossccyfixfloatswap.hpp>
+#include <ql/instruments/constnotionalcrossccyfixfloatswap.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-CrossCcyFixFloatSwap::CrossCcyFixFloatSwap(
+ConstNotionalCrossCcyFixFloatSwap::ConstNotionalCrossCcyFixFloatSwap(
     Type type, Real fixedNominal, const Currency& fixedCurrency, const Schedule& fixedSchedule, Rate fixedRate,
     const DayCounter& fixedDayCount, BusinessDayConvention fixedPaymentBdc, Natural fixedPaymentLag,
     const Calendar& fixedPaymentCalendar, Real floatNominal, const Currency& floatCurrency,
@@ -36,7 +36,7 @@ CrossCcyFixFloatSwap::CrossCcyFixFloatSwap(
     BusinessDayConvention floatPaymentBdc, Natural floatPaymentLag, const Calendar& floatPaymentCalendar,
     const bool telescopicValueDates, ext::optional<bool> floatIncludeSpread, ext::optional<Natural> floatLookbackDays,
     ext::optional<Size> floatLockoutDays, ext::optional<bool> floatIsAveraged)
-    : CrossCcySwap(2), type_(type), fixedNominal_(fixedNominal), fixedCurrency_(fixedCurrency),
+    : ConstNotionalCrossCcySwap(2), type_(type), fixedNominal_(fixedNominal), fixedCurrency_(fixedCurrency),
       fixedSchedule_(fixedSchedule), fixedRate_(fixedRate), fixedDayCount_(fixedDayCount),
       fixedPaymentBdc_(fixedPaymentBdc), fixedPaymentLag_(fixedPaymentLag), fixedPaymentCalendar_(fixedPaymentCalendar),
       floatNominal_(floatNominal), floatCurrency_(floatCurrency), floatSchedule_(floatSchedule),
@@ -88,11 +88,11 @@ CrossCcyFixFloatSwap::CrossCcyFixFloatSwap(
                                  CashFlows::maturityDate(fixedLeg));
 
     // Add notional exchanges on float Leg
-    CrossCcySwap::addNotionalExchangesToLeg(floatLeg, floatPaymentCalendar_, earliestDate, maturityDate,
+    ConstNotionalCrossCcySwap::addNotionalExchangesToLeg(floatLeg, floatPaymentCalendar_, earliestDate, maturityDate,
                                             floatPaymentLag_, floatPaymentBdc_, floatNominal_);
     
     // Add notional exchanges on fixed leg
-    CrossCcySwap::addNotionalExchangesToLeg(fixedLeg, fixedPaymentCalendar_, earliestDate, maturityDate,
+    ConstNotionalCrossCcySwap::addNotionalExchangesToLeg(fixedLeg, fixedPaymentCalendar_, earliestDate, maturityDate,
                                             fixedPaymentLag_, fixedPaymentBdc_, fixedNominal_);
 
     // Deriving from cross currency swap where:
@@ -118,21 +118,21 @@ CrossCcyFixFloatSwap::CrossCcyFixFloatSwap(
     }
 }
 
-void CrossCcyFixFloatSwap::setupArguments(PricingEngine::arguments* a) const {
-    CrossCcySwap::setupArguments(a);
-    if (CrossCcyFixFloatSwap::arguments* args = dynamic_cast<CrossCcyFixFloatSwap::arguments*>(a)) {
+void ConstNotionalCrossCcyFixFloatSwap::setupArguments(PricingEngine::arguments* a) const {
+    ConstNotionalCrossCcySwap::setupArguments(a);
+    if (ConstNotionalCrossCcyFixFloatSwap::arguments* args = dynamic_cast<ConstNotionalCrossCcyFixFloatSwap::arguments*>(a)) {
         args->fixedRate = fixedRate_;
         args->spread = floatSpread_;
     }
 }
 
-void CrossCcyFixFloatSwap::fetchResults(const PricingEngine::results* r) const {
+void ConstNotionalCrossCcyFixFloatSwap::fetchResults(const PricingEngine::results* r) const {
 
-    CrossCcySwap::fetchResults(r);
+    ConstNotionalCrossCcySwap::fetchResults(r);
 
-    // Depending on the pricing engine used, we may have CrossCcyFixFloatSwap::results
-    if (const CrossCcyFixFloatSwap::results* res = dynamic_cast<const CrossCcyFixFloatSwap::results*>(r)) {
-        // If we have CrossCcyFixFloatSwap::results from the pricing engine
+    // Depending on the pricing engine used, we may have ConstNotionalCrossCcyFixFloatSwap::results
+    if (const ConstNotionalCrossCcyFixFloatSwap::results* res = dynamic_cast<const ConstNotionalCrossCcyFixFloatSwap::results*>(r)) {
+        // If we have ConstNotionalCrossCcyFixFloatSwap::results from the pricing engine
         fairFixedRate_ = res->fairFixedRate;
         fairSpread_ = res->fairSpread;
     } else {
@@ -153,20 +153,20 @@ void CrossCcyFixFloatSwap::fetchResults(const PricingEngine::results* r) const {
         fairSpread_ = floatSpread_ - NPV_ / (legBPS_[idxFloat] / basisPoint);
 }
 
-void CrossCcyFixFloatSwap::setupExpired() const {
-    CrossCcySwap::setupExpired();
+void ConstNotionalCrossCcyFixFloatSwap::setupExpired() const {
+    ConstNotionalCrossCcySwap::setupExpired();
     fairFixedRate_ = Null<Rate>();
     fairSpread_ = Null<Spread>();
 }
 
-void CrossCcyFixFloatSwap::arguments::validate() const {
-    CrossCcySwap::arguments::validate();
+void ConstNotionalCrossCcyFixFloatSwap::arguments::validate() const {
+    ConstNotionalCrossCcySwap::arguments::validate();
     QL_REQUIRE(fixedRate != Null<Rate>(), "Fixed rate cannot be null");
     QL_REQUIRE(spread != Null<Spread>(), "Spread cannot be null");
 }
 
-void CrossCcyFixFloatSwap::results::reset() {
-    CrossCcySwap::results::reset();
+void ConstNotionalCrossCcyFixFloatSwap::results::reset() {
+    ConstNotionalCrossCcySwap::results::reset();
     fairFixedRate = Null<Rate>();
     fairSpread = Null<Spread>();
 }
