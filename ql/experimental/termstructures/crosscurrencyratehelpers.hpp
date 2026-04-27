@@ -76,7 +76,8 @@ namespace QuantLib {
                                              bool isFxBaseCurrencyCollateralCurrency,
                                              bool isBasisOnFxBaseCurrencyLeg,
                                              Frequency paymentFrequency = NoFrequency,
-                                             Integer paymentLag = 0);
+                                             Integer paymentLag = 0,
+                                             Frequency quoteCcyPaymentFrequency = NoFrequency);
 
         void initializeDates() override;
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
@@ -87,6 +88,7 @@ namespace QuantLib {
         bool isFxBaseCurrencyCollateralCurrency_;
         bool isBasisOnFxBaseCurrencyLeg_;
         Frequency paymentFrequency_;
+        Frequency quoteCcyPaymentFrequency_;
 
         Leg baseCcyIborLeg_;
         Leg quoteCcyIborLeg_;
@@ -131,7 +133,8 @@ namespace QuantLib {
             bool isFxBaseCurrencyCollateralCurrency,
             bool isBasisOnFxBaseCurrencyLeg,
             Frequency paymentFrequency = NoFrequency,
-            Integer paymentLag = 0);
+            Integer paymentLag = 0,
+            Frequency quoteCcyPaymentFrequency = NoFrequency);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -170,7 +173,8 @@ namespace QuantLib {
                                             bool isBasisOnFxBaseCurrencyLeg,
                                             bool isFxBaseCurrencyLegResettable,
                                             Frequency paymentFrequency = NoFrequency,
-                                            Integer paymentLag = 0);
+                                            Integer paymentLag = 0,
+                                            Frequency quoteCcyPaymentFrequency = NoFrequency);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
