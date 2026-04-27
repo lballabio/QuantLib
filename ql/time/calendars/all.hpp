@@ -22,6 +22,7 @@
 #include <ql/time/calendars/india.hpp>
 #include <ql/time/calendars/indonesia.hpp>
 #include <ql/time/calendars/israel.hpp>
+#include <ql/time/calendars/islamicholidays.hpp>
 #include <ql/time/calendars/italy.hpp>
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>

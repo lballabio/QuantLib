@@ -29,15 +29,13 @@
 namespace QuantLib {
 
 	//! North Macedonian calendars
-	/*! Holidays for the Macedonian Stock Exchange (see https://www.mse.mk):
+	/*! Holidays for the North Macedonian (see https://www.timeanddate.com/holidays/macedonia/2026?hol=1):
 		<ul>
 		<li>Saturdays</li>
 		<li>Sundays</li>
 		<li>New Year, January 1st & 2nd</li>
 		<li>Orthodox Christmas, January 7th</li>
-		<li>Ramadan Bajram (Eid al-Fitr), March 31st</li>
-		<li>Good Friday</li>
-		<li>Orthodox Easter Monday</li>
+		<li>Orthodox Easter Monday, variable date<</li>
 		<li>Labour Day, May 1st</li>
 		<li>Saints Cyril and Methodius Day, May 24th</li>
 		<li>Republic Day, August 2nd</li>
@@ -45,12 +43,14 @@ namespace QuantLib {
 		<li>Revolution Day, October 11th</li>
 		<li>Day of the Macedonian Uprising, October 23rd</li>
 		<li>Saint Clement of Ohrid Day, December 8th</li>
+		<li>Eid al-Fitr (Ramazan Bajram), variable date</li>
+		<li>Eid al-Adha (Kurban Bayram), variable date</li>
 		</ul>
 		\ingroup calendars
 	*/
 	class NorthMacedonia : public Calendar {
 	private:
-		class MseImpl final : public Calendar::WesternImpl {
+		class MseImpl final : public Calendar::OrthodoxImpl {
 		public:
 			std::string name() const override { return "Macedonian Stock Exchange"; }
 			bool isBusinessDay(const Date&) const override;

@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/time/calendars/islamicholidays.hpp>
 #include <ql/time/calendars/northmacedonia.hpp>
 
 namespace QuantLib {
@@ -28,58 +29,35 @@ namespace QuantLib {
 
 	bool NorthMacedonia::MseImpl::isBusinessDay(const Date& date) const {
 		Weekday w = date.weekday();
-		Day d = date.dayOfMonth();
+		Day d = date.dayOfMonth(), dd = date.dayOfYear();
 		Month m = date.month();
+		Year y = date.year();
+		Day em = easterMonday(y);
 
-		// Observance rule: if a holiday falls on a Sunday, it is observed on Monday
-		const Date prev = date - 1;
-		const bool sundayObserved = (prev.weekday() == Sunday);
-
-		// Holidays
 		if (isWeekend(w)
-			// January 1 New Year
+			|| isEidAlFitr(date)
+			|| isEidAlAdha(date)
+			// New Year
 			|| (d == 1 && m == January)
-			// January 6 Epiphany
-			|| (d == 6 && m == January)
-			// January 7 Orthodox Christmas
+			// Orthodox Christmas
 			|| (d == 7 && m == January)
-			// March 31 (Ramadan Bajram (Eid al-Fitr)
-			|| (d == 31 && m == March)
-			// April 18 Good Friday
-			|| (d == 18 && m == April)
-			// April 21 Easter Monday
-			|| (d == 21 && m == April)
-			// May 1 Labour Day
+			// Easter Monday
+			|| (dd == em)
+			// Labour Day
 			|| (d == 1 && m == May)
-			// June 6 religious holiday
-			|| (d == 6 && m == June)
-			// August 28 religious holiday
-			|| (d == 28 && m == August)
-			// September 8 Independence Day
+			// Saints Cyril and Methodius Day
+			|| (d == 24 && m == May)
+			// Republic Day
+			|| (d == 2 && m == August)
+			// Independence Day
 			|| (d == 8 && m == September)
-			// October 23 Uprising Day
+			// Day of People’s Uprising
+			|| (d == 11 && m == October)
+			// Day of the Macedonian Revolutionary Struggle
 			|| (d == 23 && m == October)
-			// December 8 Saint Clement of Ohrid
-			|| (d == 8 && m == December)
-			// December 31 Non-trading day
-			|| (d == 31 && m == December)
-			// Observed holidays (if the fixed holiday was Sunday)
-			|| (sundayObserved && ((prev.dayOfMonth() == 1 && prev.month() == January) ||
-			(prev.dayOfMonth() == 6 && prev.month() == January) ||
-				(prev.dayOfMonth() == 7 && prev.month() == January) ||
-				(prev.dayOfMonth() == 31 && prev.month() == March) ||
-				(prev.dayOfMonth() == 18 && prev.month() == April) ||
-				(prev.dayOfMonth() == 21 && prev.month() == April) ||
-				(prev.dayOfMonth() == 1 && prev.month() == May) ||
-				(prev.dayOfMonth() == 6 && prev.month() == June) ||
-				(prev.dayOfMonth() == 28 && prev.month() == August) ||
-				(prev.dayOfMonth() == 8 && prev.month() == September) ||
-				(prev.dayOfMonth() == 23 && prev.month() == October) ||
-				(prev.dayOfMonth() == 8 && prev.month() == December) ||
-				(prev.dayOfMonth() == 31 && prev.month() == December)))) {
+			// Saint Clement of Ohrid Day,
+			|| (d == 8 && m == December))
 			return false;
-		}
-
 		return true;
 	}
 

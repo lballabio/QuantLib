@@ -30,44 +30,29 @@ namespace QuantLib {
 		Weekday w = date.weekday();
 		Day d = date.dayOfMonth();
 		Month m = date.month();
-		Year y = date.year();
-		Day em = easterMonday(y);
-		Day gf = em - 3; // Good Friday
-		Date jul13(y, July, 13);
-		Date jul14(y, July, 14);
-		Date jul15(y, July, 15);
-		Date may21(y, May, 21);
-		Weekday wd21 = may21.weekday();
-
-		// Weekday logic
-		bool isJul13Weekend = isWeekend(jul13.weekday());
-		bool isJul14Weekend = isWeekend(jul14.weekday());
 
 		if (isWeekend(w)
-			// New Year and Orthodox Christmas period: Jan 1-8
-			|| (m == January && d >= 1 && d <= 8)
-			// Good Friday (Orthodox calendar)
-			|| (date.dayOfYear() == gf)
-			// Easter Monday
-			|| (date.dayOfYear() == em)
-			// Labour Day: May 1-2
-			|| (d == 1 && m == May) ||
-			(d == 2 && m == May)
-			// Independence Day: May 21-22
-			|| (d == 21 && m == May) || (d == 22 && m == May) ||
-			// Shift to 22-23 if 21st is a Sunday
-			(d == 22 && m == May && wd21 == Sunday) || (d == 23 && m == May && wd21 == Sunday) ||
-			// Statehood Day: July 14-15 (per updated calendar)
-			// Normal fixed case: 13 and/or 14 July
-			(d == 13 && m == July && !isJul13Weekend) ||
-			(d == 14 && m == July && !isJul14Weekend) ||
-			// Special case: both fall on weekend ? Monday 15th becomes observed holiday
-			(d == 15 && m == July && isJul13Weekend && isJul14Weekend)
-			// Njegos Day: Nov 13-14
-			|| (d == 13 && m == November) || (d == 14 && m == November)) {
+			// New Year’s Day
+			|| (d == 1 && m == January)
+			// New Year Holiday
+			|| (d == 2 && m == January)
+			// Labour Day
+			|| (d == 1 && m == May)
+			// Labour Day Holiday
+			|| (d == 2 && m == May)
+			// Independence Day
+			|| (d == 21 && m == May)
+			// Independence Day Holiday
+			|| (d == 22 && m == May)
+			// Statehood Day
+			|| (d == 13 && m == July)
+			// Statehood Day Holiday
+			|| (d == 14 && m == July)
+			// Njegos Day
+			|| (d == 13 && m == November)
+			// Njegos Day Holiday
+			|| (d == 14 && m == November))
 			return false;
-		}
-
 		return true;
 	}
 

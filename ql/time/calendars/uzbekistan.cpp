@@ -19,60 +19,10 @@
 */
 
 #include <ql/errors.hpp>
+#include <ql/time/calendars/islamicholidays.hpp>
 #include <ql/time/calendars/uzbekistan.hpp>
-#include <algorithm>
 
 namespace QuantLib {
-
-	bool isRamazonHayit(const Date& d) {
-		// Eid al-Fitr (Ramazon Hayit) dates
-		static std::vector<Date> RamazonHayit = {
-			Date(20, March,    2026),
-			Date(10, March,    2027),
-			Date(27, February, 2028),
-			Date(15, February, 2029),
-			Date(5, February, 2030),
-			Date(25, January,  2031),
-			Date(14, January,  2032),
-			Date(2, January,  2033),
-			Date(23, December, 2033),  // two Eids in 2033
-			Date(12, December, 2034),
-			Date(1, December, 2035),
-			Date(19, November, 2036),
-			Date(8, November, 2037),
-			Date(29, October,  2038),
-			Date(19, October,  2039),
-			Date(7, October,  2040)
-		};
-
-		return std::any_of(RamazonHayit.begin(), RamazonHayit.end(),
-			[&d](const Date& p) { return d == p; });
-	}
-
-	bool isQurbonHayit(const Date& d) {
-		// Eid al-Adha (Qurbon Hayit) dates
-		static std::vector<Date> QurbonHayit = {
-			Date(27, May,      2026),
-			Date(17, May,      2027),
-			Date(5, May,      2028),
-			Date(24, April,    2029),
-			Date(13, April,    2030),
-			Date(3, April,    2031),
-			Date(22, March,    2032),
-			Date(11, March,    2033),
-			Date(28, February, 2034),
-			Date(18, February, 2035),
-			Date(7, February, 2036),
-			Date(27, January,  2037),
-			Date(16, January,  2038),
-			Date(5, January,  2039),
-			Date(26, December, 2039),  // two Eids in 2039
-			Date(15, December, 2040)
-		};
-
-		return std::any_of(QurbonHayit.begin(), QurbonHayit.end(),
-			[&d](const Date& p) { return d == p; });
-	}
 
 	Uzbekistan::Uzbekistan(Market) {
 		static ext::shared_ptr<Calendar::Impl> impl(new Uzbekistan::Impl);
@@ -85,8 +35,8 @@ namespace QuantLib {
 		Month m = date.month();
 
 		if (isWeekend(w)
-			|| isRamazonHayit(date)
-			|| isQurbonHayit(date)
+			|| isEidAlFitr(date)
+			|| isEidAlAdha(date)
 			// New Year's Day
 			|| (d == 1 && m == January)
 			// International Womens Day
@@ -100,9 +50,8 @@ namespace QuantLib {
 			// Teachers Day
 			|| (d == 1 && m == October)
 			// Constitution Day
-			|| (d == 8 && m == December)) {
+			|| (d == 8 && m == December))
 			return false;
-		}
 		return true;
 	}
 

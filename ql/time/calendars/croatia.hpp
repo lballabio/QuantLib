@@ -39,7 +39,8 @@ namespace QuantLib {
 		<li>Easter Monday</li>
 		<li>Labour Day, May 1st</li>
 		<li>National Day May 30th</li>
-		<li>Corpus Christi, June 19 th</li>
+		<li>Corpus Christi, 60 days after Easter Sunday.</li>
+		<li>Anti-Fascist Struggle Day, June 22nd</li>
 		<li>Victory and Homeland Thanksgiving Day and the Day of Croatian Defenders August 5th</li>
 		<li>Assumption of Mary, August 15th</li>
 		<li>Remembrance Day for the Victims of the Vukovar and Skabrnja War Memorials, November 18th</li>

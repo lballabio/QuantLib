@@ -74,10 +74,8 @@ namespace QuantLib {
 			// Boxing Day (occasionally observed by MSE)
 			|| (d == 26 && m == December)
 			// New Year's Eve (non-trading)
-			|| (d == 31 && m == December)) {
+			|| (d == 31 && m == December))
 			return false;
-		}
-
 		return true;
 	}
 

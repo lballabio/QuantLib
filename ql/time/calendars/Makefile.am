@@ -25,6 +25,7 @@ this_include_HEADERS = \
 	india.hpp \
 	indonesia.hpp \
 	israel.hpp \
+	islamicholidays.hpp \
 	italy.hpp \
 	japan.hpp \
 	jointcalendar.hpp \
@@ -79,12 +80,13 @@ cpp_files = \
 	india.cpp \
 	indonesia.cpp \
 	israel.cpp \
+	islamicholidays.cpp \
 	italy.cpp \
 	japan.cpp \
 	jointcalendar.cpp \
 	malta.cpp \
 	mexico.cpp \
-	montenegro.cpp \ 
+	montenegro.cpp \
 	newzealand.cpp \
 	northmacedonia.cpp \
 	norway.cpp \

@@ -23,8 +23,7 @@ namespace QuantLib {
 
 	Croatia::Croatia(Market) {
 		// all calendar instances share the same implementation instance
-		static ext::shared_ptr<Calendar::Impl> impl(
-			new Croatia::ZseImpl);
+		static ext::shared_ptr<Calendar::Impl> impl(new Croatia::ZseImpl);
 		impl_ = impl;
 	}
 
@@ -49,12 +48,14 @@ namespace QuantLib {
 			// National Day
 			|| (d == 30 && m == May)
 			// Corpus Christi
-			|| (d == 19 && m == June)
+			|| (dd == em + 59)
+			// Anti-Fascist Struggle Day
+			|| (d == 22 && m == June)
 			// Victory and Homeland Thanksgiving Day and the Day of Croatian Defenders
 			|| (d == 5 && m == August)
 			// Assumption of Mary   
 			|| (d == 15 && m == August)
-			// Remembrance Day for the Victims of the Vukovar and Škabrnja War Memorials
+			// Remembrance Day for the Victims of the Vukovar and ï¿½kabrnja War Memorials
 			|| (d == 18 && m == November)
 			// Christmas Eve
 			|| (d == 24 && m == December)

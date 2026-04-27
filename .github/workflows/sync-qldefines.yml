@@ -3,22 +3,30 @@ on:
   push:
     branches-ignore:
       - 'dependabot/**'
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   sync-files:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v6
-    - name: Check
-      run: |
-        cp ql/qldefines.hpp ql/qldefines.hpp.cfg
-        sed -i -e 's|^#if   defined(HAVE_CONFIG_H).*$|#if   defined(QL_HAVE_CONFIG_H) // Dynamically created by cmake|g' ql/qldefines.hpp.cfg
-        sed -i -e 's|^/\* install-hook \*/.*$|#cmakedefine QL_HAVE_CONFIG_H|g' ql/qldefines.hpp.cfg
-    - uses: peter-evans/create-pull-request@v8
-      with:
-        token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
-        push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib
-        branch: sync-qldefine-${{ github.ref_name }}
-        delete-branch: true
-        commit-message: 'Sync qldefines.hpp.cfg with original header'
-        title: 'Sync qldefines.hpp.cfg with original header'
-        author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync files
+        shell: bash
+        run: |
+          cp ql/qldefines.hpp ql/qldefines.hpp.cfg
+          sed -i -e 's|^#if   defined(HAVE_CONFIG_H).*$|#if   defined(QL_HAVE_CONFIG_H) // Dynamically created by cmake|g' ql/qldefines.hpp.cfg
+          sed -i -e 's|^/\* install-hook \*/.*$|#cmakedefine QL_HAVE_CONFIG_H|g' ql/qldefines.hpp.cfg
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: sync-qldefine-${{ github.ref_name }}
+          delete-branch: true
+          commit-message: "Sync qldefines.hpp.cfg with original header"
+          title: "Sync qldefines.hpp.cfg with original header"
+          body: "Automated sync of qldefines.hpp.cfg with original header."

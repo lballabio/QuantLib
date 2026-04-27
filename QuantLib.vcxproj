@@ -1825,6 +1825,7 @@
     <ClInclude Include="ql\time\calendars\iceland.hpp" />
     <ClInclude Include="ql\time\calendars\india.hpp" />
     <ClInclude Include="ql\time\calendars\indonesia.hpp" />
+    <ClInclude Include="ql\time\calendars\islamicholidays.hpp" />
     <ClInclude Include="ql\time\calendars\israel.hpp" />
     <ClInclude Include="ql\time\calendars\italy.hpp" />
     <ClInclude Include="ql\time\calendars\japan.hpp" />
@@ -2832,6 +2833,7 @@
     <ClCompile Include="ql\time\calendars\iceland.cpp" />
     <ClCompile Include="ql\time\calendars\india.cpp" />
     <ClCompile Include="ql\time\calendars\indonesia.cpp" />
+    <ClCompile Include="ql\time\calendars\islamicholidays.cpp" />
     <ClCompile Include="ql\time\calendars\israel.cpp" />
     <ClCompile Include="ql\time\calendars\italy.cpp" />
     <ClCompile Include="ql\time\calendars\japan.cpp" />
