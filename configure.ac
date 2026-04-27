@@ -293,7 +293,11 @@ AC_ARG_ENABLE([std-optional],
                              [If enabled (the default), std::optional and
                               related classes and functions will be used
                               instead of boost::optional. If disabled,
-                              the Boost facilities will be used.]),
+                              the Boost facilities will be used; however,
+                              be aware that Boost 1.91 introduced changes
+                              in boost::optional that silently changed
+                              the behavior of our code and would cause it
+                              to work incorrectly.]),
               [ql_use_std_optional=$enableval],
               [ql_use_std_optional=yes])
 if test "$ql_use_std_optional" = "yes" ; then
@@ -311,7 +315,8 @@ AC_ARG_ENABLE([std-pointers],
                               If disabled (the default) the Boost facilities
                               will be used.
                               Note that std::shared_ptr does not check
-                              access and can cause segmentation faults.]),
+                              access and will cause a segmentation fault
+                              if you access a null pointer.]),
               [ql_use_std_pointers=$enableval],
               [ql_use_std_pointers=no])
 if test "$ql_use_std_pointers" = "yes" ; then

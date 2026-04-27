@@ -103,7 +103,7 @@
 
 /* Define this to use std::optional instead of boost::optional. */
 #ifndef QL_USE_STD_OPTIONAL
-//#    define QL_USE_STD_OPTIONAL
+#    define QL_USE_STD_OPTIONAL
 #endif
 
 /* Define this to use standard smart pointers instead of Boost ones.
