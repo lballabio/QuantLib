@@ -35,8 +35,8 @@ namespace QuantLib {
 		Day em = easterMonday(y);
 
 		if (isWeekend(w)
-			|| isEidAlFitr(date)
-			|| isEidAlAdha(date)
+			|| MoonSightingMethod::isEidAlFitr(date)
+			|| MoonSightingMethod::isEidAlAdha(date)
 			// New Year
 			|| (d == 1 && m == January)
 			// Orthodox Christmas

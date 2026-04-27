@@ -28,8 +28,16 @@
 
 namespace QuantLib {
 
-    bool isEidAlFitr(const Date&);
-    bool isEidAlAdha(const Date&);
+	/*! For calculating Eid al-Fitr and Eid al-Adha, there are two main approaches (calendars) used in practice, and they sometimes overlap.
+		Umm al-Qura calendar is used by Saudi Arabia (primary user) and some Gulf countries.
+		Moon sighting calendar is used by South Asia, Central Asia, Middle East and North Africa.
+	*/
+	namespace MoonSightingMethod {
+
+		bool isEidAlFitr(const Date&);
+		bool isEidAlAdha(const Date&);
+
+	}
 
 }
 

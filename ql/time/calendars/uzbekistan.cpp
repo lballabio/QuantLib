@@ -35,8 +35,8 @@ namespace QuantLib {
 		Month m = date.month();
 
 		if (isWeekend(w)
-			|| isEidAlFitr(date)
-			|| isEidAlAdha(date)
+			|| MoonSightingMethod::isEidAlFitr(date)
+			|| MoonSightingMethod::isEidAlAdha(date)
 			// New Year's Day
 			|| (d == 1 && m == January)
 			// International Womens Day
