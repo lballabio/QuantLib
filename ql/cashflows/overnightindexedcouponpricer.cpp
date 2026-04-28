@@ -30,16 +30,9 @@ namespace QuantLib {
     namespace {
 
         Size determineNumberOfFixings(const std::vector<Date>& interestDates,
-                                      const Date& date,
-                                      bool applyObservationShift) {
-            Size n = std::lower_bound(interestDates.begin(), interestDates.end(), date) -
+                                      const Date& date) {
+            return std::lower_bound(interestDates.begin(), interestDates.end()-1, date) -
                      interestDates.begin();
-            // When using the observation shift, it may happen that
-            // that the end of accrual period will fall later than the last
-            // interest date. In which case, n will be equal to the number of
-            // interest dates, while we know that the number of fixing dates is
-            // always one less than the number of interest dates.
-            return n == interestDates.size() && applyObservationShift ? n - 1 : n;
         }
     }
 
@@ -115,11 +108,20 @@ namespace QuantLib {
         const auto& valueDates = coupon_->valueDates();
         const auto& interestDates = coupon_->interestDates();
         const auto& dt = coupon_->dt();
-        const bool applyObservationShift = coupon_->applyObservationShift();
-	    Real couponSpread = coupon_->spread();
+        const bool applyObservationShift = coupon_->applyObservationShift() && coupon_->fixingDays() > 0;
+        const auto& dc = index->dayCounter();
+	    const Real couponSpread = coupon_->spread();
+        const bool compoundSpreadDaily = coupon_->compoundSpreadDaily();
 
         Size i = 0;
-        const Size n = determineNumberOfFixings(interestDates, date, applyObservationShift);
+        const Size n = determineNumberOfFixings(interestDates, date);
+        const auto growthFactor = [&, applyObservationShift, compoundSpreadDaily](double fixing, Size idx) {
+            const auto span = (applyObservationShift || date >= interestDates[idx + 1])
+                              ? dt[idx]
+                              : dc.yearFraction(interestDates[idx], date);
+            const auto gf = 1.0 + fixing * span;
+            return std::make_pair(gf, compoundSpreadDaily ? gf + couponSpread * span : gf);
+        };
 
         Real compoundFactor = 1.0, compoundFactorWithoutSpread = 1.0;
 
@@ -129,14 +131,9 @@ namespace QuantLib {
             Rate fixing = pastFixings[fixingDates[i]];
             QL_REQUIRE(fixing != Null<Real>(),
                        "Missing " << index->name() << " fixing for " << fixingDates[i]);
-            Time span = (date >= interestDates[i + 1] ?
-                             dt[i] :
-                             index->dayCounter().yearFraction(interestDates[i], date));
-            if (coupon_->compoundSpreadDaily()) {
-                compoundFactorWithoutSpread *= (1.0 + fixing * span);
-                fixing += coupon_->spread();
-            }
-            compoundFactor *= (1.0 + fixing * span);
+            const auto [gf, gfSpread] = growthFactor(fixing, i);
+            compoundFactorWithoutSpread *= gf;
+            compoundFactor *= gfSpread;
             ++i;
         }
 
@@ -146,14 +143,9 @@ namespace QuantLib {
             try {
                 Rate fixing = pastFixings[fixingDates[i]];
                 if (fixing != Null<Real>()) {
-                    Time span = (date >= interestDates[i + 1] ?
-                                     dt[i] :
-                                     index->dayCounter().yearFraction(interestDates[i], date));
-                    if (coupon_->compoundSpreadDaily()) {
-                        compoundFactorWithoutSpread *= (1.0 + fixing * span);
-                        fixing += coupon_->spread();
-                    }
-                    compoundFactor *= (1.0 + fixing * span);
+                    const auto [gf, gfSpread] = growthFactor(fixing, i);
+                    compoundFactorWithoutSpread *= gf;
+                    compoundFactor *= gfSpread;
                     ++i;
                 } else {
                     ; // fall through and forecast
@@ -170,85 +162,58 @@ namespace QuantLib {
             const Handle<YieldTermStructure> curve = index->forwardingTermStructure();
             QL_REQUIRE(!curve.empty(),
                        "null term structure set to this instance of " << index->name());
+            QL_REQUIRE(curve->referenceDate() <= valueDates[i] &&
+                       (curve->allowsExtrapolation() || valueDates[n] <= curve->maxDate()),
+                       "coupon requires a range [" << valueDates[i] << ", " << valueDates[n]
+                       << "] wider than is supported by the term structure for instance of"
+                       << index->name() << " [" << curve->referenceDate() << ", "
+                       << (curve->allowsExtrapolation() ? Date::maxDate(): curve->maxDate()) << "]");
 
-            const auto effectiveRate = [&index, &fixingDates, &date, &interestDates,
-                                        &dt, &couponSpread](Size position, bool compoundSpreadDaily) {
-                Rate fixing = index->fixing(fixingDates[position]);
-                Time span = (date >= interestDates[position + 1] ?
-                                 dt[position] :
-                                 index->dayCounter().yearFraction(interestDates[position], date));
-                Spread spreadToAdd = compoundSpreadDaily ? couponSpread : 0.0;
-                return span * (fixing + spreadToAdd);
+            const auto projGrowthFactor = [&](Size i) {
+                return growthFactor(index->fixing(fixingDates[i]), i);
             };
-
-            if (!coupon_->canApplyTelescopicFormula()) {
-                // With lookback applied, the telescopic formula cannot be used,
-                // we need to project each fixing in the coupon.
-                // Only in one particular case when observation shift is used and
-                // no intrinsic index fixing delay is applied, the telescopic formula
-                // holds, because regardless of the fixing delay in the coupon,
-                // in such configuration value dates will be equal to interest dates.
-                // A potential lockout, which may occur in tandem with a lookback
-                // setting, will be handled automatically based on fixing dates.
-                // Same applies to a case when accrual calculation date does or
-                // does not occur on an interest date.
-                while (i < n) {
-		            compoundFactorWithoutSpread *= (1.0 + effectiveRate(i, false));
-                    compoundFactor *= (1.0 + effectiveRate(i, coupon_->compoundSpreadDaily()));
-                    ++i;
-                }
-            } else {
-                // No lookback, we can partially apply the telescopic formula.
-                // But we need to make a correction for a potential lockout.
-                const Size nLockout = n - coupon_->lockoutDays();
-                const bool isLockoutApplied = coupon_->lockoutDays() > 0;
-
-                // Lockout could already start at or before i.
-                // In such case the ratio of discount factors will be equal to 1.
-                const DiscountFactor startDiscount =
-                    curve->discount(valueDates[std::min<Size>(nLockout, i)]);
-                if (interestDates[n] == date || isLockoutApplied) {
-                    // telescopic formula up to potential lockout dates.
-                    const DiscountFactor endDiscount =
-                        curve->discount(valueDates[std::min<Size>(nLockout, n)]);
-                    compoundFactor *= startDiscount / endDiscount;
-                    compoundFactorWithoutSpread *= startDiscount / endDiscount;
-                    // For the lockout periods the telescopic formula does not apply.
-                    // The value dates (at which the projection is calculated) correspond
-                    // to the locked-out fixing, while the interest dates (at which the
-                    // interest over that fixing is accrued) are not fixed at lockout,
-                    // hence they do not cancel out.
-                    i = std::max(nLockout, i);
-
-                    // With no lockout, the loop is skipped because i = n.
-                    while (i < n) {
-                        compoundFactorWithoutSpread *= (1.0 + effectiveRate(i, false));
-                        compoundFactor *= (1.0 + effectiveRate(i, coupon_->compoundSpreadDaily()));
+            if (coupon_->canApplyTelescopicFormula()) {
+                // handle partial accrual of first fixing if the first interestDate lands on a fixing holiday
+                const Size telescopicStartIdx =
+                    i == 0 && !applyObservationShift && (valueDates.front() < interestDates.front()) ? 1 : i;
+                // telescopic formula up to potential lockout dates and partial accrual up to date.
+                const Size endDateIdx = std::min<Size>(n, valueDates.size() - 1 - coupon_->lockoutDays());
+                const Size telescopicEndIdx = endDateIdx - (applyObservationShift || valueDates[endDateIdx] <= date ? 0 : 1);
+                if (telescopicStartIdx < telescopicEndIdx) {
+                    while (i < telescopicStartIdx) {
+                        // compound up any periods ahead of the telescopic range
+                        const auto [gf, gfSpread] = projGrowthFactor(i);
+                        compoundFactorWithoutSpread *= gf;
+                        compoundFactor *= gfSpread;
                         ++i;
                     }
-                } else {
-                    // No lockout and date is different than last interest date.
-                    // The last fixing is not used for its full period (the date is between
-                    // its start and end date).  We can use the telescopic formula until the
-                    // previous date, then we'll add the missing bit.
-                    const DiscountFactor endDiscount = curve->discount(valueDates[n - 1]);
+                    const DiscountFactor startDiscount = curve->discount(valueDates[telescopicStartIdx]);
+                    const DiscountFactor endDiscount = curve->discount(valueDates[telescopicEndIdx]);
                     compoundFactor *= startDiscount / endDiscount;
                     compoundFactorWithoutSpread *= startDiscount / endDiscount;
-                    compoundFactor *= (1.0 + effectiveRate(n - 1, coupon_->compoundSpreadDaily()));
-                    compoundFactorWithoutSpread *= (1.0 + effectiveRate(n - 1, false));
+                    i = telescopicEndIdx;
                 }
             }
+            // compound up any remaining periods
+            while (i < n) {
+                const auto [gf, gfSpread] = projGrowthFactor(i);
+                compoundFactorWithoutSpread *= gf;
+                compoundFactor *= gfSpread;
+                ++i;
+            }
         }
-
-        const Rate tau = index->dayCounter().yearFraction(valueDates.front(), valueDates.back());
-        const Rate rate = (compoundFactor - 1.0) / coupon_->accruedPeriod(date);
+        const auto [rateAccrualStartDate, rateAccrualEndDate] = applyObservationShift
+            ? std::make_pair(valueDates.front(), valueDates[n])
+            : std::make_pair(interestDates.front(), std::min(date, interestDates[n]));
+        const Rate tau = dc.yearFraction(rateAccrualStartDate, rateAccrualEndDate);
+        const Rate rate = (compoundFactor - 1.0) / tau;
         Rate swapletRate = coupon_->gearing() * rate;
         Spread effectiveSpread;
         Rate effectiveIndexFixing;
-        
-        if (!coupon_->compoundSpreadDaily()) {
-            swapletRate += coupon_->spread();
-            effectiveSpread = coupon_->spread();
+
+        if (!compoundSpreadDaily) {
+            swapletRate += couponSpread;
+            effectiveSpread = couponSpread;
             effectiveIndexFixing = rate;
         } else {
             effectiveSpread = rate - (compoundFactorWithoutSpread - 1.0) / tau;
@@ -270,10 +235,9 @@ namespace QuantLib {
         const auto& fixingDates = coupon_->fixingDates();
         const auto& interestDates = coupon_->interestDates();
         const auto& dt = coupon_->dt();
-        const bool applyObservationShift = coupon_->applyObservationShift();
 
         Size i = 0;
-        const Size n = determineNumberOfFixings(interestDates, date, applyObservationShift);
+        const Size n = determineNumberOfFixings(interestDates, date);
 
         Real accumulatedRate = 0.0;
 
