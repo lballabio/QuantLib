@@ -599,9 +599,18 @@ namespace QuantLib {
                                                     << n << ")");
         }
 
+        const Calendar& fixCal = overnightIndex_->fixingCalendar();
+        BusinessDayConvention fixConv = overnightIndex_->businessDayConvention();
+
         for (Size i=0; i<n; ++i) {
             refStart = start = schedule_.date(i);
             refEnd   =   end = schedule_.date(i+1);
+
+            // Skip degenerate periods whose start and end collapse to the
+            // same business day under the overnight index's fixing calendar
+            // (e.g. a 1-day stub spanning Saturday-Sunday).
+            if (fixCal.adjust(start, fixConv) >= fixCal.adjust(end, fixConv))
+                continue;
 
             // If explicit payment dates provided, use them.
             if (!paymentDates_.empty()) {
