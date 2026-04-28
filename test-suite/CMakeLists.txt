@@ -73,6 +73,7 @@ set(QL_TEST_SOURCES
     forwardrateagreement.cpp
     functions.cpp
     fxforward.cpp
+    g2process.cpp
     garch.cpp
     gaussianquadratures.cpp
     gjrgarchmodel.cpp

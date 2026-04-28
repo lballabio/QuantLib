@@ -26,6 +26,7 @@
 
 #include <ql/processes/forwardmeasureprocess.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 
@@ -33,7 +34,8 @@ namespace QuantLib {
     /*! \ingroup processes */
     class G2Process : public StochasticProcess {
       public:
-        G2Process(Real a, Real sigma, Real b, Real eta, Real rho);
+        G2Process(const Handle<YieldTermStructure>& termStructure,
+                  Real a, Real sigma, Real b, Real eta, Real rho);
         //! \name StochasticProcess interface
         //@{
         Size size() const override;
@@ -51,17 +53,22 @@ namespace QuantLib {
         Real b() const;
         Real eta() const;
         Real rho() const;
+        const Handle<YieldTermStructure>& termStructure() const;
+        Real phi(Time t) const;
+        Rate shortRate(Time t, Real x, Real y) const;
       private:
         Real x0_ = 0.0, y0_ = 0.0, a_, sigma_, b_, eta_, rho_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> xProcess_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> yProcess_;
+        Handle<YieldTermStructure> termStructure_;
     };
 
     //! %Forward %G2 stochastic process
     /*! \ingroup processes */
     class G2ForwardProcess : public ForwardMeasureProcess {
       public:
-        G2ForwardProcess(Real a, Real sigma, Real b, Real eta, Real rho);
+        G2ForwardProcess(const Handle<YieldTermStructure>& termStructure,
+                         Real a, Real sigma, Real b, Real eta, Real rho);
         //! \name StochasticProcess interface
         //@{
         Size size() const override;
@@ -72,10 +79,14 @@ namespace QuantLib {
         Matrix stdDeviation(Time t0, const Array& x0, Time dt) const override;
         Matrix covariance(Time t0, const Array& x0, Time dt) const override;
         //@}
+        const Handle<YieldTermStructure>& termStructure() const;
+        Real phi(Time t) const;
+        Rate shortRate(Time t, Real x, Real y) const;
       protected:
         Real x0_ = 0.0, y0_ = 0.0, a_, sigma_, b_, eta_, rho_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> xProcess_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> yProcess_;
+        Handle<YieldTermStructure> termStructure_;
         Real xForwardDrift(Time t, Time T) const;
         Real yForwardDrift(Time t, Time T) const;
         Real Mx_T(Real s, Real t, Real T) const;

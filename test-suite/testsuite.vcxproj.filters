@@ -182,6 +182,9 @@
     <ClCompile Include="forwardrateagreement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="g2process.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="garch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
