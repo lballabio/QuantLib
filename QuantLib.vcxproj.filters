@@ -822,6 +822,15 @@
     <ClInclude Include="ql\instruments\creditdefaultswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\constnotionalcrossccybasisswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\constnotionalcrossccyfixfloatswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\constnotionalcrossccyswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\dividendschedule.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -2743,6 +2752,9 @@
       <Filter>pricingengines\bond</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\swap\all.hpp">
+      <Filter>pricingengines\swap</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\swap\constnotionalcrossccyswapengine.hpp">
       <Filter>pricingengines\swap</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\swap\cvaswapengine.hpp">
@@ -4778,6 +4790,15 @@
     <ClCompile Include="ql\instruments\creditdefaultswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\constnotionalcrossccybasisswap.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\constnotionalcrossccyfixfloatswap.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\constnotionalcrossccyswap.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
     <ClCompile Include="ql\instruments\europeanoption.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
@@ -6046,6 +6067,9 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\bond\discretizedconvertible.cpp">
       <Filter>pricingengines\bond</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\swap\constnotionalcrossccyswapengine.cpp">
+      <Filter>pricingengines\swap</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\swap\cvaswapengine.cpp">
       <Filter>pricingengines\swap</Filter>

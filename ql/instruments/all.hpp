@@ -20,6 +20,9 @@
 #include <ql/instruments/cpicapfloor.hpp>
 #include <ql/instruments/cpiswap.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
+#include <ql/instruments/constnotionalcrossccybasisswap.hpp>
+#include <ql/instruments/constnotionalcrossccyfixfloatswap.hpp>
+#include <ql/instruments/constnotionalcrossccyswap.hpp>
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/instruments/doublebarriertype.hpp>

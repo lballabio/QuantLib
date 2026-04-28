@@ -4,12 +4,14 @@ AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+	constnotionalcrossccyswapengine.hpp \
     cvaswapengine.hpp \
     discountingswapengine.hpp \
     discretizedswap.hpp \
     treeswapengine.hpp
 
 cpp_files = \
+	constnotionalcrossccyswapengine.cpp \
     cvaswapengine.cpp \
     discountingswapengine.cpp \
     discretizedswap.cpp \

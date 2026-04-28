@@ -586,7 +586,7 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFixedLeg) {
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
     helpers.reserve(quotes.size());
-for (auto [tenor, q]: quotes) {
+    for (auto [tenor, q]: quotes) {
         helpers.push_back(ext::make_shared<ConstNotionalCrossCurrencySwapRateHelper>(
             makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth,
             fixedFreq, fixedDC, euribor3m,
@@ -628,8 +628,8 @@ for (auto [tenor, q]: quotes) {
                        .withSpreads(0.0);
 
         Date initialPaymentDate = CashFlows::startDate(fixedLeg);
-        fixedLeg.push_back(ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
-        floatLeg.push_back(ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
+        fixedLeg.insert(fixedLeg.begin(), ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
+        floatLeg.insert(floatLeg.begin(), ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
 
         Date finalPaymentDate = CashFlows::maturityDate(fixedLeg);
         fixedLeg.push_back(ext::make_shared<SimpleCashFlow>(1.0, finalPaymentDate));
@@ -684,7 +684,7 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFloatingLeg) {
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
     helpers.reserve(quotes.size());
-for (auto [tenor, q]: quotes) {
+    for (auto [tenor, q]: quotes) {
         helpers.push_back(ext::make_shared<ConstNotionalCrossCurrencySwapRateHelper>(
             makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth,
             fixedFreq, fixedDC, euribor3m,
@@ -719,16 +719,20 @@ for (auto [tenor, q]: quotes) {
         Leg fixedLeg = FixedRateLeg(fixedSched)
                        .withNotionals(1.0)
                        .withCouponRates(q, fixedDC)
-                       .withPaymentLag(paymentLag);
+                       .withPaymentLag(paymentLag)
+                       .withPaymentAdjustment(bdc)
+                       .withPaymentCalendar(cal);
 
         Leg floatLeg = IborLeg(floatSched, euribor3m)
                        .withNotionals(1.0)
                        .withSpreads(0.0)
-                       .withPaymentLag(paymentLag);
+                       .withPaymentLag(paymentLag)
+                       .withPaymentAdjustment(euribor3m->businessDayConvention())
+                       .withPaymentCalendar(cal);
 
         Date initialPaymentDate = cal.advance(CashFlows::startDate(fixedLeg), paymentLag, Days, bdc);
-        fixedLeg.push_back(ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
-        floatLeg.push_back(ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
+        fixedLeg.insert(fixedLeg.begin(), ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
+        floatLeg.insert(floatLeg.begin(), ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
 
         Date finalPaymentDate = cal.advance(CashFlows::maturityDate(fixedLeg), paymentLag, Days, bdc);
         fixedLeg.push_back(ext::make_shared<SimpleCashFlow>(1.0, finalPaymentDate));
