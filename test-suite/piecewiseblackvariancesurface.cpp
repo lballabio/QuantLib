@@ -1106,6 +1106,109 @@ BOOST_AUTO_TEST_CASE(testLocalVolFdPricingFromSabrSmiles) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testSmileSectionFromBlackVolSurface) {
+    BOOST_TEST_MESSAGE(
+        "Testing SmileSection extraction from BlackVolTermStructure...");
+
+    Date today(15, January, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+
+    // 1. Vol-native surface (default adapter path)
+    // BlackConstantVol has no native SmileSection — the base class
+    // adapter wraps blackVol() into a SmileSection on the fly.
+    Volatility flatVol = 0.20;
+    auto constVol = ext::make_shared<BlackConstantVol>(today, NullCalendar(),
+                                                       flatVol, dc);
+
+    Date maturity = today + 1*Years;
+    auto smile = constVol->smileSection(maturity);
+
+    Real tolerance = 1.0e-12;
+    for (Real strike : {80.0, 100.0, 120.0}) {
+        Volatility v = smile->volatility(strike);
+        if (std::fabs(v - flatVol) > tolerance)
+            BOOST_FAIL("vol-native: failed to reproduce flat vol"
+                       << std::fixed << std::setprecision(12)
+                       << "\n    strike:     " << strike
+                       << "\n    expected:   " << flatVol
+                       << "\n    calculated: " << v);
+    }
+
+    // 2. Smile-native surface, at a stored tenor (override path)
+    // PiecewiseBlackVarianceSurface stores SmileSection objects and
+    // overrides smileSectionImpl() to return them directly at stored tenors.
+    Date d1 = today + 6*Months;
+    Date d2 = today + 1*Years;
+    std::vector<Real> strikes = {80.0, 90.0, 100.0, 110.0, 120.0};
+    std::vector<Real> vols1 = {0.30, 0.25, 0.20, 0.22, 0.28};
+    std::vector<Real> vols2 = {0.28, 0.23, 0.19, 0.21, 0.26};
+    Time T1 = dc.yearFraction(today, d1);
+    Time T2 = dc.yearFraction(today, d2);
+    Real sqrtT1 = std::sqrt(T1);
+    Real sqrtT2 = std::sqrt(T2);
+
+    std::vector<Real> stdDevs1, stdDevs2;
+    for (auto v : vols1)
+        stdDevs1.push_back(v * sqrtT1);
+    for (auto v : vols2)
+        stdDevs2.push_back(v * sqrtT2);
+
+    auto section1 = ext::make_shared<InterpolatedSmileSection<Linear>>(
+        d1, strikes, stdDevs1, 100.0, dc, Linear(), today);
+    auto section2 = ext::make_shared<InterpolatedSmileSection<Linear>>(
+        d2, strikes, stdDevs2, 100.0, dc, Linear(), today);
+    auto surface = ext::make_shared<PiecewiseBlackVarianceSurface>(
+        today, std::vector<Date>{d1, d2},
+        std::vector<ext::shared_ptr<SmileSection>>{section1, section2}, dc);
+
+    // At a stored tenor: should return the same SmileSection object (pointer equality)
+    auto smile1 = surface->smileSection(d1);
+    if (smile1.get() != section1.get())
+        BOOST_FAIL("at stored tenor: smileSection(d1) did not return "
+                   "the stored SmileSection (pointer mismatch)");
+
+    auto smile2 = surface->smileSection(d2);
+    if (smile2.get() != section2.get())
+        BOOST_FAIL("at stored tenor: smileSection(d2) did not return "
+                   "the stored SmileSection (pointer mismatch)");
+
+    // At a stored tenor: volatilities should match exactly
+    for (Size i = 0; i < strikes.size(); ++i) {
+        Volatility surfaceVol = surface->blackVol(d1, strikes[i]);
+        Volatility sectionVol = smile1->volatility(strikes[i]);
+        if (std::fabs(surfaceVol - sectionVol) > tolerance)
+            BOOST_FAIL("at stored tenor: vol mismatch"
+                       << std::fixed << std::setprecision(12)
+                       << "\n    strike:      " << strikes[i]
+                       << "\n    surface vol: " << surfaceVol
+                       << "\n    section vol: " << sectionVol);
+    }
+
+    // 3. Smile-native surface, between tenors (adapter fallback path)
+    // Between stored tenors, smileSectionImpl() falls back to the
+    // default adapter which queries blackVol() per strike.
+    Date dMid = today + 9*Months;
+    auto smileMid = surface->smileSection(dMid);
+
+    // Between tenors: should NOT be either stored section (it's an adapter)
+    if (smileMid.get() == section1.get() || smileMid.get() == section2.get())
+        BOOST_FAIL("between tenors: smileSection(dMid) should not "
+                   "return a stored SmileSection");
+
+    // Between tenors: adapter should reproduce blackVol() at each strike
+    for (Size i = 0; i < strikes.size(); ++i) {
+        Volatility surfaceVol = surface->blackVol(dMid, strikes[i]);
+        Volatility sectionVol = smileMid->volatility(strikes[i]);
+        if (std::fabs(surfaceVol - sectionVol) > tolerance)
+            BOOST_FAIL("between tenors: vol mismatch"
+                       << std::fixed << std::setprecision(12)
+                       << "\n    strike:      " << strikes[i]
+                       << "\n    surface vol: " << surfaceVol
+                       << "\n    section vol: " << sectionVol);
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

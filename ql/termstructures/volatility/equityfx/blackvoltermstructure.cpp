@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,8 +19,29 @@
 */
 
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
+#include <ql/termstructures/volatility/smilesection.hpp>
 
 namespace QuantLib {
+
+    namespace {
+
+        class BlackVolSmileSectionAdapter : public SmileSection {
+          public:
+            BlackVolSmileSectionAdapter(const BlackVolTermStructure& vol,
+                                        Time t)
+            : SmileSection(t, vol.dayCounter()), vol_(vol) {}
+            Real minStrike() const override { return vol_.minStrike(); }
+            Real maxStrike() const override { return vol_.maxStrike(); }
+            Real atmLevel() const override { return Null<Real>(); }
+          protected:
+            Volatility volatilityImpl(Rate strike) const override {
+                return vol_.blackVol(exerciseTime(), strike, true);
+            }
+          private:
+            const BlackVolTermStructure& vol_;
+        };
+
+    }
 
     BlackVolTermStructure::BlackVolTermStructure(BusinessDayConvention bdc,
                                                  const DayCounter& dc)
@@ -150,5 +172,10 @@ namespace QuantLib {
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
     : BlackVolTermStructure(settlementDays, cal, bdc, dc) {}
+
+    ext::shared_ptr<SmileSection>
+    BlackVolTermStructure::smileSectionImpl(Time t) const {
+        return ext::make_shared<BlackVolSmileSectionAdapter>(*this, t);
+    }
 
 }
