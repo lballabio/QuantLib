@@ -618,6 +618,9 @@ namespace QuantLib {
             Time t = 0.0;
             Date lastDate = npvDate;
             const DayCounter& dc = y.dayCounter();
+            bool stc = (y.compounding() == SimpleThenCompounded);
+            DiscountFactor discount = 1.0;
+            bool firstCoupon = stc;
             for (const auto& i : leg) {
                 if (i->hasOccurred(settlementDate, includeSettlementDateFlows))
                     continue;
@@ -627,8 +630,22 @@ namespace QuantLib {
                     c = 0.0;
                 }
 
-                t += getStepwiseDiscountTime(i, dc, npvDate, lastDate);
-                DiscountFactor B = y.discountFactor(t);
+                Time dt = getStepwiseDiscountTime(i, dc, npvDate, lastDate);
+                t += dt;
+                DiscountFactor B;
+                if (stc) {
+                    DiscountFactor b;
+                    if (firstCoupon) {
+                        b = 1.0 / (1.0 + y.rate() * dt);
+                        firstCoupon = false;
+                    } else {
+                        b = y.discountFactor(dt);
+                    }
+                    discount *= b;
+                    B = discount;
+                } else {
+                    B = y.discountFactor(t);
+                }
                 P += c * B;
                 dPdy += t * c * B;
 
@@ -660,6 +677,10 @@ namespace QuantLib {
             Natural N = y.frequency();
             Date lastDate = npvDate;
             const DayCounter& dc = y.dayCounter();
+            bool stc = (y.compounding() == SimpleThenCompounded);
+            DiscountFactor discount = 1.0;
+            Real alpha = 0.0;
+            bool firstCoupon = stc;
             for (const auto& i : leg) {
                 if (i->hasOccurred(settlementDate, includeSettlementDateFlows))
                     continue;
@@ -669,8 +690,24 @@ namespace QuantLib {
                     c = 0.0;
                 }
 
-                t += getStepwiseDiscountTime(i, dc, npvDate, lastDate);
-                DiscountFactor B = y.discountFactor(t);
+                Time dt = getStepwiseDiscountTime(i, dc, npvDate, lastDate);
+                t += dt;
+                DiscountFactor B;
+                if (stc) {
+                    DiscountFactor b;
+                    if (firstCoupon) {
+                        b = 1.0 / (1.0 + r * dt);
+                        alpha = dt * b;
+                        firstCoupon = false;
+                    } else {
+                        b = y.discountFactor(dt);
+                        alpha += dt / (1.0 + r / N);
+                    }
+                    discount *= b;
+                    B = discount;
+                } else {
+                    B = y.discountFactor(t);
+                }
                 P += c * B;
                 switch (y.compounding()) {
                   case Simple:
@@ -683,10 +720,7 @@ namespace QuantLib {
                     dPdy -= c * B * t;
                     break;
                   case SimpleThenCompounded:
-                    if (t<=1.0/N)
-                        dPdy -= c * B*B * t;
-                    else
-                        dPdy -= c * t * B/(1+r/N);
+                    dPdy -= c * B * alpha;
                     break;
                   case CompoundedThenSimple:
                     if (t>1.0/N)
@@ -833,6 +867,7 @@ namespace QuantLib {
         DiscountFactor discount = 1.0;
         Date lastDate = npvDate;
         const DayCounter& dc = y.dayCounter();
+        bool firstCoupon = (y.compounding() == SimpleThenCompounded);
         for (const auto& i : leg) {
             if (i->hasOccurred(settlementDate, includeSettlementDateFlows))
                 continue;
@@ -842,7 +877,14 @@ namespace QuantLib {
                 amount = 0.0;
             }
 
-            DiscountFactor b = y.discountFactor(getStepwiseDiscountTime(i, dc, npvDate, lastDate));
+            Time dt = getStepwiseDiscountTime(i, dc, npvDate, lastDate);
+            DiscountFactor b;
+            if (firstCoupon) {
+                b = 1.0 / (1.0 + y.rate() * dt);
+                firstCoupon = false;
+            } else {
+                b = y.discountFactor(dt);
+            }
             discount *= b;
             lastDate = i->date();
 
@@ -992,6 +1034,10 @@ namespace QuantLib {
         Rate r = y.rate();
         Natural N = y.frequency();
         Date lastDate = npvDate;
+        bool stc = (y.compounding() == SimpleThenCompounded);
+        DiscountFactor discount = 1.0;
+        Real alpha = 0.0, beta = 0.0;
+        bool firstCoupon = stc;
         for (const auto& i : leg) {
             if (i->hasOccurred(settlementDate, includeSettlementDateFlows))
                 continue;
@@ -1001,8 +1047,26 @@ namespace QuantLib {
                 c = 0.0;
             }
 
-            t += getStepwiseDiscountTime(i, dc, npvDate, lastDate);
-            DiscountFactor B = y.discountFactor(t);
+            Time dt = getStepwiseDiscountTime(i, dc, npvDate, lastDate);
+            t += dt;
+            DiscountFactor B;
+            if (stc) {
+                DiscountFactor b;
+                if (firstCoupon) {
+                    b = 1.0 / (1.0 + r * dt);
+                    alpha = dt * b;
+                    beta = -dt * dt * b * b;
+                    firstCoupon = false;
+                } else {
+                    b = y.discountFactor(dt);
+                    alpha += dt / (1.0 + r / N);
+                    beta -= dt / (N * (1.0 + r / N) * (1.0 + r / N));
+                }
+                discount *= b;
+                B = discount;
+            } else {
+                B = y.discountFactor(t);
+            }
             P += c * B;
             switch (y.compounding()) {
               case Simple:
@@ -1015,10 +1079,7 @@ namespace QuantLib {
                 d2Pdy2 += c * B*t*t;
                 break;
               case SimpleThenCompounded:
-                if (t<=1.0/N)
-                    d2Pdy2 += c * 2.0*B*B*B*t*t;
-                else
-                    d2Pdy2 += c * B*t*(N*t+1)/(N*(1+r/N)*(1+r/N));
+                d2Pdy2 += c * B * (alpha*alpha - beta);
                 break;
               case CompoundedThenSimple:
                 if (t>1.0/N)
