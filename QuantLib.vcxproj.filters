@@ -2907,6 +2907,9 @@
     <ClInclude Include="ql\time\calendars\indonesia.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\calendars\islamicholidays.hpp">
+      <Filter>ql\time\calendars</Filter>
+    </ClInclude>
     <ClInclude Include="ql\time\calendars\israel.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
@@ -4524,6 +4527,13 @@
     <ClInclude Include="ql\pricingengines\vanilla\cashdividendeuropeanengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\calendars\uzbekistan.hpp" />
+    <ClInclude Include="ql\time\calendars\malta.hpp" />
+    <ClInclude Include="ql\time\calendars\montenegro.hpp" />
+    <ClInclude Include="ql\time\calendars\northmacedonia.hpp" />
+    <ClInclude Include="ql\time\calendars\serbia.hpp" />
+    <ClInclude Include="ql\time\calendars\slovenia.hpp" />
+    <ClInclude Include="ql\time\calendars\croatia.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -6188,6 +6198,9 @@
     <ClCompile Include="ql\time\calendars\indonesia.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
+    <ClCompile Include="ql\time\calendars\islamicholidays.cpp">
+      <Filter>ql\time\calendars</Filter>
+    </ClCompile>
     <ClCompile Include="ql\time\calendars\israel.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
@@ -7351,5 +7364,12 @@
     <ClCompile Include="ql\pricingengines\vanilla\cashdividendeuropeanengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
+    <ClCompile Include="ql\time\calendars\uzbekistan.cpp" />
+    <ClCompile Include="ql\time\calendars\croatia.cpp" />
+    <ClCompile Include="ql\time\calendars\malta.cpp" />
+    <ClCompile Include="ql\time\calendars\montenegro.cpp" />
+    <ClCompile Include="ql\time\calendars\northmacedonia.cpp" />
+    <ClCompile Include="ql\time\calendars\serbia.cpp" />
+    <ClCompile Include="ql\time\calendars\slovenia.cpp" />
   </ItemGroup>
 </Project>

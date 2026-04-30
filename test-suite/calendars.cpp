@@ -33,19 +33,26 @@
 #include <ql/time/calendars/bespokecalendar.hpp>
 #include <ql/time/calendars/brazil.hpp>
 #include <ql/time/calendars/china.hpp>
+#include <ql/time/calendars/croatia.hpp>
 #include <ql/time/calendars/denmark.hpp>
 #include <ql/time/calendars/germany.hpp>
 #include <ql/time/calendars/israel.hpp>
 #include <ql/time/calendars/italy.hpp>
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/malta.hpp>
 #include <ql/time/calendars/mexico.hpp>
+#include <ql/time/calendars/montenegro.hpp>
 #include <ql/time/calendars/newzealand.hpp>
+#include <ql/time/calendars/northmacedonia.hpp>
 #include <ql/time/calendars/russia.hpp>
+#include <ql/time/calendars/serbia.hpp>
+#include <ql/time/calendars/slovenia.hpp>
 #include <ql/time/calendars/southkorea.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/calendars/uzbekistan.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <fstream>
 
@@ -3887,6 +3894,311 @@ BOOST_AUTO_TEST_CASE(testDayLists) {
             BOOST_FAIL("Date " << d << "is neither holiday nor business day.");
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testMalta) {
+
+    BOOST_TEST_MESSAGE("Testing Malta holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    expectedHol.emplace_back(1, January, 2026);
+    expectedHol.emplace_back(10, February, 2026);
+    expectedHol.emplace_back(19, March, 2026);
+    expectedHol.emplace_back(31, March, 2026);
+    expectedHol.emplace_back(6, April, 2026);
+    expectedHol.emplace_back(29, June, 2026);
+    expectedHol.emplace_back(8, September, 2026);
+    expectedHol.emplace_back(21, September, 2026);
+    expectedHol.emplace_back(8, December, 2026);
+    expectedHol.emplace_back(13, December, 2026);
+    expectedHol.emplace_back(24, December, 2026);
+    expectedHol.emplace_back(31, December, 2026);
+
+    expectedHol.emplace_back(10, February, 2027);
+    expectedHol.emplace_back(29, March, 2027);
+    expectedHol.emplace_back(31, March, 2027);
+    expectedHol.emplace_back(29, June, 2027);
+    expectedHol.emplace_back(15, August, 2027);
+    expectedHol.emplace_back(8, September, 2027);
+    expectedHol.emplace_back(21, September, 2027);
+    expectedHol.emplace_back(8, December, 2027);
+    expectedHol.emplace_back(13, December, 2027);
+    expectedHol.emplace_back(26, December, 2027);
+
+    Calendar c = Malta();
+    checkHolidays(
+        c.holidayList(Date(1, January, 2026), Date(31, December, 2027)),
+        expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testMontenegro) {
+
+    BOOST_TEST_MESSAGE("Testing Montenegro holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    expectedHol.emplace_back(1, January, 2026);
+    expectedHol.emplace_back(2, January, 2026);
+    expectedHol.emplace_back(1, May, 2026);
+    expectedHol.emplace_back(21, May, 2026);
+    expectedHol.emplace_back(22, May, 2026);
+    expectedHol.emplace_back(13, July, 2026);
+    expectedHol.emplace_back(14, July, 2026);
+    expectedHol.emplace_back(13, November, 2026);
+
+    expectedHol.emplace_back(1, January, 2027);
+    expectedHol.emplace_back(21, May, 2027);
+    expectedHol.emplace_back(13, July, 2027);
+    expectedHol.emplace_back(14, July, 2027);
+
+    Calendar c = Montenegro();
+    checkHolidays(
+        c.holidayList(Date(1, January, 2026), Date(31, December, 2027)),
+        expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testNorthMacedonia) {
+
+    BOOST_TEST_MESSAGE("Testing North Macedonia holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    expectedHol.emplace_back(1, January, 2026);
+    expectedHol.emplace_back(7, January, 2026);
+    expectedHol.emplace_back(20, March, 2026);
+    expectedHol.emplace_back(13, April, 2026);
+    expectedHol.emplace_back(1, May, 2026);
+    expectedHol.emplace_back(27, May, 2026);
+    expectedHol.emplace_back(8, September, 2026);
+    expectedHol.emplace_back(23, October, 2026);
+    expectedHol.emplace_back(8, December, 2026);
+
+    expectedHol.emplace_back(1, January, 2027);
+    expectedHol.emplace_back(7, January, 2027);
+    expectedHol.emplace_back(10, March, 2027);
+    expectedHol.emplace_back(3, May, 2027);
+    expectedHol.emplace_back(17, May, 2027);
+    expectedHol.emplace_back(24, May, 2027);
+    expectedHol.emplace_back(2, August, 2027);
+    expectedHol.emplace_back(8, September, 2027);
+    expectedHol.emplace_back(11, October, 2027);
+    expectedHol.emplace_back(8, December, 2027);
+
+    Calendar c = NorthMacedonia();
+    checkHolidays(
+        c.holidayList(Date(1, January, 2026), Date(31, December, 2027)),
+        expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testNorthMacedoniaRamazanBajram) {
+
+    BOOST_TEST_MESSAGE("Testing North Macedonia Ramazan Bajram (Eid al-Fitr) dates...");
+
+    Calendar c = NorthMacedonia();
+
+    BOOST_CHECK(c.isHoliday(Date(20, March, 2026)));
+    BOOST_CHECK(c.isHoliday(Date(10, March, 2027)));
+    BOOST_CHECK(c.isHoliday(Date(27, February, 2028)));
+    BOOST_CHECK(c.isHoliday(Date(15, February, 2029)));
+    BOOST_CHECK(c.isHoliday(Date(5, February, 2030)));
+    BOOST_CHECK(c.isHoliday(Date(25, January, 2031)));
+    BOOST_CHECK(c.isHoliday(Date(14, January, 2032)));
+    BOOST_CHECK(c.isHoliday(Date(2, January, 2033)));
+    BOOST_CHECK(c.isHoliday(Date(23, December, 2033)));
+    BOOST_CHECK(c.isHoliday(Date(12, December, 2034)));
+    BOOST_CHECK(c.isHoliday(Date(1, December, 2035)));
+    BOOST_CHECK(c.isHoliday(Date(19, November, 2036)));
+}
+
+BOOST_AUTO_TEST_CASE(testNorthMacedoniaKurbanBajram) {
+
+    BOOST_TEST_MESSAGE("Testing North Macedonia Kurban Bajram (Eid al-Adha) dates...");
+
+    Calendar c = NorthMacedonia();
+
+    BOOST_CHECK(c.isHoliday(Date(27, May, 2026)));
+    BOOST_CHECK(c.isHoliday(Date(17, May, 2027)));
+    BOOST_CHECK(c.isHoliday(Date(5, May, 2028)));
+    BOOST_CHECK(c.isHoliday(Date(24, April, 2029)));
+    BOOST_CHECK(c.isHoliday(Date(13, April, 2030)));
+    BOOST_CHECK(c.isHoliday(Date(3, April, 2031)));
+    BOOST_CHECK(c.isHoliday(Date(22, March, 2032)));
+    BOOST_CHECK(c.isHoliday(Date(11, March, 2033)));
+    BOOST_CHECK(c.isHoliday(Date(28, February, 2034)));
+    BOOST_CHECK(c.isHoliday(Date(18, February, 2035)));
+    BOOST_CHECK(c.isHoliday(Date(7, February, 2036)));
+    BOOST_CHECK(c.isHoliday(Date(27, January, 2037)));
+    BOOST_CHECK(c.isHoliday(Date(16, January, 2038)));
+    BOOST_CHECK(c.isHoliday(Date(5, January, 2039)));
+    BOOST_CHECK(c.isHoliday(Date(26, December, 2039)));
+    BOOST_CHECK(c.isHoliday(Date(15, December, 2040)));
+}
+
+BOOST_AUTO_TEST_CASE(testSerbia) {
+
+    BOOST_TEST_MESSAGE("Testing Serbia holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    expectedHol.emplace_back(1, January, 2026);
+    expectedHol.emplace_back(2, January, 2026);
+    expectedHol.emplace_back(7, January, 2026);
+    expectedHol.emplace_back(16, February, 2026);
+    expectedHol.emplace_back(3, April, 2026);
+    expectedHol.emplace_back(6, April, 2026);
+    expectedHol.emplace_back(1, May, 2026);
+    expectedHol.emplace_back(11, November, 2026);
+    expectedHol.emplace_back(31, December, 2026);
+
+    expectedHol.emplace_back(1, January, 2027);
+    expectedHol.emplace_back(7, January, 2027);
+    expectedHol.emplace_back(15, February, 2027);
+    expectedHol.emplace_back(16, February, 2027);
+    expectedHol.emplace_back(26, March, 2027);
+    expectedHol.emplace_back(29, March, 2027);
+    expectedHol.emplace_back(11, November, 2027);
+    expectedHol.emplace_back(31, December, 2027);
+
+    Calendar c = Serbia();
+    checkHolidays(
+        c.holidayList(Date(1, January, 2026), Date(31, December, 2027)),
+        expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testSlovenia) {
+
+    BOOST_TEST_MESSAGE("Testing Slovenia holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    expectedHol.emplace_back(1, January, 2026);
+    expectedHol.emplace_back(2, January, 2026);
+    expectedHol.emplace_back(3, April, 2026);
+    expectedHol.emplace_back(6, April, 2026);
+    expectedHol.emplace_back(1, May, 2026);
+    expectedHol.emplace_back(25, June, 2026);
+    expectedHol.emplace_back(24, December, 2026);
+    expectedHol.emplace_back(25, December, 2026);
+    expectedHol.emplace_back(31, December, 2026);
+
+    expectedHol.emplace_back(1, January, 2027);
+    expectedHol.emplace_back(26, March, 2027);
+    expectedHol.emplace_back(29, March, 2027);
+    expectedHol.emplace_back(25, June, 2027);
+    expectedHol.emplace_back(24, December, 2027);
+    expectedHol.emplace_back(31, December, 2027);
+
+    Calendar c = Slovenia();
+    checkHolidays(
+        c.holidayList(Date(1, January, 2026), Date(31, December, 2027)),
+        expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testCroatia) {
+
+    BOOST_TEST_MESSAGE("Testing Croatia holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    expectedHol.emplace_back(1, January, 2026);
+    expectedHol.emplace_back(6, January, 2026);
+    expectedHol.emplace_back(3, April, 2026);
+    expectedHol.emplace_back(6, April, 2026);
+    expectedHol.emplace_back(1, May, 2026);
+    expectedHol.emplace_back(4, June, 2026);
+    expectedHol.emplace_back(22, June, 2026);
+    expectedHol.emplace_back(5, August, 2026);
+    expectedHol.emplace_back(18, November, 2026);
+    expectedHol.emplace_back(24, December, 2026);
+    expectedHol.emplace_back(25, December, 2026);
+    expectedHol.emplace_back(31, December, 2026);
+
+    expectedHol.emplace_back(1, January, 2027);
+    expectedHol.emplace_back(6, January, 2027);
+    expectedHol.emplace_back(26, March, 2027);
+    expectedHol.emplace_back(29, March, 2027);
+    expectedHol.emplace_back(27, May, 2027);
+    expectedHol.emplace_back(22, June, 2027);
+    expectedHol.emplace_back(5, August, 2027);
+    expectedHol.emplace_back(18, November, 2027);
+    expectedHol.emplace_back(24, December, 2027);
+    expectedHol.emplace_back(31, December, 2027);
+
+    Calendar c = Croatia();
+    checkHolidays(
+        c.holidayList(Date(1, January, 2026), Date(31, December, 2027)),
+        expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testUzbekistan) {
+
+    BOOST_TEST_MESSAGE("Testing Uzbekistan holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    expectedHol.emplace_back(1, January, 2026);
+    expectedHol.emplace_back(20, March, 2026);
+    expectedHol.emplace_back(27, May, 2026);
+    expectedHol.emplace_back(1, September, 2026);
+    expectedHol.emplace_back(1, October, 2026);
+    expectedHol.emplace_back(8, December, 2026);
+    expectedHol.emplace_back(1, January, 2027);
+    expectedHol.emplace_back(8, March, 2027);
+    expectedHol.emplace_back(10, March, 2027);
+    expectedHol.emplace_back(17, May, 2027);
+    expectedHol.emplace_back(1, September, 2027);
+    expectedHol.emplace_back(1, October, 2027);
+    expectedHol.emplace_back(8, December, 2027);
+
+    Calendar c = Uzbekistan();
+    checkHolidays(
+        c.holidayList(Date(1, January, 2026), Date(31, December, 2027)),
+        expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testUzbekistanRamazonHayit) {
+
+    BOOST_TEST_MESSAGE("Testing Uzbekistan Ramazon Hayit (Eid al-Fitr) dates...");
+
+    Calendar c = Uzbekistan();
+
+    BOOST_CHECK(c.isHoliday(Date(20, March, 2026)));
+    BOOST_CHECK(c.isHoliday(Date(10, March, 2027)));
+    BOOST_CHECK(c.isHoliday(Date(27, February, 2028)));
+    BOOST_CHECK(c.isHoliday(Date(15, February, 2029)));
+    BOOST_CHECK(c.isHoliday(Date(5, February, 2030)));
+    BOOST_CHECK(c.isHoliday(Date(25, January, 2031)));
+    BOOST_CHECK(c.isHoliday(Date(14, January, 2032)));
+    BOOST_CHECK(c.isHoliday(Date(2, January, 2033)));
+    BOOST_CHECK(c.isHoliday(Date(23, December, 2033)));
+    BOOST_CHECK(c.isHoliday(Date(12, December, 2034)));
+    BOOST_CHECK(c.isHoliday(Date(1, December, 2035)));
+    BOOST_CHECK(c.isHoliday(Date(19, November, 2036)));
+}
+
+BOOST_AUTO_TEST_CASE(testUzbekistanQurbonHayit) {
+
+    BOOST_TEST_MESSAGE("Testing Uzbekistan Qurbon Hayit (Eid al-Adha) dates...");
+
+    Calendar c = Uzbekistan();
+
+    BOOST_CHECK(c.isHoliday(Date(27, May, 2026)));
+    BOOST_CHECK(c.isHoliday(Date(17, May, 2027)));
+    BOOST_CHECK(c.isHoliday(Date(5, May, 2028)));
+    BOOST_CHECK(c.isHoliday(Date(24, April, 2029)));
+    BOOST_CHECK(c.isHoliday(Date(13, April, 2030)));
+    BOOST_CHECK(c.isHoliday(Date(3, April, 2031)));
+    BOOST_CHECK(c.isHoliday(Date(22, March, 2032)));
+    BOOST_CHECK(c.isHoliday(Date(11, March, 2033)));
+    BOOST_CHECK(c.isHoliday(Date(28, February, 2034)));
+    BOOST_CHECK(c.isHoliday(Date(18, February, 2035)));
+    BOOST_CHECK(c.isHoliday(Date(7, February, 2036)));
+    BOOST_CHECK(c.isHoliday(Date(27, January, 2037)));
+    BOOST_CHECK(c.isHoliday(Date(16, January, 2038)));
+    BOOST_CHECK(c.isHoliday(Date(5, January, 2039)));
+    BOOST_CHECK(c.isHoliday(Date(26, December, 2039)));
+    BOOST_CHECK(c.isHoliday(Date(15, December, 2040)));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
