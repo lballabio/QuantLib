@@ -28,6 +28,7 @@ this_include_HEADERS = \
     kofr.hpp \
     libor.hpp \
     mosprime.hpp \
+    noknibor.hpp \
     nzdlibor.hpp \
     nzocr.hpp \
     pribor.hpp \

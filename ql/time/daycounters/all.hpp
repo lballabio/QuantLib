@@ -6,6 +6,7 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/actual36525.hpp>
 #include <ql/time/daycounters/actual366.hpp>
+#include <ql/time/daycounters/actual365nl.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/business252.hpp>
 #include <ql/time/daycounters/one.hpp>
