@@ -33,24 +33,24 @@
 
 namespace QuantLib {
 
-	//! NOK-NIBOR index
-	/*! NOK-NIBOR rate published by Oslo Boers.
-		See <http://www.oslobors.no/ob_eng>.
-		https://nore-benchmarks.com/
-		https://finansfag.no/wp-content/uploads/2024/10/Rentekonvensjon-6.0_engelsk_oppdatert-18.09.2024_final.pdf
-		https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5099269
+    //! NOK-NIBOR index
+    /*! NOK-NIBOR rate published by Oslo Boers.
+        See <http://www.oslobors.no/ob_eng>.
+        https://nore-benchmarks.com/
+        https://finansfag.no/wp-content/uploads/2024/10/Rentekonvensjon-6.0_engelsk_oppdatert-18.09.2024_final.pdf
+        https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5099269
 
-		\remark Using Norway calendar, should be Oslo.
+        \remark Using Norway calendar, should be Oslo.
 
-		\warning Check roll convention and EOM.
+        \warning Check roll convention and EOM.
 
-		\ingroup indexes
-	*/
-	class NOKNibor : public IborIndex {
-	  public:
-		NOKNibor(const Period &tenor, const Handle<YieldTermStructure> &h = Handle<YieldTermStructure>())
-		: IborIndex("NOK-NIBOR", tenor, 2, NOKCurrency(), Norway(), ModifiedFollowing, false, Actual360(), h) {}
-	};
+        \ingroup indexes
+    */
+    class NOKNibor : public IborIndex {
+      public:
+        NOKNibor(const Period &tenor, const Handle<YieldTermStructure> &h = Handle<YieldTermStructure>())
+        : IborIndex("NOK-NIBOR", tenor, 2, NOKCurrency(), Norway(), ModifiedFollowing, false, Actual360(), h) {}
+    };
 
 }
 
