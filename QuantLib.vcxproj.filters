@@ -4534,6 +4534,9 @@
     <ClInclude Include="ql\time\calendars\serbia.hpp" />
     <ClInclude Include="ql\time\calendars\slovenia.hpp" />
     <ClInclude Include="ql\time\calendars\croatia.hpp" />
+    <ClInclude Include="ql\time\daycounters\actual365nl.hpp" />
+    <ClInclude Include="ql\indexes\ibor\noknibor.hpp" />
+    <ClInclude Include="ql\math\interpolations\linearthenflatinterpolation.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">

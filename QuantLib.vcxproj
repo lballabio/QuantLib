@@ -831,6 +831,7 @@
     <ClInclude Include="ql\indexes\ibor\kofr.hpp" />
     <ClInclude Include="ql\indexes\ibor\libor.hpp" />
     <ClInclude Include="ql\indexes\ibor\mosprime.hpp" />
+    <ClInclude Include="ql\indexes\ibor\noknibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\nzdlibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\nzocr.hpp" />
     <ClInclude Include="ql\indexes\ibor\pribor.hpp" />
@@ -1048,6 +1049,7 @@
     <ClInclude Include="ql\math\interpolations\kernelinterpolation2d.hpp" />
     <ClInclude Include="ql\math\interpolations\lagrangeinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\linearinterpolation.hpp" />
+    <ClInclude Include="ql\math\interpolations\linearthenflatinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\loginterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\mixedinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\multicubicspline.hpp" />
@@ -1865,6 +1867,7 @@
     <ClInclude Include="ql\time\daycounters\actual364.hpp" />
     <ClInclude Include="ql\time\daycounters\actual36525.hpp" />
     <ClInclude Include="ql\time\daycounters\actual365fixed.hpp" />
+    <ClInclude Include="ql\time\daycounters\actual365nl.hpp" />
     <ClInclude Include="ql\time\daycounters\actual366.hpp" />
     <ClInclude Include="ql\time\daycounters\actualactual.hpp" />
     <ClInclude Include="ql\time\daycounters\all.hpp" />

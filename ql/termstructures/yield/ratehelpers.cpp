@@ -836,4 +836,24 @@ namespace QuantLib {
             RateHelper::accept(v);
     }
 
+    GenericRateHelper::GenericRateHelper(const Handle<Quote>& rate,
+                                         const Date& settlementDate,
+                                         const Date& refDate,
+                                         const DayCounter& dayCounter,
+                                         const Compounding& comp,
+                                         const Frequency& freq,
+                                         const bool& extrapolate)
+    : RelativeDateRateHelper(rate), dayCounter_(dayCounter),
+      compounding_(comp), frequency_(freq), extrapolate_(extrapolate) {
+        earliestDate_ = settlementDate;
+        latestDate_ = refDate;
+    }
+
+    Real GenericRateHelper::impliedQuote() const {
+        return termStructure_->zeroRate(latestDate_, dayCounter_,
+                                        compounding_, frequency_, extrapolate_);
+    }
+
+    void GenericRateHelper::initializeDates() {}
+
 }

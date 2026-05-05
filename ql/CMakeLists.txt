@@ -1278,6 +1278,7 @@ set(QL_HEADERS
     indexes/ibor/kofr.hpp
     indexes/ibor/libor.hpp
     indexes/ibor/mosprime.hpp
+    indexes/ibor/noknibor.hpp
     indexes/ibor/nzdlibor.hpp
     indexes/ibor/nzocr.hpp
     indexes/ibor/pribor.hpp
@@ -1486,6 +1487,7 @@ set(QL_HEADERS
     math/interpolations/kernelinterpolation2d.hpp
     math/interpolations/lagrangeinterpolation.hpp
     math/interpolations/linearinterpolation.hpp
+    math/interpolations/linearthenflatinterpolation.hpp
     math/interpolations/loginterpolation.hpp
     math/interpolations/mixedinterpolation.hpp
     math/interpolations/multicubicspline.hpp
@@ -2248,6 +2250,7 @@ set(QL_HEADERS
     time/daycounters/actual360.hpp
     time/daycounters/actual364.hpp
     time/daycounters/actual365fixed.hpp
+    time/daycounters/actual365nl.hpp
     time/daycounters/actual366.hpp
     time/daycounters/actual36525.hpp
     time/daycounters/actualactual.hpp
