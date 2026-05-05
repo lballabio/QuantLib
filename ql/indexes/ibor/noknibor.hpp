@@ -20,7 +20,6 @@
 
 /*! \file noknibor.hpp
     \brief NOK-NIBOR index
-    \ingroup indexes
 */
 
 #ifndef quantext_noknibor_hpp
@@ -43,8 +42,6 @@ namespace QuantLib {
         \remark Using Norway calendar, should be Oslo.
 
         \warning Check roll convention and EOM.
-
-        \ingroup indexes
     */
     class NOKNibor : public IborIndex {
       public:
