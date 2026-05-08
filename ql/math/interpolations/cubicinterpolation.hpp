@@ -818,6 +818,94 @@ namespace QuantLib {
 
     }
 
+    class Cubic__FritschButland_nonMonotonic : public Cubic {
+      public:
+        Cubic__FritschButland_nonMonotonic()
+        : Cubic(CubicInterpolation::FritschButland, false,
+                CubicInterpolation::SecondDerivative, 0.0,
+                CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
+    class Cubic__FritschButland_monotonic : public Cubic {
+      public:
+        Cubic__FritschButland_monotonic()
+        : Cubic(CubicInterpolation::FritschButland, true,
+                CubicInterpolation::SecondDerivative, 0.0,
+                CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
+    class Cubic__NaturalSpline : public Cubic {
+      public:
+        Cubic__NaturalSpline()
+        : Cubic(CubicInterpolation::Spline, false,
+                CubicInterpolation::SecondDerivative, 0.0,
+                CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
+    class Cubic__Monotonic_NaturalSpline : public Cubic {
+      public:
+        Cubic__Monotonic_NaturalSpline()
+        : Cubic(CubicInterpolation::Spline, true,
+                CubicInterpolation::SecondDerivative, 0.0,
+                CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
+    class Cubic__SplineOvershootingMinimization1 : public Cubic {
+      public:
+        Cubic__SplineOvershootingMinimization1()
+        : Cubic(CubicInterpolation::SplineOM1, false,
+                CubicInterpolation::SecondDerivative, 0.0,
+                CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
+    class Cubic__SplineOvershootingMinimization2 : public Cubic {
+      public:
+        Cubic__SplineOvershootingMinimization2()
+        : Cubic(CubicInterpolation::SplineOM2, false,
+                CubicInterpolation::SecondDerivative, 0.0,
+                CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
+    class Cubic__Akima : public Cubic {
+      public:
+        Cubic__Akima()
+        : Cubic(CubicInterpolation::Akima, false,
+                CubicInterpolation::SecondDerivative, 0.0,
+                CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
+    class Cubic__Parabolic : public Cubic {
+      public:
+        Cubic__Parabolic()
+        : Cubic(CubicInterpolation::Parabolic, false,
+                CubicInterpolation::SecondDerivative, 0.0,
+                CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
+    class Cubic__MonotonicParabolic : public Cubic {
+      public:
+        Cubic__MonotonicParabolic()
+        : Cubic(CubicInterpolation::Parabolic, true,
+                CubicInterpolation::SecondDerivative, 0.0,
+                CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
+    class Cubic__Kruger : public Cubic {
+      public:
+        Cubic__Kruger()
+        : Cubic(CubicInterpolation::Kruger, false,
+                CubicInterpolation::SecondDerivative, 0.0,
+                CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
+    class Cubic__MonotonicKruger : public Cubic {
+      public:
+        Cubic__MonotonicKruger()
+        : Cubic(CubicInterpolation::Kruger, true,
+                CubicInterpolation::SecondDerivative, 0.0,
+                CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
 }
 
 #endif
