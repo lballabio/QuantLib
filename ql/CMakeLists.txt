@@ -1479,6 +1479,7 @@ set(QL_HEADERS
     math/interpolations/kernelinterpolation2d.hpp
     math/interpolations/lagrangeinterpolation.hpp
     math/interpolations/linearinterpolation.hpp
+    math/interpolations/linearthenflatinterpolation.hpp
     math/interpolations/loginterpolation.hpp
     math/interpolations/mixedinterpolation.hpp
     math/interpolations/multicubicspline.hpp
