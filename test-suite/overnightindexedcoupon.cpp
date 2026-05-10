@@ -30,7 +30,6 @@
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
@@ -1823,7 +1822,7 @@ BOOST_AUTO_TEST_CASE(testInterestCalculatedAccrualDateFixingHolidayAccruals) {
         },
     };
     const auto makeCoupon = [&](const TestCase& tc, bool telescopicValueDates) {
-        auto& dc = tc.dayCounter.empty() ? vars.sofr->dayCounter() : tc.dayCounter;
+        const auto& dc = tc.dayCounter.empty() ? vars.sofr->dayCounter() : tc.dayCounter;
         return vars.makeCoupon(tc.startDate, tc.endDate, tc.lookbackDays, tc.lockoutDays, tc.obsShift,
                                telescopicValueDates, RateAveraging::Compound,
                                fedCal.advance(tc.endDate, 2, Days), 10000000.0, dc);
@@ -1991,7 +1990,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWeekendStub) {
         {Date(30, March, 2026), 2.0 * oneDayInterest},
         {Date(31, March, 2026), 0.0},
     };
-    for (auto& tc: testCases) {
+    for (const auto& tc: testCases) {
         CHECK_OIS_COUPON_RESULT("leg accruedAmount", CashFlows::accruedAmount(leg, true, tc.valueDate),
                                 tc.accruedAmount, 1e-8);
     }
