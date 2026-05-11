@@ -424,7 +424,7 @@ namespace {
         struct AddBenchmark {
             template<class CALLABLE>
                 AddBenchmark(std::vector<Benchmark> &bm, CALLABLE && test_body, const char* name, double cost) {
-                    bm.push_back( Benchmark(name, std::forward<CALLABLE>(test_body), cost) );
+                    bm.emplace_back(name, std::forward<CALLABLE>(test_body), cost);
                 }
         };
     };

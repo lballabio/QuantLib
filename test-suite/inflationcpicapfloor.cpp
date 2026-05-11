@@ -70,7 +70,7 @@ std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
         Handle<Quote> quote(ext::shared_ptr<Quote>(
                                 new SimpleQuote(iiData[i].rate/100.0)));
         auto anInstrument = ext::make_shared<U>(quote, observationLag, maturity,
-                                                calendar, bdc, dc, ii, CPI::AsIndex);
+                                                calendar, bdc, dc, ii, CPI::Flat);
         instruments.push_back(anInstrument);
     }
 
@@ -398,7 +398,7 @@ BOOST_AUTO_TEST_CASE(cpicapfloorpricer) {
     Calendar fixCalendar = UnitedKingdom(), payCalendar = UnitedKingdom();
     BusinessDayConvention fixConvention(Unadjusted), payConvention(ModifiedFollowing);
     Rate strike(0.03);
-    CPI::InterpolationType observationInterpolation = CPI::AsIndex;
+    CPI::InterpolationType observationInterpolation = CPI::Linear; // because the surface interpolates
     Real baseCPI = CPI::laggedFixing(common.ii, startDate, common.observationLag, observationInterpolation);
     CPICapFloor aCap(Option::Call,
                      nominal,

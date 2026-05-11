@@ -29,8 +29,9 @@
 #include <ql/math/interpolations/extrapolation.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/errors.hpp>
-#include <vector>
 #include <algorithm>
+#include <type_traits>
+#include <vector>
 
 namespace QuantLib {
 
@@ -140,6 +141,12 @@ namespace QuantLib {
         Real xMax() const {
             return impl_->xMax();
         }
+        std::vector<Real> xValues() const {
+            return impl_->xValues();
+        }
+        std::vector<Real> yValues() const {
+            return impl_->yValues();
+        }
         bool isInRange(Real x) const {
             return impl_->isInRange(x);
         }
@@ -159,6 +166,23 @@ namespace QuantLib {
         friend class MixedLinearCubicInterpolation;
     };
 
+    namespace detail {
+
+        template <class Interpolator, class I1, class I2>
+        Interpolation interpolateWithoutUpdate(const Interpolator& interpolator,
+                                               const I1& xBegin,
+                                               const I1& xEnd,
+                                               const I2& yBegin) {
+            if constexpr (std::is_invocable_v<decltype(&Interpolator::template interpolate<I1, I2>),
+                                              const Interpolator&,
+                                              const I1&, const I1&, const I2&, bool>) {
+                return interpolator.interpolate(xBegin, xEnd, yBegin, false);
+            } else {
+                return interpolator.interpolate(xBegin, xEnd, yBegin);
+            }
+        }
+
+    }
 }
 
 #endif

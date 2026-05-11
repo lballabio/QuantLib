@@ -250,7 +250,6 @@ namespace QuantLib {
 
         this->setupTimes(dates_, dates_[0], dayCounter());
         this->setupInterpolation();
-        this->interpolation_.update();
     }
 
 }

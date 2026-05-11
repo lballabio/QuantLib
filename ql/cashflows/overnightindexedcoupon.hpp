@@ -72,7 +72,8 @@ namespace QuantLib {
                     bool applyObservationShift = false,
                     bool compoundSpread = false,
                     const Date& rateComputationStartDate = Date(),
-                    const Date& rateComputationEndDate = Date());
+                    const Date& rateComputationEndDate = Date(),
+                    const Date& exCouponDate = Date());
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded

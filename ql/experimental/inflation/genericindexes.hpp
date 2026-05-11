@@ -68,29 +68,6 @@ namespace QuantLib {
                             lag,
                             ccy,
                             ts) {}
-
-        QL_DEPRECATED_DISABLE_WARNING
-
-        /*! \deprecated Use the overload without the interpolated parameter.
-                        Deprecated in version 1.38.
-        */
-        [[deprecated("Use the overload without the interpolated parameter")]]
-        YYGenericCPI(Frequency frequency,
-                     bool revised,
-                     bool interpolated,
-                     const Period &lag,
-                     const Currency &ccy,
-                     const Handle<YoYInflationTermStructure>& ts = {})
-        : YoYInflationIndex("YY_CPI",
-                            GenericRegion(),
-                            revised,
-                            interpolated,
-                            frequency,
-                            lag,
-                            ccy,
-                            ts) {}
-
-        QL_DEPRECATED_ENABLE_WARNING
     };
 
 }

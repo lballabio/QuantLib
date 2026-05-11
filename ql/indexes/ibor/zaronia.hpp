@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2011 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+ Copyright (C) 2024 Francois Botha
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,12 +17,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_experimental_writer_extensible_option_hpp
-#define quantlib_experimental_writer_extensible_option_hpp
+/*! \file zaronia.hpp
+    \brief %Zaronia index
+*/
 
-// Deprecated in version 1.38
-#pragma message("Warning: this file will disappear in a future release; include <ql/instruments/writerextensibleoption.hpp> instead.")
+#ifndef quantlib_zaronia_hpp
+#define quantlib_zaronia_hpp
 
-#include <ql/instruments/writerextensibleoption.hpp>
+#include <ql/indexes/iborindex.hpp>
+
+namespace QuantLib {
+
+    //! %Zaronia (South African Rand Overnight Index Average) rate fixed by the South African Reserve Bank.
+    class Zaronia : public OvernightIndex {
+      public:
+        explicit Zaronia(const Handle<YieldTermStructure>& h = {});
+    };
+
+}
 
 #endif

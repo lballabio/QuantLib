@@ -19,7 +19,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/vanillaoption.hpp>
@@ -121,7 +120,7 @@ class MCAmericanMaxEngine
 };
 
 
-BOOST_AUTO_TEST_CASE(testAmericanOption, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testAmericanOption) {
     BOOST_TEST_MESSAGE("Testing Monte-Carlo pricing of American options...");
 
     // most of the example taken from the EquityOption.cpp

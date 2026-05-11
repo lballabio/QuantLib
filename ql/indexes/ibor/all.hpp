@@ -41,5 +41,6 @@
 #include <ql/indexes/ibor/trlibor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/indexes/ibor/wibor.hpp>
+#include <ql/indexes/ibor/zaronia.hpp>
 #include <ql/indexes/ibor/zibor.hpp>
 

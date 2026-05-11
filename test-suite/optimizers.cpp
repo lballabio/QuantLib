@@ -168,11 +168,11 @@ ext::shared_ptr<OptimizationMethod> makeOptimizationMethod(
                                        levenbergMarquardtGtol,
                                        true));
       case conjugateGradient:
-        return ext::shared_ptr<OptimizationMethod>(new ConjugateGradient);
+        return ext::make_shared<ConjugateGradient>();
       case steepestDescent:
-        return ext::shared_ptr<OptimizationMethod>(new SteepestDescent);
+        return ext::make_shared<SteepestDescent>();
       case bfgs:
-        return ext::shared_ptr<OptimizationMethod>(new BFGS);
+        return ext::make_shared<BFGS>();
       case conjugateGradient_goldstein:
         return ext::shared_ptr<OptimizationMethod>(new ConjugateGradient(ext::make_shared<GoldsteinLineSearch>()));
       case steepestDescent_goldstein:
@@ -223,10 +223,9 @@ void setup() {
     coefficients[0]= c;
     coefficients[1]= b;
     coefficients[2]= a;
-    costFunctions_.push_back(ext::shared_ptr<CostFunction>(
-            new OneDimensionalPolynomialDegreeN(coefficients)));
+    costFunctions_.push_back(ext::make_shared<OneDimensionalPolynomialDegreeN>(coefficients));
     // Set constraint for optimizers: unconstrained problem
-    constraints_.push_back(ext::shared_ptr<Constraint>(new NoConstraint()));
+    constraints_.push_back(ext::make_shared<NoConstraint>());
     // Set initial guess for optimizer
     Array initialValue(1);
     initialValue[0] = -100;

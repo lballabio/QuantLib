@@ -49,3 +49,59 @@ set_target_properties(TimeFunctionsFuzzer PROPERTIES
     LINK_FLAGS "${FUZZING_LINK_FLAGS}"
 )
 target_link_libraries(TimeFunctionsFuzzer ql_library ${QL_THREAD_LIBRARIES})
+
+add_executable(BlackFormulaFuzzer fuzzblackformula.cpp)
+set_target_properties(BlackFormulaFuzzer PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(BlackFormulaFuzzer ql_library ${QL_THREAD_LIBRARIES})
+
+add_executable(VanillaOptionFuzzer fuzz_vanilla_option.cpp)
+set_target_properties(VanillaOptionFuzzer PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(VanillaOptionFuzzer ql_library ${QL_THREAD_LIBRARIES})
+
+add_executable(Fuzz_CashFlows fuzz_cashflows.cpp)
+set_target_properties(Fuzz_CashFlows PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(Fuzz_CashFlows ql_library ${QL_THREAD_LIBRARIES})
+
+add_executable(Fuzz_IndexManager fuzz_indexmanager.cpp)
+set_target_properties(Fuzz_IndexManager PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(Fuzz_IndexManager ql_library ${QL_THREAD_LIBRARIES})
+
+add_executable(Fuzz_ExchangeRateManager fuzz_exchangeratemanager.cpp)
+set_target_properties(Fuzz_ExchangeRateManager PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(Fuzz_ExchangeRateManager ql_library ${QL_THREAD_LIBRARIES})
+
+add_executable(Fuzz_BarrierOption fuzz_barrieroption.cpp)
+set_target_properties(Fuzz_BarrierOption PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(Fuzz_BarrierOption ql_library ${QL_THREAD_LIBRARIES})
+
+add_executable(Fuzz_AsianOption fuzz_asianoption.cpp)
+set_target_properties(Fuzz_AsianOption PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(Fuzz_AsianOption ql_library ${QL_THREAD_LIBRARIES})
+
+add_executable(Fuzz_BasketOption fuzz_basketoption.cpp)
+set_target_properties(Fuzz_BasketOption PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(Fuzz_BasketOption ql_library ${QL_THREAD_LIBRARIES})

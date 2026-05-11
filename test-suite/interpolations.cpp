@@ -22,7 +22,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
@@ -34,6 +33,7 @@
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/chebyshevinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/math/interpolations/flatextrapolation.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation2d.hpp>
@@ -54,6 +54,7 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+using QuantLib::detail::interpolateWithoutUpdate;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
@@ -237,6 +238,76 @@ Real lagrangeTestFct(Real x) {
     return std::fabs(x) + 0.5*x - x*x;
 }
 
+template <class I1, class I2>
+class TestInterpolationImpl final : public Interpolation::templateImpl<I1, I2> {
+  public:
+    TestInterpolationImpl(const I1& xBegin, const I1& xEnd, const I2& yBegin)
+    : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin) {}
+
+    void update() override {
+        updateCalls_++;
+    }
+    Real value(Real x) const override {
+        return updateCalls_;
+    }
+    Real primitive(Real x) const override {
+        return 0;
+    }
+    Real derivative(Real x) const override {
+        return 0;
+    }
+    Real secondDerivative(Real x) const override {
+        return 0;
+    }
+  private:
+    int updateCalls_ = 0;
+};
+
+class TestInterpolation : public Interpolation {
+  public:
+    template <class I1, class I2>
+    TestInterpolation(const I1& xBegin, const I1& xEnd,
+                      const I2& yBegin, bool update = true) {
+        impl_ = ext::make_shared<TestInterpolationImpl<I1, I2>>(xBegin, xEnd, yBegin);
+        if (update)
+            impl_->update();
+    }
+};
+
+class TestInterpOld {
+  public:
+    template <class I1, class I2>
+    Interpolation interpolate(const I1& xBegin,
+                              const I1& xEnd,
+                              const I2& yBegin) const {
+        return TestInterpolation(xBegin, xEnd, yBegin);
+    }
+};
+
+class TestInterpNew {
+  public:
+    template <class I1, class I2>
+    Interpolation interpolate(const I1& xBegin,
+                              const I1& xEnd,
+                              const I2& yBegin,
+                              bool update = true) const {
+        return TestInterpolation(xBegin, xEnd, yBegin, update);
+    }
+};
+
+BOOST_AUTO_TEST_CASE(testInterpolateWithoutUpdate) {
+    std::vector<Real> x, y;
+    x = xRange(-2.0, 2.0, 4);
+    y = parabolic(x);
+    auto interp = interpolateWithoutUpdate(TestInterpOld(), x.begin(), x.end(), y.begin());
+    BOOST_CHECK_EQUAL(interp(0), 1);
+    interp.update();
+    BOOST_CHECK_EQUAL(interp(0), 2);
+    interp = interpolateWithoutUpdate(TestInterpNew(), x.begin(), x.end(), y.begin());
+    BOOST_CHECK_EQUAL(interp(0), 0);
+    interp.update();
+    BOOST_CHECK_EQUAL(interp(0), 1);
+}
 
 /* See J. M. Hyman, "Accurate monotonicity preserving cubic interpolation"
    SIAM J. of Scientific and Statistical Computing, v. 4, 1983, pp. 645-654.
@@ -277,7 +348,6 @@ BOOST_AUTO_TEST_CASE(testSplineErrorOnGaussianValues) {
                              CubicInterpolation::Spline, false,
                              CubicInterpolation::NotAKnot, Null<Real>(),
                              CubicInterpolation::NotAKnot, Null<Real>());
-        f.update();
         Real result = std::sqrt(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
         if (std::fabs(result-tabulatedErrors[i]) > toleranceOnTabErr[i])
@@ -291,7 +361,6 @@ BOOST_AUTO_TEST_CASE(testSplineErrorOnGaussianValues) {
                                CubicInterpolation::Spline, true,
                                CubicInterpolation::NotAKnot, Null<Real>(),
                                CubicInterpolation::NotAKnot, Null<Real>());
-        f.update();
         result = std::sqrt(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
         if (std::fabs(result-tabulatedMCErrors[i]) > toleranceOnTabMCErr[i])
@@ -328,7 +397,6 @@ BOOST_AUTO_TEST_CASE(testSplineOnGaussianValues) {
                              CubicInterpolation::Spline, false,
                              CubicInterpolation::NotAKnot, Null<Real>(),
                              CubicInterpolation::NotAKnot, Null<Real>());
-        f.update();
         checkValues("Not-a-knot spline", f,
                     x.begin(), x.end(), y.begin());
         checkNotAKnotCondition("Not-a-knot spline", f);
@@ -350,7 +418,6 @@ BOOST_AUTO_TEST_CASE(testSplineOnGaussianValues) {
                                CubicInterpolation::Spline, true,
                                CubicInterpolation::NotAKnot, Null<Real>(),
                                CubicInterpolation::NotAKnot, Null<Real>());
-        f.update();
         checkValues("MC not-a-knot spline", f,
                     x.begin(), x.end(), y.begin());
         // good performance
@@ -401,7 +468,6 @@ BOOST_AUTO_TEST_CASE(testSplineOnRPN15AValues) {
                                     CubicInterpolation::Spline, false,
                                     CubicInterpolation::SecondDerivative, 0.0,
                                     CubicInterpolation::SecondDerivative, 0.0);
-    f.update();
     checkValues("Natural spline", f,
                 std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y));
     check2ndDerivativeValue("Natural spline", f,
@@ -425,7 +491,6 @@ BOOST_AUTO_TEST_CASE(testSplineOnRPN15AValues) {
                            CubicInterpolation::Spline, false,
                            CubicInterpolation::FirstDerivative, 0.0,
                            CubicInterpolation::FirstDerivative, 0.0);
-    f.update();
     checkValues("Clamped spline", f,
                 std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y));
     check1stDerivativeValue("Clamped spline", f,
@@ -448,7 +513,6 @@ BOOST_AUTO_TEST_CASE(testSplineOnRPN15AValues) {
                            CubicInterpolation::Spline, false,
                            CubicInterpolation::NotAKnot, Null<Real>(),
                            CubicInterpolation::NotAKnot, Null<Real>());
-    f.update();
     checkValues("Not-a-knot spline", f,
                 std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y));
     checkNotAKnotCondition("Not-a-knot spline", f);
@@ -469,7 +533,6 @@ BOOST_AUTO_TEST_CASE(testSplineOnRPN15AValues) {
                            CubicInterpolation::Spline, true,
                            CubicInterpolation::SecondDerivative, 0.0,
                            CubicInterpolation::SecondDerivative, 0.0);
-    f.update();
     checkValues("MC natural spline", f,
                 std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y));
     // good performance
@@ -488,7 +551,6 @@ BOOST_AUTO_TEST_CASE(testSplineOnRPN15AValues) {
                            CubicInterpolation::Spline, true,
                            CubicInterpolation::FirstDerivative, 0.0,
                            CubicInterpolation::FirstDerivative, 0.0);
-    f.update();
     checkValues("MC clamped spline", f,
                 std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y));
     check1stDerivativeValue("MC clamped spline", f,
@@ -511,7 +573,6 @@ BOOST_AUTO_TEST_CASE(testSplineOnRPN15AValues) {
                            CubicInterpolation::Spline, true,
                            CubicInterpolation::NotAKnot, Null<Real>(),
                            CubicInterpolation::NotAKnot, Null<Real>());
-    f.update();
     checkValues("MC not-a-knot spline", f,
                 std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y));
     // good performance
@@ -550,7 +611,6 @@ BOOST_AUTO_TEST_CASE(testSplineOnGenericValues) {
                          generic_natural_y2[0],
                          CubicInterpolation::SecondDerivative,
                          generic_natural_y2[n-1]);
-    f.update();
     checkValues("Natural spline", f,
                 std::begin(generic_x), std::end(generic_x), std::begin(generic_y));
     // cached second derivative
@@ -574,7 +634,6 @@ BOOST_AUTO_TEST_CASE(testSplineOnGenericValues) {
                     CubicInterpolation::Spline, false,
                     CubicInterpolation::FirstDerivative, y1a,
                     CubicInterpolation::FirstDerivative, y1b);
-    f.update();
     checkValues("Clamped spline", f,
                 std::begin(generic_x), std::end(generic_x), std::begin(generic_y));
     check1stDerivativeValue("Clamped spline", f,
@@ -589,7 +648,6 @@ BOOST_AUTO_TEST_CASE(testSplineOnGenericValues) {
                            CubicInterpolation::Spline, false,
                            CubicInterpolation::NotAKnot, Null<Real>(),
                            CubicInterpolation::NotAKnot, Null<Real>());
-    f.update();
     checkValues("Not-a-knot spline", f,
                 std::begin(generic_x), std::end(generic_x), std::begin(generic_y));
     checkNotAKnotCondition("Not-a-knot spline", f);
@@ -622,7 +680,6 @@ BOOST_AUTO_TEST_CASE(testSimmetricEndConditions) {
                          CubicInterpolation::Spline, false,
                          CubicInterpolation::NotAKnot, Null<Real>(),
                          CubicInterpolation::NotAKnot, Null<Real>());
-    f.update();
     checkValues("Not-a-knot spline", f,
                 x.begin(), x.end(), y.begin());
     checkNotAKnotCondition("Not-a-knot spline", f);
@@ -634,7 +691,6 @@ BOOST_AUTO_TEST_CASE(testSimmetricEndConditions) {
                            CubicInterpolation::Spline, true,
                            CubicInterpolation::NotAKnot, Null<Real>(),
                            CubicInterpolation::NotAKnot, Null<Real>());
-    f.update();
     checkValues("MC not-a-knot spline", f,
                 x.begin(), x.end(), y.begin());
     checkSymmetry("MC not-a-knot spline", f, x[0]);
@@ -656,7 +712,6 @@ BOOST_AUTO_TEST_CASE(testDerivativeEndConditions) {
                          CubicInterpolation::Spline, false,
                          CubicInterpolation::NotAKnot, Null<Real>(),
                          CubicInterpolation::NotAKnot, Null<Real>());
-    f.update();
     checkValues("Not-a-knot spline", f,
                 x.begin(), x.end(), y.begin());
     check1stDerivativeValue("Not-a-knot spline", f,
@@ -674,7 +729,6 @@ BOOST_AUTO_TEST_CASE(testDerivativeEndConditions) {
                            CubicInterpolation::Spline, false,
                            CubicInterpolation::FirstDerivative,  4.0,
                            CubicInterpolation::FirstDerivative, -4.0);
-    f.update();
     checkValues("Clamped spline", f,
                 x.begin(), x.end(), y.begin());
     check1stDerivativeValue("Clamped spline", f,
@@ -692,7 +746,6 @@ BOOST_AUTO_TEST_CASE(testDerivativeEndConditions) {
                            CubicInterpolation::Spline, false,
                            CubicInterpolation::SecondDerivative, -2.0,
                            CubicInterpolation::SecondDerivative, -2.0);
-    f.update();
     checkValues("SecondDerivative spline", f,
                 x.begin(), x.end(), y.begin());
     check1stDerivativeValue("SecondDerivative spline", f,
@@ -709,7 +762,6 @@ BOOST_AUTO_TEST_CASE(testDerivativeEndConditions) {
                            CubicInterpolation::Spline, true,
                            CubicInterpolation::NotAKnot, Null<Real>(),
                            CubicInterpolation::NotAKnot, Null<Real>());
-    f.update();
     checkValues("MC Not-a-knot spline", f,
                 x.begin(), x.end(), y.begin());
     check1stDerivativeValue("MC Not-a-knot spline", f,
@@ -727,7 +779,6 @@ BOOST_AUTO_TEST_CASE(testDerivativeEndConditions) {
                            CubicInterpolation::Spline, true,
                            CubicInterpolation::FirstDerivative,  4.0,
                            CubicInterpolation::FirstDerivative, -4.0);
-    f.update();
     checkValues("MC Clamped spline", f,
                 x.begin(), x.end(), y.begin());
     check1stDerivativeValue("MC Clamped spline", f,
@@ -745,7 +796,6 @@ BOOST_AUTO_TEST_CASE(testDerivativeEndConditions) {
                            CubicInterpolation::Spline, true,
                            CubicInterpolation::SecondDerivative, -2.0,
                            CubicInterpolation::SecondDerivative, -2.0);
-    f.update();
     checkValues("MC SecondDerivative spline", f,
                 x.begin(), x.end(), y.begin());
     check1stDerivativeValue("MC SecondDerivative spline", f,
@@ -782,7 +832,6 @@ BOOST_AUTO_TEST_CASE(testNonRestrictiveHymanFilter) {
                          CubicInterpolation::Spline, true,
                          CubicInterpolation::NotAKnot, Null<Real>(),
                          CubicInterpolation::NotAKnot, Null<Real>());
-    f.update();
     interpolated = f(zero);
     if (std::fabs(interpolated-expected)>1e-15) {
         BOOST_ERROR("MC not-a-knot spline"
@@ -799,7 +848,6 @@ BOOST_AUTO_TEST_CASE(testNonRestrictiveHymanFilter) {
                            CubicInterpolation::Spline, true,
                            CubicInterpolation::FirstDerivative,  4.0,
                            CubicInterpolation::FirstDerivative, -4.0);
-    f.update();
     interpolated = f(zero);
     if (std::fabs(interpolated-expected)>1e-15) {
         BOOST_ERROR("MC clamped spline"
@@ -816,7 +864,6 @@ BOOST_AUTO_TEST_CASE(testNonRestrictiveHymanFilter) {
                            CubicInterpolation::Spline, true,
                            CubicInterpolation::SecondDerivative, -2.0,
                            CubicInterpolation::SecondDerivative, -2.0);
-    f.update();
     interpolated = f(zero);
     if (std::fabs(interpolated-expected)>1e-15) {
         BOOST_ERROR("MC SecondDerivative spline"
@@ -936,8 +983,7 @@ BOOST_AUTO_TEST_CASE(testAsFunctor) {
     const Real x[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
     const Real y[] = { 5.0, 4.0, 3.0, 2.0, 1.0 };
 
-   Interpolation f = LinearInterpolation(std::begin(x), std::end(x), std::begin(y));
-    f.update();
+    Interpolation f = LinearInterpolation(std::begin(x), std::end(x), std::begin(y));
 
     const Real x2[] = { -2.0, -1.0, 0.0, 1.0, 3.0, 4.0, 5.0, 6.0, 7.0 };
     Size N = std::size(x2);
@@ -985,7 +1031,6 @@ BOOST_AUTO_TEST_CASE(testFritschButland) {
     for (Size i=0; i<3; ++i) {
 
         Interpolation f = FritschButlandCubic(std::begin(x), std::end(x), std::begin(y[i]));
-        f.update();
 
         for (Size j=0; j<4; ++j) {
             Real left_knot = x[j];
@@ -1016,7 +1061,6 @@ BOOST_AUTO_TEST_CASE(testBackwardFlat) {
     const Real y[] = { 5.0, 4.0, 3.0, 2.0, 1.0 };
 
     Interpolation f = BackwardFlatInterpolation(std::begin(x), std::end(x), std::begin(y));
-    f.update();
 
     Size N = std::size(x);
     Size i;
@@ -1134,7 +1178,6 @@ BOOST_AUTO_TEST_CASE(testForwardFlat) {
     const Real y[] = { 5.0, 4.0, 3.0, 2.0, 1.0 };
 
     Interpolation f = ForwardFlatInterpolation(std::begin(x), std::end(x), std::begin(y));
-    f.update();
 
     Size N = std::size(x);
     Size i;
@@ -1257,7 +1300,6 @@ BOOST_AUTO_TEST_CASE(testMixedLinearCubicMatchDerivatives) {
         CubicInterpolation::Spline, false,
         CubicInterpolation::FirstDerivative, Null<Real>(),
         CubicInterpolation::SecondDerivative, 0.0);
-    f.update();
 
     Real tolerance = 1.0e-12;
     Real eps = tolerance / 10;
@@ -1535,7 +1577,6 @@ BOOST_AUTO_TEST_CASE(testKernelInterpolation) {
                                   1e-6
 #endif
             );
-            f.update();
 
             for (Size dIt=0; dIt< deltaGrid.size(); ++dIt) {
                 expectedVal=currY[dIt];
@@ -1576,7 +1617,6 @@ BOOST_AUTO_TEST_CASE(testKernelInterpolation) {
         // Build interpolation according to original grid + y-values
         KernelInterpolation f(deltaGrid.begin(), deltaGrid.end(),
                               currY.begin(), myKernel);
-        f.update();
 
         // test values at test Grid
         for (Size dIt=0; dIt< testDeltaGrid.size(); ++dIt) {
@@ -1876,7 +1916,7 @@ BOOST_AUTO_TEST_CASE(testRichardsonExtrapolation) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testNoArbSabrInterpolation, *precondition(if_speed(Fast))){
+BOOST_AUTO_TEST_CASE(testNoArbSabrInterpolation){
 
     BOOST_TEST_MESSAGE("Testing no-arbitrage Sabr interpolation...");
 
@@ -2881,6 +2921,216 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
         QL_CHECK_CLOSE(v, 1.0, 0.1);
     }
 
+}
+
+BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
+
+    BOOST_TEST_MESSAGE("Testing flat extrapolation of 1-D interpolation...");
+
+    const Real x[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+    const Real y[] = { 5.0, 3.0, 4.0, 2.0, 1.0 };
+    const Size N = std::size(x);
+
+    auto cubic = ext::make_shared<CubicInterpolation>(
+        std::begin(x), std::end(x), std::begin(y),
+        CubicInterpolation::Spline, false,
+        CubicInterpolation::SecondDerivative, 0.0,
+        CubicInterpolation::SecondDerivative, 0.0);
+    cubic->enableExtrapolation();
+
+    FlatExtrapolator f(cubic);
+
+    Real tolerance = 1.0e-12;
+
+    // extrapolation not allowed by default
+    try {
+        f(-1.0);
+        BOOST_ERROR("failed to throw when extrapolating without permission");
+    } catch (Error&) {
+        // expected
+    }
+
+    f.enableExtrapolation();
+
+    // in-range: must match underlying cubic at knots
+    for (Size i = 0; i < N; ++i) {
+        Real calculated = f(x[i]);
+        Real expected = y[i];
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("in-range mismatch at x=" << x[i]
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
+
+    // in-range at midpoints: must match underlying cubic
+    for (Size i = 0; i < N - 1; ++i) {
+        Real mid = (x[i] + x[i + 1]) / 2.0;
+        Real calculated = f(mid);
+        Real expected = (*cubic)(mid);
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("in-range mismatch at midpoint x=" << mid
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
+
+    // below range: flat at y[0]
+    for (Real p : { -2.0, -1.0, -0.01 }) {
+        Real calculated = f(p);
+        Real expected = y[0];
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("flat extrapolation below range failed at " << p
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
+
+    // above range: flat at y[N-1]
+    for (Real p : { 4.01, 5.0, 10.0 }) {
+        Real calculated = f(p);
+        Real expected = y[N - 1];
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("flat extrapolation above range failed at " << p
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
+
+    // derivative outside range is zero
+    Real calc = f.derivative(-1.0);
+    if (std::fabs(calc) > tolerance)
+        BOOST_ERROR("derivative should be zero below range"
+                    << "\n    calculated: " << calc);
+    calc = f.derivative(5.0);
+    if (std::fabs(calc) > tolerance)
+        BOOST_ERROR("derivative should be zero above range"
+                    << "\n    calculated: " << calc);
+
+    // second derivative outside range is zero
+    calc = f.secondDerivative(-1.0);
+    if (std::fabs(calc) > tolerance)
+        BOOST_ERROR("second derivative should be zero below range"
+                    << "\n    calculated: " << calc);
+    calc = f.secondDerivative(5.0);
+    if (std::fabs(calc) > tolerance)
+        BOOST_ERROR("second derivative should be zero above range"
+                    << "\n    calculated: " << calc);
+
+    // derivative inside range matches underlying
+    for (Real p : { 0.5, 1.5, 2.5, 3.5 }) {
+        Real calculated = f.derivative(p);
+        Real expected = cubic->derivative(p);
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("in-range derivative mismatch at x=" << p
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
+
+    // second derivative inside range matches underlying
+    for (Real p : { 0.5, 1.5, 2.5, 3.5 }) {
+        Real calculated = f.secondDerivative(p);
+        Real expected = cubic->secondDerivative(p);
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("in-range second derivative mismatch at x=" << p
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
+
+    // primitive below range
+    {
+        Real calculated = f.primitive(-1.0);
+        Real expected = cubic->primitive(x[0], true) + y[0] * (-1.0 - x[0]);
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("primitive below range mismatch at x=-1.0"
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
+
+    // primitive above range
+    {
+        Real calculated = f.primitive(5.0);
+        Real expected = cubic->primitive(x[N - 1], true) + y[N - 1] * (5.0 - x[N - 1]);
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("primitive above range mismatch at x=5.0"
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
+
+    // primitive inside range matches underlying
+    for (Real p : { 0.5, 1.5, 2.5, 3.5 }) {
+        Real calculated = f.primitive(p);
+        Real expected = cubic->primitive(p);
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("in-range primitive mismatch at x=" << p
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
+
+    // xValues and yValues accessors
+    std::vector<Real> xs = f.xValues();
+    std::vector<Real> ys = f.yValues();
+    if (xs.size() != N)
+        BOOST_ERROR("xValues size mismatch"
+                    << "\n    expected: " << N
+                    << "\n    got:      " << xs.size());
+    if (ys.size() != N)
+        BOOST_ERROR("yValues size mismatch"
+                    << "\n    expected: " << N
+                    << "\n    got:      " << ys.size());
+    for (Size i = 0; i < N; ++i) {
+        if (std::fabs(xs[i] - x[i]) > tolerance)
+            BOOST_ERROR("xValues mismatch at index " << i
+                        << "\n    expected: " << x[i]
+                        << "\n    got:      " << xs[i]);
+        if (std::fabs(ys[i] - y[i]) > tolerance)
+            BOOST_ERROR("yValues mismatch at index " << i
+                        << "\n    expected: " << y[i]
+                        << "\n    got:      " << ys[i]);
+    }
+
+    // isInRange
+    if (!f.isInRange(2.0))
+        BOOST_ERROR("isInRange should return true for x=2.0");
+    if (f.isInRange(-1.0))
+        BOOST_ERROR("isInRange should return false for x=-1.0");
+
+    // update smoke test
+    f.update();
+    {
+        Real calculated = f(2.0);
+        Real expected = (*cubic)(2.0);
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("mismatch after update at x=2.0"
+                        << std::fixed
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

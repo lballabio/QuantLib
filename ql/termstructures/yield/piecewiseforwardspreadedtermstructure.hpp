@@ -108,6 +108,8 @@ namespace QuantLib {
         registerWith(originalCurve_);
         for (auto& spread : spreads_)
             registerWith(spread);
+        interpolator_ = detail::interpolateWithoutUpdate(
+            factory_, times_.begin(), times_.end(), spreadValues_.begin());
         if (!originalCurve_.empty())
             updateInterpolation();
     }
@@ -163,9 +165,9 @@ namespace QuantLib {
     inline Spread
     InterpolatedPiecewiseForwardSpreadedTermStructure<T>::calcSpread(Time t) const {
         if (t <= times_.front()) {
-            return spreads_.front()->value();
+            return spreadValues_.front();
         } else if (t >= times_.back()) {
-            return spreads_.back()->value();
+            return spreadValues_.back();
         } else {
             return interpolator_(t, true);
         }
@@ -178,11 +180,11 @@ namespace QuantLib {
             return calcSpread(0.0);
 
         Real integral;
-        if (t <= this->times_.back()) {
-            integral = this->interpolator_.primitive(t, true);
+        if (t <= times_.back()) {
+            integral = interpolator_.primitive(t, true);
         } else {
-            integral = this->interpolator_.primitive(this->times_.back(), true)
-                     + this->spreads_.back()->value() * (t - this->times_.back());
+            integral = interpolator_.primitive(times_.back(), true)
+                     + spreadValues_.back() * (t - times_.back());
         }
         return integral/t;
     }
@@ -208,9 +210,7 @@ namespace QuantLib {
             times_[i] = timeFromReference(dates_[i]);
             spreadValues_[i] = spreads_[i]->value();
         }
-        interpolator_ = factory_.interpolate(times_.begin(),
-                                             times_.end(),
-                                             spreadValues_.begin());
+        interpolator_.update();
     }
 
 }

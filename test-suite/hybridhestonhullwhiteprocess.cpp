@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/europeanoption.hpp>
@@ -807,7 +806,7 @@ BOOST_AUTO_TEST_CASE(testDiscretizationError) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testFdmHestonHullWhiteEngine, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testFdmHestonHullWhiteEngine) {
     BOOST_TEST_MESSAGE("Testing the FDM Heston Hull-White engine...");
 
     const Date today = Date(28, March, 2004);
@@ -1054,7 +1053,7 @@ BOOST_AUTO_TEST_CASE(testBsmHullWhitePricing) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testSpatialDiscretizatinError, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testSpatialDiscretizatinError) {
     BOOST_TEST_MESSAGE("Testing spatial convergence speed of Heston engine...");
 
     Date today(27, December, 2004);
@@ -1135,7 +1134,7 @@ class HestonHullWhiteCorrelationConstraint : public Constraint {
 };
 
 
-BOOST_AUTO_TEST_CASE(testHestonHullWhiteCalibration, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testHestonHullWhiteCalibration) {
     BOOST_TEST_MESSAGE("Testing the Heston Hull-White calibration...");
 
     // Calibration of a hybrid Heston-Hull-White model using

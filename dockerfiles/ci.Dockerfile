@@ -1,7 +1,8 @@
 ARG tag=latest
 FROM ubuntu:${tag}
-MAINTAINER Luigi Ballabio <luigi.ballabio@gmail.com>
-LABEL Description="Provide Docker images for QuantLib's CI builds on Linux"
+
+LABEL org.opencontainers.image.authors="Luigi Ballabio <luigi.ballabio@gmail.com>"
+LABEL description="An environment for QuantLib CI builds on Linux"
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential wget libbz2-dev autoconf automake libtool ccache cmake clang git \

@@ -78,7 +78,7 @@ namespace QuantLib {
             Real slope_;
             Rate K_;
             Frequency frequency_;
-            bool indexIsInterpolated_;
+            bool indexIsInterpolated_ = false;
             std::vector<Time> tvec_;
             std::vector<Date> dvec_;
             mutable std::vector<Volatility> vvec_;
@@ -105,7 +105,7 @@ namespace QuantLib {
         ext::shared_ptr<YoYInflationCapFloorEngine> p,
         Real priceToMatch)
     : slope_(slope), K_(K), frequency_(anIndex->frequency()),
-      indexIsInterpolated_(anIndex->interpolated()), tvec_(std::vector<Time>(2)),
+       tvec_(std::vector<Time>(2)),
       dvec_(std::vector<Date>(2)), vvec_(std::vector<Volatility>(2)), priceToMatch_(priceToMatch),
       surf_(surf), p_(std::move(p)) {
 
@@ -113,7 +113,7 @@ namespace QuantLib {
         capfloor_ =
             MakeYoYInflationCapFloor(type, anIndex,
                                      (Size)std::floor(0.5+surf->timeFromReference(surf->minMaturity())),
-                                     surf->calendar(), lag, CPI::AsIndex)
+                                     surf->calendar(), lag, CPI::Flat)
             .withNominal(10000.0)
             .withStrike(K);
 

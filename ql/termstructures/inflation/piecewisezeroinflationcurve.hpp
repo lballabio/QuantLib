@@ -108,9 +108,10 @@ namespace QuantLib {
         //@{
         void update() override;
         //@}
+      protected:
+        void performCalculations() const override;
       private:
         // methods
-        void performCalculations() const override;
         Rate zeroRateImpl(Time t) const override;
         // data members
         std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;

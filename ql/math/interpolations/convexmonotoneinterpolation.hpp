@@ -59,8 +59,8 @@ namespace QuantLib {
                                     const I2& yBegin, Real quadraticity,
                                     Real monotonicity, bool forcePositive,
                                     bool flatFinalPeriod = false,
-                                    const helper_map& preExistingHelpers =
-                                                               helper_map()) {
+                                    const helper_map& preExistingHelpers = {},
+                                    bool update = true) {
             impl_ = ext::shared_ptr<Interpolation::Impl>(
                    new detail::ConvexMonotoneImpl<I1,I2>(xBegin,
                                                          xEnd,
@@ -70,10 +70,11 @@ namespace QuantLib {
                                                          forcePositive,
                                                          flatFinalPeriod,
                                                          preExistingHelpers));
-            impl_->update();
+            if (update)
+                impl_->update();
         }
 
-        ConvexMonotoneInterpolation(Interpolation& interp)
+        explicit ConvexMonotoneInterpolation(const Interpolation& interp)
         : Interpolation(interp) {}
 
         std::map<Real, ext::shared_ptr<detail::SectionHelper> >
@@ -98,12 +99,14 @@ namespace QuantLib {
 
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
-                                  const I2& yBegin) const {
+                                  const I2& yBegin, bool update = true) const {
             return ConvexMonotoneInterpolation<I1,I2>(xBegin, xEnd, yBegin,
                                                       quadraticity_,
                                                       monotonicity_,
                                                       forcePositive_,
-                                                      false);
+                                                      false,
+                                                      {},
+                                                      update);
         }
 
         template <class I1, class I2>

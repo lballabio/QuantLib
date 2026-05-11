@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/barrieroption/binomialdoublebarrierengine.hpp>
@@ -522,7 +521,7 @@ BOOST_AUTO_TEST_CASE(testVannaVolgaDoubleBarrierValues) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testMonteCarloDoubleBarrierWithAnalytical, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testMonteCarloDoubleBarrierWithAnalytical) {
     BOOST_TEST_MESSAGE("Testing MC double-barrier options against analytical values...");
 
     Real tolerance = 0.01; //percentage difference between analytical and monte carlo values to be tolerated

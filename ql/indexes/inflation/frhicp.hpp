@@ -50,26 +50,6 @@ namespace QuantLib {
                             Period(1, Months),
                             EURCurrency(),
                             ts) {}
-
-        QL_DEPRECATED_DISABLE_WARNING
-
-        /*! \deprecated Use the overload without the interpolated parameter.
-                        Deprecated in version 1.38.
-        */
-        [[deprecated("Use the overload without the interpolated parameter")]]
-        explicit YYFRHICP(
-            bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = {})
-        : YoYInflationIndex("YY_HICP",
-                            FranceRegion(),
-                            false,
-                            interpolated,
-                            Monthly,
-                            Period(1, Months),
-                            EURCurrency(),
-                            ts) {}
-
-        QL_DEPRECATED_ENABLE_WARNING
     };
 
 }

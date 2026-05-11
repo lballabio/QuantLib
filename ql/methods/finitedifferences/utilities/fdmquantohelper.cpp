@@ -25,6 +25,7 @@
 #include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -56,10 +57,10 @@ namespace QuantLib {
             = fxVolTS_->blackForwardVol(t1, t2, exchRateATMlevel_);
 
         Array retVal(equityVol.size());
-        for (Size i=0; i < retVal.size(); ++i) {
-            retVal[i]
-                = rDomestic - rForeign + equityVol[i]*fxVol*equityFxCorrelation_;
-        }
+        std::transform(equityVol.begin(), equityVol.end(), retVal.begin(),
+                       [&](Volatility vol) {
+                           return rDomestic - rForeign + vol*fxVol*equityFxCorrelation_;
+                       });
         return retVal;
     }
 }

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2014 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+ Copyright (C) 2024 Francois Botha
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,12 +17,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_experimental_holder_extensible_option_hpp
-#define quantlib_experimental_holder_extensible_option_hpp
+#include <ql/indexes/ibor/zaronia.hpp>
+#include <ql/time/calendars/southafrica.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/currencies/africa.hpp>
 
-// Deprecated in version 1.38
-#pragma message("Warning: this file will disappear in a future release; include <ql/instruments/holderextensibleoption.hpp> instead.")
+namespace QuantLib {
 
-#include <ql/instruments/holderextensibleoption.hpp>
+    Zaronia::Zaronia(const Handle<YieldTermStructure>& h)
+    : OvernightIndex("ZARONIA", 0, ZARCurrency(), SouthAfrica(), Actual365Fixed(), h) {}
 
-#endif
+}

@@ -436,7 +436,7 @@ namespace QuantLib {
     }
 
     inline Time daysBetween(const Date& d1, const Date& d2) {
-        return Time(d2-d1);
+        return static_cast<Time>(d2-d1);
     }
 
     inline bool operator==(const Date& d1, const Date& d2) {

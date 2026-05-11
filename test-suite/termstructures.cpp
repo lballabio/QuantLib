@@ -159,6 +159,9 @@ BOOST_AUTO_TEST_CASE(testImplied) {
 
     CommonVars vars;
 
+    auto flatRate = ext::make_shared<SimpleQuote>();
+    vars.termStructure = ext::make_shared<FlatForward>(
+        vars.settlementDays, NullCalendar(), Handle<Quote>(flatRate), Actual360());
     Real tolerance = 1.0e-10;
     Date today = Settings::instance().evaluationDate();
     Date newToday = today + 3*Years;
@@ -168,15 +171,18 @@ BOOST_AUTO_TEST_CASE(testImplied) {
     ext::shared_ptr<YieldTermStructure> implied(
         new ImpliedTermStructure(Handle<YieldTermStructure>(vars.termStructure),
                                  newSettlement));
-    DiscountFactor baseDiscount = vars.termStructure->discount(newSettlement);
-    DiscountFactor discount = vars.termStructure->discount(testDate);
-    DiscountFactor impliedDiscount = implied->discount(testDate);
-    if (std::fabs(discount - baseDiscount*impliedDiscount) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce discount from implied curve\n"
-            << std::fixed << std::setprecision(10)
-            << "    calculated: " << baseDiscount*impliedDiscount << "\n"
-            << "    expected:   " << discount);
+    for (int i = 1; i < 4; i++) {
+        flatRate->setValue(i / 100.0);
+        DiscountFactor baseDiscount = vars.termStructure->discount(newSettlement);
+        DiscountFactor discount = vars.termStructure->discount(testDate);
+        DiscountFactor impliedDiscount = implied->discount(testDate);
+        if (std::fabs(discount - baseDiscount*impliedDiscount) > tolerance)
+            BOOST_ERROR(
+                "unable to reproduce discount from implied curve\n"
+                << std::fixed << std::setprecision(10)
+                << "    calculated: " << baseDiscount*impliedDiscount << "\n"
+                << "    expected:   " << discount);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testImpliedObs) {

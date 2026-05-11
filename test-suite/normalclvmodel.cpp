@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
@@ -369,7 +368,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloBSOptionPricing) {
                    << "\n    expected:   " << expected);
     }
 }
-BOOST_AUTO_TEST_CASE(testMoustacheGraph, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testMoustacheGraph) {
     BOOST_TEST_MESSAGE(
         "Testing double no-touch pricing with normal CLV model...");
 

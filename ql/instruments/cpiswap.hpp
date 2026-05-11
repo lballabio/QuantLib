@@ -88,7 +88,7 @@ namespace QuantLib {
                 const BusinessDayConvention& fixedRoll,
                 const Period& observationLag,
                 ext::shared_ptr<ZeroInflationIndex> fixedIndex,
-                CPI::InterpolationType observationInterpolation = CPI::AsIndex,
+                CPI::InterpolationType observationInterpolation = CPI::Flat,
                 Real inflationNominal = Null<Real>());
 
         // results

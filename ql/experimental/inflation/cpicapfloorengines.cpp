@@ -54,7 +54,9 @@ namespace QuantLib {
 
 
         // what interpolation do we use? Index / flat / linear
+        QL_DEPRECATED_DISABLE_WARNING
         if (arguments_.observationInterpolation == CPI::AsIndex) {
+        QL_DEPRECATED_ENABLE_WARNING
             // same as index means we can just use the price surface
             // since this uses the index
             if (arguments_.type == Option::Call) {

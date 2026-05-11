@@ -6,25 +6,31 @@ on:
   pull_request:
 jobs:
   msbuild:
-    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
-        toolset: [v142, v143]
+        toolset: [v142, v143, v145]
         unity: [unity, singles]
         include:
           - toolset: v142
             boost_version: 77
             vsversion: 2019
+            image: windows-2022
           - toolset: v143
             boost_version: 90
             vsversion: 2022
+            image: windows-2022
+          - toolset: v145
+            boost_version: 90
+            vsversion: 2026
+            image: windows-2025-vs2026
+    runs-on: ${{ matrix.image }}
     steps:
     - uses: actions/checkout@v6
     - name: Setup MSVC++ environment
-      uses: ilammy/msvc-dev-cmd@v1
+      uses: microsoft/setup-msbuild@v3
       with:
-        arch: x64
+        msbuild-architecture: x64
     - name: Setup Boost
       run: |
         $Url = "https://archives.boost.io/release/1.${{ matrix.boost_version }}.0/source/boost_1_${{ matrix.boost_version }}_0.zip"

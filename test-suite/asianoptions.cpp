@@ -22,7 +22,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/asian/analytic_cont_geom_av_price_heston.hpp>
@@ -635,7 +634,7 @@ void testDiscreteGeometricAveragePriceHeston(const ext::shared_ptr<PricingEngine
     }
 }
 
-BOOST_AUTO_TEST_CASE(testMCDiscreteGeometricAveragePriceHeston, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testMCDiscreteGeometricAveragePriceHeston) {
 
     BOOST_TEST_MESSAGE("Testing MC discrete geometric average-price Asians under Heston...");
 
@@ -674,7 +673,7 @@ BOOST_AUTO_TEST_CASE(testMCDiscreteGeometricAveragePriceHeston, *precondition(if
     testDiscreteGeometricAveragePriceHeston(engine, tol);
 }
 
-BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAveragePrice, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAveragePrice) {
 
     BOOST_TEST_MESSAGE(
            "Testing Monte Carlo discrete arithmetic average-price Asians...");
@@ -855,7 +854,7 @@ BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAveragePrice, *precondition(if_spee
     }
 }
 
-BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAveragePriceHeston, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAveragePriceHeston) {
 
     BOOST_TEST_MESSAGE(
            "Testing Monte Carlo discrete arithmetic average-price Asians in Heston model...");

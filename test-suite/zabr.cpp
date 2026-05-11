@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/termstructures/volatility/sabrsmilesection.hpp>
@@ -31,7 +30,7 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(ZabrTests)
 
-BOOST_AUTO_TEST_CASE(testConsistency, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testConsistency) {
     BOOST_TEST_MESSAGE("Testing the consistency of ZABR interpolation...");
 
     Real tol = 1E-4;

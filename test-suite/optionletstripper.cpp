@@ -19,7 +19,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/currencies/america.hpp>
@@ -920,7 +919,7 @@ BOOST_AUTO_TEST_CASE(testSwitchStrike) {
                    << "\ntolerance:     " << io::rate(vars.tolerance));
 }
 
-BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1ON, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1ON) {
     BOOST_TEST_MESSAGE("Testing optionlet stripping with overnight index...");
     CommonVarsON vars;
     Settings::instance().evaluationDate() = vars.today;

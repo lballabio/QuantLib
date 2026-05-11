@@ -20,7 +20,6 @@
 // TODO: Figure out why tests for options with both continuous and discrete
 // dividends fail.
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/functional.hpp>
@@ -719,7 +718,7 @@ void testFdGreeks(const Date& today,
 }
 
 
-BOOST_AUTO_TEST_CASE(testFdEuropeanGreeks, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testFdEuropeanGreeks) {
     BOOST_TEST_MESSAGE("Testing finite-differences dividend European option greeks...");
 
     Date today = Date::todaysDate();

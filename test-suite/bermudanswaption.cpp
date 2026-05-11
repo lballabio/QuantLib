@@ -19,7 +19,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/coupon.hpp>
@@ -236,7 +235,7 @@ BOOST_AUTO_TEST_CASE(testCachedValues) {
                     << "expected:   " << otmValue);
 }
 
-BOOST_AUTO_TEST_CASE(testCachedG2Values, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testCachedG2Values) {
     BOOST_TEST_MESSAGE(
         "Testing Bermudan swaption with G2 model against cached values...");
 

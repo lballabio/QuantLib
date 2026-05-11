@@ -19,7 +19,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/lookbackoption.hpp>
@@ -485,7 +484,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticContinuousPartialFixedLookback) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testMonteCarloLookback, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testMonteCarloLookback) {
     BOOST_TEST_MESSAGE("Testing Monte Carlo engines for lookback options...");
 
     Real tolerance = 0.1;

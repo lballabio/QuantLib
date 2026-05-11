@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
@@ -225,7 +224,7 @@ BOOST_AUTO_TEST_CASE(testCapletPricing) {
                     << "\n    expected:   " << expected);
 }
 
-BOOST_AUTO_TEST_CASE(testCalibration, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testCalibration) {
     BOOST_TEST_MESSAGE("Testing calibration of a Libor forward model...");
 
     const Size size = 14;

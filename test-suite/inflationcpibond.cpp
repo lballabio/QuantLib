@@ -66,7 +66,7 @@ std::vector<ext::shared_ptr<Helper> > makeHelpers(
         Handle<Quote> quote(ext::shared_ptr<Quote>(
                                 new SimpleQuote(datum.rate/100.0)));
         auto h = ext::make_shared<ZeroCouponInflationSwapHelper>(
-                quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex);
+                quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::Flat);
         instruments.push_back(h);
     }
     return instruments;

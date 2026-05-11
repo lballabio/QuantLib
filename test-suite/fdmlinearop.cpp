@@ -19,7 +19,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/integrals/discreteintegrals.hpp>
@@ -1080,7 +1079,7 @@ BOOST_AUTO_TEST_CASE(testFdmHestonExpress) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testFdmHestonHullWhiteOp, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testFdmHestonHullWhiteOp) {
     BOOST_TEST_MESSAGE("Testing FDM with Heston Hull-White model...");
 
     const Date today = Date(28, March, 2004);

@@ -100,6 +100,9 @@ namespace QuantLib {
         }
 
         registerWith(baseCurve_);
+        this->times_.resize(dates_.size());
+        this->interpolation_ = detail::interpolateWithoutUpdate(
+            this->interpolator_, this->times_.begin(), this->times_.end(), this->data_.begin());
         if (!baseCurve_.empty())
             updateInterpolation();
     }
@@ -218,7 +221,6 @@ namespace QuantLib {
         auto dc = dayCounter();
         if (prevDayCount_ != dc) {
             this->setupTimes(dates_, dates_[0], dc);
-            this->setupInterpolation();
             this->interpolation_.update();
             prevDayCount_ = dc;
         }

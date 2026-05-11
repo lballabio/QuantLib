@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/finitedifferences/fdextoujumpvanillaengine.hpp>
@@ -204,7 +203,7 @@ BOOST_AUTO_TEST_CASE(testFdmExponentialJump1dMesher) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testExtOUJumpVanillaEngine, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testExtOUJumpVanillaEngine) {
 
     BOOST_TEST_MESSAGE("Testing finite difference pricer for the Kluge model...");
 
@@ -339,7 +338,7 @@ BOOST_AUTO_TEST_CASE(testFdBSSwingOption) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testExtOUJumpSwingOption, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testExtOUJumpSwingOption) {
 
     BOOST_TEST_MESSAGE("Testing simple swing option pricing for Kluge model...");
 

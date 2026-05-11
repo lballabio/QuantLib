@@ -296,18 +296,17 @@ namespace detail {
                 if (!validData) {
                     try { // extend interpolation a point at a time
                           // including the pillar to be boostrapped
-                        ts_->interpolation_ = ts_->interpolator_.interpolate(
-                            times.begin(), times.begin()+i+1, data.begin());
+                        ts_->interpolation_ = detail::interpolateWithoutUpdate(
+                            ts_->interpolator_, times.begin(), times.begin()+i+1, data.begin());
                     } catch (...) {
                         if (!Interpolator::global)
                             throw; // no chance to fix it in a later iteration
 
                         // otherwise use Linear while the target
                         // interpolation is not usable yet
-                        ts_->interpolation_ = Linear().interpolate(
-                            times.begin(), times.begin()+i+1, data.begin());
+                        ts_->interpolation_ = detail::interpolateWithoutUpdate(
+                            Linear(), times.begin(), times.begin()+i+1, data.begin());
                     }
-                    ts_->interpolation_.update();
                 }
 
                 const auto& helper = ts_->instruments_[j];

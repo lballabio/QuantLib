@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/cashflowvectors.hpp>
@@ -889,7 +888,7 @@ BOOST_AUTO_TEST_CASE(testSmileSectionUtilsWShapedSmile) {
                     << idx.first << ", right index " << idx.second);
 }
 
-BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet) {
 
     const Real tol0 = 0.0001; //  1bp tolerance for model zero rates vs. market
                               // zero rates (note that model zero rates are
@@ -1117,7 +1116,7 @@ BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet, *precondition(if_speed(Slo
     }
 }
 
-BOOST_AUTO_TEST_CASE(testVanillaEngines, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testVanillaEngines) {
 
     const Real tol1 = 0.0001; // 1bp tolerance for model engine call put premia
                               // vs. black premia
@@ -1398,7 +1397,7 @@ BOOST_AUTO_TEST_CASE(testVanillaEngines, *precondition(if_speed(Slow))) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testCalibrationTwoInstrumentSets, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testCalibrationTwoInstrumentSets) {
 
     const Real tol1 = 0.1; // 0.1 times vega tolerance for model vs. market in
                            // second instrument set

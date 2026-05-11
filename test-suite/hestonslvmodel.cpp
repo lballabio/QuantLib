@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/barrieroption.hpp>
@@ -1138,7 +1137,7 @@ BOOST_AUTO_TEST_CASE(testSquareRootFokkerPlanckFwdEquation) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testHestonFokkerPlanckFwdEquation, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testHestonFokkerPlanckFwdEquation) {
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
                        "for the Heston process...");
 
@@ -1194,7 +1193,7 @@ BOOST_AUTO_TEST_CASE(testHestonFokkerPlanckFwdEquation, *precondition(if_speed(S
     }
 }
 
-BOOST_AUTO_TEST_CASE(testHestonFokkerPlanckFwdEquationLogLVLeverage, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testHestonFokkerPlanckFwdEquationLogLVLeverage) {
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
                        "for the Heston process Log Transformation with leverage LV limiting case...");
 
@@ -1360,7 +1359,7 @@ BOOST_AUTO_TEST_CASE(testHestonFokkerPlanckFwdEquationLogLVLeverage, *preconditi
     }
 }
 
-BOOST_AUTO_TEST_CASE(testBlackScholesFokkerPlanckFwdEquationLocalVol, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testBlackScholesFokkerPlanckFwdEquationLocalVol) {
     BOOST_TEST_MESSAGE(
             "Testing Fokker-Planck forward equation for BS Local Vol process...");
 
@@ -1857,7 +1856,7 @@ BOOST_AUTO_TEST_CASE(testBarrierPricingViaHestonLocalVol) {
 //    }
 //}
 
-BOOST_AUTO_TEST_CASE(testMonteCarloVsFdmPricing, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testMonteCarloVsFdmPricing) {
     BOOST_TEST_MESSAGE(
         "Testing Monte-Carlo vs FDM Pricing for "
         "Heston SLV models...");
@@ -1962,7 +1961,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloVsFdmPricing, *precondition(if_speed(Fast))) 
     }
 }
 
-BOOST_AUTO_TEST_CASE(testMonteCarloCalibration, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testMonteCarloCalibration) {
     BOOST_TEST_MESSAGE(
         "Testing Monte-Carlo Calibration...");
 
@@ -2256,7 +2255,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloCalibration, *precondition(if_speed(Fast))) {
 //    }
 //}
 
-BOOST_AUTO_TEST_CASE(testMoustacheGraph, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testMoustacheGraph) {
     BOOST_TEST_MESSAGE(
         "Testing double no touch pricing with SLV and mixing...");
 

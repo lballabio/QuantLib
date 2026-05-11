@@ -3,6 +3,7 @@ on:
   schedule:
     - cron: '0 0 * * 0'
   workflow_dispatch:
+  workflow_call:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -152,7 +153,7 @@ jobs:
             configureflags: --enable-unity-build
           - name: "Standard Library classes enabled"
             shortname: stdclasses
-            tag: rolling
+            tag: oracular
             cc: gcc
             cxx: g++
             configureflags: --enable-std-pointers --disable-std-any --disable-std-optional

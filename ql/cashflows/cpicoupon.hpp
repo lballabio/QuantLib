@@ -243,7 +243,7 @@ namespace QuantLib {
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_ = ModifiedFollowing;
         Calendar paymentCalendar_;
-        CPI::InterpolationType observationInterpolation_ = CPI::AsIndex;
+        CPI::InterpolationType observationInterpolation_ = CPI::Flat;
         bool subtractInflationNominal_ = true;
         std::vector<Rate> caps_, floors_;
         Period exCouponPeriod_;

@@ -186,7 +186,6 @@ template <class T> void InterpolatedSimpleZeroCurve<T>::initialize() {
 
     this->setupTimes(dates_, dates_[0], dayCounter());
     this->setupInterpolation();
-    this->interpolation_.update();
 }
 
 } // namespace QuantLib

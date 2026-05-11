@@ -69,26 +69,6 @@ namespace QuantLib {
                             Period(1, Months),
                             EURCurrency(),
                             ts) {}
-
-        QL_DEPRECATED_DISABLE_WARNING
-
-        /*! \deprecated Use the overload without the interpolated parameter.
-                        Deprecated in version 1.38.
-        */
-        [[deprecated("Use the overload without the interpolated parameter")]]
-        explicit YYEUHICP(
-            bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = {})
-        : YoYInflationIndex("YY_HICP",
-                            EURegion(),
-                            false,
-                            interpolated,
-                            Monthly,
-                            Period(1, Months),
-                            EURCurrency(),
-                            ts) {}
-
-        QL_DEPRECATED_ENABLE_WARNING
     };
 
     //! Quoted year-on-year EU HICPXT
@@ -102,26 +82,6 @@ namespace QuantLib {
                             Period(1, Months),
                             EURCurrency(),
                             ts) {}
-
-        QL_DEPRECATED_DISABLE_WARNING
-
-        /*! \deprecated Use the overload without the interpolated parameter.
-                        Deprecated in version 1.38.
-        */
-        [[deprecated("Use the overload without the interpolated parameter")]]
-        explicit YYEUHICPXT(
-            bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = {})
-        : YoYInflationIndex("YY_HICPXT",
-                            EURegion(),
-                            false,
-                            interpolated,
-                            Monthly,
-                            Period(1, Months),
-                            EURCurrency(),
-                            ts) {}
-
-        QL_DEPRECATED_ENABLE_WARNING
     };
 
 }

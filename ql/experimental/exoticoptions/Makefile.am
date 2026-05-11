@@ -4,27 +4,15 @@ AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    analyticholderextensibleoptionengine.hpp \
-    analyticpartialtimebarrieroptionengine.hpp \
-    analyticpdfhestonengine.hpp \
-    analytictwoassetbarrierengine.hpp \
-    analytictwoassetcorrelationengine.hpp \
-    analyticwriterextensibleoptionengine.hpp \
-    continuousarithmeticasianlevyengine.hpp \
     continuousarithmeticasianvecerengine.hpp \
     everestoption.hpp \
     himalayaoption.hpp \
-    holderextensibleoption.hpp \
     kirkspreadoptionengine.hpp \
     mceverestengine.hpp \
     mchimalayaengine.hpp \
     mcpagodaengine.hpp \
     pagodaoption.hpp \
-    partialtimebarrieroption.hpp \
-    spreadoption.hpp \
-    twoassetbarrieroption.hpp \
-    twoassetcorrelationoption.hpp \
-    writerextensibleoption.hpp
+    spreadoption.hpp
 
 cpp_files = \
     continuousarithmeticasianvecerengine.cpp \
@@ -62,20 +50,8 @@ all.hpp: Makefile.am
 	echo "/* Add the files to be included into Makefile.am instead. */" >> ${srcdir}/$@
 	echo >> ${srcdir}/$@
 	for i in $(filter-out all.hpp \
-	                      analyticholderextensibleoptionengine.hpp \
-	                      analyticpartialtimebarrieroptionengine.hpp \
-	                      analyticpdfhestonengine.hpp \
-	                      analytictwoassetbarrierengine.hpp \
-	                      analytictwoassetcorrelationengine.hpp \
-	                      analyticwriterextensibleoptionengine.hpp \
-	                      continuousarithmeticasianlevyengine.hpp \
-	                      holderextensibleoption.hpp \
 	                      kirkspreadoptionengine.hpp \
-	                      partialtimebarrieroption.hpp \
-	                      spreadoption.hpp \
-	                      twoassetbarrieroption.hpp \
-	                      twoassetcorrelationoption.hpp \
-	                      writerextensibleoption.hpp, \
+	                      spreadoption.hpp, \
 	                      $(this_include_HEADERS)); do \
 		echo "#include <${subdir}/$$i>" >> ${srcdir}/$@; \
 	done

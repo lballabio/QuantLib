@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <algorithm>
@@ -589,7 +588,7 @@ BOOST_AUTO_TEST_CASE(testMcVsCached) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testFdBarrierVsCached, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testFdBarrierVsCached) {
     BOOST_TEST_MESSAGE("Testing FD barrier Heston engine against cached values...");
 
     DayCounter dc = Actual360();
@@ -786,7 +785,7 @@ BOOST_AUTO_TEST_CASE(testFdAmerican) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testKahlJaeckelCase, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testKahlJaeckelCase) {
     BOOST_TEST_MESSAGE(
           "Testing MC and FD Heston engines for the Kahl-Jaeckel example...");
 
@@ -938,7 +937,7 @@ BOOST_AUTO_TEST_CASE(testKahlJaeckelCase, *precondition(if_speed(Fast))) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testDifferentIntegrals, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testDifferentIntegrals) {
     BOOST_TEST_MESSAGE(
        "Testing different numerical Heston integration algorithms...");
 

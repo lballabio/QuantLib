@@ -273,7 +273,6 @@ namespace QuantLib {
         }
 
         this->setupInterpolation();
-        this->interpolation_.update();
     }
 
 }

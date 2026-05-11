@@ -35,17 +35,6 @@ namespace QuantLib {
             return (Integer)std::lround(12.0 / Real(months));
         }
 
-        /* An ISMA day counter either needs a schedule or to have
-           been explicitly passed a reference period. This usage
-           leads to inaccurate year fractions.
-        */
-        template <class T>
-        Time yearFractionGuess(const T& impl,
-                               const Date& start, const Date& end) {
-            // asymptotically correct.
-            return Real(impl.dayCount(start, end)) / 365.0;
-        }
-
         std::vector<Date> getListOfPeriodDatesIncludingQuasiPayments(
                                                    const Schedule& schedule) {
             // Process the schedule into an array of dates.

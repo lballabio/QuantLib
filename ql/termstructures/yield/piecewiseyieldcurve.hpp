@@ -163,11 +163,11 @@ namespace QuantLib {
           accuracy_(1.0e-12), bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
         }
-      private:
         //! \name LazyObject interface
         //@{
         void performCalculations() const override;
         //@}
+      private:
         // methods
         DiscountFactor discountImpl(Time) const override;
         // data members

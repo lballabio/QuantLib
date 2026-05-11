@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/distributions/normaldistribution.hpp>
@@ -45,7 +44,7 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(GJRGARCHModelTests)
 
-BOOST_AUTO_TEST_CASE(testEngines, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testEngines) {
     BOOST_TEST_MESSAGE(
        "Testing Monte Carlo GJR-GARCH engine against "
        "analytic GJR-GARCH engine...");
@@ -197,7 +196,7 @@ BOOST_AUTO_TEST_CASE(testEngines, *precondition(if_speed(Slow))) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testDAXCalibration, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testDAXCalibration) {
     /* this example is taken from A. Sepp
        Pricing European-Style Options under Jump Diffusion Processes
        with Stochstic Volatility: Applications of Fourier Transform

@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE(testSettings) {
     std::vector<ext::shared_ptr<CashFlow> > leg;
     leg.reserve(3);
     for (Integer i = 0; i < 3; ++i)
-        leg.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(1.0, today+i)));
+        leg.push_back(ext::make_shared<SimpleCashFlow>(1.0, today+i));
 
 
     #define CHECK_INCLUSION(n, days, expected) \

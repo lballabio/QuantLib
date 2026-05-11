@@ -111,7 +111,6 @@ namespace QuantLib {
 
         this->setupTimes(dates_, referenceDate, dayCounter);
         this->setupInterpolation();
-        this->interpolation_.update();
     }
 
     template <class Interpolator>

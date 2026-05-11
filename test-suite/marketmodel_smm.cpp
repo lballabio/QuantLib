@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
@@ -420,7 +419,7 @@ void checkCoterminalSwapsAndSwaptions(
 }
 
 
-BOOST_AUTO_TEST_CASE(testMultiStepCoterminalSwapsAndSwaptions, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testMultiStepCoterminalSwapsAndSwaptions) {
 
     BOOST_TEST_MESSAGE("Testing exact repricing of "
                        "multi-step coterminal swaps and swaptions "

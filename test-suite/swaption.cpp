@@ -22,7 +22,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/iborcoupon.hpp>
@@ -823,7 +822,7 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Faster))) {
+BOOST_AUTO_TEST_CASE(testImpliedVolatility) {
 
     BOOST_TEST_MESSAGE("Testing implied volatility for swaptions...");
 
@@ -921,7 +920,7 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Faster))) {
 }
 
 
-BOOST_AUTO_TEST_CASE(testImpliedVolatilityOis, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testImpliedVolatilityOis) {
 
     BOOST_TEST_MESSAGE("Testing implied volatility for overnight-indexed swaptions...");
 

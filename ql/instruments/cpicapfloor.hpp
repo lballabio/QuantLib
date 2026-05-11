@@ -76,7 +76,7 @@ namespace QuantLib {
                     Rate strike,
                     ext::shared_ptr<ZeroInflationIndex>  inflationIndex,
                     const Period& observationLag,
-                    CPI::InterpolationType observationInterpolation = CPI::AsIndex);
+                    CPI::InterpolationType observationInterpolation = CPI::Flat);
 
         //! \name Inspectors
         //@{
