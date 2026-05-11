@@ -26,29 +26,44 @@
 
 namespace QuantLib {
 
+    //! Abstract interface for a parametric early-exercise strategy.
+    /*! Derived classes encode a family of exercise boundaries
+        parameterized by a set of real-valued parameters.  The
+        optimal parameters are found by numerical optimization
+        (see genericEarlyExerciseOptimization()).
+    */
     class ParametricExercise {
       public:
         virtual ~ParametricExercise() = default;
-        // possibly different for each exercise
+        //! number of state variables used at each exercise date
         virtual std::vector<Size> numberOfVariables() const = 0;
+        //! number of free parameters at each exercise date
         virtual std::vector<Size> numberOfParameters() const = 0;
+        /*! returns true if exercise is optimal given \p parameters
+        and the state \p variables at \p exerciseNumber */
         virtual bool exercise(Size exerciseNumber,
                               const std::vector<Real>& parameters,
                               const std::vector<Real>& variables) const = 0;
+        //! provides an initial guess for the parameters
         virtual void guess(Size exerciseNumber,
                            std::vector<Real>& parameters) const = 0;
     };
     
 
-    //! returns the biased estimate obtained while optimizing
-    /* TODO document:
-       n exercises, n+1 elements in simulationData
-       simulationData[0][j] -> cashflows up to first exercise, j-th path
-       simulationData[i+1][j] -> i-th exercise, j-th path
+    /*! Estimates the value of early-exercise rights
+        by optimizing a parametric exercise strategy.
 
-       simulationData[0][j].foo unused (unusable?) if foo != cumulatedCashFlows
+        Returns a biased estimate of the option value
+        by maximizing the strategy value over parameters at each exercise date.
 
-       parameters.size() = n
+        \param simulationData Node data for all paths and exercise dates.
+                              Contains n+1 elements for n exercise dates
+                              - simulationData[0][j]: accumulated cash flows on path j
+                              - simulationData[i+1][j]: data at exercise date i on path j
+        \param exercise Parametric exercise strategy to optimize
+        \param parameters Output: optimal parameters for each exercise date (size = n)
+        \param endCriteria Convergence criteria for the optimizer
+        \param method Optimization algorithm
     */
     Real genericEarlyExerciseOptimization(
         std::vector<std::vector<NodeData> >& simulationData,
