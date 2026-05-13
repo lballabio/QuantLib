@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2015 Johannes Göttker-Schnetmann
  Copyright (C) 2015, 2016 Klaus Spanderen
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +29,7 @@
 #include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/smilesectionrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
@@ -35,9 +37,11 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/atmsmilesection.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
+#include <ql/termstructures/volatility/flatsmilesection.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/timegrid.hpp>
 #include <ql/types.hpp>
@@ -778,6 +782,160 @@ BOOST_AUTO_TEST_CASE(testCEVCDF) {
         }
     }
 }
+
+BOOST_AUTO_TEST_CASE(testSmileSectionRNDvsBSM) {
+    BOOST_TEST_MESSAGE("Testing SmileSectionRNDCalculator on a flat-vol "
+                       "smile against BSMRNDCalculator...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Settings::instance().evaluationDate();
+    const Date maturity = today + 1 * Years;
+
+    const Real s0 = 100.0;
+    const Rate r = 0.05;
+    const Rate q = 0.02;
+    const Volatility v = 0.20;
+
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
+    const Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, q, dc));
+
+    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess =
+        ext::make_shared<BlackScholesMertonProcess>(
+            spot, qTS, rTS,
+            Handle<BlackVolTermStructure>(flatVol(today, v, dc)));
+
+    const BSMRNDCalculator bsmRnd(bsmProcess);
+
+    const Real fwd = s0 * qTS->discount(maturity) / rTS->discount(maturity);
+    const auto smile = ext::make_shared<FlatSmileSection>(
+        maturity, v, dc, today, fwd);
+    const SmileSectionRNDCalculator smileRnd(smile);
+    const Time T = smile->exerciseTime();
+
+    const Real logFwd = std::log(fwd);
+    const Real tol = 1e-3;
+
+    for (Real offset : { -0.30, -0.15, 0.0, 0.15, 0.30 }) {
+        const Real x = logFwd + offset;
+
+        const Real expectedCDF = bsmRnd.cdf(x, T);
+        const Real calculatedCDF = smileRnd.cdf(x, T);
+        if (std::fabs(expectedCDF - calculatedCDF) > tol) {
+            BOOST_FAIL("failed to reproduce BSM cdf with SmileSection RND"
+                    << "\n   x:          " << x
+                    << "\n   calculated: " << calculatedCDF
+                    << "\n   expected:   " << expectedCDF
+                    << "\n   diff:       " << calculatedCDF - expectedCDF
+                    << "\n   tolerance:  " << tol);
+        }
+
+        const Real expectedPDF = bsmRnd.pdf(x, T);
+        const Real calculatedPDF = smileRnd.pdf(x, T);
+        if (std::fabs(expectedPDF - calculatedPDF) > tol) {
+            BOOST_FAIL("failed to reproduce BSM pdf with SmileSection RND"
+                    << "\n   x:          " << x
+                    << "\n   calculated: " << calculatedPDF
+                    << "\n   expected:   " << expectedPDF
+                    << "\n   diff:       " << calculatedPDF - expectedPDF
+                    << "\n   tolerance:  " << tol);
+        }
+    }
+
+    for (Real prob : { 0.05, 0.25, 0.5, 0.75, 0.95 }) {
+        const Real expectedInvCDF = bsmRnd.invcdf(prob, T);
+        const Real calculatedInvCDF = smileRnd.invcdf(prob, T);
+        if (std::fabs(expectedInvCDF - calculatedInvCDF) > tol) {
+            BOOST_FAIL("failed to reproduce BSM invcdf with SmileSection RND"
+                    << "\n   prob:       " << prob
+                    << "\n   calculated: " << calculatedInvCDF
+                    << "\n   expected:   " << expectedInvCDF
+                    << "\n   diff:       " << calculatedInvCDF - expectedInvCDF
+                    << "\n   tolerance:  " << tol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSmileSectionRNDvsHeston) {
+    BOOST_TEST_MESSAGE("Testing SmileSectionRNDCalculator on a Heston-implied "
+                       "smile against HestonRNDCalculator...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Settings::instance().evaluationDate();
+    const Date maturity = today + 1 * Years;
+
+    const Real s0 = 100.0;
+    const Rate r = 0.05;
+    const Rate q = 0.02;
+
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
+    const Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, q, dc));
+
+    const Real v0 = 0.04, kappa = 1.0, theta = 0.04;
+    const Real sigma = 0.3, rho = -0.5;
+
+    const auto hestonProcess = ext::make_shared<HestonProcess>(
+        rTS, qTS, spot, v0, kappa, theta, sigma, rho);
+    const auto hestonModel = ext::make_shared<HestonModel>(hestonProcess);
+
+    const HestonRNDCalculator hestonRnd(hestonProcess);
+
+    const auto hestonVolSurface = ext::make_shared<HestonBlackVolSurface>(
+        Handle<HestonModel>(hestonModel));
+    const Time T = hestonVolSurface->timeFromReference(maturity);
+    const Real fwd = s0 * qTS->discount(maturity) / rTS->discount(maturity);
+    const auto smile = ext::make_shared<AtmSmileSection>(
+        hestonVolSurface->smileSection(T), fwd);
+    const SmileSectionRNDCalculator smileRnd(smile);
+
+    const Real logFwd = std::log(fwd);
+    const Real cdfTol = 5e-3;
+    const Real pdfTol = 1e-3;
+
+    for (Real offset : { -0.30, -0.15, 0.0, 0.15, 0.30 }) {
+        const Real x = logFwd + offset;
+
+        const Real expectedCDF = hestonRnd.cdf(x, T);
+        const Real calculatedCDF = smileRnd.cdf(x, T);
+        if (std::fabs(expectedCDF - calculatedCDF) > cdfTol) {
+            BOOST_FAIL("failed to reproduce Heston cdf with SmileSection RND"
+                    << "\n   x:          " << x
+                    << "\n   calculated: " << calculatedCDF
+                    << "\n   expected:   " << expectedCDF
+                    << "\n   diff:       " << calculatedCDF - expectedCDF
+                    << "\n   tolerance:  " << cdfTol);
+        }
+
+        const Real expectedPDF = hestonRnd.pdf(x, T);
+        const Real calculatedPDF = smileRnd.pdf(x, T);
+        if (std::fabs(expectedPDF - calculatedPDF) > pdfTol) {
+            BOOST_FAIL("failed to reproduce Heston pdf with SmileSection RND"
+                    << "\n   x:          " << x
+                    << "\n   calculated: " << calculatedPDF
+                    << "\n   expected:   " << expectedPDF
+                    << "\n   diff:       " << calculatedPDF - expectedPDF
+                    << "\n   tolerance:  " << pdfTol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSmileSectionRNDMissingAtmLevel) {
+    BOOST_TEST_MESSAGE("Testing that SmileSectionRNDCalculator raises "
+                       "when the smile has no atmLevel...");
+
+    const Date today = Settings::instance().evaluationDate();
+    const Date maturity = today + 1 * Years;
+    const auto smile = ext::make_shared<FlatSmileSection>(
+        maturity, 0.20, Actual365Fixed(), today);
+    SmileSectionRNDCalculator rnd(smile);
+
+    const Time T = smile->exerciseTime();
+    BOOST_CHECK_EXCEPTION(
+        rnd.invcdf(0.5, T), QuantLib::Error,
+        ExpectedErrorMessage("AtmSmileSection"));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

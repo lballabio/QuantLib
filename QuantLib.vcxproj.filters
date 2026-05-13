@@ -4365,6 +4365,9 @@
     <ClInclude Include="ql\methods\finitedifferences\utilities\riskneutraldensitycalculator.hpp">
       <Filter>methods\finitedifferences\utilities</Filter>
     </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\utilities\smilesectionrndcalculator.hpp">
+      <Filter>methods\finitedifferences\utilities</Filter>
+    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\utilities\squarerootprocessrndcalculator.hpp">
       <Filter>methods\finitedifferences\utilities</Filter>
     </ClInclude>
@@ -7253,6 +7256,9 @@
       <Filter>methods\finitedifferences\utilities</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\utilities\riskneutraldensitycalculator.cpp">
+      <Filter>methods\finitedifferences\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\utilities\smilesectionrndcalculator.cpp">
       <Filter>methods\finitedifferences\utilities</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\utilities\squarerootprocessrndcalculator.cpp">
