@@ -2127,7 +2127,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloCalibration) {
 //    const ext::shared_ptr<LocalVolTermStructure> leverageFctMC =
 //        HestonSLVMCModel(
 //            localVol, hestonModel,
-//            ext::make_shared<MTBrownianGeneratorFactory>(1234UL),
+//            ext::shared_ptr<BrownianGeneratorFactory>(new MTBrownianGeneratorFactory(1234UL)),
 //            maturityDate, 182, xGrid, nSim)
 //            .leverageFunction();
 //

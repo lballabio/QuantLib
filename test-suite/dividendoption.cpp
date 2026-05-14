@@ -317,19 +317,19 @@ BOOST_AUTO_TEST_CASE(testEuropeanStartLimit) {
 //    Date today = Date::todaysDate();
 //    Settings::instance().evaluationDate() = today;
 //
-//    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
-//    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+//    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+//    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
 //    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-//    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
+//    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
 //    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-//    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
+//    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
 //    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 //
 //    for (auto& type : types) {
 //        for (Real strike : strikes) {
 //            for (int length : lengths) {
 //                Date exDate = today + length * Years;
-//                ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
+//                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 //
 //                ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
 //                    new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
@@ -337,12 +337,12 @@ BOOST_AUTO_TEST_CASE(testEuropeanStartLimit) {
 //                std::vector<Date> dividendDates = {exercise->lastDate()};
 //                std::vector<Real> dividends = {dividendValue};
 //
-//                ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
+//                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
 //
 //                ext::shared_ptr<StrikedTypePayoff> refPayoff(
 //                    new PlainVanillaPayoff(type, strike + dividendValue));
 //
-//                ext::shared_ptr<PricingEngine> ref_engine = ext::make_shared<AnalyticEuropeanEngine>(stochProcess);
+//                ext::shared_ptr<PricingEngine> ref_engine(new AnalyticEuropeanEngine(stochProcess));
 //
 //                VanillaOption ref_option(refPayoff, exercise);
 //                ref_option.setPricingEngine(ref_engine);

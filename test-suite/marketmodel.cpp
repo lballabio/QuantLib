@@ -4268,7 +4268,8 @@ BOOST_AUTO_TEST_CASE(testStochVolForwardsAndOptionlets) {
     {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
         optionletPayoffs[i] = ext::make_shared<PlainVanillaPayoff>(Option::Call, todaysForwards[i]);
-        /* displacedPayoffs[i] = ext::make_shared<PlainVanillaPayoff>(Option::Call, todaysForwards[i]+displacement); */
+        /* displacedPayoffs[i] = ext::shared_ptr<PlainVanillaPayoff>(new
+           PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement)); */
     }
 
     MultiStepForwards forwards(rateTimes, accruals,

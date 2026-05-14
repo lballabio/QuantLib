@@ -236,7 +236,7 @@ void ZabrSmileSection<Evaluation>::init3(ZabrLocalVolatility) {
         CubicInterpolation::Spline, true, CubicInterpolation::SecondDerivative,
         0.0, CubicInterpolation::SecondDerivative, 0.0);
     // callPriceFct_ =
-    //     ext::make_shared<LinearInterpolation>(
+    //     ext::shared_ptr<Interpolation>(new LinearInterpolation(
     //         strikes_.begin(), strikes_.end(), callPrices_.begin());
 
     callPriceFct_->enableExtrapolation();

@@ -153,7 +153,7 @@ std::vector<Real> ZabrModel::fdPrice(const std::vector<Real> &strikes) const {
     // Uniform1dMesher(start,0.03,101));
     // const ext::shared_ptr<Fdm1dMesher> m1b(new
     // Uniform1dMesher(0.03,end,100));
-    // const ext::shared_ptr<Fdm1dMesher> m1 = ext::make_shared<Glued1dMesher>(*m1a,*m1b);
+    // const ext::shared_ptr<Fdm1dMesher> m1(new Glued1dMesher(*m1a,*m1b));
     const std::vector<ext::shared_ptr<Fdm1dMesher> > meshers(1, m1);
     const ext::shared_ptr<FdmMesher> mesher = ext::make_shared<FdmMesherComposite>(layout, meshers);
 
@@ -247,7 +247,7 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
     const ext::shared_ptr<Fdm1dMesher> mf = ext::make_shared<Glued1dMesher>(*mfa, *mfb);
 
     // concentraing mesher around f to get the forward mesher
-    // const ext::shared_ptr<Fdm1dMesher> mf = ext::make_shared<Concentrating1dMesher>(
+    // const ext::shared_ptr<Fdm1dMesher> mf(new Concentrating1dMesher(
     //     f0, f1, sizef, std::pair<Real, Real>(forward_, densityf), true);
 
     // Volatility mesher
