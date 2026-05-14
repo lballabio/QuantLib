@@ -65,23 +65,21 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhite) {
     Settings::instance().evaluationDate() = today;
     Handle<YieldTermStructure> termStructure(flatRate(settlement,0.04875825,
                                                       Actual365Fixed()));
-    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure));
+    ext::shared_ptr<HullWhite> model = ext::make_shared<HullWhite>(termStructure);
     CalibrationData data[] = {{ 1, 5, 0.1148 },
                               { 2, 4, 0.1108 },
                               { 3, 3, 0.1070 },
                               { 4, 2, 0.1021 },
                               { 5, 1, 0.1000 }};
-    ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
+    ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor6M>(termStructure);
 
-    ext::shared_ptr<PricingEngine> engine(
-                                     new JamshidianSwaptionEngine(model));
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<JamshidianSwaptionEngine>(model);
 
     std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
     for (auto& i : data) {
-        ext::shared_ptr<Quote> vol(new SimpleQuote(i.volatility));
-        ext::shared_ptr<BlackCalibrationHelper> helper(
-            new SwaptionHelper(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
-                               index, Period(1, Years), Thirty360(Thirty360::BondBasis), Actual360(), termStructure));
+        ext::shared_ptr<Quote> vol = ext::make_shared<SimpleQuote>(i.volatility);
+        ext::shared_ptr<BlackCalibrationHelper> helper = ext::make_shared<SwaptionHelper>(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
+                               index, Period(1, Years), Thirty360(Thirty360::BondBasis), Actual360(), termStructure);
         helper->setPricingEngine(engine);
         swaptions.push_back(helper);
     }
@@ -137,24 +135,22 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhiteFixedReversion) {
     Settings::instance().evaluationDate() = today;
     Handle<YieldTermStructure> termStructure(flatRate(settlement,0.04875825,
                                                       Actual365Fixed()));
-    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure,0.05,0.01));
+    ext::shared_ptr<HullWhite> model = ext::make_shared<HullWhite>(termStructure,0.05,0.01);
     CalibrationData data[] = {{ 1, 5, 0.1148 },
                               { 2, 4, 0.1108 },
                               { 3, 3, 0.1070 },
                               { 4, 2, 0.1021 },
                               { 5, 1, 0.1000 }};
-    ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
+    ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor6M>(termStructure);
 
-    ext::shared_ptr<PricingEngine> engine(
-                                     new JamshidianSwaptionEngine(model));
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<JamshidianSwaptionEngine>(model);
 
     std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
     for (auto& i : data) {
-        ext::shared_ptr<Quote> vol(new SimpleQuote(i.volatility));
-        ext::shared_ptr<BlackCalibrationHelper> helper(
-            new SwaptionHelper(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
+        ext::shared_ptr<Quote> vol = ext::make_shared<SimpleQuote>(i.volatility);
+        ext::shared_ptr<BlackCalibrationHelper> helper = ext::make_shared<SwaptionHelper>(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
                                index, Period(1, Years), Thirty360(Thirty360::BondBasis),
-                               Actual360(), termStructure));
+                               Actual360(), termStructure);
         helper->setPricingEngine(engine);
         swaptions.push_back(helper);
     }
@@ -212,27 +208,25 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhite2) {
     Settings::instance().evaluationDate() = today;
     Handle<YieldTermStructure> termStructure(flatRate(settlement,0.04875825,
                                                       Actual365Fixed()));
-    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure));
+    ext::shared_ptr<HullWhite> model = ext::make_shared<HullWhite>(termStructure);
     CalibrationData data[] = {{ 1, 5, 0.1148 },
                               { 2, 4, 0.1108 },
                               { 3, 3, 0.1070 },
                               { 4, 2, 0.1021 },
                               { 5, 1, 0.1000 }};
-    ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
-    ext::shared_ptr<IborIndex> index0(new IborIndex(
+    ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor6M>(termStructure);
+    ext::shared_ptr<IborIndex> index0 = ext::make_shared<IborIndex>(
         index->familyName(),index->tenor(),0,index->currency(),index->fixingCalendar(),
-        index->businessDayConvention(),index->endOfMonth(),index->dayCounter(),termStructure)); // Euribor 6m with zero fixing days
+        index->businessDayConvention(),index->endOfMonth(),index->dayCounter(),termStructure); // Euribor 6m with zero fixing days
 
-    ext::shared_ptr<PricingEngine> engine(
-                                     new JamshidianSwaptionEngine(model));
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<JamshidianSwaptionEngine>(model);
 
     std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
     for (auto& i : data) {
-        ext::shared_ptr<Quote> vol(new SimpleQuote(i.volatility));
-        ext::shared_ptr<BlackCalibrationHelper> helper(
-            new SwaptionHelper(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
+        ext::shared_ptr<Quote> vol = ext::make_shared<SimpleQuote>(i.volatility);
+        ext::shared_ptr<BlackCalibrationHelper> helper = ext::make_shared<SwaptionHelper>(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
                                index0, Period(1, Years), Thirty360(Thirty360::BondBasis),
-                               Actual360(), termStructure));
+                               Actual360(), termStructure);
         helper->setPricingEngine(engine);
         swaptions.push_back(helper);
     }
@@ -322,18 +316,16 @@ BOOST_AUTO_TEST_CASE(testSwaps) {
     };
 
     Handle<YieldTermStructure> termStructure(
-       ext::shared_ptr<YieldTermStructure>(
-           new DiscountCurve(dates, discounts, Actual365Fixed())));
+       ext::make_shared<DiscountCurve>(dates, discounts, Actual365Fixed()));
 
-    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure));
+    ext::shared_ptr<HullWhite> model = ext::make_shared<HullWhite>(termStructure);
 
     Integer start[] = { -3, 0, 3 };
     Integer length[] = { 2, 5, 10 };
     Rate rates[] = { 0.02, 0.04, 0.06 };
-    ext::shared_ptr<IborIndex> euribor(new Euribor6M(termStructure));
+    ext::shared_ptr<IborIndex> euribor = ext::make_shared<Euribor6M>(termStructure);
 
-    ext::shared_ptr<PricingEngine> engine(
-                                     new TreeVanillaSwapEngine(model,120));
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<TreeVanillaSwapEngine>(model,120);
 
     Real tolerance = usingAtParCoupons ? 1.0e-8 : 4.0e-3;
 
@@ -359,8 +351,7 @@ BOOST_AUTO_TEST_CASE(testSwaps) {
                 VanillaSwap swap(Swap::Payer, 1000000.0, fixedSchedule, rate,
                                  Thirty360(Thirty360::BondBasis),
                                  floatSchedule, euribor, 0.0, Actual360());
-                swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                                     new DiscountingSwapEngine(termStructure)));
+                swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(termStructure));
                 Real expected = swap.NPV();
                 swap.setPricingEngine(engine);
                 Real calculated = swap.NPV();

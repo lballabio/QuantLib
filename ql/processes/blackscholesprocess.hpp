@@ -58,7 +58,7 @@ namespace QuantLib {
                                        Handle<YieldTermStructure> riskFreeTS,
                                        Handle<BlackVolTermStructure> blackVolTS,
                                        const ext::shared_ptr<discretization>& d =
-                                           ext::shared_ptr<discretization>(new EulerDiscretization),
+                                           ext::make_shared<EulerDiscretization>(),
                                        bool forceDiscretization = false);
 
         GeneralizedBlackScholesProcess(Handle<Quote> x0,
@@ -127,7 +127,7 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const ext::shared_ptr<discretization>& d =
-                  ext::shared_ptr<discretization>(new EulerDiscretization),
+                ext::make_shared<EulerDiscretization>(),
             bool forceDiscretization = false);
     };
 
@@ -149,7 +149,7 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const ext::shared_ptr<discretization>& d =
-                  ext::shared_ptr<discretization>(new EulerDiscretization),
+                ext::make_shared<EulerDiscretization>(),
             bool forceDiscretization = false);
     };
 
@@ -172,7 +172,7 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const ext::shared_ptr<discretization>& d =
-                  ext::shared_ptr<discretization>(new EulerDiscretization),
+                ext::make_shared<EulerDiscretization>(),
             bool forceDiscretization = false);
     };
 
@@ -197,7 +197,7 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& domesticRiskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const ext::shared_ptr<discretization>& d =
-                  ext::shared_ptr<discretization>(new EulerDiscretization),
+                ext::make_shared<EulerDiscretization>(),
             bool forceDiscretization = false);
     };
 

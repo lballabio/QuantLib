@@ -81,9 +81,8 @@ namespace QuantLib {
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
 
-            return ext::shared_ptr<path_generator_type>(
-                         new path_generator_type(processes_,
-                                                 grid, gen, brownianBridge_));
+            return ext::make_shared<path_generator_type>(processes_,
+                                                 grid, gen, brownianBridge_);
         }
         ext::shared_ptr<path_pricer_type> pathPricer() const override;
 
@@ -198,11 +197,9 @@ namespace QuantLib {
     inline ext::shared_ptr<typename MCEverestEngine<RNG,S>::path_pricer_type>
     MCEverestEngine<RNG,S>::pathPricer() const {
 
-        return ext::shared_ptr<
-                         typename MCEverestEngine<RNG,S>::path_pricer_type>(
-                              new EverestMultiPathPricer(arguments_.notional,
+        return ext::make_shared<EverestMultiPathPricer>(arguments_.notional,
                                                          arguments_.guarantee,
-                                                         endDiscount()));
+                                                         endDiscount());
     }
 
 

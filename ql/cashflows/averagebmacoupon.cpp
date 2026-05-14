@@ -125,8 +125,7 @@ namespace QuantLib {
 
         fixingSchedule_ = index->fixingSchedule(fixingStart, endDate);
 
-        setPricer(ext::shared_ptr<FloatingRateCouponPricer>(
-                                                 new AverageBMACouponPricer));
+        setPricer(ext::make_shared<AverageBMACouponPricer>());
     }
 
     Date AverageBMACoupon::fixingDate() const {
@@ -236,15 +235,14 @@ namespace QuantLib {
                 refEnd = calendar.adjust(start + schedule_.tenor(),
                                          paymentAdjustment_);
 
-            cashflows.push_back(ext::shared_ptr<CashFlow>(new
-                AverageBMACoupon(paymentDate,
+            cashflows.push_back(ext::make_shared<AverageBMACoupon>(paymentDate,
                                  detail::get(notionals_, i, notionals_.back()),
                                  start, end,
                                  index_,
                                  detail::get(gearings_, i, 1.0),
                                  detail::get(spreads_, i, 0.0),
                                  refStart, refEnd,
-                                 paymentDayCounter_)));
+                                 paymentDayCounter_));
         }
 
         return cashflows;

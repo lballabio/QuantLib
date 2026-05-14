@@ -128,11 +128,11 @@ ext::shared_ptr<BasketPayoff> basketTypeToPayoff(BasketType basketType,
                                                  const ext::shared_ptr<Payoff> &p) {
     switch (basketType) {
       case MinBasket:
-        return ext::shared_ptr<BasketPayoff>(new MinBasketPayoff(p));
+        return ext::make_shared<MinBasketPayoff>(p);
       case MaxBasket:
-        return ext::shared_ptr<BasketPayoff>(new MaxBasketPayoff(p));
+        return ext::make_shared<MaxBasketPayoff>(p);
       case SpreadBasket:
-        return ext::shared_ptr<BasketPayoff>(new SpreadBasketPayoff(p));
+        return ext::make_shared<SpreadBasketPayoff>(p);
     }
     QL_FAIL("unknown basket option type");
 }
@@ -313,20 +313,20 @@ BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1 = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot2 = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, qRate1, dc);
-    ext::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, qRate2, dc);
 
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
-    ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
 
     const Real mcRelativeErrorTolerance = 0.01;
@@ -334,11 +334,10 @@ BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
 
     for (auto& value : values) {
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff(
-            new PlainVanillaPayoff(value.type, value.strike));
+        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::make_shared<PlainVanillaPayoff>(value.type, value.strike);
 
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
 
         spot1->setValue(value.s1);
         spot2->setValue(value.s2);
@@ -354,25 +353,22 @@ BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
         switch (value.basketType) {
             case MaxBasket:
             case MinBasket:
-                p1 = ext::shared_ptr<GeneralizedBlackScholesProcess>(new BlackScholesMertonProcess(
+                p1 = ext::make_shared<BlackScholesMertonProcess>(
                     Handle<Quote>(spot1), Handle<YieldTermStructure>(qTS1),
-                    Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(volTS1)));
-                p2 = ext::shared_ptr<GeneralizedBlackScholesProcess>(new BlackScholesMertonProcess(
+                    Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(volTS1));
+                p2 = ext::make_shared<BlackScholesMertonProcess>(
                     Handle<Quote>(spot2), Handle<YieldTermStructure>(qTS2),
-                    Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(volTS2)));
-                analyticEngine = ext::shared_ptr<PricingEngine>(new StulzEngine(p1, p2, value.rho));
+                    Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(volTS2));
+                analyticEngine = ext::make_shared<StulzEngine>(p1, p2, value.rho);
                 break;
             case SpreadBasket:
-                p1 = ext::shared_ptr<GeneralizedBlackScholesProcess>(
-                    new BlackProcess(Handle<Quote>(spot1), Handle<YieldTermStructure>(rTS),
-                                     Handle<BlackVolTermStructure>(volTS1)));
-                p2 = ext::shared_ptr<GeneralizedBlackScholesProcess>(
-                    new BlackProcess(Handle<Quote>(spot2), Handle<YieldTermStructure>(rTS),
-                                     Handle<BlackVolTermStructure>(volTS2)));
+                p1 = ext::make_shared<BlackProcess>(Handle<Quote>(spot1), Handle<YieldTermStructure>(rTS),
+                                     Handle<BlackVolTermStructure>(volTS1));
+                p2 = ext::make_shared<BlackProcess>(Handle<Quote>(spot2), Handle<YieldTermStructure>(rTS),
+                                     Handle<BlackVolTermStructure>(volTS2));
 
-                analyticEngine = ext::shared_ptr<PricingEngine>(
-                    new KirkEngine(ext::dynamic_pointer_cast<BlackProcess>(p1),
-                                   ext::dynamic_pointer_cast<BlackProcess>(p2), value.rho));
+                analyticEngine = ext::make_shared<KirkEngine>(ext::dynamic_pointer_cast<BlackProcess>(p1),
+                                   ext::dynamic_pointer_cast<BlackProcess>(p2), value.rho);
                 break;
             default:
                 QL_FAIL("unknown basket type");
@@ -385,8 +381,7 @@ BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
             correlationMatrix[j][j] = 1.0;
         }
 
-        ext::shared_ptr<StochasticProcessArray> process(
-                         new StochasticProcessArray(procs,correlationMatrix));
+        ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(procs,correlationMatrix);
 
         ext::shared_ptr<PricingEngine> mcEngine =
             MakeMCEuropeanBasketEngine<PseudoRandom, Statistics>(process)
@@ -394,8 +389,7 @@ BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
             .withSamples(10000)
             .withSeed(42);
 
-        ext::shared_ptr<PricingEngine> fdEngine(
-            new Fd2dBlackScholesVanillaEngine(p1, p2, value.rho, 50, 50, 15));
+        ext::shared_ptr<PricingEngine> fdEngine = ext::make_shared<Fd2dBlackScholesVanillaEngine>(p1, p2, value.rho, 50, 50, 15);
 
         BasketOption basketOption(basketTypeToPayoff(value.basketType, payoff), exercise);
 
@@ -521,32 +515,31 @@ BOOST_AUTO_TEST_CASE(testBarraquandThreeValues) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> spot3(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1 = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot2 = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot3 = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
 
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
-    ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
-    ext::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol3 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS3 = flatVol(today, vol3, dc);
 
     for (auto& value : values) {
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff(
-            new PlainVanillaPayoff(value.type, value.strike));
+        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::make_shared<PlainVanillaPayoff>(value.type, value.strike);
 
         Date exDate = today + Integer(value.t) * 30;
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        ext::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
-                                                                    exDate));
+        ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
+        ext::shared_ptr<Exercise> amExercise = ext::make_shared<AmericanExercise>(today,
+                                                                    exDate);
 
         spot1->setValue(value.s1);
         spot2->setValue(value.s2);
@@ -556,23 +549,20 @@ BOOST_AUTO_TEST_CASE(testBarraquandThreeValues) {
         vol2->setValue(value.v2);
         vol3->setValue(value.v3);
 
-        ext::shared_ptr<StochasticProcess1D> stochProcess1(new
-            BlackScholesMertonProcess(Handle<Quote>(spot1),
+        ext::shared_ptr<StochasticProcess1D> stochProcess1 = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot1),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS1)));
+                                      Handle<BlackVolTermStructure>(volTS1));
 
-        ext::shared_ptr<StochasticProcess1D> stochProcess2(new
-            BlackScholesMertonProcess(Handle<Quote>(spot2),
+        ext::shared_ptr<StochasticProcess1D> stochProcess2 = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot2),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS2)));
+                                      Handle<BlackVolTermStructure>(volTS2));
 
-        ext::shared_ptr<StochasticProcess1D> stochProcess3(new
-            BlackScholesMertonProcess(Handle<Quote>(spot3),
+        ext::shared_ptr<StochasticProcess1D> stochProcess3 = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot3),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS3)));
+                                      Handle<BlackVolTermStructure>(volTS3));
 
         std::vector<ext::shared_ptr<StochasticProcess1D> > procs
             = {stochProcess1, stochProcess2, stochProcess3 };
@@ -582,8 +572,7 @@ BOOST_AUTO_TEST_CASE(testBarraquandThreeValues) {
             correlation[j][j] = 1.0;
         }
 
-        ext::shared_ptr<StochasticProcessArray> process(
-                               new StochasticProcessArray(procs,correlation));
+        ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(procs,correlation);
 
         // use a 3D sobol sequence...
         // Think long and hard before moving to more than 1 timestep....
@@ -654,21 +643,21 @@ BOOST_AUTO_TEST_CASE(testTavellaValues) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> spot3(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1 = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot2 = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot3 = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.1));
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.1);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
 
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.05);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
-    ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
-    ext::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol3 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS3 = flatVol(today, vol3, dc);
 
     Real mcRelativeErrorTolerance = 0.01;
@@ -677,11 +666,10 @@ BOOST_AUTO_TEST_CASE(testTavellaValues) {
     BigNatural seed = 0;
 
 
-    ext::shared_ptr<PlainVanillaPayoff> payoff(new
-        PlainVanillaPayoff(values[0].type, values[0].strike));
+    ext::shared_ptr<PlainVanillaPayoff> payoff = ext::make_shared<PlainVanillaPayoff>(values[0].type, values[0].strike);
 
     Date exDate = today + timeToDays(values[0].t);
-    ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<AmericanExercise>(today, exDate);
 
     spot1 ->setValue(values[0].s1);
     spot2 ->setValue(values[0].s2);
@@ -690,23 +678,20 @@ BOOST_AUTO_TEST_CASE(testTavellaValues) {
     vol2  ->setValue(values[0].v2);
     vol3  ->setValue(values[0].v3);
 
-    ext::shared_ptr<StochasticProcess1D> stochProcess1(new
-        BlackScholesMertonProcess(Handle<Quote>(spot1),
+    ext::shared_ptr<StochasticProcess1D> stochProcess1 = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot1),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
-                                  Handle<BlackVolTermStructure>(volTS1)));
+                                  Handle<BlackVolTermStructure>(volTS1));
 
-    ext::shared_ptr<StochasticProcess1D> stochProcess2(new
-        BlackScholesMertonProcess(Handle<Quote>(spot2),
+    ext::shared_ptr<StochasticProcess1D> stochProcess2 = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot2),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
-                                  Handle<BlackVolTermStructure>(volTS2)));
+                                  Handle<BlackVolTermStructure>(volTS2));
 
-    ext::shared_ptr<StochasticProcess1D> stochProcess3(new
-        BlackScholesMertonProcess(Handle<Quote>(spot3),
+    ext::shared_ptr<StochasticProcess1D> stochProcess3 = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot3),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
-                                  Handle<BlackVolTermStructure>(volTS3)));
+                                  Handle<BlackVolTermStructure>(volTS3));
 
     std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1,
                                                                 stochProcess2,
@@ -723,8 +708,7 @@ BOOST_AUTO_TEST_CASE(testTavellaValues) {
     correlation[2][1] = 0.3;
     correlation[1][2] = 0.3;
 
-    ext::shared_ptr<StochasticProcessArray> process(
-                               new StochasticProcessArray(procs,correlation));
+    ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(procs,correlation);
     ext::shared_ptr<PricingEngine> mcLSMCEngine =
         MakeMCAmericanBasketEngine<>(process)
         .withSteps(timeSteps)
@@ -772,33 +756,31 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testOneDAmericanValues, T, slices) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1 = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
 
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.05);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
 
     Size requiredSamples = 10000;
     Size timeSteps = 52;
     BigNatural seed = 0;
 
-    ext::shared_ptr<StochasticProcess1D> stochProcess1(new
-        BlackScholesMertonProcess(Handle<Quote>(spot1),
+    ext::shared_ptr<StochasticProcess1D> stochProcess1 = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot1),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
-                                  Handle<BlackVolTermStructure>(volTS1)));
+                                  Handle<BlackVolTermStructure>(volTS1));
 
     std::vector<ext::shared_ptr<StochasticProcess1D>> procs = {stochProcess1};
 
     Matrix correlation(1, 1, 1.0);
 
-    ext::shared_ptr<StochasticProcessArray> process(
-        new StochasticProcessArray(procs, correlation));
+    ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(procs, correlation);
 
     ext::shared_ptr<PricingEngine> mcLSMCEngine =
         MakeMCAmericanBasketEngine<>(process)
@@ -809,11 +791,10 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testOneDAmericanValues, T, slices) {
             .withSeed(seed);
 
     for (Size i = from; i < to; i++) {
-        ext::shared_ptr<PlainVanillaPayoff> payoff(
-            new PlainVanillaPayoff(oneDataValues[i].type, oneDataValues[i].strike));
+        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::make_shared<PlainVanillaPayoff>(oneDataValues[i].type, oneDataValues[i].strike);
 
         Date exDate = today + timeToDays(oneDataValues[i].t);
-        ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
+        ext::shared_ptr<Exercise> exercise = ext::make_shared<AmericanExercise>(today, exDate);
 
         spot1 ->setValue(oneDataValues[i].s);
         vol1  ->setValue(oneDataValues[i].v);
@@ -859,33 +840,31 @@ BOOST_AUTO_TEST_CASE(testOddSamples) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1 = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
 
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.05);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
 
 
 
     BigNatural seed = 0;
 
-    ext::shared_ptr<StochasticProcess1D> stochProcess1(new
-        BlackScholesMertonProcess(Handle<Quote>(spot1),
+    ext::shared_ptr<StochasticProcess1D> stochProcess1 = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot1),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
-                                  Handle<BlackVolTermStructure>(volTS1)));
+                                  Handle<BlackVolTermStructure>(volTS1));
 
     std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1};
 
     Matrix correlation(1, 1, 1.0);
 
-    ext::shared_ptr<StochasticProcessArray> process(
-                               new StochasticProcessArray(procs,correlation));
+    ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(procs,correlation);
 
     ext::shared_ptr<PricingEngine> mcLSMCEngine =
         MakeMCAmericanBasketEngine<>(process)
@@ -896,12 +875,11 @@ BOOST_AUTO_TEST_CASE(testOddSamples) {
         .withSeed(seed);
 
     for (auto& value : values) {
-        ext::shared_ptr<PlainVanillaPayoff> payoff(
-            new PlainVanillaPayoff(value.type, value.strike));
+        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::make_shared<PlainVanillaPayoff>(value.type, value.strike);
 
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,
-                                                                  exDate));
+        ext::shared_ptr<Exercise> exercise = ext::make_shared<AmericanExercise>(today,
+                                                                  exDate);
 
         spot1->setValue(value.s);
         vol1->setValue(value.v);

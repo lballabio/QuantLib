@@ -135,7 +135,7 @@ void setup() {
     }
 
     ext::shared_ptr<InterpolatedZeroCurve<Cubic> >
-        euriborTS(new InterpolatedZeroCurve<Cubic>(d, r, Actual365Fixed()));
+        euriborTS = ext::make_shared<InterpolatedZeroCurve<Cubic>>(d, r, Actual365Fixed());
     Handle<YieldTermStructure> nominalHeur(euriborTS, false);
     nominalEUR = nominalHeur;   // copy to global
 
@@ -150,7 +150,7 @@ void setup() {
     }
 
     ext::shared_ptr<InterpolatedZeroCurve<Cubic> >
-        gbpLiborTS(new InterpolatedZeroCurve<Cubic>(d, r, Actual365Fixed()));
+        gbpLiborTS = ext::make_shared<InterpolatedZeroCurve<Cubic>>(d, r, Actual365Fixed());
     Handle<YieldTermStructure> nominalHgbp(gbpLiborTS, false);
     nominalGBP = nominalHgbp;   // copy to global
 
@@ -223,8 +223,8 @@ void setup() {
         fStrikesEU.push_back(i);
     for (auto& i : capMaturitiesEU)
         cfMaturitiesEU.push_back(i);
-    ext::shared_ptr<Matrix> tcPriceEU(new Matrix(ncStrikesEU, ncfMaturitiesEU));
-    ext::shared_ptr<Matrix> tfPriceEU(new Matrix(nfStrikesEU, ncfMaturitiesEU));
+    ext::shared_ptr<Matrix> tcPriceEU = ext::make_shared<Matrix>(ncStrikesEU, ncfMaturitiesEU);
+    ext::shared_ptr<Matrix> tfPriceEU = ext::make_shared<Matrix>(nfStrikesEU, ncfMaturitiesEU);
     for(Size i = 0; i < ncStrikesEU; i++) {
         for(Size j = 0; j < ncfMaturitiesEU; j++) {
             (*tcPriceEU)[i][j] = capPricesEU[i][j];
@@ -283,12 +283,11 @@ BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToVol) {
     ext::shared_ptr<YoYOptionletVolatilitySurface> pVS;
     Handle<YoYOptionletVolatilitySurface> hVS(pVS, false); // pVS does NOT own whatever it points to later, hence the handle does not either
     ext::shared_ptr<YoYInflationUnitDisplacedBlackCapFloorEngine>
-        yoyPricerUD(new YoYInflationUnitDisplacedBlackCapFloorEngine(yoyIndexEU,hVS,nominalEUR)); //hVS
+        yoyPricerUD = ext::make_shared<YoYInflationUnitDisplacedBlackCapFloorEngine>(yoyIndexEU,hVS,nominalEUR); //hVS
     // N.B. the vol gets set in the stripper ... else no point!
 
     // cap stripper
-    ext::shared_ptr<YoYOptionletStripper> yoyOptionletStripper(
-                             new InterpolatedYoYOptionletStripper<Linear>() );
+    ext::shared_ptr<YoYOptionletStripper> yoyOptionletStripper = ext::make_shared<InterpolatedYoYOptionletStripper<Linear>>();
 
     // now set up all the variables for the stripping
     Natural settlementDays = 0;
@@ -311,10 +310,9 @@ BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToVol) {
 
     // Actually is doesn't matter what the interpolation is because we only
     // intend to use the K values that correspond to quotes ... for model fitting.
-    ext::shared_ptr<KInterpolatedYoYOptionletVolatilitySurface<Linear> > yoySurf(new
-                    KInterpolatedYoYOptionletVolatilitySurface<Linear>(settlementDays,
+    ext::shared_ptr<KInterpolatedYoYOptionletVolatilitySurface<Linear> > yoySurf = ext::make_shared<KInterpolatedYoYOptionletVolatilitySurface<Linear>>(settlementDays,
                 cal, bdc, dc, lag, capFloorPrices, yoyPricerUD, yoyOptionletStripper,
-                                                              slope) );
+                                                              slope);
 
     // now use it for something ... like stating what the T=const lines look like
     const Real volATyear1[] = {

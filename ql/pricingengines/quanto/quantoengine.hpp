@@ -99,22 +99,20 @@ namespace QuantLib {
         Handle<YieldTermStructure> riskFreeRate = process_->riskFreeRate();
         // dividendTS needs modification
         Handle<YieldTermStructure> dividendYield(
-            ext::shared_ptr<YieldTermStructure>(
-                new QuantoTermStructure(process_->dividendYield(),
+            ext::make_shared<QuantoTermStructure>(process_->dividendYield(),
                                         process_->riskFreeRate(),
                                         foreignRiskFreeRate_,
                                         process_->blackVolatility(),
                                         strike,
                                         exchangeRateVolatility_,
                                         exchangeRateATMlevel,
-                                        correlation_->value())));
+                                        correlation_->value()));
         Handle<BlackVolTermStructure> blackVol = process_->blackVolatility();
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> quantoProcess(
-                  new GeneralizedBlackScholesProcess(spot, dividendYield,
-                                                     riskFreeRate, blackVol));
+        ext::shared_ptr<GeneralizedBlackScholesProcess> quantoProcess = ext::make_shared<GeneralizedBlackScholesProcess>(spot, dividendYield,
+                                                     riskFreeRate, blackVol);
 
-        ext::shared_ptr<Engine> originalEngine(new Engine(quantoProcess));
+        ext::shared_ptr<Engine> originalEngine = ext::make_shared<Engine>(quantoProcess);
         originalEngine->reset();
         auto* originalArguments =
             dynamic_cast<typename Instr::arguments*>(originalEngine->getArguments());

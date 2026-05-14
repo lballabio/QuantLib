@@ -119,8 +119,8 @@ namespace QuantLib {
       public:
         Dynamics(Parameter fitting, Real a, Real sigma, Real b, Real eta, Real rho)
         : ShortRateDynamics(
-              ext::shared_ptr<StochasticProcess1D>(new OrnsteinUhlenbeckProcess(a, sigma)),
-              ext::shared_ptr<StochasticProcess1D>(new OrnsteinUhlenbeckProcess(b, eta)),
+              ext::make_shared<OrnsteinUhlenbeckProcess>(a, sigma),
+              ext::make_shared<OrnsteinUhlenbeckProcess>(b, eta),
               rho),
           fitting_(std::move(fitting)) {}
         Rate shortRate(Time t, Real x, Real y) const override { return fitting_(t) + x + y; }
@@ -174,9 +174,8 @@ namespace QuantLib {
                          Real b,
                          Real eta,
                          Real rho)
-        : TermStructureFittingParameter(ext::shared_ptr<Parameter::Impl>(
-                          new FittingParameter::Impl(termStructure, a, sigma,
-                                                     b, eta, rho))) {}
+        : TermStructureFittingParameter(ext::make_shared<FittingParameter::Impl>(termStructure, a, sigma,
+                                                     b, eta, rho)) {}
     };
 
 }

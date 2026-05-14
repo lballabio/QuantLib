@@ -138,17 +138,15 @@ namespace QuantLib {
       public:
         FittingParameter(const Handle<YieldTermStructure>& termStructure,
                          Real theta, Real k, Real sigma, Real x0)
-        : TermStructureFittingParameter(ext::shared_ptr<Parameter::Impl>(
-                 new FittingParameter::Impl(
-                                     termStructure, theta, k, sigma, x0))) {}
+        : TermStructureFittingParameter(ext::make_shared<FittingParameter::Impl>(
+                                     termStructure, theta, k, sigma, x0)) {}
     };
 
     // inline definitions
 
     inline ext::shared_ptr<OneFactorModel::ShortRateDynamics>
     ExtendedCoxIngersollRoss::dynamics() const {
-        return ext::shared_ptr<ShortRateDynamics>(
-                            new Dynamics(phi_, theta(), k() , sigma(), x0()));
+        return ext::make_shared<Dynamics>(phi_, theta(), k() , sigma(), x0());
     }
 
     inline void ExtendedCoxIngersollRoss::generateArguments() {

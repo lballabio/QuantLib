@@ -218,9 +218,8 @@ namespace QuantLib {
 
     ext::shared_ptr<BrownianGenerator>
     SobolBrownianGeneratorFactory::create(Size factors, Size steps) const {
-        return ext::shared_ptr<BrownianGenerator>(
-                         new SobolBrownianGenerator(factors, steps, ordering_,
-                                                    seed_, integers_));
+        return ext::make_shared<SobolBrownianGenerator>(factors, steps, ordering_,
+                                                    seed_, integers_);
     }
 
     Burley2020SobolBrownianGenerator::Burley2020SobolBrownianGenerator(
@@ -247,8 +246,8 @@ namespace QuantLib {
 
     ext::shared_ptr<BrownianGenerator>
     Burley2020SobolBrownianGeneratorFactory::create(Size factors, Size steps) const {
-        return ext::shared_ptr<BrownianGenerator>(new Burley2020SobolBrownianGenerator(
-            factors, steps, ordering_, seed_, integers_, scrambleSeed_));
+        return ext::make_shared<Burley2020SobolBrownianGenerator>(
+            factors, steps, ordering_, seed_, integers_, scrambleSeed_);
     }
 }
 

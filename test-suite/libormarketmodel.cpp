@@ -57,7 +57,7 @@ ext::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates, const std::vector<
 
     RelinkableHandle<YieldTermStructure> termStructure;
 
-    ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
+    ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor6M>(termStructure);
 
     Date todaysDate =
         index->fixingCalendar().adjust(Date(4,September,2005));
@@ -66,8 +66,7 @@ ext::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates, const std::vector<
     dates[0] = index->fixingCalendar().advance(todaysDate,
                                                index->fixingDays(), Days);
 
-    termStructure.linkTo(ext::shared_ptr<YieldTermStructure>(
-                                    new ZeroCurve(dates, rates, dayCounter)));
+    termStructure.linkTo(ext::make_shared<ZeroCurve>(dates, rates, dayCounter));
 
     return index;
 }
@@ -88,8 +87,7 @@ makeCapVolCurve(const Date& todaysDate) {
 
     std::vector<Date> dates;
     std::vector<Volatility> capletVols;
-    ext::shared_ptr<LiborForwardModelProcess> process(
-                               new LiborForwardModelProcess(10, makeIndex()));
+    ext::shared_ptr<LiborForwardModelProcess> process = ext::make_shared<LiborForwardModelProcess>(10, makeIndex());
 
     for (Size i=0; i < 9; ++i) {
         capletVols.push_back(vols[i]/100);
@@ -109,8 +107,7 @@ BOOST_AUTO_TEST_CASE(testSimpleCovarianceModels) {
     const Real tolerance = 1e-14;
     Size i;
 
-    ext::shared_ptr<LmCorrelationModel> corrModel(
-                                new LmExponentialCorrelationModel(size, 0.1));
+    ext::shared_ptr<LmCorrelationModel> corrModel = ext::make_shared<LmExponentialCorrelationModel>(size, 0.1);
 
     Matrix recon = corrModel->correlation(0.0)
         - corrModel->pseudoSqrt(0.0)*transpose(corrModel->pseudoSqrt(0.0));
@@ -134,17 +131,13 @@ BOOST_AUTO_TEST_CASE(testSimpleCovarianceModels) {
     const Real c=2.1;
     const Real d=0.3;
 
-    ext::shared_ptr<LmVolatilityModel> volaModel(
-             new LmLinearExponentialVolatilityModel(fixingTimes, a, b, c, d));
+    ext::shared_ptr<LmVolatilityModel> volaModel = ext::make_shared<LmLinearExponentialVolatilityModel>(fixingTimes, a, b, c, d);
 
-    ext::shared_ptr<LfmCovarianceProxy> covarProxy(
-                                new LfmCovarianceProxy(volaModel, corrModel));
+    ext::shared_ptr<LfmCovarianceProxy> covarProxy = ext::make_shared<LfmCovarianceProxy>(volaModel, corrModel);
 
-    ext::shared_ptr<LiborForwardModelProcess> process(
-                             new LiborForwardModelProcess(size, makeIndex()));
+    ext::shared_ptr<LiborForwardModelProcess> process = ext::make_shared<LiborForwardModelProcess>(size, makeIndex());
 
-    ext::shared_ptr<LiborForwardModel> liborModel(
-                        new LiborForwardModel(process, volaModel, corrModel));
+    ext::shared_ptr<LiborForwardModel> liborModel = ext::make_shared<LiborForwardModel>(process, volaModel, corrModel);
 
     for (Real t=0; t<4.6; t+=0.31) {
         recon = covarProxy->covariance(t)
@@ -185,8 +178,7 @@ BOOST_AUTO_TEST_CASE(testCapletPricing) {
     Real tolerance = usingAtParCoupons ? 1e-12 : 1e-5;
 
     ext::shared_ptr<IborIndex> index = makeIndex();
-    ext::shared_ptr<LiborForwardModelProcess> process(
-        new LiborForwardModelProcess(size, index));
+    ext::shared_ptr<LiborForwardModelProcess> process = ext::make_shared<LiborForwardModelProcess>(size, index);
 
     // set-up pricing engine
     const ext::shared_ptr<OptionletVolatilityStructure> capVolCurve =
@@ -195,21 +187,17 @@ BOOST_AUTO_TEST_CASE(testCapletPricing) {
     Array variances = LfmHullWhiteParameterization(process, capVolCurve)
         .covariance(0.0).diagonal();
 
-    ext::shared_ptr<LmVolatilityModel> volaModel(
-        new LmFixedVolatilityModel(Sqrt(variances),
-                                   process->fixingTimes()));
+    ext::shared_ptr<LmVolatilityModel> volaModel = ext::make_shared<LmFixedVolatilityModel>(Sqrt(variances),
+                                   process->fixingTimes());
 
-    ext::shared_ptr<LmCorrelationModel> corrModel(
-                                new LmExponentialCorrelationModel(size, 0.3));
+    ext::shared_ptr<LmCorrelationModel> corrModel = ext::make_shared<LmExponentialCorrelationModel>(size, 0.3);
 
-    ext::shared_ptr<AffineModel> model(
-                        new LiborForwardModel(process, volaModel, corrModel));
+    ext::shared_ptr<AffineModel> model = ext::make_shared<LiborForwardModel>(process, volaModel, corrModel);
 
     const Handle<YieldTermStructure> termStructure =
         process->index()->forwardingTermStructure();
 
-    ext::shared_ptr<AnalyticCapFloorEngine> engine1(
-                            new AnalyticCapFloorEngine(model, termStructure));
+    ext::shared_ptr<AnalyticCapFloorEngine> engine1 = ext::make_shared<AnalyticCapFloorEngine>(model, termStructure);
 
     auto cap1 = Cap(process->cashFlows(),
                     std::vector<Rate>(size, 0.04));
@@ -249,20 +237,16 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
                                  0.106996, 0.100064};
 
     ext::shared_ptr<IborIndex> index = makeIndex();
-    ext::shared_ptr<LiborForwardModelProcess> process(
-        new LiborForwardModelProcess(size, index));
+    ext::shared_ptr<LiborForwardModelProcess> process = ext::make_shared<LiborForwardModelProcess>(size, index);
     Handle<YieldTermStructure> termStructure = index->forwardingTermStructure();
 
     // set-up the model
-    ext::shared_ptr<LmVolatilityModel> volaModel(
-                    new LmExtLinearExponentialVolModel(process->fixingTimes(),
-                                                       0.5,0.6,0.1,0.1));
+    ext::shared_ptr<LmVolatilityModel> volaModel = ext::make_shared<LmExtLinearExponentialVolModel>(process->fixingTimes(),
+                                                       0.5,0.6,0.1,0.1);
 
-    ext::shared_ptr<LmCorrelationModel> corrModel(
-                     new LmLinearExponentialCorrelationModel(size, 0.5, 0.8));
+    ext::shared_ptr<LmCorrelationModel> corrModel = ext::make_shared<LmLinearExponentialCorrelationModel>(size, 0.5, 0.8);
 
-    ext::shared_ptr<LiborForwardModel> model(
-                        new LiborForwardModel(process, volaModel, corrModel));
+    ext::shared_ptr<LiborForwardModel> model = ext::make_shared<LiborForwardModel>(process, volaModel, corrModel);
 
     Size swapVolIndex = 0;
     DayCounter dayCounter=index->forwardingTermStructure()->dayCounter();
@@ -274,15 +258,14 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
     for (i=2; i < size; ++i) {
         const Period maturity = i*index->tenor();
         Handle<Quote> capVol(
-            ext::shared_ptr<Quote>(new SimpleQuote(capVols[i-2])));
+            ext::make_shared<SimpleQuote>(capVols[i-2]));
 
         auto caphelper =
             ext::make_shared<CapHelper>(maturity, capVol, index, Annual,
                                         index->dayCounter(), true, termStructure,
                                         BlackCalibrationHelper::ImpliedVolError);
 
-        caphelper->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                           new AnalyticCapFloorEngine(model, termStructure)));
+        caphelper->setPricingEngine(ext::make_shared<AnalyticCapFloorEngine>(model, termStructure));
 
         calibrationHelpers.push_back(caphelper);
 
@@ -291,8 +274,7 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
             for (Size j=1; j <= size/2; ++j) {
                 const Period len = j*index->tenor();
                 Handle<Quote> swaptionVol(
-                    ext::shared_ptr<Quote>(
-                        new SimpleQuote(swaptionVols[swapVolIndex++])));
+                    ext::make_shared<SimpleQuote>(swaptionVols[swapVolIndex++]));
 
                 auto swaptionHelper =
                     ext::make_shared<SwaptionHelper>(maturity, len, swaptionVol, index,
@@ -302,8 +284,7 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
                                                      BlackCalibrationHelper::ImpliedVolError);
 
                 swaptionHelper->setPricingEngine(
-                     ext::shared_ptr<PricingEngine>(
-                                 new LfmSwaptionEngine(model,termStructure)));
+                     ext::make_shared<LfmSwaptionEngine>(model,termStructure));
 
                 calibrationHelpers.push_back(swaptionHelper);
             }
@@ -341,19 +322,15 @@ BOOST_AUTO_TEST_CASE(testSwaptionPricing) {
 
     ext::shared_ptr<IborIndex> index = makeIndex(dates, rates);
 
-    ext::shared_ptr<LiborForwardModelProcess> process(
-                                   new LiborForwardModelProcess(size, index));
+    ext::shared_ptr<LiborForwardModelProcess> process = ext::make_shared<LiborForwardModelProcess>(size, index);
 
-    ext::shared_ptr<LmCorrelationModel> corrModel(
-                                new LmExponentialCorrelationModel(size, 0.5));
+    ext::shared_ptr<LmCorrelationModel> corrModel = ext::make_shared<LmExponentialCorrelationModel>(size, 0.5);
 
-    ext::shared_ptr<LmVolatilityModel> volaModel(
-        new LmLinearExponentialVolatilityModel(process->fixingTimes(),
-                                               0.291, 1.483, 0.116, 0.00001));
+    ext::shared_ptr<LmVolatilityModel> volaModel = ext::make_shared<LmLinearExponentialVolatilityModel>(process->fixingTimes(),
+                                               0.291, 1.483, 0.116, 0.00001);
 
    // set-up pricing engine
-    process->setCovarParam(ext::shared_ptr<LfmCovarianceParameterization>(
-                               new LfmCovarianceProxy(volaModel, corrModel)));
+    process->setCovarParam(ext::make_shared<LfmCovarianceProxy>(volaModel, corrModel));
 
     // set-up a small Monte-Carlo simulation to price swations
     typedef PseudoRandom::rsg_type rsg_type;
@@ -377,7 +354,7 @@ BOOST_AUTO_TEST_CASE(testSwaptionPricing) {
     MultiPathGenerator<rsg_type> generator(process, grid, rsg, false);
 
     ext::shared_ptr<LiborForwardModel>
-        liborModel(new LiborForwardModel(process, volaModel, corrModel));
+        liborModel = ext::make_shared<LiborForwardModel>(process, volaModel, corrModel);
 
     Calendar calendar = index->fixingCalendar();
     DayCounter dayCounter = index->forwardingTermStructure()->dayCounter();
@@ -394,12 +371,10 @@ BOOST_AUTO_TEST_CASE(testSwaptionPricing) {
                                convention, convention, DateGeneration::Forward, false);
 
             Rate swapRate  = 0.0404;
-            ext::shared_ptr<VanillaSwap> forwardSwap(
-                new VanillaSwap(Swap::Receiver, 1.0,
+            ext::shared_ptr<VanillaSwap> forwardSwap = ext::make_shared<VanillaSwap>(Swap::Receiver, 1.0,
                                 schedule, swapRate, dayCounter,
-                                schedule, index, 0.0, index->dayCounter()));
-            forwardSwap->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                new DiscountingSwapEngine(index->forwardingTermStructure())));
+                                schedule, index, 0.0, index->dayCounter());
+            forwardSwap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(index->forwardingTermStructure()));
 
             // check forward pricing first
             const Real expected = forwardSwap->fairRate();
@@ -415,15 +390,12 @@ BOOST_AUTO_TEST_CASE(testSwaptionPricing) {
                                 Swap::Receiver, 1.0,
                                 schedule, swapRate, dayCounter,
                                 schedule, index, 0.0, index->dayCounter());
-            forwardSwap->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                new DiscountingSwapEngine(index->forwardingTermStructure())));
+            forwardSwap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(index->forwardingTermStructure()));
 
             if (i == j && i<=size/2) {
-                ext::shared_ptr<PricingEngine> engine(
-                     new LfmSwaptionEngine(liborModel,
-                                           index->forwardingTermStructure()));
-                ext::shared_ptr<Exercise> exercise(
-                    new EuropeanExercise(process->fixingDates()[i]));
+                ext::shared_ptr<PricingEngine> engine = ext::make_shared<LfmSwaptionEngine>(liborModel,
+                                           index->forwardingTermStructure());
+                ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(process->fixingDates()[i]);
 
                 auto swaption = ext::make_shared<Swaption>(forwardSwap, exercise);
                 swaption->setPricingEngine(engine);

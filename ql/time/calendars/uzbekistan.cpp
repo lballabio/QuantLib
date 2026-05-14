@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     Uzbekistan::Uzbekistan(Market) {
-        static ext::shared_ptr<Calendar::Impl> impl(new Uzbekistan::Impl);
+        static ext::shared_ptr<Calendar::Impl> impl = ext::make_shared<Uzbekistan::Impl>();
         impl_ = impl;
     }
 

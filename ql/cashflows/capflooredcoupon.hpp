@@ -119,11 +119,10 @@ namespace QuantLib {
                   bool isInArrears = false,
                   const Date& exCouponDate = Date(),
                   BusinessDayConvention fixingConvention = Preceding)
-        : CappedFlooredCoupon(ext::shared_ptr<FloatingRateCoupon>(new
-            IborCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
+        : CappedFlooredCoupon(ext::make_shared<IborCoupon>(paymentDate, nominal, startDate, endDate, fixingDays,
                        index, gearing, spread, refPeriodStart, refPeriodEnd,
                        dayCounter, isInArrears, exCouponDate,
-                       fixingConvention)), cap, floor) {}
+                       fixingConvention), cap, floor) {}
 
         void accept(AcyclicVisitor& v) override {
             auto* v1 = dynamic_cast<Visitor<CappedFlooredIborCoupon>*>(&v);
@@ -153,11 +152,10 @@ namespace QuantLib {
                   bool isInArrears = false,
                   const Date& exCouponDate = Date(),
                   BusinessDayConvention fixingConvention = Preceding)
-        : CappedFlooredCoupon(ext::shared_ptr<FloatingRateCoupon>(new
-            CmsCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
+        : CappedFlooredCoupon(ext::make_shared<CmsCoupon>(paymentDate, nominal, startDate, endDate, fixingDays,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
                       dayCounter, isInArrears, exCouponDate,
-                      fixingConvention)), cap, floor) {}
+                      fixingConvention), cap, floor) {}
 
         void accept(AcyclicVisitor& v) override {
             auto* v1 = dynamic_cast<Visitor<CappedFlooredCmsCoupon>*>(&v);

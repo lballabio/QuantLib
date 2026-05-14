@@ -42,7 +42,7 @@ namespace QuantLib {
     : swap_(std::move(swap)), termStructure_(std::move(termStructure)),
       volatilityStructure_(std::move(volatilityStructure)) {
 
-        engine_ = ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(termStructure_));
+        engine_ = ext::make_shared<DiscountingSwapEngine>(termStructure_);
 
         // store swap npv
         swap_->setPricingEngine(engine_);
@@ -89,7 +89,7 @@ namespace QuantLib {
 
                     if (!newCpn->isInArrears())
                         newCpn->setPricer(
-                            ext::shared_ptr<FloatingRateCouponPricer>(new BlackIborCouponPricer()));
+                            ext::make_shared<BlackIborCouponPricer>());
 
                     floatCFS.push_back(newCpn);
                 }
@@ -266,7 +266,7 @@ namespace QuantLib {
 
             if (!newCpn->isInArrears())
                 newCpn->setPricer(
-                    ext::shared_ptr<FloatingRateCouponPricer>(new BlackIborCouponPricer()));
+                    ext::make_shared<BlackIborCouponPricer>());
 
             floatCFS.push_back(newCpn);
         }
@@ -339,8 +339,7 @@ namespace QuantLib {
                    "swaptionEngine: only normal volatility implemented.");
 
 
-        ext::shared_ptr<PricingEngine> swaptionEngine = ext::shared_ptr<PricingEngine>(
-            new BachelierSwaptionEngine(termStructure_, volatilityStructure_));
+        ext::shared_ptr<PricingEngine> swaptionEngine = ext::make_shared<BachelierSwaptionEngine>(termStructure_, volatilityStructure_);
 
 
         // retrieve weights of underlying swaps

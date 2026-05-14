@@ -28,7 +28,7 @@ namespace QuantLib {
                                                                    Volatility volatility,
                                                                    DayCounter dayCounter)
     : CallableBondVolatilityStructure(referenceDate),
-      volatility_(ext::shared_ptr<Quote>(new SimpleQuote(volatility))),
+      volatility_(ext::make_shared<SimpleQuote>(volatility)),
       dayCounter_(std::move(dayCounter)), maxBondTenor_(100 * Years) {}
 
     CallableBondConstantVolatility::CallableBondConstantVolatility(const Date& referenceDate,
@@ -44,7 +44,7 @@ namespace QuantLib {
                                                                    Volatility volatility,
                                                                    DayCounter dayCounter)
     : CallableBondVolatilityStructure(settlementDays, calendar),
-      volatility_(ext::shared_ptr<Quote>(new SimpleQuote(volatility))),
+      volatility_(ext::make_shared<SimpleQuote>(volatility)),
       dayCounter_(std::move(dayCounter)), maxBondTenor_(100 * Years) {}
 
     CallableBondConstantVolatility::CallableBondConstantVolatility(Natural settlementDays,
@@ -72,10 +72,9 @@ namespace QuantLib {
     CallableBondConstantVolatility::smileSectionImpl(Time optionTime,
                                                      Time) const {
         Volatility atmVol = volatility_->value();
-        return ext::shared_ptr<SmileSection>(
-                                    new FlatSmileSection(optionTime,
+        return ext::make_shared<FlatSmileSection>(optionTime,
                                                          atmVol,
-                                                         dayCounter_));
+                                                         dayCounter_);
     }
 
 }

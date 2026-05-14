@@ -61,8 +61,7 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorBasicValues) {
         Real value1 = calc1.value();
         
         // Test constructor with Payoff
-        ext::shared_ptr<StrikedTypePayoff> payoff(
-            new PlainVanillaPayoff(data.type, data.strike));
+        ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(data.type, data.strike);
         BlackCalculator calc2(payoff, data.forward, data.stdDev, data.discount);
         Real value2 = calc2.value();
 

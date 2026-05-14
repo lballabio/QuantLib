@@ -31,7 +31,7 @@
 namespace QuantLib {
 
     LiborForwardModelProcess::LiborForwardModelProcess(Size size, ext::shared_ptr<IborIndex> index)
-    : StochasticProcess(ext::shared_ptr<discretization>(new EulerDiscretization)), size_(size),
+    : StochasticProcess(ext::make_shared<EulerDiscretization>()), size_(size),
       index_(std::move(index)), initialValues_(size_), fixingTimes_(size_), fixingDates_(size_),
       accrualStartTimes_(size), accrualEndTimes_(size), accrualPeriod_(size_), m1(size_),
       m2(size_) {

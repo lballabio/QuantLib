@@ -23,8 +23,7 @@ namespace QuantLib {
 
     CzechRepublic::CzechRepublic(Market) {
         // all calendar instances share the same implementation instance
-        static ext::shared_ptr<Calendar::Impl> impl(
-                                                  new CzechRepublic::PseImpl);
+        static ext::shared_ptr<Calendar::Impl> impl = ext::make_shared<CzechRepublic::PseImpl>();
         impl_ = impl;
     }
 

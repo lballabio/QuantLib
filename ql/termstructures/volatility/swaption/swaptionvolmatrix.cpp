@@ -131,8 +131,7 @@ namespace QuantLib {
             volHandles_[i].resize(vols.columns());
             shiftValues_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); ++j) {
-                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                    SimpleQuote(vols[i][j])));
+                volHandles_[i][j] = Handle<Quote>(ext::make_shared<SimpleQuote>(vols[i][j]));
                 shiftValues_[i][j] = shifts.rows() > 0 ? shifts[i][j] : 0.0;
             }
         }
@@ -180,8 +179,7 @@ namespace QuantLib {
             volHandles_[i].resize(vols.columns());
             shiftValues_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); ++j) {
-                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                    SimpleQuote(vols[i][j])));
+                volHandles_[i][j] = Handle<Quote>(ext::make_shared<SimpleQuote>(vols[i][j]));
                 shiftValues_[i][j] = shifts.rows() > 0 ? shifts[i][j] : 0.0;
             }
         }
@@ -229,8 +227,7 @@ namespace QuantLib {
             volHandles_[i].resize(vols.columns());
             shiftValues_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); ++j) {
-                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                    SimpleQuote(vols[i][j])));
+                volHandles_[i][j] = Handle<Quote>(ext::make_shared<SimpleQuote>(vols[i][j]));
                 shiftValues_[i][j] = shifts.rows() > 0 ? shifts[i][j] : 0.0;
             }
         }
@@ -321,9 +318,9 @@ namespace QuantLib {
                                                Time swapLength) const {
         // dummy strike
         Volatility atmVol = volatilityImpl(optionTime, swapLength, 0.05);
-        return ext::shared_ptr<SmileSection>(new FlatSmileSection(
+        return ext::make_shared<FlatSmileSection>(
             optionTime, atmVol, dayCounter(), Null<Real>(), volatilityType(),
-            shift(optionTime, swapLength, true)));
+            shift(optionTime, swapLength, true));
     }
 
 }

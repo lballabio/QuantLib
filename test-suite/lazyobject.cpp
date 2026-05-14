@@ -51,8 +51,8 @@ BOOST_AUTO_TEST_CASE(testDiscardingNotifications) {
 
     LazyObject::Defaults::instance().alwaysForwardNotifications();
 
-    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
-    ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
+    ext::shared_ptr<SimpleQuote> q = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<Instrument> s = ext::make_shared<Stock>(Handle<Quote>(q));
 
     Flag f;
     f.registerWith(s);
@@ -84,8 +84,8 @@ BOOST_AUTO_TEST_CASE(testDiscardingNotificationsByDefault) {
 
     LazyObject::Defaults::instance().forwardFirstNotificationOnly();
 
-    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
-    ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
+    ext::shared_ptr<SimpleQuote> q = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<Instrument> s = ext::make_shared<Stock>(Handle<Quote>(q));
 
     Flag f;
     f.registerWith(s);
@@ -115,8 +115,8 @@ BOOST_AUTO_TEST_CASE(testForwardingNotificationsByDefault) {
 
     LazyObject::Defaults::instance().alwaysForwardNotifications();
 
-    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
-    ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
+    ext::shared_ptr<SimpleQuote> q = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<Instrument> s = ext::make_shared<Stock>(Handle<Quote>(q));
 
     Flag f;
     f.registerWith(s);
@@ -140,8 +140,8 @@ BOOST_AUTO_TEST_CASE(testForwardingNotifications) {
 
     LazyObject::Defaults::instance().forwardFirstNotificationOnly();
 
-    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
-    ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
+    ext::shared_ptr<SimpleQuote> q = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<Instrument> s = ext::make_shared<Stock>(Handle<Quote>(q));
 
     Flag f;
     f.registerWith(s);

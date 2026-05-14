@@ -195,23 +195,20 @@ BOOST_AUTO_TEST_CASE(testDeltaPriceConsistency) {
     Real calculatedVal  =0.0;
     Real error          =0.0;
 
-    ext::shared_ptr<SimpleQuote> spotQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spotQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> spotHandle(spotQuote);
 
-    ext::shared_ptr<SimpleQuote> qQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> qHandle(qQuote);
-    ext::shared_ptr<YieldTermStructure> qTS(
-                                         new FlatForward(today, qHandle, dc));
+    ext::shared_ptr<YieldTermStructure> qTS = ext::make_shared<FlatForward>(today, qHandle, dc);
 
-    ext::shared_ptr<SimpleQuote> rQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> rHandle(qQuote);
-    ext::shared_ptr<YieldTermStructure> rTS(
-                                         new FlatForward(today, rHandle, dc));
+    ext::shared_ptr<YieldTermStructure> rTS = ext::make_shared<FlatForward>(today, rHandle, dc);
 
-    ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> volQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> volHandle(volQuote);
-    ext::shared_ptr<BlackVolTermStructure> volTS(
-                        new BlackConstantVol(today, calendar, volHandle, dc));
+    ext::shared_ptr<BlackVolTermStructure> volTS = ext::make_shared<BlackConstantVol>(today, calendar, volHandle, dc);
 
     ext::shared_ptr<BlackScholesMertonProcess>    stochProcess;
     ext::shared_ptr<PricingEngine>                engine;
@@ -225,9 +222,9 @@ BOOST_AUTO_TEST_CASE(testDeltaPriceConsistency) {
     for (auto& value : values) {
 
         payoff =
-            ext::shared_ptr<StrikedTypePayoff>(new PlainVanillaPayoff(value.type, value.strike));
+            ext::make_shared<PlainVanillaPayoff>(value.type, value.strike);
         exDate = today + timeToDays(value.t);
-        exercise = ext::shared_ptr<Exercise>(new EuropeanExercise(exDate));
+        exercise = ext::make_shared<EuropeanExercise>(exDate);
 
         spotQuote->setValue(value.s);
         volQuote->setValue(value.v);
@@ -246,8 +243,7 @@ BOOST_AUTO_TEST_CASE(testDeltaPriceConsistency) {
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS));
 
-        engine = ext::shared_ptr<PricingEngine>(
-                                    new AnalyticEuropeanEngine(stochProcess));
+        engine = ext::make_shared<AnalyticEuropeanEngine>(stochProcess);
 
         EuropeanOption option(payoff, exercise);
         option.setPricingEngine(engine);
@@ -383,22 +379,19 @@ BOOST_AUTO_TEST_CASE(testPutCallParity){
     Real error          =0.0;
     Real forward        =0.0;
 
-    ext::shared_ptr<SimpleQuote> spotQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spotQuote = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> qHandle(qQuote);
-    ext::shared_ptr<YieldTermStructure> qTS(
-                                         new FlatForward(today, qHandle, dc));
+    ext::shared_ptr<YieldTermStructure> qTS = ext::make_shared<FlatForward>(today, qHandle, dc);
 
-    ext::shared_ptr<SimpleQuote> rQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> rHandle(qQuote);
-    ext::shared_ptr<YieldTermStructure> rTS(
-                                         new FlatForward(today, rHandle, dc));
+    ext::shared_ptr<YieldTermStructure> rTS = ext::make_shared<FlatForward>(today, rHandle, dc);
 
-    ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> volQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> volHandle(volQuote);
-    ext::shared_ptr<BlackVolTermStructure> volTS(
-                        new BlackConstantVol(today, calendar, volHandle, dc));
+    ext::shared_ptr<BlackVolTermStructure> volTS = ext::make_shared<BlackConstantVol>(today, calendar, volHandle, dc);
 
     ext::shared_ptr<StrikedTypePayoff> payoff;
     Date exDate;
@@ -409,9 +402,9 @@ BOOST_AUTO_TEST_CASE(testPutCallParity){
     for (auto& value : values) {
 
         payoff =
-            ext::shared_ptr<StrikedTypePayoff>(new PlainVanillaPayoff(Option::Call, value.strike));
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, value.strike);
         exDate = today + timeToDays(value.t);
-        exercise = ext::shared_ptr<Exercise>(new EuropeanExercise(exDate));
+        exercise = ext::make_shared<EuropeanExercise>(exDate);
 
         spotQuote->setValue(value.s);
         volQuote->setValue(value.v);

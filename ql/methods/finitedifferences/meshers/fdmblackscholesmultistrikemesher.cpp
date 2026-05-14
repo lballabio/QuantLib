@@ -46,21 +46,21 @@ namespace QuantLib {
                                  / process->riskFreeRate()->discount(maturity);
         const Real minStrike= *std::min_element(strikes.begin(), strikes.end());
         const Real maxStrike= *std::max_element(strikes.begin(), strikes.end());
-                
+
         const Real Fmin = spot*spot/maxStrike*d;
         const Real Fmax = spot*spot/minStrike*d;
-        
+
         QL_REQUIRE(Fmin > 0.0, "negative forward given");
 
         // Set the grid boundaries
         const Real normInvEps = InverseCumulativeNormal()(1-eps);
-        const Real sigmaSqrtTmin 
+        const Real sigmaSqrtTmin
             = process->blackVolatility()->blackVol(maturity, minStrike)
                                                         *std::sqrt(maturity);
-        const Real sigmaSqrtTmax 
+        const Real sigmaSqrtTmax
             = process->blackVolatility()->blackVol(maturity, maxStrike)
                                                         *std::sqrt(maturity);
-        
+
         const Real xMin
             = std::min(0.8*std::log(0.8*spot*spot/maxStrike),
                        std::log(Fmin) - sigmaSqrtTmin*normInvEps*scaleFactor
@@ -71,17 +71,15 @@ namespace QuantLib {
                                       - sigmaSqrtTmax*sigmaSqrtTmax/2.0);
 
         ext::shared_ptr<Fdm1dMesher> helper;
-        if (   cPoint.first != Null<Real>() 
+        if (   cPoint.first != Null<Real>()
             && std::log(cPoint.first) >=xMin && std::log(cPoint.first) <=xMax) {
-            
-            helper = ext::shared_ptr<Fdm1dMesher>(
-                new Concentrating1dMesher(xMin, xMax, size, 
-                    std::pair<Real,Real>(std::log(cPoint.first),cPoint.second)));
+
+            helper = ext::make_shared<Concentrating1dMesher>(xMin, xMax, size,
+                    std::pair<Real,Real>(std::log(cPoint.first),cPoint.second));
         }
         else {
-            helper = ext::shared_ptr<Fdm1dMesher>(
-                                        new Uniform1dMesher(xMin, xMax, size));
-            
+            helper = ext::make_shared<Uniform1dMesher>(xMin, xMax, size);
+
         }
 
         locations_ = helper->locations();
@@ -89,5 +87,5 @@ namespace QuantLib {
             dplus_[i]  = helper->dplus(i);
             dminus_[i] = helper->dminus(i);
         }
-    }            
+    }
 }

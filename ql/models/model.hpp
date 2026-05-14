@@ -224,8 +224,7 @@ namespace QuantLib {
         };
       public:
         explicit PrivateConstraint(const std::vector<Parameter>& arguments)
-        : Constraint(ext::shared_ptr<Constraint::Impl>(
-                                   new PrivateConstraint::Impl(arguments))) {}
+        : Constraint(ext::make_shared<PrivateConstraint::Impl>(arguments)) {}
     };
 
 }

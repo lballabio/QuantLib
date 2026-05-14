@@ -169,8 +169,7 @@ namespace QuantLib {
                            "null term structure set to this instance of " <<
                            iborIndex_->name());
                 bool includeSettlementDateFlows = false;
-                ext::shared_ptr<PricingEngine> engine(new
-                    DiscountingSwapEngine(disc, includeSettlementDateFlows));
+                ext::shared_ptr<PricingEngine> engine = ext::make_shared<DiscountingSwapEngine>(disc, includeSettlementDateFlows);
                 temp.setPricingEngine(engine);
             } else
                 temp.setPricingEngine(engine_);
@@ -178,16 +177,15 @@ namespace QuantLib {
             usedFixedRate = temp.fairRate();
         }
 
-        ext::shared_ptr<VanillaSwap> swap(new VanillaSwap(
+        ext::shared_ptr<VanillaSwap> swap = ext::make_shared<VanillaSwap>(
             type_, nominal_, fixedSchedule, usedFixedRate, fixedDayCount, floatSchedule, iborIndex_,
-            floatSpread_, floatDayCount_, paymentConvention_, useIndexedCoupons_));
+            floatSpread_, floatDayCount_, paymentConvention_, useIndexedCoupons_);
 
         if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
                                     iborIndex_->forwardingTermStructure();
             bool includeSettlementDateFlows = false;
-            ext::shared_ptr<PricingEngine> engine(new
-                DiscountingSwapEngine(disc, includeSettlementDateFlows));
+            ext::shared_ptr<PricingEngine> engine = ext::make_shared<DiscountingSwapEngine>(disc, includeSettlementDateFlows);
             swap->setPricingEngine(engine);
         } else
             swap->setPricingEngine(engine_);
@@ -243,8 +241,7 @@ namespace QuantLib {
     MakeVanillaSwap& MakeVanillaSwap::withDiscountingTermStructure(
                                         const Handle<YieldTermStructure>& d) {
         bool includeSettlementDateFlows = false;
-        engine_ = ext::shared_ptr<PricingEngine>(new
-            DiscountingSwapEngine(d, includeSettlementDateFlows));
+        engine_ = ext::make_shared<DiscountingSwapEngine>(d, includeSettlementDateFlows);
         return *this;
     }
 

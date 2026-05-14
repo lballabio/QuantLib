@@ -102,11 +102,10 @@ namespace QuantLib {
         if ((barrierType == Barrier::DownIn && spot <= barrier) ||
            (barrierType == Barrier::UpIn && spot >= barrier)) {
             // knocked in - is a digital european
-            ext::shared_ptr<Exercise> exercise(new EuropeanExercise(
-                                             arguments_.exercise->lastDate()));
+            ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(
+                                             arguments_.exercise->lastDate());
 
-            ext::shared_ptr<PricingEngine> engine(
-                                       new AnalyticEuropeanEngine(process_));
+            ext::shared_ptr<PricingEngine> engine = ext::make_shared<AnalyticEuropeanEngine>(process_);
 
             VanillaOption opt(payoff, exercise);
             opt.setPricingEngine(engine);

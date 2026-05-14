@@ -503,7 +503,7 @@ namespace QuantLib {
     }
 
     inline Observer::Observer(const Observer& o) {
-        proxy_.reset(new Proxy(this));
+        proxy_ = ext::make_shared<Proxy>(this);
 
         {
              std::lock_guard<std::recursive_mutex> lock(o.mutex_);
@@ -517,7 +517,7 @@ namespace QuantLib {
     inline Observer& Observer::operator=(const Observer& o) {
         std::lock_guard<std::recursive_mutex> lock(mutex_);
         if (!proxy_) {
-            proxy_.reset(new Proxy(this));
+            proxy_ = ext::make_shared<Proxy>(this);
         }
 
         for (const auto& observable : observables_)
@@ -546,7 +546,7 @@ namespace QuantLib {
     Observer::registerWith(const ext::shared_ptr<Observable>& h) {
         std::lock_guard<std::recursive_mutex> lock(mutex_);
         if (!proxy_) {
-            proxy_.reset(new Proxy(this));
+            proxy_ = ext::make_shared<Proxy>(this);
         }
 
         if (h) {

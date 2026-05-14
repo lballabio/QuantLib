@@ -62,8 +62,7 @@ namespace QuantLib {
                                     klugeOUProcess_.currentLink(),
                                     rTS_, solverDesc_.bcSet, 16));
 
-            solver_ = ext::shared_ptr<FdmNdimSolver<N> >(
-                          new FdmNdimSolver<N>(solverDesc_, schemeDesc_, op));
+            solver_ = ext::make_shared<FdmNdimSolver<N>>(solverDesc_, schemeDesc_, op);
         }
 
       private:

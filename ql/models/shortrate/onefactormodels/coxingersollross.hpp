@@ -90,8 +90,7 @@ namespace QuantLib {
                  Real k,
                  Real sigma,
                  Real x0)
-        : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
-                        new CoxIngersollRossProcess(k, sigma, x0, theta))) {}
+        : ShortRateDynamics(ext::make_shared<CoxIngersollRossProcess>(k, sigma, x0, theta)) {}
 
         Real variable(Time, Rate r) const override { return r; }
         Real shortRate(Time, Real y) const override { return y; }

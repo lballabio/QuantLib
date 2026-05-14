@@ -108,39 +108,31 @@ BOOST_AUTO_TEST_CASE(testPutCallParity){
     DayCounter dc = Actual360();
     Date todaysDate = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<YieldTermStructure> rTS(
-              new FlatForward(0, NullCalendar(), Handle<Quote>(rRate), dc));
+    ext::shared_ptr<YieldTermStructure> rTS = ext::make_shared<FlatForward>(0, NullCalendar(), Handle<Quote>(rRate), dc);
 
-    ext::shared_ptr<YieldTermStructure> qTS(
-              new FlatForward(0, NullCalendar(), Handle<Quote>(qRate), dc));
+    ext::shared_ptr<YieldTermStructure> qTS = ext::make_shared<FlatForward>(0, NullCalendar(), Handle<Quote>(qRate), dc);
 
-    ext::shared_ptr<BlackVolTermStructure> volTS(
-                              new BlackConstantVol(todaysDate, NullCalendar(),
-                                                   Handle<Quote>(vol), dc));
+    ext::shared_ptr<BlackVolTermStructure> volTS = ext::make_shared<BlackConstantVol>(todaysDate, NullCalendar(),
+                                                   Handle<Quote>(vol), dc);
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoffMotherCall(
-            new PlainVanillaPayoff(Option::Call, value.strikeMother));
+        ext::shared_ptr<StrikedTypePayoff> payoffMotherCall = ext::make_shared<PlainVanillaPayoff>(Option::Call, value.strikeMother);
 
-        ext::shared_ptr<StrikedTypePayoff> payoffMotherPut(
-            new PlainVanillaPayoff(Option::Put, value.strikeMother));
+        ext::shared_ptr<StrikedTypePayoff> payoffMotherPut = ext::make_shared<PlainVanillaPayoff>(Option::Put, value.strikeMother);
 
-        ext::shared_ptr<StrikedTypePayoff> payoffDaughter(
-            new PlainVanillaPayoff(value.typeDaughter, value.strikeDaughter));
+        ext::shared_ptr<StrikedTypePayoff> payoffDaughter = ext::make_shared<PlainVanillaPayoff>(value.typeDaughter, value.strikeDaughter);
 
         Date matDateMom = todaysDate + timeToDays(value.tMother);
         Date matDateDaughter = todaysDate + timeToDays(value.tDaughter);
 
-        ext::shared_ptr<Exercise> exerciseCompound(
-                                            new EuropeanExercise(matDateMom));
-        ext::shared_ptr<Exercise> exerciseDaughter(
-                                       new EuropeanExercise(matDateDaughter));
+        ext::shared_ptr<Exercise> exerciseCompound = ext::make_shared<EuropeanExercise>(matDateMom);
+        ext::shared_ptr<Exercise> exerciseDaughter = ext::make_shared<EuropeanExercise>(matDateDaughter);
 
         spot->setValue(value.s);
         qRate->setValue(value.q);
@@ -156,19 +148,16 @@ BOOST_AUTO_TEST_CASE(testPutCallParity){
         VanillaOption vanillaOption(EuropeanOption(payoffDaughter,
                                                    exerciseDaughter));
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-            new BlackScholesMertonProcess(
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess = ext::make_shared<BlackScholesMertonProcess>(
                       Handle<Quote>(spot),
                       Handle<YieldTermStructure>(qTS),
                       Handle<YieldTermStructure>(rTS),
-                      Handle<BlackVolTermStructure>(volTS)));
+                      Handle<BlackVolTermStructure>(volTS));
 
 
-        ext::shared_ptr<PricingEngine> engineCompound(
-                              new AnalyticCompoundOptionEngine(stochProcess));
+        ext::shared_ptr<PricingEngine> engineCompound = ext::make_shared<AnalyticCompoundOptionEngine>(stochProcess);
 
-        ext::shared_ptr<PricingEngine> engineEuropean(
-                                     new AnalyticEuropeanEngine(stochProcess));
+        ext::shared_ptr<PricingEngine> engineEuropean = ext::make_shared<AnalyticEuropeanEngine>(stochProcess);
 
         compoundOptionCall.setPricingEngine(engineCompound);
         compoundOptionPut.setPricingEngine(engineCompound);
@@ -238,36 +227,29 @@ BOOST_AUTO_TEST_CASE(testValues){
     DayCounter dc = Actual360();
     Date todaysDate = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<YieldTermStructure> rTS(
-              new FlatForward(0, NullCalendar(), Handle<Quote>(rRate), dc));
+    ext::shared_ptr<YieldTermStructure> rTS = ext::make_shared<FlatForward>(0, NullCalendar(), Handle<Quote>(rRate), dc);
 
-    ext::shared_ptr<YieldTermStructure> qTS(
-              new FlatForward(0, NullCalendar(), Handle<Quote>(qRate), dc));
+    ext::shared_ptr<YieldTermStructure> qTS = ext::make_shared<FlatForward>(0, NullCalendar(), Handle<Quote>(qRate), dc);
 
-    ext::shared_ptr<BlackVolTermStructure> volTS(
-                              new BlackConstantVol(todaysDate, NullCalendar(),
-                                                   Handle<Quote>(vol), dc));
+    ext::shared_ptr<BlackVolTermStructure> volTS = ext::make_shared<BlackConstantVol>(todaysDate, NullCalendar(),
+                                                   Handle<Quote>(vol), dc);
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoffMother(
-            new PlainVanillaPayoff(value.typeMother, value.strikeMother));
+        ext::shared_ptr<StrikedTypePayoff> payoffMother = ext::make_shared<PlainVanillaPayoff>(value.typeMother, value.strikeMother);
 
-        ext::shared_ptr<StrikedTypePayoff> payoffDaughter(
-            new PlainVanillaPayoff(value.typeDaughter, value.strikeDaughter));
+        ext::shared_ptr<StrikedTypePayoff> payoffDaughter = ext::make_shared<PlainVanillaPayoff>(value.typeDaughter, value.strikeDaughter);
 
         Date matDateMom = todaysDate + timeToDays(value.tMother);
         Date matDateDaughter = todaysDate + timeToDays(value.tDaughter);
 
-        ext::shared_ptr<Exercise> exerciseMother(
-                                            new EuropeanExercise(matDateMom));
-        ext::shared_ptr<Exercise> exerciseDaughter(
-                                       new EuropeanExercise(matDateDaughter));
+        ext::shared_ptr<Exercise> exerciseMother = ext::make_shared<EuropeanExercise>(matDateMom);
+        ext::shared_ptr<Exercise> exerciseDaughter = ext::make_shared<EuropeanExercise>(matDateDaughter);
 
         spot->setValue(value.s);
         qRate->setValue(value.q);
@@ -277,15 +259,13 @@ BOOST_AUTO_TEST_CASE(testValues){
         CompoundOption compoundOption(payoffMother,exerciseMother,
                                       payoffDaughter, exerciseDaughter);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-            new BlackScholesMertonProcess(
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess = ext::make_shared<BlackScholesMertonProcess>(
                       Handle<Quote>(spot),
                       Handle<YieldTermStructure>(qTS),
                       Handle<YieldTermStructure>(rTS),
-                      Handle<BlackVolTermStructure>(volTS)));
+                      Handle<BlackVolTermStructure>(volTS));
 
-        ext::shared_ptr<PricingEngine> engineCompound(
-                              new AnalyticCompoundOptionEngine(stochProcess));
+        ext::shared_ptr<PricingEngine> engineCompound = ext::make_shared<AnalyticCompoundOptionEngine>(stochProcess);
 
         compoundOption.setPricingEngine(engineCompound);
 

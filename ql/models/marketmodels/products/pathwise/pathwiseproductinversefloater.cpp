@@ -101,7 +101,7 @@ namespace QuantLib
     std::unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseInverseFloater::clone() const 
     {
-        return std::unique_ptr<MarketModelPathwiseMultiProduct>(new MarketModelPathwiseInverseFloater(*this));
+        return std::make_unique<MarketModelPathwiseInverseFloater>(*this);
     }
 
     std::vector<Size> MarketModelPathwiseInverseFloater::suggestedNumeraires() const

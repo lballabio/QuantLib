@@ -81,8 +81,7 @@ namespace QuantLib {
                  Real b,
                  Real sigma,
                  Real r0)
-        : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
-                             new OrnsteinUhlenbeckProcess(a, sigma, r0 - b))),
+        : ShortRateDynamics(ext::make_shared<OrnsteinUhlenbeckProcess>(a, sigma, r0 - b)),
           b_(b) {}
 
         Real variable(Time, Rate r) const override { return r - b_; }
@@ -97,8 +96,7 @@ namespace QuantLib {
 
     inline ext::shared_ptr<OneFactorModel::ShortRateDynamics>
     Vasicek::dynamics() const {
-        return ext::shared_ptr<ShortRateDynamics>(
-                                     new Dynamics(a(), b() , sigma(), r0_));
+        return ext::make_shared<Dynamics>(a(), b() , sigma(), r0_);
     }
 
 }

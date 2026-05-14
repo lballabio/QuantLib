@@ -25,10 +25,8 @@ namespace QuantLib {
     France::France(France::Market market) {
         // all calendar instances on the same market share the same
         // implementation instance
-        static ext::shared_ptr<Calendar::Impl> settlementImpl(
-                                                   new France::SettlementImpl);
-        static ext::shared_ptr<Calendar::Impl> exchangeImpl(
-                                                   new France::ExchangeImpl);
+        static ext::shared_ptr<Calendar::Impl> settlementImpl = ext::make_shared<France::SettlementImpl>();
+        static ext::shared_ptr<Calendar::Impl> exchangeImpl = ext::make_shared<France::ExchangeImpl>();
         switch (market) {
           case Settlement:
             impl_ = settlementImpl;

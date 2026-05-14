@@ -108,8 +108,7 @@ class MCAmericanMaxEngine
                                                     processArray->process(0));
         QL_REQUIRE(process, "generalized Black-Scholes proces required");
 
-        ext::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer(
-                          new AmericanMaxPathPricer(this->arguments_.payoff));
+        ext::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer = ext::make_shared<AmericanMaxPathPricer>(this->arguments_.payoff);
 
         return ext::make_shared<LongstaffSchwartzPathPricer<MultiPath> > (
                 
@@ -137,16 +136,13 @@ BOOST_AUTO_TEST_CASE(testAmericanOption) {
     const Date maturity(17, May, 1999);
     const DayCounter dayCounter = Actual365Fixed();
 
-    ext::shared_ptr<Exercise> americanExercise(
-        new AmericanExercise(settlementDate, maturity));
+    ext::shared_ptr<Exercise> americanExercise = ext::make_shared<AmericanExercise>(settlementDate, maturity);
 
     // bootstrap the yield/dividend/vol curves
     Handle<YieldTermStructure> flatTermStructure(
-            ext::shared_ptr<YieldTermStructure>(
-                new FlatForward(settlementDate, riskFreeRate, dayCounter)));
+            ext::make_shared<FlatForward>(settlementDate, riskFreeRate, dayCounter));
     Handle<YieldTermStructure> flatDividendTS(
-            ext::shared_ptr<YieldTermStructure>(
-                new FlatForward(settlementDate, dividendYield, dayCounter)));
+            ext::make_shared<FlatForward>(settlementDate, dividendYield, dayCounter));
 
     // expected results for exercise probability, evaluated with third-party
     // product (using Cox-Rubinstein binomial tree)
@@ -166,20 +162,18 @@ BOOST_AUTO_TEST_CASE(testAmericanOption) {
     for (Integer i=0; i<2; ++i) {
         for (Integer j=0; j<3; ++j) {
             Handle<BlackVolTermStructure> flatVolTS(
-                ext::shared_ptr<BlackVolTermStructure>(
-                    new BlackConstantVol(settlementDate, NullCalendar(),
-                                         volatility+0.1*j, dayCounter)));
+                ext::make_shared<BlackConstantVol>(settlementDate, NullCalendar(),
+                                         volatility+0.1*j, dayCounter));
 
-            ext::shared_ptr<StrikedTypePayoff> payoff(
-                new PlainVanillaPayoff(type, underlying+4*i));
+            ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(type, underlying+4*i);
 
             Handle<Quote> underlyingH(
-                ext::shared_ptr<Quote>(new SimpleQuote(underlying)));
+                ext::make_shared<SimpleQuote>(underlying));
 
             ext::shared_ptr<GeneralizedBlackScholesProcess>
-                stochasticProcess(new GeneralizedBlackScholesProcess(
+                stochasticProcess = ext::make_shared<GeneralizedBlackScholesProcess>(
                                       underlyingH, flatDividendTS,
-                                      flatTermStructure, flatVolTS));
+                                      flatTermStructure, flatVolTS);
 
             VanillaOption americanOption(payoff, americanExercise);
 
@@ -198,8 +192,7 @@ BOOST_AUTO_TEST_CASE(testAmericanOption) {
             const Real exerciseProbability =
                 americanOption.result<QuantLib::Real>("exerciseProbability");
 
-            americanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                        new FdBlackScholesVanillaEngine(stochasticProcess, 401, 200)));
+            americanOption.setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(stochasticProcess, 401, 200));
             const Real expected = americanOption.NPV();
 
             // Check price
@@ -243,30 +236,24 @@ BOOST_AUTO_TEST_CASE(testAmericanMaxOption) {
     const Date maturity(16, May, 2001);
     const DayCounter dayCounter = Actual365Fixed();
 
-    ext::shared_ptr<Exercise> americanExercise(
-        new AmericanExercise(settlementDate, maturity));
+    ext::shared_ptr<Exercise> americanExercise = ext::make_shared<AmericanExercise>(settlementDate, maturity);
 
     // bootstrap the yield/dividend/vol curves
     Handle<YieldTermStructure> flatTermStructure(
-        ext::shared_ptr<YieldTermStructure>(
-            new FlatForward(settlementDate, riskFreeRate, dayCounter)));
+        ext::make_shared<FlatForward>(settlementDate, riskFreeRate, dayCounter));
     Handle<YieldTermStructure> flatDividendTS(
-        ext::shared_ptr<YieldTermStructure>(
-            new FlatForward(settlementDate, dividendYield, dayCounter)));
+        ext::make_shared<FlatForward>(settlementDate, dividendYield, dayCounter));
 
     Handle<BlackVolTermStructure> flatVolTS(
-        ext::shared_ptr<BlackVolTermStructure>(new
-            BlackConstantVol(settlementDate, NullCalendar(),
-                             volatility, dayCounter)));
+        ext::make_shared<BlackConstantVol>(settlementDate, NullCalendar(),
+                             volatility, dayCounter));
 
-    ext::shared_ptr<StrikedTypePayoff> payoff(
-        new PlainVanillaPayoff(type, strike));
+    ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
 
     RelinkableHandle<Quote> underlyingH;
 
-    ext::shared_ptr<GeneralizedBlackScholesProcess> stochasticProcess(new
-        GeneralizedBlackScholesProcess(
-            underlyingH, flatDividendTS, flatTermStructure, flatVolTS));
+    ext::shared_ptr<GeneralizedBlackScholesProcess> stochasticProcess = ext::make_shared<GeneralizedBlackScholesProcess>(
+            underlyingH, flatDividendTS, flatTermStructure, flatVolTS);
 
     const Size numberAssets = 2;
     Matrix corr(numberAssets, numberAssets, 0.0);
@@ -277,15 +264,13 @@ BOOST_AUTO_TEST_CASE(testAmericanMaxOption) {
         corr[i][i] = 1.0;
     }
 
-    ext::shared_ptr<StochasticProcessArray> process(
-        new StochasticProcessArray(v, corr));
+    ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(v, corr);
     VanillaOption americanMaxOption(payoff, americanExercise);
 
-    ext::shared_ptr<PricingEngine> mcengine(
-        new MCAmericanMaxEngine<PseudoRandom>(process, 25, Null<Size>(), false,
+    ext::shared_ptr<PricingEngine> mcengine = ext::make_shared<MCAmericanMaxEngine<PseudoRandom>>(process, 25, Null<Size>(), false,
                                               true, false, 4096,
                                               Null<Real>(), Null<Size>(),
-                                              42, 1024));
+                                              42, 1024);
     americanMaxOption.setPricingEngine(mcengine);
 
     const Real expected[] = {8.08, 13.90, 21.34};
@@ -293,7 +278,7 @@ BOOST_AUTO_TEST_CASE(testAmericanMaxOption) {
 
         const Real underlying = 90.0 + i*10.0;
         underlyingH.linkTo(
-            ext::shared_ptr<Quote>(new SimpleQuote(underlying)));
+            ext::make_shared<SimpleQuote>(underlying));
 
         const Real calculated  = americanMaxOption.NPV();
         const Real errorEstimate = americanMaxOption.errorEstimate();

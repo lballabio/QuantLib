@@ -179,18 +179,17 @@ BOOST_AUTO_TEST_CASE(testHaugValues) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(100.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.04);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.01);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
-            new CashOrNothingPayoff(Option::Call, 0, value.cash));
+        ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<CashOrNothingPayoff>(Option::Call, 0, value.cash);
 
         Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise;
@@ -204,15 +203,13 @@ BOOST_AUTO_TEST_CASE(testHaugValues) {
         rRate->setValue(value.r);
         vol->setValue(value.v);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
-            BlackScholesMertonProcess(Handle<Quote>(spot),
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
+                                      Handle<BlackVolTermStructure>(volTS));
 
         // checking with analytic engine
-        ext::shared_ptr<PricingEngine> engine(
-                             new AnalyticDoubleBarrierBinaryEngine(stochProcess));
+        ext::shared_ptr<PricingEngine> engine = ext::make_shared<AnalyticDoubleBarrierBinaryEngine>(stochProcess);
         DoubleBarrierOption opt(value.barrierType, value.barrier_lo, value.barrier_hi, 0, payoff,
                                 exercise);
         opt.setPricingEngine(engine);

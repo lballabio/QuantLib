@@ -52,11 +52,9 @@ namespace QuantLib {
                                   integroIntegrationOrder)),
       ouOp_   (new FdmExtendedOrnsteinUhlenbeckOp(
                   mesher, extOU_,
-                  ext::shared_ptr<YieldTermStructure>(
-                      new FlatForward(rTS->referenceDate(),
-                              Handle<Quote>(ext::shared_ptr<Quote>(
-                                      new SimpleQuote(0.0))),
-                                      rTS->dayCounter())),
+                  ext::make_shared<FlatForward>(rTS->referenceDate(),
+                              Handle<Quote>(ext::make_shared<SimpleQuote>(0.0)),
+                                      rTS->dayCounter()),
                   bcSet, 2)),
       corrMap_(SecondOrderMixedDerivativeOp(0, 2, mesher).mult(
           Array(mesher->layout()->size(),

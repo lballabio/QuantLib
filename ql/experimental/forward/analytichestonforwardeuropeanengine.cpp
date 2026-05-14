@@ -152,7 +152,7 @@ namespace QuantLib {
         // calculation, both for accuracy and because tStar==0 causes some numerical issues...
         std::pair<Real, Real> P1HatP2Hat;
         if (resetTime <= 1e-3) {
-            Handle<Quote> tempQuote(ext::shared_ptr<Quote>(new SimpleQuote(s0_->value())));
+            Handle<Quote> tempQuote(ext::make_shared<SimpleQuote>(s0_->value()));
             P1HatP2Hat = calculateP1P2(tenor, tempQuote, moneyness * s0_->value(), expiryRatio, phiRightLimit);
         } else {
             P1HatP2Hat = calculateP1P2Hat(tenor, resetTime, moneyness, expiryRatio/resetRatio, phiRightLimit, nuRightLimit);
@@ -197,7 +197,7 @@ namespace QuantLib {
                                                                                 Real phiRightLimit,
                                                                                 Real nuRightLimit) const {
 
-        Handle<Quote> unitQuote(ext::shared_ptr<Quote>(new SimpleQuote(1.0)));
+        Handle<Quote> unitQuote(ext::make_shared<SimpleQuote>(1.0));
 
         // Re-expressing moneyness in terms of the forward here (strike fixes to spot, but in
         // our pricing calculation we need to compare it to the future at expiry)
@@ -236,14 +236,12 @@ namespace QuantLib {
 
         // Probably a wasteful implementation here, could be improved by importing
         // only the CF-generating parts of the AnalyticHestonEngine (currently private)
-        ext::shared_ptr<HestonProcess> hestonProcess(new
-            HestonProcess(riskFreeRate_, dividendYield_, spotReset,
-                varReset, kappa_, theta_, sigma_, rho_));
+        ext::shared_ptr<HestonProcess> hestonProcess = ext::make_shared<HestonProcess>(riskFreeRate_, dividendYield_, spotReset,
+                varReset, kappa_, theta_, sigma_, rho_);
 
-        ext::shared_ptr<HestonModel> hestonModel(new HestonModel(hestonProcess));
+        ext::shared_ptr<HestonModel> hestonModel = ext::make_shared<HestonModel>(hestonProcess);
 
-        ext::shared_ptr<AnalyticHestonEngine> analyticHestonEngine(
-            new AnalyticHestonEngine(hestonModel, integrationOrder_));
+        ext::shared_ptr<AnalyticHestonEngine> analyticHestonEngine = ext::make_shared<AnalyticHestonEngine>(hestonModel, integrationOrder_);
 
         // Not sure how to pass only the chF, so just pass the whole thing for now!
         return analyticHestonEngine;

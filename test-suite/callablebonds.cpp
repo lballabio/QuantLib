@@ -80,8 +80,7 @@ struct Globals {
 
     template <class R>
     ext::shared_ptr<YieldTermStructure> makeFlatCurve(const R& r) const {
-        return ext::shared_ptr<YieldTermStructure>(
-                                  new FlatForward(settlement, r, dayCounter));
+        return ext::make_shared<FlatForward>(settlement, r, dayCounter);
     }
 
     Globals() {
@@ -303,7 +302,7 @@ BOOST_AUTO_TEST_CASE(testObservability) {
 
     Globals vars;
 
-    ext::shared_ptr<SimpleQuote> observable(new SimpleQuote(0.03));
+    ext::shared_ptr<SimpleQuote> observable = ext::make_shared<SimpleQuote>(0.03);
     Handle<Quote> h(observable);
     vars.termStructure.linkTo(vars.makeFlatCurve(h));
     vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));

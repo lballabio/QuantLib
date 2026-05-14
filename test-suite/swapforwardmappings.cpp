@@ -156,8 +156,7 @@ simulate(const std::vector<Real>& todaysDiscounts,
     Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
     AccountingEngine engine(evolver, product, initialNumeraireValue);
-    ext::shared_ptr<SequenceStatisticsInc> stats(new
-            SequenceStatisticsInc(product.numberOfProducts()));
+    ext::shared_ptr<SequenceStatisticsInc> stats = ext::make_shared<SequenceStatisticsInc>(product.numberOfProducts());
     engine.multiplePathValues(*stats, paths_);
     return stats;
 }
@@ -379,8 +378,7 @@ BOOST_AUTO_TEST_CASE(testSwaptionImpliedVolatility)
         
         Size endIndex = nbRates-2;
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new   
-            PlainVanillaPayoff(Option::Call, strike));
+        ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
         MultiStepSwaption product(rateTimes, startIndex, endIndex,payoff );
 
         const EvolutionDescription& evolution = product.evolution();
@@ -393,23 +391,20 @@ BOOST_AUTO_TEST_CASE(testSwaptionImpliedVolatility)
         Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
             longTermCorr,
             beta);
-        ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
-            TimeHomogeneousForwardCorrelation(correlations,
-            rateTimes));
-        ext::shared_ptr<MarketModel> lmmMarketModel(new
-            FlatVol(marketData.volatilities(),
+        ext::shared_ptr<PiecewiseConstantCorrelation> corr = ext::make_shared<TimeHomogeneousForwardCorrelation>(correlations,
+            rateTimes);
+        ext::shared_ptr<MarketModel> lmmMarketModel = ext::make_shared<FlatVol>(marketData.volatilities(),
             corr,
             evolution,
             numberOfFactors,
             lmmCurveState.forwardRates(),
-            marketData.displacements()));
+            marketData.displacements());
 
 
         SobolBrownianGeneratorFactory generatorFactory(SobolBrownianGenerator::Diagonal);
         std::vector<Size> numeraires(nbRates,
             nbRates);
-        ext::shared_ptr<MarketModelEvolver> evolver(new LogNormalFwdRatePc
-            (lmmMarketModel, generatorFactory, numeraires));
+        ext::shared_ptr<MarketModelEvolver> evolver = ext::make_shared<LogNormalFwdRatePc>(lmmMarketModel, generatorFactory, numeraires);
 
         ext::shared_ptr<SequenceStatisticsInc> stats =
             simulate(marketData.discountFactors(), evolver, product);
@@ -422,7 +417,7 @@ BOOST_AUTO_TEST_CASE(testSwaptionImpliedVolatility)
         Real swapRate = lmmCurveState.cmSwapRate(startIndex,endIndex-startIndex);
         Real swapAnnuity = lmmCurveState.cmSwapAnnuity(startIndex,startIndex,endIndex-startIndex)*marketData.discountFactors()[startIndex];
 
-        ext::shared_ptr<PlainVanillaPayoff> payoffDis( new PlainVanillaPayoff(Option::Call, strike+displacement));
+        ext::shared_ptr<PlainVanillaPayoff> payoffDis = ext::make_shared<PlainVanillaPayoff>(Option::Call, strike+displacement);
 
         Real expectedSwaption = BlackCalculator(payoffDis,
             swapRate+displacement, estimatedImpliedVol *sqrt(rateTimes[startIndex]),

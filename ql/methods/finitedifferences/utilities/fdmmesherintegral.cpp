@@ -38,10 +38,9 @@ namespace QuantLib {
             return integrator1d_(x, f);
         }
 
-        const ext::shared_ptr<FdmMesherComposite> subMesher(
-            new FdmMesherComposite(
+        const ext::shared_ptr<FdmMesherComposite> subMesher = ext::make_shared<FdmMesherComposite>(
                 std::vector<ext::shared_ptr<Fdm1dMesher> >(
-                    meshers_.begin(), meshers_.end()-1)));
+                    meshers_.begin(), meshers_.end()-1));
 
         FdmMesherIntegral subMesherIntegral(subMesher, integrator1d_);
         const Size subSize = subMesher->layout()->size();

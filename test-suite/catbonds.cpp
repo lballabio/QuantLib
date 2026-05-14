@@ -53,7 +53,8 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 BOOST_AUTO_TEST_SUITE(CatBondTests)
 
 std::pair<Date, Real> data[] = {std::pair<Date, Real>(Date(1, February, 2012), 100), std::pair<Date, Real>(Date(1, July, 2013), 150), std::pair<Date, Real>(Date(5, January, 2014), 50)};
-ext::shared_ptr<std::vector<std::pair<Date, Real> > > sampleEvents(new std::vector<std::pair<Date, Real> >(data, data+3));
+ext::shared_ptr<std::vector<std::pair<Date, Real> > > sampleEvents =
+    ext::make_shared<std::vector<std::pair<Date, Real> > >(data, data + 3);
 
 Date eventsStart(1, January, 2011);
 Date eventsEnd(31, December, 2014);
@@ -131,7 +132,8 @@ BOOST_AUTO_TEST_CASE(testEventSetForIrregularPeriods) {
 BOOST_AUTO_TEST_CASE(testEventSetForNoEvents) {
     BOOST_TEST_MESSAGE("Testing that catastrophe events are split correctly when there are no simulated events...");
 
-    ext::shared_ptr<std::vector<std::pair<Date, Real> > > emptyEvents(new std::vector<std::pair<Date, Real> >());
+    ext::shared_ptr<std::vector<std::pair<Date, Real> > > emptyEvents =
+        ext::make_shared<std::vector<std::pair<Date, Real> > >();
     EventSet catRisk(emptyEvents, eventsStart, eventsEnd);
     ext::shared_ptr<CatSimulation> simulation = catRisk.newSimulation(Date(2, January, 2015), Date(5, January, 2016));
 
@@ -212,13 +214,12 @@ BOOST_AUTO_TEST_CASE(testRiskFreeAgainstFloatingRateBond) {
     Handle<YieldTermStructure> riskFreeRate(flatRate(today,0.025,Actual360()));
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
-    ext::shared_ptr<IborIndex> index(new USDLibor(6*Months, riskFreeRate));
+    ext::shared_ptr<IborIndex> index = ext::make_shared<USDLibor>(6*Months, riskFreeRate);
     Natural fixingDays = 1;
 
     Real tolerance = 1.0e-6;
 
-    ext::shared_ptr<IborCouponPricer> pricer(new
-        BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
+    ext::shared_ptr<IborCouponPricer> pricer = ext::make_shared<BlackIborCouponPricer>(Handle<OptionletVolatilityStructure>());
 
     // plain
 
@@ -229,12 +230,12 @@ BOOST_AUTO_TEST_CASE(testRiskFreeAgainstFloatingRateBond) {
                  ModifiedFollowing, ModifiedFollowing,
                  DateGeneration::Backward, false);
 
-    ext::shared_ptr<CatRisk> noCatRisk(new EventSet(
+    ext::shared_ptr<CatRisk> noCatRisk = ext::make_shared<EventSet>(
         ext::make_shared<std::vector<std::pair<Date, Real> > >(), 
-        Date(1, Jan, 2000), Date(31, Dec, 2010)));
+        Date(1, Jan, 2000), Date(31, Dec, 2010));
 
-    ext::shared_ptr<EventPaymentOffset> paymentOffset(new NoOffset());
-    ext::shared_ptr<NotionalRisk> notionalRisk(new DigitalNotionalRisk(paymentOffset, 100));
+    ext::shared_ptr<EventPaymentOffset> paymentOffset = ext::make_shared<NoOffset>();
+    ext::shared_ptr<NotionalRisk> notionalRisk = ext::make_shared<DigitalNotionalRisk>(paymentOffset, 100);
 
     FloatingRateBond bond1(settlementDays, vars.faceAmount, sch,
                            index, ActualActual(ActualActual::ISMA),
@@ -253,12 +254,11 @@ BOOST_AUTO_TEST_CASE(testRiskFreeAgainstFloatingRateBond) {
                            false,
                            100.0, Date(30,November,2004));
 
-    ext::shared_ptr<PricingEngine> bondEngine(
-                                     new DiscountingBondEngine(riskFreeRate));
+    ext::shared_ptr<PricingEngine> bondEngine = ext::make_shared<DiscountingBondEngine>(riskFreeRate);
     bond1.setPricingEngine(bondEngine);
     setCouponPricer(bond1.cashflows(),pricer);
 
-    ext::shared_ptr<PricingEngine> catBondEngine(new MonteCarloCatBondEngine(noCatRisk, riskFreeRate));
+    ext::shared_ptr<PricingEngine> catBondEngine = ext::make_shared<MonteCarloCatBondEngine>(noCatRisk, riskFreeRate);
     catBond1.setPricingEngine(catBondEngine);
     setCouponPricer(catBond1.cashflows(),pricer);
 
@@ -296,12 +296,11 @@ BOOST_AUTO_TEST_CASE(testRiskFreeAgainstFloatingRateBond) {
                            false,
                            100.0, Date(30,November,2004));
 
-    ext::shared_ptr<PricingEngine> bondEngine2(
-                                    new DiscountingBondEngine(discountCurve));
+    ext::shared_ptr<PricingEngine> bondEngine2 = ext::make_shared<DiscountingBondEngine>(discountCurve);
     bond2.setPricingEngine(bondEngine2);
     setCouponPricer(bond2.cashflows(),pricer);
 
-    ext::shared_ptr<PricingEngine> catBondEngine2(new MonteCarloCatBondEngine(noCatRisk, discountCurve));
+    ext::shared_ptr<PricingEngine> catBondEngine2 = ext::make_shared<MonteCarloCatBondEngine>(noCatRisk, discountCurve);
     catBond2.setPricingEngine(catBondEngine2);
     setCouponPricer(catBond2.cashflows(),pricer);
 
@@ -376,13 +375,12 @@ BOOST_AUTO_TEST_CASE(testCatBondInDoomScenario) {
     Handle<YieldTermStructure> riskFreeRate(flatRate(today,0.025,Actual360()));
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
-    ext::shared_ptr<IborIndex> index(new USDLibor(6*Months, riskFreeRate));
+    ext::shared_ptr<IborIndex> index = ext::make_shared<USDLibor>(6*Months, riskFreeRate);
     Natural fixingDays = 1;
 
     Real tolerance = 1.0e-6;
 
-    ext::shared_ptr<IborCouponPricer> pricer(new
-        BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
+    ext::shared_ptr<IborCouponPricer> pricer = ext::make_shared<BlackIborCouponPricer>(Handle<OptionletVolatilityStructure>());
 
     Schedule sch(Date(30,November,2004),
                  Date(30,November,2008),
@@ -391,14 +389,15 @@ BOOST_AUTO_TEST_CASE(testCatBondInDoomScenario) {
                  ModifiedFollowing, ModifiedFollowing,
                  DateGeneration::Backward, false);
 
-    ext::shared_ptr<std::vector<std::pair<Date, Real> > > events(new std::vector<std::pair<Date, Real> >());
+    ext::shared_ptr<std::vector<std::pair<Date, Real> > > events =
+        ext::make_shared<std::vector<std::pair<Date, Real> > >();
     events->emplace_back(Date(30,November,2004), 1000);
-    ext::shared_ptr<CatRisk> doomCatRisk(new EventSet(
+    ext::shared_ptr<CatRisk> doomCatRisk = ext::make_shared<EventSet>(
         events, 
-        Date(30,November,2004), Date(30,November,2008)));
+        Date(30,November,2004), Date(30,November,2008));
 
-    ext::shared_ptr<EventPaymentOffset> paymentOffset(new NoOffset());
-    ext::shared_ptr<NotionalRisk> notionalRisk(new DigitalNotionalRisk(paymentOffset, 100));
+    ext::shared_ptr<EventPaymentOffset> paymentOffset = ext::make_shared<NoOffset>();
+    ext::shared_ptr<NotionalRisk> notionalRisk = ext::make_shared<DigitalNotionalRisk>(paymentOffset, 100);
 
     FloatingCatBond catBond(settlementDays, vars.faceAmount, sch,
                            index, ActualActual(ActualActual::ISMA),
@@ -409,7 +408,7 @@ BOOST_AUTO_TEST_CASE(testCatBondInDoomScenario) {
                            false,
                            100.0, Date(30,November,2004));
 
-    ext::shared_ptr<PricingEngine> catBondEngine(new MonteCarloCatBondEngine(doomCatRisk, discountCurve));
+    ext::shared_ptr<PricingEngine> catBondEngine = ext::make_shared<MonteCarloCatBondEngine>(doomCatRisk, discountCurve);
     catBond.setPricingEngine(catBondEngine);
     setCouponPricer(catBond.cashflows(),pricer);
 
@@ -438,13 +437,12 @@ BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYears) {
     Handle<YieldTermStructure> riskFreeRate(flatRate(today,0.025,Actual360()));
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
-    ext::shared_ptr<IborIndex> index(new USDLibor(6*Months, riskFreeRate));
+    ext::shared_ptr<IborIndex> index = ext::make_shared<USDLibor>(6*Months, riskFreeRate);
     Natural fixingDays = 1;
 
     Real tolerance = 1.0e-6;
 
-    ext::shared_ptr<IborCouponPricer> pricer(new
-        BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
+    ext::shared_ptr<IborCouponPricer> pricer = ext::make_shared<BlackIborCouponPricer>(Handle<OptionletVolatilityStructure>());
 
     Schedule sch(Date(30,November,2004),
                  Date(30,November,2008),
@@ -453,18 +451,19 @@ BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYears) {
                  ModifiedFollowing, ModifiedFollowing,
                  DateGeneration::Backward, false);
 
-    ext::shared_ptr<std::vector<std::pair<Date, Real> > > events(new std::vector<std::pair<Date, Real> >());
+    ext::shared_ptr<std::vector<std::pair<Date, Real> > > events =
+        ext::make_shared<std::vector<std::pair<Date, Real> > >();
     events->emplace_back(Date(30,November,2008), 1000);
-    ext::shared_ptr<CatRisk> doomCatRisk(new EventSet(
+    ext::shared_ptr<CatRisk> doomCatRisk = ext::make_shared<EventSet>(
         events, 
-        Date(30,November,2004), Date(30,November,2044)));
+        Date(30,November,2004), Date(30,November,2044));
 
-    ext::shared_ptr<CatRisk> noCatRisk(new EventSet(
+    ext::shared_ptr<CatRisk> noCatRisk = ext::make_shared<EventSet>(
         ext::make_shared<std::vector<std::pair<Date, Real> > >(), 
-        Date(1, Jan, 2000), Date(31, Dec, 2010)));
+        Date(1, Jan, 2000), Date(31, Dec, 2010));
 
-    ext::shared_ptr<EventPaymentOffset> paymentOffset(new NoOffset());
-    ext::shared_ptr<NotionalRisk> notionalRisk(new DigitalNotionalRisk(paymentOffset, 100));
+    ext::shared_ptr<EventPaymentOffset> paymentOffset = ext::make_shared<NoOffset>();
+    ext::shared_ptr<NotionalRisk> notionalRisk = ext::make_shared<DigitalNotionalRisk>(paymentOffset, 100);
 
     FloatingCatBond catBond(settlementDays, vars.faceAmount, sch,
                            index, ActualActual(ActualActual::ISMA),
@@ -475,7 +474,7 @@ BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYears) {
                            false,
                            100.0, Date(30,November,2004));
 
-    ext::shared_ptr<PricingEngine> catBondEngine(new MonteCarloCatBondEngine(doomCatRisk, discountCurve));
+    ext::shared_ptr<PricingEngine> catBondEngine = ext::make_shared<MonteCarloCatBondEngine>(doomCatRisk, discountCurve);
     catBond.setPricingEngine(catBondEngine);
     setCouponPricer(catBond.cashflows(),pricer);
 
@@ -489,7 +488,7 @@ BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYears) {
     QL_CHECK_CLOSE(Real(0.1), exhaustionProbability, tolerance);
     QL_CHECK_CLOSE(Real(0.1), expectedLoss, tolerance);
 
-    ext::shared_ptr<PricingEngine> catBondEngineRF(new MonteCarloCatBondEngine(noCatRisk, discountCurve));
+    ext::shared_ptr<PricingEngine> catBondEngineRF = ext::make_shared<MonteCarloCatBondEngine>(noCatRisk, discountCurve);
     catBond.setPricingEngine(catBondEngineRF);
 
     Real riskFreePrice = catBond.cleanPrice();
@@ -519,13 +518,12 @@ BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYearsProportional) {
     Handle<YieldTermStructure> riskFreeRate(flatRate(today,0.025,Actual360()));
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
-    ext::shared_ptr<IborIndex> index(new USDLibor(6*Months, riskFreeRate));
+    ext::shared_ptr<IborIndex> index = ext::make_shared<USDLibor>(6*Months, riskFreeRate);
     Natural fixingDays = 1;
 
     Real tolerance = 1.0e-6;
 
-    ext::shared_ptr<IborCouponPricer> pricer(new
-        BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
+    ext::shared_ptr<IborCouponPricer> pricer = ext::make_shared<BlackIborCouponPricer>(Handle<OptionletVolatilityStructure>());
 
     Schedule sch(Date(30,November,2004),
                  Date(30,November,2008),
@@ -534,18 +532,19 @@ BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYearsProportional) {
                  ModifiedFollowing, ModifiedFollowing,
                  DateGeneration::Backward, false);
 
-    ext::shared_ptr<std::vector<std::pair<Date, Real> > > events(new std::vector<std::pair<Date, Real> >());
+    ext::shared_ptr<std::vector<std::pair<Date, Real> > > events =
+        ext::make_shared<std::vector<std::pair<Date, Real> > >();
     events->emplace_back(Date(30,November,2008), 1000);
-    ext::shared_ptr<CatRisk> doomCatRisk(new EventSet(
+    ext::shared_ptr<CatRisk> doomCatRisk = ext::make_shared<EventSet>(
         events, 
-        Date(30,November,2004), Date(30,November,2044)));
+        Date(30,November,2004), Date(30,November,2044));
 
-    ext::shared_ptr<CatRisk> noCatRisk(new EventSet(
+    ext::shared_ptr<CatRisk> noCatRisk = ext::make_shared<EventSet>(
         ext::make_shared<std::vector<std::pair<Date, Real> > >(), 
-        Date(1, Jan, 2000), Date(31, Dec, 2010)));
+        Date(1, Jan, 2000), Date(31, Dec, 2010));
 
-    ext::shared_ptr<EventPaymentOffset> paymentOffset(new NoOffset());
-    ext::shared_ptr<NotionalRisk> notionalRisk(new ProportionalNotionalRisk(paymentOffset, 500, 1500));
+    ext::shared_ptr<EventPaymentOffset> paymentOffset = ext::make_shared<NoOffset>();
+    ext::shared_ptr<NotionalRisk> notionalRisk = ext::make_shared<ProportionalNotionalRisk>(paymentOffset, 500, 1500);
 
     FloatingCatBond catBond(settlementDays, vars.faceAmount, sch,
                            index, ActualActual(ActualActual::ISMA),
@@ -556,7 +555,7 @@ BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYearsProportional) {
                            false,
                            100.0, Date(30,November,2004));
 
-    ext::shared_ptr<PricingEngine> catBondEngine(new MonteCarloCatBondEngine(doomCatRisk, discountCurve));
+    ext::shared_ptr<PricingEngine> catBondEngine = ext::make_shared<MonteCarloCatBondEngine>(doomCatRisk, discountCurve);
     catBond.setPricingEngine(catBondEngine);
     setCouponPricer(catBond.cashflows(),pricer);
 
@@ -570,7 +569,7 @@ BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYearsProportional) {
     QL_CHECK_CLOSE(Real(0.0), exhaustionProbability, tolerance);
     QL_CHECK_CLOSE(Real(0.05), expectedLoss, tolerance);
 
-    ext::shared_ptr<PricingEngine> catBondEngineRF(new MonteCarloCatBondEngine(noCatRisk, discountCurve));
+    ext::shared_ptr<PricingEngine> catBondEngineRF = ext::make_shared<MonteCarloCatBondEngine>(noCatRisk, discountCurve);
     catBond.setPricingEngine(catBondEngineRF);
 
     Real riskFreePrice = catBond.cleanPrice();
@@ -598,13 +597,12 @@ BOOST_AUTO_TEST_CASE(testCatBondWithGeneratedEventsProportional) {
     Handle<YieldTermStructure> riskFreeRate(flatRate(today,0.025,Actual360()));
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
-    ext::shared_ptr<IborIndex> index(new USDLibor(6*Months, riskFreeRate));
+    ext::shared_ptr<IborIndex> index = ext::make_shared<USDLibor>(6*Months, riskFreeRate);
     Natural fixingDays = 1;
 
     Real tolerance = 1.0e-6;
 
-    ext::shared_ptr<IborCouponPricer> pricer(new
-        BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
+    ext::shared_ptr<IborCouponPricer> pricer = ext::make_shared<BlackIborCouponPricer>(Handle<OptionletVolatilityStructure>());
 
     Schedule sch(Date(30,November,2004),
                  Date(30,November,2008),
@@ -613,14 +611,14 @@ BOOST_AUTO_TEST_CASE(testCatBondWithGeneratedEventsProportional) {
                  ModifiedFollowing, ModifiedFollowing,
                  DateGeneration::Backward, false);
 
-    ext::shared_ptr<CatRisk> betaCatRisk(new BetaRisk(5000, 50, 500, 500));
+    ext::shared_ptr<CatRisk> betaCatRisk = ext::make_shared<BetaRisk>(5000, 50, 500, 500);
 
-    ext::shared_ptr<CatRisk> noCatRisk(new EventSet(
+    ext::shared_ptr<CatRisk> noCatRisk = ext::make_shared<EventSet>(
         ext::make_shared<std::vector<std::pair<Date, Real> > >(), 
-        Date(1, Jan, 2000), Date(31, Dec, 2010)));
+        Date(1, Jan, 2000), Date(31, Dec, 2010));
 
-    ext::shared_ptr<EventPaymentOffset> paymentOffset(new NoOffset());
-    ext::shared_ptr<NotionalRisk> notionalRisk(new ProportionalNotionalRisk(paymentOffset, 500, 1500));
+    ext::shared_ptr<EventPaymentOffset> paymentOffset = ext::make_shared<NoOffset>();
+    ext::shared_ptr<NotionalRisk> notionalRisk = ext::make_shared<ProportionalNotionalRisk>(paymentOffset, 500, 1500);
 
     FloatingCatBond catBond(settlementDays, vars.faceAmount, sch,
                            index, ActualActual(ActualActual::ISMA),
@@ -631,7 +629,7 @@ BOOST_AUTO_TEST_CASE(testCatBondWithGeneratedEventsProportional) {
                            false,
                            100.0, Date(30,November,2004));
 
-    ext::shared_ptr<PricingEngine> catBondEngine(new MonteCarloCatBondEngine(betaCatRisk, discountCurve));
+    ext::shared_ptr<PricingEngine> catBondEngine = ext::make_shared<MonteCarloCatBondEngine>(betaCatRisk, discountCurve);
     catBond.setPricingEngine(catBondEngine);
     setCouponPricer(catBond.cashflows(),pricer);
 
@@ -645,7 +643,7 @@ BOOST_AUTO_TEST_CASE(testCatBondWithGeneratedEventsProportional) {
     BOOST_CHECK(exhaustionProbability<1.0 && exhaustionProbability>0.0);
     BOOST_CHECK(expectedLoss>0.0);
 
-    ext::shared_ptr<PricingEngine> catBondEngineRF(new MonteCarloCatBondEngine(noCatRisk, discountCurve));
+    ext::shared_ptr<PricingEngine> catBondEngineRF = ext::make_shared<MonteCarloCatBondEngine>(noCatRisk, discountCurve);
     catBond.setPricingEngine(catBondEngineRF);
 
     Real riskFreePrice = catBond.cleanPrice();

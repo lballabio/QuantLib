@@ -64,14 +64,12 @@ namespace QuantLib {
             fixingDate_ = calendar.advance(refDate, optionTenor_,
                                            optionConvention_);
         if (exerciseDate_ == Date()) {
-            exercise_ = ext::shared_ptr<Exercise>(new
-                EuropeanExercise(fixingDate_));
+            exercise_ = ext::make_shared<EuropeanExercise>(fixingDate_);
         } else {
             QL_REQUIRE(exerciseDate_ <= fixingDate_,
                        "exercise date (" << exerciseDate_ << ") must be less "
                        "than or equal to fixing date (" << fixingDate_ << ")");
-            exercise_ = ext::shared_ptr<Exercise>(new
-                EuropeanExercise(exerciseDate_));
+            exercise_ = ext::make_shared<EuropeanExercise>(exerciseDate_);
         }
 
         Rate usedStrike;

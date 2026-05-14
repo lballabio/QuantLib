@@ -249,10 +249,8 @@ BOOST_AUTO_TEST_CASE(testTwoDimensionalIntegration) {
 
     const Size maxEvaluations = 1000;
     const Real calculated = TwoDimensionalIntegral(
-        ext::shared_ptr<Integrator>(
-            new TrapezoidIntegral<Default>(tolerance, maxEvaluations)),
-        ext::shared_ptr<Integrator>(
-            new TrapezoidIntegral<Default>(tolerance, maxEvaluations)))(
+        ext::make_shared<TrapezoidIntegral<Default>>(tolerance, maxEvaluations),
+        ext::make_shared<TrapezoidIntegral<Default>>(tolerance, maxEvaluations))(
         std::multiplies<>(),
         std::make_pair(0.0, 0.0), std::make_pair(1.0, 2.0));
 

@@ -218,30 +218,24 @@ namespace QuantLib {
 
             switch (desc.type) {
               case FdmSchemeDesc::HundsdorferType:
-                  return ext::shared_ptr<FdmScheme>(
-                      new FdmSchemeWrapper<HundsdorferScheme>(
-                          new HundsdorferScheme(desc.theta, desc.mu, op)));
+                  return ext::make_shared<FdmSchemeWrapper<HundsdorferScheme>>(
+                          new HundsdorferScheme(desc.theta, desc.mu, op));
               case FdmSchemeDesc::DouglasType:
-                  return ext::shared_ptr<FdmScheme>(
-                      new FdmSchemeWrapper<DouglasScheme>(
-                          new DouglasScheme(desc.theta, op)));
+                  return ext::make_shared<FdmSchemeWrapper<DouglasScheme>>(
+                          new DouglasScheme(desc.theta, op));
               case FdmSchemeDesc::CraigSneydType:
-                  return ext::shared_ptr<FdmScheme>(
-                      new FdmSchemeWrapper<CraigSneydScheme>(
-                          new CraigSneydScheme(desc.theta, desc.mu, op)));
+                  return ext::make_shared<FdmSchemeWrapper<CraigSneydScheme>>(
+                          new CraigSneydScheme(desc.theta, desc.mu, op));
               case FdmSchemeDesc::ModifiedCraigSneydType:
-                  return ext::shared_ptr<FdmScheme>(
-                     new FdmSchemeWrapper<ModifiedCraigSneydScheme>(
+                  return ext::make_shared<FdmSchemeWrapper<ModifiedCraigSneydScheme>>(
                           new ModifiedCraigSneydScheme(
-                              desc.theta, desc.mu, op)));
+                              desc.theta, desc.mu, op));
               case FdmSchemeDesc::ImplicitEulerType:
-                  return ext::shared_ptr<FdmScheme>(
-                      new FdmSchemeWrapper<ImplicitEulerScheme>(
-                          new ImplicitEulerScheme(op)));
+                  return ext::make_shared<FdmSchemeWrapper<ImplicitEulerScheme>>(
+                          new ImplicitEulerScheme(op));
               case FdmSchemeDesc::ExplicitEulerType:
-                  return ext::shared_ptr<FdmScheme>(
-                      new FdmSchemeWrapper<ExplicitEulerScheme>(
-                          new ExplicitEulerScheme(op)));
+                  return ext::make_shared<FdmSchemeWrapper<ExplicitEulerScheme>>(
+                          new ExplicitEulerScheme(op));
               default:
                   QL_FAIL("Unknown scheme type");
             }
@@ -329,8 +323,7 @@ namespace QuantLib {
             times.push_back(dc.yearFraction(referenceDate, mandatoryDate));
         }
 
-        const ext::shared_ptr<TimeGrid> timeGrid(
-            new TimeGrid(times.begin(), times.end()));
+        const ext::shared_ptr<TimeGrid> timeGrid = ext::make_shared<TimeGrid>(times.begin(), times.end());
 
         // build 1d meshers
         const LocalVolRNDCalculator localVolRND(
@@ -383,7 +376,7 @@ namespace QuantLib {
         const Volatility lv0
             = localVol_->localVol(0.0, spot->value())/std::sqrt(v0);
 
-        ext::shared_ptr<Matrix> L(new Matrix(xGrid, timeGrid->size()));
+        ext::shared_ptr<Matrix> L = ext::make_shared<Matrix>(xGrid, timeGrid->size());
 
         const Real l0 = lv0;
         std::fill(L->column_begin(0),L->column_end(0), l0);
@@ -408,11 +401,9 @@ namespace QuantLib {
             }
         }
 
-        const ext::shared_ptr<FixedLocalVolSurface> leverageFct(
-            new FixedLocalVolSurface(referenceDate, times, vStrikes, L, dc));
+        const ext::shared_ptr<FixedLocalVolSurface> leverageFct = ext::make_shared<FixedLocalVolSurface>(referenceDate, times, vStrikes, L, dc);
 
-        ext::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
-            new FdmHestonFwdOp(mesher, hestonProcess, trafoType, leverageFct, mixingFactor_));
+        ext::shared_ptr<FdmLinearOpComposite> hestonFwdOp = ext::make_shared<FdmHestonFwdOp>(mesher, hestonProcess, trafoType, leverageFct, mixingFactor_);
 
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
@@ -429,17 +420,15 @@ namespace QuantLib {
 
             if (   mesher->getFdm1dMeshers()[0] != xMesher[i]
                 || mesher->getFdm1dMeshers()[1] != vMesher[i]) {
-                const ext::shared_ptr<FdmMesherComposite> newMesher(
-                    new FdmMesherComposite(xMesher[i], vMesher[i]));
+                const ext::shared_ptr<FdmMesherComposite> newMesher = ext::make_shared<FdmMesherComposite>(xMesher[i], vMesher[i]);
 
                 p = reshapePDF<Bilinear>(p, mesher, newMesher);
                 mesher = newMesher;
 
                 p = rescalePDF(p, mesher, trafoType, alpha);
 
-                hestonFwdOp = ext::shared_ptr<FdmLinearOpComposite>(
-                                new FdmHestonFwdOp(mesher, hestonProcess,
-                                               trafoType, leverageFct, mixingFactor_));
+                hestonFwdOp = ext::make_shared<FdmHestonFwdOp>(mesher, hestonProcess,
+                                               trafoType, leverageFct, mixingFactor_);
             }
 
             Array pn = p;

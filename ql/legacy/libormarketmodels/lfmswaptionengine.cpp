@@ -40,8 +40,7 @@ namespace QuantLib {
         static const Spread basisPoint = 1.0e-4;
 
         auto swap = arguments_.swap;
-        swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                                  new DiscountingSwapEngine(discountCurve_, false)));
+        swap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discountCurve_, false));
 
         Spread correction = swap->spread() *
             std::fabs(swap->floatingLegBPS()/swap->fixedLegBPS());

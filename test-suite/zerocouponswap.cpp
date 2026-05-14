@@ -55,7 +55,7 @@ struct CommonVars {
         baseNominal = 1.0e6;
         finalPayment = 1.2e6;
 
-        euribor = ext::shared_ptr<IborIndex>(new Euribor6M(euriborHandle));
+        euribor = ext::make_shared<Euribor6M>(euriborHandle);
         euribor->addFixing(Date(10, February, 2021), 0.0085);
 
         today = calendar.adjust(Date(15, March, 2021));
@@ -64,7 +64,7 @@ struct CommonVars {
 
         euriborHandle.linkTo(flatRate(settlement, 0.007, dayCount));
         discountEngine =
-            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(euriborHandle));
+            ext::make_shared<DiscountingSwapEngine>(euriborHandle);
     }
 
     ext::shared_ptr<CashFlow> createMultipleResetsCoupon(const Date& start, const Date& end) const {

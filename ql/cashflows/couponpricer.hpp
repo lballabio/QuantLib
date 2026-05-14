@@ -114,7 +114,7 @@ namespace QuantLib {
         BlackIborCouponPricer(
             const Handle<OptionletVolatilityStructure>& v = Handle<OptionletVolatilityStructure>(),
             const TimingAdjustment timingAdjustment = Black76,
-            Handle<Quote> correlation = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))),
+            Handle<Quote> correlation = Handle<Quote>(ext::make_shared<SimpleQuote>(1.0)),
             const ext::optional<bool> useIndexedCoupon = ext::nullopt)
         : IborCouponPricer(v, useIndexedCoupon), timingAdjustment_(timingAdjustment),
           correlation_(std::move(correlation)) {

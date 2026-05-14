@@ -72,8 +72,7 @@ struct Datum {
 
 ext::shared_ptr<YieldTermStructure> nominalTermStructure() {
     Date evaluationDate(13, August, 2007);
-    return ext::shared_ptr<YieldTermStructure>(
-            new FlatForward(evaluationDate, 0.05, Actual360()));
+    return ext::make_shared<FlatForward>(evaluationDate, 0.05, Actual360());
 }
 
 template <class T>
@@ -85,7 +84,7 @@ std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
     std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
     for (Datum datum : iiData) {
         Date maturity = datum.date;
-        Handle<Quote> quote(ext::shared_ptr<Quote>(new SimpleQuote(datum.rate / 100.0)));
+        Handle<Quote> quote(ext::make_shared<SimpleQuote>(datum.rate / 100.0));
         auto anInstrument = makeHelper(quote, maturity);
         instruments.push_back(anInstrument);
     }
@@ -1190,7 +1189,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
     Real eps = 0.000001;
     // usual swap engine
     Handle<YieldTermStructure> hTS(nominalTS);
-    ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
+    ext::shared_ptr<PricingEngine> sppe = ext::make_shared<DiscountingSwapEngine>(hTS);
 
     // make sure that the index has the latest yoy term structure
     hy.linkTo(pYYTS);

@@ -126,19 +126,17 @@ namespace QuantLib {
             const Handle<YieldTermStructure> discount
                 = disModel_->termStructure();
 
-            disTs_.linkTo(ext::shared_ptr<YieldTermStructure>(
-                new FdmAffineModelTermStructure(disRate,
+            disTs_.linkTo(ext::make_shared<FdmAffineModelTermStructure>(disRate,
                     discount->calendar(), discount->dayCounter(),
                     iterExerciseDate, discount->referenceDate(),
-                    disModel_)));
+                    disModel_));
 
             const Handle<YieldTermStructure> fwd = fwdModel_->termStructure();
 
-            fwdTs_.linkTo(ext::shared_ptr<YieldTermStructure>(
-                new FdmAffineModelTermStructure(fwdRate,
+            fwdTs_.linkTo(ext::make_shared<FdmAffineModelTermStructure>(fwdRate,
                     fwd->calendar(), fwd->dayCounter(),
                     iterExerciseDate, fwd->referenceDate(),
-                    fwdModel_)));
+                    fwdModel_));
 
         }
         else {

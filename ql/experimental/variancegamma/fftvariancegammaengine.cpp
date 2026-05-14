@@ -32,7 +32,7 @@ namespace QuantLib {
     {
         ext::shared_ptr<VarianceGammaProcess> process =
             ext::dynamic_pointer_cast<VarianceGammaProcess>(process_);
-        return std::unique_ptr<FFTEngine>(new FFTVarianceGammaEngine(process, lambda_));
+        return std::make_unique<FFTVarianceGammaEngine>(process, lambda_);
     }
 
     void FFTVarianceGammaEngine::precalculateExpiry(Date d)

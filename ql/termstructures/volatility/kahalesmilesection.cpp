@@ -99,8 +99,7 @@ namespace QuantLib {
                                      QL_KAHALE_SMAX); // numerical parameters
                                                       // hardcoded here
                 sh1(s);
-                ext::shared_ptr<cFunction> cFct1(
-                    new cFunction(sh1.f_, s, 0.0, sh1.b_));
+                ext::shared_ptr<cFunction> cFct1 = ext::make_shared<cFunction>(sh1.f_, s, 0.0, sh1.b_);
                 cFunctions_[0] = cFct1;
                 // sanity check - in rare cases we can get digitials
                 // which are not monotonic or greater than 1.0
@@ -166,8 +165,7 @@ namespace QuantLib {
                 }
                 if (valid) {
                     ah(a);
-                    ext::shared_ptr<cFunction> cFct(
-                        new cFunction(ah.f_, ah.s_, a, ah.b_));
+                    ext::shared_ptr<cFunction> cFct = ext::make_shared<cFunction>(ah.f_, ah.s_, a, ah.b_);
                     cFunctions_[leftIndex_ > 0 ? i - leftIndex_ + 1 : 0] = cFct;
                     cp0 = cp1;
                 }

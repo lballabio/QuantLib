@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(testDefaultProbability) {
 
     Real hazardRate = 0.0100;
     Handle<Quote> hazardRateQuote = Handle<Quote>(
-                ext::shared_ptr<Quote>(new SimpleQuote(hazardRate)));
+                ext::make_shared<SimpleQuote>(hazardRate));
     DayCounter dayCounter = Actual360();
     Calendar calendar = TARGET();
     Size n = 20;
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE(testFlatHazardRate) {
 
     Real hazardRate = 0.0100;
     Handle<Quote> hazardRateQuote = Handle<Quote>(
-                ext::shared_ptr<Quote>(new SimpleQuote(hazardRate)));
+                ext::make_shared<SimpleQuote>(hazardRate));
     DayCounter dayCounter = Actual360();
     Calendar calendar = TARGET();
     Size n = 20;
@@ -168,20 +168,18 @@ void testBootstrapFromSpread() {
     Real recoveryRate = 0.4;
 
     RelinkableHandle<YieldTermStructure> discountCurve;
-    discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
-                                    new FlatForward(today,0.06,Actual360())));
+    discountCurve.linkTo(ext::make_shared<FlatForward>(today,0.06,Actual360()));
 
     std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
 
     helpers.reserve(n.size());
     for(Size i=0; i<n.size(); i++)
         helpers.push_back(
-                ext::shared_ptr<DefaultProbabilityHelper>(
-                    new SpreadCdsHelper(quote[i], Period(n[i], Years),
+                ext::make_shared<SpreadCdsHelper>(quote[i], Period(n[i], Years),
                                         settlementDays, calendar,
                                         frequency, convention, rule,
                                         dayCounter, recoveryRate,
-                                        discountCurve)));
+                                        discountCurve));
 
     RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
     piecewiseCurve.linkTo(
@@ -208,9 +206,8 @@ void testBootstrapFromSpread() {
             CreditDefaultSwap cds(Protection::Buyer, notional, quote[i],
                                   schedule, convention, dayCounter,
                                   true, true, protectionStart);
-            cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                           new MidPointCdsEngine(piecewiseCurve, recoveryRate,
-                                                 discountCurve)));
+            cds.setPricingEngine(ext::make_shared<MidPointCdsEngine>(piecewiseCurve, recoveryRate,
+                                                 discountCurve));
 
             // test
             Rate inputRate = quote[i];
@@ -247,23 +244,21 @@ void testBootstrapFromUpfront() {
     Integer upfrontSettlementDays = 3;
 
     RelinkableHandle<YieldTermStructure> discountCurve;
-    discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
-                                    new FlatForward(today,0.06,Actual360())));
+    discountCurve.linkTo(ext::make_shared<FlatForward>(today,0.06,Actual360()));
 
     std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
 
     helpers.reserve(n.size());
     for(Size i=0; i<n.size(); i++)
         helpers.push_back(
-                ext::shared_ptr<DefaultProbabilityHelper>(
-                    new UpfrontCdsHelper(quote[i], fixedRate,
+                ext::make_shared<UpfrontCdsHelper>(quote[i], fixedRate,
                                          Period(n[i], Years),
                                          settlementDays, calendar,
                                          frequency, convention, rule,
                                          dayCounter, recoveryRate,
                                          discountCurve,
                                          upfrontSettlementDays, 
-                                         true, true, Date(), Actual360(true))));
+                                         true, true, Date(), Actual360(true)));
 
     RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
     piecewiseCurve.linkTo(
@@ -299,9 +294,8 @@ void testBootstrapFromUpfront() {
                                   ext::shared_ptr<Claim>(),
                                   Actual360(true),
                                   true, today);
-            cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                           new MidPointCdsEngine(piecewiseCurve, recoveryRate,
-                                                 discountCurve, true)));
+            cds.setPricingEngine(ext::make_shared<MidPointCdsEngine>(piecewiseCurve, recoveryRate,
+                                                 discountCurve, true));
 
             // test
             Rate inputUpfront = quote[i];
@@ -360,17 +354,15 @@ BOOST_AUTO_TEST_CASE(testSingleInstrumentBootstrap) {
     Real recoveryRate = 0.4;
 
     RelinkableHandle<YieldTermStructure> discountCurve;
-    discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
-                                    new FlatForward(today,0.06,Actual360())));
+    discountCurve.linkTo(ext::make_shared<FlatForward>(today,0.06,Actual360()));
 
     std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers(1);
 
-    helpers[0] = ext::shared_ptr<DefaultProbabilityHelper>(
-                        new SpreadCdsHelper(quote, tenor,
+    helpers[0] = ext::make_shared<SpreadCdsHelper>(quote, tenor,
                                             settlementDays, calendar,
                                             frequency, convention, rule,
                                             dayCounter, recoveryRate,
-                                            discountCurve));
+                                            discountCurve);
 
     PiecewiseDefaultCurve<HazardRate,BackwardFlat> defaultCurve(today, helpers,
                                                                 dayCounter);

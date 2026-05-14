@@ -48,8 +48,7 @@ BOOST_AUTO_TEST_CASE(testCached) {
     Calendar calendar = TARGET();
 
     RelinkableHandle<YieldTermStructure> riskFree;
-    riskFree.linkTo(ext::shared_ptr<YieldTermStructure>(
-                              new FlatForward(cachedToday,0.02,Actual360())));
+    riskFree.linkTo(ext::make_shared<FlatForward>(cachedToday,0.02,Actual360()));
 
     Date expiry = calendar.advance(cachedToday,9,Months);
     Date startDate = calendar.advance(expiry,1,Months);
@@ -59,7 +58,7 @@ BOOST_AUTO_TEST_CASE(testCached) {
     BusinessDayConvention convention = ModifiedFollowing;
     Real notional = 1000000.0;
 
-    Handle<Quote> hazardRate(ext::shared_ptr<Quote>(new SimpleQuote(0.001)));
+    Handle<Quote> hazardRate(ext::make_shared<SimpleQuote>(0.001));
 
     Schedule schedule(startDate,maturity, Period(Quarterly),
                       calendar, convention, convention,
@@ -67,29 +66,25 @@ BOOST_AUTO_TEST_CASE(testCached) {
 
     Real recoveryRate = 0.4;
     Handle<DefaultProbabilityTermStructure> defaultProbability(
-        ext::shared_ptr<DefaultProbabilityTermStructure>(
-                    new FlatHazardRate(0, calendar, hazardRate, dayCounter)));
+        ext::make_shared<FlatHazardRate>(0, calendar, hazardRate, dayCounter));
 
-    ext::shared_ptr<PricingEngine> swapEngine(
-           new MidPointCdsEngine(defaultProbability, recoveryRate, riskFree));
+    ext::shared_ptr<PricingEngine> swapEngine = ext::make_shared<MidPointCdsEngine>(defaultProbability, recoveryRate, riskFree);
 
     CreditDefaultSwap swap(Protection::Seller, notional, 0.001, schedule,
                            convention, dayCounter);
     swap.setPricingEngine(swapEngine);
     Rate strike = swap.fairSpread();
 
-    Handle<Quote> cdsVol(ext::shared_ptr<Quote>(new SimpleQuote(0.20)));
+    Handle<Quote> cdsVol(ext::make_shared<SimpleQuote>(0.20));
 
-    ext::shared_ptr<CreditDefaultSwap> underlying(
-         new CreditDefaultSwap(Protection::Seller, notional, strike, schedule,
-                               convention, dayCounter));
+    ext::shared_ptr<CreditDefaultSwap> underlying = ext::make_shared<CreditDefaultSwap>(Protection::Seller, notional, strike, schedule,
+                               convention, dayCounter);
     underlying->setPricingEngine(swapEngine);
 
-    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(expiry));
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(expiry);
     CdsOption option1(underlying, exercise);
-    option1.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                    new BlackCdsOptionEngine(defaultProbability, recoveryRate,
-                                             riskFree, cdsVol)));
+    option1.setPricingEngine(ext::make_shared<BlackCdsOptionEngine>(defaultProbability, recoveryRate,
+                                             riskFree, cdsVol));
 
     Real cachedValue = 270.976348;
     if (std::fabs(option1.NPV() - cachedValue) > 1.0e-5)
@@ -104,9 +99,8 @@ BOOST_AUTO_TEST_CASE(testCached) {
     underlying->setPricingEngine(swapEngine);
 
     CdsOption option2(underlying, exercise);
-    option2.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                    new BlackCdsOptionEngine(defaultProbability, recoveryRate,
-                                             riskFree, cdsVol)));
+    option2.setPricingEngine(ext::make_shared<BlackCdsOptionEngine>(defaultProbability, recoveryRate,
+                                             riskFree, cdsVol));
 
     cachedValue = 270.976348;
     if (std::fabs(option2.NPV() - cachedValue) > 1.0e-5)

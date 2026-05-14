@@ -146,10 +146,9 @@ namespace QuantLib {
 
         const Time exerciseTime = process_->time(exercise->lastDate());
 
-        return ext::shared_ptr<path_pricer_type>(
-             new HestonHullWhitePathPricer(exerciseTime,
+        return ext::make_shared<HestonHullWhitePathPricer>(exerciseTime,
                                            this->arguments_.payoff,
-                                           process_));
+                                           process_);
     }
 
     template <class RNG, class S> inline
@@ -170,11 +169,10 @@ namespace QuantLib {
 
         const Time exerciseTime = process_->time(exercise->lastDate());
 
-        return ext::shared_ptr<path_pricer_type>(
-             new HestonHullWhitePathPricer(
+        return ext::make_shared<HestonHullWhitePathPricer>(
                   exerciseTime,
                   this->arguments_.payoff,
-                  process_) );
+                  process_);
     }
 
     template <class RNG, class S> inline
@@ -187,15 +185,12 @@ namespace QuantLib {
         ext::shared_ptr<HullWhiteForwardProcess> hullWhiteProcess =
             process_->hullWhiteProcess();
 
-        ext::shared_ptr<HestonModel> hestonModel(
-                                              new HestonModel(hestonProcess));
-        ext::shared_ptr<HullWhite> hwModel(
-                              new HullWhite(hestonProcess->riskFreeRate(),
+        ext::shared_ptr<HestonModel> hestonModel = ext::make_shared<HestonModel>(hestonProcess);
+        ext::shared_ptr<HullWhite> hwModel = ext::make_shared<HullWhite>(hestonProcess->riskFreeRate(),
                                             hullWhiteProcess->a(),
-                                            hullWhiteProcess->sigma()));
+                                            hullWhiteProcess->sigma());
 
-        return ext::shared_ptr<PricingEngine>(
-                new AnalyticHestonHullWhiteEngine(hestonModel, hwModel, 144));
+        return ext::make_shared<AnalyticHestonHullWhiteEngine>(hestonModel, hwModel, 144);
     }
 
     template <class RNG, class S> inline
@@ -209,14 +204,12 @@ namespace QuantLib {
             RNG::make_sequence_generator(dimensions*(grid.size()-1),
                                          this->seed_);
 
-        ext::shared_ptr<HybridHestonHullWhiteProcess> cvProcess(
-            new HybridHestonHullWhiteProcess(process_->hestonProcess(),
+        ext::shared_ptr<HybridHestonHullWhiteProcess> cvProcess = ext::make_shared<HybridHestonHullWhiteProcess>(process_->hestonProcess(),
                                              process_->hullWhiteProcess(),
                                              0.0,
-                                             process_->discretization()));
+                                             process_->discretization());
 
-        return ext::shared_ptr<path_generator_type>(
-                  new path_generator_type(cvProcess, grid, generator, false));
+        return ext::make_shared<path_generator_type>(cvProcess, grid, generator, false);
     }
 
 

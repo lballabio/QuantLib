@@ -270,35 +270,33 @@ BOOST_AUTO_TEST_CASE(testMerton76) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    ext::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> jumpIntensity = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> meanLogJump = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> jumpVol = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<Merton76Process> stochProcess(
-           new Merton76Process(Handle<Quote>(spot),
+    ext::shared_ptr<Merton76Process> stochProcess = ext::make_shared<Merton76Process>(Handle<Quote>(spot),
                                Handle<YieldTermStructure>(qTS),
                                Handle<YieldTermStructure>(rTS),
                                Handle<BlackVolTermStructure>(volTS),
                                Handle<Quote>(jumpIntensity),
                                Handle<Quote>(meanLogJump),
-                               Handle<Quote>(jumpVol)));
-    ext::shared_ptr<PricingEngine> engine(
-                                       new JumpDiffusionEngine(stochProcess));
+                               Handle<Quote>(jumpVol));
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<JumpDiffusionEngine>(stochProcess);
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
+        ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(value.type, value.strike);
 
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
 
         spot->setValue(value.s);
         qRate->setValue(value.q);
@@ -369,31 +367,29 @@ BOOST_AUTO_TEST_CASE(testGreeks) {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    ext::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> jumpIntensity = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> meanLogJump = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> jumpVol = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<Merton76Process> stochProcess(
-          new Merton76Process(Handle<Quote>(spot), qTS, rTS, volTS,
+    ext::shared_ptr<Merton76Process> stochProcess = ext::make_shared<Merton76Process>(Handle<Quote>(spot), qTS, rTS, volTS,
                               Handle<Quote>(jumpIntensity),
                               Handle<Quote>(meanLogJump),
-                              Handle<Quote>(jumpVol)));
+                              Handle<Quote>(jumpVol));
 
     ext::shared_ptr<StrikedTypePayoff> payoff;
 
     // The jumpdiffusionengine greeks are very sensitive to the
     // convergence level.  A tolerance of 1.0e-08 is usually
     // sufficient to get reasonable results
-    ext::shared_ptr<PricingEngine> engine(
-                                 new JumpDiffusionEngine(stochProcess,1e-08));
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<JumpDiffusionEngine>(stochProcess,1e-08);
 
     for (auto& type : types) {
         for (Real strike : strikes) {
@@ -405,15 +401,13 @@ BOOST_AUTO_TEST_CASE(testGreeks) {
                         jumpVol->setValue(jj3);
                         for (Real residualTime : residualTimes) {
                             Date exDate = today + timeToDays(residualTime);
-                            ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                            ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
                             for (Size kk = 0; kk < 1; kk++) {
                                 // option to check
                                 if (kk == 0) {
-                                    payoff = ext::shared_ptr<StrikedTypePayoff>(
-                                        new PlainVanillaPayoff(type, strike));
+                                    payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
                                 } else if (kk == 1) {
-                                    payoff = ext::shared_ptr<StrikedTypePayoff>(
-                                        new CashOrNothingPayoff(type, strike, 100.0));
+                                    payoff = ext::make_shared<CashOrNothingPayoff>(type, strike, 100.0);
                                 }
                                 EuropeanOption option(payoff, exercise);
                                 option.setPricingEngine(engine);

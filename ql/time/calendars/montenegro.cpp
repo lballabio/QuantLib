@@ -22,7 +22,7 @@
 namespace QuantLib {
 
     Montenegro::Montenegro(Market) {
-        static ext::shared_ptr<Calendar::Impl> impl(new Montenegro::MnseImpl);
+        static ext::shared_ptr<Calendar::Impl> impl = ext::make_shared<Montenegro::MnseImpl>();
         impl_ = impl;
     }
 

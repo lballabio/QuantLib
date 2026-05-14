@@ -74,8 +74,7 @@ std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > makeH
     std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > instruments;
     for (Datum datum : iiData) {
         Date maturity = datum.date;
-        Handle<Quote> quote(ext::shared_ptr<Quote>(
-                    new SimpleQuote(datum.rate/100.0)));
+        Handle<Quote> quote(ext::make_shared<SimpleQuote>(datum.rate/100.0));
         auto anInstrument = ext::make_shared<YearOnYearInflationSwapHelper>(
                     quote, observationLag, maturity,
                     calendar, bdc, dc, ii, interpolation, discountCurve);
@@ -142,8 +141,7 @@ struct CommonVars {
         // link from yoy index to yoy TS
         iir = ext::make_shared<YoYInflationIndex>(rpi, hy);
 
-        ext::shared_ptr<YieldTermStructure> nominalFF(
-                new FlatForward(evaluationDate, 0.05, ActualActual(ActualActual::ISDA)));
+        ext::shared_ptr<YieldTermStructure> nominalFF = ext::make_shared<FlatForward>(evaluationDate, 0.05, ActualActual(ActualActual::ISDA));
         nominalTS.linkTo(nominalFF);
 
         // now build the YoY inflation curve
@@ -220,16 +218,13 @@ struct CommonVars {
 
         switch (which) {
           case 0:
-            return ext::shared_ptr<PricingEngine>(
-                            new YoYInflationBlackCapFloorEngine(iir, vol, nominalTS));
+            return ext::make_shared<YoYInflationBlackCapFloorEngine>(iir, vol, nominalTS);
             break;
           case 1:
-            return ext::shared_ptr<PricingEngine>(
-                            new YoYInflationUnitDisplacedBlackCapFloorEngine(iir, vol, nominalTS));
+            return ext::make_shared<YoYInflationUnitDisplacedBlackCapFloorEngine>(iir, vol, nominalTS);
             break;
           case 2:
-            return ext::shared_ptr<PricingEngine>(
-                            new YoYInflationBachelierCapFloorEngine(iir, vol, nominalTS));
+            return ext::make_shared<YoYInflationBachelierCapFloorEngine>(iir, vol, nominalTS);
             break;
           default:
             BOOST_FAIL("unknown engine request: which = "<<which
@@ -249,12 +244,10 @@ struct CommonVars {
         ext::shared_ptr<YoYInflationCapFloor> result;
         switch (type) {
           case YoYInflationCapFloor::Cap:
-            result = ext::shared_ptr<YoYInflationCapFloor>(
-                        new YoYInflationCap(leg, std::vector<Rate>(1, strike)));
+            result = ext::make_shared<YoYInflationCap>(leg, std::vector<Rate>(1, strike));
             break;
           case YoYInflationCapFloor::Floor:
-            result = ext::shared_ptr<YoYInflationCapFloor>(
-                        new YoYInflationFloor(leg, std::vector<Rate>(1, strike)));
+            result = ext::make_shared<YoYInflationFloor>(leg, std::vector<Rate>(1, strike));
             break;
           default:
             QL_FAIL("unknown YoYInflation cap/floor type");
@@ -428,7 +421,7 @@ BOOST_AUTO_TEST_CASE(testParity) {
                                                  vars.dc, UnitedKingdom());
 
                     Handle<YieldTermStructure> hTS(vars.nominalTS);
-                    ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
+                    ext::shared_ptr<PricingEngine> sppe = ext::make_shared<DiscountingSwapEngine>(hTS);
                     swap.setPricingEngine(sppe);
 
                     // N.B. nominals are 10e6

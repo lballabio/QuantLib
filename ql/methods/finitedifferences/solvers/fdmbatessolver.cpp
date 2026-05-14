@@ -41,12 +41,11 @@ namespace QuantLib {
     }
 
     void FdmBatesSolver::performCalculations() const {
-        ext::shared_ptr<FdmLinearOpComposite> op(
-            new FdmBatesOp(solverDesc_.mesher, process_.currentLink(),
+        ext::shared_ptr<FdmLinearOpComposite> op = ext::make_shared<FdmBatesOp>(solverDesc_.mesher, process_.currentLink(),
                            solverDesc_.bcSet, integroIntegrationOrder_,
                            (!quantoHelper_.empty()) 
                                    ? quantoHelper_.currentLink()
-                                   : ext::shared_ptr<FdmQuantoHelper>()));
+                                   : ext::shared_ptr<FdmQuantoHelper>());
 
         solver_ = ext::make_shared<Fdm2DimSolver>(
                                solverDesc_, schemeDesc_, op);

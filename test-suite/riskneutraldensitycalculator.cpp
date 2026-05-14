@@ -68,10 +68,9 @@ BOOST_AUTO_TEST_CASE(testDensityAgainstOptionPrices) {
 
     const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dayCounter));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
-        new BlackScholesMertonProcess(
+    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess = ext::make_shared<BlackScholesMertonProcess>(
             spot, qTS, rTS,
-            Handle<BlackVolTermStructure>(flatVol(v, dayCounter))));
+            Handle<BlackVolTermStructure>(flatVol(v, dayCounter)));
 
     const BSMRNDCalculator bsm(bsmProcess);
     const Time times[] = { 0.5, 1.0, 2.0 };
@@ -144,10 +143,9 @@ BOOST_AUTO_TEST_CASE(testBSMagainstHestonRND) {
 
     const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dayCounter));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
-        new BlackScholesMertonProcess(
+    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess = ext::make_shared<BlackScholesMertonProcess>(
             spot, qTS, rTS,
-            Handle<BlackVolTermStructure>(flatVol(v, dayCounter))));
+            Handle<BlackVolTermStructure>(flatVol(v, dayCounter)));
 
     const BSMRNDCalculator bsm(bsmProcess);
     const HestonRNDCalculator heston(
@@ -302,13 +300,12 @@ BOOST_AUTO_TEST_CASE(testLocalVolatilityRND) {
     const ext::shared_ptr<YieldTermStructure> qTS(
         flatRate(todaysDate, q, dayCounter));
 
-    const ext::shared_ptr<TimeGrid> timeGrid(new TimeGrid(1.0, 101));
+    const ext::shared_ptr<TimeGrid> timeGrid = ext::make_shared<TimeGrid>(1.0, 101);
 
-    const ext::shared_ptr<LocalVolRNDCalculator> constVolCalc(
-        new LocalVolRNDCalculator(
+    const ext::shared_ptr<LocalVolRNDCalculator> constVolCalc = ext::make_shared<LocalVolRNDCalculator>(
             spot, rTS, qTS,
             ext::make_shared<LocalConstantVol>(todaysDate, v, dayCounter),
-            timeGrid, 201));
+            timeGrid, 201);
 
     const Real rTol = 0.01, atol = 0.005;
     for (Time t=0.1; t < 0.99; t+=0.015) {
@@ -382,15 +379,13 @@ BOOST_AUTO_TEST_CASE(testLocalVolatilityRND) {
     const Real b4 = -0.02;
     const Real b5 = -0.005;
 
-    const ext::shared_ptr<DumasParametricVolSurface> dumasVolSurface(
-        new DumasParametricVolSurface(b1, b2, b3, b4, b5, spot, rTS, qTS));
+    const ext::shared_ptr<DumasParametricVolSurface> dumasVolSurface = ext::make_shared<DumasParametricVolSurface>(b1, b2, b3, b4, b5, spot, rTS, qTS);
 
-    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
-        new BlackScholesMertonProcess(
+    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess = ext::make_shared<BlackScholesMertonProcess>(
             Handle<Quote>(spot),
             Handle<YieldTermStructure>(qTS),
             Handle<YieldTermStructure>(rTS),
-            Handle<BlackVolTermStructure>(dumasVolSurface)));
+            Handle<BlackVolTermStructure>(dumasVolSurface));
 
     const ext::shared_ptr<LocalVolTermStructure> localVolSurface
         = ext::make_shared<NoExceptLocalVolSurface>(
@@ -402,12 +397,10 @@ BOOST_AUTO_TEST_CASE(testLocalVolatilityRND) {
     const std::vector<Time> adaptiveGrid
         = adaptiveTimeGrid(400, 50, 5.0, 3.0);
 
-    const ext::shared_ptr<TimeGrid> dumasTimeGrid(
-        new TimeGrid(adaptiveGrid.begin(), adaptiveGrid.end()));
+    const ext::shared_ptr<TimeGrid> dumasTimeGrid = ext::make_shared<TimeGrid>(adaptiveGrid.begin(), adaptiveGrid.end());
 
-    const ext::shared_ptr<LocalVolRNDCalculator> dumasVolCalc(
-        new LocalVolRNDCalculator(
-            spot, rTS, qTS, localVolSurface, dumasTimeGrid, 401, 0.1, 1e-8));
+    const ext::shared_ptr<LocalVolRNDCalculator> dumasVolCalc = ext::make_shared<LocalVolRNDCalculator>(
+            spot, rTS, qTS, localVolSurface, dumasTimeGrid, 401, 0.1, 1e-8);
 
     const Real strikes[] = { 25, 50, 95, 100, 105, 150, 200, 400 };
     const std::vector<Date> maturities = {
@@ -421,16 +414,15 @@ BOOST_AUTO_TEST_CASE(testLocalVolatilityRND) {
         const Time expiry
             = rTS->dayCounter().yearFraction(todaysDate, maturity);
 
-        const ext::shared_ptr<PricingEngine> engine(
-            new FdBlackScholesVanillaEngine(
+        const ext::shared_ptr<PricingEngine> engine = ext::make_shared<FdBlackScholesVanillaEngine>(
                 bsmProcess, std::max(Size(51), Size(expiry*101)),
-                201, 0, FdmSchemeDesc::Douglas(), true, b1));
+                201, 0, FdmSchemeDesc::Douglas(), true, b1);
 
-        const ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
+        const ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(maturity);
 
         for (Real strike : strikes) {
-            const ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(
-                (strike > spot->value()) ? Option::Call : Option::Put, strike));
+            const ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(
+                (strike > spot->value()) ? Option::Call : Option::Put, strike);
 
             VanillaOption option(payoff, exercise);
             option.setPricingEngine(engine);
@@ -589,7 +581,7 @@ BOOST_AUTO_TEST_CASE(testBlackScholesWithSkew) {
             AnalyticHestonEngine::AndersenPiterbarg,
             AnalyticHestonEngine::Integration::discreteTrapezoid(128)));
 
-    const ext::shared_ptr<TimeGrid> timeGrid(new TimeGrid(maturity, 51));
+    const ext::shared_ptr<TimeGrid> timeGrid = ext::make_shared<TimeGrid>(maturity, 51);
 
     const ext::shared_ptr<LocalVolTermStructure> localVol(
         ext::make_shared<NoExceptLocalVolSurface>(

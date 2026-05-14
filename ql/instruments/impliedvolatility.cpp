@@ -91,11 +91,10 @@ namespace QuantLib {
 
             Handle<BlackVolTermStructure> blackVol = process->blackVolatility();
             Handle<BlackVolTermStructure> volatility(
-                ext::shared_ptr<BlackVolTermStructure>(
-                               new BlackConstantVol(blackVol->referenceDate(),
+                ext::make_shared<BlackConstantVol>(blackVol->referenceDate(),
                                                     blackVol->calendar(),
                                                     Handle<Quote>(volQuote),
-                                                    blackVol->dayCounter())));
+                                                    blackVol->dayCounter()));
 
             return ext::make_shared<GeneralizedBlackScholesProcess>(
                 stateVariable, dividendYield,

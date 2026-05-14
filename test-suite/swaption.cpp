@@ -83,15 +83,13 @@ struct CommonVars {
                                            Settlement::Type settlementType = Settlement::Physical,
                                            Settlement::Method settlementMethod = Settlement::PhysicalOTC,
                                            BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
-        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
-        ext::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(
-                termStructure, vol, Actual365Fixed(), 0.0, model));
+        Handle<Quote> vol(ext::make_shared<SimpleQuote>(volatility));
+        ext::shared_ptr<PricingEngine> engine = ext::make_shared<BlackSwaptionEngine>(
+                termStructure, vol, Actual365Fixed(), 0.0, model);
 
-        ext::shared_ptr<Swaption> result(new
-                Swaption(swap,
-                         ext::shared_ptr<Exercise>(
-                                              new EuropeanExercise(exercise)),
-                         settlementType, settlementMethod));
+        ext::shared_ptr<Swaption> result = ext::make_shared<Swaption>(swap,
+                         ext::make_shared<EuropeanExercise>(exercise),
+                         settlementType, settlementMethod);
         result->setPricingEngine(engine);
         return result;
     }
@@ -127,7 +125,7 @@ struct CommonVars {
         fixedFrequency = Annual;
         fixedDayCount = Thirty360(Thirty360::BondBasis);
 
-        index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        index = ext::make_shared<Euribor6M>(termStructure);
         oisIndex = ext::make_shared<Eonia>(
                 Handle<YieldTermStructure>(
                     ext::make_shared<ZeroSpreadedTermStructure>(
@@ -550,18 +548,16 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
                                      Period(vars.fixedFrequency),
                                      vars.calendar, Unadjusted, Unadjusted,
                                      DateGeneration::Forward, true);
-            ext::shared_ptr<VanillaSwap> swap_u360(
-                new VanillaSwap(type[0], vars.nominal,
+            ext::shared_ptr<VanillaSwap> swap_u360 = ext::make_shared<VanillaSwap>(type[0], vars.nominal,
                                 fixedSchedule_u,strike,Thirty360(Thirty360::BondBasis),
                                 floatSchedule,vars.index,0.0,
-                                vars.index->dayCounter()));
+                                vars.index->dayCounter());
 
             // Swap with fixed leg conventions: Business Days = Unadjusted, DayCount = Act/365
-            ext::shared_ptr<VanillaSwap> swap_u365(
-                new VanillaSwap(type[0],vars.nominal,
+            ext::shared_ptr<VanillaSwap> swap_u365 = ext::make_shared<VanillaSwap>(type[0],vars.nominal,
                                 fixedSchedule_u,strike,Actual365Fixed(),
                                 floatSchedule,vars.index,0.0,
-                                vars.index->dayCounter()));
+                                vars.index->dayCounter());
 
             // Swap with fixed leg conventions: Business Days = Modified Following, DayCount = 30/360
             Schedule fixedSchedule_a(startDate,maturity,
@@ -569,21 +565,18 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
                                      vars.calendar,ModifiedFollowing,
                                      ModifiedFollowing,
                                      DateGeneration::Forward, true);
-            ext::shared_ptr<VanillaSwap> swap_a360(
-                new VanillaSwap(type[0],vars.nominal,
+            ext::shared_ptr<VanillaSwap> swap_a360 = ext::make_shared<VanillaSwap>(type[0],vars.nominal,
                                 fixedSchedule_a,strike,Thirty360(Thirty360::BondBasis),
                                 floatSchedule,vars.index,0.0,
-                                vars.index->dayCounter()));
+                                vars.index->dayCounter());
 
             // Swap with fixed leg conventions: Business Days = Modified Following, DayCount = Act/365
-            ext::shared_ptr<VanillaSwap> swap_a365(
-                new VanillaSwap(type[0],vars.nominal,
+            ext::shared_ptr<VanillaSwap> swap_a365 = ext::make_shared<VanillaSwap>(type[0],vars.nominal,
                                 fixedSchedule_a,strike,Actual365Fixed(),
                                 floatSchedule,vars.index,0.0,
-                                vars.index->dayCounter()));
+                                vars.index->dayCounter());
 
-            ext::shared_ptr<PricingEngine> swapEngine(
-                               new DiscountingSwapEngine(vars.termStructure));
+            ext::shared_ptr<PricingEngine> swapEngine = ext::make_shared<DiscountingSwapEngine>(vars.termStructure);
 
             swap_u360->setPricingEngine(swapEngine);
             swap_a360->setPricingEngine(swapEngine);
@@ -597,25 +590,21 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
 
             // FlatForward curves
             Handle<YieldTermStructure> termStructure_u360(
-                ext::shared_ptr<YieldTermStructure>(
-                    new FlatForward(vars.settlement,swap_u360->fairRate(),
+                ext::make_shared<FlatForward>(vars.settlement,swap_u360->fairRate(),
                                     Thirty360(Thirty360::BondBasis),Compounded,
-                                    vars.fixedFrequency)));
+                                    vars.fixedFrequency));
             Handle<YieldTermStructure> termStructure_a360(
-                ext::shared_ptr<YieldTermStructure>(
-                    new FlatForward(vars.settlement,swap_a360->fairRate(),
+                ext::make_shared<FlatForward>(vars.settlement,swap_a360->fairRate(),
                                     Thirty360(Thirty360::BondBasis),Compounded,
-                                    vars.fixedFrequency)));
+                                    vars.fixedFrequency));
             Handle<YieldTermStructure> termStructure_u365(
-                ext::shared_ptr<YieldTermStructure>(
-                    new FlatForward(vars.settlement,swap_u365->fairRate(),
+                ext::make_shared<FlatForward>(vars.settlement,swap_u365->fairRate(),
                                     Actual365Fixed(),Compounded,
-                                    vars.fixedFrequency)));
+                                    vars.fixedFrequency));
             Handle<YieldTermStructure> termStructure_a365(
-                ext::shared_ptr<YieldTermStructure>(
-                    new FlatForward(vars.settlement,swap_a365->fairRate(),
+                ext::make_shared<FlatForward>(vars.settlement,swap_a365->fairRate(),
                                     Actual365Fixed(),Compounded,
-                                    vars.fixedFrequency)));
+                                    vars.fixedFrequency));
 
             // Annuity calculated by swap method fixedLegBPS().
             // Fixed leg conventions: Unadjusted, 30/360

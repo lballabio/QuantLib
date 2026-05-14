@@ -1189,8 +1189,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticPiecewiseTimeDependent) {
     
     const Real expected = option.NPV();
 
-    option.setPricingEngine(ext::shared_ptr<PricingEngine>(
-         new AnalyticPTDHestonEngine(model, 192)));
+    option.setPricingEngine(ext::make_shared<AnalyticPTDHestonEngine>(model, 192));
 
     const Real calculatedGatheral = option.NPV();
     if (std::fabs(calculatedGatheral-expected) > 1e-7) {
@@ -1199,11 +1198,10 @@ BOOST_AUTO_TEST_CASE(testAnalyticPiecewiseTimeDependent) {
                    << "\n    expected:   " << expected);
     }
 
-    option.setPricingEngine(ext::shared_ptr<PricingEngine>(
-         new AnalyticPTDHestonEngine(
+    option.setPricingEngine(ext::make_shared<AnalyticPTDHestonEngine>(
              model,
              AnalyticPTDHestonEngine::AndersenPiterbarg,
-             AnalyticPTDHestonEngine::Integration::gaussLobatto(1e-12,  Null<Real>(), 100000))));
+             AnalyticPTDHestonEngine::Integration::gaussLobatto(1e-12,  Null<Real>(), 100000)));
     const Real calculatedAndersenPiterbarg = option.NPV();
 
     if (std::fabs(calculatedAndersenPiterbarg-expected) > 1e-9) {
@@ -1329,32 +1327,26 @@ BOOST_AUTO_TEST_CASE(testAlanLewisReferencePrices) {
     const ext::shared_ptr<PricingEngine> exponentialFittingEngine(
         ext::make_shared<ExponentialFittingHestonEngine>(model));
 
-    const ext::shared_ptr<PricingEngine> andersenPiterbargEngine(
-        new AnalyticHestonEngine(
+    const ext::shared_ptr<PricingEngine> andersenPiterbargEngine = ext::make_shared<AnalyticHestonEngine>(
             model,
             AnalyticHestonEngine::AndersenPiterbarg,
             AnalyticHestonEngine::Integration::gaussLobatto(
                 Null<Real>(), 1e-14, 1000000),
-            QL_EPSILON)
-    );
+            QL_EPSILON);
 
-    const ext::shared_ptr<PricingEngine> angledContourEngine(
-        new AnalyticHestonEngine(
+    const ext::shared_ptr<PricingEngine> angledContourEngine = ext::make_shared<AnalyticHestonEngine>(
             model,
             AnalyticHestonEngine::AngledContour,
             AnalyticHestonEngine::Integration::gaussLobatto(
                 Null<Real>(), 1e-14, 1000000),
-            QL_EPSILON)
-    );
+            QL_EPSILON);
 
-    const ext::shared_ptr<PricingEngine> optimalCvEngine(
-        new AnalyticHestonEngine(
+    const ext::shared_ptr<PricingEngine> optimalCvEngine = ext::make_shared<AnalyticHestonEngine>(
             model,
             AnalyticHestonEngine::OptimalCV,
             AnalyticHestonEngine::Integration::gaussLobatto(
                 Null<Real>(), 1e-14, 1000000),
-            QL_EPSILON)
-    );
+            QL_EPSILON);
 
     const Real strikes[] = { 80, 90, 100, 110, 120 };
     const Option::Type types[] = { Option::Put, Option::Call };
@@ -1953,25 +1945,20 @@ BOOST_AUTO_TEST_CASE(testCosHestonEngineTruncation) {
     Rate riskFreeRate = 0;
     DayCounter dayCounter = Actual365Fixed();
 
-    ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(maturity));
-    Handle<Quote> underlyingH(ext::shared_ptr<Quote>(new SimpleQuote(underlying)));
+    ext::shared_ptr<Exercise> europeanExercise = ext::make_shared<EuropeanExercise>(maturity);
+    Handle<Quote> underlyingH(ext::make_shared<SimpleQuote>(underlying));
     Handle<YieldTermStructure> riskFreeTS(
-        ext::shared_ptr<YieldTermStructure>(
-            new FlatForward(todaysDate, riskFreeRate, dayCounter)));
+        ext::make_shared<FlatForward>(todaysDate, riskFreeRate, dayCounter));
     Handle<YieldTermStructure> dividendTS(
-        ext::shared_ptr<YieldTermStructure>(
-            new FlatForward(todaysDate, dividendYield, dayCounter)));
+        ext::make_shared<FlatForward>(todaysDate, dividendYield, dayCounter));
 
-    ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+    ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
     VanillaOption europeanOption(payoff, europeanExercise);
 
-    ext::shared_ptr<HestonProcess> hestonProcess(
-            new HestonProcess(riskFreeTS, dividendTS, underlyingH, .007, .8, .007, .1, -.2));
-    ext::shared_ptr<HestonModel> hestonModel(
-            new HestonModel(hestonProcess));
+    ext::shared_ptr<HestonProcess> hestonProcess = ext::make_shared<HestonProcess>(riskFreeTS, dividendTS, underlyingH, .007, .8, .007, .1, -.2);
+    ext::shared_ptr<HestonModel> hestonModel = ext::make_shared<HestonModel>(hestonProcess);
     
-    europeanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                new COSHestonEngine(hestonModel)));
+    europeanOption.setPricingEngine(ext::make_shared<COSHestonEngine>(hestonModel));
                 
     const Real tol = 1e-7;
     const Real error = std::fabs(europeanOption.NPV() - 0.0);
@@ -1995,7 +1982,7 @@ BOOST_AUTO_TEST_CASE(testCharacteristicFct) {
     const Handle<YieldTermStructure> riskFreeTS(flatRate(0.35, dayCounter));
     const Handle<YieldTermStructure> dividendTS(flatRate(0.17, dayCounter));
 
-    const Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
     const Real v0    =  0.1;
     const Real rho   = -0.85;
@@ -2043,7 +2030,7 @@ BOOST_AUTO_TEST_CASE(testAndersenPiterbargPricing) {
     const Handle<YieldTermStructure> riskFreeTS(flatRate(0.10, dayCounter));
     const Handle<YieldTermStructure> dividendTS(flatRate(0.06, dayCounter));
 
-    const Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
     const Real v0    =  0.1;
     const Real rho   =  0.80;
@@ -2179,7 +2166,7 @@ BOOST_AUTO_TEST_CASE(testAndersenPiterbargControlVariateIntegrand) {
     const Time maturity = dayCounter.yearFraction(settlementDate, maturityDate);
     const DiscountFactor df = rTS->discount(maturity);
 
-    const Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
     const Real fwd = s0->value()*qTS->discount(maturity)/df;
 
     const Real strike = 150;
@@ -2302,7 +2289,7 @@ BOOST_AUTO_TEST_CASE(testAndersenPiterbargConvergence) {
     const Handle<YieldTermStructure> rTS(flatRate(0.01, dayCounter));
     const Handle<YieldTermStructure> qTS(flatRate(0.02, dayCounter));
 
-    const Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
     const Real v0    =  0.04;
     const Real rho   = -0.5;
@@ -2354,7 +2341,7 @@ BOOST_AUTO_TEST_CASE(testPiecewiseTimeDependentChFvsHestonChF) {
     const Handle<YieldTermStructure> rTS(flatRate(0.01, dayCounter));
     const Handle<YieldTermStructure> qTS(flatRate(0.02, dayCounter));
 
-    const Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
     const Real v0    =  0.04;
     const Real rho   = -0.5;

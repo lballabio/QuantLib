@@ -80,8 +80,7 @@ namespace QuantLib {
                 }
                 u.push_back(1.0);
                 z.push_back(1.0);
-                transform = ext::shared_ptr<Interpolation>(
-                    new LinearInterpolation(u.begin(), u.end(), z.begin()));
+                transform = ext::make_shared<LinearInterpolation>(u.begin(), u.end(), z.begin());
             }
 
             for (Size i = 1; i < size - 1; ++i) {

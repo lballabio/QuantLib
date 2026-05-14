@@ -70,9 +70,8 @@ namespace QuantLib {
             TimeGrid grid = timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
-            return ext::shared_ptr<path_generator_type>(
-                         new path_generator_type(process_,
-                                                 grid, gen, brownianBridge_));
+            return ext::make_shared<path_generator_type>(process_,
+                                                 grid, gen, brownianBridge_);
         }
         ext::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
@@ -188,16 +187,14 @@ namespace QuantLib {
         for (Size i=0; i<grid.size(); i++)
             discounts[i] = process_->riskFreeRate()->discount(grid[i]);
 
-        return ext::shared_ptr<
-                    typename MCDoubleBarrierEngine<RNG,S>::path_pricer_type>(
-            new DoubleBarrierPathPricer(
+        return ext::make_shared<DoubleBarrierPathPricer>(
                 arguments_.barrierType,
                 arguments_.barrier_lo,
                 arguments_.barrier_hi,
                 arguments_.rebate,
                 payoff->optionType(),
                 payoff->strike(),
-                discounts));
+                discounts);
         }
 
         template <class RNG, class S>

@@ -68,25 +68,20 @@ namespace QuantLib {
         const Time maturity = exerciseTimes.back();
         const ext::shared_ptr<StochasticProcess1D> ouProcess(
                               process_->getExtendedOrnsteinUhlenbeckProcess());
-        const ext::shared_ptr<Fdm1dMesher> xMesher(
-                     new FdmSimpleProcess1dMesher(xGrid_, ouProcess,maturity));
+        const ext::shared_ptr<Fdm1dMesher> xMesher = ext::make_shared<FdmSimpleProcess1dMesher>(xGrid_, ouProcess,maturity);
 
-        const ext::shared_ptr<Fdm1dMesher> yMesher(
-                        new ExponentialJump1dMesher(yGrid_,
+        const ext::shared_ptr<Fdm1dMesher> yMesher = ext::make_shared<ExponentialJump1dMesher>(yGrid_,
                                                     process_->beta(),
                                                     process_->jumpIntensity(),
-                                                    process_->eta()));
-        const ext::shared_ptr<Fdm1dMesher> exerciseMesher(
-                       new Uniform1dMesher(
+                                                    process_->eta());
+        const ext::shared_ptr<Fdm1dMesher> exerciseMesher = ext::make_shared<Uniform1dMesher>(
                            0, static_cast<Real>(arguments_.maxExerciseRights),
-                           arguments_.maxExerciseRights+1));
+                           arguments_.maxExerciseRights+1);
 
-        const ext::shared_ptr<FdmMesher> mesher(
-            new FdmMesherComposite(xMesher, yMesher, exerciseMesher));
+        const ext::shared_ptr<FdmMesher> mesher = ext::make_shared<FdmMesherComposite>(xMesher, yMesher, exerciseMesher);
 
         // 3. Calculator
-        ext::shared_ptr<FdmInnerValueCalculator> calculator(
-                                                    new FdmZeroInnerValue());
+        ext::shared_ptr<FdmInnerValueCalculator> calculator = ext::make_shared<FdmZeroInnerValue>();
         // 4. Step conditions
         std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
@@ -94,16 +89,13 @@ namespace QuantLib {
         // 4.1 Bermudan step conditions
         stoppingTimes.push_back(exerciseTimes);
 
-        ext::shared_ptr<FdmInnerValueCalculator> exerciseCalculator(
-            new FdmExtOUJumpModelInnerValue(arguments_.payoff, mesher, shape_));
+        ext::shared_ptr<FdmInnerValueCalculator> exerciseCalculator = ext::make_shared<FdmExtOUJumpModelInnerValue>(arguments_.payoff, mesher, shape_);
 
-        stepConditions.push_back(ext::shared_ptr<StepCondition<Array> >(
-            new FdmSimpleSwingCondition(
+        stepConditions.push_back(ext::make_shared<FdmSimpleSwingCondition>(
                 exerciseTimes, mesher, exerciseCalculator,
-                2, arguments_.minExerciseRights)));
+                2, arguments_.minExerciseRights));
 
-        ext::shared_ptr<FdmStepConditionComposite> conditions(
-                new FdmStepConditionComposite(stoppingTimes, stepConditions));
+        ext::shared_ptr<FdmStepConditionComposite> conditions = ext::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions);
 
 
         // 5. Boundary conditions
@@ -113,10 +105,9 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                      calculator, maturity, tGrid_, 0 };
 
-        const ext::shared_ptr<FdmSimple3dExtOUJumpSolver> solver(
-            new FdmSimple3dExtOUJumpSolver(
+        const ext::shared_ptr<FdmSimple3dExtOUJumpSolver> solver = ext::make_shared<FdmSimple3dExtOUJumpSolver>(
                                     Handle<ExtOUWithJumpsProcess>(process_),
-                                    rTS_, solverDesc, schemeDesc_));
+                                    rTS_, solverDesc, schemeDesc_);
 
         const Real x = process_->initialValues()[0];
         const Real y = process_->initialValues()[1];

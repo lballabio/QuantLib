@@ -85,10 +85,10 @@ struct CommonVars {
                                    bool isBasisOnFxBaseCurrencyLeg) const {
         Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
         Period tenor(q.n, q.units);
-        return ext::shared_ptr<RateHelper>(new ConstNotionalCrossCurrencyBasisSwapRateHelper(
+        return ext::make_shared<ConstNotionalCrossCurrencyBasisSwapRateHelper>(
                 quoteHandle, tenor, instrumentSettlementDays, calendar, businessConvention, endOfMonth,
             baseCcyIdx, quoteCcyIdx, collateralHandle, isFxBaseCurrencyCollateralCurrency,
-                isBasisOnFxBaseCurrencyLeg));
+                isBasisOnFxBaseCurrencyLeg);
     }
 
     std::vector<ext::shared_ptr<RateHelper> >
@@ -127,10 +127,10 @@ struct CommonVars {
             quoteIndex = quoteCcyIdx;
         }
 
-        return ext::shared_ptr<RateHelper>(new MtMCrossCurrencyBasisSwapRateHelper(
+        return ext::make_shared<MtMCrossCurrencyBasisSwapRateHelper>(
                 quoteHandle, tenor, instrumentSettlementDays, calendar, businessConvention, endOfMonth,
             baseIndex, quoteIndex, collateralHandle, isFxBaseCurrencyCollateralCurrency,
-                isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, paymentFrequency, paymentLag));
+                isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, paymentFrequency, paymentLag);
     }
 
     std::vector<ext::shared_ptr<RateHelper> >
@@ -217,10 +217,10 @@ struct CommonVars {
         basisPoint = 1.0e-4;
         fxSpot = 1.25;
 
-        baseCcyIdx = ext::shared_ptr<IborIndex>(new Euribor3M(baseCcyIdxHandle));
-        quoteCcyIdx = ext::shared_ptr<IborIndex>(new USDLibor(3 * Months, quoteCcyIdxHandle));
-        baseOvernightIndex = ext::shared_ptr<IborIndex>(new Eonia(baseCcyIdxHandle));
-        quoteOvernightIndex = ext::shared_ptr<IborIndex>(new Sofr(quoteCcyIdxHandle));
+        baseCcyIdx = ext::make_shared<Euribor3M>(baseCcyIdxHandle);
+        quoteCcyIdx = ext::make_shared<USDLibor>(3 * Months, quoteCcyIdxHandle);
+        baseOvernightIndex = ext::make_shared<Eonia>(baseCcyIdxHandle);
+        quoteOvernightIndex = ext::make_shared<Sofr>(quoteCcyIdxHandle);
 
         /* Data source:
            N. Moreni, A. Pallavicini (2015)
@@ -261,8 +261,7 @@ void testConstantNotionalCrossCurrencySwapsNPV(bool isFxBaseCurrencyCollateralCu
     Handle<YieldTermStructure> collateralHandle =
         isFxBaseCurrencyCollateralCurrency ? vars.baseCcyIdxHandle : vars.quoteCcyIdxHandle;
 
-    ext::shared_ptr<DiscountingSwapEngine> collateralCcyLegEngine(
-        new DiscountingSwapEngine(collateralHandle));
+    ext::shared_ptr<DiscountingSwapEngine> collateralCcyLegEngine = ext::make_shared<DiscountingSwapEngine>(collateralHandle);
 
     std::vector<ext::shared_ptr<RateHelper> > instruments =
         vars.buildConstantNotionalXccyRateHelpers(vars.basisData, collateralHandle,
@@ -272,8 +271,7 @@ void testConstantNotionalCrossCurrencySwapsNPV(bool isFxBaseCurrencyCollateralCu
         new PiecewiseYieldCurve<Discount, LogLinear>(vars.curveSettlementDt, instruments, vars.dayCount));
     foreignCcyCurve->enableExtrapolation();
     Handle<YieldTermStructure> foreignCcyHandle(foreignCcyCurve);
-    ext::shared_ptr<DiscountingSwapEngine> foreignCcyLegEngine(
-        new DiscountingSwapEngine(foreignCcyHandle));
+    ext::shared_ptr<DiscountingSwapEngine> foreignCcyLegEngine = ext::make_shared<DiscountingSwapEngine>(foreignCcyHandle);
 
     Real tolerance = 1.0e-12;
 
@@ -594,8 +592,7 @@ for (auto [tenor, q]: quotes) {
     }
 
     typedef PiecewiseYieldCurve<Discount, LogLinear> Curve;
-    ext::shared_ptr<YieldTermStructure> curve(
-        new Curve(today, helpers, Actual365Fixed()));
+    ext::shared_ptr<YieldTermStructure> curve = ext::make_shared<Curve>(today, helpers, Actual365Fixed());
     curve->enableExtrapolation();
     Handle<YieldTermStructure> curveHandle(curve);
 
@@ -692,8 +689,7 @@ for (auto [tenor, q]: quotes) {
     }
 
     typedef PiecewiseYieldCurve<Discount, LogLinear> Curve;
-    ext::shared_ptr<YieldTermStructure> curve(
-        new Curve(today, helpers, Actual365Fixed()));
+    ext::shared_ptr<YieldTermStructure> curve = ext::make_shared<Curve>(today, helpers, Actual365Fixed());
     curve->enableExtrapolation();
     Handle<YieldTermStructure> curveHandle(curve);
 

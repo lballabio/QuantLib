@@ -235,8 +235,7 @@ namespace QuantLib {
     : GeneralizedBlackScholesProcess(
              x0,
              // no dividend yield
-             Handle<YieldTermStructure>(ext::shared_ptr<YieldTermStructure>(
-                  new FlatForward(0, NullCalendar(), 0.0, Actual365Fixed()))),
+             Handle<YieldTermStructure>(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0, Actual365Fixed())),
              riskFreeTS,
              blackVolTS,
              d,forceDiscretization) {}

@@ -135,27 +135,24 @@ BOOST_AUTO_TEST_CASE(testGauss) {
         TARGET().advance (asofDate, Period (7, Years))
     };
 
-    ext::shared_ptr<YieldTermStructure> yieldPtr (
-                                   new FlatForward (asofDate, rate, dc, cmp));
+    ext::shared_ptr<YieldTermStructure> yieldPtr = ext::make_shared<FlatForward>(asofDate, rate, dc, cmp);
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
     std::vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
     for (Real i : lambda) {
-        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(i)));
-        ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
-                                         new FlatHazardRate(asofDate, h, dc));
+        Handle<Quote> h(ext::make_shared<SimpleQuote>(i));
+        ext::shared_ptr<DefaultProbabilityTermStructure> ptr = ext::make_shared<FlatHazardRate>(asofDate, h, dc);
         probabilities.emplace_back(ptr);
     }
 
-    ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> simpleQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> correlationHandle (simpleQuote);
 
-    ext::shared_ptr<DefaultLossModel> copula( new
-        ConstantLossModel<GaussianCopulaPolicy>( correlationHandle,
+    ext::shared_ptr<DefaultLossModel> copula = ext::make_shared<ConstantLossModel<GaussianCopulaPolicy>>( correlationHandle,
         std::vector<Real>(names, recovery),
         LatentModelIntegrationType::GaussianQuadrature, names,
-        GaussianCopulaPolicy::initTraits()));
+        GaussianCopulaPolicy::initTraits());
 
     /* If you like the action you can price with the simulation engine below
     instead below. But you need at least 1e6 simulations to pass the pricing
@@ -198,11 +195,10 @@ BOOST_AUTO_TEST_CASE(testGauss) {
     std::vector<DefaultProbKey> defaultKeys(probabilities.size(),
         NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
 
-    ext::shared_ptr<Basket> basket(new Basket(asofDate, namesIds,
-        std::vector<Real>(names, namesNotional/names), thePool, 0., 1.));
+    ext::shared_ptr<Basket> basket = ext::make_shared<Basket>(asofDate, namesIds,
+        std::vector<Real>(names, namesNotional/names), thePool, 0., 1.);
 
-    ext::shared_ptr<PricingEngine> engine(
-        new IntegralNtdEngine(timeUnit, yieldHandle));
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<IntegralNtdEngine>(timeUnit, yieldHandle);
 
     std::vector<NthToDefault> ntd;
     for (Size i = 1; i <= probabilities.size(); i++) {
@@ -273,28 +269,25 @@ BOOST_AUTO_TEST_CASE(testStudent) {
         TARGET().advance (asofDate, Period (7, Years))
     };
 
-    ext::shared_ptr<YieldTermStructure> yieldPtr (
-                                new FlatForward (asofDate, rate, dc, cmp));
+    ext::shared_ptr<YieldTermStructure> yieldPtr = ext::make_shared<FlatForward>(asofDate, rate, dc, cmp);
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
     std::vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
     for (Real i : lambda) {
-        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(i)));
-        ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
-                                         new FlatHazardRate(asofDate, h, dc));
+        Handle<Quote> h(ext::make_shared<SimpleQuote>(i));
+        ext::shared_ptr<DefaultProbabilityTermStructure> ptr = ext::make_shared<FlatHazardRate>(asofDate, h, dc);
         probabilities.emplace_back(ptr);
     }
 
-    ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> simpleQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> correlationHandle (simpleQuote);
 
     TCopulaPolicy::initTraits iniT;
     iniT.tOrders = std::vector<QuantLib::Integer>(2,5);
-    ext::shared_ptr<DefaultLossModel> copula( new
-        ConstantLossModel<TCopulaPolicy>( correlationHandle,
+    ext::shared_ptr<DefaultLossModel> copula = ext::make_shared<ConstantLossModel<TCopulaPolicy>>( correlationHandle,
         std::vector<Real>(names, recovery),
-        LatentModelIntegrationType::GaussianQuadrature, names, iniT));
+        LatentModelIntegrationType::GaussianQuadrature, names, iniT);
 
     // Set up pool and basket
     std::vector<std::string> namesIds;
@@ -320,11 +313,10 @@ BOOST_AUTO_TEST_CASE(testStudent) {
     std::vector<DefaultProbKey> defaultKeys(probabilities.size(),
         NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
 
-    ext::shared_ptr<Basket> basket(new Basket(asofDate, namesIds,
-        std::vector<Real>(names, namesNotional/names), thePool, 0., 1.));
+    ext::shared_ptr<Basket> basket = ext::make_shared<Basket>(asofDate, namesIds,
+        std::vector<Real>(names, namesNotional/names), thePool, 0., 1.);
 
-    ext::shared_ptr<PricingEngine> engine(
-        new IntegralNtdEngine(timeUnit, yieldHandle));
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<IntegralNtdEngine>(timeUnit, yieldHandle);
 
     std::vector<NthToDefault> ntd;
     for (Size i = 1; i <= probabilities.size(); i++) {

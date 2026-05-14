@@ -69,9 +69,8 @@ namespace QuantLib {
         const ext::shared_ptr<BatesProcess> process =
                 ext::dynamic_pointer_cast<BatesProcess>(model_->process());
 
-        ext::shared_ptr<FdmBatesSolver> solver(
-            new FdmBatesSolver(Handle<BatesProcess>(process),
-                               solverDesc, schemeDesc_));
+        ext::shared_ptr<FdmBatesSolver> solver = ext::make_shared<FdmBatesSolver>(Handle<BatesProcess>(process),
+                               solverDesc, schemeDesc_);
 
         const Real v0   = process->v0();
         const Real spot = process->s0()->value();

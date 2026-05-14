@@ -29,7 +29,7 @@ namespace QuantLib {
     LineSearchBasedMethod::LineSearchBasedMethod(ext::shared_ptr<LineSearch> lineSearch)
     : lineSearch_(std::move(lineSearch)) {
         if (!lineSearch_)
-           lineSearch_ = ext::shared_ptr<LineSearch>(new ArmijoLineSearch);
+           lineSearch_ = ext::make_shared<ArmijoLineSearch>();
     }
 
     EndCriteria::Type

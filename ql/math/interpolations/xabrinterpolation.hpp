@@ -123,8 +123,7 @@ class XABRInterpolationImpl final : public Interpolation::templateImpl<I1, I2>,
       vegaWeighted_(vegaWeighted), volatilityType_(volatilityType) {
         // if no optimization method or endCriteria is provided, we provide one
         if (!optMethod_)
-            optMethod_ = ext::shared_ptr<OptimizationMethod>(
-                new LevenbergMarquardt(1e-8, 1e-8, 1e-8));
+            optMethod_ = ext::make_shared<LevenbergMarquardt>(1e-8, 1e-8, 1e-8);
         // optMethod_ = ext::shared_ptr<OptimizationMethod>(new
         //    Simplex(0.01));
         if (!endCriteria_) {

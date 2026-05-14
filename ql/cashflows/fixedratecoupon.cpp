@@ -206,9 +206,8 @@ namespace QuantLib {
                        firstPeriodDC_.empty() ? rate.dayCounter()
                        : firstPeriodDC_,
                        rate.compounding(), rate.frequency());
-        leg.push_back(ext::shared_ptr<CashFlow>(new
-            FixedRateCoupon(paymentDate, nominal, r,
-                            start, end, ref, end, exCouponDate)));
+        leg.push_back(ext::make_shared<FixedRateCoupon>(paymentDate, nominal, r,
+                            start, end, ref, end, exCouponDate));
         // regular periods
         for (Size i=2; i<schedule_.size()-1; ++i) {
             start = end; end = schedule_.date(i);
@@ -228,9 +227,8 @@ namespace QuantLib {
                 nominal = notionals_[i-1];
             else
                 nominal = notionals_.back();
-            leg.push_back(ext::shared_ptr<CashFlow>(new
-                FixedRateCoupon(paymentDate, nominal, rate,
-                                start, end, start, end, exCouponDate)));
+            leg.push_back(ext::make_shared<FixedRateCoupon>(paymentDate, nominal, rate,
+                                start, end, start, end, exCouponDate));
         }
         if (schedule_.size() > 2) {
             // last period might be short or long
@@ -257,18 +255,16 @@ namespace QuantLib {
                 lastPeriodDC_ , rate.compounding(), rate.frequency() );
             if ((schedule_.hasIsRegular() && schedule_.isRegular(N - 1)) ||
                 !schedule_.hasTenor()) {
-                leg.push_back(ext::shared_ptr<CashFlow>(new
-                    FixedRateCoupon(paymentDate, nominal, r,
-                                    start, end, start, end, exCouponDate)));
+                leg.push_back(ext::make_shared<FixedRateCoupon>(paymentDate, nominal, r,
+                                    start, end, start, end, exCouponDate));
             } else {
                 Date ref = schedule_.calendar().advance(
                                             start,
                                             schedule_.tenor(),
                                             schedule_.businessDayConvention(),
                                             schedule_.endOfMonth());
-                leg.push_back(ext::shared_ptr<CashFlow>(new
-                    FixedRateCoupon(paymentDate, nominal, r,
-                                    start, end, start, ref, exCouponDate)));
+                leg.push_back(ext::make_shared<FixedRateCoupon>(paymentDate, nominal, r,
+                                    start, end, start, ref, exCouponDate));
             }
         }
         return leg;

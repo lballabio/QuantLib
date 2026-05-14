@@ -106,7 +106,7 @@ namespace QuantLib {
             }
         }
 
-        f_ = ext::shared_ptr<data_table>(new data_table(x_));
+        f_ = ext::make_shared<data_table>(x_);
     }
 
 
@@ -123,8 +123,7 @@ namespace QuantLib {
             setValue(*f_, iter.coordinates(), rhs[iter.index()]);
         }
 
-        interp_ = ext::shared_ptr<MultiCubicSpline<N> >(
-            new MultiCubicSpline<N>(x_, *f_, extrapolation_));
+        interp_ = ext::make_shared<MultiCubicSpline<N>>(x_, *f_, extrapolation_);
     }
 
 

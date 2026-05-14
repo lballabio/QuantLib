@@ -113,7 +113,7 @@ namespace QuantLib {
 
         //! implements the actual smile calculation in derived classes
         ext::shared_ptr<SmileSection> smileSectionImpl(Time optionTime) const override {
-            return ext::shared_ptr<SmileSection>(new TenorOptionletSmileSection(*this, optionTime));
+            return ext::make_shared<TenorOptionletSmileSection>(*this, optionTime);
         }
         //! implements the actual volatility calculation in derived classes
         Volatility volatilityImpl(Time optionTime, Rate strike) const override {

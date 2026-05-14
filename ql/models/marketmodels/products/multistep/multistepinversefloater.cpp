@@ -68,7 +68,7 @@ namespace QuantLib {
     std::unique_ptr<MarketModelMultiProduct>
     MultiStepInverseFloater::clone() const 
     {
-        return std::unique_ptr<MarketModelMultiProduct>(new MultiStepInverseFloater(*this));
+        return std::make_unique<MultiStepInverseFloater>(*this);
     }
 
 }

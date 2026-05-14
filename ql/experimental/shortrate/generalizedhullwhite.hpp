@@ -48,8 +48,7 @@ namespace QuantLib {
             Size count,
             const Constraint& constraint = NoConstraint())
         : Parameter(count,
-            ext::shared_ptr<Parameter::Impl>(
-                new InterpolationParameter::Impl()),
+            ext::make_shared<InterpolationParameter::Impl>(),
                 constraint)
         { }
         void reset(const Interpolation &interp) {
@@ -237,14 +236,13 @@ namespace QuantLib {
                  const std::function<Real(Time)>& sigma,
                  std::function<Real(Real)> f,
                  std::function<Real(Real)> fInverse)
-        : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
-              new GeneralizedOrnsteinUhlenbeckProcess(alpha, sigma))),
+        : ShortRateDynamics(ext::make_shared<GeneralizedOrnsteinUhlenbeckProcess>(alpha, sigma)),
           fitting_(std::move(fitting)), _f_(std::move(f)), _fInverse_(std::move(fInverse)) {}
 
         //classical HW dynamics
         Dynamics(Parameter fitting, Real a, Real sigma)
         : GeneralizedHullWhite::ShortRateDynamics(
-              ext::shared_ptr<StochasticProcess1D>(new OrnsteinUhlenbeckProcess(a, sigma))),
+              ext::make_shared<OrnsteinUhlenbeckProcess>(a, sigma)),
           fitting_(std::move(fitting)), _f_(identity()), _fInverse_(identity()) {}
 
         Real variable(Time t, Rate r) const override { return _f_(r) - fitting_(t); }
@@ -291,15 +289,13 @@ namespace QuantLib {
       public:
         FittingParameter(const Handle<YieldTermStructure>& termStructure,
                          Real a, Real sigma)
-        : TermStructureFittingParameter(ext::shared_ptr<Parameter::Impl>(
-                      new FittingParameter::Impl(termStructure, a, sigma))) {}
+        : TermStructureFittingParameter(ext::make_shared<FittingParameter::Impl>(termStructure, a, sigma)) {}
     };
 
     // Analytic fitting dynamics
     inline ext::shared_ptr<OneFactorModel::ShortRateDynamics>
     GeneralizedHullWhite::HWdynamics() const {
-        return ext::shared_ptr<ShortRateDynamics>(
-          new Dynamics(phi_, a(), sigma()));
+        return ext::make_shared<Dynamics>(phi_, a(), sigma());
     }
 
     namespace detail {

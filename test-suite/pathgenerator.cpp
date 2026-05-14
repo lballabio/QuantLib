@@ -147,31 +147,26 @@ BOOST_AUTO_TEST_CASE(testPathGenerator) {
 
     Settings::instance().evaluationDate() = Date(26,April,2005);
 
-    Handle<Quote> x0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<Quote> x0(ext::make_shared<SimpleQuote>(100.0));
     Handle<YieldTermStructure> r(flatRate(0.05, Actual360()));
     Handle<YieldTermStructure> q(flatRate(0.02, Actual360()));
     Handle<BlackVolTermStructure> sigma(flatVol(0.20, Actual360()));
     // commented values must be used when Halley's correction is enabled
-    testSingle(ext::shared_ptr<StochasticProcess1D>(
-                                 new BlackScholesMertonProcess(x0,q,r,sigma)),
+    testSingle(ext::make_shared<BlackScholesMertonProcess>(x0,q,r,sigma),
                "Black-Scholes", false, 26.13784357783, 467.2928561411);
                                     // 26.13784357783, 467.2928562519);
-    testSingle(ext::shared_ptr<StochasticProcess1D>(
-                                 new BlackScholesMertonProcess(x0,q,r,sigma)),
+    testSingle(ext::make_shared<BlackScholesMertonProcess>(x0,q,r,sigma),
                "Black-Scholes", true, 60.28215549393, 202.6143139999);
                                    // 60.28215551021, 202.6143139437);
 
-    testSingle(ext::shared_ptr<StochasticProcess1D>(
-                       new GeometricBrownianMotionProcess(100.0, 0.03, 0.20)),
+    testSingle(ext::make_shared<GeometricBrownianMotionProcess>(100.0, 0.03, 0.20),
                "geometric Brownian", false, 27.62223714065, 483.6026514084);
                                          // 27.62223714065, 483.602651493);
 
-    testSingle(ext::shared_ptr<StochasticProcess1D>(
-                                     new OrnsteinUhlenbeckProcess(0.1, 0.20)),
+    testSingle(ext::make_shared<OrnsteinUhlenbeckProcess>(0.1, 0.20),
                "Ornstein-Uhlenbeck", false, -0.8372003433557, 0.8372003433557);
 
-    testSingle(ext::shared_ptr<StochasticProcess1D>(
-                                 new SquareRootProcess(0.1, 0.1, 0.20, 10.0)),
+    testSingle(ext::make_shared<SquareRootProcess>(0.1, 0.1, 0.20, 10.0),
                "square-root", false, 1.70608664108, 6.024200546031);
 }
 
@@ -181,7 +176,7 @@ BOOST_AUTO_TEST_CASE(testMultiPathGenerator) {
 
     Settings::instance().evaluationDate() = Date(26,April,2005);
 
-    Handle<Quote> x0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<Quote> x0(ext::make_shared<SimpleQuote>(100.0));
     Handle<YieldTermStructure> r(flatRate(0.05, Actual360()));
     Handle<YieldTermStructure> q(flatRate(0.02, Actual360()));
     Handle<BlackVolTermStructure> sigma(flatVol(0.20, Actual360()));
@@ -194,14 +189,10 @@ BOOST_AUTO_TEST_CASE(testMultiPathGenerator) {
     std::vector<ext::shared_ptr<StochasticProcess1D> > processes(3);
     ext::shared_ptr<StochasticProcess> process;
 
-    processes[0] = ext::shared_ptr<StochasticProcess1D>(
-                                 new BlackScholesMertonProcess(x0,q,r,sigma));
-    processes[1] = ext::shared_ptr<StochasticProcess1D>(
-                                 new BlackScholesMertonProcess(x0,q,r,sigma));
-    processes[2] = ext::shared_ptr<StochasticProcess1D>(
-                                 new BlackScholesMertonProcess(x0,q,r,sigma));
-    process = ext::shared_ptr<StochasticProcess>(
-                           new StochasticProcessArray(processes,correlation));
+    processes[0] = ext::make_shared<BlackScholesMertonProcess>(x0,q,r,sigma);
+    processes[1] = ext::make_shared<BlackScholesMertonProcess>(x0,q,r,sigma);
+    processes[2] = ext::make_shared<BlackScholesMertonProcess>(x0,q,r,sigma);
+    process = ext::make_shared<StochasticProcessArray>(processes,correlation);
     // commented values must be used when Halley's correction is enabled
     Real result1[] = {
         188.2235868185,
@@ -221,14 +212,10 @@ BOOST_AUTO_TEST_CASE(testMultiPathGenerator) {
     //     108.0475146914 };
     testMultiple(process, "Black-Scholes", result1, result1a);
 
-    processes[0] = ext::shared_ptr<StochasticProcess1D>(
-                       new GeometricBrownianMotionProcess(100.0, 0.03, 0.20));
-    processes[1] = ext::shared_ptr<StochasticProcess1D>(
-                       new GeometricBrownianMotionProcess(100.0, 0.03, 0.20));
-    processes[2] = ext::shared_ptr<StochasticProcess1D>(
-                       new GeometricBrownianMotionProcess(100.0, 0.03, 0.20));
-    process = ext::shared_ptr<StochasticProcess>(
-                           new StochasticProcessArray(processes,correlation));
+    processes[0] = ext::make_shared<GeometricBrownianMotionProcess>(100.0, 0.03, 0.20);
+    processes[1] = ext::make_shared<GeometricBrownianMotionProcess>(100.0, 0.03, 0.20);
+    processes[2] = ext::make_shared<GeometricBrownianMotionProcess>(100.0, 0.03, 0.20);
+    process = ext::make_shared<StochasticProcessArray>(processes,correlation);
     Real result2[] = {
         174.8266131680,
         237.2692443633,
@@ -247,14 +234,10 @@ BOOST_AUTO_TEST_CASE(testMultiPathGenerator) {
     //     116.4056510107 };
     testMultiple(process, "geometric Brownian", result2, result2a);
 
-    processes[0] = ext::shared_ptr<StochasticProcess1D>(
-                                     new OrnsteinUhlenbeckProcess(0.1, 0.20));
-    processes[1] = ext::shared_ptr<StochasticProcess1D>(
-                                     new OrnsteinUhlenbeckProcess(0.1, 0.20));
-    processes[2] = ext::shared_ptr<StochasticProcess1D>(
-                                     new OrnsteinUhlenbeckProcess(0.1, 0.20));
-    process = ext::shared_ptr<StochasticProcess>(
-                           new StochasticProcessArray(processes,correlation));
+    processes[0] = ext::make_shared<OrnsteinUhlenbeckProcess>(0.1, 0.20);
+    processes[1] = ext::make_shared<OrnsteinUhlenbeckProcess>(0.1, 0.20);
+    processes[2] = ext::make_shared<OrnsteinUhlenbeckProcess>(0.1, 0.20);
+    process = ext::make_shared<StochasticProcessArray>(processes,correlation);
     Real result3[] = {
         0.2942058437284,
         0.5525006418386,
@@ -265,14 +248,10 @@ BOOST_AUTO_TEST_CASE(testMultiPathGenerator) {
         -0.02650931054575 };
     testMultiple(process, "Ornstein-Uhlenbeck", result3, result3a);
 
-    processes[0] = ext::shared_ptr<StochasticProcess1D>(
-                                 new SquareRootProcess(0.1, 0.1, 0.20, 10.0));
-    processes[1] = ext::shared_ptr<StochasticProcess1D>(
-                                 new SquareRootProcess(0.1, 0.1, 0.20, 10.0));
-    processes[2] = ext::shared_ptr<StochasticProcess1D>(
-                                 new SquareRootProcess(0.1, 0.1, 0.20, 10.0));
-    process = ext::shared_ptr<StochasticProcess>(
-                           new StochasticProcessArray(processes,correlation));
+    processes[0] = ext::make_shared<SquareRootProcess>(0.1, 0.1, 0.20, 10.0);
+    processes[1] = ext::make_shared<SquareRootProcess>(0.1, 0.1, 0.20, 10.0);
+    processes[2] = ext::make_shared<SquareRootProcess>(0.1, 0.1, 0.20, 10.0);
+    process = ext::make_shared<StochasticProcessArray>(processes,correlation);
     Real result4[] = {
         4.279510844897,
         4.943783503533,

@@ -332,8 +332,7 @@ namespace QuantLib {
                                    Real redemption,
                                    const Date& date) {
 
-        ext::shared_ptr<CashFlow> redemptionCashflow(
-                         new Redemption(notional*redemption/100.0, date));
+        ext::shared_ptr<CashFlow> redemptionCashflow = ext::make_shared<Redemption>(notional*redemption/100.0, date);
         setSingleRedemption(notional, redemptionCashflow);
     }
 

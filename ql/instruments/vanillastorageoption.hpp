@@ -37,7 +37,7 @@ namespace QuantLib {
           class arguments;
           VanillaStorageOption(const ext::shared_ptr<BermudanExercise>& ex,
                                Real capacity, Real load, Real changeRate)
-        : OneAssetOption(ext::shared_ptr<Payoff>(new NullPayoff), ex),
+        : OneAssetOption(ext::make_shared<NullPayoff>(), ex),
           capacity_  (capacity),
           load_      (load),
           changeRate_(changeRate) {}

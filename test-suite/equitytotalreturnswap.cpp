@@ -90,7 +90,7 @@ struct CommonVars {
         dividendHandle.linkTo(flatRate(0.005, dayCount));
 
         discountEngine =
-            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(interestHandle));
+            ext::make_shared<DiscountingSwapEngine>(interestHandle);
 
         spot = ext::make_shared<SimpleQuote>(8700.0);
         spotHandle.linkTo(spot);

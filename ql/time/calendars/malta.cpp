@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     Malta::Malta(Market) {
-        static ext::shared_ptr<Calendar::Impl> impl(new Malta::MseImpl);
+        static ext::shared_ptr<Calendar::Impl> impl = ext::make_shared<Malta::MseImpl>();
         impl_ = impl;
     }
 

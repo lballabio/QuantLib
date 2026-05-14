@@ -60,40 +60,32 @@ namespace QuantLib {
                                           = klugeOUProcess_->getKlugeProcess();
         const ext::shared_ptr<StochasticProcess1D> ouProcess
                         = klugeProcess->getExtendedOrnsteinUhlenbeckProcess();
-        const ext::shared_ptr<Fdm1dMesher> xMesher(
-            new FdmSimpleProcess1dMesher(xGrid_, ouProcess,maturity));
+        const ext::shared_ptr<Fdm1dMesher> xMesher = ext::make_shared<FdmSimpleProcess1dMesher>(xGrid_, ouProcess,maturity);
 
-        const ext::shared_ptr<Fdm1dMesher> yMesher(
-            new ExponentialJump1dMesher(yGrid_,
+        const ext::shared_ptr<Fdm1dMesher> yMesher = ext::make_shared<ExponentialJump1dMesher>(yGrid_,
                                         klugeProcess->beta(),
                                         klugeProcess->jumpIntensity(),
-                                        klugeProcess->eta()));
+                                        klugeProcess->eta());
 
-        const ext::shared_ptr<Fdm1dMesher> uMesher(
-            new FdmSimpleProcess1dMesher(uGrid_,
+        const ext::shared_ptr<Fdm1dMesher> uMesher = ext::make_shared<FdmSimpleProcess1dMesher>(uGrid_,
                                          klugeOUProcess_->getExtOUProcess(),
-                                         maturity));
+                                         maturity);
 
-        const ext::shared_ptr<FdmMesher> mesher(
-            new FdmMesherComposite(xMesher, yMesher, uMesher));
+        const ext::shared_ptr<FdmMesher> mesher = ext::make_shared<FdmMesherComposite>(xMesher, yMesher, uMesher);
 
         // 2. Calculator
         ext::shared_ptr<BasketPayoff> basketPayoff =
             ext::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
         QL_REQUIRE(basketPayoff," basket payoff expected");
 
-        const ext::shared_ptr<Payoff> zeroStrikeCall(
-            new PlainVanillaPayoff(Option::Call, 0.0));
+        const ext::shared_ptr<Payoff> zeroStrikeCall = ext::make_shared<PlainVanillaPayoff>(Option::Call, 0.0);
 
-        const ext::shared_ptr<FdmInnerValueCalculator> gasPrice(
-            new FdmExpExtOUInnerValueCalculator(zeroStrikeCall,
-                                                mesher, gasShape_, 2));
+        const ext::shared_ptr<FdmInnerValueCalculator> gasPrice = ext::make_shared<FdmExpExtOUInnerValueCalculator>(zeroStrikeCall,
+                                                mesher, gasShape_, 2);
 
-        const ext::shared_ptr<FdmInnerValueCalculator> powerPrice(
-            new FdmExtOUJumpModelInnerValue(zeroStrikeCall,mesher,powerShape_));
+        const ext::shared_ptr<FdmInnerValueCalculator> powerPrice = ext::make_shared<FdmExtOUJumpModelInnerValue>(zeroStrikeCall,mesher,powerShape_);
 
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-            new FdmSpreadPayoffInnerValue(basketPayoff, powerPrice, gasPrice));
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator = ext::make_shared<FdmSpreadPayoffInnerValue>(basketPayoff, powerPrice, gasPrice);
 
         // 3. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions =
@@ -109,10 +101,9 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                      calculator, maturity, tGrid_, 0 };
 
-        const ext::shared_ptr<FdmKlugeExtOUSolver<3> > solver(
-            new FdmKlugeExtOUSolver<3>(
+        const ext::shared_ptr<FdmKlugeExtOUSolver<3> > solver = ext::make_shared<FdmKlugeExtOUSolver<3>>(
                 Handle<KlugeExtOUProcess>(klugeOUProcess_),
-                rTS_, solverDesc, schemeDesc_));
+                rTS_, solverDesc, schemeDesc_);
 
         std::vector<Real> x(3);
         x[0] = klugeOUProcess_->initialValues()[0];

@@ -263,8 +263,8 @@ BOOST_AUTO_TEST_CASE(consistency) {
     DayCounter floatDayCount = Actual365Fixed();
     BusinessDayConvention floatPaymentConvention = ModifiedFollowing;
     Natural fixingDays = 0;
-    ext::shared_ptr<IborIndex> floatIndex(new GBPLibor(Period(6,Months),
-                                                         common.nominalTS));
+    ext::shared_ptr<IborIndex> floatIndex = ext::make_shared<GBPLibor>(Period(6,Months),
+                                                         common.nominalTS);
 
     // fixed x inflation leg
     Rate fixedRate = 0.1;//1% would be 0.01
@@ -318,7 +318,7 @@ BOOST_AUTO_TEST_CASE(consistency) {
     }
 
     // simple structure so simple pricing engine - most work done by index
-    ext::shared_ptr<DiscountingSwapEngine> dse(new DiscountingSwapEngine(common.nominalTS));
+    ext::shared_ptr<DiscountingSwapEngine> dse = ext::make_shared<DiscountingSwapEngine>(common.nominalTS);
     zisV.setPricingEngine(dse);
     
     // get float+spread & fixed*inflation leg prices separately
@@ -374,7 +374,7 @@ BOOST_AUTO_TEST_CASE(zciisconsistency) {
 
     // simple structure so simple pricing engine - most work done by index
     ext::shared_ptr<DiscountingSwapEngine>
-    dse(new DiscountingSwapEngine(common.nominalTS));
+    dse = ext::make_shared<DiscountingSwapEngine>(common.nominalTS);
 
     zciis.setPricingEngine(dse);
     QL_REQUIRE(fabs(zciis.NPV())<1e-3,"zciis does not reprice to zero");
@@ -418,8 +418,8 @@ BOOST_AUTO_TEST_CASE(cpibondconsistency) {
     DayCounter floatDayCount = Actual365Fixed();
     BusinessDayConvention floatPaymentConvention = ModifiedFollowing;
     Natural fixingDays = 0;
-    ext::shared_ptr<IborIndex> floatIndex(new GBPLibor(Period(6,Months),
-                                                         common.nominalTS));
+    ext::shared_ptr<IborIndex> floatIndex = ext::make_shared<GBPLibor>(Period(6,Months),
+                                                         common.nominalTS);
 
     // fixed x inflation leg
     Rate fixedRate = 0.1;//1% would be 0.01
@@ -473,7 +473,7 @@ BOOST_AUTO_TEST_CASE(cpibondconsistency) {
 
 
     // simple structure so simple pricing engine - most work done by index
-    ext::shared_ptr<DiscountingSwapEngine> dse(new DiscountingSwapEngine(common.nominalTS));
+    ext::shared_ptr<DiscountingSwapEngine> dse = ext::make_shared<DiscountingSwapEngine>(common.nominalTS);
     zisV.setPricingEngine(dse);
 
     // now do the bond equivalent
@@ -484,7 +484,7 @@ BOOST_AUTO_TEST_CASE(cpibondconsistency) {
                  observationInterpolation, fixedSchedule,
                  fixedRates, fixedDayCount, fixedPaymentConvention);
 
-    ext::shared_ptr<DiscountingBondEngine> dbe(new DiscountingBondEngine(common.nominalTS));
+    ext::shared_ptr<DiscountingBondEngine> dbe = ext::make_shared<DiscountingBondEngine>(common.nominalTS);
     cpiB.setPricingEngine(dbe);
 
     QL_REQUIRE(fabs(cpiB.NPV() - zisV.legNPV(0))<1e-5,"cpi bond does not equal equivalent cpi swap leg");

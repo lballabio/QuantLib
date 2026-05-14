@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(testIntegralHeston) {
 
     Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.0));
     Handle<YieldTermStructure> qTS;
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
 
     Real v0 = 2.0;
@@ -49,19 +49,18 @@ BOOST_AUTO_TEST_CASE(testIntegralHeston) {
     Real sigma = 0.1;
     Real rho = -0.5;
 
-    ext::shared_ptr<HestonProcess> process(new HestonProcess(rTS, qTS, s0,
+    ext::shared_ptr<HestonProcess> process = ext::make_shared<HestonProcess>(rTS, qTS, s0,
                                                                v0, kappa, theta,
-                                                               sigma, rho));
-    ext::shared_ptr<PricingEngine> engine(
-                               new IntegralHestonVarianceOptionEngine(process));
+                                                               sigma, rho);
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<IntegralHestonVarianceOptionEngine>(process);
 
     Real strike = 0.05;
     Real nominal = 1.0;
     Time T = 1.5;
     Date exDate = today + int(360*T);
 
-    ext::shared_ptr<Payoff> payoff(new PlainVanillaPayoff(Option::Call,
-                                                            strike));
+    ext::shared_ptr<Payoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call,
+                                                            strike);
 
     VarianceOption varianceOption1(payoff, nominal, today, exDate);
     varianceOption1.setPricingEngine(engine);
@@ -86,16 +85,15 @@ BOOST_AUTO_TEST_CASE(testIntegralHeston) {
 
     process = ext::make_shared<HestonProcess>(
                rTS, qTS, s0, v0, kappa, theta, sigma, rho);
-    engine = ext::shared_ptr<PricingEngine>(
-                               new IntegralHestonVarianceOptionEngine(process));
+    engine = ext::make_shared<IntegralHestonVarianceOptionEngine>(process);
 
     strike = 0.7;
     nominal = 1.0;
     T = 1.0;
     exDate = today + int(360*T);
 
-    payoff = ext::shared_ptr<Payoff>(new PlainVanillaPayoff(Option::Put,
-                                                              strike));
+    payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put,
+                                                              strike);
 
     VarianceOption varianceOption2(payoff, nominal, today, exDate);
     varianceOption2.setPricingEngine(engine);

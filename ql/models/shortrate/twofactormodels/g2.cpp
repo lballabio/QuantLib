@@ -46,8 +46,7 @@ namespace QuantLib {
     }
 
     ext::shared_ptr<TwoFactorModel::ShortRateDynamics> G2::dynamics() const {
-        return ext::shared_ptr<ShortRateDynamics>(new
-            Dynamics(phi_, a(), sigma(), b(), eta(), rho()));
+        return ext::make_shared<Dynamics>(phi_, a(), sigma(), b(), eta(), rho());
     }
 
     void G2::generateArguments() {

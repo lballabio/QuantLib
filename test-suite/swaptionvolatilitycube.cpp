@@ -137,28 +137,25 @@ struct CommonVars {
         atm.setMarketData();
 
         atmVolMatrix = RelinkableHandle<SwaptionVolatilityStructure>(
-                ext::shared_ptr<SwaptionVolatilityStructure>(new
-                    SwaptionVolatilityMatrix(conventions.calendar,
+                ext::make_shared<SwaptionVolatilityMatrix>(conventions.calendar,
                                              conventions.optionBdc,
                                              atm.tenors.options,
                                              atm.tenors.swaps,
                                              atm.volsHandle,
-                                             conventions.dayCounter)));
+                                             conventions.dayCounter));
 
         normalVolMatrix = RelinkableHandle<SwaptionVolatilityStructure>(
-                ext::shared_ptr<SwaptionVolatilityStructure>(new SwaptionVolatilityMatrix(
+                ext::make_shared<SwaptionVolatilityMatrix>(
                     conventions.calendar, conventions.optionBdc, atm.tenors.options,
-                    atm.tenors.swaps, atm.volsHandle, conventions.dayCounter, false, VolatilityType::Normal)));
+                    atm.tenors.swaps, atm.volsHandle, conventions.dayCounter, false, VolatilityType::Normal));
 
         // Swaptionvolcube
         cube.setMarketData();
 
         termStructure.linkTo(flatRate(0.05, Actual365Fixed()));
 
-        swapIndexBase = ext::shared_ptr<SwapIndex>(new
-                EuriborSwapIsdaFixA(2*Years, termStructure));
-        shortSwapIndexBase = ext::shared_ptr<SwapIndex>(new
-                EuriborSwapIsdaFixA(1*Years, termStructure));
+        swapIndexBase = ext::make_shared<EuriborSwapIsdaFixA>(2*Years, termStructure);
+        shortSwapIndexBase = ext::make_shared<EuriborSwapIsdaFixA>(1*Years, termStructure);
 
         vegaWeighedSmileFit=false;
     }
@@ -175,10 +172,10 @@ BOOST_AUTO_TEST_CASE(testSabrNormalVolatility) {
                                                               vars.cube.tenors.swaps.size());
     for (Size i = 0; i < vars.cube.tenors.options.size() * vars.cube.tenors.swaps.size(); i++) {
         parametersGuess[i] = std::vector<Handle<Quote> >(4);
-        parametersGuess[i][0] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
-        parametersGuess[i][1] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
-        parametersGuess[i][2] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
-        parametersGuess[i][3] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
+        parametersGuess[i][0] = Handle<Quote>(ext::make_shared<SimpleQuote>(0.2));
+        parametersGuess[i][1] = Handle<Quote>(ext::make_shared<SimpleQuote>(0.5));
+        parametersGuess[i][2] = Handle<Quote>(ext::make_shared<SimpleQuote>(0.4));
+        parametersGuess[i][3] = Handle<Quote>(ext::make_shared<SimpleQuote>(0.0));
     }
     std::vector<bool> isParameterFixed(4, false);
 
@@ -243,13 +240,13 @@ BOOST_AUTO_TEST_CASE(testSabrVols) {
     for (Size i=0; i<vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size(); i++) {
         parametersGuess[i] = std::vector<Handle<Quote> >(4);
         parametersGuess[i][0] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.2));
         parametersGuess[i][1] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.5));
         parametersGuess[i][2] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.4));
         parametersGuess[i][3] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.0));
     }
     std::vector<bool> isParameterFixed(4, false);
 
@@ -282,18 +279,17 @@ BOOST_AUTO_TEST_CASE(testSpreadedCube) {
     for (Size i=0; i<vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size(); i++) {
         parametersGuess[i] = std::vector<Handle<Quote> >(4);
         parametersGuess[i][0] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.2));
         parametersGuess[i][1] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.5));
         parametersGuess[i][2] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.4));
         parametersGuess[i][3] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.0));
     }
     std::vector<bool> isParameterFixed(4, false);
 
-    Handle<SwaptionVolatilityStructure> volCube( ext::shared_ptr<SwaptionVolatilityStructure>(new
-        SabrSwaptionVolatilityCube(vars.atmVolMatrix,
+    Handle<SwaptionVolatilityStructure> volCube( ext::make_shared<SabrSwaptionVolatilityCube>(vars.atmVolMatrix,
                          vars.cube.tenors.options,
                          vars.cube.tenors.swaps,
                          vars.cube.strikeSpreads,
@@ -303,12 +299,11 @@ BOOST_AUTO_TEST_CASE(testSpreadedCube) {
                          vars.vegaWeighedSmileFit,
                          parametersGuess,
                          isParameterFixed,
-                         true)));
+                         true));
 
-    ext::shared_ptr<SimpleQuote> spread (new SimpleQuote(0.0001));
+    ext::shared_ptr<SimpleQuote> spread = ext::make_shared<SimpleQuote>(0.0001);
     Handle<Quote> spreadHandle(spread);
-    ext::shared_ptr<SwaptionVolatilityStructure> spreadedVolCube(new
-        SpreadedSwaptionVolatility(volCube, spreadHandle));
+    ext::shared_ptr<SwaptionVolatilityStructure> spreadedVolCube = ext::make_shared<SpreadedSwaptionVolatility>(volCube, spreadHandle);
     std::vector<Real> strikes;
     for (Size k=1; k<100; k++)
         strikes.push_back(k*.01);
@@ -368,13 +363,13 @@ BOOST_AUTO_TEST_CASE(testObservability) {
     for (Size i=0; i<vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size(); i++) {
         parametersGuess[i] = std::vector<Handle<Quote> >(4);
         parametersGuess[i][0] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.2));
         parametersGuess[i][1] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.5));
         parametersGuess[i][2] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.4));
         parametersGuess[i][3] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.0));
     }
     std::vector<bool> isParameterFixed(4, false);
 
@@ -498,13 +493,13 @@ BOOST_AUTO_TEST_CASE(testSabrParameters) {
     for (Size i=0; i<vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size(); i++) {
         parametersGuess[i] = std::vector<Handle<Quote> >(4);
         parametersGuess[i][0] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.2));
         parametersGuess[i][1] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.5));
         parametersGuess[i][2] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.4));
         parametersGuess[i][3] =
-            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.0));
     }
     std::vector<bool> isParameterFixed(4, false);
 

@@ -1160,8 +1160,7 @@ namespace QuantLib {
             npvDate = settlementDate;
 
         Handle<YieldTermStructure> discountCurveHandle(discountCurve);
-        Handle<Quote> zSpreadQuoteHandle(ext::shared_ptr<Quote>(new
-            SimpleQuote(zSpread)));
+        Handle<Quote> zSpreadQuoteHandle(ext::make_shared<SimpleQuote>(zSpread));
 
         ZeroSpreadedTermStructure spreadedCurve(discountCurveHandle,
                                                 zSpreadQuoteHandle,

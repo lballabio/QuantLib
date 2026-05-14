@@ -291,41 +291,37 @@ BOOST_AUTO_TEST_CASE(testFdmHestonBarrierVsBlackScholes) {
     Settings::instance().evaluationDate() = todaysDate;
 
     Handle<Quote> spot(
-            ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+            ext::make_shared<SimpleQuote>(0.0));
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    ext::shared_ptr<BlackScholesMertonProcess> bsProcess(
-                      new BlackScholesMertonProcess(spot, qTS, rTS, volTS));
+    ext::shared_ptr<BlackScholesMertonProcess> bsProcess = ext::make_shared<BlackScholesMertonProcess>(spot, qTS, rTS, volTS);
 
-    ext::shared_ptr<PricingEngine> analyticEngine(
-                                        new AnalyticBarrierEngine(bsProcess));
+    ext::shared_ptr<PricingEngine> analyticEngine = ext::make_shared<AnalyticBarrierEngine>(bsProcess);
 
     for (auto& value : values) {
         Date exDate = todaysDate + timeToDays(value.t, 365);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
 
         ext::dynamic_pointer_cast<SimpleQuote>(spot.currentLink())->setValue(value.s);
         qRate->setValue(value.q);
         rRate->setValue(value.r);
         vol->setValue(value.v);
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
+        ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(value.type, value.strike);
 
         BarrierOption barrierOption(value.barrierType, value.barrier, value.rebate, payoff,
                                     exercise);
 
         const Real v0 = vol->value()*vol->value();
-        ext::shared_ptr<HestonProcess> hestonProcess(
-             new HestonProcess(rTS, qTS, spot, v0, 1.0, v0, 0.005, 0.0));
+        ext::shared_ptr<HestonProcess> hestonProcess = ext::make_shared<HestonProcess>(rTS, qTS, spot, v0, 1.0, v0, 0.005, 0.0);
 
-        barrierOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-            new FdHestonBarrierEngine(ext::make_shared<HestonModel>(
-                              hestonProcess), 200, 101, 3)));
+        barrierOption.setPricingEngine(ext::make_shared<FdHestonBarrierEngine>(ext::make_shared<HestonModel>(
+                              hestonProcess), 200, 101, 3));
 
         const Real calculatedHE = barrierOption.NPV();
     
@@ -347,27 +343,24 @@ BOOST_AUTO_TEST_CASE(testFdmHestonBarrier) {
     BOOST_TEST_MESSAGE("Testing FDM with barrier option for Heston model vs "
                        "Black-Scholes model...");
 
-    Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
     Handle<YieldTermStructure> rTS(flatRate(0.05, Actual365Fixed()));
     Handle<YieldTermStructure> qTS(flatRate(0.0 , Actual365Fixed()));
 
-    ext::shared_ptr<HestonProcess> hestonProcess(
-        new HestonProcess(rTS, qTS, s0, 0.04, 2.5, 0.04, 0.66, -0.8));
+    ext::shared_ptr<HestonProcess> hestonProcess = ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 2.5, 0.04, 0.66, -0.8);
 
     Settings::instance().evaluationDate() = Date(28, March, 2004);
     Date exerciseDate(28, March, 2005);
 
-    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exerciseDate);
 
-    ext::shared_ptr<StrikedTypePayoff> payoff(new
-                                      PlainVanillaPayoff(Option::Call, 100));
+    ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100);
 
     BarrierOption barrierOption(Barrier::UpOut, 135, 0.0, payoff, exercise);
 
-    barrierOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-            new FdHestonBarrierEngine(ext::make_shared<HestonModel>(
-                              hestonProcess), 50, 400, 100)));
+    barrierOption.setPricingEngine(ext::make_shared<FdHestonBarrierEngine>(ext::make_shared<HestonModel>(
+                              hestonProcess), 50, 400, 100));
 
     const Real tol = 0.01;
     const Real npvExpected   =  9.1530;
@@ -398,26 +391,23 @@ BOOST_AUTO_TEST_CASE(testFdmHestonAmerican) {
 
     BOOST_TEST_MESSAGE("Testing FDM with American option in Heston model...");
 
-    Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
     Handle<YieldTermStructure> rTS(flatRate(0.05, Actual365Fixed()));
     Handle<YieldTermStructure> qTS(flatRate(0.0 , Actual365Fixed()));
 
-    ext::shared_ptr<HestonProcess> hestonProcess(
-        new HestonProcess(rTS, qTS, s0, 0.04, 2.5, 0.04, 0.66, -0.8));
+    ext::shared_ptr<HestonProcess> hestonProcess = ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 2.5, 0.04, 0.66, -0.8);
 
     Settings::instance().evaluationDate() = Date(28, March, 2004);
     Date exerciseDate(28, March, 2005);
 
-    ext::shared_ptr<Exercise> exercise(new AmericanExercise(exerciseDate));
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<AmericanExercise>(exerciseDate);
 
-    ext::shared_ptr<StrikedTypePayoff> payoff(new
-                                      PlainVanillaPayoff(Option::Put, 100));
+    ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 100);
 
     VanillaOption option(payoff, exercise);
-    ext::shared_ptr<PricingEngine> engine(
-         new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
-                             hestonProcess), 200, 100, 50));
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<FdHestonVanillaEngine>(ext::make_shared<HestonModel>(
+                             hestonProcess), 200, 100, 50);
     option.setPricingEngine(engine);
     
     const Real tol = 0.01;
@@ -460,10 +450,9 @@ BOOST_AUTO_TEST_CASE(testFdmHestonIkonenToivanen) {
     Settings::instance().evaluationDate() = Date(28, March, 2004);
     Date exerciseDate(26, June, 2004);
 
-    ext::shared_ptr<Exercise> exercise(new AmericanExercise(exerciseDate));
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<AmericanExercise>(exerciseDate);
 
-    ext::shared_ptr<StrikedTypePayoff> payoff(new
-                                      PlainVanillaPayoff(Option::Put, 10));
+    ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 10);
 
     VanillaOption option(payoff, exercise);
 
@@ -472,13 +461,11 @@ BOOST_AUTO_TEST_CASE(testFdmHestonIkonenToivanen) {
     const Real tol = 0.001;
     
     for (Size i=0; i < std::size(strikes); ++i) {
-        Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(strikes[i])));
-        ext::shared_ptr<HestonProcess> hestonProcess(
-            new HestonProcess(rTS, qTS, s0, 0.0625, 5, 0.16, 0.9, 0.1));
+        Handle<Quote> s0(ext::make_shared<SimpleQuote>(strikes[i]));
+        ext::shared_ptr<HestonProcess> hestonProcess = ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.0625, 5, 0.16, 0.9, 0.1);
     
-        ext::shared_ptr<PricingEngine> engine(
-             new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
-                                 hestonProcess), 100, 400));
+        ext::shared_ptr<PricingEngine> engine = ext::make_shared<FdHestonVanillaEngine>(ext::make_shared<HestonModel>(
+                                 hestonProcess), 100, 400);
         option.setPricingEngine(engine);
         
         Real calculated = option.NPV();
@@ -504,10 +491,9 @@ BOOST_AUTO_TEST_CASE(testFdmHestonBlackScholes) {
     Handle<BlackVolTermStructure> volTS(
                     flatVol(rTS->referenceDate(), 0.25, rTS->dayCounter()));
     
-    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exerciseDate);
 
-    ext::shared_ptr<StrikedTypePayoff> payoff(new
-                                      PlainVanillaPayoff(Option::Put, 10));
+    ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 10);
 
     VanillaOption option(payoff, exercise);
 
@@ -515,24 +501,20 @@ BOOST_AUTO_TEST_CASE(testFdmHestonBlackScholes) {
     const Real tol = 0.0001;
 
     for (Real& strike : strikes) {
-        Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(strike)));
+        Handle<Quote> s0(ext::make_shared<SimpleQuote>(strike));
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-                       new GeneralizedBlackScholesProcess(s0, qTS, rTS, volTS));
+        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess = ext::make_shared<GeneralizedBlackScholesProcess>(s0, qTS, rTS, volTS);
 
-        option.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                                        new AnalyticEuropeanEngine(bsProcess)));
+        option.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(bsProcess));
         
         const Real expected = option.NPV();
         
-        ext::shared_ptr<HestonProcess> hestonProcess(
-            new HestonProcess(rTS, qTS, s0, 0.0625, 1, 0.0625, 0.0001, 0.0));
+        ext::shared_ptr<HestonProcess> hestonProcess = ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.0625, 1, 0.0625, 0.0001, 0.0);
 
         // Hundsdorfer scheme
-        option.setPricingEngine(ext::shared_ptr<PricingEngine>(
-             new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
+        option.setPricingEngine(ext::make_shared<FdHestonVanillaEngine>(ext::make_shared<HestonModel>(
                                            hestonProcess), 
-                                       100, 400, 3)));
+                                       100, 400, 3));
         
         Real calculated = option.NPV();
         if (std::fabs(calculated - expected) > tol) {
@@ -542,11 +524,10 @@ BOOST_AUTO_TEST_CASE(testFdmHestonBlackScholes) {
         }
         
         // Explicit scheme
-        option.setPricingEngine(ext::shared_ptr<PricingEngine>(
-             new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
+        option.setPricingEngine(ext::make_shared<FdHestonVanillaEngine>(ext::make_shared<HestonModel>(
                                            hestonProcess),
                                        4000, 400, 3, 0,
-                                       FdmSchemeDesc::ExplicitEuler())));
+                                       FdmSchemeDesc::ExplicitEuler()));
 
         calculated = option.NPV();
         if (std::fabs(calculated - expected) > tol) {
@@ -561,7 +542,7 @@ BOOST_AUTO_TEST_CASE(testFdmHestonEuropeanWithDividends) {
 
     BOOST_TEST_MESSAGE("Testing FDM with European option with dividends in Heston model...");
 
-    Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
     Handle<YieldTermStructure> rTS(flatRate(0.05, Actual365Fixed()));
     Handle<YieldTermStructure> qTS(flatRate(0.0 , Actual365Fixed()));
@@ -641,7 +622,7 @@ BOOST_AUTO_TEST_CASE(testFdmHestonConvergence) {
     const Date todaysDate(28, March, 2004); 
     Settings::instance().evaluationDate() = todaysDate;
     
-    Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(75.0)));
+    Handle<Quote> s0(ext::make_shared<SimpleQuote>(75.0));
 
     for (const auto& scheme : schemes) {
         for (auto& value : values) {
@@ -650,28 +631,25 @@ BOOST_AUTO_TEST_CASE(testFdmHestonConvergence) {
                     Handle<YieldTermStructure> rTS(flatRate(value.r, Actual365Fixed()));
                     Handle<YieldTermStructure> qTS(flatRate(value.q, Actual365Fixed()));
 
-                    ext::shared_ptr<HestonProcess> hestonProcess(new HestonProcess(
-                        rTS, qTS, s0, k, value.kappa, value.theta, value.sigma, value.rho));
+                    ext::shared_ptr<HestonProcess> hestonProcess = ext::make_shared<HestonProcess>(
+                        rTS, qTS, s0, k, value.kappa, value.theta, value.sigma, value.rho);
 
                     Date exerciseDate =
                         todaysDate + Period(static_cast<Integer>(value.T * 365), Days);
-                    ext::shared_ptr<Exercise> exercise(
-                                          new EuropeanExercise(exerciseDate));
+                    ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exerciseDate);
 
-                    ext::shared_ptr<StrikedTypePayoff> payoff(
-                        new PlainVanillaPayoff(Option::Call, value.K));
+                    ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, value.K);
 
                     VanillaOption option(payoff, exercise);
-                    ext::shared_ptr<PricingEngine> engine(new FdHestonVanillaEngine(
-                        ext::make_shared<HestonModel>(hestonProcess), j, 101, 51, 0, scheme));
+                    ext::shared_ptr<PricingEngine> engine = ext::make_shared<FdHestonVanillaEngine>(
+                        ext::make_shared<HestonModel>(hestonProcess), j, 101, 51, 0, scheme);
                     option.setPricingEngine(engine);
                     
                     const Real calculated = option.NPV();
                     
-                    ext::shared_ptr<PricingEngine> analyticEngine(
-                        new AnalyticHestonEngine(
+                    ext::shared_ptr<PricingEngine> analyticEngine = ext::make_shared<AnalyticHestonEngine>(
                             ext::make_shared<HestonModel>(
-                                hestonProcess), 144));
+                                hestonProcess), 144);
                     
                     option.setPricingEngine(analyticEngine);
                     const Real expected = option.NPV();
@@ -707,22 +685,18 @@ BOOST_AUTO_TEST_CASE(testFdmHestonIntradayPricing) {
 
     const Date maturity(17, May, 2014, 17, 30, 0);
 
-    const ext::shared_ptr<Exercise> europeanExercise(
-        new EuropeanExercise(maturity));
-    const ext::shared_ptr<StrikedTypePayoff> payoff(
-        new PlainVanillaPayoff(type, strike));
+    const ext::shared_ptr<Exercise> europeanExercise = ext::make_shared<EuropeanExercise>(maturity);
+    const ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
     VanillaOption option(payoff, europeanExercise);
 
     const Handle<Quote> s0(
-         ext::shared_ptr<Quote>(new SimpleQuote(underlying)));
+         ext::make_shared<SimpleQuote>(underlying));
     RelinkableHandle<BlackVolTermStructure> flatVolTS;
     RelinkableHandle<YieldTermStructure> flatTermStructure, flatDividendTS;
-    const ext::shared_ptr<HestonProcess> process(
-        new HestonProcess(flatTermStructure, flatDividendTS, s0,
-              v0, kappa, theta, sigma, rho));
-    const ext::shared_ptr<HestonModel> model(new HestonModel(process));
-    const ext::shared_ptr<PricingEngine> fdm(
-        new FdHestonVanillaEngine(model, 20, 100, 26, 0));
+    const ext::shared_ptr<HestonProcess> process = ext::make_shared<HestonProcess>(flatTermStructure, flatDividendTS, s0,
+              v0, kappa, theta, sigma, rho);
+    const ext::shared_ptr<HestonModel> model = ext::make_shared<HestonModel>(process);
+    const ext::shared_ptr<PricingEngine> fdm = ext::make_shared<FdHestonVanillaEngine>(model, 20, 100, 26, 0);
     option.setPricingEngine(fdm);
 
     const Real gammaExpected[] = {
@@ -733,10 +707,8 @@ BOOST_AUTO_TEST_CASE(testFdmHestonIntradayPricing) {
         const Date now(17, May, 2014, 15, i*15, 0);
         Settings::instance().evaluationDate() = now;
 
-        flatTermStructure.linkTo(ext::shared_ptr<YieldTermStructure>(
-            new FlatForward(now, riskFreeRate, dayCounter)));
-        flatDividendTS.linkTo(ext::shared_ptr<YieldTermStructure>(
-            new FlatForward(now, dividendYield, dayCounter)));
+        flatTermStructure.linkTo(ext::make_shared<FlatForward>(now, riskFreeRate, dayCounter));
+        flatDividendTS.linkTo(ext::make_shared<FlatForward>(now, dividendYield, dayCounter));
 
         const Real gammaCalculated = option.gamma();
         if (std::fabs(gammaCalculated - gammaExpected[i]) > 1e-4) {

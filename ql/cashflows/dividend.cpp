@@ -44,8 +44,7 @@ namespace QuantLib {
         items.reserve(dividendDates.size());
         for (dd = dividendDates.begin(), d = dividends.begin();
              dd != dividendDates.end(); ++dd, ++d) {
-            items.push_back(ext::shared_ptr<Dividend>(new
-                FixedDividend(*d, *dd)));
+            items.push_back(ext::make_shared<FixedDividend>(*d, *dd));
         }
         return items;
     }

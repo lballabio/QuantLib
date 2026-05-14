@@ -149,11 +149,10 @@ namespace QuantLib {
                                          innerSolvingMaxIterations,
                                          innerSolvingTolerance);
 
-            ext::shared_ptr<MarketModel> ctsmm(new
-                PseudoRootFacade(swapCovariancePseudoRoots_,
+            ext::shared_ptr<MarketModel> ctsmm = ext::make_shared<PseudoRootFacade>(swapCovariancePseudoRoots_,
                                  rateTimes,
                                  cs_->coterminalSwapRates(),
-                                 displacements));
+                                 displacements);
             const Matrix& swaptionTotCovariance =
                 ctsmm->totalCovariance(numberOfRates_-1);
 
@@ -185,11 +184,10 @@ namespace QuantLib {
         } while (iterations<maxIterations &&
                  capletRmsError_>capletVolTolerance);
 
-         ext::shared_ptr<MarketModel> ctsmm(new
-                PseudoRootFacade(swapCovariancePseudoRoots_,
+         ext::shared_ptr<MarketModel> ctsmm = ext::make_shared<PseudoRootFacade>(swapCovariancePseudoRoots_,
                                  rateTimes,
                                  cs_->coterminalSwapRates(),
-                                 displacements));
+                                 displacements);
 
          timeDependentCalibratedSwaptionVols_.clear();
          for (Size i=0; i<numberOfRates_; ++i)

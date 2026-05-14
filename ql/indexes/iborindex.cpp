@@ -84,13 +84,12 @@ namespace QuantLib {
 
     ext::shared_ptr<IborIndex> OvernightIndex::clone(
                                const Handle<YieldTermStructure>& h) const {
-        return ext::shared_ptr<IborIndex>(
-                                        new OvernightIndex(familyName(),
+        return ext::make_shared<OvernightIndex>(familyName(),
                                                            fixingDays(),
                                                            currency(),
                                                            fixingCalendar(),
                                                            dayCounter(),
-                                                           h));
+                                                           h);
     }
 
 }

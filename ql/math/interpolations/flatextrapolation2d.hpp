@@ -36,8 +36,7 @@ namespace QuantLib {
     class FlatExtrapolator2D : public Interpolation2D {
       public:
         FlatExtrapolator2D(const ext::shared_ptr<Interpolation2D>& decoratedInterpolation) {
-            impl_ = ext::shared_ptr<Interpolation2D::Impl>(
-                  new FlatExtrapolator2DImpl(decoratedInterpolation));
+            impl_ = ext::make_shared<FlatExtrapolator2DImpl>(decoratedInterpolation);
         }
       protected:
        class FlatExtrapolator2DImpl: public Interpolation2D::Impl{

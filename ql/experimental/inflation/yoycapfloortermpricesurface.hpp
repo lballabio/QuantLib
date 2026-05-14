@@ -529,8 +529,7 @@ namespace QuantLib {
         std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > YYhelpers;
         for (Size i=1; i<=nYears; i++) {
             Date maturity = nominalTS_->referenceDate() + Period(i,Years);
-            Handle<Quote> quote(ext::shared_ptr<Quote>(
-                               new SimpleQuote( atmYoYSwapRate( maturity ) )));//!
+            Handle<Quote> quote(ext::make_shared<SimpleQuote>( atmYoYSwapRate( maturity ) ));//!
             auto anInstrument =
                 ext::make_shared<YearOnYearInflationSwapHelper>(
                                 quote, observationLag(), maturity,

@@ -63,7 +63,7 @@ struct CommonVars {
     CommonVars()
     : nominals(1,100) {
         frequency = Semiannual;
-        index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        index = ext::make_shared<Euribor6M>(termStructure);
         calendar = index->fixingCalendar();
         convention = ModifiedFollowing;
         Date today = Settings::instance().evaluationDate();
@@ -88,15 +88,13 @@ struct CommonVars {
     }
 
     ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) const {
-        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
-        return ext::shared_ptr<PricingEngine>(
-                                new BlackCapFloorEngine(termStructure, vol));
+        Handle<Quote> vol(ext::make_shared<SimpleQuote>(volatility));
+        return ext::make_shared<BlackCapFloorEngine>(termStructure, vol);
     }
 
     ext::shared_ptr<PricingEngine> makeBachelierEngine(Volatility volatility) const {
-        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
-        return ext::shared_ptr<PricingEngine>(
-                                new BachelierCapFloorEngine(termStructure, vol));
+        Handle<Quote> vol(ext::make_shared<SimpleQuote>(volatility));
+        return ext::make_shared<BachelierCapFloorEngine>(termStructure, vol);
     }
 
     ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
@@ -107,12 +105,10 @@ struct CommonVars {
         ext::shared_ptr<CapFloor> result;
         switch (type) {
           case CapFloor::Cap:
-            result = ext::shared_ptr<CapFloor>(
-                                  new Cap(leg, std::vector<Rate>(1, strike)));
+            result = ext::make_shared<Cap>(leg, std::vector<Rate>(1, strike));
             break;
           case CapFloor::Floor:
-            result = ext::shared_ptr<CapFloor>(
-                                new Floor(leg, std::vector<Rate>(1, strike)));
+            result = ext::make_shared<Floor>(leg, std::vector<Rate>(1, strike));
             break;
           default:
             QL_FAIL("unknown cap/floor type");
@@ -379,7 +375,7 @@ BOOST_AUTO_TEST_CASE(testParity) {
                                  vars.index->dayCounter(), schedule, vars.index, 0.0,
                                  vars.index->dayCounter());
                 swap.setPricingEngine(
-                    ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(vars.termStructure)));
+                    ext::make_shared<DiscountingSwapEngine>(vars.termStructure));
                 if (std::fabs((cap->NPV() - floor->NPV()) - swap.NPV()) > 1.0e-10) {
                     BOOST_FAIL("put/call parity violated:\n"
                                << "    length:      " << length << " years\n"
@@ -435,8 +431,7 @@ BOOST_AUTO_TEST_CASE(testATMRate) {
                                  vars.index->dayCounter(),
                                  schedule, vars.index, 0.0,
                                  vars.index->dayCounter());
-                swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                              new DiscountingSwapEngine(vars.termStructure)));
+                swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(vars.termStructure));
                 Real swapNPV = swap.NPV();
                 if (!checkAbsError(swapNPV, 0, 1.0e-10))
                     BOOST_FAIL("the NPV of a Swap struck at ATM rate "
@@ -659,11 +654,11 @@ BOOST_AUTO_TEST_CASE(testOptionLetsDelta) {
 
     // Define spreaded curve with eps as spread used for FD sensitivities
     Real eps = 1.0e-6;
-    ext::shared_ptr<SimpleQuote> spread(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
+    ext::shared_ptr<SimpleQuote> spread = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<YieldTermStructure> spreadCurve = ext::make_shared<ZeroSpreadedTermStructure>(
                                                             baseCurveHandle,
                                                             Handle<Quote>(spread),
-                                                            Continuous));
+                                                            Continuous);
     vars.termStructure.linkTo(spreadCurve);
     Date startDate = vars.termStructure->referenceDate();
     Leg leg = vars.makeLeg(startDate,20);  
@@ -778,11 +773,11 @@ BOOST_AUTO_TEST_CASE(testBachelierOptionLetsDelta) {
 
     // Define spreaded curve with eps as spread used for FD sensitivities
     Real eps = 1.0e-6;
-    ext::shared_ptr<SimpleQuote> spread(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
+    ext::shared_ptr<SimpleQuote> spread = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<YieldTermStructure> spreadCurve = ext::make_shared<ZeroSpreadedTermStructure>(
                                                             baseCurveHandle,
                                                             Handle<Quote>(spread),
-                                                            Continuous));
+                                                            Continuous);
     vars.termStructure.linkTo(spreadCurve);
     Date startDate = vars.termStructure->referenceDate();
     Leg leg = vars.makeLeg(startDate,20);  

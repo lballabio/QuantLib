@@ -88,52 +88,44 @@ makeOption(const ext::shared_ptr<StrikedTypePayoff>& payoff,
     ext::shared_ptr<PricingEngine> engine;
     switch (engineType) {
       case Analytic:
-        engine = ext::shared_ptr<PricingEngine>(
-                                    new AnalyticEuropeanEngine(stochProcess));
+        engine = ext::make_shared<AnalyticEuropeanEngine>(stochProcess);
         break;
       case JR:
-        engine = ext::shared_ptr<PricingEngine>(
-                new BinomialVanillaEngine<ExtendedJarrowRudd>(stochProcess,
-                                                              binomialSteps));
+        engine = ext::make_shared<BinomialVanillaEngine<ExtendedJarrowRudd>>(stochProcess,
+                                                              binomialSteps);
         break;
       case CRR:
-        engine = ext::shared_ptr<PricingEngine>(
-                new BinomialVanillaEngine<ExtendedCoxRossRubinstein>(
+        engine = ext::make_shared<BinomialVanillaEngine<ExtendedCoxRossRubinstein>>(
                                                               stochProcess,
-                                                              binomialSteps));
+                                                              binomialSteps);
         break;
       case EQP:
-        engine = ext::shared_ptr<PricingEngine>(
-                new BinomialVanillaEngine<ExtendedAdditiveEQPBinomialTree>(
+        engine = ext::make_shared<BinomialVanillaEngine<ExtendedAdditiveEQPBinomialTree>>(
                                                               stochProcess,
-                                                              binomialSteps));
+                                                              binomialSteps);
         break;
       case TGEO:
-        engine = ext::shared_ptr<PricingEngine>(
-                new BinomialVanillaEngine<ExtendedTrigeorgis>(stochProcess,
-                                                              binomialSteps));
+        engine = ext::make_shared<BinomialVanillaEngine<ExtendedTrigeorgis>>(stochProcess,
+                                                              binomialSteps);
         break;
       case TIAN:
-        engine = ext::shared_ptr<PricingEngine>(
-                new BinomialVanillaEngine<ExtendedTian>(stochProcess,
-                                                        binomialSteps));
+        engine = ext::make_shared<BinomialVanillaEngine<ExtendedTian>>(stochProcess,
+                                                        binomialSteps);
         break;
       case LR:
-        engine = ext::shared_ptr<PricingEngine>(
-                      new BinomialVanillaEngine<ExtendedLeisenReimer>(
+        engine = ext::make_shared<BinomialVanillaEngine<ExtendedLeisenReimer>>(
                                                               stochProcess,
-                                                              binomialSteps));
+                                                              binomialSteps);
         break;
       case JOSHI:
-        engine = ext::shared_ptr<PricingEngine>(
-                new BinomialVanillaEngine<ExtendedJoshi4>(stochProcess,
-                                                          binomialSteps));
+        engine = ext::make_shared<BinomialVanillaEngine<ExtendedJoshi4>>(stochProcess,
+                                                          binomialSteps);
         break;
       default:
         QL_FAIL("unknown engine type");
     }
 
-    ext::shared_ptr<VanillaOption> option(new EuropeanOption(payoff, exercise));
+    ext::shared_ptr<VanillaOption> option = ext::make_shared<EuropeanOption>(payoff, exercise);
     option->setPricingEngine(engine);
     return option;
 }
@@ -158,20 +150,20 @@ void testEngineConsistency(EngineType engine,
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol,dc);
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
 
     for (auto& type : types) {
         for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * 360;
-                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+                ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
+                ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
                 // reference option
                 ext::shared_ptr<VanillaOption> refOption =
                     makeOption(payoff, exercise, spot, qTS, rTS, volTS, Analytic, Null<Size>());

@@ -144,12 +144,10 @@ namespace QuantLib {
                 this->process_);
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        return ext::shared_ptr<
-                       typename MCEuropeanEngine<RNG,S>::path_pricer_type>(
-          new EuropeanPathPricer(
+        return ext::make_shared<EuropeanPathPricer>(
               payoff->optionType(),
               payoff->strike(),
-              process->riskFreeRate()->discount(this->timeGrid().back())));
+              process->riskFreeRate()->discount(this->timeGrid().back()));
     }
 
 

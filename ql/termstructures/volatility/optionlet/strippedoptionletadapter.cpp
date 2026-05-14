@@ -73,9 +73,8 @@ namespace QuantLib {
 
         const std::vector<Time>& optionletTimes =
                                     optionletStripper_->optionletFixingTimes();
-        ext::shared_ptr<LinearInterpolation> timeInterpolator(new
-            LinearInterpolation(optionletTimes.begin(), optionletTimes.end(),
-                                vol.begin()));
+        ext::shared_ptr<LinearInterpolation> timeInterpolator = ext::make_shared<LinearInterpolation>(optionletTimes.begin(), optionletTimes.end(),
+                                vol.begin());
         return (*timeInterpolator)(length, true);
     }
 

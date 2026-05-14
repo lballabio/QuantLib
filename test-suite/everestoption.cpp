@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(testCached) {
 
     DayCounter dc = Actual360();
     Date exerciseDate = today+360;
-    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exerciseDate);
 
     Real notional = 1.0;
     Rate guarantee = 0.0;
@@ -49,32 +49,27 @@ BOOST_AUTO_TEST_CASE(testCached) {
     Handle<YieldTermStructure> riskFreeRate(flatRate(today, 0.05, dc));
 
     std::vector<ext::shared_ptr<StochasticProcess1D> > processes(4);
-    Handle<Quote> dummyUnderlying(ext::shared_ptr<Quote>(
-                                                       new SimpleQuote(1.0)));
-    processes[0] = ext::shared_ptr<StochasticProcess1D>(
-        new BlackScholesMertonProcess(
+    Handle<Quote> dummyUnderlying(ext::make_shared<SimpleQuote>(1.0));
+    processes[0] = ext::make_shared<BlackScholesMertonProcess>(
                     dummyUnderlying,
                     Handle<YieldTermStructure>(flatRate(today, 0.01, dc)),
                     riskFreeRate,
-                    Handle<BlackVolTermStructure>(flatVol(today, 0.30, dc))));
-    processes[1] = ext::shared_ptr<StochasticProcess1D>(
-        new BlackScholesMertonProcess(
+                    Handle<BlackVolTermStructure>(flatVol(today, 0.30, dc)));
+    processes[1] = ext::make_shared<BlackScholesMertonProcess>(
                     dummyUnderlying,
                     Handle<YieldTermStructure>(flatRate(today, 0.05, dc)),
                     riskFreeRate,
-                    Handle<BlackVolTermStructure>(flatVol(today, 0.35, dc))));
-    processes[2] = ext::shared_ptr<StochasticProcess1D>(
-        new BlackScholesMertonProcess(
+                    Handle<BlackVolTermStructure>(flatVol(today, 0.35, dc)));
+    processes[2] = ext::make_shared<BlackScholesMertonProcess>(
                     dummyUnderlying,
                     Handle<YieldTermStructure>(flatRate(today, 0.04, dc)),
                     riskFreeRate,
-                    Handle<BlackVolTermStructure>(flatVol(today, 0.25, dc))));
-    processes[3] = ext::shared_ptr<StochasticProcess1D>(
-        new BlackScholesMertonProcess(
+                    Handle<BlackVolTermStructure>(flatVol(today, 0.25, dc)));
+    processes[3] = ext::make_shared<BlackScholesMertonProcess>(
                     dummyUnderlying,
                     Handle<YieldTermStructure>(flatRate(today, 0.03, dc)),
                     riskFreeRate,
-                    Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc))));
+                    Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc)));
 
     Matrix correlation(4,4);
     correlation[0][0] = 1.00;
@@ -100,8 +95,7 @@ BOOST_AUTO_TEST_CASE(testCached) {
     Size fixedSamples = 1023;
     Real minimumTol = 1.0e-2;
 
-    ext::shared_ptr<StochasticProcessArray> process(
-                          new StochasticProcessArray(processes, correlation));
+    ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(processes, correlation);
 
     option.setPricingEngine(MakeMCEverestEngine<PseudoRandom>(process)
                             .withStepsPerYear(1)

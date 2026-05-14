@@ -1027,8 +1027,7 @@ namespace QuantLib {
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
-            interpolators_.push_back(ext::shared_ptr<Interpolation2D>(
-                new FlatExtrapolator2D(interpolation)));
+            interpolators_.push_back(ext::make_shared<FlatExtrapolator2D>(interpolation));
             interpolators_[k]->enableExtrapolation();
         }
         setPoints(points);
@@ -1053,8 +1052,7 @@ namespace QuantLib {
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
-            interpolators_.push_back(ext::shared_ptr<Interpolation2D>(
-                new FlatExtrapolator2D(interpolation)));
+            interpolators_.push_back(ext::make_shared<FlatExtrapolator2D>(interpolation));
             interpolators_[k]->enableExtrapolation();
         }
         setPoints(o.points_);
@@ -1084,8 +1082,7 @@ namespace QuantLib {
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
-            interpolators_.push_back(ext::shared_ptr<Interpolation2D>(
-                new FlatExtrapolator2D(interpolation)));
+            interpolators_.push_back(ext::make_shared<FlatExtrapolator2D>(interpolation));
             interpolators_[k]->enableExtrapolation();
         }
         setPoints(o.points_);
@@ -1236,8 +1233,7 @@ namespace QuantLib {
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
-            interpolators_[k] = ext::shared_ptr<Interpolation2D>(
-                new FlatExtrapolator2D(interpolation));
+            interpolators_[k] = ext::make_shared<FlatExtrapolator2D>(interpolation);
             interpolators_[k]->enableExtrapolation();
         }
     }

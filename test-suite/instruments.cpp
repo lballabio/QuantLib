@@ -37,9 +37,9 @@ BOOST_AUTO_TEST_CASE(testObservable) {
 
     BOOST_TEST_MESSAGE("Testing observability of instruments...");
 
-    ext::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> me1 = ext::make_shared<SimpleQuote>(0.0);
     RelinkableHandle<Quote> h(me1);
-    ext::shared_ptr<Instrument> s(new Stock(h));
+    ext::shared_ptr<Instrument> s = ext::make_shared<Stock>(h);
 
     Flag f;
     f.registerWith(s);
@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(testObservable) {
 
     s->NPV();
     f.lower();
-    ext::shared_ptr<SimpleQuote> me2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> me2 = ext::make_shared<SimpleQuote>(0.0);
     h.linkTo(me2);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of instrument change");
@@ -75,23 +75,21 @@ BOOST_AUTO_TEST_CASE(testCompositeWhenShiftingDates) {
     Date today = Date::todaysDate();
     DayCounter dc = Actual360();
 
-    ext::shared_ptr<StrikedTypePayoff> payoff(
-        new PlainVanillaPayoff(Option::Call, 100.0));
-    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(today+30));
+    ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(today+30);
 
-    ext::shared_ptr<Instrument> option(new EuropeanOption(payoff, exercise));
+    ext::shared_ptr<Instrument> option = ext::make_shared<EuropeanOption>(payoff, exercise);
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(100.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(0.0, dc);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(0.01, dc);
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(0.1, dc);
 
-    ext::shared_ptr<BlackScholesMertonProcess> process(
-        new BlackScholesMertonProcess(Handle<Quote>(spot),
+    ext::shared_ptr<BlackScholesMertonProcess> process = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
-    ext::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine(process));
+                                      Handle<BlackVolTermStructure>(volTS));
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<AnalyticEuropeanEngine>(process);
 
     option->setPricingEngine(engine);
 

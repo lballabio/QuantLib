@@ -90,15 +90,14 @@ struct CommonVars {
 
 
         atmVol = Handle<SwaptionVolatilityStructure>(
-                ext::shared_ptr<SwaptionVolatilityStructure>(new
-                    SwaptionVolatilityMatrix(calendar,
+                ext::make_shared<SwaptionVolatilityMatrix>(calendar,
                                              Following,
                                              atmOptionTenors,
                                              atmSwapTenors,
                                              m,
                                              Actual365Fixed(),
                                              false,
-                                             QuantLib::VolatilityType::Normal)));
+                                             QuantLib::VolatilityType::Normal));
             
 
         // Vol cubes
@@ -170,20 +169,17 @@ struct CommonVars {
         for (Size i=0; i<nRows; ++i){
             volSpreads[i] = std::vector<Handle<Quote> >(nCols);
             for (Size j=0; j<nCols; ++j) {
-                volSpreads[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(
-                                    new SimpleQuote(volSpreadsMatrix[i][j])));
+                volSpreads[i][j] = Handle<Quote>(ext::make_shared<SimpleQuote>(volSpreadsMatrix[i][j]));
             }
         }
 
-        iborIndex = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        iborIndex = ext::make_shared<Euribor6M>(termStructure);
         /*
-          ext::shared_ptr<SwapIndex> swapIndexBase(new
-                EuriborSwapIsdaFixA(10*Years, termStructure,termStructure));
-          ext::shared_ptr<SwapIndex> shortSwapIndexBase(new
-                EuriborSwapIsdaFixA(2*Years, termStructure,termStructure));
+          ext::shared_ptr<SwapIndex> swapIndexBase = ext::make_shared<EuriborSwapIsdaFixA>(10*Years, termStructure,termStructure);
+          ext::shared_ptr<SwapIndex> shortSwapIndexBase = ext::make_shared<EuriborSwapIsdaFixA>(2*Years, termStructure,termStructure);
         */
 
-        ext::shared_ptr<SwapIndex> swapIndexBase(new SwapIndex("swapIndexBase",
+        ext::shared_ptr<SwapIndex> swapIndexBase = ext::make_shared<SwapIndex>("swapIndexBase",
                                                        2*Years,
                                                        iborIndex->fixingDays(),
                                                        iborIndex->currency(),
@@ -192,8 +188,8 @@ struct CommonVars {
                                                        ModifiedFollowing,
                                                        Thirty360(Thirty360::EurobondBasis),//EUR
                                                        iborIndex,
-                                                       termStructure));
-        ext::shared_ptr<SwapIndex> shortSwapIndexBase(new SwapIndex("shortSwapIndexBase",
+                                                       termStructure);
+        ext::shared_ptr<SwapIndex> shortSwapIndexBase = ext::make_shared<SwapIndex>("shortSwapIndexBase",
                                                        1*Years,
                                                        iborIndex->fixingDays(),
                                                        iborIndex->currency(),
@@ -202,7 +198,7 @@ struct CommonVars {
                                                        ModifiedFollowing,
                                                        Thirty360(Thirty360::EurobondBasis),//EUR
                                                        iborIndex,
-                                                       termStructure));
+                                                       termStructure);
 
         bool vegaWeightedSmileFit = false;
 
@@ -221,13 +217,13 @@ struct CommonVars {
         for (Size i=0; i<nRows; ++i) {
             guess[i] = std::vector<Handle<Quote> >(4);
             guess[i][0] =
-                Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.01)));
+                Handle<Quote>(ext::make_shared<SimpleQuote>(0.01));
             guess[i][1] =
-                Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
+                Handle<Quote>(ext::make_shared<SimpleQuote>(0.0));
             guess[i][2] =
-                Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.3)));
+                Handle<Quote>(ext::make_shared<SimpleQuote>(0.3));
             guess[i][3] =
-                Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
+                Handle<Quote>(ext::make_shared<SimpleQuote>(0.5));
         }
         std::vector<bool> isParameterFixed(4, false);
         isParameterFixed[1] = true;
@@ -260,12 +256,10 @@ struct CommonVars {
         numericalPricers.clear();
         analyticPricers.clear();
         for (auto& yieldCurveModel : yieldCurveModels) {
-            numericalPricers.push_back(ext::shared_ptr<CmsCouponPricer>(
-                    new NumericHaganPricer(atmVol, yieldCurveModel, zeroMeanRev)));
+            numericalPricers.push_back(ext::make_shared<NumericHaganPricer>(atmVol, yieldCurveModel, zeroMeanRev));
 
 
-            analyticPricers.push_back(ext::shared_ptr<CmsCouponPricer>(
-                    new AnalyticHaganPricer(atmVol, yieldCurveModel, zeroMeanRev)));
+            analyticPricers.push_back(ext::make_shared<AnalyticHaganPricer>(atmVol, yieldCurveModel, zeroMeanRev));
         }
     }
 };
@@ -277,7 +271,7 @@ BOOST_AUTO_TEST_CASE(testFairRate)  {
 
     CommonVars vars;
 
-    ext::shared_ptr<SwapIndex> swapIndex(new SwapIndex("CMS10Y",
+    ext::shared_ptr<SwapIndex> swapIndex = ext::make_shared<SwapIndex>("CMS10Y",
                                                        10*Years,
                                                        vars.iborIndex->fixingDays(),
                                                        vars.iborIndex->currency(),
@@ -286,7 +280,7 @@ BOOST_AUTO_TEST_CASE(testFairRate)  {
                                                        ModifiedFollowing,
                                                        Thirty360(Thirty360::EurobondBasis),//EUR
                                                        vars.iborIndex,
-                                                       vars.termStructure));
+                                                       vars.termStructure);
     // FIXME
     //ext::shared_ptr<SwapIndex> swapIndex(new
     //    EuriborSwapIsdaFixA(10*Years, vars.iborIndex->termStructure()));
@@ -340,7 +334,7 @@ BOOST_AUTO_TEST_CASE(testCmsSwap) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SwapIndex> swapIndex(new SwapIndex("CMS10Y",
+    ext::shared_ptr<SwapIndex> swapIndex = ext::make_shared<SwapIndex>("CMS10Y",
                                                        10*Years,
                                                        vars.iborIndex->fixingDays(),
                                                        vars.iborIndex->currency(),
@@ -349,7 +343,7 @@ BOOST_AUTO_TEST_CASE(testCmsSwap) {
                                                        ModifiedFollowing,
                                                        Thirty360(Thirty360::EurobondBasis),//EUR
                                                        vars.iborIndex,
-                                                       vars.termStructure));
+                                                       vars.termStructure);
     // FIXME
     //ext::shared_ptr<SwapIndex> swapIndex(new
     //    EuriborSwapIsdaFixA(10*Years, vars.iborIndex->termStructure()));
@@ -405,7 +399,7 @@ BOOST_AUTO_TEST_CASE(testParity) {
                            
   
 
-    ext::shared_ptr<SwapIndex> swapIndex(new SwapIndex("CMS10Y",
+    ext::shared_ptr<SwapIndex> swapIndex = ext::make_shared<SwapIndex>("CMS10Y",
                                                        10*Years,
                                                        vars.iborIndex->fixingDays(),
                                                        vars.iborIndex->currency(),
@@ -414,7 +408,7 @@ BOOST_AUTO_TEST_CASE(testParity) {
                                                        ModifiedFollowing,
                                                        Thirty360(Thirty360::EurobondBasis),//EUR
                                                        vars.iborIndex,
-                                                       vars.termStructure));
+                                                       vars.termStructure);
 
 
 

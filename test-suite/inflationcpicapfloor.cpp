@@ -67,8 +67,7 @@ std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
     std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
     for (Size i=0; i<N; i++) {
         Date maturity = iiData[i].date;
-        Handle<Quote> quote(ext::shared_ptr<Quote>(
-                                new SimpleQuote(iiData[i].rate/100.0)));
+        Handle<Quote> quote(ext::make_shared<SimpleQuote>(iiData[i].rate/100.0));
         auto anInstrument = ext::make_shared<U>(quote, observationLag, maturity,
                                                 calendar, bdc, dc, ii, CPI::Flat);
         instruments.push_back(anInstrument);
@@ -372,21 +371,22 @@ BOOST_AUTO_TEST_CASE(cpicapfloorpricer) {
     
     CommonVars common;
     Real nominal = 1.0;
-    ext::shared_ptr<CPICapFloorTermPriceSurface> cpiCFpriceSurf(new InterpolatedCPICapFloorTermPriceSurface
-                                                    <Bilinear>(nominal,
-                                                               common.baseZeroRate,
-                                                               common.observationLag,
-                                                               common.calendar,
-                                                               common.convention,
-                                                               common.dcZCIIS,
-                                                               common.ii,
-                                                               CPI::Flat,
-                                                               common.nominalUK,
-                                                               common.cStrikesUK,
-                                                               common.fStrikesUK,
-                                                               common.cfMaturitiesUK,
-                                                               *(common.cPriceUK),
-                                                               *(common.fPriceUK)));
+    ext::shared_ptr<CPICapFloorTermPriceSurface> cpiCFpriceSurf =
+        ext::make_shared<InterpolatedCPICapFloorTermPriceSurface<Bilinear> >(
+            nominal,
+            common.baseZeroRate,
+            common.observationLag,
+            common.calendar,
+            common.convention,
+            common.dcZCIIS,
+            common.ii,
+            CPI::Flat,
+            common.nominalUK,
+            common.cStrikesUK,
+            common.fStrikesUK,
+            common.cfMaturitiesUK,
+            *(common.cPriceUK),
+            *(common.fPriceUK));
 
     common.cpiCFsurfUK = cpiCFpriceSurf;
 
@@ -415,7 +415,8 @@ BOOST_AUTO_TEST_CASE(cpicapfloorpricer) {
                      observationInterpolation);
 
     Handle<CPICapFloorTermPriceSurface> cpiCFsurfUKh(common.cpiCFsurfUK);
-    ext::shared_ptr<PricingEngine>engine(new InterpolatingCPICapFloorEngine(cpiCFsurfUKh));
+    ext::shared_ptr<PricingEngine>engine =
+        ext::make_shared<InterpolatingCPICapFloorEngine>(cpiCFsurfUKh);
 
     aCap.setPricingEngine(engine);
 

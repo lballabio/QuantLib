@@ -143,14 +143,12 @@ namespace QuantLib {
             }
         }
 
-        return ext::shared_ptr<typename
-            MCDiscreteArithmeticASEngine<RNG,S>::path_pricer_type>(
-                new ArithmeticASOPathPricer(
+        return ext::make_shared<ArithmeticASOPathPricer>(
                     payoff->optionType(),
                     process->riskFreeRate()->discount(exercise->lastDate()),
                     this->arguments_.runningAccumulator,
                     this->arguments_.pastFixings,
-                    fixingCount));
+                    fixingCount);
     }
 
 

@@ -254,8 +254,7 @@ namespace QuantLib {
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return ext::shared_ptr<PricingEngine>(new
-            MCAmericanPathEngine<RNG>(process_,
+        return ext::make_shared<MCAmericanPathEngine<RNG>>(process_,
                                         steps_,
                                         stepsPerYear_,
                                         brownianBridge_,
@@ -265,7 +264,7 @@ namespace QuantLib {
                                         tolerance_,
                                         maxSamples_,
                                         seed_,
-                                        calibrationSamples_));
+                                        calibrationSamples_);
     }
 
 }

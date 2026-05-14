@@ -154,19 +154,16 @@ ext::shared_ptr<OptimizationMethod> makeOptimizationMethod(
                                                            Real levenbergMarquardtGtol) {
     switch (optimizationMethodType) {
       case simplex:
-        return ext::shared_ptr<OptimizationMethod>(
-                new Simplex(simplexLambda));
+        return ext::make_shared<Simplex>(simplexLambda);
       case levenbergMarquardt:
-        return ext::shared_ptr<OptimizationMethod>(
-                new LevenbergMarquardt(levenbergMarquardtEpsfcn,
+        return ext::make_shared<LevenbergMarquardt>(levenbergMarquardtEpsfcn,
                                        levenbergMarquardtXtol,
-                                       levenbergMarquardtGtol));
+                                       levenbergMarquardtGtol);
       case levenbergMarquardt2:
-        return ext::shared_ptr<OptimizationMethod>(
-                new LevenbergMarquardt(levenbergMarquardtEpsfcn,
+        return ext::make_shared<LevenbergMarquardt>(levenbergMarquardtEpsfcn,
                                        levenbergMarquardtXtol,
                                        levenbergMarquardtGtol,
-                                       true));
+                                       true);
       case conjugateGradient:
         return ext::make_shared<ConjugateGradient>();
       case steepestDescent:
@@ -174,11 +171,11 @@ ext::shared_ptr<OptimizationMethod> makeOptimizationMethod(
       case bfgs:
         return ext::make_shared<BFGS>();
       case conjugateGradient_goldstein:
-        return ext::shared_ptr<OptimizationMethod>(new ConjugateGradient(ext::make_shared<GoldsteinLineSearch>()));
+        return ext::make_shared<ConjugateGradient>(ext::make_shared<GoldsteinLineSearch>());
       case steepestDescent_goldstein:
-        return ext::shared_ptr<OptimizationMethod>(new SteepestDescent(ext::make_shared<GoldsteinLineSearch>()));
+        return ext::make_shared<SteepestDescent>(ext::make_shared<GoldsteinLineSearch>());
       case bfgs_goldstein:
-        return ext::shared_ptr<OptimizationMethod>(new BFGS(ext::make_shared<GoldsteinLineSearch>()));
+        return ext::make_shared<BFGS>(ext::make_shared<GoldsteinLineSearch>());
       default:
         QL_FAIL("unknown OptimizationMethod type");
     }
@@ -476,12 +473,12 @@ BOOST_AUTO_TEST_CASE(testDifferentialEvolution) {
         deOptim2
     };
 
-    std::vector<ext::shared_ptr<CostFunction> > costFunctions = {
-        ext::shared_ptr<CostFunction>(new FirstDeJong),
-        ext::shared_ptr<CostFunction>(new SecondDeJong),
-        ext::shared_ptr<CostFunction>(new ModThirdDeJong),
-        ext::shared_ptr<CostFunction>(new ModFourthDeJong),
-        ext::shared_ptr<CostFunction>(new Griewangk)
+    std::vector<ext::shared_ptr<CostFunction>> costFunctions = {
+        ext::make_shared<FirstDeJong>(),
+        ext::make_shared<SecondDeJong>(),
+        ext::make_shared<ModThirdDeJong>(),
+        ext::make_shared<ModFourthDeJong>(),
+        ext::make_shared<Griewangk>()
     };
 
     std::vector<BoundaryConstraint> constraints = {

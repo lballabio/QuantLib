@@ -222,23 +222,20 @@ BOOST_AUTO_TEST_CASE(testFunction) {
     EvolutionDescription evolution(rateTimes_);
     // Size numberOfSteps = evolution.numberOfSteps();
 
-    ext::shared_ptr<PiecewiseConstantCorrelation> fwdCorr(new
-        ExponentialForwardCorrelation(rateTimes_,
+    ext::shared_ptr<PiecewiseConstantCorrelation> fwdCorr = ext::make_shared<ExponentialForwardCorrelation>(rateTimes_,
                                       longTermCorrelation_,
-                                      beta_));
+                                      beta_);
 
-    ext::shared_ptr<LMMCurveState> cs(new LMMCurveState(rateTimes_));
+    ext::shared_ptr<LMMCurveState> cs = ext::make_shared<LMMCurveState>(rateTimes_);
     cs->setOnForwardRates(todaysForwards_);
 
-    ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
-        CotSwapFromFwdCorrelation(fwdCorr, *cs, displacement_));
+    ext::shared_ptr<PiecewiseConstantCorrelation> corr = ext::make_shared<CotSwapFromFwdCorrelation>(fwdCorr, *cs, displacement_);
 
     std::vector<ext::shared_ptr<PiecewiseConstantVariance> >
                                     swapVariances(numberOfRates);
     for (Size i=0; i<numberOfRates; ++i) {
-        swapVariances[i] = ext::shared_ptr<PiecewiseConstantVariance>(new
-            PiecewiseConstantAbcdVariance(a_, b_, c_, d_,
-                                          i, rateTimes_));
+        swapVariances[i] = ext::make_shared<PiecewiseConstantAbcdVariance>(a_, b_, c_, d_,
+                                          i, rateTimes_);
     }
 
     // create calibrator
@@ -280,11 +277,10 @@ BOOST_AUTO_TEST_CASE(testFunction) {
         BOOST_ERROR("calibration failed");
 
     const std::vector<Matrix>& swapPseudoRoots = calibrator.swapPseudoRoots();
-    ext::shared_ptr<MarketModel> smm(new
-        PseudoRootFacade(swapPseudoRoots,
+    ext::shared_ptr<MarketModel> smm = ext::make_shared<PseudoRootFacade>(swapPseudoRoots,
                          rateTimes_,
                          cs->coterminalSwapRates(),
-                         std::vector<Spread>(numberOfRates, displacement_)));
+                         std::vector<Spread>(numberOfRates, displacement_));
     CotSwapToFwdAdapter flmm(smm);
     Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
 

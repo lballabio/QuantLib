@@ -231,10 +231,9 @@ namespace QuantLib {
         Real targetNPV,
         Real accuracy) const
     {
-        ext::shared_ptr<SimpleQuote> correl(new SimpleQuote(0.0));
+        ext::shared_ptr<SimpleQuote> correl = ext::make_shared<SimpleQuote>(0.0);
 
-        ext::shared_ptr<GaussianLHPLossModel> lhp(new
-            GaussianLHPLossModel(Handle<Quote>(correl), recoveries));
+        ext::shared_ptr<GaussianLHPLossModel> lhp = ext::make_shared<GaussianLHPLossModel>(Handle<Quote>(correl), recoveries);
 
         // lock
         basket_->setLossModel(lhp);

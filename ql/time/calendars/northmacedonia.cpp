@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     NorthMacedonia::NorthMacedonia(Market) {
-        static ext::shared_ptr<Calendar::Impl> impl(new NorthMacedonia::MseImpl);
+        static ext::shared_ptr<Calendar::Impl> impl = ext::make_shared<NorthMacedonia::MseImpl>();
         impl_ = impl;
     }
 

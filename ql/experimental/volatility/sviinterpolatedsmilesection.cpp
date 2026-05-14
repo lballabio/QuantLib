@@ -81,8 +81,8 @@ namespace QuantLib {
         ext::shared_ptr<OptimizationMethod> method,
         const DayCounter& dc)
     : SmileSection(optionDate, dc),
-      forward_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(forward)))),
-      atmVolatility_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(atmVolatility)))),
+      forward_(Handle<Quote>(ext::make_shared<SimpleQuote>(forward))),
+      atmVolatility_(Handle<Quote>(ext::make_shared<SimpleQuote>(atmVolatility))),
       volHandles_(volHandles.size()), strikes_(strikes), actualStrikes_(strikes),
       hasFloatingStrikes_(hasFloatingStrikes), vols_(volHandles.size()), a_(a), b_(b),
       sigma_(sigma), rho_(rho), m_(m), isAFixed_(isAFixed), isBFixed_(isBFixed),
@@ -91,15 +91,15 @@ namespace QuantLib {
       method_(std::move(method)) {
 
         for (Size i = 0; i < volHandles_.size(); ++i)
-            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(volHandles[i])));
+            volHandles_[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(volHandles[i]));
     }
 
 void SviInterpolatedSmileSection::createInterpolation() const {
-    ext::shared_ptr<SviInterpolation> tmp(new SviInterpolation(
+    ext::shared_ptr<SviInterpolation> tmp = ext::make_shared<SviInterpolation>(
         actualStrikes_.begin(), actualStrikes_.end(), vols_.begin(),
         exerciseTime(), forwardValue_, a_, b_, sigma_, rho_, m_, isAFixed_,
         isBFixed_, isSigmaFixed_, isRhoFixed_, isMFixed_, vegaWeighted_,
-        endCriteria_, method_));
+        endCriteria_, method_);
     swap(tmp, sviInterpolation_);
 }
 

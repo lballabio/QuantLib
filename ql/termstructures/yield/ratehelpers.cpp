@@ -675,7 +675,7 @@ namespace QuantLib {
         Date maturity = earliestDate_ + tenor_;
 
         // dummy BMA index with curve/swap arguments
-        ext::shared_ptr<BMAIndex> clonedIndex(new BMAIndex(termStructureHandle_));
+        ext::shared_ptr<BMAIndex> clonedIndex = ext::make_shared<BMAIndex>(termStructureHandle_);
 
         Schedule bmaSchedule =
             MakeSchedule().from(earliestDate_).to(maturity)
@@ -701,8 +701,7 @@ namespace QuantLib {
                                           bmaSchedule,
                                           clonedIndex,
                                           bmaDayCount_);
-        swap_->setPricingEngine(ext::shared_ptr<PricingEngine>(new
-            DiscountingSwapEngine(iborIndex_->forwardingTermStructure())));
+        swap_->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(iborIndex_->forwardingTermStructure()));
 
         Date d = calendar_.adjust(swap_->maturityDate(), Following);
         Weekday w = d.weekday();

@@ -72,8 +72,7 @@ namespace QuantLib {
                                                  discountCurve->referenceDate());
         }
 
-        ext::shared_ptr<CapFloor> capFloor(new
-            CapFloor(capFloorType_, leg, strikeVector));
+        ext::shared_ptr<CapFloor> capFloor = ext::make_shared<CapFloor>(capFloorType_, leg, strikeVector);
         capFloor->setPricingEngine(engine_);
         return capFloor;
     }

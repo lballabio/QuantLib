@@ -62,10 +62,9 @@ namespace QuantLib {
         Real s1 = process1_->stateVariable()->value();
         Real s2 = process2_->stateVariable()->value();
 
-        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(arguments_.Q1*s1));
+        ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(arguments_.Q1*s1);
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
-                      new PlainVanillaPayoff(Option::Call, arguments_.Q2*s2));
+        ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, arguments_.Q2*s2);
 
         DiscountFactor dividendDiscount1 =
             process1_->dividendYield()->discount(exercise->lastDate());
@@ -75,11 +74,9 @@ namespace QuantLib {
             process2_->dividendYield()->discount(exercise->lastDate());
         Rate q2 = -std::log(dividendDiscount2)/t;
 
-        ext::shared_ptr<YieldTermStructure> qTS(
-                                            new FlatForward(today, q1, rfdc));
+        ext::shared_ptr<YieldTermStructure> qTS = ext::make_shared<FlatForward>(today, q1, rfdc);
 
-        ext::shared_ptr<YieldTermStructure> rTS(
-                                            new FlatForward(today, q2, rfdc));
+        ext::shared_ptr<YieldTermStructure> rTS = ext::make_shared<FlatForward>(today, q2, rfdc);
 
         Real variance1 = process1_->blackVolatility()->blackVariance(
                                                 exercise->lastDate(), s1);
@@ -89,17 +86,14 @@ namespace QuantLib {
                       - 2*rho_*std::sqrt(variance1)*std::sqrt(variance2);
         Volatility volatility = std::sqrt(variance/t);
 
-        ext::shared_ptr<BlackVolTermStructure> volTS(
-               new BlackConstantVol(today, NullCalendar(), volatility, rfdc));
+        ext::shared_ptr<BlackVolTermStructure> volTS = ext::make_shared<BlackConstantVol>(today, NullCalendar(), volatility, rfdc);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
-            BlackScholesMertonProcess(Handle<Quote>(spot),
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
+                                      Handle<BlackVolTermStructure>(volTS));
 
-        ext::shared_ptr<PricingEngine> engine(
-                     new BjerksundStenslandApproximationEngine(stochProcess));
+        ext::shared_ptr<PricingEngine> engine = ext::make_shared<BjerksundStenslandApproximationEngine>(stochProcess);
 
         VanillaOption option(payoff, exercise);
         option.setPricingEngine(engine);

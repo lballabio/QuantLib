@@ -2004,10 +2004,13 @@ BOOST_AUTO_TEST_CASE(testMonteCarloCalibration) {
         const ext::shared_ptr<LocalVolTermStructure> leverageFct =
             HestonSLVMCModel(
                 Handle<LocalVolTermStructure>(localVol), Handle<HestonModel>(hestonModel),
-                sobol ? ext::shared_ptr<BrownianGeneratorFactory>(new SobolBrownianGeneratorFactory(
-                            SobolBrownianGenerator::Diagonal, 1234UL, SobolRsg::JoeKuoD7)) :
-                        ext::shared_ptr<BrownianGeneratorFactory>(
-                            new MTBrownianGeneratorFactory(1234UL)),
+                sobol
+                    ? ext::shared_ptr<BrownianGeneratorFactory>(
+                          ext::make_shared<SobolBrownianGeneratorFactory>(
+                              SobolBrownianGenerator::Diagonal, 1234UL,
+                              SobolRsg::JoeKuoD7))
+                    : ext::shared_ptr<BrownianGeneratorFactory>(
+                          ext::make_shared<MTBrownianGeneratorFactory>(1234UL)),
                 maturityDate, 91, xGrid, nSim)
                 .leverageFunction();
 
@@ -2124,7 +2127,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloCalibration) {
 //    const ext::shared_ptr<LocalVolTermStructure> leverageFctMC =
 //        HestonSLVMCModel(
 //            localVol, hestonModel,
-//            ext::shared_ptr<BrownianGeneratorFactory>(new MTBrownianGeneratorFactory(1234UL)),
+//            ext::make_shared<MTBrownianGeneratorFactory>(1234UL),
 //            maturityDate, 182, xGrid, nSim)
 //            .leverageFunction();
 //

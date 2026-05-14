@@ -77,8 +77,7 @@ namespace QuantLib {
         };
       public:
         FellerConstraint()
-        : Constraint(ext::shared_ptr<Constraint::Impl>(
-                                           new FellerConstraint::Impl)) {}
+        : Constraint(ext::make_shared<FellerConstraint::Impl>()) {}
     };
 }
 

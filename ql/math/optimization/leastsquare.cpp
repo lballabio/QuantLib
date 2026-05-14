@@ -80,7 +80,7 @@ namespace QuantLib {
                                                Real accuracy,
                                                Size maxiter)
     : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-      om_ (ext::shared_ptr<OptimizationMethod>(new ConjugateGradient())),
+      om_ (ext::make_shared<ConjugateGradient>()),
       c_(c)
     {}
 

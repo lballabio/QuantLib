@@ -95,9 +95,8 @@ namespace QuantLib {
             TimeGrid grid = timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
-            return ext::shared_ptr<path_generator_type>(
-                         new path_generator_type(process_,
-                                                 grid, gen, brownianBridge_));
+            return ext::make_shared<path_generator_type>(process_,
+                                                 grid, gen, brownianBridge_);
         }
         ext::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
@@ -243,21 +242,17 @@ namespace QuantLib {
 
         // do this with template parameters?
         if (isBiased_) {
-            return ext::shared_ptr<
-                        typename MCBarrierEngine<RNG,S>::path_pricer_type>(
-                new BiasedBarrierPathPricer(
+            return ext::make_shared<BiasedBarrierPathPricer>(
                        arguments_.barrierType,
                        arguments_.barrier,
                        arguments_.rebate,
                        payoff->optionType(),
                        payoff->strike(),
-                       discounts));
+                       discounts);
         } else {
             PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                                 PseudoRandom::urng_type(5));
-            return ext::shared_ptr<
-                        typename MCBarrierEngine<RNG,S>::path_pricer_type>(
-                new BarrierPathPricer(
+            return ext::make_shared<BarrierPathPricer>(
                     arguments_.barrierType,
                     arguments_.barrier,
                     arguments_.rebate,
@@ -265,7 +260,7 @@ namespace QuantLib {
                     payoff->strike(),
                     discounts,
                     process_,
-                    sequenceGen));
+                    sequenceGen);
         }
     }
 

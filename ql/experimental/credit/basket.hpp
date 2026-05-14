@@ -66,7 +66,7 @@ namespace QuantLib {
                ext::shared_ptr<Pool> pool,
                Real attachmentRatio = 0.0,
                Real detachmentRatio = 1.0,
-               ext::shared_ptr<Claim> claim = ext::shared_ptr<Claim>(new FaceValueClaim()));
+               ext::shared_ptr<Claim> claim = ext::make_shared<FaceValueClaim>());
         void update() override {
             computeBasket();
             LazyObject::update();

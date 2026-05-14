@@ -72,22 +72,22 @@ namespace QuantLib {
             volTS.targIndex_, 0.0, volTS.targIndex_->dayCounter());
         // adding engines
         baseSwap->setPricingEngine(
-            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(volTS.discountCurve_)));
+            ext::make_shared<DiscountingSwapEngine>(volTS.discountCurve_));
         targSwap->setPricingEngine(
-            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(volTS.discountCurve_)));
+            ext::make_shared<DiscountingSwapEngine>(volTS.discountCurve_));
         finlSwap->setPricingEngine(
-            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(volTS.discountCurve_)));
+            ext::make_shared<DiscountingSwapEngine>(volTS.discountCurve_));
         // swap rates
         swapRateBase_ = baseSwap->fairRate();
         swapRateTarg_ = targSwap->fairRate();
         swapRateFinl_ = finlSwap->fairRate();
         SwaptionCashFlows cfs(
             ext::make_shared<Swaption>(
-                baseSwap, ext::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate))),
+                baseSwap, ext::make_shared<EuropeanExercise>(exerciseDate)),
             volTS.discountCurve_);
         SwaptionCashFlows cf2(
             ext::make_shared<Swaption>(
-                targSwap, ext::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate))),
+                targSwap, ext::make_shared<EuropeanExercise>(exerciseDate)),
             volTS.discountCurve_);
         // calculate affine TSR model u and v
         // Sum tau_j   (fixed leg)

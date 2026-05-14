@@ -92,8 +92,7 @@ struct CommonVars {
                             {40, Years, 0.0103},  {50, Years, 0.0103}};
 
         InterestRate ufr(0.023, dayCount, Compounded, Annual);
-        ufrRate = ext::shared_ptr<Quote>(
-                new SimpleQuote(ufr.equivalentRate(Continuous, Annual, 1.0)));
+        ufrRate = ext::make_shared<SimpleQuote>(ufr.equivalentRate(Continuous, Annual, 1.0));
         fsp = 20 * Years;
         alpha = 0.1;
 
@@ -104,9 +103,9 @@ struct CommonVars {
         Size nInstruments = std::size(swapData);
         std::vector<ext::shared_ptr<RateHelper> > instruments(nInstruments);
         for (Size i = 0; i < nInstruments; i++) {
-            instruments[i] = ext::shared_ptr<RateHelper>(new SwapRateHelper(
+            instruments[i] = ext::make_shared<SwapRateHelper>(
                     swapData[i].rate, Period(swapData[i].n, swapData[i].units), calendar,
-                    fixedFrequency, businessConvention, dayCount, index));
+                    fixedFrequency, businessConvention, dayCount, index);
         }
 
         ext::shared_ptr<YieldTermStructure> ftkCurve(
@@ -128,7 +127,7 @@ ext::shared_ptr<Quote> calculateLLFR(const Handle<YieldTermStructure>& ts, const
         LLFRWeight w = llfrWeights[j];
         llfr += w.weight * ts->forwardRate(cutOff, w.ttm, Continuous, NoFrequency, true);
     }
-    return ext::shared_ptr<Quote>(new SimpleQuote(omega * llfr));
+    return ext::make_shared<SimpleQuote>(omega * llfr);
 }
 
 Rate calculateExtrapolatedForward(Time t, Time fsp, Rate llfr, Rate ufr, Real alpha) {
@@ -146,9 +145,9 @@ void checkDutchBankRates(const std::vector<Datum>& expectedRates,
 
     ext::shared_ptr<Quote> llfr = calculateLLFR(vars.ftkCurveHandle, vars.fsp);
 
-    ext::shared_ptr<YieldTermStructure> ufrTs(new UltimateForwardTermStructure(
+    ext::shared_ptr<YieldTermStructure> ufrTs = ext::make_shared<UltimateForwardTermStructure>(
         vars.ftkCurveHandle, Handle<Quote>(llfr), Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha,
-        rounding, compounding, frequency));
+        rounding, compounding, frequency);
 
     Size nRates = std::size(expectedRates);
 
@@ -204,11 +203,10 @@ BOOST_AUTO_TEST_CASE(testExtrapolatedForward) {
 
     CommonVars vars;
 
-    ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
+    ext::shared_ptr<Quote> llfr = ext::make_shared<SimpleQuote>(0.0125);
 
-    ext::shared_ptr<YieldTermStructure> ufrTs(
-        new UltimateForwardTermStructure(vars.ftkCurveHandle, Handle<Quote>(llfr),
-                                         Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
+    ext::shared_ptr<YieldTermStructure> ufrTs = ext::make_shared<UltimateForwardTermStructure>(vars.ftkCurveHandle, Handle<Quote>(llfr),
+                                         Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha);
     Time cutOff = ufrTs->timeFromReference(ufrTs->referenceDate() + vars.fsp);
 
     Period tenors[] = {
@@ -229,7 +227,7 @@ BOOST_AUTO_TEST_CASE(testExtrapolatedForward) {
         Real tolerance = 1.0e-10;
         if (std::fabs(actual - expected) > tolerance)
             BOOST_ERROR("unable to replicate the forward rate from the UFR curve\n"
-                        << std::setprecision(5) 
+                        << std::setprecision(5)
                         << "    calculated: " << actual << "\n"
                         << "    expected:   " << expected << "\n"
                         << "    tenor:       " << tenors[i] << "\n");
@@ -241,11 +239,10 @@ BOOST_AUTO_TEST_CASE(testZeroRateAtFirstSmoothingPoint) {
 
     CommonVars vars;
 
-    ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
+    ext::shared_ptr<Quote> llfr = ext::make_shared<SimpleQuote>(0.0125);
 
-    ext::shared_ptr<YieldTermStructure> ufrTs(
-        new UltimateForwardTermStructure(vars.ftkCurveHandle, Handle<Quote>(llfr),
-                                         Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
+    ext::shared_ptr<YieldTermStructure> ufrTs = ext::make_shared<UltimateForwardTermStructure>(vars.ftkCurveHandle, Handle<Quote>(llfr),
+                                         Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha);
     Time cutOff = ufrTs->timeFromReference(ufrTs->referenceDate() + vars.fsp);
 
     Rate actual = ufrTs->zeroRate(cutOff, Continuous, NoFrequency, true).rate();
@@ -254,7 +251,7 @@ BOOST_AUTO_TEST_CASE(testZeroRateAtFirstSmoothingPoint) {
     Real tolerance = 1.0e-10;
     if (std::fabs(actual - expected) > tolerance)
         BOOST_ERROR("unable to replicate the zero rate on the First Smoothing Point\n"
-                    << std::setprecision(5) 
+                    << std::setprecision(5)
                     << "    calculated: " << actual << "\n"
                     << "    expected:   " << expected << "\n"
                     << "    FSP:       " << vars.fsp << "\n");
@@ -265,11 +262,10 @@ BOOST_AUTO_TEST_CASE(testThatInspectorsEqualToBaseCurve) {
 
     CommonVars vars;
 
-    ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
+    ext::shared_ptr<Quote> llfr = ext::make_shared<SimpleQuote>(0.0125);
 
-    ext::shared_ptr<YieldTermStructure> ufrTs(
-        new UltimateForwardTermStructure(vars.ftkCurveHandle, Handle<Quote>(llfr),
-                                         Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
+    ext::shared_ptr<YieldTermStructure> ufrTs = ext::make_shared<UltimateForwardTermStructure>(vars.ftkCurveHandle, Handle<Quote>(llfr),
+                                         Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha);
 
     if (ufrTs->dayCounter() != vars.ftkCurveHandle->dayCounter())
         BOOST_ERROR("different day counter on the UFR curve than on the base curve\n"
@@ -297,7 +293,7 @@ BOOST_AUTO_TEST_CASE(testExceptionWhenFspLessOrEqualZero) {
 
     CommonVars vars;
 
-    ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
+    ext::shared_ptr<Quote> llfr = ext::make_shared<SimpleQuote>(0.0125);
 
     BOOST_CHECK_THROW(
         ext::shared_ptr<YieldTermStructure> ufrTsZeroPeriod(
@@ -317,12 +313,12 @@ BOOST_AUTO_TEST_CASE(testObservability) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> llfr(new SimpleQuote(0.0125));
+    ext::shared_ptr<SimpleQuote> llfr = ext::make_shared<SimpleQuote>(0.0125);
     Handle<Quote> llfr_quote(llfr);
-    ext::shared_ptr<SimpleQuote> ufr(new SimpleQuote(0.02));
+    ext::shared_ptr<SimpleQuote> ufr = ext::make_shared<SimpleQuote>(0.02);
     Handle<Quote> ufr_handle(ufr);
-    ext::shared_ptr<YieldTermStructure> ufrTs(new UltimateForwardTermStructure(
-        vars.ftkCurveHandle, llfr_quote, ufr_handle, vars.fsp, vars.alpha));
+    ext::shared_ptr<YieldTermStructure> ufrTs = ext::make_shared<UltimateForwardTermStructure>(
+        vars.ftkCurveHandle, llfr_quote, ufr_handle, vars.fsp, vars.alpha);
 
     Flag flag;
     flag.registerWith(ufrTs);

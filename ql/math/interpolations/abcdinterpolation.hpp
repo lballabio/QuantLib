@@ -105,14 +105,13 @@ namespace QuantLib {
                     times.push_back(*x);
                     blackVols.push_back(*y);
                 }
-                abcdCalibrator_ = ext::shared_ptr<AbcdCalibration>(
-                    new AbcdCalibration(times, blackVols,
+                abcdCalibrator_ = ext::make_shared<AbcdCalibration>(times, blackVols,
                                         this->a_, this->b_, this->c_, this->d_,
                                         this->aIsFixed_, this->bIsFixed_,
                                         this->cIsFixed_, this->dIsFixed_,
                                         vegaWeighted_,
                                         endCriteria_,
-                                        optMethod_));
+                                        optMethod_);
                 abcdCalibrator_->compute();
                 this->a_ = abcdCalibrator_->a();
                 this->b_ = abcdCalibrator_->b();

@@ -165,8 +165,7 @@ struct CommonVars {
 
         std::vector<Handle<Quote> >  curveVHandle(optionTenors.size());
         for (Size i=0; i<optionTenors.size(); ++i)
-            curveVHandle[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                                                        SimpleQuote(flatVol)));
+            curveVHandle[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(flatVol));
 
         flatTermVolCurve = Handle<CapFloorTermVolCurve>(
               ext::make_shared<CapFloorTermVolCurve>(0, calendar, Following, optionTenors,
@@ -240,8 +239,7 @@ struct CommonVars {
 
         atmTermVolHandle.resize(optionTenors.size());
         for (Size i=0; i<optionTenors.size(); ++i) {
-            atmTermVolHandle[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                            SimpleQuote(atmTermV[i])));
+            atmTermVolHandle[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(atmTermV[i]));
         }
 
         capFloorVolCurve = Handle<CapFloorTermVolCurve>(
@@ -449,8 +447,7 @@ struct CommonVarsON {
             3.221372 / 100.0
         };
 
-        ext::shared_ptr<YieldTermStructure> sofrCurve(
-            new ZeroCurve(dates, zeroRates, Actual365Fixed(), calendar));
+        ext::shared_ptr<YieldTermStructure> sofrCurve = ext::make_shared<ZeroCurve>(dates, zeroRates, Actual365Fixed(), calendar);
         sofrCurveHandle.linkTo(sofrCurve);
     }
 
@@ -497,24 +494,21 @@ BOOST_AUTO_TEST_CASE(testFlatTermVolatilityStripping1) {
 
     vars.setFlatTermVolSurface();
 
-    ext::shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
+    ext::shared_ptr<IborIndex> iborIndex = ext::make_shared<Euribor6M>(vars.yieldTermStructure);
 
-    ext::shared_ptr<OptionletStripper> optionletStripper1(new
-        OptionletStripper1(vars.flatTermVolSurface,
+    ext::shared_ptr<OptionletStripper> optionletStripper1 = ext::make_shared<OptionletStripper1>(vars.flatTermVolSurface,
                            iborIndex,
                            Null<Rate>(),
-                           vars.accuracy));
+                           vars.accuracy);
 
-    ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter(new
-        StrippedOptionletAdapter(optionletStripper1));
+    ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter = ext::make_shared<StrippedOptionletAdapter>(optionletStripper1);
 
     Handle<OptionletVolatilityStructure> vol(strippedOptionletAdapter);
 
     vol->enableExtrapolation();
 
-    ext::shared_ptr<BlackCapFloorEngine> strippedVolEngine(new
-        BlackCapFloorEngine(vars.yieldTermStructure,
-                            vol));
+    ext::shared_ptr<BlackCapFloorEngine> strippedVolEngine = ext::make_shared<BlackCapFloorEngine>(vars.yieldTermStructure,
+                            vol);
 
     ext::shared_ptr<CapFloor> cap;
     for (Size tenorIndex=0; tenorIndex<vars.optionTenors.size(); ++tenorIndex) {
@@ -528,9 +522,8 @@ BOOST_AUTO_TEST_CASE(testFlatTermVolatilityStripping1) {
 
             Real priceFromStrippedVolatility = cap->NPV();
 
-            ext::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(new
-                BlackCapFloorEngine(vars.yieldTermStructure,
-                                    vars.termV[tenorIndex][strikeIndex]));
+            ext::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility = ext::make_shared<BlackCapFloorEngine>(vars.yieldTermStructure,
+                                    vars.termV[tenorIndex][strikeIndex]);
 
             cap->setPricingEngine(blackCapFloorEngineConstantVolatility);
             Real priceFromConstantVolatility = cap->NPV();
@@ -558,13 +551,12 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1) {
 
     vars.setCapFloorTermVolSurface();
 
-    ext::shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
+    ext::shared_ptr<IborIndex> iborIndex = ext::make_shared<Euribor6M>(vars.yieldTermStructure);
 
-    ext::shared_ptr<OptionletStripper> optionletStripper1(new
-        OptionletStripper1(vars.capFloorVolSurface,
+    ext::shared_ptr<OptionletStripper> optionletStripper1 = ext::make_shared<OptionletStripper1>(vars.capFloorVolSurface,
                            iborIndex,
                            Null<Rate>(),
-                           vars.accuracy));
+                           vars.accuracy);
 
     ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter =
         ext::make_shared<StrippedOptionletAdapter>(optionletStripper1);
@@ -573,9 +565,8 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1) {
 
     vol->enableExtrapolation();
 
-    ext::shared_ptr<BlackCapFloorEngine> strippedVolEngine(new
-        BlackCapFloorEngine(vars.yieldTermStructure,
-                            vol));
+    ext::shared_ptr<BlackCapFloorEngine> strippedVolEngine = ext::make_shared<BlackCapFloorEngine>(vars.yieldTermStructure,
+                            vol);
 
     ext::shared_ptr<CapFloor> cap;
     for (Size tenorIndex=0; tenorIndex<vars.optionTenors.size(); ++tenorIndex) {
@@ -589,9 +580,8 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1) {
 
             Real priceFromStrippedVolatility = cap->NPV();
 
-            ext::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(new
-                BlackCapFloorEngine(vars.yieldTermStructure,
-                                    vars.termV[tenorIndex][strikeIndex]));
+            ext::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility = ext::make_shared<BlackCapFloorEngine>(vars.yieldTermStructure,
+                                    vars.termV[tenorIndex][strikeIndex]);
 
             cap->setPricingEngine(blackCapFloorEngineConstantVolatility);
             Real priceFromConstantVolatility = cap->NPV();
@@ -619,12 +609,11 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStrippingNormalVol) {
 
     vars.setRealCapFloorTermVolSurface();
 
-    ext::shared_ptr< IborIndex > iborIndex(new Euribor6M(vars.forwardingYTS));
+    ext::shared_ptr< IborIndex > iborIndex = ext::make_shared<Euribor6M>(vars.forwardingYTS);
 
-    ext::shared_ptr< OptionletStripper > optionletStripper1(
-        new OptionletStripper1(vars.capFloorVolRealSurface, iborIndex,
+    ext::shared_ptr< OptionletStripper > optionletStripper1 = ext::make_shared<OptionletStripper1>(vars.capFloorVolRealSurface, iborIndex,
                                Null< Rate >(), vars.accuracy, 100,
-                               vars.discountingYTS, Normal));
+                               vars.discountingYTS, Normal);
 
     ext::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
         ext::make_shared< StrippedOptionletAdapter >(
@@ -634,8 +623,7 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStrippingNormalVol) {
 
     vol->enableExtrapolation();
 
-    ext::shared_ptr< BachelierCapFloorEngine > strippedVolEngine(
-        new BachelierCapFloorEngine(vars.discountingYTS, vol));
+    ext::shared_ptr< BachelierCapFloorEngine > strippedVolEngine = ext::make_shared<BachelierCapFloorEngine>(vars.discountingYTS, vol);
 
     ext::shared_ptr< CapFloor > cap;
     for (Size tenorIndex = 0; tenorIndex < vars.optionTenors.size();
@@ -649,10 +637,9 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStrippingNormalVol) {
             Real priceFromStrippedVolatility = cap->NPV();
 
             ext::shared_ptr< PricingEngine >
-                bachelierCapFloorEngineConstantVolatility(
-                    new BachelierCapFloorEngine(
+                bachelierCapFloorEngineConstantVolatility = ext::make_shared<BachelierCapFloorEngine>(
                         vars.discountingYTS,
-                        vars.termV[tenorIndex][strikeIndex]));
+                        vars.termV[tenorIndex][strikeIndex]);
 
             cap->setPricingEngine(bachelierCapFloorEngineConstantVolatility);
             Real priceFromConstantVolatility = cap->NPV();
@@ -686,13 +673,12 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStrippingShiftedLogNormalVol) {
 
     vars.setRealCapFloorTermVolSurface();
 
-    ext::shared_ptr< IborIndex > iborIndex(new Euribor6M(vars.forwardingYTS));
+    ext::shared_ptr< IborIndex > iborIndex = ext::make_shared<Euribor6M>(vars.forwardingYTS);
 
-    ext::shared_ptr< OptionletStripper > optionletStripper1(
-        new OptionletStripper1(vars.capFloorVolRealSurface, iborIndex,
+    ext::shared_ptr< OptionletStripper > optionletStripper1 = ext::make_shared<OptionletStripper1>(vars.capFloorVolRealSurface, iborIndex,
                                Null< Rate >(), vars.accuracy, 100,
                                vars.discountingYTS, ShiftedLognormal, shift,
-                               true));
+                               true);
 
     ext::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
         ext::make_shared< StrippedOptionletAdapter >(
@@ -702,8 +688,7 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStrippingShiftedLogNormalVol) {
 
     vol->enableExtrapolation();
 
-    ext::shared_ptr< BlackCapFloorEngine > strippedVolEngine(
-        new BlackCapFloorEngine(vars.discountingYTS, vol));
+    ext::shared_ptr< BlackCapFloorEngine > strippedVolEngine = ext::make_shared<BlackCapFloorEngine>(vars.discountingYTS, vol);
 
     ext::shared_ptr< CapFloor > cap;
     for (Size strikeIndex = 0; strikeIndex < vars.strikes.size();
@@ -717,9 +702,9 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStrippingShiftedLogNormalVol) {
             Real priceFromStrippedVolatility = cap->NPV();
 
             ext::shared_ptr< PricingEngine >
-                blackCapFloorEngineConstantVolatility(new BlackCapFloorEngine(
+                blackCapFloorEngineConstantVolatility = ext::make_shared<BlackCapFloorEngine>(
                     vars.discountingYTS, vars.termV[tenorIndex][strikeIndex],
-                    vars.capFloorVolRealSurface->dayCounter(), shift));
+                    vars.capFloorVolRealSurface->dayCounter(), shift);
 
             cap->setPricingEngine(blackCapFloorEngineConstantVolatility);
             Real priceFromConstantVolatility = cap->NPV();
@@ -753,28 +738,24 @@ BOOST_AUTO_TEST_CASE(testFlatTermVolatilityStripping2) {
   vars.setFlatTermVolCurve();
   vars.setFlatTermVolSurface();
 
-  ext::shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
+  ext::shared_ptr<IborIndex> iborIndex = ext::make_shared<Euribor6M>(vars.yieldTermStructure);
 
   // optionletstripper1
-  ext::shared_ptr<OptionletStripper1> optionletStripper1(new
-        OptionletStripper1(vars.flatTermVolSurface,
+  ext::shared_ptr<OptionletStripper1> optionletStripper1 = ext::make_shared<OptionletStripper1>(vars.flatTermVolSurface,
                            iborIndex,
                            Null<Rate>(),
-                           vars.accuracy));
+                           vars.accuracy);
 
-  ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter1(new
-        StrippedOptionletAdapter(optionletStripper1));
+  ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter1 = ext::make_shared<StrippedOptionletAdapter>(optionletStripper1);
 
   Handle<OptionletVolatilityStructure> vol1(strippedOptionletAdapter1);
 
   vol1->enableExtrapolation();
 
   // optionletstripper2
-  ext::shared_ptr<OptionletStripper> optionletStripper2(new
-        OptionletStripper2(optionletStripper1, vars.flatTermVolCurve));
+  ext::shared_ptr<OptionletStripper> optionletStripper2 = ext::make_shared<OptionletStripper2>(optionletStripper1, vars.flatTermVolCurve);
 
-  ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter2(new
-        StrippedOptionletAdapter(optionletStripper2));
+  ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter2 = ext::make_shared<StrippedOptionletAdapter>(optionletStripper2);
 
   Handle<OptionletVolatilityStructure> vol2(strippedOptionletAdapter2);
 
@@ -820,14 +801,13 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping2) {
   vars.setCapFloorTermVolCurve();
   vars.setCapFloorTermVolSurface();
 
-  ext::shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
+  ext::shared_ptr<IborIndex> iborIndex = ext::make_shared<Euribor6M>(vars.yieldTermStructure);
 
   // optionletstripper1
-  ext::shared_ptr<OptionletStripper1> optionletStripper1(new
-        OptionletStripper1(vars.capFloorVolSurface,
+  ext::shared_ptr<OptionletStripper1> optionletStripper1 = ext::make_shared<OptionletStripper1>(vars.capFloorVolSurface,
                            iborIndex,
                            Null<Rate>(),
-                           vars.accuracy));
+                           vars.accuracy);
 
   ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter1 =
         ext::make_shared<StrippedOptionletAdapter>(optionletStripper1);
@@ -836,12 +816,10 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping2) {
   vol1->enableExtrapolation();
 
   // optionletstripper2
-  ext::shared_ptr<OptionletStripper> optionletStripper2(new
-                OptionletStripper2(optionletStripper1,
-                                   vars.capFloorVolCurve));
+  ext::shared_ptr<OptionletStripper> optionletStripper2 = ext::make_shared<OptionletStripper2>(optionletStripper1,
+                                   vars.capFloorVolCurve);
 
-  ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter2(new
-        StrippedOptionletAdapter(optionletStripper2));
+  ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter2 = ext::make_shared<StrippedOptionletAdapter>(optionletStripper2);
 
   Handle<OptionletVolatilityStructure> vol2(strippedOptionletAdapter2);
   vol2->enableExtrapolation();
@@ -887,11 +865,10 @@ BOOST_AUTO_TEST_CASE(testSwitchStrike) {
     yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
         0, vars.calendar, 0.03, vars.dayCounter));
 
-    ext::shared_ptr< IborIndex > iborIndex(new Euribor6M(yieldTermStructure));
+    ext::shared_ptr< IborIndex > iborIndex = ext::make_shared<Euribor6M>(yieldTermStructure);
 
-    ext::shared_ptr< OptionletStripper1 > optionletStripper1(
-        new OptionletStripper1(vars.capFloorVolSurface, iborIndex,
-                               Null< Rate >(), vars.accuracy));
+    ext::shared_ptr< OptionletStripper1 > optionletStripper1 = ext::make_shared<OptionletStripper1>(vars.capFloorVolSurface, iborIndex,
+                               Null< Rate >(), vars.accuracy);
 
     Real expected = usingAtParCoupons ? 0.02981223 : 0.02981258;
 
@@ -929,7 +906,7 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1ON) {
     vars.setSofrHandle();
     vars.setRealCapFloorVolSurface();
 
-    ext::shared_ptr<OvernightIndex> sofrIndex(new Sofr(vars.sofrCurveHandle));
+    ext::shared_ptr<OvernightIndex> sofrIndex = ext::make_shared<Sofr>(vars.sofrCurveHandle);
     sofrIndex->addFixing(Date(15, April, 2025), 3.04/100.0);
 
     Real notional = 1'000'000;
@@ -943,37 +920,29 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1ON) {
     Cap cap(sofrLeg, strikes);
     Cap cap1(sofrLeg, strikes);
 
-    ext::shared_ptr<OptionletStripper1> optionletSurf(
-            new OptionletStripper1(vars.capfloorVol, sofrIndex,
+    ext::shared_ptr<OptionletStripper1> optionletSurf = ext::make_shared<OptionletStripper1>(vars.capfloorVol, sofrIndex,
                                    Null<Real>(), 1e-6, 100,
                                    vars.sofrCurveHandle, Normal,
-                                   0.0, true, Period(3, Months)));
+                                   0.0, true, Period(3, Months));
 
     Handle<OptionletVolatilityStructure> ovsHandle(
-        ext::shared_ptr<OptionletVolatilityStructure>(
-            new StrippedOptionletAdapter(optionletSurf)));
+        ext::make_shared<StrippedOptionletAdapter>(optionletSurf));
 
-     ext::shared_ptr<IborIndex> sofr3m(new IborIndex(
+     ext::shared_ptr<IborIndex> sofr3m = ext::make_shared<IborIndex>(
         "SOFR", Period(3, Months), 2,
         USDCurrency(), vars.calendar, vars.convention, false, vars.dc, vars.sofrCurveHandle
-    ));
-
-    ext::shared_ptr<OptionletStripper1> optionletSurf1(
-        new OptionletStripper1(vars.capfloorVol, sofr3m,
-                               Null<Real>(), 1e-6, 100, vars.sofrCurveHandle, Normal)
     );
 
-    ext::shared_ptr<OptionletVolatilityStructure> ovs(
-        new StrippedOptionletAdapter(optionletSurf)
-    );
+    ext::shared_ptr<OptionletStripper1> optionletSurf1 = ext::make_shared<OptionletStripper1>(vars.capfloorVol, sofr3m,
+                               Null<Real>(), 1e-6, 100, vars.sofrCurveHandle, Normal);
+
+    ext::shared_ptr<OptionletVolatilityStructure> ovs = ext::make_shared<StrippedOptionletAdapter>(optionletSurf);
     Handle<OptionletVolatilityStructure> ovsHandle1(ovs);
 
     // Use optionlet surface for pricing
-    ext::shared_ptr<PricingEngine> engineOvs(
-        new BachelierCapFloorEngine(vars.sofrCurveHandle, ovsHandle));
+    ext::shared_ptr<PricingEngine> engineOvs = ext::make_shared<BachelierCapFloorEngine>(vars.sofrCurveHandle, ovsHandle);
     cap.setPricingEngine(engineOvs);
-    ext::shared_ptr<PricingEngine> engineOvs1(
-        new BachelierCapFloorEngine(vars.sofrCurveHandle, ovsHandle1));
+    ext::shared_ptr<PricingEngine> engineOvs1 = ext::make_shared<BachelierCapFloorEngine>(vars.sofrCurveHandle, ovsHandle1);
     cap1.setPricingEngine(engineOvs1);
     
     Real tolerance = 2.5e-8;

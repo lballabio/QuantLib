@@ -192,25 +192,23 @@ BOOST_AUTO_TEST_CASE(testAccessViolation) {
     Volatility volatility = 0.10;
     Handle<OptionletVolatilityStructure> vol;
     vol = Handle<OptionletVolatilityStructure>(
-             ext::shared_ptr<OptionletVolatilityStructure>(
-                 new ConstantOptionletVolatility(
+             ext::make_shared<ConstantOptionletVolatility>(
                              2,
                              calendar,
                              ModifiedFollowing,
                              volatility,
-                             Actual365Fixed())));
+                             Actual365Fixed()));
 
-    ext::shared_ptr<IborIndex> index3m (new USDLibor(3*Months,
-                                                       rhTermStructure));
+    ext::shared_ptr<IborIndex> index3m = ext::make_shared<USDLibor>(3*Months,
+                                                       rhTermStructure);
 
     Date payDate(20, December, 2013);
     Date startDate(20, September, 2013);
     Date endDate(20, December, 2013);
     Rate spread = 0.0115;
-    ext::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(vol));
-    ext::shared_ptr<FloatingRateCoupon> coupon(
-        new FloatingRateCoupon(payDate,100, startDate, endDate, 2,
-                               index3m, 1.0 , spread / 100));
+    ext::shared_ptr<IborCouponPricer> pricer = ext::make_shared<BlackIborCouponPricer>(vol);
+    ext::shared_ptr<FloatingRateCoupon> coupon = ext::make_shared<FloatingRateCoupon>(payDate,100, startDate, endDate, 2,
+                               index3m, 1.0 , spread / 100);
     coupon->setPricer(pricer);
 
     try {
@@ -262,7 +260,7 @@ BOOST_AUTO_TEST_CASE(testNullFixingDays, *precondition(usingAtParCoupons())) {
         .withConvention(Following)
         .backwards();
 
-    ext::shared_ptr<IborIndex> index(new USDLibor(6*Months));
+    ext::shared_ptr<IborIndex> index = ext::make_shared<USDLibor>(6*Months);
     Leg leg = IborLeg(schedule, index)
         .withNotionals(100.0)
         // this can happen with default values, and caused an
@@ -291,7 +289,7 @@ BOOST_AUTO_TEST_CASE(testExCouponDates) {
     }
 
     // same for floating legs
-    ext::shared_ptr<IborIndex> index(new Euribor3M);
+    ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor3M>();
     Leg l2 = IborLeg(schedule, index).withNotionals(100.0);
     for (auto& i : l2) {
         ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);

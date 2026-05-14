@@ -80,9 +80,8 @@ namespace QuantLib {
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
 
-            return ext::shared_ptr<path_generator_type>(
-                         new path_generator_type(processes_,
-                                                 grid, gen, brownianBridge_));
+            return ext::make_shared<path_generator_type>(processes_,
+                                                 grid, gen, brownianBridge_);
         }
         ext::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
@@ -193,11 +192,9 @@ namespace QuantLib {
                                                       processes_->process(0));
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        return ext::shared_ptr<
-                    typename MCEuropeanBasketEngine<RNG,S>::path_pricer_type>(
-            new EuropeanMultiPathPricer(payoff,
+        return ext::make_shared<EuropeanMultiPathPricer>(payoff,
                                         process->riskFreeRate()->discount(
-                                           arguments_.exercise->lastDate())));
+                                           arguments_.exercise->lastDate()));
     }
 
 

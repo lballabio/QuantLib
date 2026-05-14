@@ -178,17 +178,13 @@ BOOST_AUTO_TEST_CASE(testPathGeneration) {
     InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal> gsg(sobol);
 
     Date today = Settings::instance().evaluationDate();
-    Handle<Quote> x0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
-    Handle<YieldTermStructure> r(ext::shared_ptr<YieldTermStructure>(
-                               new FlatForward(today,0.06,Actual365Fixed())));
-    Handle<YieldTermStructure> q(ext::shared_ptr<YieldTermStructure>(
-                               new FlatForward(today,0.03,Actual365Fixed())));
+    Handle<Quote> x0(ext::make_shared<SimpleQuote>(100.0));
+    Handle<YieldTermStructure> r(ext::make_shared<FlatForward>(today,0.06,Actual365Fixed()));
+    Handle<YieldTermStructure> q(ext::make_shared<FlatForward>(today,0.03,Actual365Fixed()));
     Handle<BlackVolTermStructure> sigma(
-                   ext::shared_ptr<BlackVolTermStructure>(
-                          new BlackConstantVol(today, NullCalendar(), 0.20,Actual365Fixed())));
+                   ext::make_shared<BlackConstantVol>(today, NullCalendar(), 0.20,Actual365Fixed()));
 
-    ext::shared_ptr<StochasticProcess1D> process(
-                              new BlackScholesMertonProcess(x0, q, r, sigma));
+    ext::shared_ptr<StochasticProcess1D> process = ext::make_shared<BlackScholesMertonProcess>(x0, q, r, sigma);
 
 
     PathGenerator<InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal> >

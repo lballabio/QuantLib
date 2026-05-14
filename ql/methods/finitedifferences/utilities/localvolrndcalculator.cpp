@@ -231,9 +231,8 @@ namespace QuantLib {
         Real sLowerBound = xm - normInvEps * stdDevOfFirstStep;
         Real sUpperBound = xm + normInvEps * stdDevOfFirstStep;
 
-        ext::shared_ptr<Fdm1dMesher> mesher(
-            new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid_,
-                std::make_pair(xm, x0Density_), true));
+        ext::shared_ptr<Fdm1dMesher> mesher = ext::make_shared<Concentrating1dMesher>(sLowerBound, sUpperBound, xGrid_,
+                std::make_pair(xm, x0Density_), true);
 
         Array p(mesher->size());
         Array x(mesher->locations().begin(), mesher->locations().end());
@@ -250,11 +249,10 @@ namespace QuantLib {
 
         const Size b = std::max(Size(1), Size(x.size()*0.04));
 
-        ext::shared_ptr<DouglasScheme> evolver(
-            new DouglasScheme(0.5,
+        ext::shared_ptr<DouglasScheme> evolver = ext::make_shared<DouglasScheme>(0.5,
                 ext::make_shared<FdmLocalVolFwdOp>(
                     ext::make_shared<FdmMesherComposite>(mesher),
-                    spot_, rTS_, qTS_, localVol_)));
+                    spot_, rTS_, qTS_, localVol_));
 
         pFct_.resize(tGrid_);
 
@@ -291,9 +289,8 @@ namespace QuantLib {
                 if (maxRightValue > localVolProbEps_)
                     sUpperBound += scalingFactor*(oldUpperBound-oldLowerBound);
 
-                mesher = ext::shared_ptr<Fdm1dMesher>(
-                    new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid_,
-                        std::make_pair(xm, 0.1), false));
+                mesher = ext::make_shared<Concentrating1dMesher>(sLowerBound, sUpperBound, xGrid_,
+                        std::make_pair(xm, 0.1), false);
 
                 const CubicNaturalSpline pSpline(x.begin(), x.end(), p.begin());
                 const Array xn(mesher->locations().begin(),

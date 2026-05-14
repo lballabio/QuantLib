@@ -140,10 +140,10 @@ BOOST_AUTO_TEST_CASE(testReplicatingVarianceSwap) {
     DayCounter dc = Actual365Fixed();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
     for (auto& value : values) {
@@ -185,22 +185,19 @@ BOOST_AUTO_TEST_CASE(testReplicatingVarianceSwap) {
             strikes.push_back(callStrikes[k]);
         }
 
-        ext::shared_ptr<BlackVolTermStructure> volTS(new
-            BlackVarianceSurface(today, NullCalendar(),
-                                 dates, strikes, vols, dc));
+        ext::shared_ptr<BlackVolTermStructure> volTS = ext::make_shared<BlackVarianceSurface>(today, NullCalendar(),
+                                 dates, strikes, vols, dc);
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> stochProcess(
-                             new BlackScholesMertonProcess(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> stochProcess = ext::make_shared<BlackScholesMertonProcess>(
                                        Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
-                                       Handle<BlackVolTermStructure>(volTS)));
+                                       Handle<BlackVolTermStructure>(volTS));
 
 
-        ext::shared_ptr<PricingEngine> engine(
-                          new ReplicatingVarianceSwapEngine(stochProcess, 5.0,
+        ext::shared_ptr<PricingEngine> engine = ext::make_shared<ReplicatingVarianceSwapEngine>(stochProcess, 5.0,
                                                             callStrikes,
-                                                            putStrikes));
+                                                            putStrikes);
 
         VarianceSwap varianceSwap(value.type, value.varStrike, value.nominal, today, exDate);
         varianceSwap.setPricingEngine(engine);
@@ -238,10 +235,10 @@ BOOST_AUTO_TEST_CASE(testMCVarianceSwap) {
     DayCounter dc = Actual365Fixed();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     std::vector<Volatility> vols(2);
     std::vector<Date> dates(2);
@@ -249,7 +246,7 @@ BOOST_AUTO_TEST_CASE(testMCVarianceSwap) {
     for (auto& value : values) {
         Date exDate = today + timeToDays(value.t, 365);
         Date intermDate = today + timeToDays(value.t1, 365);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
         dates[0] = intermDate;
         dates[1] = exDate;
 
@@ -259,15 +256,13 @@ BOOST_AUTO_TEST_CASE(testMCVarianceSwap) {
         vols[0] = value.v1;
         vols[1] = value.v;
 
-        ext::shared_ptr<BlackVolTermStructure> volTS(
-                        new BlackVarianceCurve(today, dates, vols, dc, true));
+        ext::shared_ptr<BlackVolTermStructure> volTS = ext::make_shared<BlackVarianceCurve>(today, dates, vols, dc, true);
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> stochProcess(
-                    new BlackScholesMertonProcess(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> stochProcess = ext::make_shared<BlackScholesMertonProcess>(
                                        Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
-                                       Handle<BlackVolTermStructure>(volTS)));
+                                       Handle<BlackVolTermStructure>(volTS));
 
         ext::shared_ptr<PricingEngine> engine;
         engine =

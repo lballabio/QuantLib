@@ -48,7 +48,7 @@ namespace QuantLib {
               batesProcess->riskFreeRate(),
               Handle<YieldTermStructure>(ext::make_shared<ZeroSpreadedTermStructure>(
                   batesProcess->dividendYield(),
-                  Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(lambda_ * m_))),
+                  Handle<Quote>(ext::make_shared<SimpleQuote>(lambda_ * m_)),
                   Continuous)),
               batesProcess->s0(),
               batesProcess->v0(),

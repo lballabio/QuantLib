@@ -82,8 +82,7 @@ struct CommonVars {
         compounding = Continuous;
         Frequency fixedFrequency = Annual;
         Frequency floatingFrequency = Semiannual;
-        iborIndex = ext::shared_ptr<IborIndex>(
-                     new Euribor(Period(floatingFrequency), termStructure));
+        iborIndex = ext::make_shared<Euribor>(Period(floatingFrequency), termStructure);
         Calendar calendar = iborIndex->fixingCalendar();
         swapIndex = ext::make_shared<SwapIndex>(
                 "EuriborSwapIsdaFixA", 10*Years, swapSettlementDays,
@@ -96,17 +95,14 @@ struct CommonVars {
         Settings::instance().evaluationDate() = today;
 
         termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
-        pricer = ext::shared_ptr<IborCouponPricer>(new BlackIborCouponPricer);
+        pricer = ext::make_shared<BlackIborCouponPricer>();
         Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
-                ext::shared_ptr<SwaptionVolatilityStructure>(new
-                    ConstantSwaptionVolatility(today, NullCalendar(),Following,
-                                               0.2, Actual365Fixed())));
-        Handle<Quote> meanReversionQuote(ext::shared_ptr<Quote>(new
-                SimpleQuote(0.01)));
-        cmspricer = ext::shared_ptr<CmsCouponPricer>(new
-                AnalyticHaganPricer(swaptionVolatilityStructure,
+                ext::make_shared<ConstantSwaptionVolatility>(today, NullCalendar(),Following,
+                                               0.2, Actual365Fixed()));
+        Handle<Quote> meanReversionQuote(ext::make_shared<SimpleQuote>(0.01));
+        cmspricer = ext::make_shared<AnalyticHaganPricer>(swaptionVolatilityStructure,
                                     GFunctionFactory::Standard,
-                                    meanReversionQuote));
+                                    meanReversionQuote);
     }
 };
 
@@ -128,13 +124,12 @@ BOOST_AUTO_TEST_CASE(testConsistency) {
                           Period(Annual), bondCalendar,
                           Unadjusted, Unadjusted,
                           DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> bond(new
-        FixedRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> bond = ext::make_shared<FixedRateBond>(settlementDays, vars.faceAmount,
                       bondSchedule,
                       std::vector<Rate>(1, 0.04),
                       ActualActual(ActualActual::ISDA),
                       Following,
-                      100.0, Date(4,January,2005)));
+                      100.0, Date(4,January,2005));
 
     bool payFixedRate = true;
     Real bondPrice = 95.0;
@@ -147,11 +142,10 @@ BOOST_AUTO_TEST_CASE(testConsistency) {
                          vars.iborIndex->dayCounter(),
                          isPar);
 
-    ext::shared_ptr<PricingEngine> swapEngine(new
-        DiscountingSwapEngine(vars.termStructure,
+    ext::shared_ptr<PricingEngine> swapEngine = ext::make_shared<DiscountingSwapEngine>(vars.termStructure,
                               true,
                               bond->settlementDate(),
-                              Settings::instance().evaluationDate()));
+                              Settings::instance().evaluationDate());
 
     parAssetSwap.setPricingEngine(swapEngine);
     Real fairCleanPrice = parAssetSwap.fairCleanPrice();
@@ -226,11 +220,10 @@ BOOST_AUTO_TEST_CASE(testConsistency) {
     }
 
     // let's change the npv date
-    swapEngine = ext::shared_ptr<PricingEngine>(new
-        DiscountingSwapEngine(vars.termStructure,
+    swapEngine = ext::make_shared<DiscountingSwapEngine>(vars.termStructure,
                               true,
                               bond->settlementDate(),
-                              bond->settlementDate()));
+                              bond->settlementDate());
 
     parAssetSwap.setPricingEngine(swapEngine);
     // fair clean price and fair spread should not change
@@ -421,11 +414,10 @@ BOOST_AUTO_TEST_CASE(testConsistency) {
                            vars.iborIndex->dayCounter(),
                            isPar);
 
-    swapEngine = ext::shared_ptr<PricingEngine>(new
-        DiscountingSwapEngine(vars.termStructure,
+    swapEngine = ext::make_shared<DiscountingSwapEngine>(vars.termStructure,
                               true,
                               bond->settlementDate(),
-                              Settings::instance().evaluationDate()));
+                              Settings::instance().evaluationDate());
 
     mktAssetSwap.setPricingEngine(swapEngine);
     fairCleanPrice = mktAssetSwap.fairCleanPrice();
@@ -498,11 +490,10 @@ BOOST_AUTO_TEST_CASE(testConsistency) {
     }
 
     // let's change the npv date
-    swapEngine = ext::shared_ptr<PricingEngine>(new
-        DiscountingSwapEngine(vars.termStructure,
+    swapEngine = ext::make_shared<DiscountingSwapEngine>(vars.termStructure,
                               true,
                               bond->settlementDate(),
-                              bond->settlementDate()));
+                              bond->settlementDate());
 
     mktAssetSwap.setPricingEngine(swapEngine);
     // fair clean price and fair spread should not change
@@ -697,18 +688,15 @@ BOOST_AUTO_TEST_CASE(testImpliedValue) {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> fixedBond1(
-                         new FixedRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> fixedBond1 = ext::make_shared<FixedRateBond>(settlementDays, vars.faceAmount,
                                            fixedBondSchedule1,
                                            std::vector<Rate>(1, 0.04),
                                            ActualActual(ActualActual::ISDA),
                                            Following,
-                                           100.0, Date(4,January,2005)));
+                                           100.0, Date(4,January,2005));
 
-    ext::shared_ptr<PricingEngine> bondEngine(
-                            new DiscountingBondEngine(vars.termStructure));
-    ext::shared_ptr<PricingEngine> swapEngine(
-                            new DiscountingSwapEngine(vars.termStructure));
+    ext::shared_ptr<PricingEngine> bondEngine = ext::make_shared<DiscountingBondEngine>(vars.termStructure);
+    ext::shared_ptr<PricingEngine> swapEngine = ext::make_shared<DiscountingSwapEngine>(vars.termStructure);
     fixedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondPrice1 = fixedBond1->cleanPrice();
@@ -749,13 +737,12 @@ BOOST_AUTO_TEST_CASE(testImpliedValue) {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> fixedBond2(
-                         new FixedRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> fixedBond2 = ext::make_shared<FixedRateBond>(settlementDays, vars.faceAmount,
                                            fixedBondSchedule2,
                                            std::vector<Rate>(1, 0.05),
                                            Thirty360(Thirty360::BondBasis),
                                            Following,
-                                           100.0, Date(5,February,2005)));
+                                           100.0, Date(5,February,2005));
 
     fixedBond2->setPricingEngine(bondEngine);
 
@@ -789,8 +776,7 @@ BOOST_AUTO_TEST_CASE(testImpliedValue) {
                                    Unadjusted, Unadjusted,
                                    DateGeneration::Backward, false);
 
-    ext::shared_ptr<Bond> floatingBond1(
-                      new FloatingRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingBond1 = ext::make_shared<FloatingRateBond>(settlementDays, vars.faceAmount,
                                            floatingBondSchedule1,
                                            vars.iborIndex, Actual360(),
                                            Following, fixingDays,
@@ -799,7 +785,7 @@ BOOST_AUTO_TEST_CASE(testImpliedValue) {
                                            std::vector<Rate>(),
                                            std::vector<Rate>(),
                                            inArrears,
-                                           100.0, Date(29,September,2003)));
+                                           100.0, Date(29,September,2003));
 
     floatingBond1->setPricingEngine(bondEngine);
 
@@ -834,8 +820,7 @@ BOOST_AUTO_TEST_CASE(testImpliedValue) {
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> floatingBond2(
-                      new FloatingRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingBond2 = ext::make_shared<FloatingRateBond>(settlementDays, vars.faceAmount,
                                            floatingBondSchedule2,
                                            vars.iborIndex, Actual360(),
                                            ModifiedFollowing, fixingDays,
@@ -844,7 +829,7 @@ BOOST_AUTO_TEST_CASE(testImpliedValue) {
                                            std::vector<Rate>(),
                                            std::vector<Rate>(),
                                            inArrears,
-                                           100.0, Date(24,September,2004)));
+                                           100.0, Date(24,September,2004));
 
     floatingBond2->setPricingEngine(bondEngine);
 
@@ -894,8 +879,7 @@ BOOST_AUTO_TEST_CASE(testImpliedValue) {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> cmsBond1(
-                          new CmsRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> cmsBond1 = ext::make_shared<CmsRateBond>(settlementDays, vars.faceAmount,
                                           cmsBondSchedule1,
                                           vars.swapIndex, Thirty360(Thirty360::BondBasis),
                                           Following, fixingDays,
@@ -904,7 +888,7 @@ BOOST_AUTO_TEST_CASE(testImpliedValue) {
                                           std::vector<Rate>(1,0.055),
                                           std::vector<Rate>(1,0.025),
                                           inArrears,
-                                          100.0, Date(22,August,2005)));
+                                          100.0, Date(22,August,2005));
 
     cmsBond1->setPricingEngine(bondEngine);
 
@@ -939,14 +923,13 @@ BOOST_AUTO_TEST_CASE(testImpliedValue) {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> cmsBond2(new
-        CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
+    ext::shared_ptr<Bond> cmsBond2 = ext::make_shared<CmsRateBond>(settlementDays, vars.faceAmount, cmsBondSchedule2,
                     vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(), std::vector<Rate>(),
                     inArrears,
-                    100.0, Date(06,May,2005)));
+                    100.0, Date(06,May,2005));
 
     cmsBond2->setPricingEngine(bondEngine);
 
@@ -976,11 +959,10 @@ BOOST_AUTO_TEST_CASE(testImpliedValue) {
     // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
 
-    ext::shared_ptr<Bond> zeroCpnBond1(new
-        ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> zeroCpnBond1 = ext::make_shared<ZeroCouponBond>(settlementDays, bondCalendar, vars.faceAmount,
                        Date(20,December,2015),
                        Following,
-                       100.0, Date(19,December,1985)));
+                       100.0, Date(19,December,1985));
 
     zeroCpnBond1->setPricingEngine(bondEngine);
 
@@ -1008,11 +990,10 @@ BOOST_AUTO_TEST_CASE(testImpliedValue) {
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
     // maturity occurs on a business day
 
-    ext::shared_ptr<Bond> zeroCpnBond2(new
-        ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> zeroCpnBond2 = ext::make_shared<ZeroCouponBond>(settlementDays, bondCalendar, vars.faceAmount,
                        Date(17,February,2028),
                        Following,
-                       100.0, Date(17,February,1998)));
+                       100.0, Date(17,February,1998));
 
     zeroCpnBond2->setPricingEngine(bondEngine);
 
@@ -1064,16 +1045,13 @@ BOOST_AUTO_TEST_CASE(testMarketASWSpread) {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> fixedBond1(new
-        FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule1,
+    ext::shared_ptr<Bond> fixedBond1 = ext::make_shared<FixedRateBond>(settlementDays, vars.faceAmount, fixedBondSchedule1,
                       std::vector<Rate>(1, 0.04),
                       ActualActual(ActualActual::ISDA), Following,
-                      100.0, Date(4,January,2005)));
+                      100.0, Date(4,January,2005));
 
-    ext::shared_ptr<PricingEngine> bondEngine(
-                            new DiscountingBondEngine(vars.termStructure));
-    ext::shared_ptr<PricingEngine> swapEngine(
-                            new DiscountingSwapEngine(vars.termStructure));
+    ext::shared_ptr<PricingEngine> bondEngine = ext::make_shared<DiscountingBondEngine>(vars.termStructure);
+    ext::shared_ptr<PricingEngine> swapEngine = ext::make_shared<DiscountingSwapEngine>(vars.termStructure);
     fixedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondMktPrice1 = 89.22 ; // market price observed on 7th June 2007
@@ -1120,11 +1098,10 @@ BOOST_AUTO_TEST_CASE(testMarketASWSpread) {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> fixedBond2(new
-        FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule2,
+    ext::shared_ptr<Bond> fixedBond2 = ext::make_shared<FixedRateBond>(settlementDays, vars.faceAmount, fixedBondSchedule2,
                       std::vector<Rate>(1, 0.05),
                       Thirty360(Thirty360::BondBasis), Following,
-                      100.0, Date(5,February,2005)));
+                      100.0, Date(5,February,2005));
 
     fixedBond2->setPricingEngine(bondEngine);
 
@@ -1169,15 +1146,14 @@ BOOST_AUTO_TEST_CASE(testMarketASWSpread) {
                                    Unadjusted, Unadjusted,
                                    DateGeneration::Backward, false);
 
-    ext::shared_ptr<Bond> floatingBond1(new
-        FloatingRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingBond1 = ext::make_shared<FloatingRateBond>(settlementDays, vars.faceAmount,
                          floatingBondSchedule1,
                          vars.iborIndex, Actual360(),
                          Following, fixingDays,
                          std::vector<Real>(1,1), std::vector<Spread>(1,0.0056),
                          std::vector<Rate>(), std::vector<Rate>(),
                          inArrears,
-                         100.0, Date(29,September,2003)));
+                         100.0, Date(29,September,2003));
 
     floatingBond1->setPricingEngine(bondEngine);
 
@@ -1227,15 +1203,14 @@ BOOST_AUTO_TEST_CASE(testMarketASWSpread) {
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> floatingBond2(new
-        FloatingRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingBond2 = ext::make_shared<FloatingRateBond>(settlementDays, vars.faceAmount,
                          floatingBondSchedule2,
                          vars.iborIndex, Actual360(),
                          ModifiedFollowing, fixingDays,
                          std::vector<Real>(1,1), std::vector<Spread>(1,0.0025),
                          std::vector<Rate>(), std::vector<Rate>(),
                          inArrears,
-                         100.0, Date(24,September,2004)));
+                         100.0, Date(24,September,2004));
 
     floatingBond2->setPricingEngine(bondEngine);
 
@@ -1285,14 +1260,13 @@ BOOST_AUTO_TEST_CASE(testMarketASWSpread) {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> cmsBond1(new
-        CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
+    ext::shared_ptr<Bond> cmsBond1 = ext::make_shared<CmsRateBond>(settlementDays, vars.faceAmount, cmsBondSchedule1,
                     vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
                     inArrears,
-                    100.0, Date(22,August,2005)));
+                    100.0, Date(22,August,2005));
 
     cmsBond1->setPricingEngine(bondEngine);
 
@@ -1338,14 +1312,13 @@ BOOST_AUTO_TEST_CASE(testMarketASWSpread) {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> cmsBond2(new
-        CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
+    ext::shared_ptr<Bond> cmsBond2 = ext::make_shared<CmsRateBond>(settlementDays, vars.faceAmount, cmsBondSchedule2,
                     vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(), std::vector<Rate>(),
                     inArrears,
-                    100.0, Date(06,May,2005)));
+                    100.0, Date(06,May,2005));
 
     cmsBond2->setPricingEngine(bondEngine);
 
@@ -1386,11 +1359,10 @@ BOOST_AUTO_TEST_CASE(testMarketASWSpread) {
     // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
 
-    ext::shared_ptr<Bond> zeroCpnBond1(new
-        ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> zeroCpnBond1 = ext::make_shared<ZeroCouponBond>(settlementDays, bondCalendar, vars.faceAmount,
                        Date(20,December,2015),
                        Following,
-                       100.0, Date(19,December,1985)));
+                       100.0, Date(19,December,1985));
 
     zeroCpnBond1->setPricingEngine(bondEngine);
 
@@ -1431,11 +1403,10 @@ BOOST_AUTO_TEST_CASE(testMarketASWSpread) {
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
     // maturity occurs on a business day
 
-    ext::shared_ptr<Bond> zeroCpnBond2(new
-        ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> zeroCpnBond2 = ext::make_shared<ZeroCouponBond>(settlementDays, bondCalendar, vars.faceAmount,
                        Date(17,February,2028),
                        Following,
-                       100.0, Date(17,February,1998)));
+                       100.0, Date(17,February,1998));
 
     zeroCpnBond2->setPricingEngine(bondEngine);
 
@@ -1497,14 +1468,12 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> fixedBond1(new
-        FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule1,
+    ext::shared_ptr<Bond> fixedBond1 = ext::make_shared<FixedRateBond>(settlementDays, vars.faceAmount, fixedBondSchedule1,
                       std::vector<Rate>(1, 0.04),
                       ActualActual(ActualActual::ISDA), Following,
-                      100.0, Date(4,January,2005)));
+                      100.0, Date(4,January,2005));
 
-    ext::shared_ptr<PricingEngine> bondEngine(
-                            new DiscountingBondEngine(vars.termStructure));
+    ext::shared_ptr<PricingEngine> bondEngine = ext::make_shared<DiscountingBondEngine>(vars.termStructure);
     fixedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondImpliedValue1 = fixedBond1->cleanPrice();
@@ -1536,11 +1505,10 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> fixedBond2(new
-        FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule2,
+    ext::shared_ptr<Bond> fixedBond2 = ext::make_shared<FixedRateBond>(settlementDays, vars.faceAmount, fixedBondSchedule2,
                       std::vector<Rate>(1, 0.05),
                       Thirty360(Thirty360::BondBasis), Following,
-                      100.0, Date(5,February,2005)));
+                      100.0, Date(5,February,2005));
 
     fixedBond2->setPricingEngine(bondEngine);
 
@@ -1573,15 +1541,14 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
                                    Unadjusted, Unadjusted,
                                    DateGeneration::Backward, false);
 
-    ext::shared_ptr<Bond> floatingBond1(new
-        FloatingRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingBond1 = ext::make_shared<FloatingRateBond>(settlementDays, vars.faceAmount,
                          floatingBondSchedule1,
                          vars.iborIndex, Actual360(),
                          Following, fixingDays,
                          std::vector<Real>(1,1), std::vector<Spread>(1,0.0056),
                          std::vector<Rate>(), std::vector<Rate>(),
                          inArrears,
-                         100.0, Date(29,September,2003)));
+                         100.0, Date(29,September,2003));
 
     floatingBond1->setPricingEngine(bondEngine);
 
@@ -1614,15 +1581,14 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> floatingBond2(new
-        FloatingRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingBond2 = ext::make_shared<FloatingRateBond>(settlementDays, vars.faceAmount,
                          floatingBondSchedule2,
                          vars.iborIndex, Actual360(),
                          ModifiedFollowing, fixingDays,
                          std::vector<Real>(1,1), std::vector<Spread>(1,0.0025),
                          std::vector<Rate>(), std::vector<Rate>(),
                          inArrears,
-                         100.0, Date(24,September,2004)));
+                         100.0, Date(24,September,2004));
 
     floatingBond2->setPricingEngine(bondEngine);
 
@@ -1655,14 +1621,13 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> cmsBond1(new
-        CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
+    ext::shared_ptr<Bond> cmsBond1 = ext::make_shared<CmsRateBond>(settlementDays, vars.faceAmount, cmsBondSchedule1,
                     vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
                     inArrears,
-                    100.0, Date(22,August,2005)));
+                    100.0, Date(22,August,2005));
 
     cmsBond1->setPricingEngine(bondEngine);
 
@@ -1695,14 +1660,13 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               DateGeneration::Backward, false);
-    ext::shared_ptr<Bond> cmsBond2(new
-        CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
+    ext::shared_ptr<Bond> cmsBond2 = ext::make_shared<CmsRateBond>(settlementDays, vars.faceAmount, cmsBondSchedule2,
                     vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(), std::vector<Rate>(),
                     inArrears,
-                    100.0, Date(06,May,2005)));
+                    100.0, Date(06,May,2005));
 
     cmsBond2->setPricingEngine(bondEngine);
 
@@ -1730,11 +1694,10 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // Zero-Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
 
-    ext::shared_ptr<Bond> zeroCpnBond1(new
-        ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> zeroCpnBond1 = ext::make_shared<ZeroCouponBond>(settlementDays, bondCalendar, vars.faceAmount,
                        Date(20,December,2015),
                        Following,
-                       100.0, Date(19,December,1985)));
+                       100.0, Date(19,December,1985));
 
     zeroCpnBond1->setPricingEngine(bondEngine);
 
@@ -1763,11 +1726,10 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
     // maturity doesn't occur on a business day
 
-    ext::shared_ptr<Bond> zeroCpnBond2(new
-        ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> zeroCpnBond2 = ext::make_shared<ZeroCouponBond>(settlementDays, bondCalendar, vars.faceAmount,
                        Date(17,February,2028),
                        Following,
-                       100.0, Date(17,February,1998)));
+                       100.0, Date(17,February,1998));
 
     zeroCpnBond2->setPricingEngine(bondEngine);
 
@@ -1825,16 +1787,12 @@ BOOST_AUTO_TEST_CASE(testGenericBondImplied) {
         .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
-    fixedBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, fixedbondRedemption1)));
-    ext::shared_ptr<Bond> fixedBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    fixedBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, fixedbondRedemption1));
+    ext::shared_ptr<Bond> fixedBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate1, fixedBondStartDate1,
-             fixedBondLeg1));
-    ext::shared_ptr<PricingEngine> bondEngine(
-                               new DiscountingBondEngine(vars.termStructure));
-    ext::shared_ptr<PricingEngine> swapEngine(
-                               new DiscountingSwapEngine(vars.termStructure));
+             fixedBondLeg1);
+    ext::shared_ptr<PricingEngine> bondEngine = ext::make_shared<DiscountingBondEngine>(vars.termStructure);
+    ext::shared_ptr<PricingEngine> swapEngine = ext::make_shared<DiscountingSwapEngine>(vars.termStructure);
     fixedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondPrice1 = fixedBond1->cleanPrice();
@@ -1877,11 +1835,9 @@ BOOST_AUTO_TEST_CASE(testGenericBondImplied) {
         .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
-    fixedBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, fixedbondRedemption2)));
-    ext::shared_ptr<Bond> fixedBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
+    fixedBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, fixedbondRedemption2));
+    ext::shared_ptr<Bond> fixedBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2);
     fixedBond2->setPricingEngine(bondEngine);
 
     Real fixedBondPrice2 = fixedBond2->cleanPrice();
@@ -1922,12 +1878,10 @@ BOOST_AUTO_TEST_CASE(testGenericBondImplied) {
         .inArrears(inArrears);
     Date floatingbondRedemption1 =
         bondCalendar.adjust(floatingBondMaturityDate1, Following);
-    floatingBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, floatingbondRedemption1)));
-    ext::shared_ptr<Bond> floatingBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    floatingBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, floatingbondRedemption1));
+    ext::shared_ptr<Bond> floatingBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate1, floatingBondStartDate1,
-             floatingBondLeg1));
+             floatingBondLeg1);
     floatingBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond1->cashflows(), vars.pricer);
@@ -1972,12 +1926,10 @@ BOOST_AUTO_TEST_CASE(testGenericBondImplied) {
         .inArrears(inArrears);
     Date floatingbondRedemption2 =
         bondCalendar.adjust(floatingBondMaturityDate2, ModifiedFollowing);
-    floatingBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, floatingbondRedemption2)));
-    ext::shared_ptr<Bond> floatingBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    floatingBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, floatingbondRedemption2));
+    ext::shared_ptr<Bond> floatingBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate2, floatingBondStartDate2,
-             floatingBondLeg2));
+             floatingBondLeg2);
     floatingBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond2->cashflows(), vars.pricer);
@@ -2037,11 +1989,9 @@ BOOST_AUTO_TEST_CASE(testGenericBondImplied) {
         .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
-    cmsBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, cmsbondRedemption1)));
-    ext::shared_ptr<Bond> cmsBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
+    cmsBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, cmsbondRedemption1));
+    ext::shared_ptr<Bond> cmsBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1);
     cmsBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond1->cashflows(), vars.cmspricer);
@@ -2084,11 +2034,9 @@ BOOST_AUTO_TEST_CASE(testGenericBondImplied) {
         .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
-    cmsBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, cmsbondRedemption2)));
-    ext::shared_ptr<Bond> cmsBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
+    cmsBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, cmsbondRedemption2));
+    ext::shared_ptr<Bond> cmsBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2);
     cmsBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond2->cashflows(), vars.cmspricer);
@@ -2120,11 +2068,9 @@ BOOST_AUTO_TEST_CASE(testGenericBondImplied) {
     Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
     Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
-    Leg zeroCpnBondLeg1 = Leg(1, ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
-    ext::shared_ptr<Bond> zeroCpnBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
+    Leg zeroCpnBondLeg1 = Leg(1, ext::make_shared<SimpleCashFlow>(100.0, zeroCpnBondRedemption1));
+    ext::shared_ptr<Bond> zeroCpnBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1);
     zeroCpnBond1->setPricingEngine(bondEngine);
 
     Real zeroCpnBondPrice1 = zeroCpnBond1->cleanPrice();
@@ -2154,11 +2100,9 @@ BOOST_AUTO_TEST_CASE(testGenericBondImplied) {
     Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
     Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
-    Leg zeroCpnBondLeg2 = Leg(1, ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, zerocpbondRedemption2)));
-    ext::shared_ptr<Bond> zeroCpnBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
+    Leg zeroCpnBondLeg2 = Leg(1, ext::make_shared<SimpleCashFlow>(100.0, zerocpbondRedemption2));
+    ext::shared_ptr<Bond> zeroCpnBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2);
     zeroCpnBond2->setPricingEngine(bondEngine);
 
     Real zeroCpnBondPrice2 = zeroCpnBond2->cleanPrice();
@@ -2215,16 +2159,12 @@ BOOST_AUTO_TEST_CASE(testMASWWithGenericBond) {
         .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
-    fixedBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, fixedbondRedemption1)));
-    ext::shared_ptr<Bond> fixedBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    fixedBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, fixedbondRedemption1));
+    ext::shared_ptr<Bond> fixedBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate1, fixedBondStartDate1,
-             fixedBondLeg1));
-    ext::shared_ptr<PricingEngine> bondEngine(
-                               new DiscountingBondEngine(vars.termStructure));
-    ext::shared_ptr<PricingEngine> swapEngine(
-                               new DiscountingSwapEngine(vars.termStructure));
+             fixedBondLeg1);
+    ext::shared_ptr<PricingEngine> bondEngine = ext::make_shared<DiscountingBondEngine>(vars.termStructure);
+    ext::shared_ptr<PricingEngine> swapEngine = ext::make_shared<DiscountingSwapEngine>(vars.termStructure);
     fixedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondMktPrice1 = 89.22 ; // market price observed on 7th June 2007
@@ -2277,11 +2217,9 @@ BOOST_AUTO_TEST_CASE(testMASWWithGenericBond) {
         .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
-    fixedBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, fixedbondRedemption2)));
-    ext::shared_ptr<Bond> fixedBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
+    fixedBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, fixedbondRedemption2));
+    ext::shared_ptr<Bond> fixedBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2);
     fixedBond2->setPricingEngine(bondEngine);
 
     Real fixedBondMktPrice2 = 99.98 ; // market price observed on 7th June 2007
@@ -2333,12 +2271,10 @@ BOOST_AUTO_TEST_CASE(testMASWWithGenericBond) {
         .inArrears(inArrears);
     Date floatingbondRedemption1 =
         bondCalendar.adjust(floatingBondMaturityDate1, Following);
-    floatingBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, floatingbondRedemption1)));
-    ext::shared_ptr<Bond> floatingBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    floatingBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, floatingbondRedemption1));
+    ext::shared_ptr<Bond> floatingBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate1, floatingBondStartDate1,
-             floatingBondLeg1));
+             floatingBondLeg1);
     floatingBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond1->cashflows(), vars.pricer);
@@ -2397,12 +2333,10 @@ BOOST_AUTO_TEST_CASE(testMASWWithGenericBond) {
         .inArrears(inArrears);
     Date floatingbondRedemption2 =
         bondCalendar.adjust(floatingBondMaturityDate2, ModifiedFollowing);
-    floatingBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, floatingbondRedemption2)));
-    ext::shared_ptr<Bond> floatingBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    floatingBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, floatingbondRedemption2));
+    ext::shared_ptr<Bond> floatingBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate2, floatingBondStartDate2,
-             floatingBondLeg2));
+             floatingBondLeg2);
     floatingBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond2->cashflows(), vars.pricer);
@@ -2461,11 +2395,9 @@ BOOST_AUTO_TEST_CASE(testMASWWithGenericBond) {
         .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
-    cmsBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, cmsbondRedemption1)));
-    ext::shared_ptr<Bond> cmsBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
+    cmsBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, cmsbondRedemption1));
+    ext::shared_ptr<Bond> cmsBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1);
     cmsBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond1->cashflows(), vars.cmspricer);
@@ -2519,11 +2451,9 @@ BOOST_AUTO_TEST_CASE(testMASWWithGenericBond) {
         .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
-    cmsBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, cmsbondRedemption2)));
-    ext::shared_ptr<Bond> cmsBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
+    cmsBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, cmsbondRedemption2));
+    ext::shared_ptr<Bond> cmsBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2);
     cmsBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond2->cashflows(), vars.cmspricer);
@@ -2566,11 +2496,9 @@ BOOST_AUTO_TEST_CASE(testMASWWithGenericBond) {
     Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
     Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
-    Leg zeroCpnBondLeg1 = Leg(1, ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
-    ext::shared_ptr<Bond> zeroCpnBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
+    Leg zeroCpnBondLeg1 = Leg(1, ext::make_shared<SimpleCashFlow>(100.0, zeroCpnBondRedemption1));
+    ext::shared_ptr<Bond> zeroCpnBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1);
     zeroCpnBond1->setPricingEngine(bondEngine);
 
     // market price observed on 12th June 2007
@@ -2613,11 +2541,9 @@ BOOST_AUTO_TEST_CASE(testMASWWithGenericBond) {
     Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
     Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
-    Leg zeroCpnBondLeg2 = Leg(1, ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, zerocpbondRedemption2)));
-    ext::shared_ptr<Bond> zeroCpnBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
+    Leg zeroCpnBondLeg2 = Leg(1, ext::make_shared<SimpleCashFlow>(100.0, zerocpbondRedemption2));
+    ext::shared_ptr<Bond> zeroCpnBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2);
     zeroCpnBond2->setPricingEngine(bondEngine);
 
     // Real zeroCpnBondPrice2 = zeroCpnBond2->cleanPrice();
@@ -2683,14 +2609,11 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
         .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
-    fixedBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, fixedbondRedemption1)));
-    ext::shared_ptr<Bond> fixedBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    fixedBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, fixedbondRedemption1));
+    ext::shared_ptr<Bond> fixedBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate1, fixedBondStartDate1,
-             fixedBondLeg1));
-    ext::shared_ptr<PricingEngine> bondEngine(new
-        DiscountingBondEngine(vars.termStructure));
+             fixedBondLeg1);
+    ext::shared_ptr<PricingEngine> bondEngine = ext::make_shared<DiscountingBondEngine>(vars.termStructure);
     fixedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondImpliedValue1 = fixedBond1->cleanPrice();
@@ -2729,11 +2652,9 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
         .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
-    fixedBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, fixedbondRedemption2)));
-    ext::shared_ptr<Bond> fixedBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
+    fixedBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, fixedbondRedemption2));
+    ext::shared_ptr<Bond> fixedBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2);
     fixedBond2->setPricingEngine(bondEngine);
 
     Real fixedBondImpliedValue2 = fixedBond2->cleanPrice();
@@ -2775,12 +2696,10 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
         .inArrears(inArrears);
     Date floatingbondRedemption1 =
         bondCalendar.adjust(floatingBondMaturityDate1, Following);
-    floatingBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, floatingbondRedemption1)));
-    ext::shared_ptr<Bond> floatingBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    floatingBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, floatingbondRedemption1));
+    ext::shared_ptr<Bond> floatingBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate1, floatingBondStartDate1,
-             floatingBondLeg1));
+             floatingBondLeg1);
     floatingBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond1->cashflows(), vars.pricer);
@@ -2823,12 +2742,10 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
         .inArrears(inArrears);
     Date floatingbondRedemption2 =
         bondCalendar.adjust(floatingBondMaturityDate2, ModifiedFollowing);
-    floatingBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, floatingbondRedemption2)));
-    ext::shared_ptr<Bond> floatingBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    floatingBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, floatingbondRedemption2));
+    ext::shared_ptr<Bond> floatingBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate2, floatingBondStartDate2,
-             floatingBondLeg2));
+             floatingBondLeg2);
     floatingBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond2->cashflows(), vars.pricer);
@@ -2871,11 +2788,9 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
         .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
-    cmsBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, cmsbondRedemption1)));
-    ext::shared_ptr<Bond> cmsBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
+    cmsBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, cmsbondRedemption1));
+    ext::shared_ptr<Bond> cmsBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1);
     cmsBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond1->cashflows(), vars.cmspricer);
@@ -2917,11 +2832,9 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
         .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
-    cmsBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, cmsbondRedemption2)));
-    ext::shared_ptr<Bond> cmsBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
+    cmsBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, cmsbondRedemption2));
+    ext::shared_ptr<Bond> cmsBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2);
     cmsBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond2->cashflows(), vars.cmspricer);
@@ -2952,11 +2865,9 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
     Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
-    Leg zeroCpnBondLeg1 = Leg(1, ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
-    ext::shared_ptr<Bond> zeroCpnBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
+    Leg zeroCpnBondLeg1 = Leg(1, ext::make_shared<SimpleCashFlow>(100.0, zeroCpnBondRedemption1));
+    ext::shared_ptr<Bond> zeroCpnBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1);
     zeroCpnBond1->setPricingEngine(bondEngine);
 
     Real zeroCpnBondImpliedValue1 = zeroCpnBond1->cleanPrice();
@@ -2988,11 +2899,9 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
     Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
-    Leg zeroCpnBondLeg2 = Leg(1, ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, zerocpbondRedemption2)));
-    ext::shared_ptr<Bond> zeroCpnBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
+    Leg zeroCpnBondLeg2 = Leg(1, ext::make_shared<SimpleCashFlow>(100.0, zerocpbondRedemption2));
+    ext::shared_ptr<Bond> zeroCpnBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2);
     zeroCpnBond2->setPricingEngine(bondEngine);
 
     Real zeroCpnBondImpliedValue2 = zeroCpnBond2->cleanPrice();
@@ -3044,23 +2953,19 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBond) {
         .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
-    fixedBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, fixedbondRedemption1)));
+    fixedBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, fixedbondRedemption1));
     // generic bond
-    ext::shared_ptr<Bond> fixedBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> fixedBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate1, fixedBondStartDate1,
-             fixedBondLeg1));
-    ext::shared_ptr<PricingEngine> bondEngine(new
-        DiscountingBondEngine(vars.termStructure));
+             fixedBondLeg1);
+    ext::shared_ptr<PricingEngine> bondEngine = ext::make_shared<DiscountingBondEngine>(vars.termStructure);
     fixedBond1->setPricingEngine(bondEngine);
 
     // equivalent specialized fixed rate bond
-    ext::shared_ptr<Bond> fixedSpecializedBond1(new
-        FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule1,
+    ext::shared_ptr<Bond> fixedSpecializedBond1 = ext::make_shared<FixedRateBond>(settlementDays, vars.faceAmount, fixedBondSchedule1,
                       std::vector<Rate>(1, 0.04),
                       ActualActual(ActualActual::ISDA), Following,
-                      100.0, Date(4,January,2005) ));
+                      100.0, Date(4,January,2005) );
     fixedSpecializedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondTheoValue1 = fixedBond1->cleanPrice();
@@ -3108,21 +3013,18 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBond) {
         .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
-    fixedBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, fixedbondRedemption2)));
+    fixedBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, fixedbondRedemption2));
 
     // generic bond
-    ext::shared_ptr<Bond> fixedBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
+    ext::shared_ptr<Bond> fixedBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2);
     fixedBond2->setPricingEngine(bondEngine);
 
     // equivalent specialized fixed rate bond
-    ext::shared_ptr<Bond> fixedSpecializedBond2(new
-         FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule2,
+    ext::shared_ptr<Bond> fixedSpecializedBond2 = ext::make_shared<FixedRateBond>(settlementDays, vars.faceAmount, fixedBondSchedule2,
                       std::vector<Rate>(1, 0.05),
                       Thirty360(Thirty360::BondBasis), Following,
-                      100.0, Date(5,February,2005)));
+                      100.0, Date(5,February,2005));
     fixedSpecializedBond2->setPricingEngine(bondEngine);
 
     Real fixedBondTheoValue2 = fixedBond2->cleanPrice();
@@ -3174,18 +3076,15 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBond) {
         .inArrears(inArrears);
     Date floatingbondRedemption1 =
         bondCalendar.adjust(floatingBondMaturityDate1, Following);
-    floatingBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, floatingbondRedemption1)));
+    floatingBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, floatingbondRedemption1));
     // generic bond
-    ext::shared_ptr<Bond> floatingBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate1, floatingBondStartDate1,
-             floatingBondLeg1));
+             floatingBondLeg1);
     floatingBond1->setPricingEngine(bondEngine);
 
     // equivalent specialized floater
-    ext::shared_ptr<Bond> floatingSpecializedBond1(new
-           FloatingRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingSpecializedBond1 = ext::make_shared<FloatingRateBond>(settlementDays, vars.faceAmount,
                             floatingBondSchedule1,
                             vars.iborIndex, Actual360(),
                             Following, fixingDays,
@@ -3193,7 +3092,7 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBond) {
                             std::vector<Spread>(1,0.0056),
                             std::vector<Rate>(), std::vector<Rate>(),
                             inArrears,
-                            100.0, Date(29,September,2003)));
+                            100.0, Date(29,September,2003));
     floatingSpecializedBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond1->cashflows(), vars.pricer);
@@ -3253,18 +3152,15 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBond) {
         .inArrears(inArrears);
     Date floatingbondRedemption2 =
         bondCalendar.adjust(floatingBondMaturityDate2, ModifiedFollowing);
-    floatingBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, floatingbondRedemption2)));
+    floatingBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, floatingbondRedemption2));
     // generic bond
-    ext::shared_ptr<Bond> floatingBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate2, floatingBondStartDate2,
-             floatingBondLeg2));
+             floatingBondLeg2);
     floatingBond2->setPricingEngine(bondEngine);
 
     // equivalent specialized floater
-    ext::shared_ptr<Bond> floatingSpecializedBond2(new
-        FloatingRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingSpecializedBond2 = ext::make_shared<FloatingRateBond>(settlementDays, vars.faceAmount,
                          floatingBondSchedule2,
                          vars.iborIndex, Actual360(),
                          ModifiedFollowing, fixingDays,
@@ -3272,7 +3168,7 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBond) {
                          std::vector<Spread>(1,0.0025),
                          std::vector<Rate>(), std::vector<Rate>(),
                          inArrears,
-                         100.0, Date(24,September,2004)));
+                         100.0, Date(24,September,2004));
     floatingSpecializedBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond2->cashflows(), vars.pricer);
@@ -3335,23 +3231,20 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBond) {
         .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
-    cmsBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, cmsbondRedemption1)));
+    cmsBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, cmsbondRedemption1));
     // generic cms bond
-    ext::shared_ptr<Bond> cmsBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
+    ext::shared_ptr<Bond> cmsBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1);
     cmsBond1->setPricingEngine(bondEngine);
 
     // equivalent specialized cms bond
-    ext::shared_ptr<Bond> cmsSpecializedBond1(new
-        CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
+    ext::shared_ptr<Bond> cmsSpecializedBond1 = ext::make_shared<CmsRateBond>(settlementDays, vars.faceAmount, cmsBondSchedule1,
                 vars.swapIndex, Thirty360(Thirty360::BondBasis),
                 Following, fixingDays,
                 std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
                 inArrears,
-                100.0, Date(22,August,2005)));
+                100.0, Date(22,August,2005));
     cmsSpecializedBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond1->cashflows(), vars.cmspricer);
@@ -3404,23 +3297,20 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBond) {
         .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
-    cmsBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, cmsbondRedemption2)));
+    cmsBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, cmsbondRedemption2));
     // generic bond
-    ext::shared_ptr<Bond> cmsBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
+    ext::shared_ptr<Bond> cmsBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2);
     cmsBond2->setPricingEngine(bondEngine);
 
     // equivalent specialized cms bond
-    ext::shared_ptr<Bond> cmsSpecializedBond2(new
-        CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
+    ext::shared_ptr<Bond> cmsSpecializedBond2 = ext::make_shared<CmsRateBond>(settlementDays, vars.faceAmount, cmsBondSchedule2,
                 vars.swapIndex, Thirty360(Thirty360::BondBasis),
                 Following, fixingDays,
                 std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(), std::vector<Rate>(),
                 inArrears,
-                100.0, Date(06,May,2005)));
+                100.0, Date(06,May,2005));
     cmsSpecializedBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond2->cashflows(), vars.cmspricer);
@@ -3463,20 +3353,17 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBond) {
     Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
     Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
-    Leg zeroCpnBondLeg1 = Leg(1, ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
+    Leg zeroCpnBondLeg1 = Leg(1, ext::make_shared<SimpleCashFlow>(100.0, zeroCpnBondRedemption1));
     // generic bond
-    ext::shared_ptr<Bond> zeroCpnBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
+    ext::shared_ptr<Bond> zeroCpnBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1);
     zeroCpnBond1->setPricingEngine(bondEngine);
 
     // specialized zerocpn bond
-    ext::shared_ptr<Bond> zeroCpnSpecializedBond1(new
-        ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> zeroCpnSpecializedBond1 = ext::make_shared<ZeroCouponBond>(settlementDays, bondCalendar, vars.faceAmount,
                   Date(20,December,2015),
                   Following,
-                  100.0, Date(19,December,1985)));
+                  100.0, Date(19,December,1985));
     zeroCpnSpecializedBond1->setPricingEngine(bondEngine);
 
     Real zeroCpnBondTheoValue1 = zeroCpnBond1->cleanPrice();
@@ -3521,20 +3408,17 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBond) {
     Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
     Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
-    Leg zeroCpnBondLeg2 = Leg(1, ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, zerocpbondRedemption2)));
+    Leg zeroCpnBondLeg2 = Leg(1, ext::make_shared<SimpleCashFlow>(100.0, zerocpbondRedemption2));
     // generic bond
-    ext::shared_ptr<Bond> zeroCpnBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
+    ext::shared_ptr<Bond> zeroCpnBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2);
     zeroCpnBond2->setPricingEngine(bondEngine);
 
     // specialized zerocpn bond
-    ext::shared_ptr<Bond> zeroCpnSpecializedBond2(new
-        ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> zeroCpnSpecializedBond2 = ext::make_shared<ZeroCouponBond>(settlementDays, bondCalendar, vars.faceAmount,
                    Date(17,February,2028),
                    Following,
-                   100.0, Date(17,February,1998)));
+                   100.0, Date(17,February,1998));
     zeroCpnSpecializedBond2->setPricingEngine(bondEngine);
 
     Real zeroCpnBondTheoValue2 = zeroCpnBond2->cleanPrice();
@@ -3605,25 +3489,20 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBondUsingAsw) {
         .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
-    fixedBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, fixedbondRedemption1)));
+    fixedBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, fixedbondRedemption1));
     // generic bond
-    ext::shared_ptr<Bond> fixedBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> fixedBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate1, fixedBondStartDate1,
-             fixedBondLeg1));
-    ext::shared_ptr<PricingEngine> bondEngine(
-                               new DiscountingBondEngine(vars.termStructure));
-    ext::shared_ptr<PricingEngine> swapEngine(
-                               new DiscountingSwapEngine(vars.termStructure));
+             fixedBondLeg1);
+    ext::shared_ptr<PricingEngine> bondEngine = ext::make_shared<DiscountingBondEngine>(vars.termStructure);
+    ext::shared_ptr<PricingEngine> swapEngine = ext::make_shared<DiscountingSwapEngine>(vars.termStructure);
     fixedBond1->setPricingEngine(bondEngine);
 
     // equivalent specialized fixed rate bond
-    ext::shared_ptr<Bond> fixedSpecializedBond1(new
-        FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule1,
+    ext::shared_ptr<Bond> fixedSpecializedBond1 = ext::make_shared<FixedRateBond>(settlementDays, vars.faceAmount, fixedBondSchedule1,
                       std::vector<Rate>(1, 0.04),
                       ActualActual(ActualActual::ISDA), Following,
-                      100.0, Date(4,January,2005) ));
+                      100.0, Date(4,January,2005) );
     fixedSpecializedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondPrice1 = fixedBond1->cleanPrice();
@@ -3708,21 +3587,18 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBondUsingAsw) {
         .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
-    fixedBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, fixedbondRedemption2)));
+    fixedBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, fixedbondRedemption2));
 
     // generic bond
-    ext::shared_ptr<Bond> fixedBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
+    ext::shared_ptr<Bond> fixedBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2);
     fixedBond2->setPricingEngine(bondEngine);
 
     // equivalent specialized fixed rate bond
-    ext::shared_ptr<Bond> fixedSpecializedBond2(new
-         FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule2,
+    ext::shared_ptr<Bond> fixedSpecializedBond2 = ext::make_shared<FixedRateBond>(settlementDays, vars.faceAmount, fixedBondSchedule2,
                       std::vector<Rate>(1, 0.05),
                       Thirty360(Thirty360::BondBasis), Following,
-                      100.0, Date(5,February,2005)));
+                      100.0, Date(5,February,2005));
     fixedSpecializedBond2->setPricingEngine(bondEngine);
 
     Real fixedBondPrice2 = fixedBond2->cleanPrice();
@@ -3810,18 +3686,15 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBondUsingAsw) {
         .inArrears(inArrears);
     Date floatingbondRedemption1 =
         bondCalendar.adjust(floatingBondMaturityDate1, Following);
-    floatingBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, floatingbondRedemption1)));
+    floatingBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, floatingbondRedemption1));
     // generic bond
-    ext::shared_ptr<Bond> floatingBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate1, floatingBondStartDate1,
-             floatingBondLeg1));
+             floatingBondLeg1);
     floatingBond1->setPricingEngine(bondEngine);
 
     // equivalent specialized floater
-    ext::shared_ptr<Bond> floatingSpecializedBond1(new
-           FloatingRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingSpecializedBond1 = ext::make_shared<FloatingRateBond>(settlementDays, vars.faceAmount,
                             floatingBondSchedule1,
                             vars.iborIndex, Actual360(),
                             Following, fixingDays,
@@ -3829,7 +3702,7 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBondUsingAsw) {
                             std::vector<Spread>(1,0.0056),
                             std::vector<Rate>(), std::vector<Rate>(),
                             inArrears,
-                            100.0, Date(29,September,2003)));
+                            100.0, Date(29,September,2003));
     floatingSpecializedBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond1->cashflows(), vars.pricer);
@@ -3922,18 +3795,15 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBondUsingAsw) {
     Date floatingbondRedemption2 =
         bondCalendar.adjust(floatingBondMaturityDate2,
                             ModifiedFollowing);
-    floatingBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, floatingbondRedemption2)));
+    floatingBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, floatingbondRedemption2));
     // generic bond
-    ext::shared_ptr<Bond> floatingBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate2, floatingBondStartDate2,
-             floatingBondLeg2));
+             floatingBondLeg2);
     floatingBond2->setPricingEngine(bondEngine);
 
     // equivalent specialized floater
-    ext::shared_ptr<Bond> floatingSpecializedBond2(new
-        FloatingRateBond(settlementDays, vars.faceAmount,
+    ext::shared_ptr<Bond> floatingSpecializedBond2 = ext::make_shared<FloatingRateBond>(settlementDays, vars.faceAmount,
                          floatingBondSchedule2,
                          vars.iborIndex, Actual360(),
                          ModifiedFollowing, fixingDays,
@@ -3941,7 +3811,7 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBondUsingAsw) {
                          std::vector<Spread>(1,0.0025),
                          std::vector<Rate>(), std::vector<Rate>(),
                          inArrears,
-                         100.0, Date(24,September,2004)));
+                         100.0, Date(24,September,2004));
     floatingSpecializedBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond2->cashflows(), vars.pricer);
@@ -4035,23 +3905,20 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBondUsingAsw) {
         .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
-    cmsBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, cmsbondRedemption1)));
+    cmsBondLeg1.push_back(ext::make_shared<SimpleCashFlow>(100.0, cmsbondRedemption1));
     // generic cms bond
-    ext::shared_ptr<Bond> cmsBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
+    ext::shared_ptr<Bond> cmsBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1);
     cmsBond1->setPricingEngine(bondEngine);
 
     // equivalent specialized cms bond
-    ext::shared_ptr<Bond> cmsSpecializedBond1(new
-        CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
+    ext::shared_ptr<Bond> cmsSpecializedBond1 = ext::make_shared<CmsRateBond>(settlementDays, vars.faceAmount, cmsBondSchedule1,
                 vars.swapIndex, Thirty360(Thirty360::BondBasis),
                 Following, fixingDays,
                 std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
                 inArrears,
-                100.0, Date(22,August,2005)));
+                100.0, Date(22,August,2005));
     cmsSpecializedBond1->setPricingEngine(bondEngine);
 
 
@@ -4137,23 +4004,20 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBondUsingAsw) {
         .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
-    cmsBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, cmsbondRedemption2)));
+    cmsBondLeg2.push_back(ext::make_shared<SimpleCashFlow>(100.0, cmsbondRedemption2));
     // generic bond
-    ext::shared_ptr<Bond> cmsBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
+    ext::shared_ptr<Bond> cmsBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2);
     cmsBond2->setPricingEngine(bondEngine);
 
     // equivalent specialized cms bond
-    ext::shared_ptr<Bond> cmsSpecializedBond2(new
-        CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
+    ext::shared_ptr<Bond> cmsSpecializedBond2 = ext::make_shared<CmsRateBond>(settlementDays, vars.faceAmount, cmsBondSchedule2,
                 vars.swapIndex, Thirty360(Thirty360::BondBasis),
                 Following, fixingDays,
                 std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(), std::vector<Rate>(),
                 inArrears,
-                100.0, Date(06,May,2005)));
+                100.0, Date(06,May,2005));
     cmsSpecializedBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond2->cashflows(), vars.cmspricer);
@@ -4229,20 +4093,17 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBondUsingAsw) {
     Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
     Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
-    Leg zeroCpnBondLeg1 = Leg(1, ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
+    Leg zeroCpnBondLeg1 = Leg(1, ext::make_shared<SimpleCashFlow>(100.0, zeroCpnBondRedemption1));
     // generic bond
-    ext::shared_ptr<Bond> zeroCpnBond1(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
+    ext::shared_ptr<Bond> zeroCpnBond1 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1);
     zeroCpnBond1->setPricingEngine(bondEngine);
 
     // specialized zerocpn bond
-    ext::shared_ptr<Bond> zeroCpnSpecializedBond1(new
-        ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> zeroCpnSpecializedBond1 = ext::make_shared<ZeroCouponBond>(settlementDays, bondCalendar, vars.faceAmount,
                   Date(20,December,2015),
                   Following,
-                  100.0, Date(19,December,1985)));
+                  100.0, Date(19,December,1985));
     zeroCpnSpecializedBond1->setPricingEngine(bondEngine);
 
     Real zeroCpnBondPrice1 = zeroCpnBond1->cleanPrice();
@@ -4319,20 +4180,17 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBondUsingAsw) {
     Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
     Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
-    Leg zeroCpnBondLeg2 = Leg(1, ext::shared_ptr<CashFlow>(new
-        SimpleCashFlow(100.0, zerocpbondRedemption2)));
+    Leg zeroCpnBondLeg2 = Leg(1, ext::make_shared<SimpleCashFlow>(100.0, zerocpbondRedemption2));
     // generic bond
-    ext::shared_ptr<Bond> zeroCpnBond2(new
-        Bond(settlementDays, bondCalendar, vars.faceAmount,
-             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
+    ext::shared_ptr<Bond> zeroCpnBond2 = ext::make_shared<Bond>(settlementDays, bondCalendar, vars.faceAmount,
+             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2);
     zeroCpnBond2->setPricingEngine(bondEngine);
 
     // specialized zerocpn bond
-    ext::shared_ptr<Bond> zeroCpnSpecializedBond2(new
-        ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
+    ext::shared_ptr<Bond> zeroCpnSpecializedBond2 = ext::make_shared<ZeroCouponBond>(settlementDays, bondCalendar, vars.faceAmount,
                    Date(17,February,2028),
                    Following,
-                   100.0, Date(17,February,1998)));
+                   100.0, Date(17,February,1998));
     zeroCpnSpecializedBond2->setPricingEngine(bondEngine);
 
     Real zeroCpnBondPrice2 = zeroCpnBond2->cleanPrice();

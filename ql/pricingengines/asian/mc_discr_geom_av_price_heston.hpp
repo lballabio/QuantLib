@@ -162,15 +162,13 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<P>(this->process_);
         QL_REQUIRE(process, "Heston like process required");
 
-        return ext::shared_ptr<typename
-            MCDiscreteGeometricAPHestonEngine<RNG,S,P>::path_pricer_type>(
-                new GeometricAPOHestonPathPricer(
+        return ext::make_shared<GeometricAPOHestonPathPricer>(
                     payoff->optionType(),
                     payoff->strike(),
                     process->riskFreeRate()->discount(exercise->lastDate()),
                     fixingIndexes,
                     this->arguments_.runningAccumulator,
-                    this->arguments_.pastFixings));
+                    this->arguments_.pastFixings);
     }
 
     template <class RNG, class S, class P>

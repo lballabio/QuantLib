@@ -80,7 +80,7 @@ namespace QuantLib {
 
     std::unique_ptr<MarketModelExerciseValue>
     BermudanSwaptionExerciseValue::clone() const {
-        return std::unique_ptr<MarketModelExerciseValue>(new BermudanSwaptionExerciseValue(*this));
+        return std::make_unique<BermudanSwaptionExerciseValue>(*this);
     }
 
 }

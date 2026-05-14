@@ -588,10 +588,9 @@ namespace QuantLib {
         void ConvexMonotoneImpl<I1,I2>::update() {
             sectionHelpers_.clear();
             if (length_ == 2) { //single period
-                ext::shared_ptr<SectionHelper> singleHelper(
-                              new EverywhereConstantHelper(this->yBegin_[1],
+                ext::shared_ptr<SectionHelper> singleHelper = ext::make_shared<EverywhereConstantHelper>(this->yBegin_[1],
                                                            0.0,
-                                                           this->xBegin_[0]));
+                                                           this->xBegin_[0]);
                 sectionHelpers_[this->xBegin_[1]] = singleHelper;
                 extrapolationHelper_ = singleHelper;
                 return;
@@ -639,11 +638,10 @@ namespace QuantLib {
                 //first deal with the zero gradient case
                 if ( std::fabs(gPrev) < 1.0E-14
                      && std::fabs(gNext) < 1.0E-14 ) {
-                    ext::shared_ptr<SectionHelper> singleHelper(
-                                     new ConstantGradHelper(f[i-1], primitive,
+                    ext::shared_ptr<SectionHelper> singleHelper = ext::make_shared<ConstantGradHelper>(f[i-1], primitive,
                                                             this->xBegin_[i-1],
                                                             this->xBegin_[i],
-                                                            f[i]));
+                                                            f[i]);
                     sectionHelpers_[this->xBegin_[i]] = singleHelper;
                 } else {
                     Real quadraticity = quadraticity_;
@@ -652,20 +650,18 @@ namespace QuantLib {
                     if (quadraticity_ > 0.0) {
                         if (gPrev >= -2.0*gNext && gPrev > -0.5*gNext && forcePositive_) {
                             quadraticHelper =
-                                ext::shared_ptr<SectionHelper>(
-                                    new QuadraticMinHelper(this->xBegin_[i-1],
+                                ext::make_shared<QuadraticMinHelper>(this->xBegin_[i-1],
                                                            this->xBegin_[i],
                                                            f[i-1], f[i],
                                                            this->yBegin_[i],
-                                                           primitive) );
+                                                           primitive);
                         } else {
                             quadraticHelper =
-                                ext::shared_ptr<SectionHelper>(
-                                    new QuadraticHelper(this->xBegin_[i-1],
+                                ext::make_shared<QuadraticHelper>(this->xBegin_[i-1],
                                                         this->xBegin_[i],
                                                         f[i-1], f[i],
                                                         this->yBegin_[i],
-                                                        primitive) );
+                                                        primitive);
                         }
                     }
                     if (quadraticity_ < 1.0) {
@@ -676,22 +672,20 @@ namespace QuantLib {
                             if (quadraticity_ == 0) {
                                 if (forcePositive_) {
                                     quadraticHelper =
-                                        ext::shared_ptr<SectionHelper>(
-                                            new QuadraticMinHelper(
+                                        ext::make_shared<QuadraticMinHelper>(
                                                            this->xBegin_[i-1],
                                                            this->xBegin_[i],
                                                            f[i-1], f[i],
                                                            this->yBegin_[i],
-                                                           primitive) );
+                                                           primitive);
                                 } else {
                                     quadraticHelper =
-                                        ext::shared_ptr<SectionHelper>(
-                                            new QuadraticHelper(
+                                        ext::make_shared<QuadraticHelper>(
                                                            this->xBegin_[i-1],
                                                            this->xBegin_[i],
                                                            f[i-1], f[i],
                                                            this->yBegin_[i],
-                                                           primitive) );
+                                                           primitive);
                                 }
                             }
                         }
@@ -702,32 +696,29 @@ namespace QuantLib {
                             Real b2 = (1.0 + monotonicity_)/2.0;
                             if (eta < b2) {
                                 convMonotoneHelper =
-                                    ext::shared_ptr<SectionHelper>(
-                                        new ConvexMonotone2Helper(
+                                    ext::make_shared<ConvexMonotone2Helper>(
                                                            this->xBegin_[i-1],
                                                            this->xBegin_[i],
                                                            gPrev, gNext,
                                                            this->yBegin_[i],
-                                                           eta, primitive));
+                                                           eta, primitive);
                             } else {
                                 if (forcePositive_) {
                                     convMonotoneHelper =
-                                        ext::shared_ptr<SectionHelper>(
-                                            new ConvexMonotone4MinHelper(
+                                        ext::make_shared<ConvexMonotone4MinHelper>(
                                                            this->xBegin_[i-1],
                                                            this->xBegin_[i],
                                                            gPrev, gNext,
                                                            this->yBegin_[i],
-                                                           b2, primitive));
+                                                           b2, primitive);
                                 } else {
                                     convMonotoneHelper =
-                                        ext::shared_ptr<SectionHelper>(
-                                            new ConvexMonotone4Helper(
+                                        ext::make_shared<ConvexMonotone4Helper>(
                                                            this->xBegin_[i-1],
                                                            this->xBegin_[i],
                                                            gPrev, gNext,
                                                            this->yBegin_[i],
-                                                           b2, primitive));
+                                                           b2, primitive);
                                 }
                             }
                         }
@@ -737,32 +728,29 @@ namespace QuantLib {
                             Real b3 = (1.0 - monotonicity_)/2.0;
                             if (eta > b3) {
                                 convMonotoneHelper =
-                                    ext::shared_ptr<SectionHelper>(
-                                        new ConvexMonotone3Helper(
+                                    ext::make_shared<ConvexMonotone3Helper>(
                                                            this->xBegin_[i-1],
                                                            this->xBegin_[i],
                                                            gPrev, gNext,
                                                            this->yBegin_[i],
-                                                           eta, primitive));
+                                                           eta, primitive);
                             } else {
                                 if (forcePositive_) {
                                     convMonotoneHelper =
-                                        ext::shared_ptr<SectionHelper>(
-                                            new ConvexMonotone4MinHelper(
+                                        ext::make_shared<ConvexMonotone4MinHelper>(
                                                            this->xBegin_[i-1],
                                                            this->xBegin_[i],
                                                            gPrev, gNext,
                                                            this->yBegin_[i],
-                                                           b3, primitive));
+                                                           b3, primitive);
                                 } else {
                                     convMonotoneHelper =
-                                        ext::shared_ptr<SectionHelper>(
-                                            new ConvexMonotone4Helper(
+                                        ext::make_shared<ConvexMonotone4Helper>(
                                                            this->xBegin_[i-1],
                                                            this->xBegin_[i],
                                                            gPrev, gNext,
                                                            this->yBegin_[i],
-                                                           b3, primitive));
+                                                           b3, primitive);
                                 }
                             }
                         } else {
@@ -775,22 +763,20 @@ namespace QuantLib {
                                 eta = b3;
                             if (forcePositive_) {
                                 convMonotoneHelper =
-                                    ext::shared_ptr<SectionHelper>(
-                                        new ConvexMonotone4MinHelper(
+                                    ext::make_shared<ConvexMonotone4MinHelper>(
                                                            this->xBegin_[i-1],
                                                            this->xBegin_[i],
                                                            gPrev, gNext,
                                                            this->yBegin_[i],
-                                                           eta, primitive));
+                                                           eta, primitive);
                             } else {
                                 convMonotoneHelper =
-                                    ext::shared_ptr<SectionHelper>(
-                                        new ConvexMonotone4Helper(
+                                    ext::make_shared<ConvexMonotone4Helper>(
                                                            this->xBegin_[i-1],
                                                            this->xBegin_[i],
                                                            gPrev, gNext,
                                                            this->yBegin_[i],
-                                                           eta, primitive));
+                                                           eta, primitive);
                             }
                         }
                     }
@@ -801,10 +787,9 @@ namespace QuantLib {
                         sectionHelpers_[this->xBegin_[i]] = convMonotoneHelper;
                     } else {
                         sectionHelpers_[this->xBegin_[i]] =
-                            ext::shared_ptr<SectionHelper>(
-                                           new ComboHelper(quadraticHelper,
+                            ext::make_shared<ComboHelper>(quadraticHelper,
                                                            convMonotoneHelper,
-                                                           quadraticity));
+                                                           quadraticity);
                     }
 
                 }
@@ -814,18 +799,16 @@ namespace QuantLib {
 
             if (constantLastPeriod_) {
                 sectionHelpers_[this->xBegin_[length_-1]] =
-                    ext::shared_ptr<SectionHelper>(
-                        new EverywhereConstantHelper(this->yBegin_[length_-1],
+                    ext::make_shared<EverywhereConstantHelper>(this->yBegin_[length_-1],
                                                      primitive,
-                                                     this->xBegin_[length_-2]));
+                                                     this->xBegin_[length_-2]);
                 extrapolationHelper_ = sectionHelpers_[this->xBegin_[length_-1]];
             } else {
                 extrapolationHelper_ =
-                    ext::shared_ptr<SectionHelper>(
-                        new EverywhereConstantHelper(
+                    ext::make_shared<EverywhereConstantHelper>(
                                 (sectionHelpers_.rbegin())->second->value(*(this->xEnd_-1)),
                                 primitive,
-                                *(this->xEnd_-1)));
+                                *(this->xEnd_-1));
             }
         }
 

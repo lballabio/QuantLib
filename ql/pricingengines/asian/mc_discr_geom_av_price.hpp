@@ -128,14 +128,12 @@ namespace QuantLib {
                 this->process_);
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        return ext::shared_ptr<typename
-            MCDiscreteGeometricAPEngine<RNG,S>::path_pricer_type>(
-                new GeometricAPOPathPricer(
+        return ext::make_shared<GeometricAPOPathPricer>(
                     payoff->optionType(),
                     payoff->strike(),
                     process->riskFreeRate()->discount(exercise->lastDate()),
                     this->arguments_.runningAccumulator,
-                    this->arguments_.pastFixings));
+                    this->arguments_.pastFixings);
     }
 
 

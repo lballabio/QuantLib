@@ -84,28 +84,26 @@ struct CommonVars {
 
         std::vector<ext::shared_ptr<RateHelper> > instruments(deposits+swaps);
         for (Size i=0; i<deposits; i++) {
-            instruments[i] = ext::shared_ptr<RateHelper>(new
-                    DepositRateHelper(depositData[i].rate/100,
+            instruments[i] = ext::make_shared<DepositRateHelper>(depositData[i].rate/100,
                                       depositData[i].n*depositData[i].units,
                                       settlementDays, calendar,
                                       ModifiedFollowing, true,
-                                      Actual360()));
+                                      Actual360());
         }
-        ext::shared_ptr<IborIndex> index(new IborIndex("dummy",
+        ext::shared_ptr<IborIndex> index = ext::make_shared<IborIndex>("dummy",
                                                        6*Months,
                                                        settlementDays,
                                                        Currency(),
                                                        calendar,
                                                        ModifiedFollowing,
                                                        false,
-                                                       Actual360()));
+                                                       Actual360());
         for (Size i=0; i<swaps; ++i) {
-            instruments[i+deposits] = ext::shared_ptr<RateHelper>(new
-                    SwapRateHelper(swapData[i].rate/100,
+            instruments[i+deposits] = ext::make_shared<SwapRateHelper>(swapData[i].rate/100,
                                    swapData[i].n*swapData[i].units,
                                    calendar,
                                    Annual, Unadjusted, Thirty360(Thirty360::BondBasis),
-                                   index));
+                                   index);
         }
         termStructure = ext::shared_ptr<YieldTermStructure>(new
                 PiecewiseYieldCurve<Discount,LogLinear>(settlement,
@@ -125,11 +123,10 @@ BOOST_AUTO_TEST_CASE(testReferenceChange) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> flatRate (new SimpleQuote);
+    ext::shared_ptr<SimpleQuote> flatRate = ext::make_shared<SimpleQuote>();
     Handle<Quote> flatRateHandle(flatRate);
-    vars.termStructure = ext::shared_ptr<YieldTermStructure>(
-                          new FlatForward(vars.settlementDays, NullCalendar(),
-                                          flatRateHandle, Actual360()));
+    vars.termStructure = ext::make_shared<FlatForward>(vars.settlementDays, NullCalendar(),
+                                          flatRateHandle, Actual360());
     Date today = Settings::instance().evaluationDate();
     flatRate->setValue(.03);
     Integer days[] = { 10, 30, 60, 120, 360, 720 };
@@ -168,9 +165,8 @@ BOOST_AUTO_TEST_CASE(testImplied) {
     Date newSettlement = vars.calendar.advance(newToday,
                                                vars.settlementDays,Days);
     Date testDate = newSettlement + 5*Years;
-    ext::shared_ptr<YieldTermStructure> implied(
-        new ImpliedTermStructure(Handle<YieldTermStructure>(vars.termStructure),
-                                 newSettlement));
+    ext::shared_ptr<YieldTermStructure> implied = ext::make_shared<ImpliedTermStructure>(Handle<YieldTermStructure>(vars.termStructure),
+                                 newSettlement);
     for (int i = 1; i < 4; i++) {
         flatRate->setValue(i / 100.0);
         DiscountFactor baseDiscount = vars.termStructure->discount(newSettlement);
@@ -196,8 +192,7 @@ BOOST_AUTO_TEST_CASE(testImpliedObs) {
     Date newSettlement = vars.calendar.advance(newToday,
                                                vars.settlementDays,Days);
     RelinkableHandle<YieldTermStructure> h;
-    ext::shared_ptr<YieldTermStructure> implied(
-                                  new ImpliedTermStructure(h, newSettlement));
+    ext::shared_ptr<YieldTermStructure> implied = ext::make_shared<ImpliedTermStructure>(h, newSettlement);
     Flag flag;
     flag.registerWith(implied);
     h.linkTo(vars.termStructure);
@@ -212,11 +207,10 @@ BOOST_AUTO_TEST_CASE(testFSpreaded) {
     CommonVars vars;
 
     Real tolerance = 1.0e-10;
-    ext::shared_ptr<Quote> me(new SimpleQuote(0.01));
+    ext::shared_ptr<Quote> me = ext::make_shared<SimpleQuote>(0.01);
     Handle<Quote> mh(me);
-    ext::shared_ptr<YieldTermStructure> spreaded(
-        new ForwardSpreadedTermStructure(
-            Handle<YieldTermStructure>(vars.termStructure),mh));
+    ext::shared_ptr<YieldTermStructure> spreaded = ext::make_shared<ForwardSpreadedTermStructure>(
+            Handle<YieldTermStructure>(vars.termStructure),mh);
     Date testDate = vars.termStructure->referenceDate() + 5*Years;
     DayCounter tsdc  = vars.termStructure->dayCounter();
     DayCounter sprdc = spreaded->dayCounter();
@@ -240,11 +234,10 @@ BOOST_AUTO_TEST_CASE(testFSpreadedObs) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
+    ext::shared_ptr<SimpleQuote> me = ext::make_shared<SimpleQuote>(0.01);
     Handle<Quote> mh(me);
     RelinkableHandle<YieldTermStructure> h; //(vars.dummyTermStructure);
-    ext::shared_ptr<YieldTermStructure> spreaded(
-        new ForwardSpreadedTermStructure(h,mh));
+    ext::shared_ptr<YieldTermStructure> spreaded = ext::make_shared<ForwardSpreadedTermStructure>(h,mh);
     Flag flag;
     flag.registerWith(spreaded);
     h.linkTo(vars.termStructure);
@@ -263,11 +256,10 @@ BOOST_AUTO_TEST_CASE(testZSpreaded) {
     CommonVars vars;
 
     Real tolerance = 1.0e-10;
-    ext::shared_ptr<Quote> me(new SimpleQuote(0.01));
+    ext::shared_ptr<Quote> me = ext::make_shared<SimpleQuote>(0.01);
     Handle<Quote> mh(me);
-    ext::shared_ptr<YieldTermStructure> spreaded(
-        new ZeroSpreadedTermStructure(
-            Handle<YieldTermStructure>(vars.termStructure),mh));
+    ext::shared_ptr<YieldTermStructure> spreaded = ext::make_shared<ZeroSpreadedTermStructure>(
+            Handle<YieldTermStructure>(vars.termStructure),mh);
     Date testDate = vars.termStructure->referenceDate() + 5*Years;
     DayCounter rfdc  = vars.termStructure->dayCounter();
     Rate zero = vars.termStructure->zeroRate(testDate, rfdc,
@@ -288,12 +280,11 @@ BOOST_AUTO_TEST_CASE(testZSpreadedObs) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
+    ext::shared_ptr<SimpleQuote> me = ext::make_shared<SimpleQuote>(0.01);
     Handle<Quote> mh(me);
     RelinkableHandle<YieldTermStructure> h(vars.dummyTermStructure);
 
-    ext::shared_ptr<YieldTermStructure> spreaded(
-        new ZeroSpreadedTermStructure(h,mh));
+    ext::shared_ptr<YieldTermStructure> spreaded = ext::make_shared<ZeroSpreadedTermStructure>(h,mh);
     Flag flag;
     flag.registerWith(spreaded);
     h.linkTo(vars.termStructure);
@@ -312,11 +303,10 @@ BOOST_AUTO_TEST_CASE(testCreateWithNullUnderlying) {
 
     CommonVars vars;
 
-    Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.01)));
+    Handle<Quote> spread(ext::make_shared<SimpleQuote>(0.01));
     RelinkableHandle<YieldTermStructure> underlying;
     // this shouldn't throw
-    ext::shared_ptr<YieldTermStructure> spreaded(
-        new ZeroSpreadedTermStructure(underlying,spread));
+    ext::shared_ptr<YieldTermStructure> spreaded = ext::make_shared<ZeroSpreadedTermStructure>(underlying,spread);
     // if we do this, the curve can work.
     underlying.linkTo(vars.termStructure);
     // check that we can use it
@@ -528,10 +518,9 @@ BOOST_AUTO_TEST_CASE(testLinkToNullUnderlying) {
 
     CommonVars vars;
 
-    Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.01)));
+    Handle<Quote> spread(ext::make_shared<SimpleQuote>(0.01));
     RelinkableHandle<YieldTermStructure> underlying(vars.termStructure);
-    ext::shared_ptr<YieldTermStructure> spreaded(
-        new ZeroSpreadedTermStructure(underlying,spread));
+    ext::shared_ptr<YieldTermStructure> spreaded = ext::make_shared<ZeroSpreadedTermStructure>(underlying,spread);
     // check that we can use it
     spreaded->referenceDate();
     // if we do this, the curve can't work anymore. But it shouldn't
@@ -560,8 +549,7 @@ BOOST_AUTO_TEST_CASE(testCompositeZeroYieldStructures) {
                                0.109824660896137,  0.109231572878364,  0.119218123236241,
                                0.128647300167664,  0.0506086995288751};
 
-    ext::shared_ptr<YieldTermStructure> termStructure1 = ext::shared_ptr<YieldTermStructure>(
-        new ForwardCurve(dates, rates, Actual365Fixed(), NullCalendar()));
+    ext::shared_ptr<YieldTermStructure> termStructure1 = ext::make_shared<ForwardCurve>(dates, rates, Actual365Fixed(), NullCalendar());
 
     // Second curve
     dates = {Date(10, Nov, 2017), Date(13, Nov, 2017), Date(11, Dec, 2017), Date(12, Feb, 2018),
@@ -574,13 +562,11 @@ BOOST_AUTO_TEST_CASE(testCompositeZeroYieldStructures) {
              0.0263943927922053, 0.0291924526539802, 0.0270049276163556, 0.028775807327614,
              0.0293567711641792, 0.010518655099659};
 
-    ext::shared_ptr<YieldTermStructure> termStructure2 = ext::shared_ptr<YieldTermStructure>(
-        new ForwardCurve(dates, rates, Actual365Fixed(), NullCalendar()));
+    ext::shared_ptr<YieldTermStructure> termStructure2 = ext::make_shared<ForwardCurve>(dates, rates, Actual365Fixed(), NullCalendar());
 
     typedef Real(*binary_f)(Real, Real);
 
-    ext::shared_ptr<YieldTermStructure> compoundCurve = ext::shared_ptr<YieldTermStructure>(
-        new CompositeZeroYieldStructure<binary_f>(Handle<YieldTermStructure>(termStructure1), Handle<YieldTermStructure>(termStructure2), sub));
+    ext::shared_ptr<YieldTermStructure> compoundCurve = ext::make_shared<CompositeZeroYieldStructure<binary_f>>(Handle<YieldTermStructure>(termStructure1), Handle<YieldTermStructure>(termStructure2), sub);
 
     // Expected values
     dates = {Date(10, Nov, 2017), Date(15, Dec, 2017), Date(15, Jun, 2018), Date(15, Sep, 2029),

@@ -70,7 +70,7 @@ namespace QuantLib {
              Volatility maxVol) const {
         QL_REQUIRE(!isExpired(), "option expired");
 
-        ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
+        ext::shared_ptr<SimpleQuote> volQuote = ext::make_shared<SimpleQuote>();
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> newProcess =
             detail::ImpliedVolatilityHelper::clone(process, volQuote);

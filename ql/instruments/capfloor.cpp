@@ -67,14 +67,12 @@ namespace QuantLib {
 
             switch (type) {
             case ShiftedLognormal:
-                engine_ = ext::shared_ptr<PricingEngine>(new
-                    BlackCapFloorEngine(discountCurve_, h, Actual365Fixed(),
-                                                                displacement));
+                engine_ = ext::make_shared<BlackCapFloorEngine>(discountCurve_, h, Actual365Fixed(),
+                                                                displacement);
                 break;
             case Normal:
-                engine_ = ext::shared_ptr<PricingEngine>(new
-                    BachelierCapFloorEngine(discountCurve_, h, 
-                                                            Actual365Fixed()));
+                engine_ = ext::make_shared<BachelierCapFloorEngine>(discountCurve_, h,
+                                                            Actual365Fixed());
                 break;
             default:
                 QL_FAIL("unknown VolatilityType (" << type << ")");

@@ -122,13 +122,11 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<P>(this->process_);
         QL_REQUIRE(process, "Heston like process required");
 
-        return ext::shared_ptr<
-            typename MCEuropeanHestonEngine<RNG,S,P>::path_pricer_type>(
-                   new EuropeanHestonPathPricer(
+        return ext::make_shared<EuropeanHestonPathPricer>(
                                         payoff->optionType(),
                                         payoff->strike(),
                                         process->riskFreeRate()->discount(
-                                                   this->timeGrid().back())));
+                                                   this->timeGrid().back()));
     }
 
 

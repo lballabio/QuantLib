@@ -70,9 +70,8 @@ namespace QuantLib {
             TimeGrid grid = timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
-            return ext::shared_ptr<path_generator_type>(
-                         new path_generator_type(process_,
-                                                 grid, gen, brownianBridge_));
+            return ext::make_shared<path_generator_type>(process_,
+                                                 grid, gen, brownianBridge_);
         }
         ext::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members

@@ -56,8 +56,7 @@ namespace QuantLib {
           vol_(ext::make_shared<SimpleQuote>(-1.0)) {
 
             Handle<Quote> h(vol_);
-            engine_ = ext::shared_ptr<PricingEngine>(new
-                                    BlackSwaptionEngine(discountCurve_, h));
+            engine_ = ext::make_shared<BlackSwaptionEngine>(discountCurve_, h);
             swaption.setupArguments(engine_->getArguments());
 
             results_ =

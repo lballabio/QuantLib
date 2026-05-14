@@ -70,20 +70,17 @@ namespace QuantLib {
         Real xMin = std::log(arguments_.barrier_lo);
         Real xMax = std::log(arguments_.barrier_hi);
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(
+        const ext::shared_ptr<Fdm1dMesher> equityMesher = ext::make_shared<FdmBlackScholesMesher>(
                 xGrid_,
                 FdmBlackScholesMesher::processHelper(
                     process->s0(), process->dividendYield(),
                     process->riskFreeRate(), vMesher->volaEstimate()),
-                maturity, payoff->strike(), xMin, xMax));
+                maturity, payoff->strike(), xMin, xMax);
 
-        const ext::shared_ptr<FdmMesher> mesher (
-            new FdmMesherComposite(equityMesher, vMesher));
+        const ext::shared_ptr<FdmMesher> mesher = ext::make_shared<FdmMesherComposite>(equityMesher, vMesher);
 
         // 2. Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-                                new FdmLogInnerValue(payoff, mesher, 0));
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator = ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0);
 
         // 3. Step conditions
         std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
@@ -92,8 +89,7 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "only european style option are supported");
 
-        ext::shared_ptr<FdmStepConditionComposite> conditions(
-                new FdmStepConditionComposite(stoppingTimes, stepConditions));
+        ext::shared_ptr<FdmStepConditionComposite> conditions = ext::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions);
 
         // 4. Boundary conditions
         FdmBoundaryConditionSet boundaries;
@@ -110,9 +106,9 @@ namespace QuantLib {
                                      calculator, maturity,
                                      tGrid_, dampingSteps_ };
 
-        ext::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
+        ext::shared_ptr<FdmHestonSolver> solver = ext::make_shared<FdmHestonSolver>(
                     Handle<HestonProcess>(process), solverDesc, schemeDesc_,
-                    Handle<FdmQuantoHelper>(), leverageFct_, mixingFactor_));
+                    Handle<FdmQuantoHelper>(), leverageFct_, mixingFactor_);
 
         const Real spot = process->s0()->value();
         results_.value = solver->valueAt(spot, process->v0());

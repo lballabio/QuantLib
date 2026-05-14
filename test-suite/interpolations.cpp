@@ -1385,12 +1385,11 @@ BOOST_AUTO_TEST_CASE(testSabrInterpolation){
     Real calibrationTolerance = 5.0e-8;
     // initialize optimization methods
     std::vector<ext::shared_ptr<OptimizationMethod>> methods_ = {
-        ext::shared_ptr<OptimizationMethod>(new Simplex(0.01)),
-        ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8))
+        ext::make_shared<Simplex>(0.01),
+        ext::make_shared<LevenbergMarquardt>(1e-8, 1e-8, 1e-8)
     };
     // Initialize end criteria
-    ext::shared_ptr<EndCriteria> endCriteria(new
-                  EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
+    ext::shared_ptr<EndCriteria> endCriteria = ext::make_shared<EndCriteria>(100000, 100, 1e-8, 1e-8, 1e-8);
     // Test looping over all possibilities
     for (auto& method : methods_) {
         for (bool i : vegaWeighted) {
@@ -2009,12 +2008,11 @@ BOOST_AUTO_TEST_CASE(testNoArbSabrInterpolation){
     Real calibrationTolerance = 5.0e-6;
     // initialize optimization methods
     std::vector<ext::shared_ptr<OptimizationMethod>> methods_ = {
-        ext::shared_ptr<OptimizationMethod>(new Simplex(0.01)),
-        ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8))
+        ext::make_shared<Simplex>(0.01),
+        ext::make_shared<LevenbergMarquardt>(1e-8, 1e-8, 1e-8)
     };
     // Initialize end criteria
-    ext::shared_ptr<EndCriteria> endCriteria(new
-                  EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
+    ext::shared_ptr<EndCriteria> endCriteria = ext::make_shared<EndCriteria>(100000, 100, 1e-8, 1e-8, 1e-8);
     // Test looping over all possibilities
     for (Size j=1; j<methods_.size(); ++j) { // skip simplex (gets caught in some cases)
         for (bool i : vegaWeighted) {

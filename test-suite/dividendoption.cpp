@@ -83,19 +83,19 @@ BOOST_AUTO_TEST_CASE(testEuropeanValues) {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
         for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
-                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
 
                 std::vector<Date> dividendDates;
                 std::vector<Real> dividends;
@@ -104,12 +104,11 @@ BOOST_AUTO_TEST_CASE(testEuropeanValues) {
                     dividends.push_back(0.0);
                 }
 
-                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+                ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
 
-                ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-                    new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+                ext::shared_ptr<BlackScholesMertonProcess> stochProcess = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot), qTS, rTS, volTS);
 
-                ext::shared_ptr<PricingEngine> ref_engine(new AnalyticEuropeanEngine(stochProcess));
+                ext::shared_ptr<PricingEngine> ref_engine = ext::make_shared<AnalyticEuropeanEngine>(stochProcess);
 
                 VanillaOption ref_option(payoff, exercise);
                 ref_option.setPricingEngine(ref_engine);
@@ -174,26 +173,24 @@ BOOST_AUTO_TEST_CASE(testEuropeanKnownValue) {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     Date exDate = today + 180 * Days;
-    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
 
     std::vector<Date> dividendDates = {today + 2 * 30 * Days, today + 5 * 30 * Days};
     std::vector<Real> dividends = {0.50, 0.50};
 
-    ext::shared_ptr<StrikedTypePayoff> payoff(
-            new PlainVanillaPayoff(Option::Call, 40.0));
+    ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 40.0);
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-                            new BlackScholesMertonProcess(Handle<Quote>(spot),
-                                                          qTS, rTS, volTS));
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcess = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS);
 
     auto engine = ext::make_shared<AnalyticDividendEuropeanEngine>(
         stochProcess, DividendVector(dividendDates, dividends));
@@ -240,29 +237,28 @@ BOOST_AUTO_TEST_CASE(testEuropeanStartLimit) {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
         for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
-                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
 
                 std::vector<Date> dividendDates = {today};
                 std::vector<Real> dividends = {dividendValue};
 
-                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+                ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
 
-                ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-                    new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+                ext::shared_ptr<BlackScholesMertonProcess> stochProcess = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot), qTS, rTS, volTS);
 
-                ext::shared_ptr<PricingEngine> ref_engine(new AnalyticEuropeanEngine(stochProcess));
+                ext::shared_ptr<PricingEngine> ref_engine = ext::make_shared<AnalyticEuropeanEngine>(stochProcess);
 
                 VanillaOption ref_option(payoff, exercise);
                 ref_option.setPricingEngine(ref_engine);
@@ -321,19 +317,19 @@ BOOST_AUTO_TEST_CASE(testEuropeanStartLimit) {
 //    Date today = Date::todaysDate();
 //    Settings::instance().evaluationDate() = today;
 //
-//    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-//    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+//    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+//    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
 //    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-//    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+//    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
 //    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-//    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+//    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
 //    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 //
 //    for (auto& type : types) {
 //        for (Real strike : strikes) {
 //            for (int length : lengths) {
 //                Date exDate = today + length * Years;
-//                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+//                ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
 //
 //                ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
 //                    new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
@@ -341,12 +337,12 @@ BOOST_AUTO_TEST_CASE(testEuropeanStartLimit) {
 //                std::vector<Date> dividendDates = {exercise->lastDate()};
 //                std::vector<Real> dividends = {dividendValue};
 //
-//                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+//                ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
 //
 //                ext::shared_ptr<StrikedTypePayoff> refPayoff(
 //                    new PlainVanillaPayoff(type, strike + dividendValue));
 //
-//                ext::shared_ptr<PricingEngine> ref_engine(new AnalyticEuropeanEngine(stochProcess));
+//                ext::shared_ptr<PricingEngine> ref_engine = ext::make_shared<AnalyticEuropeanEngine>(stochProcess);
 //
 //                VanillaOption ref_option(refPayoff, exercise);
 //                ref_option.setPricingEngine(ref_engine);
@@ -420,19 +416,19 @@ BOOST_AUTO_TEST_CASE(testEuropeanGreeks) {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
         for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
-                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
 
                 std::vector<Date> dividendDates;
                 std::vector<Real> dividends;
@@ -441,10 +437,9 @@ BOOST_AUTO_TEST_CASE(testEuropeanGreeks) {
                     dividends.push_back(5.0);
                 }
 
-                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+                ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
 
-                ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-                    new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+                ext::shared_ptr<BlackScholesMertonProcess> stochProcess = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot), qTS, rTS, volTS);
 
                 auto engine = ext::make_shared<AnalyticDividendEuropeanEngine>(
                     stochProcess, DividendVector(dividendDates, dividends));
@@ -550,19 +545,19 @@ BOOST_AUTO_TEST_CASE(testFdEuropeanValues) {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
         for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
-                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
 
                 std::vector<Date> dividendDates;
                 std::vector<Real> dividends;
@@ -571,10 +566,9 @@ BOOST_AUTO_TEST_CASE(testFdEuropeanValues) {
                     dividends.push_back(5.0);
                 }
 
-                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+                ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
 
-                ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-                    new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+                ext::shared_ptr<BlackScholesMertonProcess> stochProcess = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot), qTS, rTS, volTS);
 
                 auto ref_engine = ext::make_shared<AnalyticDividendEuropeanEngine>(
                     stochProcess, DividendVector(dividendDates, dividends));
@@ -637,12 +631,12 @@ void testFdGreeks(const Date& today,
 
     DayCounter dc = Actual365Fixed();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
@@ -657,11 +651,10 @@ void testFdGreeks(const Date& today,
                 dividends.push_back(5.0);
             }
 
-            ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+            ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
 
-            ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-                            new BlackScholesMertonProcess(Handle<Quote>(spot),
-                                                          qTS, rTS, volTS));
+            ext::shared_ptr<BlackScholesMertonProcess> stochProcess = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS);
 
             ext::shared_ptr<PricingEngine> engine =
                 MakeFdBlackScholesVanillaEngine(stochProcess)
@@ -727,7 +720,7 @@ BOOST_AUTO_TEST_CASE(testFdEuropeanGreeks) {
 
     for (int length : lengths) {
         Date exDate = today + length * Years;
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
         testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Spot);
         testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
     }
@@ -743,7 +736,7 @@ BOOST_AUTO_TEST_CASE(testFdAmericanGreeks) {
 
     for (int length : lengths) {
         Date exDate = today + length * Years;
-        ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
+        ext::shared_ptr<Exercise> exercise = ext::make_shared<AmericanExercise>(today,exDate);
         testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Spot);
     }
 }
@@ -754,20 +747,18 @@ void testFdDegenerate(const Date& today,
                       FdBlackScholesVanillaEngine::CashDividendModel model) {
 
     DayCounter dc = Actual360();
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(54.625));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(54.625);
     Handle<YieldTermStructure> rTS(flatRate(0.052706, dc));
     Handle<YieldTermStructure> qTS(flatRate(0.0, dc));
     Handle<BlackVolTermStructure> volTS(flatVol(0.282922, dc));
 
-    ext::shared_ptr<BlackScholesMertonProcess> process(
-                            new BlackScholesMertonProcess(Handle<Quote>(spot),
-                                                          qTS, rTS, volTS));
+    ext::shared_ptr<BlackScholesMertonProcess> process = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS);
 
     Size timeSteps = 100;
     Size gridPoints = 300;
 
-    ext::shared_ptr<StrikedTypePayoff> payoff(
-                                  new PlainVanillaPayoff(Option::Call, 55.0));
+    ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 55.0);
 
     Real tolerance = 1.0e-6;
 
@@ -831,7 +822,7 @@ BOOST_AUTO_TEST_CASE(testFdEuropeanDegenerate) {
     Settings::instance().evaluationDate() = today;
     Date exDate(13,April,2005);
 
-    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
 
     testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Spot);
     testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
@@ -846,7 +837,7 @@ BOOST_AUTO_TEST_CASE(testFdAmericanDegenerate) {
     Settings::instance().evaluationDate() = today;
     Date exDate(13,April,2005);
 
-    ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<AmericanExercise>(today,exDate);
 
     testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Spot);
     testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
@@ -858,19 +849,17 @@ void testFdDividendAtTZero(const Date& today,
                            FdBlackScholesVanillaEngine::CashDividendModel model) {
 
     DayCounter dc = Actual360();
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(54.625));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(54.625);
     Handle<YieldTermStructure> rTS(flatRate(0.0, dc));
     Handle<BlackVolTermStructure> volTS(flatVol(0.282922, dc));
 
-    ext::shared_ptr<BlackScholesMertonProcess> process(
-                            new BlackScholesMertonProcess(Handle<Quote>(spot),
-                                                          rTS, rTS, volTS));
+    ext::shared_ptr<BlackScholesMertonProcess> process = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot),
+                                                          rTS, rTS, volTS);
 
     Size timeSteps = 50;
     Size gridPoints = 400;
 
-    ext::shared_ptr<StrikedTypePayoff> payoff(
-                                  new PlainVanillaPayoff(Option::Call, 55.0));
+    ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 55.0);
 
     // today's dividend must by taken into account
     std::vector<Rate> dividends(1, 1.0);
@@ -927,7 +916,7 @@ BOOST_AUTO_TEST_CASE(testFdEuropeanWithDividendToday) {
     Settings::instance().evaluationDate() = today;
     Date exDate(13,April,2005);
 
-    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
 
     testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Spot);
     testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
@@ -942,7 +931,7 @@ BOOST_AUTO_TEST_CASE(testFdAmericanWithDividendToday) {
     Settings::instance().evaluationDate() = today;
     Date exDate(13,April,2005);
 
-    ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<AmericanExercise>(today,exDate);
 
     testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Spot);
 }

@@ -95,7 +95,7 @@ namespace QuantLib {
         const Volatility lv0
             = localVol_->localVol(0.0, spot->value())/std::sqrt(v0);
 
-        const ext::shared_ptr<Matrix> L(new Matrix(nBins_, timeGrid_->size()));
+        const ext::shared_ptr<Matrix> L = ext::make_shared<Matrix>(nBins_, timeGrid_->size());
 
         std::vector<ext::shared_ptr<std::vector<Real> > >
             vStrikes(timeGrid_->size());

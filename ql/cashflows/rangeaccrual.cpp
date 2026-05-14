@@ -661,12 +661,11 @@ namespace QuantLib {
                 refEnd = calendar.adjust(start + schedule_.tenor(), bdc);
             }
             if (detail::get(gearings_, i, 1.0) == 0.0) { // fixed coupon
-                leg.push_back(ext::shared_ptr<CashFlow>(new
-                    FixedRateCoupon(paymentDate,
+                leg.push_back(ext::make_shared<FixedRateCoupon>(paymentDate,
                                     detail::get(notionals_, i, Null<Real>()),
                                     detail::get(spreads_, i, 0.0),
                                     paymentDayCounter_,
-                                    start, end, refStart, refEnd)));
+                                    start, end, refStart, refEnd));
             } else { // floating coupon
                 auto observationSchedule =
                     Schedule(start, end,
@@ -675,8 +674,7 @@ namespace QuantLib {
                              observationConvention_,
                              DateGeneration::Forward, false);
 
-                    leg.push_back(ext::shared_ptr<CashFlow>(new
-                       RangeAccrualFloatersCoupon(
+                    leg.push_back(ext::make_shared<RangeAccrualFloatersCoupon>(
                             paymentDate,
                             detail::get(notionals_, i, Null<Real>()),
                             index_,
@@ -688,7 +686,7 @@ namespace QuantLib {
                             refStart, refEnd,
                             observationSchedule,
                             detail::get(lowerTriggers_, i, Null<Rate>()),
-                            detail::get(upperTriggers_, i, Null<Rate>()))));
+                            detail::get(upperTriggers_, i, Null<Rate>())));
             }
         }
         return leg;

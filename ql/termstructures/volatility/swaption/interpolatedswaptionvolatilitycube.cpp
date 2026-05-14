@@ -102,14 +102,13 @@ namespace QuantLib {
                 atmVol + volSpreadsInterpolator_[i](length, optionTime)));
         }
         Real shift = atmVol_->shift(optionTime,length);
-        return ext::shared_ptr<SmileSection>(new
-            InterpolatedSmileSection<Linear>(optionTime,
+        return ext::make_shared<InterpolatedSmileSection<Linear>>(optionTime,
                                              strikes,
                                              stdDevs,
                                              atmForward,
                                              Linear(),
                                              Actual365Fixed(),
                                              volatilityType(),
-                                             shift));
+                                             shift);
     }
 }

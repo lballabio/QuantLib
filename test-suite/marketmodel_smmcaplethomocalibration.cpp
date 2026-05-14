@@ -234,23 +234,20 @@ BOOST_AUTO_TEST_CASE(testFunction) {
     EvolutionDescription evolution(rateTimes_);
     // Size numberOfSteps = evolution.numberOfSteps();
 
-    ext::shared_ptr<PiecewiseConstantCorrelation> fwdCorr(new
-        ExponentialForwardCorrelation(rateTimes_,
+    ext::shared_ptr<PiecewiseConstantCorrelation> fwdCorr = ext::make_shared<ExponentialForwardCorrelation>(rateTimes_,
                                       longTermCorrelation_,
-                                      beta_));
+                                      beta_);
 
-    ext::shared_ptr<LMMCurveState> cs(new LMMCurveState(rateTimes_));
+    ext::shared_ptr<LMMCurveState> cs = ext::make_shared<LMMCurveState>(rateTimes_);
     cs->setOnForwardRates(todaysForwards_);
 
-    ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
-        CotSwapFromFwdCorrelation(fwdCorr, *cs, displacement_));
+    ext::shared_ptr<PiecewiseConstantCorrelation> corr = ext::make_shared<CotSwapFromFwdCorrelation>(fwdCorr, *cs, displacement_);
 
     std::vector<ext::shared_ptr<PiecewiseConstantVariance> >
                                     swapVariances(numberOfRates);
     for (Size i=0; i<numberOfRates; ++i) {
-        swapVariances[i] = ext::shared_ptr<PiecewiseConstantVariance>(new
-            PiecewiseConstantAbcdVariance(a_, b_, c_, d_,
-                                          i, rateTimes_));
+        swapVariances[i] = ext::make_shared<PiecewiseConstantAbcdVariance>(a_, b_, c_, d_,
+                                          i, rateTimes_);
     }
 
     // create calibrator
@@ -288,12 +285,11 @@ BOOST_AUTO_TEST_CASE(testFunction) {
         BOOST_ERROR("calibration failed");
 
     const std::vector<Matrix>& swapPseudoRoots = calibrator.swapPseudoRoots();
-    ext::shared_ptr<MarketModel> smm(new
-        PseudoRootFacade(swapPseudoRoots,
+    ext::shared_ptr<MarketModel> smm = ext::make_shared<PseudoRootFacade>(swapPseudoRoots,
                          rateTimes_,
                          cs->coterminalSwapRates(),
-                         std::vector<Spread>(numberOfRates, displacement_)));
-    ext::shared_ptr<MarketModel> flmm(new CotSwapToFwdAdapter(smm));
+                         std::vector<Spread>(numberOfRates, displacement_));
+    ext::shared_ptr<MarketModel> flmm = ext::make_shared<CotSwapToFwdAdapter>(smm);
     Matrix capletTotCovariance = flmm->totalCovariance(numberOfRates-1);
 
     std::vector<Volatility> capletVols(numberOfRates);
@@ -342,7 +338,7 @@ BOOST_AUTO_TEST_CASE(testFunction) {
     Size period =2;
     Size offset =0;
     std::vector<Spread> adaptedDisplacements;
-    ext::shared_ptr<MarketModel> adapted(new FwdPeriodAdapter(flmm,period,offset,adaptedDisplacements));
+    ext::shared_ptr<MarketModel> adapted = ext::make_shared<FwdPeriodAdapter>(flmm,period,offset,adaptedDisplacements);
    // FwdToCotSwapAdapter newSwapMM(adapted);
    // for (Size i=0; i < newSwapMM.numberOfRates(); ++i)
      //      BOOST_TEST_MESSAGE("swap MM time dependent vols: "<< i << std::fixed <<
@@ -368,16 +364,14 @@ BOOST_AUTO_TEST_CASE(testPeriodFunction) {
     for (Size i=0; i <= numberBigRates; ++i)
         bigRateTimes[i] = rateTimes_[i*period+offset];
 
-    ext::shared_ptr<PiecewiseConstantCorrelation> fwdCorr(new
-        ExponentialForwardCorrelation(rateTimes_,
+    ext::shared_ptr<PiecewiseConstantCorrelation> fwdCorr = ext::make_shared<ExponentialForwardCorrelation>(rateTimes_,
                                       longTermCorrelation_,
-                                      beta_));
+                                      beta_);
 
-    ext::shared_ptr<LMMCurveState> cs(new LMMCurveState(rateTimes_));
+    ext::shared_ptr<LMMCurveState> cs = ext::make_shared<LMMCurveState>(rateTimes_);
     cs->setOnForwardRates(todaysForwards_);
 
-    ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
-        CotSwapFromFwdCorrelation(fwdCorr, *cs, displacement_));
+    ext::shared_ptr<PiecewiseConstantCorrelation> corr = ext::make_shared<CotSwapFromFwdCorrelation>(fwdCorr, *cs, displacement_);
 
     std::vector<PiecewiseConstantAbcdVariance >
                                     swapVariances;
@@ -450,12 +444,11 @@ BOOST_AUTO_TEST_CASE(testPeriodFunction) {
         );
 
 
-    ext::shared_ptr<MarketModel> smm(new
-        PseudoRootFacade(swapPseudoRoots,
+    ext::shared_ptr<MarketModel> smm = ext::make_shared<PseudoRootFacade>(swapPseudoRoots,
                          rateTimes_,
                          cs->coterminalSwapRates(),
-                         std::vector<Spread>(numberOfRates, displacement_)));
-    ext::shared_ptr<MarketModel> flmm(new CotSwapToFwdAdapter(smm));
+                         std::vector<Spread>(numberOfRates, displacement_));
+    ext::shared_ptr<MarketModel> flmm = ext::make_shared<CotSwapToFwdAdapter>(smm);
     Matrix capletTotCovariance = flmm->totalCovariance(numberOfRates-1);
 
 
@@ -484,9 +477,9 @@ BOOST_AUTO_TEST_CASE(testPeriodFunction) {
 
 
     std::vector<Spread> adaptedDisplacements(numberBigRates,displacement_);
-    ext::shared_ptr<MarketModel> adaptedFlmm(new FwdPeriodAdapter(flmm,period,offset,adaptedDisplacements));
+    ext::shared_ptr<MarketModel> adaptedFlmm = ext::make_shared<FwdPeriodAdapter>(flmm,period,offset,adaptedDisplacements);
 
-     ext::shared_ptr<MarketModel> adaptedsmm(new FwdToCotSwapAdapter(adaptedFlmm));
+     ext::shared_ptr<MarketModel> adaptedsmm = ext::make_shared<FwdToCotSwapAdapter>(adaptedFlmm);
 
       // check perfect swaption fit
     Real  swapTolerance = 2e-5;

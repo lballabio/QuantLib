@@ -62,14 +62,12 @@ namespace QuantLib {
         ProjectedConstraint(const Constraint &constraint,
                             const Array &parameterValues,
                             const std::vector<bool> &fixParameters)
-            : Constraint(ext::shared_ptr<Constraint::Impl>(
-                  new ProjectedConstraint::Impl(constraint, parameterValues,
-                                                fixParameters))) {}
+            : Constraint(ext::make_shared<ProjectedConstraint::Impl>(constraint, parameterValues,
+                                                fixParameters)) {}
 
         ProjectedConstraint(const Constraint &constraint,
                             const Projection &projection)
-            : Constraint(ext::shared_ptr<Constraint::Impl>(
-                  new ProjectedConstraint::Impl(constraint, projection))) {}
+            : Constraint(ext::make_shared<ProjectedConstraint::Impl>(constraint, projection)) {}
     };
 }
 

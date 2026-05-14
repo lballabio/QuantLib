@@ -37,8 +37,7 @@ namespace QuantLib {
                                       Real sig2, Real a, Real b,
                                       Real theta1, Real theta2, Real theta3,
                                       Real psi)
-    : StochasticProcess1D(ext::shared_ptr<discretization>(
-                                                    new EulerDiscretization)),
+    : StochasticProcess1D(ext::make_shared<EulerDiscretization>()),
       x0_(x0),
       alpha_(alpha), beta_(beta),
       gamma_(gamma), delta_(delta),

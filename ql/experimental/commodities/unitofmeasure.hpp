@@ -138,8 +138,7 @@ namespace QuantLib {
     class LotUnitOfMeasure : public UnitOfMeasure {
       public:
         LotUnitOfMeasure() {
-            static ext::shared_ptr<Data> data(
-                new Data("Lot", "Lot", UnitOfMeasure::Quantity));
+            static ext::shared_ptr<Data> data = ext::make_shared<Data>("Lot", "Lot", UnitOfMeasure::Quantity);
             data_ = data;
         }
     };

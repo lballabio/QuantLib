@@ -84,8 +84,7 @@ namespace QuantLib {
                                        Real variance1, Real variance2,
                                        Real rho) {
 
-            ext::shared_ptr<StrikedTypePayoff> payoff(new
-                PlainVanillaPayoff(Option::Call, strike));
+            ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
 
             Real black1 = blackFormula(payoff->optionType(), payoff->strike(),
                 forward1, std::sqrt(variance1)) * riskFreeDiscount;

@@ -84,8 +84,7 @@ namespace QuantLib {
             Real xtol = 1.0e-8;
             Real gtol = 1.0e-8;
             bool useCostFunctionsJacobian = false;
-            optMethod_ = ext::shared_ptr<OptimizationMethod>(new
-                LevenbergMarquardt(epsfcn, xtol, gtol, useCostFunctionsJacobian));
+            optMethod_ = ext::make_shared<LevenbergMarquardt>(epsfcn, xtol, gtol, useCostFunctionsJacobian);
         }
         if (!endCriteria_) {
             Size maxIterations = 10000;
@@ -122,8 +121,7 @@ namespace QuantLib {
         } else {
 
             AbcdError costFunction(this);
-            transformation_ = ext::shared_ptr<ParametersTransformation>(new
-                AbcdParametersTransformation);
+            transformation_ = ext::make_shared<AbcdParametersTransformation>();
 
             Array guess(4);
             guess[0] = a_;

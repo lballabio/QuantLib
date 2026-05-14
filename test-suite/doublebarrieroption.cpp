@@ -269,38 +269,36 @@ BOOST_AUTO_TEST_CASE(testEuropeanHaugValues) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (auto& value : values) {
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(exDate);
 
         spot->setValue(value.s);
         qRate->setValue(value.q);
         rRate->setValue(value.r);
         vol->setValue(value.v);
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
+        ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(value.type, value.strike);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
-            BlackScholesMertonProcess(Handle<Quote>(spot),
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
+                                      Handle<BlackVolTermStructure>(volTS));
 
         DoubleBarrierOption opt(value.barrierType, value.barrierlo, value.barrierhi,
                                 0, // no rebate
                                 payoff, exercise);
 
         // Ikeda/Kunitomo engine
-        ext::shared_ptr<PricingEngine> engine(
-                                     new AnalyticDoubleBarrierEngine(stochProcess));
+        ext::shared_ptr<PricingEngine> engine = ext::make_shared<AnalyticDoubleBarrierEngine>(stochProcess);
         opt.setPricingEngine(engine);
 
         Real calculated = opt.NPV();
@@ -313,8 +311,7 @@ BOOST_AUTO_TEST_CASE(testEuropeanHaugValues) {
         }
 
         // Wulin Suo/Yong Wang engine
-        engine = ext::shared_ptr<PricingEngine>(
-                                     new SuoWangDoubleBarrierEngine(stochProcess));
+        engine = ext::make_shared<SuoWangDoubleBarrierEngine>(stochProcess);
         opt.setPricingEngine(engine);
 
         calculated = opt.NPV();
@@ -546,28 +543,22 @@ BOOST_AUTO_TEST_CASE(testMonteCarloDoubleBarrierWithAnalytical) {
     for (Integer i=1; i<=4; i++)
         exerciseDates.push_back(settlementDate + 3*i*Months);
 
-    ext::shared_ptr<Exercise> europeanExercise(
-        new EuropeanExercise(maturity));
+    ext::shared_ptr<Exercise> europeanExercise = ext::make_shared<EuropeanExercise>(maturity);
 
     Handle<Quote> underlyingH(
-        ext::shared_ptr<Quote>(new SimpleQuote(underlying)));
+        ext::make_shared<SimpleQuote>(underlying));
 
     // bootstrap the yield/dividend/vol curves
     Handle<YieldTermStructure> flatTermStructure(
-        ext::shared_ptr<YieldTermStructure>(
-            new FlatForward(settlementDate, riskFreeRate, dayCounter)));
+        ext::make_shared<FlatForward>(settlementDate, riskFreeRate, dayCounter));
     Handle<YieldTermStructure> flatDividendTS(
-        ext::shared_ptr<YieldTermStructure>(
-            new FlatForward(settlementDate, dividendYield, dayCounter)));
+        ext::make_shared<FlatForward>(settlementDate, dividendYield, dayCounter));
     Handle<BlackVolTermStructure> flatVolTS(
-        ext::shared_ptr<BlackVolTermStructure>(
-            new BlackConstantVol(settlementDate, calendar, volatility,
-                                 dayCounter)));
-    ext::shared_ptr<StrikedTypePayoff> payoff(
-        new PlainVanillaPayoff(type, strike));
-    ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
-        new BlackScholesMertonProcess(underlyingH, flatDividendTS,
-                                      flatTermStructure, flatVolTS));
+        ext::make_shared<BlackConstantVol>(settlementDate, calendar, volatility,
+                                 dayCounter));
+    ext::shared_ptr<StrikedTypePayoff> payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
+    ext::shared_ptr<BlackScholesMertonProcess> bsmProcess = ext::make_shared<BlackScholesMertonProcess>(underlyingH, flatDividendTS,
+                                      flatTermStructure, flatVolTS);
 
     Real barrierLow = underlying * 0.9;
     Real barrierHigh = underlying * 1.1;
@@ -579,7 +570,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloDoubleBarrierWithAnalytical) {
                                                    payoff,
                                                    europeanExercise);
 
-    ext::shared_ptr<PricingEngine> analyticdoublebarrierengine(new AnalyticDoubleBarrierEngine(bsmProcess));
+    ext::shared_ptr<PricingEngine> analyticdoublebarrierengine = ext::make_shared<AnalyticDoubleBarrierEngine>(bsmProcess);
     knockIndoubleBarrierOption.setPricingEngine(analyticdoublebarrierengine);
     Real analytical = knockIndoubleBarrierOption.NPV();
 

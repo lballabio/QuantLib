@@ -53,17 +53,15 @@ struct CommonVars {
         Settings::instance().evaluationDate() =
             conventions.calendar.adjust(Date::todaysDate());
         atmVolMatrix = RelinkableHandle<SwaptionVolatilityStructure>(
-                ext::shared_ptr<SwaptionVolatilityStructure>(new
-                    SwaptionVolatilityMatrix(conventions.calendar,
+                ext::make_shared<SwaptionVolatilityMatrix>(conventions.calendar,
                                              conventions.optionBdc,
                                              atm.tenors.options,
                                              atm.tenors.swaps,
                                              atm.volsHandle,
-                                             conventions.dayCounter)));
+                                             conventions.dayCounter));
         termStructure.linkTo(
-                ext::shared_ptr<YieldTermStructure>(new
-                    FlatForward(0, conventions.calendar,
-                                0.05, Actual365Fixed())));
+                ext::make_shared<FlatForward>(0, conventions.calendar,
+                                0.05, Actual365Fixed()));
     }
 
     // utilities
@@ -131,9 +129,8 @@ struct CommonVars {
                            "\n  exp. option time : " << vol->optionTimes()[i]);
         }
 
-        ext::shared_ptr<BlackSwaptionEngine> engine(new
-                BlackSwaptionEngine(termStructure,
-                                    Handle<SwaptionVolatilityStructure>(vol)));
+        ext::shared_ptr<BlackSwaptionEngine> engine = ext::make_shared<BlackSwaptionEngine>(termStructure,
+                                    Handle<SwaptionVolatilityStructure>(vol));
 
         for (Size j=0; j<atm.tenors.swaps.size(); j++) {
             Time swapLength = vol->swapLength(atm.tenors.swaps[j]);
@@ -144,8 +141,7 @@ struct CommonVars {
                            "\n actual swap length: " << swapLength <<
                            "\n   exp. swap length: " << years(atm.tenors.swaps[j]));
 
-            ext::shared_ptr<SwapIndex> swapIndex(new
-                    EuriborSwapIsdaFixA(atm.tenors.swaps[j], termStructure));
+            ext::shared_ptr<SwapIndex> swapIndex = ext::make_shared<EuriborSwapIsdaFixA>(atm.tenors.swaps[j], termStructure);
 
             for (Size i=0; i<atm.tenors.options.size(); ++i) {
                 Real error, tolerance = 1.0e-16;

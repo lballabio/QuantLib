@@ -176,13 +176,11 @@ namespace QuantLib {
         PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                             PseudoRandom::urng_type(76));
 
-        return ext::shared_ptr<
-                        typename MCDigitalEngine<RNG,S>::path_pricer_type>(
-          new DigitalPathPricer(payoff,
+        return ext::make_shared<DigitalPathPricer>(payoff,
                                 exercise,
                                 process->riskFreeRate(),
                                 process,
-                                sequenceGen));
+                                sequenceGen);
     }
 
 

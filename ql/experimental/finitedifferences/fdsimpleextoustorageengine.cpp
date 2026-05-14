@@ -93,8 +93,7 @@ namespace QuantLib {
             = rTS_->dayCounter().yearFraction(rTS_->referenceDate(),
                                               arguments_.exercise->lastDate());
 
-        const ext::shared_ptr<Fdm1dMesher> xMesher(
-                     new FdmSimpleProcess1dMesher(xGrid_, process_, maturity));
+        const ext::shared_ptr<Fdm1dMesher> xMesher = ext::make_shared<FdmSimpleProcess1dMesher>(xGrid_, process_, maturity);
 
         ext::shared_ptr<Fdm1dMesher> storageMesher;
 
@@ -114,21 +113,17 @@ namespace QuantLib {
                 storageValues.begin(), storageValues.end());
             storageValues.assign(orderedValues.begin(), orderedValues.end());
 
-            storageMesher =    ext::shared_ptr<Fdm1dMesher>(
-                new Predefined1dMesher(storageValues));
+            storageMesher =    ext::make_shared<Predefined1dMesher>(storageValues);
         }
         else {
             // uniform mesher
-            storageMesher = ext::shared_ptr<Fdm1dMesher>(
-                new Uniform1dMesher(0, arguments_.capacity, yGrid_));
+            storageMesher = ext::make_shared<Uniform1dMesher>(0, arguments_.capacity, yGrid_);
         }
 
-        const ext::shared_ptr<FdmMesher> mesher (
-            new FdmMesherComposite(xMesher, storageMesher));
+        const ext::shared_ptr<FdmMesher> mesher = ext::make_shared<FdmMesherComposite>(xMesher, storageMesher);
 
         // 3. Calculator
-        ext::shared_ptr<FdmInnerValueCalculator> storageCalculator(
-                                                  new FdmStorageValue(mesher));
+        ext::shared_ptr<FdmInnerValueCalculator> storageCalculator = ext::make_shared<FdmStorageValue>(mesher);
 
         // 4. Step conditions
         std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
@@ -144,19 +139,15 @@ namespace QuantLib {
         }
         stoppingTimes.push_back(exerciseTimes);
 
-        ext::shared_ptr<Payoff> payoff(
-                                    new PlainVanillaPayoff(Option::Call, 0.0));
+        ext::shared_ptr<Payoff> payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 0.0);
 
-        ext::shared_ptr<FdmInnerValueCalculator> underlyingCalculator(
-            new FdmExpExtOUInnerValueCalculator(payoff, mesher, shape_));
+        ext::shared_ptr<FdmInnerValueCalculator> underlyingCalculator = ext::make_shared<FdmExpExtOUInnerValueCalculator>(payoff, mesher, shape_);
 
-        stepConditions.push_back(ext::shared_ptr<StepCondition<Array> >(
-            new FdmSimpleStorageCondition(exerciseTimes,
+        stepConditions.push_back(ext::make_shared<FdmSimpleStorageCondition>(exerciseTimes,
                                           mesher, underlyingCalculator,
-                                          arguments_.changeRate)));
+                                          arguments_.changeRate));
 
-        ext::shared_ptr<FdmStepConditionComposite> conditions(
-                new FdmStepConditionComposite(stoppingTimes, stepConditions));
+        ext::shared_ptr<FdmStepConditionComposite> conditions = ext::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions);
 
         // 5. Boundary conditions
         const FdmBoundaryConditionSet boundaries;
@@ -165,10 +156,9 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                      storageCalculator, maturity, tGrid_, 0 };
 
-        ext::shared_ptr<FdmSimple2dExtOUSolver> solver(
-                new FdmSimple2dExtOUSolver(
+        ext::shared_ptr<FdmSimple2dExtOUSolver> solver = ext::make_shared<FdmSimple2dExtOUSolver>(
                            Handle<ExtendedOrnsteinUhlenbeckProcess>(process_),
-                           rTS_, solverDesc, schemeDesc_));
+                           rTS_, solverDesc, schemeDesc_);
 
         const Real x = process_->x0();
         const Real y = arguments_.load;

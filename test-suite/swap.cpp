@@ -70,13 +70,11 @@ struct CommonVars {
                                Period(floatingFrequency),
                                calendar,floatingConvention,
                                floatingConvention, rule, false);
-        ext::shared_ptr<VanillaSwap> swap(
-                new VanillaSwap(type, nominal,
+        ext::shared_ptr<VanillaSwap> swap = ext::make_shared<VanillaSwap>(type, nominal,
                                 fixedSchedule, fixedRate, fixedDayCount,
                                 floatSchedule, index, floatingSpread,
-                                index->dayCounter()));
-        swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                                  new DiscountingSwapEngine(termStructure)));
+                                index->dayCounter());
+        swap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(termStructure));
         return swap;
     }
 
@@ -89,8 +87,7 @@ struct CommonVars {
         fixedFrequency = Annual;
         floatingFrequency = Semiannual;
         fixedDayCount = Thirty360(Thirty360::BondBasis);
-        index = ext::shared_ptr<IborIndex>(new
-                Euribor(Period(floatingFrequency), termStructure));
+        index = ext::make_shared<Euribor>(Period(floatingFrequency), termStructure);
         calendar = index->fixingCalendar();
         today = calendar.adjust(Settings::instance().evaluationDate());
         settlement = calendar.advance(today,settlementDays,Days);
@@ -233,10 +230,10 @@ BOOST_AUTO_TEST_CASE(testInArrears) {
                       DateGeneration::Forward,false);
     DayCounter dayCounter = SimpleDayCounter();
     std::vector<Real> nominals(1, 100000000.0);
-    ext::shared_ptr<IborIndex> index(new IborIndex("dummy", 1*Years, 0,
+    ext::shared_ptr<IborIndex> index = ext::make_shared<IborIndex>("dummy", 1*Years, 0,
                                              EURCurrency(), calendar,
                                              Following, false, dayCounter,
-                                             vars.termStructure));
+                                             vars.termStructure);
     Rate oneYear = 0.05;
     Rate r = std::log(1.0+oneYear);
     vars.termStructure.linkTo(flatRate(vars.today,r,dayCounter));
@@ -253,11 +250,9 @@ BOOST_AUTO_TEST_CASE(testInArrears) {
 
     Volatility capletVolatility = 0.22;
     Handle<OptionletVolatilityStructure> vol(
-        ext::shared_ptr<OptionletVolatilityStructure>(new
-            ConstantOptionletVolatility(vars.today, NullCalendar(), Following,
-                                        capletVolatility, dayCounter)));
-    ext::shared_ptr<IborCouponPricer> pricer(new
-        BlackIborCouponPricer(vol));
+        ext::make_shared<ConstantOptionletVolatility>(vars.today, NullCalendar(), Following,
+                                        capletVolatility, dayCounter));
+    ext::shared_ptr<IborCouponPricer> pricer = ext::make_shared<BlackIborCouponPricer>(vol);
 
     Leg floatingLeg = IborLeg(schedule, index)
         .withNotionals(nominals)
@@ -269,8 +264,7 @@ BOOST_AUTO_TEST_CASE(testInArrears) {
     setCouponPricer(floatingLeg, pricer);
 
     Swap swap(floatingLeg,fixedLeg);
-    swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                              new DiscountingSwapEngine(vars.termStructure)));
+    swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(vars.termStructure));
 
     Decimal storedValue = -144813.0;
     Real tolerance = 1.0;

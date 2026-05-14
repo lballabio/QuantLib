@@ -99,16 +99,13 @@ namespace QuantLib {
         const Time maturity = dc.yearFraction(
             referenceDate, arguments_.exercise->lastDate());
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmSimpleProcess1dMesher(
-                xGrid_, process_, maturity, 1, epsilon_));
+        const ext::shared_ptr<Fdm1dMesher> equityMesher = ext::make_shared<FdmSimpleProcess1dMesher>(
+                xGrid_, process_, maturity, 1, epsilon_);
 
-        const ext::shared_ptr<FdmMesher> mesher (
-            new FdmMesherComposite(equityMesher));
+        const ext::shared_ptr<FdmMesher> mesher = ext::make_shared<FdmMesherComposite>(equityMesher);
 
         // 2. Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-            new FdmOUInnerValue(payoff, mesher, 0));
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator = ext::make_shared<FdmOUInnerValue>(payoff, mesher, 0);
 
         // 3. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions =
@@ -124,11 +121,9 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
                                      maturity, tGrid_, dampingSteps_ };
 
-        const ext::shared_ptr<FdmOrnsteinUhlenbeckOp> op(
-            new FdmOrnsteinUhlenbeckOp(mesher, process_, rTS_, 0));
+        const ext::shared_ptr<FdmOrnsteinUhlenbeckOp> op = ext::make_shared<FdmOrnsteinUhlenbeckOp>(mesher, process_, rTS_, 0);
 
-        const ext::shared_ptr<Fdm1DimSolver> solver(
-                new Fdm1DimSolver(solverDesc, schemeDesc_, op));
+        const ext::shared_ptr<Fdm1DimSolver> solver = ext::make_shared<Fdm1DimSolver>(solverDesc, schemeDesc_, op);
 
         const Real spot = process_->x0();
 

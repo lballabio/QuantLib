@@ -46,10 +46,9 @@ ext::shared_ptr<IborIndex> makeIndex() {
     std::vector<Rate> rates = {0.01, 0.08};
 
     RelinkableHandle<YieldTermStructure> termStructure(
-                      ext::shared_ptr<YieldTermStructure>(
-                                      new ZeroCurve(dates,rates,dayCounter)));
+                      ext::make_shared<ZeroCurve>(dates,rates,dayCounter));
 
-    ext::shared_ptr<IborIndex> index(new Euribor1Y(termStructure));
+    ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor1Y>(termStructure);
 
     Date todaysDate =
         index->fixingCalendar().adjust(Date(4,September,2005));
@@ -58,8 +57,7 @@ ext::shared_ptr<IborIndex> makeIndex() {
     dates[0] = index->fixingCalendar().advance(todaysDate,
                                                index->fixingDays(), Days);
 
-    termStructure.linkTo(ext::shared_ptr<YieldTermStructure>(
-                                    new ZeroCurve(dates, rates, dayCounter)));
+    termStructure.linkTo(ext::make_shared<ZeroCurve>(dates, rates, dayCounter));
 
     return index;
 }
@@ -71,8 +69,7 @@ makeCapVolCurve(const Date& todaysDate) {
 
     std::vector<Date> dates;
     std::vector<Volatility> capletVols;
-    ext::shared_ptr<LiborForwardModelProcess> process(
-                            new LiborForwardModelProcess(len+1, makeIndex()));
+    ext::shared_ptr<LiborForwardModelProcess> process = ext::make_shared<LiborForwardModelProcess>(len+1, makeIndex());
 
     for (Size i=0; i < len; ++i) {
         capletVols.push_back(vols[i]/100);
@@ -88,14 +85,12 @@ makeProcess(const Matrix& volaComp = Matrix()) {
     Size factors = (volaComp.empty() ? 1 : volaComp.columns());
 
     ext::shared_ptr<IborIndex> index = makeIndex();
-    ext::shared_ptr<LiborForwardModelProcess> process(
-                                    new LiborForwardModelProcess(len, index));
+    ext::shared_ptr<LiborForwardModelProcess> process = ext::make_shared<LiborForwardModelProcess>(len, index);
 
-    ext::shared_ptr<LfmCovarianceParameterization> fct(
-                new LfmHullWhiteParameterization(
+    ext::shared_ptr<LfmCovarianceParameterization> fct = ext::make_shared<LfmHullWhiteParameterization>(
                     process,
                     makeCapVolCurve(Settings::instance().evaluationDate()),
-                    volaComp * transpose(volaComp), factors));
+                    volaComp * transpose(volaComp), factors);
 
     process->setCovarParam(fct);
 
@@ -110,13 +105,12 @@ BOOST_AUTO_TEST_CASE(testInitialisation) {
     RelinkableHandle<YieldTermStructure> termStructure(
         flatRate(Date::todaysDate(), 0.04, dayCounter));
 
-    ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
-    ext::shared_ptr<OptionletVolatilityStructure> capletVol(new
-        ConstantOptionletVolatility(termStructure->referenceDate(),
+    ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor6M>(termStructure);
+    ext::shared_ptr<OptionletVolatilityStructure> capletVol = ext::make_shared<ConstantOptionletVolatility>(termStructure->referenceDate(),
                                     termStructure->calendar(),
                                     Following,
                                     0.2,
-                                    termStructure->dayCounter()));
+                                    termStructure->dayCounter());
 
     Calendar calendar = index->fixingCalendar();
 

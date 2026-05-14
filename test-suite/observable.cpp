@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE(testObservableSettings) {
 
     BOOST_TEST_MESSAGE("Testing observable settings...");
 
-    const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(100.0));
+    const ext::shared_ptr<SimpleQuote> quote = ext::make_shared<SimpleQuote>(100.0);
     UpdateCounter updateCounter;
 
     updateCounter.registerWith(quote);
@@ -197,13 +197,13 @@ BOOST_AUTO_TEST_CASE(testAsyncGarbagCollector) {
     // of the observer pattern (comparable situation
     // in JVM or .NET eco systems).
 
-    const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(-1.0));
+    const ext::shared_ptr<SimpleQuote> quote = ext::make_shared<SimpleQuote>(-1.0);
 
     GarbageCollector gc;
     std::thread workerThread(&GarbageCollector::run, &gc);
 
     for (Size i=0; i < 10000; ++i) {
-        const ext::shared_ptr<MTUpdateCounter> observer(new MTUpdateCounter);
+        const ext::shared_ptr<MTUpdateCounter> observer = ext::make_shared<MTUpdateCounter>();
         observer->registerWith(quote);
         gc.addObj(observer);
 
@@ -223,7 +223,7 @@ BOOST_AUTO_TEST_CASE(testMultiThreadingGlobalSettings) {
 	BOOST_TEST_MESSAGE("Testing observer global settings in a "
 		               "multithreading environment...");
 	
-	const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(-1.0));
+	const ext::shared_ptr<SimpleQuote> quote = ext::make_shared<SimpleQuote>(-1.0);
 
     ObservableSettings::instance().disableUpdates(true);
 
@@ -234,7 +234,7 @@ BOOST_AUTO_TEST_CASE(testMultiThreadingGlobalSettings) {
     local_list_type localList;
 
     for (Size i=0; i < 4000; ++i) {
-        const ext::shared_ptr<MTUpdateCounter> observer(new MTUpdateCounter);
+        const ext::shared_ptr<MTUpdateCounter> observer = ext::make_shared<MTUpdateCounter>();
         observer->registerWith(quote);
 
         if ((i%4) == 0) {

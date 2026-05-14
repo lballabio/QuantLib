@@ -79,8 +79,7 @@ namespace QuantLib {
                 for (Size j=0; j<tenors.swaps.size(); j++)
                     // every handle must be reassigned, as the ones created by
                     // default are all linked together.
-                    volsHandle[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                        SimpleQuote(vols[i][j])));
+                    volsHandle[i][j] = Handle<Quote>(ext::make_shared<SimpleQuote>(vols[i][j]));
             }
         };
     };
@@ -138,8 +137,7 @@ namespace QuantLib {
                 for (Size j=0; j<strikeSpreads.size(); j++) {
                     // every handle must be reassigned, as the ones created by
                     // default are all linked together.
-                    volSpreadsHandle[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                        SimpleQuote(volSpreads[i][j])));
+                    volSpreadsHandle[i][j] = Handle<Quote>(ext::make_shared<SimpleQuote>(volSpreads[i][j]));
                 }
             }
         };
@@ -153,13 +151,12 @@ namespace QuantLib {
         atm_.setMarketData();
         cube_.setMarketData();
         atmVolMatrix_ = RelinkableHandle<SwaptionVolatilityStructure>(
-            ext::shared_ptr<SwaptionVolatilityStructure>(new
-                SwaptionVolatilityMatrix(conventions_.calendar,
+            ext::make_shared<SwaptionVolatilityMatrix>(conventions_.calendar,
                                          atm_.tenors.options,
                                          atm_.tenors.swaps,
                                          atm_.volsHandle,
                                          conventions_.dayCounter,
-                                         conventions_.optionBdc)));
+                                         conventions_.optionBdc));
     }*/
 
 }

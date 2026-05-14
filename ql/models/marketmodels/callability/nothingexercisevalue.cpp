@@ -86,7 +86,7 @@ namespace QuantLib {
 
     std::unique_ptr<MarketModelExerciseValue>
     NothingExerciseValue::clone() const {
-        return std::unique_ptr<MarketModelExerciseValue>(new NothingExerciseValue(*this));
+        return std::make_unique<NothingExerciseValue>(*this);
     }
 
 }

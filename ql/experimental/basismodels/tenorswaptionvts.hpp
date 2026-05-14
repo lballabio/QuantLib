@@ -112,8 +112,7 @@ namespace QuantLib {
 
         ext::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
                                                        Time swapLength) const override {
-            return ext::shared_ptr<SmileSection>(
-                new TenorSwaptionSmileSection(*this, optionTime, swapLength));
+            return ext::make_shared<TenorSwaptionSmileSection>(*this, optionTime, swapLength);
         }
 
         Volatility volatilityImpl(Time optionTime, Time swapLength, Rate strike) const override {

@@ -87,11 +87,10 @@ namespace QuantLib {
                   bool isInArrears = false,
                   const Date& exCouponDate = Date(),
                   BusinessDayConvention fixingConvention = Preceding)
-        : CappedFlooredCoupon(ext::shared_ptr<FloatingRateCoupon>(new
-            CmsSpreadCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
+        : CappedFlooredCoupon(ext::make_shared<CmsSpreadCoupon>(paymentDate, nominal, startDate, endDate, fixingDays,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
                       dayCounter, isInArrears, exCouponDate,
-                      fixingConvention)), cap, floor) {}
+                      fixingConvention), cap, floor) {}
 
         void accept(AcyclicVisitor& v) override {
             auto* v1 = dynamic_cast<Visitor<CappedFlooredCmsSpreadCoupon>*>(&v);

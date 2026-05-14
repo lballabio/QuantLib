@@ -68,7 +68,7 @@ namespace QuantLib {
 
     Real CapHelper::blackPrice(Volatility sigma) const {
         calculate();
-        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(sigma)));
+        Handle<Quote> vol(ext::make_shared<SimpleQuote>(sigma));
         ext::shared_ptr<PricingEngine> engine;
         switch(volatilityType_) {
           case ShiftedLognormal:
@@ -100,8 +100,7 @@ namespace QuantLib {
             startDate = termStructure_->referenceDate() + indexTenor;
             maturity = termStructure_->referenceDate() + length_;
         }
-        ext::shared_ptr<IborIndex> dummyIndex(new
-            IborIndex("dummy",
+        ext::shared_ptr<IborIndex> dummyIndex = ext::make_shared<IborIndex>("dummy",
                       indexTenor,
                       index_->fixingDays(),
                       index_->currency(),
@@ -109,7 +108,7 @@ namespace QuantLib {
                       index_->businessDayConvention(),
                       index_->endOfMonth(),
                       termStructure_->dayCounter(),
-                      termStructure_));
+                      termStructure_);
 
         std::vector<Real> nominals(1,1.0);
 
@@ -133,8 +132,7 @@ namespace QuantLib {
             .withPaymentAdjustment(index_->businessDayConvention());
 
         Swap swap(floatingLeg, fixedLeg);
-        swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                            new DiscountingSwapEngine(termStructure_, false)));
+        swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(termStructure_, false));
         Rate fairRate = fixedRate - swap.NPV()/(swap.legBPS(1)/1.0e-4);
         cap_ = ext::make_shared<Cap>(floatingLeg,
                                               std::vector<Rate>(1, fairRate));

@@ -63,8 +63,7 @@ std::vector<ext::shared_ptr<Helper> > makeHelpers(
     std::vector<ext::shared_ptr<Helper> > instruments;
     for (Datum datum : iiData) {
         Date maturity = datum.date;
-        Handle<Quote> quote(ext::shared_ptr<Quote>(
-                                new SimpleQuote(datum.rate/100.0)));
+        Handle<Quote> quote(ext::make_shared<SimpleQuote>(datum.rate/100.0));
         auto h = ext::make_shared<ZeroCouponInflationSwapHelper>(
                 quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::Flat);
         instruments.push_back(h);
@@ -115,8 +114,7 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
             ii->addFixing(rpiSchedule[i], fixData[i]);
         }
 
-        yTS.linkTo(ext::shared_ptr<YieldTermStructure>(
-                          new FlatForward(evaluationDate, 0.05, dayCounter)));
+        yTS.linkTo(ext::make_shared<FlatForward>(evaluationDate, 0.05, dayCounter));
 
         // now build the zero inflation curve
         observationLag = Period(2,Months);

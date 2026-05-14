@@ -36,18 +36,15 @@ namespace QuantLib {
     ext::shared_ptr<Lattice> ExtendedCoxIngersollRoss::tree(
                                                  const TimeGrid& grid) const {
         TermStructureFittingParameter phi(termStructure());
-        ext::shared_ptr<Dynamics> numericDynamics(
-                              new Dynamics(phi, theta(), k(), sigma(), x0()));
+        ext::shared_ptr<Dynamics> numericDynamics = ext::make_shared<Dynamics>(phi, theta(), k(), sigma(), x0());
 
-        ext::shared_ptr<TrinomialTree> trinomial(
-                   new TrinomialTree(numericDynamics->process(), grid, true));
+        ext::shared_ptr<TrinomialTree> trinomial = ext::make_shared<TrinomialTree>(numericDynamics->process(), grid, true);
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
         ext::shared_ptr<NumericalImpl> impl =
             ext::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
 
-        return ext::shared_ptr<Lattice>(
-                   new ShortRateTree(trinomial, numericDynamics, impl, grid));
+        return ext::make_shared<ShortRateTree>(trinomial, numericDynamics, impl, grid);
     }
 
     Real ExtendedCoxIngersollRoss::A(Time t, Time s) const {

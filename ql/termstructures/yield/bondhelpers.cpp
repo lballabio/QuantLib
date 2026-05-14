@@ -160,11 +160,11 @@ namespace QuantLib {
                             const Bond::Price::Type priceType)
     : BondHelper(price,
                  // make_shared and deprecation interfere; restore later
-                 ext::shared_ptr<Bond>(new CPIBond(settlementDays, faceAmount, growthOnly, baseCPI,
+                 ext::make_shared<CPIBond>(settlementDays, faceAmount, growthOnly, baseCPI,
                                            observationLag, cpiIndex, observationInterpolation,
                                            std::move(schedule), fixedRate, accrualDayCounter, paymentConvention,
                                            issueDate, paymentCalendar, exCouponPeriod, exCouponCalendar,
-                                           exCouponConvention, exCouponEndOfMonth)),
+                                           exCouponConvention, exCouponEndOfMonth),
                  priceType) {}
 
     QL_DEPRECATED_ENABLE_WARNING

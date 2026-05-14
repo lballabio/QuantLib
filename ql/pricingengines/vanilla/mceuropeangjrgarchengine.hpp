@@ -119,13 +119,11 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<GJRGARCHProcess>(this->process_);
         QL_REQUIRE(process, "GJRGARCH process required");
 
-        return ext::shared_ptr<
-            typename MCEuropeanGJRGARCHEngine<RNG,S>::path_pricer_type>(
-                   new EuropeanGJRGARCHPathPricer(
+        return ext::make_shared<EuropeanGJRGARCHPathPricer>(
                                         payoff->optionType(),
                                         payoff->strike(),
                                         process->riskFreeRate()->discount(
-                                                   this->timeGrid().back())));
+                                                   this->timeGrid().back()));
     }
 
 

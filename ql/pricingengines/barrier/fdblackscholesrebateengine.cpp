@@ -83,21 +83,17 @@ namespace QuantLib {
             xMax = std::log(arguments_.barrier);
         }
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(
+        const ext::shared_ptr<Fdm1dMesher> equityMesher = ext::make_shared<FdmBlackScholesMesher>(
                 xGrid_, process_, maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
-                dividends_));
+                dividends_);
         
-        const ext::shared_ptr<FdmMesher> mesher (
-            new FdmMesherComposite(equityMesher));
+        const ext::shared_ptr<FdmMesher> mesher = ext::make_shared<FdmMesherComposite>(equityMesher);
         
         // 2. Calculator
-        const ext::shared_ptr<StrikedTypePayoff> rebatePayoff(
-                new CashOrNothingPayoff(Option::Call, 0.0, arguments_.rebate));
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-                                new FdmLogInnerValue(rebatePayoff, mesher, 0));
+        const ext::shared_ptr<StrikedTypePayoff> rebatePayoff = ext::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, arguments_.rebate);
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator = ext::make_shared<FdmLogInnerValue>(rebatePayoff, mesher, 0);
 
         // 3. Step conditions
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
@@ -130,11 +126,10 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
                                      maturity, tGrid_, dampingSteps_ };
 
-        const ext::shared_ptr<FdmBlackScholesSolver> solver(
-                new FdmBlackScholesSolver(
+        const ext::shared_ptr<FdmBlackScholesSolver> solver = ext::make_shared<FdmBlackScholesSolver>(
                                 Handle<GeneralizedBlackScholesProcess>(process_),
                                 payoff->strike(), solverDesc, schemeDesc_,
-                                localVol_, illegalLocalVolOverwrite_));
+                                localVol_, illegalLocalVolOverwrite_);
 
         const Real spot = process_->x0();
         results_.value = solver->valueAt(spot);

@@ -144,13 +144,12 @@ namespace QuantLib {
         vvec_[0] = guess - slope_ * (tvec_[1] - tvec_[0]) * guess;
         // could have Interpolator1D instead of Linear
         ext::shared_ptr<InterpolatedYoYOptionletVolatilityCurve<Linear> >
-        vCurve(
-            new InterpolatedYoYOptionletVolatilityCurve<Linear>(
+        vCurve = ext::make_shared<InterpolatedYoYOptionletVolatilityCurve<Linear>>(
                                                0, TARGET(), ModifiedFollowing,
                                                Actual365Fixed(), lag_,
                                                frequency_, indexIsInterpolated_,
                                                dvec_, vvec_,
-                                               -1.0, 3.0) ); // strike limits
+                                               -1.0, 3.0); // strike limits
         Handle<YoYOptionletVolatilitySurface> hCurve(vCurve);
         p_->setVolatility(hCurve);
         // hopefully this gets to the pricer ... then
@@ -183,10 +182,9 @@ namespace QuantLib {
         // provided that the lag and frequency are correct
         RelinkableHandle<YoYInflationTermStructure> hYoY(
                                        YoYCapFloorTermPriceSurface_->YoYTS());
-        ext::shared_ptr<YoYInflationIndex> anIndex(
-                                           new YYGenericCPI(frequency_,
+        ext::shared_ptr<YoYInflationIndex> anIndex = ext::make_shared<YYGenericCPI>(frequency_,
                                                             false, lag_,
-                                                            Currency(), hYoY));
+                                                            Currency(), hYoY);
 
         // strip each K separatly
         for (Size i=0; i<YoYCapFloorTermPriceSurface_->strikes().size(); i++) {
@@ -227,26 +225,23 @@ namespace QuantLib {
                      YoYCapFloorTermPriceSurface_->capPrice(Tp, K) :
                      YoYCapFloorTermPriceSurface_->floorPrice(Tp, K));
 
-                Handle<Quote> quote1(ext::shared_ptr<Quote>(
-                                               new SimpleQuote( nextPrice )));
+                Handle<Quote> quote1(ext::make_shared<SimpleQuote>( nextPrice ));
                 // helper should be an integer number of periods away,
                 // this is enforced by rounding
                 Size nT = (Size)floor(s->timeFromReference(s->yoyOptionDateFromTenor(Tp))+0.5);
-                helpers.push_back(ext::shared_ptr<YoYOptionletHelper>(
-                          new YoYOptionletHelper(quote1, notional, useType,
+                helpers.push_back(ext::make_shared<YoYOptionletHelper>(quote1, notional, useType,
                                                  lag_,
                                                  dc, cal,
                                                  fixingDays_,
                                                  anIndex, CPI::Flat,
-                                                 K, nT, p_)));
+                                                 K, nT, p_));
 
-                ext::shared_ptr<ConstantYoYOptionletVolatility> yoyVolBLACK(
-                          new ConstantYoYOptionletVolatility(found, settlementDays,
+                ext::shared_ptr<ConstantYoYOptionletVolatility> yoyVolBLACK = ext::make_shared<ConstantYoYOptionletVolatility>(found, settlementDays,
                                                              cal, bdc, dc,
                                                              lag_, frequency_,
                                                              false,
                                                              // -100% to +300%
-                                                             -1.0,3.0));
+                                                             -1.0,3.0);
 
                 helpers[j]->setTermStructure(
                        // gets underlying pointer & removes const
@@ -262,13 +257,12 @@ namespace QuantLib {
             Rate minStrike = K-eps;
             Rate maxStrike = K+eps;
             ext::shared_ptr<
-                PiecewiseYoYOptionletVolatilityCurve<Interpolator1D> > testPW(
-                new PiecewiseYoYOptionletVolatilityCurve<Interpolator1D>(
+                PiecewiseYoYOptionletVolatilityCurve<Interpolator1D> > testPW = ext::make_shared<PiecewiseYoYOptionletVolatilityCurve<Interpolator1D>>(
                                             settlementDays, cal, bdc, dc, lag_,
                                             frequency_, indexIsInterpolated_,
                                             minStrike, maxStrike,
                                             baseYoYVolatility,
-                                            helperInstruments) );
+                                            helperInstruments);
             testPW->recalculate();
             volCurves_.push_back(testPW);
         }

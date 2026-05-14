@@ -75,7 +75,7 @@ struct CommonVars {
         fixedFrequency = Annual;
         floatingFrequency = Semiannual;
         fixedDayCount = Thirty360(Thirty360::BondBasis);
-        index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        index = ext::make_shared<Euribor6M>(termStructure);
         calendar = index->fixingCalendar();
         today = calendar.adjust(Date::todaysDate());
         settlement = calendar.advance(today,settlementDays,Days);
@@ -97,13 +97,11 @@ struct CommonVars {
                                floatingConvention,
                                floatingConvention,
                                DateGeneration::Forward, false);
-        ext::shared_ptr<VanillaSwap> swap(
-                      new VanillaSwap(type, nominal,
+        ext::shared_ptr<VanillaSwap> swap = ext::make_shared<VanillaSwap>(type, nominal,
                                       fixedSchedule, fixedRate, fixedDayCount,
                                       floatSchedule, index, 0.0,
-                                      index->dayCounter()));
-        swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                                   new DiscountingSwapEngine(termStructure)));
+                                      index->dayCounter());
+        swap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(termStructure));
         return swap;
     }
 };
@@ -135,20 +133,18 @@ BOOST_AUTO_TEST_CASE(testCachedValues) {
     ext::shared_ptr<VanillaSwap> otmSwap = vars.makeSwap(1.2*atmRate);
 
     Real a = 0.048696, sigma = 0.0058904;
-    ext::shared_ptr<HullWhite> model(new HullWhite(vars.termStructure,
-                                                     a, sigma));
+    ext::shared_ptr<HullWhite> model = ext::make_shared<HullWhite>(vars.termStructure,
+                                                     a, sigma);
     std::vector<Date> exerciseDates;
     const Leg& leg = atmSwap->fixedLeg();
     for (const auto& i : leg) {
         ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(i);
         exerciseDates.push_back(coupon->accrualStartDate());
     }
-    ext::shared_ptr<Exercise> exercise(new BermudanExercise(exerciseDates));
+    ext::shared_ptr<Exercise> exercise = ext::make_shared<BermudanExercise>(exerciseDates);
 
-    ext::shared_ptr<PricingEngine> treeEngine(
-                                            new TreeSwaptionEngine(model, 50));
-    ext::shared_ptr<PricingEngine> fdmEngine(
-                                         new FdHullWhiteSwaptionEngine(model));
+    ext::shared_ptr<PricingEngine> treeEngine = ext::make_shared<TreeSwaptionEngine>(model, 50);
+    ext::shared_ptr<PricingEngine> fdmEngine = ext::make_shared<FdHullWhiteSwaptionEngine>(model);
 
     Real itmValue,    atmValue,    otmValue;
     Real itmValueFdm, atmValueFdm, otmValueFdm;
@@ -206,7 +202,7 @@ BOOST_AUTO_TEST_CASE(testCachedValues) {
     for (auto& exerciseDate : exerciseDates)
         exerciseDate = vars.calendar.adjust(exerciseDate - 10);
     exercise =
-        ext::shared_ptr<Exercise>(new BermudanExercise(exerciseDates));
+        ext::make_shared<BermudanExercise>(exerciseDates);
 
     if (!usingAtParCoupons) {
         itmValue = 42.1791; atmValue = 12.7699; otmValue = 2.4368;

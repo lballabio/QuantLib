@@ -324,8 +324,7 @@ namespace QuantLib {
                     i->first, i->second.tenor_, true);
             }
 
-            i->second.rawSmileSection_ = ext::shared_ptr<SmileSection>(
-                new AtmSmileSection(smileSection, i->second.atm_));
+            i->second.rawSmileSection_ = ext::make_shared<AtmSmileSection>(smileSection, i->second.atm_);
 
             int forcedLeftIndex = -1;
             int forcedRightIndex = QL_MAX_INTEGER;
@@ -379,8 +378,7 @@ namespace QuantLib {
 
                     // TODO should we fix beta to avoid numerical instabilities
                     // during calibration ?
-                    ext::shared_ptr<SabrInterpolatedSmileSection> sabrSection(
-                        new SabrInterpolatedSmileSection(
+                    ext::shared_ptr<SabrInterpolatedSmileSection> sabrSection = ext::make_shared<SabrInterpolatedSmileSection>(
                             i->first, i->second.atm_, k, false,
                             i->second.rawSmileSection_->volatility(
                                 i->second.atm_),
@@ -388,7 +386,7 @@ namespace QuantLib {
                             false, true, ext::shared_ptr<EndCriteria>(),
                             ext::shared_ptr<OptimizationMethod>(),
                             Actual365Fixed(),
-                                i->second.rawSmileSection_->shift()));
+                                i->second.rawSmileSection_->shift());
 
                     // we make the sabr section arbitrage free by superimposing
                     // a kahalesection

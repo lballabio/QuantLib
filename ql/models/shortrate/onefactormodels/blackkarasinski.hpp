@@ -76,7 +76,7 @@ namespace QuantLib {
       public:
         Dynamics(Parameter fitting, Real alpha, Real sigma)
         : ShortRateDynamics(
-              ext::shared_ptr<StochasticProcess1D>(new OrnsteinUhlenbeckProcess(alpha, sigma))),
+              ext::make_shared<OrnsteinUhlenbeckProcess>(alpha, sigma)),
           fitting_(std::move(fitting)) {}
 
         Real variable(Time t, Rate r) const override { return std::log(r) - fitting_(t); }

@@ -74,8 +74,7 @@ namespace QuantLib {
             ext::shared_ptr<P> process = ext::dynamic_pointer_cast<P>(this->process_);
             QL_REQUIRE(process, "Heston-like process required");
 
-            return ext::shared_ptr<PricingEngine>(new
-                AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(process));
+            return ext::make_shared<AnalyticDiscreteGeometricAveragePriceAsianHestonEngine>(process);
         }
     };
 
@@ -180,15 +179,13 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<P>(this->process_);
         QL_REQUIRE(process, "Heston like process required");
 
-        return ext::shared_ptr<typename
-            MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::path_pricer_type>(
-                new ArithmeticAPOHestonPathPricer(
+        return ext::make_shared<ArithmeticAPOHestonPathPricer>(
                     payoff->optionType(),
                     payoff->strike(),
                     process->riskFreeRate()->discount(exercise->lastDate()),
                     fixingIndexes,
                     this->arguments_.runningAccumulator,
-                    this->arguments_.pastFixings));
+                    this->arguments_.pastFixings);
     }
 
     template <class RNG, class S, class P>
@@ -224,13 +221,11 @@ namespace QuantLib {
         // pass seasoning details to the path pricer (NB. NEED to pass them to
         // the analytic pricer as well in that case).
 
-        return ext::shared_ptr<typename
-            MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::path_pricer_type>(
-                new GeometricAPOHestonPathPricer(
+        return ext::make_shared<GeometricAPOHestonPathPricer>(
                     payoff->optionType(),
                     payoff->strike(),
                     process->riskFreeRate()->discount(exercise->lastDate()),
-                    fixingIndexes));
+                    fixingIndexes);
     }
 
     template <class RNG, class S, class P>

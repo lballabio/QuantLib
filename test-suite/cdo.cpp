@@ -133,15 +133,13 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
 
     Settings::instance().evaluationDate() = asofDate;
 
-    ext::shared_ptr<YieldTermStructure> yieldPtr(
-        new FlatForward(asofDate, rate, daycount, cmp));
+    ext::shared_ptr<YieldTermStructure> yieldPtr = ext::make_shared<FlatForward>(asofDate, rate, daycount, cmp);
     Handle<YieldTermStructure> yieldHandle(yieldPtr);
 
-    Handle<Quote> hazardRate(ext::shared_ptr<Quote>(new SimpleQuote(lambda)));
+    Handle<Quote> hazardRate(ext::make_shared<SimpleQuote>(lambda));
     std::vector<Handle<DefaultProbabilityTermStructure>> basket;
-    ext::shared_ptr<DefaultProbabilityTermStructure> ptr(
-        new FlatHazardRate(asofDate, hazardRate, ActualActual(ActualActual::ISDA)));
-    ext::shared_ptr<Pool> pool(new Pool());
+    ext::shared_ptr<DefaultProbabilityTermStructure> ptr = ext::make_shared<FlatHazardRate>(asofDate, hazardRate, ActualActual(ActualActual::ISDA));
+    ext::shared_ptr<Pool> pool = ext::make_shared<Pool>();
     std::vector<std::string> names;
     // probability key items
     std::vector<Issuer> issuers;
@@ -161,12 +159,12 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
                   NorthAmericaCorpDefaultKey(EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
     }
 
-    ext::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> correlation = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> hCorrelation(correlation);
     QL_REQUIRE(std::size(hwAttachment) == std::size(hwDetachment), "data length does not match");
 
-    ext::shared_ptr<PricingEngine> midPCDOEngine(new MidPointCDOEngine(yieldHandle));
-    ext::shared_ptr<PricingEngine> integralCDOEngine(new IntegralCDOEngine(yieldHandle));
+    ext::shared_ptr<PricingEngine> midPCDOEngine = ext::make_shared<MidPointCDOEngine>(yieldHandle);
+    ext::shared_ptr<PricingEngine> integralCDOEngine = ext::make_shared<IntegralCDOEngine>(yieldHandle);
 
     const Size i = dataSet;
     correlation->setValue(hwData7[i].correlation);
@@ -177,37 +175,32 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
     std::vector<Real> relativeToleranceMidp, relativeTolerancePeriod, absoluteTolerance;
 
     if (hwData7[i].nm == -1 && hwData7[i].nz == -1) {
-        ext::shared_ptr<GaussianConstantLossLM> gaussKtLossLM(
-            new GaussianConstantLossLM(hCorrelation, std::vector<Real>(poolSize, recovery),
+        ext::shared_ptr<GaussianConstantLossLM> gaussKtLossLM = ext::make_shared<GaussianConstantLossLM>(hCorrelation, std::vector<Real>(poolSize, recovery),
                                        LatentModelIntegrationType::GaussianQuadrature, poolSize,
-                                       GaussianCopulaPolicy::initTraits()));
+                                       GaussianCopulaPolicy::initTraits());
 
         // 1.-Inhomogeneous gaussian
         modelNames.emplace_back("Inhomogeneous gaussian");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(
-            new IHGaussPoolLossModel(gaussKtLossLM, nBuckets, 5., -5, 15)));
+        basketModels.push_back(ext::make_shared<IHGaussPoolLossModel>(gaussKtLossLM, nBuckets, 5., -5, 15));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 2.-homogeneous gaussian
         modelNames.emplace_back("Homogeneous gaussian");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(
-            new HomogGaussPoolLossModel(gaussKtLossLM, nBuckets, 5., -5, 15)));
+        basketModels.push_back(ext::make_shared<HomogGaussPoolLossModel>(gaussKtLossLM, nBuckets, 5., -5, 15));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 3.-random default gaussian
         modelNames.emplace_back("Random default gaussian");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(
-            new RandomDefaultLM<GaussianCopulaPolicy>(gaussKtLossLM, numSims)));
+        basketModels.push_back(ext::make_shared<RandomDefaultLM<GaussianCopulaPolicy>>(gaussKtLossLM, numSims));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.07);
         relativeTolerancePeriod.push_back(0.07);
         // SECOND MC
         // gaussian LHP
         modelNames.emplace_back("Gaussian LHP");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(
-            new GaussianLHPLossModel(hCorrelation, std::vector<Real>(poolSize, recovery))));
+        basketModels.push_back(ext::make_shared<GaussianLHPLossModel>(hCorrelation, std::vector<Real>(poolSize, recovery)));
         absoluteTolerance.push_back(10.);
         relativeToleranceMidp.push_back(0.5);
         relativeTolerancePeriod.push_back(0.5);
@@ -218,27 +211,24 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
         TCopulaPolicy::initTraits initTG;
         initTG.tOrders.push_back(hwData7[i].nm);
         initTG.tOrders.push_back(hwData7[i].nz);
-        ext::shared_ptr<TConstantLossLM> TKtLossLM(new TConstantLossLM(
+        ext::shared_ptr<TConstantLossLM> TKtLossLM = ext::make_shared<TConstantLossLM>(
             hCorrelation, std::vector<Real>(poolSize, recovery),
-            LatentModelIntegrationType::GaussianQuadrature, poolSize, initTG));
+            LatentModelIntegrationType::GaussianQuadrature, poolSize, initTG);
         // 1.-inhomogeneous studentT
         modelNames.emplace_back("Inhomogeneous student");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(
-            new IHStudentPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
+        basketModels.push_back(ext::make_shared<IHStudentPoolLossModel>(TKtLossLM, nBuckets, 5., -5., 15));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 2.-homogeneous student T
         modelNames.emplace_back("Homogeneous student");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(
-            new HomogTPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
+        basketModels.push_back(ext::make_shared<HomogTPoolLossModel>(TKtLossLM, nBuckets, 5., -5., 15));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 3.-random default student T
         modelNames.emplace_back("Random default studentT");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(
-            new RandomDefaultLM<TCopulaPolicy>(TKtLossLM, numSims)));
+        basketModels.push_back(ext::make_shared<RandomDefaultLM<TCopulaPolicy>>(TKtLossLM, numSims));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.07);
         relativeTolerancePeriod.push_back(0.07);
@@ -254,27 +244,24 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
         be this conservative as the polynomial convolution gets shorter and
         faster as the order decreases.
         */
-        ext::shared_ptr<TConstantLossLM> TKtLossLM(new TConstantLossLM(
+        ext::shared_ptr<TConstantLossLM> TKtLossLM = ext::make_shared<TConstantLossLM>(
             hCorrelation, std::vector<Real>(poolSize, recovery),
-            LatentModelIntegrationType::GaussianQuadrature, poolSize, initTG));
+            LatentModelIntegrationType::GaussianQuadrature, poolSize, initTG);
         // 1.-inhomogeneous
         modelNames.emplace_back("Inhomogeneous student-gaussian");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(
-            new IHStudentPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
+        basketModels.push_back(ext::make_shared<IHStudentPoolLossModel>(TKtLossLM, nBuckets, 5., -5., 15));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 2.-homogeneous
         modelNames.emplace_back("Homogeneous student-gaussian");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(
-            new HomogTPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
+        basketModels.push_back(ext::make_shared<HomogTPoolLossModel>(TKtLossLM, nBuckets, 5., -5., 15));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 3.-random default
         modelNames.emplace_back("Random default student-gaussian");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(
-            new RandomDefaultLM<TCopulaPolicy>(TKtLossLM, numSims)));
+        basketModels.push_back(ext::make_shared<RandomDefaultLM<TCopulaPolicy>>(TKtLossLM, numSims));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.07);
         relativeTolerancePeriod.push_back(0.07);
@@ -286,27 +273,24 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
         TCopulaPolicy::initTraits initTG;
         initTG.tOrders.push_back(45); // pretty close to gaussian
         initTG.tOrders.push_back(hwData7[i].nz);
-        ext::shared_ptr<TConstantLossLM> TKtLossLM(new TConstantLossLM(
+        ext::shared_ptr<TConstantLossLM> TKtLossLM = ext::make_shared<TConstantLossLM>(
             hCorrelation, std::vector<Real>(poolSize, recovery),
-            LatentModelIntegrationType::GaussianQuadrature, poolSize, initTG));
+            LatentModelIntegrationType::GaussianQuadrature, poolSize, initTG);
         // 1.-inhomogeneous gaussian
         modelNames.emplace_back("Inhomogeneous gaussian-student");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(
-            new IHStudentPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
+        basketModels.push_back(ext::make_shared<IHStudentPoolLossModel>(TKtLossLM, nBuckets, 5., -5., 15));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 2.-homogeneous gaussian
         modelNames.emplace_back("Homogeneous gaussian-student");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(
-            new HomogTPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
+        basketModels.push_back(ext::make_shared<HomogTPoolLossModel>(TKtLossLM, nBuckets, 5., -5., 15));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 3.-random default gaussian
         modelNames.emplace_back("Random default gaussian-student");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(
-            new RandomDefaultLM<TCopulaPolicy>(TKtLossLM, numSims)));
+        basketModels.push_back(ext::make_shared<RandomDefaultLM<TCopulaPolicy>>(TKtLossLM, numSims));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.07);
         relativeTolerancePeriod.push_back(0.07);
@@ -319,8 +303,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
     }
 
     for (Size j = 0; j < std::size(hwAttachment); j++) {
-        ext::shared_ptr<Basket> basketPtr(
-            new Basket(asofDate, names, nominals, pool, hwAttachment[j], hwDetachment[j]));
+        ext::shared_ptr<Basket> basketPtr = ext::make_shared<Basket>(asofDate, names, nominals, pool, hwAttachment[j], hwDetachment[j]);
         std::ostringstream trancheId;
         trancheId << "[" << hwAttachment[j] << " , " << hwDetachment[j] << "]";
         SyntheticCDO cdoe(basketPtr, Protection::Seller, schedule, 0.0, premium, daycount,

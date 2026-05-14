@@ -121,8 +121,7 @@ namespace QuantLib {
 
         ext::shared_ptr<Fdm1dMesher> equityMesher;
         if (strikes_.empty()) {
-            equityMesher = ext::shared_ptr<Fdm1dMesher>(
-                new FdmBlackScholesMesher(
+            equityMesher = ext::make_shared<FdmBlackScholesMesher>(
                     xGrid_,
                     FdmBlackScholesMesher::processHelper(
                         process->s0(), process->dividendYield(),
@@ -131,27 +130,24 @@ namespace QuantLib {
                     Null<Real>(), Null<Real>(), 0.0001, 2.0,
                     std::pair<Real, Real>(payoff->strike(), 0.1),
                     dividends_,
-                    quantoHelper_));
+                    quantoHelper_);
         }
         else {
             QL_REQUIRE(dividends_.empty(),
                        "multiple strikes engine does not work with discrete dividends");
-            equityMesher = ext::shared_ptr<Fdm1dMesher>(
-                new FdmBlackScholesMultiStrikeMesher(
+            equityMesher = ext::make_shared<FdmBlackScholesMultiStrikeMesher>(
                     xGrid_,
                     FdmBlackScholesMesher::processHelper(
                       process->s0(), process->dividendYield(),
                       process->riskFreeRate(), avgVolaEstimate),
                     maturity, strikes_, 0.0001, 1.5,
-                    std::pair<Real, Real>(payoff->strike(), 0.075)));
+                    std::pair<Real, Real>(payoff->strike(), 0.075));
         }
 
-        const ext::shared_ptr<FdmMesher> mesher(
-            new FdmMesherComposite(equityMesher, vMesher));
+        const ext::shared_ptr<FdmMesher> mesher = ext::make_shared<FdmMesherComposite>(equityMesher, vMesher);
 
         // 2. Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-                          new FdmLogInnerValue(arguments_.payoff, mesher, 0));
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator = ext::make_shared<FdmLogInnerValue>(arguments_.payoff, mesher, 0);
 
         // 3. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions =
@@ -196,11 +192,11 @@ namespace QuantLib {
 
         const ext::shared_ptr<HestonProcess> process = model_->process();
 
-        ext::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
+        ext::shared_ptr<FdmHestonSolver> solver = ext::make_shared<FdmHestonSolver>(
                     Handle<HestonProcess>(process),
                     getSolverDesc(1.5), schemeDesc_,
                     Handle<FdmQuantoHelper>(quantoHelper_), leverageFct_,
-                    mixingFactor_));
+                    mixingFactor_);
 
         const Real v0   = process->v0();
         const Real spot = process->s0()->value();

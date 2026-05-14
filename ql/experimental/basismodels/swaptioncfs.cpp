@@ -45,8 +45,8 @@ namespace QuantLib {
                             ->accrualStartDate()) { // otherwise there is no floating coupon left
             ext::shared_ptr<Coupon> firstFloatCoupon =
                 ext::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]);
-            floatLeg_.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(
-                firstFloatCoupon->nominal(), firstFloatCoupon->accrualStartDate())));
+            floatLeg_.push_back(ext::make_shared<SimpleCashFlow>(
+                firstFloatCoupon->nominal(), firstFloatCoupon->accrualStartDate()));
             // calculate spread payments
             for (Size k = floatIdx; k < iborLeg.size(); ++k) {
                 ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(iborLeg[k]);
@@ -73,14 +73,14 @@ namespace QuantLib {
                     spread = liborForwardRate - discForwardRate;
                     payDate = coupon->date();
                 }
-                floatLeg_.push_back(ext::shared_ptr<CashFlow>(new FixedRateCoupon(
-                    payDate, coupon->nominal(), spread, coupon->dayCounter(), startDate, endDate)));
+                floatLeg_.push_back(ext::make_shared<FixedRateCoupon>(
+                    payDate, coupon->nominal(), spread, coupon->dayCounter(), startDate, endDate));
             } // for ...
               // finally, add the notional at the last date
             ext::shared_ptr<Coupon> lastFloatCoupon =
                 ext::dynamic_pointer_cast<Coupon>(iborLeg.back());
-            floatLeg_.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(
-                -1.0 * lastFloatCoupon->nominal(), lastFloatCoupon->accrualEndDate())));
+            floatLeg_.push_back(ext::make_shared<SimpleCashFlow>(
+                -1.0 * lastFloatCoupon->nominal(), lastFloatCoupon->accrualEndDate()));
         } // if ...
         // assemble raw cash flow data...
         Actual365Fixed dc;

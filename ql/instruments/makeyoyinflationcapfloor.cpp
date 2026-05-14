@@ -82,8 +82,7 @@ namespace QuantLib {
                                                  false, nominalTermStructure_->referenceDate());
         }
 
-        ext::shared_ptr<YoYInflationCapFloor> capFloor(new
-                    YoYInflationCapFloor(capFloorType_, leg, strikeVector));
+        ext::shared_ptr<YoYInflationCapFloor> capFloor = ext::make_shared<YoYInflationCapFloor>(capFloorType_, leg, strikeVector);
         capFloor->setPricingEngine(engine_);
         return capFloor;
     }
