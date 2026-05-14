@@ -35,9 +35,9 @@ namespace QuantLib {
         const Size m = M.rows();
         const Size n = M.columns();
 
-        std::unique_ptr<int[]> lipvt(new int[n]);
-        std::unique_ptr<Real[]> rdiag(new Real[n]);
-        std::unique_ptr<Real[]> wa(new Real[n]);
+        std::unique_ptr<int[]> lipvt = std::make_unique<int[]>(n);
+        std::unique_ptr<Real[]> rdiag = std::make_unique<Real[]>(n);
+        std::unique_ptr<Real[]> wa = std::make_unique<Real[]>(n);
 
         MINPACK::qrfac(m, n, mT.begin(), 0, (pivot)?1:0,
                        lipvt.get(), n, rdiag.get(), rdiag.get(), wa.get());
@@ -135,13 +135,13 @@ namespace QuantLib {
 
         std::vector<Size> lipvt = qrDecomposition(a, q, r, pivot);
 
-        std::unique_ptr<int[]> ipvt(new int[n]);
+        std::unique_ptr<int[]> ipvt = std::make_unique<int[]>(n);
         std::copy(lipvt.begin(), lipvt.end(), ipvt.get());
 
         Matrix rT = transpose(r);
 
-        std::unique_ptr<Real[]> sdiag(new Real[n]);
-        std::unique_ptr<Real[]> wa(new Real[n]);
+        std::unique_ptr<Real[]> sdiag = std::make_unique<Real[]>(n);
+        std::unique_ptr<Real[]> wa = std::make_unique<Real[]>(n);
 
         Array ld(n, 0.0);
         if (!d.empty()) {

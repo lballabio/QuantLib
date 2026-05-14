@@ -170,7 +170,7 @@ namespace QuantLib {
     std::unique_ptr<MarketModelMultiProduct>
     CallSpecifiedMultiProduct::clone() const 
     {
-        return std::unique_ptr<MarketModelMultiProduct>(new CallSpecifiedMultiProduct(*this));
+        return std::make_unique<CallSpecifiedMultiProduct>(*this);
     }
 
     const MarketModelMultiProduct&
