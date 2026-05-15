@@ -57,27 +57,26 @@ namespace QuantLib {
     Real IvopOneDim(Real eps, Real chi, Real theta, Real /*rho*/,
                       Real v0, Real eprice, Time tau, Real rtax)
     {
-        Real ss=0.0;
-        std::unique_ptr<double[]> xiv = std::make_unique<double[]>(2048*2048+1);
-        double nris=0.0;
-        int j=0,mm=0;
-        double pi=0,pi2=0;
-        double dstep=0;
-        Real option=0, impart=0;
+        auto ss = 0.0;
+        auto xiv = std::make_unique<double[]>(2048*2048+1);
+        auto nris = 0.0;
+        auto j = 0, mm = 0;
+        auto pi = 0.0, pi2 = 0.0;
+        auto dstep = 0.0;
+        auto option = 0.0, impart = 0.0;
 
-        std::unique_ptr<Complex[]> ff = std::make_unique<Complex[]>(2048*2048);
+        auto ff = std::make_unique<Complex[]>(2048*2048);
         Complex xi;
-        Complex ui,beta,zita,gamma,csum,vero;
+        const auto ui = Complex(0.0,1.0);
+        Complex beta,zita,gamma,csum,vero;
         Complex contrib, caux, caux1,caux2,caux3;
-
-        ui=Complex(0.0,1.0);
 
         /*
          **********************************************************
          **   i0: initial integrated variance i0=0
          **********************************************************
          */
-        Real i0=0.0;
+        const auto i0 = 0.0;
         //s=2.0*chi*theta/(eps*eps)-1.0;
 
         //s=s+1;
@@ -90,7 +89,7 @@ namespace QuantLib {
 
         pi= 3.14159265358979324;
         pi2=2.0*pi;
-        Real s=2.0*chi*theta/(eps*eps)-1.0;
+        const auto s = 2.0*chi*theta/(eps*eps)-1.0;
         /*
          ****************************************
          ** Note that s must be greater than zero
@@ -202,34 +201,33 @@ namespace QuantLib {
                     Real v0, Time tau, Real rtax,
                     const std::function<Real(Real)>& payoff) {
 
-        Real ss=0.0;
-        std::unique_ptr<double[]> xiv = std::make_unique<double[]>(2048*2048+1);
-        std::unique_ptr<double[]> ivet = std::make_unique<double[]>(2048 * 2048 + 1);
-        double nris=0.0;
-        int j=0,mm=0,k=0;
-        double pi=0,pi2=0;
+        auto ss = 0.0;
+        auto xiv = std::make_unique<double[]>(2048*2048+1);
+        auto ivet = std::make_unique<double[]>(2048 * 2048 + 1);
+        auto nris = 0.0;
+        auto j = 0, mm = 0, k = 0;
+        auto pi = 0.0, pi2 = 0.0;
 
-        double dstep=0;
-        Real ip=0;
-        Real payoffval=0;
-        Real option=0/*, impart=0*/;
+        auto dstep = 0.0;
+        auto ip = 0.0;
+        auto payoffval = 0.0;
+        auto option = 0.0/*, impart=0*/;
 
-        Real sumr=0;//,sumi=0;
+        auto sumr = 0.0;//,sumi=0;
         Complex dxi,z;
 
-        std::unique_ptr<Complex[]> ff = std::make_unique<Complex[]>(2048*2048);
+        auto ff = std::make_unique<Complex[]>(2048*2048);
         Complex xi;
-        Complex ui,beta,zita,gamma,csum;
+        const auto ui = Complex(0.0,1.0);
+        Complex beta,zita,gamma,csum;
         Complex caux,caux1,caux2,caux3;
-
-        ui=Complex(0.0,1.0);
 
         /*
          **********************************************************
          **   i0: initial integrated variance i0=0
          **********************************************************
          */
-        Real i0=0.0;
+        const auto i0 = 0.0;
 
         /*
          *************************************************
@@ -240,7 +238,7 @@ namespace QuantLib {
         pi= 3.14159265358979324;
         pi2=2.0*pi;
 
-        Real s=2.0*chi*theta/(eps*eps)-1.0;
+        const auto s = 2.0*chi*theta/(eps*eps)-1.0;
         /*
          ****************************************
          ** Note that s must be greater than zero
@@ -368,26 +366,26 @@ namespace QuantLib {
         QL_REQUIRE(process_->dividendYield().empty(),
                    "this engine does not manage dividend yields");
 
-        Handle<YieldTermStructure> riskFreeRate = process_->riskFreeRate();
+        const auto riskFreeRate = process_->riskFreeRate();
 
-        Real epsilon = process_->sigma();
-        Real chi = process_->kappa();
-        Real theta = process_->theta();
-        Real rho = process_->rho();
-        Real v0 = process_->v0();
+        const auto epsilon = process_->sigma();
+        const auto chi = process_->kappa();
+        const auto theta = process_->theta();
+        const auto rho = process_->rho();
+        const auto v0 = process_->v0();
 
-        Time tau = riskFreeRate->dayCounter().yearFraction(
+        const auto tau = riskFreeRate->dayCounter().yearFraction(
                                         Settings::instance().evaluationDate(),
                                         arguments_.maturityDate);
-        Rate r = riskFreeRate->zeroRate(arguments_.maturityDate,
+        const auto r = riskFreeRate->zeroRate(arguments_.maturityDate,
                                         riskFreeRate->dayCounter(),
                                         Continuous);
 
-        ext::shared_ptr<PlainVanillaPayoff> plainPayoff =
+        const auto plainPayoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         if ((plainPayoff != nullptr) && plainPayoff->optionType() == Option::Call) {
             // a specialization for Call options is available
-            Real strike = plainPayoff->strike();
+            const auto strike = plainPayoff->strike();
             results_.value = IvopOneDim(epsilon, chi, theta, rho,
                                         v0, strike, tau, r)
                 * arguments_.notional;
@@ -399,4 +397,3 @@ namespace QuantLib {
     }
 
 }
-

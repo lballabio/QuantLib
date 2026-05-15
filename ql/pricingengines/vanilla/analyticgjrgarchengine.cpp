@@ -137,9 +137,9 @@ namespace QuantLib {
             m1 = m1_; m2 = m2_; m3 = m3_; 
             v1 = v1_; v2 = v2_; /*v3 = v3_;*/ z1 = z1_; /*z2 = z2_;*/ x1 = x1_;
 
-            std::unique_ptr<Real[]> m1ai = std::make_unique<Real[]>(T);
-            std::unique_ptr<Real[]> m2ai = std::make_unique<Real[]>(T);
-            std::unique_ptr<Real[]> m3ai = std::make_unique<Real[]>(T);
+            auto m1ai = std::make_unique<Real[]>(T);
+            auto m2ai = std::make_unique<Real[]>(T);
+            auto m3ai = std::make_unique<Real[]>(T);
             m1ai[0] = m2ai[0] = m3ai[0] = 1.0;
             for (i=1; i < T; ++i) {
                 m1ai[i] = m1ai[i-1]*m1;
