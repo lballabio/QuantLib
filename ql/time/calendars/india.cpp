@@ -40,7 +40,7 @@ namespace QuantLib {
             // Republic Day
             || (d == 26 && m == January)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Ambedkar Jayanti
             || (d == 14 && m == April)
             // May Day
@@ -50,14 +50,14 @@ namespace QuantLib {
             // Gandhi Jayanti
             || (d == 2 && m == October)
             // Christmas
-            || (d == 25 && m == December)
-            )
+            || (d == 25 && m == December))
             return false;
+
 
         if (y == 2005) {
             // Moharram, Holi, Maharashtra Day, and Ramzan Id fall
             // on Saturday or Sunday in 2005
-            if (// Bakri Id
+            if ( // Bakri Id
                 (d == 21 && m == January)
                 // Ganesh Chaturthi
                 || (d == 7 && m == September)
@@ -68,13 +68,12 @@ namespace QuantLib {
                 // Bhaubeej
                 || (d == 3 && m == November)
                 // Guru Nanak Jayanti
-                || (d == 15 && m == November)
-                )
+                || (d == 15 && m == November))
                 return false;
         }
 
         if (y == 2006) {
-            if (// Bakri Id
+            if ( // Bakri Id
                 (d == 11 && m == January)
                 // Moharram
                 || (d == 9 && m == February)
@@ -89,13 +88,12 @@ namespace QuantLib {
                 // Bhaubeej
                 || (d == 24 && m == October)
                 // Ramzan Id
-                || (d == 25 && m == October)
-                )
+                || (d == 25 && m == October))
                 return false;
         }
 
         if (y == 2007) {
-            if (// Bakri Id
+            if ( // Bakri Id
                 (d == 1 && m == January)
                 // Moharram
                 || (d == 30 && m == January)
@@ -110,13 +108,12 @@ namespace QuantLib {
                 // Laxmi Puja
                 || (d == 9 && m == November)
                 // Bakri Id (again)
-                || (d == 21 && m == December)
-                )
+                || (d == 21 && m == December))
                 return false;
         }
 
         if (y == 2008) {
-            if (// Mahashivratri
+            if ( // Mahashivratri
                 (d == 6 && m == March)
                 // Id-E-Milad
                 || (d == 20 && m == March)
@@ -139,13 +136,12 @@ namespace QuantLib {
                 // Gurunanak Jayanti
                 || (d == 13 && m == November)
                 // Bakri Id
-                || (d == 9 && m == December)
-                )
+                || (d == 9 && m == December))
                 return false;
         }
 
         if (y == 2009) {
-            if (// Moharram
+            if ( // Moharram
                 (d == 8 && m == January)
                 // Mahashivratri
                 || (d == 23 && m == February)
@@ -168,13 +164,12 @@ namespace QuantLib {
                 // Gurunanak Jayanti
                 || (d == 2 && m == November)
                 // Moharram (again)
-                || (d == 28 && m == December)
-                )
+                || (d == 28 && m == December))
                 return false;
         }
 
         if (y == 2010) {
-            if (// New Year's Day
+            if ( // New Year's Day
                 (d == 1 && m == January)
                 // Mahashivratri
                 || (d == 12 && m == February)
@@ -189,13 +184,12 @@ namespace QuantLib {
                 // Bakri Id
                 || (d == 17 && m == November)
                 // Moharram
-                || (d == 17 && m == December)
-                )
+                || (d == 17 && m == December))
                 return false;
         }
 
         if (y == 2011) {
-            if (// Mahashivratri
+            if ( // Mahashivratri
                 (d == 2 && m == March)
                 // Ram Navmi
                 || (d == 12 && m == April)
@@ -214,13 +208,12 @@ namespace QuantLib {
                 // Gurunanak Jayanti
                 || (d == 10 && m == November)
                 // Moharram
-                || (d == 6 && m == December)
-                )
+                || (d == 6 && m == December))
                 return false;
         }
 
         if (y == 2012) {
-            if (// Mahashivratri
+            if ( // Mahashivratri
                 (d == 20 && m == February)
                 // Holi
                 || (d == 8 && m == March)
@@ -235,13 +228,12 @@ namespace QuantLib {
                 // Diwali - Balipratipada
                 || (d == 14 && m == November)
                 // Gurunanak Jayanti
-                || (d == 28 && m == November)
-                )
+                || (d == 28 && m == November))
                 return false;
         }
 
         if (y == 2013) {
-            if (// Holi
+            if ( // Holi
                 (d == 27 && m == March)
                 // Ram Navmi
                 || (d == 19 && m == April)
@@ -256,13 +248,12 @@ namespace QuantLib {
                 // Diwali - Balipratipada
                 || (d == 4 && m == November)
                 // Moharram
-                || (d == 14 && m == November)
-                )
+                || (d == 14 && m == November))
                 return false;
         }
 
         if (y == 2014) {
-            if (// Mahashivratri
+            if ( // Mahashivratri
                 (d == 27 && m == February)
                 // Holi
                 || (d == 17 && m == March)
@@ -281,80 +272,77 @@ namespace QuantLib {
                 // Moharram
                 || (d == 4 && m == November)
                 // Gurunank Jayanti
-                || (d == 6 && m == November)
-                )
+                || (d == 6 && m == November))
                 return false;
         }
 
-      if (y == 2019) {
-          if (// Chatrapati Shivaji Jayanti
-              (d == 19 && m == February)
-              // Mahashivratri
-              || (d == 4 && m == March)
-              // Holi
-              || (d == 21 && m == March)
-              // Annual Bank Closing
-              || (d == 1 && m == April)
-              // Mahavir Jayanti
-              || (d == 17 && m == April)
-              // Parliamentary Elections
-              || (d == 29 && m == April)
-              // Ramzan Id
-              || (d == 05 && m == June)
-              // Bakri Id
-              || (d == 12 && m == August)
-              // Ganesh Chaturthi
-              || (d == 2 && m == September)
-              // Moharram
-              || (d == 10 && m == September)
-              // Dasera
-              || (d == 8 && m == October)
-              // General Assembly Elections in Maharashtra
-              || (d == 21 && m == October)
-              // Diwali - Balipratipada
-              || (d == 28 && m == October)
-              // Gurunank Jayanti
-              || (d == 12 && m == November)
-              )
-              return false;
-      }
+        if (y == 2019) {
+            if ( // Chatrapati Shivaji Jayanti
+                (d == 19 && m == February)
+                // Mahashivratri
+                || (d == 4 && m == March)
+                // Holi
+                || (d == 21 && m == March)
+                // Annual Bank Closing
+                || (d == 1 && m == April)
+                // Mahavir Jayanti
+                || (d == 17 && m == April)
+                // Parliamentary Elections
+                || (d == 29 && m == April)
+                // Ramzan Id
+                || (d == 05 && m == June)
+                // Bakri Id
+                || (d == 12 && m == August)
+                // Ganesh Chaturthi
+                || (d == 2 && m == September)
+                // Moharram
+                || (d == 10 && m == September)
+                // Dasera
+                || (d == 8 && m == October)
+                // General Assembly Elections in Maharashtra
+                || (d == 21 && m == October)
+                // Diwali - Balipratipada
+                || (d == 28 && m == October)
+                // Gurunank Jayanti
+                || (d == 12 && m == November))
+                return false;
+        }
 
-      if (y == 2020) {
-          if (// Chatrapati Shivaji Jayanti
-              (d == 19 && m == February)
-              // Mahashivratri
-              || (d == 21 && m == February)
-              // Holi
-              || (d == 10 && m == March)
-              // Gudi Padwa
-              || (d == 25 && m == March)
-              // Annual Bank Closing
-              || (d == 1 && m == April)
-              // Ram Navami
-              || (d == 2 && m == April)
-              // Mahavir Jayanti
-              || (d == 6 && m == April)
-              // Buddha Pournima
-              || (d == 7 && m == May)
-              // Ramzan Id
-              || (d == 25 && m == May)
-              // Id-E-Milad
-              || (d == 30 && m == October)
-              // Diwali - Balipratipada
-              || (d == 16 && m == November)
-              // Gurunank Jayanti
-              || (d == 30 && m == November)
-              )
-              return false;
-      }
+        if (y == 2020) {
+            if ( // Chatrapati Shivaji Jayanti
+                (d == 19 && m == February)
+                // Mahashivratri
+                || (d == 21 && m == February)
+                // Holi
+                || (d == 10 && m == March)
+                // Gudi Padwa
+                || (d == 25 && m == March)
+                // Annual Bank Closing
+                || (d == 1 && m == April)
+                // Ram Navami
+                || (d == 2 && m == April)
+                // Mahavir Jayanti
+                || (d == 6 && m == April)
+                // Buddha Pournima
+                || (d == 7 && m == May)
+                // Ramzan Id
+                || (d == 25 && m == May)
+                // Id-E-Milad
+                || (d == 30 && m == October)
+                // Diwali - Balipratipada
+                || (d == 16 && m == November)
+                // Gurunank Jayanti
+                || (d == 30 && m == November))
+                return false;
+        }
 
         if (y == 2021) {
-            if (// Chatrapati Shivaji Jayanti
+            if ( // Chatrapati Shivaji Jayanti
                 (d == 19 && m == February)
                 // Mahashivratri
                 || (d == 11 && m == March)
                 // Holi
-                || (d == 29 && m == March) 
+                || (d == 29 && m == March)
                 // Gudi Padwa
                 || (d == 13 && m == April)
                 // Mahavir Jayanti
@@ -399,7 +387,7 @@ namespace QuantLib {
         }
 
         if (y == 2023) {
-            if ( 
+            if (
                 // Holi
                 (d == 7 && m == March)
                 // Gudi Padwa
@@ -471,7 +459,7 @@ namespace QuantLib {
                 // Holi
                 || (d == 14 && m == March)
                 // Ramzan Id (estimated Sunday 30th or Monday 31st)
-                || (d == 31  && m == March)
+                || (d == 31 && m == March)
                 // Mahavir Jayanti
                 || (d == 10 && m == April)
                 // Buddha Pournima
@@ -485,8 +473,39 @@ namespace QuantLib {
                 return false;
         }
 
-     return true;
+        if (y == 2026) {
+            if ( // Municipal Corporation Election - Maharashtra
+                (d == 15 && m == January)
+                // Chatrapati Shivaji Jayanti
+                || (d == 19 && m == February)
+                // Holi
+                || (d == 3 && m == March)
+                // Gudi Padwa
+                || (d == 19 && m == March)
+                // Ram Navami
+                || (d == 26 && m == March)
+                // Mahavir Jayanti
+                || (d == 31 && m == March)
+                // Annual Bank Closing
+                || (d == 1 && m == April)
+                // Bakri Id
+                || (d == 28 && m == May)
+                // Moharram
+                || (d == 26 && m == June)
+                // Id-E-Milad
+                || (d == 26 && m == August)
+                // Ganesh Chaturthi
+                || (d == 14 && m == September)
+                // Dussehra
+                || (d == 20 && m == October)
+                // Diwali - Balipratipada
+                || (d == 10 && m == November)
+                // Gurunank Jayanti
+                || (d == 24 && m == November))
+                return false;
+        }
+
+        return true;
     }
 
 }
-
