@@ -528,65 +528,6 @@ BOOST_AUTO_TEST_CASE(testGermanyXetra) {
     checkHolidays(c.holidayList(Date(1, January, 2003), Date(31, December, 2004)), expectedHol);
 }
 
-BOOST_AUTO_TEST_CASE(testIndia) {
-
-    BOOST_TEST_MESSAGE("Testing India (NSE) clearing holiday list...");
-
-    std::vector<Date> expectedHol;
-
-    // 2026
-    // Municipal Corporation Election - Maharashtra
-    expectedHol.emplace_back(15, January, 2026);
-    // Republic Day
-    expectedHol.emplace_back(26, January, 2026);
-    // Chatrapati Shivaji Jayanti
-    expectedHol.emplace_back(19, February, 2026);
-    // Holi
-    expectedHol.emplace_back(3, March, 2026);
-    // Gudi Padwa
-    expectedHol.emplace_back(19, March, 2026);
-    // Ram Navami
-    expectedHol.emplace_back(26, March, 2026);
-    // Mahavir Jayanti
-    expectedHol.emplace_back(31, March, 2026);
-    // Annual Bank Closing
-    expectedHol.emplace_back(1, April, 2026);
-    // Good Friday
-    expectedHol.emplace_back(3, April, 2026);
-    // Ambedkar Jayanti
-    expectedHol.emplace_back(14, April, 2026);
-    // May Day
-    expectedHol.emplace_back(1, May, 2026);
-    // Bakri Id
-    expectedHol.emplace_back(28, May, 2026);
-    // Muharram
-    expectedHol.emplace_back(26, June, 2026);
-    // Id-E-Milad
-    expectedHol.emplace_back(26, August, 2026);
-    // Ganesh Chaturthi
-    expectedHol.emplace_back(14, September, 2026);
-    // Gandhi Jayanti
-    expectedHol.emplace_back(2, October, 2026);
-    // Dussehra
-    expectedHol.emplace_back(20, October, 2026);
-    // Diwali - Balipratipada
-    expectedHol.emplace_back(10, November, 2026);
-    // Gurunank Jayanti
-    expectedHol.emplace_back(24, November, 2026);
-    // Christmas
-    expectedHol.emplace_back(25, December, 2026);
-
-    // The following 2026 holidays fall on weekends and are
-    // therefore not included above:
-    // Mahashivratri:      15-Feb-2026 (Sunday)
-    // Id-Ul-Fitr:         21-Mar-2026 (Saturday)
-    // Independence Day:   15-Aug-2026 (Saturday)
-    // Diwali Laxmi Pujan: 08-Nov-2026 (Sunday)
-
-    Calendar c = India();
-    checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2026)), expectedHol);
-}
-
 BOOST_AUTO_TEST_CASE(testUKSettlement) {
     BOOST_TEST_MESSAGE("Testing UK settlement holiday list...");
 
@@ -4144,6 +4085,65 @@ BOOST_AUTO_TEST_CASE(testUzbekistanQurbonHayit) {
     BOOST_CHECK(c.isHoliday(Date(5, January, 2039)));
     BOOST_CHECK(c.isHoliday(Date(26, December, 2039)));
     BOOST_CHECK(c.isHoliday(Date(15, December, 2040)));
+}
+
+BOOST_AUTO_TEST_CASE(testIndia) {
+
+    BOOST_TEST_MESSAGE("Testing India (NSE) clearing holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    // 2026
+    // Municipal Corporation Election - Maharashtra
+    expectedHol.emplace_back(15, January, 2026);
+    // Republic Day
+    expectedHol.emplace_back(26, January, 2026);
+    // Chatrapati Shivaji Jayanti
+    expectedHol.emplace_back(19, February, 2026);
+    // Holi
+    expectedHol.emplace_back(3, March, 2026);
+    // Gudi Padwa
+    expectedHol.emplace_back(19, March, 2026);
+    // Ram Navami
+    expectedHol.emplace_back(26, March, 2026);
+    // Mahavir Jayanti
+    expectedHol.emplace_back(31, March, 2026);
+    // Annual Bank Closing
+    expectedHol.emplace_back(1, April, 2026);
+    // Good Friday
+    expectedHol.emplace_back(3, April, 2026);
+    // Ambedkar Jayanti
+    expectedHol.emplace_back(14, April, 2026);
+    // May Day
+    expectedHol.emplace_back(1, May, 2026);
+    // Bakri Id
+    expectedHol.emplace_back(28, May, 2026);
+    // Muharram
+    expectedHol.emplace_back(26, June, 2026);
+    // Id-E-Milad
+    expectedHol.emplace_back(26, August, 2026);
+    // Ganesh Chaturthi
+    expectedHol.emplace_back(14, September, 2026);
+    // Gandhi Jayanti
+    expectedHol.emplace_back(2, October, 2026);
+    // Dussehra
+    expectedHol.emplace_back(20, October, 2026);
+    // Diwali - Balipratipada
+    expectedHol.emplace_back(10, November, 2026);
+    // Gurunank Jayanti
+    expectedHol.emplace_back(24, November, 2026);
+    // Christmas
+    expectedHol.emplace_back(25, December, 2026);
+
+    // The following 2026 holidays fall on weekends and are
+    // therefore not included above:
+    // Mahashivratri:      15-Feb-2026 (Sunday)
+    // Id-Ul-Fitr:         21-Mar-2026 (Saturday)
+    // Independence Day:   15-Aug-2026 (Saturday)
+    // Diwali Laxmi Pujan: 08-Nov-2026 (Sunday)
+
+    Calendar c = India();
+    checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2026)), expectedHol);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
