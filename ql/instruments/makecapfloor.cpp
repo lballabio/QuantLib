@@ -71,11 +71,11 @@ namespace QuantLib {
                 ext::dynamic_pointer_cast<BachelierCapFloorEngine>(engine_);
             if (blackCapTemp)
             {
-                Handle<YieldTermStructure> discountCurve = blackCapTemp->termStructure();
+                discountCurve = blackCapTemp->termStructure();
             }
             else if(bachelierCapTemp)
             {
-                Handle<YieldTermStructure> discountCurve = bachelierCapTemp->termStructure();
+                discountCurve = bachelierCapTemp->termStructure();
             }
             else 
             {
