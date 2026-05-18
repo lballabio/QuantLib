@@ -243,7 +243,7 @@ ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> makeFixFloatXCCYS
 
     // Create swap
     return ext::make_shared<ConstNotionalCrossCurrencyFixedVsFloatingSwap>(
-                                 ConstNotionalCrossCurrencyFixedVsFloatingSwap::Payer, usdNominal * spotFx, TRYCurrency(), fixedSchedule, rate,
+                                 Swap::Payer, usdNominal * spotFx, TRYCurrency(), fixedSchedule, rate,
                                  Actual360(), payConvention, payLag, payCalendar, usdNominal, USDCurrency(),
                                  floatSchedule, index, spread, payConvention, payLag, payCalendar);
 }

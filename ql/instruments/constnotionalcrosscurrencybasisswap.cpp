@@ -26,22 +26,26 @@
 
 namespace QuantLib  {
 
-ConstNotionalCrossCurrencyBasisSwap::ConstNotionalCrossCurrencyBasisSwap(Real payNominal, const Currency& payCurrency, const Schedule& paySchedule,
+ConstNotionalCrossCurrencyBasisSwap::ConstNotionalCrossCurrencyBasisSwap(
+                                     Real payNominal, const Currency& payCurrency, const Schedule& paySchedule,
                                      const ext::shared_ptr<IborIndex>& payIndex, Spread paySpread, Real payGearing,
                                      Real recNominal, const Currency& recCurrency, const Schedule& recSchedule,
                                      const ext::shared_ptr<IborIndex>& recIndex, Spread recSpread, Real recGearing,
-                                     Size payPaymentLag, Size recPaymentLag, ext::optional<bool> payIncludeSpread,
-                                     ext::optional<Natural> payLookback, ext::optional<Size> payLockoutDays,
-                                     ext::optional<bool> payIsAveraged, ext::optional<bool> recIncludeSpread,
-                                     ext::optional<Natural> recLookback, ext::optional<Size> recLockoutDays,
-                                     ext::optional<bool> recIsAveraged, const bool telescopicValueDates)
+                                     Integer payPaymentLag, Integer recPaymentLag,
+                                     bool payCompoundSpread, Natural payLookbackDays, bool payObservationShift,
+                                     Natural payLockoutDays, RateAveraging::Type payAveragingMethod,
+                                     bool recCompoundSpread, Natural recLookbackDays, bool recObservationShift,
+                                     Natural recLockoutDays, RateAveraging::Type recAveragingMethod,
+                                     const bool telescopicValueDates)
     : ConstNotionalCrossCurrencySwap(2), payNominal_(payNominal), payCurrency_(payCurrency), paySchedule_(paySchedule),
       payIndex_(payIndex), paySpread_(paySpread), payGearing_(payGearing), recNominal_(recNominal),
       recCurrency_(recCurrency), recSchedule_(recSchedule), recIndex_(recIndex), recSpread_(recSpread),
       recGearing_(recGearing), payPaymentLag_(payPaymentLag), recPaymentLag_(recPaymentLag),
-      payIncludeSpread_(payIncludeSpread), payLookback_(payLookback), payLockoutDays_(payLockoutDays), 
-      payIsAveraged_(payIsAveraged), recIncludeSpread_(recIncludeSpread), recLookback_(recLookback), 
-      recLockoutDays_(recLockoutDays), recIsAveraged_(recIsAveraged), telescopicValueDates_(telescopicValueDates) {
+      payCompoundSpread_(payCompoundSpread), payLookbackDays_(payLookbackDays),
+      payObservationShift_(payObservationShift), payLockoutDays_(payLockoutDays),
+      payAveragingMethod_(payAveragingMethod), recCompoundSpread_(recCompoundSpread),
+      recLookbackDays_(recLookbackDays), recObservationShift_(recObservationShift),
+      recLockoutDays_(recLockoutDays), recAveragingMethod_(recAveragingMethod), telescopicValueDates_(telescopicValueDates) {
     registerWith(payIndex_);
     registerWith(recIndex_);
     initialize();
@@ -56,11 +60,11 @@ void ConstNotionalCrossCurrencyBasisSwap::initialize() {
                         .withSpreads(paySpread_)
                         .withGearings(payGearing_)
                         .withPaymentLag(payPaymentLag_)
-                        .withSpreads(payIncludeSpread_ ? *payIncludeSpread_ : false)
-                        .withLookbackDays(payLookback_ ? *payLookback_ : 0)
-                        .withLockoutDays(payLockoutDays_ ? *payLockoutDays_ : 0)
-                        .withAveragingMethod(payIsAveraged_ ? 
-                            (*payIsAveraged_ ? RateAveraging::Simple : RateAveraging::Compound) : RateAveraging::Compound)
+                        .compoundingSpreadDaily(payCompoundSpread_)
+                        .withLookbackDays(payLookbackDays_)
+                        .withObservationShift(payObservationShift_)
+                        .withLockoutDays(payLockoutDays_)
+                        .withAveragingMethod(payAveragingMethod_)
                         .withTelescopicValueDates(telescopicValueDates_);
     } else {
         // Ibor leg
@@ -81,11 +85,11 @@ void ConstNotionalCrossCurrencyBasisSwap::initialize() {
                         .withSpreads(recSpread_)
                         .withGearings(recGearing_)
                         .withPaymentLag(recPaymentLag_)
-                        .withSpreads(recIncludeSpread_ ? *recIncludeSpread_ : false)
-                        .withLookbackDays(recLookback_ ? *recLookback_ : 0)
-                        .withLockoutDays(recLockoutDays_ ? *recLockoutDays_ : 0)
-                        .withAveragingMethod(recIsAveraged_ ? 
-                            (*recIsAveraged_ ? RateAveraging::Simple : RateAveraging::Compound) : RateAveraging::Compound)
+                        .compoundingSpreadDaily(recCompoundSpread_)
+                        .withLookbackDays(recLookbackDays_)
+                        .withObservationShift(recObservationShift_)
+                        .withLockoutDays(recLockoutDays_)
+                        .withAveragingMethod(recAveragingMethod_)
                         .withTelescopicValueDates(telescopicValueDates_);
     } else {
         // Ibor leg
