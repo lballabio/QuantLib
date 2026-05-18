@@ -26,6 +26,7 @@
 #define quantlib_cross_currency_fix_vs_floating_swap_hpp
 
 #include <ql/indexes/iborindex.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/constnotionalcrosscurrencyswap.hpp>
 
@@ -64,13 +65,15 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         \param floatPaymentBdc       Business day convention for floating leg payments.
         \param floatPaymentLag       Payment lag for the floating leg (default: 0).
         \param floatPaymentCalendar  Calendar for floating leg payments.
-        \param telescopicValueDates  Set to true if the floatIndex is an OvernightIndex and you want to use telescopic values when calculating the rate.
-        \param floatIncludeSpread    If true, include the `floatSpread` when computing compounded or averaged overnight rates; if not provided, the index default behaviour is used.
-        \param floatLookbackDays     Optional lookback period (in calendar days) applied to the floating-rate observation window for the floating leg.
-        \param floatLockoutDays      Optional lockout period (in business days) before payment during which rate observations are frozen.
-        \param floatIsAveraged       If true, use arithmetic averaging of overnight rates instead of compounding when building the floating leg.
+        \param telescopicValueDates  For overnight legs, whether to use telescopic value dates (default: false).
+        \param floatCompoundSpread   For overnight legs, whether to compound the spread daily (default: false).
+        \param floatLookbackDays     For overnight legs, optional lookback days (default: null).
+        \param floatObservationShift For overnight legs, whether the observation shift is applied (default: false).
+        \param floatLockoutDays      For overnight legs, optional lockout period in business days (default: 0).
+        \param floatAveragingMethod  For overnight legs, averaging method (default: compounding).
     */
-    ConstNotionalCrossCurrencyFixedVsFloatingSwap(Type type, Real fixedNominal, const Currency& fixedCurrency,
+    ConstNotionalCrossCurrencyFixedVsFloatingSwap(
+                         Type type, Real fixedNominal, const Currency& fixedCurrency,
                          const Schedule& fixedSchedule, Rate fixedRate,
                          const DayCounter& fixedDayCount, BusinessDayConvention fixedPaymentBdc,
                          Natural fixedPaymentLag, const Calendar& fixedPaymentCalendar,
@@ -80,10 +83,11 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
                          BusinessDayConvention floatPaymentBdc, Natural floatPaymentLag,
                          const Calendar& floatPaymentCalendar, 
                          const bool telescopicValueDates = false,
-                         ext::optional<bool> floatIncludeSpread = ext::nullopt,
-                         ext::optional<Natural> floatLookbackDays = ext::nullopt,
-                         ext::optional<Size> floatLockoutDays = ext::nullopt,
-                         ext::optional<bool> floatIsAveraged = ext::nullopt);
+                         bool floatCompoundSpread = false,
+                         Natural floatLookbackDays = Null<Natural>(),
+                         bool floatObservationShift = false,
+                         Natural floatLockoutDays = 0,
+                         RateAveraging::Type floatAveragingMethod = RateAveraging::Compound);
     //@}
 
     //! \name Instrument interface
@@ -113,10 +117,10 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
     BusinessDayConvention floatPaymentBdc() const { return floatPaymentBdc_; }
     Natural floatPaymentLag() const { return floatPaymentLag_; }
     const Calendar& floatPaymentCalendar() const { return floatPaymentCalendar_; }
-    ext::optional<bool> floatIncludeSpread() const { return floatIncludeSpread_; }
-    ext::optional<Natural> floatLookbackDays() const { return floatLookbackDays_; }
-    ext::optional<Size> floatLockoutDays() const { return floatLockoutDays_; }
-    ext::optional<bool> floatIsAveraged() const { return floatIsAveraged_; }
+    bool floatCompoundSpread() const { return floatCompoundSpread_; }
+    Natural floatLookbackDays() const { return floatLookbackDays_; }
+    Natural floatLockoutDays() const { return floatLockoutDays_; }
+    RateAveraging::Type floatAveragingMethod() const { return floatAveragingMethod_; }
     //@}
 
     //! \name Additional interface
@@ -161,10 +165,11 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
     Natural floatPaymentLag_;
     Calendar floatPaymentCalendar_;
     bool telescopicValueDates_;
-    ext::optional<bool> floatIncludeSpread_;
-    ext::optional<Natural> floatLookbackDays_;
-    ext::optional<Size> floatLockoutDays_;
-    ext::optional<bool> floatIsAveraged_;
+    bool floatCompoundSpread_;
+    Natural floatLookbackDays_;
+    bool floatObservationShift_;
+    Natural floatLockoutDays_;
+    RateAveraging::Type floatAveragingMethod_;
 
     mutable Rate fairFixedRate_;
     mutable Spread fairSpread_;

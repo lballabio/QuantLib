@@ -26,6 +26,7 @@
 #define quantlib_cross_currency_basis_swap_hpp
 
 #include <ql/indexes/iborindex.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/constnotionalcrosscurrencyswap.hpp>
 
@@ -61,27 +62,29 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         \param recIndex           Floating rate index for the receive leg.
         \param recSpread          Spread over the floating rate for the receive leg.
         \param recGearing         Gearing factor for the receive leg.
-        \param payPaymentLag      Payment lag for the pay leg (default: 0).
-        \param recPaymentLag      Payment lag for the receive leg (default: 0).
-        \param payIncludeSpread   Optional flag to include the spread in the pay leg calculation (default: null).
-        \param payLookback        Optional lookback days for the pay leg (default: null).
-        \param payLockoutDays     Optional lockout period (in business days) before payment during which rate observations are frozen for the pay leg (defaul: 0).
-        \param payIsAveraged      If true, use arithmetic averaging of overnight rates instead of compounding when building the pay leg (defaul: 0).
-        \param recIncludeSpread   Optional flag to include the spread in the receive leg calculation (default: null).
-        \param recLookback        Optional lookback days for the receive leg (default: null).
-        \param recLockoutDays     Optional lockout period (in business days) before payment during which rate observations are frozen for the rec leg (defaul: 0).
-        \param recIsAveraged      If true, use arithmetic averaging of overnight rates instead of compounding when building the rec leg (defaul: 0).
-        \param telescopicValueDates Flag indicating whether telescopic value dates are used (default: false).
+        \param payPaymentLag      Payment lag in days for the pay leg if overnight (default: 0).
+        \param recPaymentLag      Payment lag in days for the receive leg if overnight (default: 0).
+        \param payCompoundSpread  Whether to compound the spread daily for the pay leg if overnight (default: false).
+        \param payLookbackDays    Lookback days for the pay leg if overnight (default: null).
+        \param payObservationShift  Whether the observation shift is applied for the pay leg if overnight (default: false).
+        \param payLockoutDays     Lockout period (in business days) for the pay leg if overnight (default: 0).
+        \param payAveragingMethod   Averaging method for the pay leg if overnight (default: compounding).
+        \param recCompoundSpread  Whether to compound the spread daily for the receive leg if overnight (default: false).
+        \param recLookbackDays    Lookback days for the receive leg if overnight (default: null).
+        \param recObservationShift  Whether the observation shift is applied for the receive leg if overnight (default: false).
+        \param recLockoutDays     Lockout period (in business days) for the receive leg if overnight (default: 0).
+        \param recAveragingMethod   Averaging method for the receive leg if overnight (default: compounding).
+        \param telescopicValueDates Flag indicating whether telescopic value dates are used if overnight (default: false).
     */
     ConstNotionalCrossCurrencyBasisSwap(
         Real payNominal, const Currency& payCurrency, const Schedule& paySchedule,
         const ext::shared_ptr<IborIndex>& payIndex, Spread paySpread, Real payGearing, Real recNominal,
         const Currency& recCurrency, const Schedule& recSchedule, const ext::shared_ptr<IborIndex>& recIndex,
-        Spread recSpread, Real recGearing, Size payPaymentLag = 0, Size recPaymentLag = 0,
-        ext::optional<bool> payIncludeSpread = ext::nullopt, ext::optional<Natural> payLookback = ext::nullopt,
-        ext::optional<Size> payLockoutDays = ext::nullopt, ext::optional<bool> payIsAveraged = ext::nullopt,
-        ext::optional<bool> recIncludeSpread = ext::nullopt, ext::optional<Natural> recLookback = ext::nullopt, 
-        ext::optional<Size> recLockoutDays = ext::nullopt, ext::optional<bool> recIsAveraged = ext::nullopt,
+        Spread recSpread, Real recGearing, Integer payPaymentLag = 0, Integer recPaymentLag = 0,
+        bool payCompoundSpread = false, Natural payLookbackDays = Null<Natural>(), bool payObservationShift = false,
+        Natural payLockoutDays = 0, RateAveraging::Type payAveragingMethod = RateAveraging::Compound,
+        bool recCompoundSpread = false, Natural recLookbackDays = Null<Natural>(), bool recObservationShift = false,
+        Natural recLockoutDays = 0, RateAveraging::Type recAveragingMethod = RateAveraging::Compound,
         const bool telescopicValueDates = false);
     //@}
     //! \name Instrument interface
@@ -143,17 +146,20 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
     Spread recSpread_;
     Real recGearing_;
 
-    Size payPaymentLag_;
-    Size recPaymentLag_;
+    Integer payPaymentLag_;
+    Integer recPaymentLag_;
+
     // OIS only
-    ext::optional<bool> payIncludeSpread_;
-    ext::optional<QuantLib::Natural> payLookback_;
-    ext::optional<Size> payLockoutDays_;
-    ext::optional<bool> payIsAveraged_;
-    ext::optional<bool> recIncludeSpread_;
-    ext::optional<QuantLib::Natural> recLookback_;
-    ext::optional<Size> recLockoutDays_;
-    ext::optional<bool> recIsAveraged_;
+    bool payCompoundSpread_;
+    Natural payLookbackDays_;
+    bool payObservationShift_;
+    Natural payLockoutDays_;
+    RateAveraging::Type payAveragingMethod_;
+    bool recCompoundSpread_;
+    Natural recLookbackDays_;
+    bool recObservationShift_;
+    Natural recLockoutDays_;
+    RateAveraging::Type recAveragingMethod_;
     bool telescopicValueDates_;
 
     mutable Spread fairPaySpread_;

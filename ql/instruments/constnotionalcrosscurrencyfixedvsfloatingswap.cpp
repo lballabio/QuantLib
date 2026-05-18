@@ -33,8 +33,8 @@ ConstNotionalCrossCurrencyFixedVsFloatingSwap::ConstNotionalCrossCurrencyFixedVs
     const Calendar& fixedPaymentCalendar, Real floatNominal, const Currency& floatCurrency,
     const Schedule& floatSchedule, const ext::shared_ptr<IborIndex>& floatIndex, Spread floatSpread,
     BusinessDayConvention floatPaymentBdc, Natural floatPaymentLag, const Calendar& floatPaymentCalendar,
-    const bool telescopicValueDates, ext::optional<bool> floatIncludeSpread, ext::optional<Natural> floatLookbackDays,
-    ext::optional<Size> floatLockoutDays, ext::optional<bool> floatIsAveraged)
+    const bool telescopicValueDates, bool floatCompoundSpread, Natural floatLookbackDays,
+    bool floatObservationShift, Natural floatLockoutDays, RateAveraging::Type floatAveragingMethod)
     : ConstNotionalCrossCurrencySwap(2), type_(type), fixedNominal_(fixedNominal), fixedCurrency_(fixedCurrency),
       fixedSchedule_(fixedSchedule), fixedRate_(fixedRate), fixedDayCount_(fixedDayCount),
       fixedPaymentBdc_(fixedPaymentBdc), fixedPaymentLag_(fixedPaymentLag), fixedPaymentCalendar_(fixedPaymentCalendar),
@@ -42,8 +42,9 @@ ConstNotionalCrossCurrencyFixedVsFloatingSwap::ConstNotionalCrossCurrencyFixedVs
       floatIndex_(floatIndex), floatSpread_(floatSpread), floatPaymentBdc_(floatPaymentBdc),
       floatPaymentLag_(floatPaymentLag), floatPaymentCalendar_(floatPaymentCalendar),
       telescopicValueDates_(telescopicValueDates),
-      floatIncludeSpread_(floatIncludeSpread), floatLookbackDays_(floatLookbackDays),
-      floatLockoutDays_(floatLockoutDays), floatIsAveraged_(floatIsAveraged) {
+      floatCompoundSpread_(floatCompoundSpread), floatLookbackDays_(floatLookbackDays),
+      floatObservationShift_(floatObservationShift),
+      floatLockoutDays_(floatLockoutDays), floatAveragingMethod_(floatAveragingMethod) {
 
     // Build the float leg
     Leg floatLeg;
@@ -53,11 +54,12 @@ ConstNotionalCrossCurrencyFixedVsFloatingSwap::ConstNotionalCrossCurrencyFixedVs
                     .withSpreads(floatSpread_)
                     .withPaymentAdjustment(floatPaymentBdc_)
                     .withPaymentLag(floatPaymentLag_)
-                    .withLookbackDays(floatLookbackDays ? *floatLookbackDays : 0)
+                    .withLookbackDays(floatLookbackDays_)
+                    .compoundingSpreadDaily(floatCompoundSpread_)
+                    .withObservationShift(floatObservationShift_)
                     .withPaymentCalendar(floatPaymentCalendar_)
-                    .withLockoutDays(floatLockoutDays_ ? *floatLockoutDays_ : 0)
-                    .withAveragingMethod(floatIsAveraged_ ? 
-                        (*floatIsAveraged_ ? RateAveraging::Simple : RateAveraging::Compound) : RateAveraging::Compound)
+                    .withLockoutDays(floatLockoutDays_)
+                    .withAveragingMethod(floatAveragingMethod_)
                     .withTelescopicValueDates(telescopicValueDates_);
     } else {
         floatLeg = IborLeg(floatSchedule_, floatIndex_)
