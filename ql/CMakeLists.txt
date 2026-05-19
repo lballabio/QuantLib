@@ -515,6 +515,7 @@ set(QL_SOURCES
     methods/finitedifferences/utilities/hestonrndcalculator.cpp
     methods/finitedifferences/utilities/localvolrndcalculator.cpp
     methods/finitedifferences/utilities/riskneutraldensitycalculator.cpp
+    methods/finitedifferences/utilities/smilesectionrndcalculator.cpp
     methods/finitedifferences/utilities/squarerootprocessrndcalculator.cpp
     methods/lattices/binomialtree.cpp
     methods/lattices/trinomialtree.cpp
@@ -1706,6 +1707,7 @@ set(QL_HEADERS
     methods/finitedifferences/utilities/hestonrndcalculator.hpp
     methods/finitedifferences/utilities/localvolrndcalculator.hpp
     methods/finitedifferences/utilities/riskneutraldensitycalculator.hpp
+    methods/finitedifferences/utilities/smilesectionrndcalculator.hpp
     methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp
     methods/finitedifferences/zerocondition.hpp
     methods/lattices/binomialtree.hpp

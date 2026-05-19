@@ -1276,6 +1276,7 @@
     <ClInclude Include="ql\methods\finitedifferences\utilities\hestonrndcalculator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\localvolrndcalculator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\riskneutraldensitycalculator.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\utilities\smilesectionrndcalculator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\squarerootprocessrndcalculator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\zerocondition.hpp" />
     <ClInclude Include="ql\methods\lattices\all.hpp" />
@@ -2452,6 +2453,7 @@
     <ClCompile Include="ql\methods\finitedifferences\utilities\hestonrndcalculator.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\localvolrndcalculator.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\riskneutraldensitycalculator.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\utilities\smilesectionrndcalculator.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\squarerootprocessrndcalculator.cpp" />
     <ClCompile Include="ql\methods\lattices\binomialtree.cpp" />
     <ClCompile Include="ql\methods\lattices\trinomialtree.cpp" />
