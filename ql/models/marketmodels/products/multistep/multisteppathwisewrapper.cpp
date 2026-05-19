@@ -86,7 +86,7 @@ namespace QuantLib
         std::unique_ptr<MarketModelMultiProduct>
         MultiProductPathwiseWrapper::clone() const
         {
-            return std::unique_ptr<MarketModelMultiProduct>(new MultiProductPathwiseWrapper(*this));
+            return std::make_unique<MultiProductPathwiseWrapper>(*this);
         }
 
       

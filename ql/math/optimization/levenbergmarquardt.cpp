@@ -48,8 +48,8 @@ namespace QuantLib {
             P.costFunction().jacobian(initJacobian_, initX);
         }
         Array xx = initX;
-        std::unique_ptr<Real[]> fvec(new Real[m]);
-        std::unique_ptr<Real[]> diag(new Real[n]);
+        auto fvec = std::make_unique<Real[]>(m);
+        auto diag = std::make_unique<Real[]>(n);
         int mode = 1;
         // magic number recommended by the documentation
         Real factor = 100;
@@ -59,14 +59,14 @@ namespace QuantLib {
         int nprint = 0;
         int info = 0;
         int nfev = 0;
-        std::unique_ptr<Real[]> fjac(new Real[m*n]);
+        auto fjac = std::make_unique<Real[]>(m*n);
         int ldfjac = m;
-        std::unique_ptr<int[]> ipvt(new int[n]);
-        std::unique_ptr<Real[]> qtf(new Real[n]);
-        std::unique_ptr<Real[]> wa1(new Real[n]);
-        std::unique_ptr<Real[]> wa2(new Real[n]);
-        std::unique_ptr<Real[]> wa3(new Real[n]);
-        std::unique_ptr<Real[]> wa4(new Real[m]);
+        auto ipvt = std::make_unique<int[]>(n);
+        auto qtf = std::make_unique<Real[]>(n);
+        auto wa1 = std::make_unique<Real[]>(n);
+        auto wa2 = std::make_unique<Real[]>(n);
+        auto wa3 = std::make_unique<Real[]>(n);
+        auto wa4 = std::make_unique<Real[]>(m);
         // requirements; check here to get more detailed error messages.
         QL_REQUIRE(n > 0, "no variables given");
         QL_REQUIRE(m >= n,
