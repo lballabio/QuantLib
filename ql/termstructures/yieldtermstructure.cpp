@@ -163,7 +163,7 @@ namespace QuantLib {
             t2 = t1 + dt;
             compound = discount(t1, true)/discount(t2, true);
         } else {
-            QL_REQUIRE(t2>t1, "t2 (" << t2 << ") < t1 (" << t2 << ")");
+            QL_REQUIRE(t2>t1, "t2 (" << t2 << ") < t1 (" << t1 << ")");
             compound = discount(t1, extrapolate)/discount(t2, extrapolate);
         }
         return InterestRate::impliedRate(compound,
