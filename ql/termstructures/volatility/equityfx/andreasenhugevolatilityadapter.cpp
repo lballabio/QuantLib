@@ -66,4 +66,7 @@ namespace QuantLib {
     Natural AndreasenHugeVolatilityAdapter::settlementDays() const {
         return volInterpl_->riskFreeRate()->settlementDays();
     }
+    Real AndreasenHugeVolatilityAdapter::atmLevel(Time t) const {
+        return volInterpl_->fwd(t);
+    }
 }
