@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "ql/errors.hpp"
+#include <ql/errors.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
