@@ -756,7 +756,7 @@ namespace QuantLib {
         Real NPV = CashFlows::npv(leg_, yield,
                                   includeSettlementDateFlows_,
                                   settlementDate_, npvDate_);
-        return npv_ - NPV;
+        return NPV - npv_;
     }
 
     Real CashFlows::IrrFinder::derivative(Rate y) const {
