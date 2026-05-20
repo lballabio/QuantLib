@@ -35,24 +35,24 @@ namespace QuantLib {
     YieldTermStructure::YieldTermStructure(const Date& referenceDate,
                                            const Calendar& cal,
                                            const DayCounter& dc,
-                                           std::vector<Handle<Quote>> jumps,
+                                           std::vector<Handle<Quote> > jumps,
                                            const std::vector<Date>& jumpDates)
     : TermStructure(referenceDate, cal, dc), jumps_(std::move(jumps)), jumpDates_(jumpDates),
       jumpTimes_(jumpDates.size()), nJumps_(jumps_.size()) {
         setJumps(YieldTermStructure::referenceDate());
-        for (Size i = 0; i < nJumps_; ++i)
+        for (Size i=0; i<nJumps_; ++i)
             registerWith(jumps_[i]);
     }
 
     YieldTermStructure::YieldTermStructure(Natural settlementDays,
                                            const Calendar& cal,
                                            const DayCounter& dc,
-                                           std::vector<Handle<Quote>> jumps,
+                                           std::vector<Handle<Quote> > jumps,
                                            const std::vector<Date>& jumpDates)
     : TermStructure(settlementDays, cal, dc), jumps_(std::move(jumps)), jumpDates_(jumpDates),
       jumpTimes_(jumpDates.size()), nJumps_(jumps_.size()) {
         setJumps(YieldTermStructure::referenceDate());
-        for (Size i = 0; i < nJumps_; ++i)
+        for (Size i=0; i<nJumps_; ++i)
             registerWith(jumps_[i]);
     }
 
@@ -61,31 +61,34 @@ namespace QuantLib {
             jumpDates_.resize(nJumps_);
             jumpTimes_.resize(nJumps_);
             Year y = referenceDate.year();
-            for (Size i = 0; i < nJumps_; ++i)
-                jumpDates_[i] = Date(31, December, y + i);
+            for (Size i=0; i<nJumps_; ++i)
+                jumpDates_[i] = Date(31, December, y+i);
         } else { // fixed dates
-            QL_REQUIRE(jumpDates_.size() == nJumps_, "mismatch between number of jumps ("
-                                                         << nJumps_ << ") and jump dates ("
-                                                         << jumpDates_.size() << ")");
+            QL_REQUIRE(jumpDates_.size()==nJumps_,
+                       "mismatch between number of jumps (" << nJumps_ <<
+                       ") and jump dates (" << jumpDates_.size() << ")");
         }
-        for (Size i = 0; i < nJumps_; ++i)
+        for (Size i=0; i<nJumps_; ++i)
             jumpTimes_[i] = timeFromReference(jumpDates_[i]);
         latestReference_ = referenceDate;
     }
 
-    DiscountFactor YieldTermStructure::discount(Time t, bool extrapolate) const {
+    DiscountFactor YieldTermStructure::discount(Time t,
+                                                bool extrapolate) const {
         checkRange(t, extrapolate);
 
         if (jumps_.empty())
             return discountImpl(t);
 
         DiscountFactor jumpEffect = 1.0;
-        for (Size i = 0; i < nJumps_; ++i) {
-            if (jumpTimes_[i] > 0 && jumpTimes_[i] < t) {
-                QL_REQUIRE(jumps_[i]->isValid(), "invalid " << io::ordinal(i + 1) << " jump quote");
+        for (Size i=0; i<nJumps_; ++i) {
+            if (jumpTimes_[i]>0 && jumpTimes_[i]<t) {
+                QL_REQUIRE(jumps_[i]->isValid(),
+                           "invalid " << io::ordinal(i+1) << " jump quote");
                 DiscountFactor thisJump = jumps_[i]->value();
                 QL_REQUIRE(thisJump > 0.0,
-                           "invalid " << io::ordinal(i + 1) << " jump value: " << thisJump);
+                           "invalid " << io::ordinal(i+1) << " jump value: " <<
+                           thisJump);
                 jumpEffect *= thisJump;
             }
         }
@@ -99,21 +102,28 @@ namespace QuantLib {
                                               bool extrapolate) const {
         Time t = timeFromReference(d);
         if (t == 0) {
-            Real compound = 1.0 / discount(dt, extrapolate);
+            Real compound = 1.0/discount(dt, extrapolate);
             // t has been calculated with a possibly different daycounter
             // but the difference should not matter for very small times
-            return InterestRate::impliedRate(compound, dayCounter, comp, freq, dt);
+            return InterestRate::impliedRate(compound,
+                                             dayCounter, comp, freq,
+                                             dt);
         }
-        Real compound = 1.0 / discount(t, extrapolate);
-        return InterestRate::impliedRate(compound, dayCounter, comp, freq, referenceDate(), d);
+        Real compound = 1.0/discount(t, extrapolate);
+        return InterestRate::impliedRate(compound,
+                                         dayCounter, comp, freq,
+                                         referenceDate(), d);
     }
 
-    InterestRate
-    YieldTermStructure::zeroRate(Time t, Compounding comp, Frequency freq, bool extrapolate) const {
-        if (t == 0.0)
-            t = dt;
-        Real compound = 1.0 / discount(t, extrapolate);
-        return InterestRate::impliedRate(compound, dayCounter(), comp, freq, t);
+    InterestRate YieldTermStructure::zeroRate(Time t,
+                                              Compounding comp,
+                                              Frequency freq,
+                                              bool extrapolate) const {
+        if (t==0.0) t = dt;
+        Real compound = 1.0/discount(t, extrapolate);
+        return InterestRate::impliedRate(compound,
+                                         dayCounter(), comp, freq,
+                                         t);
     }
 
     InterestRate YieldTermStructure::forwardRate(const Date& d1,
@@ -122,33 +132,43 @@ namespace QuantLib {
                                                  Compounding comp,
                                                  Frequency freq,
                                                  bool extrapolate) const {
-        if (d1 == d2) {
+        if (d1==d2) {
             checkRange(d1, extrapolate);
-            Time t1 = std::max(timeFromReference(d1) - dt / 2.0, 0.0);
+            Time t1 = std::max(timeFromReference(d1) - dt/2.0, 0.0);
             Time t2 = t1 + dt;
-            Real compound = discount(t1, true) / discount(t2, true);
+            Real compound =
+                discount(t1, true)/discount(t2, true);
             // times have been calculated with a possibly different daycounter
             // but the difference should not matter for very small times
-            return InterestRate::impliedRate(compound, dayCounter, comp, freq, dt);
+            return InterestRate::impliedRate(compound,
+                                             dayCounter, comp, freq,
+                                             dt);
         }
-        QL_REQUIRE(d1 < d2, d1 << " later than " << d2);
-        Real compound = discount(d1, extrapolate) / discount(d2, extrapolate);
-        return InterestRate::impliedRate(compound, dayCounter, comp, freq, d1, d2);
+        QL_REQUIRE(d1 < d2,  d1 << " later than " << d2);
+        Real compound = discount(d1, extrapolate)/discount(d2, extrapolate);
+        return InterestRate::impliedRate(compound,
+                                         dayCounter, comp, freq,
+                                         d1, d2);
     }
 
-    InterestRate YieldTermStructure::forwardRate(
-        Time t1, Time t2, Compounding comp, Frequency freq, bool extrapolate) const {
+    InterestRate YieldTermStructure::forwardRate(Time t1,
+                                                 Time t2,
+                                                 Compounding comp,
+                                                 Frequency freq,
+                                                 bool extrapolate) const {
         Real compound;
-        if (t2 == t1) {
+        if (t2==t1) {
             checkRange(t1, extrapolate);
-            t1 = std::max(t1 - dt / 2.0, 0.0);
+            t1 = std::max(t1 - dt/2.0, 0.0);
             t2 = t1 + dt;
-            compound = discount(t1, true) / discount(t2, true);
+            compound = discount(t1, true)/discount(t2, true);
         } else {
-            QL_REQUIRE(t2 > t1, "t1 (" << t1 << ") >= t2 (" << t2 << ")");
-            compound = discount(t1, extrapolate) / discount(t2, extrapolate);
+            QL_REQUIRE(t2>t1, "t1 (" << t1 << ") >= t2 (" << t2 << ")");
+            compound = discount(t1, extrapolate)/discount(t2, extrapolate);
         }
-        return InterestRate::impliedRate(compound, dayCounter(), comp, freq, t2 - t1);
+        return InterestRate::impliedRate(compound,
+                                         dayCounter(), comp, freq,
+                                         t2-t1);
     }
 
     void YieldTermStructure::update() {
