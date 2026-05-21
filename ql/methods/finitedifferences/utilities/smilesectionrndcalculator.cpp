@@ -71,13 +71,13 @@ namespace QuantLib {
         cdf_.clear();
         strikes_.reserve(nStrikes_);
         cdf_.reserve(nStrikes_);
-        constexpr Real dedupTol = 1e-12;
+        constexpr double dedupTol = 1e-12;
         Real lastCdf = -1.0;
         for (Size i = 0; i < nStrikes_; ++i) {
             const Real K = kMin + (kMax - kMin) * i / (nStrikes_ - 1);
             const Real c = std::clamp(
-                1.0 - smile_->digitalOptionPrice(K, Option::Call, 1.0),
-                0.0, 1.0);
+                Real(1.0 - smile_->digitalOptionPrice(K, Option::Call, 1.0)),
+                Real(0.0), Real(1.0));
             const Real cMono = std::max(c, lastCdf);
             if (cMono - lastCdf > dedupTol) {
                 strikes_.push_back(K);
