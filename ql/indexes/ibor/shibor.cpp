@@ -49,6 +49,6 @@ namespace QuantLib {
     
     ext::shared_ptr<IborIndex> Shibor::clone(
                                   const Handle<YieldTermStructure>& h) const {
-        return ext::shared_ptr<IborIndex>(new Shibor(tenor(), h));
+        return ext::make_shared<Shibor>(tenor(), h);
     }
 }
