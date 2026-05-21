@@ -44,13 +44,13 @@ class DiscountingConstNotionalCrossCurrencySwapEngine : public ConstNotionalCros
     //! \name Constructors
     //@{
     /*! \param domesticCcy
-               Currency 1
+               Domestic currency
         \param domesticCcyDiscountCurve
-               Discount curve for cash flows in currency 1
+               Discount curve for cash flows in domestic currency
         \param foreignCcy
-               Currency 2
+               Foreign currency
         \param foreignCcyDiscountCurve
-               Discount curve for cash flows in currency 2
+               Discount curve for cash flows in foreign currency
         \param spotFX
                The market spot rate quote, given as units of domesticCcy
                for one unit of foreignCcy. The spot rate must be given
@@ -82,8 +82,8 @@ class DiscountingConstNotionalCrossCurrencySwapEngine : public ConstNotionalCros
     const Handle<YieldTermStructure>& domesticCcyDiscountCurve() const { return domesticCcyDiscountcurve_; }
     const Handle<YieldTermStructure>& foreignCcyDiscountCurve() const { return foreignCcyDiscountcurve_; }
 
-    const Currency& currency1() const { return domesticCcy_; }
-    const Currency& currency2() const { return foreignCcy_; }
+    const Currency& domesticCurrency() const { return domesticCcy_; }
+    const Currency& foreignCurrency() const { return foreignCcy_; }
 
     const Handle<Quote>& spotFX() const { return spotFX_; }
     //@}
