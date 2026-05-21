@@ -83,7 +83,7 @@ namespace QuantLib {
     }
 
     void HullWhite::generateArguments() {
-        r0_ = termStructure()->forwardRate(0.0, 0.0, Continuous, NoFrequency);
+        r0_ = termStructure()->zeroRate(0.0, Continuous, NoFrequency);
         phi_ = FittingParameter(termStructure(), a(), sigma());
     }
 
