@@ -36,7 +36,10 @@ namespace QuantLib {
     Real Vasicek::A(Time t, Time T) const {
         Real _a = a();
         if (_a < std::sqrt(QL_EPSILON)) {
-            return 0.0;
+            const Real sigma2 = sigma()*sigma();
+            const Real tau = T - t;
+            return std::exp(-0.5*lambda()*sigma()*tau*tau +
+                            sigma2*tau*tau*tau/6.0);
         } else {
             Real sigma2 = sigma()*sigma();
             Real bt = B(t, T);
@@ -75,4 +78,3 @@ namespace QuantLib {
     }
 
 }
-

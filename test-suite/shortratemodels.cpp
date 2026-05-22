@@ -25,6 +25,7 @@
 #include "utilities.hpp"
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <ql/models/shortrate/onefactormodels/vasicek.hpp>
 #include <ql/models/shortrate/onefactormodels/extendedcoxingersollross.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
@@ -462,6 +463,34 @@ BOOST_AUTO_TEST_CASE(testExtendedCoxIngersollRossDiscountFactor) {
                     << std::scientific
                     << "\n  difference: " << diff
                     << "\n  tolerance : " << tol);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testVasicekDiscountFactorForSmallMeanReversion) {
+    BOOST_TEST_MESSAGE("Testing zero-bond pricing for Vasicek model with small mean reversion...");
+
+    const Rate r0 = 0.05;
+    const Real a = 1e-12;
+    const Real b = 0.05;
+    const Volatility sigma = 0.01;
+    const Real lambda = 0.0;
+    const Time now = 0.0;
+    const Time maturity = 1.0;
+
+    const Vasicek model(r0, a, b, sigma, lambda);
+
+    const Real expected = std::exp(-r0*maturity + sigma*sigma*maturity*maturity*maturity/6.0);
+    const Real calculated = model.discountBond(now, maturity, r0);
+
+    const Real tolerance = 1e-12;
+    const Real error = std::fabs(expected-calculated);
+    if (error > tolerance) {
+        BOOST_ERROR("Failed to reproduce small-mean-reversion zero-bond price:"
+                    << "\n  calculated: " << calculated
+                    << "\n  expected  : " << expected
+                    << std::scientific
+                    << "\n  error     : " << error
+                    << "\n  tolerance : " << tolerance);
     }
 }
 BOOST_AUTO_TEST_SUITE_END()
