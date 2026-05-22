@@ -763,7 +763,7 @@ namespace QuantLib {
         InterestRate yield(y, dayCounter_, compounding_, frequency_);
         Real p = CashFlows::npv(leg_, yield, includeSettlementDateFlows_, 
                                 settlementDate_, npvDate_);
-        return modifiedDuration(leg_, yield,
+        return -modifiedDuration(leg_, yield,
                                 includeSettlementDateFlows_,
                                 settlementDate_, npvDate_) * p;
     }
