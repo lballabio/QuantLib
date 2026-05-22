@@ -105,6 +105,28 @@ BOOST_AUTO_TEST_CASE(testInverse) {
 
 }
 
+BOOST_AUTO_TEST_CASE(testTrivialOrder) {
+    BOOST_TEST_MESSAGE("Testing FFT of size 1 (order 0)...");
+    // min_order(1) is 0; constructing an FFT of order 0 used to write
+    // out of bounds in the constructor.  A size-1 transform reduces to
+    // a copy of the single input element.
+    BOOST_CHECK_EQUAL(FastFourierTransform::min_order(1), 0u);
+
+    typedef std::complex<Real> cx;
+    FastFourierTransform fft(0);
+    BOOST_CHECK_EQUAL(fft.output_size(), 1u);
+
+    cx a[] = { cx(2.5, -1.5) };
+    cx b[1];
+    fft.transform(a, a+1, b);
+    if (std::fabs(b[0].real() - a[0].real()) > 1.0e-12 ||
+        std::fabs(b[0].imag() - a[0].imag()) > 1.0e-12)
+        BOOST_ERROR("Size-1 FFT\n"
+                    << std::setprecision(16) << std::scientific
+                    << "    calculated: " << b[0] << "\n"
+                    << "    expected:   " << a[0]);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
