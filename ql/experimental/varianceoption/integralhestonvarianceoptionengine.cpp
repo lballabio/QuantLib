@@ -57,13 +57,13 @@ namespace QuantLib {
     Real IvopOneDim(Real eps, Real chi, Real theta, Real /*rho*/,
                       Real v0, Real eprice, Time tau, Real rtax)
     {
-        auto ss = 0.0;
-        auto xiv = std::make_unique<double[]>(2048*2048+1);
-        auto nris = 0.0;
-        auto j = 0, mm = 0;
-        auto pi = 0.0, pi2 = 0.0;
-        auto dstep = 0.0;
-        auto option = 0.0, impart = 0.0;
+        Real ss = 0.0;
+        auto xiv = std::make_unique<Real[]>(2048*2048+1);
+        Real nris = 0.0;
+        int j = 0, mm = 0;
+        Real pi = 0.0, pi2 = 0.0;
+        Real dstep = 0.0;
+        Real option = 0.0, impart = 0.0;
 
         auto ff = std::make_unique<Complex[]>(2048*2048);
         Complex xi;
@@ -89,7 +89,7 @@ namespace QuantLib {
 
         pi= 3.14159265358979324;
         pi2=2.0*pi;
-        const auto s = 2.0*chi*theta/(eps*eps)-1.0;
+        const Real s = 2.0*chi*theta/(eps*eps)-1.0;
         /*
          ****************************************
          ** Note that s must be greater than zero
@@ -201,19 +201,19 @@ namespace QuantLib {
                     Real v0, Time tau, Real rtax,
                     const std::function<Real(Real)>& payoff) {
 
-        auto ss = 0.0;
-        auto xiv = std::make_unique<double[]>(2048*2048+1);
-        auto ivet = std::make_unique<double[]>(2048 * 2048 + 1);
-        auto nris = 0.0;
-        auto j = 0, mm = 0, k = 0;
-        auto pi = 0.0, pi2 = 0.0;
+        Real ss = 0.0;
+        auto xiv = std::make_unique<Real[]>(2048*2048+1);
+        auto ivet = std::make_unique<Real[]>(2048 * 2048 + 1);
+        Real nris = 0.0;
+        int j = 0, mm = 0, k = 0;
+        Real pi = 0.0, pi2 = 0.0;
 
-        auto dstep = 0.0;
-        auto ip = 0.0;
-        auto payoffval = 0.0;
-        auto option = 0.0/*, impart=0*/;
+        Real dstep = 0.0;
+        Real ip = 0.0;
+        Real payoffval = 0.0;
+        Real option = 0.0/*, impart=0*/;
 
-        auto sumr = 0.0;//,sumi=0;
+        Real sumr = 0.0;//,sumi=0;
         Complex dxi,z;
 
         auto ff = std::make_unique<Complex[]>(2048*2048);
@@ -238,7 +238,7 @@ namespace QuantLib {
         pi= 3.14159265358979324;
         pi2=2.0*pi;
 
-        const auto s = 2.0*chi*theta/(eps*eps)-1.0;
+        const Real s = 2.0*chi*theta/(eps*eps)-1.0;
         /*
          ****************************************
          ** Note that s must be greater than zero
