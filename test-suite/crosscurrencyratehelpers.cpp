@@ -23,6 +23,7 @@
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/pricingengines/vanilla/all.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
+#include <ql/optional.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
@@ -113,10 +114,10 @@ struct CommonVars {
                             bool isFxBaseCurrencyCollateralCurrency,
                             bool isBasisOnFxBaseCurrencyLeg,
                             bool isFxBaseCurrencyLegResettable,
-                            Frequency paymentFrequency = NoFrequency,
+                            ext::optional<Frequency> paymentFrequency = ext::nullopt,
                             Integer paymentLag = 0,
                             bool useOvernightIndex = false,
-                            Frequency quoteCcyPaymentFrequency = NoFrequency) const {
+                            ext::optional<Frequency> quoteCcyPaymentFrequency = ext::nullopt) const {
         Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
         Period tenor(q.n, q.units);
         ext::shared_ptr<IborIndex> baseIndex, quoteIndex;
@@ -141,10 +142,10 @@ struct CommonVars {
                                   bool isFxBaseCurrencyCollateralCurrency,
                                   bool isBasisOnFxBaseCurrencyLeg,
                                   bool isFxBaseCurrencyLegResettable,
-                                  Frequency paymentFrequency = NoFrequency,
+                                  ext::optional<Frequency> paymentFrequency = ext::nullopt,
                                   Integer paymentLag = 0,
                                   bool useOvernightQuoteIndex = false,
-                                  Frequency quoteCcyPaymentFrequency = NoFrequency) const {
+                                  ext::optional<Frequency> quoteCcyPaymentFrequency = ext::nullopt) const {
         std::vector<ext::shared_ptr<RateHelper> > instruments;
         instruments.reserve(xccyData.size());
         for (const auto& i : xccyData) {
@@ -313,10 +314,10 @@ void testConstantNotionalCrossCurrencySwapsNPV(bool isFxBaseCurrencyCollateralCu
 void testResettingCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurrency,
                                      bool isBasisOnFxBaseCurrencyLeg,
                                      bool isFxBaseCurrencyLegResettable,
-                                     Frequency paymentFrequency = NoFrequency,
+                                     ext::optional<Frequency> paymentFrequency = ext::nullopt,
                                      Integer paymentLag = 0,
                                      bool useOvernightIndex = false,
-                                     Frequency quoteCcyPaymentFrequency = NoFrequency) {
+                                     ext::optional<Frequency> quoteCcyPaymentFrequency = ext::nullopt) {
 
     CommonVars vars;
 
@@ -490,7 +491,7 @@ BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithPaymentLag) {
     bool isBasisOnFxBaseCurrencyLeg = true;
 
     testResettingCrossCurrencySwaps(isFxBaseCurrencyCollateralCurrency, isBasisOnFxBaseCurrencyLeg,
-                                    isFxBaseCurrencyLegResettable, NoFrequency, 2);
+                                    isFxBaseCurrencyLegResettable, ext::nullopt, 2);
 }
 
 BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithOvernightIndex) {
@@ -515,7 +516,7 @@ BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithOvernightIndexException) {
 
     BOOST_CHECK_THROW(testResettingCrossCurrencySwaps(
                           isFxBaseCurrencyCollateralCurrency, isBasisOnFxBaseCurrencyLeg,
-                          isFxBaseCurrencyLegResettable, NoFrequency, 0, true),
+                          isFxBaseCurrencyLegResettable, ext::nullopt, 0, true),
         Error);
 }
 

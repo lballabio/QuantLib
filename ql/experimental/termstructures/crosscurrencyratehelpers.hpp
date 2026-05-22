@@ -27,6 +27,7 @@
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/instruments/constnotionalcrosscurrencyfixedvsfloatingswap.hpp>
+#include <ql/optional.hpp>
 
 namespace QuantLib {
 
@@ -76,9 +77,9 @@ namespace QuantLib {
                                              Handle<YieldTermStructure> collateralCurve,
                                              bool isFxBaseCurrencyCollateralCurrency,
                                              bool isBasisOnFxBaseCurrencyLeg,
-                                             Frequency paymentFrequency = NoFrequency,
+                                             ext::optional<Frequency> paymentFrequency = ext::nullopt,
                                              Integer paymentLag = 0,
-                                             Frequency quoteCcyPaymentFrequency = NoFrequency);
+                                             ext::optional<Frequency> quoteCcyPaymentFrequency = ext::nullopt);
 
         void initializeDates() override;
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
@@ -88,8 +89,8 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> quoteCcyIdx_;
         bool isFxBaseCurrencyCollateralCurrency_;
         bool isBasisOnFxBaseCurrencyLeg_;
-        Frequency paymentFrequency_;
-        Frequency quoteCcyPaymentFrequency_;
+        ext::optional<Frequency> paymentFrequency_;
+        ext::optional<Frequency> quoteCcyPaymentFrequency_;
 
         Leg baseCcyIborLeg_;
         Leg quoteCcyIborLeg_;
@@ -133,9 +134,9 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& collateralCurve,
             bool isFxBaseCurrencyCollateralCurrency,
             bool isBasisOnFxBaseCurrencyLeg,
-            Frequency paymentFrequency = NoFrequency,
+            ext::optional<Frequency> paymentFrequency = ext::nullopt,
             Integer paymentLag = 0,
-            Frequency quoteCcyPaymentFrequency = NoFrequency);
+            ext::optional<Frequency> quoteCcyPaymentFrequency = ext::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -173,9 +174,9 @@ namespace QuantLib {
                                             bool isFxBaseCurrencyCollateralCurrency,
                                             bool isBasisOnFxBaseCurrencyLeg,
                                             bool isFxBaseCurrencyLegResettable,
-                                            Frequency paymentFrequency = NoFrequency,
+                                            ext::optional<Frequency> paymentFrequency = ext::nullopt,
                                             Integer paymentLag = 0,
-                                            Frequency quoteCcyPaymentFrequency = NoFrequency);
+                                            ext::optional<Frequency> quoteCcyPaymentFrequency = ext::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;

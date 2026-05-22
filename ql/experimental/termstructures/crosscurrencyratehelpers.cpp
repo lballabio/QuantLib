@@ -64,16 +64,16 @@ namespace QuantLib {
                          BusinessDayConvention convention,
                          bool endOfMonth,
                          const ext::shared_ptr<IborIndex>& idx,
-                         Frequency paymentFrequency,
+                         ext::optional<Frequency> paymentFrequency,
                          Integer paymentLag) {
             auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(idx);
 
             Period freqPeriod;
-            if (paymentFrequency == NoFrequency) {
+            if (!paymentFrequency) {
                 QL_REQUIRE(!overnightIndex, "Require payment frequency for overnight indices.");
                 freqPeriod = idx->tenor();
             } else {
-                freqPeriod = Period(paymentFrequency);
+                freqPeriod = Period(*paymentFrequency);
             }
 
             Schedule sch = legSchedule(evaluationDate, tenor, freqPeriod, fixingDays, calendar,
@@ -256,9 +256,9 @@ namespace QuantLib {
         Handle<YieldTermStructure> collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg,
-        Frequency paymentFrequency,
+        ext::optional<Frequency> paymentFrequency,
         Integer paymentLag,
-        Frequency quoteCcyPaymentFrequency)
+        ext::optional<Frequency> quoteCcyPaymentFrequency)
     : CrossCurrencySwapRateHelperBase(basis, tenor, fixingDays, std::move(calendar), convention, endOfMonth,
                                       std::move(collateralCurve), paymentLag),
       baseCcyIdx_(std::move(baseCurrencyIndex)), quoteCcyIdx_(std::move(quoteCurrencyIndex)),
@@ -276,8 +276,8 @@ namespace QuantLib {
         baseCcyIborLeg_ = buildFloatingLeg(evaluationDate_, tenor_, fixingDays_, calendar_, convention_,
                                            endOfMonth_, baseCcyIdx_, paymentFrequency_, paymentLag_);
 
-        Frequency effectiveQuoteCcyFreq = (quoteCcyPaymentFrequency_ == NoFrequency)
-            ? paymentFrequency_ : quoteCcyPaymentFrequency_;
+        ext::optional<Frequency> effectiveQuoteCcyFreq =
+            quoteCcyPaymentFrequency_ ? quoteCcyPaymentFrequency_ : paymentFrequency_;
         quoteCcyIborLeg_ = buildFloatingLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
                                             convention_, endOfMonth_, quoteCcyIdx_, effectiveQuoteCcyFreq, paymentLag_);
 
@@ -306,9 +306,9 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg,
-        Frequency paymentFrequency,
+        ext::optional<Frequency> paymentFrequency,
         Integer paymentLag,
-        Frequency quoteCcyPaymentFrequency)
+        ext::optional<Frequency> quoteCcyPaymentFrequency)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
@@ -360,9 +360,9 @@ namespace QuantLib {
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg,
         bool isFxBaseCurrencyLegResettable,
-        Frequency paymentFrequency,
+        ext::optional<Frequency> paymentFrequency,
         Integer paymentLag,
-        Frequency quoteCcyPaymentFrequency)
+        ext::optional<Frequency> quoteCcyPaymentFrequency)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
