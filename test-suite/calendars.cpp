@@ -1698,6 +1698,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
     expectedHol.emplace_back(9, October, 2024);
     expectedHol.emplace_back(25, December, 2024);
     expectedHol.emplace_back(1, January, 2025);
+    expectedHol.emplace_back(27, January, 2025);
     expectedHol.emplace_back(28, January, 2025);
     expectedHol.emplace_back(29, January, 2025);
     expectedHol.emplace_back(30, January, 2025);
@@ -2441,6 +2442,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
     expectedHol.emplace_back(25, December, 2024);
     expectedHol.emplace_back(31, December, 2024);
     expectedHol.emplace_back(1, January, 2025);
+    expectedHol.emplace_back(27, January, 2025);
     expectedHol.emplace_back(28, January, 2025);
     expectedHol.emplace_back(29, January, 2025);
     expectedHol.emplace_back(30, January, 2025);
