@@ -54,6 +54,30 @@ struct CalibrationData {
     Volatility volatility;
 };
 
+BOOST_AUTO_TEST_CASE(testHullWhiteUpdatesR0WhenTermStructureRelinks) {
+    BOOST_TEST_MESSAGE("Testing Hull-White r0 update when the term structure is relinked...");
+
+    Date today(19, May, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    RelinkableHandle<YieldTermStructure> termStructure;
+    termStructure.linkTo(flatRate(today, 0.02, Actual365Fixed()));
+
+    HullWhite model(termStructure);
+
+    termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
+
+    const Rate expected =
+        termStructure->forwardRate(0.0, 0.0, Continuous, NoFrequency);
+    const Real tolerance = 1.0e-12;
+
+    if (std::fabs(model.r0() - expected) > tolerance) {
+        BOOST_ERROR("failed to update r0 after relinking the term structure:\n"
+                    << "expected:   " << expected << "\n"
+                    << "calculated: " << model.r0());
+    }
+}
+
 
 BOOST_AUTO_TEST_CASE(testCachedHullWhite) {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached values using swaptions with start delay...");
