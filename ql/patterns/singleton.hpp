@@ -25,7 +25,6 @@
 #define quantlib_singleton_hpp
 
 #include <ql/types.hpp>
-#include <type_traits>
 
 namespace QuantLib {
 
@@ -54,7 +53,7 @@ namespace QuantLib {
 
         \ingroup patterns
     */
-    template <class T, class Global = std::integral_constant<bool, false> >
+    template <class T, bool Global = false>
     class Singleton {
       public:
         // disable copy/move
@@ -83,9 +82,9 @@ namespace QuantLib {
 #pragma GCC optimize("-O0")
 #endif
 
-    template <class T, class Global>
+    template <class T, bool Global>
     T& Singleton<T, Global>::instance() {
-        if(Global()) {
+        if constexpr (Global) {
             static T global_instance;
             return global_instance;
         } else {
@@ -100,7 +99,7 @@ namespace QuantLib {
 
 #else
 
-    template <class T, class Global>
+    template <class T, bool Global>
     T& Singleton<T, Global>::instance() {
         static T instance;
         return instance;
