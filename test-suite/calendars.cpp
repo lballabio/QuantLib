@@ -4091,50 +4091,50 @@ BOOST_AUTO_TEST_CASE(testIndia) {
 
     BOOST_TEST_MESSAGE("Testing India (NSE) clearing holiday list...");
 
-    std::vector<Date> expectedHol;
-
-    // 2026
-    // Municipal Corporation Election - Maharashtra
-    expectedHol.emplace_back(15, January, 2026);
-    // Republic Day
-    expectedHol.emplace_back(26, January, 2026);
-    // Chatrapati Shivaji Jayanti
-    expectedHol.emplace_back(19, February, 2026);
-    // Holi
-    expectedHol.emplace_back(3, March, 2026);
-    // Gudi Padwa
-    expectedHol.emplace_back(19, March, 2026);
-    // Ram Navami
-    expectedHol.emplace_back(26, March, 2026);
-    // Mahavir Jayanti
-    expectedHol.emplace_back(31, March, 2026);
-    // Annual Bank Closing
-    expectedHol.emplace_back(1, April, 2026);
-    // Good Friday
-    expectedHol.emplace_back(3, April, 2026);
-    // Ambedkar Jayanti
-    expectedHol.emplace_back(14, April, 2026);
-    // May Day
-    expectedHol.emplace_back(1, May, 2026);
-    // Bakri Id
-    expectedHol.emplace_back(28, May, 2026);
-    // Muharram
-    expectedHol.emplace_back(26, June, 2026);
-    // Id-E-Milad
-    expectedHol.emplace_back(26, August, 2026);
-    // Ganesh Chaturthi
-    expectedHol.emplace_back(14, September, 2026);
-    // Gandhi Jayanti
-    expectedHol.emplace_back(2, October, 2026);
-    // Dussehra
-    expectedHol.emplace_back(20, October, 2026);
-    // Diwali - Balipratipada
-    expectedHol.emplace_back(10, November, 2026);
-    // Gurunank Jayanti
-    expectedHol.emplace_back(24, November, 2026);
-    // Christmas
-    expectedHol.emplace_back(25, December, 2026);
-
+    std::vector<Date> expectedHol = {
+        // 2026
+        // Municipal Corporation Election - Maharashtra
+        Date(15, January, 2026),
+        // Republic Day
+        Date(26, January, 2026),
+        // Chatrapati Shivaji Jayanti
+        Date(19, February, 2026),
+        // Holi
+        Date(3, March, 2026),
+        // Gudi Padwa
+        Date(19, March, 2026),
+        // Ram Navami
+        Date(26, March, 2026),
+        // Mahavir Jayanti
+        Date(31, March, 2026),
+        // Annual Bank Closing
+        Date(1, April, 2026),
+        // Good Friday
+        Date(3, April, 2026),
+        // Ambedkar Jayanti
+        Date(14, April, 2026),
+        // May Day
+        Date(1, May, 2026),
+        // Bakri Id
+        Date(28, May, 2026),
+        // Muharram
+        Date(26, June, 2026),
+        // Id-E-Milad
+        Date(26, August, 2026),
+        // Ganesh Chaturthi
+        Date(14, September, 2026),
+        // Gandhi Jayanti
+        Date(2, October, 2026),
+        // Dussehra
+        Date(20, October, 2026),
+        // Diwali - Balipratipada
+        Date(10, November, 2026),
+        // Gurunank Jayanti
+        Date(24, November, 2026),
+        // Christmas
+        Date(25, December, 2026),
+    };
+    
     // The following 2026 holidays fall on weekends and are
     // therefore not included above:
     // Mahashivratri:      15-Feb-2026 (Sunday)
