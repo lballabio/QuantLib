@@ -67,9 +67,9 @@ namespace QuantLib {
         DiscountFactor dfTarget = targetCurrencyDiscountCurve_->discount(maturityDate) /
                                   targetCurrencyDiscountCurve_->discount(settlementDate);
 
-        // Calculate fair forward rate: F = S * dfTarget / dfSource
+        // Calculate fair forward rate: F = S * dfSource / dfTarget
         // This is the forward rate targetCurrency/sourceCurrency
-        results_.fairForwardRate = spotFxRate * dfTarget / dfSource;
+        results_.fairForwardRate = spotFxRate * dfSource / dfTarget;
 
         // Calculate present values of each leg
         // PV of source currency leg (in source currency)
