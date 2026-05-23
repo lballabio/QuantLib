@@ -48,7 +48,7 @@ namespace QuantLib {
 
         The fair forward rate is computed as:
         \f[
-        F = S \times \frac{D_{target}(T)}{D_{source}(T)}
+        F = S \times \frac{D_{source}(T)}{D_{target}(T)}
         \f]
 
         \ingroup forwardengines
