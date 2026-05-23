@@ -196,17 +196,17 @@ BOOST_AUTO_TEST_CASE(testNPVDiscountedToReferenceDate) {
 
     fwd.setPricingEngine(engine);
 
-    Date settlementDate = fwd.settlementDate();
-    Real spotFx = vars.spotFxHandle->value();
-    DiscountFactor dfUsd = vars.usdCurveHandle->discount(vars.maturityDate) /
-                           vars.usdCurveHandle->discount(settlementDate);
-    DiscountFactor dfSgd = vars.sgdCurveHandle->discount(vars.maturityDate) /
-                           vars.sgdCurveHandle->discount(settlementDate);
+    const Date settlementDate = fwd.settlementDate();
+    const Real spotFx = vars.spotFxHandle->value();
+    const DiscountFactor dfUsd = vars.usdCurveHandle->discount(vars.maturityDate) /
+                                 vars.usdCurveHandle->discount(settlementDate);
+    const DiscountFactor dfSgd = vars.sgdCurveHandle->discount(vars.maturityDate) /
+                                 vars.sgdCurveHandle->discount(settlementDate);
 
-    Real npvAtSettlement = -usdNominal * dfUsd + sgdNominal * dfSgd / spotFx;
-    Real expectedSourceNpv =
+    const Real npvAtSettlement = -usdNominal * dfUsd + sgdNominal * dfSgd / spotFx;
+    const Real expectedSourceNpv =
         npvAtSettlement * vars.usdCurveHandle->discount(settlementDate);
-    Real expectedTargetNpv =
+    const Real expectedTargetNpv =
         npvAtSettlement * spotFx * vars.sgdCurveHandle->discount(settlementDate);
 
     QL_CHECK_CLOSE(fwd.NPV(), expectedSourceNpv, 1.0e-8);
