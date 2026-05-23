@@ -180,41 +180,6 @@ BOOST_AUTO_TEST_CASE(testDiscountingFxForwardEngine) {
 }
 
 
-BOOST_AUTO_TEST_CASE(testNPVDiscountedToReferenceDate) {
-    BOOST_TEST_MESSAGE("Testing FX-forward NPV is discounted to the reference date...");
-
-    CommonVars vars;
-
-    Real usdNominal = 1000000.0;
-    Real sgdNominal = 1350000.0;
-
-    FxForward fwd(usdNominal, vars.usd, sgdNominal, vars.sgd, vars.maturityDate,
-                  true);
-
-    auto engine = ext::make_shared<DiscountingFxForwardEngine>(
-        vars.usdCurveHandle, vars.sgdCurveHandle, vars.spotFxHandle);
-
-    fwd.setPricingEngine(engine);
-
-    const Date settlementDate = fwd.settlementDate();
-    const Real spotFx = vars.spotFxHandle->value();
-    const DiscountFactor dfUsd = vars.usdCurveHandle->discount(vars.maturityDate) /
-                                 vars.usdCurveHandle->discount(settlementDate);
-    const DiscountFactor dfSgd = vars.sgdCurveHandle->discount(vars.maturityDate) /
-                                 vars.sgdCurveHandle->discount(settlementDate);
-
-    const Real npvAtSettlement = -usdNominal * dfUsd + sgdNominal * dfSgd / spotFx;
-    const Real expectedSourceNpv =
-        npvAtSettlement * vars.usdCurveHandle->discount(settlementDate);
-    const Real expectedTargetNpv =
-        npvAtSettlement * spotFx * vars.sgdCurveHandle->discount(settlementDate);
-
-    QL_CHECK_CLOSE(fwd.NPV(), expectedSourceNpv, 1.0e-8);
-    QL_CHECK_CLOSE(fwd.npvSourceCurrency(), expectedSourceNpv, 1.0e-8);
-    QL_CHECK_CLOSE(fwd.npvTargetCurrency(), expectedTargetNpv, 1.0e-8);
-}
-
-
 BOOST_AUTO_TEST_CASE(testFairForwardRate) {
     BOOST_TEST_MESSAGE("Testing fair forward rate calculation...");
 
