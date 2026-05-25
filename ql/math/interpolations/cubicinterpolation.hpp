@@ -398,7 +398,12 @@ namespace QuantLib {
                     || rightType_ == CubicInterpolation::Lagrange) {
                     QL_REQUIRE((xEnd-xBegin) >= 4,
                                "Lagrange boundary condition requires at least "
-                               "4 points (" << (xEnd-xBegin) << " are given)"); 
+                               "4 points (" << (xEnd-xBegin) << " are given)");
+                }
+                if (da_ == CubicInterpolation::Akima) {
+                    QL_REQUIRE((xEnd-xBegin) >= 4,
+                               "Akima approximation requires at least "
+                               "4 points (" << (xEnd-xBegin) << " are given)");
                 }
             }
 
