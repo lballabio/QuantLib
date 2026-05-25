@@ -1317,6 +1317,31 @@ BOOST_AUTO_TEST_CASE(testMixedLinearCubicMatchDerivatives) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testMixedLinearCubicSwitchPoint) {
+    BOOST_TEST_MESSAGE("Testing switch point bounds of mixed linear/cubic interpolation...");
+
+    Size n = 5;
+    std::vector<Real> x = xRange(-2.0, 2.0, n);
+    std::vector<Real> y = parabolic(x);
+
+    // a switch index equal to the number of points puts the switch
+    // iterator one past the end of the x range, which used to be
+    // dereferenced; it must be rejected instead
+    BOOST_CHECK_THROW(MixedLinearCubicNaturalSpline(x.begin(), x.end(), y.begin(), n),
+                      Error);
+
+    // the largest valid switch index still reproduces the knots
+    MixedLinearCubicNaturalSpline f(x.begin(), x.end(), y.begin(), n - 1);
+    for (Size i = 0; i < n; ++i) {
+        Real interpolated = f(x[i]);
+        if (std::fabs(interpolated - y[i]) > 1e-12)
+            BOOST_ERROR("failed to reproduce knot " << i
+                        << std::scientific
+                        << "\n    expected:     " << y[i]
+                        << "\n    interpolated: " << interpolated);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testSabrInterpolation){
 
     BOOST_TEST_MESSAGE("Testing Sabr interpolation...");
