@@ -34,21 +34,29 @@ namespace QuantLib {
     /*! This engine discounts the two legs of an FX forward using their
         respective currency discount curves.
 
-        The NPV is computed as:
+        The source-currency NPV is computed as:
         \f[
-        \text{NPV} = \pm N_{source} \times D_{source}(T) \mp N_{target} \times D_{target}(T) / S
+        \text{NPV}_{source} =
+            \left(\pm N_{source} \times D_{source}(\tau,T)
+            \mp N_{target} \times D_{target}(\tau,T) / S\right)
+            \times D_{source}(\tau)
         \f]
         where:
         - \f$ N_{source} \f$ is the source currency nominal
         - \f$ N_{target} \f$ is the target currency nominal
-        - \f$ D_{source}(T) \f$ is the source currency discount factor to maturity
-        - \f$ D_{target}(T) \f$ is the target currency discount factor to maturity
+        - \f$ D_{source}(\tau,T) \f$ is the source currency discount factor
+          from settlement to maturity
+        - \f$ D_{target}(\tau,T) \f$ is the target currency discount factor
+          from settlement to maturity
+        - \f$ D_{source}(\tau) \f$ is the source currency discount factor to
+          settlement
         - \f$ S \f$ is the spot FX rate (target/source)
+        - \f$ \tau \f$ is the settlement date
         - \f$ T \f$ is the maturity date
 
         The fair forward rate is computed as:
         \f[
-        F = S \times \frac{D_{source}(T)}{D_{target}(T)}
+        F = S \times \frac{D_{source}(\tau,T)}{D_{target}(\tau,T)}
         \f]
 
         \ingroup forwardengines

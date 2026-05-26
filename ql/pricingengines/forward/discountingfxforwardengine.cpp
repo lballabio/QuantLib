@@ -61,17 +61,21 @@ namespace QuantLib {
         Real spotFxRate = spotFx_->value();
         QL_REQUIRE(spotFxRate > 0.0, "spot FX rate must be positive");
 
-        // Get discount factors to maturity
+        // Get discount factors from settlement to maturity
         DiscountFactor dfSource = sourceCurrencyDiscountCurve_->discount(maturityDate) /
                                   sourceCurrencyDiscountCurve_->discount(settlementDate);
         DiscountFactor dfTarget = targetCurrencyDiscountCurve_->discount(maturityDate) /
                                   targetCurrencyDiscountCurve_->discount(settlementDate);
+        DiscountFactor dfSourceSettlement =
+            sourceCurrencyDiscountCurve_->discount(settlementDate);
+        DiscountFactor dfTargetSettlement =
+            targetCurrencyDiscountCurve_->discount(settlementDate);
 
         // Calculate fair forward rate: F = S * dfSource / dfTarget
         // This is the forward rate targetCurrency/sourceCurrency
         results_.fairForwardRate = spotFxRate * dfSource / dfTarget;
 
-        // Calculate present values of each leg
+        // Calculate settlement-date present values of each leg
         // PV of source currency leg (in source currency)
         Real pvSource = arguments_.sourceNominal * dfSource;
 
@@ -86,22 +90,31 @@ namespace QuantLib {
         //   NPV = -PVSource + PVTarget (in source currency terms)
         // If paySourceCurrency is false: receive source currency, pay target currency
         //   NPV = +PVSource - PVTarget (in source currency terms)
-        Real npvInSourceCurrency;
+        Real npvAtSettlementInSourceCurrency;
         if (arguments_.paySourceCurrency) {
-            npvInSourceCurrency = -pvSource + pvTargetInSourceCurrency;
+            npvAtSettlementInSourceCurrency = -pvSource + pvTargetInSourceCurrency;
         } else {
-            npvInSourceCurrency = pvSource - pvTargetInSourceCurrency;
+            npvAtSettlementInSourceCurrency = pvSource - pvTargetInSourceCurrency;
         }
+
+        Real npvInSourceCurrency =
+            npvAtSettlementInSourceCurrency * dfSourceSettlement;
+        Real npvInTargetCurrency =
+            npvAtSettlementInSourceCurrency * spotFxRate * dfTargetSettlement;
 
         // Store results - NPV is as of the curve reference date
         results_.value = npvInSourceCurrency;
         results_.npvSourceCurrency = npvInSourceCurrency;
-        results_.npvTargetCurrency = npvInSourceCurrency * spotFxRate;
+        results_.npvTargetCurrency = npvInTargetCurrency;
 
         // Store additional results for inspection
         results_.additionalResults["spotFx"] = spotFxRate;
         results_.additionalResults["sourceCurrencyDiscountFactor"] = dfSource;
         results_.additionalResults["targetCurrencyDiscountFactor"] = dfTarget;
+        results_.additionalResults["sourceCurrencySettlementDiscountFactor"] =
+            dfSourceSettlement;
+        results_.additionalResults["targetCurrencySettlementDiscountFactor"] =
+            dfTargetSettlement;
         results_.additionalResults["sourceCurrencyPV"] = pvSource;
         results_.additionalResults["targetCurrencyPV"] = pvTarget;
     }
