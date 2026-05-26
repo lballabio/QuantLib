@@ -340,6 +340,23 @@ BOOST_AUTO_TEST_CASE(testDiscreteIntegrals) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testDiscreteIntegralsWithFewPoints) {
+    BOOST_TEST_MESSAGE("Testing discrete integrals on degenerate grids...");
+
+    // With fewer than two nodes there is no interval to integrate, but the
+    // unsigned loop bounds (n-1, n-2) used to wrap around to SIZE_MAX and
+    // read past the arrays (e.g. a single-point Simpson rule indexing x[2]).
+    for (Size n=0; n < 2; ++n) {
+        Array x(n), f(n);
+        for (Size i=0; i < n; ++i) {
+            x[i] = Real(i);
+            f[i] = 1.0;
+        }
+        BOOST_CHECK_EQUAL(DiscreteTrapezoidIntegral()(x, f), 0.0);
+        BOOST_CHECK_EQUAL(DiscreteSimpsonIntegral()(x, f), 0.0);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testDiscreteIntegrator) {
     BOOST_TEST_MESSAGE("Testing discrete integrator formulae...");
 
