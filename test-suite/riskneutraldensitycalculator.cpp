@@ -922,7 +922,8 @@ BOOST_AUTO_TEST_CASE(testSmileSectionRNDvsHeston) {
 
 BOOST_AUTO_TEST_CASE(testSmileSectionRNDMissingAtmLevel) {
     BOOST_TEST_MESSAGE("Testing that SmileSectionRNDCalculator raises "
-                       "when the smile has no atmLevel...");
+                       "when the smile has no atmLevel and no explicit "
+                       "forward is supplied...");
 
     const Date today = Settings::instance().evaluationDate();
     const Date maturity = today + 1 * Years;
@@ -933,7 +934,104 @@ BOOST_AUTO_TEST_CASE(testSmileSectionRNDMissingAtmLevel) {
     const Time T = smile->exerciseTime();
     BOOST_CHECK_EXCEPTION(
         rnd.invcdf(0.5, T), QuantLib::Error,
-        ExpectedErrorMessage("AtmSmileSection"));
+        ExpectedErrorMessage("(smile, forward, ...)"));
+}
+
+BOOST_AUTO_TEST_CASE(testSmileSectionRNDExplicitForward) {
+    BOOST_TEST_MESSAGE("Testing SmileSectionRNDCalculator with an explicit "
+                       "forward on a smile that does not self-describe its "
+                       "atmLevel...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Settings::instance().evaluationDate();
+    const Date maturity = today + 1 * Years;
+
+    const Real s0 = 100.0;
+    const Rate r = 0.05;
+    const Rate q = 0.02;
+    const Volatility v = 0.20;
+
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
+    const Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, q, dc));
+
+    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess =
+        ext::make_shared<BlackScholesMertonProcess>(
+            spot, qTS, rTS,
+            Handle<BlackVolTermStructure>(flatVol(today, v, dc)));
+
+    const BSMRNDCalculator bsmRnd(bsmProcess);
+
+    // FlatSmileSection without the optional atmLevel argument leaves
+    // atmLevel() returning Null<Real>(); the explicit-forward ctor must
+    // supply the forward so the strike grid can be anchored.
+    const auto smile = ext::make_shared<FlatSmileSection>(
+        maturity, v, dc, today);
+
+    const Real fwd = s0 * qTS->discount(maturity) / rTS->discount(maturity);
+
+    // Sanity-check the precondition the new ctor is designed for.
+    BOOST_CHECK_EQUAL(smile->atmLevel(), Null<Real>());
+
+    const SmileSectionRNDCalculator smileRnd(smile, fwd);
+    const Time T = smile->exerciseTime();
+
+    const Real logFwd = std::log(fwd);
+    const Real tol = 1e-3;
+
+    for (Real prob : { 0.05, 0.25, 0.5, 0.75, 0.95 }) {
+        const Real expectedInvCDF = bsmRnd.invcdf(prob, T);
+        const Real calculatedInvCDF = smileRnd.invcdf(prob, T);
+        if (std::fabs(expectedInvCDF - calculatedInvCDF) > tol) {
+            BOOST_FAIL("explicit-forward SmileSectionRNDCalculator failed "
+                       "to reproduce BSM invcdf"
+                    << "\n   prob:       " << prob
+                    << "\n   calculated: " << calculatedInvCDF
+                    << "\n   expected:   " << expectedInvCDF
+                    << "\n   diff:       " << calculatedInvCDF - expectedInvCDF
+                    << "\n   tolerance:  " << tol);
+        }
+    }
+
+    // Spot-check cdf around the forward as well.
+    for (Real offset : { -0.15, 0.0, 0.15 }) {
+        const Real x = logFwd + offset;
+        const Real expectedCDF = bsmRnd.cdf(x, T);
+        const Real calculatedCDF = smileRnd.cdf(x, T);
+        if (std::fabs(expectedCDF - calculatedCDF) > tol) {
+            BOOST_FAIL("explicit-forward SmileSectionRNDCalculator failed "
+                       "to reproduce BSM cdf"
+                    << "\n   x:          " << x
+                    << "\n   calculated: " << calculatedCDF
+                    << "\n   expected:   " << expectedCDF
+                    << "\n   diff:       " << calculatedCDF - expectedCDF
+                    << "\n   tolerance:  " << tol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSmileSectionRNDExplicitForwardRejectsBadInputs) {
+    BOOST_TEST_MESSAGE("Testing that the explicit-forward "
+                       "SmileSectionRNDCalculator ctor rejects "
+                       "non-positive and Null forwards...");
+
+    const Date today = Settings::instance().evaluationDate();
+    const Date maturity = today + 1 * Years;
+    const auto smile = ext::make_shared<FlatSmileSection>(
+        maturity, 0.20, Actual365Fixed(), today);
+
+    BOOST_CHECK_EXCEPTION(
+        SmileSectionRNDCalculator(smile, Null<Real>()),
+        QuantLib::Error,
+        ExpectedErrorMessage("explicit forward cannot be Null"));
+    BOOST_CHECK_EXCEPTION(
+        SmileSectionRNDCalculator(smile, -1.0),
+        QuantLib::Error,
+        ExpectedErrorMessage("explicit forward must be positive"));
+    BOOST_CHECK_EXCEPTION(
+        SmileSectionRNDCalculator(smile, 0.0),
+        QuantLib::Error,
+        ExpectedErrorMessage("explicit forward must be positive"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

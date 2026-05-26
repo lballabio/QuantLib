@@ -20,6 +20,7 @@
 #include <ql/errors.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/methods/finitedifferences/utilities/smilesectionrndcalculator.hpp>
+#include <ql/termstructures/volatility/atmsmilesection.hpp>
 #include <ql/termstructures/volatility/smilesection.hpp>
 #include <algorithm>
 #include <cmath>
@@ -39,6 +40,26 @@ namespace QuantLib {
                    "nStd must be positive, got " << nStd_);
     }
 
+    SmileSectionRNDCalculator::SmileSectionRNDCalculator(
+        ext::shared_ptr<SmileSection> smile,
+        Real forward,
+        Size nStrikes,
+        Real nStd)
+    : nStrikes_(nStrikes), nStd_(nStd) {
+        QL_REQUIRE(smile, "null SmileSection");
+        QL_REQUIRE(forward != Null<Real>(),
+                   "explicit forward cannot be Null<Real>()");
+        QL_REQUIRE(forward > 0.0,
+                   "explicit forward must be positive, got " << forward);
+        QL_REQUIRE(nStrikes_ >= 4,
+                   "at least 4 strikes required, got " << nStrikes_);
+        QL_REQUIRE(nStd_ > 0.0,
+                   "nStd must be positive, got " << nStd_);
+        // Wrap so that smile pricing methods (which require atmLevel)
+        // work regardless of whether the input smile self-describes it.
+        smile_ = ext::make_shared<AtmSmileSection>(std::move(smile), forward);
+    }
+
     void SmileSectionRNDCalculator::checkTime(Time t) const {
         const Time tRef = smile_->exerciseTime();
         QL_REQUIRE(close_enough(t, tRef),
@@ -53,7 +74,8 @@ namespace QuantLib {
         const Real forward = smile_->atmLevel();
         QL_REQUIRE(forward != Null<Real>(),
                    "SmileSectionRNDCalculator: smile->atmLevel() returned "
-                   "Null<Real>(); wrap with AtmSmileSection to supply one");
+                   "Null<Real>(); use the (smile, forward, ...) constructor "
+                   "to supply one explicitly");
 
         const Time T = smile_->exerciseTime();
         const Real sigmaAtm = smile_->volatility(forward);

@@ -36,8 +36,16 @@ namespace QuantLib {
 
     class SmileSectionRNDCalculator : public RiskNeutralDensityCalculator {
       public:
+        //! takes the forward from \c smile->atmLevel()
         explicit SmileSectionRNDCalculator(
             ext::shared_ptr<SmileSection> smile,
+            Size nStrikes = 200,
+            Real nStd = 5.0);
+
+        //! explicit forward; overrides \c smile->atmLevel()
+        SmileSectionRNDCalculator(
+            ext::shared_ptr<SmileSection> smile,
+            Real forward,
             Size nStrikes = 200,
             Real nStd = 5.0);
 
