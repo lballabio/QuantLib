@@ -1063,9 +1063,11 @@ BOOST_AUTO_TEST_CASE(testAkimaWithFewPoints) {
     // rather than read past the end of the vector.
     const Real x3[3] = { 0.0, 1.0, 2.0 };
     const Real y3[3] = { 1.0, 2.0, 0.5 };
-    BOOST_CHECK_THROW(AkimaCubicInterpolation(std::begin(x3), std::end(x3),
-                                              std::begin(y3)),
-                      QuantLib::Error);
+    BOOST_CHECK_EXCEPTION(AkimaCubicInterpolation(std::begin(x3), std::end(x3),
+                                                  std::begin(y3)),
+                          QuantLib::Error,
+                          ExpectedErrorMessage(
+                              "Akima approximation requires at least 4 points"));
 
     // Four points are enough; the interpolation must reproduce the knots.
     const Real x4[4] = { 0.0, 1.0, 2.0, 3.0 };
