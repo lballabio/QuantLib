@@ -1327,8 +1327,10 @@ BOOST_AUTO_TEST_CASE(testMixedLinearCubicSwitchPoint) {
     // a switch index equal to the number of points puts the switch
     // iterator one past the end of the x range, which used to be
     // dereferenced; it must be rejected instead
-    BOOST_CHECK_THROW(MixedLinearCubicNaturalSpline(x.begin(), x.end(), y.begin(), n),
-                      Error);
+    BOOST_CHECK_EXCEPTION(
+        MixedLinearCubicNaturalSpline(x.begin(), x.end(), y.begin(), n),
+        Error,
+        ExpectedErrorMessage("n is too large"));
 
     // the largest valid switch index still reproduces the knots
     MixedLinearCubicNaturalSpline f(x.begin(), x.end(), y.begin(), n - 1);
