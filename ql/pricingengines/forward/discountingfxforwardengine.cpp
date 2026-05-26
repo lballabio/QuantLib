@@ -48,8 +48,8 @@ namespace QuantLib {
         const Date& settlementDate = arguments_.settlementDate;
 
         // Validate that curve reference dates are on or before settlement date
-        Date sourceRefDate = sourceCurrencyDiscountCurve_->referenceDate();
-        Date targetRefDate = targetCurrencyDiscountCurve_->referenceDate();
+        const Date sourceRefDate = sourceCurrencyDiscountCurve_->referenceDate();
+        const Date targetRefDate = targetCurrencyDiscountCurve_->referenceDate();
         QL_REQUIRE(sourceRefDate <= settlementDate,
                    "source currency discount curve reference date (" << sourceRefDate
                    << ") must be on or before settlement date (" << settlementDate << ")");
@@ -58,17 +58,19 @@ namespace QuantLib {
                    << ") must be on or before settlement date (" << settlementDate << ")");
 
         // Get the spot FX rate (targetCurrency/sourceCurrency)
-        Real spotFxRate = spotFx_->value();
+        const Real spotFxRate = spotFx_->value();
         QL_REQUIRE(spotFxRate > 0.0, "spot FX rate must be positive");
 
         // Get discount factors from settlement to maturity
-        DiscountFactor dfSource = sourceCurrencyDiscountCurve_->discount(maturityDate) /
-                                  sourceCurrencyDiscountCurve_->discount(settlementDate);
-        DiscountFactor dfTarget = targetCurrencyDiscountCurve_->discount(maturityDate) /
-                                  targetCurrencyDiscountCurve_->discount(settlementDate);
-        DiscountFactor dfSourceSettlement =
+        const DiscountFactor dfSource =
+            sourceCurrencyDiscountCurve_->discount(maturityDate) /
             sourceCurrencyDiscountCurve_->discount(settlementDate);
-        DiscountFactor dfTargetSettlement =
+        const DiscountFactor dfTarget =
+            targetCurrencyDiscountCurve_->discount(maturityDate) /
+            targetCurrencyDiscountCurve_->discount(settlementDate);
+        const DiscountFactor dfSourceSettlement =
+            sourceCurrencyDiscountCurve_->discount(settlementDate);
+        const DiscountFactor dfTargetSettlement =
             targetCurrencyDiscountCurve_->discount(settlementDate);
 
         // Calculate fair forward rate: F = S * dfSource / dfTarget
@@ -77,29 +79,27 @@ namespace QuantLib {
 
         // Calculate settlement-date present values of each leg
         // PV of source currency leg (in source currency)
-        Real pvSource = arguments_.sourceNominal * dfSource;
+        const Real pvSource = arguments_.sourceNominal * dfSource;
 
         // PV of target currency leg (in target currency)
-        Real pvTarget = arguments_.targetNominal * dfTarget;
+        const Real pvTarget = arguments_.targetNominal * dfTarget;
 
         // Convert target currency PV to source currency using spot FX rate
-        Real pvTargetInSourceCurrency = pvTarget / spotFxRate;
+        const Real pvTargetInSourceCurrency = pvTarget / spotFxRate;
 
         // Calculate NPV based on direction of trade
         // If paySourceCurrency is true: pay source currency, receive target currency
         //   NPV = -PVSource + PVTarget (in source currency terms)
         // If paySourceCurrency is false: receive source currency, pay target currency
         //   NPV = +PVSource - PVTarget (in source currency terms)
-        Real npvAtSettlementInSourceCurrency;
-        if (arguments_.paySourceCurrency) {
-            npvAtSettlementInSourceCurrency = -pvSource + pvTargetInSourceCurrency;
-        } else {
-            npvAtSettlementInSourceCurrency = pvSource - pvTargetInSourceCurrency;
-        }
+        const Real npvAtSettlementInSourceCurrency =
+            arguments_.paySourceCurrency ?
+                -pvSource + pvTargetInSourceCurrency :
+                pvSource - pvTargetInSourceCurrency;
 
-        Real npvInSourceCurrency =
+        const Real npvInSourceCurrency =
             npvAtSettlementInSourceCurrency * dfSourceSettlement;
-        Real npvInTargetCurrency =
+        const Real npvInTargetCurrency =
             npvAtSettlementInSourceCurrency * spotFxRate * dfTargetSettlement;
 
         // Store results - NPV is as of the curve reference date
