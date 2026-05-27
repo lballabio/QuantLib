@@ -1053,6 +1053,30 @@ BOOST_AUTO_TEST_CASE(testFritschButland) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testAkimaWithFewPoints) {
+
+    BOOST_TEST_MESSAGE("Testing Akima interpolation with few points...");
+
+    // The Akima scheme reads S_[2] and S_[n-4] while computing the
+    // first-derivative estimates; with three points S_ has size two and
+    // both indices are out of bounds. Construction must fail cleanly
+    // rather than read past the end of the vector.
+    const Real x3[3] = { 0.0, 1.0, 2.0 };
+    const Real y3[3] = { 1.0, 2.0, 0.5 };
+    BOOST_CHECK_EXCEPTION(AkimaCubicInterpolation(std::begin(x3), std::end(x3),
+                                                  std::begin(y3)),
+                          QuantLib::Error,
+                          ExpectedErrorMessage(
+                              "Akima approximation requires at least 4 points"));
+
+    // Four points are enough; the interpolation must reproduce the knots.
+    const Real x4[4] = { 0.0, 1.0, 2.0, 3.0 };
+    const Real y4[4] = { 1.0, 2.0, 0.5, 1.5 };
+    AkimaCubicInterpolation f(std::begin(x4), std::end(x4), std::begin(y4));
+    for (Size i=0; i<4; ++i)
+        BOOST_CHECK_CLOSE(f(x4[i]), y4[i], 1.0e-12);
+}
+
 BOOST_AUTO_TEST_CASE(testBackwardFlat) {
 
     BOOST_TEST_MESSAGE("Testing backward-flat interpolation...");
