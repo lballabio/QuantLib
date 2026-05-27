@@ -118,16 +118,16 @@ namespace QuantLib {
           case ISMA:
           case Bond:
             if (!schedule.empty())
-                return ext::shared_ptr<DayCounter::Impl>(new ISMA_Impl(std::move(schedule)));
+                return ext::make_shared<ISMA_Impl>(std::move(schedule));
             else
-                return ext::shared_ptr<DayCounter::Impl>(new Old_ISMA_Impl);
+                return ext::make_shared<Old_ISMA_Impl>();
           case ISDA:
           case Historical:
           case Actual365:
-            return ext::shared_ptr<DayCounter::Impl>(new ISDA_Impl);
+            return ext::make_shared<ISDA_Impl>();
           case AFB:
           case Euro:
-            return ext::shared_ptr<DayCounter::Impl>(new AFB_Impl);
+            return ext::make_shared<AFB_Impl>();
           default:
             QL_FAIL("unknown act/act convention");
         }

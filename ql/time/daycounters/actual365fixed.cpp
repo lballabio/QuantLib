@@ -27,11 +27,11 @@ namespace QuantLib {
     Actual365Fixed::implementation(Actual365Fixed::Convention c) {
         switch (c) {
           case Standard:
-            return ext::shared_ptr<DayCounter::Impl>(new Impl);
+            return ext::make_shared<Impl>();
           case Canadian:
-            return ext::shared_ptr<DayCounter::Impl>(new CA_Impl);
+            return ext::make_shared<CA_Impl>();
           case NoLeap:
-            return ext::shared_ptr<DayCounter::Impl>(new NL_Impl);
+            return ext::make_shared<NL_Impl>();
           default:
             QL_FAIL("unknown Actual/365 (Fixed) convention");
         }
