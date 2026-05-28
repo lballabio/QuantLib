@@ -79,7 +79,7 @@ namespace QuantLib {
                                              bool isBasisOnFxBaseCurrencyLeg,
                                              ext::optional<Frequency> paymentFrequency = ext::nullopt,
                                              Integer paymentLag = 0,
-                                             ext::optional<Frequency> quoteCcyPaymentFrequency = ext::nullopt);
+                                             ext::optional<Frequency> quoteCurrencyPaymentFrequency = ext::nullopt);
 
         void initializeDates() override;
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
@@ -122,6 +122,19 @@ namespace QuantLib {
     */
     class ConstNotionalCrossCurrencyBasisSwapRateHelper : public CrossCurrencyBasisSwapRateHelperBase {
       public:
+        /*! \param paymentFrequency
+                payment frequency of the base-currency leg; if left unset (the
+                default) the schedule is derived from the base-currency index tenor.
+            \param paymentLag
+                payment lag, in days, applied to both legs (default: 0).
+            \param quoteCurrencyPaymentFrequency
+                payment frequency of the quote-currency leg; if left unset (the
+                default) it defaults to \c paymentFrequency, and if that is unset as
+                well the schedule is derived from the quote-currency index tenor.
+
+            In both frequency parameters, \c NoFrequency is accepted as a synonym for
+            an unset (null) value.
+        */
         ConstNotionalCrossCurrencyBasisSwapRateHelper(
             const Handle<Quote>& basis,
             const Period& tenor,
@@ -136,7 +149,7 @@ namespace QuantLib {
             bool isBasisOnFxBaseCurrencyLeg,
             ext::optional<Frequency> paymentFrequency = ext::nullopt,
             Integer paymentLag = 0,
-            ext::optional<Frequency> quoteCcyPaymentFrequency = ext::nullopt);
+            ext::optional<Frequency> quoteCurrencyPaymentFrequency = ext::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -162,6 +175,19 @@ namespace QuantLib {
     */
     class MtMCrossCurrencyBasisSwapRateHelper : public CrossCurrencyBasisSwapRateHelperBase {
       public:
+        /*! \param paymentFrequency
+                payment frequency of the base-currency leg; if left unset (the
+                default) the schedule is derived from the base-currency index tenor.
+            \param paymentLag
+                payment lag, in days, applied to both legs (default: 0).
+            \param quoteCurrencyPaymentFrequency
+                payment frequency of the quote-currency leg; if left unset (the
+                default) it defaults to \c paymentFrequency, and if that is unset as
+                well the schedule is derived from the quote-currency index tenor.
+
+            In both frequency parameters, \c NoFrequency is accepted as a synonym for
+            an unset (null) value.
+        */
         MtMCrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
                                             const Period& tenor,
                                             Natural fixingDays,
@@ -176,7 +202,7 @@ namespace QuantLib {
                                             bool isFxBaseCurrencyLegResettable,
                                             ext::optional<Frequency> paymentFrequency = ext::nullopt,
                                             Integer paymentLag = 0,
-                                            ext::optional<Frequency> quoteCcyPaymentFrequency = ext::nullopt);
+                                            ext::optional<Frequency> quoteCurrencyPaymentFrequency = ext::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;

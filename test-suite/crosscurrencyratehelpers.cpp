@@ -536,6 +536,57 @@ BOOST_AUTO_TEST_CASE(testResettingBasisSwapsTreatNoFrequencyAsUnset) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testResettingBasisSwapsQuoteFrequencyDefaultsToBase) {
+    BOOST_TEST_MESSAGE(
+        "Testing that an unset quote-currency payment frequency defaults to the base frequency...");
+
+    CommonVars vars;
+
+    bool isFxBaseCurrencyCollateralCurrency = false;
+    bool isBasisOnFxBaseCurrencyLeg = true;
+    bool isFxBaseCurrencyLegResettable = false;
+
+    Handle<YieldTermStructure> collateralHandle = vars.quoteCcyIdxHandle;
+
+    Frequency baseFrequency = Semiannual;
+
+    // Quote-currency frequency left unset: it must fall back to the base frequency.
+    std::vector<ext::shared_ptr<RateHelper> > fallbackInstruments =
+        vars.buildResettingXccyRateHelpers(
+            vars.basisData, collateralHandle, isFxBaseCurrencyCollateralCurrency,
+            isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, baseFrequency, 0, false,
+            ext::nullopt);
+
+    // Quote-currency frequency set explicitly to the base frequency: same result.
+    std::vector<ext::shared_ptr<RateHelper> > explicitInstruments =
+        vars.buildResettingXccyRateHelpers(
+            vars.basisData, collateralHandle, isFxBaseCurrencyCollateralCurrency,
+            isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, baseFrequency, 0, false,
+            baseFrequency);
+
+    ext::shared_ptr<YieldTermStructure> fallbackCurve(new PiecewiseYieldCurve<Discount, LogLinear>(
+        vars.curveSettlementDt, fallbackInstruments, vars.dayCount));
+    fallbackCurve->enableExtrapolation();
+
+    ext::shared_ptr<YieldTermStructure> explicitCurve(new PiecewiseYieldCurve<Discount, LogLinear>(
+        vars.curveSettlementDt, explicitInstruments, vars.dayCount));
+    explicitCurve->enableExtrapolation();
+
+    Real tolerance = 1.0e-12;
+    for (Size i = 0; i < vars.basisData.size(); ++i) {
+        Date maturity = fallbackInstruments[i]->maturityDate();
+        Rate fallbackZero = fallbackCurve->zeroRate(maturity, vars.dayCount, Continuous);
+        Rate explicitZero = explicitCurve->zeroRate(maturity, vars.dayCount, Continuous);
+
+        if (std::fabs(fallbackZero - explicitZero) > tolerance)
+            BOOST_ERROR("unset quote-currency frequency does not default to the base frequency\n"
+                        << std::setprecision(16)
+                        << "    zero with quote frequency unset:    " << fallbackZero << "\n"
+                        << "    zero with quote frequency = base:    " << explicitZero << "\n"
+                        << "    maturity:    " << maturity << "\n");
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithPaymentLag) {
     BOOST_TEST_MESSAGE(
         "Testing resetting basis swaps with collateral in quote ccy and basis in base ccy...");
