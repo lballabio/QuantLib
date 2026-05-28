@@ -34,6 +34,19 @@ namespace QuantLib {
 
         constexpr double sample_fixed_rate = 0.01;
 
+        // Treat an explicitly-passed NoFrequency the same as an unset (nullopt)
+        // payment frequency.  Before these parameters were migrated to
+        // ext::optional<Frequency>, NoFrequency was the sentinel meaning "derive
+        // the schedule from the index tenor".  Normalizing it here preserves that
+        // behavior and keeps the stored optional either empty or holding an
+        // actual frequency, so the rest of the code can treat the two cases
+        // identically.
+        ext::optional<Frequency> normalizedPaymentFrequency(ext::optional<Frequency> frequency) {
+            if (frequency && *frequency == NoFrequency)
+                return ext::nullopt;
+            return frequency;
+        }
+
         Schedule legSchedule(const Date& evaluationDate,
                              const Period& tenor,
                              const Period& frequency,
@@ -264,8 +277,8 @@ namespace QuantLib {
       baseCcyIdx_(std::move(baseCurrencyIndex)), quoteCcyIdx_(std::move(quoteCurrencyIndex)),
       isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
       isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg),
-      paymentFrequency_(paymentFrequency),
-      quoteCcyPaymentFrequency_(quoteCcyPaymentFrequency) {
+      paymentFrequency_(normalizedPaymentFrequency(paymentFrequency)),
+      quoteCcyPaymentFrequency_(normalizedPaymentFrequency(quoteCcyPaymentFrequency)) {
         registerWith(baseCcyIdx_);
         registerWith(quoteCcyIdx_);
 

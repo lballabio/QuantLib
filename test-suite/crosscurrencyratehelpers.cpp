@@ -482,6 +482,60 @@ BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithAsymmetricFrequencies) {
                                     Quarterly);
 }
 
+BOOST_AUTO_TEST_CASE(testResettingBasisSwapsTreatNoFrequencyAsUnset) {
+    BOOST_TEST_MESSAGE(
+        "Testing that an explicit NoFrequency reproduces the default payment frequency...");
+
+    CommonVars vars;
+
+    bool isFxBaseCurrencyCollateralCurrency = false;
+    bool isBasisOnFxBaseCurrencyLeg = true;
+    bool isFxBaseCurrencyLegResettable = false;
+
+    Handle<YieldTermStructure> collateralHandle = vars.quoteCcyIdxHandle;
+
+    // Default (unset) payment frequencies: the schedule is derived from the
+    // index tenor on both legs.
+    std::vector<ext::shared_ptr<RateHelper> > defaultInstruments =
+        vars.buildResettingXccyRateHelpers(
+            vars.basisData, collateralHandle, isFxBaseCurrencyCollateralCurrency,
+            isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, ext::nullopt, 0, false,
+            ext::nullopt);
+
+    // An explicit NoFrequency on both legs must behave identically.  Before
+    // NoFrequency was normalized to nullopt it built a single-period schedule
+    // (Period(NoFrequency) has zero length, which Schedule maps to the Zero
+    // date-generation rule), silently changing the result instead of using the
+    // index tenor.
+    std::vector<ext::shared_ptr<RateHelper> > noFrequencyInstruments =
+        vars.buildResettingXccyRateHelpers(
+            vars.basisData, collateralHandle, isFxBaseCurrencyCollateralCurrency,
+            isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, NoFrequency, 0, false,
+            NoFrequency);
+
+    ext::shared_ptr<YieldTermStructure> defaultCurve(new PiecewiseYieldCurve<Discount, LogLinear>(
+        vars.curveSettlementDt, defaultInstruments, vars.dayCount));
+    defaultCurve->enableExtrapolation();
+
+    ext::shared_ptr<YieldTermStructure> noFrequencyCurve(new PiecewiseYieldCurve<Discount, LogLinear>(
+        vars.curveSettlementDt, noFrequencyInstruments, vars.dayCount));
+    noFrequencyCurve->enableExtrapolation();
+
+    Real tolerance = 1.0e-12;
+    for (Size i = 0; i < vars.basisData.size(); ++i) {
+        Date maturity = defaultInstruments[i]->maturityDate();
+        Rate defaultZero = defaultCurve->zeroRate(maturity, vars.dayCount, Continuous);
+        Rate noFrequencyZero = noFrequencyCurve->zeroRate(maturity, vars.dayCount, Continuous);
+
+        if (std::fabs(defaultZero - noFrequencyZero) > tolerance)
+            BOOST_ERROR("explicit NoFrequency does not match the default payment frequency\n"
+                        << std::setprecision(16)
+                        << "    zero with default frequency:    " << defaultZero << "\n"
+                        << "    zero with explicit NoFrequency:    " << noFrequencyZero << "\n"
+                        << "    maturity:    " << maturity << "\n");
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithPaymentLag) {
     BOOST_TEST_MESSAGE(
         "Testing resetting basis swaps with collateral in quote ccy and basis in base ccy...");
