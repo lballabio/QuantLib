@@ -1074,7 +1074,7 @@ BOOST_AUTO_TEST_CASE(testAkimaWithFewPoints) {
     const Real y4[4] = { 1.0, 2.0, 0.5, 1.5 };
     AkimaCubicInterpolation f(std::begin(x4), std::end(x4), std::begin(y4));
     for (Size i=0; i<4; ++i)
-        BOOST_CHECK_CLOSE(f(x4[i]), y4[i], 1.0e-12);
+        QL_CHECK_CLOSE(f(x4[i]), y4[i], 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testBackwardFlat) {
