@@ -34,6 +34,19 @@ namespace QuantLib {
 
         constexpr double sample_fixed_rate = 0.01;
 
+        // Treat an explicitly-passed NoFrequency the same as an unset (nullopt)
+        // payment frequency.  Before these parameters were migrated to
+        // ext::optional<Frequency>, NoFrequency was the sentinel meaning "derive
+        // the schedule from the index tenor".  Normalizing it here preserves that
+        // behavior and keeps the stored optional either empty or holding an
+        // actual frequency, so the rest of the code can treat the two cases
+        // identically.
+        ext::optional<Frequency> normalizedPaymentFrequency(ext::optional<Frequency> frequency) {
+            if (frequency && *frequency == NoFrequency)
+                return ext::nullopt;
+            return frequency;
+        }
+
         Schedule legSchedule(const Date& evaluationDate,
                              const Period& tenor,
                              const Period& frequency,
@@ -64,16 +77,16 @@ namespace QuantLib {
                          BusinessDayConvention convention,
                          bool endOfMonth,
                          const ext::shared_ptr<IborIndex>& idx,
-                         Frequency paymentFrequency,
+                         ext::optional<Frequency> paymentFrequency,
                          Integer paymentLag) {
             auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(idx);
 
             Period freqPeriod;
-            if (paymentFrequency == NoFrequency) {
+            if (!paymentFrequency) {
                 QL_REQUIRE(!overnightIndex, "Require payment frequency for overnight indices.");
                 freqPeriod = idx->tenor();
             } else {
-                freqPeriod = Period(paymentFrequency);
+                freqPeriod = Period(*paymentFrequency);
             }
 
             Schedule sch = legSchedule(evaluationDate, tenor, freqPeriod, fixingDays, calendar,
@@ -256,14 +269,16 @@ namespace QuantLib {
         Handle<YieldTermStructure> collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg,
-        Frequency paymentFrequency,
-        Integer paymentLag)
+        ext::optional<Frequency> paymentFrequency,
+        Integer paymentLag,
+        ext::optional<Frequency> quoteCurrencyPaymentFrequency)
     : CrossCurrencySwapRateHelperBase(basis, tenor, fixingDays, std::move(calendar), convention, endOfMonth,
                                       std::move(collateralCurve), paymentLag),
       baseCcyIdx_(std::move(baseCurrencyIndex)), quoteCcyIdx_(std::move(quoteCurrencyIndex)),
       isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
       isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg),
-      paymentFrequency_(paymentFrequency) {
+      paymentFrequency_(normalizedPaymentFrequency(paymentFrequency)),
+      quoteCcyPaymentFrequency_(normalizedPaymentFrequency(quoteCurrencyPaymentFrequency)) {
         registerWith(baseCcyIdx_);
         registerWith(quoteCcyIdx_);
 
@@ -274,8 +289,13 @@ namespace QuantLib {
         baseCcyIborLeg_ = buildFloatingLeg(evaluationDate_, tenor_, fixingDays_, calendar_, convention_,
                                            endOfMonth_, baseCcyIdx_, paymentFrequency_, paymentLag_);
 
+        // If no quote-currency payment frequency was given, fall back to the
+        // base-currency payment frequency (which may itself be unset, in which
+        // case the quote-currency leg uses its own index tenor).
+        ext::optional<Frequency> effectiveQuoteCcyFreq =
+            quoteCcyPaymentFrequency_ ? quoteCcyPaymentFrequency_ : paymentFrequency_;
         quoteCcyIborLeg_ = buildFloatingLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
-                                            convention_, endOfMonth_, quoteCcyIdx_, paymentFrequency_, paymentLag_);
+                                            convention_, endOfMonth_, quoteCcyIdx_, effectiveQuoteCcyFreq, paymentLag_);
 
         initializeDatesFromLegs(baseCcyIborLeg_, quoteCcyIborLeg_);
     }
@@ -302,8 +322,9 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg,
-        Frequency paymentFrequency,
-        Integer paymentLag)
+        ext::optional<Frequency> paymentFrequency,
+        Integer paymentLag,
+        ext::optional<Frequency> quoteCurrencyPaymentFrequency)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
@@ -316,7 +337,8 @@ namespace QuantLib {
                                            isFxBaseCurrencyCollateralCurrency,
                                            isBasisOnFxBaseCurrencyLeg,
                                            paymentFrequency,
-                                           paymentLag) {}
+                                           paymentLag,
+                                           quoteCurrencyPaymentFrequency) {}
 
     Real ConstNotionalCrossCurrencyBasisSwapRateHelper::impliedQuote() const {
         QL_REQUIRE(!termStructureHandle_.empty(), "term structure not set");
@@ -354,8 +376,9 @@ namespace QuantLib {
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg,
         bool isFxBaseCurrencyLegResettable,
-        Frequency paymentFrequency,
-        Integer paymentLag)
+        ext::optional<Frequency> paymentFrequency,
+        Integer paymentLag,
+        ext::optional<Frequency> quoteCurrencyPaymentFrequency)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
@@ -368,7 +391,8 @@ namespace QuantLib {
                                            isFxBaseCurrencyCollateralCurrency,
                                            isBasisOnFxBaseCurrencyLeg,
                                            paymentFrequency,
-                                           paymentLag),
+                                           paymentLag,
+                                           quoteCurrencyPaymentFrequency),
       isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable) {}
 
     Real MtMCrossCurrencyBasisSwapRateHelper::impliedQuote() const {

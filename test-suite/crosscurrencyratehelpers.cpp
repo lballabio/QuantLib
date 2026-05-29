@@ -23,6 +23,7 @@
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/pricingengines/vanilla/all.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
+#include <ql/optional.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
@@ -113,9 +114,10 @@ struct CommonVars {
                             bool isFxBaseCurrencyCollateralCurrency,
                             bool isBasisOnFxBaseCurrencyLeg,
                             bool isFxBaseCurrencyLegResettable,
-                            Frequency paymentFrequency = NoFrequency,
+                            ext::optional<Frequency> paymentFrequency = ext::nullopt,
                             Integer paymentLag = 0,
-                            bool useOvernightIndex = false) const {
+                            bool useOvernightIndex = false,
+                            ext::optional<Frequency> quoteCcyPaymentFrequency = ext::nullopt) const {
         Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
         Period tenor(q.n, q.units);
         ext::shared_ptr<IborIndex> baseIndex, quoteIndex;
@@ -130,7 +132,8 @@ struct CommonVars {
         return ext::shared_ptr<RateHelper>(new MtMCrossCurrencyBasisSwapRateHelper(
                 quoteHandle, tenor, instrumentSettlementDays, calendar, businessConvention, endOfMonth,
             baseIndex, quoteIndex, collateralHandle, isFxBaseCurrencyCollateralCurrency,
-                isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, paymentFrequency, paymentLag));
+                isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, paymentFrequency, paymentLag,
+                quoteCcyPaymentFrequency));
     }
 
     std::vector<ext::shared_ptr<RateHelper> >
@@ -139,16 +142,18 @@ struct CommonVars {
                                   bool isFxBaseCurrencyCollateralCurrency,
                                   bool isBasisOnFxBaseCurrencyLeg,
                                   bool isFxBaseCurrencyLegResettable,
-                                  Frequency paymentFrequency = NoFrequency,
+                                  ext::optional<Frequency> paymentFrequency = ext::nullopt,
                                   Integer paymentLag = 0,
-                                  bool useOvernightQuoteIndex = false) const {
+                                  bool useOvernightQuoteIndex = false,
+                                  ext::optional<Frequency> quoteCcyPaymentFrequency = ext::nullopt) const {
         std::vector<ext::shared_ptr<RateHelper> > instruments;
         instruments.reserve(xccyData.size());
         for (const auto& i : xccyData) {
             instruments.push_back(resettingXccyRateHelper(
                     i, collateralHandle, isFxBaseCurrencyCollateralCurrency,
                     isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable,
-                    paymentFrequency, paymentLag, useOvernightQuoteIndex));
+                    paymentFrequency, paymentLag, useOvernightQuoteIndex,
+                    quoteCcyPaymentFrequency));
         }
 
         return instruments;
@@ -309,9 +314,10 @@ void testConstantNotionalCrossCurrencySwapsNPV(bool isFxBaseCurrencyCollateralCu
 void testResettingCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurrency,
                                      bool isBasisOnFxBaseCurrencyLeg,
                                      bool isFxBaseCurrencyLegResettable,
-                                     Frequency paymentFrequency = NoFrequency,
+                                     ext::optional<Frequency> paymentFrequency = ext::nullopt,
                                      Integer paymentLag = 0,
-                                     bool useOvernightIndex = false) {
+                                     bool useOvernightIndex = false,
+                                     ext::optional<Frequency> quoteCcyPaymentFrequency = ext::nullopt) {
 
     CommonVars vars;
 
@@ -322,7 +328,7 @@ void testResettingCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurrency,
         vars.buildResettingXccyRateHelpers(
             vars.basisData, collateralHandle, isFxBaseCurrencyCollateralCurrency,
             isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, paymentFrequency, paymentLag,
-            useOvernightIndex);
+            useOvernightIndex, quoteCcyPaymentFrequency);
 
     std::vector<ext::shared_ptr<RateHelper> > constNotionalInstruments =
         vars.buildConstantNotionalXccyRateHelpers(vars.basisData, collateralHandle,
@@ -463,6 +469,124 @@ BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithArbitraryFreq) {
                                     Weekly);
 }
 
+BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithAsymmetricFrequencies) {
+    BOOST_TEST_MESSAGE(
+        "Testing resetting basis swaps with different payment frequencies per leg...");
+
+    bool isFxBaseCurrencyCollateralCurrency = false;
+    bool isFxBaseCurrencyLegResettable = false;
+    bool isBasisOnFxBaseCurrencyLeg = true;
+
+    testResettingCrossCurrencySwaps(isFxBaseCurrencyCollateralCurrency, isBasisOnFxBaseCurrencyLeg,
+                                    isFxBaseCurrencyLegResettable, Semiannual, 0, false,
+                                    Quarterly);
+}
+
+BOOST_AUTO_TEST_CASE(testResettingBasisSwapsTreatNoFrequencyAsUnset) {
+    BOOST_TEST_MESSAGE(
+        "Testing that an explicit NoFrequency reproduces the default payment frequency...");
+
+    CommonVars vars;
+
+    bool isFxBaseCurrencyCollateralCurrency = false;
+    bool isBasisOnFxBaseCurrencyLeg = true;
+    bool isFxBaseCurrencyLegResettable = false;
+
+    Handle<YieldTermStructure> collateralHandle = vars.quoteCcyIdxHandle;
+
+    // Default (unset) payment frequencies: the schedule is derived from the
+    // index tenor on both legs.
+    std::vector<ext::shared_ptr<RateHelper> > defaultInstruments =
+        vars.buildResettingXccyRateHelpers(
+            vars.basisData, collateralHandle, isFxBaseCurrencyCollateralCurrency,
+            isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, ext::nullopt, 0, false,
+            ext::nullopt);
+
+    // An explicit NoFrequency on both legs must behave identically.  Before
+    // NoFrequency was normalized to nullopt it built a single-period schedule
+    // (Period(NoFrequency) has zero length, which Schedule maps to the Zero
+    // date-generation rule), silently changing the result instead of using the
+    // index tenor.
+    std::vector<ext::shared_ptr<RateHelper> > noFrequencyInstruments =
+        vars.buildResettingXccyRateHelpers(
+            vars.basisData, collateralHandle, isFxBaseCurrencyCollateralCurrency,
+            isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, NoFrequency, 0, false,
+            NoFrequency);
+
+    ext::shared_ptr<YieldTermStructure> defaultCurve(new PiecewiseYieldCurve<Discount, LogLinear>(
+        vars.curveSettlementDt, defaultInstruments, vars.dayCount));
+    defaultCurve->enableExtrapolation();
+
+    ext::shared_ptr<YieldTermStructure> noFrequencyCurve(new PiecewiseYieldCurve<Discount, LogLinear>(
+        vars.curveSettlementDt, noFrequencyInstruments, vars.dayCount));
+    noFrequencyCurve->enableExtrapolation();
+
+    Real tolerance = 1.0e-12;
+    for (Size i = 0; i < vars.basisData.size(); ++i) {
+        Date maturity = defaultInstruments[i]->maturityDate();
+        Rate defaultZero = defaultCurve->zeroRate(maturity, vars.dayCount, Continuous);
+        Rate noFrequencyZero = noFrequencyCurve->zeroRate(maturity, vars.dayCount, Continuous);
+
+        if (std::fabs(defaultZero - noFrequencyZero) > tolerance)
+            BOOST_ERROR("explicit NoFrequency does not match the default payment frequency\n"
+                        << std::setprecision(16)
+                        << "    zero with default frequency:    " << defaultZero << "\n"
+                        << "    zero with explicit NoFrequency:    " << noFrequencyZero << "\n"
+                        << "    maturity:    " << maturity << "\n");
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testResettingBasisSwapsQuoteFrequencyDefaultsToBase) {
+    BOOST_TEST_MESSAGE(
+        "Testing that an unset quote-currency payment frequency defaults to the base frequency...");
+
+    CommonVars vars;
+
+    bool isFxBaseCurrencyCollateralCurrency = false;
+    bool isBasisOnFxBaseCurrencyLeg = true;
+    bool isFxBaseCurrencyLegResettable = false;
+
+    Handle<YieldTermStructure> collateralHandle = vars.quoteCcyIdxHandle;
+
+    Frequency baseFrequency = Semiannual;
+
+    // Quote-currency frequency left unset: it must fall back to the base frequency.
+    std::vector<ext::shared_ptr<RateHelper> > fallbackInstruments =
+        vars.buildResettingXccyRateHelpers(
+            vars.basisData, collateralHandle, isFxBaseCurrencyCollateralCurrency,
+            isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, baseFrequency, 0, false,
+            ext::nullopt);
+
+    // Quote-currency frequency set explicitly to the base frequency: same result.
+    std::vector<ext::shared_ptr<RateHelper> > explicitInstruments =
+        vars.buildResettingXccyRateHelpers(
+            vars.basisData, collateralHandle, isFxBaseCurrencyCollateralCurrency,
+            isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, baseFrequency, 0, false,
+            baseFrequency);
+
+    ext::shared_ptr<YieldTermStructure> fallbackCurve(new PiecewiseYieldCurve<Discount, LogLinear>(
+        vars.curveSettlementDt, fallbackInstruments, vars.dayCount));
+    fallbackCurve->enableExtrapolation();
+
+    ext::shared_ptr<YieldTermStructure> explicitCurve(new PiecewiseYieldCurve<Discount, LogLinear>(
+        vars.curveSettlementDt, explicitInstruments, vars.dayCount));
+    explicitCurve->enableExtrapolation();
+
+    Real tolerance = 1.0e-12;
+    for (Size i = 0; i < vars.basisData.size(); ++i) {
+        Date maturity = fallbackInstruments[i]->maturityDate();
+        Rate fallbackZero = fallbackCurve->zeroRate(maturity, vars.dayCount, Continuous);
+        Rate explicitZero = explicitCurve->zeroRate(maturity, vars.dayCount, Continuous);
+
+        if (std::fabs(fallbackZero - explicitZero) > tolerance)
+            BOOST_ERROR("unset quote-currency frequency does not default to the base frequency\n"
+                        << std::setprecision(16)
+                        << "    zero with quote frequency unset:    " << fallbackZero << "\n"
+                        << "    zero with quote frequency = base:    " << explicitZero << "\n"
+                        << "    maturity:    " << maturity << "\n");
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithPaymentLag) {
     BOOST_TEST_MESSAGE(
         "Testing resetting basis swaps with collateral in quote ccy and basis in base ccy...");
@@ -472,7 +596,7 @@ BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithPaymentLag) {
     bool isBasisOnFxBaseCurrencyLeg = true;
 
     testResettingCrossCurrencySwaps(isFxBaseCurrencyCollateralCurrency, isBasisOnFxBaseCurrencyLeg,
-                                    isFxBaseCurrencyLegResettable, NoFrequency, 2);
+                                    isFxBaseCurrencyLegResettable, ext::nullopt, 2);
 }
 
 BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithOvernightIndex) {
@@ -497,7 +621,7 @@ BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithOvernightIndexException) {
 
     BOOST_CHECK_THROW(testResettingCrossCurrencySwaps(
                           isFxBaseCurrencyCollateralCurrency, isBasisOnFxBaseCurrencyLeg,
-                          isFxBaseCurrencyLegResettable, NoFrequency, 0, true),
+                          isFxBaseCurrencyLegResettable, ext::nullopt, 0, true),
         Error);
 }
 
