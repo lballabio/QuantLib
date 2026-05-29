@@ -155,11 +155,15 @@ namespace QuantLib {
             ex->lastDate());
         Real spot = process_->stateVariable()->value();
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
+        // A risk-free discount factor greater than 1 implies a negative
+        // average risk-free rate over the option's life. The Barone-Adesi-
+        // Whaley critical-price iteration diverges in that regime (producing
+        // a negative forward that later trips a cryptic error deep inside
+        // BlackCalculator), so reject it up front with a clear message.
+        QL_REQUIRE(riskFreeDiscount <= 1.0,
+                   "the Barone-Adesi-Whaley approximation does not support "
+                   "negative risk-free rates");
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
-        QL_REQUIRE(forwardPrice > 0.0,
-                   "negative forward price (" << forwardPrice
-                   << ") not allowed: the Barone-Adesi-Whaley approximation "
-                   << "does not support negative interest rates");
         BlackCalculator black(payoff, forwardPrice, std::sqrt(variance),
                               riskFreeDiscount);
 

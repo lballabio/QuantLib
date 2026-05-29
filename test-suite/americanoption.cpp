@@ -222,7 +222,8 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyNegativeRates) {
     option.setPricingEngine(engine);
 
     // Should throw with a clear message, not crash with a cryptic error
-    BOOST_CHECK_EXCEPTION(option.NPV(), Error, ExpectedErrorMessage("negative forward price"));
+    BOOST_CHECK_EXCEPTION(option.NPV(), Error,
+                          ExpectedErrorMessage("does not support negative risk-free rates"));
 }
 
 BOOST_AUTO_TEST_CASE(testBjerksundStenslandValues) {
