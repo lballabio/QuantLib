@@ -1175,13 +1175,13 @@ BOOST_AUTO_TEST_CASE(testSmileSectionFromBlackVolSurface) {
                    "the stored SmileSection (pointer mismatch)");
 
     // At a stored tenor: volatilities should match exactly
-    for (Size i = 0; i < strikes.size(); ++i) {
-        Volatility surfaceVol = surface->blackVol(d1, strikes[i]);
-        Volatility sectionVol = smile1->volatility(strikes[i]);
+    for (double strike : strikes) {
+        Volatility surfaceVol = surface->blackVol(d1, strike);
+        Volatility sectionVol = smile1->volatility(strike);
         if (std::fabs(surfaceVol - sectionVol) > tolerance)
             BOOST_FAIL("at stored tenor: vol mismatch"
                        << std::fixed << std::setprecision(12)
-                       << "\n    strike:      " << strikes[i]
+                       << "\n    strike:      " << strike
                        << "\n    surface vol: " << surfaceVol
                        << "\n    section vol: " << sectionVol);
     }
@@ -1198,13 +1198,13 @@ BOOST_AUTO_TEST_CASE(testSmileSectionFromBlackVolSurface) {
                    "return a stored SmileSection");
 
     // Between tenors: adapter should reproduce blackVol() at each strike
-    for (Size i = 0; i < strikes.size(); ++i) {
-        Volatility surfaceVol = surface->blackVol(dMid, strikes[i]);
-        Volatility sectionVol = smileMid->volatility(strikes[i]);
+    for (double strike : strikes) {
+        Volatility surfaceVol = surface->blackVol(dMid, strike);
+        Volatility sectionVol = smileMid->volatility(strike);
         if (std::fabs(surfaceVol - sectionVol) > tolerance)
             BOOST_FAIL("between tenors: vol mismatch"
                        << std::fixed << std::setprecision(12)
-                       << "\n    strike:      " << strikes[i]
+                       << "\n    strike:      " << strike
                        << "\n    surface vol: " << surfaceVol
                        << "\n    section vol: " << sectionVol);
     }

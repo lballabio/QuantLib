@@ -23,13 +23,14 @@
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/instruments/constnotionalcrosscurrencybasisswap.hpp>
+#include <utility>
 
 namespace QuantLib  {
 
 ConstNotionalCrossCurrencyBasisSwap::ConstNotionalCrossCurrencyBasisSwap(
-                                     Real payNominal, const Currency& payCurrency, const Schedule& paySchedule,
+                                     Real payNominal, Currency  payCurrency, Schedule  paySchedule,
                                      const ext::shared_ptr<IborIndex>& payIndex, Spread paySpread, Real payGearing,
-                                     Real recNominal, const Currency& recCurrency, const Schedule& recSchedule,
+                                     Real recNominal, Currency  recCurrency, Schedule  recSchedule,
                                      const ext::shared_ptr<IborIndex>& recIndex, Spread recSpread, Real recGearing,
                                      Integer payPaymentLag, Integer recPaymentLag,
                                      bool payCompoundSpread, Natural payLookbackDays, bool payObservationShift,
@@ -37,9 +38,9 @@ ConstNotionalCrossCurrencyBasisSwap::ConstNotionalCrossCurrencyBasisSwap(
                                      bool recCompoundSpread, Natural recLookbackDays, bool recObservationShift,
                                      Natural recLockoutDays, RateAveraging::Type recAveragingMethod,
                                      const bool telescopicValueDates)
-    : ConstNotionalCrossCurrencySwap(2), payNominal_(payNominal), payCurrency_(payCurrency), paySchedule_(paySchedule),
+    : ConstNotionalCrossCurrencySwap(2), payNominal_(payNominal), payCurrency_(std::move(payCurrency)), paySchedule_(std::move(paySchedule)),
       payIndex_(payIndex), paySpread_(paySpread), payGearing_(payGearing), recNominal_(recNominal),
-      recCurrency_(recCurrency), recSchedule_(recSchedule), recIndex_(recIndex), recSpread_(recSpread),
+      recCurrency_(std::move(recCurrency)), recSchedule_(std::move(recSchedule)), recIndex_(recIndex), recSpread_(recSpread),
       recGearing_(recGearing), payPaymentLag_(payPaymentLag), recPaymentLag_(recPaymentLag),
       payCompoundSpread_(payCompoundSpread), payLookbackDays_(payLookbackDays),
       payObservationShift_(payObservationShift), payLockoutDays_(payLockoutDays),
@@ -128,11 +129,11 @@ void ConstNotionalCrossCurrencyBasisSwap::setupArguments(PricingEngine::argument
 
     ConstNotionalCrossCurrencySwap::setupArguments(args);
 
-    ConstNotionalCrossCurrencyBasisSwap::arguments* arguments = dynamic_cast<ConstNotionalCrossCurrencyBasisSwap::arguments*>(args);
+    auto* arguments = dynamic_cast<ConstNotionalCrossCurrencyBasisSwap::arguments*>(args);
 
     /* Returns here if e.g. args is ConstNotionalCrossCurrencySwap::arguments which
        is the case if PricingEngine is a ConstNotionalCrossCurrencySwap::engine. */
-    if (!arguments)
+    if (arguments == nullptr)
         return;
 
     arguments->paySpread = paySpread_;
@@ -143,8 +144,8 @@ void ConstNotionalCrossCurrencyBasisSwap::fetchResults(const PricingEngine::resu
 
     ConstNotionalCrossCurrencySwap::fetchResults(r);
 
-    const ConstNotionalCrossCurrencyBasisSwap::results* results = dynamic_cast<const ConstNotionalCrossCurrencyBasisSwap::results*>(r);
-    if (results) {
+    const auto* results = dynamic_cast<const ConstNotionalCrossCurrencyBasisSwap::results*>(r);
+    if (results != nullptr) {
         /* If PricingEngine::results are of type
            ConstNotionalCrossCurrencyBasisSwap::results */
         fairPaySpread_ = results->fairPaySpread;

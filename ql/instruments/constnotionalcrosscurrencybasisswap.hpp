@@ -77,15 +77,15 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         \param telescopicValueDates Flag indicating whether telescopic value dates are used if overnight (default: false).
     */
     ConstNotionalCrossCurrencyBasisSwap(
-        Real payNominal, const Currency& payCurrency, const Schedule& paySchedule,
+        Real payNominal, Currency  payCurrency, Schedule  paySchedule,
         const ext::shared_ptr<IborIndex>& payIndex, Spread paySpread, Real payGearing, Real recNominal,
-        const Currency& recCurrency, const Schedule& recSchedule, const ext::shared_ptr<IborIndex>& recIndex,
+        Currency  recCurrency, Schedule  recSchedule, const ext::shared_ptr<IborIndex>& recIndex,
         Spread recSpread, Real recGearing, Integer payPaymentLag = 0, Integer recPaymentLag = 0,
         bool payCompoundSpread = false, Natural payLookbackDays = Null<Natural>(), bool payObservationShift = false,
         Natural payLockoutDays = 0, RateAveraging::Type payAveragingMethod = RateAveraging::Compound,
         bool recCompoundSpread = false, Natural recLookbackDays = Null<Natural>(), bool recObservationShift = false,
         Natural recLockoutDays = 0, RateAveraging::Type recAveragingMethod = RateAveraging::Compound,
-        const bool telescopicValueDates = false);
+        bool telescopicValueDates = false);
     //@}
     //! \name Instrument interface
     //@{

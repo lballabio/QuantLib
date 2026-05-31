@@ -73,16 +73,16 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         \param floatAveragingMethod  For overnight legs, averaging method (default: compounding).
     */
     ConstNotionalCrossCurrencyFixedVsFloatingSwap(
-                         Type type, Real fixedNominal, const Currency& fixedCurrency,
-                         const Schedule& fixedSchedule, Rate fixedRate,
-                         const DayCounter& fixedDayCount, BusinessDayConvention fixedPaymentBdc,
+                         Type type, Real fixedNominal, Currency  fixedCurrency,
+                         Schedule  fixedSchedule, Rate fixedRate,
+                         DayCounter  fixedDayCount, BusinessDayConvention fixedPaymentBdc,
                          Natural fixedPaymentLag, const Calendar& fixedPaymentCalendar,
-                         Real floatNominal, const Currency& floatCurrency,
-                         const Schedule& floatSchedule,
+                         Real floatNominal, Currency  floatCurrency,
+                         Schedule  floatSchedule,
                          const ext::shared_ptr<IborIndex>& floatIndex, Spread floatSpread,
                          BusinessDayConvention floatPaymentBdc, Natural floatPaymentLag,
-                         const Calendar& floatPaymentCalendar, 
-                         const bool telescopicValueDates = false,
+                         Calendar  floatPaymentCalendar, 
+                         bool telescopicValueDates = false,
                          bool floatCompoundSpread = false,
                          Natural floatLookbackDays = Null<Natural>(),
                          bool floatObservationShift = false,

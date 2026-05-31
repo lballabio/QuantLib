@@ -29,6 +29,7 @@
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/time/calendars/all.hpp>
 #include <ql/currencies/all.hpp>
+#include <utility>
 
 using namespace std;
 using namespace QuantLib;
@@ -56,7 +57,7 @@ struct CommonVars {
     DayCounter dc;
 
     CommonVars(Calendar c, BusinessDayConvention conv, DateGeneration::Rule r) {
-        payCalendar = c;
+        payCalendar = std::move(c);
         today = Date(11, Sep, 2018);
         Settings::instance().evaluationDate() = today;
         startDate = payCalendar.advance(today, Period(2, Days));

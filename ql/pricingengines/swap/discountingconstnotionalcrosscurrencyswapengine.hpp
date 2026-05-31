@@ -66,8 +66,8 @@ class DiscountingConstNotionalCrossCurrencySwapEngine : public ConstNotionalCros
         \param spotFXSettleDate
                FX conversion as of this date if specified explicitly
     */
-    DiscountingConstNotionalCrossCurrencySwapEngine(const Currency& domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountCurve,
-                       const Currency& foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountCurve,
+    DiscountingConstNotionalCrossCurrencySwapEngine(Currency  domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountCurve,
+                       Currency  foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountCurve,
                        const Handle<Quote>& spotFX, ext::optional<bool> includeSettlementDateFlows = ext::nullopt,
                        const Date& settlementDate = Date(), const Date& npvDate = Date(), const Date& spotFXSettleDate = Date());
     //@}
