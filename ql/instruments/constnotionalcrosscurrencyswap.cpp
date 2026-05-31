@@ -47,7 +47,7 @@ void ConstNotionalCrossCurrencySwap::setupArguments(PricingEngine::arguments* ar
 
     Swap::setupArguments(args);
 
-    ConstNotionalCrossCurrencySwap::arguments* arguments = dynamic_cast<ConstNotionalCrossCurrencySwap::arguments*>(args);
+    auto* arguments = dynamic_cast<ConstNotionalCrossCurrencySwap::arguments*>(args);
     QL_REQUIRE(arguments, "The arguments are not of type "
                           "cross currency swap");
 
@@ -58,7 +58,7 @@ void ConstNotionalCrossCurrencySwap::fetchResults(const PricingEngine::results* 
 
     Swap::fetchResults(r);
 
-    const ConstNotionalCrossCurrencySwap::results* results = dynamic_cast<const ConstNotionalCrossCurrencySwap::results*>(r);
+    const auto* results = dynamic_cast<const ConstNotionalCrossCurrencySwap::results*>(r);
     QL_REQUIRE(results, "The results are not of type cross currency swap");
 
     if (!results->inCcyLegNPV.empty()) {

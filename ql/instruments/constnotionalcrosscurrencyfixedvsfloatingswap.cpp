@@ -24,23 +24,24 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <utility>
 
 namespace QuantLib {
 
 ConstNotionalCrossCurrencyFixedVsFloatingSwap::ConstNotionalCrossCurrencyFixedVsFloatingSwap(
-    Type type, Real fixedNominal, const Currency& fixedCurrency, const Schedule& fixedSchedule, Rate fixedRate,
-    const DayCounter& fixedDayCount, BusinessDayConvention fixedPaymentBdc, Natural fixedPaymentLag,
-    const Calendar& fixedPaymentCalendar, Real floatNominal, const Currency& floatCurrency,
-    const Schedule& floatSchedule, const ext::shared_ptr<IborIndex>& floatIndex, Spread floatSpread,
-    BusinessDayConvention floatPaymentBdc, Natural floatPaymentLag, const Calendar& floatPaymentCalendar,
+    Type type, Real fixedNominal, Currency  fixedCurrency, Schedule  fixedSchedule, Rate fixedRate,
+    DayCounter  fixedDayCount, BusinessDayConvention fixedPaymentBdc, Natural fixedPaymentLag,
+    const Calendar& fixedPaymentCalendar, Real floatNominal, Currency  floatCurrency,
+    Schedule  floatSchedule, const ext::shared_ptr<IborIndex>& floatIndex, Spread floatSpread,
+    BusinessDayConvention floatPaymentBdc, Natural floatPaymentLag, Calendar  floatPaymentCalendar,
     const bool telescopicValueDates, bool floatCompoundSpread, Natural floatLookbackDays,
     bool floatObservationShift, Natural floatLockoutDays, RateAveraging::Type floatAveragingMethod)
-    : ConstNotionalCrossCurrencySwap(2), type_(type), fixedNominal_(fixedNominal), fixedCurrency_(fixedCurrency),
-      fixedSchedule_(fixedSchedule), fixedRate_(fixedRate), fixedDayCount_(fixedDayCount),
+    : ConstNotionalCrossCurrencySwap(2), type_(type), fixedNominal_(fixedNominal), fixedCurrency_(std::move(fixedCurrency)),
+      fixedSchedule_(std::move(fixedSchedule)), fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
       fixedPaymentBdc_(fixedPaymentBdc), fixedPaymentLag_(fixedPaymentLag), fixedPaymentCalendar_(fixedPaymentCalendar),
-      floatNominal_(floatNominal), floatCurrency_(floatCurrency), floatSchedule_(floatSchedule),
+      floatNominal_(floatNominal), floatCurrency_(std::move(floatCurrency)), floatSchedule_(std::move(floatSchedule)),
       floatIndex_(floatIndex), floatSpread_(floatSpread), floatPaymentBdc_(floatPaymentBdc),
-      floatPaymentLag_(floatPaymentLag), floatPaymentCalendar_(floatPaymentCalendar),
+      floatPaymentLag_(floatPaymentLag), floatPaymentCalendar_(std::move(floatPaymentCalendar)),
       telescopicValueDates_(telescopicValueDates),
       floatCompoundSpread_(floatCompoundSpread), floatLookbackDays_(floatLookbackDays),
       floatObservationShift_(floatObservationShift),
@@ -71,7 +72,7 @@ ConstNotionalCrossCurrencyFixedVsFloatingSwap::ConstNotionalCrossCurrencyFixedVs
     }
 
     // Register with each floating rate coupon
-    for (Leg::const_iterator it = floatLeg.begin(); it < floatLeg.end(); ++it)
+    for (auto it = floatLeg.begin(); it < floatLeg.end(); ++it)
         registerWith(*it);
 
     // Build the fixed rate leg
@@ -121,7 +122,7 @@ ConstNotionalCrossCurrencyFixedVsFloatingSwap::ConstNotionalCrossCurrencyFixedVs
 
 void ConstNotionalCrossCurrencyFixedVsFloatingSwap::setupArguments(PricingEngine::arguments* a) const {
     ConstNotionalCrossCurrencySwap::setupArguments(a);
-    if (ConstNotionalCrossCurrencyFixedVsFloatingSwap::arguments* args = dynamic_cast<ConstNotionalCrossCurrencyFixedVsFloatingSwap::arguments*>(a)) {
+    if (auto* args = dynamic_cast<ConstNotionalCrossCurrencyFixedVsFloatingSwap::arguments*>(a)) {
         args->fixedRate = fixedRate_;
         args->spread = floatSpread_;
     }
@@ -132,7 +133,7 @@ void ConstNotionalCrossCurrencyFixedVsFloatingSwap::fetchResults(const PricingEn
     ConstNotionalCrossCurrencySwap::fetchResults(r);
 
     // Depending on the pricing engine used, we may have ConstNotionalCrossCurrencyFixedVsFloatingSwap::results
-    if (const ConstNotionalCrossCurrencyFixedVsFloatingSwap::results* res = dynamic_cast<const ConstNotionalCrossCurrencyFixedVsFloatingSwap::results*>(r)) {
+    if (const auto* res = dynamic_cast<const ConstNotionalCrossCurrencyFixedVsFloatingSwap::results*>(r)) {
         // If we have ConstNotionalCrossCurrencyFixedVsFloatingSwap::results from the pricing engine
         fairFixedRate_ = res->fairFixedRate;
         fairSpread_ = res->fairSpread;

@@ -110,11 +110,11 @@ BOOST_AUTO_TEST_CASE(testTrivialOrder) {
     // min_order(1) is 0; constructing an FFT of order 0 used to write
     // out of bounds in the constructor.  A size-1 transform reduces to
     // a copy of the single input element.
-    BOOST_CHECK_EQUAL(FastFourierTransform::min_order(1), 0u);
+    BOOST_CHECK_EQUAL(FastFourierTransform::min_order(1), 0U);
 
     typedef std::complex<Real> cx;
     FastFourierTransform fft(0);
-    BOOST_CHECK_EQUAL(fft.output_size(), 1u);
+    BOOST_CHECK_EQUAL(fft.output_size(), 1U);
 
     cx a[] = { cx(2.5, -1.5) };
     cx b[1];
