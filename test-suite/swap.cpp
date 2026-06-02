@@ -35,9 +35,14 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/currencies/asia.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/indexes/ibor/bbsw.hpp>
 #include <ql/indexes/ibor/gbplibor.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/time/calendars/taiwan.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/calendars/jointcalendar.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -536,6 +541,63 @@ BOOST_AUTO_TEST_CASE(testSettlementDaysEffectiveDateConflict) {
     ext::shared_ptr<VanillaSwap> swap3 =
         MakeVanillaSwap(5 * Years, index, 0.03);
     BOOST_CHECK(swap3->startDate() != Date());
+}
+
+BOOST_AUTO_TEST_CASE(testSpotDateUsesFixingCalendar) {
+    BOOST_TEST_MESSAGE("Testing that MakeVanillaSwap derives the spot date "
+                       "on the index fixing calendar...");
+
+    // Regression test for issue #2546: when the index fixing calendar and the
+    // float/payment calendar disagree (a non-deliverable IRS with a local
+    // fixing calendar and a joint payment calendar), the spot date used to be
+    // pre-adjusted on the payment calendar but then advanced by valueDate on
+    // the fixing calendar, producing a start date one business day late.
+
+    SavedSettings backup;
+
+    RelinkableHandle<YieldTermStructure> yts;
+    yts.linkTo(flatRate(0.03, Actual365Fixed()));
+
+    Calendar fixingCalendar = Taiwan();
+    Calendar paymentCalendar =
+        JointCalendar(Taiwan(),
+                      UnitedStates(UnitedStates::FederalReserve));
+
+    Natural fixingDays = 2;
+    auto index = ext::make_shared<IborIndex>(
+        "Taibor3M", 3 * Months, fixingDays, TWDCurrency(),
+        fixingCalendar, ModifiedFollowing, true, Actual365Fixed(), yts);
+
+    // 19 January 2026 is the third Monday of January (Martin Luther King's
+    // birthday): a US Federal Reserve holiday but a Taiwan business day, so
+    // the fixing calendar and the joint payment calendar diverge here.
+    Date today(19, January, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    // The correct spot date is defined entirely by the index, i.e. the eval
+    // date adjusted and advanced on the fixing calendar.
+    Date refDate = fixingCalendar.adjust(today);
+    Date expectedStart = index->valueDate(refDate);
+
+    ext::shared_ptr<VanillaSwap> swap =
+        MakeVanillaSwap(1 * Years, index, 0.03)
+            .withFixedLegTenor(1 * Years)
+            .withFixedLegDayCount(Actual365Fixed())
+            .withFloatingLegCalendar(paymentCalendar)
+            .withFixedLegCalendar(paymentCalendar);
+
+    if (swap->startDate() != expectedStart)
+        BOOST_FAIL("MakeVanillaSwap spot date should be derived on the index "
+                   "fixing calendar.\n"
+                   "    expected: " << expectedStart << "\n"
+                   "    obtained: " << swap->startDate());
+
+    // Sanity check: the buggy path pre-adjusted on the joint calendar, which
+    // would have rolled 19 January forward to 20 January before the 2-day
+    // fixing advance, landing one business day late.
+    Date buggyRef = paymentCalendar.adjust(today);
+    Date buggyStart = index->valueDate(buggyRef);
+    BOOST_CHECK(buggyStart != expectedStart);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
