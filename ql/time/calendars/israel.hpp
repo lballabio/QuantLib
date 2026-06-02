@@ -64,7 +64,9 @@ namespace QuantLib {
         class ShirImpl;
       public:
           enum Market { Settlement,     //!< generic settlement calendar
-                        TASE,           //!< Tel-Aviv stock exchange calendar
+                        TASE,           //!< Tel-Aviv stock exchange calendar (Fri/Sat weekends, pre-2026)
+                        TASE_National,  //!< Tel-Aviv stock exchange calendar (Sat/Sun weekends, from Jan 5 2026)
+                        Telbor,         //!< TELBOR fixing calendar (Sat/Sun weekends)
                         SHIR            //!< SHIR fixing calendar
           };
           Israel(Market market = Settlement);
