@@ -61,6 +61,8 @@ namespace QuantLib {
     class Israel : public Calendar {
       private:
         class TelAvivImpl;
+        class TelAvivNationalImpl;
+        class TelborImpl;
         class ShirImpl;
       public:
           enum Market { Settlement,     //!< generic settlement calendar
