@@ -425,6 +425,9 @@
     <ClCompile Include="tracing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="trinomialtree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="twoassetbarrieroption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
