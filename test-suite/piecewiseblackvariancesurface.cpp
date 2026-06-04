@@ -1175,7 +1175,7 @@ BOOST_AUTO_TEST_CASE(testSmileSectionFromBlackVolSurface) {
                    "the stored SmileSection (pointer mismatch)");
 
     // At a stored tenor: volatilities should match exactly
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         Volatility surfaceVol = surface->blackVol(d1, strike);
         Volatility sectionVol = smile1->volatility(strike);
         if (std::fabs(surfaceVol - sectionVol) > tolerance)
@@ -1198,7 +1198,7 @@ BOOST_AUTO_TEST_CASE(testSmileSectionFromBlackVolSurface) {
                    "return a stored SmileSection");
 
     // Between tenors: adapter should reproduce blackVol() at each strike
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         Volatility surfaceVol = surface->blackVol(dMid, strike);
         Volatility sectionVol = smileMid->volatility(strike);
         if (std::fabs(surfaceVol - sectionVol) > tolerance)

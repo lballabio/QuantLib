@@ -94,8 +94,8 @@ namespace QuantLib {
         //   NPV = +PVSource - PVTarget (in source currency terms)
         const Real npvAtSettlementInSourceCurrency =
             arguments_.paySourceCurrency ?
-                -pvSource + pvTargetInSourceCurrency :
-                pvSource - pvTargetInSourceCurrency;
+                Real(-pvSource + pvTargetInSourceCurrency) :
+                Real(pvSource - pvTargetInSourceCurrency);
 
         const Real npvInSourceCurrency =
             npvAtSettlementInSourceCurrency * dfSourceSettlement;
