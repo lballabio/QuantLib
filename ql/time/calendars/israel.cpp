@@ -435,9 +435,12 @@ namespace QuantLib {
         Weekday w = date.weekday();
         Year y = date.year();
         const Date switchDate(5, January, 2026);
-        bool weekend = isWeekend(w);
+        
+        bool weekend;
         if (date >= switchDate)
             weekend = (w == Saturday || w == Sunday);
+        else
+            weekend = (w == Friday || w == Saturday);
 
         if (weekend
             || isPurim(date)
