@@ -393,13 +393,6 @@ namespace QuantLib {
         bool isBusinessDay(const Date&) const override;
     };
 
-    class Israel::TelAvivNationalImpl final : public Calendar::Impl {
-      public:
-        std::string name() const override { return "Tel Aviv stock exchange (national days)"; }
-        bool isWeekend(Weekday) const override;
-        bool isBusinessDay(const Date&) const override;
-    };
-
     class Israel::TelborImpl final : public Calendar::Impl {
       public:
         std::string name() const override { return "Israel Telbor Implementation"; }
@@ -417,15 +410,11 @@ namespace QuantLib {
         // all calendar instances share the same implementation instance
         static auto telAvivImpl = ext::make_shared<Israel::TelAvivImpl>();
         static auto shirImpl = ext::make_shared<Israel::ShirImpl>();
-        static auto telAvivNationalImpl = ext::make_shared<Israel::TelAvivNationalImpl>();
         static auto telborImpl = ext::make_shared<Israel::TelborImpl>();
         switch (market) {
         case Settlement:
         case TASE:
             impl_ = telAvivImpl;
-            break;
-        case TASE_National:
-            impl_ = telAvivNationalImpl;
             break;
         case Telbor:
             impl_ = telborImpl;
@@ -445,8 +434,12 @@ namespace QuantLib {
     bool Israel::TelAvivImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Year y = date.year();
+        const Date switchDate(5, January, 2026);
+        bool weekend = isWeekend(w);
+        if (date >= switchDate)
+            weekend = (w == Saturday || w == Sunday);
 
-        if (isWeekend(w)
+        if (weekend
             || isPurim(date)
             || (y <= 2020 && isPassover1st(date+1)) // Eve of Passover, until 2020
             || isPassover1st(date)
@@ -471,38 +464,6 @@ namespace QuantLib {
         return true;
     }
 
-    bool Israel::TelAvivNationalImpl::isWeekend(Weekday w) const {
-        return w == Saturday || w == Sunday;
-    }
-
-    bool Israel::TelAvivNationalImpl::isBusinessDay(const Date& date) const {
-        Weekday w = date.weekday();
-        Year y = date.year();
-
-        if (isWeekend(w)
-            || isPurim(date)
-            || (y <= 2020 && isPassover1st(date+1)) // Eve of Passover, until 2020
-            || isPassover1st(date)
-            || isPassover1st(date-5) // Eve of Passover VII, until 2020
-            || isPassover1st(date-6) // Passover VII
-            || isMemorialDay(date)
-            || isIndependenceDay(date)
-            || (y <= 2020 && isShavuot(date+1)) // Eve of Shavuot, until 2020
-            || isShavuot(date)
-            || isFastDay(date)
-            || (y <= 2019 && isNewYearsDay(date+1))  // Eve of new year, until 2019
-            || isNewYearsDay(date)
-            || isNewYearsDay(date-1)  // 2nd day of new year
-            || isYomKippur(date+1) // Eve of Yom Kippur
-            || isYomKippur(date)
-            || isSukkot(date+1)  // Eve of Sukkot
-            || isSukkot(date)
-            || isSimchatTorah(date+1)  // Eve of Simchat Torah
-            || isSimchatTorah(date))
-            return false; // NOLINT(readability-simplify-boolean-expr)
-
-        return true;
-    }
 
     bool Israel::TelborImpl::isWeekend(Weekday w) const {
         return w == Saturday || w == Sunday;
