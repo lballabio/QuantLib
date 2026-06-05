@@ -121,9 +121,8 @@ namespace QuantLib {
         LazyObject::registerWith(atmLevel_);
 
         checkStrikes();
-        interpolation_ = interpolator.interpolate(strikes_.begin(),
-                                                  strikes_.end(),
-                                                  vols_.begin());
+        interpolation_ = detail::interpolateWithoutUpdate(
+            interpolator, strikes_.begin(), strikes_.end(), vols_.begin());
     }
 
     template <class Interpolator>
@@ -151,9 +150,8 @@ namespace QuantLib {
            (ext::shared_ptr<Quote>(new SimpleQuote(atmLevel)));
         
         checkStrikes();
-        interpolation_ = interpolator.interpolate(strikes_.begin(),
-                                                  strikes_.end(),
-                                                  vols_.begin());
+        interpolation_ = detail::interpolateWithoutUpdate(
+            interpolator, strikes_.begin(), strikes_.end(), vols_.begin());
     }
 
     template <class Interpolator>
@@ -178,9 +176,8 @@ namespace QuantLib {
         LazyObject::registerWith(atmLevel_);
         
         checkStrikes();
-        interpolation_ = interpolator.interpolate(strikes_.begin(),
-                                                  strikes_.end(),
-                                                  vols_.begin());
+        interpolation_ = detail::interpolateWithoutUpdate(
+            interpolator, strikes_.begin(), strikes_.end(), vols_.begin());
     }
 
     template <class Interpolator>
@@ -209,9 +206,8 @@ namespace QuantLib {
            (ext::shared_ptr<Quote>(new SimpleQuote(atmLevel)));
         
         checkStrikes();
-        interpolation_ = interpolator.interpolate(strikes_.begin(),
-                                                  strikes_.end(),
-                                                  vols_.begin());
+        interpolation_ = detail::interpolateWithoutUpdate(
+            interpolator, strikes_.begin(), strikes_.end(), vols_.begin());
     }
 
 
@@ -226,7 +222,6 @@ namespace QuantLib {
     #ifndef __DOXYGEN__
     template <class Interpolator>
     Real InterpolatedSmileSection<Interpolator>::varianceImpl(Real strike) const {
-        calculate();
         Real v = volatilityImpl(strike);
         return v * v * exerciseTime();
     }
