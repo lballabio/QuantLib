@@ -169,6 +169,7 @@ set(QL_TEST_SOURCES
     timeseries.cpp
     tqreigendecomposition.cpp
     tracing.cpp
+    trinomialtree.cpp
     twoassetbarrieroption.cpp
     twoassetcorrelationoption.cpp
     ultimateforwardtermstructure.cpp

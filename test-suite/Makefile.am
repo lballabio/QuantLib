@@ -170,6 +170,7 @@ QL_TEST_SRCS = \
 	timeseries.cpp \
 	tqreigendecomposition.cpp \
 	tracing.cpp \
+	trinomialtree.cpp \
 	twoassetbarrieroption.cpp \
 	twoassetcorrelationoption.cpp \
 	ultimateforwardtermstructure.cpp \
