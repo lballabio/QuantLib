@@ -3384,6 +3384,18 @@ BOOST_AUTO_TEST_CASE(testNewZealand) {
 BOOST_AUTO_TEST_CASE(testTASECalendar) {
     BOOST_TEST_MESSAGE("Testing TASE calendar...");
 
+    auto c = Israel(Israel::TASE);
+
+    auto is_weekend = [](Date d) {
+        if (d >= Date {5, January, 2026})
+            return d.weekday() == Saturday || d.weekday() == Sunday;
+        else
+            return d.weekday() == Friday || d.weekday() == Saturday;
+    };
+
+    // using checkHolidays with includeWeekEnds = false doesn't work in this case;
+    // weekdays changed in 2026.
+
     std::vector<Date> expected2013 = {
         {24, February, 2013},  {25, March, 2013},     {26, March, 2013},     {31, March, 2013},
         {1, April, 2013},      {15, April, 2013},     {16, April, 2013},     {14, May, 2013},
@@ -3391,8 +3403,9 @@ BOOST_AUTO_TEST_CASE(testTASECalendar) {
         {18, September, 2013}, {19, September, 2013}, {25, September, 2013}, {26, September, 2013},
     };
 
-    auto c = Israel();
-    checkHolidays(c.holidayList(Date(1, January, 2013), Date(31, December, 2013)), expected2013);
+    auto holidays = c.holidayList(Date(1, January, 2013), Date(31, December, 2013), true);
+    holidays.erase(std::remove_if(holidays.begin(), holidays.end(), is_weekend), holidays.end());
+    checkHolidays(holidays, expected2013);
 
     std::vector<Date> expected2025 = {
         {13, April, 2025},   {30, April, 2025},     {1, May, 2025},        {2, June, 2025},
@@ -3401,7 +3414,9 @@ BOOST_AUTO_TEST_CASE(testTASECalendar) {
         {14, October, 2025},
     };
 
-    checkHolidays(c.holidayList(Date(1, January, 2025), Date(31, December, 2025)), expected2025);
+    holidays = c.holidayList(Date(1, January, 2025), Date(31, December, 2025), true);
+    holidays.erase(std::remove_if(holidays.begin(), holidays.end(), is_weekend), holidays.end());
+    checkHolidays(holidays, expected2025);
 }
 
 BOOST_AUTO_TEST_CASE(testSHIRCalendar) {
