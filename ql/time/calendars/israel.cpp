@@ -395,7 +395,7 @@ namespace QuantLib {
 
     class Israel::TelborImpl final : public Calendar::Impl {
       public:
-        std::string name() const override { return "Israel Telbor Implementation"; }
+        std::string name() const override { return "Telbor fixing calendar"; }
         bool isWeekend(Weekday) const override;
         bool isBusinessDay(const Date&) const override;
     };
@@ -407,7 +407,7 @@ namespace QuantLib {
     };
 
     Israel::Israel(Israel::Market market) {
-        // all calendar instances share the same implementation instance
+        // all calendar instances for the same market share the same implementation instance
         static auto telAvivImpl = ext::make_shared<Israel::TelAvivImpl>();
         static auto shirImpl = ext::make_shared<Israel::ShirImpl>();
         static auto telborImpl = ext::make_shared<Israel::TelborImpl>();
