@@ -23,7 +23,9 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
-#include <ql/time/calendars/all.hpp>
+#include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/unitedkingdom.hpp>
+#include <ql/time/calendars/turkey.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/types.hpp>
 #include <ql/instruments/constnotionalcrosscurrencyfixedvsfloatingswap.hpp>

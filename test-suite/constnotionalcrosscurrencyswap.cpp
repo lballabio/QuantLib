@@ -27,7 +27,9 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/pricingengines/swap/discountingconstnotionalcrosscurrencyswapengine.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
-#include <ql/time/calendars/all.hpp>
+#include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/switzerland.hpp>
+#include <ql/time/calendars/turkey.hpp>
 #include <ql/currencies/all.hpp>
 #include <utility>
 
