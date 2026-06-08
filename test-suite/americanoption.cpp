@@ -1575,7 +1575,7 @@ class QdFpGaussLobattoScheme: public QdFpIterationScheme {
 };
 
 
-BOOST_AUTO_TEST_CASE(testBulkQdFpAmericanEngine) {
+BOOST_AUTO_TEST_CASE(testBulkQdFpAmericanEngine, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden bulk examples...");
 
     // Examples are taken from
@@ -1683,7 +1683,7 @@ BOOST_AUTO_TEST_CASE(testBulkQdFpAmericanEngine) {
                 << "\n    tol     : " << tolMax);
 }
 
-BOOST_AUTO_TEST_CASE(testQdEngineWithLobattoIntegral) {
+BOOST_AUTO_TEST_CASE(testQdEngineWithLobattoIntegral, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                        "with high precision Gauss-Lobatto integration...");
 
@@ -2294,6 +2294,831 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyNegativeRates) {
 
     BOOST_CHECK_EXCEPTION(callOption.NPV(), Error,
                           ExpectedErrorMessage("negative interest rates"));
+}
+
+BOOST_AUTO_TEST_CASE(testQdAmericanGreeks, *precondition(if_speed(Fast))) {
+    BOOST_TEST_MESSAGE("Testing QD+ and QdFp American option greeks "
+                       "against bump and revalue...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(1, June, 2022);
+    Settings::instance().evaluationDate() = today;
+
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+    const auto rRate = ext::make_shared<SimpleQuote>(0.05);
+    const auto qRate = ext::make_shared<SimpleQuote>(0.03);
+    const auto vol = ext::make_shared<SimpleQuote>(0.25);
+
+    const auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+
+    const Option::Type types[] = {Option::Put, Option::Call};
+    const Real strikes[] = {80.0, 100.0, 120.0};
+    const Real spots[] = {80.0, 100.0, 120.0};
+    const Rate rates[] = {0.02, 0.08};
+    const Rate divs[] = {0.0, 0.04, 0.10};
+    const Volatility vols[] = {0.15, 0.35};
+    const Integer maturities[] = {182, 365};
+
+    const Real tolDelta = 7.0e-4;
+    const Real tolGamma = 2.0e-4;
+
+    // Vega, rho, dividendRho now use analytical boundary sensitivity.
+    const Real tolVega = 7.0e-4;
+    const Real tolRho = 7.0e-4;
+    const Real tolDivRho = 7.0e-4;
+
+    using EngineSpec = std::pair<std::string, ext::shared_ptr<PricingEngine>>;
+    std::vector<EngineSpec> engines = {
+        {"QdPlus",
+         ext::make_shared<QdPlusAmericanEngine>(bsProcess, 8, QdPlusAmericanEngine::Halley, 1e-10)},
+        {"QdFpAccurate",
+         ext::make_shared<QdFpAmericanEngine>(bsProcess, QdFpAmericanEngine::accurateScheme())}};
+
+    for (const auto& [engineName, engine] : engines) {
+        // Both engines now compute analytical vega/rho/dividendRho
+        const bool testParamGreeks = true;
+
+        for (auto type : types) {
+            for (Real K : strikes) {
+                for (Integer mat : maturities) {
+                    const Date matDate = today + Period(mat, Days);
+                    const auto payoff = ext::make_shared<PlainVanillaPayoff>(type, K);
+                    const auto exercise = ext::make_shared<AmericanExercise>(today, matDate);
+                    VanillaOption option(payoff, exercise);
+                    option.setPricingEngine(engine);
+
+                    for (Real S : spots) {
+                        for (Rate r : rates) {
+                            for (Rate q : divs) {
+                                for (Volatility v : vols) {
+                                    spot->setValue(S);
+                                    rRate->setValue(r);
+                                    qRate->setValue(q);
+                                    vol->setValue(v);
+
+                                    const Real price = option.NPV();
+                                    if (price < S * 1e-5)
+                                        continue;
+
+                                    const Real anDelta = option.delta();
+                                    const Real anGamma = option.gamma();
+
+                                    // Delta and Gamma via spot bump
+                                    const Real du = S * 1e-4;
+                                    spot->setValue(S + du);
+                                    const Real pUp = option.NPV();
+                                    const Real dUp = option.delta();
+                                    spot->setValue(S - du);
+                                    const Real pDn = option.NPV();
+                                    const Real dDn = option.delta();
+                                    spot->setValue(S);
+
+                                    const Real fdDelta = (pUp - pDn) / (2 * du);
+                                    const Real fdGamma = (dUp - dDn) / (2 * du);
+
+                                    Real err = relativeError(fdDelta, anDelta, S);
+                                    if (err > tolDelta) {
+                                        BOOST_ERROR(engineName << " delta mismatch for " << type
+                                                               << " K=" << K << " S=" << S
+                                                               << " r=" << r << " q=" << q
+                                                               << " v=" << v << " T=" << mat << "d"
+                                                               << "\n    analytical: " << anDelta
+                                                               << "\n    FD:         " << fdDelta
+                                                               << "\n    rel error:  " << err);
+                                    }
+
+                                    err = relativeError(fdGamma, anGamma, S);
+                                    if (err > tolGamma) {
+                                        BOOST_ERROR(engineName << " gamma mismatch for " << type
+                                                               << " K=" << K << " S=" << S
+                                                               << " r=" << r << " q=" << q
+                                                               << " v=" << v << " T=" << mat << "d"
+                                                               << "\n    analytical: " << anGamma
+                                                               << "\n    FD:         " << fdGamma
+                                                               << "\n    rel error:  " << err);
+                                    }
+
+                                    if (!testParamGreeks)
+                                        continue;
+
+                                    const Real anVega = option.vega();
+                                    const Real anRho = option.rho();
+                                    const Real anDivRho = option.dividendRho();
+
+                                    // (logging moved after FD computation below)
+
+                                    // Vega via vol bump
+                                    const Real dv = v * 1e-4;
+                                    vol->setValue(v + dv);
+                                    const Real pVolUp = option.NPV();
+                                    vol->setValue(v - dv);
+                                    const Real pVolDn = option.NPV();
+                                    vol->setValue(v);
+
+                                    const Real fdVega = (pVolUp - pVolDn) / (2 * dv);
+                                    err = relativeError(fdVega, anVega, S);
+                                    if (err > tolVega) {
+                                        BOOST_ERROR(engineName << " vega mismatch for " << type
+                                                               << " K=" << K << " S=" << S
+                                                               << " r=" << r << " q=" << q
+                                                               << " v=" << v << " T=" << mat << "d"
+                                                               << "\n    analytical: " << anVega
+                                                               << "\n    FD:         " << fdVega
+                                                               << "\n    rel error:  " << err);
+                                    }
+
+                                    // Rho via rate bump
+                                    const Real dr = r * 1e-4;
+                                    rRate->setValue(r + dr);
+                                    const Real pRUp = option.NPV();
+                                    rRate->setValue(r - dr);
+                                    const Real pRDn = option.NPV();
+                                    rRate->setValue(r);
+
+                                    const Real fdRho = (pRUp - pRDn) / (2 * dr);
+                                    err = relativeError(fdRho, anRho, S);
+                                    if (err > tolRho) {
+                                        BOOST_ERROR(engineName << " rho mismatch for " << type
+                                                               << " K=" << K << " S=" << S
+                                                               << " r=" << r << " q=" << q
+                                                               << " v=" << v << " T=" << mat << "d"
+                                                               << "\n    analytical: " << anRho
+                                                               << "\n    FD:         " << fdRho
+                                                               << "\n    rel error:  " << err);
+                                    }
+
+                                    // DividendRho via dividend bump (skip q=0)
+                                    Real fdDivRho = 0.0;
+                                    if (q > QL_EPSILON) {
+                                        const Real dq = q * 1e-4;
+                                        qRate->setValue(q + dq);
+                                        const Real pQUp = option.NPV();
+                                        qRate->setValue(q - dq);
+                                        const Real pQDn = option.NPV();
+                                        qRate->setValue(q);
+
+                                        fdDivRho = (pQUp - pQDn) / (2 * dq);
+                                        err = relativeError(fdDivRho, anDivRho, S);
+                                        if (err > tolDivRho) {
+                                            BOOST_ERROR(engineName
+                                                        << " dividendRho mismatch for " << type
+                                                        << " K=" << K << " S=" << S << " r=" << r
+                                                        << " q=" << q << " v=" << v << " T=" << mat
+                                                        << "d"
+                                                        << "\n    analytical: " << anDivRho
+                                                        << "\n    FD:         " << fdDivRho
+                                                        << "\n    rel error:  " << err);
+                                        }
+                                    }
+
+                                    BOOST_TEST_MESSAGE(
+                                        engineName
+                                        << " " << type << " K=" << K << " S=" << S << " r=" << r
+                                        << " q=" << q << " v=" << v << " T=" << mat << "d"
+                                        << "\n  price=" << price << "\n  delta:  an=" << anDelta
+                                        << "  fd=" << fdDelta << "\n  gamma:  an=" << anGamma
+                                        << "  fd=" << fdGamma << "\n  vega:   an=" << anVega
+                                        << "  fd=" << fdVega << "\n  rho:    an=" << anRho
+                                        << "  fd=" << fdRho << "\n  divRho: an=" << anDivRho
+                                        << "  fd=" << fdDivRho);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testQdDoubleBoundary) {
+    BOOST_TEST_MESSAGE("Testing QD American engine double-boundary case (q<r<0)...");
+
+    const Date today = Date(15, March, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    // Parameters: q < r < 0
+    const Real S = 100.0;
+    const Real K = 100.0;
+    const Rate r = -0.02;
+    const Rate q = -0.05;
+    const Volatility vol = 0.20;
+    const Integer matDays = 365;
+    const Date matDate = today + matDays;
+
+    const auto spot = ext::make_shared<SimpleQuote>(S);
+    const auto rRate = ext::make_shared<SimpleQuote>(r);
+    const auto qRate = ext::make_shared<SimpleQuote>(q);
+    const auto sigma = ext::make_shared<SimpleQuote>(vol);
+
+    const auto rTS = flatRate(today, rRate, Actual365Fixed());
+    const auto qTS = flatRate(today, qRate, Actual365Fixed());
+    const auto volTS = flatVol(today, sigma, Actual365Fixed());
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
+        Handle<BlackVolTermStructure>(volTS));
+
+    const auto exercise = ext::make_shared<AmericanExercise>(matDate);
+    const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, K);
+    VanillaOption option(payoff, exercise);
+
+    // Test QdPlus
+    option.setPricingEngine(ext::make_shared<QdPlusAmericanEngine>(process));
+    const Real qdPlusPrice = option.NPV();
+    BOOST_TEST_MESSAGE("  QdPlus price: " << qdPlusPrice);
+
+    // Test QdFp (accurate)
+    option.setPricingEngine(
+        ext::make_shared<QdFpAmericanEngine>(process, QdFpAmericanEngine::accurateScheme()));
+    const Real qdFpPrice = option.NPV();
+    BOOST_TEST_MESSAGE("  QdFpAccurate price: " << qdFpPrice);
+
+    // Sanity: price should be positive and reasonable
+    BOOST_CHECK_MESSAGE(qdFpPrice > 0.0, "QdFp price should be positive, got " << qdFpPrice);
+    BOOST_CHECK_MESSAGE(qdPlusPrice > 0.0, "QdPlus price should be positive, got " << qdPlusPrice);
+
+    // Compare against FD engine
+    option.setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(process, 200, 800));
+    const Real fdPrice = option.NPV();
+    BOOST_TEST_MESSAGE("  FD price: " << fdPrice);
+
+    // QdFp and QdPlus should agree reasonably with FD
+    Real diff = std::abs(qdFpPrice - fdPrice);
+    BOOST_CHECK_MESSAGE(diff < 0.05,
+                        "QdFp " << qdFpPrice << " vs FD " << fdPrice << " differ by " << diff);
+    diff = std::abs(qdPlusPrice - fdPrice);
+    BOOST_CHECK_MESSAGE(diff < 0.1,
+                        "QdPlus " << qdPlusPrice << " vs FD " << fdPrice << " differ by " << diff);
+
+    // Test with a call (r < q < 0, which maps to put double-boundary via parity)
+    const auto callPayoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, K);
+    VanillaOption callOption(callPayoff, exercise);
+    callOption.setPricingEngine(
+        ext::make_shared<QdFpAmericanEngine>(process, QdFpAmericanEngine::accurateScheme()));
+    const Real callPrice = callOption.NPV();
+    BOOST_TEST_MESSAGE("  Call price (r<q<0): " << callPrice);
+    BOOST_CHECK_MESSAGE(callPrice > 0.0, "Call price should be positive");
+
+    // Reference prices from Andersen-Lake "Fast American Option Pricing:
+    // The Double-Boundary Case", Table 3.
+    // Parameters: K=100, r=-1.2%, q=-1.6%, sigma=10%, S=101
+    // Benchmark computed with (m,n,l) = (64,128,257)
+    {
+        const Real S2 = 100.0;
+        const Real K2 = 100.0;
+        const Rate r2 = -0.012;
+        const Rate q2 = -0.016;
+        const Volatility vol2 = 0.10;
+
+        const auto spot2 = ext::make_shared<SimpleQuote>(S2);
+        const auto rRate2 = ext::make_shared<SimpleQuote>(r2);
+        const auto qRate2 = ext::make_shared<SimpleQuote>(q2);
+        const auto sigma2 = ext::make_shared<SimpleQuote>(vol2);
+
+        const auto rTS2 = flatRate(today, rRate2, Actual365Fixed());
+        const auto qTS2 = flatRate(today, qRate2, Actual365Fixed());
+        const auto volTS2 = flatVol(today, sigma2, Actual365Fixed());
+
+        const auto process2 = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot2), Handle<YieldTermStructure>(qTS2),
+            Handle<YieldTermStructure>(rTS2), Handle<BlackVolTermStructure>(volTS2));
+
+        struct TestCase {
+            Integer days;
+            Real reference; // n=16 benchmark from Table 3
+            Real fpTol;     // QdFp tolerance
+            Real qpTol;     // QdPlus tolerance
+        };
+        const TestCase cases[] = {
+            {45, 1.380533089, 1e-3, 0.01},
+            {90, 1.942381237, 1e-3, 0.01},
+            {180, 2.729267252, 1e-3, 0.01},
+            {360, 3.830520425, 1e-3, 0.01},
+            {3600, 12.189323541, 0.05, 0.1} // long-dated: harder case
+        };
+
+        for (const auto& tc : cases) {
+            const Date mat2 = today + tc.days;
+            const auto ex2 = ext::make_shared<AmericanExercise>(mat2);
+            const auto po2 = ext::make_shared<PlainVanillaPayoff>(Option::Put, K2);
+            VanillaOption opt2(po2, ex2);
+
+            opt2.setPricingEngine(ext::make_shared<QdFpAmericanEngine>(
+                process2, QdFpAmericanEngine::accurateScheme()));
+            const Real fpPrice = opt2.NPV();
+
+            opt2.setPricingEngine(ext::make_shared<QdPlusAmericanEngine>(process2));
+            const Real qpPrice = opt2.NPV();
+
+            const Real fpErr = std::abs(fpPrice - tc.reference);
+            const Real qpErr = std::abs(qpPrice - tc.reference);
+
+            BOOST_TEST_MESSAGE("  T=" << tc.days << "d: QdFp=" << fpPrice << " QdPlus=" << qpPrice
+                                      << " ref=" << tc.reference << " fpErr=" << fpErr
+                                      << " qpErr=" << qpErr);
+
+            BOOST_CHECK_MESSAGE(fpErr < tc.fpTol, "QdFp T=" << tc.days << "d: " << fpPrice
+                                                            << " vs ref " << tc.reference
+                                                            << " diff " << fpErr);
+
+            BOOST_CHECK_MESSAGE(qpErr < tc.qpTol, "QdPlus T=" << tc.days << "d: " << qpPrice
+                                                              << " vs ref " << tc.reference
+                                                              << " diff " << qpErr);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testQdDoubleBoundaryGreeks) {
+    BOOST_TEST_MESSAGE("Testing QD American engine double-boundary greeks "
+                       "against FD reference values...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(15, March, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+    const auto rRate = ext::make_shared<SimpleQuote>(-0.02);
+    const auto qRate = ext::make_shared<SimpleQuote>(-0.05);
+    const auto vol = ext::make_shared<SimpleQuote>(0.20);
+
+    const auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+
+    struct RefCase {
+        Option::Type type;
+        Real K, S;
+        Rate r, q;
+        Volatility v;
+        Integer mat;
+        // FD reference values (from FdBlackScholesVanillaEngine 6400x25600)
+        Real price, delta, gamma, vega, rho, divRho;
+    };
+
+    // --- Generate FD reference values ---
+    // Uncomment the block below to regenerate reference values with the FD
+    // pricer.  The output is in C++ struct-initializer syntax that can be
+    // pasted directly into the refCases array.
+    //
+    // const auto fdEngine = ext::make_shared<FdBlackScholesVanillaEngine>(
+    //     bsProcess, 6400, 25600);
+    if (false) {
+        const auto fdEngine = ext::make_shared<FdBlackScholesVanillaEngine>(bsProcess, 6400, 25600);
+
+        struct GenCase {
+            Option::Type type;
+            Real K, S;
+            Rate r, q;
+            Volatility v;
+            Integer mat;
+        };
+        const GenCase gcases[] = {
+            // Double-boundary puts (q < r < 0) — 1y
+            {Option::Put, 100, 100, -0.02, -0.03, 0.25, 365},
+            {Option::Put, 100, 100, -0.02, -0.03, 0.10, 365},
+            {Option::Put, 100, 100, -0.02, -0.03, 0.40, 365},
+            {Option::Put, 100, 110, -0.02, -0.03, 0.25, 365},
+            {Option::Put, 100, 90, -0.02, -0.03, 0.25, 365},
+            {Option::Put, 100, 90, -0.02, -0.03, 0.40, 365},
+            {Option::Put, 100, 100, -0.02, -0.05, 0.25, 365},
+            {Option::Put, 100, 100, -0.02, -0.05, 0.10, 365},
+            {Option::Put, 100, 110, -0.02, -0.05, 0.25, 365},
+            {Option::Put, 100, 90, -0.02, -0.05, 0.25, 365},
+            {Option::Put, 100, 100, -0.01, -0.05, 0.25, 365},
+            {Option::Put, 100, 100, -0.01, -0.05, 0.10, 365},
+            // Double-boundary puts — 6m
+            {Option::Put, 100, 100, -0.02, -0.03, 0.25, 182},
+            {Option::Put, 100, 110, -0.02, -0.03, 0.25, 182},
+            {Option::Put, 100, 90, -0.02, -0.03, 0.25, 182},
+            {Option::Put, 100, 100, -0.02, -0.05, 0.25, 182},
+            // Double-boundary puts — 3m
+            {Option::Put, 100, 100, -0.02, -0.03, 0.25, 91},
+            {Option::Put, 100, 110, -0.02, -0.03, 0.25, 91},
+            {Option::Put, 100, 100, -0.02, -0.05, 0.25, 91},
+            // Double-boundary puts — 1m
+            {Option::Put, 100, 100, -0.02, -0.03, 0.25, 30},
+            {Option::Put, 100, 100, -0.02, -0.05, 0.25, 30},
+            // Double-boundary calls (r < q < 0) — 1y
+            {Option::Call, 100, 100, -0.03, -0.02, 0.25, 365},
+            {Option::Call, 100, 100, -0.03, -0.02, 0.10, 365},
+            {Option::Call, 100, 100, -0.03, -0.02, 0.40, 365},
+            {Option::Call, 100, 90, -0.03, -0.02, 0.25, 365},
+            {Option::Call, 100, 110, -0.03, -0.02, 0.25, 365},
+            {Option::Call, 100, 100, -0.05, -0.02, 0.25, 365},
+            {Option::Call, 100, 100, -0.05, -0.01, 0.25, 365},
+            // Double-boundary calls — 6m, 3m
+            {Option::Call, 100, 100, -0.03, -0.02, 0.25, 182},
+            {Option::Call, 100, 110, -0.03, -0.02, 0.25, 182},
+            {Option::Call, 100, 100, -0.03, -0.02, 0.25, 91},
+            {Option::Call, 100, 100, -0.05, -0.02, 0.25, 91},
+            // Single-boundary puts (r > 0) — 1y
+            {Option::Put, 100, 100, 0.05, 0.02, 0.25, 365},
+            {Option::Put, 100, 110, 0.05, 0.02, 0.25, 365},
+            {Option::Put, 100, 90, 0.05, 0.02, 0.25, 365},
+            {Option::Put, 100, 100, 0.05, 0.02, 0.10, 365},
+            {Option::Put, 100, 100, 0.05, 0.00, 0.25, 365},
+            // Single-boundary puts — shorter dated
+            {Option::Put, 100, 100, 0.05, 0.02, 0.25, 182},
+            {Option::Put, 100, 100, 0.05, 0.02, 0.25, 91},
+            // Single-boundary calls (q > 0) — 1y
+            {Option::Call, 100, 100, 0.02, 0.05, 0.25, 365},
+            {Option::Call, 100, 90, 0.02, 0.05, 0.25, 365},
+            {Option::Call, 100, 110, 0.02, 0.05, 0.25, 365},
+            {Option::Call, 100, 100, 0.02, 0.05, 0.10, 365},
+            // Single-boundary calls — shorter dated
+            {Option::Call, 100, 100, 0.02, 0.05, 0.25, 182},
+            {Option::Call, 100, 100, 0.02, 0.05, 0.25, 91},
+            // Immediate exercise: deep ITM puts with low vol in double-boundary
+            // S between Y(T) and B(T), option at intrinsic
+            {Option::Put, 110, 90, -0.02, -0.03, 0.10, 365},  // intrinsic=20
+            {Option::Put, 120, 90, -0.02, -0.03, 0.10, 365},  // intrinsic=30
+            {Option::Put, 110, 100, -0.02, -0.03, 0.10, 182}, // intrinsic=10
+            // Immediate exercise: deep ITM calls with low vol in double-boundary
+            {Option::Call, 90, 110, -0.03, -0.02, 0.10, 365}, // intrinsic=20
+            {Option::Call, 80, 110, -0.03, -0.02, 0.10, 365}, // intrinsic=30
+            {Option::Call, 90, 100, -0.03, -0.02, 0.10, 182}, // intrinsic=10
+        };
+
+        for (const auto& gc : gcases) {
+            spot->setValue(gc.S);
+            rRate->setValue(gc.r);
+            qRate->setValue(gc.q);
+            vol->setValue(gc.v);
+            const Date matDate = today + Period(gc.mat, Days);
+            VanillaOption opt(ext::make_shared<PlainVanillaPayoff>(gc.type, gc.K),
+                              ext::make_shared<AmericanExercise>(today, matDate));
+            opt.setPricingEngine(fdEngine);
+            const Real fdP = opt.NPV();
+            const Real fdDelta = opt.delta();
+
+            // Gamma via forward differences to avoid straddling exercise boundary kink
+            const Real h = gc.S * 5e-3;
+            spot->setValue(gc.S + h);
+            const Real fdP1 = opt.NPV();
+            spot->setValue(gc.S + 2 * h);
+            const Real fdP2 = opt.NPV();
+            spot->setValue(gc.S);
+            const Real fdGamma = (fdP2 - 2 * fdP1 + fdP) / (h * h);
+
+            // vega, rho, divRho via bump-and-revalue (FD engine doesn't provide them)
+            const Real dv = gc.v * 5e-5;
+            vol->setValue(gc.v + dv);
+            const Real fdVup = opt.NPV();
+            vol->setValue(gc.v - dv);
+            const Real fdVdn = opt.NPV();
+            vol->setValue(gc.v);
+            const Real fdVega = (fdVup - fdVdn) / (2 * dv);
+
+            const Real dr = std::max(std::abs(gc.r), 0.01) * 5e-5;
+            rRate->setValue(gc.r + dr);
+            const Real fdRup = opt.NPV();
+            rRate->setValue(gc.r - dr);
+            const Real fdRdn = opt.NPV();
+            rRate->setValue(gc.r);
+            const Real fdRho = (fdRup - fdRdn) / (2 * dr);
+
+            const Real dq = std::max(std::abs(gc.q), 0.01) * 5e-5;
+            qRate->setValue(gc.q + dq);
+            const Real fdQup = opt.NPV();
+            qRate->setValue(gc.q - dq);
+            const Real fdQdn = opt.NPV();
+            qRate->setValue(gc.q);
+            const Real fdDivRho = (fdQup - fdQdn) / (2 * dq);
+
+
+            const char* typeStr = (gc.type == Option::Put) ? "Option::Put" : "Option::Call";
+            std::cerr << std::setprecision(15) << "{" << typeStr << ", " << gc.K << ", " << gc.S
+                      << ", " << gc.r << ", " << gc.q << ", " << gc.v << ", " << gc.mat << ", "
+                      << fdP << ", " << fdDelta << ", " << fdGamma << ", " << fdVega << ", "
+                      << fdRho << ", " << fdDivRho << "},\n";
+        }
+    }
+
+    // --- QdFp profile sweep for analysis/plotting ---
+    // Produces CSV on stderr: spot sweep and vol sweep for interesting cases.
+    // Enable by changing if(false) to if(true).
+    if (false) {
+        const auto sweepEngine =
+            ext::make_shared<QdFpAmericanEngine>(bsProcess, QdFpAmericanEngine::accurateScheme());
+
+        struct SweepCase {
+            const char* label;
+            Option::Type type;
+            Real K;
+            Rate r, q;
+            Volatility v;
+            Integer mat;
+        };
+        const SweepCase sweepCases[] = {
+            // Double-boundary put, narrow gap
+            {"dbl_put_narrow_1y", Option::Put, 100, -0.02, -0.03, 0.25, 365},
+            // Double-boundary put, wide gap
+            {"dbl_put_wide_1y", Option::Put, 100, -0.01, -0.05, 0.25, 365},
+            // Double-boundary put, low vol
+            {"dbl_put_lowvol_1y", Option::Put, 100, -0.02, -0.03, 0.10, 365},
+            // Double-boundary call, narrow gap
+            {"dbl_call_narrow_1y", Option::Call, 100, -0.03, -0.02, 0.25, 365},
+            // Single-boundary put (standard)
+            {"sgl_put_1y", Option::Put, 100, 0.05, 0.02, 0.25, 365},
+            // Single-boundary call (standard)
+            {"sgl_call_1y", Option::Call, 100, 0.02, 0.05, 0.25, 365},
+            // Double-boundary put, short dated
+            {"dbl_put_narrow_3m", Option::Put, 100, -0.02, -0.03, 0.25, 91},
+        };
+
+        // Spot sweep: S from 70 to 130
+        std::cerr << "SPOT_SWEEP\n";
+        std::cerr << "label,type,K,r,q,v,T,S,price,delta,gamma,vega,rho,divRho\n";
+        for (const auto& sc : sweepCases) {
+            rRate->setValue(sc.r);
+            qRate->setValue(sc.q);
+            vol->setValue(sc.v);
+            const Date matDate = today + Period(sc.mat, Days);
+            VanillaOption opt(ext::make_shared<PlainVanillaPayoff>(sc.type, sc.K),
+                              ext::make_shared<AmericanExercise>(today, matDate));
+            opt.setPricingEngine(sweepEngine);
+
+            for (Real S = 70.0; S <= 130.01; S += 0.5) {
+                spot->setValue(S);
+                std::cerr << std::setprecision(10) << sc.label << ","
+                          << (sc.type == Option::Put ? "Put" : "Call") << "," << sc.K << "," << sc.r
+                          << "," << sc.q << "," << sc.v << "," << sc.mat << "," << S << ","
+                          << opt.NPV() << "," << opt.delta() << "," << opt.gamma() << ","
+                          << opt.vega() << "," << opt.rho() << "," << opt.dividendRho() << "\n";
+            }
+        }
+
+        // Vol sweep: vol from 0.05 to 0.60, at S=100 (ATM)
+        std::cerr << "VOL_SWEEP\n";
+        std::cerr << "label,type,K,r,q,S,T,v,price,delta,gamma,vega,rho,divRho\n";
+        spot->setValue(100.0);
+        for (const auto& sc : sweepCases) {
+            rRate->setValue(sc.r);
+            qRate->setValue(sc.q);
+            const Date matDate = today + Period(sc.mat, Days);
+            VanillaOption opt(ext::make_shared<PlainVanillaPayoff>(sc.type, sc.K),
+                              ext::make_shared<AmericanExercise>(today, matDate));
+            opt.setPricingEngine(sweepEngine);
+
+            for (Real v = 0.05; v <= 0.601; v += 0.01) {
+                vol->setValue(v);
+                std::cerr << std::setprecision(10) << sc.label << ","
+                          << (sc.type == Option::Put ? "Put" : "Call") << "," << sc.K << "," << sc.r
+                          << "," << sc.q << "," << 100.0 << "," << sc.mat << "," << v << ","
+                          << opt.NPV() << "," << opt.delta() << "," << opt.gamma() << ","
+                          << opt.vega() << "," << opt.rho() << "," << opt.dividendRho() << "\n";
+            }
+        }
+    }
+
+    // Reference values from FdBlackScholesVanillaEngine(6400, 25600)
+    // Greeks computed via bump-and-revalue with relative bump 5e-5;
+    // gamma via forward differences with 1% bump
+    const RefCase refCases[] = {
+        // Double-boundary puts (q < r < 0) — 1y
+        {Option::Put, 100, 100, -0.02, -0.03, 0.25, 365, 9.70634871891378, -0.449149920684487,
+         0.0161117554440651, 40.4325420979035, -49.7305992688268, 41.1211151464623},
+        {Option::Put, 100, 100, -0.02, -0.03, 0.10, 365, 3.64590769414805, -0.46308197469402,
+         0.0410550676300847, 40.250315494017, -39.5038269058734, 36.9498067658292},
+        {Option::Put, 100, 100, -0.02, -0.03, 0.40, 365, 15.7486419445511, -0.424784208456321,
+         0.00996385375447773, 40.0588527441403, -56.7279489578354, 41.3104383121995},
+        {Option::Put, 100, 110, -0.02, -0.03, 0.25, 365, 5.98553175979762, -0.301688245147016,
+         0.0126795572790804, 38.8968635008524, -36.2320249660541, 30.8933657583073},
+        {Option::Put, 100, 90, -0.02, -0.03, 0.25, 365, 15.0334199706047, -0.619782929211281,
+         0.0176593155826081, 35.6077802050692, -63.9089959948436, 50.5343370290253},
+        {Option::Put, 100, 90, -0.02, -0.03, 0.40, 365, 20.5097856412248, -0.531021556463035,
+         0.0113563975412735, 36.9452440279971, -66.7936644536127, 46.6584266689551},
+        {Option::Put, 100, 100, -0.02, -0.05, 0.25, 365, 8.96769519525504, -0.431009456915774,
+         0.0165866833616732, 40.178739903709, -40.5972343031635, 34.4303783752054},
+        {Option::Put, 100, 100, -0.02, -0.05, 0.10, 365, 3.00584702665286, -0.42862370829589,
+         0.0455937834869307, 38.6256212425273, -29.4683204513646, 27.8122341020648},
+        {Option::Put, 100, 110, -0.02, -0.05, 0.25, 365, 5.41728344849056, -0.284121602335388,
+         0.0125959168280032, 37.9000228735649, -30.7832070149949, 26.6704784220195},
+        {Option::Put, 100, 90, -0.02, -0.05, 0.25, 365, 14.1786059865793, -0.613485117553759,
+         0.0189719251641075, 35.4535320184368, -46.7986304437673, 38.5648085995172},
+        {Option::Put, 100, 100, -0.01, -0.05, 0.25, 365, 8.5775244406978, -0.422766145564709,
+         0.0169284840289876, 39.6985105058434, -37.6001141546567, 32.0620328562171},
+        {Option::Put, 100, 100, -0.01, -0.05, 0.10, 365, 2.73086268374839, -0.413720610385531,
+         0.0486380443455197, 37.2728131330824, -25.6433523100341, 24.2883307733699},
+        // Double-boundary puts — 6m
+        {Option::Put, 100, 100, -0.02, -0.03, 0.25, 182, 6.88245013988051, -0.459571993884531,
+         0.0226277275072029, 28.3276039322899, -23.1574223983344, 20.3778610785577},
+        {Option::Put, 100, 110, -0.02, -0.03, 0.25, 182, 3.32714702710883, -0.260035361689148,
+         0.0164402079842633, 25.3490088232766, -14.6094502806449, 13.1810888879258},
+        {Option::Put, 100, 90, -0.02, -0.03, 0.25, 182, 12.6665171459094, -0.695549959414845,
+         0.0228772144891679, 22.7242583986254, -30.460479361949, 25.7265516806863},
+        {Option::Put, 100, 100, -0.02, -0.05, 0.25, 182, 6.49974274749274, -0.448196661623547,
+         0.0231099790799085, 28.2493668472839, -20.4849502725146, 18.1828823528463},
+        // Double-boundary puts — 3m
+        {Option::Put, 100, 100, -0.02, -0.03, 0.25, 91, 4.89041800156482, -0.469903537558339,
+         0.0318721565007216, 19.971779320862, -11.3850989476028, 10.4051044903149},
+        {Option::Put, 100, 110, -0.02, -0.03, 0.25, 91, 1.63032027762322, -0.200570952600447,
+         0.0197055661359183, 15.4418621646535, -5.5134074191665, 5.15616616122057},
+        {Option::Put, 100, 100, -0.02, -0.05, 0.25, 91, 4.6918617119121, -0.461969567992806,
+         0.0323093103669798, 19.9382117095226, -10.3902374521958, 9.53693902854269},
+        // Double-boundary puts — 1m
+        {Option::Put, 100, 100, -0.02, -0.03, 0.25, 30, 2.82642347938117, -0.482150015914476,
+         0.0552272105490808, 11.4463475614812, -3.73157326682971, 3.54337625048847},
+        {Option::Put, 100, 100, -0.02, -0.05, 0.25, 30, 2.75782216780659, -0.475353754281258,
+         0.0555678417457734, 11.4374173679721, -3.50907097046438, 3.33810339538942},
+        // Double-boundary calls (r < q < 0) — 1y
+        {Option::Call, 100, 100, -0.03, -0.02, 0.25, 365, 9.70634873011048, 0.546213233339622,
+         0.0161360481654143, 40.4325433551378, 41.1229147404176, -49.7288653420469},
+        {Option::Call, 100, 100, -0.03, -0.02, 0.10, 365, 3.64590769656091, 0.499541011015061,
+         0.0415272830826794, 40.2503160227496, 36.9505014381488, -39.5032025357622},
+        {Option::Call, 100, 100, -0.03, -0.02, 0.40, 365, 15.7486420140371, 0.582270513785861,
+         0.00996997076028805, 40.0588648903799, 41.3132181685446, -56.7249055425378},
+        {Option::Call, 100, 90, -0.03, -0.02, 0.25, 365, 5.09237180265451, 0.376139931211938,
+         0.0171300729859175, 34.5692357397098, 26.8134783384018, -31.3576761667988},
+        {Option::Call, 100, 110, -0.03, -0.02, 0.25, 365, 15.9250060291346, 0.693617651239593,
+         0.0130709368607326, 39.9527729126703, 54.7552232556351, -68.9079981306406},
+        {Option::Call, 100, 100, -0.05, -0.02, 0.25, 365, 8.96769519428094, 0.520686297698953,
+         0.0166762734441974, 40.1787414146071, 34.4307732671467, -40.5957890068365},
+        {Option::Call, 100, 100, -0.05, -0.01, 0.25, 365, 8.57752442660377, 0.508541274188651,
+         0.0170692991195764, 39.6985270182881, 32.0625275094244, -37.5892976371972},
+        // Double-boundary calls — 6m, 3m
+        {Option::Call, 100, 100, -0.03, -0.02, 0.25, 182, 6.8824501339981, 0.528396395405936,
+         0.0226615696132306, 28.3275948875783, 20.3814311374728, -23.1530688106218},
+        {Option::Call, 100, 110, -0.03, -0.02, 0.25, 182, 13.2479893568667, 0.733849103769163,
+         0.0169356378709736, 25.9307127365815, 27.9541693301392, -32.9286216311786},
+        {Option::Call, 100, 100, -0.03, -0.02, 0.25, 91, 4.89041800481184, 0.518807645661719,
+         0.0319237737504672, 19.9717855024417, 10.4030494224953, -11.385761693905},
+        {Option::Call, 100, 100, -0.05, -0.02, 0.25, 91, 4.69186171081853, 0.508888162273453,
+         0.0324987619469468, 19.938211594237, 9.53599736206456, -10.3910036473032},
+        // Single-boundary puts (r > 0) — 1y
+        {Option::Put, 100, 100, 0.05, 0.02, 0.25, 365, 8.56516754564992, -0.417498564515722,
+         0.016621053064668, 38.1258099609028, -36.3853448671847, 30.9993555491772},
+        {Option::Put, 100, 110, 0.05, 0.02, 0.25, 365, 5.1448369208686, -0.272220115245049,
+         0.012285114453521, 35.9828294574172, -28.1767442595893, 24.4831557409952},
+        {Option::Put, 100, 90, 0.05, 0.02, 0.25, 365, 13.6591033384705, -0.605536555936136,
+         0.0201218681751941, 33.043132469075, -39.6804399354522, 32.9460442154428},
+        {Option::Put, 100, 100, 0.05, 0.02, 0.10, 365, 2.89533078318739, -0.419876864564183,
+         0.0462348707087603, 36.8729507430832, -27.2285744687295, 25.7224514195187},
+        {Option::Put, 100, 100, 0.05, 0.00, 0.25, 365, 7.97439342909439, -0.40864507977181,
+         0.0174773907560066, 37.8333182794321, -32.8126366699877, 28.1869264124879},
+        // Single-boundary puts — shorter dated
+        {Option::Put, 100, 100, 0.05, 0.02, 0.25, 182, 6.3451006584151, -0.440268624461285,
+         0.0230569802255474, 27.4990108782092, -19.2733765683073, 17.1454777162516},
+        {Option::Put, 100, 100, 0.05, 0.02, 0.25, 91, 4.63340476090454, -0.457492685608646,
+         0.0322213244793979, 19.6654315759659, -10.0445785371051, 9.2263260000891},
+        // Single-boundary calls (q > 0) — 1y
+        {Option::Call, 100, 100, 0.02, 0.05, 0.25, 365, 8.56516754429367, 0.503150128720948,
+         0.0167753673117801, 38.1258160767572, 30.9981308550533, -36.3857261145739},
+        {Option::Call, 100, 90, 0.02, 0.05, 0.25, 365, 4.36500082455977, 0.335802795618739,
+         0.0165962925640462, 31.8913772857243, 21.3099466472855, -24.4792960376827},
+        {Option::Call, 100, 110, 0.02, 0.05, 0.25, 365, 14.4286567619336, 0.665022320946486,
+         0.0148917716733521, 37.2554478762765, 36.4196035107511, -43.7517875827353},
+        {Option::Call, 100, 100, 0.02, 0.05, 0.10, 365, 2.89533078212857, 0.448830143007674,
+         0.0489020992523734, 36.8729543108071, 25.7220759454224, -27.228765929177},
+        // Single-boundary calls — shorter dated
+        {Option::Call, 100, 100, 0.02, 0.05, 0.25, 182, 6.34510064461839, 0.503719590713749,
+         0.0232471939003638, 27.4990190098379, 17.1415625969118, -19.2736572133256},
+        {Option::Call, 100, 100, 0.02, 0.05, 0.25, 91, 4.6334047598945, 0.503826710409155,
+         0.0324637591295414, 19.665433094822, 9.22713331830138, -10.0436372770574},
+        // Immediate exercise — double-boundary puts
+        {Option::Put, 110, 90, -0.02, -0.03, 0.10, 365, 20.0, -1.0, 0.0, 0.0, 0.0, 0.0},
+        {Option::Put, 120, 90, -0.02, -0.03, 0.10, 365, 30.0, -1.0, 0.0, 0.0, 0.0, 0.0},
+        {Option::Put, 110, 100, -0.02, -0.03, 0.10, 182, 10.1090129265466, -0.927921861900638,
+         0.0305232774434501, 9.63850817026213, -18.0582480115987, 16.6383846718077},
+        // Immediate exercise — double-boundary calls
+        {Option::Call, 90, 110, -0.03, -0.02, 0.10, 365, 20.0, 1.0, 0.0, 0.0, 0.0, 0.0},
+        {Option::Call, 80, 110, -0.03, -0.02, 0.10, 365, 30.0, 1.0, 0.0, 0.0, 0.0, 0.0},
+        {Option::Call, 90, 100, -0.03, -0.02, 0.10, 182, 10.0457853012681, 0.959112950493978,
+         0.0192937600670717, 5.99007261197215, 11.5121098674583, -12.5514394717641},
+    };
+
+    const auto fpEngine =
+        ext::make_shared<QdFpAmericanEngine>(bsProcess, QdFpAmericanEngine::accurateScheme());
+
+    // Tolerances: price and greeks vs FD reference
+    // FD reference: 6400x25600 grid, forward-difference gamma (1% bump),
+    // central-difference vega/rho/divRho (5e-5 relative bump)
+    const Real tolPrice = 5.0e-3;
+    const Real tolDelta = 2.0e-2;
+    const Real tolGamma = 5.0e-2;
+    const Real tolVega = 0.5;
+    const Real tolRho = 1.0;
+    const Real tolDivRho = 1.0;
+
+    for (const auto& rc : refCases) {
+        if (rc.price == 0.0)
+            continue; // skip placeholder
+
+        spot->setValue(rc.S);
+        rRate->setValue(rc.r);
+        qRate->setValue(rc.q);
+        vol->setValue(rc.v);
+        const Date matDate = today + Period(rc.mat, Days);
+        VanillaOption opt(ext::make_shared<PlainVanillaPayoff>(rc.type, rc.K),
+                          ext::make_shared<AmericanExercise>(today, matDate));
+        opt.setPricingEngine(fpEngine);
+
+        const Real price = opt.NPV();
+        const Real delta = opt.delta();
+        const Real gamma = opt.gamma();
+        const Real vega = opt.vega();
+        const Real rho = opt.rho();
+        const Real divRho = opt.dividendRho();
+
+        const char* typeStr = (rc.type == Option::Put) ? "Put" : "Call";
+
+        BOOST_TEST_MESSAGE(
+            std::fixed << std::setprecision(6) << typeStr << " K=" << rc.K << " S=" << rc.S
+                       << " r=" << rc.r << " q=" << rc.q << " v=" << rc.v << " T=" << rc.mat << "d"
+                       << "\n             " << std::setw(14) << "QdFp" << "  " << std::setw(14)
+                       << "FD ref" << "  " << std::setw(12) << "diff"
+                       << "\n  price:   " << std::setw(14) << price << "  " << std::setw(14)
+                       << rc.price << "  " << std::setw(12) << (price - rc.price) << "\n  delta:   "
+                       << std::setw(14) << delta << "  " << std::setw(14) << rc.delta << "  "
+                       << std::setw(12) << (delta - rc.delta) << "\n  gamma:   " << std::setw(14)
+                       << gamma << "  " << std::setw(14) << rc.gamma << "  " << std::setw(12)
+                       << (gamma - rc.gamma) << "\n  vega:    " << std::setw(14) << vega << "  "
+                       << std::setw(14) << rc.vega << "  " << std::setw(12) << (vega - rc.vega)
+                       << "\n  rho:     " << std::setw(14) << rho << "  " << std::setw(14) << rc.rho
+                       << "  " << std::setw(12) << (rho - rc.rho)
+                       << "\n  divRho:  " << std::setw(14) << divRho << "  " << std::setw(14)
+                       << rc.divRho << "  " << std::setw(12) << (divRho - rc.divRho));
+
+        if (std::abs(price - rc.price) > tolPrice) {
+            BOOST_ERROR(typeStr << " K=" << rc.K << " S=" << rc.S << " r=" << rc.r << " q=" << rc.q
+                                << " v=" << rc.v << " T=" << rc.mat << "d: price " << price
+                                << " vs ref " << rc.price << " diff=" << (price - rc.price));
+        }
+        if (std::abs(delta - rc.delta) > tolDelta) {
+            BOOST_ERROR(typeStr << " K=" << rc.K << " S=" << rc.S << " r=" << rc.r << " q=" << rc.q
+                                << " v=" << rc.v << " T=" << rc.mat << "d: delta " << delta
+                                << " vs ref " << rc.delta << " diff=" << (delta - rc.delta));
+        }
+        if (std::abs(gamma - rc.gamma) > tolGamma) {
+            BOOST_ERROR(typeStr << " K=" << rc.K << " S=" << rc.S << " r=" << rc.r << " q=" << rc.q
+                                << " v=" << rc.v << " T=" << rc.mat << "d: gamma " << gamma
+                                << " vs ref " << rc.gamma << " diff=" << (gamma - rc.gamma));
+        }
+        if (std::abs(vega - rc.vega) > tolVega) {
+            BOOST_ERROR(typeStr << " K=" << rc.K << " S=" << rc.S << " r=" << rc.r << " q=" << rc.q
+                                << " v=" << rc.v << " T=" << rc.mat << "d: vega " << vega
+                                << " vs ref " << rc.vega << " diff=" << (vega - rc.vega));
+        }
+        if (std::abs(rho - rc.rho) > tolRho) {
+            BOOST_ERROR(typeStr << " K=" << rc.K << " S=" << rc.S << " r=" << rc.r << " q=" << rc.q
+                                << " v=" << rc.v << " T=" << rc.mat << "d: rho " << rho
+                                << " vs ref " << rc.rho << " diff=" << (rho - rc.rho));
+        }
+        if (std::abs(divRho - rc.divRho) > tolDivRho) {
+            BOOST_ERROR(typeStr << " K=" << rc.K << " S=" << rc.S << " r=" << rc.r << " q=" << rc.q
+                                << " v=" << rc.v << " T=" << rc.mat << "d: divRho " << divRho
+                                << " vs ref " << rc.divRho << " diff=" << (divRho - rc.divRho));
+        }
+    }
+
+    // --- QdPlus engine comparison (informational, no assertions) ---
+    const auto plusEngine = ext::make_shared<QdPlusAmericanEngine>(bsProcess);
+
+    BOOST_TEST_MESSAGE("\n=== QdPlus vs FD reference ===");
+    for (const auto& rc : refCases) {
+        if (rc.price == 0.0)
+            continue;
+
+        spot->setValue(rc.S);
+        rRate->setValue(rc.r);
+        qRate->setValue(rc.q);
+        vol->setValue(rc.v);
+        const Date matDate = today + Period(rc.mat, Days);
+        VanillaOption opt(ext::make_shared<PlainVanillaPayoff>(rc.type, rc.K),
+                          ext::make_shared<AmericanExercise>(today, matDate));
+        opt.setPricingEngine(plusEngine);
+
+        const Real price = opt.NPV();
+        const Real delta = opt.delta();
+        const Real gamma = opt.gamma();
+        const Real vega = opt.vega();
+        const Real rho = opt.rho();
+        const Real divRho = opt.dividendRho();
+
+        const char* typeStr = (rc.type == Option::Put) ? "Put" : "Call";
+
+        BOOST_TEST_MESSAGE(
+            std::fixed << std::setprecision(6) << typeStr << " K=" << rc.K << " S=" << rc.S
+                       << " r=" << rc.r << " q=" << rc.q << " v=" << rc.v << " T=" << rc.mat << "d"
+                       << "\n             " << std::setw(14) << "QdPlus" << "  " << std::setw(14)
+                       << "FD ref" << "  " << std::setw(12) << "diff"
+                       << "\n  price:   " << std::setw(14) << price << "  " << std::setw(14)
+                       << rc.price << "  " << std::setw(12) << (price - rc.price) << "\n  delta:   "
+                       << std::setw(14) << delta << "  " << std::setw(14) << rc.delta << "  "
+                       << std::setw(12) << (delta - rc.delta) << "\n  gamma:   " << std::setw(14)
+                       << gamma << "  " << std::setw(14) << rc.gamma << "  " << std::setw(12)
+                       << (gamma - rc.gamma) << "\n  vega:    " << std::setw(14) << vega << "  "
+                       << std::setw(14) << rc.vega << "  " << std::setw(12) << (vega - rc.vega)
+                       << "\n  rho:     " << std::setw(14) << rho << "  " << std::setw(14) << rc.rho
+                       << "  " << std::setw(12) << (rho - rc.rho)
+                       << "\n  divRho:  " << std::setw(14) << divRho << "  " << std::setw(14)
+                       << rc.divRho << "  " << std::setw(12) << (divRho - rc.divRho));
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
