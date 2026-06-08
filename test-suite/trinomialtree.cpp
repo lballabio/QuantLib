@@ -150,8 +150,8 @@ BOOST_AUTO_TEST_CASE(testFloorThresholdBoundary) {
     // threshold (0.01) so the test exercises the gating boundary
     // itself; loose multipliers (e.g. 0.005 / 0.02) would still pass
     // for any threshold in a wide range.
-    constexpr Time kBelow = 0.0099;
-    constexpr Time kAbove = 0.0101;
+    constexpr double kBelow = 0.0099;
+    constexpr double kAbove = 0.0101;
 
     // Just below threshold: floor active.  Node count must stay
     // bounded (each step extends the j-range by at most 1 on each

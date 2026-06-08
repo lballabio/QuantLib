@@ -29,7 +29,7 @@ namespace QuantLib {
         // Two orders of magnitude leaves uniform and typical non-uniform
         // grids (weekend rolls, 1-day mismatches) untouched; the floor
         // intervenes only on the pathological small-mandatory-gap case.
-        constexpr Real kFloorThreshold = 0.01;
+        constexpr double kFloorThreshold = 0.01;
     }
 
     TrinomialTree::TrinomialTree(
