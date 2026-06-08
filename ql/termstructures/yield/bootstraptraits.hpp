@@ -76,6 +76,15 @@ namespace QuantLib {
             Real r = -std::log(c->data()[i-1])/c->times()[i-1];
             return std::exp(-r * c->times()[i]);
         }
+        template <class C>
+        static Real globalGuess(Size i,
+                                const C* c,
+                                bool validData)
+        {
+            if (validData) // previous iteration value
+                return c->data()[i];
+            return std::exp(-detail::avgRate * c->times()[i]);
+        }
 
         // possible constraints based on previous values
         template <class C>
@@ -161,6 +170,15 @@ namespace QuantLib {
             return c->zeroRate(d, c->dayCounter(),
                                Continuous, Annual, true);
         }
+        template <class C>
+        static Real globalGuess(Size i,
+                                const C* c,
+                                bool validData)
+        {
+            if (validData) // previous iteration value
+                return c->data()[i];
+            return detail::avgRate;
+        }
 
         // possible constraints based on previous values
         template <class C>
@@ -190,18 +208,6 @@ namespace QuantLib {
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
             return detail::maxRate;
-        }
-
-        // transformation to add constraints to an unconstrained optimization
-        template <class C>
-        static Real transformDirect(Real x, Size i, const C* c)
-        {
-            return x;
-        }
-        template <class C>
-        static Real transformInverse(Real x, Size i, const C* c)
-        {
-            return x;
         }
 
         // root-finding update
@@ -254,6 +260,15 @@ namespace QuantLib {
             return c->forwardRate(d, d, c->dayCounter(),
                                   Continuous, Annual, true);
         }
+        template <class C>
+        static Real globalGuess(Size i,
+                                const C* c,
+                                bool validData)
+        {
+            if (validData) // previous iteration value
+                return c->data()[i];
+            return detail::avgRate;
+        }
 
         // possible constraints based on previous values
         template <class C>
@@ -283,18 +298,6 @@ namespace QuantLib {
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
             return detail::maxRate;
-        }
-
-        // transformation to add constraints to an unconstrained optimization
-        template <class C>
-        static Real transformDirect(Real x, Size i, const C* c)
-        {
-            return x;
-        }
-        template <class C>
-        static Real transformInverse(Real x, Size i, const C* c)
-        {
-            return x;
         }
 
         // root-finding update
@@ -345,6 +348,15 @@ namespace QuantLib {
             Date d = c->dates()[i];
             return c->zeroRate(d, c->dayCounter(),
                                Simple, Annual, true);
+        }
+        template <class C>
+        static Real globalGuess(Size i,
+                                const C* c,
+                                bool validData)
+        {
+            if (validData) // previous iteration value
+                return c->data()[i];
+            return detail::avgRate;
         }
 
         // possible constraints based on previous values
