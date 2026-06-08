@@ -43,7 +43,7 @@ namespace QuantLib {
             the coupons using it.  Deprecated in version 1.43.
         */
         enum InterpolationType {
-            AsIndex [[deprecated("Use either Linear or Flat")]] = 0, //!< same interpolation as index
+            AsIndex [[deprecated("Use either Linear or Flat")]] = 0, //!< same interpolation as index.  \deprecated Use either Linear or Flat. Deprecated in version 1.43.
             Flat = 1,    //!< flat from previous fixing
             Linear = 2   //!< linearly between bracketing fixings
         };
