@@ -45,7 +45,8 @@ this_include_HEADERS = \
     mchestonhullwhiteengine.hpp \
     mcvanillaengine.hpp \
     qdfpamericanengine.hpp \
-    qdplusamericanengine.hpp
+    qdplusamericanengine.hpp \
+    vnbinomialengine.hpp
 
 cpp_files = \
     analyticbsmhullwhiteengine.cpp \
@@ -84,7 +85,8 @@ cpp_files = \
     mcdigitalengine.cpp \
     mchestonhullwhiteengine.cpp \
     qdfpamericanengine.cpp \
-    qdplusamericanengine.cpp
+    qdplusamericanengine.cpp \
+    vnbinomialengine.cpp
 
 if UNITY_BUILD
 
