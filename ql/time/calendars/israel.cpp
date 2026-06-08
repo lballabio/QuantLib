@@ -412,7 +412,9 @@ namespace QuantLib {
         static auto shirImpl = ext::make_shared<Israel::ShirImpl>();
         static auto telborImpl = ext::make_shared<Israel::TelborImpl>();
         switch (market) {
+        QL_DEPRECATED_DISABLE_WARNING
         case Settlement:
+        QL_DEPRECATED_ENABLE_WARNING
         case TASE:
             impl_ = telAvivImpl;
             break;

@@ -102,12 +102,13 @@ namespace QuantLib {
         class ShirImpl;
       public:
           enum Market {
-              Settlement,     //!< generic settlement calendar
-              TASE,           //!< Tel-Aviv stock exchange calendar (Fri/Sat weekends, pre-2026; Sat/Sun afterwards)
-              Telbor,         //!< Telbor fixing calendar (Sat/Sun weekends)
-              SHIR            //!< SHIR fixing calendar (Sat/Sun weekends)
+              Settlement [[deprecated("Use an explicit market")]] = 0,     /*!< generic settlement calendar.
+                                                                                \deprecated Use an explicit market. Deprecated in version 1.43. */
+              TASE = 1,    //!< Tel-Aviv stock exchange calendar (Fri/Sat weekends, pre-2026; Sat/Sun afterwards)
+              Telbor = 2,  //!< Telbor fixing calendar (Sat/Sun weekends)
+              SHIR = 3     //!< SHIR fixing calendar (Sat/Sun weekends)
           };
-          Israel(Market market = Settlement);
+          Israel(Market market = TASE);
     };
 
 }
