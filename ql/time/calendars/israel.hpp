@@ -33,11 +33,10 @@ namespace QuantLib {
     /*! Due to the lack of reliable sources, the settlement calendar
         has the same holidays as the Tel Aviv stock-exchange.
 
-        Holidays for the Tel-Aviv Stock Exchange
+        Holidays for the Tel-Aviv Stock Exchange (TASE)
         (data from <http://www.tase.co.il>):
         <ul>
-        <li>Friday</li>
-        <li>Saturday</li>
+        <li>Weekdays: Friday and Saturday until 2025, Saturday and Sunday since 2026</li>
         </ul>
         Other holidays for wich no rule is given
         (data available for 2013-2044 only:)
@@ -55,19 +54,61 @@ namespace QuantLib {
         <li>Simchat Tora, Tishrei 22nd (between Sep 26th & Oct 26th)</li>
         </ul>
 
+        Holidays for the Telbor fixing calendar:
+        <ul>
+        <li>Weekdays: Saturday and Sunday</li>
+        <li>Purim I and II</li>
+        <li>Passover Eve, I and VII</li>
+        <li>Indipendence Day</li>
+        <li>Pentecost (Shavuot)</li>
+        <li>Fast Day</li>
+        <li>Jewish New Year I and II</li>
+        <li>Yom Kippur</li>
+        <li>Sukkoth</li>
+        <li>Simchat Torah</li>
+        <li>Western New Year, January 1st</li>
+        <li>Spring Bank Holiday, last Monday of May</li>
+        <li>Christmas, December 25th</li>
+        <li>Boxing Day, December 26th</li>
+        <li>One-off days for elections</li>
+        </ul>
+
+        Holidays for the SHIR fixing calendar:
+        <ul>
+        <li>Weekdays: Saturday and Sunday</li>
+        <li>Purim I and II</li>
+        <li>Passover Eve, I and VII</li>
+        <li>Indipendence Day</li>
+        <li>Pentecost (Shavuot)</li>
+        <li>Fast Day</li>
+        <li>Jewish New Year Eve, I and II</li>
+        <li>Yom Kippur and its Eve</li>
+        <li>Sukkoth</li>
+        <li>Simchat Torah</li>
+        <li>Western New Year, January 1st</li>
+        <li>Good Friday</li>
+        <li>Spring Bank Holiday, last Monday of May</li>
+        <li>Christmas, December 25th</li>
+        <li>Boxing Day, December 26th</li>
+        <li>One-off days for elections</li>
+        </ul>
 
         \ingroup calendars
     */
     class Israel : public Calendar {
       private:
         class TelAvivImpl;
+        class TelborImpl;
         class ShirImpl;
       public:
-          enum Market { Settlement,     //!< generic settlement calendar
-                        TASE,           //!< Tel-Aviv stock exchange calendar
-                        SHIR            //!< SHIR fixing calendar
+          enum Market {
+              Settlement [[deprecated("Use an explicit market")]] = 0,     /*!< generic settlement calendar.
+                                                                                \deprecated Use an explicit market. Deprecated in version 1.43. */
+              TASE = 1,    //!< Tel-Aviv stock exchange calendar (Fri/Sat weekends, pre-2026; Sat/Sun afterwards)
+              Telbor = 2,  //!< Telbor fixing calendar (Sat/Sun weekends)
+              SHIR = 3     //!< SHIR fixing calendar (Sat/Sun weekends)
           };
-          Israel(Market market = Settlement);
+          Israel(Market market = TASE);
     };
 
 }

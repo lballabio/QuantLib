@@ -3384,6 +3384,18 @@ BOOST_AUTO_TEST_CASE(testNewZealand) {
 BOOST_AUTO_TEST_CASE(testTASECalendar) {
     BOOST_TEST_MESSAGE("Testing TASE calendar...");
 
+    auto c = Israel(Israel::TASE);
+
+    auto is_weekend = [](Date d) {
+        if (d >= Date {5, January, 2026})
+            return d.weekday() == Saturday || d.weekday() == Sunday;
+        else
+            return d.weekday() == Friday || d.weekday() == Saturday;
+    };
+
+    // using checkHolidays with includeWeekEnds = false doesn't work in this case;
+    // weekdays changed in 2026.
+
     std::vector<Date> expected2013 = {
         {24, February, 2013},  {25, March, 2013},     {26, March, 2013},     {31, March, 2013},
         {1, April, 2013},      {15, April, 2013},     {16, April, 2013},     {14, May, 2013},
@@ -3391,8 +3403,9 @@ BOOST_AUTO_TEST_CASE(testTASECalendar) {
         {18, September, 2013}, {19, September, 2013}, {25, September, 2013}, {26, September, 2013},
     };
 
-    auto c = Israel();
-    checkHolidays(c.holidayList(Date(1, January, 2013), Date(31, December, 2013)), expected2013);
+    auto holidays = c.holidayList(Date(1, January, 2013), Date(31, December, 2013), true);
+    holidays.erase(std::remove_if(holidays.begin(), holidays.end(), is_weekend), holidays.end());
+    checkHolidays(holidays, expected2013);
 
     std::vector<Date> expected2025 = {
         {13, April, 2025},   {30, April, 2025},     {1, May, 2025},        {2, June, 2025},
@@ -3401,7 +3414,9 @@ BOOST_AUTO_TEST_CASE(testTASECalendar) {
         {14, October, 2025},
     };
 
-    checkHolidays(c.holidayList(Date(1, January, 2025), Date(31, December, 2025)), expected2025);
+    holidays = c.holidayList(Date(1, January, 2025), Date(31, December, 2025), true);
+    holidays.erase(std::remove_if(holidays.begin(), holidays.end(), is_weekend), holidays.end());
+    checkHolidays(holidays, expected2025);
 }
 
 BOOST_AUTO_TEST_CASE(testSHIRCalendar) {
@@ -3431,6 +3446,32 @@ BOOST_AUTO_TEST_CASE(testSHIRCalendar) {
     };
 
     auto c = Israel(Israel::SHIR);
+    checkHolidays(c.holidayList(Date(5, May, 2022), Date(31, December, 2025)), expected);
+}
+
+BOOST_AUTO_TEST_CASE(testTelborCalendar) {
+    BOOST_TEST_MESSAGE("Testing Telbor calendar...");
+
+    std::vector<Date> expected = {
+        {5, May, 2022},        {30, May, 2022},       {26, September, 2022},
+        {27, September, 2022}, {5, October, 2022},    {10, October, 2022},
+        {17, October, 2022},   {26, December, 2022},  {7, March, 2023},
+        {8, March, 2023},      {5, April, 2023},      {6, April, 2023},
+        {12, April, 2023},     {26, April, 2023},     {26, May, 2023},
+        {29, May, 2023},       {27, July, 2023},      {25, September, 2023},
+        {25, December, 2023},  {26, December, 2023},  {1, January, 2024},
+        {25, March, 2024},     {22, April, 2024},     {23, April, 2024},
+        {29, April, 2024},     {14, May, 2024},       {27, May, 2024},
+        {12, June, 2024},      {13, August, 2024},    {3, October, 2024},
+        {4, October, 2024},    {17, October, 2024},   {24, October, 2024},
+        {25, December, 2024},  {26, December, 2024},  {1, January, 2025},
+        {14, March, 2025},     {1, May, 2025},        {26, May, 2025},
+        {2, June, 2025},       {23, September, 2025}, {24, September, 2025},
+        {2, October, 2025},    {7, October, 2025},    {14, October, 2025},
+        {25, December, 2025},  {26, December, 2025},
+    };
+
+    auto c = Israel(Israel::Telbor);
     checkHolidays(c.holidayList(Date(5, May, 2022), Date(31, December, 2025)), expected);
 }
 
