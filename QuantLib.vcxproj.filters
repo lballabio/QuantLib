@@ -2520,6 +2520,9 @@
     <ClInclude Include="ql\pricingengines\basket\mceuropeanbasketengine.hpp">
       <Filter>pricingengines\basket</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\basket\gaussiancopulaspreadengine.hpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\basket\kirkengine.hpp">
       <Filter>pricingengines\basket</Filter>
     </ClInclude>
@@ -5940,6 +5943,9 @@
       <Filter>pricingengines\basket</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\basket\mceuropeanbasketengine.cpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\basket\gaussiancopulaspreadengine.cpp">
       <Filter>pricingengines\basket</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\basket\kirkengine.cpp">

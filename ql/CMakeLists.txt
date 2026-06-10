@@ -682,6 +682,7 @@ set(QL_SOURCES
     pricingengines/basket/denglizhoubasketengine.cpp
     pricingengines/basket/fd2dblackscholesvanillaengine.cpp
     pricingengines/basket/fdndimblackscholesvanillaengine.cpp
+    pricingengines/basket/gaussiancopulaspreadengine.cpp
     pricingengines/basket/kirkengine.cpp
     pricingengines/basket/mcamericanbasketengine.cpp
     pricingengines/basket/mceuropeanbasketengine.cpp
@@ -1921,6 +1922,7 @@ set(QL_HEADERS
     pricingengines/basket/denglizhoubasketengine.hpp
     pricingengines/basket/fd2dblackscholesvanillaengine.hpp
     pricingengines/basket/fdndimblackscholesvanillaengine.hpp    
+    pricingengines/basket/gaussiancopulaspreadengine.hpp
     pricingengines/basket/kirkengine.hpp
     pricingengines/basket/mcamericanbasketengine.hpp
     pricingengines/basket/mceuropeanbasketengine.hpp

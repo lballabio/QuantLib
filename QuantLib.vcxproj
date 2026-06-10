@@ -1510,6 +1510,7 @@
     <ClInclude Include="ql\pricingengines\basket\denglizhoubasketengine.hpp" />
     <ClInclude Include="ql\pricingengines\basket\fd2dblackscholesvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\basket\fdndimblackscholesvanillaengine.hpp" />
+    <ClInclude Include="ql\pricingengines\basket\gaussiancopulaspreadengine.hpp" />
     <ClInclude Include="ql\pricingengines\basket\kirkengine.hpp" />
     <ClInclude Include="ql\pricingengines\basket\mcamericanbasketengine.hpp" />
     <ClInclude Include="ql\pricingengines\basket\mceuropeanbasketengine.hpp" />
@@ -2617,6 +2618,7 @@
     <ClCompile Include="ql\pricingengines\basket\denglizhoubasketengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\fd2dblackscholesvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\fdndimblackscholesvanillaengine.cpp" />
+    <ClCompile Include="ql\pricingengines\basket\gaussiancopulaspreadengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\kirkengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\mcamericanbasketengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\mceuropeanbasketengine.cpp" />
