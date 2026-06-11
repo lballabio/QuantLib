@@ -104,7 +104,7 @@ namespace QuantLib {
             const Real z1 = M_SQRT2 * x[i];
             // At extreme GH nodes Phi(z) saturates to exactly 0 or 1;
             // nudge it inside the open interval that invcdf requires.
-            const Real u1 = std::clamp(Phi(z1), QL_EPSILON, 1.0 - QL_EPSILON);
+            const Real u1 = std::clamp(Phi(z1), Real(QL_EPSILON), Real(1.0 - QL_EPSILON));
             const Real S1 = std::exp(rnd1.invcdf(u1));
             const Real expX1sq = std::exp(-x[i] * x[i]);
 
@@ -112,7 +112,7 @@ namespace QuantLib {
             for (Size j = 0; j < gh.order(); ++j) {
                 const Real z2perp = M_SQRT2 * x[j];
                 const Real z2 = rho_ * z1 + rhoComp * z2perp;
-                const Real u2 = std::clamp(Phi(z2), QL_EPSILON, 1.0 - QL_EPSILON);
+                const Real u2 = std::clamp(Phi(z2), Real(QL_EPSILON), Real(1.0 - QL_EPSILON));
                 const Real S2 = std::exp(rnd2.invcdf(u2));
 
                 const Real payoffVal = (*payoff)(S1 - S2);
