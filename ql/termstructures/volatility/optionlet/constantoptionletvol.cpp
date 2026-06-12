@@ -58,7 +58,7 @@ namespace QuantLib {
         Volatility vol, const DayCounter &dc, VolatilityType type,
         Real displacement)
         : OptionletVolatilityStructure(settlementDays, cal, bdc, dc),
-          volatility_(ext::shared_ptr< Quote >(new SimpleQuote(vol))),
+          volatility_(ext::make_shared<SimpleQuote>(vol)),
           type_(type), displacement_(displacement) {}
 
     // fixed reference date, fixed market data
@@ -67,21 +67,20 @@ namespace QuantLib {
         BusinessDayConvention bdc, Volatility vol, const DayCounter &dc,
         VolatilityType type, Real displacement)
         : OptionletVolatilityStructure(referenceDate, cal, bdc, dc),
-          volatility_(ext::shared_ptr< Quote >(new SimpleQuote(vol))),
+          volatility_(ext::make_shared<SimpleQuote>(vol)),
           type_(type), displacement_(displacement) {}
 
     ext::shared_ptr<SmileSection>
     ConstantOptionletVolatility::smileSectionImpl(const Date& d) const {
         Volatility atmVol = volatility_->value();
-        return ext::shared_ptr<SmileSection>(new
-            FlatSmileSection(d, atmVol, dayCounter(), referenceDate()));
+        return ext::make_shared<FlatSmileSection>(
+            d, atmVol, dayCounter(), referenceDate());
     }
 
     ext::shared_ptr<SmileSection>
     ConstantOptionletVolatility::smileSectionImpl(Time optionTime) const {
         Volatility atmVol = volatility_->value();
-        return ext::shared_ptr<SmileSection>(new
-            FlatSmileSection(optionTime, atmVol, dayCounter()));
+        return ext::make_shared<FlatSmileSection>(optionTime, atmVol, dayCounter());
     }
 
     Volatility ConstantOptionletVolatility::volatilityImpl(Time,

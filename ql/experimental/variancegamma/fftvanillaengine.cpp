@@ -34,7 +34,7 @@ namespace QuantLib {
     {
         ext::shared_ptr<GeneralizedBlackScholesProcess> process =
             ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(process_);
-        return std::unique_ptr<FFTEngine>(new FFTVanillaEngine(process, lambda_));
+        return std::make_unique<FFTVanillaEngine>(process, lambda_);
     }
 
     void FFTVanillaEngine::precalculateExpiry(Date d)
