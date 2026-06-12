@@ -1053,6 +1053,7 @@
     <ClInclude Include="ql\math\interpolations\kernelinterpolation2d.hpp" />
     <ClInclude Include="ql\math\interpolations\lagrangeinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\linearinterpolation.hpp" />
+    <ClInclude Include="ql\math\interpolations\linearthenflatinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\loginterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\mixedinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\multicubicspline.hpp" />
