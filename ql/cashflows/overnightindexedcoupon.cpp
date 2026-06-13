@@ -33,6 +33,7 @@
 #include <utility>
 #include <algorithm>
 #include <type_traits>
+#include <ql/math/rounding.hpp>
 
 using std::vector;
 
@@ -66,7 +67,8 @@ namespace QuantLib {
                     bool compoundSpreadDaily,
                     const Date& rateComputationStartDate,
                     const Date& rateComputationEndDate,
-                    const Date& exCouponDate)
+                    const Date& exCouponDate,
+const ext::optional<Integer>& roundingPrecision)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          lookbackDays,
                          overnightIndex,
@@ -76,6 +78,7 @@ namespace QuantLib {
         averagingMethod_(averagingMethod), lockoutDays_(lockoutDays),
         applyObservationShift_(applyObservationShift),
         compoundSpreadDaily_(compoundSpreadDaily),
+        roundingPrecision_(roundingPrecision),
         rateComputationStartDate_(rateComputationStartDate),
         rateComputationEndDate_(rateComputationEndDate) {
         
@@ -200,6 +203,16 @@ namespace QuantLib {
             // usual case
             return nominal() * averageRate(std::min(d, accrualEndDate_)) * accruedPeriod(d);
         }
+    }
+
+    Real OvernightIndexedCoupon::amount() const {
+
+        Rate r = rate();
+
+        if (roundingPrecision_.has_value())
+            r = ClosestRounding(*roundingPrecision_)(r);
+
+        return r * accrualPeriod() * nominal();
     }
 
     Rate OvernightIndexedCoupon::averageRate(const Date& d) const {
@@ -478,6 +491,10 @@ namespace QuantLib {
         lockoutDays_ = lockoutDays;
         return *this;
     }
+    OvernightLeg& OvernightLeg::withRoundingPrecision(Integer roundingPrecision) {
+        roundingPrecision_ = roundingPrecision;
+        return *this;
+    }
     OvernightLeg& OvernightLeg::withObservationShift(bool applyObservationShift) {
         applyObservationShift_ = applyObservationShift;
         return *this;
@@ -645,7 +662,7 @@ namespace QuantLib {
                     paymentDate, detail::get(notionals_, i, 1.0), start, end, overnightIndex_,
                     detail::get(gearings_, i, 1.0), detail::get(spreads_, i, 0.0), refStart, refEnd, paymentDayCounter_,
                     telescopicValueDates_, averagingMethod_, lookbackDays_, lockoutDays_, applyObservationShift_,
-                    compoundSpreadDaily_, rateComputationStartDate, rateComputationEndDate);
+                    compoundSpreadDaily_, rateComputationStartDate, rateComputationEndDate,  Date(), roundingPrecision_);
                 if (couponPricer_) {
                     cpn->setPricer(couponPricer_);
                 }
