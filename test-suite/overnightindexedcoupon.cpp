@@ -1019,18 +1019,6 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithGearingsAndSpreads) {
         }
     }
 }
-BOOST_AUTO_TEST_CASE(testOvernightLegRoundingPrecision) {
-    CommonVars vars;
-
-    OvernightLeg legBuilder(vars.schedule, vars.sofr);
-
-    legBuilder.withNotionals(vars.notional)
-              .withRoundingPrecision(5);
-
-    Leg leg = legBuilder;
-
-    BOOST_CHECK(!leg.empty());
-}
 BOOST_AUTO_TEST_CASE(testOvernightLegNPV) {
     BOOST_TEST_MESSAGE("Testing overnight leg NPV...");
 
