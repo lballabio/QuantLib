@@ -37,6 +37,7 @@
 #include <ql/time/imm.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>
+#include <ql/cashflows/couponpricer.hpp>
 
 namespace QuantLib {
 
@@ -466,12 +467,13 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const ext::optional<bool>& useIndexedCoupons)
+                                   const ext::optional<bool>& useIndexedCoupons,
+                                   const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer)
     : SwapRateHelper(rate, swapIndex->tenor(), swapIndex->fixingCalendar(),
         swapIndex->fixedLegTenor().frequency(), swapIndex->fixedLegConvention(),
         swapIndex->dayCounter(), swapIndex->iborIndex(), std::move(spread), fwdStart,
         std::move(discount), Null<Natural>(), pillarChoice, customPillarDate, endOfMonth,
-        useIndexedCoupons) {}
+        useIndexedCoupons, ext::nullopt, couponPricer) {}
 
     SwapRateHelper::SwapRateHelper(const std::variant<Rate, Handle<Quote>>& rate,
                                    const Period& tenor,
@@ -488,13 +490,15 @@ namespace QuantLib {
                                    Date customPillarDate,
                                    bool endOfMonth,
                                    const ext::optional<bool>& useIndexedCoupons,
-                                   const ext::optional<BusinessDayConvention>& floatConvention)
+                                   const ext::optional<BusinessDayConvention>& floatConvention,
+                                   const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays), tenor_(tenor),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
       fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(std::move(discount)),
-      useIndexedCoupons_(useIndexedCoupons), floatConvention_(floatConvention) {
+      useIndexedCoupons_(useIndexedCoupons), floatConvention_(floatConvention),
+      couponPricer_(couponPricer) {
         initialize(iborIndex, customPillarDate);
     }
 
@@ -512,13 +516,14 @@ namespace QuantLib {
                                    Date customPillarDate,
                                    bool endOfMonth,
                                    const ext::optional<bool>& useIndexedCoupons,
-                                   const ext::optional<BusinessDayConvention>& floatConvention)
+                                   const ext::optional<BusinessDayConvention>& floatConvention,
+                                   const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer)
     : RelativeDateRateHelper(rate, false), startDate_(startDate), endDate_(endDate),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
       fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
       discountHandle_(std::move(discount)), useIndexedCoupons_(useIndexedCoupons),
-      floatConvention_(floatConvention) {
+      floatConvention_(floatConvention), couponPricer_(couponPricer) {
         QL_REQUIRE(fixedFrequency != Once,
             "fixedFrequency == Once is not supported when passing explicit "
             "startDate and endDate");
@@ -537,6 +542,7 @@ namespace QuantLib {
         registerWith(iborIndex_);
         registerWith(spread_);
         registerWith(discountHandle_);
+        registerWith(couponPricer_);
 
         pillarDate_ = customPillarDate;
         SwapRateHelper::initializeDates();
@@ -569,6 +575,9 @@ namespace QuantLib {
         if (startDate_ == Date() && settlementDays_ != Null<Natural>())
             tmp.withSettlementDays(settlementDays_);
         swap_ = tmp;
+
+        if (couponPricer_)
+            setCouponPricer(swap_->floatingLeg(), couponPricer_);
 
         simplifyNotificationGraph(*swap_, true);
 
