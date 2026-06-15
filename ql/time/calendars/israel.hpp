@@ -105,8 +105,8 @@ namespace QuantLib {
               Settlement [[deprecated("Use an explicit market")]] = 0,     /*!< generic settlement calendar.
                                                                                 \deprecated Use an explicit market. Deprecated in version 1.43. */
               TASE = 1,    //!< Tel-Aviv stock exchange calendar (Fri/Sat weekends, pre-2026; Sat/Sun afterwards)
-              Telbor = 2,  //!< Telbor fixing calendar (Sat/Sun weekends)
-              SHIR = 3     //!< SHIR fixing calendar (Sat/Sun weekends)
+              SHIR = 2,    //!< SHIR fixing calendar (Sat/Sun weekends)
+              Telbor = 3,  //!< Telbor fixing calendar (Sat/Sun weekends)
           };
           Israel(Market market = TASE);
     };
