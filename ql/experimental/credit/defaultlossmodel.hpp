@@ -45,7 +45,7 @@ namespace QuantLib {
     basket loss models, which might require recalculations (of the basket) or 
     not depending on the pricing order.
     */
-    class DefaultLossModel : public Observable {// joint-? basket?-defaultLoss
+    class DefaultLossModel : public virtual Observable {// joint-? basket?-defaultLoss
      /* Protection together with frienship to avoid the need of checking the 
      basket-argument pointer integrity. It is the responsibility of the basket 
      now; our only caller.
@@ -148,6 +148,9 @@ namespace QuantLib {
             until the basket takes in a new model....
             ..alternatively both old basket and model could be forced reset here
             */
+            if (!basket_.empty() && basket_.currentLink().get() == bskt)
+                return; // already linked to this basket, nothing to reset
+            
             basket_.linkTo(ext::shared_ptr<Basket>(bskt, null_deleter()),
                            false);
             resetModel();// or rename to setBasketImpl(...)
