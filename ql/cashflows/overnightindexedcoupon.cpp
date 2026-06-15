@@ -78,9 +78,9 @@ const ext::optional<Integer>& roundingPrecision)
         averagingMethod_(averagingMethod), lockoutDays_(lockoutDays),
         applyObservationShift_(applyObservationShift),
         compoundSpreadDaily_(compoundSpreadDaily),
-        roundingPrecision_(roundingPrecision),
         rateComputationStartDate_(rateComputationStartDate),
-        rateComputationEndDate_(rateComputationEndDate) {
+        rateComputationEndDate_(rateComputationEndDate),
+         roundingPrecision_(roundingPrecision) {
         
         // ctor guard prevents construction of an object with illogically ordered dates. 
         QL_REQUIRE(startDate < endDate, "startDate must be less than endDate");
@@ -549,6 +549,7 @@ const ext::optional<Integer>& roundingPrecision)
         lastRecentPeriodCalendar_ = lastRecentPeriodCalendar;
         return *this;
     }
+    
 
     OvernightLeg& OvernightLeg::withPaymentDates(const std::vector<Date>& paymentDates) {
         paymentDates_ = paymentDates;
