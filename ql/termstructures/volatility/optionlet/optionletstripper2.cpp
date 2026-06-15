@@ -76,7 +76,7 @@ namespace QuantLib {
         for (Size j=0; j<nOptionExpiries_; ++j) {
             Volatility atmOptionVol = atmCapFloorTermVolCurve_->volatility(
                 optionExpiriesTimes[j], 33.3333); // dummy strike
-            ext::shared_ptr<BlackCapFloorEngine> engine =
+            auto engine =
                 ext::make_shared<BlackCapFloorEngine>(
                     iborIndex_->forwardingTermStructure(), atmOptionVol, dc_);
             caps_[j] = MakeCapFloor(CapFloor::Cap,
@@ -171,7 +171,7 @@ namespace QuantLib {
             ext::make_shared<SpreadedOptionletVolatility>(
                 Handle<OptionletVolatilityStructure>(adapter), Handle<Quote>(spreadQuote_));
 
-        ext::shared_ptr<BlackCapFloorEngine> engine =
+        auto engine =
             ext::make_shared<BlackCapFloorEngine>(
                 optionletStripper1->iborIndex()->forwardingTermStructure(),
                 Handle<OptionletVolatilityStructure>(spreadedAdapter));

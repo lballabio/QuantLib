@@ -63,7 +63,7 @@ namespace QuantLib {
         // update dates
         const Date& referenceDate = termVolSurface_->referenceDate();
         const DayCounter& dc = termVolSurface_->dayCounter();
-        ext::shared_ptr<BlackCapFloorEngine> dummy =
+        auto dummy =
             ext::make_shared<BlackCapFloorEngine>( // discounting does not matter here
                 iborIndex_->forwardingTermStructure(), 0.20, dc);
         for (Size i=0; i<nOptionletTenors_; ++i) {
@@ -99,7 +99,7 @@ namespace QuantLib {
         const std::vector<Rate>& strikes = termVolSurface_->strikes();
 
         ext::shared_ptr<PricingEngine> capFloorEngine;
-        ext::shared_ptr<SimpleQuote> volQuote = ext::make_shared<SimpleQuote>();
+        auto volQuote = ext::make_shared<SimpleQuote>();
 
         if (volatilityType_ == ShiftedLognormal) {
             capFloorEngine = ext::make_shared<BlackCapFloorEngine>(

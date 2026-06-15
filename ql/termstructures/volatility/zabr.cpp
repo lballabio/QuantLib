@@ -180,7 +180,7 @@ std::vector<Real> ZabrModel::fdPrice(const std::vector<Real> &strikes) const {
     std::copy(locVolv.begin(), locVolv.end(), locVol.begin());
 
     // solver
-    ext::shared_ptr<FdmDupire1dOp> map =
+    auto map =
         ext::make_shared<FdmDupire1dOp>(mesher, locVol);
     FdmBackwardSolver solver(map, boundaries,
                              ext::shared_ptr<FdmStepConditionComposite>(),

@@ -95,7 +95,7 @@ namespace QuantLib {
     }
 
     void SabrInterpolatedSmileSection::createInterpolation() const {
-         ext::shared_ptr<SABRInterpolation> tmp = ext::make_shared<SABRInterpolation>(
+         auto tmp = ext::make_shared<SABRInterpolation>(
              actualStrikes_.begin(), actualStrikes_.end(), vols_.begin(),
              exerciseTime(), forwardValue_, alpha_, beta_, nu_, rho_,
              isAlphaFixed_, isBetaFixed_, isNuFixed_, isRhoFixed_, vegaWeighted_,
