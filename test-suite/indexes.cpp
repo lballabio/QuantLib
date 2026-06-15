@@ -19,17 +19,21 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/currencies/asia.hpp>
 #include <ql/indexes/bmaindex.hpp>
-#include <ql/indexes/ibor/custom.hpp>
 #include <ql/indexes/ibor/cdi.hpp>
+#include <ql/indexes/ibor/custom.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/ibor/shir.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/bespokecalendar.hpp>
 #include <ql/time/calendars/brazil.hpp>
+#include <ql/time/calendars/israel.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
 using namespace QuantLib;
@@ -218,6 +222,18 @@ BOOST_AUTO_TEST_CASE(testCdiIndex) {
     auto approx = pow(discountStart / discountEnd, 252.0) - 1.0;
     QL_ASSERT(std::fabs(0.05127 - forecast) < 1e-5, "discrepancy in fixing forecast computation\n");
     QL_ASSERT(std::fabs(approx - forecast) < 1e-6, "discrepancy in fixing forecast computation with approximation\n");
+}
+
+BOOST_AUTO_TEST_CASE(testShirIndex) {
+    BOOST_TEST_MESSAGE("Testing Shir index...");
+
+    auto shir = ext::make_shared<Shir>();
+
+    BOOST_CHECK_EQUAL(shir->familyName(), "Shir");
+    BOOST_CHECK_EQUAL(shir->fixingDays(), 0);
+    BOOST_CHECK(shir->currency() == ILSCurrency());
+    BOOST_CHECK(shir->fixingCalendar() == Israel(Israel::SHIR));
+    BOOST_CHECK(shir->dayCounter() == Actual365Fixed());
 }
 BOOST_AUTO_TEST_SUITE_END()
 

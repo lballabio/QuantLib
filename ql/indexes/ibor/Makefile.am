@@ -36,6 +36,7 @@ this_include_HEADERS = \
     saron.hpp \
     seklibor.hpp \
     shibor.hpp \
+    shir.hpp \
     sofr.hpp \
     sonia.hpp \
     swestr.hpp \
@@ -62,6 +63,7 @@ cpp_files = \
     libor.cpp \
     saron.cpp \
     shibor.cpp \
+    shir.cpp \
     sofr.cpp \
     sonia.cpp \
     zaronia.cpp
