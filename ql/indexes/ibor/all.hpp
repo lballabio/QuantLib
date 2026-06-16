@@ -33,6 +33,7 @@
 #include <ql/indexes/ibor/saron.hpp>
 #include <ql/indexes/ibor/seklibor.hpp>
 #include <ql/indexes/ibor/shibor.hpp>
+#include <ql/indexes/ibor/shir.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/indexes/ibor/sonia.hpp>
 #include <ql/indexes/ibor/swestr.hpp>
