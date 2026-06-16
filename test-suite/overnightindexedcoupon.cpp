@@ -37,6 +37,7 @@
 #include <ql/indexes/ibor/estr.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <iomanip>
+#include <ql/math/rounding.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1018,7 +1019,6 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithGearingsAndSpreads) {
         }
     }
 }
-
 BOOST_AUTO_TEST_CASE(testOvernightLegNPV) {
     BOOST_TEST_MESSAGE("Testing overnight leg NPV...");
 
@@ -1106,7 +1106,55 @@ BOOST_AUTO_TEST_CASE(testOvernightLegErrorConditions) {
     // Test that observation shift with simple averaging throws an error
     BOOST_CHECK_THROW(vars.makeLeg(Null<Natural>(), 0, true, false, RateAveraging::Simple), Error);
 }
+BOOST_AUTO_TEST_CASE(testOvernightCouponAmountRounding) {
+    BOOST_TEST_MESSAGE("Testing overnight coupon amount with rounded rate...");
 
+    CommonVars vars;
+    vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
+
+    auto unrounded = vars.makeCoupon(
+        Date(10, December, 2021),
+        Date(10, January, 2022));
+
+    auto rounded = ext::make_shared<OvernightIndexedCoupon>(
+        Date(10, January, 2022),
+        vars.notional,
+        Date(10, December, 2021),
+        Date(10, January, 2022),
+        vars.sofr,
+        1.0,
+        0.0,
+        Date(),
+        Date(),
+        DayCounter(),
+        false,
+        RateAveraging::Compound,
+        Null<Natural>(),
+        0,
+        false,
+        false,
+        Date(),
+        Date(),
+        Date(),
+        5); // rounding precision
+        Rate roundedRate =
+        ClosestRounding(5)(unrounded->rate());
+
+    Real expectedAmount =
+        vars.notional *
+        roundedRate *
+        unrounded->accrualPeriod();
+
+    BOOST_CHECK_NE(
+    rounded->amount(),
+    unrounded->amount());
+
+
+    BOOST_CHECK_CLOSE(
+        rounded->amount(),
+        expectedAmount,
+        1e-10);
+}
 BOOST_AUTO_TEST_CASE(testOvernightIndexedCouponPaymentBeforeAccrualEnd) {
     BOOST_TEST_MESSAGE("Testing that an overnight coupon with inconsistent dates throws...");
 
