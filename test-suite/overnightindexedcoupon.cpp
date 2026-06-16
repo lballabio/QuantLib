@@ -1150,7 +1150,7 @@ BOOST_AUTO_TEST_CASE(testOvernightCouponAmountRounding) {
     unrounded->amount());
 
 
-    BOOST_CHECK_CLOSE(
+    QL_CHECK_CLOSE(
         rounded->amount(),
         expectedAmount,
         1e-10);
