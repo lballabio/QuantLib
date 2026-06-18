@@ -241,14 +241,6 @@ namespace QuantLib {
         return numericTree;
     }
 
-    std::function<Real (Time)> GeneralizedHullWhite::speed() const {
-        return speed_;
-    }
-
-    std::function<Real (Time)> GeneralizedHullWhite::vol() const {
-        return vol_;
-    }
-
     //! vector to pass to 'calibrate' to fit only volatility
     std::vector<bool> GeneralizedHullWhite::fixedReversion() const {
         Size na = a_.params().size();
