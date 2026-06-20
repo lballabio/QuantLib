@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2024 Colin Alberts
+ Copyright (C) 2026 Colin Alberts
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -362,16 +362,16 @@ namespace QuantLib {
                 return DotProduct(gt, d);
             };
 
-            Real aLo = 0.0, aHi = 0.0, fLo = f0, dphiLo = dphi0;
+            Real aLo = 0.0, aHi = 0.0, fLo = f0;
             bool bracketed = false;
 
-            Real aPrev = 0.0, fPrev = f0, dphiPrev = dphi0;
+            Real aPrev = 0.0, fPrev = f0;
             Real a = std::min(1.0, stpMax);
 
             for (Size i = 0; i < maxIter; ++i) {
                 Real dphi = eval(a);
                 if (ft > f0 + c1 * a * dphi0 || (i > 0 && ft >= fPrev)) {
-                    aLo = aPrev; fLo = fPrev; dphiLo = dphiPrev;
+                    aLo = aPrev; fLo = fPrev;
                     aHi = a;
                     bracketed = true;
                     break;
@@ -381,12 +381,12 @@ namespace QuantLib {
                     return true; // strong Wolfe satisfied
                 }
                 if (dphi >= 0.0) {
-                    aLo = a; fLo = ft; dphiLo = dphi;
+                    aLo = a; fLo = ft;
                     aHi = aPrev;
                     bracketed = true;
                     break;
                 }
-                aPrev = a; fPrev = ft; dphiPrev = dphi;
+                aPrev = a; fPrev = ft;
                 if (a >= stpMax)
                     break; // cannot expand further
                 a = std::min(2.0 * a, stpMax);
@@ -405,7 +405,7 @@ namespace QuantLib {
                         }
                         if (dphi * (aHi - aLo) >= 0.0)
                             aHi = aLo;
-                        aLo = a; fLo = ft; dphiLo = dphi;
+                        aLo = a; fLo = ft;
                     }
                     if (std::fabs(aHi - aLo) <
                         QL_EPSILON * std::max(Real(1.0), std::fabs(a)))
