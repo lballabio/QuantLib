@@ -30,6 +30,7 @@
 #include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/math/optimization/goldstein.hpp>
+#include <ql/math/optimization/lbfgsb.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/steepestdescent.hpp>
@@ -118,7 +119,8 @@ enum OptimizationMethodType {simplex,
                              steepestDescent,
                              steepestDescent_goldstein,
                              bfgs,
-                             bfgs_goldstein};
+                             bfgs_goldstein,
+                             lbfgsb};
 
 std::string optimizationMethodTypeToString(OptimizationMethodType type) {
     switch (type) {
@@ -134,6 +136,8 @@ std::string optimizationMethodTypeToString(OptimizationMethodType type) {
         return "Steepest Descent";
       case bfgs:
         return "BFGS";
+      case lbfgsb:
+        return "L-BFGS-B";
       case conjugateGradient_goldstein:
         return "Conjugate Gradient (Goldstein line search)";
       case steepestDescent_goldstein:
@@ -173,6 +177,8 @@ ext::shared_ptr<OptimizationMethod> makeOptimizationMethod(
         return ext::make_shared<SteepestDescent>();
       case bfgs:
         return ext::make_shared<BFGS>();
+      case lbfgsb:
+        return ext::make_shared<LBFGSB>();
       case conjugateGradient_goldstein:
         return ext::shared_ptr<OptimizationMethod>(new ConjugateGradient(ext::make_shared<GoldsteinLineSearch>()));
       case steepestDescent_goldstein:
@@ -243,7 +249,7 @@ void setup() {
     // Set optimization methods for optimizer
     std::vector<OptimizationMethodType> optimizationMethodTypes = {
         simplex, levenbergMarquardt, levenbergMarquardt2, conjugateGradient,
-        bfgs //, steepestDescent
+        bfgs, lbfgsb //, steepestDescent
     };
     Real simplexLambda = 0.1;                   // characteristic search length for simplex
     Real levenbergMarquardtEpsfcn = 1.0e-8;     // parameters specific for Levenberg-Marquardt
@@ -357,6 +363,168 @@ BOOST_AUTO_TEST_CASE(nestedOptimizationTest) {
     EndCriteria endCriteria(1000, 100, 1e-5, 1e-5, 1e-5);
     optimizationMethod.minimize(problem, endCriteria);
 
+}
+
+
+// Extended Rosenbrock function with analytic gradient; global minimum 0
+// at (1, 1, ..., 1).
+class RosenbrockFunction : public CostFunction {
+  public:
+    Real value(const Array& x) const override {
+        Real f = 0.0;
+        for (Size i = 0; i + 1 < x.size(); ++i)
+            f += 100.0 * std::pow(x[i+1] - x[i]*x[i], 2) + std::pow(1.0 - x[i], 2);
+        return f;
+    }
+    Array values(const Array& x) const override { return Array(1, value(x)); }
+    void gradient(Array& grad, const Array& x) const override {
+        std::fill(grad.begin(), grad.end(), 0.0);
+        for (Size i = 0; i + 1 < x.size(); ++i) {
+            grad[i]   += -400.0*x[i]*(x[i+1]-x[i]*x[i]) - 2.0*(1.0-x[i]);
+            grad[i+1] +=  200.0*(x[i+1]-x[i]*x[i]);
+        }
+    }
+    Real valueAndGradient(Array& grad, const Array& x) const override {
+        gradient(grad, x);
+        return value(x);
+    }
+};
+
+// Separable quadratic sum_i w_i (x_i - c_i)^2; unconstrained minimum c.
+class WeightedQuadratic : public CostFunction {
+  public:
+    WeightedQuadratic(Array center, Array weight)
+    : center_(std::move(center)), weight_(std::move(weight)) {}
+    Real value(const Array& x) const override {
+        Real f = 0.0;
+        for (Size i = 0; i < x.size(); ++i)
+            f += weight_[i] * std::pow(x[i] - center_[i], 2);
+        return f;
+    }
+    Array values(const Array& x) const override { return Array(1, value(x)); }
+    void gradient(Array& grad, const Array& x) const override {
+        for (Size i = 0; i < x.size(); ++i)
+            grad[i] = 2.0 * weight_[i] * (x[i] - center_[i]);
+    }
+    Real valueAndGradient(Array& grad, const Array& x) const override {
+        gradient(grad, x);
+        return value(x);
+    }
+  private:
+    Array center_, weight_;
+};
+
+// infinity norm of the projected gradient P(x - g, l, u) - x, the
+// quantity that vanishes at a KKT point of a box-constrained problem.
+Real projectedGradientNorm(const Array& x, const Array& g,
+                           const Array& lo, const Array& hi) {
+    Real norm = 0.0;
+    for (Size i = 0; i < x.size(); ++i) {
+        Real proj = std::min(std::max(x[i] - g[i], lo[i]), hi[i]) - x[i];
+        norm = std::max(norm, std::fabs(proj));
+    }
+    return norm;
+}
+
+BOOST_AUTO_TEST_CASE(testLBFGSB) {
+    BOOST_TEST_MESSAGE("Testing L-BFGS-B optimizer...");
+
+    // Reference values below were produced with
+    //   scipy.optimize.minimize(method='L-BFGS-B').
+    // The unconstrained Rosenbrock and the box-constrained quadratics have
+    // analytic minima, used directly as the expected results.
+
+    EndCriteria endCriteria(1000, 100, 1e-12, 1e-12, 1e-10);
+
+    // 1. Unconstrained equivalence: Rosenbrock in 2 and 10 dimensions must
+    //    reach the analytic minimum (1,...,1), as plain (L-)BFGS does.
+    for (Size n : {Size(2), Size(10)}) {
+        RosenbrockFunction f;
+        NoConstraint c;
+        Array x0(n, -1.0);
+        Problem problem(f, c, x0);
+        LBFGSB optimizer(10, 1e-10, 1e1);
+        optimizer.minimize(problem, endCriteria);
+        Array x = problem.currentValue();
+        Array expected(n, 1.0);
+        Real xError = maxDifference(x, expected);
+        if (xError > 1e-4)
+            BOOST_ERROR("L-BFGS-B on unconstrained Rosenbrock-" << n << "D"
+                        << "\n    calculated: " << x
+                        << "\n    expected:   " << expected
+                        << "\n    x error:    " << xError);
+        if (problem.functionValue() > 1e-8)
+            BOOST_ERROR("L-BFGS-B Rosenbrock-" << n << "D f = "
+                        << problem.functionValue() << " (expected ~0)");
+    }
+
+    const Array center{3.0, -2.0, 0.5};
+    const Array weight{1.0, 4.0, 0.25};
+
+    // 2. Interior minimum: with wide bounds enclosing the unconstrained
+    //    optimum the result must equal the unconstrained minimizer.
+    {
+        WeightedQuadratic f(center, weight);
+        Array lo(3, -10.0), hi(3, 10.0);
+        NonhomogeneousBoundaryConstraint c(lo, hi);
+        Array x0(3, 0.0);
+        Problem problem(f, c, x0);
+        LBFGSB optimizer(10, 1e-10, 1e1);
+        optimizer.minimize(problem, endCriteria);
+        Real xError = maxDifference(problem.currentValue(), center);
+        if (xError > 1e-6)
+            BOOST_ERROR("L-BFGS-B interior-bound quadratic"
+                        << "\n    calculated: " << problem.currentValue()
+                        << "\n    expected:   " << center
+                        << "\n    x error:    " << xError);
+    }
+
+    // 3. Active-bound minimum: the box [0,1]^3 clips the unconstrained
+    //    optimum (3,-2,0.5), so the solution must sit on the boundary at
+    //    (1, 0, 0.5) with a vanishing projected gradient.
+    {
+        WeightedQuadratic f(center, weight);
+        Array lo(3, 0.0), hi(3, 1.0);
+        NonhomogeneousBoundaryConstraint c(lo, hi);
+        Array x0(3, 0.5);
+        Problem problem(f, c, x0);
+        LBFGSB optimizer;
+        optimizer.minimize(problem, endCriteria);
+        Array x = problem.currentValue();
+        Array expected{1.0, 0.0, 0.5};
+        Real xError = maxDifference(x, expected);
+        if (xError > 1e-7)
+            BOOST_ERROR("L-BFGS-B active-bound quadratic"
+                        << "\n    calculated: " << x
+                        << "\n    expected:   " << expected
+                        << "\n    x error:    " << xError);
+        Array g(3);
+        f.gradient(g, x);
+        Real pg = projectedGradientNorm(x, g, lo, hi);
+        if (pg > 1e-6)
+            BOOST_ERROR("L-BFGS-B active-bound projected gradient = " << pg
+                        << " (expected ~0)");
+    }
+
+    // 4. Bound-constrained Rosenbrock: the box [-2,0.5]^2 clips the optimum;
+    //    SciPy's L-BFGS-B converges to (0.5, 0.25) on the boundary.
+    {
+        RosenbrockFunction f;
+        Array lo(2, -2.0), hi(2, 0.5);
+        NonhomogeneousBoundaryConstraint c(lo, hi);
+        Array x0(2, -1.0);
+        Problem problem(f, c, x0);
+        LBFGSB optimizer(10, 1e-10, 1e1);
+        optimizer.minimize(problem, endCriteria);
+        Array x = problem.currentValue();
+        Array expected{0.5, 0.25};
+        Real xError = maxDifference(x, expected);
+        if (xError > 1e-5)
+            BOOST_ERROR("L-BFGS-B bound-constrained Rosenbrock"
+                        << "\n    calculated: " << x
+                        << "\n    expected:   " << expected
+                        << "\n    x error:    " << xError);
+    }
 }
 
 

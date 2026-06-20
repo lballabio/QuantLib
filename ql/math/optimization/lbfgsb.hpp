@@ -62,8 +62,7 @@ namespace QuantLib {
                Real pgTol = 1e-8,
                Real factr = 1e7);
 
-        EndCriteria::Type minimize(Problem& P,
-                                   const EndCriteria& endCriteria) override;
+        EndCriteria::Type minimize(Problem& P, const EndCriteria& endCriteria) override;
 
       private:
         Size m_;

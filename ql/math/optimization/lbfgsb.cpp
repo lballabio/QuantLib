@@ -17,10 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/matrix.hpp>
+#include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/lbfgsb.hpp>
 #include <ql/math/optimization/problem.hpp>
-#include <ql/math/optimization/constraint.hpp>
-#include <ql/math/matrix.hpp>
 #include <algorithm>
 #include <cmath>
 #include <deque>
@@ -35,8 +35,12 @@ namespace QuantLib {
 
         // A bound is "absent" when it equals +/- DBL_MAX (the value
         // returned by the default Constraint and by NoConstraint).
-        inline bool noUpper(Real u) { return u >= 0.5 * INF; }
-        inline bool noLower(Real l) { return l <= -0.5 * INF; }
+        inline bool noUpper(Real u) {
+            return u >= 0.5 * INF;
+        }
+        inline bool noLower(Real l) {
+            return l <= -0.5 * INF;
+        }
 
         // Compact limited-memory representation of the BFGS Hessian
         // approximation  B = theta I - W M W^T   (Byrd, Lu, Nocedal & Zhu
@@ -48,9 +52,8 @@ namespace QuantLib {
             Size col = 0;
         };
 
-        CompactRep buildCompactRep(const std::deque<Array>& S,
-                                   const std::deque<Array>& Y,
-                                   Real theta) {
+        CompactRep
+        buildCompactRep(const std::deque<Array>& S, const std::deque<Array>& Y, Real theta) {
             CompactRep rep;
             rep.theta = theta;
             rep.col = S.size();
@@ -147,13 +150,12 @@ namespace QuantLib {
                 return;
             }
 
-            std::sort(brk.begin(), brk.end(),
-                      [&t](Size a, Size b) { return t[a] < t[b]; });
+            std::sort(brk.begin(), brk.end(), [&t](Size a, Size b) { return t[a] < t[b]; });
 
             Array p = (rep.col > 0) ? (d * rep.W) : Array(0);
 
-            Real fp = -DotProduct(d, d);  // first derivative of the model, m'(0)
-            Real fpp = -rep.theta * fp;   // second derivative, theta d^T d - ...
+            Real fp = -DotProduct(d, d); // first derivative of the model, m'(0)
+            Real fpp = -rep.theta * fp;  // second derivative, theta d^T d - ...
             if (rep.col > 0)
                 fpp -= DotProduct(p, rep.M * p);
             Real fppFloor = QL_EPSILON * (fpp > 0.0 ? fpp : 1.0);
@@ -180,8 +182,7 @@ namespace QuantLib {
                     Array Mc = rep.M * c;
                     Array Mp = rep.M * p;
                     Array Mwb = rep.M * wb;
-                    fp += dt * fpp + gb * gb + rep.theta * gb * zb -
-                          gb * DotProduct(wb, Mc);
+                    fp += dt * fpp + gb * gb + rep.theta * gb * zb - gb * DotProduct(wb, Mc);
                     fpp += -rep.theta * gb * gb - 2.0 * gb * DotProduct(wb, Mp) -
                            gb * gb * DotProduct(wb, Mwb);
                     p += gb * wb;
@@ -310,10 +311,7 @@ namespace QuantLib {
         }
 
         // Largest feasible step length along d starting from x.
-        Real maxFeasibleStep(const Array& x,
-                             const Array& d,
-                             const Array& lo,
-                             const Array& hi) {
+        Real maxFeasibleStep(const Array& x, const Array& d, const Array& lo, const Array& hi) {
             Real stp = INF;
             for (Size i = 0; i < x.size(); ++i) {
                 if (d[i] > 0.0 && !noUpper(hi[i]))
@@ -371,7 +369,8 @@ namespace QuantLib {
             for (Size i = 0; i < maxIter; ++i) {
                 Real dphi = eval(a);
                 if (ft > f0 + c1 * a * dphi0 || (i > 0 && ft >= fPrev)) {
-                    aLo = aPrev; fLo = fPrev;
+                    aLo = aPrev;
+                    fLo = fPrev;
                     aHi = a;
                     bracketed = true;
                     break;
@@ -381,12 +380,14 @@ namespace QuantLib {
                     return true; // strong Wolfe satisfied
                 }
                 if (dphi >= 0.0) {
-                    aLo = a; fLo = ft;
+                    aLo = a;
+                    fLo = ft;
                     aHi = aPrev;
                     bracketed = true;
                     break;
                 }
-                aPrev = a; fPrev = ft;
+                aPrev = a;
+                fPrev = ft;
                 if (a >= stpMax)
                     break; // cannot expand further
                 a = std::min(2.0 * a, stpMax);
@@ -405,10 +406,10 @@ namespace QuantLib {
                         }
                         if (dphi * (aHi - aLo) >= 0.0)
                             aHi = aLo;
-                        aLo = a; fLo = ft;
+                        aLo = a;
+                        fLo = ft;
                     }
-                    if (std::fabs(aHi - aLo) <
-                        QL_EPSILON * std::max(Real(1.0), std::fabs(a)))
+                    if (std::fabs(aHi - aLo) < QL_EPSILON * std::max(Real(1.0), std::fabs(a)))
                         break;
                 }
             }
@@ -426,14 +427,13 @@ namespace QuantLib {
 
     }
 
-    LBFGSB::LBFGSB(Size memory, Real pgTol, Real factr)
-    : m_(memory), pgTol_(pgTol), factr_(factr) {
+    LBFGSB::LBFGSB(Size memory, Real pgTol, Real factr) : m_(memory), pgTol_(pgTol), factr_(factr) {
         QL_REQUIRE(memory > 0, "memory must be positive");
     }
 
     LBFGSB::LBFGSB(Array lowerBound, Array upperBound, Size memory, Real pgTol, Real factr)
-    : m_(memory), pgTol_(pgTol), factr_(factr),
-      lowerBound_(std::move(lowerBound)), upperBound_(std::move(upperBound)) {
+    : m_(memory), pgTol_(pgTol), factr_(factr), lowerBound_(std::move(lowerBound)),
+      upperBound_(std::move(upperBound)) {
         QL_REQUIRE(memory > 0, "memory must be positive");
         QL_REQUIRE(lowerBound_.size() == upperBound_.size(),
                    "lower and upper bound sizes are inconsistent");
