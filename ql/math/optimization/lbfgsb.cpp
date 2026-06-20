@@ -208,7 +208,7 @@ namespace QuantLib {
             // advance the still-free variables along the final segment
             if (exhausted)
                 dtMin = 0.0;
-            dtMin = std::max(dtMin, 0.0);
+            dtMin = std::max(dtMin, Real(0.0));
             tOld += dtMin;
             for (Size i = 0; i < n; ++i)
                 if (isFree[i])
@@ -303,7 +303,7 @@ namespace QuantLib {
                 else if (dhat[k] < 0.0 && !noLower(lo[i]))
                     alphaStar = std::min(alphaStar, (lo[i] - xcp[i]) / dhat[k]);
             }
-            alphaStar = std::max(alphaStar, 0.0);
+            alphaStar = std::max(alphaStar, Real(0.0));
 
             for (Size k = 0; k < nf; ++k)
                 xbar[freeIdx[k]] = xcp[freeIdx[k]] + alphaStar * dhat[k];
@@ -364,7 +364,7 @@ namespace QuantLib {
             bool bracketed = false;
 
             Real aPrev = 0.0, fPrev = f0;
-            Real a = std::min(1.0, stpMax);
+            Real a = std::min(Real(1.0), stpMax);
 
             for (Size i = 0; i < maxIter; ++i) {
                 Real dphi = eval(a);
@@ -463,7 +463,6 @@ namespace QuantLib {
         std::deque<Array> S, Y;
         Real theta = 1.0;
         Size iter = 0;
-        Size statState = 0;
 
         while (true) {
             // infinity norm of the projected gradient
@@ -576,7 +575,6 @@ namespace QuantLib {
             // relative function-reduction stop (SciPy's factr criterion)
             Real denom = std::max(std::max(std::fabs(fOld), std::fabs(f)), Real(1.0));
             if ((fOld - f) <= factr_ * QL_EPSILON * denom) {
-                endCriteria.checkStationaryFunctionValue(fOld, f, statState, ecType);
                 ecType = EndCriteria::StationaryFunctionValue;
                 break;
             }
