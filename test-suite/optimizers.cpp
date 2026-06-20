@@ -414,6 +414,23 @@ class WeightedQuadratic : public CostFunction {
     Array center_, weight_;
 };
 
+// Same separable quadratic but with no analytic gradient, forcing the
+// optimizer onto the base-class central-difference gradient path.
+class WeightedQuadraticValueOnly : public CostFunction {
+  public:
+    WeightedQuadraticValueOnly(Array center, Array weight)
+    : center_(std::move(center)), weight_(std::move(weight)) {}
+    Real value(const Array& x) const override {
+        Real f = 0.0;
+        for (Size i = 0; i < x.size(); ++i)
+            f += weight_[i] * std::pow(x[i] - center_[i], 2);
+        return f;
+    }
+    Array values(const Array& x) const override { return Array(1, value(x)); }
+  private:
+    Array center_, weight_;
+};
+
 // infinity norm of the projected gradient P(x - g, l, u) - x, the
 // quantity that vanishes at a KKT point of a box-constrained problem.
 Real projectedGradientNorm(const Array& x, const Array& g,
@@ -489,7 +506,12 @@ BOOST_AUTO_TEST_CASE(testLBFGSB) {
         Array x0(3, 0.5);
         Problem problem(f, c, x0);
         LBFGSB optimizer;
-        optimizer.minimize(problem, endCriteria);
+        EndCriteria::Type ret = optimizer.minimize(problem, endCriteria);
+        // the operative stop must be the projected-gradient (KKT) test, not
+        // the function-reduction fallback
+        if (ret != EndCriteria::ZeroGradientNorm)
+            BOOST_ERROR("L-BFGS-B active-bound quadratic ended with " << ret
+                        << " (expected ZeroGradientNorm)");
         Array x = problem.currentValue();
         Array expected{1.0, 0.0, 0.5};
         Real xError = maxDifference(x, expected);
@@ -521,6 +543,186 @@ BOOST_AUTO_TEST_CASE(testLBFGSB) {
         Real xError = maxDifference(x, expected);
         if (xError > 1e-5)
             BOOST_ERROR("L-BFGS-B bound-constrained Rosenbrock"
+                        << "\n    calculated: " << x
+                        << "\n    expected:   " << expected
+                        << "\n    x error:    " << xError);
+        Array g(2);
+        f.gradient(g, x);
+        Real pg = projectedGradientNorm(x, g, lo, hi);
+        if (pg > 1e-6)
+            BOOST_ERROR("L-BFGS-B bound-constrained Rosenbrock projected gradient = "
+                        << pg << " (expected ~0)");
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testLBFGSBActiveBounds) {
+    BOOST_TEST_MESSAGE("Testing L-BFGS-B with active bounds, corners and "
+                       "pinned coordinates...");
+
+    EndCriteria endCriteria(1000, 100, 1e-12, 1e-12, 1e-10);
+
+    // 1. All bounds active at a corner: the unconstrained optimum (5,5,5)
+    //    lies outside [0,1]^3, so every coordinate is pinned at its upper
+    //    bound and the solution is the corner (1,1,1) with a vanishing
+    //    projected gradient. Exercises the empty free-set subspace path.
+    {
+        WeightedQuadratic f(Array{5.0, 5.0, 5.0}, Array{1.0, 1.0, 1.0});
+        Array lo(3, 0.0), hi(3, 1.0);
+        NonhomogeneousBoundaryConstraint c(lo, hi);
+        Array x0(3, 0.5);
+        Problem problem(f, c, x0);
+        LBFGSB optimizer(10, 1e-10, 1e1);
+        optimizer.minimize(problem, endCriteria);
+        Array x = problem.currentValue();
+        Array expected(3, 1.0);
+        Real xError = maxDifference(x, expected);
+        Array g(3);
+        f.gradient(g, x);
+        Real pg = projectedGradientNorm(x, g, lo, hi);
+        if (xError > 1e-8 || pg > 1e-8)
+            BOOST_ERROR("L-BFGS-B all-active corner"
+                        << "\n    calculated: " << x
+                        << "\n    expected:   " << expected
+                        << "\n    x error:    " << xError
+                        << "\n    proj. grad: " << pg);
+    }
+
+    // 2. Two simultaneously active bounds reached through distinct
+    //    breakpoints: the disparate weights make the projected-gradient
+    //    path hit the two upper bounds at different step lengths, so the
+    //    Cauchy search must traverse more than one breakpoint.
+    {
+        WeightedQuadratic f(Array{10.0, 10.0}, Array{1.0, 100.0});
+        Array lo(2, 0.0), hi(2, 1.0);
+        NonhomogeneousBoundaryConstraint c(lo, hi);
+        Array x0{0.9, 0.1};
+        Problem problem(f, c, x0);
+        LBFGSB optimizer(10, 1e-10, 1e1);
+        optimizer.minimize(problem, endCriteria);
+        Array x = problem.currentValue();
+        Array expected{1.0, 1.0};
+        Real xError = maxDifference(x, expected);
+        Array g(2);
+        f.gradient(g, x);
+        Real pg = projectedGradientNorm(x, g, lo, hi);
+        if (xError > 1e-8 || pg > 1e-8)
+            BOOST_ERROR("L-BFGS-B two-active-bound quadratic"
+                        << "\n    calculated: " << x
+                        << "\n    expected:   " << expected
+                        << "\n    x error:    " << xError
+                        << "\n    proj. grad: " << pg);
+    }
+
+    // 3. Single variable (n = 1) with an active bound: the minimum of
+    //    (x-5)^2 over [0,1] is the boundary point x = 1.
+    {
+        WeightedQuadratic f(Array{5.0}, Array{1.0});
+        Array lo(1, 0.0), hi(1, 1.0);
+        NonhomogeneousBoundaryConstraint c(lo, hi);
+        Array x0(1, 0.5);
+        Problem problem(f, c, x0);
+        LBFGSB optimizer(10, 1e-10, 1e1);
+        optimizer.minimize(problem, endCriteria);
+        Array x = problem.currentValue();
+        Array g(1);
+        f.gradient(g, x);
+        Real xError = maxDifference(x, Array{1.0});
+        Real pg = projectedGradientNorm(x, g, lo, hi);
+        if (xError > 1e-8 || pg > 1e-8)
+            BOOST_ERROR("L-BFGS-B n=1 active bound"
+                        << "\n    calculated: " << x
+                        << "\n    x error:    " << xError
+                        << "\n    proj. grad: " << pg);
+    }
+
+    // 4. Pinned coordinate (lower == upper): the third variable is frozen
+    //    at 0.25 while the first two reach their unconstrained optima.
+    {
+        WeightedQuadratic f(Array{3.0, -2.0, 0.5}, Array{1.0, 4.0, 0.25});
+        Array lo{-10.0, -10.0, 0.25}, hi{10.0, 10.0, 0.25};
+        NonhomogeneousBoundaryConstraint c(lo, hi);
+        Array x0(3, 0.0);
+        Problem problem(f, c, x0);
+        LBFGSB optimizer(10, 1e-10, 1e1);
+        optimizer.minimize(problem, endCriteria);
+        Array x = problem.currentValue();
+        Array expected{3.0, -2.0, 0.25};
+        Real xError = maxDifference(x, expected);
+        if (xError > 1e-6)
+            BOOST_ERROR("L-BFGS-B pinned coordinate (lower==upper)"
+                        << "\n    calculated: " << x
+                        << "\n    expected:   " << expected
+                        << "\n    x error:    " << xError);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testLBFGSBCoverage) {
+    BOOST_TEST_MESSAGE("Testing L-BFGS-B small memory, infeasible start and "
+                       "finite-difference gradient...");
+
+    EndCriteria endCriteria(1000, 100, 1e-12, 1e-12, 1e-10);
+
+    // 1. Limited memory smaller than the dimension (m < n): forces eviction
+    //    of correction pairs and repeated rebuilds of the compact
+    //    representation while still converging to (1, ..., 1).
+    {
+        const Size n = 20;
+        RosenbrockFunction f;
+        NoConstraint c;
+        Array x0(n, -1.0);
+        Problem problem(f, c, x0);
+        LBFGSB optimizer(3, 1e-8, 1e1); // memory = 3 < n = 20
+        optimizer.minimize(problem, endCriteria);
+        Array x = problem.currentValue();
+        Array expected(n, 1.0);
+        Real xError = maxDifference(x, expected);
+        if (xError > 1e-4)
+            BOOST_ERROR("L-BFGS-B small-memory Rosenbrock-" << n << "D (m=3)"
+                        << "\n    x error: " << xError);
+        if (problem.functionValue() > 1e-8)
+            BOOST_ERROR("L-BFGS-B small-memory Rosenbrock f = "
+                        << problem.functionValue() << " (expected ~0)");
+    }
+
+    // 2. Infeasible start point: x0 lies outside the box and must be clipped
+    //    into [l,u] before optimization; the solution is unaffected.
+    {
+        WeightedQuadratic f(Array{3.0, -2.0, 0.5}, Array{1.0, 4.0, 0.25});
+        Array lo(3, 0.0), hi(3, 1.0);
+        NonhomogeneousBoundaryConstraint c(lo, hi);
+        Array x0(3, 5.0); // outside [0,1]^3
+        Problem problem(f, c, x0);
+        LBFGSB optimizer(10, 1e-10, 1e1);
+        optimizer.minimize(problem, endCriteria);
+        Array x = problem.currentValue();
+        Array expected{1.0, 0.0, 0.5};
+        Real xError = maxDifference(x, expected);
+        if (xError > 1e-7)
+            BOOST_ERROR("L-BFGS-B infeasible start"
+                        << "\n    calculated: " << x
+                        << "\n    expected:   " << expected
+                        << "\n    x error:    " << xError);
+    }
+
+    // 3. Finite-difference gradient with active bounds: the cost function
+    //    exposes no analytic gradient, so the optimizer uses central
+    //    differences. The interior coordinate (0.7) has to move off its
+    //    starting value, unlike the two clipped coordinates.
+    {
+        WeightedQuadraticValueOnly f(Array{3.0, -2.0, 0.7}, Array{1.0, 4.0, 0.25});
+        Array lo(3, 0.0), hi(3, 1.0);
+        NonhomogeneousBoundaryConstraint c(lo, hi);
+        Array x0(3, 0.5);
+        Problem problem(f, c, x0);
+        LBFGSB optimizer(10, 1e-6, 1e7);
+        optimizer.minimize(problem, endCriteria);
+        Array x = problem.currentValue();
+        Array expected{1.0, 0.0, 0.7};
+        Real xError = maxDifference(x, expected);
+        if (xError > 1e-5)
+            BOOST_ERROR("L-BFGS-B finite-difference gradient with bounds"
                         << "\n    calculated: " << x
                         << "\n    expected:   " << expected
                         << "\n    x error:    " << xError);
