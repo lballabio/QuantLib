@@ -151,8 +151,9 @@ namespace QuantLib {
         Real npv = 0.0;
         for (Size j = 0; j < 2; j++) {
             for (const auto& i : swap_->leg(j)) {
+                QL_REQUIRE(i->isCoupon(), "expected Coupon");
                 npv +=
-                    ext::dynamic_pointer_cast<Coupon>(i)->accrualStartDate() >= iterExerciseDate ?
+                    ext::static_pointer_cast<Coupon>(i)->accrualStartDate() >= iterExerciseDate ?
                         Real(i->amount() * disTs_->discount(i->date())) :
                         0.0;
             }

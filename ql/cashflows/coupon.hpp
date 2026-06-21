@@ -55,6 +55,7 @@ namespace QuantLib {
         //! \name CashFlow interface
         //@{
         Date exCouponDate() const override { return exCouponDate_; }
+        bool isCoupon() const override { return true; }
         //@}
         //! \name Inspectors
         //@{

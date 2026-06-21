@@ -367,9 +367,9 @@ namespace QuantLib {
         Date lastPaymentDate = Date();
         notionalSchedule_.emplace_back();
         for (auto& cashflow : cashflows_) {
-            ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(cashflow);
-            if (!coupon)
+            if (!cashflow->isCoupon())
                 continue;
+            auto const& coupon = ext::static_pointer_cast<Coupon>(cashflow);
 
             Real notional = coupon->nominal();
             // we add the notional only if it is the first one...

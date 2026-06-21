@@ -66,6 +66,8 @@ namespace QuantLib {
         virtual Date exCouponDate() const { return {}; };
         //! returns true if the cashflow is trading ex-coupon on the refDate
         bool tradingExCoupon(const Date& refDate = Date()) const;
+        //! returns true if the cashflow is a coupon
+        virtual bool isCoupon() const { return false; }
 
         //@}
         //! \name Visitability
