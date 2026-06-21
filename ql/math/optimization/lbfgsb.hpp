@@ -26,8 +26,23 @@
 
 #include <ql/math/array.hpp>
 #include <ql/math/optimization/method.hpp>
+#include <vector>
 
 namespace QuantLib {
+
+    class Matrix;
+
+    namespace detail {
+        /*! \brief Dense BFGS Hessian approximation
+                   \f$ B = \theta I - W M W^T \f$ assembled from the
+                   limited-memory compact representation of the correction pairs \p S, \p Y.
+
+            Exposed to compare the compact representation against
+            the reference dense BFGS for unit testing.
+        */
+        Matrix
+        lbfgsbCompactHessian(const std::vector<Array>& S, const std::vector<Array>& Y, Real theta);
+    }
 
     //! Limited-memory BFGS for bound-constrained optimization (L-BFGS-B)
     /*! Faithful implementation of the algorithm of Byrd, Lu, Nocedal and
@@ -53,7 +68,7 @@ namespace QuantLib {
         explicit LBFGSB(Size memory = 10, Real pgTol = 1e-8, Real factr = 1e7);
 
         /*! Convenience constructor taking explicit box bounds; these
-            override the bounds of the Problem's constraint. Use
+            override the bounds of the problem's constraint. Use
             \f$ \pm \mathrm{DBL\_MAX} \f$ for unbounded coordinates.
         */
         LBFGSB(Array lowerBound,
@@ -62,7 +77,7 @@ namespace QuantLib {
                Real pgTol = 1e-8,
                Real factr = 1e7);
 
-        EndCriteria::Type minimize(Problem& P, const EndCriteria& endCriteria) override;
+        EndCriteria::Type minimize(problem& P, const EndCriteria& endCriteria) override;
 
       private:
         Size m_;
