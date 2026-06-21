@@ -29,21 +29,7 @@
 #include <vector>
 
 namespace QuantLib {
-
-    class Matrix;
-
-    namespace detail {
-        /*! \brief Dense BFGS Hessian approximation
-                   \f$ B = \theta I - W M W^T \f$ assembled from the
-                   limited-memory compact representation of the correction pairs \p S, \p Y.
-
-            Exposed to compare the compact representation against
-            the reference dense BFGS for unit testing.
-        */
-        Matrix
-        lbfgsbCompactHessian(const std::vector<Array>& S, const std::vector<Array>& Y, Real theta);
-    }
-
+    
     //! Limited-memory BFGS for bound-constrained optimization (L-BFGS-B)
     /*! Faithful implementation of the algorithm of Byrd, Lu, Nocedal and
         Zhu, "A Limited Memory Algorithm for Bound Constrained
