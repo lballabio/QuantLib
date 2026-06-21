@@ -366,8 +366,7 @@ BOOST_AUTO_TEST_CASE(nestedOptimizationTest) {
 }
 
 
-// Extended Rosenbrock function with analytic gradient; global minimum 0
-// at (1, 1, ..., 1).
+// Extended Rosenbrock function with analytic gradient; global minimum 0 at \vec{1}
 class RosenbrockFunction : public CostFunction {
   public:
     Real value(const Array& x) const override {
@@ -390,7 +389,7 @@ class RosenbrockFunction : public CostFunction {
     }
 };
 
-// Separable quadratic sum_i w_i (x_i - c_i)^2; unconstrained minimum c.
+// Separable quadratic sum_i {w_i (x_i - c_i)^2}; unconstrained minimum c.
 class WeightedQuadratic : public CostFunction {
   public:
     WeightedQuadratic(Array center, Array weight)
@@ -453,8 +452,8 @@ BOOST_AUTO_TEST_CASE(testLBFGSB) {
 
     EndCriteria endCriteria(1000, 100, 1e-12, 1e-12, 1e-10);
 
-    // 1. Unconstrained equivalence: Rosenbrock in 2 and 10 dimensions must
-    //    reach the analytic minimum (1,...,1), as plain (L-)BFGS does.
+    // Unconstrained equivalence: Rosenbrock in 2 and 10 dimensions must
+    // reach the analytic minimum \vec{1}, as plain (L-)BFGS does.
     for (Size n : {Size(2), Size(10)}) {
         RosenbrockFunction f;
         NoConstraint c;
@@ -478,8 +477,8 @@ BOOST_AUTO_TEST_CASE(testLBFGSB) {
     const Array center{3.0, -2.0, 0.5};
     const Array weight{1.0, 4.0, 0.25};
 
-    // 2. Interior minimum: with wide bounds enclosing the unconstrained
-    //    optimum the result must equal the unconstrained minimizer.
+    // Interior minimum: with wide bounds enclosing the unconstrained
+    // optimum the result must equal the unconstrained minimizer.
     {
         WeightedQuadratic f(center, weight);
         Array lo(3, -10.0), hi(3, 10.0);
@@ -496,9 +495,9 @@ BOOST_AUTO_TEST_CASE(testLBFGSB) {
                         << "\n    x error:    " << xError);
     }
 
-    // 3. Active-bound minimum: the box [0,1]^3 clips the unconstrained
-    //    optimum (3,-2,0.5), so the solution must sit on the boundary at
-    //    (1, 0, 0.5) with a vanishing projected gradient.
+    // Active-bound minimum: the box [0,1]^3 clips the unconstrained
+    // optimum (3,-2,0.5), so the solution must sit on the boundary at
+    // (1, 0, 0.5) with a vanishing projected gradient.
     {
         WeightedQuadratic f(center, weight);
         Array lo(3, 0.0), hi(3, 1.0);
@@ -528,8 +527,8 @@ BOOST_AUTO_TEST_CASE(testLBFGSB) {
                         << " (expected ~0)");
     }
 
-    // 4. Bound-constrained Rosenbrock: the box [-2,0.5]^2 clips the optimum;
-    //    SciPy's L-BFGS-B converges to (0.5, 0.25) on the boundary.
+    // Bound-constrained Rosenbrock: the box [-2,0.5]^2 clips the optimum;
+    // SciPy's L-BFGS-B converges to (0.5, 0.25) on the boundary.
     {
         RosenbrockFunction f;
         Array lo(2, -2.0), hi(2, 0.5);
@@ -562,10 +561,10 @@ BOOST_AUTO_TEST_CASE(testLBFGSBActiveBounds) {
 
     EndCriteria endCriteria(1000, 100, 1e-12, 1e-12, 1e-10);
 
-    // 1. All bounds active at a corner: the unconstrained optimum (5,5,5)
-    //    lies outside [0,1]^3, so every coordinate is pinned at its upper
-    //    bound and the solution is the corner (1,1,1) with a vanishing
-    //    projected gradient. Exercises the empty free-set subspace path.
+    // All bounds active at a corner: the unconstrained optimum (5,5,5)
+    // lies outside [0,1]^3, so every coordinate is pinned at its upper
+    // bound and the solution is the corner (1,1,1) with a vanishing
+    // projected gradient. Exercises the empty free-set subspace path.
     {
         WeightedQuadratic f(Array{5.0, 5.0, 5.0}, Array{1.0, 1.0, 1.0});
         Array lo(3, 0.0), hi(3, 1.0);
@@ -588,10 +587,10 @@ BOOST_AUTO_TEST_CASE(testLBFGSBActiveBounds) {
                         << "\n    proj. grad: " << pg);
     }
 
-    // 2. Two simultaneously active bounds reached through distinct
-    //    breakpoints: the disparate weights make the projected-gradient
-    //    path hit the two upper bounds at different step lengths, so the
-    //    Cauchy search must traverse more than one breakpoint.
+    // Two simultaneously active bounds reached through distinct
+    // breakpoints: the disparate weights make the projected-gradient
+    // path hit the two upper bounds at different step lengths, so the
+    // Cauchy search must traverse more than one breakpoint.
     {
         WeightedQuadratic f(Array{10.0, 10.0}, Array{1.0, 100.0});
         Array lo(2, 0.0), hi(2, 1.0);
@@ -614,8 +613,8 @@ BOOST_AUTO_TEST_CASE(testLBFGSBActiveBounds) {
                         << "\n    proj. grad: " << pg);
     }
 
-    // 3. Single variable (n = 1) with an active bound: the minimum of
-    //    (x-5)^2 over [0,1] is the boundary point x = 1.
+    // Single variable (n = 1) with an active bound: the minimum of
+    // (x-5)^2 over [0,1] is the boundary point x = 1.
     {
         WeightedQuadratic f(Array{5.0}, Array{1.0});
         Array lo(1, 0.0), hi(1, 1.0);
@@ -636,8 +635,8 @@ BOOST_AUTO_TEST_CASE(testLBFGSBActiveBounds) {
                         << "\n    proj. grad: " << pg);
     }
 
-    // 4. Pinned coordinate (lower == upper): the third variable is frozen
-    //    at 0.25 while the first two reach their unconstrained optima.
+    // Pinned coordinate (lower == upper): the third variable is frozen
+    // at 0.25 while the first two reach their unconstrained optima.
     {
         WeightedQuadratic f(Array{3.0, -2.0, 0.5}, Array{1.0, 4.0, 0.25});
         Array lo{-10.0, -10.0, 0.25}, hi{10.0, 10.0, 0.25};
@@ -664,9 +663,9 @@ BOOST_AUTO_TEST_CASE(testLBFGSBCoverage) {
 
     EndCriteria endCriteria(1000, 100, 1e-12, 1e-12, 1e-10);
 
-    // 1. Limited memory smaller than the dimension (m < n): forces eviction
-    //    of correction pairs and repeated rebuilds of the compact
-    //    representation while still converging to (1, ..., 1).
+    // Limited memory smaller than the dimension (m < n): forces eviction
+    // of correction pairs and repeated rebuilds of the compact
+    // representation while still converging to \vec{1}.
     {
         const Size n = 20;
         RosenbrockFunction f;
@@ -686,8 +685,8 @@ BOOST_AUTO_TEST_CASE(testLBFGSBCoverage) {
                         << problem.functionValue() << " (expected ~0)");
     }
 
-    // 2. Infeasible start point: x0 lies outside the box and must be clipped
-    //    into [l,u] before optimization; the solution is unaffected.
+    // Infeasible start point: x0 lies outside the box and must be clipped
+    // into [l,u] before optimization; the solution is unaffected.
     {
         WeightedQuadratic f(Array{3.0, -2.0, 0.5}, Array{1.0, 4.0, 0.25});
         Array lo(3, 0.0), hi(3, 1.0);
@@ -706,10 +705,10 @@ BOOST_AUTO_TEST_CASE(testLBFGSBCoverage) {
                         << "\n    x error:    " << xError);
     }
 
-    // 3. Finite-difference gradient with active bounds: the cost function
-    //    exposes no analytic gradient, so the optimizer uses central
-    //    differences. The interior coordinate (0.7) has to move off its
-    //    starting value, unlike the two clipped coordinates.
+    // Finite-difference gradient with active bounds: the cost function
+    // exposes no analytic gradient, so the optimizer uses central
+    // differences. The interior coordinate (0.7) has to move off its
+    // starting value, unlike the two clipped coordinates.
     {
         WeightedQuadraticValueOnly f(Array{3.0, -2.0, 0.7}, Array{1.0, 4.0, 0.25});
         Array lo(3, 0.0), hi(3, 1.0);
