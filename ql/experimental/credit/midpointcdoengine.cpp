@@ -61,7 +61,7 @@ namespace QuantLib {
                 results_.expectedTrancheLoss.push_back(0.);
                 continue;
             }
-            QL_REQUIRE(i->isCoupon, "expected Coupon");
+            QL_REQUIRE(i->isCoupon(), "expected Coupon");
             auto const& coupon = ext::static_pointer_cast<Coupon>(i);
             Date paymentDate = coupon->date();
             Date startDate = std::max(coupon->accrualStartDate(),
