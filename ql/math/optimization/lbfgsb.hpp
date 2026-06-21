@@ -29,7 +29,7 @@
 #include <vector>
 
 namespace QuantLib {
-    
+
     //! Limited-memory BFGS for bound-constrained optimization (L-BFGS-B)
     /*! Faithful implementation of the algorithm of Byrd, Lu, Nocedal and
         Zhu, "A Limited Memory Algorithm for Bound Constrained
@@ -63,7 +63,7 @@ namespace QuantLib {
                Real pgTol = 1e-8,
                Real factr = 1e7);
 
-        EndCriteria::Type minimize(problem& P, const EndCriteria& endCriteria) override;
+        EndCriteria::Type minimize(Problem& P, const EndCriteria& endCriteria) override;
 
       private:
         Size m_;
