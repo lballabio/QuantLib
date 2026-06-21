@@ -427,28 +427,6 @@ namespace QuantLib {
 
     }
 
-    namespace detail {
-
-        // Assemble the dense Hessian approximation from the compact
-        // representation so it can be checked against a reference recursion.
-        Matrix
-        lbfgsbCompactHessian(const std::vector<Array>& S, const std::vector<Array>& Y, Real theta) {
-            QL_REQUIRE(S.size() == Y.size(),
-                       "S and Y must have the same number of correction pairs");
-            QL_REQUIRE(!S.empty(), "at least one correction pair is required");
-            std::deque<Array> Sd(S.begin(), S.end()), Yd(Y.begin(), Y.end());
-            CompactRep rep = buildCompactRep(Sd, Yd, theta);
-            Size n = S.front().size();
-            Matrix B(n, n, 0.0);
-            for (Size i = 0; i < n; ++i)
-                B[i][i] = theta;
-            if (rep.col == 0)
-                return B;
-            return B - rep.W * (rep.M * transpose(rep.W));
-        }
-
-    }
-
     LBFGSB::LBFGSB(Size memory, Real pgTol, Real factr) : m_(memory), pgTol_(pgTol), factr_(factr) {
         QL_REQUIRE(memory > 0, "memory must be positive");
     }
