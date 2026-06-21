@@ -144,12 +144,10 @@ namespace QuantLib {
                 this->process_);
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        return ext::shared_ptr<
-                       typename MCEuropeanEngine<RNG,S>::path_pricer_type>(
-          new EuropeanPathPricer(
+        return ext::make_shared<EuropeanPathPricer>(
               payoff->optionType(),
               payoff->strike(),
-              process->riskFreeRate()->discount(this->timeGrid().back())));
+              process->riskFreeRate()->discount(this->timeGrid().back()));
     }
 
 
@@ -230,15 +228,14 @@ namespace QuantLib {
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return ext::shared_ptr<PricingEngine>(new
-            MCEuropeanEngine<RNG,S>(process_,
+        return ext::make_shared<MCEuropeanEngine<RNG,S>>(process_,
                                     steps_,
                                     stepsPerYear_,
                                     brownianBridge_,
                                     antithetic_,
                                     samples_, tolerance_,
                                     maxSamples_,
-                                    seed_));
+                                    seed_);
     }
 
 

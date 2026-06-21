@@ -94,8 +94,7 @@ namespace QuantLib {
             xMax = std::log(arguments_.barrier);
         }
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(
+        const ext::shared_ptr<Fdm1dMesher> equityMesher(ext::make_shared<FdmBlackScholesMesher>(
                 xGrid_,
                 FdmBlackScholesMesher::processHelper(
                     process->s0(), process->dividendYield(),

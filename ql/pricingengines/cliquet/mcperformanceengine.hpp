@@ -66,9 +66,8 @@ namespace QuantLib {
             TimeGrid grid = this->timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
-            return ext::shared_ptr<path_generator_type>(
-                         new path_generator_type(process_, grid,
-                                                 gen, brownianBridge_));
+            return ext::make_shared<path_generator_type>(process_, grid,
+                                                 gen, brownianBridge_);
         }
         ext::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
@@ -174,11 +173,9 @@ namespace QuantLib {
         discounts.push_back(this->process_->riskFreeRate()->discount(
                                             arguments_.exercise->lastDate()));
 
-        return ext::shared_ptr<
-            typename MCPerformanceEngine<RNG,S>::path_pricer_type>(
-                         new PerformanceOptionPathPricer(payoff->optionType(),
+        return ext::make_shared<PerformanceOptionPathPricer>(payoff->optionType(),
                                                          payoff->strike(),
-                                                         discounts));
+                                                         discounts);
     }
 
 
@@ -241,14 +238,13 @@ namespace QuantLib {
     inline
     MakeMCPerformanceEngine<RNG,S>::operator ext::shared_ptr<PricingEngine>()
                                                                       const {
-        return ext::shared_ptr<PricingEngine>(new
-            MCPerformanceEngine<RNG,S>(process_,
+        return ext::make_shared<MCPerformanceEngine<RNG,S>>(process_,
                                        brownianBridge_,
                                        antithetic_,
                                        samples_,
                                        tolerance_,
                                        maxSamples_,
-                                       seed_));
+                                       seed_);
     }
 
 }
