@@ -35,6 +35,8 @@ namespace QuantLib {
 
         // A bound is "absent" when it equals +/- DBL_MAX (the value
         // returned by the default Constraint and by NoConstraint).
+        // The 0.5 factor guards against overflow in subsequent arithmetic
+        // such as (x - bound) or (bound - x).
         inline bool noUpper(Real u) {
             return u >= 0.5 * INF;
         }
@@ -55,14 +57,17 @@ namespace QuantLib {
         CompactRep
         buildCompactRep(const std::deque<Array>& S, const std::deque<Array>& Y, Real theta) {
             CompactRep rep;
+
             rep.theta = theta;
             rep.col = S.size();
-            Size col = rep.col;
+            const Size col = rep.col;
+
             if (col == 0)
                 return rep;
 
-            Size n = S.front().size();
+            const Size n = S.front().size();
             Matrix W(n, 2 * col);
+
             for (Size j = 0; j < col; ++j)
                 for (Size i = 0; i < n; ++i) {
                     W[i][j] = Y[j][i];
@@ -71,6 +76,7 @@ namespace QuantLib {
 
             // small Gram matrices S^T S and S^T Y
             Matrix StS(col, col), StY(col, col);
+
             for (Size i = 0; i < col; ++i)
                 for (Size j = 0; j < col; ++j) {
                     StS[i][j] = DotProduct(S[i], S[j]);
@@ -80,13 +86,16 @@ namespace QuantLib {
             // middle matrix  [ -D  L^T ; L  theta S^T S ]  with
             // D = diag(s_i.y_i) and L the strictly lower part of S^T Y.
             Matrix mid(2 * col, 2 * col, 0.0);
+
             for (Size i = 0; i < col; ++i) {
                 mid[i][i] = -StY[i][i]; // -D
+
                 for (Size j = 0; j < col; ++j) {
                     if (i > j)
                         mid[col + i][j] = StY[i][j]; // L
                     if (j > i)
                         mid[i][col + j] = StY[j][i]; // L^T
+
                     mid[col + i][col + j] = theta * StS[i][j];
                 }
             }
@@ -98,8 +107,10 @@ namespace QuantLib {
 
         inline Array wRow(const Matrix& W, Size i) {
             Array r(W.columns());
+
             for (Size k = 0; k < r.size(); ++k)
                 r[k] = W[i][k];
+
             return r;
         }
 
@@ -117,8 +128,8 @@ namespace QuantLib {
                                     Array& xcp,
                                     Array& cOut,
                                     std::vector<bool>& isFree) {
-            Size n = x.size();
-            Size m2 = 2 * rep.col;
+            const Size n = x.size();
+            const Size m2 = 2 * rep.col;
 
             xcp = x;
             isFree.assign(n, true);
@@ -127,13 +138,16 @@ namespace QuantLib {
             std::vector<Size> brk; // indices with a strictly positive breakpoint
             for (Size i = 0; i < n; ++i) {
                 Real ti;
+
                 if (g[i] < 0.0)
                     ti = noUpper(hi[i]) ? INF : (x[i] - hi[i]) / g[i];
                 else if (g[i] > 0.0)
                     ti = noLower(lo[i]) ? INF : (x[i] - lo[i]) / g[i];
                 else
                     ti = INF;
+
                 t[i] = ti;
+
                 if (ti <= 0.0) {
                     // already sitting on the bound the gradient pushes into
                     d[i] = 0.0;
@@ -156,9 +170,11 @@ namespace QuantLib {
 
             Real fp = -DotProduct(d, d); // first derivative of the model, m'(0)
             Real fpp = -rep.theta * fp;  // second derivative, theta d^T d - ...
+
             if (rep.col > 0)
                 fpp -= DotProduct(p, rep.M * p);
             Real fppFloor = QL_EPSILON * (fpp > 0.0 ? fpp : 1.0);
+
             Real dtMin = (fpp > 0.0) ? -fp / fpp : 0.0;
 
             Real tOld = 0.0;
@@ -178,10 +194,12 @@ namespace QuantLib {
 
                 if (rep.col > 0) {
                     c += dt * p;
+
                     Array wb = wRow(rep.W, b);
                     Array Mc = rep.M * c;
                     Array Mp = rep.M * p;
                     Array Mwb = rep.M * wb;
+
                     fp += dt * fpp + gb * gb + rep.theta * gb * zb - gb * DotProduct(wb, Mc);
                     fpp += -rep.theta * gb * gb - 2.0 * gb * DotProduct(wb, Mp) -
                            gb * gb * DotProduct(wb, Mwb);
@@ -190,8 +208,10 @@ namespace QuantLib {
                     fp += dt * fpp + gb * gb + rep.theta * gb * zb;
                     fpp += -rep.theta * gb * gb;
                 }
+
                 if (fpp < fppFloor)
                     fpp = fppFloor;
+
                 d[b] = 0.0;
                 dtMin = (fpp > 0.0) ? -fp / fpp : 0.0;
                 tOld = tb;
@@ -200,6 +220,7 @@ namespace QuantLib {
                     exhausted = true;
                     break;
                 }
+
                 b = brk[ptr];
                 tb = t[b];
                 dt = tb - tOld;
@@ -208,11 +229,14 @@ namespace QuantLib {
             // advance the still-free variables along the final segment
             if (exhausted)
                 dtMin = 0.0;
+
             dtMin = std::max(dtMin, Real(0.0));
             tOld += dtMin;
+
             for (Size i = 0; i < n; ++i)
                 if (isFree[i])
                     xcp[i] = x[i] + tOld * d[i];
+
             if (rep.col > 0)
                 c += dtMin * p;
             cOut = c;
@@ -230,19 +254,21 @@ namespace QuantLib {
                                    const Array& hi,
                                    const CompactRep& rep,
                                    const std::vector<bool>& isFree) {
-            Size n = x.size();
+            const Size n = x.size();
             std::vector<Size> freeIdx;
+
             for (Size i = 0; i < n; ++i)
                 if (isFree[i])
                     freeIdx.push_back(i);
-            Size nf = freeIdx.size();
+
+            const Size nf = freeIdx.size();
 
             Array xbar = xcp;
             if (nf == 0)
                 return xbar;
 
-            Real theta = rep.theta;
-            Size m2 = 2 * rep.col;
+            const Real theta = rep.theta;
+            const Size m2 = 2 * rep.col;
 
             // reduced gradient of the model at the Cauchy point:
             //   r = [ g + theta (xcp - x) - W M c ]  restricted to free vars
@@ -263,23 +289,30 @@ namespace QuantLib {
             } else {
                 // v = M (W_free^T r)
                 Array wtr(m2, 0.0);
+
                 for (Size k = 0; k < nf; ++k) {
                     Size i = freeIdx[k];
+
                     for (Size j = 0; j < m2; ++j)
                         wtr[j] += rep.W[i][j] * r[k];
                 }
+
                 Array v = rep.M * wtr;
 
                 // N = I - (1/theta) M (W_free^T W_free)
                 Matrix WftWf(m2, m2, 0.0);
+
                 for (Size k = 0; k < nf; ++k) {
                     Size i = freeIdx[k];
+
                     for (Size a = 0; a < m2; ++a)
                         for (Size bb = 0; bb < m2; ++bb)
                             WftWf[a][bb] += rep.W[i][a] * rep.W[i][bb];
                 }
+
                 Matrix N = rep.M * WftWf;
                 N *= -1.0 / theta;
+
                 for (Size a = 0; a < m2; ++a)
                     N[a][a] += 1.0;
                 v = inverse(N) * v;
@@ -288,16 +321,20 @@ namespace QuantLib {
                 for (Size k = 0; k < nf; ++k) {
                     Size i = freeIdx[k];
                     Real Wfv = 0.0;
+
                     for (Size j = 0; j < m2; ++j)
                         Wfv += rep.W[i][j] * v[j];
+
                     dhat[k] = -r[k] / theta - Wfv / (theta * theta);
                 }
             }
 
             // truncate so that every free variable stays inside the box
             Real alphaStar = 1.0;
+
             for (Size k = 0; k < nf; ++k) {
                 Size i = freeIdx[k];
+
                 if (dhat[k] > 0.0 && !noUpper(hi[i]))
                     alphaStar = std::min(alphaStar, (hi[i] - xcp[i]) / dhat[k]);
                 else if (dhat[k] < 0.0 && !noLower(lo[i]))
@@ -313,6 +350,7 @@ namespace QuantLib {
         // Largest feasible step length along d starting from x.
         Real maxFeasibleStep(const Array& x, const Array& d, const Array& lo, const Array& hi) {
             Real stp = INF;
+
             for (Size i = 0; i < x.size(); ++i) {
                 if (d[i] > 0.0 && !noUpper(hi[i]))
                     stp = std::min(stp, (hi[i] - x[i]) / d[i]);
@@ -350,6 +388,7 @@ namespace QuantLib {
             auto eval = [&](Real a) -> Real {
                 xt = x + a * d;
                 ft = P.valueAndGradient(gt, xt);
+
                 if (ft < bestF) {
                     haveBest = true;
                     bestF = ft;
@@ -368,6 +407,7 @@ namespace QuantLib {
 
             for (Size i = 0; i < maxIter; ++i) {
                 Real dphi = eval(a);
+
                 if (ft > f0 + c1 * a * dphi0 || (i > 0 && ft >= fPrev)) {
                     aLo = aPrev;
                     fLo = fPrev;
@@ -375,10 +415,12 @@ namespace QuantLib {
                     bracketed = true;
                     break;
                 }
+
                 if (std::fabs(dphi) <= -c2 * dphi0) {
                     alpha = a;
                     return true; // strong Wolfe satisfied
                 }
+
                 if (dphi >= 0.0) {
                     aLo = a;
                     fLo = ft;
@@ -386,17 +428,20 @@ namespace QuantLib {
                     bracketed = true;
                     break;
                 }
+
                 aPrev = a;
                 fPrev = ft;
+
                 if (a >= stpMax)
                     break; // cannot expand further
-                a = std::min(2.0 * a, stpMax);
+                a = std::min(Real(2.0) * a, stpMax);
             }
 
             if (bracketed) {
                 for (Size j = 0; j < maxIter; ++j) {
                     a = 0.5 * (aLo + aHi); // bisection
                     Real dphi = eval(a);
+
                     if (ft > f0 + c1 * a * dphi0 || ft >= fLo) {
                         aHi = a;
                     } else {
@@ -404,11 +449,14 @@ namespace QuantLib {
                             alpha = a;
                             return true;
                         }
+
                         if (dphi * (aHi - aLo) >= 0.0)
                             aHi = aLo;
+
                         aLo = a;
                         fLo = ft;
                     }
+
                     if (std::fabs(aHi - aLo) < QL_EPSILON * std::max(Real(1.0), std::fabs(a)))
                         break;
                 }
@@ -420,6 +468,7 @@ namespace QuantLib {
                 xt = bestX;
                 ft = bestF;
                 gt = bestG;
+
                 return true;
             }
             return false;
@@ -444,10 +493,11 @@ namespace QuantLib {
         P.reset();
 
         Array x = P.currentValue();
-        Size n = x.size();
+        const Size n = x.size();
 
         Array lo = lowerBound_.empty() ? P.constraint().lowerBound(x) : lowerBound_;
         Array hi = upperBound_.empty() ? P.constraint().upperBound(x) : upperBound_;
+
         QL_REQUIRE(lo.size() == n && hi.size() == n,
                    "bounds size does not match the number of variables");
 
@@ -463,28 +513,34 @@ namespace QuantLib {
         std::deque<Array> S, Y;
         Real theta = 1.0;
         Size iter = 0;
+        Real pgInf = 0.0; // projected gradient ∞-norm; persists for final reporting
 
         while (true) {
             // infinity norm of the projected gradient
-            Real pgInf = 0.0;
+            pgInf = 0.0;
+
             for (Size i = 0; i < n; ++i) {
                 Real proj = std::min(std::max(x[i] - g[i], lo[i]), hi[i]) - x[i];
                 pgInf = std::max(pgInf, std::fabs(proj));
             }
+
             P.setGradientNormValue(pgInf * pgInf);
 
             if (pgInf < pgTol_) {
                 ecType = EndCriteria::ZeroGradientNorm;
                 break;
             }
+
             if (endCriteria.checkZeroGradientNorm(pgInf, ecType))
                 break;
+
             if (endCriteria.checkMaxIterations(iter, ecType))
                 break;
 
             // compact representation; drop the oldest pairs if the middle
             // matrix turns out numerically singular
             CompactRep rep;
+
             while (true) {
                 try {
                     rep = buildCompactRep(S, Y, theta);
@@ -520,10 +576,12 @@ namespace QuantLib {
                 d = xcp - x;
                 dphi0 = DotProduct(g, d);
             }
+
             if (Norm2(d) < QL_EPSILON) {
                 ecType = EndCriteria::StationaryPoint;
                 break;
             }
+
             if (dphi0 >= 0.0) {
                 for (Size i = 0; i < n; ++i)
                     d[i] = std::min(std::max(x[i] - g[i], lo[i]), hi[i]) - x[i];
@@ -540,9 +598,9 @@ namespace QuantLib {
                 break;
             }
 
-            Real alpha;
+            Real alpha = 0.0;
             Array xt(n), gt(n);
-            Real ft;
+            Real ft = 0.0;
             if (!lineSearchWolfe(P, x, d, f, g, stpMax, alpha, xt, ft, gt)) {
                 ecType = EndCriteria::StationaryFunctionValue;
                 break;
@@ -553,9 +611,11 @@ namespace QuantLib {
             Array y = gt - g;
             Real sy = DotProduct(s, y);
             Real yy = DotProduct(y, y);
+
             if (yy > 0.0 && sy > QL_EPSILON * yy) {
                 S.push_back(s);
                 Y.push_back(y);
+
                 if (S.size() > m_) {
                     S.pop_front();
                     Y.pop_front();
@@ -582,7 +642,7 @@ namespace QuantLib {
 
         P.setCurrentValue(x);
         P.setFunctionValue(f);
-        P.setGradientNormValue(DotProduct(g, g));
+        P.setGradientNormValue(pgInf * pgInf);
         return ecType;
     }
 
