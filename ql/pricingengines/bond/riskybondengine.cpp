@@ -54,7 +54,7 @@ namespace QuantLib {
                     settlementValue += weightedCouponAmount * yieldTS()->discount(d2);
 
                 if (cf->isCoupon()) {
-                    auto const& coupon = ext::static_pointer_cast<Coupon>(cf);
+                    auto const& coupon ) ext::static_pointer_cast<Coupon>(cf);
                     Date defaultDate = d1 + (d2 - d1) / 2;
                     Real weightedRecovery = coupon->nominal() * recoveryRate() *
                                     (defaultTS()->survivalProbability(d1) -
