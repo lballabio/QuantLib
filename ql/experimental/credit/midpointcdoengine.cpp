@@ -45,15 +45,15 @@ namespace QuantLib {
         // compute expected loss at the beginning of first relevant period
         Real e1 = 0;
         // todo add includeSettlement date flows variable to engine.
-        if (!arguments_.normalizedLeg[0]->hasOccurred(today)) {
-            // Notice that since there might be a gap between the end of
+        if (!arguments_.normalizedLeg[0]->hasOccurred(today))
+            // Notice that since there might be a gap between the end of 
             // acrrual and payment dates and today be in between
-            // the tranche loss on that date might not be contingent but
+            // the tranche loss on that date might not be contingent but 
             // realized:
             QL_REQUIRE(arguments_.normalizedLeg[0]->isCoupon(), "expected Coupon");
             e1 = arguments_.basket->expectedTrancheLoss(
-                ext::static_pointer_cast<Coupon>(arguments_.normalizedLeg[0])->accrualStartDate());
-        }
+                ext::static_pointer_cast<Coupon>(
+                    arguments_.normalizedLeg[0])->accrualStartDate());
         results_.expectedTrancheLoss.push_back(e1);
         //'e1'  should contain the existing loses.....? use remaining amounts?
         for (auto& i : arguments_.normalizedLeg) {
