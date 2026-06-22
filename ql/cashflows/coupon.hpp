@@ -55,7 +55,6 @@ namespace QuantLib {
         //! \name CashFlow interface
         //@{
         Date exCouponDate() const override { return exCouponDate_; }
-        bool isCoupon() const override { return true; }
         //@}
         //! \name Inspectors
         //@{
@@ -93,8 +92,11 @@ namespace QuantLib {
         Date accrualStartDate_,accrualEndDate_, refPeriodStart_,refPeriodEnd_;
         Date exCouponDate_;
         mutable Real accrualPeriod_;
+      private:
+        bool isCoupon() const override { return true; }
     };
 
+    ext::shared_ptr<Coupon> coupon_cast(const ext::shared_ptr<CashFlow>& cf);
 
     // inline definitions
 

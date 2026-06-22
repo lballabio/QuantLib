@@ -85,4 +85,7 @@ namespace QuantLib {
             CashFlow::accept(v);
     }
 
+    ext::shared_ptr<Coupon> coupon_cast(const ext::shared_ptr<CashFlow>& cf) {
+        return cf->isCoupon() ? ext::static_pointer_cast<Coupon>(cf) : nullptr;
+    }
 }
