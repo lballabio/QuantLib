@@ -367,7 +367,7 @@ namespace QuantLib {
         Date lastPaymentDate = Date();
         notionalSchedule_.emplace_back();
         for (auto& cashflow : cashflows_) {
-            ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(cashflow);
+            ext::shared_ptr<Coupon> coupon = coupon_cast(cashflow);
             if (!coupon)
                 continue;
 

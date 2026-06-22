@@ -987,8 +987,8 @@ BOOST_AUTO_TEST_CASE(testDefaultConventions) {
     BOOST_CHECK_EQUAL(cds->paysAtDefaultTime(), true);
     BOOST_CHECK_EQUAL(cds->rebatesAccrual(), true);
 
-    auto first = ext::dynamic_pointer_cast<Coupon>(cds->coupons().front());
-    auto last = ext::dynamic_pointer_cast<Coupon>(cds->coupons().back());
+    auto first = coupon_cast(cds->coupons().front());
+    auto last = coupon_cast(cds->coupons().back());
 
     BOOST_CHECK_EQUAL(first->dayCounter().name(), "Actual/360");
     BOOST_CHECK_EQUAL(last->dayCounter().name(), "Actual/360 (inc)");
@@ -1011,7 +1011,7 @@ BOOST_AUTO_TEST_CASE(testDefaultConventions) {
         .withUpfrontRate(0.02);
 
     BOOST_CHECK_EQUAL(cds->notional(), 10000.0);
-    first = ext::dynamic_pointer_cast<Coupon>(cds->coupons().front());
+    first = coupon_cast(cds->coupons().front());
     BOOST_CHECK_EQUAL(first->nominal(), 10000.0);
 
     BOOST_CHECK(cds->upfront().has_value());
@@ -1060,8 +1060,8 @@ BOOST_AUTO_TEST_CASE(testDefaultConventions) {
     cds = MakeCreditDefaultSwap(5 * Years, 0.01)
         .withDayCounter(Actual365Fixed());
 
-    first = ext::dynamic_pointer_cast<Coupon>(cds->coupons().front());
-    last = ext::dynamic_pointer_cast<Coupon>(cds->coupons().back());
+    first = coupon_cast(cds->coupons().front());
+    last = coupon_cast(cds->coupons().back());
 
     BOOST_CHECK_EQUAL(first->dayCounter().name(), "Actual/365 (Fixed)");
     BOOST_CHECK_EQUAL(last->dayCounter().name(), "Actual/360 (inc)");
@@ -1069,8 +1069,8 @@ BOOST_AUTO_TEST_CASE(testDefaultConventions) {
     cds = MakeCreditDefaultSwap(5 * Years, 0.01)
         .withLastPeriodDayCounter(Actual365Fixed());
 
-    first = ext::dynamic_pointer_cast<Coupon>(cds->coupons().front());
-    last = ext::dynamic_pointer_cast<Coupon>(cds->coupons().back());
+    first = coupon_cast(cds->coupons().front());
+    last = coupon_cast(cds->coupons().back());
 
     BOOST_CHECK_EQUAL(first->dayCounter().name(), "Actual/360");
     BOOST_CHECK_EQUAL(last->dayCounter().name(), "Actual/365 (Fixed)");
