@@ -74,7 +74,7 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
       private:
-        friend void coupon_cast(const ext::shared_ptr<Coupon>&);
+        friend ext::shared_ptr<Coupon> coupon_cast(const ext::shared_ptr<CashFlow>&);
         //! returns true if the cashflow is a coupon
         virtual bool isCoupon() const { return false; }
     };
