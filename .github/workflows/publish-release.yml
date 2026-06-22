@@ -13,7 +13,7 @@ jobs:
   draft-release:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0
         fetch-tags: true
@@ -61,7 +61,7 @@ jobs:
   reference-manual:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Setup
       env:
         HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
@@ -75,7 +75,7 @@ jobs:
         ./autogen.sh
         ./configure --with-boost-include=$(brew --prefix)/include
         make docs
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         repository: quantlib/quantlib.github.io
         path: site

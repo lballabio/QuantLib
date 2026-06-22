@@ -165,7 +165,7 @@ jobs:
             configureflags: --enable-openmp
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Compiler version
       run: |
         ${{ matrix.cc }} --version

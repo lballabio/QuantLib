@@ -7,7 +7,7 @@ jobs:
   check-namespaces:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Check
       run: |
         sed -i -e 's/BOOST_CHECK_SMALL\b/QL_CHECK_SMALL/g' test-suite/*.cpp
