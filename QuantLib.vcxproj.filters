@@ -1398,6 +1398,9 @@
     <ClInclude Include="ql\math\optimization\goldstein.hpp">
       <Filter>math\optimization</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\optimization\lbfgsb.hpp">
+      <Filter>math\optimization</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\optimization\leastsquare.hpp">
       <Filter>math\optimization</Filter>
     </ClInclude>
@@ -5181,6 +5184,9 @@
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\goldstein.cpp">
+      <Filter>math\optimization</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\optimization\lbfgsb.cpp">
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\leastsquare.cpp">
