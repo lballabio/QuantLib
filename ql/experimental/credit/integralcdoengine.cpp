@@ -45,13 +45,11 @@ namespace QuantLib {
         // compute expected loss at the beginning of first relevant period
         Real e1 = 0;
         // todo add includeSettlement date flows variable to engine.
-        if (!arguments_.normalizedLeg[0]->hasOccurred(today)) {
-            QL_REQUIRE(arguments_.normalizedLeg[0]->isCoupon(), "expected Coupon");
+        if (!arguments_.normalizedLeg[0]->hasOccurred(today)) 
              // cast to fixed rate coupon?
             e1 = arguments_.basket->expectedTrancheLoss(
-                ext::static_pointer_cast<Coupon>(
-                    arguments_.normalizedLeg[0])->accrualStartDate());
-        }
+                ext::dynamic_pointer_cast<Coupon>(
+                    arguments_.normalizedLeg[0])->accrualStartDate()); 
         results_.expectedTrancheLoss.push_back(e1);// zero or realized losses?
 
         for (auto& i : arguments_.normalizedLeg) {
@@ -61,8 +59,7 @@ namespace QuantLib {
                 continue;
             }
 
-            QL_REQUIRE(i->isCoupon(), "expected Coupon");
-            const auto& coupon = ext::static_pointer_cast<Coupon>(i);
+            const ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(i);
 
             Date d1 = coupon->accrualStartDate();
             Date d2 = coupon->date();
@@ -98,14 +95,12 @@ namespace QuantLib {
         }
 
         // add includeSettlement date flows variable to engine.
-        if (!arguments_.normalizedLeg[0]->hasOccurred(today)) {
-            QL_REQUIRE(arguments_.normalizedLeg[0]->isCoupon(), "expected Coupon");
+        if (!arguments_.normalizedLeg[0]->hasOccurred(today))
             results_.upfrontPremiumValue
                 = inceptionTrancheNotional * arguments_.upfrontRate
                     * discountCurve_->discount(
-                        ext::static_pointer_cast<Coupon>(
+                        ext::dynamic_pointer_cast<Coupon>(
                             arguments_.normalizedLeg[0])->accrualStartDate());
-        }
 
         if (arguments_.side == Protection::Buyer) {
             results_.protectionValue *= -1;

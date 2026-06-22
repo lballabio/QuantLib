@@ -50,9 +50,8 @@ namespace QuantLib {
             // acrrual and payment dates and today be in between
             // the tranche loss on that date might not be contingent but 
             // realized:
-            QL_REQUIRE(arguments_.normalizedLeg[0]->isCoupon(), "expected Coupon");
             e1 = arguments_.basket->expectedTrancheLoss(
-                ext::static_pointer_cast<Coupon>(
+                ext::dynamic_pointer_cast<Coupon>(
                     arguments_.normalizedLeg[0])->accrualStartDate());
         results_.expectedTrancheLoss.push_back(e1);
         //'e1'  should contain the existing loses.....? use remaining amounts?
@@ -61,8 +60,7 @@ namespace QuantLib {
                 results_.expectedTrancheLoss.push_back(0.);
                 continue;
             }
-            QL_REQUIRE(i->isCoupon, "expected Coupon");
-            auto const& coupon = ext::static_pointer_cast<Coupon>(i);
+            ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(i);
             Date paymentDate = coupon->date();
             Date startDate = std::max(coupon->accrualStartDate(),
                                       discountCurve_->referenceDate());
@@ -93,17 +91,15 @@ namespace QuantLib {
 
         //\todo treat upfron tnow as in the new CDS (see March 2014)
         // add includeSettlement date flows variable to engine ?
-        if (!arguments_.normalizedLeg[0]->hasOccurred(today)) {
-            QL_REQUIRE(arguments_.normalizedLeg[0]->isCoupon(), "expected Coupon");
+        if (!arguments_.normalizedLeg[0]->hasOccurred(today))
             results_.upfrontPremiumValue 
                 = inceptionTrancheNotional * arguments_.upfrontRate 
                     * discountCurve_->discount(
-                        ext::static_pointer_cast<Coupon>(
+                        ext::dynamic_pointer_cast<Coupon>(
                             arguments_.normalizedLeg[0])->accrualStartDate());
             /* use it in a future version for coherence with the integral engine
                 arguments_.leverageFactor * ;
             */
-        }
         if (arguments_.side == Protection::Buyer) {
             results_.protectionValue *= -1;
             results_.premiumValue *= -1;

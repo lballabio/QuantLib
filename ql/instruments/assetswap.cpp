@@ -112,10 +112,11 @@ namespace QuantLib {
         // if we're skipping a cashflow before the redemption
         // and it's a coupon, then add the accrued coupon.
         if (i < bondLeg.end()-1) {
-            if ((*i)->isCoupon()) {
-                auto const& c = ext::static_pointer_cast<Coupon>(*i);
+            auto c = ext::dynamic_pointer_cast<Coupon>(*i);
+            if (c != nullptr) {
                 Real accruedAmount = c->accruedAmount(dealMaturity);
-                auto accruedCoupon = ext::make_shared<SimpleCashFlow>(accruedAmount, finalDate);
+                auto accruedCoupon =
+                    ext::make_shared<SimpleCashFlow>(accruedAmount, finalDate);
                 legs_[0].push_back(accruedCoupon);
             }
         }

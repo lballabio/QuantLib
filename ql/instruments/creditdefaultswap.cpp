@@ -428,8 +428,8 @@ namespace QuantLib {
     }
 
     const Date& CreditDefaultSwap::protectionEndDate() const {
-        QL_REQUIRE(leg_.back()->isCoupon(), "expected Coupon");
-        return ext::static_cast<Coupon>(leg_.back())->accrualEndDate();
+        return ext::dynamic_pointer_cast<Coupon>(leg_.back())
+            ->accrualEndDate();
     }
 
     const ext::shared_ptr<SimpleCashFlow>& CreditDefaultSwap::upfrontPayment() const {
