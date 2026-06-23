@@ -50,6 +50,11 @@ namespace QuantLib {
         ex-dividend days, and excluding any cashflow on the settlement date.
 
         Prices are always clean, as per market convention.
+
+        \note Prices are assumed to be a percentage of par (per 100). For bonds
+              with a face value other than 100 (e.g., 25), any price input (like in
+              zSpread or yield calculations) must be provided per 100:
+              `quote = cash price * 100 / face`. Returned prices are also per 100.
     */
     struct BondFunctions {
         //! \name Date inspectors
