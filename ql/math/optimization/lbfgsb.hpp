@@ -40,6 +40,13 @@ namespace QuantLib {
         limited-memory BFGS. Explicit bounds may instead be passed to the
         constructor, overriding the constraint.
 
+        Limited memory trades accuracy of the Hessian model for cost: it
+        stores only the last \c memory correction pairs, needing
+        \f$ O(\mathrm{memory}\cdot n) \f$ storage and work per step instead of
+        the \f$ O(n^2) \f$ of dense BFGS, at the price of linear rather than
+        superlinear convergence. This typically results in a modest increase
+        in iteration count.
+
         \ingroup optimizers
     */
     class LBFGSB : public OptimizationMethod {
@@ -47,11 +54,10 @@ namespace QuantLib {
         /*! \param memory number of stored correction pairs
             \param pgTol  convergence tolerance on the infinity norm of
                           the projected gradient
-            \param factr  the iteration stops when the relative reduction
-                          of the objective falls below
-                          <tt>factr</tt> times machine precision
+            \param fTol   the iteration stops when the relative reduction
+                          of the objective falls below <tt>fTol</tt>
         */
-        explicit LBFGSB(Size memory = 10, Real pgTol = 1e-8, Real factr = 1e7);
+        explicit LBFGSB(Size memory = 10, Real pgTol = 1e-8, Real fTol = 1e7 * QL_EPSILON);
 
         /*! Convenience constructor taking explicit box bounds; these
             override the bounds of the problem's constraint. Use
@@ -61,7 +67,7 @@ namespace QuantLib {
                Array upperBound,
                Size memory = 10,
                Real pgTol = 1e-8,
-               Real factr = 1e7);
+               Real fTol = 1e7 * QL_EPSILON);
 
         EndCriteria::Type minimize(Problem& P, const EndCriteria& endCriteria) override;
 
