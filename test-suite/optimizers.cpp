@@ -459,7 +459,7 @@ BOOST_AUTO_TEST_CASE(testLBFGSB) {
         NoConstraint c;
         Array x0(n, -1.0);
         Problem problem(f, c, x0);
-        LBFGSB optimizer(10, 1e-10, 1e1);
+        LBFGSB optimizer(10, 1e-10, 1e1 * QL_EPSILON);
         optimizer.minimize(problem, endCriteria);
         Array x = problem.currentValue();
         Array expected(n, 1.0);
@@ -485,7 +485,7 @@ BOOST_AUTO_TEST_CASE(testLBFGSB) {
         NonhomogeneousBoundaryConstraint c(lo, hi);
         Array x0(3, 0.0);
         Problem problem(f, c, x0);
-        LBFGSB optimizer(10, 1e-10, 1e1);
+        LBFGSB optimizer(10, 1e-10, 1e1 * QL_EPSILON);
         optimizer.minimize(problem, endCriteria);
         Real xError = maxDifference(problem.currentValue(), center);
         if (xError > 1e-6)
@@ -535,7 +535,7 @@ BOOST_AUTO_TEST_CASE(testLBFGSB) {
         NonhomogeneousBoundaryConstraint c(lo, hi);
         Array x0(2, -1.0);
         Problem problem(f, c, x0);
-        LBFGSB optimizer(10, 1e-10, 1e1);
+        LBFGSB optimizer(10, 1e-10, 1e1 * QL_EPSILON);
         optimizer.minimize(problem, endCriteria);
         Array x = problem.currentValue();
         Array expected{0.5, 0.25};
@@ -571,7 +571,7 @@ BOOST_AUTO_TEST_CASE(testLBFGSBActiveBounds) {
         NonhomogeneousBoundaryConstraint c(lo, hi);
         Array x0(3, 0.5);
         Problem problem(f, c, x0);
-        LBFGSB optimizer(10, 1e-10, 1e1);
+        LBFGSB optimizer(10, 1e-10, 1e1 * QL_EPSILON);
         optimizer.minimize(problem, endCriteria);
         Array x = problem.currentValue();
         Array expected(3, 1.0);
@@ -597,7 +597,7 @@ BOOST_AUTO_TEST_CASE(testLBFGSBActiveBounds) {
         NonhomogeneousBoundaryConstraint c(lo, hi);
         Array x0{0.9, 0.1};
         Problem problem(f, c, x0);
-        LBFGSB optimizer(10, 1e-10, 1e1);
+        LBFGSB optimizer(10, 1e-10, 1e1 * QL_EPSILON);
         optimizer.minimize(problem, endCriteria);
         Array x = problem.currentValue();
         Array expected{1.0, 1.0};
@@ -621,7 +621,7 @@ BOOST_AUTO_TEST_CASE(testLBFGSBActiveBounds) {
         NonhomogeneousBoundaryConstraint c(lo, hi);
         Array x0(1, 0.5);
         Problem problem(f, c, x0);
-        LBFGSB optimizer(10, 1e-10, 1e1);
+        LBFGSB optimizer(10, 1e-10, 1e1 * QL_EPSILON);
         optimizer.minimize(problem, endCriteria);
         Array x = problem.currentValue();
         Array g(1);
@@ -643,7 +643,7 @@ BOOST_AUTO_TEST_CASE(testLBFGSBActiveBounds) {
         NonhomogeneousBoundaryConstraint c(lo, hi);
         Array x0(3, 0.0);
         Problem problem(f, c, x0);
-        LBFGSB optimizer(10, 1e-10, 1e1);
+        LBFGSB optimizer(10, 1e-10, 1e1 * QL_EPSILON);
         optimizer.minimize(problem, endCriteria);
         Array x = problem.currentValue();
         Array expected{3.0, -2.0, 0.25};
@@ -672,7 +672,7 @@ BOOST_AUTO_TEST_CASE(testLBFGSBCoverage) {
         NoConstraint c;
         Array x0(n, -1.0);
         Problem problem(f, c, x0);
-        LBFGSB optimizer(3, 1e-8, 1e1); // memory = 3 < n = 20
+        LBFGSB optimizer(3, 1e-8, 1e1 * QL_EPSILON); // memory = 3 < n = 20
         optimizer.minimize(problem, endCriteria);
         Array x = problem.currentValue();
         Array expected(n, 1.0);
@@ -693,7 +693,7 @@ BOOST_AUTO_TEST_CASE(testLBFGSBCoverage) {
         NonhomogeneousBoundaryConstraint c(lo, hi);
         Array x0(3, 5.0); // outside [0,1]^3
         Problem problem(f, c, x0);
-        LBFGSB optimizer(10, 1e-10, 1e1);
+        LBFGSB optimizer(10, 1e-10, 1e1 * QL_EPSILON);
         optimizer.minimize(problem, endCriteria);
         Array x = problem.currentValue();
         Array expected{1.0, 0.0, 0.5};
@@ -715,7 +715,7 @@ BOOST_AUTO_TEST_CASE(testLBFGSBCoverage) {
         NonhomogeneousBoundaryConstraint c(lo, hi);
         Array x0(3, 0.5);
         Problem problem(f, c, x0);
-        LBFGSB optimizer(10, 1e-6, 1e7);
+        LBFGSB optimizer(10, 1e-6, 1e7 * QL_EPSILON);
         optimizer.minimize(problem, endCriteria);
         Array x = problem.currentValue();
         Array expected{1.0, 0.0, 0.7};
