@@ -457,7 +457,7 @@ namespace QuantLib {
                     Real callAccrued = 0.0;
                     for (const auto& cf : cashflows_) {
                         if (!cf->hasOccurred(callDate, false)) {
-                            auto coupon = ext::dynamic_pointer_cast<Coupon>(cf);
+                            auto coupon = coupon_cast(cf);
                             if (coupon != nullptr) {
                                 Real acc = coupon->accruedAmount(callDate);
                                 if (coupon->tradingExCoupon(callDate))

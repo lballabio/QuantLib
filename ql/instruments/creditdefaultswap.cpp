@@ -428,7 +428,7 @@ namespace QuantLib {
     }
 
     const Date& CreditDefaultSwap::protectionEndDate() const {
-        return ext::dynamic_pointer_cast<Coupon>(leg_.back())
+        return coupon_cast(leg_.back())
             ->accrualEndDate();
     }
 
