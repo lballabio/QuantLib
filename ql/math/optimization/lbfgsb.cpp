@@ -476,12 +476,13 @@ namespace QuantLib {
 
     }
 
-    LBFGSB::LBFGSB(Size memory, Real pgTol, Real factr) : m_(memory), pgTol_(pgTol), factr_(factr) {
+    LBFGSB::LBFGSB(Size memory, Real pgTol, Real fTol)
+    : m_(memory), pgTol_(pgTol), factr_(fTol / QL_EPSILON) {
         QL_REQUIRE(memory > 0, "memory must be positive");
     }
 
-    LBFGSB::LBFGSB(Array lowerBound, Array upperBound, Size memory, Real pgTol, Real factr)
-    : m_(memory), pgTol_(pgTol), factr_(factr), lowerBound_(std::move(lowerBound)),
+    LBFGSB::LBFGSB(Array lowerBound, Array upperBound, Size memory, Real pgTol, Real fTol)
+    : m_(memory), pgTol_(pgTol), factr_(fTol / QL_EPSILON), lowerBound_(std::move(lowerBound)),
       upperBound_(std::move(upperBound)) {
         QL_REQUIRE(memory > 0, "memory must be positive");
         QL_REQUIRE(lowerBound_.size() == upperBound_.size(),
