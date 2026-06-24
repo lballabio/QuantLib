@@ -4581,6 +4581,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\cashdividendeuropeanengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\interpolations\linearthenflatinterpolation.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
