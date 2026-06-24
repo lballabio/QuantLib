@@ -95,8 +95,7 @@ namespace QuantLib {
             xMax = std::log(arguments_.barrier);
         }
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(
+        const ext::shared_ptr<Fdm1dMesher> equityMesher(ext::make_shared<FdmBlackScholesMesher>(
                 xGrid_,
                 FdmBlackScholesMesher::processHelper(
                     process->s0(), process->dividendYield(),
@@ -106,14 +105,11 @@ namespace QuantLib {
                 std::make_pair(Null<Real>(), Null<Real>()),
                 dividends_));
 
-        const ext::shared_ptr<FdmMesher> mesher (
-            new FdmMesherComposite(equityMesher, vMesher));
+        const ext::shared_ptr<FdmMesher> mesher (ext::make_shared<FdmMesherComposite>(equityMesher, vMesher));
 
         // 2. Calculator
-        const ext::shared_ptr<StrikedTypePayoff> rebatePayoff(
-                new CashOrNothingPayoff(Option::Call, 0.0, arguments_.rebate));
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-                                new FdmLogInnerValue(rebatePayoff, mesher, 0));
+        const ext::shared_ptr<StrikedTypePayoff> rebatePayoff(ext::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, arguments_.rebate));
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator(ext::make_shared<FdmLogInnerValue>(rebatePayoff, mesher, 0));
 
         // 3. Step conditions
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
@@ -147,9 +143,9 @@ namespace QuantLib {
                                      calculator, maturity,
                                      tGrid_, dampingSteps_ };
 
-        ext::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
+        auto solver = ext::make_shared<FdmHestonSolver>(
                     Handle<HestonProcess>(process), solverDesc, schemeDesc_,
-                    Handle<FdmQuantoHelper>(), leverageFct_, mixingFactor_));
+                    Handle<FdmQuantoHelper>(), leverageFct_, mixingFactor_);
 
         const Real spot = process->s0()->value();
         results_.value = solver->valueAt(spot, process->v0());
