@@ -12,6 +12,7 @@ this_include_HEADERS = \
     differentialevolution.hpp \
     endcriteria.hpp \
     goldstein.hpp \
+    lbfgsb.hpp \
     leastsquare.hpp \
     levenbergmarquardt.hpp \
     linesearch.hpp \
@@ -35,6 +36,7 @@ cpp_files = \
     differentialevolution.cpp \
     endcriteria.cpp \
     goldstein.cpp \
+    lbfgsb.cpp \
     leastsquare.cpp \
     levenbergmarquardt.cpp \
     linesearch.cpp \

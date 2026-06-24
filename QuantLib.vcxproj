@@ -1092,6 +1092,7 @@
     <ClInclude Include="ql\math\optimization\differentialevolution.hpp" />
     <ClInclude Include="ql\math\optimization\endcriteria.hpp" />
     <ClInclude Include="ql\math\optimization\goldstein.hpp" />
+    <ClInclude Include="ql\math\optimization\lbfgsb.hpp" />
     <ClInclude Include="ql\math\optimization\leastsquare.hpp" />
     <ClInclude Include="ql\math\optimization\levenbergmarquardt.hpp" />
     <ClInclude Include="ql\math\optimization\linesearch.hpp" />
@@ -2339,6 +2340,7 @@
     <ClCompile Include="ql\math\optimization\differentialevolution.cpp" />
     <ClCompile Include="ql\math\optimization\endcriteria.cpp" />
     <ClCompile Include="ql\math\optimization\goldstein.cpp" />
+    <ClCompile Include="ql\math\optimization\lbfgsb.cpp" />
     <ClCompile Include="ql\math\optimization\leastsquare.cpp" />
     <ClCompile Include="ql\math\optimization\levenbergmarquardt.cpp" />
     <ClCompile Include="ql\math\optimization\linesearch.cpp" />
