@@ -132,8 +132,8 @@ namespace QuantLib {
         static ext::shared_ptr<QdFpIterationScheme> highPrecisionScheme();
 
       protected:
-        Real calculatePut(
-            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const override;
+        detail::QdPutResults
+        calculatePut(Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const override;
 
       private:
         const ext::shared_ptr<QdFpIterationScheme> iterationScheme_;
