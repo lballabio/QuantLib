@@ -437,6 +437,29 @@ namespace QuantLib {
         return fwdStart_;
     }
 
+    class GenericRateHelper : public RelativeDateRateHelper {
+      public:
+        GenericRateHelper(const Handle<Quote>& rate,
+                          const Date& settlementDate,
+                          const Date& refDate,
+                          const DayCounter& dayCounter,
+                          const Compounding& comp,
+                          const Frequency& freq,
+                          const bool& extrapolate);
+
+        Real impliedQuote() const override;
+
+      protected:
+        DayCounter dayCounter_;
+      private:
+        Calendar calendar_;
+        Compounding compounding_;
+        Frequency frequency_;
+        bool extrapolate_;
+
+        void initializeDates() override;
+    };
+    
 }
 
 #endif
