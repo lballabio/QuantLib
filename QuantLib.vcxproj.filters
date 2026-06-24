@@ -4473,6 +4473,9 @@
     <ClInclude Include="ql\pricingengines\vanilla\qdplusamericanengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\vanilla\vnbinomialengine.hpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>
     <ClInclude Include="ql\models\equity\hestonslvfdmmodel.hpp">
       <Filter>models\equity</Filter>
     </ClInclude>
@@ -7367,6 +7370,9 @@
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\qdplusamericanengine.cpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\vanilla\vnbinomialengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\models\equity\hestonslvfdmmodel.cpp">

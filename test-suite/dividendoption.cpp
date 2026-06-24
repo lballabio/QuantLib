@@ -28,6 +28,8 @@
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/vnbinomialengine.hpp>
+#include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/pricingengines/vanilla/cashdividendeuropeanengine.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
@@ -1462,6 +1464,234 @@ BOOST_AUTO_TEST_CASE(testAmericanOptionsWithEscrowedDividends) {
         }
 }
 
+
+
+BOOST_AUTO_TEST_CASE(testVNBinomialNoDividendsMatchesLR) {
+    BOOST_TEST_MESSAGE(
+        "Testing VN binomial engine matches standard LR tree without dividends...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today(8, April, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.05, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.02, dc));
+    const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.25, dc));
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        spot, qTS, rTS, volTS);
+
+    const Date maturityDate = today + Period(6, Months);
+    const DividendSchedule noDivs;
+
+    for (const Option::Type type : {Option::Put, Option::Call}) {
+        VanillaOption option(
+            ext::make_shared<PlainVanillaPayoff>(type, 100.0),
+            ext::make_shared<AmericanExercise>(maturityDate));
+
+        option.setPricingEngine(
+            ext::make_shared<VNBinomialVanillaEngine>(process, noDivs, 201));
+        const Real vnNPV = option.NPV();
+
+        option.setPricingEngine(
+            ext::make_shared<BinomialVanillaEngine<LeisenReimer>>(process, 201));
+        const Real lrNPV = option.NPV();
+
+        const Real tol = 1e-10;
+        if (std::abs(vnNPV - lrNPV) > tol) {
+            BOOST_FAIL("VN without dividends does not match standard LR tree"
+                       << "\n    option type: "
+                       << ((type == Option::Call) ? "Call" : "Put")
+                       << "\n    VN NPV:      " << vnNPV
+                       << "\n    LR NPV:      " << lrNPV
+                       << "\n    difference:   " << std::abs(vnNPV - lrNPV)
+                       << "\n    tolerance:    " << tol);
+        }
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testVNBinomialConvergence) {
+    BOOST_TEST_MESSAGE(
+        "Testing VN binomial convergence vs FD with discrete dividends...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today(8, April, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.05, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.02, dc));
+    const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.25, dc));
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        spot, qTS, rTS, volTS);
+
+    const Date maturityDate = today + Period(6, Months);
+
+    DividendSchedule divs;
+    divs.push_back(ext::make_shared<FixedDividend>(2.0, today + Period(2, Months)));
+    divs.push_back(ext::make_shared<FixedDividend>(2.0, today + Period(5, Months)));
+
+    // FD 500x500 baseline
+    const auto fdEngine =
+        MakeFdBlackScholesVanillaEngine(process)
+            .withTGrid(500).withXGrid(500)
+            .withCashDividends(
+                {today + Period(2, Months), today + Period(5, Months)},
+                {2.0, 2.0});
+
+    const Real strikes[] = {90.0, 100.0, 110.0};
+    const Option::Type types[] = {Option::Put, Option::Call};
+    const Real tol = 0.005; // 0.5%
+
+    for (auto type : types) {
+        for (auto K : strikes) {
+            VanillaOption option(
+                ext::make_shared<PlainVanillaPayoff>(type, K),
+                ext::make_shared<AmericanExercise>(maturityDate));
+
+            option.setPricingEngine(fdEngine);
+            const Real fdNPV = option.NPV();
+
+            option.setPricingEngine(
+                ext::make_shared<VNBinomialVanillaEngine>(process, divs, 501));
+            const Real vnNPV = option.NPV();
+
+            const Real relErr = std::abs(vnNPV - fdNPV) / fdNPV;
+            if (relErr > tol) {
+                BOOST_FAIL("VN binomial exceeds tolerance vs FD"
+                           << "\n    option type: "
+                           << ((type == Option::Call) ? "Call" : "Put")
+                           << "\n    strike:      " << K
+                           << "\n    VN NPV:      " << vnNPV
+                           << "\n    FD NPV:      " << fdNPV
+                           << "\n    relative err: " << relErr
+                           << "\n    tolerance:    " << tol);
+            }
+        }
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testVNBinomialFourQuarterlyDividends) {
+    BOOST_TEST_MESSAGE(
+        "Testing VN binomial with four quarterly dividends...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today(8, April, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.05, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.02, dc));
+    const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.25, dc));
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        spot, qTS, rTS, volTS);
+
+    const Date maturityDate = today + Period(1, Years);
+
+    std::vector<Date> divDates;
+    std::vector<Real> divAmts;
+    DividendSchedule divs;
+    for (int m : {3, 6, 9, 12}) {
+        Date d = today + Period(m, Months);
+        divs.push_back(ext::make_shared<FixedDividend>(1.50, d));
+        divDates.push_back(d);
+        divAmts.push_back(1.50);
+    }
+
+    const auto fdEngine =
+        MakeFdBlackScholesVanillaEngine(process)
+            .withTGrid(500).withXGrid(500)
+            .withCashDividends(divDates, divAmts);
+
+    const Real tol = 0.005;
+
+    for (auto type : {Option::Put, Option::Call}) {
+        for (Real K : {90.0, 100.0, 110.0}) {
+            VanillaOption option(
+                ext::make_shared<PlainVanillaPayoff>(type, K),
+                ext::make_shared<AmericanExercise>(maturityDate));
+
+            option.setPricingEngine(fdEngine);
+            const Real fdNPV = option.NPV();
+
+            option.setPricingEngine(
+                ext::make_shared<VNBinomialVanillaEngine>(process, divs, 501));
+            const Real vnNPV = option.NPV();
+
+            const Real relErr = std::abs(vnNPV - fdNPV) / fdNPV;
+            if (relErr > tol) {
+                BOOST_FAIL("VN binomial four-div exceeds tolerance vs FD"
+                           << "\n    option type: "
+                           << ((type == Option::Call) ? "Call" : "Put")
+                           << "\n    strike:      " << K
+                           << "\n    VN NPV:      " << vnNPV
+                           << "\n    FD NPV:      " << fdNPV
+                           << "\n    relative err: " << relErr
+                           << "\n    tolerance:    " << tol);
+            }
+        }
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testVNBinomialHighDividend) {
+    BOOST_TEST_MESSAGE(
+        "Testing VN binomial with high dividend / spot ratio...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today(8, April, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.05, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.02, dc));
+    const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.25, dc));
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        spot, qTS, rTS, volTS);
+
+    const Date maturityDate = today + Period(6, Months);
+    const Date divDate = today + Period(3, Months);
+
+    // 8% of spot
+    DividendSchedule divs;
+    divs.push_back(ext::make_shared<FixedDividend>(8.0, divDate));
+
+    const auto fdEngine =
+        MakeFdBlackScholesVanillaEngine(process)
+            .withTGrid(500).withXGrid(500)
+            .withCashDividends({divDate}, {8.0});
+
+    const Real tol = 0.005;
+
+    for (Real K : {90.0, 100.0, 110.0}) {
+        VanillaOption option(
+            ext::make_shared<PlainVanillaPayoff>(Option::Put, K),
+            ext::make_shared<AmericanExercise>(maturityDate));
+
+        option.setPricingEngine(fdEngine);
+        const Real fdNPV = option.NPV();
+
+        option.setPricingEngine(
+            ext::make_shared<VNBinomialVanillaEngine>(process, divs, 501));
+        const Real vnNPV = option.NPV();
+
+        const Real relErr = std::abs(vnNPV - fdNPV) / fdNPV;
+        if (relErr > tol) {
+            BOOST_FAIL("VN binomial high-div exceeds tolerance vs FD"
+                       << "\n    strike:      " << K
+                       << "\n    VN NPV:      " << vnNPV
+                       << "\n    FD NPV:      " << fdNPV
+                       << "\n    relative err: " << relErr
+                       << "\n    tolerance:    " << tol);
+        }
+    }
+}
 
 
 BOOST_AUTO_TEST_SUITE_END()
