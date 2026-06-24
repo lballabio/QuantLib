@@ -31,6 +31,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <algorithm>
 #include <functional>
+#include <type_traits>
 #include <utility>
 
 namespace QuantLib {
@@ -98,9 +99,8 @@ class AdditionalBootstrapVariables {
   for a concrete implementation of this interface.
 
   WARNING: This class is known to work with Traits Discount, ZeroYield, Forward,
-  i.e. the usual IR curves traits in QL. It requires Traits::transformDirect()
-  and Traits::transformInverse() to be implemented. Also, check the usage of
-  Traits::updateGuess(), Traits::guess() in this class.
+  i.e. the usual IR curves traits in QL. For new Traits you may want to implement
+  Traits::transformDirect()/transformInverse()/globalGuess().
 */
 template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapContributor {
     typedef typename Curve::traits_type Traits;             // ZeroYield, Discount, ForwardRate
@@ -133,6 +133,12 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
     void calculate() const;
 
   private:
+    template <class T, class = void>
+    static constexpr bool hasTransform = false;
+
+    template <class T, class = void>
+    static constexpr bool hasGlobalGuess = false;
+
     void initialize() const;
     void
     setParentBootstrapper(const ext::shared_ptr<MultiCurveBootstrap>& b) const override;
@@ -157,6 +163,18 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
 };
 
 // template definitions
+
+template <class Curve>
+template <class T>
+constexpr bool GlobalBootstrap<Curve>::hasTransform<
+    T,
+    std::void_t<decltype(T::transformDirect(Real(), Size(), std::declval<const Curve*>()))>> = true;
+
+template <class Curve>
+template <class T>
+constexpr bool GlobalBootstrap<Curve>::hasGlobalGuess<
+    T,
+    std::void_t<decltype(T::globalGuess(Size(), std::declval<const Curve*>(), true))>> = true;
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy,
@@ -353,8 +371,13 @@ template <class Curve> Array GlobalBootstrap<Curve>::setupCostFunction() const {
 
     // setup interpolation
     if (!validCurve_) {
-        ts_->interpolation_ = ts_->interpolator_.interpolate(ts_->times_.begin(), ts_->times_.end(),
-                                                             ts_->data_.begin());
+        ts_->interpolation_ = detail::interpolateWithoutUpdate(
+            ts_->interpolator_, ts_->times_.begin(), ts_->times_.end(), ts_->data_.begin());
+        if constexpr (!hasGlobalGuess<Traits>) {
+            // Update interpolation because Traits::guess() might rely on it. Implementing
+            // Traits::globalGuess() is a more efficient option.
+            ts_->interpolation_.update();
+        }
     }
 
     // Initial guess. We have guesses for the curve values first (numberPillars),
@@ -365,10 +388,19 @@ template <class Curve> Array GlobalBootstrap<Curve>::setupCostFunction() const {
     }
     Array guess(ts_->times_.size() - 1 + additionalGuesses.size());
     for (Size i = 0; i < ts_->times_.size() - 1; ++i) {
-        // just pass zero as the first alive helper, it's not used in the standard QL traits anyway
-        // update ts_->data_ since Traits::guess() usually depends on previous values
-        Traits::updateGuess(ts_->data_, Traits::guess(i + 1, ts_, validCurve_, 0), i + 1);
-        guess[i] = Traits::transformInverse(ts_->data_[i + 1], i + 1, ts_);
+        Real value;
+        if constexpr (hasGlobalGuess<Traits>) {
+            value = Traits::globalGuess(i + 1, ts_, validCurve_);
+        } else {
+            // Just pass zero as the first alive helper, it's not used in the standard QL traits
+            // anyway. Update ts_->data_ since Traits::guess() usually depends on previous values.
+            Traits::updateGuess(ts_->data_, Traits::guess(i + 1, ts_, validCurve_, 0), i + 1);
+            value = ts_->data_[i + 1];
+        }
+        if constexpr (hasTransform<Traits>) {
+            value = Traits::transformInverse(value, i + 1, ts_);
+        }
+        guess[i] = value;
     }
     std::copy(additionalGuesses.begin(), additionalGuesses.end(),
               guess.begin() + ts_->times_.size() - 1);
@@ -380,7 +412,11 @@ void GlobalBootstrap<Curve>::setCostFunctionArgument(const Array& x) const {
     // x has the same layout as guess above: the first numberPillars values go into
     // the curve, while the rest are new values for the additional variables.
     for (Size i = 0; i < ts_->times_.size() - 1; ++i) {
-        Traits::updateGuess(ts_->data_, Traits::transformDirect(x[i], i + 1, ts_), i + 1);
+        Real value = x[i];
+        if constexpr (hasTransform<Traits>) {
+            value = Traits::transformDirect(value, i + 1, ts_);
+        }
+        Traits::updateGuess(ts_->data_, value, i + 1);
     }
     ts_->interpolation_.update();
     if (additionalVariables_) {

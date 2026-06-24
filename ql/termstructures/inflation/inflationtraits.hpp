@@ -64,6 +64,13 @@ namespace QuantLib {
 
             return detail::avgInflation;
         }
+        template <class C>
+        static Real globalGuess(Size i,
+                                const C* c,
+                                bool validData)
+        {
+            return guess(i, c, validData, 0);
+        }
 
         // constraints
         template <class C>
@@ -101,15 +108,6 @@ namespace QuantLib {
             if (i==1)
                 data[0] = level; // the first point is updated as well
         }
-        // transformation to add constraints to an unconstrained optimization
-        template <class C>
-        static Real transformDirect(Real x, Size, const C*) {
-            return x;
-        }
-        template <class C>
-        static Real transformInverse(Real x, Size, const C*) {
-            return x;
-        }
         // upper bound for convergence loop
         static Size maxIterations() { return 40; }
     };
@@ -141,6 +139,13 @@ namespace QuantLib {
                 return c->data()[i];
 
             return detail::avgInflation;
+        }
+        template <class C>
+        static Real globalGuess(Size i,
+                                const C* c,
+                                bool validData)
+        {
+            return guess(i, c, validData, 0);
         }
 
         // constraints
@@ -176,15 +181,6 @@ namespace QuantLib {
                                 Rate level,
                                 Size i) {
             data[i] = level;
-        }
-        // transformation to add constraints to an unconstrained optimization
-        template <class C>
-        static Real transformDirect(Real x, Size, const C*) {
-            return x;
-        }
-        template <class C>
-        static Real transformInverse(Real x, Size, const C*) {
-            return x;
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 40; }
