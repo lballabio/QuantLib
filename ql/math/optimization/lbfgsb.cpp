@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <algorithm>
 #include <ql/math/matrix.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/lbfgsb.hpp>
@@ -634,7 +635,7 @@ namespace QuantLib {
             P.setFunctionValue(f);
 
             // relative function-reduction stop (SciPy's factr criterion)
-            Real denom = std::max(std::max(std::fabs(fOld), std::fabs(f)), Real(1.0));
+            Real denom = std::max({std::fabs(fOld), std::fabs(f), Real(1.0)});
             if ((fOld - f) <= factr_ * QL_EPSILON * denom) {
                 ecType = EndCriteria::StationaryFunctionValue;
                 break;
