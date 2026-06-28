@@ -40,8 +40,6 @@ namespace QuantLib {
     is never asked to look forward.  Requesting a fixing for a future date raises
     an error, and a missing historical fixing raises the standard missing-fixing
     error.
-
-    \ingroup indexes
 */
 class FxIndex : public Index {
   public:
