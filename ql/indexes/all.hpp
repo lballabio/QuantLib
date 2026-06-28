@@ -3,6 +3,7 @@
 
 #include <ql/indexes/bmaindex.hpp>
 #include <ql/indexes/equityindex.hpp>
+#include <ql/indexes/fxindex.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/indexes/indexmanager.hpp>
 #include <ql/indexes/inflationindex.hpp>

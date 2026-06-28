@@ -228,6 +228,7 @@ set(QL_SOURCES
     indexes/iborindex.cpp
     indexes/indexmanager.cpp
     indexes/inflationindex.cpp
+    indexes/fxindex.cpp
     indexes/interestrateindex.cpp
     indexes/region.cpp
     indexes/swap/chfliborswap.cpp
@@ -266,8 +267,10 @@ set(QL_SOURCES
     instruments/cpicapfloor.cpp
     instruments/cpiswap.cpp
     instruments/creditdefaultswap.cpp
+    instruments/crosscurrencyswap.cpp
     instruments/constnotionalcrosscurrencybasisswap.cpp
     instruments/constnotionalcrosscurrencyfixedvsfloatingswap.cpp
+    instruments/mtmcrosscurrencybasisswap.cpp
     instruments/constnotionalcrosscurrencyswap.cpp
     instruments/doublebarrieroption.cpp
     instruments/doublebarriertype.cpp
@@ -735,6 +738,7 @@ set(QL_SOURCES
     pricingengines/lookback/analyticcontinuouspartialfloatinglookback.cpp
     pricingengines/lookback/mclookbackengine.cpp
     pricingengines/swap/discountingconstnotionalcrosscurrencyswapengine.cpp
+    pricingengines/swap/discountingmtmcrosscurrencybasisswapengine.cpp
     pricingengines/swap/cvaswapengine.cpp
     pricingengines/swap/discountingswapengine.cpp
     pricingengines/swap/discretizedswap.cpp
@@ -1317,6 +1321,7 @@ set(QL_HEADERS
     indexes/inflation/uscpi.hpp
     indexes/inflation/zacpi.hpp
     indexes/inflationindex.hpp
+    indexes/fxindex.hpp
     indexes/interestrateindex.hpp
     indexes/region.hpp
     indexes/swap/chfliborswap.hpp
@@ -1356,8 +1361,10 @@ set(QL_HEADERS
     instruments/cpicapfloor.hpp
     instruments/cpiswap.hpp
     instruments/creditdefaultswap.hpp
+    instruments/crosscurrencyswap.hpp
     instruments/constnotionalcrosscurrencybasisswap.hpp
     instruments/constnotionalcrosscurrencyfixedvsfloatingswap.hpp
+    instruments/mtmcrosscurrencybasisswap.hpp
     instruments/constnotionalcrosscurrencyswap.hpp
     instruments/dividendschedule.hpp
     instruments/doublebarrieroption.hpp
@@ -1988,6 +1995,7 @@ set(QL_HEADERS
     pricingengines/mcsimulation.hpp
     pricingengines/quanto/quantoengine.hpp
     pricingengines/swap/discountingconstnotionalcrosscurrencyswapengine.hpp
+    pricingengines/swap/discountingmtmcrosscurrencybasisswapengine.hpp
     pricingengines/swap/cvaswapengine.hpp
     pricingengines/swap/discountingswapengine.hpp
     pricingengines/swap/discretizedswap.hpp
