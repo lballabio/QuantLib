@@ -26,6 +26,7 @@
 #ifndef quantlib_settings_hpp
 #define quantlib_settings_hpp
 
+#include <ql/errors.hpp>
 #include <ql/patterns/singleton.hpp>
 #include <ql/time/date.hpp>
 #include <ql/utilities/observablevalue.hpp>
@@ -132,10 +133,17 @@ namespace QuantLib {
     // inline
 
     inline Settings::DateProxy::operator Date() const {
-        if (value() == Date())
+        if (value() == Date()) {
+#ifdef QL_REQUIRE_EXPLICIT_EVALUATION_DATE
+            QL_FAIL("the evaluation date has not been set; with "
+                    "QL_REQUIRE_EXPLICIT_EVALUATION_DATE defined it must be set explicitly "
+                    "through Settings::instance().evaluationDate() before it is used");
+#else
             return Date::todaysDate();
-        else
+#endif
+        } else {
             return value();
+        }
     }
 
     inline Settings::DateProxy& Settings::DateProxy::operator=(const Date& d) {

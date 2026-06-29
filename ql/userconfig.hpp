@@ -157,6 +157,15 @@
 //#    define QL_NULL_AS_FUNCTIONS
 #endif
 
+/* If defined, the evaluation date is no longer defaulted to today's
+   date when it has not been set explicitly; instead, reading it raises
+   an exception. This forces client code to set the evaluation date
+   before it is used.
+*/
+#ifndef QL_REQUIRE_EXPLICIT_EVALUATION_DATE
+#    define QL_REQUIRE_EXPLICIT_EVALUATION_DATE
+#endif
+
 /* If defined, a parallel unit test runner will be used to execute the
    C++ test suite. This will reduce the runtime on multi core CPUs.
 */
