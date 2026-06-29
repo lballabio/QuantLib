@@ -96,11 +96,6 @@
 //#    define QL_FASTER_LAZY_OBJECTS
 #endif
 
-/* Define this to use std::any instead of boost::any. */
-#ifndef QL_USE_STD_ANY
-//#    define QL_USE_STD_ANY
-#endif
-
 /* Define this to use std::optional instead of boost::optional. */
 #ifndef QL_USE_STD_OPTIONAL
 #    define QL_USE_STD_OPTIONAL

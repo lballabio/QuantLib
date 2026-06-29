@@ -119,14 +119,6 @@
 #    define QL_FASTER_LAZY_OBJECTS
 #endif
 
-/* If defined, `std::any` and related classes and functions will be
-   used instead of `boost::any`. If undefined, the Boost facilities
-   will be used.
-*/
-#ifndef QL_USE_STD_ANY
-#    define QL_USE_STD_ANY
-#endif
-
 /* If defined, `std::optional` and related classes and functions will
    be used instead of `boost::optional`. If undefined, the Boost
    facilities will be used; however, be aware that Boost 1.91

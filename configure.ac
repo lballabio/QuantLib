@@ -272,21 +272,6 @@ if test "$ql_faster_lazy_objects" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_faster_lazy_objects])
 
-AC_MSG_CHECKING([whether to enable std::any instead of boost::any])
-AC_ARG_ENABLE([std-any],
-              AS_HELP_STRING([--enable-std-any],
-                             [If enabled (the default), std::any and related
-                              classes and functions will be used instead of
-                              boost::any. If disabled, the Boost facilities
-                              will be used.]),
-              [ql_use_std_any=$enableval],
-              [ql_use_std_any=yes])
-if test "$ql_use_std_any" = "yes" ; then
-   AC_DEFINE([QL_USE_STD_ANY],[1],
-             [Define this if you want to use std::any.])
-fi
-AC_MSG_RESULT([$ql_use_std_any])
-
 AC_MSG_CHECKING([whether to enable std::optional instead of boost::optional])
 AC_ARG_ENABLE([std-optional],
               AS_HELP_STRING([--enable-std-optional],
@@ -328,15 +313,12 @@ AC_MSG_RESULT([$ql_use_std_pointers])
 AC_MSG_CHECKING([whether to enable available std classes])
 AC_ARG_ENABLE([std-classes],
               AS_HELP_STRING([--enable-std-classes],
-                             [This is a shortcut for --enable-std-pointers
-                              --enable-std-function --enable-std-tuple.
+                             [This is a shortcut for --enable-std-pointers.
                               If enabled, this supersedes any --disable
                               option passed for the above.]),
               [ql_use_std_classes=$enableval],
               [ql_use_std_classes=no])
 if test "$ql_use_std_classes" = "yes" ; then
-   AC_DEFINE([QL_USE_STD_ANY],[1],
-             [Define this if you want to use std::any.])
    AC_DEFINE([QL_USE_STD_OPTIONAL],[1],
              [Define this if you want to use std::optional.])
    AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
