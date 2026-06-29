@@ -45,7 +45,6 @@ namespace QuantLib {
     : ZeroCouponInflationSwapHelper(
         quote, swapObsLag, Date(), maturity, std::move(calendar), paymentConvention,
         dayCounter, zii, observationInterpolation,
-        Handle<YieldTermStructure>(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0, dayCounter)),
         pillar, customPillarDate) {}
 
     ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
@@ -60,34 +59,11 @@ namespace QuantLib {
         CPI::InterpolationType observationInterpolation,
         Pillar::Choice pillar,
         Date customPillarDate)
-    : ZeroCouponInflationSwapHelper(
-        quote, swapObsLag, startDate, endDate, std::move(calendar), paymentConvention,
-        dayCounter, zii, observationInterpolation,
-        // any nominal term structure will give the same result;
-        // when calculating the fair rate, the equal discount factors
-        // for the payments on the two legs will cancel out.
-        Handle<YieldTermStructure>(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0, dayCounter)),
-        pillar, customPillarDate) {}
-
-    ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
-        const Handle<Quote>& quote,
-        const Period& swapObsLag,
-        const Date& startDate,
-        const Date& endDate,
-        Calendar calendar,
-        BusinessDayConvention paymentConvention,
-        DayCounter dayCounter,
-        const ext::shared_ptr<ZeroInflationIndex>& zii,
-        CPI::InterpolationType observationInterpolation,
-        Handle<YieldTermStructure> nominalTermStructure,
-        Pillar::Choice pillar,
-        Date customPillarDate)
     : RelativeDateBootstrapHelper<ZeroInflationTermStructure>(quote, startDate == Date()),
       swapObsLag_(swapObsLag), startDate_(startDate), maturity_(endDate),
       calendar_(std::move(calendar)), paymentConvention_(paymentConvention),
       dayCounter_(std::move(dayCounter)), observationInterpolation_(observationInterpolation),
-      pillarChoice_(pillar),
-      nominalTermStructure_(std::move(nominalTermStructure)) {
+      pillarChoice_(pillar) {
         zii_ = zii->clone(termStructureHandle_);
         // We want to be notified of changes of fixings, but we don't
         // want notifications from termStructureHandle_ (they would
@@ -156,7 +132,6 @@ namespace QuantLib {
         }
 
         registerWith(zii_);
-        registerWith(nominalTermStructure_);
         ZeroCouponInflationSwapHelper::initializeDates();
     }
 
@@ -173,10 +148,19 @@ namespace QuantLib {
             Swap::Payer, 1.0, updateDates_ ? evaluationDate_ : startDate_, maturity_, calendar_,
             paymentConvention_, dayCounter_, 0.0, zii_, swapObsLag_,
             observationInterpolation_);
+
         // The instrument takes a standard discounting swap engine.
         // The inflation-related work is done by the coupons.
+
+        // Any nominal term structure will give the same result;
+        // when calculating the fair rate, the equal discount factors
+        // for the payments on the two legs will cancel out.
+
+        auto null_nominal_curve =
+            Handle<YieldTermStructure>(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0, dayCounter_));
+
         zciis_->setPricingEngine(
-            ext::make_shared<DiscountingSwapEngine>(nominalTermStructure_));
+            ext::make_shared<DiscountingSwapEngine>(null_nominal_curve));
     }
 
     void ZeroCouponInflationSwapHelper::setTermStructure(ZeroInflationTermStructure* z) {
