@@ -52,7 +52,7 @@ namespace QuantLib {
         */
         virtual bool hasOccurred(
                     const Date& refDate = Date(),
-                    ext::optional<bool> includeRefDate = ext::nullopt) const;
+                    std::optional<bool> includeRefDate = std::nullopt) const;
         //@}
 
         //! \name Visitability
