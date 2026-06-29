@@ -11,6 +11,7 @@ this_include_HEADERS = \
     iborindex.hpp \
     indexmanager.hpp \
     inflationindex.hpp \
+    fxindex.hpp \
     interestrateindex.hpp \
     region.hpp \
     swapindex.hpp
@@ -21,6 +22,7 @@ cpp_files = \
     iborindex.cpp \
     indexmanager.cpp \
     inflationindex.cpp \
+    fxindex.cpp \
     interestrateindex.cpp \
     region.cpp \
     swapindex.cpp
