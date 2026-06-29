@@ -63,7 +63,6 @@ option(QL_TAGGED_LAYOUT "Library names use layout tags" ${MSVC})
 option(QL_USE_CLANG_TIDY "Use clang-tidy when building" OFF)
 option(QL_USE_INDEXED_COUPON "Use indexed coupons instead of par coupons" OFF)
 option(QL_USE_STD_CLASSES "Enable all QL_USE_STD_ options" OFF)
-option(QL_USE_STD_OPTIONAL "Use std::optional instead of boost::optional" ON)
 option(QL_USE_STD_SHARED_PTR "Use standard smart pointers instead of Boost ones" OFF)
 set(QL_EXTERNAL_SUBDIRECTORIES "" CACHE STRING "Optional list of external source directories to be added to the build (semicolon-separated)")
 # set -lpapi here
@@ -85,7 +84,6 @@ endif()
 
 # Convenience option to activate all STD options
 if (QL_USE_STD_CLASSES)
-    set(QL_USE_STD_OPTIONAL ON)
     set(QL_USE_STD_SHARED_PTR ON)
 endif()
 

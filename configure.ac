@@ -272,25 +272,6 @@ if test "$ql_faster_lazy_objects" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_faster_lazy_objects])
 
-AC_MSG_CHECKING([whether to enable std::optional instead of boost::optional])
-AC_ARG_ENABLE([std-optional],
-              AS_HELP_STRING([--enable-std-optional],
-                             [If enabled (the default), std::optional and
-                              related classes and functions will be used
-                              instead of boost::optional. If disabled,
-                              the Boost facilities will be used; however,
-                              be aware that Boost 1.91 introduced changes
-                              in boost::optional that silently changed
-                              the behavior of our code and would cause it
-                              to work incorrectly.]),
-              [ql_use_std_optional=$enableval],
-              [ql_use_std_optional=yes])
-if test "$ql_use_std_optional" = "yes" ; then
-   AC_DEFINE([QL_USE_STD_OPTIONAL],[1],
-             [Define this if you want to use std::optional.])
-fi
-AC_MSG_RESULT([$ql_use_std_optional])
-
 AC_MSG_CHECKING([whether to enable standard smart pointers])
 AC_ARG_ENABLE([std-pointers],
               AS_HELP_STRING([--enable-std-pointers],
@@ -319,8 +300,6 @@ AC_ARG_ENABLE([std-classes],
               [ql_use_std_classes=$enableval],
               [ql_use_std_classes=no])
 if test "$ql_use_std_classes" = "yes" ; then
-   AC_DEFINE([QL_USE_STD_OPTIONAL],[1],
-             [Define this if you want to use std::optional.])
    AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
              [Define this if you want to use standard smart pointers.])
 fi

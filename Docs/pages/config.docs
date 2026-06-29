@@ -119,15 +119,6 @@
     thus is the current default.
 
     \code
-    #define QL_USE_STD_OPTIONAL
-    \endcode
-    If defined (the default), `std::optional` and related classes and
-    functions will be used instead of `boost::optional`. If undefined,
-    the Boost facilities will be used; however, be aware that Boost
-    1.91 introduced changes in boost::optional that silently changed
-    the behavior of our code and would cause it to work incorrectly.
-
-    \code
     #define QL_USE_STD_SHARED_PTR
     \endcode
     If defined, `std::shared_ptr` and related classes and functions
