@@ -59,35 +59,12 @@ namespace QuantLib {
                                Rate baseRate = Null<Rate>());
         //@}
 
-        QL_DEPRECATED_DISABLE_WARNING
-        ~InflationTermStructure() override = default;
-        QL_DEPRECATED_ENABLE_WARNING
-
-        //! \name Inflation interface
-        //@{
-        /*! \deprecated Do not use; inflation curves always have an explicit
-                        base date now.
-                        Deprecated in version 1.39.
-        */
-        [[deprecated("Do not use; inflation curves always have an explicit base date now.")]]
-        virtual Period observationLag() const;
-
         virtual Frequency frequency() const;
         virtual Rate baseRate() const;
 
         //! minimum (base) date
         /*! The last date for which we have information. */
         virtual Date baseDate() const;
-
-        /*! \deprecated Do not use; inflation curves always have an explicit
-                        base date now.
-                        Deprecated in version 1.39.
-        */
-        [[deprecated("Do not use; inflation curves always have an explicit base date now.")]]
-        bool hasExplicitBaseDate() const {
-            return true;
-        }
-        //@}
 
         //! \name Seasonality
         //@{
@@ -103,13 +80,6 @@ namespace QuantLib {
                         bool extrapolate) const;
 
         ext::shared_ptr<Seasonality> seasonality_;
-
-        /*! \deprecated Do not use; inflation curves always have an explicit
-                        base date now.
-                        Deprecated in version 1.39.
-        */
-        [[deprecated("Do not use; inflation curves always have an explicit base date now.")]]
-        Period observationLag_;
 
         Frequency frequency_;
         mutable Rate baseRate_;
@@ -251,12 +221,6 @@ namespace QuantLib {
 
 
     // inline
-
-    inline Period InflationTermStructure::observationLag() const {
-        QL_DEPRECATED_DISABLE_WARNING
-        return observationLag_;
-        QL_DEPRECATED_ENABLE_WARNING
-    }
 
     inline Frequency InflationTermStructure::frequency() const {
         return frequency_;
