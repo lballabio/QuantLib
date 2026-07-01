@@ -22,7 +22,6 @@
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/lbfgsb.hpp>
 #include <ql/math/optimization/problem.hpp>
-#include <algorithm>
 #include <cmath>
 #include <deque>
 #include <utility>
