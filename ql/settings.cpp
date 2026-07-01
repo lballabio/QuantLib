@@ -47,14 +47,14 @@ namespace QuantLib {
     }
 
     SavedSettings::SavedSettings()
-    : evaluationDate_(Settings::instance().evaluationDate()),
+    : evaluationDate_(Settings::instance().evaluationDate().value()),
       includeReferenceDateEvents_(Settings::instance().includeReferenceDateEvents()),
       includeTodaysCashFlows_(Settings::instance().includeTodaysCashFlows()),
       enforcesTodaysHistoricFixings_(Settings::instance().enforcesTodaysHistoricFixings()) {}
 
     SavedSettings::~SavedSettings() {
         try {
-            if (Settings::instance().evaluationDate() != evaluationDate_)
+            if (Settings::instance().evaluationDate().value() != evaluationDate_)
                 Settings::instance().evaluationDate() = evaluationDate_;
             Settings::instance().includeReferenceDateEvents() =
                 includeReferenceDateEvents_;
