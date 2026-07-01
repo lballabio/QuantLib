@@ -56,24 +56,20 @@ namespace QuantLib {
 
         // 2. Mesher
         const Time maturity = p1_->time(arguments_.exercise->lastDate());
-        const ext::shared_ptr<Fdm1dMesher> em1(
-            new FdmBlackScholesMesher(
+        const ext::shared_ptr<Fdm1dMesher> em1(ext::make_shared<FdmBlackScholesMesher>(
                     xGrid_, p1_, maturity, p1_->x0(), 
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
                     std::pair<Real, Real>(p1_->x0(), 0.1)));
 
-        const ext::shared_ptr<Fdm1dMesher> em2(
-            new FdmBlackScholesMesher(
+        const ext::shared_ptr<Fdm1dMesher> em2(ext::make_shared<FdmBlackScholesMesher>(
                     yGrid_, p2_, maturity, p2_->x0(),
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
                     std::pair<Real, Real>(p2_->x0(), 0.1)));
 
-        const ext::shared_ptr<FdmMesher> mesher (
-            new FdmMesherComposite(em1, em2));
+        const ext::shared_ptr<FdmMesher> mesher (ext::make_shared<FdmMesherComposite>(em1, em2));
 
         // 3. Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-                                new FdmLogBasketInnerValue(payoff, mesher));
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator(ext::make_shared<FdmLogBasketInnerValue>(payoff, mesher));
 
         // 4. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions =
@@ -91,12 +87,11 @@ namespace QuantLib {
                                            conditions, calculator,
                                            maturity, tGrid_, dampingSteps_ };
 
-        ext::shared_ptr<Fdm2dBlackScholesSolver> solver(
-                new Fdm2dBlackScholesSolver(
+        auto solver = ext::make_shared<Fdm2dBlackScholesSolver>(
                              Handle<GeneralizedBlackScholesProcess>(p1_),
                              Handle<GeneralizedBlackScholesProcess>(p2_),
                              correlation_, solverDesc, schemeDesc_,
-                             localVol_, illegalLocalVolOverwrite_));
+                             localVol_, illegalLocalVolOverwrite_);
 
         const Real x = p1_->x0();
         const Real y = p2_->x0();

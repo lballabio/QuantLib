@@ -81,8 +81,7 @@ namespace QuantLib {
                 this->arguments_.payoff);
         QL_REQUIRE(argumentsPayoff, "wrong payoff given");
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
-                   new PlainVanillaPayoff(argumentsPayoff->optionType(),
+        ext::shared_ptr<StrikedTypePayoff> payoff(ext::make_shared<PlainVanillaPayoff>(argumentsPayoff->optionType(),
                                           this->arguments_.moneyness *
                                           process_->x0()));
 
@@ -92,29 +91,25 @@ namespace QuantLib {
         Handle<Quote> spot = process_->stateVariable();
         QL_REQUIRE(spot->value() > 0.0, "negative or null underlying given");
         Handle<YieldTermStructure> dividendYield(
-            ext::shared_ptr<YieldTermStructure>(
-               new ImpliedTermStructure(process_->dividendYield(),
-                                        this->arguments_.resetDate)));
+            ext::make_shared<ImpliedTermStructure>(process_->dividendYield(),
+                                        this->arguments_.resetDate));
         Handle<YieldTermStructure> riskFreeRate(
-            ext::shared_ptr<YieldTermStructure>(
-               new ImpliedTermStructure(process_->riskFreeRate(),
-                                        this->arguments_.resetDate)));
+            ext::make_shared<ImpliedTermStructure>(process_->riskFreeRate(),
+                                        this->arguments_.resetDate));
         // The following approach is ok if the vol is at most
         // time-dependent. It is plain wrong if it is asset-dependent.
         // In the latter case the right solution would be stochastic
         // volatility or at least local volatility (which unfortunately
         // implies an unrealistic time-decreasing smile)
         Handle<BlackVolTermStructure> blackVolatility(
-            ext::shared_ptr<BlackVolTermStructure>(
-                new ImpliedVolTermStructure(process_->blackVolatility(),
-                                            this->arguments_.resetDate)));
+            ext::make_shared<ImpliedVolTermStructure>(process_->blackVolatility(),
+                                            this->arguments_.resetDate));
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> fwdProcess(
-                       new GeneralizedBlackScholesProcess(spot, dividendYield,
+        auto fwdProcess = ext::make_shared<GeneralizedBlackScholesProcess>(spot, dividendYield,
                                                           riskFreeRate,
-                                                          blackVolatility));
+                                                          blackVolatility);
 
-        originalEngine_ = ext::shared_ptr<Engine>(new Engine(fwdProcess));
+        originalEngine_ = ext::make_shared<Engine>(fwdProcess);
         originalEngine_->reset();
 
         originalArguments_ =

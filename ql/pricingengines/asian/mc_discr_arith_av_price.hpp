@@ -75,8 +75,7 @@ namespace QuantLib {
                 ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                     this->process_);
             QL_REQUIRE(process, "Black-Scholes process required");
-            return ext::shared_ptr<PricingEngine>(new
-                AnalyticDiscreteGeometricAveragePriceAsianEngine(process));
+            return ext::make_shared<AnalyticDiscreteGeometricAveragePriceAsianEngine>(process);
         }
     };
 
@@ -141,14 +140,12 @@ namespace QuantLib {
                 this->process_);
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        return ext::shared_ptr<typename
-            MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>(
-                new ArithmeticAPOPathPricer(
+        return ext::make_shared<ArithmeticAPOPathPricer>(
                     payoff->optionType(),
                     payoff->strike(),
                     process->riskFreeRate()->discount(exercise->lastDate()),
                     this->arguments_.runningAccumulator,
-                    this->arguments_.pastFixings));
+                    this->arguments_.pastFixings);
     }
 
     template <class RNG, class S>
@@ -175,12 +172,10 @@ namespace QuantLib {
         // for seasoned option the geometric strike might be rescaled
         // to obtain an equivalent arithmetic strike.
         // Any change applied here MUST be applied to the analytic engine too
-        return ext::shared_ptr<typename
-            MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>(
-            new GeometricAPOPathPricer(
+        return ext::make_shared<GeometricAPOPathPricer>(
               payoff->optionType(),
               payoff->strike(),
-              process->riskFreeRate()->discount(this->timeGrid().back())));
+              process->riskFreeRate()->discount(this->timeGrid().back()));
     }
 
     template <class RNG = PseudoRandom, class S = Statistics>
@@ -274,13 +269,12 @@ namespace QuantLib {
     inline
     MakeMCDiscreteArithmeticAPEngine<RNG,S>::operator ext::shared_ptr<PricingEngine>()
                                                                       const {
-        return ext::shared_ptr<PricingEngine>(new
-            MCDiscreteArithmeticAPEngine<RNG,S>(process_,
+        return ext::make_shared<MCDiscreteArithmeticAPEngine<RNG,S>>(process_,
                                                 brownianBridge_,
                                                 antithetic_, controlVariate_,
                                                 samples_, tolerance_,
                                                 maxSamples_,
-                                                seed_));
+                                                seed_);
     }
 
 
