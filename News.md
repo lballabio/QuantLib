@@ -1,7 +1,7 @@
 Changes for QuantLib 1.43
 =========================
 
-Features deprecated in release 1.38 were removed in this release; see #2539 for a full list.
+Features deprecated in release 1.38 were removed in this release; see <https://github.com/lballabio/QuantLib/pull/2539> for a full list.
 
 A number of features were deprecated in this release and will be removed in a future release (probably release 1.48):
 
