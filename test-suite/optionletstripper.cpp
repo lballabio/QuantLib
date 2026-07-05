@@ -22,6 +22,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/currencies/america.hpp>
+#include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
@@ -31,6 +32,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp>
 #include <ql/termstructures/volatility/capfloor/constantcapfloortermvol.hpp>
+#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletstripper2.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
@@ -403,6 +405,7 @@ struct CommonVarsON {
         today = Date(15, April, 2025);
         startDate = Date(17, April, 2025);
         endDate = Date(17, April, 2030);
+        tenor = 3 * Months;
         calendar = UnitedStates(UnitedStates::FederalReserve);
         convention = ModifiedFollowing;
         dc = Actual360();
@@ -454,29 +457,16 @@ struct CommonVarsON {
         sofrCurveHandle.linkTo(sofrCurve);
     }
 
-    void setRealCapFloorVolSurface() {
+    void setFlatSofrCapFloorVolSurface() {
         strikes = {0.03, 0.035, 0.04};
         
         for (int i = 1; i <= 10; ++i)
             expiries.emplace_back(i, Years);
 
         Matrix vols(expiries.size(), strikes.size());
-        Real data[10][3] = {
-            {12.52, 24.73, 26.8},
-            {15.81, 24.94, 27.95},
-            {18.91, 41.48, 38.94},
-            {21,    40.14, 37.17},
-            {22.46, 41.69, 38.96},
-            {23.39, 43.06, 38.48},
-            {23.95, 43.98, 39.61},
-            {24.29, 44.58, 39.51},
-            {24.42, 44.7,  39.09},
-            {24.42, 44.36, 37.41}
-        };
-            
         for (Size i = 0; i < vols.rows(); ++i)
             for (Size j = 0; j < vols.columns(); ++j)
-                vols[i][j] = data[i][j] / 10000.0;
+                vols[i][j] = 30.0 / 10000.0;
 
         capfloorVol = ext::make_shared<CapFloorTermVolSurface>(
                                         2, calendar, convention,
@@ -927,7 +917,7 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1ON) {
                       vars.calendar, vars.convention, vars.convention,
                       DateGeneration::Forward, false);
     vars.setSofrHandle();
-    vars.setRealCapFloorVolSurface();
+    vars.setFlatSofrCapFloorVolSurface();
 
     ext::shared_ptr<OvernightIndex> sofrIndex(new Sofr(vars.sofrCurveHandle));
     sofrIndex->addFixing(Date(15, April, 2025), 3.04/100.0);
@@ -936,52 +926,47 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1ON) {
     OvernightLeg sofrLeg(schedule, sofrIndex);
     sofrLeg.withNotionals(notional)
            .withPaymentAdjustment(ModifiedFollowing)
-           .withPaymentLag(2);
+           .withPaymentLag(2)
+           .withCouponPricer(ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
 
     Rate strikeRate = 0.04;
     std::vector<Rate> strikes(1, strikeRate);
     Cap cap(sofrLeg, strikes);
-    Cap cap1(sofrLeg, strikes);
+    Cap strippedCap(sofrLeg, strikes);
 
     ext::shared_ptr<OptionletStripper1> optionletSurf(
             new OptionletStripper1(vars.capfloorVol, sofrIndex,
                                    Null<Real>(), 1e-6, 100,
                                    vars.sofrCurveHandle, Normal,
-                                   0.0, true, Period(3, Months)));
+                                   0.0, false, Period(3, Months)));
 
     Handle<OptionletVolatilityStructure> ovsHandle(
         ext::shared_ptr<OptionletVolatilityStructure>(
             new StrippedOptionletAdapter(optionletSurf)));
 
-     ext::shared_ptr<IborIndex> sofr3m(new IborIndex(
-        "SOFR", Period(3, Months), 2,
-        USDCurrency(), vars.calendar, vars.convention, false, vars.dc, vars.sofrCurveHandle
-    ));
+    auto quotedVol = ext::make_shared<SimpleQuote>(
+        vars.capfloorVol->volatility(Period(5, Years), strikeRate, true));
+    Handle<OptionletVolatilityStructure> quotedVolHandle(
+        ext::make_shared<ConstantOptionletVolatility>(
+            vars.capfloorVol->referenceDate(), vars.calendar, vars.convention,
+            Handle<Quote>(quotedVol), vars.dc, Normal));
 
-    ext::shared_ptr<OptionletStripper1> optionletSurf1(
-        new OptionletStripper1(vars.capfloorVol, sofr3m,
-                               Null<Real>(), 1e-6, 100, vars.sofrCurveHandle, Normal)
-    );
+    ext::shared_ptr<PricingEngine> quotedVolEngine(
+        new BachelierCapFloorEngine(vars.sofrCurveHandle, quotedVolHandle));
+    cap.setPricingEngine(quotedVolEngine);
 
-    ext::shared_ptr<OptionletVolatilityStructure> ovs(
-        new StrippedOptionletAdapter(optionletSurf)
-    );
-    Handle<OptionletVolatilityStructure> ovsHandle1(ovs);
-
-    // Use optionlet surface for pricing
-    ext::shared_ptr<PricingEngine> engineOvs(
+    ext::shared_ptr<PricingEngine> strippedVolEngine(
         new BachelierCapFloorEngine(vars.sofrCurveHandle, ovsHandle));
-    cap.setPricingEngine(engineOvs);
-    ext::shared_ptr<PricingEngine> engineOvs1(
-        new BachelierCapFloorEngine(vars.sofrCurveHandle, ovsHandle1));
-    cap1.setPricingEngine(engineOvs1);
-    
+    strippedCap.setPricingEngine(strippedVolEngine);
+
     Real tolerance = 2.5e-8;
     Real capPrice = cap.NPV();
-    Real cap1Price = cap1.NPV();
-    Real error = std::fabs(capPrice - cap1Price);
+    Real strippedCapPrice = strippedCap.NPV();
+    Real error = std::fabs(capPrice - strippedCapPrice);
     if (error> tolerance)
       BOOST_FAIL("\nerror:         " << error <<
+                 "\ncap price:     " << capPrice <<
+                 "\nstripped price:" << strippedCapPrice <<
                  "\ntolerance:     " << io::rate(tolerance));
 }
 

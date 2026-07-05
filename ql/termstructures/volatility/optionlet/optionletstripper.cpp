@@ -45,7 +45,8 @@ namespace QuantLib {
                        "non-null displacement is not allowed with Normal model");
         }
 
-        if (ext::dynamic_pointer_cast<OvernightIndex>(iborIndex_)) {
+        bool isOvernightIndex = static_cast<bool>(ext::dynamic_pointer_cast<OvernightIndex>(iborIndex_));
+        if (isOvernightIndex) {
             QL_REQUIRE(optionletFrequency_, 
                        "an optionlet frequency is required when using an overnight index");
         }
@@ -59,16 +60,28 @@ namespace QuantLib {
         Period maxCapFloorTenor = termVolSurface->optionTenors().back();
 
         // optionlet tenors and capFloor lengths
-        optionletTenors_.push_back(indexTenor);
-        capFloorLengths_.push_back(optionletTenors_.back()+indexTenor);
-        QL_REQUIRE(maxCapFloorTenor>=capFloorLengths_.back(),
-                   "too short (" << maxCapFloorTenor <<
-                   ") capfloor term vol termVolSurface");
-        Period nextCapFloorLength = capFloorLengths_.back()+indexTenor;
-        while (nextCapFloorLength<=maxCapFloorTenor) {
-            optionletTenors_.push_back(capFloorLengths_.back());
-            capFloorLengths_.push_back(nextCapFloorLength);
-            nextCapFloorLength += indexTenor;
+        if (isOvernightIndex) {
+            Period nextCapFloorLength = indexTenor;
+            QL_REQUIRE(maxCapFloorTenor >= nextCapFloorLength,
+                       "too short (" << maxCapFloorTenor <<
+                       ") capfloor term vol termVolSurface");
+            while (nextCapFloorLength <= maxCapFloorTenor) {
+                optionletTenors_.push_back(nextCapFloorLength);
+                capFloorLengths_.push_back(nextCapFloorLength);
+                nextCapFloorLength += indexTenor;
+            }
+        } else {
+            optionletTenors_.push_back(indexTenor);
+            capFloorLengths_.push_back(optionletTenors_.back()+indexTenor);
+            QL_REQUIRE(maxCapFloorTenor>=capFloorLengths_.back(),
+                       "too short (" << maxCapFloorTenor <<
+                       ") capfloor term vol termVolSurface");
+            Period nextCapFloorLength = capFloorLengths_.back()+indexTenor;
+            while (nextCapFloorLength<=maxCapFloorTenor) {
+                optionletTenors_.push_back(capFloorLengths_.back());
+                capFloorLengths_.push_back(nextCapFloorLength);
+                nextCapFloorLength += indexTenor;
+            }
         }
         nOptionletTenors_ = optionletTenors_.size();
         
