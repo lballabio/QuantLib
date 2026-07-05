@@ -132,17 +132,34 @@ namespace QuantLib {
 
         ext::shared_ptr<PricingEngine> capFloorEngine;
         auto volQuote = ext::make_shared<SimpleQuote>();
-        Handle<OptionletVolatilityStructure> vol(
-            ext::make_shared<ConstantOptionletVolatility>(
-                referenceDate, termVolSurface_->calendar(), termVolSurface_->businessDayConvention(),
-                Handle<Quote>(volQuote), dc, volatilityType_, displacement_));
+        Handle<Quote> volHandle(volQuote);
 
         if (volatilityType_ == ShiftedLognormal) {
-            capFloorEngine = ext::make_shared<BlackCapFloorEngine>(
-                discountCurve, vol, displacement_);
+            if (overnightIndex) {
+                Handle<OptionletVolatilityStructure> vol(
+                    ext::make_shared<ConstantOptionletVolatility>(
+                        referenceDate, termVolSurface_->calendar(),
+                        termVolSurface_->businessDayConvention(), volHandle,
+                        dc, volatilityType_, displacement_));
+                capFloorEngine = ext::make_shared<BlackCapFloorEngine>(
+                    discountCurve, vol, displacement_);
+            } else {
+                capFloorEngine = ext::make_shared<BlackCapFloorEngine>(
+                    discountCurve, volHandle, dc, displacement_);
+            }
         } else if (volatilityType_ == Normal) {
-            capFloorEngine = ext::make_shared<BachelierCapFloorEngine>(
-                discountCurve, vol);
+            if (overnightIndex) {
+                Handle<OptionletVolatilityStructure> vol(
+                    ext::make_shared<ConstantOptionletVolatility>(
+                        referenceDate, termVolSurface_->calendar(),
+                        termVolSurface_->businessDayConvention(), volHandle,
+                        dc, volatilityType_, displacement_));
+                capFloorEngine = ext::make_shared<BachelierCapFloorEngine>(
+                    discountCurve, vol);
+            } else {
+                capFloorEngine = ext::make_shared<BachelierCapFloorEngine>(
+                    discountCurve, volHandle, dc);
+            }
         } else {
             QL_FAIL("unknown volatility type: " << volatilityType_);
         }
