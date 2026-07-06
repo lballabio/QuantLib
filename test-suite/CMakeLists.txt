@@ -148,6 +148,7 @@ set(QL_TEST_SOURCES
     riskneutraldensitycalculator.cpp
     riskstats.cpp
     rngtraits.cpp
+    roughhestonmodel.cpp
     rounding.cpp
     schedule.cpp
     settings.cpp
