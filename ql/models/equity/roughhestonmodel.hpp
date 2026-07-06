@@ -32,31 +32,7 @@
 namespace QuantLib {
 
     //! rough Heston model for the stochastic volatility of an asset
-    /*! The variance follows a fractional (Volterra) square-root process
-        \f[
-        \begin{array}{rcl}
-        dS_t &=& (r-q) S_t dt + S_t\sqrt{V_t}\,dW_t \\
-        V_t  &=& V_0 + \frac{1}{\Gamma(\alpha)}\int_0^t (t-s)^{\alpha-1}
-                 \kappa(\theta - V_s)\,ds
-               + \frac{1}{\Gamma(\alpha)}\int_0^t (t-s)^{\alpha-1}
-                 \sigma\sqrt{V_s}\,dB_s \\
-        dW_t\,dB_t &=& \rho\,dt
-        \end{array}
-        \f]
-        with \f$ \alpha = H + \frac{1}{2} \f$ and Hurst exponent
-        \f$ H \in (0, \frac{1}{2}] \f$.  For \f$ H = \frac{1}{2} \f$ the
-        kernel is constant and the model reduces exactly to the classical
-        Heston model with the same parameters.  Small values of the Hurst
-        exponent (empirically \f$ H \approx 0.1 \f$) generate the steep
-        short-maturity at-the-money implied-volatility skew, exploding like
-        \f$ T^{H-1/2} \f$, that classical stochastic-volatility models
-        cannot reproduce.
-
-        Since the variance process is neither Markovian nor a semimartingale,
-        the model is not backed by a StochasticProcess instance; the yield
-        term structures and the spot quote are held directly.
-
-        References:
+    /*! References:
 
         O. El Euch and M. Rosenbaum, The characteristic function of rough
         Heston models, Mathematical Finance 29(1), 3-38 (2019).
