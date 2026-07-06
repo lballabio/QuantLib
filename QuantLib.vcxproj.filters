@@ -1962,6 +1962,9 @@
     <ClInclude Include="ql\models\equity\piecewisetimedependenthestonmodel.hpp">
       <Filter>models\equity</Filter>
     </ClInclude>
+    <ClInclude Include="ql\models\equity\roughhestonmodel.hpp">
+      <Filter>models\equity</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\all.hpp">
       <Filter>termstructures</Filter>
     </ClInclude>
@@ -2626,6 +2629,9 @@
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\analyticptdhestonengine.hpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\vanilla\analyticroughhestonengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\baroneadesiwhaleyengine.hpp">
@@ -3745,6 +3751,9 @@
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\ode\adaptiverungekutta.hpp">
+      <Filter>math\ode</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\ode\fractionaladams.hpp">
       <Filter>math\ode</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp">
@@ -5606,6 +5615,9 @@
     <ClCompile Include="ql\models\equity\piecewisetimedependenthestonmodel.cpp">
       <Filter>models\equity</Filter>
     </ClCompile>
+    <ClCompile Include="ql\models\equity\roughhestonmodel.cpp">
+      <Filter>models\equity</Filter>
+    </ClCompile>
     <ClCompile Include="ql\termstructures\defaulttermstructure.cpp">
       <Filter>termstructures</Filter>
     </ClCompile>
@@ -5994,6 +6006,9 @@
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\analyticptdhestonengine.cpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\vanilla\analyticroughhestonengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\baroneadesiwhaleyengine.cpp">

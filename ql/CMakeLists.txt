@@ -533,6 +533,7 @@ set(QL_SOURCES
     models/equity/hestonslvfdmmodel.cpp
     models/equity/hestonslvmcmodel.cpp
     models/equity/piecewisetimedependenthestonmodel.cpp
+    models/equity/roughhestonmodel.cpp
     models/marketmodels/accountingengine.cpp
     models/marketmodels/browniangenerators/mtbrowniangenerator.cpp
     models/marketmodels/browniangenerators/sobolbrowniangenerator.cpp
@@ -762,6 +763,7 @@ set(QL_SOURCES
     pricingengines/vanilla/analytichestonhullwhiteengine.cpp
     pricingengines/vanilla/analyticpdfhestonengine.cpp
     pricingengines/vanilla/analyticptdhestonengine.cpp
+    pricingengines/vanilla/analyticroughhestonengine.cpp
     pricingengines/vanilla/baroneadesiwhaleyengine.cpp
     pricingengines/vanilla/batesengine.cpp
     pricingengines/vanilla/bjerksundstenslandengine.cpp
@@ -1528,6 +1530,7 @@ set(QL_HEADERS
     math/matrixutilities/tqreigendecomposition.hpp
     math/modifiedbessel.hpp
     math/ode/adaptiverungekutta.hpp
+    math/ode/fractionaladams.hpp
     math/optimization/armijo.hpp
     math/optimization/bfgs.hpp
     math/optimization/conjugategradient.hpp
@@ -1747,6 +1750,7 @@ set(QL_HEADERS
     models/equity/hestonslvfdmmodel.hpp
     models/equity/hestonslvmcmodel.hpp
     models/equity/piecewisetimedependenthestonmodel.hpp
+    models/equity/roughhestonmodel.hpp
     models/marketmodels/accountingengine.hpp
     models/marketmodels/browniangenerator.hpp
     models/marketmodels/browniangenerators/mtbrowniangenerator.hpp
@@ -2016,6 +2020,7 @@ set(QL_HEADERS
     pricingengines/vanilla/analytichestonhullwhiteengine.hpp
     pricingengines/vanilla/analyticpdfhestonengine.hpp
     pricingengines/vanilla/analyticptdhestonengine.hpp
+    pricingengines/vanilla/analyticroughhestonengine.hpp
     pricingengines/vanilla/baroneadesiwhaleyengine.hpp
     pricingengines/vanilla/batesengine.hpp
     pricingengines/vanilla/binomialengine.hpp
