@@ -40,18 +40,12 @@ namespace QuantLib {
         engine solves the latter numerically with the Diethelm-Ford-Freed
         Adams predictor-corrector scheme and prices European options with
         the Andersen-Piterbarg Fourier integral and a Black-Scholes
-        control variate.  Characteristic function values are cached per
-        frequency and maturity, so that with a non-adaptive integration
-        rule (the Gauss-Laguerre default) all strikes sharing a maturity
-        reuse the same fractional Riccati solutions.
+        control variate.
 
         \note The fractional Adams scheme is the reference-quality but
               \f$ O(N^2) \f$ route to the characteristic function.  Future
-              pull requests are planned to add faster approximations,
-              among them the rational (Pade) approximation of Gatheral and
-              Radoicic, the multi-factor "lifted Heston" Markovian
-              approximation of Abi Jaber, and support for forward-variance
-              term structures.
+              pull requests will add faster approximations like Padè, 
+              lifted Heston, and forward-variance term structures.
 
         References:
 
@@ -62,16 +56,13 @@ namespace QuantLib {
         for the Numerical Solution of Fractional Differential Equations,
         Nonlinear Dynamics 29, 3-22 (2002).
 
-        L. Andersen and V. Piterbarg, Interest Rate Modeling, Volume I:
-        Foundations and Vanilla Models, Atlantic Financial Press (2010).
-
         \ingroup vanillaengines
 
         \test the correctness of the returned value is tested by comparison
               against the classical Heston model for Hurst exponent
               \f$ H = \frac{1}{2} \f$, against values from an independent
               implementation, and by checking known qualitative properties
-              of rough volatility (short-maturity skew explosion).
+              of rough volatility.
     */
     class AnalyticRoughHestonEngine
         : public GenericModelEngine<RoughHestonModel,
@@ -80,15 +71,14 @@ namespace QuantLib {
       public:
         typedef AnalyticHestonEngine::Integration Integration;
 
-        // Constructor using Gauss-Laguerre integration; timeSteps is the
-        // number of steps of the fractional Adams scheme per maturity.
+        // Constructor using Gauss-Laguerre integration
         explicit AnalyticRoughHestonEngine(
             const ext::shared_ptr<RoughHestonModel>& model,
             Size integrationOrder = 128,
             Size timeSteps = 256);
 
-        // Constructor giving full control over the Fourier integration
-        // algorithm; alpha is the payoff dampening exponent, which must
+        // Constructor gives full control over the Fourier integration
+        // algorithm. \alpha is the payoff dampening exponent, which must
         // lie in (-1, 0) to keep the required moments finite.
         AnalyticRoughHestonEngine(
             const ext::shared_ptr<RoughHestonModel>& model,
@@ -107,7 +97,7 @@ namespace QuantLib {
             const ext::shared_ptr<PlainVanillaPayoff>& payoff,
             Time maturity) const;
 
-        // normalized characteristic function of the log forward moneyness,
+        // normalized characteristic function of the log forward moneyness
         // E[exp(i z ln(S_t/F_t))]
         std::complex<Real> chF(const std::complex<Real>& z, Time t) const;
         std::complex<Real> lnChF(const std::complex<Real>& z, Time t) const;
