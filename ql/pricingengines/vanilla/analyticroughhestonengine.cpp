@@ -26,9 +26,7 @@
 namespace QuantLib {
 
     // Andersen-Piterbarg integrand with Black-Scholes control variate,
-    // following AnalyticHestonEngine::AP_Helper; the control-variate
-    // variance is matched to the model characteristic function at the
-    // purely imaginary point i*alpha.
+    // following AnalyticHestonEngine::AP_Helper
     class AnalyticRoughHestonEngine::AP_Helper {
       public:
         AP_Helper(Time term, Real fwd, Real strike, Real alpha,
@@ -38,7 +36,7 @@ namespace QuantLib {
           strike_(strike),
           alpha_(alpha),
           freq_(std::log(fwd/strike)),
-          s_alpha_(std::exp(alpha*freq_)),
+          s_alpha_(std::exp(alpha * freq_)),
           enginePtr_(enginePtr) {
             QL_REQUIRE(enginePtr != nullptr, "pricing engine required");
 
@@ -47,7 +45,7 @@ namespace QuantLib {
             QL_REQUIRE(moment > 0.0,
                        "invalid characteristic function value; try to "
                        "increase the number of fractional Riccati time steps");
-            vAvg_ = -8.0*std::log(moment)/term;
+            vAvg_ = -8.0 * std::log(moment) / term;
         }
 
         Real operator()(Real u) const {
@@ -55,23 +53,22 @@ namespace QuantLib {
             const std::complex<Real> zPrime(u, -alpha_ - 1.0);
 
             const std::complex<Real> phiBS = std::exp(
-                -0.5*vAvg_*term_*(zPrime*zPrime
+                -0.5 * vAvg_ * term_ * (zPrime * zPrime
                     + std::complex<Real>(-zPrime.imag(), zPrime.real())));
 
             std::complex<Real> phi = enginePtr_->chF(zPrime, term_);
 
-            // the fractional Adams scheme diverges once the oscillation is
-            // under-resolved by the time grid (u dt > ~0.35). Along this
-            // contour the exact characteristic function satisfies
-            // |phi| <= 1 and decays exponentially in u, so diverged
-            // far-tail values are truncated to zero.
+            // The fractional Adams scheme diverges once the oscillation is
+            // under-resolved by the time grid. The exact characteristic
+            //  function satisfies |phi| <= 1 and decays exponentially
+            // in u, so far-tail values are truncated to zero.
             if (!std::isfinite(phi.real()) || !std::isfinite(phi.imag())
                     || std::norm(phi) > 1.0)
                 phi = std::complex<Real>(0.0);
 
-            return (std::exp(std::complex<Real>(0.0, u*freq_))
-                    *(phiBS - phi)/(z*zPrime)
-                   ).real()*s_alpha_;
+            return (std::exp(std::complex<Real>(0.0, u * freq_))
+                    * (phiBS - phi)/(z * zPrime)
+                   ).real() * s_alpha_;
         }
 
         Real controlVariateValue() const {
@@ -139,21 +136,23 @@ namespace QuantLib {
         const Real a     = model_->hurst() + 0.5;
 
         const std::complex<Real> c0 =
-            -0.5*z*(z + std::complex<Real>(0.0, 1.0));
+            -0.5 * z * (z + std::complex<Real>(0.0, 1.0));
+
         const std::complex<Real> c1 =
-            std::complex<Real>(0.0, rho*sigma)*z - kappa;
-        const Real c2 = 0.5*sigma*sigma;
+            std::complex<Real>(0.0, rho * sigma) * z - kappa;
+
+        const Real c2 = 0.5 * sigma * sigma;
 
         const std::vector<std::complex<Real>> h =
             FractionalAdams<std::complex<Real>>(a).solve(
                 [&](Real, const std::complex<Real>& x)
-                    -> std::complex<Real> { return c0 + (c1 + c2*x)*x; },
+                    -> std::complex<Real> { return c0 + (c1 + c2 * x) * x; },
                 std::complex<Real>(0.0), t, timeSteps_);
 
-        const Real dt = t/timeSteps_;
+        const Real dt = t / timeSteps_;
 
-        return kappa*theta*riemannLiouvilleIntegral(h, 1.0, dt)
-            + v0*riemannLiouvilleIntegral(h, 1.0 - a, dt);
+        return kappa * theta * riemannLiouvilleIntegral(h, 1.0, dt)
+            + v0 * riemannLiouvilleIntegral(h, 1.0 - a, dt);
     }
 
     std::complex<Real> AnalyticRoughHestonEngine::chF(
@@ -164,7 +163,7 @@ namespace QuantLib {
         if (cached != chFCache_.end())
             return cached->second;
 
-        const std::complex<Real> value = std::exp(lnChF(z, t));
+        const std::complex<Real> value{std::exp(lnChF(z, t))};
         chFCache_[key] = value;
 
         return value;
@@ -206,25 +205,25 @@ namespace QuantLib {
             model_->riskFreeRate()->discount(maturity);
         const Real strike = payoff->strike();
 
-        const Real kappa = model_->kappa();
-        const Real theta = model_->theta();
-        const Real sigma = model_->sigma();
-        const Real rho   = model_->rho();
-        const Real v0    = model_->v0();
-        const Real a     = model_->hurst() + 0.5;
+        const Real kappa{model_->kappa()};
+        const Real theta{model_->theta()};
+        const Real sigma{model_->sigma()};
+        const Real rho{model_->rho()};
+        const Real v0{model_->v0()};
+        const Real a{model_->hurst() + 0.5};
 
         evaluations_ = 0;
 
         // decay estimate of the characteristic function along the
         // integration contour; recovers the classical Heston engine value
-        // sqrt(1-rho^2)(v0 + kappa theta t)/sigma for alpha = 1
-        const Real c_inf = std::sqrt(1.0 - rho*rho)/sigma
-            *(v0*std::pow(maturity, 1.0 - a)
-                /GammaFunction().value(2.0 - a)
-              + kappa*theta*maturity);
+        // sqrt(1 - rho ^ 2)(v0 + kappa theta t) / sigma for alpha = 1
+        const Real c_inf = std::sqrt(1.0 - rho * rho) / sigma
+            * (v0 * std::pow(maturity, 1.0 - a)
+                / GammaFunction().value(2.0 - a)
+              + kappa * theta * maturity);
 
         const Real epsilon = andersenPiterbargEpsilon_
-            *M_PI/(std::sqrt(strike*fwd)*dr);
+            * M_PI / (std::sqrt(strike * fwd) * dr);
 
         const std::function<Real()> uM = [=]() {
             return Integration::andersenPiterbargIntegrationLimit(
@@ -235,17 +234,17 @@ namespace QuantLib {
         const Real cvValue = cvHelper.controlVariateValue();
 
         const Real scalingFactor = std::max(0.25, std::min(1000.0,
-            0.25/std::sqrt(0.5*cvHelper.vAvg()*maturity)));
+            0.25 / std::sqrt(0.5 * cvHelper.vAvg() * maturity)));
 
-        const Real h_cv = fwd/M_PI
-            *integration_->calculate(c_inf, cvHelper, uM, scalingFactor);
+        const Real h_cv = fwd / M_PI
+            * integration_->calculate(c_inf, cvHelper, uM, scalingFactor);
         evaluations_ += integration_->numberOfEvaluations();
 
         switch (payoff->optionType()) {
           case Option::Call:
-            return (cvValue + h_cv)*dr;
+            return (cvValue + h_cv) * dr;
           case Option::Put:
-            return (cvValue + h_cv - (fwd - strike))*dr;
+            return (cvValue + h_cv - (fwd - strike)) * dr;
           default:
             QL_FAIL("unknown option type");
         }
