@@ -39,33 +39,15 @@ namespace QuantLib {
             D^{\alpha} y(t) = f(t, y(t)),\qquad y(0) = y_0,
             \qquad \alpha \in (0, 1],
         \f]
-        where \f$ D^{\alpha} \f$ denotes the Caputo fractional derivative,
-        by discretizing the equivalent Volterra integral equation
-        \f[
-            y(t) = y_0 + \frac{1}{\Gamma(\alpha)}
-                \int_0^t (t-s)^{\alpha-1} f(s, y(s))\,ds
-        \f]
-        on a uniform grid with a product-rectangle predictor and a
-        product-trapezoidal corrector.  For \f$ \alpha = 1 \f$ the scheme
-        reduces to the classical one-step Adams-Bashforth-Moulton
-        (explicit Euler predictor, trapezoidal corrector) method.
-
-        The computational cost is \f$ O(N^2) \f$ evaluations of the right
-        hand side for \f$ N \f$ time steps, due to the memory of the
-        fractional kernel.  The convergence order is
-        \f$ O(\Delta t^{1+\alpha}) \f$ for smooth solutions; solutions
-        behaving like \f$ t^{\alpha} \f$ at the origin (the generic case)
-        reduce the observed global order to roughly
-        \f$ O(\Delta t^{1+\alpha}) \f$ away from the origin and
-        \f$ O(\Delta t^{2\alpha}) \f$ uniformly.
+        where \f$ D^{\alpha} \f$ denotes the Caputo fractional derivative.
+        For \f$ \alpha = 1 \f$ the scheme reduces to the classical one-step
+        Adams-Bashforth-Moulton method.  The memory of the fractional
+        kernel makes the cost \f$ O(N^2) \f$ in the number of time steps.
 
         References:
         K. Diethelm, N.J. Ford, A.D. Freed, A Predictor-Corrector Approach
         for the Numerical Solution of Fractional Differential Equations,
         Nonlinear Dynamics 29, 3-22 (2002).
-
-        K. Diethelm, N.J. Ford, A.D. Freed, Detailed error analysis for a
-        fractional Adams method, Numerical Algorithms 36, 31-52 (2004).
 
         \test the correctness of the returned values is tested against
               problems with known closed-form solutions and by checking
@@ -152,12 +134,10 @@ namespace QuantLib {
                 \int_0^{t_N} (t_N-s)^{\alpha-1} y(s)\,ds,
             \qquad \alpha \ge 0,
         \f]
-        given values of \f$ y \f$ on the uniform grid
-        \f$ t_j = j\,\Delta t,\ j=0,\ldots,N \f$, by integrating the
+        given values of \f$ y \f$ on a uniform grid, by integrating the
         piecewise linear interpolant of \f$ y \f$ against the kernel
-        exactly.  For \f$ \alpha = 1 \f$ this is the trapezoidal rule; the
-        limit \f$ \alpha \to 0 \f$ recovers the identity
-        \f$ I^0 y(t_N) = y(t_N) \f$.
+        exactly.  For \f$ \alpha = 1 \f$ this is the trapezoidal rule;
+        \f$ \alpha \to 0 \f$ recovers the identity.
     */
     template <class T = Real>
     T riemannLiouvilleIntegral(const std::vector<T>& y, Real alpha, Real dt) {

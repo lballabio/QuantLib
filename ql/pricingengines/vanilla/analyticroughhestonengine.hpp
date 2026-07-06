@@ -36,28 +36,14 @@ namespace QuantLib {
     //! analytic rough Heston-model engine based on Fourier transform
     /*! The log-price characteristic function of the rough Heston model
         retains the affine structure of the classical Heston model, with
-        the Riccati ODE replaced by the fractional Riccati equation
-        \f[
-            D^{\alpha} h(z, t) = -\frac{1}{2} z (z+i)
-                + (i z \rho \sigma - \kappa)\, h(z, t)
-                + \frac{1}{2} \sigma^2 h^2(z, t),
-            \qquad I^{1-\alpha} h(z, 0) = 0,
-        \f]
-        with \f$ \alpha = H + \frac{1}{2} \f$, giving
-        \f[
-            E\!\left[e^{i z \ln (S_t/F_t)}\right]
-              = \exp\!\left( \kappa\theta\, I^{1} h(z, t)
-                             + V_0\, I^{1-\alpha} h(z, t) \right).
-        \f]
-        This engine solves the fractional Riccati equation numerically with
-        the Diethelm-Ford-Freed Adams predictor-corrector scheme and prices
-        European options with the Andersen-Piterbarg Fourier integral,
-        using a Black-Scholes control variate whose variance is matched to
-        the model characteristic function.  Characteristic function values
-        are cached per frequency and maturity, so that with a non-adaptive
-        integration rule (the Gauss-Laguerre default) all strikes sharing a
-        maturity reuse the same fractional Riccati solutions -- the typical
-        calibration access pattern.
+        the Riccati ODE replaced by a fractional Riccati equation.  This
+        engine solves the latter numerically with the Diethelm-Ford-Freed
+        Adams predictor-corrector scheme and prices European options with
+        the Andersen-Piterbarg Fourier integral and a Black-Scholes
+        control variate.  Characteristic function values are cached per
+        frequency and maturity, so that with a non-adaptive integration
+        rule (the Gauss-Laguerre default) all strikes sharing a maturity
+        reuse the same fractional Riccati solutions.
 
         \note The fractional Adams scheme is the reference-quality but
               \f$ O(N^2) \f$ route to the characteristic function.  Future
@@ -140,7 +126,7 @@ namespace QuantLib {
         const Real andersenPiterbargEpsilon_, alpha_;
 
         mutable Size evaluations_ = 0;
-        mutable std::map<std::tuple<Real, Real, Time>, std::complex<Real> >
+        mutable std::map<std::tuple<Real, Real, Time>, std::complex<Real>>
             chFCache_;
     };
 }

@@ -81,9 +81,8 @@ BOOST_AUTO_TEST_CASE(testFractionalAdamsScheme) {
                     << "\n    max error:  " << fineError
                     << "\n    tolerance:  " << tol);
 
-    // the scheme converges at order 1 + alpha = 1.6 for this smooth
-    // solution, i.e. halving the step size should reduce the error by
-    // about a factor of three
+    // at convergence order 1 + alpha = 1.6, halving the step size
+    // should reduce the error by about a factor of three
     const Real minRatio = 2.2;
     if (coarseError/fineError < minRatio)
         BOOST_ERROR("failed to reproduce fractional Adams convergence order"
@@ -301,7 +300,8 @@ BOOST_AUTO_TEST_CASE(testShortMaturitySkewExplosion) {
         model, 128, 512);
 
     // at-the-money implied volatility skew d(sigma_iv)/d(ln K)
-    const auto atmSkew = [&](Time t) -> Real {
+    const auto atmSkew = [](const ext::shared_ptr<AnalyticRoughHestonEngine>& engine,
+                            Time t) -> Real {
         const Real dk = 0.02;
 
         Real iv[2];
@@ -318,7 +318,7 @@ BOOST_AUTO_TEST_CASE(testShortMaturitySkewExplosion) {
     // El Euch, Fukasawa, Rosenbaum: the ATM skew of rough volatility
     // models explodes like T^(H - 1/2) for T -> 0
     const Time t1 = 0.1, t2 = 0.4;
-    const Real skewRatio = atmSkew(t1)/atmSkew(t2);
+    const Real skewRatio = atmSkew(engine, t1)/atmSkew(engine, t2);
     const Real expected = std::pow(t1/t2, hurst - 0.5);
 
     const Real tol = 0.15*expected;
@@ -335,20 +335,7 @@ BOOST_AUTO_TEST_CASE(testShortMaturitySkewExplosion) {
     const auto flatEngine = ext::make_shared<AnalyticRoughHestonEngine>(
         flatModel, 128, 512);
 
-    const auto flatAtmSkew = [&](Time t) -> Real {
-        const Real dk = 0.02;
-        Real iv[2];
-        for (Size i = 0; i < 2; ++i) {
-            const Real strike = 100.0*std::exp((i == 0 ? -dk : dk));
-            const Real price = flatEngine->priceVanillaPayoff(
-                ext::make_shared<PlainVanillaPayoff>(Option::Call, strike), t);
-            iv[i] = blackFormulaImpliedStdDev(
-                Option::Call, strike, 100.0, price)/std::sqrt(t);
-        }
-        return (iv[1] - iv[0])/(2*dk);
-    };
-
-    const Real flatSkewRatio = flatAtmSkew(t1)/flatAtmSkew(t2);
+    const Real flatSkewRatio = atmSkew(flatEngine, t1)/atmSkew(flatEngine, t2);
     if (flatSkewRatio > 0.5*(skewRatio + 1.0))
         BOOST_ERROR("classical limit shows unexpected skew explosion"
                     << "\n    rough skew ratio:   " << skewRatio
@@ -377,9 +364,8 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
     const Real rho   = -0.65;
     const Real hurst = 0.12;
 
-    // the number of time steps has to keep the fractional Adams scheme
-    // stable up to frequencies where the characteristic function has
-    // decayed, here u ~ 0.35 N/T ~ 45 for the longest maturity
+    // the time steps must keep the fractional Adams scheme stable up to
+    // frequencies where the characteristic function has decayed (u ~ 0.35 N/T)
     const Size integrationOrder = 64, timeSteps = 256;
 
     // synthetic market surface generated from known parameters
@@ -388,7 +374,7 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
     const auto trueEngine = ext::make_shared<AnalyticRoughHestonEngine>(
         trueModel, integrationOrder, timeSteps);
 
-    std::vector<ext::shared_ptr<CalibrationHelper> > helpers;
+    std::vector<ext::shared_ptr<CalibrationHelper>> helpers;
     for (const Size months : {3, 6, 12, 24}) {
         const Period maturity(months, Months);
         const Date maturityDate = today + maturity;
@@ -404,9 +390,8 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
             const Volatility impliedVol = blackFormulaImpliedStdDev(
                 Option::Call, strike, fwd, price, df)/std::sqrt(t);
 
-            // implied-vol errors keep the objective well scaled across
-            // strikes and maturities; relative price errors overweight the
-            // wings and can strand the optimizer in local minima
+            // implied-vol errors keep the objective well scaled; relative
+            // price errors can strand the optimizer in local minima
             helpers.push_back(ext::make_shared<HestonModelHelper>(
                 maturity, calendar, s0, strike,
                 Handle<Quote>(ext::make_shared<SimpleQuote>(impliedVol)),
@@ -449,8 +434,8 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
                     << "\n    rho:   " << model->rho()   << " vs " << rho
                     << "\n    hurst: " << model->hurst() << " vs " << hurst);
 
-    // the Hurst exponent controls the observable skew term structure and
-    // should be identified well
+    // the Hurst exponent controls the skew term structure and should be
+    // identified well
     const Real hurstTol = 0.02;
     if (std::fabs(model->hurst() - hurst) > hurstTol)
         BOOST_ERROR("failed to recover the Hurst exponent"

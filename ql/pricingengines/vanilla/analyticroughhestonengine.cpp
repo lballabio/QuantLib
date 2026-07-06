@@ -17,19 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/mathconstants.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/ode/fractionaladams.hpp>
+#include <ql/mathconstants.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analyticroughhestonengine.hpp>
 
 namespace QuantLib {
 
     // Andersen-Piterbarg integrand with Black-Scholes control variate,
-    // following AnalyticHestonEngine::AP_Helper. The control-variate
+    // following AnalyticHestonEngine::AP_Helper; the control-variate
     // variance is matched to the model characteristic function at the
-    // purely imaginary point i*alpha, which requires no model-specific
-    // formula and makes the integrand decay quickly for small u.
+    // purely imaginary point i*alpha.
     class AnalyticRoughHestonEngine::AP_Helper {
       public:
         AP_Helper(Time term, Real fwd, Real strike, Real alpha,
@@ -61,14 +60,11 @@ namespace QuantLib {
 
             std::complex<Real> phi = enginePtr_->chF(zPrime, term_);
 
-            // The fractional Adams scheme loses stability at frequencies
-            // whose oscillation is under-resolved by the time grid,
-            // empirically for u dt > 0.35 or so. Along this contour the
-            // exact characteristic function satisfies |phi| <= 1, since
-            // -Im(zPrime) = 1 + alpha lies in (0, 1) and the forward price
-            // is a martingale; a violation therefore flags a diverged
-            // solution. The exact value decays exponentially in u, so
-            // these far-tail values are truncated to zero.
+            // the fractional Adams scheme diverges once the oscillation is
+            // under-resolved by the time grid (u dt > ~0.35). Along this
+            // contour the exact characteristic function satisfies
+            // |phi| <= 1 and decays exponentially in u, so diverged
+            // far-tail values are truncated to zero.
             if (!std::isfinite(phi.real()) || !std::isfinite(phi.imag())
                     || std::norm(phi) > 1.0)
                 phi = std::complex<Real>(0.0);
@@ -148,8 +144,8 @@ namespace QuantLib {
             std::complex<Real>(0.0, rho*sigma)*z - kappa;
         const Real c2 = 0.5*sigma*sigma;
 
-        const std::vector<std::complex<Real> > h =
-            FractionalAdams<std::complex<Real> >(a).solve(
+        const std::vector<std::complex<Real>> h =
+            FractionalAdams<std::complex<Real>>(a).solve(
                 [&](Real, const std::complex<Real>& x)
                     -> std::complex<Real> { return c0 + (c1 + c2*x)*x; },
                 std::complex<Real>(0.0), t, timeSteps_);
