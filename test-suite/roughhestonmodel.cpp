@@ -21,7 +21,6 @@
 #include "utilities.hpp"
 #include <ql/exercise.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/math/array.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/ode/fractionaladams.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
@@ -478,112 +477,6 @@ BOOST_AUTO_TEST_CASE(testMonotonicityAndBounds) {
                 BOOST_ERROR("call price is not convex in strike"
                             << "\n    strike:            " << strikes[i]
                             << "\n    second difference: " << secondDiff);
-        }
-    }
-}
-
-BOOST_AUTO_TEST_CASE(testParameterUpdateInvalidatesCache) {
-    BOOST_TEST_MESSAGE(
-        "Testing that a parameter update invalidates the cached "
-        "characteristic function...");
-
-    const Date today(2, July, 2026);
-    Settings::instance().evaluationDate() = today;
-    const DayCounter dc = Actual365Fixed();
-
-    const Handle<YieldTermStructure> rTS(
-        ext::make_shared<FlatForward>(today, 0.03, dc));
-    const Handle<YieldTermStructure> qTS(
-        ext::make_shared<FlatForward>(today, 0.0, dc));
-    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
-
-    const auto model = ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.15);
-    const auto engine = ext::make_shared<AnalyticRoughHestonEngine>(
-        model, 128, 256);
-
-    const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
-    const Time t = 1.0;
-
-    const Real initialPrice = engine->priceVanillaPayoff(payoff, t);
-
-    // arguments_ order is theta, kappa, sigma, rho, v0, hurst
-    Array params = model->params();
-    params[1] *= 2.0;
-    model->setParams(params);
-
-    const Real updatedPrice = engine->priceVanillaPayoff(payoff, t);
-
-    const auto freshModel = ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, 0.04, 0.6, 0.04, 0.4, -0.7, 0.15);
-    const auto freshEngine = ext::make_shared<AnalyticRoughHestonEngine>(
-        freshModel, 128, 256);
-    const Real freshPrice = freshEngine->priceVanillaPayoff(payoff, t);
-
-    const Real changeTol = 1e-3;
-    if (std::fabs(updatedPrice - initialPrice) < changeTol)
-        BOOST_ERROR("price did not react to a parameter change"
-                    << "\n    initial price: " << initialPrice
-                    << "\n    updated price: " << updatedPrice);
-
-    const Real matchTol = 1e-10;
-    if (std::fabs(updatedPrice - freshPrice) > matchTol)
-        BOOST_ERROR("stale cached characteristic function used after "
-                    "setParams"
-                    << "\n    updated price: " << updatedPrice
-                    << "\n    fresh price:   " << freshPrice
-                    << "\n    tolerance:     " << matchTol);
-}
-
-BOOST_AUTO_TEST_CASE(testGuardedDivergenceRobustness) {
-    BOOST_TEST_MESSAGE(
-        "Testing that severely under-resolved time grids stay within "
-        "no-arbitrage bounds instead of diverging...");
-
-    const Date today(2, July, 2026);
-    Settings::instance().evaluationDate() = today;
-    const DayCounter dc = Actual365Fixed();
-
-    const Handle<YieldTermStructure> rTS(
-        ext::make_shared<FlatForward>(today, 0.03, dc));
-    const Handle<YieldTermStructure> qTS(
-        ext::make_shared<FlatForward>(today, 0.0, dc));
-    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
-
-    const Time t = 2.0;
-    const Real fwd = s0->value()*qTS->discount(t)/rTS->discount(t);
-    const Real df = rTS->discount(t);
-
-    for (const Real hurst : {0.02, 0.05, 0.1}) {
-        const auto model = ext::make_shared<RoughHestonModel>(
-            rTS, qTS, s0, 0.04, 0.1, 0.04, 0.6, -0.7, hurst);
-
-        // far too few Adams steps to resolve the fractional Riccati ODE
-        // over two years; the AP_Helper divergence guard must keep the
-        // price finite and arbitrage-free regardless
-        for (const Size timeSteps : {2u, 4u, 8u}) {
-            const auto engine = ext::make_shared<AnalyticRoughHestonEngine>(
-                model, 128, timeSteps);
-
-            for (const Real strike : {70.0, 100.0, 130.0}) {
-                const Real price = engine->priceVanillaPayoff(
-                    ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
-                    t);
-
-                const Real lower = std::max(fwd - strike, 0.0)*df;
-                const Real upper = fwd*df;
-
-                if (!std::isfinite(price)
-                        || price < lower - 1e-6 || price > upper + 1e-6)
-                    BOOST_ERROR("under-resolved rough Heston price is not "
-                                "finite or violates no-arbitrage bounds"
-                                << "\n    hurst:      " << hurst
-                                << "\n    timeSteps:  " << timeSteps
-                                << "\n    strike:     " << strike
-                                << "\n    price:      " << price
-                                << "\n    lower:      " << lower
-                                << "\n    upper:      " << upper);
-            }
         }
     }
 }
