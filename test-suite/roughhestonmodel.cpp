@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 #include <ql/exercise.hpp>
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/math/array.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/ode/fractionaladams.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
@@ -111,6 +112,28 @@ BOOST_AUTO_TEST_CASE(testFractionalAdamsScheme) {
                     << "\n    calculated: " << w.back()
                     << "\n    expected:   " << mittagLefflerRef
                     << "\n    tolerance:  " << mlTol);
+
+    // the pricing engine only ever instantiates FractionalAdams<complex<Real>>;
+    // D^a z = i omega z with z(0) = 1 has the solution z(t) = E_a(i omega t^a)
+    const std::complex<Real> lambda(0.0, 1.5);
+    const std::complex<Real> mittagLefflerComplexRef = [alpha, lambda]() {
+        std::complex<Real> sum = 0.0, term = 1.0;
+        for (Size k = 0; k < 100; ++k, term *= lambda)
+            sum += term/GammaFunction().value(alpha*k + 1.0);
+        return sum;
+    }();
+
+    const std::vector<std::complex<Real>> wc =
+        FractionalAdams<std::complex<Real>>(alpha).solve(
+            [lambda](Real, const std::complex<Real>& x) { return lambda*x; },
+            std::complex<Real>(1.0), 1.0, 400);
+
+    if (std::abs(wc.back() - mittagLefflerComplexRef) > mlTol)
+        BOOST_ERROR("failed to reproduce complex Mittag-Leffler solution of "
+                    "the linear fractional ODE"
+                    << "\n    calculated: " << wc.back()
+                    << "\n    expected:   " << mittagLefflerComplexRef
+                    << "\n    tolerance:  " << mlTol);
 }
 
 BOOST_AUTO_TEST_CASE(testRiemannLiouvilleIntegral) {
@@ -140,6 +163,26 @@ BOOST_AUTO_TEST_CASE(testRiemannLiouvilleIntegral) {
                             << "\n    calculated: " << calculated
                             << "\n    expected:   " << expected
                             << "\n    tolerance:  " << tol);
+
+            // FractionalAdams only ever integrates complex-valued vectors in
+            // production; check the templated complex path directly
+            std::vector<std::complex<Real>> yc(y.size());
+            for (Size i = 0; i <= steps; ++i)
+                yc[i] = std::complex<Real>(1.0, 1.0)*y[i];
+
+            const std::complex<Real> calculatedC =
+                riemannLiouvilleIntegral(yc, a, dt);
+            const std::complex<Real> expectedC =
+                std::complex<Real>(1.0, 1.0)*expected;
+
+            if (std::abs(calculatedC - expectedC) > tol)
+                BOOST_ERROR("failed to reproduce complex fractional integral "
+                            "of t^p"
+                            << "\n    p:          " << p
+                            << "\n    alpha:      " << a
+                            << "\n    calculated: " << calculatedC
+                            << "\n    expected:   " << expectedC
+                            << "\n    tolerance:  " << tol);
         }
     }
 }
@@ -159,67 +202,77 @@ BOOST_AUTO_TEST_CASE(testEquivalenceWithHestonModel) {
         ext::make_shared<FlatForward>(today, 0.02, dc));
     const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
-    const Real v0    = 0.05;
-    const Real kappa = 1.5;
-    const Real theta = 0.04;
-    const Real sigma = 0.5;
-    const Real rho   = -0.75;
+    // three parameter sets: the original strongly-correlated case, one
+    // with near-zero correlation, and one with a small vol-of-vol
+    struct Params { Real v0, kappa, theta, sigma, rho; };
+    const Params paramSets[] = {
+        {0.05, 1.5, 0.04, 0.5, -0.75},
+        {0.05, 1.5, 0.04, 0.5,  0.02},
+        {0.05, 1.5, 0.04, 0.1, -0.75},
+    };
 
-    const auto roughModel = ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, v0, kappa, theta, sigma, rho, 0.5);
-    const auto roughEngine = ext::make_shared<AnalyticRoughHestonEngine>(
-        roughModel, 128, 512);
+    for (const auto& p : paramSets) {
+        const auto roughModel = ext::make_shared<RoughHestonModel>(
+            rTS, qTS, s0, p.v0, p.kappa, p.theta, p.sigma, p.rho, 0.5);
+        const auto roughEngine = ext::make_shared<AnalyticRoughHestonEngine>(
+            roughModel, 128, 512);
 
-    const auto hestonModel = ext::make_shared<HestonModel>(
-        ext::make_shared<HestonProcess>(
-            rTS, qTS, s0, v0, kappa, theta, sigma, rho));
-    const auto hestonEngine =
-        ext::make_shared<AnalyticHestonEngine>(hestonModel, 192);
+        const auto hestonModel = ext::make_shared<HestonModel>(
+            ext::make_shared<HestonProcess>(
+                rTS, qTS, s0, p.v0, p.kappa, p.theta, p.sigma, p.rho));
+        const auto hestonEngine =
+            ext::make_shared<AnalyticHestonEngine>(hestonModel, 192);
 
-    // characteristic function comparison along the integration contour
-    for (const Real u : {0.5, 1.0, 5.0, 10.0, 25.0, 50.0}) {
-        for (const Time t : {0.5, 2.0}) {
-            const std::complex<Real> z(u, -0.5);
-            const std::complex<Real> calculated = roughEngine->chF(z, t);
-            const std::complex<Real> expected = hestonEngine->chF(z, t);
+        // characteristic function comparison along the integration contour
+        for (const Real u : {0.5, 1.0, 5.0, 10.0, 25.0, 50.0}) {
+            for (const Time t : {0.5, 2.0}) {
+                const std::complex<Real> z(u, -0.5);
+                const std::complex<Real> calculated = roughEngine->chF(z, t);
+                const std::complex<Real> expected = hestonEngine->chF(z, t);
 
-            const Real tol = 1e-5;
-            if (std::abs(calculated - expected) > tol)
-                BOOST_ERROR("failed to reproduce Heston characteristic "
-                            "function for H = 0.5"
-                            << "\n    u:          " << u
-                            << "\n    t:          " << t
-                            << "\n    calculated: " << calculated
-                            << "\n    expected:   " << expected
-                            << "\n    tolerance:  " << tol);
-        }
-    }
-
-    // price comparison through the full pricing-engine interface
-    for (const auto& optionType : {Option::Call, Option::Put}) {
-        for (const Real strike : {80.0, 90.0, 100.0, 110.0, 125.0}) {
-            for (const Size months : {6, 12, 24}) {
-                const Date maturity = today + Period(months, Months);
-
-                VanillaOption option(
-                    ext::make_shared<PlainVanillaPayoff>(optionType, strike),
-                    ext::make_shared<EuropeanExercise>(maturity));
-
-                option.setPricingEngine(roughEngine);
-                const Real calculated = option.NPV();
-
-                option.setPricingEngine(hestonEngine);
-                const Real expected = option.NPV();
-
-                const Real tol = 5e-4;
-                if (std::fabs(calculated - expected) > tol)
-                    BOOST_ERROR("failed to reproduce Heston price for H = 0.5"
-                                << "\n    option:     " << optionType
-                                << "\n    strike:     " << strike
-                                << "\n    maturity:   " << maturity
+                const Real tol = 1e-5;
+                if (std::abs(calculated - expected) > tol)
+                    BOOST_ERROR("failed to reproduce Heston characteristic "
+                                "function for H = 0.5"
+                                << "\n    rho:        " << p.rho
+                                << "\n    sigma:      " << p.sigma
+                                << "\n    u:          " << u
+                                << "\n    t:          " << t
                                 << "\n    calculated: " << calculated
                                 << "\n    expected:   " << expected
                                 << "\n    tolerance:  " << tol);
+            }
+        }
+
+        // price comparison through the full pricing-engine interface
+        for (const auto& optionType : {Option::Call, Option::Put}) {
+            for (const Real strike : {80.0, 90.0, 100.0, 110.0, 125.0}) {
+                for (const Size months : {6, 12, 24}) {
+                    const Date maturity = today + Period(months, Months);
+
+                    VanillaOption option(
+                        ext::make_shared<PlainVanillaPayoff>(optionType, strike),
+                        ext::make_shared<EuropeanExercise>(maturity));
+
+                    option.setPricingEngine(roughEngine);
+                    const Real calculated = option.NPV();
+
+                    option.setPricingEngine(hestonEngine);
+                    const Real expected = option.NPV();
+
+                    const Real tol = 5e-4;
+                    if (std::fabs(calculated - expected) > tol)
+                        BOOST_ERROR("failed to reproduce Heston price for "
+                                    "H = 0.5"
+                                    << "\n    rho:        " << p.rho
+                                    << "\n    sigma:      " << p.sigma
+                                    << "\n    option:     " << optionType
+                                    << "\n    strike:     " << strike
+                                    << "\n    maturity:   " << maturity
+                                    << "\n    calculated: " << calculated
+                                    << "\n    expected:   " << expected
+                                    << "\n    tolerance:  " << tol);
+                }
             }
         }
     }
@@ -279,6 +332,312 @@ BOOST_AUTO_TEST_CASE(testIntegrationAlgorithmConsistency) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testKnownReferenceValues) {
+    BOOST_TEST_MESSAGE(
+        "Testing rough Heston prices against an independent reference "
+        "implementation...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.03, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const auto model = ext::make_shared<RoughHestonModel>(
+        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.1);
+    const auto engine = ext::make_shared<AnalyticRoughHestonEngine>(
+        model, 128, 512);
+
+    // reference prices from a from-scratch NumPy/SciPy reimplementation,
+    // independent of this engine's C++ code, converged to ~1e-4
+    struct Reference { Time maturity; Real strike; Real price; };
+    const Reference references[] = {
+        {0.25,  75.0, 25.762400},
+        {0.25, 100.0,  3.793313},
+        {0.25, 130.0,  0.001586},
+        {1.00,  75.0, 28.394103},
+        {1.00, 100.0,  8.336634},
+        {1.00, 130.0,  0.202295},
+        {2.00,  75.0, 31.520600},
+        {2.00, 100.0, 12.722717},
+        {2.00, 130.0,  1.285820},
+    };
+
+    for (const auto& ref : references) {
+        const Real calculated = engine->priceVanillaPayoff(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, ref.strike),
+            ref.maturity);
+
+        const Real tol = 5e-4;
+        if (std::fabs(calculated - ref.price) > tol)
+            BOOST_ERROR("failed to reproduce independent reference price"
+                        << "\n    strike:     " << ref.strike
+                        << "\n    maturity:   " << ref.maturity
+                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << ref.price
+                        << "\n    tolerance:  " << tol);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPutCallParity) {
+    BOOST_TEST_MESSAGE("Testing put-call parity for the rough Heston engine...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.03, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.01, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    for (const Real hurst : {0.1, 0.3, 0.5}) {
+        const auto model = ext::make_shared<RoughHestonModel>(
+            rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, hurst);
+        const auto engine = ext::make_shared<AnalyticRoughHestonEngine>(
+            model, 128, 256);
+
+        for (const Real strike : {70.0, 100.0, 130.0}) {
+            for (const Time t : {0.1, 1.0, 2.0}) {
+                const Real callPrice = engine->priceVanillaPayoff(
+                    ext::make_shared<PlainVanillaPayoff>(Option::Call, strike), t);
+                const Real putPrice = engine->priceVanillaPayoff(
+                    ext::make_shared<PlainVanillaPayoff>(Option::Put, strike), t);
+
+                const Real fwd = s0->value()*qTS->discount(t)/rTS->discount(t);
+                const Real expected = (fwd - strike)*rTS->discount(t);
+
+                const Real tol = 1e-6;
+                if (std::fabs((callPrice - putPrice) - expected) > tol)
+                    BOOST_ERROR("failed put-call parity"
+                                << "\n    hurst:      " << hurst
+                                << "\n    strike:     " << strike
+                                << "\n    maturity:   " << t
+                                << "\n    call - put: " << callPrice - putPrice
+                                << "\n    expected:   " << expected
+                                << "\n    tolerance:  " << tol);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testMonotonicityAndBounds) {
+    BOOST_TEST_MESSAGE(
+        "Testing rough Heston call-price monotonicity, convexity and "
+        "no-arbitrage bounds...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.03, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.01, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const auto model = ext::make_shared<RoughHestonModel>(
+        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.15);
+    const auto engine = ext::make_shared<AnalyticRoughHestonEngine>(
+        model, 128, 256);
+
+    const Time t = 1.0;
+    const Real fwd = s0->value()*qTS->discount(t)/rTS->discount(t);
+    const Real df = rTS->discount(t);
+
+    const std::vector<Real> strikes =
+        {60.0, 70.0, 80.0, 90.0, 100.0, 110.0, 120.0, 130.0, 140.0};
+    std::vector<Real> prices;
+    for (Real k : strikes)
+        prices.push_back(engine->priceVanillaPayoff(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, k), t));
+
+    for (Size i = 0; i < strikes.size(); ++i) {
+        const Real lower = std::max(fwd - strikes[i], 0.0)*df;
+        const Real upper = fwd*df;
+        if (prices[i] < lower - 1e-8 || prices[i] > upper + 1e-8)
+            BOOST_ERROR("call price violates no-arbitrage bounds"
+                        << "\n    strike: " << strikes[i]
+                        << "\n    price:  " << prices[i]
+                        << "\n    lower:  " << lower
+                        << "\n    upper:  " << upper);
+
+        if (i > 0 && prices[i] > prices[i - 1] + 1e-8)
+            BOOST_ERROR("call price is not monotonically decreasing in strike"
+                        << "\n    strike: " << strikes[i - 1] << " -> " << strikes[i]
+                        << "\n    price:  " << prices[i - 1] << " -> " << prices[i]);
+
+        if (i > 0 && i + 1 < strikes.size()) {
+            const Real secondDiff = prices[i + 1] - 2*prices[i] + prices[i - 1];
+            if (secondDiff < -1e-6)
+                BOOST_ERROR("call price is not convex in strike"
+                            << "\n    strike:            " << strikes[i]
+                            << "\n    second difference: " << secondDiff);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testParameterUpdateInvalidatesCache) {
+    BOOST_TEST_MESSAGE(
+        "Testing that a parameter update invalidates the cached "
+        "characteristic function...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.03, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const auto model = ext::make_shared<RoughHestonModel>(
+        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.15);
+    const auto engine = ext::make_shared<AnalyticRoughHestonEngine>(
+        model, 128, 256);
+
+    const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+    const Time t = 1.0;
+
+    const Real initialPrice = engine->priceVanillaPayoff(payoff, t);
+
+    // arguments_ order is theta, kappa, sigma, rho, v0, hurst
+    Array params = model->params();
+    params[1] *= 2.0;
+    model->setParams(params);
+
+    const Real updatedPrice = engine->priceVanillaPayoff(payoff, t);
+
+    const auto freshModel = ext::make_shared<RoughHestonModel>(
+        rTS, qTS, s0, 0.04, 0.6, 0.04, 0.4, -0.7, 0.15);
+    const auto freshEngine = ext::make_shared<AnalyticRoughHestonEngine>(
+        freshModel, 128, 256);
+    const Real freshPrice = freshEngine->priceVanillaPayoff(payoff, t);
+
+    const Real changeTol = 1e-3;
+    if (std::fabs(updatedPrice - initialPrice) < changeTol)
+        BOOST_ERROR("price did not react to a parameter change"
+                    << "\n    initial price: " << initialPrice
+                    << "\n    updated price: " << updatedPrice);
+
+    const Real matchTol = 1e-10;
+    if (std::fabs(updatedPrice - freshPrice) > matchTol)
+        BOOST_ERROR("stale cached characteristic function used after "
+                    "setParams"
+                    << "\n    updated price: " << updatedPrice
+                    << "\n    fresh price:   " << freshPrice
+                    << "\n    tolerance:     " << matchTol);
+}
+
+BOOST_AUTO_TEST_CASE(testGuardedDivergenceRobustness) {
+    BOOST_TEST_MESSAGE(
+        "Testing that severely under-resolved time grids stay within "
+        "no-arbitrage bounds instead of diverging...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.03, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const Time t = 2.0;
+    const Real fwd = s0->value()*qTS->discount(t)/rTS->discount(t);
+    const Real df = rTS->discount(t);
+
+    for (const Real hurst : {0.02, 0.05, 0.1}) {
+        const auto model = ext::make_shared<RoughHestonModel>(
+            rTS, qTS, s0, 0.04, 0.1, 0.04, 0.6, -0.7, hurst);
+
+        // far too few Adams steps to resolve the fractional Riccati ODE
+        // over two years; the AP_Helper divergence guard must keep the
+        // price finite and arbitrage-free regardless
+        for (const Size timeSteps : {2u, 4u, 8u}) {
+            const auto engine = ext::make_shared<AnalyticRoughHestonEngine>(
+                model, 128, timeSteps);
+
+            for (const Real strike : {70.0, 100.0, 130.0}) {
+                const Real price = engine->priceVanillaPayoff(
+                    ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+                    t);
+
+                const Real lower = std::max(fwd - strike, 0.0)*df;
+                const Real upper = fwd*df;
+
+                if (!std::isfinite(price)
+                        || price < lower - 1e-6 || price > upper + 1e-6)
+                    BOOST_ERROR("under-resolved rough Heston price is not "
+                                "finite or violates no-arbitrage bounds"
+                                << "\n    hurst:      " << hurst
+                                << "\n    timeSteps:  " << timeSteps
+                                << "\n    strike:     " << strike
+                                << "\n    price:      " << price
+                                << "\n    lower:      " << lower
+                                << "\n    upper:      " << upper);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testInputValidation) {
+    BOOST_TEST_MESSAGE(
+        "Testing input validation of the rough Heston engine...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.03, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const auto model = ext::make_shared<RoughHestonModel>(
+        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.15);
+
+    BOOST_CHECK_THROW(
+        AnalyticRoughHestonEngine(model, 128, 0), Error);
+
+    const auto integration =
+        AnalyticRoughHestonEngine::Integration::gaussLaguerre(128);
+    BOOST_CHECK_THROW(
+        AnalyticRoughHestonEngine(model, integration, 0), Error);
+    BOOST_CHECK_THROW(
+        AnalyticRoughHestonEngine(model, integration, 256, 1e-25, 0.0), Error);
+    BOOST_CHECK_THROW(
+        AnalyticRoughHestonEngine(model, integration, 256, 1e-25, -1.0), Error);
+    BOOST_CHECK_THROW(
+        AnalyticRoughHestonEngine(model, integration, 256, 1e-25, 0.5), Error);
+
+    const auto engine = ext::make_shared<AnalyticRoughHestonEngine>(
+        model, 128, 256);
+
+    BOOST_CHECK_THROW(
+        engine->priceVanillaPayoff(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0), 0.0),
+        Error);
+    BOOST_CHECK_THROW(
+        engine->priceVanillaPayoff(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0), -1.0),
+        Error);
+
+    VanillaOption americanOption(
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0),
+        ext::make_shared<AmericanExercise>(today, today + Period(1, Years)));
+    americanOption.setPricingEngine(engine);
+    BOOST_CHECK_THROW(americanOption.NPV(), Error);
+}
+
 BOOST_AUTO_TEST_CASE(testShortMaturitySkewExplosion) {
     BOOST_TEST_MESSAGE(
         "Testing rough Heston short-maturity skew explosion...");
@@ -292,12 +651,6 @@ BOOST_AUTO_TEST_CASE(testShortMaturitySkewExplosion) {
     const Handle<YieldTermStructure> qTS(
         ext::make_shared<FlatForward>(today, 0.0, dc));
     const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
-
-    const Real hurst = 0.1;
-    const auto model = ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, hurst);
-    const auto engine = ext::make_shared<AnalyticRoughHestonEngine>(
-        model, 128, 512);
 
     // at-the-money implied volatility skew d(sigma_iv)/d(ln K)
     const auto atmSkew = [](const ext::shared_ptr<AnalyticRoughHestonEngine>& engine,
@@ -315,31 +668,43 @@ BOOST_AUTO_TEST_CASE(testShortMaturitySkewExplosion) {
         return (iv[1] - iv[0])/(2*dk);
     };
 
-    // El Euch, Fukasawa, Rosenbaum: the ATM skew of rough volatility
-    // models explodes like T^(H - 1/2) for T -> 0
     const Time t1 = 0.1, t2 = 0.4;
-    const Real skewRatio = atmSkew(engine, t1)/atmSkew(engine, t2);
-    const Real expected = std::pow(t1/t2, hurst - 0.5);
 
-    const Real tol = 0.15*expected;
-    if (std::fabs(skewRatio - expected) > tol)
-        BOOST_ERROR("failed to reproduce short-maturity skew power law"
-                    << "\n    skew ratio: " << skewRatio
-                    << "\n    expected:   " << expected
-                    << "\n    tolerance:  " << tol);
-
-    // classical Heston (H = 0.5) must show materially less
-    // short-maturity skew steepening
+    // classical Heston (H = 0.5) reference for the "materially less
+    // explosion" comparison below
     const auto flatModel = ext::make_shared<RoughHestonModel>(
         rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.5);
     const auto flatEngine = ext::make_shared<AnalyticRoughHestonEngine>(
         flatModel, 128, 512);
-
     const Real flatSkewRatio = atmSkew(flatEngine, t1)/atmSkew(flatEngine, t2);
-    if (flatSkewRatio > 0.5*(skewRatio + 1.0))
-        BOOST_ERROR("classical limit shows unexpected skew explosion"
-                    << "\n    rough skew ratio:   " << skewRatio
-                    << "\n    classical skew ratio: " << flatSkewRatio);
+
+    // El Euch, Fukasawa, Rosenbaum: the ATM skew of rough volatility
+    // models explodes like T^(H - 1/2) for T -> 0
+    for (const Real hurst : {0.05, 0.1, 0.3}) {
+        const auto model = ext::make_shared<RoughHestonModel>(
+            rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, hurst);
+        const auto engine = ext::make_shared<AnalyticRoughHestonEngine>(
+            model, 128, 512);
+
+        const Real skewRatio = atmSkew(engine, t1)/atmSkew(engine, t2);
+        const Real expected = std::pow(t1/t2, hurst - 0.5);
+
+        const Real tol = 0.15*expected;
+        if (std::fabs(skewRatio - expected) > tol)
+            BOOST_ERROR("failed to reproduce short-maturity skew power law"
+                        << "\n    hurst:      " << hurst
+                        << "\n    skew ratio: " << skewRatio
+                        << "\n    expected:   " << expected
+                        << "\n    tolerance:  " << tol);
+
+        // classical Heston must show materially less short-maturity
+        // skew steepening than any rough case
+        if (flatSkewRatio > 0.5*(skewRatio + 1.0))
+            BOOST_ERROR("classical limit shows unexpected skew explosion"
+                        << "\n    hurst:                 " << hurst
+                        << "\n    rough skew ratio:      " << skewRatio
+                        << "\n    classical skew ratio:  " << flatSkewRatio);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testCalibration) {
