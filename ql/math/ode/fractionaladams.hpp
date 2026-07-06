@@ -48,11 +48,8 @@ namespace QuantLib {
         K. Diethelm, N.J. Ford, A.D. Freed, A Predictor-Corrector Approach
         for the Numerical Solution of Fractional Differential Equations,
         Nonlinear Dynamics 29, 3-22 (2002).
-
-        \test the correctness of the returned values is tested against
-              problems with known closed-form solutions and by checking
-              the empirical convergence order.
     */
+
     template <class T = Real>
     class FractionalAdams {
       public:
@@ -60,62 +57,57 @@ namespace QuantLib {
 
         explicit FractionalAdams(Real alpha) : alpha_(alpha) {
             QL_REQUIRE(alpha > 0.0 && alpha <= 1.0,
-                       "fractional order alpha (" << alpha
-                       << ") must be in (0, 1]");
+                       "fractional order alpha (" << alpha << ") must be in (0, 1]");
         }
 
         //! solution values on the uniform grid \f$ \{0, \Delta t, \ldots, t_{max}\} \f$
-        std::vector<T> solve(const OdeFct& ode,
-                             const T& y0,
-                             Real tMax,
-                             Size steps) const {
+        std::vector<T> solve(const OdeFct& ode, const T& y0, Real tMax, Size steps) const {
             QL_REQUIRE(tMax > 0.0, "tMax (" << tMax << ") must be positive");
             QL_REQUIRE(steps > 0, "at least one step required");
 
-            const Real dt = tMax/steps;
-            const Real dtAlpha = std::pow(dt, alpha_);
-            const Real gamma1 = GammaFunction().value(alpha_ + 1.0);
-            const Real gamma2 = GammaFunction().value(alpha_ + 2.0);
+            const Real dt(tMax / steps);
+            const Real dtAlpha{std::pow(dt, alpha_)};
+            const Real gamma1{GammaFunction().value(alpha_ + 1.0)};
+            const Real gamma2{GammaFunction().value(alpha_ + 2.0)};
 
-            // powers k^alpha and k^(alpha+1) for the quadrature weights
-            std::vector<Real> powA(steps + 1), powA1(steps + 1);
-            for (Size k = 0; k <= steps; ++k) {
-                powA[k] = std::pow(Real(k), alpha_);
-                powA1[k] = std::pow(Real(k), alpha_ + 1.0);
+            // powers k ^ alpha and k ^ (alpha + 1) for the quadrature weights
+            std::vector<Real> alphaPowers(steps + 2), alphaPlusOnePowers(steps + 2);
+            for (Size k{0}; k <= steps + 1; ++k) {
+                alphaPowers[k] = std::pow(static_cast<Real>(k), alpha_);
+                alphaPlusOnePowers[k] = alphaPowers[k] * k;
             }
 
-            // predictor weights b_k = (k+1)^alpha - k^alpha and corrector
-            // weights c_k = (k+2)^(alpha+1) + k^(alpha+1) - 2(k+1)^(alpha+1),
-            // both depending only on the distance k = n-j to the current step
-            std::vector<Real> b(steps), c(steps);
-            for (Size k = 0; k < steps; ++k) {
-                b[k] = powA[k + 1] - powA[k];
-                c[k] = ((k + 2 <= steps) ? powA1[k + 2]
-                                         : std::pow(Real(k + 2), alpha_ + 1.0))
-                       + powA1[k] - 2.0*powA1[k + 1];
+            // predictor weights b_k = (k + 1) ^ alpha - k ^ alpha and corrector
+            // weights c_k = (k + 2) ^ (alpha + 1) + k ^ (alpha + 1) - 2(k + 1)^(alpha + 1),
+            // both depending only on the distance k = n - j to the current step
+            std::vector<Real> predictorWeights(steps), correctorWeights(steps);
+            for (Size k{0}; k < steps; ++k) {
+                predictorWeights[k] = alphaPowers[k + 1] - alphaPowers[k];
+                correctorWeights[k] = alphaPlusOnePowers[k + 2] + alphaPlusOnePowers[k] -
+                                       2.0 * alphaPlusOnePowers[k + 1];
             }
 
             std::vector<T> y(steps + 1), f(steps + 1);
             y[0] = y0;
             f[0] = ode(0.0, y0);
 
-            for (Size n = 0; n < steps; ++n) {
-                const Real tNext = (n + 1)*dt;
+            for (Size n{0}; n < steps; ++n) {
+                const Real tNext = (n + 1) * dt;
 
-                T predictorSum = b[n]*f[0];
-                for (Size j = 1; j <= n; ++j)
-                    predictorSum += b[n - j]*f[j];
-                const T yP = y0 + dtAlpha/gamma1*predictorSum;
+                T predictorSum = predictorWeights[n] * f[0];
+                for (Size j{1}; j <= n; ++j)
+                    predictorSum += predictorWeights[n - j] * f[j];
+                const T yP = y0 + dtAlpha / gamma1 * predictorSum;
 
-                // corrector weight of f_0: n^(alpha+1) - (n-alpha)(n+1)^alpha
-                const Real a0 = powA1[n] - (n - alpha_)*powA[n + 1];
+                // corrector weight of f_0: n ^ (alpha + 1) - (n - alpha)(n + 1) ^ alpha
+                const Real a0 = alphaPlusOnePowers[n] - (n - alpha_) * alphaPowers[n + 1];
 
-                T correctorSum = a0*f[0];
-                for (Size j = 1; j <= n; ++j)
-                    correctorSum += c[n - j]*f[j];
+                T correctorSum = a0 * f[0];
+                for (Size j{1}; j <= n; ++j)
+                    correctorSum += correctorWeights[n - j] * f[j];
                 correctorSum += ode(tNext, yP);
 
-                y[n + 1] = y0 + dtAlpha/gamma2*correctorSum;
+                y[n + 1] = y0 + dtAlpha / gamma2 * correctorSum;
                 f[n + 1] = ode(tNext, y[n + 1]);
             }
 
@@ -131,37 +123,38 @@ namespace QuantLib {
     /*! Approximates
         \f[
             I^{\alpha} y(t_N) = \frac{1}{\Gamma(\alpha)}
-                \int_0^{t_N} (t_N-s)^{\alpha-1} y(s)\,ds,
+                \int_0^{t_N} (t_N - s)^{\alpha - 1} y(s)\,ds,
             \qquad \alpha \ge 0,
         \f]
         given values of \f$ y \f$ on a uniform grid, by integrating the
-        piecewise linear interpolant of \f$ y \f$ against the kernel
-        exactly.  For \f$ \alpha = 1 \f$ this is the trapezoidal rule;
+        piecewise linear interpolant of \f$ y \f$ against the kernel.
+        For \f$ \alpha = 1 \f$ this is the trapezoidal rule;
         \f$ \alpha \to 0 \f$ recovers the identity.
     */
     template <class T = Real>
     T riemannLiouvilleIntegral(const std::vector<T>& y, Real alpha, Real dt) {
-        QL_REQUIRE(alpha >= 0.0,
-                   "integration order alpha (" << alpha
-                   << ") must be non-negative");
+        QL_REQUIRE(alpha >= 0.0, "integration order alpha (" << alpha << ") must be non-negative");
         QL_REQUIRE(y.size() >= 2, "at least two grid values required");
         QL_REQUIRE(dt > 0.0, "grid spacing dt (" << dt << ") must be positive");
 
-        const Size n = y.size() - 1;
+        const Size n{y.size() - 1};
 
-        // weight of y_0: (n-1)^(alpha+1) - (n-1-alpha) n^alpha
-        T sum = (std::pow(Real(n - 1), alpha + 1.0)
-                 - (n - 1 - alpha)*std::pow(Real(n), alpha))*y[0];
+        // powers m ^ (alpha + 1) for m = 0, ..., n + 1, reused across the shifted
+        // (k - 1, k, k + 1) terms in the quadrature weights below
+        std::vector<Real> powAlphaPlus1(n + 2);
+        for (Size m{0}; m <= n + 1; ++m)
+            powAlphaPlus1[m] = std::pow(static_cast<Real>(m), alpha + 1.0);
 
-        for (Size j = 1; j < n; ++j) {
-            const Real k = Real(n - j);
-            const Real w = std::pow(k + 1.0, alpha + 1.0)
-                + std::pow(k - 1.0, alpha + 1.0) - 2.0*std::pow(k, alpha + 1.0);
-            sum += w*y[j];
+        // weight of y_0: (n - 1) ^ (alpha + 1) - (n - 1 - alpha) n ^ alpha
+        T sum = (powAlphaPlus1[n - 1] - (n - 1 - alpha) * std::pow(Real(n), alpha)) * y[0];
+
+        for (Size j{1}; j < n; ++j) {
+            const Size k{n - j};
+            sum += (powAlphaPlus1[k + 1] + powAlphaPlus1[k - 1] - 2.0 * powAlphaPlus1[k]) * y[j];
         }
         sum += y[n];
 
-        return std::pow(dt, alpha)/GammaFunction().value(alpha + 2.0)*sum;
+        return std::pow(dt, alpha) / GammaFunction().value(alpha + 2.0) * sum;
     }
 }
 
