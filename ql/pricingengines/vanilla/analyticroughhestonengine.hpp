@@ -115,7 +115,7 @@ namespace QuantLib {
         const ext::shared_ptr<Integration> integration_;
         const Real andersenPiterbargEpsilon_, alpha_;
 
-        mutable Size evaluations_ = 0;
+        mutable Size evaluations_{0};
         mutable std::map<std::tuple<Real, Real, Time>, std::complex<Real>>
             chFCache_;
     };

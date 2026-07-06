@@ -92,17 +92,17 @@ namespace QuantLib {
             f[0] = ode(0.0, y0);
 
             for (Size n{0}; n < steps; ++n) {
-                const Real tNext = (n + 1) * dt;
+                const Real tNext{(n + 1) * dt};
 
-                T predictorSum = predictorWeights[n] * f[0];
+                T predictorSum{predictorWeights[n] * f[0]};
                 for (Size j{1}; j <= n; ++j)
                     predictorSum += predictorWeights[n - j] * f[j];
-                const T yP = y0 + dtAlpha / gamma1 * predictorSum;
+                const T yP{y0 + dtAlpha / gamma1 * predictorSum};
 
                 // corrector weight of f_0: n ^ (alpha + 1) - (n - alpha)(n + 1) ^ alpha
-                const Real a0 = alphaPlusOnePowers[n] - (n - alpha_) * alphaPowers[n + 1];
+                const Real a0{alphaPlusOnePowers[n] - (n - alpha_) * alphaPowers[n + 1]};
 
-                T correctorSum = a0 * f[0];
+                T correctorSum{a0 * f[0]};
                 for (Size j{1}; j <= n; ++j)
                     correctorSum += correctorWeights[n - j] * f[j];
                 correctorSum += ode(tNext, yP);
@@ -146,7 +146,7 @@ namespace QuantLib {
             powAlphaPlus1[m] = std::pow(static_cast<Real>(m), alpha + 1.0);
 
         // weight of y_0: (n - 1) ^ (alpha + 1) - (n - 1 - alpha) n ^ alpha
-        T sum = (powAlphaPlus1[n - 1] - (n - 1 - alpha) * std::pow(Real(n), alpha)) * y[0];
+        T sum{(powAlphaPlus1[n - 1] - (n - 1 - alpha) * std::pow(Real(n), alpha)) * y[0]};
 
         for (Size j{1}; j < n; ++j) {
             const Size k{n - j};
