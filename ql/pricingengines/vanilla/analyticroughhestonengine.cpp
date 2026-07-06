@@ -201,9 +201,8 @@ namespace QuantLib {
         const Real spot = model_->s0()->value();
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
 
-        const DiscountFactor dr =
-            model_->riskFreeRate()->discount(maturity);
-        const Real strike = payoff->strike();
+        const DiscountFactor dr{model_->riskFreeRate()->discount(maturity)};
+        const Real strike{payoff->strike()};
 
         const Real kappa{model_->kappa()};
         const Real theta{model_->theta()};
