@@ -25,7 +25,7 @@
 #include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
 #include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
-#include <ql/instruments/makecapfloor.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
@@ -34,6 +34,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/settings.hpp>
 
 namespace QuantLib {
 
@@ -47,10 +48,11 @@ namespace QuantLib {
         const VolatilityType type,
         const Real displacement,
         bool dontThrow,
-        ext::optional<Period> optionletFrequency)
+        ext::optional<Period> optionletFrequency,
+        Natural paymentLag)
     : OptionletStripper(termVolSurface, index, discount, type, displacement, optionletFrequency),
       floatingSwitchStrike_(switchStrike == Null<Rate>()), switchStrike_(switchStrike),
-      accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow) {
+      accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow), paymentLag_(paymentLag) {
 
         capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);
         optionletPrices_ = Matrix(nOptionletTenors_, nStrikes_);
@@ -84,6 +86,7 @@ namespace QuantLib {
                               .withNotionals(1.0)
                               .withPaymentCalendar(termVolSurface_->calendar())
                               .withPaymentAdjustment(termVolSurface_->businessDayConvention())
+                              .withPaymentLag(paymentLag_)
                               .withCouponPricer(ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
 
                 leg.resize(optionletIndex + 1);
@@ -92,9 +95,21 @@ namespace QuantLib {
                 return capFloor;
             }
 
-            return ext::shared_ptr<CapFloor>(
-                MakeCapFloor(capFloorType, capFloorLengths_[optionletIndex], iborIndex_, strike, 0 * Days)
-                    .withPricingEngine(engine));
+            // built by hand (rather than through MakeCapFloor/MakeVanillaSwap) to make it symmetric with the overnight leg
+            Date startDate = iborIndex_->valueDate(
+                iborIndex_->fixingCalendar().adjust(Settings::instance().evaluationDate()));
+            Date endDate = startDate + capFloorLengths_[optionletIndex];
+            Schedule schedule(startDate, endDate, iborIndex_->tenor(), iborIndex_->fixingCalendar(),
+                               iborIndex_->businessDayConvention(),
+                               iborIndex_->businessDayConvention(), DateGeneration::Backward, false);
+            Leg leg = IborLeg(schedule, iborIndex_)
+                          .withNotionals(1.0)
+                          .withPaymentDayCounter(iborIndex_->dayCounter())
+                          .withPaymentAdjustment(iborIndex_->businessDayConvention())
+                          .withPaymentLag(paymentLag_);
+            auto capFloor = ext::make_shared<CapFloor>(capFloorType, leg, std::vector<Rate>(1, strike));
+            capFloor->setPricingEngine(engine);
+            return capFloor;
         };
 
         auto dummy =
