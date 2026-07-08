@@ -72,23 +72,18 @@ namespace QuantLib {
     };
 
     //! Inverse cumulative Student t-distribution
-    /*! \todo Find/implement an efficient algorithm for evaluating the
-              cumulative Student t-distribution, replacing the Newton
-              iteration
-    */
+    /*! The implementation delegates the calculation to Boost.Math. */
     class InverseCumulativeStudent {
       public:
         InverseCumulativeStudent(Integer n,
-                                 Real accuracy = 1e-6,
-                                 Size maxIterations = 50)
-        : d_(n), f_(n), accuracy_(accuracy),
-          maxIterations_(maxIterations) {}
+                                 Real = 1e-6,
+                                 Size = 50)
+        : n_(n) {
+            QL_REQUIRE(n > 0, "invalid parameter for t-distribution");
+        }
         Real operator()(Real x) const;
       private:
-        StudentDistribution d_;
-        CumulativeStudentDistribution f_;
-        Real accuracy_;
-        Size maxIterations_;
+        Integer n_;
     };
 
 }

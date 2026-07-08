@@ -27,6 +27,7 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/math/distributions/bivariatestudenttdistribution.hpp>
+#include <ql/math/distributions/studenttdistribution.hpp>
 #include <ql/math/distributions/chisquaredistribution.hpp>
 #include <ql/math/distributions/poissondistribution.hpp>
 #include <ql/math/randomnumbers/stochasticcollocationinvcdf.hpp>
@@ -432,6 +433,118 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativePoisson) {
                         << data[i] << "\n"
                         << "    calculated: " << icp(data[i]) << "\n"
                         << "    expected:   " << Real(i));
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testInverseCumulativeStudent) {
+
+    BOOST_TEST_MESSAGE("Testing inverse cumulative Student t distribution...");
+
+    Real probabilities[] = { 1.0e-12, 1.0e-9, 1.0e-6, 1.0e-4,
+                             0.001, 0.01, 0.10, 0.25, 0.50, 0.75,
+                             0.90, 0.99, 0.999, 1.0 - 1.0e-4,
+                             1.0 - 1.0e-6, 1.0 - 1.0e-9,
+                             1.0 - 1.0e-12 };
+
+    InverseCumulativeStudent inverseCauchy(1, 1.0e-12, 100);
+    for (Real p : probabilities) {
+        Real calculated = inverseCauchy(p);
+        Real expected;
+        if (p < 0.5)
+            expected = -1.0 / std::tan(M_PI * p);
+        else if (p > 0.5)
+            expected = 1.0 / std::tan(M_PI * (1.0 - p));
+        else
+            expected = 0.0;
+        Real error = std::fabs(calculated - expected);
+        Real tolerance = 1.0e-10 * std::max(1.0, std::fabs(expected));
+        if (error > tolerance)
+            BOOST_ERROR("Failed to reproduce inverse cumulative Cauchy value:"
+                        << "\n    probability: " << p
+                        << "\n    calculated:  " << calculated
+                        << "\n    expected:    " << expected
+                        << "\n    error:       " << error);
+    }
+
+    InverseCumulativeStudent inverseStudent2(2, 1.0e-12, 100);
+    for (Real p : probabilities) {
+        Real calculated = inverseStudent2(p);
+        Real expected = (2.0*p - 1.0) / std::sqrt(2.0*p*(1.0 - p));
+        Real error = std::fabs(calculated - expected);
+        Real tolerance = 1.0e-12 * std::max(1.0, std::fabs(expected));
+        if (error > tolerance)
+            BOOST_ERROR("Failed to reproduce inverse cumulative Student t "
+                        "value for 2 degrees of freedom:"
+                        << "\n    probability: " << p
+                        << "\n    calculated:  " << calculated
+                        << "\n    expected:    " << expected
+                        << "\n    error:       " << error);
+    }
+
+    InverseCumulativeStudent inverse(4, 1.0e-12, 100);
+    if (inverse(0.0) != QL_MIN_REAL)
+        BOOST_ERROR("Inverse cumulative Student t distribution at 0.0 "
+                    "must return QL_MIN_REAL");
+    if (inverse(1.0) != QL_MAX_REAL)
+        BOOST_ERROR("Inverse cumulative Student t distribution at 1.0 "
+                    "must return QL_MAX_REAL");
+    BOOST_CHECK_THROW(inverse(-0.1), Error);
+    BOOST_CHECK_THROW(inverse(1.1), Error);
+
+    Integer ns[] = { 3, 4, 5, 10, 30, 100 };
+    Real roundTripProbabilities[] = { 1.0e-10, 1.0e-8, 1.0e-6,
+                                      1.0e-4, 0.001, 0.01, 0.10,
+                                      0.25, 0.50, 0.75, 0.90, 0.99,
+                                      0.999, 1.0 - 1.0e-4,
+                                      1.0 - 1.0e-6, 1.0 - 1.0e-8,
+                                      1.0 - 1.0e-10 };
+    Real symmetryProbabilities[] = { 1.0e-8, 1.0e-6, 1.0e-4, 0.001,
+                                     0.01, 0.10, 0.25 };
+
+    for (Integer n : ns) {
+        InverseCumulativeStudent inv(n, 1.0e-12, 100);
+        CumulativeStudentDistribution cdf(n);
+
+        Real previous = QL_MIN_REAL;
+        for (Real p : roundTripProbabilities) {
+            Real x = inv(p);
+            if (x <= previous)
+                BOOST_ERROR("Inverse cumulative Student t distribution "
+                            "is not increasing:"
+                            << "\n    n:            " << n
+                            << "\n    probability:  " << p
+                            << "\n    value:        " << x
+                            << "\n    previous:     " << previous);
+            previous = x;
+
+            Real calculated = cdf(x);
+            Real error = std::fabs(calculated - p);
+            Real tolerance = 1.0e-8;
+            if (error > tolerance)
+                BOOST_ERROR("Failed to reproduce Student t distribution "
+                            "round-trip:"
+                            << "\n    n:            " << n
+                            << "\n    probability:  " << p
+                            << "\n    inverse:      " << x
+                            << "\n    calculated:   " << calculated
+                            << "\n    error:        " << error);
+        }
+
+        for (Real p : symmetryProbabilities) {
+            Real lower = inv(p);
+            Real upper = inv(1.0 - p);
+            Real error = std::fabs(lower + upper);
+            Real tolerance = 1.0e-8 *
+                std::max(1.0, std::max(std::fabs(lower), std::fabs(upper)));
+            if (error > tolerance)
+                BOOST_ERROR("Inverse cumulative Student t distribution "
+                            "symmetry failure:"
+                            << "\n    n:            " << n
+                            << "\n    probability:  " << p
+                            << "\n    lower:        " << lower
+                            << "\n    upper:        " << upper
+                            << "\n    error:        " << error);
         }
     }
 }
