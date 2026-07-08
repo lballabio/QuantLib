@@ -107,6 +107,9 @@ namespace QuantLib {
                           .withPaymentDayCounter(iborIndex_->dayCounter())
                           .withPaymentAdjustment(iborIndex_->businessDayConvention())
                           .withPaymentLag(paymentLag_);
+            // MakeCapFloor excludes the first (already-fixed) caplet for a spot-starting
+            // cap/floor; replicate that here since we no longer go through MakeCapFloor.
+            leg.erase(leg.begin());
             auto capFloor = ext::make_shared<CapFloor>(capFloorType, leg, std::vector<Rate>(1, strike));
             capFloor->setPricingEngine(engine);
             return capFloor;

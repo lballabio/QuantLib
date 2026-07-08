@@ -23,6 +23,7 @@
 #include "utilities.hpp"
 #include <ql/currencies/america.hpp>
 #include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
@@ -399,6 +400,7 @@ struct CommonVarsON {
     RelinkableHandle<YieldTermStructure> sofrCurveHandle;
     std::vector<Rate> strikes;
     std::vector<Period> expiries;
+    Matrix vols;
     ext::shared_ptr<CapFloorTermVolSurface> capfloorVol;
 
     CommonVarsON() {
@@ -459,14 +461,37 @@ struct CommonVarsON {
 
     void setFlatSofrCapFloorVolSurface() {
         strikes = {0.03, 0.035, 0.04};
-        
+
         for (int i = 1; i <= 10; ++i)
             expiries.emplace_back(i, Years);
 
-        Matrix vols(expiries.size(), strikes.size());
+        vols = Matrix(expiries.size(), strikes.size());
         for (Size i = 0; i < vols.rows(); ++i)
             for (Size j = 0; j < vols.columns(); ++j)
                 vols[i][j] = 30.0 / 10000.0;
+
+        capfloorVol = ext::make_shared<CapFloorTermVolSurface>(
+                                        2, calendar, convention,
+                                        expiries, strikes, vols, dc);
+    }
+
+    // A mild, smoothly-varying (term structure + skew) surface. Deliberately gentle:
+    // a surface with sharp strike/expiry jumps can make the fine (indexTenor-spaced)
+    // internal calibration grid used for an overnight index imply a slightly negative
+    // optionlet price at some deep-OTM point purely from interpolation noise, which
+    // OptionletStripper1 (with dontThrow=false) correctly refuses to silently accept.
+    void setNonFlatSofrCapFloorVolSurface() {
+        strikes = {0.03, 0.035, 0.04};
+
+        for (int i = 1; i <= 10; ++i)
+            expiries.emplace_back(i, Years);
+
+        std::vector<Real> skewBps = {4.0, 2.0, 0.0}; // higher vol at lower (more OTM put) strikes
+
+        vols = Matrix(expiries.size(), strikes.size());
+        for (Size i = 0; i < vols.rows(); ++i)
+            for (Size j = 0; j < vols.columns(); ++j)
+                vols[i][j] = (25.0 + 1.5*Real(i+1) + skewBps[j]) / 10000.0;
 
         capfloorVol = ext::make_shared<CapFloorTermVolSurface>(
                                         2, calendar, convention,
@@ -909,65 +934,183 @@ BOOST_AUTO_TEST_CASE(testSwitchStrike) {
                    << "\ntolerance:     " << io::rate(vars.tolerance));
 }
 
-BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1ON) {
-    BOOST_TEST_MESSAGE("Testing optionlet stripping with overnight index...");
-    CommonVarsON vars;
-    Settings::instance().evaluationDate() = vars.today;
-    Schedule schedule(vars.startDate, vars.endDate, vars.tenor,
-                      vars.calendar, vars.convention, vars.convention,
-                      DateGeneration::Forward, false);
-    vars.setSofrHandle();
-    vars.setFlatSofrCapFloorVolSurface();
+namespace {
 
-    ext::shared_ptr<OvernightIndex> sofrIndex(new Sofr(vars.sofrCurveHandle));
-    sofrIndex->addFixing(Date(15, April, 2025), 3.04/100.0);
+    // Bootstraps an OptionletStripper1 from an overnight (SOFR) surface, with an
+    // explicit payment lag applied both to the calibration leg (inside the
+    // stripper) and to an externally-built reference leg of the same tenor/lag.
+    // Cap prices from the two should agree at every surface grid point.
+    void checkSofrOptionletStripping(bool flatVol, Natural paymentLag) {
+        CommonVarsON vars;
+        Settings::instance().evaluationDate() = vars.today;
+        vars.setSofrHandle();
+        if (flatVol)
+            vars.setFlatSofrCapFloorVolSurface();
+        else
+            vars.setNonFlatSofrCapFloorVolSurface();
 
-    Real notional = 1'000'000;
-    OvernightLeg sofrLeg(schedule, sofrIndex);
-    sofrLeg.withNotionals(notional)
-           .withPaymentAdjustment(ModifiedFollowing)
-           .withPaymentLag(2)
-           .withCouponPricer(ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
+        ext::shared_ptr<OvernightIndex> sofrIndex(new Sofr(vars.sofrCurveHandle));
+        sofrIndex->addFixing(Date(15, April, 2025), 3.04/100.0);
 
-    Rate strikeRate = 0.04;
-    std::vector<Rate> strikes(1, strikeRate);
-    Cap cap(sofrLeg, strikes);
-    Cap strippedCap(sofrLeg, strikes);
+        Real notional = 1.0;
 
-    ext::shared_ptr<OptionletStripper1> optionletSurf(
-            new OptionletStripper1(vars.capfloorVol, sofrIndex,
-                                   Null<Real>(), 1e-6, 100,
-                                   vars.sofrCurveHandle, Normal,
-                                   0.0, false, Period(3, Months)));
+        ext::shared_ptr<OptionletStripper1> optionletSurf(
+                new OptionletStripper1(vars.capfloorVol, sofrIndex,
+                                       Null<Real>(), 1e-6, 100,
+                                       vars.sofrCurveHandle, Normal,
+                                       0.0, false, vars.tenor, paymentLag));
 
-    Handle<OptionletVolatilityStructure> ovsHandle(
-        ext::shared_ptr<OptionletVolatilityStructure>(
-            new StrippedOptionletAdapter(optionletSurf)));
+        Handle<OptionletVolatilityStructure> ovsHandle(
+            ext::shared_ptr<OptionletVolatilityStructure>(
+                new StrippedOptionletAdapter(optionletSurf)));
 
-    auto quotedVol = ext::make_shared<SimpleQuote>(
-        vars.capfloorVol->volatility(Period(5, Years), strikeRate, true));
-    Handle<OptionletVolatilityStructure> quotedVolHandle(
-        ext::make_shared<ConstantOptionletVolatility>(
-            vars.capfloorVol->referenceDate(), vars.calendar, vars.convention,
-            Handle<Quote>(quotedVol), vars.dc, Normal));
+        ext::shared_ptr<PricingEngine> strippedVolEngine(
+            new BachelierCapFloorEngine(vars.sofrCurveHandle, ovsHandle));
 
-    ext::shared_ptr<PricingEngine> quotedVolEngine(
-        new BachelierCapFloorEngine(vars.sofrCurveHandle, quotedVolHandle));
-    cap.setPricingEngine(quotedVolEngine);
+        Real tolerance = 2.5e-8;
 
-    ext::shared_ptr<PricingEngine> strippedVolEngine(
-        new BachelierCapFloorEngine(vars.sofrCurveHandle, ovsHandle));
-    strippedCap.setPricingEngine(strippedVolEngine);
+        for (Size tenorIndex=0; tenorIndex<vars.expiries.size(); ++tenorIndex) {
+            Date endDate = vars.calendar.advance(vars.startDate, vars.expiries[tenorIndex],
+                                                 vars.convention);
+            Schedule schedule(vars.startDate, endDate, vars.tenor,
+                              vars.calendar, vars.convention, vars.convention,
+                              DateGeneration::Forward, false);
+            OvernightLeg sofrLeg(schedule, sofrIndex);
+            sofrLeg.withNotionals(notional)
+                   .withPaymentAdjustment(ModifiedFollowing)
+                   .withPaymentLag(paymentLag)
+                   .withCouponPricer(ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
 
-    Real tolerance = 2.5e-8;
-    Real capPrice = cap.NPV();
-    Real strippedCapPrice = strippedCap.NPV();
-    Real error = std::fabs(capPrice - strippedCapPrice);
-    if (error> tolerance)
-      BOOST_FAIL("\nerror:         " << error <<
-                 "\ncap price:     " << capPrice <<
-                 "\nstripped price:" << strippedCapPrice <<
-                 "\ntolerance:     " << io::rate(tolerance));
+            for (Size strikeIndex=0; strikeIndex<vars.strikes.size(); ++strikeIndex) {
+                std::vector<Rate> strikes(1, vars.strikes[strikeIndex]);
+
+                Cap strippedCap(sofrLeg, strikes);
+                strippedCap.setPricingEngine(strippedVolEngine);
+                Real strippedCapPrice = strippedCap.NPV();
+
+                auto quotedVol = ext::make_shared<SimpleQuote>(vars.vols[tenorIndex][strikeIndex]);
+                Handle<OptionletVolatilityStructure> quotedVolHandle(
+                    ext::make_shared<ConstantOptionletVolatility>(
+                        vars.capfloorVol->referenceDate(), vars.calendar, vars.convention,
+                        Handle<Quote>(quotedVol), vars.dc, Normal));
+                ext::shared_ptr<PricingEngine> quotedVolEngine(
+                    new BachelierCapFloorEngine(vars.sofrCurveHandle, quotedVolHandle));
+                Cap cap(sofrLeg, strikes);
+                cap.setPricingEngine(quotedVolEngine);
+                Real capPrice = cap.NPV();
+
+                Real error = std::fabs(capPrice - strippedCapPrice);
+                if (error > tolerance)
+                    BOOST_FAIL("\noption tenor:  " << vars.expiries[tenorIndex] <<
+                               "\nstrike:        " << io::rate(vars.strikes[strikeIndex]) <<
+                               "\nquoted vol price:   " << capPrice <<
+                               "\nstripped vol price: " << strippedCapPrice <<
+                               "\nerror:         " << error <<
+                               "\ntolerance:     " << tolerance);
+            }
+        }
+    }
+
+    // Same idea as checkSofrOptionletStripping, but for the Ibor branch: the
+    // reference leg and the stripper's internal calibration leg are both built
+    // (by hand, bypassing MakeCapFloor) with the same explicit payment lag.
+    void checkIborOptionletStripping(bool flatVol, Natural paymentLag) {
+        CommonVars vars;
+        Settings::instance().evaluationDate() = Date(28, October, 2013);
+        if (flatVol)
+            vars.setFlatTermVolSurface();
+        else
+            vars.setCapFloorTermVolSurface();
+
+        ext::shared_ptr<CapFloorTermVolSurface> surface =
+            flatVol ? vars.flatTermVolSurface : vars.capFloorVolSurface;
+
+        ext::shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
+
+        ext::shared_ptr<OptionletStripper1> optionletStripper1(
+            new OptionletStripper1(surface, iborIndex, Null<Rate>(), vars.accuracy, 100,
+                                   Handle<YieldTermStructure>(), ShiftedLognormal, 0.0,
+                                   false, ext::nullopt, paymentLag));
+
+        Handle<OptionletVolatilityStructure> vol(
+            ext::make_shared<StrippedOptionletAdapter>(optionletStripper1));
+        vol->enableExtrapolation();
+
+        ext::shared_ptr<PricingEngine> strippedVolEngine(
+            new BlackCapFloorEngine(vars.yieldTermStructure, vol));
+
+        Date startDate = iborIndex->valueDate(
+            iborIndex->fixingCalendar().adjust(Settings::instance().evaluationDate()));
+
+        for (Size tenorIndex=0; tenorIndex<vars.optionTenors.size(); ++tenorIndex) {
+            Date endDate = startDate + vars.optionTenors[tenorIndex];
+            Schedule schedule(startDate, endDate, iborIndex->tenor(), iborIndex->fixingCalendar(),
+                              iborIndex->businessDayConvention(), iborIndex->businessDayConvention(),
+                              DateGeneration::Backward, false);
+            Leg leg = IborLeg(schedule, iborIndex)
+                          .withNotionals(1.0)
+                          .withPaymentDayCounter(iborIndex->dayCounter())
+                          .withPaymentAdjustment(iborIndex->businessDayConvention())
+                          .withPaymentLag(paymentLag);
+
+            for (Size strikeIndex=0; strikeIndex<vars.strikes.size(); ++strikeIndex) {
+                std::vector<Rate> strikes(1, vars.strikes[strikeIndex]);
+
+                CapFloor strippedCap(CapFloor::Cap, leg, strikes);
+                strippedCap.setPricingEngine(strippedVolEngine);
+                Real priceFromStrippedVolatility = strippedCap.NPV();
+
+                ext::shared_ptr<PricingEngine> constantVolEngine(
+                    new BlackCapFloorEngine(vars.yieldTermStructure,
+                                            vars.termV[tenorIndex][strikeIndex]));
+                CapFloor cap(CapFloor::Cap, leg, strikes);
+                cap.setPricingEngine(constantVolEngine);
+                Real priceFromConstantVolatility = cap.NPV();
+
+                Real error = std::fabs(priceFromStrippedVolatility - priceFromConstantVolatility);
+                if (error>vars.tolerance)
+                    BOOST_FAIL("\noption tenor:       " << vars.optionTenors[tenorIndex] <<
+                               "\nstrike:             " << io::rate(vars.strikes[strikeIndex]) <<
+                               "\nstripped vol price: " << io::rate(priceFromStrippedVolatility) <<
+                               "\nconstant vol price: " << io::rate(priceFromConstantVolatility) <<
+                               "\nerror:              " << io::rate(error) <<
+                               "\ntolerance:          " << io::rate(vars.tolerance));
+            }
+        }
+    }
+
+}
+
+BOOST_AUTO_TEST_CASE(testFlatTermVolatilityStripping1SofrPaymentLag) {
+    BOOST_TEST_MESSAGE(
+        "Testing forward/forward vol stripping from flat term vol surface "
+        "using OptionletStripper1 class with an overnight index and a "
+        "payment lag...");
+    checkSofrOptionletStripping(true, 2);
+}
+
+BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1SofrPaymentLag) {
+    BOOST_TEST_MESSAGE(
+        "Testing forward/forward vol stripping from non-flat term vol "
+        "surface using OptionletStripper1 class with an overnight index "
+        "and a payment lag...");
+    checkSofrOptionletStripping(false, 2);
+}
+
+BOOST_AUTO_TEST_CASE(testFlatTermVolatilityStripping1IborPaymentLag) {
+    BOOST_TEST_MESSAGE(
+        "Testing forward/forward vol stripping from flat term vol surface "
+        "using OptionletStripper1 class with an Ibor index and a payment "
+        "lag...");
+    checkIborOptionletStripping(true, 2);
+}
+
+BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1IborPaymentLag) {
+    BOOST_TEST_MESSAGE(
+        "Testing forward/forward vol stripping from non-flat term vol "
+        "surface using OptionletStripper1 class with an Ibor index and a "
+        "payment lag...");
+    checkIborOptionletStripping(false, 2);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
