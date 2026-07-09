@@ -69,10 +69,11 @@ namespace QuantLib {
             }            
 
             Date refDate = Settings::instance().evaluationDate();
-            // if the evaluation date is not a business day
-            // then move to the next business day
-            refDate = overnightCalendar_.adjust(refDate);
-            Date spotDate = overnightCalendar_.advance(refDate,
+            // settlement days are counted from the actual evaluation
+            // date, even when it is not a business day (see issue #753)
+            const Calendar& settlementCalendar =
+                settlementCalendar_.empty() ? overnightCalendar_ : settlementCalendar_;
+            Date spotDate = settlementCalendar.advance(refDate,
                                                        settlementDays*Days);
             startDate = spotDate+forwardStart_;
             if (forwardStart_.length()<0)
@@ -199,6 +200,11 @@ namespace QuantLib {
 
     MakeOIS& MakeOIS::withSettlementDays(Natural settlementDays) {
         settlementDays_ = settlementDays;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withSettlementCalendar(const Calendar& cal) {
+        settlementCalendar_ = cal;
         return *this;
     }
 
