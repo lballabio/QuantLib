@@ -152,6 +152,7 @@ set(QL_SOURCES
     experimental/inflation/yoycapfloortermpricesurface.cpp
     experimental/inflation/yoyoptionlethelpers.cpp
     experimental/lattices/extendedbinomialtree.cpp
+    experimental/math/cmaes.cpp
     experimental/math/convolvedstudentt.cpp
     experimental/math/fireflyalgorithm.cpp
     experimental/math/gaussiancopulapolicy.cpp
@@ -1182,6 +1183,7 @@ set(QL_HEADERS
     experimental/inflation/yoyoptionletstripper.hpp
     experimental/lattices/extendedbinomialtree.hpp
     experimental/math/claytoncopularng.hpp
+    experimental/math/cmaes.hpp
     experimental/math/convolvedstudentt.hpp
     experimental/math/farliegumbelmorgensterncopularng.hpp
     experimental/math/fireflyalgorithm.hpp
