@@ -37,6 +37,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/currencies/europe.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/instruments/floatfloatswap.hpp>
 #include <ql/instruments/floatfloatswaption.hpp>
@@ -441,6 +442,7 @@ BOOST_AUTO_TEST_CASE(testOvernightIndexedUnderlyings) {
                                      std::vector<Real>{sigma}, reversion, 12.0);
     auto jamshidian = ext::make_shared<JamshidianSwaptionEngine>(hw, yts);
     auto gaussian1d = ext::make_shared<Gaussian1dSwaptionEngine>(gsr, 128, 8.0);
+    auto g1dJamshidian = ext::make_shared<Gaussian1dJamshidianSwaptionEngine>(gsr);
 
     Real tol = 0.002; // 20 bp relative: engine-representation differences only
 
@@ -465,6 +467,15 @@ BOOST_AUTO_TEST_CASE(testOvernightIndexedUnderlyings) {
         Real reference = oisSwaption->NPV();
         oisSwaption->setPricingEngine(gaussian1d);
         Real g1dOis = oisSwaption->NPV();
+        oisSwaption->setPricingEngine(g1dJamshidian);
+        Real g1dJamOis = oisSwaption->NPV();
+
+        if (std::fabs(g1dJamOis - reference) / reference > tol)
+            BOOST_ERROR("Gaussian1dJamshidian vs affine Jamshidian on an OIS "
+                        "underlying differ by "
+                        << (g1dJamOis - reference) / reference << " ("
+                        << g1dJamOis << " vs " << reference << ") for expiry "
+                        << expiryYears << "y");
 
         if (std::fabs(g1dOis - reference) / reference > tol)
             BOOST_ERROR("Gaussian1dSwaptionEngine OIS price ("
@@ -517,6 +528,36 @@ BOOST_AUTO_TEST_CASE(testOvernightIndexedUnderlyings) {
                         << "reference (" << reference << ") by "
                         << (g1dNonstandard - reference) / reference
                         << " for expiry " << expiryYears << "y");
+
+        // SOFR payment lag (2 business days after accrual end)
+        auto oisLagProbe = ext::make_shared<OvernightIndexedSwap>(
+            Swap::Payer, 1.0, schedule, 0.0, dc, onIndex, 0.0, 2, Following,
+            calendar);
+        oisLagProbe->setPricingEngine(swapEngine);
+        auto oisLag = ext::make_shared<OvernightIndexedSwap>(
+            Swap::Payer, 1.0, schedule, oisLagProbe->fairRate(), dc, onIndex,
+            0.0, 2, Following, calendar);
+        auto oisLagSwaption = ext::make_shared<Swaption>(oisLag, exercise);
+        oisLagSwaption->setPricingEngine(jamshidian);
+        Real jamLag = oisLagSwaption->NPV();
+        oisLagSwaption->setPricingEngine(g1dJamshidian);
+        Real g1dJamLag = oisLagSwaption->NPV();
+        oisLagSwaption->setPricingEngine(gaussian1d);
+        Real g1dLag = oisLagSwaption->NPV();
+
+        if (std::fabs(g1dLag - jamLag) / jamLag > tol)
+            BOOST_ERROR("Gaussian1d vs Jamshidian on a payment-lagged OIS "
+                        "underlying differ by "
+                        << (g1dLag - jamLag) / jamLag << " (" << g1dLag
+                        << " vs " << jamLag << ") for expiry " << expiryYears
+                        << "y");
+
+        if (std::fabs(g1dJamLag - jamLag) / jamLag > tol)
+            BOOST_ERROR("Gaussian1dJamshidian vs affine Jamshidian on a "
+                        "payment-lagged OIS underlying differ by "
+                        << (g1dJamLag - jamLag) / jamLag << " (" << g1dJamLag
+                        << " vs " << jamLag << ") for expiry " << expiryYears
+                        << "y");
 
         // --- FloatFloatSwap: an overnight leg exchanged against a
         //     same-schedule Ibor twin leg is par-for-par in a single-curve
