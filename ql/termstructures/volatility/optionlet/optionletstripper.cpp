@@ -19,7 +19,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/settings.hpp>
+#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletstripper.hpp>
 #include <utility>
 
@@ -33,20 +40,21 @@ namespace QuantLib {
         Handle<YieldTermStructure> discount,
         const VolatilityType type,
         const Real displacement,
-        ext::optional<Period> optionletFrequency
+        ext::optional<Period> optionletFrequency,
+        Natural paymentLag
     )
     : termVolSurface_(termVolSurface), iborIndex_(std::move(iborIndex)),
       discount_(std::move(discount)), nStrikes_(termVolSurface->strikes().size()),
-      volatilityType_(type), displacement_(displacement), 
-      optionletFrequency_(optionletFrequency) {
+      volatilityType_(type), displacement_(displacement),
+      optionletFrequency_(optionletFrequency), paymentLag_(paymentLag),
+      isOvernightIndex_(static_cast<bool>(ext::dynamic_pointer_cast<OvernightIndex>(iborIndex_))) {
 
         if (volatilityType_ == Normal) {
             QL_REQUIRE(displacement_ == 0.0,
                        "non-null displacement is not allowed with Normal model");
         }
 
-        bool isOvernightIndex = static_cast<bool>(ext::dynamic_pointer_cast<OvernightIndex>(iborIndex_));
-        if (isOvernightIndex) {
+        if (isOvernightIndex_) {
             QL_REQUIRE(optionletFrequency_, 
                        "an optionlet frequency is required when using an overnight index");
         }
@@ -60,7 +68,7 @@ namespace QuantLib {
         Period maxCapFloorTenor = termVolSurface->optionTenors().back();
 
         // optionlet tenors and capFloor lengths
-        if (isOvernightIndex) {
+        if (isOvernightIndex_) {
             Period nextCapFloorLength = indexTenor;
             QL_REQUIRE(maxCapFloorTenor >= nextCapFloorLength,
                        "too short (" << maxCapFloorTenor <<
@@ -185,6 +193,71 @@ namespace QuantLib {
 
     ext::optional<Period> OptionletStripper::optionletFrequency() const {
         return optionletFrequency_;
+    }
+
+    Natural OptionletStripper::paymentLag() const {
+        return paymentLag_;
+    }
+
+    bool OptionletStripper::isOvernightIndex() const {
+        return isOvernightIndex_;
+    }
+
+    Leg OptionletStripper::makeCapFloorLeg(const Period& capFloorLength) const {
+        if (isOvernightIndex_) {
+            auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(iborIndex_);
+            Date startDate = termVolSurface_->referenceDate();
+            Date endDate = termVolSurface_->calendar().advance(
+                startDate, capFloorLength, termVolSurface_->businessDayConvention());
+            Schedule schedule(startDate, endDate, *optionletFrequency_,
+                              termVolSurface_->calendar(),
+                              termVolSurface_->businessDayConvention(),
+                              termVolSurface_->businessDayConvention(),
+                              DateGeneration::Forward, false);
+            return OvernightLeg(schedule, overnightIndex)
+                .withNotionals(1.0)
+                .withPaymentCalendar(termVolSurface_->calendar())
+                .withPaymentAdjustment(termVolSurface_->businessDayConvention())
+                .withPaymentLag(paymentLag_)
+                .withCouponPricer(ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
+        }
+
+        Date startDate = iborIndex_->valueDate(
+            iborIndex_->fixingCalendar().adjust(Settings::instance().evaluationDate()));
+        Date endDate = startDate + capFloorLength;
+        Schedule schedule(startDate, endDate, iborIndex_->tenor(),
+                          iborIndex_->fixingCalendar(), iborIndex_->businessDayConvention(),
+                          iborIndex_->businessDayConvention(), DateGeneration::Backward, false);
+        Leg leg = IborLeg(schedule, iborIndex_)
+                      .withNotionals(1.0)
+                      .withPaymentDayCounter(iborIndex_->dayCounter())
+                      .withPaymentAdjustment(iborIndex_->businessDayConvention())
+                      .withPaymentLag(paymentLag_);
+        // Spot-starting Ibor caps exclude the first, already-fixed caplet.
+        leg.erase(leg.begin());
+        QL_REQUIRE(!leg.empty(), "cap/floor length " << capFloorLength
+                                                      << " does not contain any optionlets");
+        return leg;
+    }
+
+    Handle<OptionletVolatilityStructure>
+    OptionletStripper::constantOptionletVolatility(const Handle<Quote>& volatility) const {
+        return Handle<OptionletVolatilityStructure>(
+            ext::make_shared<ConstantOptionletVolatility>(
+                termVolSurface_->referenceDate(), termVolSurface_->calendar(),
+                termVolSurface_->businessDayConvention(), volatility,
+                termVolSurface_->dayCounter(), volatilityType_, displacement_));
+    }
+
+    ext::shared_ptr<PricingEngine> OptionletStripper::makeCapFloorPricingEngine(
+        const Handle<YieldTermStructure>& discountCurve,
+        const Handle<OptionletVolatilityStructure>& volatility) const {
+        if (volatilityType_ == ShiftedLognormal)
+            return ext::make_shared<BlackCapFloorEngine>(
+                discountCurve, volatility, displacement_);
+        if (volatilityType_ == Normal)
+            return ext::make_shared<BachelierCapFloorEngine>(discountCurve, volatility);
+        QL_FAIL("unknown volatility type: " << volatilityType_);
     }
 
 }

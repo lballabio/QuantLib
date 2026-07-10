@@ -56,11 +56,12 @@ namespace QuantLib {
         void performCalculations() const override;
         //@}
       private:
-        std::vector<Volatility> spreadsVolImplied() const;
+        std::vector<Volatility> spreadsVolImplied(
+            const Handle<OptionletVolatilityStructure>& baseVolatility) const;
 
         class ObjectiveFunction {
           public:
-            ObjectiveFunction(const ext::shared_ptr<OptionletStripper1>&,
+            ObjectiveFunction(ext::shared_ptr<SimpleQuote> spreadQuote,
                               ext::shared_ptr<CapFloor>,
                               Real targetValue);
             Real operator()(Volatility spreadVol) const;

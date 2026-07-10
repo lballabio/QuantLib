@@ -77,7 +77,6 @@ namespace QuantLib {
         Real accuracy_;
         Natural maxIter_;
         bool dontThrow_;
-        Natural paymentLag_;
     };
 
 }

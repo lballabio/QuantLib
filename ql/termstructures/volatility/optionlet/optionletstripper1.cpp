@@ -23,18 +23,12 @@
 */
 
 #include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
-#include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
-#include <ql/cashflows/overnightindexedcoupon.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengine.hpp>
-#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/settings.hpp>
 
 namespace QuantLib {
 
@@ -50,9 +44,10 @@ namespace QuantLib {
         bool dontThrow,
         ext::optional<Period> optionletFrequency,
         Natural paymentLag)
-    : OptionletStripper(termVolSurface, index, discount, type, displacement, optionletFrequency),
+    : OptionletStripper(termVolSurface, index, discount, type, displacement,
+                        optionletFrequency, paymentLag),
       floatingSwitchStrike_(switchStrike == Null<Rate>()), switchStrike_(switchStrike),
-      accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow), paymentLag_(paymentLag) {
+      accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow) {
 
         capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);
         optionletPrices_ = Matrix(nOptionletTenors_, nStrikes_);
@@ -68,48 +63,22 @@ namespace QuantLib {
         // update dates
         const Date& referenceDate = termVolSurface_->referenceDate();
         const DayCounter& dc = termVolSurface_->dayCounter();
-        auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(iborIndex_);
+        Leg fullOvernightLeg;
+        if (isOvernightIndex())
+            fullOvernightLeg = makeCapFloorLeg(capFloorLengths_.back());
         auto makeCapFloor = [&](CapFloor::Type capFloorType,
                                 Size optionletIndex,
                                 Rate strike,
                                 const ext::shared_ptr<PricingEngine>& engine) {
-            if (overnightIndex) {
-                Date startDate = termVolSurface_->referenceDate();
-                Date endDate = termVolSurface_->calendar().advance(
-                    startDate, capFloorLengths_.back(), termVolSurface_->businessDayConvention());
-                Schedule schedule(startDate, endDate, *optionletFrequency_,
-                                  termVolSurface_->calendar(),
-                                  termVolSurface_->businessDayConvention(),
-                                  termVolSurface_->businessDayConvention(),
-                                  DateGeneration::Forward, false);
-                Leg leg = OvernightLeg(schedule, overnightIndex)
-                              .withNotionals(1.0)
-                              .withPaymentCalendar(termVolSurface_->calendar())
-                              .withPaymentAdjustment(termVolSurface_->businessDayConvention())
-                              .withPaymentLag(paymentLag_)
-                              .withCouponPricer(ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
-
-                leg.resize(optionletIndex + 1);
-                auto capFloor = ext::make_shared<CapFloor>(capFloorType, leg, std::vector<Rate>(1, strike));
-                capFloor->setPricingEngine(engine);
-                return capFloor;
+            Leg leg;
+            if (isOvernightIndex()) {
+                QL_REQUIRE(optionletIndex < fullOvernightLeg.size(),
+                           "optionlet index out of range");
+                leg = Leg(fullOvernightLeg.begin(),
+                          fullOvernightLeg.begin() + optionletIndex + 1);
+            } else {
+                leg = makeCapFloorLeg(capFloorLengths_[optionletIndex]);
             }
-
-            // built by hand (rather than through MakeCapFloor/MakeVanillaSwap) to make it symmetric with the overnight leg
-            Date startDate = iborIndex_->valueDate(
-                iborIndex_->fixingCalendar().adjust(Settings::instance().evaluationDate()));
-            Date endDate = startDate + capFloorLengths_[optionletIndex];
-            Schedule schedule(startDate, endDate, iborIndex_->tenor(), iborIndex_->fixingCalendar(),
-                               iborIndex_->businessDayConvention(),
-                               iborIndex_->businessDayConvention(), DateGeneration::Backward, false);
-            Leg leg = IborLeg(schedule, iborIndex_)
-                          .withNotionals(1.0)
-                          .withPaymentDayCounter(iborIndex_->dayCounter())
-                          .withPaymentAdjustment(iborIndex_->businessDayConvention())
-                          .withPaymentLag(paymentLag_);
-            // MakeCapFloor excludes the first (already-fixed) caplet for a spot-starting
-            // cap/floor; replicate that here since we no longer go through MakeCapFloor.
-            leg.erase(leg.begin());
             auto capFloor = ext::make_shared<CapFloor>(capFloorType, leg, std::vector<Rate>(1, strike));
             capFloor->setPricingEngine(engine);
             return capFloor;
@@ -130,7 +99,7 @@ namespace QuantLib {
             optionletAccrualPeriods_[i] = lFRC->accrualPeriod();
             optionletTimes_[i] = dc.yearFraction(referenceDate,
                                                  optionletDates_[i]);
-            atmOptionletRate_[i] = overnightIndex ? lFRC->adjustedFixing() : lFRC->indexFixing();
+            atmOptionletRate_[i] = isOvernightIndex() ? lFRC->adjustedFixing() : lFRC->indexFixing();
         }
 
         if (floatingSwitchStrike_) {
@@ -148,39 +117,10 @@ namespace QuantLib {
 
         const std::vector<Rate>& strikes = termVolSurface_->strikes();
 
-        ext::shared_ptr<PricingEngine> capFloorEngine;
         auto volQuote = ext::make_shared<SimpleQuote>();
         Handle<Quote> volHandle(volQuote);
-
-        if (volatilityType_ == ShiftedLognormal) {
-            if (overnightIndex) {
-                Handle<OptionletVolatilityStructure> vol(
-                    ext::make_shared<ConstantOptionletVolatility>(
-                        referenceDate, termVolSurface_->calendar(),
-                        termVolSurface_->businessDayConvention(), volHandle,
-                        dc, volatilityType_, displacement_));
-                capFloorEngine = ext::make_shared<BlackCapFloorEngine>(
-                    discountCurve, vol, displacement_);
-            } else {
-                capFloorEngine = ext::make_shared<BlackCapFloorEngine>(
-                    discountCurve, volHandle, dc, displacement_);
-            }
-        } else if (volatilityType_ == Normal) {
-            if (overnightIndex) {
-                Handle<OptionletVolatilityStructure> vol(
-                    ext::make_shared<ConstantOptionletVolatility>(
-                        referenceDate, termVolSurface_->calendar(),
-                        termVolSurface_->businessDayConvention(), volHandle,
-                        dc, volatilityType_, displacement_));
-                capFloorEngine = ext::make_shared<BachelierCapFloorEngine>(
-                    discountCurve, vol);
-            } else {
-                capFloorEngine = ext::make_shared<BachelierCapFloorEngine>(
-                    discountCurve, volHandle, dc);
-            }
-        } else {
-            QL_FAIL("unknown volatility type: " << volatilityType_);
-        }
+        auto capFloorEngine = makeCapFloorPricingEngine(
+            discountCurve, constantOptionletVolatility(volHandle));
 
         for (Size j=0; j<nStrikes_; ++j) {
             // using out-of-the-money options

@@ -26,14 +26,18 @@
 #ifndef quantlib_optionletstripper_hpp
 #define quantlib_optionletstripper_hpp
 
-#include <ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp>
+#include <ql/cashflow.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp>
 #include <ql/termstructures/volatility/volatilitytype.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 
     class IborIndex;
+    class OptionletVolatilityStructure;
+    class PricingEngine;
+    class Quote;
 
     /*! StrippedOptionletBase specialization. It's up to derived
         classes to implement LazyObject::performCalculations
@@ -65,6 +69,7 @@ namespace QuantLib {
         Real displacement() const override;
         VolatilityType volatilityType() const override;
         ext::optional<Period> optionletFrequency() const;
+        Natural paymentLag() const;
 
       protected:
         OptionletStripper(const ext::shared_ptr<CapFloorTermVolSurface>&,
@@ -72,7 +77,15 @@ namespace QuantLib {
                           Handle<YieldTermStructure> discount = {},
                           VolatilityType type = ShiftedLognormal,
                           Real displacement = 0.0,
-                          ext::optional<Period> optionletFrequency = ext::nullopt);
+                          ext::optional<Period> optionletFrequency = ext::nullopt,
+                          Natural paymentLag = 0);
+        Leg makeCapFloorLeg(const Period& capFloorLength) const;
+        Handle<OptionletVolatilityStructure>
+        constantOptionletVolatility(const Handle<Quote>& volatility) const;
+        ext::shared_ptr<PricingEngine> makeCapFloorPricingEngine(
+            const Handle<YieldTermStructure>& discountCurve,
+            const Handle<OptionletVolatilityStructure>& volatility) const;
+        bool isOvernightIndex() const;
         ext::shared_ptr<CapFloorTermVolSurface> termVolSurface_;
         ext::shared_ptr<IborIndex> iborIndex_;
         Handle<YieldTermStructure> discount_;
@@ -93,6 +106,8 @@ namespace QuantLib {
         const VolatilityType volatilityType_;
         const Real displacement_;
         ext::optional<Period> optionletFrequency_;
+        const Natural paymentLag_;
+        const bool isOvernightIndex_;
     };
 
 }

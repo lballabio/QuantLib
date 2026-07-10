@@ -1079,6 +1079,157 @@ namespace {
         }
     }
 
+    void checkIborOptionletStripping2(Natural paymentLag) {
+        CommonVars vars;
+        Settings::instance().evaluationDate() = Date(28, October, 2013);
+        vars.setFlatTermVolCurve();
+        vars.setFlatTermVolSurface();
+
+        auto iborIndex = ext::make_shared<Euribor6M>(vars.yieldTermStructure);
+        auto stripper1 = ext::make_shared<OptionletStripper1>(
+            vars.flatTermVolSurface, iborIndex, Null<Rate>(), vars.accuracy, 100,
+            Handle<YieldTermStructure>(), ShiftedLognormal, 0.0, false,
+            ext::nullopt, paymentLag);
+        auto stripper2 = ext::make_shared<OptionletStripper2>(
+            stripper1, vars.flatTermVolCurve);
+
+        // The flat ATM curve and flat surface imply an exact zero adjustment;
+        // the tight price tolerance below therefore isolates leg conventions.
+        for (Volatility spread : stripper2->spreadsVol())
+            BOOST_CHECK_SMALL(spread, 1.0e-12);
+
+        Handle<OptionletVolatilityStructure> vol(
+            ext::make_shared<StrippedOptionletAdapter>(stripper2));
+        vol->enableExtrapolation();
+        auto engine = ext::make_shared<BlackCapFloorEngine>(vars.yieldTermStructure, vol);
+
+        const std::vector<Rate> strikes = stripper2->atmCapFloorStrikes();
+        const std::vector<Real> targetPrices = stripper2->atmCapFloorPrices();
+        Date startDate = iborIndex->valueDate(
+            iborIndex->fixingCalendar().adjust(Settings::instance().evaluationDate()));
+
+        for (Size i=0; i<vars.optionTenors.size(); ++i) {
+            Date endDate = startDate + vars.optionTenors[i];
+            Schedule schedule(startDate, endDate, iborIndex->tenor(),
+                              iborIndex->fixingCalendar(),
+                              iborIndex->businessDayConvention(),
+                              iborIndex->businessDayConvention(),
+                              DateGeneration::Backward, false);
+            Leg leg = IborLeg(schedule, iborIndex)
+                          .withNotionals(1.0)
+                          .withPaymentDayCounter(iborIndex->dayCounter())
+                          .withPaymentAdjustment(iborIndex->businessDayConvention())
+                          .withPaymentLag(paymentLag);
+            leg.erase(leg.begin());
+
+            CapFloor cap(CapFloor::Cap, leg, std::vector<Rate>(1, strikes[i]));
+            cap.setPricingEngine(engine);
+            Real error = std::fabs(cap.NPV() - targetPrices[i]);
+            if (error > vars.tolerance)
+                BOOST_FAIL("\noption tenor: " << vars.optionTenors[i] <<
+                           "\nATM strike:   " << io::rate(strikes[i]) <<
+                           "\ntarget price: " << targetPrices[i] <<
+                           "\nstripper price: " << cap.NPV() <<
+                           "\nerror:        " << error <<
+                           "\ntolerance:    " << vars.tolerance);
+        }
+    }
+
+    void checkSofrOptionletStripping2(bool flatVol, Natural paymentLag) {
+        CommonVarsON vars;
+        Settings::instance().evaluationDate() = vars.today;
+        vars.setSofrHandle();
+        if (flatVol)
+            vars.setFlatSofrCapFloorVolSurface();
+        else
+            vars.setNonFlatSofrCapFloorVolSurface();
+
+        auto sofrIndex = ext::make_shared<Sofr>(vars.sofrCurveHandle);
+        sofrIndex->addFixing(Date(15, April, 2025), 3.04/100.0);
+
+        std::vector<Handle<Quote>> atmVols(vars.expiries.size());
+        for (Size i=0; i<atmVols.size(); ++i) {
+            Volatility atmVol = vars.vols[i][1];
+            if (!flatVol)
+                atmVol += 0.0001;
+            atmVols[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(atmVol));
+        }
+        Handle<CapFloorTermVolCurve> atmCurve(
+            ext::make_shared<CapFloorTermVolCurve>(
+                2, vars.calendar, vars.convention, vars.expiries, atmVols, vars.dc));
+
+        auto stripper1 = ext::make_shared<OptionletStripper1>(
+            vars.capfloorVol, sofrIndex, Null<Rate>(), 1e-6, 100,
+            vars.sofrCurveHandle, Normal, 0.0, false, vars.tenor, paymentLag);
+        auto stripper2 = ext::make_shared<OptionletStripper2>(stripper1, atmCurve);
+
+        Handle<OptionletVolatilityStructure> vol(
+            ext::make_shared<StrippedOptionletAdapter>(stripper2));
+        vol->enableExtrapolation();
+        auto engine = ext::make_shared<BachelierCapFloorEngine>(vars.sofrCurveHandle, vol);
+
+        const std::vector<Rate> strikes = stripper2->atmCapFloorStrikes();
+        const std::vector<Real> targetPrices = stripper2->atmCapFloorPrices();
+        Real tolerance = 1.0e-6;
+
+        if (flatVol) {
+            const std::vector<Rate>& firstUncoveredSmile =
+                stripper2->optionletStrikes(4);
+            bool containsOneYearAtmStrike = std::any_of(
+                firstUncoveredSmile.begin(), firstUncoveredSmile.end(),
+                [&](Rate strike) { return std::fabs(strike - strikes.front()) < 1.0e-12; });
+            BOOST_CHECK_MESSAGE(
+                !containsOneYearAtmStrike,
+                "the 1Y SOFR ATM adjustment was applied beyond its final optionlet");
+        }
+
+        for (Size i=0; i<vars.expiries.size(); ++i) {
+            Date endDate = vars.calendar.advance(
+                vars.startDate, vars.expiries[i], vars.convention);
+            Schedule schedule(vars.startDate, endDate, vars.tenor,
+                              vars.calendar, vars.convention, vars.convention,
+                              DateGeneration::Forward, false);
+            Leg leg = OvernightLeg(schedule, sofrIndex)
+                          .withNotionals(1.0)
+                          .withPaymentCalendar(vars.calendar)
+                          .withPaymentAdjustment(vars.convention)
+                          .withPaymentLag(paymentLag)
+                          .withCouponPricer(
+                              ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
+
+            CapFloor cap(CapFloor::Cap, leg, std::vector<Rate>(1, strikes[i]));
+            cap.setPricingEngine(engine);
+            Real error = std::fabs(cap.NPV() - targetPrices[i]);
+            if (error > tolerance)
+                BOOST_FAIL("\noption tenor: " << vars.expiries[i] <<
+                           "\nATM strike:   " << io::rate(strikes[i]) <<
+                           "\ntarget price: " << targetPrices[i] <<
+                           "\nstripper price: " << cap.NPV() <<
+                           "\nerror:        " << error <<
+                           "\ntolerance:    " << tolerance);
+        }
+    }
+
+    void checkIborOptionletStripping2FrontStub() {
+        CommonVars vars;
+        Settings::instance().evaluationDate() = Date(28, October, 2013);
+        vars.setFlatTermVolSurface();
+
+        auto iborIndex = ext::make_shared<Euribor6M>(vars.yieldTermStructure);
+        auto stripper1 = ext::make_shared<OptionletStripper1>(
+            vars.flatTermVolSurface, iborIndex, Null<Rate>(), vars.accuracy);
+
+        std::vector<Period> tenors = {9 * Months, 1 * Years};
+        std::vector<Handle<Quote>> atmVols = {
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.18)),
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.18))};
+        Handle<CapFloorTermVolCurve> atmCurve(
+            ext::make_shared<CapFloorTermVolCurve>(
+                0, vars.calendar, Following, tenors, atmVols, vars.dayCounter));
+        auto stripper2 = ext::make_shared<OptionletStripper2>(stripper1, atmCurve);
+        BOOST_CHECK_THROW(stripper2->atmCapFloorPrices(), Error);
+    }
+
 }
 
 BOOST_AUTO_TEST_CASE(testFlatTermVolatilityStripping1SofrPaymentLag) {
@@ -1111,6 +1262,106 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1IborPaymentLag) {
         "surface using OptionletStripper1 class with an Ibor index and a "
         "payment lag...");
     checkIborOptionletStripping(false, 2);
+}
+
+BOOST_AUTO_TEST_CASE(testTermVolatilityStripping2IborPaymentLag) {
+    BOOST_TEST_MESSAGE(
+        "Testing ATM adjustment with OptionletStripper2 using an Ibor index "
+        "and a payment lag...");
+    checkIborOptionletStripping2(2);
+}
+
+BOOST_AUTO_TEST_CASE(testFlatTermVolatilityStripping2SofrPaymentLag) {
+    BOOST_TEST_MESSAGE(
+        "Testing ATM adjustment from a flat term vol curve using "
+        "OptionletStripper2 with an overnight index and a payment lag...");
+    checkSofrOptionletStripping2(true, 2);
+}
+
+BOOST_AUTO_TEST_CASE(testTermVolatilityStripping2SofrPaymentLag) {
+    BOOST_TEST_MESSAGE(
+        "Testing ATM adjustment from a non-flat term vol curve using "
+        "OptionletStripper2 with an overnight index and a payment lag...");
+    checkSofrOptionletStripping2(false, 2);
+}
+
+BOOST_AUTO_TEST_CASE(testTermVolatilityStripping2IborFrontStub) {
+    BOOST_TEST_MESSAGE(
+        "Testing that OptionletStripper2 rejects an unsupported front-stub Ibor cap...");
+    checkIborOptionletStripping2FrontStub();
+}
+
+BOOST_AUTO_TEST_CASE(testOptionletStripper2RejectsEmptyIborCap) {
+    BOOST_TEST_MESSAGE(
+        "Testing that OptionletStripper2 rejects an Ibor cap with no optionlets...");
+    CommonVars vars;
+    Settings::instance().evaluationDate() = Date(28, October, 2013);
+    vars.setFlatTermVolSurface();
+    auto iborIndex = ext::make_shared<Euribor6M>(vars.yieldTermStructure);
+    auto stripper1 = ext::make_shared<OptionletStripper1>(
+        vars.flatTermVolSurface, iborIndex, Null<Rate>(), vars.accuracy);
+
+    std::vector<Period> tenors = {6 * Months, 1 * Years};
+    std::vector<Handle<Quote>> atmVols = {
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.18)),
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.18))};
+    Handle<CapFloorTermVolCurve> atmCurve(
+        ext::make_shared<CapFloorTermVolCurve>(
+            0, vars.calendar, Following, tenors, atmVols, vars.dayCounter));
+    auto stripper2 = ext::make_shared<OptionletStripper2>(stripper1, atmCurve);
+    BOOST_CHECK_THROW(stripper2->atmCapFloorPrices(), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testOptionletStripper2RejectsMismatchedReferenceDate) {
+    BOOST_TEST_MESSAGE(
+        "Testing that OptionletStripper2 rejects mismatched volatility reference dates...");
+    CommonVars vars;
+    Settings::instance().evaluationDate() = Date(28, October, 2013);
+    vars.setFlatTermVolSurface();
+    auto iborIndex = ext::make_shared<Euribor6M>(vars.yieldTermStructure);
+    auto stripper1 = ext::make_shared<OptionletStripper1>(
+        vars.flatTermVolSurface, iborIndex, Null<Rate>(), vars.accuracy);
+
+    std::vector<Handle<Quote>> atmVols(vars.optionTenors.size());
+    for (auto& vol : atmVols)
+        vol = Handle<Quote>(ext::make_shared<SimpleQuote>(0.18));
+    Handle<CapFloorTermVolCurve> atmCurve(
+        ext::make_shared<CapFloorTermVolCurve>(
+            2, vars.calendar, Following, vars.optionTenors, atmVols,
+            vars.dayCounter));
+    BOOST_CHECK_THROW(
+        ext::make_shared<OptionletStripper2>(stripper1, atmCurve), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testOptionletStripper2AdjustsZeroBaseVolatility) {
+    BOOST_TEST_MESSAGE(
+        "Testing OptionletStripper2 adjustment from zero base volatility...");
+    CommonVarsON vars;
+    Settings::instance().evaluationDate() = vars.today;
+    vars.setSofrHandle();
+    vars.setFlatSofrCapFloorVolSurface();
+    vars.vols = Matrix(vars.expiries.size(), vars.strikes.size(), 0.0);
+    vars.capfloorVol = ext::make_shared<CapFloorTermVolSurface>(
+        2, vars.calendar, vars.convention, vars.expiries, vars.strikes,
+        vars.vols, vars.dc);
+
+    auto sofrIndex = ext::make_shared<Sofr>(vars.sofrCurveHandle);
+    sofrIndex->addFixing(Date(15, April, 2025), 3.04/100.0);
+    auto stripper1 = ext::make_shared<OptionletStripper1>(
+        vars.capfloorVol, sofrIndex, Null<Rate>(), 1e-6, 100,
+        vars.sofrCurveHandle, Normal, 0.0, true, vars.tenor, 2);
+
+    std::vector<Handle<Quote>> atmVols(vars.expiries.size());
+    for (auto& vol : atmVols)
+        vol = Handle<Quote>(ext::make_shared<SimpleQuote>(0.05));
+    Handle<CapFloorTermVolCurve> atmCurve(
+        ext::make_shared<CapFloorTermVolCurve>(
+            2, vars.calendar, vars.convention, vars.expiries, atmVols, vars.dc));
+    auto stripper2 = ext::make_shared<OptionletStripper2>(stripper1, atmCurve);
+
+    const std::vector<Volatility> spreads = stripper2->spreadsVol();
+    for (Volatility spread : spreads)
+        BOOST_CHECK_GT(spread, 0.0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
