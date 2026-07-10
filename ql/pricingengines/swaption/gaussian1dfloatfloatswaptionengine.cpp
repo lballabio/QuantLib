@@ -18,6 +18,7 @@
 */
 
 #include <ql/pricingengines/swaption/gaussian1dfloatfloatswaptionengine.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/experimental/coupons/swapspreadindex.hpp> // internal
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/payoff.hpp>
@@ -452,7 +453,22 @@ namespace QuantLib {
                                 amount = arguments_.leg1Coupons[j];
                             } else {
                                 Real estFixing = 0.0;
-                                if (ibor1 != nullptr) {
+                                auto on1 =
+                                    ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+                                        arguments_.swap->leg1()[j]);
+                                if (on1 != nullptr) {
+                                    // compounded overnight coupon telescopes to
+                                    // a zerobond ratio over its own accrual
+                                    estFixing =
+                                        (model_->zerobond(on1->accrualStartDate(),
+                                                          event0, zk,
+                                                          ibor1->forwardingTermStructure()) /
+                                             model_->zerobond(on1->accrualEndDate(),
+                                                              event0, zk,
+                                                              ibor1->forwardingTermStructure()) -
+                                         1.0) /
+                                        on1->accrualPeriod();
+                                } else if (ibor1 != nullptr) {
                                     estFixing = model_->forwardRate(
                                         arguments_.leg1FixingDates[j], event0,
                                         zk, ibor1);
@@ -536,7 +552,20 @@ namespace QuantLib {
                                 amount = arguments_.leg2Coupons[j];
                             } else {
                                 Real estFixing = 0.0;
-                                if (ibor2 != nullptr)
+                                auto on2 =
+                                    ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+                                        arguments_.swap->leg2()[j]);
+                                if (on2 != nullptr) {
+                                    estFixing =
+                                        (model_->zerobond(on2->accrualStartDate(),
+                                                          event0, zk,
+                                                          ibor2->forwardingTermStructure()) /
+                                             model_->zerobond(on2->accrualEndDate(),
+                                                              event0, zk,
+                                                              ibor2->forwardingTermStructure()) -
+                                         1.0) /
+                                        on2->accrualPeriod();
+                                } else if (ibor2 != nullptr)
                                     estFixing = model_->forwardRate(arguments_.leg2FixingDates[j],event0,zk,ibor2);
                                 if (cms2 != nullptr)
                                     estFixing = model_->swapRate(arguments_.leg2FixingDates[j],cms2->tenor(),event0,zk,cms2);

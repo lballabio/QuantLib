@@ -53,6 +53,32 @@ namespace QuantLib {
         const Schedule& fixedSchedule = swap->fixedSchedule();
         const Schedule& floatSchedule = swap->floatingSchedule();
 
+        // Floating-rate estimate for coupon l as seen from expiry0 in state y.
+        // For an Ibor underlying the index's own deposit period coincides with
+        // the coupon period and the standard forward projection applies. For an
+        // overnight-indexed underlying the daily compounding telescopes to a
+        // zerobond ratio over the coupon's own accrual period (exact in-model
+        // for compound averaging, first-order accurate for arithmetic
+        // averaging); projecting the index's one-day tenor over the whole
+        // accrual - as the generic branch would do - misestimates the coupon by
+        // O(curve slope * accrual) on non-flat curves.
+        bool overnightIndexed =
+            ext::dynamic_pointer_cast<OvernightIndex>(swap->iborIndex()) != nullptr;
+        Handle<YieldTermStructure> forwardingCurve =
+            swap->iborIndex()->forwardingTermStructure();
+        auto floatingRate = [&](Size l, const Date& expiryDate, Real y) -> Real {
+            if (overnightIndexed) {
+                return (model_->zerobond(floatSchedule.dates()[l], expiryDate, y,
+                                         forwardingCurve) /
+                            model_->zerobond(floatSchedule.dates()[l + 1], expiryDate,
+                                             y, forwardingCurve) -
+                        1.0) /
+                       arguments_.floatingAccrualTimes[l];
+            }
+            return model_->forwardRate(arguments_.floatingFixingDates[l], expiryDate,
+                                       y, arguments_.swap->iborIndex());
+        };
+
         Array npv0(2 * integrationPoints_ + 1, 0.0),
             npv1(2 * integrationPoints_ + 1, 0.0);
         Array z = model_->yGrid(stddevs_, integrationPoints_);
@@ -104,9 +130,7 @@ namespace QuantLib {
                               expiry0Time, 0.0);
             if (expiry0 > settlement) {
                 for (Size l = k1; l < arguments_.floatingCoupons.size(); l++) {
-                    model_->forwardRate(arguments_.floatingFixingDates[l],
-                                        expiry0, 0.0,
-                                        arguments_.swap->iborIndex());
+                    floatingRate(l, expiry0, 0.0);
                     model_->zerobond(arguments_.floatingPayDates[l], expiry0,
                                      0.0, discountCurve_);
                 }
@@ -260,9 +284,7 @@ namespace QuantLib {
                             arguments_.nominal *
                             arguments_.floatingAccrualTimes[l] *
                             (arguments_.floatingSpreads[l] +
-                             model_->forwardRate(
-                                 arguments_.floatingFixingDates[l], expiry0,
-                                 z[k], arguments_.swap->iborIndex())) *
+                             floatingRate(l, expiry0, z[k])) *
                             model_->zerobond(arguments_.floatingPayDates[l],
                                              expiry0, z[k], discountCurve_);
                     }

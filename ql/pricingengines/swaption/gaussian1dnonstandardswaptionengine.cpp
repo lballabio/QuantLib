@@ -18,6 +18,7 @@
 */
 
 #include <ql/pricingengines/swaption/gaussian1dnonstandardswaptionengine.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/rebatedexercise.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -27,6 +28,33 @@
 using std::exp;
 
 namespace QuantLib {
+
+    namespace {
+        // Floating-rate estimate for coupon i as seen from expiryDate in state y.
+        // A compounded-in-arrears overnight coupon telescopes to a zerobond ratio
+        // over its own accrual period (exact in-model for compound averaging);
+        // projecting the overnight index's one-day tenor over the whole accrual
+        // - as the generic branch would do - misestimates the coupon by
+        // O(curve slope * accrual) on non-flat curves.
+        Real nonstandardFloatingRate(const ext::shared_ptr<Gaussian1dModel>& model,
+                                     const NonstandardSwaption::arguments& arguments,
+                                     Size i, const Date& expiryDate, Real y) {
+            auto overnightCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+                arguments.swap->floatingLeg()[i]);
+            if (overnightCoupon != nullptr) {
+                Handle<YieldTermStructure> forwardingCurve =
+                    arguments.swap->iborIndex()->forwardingTermStructure();
+                return (model->zerobond(overnightCoupon->accrualStartDate(),
+                                        expiryDate, y, forwardingCurve) /
+                            model->zerobond(overnightCoupon->accrualEndDate(),
+                                            expiryDate, y, forwardingCurve) -
+                        1.0) /
+                       overnightCoupon->accrualPeriod();
+            }
+            return model->forwardRate(arguments.floatingFixingDates[i], expiryDate,
+                                      y, arguments.swap->iborIndex());
+        }
+    }
 
     Real
     Gaussian1dNonstandardSwaptionEngine::underlyingNpv(const Date &expiry,
@@ -66,9 +94,8 @@ namespace QuantLib {
             Real amount;
             if (!arguments_.floatingIsRedemptionFlow[i])
                 amount = (arguments_.floatingGearings[i] *
-                              model_->forwardRate(
-                                  arguments_.floatingFixingDates[i], expiry, y,
-                                  arguments_.swap->iborIndex()) +
+                              nonstandardFloatingRate(*model_, arguments_, i,
+                                                      expiry, y) +
                           arguments_.floatingSpreads[i]) *
                          arguments_.floatingAccrualTimes[i] *
                          arguments_.floatingNominal[i];
@@ -377,10 +404,9 @@ namespace QuantLib {
                             amount = arguments_.floatingNominal[l] *
                                      arguments_.floatingAccrualTimes[l] *
                                      (arguments_.floatingGearings[l] *
-                                          model_->forwardRate(
-                                              arguments_.floatingFixingDates[l],
-                                              expiry0, z[k],
-                                              arguments_.swap->iborIndex()) +
+                                          nonstandardFloatingRate(
+                                              *model_, arguments_, l, expiry0,
+                                              z[k]) +
                                       arguments_.floatingSpreads[l]);
                         floatingLegNpv +=
                             amount *

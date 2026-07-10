@@ -37,6 +37,14 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/instruments/overnightindexedswap.hpp>
+#include <ql/instruments/floatfloatswap.hpp>
+#include <ql/instruments/floatfloatswaption.hpp>
+#include <ql/pricingengines/swaption/gaussian1dfloatfloatswaptionengine.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
@@ -387,6 +395,150 @@ BOOST_AUTO_TEST_CASE(testGsrModelQuoteUpdate) {
 
     Real after = stdswaption->NPV();
     BOOST_CHECK(std::fabs(before - after) > 0.01);
+}
+
+
+BOOST_AUTO_TEST_CASE(testOvernightIndexedUnderlyings) {
+
+    BOOST_TEST_MESSAGE("Testing Gaussian1d engines on compounded overnight "
+                       "(OIS) underlyings...");
+
+    // A compounded-in-arrears overnight coupon telescopes to a zerobond ratio
+    // over its own accrual period. On a sloped curve, projecting the overnight
+    // index's one-day tenor over the whole accrual instead (as the engines did
+    // before the fix) misestimates each coupon by O(slope * accrual), which
+    // showed up as an ~8-11% price bias on annual coupons. The reference is
+    // the JamshidianSwaptionEngine, whose par representation of the floating
+    // leg is telescoping-exact by construction, plus an Ibor twin on the same
+    // schedule with a 12M index (index period == coupon period).
+
+    Date today(30, June, 2025);
+    Settings::instance().evaluationDate() = today;
+    Actual365Fixed dc;
+    Calendar calendar = TARGET();
+
+    // upward sloping curve, z(t) = 3% + 0.8% (1 - exp(-t/4))
+    std::vector<Date> dates = {today};
+    std::vector<Real> zeros = {0.03};
+    for (Size y = 1; y <= 16; ++y) {
+        Time t = 365.0 * y / 365.0;
+        dates.push_back(today + y * Years);
+        zeros.push_back(0.03 + 0.008 * (1.0 - std::exp(-t / 4.0)));
+    }
+    Handle<YieldTermStructure> yts(
+        ext::make_shared<InterpolatedZeroCurve<Linear> >(dates, zeros, dc));
+
+    Real reversion = 0.03, sigma = 0.008;
+    auto onIndex = ext::make_shared<OvernightIndex>("dummyON", 0, EURCurrency(),
+                                                    calendar, dc, yts);
+    auto iborIndex = ext::make_shared<IborIndex>(
+        "dummy12M", 12 * Months, 2, EURCurrency(), calendar, ModifiedFollowing,
+        false, dc, yts);
+    auto swapEngine = ext::make_shared<DiscountingSwapEngine>(yts);
+
+    auto hw = ext::make_shared<HullWhite>(yts, reversion, sigma);
+    auto gsr = ext::make_shared<Gsr>(yts, std::vector<Date>(),
+                                     std::vector<Real>{sigma}, reversion, 12.0);
+    auto jamshidian = ext::make_shared<JamshidianSwaptionEngine>(hw, yts);
+    auto gaussian1d = ext::make_shared<Gaussian1dSwaptionEngine>(gsr, 128, 8.0);
+
+    Real tol = 0.002; // 20 bp relative: engine-representation differences only
+
+    for (Size expiryYears : {1, 3, 5}) {
+        Date expiry = calendar.adjust(today + expiryYears * Years);
+        Date start = calendar.advance(expiry, 2 * Days);
+        Date end = calendar.advance(start, (10 - expiryYears) * Years);
+        Schedule schedule(start, end, 1 * Years, calendar, ModifiedFollowing,
+                          ModifiedFollowing, DateGeneration::Forward, false);
+        auto exercise = ext::make_shared<EuropeanExercise>(expiry);
+
+        // --- vanilla OIS swaption through Gaussian1dSwaptionEngine ---
+        auto oisProbe = ext::make_shared<OvernightIndexedSwap>(
+            Swap::Payer, 1.0, schedule, 0.0, dc, onIndex);
+        oisProbe->setPricingEngine(swapEngine);
+        Rate atm = oisProbe->fairRate();
+        auto ois = ext::make_shared<OvernightIndexedSwap>(
+            Swap::Payer, 1.0, schedule, atm, dc, onIndex);
+        auto oisSwaption = ext::make_shared<Swaption>(ois, exercise);
+
+        oisSwaption->setPricingEngine(jamshidian);
+        Real reference = oisSwaption->NPV();
+        oisSwaption->setPricingEngine(gaussian1d);
+        Real g1dOis = oisSwaption->NPV();
+
+        if (std::fabs(g1dOis - reference) / reference > tol)
+            BOOST_ERROR("Gaussian1dSwaptionEngine OIS price ("
+                        << g1dOis << ") deviates from the telescoping-exact "
+                        << "Jamshidian price (" << reference << ") by "
+                        << (g1dOis - reference) / reference
+                        << " for expiry " << expiryYears << "y");
+
+        // --- Ibor twin on the same schedule: index period == coupon period ---
+        auto iborProbe = ext::make_shared<VanillaSwap>(
+            Swap::Payer, 1.0, schedule, 0.0, dc, schedule, iborIndex, 0.0, dc);
+        iborProbe->setPricingEngine(swapEngine);
+        auto ibor = ext::make_shared<VanillaSwap>(
+            Swap::Payer, 1.0, schedule, iborProbe->fairRate(), dc, schedule,
+            iborIndex, 0.0, dc);
+        auto iborSwaption = ext::make_shared<Swaption>(ibor, exercise);
+        iborSwaption->setPricingEngine(gaussian1d);
+        Real g1dIbor = iborSwaption->NPV();
+
+        if (std::fabs(g1dOis - g1dIbor) / g1dIbor > tol)
+            BOOST_ERROR("Gaussian1d OIS price (" << g1dOis
+                        << ") deviates from the same-schedule Ibor twin ("
+                        << g1dIbor << ") by "
+                        << (g1dOis - g1dIbor) / g1dIbor << " for expiry "
+                        << expiryYears << "y");
+
+        // --- NonstandardSwap with an overnight index builds a compounded leg
+        //     and must reproduce the vanilla OIS swaption ---
+        std::vector<Real> fixedNominal(schedule.size() - 1, 1.0),
+            floatingNominal(schedule.size() - 1, 1.0),
+            strikes(schedule.size() - 1, atm);
+        auto nsSwap = ext::make_shared<NonstandardSwap>(
+            Swap::Payer, fixedNominal, floatingNominal, schedule, strikes, dc,
+            schedule, onIndex, 1.0, 0.0, dc);
+        nsSwap->setPricingEngine(swapEngine);
+        if (std::fabs(nsSwap->NPV() - ois->NPV()) > 1e-9)
+            BOOST_ERROR("NonstandardSwap with overnight index does not "
+                        "reproduce the OvernightIndexedSwap NPV: "
+                        << nsSwap->NPV() << " vs " << ois->NPV());
+
+        auto nsSwaption = ext::make_shared<NonstandardSwaption>(nsSwap, exercise);
+        nsSwaption->setPricingEngine(
+            ext::make_shared<Gaussian1dNonstandardSwaptionEngine>(
+                gsr, 128, 8.0, true, false, Handle<Quote>(), yts));
+        Real g1dNonstandard = nsSwaption->NPV();
+
+        if (std::fabs(g1dNonstandard - reference) / reference > tol)
+            BOOST_ERROR("Gaussian1dNonstandardSwaptionEngine OIS price ("
+                        << g1dNonstandard << ") deviates from the Jamshidian "
+                        << "reference (" << reference << ") by "
+                        << (g1dNonstandard - reference) / reference
+                        << " for expiry " << expiryYears << "y");
+
+        // --- FloatFloatSwap: an overnight leg exchanged against a
+        //     same-schedule Ibor twin leg is par-for-par in a single-curve
+        //     model, so the exchange option must be worth ~0; the pre-fix
+        //     one-day projection biased the overnight leg and made this
+        //     option large ---
+        auto ffSwap = ext::make_shared<FloatFloatSwap>(
+            Swap::Payer, 1.0, 1.0, schedule, onIndex, dc, schedule, iborIndex,
+            dc, false, false, 1.0, 0.0, Null<Real>(), Null<Real>(), 1.0, 0.0);
+        auto ffSwaption = ext::make_shared<FloatFloatSwaption>(ffSwap, exercise);
+        ffSwaption->setPricingEngine(
+            ext::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
+                gsr, 128, 8.0, true, false, Handle<Quote>(), yts));
+        Real g1dFloatFloat = ffSwaption->NPV();
+
+        if (std::fabs(g1dFloatFloat) > 0.0005)
+            BOOST_ERROR("Gaussian1dFloatFloatSwaptionEngine option to exchange "
+                        "an overnight leg for a same-schedule Ibor twin leg "
+                        "should be worth ~0, got "
+                        << g1dFloatFloat << " for expiry " << expiryYears
+                        << "y");
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

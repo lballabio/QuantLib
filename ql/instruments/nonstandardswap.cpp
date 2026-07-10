@@ -27,6 +27,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/instruments/nonstandardswap.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/optional.hpp>
 #include <utility>
@@ -159,12 +160,23 @@ namespace QuantLib {
                        .withCouponRates(fixedRate_, fixedDayCount_)
                        .withPaymentAdjustment(paymentConvention_);
 
-        legs_[1] = IborLeg(floatingSchedule_, iborIndex_)
-                       .withNotionals(floatingNominal_)
-                       .withPaymentDayCounter(floatingDayCount_)
-                       .withPaymentAdjustment(paymentConvention_)
-                       .withSpreads(spread_)
-                       .withGearings(gearing_);
+        auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(iborIndex_);
+        if (overnightIndex != nullptr) {
+            // compounded-in-arrears overnight (RFR) floating leg
+            legs_[1] = OvernightLeg(floatingSchedule_, overnightIndex)
+                           .withNotionals(floatingNominal_)
+                           .withPaymentDayCounter(floatingDayCount_)
+                           .withPaymentAdjustment(paymentConvention_)
+                           .withSpreads(spread_)
+                           .withGearings(gearing_);
+        } else {
+            legs_[1] = IborLeg(floatingSchedule_, iborIndex_)
+                           .withNotionals(floatingNominal_)
+                           .withPaymentDayCounter(floatingDayCount_)
+                           .withPaymentAdjustment(paymentConvention_)
+                           .withSpreads(spread_)
+                           .withGearings(gearing_);
+        }
 
         if (intermediateCapitalExchange_) {
             for (Size i = 0; i < legs_[0].size() - 1; i++) {
@@ -290,8 +302,10 @@ namespace QuantLib {
             std::vector<bool>(floatingCoupons.size(), false);
 
         for (Size i = 0; i < floatingCoupons.size(); ++i) {
-            ext::shared_ptr<IborCoupon> coupon =
-                ext::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
+            // FloatingRateCoupon covers both Ibor and compounded overnight
+            // coupons; every accessor used below lives on the base class
+            ext::shared_ptr<FloatingRateCoupon> coupon =
+                ext::dynamic_pointer_cast<FloatingRateCoupon>(floatingCoupons[i]);
             if (coupon != nullptr) {
                 arguments->floatingResetDates[i] = coupon->accrualStartDate();
                 arguments->floatingPayDates[i] = coupon->date();
