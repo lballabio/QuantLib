@@ -35,6 +35,9 @@
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/steepestdescent.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/experimental/math/cmaes.hpp>
+#include <ql/math/matrix.hpp>
+#include <ql/mathconstants.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -799,6 +802,33 @@ class Griewangk : public CostFunction {
 };
 
 
+class Rastrigin : public CostFunction {
+  public:
+    Real value(const Array& x) const override {
+        Real fx = 10.0 * x.size();
+
+        for (Real xi : x)
+            fx += xi * xi - 10.0 * cos(M_TWOPI * xi);
+
+        return fx;
+    }
+
+    Array values(const Array& x) const override { return Array(x.size(), value(x)); }
+};
+
+
+class QuadraticForm : public CostFunction {
+  public:
+    explicit QuadraticForm(Matrix m) : m_(std::move(m)) {}
+
+    Real value(const Array& x) const override { return DotProduct(x, m_ * x); }
+    Array values(const Array& x) const override { return Array(x.size(), value(x)); }
+
+  private:
+    Matrix m_;
+};
+
+
 BOOST_AUTO_TEST_CASE(testDifferentialEvolution) {
     BOOST_TEST_MESSAGE("Testing differential evolution...");
 
@@ -908,6 +938,186 @@ BOOST_AUTO_TEST_CASE(testDifferentialEvolution) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE_END()
+BOOST_AUTO_TEST_CASE(testCMAES) {
+    BOOST_TEST_MESSAGE("Testing CMA-ES optimizer...");
+
+    // Convex convergence: shifted, ill-conditioned separable quadratics
+    // (2D, 10D) must reach the analytic minimum value 0.
+    {
+        EndCriteria endCriteria(5000, 100, 1e-14, 1e-14, Null<Real>());
+        for (Size n : {Size(2), Size(10)}) {
+            Array center(n), weight(n);
+
+            for (Size i = 0; i < n; ++i) {
+                center[i] = 1.0 + 0.5 * i;
+                weight[i] = std::pow(10.0, 2.0 * i / Real(n));
+            }
+
+            WeightedQuadratic f(center, weight);
+            NoConstraint c;
+            Array x0(n, 0.0);
+            Problem problem(f, c, x0);
+            Cmaes optimizer(Cmaes::Configuration().withSigma(1.0).withSeed(42));
+
+            optimizer.minimize(problem, endCriteria);
+
+            if (problem.functionValue() > 1e-8)
+                BOOST_ERROR("CMA-ES convex quadratic-" << n << "D f = "
+                            << problem.functionValue() << " (expected < 1e-8)");
+        }
+    }
+
+    // Non-convex convergence: Rosenbrock (2D, 10D) must reach the
+    // minimizer (1,...,1) with f \approx 0.
+    {
+        EndCriteria endCriteria(20000, 300, 1e-14, 1e-14, Null<Real>());
+        for (Size n : {Size(2), Size(10)}) {
+            RosenbrockFunction f;
+            NoConstraint c;
+            Array x0(n, 0.0);
+            Cmaes::Configuration cfg =
+                Cmaes::Configuration().withSigma(0.5).withSeed(123);
+
+            if (n >= 10)
+                cfg.withPopulationSize(20); // larger population for 10D
+
+            Problem problem(f, c, x0);
+            Cmaes(cfg).minimize(problem, endCriteria);
+            Array expected(n, 1.0);
+
+            Real xError = maxDifference(problem.currentValue(), expected);
+            if (problem.functionValue() > 1e-8 || xError > 1e-4)
+                BOOST_ERROR("CMA-ES Rosenbrock-" << n << "D"
+                            << "\n    f       = " << problem.functionValue()
+                            << "\n    x error = " << xError);
+        }
+    }
+
+    // Multimodal global search: Rastrigin 5D from a start away from the
+    // origin must reach the global minimum, and match or beat DifferentialEvolution.
+    {
+        const Size n = 5;
+        Rastrigin f;
+        BoundaryConstraint c(-5.12, 5.12);
+        Array x0(n, 3.0);
+        EndCriteria endCriteria(2000, 200, 1e-12, 1e-12, Null<Real>());
+
+        // Large population lets CMA-ES cross the local-minimum lattice to the
+        // global basin. Small populations reliably stall one lattice step away.
+        Cmaes::Configuration cfg = Cmaes::Configuration()
+            .withSigma(4.0).withPopulationSize(150).withSeed(1);
+        Problem cmaesProblem(f, c, x0);
+        Cmaes(cfg).minimize(cmaesProblem, endCriteria);
+
+        Real cmaesValue = cmaesProblem.functionValue();
+        if (cmaesValue > 1e-4)
+            BOOST_ERROR("CMA-ES Rastrigin-5D f = " << cmaesValue
+                        << " (expected < 1e-4)");
+
+        DifferentialEvolution::Configuration deConf =
+            DifferentialEvolution::Configuration()
+            .withStepsizeWeight(0.6)
+            .withBounds()
+            .withCrossoverProbability(0.9)
+            .withPopulationMembers(60)
+            .withStrategy(DifferentialEvolution::BestMemberWithJitter)
+            .withSeed(7);
+        DifferentialEvolution de(deConf);
+        Problem deProblem(f, c, x0);
+
+        de.minimize(deProblem, endCriteria);
+        if (cmaesValue > deProblem.functionValue() + 1e-8)
+            BOOST_ERROR("CMA-ES (" << cmaesValue << ") failed to match/beat "
+                        << "DifferentialEvolution (" << deProblem.functionValue()
+                        << ") on Rastrigin-5D");
+    }
+
+    // Rotational/affine invariance: an ill-conditioned quadratic x^T A x and
+    // its rotation by an orthogonal Q must be solved in a comparable eval budget.
+    {
+        Matrix A(2, 2, 0.0);
+        A[0][0] = 1.0;
+        A[1][1] = 30.0;
+
+        Real theta = 0.7;
+        Matrix Q(2, 2, 0.0);
+        Q[0][0] = std::cos(theta); Q[0][1] = -std::sin(theta);
+        Q[1][0] = std::sin(theta); Q[1][1] =  std::cos(theta);
+        Matrix Arot = transpose(Q) * A * Q;
+
+        QuadraticForm f(A);
+        QuadraticForm fRot(Arot);
+        NoConstraint c;
+
+        Array x0{2.0, 2.0};
+        Array x0Rot = transpose(Q) * x0; // s.t. Q * x0Rot = x0
+
+        EndCriteria endCriteria(5000, 100, 1e-14, 1e-14, Null<Real>());
+        Cmaes::Configuration cfg =
+            Cmaes::Configuration().withSigma(1.0).withSeed(99);
+
+        Problem pA(f, c, x0);
+        Cmaes(cfg).minimize(pA, endCriteria);
+
+        Problem pRot(fRot, c, x0Rot);
+        Cmaes(cfg).minimize(pRot, endCriteria);
+
+        if (pA.functionValue() > 1e-8 || pRot.functionValue() > 1e-8)
+            BOOST_ERROR("CMA-ES invariance: values " << pA.functionValue()
+                        << " and " << pRot.functionValue() << " (expected < 1e-8)");
+
+        Real evalsA = Real(pA.functionEvaluation());
+        Real evalsRot = Real(pRot.functionEvaluation());
+        Real ratio = std::max(evalsA, evalsRot) / std::min(evalsA, evalsRot);
+        if (ratio > 2.0)
+            BOOST_ERROR("CMA-ES rotational invariance: eval budgets differ by "
+                        << ratio << "x (" << evalsA << " vs " << evalsRot << ")");
+    }
+
+    // Determinism check: runs must be bit-identical
+    {
+        WeightedQuadratic f(Array{1.0, -2.0, 0.5}, Array{1.0, 3.0, 7.0});
+        NoConstraint c;
+        Array x0(3, 0.0);
+        EndCriteria endCriteria(500, 50, 1e-12, 1e-12, Null<Real>());
+        Cmaes::Configuration cfg =
+            Cmaes::Configuration().withSigma(1.0).withSeed(2024);
+
+        Problem p1(f, c, x0);
+        Cmaes(cfg).minimize(p1, endCriteria);
+        Problem p2(f, c, x0);
+        Cmaes(cfg).minimize(p2, endCriteria);
+
+        if (p1.functionValue() != p2.functionValue())
+            BOOST_ERROR("CMA-ES not reproducible: " << p1.functionValue()
+                        << " != " << p2.functionValue());
+    }
+
+    // Box bounds: unconstrained minimum (3,-2) lies outside [0, 1] ^ 2.
+    // The returned point must be feasible and sit at the constrained min (1,0).
+    {
+        WeightedQuadratic f(Array{3.0, -2.0}, Array{1.0, 1.0});
+        BoundaryConstraint c(0.0, 1.0);
+        Array x0(2, 0.5);
+        EndCriteria endCriteria(3000, 100, 1e-14, 1e-14, Null<Real>());
+        Cmaes::Configuration cfg =
+            Cmaes::Configuration().withSigma(0.3).withSeed(5);
+        Problem problem(f, c, x0);
+
+        Cmaes(cfg).minimize(problem, endCriteria);
+
+        Array x = problem.currentValue();
+
+        Array expected{1.0, 0.0};
+        if (!c.test(x))
+            BOOST_ERROR("CMA-ES box-bounds returned infeasible point " << x);
+        Real xError = maxDifference(x, expected);
+        if (xError > 1e-5)
+            BOOST_ERROR("CMA-ES box-bounds"
+                        << "\n    calculated: " << x
+                        << "\n    expected:   " << expected
+                        << "\n    x error:    " << xError);
+    }
+}
 
 BOOST_AUTO_TEST_SUITE_END()
