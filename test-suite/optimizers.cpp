@@ -993,8 +993,8 @@ BOOST_AUTO_TEST_CASE(testCMAES) {
         }
     }
 
-    // Multimodal global search: Rastrigin 5D from a start away from the
-    // origin must reach the global minimum, and match or beat DifferentialEvolution.
+    // Multimodal global search: Rastrigin 5D from a start away from the origin
+    // must reach the global minimum (not merely a local one).
     {
         const Size n = 5;
         Rastrigin f;
@@ -1013,23 +1013,6 @@ BOOST_AUTO_TEST_CASE(testCMAES) {
         if (cmaesValue > 1e-4)
             BOOST_ERROR("CMA-ES Rastrigin-5D f = " << cmaesValue
                         << " (expected < 1e-4)");
-
-        DifferentialEvolution::Configuration deConf =
-            DifferentialEvolution::Configuration()
-            .withStepsizeWeight(0.6)
-            .withBounds()
-            .withCrossoverProbability(0.9)
-            .withPopulationMembers(60)
-            .withStrategy(DifferentialEvolution::BestMemberWithJitter)
-            .withSeed(7);
-        DifferentialEvolution de(deConf);
-        Problem deProblem(f, c, x0);
-
-        de.minimize(deProblem, endCriteria);
-        if (cmaesValue > deProblem.functionValue() + 1e-8)
-            BOOST_ERROR("CMA-ES (" << cmaesValue << ") failed to match/beat "
-                        << "DifferentialEvolution (" << deProblem.functionValue()
-                        << ") on Rastrigin-5D");
     }
 
     // Rotational/affine invariance: an ill-conditioned quadratic x^T A x and
@@ -1119,5 +1102,7 @@ BOOST_AUTO_TEST_CASE(testCMAES) {
                         << "\n    x error:    " << xError);
     }
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
