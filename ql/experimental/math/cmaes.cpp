@@ -77,6 +77,10 @@ namespace QuantLib {
         // \chi_n = E||N(0,I)||, the expected length of a standard normal vector
         Real chiN{std::sqrt(Real(n)) * (1.0 - 1.0 / (4.0 * n) + 1.0 / (21.0 * n * n))};
 
+        // evolution-path decay gains sqrt(c (2-c) mu_eff), constant across generations
+        const Real pSigmaGain{std::sqrt(cSigma * (2.0 - cSigma) * muEff)};
+        const Real pCovGain{std::sqrt(cc * (2.0 - cc) * muEff)};
+
         // m = mean of the sampling distribution (current estimate of the optimum)
         Array mean(configuration_.initialMean.empty() ? P.currentValue()
                                                        : configuration_.initialMean);
@@ -148,11 +152,11 @@ namespace QuantLib {
                 SymmetricSchurDecomposition schur(C);
                 B = schur.eigenvectors();
 
-                Array ev(schur.eigenvalues());
-                for (Size i{0}; i < n; ++i)
-                    ev[i] = std::max(ev[i], QL_EPSILON);
-
-                D = Sqrt(ev);
+                // D = sqrt of the eigenvalues, floored at QL_EPSILON to keep
+                // the covariance factorisation positive-definite
+                const Array& ev = schur.eigenvalues();
+                std::transform(ev.begin(), ev.end(), D.begin(),
+                               [](Real e) { return std::sqrt(std::max(e, QL_EPSILON)); });
             }
 
             for (Size k{0}; k < lambda; ++k) {
@@ -162,8 +166,8 @@ namespace QuantLib {
 
                 bool feasible{false};
                 for (Size attempt{0}; attempt < maxResample && !feasible; ++attempt) {
-                    for (Size i{0}; i < n; ++i)
-                        z[i] = icn(rng_.next().value);
+                    std::generate(z.begin(), z.end(),
+                                  [&] { return icn(rng_.next().value); });
 
                     y = B * (D * z);             // element-wise D*z
                     x = mean + sigma * y;
@@ -182,7 +186,7 @@ namespace QuantLib {
                 } else {
                     Array xClamped(n);
                     for (Size i{0}; i < n; ++i)
-                        xClamped[i] = std::min(std::max(x[i], lo[i]), up[i]);
+                        xClamped[i] = std::clamp(x[i], lo[i], up[i]);
 
                     Array excess(x - xClamped);
                     Real penalty{gamma * DotProduct(excess, excess)};
@@ -211,12 +215,11 @@ namespace QuantLib {
             // whiten the mean step: CinvHalf_yw = C^{-1/2} yw = B D^{-1} B^T yw,
             // built without forming or inverting a matrix
             Array t(transpose(B) * yw);
-            for (Size i{0}; i < n; ++i)
-                t[i] /= D[i];
+            t /= D;
             Array CinvHalf_yw(B * t);
 
             pSigma = (1.0 - cSigma) * pSigma
-                   + std::sqrt(cSigma * (2.0 - cSigma) * muEff) * CinvHalf_yw;
+                   + pSigmaGain * CinvHalf_yw;
 
             Real pSigmaNorm{Norm2(pSigma)};
 
@@ -225,7 +228,7 @@ namespace QuantLib {
             Real hSigma{hSigmaLHS < (1.4 + 2.0 / (n + 1.0)) * chiN ? 1.0 : 0.0};
 
             pCov = (1.0 - cc) * pCov
-                 + hSigma * std::sqrt(cc * (2.0 - cc) * muEff) * yw;
+                 + hSigma * pCovGain * yw;
 
             // deltaH = variance restored to C when the p_c update is stalled (h_\sigma = 0)
             Real deltaH{(1.0 - hSigma) * cc * (2.0 - cc)};
