@@ -38,28 +38,18 @@ namespace QuantLib {
         const Size n{P.currentValue().size()};
         QL_REQUIRE(n >= 1, "CMA-ES needs at least one dimension");
 
-        // \lambda = population size = offspring per generation
         const Size lambda{configuration_.populationSize != 0
                               ? configuration_.populationSize
                               : Size(4 + std::floor(3.0 * std::log(Real(n))))};
         QL_REQUIRE(lambda >= 2, "CMA-ES population size must be at least 2");
 
-        // \mu = number of parents that recombine
         const Size mu{lambda / 2};
 
-        // log-rank recombination weights, normalized to sum to one
         Array weights(mu);
         for (Size i{0}; i < mu; ++i)
             weights[i] = std::log((lambda + 1.0) / 2.0) - std::log(Real(i + 1));
         weights /= std::accumulate(weights.begin(), weights.end(), Real(0.0));
 
-        // \mu_{eff} = variance-effective selection mass = how many samples effectively contribute
-        // c_\sigma = learning rate for the step-size path p_\sigma
-        // d_\sigma = step-size damper
-        // c_c = learning rate for the covariance path p_c
-        // c_1 = learning rate of the rank-one covariance update (from p_c)
-        // c_\mu = learning rate of the rank-\mu covariance update (from the selected steps)
-        // \chi_n = E||N(0,I)||, the expected length of a standard normal vector
         const Real muEff{1.0 / DotProduct(weights, weights)};
         const Real cSigma{(muEff + 2.0) / (n + muEff + 5.0)};
         const Real dSigma{1.0 + 2.0 * std::max(0.0, std::sqrt((muEff - 1.0) / (n + 1.0)) - 1.0)
@@ -70,7 +60,6 @@ namespace QuantLib {
                                 2.0 * (muEff - 2.0 + 1.0 / muEff) / (std::pow(n + 2.0, 2) + muEff))};
         const Real chiN{std::sqrt(Real(n)) * (1.0 - 1.0 / (4.0 * n) + 1.0 / (21.0 * n * n))};
 
-        // evolution-path decay gains sqrt(c * (2 - c) * mu_eff), constant across generations
         const Real pSigmaGain{std::sqrt(cSigma * (2.0 - cSigma) * muEff)};
         const Real pCovGain{std::sqrt(cc * (2.0 - cc) * muEff)};
 
@@ -78,10 +67,9 @@ namespace QuantLib {
                                                        : configuration_.initialMean);
         QL_REQUIRE(mean.size() == n, "initial mean size does not match problem dimension");
 
-        // \sigma = overall step size
         Real sigma{configuration_.sigma};
 
-        // covariance C = B diag(D)^2 B^T eigendecomposition
+        // C = B diag(D)^2 * B^T, initialised to the identity
         Matrix C(n, n, 0.0);
         Matrix B(n, n, 0.0);
         for (Size i{0}; i < n; ++i) {
@@ -90,10 +78,10 @@ namespace QuantLib {
         }
         Array D(n, 1.0);
 
-        Array pSigma(n, 0.0);            // p_\sigma = step-size evolution path
-        Array pCov(n, 0.0);              // p_c = covariance evolution path
+        Array pSigma(n, 0.0);
+        Array pCov(n, 0.0);
 
-        // box bounds lo/up: from the configuration if set, else the Constraint
+        // Box bounds: configuration overrides the constraint
         const Array lo(configuration_.lowerBound.empty()
                            ? P.constraint().lowerBound(P.currentValue())
                            : configuration_.lowerBound);
@@ -108,28 +96,25 @@ namespace QuantLib {
 
         const InverseCumulativeNormal icn;
 
-        // generations between eigen-decomposition refreshes of B / D
+        // B/D refresh cadence, amortising the decomposition
         const Size eigenEvery{std::max<Size>(1, Size(1.0 / (10.0 * n * (c1 + cMu))))};
 
-        const Size maxResample{10};      // feasibility resample attempts before clamping
+        const Size maxResample{10};      // resample attempts before clamping
         const Real gamma{1.0};           // out-of-bounds penalty weight
         const Real degenerateScale{1e-12};
 
-        // per-generation offspring: candidate points x, their underlying
-        // N(0,C) steps y = (x - m)/sigma, costs f, and a cost-sorted index list
         std::vector<Array> xSamples(lambda, Array(n));
         std::vector<Array> ySamples(lambda, Array(n));
         Array fSamples(lambda);
         std::vector<Size> order(lambda);
 
-        Size g{0};                       // generation counter
+        Size g{0};
         Size statState{0};               // consecutive near-stationary generations
-        Real fOld{QL_MAX_REAL};          // previous best cost (for the stopping test)
+        Real fOld{QL_MAX_REAL};
 
         while (!endCriteria.checkMaxIterations(g, ecType)) {
 
-            // refresh B and D from C lazily, and on generation 0; symmetrize
-            // first to shed accumulated round-off asymmetry
+            // Symmetrize C to shed round-off before decomposing
             if (g % eigenEvery == 0) {
                 for (Size i{0}; i < n; ++i)
                     for (Size j{0}; j < i; ++j) {
@@ -140,17 +125,16 @@ namespace QuantLib {
                 SymmetricSchurDecomposition schur(C);
                 B = schur.eigenvectors();
 
-                // D = sqrt of the eigenvalues, floored at QL_EPSILON to keep
-                // the covariance factorisation positive-definite
+                // floor the eigenvalues to keep D positive-definite
                 const Array& ev = schur.eigenvalues();
                 std::transform(ev.begin(), ev.end(), D.begin(),
                                [](Real e) { return std::sqrt(std::max(e, QL_EPSILON)); });
             }
 
-            // Per-sample scratch
+            // per-sample scratch, reused across offspring
             Array z(n);
-            Array y(n);   // mutation step y = B(D * z)
-            Array x(n);   // candidate point m + sigma * y
+            Array y(n);
+            Array x(n);
             Array xClamped(n);
 
             for (Size k{0}; k < lambda; ++k) {
@@ -167,7 +151,7 @@ namespace QuantLib {
                         feasible = (x[i] >= lo[i] && x[i] <= up[i]);
                 }
 
-                // keep the original unclamped y for the path/covariance updates
+                // unclamped y (not the clamped x) feeds the updates
                 ySamples[k] = y;
 
                 if (feasible) {
@@ -189,7 +173,6 @@ namespace QuantLib {
             std::sort(order.begin(), order.end(),
                       [&fSamples](Size a, Size b) { return fSamples[a] < fSamples[b]; });
 
-            // yw = weighted mean of the best-mu mutation steps (drives the mean move)
             Array yw(n, 0.0);
             for (Size i{0}; i < mu; ++i)
                 yw += weights[i] * ySamples[order[i]];
@@ -201,8 +184,7 @@ namespace QuantLib {
                 bestX = xSamples[order[0]];
             }
 
-            // whiten the mean step: cInvSqrtYw = C^{-1/2} yw = B D^{-1} B^T yw,
-            // built without forming or inverting a matrix
+            // cInvSqrtYw = C^{-1/2} yw, without forming or inverting a matrix
             Array t(transpose(B) * yw);
             t /= D;
             const Array cInvSqrtYw(B * t);
@@ -212,17 +194,14 @@ namespace QuantLib {
 
             const Real pSigmaNorm{Norm2(pSigma)};
 
-            // Heaviside stall guard: freeze pCov while pSigma is anomalously long
             const Real hSigmaLHS{pSigmaNorm / std::sqrt(1.0 - std::pow(1.0 - cSigma, 2.0 * (g + 1)))};
             const Real hSigma{hSigmaLHS < (1.4 + 2.0 / (n + 1.0)) * chiN ? 1.0 : 0.0};
 
             pCov = (1.0 - cc) * pCov
                  + hSigma * pCovGain * yw;
 
-            // deltaH = variance restored to C when the p_c update is stalled (h_\sigma = 0)
             const Real deltaH{(1.0 - hSigma) * cc * (2.0 - cc)};
 
-            // covariance update: rank-one (pCov) plus rank-mu (selected y's)
             Matrix rankMu(n, n, 0.0);
             for (Size i{0}; i < mu; ++i)
                 rankMu += weights[i] * outerProduct(ySamples[order[i]], ySamples[order[i]]);
