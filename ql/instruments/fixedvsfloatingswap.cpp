@@ -46,7 +46,8 @@ namespace QuantLib {
     : Swap(2), type_(type), fixedNominals_(std::move(fixedNominals)), fixedSchedule_(std::move(fixedSchedule)),
       fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
       floatingNominals_(std::move(floatingNominals)), floatingSchedule_(std::move(floatingSchedule)),
-      iborIndex_(std::move(iborIndex)), spread_(spread), floatingDayCount_(std::move(floatingDayCount)) {
+      iborIndex_(std::move(iborIndex)), spread_(spread), floatingDayCount_(std::move(floatingDayCount)),
+      paymentLag_(paymentLag), paymentCalendar_(paymentCalendar) {
 
         QL_REQUIRE(iborIndex_, "null floating index provided");
 

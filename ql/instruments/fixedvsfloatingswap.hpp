@@ -87,6 +87,8 @@ namespace QuantLib {
         const DayCounter& floatingDayCount() const;
 
         BusinessDayConvention paymentConvention() const;
+        Integer paymentLag() const;
+        const Calendar& paymentCalendar() const;
 
         const Leg& fixedLeg() const;
         const Leg& floatingLeg() const;
@@ -120,6 +122,8 @@ namespace QuantLib {
         Spread spread_;
         DayCounter floatingDayCount_;
         BusinessDayConvention paymentConvention_;
+        Integer paymentLag_;
+        Calendar paymentCalendar_;
         // results
         mutable Rate fairRate_;
         mutable Spread fairSpread_;
@@ -216,6 +220,14 @@ namespace QuantLib {
 
     inline BusinessDayConvention FixedVsFloatingSwap::paymentConvention() const {
         return paymentConvention_;
+    }
+
+    inline Integer FixedVsFloatingSwap::paymentLag() const {
+        return paymentLag_;
+    }
+
+    inline const Calendar& FixedVsFloatingSwap::paymentCalendar() const {
+        return paymentCalendar_;
     }
 
     inline const Leg& FixedVsFloatingSwap::fixedLeg() const {

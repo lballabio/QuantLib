@@ -20,6 +20,7 @@
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/instruments/makemultipleresetsswap.hpp>
+#include <ql/instruments/nonstandardswap.hpp>
 #include <ql/termstructures/yield/multipleresetsswaphelper.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -117,6 +118,33 @@ BOOST_AUTO_TEST_CASE(testAveragingVsCompounding) {
     auto swapAverage = vars.makeSwap(fixedRate, RateAveraging::Simple);
 
     BOOST_CHECK(std::abs(swapCompound->fairRate() - swapAverage->fairRate()) > 1.0e-10);
+}
+
+
+BOOST_AUTO_TEST_CASE(testPaymentLagPreservedOnConversion) {
+    BOOST_TEST_MESSAGE("Testing payment lag preservation on conversion to a nonstandard swap...");
+
+    CommonVars vars;
+    auto baseSwap = vars.makeSwap(0.05);
+    Integer paymentLag = 3;
+    auto laggedSwap = ext::make_shared<MultipleResetsSwap>(
+        Swap::Payer, 1.0e6, baseSwap->fixedSchedule(), 0.05,
+        baseSwap->fixedDayCount(), baseSwap->fullResetSchedule(),
+        vars.euribor3m, baseSwap->resetsPerCoupon(), 0.0,
+        RateAveraging::Compound, ext::nullopt, paymentLag, vars.calendar);
+
+    NonstandardSwap converted(*laggedSwap);
+    BOOST_CHECK_EQUAL(converted.paymentLag(), paymentLag);
+    BOOST_CHECK(converted.paymentCalendar() == vars.calendar);
+    BOOST_REQUIRE_EQUAL(converted.fixedLeg().size(), laggedSwap->fixedLeg().size());
+    BOOST_REQUIRE_EQUAL(converted.floatingLeg().size(),
+                        laggedSwap->floatingLeg().size());
+    for (Size i = 0; i < converted.fixedLeg().size(); ++i)
+        BOOST_CHECK_EQUAL(converted.fixedLeg()[i]->date(),
+                          laggedSwap->fixedLeg()[i]->date());
+    for (Size i = 0; i < converted.floatingLeg().size(); ++i)
+        BOOST_CHECK_EQUAL(converted.floatingLeg()[i]->date(),
+                          laggedSwap->floatingLeg()[i]->date());
 }
 
 

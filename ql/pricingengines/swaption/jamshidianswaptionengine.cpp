@@ -101,7 +101,6 @@ namespace QuantLib {
         fixedPayTimes.push_back(
             dayCounter.yearFraction(referenceDate, floatingAccrualEnd));
 
-        // Take into account the payment lag
         Real parNominal = arguments_.nominal;
         {
             Handle<YieldTermStructure> curve =
@@ -118,6 +117,9 @@ namespace QuantLib {
                     DiscountFactor dfEnd = curve->discount(accrualEnd);
                     DiscountFactor dfPay =
                         curve->discount(arguments_.floatingPayDates[j]);
+                    // Freeze the time-zero lag discount ratio and absorb the
+                    // resulting floating-leg PV shortfall into the effective
+                    // notional exchanged at the swap value date.
                     parNominal -= arguments_.nominal * (dfStart - dfEnd) *
                                   (1.0 - dfPay / dfEnd) / dfValue;
                 }
@@ -154,4 +156,3 @@ namespace QuantLib {
     }
 
 }
-

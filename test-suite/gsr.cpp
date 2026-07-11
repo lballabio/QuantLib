@@ -639,6 +639,7 @@ BOOST_AUTO_TEST_CASE(testSofrSwaptionUnderlying) {
 
     BOOST_CHECK_CLOSE(gaussian, reference, 0.2);
     BOOST_CHECK_CLOSE(gaussianJamshidian, reference, 0.2);
+
 }
 
 BOOST_AUTO_TEST_CASE(testSofrSwaptionPaymentLag) {
@@ -706,6 +707,69 @@ BOOST_AUTO_TEST_CASE(testSofrSwaptionPaymentLag) {
 
     BOOST_CHECK_CLOSE(gaussian, reference, 0.2);
     BOOST_CHECK_CLOSE(gaussianJamshidian, reference, 0.2);
+    // Conversion to a NonstandardSwap must preserve the payment lag, and the
+    // nonstandard Gaussian engine must reproduce the standard engine.
+    auto nonstandardSwap = ext::make_shared<NonstandardSwap>(*swap);
+    nonstandardSwap->setPricingEngine(discountingEngine);
+    BOOST_CHECK_EQUAL(nonstandardSwap->paymentLag(), 2);
+    BOOST_CHECK_SMALL(nonstandardSwap->NPV() - swap->NPV(), 1.0e-12);
+    auto nonstandardSwaption =
+        ext::make_shared<NonstandardSwaption>(nonstandardSwap, exercise);
+    nonstandardSwaption->setPricingEngine(
+        ext::make_shared<Gaussian1dNonstandardSwaptionEngine>(
+            gsr, 128, 8.0, true, false, Handle<Quote>(), curve));
+    BOOST_CHECK_CLOSE(nonstandardSwaption->NPV(), gaussian, 0.2);
+
+    // Exercise the same path with variable notionals and margins.
+    Size coupons = schedule.size() - 1;
+    std::vector<Real> fixedNominals(coupons), floatingNominals(coupons),
+        fixedRates(coupons, probe->fairRate()), gearings(coupons, 1.0);
+    std::vector<Spread> spreads(coupons);
+    for (Size i = 0; i < coupons; ++i) {
+        fixedNominals[i] = 1.0 - 0.05 * i;
+        floatingNominals[i] = 1.0 - 0.04 * i;
+        spreads[i] = 0.0001 * i;
+    }
+    auto variableSwap = ext::make_shared<NonstandardSwap>(
+        Swap::Payer, fixedNominals, floatingNominals, schedule, fixedRates, dc,
+        schedule, sofr, gearings, spreads, dc, false, false,
+        ext::optional<BusinessDayConvention>(Following), 2, calendar);
+    variableSwap->setPricingEngine(discountingEngine);
+    BOOST_CHECK(std::isfinite(variableSwap->NPV()));
+    for (const auto& cashflow : variableSwap->floatingLeg()) {
+        auto coupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(cashflow);
+        BOOST_REQUIRE(coupon != nullptr);
+        BOOST_CHECK_EQUAL(
+            coupon->date(),
+            calendar.advance(coupon->accrualEndDate(), 2 * Days, Following));
+    }
+    auto variableSwaption =
+        ext::make_shared<NonstandardSwaption>(variableSwap, exercise);
+    variableSwaption->setPricingEngine(
+        ext::make_shared<Gaussian1dNonstandardSwaptionEngine>(
+            gsr, 128, 8.0, true, false, Handle<Quote>(), curve));
+    Real payerValue = variableSwaption->NPV();
+    BOOST_CHECK(std::isfinite(payerValue));
+    BOOST_CHECK(payerValue >= 0.0);
+
+    std::vector<Real> scaledFixedNominals = fixedNominals;
+    std::vector<Real> scaledFloatingNominals = floatingNominals;
+    for (Size i = 0; i < coupons; ++i) {
+        scaledFixedNominals[i] *= 2.0;
+        scaledFloatingNominals[i] *= 2.0;
+    }
+    auto scaledSwap = ext::make_shared<NonstandardSwap>(
+        Swap::Payer, scaledFixedNominals, scaledFloatingNominals, schedule,
+        fixedRates, dc, schedule, sofr, gearings, spreads, dc, false, false,
+        ext::optional<BusinessDayConvention>(Following), 2, calendar);
+    auto scaledSwaption =
+        ext::make_shared<NonstandardSwaption>(scaledSwap, exercise);
+    scaledSwaption->setPricingEngine(
+        ext::make_shared<Gaussian1dNonstandardSwaptionEngine>(
+            gsr, 128, 8.0, true, false, Handle<Quote>(), curve));
+    // Exact notional homogeneity provides a reference value while retaining
+    // the variable-notional, variable-margin and payment-lag path.
+    BOOST_CHECK_CLOSE(scaledSwaption->NPV(), 2.0 * payerValue, 1.0e-8);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

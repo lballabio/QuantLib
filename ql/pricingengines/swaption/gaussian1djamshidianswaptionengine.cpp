@@ -94,11 +94,6 @@ namespace QuantLib {
         amounts.push_back(arguments_.nominal);
         payDates.push_back(floatingAccrualEnd);
 
-        // With a payment lag each floating coupon pays after its accrual end,
-        // so the floating leg plus terminal notional is worth slightly less
-        // than the par proxy nominal * P(valueDate). Correct the par amount by
-        // the (deterministic, first-order) lag discounting of each projected
-        // coupon; for lag-free swaps the adjustment is identically zero.
         Real parNominal = arguments_.nominal;
         {
             Handle<YieldTermStructure> curve = model_->termStructure();
@@ -108,12 +103,17 @@ namespace QuantLib {
                 curve->discount(arguments_.fixedResetDates[startIndex]);
             for (Size j = 0; j + 1 < floatDates.size() &&
                              j < arguments_.floatingPayDates.size(); ++j) {
+                if (floatDates[j] < arguments_.fixedResetDates[startIndex])
+                    continue;
                 Date accrualEnd = floatDates[j + 1];
                 if (arguments_.floatingPayDates[j] > accrualEnd) {
                     DiscountFactor dfStart = curve->discount(floatDates[j]);
                     DiscountFactor dfEnd = curve->discount(accrualEnd);
                     DiscountFactor dfPay =
                         curve->discount(arguments_.floatingPayDates[j]);
+                    // Freeze the time-zero lag discount ratio and absorb the
+                    // resulting floating-leg PV shortfall into the effective
+                    // notional exchanged at the swap value date.
                     parNominal -= arguments_.nominal * (dfStart - dfEnd) *
                                   (1.0 - dfPay / dfEnd) / dfValue;
                 }
