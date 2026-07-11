@@ -71,11 +71,9 @@ namespace QuantLib {
 
         // C = B diag(D)^2 * B^T, initialised to the identity
         Matrix C(n, n, 0.0);
-        Matrix B(n, n, 0.0);
-        for (Size i{0}; i < n; ++i) {
+        for (Size i{0}; i < n; ++i)
             C[i][i] = 1.0;
-            B[i][i] = 1.0;
-        }
+        Matrix B(C);
         Array D(n, 1.0);
 
         Array pSigma(n, 0.0);
