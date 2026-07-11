@@ -136,23 +136,23 @@ namespace QuantLib {
             Array xClamped(n);
 
             for (Size k{0}; k < lambda; ++k) {
-                bool feasible{false};
-                for (Size attempt{0}; attempt < maxResample && !feasible; ++attempt) {
+                bool is_feasible{false};
+                for (Size attempt{0}; attempt < maxResample && !is_feasible; ++attempt) {
                     std::generate(z.begin(), z.end(),
                                   [&] { return icn(rng_.next().value); });
 
                     y = B * (D * z);             // element-wise D*z
                     x = mean + sigma * y;
 
-                    feasible = P.constraint().test(x);
-                    for (Size i{0}; i < n && feasible; ++i)
-                        feasible = (x[i] >= lo[i] && x[i] <= up[i]);
+                    is_feasible = P.constraint().test(x);
+                    for (Size i{0}; i < n && is_feasible; ++i)
+                        is_feasible = (x[i] >= lo[i] && x[i] <= up[i]);
                 }
 
                 // unclamped y (not the clamped x) feeds the updates
                 ySamples[k] = y;
 
-                if (feasible) {
+                if (is_feasible) {
                     xSamples[k] = x;
                     fSamples[k] = P.value(x);
                 } else {
