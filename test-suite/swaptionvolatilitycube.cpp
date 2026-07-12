@@ -31,6 +31,7 @@
 #include <ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp>
 #include <ql/termstructures/volatility/sabrsmilesection.hpp>
 #include <ql/termstructures/volatility/zabrsmilesection.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -188,6 +189,315 @@ BOOST_AUTO_TEST_CASE(testSabrNormalVolatility) {
                              parametersGuess, isParameterFixed, true);
     Real tolerance = 7.0e-4;
     vars.makeAtmVolTest(volCube, tolerance);
+}
+
+BOOST_AUTO_TEST_CASE(testSabrNormalTwoPassUsesStrikeSpreadMoneyness) {
+
+    BOOST_TEST_MESSAGE("Testing K-F interpolation in a two-pass normal SABR cube...");
+
+    CommonVars vars;
+    const Date today = Settings::instance().evaluationDate();
+    const std::vector<Date> dates = {
+        today,
+        vars.conventions.calendar.advance(today, 1 * Years),
+        vars.conventions.calendar.advance(today, 5 * Years),
+        vars.conventions.calendar.advance(today, 15 * Years),
+        vars.conventions.calendar.advance(today, 70 * Years)
+    };
+    const std::vector<Rate> zeroRates = { 0.01, 0.015, 0.025, 0.035, 0.045 };
+    RelinkableHandle<YieldTermStructure> termStructure;
+    termStructure.linkTo(ext::make_shared<ZeroCurve>(
+        dates, zeroRates, Actual365Fixed(), vars.conventions.calendar));
+
+    const auto swapIndex = ext::make_shared<EuriborSwapIsdaFixA>(2 * Years, termStructure);
+    const auto shortSwapIndex = ext::make_shared<EuriborSwapIsdaFixA>(1 * Years, termStructure);
+    const Size sections = vars.cube.tenors.options.size() * vars.cube.tenors.swaps.size();
+    Matrix normalVols = 0.05 * vars.atm.vols;
+    Handle<SwaptionVolatilityStructure> normalAtm(
+        ext::make_shared<SwaptionVolatilityMatrix>(
+            vars.conventions.calendar, vars.conventions.optionBdc,
+            vars.atm.tenors.options, vars.atm.tenors.swaps, normalVols,
+            vars.conventions.dayCounter, false, VolatilityType::Normal));
+    std::vector<std::vector<Handle<Quote>>> volSpreads(
+        sections, std::vector<Handle<Quote>>(vars.cube.strikeSpreads.size()));
+    for (Size section = 0; section < sections; ++section) {
+        for (Size strike = 0; strike < vars.cube.strikeSpreads.size(); ++strike) {
+            volSpreads[section][strike] = Handle<Quote>(ext::make_shared<SimpleQuote>(
+                0.03 * vars.cube.volSpreads[section][strike]));
+        }
+    }
+    std::vector<std::vector<Handle<Quote>>> parametersGuess(
+        sections, std::vector<Handle<Quote>>(4));
+    for (auto& guess : parametersGuess) {
+        guess[0] = Handle<Quote>(ext::make_shared<SimpleQuote>(0.05));
+        guess[1] = Handle<Quote>(ext::make_shared<SimpleQuote>(0.5));
+        guess[2] = Handle<Quote>(ext::make_shared<SimpleQuote>(0.4));
+        guess[3] = Handle<Quote>(ext::make_shared<SimpleQuote>(0.0));
+    }
+
+    SabrSwaptionVolatilityCube volCube(
+        normalAtm, vars.cube.tenors.options, vars.cube.tenors.swaps,
+        vars.cube.strikeSpreads, volSpreads, swapIndex,
+        shortSwapIndex, false, parametersGuess,
+        { false, true, false, false }, true);
+
+    const Period targetOption = 5 * Years;
+    const Period targetSwap = 5 * Years;
+    const Time targetTime = normalAtm->timeFromReference(
+        normalAtm->optionDateFromTenor(targetOption));
+    const Time targetLength = normalAtm->swapLength(targetSwap);
+    const Rate targetForward = volCube.atmStrike(targetOption, targetSwap);
+    const Spread targetStrikeSpread = 0.02;
+    const Rate targetStrike = targetForward + targetStrikeSpread;
+
+    const Matrix sparseParameters = volCube.sparseSabrParameters();
+    const auto findRow = [](const Matrix& matrix, Time optionTime, Time swapLength) -> Size {
+        for (Size row = 0; row < matrix.rows(); ++row) {
+            if (close_enough(matrix[row][0], swapLength) &&
+                close_enough(matrix[row][1], optionTime))
+                return row;
+        }
+        QL_FAIL("parameter row not found");
+    };
+    const std::vector<Time> optionNodes = {
+        normalAtm->timeFromReference(normalAtm->optionDateFromTenor(1 * Years)),
+        normalAtm->timeFromReference(normalAtm->optionDateFromTenor(10 * Years))
+    };
+    const std::vector<Time> swapNodes = {
+        normalAtm->swapLength(2 * Years),
+        normalAtm->swapLength(10 * Years)
+    };
+
+    const auto interpolatedSpread = [&](bool ratioMoneyness) {
+        Matrix cornerSpreads(2, 2, 0.0);
+        for (Size i = 0; i < 2; ++i) {
+            for (Size j = 0; j < 2; ++j) {
+                const Size row = findRow(sparseParameters, optionNodes[i], swapNodes[j]);
+                const Rate sourceForward = sparseParameters[row][6];
+                const std::vector<Real> parameters = {
+                    sparseParameters[row][2], sparseParameters[row][3],
+                    sparseParameters[row][4], sparseParameters[row][5]
+                };
+                SabrSmileSection smile(optionNodes[i], sourceForward, parameters,
+                                       0.0, VolatilityType::Normal);
+                const Rate sourceStrike = ratioMoneyness ?
+                    sourceForward * targetStrike / targetForward :
+                    sourceForward + targetStrikeSpread;
+                const Volatility sourceAtm = normalAtm->volatility(
+                    optionNodes[i], swapNodes[j], sourceForward, true);
+                cornerSpreads[i][j] = smile.volatility(sourceStrike) - sourceAtm;
+            }
+        }
+        const Real optionWeight = (targetTime - optionNodes[0]) /
+                                  (optionNodes[1] - optionNodes[0]);
+        const Real swapWeight = (targetLength - swapNodes[0]) /
+                                (swapNodes[1] - swapNodes[0]);
+        return (1.0 - optionWeight) *
+                   ((1.0 - swapWeight) * cornerSpreads[0][0] +
+                    swapWeight * cornerSpreads[0][1]) +
+               optionWeight *
+                   ((1.0 - swapWeight) * cornerSpreads[1][0] +
+                    swapWeight * cornerSpreads[1][1]);
+    };
+
+    const Matrix denseMarketVols = volCube.volCubeAtmCalibrated();
+    const Size targetRow = findRow(denseMarketVols, targetTime, targetLength);
+    const Volatility targetAtm = normalAtm->volatility(
+        targetTime, targetLength, targetForward, true);
+    const Volatility actual = denseMarketVols[targetRow][6];
+    const Volatility expected = targetAtm + interpolatedSpread(false);
+    const Volatility oldRatioResult = targetAtm + interpolatedSpread(true);
+
+    BOOST_CHECK_SMALL(actual - expected, 1.0e-12);
+    BOOST_CHECK_GT(std::fabs(actual - oldRatioResult), 1.0e-8);
+}
+
+BOOST_AUTO_TEST_CASE(testSabrAtmCalibrationWithAsymmetricSmile) {
+
+    BOOST_TEST_MESSAGE("Testing exact SABR ATM calibration with asymmetric smiles...");
+
+    CommonVars vars;
+
+    const auto checkAtmRecovery = [&](const Handle<SwaptionVolatilityStructure>& atmVols,
+                                      const std::vector<Volatility>& smileSpreads,
+                                      Real alphaGuess) {
+        const Size sections = vars.cube.tenors.options.size() * vars.cube.tenors.swaps.size();
+        std::vector<std::vector<Handle<Quote>>> volSpreads(
+            sections, std::vector<Handle<Quote>>(smileSpreads.size()));
+        for (auto& section : volSpreads) {
+            for (Size i = 0; i < smileSpreads.size(); ++i)
+                section[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(smileSpreads[i]));
+        }
+
+        std::vector<std::vector<Handle<Quote>>> parametersGuess(
+            sections, std::vector<Handle<Quote>>(4));
+        for (auto& guess : parametersGuess) {
+            guess[0] = Handle<Quote>(ext::make_shared<SimpleQuote>(alphaGuess));
+            guess[1] = Handle<Quote>(ext::make_shared<SimpleQuote>(0.5));
+            guess[2] = Handle<Quote>(ext::make_shared<SimpleQuote>(0.4));
+            guess[3] = Handle<Quote>(ext::make_shared<SimpleQuote>(0.0));
+        }
+
+        SabrSwaptionVolatilityCube volCube(
+            atmVols, vars.cube.tenors.options, vars.cube.tenors.swaps,
+            vars.cube.strikeSpreads, volSpreads, vars.swapIndexBase,
+            vars.shortSwapIndexBase, false, parametersGuess,
+            { false, true, false, false }, true,
+            {}, Null<Real>(), {}, Null<Real>(), false, 50, false, 0.0001, true);
+
+        for (const auto& option : vars.cube.tenors.options) {
+            for (const auto& swap : vars.cube.tenors.swaps) {
+                const Rate strike = volCube.atmStrike(option, swap);
+                const Volatility expected = atmVols->volatility(option, swap, strike, true);
+                const Volatility calculated = volCube.volatility(option, swap, strike, true);
+                BOOST_CHECK_SMALL(calculated - expected, 1.0e-10);
+                const auto smile = ext::dynamic_pointer_cast<SabrSmileSection>(
+                    volCube.smileSection(option, swap));
+                BOOST_REQUIRE(smile);
+                BOOST_CHECK_SMALL(smile->beta() - 0.5, 1.0e-12);
+            }
+        }
+
+        const Matrix parameters = volCube.denseSabrParameters();
+        const Matrix marketVols = volCube.volCubeAtmCalibrated();
+        bool hasRatioMoneynessAdjustment = false;
+        for (Size row = 0; row < parameters.rows(); ++row) {
+            const Time optionTime = parameters[row][1];
+            const Time swapLength = parameters[row][0];
+            const Rate forward = parameters[row][6];
+            const std::vector<Real> sabrParameters = {
+                parameters[row][2], parameters[row][3],
+                parameters[row][4], parameters[row][5]
+            };
+            SabrSmileSection smile(
+                optionTime, forward, sabrParameters,
+                atmVols->shift(optionTime, swapLength), atmVols->volatilityType());
+
+            Real squaredError = 0.0;
+            Real maxError = 0.0;
+            for (Size i = 0; i < vars.cube.strikeSpreads.size(); ++i) {
+                const Real error = smile.volatility(forward + vars.cube.strikeSpreads[i]) -
+                                   marketVols[row][i + 2];
+                squaredError += error * error;
+                maxError = std::max(maxError, std::fabs(error));
+            }
+            const Size n = vars.cube.strikeSpreads.size();
+            const Real rmsError = std::sqrt(squaredError / (n - 1));
+            BOOST_CHECK_SMALL(parameters[row][7] - rmsError, 1.0e-12);
+            BOOST_CHECK_SMALL(parameters[row][8] - maxError, 1.0e-12);
+
+            if (atmVols->volatilityType() == VolatilityType::Normal) {
+                const Volatility atmVol = atmVols->volatility(
+                    optionTime, swapLength, forward, true);
+                for (Size i = 0; i < smileSpreads.size(); ++i) {
+                    BOOST_CHECK_SMALL(
+                        marketVols[row][i + 2] - atmVol - smileSpreads[i],
+                        1.0e-12);
+                }
+            } else {
+                const Volatility atmVol = atmVols->volatility(
+                    optionTime, swapLength, forward, true);
+                for (Size i = 0; i < smileSpreads.size(); ++i) {
+                    hasRatioMoneynessAdjustment = hasRatioMoneynessAdjustment ||
+                        std::fabs(marketVols[row][i + 2] - atmVol - smileSpreads[i]) >
+                            1.0e-10;
+                }
+            }
+        }
+        if (atmVols->volatilityType() == VolatilityType::ShiftedLognormal)
+            BOOST_CHECK(hasRatioMoneynessAdjustment);
+
+        SabrSwaptionVolatilityCube twoPassCube(
+            atmVols, vars.cube.tenors.options, vars.cube.tenors.swaps,
+            vars.cube.strikeSpreads, volSpreads, vars.swapIndexBase,
+            vars.shortSwapIndexBase, false, parametersGuess,
+            { false, true, false, false }, true);
+        bool hasUnanchoredAtmNode = false;
+        for (const auto& option : vars.cube.tenors.options) {
+            for (const auto& swap : vars.cube.tenors.swaps) {
+                const Rate strike = twoPassCube.atmStrike(option, swap);
+                const Volatility expected = atmVols->volatility(option, swap, strike, true);
+                const Volatility calculated = twoPassCube.volatility(
+                    option, swap, strike, true);
+                hasUnanchoredAtmNode = hasUnanchoredAtmNode ||
+                    std::fabs(calculated - expected) > 1.0e-8;
+            }
+        }
+        BOOST_CHECK(hasUnanchoredAtmNode);
+
+        SabrSwaptionVolatilityCube unanchoredSinglePassCube(
+            atmVols, vars.cube.tenors.options, vars.cube.tenors.swaps,
+            vars.cube.strikeSpreads, volSpreads, vars.swapIndexBase,
+            vars.shortSwapIndexBase, false, parametersGuess,
+            { false, true, false, false }, false,
+            {}, Null<Real>(), {}, Null<Real>(), false, 50, false, 0.0001, true);
+        bool singlePassHasUnanchoredAtmNode = false;
+        for (const auto& option : vars.cube.tenors.options) {
+            for (const auto& swap : vars.cube.tenors.swaps) {
+                const Rate strike = unanchoredSinglePassCube.atmStrike(option, swap);
+                const Volatility expected = atmVols->volatility(option, swap, strike, true);
+                const Volatility calculated = unanchoredSinglePassCube.volatility(
+                    option, swap, strike, true);
+                singlePassHasUnanchoredAtmNode = singlePassHasUnanchoredAtmNode ||
+                    std::fabs(calculated - expected) > 1.0e-8;
+            }
+        }
+        BOOST_CHECK(singlePassHasUnanchoredAtmNode);
+
+        if (atmVols->volatilityType() == VolatilityType::ShiftedLognormal) {
+            const Matrix calibrationParameters =
+                unanchoredSinglePassCube.denseSabrParameters();
+            Real largestCalibrationError = 0.0;
+            Real largestAnchoredError = 0.0;
+            for (Size row = 0; row < parameters.rows(); ++row) {
+                largestCalibrationError = std::max(
+                    largestCalibrationError, calibrationParameters[row][7]);
+                largestAnchoredError = std::max(
+                    largestAnchoredError, parameters[row][7]);
+            }
+            BOOST_REQUIRE_GT(largestAnchoredError, largestCalibrationError);
+            const Real tolerance =
+                0.5 * (largestCalibrationError + largestAnchoredError);
+            BOOST_CHECK_NO_THROW(([&] {
+                SabrSwaptionVolatilityCube toleranceCube(
+                    atmVols, vars.cube.tenors.options, vars.cube.tenors.swaps,
+                    vars.cube.strikeSpreads, volSpreads, vars.swapIndexBase,
+                    vars.shortSwapIndexBase, false, parametersGuess,
+                    { false, true, false, false }, true,
+                    {}, tolerance, {}, 0.0020, false, 50, false, 0.0001, true);
+                toleranceCube.denseSabrParameters();
+            }()));
+        }
+    };
+
+    Matrix shifts(vars.atm.tenors.options.size(), vars.atm.tenors.swaps.size());
+    for (Size i = 0; i < shifts.rows(); ++i) {
+        for (Size j = 0; j < shifts.columns(); ++j)
+            shifts[i][j] = 0.001 * (i + 2 * j);
+    }
+    Handle<SwaptionVolatilityStructure> shiftedLognormalAtm(
+        ext::make_shared<SwaptionVolatilityMatrix>(
+            vars.conventions.calendar, vars.conventions.optionBdc,
+            vars.atm.tenors.options, vars.atm.tenors.swaps, vars.atm.vols,
+            vars.conventions.dayCounter, false, VolatilityType::ShiftedLognormal,
+            shifts));
+    checkAtmRecovery(
+        shiftedLognormalAtm, { 0.045, 0.015, 0.0, 0.010, 0.030 }, 0.05);
+
+    std::vector<std::vector<Handle<Quote>>> normalAtmVols(vars.atm.tenors.options.size());
+    for (Size i = 0; i < normalAtmVols.size(); ++i) {
+        normalAtmVols[i].resize(vars.atm.tenors.swaps.size());
+        for (Size j = 0; j < normalAtmVols[i].size(); ++j) {
+            normalAtmVols[i][j] = Handle<Quote>(
+                ext::make_shared<SimpleQuote>(0.05 * vars.atm.vols[i][j]));
+        }
+    }
+    Handle<SwaptionVolatilityStructure> normalAtm(
+        ext::make_shared<SwaptionVolatilityMatrix>(
+            vars.conventions.calendar, vars.conventions.optionBdc,
+            vars.atm.tenors.options, vars.atm.tenors.swaps, normalAtmVols,
+            vars.conventions.dayCounter, false, VolatilityType::Normal));
+    checkAtmRecovery(normalAtm, { 0.00135, 0.00045, 0.0, 0.00030, 0.00090 }, 0.05);
 }
 
 // SwaptionVolCubeByLinear reproduces ATM vol with machine precision
