@@ -718,6 +718,7 @@
     <ClInclude Include="ql\experimental\lattices\extendedbinomialtree.hpp" />
     <ClInclude Include="ql\experimental\math\all.hpp" />
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp" />
+    <ClInclude Include="ql\experimental\math\cmaes.hpp" />
     <ClInclude Include="ql\experimental\math\convolvedstudentt.hpp" />
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\fireflyalgorithm.hpp" />
@@ -2096,6 +2097,7 @@
     <ClCompile Include="ql\experimental\inflation\yoycapfloortermpricesurface.cpp" />
     <ClCompile Include="ql\experimental\inflation\yoyoptionlethelpers.cpp" />
     <ClCompile Include="ql\experimental\lattices\extendedbinomialtree.cpp" />
+    <ClCompile Include="ql\experimental\math\cmaes.cpp" />
     <ClCompile Include="ql\experimental\math\convolvedstudentt.cpp" />
     <ClCompile Include="ql\experimental\math\fireflyalgorithm.cpp" />
     <ClCompile Include="ql\experimental\math\gaussiancopulapolicy.cpp" />
