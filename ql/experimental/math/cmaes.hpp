@@ -54,32 +54,27 @@ namespace QuantLib {
             Array initialMean;
 
             Configuration() {}
-            Configuration& withPopulationSize(Size n) { 
-                populationSize = n; 
-
-                return *this; 
+            Configuration& withPopulationSize(Size n) {
+                populationSize = n;
+                return *this;
             }
             Configuration& withSigma(Real s) {
                 QL_REQUIRE(s > 0.0, "sigma must be positive");
-                sigma = s; 
-
+                sigma = s;
                 return *this;
             }
-            Configuration& withSeed(unsigned long s) { 
-                seed = s; 
-
-                return *this; 
+            Configuration& withSeed(unsigned long s) {
+                seed = s;
+                return *this;
             }
             Configuration& withBounds(const Array& lo, const Array& up) {
-                lowerBound = lo; 
-                upperBound = up; 
-
+                lowerBound = lo;
+                upperBound = up;
                 return *this;
             }
-            Configuration& withInitialMean(const Array& m) { 
-                initialMean = m; 
-                
-                return *this; 
+            Configuration& withInitialMean(const Array& m) {
+                initialMean = m;
+                return *this;
             }
         };
 
