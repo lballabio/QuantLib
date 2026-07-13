@@ -1,4 +1,43 @@
-commit 44783bb54ffc6b0a489a80d708767164971a8c6b
+commit e7bd700dfd6416b4bb6749f018f3c2dc4ed19474
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Mon, 13 Jul 2026 07:09:26 +0000
+
+    Set version to 1.43
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 4567efac4393f56eb52bd4ca5e63a6b1829e0a81
+Merge: 489847af9 2073a7089
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 6 Jul 2026 08:58:03 +0200
+
+    Make L-BFGS-B compatible with expression-template Real types (#2647)
+
+commit 2073a7089aa1364a6f72d9c94c39fc3327d17db3
+Author: auto-differentiation-dev <107129969+auto-differentiation-dev@users.noreply.github.com>
+Date:   Sat, 4 Jul 2026 20:49:49 +0100
+
+    Make L-BFGS-B compatible with expression-template Real types
+    
+    Wrap mixed-type ternary and std::max operands in Real(...);
+    no-op for the default Real = double.
+
+ ql/math/optimization/lbfgsb.cpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 489847af9fd4a36236fd877795c60b326bb4676b
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Wed, 1 Jul 2026 15:55:00 +0000
+
+    Update changelog
+
+ ChangeLog.txt | 3397 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 3370 insertions(+), 27 deletions(-)
+
+commit 91c4ef46024b640427e3e43dbd8b4a5669664cf0
 Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
 Date:   Wed, 1 Jul 2026 15:55:00 +0000
 
