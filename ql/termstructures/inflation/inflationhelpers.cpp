@@ -72,21 +72,6 @@ namespace QuantLib {
     ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
         const Handle<Quote>& quote,
         const Period& swapObsLag,
-        const Date& maturity,
-        Calendar calendar,
-        BusinessDayConvention paymentConvention,
-        DayCounter dayCounter,
-        const ext::shared_ptr<ZeroInflationIndex>& zii,
-        CPI::InterpolationType observationInterpolation,
-        Handle<YieldTermStructure> nominalTermStructure)
-    : ZeroCouponInflationSwapHelper(
-        quote, swapObsLag, Date(), maturity, std::move(calendar), paymentConvention,
-        std::move(dayCounter), zii, observationInterpolation, std::move(nominalTermStructure),
-        Pillar::LastRelevantDate, Date()) {}
-
-    ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
-        const Handle<Quote>& quote,
-        const Period& swapObsLag,
         const Date& startDate,
         const Date& endDate,
         Calendar calendar,
