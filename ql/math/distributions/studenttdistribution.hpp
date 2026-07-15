@@ -75,12 +75,18 @@ namespace QuantLib {
     /*! The implementation delegates the calculation to Boost.Math. */
     class InverseCumulativeStudent {
       public:
-        InverseCumulativeStudent(Integer n,
-                                 Real = 1e-6,
-                                 Size = 50)
+        InverseCumulativeStudent(Integer n)
         : n_(n) {
             QL_REQUIRE(n > 0, "invalid parameter for t-distribution");
         }
+        /*! \deprecated Use the other overload; the solver parameters are no longer used.
+                        Deprecated in version 1.44.
+        */
+        [[deprecated("Use the other overload; the solver parameters are no longer used.")]]
+        InverseCumulativeStudent(Integer n,
+                                 Real,
+                                 Size = 50)
+        : InverseCumulativeStudent(n) {}
         Real operator()(Real x) const;
       private:
         Integer n_;

@@ -447,7 +447,7 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativeStudent) {
                              1.0 - 1.0e-6, 1.0 - 1.0e-9,
                              1.0 - 1.0e-12 };
 
-    InverseCumulativeStudent inverseCauchy(1, 1.0e-12, 100);
+    InverseCumulativeStudent inverseCauchy(1);
     for (Real p : probabilities) {
         Real calculated = inverseCauchy(p);
         Real expected;
@@ -467,7 +467,7 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativeStudent) {
                         << "\n    error:       " << error);
     }
 
-    InverseCumulativeStudent inverseStudent2(2, 1.0e-12, 100);
+    InverseCumulativeStudent inverseStudent2(2);
     for (Real p : probabilities) {
         Real calculated = inverseStudent2(p);
         Real expected = (2.0*p - 1.0) / std::sqrt(2.0*p*(1.0 - p));
@@ -482,7 +482,7 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativeStudent) {
                         << "\n    error:       " << error);
     }
 
-    InverseCumulativeStudent inverse(4, 1.0e-12, 100);
+    InverseCumulativeStudent inverse(4);
     if (inverse(0.0) != QL_MIN_REAL)
         BOOST_ERROR("Inverse cumulative Student t distribution at 0.0 "
                     "must return QL_MIN_REAL");
@@ -503,7 +503,7 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativeStudent) {
                                      0.01, 0.10, 0.25 };
 
     for (Integer n : ns) {
-        InverseCumulativeStudent inv(n, 1.0e-12, 100);
+        InverseCumulativeStudent inv(n);
         CumulativeStudentDistribution cdf(n);
 
         Real previous = QL_MIN_REAL;
