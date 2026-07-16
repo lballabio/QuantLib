@@ -158,7 +158,7 @@ namespace QuantLib {
         Real moneyness = this->arguments_.moneyness;
         Real strike = moneyness * spot;
 
-        ext::shared_ptr<StrikedTypePayoff> newPayoff(ext::make_shared<PlainVanillaPayoff>(payoff->optionType(), strike));
+        auto newPayoff = ext::make_shared<PlainVanillaPayoff>(payoff->optionType(), strike);
 
         auto* controlArguments = dynamic_cast<VanillaOption::arguments*>(controlPE->getArguments());
 

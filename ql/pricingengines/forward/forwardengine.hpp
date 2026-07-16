@@ -81,9 +81,9 @@ namespace QuantLib {
                 this->arguments_.payoff);
         QL_REQUIRE(argumentsPayoff, "wrong payoff given");
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(ext::make_shared<PlainVanillaPayoff>(argumentsPayoff->optionType(),
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(argumentsPayoff->optionType(),
                                           this->arguments_.moneyness *
-                                          process_->x0()));
+                                          process_->x0());
 
         // maybe the forward value is "better", in some fashion
         // the right level is needed in order to interpolate

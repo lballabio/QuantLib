@@ -52,17 +52,17 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "Strike type payoff expected");
             
         const Time maturity = process_->time(arguments_.exercise->lastDate());
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(ext::make_shared<FdmBlackScholesMesher>(xGrid_, process_,
-                                      maturity, payoff->strike()));
+        const auto equityMesher = ext::make_shared<FdmBlackScholesMesher>(xGrid_, process_,
+                                      maturity, payoff->strike());
         
-        const ext::shared_ptr<Fdm1dMesher> exerciseMesher(ext::make_shared<Uniform1dMesher>(
+        const auto exerciseMesher = ext::make_shared<Uniform1dMesher>(
                            0, static_cast<Real>(arguments_.maxExerciseRights),
-                           arguments_.maxExerciseRights+1));
+                           arguments_.maxExerciseRights+1);
 
-        const ext::shared_ptr<FdmMesher> mesher (ext::make_shared<FdmMesherComposite>(equityMesher, exerciseMesher));
+        const auto mesher = ext::make_shared<FdmMesherComposite>(equityMesher, exerciseMesher);
         
         // 2. Calculator
-        ext::shared_ptr<FdmInnerValueCalculator> calculator(ext::make_shared<FdmZeroInnerValue>());
+        auto calculator = ext::make_shared<FdmZeroInnerValue>();
         
         // 3. Step conditions
         std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
@@ -77,7 +77,7 @@ namespace QuantLib {
         }
         stoppingTimes.push_back(exerciseTimes);
         
-        ext::shared_ptr<FdmInnerValueCalculator> exerciseCalculator(ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0));
+        auto exerciseCalculator = ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0);
 
         stepConditions.push_back(ext::make_shared<FdmSimpleSwingCondition>(
                 exerciseTimes, mesher, exerciseCalculator,

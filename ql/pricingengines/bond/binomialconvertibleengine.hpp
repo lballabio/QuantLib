@@ -115,8 +115,8 @@ namespace QuantLib {
 
         Real creditSpread = creditSpread_->value();
 
-        ext::shared_ptr<Lattice> lattice(ext::make_shared<TsiveriotisFernandesLattice<T>>(
-            tree, riskFreeRate, maturity, timeSteps_, creditSpread, v, q));
+        auto lattice = ext::make_shared<TsiveriotisFernandesLattice<T>>(
+            tree, riskFreeRate, maturity, timeSteps_, creditSpread, v, q);
 
         DiscretizedConvertible convertible(arguments_, bs, dividends_, creditSpread_, TimeGrid(maturity, timeSteps_));
 

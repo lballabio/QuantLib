@@ -452,8 +452,7 @@ namespace QuantLib {
             return squared(std::log(fv/xmax));
         };
 
-        const ext::shared_ptr<DqFpEquation> eqn
-            = (fpEquation_ == FP_A
+        const auto eqn = (fpEquation_ == FP_A
                || (fpEquation_ == Auto && std::abs(r-q) < 0.001))?
               ext::static_pointer_cast<DqFpEquation>(
                   ext::make_shared<DqFpEquation_A>(
@@ -518,6 +517,5 @@ namespace QuantLib {
     }
 
 }
-
 
 

@@ -104,9 +104,9 @@ namespace QuantLib {
 
         Time maturity = rfdc.yearFraction(referenceDate, maturityDate);
 
-        ext::shared_ptr<StochasticProcess1D> bs(ext::make_shared<GeneralizedBlackScholesProcess>(
+        auto bs = ext::make_shared<GeneralizedBlackScholesProcess>(
                                       process_->stateVariable(),
-                                      flatDividends, flatRiskFree, flatVol));
+                                      flatDividends, flatRiskFree, flatVol);
 
         TimeGrid grid(maturity, timeSteps_);
 

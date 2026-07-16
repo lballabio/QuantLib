@@ -56,20 +56,20 @@ namespace QuantLib {
 
         // 2. Mesher
         const Time maturity = p1_->time(arguments_.exercise->lastDate());
-        const ext::shared_ptr<Fdm1dMesher> em1(ext::make_shared<FdmBlackScholesMesher>(
+        const auto em1 = ext::make_shared<FdmBlackScholesMesher>(
                     xGrid_, p1_, maturity, p1_->x0(), 
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
-                    std::pair<Real, Real>(p1_->x0(), 0.1)));
+                    std::pair<Real, Real>(p1_->x0(), 0.1));
 
-        const ext::shared_ptr<Fdm1dMesher> em2(ext::make_shared<FdmBlackScholesMesher>(
+        const auto em2 = ext::make_shared<FdmBlackScholesMesher>(
                     yGrid_, p2_, maturity, p2_->x0(),
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
-                    std::pair<Real, Real>(p2_->x0(), 0.1)));
+                    std::pair<Real, Real>(p2_->x0(), 0.1));
 
-        const ext::shared_ptr<FdmMesher> mesher (ext::make_shared<FdmMesherComposite>(em1, em2));
+        const auto mesher = ext::make_shared<FdmMesherComposite>(em1, em2);
 
         // 3. Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(ext::make_shared<FdmLogBasketInnerValue>(payoff, mesher));
+        const auto calculator = ext::make_shared<FdmLogBasketInnerValue>(payoff, mesher);
 
         // 4. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions =

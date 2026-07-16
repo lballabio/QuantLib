@@ -64,7 +64,7 @@ namespace QuantLib {
 
         auto spot = ext::make_shared<SimpleQuote>(arguments_.Q1*s1);
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(ext::make_shared<PlainVanillaPayoff>(Option::Call, arguments_.Q2*s2));
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, arguments_.Q2*s2);
 
         DiscountFactor dividendDiscount1 =
             process1_->dividendYield()->discount(exercise->lastDate());
@@ -74,9 +74,9 @@ namespace QuantLib {
             process2_->dividendYield()->discount(exercise->lastDate());
         Rate q2 = -std::log(dividendDiscount2)/t;
 
-        ext::shared_ptr<YieldTermStructure> qTS(ext::make_shared<FlatForward>(today, q1, rfdc));
+        auto qTS = ext::make_shared<FlatForward>(today, q1, rfdc);
 
-        ext::shared_ptr<YieldTermStructure> rTS(ext::make_shared<FlatForward>(today, q2, rfdc));
+        auto rTS = ext::make_shared<FlatForward>(today, q2, rfdc);
 
         Real variance1 = process1_->blackVolatility()->blackVariance(
                                                 exercise->lastDate(), s1);
@@ -86,14 +86,14 @@ namespace QuantLib {
                       - 2*rho_*std::sqrt(variance1)*std::sqrt(variance2);
         Volatility volatility = std::sqrt(variance/t);
 
-        ext::shared_ptr<BlackVolTermStructure> volTS(ext::make_shared<BlackConstantVol>(today, NullCalendar(), volatility, rfdc));
+        auto volTS = ext::make_shared<BlackConstantVol>(today, NullCalendar(), volatility, rfdc);
 
         auto stochProcess = ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS));
 
-        ext::shared_ptr<PricingEngine> engine(ext::make_shared<BjerksundStenslandApproximationEngine>(stochProcess));
+        auto engine = ext::make_shared<BjerksundStenslandApproximationEngine>(stochProcess);
 
         VanillaOption option(payoff, exercise);
         option.setPricingEngine(engine);

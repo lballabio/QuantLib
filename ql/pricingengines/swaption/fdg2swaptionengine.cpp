@@ -61,11 +61,11 @@ namespace QuantLib {
 
         const auto process2 = ext::make_shared<OrnsteinUhlenbeckProcess>(model_->b(), model_->eta());
 
-        const ext::shared_ptr<Fdm1dMesher> xMesher(ext::make_shared<FdmSimpleProcess1dMesher>(xGrid_,process1,maturity,1,invEps_));
+        const auto xMesher = ext::make_shared<FdmSimpleProcess1dMesher>(xGrid_,process1,maturity,1,invEps_);
 
-        const ext::shared_ptr<Fdm1dMesher> yMesher(ext::make_shared<FdmSimpleProcess1dMesher>(yGrid_,process2,maturity,1,invEps_));
+        const auto yMesher = ext::make_shared<FdmSimpleProcess1dMesher>(yGrid_,process2,maturity,1,invEps_);
 
-        const ext::shared_ptr<FdmMesher> mesher(ext::make_shared<FdmMesherComposite>(xMesher, yMesher));
+        const auto mesher = ext::make_shared<FdmMesherComposite>(xMesher, yMesher);
 
         // 3. Inner Value Calculator
         const std::vector<Date>& exerciseDates = arguments_.exercise->dates();
@@ -90,9 +90,9 @@ namespace QuantLib {
         const auto fwdModel = ext::make_shared<G2>(fwdTs, model_->a(), model_->sigma(),
                    model_->b(), model_->eta(), model_->rho());
 
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(ext::make_shared<FdmAffineModelSwapInnerValue<G2>>(
+        const auto calculator = ext::make_shared<FdmAffineModelSwapInnerValue<G2>>(
                  model_.currentLink(), fwdModel,
-                 arguments_.swap, t2d, mesher, 0));
+                 arguments_.swap, t2d, mesher, 0);
 
         // 4. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions =

@@ -109,8 +109,7 @@ namespace QuantLib {
         // 1.1 The variance mesher
         const Size tGridMin = 5;
         const Size tGridAvgSteps = std::max(tGridMin, tGrid_/50);
-        const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> vMesher
-            = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>(
+        const auto vMesher = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>(
                   vGrid_, process, leverageFct_, maturity, tGridAvgSteps, 0.0001, mixingFactor_);
 
         const Volatility avgVolaEstimate = vMesher->volaEstimate();
@@ -144,10 +143,10 @@ namespace QuantLib {
                     std::pair<Real, Real>(payoff->strike(), 0.075));
         }
 
-        const ext::shared_ptr<FdmMesher> mesher(ext::make_shared<FdmMesherComposite>(equityMesher, vMesher));
+        const auto mesher = ext::make_shared<FdmMesherComposite>(equityMesher, vMesher);
 
         // 2. Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(ext::make_shared<FdmLogInnerValue>(arguments_.payoff, mesher, 0));
+        const auto calculator = ext::make_shared<FdmLogInnerValue>(arguments_.payoff, mesher, 0);
 
         // 3. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions =

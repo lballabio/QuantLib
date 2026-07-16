@@ -75,8 +75,7 @@ namespace QuantLib {
         const Size tGridMin = 5;
         const Size tGridAvgSteps = std::max(tGridMin, tGrid_/50);
 
-        const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> vMesher
-            = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>(
+        const auto vMesher = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>(
                   vGrid_, process, leverageFct_, maturity, tGridAvgSteps, 0.0001, mixingFactor_);
 
         // 1.2 The equity mesher
@@ -94,7 +93,7 @@ namespace QuantLib {
             xMax = std::log(arguments_.barrier);
         }
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(ext::make_shared<FdmBlackScholesMesher>(
+        const auto equityMesher = ext::make_shared<FdmBlackScholesMesher>(
                 xGrid_,
                 FdmBlackScholesMesher::processHelper(
                     process->s0(), process->dividendYield(),
@@ -102,24 +101,21 @@ namespace QuantLib {
                 maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
-                dividends_));
+                dividends_);
 
-        const ext::shared_ptr<FdmMesher> mesher (
-			ext::make_shared<FdmMesherComposite>(equityMesher, vMesher));
+        const auto mesher = ext::make_shared<FdmMesherComposite>(equityMesher, vMesher);
 
         // 2. Calculator
-        ext::shared_ptr<FdmInnerValueCalculator> calculator(
-			ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0));
+        auto calculator = ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0);
 
         // 3. Step conditions
         std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
 
         // 3.1 Step condition if discrete dividends
-        ext::shared_ptr<FdmDividendHandler> dividendCondition(
-			ext::make_shared<FdmDividendHandler>(dividends_, mesher,
+        auto dividendCondition = ext::make_shared<FdmDividendHandler>(dividends_, mesher,
                                    process->riskFreeRate()->referenceDate(),
-                                   process->riskFreeRate()->dayCounter(), 0));
+                                   process->riskFreeRate()->dayCounter(), 0);
 
         if (!dividends_.empty()) {
             stepConditions.push_back(dividendCondition);
@@ -133,8 +129,7 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "only european style option are supported");
 
-        ext::shared_ptr<FdmStepConditionComposite> conditions(
-			ext::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions));
+        auto conditions = ext::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions);
 
         // 4. Boundary conditions
         FdmBoundaryConditionSet boundaries;
@@ -157,9 +152,9 @@ namespace QuantLib {
                                      calculator, maturity,
                                      tGrid_, dampingSteps_ };
 
-        ext::shared_ptr<FdmHestonSolver> solver(ext::make_shared<FdmHestonSolver>(
+        auto solver = ext::make_shared<FdmHestonSolver>(
                     Handle<HestonProcess>(process), solverDesc, schemeDesc_,
-                    Handle<FdmQuantoHelper>(), leverageFct_, mixingFactor_));
+                    Handle<FdmQuantoHelper>(), leverageFct_, mixingFactor_);
 
         const Real spot = process->s0()->value();
         results_.value = solver->valueAt(spot, process->v0());

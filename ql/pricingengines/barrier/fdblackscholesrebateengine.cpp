@@ -83,17 +83,17 @@ namespace QuantLib {
             xMax = std::log(arguments_.barrier);
         }
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(ext::make_shared<FdmBlackScholesMesher>(
+        const auto equityMesher = ext::make_shared<FdmBlackScholesMesher>(
                 xGrid_, process_, maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
-                dividends_));
+                dividends_);
         
-        const ext::shared_ptr<FdmMesher> mesher (ext::make_shared<FdmMesherComposite>(equityMesher));
+        const auto mesher = ext::make_shared<FdmMesherComposite>(equityMesher);
         
         // 2. Calculator
-        const ext::shared_ptr<StrikedTypePayoff> rebatePayoff(ext::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, arguments_.rebate));
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(ext::make_shared<FdmLogInnerValue>(rebatePayoff, mesher, 0));
+        const auto rebatePayoff = ext::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, arguments_.rebate);
+        const auto calculator = ext::make_shared<FdmLogInnerValue>(rebatePayoff, mesher, 0);
 
         // 3. Step conditions
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,

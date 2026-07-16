@@ -136,13 +136,13 @@ namespace QuantLib {
        
         //2.3 The short rate mesher        
         const auto ouProcess = ext::make_shared<OrnsteinUhlenbeckProcess>(hwProcess_->a(),hwProcess_->sigma());
-        const ext::shared_ptr<Fdm1dMesher> shortRateMesher(ext::make_shared<FdmSimpleProcess1dMesher>(rGrid_, ouProcess, maturity));
+        const auto shortRateMesher = ext::make_shared<FdmSimpleProcess1dMesher>(rGrid_, ouProcess, maturity);
         
-        const ext::shared_ptr<FdmMesher> mesher(ext::make_shared<FdmMesherComposite>(equityMesher, varianceMesher,
-                                   shortRateMesher));
+        const auto mesher = ext::make_shared<FdmMesherComposite>(equityMesher, varianceMesher,
+                                   shortRateMesher);
 
         // 3. Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(ext::make_shared<FdmLogInnerValue>(arguments_.payoff, mesher, 0));
+        const auto calculator = ext::make_shared<FdmLogInnerValue>(arguments_.payoff, mesher, 0);
 
         // 4. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions = 
@@ -188,8 +188,8 @@ namespace QuantLib {
         }
      
         if (controlVariate_) {
-            ext::shared_ptr<PricingEngine> analyticEngine(ext::make_shared<AnalyticHestonEngine>(*model_, 164));
-            ext::shared_ptr<Exercise> exercise(ext::make_shared<EuropeanExercise>(arguments_.exercise->lastDate()));
+            auto analyticEngine = ext::make_shared<AnalyticHestonEngine>(*model_, 164);
+            auto exercise = ext::make_shared<EuropeanExercise>(arguments_.exercise->lastDate());
             
             VanillaOption option(payoff, exercise);
             option.setPricingEngine(analyticEngine);

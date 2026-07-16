@@ -184,9 +184,7 @@ namespace QuantLib {
         typename RNG_Calibration::rsg_type generator =
             RNG_Calibration::make_sequence_generator(
                 dimensions * (grid.size() - 1), seedCalibration_);
-        ext::shared_ptr<path_generator_type_calibration>
-            pathGeneratorCalibration =
-                ext::make_shared<path_generator_type_calibration>(
+        auto pathGeneratorCalibration = ext::make_shared<path_generator_type_calibration>(
                     process_, grid, generator, brownianBridgeCalibration_);
         mcModelCalibration_ =
             ext::make_shared<MonteCarloModel<MC, RNG_Calibration, S>>(

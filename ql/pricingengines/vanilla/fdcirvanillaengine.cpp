@@ -70,20 +70,20 @@ namespace QuantLib {
         const Time maturity = bsProcess_->time(arguments_.exercise->lastDate());
 
         // The short rate mesher
-        const ext::shared_ptr<Fdm1dMesher> shortRateMesher(ext::make_shared<FdmSimpleProcess1dMesher>(rGrid_, cirProcess_, maturity, tGrid_));
+        const auto shortRateMesher = ext::make_shared<FdmSimpleProcess1dMesher>(rGrid_, cirProcess_, maturity, tGrid_);
 
         // The equity mesher
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(ext::make_shared<FdmBlackScholesMesher>(
+        const auto equityMesher = ext::make_shared<FdmBlackScholesMesher>(
                 xGrid_, bsProcess_, maturity, payoff->strike(),
                 Null<Real>(), Null<Real>(), 0.0001, 1.5,
                 std::pair<Real, Real>(payoff->strike(), 0.1),
                 dividends_, quantoHelper_,
-                0.0));
+                0.0);
         
-        const ext::shared_ptr<FdmMesher> mesher(ext::make_shared<FdmMesherComposite>(equityMesher, shortRateMesher));
+        const auto mesher = ext::make_shared<FdmMesherComposite>(equityMesher, shortRateMesher);
 
         // Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(ext::make_shared<FdmLogInnerValue>(arguments_.payoff, mesher, 0));
+        const auto calculator = ext::make_shared<FdmLogInnerValue>(arguments_.payoff, mesher, 0);
 
         // Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions = 
