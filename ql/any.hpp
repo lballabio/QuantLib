@@ -18,7 +18,7 @@
 */
 
 /*! \file any.hpp
-    \brief Maps ext::any to the std implementation
+    \brief Maps std::any to the std implementation
 */
 
 #ifndef quantlib_any_hpp

@@ -18,7 +18,7 @@
 */
 
 /*! \file optional.hpp
-    \brief Maps ext::optional to the std implementation
+    \brief Maps std::optional to the std implementation
 */
 
 #ifndef quantlib_optional_hpp
