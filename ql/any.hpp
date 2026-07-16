@@ -25,14 +25,20 @@
 #define quantlib_any_hpp
 
 #include <ql/qldefines.hpp>
-
 #include <any>
 
 namespace QuantLib::ext {
 
-        using std::any;                   // NOLINT(misc-unused-using-decls)
-        using std::any_cast;              // NOLINT(misc-unused-using-decls)
+    /*! \deprecated Use std::any instead.
+                    Deprecated in version 1.44.
+    */
+    using any [[deprecated("Use std::any instead")]] = std::any; // NOLINT(misc-unused-using-decls)
 
-    }
+    /*! \deprecated Use std::any_cast instead.
+                    Deprecated in version 1.44.
+    */
+    using std::any_cast;  // NOLINT(misc-unused-using-decls)
+
+}
 
 #endif

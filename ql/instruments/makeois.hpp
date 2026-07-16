@@ -118,7 +118,7 @@ namespace QuantLib {
         DateGeneration::Rule fixedRule_ = DateGeneration::Backward;
         DateGeneration::Rule overnightRule_ = DateGeneration::Backward;
         bool fixedEndOfMonth_ = false, overnightEndOfMonth_ = false, isDefaultEOM_ = true;
-        ext::optional<bool> maturityEndOfMonth_;
+        std::optional<bool> maturityEndOfMonth_;
 
         Swap::Type type_ = Swap::Payer;
         Real nominal_ = 1.0;

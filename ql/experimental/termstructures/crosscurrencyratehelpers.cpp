@@ -36,14 +36,14 @@ namespace QuantLib {
 
         // Treat an explicitly-passed NoFrequency the same as an unset (nullopt)
         // payment frequency.  Before these parameters were migrated to
-        // ext::optional<Frequency>, NoFrequency was the sentinel meaning "derive
+        // std::optional<Frequency>, NoFrequency was the sentinel meaning "derive
         // the schedule from the index tenor".  Normalizing it here preserves that
         // behavior and keeps the stored optional either empty or holding an
         // actual frequency, so the rest of the code can treat the two cases
         // identically.
-        ext::optional<Frequency> normalizedPaymentFrequency(ext::optional<Frequency> frequency) {
+        std::optional<Frequency> normalizedPaymentFrequency(std::optional<Frequency> frequency) {
             if (frequency && *frequency == NoFrequency)
-                return ext::nullopt;
+                return std::nullopt;
             return frequency;
         }
 
@@ -77,7 +77,7 @@ namespace QuantLib {
                          BusinessDayConvention convention,
                          bool endOfMonth,
                          const ext::shared_ptr<IborIndex>& idx,
-                         ext::optional<Frequency> paymentFrequency,
+                         std::optional<Frequency> paymentFrequency,
                          Integer paymentLag) {
             auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(idx);
 
@@ -269,9 +269,9 @@ namespace QuantLib {
         Handle<YieldTermStructure> collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg,
-        ext::optional<Frequency> paymentFrequency,
+        std::optional<Frequency> paymentFrequency,
         Integer paymentLag,
-        ext::optional<Frequency> quoteCurrencyPaymentFrequency)
+        std::optional<Frequency> quoteCurrencyPaymentFrequency)
     : CrossCurrencySwapRateHelperBase(basis, tenor, fixingDays, std::move(calendar), convention, endOfMonth,
                                       std::move(collateralCurve), paymentLag),
       baseCcyIdx_(std::move(baseCurrencyIndex)), quoteCcyIdx_(std::move(quoteCurrencyIndex)),
@@ -292,7 +292,7 @@ namespace QuantLib {
         // If no quote-currency payment frequency was given, fall back to the
         // base-currency payment frequency (which may itself be unset, in which
         // case the quote-currency leg uses its own index tenor).
-        ext::optional<Frequency> effectiveQuoteCcyFreq =
+        std::optional<Frequency> effectiveQuoteCcyFreq =
             quoteCcyPaymentFrequency_ ? quoteCcyPaymentFrequency_ : paymentFrequency_;
         quoteCcyIborLeg_ = buildFloatingLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
                                             convention_, endOfMonth_, quoteCcyIdx_, effectiveQuoteCcyFreq, paymentLag_);
@@ -322,9 +322,9 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg,
-        ext::optional<Frequency> paymentFrequency,
+        std::optional<Frequency> paymentFrequency,
         Integer paymentLag,
-        ext::optional<Frequency> quoteCurrencyPaymentFrequency)
+        std::optional<Frequency> quoteCurrencyPaymentFrequency)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
@@ -376,9 +376,9 @@ namespace QuantLib {
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg,
         bool isFxBaseCurrencyLegResettable,
-        ext::optional<Frequency> paymentFrequency,
+        std::optional<Frequency> paymentFrequency,
         Integer paymentLag,
-        ext::optional<Frequency> quoteCurrencyPaymentFrequency)
+        std::optional<Frequency> quoteCurrencyPaymentFrequency)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,

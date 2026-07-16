@@ -82,7 +82,7 @@ namespace QuantLib {
                                      Handle<Quote> ultimateForwardRate,
                                      const Period& firstSmoothingPoint,
                                      Real alpha,
-                                     const ext::optional<Integer>& roundingDigits = ext::nullopt,
+                                     const std::optional<Integer>& roundingDigits = std::nullopt,
                                      Compounding compounding = Compounded,
                                      Frequency frequency = Annual);
         //! \name YieldTermStructure interface
@@ -111,7 +111,7 @@ namespace QuantLib {
         Handle<Quote> ufr_;
         Period fsp_;
         Real alpha_;
-        ext::optional<Integer> roundingDigits_;
+        std::optional<Integer> roundingDigits_;
         Compounding compounding_;
         Frequency frequency_;
     };
@@ -124,7 +124,7 @@ namespace QuantLib {
         Handle<Quote> ultimateForwardRate,
         const Period& firstSmoothingPoint,
         Real alpha,
-        const ext::optional<Integer>& roundingDigits,
+        const std::optional<Integer>& roundingDigits,
         Compounding compounding,
         Frequency frequency)
     : originalCurve_(std::move(h)), llfr_(std::move(lastLiquidForwardRate)),

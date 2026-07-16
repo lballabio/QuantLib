@@ -25,14 +25,22 @@
 #define quantlib_optional_hpp
 
 #include <ql/qldefines.hpp>
-
 #include <optional>
 
 namespace QuantLib::ext {
 
-        using std::optional;                    // NOLINT(misc-unused-using-decls)
-        inline constexpr const std::nullopt_t& nullopt = std::nullopt;
+    /*! \deprecated Use std::optional instead.
+                    Deprecated in version 1.44.
+    */
+    template <typename T>
+    using optional [[deprecated("Use std::optional instead")]] = std::optional<T>;  // NOLINT(misc-unused-using-decls)
 
-    }
+    /*! \deprecated Use std::nullopt instead.
+                    Deprecated in version 1.44.
+    */
+    [[deprecated("Use std::nullopt instead")]]
+    inline constexpr const std::nullopt_t& nullopt = std::nullopt;
+
+}
 
 #endif
