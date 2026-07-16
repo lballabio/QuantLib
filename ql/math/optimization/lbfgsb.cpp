@@ -22,7 +22,6 @@
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/lbfgsb.hpp>
 #include <ql/math/optimization/problem.hpp>
-#include <algorithm>
 #include <cmath>
 #include <deque>
 #include <utility>
@@ -176,7 +175,7 @@ namespace QuantLib {
                 fpp -= DotProduct(p, rep.M * p);
             Real fppFloor = QL_EPSILON * (fpp > 0.0 ? fpp : 1.0);
 
-            Real dtMin = (fpp > 0.0) ? -fp / fpp : 0.0;
+            Real dtMin = (fpp > 0.0) ? Real(-fp / fpp) : 0.0;
 
             Real tOld = 0.0;
             Size ptr = 0;
@@ -214,7 +213,7 @@ namespace QuantLib {
                     fpp = fppFloor;
 
                 d[b] = 0.0;
-                dtMin = (fpp > 0.0) ? -fp / fpp : 0.0;
+                dtMin = (fpp > 0.0) ? Real(-fp / fpp) : 0.0;
                 tOld = tb;
 
                 if (++ptr >= brk.size()) {
@@ -635,7 +634,7 @@ namespace QuantLib {
             P.setFunctionValue(f);
 
             // relative function-reduction stop (SciPy's factr criterion)
-            Real denom = std::max({std::fabs(fOld), std::fabs(f), Real(1.0)});
+            Real denom = std::max({Real(std::fabs(fOld)), Real(std::fabs(f)), Real(1.0)});
             if ((fOld - f) <= factr_ * QL_EPSILON * denom) {
                 ecType = EndCriteria::StationaryFunctionValue;
                 break;
