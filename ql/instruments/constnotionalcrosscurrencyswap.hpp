@@ -75,26 +75,6 @@ class ConstNotionalCrossCurrencySwap : public CrossCurrencySwap {
     */
     ConstNotionalCrossCurrencySwap(const std::vector<Leg>& legs, const std::vector<bool>& payer, const std::vector<Currency>& currencies);
     //@}
-    //! \name Instrument interface
-    //@{
-    void setupArguments(PricingEngine::arguments* args) const override;
-    void fetchResults(const PricingEngine::results*) const override;
-    //@}
-    //! \name Additional interface
-    //@{
-    const Currency& legCurrency(Size j) const {
-        return CrossCurrencySwap::legCurrency(j);
-    }
-    Real inCcyLegBPS(Size j) const {
-        return CrossCurrencySwap::inCcyLegBPS(j);
-    }
-    Real inCcyLegNPV(Size j) const {
-        return CrossCurrencySwap::inCcyLegNPV(j);
-    }
-    DiscountFactor npvDateDiscounts(Size j) const {
-        return CrossCurrencySwap::npvDateDiscounts(j);
-    }
-    //@}
 protected:
     //! \name Constructors
     //@{
@@ -103,25 +83,14 @@ protected:
     */
     explicit ConstNotionalCrossCurrencySwap(Size legs);
     //@}
-    //! \name Instrument interface
-    //@{
-    void setupExpired() const override;
-    //@}
-
     using CrossCurrencySwap::addNotionalExchangesToLeg;
 };
 
 
-class ConstNotionalCrossCurrencySwap::arguments : public CrossCurrencySwap::arguments {
-  public:
-    void validate() const override;
-};
+class ConstNotionalCrossCurrencySwap::arguments : public CrossCurrencySwap::arguments {};
 
 
-class ConstNotionalCrossCurrencySwap::results : public CrossCurrencySwap::results {
-  public:
-    void reset() override;
-};
+class ConstNotionalCrossCurrencySwap::results : public CrossCurrencySwap::results {};
 
 
 class ConstNotionalCrossCurrencySwap::engine

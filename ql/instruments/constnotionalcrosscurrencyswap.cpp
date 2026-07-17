@@ -33,33 +33,4 @@ ConstNotionalCrossCurrencySwap::ConstNotionalCrossCurrencySwap(const std::vector
 ConstNotionalCrossCurrencySwap::ConstNotionalCrossCurrencySwap(Size legs)
 : CrossCurrencySwap(legs) {}
 
-void ConstNotionalCrossCurrencySwap::setupArguments(PricingEngine::arguments* args) const {
-
-    CrossCurrencySwap::setupArguments(args);
-
-    auto* arguments = dynamic_cast<ConstNotionalCrossCurrencySwap::arguments*>(args);
-    QL_REQUIRE(arguments, "The arguments are not of type "
-                          "cross currency swap");
-}
-
-void ConstNotionalCrossCurrencySwap::fetchResults(const PricingEngine::results* r) const {
-
-    CrossCurrencySwap::fetchResults(r);
-
-    const auto* results = dynamic_cast<const ConstNotionalCrossCurrencySwap::results*>(r);
-    QL_REQUIRE(results, "The results are not of type cross currency swap");
-}
-
-void ConstNotionalCrossCurrencySwap::setupExpired() const {
-    CrossCurrencySwap::setupExpired();
-}
-
-void ConstNotionalCrossCurrencySwap::arguments::validate() const {
-    CrossCurrencySwap::arguments::validate();
-}
-
-void ConstNotionalCrossCurrencySwap::results::reset() {
-    CrossCurrencySwap::results::reset();
-}
-
 } // namespace QuantLib

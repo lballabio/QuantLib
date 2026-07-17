@@ -17,6 +17,7 @@
 
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/coupon.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/patterns/visitor.hpp>
 #include <ql/pricingengines/swap/discountingmtmcrosscurrencybasisswapengine.hpp>
@@ -27,31 +28,6 @@
 namespace QuantLib {
 
 namespace {
-
-    bool hasOccurred(const Date& date,
-                     const Date& refDate,
-                     ext::optional<bool> includeRefDate) {
-        if (refDate != Date()) {
-            if (refDate < date)
-                return false;
-            if (date < refDate)
-                return true;
-        }
-
-        if (refDate == Date() ||
-            refDate == Settings::instance().evaluationDate()) {
-            ext::optional<bool> includeToday =
-                Settings::instance().includeTodaysCashFlows();
-            if (includeToday.has_value())
-                includeRefDate = includeToday;
-        }
-
-        Date ref = refDate != Date() ? refDate : Settings::instance().evaluationDate();
-        bool includeRefDateEvent =
-            includeRefDate ? *includeRefDate :
-                             Settings::instance().includeReferenceDateEvents();
-        return includeRefDateEvent ? date < ref : date <= ref;
-    }
 
     //! Analytic valuation of a mark-to-market (FX-resetting) floating leg.
     /*! Each period accrues on the constant-leg notional converted at the reset FX,
@@ -73,7 +49,7 @@ namespace {
                                Integer paymentLag,
                                Calendar paymentCalendar,
                                BusinessDayConvention convention,
-                               ext::optional<bool> includeSettlementDateFlows,
+                               std::optional<bool> includeSettlementDateFlows,
                                Date settlementDate)
         : ownCurve_(ownCurve), otherCurve_(otherCurve), constantLegNotional_(constantLegNotional),
           spotResetPerConstant_(spotResetPerConstant),
@@ -97,16 +73,18 @@ namespace {
             }
 
             bool includeStart =
-                !hasOccurred(paymentStart, settlementDate_, includeSettlementDateFlows_);
+                !SimpleCashFlow(0.0, paymentStart)
+                     .hasOccurred(settlementDate_, includeSettlementDateFlows_);
             bool includeEnd =
-                !hasOccurred(paymentEnd, settlementDate_, includeSettlementDateFlows_);
+                !SimpleCashFlow(0.0, paymentEnd)
+                     .hasOccurred(settlementDate_, includeSettlementDateFlows_);
 
             if (!includeStart && !includeEnd)
                 return;
 
             // FX-reset notional for the period: constantLegNotional * FX(reset).
             Real fx;
-            if (start > ownCurve_.referenceDate()) {
+            if (start >= ownCurve_.referenceDate()) {
                 // future reset: forward FX from the two discount curves
                 fx = spotResetPerConstant_ * otherCurve_.discount(start) /
                      ownCurve_.discount(start);
@@ -149,7 +127,7 @@ namespace {
         Integer paymentLag_;
         Calendar paymentCalendar_;
         BusinessDayConvention convention_;
-        ext::optional<bool> includeSettlementDateFlows_;
+        std::optional<bool> includeSettlementDateFlows_;
         Date settlementDate_;
     };
 
@@ -163,7 +141,7 @@ namespace {
                                              Integer paymentLag,
                                              const Calendar& paymentCalendar,
                                              BusinessDayConvention convention,
-                                             const ext::optional<bool>& includeSettlementDateFlows,
+                                             const std::optional<bool>& includeSettlementDateFlows,
                                              const Date& settlementDate,
                                              const YieldTermStructure& ownCurve,
                                              const YieldTermStructure& otherCurve) {
@@ -181,7 +159,7 @@ namespace {
 DiscountingMtMCrossCurrencyBasisSwapEngine::DiscountingMtMCrossCurrencyBasisSwapEngine(
     Currency domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountcurve,
     Currency foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountcurve,
-    const Handle<Quote>& spotFX, ext::optional<bool> includeSettlementDateFlows,
+    const Handle<Quote>& spotFX, std::optional<bool> includeSettlementDateFlows,
     const Date& settlementDate, const Date& npvDate, const Date& spotFXSettleDate)
 : domesticCcy_(std::move(domesticCcy)), domesticCcyDiscountcurve_(domesticCcyDiscountcurve),
   foreignCcy_(std::move(foreignCcy)), foreignCcyDiscountcurve_(foreignCcyDiscountcurve),
@@ -194,7 +172,6 @@ DiscountingMtMCrossCurrencyBasisSwapEngine::DiscountingMtMCrossCurrencyBasisSwap
 }
 
 void DiscountingMtMCrossCurrencyBasisSwapEngine::calculate() const {
-
     QL_REQUIRE(!domesticCcyDiscountcurve_.empty() && !foreignCcyDiscountcurve_.empty(),
                "Discounting term structure handle is empty.");
     QL_REQUIRE(!spotFX_.empty(), "FX spot quote handle is empty.");
@@ -203,39 +180,54 @@ void DiscountingMtMCrossCurrencyBasisSwapEngine::calculate() const {
                "Term structures should have the same reference date.");
 
     Date referenceDate = domesticCcyDiscountcurve_->referenceDate();
-    Date settlementDate = settlementDate_;
-    if (settlementDate_ == Date()) {
-        settlementDate = referenceDate;
-    } else {
-        QL_REQUIRE(settlementDate >= referenceDate,
-                   "Settlement date (" << settlementDate
+    Date settlementDate = settlementDate_ == Date() ? referenceDate : settlementDate_;
+    QL_REQUIRE(settlementDate >= referenceDate,
+               "Settlement date (" << settlementDate
+                                    << ") cannot be before discount curve reference date ("
+                                    << referenceDate << ")");
+
+    Date valuationDate = npvDate_ == Date() ? referenceDate : npvDate_;
+    QL_REQUIRE(valuationDate >= referenceDate,
+               "NPV date (" << valuationDate
+                            << ") cannot be before discount curve reference date ("
+                            << referenceDate << ")");
+
+    Date spotFXSettleDate =
+        spotFXSettleDate_ == Date() ? referenceDate : spotFXSettleDate_;
+    QL_REQUIRE(spotFXSettleDate >= referenceDate,
+               "FX settlement date (" << spotFXSettleDate
                                        << ") cannot be before discount curve reference date ("
                                        << referenceDate << ")");
-    }
+
+    DiscountFactor domesticFxSettlementDiscount =
+        domesticCcyDiscountcurve_->discount(spotFXSettleDate);
+    DiscountFactor foreignFxSettlementDiscount =
+        foreignCcyDiscountcurve_->discount(spotFXSettleDate);
+    QL_REQUIRE(foreignFxSettlementDiscount != 0.0,
+               "Discount factor for currency " << foreignCcy_ << " at " << spotFXSettleDate
+                                                << " cannot be zero");
+    Real referenceDateFx =
+        spotFX_->value() * domesticFxSettlementDiscount / foreignFxSettlementDiscount;
+
+    DiscountFactor domesticValuationDiscount =
+        domesticCcyDiscountcurve_->discount(valuationDate);
+    DiscountFactor foreignValuationDiscount =
+        foreignCcyDiscountcurve_->discount(valuationDate);
+    QL_REQUIRE(domesticValuationDiscount != 0.0,
+               "Discount factor for currency " << domesticCcy_ << " at " << valuationDate
+                                                << " cannot be zero");
+    Real valuationDateFx =
+        referenceDateFx * foreignValuationDiscount / domesticValuationDiscount;
 
     Size numLegs = arguments_.legs.size();
-    if (npvDate_ == Date()) {
-        results_.valuationDate = referenceDate;
-    } else {
-        QL_REQUIRE(npvDate_ >= referenceDate,
-                   "NPV date (" << npvDate_
-                                << ") cannot be before discount curve reference date ("
-                                << referenceDate << ")");
-        results_.valuationDate = npvDate_;
-    }
-
-    Date spotFXSettleDate = spotFXSettleDate_;
-    if (spotFXSettleDate_ == Date()) {
-        spotFXSettleDate = referenceDate;
-    } else {
-        QL_REQUIRE(spotFXSettleDate >= referenceDate,
-                   "FX settlement date (" << spotFXSettleDate
-                                          << ") cannot be before discount curve reference date ("
-                                          << referenceDate << ")");
-    }
+    bool includeReferenceDateFlows =
+        includeSettlementDateFlows_ ? *includeSettlementDateFlows_
+                                    : Settings::instance().includeReferenceDateEvents();
 
     results_.value = 0.0;
     results_.errorEstimate = Null<Real>();
+    results_.valuationDate = valuationDate;
+    results_.npvDateDiscount = domesticValuationDiscount;
     results_.legNPV.resize(numLegs);
     results_.legBPS.resize(numLegs);
     results_.startDiscounts.resize(numLegs);
@@ -244,29 +236,23 @@ void DiscountingMtMCrossCurrencyBasisSwapEngine::calculate() const {
     results_.inCcyLegBPS.resize(numLegs);
     results_.npvDateDiscounts.resize(numLegs);
 
-    bool includeReferenceDateFlows =
-        includeSettlementDateFlows_ ? *includeSettlementDateFlows_
-                                    : Settings::instance().includeReferenceDateEvents();
-
     static const Spread basisPoint = 1.0e-4;
 
     for (Size legNo = 0; legNo < numLegs; ++legNo) {
         try {
-            // The leg is discounted on its own currency curve; the "other"
-            // curve (used for the FX reset) is the other currency's curve.
-            Handle<YieldTermStructure> legDiscountCurve;
-            Handle<YieldTermStructure> otherLegCurve;
+            Handle<YieldTermStructure> legDiscountCurve, otherLegCurve;
             if (arguments_.currencies[legNo] == domesticCcy_) {
                 legDiscountCurve = domesticCcyDiscountcurve_;
                 otherLegCurve = foreignCcyDiscountcurve_;
             } else {
                 QL_REQUIRE(arguments_.currencies[legNo] == foreignCcy_,
-                           "leg ccy (" << arguments_.currencies[legNo] << ") must be domesticCcy ("
-                                       << domesticCcy_ << ") or foreignCcy (" << foreignCcy_ << ")");
+                           "leg ccy (" << arguments_.currencies[legNo]
+                                       << ") must be domesticCcy (" << domesticCcy_
+                                       << ") or foreignCcy (" << foreignCcy_ << ")");
                 legDiscountCurve = foreignCcyDiscountcurve_;
                 otherLegCurve = domesticCcyDiscountcurve_;
             }
-            results_.npvDateDiscounts[legNo] = legDiscountCurve->discount(results_.valuationDate);
+            results_.npvDateDiscounts[legNo] = legDiscountCurve->discount(valuationDate);
 
             const auto& resetData = arguments_.resettingLegData;
             if (legNo == resetData.resettingLegIndex) {
@@ -275,8 +261,8 @@ void DiscountingMtMCrossCurrencyBasisSwapEngine::calculate() const {
                 const Currency& resettableCcy = arguments_.currencies[legNo];
                 const Currency& constantLegCcy = arguments_.currencies[resetData.constantLegIndex];
                 Real spotResetPerConstant = (resettableCcy == foreignCcy_) ?
-                                                1.0 / spotFX_->value() :
-                                                spotFX_->value();
+                                                1.0 / referenceDateFx :
+                                                referenceDateFx;
                 auto [npvRef, bpsRef] = npvbpsResettingLeg(
                     arguments_.legs[legNo], resetData.constantLegNotional,
                     spotResetPerConstant, constantLegCcy, resettableCcy, resetData.paymentLag,
@@ -292,53 +278,31 @@ void DiscountingMtMCrossCurrencyBasisSwapEngine::calculate() const {
             } else {
                 std::tie(results_.inCcyLegNPV[legNo], results_.inCcyLegBPS[legNo]) =
                     CashFlows::npvbps(arguments_.legs[legNo], **legDiscountCurve,
-                                      includeReferenceDateFlows, settlementDate,
-                                      results_.valuationDate);
+                                      includeReferenceDateFlows, settlementDate, valuationDate);
             }
 
             results_.inCcyLegNPV[legNo] *= arguments_.payer[legNo];
             results_.inCcyLegBPS[legNo] *= arguments_.payer[legNo];
-
             results_.legNPV[legNo] = results_.inCcyLegNPV[legNo];
             results_.legBPS[legNo] = results_.inCcyLegBPS[legNo];
 
-            // Convert to NPV currency if necessary.
             if (arguments_.currencies[legNo] != domesticCcy_) {
-                Real spotFXRate = spotFX_->value();
-                if (spotFXSettleDate != referenceDate) {
-                    // Carry the spot to the requested settlement date using the
-                    // discount-factor / FX parity relation.
-                    Real domesticCcyDF = domesticCcyDiscountcurve_->discount(spotFXSettleDate);
-                    Real foreignCcyDF = foreignCcyDiscountcurve_->discount(spotFXSettleDate);
-                    QL_REQUIRE(foreignCcyDF != 0.0,
-                               "Discount factor for currency " << foreignCcy_ << " at "
-                                                               << spotFXSettleDate
-                                                               << " cannot be zero");
-                    spotFXRate *= domesticCcyDF / foreignCcyDF;
-                }
-                results_.legNPV[legNo] *= spotFXRate;
-                results_.legBPS[legNo] *= spotFXRate;
+                results_.legNPV[legNo] *= valuationDateFx;
+                results_.legBPS[legNo] *= valuationDateFx;
             }
 
             Date startDate = CashFlows::startDate(arguments_.legs[legNo]);
-            if (startDate >= referenceDate) {
-                results_.startDiscounts[legNo] = legDiscountCurve->discount(startDate);
-            } else {
-                results_.startDiscounts[legNo] = Null<DiscountFactor>();
-            }
-
+            results_.startDiscounts[legNo] =
+                startDate >= referenceDate ? legDiscountCurve->discount(startDate)
+                                           : Null<DiscountFactor>();
             Date maturityDate = CashFlows::maturityDate(arguments_.legs[legNo]);
-            if (maturityDate >= referenceDate) {
-                results_.endDiscounts[legNo] = legDiscountCurve->discount(maturityDate);
-            } else {
-                results_.endDiscounts[legNo] = Null<DiscountFactor>();
-            }
-
+            results_.endDiscounts[legNo] =
+                maturityDate >= referenceDate ? legDiscountCurve->discount(maturityDate)
+                                              : Null<DiscountFactor>();
+            results_.value += results_.legNPV[legNo];
         } catch (std::exception& e) {
             QL_FAIL(io::ordinal(legNo + 1) << " leg: " << e.what());
         }
-
-        results_.value += results_.legNPV[legNo];
     }
 }
 

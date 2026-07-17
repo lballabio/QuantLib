@@ -223,6 +223,98 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
             }
 }
 
+BOOST_AUTO_TEST_CASE(testSameDayResetUsesSpot) {
+    BOOST_TEST_MESSAGE("Testing that a reset on the curve reference date uses spot FX...");
+
+    SavedSettings backup;
+    ExchangeRateManagerCleaner exchangeRateCleaner;
+    Date today(11, Sep, 2018);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> usdCurve = flatCurve(today, 0.02);
+    Handle<YieldTermStructure> eurCurve = flatCurve(today, 0.01);
+    auto usdIndex = ext::make_shared<USDLibor>(3 * Months, usdCurve);
+    auto eurIndex = ext::make_shared<Euribor>(3 * Months, eurCurve);
+
+    TARGET cal;
+    Schedule sch(today, today + 3 * Months, 3 * Months, cal, ModifiedFollowing,
+                 ModifiedFollowing, DateGeneration::Forward, false);
+    Real usdNominal = 10000000.0;
+    Rate spotFx = 1.10;
+    auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
+        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
+        usdIndex, 0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, 0.0, 1.0,
+        /*isFxBaseCurrencyLegResettable=*/false);
+
+    for (Size legNo = 0; legNo < 2; ++legNo)
+        for (const auto& cf : swap->leg(legNo))
+            if (auto frc = ext::dynamic_pointer_cast<FloatingRateCoupon>(cf)) {
+                Date fixingDate = frc->fixingDate();
+                if (fixingDate < today)
+                    frc->index()->addFixing(fixingDate, legNo == 0 ? 0.02 : 0.01, true);
+            }
+
+    swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
+        USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(spotFx)));
+    BOOST_CHECK_NO_THROW(swap->NPV());
+}
+
+BOOST_AUTO_TEST_CASE(testFxSettlementAndNpvDateConsistency) {
+    BOOST_TEST_MESSAGE("Testing FX-settlement carry, NPV-date conversion, and scalar discount...");
+
+    SavedSettings backup;
+    Date today(11, Sep, 2018);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> usdCurve = flatCurve(today, 0.03);
+    Handle<YieldTermStructure> eurCurve = flatCurve(today, 0.01);
+    auto usdIndex = ext::make_shared<USDLibor>(3 * Months, usdCurve);
+    auto eurIndex = ext::make_shared<Euribor>(3 * Months, eurCurve);
+
+    TARGET cal;
+    Date start = cal.advance(today, 2 * Days);
+    Date end = start + 2 * Years;
+    Schedule sch(start, end, 3 * Months, cal, ModifiedFollowing, ModifiedFollowing,
+                 DateGeneration::Forward, false);
+    Real usdNominal = 10000000.0;
+    Rate referenceSpot = 1.10;
+
+    auto makeSwap = [&]() {
+        return ext::make_shared<MtMCrossCurrencyBasisSwap>(
+            MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
+            usdIndex, 0.0, 1.0, usdNominal / referenceSpot, EURCurrency(), sch, eurIndex,
+            15.0e-4, 1.0, /*isFxBaseCurrencyLegResettable=*/false);
+    };
+
+    auto referenceSwap = makeSwap();
+    referenceSwap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
+        USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(referenceSpot)));
+    Real referenceNpv = referenceSwap->NPV();
+
+    Date fxSettlementDate = cal.advance(today, 6 * Months);
+    Rate settlementFx = referenceSpot * eurCurve->discount(fxSettlementDate) /
+                        usdCurve->discount(fxSettlementDate);
+    auto settlementSwap = makeSwap();
+    settlementSwap->setPricingEngine(
+        ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
+            USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(settlementFx),
+            std::nullopt, Date(), Date(), fxSettlementDate));
+
+    Real tolerance = 1.0e-10 * usdNominal;
+    BOOST_CHECK_SMALL(settlementSwap->NPV() - referenceNpv, tolerance);
+
+    Date npvDate = cal.advance(today, 9 * Months);
+    auto forwardNpvSwap = makeSwap();
+    forwardNpvSwap->setPricingEngine(
+        ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
+            USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(referenceSpot),
+            std::nullopt, Date(), npvDate));
+    DiscountFactor domesticNpvDateDiscount = usdCurve->discount(npvDate);
+    BOOST_CHECK_SMALL(forwardNpvSwap->NPV() * domesticNpvDateDiscount - referenceNpv,
+                      tolerance);
+    BOOST_CHECK_CLOSE(forwardNpvSwap->npvDateDiscount(), domesticNpvDateDiscount, 1.0e-10);
+}
+
 BOOST_AUTO_TEST_CASE(testSeasonedResetPeriodNeedsExchangeRate) {
     BOOST_TEST_MESSAGE(
         "Testing that an already-started MtM reset period requires a stored exchange rate...");

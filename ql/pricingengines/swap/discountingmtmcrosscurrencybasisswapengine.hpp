@@ -24,8 +24,8 @@
 
 #include <ql/handle.hpp>
 #include <ql/instruments/mtmcrosscurrencybasisswap.hpp>
-#include <ql/optional.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <optional>
 
 namespace QuantLib {
 
@@ -39,8 +39,7 @@ namespace QuantLib {
     FX rate observed at the period's reset.  A future reset is projected as a
     forward FX from the two discount curves, so no explicit FX-reset cash flows
     are needed; an already-fixed reset (the in-progress period of a seasoned
-    swap) is read from the reset data's FX index, which holds the realized FX
-    fixings.
+    swap) is read from \c ExchangeRateManager.
 
     \ingroup engines
 */
@@ -52,19 +51,21 @@ class DiscountingMtMCrossCurrencyBasisSwapEngine : public MtMCrossCurrencyBasisS
         \param foreignCcyDiscountCurve    Discount curve for foreign-currency flows.
         \param spotFX                     Units of \p domesticCcy per unit of
                                           \p foreignCcy, quoted for settlement on
-                                          the npv date.
+                                          \p spotFXSettleDate (or the curves'
+                                          reference date if none is given).
         \param includeSettlementDateFlows,settlementDate
                If includeSettlementDateFlows is true (false), cash flows on the
-               settlementDate are (not) included in the NPV.  Defaults to the npv date.
+               settlementDate are (not) included in the NPV.  The settlement date
+               defaults to the curves' reference date.
         \param npvDate                    Discount to this date; defaults to the
                                           curves' reference date.
-        \param spotFXSettleDate           FX conversion as of this date if given.
+        \param spotFXSettleDate           Settlement date of the FX quote if given.
     */
     DiscountingMtMCrossCurrencyBasisSwapEngine(
         Currency domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountCurve,
         Currency foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountCurve,
         const Handle<Quote>& spotFX,
-        ext::optional<bool> includeSettlementDateFlows = ext::nullopt,
+        std::optional<bool> includeSettlementDateFlows = std::nullopt,
         const Date& settlementDate = Date(), const Date& npvDate = Date(),
         const Date& spotFXSettleDate = Date());
 
@@ -92,7 +93,7 @@ class DiscountingMtMCrossCurrencyBasisSwapEngine : public MtMCrossCurrencyBasisS
     Currency foreignCcy_;
     Handle<YieldTermStructure> foreignCcyDiscountcurve_;
     Handle<Quote> spotFX_;
-    ext::optional<bool> includeSettlementDateFlows_;
+    std::optional<bool> includeSettlementDateFlows_;
     Date settlementDate_;
     Date npvDate_;
     Date spotFXSettleDate_;
