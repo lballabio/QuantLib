@@ -20,8 +20,8 @@
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/currencies/all.hpp>
+#include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
-#include <ql/indexes/fxindex.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/jpylibor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
@@ -54,6 +54,11 @@ namespace {
         return Handle<YieldTermStructure>(
             ext::make_shared<FlatForward>(ref, r, Actual360()));
     }
+
+    struct ExchangeRateManagerCleaner {
+        ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
+        ~ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
+    };
 
 }
 
@@ -218,11 +223,12 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
             }
 }
 
-BOOST_AUTO_TEST_CASE(testSeasonedResetPeriodNeedsFxIndex) {
+BOOST_AUTO_TEST_CASE(testSeasonedResetPeriodNeedsExchangeRate) {
     BOOST_TEST_MESSAGE(
-        "Testing that an already-started MtM reset period requires an FxIndex...");
+        "Testing that an already-started MtM reset period requires a stored exchange rate...");
 
     SavedSettings backup;
+    ExchangeRateManagerCleaner exchangeRateCleaner;
     Date today(11, Sep, 2018);
     Settings::instance().evaluationDate() = today;
 
@@ -252,11 +258,13 @@ BOOST_AUTO_TEST_CASE(testSeasonedResetPeriodNeedsFxIndex) {
     BOOST_CHECK_THROW(swap->NPV(), Error);
 }
 
-BOOST_AUTO_TEST_CASE(testSeasonedResetMatchesConstantNotional) {
-    BOOST_TEST_MESSAGE("Testing that an in-progress MtM reset prices identically to the equivalent "
-                       "constant-notional swap built from the realised reset notional...");
+BOOST_AUTO_TEST_CASE(testSeasonedTriangulatedResetMatchesConstantNotional) {
+    BOOST_TEST_MESSAGE("Testing that an in-progress MtM reset obtained by triangulation prices "
+                       "identically to the equivalent constant-notional swap built from the "
+                       "realised reset notional...");
 
     SavedSettings backup;
+    ExchangeRateManagerCleaner exchangeRateCleaner;
     Date today(11, Sep, 2018);
     Settings::instance().evaluationDate() = today;
 
@@ -280,15 +288,12 @@ BOOST_AUTO_TEST_CASE(testSeasonedResetMatchesConstantNotional) {
     Spread eurBasis = 25 * 1.0e-4; // basis on the resettable EUR leg
     Rate realisedFx = 0.92;        // realised EUR per USD at the past reset (deliberately != 1/spotFx)
 
-    // Base USD (constant), quote EUR (resettable); FX index quotes EUR per USD.
-    auto fxIndex = ext::make_shared<FxIndex>("ECB", USDCurrency(), EURCurrency(), cal);
-
     auto mtm = ext::make_shared<MtMCrossCurrencyBasisSwap>(
         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch, usdIndex,
         0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, eurBasis, 1.0,
-        /*isFxBaseCurrencyLegResettable=*/false, fxIndex);
+        /*isFxBaseCurrencyLegResettable=*/false);
 
-    // Seed the realised  rate fixings (both legs) and the realised FX reset.
+    // Seed the realised rate fixings (both legs) and the realised FX reset.
     for (Size legNo = 0; legNo < 2; ++legNo)
         for (const auto& cf : mtm->leg(legNo))
             if (auto frc = ext::dynamic_pointer_cast<FloatingRateCoupon>(cf)) {
@@ -299,8 +304,14 @@ BOOST_AUTO_TEST_CASE(testSeasonedResetMatchesConstantNotional) {
     for (const auto& cf : mtm->leg(mtm->resettingLegIndex()))
         if (auto cpn = ext::dynamic_pointer_cast<Coupon>(cf)) {
             Date reset = cpn->accrualStartDate();
-            if (reset <= today)
-                fxIndex->addFixing(reset, realisedFx, true);
+            if (reset <= today) {
+                Rate usdGbp = 0.80;
+                ExchangeRateManager::instance().add(
+                    ExchangeRate(USDCurrency(), GBPCurrency(), usdGbp), reset, reset);
+                ExchangeRateManager::instance().add(
+                    ExchangeRate(GBPCurrency(), EURCurrency(), realisedFx / usdGbp), reset,
+                    reset);
+            }
         }
 
     auto spot = makeQuoteHandle(spotFx);
@@ -324,11 +335,13 @@ BOOST_AUTO_TEST_CASE(testSeasonedResetMatchesConstantNotional) {
                     << "    difference:     " << diff << "\n");
 }
 
-BOOST_AUTO_TEST_CASE(testSeasonedEurUsdMarketFxIndex) {
-    BOOST_TEST_MESSAGE("Testing a seasoned EURUSD MtM swap (FxIndex quoted USD per EUR, the market "
-                       "convention) reprices to the equivalent constant-notional swap...");
+BOOST_AUTO_TEST_CASE(testSeasonedEurUsdMarketExchangeRate) {
+    BOOST_TEST_MESSAGE("Testing a seasoned EURUSD MtM swap (exchange rate stored as USD per EUR, "
+                       "the market convention) reprices to the equivalent constant-notional "
+                       "swap...");
 
     SavedSettings backup;
+    ExchangeRateManagerCleaner exchangeRateCleaner;
     Date today(11, Sep, 2018);
     Settings::instance().evaluationDate() = today;
 
@@ -348,15 +361,12 @@ BOOST_AUTO_TEST_CASE(testSeasonedEurUsdMarketFxIndex) {
     Spread basis = 20 * 1.0e-4; // on the EUR (base, constant) leg
     Rate marketFx = 1.10;       // EURUSD market convention: USD per EUR
 
-    // FxIndex in market orientation: source EUR -> target USD == USD per EUR.
-    auto fxIndex = ext::make_shared<FxIndex>("ECB", EURCurrency(), USDCurrency(), cal);
-
     // base = EUR (constant), quote = USD (resettable); reset notional = EUR notional * USD per EUR.
     Real realizedUsdNotional = eurNotional * marketFx;
     auto mtm = ext::make_shared<MtMCrossCurrencyBasisSwap>(
         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, eurNotional, EURCurrency(), sch,
         eurIndex, basis, 1.0, realizedUsdNotional, USDCurrency(), sch, usdIndex, 0.0, 1.0,
-        /*isFxBaseCurrencyLegResettable=*/false, fxIndex);
+        /*isFxBaseCurrencyLegResettable=*/false);
 
     for (Size legNo = 0; legNo < 2; ++legNo)
         for (const auto& cf : mtm->leg(legNo))
@@ -369,7 +379,8 @@ BOOST_AUTO_TEST_CASE(testSeasonedEurUsdMarketFxIndex) {
         if (auto cpn = ext::dynamic_pointer_cast<Coupon>(cf)) {
             Date reset = cpn->accrualStartDate();
             if (reset <= today)
-                fxIndex->addFixing(reset, marketFx, true); // 1.10, market convention
+                ExchangeRateManager::instance().add(
+                    ExchangeRate(EURCurrency(), USDCurrency(), marketFx), reset, reset);
         }
 
     auto spot = makeQuoteHandle(marketFx); // USD per EUR = domestic(USD) per foreign(EUR)
@@ -391,11 +402,13 @@ BOOST_AUTO_TEST_CASE(testSeasonedEurUsdMarketFxIndex) {
                     << "    diff:    " << diff << "\n");
 }
 
-BOOST_AUTO_TEST_CASE(testSeasonedUsdJpyMarketFxIndex) {
-    BOOST_TEST_MESSAGE("Testing a seasoned USDJPY MtM swap (FxIndex quoted JPY per USD, the market "
-                       "convention) reprices to the equivalent constant-notional swap...");
+BOOST_AUTO_TEST_CASE(testSeasonedUsdJpyMarketExchangeRate) {
+    BOOST_TEST_MESSAGE("Testing a seasoned USDJPY MtM swap (exchange rate stored as JPY per USD, "
+                       "the market convention) reprices to the equivalent constant-notional "
+                       "swap...");
 
     SavedSettings backup;
+    ExchangeRateManagerCleaner exchangeRateCleaner;
     Date today(11, Sep, 2018);
     Settings::instance().evaluationDate() = today;
 
@@ -414,15 +427,12 @@ BOOST_AUTO_TEST_CASE(testSeasonedUsdJpyMarketFxIndex) {
     Spread basis = 15 * 1.0e-4; // on the JPY (quote, constant) leg
     Rate marketFx = 150.0;      // USDJPY market convention: JPY per USD
 
-    // FxIndex in market orientation: source USD -> target JPY == JPY per USD.
-    auto fxIndex = ext::make_shared<FxIndex>("TKO", USDCurrency(), JPYCurrency(), cal);
-
     // base = USD (resettable), quote = JPY (constant); reset notional = JPY notional * USD per JPY.
     Real realizedUsdNotional = jpyNotional / marketFx;
     auto mtm = ext::make_shared<MtMCrossCurrencyBasisSwap>(
         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, realizedUsdNotional, USDCurrency(), sch,
         usdIndex, 0.0, 1.0, jpyNotional, JPYCurrency(), sch, jpyIndex, basis, 1.0,
-        /*isFxBaseCurrencyLegResettable=*/true, fxIndex);
+        /*isFxBaseCurrencyLegResettable=*/true);
 
     for (Size legNo = 0; legNo < 2; ++legNo)
         for (const auto& cf : mtm->leg(legNo))
@@ -435,7 +445,8 @@ BOOST_AUTO_TEST_CASE(testSeasonedUsdJpyMarketFxIndex) {
         if (auto cpn = ext::dynamic_pointer_cast<Coupon>(cf)) {
             Date reset = cpn->accrualStartDate();
             if (reset <= today)
-                fxIndex->addFixing(reset, marketFx, true); // 150, market convention
+                ExchangeRateManager::instance().add(
+                    ExchangeRate(USDCurrency(), JPYCurrency(), marketFx), reset, reset);
         }
 
     auto spot = makeQuoteHandle(marketFx); // JPY per USD = domestic(JPY) per foreign(USD)

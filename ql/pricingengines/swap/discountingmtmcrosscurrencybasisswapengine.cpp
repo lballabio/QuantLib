@@ -17,6 +17,7 @@
 
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/coupon.hpp>
+#include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/patterns/visitor.hpp>
 #include <ql/pricingengines/swap/discountingmtmcrosscurrencybasisswapengine.hpp>
 #include <ql/settings.hpp>
@@ -56,10 +57,10 @@ namespace {
     /*! Each period accrues on the constant-leg notional converted at the reset FX,
         observed at the accrual start.  A future reset is the forward FX implied by
         the two discount curves (spotResetPerConstant * P_constant/P_resettable);
-        an already-fixed reset is read from the FX history.  The per-period NPV is
-        the redemption of the reset notional plus accrued interest at period end,
-        minus the borrowed notional at period start, all on the leg's own discount
-        curve.
+        an already-fixed reset is read from the exchange-rate repository.  The
+        per-period NPV is the redemption of the reset notional plus accrued interest
+        at period end, minus the borrowed notional at period start, all on the leg's
+        own discount curve.
     */
     class ResettingLegCalculator : public AcyclicVisitor, public Visitor<Coupon> {
       public:
@@ -67,16 +68,17 @@ namespace {
                                const YieldTermStructure& otherCurve,
                                Real constantLegNotional,
                                Real spotResetPerConstant,
-                               ext::shared_ptr<FxIndex> fxIndex,
-                               bool invertFxIndex,
+                               Currency constantLegCurrency,
+                               Currency resettableLegCurrency,
                                Integer paymentLag,
                                Calendar paymentCalendar,
                                BusinessDayConvention convention,
                                ext::optional<bool> includeSettlementDateFlows,
                                Date settlementDate)
         : ownCurve_(ownCurve), otherCurve_(otherCurve), constantLegNotional_(constantLegNotional),
-          spotResetPerConstant_(spotResetPerConstant), fxIndex_(std::move(fxIndex)),
-          invertFxIndex_(invertFxIndex), paymentLag_(paymentLag),
+          spotResetPerConstant_(spotResetPerConstant),
+          constantLegCurrency_(std::move(constantLegCurrency)),
+          resettableLegCurrency_(std::move(resettableLegCurrency)), paymentLag_(paymentLag),
           paymentCalendar_(std::move(paymentCalendar)), convention_(convention),
           includeSettlementDateFlows_(includeSettlementDateFlows),
           settlementDate_(settlementDate) {}
@@ -109,17 +111,16 @@ namespace {
                 fx = spotResetPerConstant_ * otherCurve_.discount(start) /
                      ownCurve_.discount(start);
             } else {
-                // in-progress reset already fixed: use the realized FX from history
-                QL_REQUIRE(fxIndex_,
-                           "the reset for the period starting " << start
-                           << " has already fixed; supply an FxIndex with the realized fixing "
-                              "to price this seasoned swap");
-                // orient the (market-convention) fixing to resettable-per-constant
-                Real fixing = fxIndex_->fixing(start);
-                QL_REQUIRE(fixing > 0.0,
-                           "FX fixing for " << fxIndex_->name() << " on " << start
-                                            << " must be positive");
-                fx = invertFxIndex_ ? 1.0 / fixing : fixing;
+                // In-progress reset already fixed: obtain the realized conversion from
+                // the exchange-rate repository.  Using exchange(), instead of rate(),
+                // handles rates stored in either orientation and derived rates.
+                ExchangeRate exchangeRate = ExchangeRateManager::instance().lookup(
+                    constantLegCurrency_, resettableLegCurrency_, start);
+                fx = exchangeRate.exchange(Money(1.0, constantLegCurrency_)).value();
+                QL_REQUIRE(fx > 0.0,
+                           "FX fixing from " << constantLegCurrency_ << " to "
+                                             << resettableLegCurrency_ << " on " << start
+                                             << " must be positive");
             }
             Real adjustedNotional = constantLegNotional_ * fx;
 
@@ -141,8 +142,8 @@ namespace {
         const YieldTermStructure& otherCurve_;
         Real constantLegNotional_;
         Real spotResetPerConstant_;
-        ext::shared_ptr<FxIndex> fxIndex_;
-        bool invertFxIndex_;
+        Currency constantLegCurrency_;
+        Currency resettableLegCurrency_;
         Real npv_ = 0.0;
         Real bps_ = 0.0;
         Integer paymentLag_;
@@ -157,8 +158,8 @@ namespace {
     std::pair<Real, Real> npvbpsResettingLeg(const Leg& leg,
                                              Real constantLegNotional,
                                              Real spotResetPerConstant,
-                                             const ext::shared_ptr<FxIndex>& fxIndex,
-                                             bool invertFxIndex,
+                                             const Currency& constantLegCurrency,
+                                             const Currency& resettableLegCurrency,
                                              Integer paymentLag,
                                              const Calendar& paymentCalendar,
                                              BusinessDayConvention convention,
@@ -167,9 +168,9 @@ namespace {
                                              const YieldTermStructure& ownCurve,
                                              const YieldTermStructure& otherCurve) {
         ResettingLegCalculator calc(ownCurve, otherCurve, constantLegNotional,
-                                    spotResetPerConstant, fxIndex, invertFxIndex, paymentLag,
-                                    paymentCalendar, convention, includeSettlementDateFlows,
-                                    settlementDate);
+                                    spotResetPerConstant, constantLegCurrency,
+                                    resettableLegCurrency, paymentLag, paymentCalendar,
+                                    convention, includeSettlementDateFlows, settlementDate);
         for (const auto& cf : leg)
             cf->accept(calc);
         return { calc.NPV(), calc.BPS() };
@@ -276,29 +277,9 @@ void DiscountingMtMCrossCurrencyBasisSwapEngine::calculate() const {
                 Real spotResetPerConstant = (resettableCcy == foreignCcy_) ?
                                                 1.0 / spotFX_->value() :
                                                 spotFX_->value();
-                // The reset notional needs the FX quoted as resettable-per-constant.
-                // Accept the FxIndex in either market orientation (it may quote the
-                // pair as quote-per-base either way) and invert if it is given as
-                // constant-per-resettable.
-                bool invertFxIndex = false;
-                if (resetData.fxIndex) {
-                    const Currency& src = resetData.fxIndex->sourceCurrency();
-                    const Currency& tgt = resetData.fxIndex->targetCurrency();
-                    if (src == constantLegCcy && tgt == resettableCcy)
-                        invertFxIndex = false;
-                    else if (src == resettableCcy && tgt == constantLegCcy)
-                        invertFxIndex = true;
-                    else
-                        QL_FAIL("FxIndex " << resetData.fxIndex->name() << " currencies ("
-                                           << src << ", " << tgt
-                                           << ") must be the swap's leg currencies ("
-                                           << constantLegCcy << ", " << resettableCcy << ")");
-                }
-
                 auto [npvRef, bpsRef] = npvbpsResettingLeg(
                     arguments_.legs[legNo], resetData.constantLegNotional,
-                    spotResetPerConstant,
-                    resetData.fxIndex, invertFxIndex, resetData.paymentLag,
+                    spotResetPerConstant, constantLegCcy, resettableCcy, resetData.paymentLag,
                     resetData.paymentCalendar,
                     resetData.paymentConvention, includeReferenceDateFlows, settlementDate,
                     **legDiscountCurve, **otherLegCurve);

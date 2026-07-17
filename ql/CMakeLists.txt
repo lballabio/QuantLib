@@ -228,7 +228,6 @@ set(QL_SOURCES
     indexes/iborindex.cpp
     indexes/indexmanager.cpp
     indexes/inflationindex.cpp
-    indexes/fxindex.cpp
     indexes/interestrateindex.cpp
     indexes/region.cpp
     indexes/swap/chfliborswap.cpp
@@ -1321,7 +1320,6 @@ set(QL_HEADERS
     indexes/inflation/uscpi.hpp
     indexes/inflation/zacpi.hpp
     indexes/inflationindex.hpp
-    indexes/fxindex.hpp
     indexes/interestrateindex.hpp
     indexes/region.hpp
     indexes/swap/chfliborswap.hpp

@@ -28,8 +28,7 @@ namespace {
 
 void checkResettingLegData(
     const MtMCrossCurrencyBasisSwap::ResettingLegData& resettingLegData,
-    Size numberOfLegs,
-    const std::vector<Currency>& currencies) {
+    Size numberOfLegs) {
 
     QL_REQUIRE(resettingLegData.resettingLegIndex < numberOfLegs,
                "Resetting leg index (" << resettingLegData.resettingLegIndex << ") out of range");
@@ -42,20 +41,6 @@ void checkResettingLegData(
     QL_REQUIRE(resettingLegData.constantLegNotional != 0.0,
                "Constant leg notional cannot be zero");
 
-    if (resettingLegData.fxIndex) {
-        // The FxIndex may quote the pair in either market orientation; require only
-        // that its two currencies are the swap's two leg currencies.  The pricing
-        // engine orients the fixing to resettable-per-constant as needed.
-        const Currency& src = resettingLegData.fxIndex->sourceCurrency();
-        const Currency& tgt = resettingLegData.fxIndex->targetCurrency();
-        const Currency& constantCcy = currencies[resettingLegData.constantLegIndex];
-        const Currency& resettableCcy = currencies[resettingLegData.resettingLegIndex];
-        QL_REQUIRE((src == constantCcy && tgt == resettableCcy) ||
-                       (src == resettableCcy && tgt == constantCcy),
-                   "FxIndex " << resettingLegData.fxIndex->name() << " currencies (" << src << ", "
-                              << tgt << ") must be the swap's leg currencies (" << constantCcy
-                              << ", " << resettableCcy << ")");
-    }
 }
 
 }
@@ -66,12 +51,10 @@ MtMCrossCurrencyBasisSwap::ResettingLegData::ResettingLegData(
     Real constantLegNotional,
     Integer paymentLag,
     Calendar paymentCalendar,
-    BusinessDayConvention paymentConvention,
-    ext::shared_ptr<FxIndex> fxIndex)
+    BusinessDayConvention paymentConvention)
 : resettingLegIndex(resettingLegIndex), constantLegIndex(constantLegIndex),
   constantLegNotional(constantLegNotional), paymentLag(paymentLag),
-  paymentCalendar(std::move(paymentCalendar)), paymentConvention(paymentConvention),
-  fxIndex(std::move(fxIndex)) {}
+  paymentCalendar(std::move(paymentCalendar)), paymentConvention(paymentConvention) {}
 
 MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
     Type type,
@@ -80,7 +63,6 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
     Real fxQuoteNominal, Currency fxQuoteCurrency, Schedule fxQuoteSchedule,
     const ext::shared_ptr<IborIndex>& fxQuoteIndex, Spread fxQuoteSpread, Real fxQuoteGearing,
     bool isFxBaseCurrencyLegResettable,
-    const ext::shared_ptr<FxIndex>& fxIndex,
     Integer fxBasePaymentLag, Integer fxQuotePaymentLag,
     bool fxBaseCompoundSpread, Natural fxBaseLookbackDays, bool fxBaseObservationShift,
     Natural fxBaseLockoutDays, RateAveraging::Type fxBaseAveragingMethod,
@@ -96,8 +78,7 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
                     isFxBaseCurrencyLegResettable ? fxBaseSchedule.calendar()
                                                   : fxQuoteSchedule.calendar(),
                     isFxBaseCurrencyLegResettable ? fxBaseSchedule.businessDayConvention()
-                                                  : fxQuoteSchedule.businessDayConvention(),
-                    fxIndex),
+                                                  : fxQuoteSchedule.businessDayConvention()),
   fxBaseNominal_(fxBaseNominal),
   fxBaseCurrency_(std::move(fxBaseCurrency)), fxBaseSchedule_(std::move(fxBaseSchedule)),
   fxBaseIndex_(fxBaseIndex), fxBaseSpread_(fxBaseSpread), fxBaseGearing_(fxBaseGearing),
@@ -114,7 +95,6 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
   fxQuoteAveragingMethod_(fxQuoteAveragingMethod), telescopicValueDates_(telescopicValueDates) {
     registerWith(fxBaseIndex_);
     registerWith(fxQuoteIndex_);
-    registerWith(resettingLegData_.fxIndex);
     initialize();
 }
 
@@ -192,7 +172,7 @@ void MtMCrossCurrencyBasisSwap::initialize() {
 }
 
 void MtMCrossCurrencyBasisSwap::validateResettingLegData() const {
-    checkResettingLegData(resettingLegData_, legs_.size(), currencies_);
+    checkResettingLegData(resettingLegData_, legs_.size());
 }
 
 void MtMCrossCurrencyBasisSwap::setupArguments(PricingEngine::arguments* args) const {
@@ -240,7 +220,7 @@ void MtMCrossCurrencyBasisSwap::setupExpired() const {
 
 void MtMCrossCurrencyBasisSwap::arguments::validate() const {
     CrossCurrencySwap::arguments::validate();
-    checkResettingLegData(resettingLegData, legs.size(), currencies);
+    checkResettingLegData(resettingLegData, legs.size());
     QL_REQUIRE(fxBaseSpread != Null<Spread>(), "FX-base spread cannot be null");
     QL_REQUIRE(fxQuoteSpread != Null<Spread>(), "FX-quote spread cannot be null");
 }

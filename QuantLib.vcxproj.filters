@@ -594,9 +594,6 @@
     <ClInclude Include="ql\indexes\inflationindex.hpp">
       <Filter>indexes</Filter>
     </ClInclude>
-    <ClInclude Include="ql\indexes\fxindex.hpp">
-      <Filter>indexes</Filter>
-    </ClInclude>
     <ClInclude Include="ql\indexes\interestrateindex.hpp">
       <Filter>indexes</Filter>
     </ClInclude>
@@ -4719,9 +4716,6 @@
       <Filter>indexes</Filter>
     </ClCompile>
     <ClCompile Include="ql\indexes\inflationindex.cpp">
-      <Filter>indexes</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\indexes\fxindex.cpp">
       <Filter>indexes</Filter>
     </ClCompile>
     <ClCompile Include="ql\indexes\interestrateindex.cpp">

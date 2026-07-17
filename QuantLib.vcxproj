@@ -862,7 +862,6 @@
     <ClInclude Include="ql\indexes\inflation\uscpi.hpp" />
     <ClInclude Include="ql\indexes\inflation\zacpi.hpp" />
     <ClInclude Include="ql\indexes\inflationindex.hpp" />
-    <ClInclude Include="ql\indexes\fxindex.hpp" />
     <ClInclude Include="ql\indexes\interestrateindex.hpp" />
     <ClInclude Include="ql\indexes\region.hpp" />
     <ClInclude Include="ql\indexes\swap\all.hpp" />
@@ -2175,7 +2174,6 @@
     <ClCompile Include="ql\indexes\ibor\zaronia.cpp" />
     <ClCompile Include="ql\indexes\indexmanager.cpp" />
     <ClCompile Include="ql\indexes\inflationindex.cpp" />
-    <ClCompile Include="ql\indexes\fxindex.cpp" />
     <ClCompile Include="ql\indexes\interestrateindex.cpp" />
     <ClCompile Include="ql\indexes\region.cpp" />
     <ClCompile Include="ql\indexes\swap\chfliborswap.cpp" />

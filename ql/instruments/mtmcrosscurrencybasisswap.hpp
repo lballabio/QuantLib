@@ -23,7 +23,6 @@
 #define quantlib_mtm_cross_currency_basis_swap_hpp
 
 #include <ql/cashflows/rateaveraging.hpp>
-#include <ql/indexes/fxindex.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/crosscurrencyswap.hpp>
 #include <ql/pricingengine.hpp>
@@ -51,6 +50,11 @@ namespace QuantLib {
     understands the resettable leg (see DiscountingMtMCrossCurrencyBasisSwapEngine);
     pricing it with a plain constant-notional engine would ignore the resets.
 
+    For a seasoned swap whose current reset period has already started, the
+    realized exchange rate on the period start date must be available from
+    \c ExchangeRateManager.  Direct, inverse, and derived exchange rates are
+    supported.
+
     \ingroup instruments
 */
 class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
@@ -62,8 +66,7 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
                          Real constantLegNotional,
                          Integer paymentLag,
                          Calendar paymentCalendar,
-                         BusinessDayConvention paymentConvention,
-                         ext::shared_ptr<FxIndex> fxIndex = {});
+                         BusinessDayConvention paymentConvention);
 
         //! index of the resettable leg
         Size resettingLegIndex = 0;
@@ -75,8 +78,6 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
         Integer paymentLag = 0;
         Calendar paymentCalendar;
         BusinessDayConvention paymentConvention = Following;
-        //! historical FX reset fixings, quoted resettable currency per constant-leg currency
-        ext::shared_ptr<FxIndex> fxIndex;
     };
 
     class arguments;
@@ -105,7 +106,6 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
         Spread fxQuoteSpread,
         Real fxQuoteGearing,
         bool isFxBaseCurrencyLegResettable,
-        const ext::shared_ptr<FxIndex>& fxIndex = {},
         Integer fxBasePaymentLag = 0, Integer fxQuotePaymentLag = 0,
         bool fxBaseCompoundSpread = false,
         Natural fxBaseLookbackDays = Null<Natural>(),
@@ -178,7 +178,6 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
     Size resettingLegIndex() const { return resettingLegData_.resettingLegIndex; }
     Size constantLegIndex() const { return resettingLegData_.constantLegIndex; }
     Real constantLegNotional() const { return resettingLegData_.constantLegNotional; }
-    const ext::shared_ptr<FxIndex>& fxIndex() const { return resettingLegData_.fxIndex; }
     //@}
 
     //! \name Additional interface
