@@ -92,13 +92,11 @@ namespace QuantLib {
 
         // 4. Boundary conditions
         FdmBoundaryConditionSet boundaries;
-        boundaries.push_back(FdmBoundaryConditionSet::value_type(
-            new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
-                                     FdmDirichletBoundary::Lower)));
+        boundaries.push_back(ext::make_shared<FdmDirichletBoundary>(
+            mesher, arguments_.rebate, 0, FdmDirichletBoundary::Lower));
 
-        boundaries.push_back(FdmBoundaryConditionSet::value_type(
-            new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
-                                     FdmDirichletBoundary::Upper)));
+        boundaries.push_back(ext::make_shared<FdmDirichletBoundary>(
+            mesher, arguments_.rebate, 0, FdmDirichletBoundary::Upper));
 
         // 5. Solver
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,

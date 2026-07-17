@@ -125,16 +125,14 @@ namespace QuantLib {
         FdmBoundaryConditionSet boundaries;
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::DownOut) {
-            boundaries.push_back(FdmBoundaryConditionSet::value_type(
-                new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
-                                         FdmDirichletBoundary::Lower)));
+            boundaries.push_back(ext::make_shared<FdmDirichletBoundary>(
+                mesher, arguments_.rebate, 0, FdmDirichletBoundary::Lower));
 
         }
         if (   arguments_.barrierType == Barrier::UpIn
             || arguments_.barrierType == Barrier::UpOut) {
-            boundaries.push_back(FdmBoundaryConditionSet::value_type(
-                new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
-                                         FdmDirichletBoundary::Upper)));
+            boundaries.push_back(ext::make_shared<FdmDirichletBoundary>(
+                mesher, arguments_.rebate, 0, FdmDirichletBoundary::Upper));
         }
 
         // 5. Solver
