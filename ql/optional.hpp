@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file optional.hpp
-    \brief Maps ext::optional to the std implementation
-*/
-
 #ifndef quantlib_optional_hpp
 #define quantlib_optional_hpp
 

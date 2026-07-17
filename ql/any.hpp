@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file any.hpp
-    \brief Maps ext::any to the std implementation
-*/
-
 #ifndef quantlib_any_hpp
 #define quantlib_any_hpp
 
