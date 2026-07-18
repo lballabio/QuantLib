@@ -857,7 +857,6 @@ namespace QuantLib {
                 b = y.discountFactor(dt);
             }
 
-            b = y.discountFactor(dt);
             discount *= b;
             lastDate = leg[i]->date();
 
