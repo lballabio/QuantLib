@@ -832,23 +832,37 @@ namespace QuantLib {
 #endif
 
         Real npv = 0.0;
-        DiscountFactor discount = 1.0;
+        DiscountFactor discount = 1.0, b;
         Date lastDate = npvDate;
         const DayCounter& dc = y.dayCounter();
-        for (const auto& i : leg) {
-            if (i->hasOccurred(settlementDate, includeSettlementDateFlows))
-                continue;
+        bool inFirstPeriod = true;
+        for (Size i = 0; i < leg.size(); ++i) {
 
-            Real amount = i->amount();
-            if (i->tradingExCoupon(settlementDate)) {
+            if (leg[i]->hasOccurred(settlementDate, includeSettlementDateFlows)) {
+                continue;
+            }
+
+            Real amount = leg[i]->amount();
+            if (leg[i]->tradingExCoupon(settlementDate)) {
                 amount = 0.0;
             }
 
-            DiscountFactor b = y.discountFactor(getStepwiseDiscountTime(i, dc, npvDate, lastDate));
+            Time dt = getStepwiseDiscountTime(leg[i], dc, npvDate, lastDate);
+
+            if ((y.compounding() == SimpleThenCompounded && inFirstPeriod) ||
+                (y.compounding() == CompoundedThenSimple && inFirstPeriod && i == leg.size() - 1)) {
+                b = InterestRate(y.rate(), y.dayCounter(), Compounding::Simple, y.frequency())
+                        .discountFactor(dt);
+            } else {
+                b = y.discountFactor(dt);
+            }
+
+            b = y.discountFactor(dt);
             discount *= b;
-            lastDate = i->date();
+            lastDate = leg[i]->date();
 
             npv += amount * discount;
+            inFirstPeriod = false;
         }
 
         return npv;
