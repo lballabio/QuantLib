@@ -850,7 +850,7 @@ namespace QuantLib {
             Time dt = getStepwiseDiscountTime(leg[i], dc, npvDate, lastDate);
 
             if ((y.compounding() == SimpleThenCompounded && inFirstPeriod) ||
-                (y.compounding() == CompoundedThenSimple && inFirstPeriod && i == leg.size() - 1)) {
+                (y.compounding() == CompoundedThenSimple && inFirstPeriod && leg[i]->date() == leg.back()->date())) {
                 b = InterestRate(y.rate(), y.dayCounter(), Compounding::Simple, y.frequency())
                         .discountFactor(dt);
             } else {
