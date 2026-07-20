@@ -854,7 +854,7 @@ BOOST_AUTO_TEST_CASE(testSofrSwaptionPaymentLag) {
     auto variableSwap = ext::make_shared<NonstandardSwap>(
         Swap::Payer, fixedNominals, floatingNominals, schedule, fixedRates, dc,
         schedule, sofr, gearings, spreads, dc, false, false,
-        ext::optional<BusinessDayConvention>(Following), 2, calendar);
+        std::optional<BusinessDayConvention>(Following), 2, calendar);
     variableSwap->setPricingEngine(discountingEngine);
     BOOST_CHECK(std::isfinite(variableSwap->NPV()));
     for (const auto& cashflow : variableSwap->floatingLeg()) {
@@ -882,7 +882,7 @@ BOOST_AUTO_TEST_CASE(testSofrSwaptionPaymentLag) {
     auto scaledSwap = ext::make_shared<NonstandardSwap>(
         Swap::Payer, scaledFixedNominals, scaledFloatingNominals, schedule,
         fixedRates, dc, schedule, sofr, gearings, spreads, dc, false, false,
-        ext::optional<BusinessDayConvention>(Following), 2, calendar);
+        std::optional<BusinessDayConvention>(Following), 2, calendar);
     auto scaledSwaption =
         ext::make_shared<NonstandardSwaption>(scaledSwap, exercise);
     scaledSwaption->setPricingEngine(

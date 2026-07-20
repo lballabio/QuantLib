@@ -131,7 +131,7 @@ BOOST_AUTO_TEST_CASE(testPaymentLagPreservedOnConversion) {
         Swap::Payer, 1.0e6, baseSwap->fixedSchedule(), 0.05,
         baseSwap->fixedDayCount(), baseSwap->fullResetSchedule(),
         vars.euribor3m, baseSwap->resetsPerCoupon(), 0.0,
-        RateAveraging::Compound, ext::nullopt, paymentLag, vars.calendar);
+        RateAveraging::Compound, std::nullopt, paymentLag, vars.calendar);
 
     NonstandardSwap converted(*laggedSwap);
     BOOST_CHECK_EQUAL(converted.paymentLag(), paymentLag);

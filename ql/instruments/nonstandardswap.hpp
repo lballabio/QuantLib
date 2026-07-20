@@ -56,7 +56,7 @@ namespace QuantLib {
                         DayCounter floatingDayCount,
                         bool intermediateCapitalExchange = false,
                         bool finalCapitalExchange = false,
-                        ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt,
+                        std::optional<BusinessDayConvention> paymentConvention = std::nullopt,
                         Integer paymentLag = 0,
                         Calendar paymentCalendar = Calendar());
         NonstandardSwap(Swap::Type type,
@@ -72,7 +72,7 @@ namespace QuantLib {
                         DayCounter floatingDayCount,
                         bool intermediateCapitalExchange = false,
                         bool finalCapitalExchange = false,
-                        ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt,
+                        std::optional<BusinessDayConvention> paymentConvention = std::nullopt,
                         Integer paymentLag = 0,
                         Calendar paymentCalendar = Calendar());
         //! \name Inspectors

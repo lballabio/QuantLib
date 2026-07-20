@@ -71,7 +71,7 @@ namespace QuantLib {
                                      DayCounter floatingDayCount,
                                      const bool intermediateCapitalExchange,
                                      const bool finalCapitalExchange,
-                                     ext::optional<BusinessDayConvention> paymentConvention,
+                                     std::optional<BusinessDayConvention> paymentConvention,
                                      const Integer paymentLag,
                                      Calendar paymentCalendar)
     : Swap(2), type_(type), fixedNominal_(std::move(fixedNominal)),
@@ -105,7 +105,7 @@ namespace QuantLib {
                                      DayCounter floatingDayCount,
                                      const bool intermediateCapitalExchange,
                                      const bool finalCapitalExchange,
-                                     ext::optional<BusinessDayConvention> paymentConvention,
+                                     std::optional<BusinessDayConvention> paymentConvention,
                                      const Integer paymentLag,
                                      Calendar paymentCalendar)
     : Swap(2), type_(type), fixedNominal_(std::move(fixedNominal)),

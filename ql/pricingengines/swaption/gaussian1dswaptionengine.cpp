@@ -99,16 +99,9 @@ namespace QuantLib {
             }
         }
 
-        /* Floating-rate estimate for coupon l as seen from expiryDate in state
-           y. Dividing by the accrual time here and multiplying by it again when
-           the cashflow is assembled reproduces nominal * (compounding factor -
-           1) exactly, so a payment lag only moves the date the amount is
-           discounted to - at the cost of no payment-delay convexity. */
+        // A payment delay enters only through the discount date - nothing special is done here
         auto floatingRate = [&](Size l, const Date& expiryDate, Real y) -> Real {
             if (overnightIndexed) {
-                // A lookback can put V0 before expiryDate. That stub is already
-                // fixed and not a function of the state, so it comes off the
-                // curve; the branches agree at V0 == expiryDate.
                 Real compounding =
                     onStartDates[l] < expiryDate
                         ? Real(projectionCurve->discount(onStartDates[l], true) /
