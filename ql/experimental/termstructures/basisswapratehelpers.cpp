@@ -127,16 +127,26 @@ namespace QuantLib {
         bool endOfMonth,
         const ext::shared_ptr<OvernightIndex>& baseIndex,
         const ext::shared_ptr<IborIndex>& otherIndex,
-        Handle<YieldTermStructure> discountHandle)
+        Handle<YieldTermStructure> discountHandle,
+        bool bootstrapBaseCurve)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
-      discountHandle_(std::move(discountHandle)) {
+      discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve) {
 
         // we need to clone the index whose forecast curve we want to bootstrap
         // and copy the other one
-        baseIndex_ = baseIndex;
-        otherIndex_ = otherIndex->clone(termStructureHandle_);
-        otherIndex_->unregisterWith(termStructureHandle_);
+        if (bootstrapBaseCurve_) {
+            baseIndex_ = ext::dynamic_pointer_cast<OvernightIndex>(
+                baseIndex->clone(termStructureHandle_));
+            QL_REQUIRE(baseIndex_ != nullptr,
+                       "the base index did not clone into an overnight index");
+            baseIndex_->unregisterWith(termStructureHandle_);
+            otherIndex_ = otherIndex;
+        } else {
+            baseIndex_ = baseIndex;
+            otherIndex_ = otherIndex->clone(termStructureHandle_);
+            otherIndex_->unregisterWith(termStructureHandle_);
+        }
 
         registerWith(baseIndex_);
         registerWith(otherIndex_);
