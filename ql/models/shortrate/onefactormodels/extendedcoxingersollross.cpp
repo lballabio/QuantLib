@@ -29,8 +29,10 @@ namespace QuantLib {
                               Real theta, Real k, Real sigma, Real x0,
                               bool withFellerConstraint)
     : CoxIngersollRoss(x0, theta, k, sigma, withFellerConstraint),
-      TermStructureConsistentModel(termStructure){
+      TermStructureConsistentModel(termStructure) {
         ExtendedCoxIngersollRoss::generateArguments();
+
+        registerWith(termStructure);
     }
 
     ext::shared_ptr<Lattice> ExtendedCoxIngersollRoss::tree(
