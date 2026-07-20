@@ -56,7 +56,6 @@ option(QL_HIGH_RESOLUTION_DATE "Enable date resolution down to microseconds" OFF
 option(QL_THROW_IN_CYCLES "Throw an exception when a notification loop is detected" OFF)
 option(QL_FASTER_LAZY_OBJECTS "Cause lazy objects to forward just the first notification instead of every one" ON)
 option(QL_NULL_AS_FUNCTIONS "Enable the implementation of Null as template functions" OFF)
-option(QL_REQUIRE_EXPLICIT_EVALUATION_DATE "Reading an unset evaluation date raises an exception instead of defaulting to today's date" OFF)
 option(QL_INSTALL_BENCHMARK "Install benchmark" ON)
 option(QL_INSTALL_EXAMPLES "Install examples" ON)
 option(QL_INSTALL_TEST_SUITE "Install test suite" ON)

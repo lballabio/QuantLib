@@ -26,7 +26,6 @@
 #ifndef quantlib_settings_hpp
 #define quantlib_settings_hpp
 
-#include <ql/errors.hpp>
 #include <ql/patterns/singleton.hpp>
 #include <ql/time/date.hpp>
 #include <ql/utilities/observablevalue.hpp>
@@ -53,8 +52,10 @@ namespace QuantLib {
             Date d = Settings::instance().evaluationDate();
             \endcode
             where today's date is returned if the evaluation date is
-            set to the null date (its default value;) can set it to a
-            new value, as in:
+            set to the null date (its default value).  If the library
+            was compiled with QL_REQUIRE_EXPLICIT_EVALUATION_DATE,
+            reading a null evaluation date throws instead.  Client
+            code can set it to a new value, as in:
             \code
             Settings::instance().evaluationDate() = d;
             \endcode
@@ -131,20 +132,6 @@ namespace QuantLib {
 
 
     // inline
-
-    inline Settings::DateProxy::operator Date() const {
-        if (value() == Date()) {
-#ifdef QL_REQUIRE_EXPLICIT_EVALUATION_DATE
-            QL_FAIL("the evaluation date has not been set; with "
-                    "QL_REQUIRE_EXPLICIT_EVALUATION_DATE defined it must be set explicitly "
-                    "through Settings::instance().evaluationDate() before it is used");
-#else
-            return Date::todaysDate();
-#endif
-        } else {
-            return value();
-        }
-    }
 
     inline Settings::DateProxy& Settings::DateProxy::operator=(const Date& d) {
         if (value() != d) // avoid notifications if the date doesn't actually change
