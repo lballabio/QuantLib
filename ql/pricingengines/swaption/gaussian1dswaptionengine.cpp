@@ -18,6 +18,7 @@
 */
 
 #include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/payoff.hpp>
 
@@ -53,25 +54,69 @@ namespace QuantLib {
         const Schedule& fixedSchedule = swap->fixedSchedule();
         const Schedule& floatSchedule = swap->floatingSchedule();
 
-        // Floating-rate estimate for coupon l as seen from expiry0 in state y.
-        // For an Ibor underlying the index's own deposit period coincides with
-        // the coupon period and the standard forward projection applies. For an
-        // overnight-indexed underlying the daily compounding telescopes to a
-        // zerobond ratio over the coupon's own accrual period (exact in-model
-        // for compound averaging, first-order accurate for arithmetic
-        // averaging); projecting the index's one-day tenor over the whole
-        // accrual - as the generic branch would do - misestimates the coupon by
-        // O(curve slope * accrual) on non-flat curves.
         bool overnightIndexed =
             ext::dynamic_pointer_cast<OvernightIndex>(swap->iborIndex()) != nullptr;
         Handle<YieldTermStructure> forwardingCurve =
             swap->iborIndex()->forwardingTermStructure();
+        // the curve zerobond() falls back to when the handle is empty
+        const Handle<YieldTermStructure>& projectionCurve =
+            forwardingCurve.empty() ? model_->termStructure() : forwardingCurve;
+
+        /* Daily compounding over the coupon's first to last value date V0, Vn
+           telescopes to P(t,V0)/P(t,Vn) - 1 (for calib performance). Note: we use value
+           dates rather than accrual dates (because of lookback).
+
+           This is exact when the daily accrual factors match the
+           periods of the rates they multiply. But some changes in settings can break that. 
+		   These settings are different combinations lookback, observation shift, lockout.
+		   We have two choices: silently accept (approx pricing) or reject.
+		   We choose to reject but silently accepting is probably fine too but rejecting is conservative 
+		   and tells the caller exactly what works accurately.
+		   We also reject arithmetic averaging - but that is probably normal as I'm not aware
+		   of any Bermudans or similar exotics with such settings. */
+        std::vector<Date> onStartDates, onEndDates;
+        if (overnightIndexed) {
+            const Leg& floatingLeg = swap->floatingLeg();
+            onStartDates.resize(floatingLeg.size());
+            onEndDates.resize(floatingLeg.size());
+            for (Size l = 0; l < floatingLeg.size(); ++l) {
+                auto coupon =
+                    ext::dynamic_pointer_cast<OvernightIndexedCoupon>(floatingLeg[l]);
+                if (coupon == nullptr) {
+                    // a VanillaSwap on an overnight index holds IborCoupons
+                    onStartDates[l] = floatSchedule.dates()[l];
+                    onEndDates[l] = floatSchedule.dates()[l + 1];
+                    continue;
+                }
+                QL_REQUIRE(coupon->canApplyTelescopicFormula() &&
+                               coupon->lockoutDays() == 0 &&
+                               coupon->averagingMethod() == RateAveraging::Compound,
+                           "overnight coupon convention does not telescope "
+                           "(lookback without observation shift, lockout or "
+                           "arithmetic averaging)");
+                onStartDates[l] = coupon->valueDates().front();
+                onEndDates[l] = coupon->valueDates().back();
+            }
+        }
+
+        /* Floating-rate estimate for coupon l as seen from expiryDate in state
+           y. Dividing by the accrual time here and multiplying by it again when
+           the cashflow is assembled reproduces nominal * (compounding factor -
+           1) exactly, so a payment lag only moves the date the amount is
+           discounted to - at the cost of no payment-delay convexity. */
         auto floatingRate = [&](Size l, const Date& expiryDate, Real y) -> Real {
             if (overnightIndexed) {
-                return (model_->zerobond(floatSchedule.dates()[l], expiryDate, y,
-                                         forwardingCurve) /
-                            model_->zerobond(floatSchedule.dates()[l + 1], expiryDate,
-                                             y, forwardingCurve) -
+                // A lookback can put V0 before expiryDate. That stub is already
+                // fixed and not a function of the state, so it comes off the
+                // curve; the branches agree at V0 == expiryDate.
+                Real compounding =
+                    onStartDates[l] < expiryDate
+                        ? Real(projectionCurve->discount(onStartDates[l], true) /
+                               projectionCurve->discount(expiryDate, true))
+                        : model_->zerobond(onStartDates[l], expiryDate, y,
+                                           forwardingCurve);
+                return (compounding / model_->zerobond(onEndDates[l], expiryDate,
+                                                       y, forwardingCurve) -
                         1.0) /
                        arguments_.floatingAccrualTimes[l];
             }
