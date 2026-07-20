@@ -84,7 +84,7 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& discountCurve);
         MakeVanillaSwap& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);
-        MakeVanillaSwap& withIndexedCoupons(const ext::optional<bool>& b = true);
+        MakeVanillaSwap& withIndexedCoupons(const std::optional<bool>& b = true);
         MakeVanillaSwap& withAtParCoupons(bool b = true);
       private:
         Period swapTenor_;
@@ -105,13 +105,13 @@ namespace QuantLib {
         DateGeneration::Rule fixedRule_ = DateGeneration::Backward,
                              floatRule_ = DateGeneration::Backward;
         bool fixedEndOfMonth_ = false, floatEndOfMonth_ = false;
-        ext::optional<bool> maturityEndOfMonth_;
+        std::optional<bool> maturityEndOfMonth_;
         Date fixedFirstDate_, fixedNextToLastDate_;
         Date floatFirstDate_, floatNextToLastDate_;
         Spread floatSpread_ = 0.0;
         DayCounter fixedDayCount_, floatDayCount_;
-        ext::optional<bool> useIndexedCoupons_;
-        ext::optional<BusinessDayConvention> paymentConvention_;
+        std::optional<bool> useIndexedCoupons_;
+        std::optional<BusinessDayConvention> paymentConvention_;
 
         ext::shared_ptr<PricingEngine> engine_;
     };
