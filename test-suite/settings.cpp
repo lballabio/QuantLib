@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(testEvaluationDateHandling) {
     SavedSettings backup;
     Settings::instance().resetEvaluationDate();
 
-#ifdef QL_REQUIRE_EXPLICIT_EVALUATION_DATE
+#ifdef QL_REQUIRE_EXPLICIT_EVALUATION_DATE 
     BOOST_CHECK_THROW(Date(Settings::instance().evaluationDate()), Error);
 #else
     Date today = Date::todaysDate();
