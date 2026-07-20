@@ -2291,7 +2291,7 @@ BOOST_AUTO_TEST_CASE(testSwapRateHelperWithCouponPricer) {
             d.rate, Period(d.n, d.units), TARGET(), Annual, ModifiedFollowing,
             Thirty360(Thirty360::BondBasis), index, Handle<Quote>(), 0 * Days,
             Handle<YieldTermStructure>(), Null<Natural>(), Pillar::LastRelevantDate, Date(), false,
-            ext::nullopt, ext::nullopt, pricer));
+            std::nullopt, std::nullopt, pricer));
     }
 
     // the supplied pricer must be attached to every coupon of the floating leg

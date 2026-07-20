@@ -467,13 +467,13 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const ext::optional<bool>& useIndexedCoupons,
+                                   const std::optional<bool>& useIndexedCoupons,
                                    const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer)
     : SwapRateHelper(rate, swapIndex->tenor(), swapIndex->fixingCalendar(),
         swapIndex->fixedLegTenor().frequency(), swapIndex->fixedLegConvention(),
         swapIndex->dayCounter(), swapIndex->iborIndex(), std::move(spread), fwdStart,
         std::move(discount), Null<Natural>(), pillarChoice, customPillarDate, endOfMonth,
-        useIndexedCoupons, ext::nullopt, couponPricer) {}
+        useIndexedCoupons, std::nullopt, couponPricer) {}
 
     SwapRateHelper::SwapRateHelper(const std::variant<Rate, Handle<Quote>>& rate,
                                    const Period& tenor,
@@ -489,8 +489,8 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const ext::optional<bool>& useIndexedCoupons,
-                                   const ext::optional<BusinessDayConvention>& floatConvention,
+                                   const std::optional<bool>& useIndexedCoupons,
+                                   const std::optional<BusinessDayConvention>& floatConvention,
                                    const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays), tenor_(tenor),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
@@ -515,8 +515,8 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const ext::optional<bool>& useIndexedCoupons,
-                                   const ext::optional<BusinessDayConvention>& floatConvention,
+                                   const std::optional<bool>& useIndexedCoupons,
+                                   const std::optional<BusinessDayConvention>& floatConvention,
                                    const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer)
     : RelativeDateRateHelper(rate, false), startDate_(startDate), endDate_(endDate),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
