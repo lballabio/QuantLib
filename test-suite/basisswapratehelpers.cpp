@@ -132,7 +132,9 @@ void testIborIborBootstrap(bool bootstrapBaseCurve) {
     }
 }
 
-void testOvernightIborBootstrap(bool externalDiscountCurve, bool bootstrapBaseCurve = false) {
+void testOvernightIborBootstrap(bool externalDiscountCurve,
+                                bool bootstrapBaseCurve = false,
+                                Integer paymentLag = 0) {
     std::vector<BasisSwapQuote> quotes = {
         { 1, Years,  0.0010 },
         { 2, Years,  0.0012 },
@@ -171,7 +173,7 @@ void testOvernightIborBootstrap(bool externalDiscountCurve, bool bootstrapBaseCu
         auto h = ext::make_shared<OvernightIborBasisSwapRateHelper>(
                 Handle<Quote>(ext::make_shared<SimpleQuote>(q.basis)),
                 Period(q.n, q.units), settlementDays, calendar, convention, endOfMonth,
-                baseIndex, otherIndex, discountCurve, bootstrapBaseCurve);
+                baseIndex, otherIndex, discountCurve, bootstrapBaseCurve, paymentLag);
         helpers.push_back(h);
     }
 
@@ -203,9 +205,11 @@ void testOvernightIborBootstrap(bool externalDiscountCurve, bool bootstrapBaseCu
 
         Leg leg1 = OvernightLeg(s, baseIndex)
             .withSpreads(q.basis)
-            .withNotionals(100.0);
+            .withNotionals(100.0)
+            .withPaymentLag(paymentLag);
         Leg leg2 = IborLeg(s, otherIndex)
-            .withNotionals(100.0);
+            .withNotionals(100.0)
+            .withPaymentLag(paymentLag);
 
         Swap swap(leg1, leg2);
         if (externalDiscountCurve) {
@@ -260,6 +264,15 @@ BOOST_AUTO_TEST_CASE(testOvernightIborBaseCurveBootstrapWithDiscountCurve) {
                        "(base curve bootstrap with external discount curve)...");
 
     testOvernightIborBootstrap(true, true);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithPaymentLag) {
+    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers with payment lag...");
+
+    testOvernightIborBootstrap(false, false, 2);
+    testOvernightIborBootstrap(true, false, 2);
+    testOvernightIborBootstrap(false, true, 2);
+    testOvernightIborBootstrap(true, true, 2);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

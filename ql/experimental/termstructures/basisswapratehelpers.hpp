@@ -87,6 +87,8 @@ namespace QuantLib {
         overnight-index curve will be used.  Note that when
         bootstrapBaseCurve = true and no discount curve is passed, the
         curve being bootstrapped is also used for discounting.
+        A payment lag can be passed; it is applied to both legs, which
+        share the same schedule, and rolls on the passed calendar.
     */
     class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -99,7 +101,8 @@ namespace QuantLib {
                                          const ext::shared_ptr<OvernightIndex>& baseIndex,
                                          const ext::shared_ptr<IborIndex>& otherIndex,
                                          Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>(),
-                                         bool bootstrapBaseCurve = false);
+                                         bool bootstrapBaseCurve = false,
+                                         Integer paymentLag = 0);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -118,6 +121,7 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> otherIndex_;
         Handle<YieldTermStructure> discountHandle_;
         bool bootstrapBaseCurve_;
+        Integer paymentLag_;
 
         ext::shared_ptr<Swap> swap_;
 
