@@ -33,7 +33,7 @@ namespace QuantLib {
         // one dynamic_cast pass over the leg, reused across states and
         // expiries; entries are null for non-overnight coupons
         std::vector<ext::shared_ptr<OvernightIndexedCoupon> >
-        overnightCoupons(const Leg& leg) {
+        nonstandardOvernightCoupons(const Leg& leg) {
             std::vector<ext::shared_ptr<OvernightIndexedCoupon> > result(leg.size());
             for (Size i = 0; i < leg.size(); ++i)
                 result[i] = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(leg[i]);
@@ -67,7 +67,7 @@ namespace QuantLib {
     Real
     Gaussian1dNonstandardSwaptionEngine::underlyingNpv(const Date &expiry,
                                                        const Real y) const {
-        const auto onCoupons = overnightCoupons(arguments_.swap->floatingLeg());
+        const auto onCoupons = nonstandardOvernightCoupons(arguments_.swap->floatingLeg());
 
         // determine the indices on both legs representing the cashflows that
         // are part of the exercise into right
@@ -193,7 +193,7 @@ namespace QuantLib {
             arguments_.exercise->dates().begin());
 
         NonstandardSwap swap = *arguments_.swap;
-        const auto onCoupons = overnightCoupons(arguments_.swap->floatingLeg());
+        const auto onCoupons = nonstandardOvernightCoupons(arguments_.swap->floatingLeg());
         Option::Type type =
             arguments_.type == Swap::Payer ? Option::Call : Option::Put;
 

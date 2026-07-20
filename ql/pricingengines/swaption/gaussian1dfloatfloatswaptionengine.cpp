@@ -29,7 +29,7 @@ namespace QuantLib {
         // one dynamic_cast pass over the leg, reused across states and
         // events; entries are null for non-overnight coupons
         std::vector<ext::shared_ptr<OvernightIndexedCoupon> >
-        overnightCoupons(const Leg& leg) {
+        floatFloatOvernightCoupons(const Leg& leg) {
             std::vector<ext::shared_ptr<OvernightIndexedCoupon> > result(leg.size());
             for (Size i = 0; i < leg.size(); ++i)
                 result[i] = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(leg[i]);
@@ -194,8 +194,8 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<SwapIndex>(arguments_.index2);
         ext::shared_ptr<SwapSpreadIndex> cmsspread2 =
             ext::dynamic_pointer_cast<SwapSpreadIndex>(arguments_.index2);
-        const auto onCoupons1 = overnightCoupons(arguments_.swap->leg1());
-        const auto onCoupons2 = overnightCoupons(arguments_.swap->leg2());
+        const auto onCoupons1 = floatFloatOvernightCoupons(arguments_.swap->leg1());
+        const auto onCoupons2 = floatFloatOvernightCoupons(arguments_.swap->leg2());
 
         QL_REQUIRE(ibor1 != nullptr || cms1 != nullptr || cmsspread1 != nullptr,
                    "index1 must be ibor or swap or swap spread index");
