@@ -53,6 +53,7 @@ namespace QuantLib {
         MakeOIS& withNominal(Real n);
 
         MakeOIS& withSettlementDays(Natural settlementDays);
+        MakeOIS& withSettlementCalendar(const Calendar& cal);
         MakeOIS& withEffectiveDate(const Date&);
         MakeOIS& withTerminationDate(const Date&);
         MakeOIS& withRule(DateGeneration::Rule r);
@@ -107,6 +108,7 @@ namespace QuantLib {
         Natural settlementDays_ = Null<Natural>();
         Date effectiveDate_, terminationDate_;
         Calendar fixedCalendar_, overnightCalendar_;
+        Calendar settlementCalendar_;
 
         Frequency fixedPaymentFrequency_ = Annual;
         Frequency overnightPaymentFrequency_ = Annual;

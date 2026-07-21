@@ -46,6 +46,7 @@
 #include <ql/math/rounding.hpp>
 #include <ql/currencies/europe.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/indexes/ibor/sonia.hpp>
 #include <ql/indexes/ibor/eonia.hpp>
@@ -1016,14 +1017,14 @@ BOOST_AUTO_TEST_CASE(testMakeOISDefaultSettlementDays) {
     // Test 1-day settlement index on weekend
     {
         OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[1].second, 0.01); // CORRA
-        Date expected(13, May, 2025); // Tuesday
+        Date expected(12, May, 2025); // Monday: T+1 from the actual trade date
         BOOST_CHECK_EQUAL(swap.startDate(), expected);
     }
 
     // Test 2-day settlement index on weekend
     {
         OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[2].second, 0.01); // EONIA
-        Date expected(14, May, 2025); // Wednesday
+        Date expected(13, May, 2025); // Tuesday: T+2 from the actual trade date
         BOOST_CHECK_EQUAL(swap.startDate(), expected);
     }
 }
@@ -1183,6 +1184,66 @@ BOOST_AUTO_TEST_CASE(testRoundingPrecision) {
                         << "\n    constructor: " << viaCtor
                         << "\n    MakeOIS:     " << viaMakeOIS);
     }
+}
+
+BOOST_AUTO_TEST_CASE(testSpotDateFromNonBusinessEvaluationDate) {
+
+    BOOST_TEST_MESSAGE("Testing that the OIS spot date is calculated from "
+                       "the actual evaluation date when the latter is not a "
+                       "business day...");
+
+    // Saturday
+    Date today(20, June, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    auto index = ext::make_shared<Estr>();
+    Calendar calendar = index->fixingCalendar();
+
+    // settlement days are counted from the actual trade date,
+    // not from the next business day
+    Date expectedStart = calendar.advance(today, 2 * Days);
+
+    ext::shared_ptr<OvernightIndexedSwap> swap =
+        MakeOIS(1 * Years, index, 0.03).withSettlementDays(2);
+
+    if (swap->startDate() != expectedStart)
+        BOOST_FAIL("OIS start date not calculated from the actual "
+                   "evaluation date:\n"
+                   "    expected: " << expectedStart << "\n"
+                   "    obtained: " << swap->startDate());
+}
+
+BOOST_AUTO_TEST_CASE(testSettlementCalendar) {
+
+    BOOST_TEST_MESSAGE("Testing that the OIS spot date can be calculated "
+                       "on an explicit settlement calendar...");
+
+    // 3 July 2026 is a TARGET business day, but a US holiday
+    // (Independence Day observed), so the settlement calendar and the
+    // index fixing calendar diverge between here and the spot date.
+    Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    auto index = ext::make_shared<Estr>();
+    Calendar settlementCalendar =
+        JointCalendar(TARGET(), UnitedStates(UnitedStates::Settlement));
+
+    Date expectedStart = settlementCalendar.advance(today, 2 * Days);
+
+    ext::shared_ptr<OvernightIndexedSwap> swap =
+        MakeOIS(1 * Years, index, 0.03)
+            .withSettlementDays(2)
+            .withSettlementCalendar(settlementCalendar);
+
+    if (swap->startDate() != expectedStart)
+        BOOST_FAIL("OIS start date not calculated on the settlement "
+                   "calendar:\n"
+                   "    expected: " << expectedStart << "\n"
+                   "    obtained: " << swap->startDate());
+
+    // sanity check: the two calendars must actually diverge here
+    BOOST_CHECK(expectedStart !=
+                index->fixingCalendar().advance(today, 2 * Days));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

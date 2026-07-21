@@ -83,10 +83,9 @@ namespace QuantLib {
                 ext::dynamic_pointer_cast<PlainVanillaPayoff>(args.payoff);
             QL_REQUIRE(payoff, "non-plain payoff given");
 
-            return ext::shared_ptr<PathPricer<Path> >(
-                new LookbackFixedPathPricer(payoff->optionType(),
+            return ext::make_shared<LookbackFixedPathPricer>(payoff->optionType(),
                                             payoff->strike(),
-                                            discount));
+                                            discount);
         }
 
         ext::shared_ptr<PathPricer<Path> >
@@ -100,11 +99,10 @@ namespace QuantLib {
 
             Time lookbackStart = process.time(args.lookbackPeriodStart);
 
-            return ext::shared_ptr<PathPricer<Path> >(
-                new LookbackPartialFixedPathPricer(lookbackStart,
+            return ext::make_shared<LookbackPartialFixedPathPricer>(lookbackStart,
                                                    payoff->optionType(),
                                                    payoff->strike(),
-                                                   discount));
+                                                   discount);
         }
 
         ext::shared_ptr<PathPricer<Path> >
@@ -116,9 +114,8 @@ namespace QuantLib {
                 ext::dynamic_pointer_cast<FloatingTypePayoff>(args.payoff);
             QL_REQUIRE(payoff, "non-floating payoff given");
 
-            return ext::shared_ptr<PathPricer<Path> >(
-                new LookbackFloatingPathPricer(payoff->optionType(),
-                                               discount));
+            return ext::make_shared<LookbackFloatingPathPricer>(payoff->optionType(),
+                                               discount);
         }
 
         ext::shared_ptr<PathPricer<Path> >
@@ -132,10 +129,9 @@ namespace QuantLib {
 
             Time lookbackEnd = process.time(args.lookbackPeriodEnd);
 
-            return ext::shared_ptr<PathPricer<Path> >(
-                new LookbackPartialFloatingPathPricer(lookbackEnd,
+            return ext::make_shared<LookbackPartialFloatingPathPricer>(lookbackEnd,
                                                       payoff->optionType(),
-                                                      discount));
+                                                      discount);
         }
 
     }
