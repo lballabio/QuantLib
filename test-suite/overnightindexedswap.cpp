@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2009 Roland Lichters
  Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2026 Sergio Araujo
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,6 +43,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
+#include <ql/math/rounding.hpp>
 #include <ql/currencies/europe.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
@@ -155,7 +157,8 @@ struct CommonVars {
              bool telescopicValueDates,
              Date effectiveDate = Date(),
              Integer paymentLag = 0,
-             RateAveraging::Type averagingMethod = RateAveraging::Compound) {
+             RateAveraging::Type averagingMethod = RateAveraging::Compound,
+             const std::optional<Integer>& roundingPrecision = std::nullopt) {
         return MakeOIS(length, estrIndex, fixedRate, 0 * Days)
             .withEffectiveDate(effectiveDate == Date() ? settlement : effectiveDate)
             .withOvernightLegSpread(spread)
@@ -163,7 +166,8 @@ struct CommonVars {
             .withPaymentLag(paymentLag)
             .withDiscountingTermStructure(estrTermStructure)
             .withTelescopicValueDates(telescopicValueDates)
-            .withAveragingMethod(averagingMethod);
+            .withAveragingMethod(averagingMethod)
+            .withRoundingPrecision(roundingPrecision);
     }
 
     ext::shared_ptr<OvernightIndexedSwap>
@@ -1092,6 +1096,94 @@ BOOST_AUTO_TEST_CASE(testSettlementDaysEffectiveDateConflict) {
     ext::shared_ptr<OvernightIndexedSwap> swap3 =
         MakeOIS(5 * Years, index, 0.03);
     BOOST_CHECK(swap3->startDate() != Date());
+}
+
+BOOST_AUTO_TEST_CASE(testRoundingPrecision) {
+
+    BOOST_TEST_MESSAGE("Testing rounding of the compounded rate in overnight-indexed swaps...");
+
+    CommonVars vars;
+
+    Integer precision = 6;
+    Rate fixedRate = 0.03;
+    Period length = 2 * Years;
+
+    ext::shared_ptr<OvernightIndexedSwap> plainSwap =
+        vars.makeSwap(length, fixedRate, 0.0, false);
+    ext::shared_ptr<OvernightIndexedSwap> roundedSwap =
+        vars.makeSwap(length, fixedRate, 0.0, false, Date(), 0,
+                      RateAveraging::Compound, precision);
+
+    BOOST_CHECK(roundedSwap->roundingPrecision() == std::optional<Integer>(precision));
+    BOOST_CHECK(!plainSwap->roundingPrecision());
+
+    ClosestRounding round(precision);
+    bool anyRoundingApplied = false;
+    for (Size i = 0; i < roundedSwap->overnightLeg().size(); ++i) {
+        auto rounded = ext::dynamic_pointer_cast<Coupon>(roundedSwap->overnightLeg()[i]);
+        auto plain = ext::dynamic_pointer_cast<Coupon>(plainSwap->overnightLeg()[i]);
+
+        // the projected rate is not affected by the rounding...
+        if (std::fabs(rounded->rate() - plain->rate()) > 1.0e-15)
+            BOOST_ERROR("rounding changed the projected rate:"
+                        << std::setprecision(12)
+                        << "\n    without rounding: " << plain->rate()
+                        << "\n    with rounding:    " << rounded->rate());
+
+        // ...but the amount is computed off the rounded rate
+        Real expected = rounded->nominal() * round(rounded->rate()) * rounded->accrualPeriod();
+        if (std::fabs(rounded->amount() - expected) > 1.0e-10)
+            BOOST_ERROR("amount not consistent with the rounded rate:"
+                        << std::setprecision(12)
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << rounded->amount());
+
+        if (rounded->amount() != plain->amount())
+            anyRoundingApplied = true;
+    }
+    if (!anyRoundingApplied)
+        BOOST_ERROR("all coupon amounts unchanged; "
+                    "rounding precision was not propagated to the overnight leg");
+
+    // the engine prices off the rounded amounts, so the leg NPV
+    // remains consistent with the discounted sum of the cashflows
+    Real calculated = roundedSwap->overnightLegNPV();
+    Real expectedNPV = 0.0;
+    for (const auto& cf : roundedSwap->overnightLeg())
+        expectedNPV += cf->amount() * vars.estrTermStructure->discount(cf->date());
+    if (std::fabs(calculated - expectedNPV) > 1.0e-10)
+        BOOST_ERROR("overnight-leg NPV inconsistent with discounted rounded cashflows:"
+                    << std::setprecision(12)
+                    << "\n    NPV:            " << calculated
+                    << "\n    discounted sum: " << expectedNPV);
+
+    // MakeOIS solves the ATM rate on the same rounded coupons the
+    // returned swap is built with, so the swap is at market
+    ext::shared_ptr<OvernightIndexedSwap> atmSwap =
+        vars.makeSwap(length, Null<Rate>(), 0.0, false, Date(), 0,
+                      RateAveraging::Compound, precision);
+    if (std::fabs(atmSwap->NPV()) > 1.0e-10)
+        BOOST_ERROR("ATM swap with rounding does not price to zero:"
+                    << std::setprecision(12)
+                    << "\n    NPV: " << atmSwap->NPV());
+
+    // the constructor propagates the rounding precision like MakeOIS
+    OvernightIndexedSwap ctorSwap(Swap::Payer, vars.nominal,
+                                  roundedSwap->fixedSchedule(),
+                                  fixedRate, vars.fixedEstrDayCount,
+                                  roundedSwap->overnightSchedule(),
+                                  vars.estrIndex, 0.0, 0, Following,
+                                  Calendar(), false, RateAveraging::Compound,
+                                  Null<Natural>(), 0, false, precision);
+    for (Size i = 0; i < ctorSwap.overnightLeg().size(); ++i) {
+        Real viaCtor = ctorSwap.overnightLeg()[i]->amount();
+        Real viaMakeOIS = roundedSwap->overnightLeg()[i]->amount();
+        if (viaCtor != viaMakeOIS)
+            BOOST_ERROR("constructor and MakeOIS produce different rounded amounts:"
+                        << std::setprecision(12)
+                        << "\n    constructor: " << viaCtor
+                        << "\n    MakeOIS:     " << viaMakeOIS);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testSpotDateFromNonBusinessEvaluationDate) {

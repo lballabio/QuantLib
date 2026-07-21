@@ -5,6 +5,7 @@
  Copyright (C) 2015 Paolo Mazzocchi
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
+ Copyright (C) 2026 Sergio Araujo
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -142,7 +143,10 @@ namespace QuantLib {
                                       overnightSchedule,
                                       overnightIndex_, overnightSpread_,
                                       paymentLag_, paymentAdjustment_,
-                                      paymentCalendar_, telescopicValueDates_);
+                                      paymentCalendar_, telescopicValueDates_,
+                                      averagingMethod_, lookbackDays_,
+                                      lockoutDays_, applyObservationShift_,
+                                      roundingPrecision_);
             if (engine_ == nullptr) {
                 Handle<YieldTermStructure> disc =
                                     overnightIndex_->forwardingTermStructure();
@@ -166,9 +170,10 @@ namespace QuantLib {
                                  overnightSchedule,
                                  overnightIndex_, overnightSpread_,
                                  paymentLag_, paymentAdjustment_,
-                                 paymentCalendar_, telescopicValueDates_, 
+                                 paymentCalendar_, telescopicValueDates_,
                                  averagingMethod_, lookbackDays_,
-                                 lockoutDays_, applyObservationShift_));
+                                 lockoutDays_, applyObservationShift_,
+                                 roundingPrecision_));
 
         if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
@@ -374,6 +379,11 @@ namespace QuantLib {
 
     MakeOIS& MakeOIS::withObservationShift(bool applyObservationShift) {
         applyObservationShift_ = applyObservationShift;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withRoundingPrecision(const std::optional<Integer>& roundingPrecision) {
+        roundingPrecision_ = roundingPrecision;
         return *this;
     }
 
