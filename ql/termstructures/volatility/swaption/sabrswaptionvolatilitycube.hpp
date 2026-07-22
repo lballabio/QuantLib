@@ -845,76 +845,138 @@ namespace QuantLib {
         }
     }
 
-    template <class Model>
+    template<class Model>
     std::vector<Real> XabrSwaptionVolatilityCube<Model>::spreadVolInterpolation(
         const Date& atmOptionDate,
         const Period& atmSwapTenor,
         bool marketSpreads) const {
 
-        const Time atmOptionTime = timeFromReference(atmOptionDate);
-        const Time atmSwapLength = swapLength(atmSwapTenor);
+        Time atmOptionTime = timeFromReference(atmOptionDate);
+        Time atmTimeLength = swapLength(atmSwapTenor);
+
+        std::vector<Real> result;
         const Cube& sourceCube = marketSpreads ? marketVolCube_ : sparseParameters_;
-        const std::vector<Time>& optionTimes = sourceCube.optionTimes();
-        const std::vector<Time>& swapLengths = sourceCube.swapLengths();
-        const std::vector<Date>& optionDates = sourceCube.optionDates();
+        const std::vector<Time>& optionTimes(sourceCube.optionTimes());
+        const std::vector<Time>& swapLengths(sourceCube.swapLengths());
+        const std::vector<Date>& optionDates =
+            sourceCube.optionDates();
         const std::vector<Period>& swapTenors = sourceCube.swapTenors();
 
-        Size optionIndex = std::lower_bound(optionTimes.begin(), optionTimes.end(),
-                                            atmOptionTime) - optionTimes.begin();
-        if (optionIndex > 0)
-            --optionIndex;
-        Size swapIndex = std::lower_bound(swapLengths.begin(), swapLengths.end(),
-                                          atmSwapLength) - swapLengths.begin();
-        if (swapIndex > 0)
-            --swapIndex;
+        std::vector<Real>::const_iterator optionTimesPreviousNode,
+                                          swapLengthsPreviousNode;
 
-        QL_REQUIRE(optionIndex + 1 < optionTimes.size(),
-                   "cannot interpolate spreads at option time " << atmOptionTime);
-        QL_REQUIRE(swapIndex + 1 < swapLengths.size(),
-                   "cannot interpolate spreads at swap length " << atmSwapLength);
+        optionTimesPreviousNode = std::lower_bound(optionTimes.begin(),
+                                                   optionTimes.end(),
+                                                   atmOptionTime);
+        Size optionTimesPreviousIndex =
+            optionTimesPreviousNode - optionTimes.begin();
+        if (optionTimesPreviousIndex >0)
+            optionTimesPreviousIndex --;
 
-        const std::vector<Time> optionNodes = {
-            optionTimes[optionIndex], optionTimes[optionIndex + 1]
-        };
-        const std::vector<Date> optionDateNodes = {
-            optionDates[optionIndex], optionDates[optionIndex + 1]
-        };
-        const std::vector<Time> swapLengthNodes = {
-            swapLengths[swapIndex], swapLengths[swapIndex + 1]
-        };
-        const std::vector<Period> swapTenorNodes = {
-            swapTenors[swapIndex], swapTenors[swapIndex + 1]
-        };
+        swapLengthsPreviousNode = std::lower_bound(swapLengths.begin(),
+                                                   swapLengths.end(),
+                                                   atmTimeLength);
+        Size swapLengthsPreviousIndex = swapLengthsPreviousNode - swapLengths.begin();
+        if (swapLengthsPreviousIndex >0)
+            swapLengthsPreviousIndex --;
 
-        const Rate atmForward = atmStrike(atmOptionDate, atmSwapTenor);
-        const Real targetShift = atmVol_->shift(atmOptionTime, atmSwapLength);
-        std::vector<Real> result;
-        result.reserve(nStrikes_);
+        std::vector< std::vector<ext::shared_ptr<SmileSection> > > smiles;
+        if (marketSpreads) {
+            QL_REQUIRE(optionTimesPreviousIndex+1 < optionTimes.size(),
+                       "cannot interpolate market spreads at option time " <<
+                           atmOptionTime);
+            QL_REQUIRE(swapLengthsPreviousIndex+1 < swapLengths.size(),
+                       "cannot interpolate market spreads at swap length " <<
+                           atmTimeLength);
+        } else {
+            std::vector<ext::shared_ptr<SmileSection> > smilesOnPreviousExpiry;
+            std::vector<ext::shared_ptr<SmileSection> > smilesOnNextExpiry;
 
-        for (Size k = 0; k < nStrikes_; ++k) {
-            const Rate targetStrike = std::max(
-                atmForward + strikeSpreads_[k], cutoffStrike_ - targetShift);
-            const Real targetStrikeSpread = targetStrike - atmForward;
-            const Real moneyness = (atmForward + targetShift) /
-                                   (targetStrike + targetShift);
-            Matrix sourceSpreads(2, 2, 0.0);
+            QL_REQUIRE(optionTimesPreviousIndex+1 < sparseSmiles_.size(),
+                       "optionTimesPreviousIndex+1 >= sparseSmiles_.size()");
+            QL_REQUIRE(swapLengthsPreviousIndex+1 < sparseSmiles_[0].size(),
+                       "swapLengthsPreviousIndex+1 >= sparseSmiles_[0].size()");
+            smilesOnPreviousExpiry.push_back(
+                sparseSmiles_[optionTimesPreviousIndex][swapLengthsPreviousIndex]);
+            smilesOnPreviousExpiry.push_back(
+                sparseSmiles_[optionTimesPreviousIndex][swapLengthsPreviousIndex+1]);
+            smilesOnNextExpiry.push_back(
+                sparseSmiles_[optionTimesPreviousIndex+1][swapLengthsPreviousIndex]);
+            smilesOnNextExpiry.push_back(
+                sparseSmiles_[optionTimesPreviousIndex+1][swapLengthsPreviousIndex+1]);
 
-            for (Size i = 0; i < 2; ++i) {
-                for (Size j = 0; j < 2; ++j) {
-                    const Size sourceOption = optionIndex + i;
-                    const Size sourceSwap = swapIndex + j;
-                    const Rate sourceForward = atmStrike(
-                        optionDateNodes[i], swapTenorNodes[j]);
-                    const Real sourceShift = atmVol_->shift(
-                        optionNodes[i], swapLengthNodes[j]);
-                    const Rate sourceStrike =
-                        volatilityType_ == VolatilityType::Normal ?
-                            sourceForward + targetStrikeSpread :
-                            (sourceForward + sourceShift) / moneyness - sourceShift;
+            smiles.push_back(smilesOnPreviousExpiry);
+            smiles.push_back(smilesOnNextExpiry);
+        }
+
+        std::vector<Real> optionsNodes(2);
+        optionsNodes[0] = optionTimes[optionTimesPreviousIndex];
+        optionsNodes[1] = optionTimes[optionTimesPreviousIndex+1];
+
+        std::vector<Date> optionsDateNodes(2);
+        optionsDateNodes[0] = optionDates[optionTimesPreviousIndex];
+        optionsDateNodes[1] = optionDates[optionTimesPreviousIndex+1];
+
+        std::vector<Real> swapLengthsNodes(2);
+        swapLengthsNodes[0] = swapLengths[swapLengthsPreviousIndex];
+        swapLengthsNodes[1] = swapLengths[swapLengthsPreviousIndex+1];
+
+        std::vector<Period> swapTenorNodes(2);
+        swapTenorNodes[0] = swapTenors[swapLengthsPreviousIndex];
+        swapTenorNodes[1] = swapTenors[swapLengthsPreviousIndex+1];
+
+        Rate atmForward = atmStrike(atmOptionDate, atmSwapTenor);
+        Real shift = atmVol_->shift(atmOptionTime, atmTimeLength);
+
+        Matrix atmForwards(2, 2, 0.0);
+        Matrix atmShifts(2,2,0.0);
+        Matrix atmVols(2, 2, 0.0);
+        for (Size i=0; i<2; i++) {
+            for (Size j=0; j<2; j++) {
+                atmForwards[i][j] = atmStrike(optionsDateNodes[i],
+                                              swapTenorNodes[j]);
+                atmShifts[i][j] = atmVol_->shift(optionsNodes[i], swapLengthsNodes[j]);
+                if (!marketSpreads) {
+                    // atmVols[i][j] = smiles[i][j]->volatility(atmForwards[i][j]);
+                    atmVols[i][j] = atmVol_->volatility(
+                        optionsDateNodes[i], swapTenorNodes[j], atmForwards[i][j]);
+                    /* With the old implementation the interpolated spreads on ATM
+                       volatilities were null even if the spreads on ATM volatilities to be
+                       interpolated were non-zero. The new implementation removes
+                       this behaviour, but introduces a small ERROR in the cube:
+                       even if no spreads are applied on any cube ATM volatility corresponding
+                       to quoted smile sections (that is ATM volatilities in sparse cube), the
+                       cube ATM volatilities corresponding to not quoted smile sections (that
+                       is ATM volatilities in dense cube) are no more exactly the quoted values,
+                       but that ones PLUS the linear interpolation of the fit errors on the ATM
+                       volatilities in sparse cube whose spreads are used in the calculation.
+                       A similar imprecision is introduced to the volatilities in dense cube
+                       whith moneyness near to 1.
+                       (See below how spreadVols are calculated).
+                       The extent of this error depends on the quality of the fit: in case of
+                       good fits it is negligibile.
+                    */
+                }
+            }
+        }
+
+        for (Size k=0; k<nStrikes_; k++){
+            const Real strike = std::max(atmForward + strikeSpreads_[k],cutoffStrike_-shift);
+            const Real moneyness = (atmForward+shift)/(strike+shift);
+
+            Matrix strikes(2,2,0.);
+            Matrix spreadVols(2,2,0.);
+            for (Size i=0; i<2; i++){
+                for (Size j=0; j<2; j++){
+                    strikes[i][j] = volatilityType_ == VolatilityType::Normal ?
+                        atmForwards[i][j] + strike - atmForward :
+                        (atmForwards[i][j]+atmShifts[i][j])/moneyness - atmShifts[i][j];
                     if (marketSpreads) {
-                        const Size section = sourceOption * nSwapTenors_ + sourceSwap;
+                        const Size section =
+                            (optionTimesPreviousIndex+i)*nSwapTenors_ +
+                            swapLengthsPreviousIndex+j;
                         if (nStrikes_ == 1) {
-                            sourceSpreads[i][j] = volSpreads_[section][0]->value();
+                            spreadVols[i][j] = volSpreads_[section][0]->value();
                         } else {
                             std::vector<Real> quotedSpreads(nStrikes_);
                             for (Size n = 0; n < nStrikes_; ++n)
@@ -923,24 +985,21 @@ namespace QuantLib {
                                 strikeSpreads_.begin(), strikeSpreads_.end(),
                                 quotedSpreads.begin());
                             strikeInterpolation.enableExtrapolation();
-                            sourceSpreads[i][j] =
-                                strikeInterpolation(sourceStrike - sourceForward);
+                            spreadVols[i][j] = strikeInterpolation(
+                                strikes[i][j] - atmForwards[i][j]);
                         }
                     } else {
-                        const Volatility sourceAtmVol = atmVol_->volatility(
-                            optionDateNodes[i], swapTenorNodes[j], sourceForward);
-                        sourceSpreads[i][j] =
-                            sparseSmiles_[sourceOption][sourceSwap]
-                                ->volatility(sourceStrike) - sourceAtmVol;
+                        spreadVols[i][j] =
+                            smiles[i][j]->volatility(strikes[i][j]) - atmVols[i][j];
                     }
                 }
             }
+           Cube localInterpolator(optionsDateNodes, swapTenorNodes,
+                                  optionsNodes, swapLengthsNodes, 1);
+           localInterpolator.setLayer(0, spreadVols);
+           localInterpolator.updateInterpolators();
 
-            Cube localInterpolator(optionDateNodes, swapTenorNodes, optionNodes,
-                                   swapLengthNodes, 1);
-            localInterpolator.setLayer(0, sourceSpreads);
-            localInterpolator.updateInterpolators();
-            result.push_back(localInterpolator(atmOptionTime, atmSwapLength)[0]);
+           result.push_back(localInterpolator(atmOptionTime, atmTimeLength)[0]);
         }
         return result;
     }
