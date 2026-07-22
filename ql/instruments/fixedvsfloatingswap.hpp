@@ -63,7 +63,7 @@ namespace QuantLib {
                             ext::shared_ptr<IborIndex> iborIndex,
                             Spread spread,
                             DayCounter floatingDayCount,
-                            ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt,
+                            std::optional<BusinessDayConvention> paymentConvention = std::nullopt,
                             Integer paymentLag = 0,
                             const Calendar& paymentCalendar = Calendar());
         //! \name Inspectors

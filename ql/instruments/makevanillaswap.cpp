@@ -76,10 +76,11 @@ namespace QuantLib {
                 refDate = iborIndex_->fixingCalendar().adjust(refDate);
                 spotDate = iborIndex_->valueDate(refDate);
             } else {
-                // an explicit settlement-day count is advanced on the
-                // float/payment calendar, so adjust the reference date there.
-                refDate = floatCalendar_.adjust(refDate);
-                spotDate = floatCalendar_.advance(refDate, settlementDays_ * Days);
+                // settlement days are counted from the actual evaluation
+                // date, even when it is not a business day (see issue #753)
+                const Calendar& settlementCalendar =
+                    settlementCalendar_.empty() ? floatCalendar_ : settlementCalendar_;
+                spotDate = settlementCalendar.advance(refDate, settlementDays_ * Days);
             }
             startDate = spotDate+forwardStart_;
             if (forwardStart_.length()<0)
@@ -218,6 +219,11 @@ namespace QuantLib {
 
     MakeVanillaSwap& MakeVanillaSwap::withSettlementDays(Natural settlementDays) {
         settlementDays_ = settlementDays;
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withSettlementCalendar(const Calendar& cal) {
+        settlementCalendar_ = cal;
         return *this;
     }
 
@@ -371,7 +377,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeVanillaSwap& MakeVanillaSwap::withIndexedCoupons(const ext::optional<bool>& b) {
+    MakeVanillaSwap& MakeVanillaSwap::withIndexedCoupons(const std::optional<bool>& b) {
         useIndexedCoupons_ = b;
         return *this;
     }
