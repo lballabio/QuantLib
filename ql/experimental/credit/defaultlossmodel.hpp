@@ -47,8 +47,8 @@ namespace QuantLib {
     */
     class DefaultLossModel : public virtual Observable {// joint-? basket?-defaultLoss
      /* Protection together with frienship to avoid the need of checking the 
-     basket-argument pointer integrity. It is the responsibility of the basket 
-     now; our only caller.
+      basket-argument pointer integrity. It is the responsibility of the basket 
+      now; our only caller.
      */
         friend class Basket;
     protected:
@@ -64,6 +64,7 @@ namespace QuantLib {
         /* Default implementation using the expectedLoss(Date) method. 
           Typically this method is called repeatedly with the same 
           date parameter which makes it innefficient. */
+        //! Expected tranche loss as an absolute amount, not a fraction.
         virtual Real expectedTrancheLoss(const Date& d) const {
             QL_FAIL("expectedTrancheLoss Not implemented for this model.");
         }
