@@ -1045,6 +1045,54 @@ BOOST_AUTO_TEST_CASE(testOasContinuityThroughExCouponWindow) {
                     << " to " << io::iso_date(sweepEnd) << ")");
 }
 
+
+BOOST_AUTO_TEST_CASE(testEffectiveDurationAndConvexity) {
+    BOOST_TEST_MESSAGE("Testing effective duration and convexity of a callable fixed-rate bond...");
+
+    Globals vars;
+
+    vars.today = Date(20, September, 2022);
+    Settings::instance().evaluationDate() = vars.today;
+    vars.settlement = vars.calendar.advance(vars.today, 2, Days);
+
+    vars.termStructure.linkTo(vars.makeFlatCurve(0.05));
+    vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure, 0.03, 0.012));
+
+    Schedule schedule = MakeSchedule()
+                            .from(vars.issueDate())
+                            .to(vars.maturityDate())
+                            .withCalendar(vars.calendar)
+                            .withFrequency(Semiannual)
+                            .withConvention(vars.rollingConvention)
+                            .withRule(DateGeneration::Backward);
+
+    std::vector<Rate> coupons(1, 0.04875);
+
+    CallabilitySchedule callSchedule;
+    callSchedule.push_back(ext::make_shared<Callability>(
+        Bond::Price(1000.0, Bond::Price::Clean), Callability::Call, schedule.at(6)));
+
+    CallableFixedRateBond callableBond(2, 100.0, schedule, coupons, vars.dayCounter,
+                                       vars.rollingConvention, 100.0, vars.issueDate(),
+                                       callSchedule);
+
+    Size timeSteps = 240;
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<TreeCallableFixedRateBondEngine>(
+        *(vars.model), timeSteps, vars.termStructure);
+    callableBond.setPricingEngine(engine);
+
+    Real cleanPrice = 70.926;
+    Real oas = callableBond.OAS(cleanPrice, vars.termStructure, vars.dayCounter, Compounded, Semiannual);
+
+    Real bump = 0.001;
+    Real effDur = callableBond.effectiveDuration(oas, vars.termStructure, vars.dayCounter, Compounded, Semiannual, bump);
+    Real effConv = callableBond.effectiveConvexity(oas, vars.termStructure, vars.dayCounter, Compounded, Semiannual, bump);
+
+    BOOST_CHECK_GT(effDur, 0.0);
+    BOOST_CHECK_LT(effDur, 15.0);
+    BOOST_CHECK_NE(effConv, 0.0);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -359,11 +359,14 @@ namespace QuantLib {
                                  compounding,
                                  frequency);
 
-        if ( P == 0.0 )
+        Real accrued = accruedAmount();
+        Real dirtyP = P + accrued;
+
+        if ( dirtyP == 0.0 )
             return 0;
         else
             {
-                return (Pmm-Ppp)/(2*P*bump);
+                return (Pmm-Ppp)/(2*dirtyP*bump);
             }
     }
 
@@ -391,11 +394,14 @@ namespace QuantLib {
                                  compounding,
                                  frequency);
 
-        if ( P == 0.0 )
+        Real accrued = accruedAmount();
+        Real dirtyP = P + accrued;
+
+        if ( dirtyP == 0.0 )
             return 0;
         else
             {
-                return (Ppp + Pmm - 2*P) / ( std::pow(bump,2) * P);
+                return (Ppp + Pmm - 2*P) / ( std::pow(bump,2) * dirtyP);
             }
 
     }
