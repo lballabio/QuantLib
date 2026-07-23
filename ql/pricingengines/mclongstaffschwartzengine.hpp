@@ -80,8 +80,8 @@ namespace QuantLib {
                                   Size maxSamples,
                                   BigNatural seed,
                                   Size nCalibrationSamples = Null<Size>(),
-                                  ext::optional<bool> brownianBridgeCalibration = ext::nullopt,
-                                  ext::optional<bool> antitheticVariateCalibration = ext::nullopt,
+                                  std::optional<bool> brownianBridgeCalibration = std::nullopt,
+                                  std::optional<bool> antitheticVariateCalibration = std::nullopt,
                                   BigNatural seedCalibration = Null<Size>());
 
         void calculate() const override;
@@ -131,8 +131,8 @@ namespace QuantLib {
                                   Size maxSamples,
                                   BigNatural seed,
                                   Size nCalibrationSamples,
-                                  ext::optional<bool> brownianBridgeCalibration,
-                                  ext::optional<bool> antitheticVariateCalibration,
+                                  std::optional<bool> brownianBridgeCalibration,
+                                  std::optional<bool> antitheticVariateCalibration,
                                   BigNatural seedCalibration)
     : McSimulation<MC, RNG, S>(antitheticVariate, controlVariate), process_(std::move(process)),
       timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), brownianBridge_(brownianBridge),
@@ -184,15 +184,12 @@ namespace QuantLib {
         typename RNG_Calibration::rsg_type generator =
             RNG_Calibration::make_sequence_generator(
                 dimensions * (grid.size() - 1), seedCalibration_);
-        ext::shared_ptr<path_generator_type_calibration>
-            pathGeneratorCalibration =
-                ext::make_shared<path_generator_type_calibration>(
+        auto pathGeneratorCalibration = ext::make_shared<path_generator_type_calibration>(
                     process_, grid, generator, brownianBridgeCalibration_);
         mcModelCalibration_ =
-            ext::shared_ptr<MonteCarloModel<MC, RNG_Calibration, S> >(
-                new MonteCarloModel<MC, RNG_Calibration, S>(
+            ext::make_shared<MonteCarloModel<MC, RNG_Calibration, S>>(
                     pathGeneratorCalibration, pathPricer_, stats_type(),
-                    this->antitheticVariateCalibration_));
+                    this->antitheticVariateCalibration_);
 
         mcModelCalibration_->addSamples(nCalibrationSamples_);
         pathPricer_->calibrate();
@@ -250,9 +247,8 @@ namespace QuantLib {
         TimeGrid grid = this->timeGrid();
         typename RNG::rsg_type generator =
             RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
-        return ext::shared_ptr<path_generator_type>(
-                   new path_generator_type(process_,
-                                           grid, generator, brownianBridge_));
+        return ext::make_shared<path_generator_type>(process_,
+                                           grid, generator, brownianBridge_);
     }
 
 }

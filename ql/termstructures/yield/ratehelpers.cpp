@@ -227,11 +227,10 @@ namespace QuantLib {
 
     void DepositRateHelper::initializeDates() {
         if (updateDates_) {
-            // if the evaluation date is not a business day
-            // then move to the next business day
-            Date referenceDate =
-                iborIndex_->fixingCalendar().adjust(evaluationDate_);
-            earliestDate_ = iborIndex_->valueDate(referenceDate);
+            // fixing days are counted from the actual evaluation date,
+            // even when it is not a business day (see issue #753)
+            earliestDate_ = iborIndex_->fixingCalendar().advance(
+                evaluationDate_, iborIndex_->fixingDays() * Days);
             fixingDate_ = iborIndex_->fixingDate(earliestDate_);
         } else {
             earliestDate_ = iborIndex_->valueDate(fixingDate_);
@@ -392,12 +391,10 @@ namespace QuantLib {
 
     void FraRateHelper::initializeDates() {
         if (updateDates_) {
-            // if the evaluation date is not a business day
-            // then move to the next business day
-            Date referenceDate =
-                iborIndex_->fixingCalendar().adjust(evaluationDate_);
+            // fixing days are counted from the actual evaluation date,
+            // even when it is not a business day (see issue #753)
             Date spotDate = iborIndex_->fixingCalendar().advance(
-                referenceDate, iborIndex_->fixingDays()*Days);
+                evaluationDate_, iborIndex_->fixingDays()*Days);
             if (periodToStart_) { // NOLINT(readability-implicit-bool-conversion)
                 earliestDate_ = iborIndex_->fixingCalendar().advance(
                     spotDate, *periodToStart_, iborIndex_->businessDayConvention(),
@@ -467,13 +464,13 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const ext::optional<bool>& useIndexedCoupons,
+                                   const std::optional<bool>& useIndexedCoupons,
                                    const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer)
     : SwapRateHelper(rate, swapIndex->tenor(), swapIndex->fixingCalendar(),
         swapIndex->fixedLegTenor().frequency(), swapIndex->fixedLegConvention(),
         swapIndex->dayCounter(), swapIndex->iborIndex(), std::move(spread), fwdStart,
         std::move(discount), Null<Natural>(), pillarChoice, customPillarDate, endOfMonth,
-        useIndexedCoupons, ext::nullopt, couponPricer) {}
+        useIndexedCoupons, std::nullopt, couponPricer) {}
 
     SwapRateHelper::SwapRateHelper(const std::variant<Rate, Handle<Quote>>& rate,
                                    const Period& tenor,
@@ -489,8 +486,8 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const ext::optional<bool>& useIndexedCoupons,
-                                   const ext::optional<BusinessDayConvention>& floatConvention,
+                                   const std::optional<bool>& useIndexedCoupons,
+                                   const std::optional<BusinessDayConvention>& floatConvention,
                                    const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays), tenor_(tenor),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
@@ -515,8 +512,8 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const ext::optional<bool>& useIndexedCoupons,
-                                   const ext::optional<BusinessDayConvention>& floatConvention,
+                                   const std::optional<bool>& useIndexedCoupons,
+                                   const std::optional<BusinessDayConvention>& floatConvention,
                                    const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer)
     : RelativeDateRateHelper(rate, false), startDate_(startDate), endDate_(endDate),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
@@ -673,13 +670,10 @@ namespace QuantLib {
     }
 
     void BMASwapRateHelper::initializeDates() {
-        // if the evaluation date is not a business day
-        // then move to the next business day
-        JointCalendar jc(calendar_,
-                         iborIndex_->fixingCalendar());
-        Date referenceDate = jc.adjust(evaluationDate_);
+        // settlement days are counted from the actual evaluation date,
+        // even when it is not a business day (see issue #753)
         earliestDate_ =
-            calendar_.advance(referenceDate, settlementDays_ * Days, Following);
+            calendar_.advance(evaluationDate_, settlementDays_ * Days, Following);
 
         Date maturity = earliestDate_ + tenor_;
 

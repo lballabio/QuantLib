@@ -68,7 +68,7 @@ class DiscountingConstNotionalCrossCurrencySwapEngine : public ConstNotionalCros
     */
     DiscountingConstNotionalCrossCurrencySwapEngine(Currency  domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountCurve,
                        Currency  foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountCurve,
-                       const Handle<Quote>& spotFX, ext::optional<bool> includeSettlementDateFlows = ext::nullopt,
+                       const Handle<Quote>& spotFX, std::optional<bool> includeSettlementDateFlows = std::nullopt,
                        const Date& settlementDate = Date(), const Date& npvDate = Date(), const Date& spotFXSettleDate = Date());
     //@}
 
@@ -94,7 +94,7 @@ class DiscountingConstNotionalCrossCurrencySwapEngine : public ConstNotionalCros
     Currency foreignCcy_;
     Handle<YieldTermStructure> foreignCcyDiscountcurve_;
     Handle<Quote> spotFX_;
-    ext::optional<bool> includeSettlementDateFlows_;
+    std::optional<bool> includeSettlementDateFlows_;
     Date settlementDate_;
     Date npvDate_;
     Date spotFXSettleDate_;

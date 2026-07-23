@@ -57,7 +57,7 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
       private:
-        ext::optional<Bond::Price> price_;
+        std::optional<Bond::Price> price_;
         Type type_;
         Date date_;
     };
