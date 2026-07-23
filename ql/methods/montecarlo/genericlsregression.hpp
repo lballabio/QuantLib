@@ -25,15 +25,28 @@
 
 namespace QuantLib {
 
-    //! returns the biased estimate obtained while regressing
-    /* TODO document:
-       n exercises, n+1 elements in simulationData
-       simulationData[0][j] -> cashflows up to first exercise, j-th path
-       simulationData[i+1][j] -> i-th exercise, j-th path
+    /*! Estimates the value of early-exercise rights using the
+        Longstaff-Schwartz least-squares regression method.
 
-       simulationData[0][j].foo unused (unusable?) if foo != cumulatedCashFlows
+        Returns the biased estimate of the option value obtained
+        by regressing continuation values against basis functions
+        along each simulated path.
 
-       basisCoefficients.size() = n
+        \param simulationData collected node data for all paths and
+               exercise dates. It must contain n+1 elements
+               for n exercise dates:
+               - simulationData[0][j] holds the cash flows
+                 accumulated up to the first exercise date on the
+                 j-th path (only the \c cumulatedCashFlows
+                 field is used);
+               - simulationData[i+1][j] holds the data at
+                 the i-th exercise date on the j-th
+                 path.
+
+        \param basisCoefficients output parameter. After the call, it
+               contains the regression coefficients for each exercise
+               date; its size must equal the number of exercise dates
+               \c n.
     */
     Real genericLongstaffSchwartzRegression(
         std::vector<std::vector<NodeData> >& simulationData,
