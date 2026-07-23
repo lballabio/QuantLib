@@ -6,6 +6,7 @@ this_include_HEADERS = \
     all.hpp \
     armijo.hpp \
     bfgs.hpp \
+    cmaes.hpp \
     conjugategradient.hpp \
     constraint.hpp \
     costfunction.hpp \
@@ -31,6 +32,7 @@ this_include_HEADERS = \
 cpp_files = \
     armijo.cpp \
     bfgs.cpp \
+    cmaes.cpp \
     conjugategradient.cpp \
     constraint.cpp \
     differentialevolution.cpp \
