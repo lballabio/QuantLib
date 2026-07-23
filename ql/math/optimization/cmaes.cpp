@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/math/cmaes.hpp>
+#include <ql/math/optimization/cmaes.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 #include <algorithm>

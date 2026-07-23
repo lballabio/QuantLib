@@ -21,8 +21,8 @@
     \brief Covariance Matrix Adaptation Evolution Strategy (CMA-ES) optimizer
 */
 
-#ifndef quantlib_cmaes_hpp
-#define quantlib_cmaes_hpp
+#ifndef quantlib_optimization_cmaes_hpp
+#define quantlib_optimization_cmaes_hpp
 
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/constraint.hpp>
