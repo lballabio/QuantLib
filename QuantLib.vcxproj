@@ -718,7 +718,6 @@
     <ClInclude Include="ql\experimental\lattices\extendedbinomialtree.hpp" />
     <ClInclude Include="ql\experimental\math\all.hpp" />
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp" />
-    <ClInclude Include="ql\experimental\math\cmaes.hpp" />
     <ClInclude Include="ql\experimental\math\convolvedstudentt.hpp" />
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\fireflyalgorithm.hpp" />
@@ -1087,6 +1086,7 @@
     <ClInclude Include="ql\math\optimization\all.hpp" />
     <ClInclude Include="ql\math\optimization\armijo.hpp" />
     <ClInclude Include="ql\math\optimization\bfgs.hpp" />
+    <ClInclude Include="ql\math\optimization\cmaes.hpp" />
     <ClInclude Include="ql\math\optimization\conjugategradient.hpp" />
     <ClInclude Include="ql\math\optimization\constraint.hpp" />
     <ClInclude Include="ql\math\optimization\costfunction.hpp" />
@@ -2097,7 +2097,6 @@
     <ClCompile Include="ql\experimental\inflation\yoycapfloortermpricesurface.cpp" />
     <ClCompile Include="ql\experimental\inflation\yoyoptionlethelpers.cpp" />
     <ClCompile Include="ql\experimental\lattices\extendedbinomialtree.cpp" />
-    <ClCompile Include="ql\experimental\math\cmaes.cpp" />
     <ClCompile Include="ql\experimental\math\convolvedstudentt.cpp" />
     <ClCompile Include="ql\experimental\math\fireflyalgorithm.cpp" />
     <ClCompile Include="ql\experimental\math\gaussiancopulapolicy.cpp" />
@@ -2337,6 +2336,7 @@
     <ClCompile Include="ql\math\modifiedbessel.cpp" />
     <ClCompile Include="ql\math\optimization\armijo.cpp" />
     <ClCompile Include="ql\math\optimization\bfgs.cpp" />
+    <ClCompile Include="ql\math\optimization\cmaes.cpp" />
     <ClCompile Include="ql\math\optimization\conjugategradient.cpp" />
     <ClCompile Include="ql\math\optimization\constraint.cpp" />
     <ClCompile Include="ql\math\optimization\differentialevolution.cpp" />

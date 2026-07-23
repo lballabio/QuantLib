@@ -1383,6 +1383,9 @@
     <ClInclude Include="ql\math\optimization\bfgs.hpp">
       <Filter>math\optimization</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\optimization\cmaes.hpp">
+      <Filter>math\optimization</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\optimization\conjugategradient.hpp">
       <Filter>math\optimization</Filter>
     </ClInclude>
@@ -3750,9 +3753,6 @@
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\math\cmaes.hpp">
-      <Filter>experimental\math</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\math\convolvedstudentt.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
@@ -5175,6 +5175,9 @@
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\bfgs.cpp">
+      <Filter>math\optimization</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\optimization\cmaes.cpp">
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\conjugategradient.cpp">
@@ -6826,9 +6829,6 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\inflation\yoyoptionlethelpers.cpp">
       <Filter>experimental\inflation</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\math\cmaes.cpp">
-      <Filter>experimental\math</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\math\convolvedstudentt.cpp">
       <Filter>experimental\math</Filter>
