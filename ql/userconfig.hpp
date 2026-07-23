@@ -82,7 +82,7 @@
    any other environment with an async garbage collector.
 */
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-#    define QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+//#    define QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 #endif
 
 /* If defined, date objects willsupport an intraday datetime
