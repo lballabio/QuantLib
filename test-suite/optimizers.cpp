@@ -35,7 +35,7 @@
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/steepestdescent.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
-#include <ql/experimental/math/cmaes.hpp>
+#include <ql/math/optimization/cmaes.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/mathconstants.hpp>
 
