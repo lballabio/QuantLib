@@ -504,37 +504,46 @@ BOOST_AUTO_TEST_CASE(testInputValidation) {
     const auto model{ext::make_shared<RoughHestonModel>(
         rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.15)};
 
-    BOOST_CHECK_THROW(
-        AnalyticRoughHestonEngine(model, 128, 0), Error);
+    const ExpectedErrorMessage noTimeSteps("at least one time step required");
+    const ExpectedErrorMessage alphaOutOfRange("must be in (-1, 0)");
+    const ExpectedErrorMessage nonPositiveMaturity("maturity must be positive");
+
+    BOOST_CHECK_EXCEPTION(
+        AnalyticRoughHestonEngine(model, 128, 0), Error, noTimeSteps);
 
     const auto integration{
         AnalyticRoughHestonEngine::Integration::gaussLaguerre(128)};
-    BOOST_CHECK_THROW(
-        AnalyticRoughHestonEngine(model, integration, 0), Error);
-    BOOST_CHECK_THROW(
-        AnalyticRoughHestonEngine(model, integration, 256, 1e-25, 0.0), Error);
-    BOOST_CHECK_THROW(
-        AnalyticRoughHestonEngine(model, integration, 256, 1e-25, -1.0), Error);
-    BOOST_CHECK_THROW(
-        AnalyticRoughHestonEngine(model, integration, 256, 1e-25, 0.5), Error);
+    BOOST_CHECK_EXCEPTION(
+        AnalyticRoughHestonEngine(model, integration, 0), Error, noTimeSteps);
+    BOOST_CHECK_EXCEPTION(
+        AnalyticRoughHestonEngine(model, integration, 256, 1e-25, 0.0), Error,
+        alphaOutOfRange);
+    BOOST_CHECK_EXCEPTION(
+        AnalyticRoughHestonEngine(model, integration, 256, 1e-25, -1.0), Error,
+        alphaOutOfRange);
+    BOOST_CHECK_EXCEPTION(
+        AnalyticRoughHestonEngine(model, integration, 256, 1e-25, 0.5), Error,
+        alphaOutOfRange);
 
     const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
         model, 128, 256)};
 
-    BOOST_CHECK_THROW(
+    BOOST_CHECK_EXCEPTION(
         engine->priceVanillaPayoff(
             ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0), 0.0),
-        Error);
-    BOOST_CHECK_THROW(
+        Error, nonPositiveMaturity);
+    BOOST_CHECK_EXCEPTION(
         engine->priceVanillaPayoff(
             ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0), -1.0),
-        Error);
+        Error, nonPositiveMaturity);
 
     VanillaOption americanOption(
         ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0),
         ext::make_shared<AmericanExercise>(today, today + Period(1, Years)));
     americanOption.setPricingEngine(engine);
-    BOOST_CHECK_THROW(americanOption.NPV(), Error);
+    BOOST_CHECK_EXCEPTION(
+        americanOption.NPV(), Error,
+        ExpectedErrorMessage("not an European option"));
 }
 
 BOOST_AUTO_TEST_CASE(testShortMaturitySkewExplosion) {
