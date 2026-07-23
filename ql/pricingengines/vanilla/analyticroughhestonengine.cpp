@@ -93,8 +93,7 @@ namespace QuantLib {
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       timeSteps_(timeSteps),
-      integration_(new Integration(
-          Integration::gaussLaguerre(integrationOrder))),
+      integration_(Integration::gaussLaguerre(integrationOrder)),
       andersenPiterbargEpsilon_(1e-25),
       alpha_(-0.5) {
         QL_REQUIRE(timeSteps > 0, "at least one time step required");
@@ -110,7 +109,7 @@ namespace QuantLib {
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       timeSteps_(timeSteps),
-      integration_(new Integration(integration)),
+      integration_(integration),
       andersenPiterbargEpsilon_(andersenPiterbargEpsilon),
       alpha_(alpha) {
         QL_REQUIRE(timeSteps > 0, "at least one time step required");
@@ -185,6 +184,8 @@ namespace QuantLib {
         const ext::shared_ptr<PlainVanillaPayoff>& payoff,
         Time maturity) const {
 
+        QL_REQUIRE(maturity > 0.0, "maturity must be positive");
+
         const Real fwd{model_->s0()->value()
             * model_->dividendYield()->discount(maturity)
             / model_->riskFreeRate()->discount(maturity)};
@@ -239,8 +240,8 @@ namespace QuantLib {
             0.25 / std::sqrt(0.5 * cvHelper.vAvg() * maturity)))};
 
         const Real h_cv{fwd / M_PI
-            * integration_->calculate(c_inf, cvHelper, uM, scalingFactor)};
-        evaluations_ += integration_->numberOfEvaluations();
+            * integration_.calculate(c_inf, cvHelper, uM, scalingFactor)};
+        evaluations_ += integration_.numberOfEvaluations();
 
         switch (payoff->optionType()) {
           case Option::Call:
