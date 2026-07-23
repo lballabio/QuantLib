@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     bool CashFlow::hasOccurred(const Date& refDate,
-                               ext::optional<bool> includeRefDate) const {
+                               std::optional<bool> includeRefDate) const {
 
         // easy and quick handling of most cases
         if (refDate != Date()) {
@@ -40,7 +40,7 @@ namespace QuantLib {
             refDate == Settings::instance().evaluationDate()) {
             // today's date; we override the bool with the one
             // specified in the settings (if any)
-            ext::optional<bool> includeToday =
+            std::optional<bool> includeToday =
                 Settings::instance().includeTodaysCashFlows();
             if (includeToday.has_value())
                 includeRefDate = includeToday;

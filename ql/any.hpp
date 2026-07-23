@@ -17,33 +17,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file any.hpp
-    \brief Maps any to either the boost or std implementation
-*/
-
 #ifndef quantlib_any_hpp
 #define quantlib_any_hpp
 
 #include <ql/qldefines.hpp>
-
-#if defined(QL_USE_STD_ANY)
 #include <any>
-#else
-// Deprecated in version 1.39
-#pragma message("Warning: using boost::any is deprecated.  Enable std::any instead.")
-#include <boost/any.hpp>
-#endif
 
 namespace QuantLib::ext {
 
-        #if defined(QL_USE_STD_ANY)
-        using std::any;                   // NOLINT(misc-unused-using-decls)
-        using std::any_cast;              // NOLINT(misc-unused-using-decls)
-        #else
-        using boost::any;                 // NOLINT(misc-unused-using-decls)
-        using boost::any_cast;            // NOLINT(misc-unused-using-decls)
-        #endif
+    /*! \deprecated Use std::any instead.
+                    Deprecated in version 1.44.
+    */
+    using any [[deprecated("Use std::any instead")]] = std::any; // NOLINT(misc-unused-using-decls)
 
-    }
+    /*! \deprecated Use std::any_cast instead.
+                    Deprecated in version 1.44.
+    */
+    using std::any_cast;  // NOLINT(misc-unused-using-decls)
+
+}
 
 #endif

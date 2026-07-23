@@ -40,7 +40,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> discount,
         const VolatilityType type,
         const Real displacement,
-        ext::optional<Period> optionletFrequency,
+        std::optional<Period> optionletFrequency,
         Natural paymentLag
     )
     : termVolSurface_(termVolSurface), iborIndex_(std::move(iborIndex)),
@@ -191,7 +191,7 @@ namespace QuantLib {
         return volatilityType_;
     }
 
-    ext::optional<Period> OptionletStripper::optionletFrequency() const {
+    std::optional<Period> OptionletStripper::optionletFrequency() const {
         return optionletFrequency_;
     }
 

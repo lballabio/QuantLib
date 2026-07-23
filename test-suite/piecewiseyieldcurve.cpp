@@ -2291,7 +2291,7 @@ BOOST_AUTO_TEST_CASE(testSwapRateHelperWithCouponPricer) {
             d.rate, Period(d.n, d.units), TARGET(), Annual, ModifiedFollowing,
             Thirty360(Thirty360::BondBasis), index, Handle<Quote>(), 0 * Days,
             Handle<YieldTermStructure>(), Null<Natural>(), Pillar::LastRelevantDate, Date(), false,
-            ext::nullopt, ext::nullopt, pricer));
+            std::nullopt, std::nullopt, pricer));
     }
 
     // the supplied pricer must be attached to every coupon of the floating leg
@@ -2335,6 +2335,57 @@ BOOST_AUTO_TEST_CASE(testSwapRateHelperWithCouponPricer) {
                         << std::setprecision(12) << "\n    tenor:     " << Period(d.n, d.units)
                         << "\n    NPV:       " << npv << "\n    tolerance: " << tolerance);
     }
+}
+
+BOOST_AUTO_TEST_CASE(testHelperDatesFromNonBusinessEvaluationDate) {
+
+    BOOST_TEST_MESSAGE("Testing that rate-helper dates are calculated from "
+                       "the actual evaluation date when the latter is not a "
+                       "business day...");
+
+    // Saturday
+    Date today(20, June, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    auto euribor6m = ext::make_shared<Euribor6M>();
+    Calendar calendar = euribor6m->fixingCalendar();
+    // fixing days are counted from the actual evaluation date,
+    // not from the next business day
+    Date expectedSpot = calendar.advance(today, euribor6m->fixingDays() * Days);
+
+    auto depo = ext::make_shared<DepositRateHelper>(
+        0.03, 6 * Months, euribor6m->fixingDays(), calendar,
+        euribor6m->businessDayConvention(), euribor6m->endOfMonth(),
+        euribor6m->dayCounter());
+    if (depo->earliestDate() != expectedSpot)
+        BOOST_ERROR("deposit helper earliest date not calculated from the "
+                    "actual evaluation date:\n"
+                    "    expected: " << expectedSpot << "\n"
+                    "    obtained: " << depo->earliestDate());
+
+    auto fra = ext::make_shared<FraRateHelper>(0.03, 3, euribor6m);
+    Date expectedFraStart =
+        calendar.advance(expectedSpot, 3 * Months,
+                         euribor6m->businessDayConvention(),
+                         euribor6m->endOfMonth());
+    if (fra->earliestDate() != expectedFraStart)
+        BOOST_ERROR("FRA helper earliest date not calculated from the "
+                    "actual evaluation date:\n"
+                    "    expected: " << expectedFraStart << "\n"
+                    "    obtained: " << fra->earliestDate());
+
+    Calendar bmaCalendar = JointCalendar(BMAIndex().fixingCalendar(),
+                                         USDLibor(3 * Months).fixingCalendar());
+    auto bmaHelper = ext::make_shared<BMASwapRateHelper>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.75)),
+        5 * Years, 3, bmaCalendar, Period(Quarterly), Following, Actual360(),
+        ext::make_shared<BMAIndex>(), ext::make_shared<USDLibor>(3 * Months));
+    Date expectedBmaStart = bmaCalendar.advance(today, 3 * Days, Following);
+    if (bmaHelper->earliestDate() != expectedBmaStart)
+        BOOST_ERROR("BMA helper earliest date not calculated from the "
+                    "actual evaluation date:\n"
+                    "    expected: " << expectedBmaStart << "\n"
+                    "    obtained: " << bmaHelper->earliestDate());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

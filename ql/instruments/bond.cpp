@@ -106,7 +106,7 @@ namespace QuantLib {
         // BondFunctions.  We pass nullopt as includeSettlementDateFlows
         // so that CashFlows::isExpired uses the default setting.
         return CashFlows::isExpired(cashflows_,
-                                    ext::nullopt,
+                                    std::nullopt,
                                     Settings::instance().evaluationDate());
     }
 

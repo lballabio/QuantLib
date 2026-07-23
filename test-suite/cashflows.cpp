@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE(testSettings) {
     //         today's date
 
     Settings::instance().includeReferenceDateEvents() = false;
-    Settings::instance().includeTodaysCashFlows() = ext::nullopt;
+    Settings::instance().includeTodaysCashFlows() = std::nullopt;
 
     CHECK_INCLUSION(0, 0, false);
     CHECK_INCLUSION(0, 1, false);
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(testSettings) {
     //         today's date
 
     Settings::instance().includeReferenceDateEvents() = true;
-    Settings::instance().includeTodaysCashFlows() = ext::nullopt;
+    Settings::instance().includeTodaysCashFlows() = std::nullopt;
 
     CHECK_INCLUSION(0, 0, true);
     CHECK_INCLUSION(0, 1, false);
@@ -165,7 +165,7 @@ BOOST_AUTO_TEST_CASE(testSettings) {
     } while (false);
 
     // no override
-    Settings::instance().includeTodaysCashFlows() = ext::nullopt;
+    Settings::instance().includeTodaysCashFlows() = std::nullopt;
 
     CHECK_NPV(false, 2.0);
     CHECK_NPV(true, 3.0);
@@ -436,7 +436,7 @@ BOOST_AUTO_TEST_CASE(testPartialScheduleLegConstruction) {
                             .backwards();
     // same schedule, date based, with metadata
     Schedule schedule2(schedule.dates(), NullCalendar(), Unadjusted, Unadjusted,
-                       6 * Months, ext::nullopt, schedule.endOfMonth(),
+                       6 * Months, std::nullopt, schedule.endOfMonth(),
                        schedule.isRegular());
     // same schedule, date based, without metadata
     Schedule schedule3(schedule.dates());

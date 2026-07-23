@@ -75,7 +75,7 @@ namespace QuantLib {
                     const Date& rateComputationStartDate = Date(),
                     const Date& rateComputationEndDate = Date(),
                     const Date& exCouponDate = Date(),
-                    const ext::optional<Integer>& roundingPrecision = ext::nullopt);
+                    const std::optional<Integer>& roundingPrecision = std::nullopt);
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded
@@ -140,7 +140,7 @@ namespace QuantLib {
         bool applyObservationShift_;
         bool compoundSpreadDaily_;
         Date rateComputationStartDate_, rateComputationEndDate_;
-        ext::optional<Integer> roundingPrecision_;
+        std::optional<Integer> roundingPrecision_;
         Rate averageRate(const Date& date) const;
     };
 
@@ -239,7 +239,7 @@ namespace QuantLib {
         OvernightLeg& withNakedOption(bool nakedOption);
         OvernightLeg& withDailyCapFloor(bool dailyCapFloor = true);
         OvernightLeg& inArrears(bool inArrears);
-        OvernightLeg& withLastRecentPeriod(const ext::optional<Period>& lastRecentPeriod);
+        OvernightLeg& withLastRecentPeriod(const std::optional<Period>& lastRecentPeriod);
         OvernightLeg& withLastRecentPeriodCalendar(const Calendar& lastRecentPeriodCalendar);
         OvernightLeg& withPaymentDates(const std::vector<Date>& paymentDates);
         OvernightLeg& withCouponPricer(const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer);
@@ -261,12 +261,12 @@ namespace QuantLib {
         Natural lockoutDays_ = 0;
         bool applyObservationShift_ = false;
         bool compoundSpreadDaily_ = false;
-        ext::optional<Integer> roundingPrecision_;
+        std::optional<Integer> roundingPrecision_;
         std::vector<Rate> caps_, floors_;
         bool nakedOption_ = false;
         bool dailyCapFloor_ = false;
         bool inArrears_ = true;
-        ext::optional<Period> lastRecentPeriod_;
+        std::optional<Period> lastRecentPeriod_;
         Calendar lastRecentPeriodCalendar_;
         std::vector<Date> paymentDates_;
         ext::shared_ptr<OvernightIndexedCouponPricer> couponPricer_;

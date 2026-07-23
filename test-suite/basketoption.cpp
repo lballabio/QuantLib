@@ -2055,7 +2055,7 @@ BOOST_AUTO_TEST_CASE(testGoldenChoiBasketEngineExample) {
 
             const std::string deltaName = "forwardDelta " + std::to_string(k);
             const Real deltaDiff = std::abs(expectedDeltaFwd
-                - ext::any_cast<Real>(option.additionalResults().at(deltaName)));
+                - std::any_cast<Real>(option.additionalResults().at(deltaName)));
             const Real deltaTol = 5e-5;
 
             if (deltaDiff > deltaTol)

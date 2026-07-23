@@ -42,7 +42,7 @@ namespace QuantLib {
         const VolatilityType type,
         const Real displacement,
         bool dontThrow,
-        ext::optional<Period> optionletFrequency,
+        std::optional<Period> optionletFrequency,
         Natural paymentLag)
     : OptionletStripper(termVolSurface, index, discount, type, displacement,
                         optionletFrequency, paymentLag),

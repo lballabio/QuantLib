@@ -1030,7 +1030,7 @@ namespace {
         ext::shared_ptr<OptionletStripper1> optionletStripper1(
             new OptionletStripper1(surface, iborIndex, Null<Rate>(), vars.accuracy, 100,
                                    Handle<YieldTermStructure>(), ShiftedLognormal, 0.0,
-                                   false, ext::nullopt, paymentLag));
+                                   false, std::nullopt, paymentLag));
 
         Handle<OptionletVolatilityStructure> vol(
             ext::make_shared<StrippedOptionletAdapter>(optionletStripper1));
@@ -1089,7 +1089,7 @@ namespace {
         auto stripper1 = ext::make_shared<OptionletStripper1>(
             vars.flatTermVolSurface, iborIndex, Null<Rate>(), vars.accuracy, 100,
             Handle<YieldTermStructure>(), ShiftedLognormal, 0.0, false,
-            ext::nullopt, paymentLag);
+            std::nullopt, paymentLag);
         auto stripper2 = ext::make_shared<OptionletStripper2>(
             stripper1, vars.flatTermVolCurve);
 

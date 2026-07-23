@@ -176,7 +176,7 @@ namespace QuantLib {
         Protection::Side side() const;
         Real notional() const;
         Rate runningSpread() const;
-        ext::optional<Rate> upfront() const;
+        std::optional<Rate> upfront() const;
         bool settlesAccrual() const;
         bool paysAtDefaultTime() const;
         const Leg& coupons() const;
@@ -282,7 +282,7 @@ namespace QuantLib {
         // data members
         Protection::Side side_;
         Real notional_;
-        ext::optional<Rate> upfront_;
+        std::optional<Rate> upfront_;
         Rate runningSpread_;
         bool settlesAccrual_, paysAtDefaultTime_;
         ext::shared_ptr<Claim> claim_;
@@ -314,7 +314,7 @@ namespace QuantLib {
         arguments();
         Protection::Side side;
         Real notional;
-        ext::optional<Rate> upfront;
+        std::optional<Rate> upfront;
         Rate spread;
         Leg leg;
         // if not initialized by constructors means theres no flows.

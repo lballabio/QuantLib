@@ -214,7 +214,7 @@ namespace QuantLib {
             for (Size i=0; i < f.size(); ++i)
                 quotes[i]->setValue(f[i]);
 
-            dStore.push_back(ext::any_cast<Real>(option.additionalResults().at("d")));
+            dStore.push_back(std::any_cast<Real>(option.additionalResults().at("d")));
             return std::exp(-DotProduct(z, z)) * option.NPV();
         };
 

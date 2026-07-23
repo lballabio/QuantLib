@@ -80,7 +80,7 @@ namespace QuantLib {
             auto vega_ = results_->additionalResults.find("vega");
             QL_REQUIRE(vega_ != results_->additionalResults.end(),
                        "vega not provided");
-            return ext::any_cast<Real>(vega_->second);
+            return std::any_cast<Real>(vega_->second);
         }
     }
 

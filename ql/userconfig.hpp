@@ -82,7 +82,7 @@
    any other environment with an async garbage collector.
 */
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-#    define QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+//#    define QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 #endif
 
 /* If defined, date objects willsupport an intraday datetime
@@ -117,24 +117,6 @@
 */
 #ifndef QL_FASTER_LAZY_OBJECTS
 #    define QL_FASTER_LAZY_OBJECTS
-#endif
-
-/* If defined, `std::any` and related classes and functions will be
-   used instead of `boost::any`. If undefined, the Boost facilities
-   will be used.
-*/
-#ifndef QL_USE_STD_ANY
-#    define QL_USE_STD_ANY
-#endif
-
-/* If defined, `std::optional` and related classes and functions will
-   be used instead of `boost::optional`. If undefined, the Boost
-   facilities will be used; however, be aware that Boost 1.91
-   introduced changes in boost::optional that silently changed the
-   behavior of our code and would cause it to work incorrectly.
-*/
-#ifndef QL_USE_STD_OPTIONAL
-#    define QL_USE_STD_OPTIONAL
 #endif
 
 /* If defined, `std::shared_ptr` and related classes and functions

@@ -19,7 +19,10 @@
 
 #include <ql/math/distributions/studenttdistribution.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/math/beta.hpp>
+
+#include <boost/math/distributions/students_t.hpp>
 
 namespace QuantLib {
 
@@ -42,25 +45,23 @@ namespace QuantLib {
     }
 
     Real InverseCumulativeStudent::operator()(Real y) const {
-        QL_REQUIRE (y >= 0 && y <= 1, "argument out of range [0, 1]");
-
-        Real x = 0;
-        Size count = 0;
-
-        // do a few newton steps to find x
-        do {
-            x -= (f_(x) - y) / d_(x);
-            count++;
+        if (y <= 0.0 || y >= 1.0) {
+            if (close_enough(y, 1.0)) {
+                return QL_MAX_REAL;
+            } else if (std::fabs(y) < QL_EPSILON) {
+                return QL_MIN_REAL;
+            } else {
+                QL_FAIL("InverseCumulativeStudent(" << y
+                        << ") undefined: must be 0 < x < 1");
+            }
         }
-        while (std::fabs(f_(x) - y) > accuracy_ && count < maxIterations_);
 
-        QL_REQUIRE (count < maxIterations_,
-                    "maximum number of iterations " << maxIterations_
-                    << " reached in InverseCumulativeStudent, "
-                    << "y=" << y << ", x=" << x);
+        if (y == 0.5)
+            return 0.0;
 
-        return x;
+        return boost::math::quantile(
+            boost::math::students_t_distribution<Real>(
+                static_cast<Real>(n_)), y);
     }
 
 }
-

@@ -65,7 +65,7 @@ namespace QuantLib {
                          Size polynomialOrder,
                          LsmBasisSystem::PolynomialType polynomialType,
                          Size nCalibrationSamples = Null<Size>(),
-                         const ext::optional<bool>& antitheticVariateCalibration = ext::nullopt,
+                         const std::optional<bool>& antitheticVariateCalibration = std::nullopt,
                          BigNatural seedCalibration = Null<Size>());
 
         void calculate() const override;
@@ -134,7 +134,7 @@ namespace QuantLib {
         BigNatural seed_ = 0;
         Size polynomialOrder_ = 2;
         LsmBasisSystem::PolynomialType polynomialType_ = LsmBasisSystem::Monomial;
-        ext::optional<bool> antitheticCalibration_;
+        std::optional<bool> antitheticCalibration_;
         BigNatural seedCalibration_;
     };
 
@@ -152,7 +152,7 @@ namespace QuantLib {
         Size polynomialOrder,
         LsmBasisSystem::PolynomialType polynomialType,
         Size nCalibrationSamples,
-        const ext::optional<bool>& antitheticVariateCalibration,
+        const std::optional<bool>& antitheticVariateCalibration,
         BigNatural seedCalibration)
     : MCLongstaffSchwartzEngine<VanillaOption::engine, SingleVariate, RNG, S, RNG_Calibration>(
           process,
@@ -197,9 +197,8 @@ namespace QuantLib {
         QL_REQUIRE(!exercise->payoffAtExpiry(),
                    "payoff at expiry not handled");
 
-        ext::shared_ptr<AmericanPathPricer> earlyExercisePathPricer(
-            new AmericanPathPricer(this->arguments_.payoff,
-                                   polynomialOrder_, polynomialType_));
+        auto earlyExercisePathPricer = ext::make_shared<AmericanPathPricer>(this->arguments_.payoff,
+                                   polynomialOrder_, polynomialType_);
 
         return ext::make_shared<LongstaffSchwartzPathPricer<Path> > (
              
@@ -221,12 +220,10 @@ namespace QuantLib {
                                                               this->process_);
         QL_REQUIRE(process, "generalized Black-Scholes process required");
 
-        return ext::shared_ptr<PathPricer<Path> >(
-            new EuropeanPathPricer(
+        return ext::make_shared<EuropeanPathPricer>(
                 payoff->optionType(),
                 payoff->strike(),
-                process->riskFreeRate()->discount(this->timeGrid().back()))
-            );
+                process->riskFreeRate()->discount(this->timeGrid().back()));
     }
 
     template <class RNG, class S, class RNG_Calibration>
@@ -237,8 +234,7 @@ namespace QuantLib {
                                                               this->process_);
         QL_REQUIRE(process, "generalized Black-Scholes process required");
 
-        return ext::shared_ptr<PricingEngine>(
-                                         new AnalyticEuropeanEngine(process));
+        return ext::make_shared<AnalyticEuropeanEngine>(process);
     }
 
     template <class RNG, class S, class RNG_Calibration>
@@ -253,8 +249,7 @@ namespace QuantLib {
 
         auto* controlArguments = dynamic_cast<VanillaOption::arguments*>(controlPE->getArguments());
         *controlArguments = this->arguments_;
-        controlArguments->exercise = ext::shared_ptr<Exercise>(
-             new EuropeanExercise(this->arguments_.exercise->lastDate()));
+        controlArguments->exercise = ext::make_shared<EuropeanExercise>(this->arguments_.exercise->lastDate());
 
         controlPE->calculate();
 
@@ -269,7 +264,7 @@ namespace QuantLib {
         ext::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()),
-      antitheticCalibration_(ext::nullopt), seedCalibration_(Null<Size>()) {}
+      antitheticCalibration_(std::nullopt), seedCalibration_(Null<Size>()) {}
 
     template <class RNG, class S, class RNG_Calibration>
     inline MakeMCAmericanEngine<RNG, S, RNG_Calibration> &
@@ -382,8 +377,7 @@ namespace QuantLib {
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return ext::shared_ptr<PricingEngine>(new
-           MCAmericanEngine<RNG, S, RNG_Calibration>(process_,
+        return ext::make_shared<MCAmericanEngine<RNG, S, RNG_Calibration>>(process_,
                                      steps_,
                                      stepsPerYear_,
                                      antithetic_,
@@ -395,7 +389,7 @@ namespace QuantLib {
                                      polynomialType_,
                                      calibrationSamples_,
                                      antitheticCalibration_,
-                                     seedCalibration_));
+                                     seedCalibration_);
     }
 
 }

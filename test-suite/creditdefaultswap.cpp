@@ -684,7 +684,7 @@ BOOST_AUTO_TEST_CASE(testIsdaEngine) {
                     ext::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
 
                 ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
-                    probabilityCurve, recovery, discountCurve, ext::nullopt, IsdaCdsEngine::Taylor,
+                    probabilityCurve, recovery, discountCurve, std::nullopt, IsdaCdsEngine::Taylor,
                     IsdaCdsEngine::HalfDayBias, IsdaCdsEngine::Piecewise);
 
                 ext::shared_ptr<CreditDefaultSwap> conventionalTrade =
@@ -827,7 +827,7 @@ BOOST_AUTO_TEST_CASE(testIsdaCalculatorReconcileSingleQuote) {
         ext::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
 
     ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
-        probabilityCurve, recovery, discountCurve, ext::nullopt, IsdaCdsEngine::Taylor,
+        probabilityCurve, recovery, discountCurve, std::nullopt, IsdaCdsEngine::Taylor,
         IsdaCdsEngine::HalfDayBias, IsdaCdsEngine::Piecewise);
 
     ext::shared_ptr<CreditDefaultSwap> conventionalTrade =
@@ -939,7 +939,7 @@ BOOST_AUTO_TEST_CASE(testIsdaCalculatorReconcileSingleWithIssueDateInThePast) {
         ext::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
 
     ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
-        probabilityCurve, recovery, discountCurve, ext::nullopt, IsdaCdsEngine::Taylor,
+        probabilityCurve, recovery, discountCurve, std::nullopt, IsdaCdsEngine::Taylor,
         IsdaCdsEngine::HalfDayBias, IsdaCdsEngine::Piecewise);
 
     ext::shared_ptr<CreditDefaultSwap> conventionalTrade =

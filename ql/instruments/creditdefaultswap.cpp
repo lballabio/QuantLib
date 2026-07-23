@@ -50,7 +50,7 @@ namespace QuantLib {
                                          const bool rebatesAccrual,
                                          const Date& tradeDate,
                                          Natural cashSettlementDays)
-    : side_(side), notional_(notional), upfront_(ext::nullopt), runningSpread_(spread),
+    : side_(side), notional_(notional), upfront_(std::nullopt), runningSpread_(spread),
       settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
       claim_(std::move(claim)),
       protectionStart_(protectionStart == Date() ? schedule[0] : protectionStart),
@@ -187,7 +187,7 @@ namespace QuantLib {
         return runningSpread_;
     }
 
-    ext::optional<Rate> CreditDefaultSwap::upfront() const {
+    std::optional<Rate> CreditDefaultSwap::upfront() const {
         return upfront_;
     }
 
@@ -361,7 +361,7 @@ namespace QuantLib {
           case ISDA:
             engine = ext::make_shared<IsdaCdsEngine>(
                 probability, recoveryRate, discountCurve,
-                ext::nullopt,
+                std::nullopt,
                 IsdaCdsEngine::Taylor,
                 IsdaCdsEngine::HalfDayBias,
                 IsdaCdsEngine::Piecewise);
@@ -402,7 +402,7 @@ namespace QuantLib {
           case ISDA:
             engine = ext::make_shared<IsdaCdsEngine>(
                 probability, conventionalRecovery, discountCurve,
-                ext::nullopt,
+                std::nullopt,
                 IsdaCdsEngine::Taylor,
                 IsdaCdsEngine::HalfDayBias,
                 IsdaCdsEngine::Piecewise);
