@@ -18,11 +18,24 @@
 */
 
 #include <ql/pricingengines/swaption/gaussian1dfloatfloatswaptionengine.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/experimental/coupons/swapspreadindex.hpp> // internal
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/payoff.hpp>
 
 namespace QuantLib {
+
+    namespace {
+        // one dynamic_cast pass over the leg, reused across states and
+        // events; entries are null for non-overnight coupons
+        std::vector<ext::shared_ptr<OvernightIndexedCoupon> >
+        floatFloatOvernightCoupons(const Leg& leg) {
+            std::vector<ext::shared_ptr<OvernightIndexedCoupon> > result(leg.size());
+            for (Size i = 0; i < leg.size(); ++i)
+                result[i] = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(leg[i]);
+            return result;
+        }
+    }
 
     void Gaussian1dFloatFloatSwaptionEngine::calculate() const {
 
@@ -181,6 +194,8 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<SwapIndex>(arguments_.index2);
         ext::shared_ptr<SwapSpreadIndex> cmsspread2 =
             ext::dynamic_pointer_cast<SwapSpreadIndex>(arguments_.index2);
+        const auto onCoupons1 = floatFloatOvernightCoupons(arguments_.swap->leg1());
+        const auto onCoupons2 = floatFloatOvernightCoupons(arguments_.swap->leg2());
 
         QL_REQUIRE(ibor1 != nullptr || cms1 != nullptr || cmsspread1 != nullptr,
                    "index1 must be ibor or swap or swap spread index");
@@ -452,7 +467,21 @@ namespace QuantLib {
                                 amount = arguments_.leg1Coupons[j];
                             } else {
                                 Real estFixing = 0.0;
-                                if (ibor1 != nullptr) {
+                                if (onCoupons1[j] != nullptr) {
+                                    // daily compounding telescopes to a
+                                    // zerobond ratio over the accrual period
+                                    estFixing =
+                                        (model_->zerobond(
+                                             onCoupons1[j]->accrualStartDate(),
+                                             event0, zk,
+                                             ibor1->forwardingTermStructure()) /
+                                             model_->zerobond(
+                                                 onCoupons1[j]->accrualEndDate(),
+                                                 event0, zk,
+                                                 ibor1->forwardingTermStructure()) -
+                                         1.0) /
+                                        arguments_.leg1AccrualTimes[j];
+                                } else if (ibor1 != nullptr) {
                                     estFixing = model_->forwardRate(
                                         arguments_.leg1FixingDates[j], event0,
                                         zk, ibor1);
@@ -536,7 +565,19 @@ namespace QuantLib {
                                 amount = arguments_.leg2Coupons[j];
                             } else {
                                 Real estFixing = 0.0;
-                                if (ibor2 != nullptr)
+                                if (onCoupons2[j] != nullptr) {
+                                    estFixing =
+                                        (model_->zerobond(
+                                             onCoupons2[j]->accrualStartDate(),
+                                             event0, zk,
+                                             ibor2->forwardingTermStructure()) /
+                                             model_->zerobond(
+                                                 onCoupons2[j]->accrualEndDate(),
+                                                 event0, zk,
+                                                 ibor2->forwardingTermStructure()) -
+                                         1.0) /
+                                        arguments_.leg2AccrualTimes[j];
+                                } else if (ibor2 != nullptr)
                                     estFixing = model_->forwardRate(arguments_.leg2FixingDates[j],event0,zk,ibor2);
                                 if (cms2 != nullptr)
                                     estFixing = model_->swapRate(arguments_.leg2FixingDates[j],cms2->tenor(),event0,zk,cms2);

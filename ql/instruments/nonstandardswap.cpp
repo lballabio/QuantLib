@@ -27,6 +27,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/instruments/nonstandardswap.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/optional.hpp>
 #include <utility>
@@ -50,6 +51,8 @@ namespace QuantLib {
           singleSpreadAndGearing_(true),
           floatingDayCount_(fromVanilla.floatingDayCount()),
           paymentConvention_(fromVanilla.paymentConvention()),
+          paymentLag_(fromVanilla.paymentLag()),
+          paymentCalendar_(fromVanilla.paymentCalendar()),
           intermediateCapitalExchange_(false), finalCapitalExchange_(false) {
 
         init();
@@ -68,7 +71,9 @@ namespace QuantLib {
                                      DayCounter floatingDayCount,
                                      const bool intermediateCapitalExchange,
                                      const bool finalCapitalExchange,
-                                     std::optional<BusinessDayConvention> paymentConvention)
+                                     std::optional<BusinessDayConvention> paymentConvention,
+                                     const Integer paymentLag,
+                                     Calendar paymentCalendar)
     : Swap(2), type_(type), fixedNominal_(std::move(fixedNominal)),
       floatingNominal_(floatingNominal), fixedSchedule_(std::move(fixedSchedule)),
       fixedRate_(std::move(fixedRate)), fixedDayCount_(std::move(fixedDayCount)),
@@ -76,6 +81,7 @@ namespace QuantLib {
       spread_(std::vector<Real>(floatingNominal.size(), spread)),
       gearing_(std::vector<Real>(floatingNominal.size(), gearing)), singleSpreadAndGearing_(true),
       floatingDayCount_(std::move(floatingDayCount)),
+      paymentLag_(paymentLag), paymentCalendar_(std::move(paymentCalendar)),
       intermediateCapitalExchange_(intermediateCapitalExchange),
       finalCapitalExchange_(finalCapitalExchange) {
 
@@ -99,13 +105,16 @@ namespace QuantLib {
                                      DayCounter floatingDayCount,
                                      const bool intermediateCapitalExchange,
                                      const bool finalCapitalExchange,
-                                     std::optional<BusinessDayConvention> paymentConvention)
+                                     std::optional<BusinessDayConvention> paymentConvention,
+                                     const Integer paymentLag,
+                                     Calendar paymentCalendar)
     : Swap(2), type_(type), fixedNominal_(std::move(fixedNominal)),
       floatingNominal_(std::move(floatingNominal)), fixedSchedule_(std::move(fixedSchedule)),
       fixedRate_(std::move(fixedRate)), fixedDayCount_(std::move(fixedDayCount)),
       floatingSchedule_(std::move(floatingSchedule)), iborIndex_(std::move(iborIndex)),
       spread_(std::move(spread)), gearing_(std::move(gearing)), singleSpreadAndGearing_(false),
       floatingDayCount_(std::move(floatingDayCount)),
+      paymentLag_(paymentLag), paymentCalendar_(std::move(paymentCalendar)),
       intermediateCapitalExchange_(intermediateCapitalExchange),
       finalCapitalExchange_(finalCapitalExchange) {
 
@@ -157,14 +166,34 @@ namespace QuantLib {
         legs_[0] = FixedRateLeg(fixedSchedule_)
                        .withNotionals(fixedNominal_)
                        .withCouponRates(fixedRate_, fixedDayCount_)
-                       .withPaymentAdjustment(paymentConvention_);
-
-        legs_[1] = IborLeg(floatingSchedule_, iborIndex_)
-                       .withNotionals(floatingNominal_)
-                       .withPaymentDayCounter(floatingDayCount_)
                        .withPaymentAdjustment(paymentConvention_)
-                       .withSpreads(spread_)
-                       .withGearings(gearing_);
+                       .withPaymentLag(paymentLag_)
+                       .withPaymentCalendar(
+                           paymentCalendar_.empty() ? fixedSchedule_.calendar() :
+                                                      paymentCalendar_);
+
+        auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(iborIndex_);
+        if (overnightIndex != nullptr) {
+            // Only compounded averaging is supported; OvernightLeg uses it by
+            // default.
+            legs_[1] = OvernightLeg(floatingSchedule_, overnightIndex)
+                           .withNotionals(floatingNominal_)
+                           .withPaymentDayCounter(floatingDayCount_)
+                           .withPaymentAdjustment(paymentConvention_)
+                           .withPaymentLag(paymentLag_)
+                           .withPaymentCalendar(paymentCalendar_)
+                           .withSpreads(spread_)
+                           .withGearings(gearing_);
+        } else {
+            legs_[1] = IborLeg(floatingSchedule_, iborIndex_)
+                           .withNotionals(floatingNominal_)
+                           .withPaymentDayCounter(floatingDayCount_)
+                           .withPaymentAdjustment(paymentConvention_)
+                           .withPaymentLag(paymentLag_)
+                           .withPaymentCalendar(paymentCalendar_)
+                           .withSpreads(spread_)
+                           .withGearings(gearing_);
+        }
 
         if (intermediateCapitalExchange_) {
             for (Size i = 0; i < legs_[0].size() - 1; i++) {
@@ -290,8 +319,10 @@ namespace QuantLib {
             std::vector<bool>(floatingCoupons.size(), false);
 
         for (Size i = 0; i < floatingCoupons.size(); ++i) {
-            ext::shared_ptr<IborCoupon> coupon =
-                ext::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
+            // FloatingRateCoupon covers both Ibor and compounded overnight
+            // coupons; every accessor used below lives on the base class
+            ext::shared_ptr<FloatingRateCoupon> coupon =
+                ext::dynamic_pointer_cast<FloatingRateCoupon>(floatingCoupons[i]);
             if (coupon != nullptr) {
                 arguments->floatingResetDates[i] = coupon->accrualStartDate();
                 arguments->floatingPayDates[i] = coupon->date();

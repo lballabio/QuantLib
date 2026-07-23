@@ -37,6 +37,17 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/currencies/europe.hpp>
+#include <ql/instruments/overnightindexedswap.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/instruments/floatfloatswap.hpp>
+#include <ql/instruments/floatfloatswaption.hpp>
+#include <ql/pricingengines/swaption/gaussian1dfloatfloatswaptionengine.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/indexes/ibor/sofr.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
@@ -387,6 +398,499 @@ BOOST_AUTO_TEST_CASE(testGsrModelQuoteUpdate) {
 
     Real after = stdswaption->NPV();
     BOOST_CHECK(std::fabs(before - after) > 0.01);
+}
+
+
+BOOST_AUTO_TEST_CASE(testOvernightIndexedUnderlyings) {
+
+    BOOST_TEST_MESSAGE("Testing Gaussian1d engines on compounded overnight "
+                       "(OIS) underlyings...");
+
+    // A compounded-in-arrears overnight coupon telescopes to a zerobond ratio
+    // over its own accrual period. On a sloped curve, projecting the overnight
+    // index's one-day tenor over the whole accrual instead (as the engines did
+    // before the fix) misestimates each coupon by O(slope * accrual), which
+    // showed up as an ~8-11% price bias on annual coupons. The reference is
+    // the JamshidianSwaptionEngine, whose par representation of the floating
+    // leg is telescoping-exact by construction, plus an Ibor twin on the same
+    // schedule with a 12M index (index period == coupon period).
+
+    Date today(30, June, 2025);
+    Settings::instance().evaluationDate() = today;
+    Actual365Fixed dc;
+    Calendar calendar = TARGET();
+
+    // upward sloping curve, z(t) = 3% + 0.8% (1 - exp(-t/4))
+    std::vector<Date> dates = {today};
+    std::vector<Real> zeros = {0.03};
+    for (Size y = 1; y <= 16; ++y) {
+        Time t = 365.0 * y / 365.0;
+        dates.push_back(today + y * Years);
+        zeros.push_back(0.03 + 0.008 * (1.0 - std::exp(-t / 4.0)));
+    }
+    Handle<YieldTermStructure> yts(
+        ext::make_shared<InterpolatedZeroCurve<Linear> >(dates, zeros, dc));
+
+    Real reversion = 0.03, sigma = 0.008;
+    auto onIndex = ext::make_shared<OvernightIndex>("dummyON", 0, EURCurrency(),
+                                                    calendar, dc, yts);
+    auto iborIndex = ext::make_shared<IborIndex>(
+        "dummy12M", 12 * Months, 2, EURCurrency(), calendar, ModifiedFollowing,
+        false, dc, yts);
+    auto swapEngine = ext::make_shared<DiscountingSwapEngine>(yts);
+
+    auto hw = ext::make_shared<HullWhite>(yts, reversion, sigma);
+    auto gsr = ext::make_shared<Gsr>(yts, std::vector<Date>(),
+                                     std::vector<Real>{sigma}, reversion, 12.0);
+    auto jamshidian = ext::make_shared<JamshidianSwaptionEngine>(hw, yts);
+    auto gaussian1d = ext::make_shared<Gaussian1dSwaptionEngine>(gsr, 128, 8.0);
+    auto g1dJamshidian = ext::make_shared<Gaussian1dJamshidianSwaptionEngine>(gsr);
+
+    Real tol = 0.002; // 20 bp relative: engine-representation differences only
+
+    for (Size expiryYears : {1, 3, 5}) {
+        Date expiry = calendar.adjust(today + expiryYears * Years);
+        Date start = calendar.advance(expiry, 2 * Days);
+        Date end = calendar.advance(start, (10 - expiryYears) * Years);
+        Schedule schedule(start, end, 1 * Years, calendar, ModifiedFollowing,
+                          ModifiedFollowing, DateGeneration::Forward, false);
+        auto exercise = ext::make_shared<EuropeanExercise>(expiry);
+
+        // --- vanilla OIS swaption through Gaussian1dSwaptionEngine ---
+        auto oisProbe = ext::make_shared<OvernightIndexedSwap>(
+            Swap::Payer, 1.0, schedule, 0.0, dc, onIndex);
+        oisProbe->setPricingEngine(swapEngine);
+        Rate atm = oisProbe->fairRate();
+        auto ois = ext::make_shared<OvernightIndexedSwap>(
+            Swap::Payer, 1.0, schedule, atm, dc, onIndex);
+        ois->setPricingEngine(swapEngine);
+        auto oisSwaption = ext::make_shared<Swaption>(ois, exercise);
+
+        oisSwaption->setPricingEngine(jamshidian);
+        Real reference = oisSwaption->NPV();
+        oisSwaption->setPricingEngine(gaussian1d);
+        Real g1dOis = oisSwaption->NPV();
+        oisSwaption->setPricingEngine(g1dJamshidian);
+        Real g1dJamOis = oisSwaption->NPV();
+
+        if (std::fabs(g1dJamOis - reference) / reference > tol)
+            BOOST_ERROR("Gaussian1dJamshidian vs affine Jamshidian on an OIS "
+                        "underlying differ by "
+                        << (g1dJamOis - reference) / reference << " ("
+                        << g1dJamOis << " vs " << reference << ") for expiry "
+                        << expiryYears << "y");
+
+        if (std::fabs(g1dOis - reference) / reference > tol)
+            BOOST_ERROR("Gaussian1dSwaptionEngine OIS price ("
+                        << g1dOis << ") deviates from the telescoping-exact "
+                        << "Jamshidian price (" << reference << ") by "
+                        << (g1dOis - reference) / reference
+                        << " for expiry " << expiryYears << "y");
+
+        // --- Ibor twin on the same schedule: index period == coupon period ---
+        auto iborProbe = ext::make_shared<VanillaSwap>(
+            Swap::Payer, 1.0, schedule, 0.0, dc, schedule, iborIndex, 0.0, dc);
+        iborProbe->setPricingEngine(swapEngine);
+        auto ibor = ext::make_shared<VanillaSwap>(
+            Swap::Payer, 1.0, schedule, iborProbe->fairRate(), dc, schedule,
+            iborIndex, 0.0, dc);
+        auto iborSwaption = ext::make_shared<Swaption>(ibor, exercise);
+        iborSwaption->setPricingEngine(gaussian1d);
+        Real g1dIbor = iborSwaption->NPV();
+
+        if (std::fabs(g1dOis - g1dIbor) / g1dIbor > tol)
+            BOOST_ERROR("Gaussian1d OIS price (" << g1dOis
+                        << ") deviates from the same-schedule Ibor twin ("
+                        << g1dIbor << ") by "
+                        << (g1dOis - g1dIbor) / g1dIbor << " for expiry "
+                        << expiryYears << "y");
+
+        // --- NonstandardSwap with an overnight index builds a compounded leg
+        //     and must reproduce the vanilla OIS swaption ---
+        std::vector<Real> fixedNominal(schedule.size() - 1, 1.0),
+            floatingNominal(schedule.size() - 1, 1.0),
+            strikes(schedule.size() - 1, atm);
+        auto nsSwap = ext::make_shared<NonstandardSwap>(
+            Swap::Payer, fixedNominal, floatingNominal, schedule, strikes, dc,
+            schedule, onIndex, 1.0, 0.0, dc);
+        nsSwap->setPricingEngine(swapEngine);
+        if (std::fabs(nsSwap->NPV() - ois->NPV()) > 1e-9)
+            BOOST_ERROR("NonstandardSwap with overnight index does not "
+                        "reproduce the OvernightIndexedSwap NPV: "
+                        << nsSwap->NPV() << " vs " << ois->NPV());
+
+        auto nsSwaption = ext::make_shared<NonstandardSwaption>(nsSwap, exercise);
+        nsSwaption->setPricingEngine(
+            ext::make_shared<Gaussian1dNonstandardSwaptionEngine>(
+                gsr, 128, 8.0, true, false, Handle<Quote>(), yts));
+        Real g1dNonstandard = nsSwaption->NPV();
+
+        if (std::fabs(g1dNonstandard - reference) / reference > tol)
+            BOOST_ERROR("Gaussian1dNonstandardSwaptionEngine OIS price ("
+                        << g1dNonstandard << ") deviates from the Jamshidian "
+                        << "reference (" << reference << ") by "
+                        << (g1dNonstandard - reference) / reference
+                        << " for expiry " << expiryYears << "y");
+
+        // SOFR payment lag (2 business days after accrual end)
+        auto oisLagProbe = ext::make_shared<OvernightIndexedSwap>(
+            Swap::Payer, 1.0, schedule, 0.0, dc, onIndex, 0.0, 2, Following,
+            calendar);
+        oisLagProbe->setPricingEngine(swapEngine);
+        auto oisLag = ext::make_shared<OvernightIndexedSwap>(
+            Swap::Payer, 1.0, schedule, oisLagProbe->fairRate(), dc, onIndex,
+            0.0, 2, Following, calendar);
+        auto oisLagSwaption = ext::make_shared<Swaption>(oisLag, exercise);
+        oisLagSwaption->setPricingEngine(jamshidian);
+        Real jamLag = oisLagSwaption->NPV();
+        oisLagSwaption->setPricingEngine(g1dJamshidian);
+        Real g1dJamLag = oisLagSwaption->NPV();
+        oisLagSwaption->setPricingEngine(gaussian1d);
+        Real g1dLag = oisLagSwaption->NPV();
+
+        if (std::fabs(g1dLag - jamLag) / jamLag > tol)
+            BOOST_ERROR("Gaussian1d vs Jamshidian on a payment-lagged OIS "
+                        "underlying differ by "
+                        << (g1dLag - jamLag) / jamLag << " (" << g1dLag
+                        << " vs " << jamLag << ") for expiry " << expiryYears
+                        << "y");
+
+        if (std::fabs(g1dJamLag - jamLag) / jamLag > tol)
+            BOOST_ERROR("Gaussian1dJamshidian vs affine Jamshidian on a "
+                        "payment-lagged OIS underlying differ by "
+                        << (g1dJamLag - jamLag) / jamLag << " (" << g1dJamLag
+                        << " vs " << jamLag << ") for expiry " << expiryYears
+                        << "y");
+
+        // --- FloatFloatSwap: an overnight leg exchanged against a
+        //     same-schedule Ibor twin leg is par-for-par in a single-curve
+        //     model, so the exchange option must be worth ~0; the pre-fix
+        //     one-day projection biased the overnight leg and made this
+        //     option large ---
+        auto ffSwap = ext::make_shared<FloatFloatSwap>(
+            Swap::Payer, 1.0, 1.0, schedule, onIndex, dc, schedule, iborIndex,
+            dc, false, false, 1.0, 0.0, Null<Real>(), Null<Real>(), 1.0, 0.0);
+        auto ffSwaption = ext::make_shared<FloatFloatSwaption>(ffSwap, exercise);
+        ffSwaption->setPricingEngine(
+            ext::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
+                gsr, 128, 8.0, true, false, Handle<Quote>(), yts));
+        Real g1dFloatFloat = ffSwaption->NPV();
+
+        if (std::fabs(g1dFloatFloat) > 0.0005)
+            BOOST_ERROR("Gaussian1dFloatFloatSwaptionEngine option to exchange "
+                        "an overnight leg for a same-schedule Ibor twin leg "
+                        "should be worth ~0, got "
+                        << g1dFloatFloat << " for expiry " << expiryYears
+                        << "y");
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSofrSwaptionUnderlying) {
+
+    BOOST_TEST_MESSAGE("Testing Gaussian1d engines with a SOFR underlying...");
+
+    Date today(30, June, 2025);
+    Settings::instance().evaluationDate() = today;
+    Actual365Fixed dc;
+
+    std::vector<Date> curveDates = {today};
+    std::vector<Rate> zeroRates = {0.03};
+    for (Size i = 1; i <= 12; ++i) {
+        curveDates.push_back(today + i * Years);
+        zeroRates.push_back(0.03 + 0.006 * (1.0 - std::exp(-Real(i) / 4.0)));
+    }
+    Handle<YieldTermStructure> curve(
+        ext::make_shared<InterpolatedZeroCurve<Linear> >(
+            curveDates, zeroRates, dc));
+
+    auto sofr = ext::make_shared<Sofr>(curve);
+    Calendar calendar = sofr->fixingCalendar();
+    Date expiry = calendar.adjust(today + 2 * Years);
+    Date start = calendar.advance(expiry, 2 * Days);
+    Date end = calendar.advance(start, 6 * Years);
+    Schedule schedule(start, end, 1 * Years, calendar, ModifiedFollowing,
+                      ModifiedFollowing, DateGeneration::Forward, false);
+
+    auto discountingEngine = ext::make_shared<DiscountingSwapEngine>(curve);
+    auto probe = ext::make_shared<OvernightIndexedSwap>(
+        Swap::Payer, 1.0, schedule, 0.0, dc, sofr);
+    probe->setPricingEngine(discountingEngine);
+    auto swap = ext::make_shared<OvernightIndexedSwap>(
+        Swap::Payer, 1.0, schedule, probe->fairRate(), dc, sofr);
+    swap->setPricingEngine(discountingEngine);
+    BOOST_CHECK_SMALL(swap->NPV(), 1.0e-12);
+
+    Real reversion = 0.03, sigma = 0.008;
+    auto hullWhite = ext::make_shared<HullWhite>(curve, reversion, sigma);
+    auto gsr = ext::make_shared<Gsr>(curve, std::vector<Date>(),
+                                     std::vector<Real>{sigma}, reversion, 12.0);
+    auto exercise = ext::make_shared<EuropeanExercise>(expiry);
+    auto swaption = ext::make_shared<Swaption>(swap, exercise);
+
+    swaption->setPricingEngine(
+        ext::make_shared<JamshidianSwaptionEngine>(hullWhite, curve));
+    Real reference = swaption->NPV();
+    swaption->setPricingEngine(
+        ext::make_shared<Gaussian1dSwaptionEngine>(gsr, 128, 8.0));
+    Real gaussian = swaption->NPV();
+    swaption->setPricingEngine(
+        ext::make_shared<Gaussian1dJamshidianSwaptionEngine>(gsr));
+    Real gaussianJamshidian = swaption->NPV();
+
+    BOOST_CHECK_CLOSE(gaussian, reference, 0.2);
+    BOOST_CHECK_CLOSE(gaussianJamshidian, reference, 0.2);
+
+}
+
+BOOST_AUTO_TEST_CASE(testSofrSwaptionObservationConventions) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing Gaussian1d telescoping with SOFR observation conventions...");
+
+    Date today(30, June, 2025);
+    Settings::instance().evaluationDate() = today;
+    Actual365Fixed dc;
+
+    std::vector<Date> curveDates = {today};
+    std::vector<Rate> zeroRates = {0.02};
+    for (Size i = 1; i <= 12; ++i) {
+        curveDates.push_back(today + i * Years);
+        zeroRates.push_back(0.02 + 0.015 * (1.0 - std::exp(-Real(i) / 3.0)));
+    }
+    Handle<YieldTermStructure> curve(
+        ext::make_shared<InterpolatedZeroCurve<Linear> >(
+            curveDates, zeroRates, dc));
+
+    auto sofr = ext::make_shared<Sofr>(curve);
+    Calendar calendar = sofr->fixingCalendar();
+    auto gsr = ext::make_shared<Gsr>(
+        curve, std::vector<Date>(), std::vector<Real>{0.008}, 0.03, 12.0);
+    auto engine = ext::make_shared<Gaussian1dSwaptionEngine>(gsr, 128, 8.0);
+
+    // The exercise date sits two business days before the accrual start, as it
+    // does for a real SOFR swaption, so a lookback puts the coupon's first
+    // value date on or before the exercise date.
+    for (Natural gapDays : {2, 5}) {
+
+        Date expiry = calendar.adjust(today + 2 * Years);
+        Date start = calendar.advance(expiry, gapDays * Days);
+        Date end = calendar.advance(start, 5 * Years);
+        Schedule schedule(start, end, 1 * Years, calendar, ModifiedFollowing,
+                          ModifiedFollowing, DateGeneration::Forward, false);
+        auto exercise = ext::make_shared<EuropeanExercise>(expiry);
+
+        auto swaption = [&](Natural lookbackDays, Natural lockoutDays,
+                            bool applyObservationShift,
+                            RateAveraging::Type averaging =
+                                RateAveraging::Compound) {
+            auto swap = ext::make_shared<OvernightIndexedSwap>(
+                Swap::Payer, 1.0, schedule, 0.03, dc, sofr, 0.0, 0, Following,
+                calendar, false, averaging, lookbackDays, lockoutDays,
+                applyObservationShift);
+            auto s = ext::make_shared<Swaption>(swap, exercise);
+            s->setPricingEngine(engine);
+            return std::make_pair(s, swap);
+        };
+
+        // Plain compounding and lookback-with-observation-shift both telescope
+        // exactly, so both must price.
+        const auto [plain, plainSwap] = swaption(Null<Natural>(), 0, false);
+        const auto [shifted, shiftedSwap] = swaption(5, 0, true);
+
+        auto shiftedCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+            shiftedSwap->overnightLeg().front());
+        BOOST_REQUIRE(shiftedCoupon != nullptr);
+        BOOST_CHECK(shiftedCoupon->valueDates().front() <
+                    shiftedCoupon->accrualStartDate());
+        // the lookback is what this test is about: it must reach back past the
+        // exercise date, which is the case the projection has to handle
+        BOOST_CHECK(shiftedCoupon->valueDates().front() <= expiry);
+
+        Real plainValue = plain->NPV();
+        Real shiftedValue = shifted->NPV();
+        BOOST_CHECK(plainValue > 0.0);
+        BOOST_CHECK(shiftedValue > 0.0);
+        // the lookback moves the underlying forward, so the prices must differ
+        BOOST_CHECK(std::fabs(shiftedValue - plainValue) > 1.0e-8);
+
+        // Conventions whose daily accrual factors do not match the periods of
+        // the rates they multiply are rejected, not silently approximated.
+        BOOST_CHECK_THROW(swaption(5, 0, false).first->NPV(), Error);
+        BOOST_CHECK_THROW(swaption(5, 2, true).first->NPV(), Error);
+        BOOST_CHECK_THROW(swaption(Null<Natural>(), 0, false,
+                                   RateAveraging::Simple).first->NPV(),
+                          Error);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIndexUnderlyingWithIborCoupons) {
+
+    BOOST_TEST_MESSAGE("Testing Gaussian1dSwaptionEngine with a VanillaSwap "
+                       "built on an overnight index...");
+
+    // A VanillaSwap always builds an IborLeg, so an overnight index yields
+    // IborCoupons rather than OvernightIndexedCoupons. The engine must still
+    // price it off the schedule dates rather than rejecting it.
+
+    Date today(30, June, 2025);
+    Settings::instance().evaluationDate() = today;
+    Actual365Fixed dc;
+    Handle<YieldTermStructure> curve(
+        ext::make_shared<FlatForward>(today, 0.03, dc));
+
+    auto sofr = ext::make_shared<Sofr>(curve);
+    Calendar calendar = sofr->fixingCalendar();
+    Date expiry = calendar.adjust(today + 2 * Years);
+    Date start = calendar.advance(expiry, 2 * Days);
+    Date end = calendar.advance(start, 5 * Years);
+    Schedule schedule(start, end, 1 * Years, calendar, ModifiedFollowing,
+                      ModifiedFollowing, DateGeneration::Forward, false);
+
+    auto gsr = ext::make_shared<Gsr>(
+        curve, std::vector<Date>(), std::vector<Real>{0.008}, 0.03, 12.0);
+    auto swap = ext::make_shared<VanillaSwap>(
+        Swap::Payer, 1.0, schedule, 0.03, dc, schedule, sofr, 0.0, dc);
+    BOOST_REQUIRE(ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+                      swap->floatingLeg().front()) == nullptr);
+
+    auto swaption = ext::make_shared<Swaption>(
+        swap, ext::make_shared<EuropeanExercise>(expiry));
+    swaption->setPricingEngine(
+        ext::make_shared<Gaussian1dSwaptionEngine>(gsr, 128, 8.0));
+
+    Real npv = 0.0;
+    BOOST_CHECK_NO_THROW(npv = swaption->NPV());
+    BOOST_CHECK(npv > 0.0);
+}
+
+BOOST_AUTO_TEST_CASE(testSofrSwaptionPaymentLag) {
+
+    BOOST_TEST_MESSAGE("Testing Gaussian1d engines with SOFR payment lag...");
+
+    Date today(30, June, 2025);
+    Settings::instance().evaluationDate() = today;
+    Actual365Fixed dc;
+
+    std::vector<Date> curveDates = {today};
+    std::vector<Rate> zeroRates = {0.025};
+    for (Size i = 1; i <= 12; ++i) {
+        curveDates.push_back(today + i * Years);
+        zeroRates.push_back(0.025 + 0.01 * (1.0 - std::exp(-Real(i) / 3.0)));
+    }
+    Handle<YieldTermStructure> curve(
+        ext::make_shared<InterpolatedZeroCurve<Linear> >(
+            curveDates, zeroRates, dc));
+
+    auto sofr = ext::make_shared<Sofr>(curve);
+    Calendar calendar = sofr->fixingCalendar();
+    Date expiry = calendar.adjust(today + 3 * Years);
+    Date start = calendar.advance(expiry, 2 * Days);
+    Date end = calendar.advance(start, 5 * Years);
+    Schedule schedule(start, end, 1 * Years, calendar, ModifiedFollowing,
+                      ModifiedFollowing, DateGeneration::Forward, false);
+
+    auto discountingEngine = ext::make_shared<DiscountingSwapEngine>(curve);
+    auto probe = ext::make_shared<OvernightIndexedSwap>(
+        Swap::Payer, 1.0, schedule, 0.0, dc, sofr, 0.0, 2, Following,
+        calendar);
+    probe->setPricingEngine(discountingEngine);
+    auto swap = ext::make_shared<OvernightIndexedSwap>(
+        Swap::Payer, 1.0, schedule, probe->fairRate(), dc, sofr, 0.0, 2,
+        Following, calendar);
+    swap->setPricingEngine(discountingEngine);
+    BOOST_CHECK_SMALL(swap->NPV(), 1.0e-12);
+
+    for (const auto& cashflow : swap->overnightLeg()) {
+        auto coupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(cashflow);
+        BOOST_REQUIRE(coupon != nullptr);
+        Date expectedPayment =
+            calendar.advance(coupon->accrualEndDate(), 2 * Days, Following);
+        BOOST_CHECK_EQUAL(coupon->date(), expectedPayment);
+        BOOST_CHECK(coupon->date() > coupon->accrualEndDate());
+    }
+
+    Real reversion = 0.03, sigma = 0.008;
+    auto hullWhite = ext::make_shared<HullWhite>(curve, reversion, sigma);
+    auto gsr = ext::make_shared<Gsr>(curve, std::vector<Date>(),
+                                     std::vector<Real>{sigma}, reversion, 12.0);
+    auto exercise = ext::make_shared<EuropeanExercise>(expiry);
+    auto swaption = ext::make_shared<Swaption>(swap, exercise);
+
+    swaption->setPricingEngine(
+        ext::make_shared<JamshidianSwaptionEngine>(hullWhite, curve));
+    Real reference = swaption->NPV();
+    swaption->setPricingEngine(
+        ext::make_shared<Gaussian1dSwaptionEngine>(gsr, 128, 8.0));
+    Real gaussian = swaption->NPV();
+    swaption->setPricingEngine(
+        ext::make_shared<Gaussian1dJamshidianSwaptionEngine>(gsr));
+    Real gaussianJamshidian = swaption->NPV();
+
+    BOOST_CHECK_CLOSE(gaussian, reference, 0.2);
+    BOOST_CHECK_CLOSE(gaussianJamshidian, reference, 0.2);
+    // Conversion to a NonstandardSwap must preserve the payment lag, and the
+    // nonstandard Gaussian engine must reproduce the standard engine.
+    auto nonstandardSwap = ext::make_shared<NonstandardSwap>(*swap);
+    nonstandardSwap->setPricingEngine(discountingEngine);
+    BOOST_CHECK_EQUAL(nonstandardSwap->paymentLag(), 2);
+    BOOST_CHECK_SMALL(nonstandardSwap->NPV() - swap->NPV(), 1.0e-12);
+    auto nonstandardSwaption =
+        ext::make_shared<NonstandardSwaption>(nonstandardSwap, exercise);
+    nonstandardSwaption->setPricingEngine(
+        ext::make_shared<Gaussian1dNonstandardSwaptionEngine>(
+            gsr, 128, 8.0, true, false, Handle<Quote>(), curve));
+    BOOST_CHECK_CLOSE(nonstandardSwaption->NPV(), gaussian, 0.2);
+
+    // Exercise the same path with variable notionals and margins.
+    Size coupons = schedule.size() - 1;
+    std::vector<Real> fixedNominals(coupons), floatingNominals(coupons),
+        fixedRates(coupons, probe->fairRate()), gearings(coupons, 1.0);
+    std::vector<Spread> spreads(coupons);
+    for (Size i = 0; i < coupons; ++i) {
+        fixedNominals[i] = 1.0 - 0.05 * i;
+        floatingNominals[i] = 1.0 - 0.04 * i;
+        spreads[i] = 0.0001 * i;
+    }
+    auto variableSwap = ext::make_shared<NonstandardSwap>(
+        Swap::Payer, fixedNominals, floatingNominals, schedule, fixedRates, dc,
+        schedule, sofr, gearings, spreads, dc, false, false,
+        std::optional<BusinessDayConvention>(Following), 2, calendar);
+    variableSwap->setPricingEngine(discountingEngine);
+    BOOST_CHECK(std::isfinite(variableSwap->NPV()));
+    for (const auto& cashflow : variableSwap->floatingLeg()) {
+        auto coupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(cashflow);
+        BOOST_REQUIRE(coupon != nullptr);
+        BOOST_CHECK_EQUAL(
+            coupon->date(),
+            calendar.advance(coupon->accrualEndDate(), 2 * Days, Following));
+    }
+    auto variableSwaption =
+        ext::make_shared<NonstandardSwaption>(variableSwap, exercise);
+    variableSwaption->setPricingEngine(
+        ext::make_shared<Gaussian1dNonstandardSwaptionEngine>(
+            gsr, 128, 8.0, true, false, Handle<Quote>(), curve));
+    Real payerValue = variableSwaption->NPV();
+    BOOST_CHECK(std::isfinite(payerValue));
+    BOOST_CHECK(payerValue >= 0.0);
+
+    std::vector<Real> scaledFixedNominals = fixedNominals;
+    std::vector<Real> scaledFloatingNominals = floatingNominals;
+    for (Size i = 0; i < coupons; ++i) {
+        scaledFixedNominals[i] *= 2.0;
+        scaledFloatingNominals[i] *= 2.0;
+    }
+    auto scaledSwap = ext::make_shared<NonstandardSwap>(
+        Swap::Payer, scaledFixedNominals, scaledFloatingNominals, schedule,
+        fixedRates, dc, schedule, sofr, gearings, spreads, dc, false, false,
+        std::optional<BusinessDayConvention>(Following), 2, calendar);
+    auto scaledSwaption =
+        ext::make_shared<NonstandardSwaption>(scaledSwap, exercise);
+    scaledSwaption->setPricingEngine(
+        ext::make_shared<Gaussian1dNonstandardSwaptionEngine>(
+            gsr, 128, 8.0, true, false, Handle<Quote>(), curve));
+    // Exact notional homogeneity provides a reference value while retaining
+    // the variable-notional, variable-margin and payment-lag path.
+    BOOST_CHECK_CLOSE(scaledSwaption->NPV(), 2.0 * payerValue, 1.0e-8);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
