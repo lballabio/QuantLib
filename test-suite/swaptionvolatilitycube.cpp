@@ -308,7 +308,7 @@ BOOST_AUTO_TEST_CASE(testSabrNormalTwoPassUsesStrikeSpreadMoneyness) {
     const Volatility expected = targetAtm + interpolatedSpread(false);
     const Volatility oldRatioResult = targetAtm + interpolatedSpread(true);
 
-    BOOST_CHECK_SMALL(actual - expected, 1.0e-12);
+    QL_CHECK_SMALL(actual - expected, 1.0e-12);
     BOOST_CHECK_GT(std::fabs(actual - oldRatioResult), 1.0e-8);
 }
 
@@ -350,11 +350,11 @@ BOOST_AUTO_TEST_CASE(testSabrAtmCalibrationWithAsymmetricSmile) {
                 const Rate strike = volCube.atmStrike(option, swap);
                 const Volatility expected = atmVols->volatility(option, swap, strike, true);
                 const Volatility calculated = volCube.volatility(option, swap, strike, true);
-                BOOST_CHECK_SMALL(calculated - expected, 1.0e-10);
+                QL_CHECK_SMALL(calculated - expected, 1.0e-10);
                 const auto smile = ext::dynamic_pointer_cast<SabrSmileSection>(
                     volCube.smileSection(option, swap));
                 BOOST_REQUIRE(smile);
-                BOOST_CHECK_SMALL(smile->beta() - 0.5, 1.0e-12);
+                QL_CHECK_SMALL(smile->beta() - 0.5, 1.0e-12);
             }
         }
 
@@ -383,14 +383,14 @@ BOOST_AUTO_TEST_CASE(testSabrAtmCalibrationWithAsymmetricSmile) {
             }
             const Size n = vars.cube.strikeSpreads.size();
             const Real rmsError = std::sqrt(squaredError / (n - 1));
-            BOOST_CHECK_SMALL(parameters[row][7] - rmsError, 1.0e-12);
-            BOOST_CHECK_SMALL(parameters[row][8] - maxError, 1.0e-12);
+            QL_CHECK_SMALL(parameters[row][7] - rmsError, 1.0e-12);
+            QL_CHECK_SMALL(parameters[row][8] - maxError, 1.0e-12);
 
             if (atmVols->volatilityType() == VolatilityType::Normal) {
                 const Volatility atmVol = atmVols->volatility(
                     optionTime, swapLength, forward, true);
                 for (Size i = 0; i < smileSpreads.size(); ++i) {
-                    BOOST_CHECK_SMALL(
+                    QL_CHECK_SMALL(
                         marketVols[row][i + 2] - atmVol - smileSpreads[i],
                         1.0e-12);
                 }
