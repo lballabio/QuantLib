@@ -41,6 +41,7 @@
 #include <ql/indexes/ibor/gbplibor.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/calendars/taiwan.hpp>
+#include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
 
@@ -598,6 +599,66 @@ BOOST_AUTO_TEST_CASE(testSpotDateUsesFixingCalendar) {
     Date buggyRef = paymentCalendar.adjust(today);
     Date buggyStart = index->valueDate(buggyRef);
     BOOST_CHECK(buggyStart != expectedStart);
+}
+
+BOOST_AUTO_TEST_CASE(testSpotDateFromNonBusinessEvaluationDate) {
+
+    BOOST_TEST_MESSAGE("Testing that the swap spot date is calculated from "
+                       "the actual evaluation date when the latter is not a "
+                       "business day...");
+
+    // Saturday
+    Date today(20, June, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    auto index = ext::make_shared<Euribor6M>();
+    Calendar calendar = index->fixingCalendar();
+
+    // settlement days are counted from the actual trade date,
+    // not from the next business day
+    Date expectedStart = calendar.advance(today, 2 * Days);
+
+    ext::shared_ptr<VanillaSwap> swap =
+        MakeVanillaSwap(5 * Years, index, 0.03).withSettlementDays(2);
+
+    if (swap->startDate() != expectedStart)
+        BOOST_FAIL("swap start date not calculated from the actual "
+                   "evaluation date:\n"
+                   "    expected: " << expectedStart << "\n"
+                   "    obtained: " << swap->startDate());
+}
+
+BOOST_AUTO_TEST_CASE(testSettlementCalendar) {
+
+    BOOST_TEST_MESSAGE("Testing that the swap spot date can be calculated "
+                       "on an explicit settlement calendar...");
+
+    // 3 July 2026 is a TARGET business day, but a US holiday
+    // (Independence Day observed), so the settlement calendar and the
+    // index fixing calendar diverge between here and the spot date.
+    Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    auto index = ext::make_shared<Euribor6M>();
+    Calendar settlementCalendar =
+        JointCalendar(TARGET(), UnitedStates(UnitedStates::Settlement));
+
+    Date expectedStart = settlementCalendar.advance(today, 2 * Days);
+
+    ext::shared_ptr<VanillaSwap> swap =
+        MakeVanillaSwap(5 * Years, index, 0.03)
+            .withSettlementDays(2)
+            .withSettlementCalendar(settlementCalendar);
+
+    if (swap->startDate() != expectedStart)
+        BOOST_FAIL("swap start date not calculated on the settlement "
+                   "calendar:\n"
+                   "    expected: " << expectedStart << "\n"
+                   "    obtained: " << swap->startDate());
+
+    // sanity check: the two calendars must actually diverge here
+    BOOST_CHECK(expectedStart !=
+                index->fixingCalendar().advance(today, 2 * Days));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

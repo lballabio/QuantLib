@@ -887,88 +887,77 @@ namespace QuantLib {
     AnalyticHestonEngine::Integration::gaussLobatto(
        Real relTolerance, Real absTolerance, Size maxEvaluations, bool useConvergenceEstimate) {
        return Integration(GaussLobatto,
-                           ext::shared_ptr<Integrator>(
-                               new GaussLobattoIntegral(maxEvaluations,
+                           ext::make_shared<GaussLobattoIntegral>(maxEvaluations,
                                                         absTolerance,
                                                         relTolerance,
-                                                        useConvergenceEstimate)));
+                                                        useConvergenceEstimate));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::gaussKronrod(Real absTolerance,
                                                    Size maxEvaluations) {
         return Integration(GaussKronrod,
-                           ext::shared_ptr<Integrator>(
-                               new GaussKronrodAdaptive(absTolerance,
-                                                        maxEvaluations)));
+                           ext::make_shared<GaussKronrodAdaptive>(absTolerance,
+                                                        maxEvaluations));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::simpson(Real absTolerance,
                                                Size maxEvaluations) {
         return Integration(Simpson,
-                           ext::shared_ptr<Integrator>(
-                               new SimpsonIntegral(absTolerance,
-                                                   maxEvaluations)));
+                           ext::make_shared<SimpsonIntegral>(absTolerance,
+                                                   maxEvaluations));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::trapezoid(Real absTolerance,
                                         Size maxEvaluations) {
         return Integration(Trapezoid,
-                           ext::shared_ptr<Integrator>(
-                              new TrapezoidIntegral<Default>(absTolerance,
-                                                             maxEvaluations)));
+                           ext::make_shared<TrapezoidIntegral<Default>>(absTolerance,
+                                                             maxEvaluations));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::gaussLaguerre(Size intOrder) {
         QL_REQUIRE(intOrder <= 192, "maximum integraton order (192) exceeded");
         return Integration(GaussLaguerre,
-                           ext::shared_ptr<GaussianQuadrature>(
-                               new GaussLaguerreIntegration(intOrder)));
+                           ext::make_shared<GaussLaguerreIntegration>(intOrder));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::gaussLegendre(Size intOrder) {
         return Integration(GaussLegendre,
-                           ext::shared_ptr<GaussianQuadrature>(
-                               new GaussLegendreIntegration(intOrder)));
+                           ext::make_shared<GaussLegendreIntegration>(intOrder));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::gaussChebyshev(Size intOrder) {
         return Integration(GaussChebyshev,
-                           ext::shared_ptr<GaussianQuadrature>(
-                               new GaussChebyshevIntegration(intOrder)));
+                           ext::make_shared<GaussChebyshevIntegration>(intOrder));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::gaussChebyshev2nd(Size intOrder) {
         return Integration(GaussChebyshev2nd,
-                           ext::shared_ptr<GaussianQuadrature>(
-                               new GaussChebyshev2ndIntegration(intOrder)));
+                           ext::make_shared<GaussChebyshev2ndIntegration>(intOrder));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::discreteSimpson(Size evaluations) {
         return Integration(
-            DiscreteSimpson, ext::shared_ptr<Integrator>(
-                new DiscreteSimpsonIntegrator(evaluations)));
+            DiscreteSimpson, ext::make_shared<DiscreteSimpsonIntegrator>(evaluations));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::discreteTrapezoid(Size evaluations) {
         return Integration(
-            DiscreteTrapezoid, ext::shared_ptr<Integrator>(
-                new DiscreteTrapezoidIntegrator(evaluations)));
+            DiscreteTrapezoid, ext::make_shared<DiscreteTrapezoidIntegrator>(evaluations));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::expSinh(Real relTolerance) {
         return Integration(
-            ExpSinh, ext::shared_ptr<Integrator>(
-                new ExpSinhIntegral(relTolerance)));
+            ExpSinh, ext::make_shared<ExpSinhIntegral>(relTolerance));
     }
 
     Size AnalyticHestonEngine::Integration::numberOfEvaluations() const {

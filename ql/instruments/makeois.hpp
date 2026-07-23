@@ -4,6 +4,7 @@
  Copyright (C) 2009 Ferdinando Ametrano
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
+ Copyright (C) 2026 Sergio Araujo
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 #define quantlib_makeois_hpp
 
 #include <ql/instruments/overnightindexedswap.hpp>
+#include <ql/optional.hpp>
 #include <ql/time/dategenerationrule.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
@@ -51,6 +53,7 @@ namespace QuantLib {
         MakeOIS& withNominal(Real n);
 
         MakeOIS& withSettlementDays(Natural settlementDays);
+        MakeOIS& withSettlementCalendar(const Calendar& cal);
         MakeOIS& withEffectiveDate(const Date&);
         MakeOIS& withTerminationDate(const Date&);
         MakeOIS& withRule(DateGeneration::Rule r);
@@ -92,6 +95,7 @@ namespace QuantLib {
         MakeOIS& withLookbackDays(Natural lookbackDays);
         MakeOIS& withLockoutDays(Natural lockoutDays);
         MakeOIS& withObservationShift(bool applyObservationShift = true);
+        MakeOIS& withRoundingPrecision(const std::optional<Integer>& roundingPrecision);
 
         MakeOIS& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);
@@ -104,6 +108,7 @@ namespace QuantLib {
         Natural settlementDays_ = Null<Natural>();
         Date effectiveDate_, terminationDate_;
         Calendar fixedCalendar_, overnightCalendar_;
+        Calendar settlementCalendar_;
 
         Frequency fixedPaymentFrequency_ = Annual;
         Frequency overnightPaymentFrequency_ = Annual;
@@ -133,6 +138,7 @@ namespace QuantLib {
         Natural lookbackDays_ = Null<Natural>();
         Natural lockoutDays_ = 0;
         bool applyObservationShift_ = false;
+        std::optional<Integer> roundingPrecision_;
     };
 
 }

@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2009 Roland Lichters
  Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2026 Sergio Araujo
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,8 +43,10 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
+#include <ql/math/rounding.hpp>
 #include <ql/currencies/europe.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/indexes/ibor/sonia.hpp>
 #include <ql/indexes/ibor/eonia.hpp>
@@ -154,7 +157,8 @@ struct CommonVars {
              bool telescopicValueDates,
              Date effectiveDate = Date(),
              Integer paymentLag = 0,
-             RateAveraging::Type averagingMethod = RateAveraging::Compound) {
+             RateAveraging::Type averagingMethod = RateAveraging::Compound,
+             const std::optional<Integer>& roundingPrecision = std::nullopt) {
         return MakeOIS(length, estrIndex, fixedRate, 0 * Days)
             .withEffectiveDate(effectiveDate == Date() ? settlement : effectiveDate)
             .withOvernightLegSpread(spread)
@@ -162,7 +166,8 @@ struct CommonVars {
             .withPaymentLag(paymentLag)
             .withDiscountingTermStructure(estrTermStructure)
             .withTelescopicValueDates(telescopicValueDates)
-            .withAveragingMethod(averagingMethod);
+            .withAveragingMethod(averagingMethod)
+            .withRoundingPrecision(roundingPrecision);
     }
 
     ext::shared_ptr<OvernightIndexedSwap>
@@ -1012,14 +1017,14 @@ BOOST_AUTO_TEST_CASE(testMakeOISDefaultSettlementDays) {
     // Test 1-day settlement index on weekend
     {
         OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[1].second, 0.01); // CORRA
-        Date expected(13, May, 2025); // Tuesday
+        Date expected(12, May, 2025); // Monday: T+1 from the actual trade date
         BOOST_CHECK_EQUAL(swap.startDate(), expected);
     }
 
     // Test 2-day settlement index on weekend
     {
         OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[2].second, 0.01); // EONIA
-        Date expected(14, May, 2025); // Wednesday
+        Date expected(13, May, 2025); // Tuesday: T+2 from the actual trade date
         BOOST_CHECK_EQUAL(swap.startDate(), expected);
     }
 }
@@ -1091,6 +1096,154 @@ BOOST_AUTO_TEST_CASE(testSettlementDaysEffectiveDateConflict) {
     ext::shared_ptr<OvernightIndexedSwap> swap3 =
         MakeOIS(5 * Years, index, 0.03);
     BOOST_CHECK(swap3->startDate() != Date());
+}
+
+BOOST_AUTO_TEST_CASE(testRoundingPrecision) {
+
+    BOOST_TEST_MESSAGE("Testing rounding of the compounded rate in overnight-indexed swaps...");
+
+    CommonVars vars;
+
+    Integer precision = 6;
+    Rate fixedRate = 0.03;
+    Period length = 2 * Years;
+
+    ext::shared_ptr<OvernightIndexedSwap> plainSwap =
+        vars.makeSwap(length, fixedRate, 0.0, false);
+    ext::shared_ptr<OvernightIndexedSwap> roundedSwap =
+        vars.makeSwap(length, fixedRate, 0.0, false, Date(), 0,
+                      RateAveraging::Compound, precision);
+
+    BOOST_CHECK(roundedSwap->roundingPrecision() == std::optional<Integer>(precision));
+    BOOST_CHECK(!plainSwap->roundingPrecision());
+
+    ClosestRounding round(precision);
+    bool anyRoundingApplied = false;
+    for (Size i = 0; i < roundedSwap->overnightLeg().size(); ++i) {
+        auto rounded = ext::dynamic_pointer_cast<Coupon>(roundedSwap->overnightLeg()[i]);
+        auto plain = ext::dynamic_pointer_cast<Coupon>(plainSwap->overnightLeg()[i]);
+
+        // the projected rate is not affected by the rounding...
+        if (std::fabs(rounded->rate() - plain->rate()) > 1.0e-15)
+            BOOST_ERROR("rounding changed the projected rate:"
+                        << std::setprecision(12)
+                        << "\n    without rounding: " << plain->rate()
+                        << "\n    with rounding:    " << rounded->rate());
+
+        // ...but the amount is computed off the rounded rate
+        Real expected = rounded->nominal() * round(rounded->rate()) * rounded->accrualPeriod();
+        if (std::fabs(rounded->amount() - expected) > 1.0e-10)
+            BOOST_ERROR("amount not consistent with the rounded rate:"
+                        << std::setprecision(12)
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << rounded->amount());
+
+        if (rounded->amount() != plain->amount())
+            anyRoundingApplied = true;
+    }
+    if (!anyRoundingApplied)
+        BOOST_ERROR("all coupon amounts unchanged; "
+                    "rounding precision was not propagated to the overnight leg");
+
+    // the engine prices off the rounded amounts, so the leg NPV
+    // remains consistent with the discounted sum of the cashflows
+    Real calculated = roundedSwap->overnightLegNPV();
+    Real expectedNPV = 0.0;
+    for (const auto& cf : roundedSwap->overnightLeg())
+        expectedNPV += cf->amount() * vars.estrTermStructure->discount(cf->date());
+    if (std::fabs(calculated - expectedNPV) > 1.0e-10)
+        BOOST_ERROR("overnight-leg NPV inconsistent with discounted rounded cashflows:"
+                    << std::setprecision(12)
+                    << "\n    NPV:            " << calculated
+                    << "\n    discounted sum: " << expectedNPV);
+
+    // MakeOIS solves the ATM rate on the same rounded coupons the
+    // returned swap is built with, so the swap is at market
+    ext::shared_ptr<OvernightIndexedSwap> atmSwap =
+        vars.makeSwap(length, Null<Rate>(), 0.0, false, Date(), 0,
+                      RateAveraging::Compound, precision);
+    if (std::fabs(atmSwap->NPV()) > 1.0e-10)
+        BOOST_ERROR("ATM swap with rounding does not price to zero:"
+                    << std::setprecision(12)
+                    << "\n    NPV: " << atmSwap->NPV());
+
+    // the constructor propagates the rounding precision like MakeOIS
+    OvernightIndexedSwap ctorSwap(Swap::Payer, vars.nominal,
+                                  roundedSwap->fixedSchedule(),
+                                  fixedRate, vars.fixedEstrDayCount,
+                                  roundedSwap->overnightSchedule(),
+                                  vars.estrIndex, 0.0, 0, Following,
+                                  Calendar(), false, RateAveraging::Compound,
+                                  Null<Natural>(), 0, false, precision);
+    for (Size i = 0; i < ctorSwap.overnightLeg().size(); ++i) {
+        Real viaCtor = ctorSwap.overnightLeg()[i]->amount();
+        Real viaMakeOIS = roundedSwap->overnightLeg()[i]->amount();
+        if (viaCtor != viaMakeOIS)
+            BOOST_ERROR("constructor and MakeOIS produce different rounded amounts:"
+                        << std::setprecision(12)
+                        << "\n    constructor: " << viaCtor
+                        << "\n    MakeOIS:     " << viaMakeOIS);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSpotDateFromNonBusinessEvaluationDate) {
+
+    BOOST_TEST_MESSAGE("Testing that the OIS spot date is calculated from "
+                       "the actual evaluation date when the latter is not a "
+                       "business day...");
+
+    // Saturday
+    Date today(20, June, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    auto index = ext::make_shared<Estr>();
+    Calendar calendar = index->fixingCalendar();
+
+    // settlement days are counted from the actual trade date,
+    // not from the next business day
+    Date expectedStart = calendar.advance(today, 2 * Days);
+
+    ext::shared_ptr<OvernightIndexedSwap> swap =
+        MakeOIS(1 * Years, index, 0.03).withSettlementDays(2);
+
+    if (swap->startDate() != expectedStart)
+        BOOST_FAIL("OIS start date not calculated from the actual "
+                   "evaluation date:\n"
+                   "    expected: " << expectedStart << "\n"
+                   "    obtained: " << swap->startDate());
+}
+
+BOOST_AUTO_TEST_CASE(testSettlementCalendar) {
+
+    BOOST_TEST_MESSAGE("Testing that the OIS spot date can be calculated "
+                       "on an explicit settlement calendar...");
+
+    // 3 July 2026 is a TARGET business day, but a US holiday
+    // (Independence Day observed), so the settlement calendar and the
+    // index fixing calendar diverge between here and the spot date.
+    Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    auto index = ext::make_shared<Estr>();
+    Calendar settlementCalendar =
+        JointCalendar(TARGET(), UnitedStates(UnitedStates::Settlement));
+
+    Date expectedStart = settlementCalendar.advance(today, 2 * Days);
+
+    ext::shared_ptr<OvernightIndexedSwap> swap =
+        MakeOIS(1 * Years, index, 0.03)
+            .withSettlementDays(2)
+            .withSettlementCalendar(settlementCalendar);
+
+    if (swap->startDate() != expectedStart)
+        BOOST_FAIL("OIS start date not calculated on the settlement "
+                   "calendar:\n"
+                   "    expected: " << expectedStart << "\n"
+                   "    obtained: " << swap->startDate());
+
+    // sanity check: the two calendars must actually diverge here
+    BOOST_CHECK(expectedStart !=
+                index->fixingCalendar().advance(today, 2 * Days));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
