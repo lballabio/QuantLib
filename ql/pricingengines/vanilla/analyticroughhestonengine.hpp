@@ -25,8 +25,9 @@
 #define quantlib_analytic_rough_heston_engine_hpp
 
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/math/integrals/fourierintegration.hpp>
 #include <ql/models/equity/roughhestonmodel.hpp>
-#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+#include <ql/pricingengines/genericmodelengine.hpp>
 #include <complex>
 #include <map>
 #include <tuple>
@@ -69,7 +70,7 @@ namespace QuantLib {
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
-        typedef AnalyticHestonEngine::Integration Integration;
+        typedef FourierIntegration Integration;
 
         // Constructor using Gauss-Laguerre integration
         explicit AnalyticRoughHestonEngine(
@@ -112,7 +113,7 @@ namespace QuantLib {
             Time maturity, Real fwd) const;
 
         const Size timeSteps_;
-        const ext::shared_ptr<Integration> integration_;
+        const Integration integration_;
         const Real andersenPiterbargEpsilon_, alpha_;
 
         mutable Size evaluations_{0};
