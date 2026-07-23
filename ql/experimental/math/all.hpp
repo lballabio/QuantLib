@@ -2,7 +2,6 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/math/claytoncopularng.hpp>
-#include <ql/experimental/math/cmaes.hpp>
 #include <ql/experimental/math/convolvedstudentt.hpp>
 #include <ql/experimental/math/farliegumbelmorgensterncopularng.hpp>
 #include <ql/experimental/math/fireflyalgorithm.hpp>

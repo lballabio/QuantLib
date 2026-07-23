@@ -5,7 +5,6 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     claytoncopularng.hpp \
-    cmaes.hpp \
     convolvedstudentt.hpp \
     farliegumbelmorgensterncopularng.hpp \
     fireflyalgorithm.hpp \
@@ -29,7 +28,6 @@ this_include_HEADERS = \
     zigguratrng.hpp
 
 cpp_files = \
-    cmaes.cpp \
     convolvedstudentt.cpp \
     fireflyalgorithm.cpp \
     gaussiancopulapolicy.cpp \

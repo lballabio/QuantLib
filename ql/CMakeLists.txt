@@ -152,7 +152,6 @@ set(QL_SOURCES
     experimental/inflation/yoycapfloortermpricesurface.cpp
     experimental/inflation/yoyoptionlethelpers.cpp
     experimental/lattices/extendedbinomialtree.cpp
-    experimental/math/cmaes.cpp
     experimental/math/convolvedstudentt.cpp
     experimental/math/fireflyalgorithm.cpp
     experimental/math/gaussiancopulapolicy.cpp
@@ -395,6 +394,7 @@ set(QL_SOURCES
     math/modifiedbessel.cpp
     math/optimization/armijo.cpp
     math/optimization/bfgs.cpp
+    math/optimization/cmaes.cpp
     math/optimization/conjugategradient.cpp
     math/optimization/constraint.cpp
     math/optimization/differentialevolution.cpp
@@ -1183,7 +1183,6 @@ set(QL_HEADERS
     experimental/inflation/yoyoptionletstripper.hpp
     experimental/lattices/extendedbinomialtree.hpp
     experimental/math/claytoncopularng.hpp
-    experimental/math/cmaes.hpp
     experimental/math/convolvedstudentt.hpp
     experimental/math/farliegumbelmorgensterncopularng.hpp
     experimental/math/fireflyalgorithm.hpp
@@ -1532,6 +1531,7 @@ set(QL_HEADERS
     math/ode/adaptiverungekutta.hpp
     math/optimization/armijo.hpp
     math/optimization/bfgs.hpp
+    math/optimization/cmaes.hpp
     math/optimization/conjugategradient.hpp
     math/optimization/constraint.hpp
     math/optimization/costfunction.hpp
