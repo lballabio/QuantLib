@@ -16,6 +16,7 @@ this_include_HEADERS = \
     analytichestonhullwhiteengine.hpp \
     analyticpdfhestonengine.hpp \
     analyticptdhestonengine.hpp \
+    analyticroughhestonengine.hpp \
     baroneadesiwhaleyengine.hpp \
     batesengine.hpp \
     binomialengine.hpp \
@@ -60,6 +61,7 @@ cpp_files = \
     analytichestonhullwhiteengine.cpp \
     analyticpdfhestonengine.cpp \
     analyticptdhestonengine.cpp \
+    analyticroughhestonengine.cpp \
     baroneadesiwhaleyengine.cpp \
     batesengine.cpp \
     bjerksundstenslandengine.cpp \

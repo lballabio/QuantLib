@@ -55,7 +55,7 @@ namespace QuantLib {
                                     VanillaOption::results> {
       public:
         enum ComplexLogFormula { Gatheral, AndersenPiterbarg };
-        typedef AnalyticHestonEngine::Integration Integration;
+        typedef FourierIntegration Integration;
 
         // Simple to use constructor: Using adaptive
         // Gauss-Lobatto integration and Gatheral's version of complex log.
