@@ -1215,6 +1215,9 @@
     <ClInclude Include="ql\math\integrals\filonintegral.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\integrals\fourierintegration.hpp">
+      <Filter>math\integrals</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\integrals\gaussianorthogonalpolynomial.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
@@ -5085,6 +5088,9 @@
       <Filter>math\integrals</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\integrals\filonintegral.cpp">
+      <Filter>math\integrals</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\integrals\fourierintegration.cpp">
       <Filter>math\integrals</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\integrals\gaussianorthogonalpolynomial.cpp">

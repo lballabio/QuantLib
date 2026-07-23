@@ -368,6 +368,7 @@ set(QL_SOURCES
     math/integrals/discreteintegrals.cpp
     math/integrals/exponentialintegrals.cpp
     math/integrals/filonintegral.cpp
+    math/integrals/fourierintegration.cpp
     math/integrals/gaussianorthogonalpolynomial.cpp
     math/integrals/gaussianquadratures.cpp
     math/integrals/gausslobattointegral.cpp
@@ -1473,6 +1474,7 @@ set(QL_HEADERS
     math/integrals/exponentialintegrals.hpp
     math/integrals/expsinhintegral.hpp
     math/integrals/filonintegral.hpp
+    math/integrals/fourierintegration.hpp
     math/integrals/gaussianorthogonalpolynomial.hpp
     math/integrals/gaussianquadratures.hpp
     math/integrals/gausslaguerrecosinepolynomial.hpp

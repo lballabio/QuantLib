@@ -7,6 +7,7 @@ this_include_HEADERS = \
 	exponentialintegrals.hpp \
 	expsinhintegral.hpp \
 	filonintegral.hpp \
+	fourierintegration.hpp \
 	gausslaguerrecosinepolynomial.hpp \
 	gausslobattointegral.hpp \
 	gaussianorthogonalpolynomial.hpp \
@@ -24,6 +25,7 @@ cpp_files = \
 	discreteintegrals.cpp \
 	exponentialintegrals.cpp \
 	filonintegral.cpp \
+	fourierintegration.cpp \
 	gausslobattointegral.cpp \
 	gaussianorthogonalpolynomial.cpp \
 	gaussianquadratures.cpp \
