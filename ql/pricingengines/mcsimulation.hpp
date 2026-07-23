@@ -181,17 +181,15 @@ namespace QuantLib {
                 this->controlPathGenerator();
 
             this->mcModel_ =
-                ext::shared_ptr<MonteCarloModel<MC,RNG,S> >(
-                    new MonteCarloModel<MC,RNG,S>(
+                ext::make_shared<MonteCarloModel<MC,RNG,S>>(
                            pathGenerator(), this->pathPricer(), stats_type(),
                            this->antitheticVariate_, controlPP,
-                           controlVariateValue, controlPG));
+                           controlVariateValue, controlPG);
         } else {
             this->mcModel_ =
-                ext::shared_ptr<MonteCarloModel<MC,RNG,S> >(
-                    new MonteCarloModel<MC,RNG,S>(
+                ext::make_shared<MonteCarloModel<MC,RNG,S>>(
                            pathGenerator(), this->pathPricer(), S(),
-                           this->antitheticVariate_));
+                           this->antitheticVariate_);
         }
 
         if (requiredTolerance != Null<Real>()) {

@@ -19,6 +19,7 @@
 
 #include <ql/time/calendars/islamicholidays.hpp>
 #include <algorithm>
+#include <vector>
 
 namespace QuantLib {
 

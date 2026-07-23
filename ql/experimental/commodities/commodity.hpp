@@ -33,7 +33,7 @@
 
 namespace QuantLib {
 
-    typedef std::map<std::string, ext::any> SecondaryCosts;
+    typedef std::map<std::string, std::any> SecondaryCosts;
     typedef std::map<std::string, Money> SecondaryCostAmounts;
 
     std::ostream& operator<<(std::ostream& out,

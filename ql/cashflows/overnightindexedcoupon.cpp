@@ -68,7 +68,7 @@ namespace QuantLib {
                     const Date& rateComputationStartDate,
                     const Date& rateComputationEndDate,
                     const Date& exCouponDate,
-const ext::optional<Integer>& roundingPrecision)
+const std::optional<Integer>& roundingPrecision)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          lookbackDays,
                          overnightIndex,
@@ -540,7 +540,7 @@ const ext::optional<Integer>& roundingPrecision)
         return *this;
     }
 
-    OvernightLeg& OvernightLeg::withLastRecentPeriod(const ext::optional<Period>& lastRecentPeriod) {
+    OvernightLeg& OvernightLeg::withLastRecentPeriod(const std::optional<Period>& lastRecentPeriod) {
         lastRecentPeriod_ = lastRecentPeriod;
         return *this;
     }

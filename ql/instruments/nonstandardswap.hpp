@@ -56,7 +56,7 @@ namespace QuantLib {
                         DayCounter floatingDayCount,
                         bool intermediateCapitalExchange = false,
                         bool finalCapitalExchange = false,
-                        ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt);
+                        std::optional<BusinessDayConvention> paymentConvention = std::nullopt);
         NonstandardSwap(Swap::Type type,
                         std::vector<Real> fixedNominal,
                         std::vector<Real> floatingNominal,
@@ -70,7 +70,7 @@ namespace QuantLib {
                         DayCounter floatingDayCount,
                         bool intermediateCapitalExchange = false,
                         bool finalCapitalExchange = false,
-                        ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt);
+                        std::optional<BusinessDayConvention> paymentConvention = std::nullopt);
         //! \name Inspectors
         //@{
         Swap::Type type() const;

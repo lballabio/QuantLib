@@ -79,6 +79,28 @@ BOOST_AUTO_TEST_CASE(testHullWhiteUpdatesR0WhenTermStructureRelinks) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testExtendedCoxIngersollRossUpdatesWhenTermStructureRelinks) {
+    BOOST_TEST_MESSAGE(
+        "Testing extended CIR updates when the term structure is relinked...");
+
+    Date today(19, May, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    RelinkableHandle<YieldTermStructure> termStructure;
+    termStructure.linkTo(flatRate(today, 0.02, Actual365Fixed()));
+
+    auto model = ext::make_shared<ExtendedCoxIngersollRoss>(
+        termStructure, 0.02, 1.0, 1e-4, 0.02);
+
+    Flag flag;
+    flag.registerWith(model);
+
+    termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
+
+    if (!flag.isUp())
+        BOOST_FAIL("extended CIR model was not notified of the curve relink");
+}
+
 
 BOOST_AUTO_TEST_CASE(testCachedHullWhite) {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached values using swaptions with start delay...");

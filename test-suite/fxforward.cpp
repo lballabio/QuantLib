@@ -389,9 +389,9 @@ BOOST_AUTO_TEST_CASE(testAdditionalResults) {
     BOOST_CHECK(additionalResults.find("sourceCurrencyDiscountFactor") != additionalResults.end());
     BOOST_CHECK(additionalResults.find("targetCurrencyDiscountFactor") != additionalResults.end());
 
-    Real spotFx = ext::any_cast<Real>(additionalResults.at("spotFx"));
-    Real dfSource = ext::any_cast<Real>(additionalResults.at("sourceCurrencyDiscountFactor"));
-    Real dfTarget = ext::any_cast<Real>(additionalResults.at("targetCurrencyDiscountFactor"));
+    Real spotFx = std::any_cast<Real>(additionalResults.at("spotFx"));
+    Real dfSource = std::any_cast<Real>(additionalResults.at("sourceCurrencyDiscountFactor"));
+    Real dfTarget = std::any_cast<Real>(additionalResults.at("targetCurrencyDiscountFactor"));
 
     QL_CHECK_CLOSE(spotFx, 1.35, 1.0e-4); // 0.0001% tolerance
     BOOST_CHECK(dfSource > 0.0 && dfSource < 1.0);

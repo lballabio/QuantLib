@@ -59,7 +59,7 @@ namespace QuantLib {
         //! returns any additional result returned by the pricing engine.
         template <typename T> T result(const std::string& tag) const;
         //! returns all additional result returned by the pricing engine.
-        const std::map<std::string, ext::any>& additionalResults() const;
+        const std::map<std::string, std::any>& additionalResults() const;
 
         //! returns whether the instrument might have value greater than zero.
         virtual bool isExpired() const = 0;
@@ -106,7 +106,7 @@ namespace QuantLib {
         //@{
         mutable Real NPV_, errorEstimate_;
         mutable Date valuationDate_;
-        mutable std::map<std::string, ext::any> additionalResults_;
+        mutable std::map<std::string, std::any> additionalResults_;
         //@}
         ext::shared_ptr<PricingEngine> engine_;
     };
@@ -121,7 +121,7 @@ namespace QuantLib {
         Real value;
         Real errorEstimate;
         Date valuationDate;
-        std::map<std::string, ext::any> additionalResults;
+        std::map<std::string, std::any> additionalResults;
     };
 
 
@@ -196,10 +196,10 @@ namespace QuantLib {
             additionalResults_.find(tag);
         QL_REQUIRE(value != additionalResults_.end(),
                    tag << " not provided");
-        return ext::any_cast<T>(value->second);
+        return std::any_cast<T>(value->second);
     }
 
-    inline const std::map<std::string, ext::any>&
+    inline const std::map<std::string, std::any>&
     Instrument::additionalResults() const {
         calculate();
         return additionalResults_;

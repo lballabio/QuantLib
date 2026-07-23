@@ -488,7 +488,7 @@ namespace QuantLib {
 
             Real tmp = results_.gamma;
             results_.gamma =
-                ext::any_cast<Real>(results_.additionalResults["strikeGamma"]);
+                std::any_cast<Real>(results_.additionalResults["strikeGamma"]);
             results_.additionalResults["strikeGamma"] = tmp;
 
             std::swap(results_.rho, results_.dividendRho);
