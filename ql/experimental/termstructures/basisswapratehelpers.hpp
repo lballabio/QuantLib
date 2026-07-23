@@ -77,10 +77,18 @@ namespace QuantLib {
 
     //! Rate helper for bootstrapping over overnight-ibor basis swaps
     /*! The swap is assumed to pay baseIndex + basis and receive
-        otherIndex.  This helper can be used to bootstrap the forecast
-        curve for otherIndex; baseIndex will need an existing forecast
-        curve.  An exogenous discount curve can be passed; if not,
-        the overnight-index curve will be used.
+        otherIndex.  The helper can be used to bootstrap the forecast
+        curve for baseIndex (in which case you'll have to pass
+        bootstrapBaseCurve = true and provide otherIndex with a
+        forecast curve) or the forecast curve for otherIndex (in which
+        case bootstrapBaseCurve = false and baseIndex will need a
+        forecast curve).
+        An exogenous discount curve can be passed; if not, the
+        overnight-index curve will be used.  Note that when
+        bootstrapBaseCurve = true and no discount curve is passed, the
+        curve being bootstrapped is also used for discounting.
+        A payment lag can be passed; it is applied to both legs, which
+        share the same schedule, and rolls on the passed calendar.
     */
     class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -92,7 +100,9 @@ namespace QuantLib {
                                          bool endOfMonth,
                                          const ext::shared_ptr<OvernightIndex>& baseIndex,
                                          const ext::shared_ptr<IborIndex>& otherIndex,
-                                         Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>());
+                                         Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>(),
+                                         bool bootstrapBaseCurve = false,
+                                         Integer paymentLag = 0);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -110,6 +120,8 @@ namespace QuantLib {
         ext::shared_ptr<OvernightIndex> baseIndex_;
         ext::shared_ptr<IborIndex> otherIndex_;
         Handle<YieldTermStructure> discountHandle_;
+        bool bootstrapBaseCurve_;
+        Integer paymentLag_;
 
         ext::shared_ptr<Swap> swap_;
 
