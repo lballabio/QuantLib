@@ -276,6 +276,343 @@ namespace QuantLib {
                 return false;
         }
 
+        if (y == 2015) {
+            if (// Chinese New Year
+                (d == 19 && m == February)
+                // Labour Day
+                || (d == 1 && m == May)
+                // Birth of Buddha
+                || (d == 2 && m == June)
+                // Ied ul-Fitr
+                || ((d == 16 || d == 17) && m == July)
+                || ((d == 20 || d == 21) && m == July)
+                // Eid ul-Adha
+                || (d == 24 && m == September)
+                // Islamic New Year
+                || (d == 14 && m == October)
+                // Regional elections
+                || (d == 9 && m == December)
+                // Birthday of the prophet Muhammad SAW
+                || (d == 24 && m == December)
+                // Trading Holiday
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2016) {
+            if (// Chinese New Year
+                (d == 8 && m == February)
+                // Saka New Year
+                || (d == 9 && m == March)
+                // Isra' Mi'raj of the prophet Muhammad SAW
+                || (d == 6 && m == May)
+                // Ied ul-Fitr
+                || (d >= 4 && d <= 8 && m == July)
+                // Eid ul-Adha
+                || (d == 12 && m == September)
+                // Birthday of the prophet Muhammad SAW
+                || (d == 12 && m == December)
+                // National leave
+                || (d == 26 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2017) {
+            if (// National leave
+                (d == 2 && m == January)
+                // Regional elections
+                || (d == 15 && m == February)
+                // Saka New Year
+                || (d == 28 && m == March)
+                // Regional elections (Jakarta runoff)
+                || (d == 19 && m == April)
+                // Isra' Mi'raj of the prophet Muhammad SAW
+                || (d == 24 && m == April)
+                // Labour Day
+                || (d == 1 && m == May)
+                // Birth of Buddha
+                || (d == 11 && m == May)
+                // Pancasila Day
+                || (d == 1 && m == June)
+                // Ied ul-Fitr
+                || (d == 23 && m == June)
+                || (d >= 26 && d <= 30 && m == June)
+                // Eid ul-Adha
+                || (d == 1 && m == September)
+                // Islamic New Year
+                || (d == 21 && m == September)
+                // Birthday of the prophet Muhammad SAW
+                || (d == 1 && m == December)
+                // National leave
+                || (d == 26 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2018) {
+            if (// Chinese New Year
+                (d == 16 && m == February)
+                // Labour Day
+                || (d == 1 && m == May)
+                // Birth of Buddha
+                || (d == 29 && m == May)
+                // Pancasila Day
+                || (d == 1 && m == June)
+                // Ied ul-Fitr
+                || (d >= 11 && d <= 15 && m == June)
+                || ((d == 18 || d == 19) && m == June)
+                // Eid ul-Adha
+                || (d == 22 && m == August)
+                // Islamic New Year
+                || (d == 11 && m == September)
+                // Birthday of the prophet Muhammad SAW
+                || (d == 20 && m == November)
+                // National leave
+                || (d == 24 && m == December)
+                // Trading Holiday
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2019) {
+            if (// Chinese New Year
+                (d == 5 && m == February)
+                // Saka New Year
+                || (d == 7 && m == March)
+                // Isra' Mi'raj of the prophet Muhammad SAW
+                || (d == 3 && m == April)
+                // General elections
+                || (d == 17 && m == April)
+                // Labour Day
+                || (d == 1 && m == May)
+                // Ied ul-Fitr
+                || (d >= 3 && d <= 7 && m == June)
+                // National leave
+                || (d == 24 && m == December)
+                // Trading Holiday
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2020) {
+            if (// Saka New Year
+                (d == 25 && m == March)
+                // Labour Day
+                || (d == 1 && m == May)
+                // Birth of Buddha
+                || (d == 7 && m == May)
+                // Ied ul-Fitr
+                || (d == 22 && m == May)
+                || (d == 25 && m == May)
+                // Pancasila Day
+                || (d == 1 && m == June)
+                // Eid ul-Adha
+                || (d == 31 && m == July)
+                // Islamic New Year
+                || (d == 20 && m == August)
+                // National leave
+                || (d == 21 && m == August)
+                || (d == 28 && m == October)
+                // Birthday of the prophet Muhammad SAW
+                || (d == 29 && m == October)
+                // National leave
+                || (d == 30 && m == October)
+                // Regional elections
+                || (d == 9 && m == December)
+                // National leave
+                || (d == 24 && m == December)
+                // Ied ul-Fitr
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2021) {
+            if (// Chinese New Year
+                (d == 12 && m == February)
+                // Isra' Mi'raj of the prophet Muhammad SAW
+                || (d == 11 && m == March)
+                // Ied ul-Fitr
+                || (d == 12 && m == May)
+                || (d == 14 && m == May)
+                // Birth of Buddha
+                || (d == 26 && m == May)
+                // Pancasila Day
+                || (d == 1 && m == June)
+                // Eid ul-Adha
+                || (d == 20 && m == July)
+                // Islamic New Year
+                || (d == 11 && m == August)
+                // Birthday of the prophet Muhammad SAW
+                || (d == 20 && m == October)
+                // Trading Holiday
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2022) {
+            if (// Chinese New Year
+                (d == 1 && m == February)
+                // Isra' Mi'raj of the prophet Muhammad SAW
+                || (d == 28 && m == February)
+                // Saka New Year
+                || (d == 3 && m == March)
+                // Ied ul-Fitr
+                || ((d == 2 || d == 3) && m == May)
+                // Birth of Buddha
+                || (d == 16 && m == May)
+                // Pancasila Day
+                || (d == 1 && m == June)
+                )
+                return false;
+        }
+
+        if (y == 2023) {
+            if (// National leave
+                (d == 23 && m == January)
+                // Saka New Year
+                || (d == 22 && m == March)
+                // National leave
+                || (d == 23 && m == March)
+                // Ied ul-Fitr
+                || (d >= 19 && d <= 21 && m == April)
+                || ((d == 24 || d == 25) && m == April)
+                // Labour Day
+                || (d == 1 && m == May)
+                // Pancasila Day
+                || (d == 1 && m == June)
+                // National leave
+                || (d == 2 && m == June)
+                || (d == 28 && m == June)
+                // Eid ul-Adha
+                || (d == 29 && m == June)
+                // National leave
+                || (d == 30 && m == June)
+                // Islamic New Year
+                || (d == 19 && m == July)
+                // Birthday of the prophet Muhammad SAW
+                || (d == 28 && m == September)
+                // National leave
+                || (d == 26 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2024) {
+            if (// Isra' Mi'raj of the prophet Muhammad SAW
+                (d == 8 && m == February)
+                // National leave
+                || (d == 9 && m == February)
+                // General elections
+                || (d == 14 && m == February)
+                // Saka New Year
+                || (d == 11 && m == March)
+                // National leave
+                || (d == 12 && m == March)
+                // Ied ul-Fitr
+                || (d >= 8 && d <= 12 && m == April)
+                || (d == 15 && m == April)
+                // Labour Day
+                || (d == 1 && m == May)
+                // National leave
+                || (d == 10 && m == May)
+                // Birth of Buddha
+                || (d == 23 && m == May)
+                // National leave
+                || (d == 24 && m == May)
+                // Eid ul-Adha
+                || (d == 17 && m == June)
+                // National leave
+                || (d == 18 && m == June)
+                // Birthday of the prophet Muhammad SAW
+                || (d == 16 && m == September)
+                // Regional elections
+                || (d == 27 && m == November)
+                // National leave
+                || (d == 26 && m == December)
+                // Trading Holiday
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2025) {
+            if (// Isra' Mi'raj of the prophet Muhammad SAW
+                (d == 27 && m == January)
+                // National leave
+                || (d == 28 && m == January)
+                // Chinese New Year
+                || (d == 29 && m == January)
+                // National leave
+                || (d == 28 && m == March)
+                // Ied ul-Fitr
+                || (d == 31 && m == March)
+                || (d >= 1 && d <= 4 && m == April)
+                || (d == 7 && m == April)
+                // Labour Day
+                || (d == 1 && m == May)
+                // Birth of Buddha
+                || (d == 12 && m == May)
+                // National leave
+                || (d == 13 && m == May)
+                || (d == 30 && m == May)
+                // Eid ul-Adha
+                || (d == 6 && m == June)
+                // National leave
+                || (d == 9 && m == June)
+                // Islamic New Year
+                || (d == 27 && m == June)
+                // Birthday of the prophet Muhammad SAW
+                || (d == 5 && m == September)
+                // National leave
+                || (d == 26 && m == December)
+                // Trading Holiday
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2026) {
+            if (// Isra' Mi'raj of the prophet Muhammad SAW
+                (d == 16 && m == January)
+                // National leave
+                || (d == 16 && m == February)
+                // Chinese New Year
+                || (d == 17 && m == February)
+                // National leave
+                || (d == 18 && m == March)
+                // Saka New Year
+                || (d == 19 && m == March)
+                // Ied ul-Fitr
+                || (d == 20 && m == March)
+                || ((d == 23 || d == 24) && m == March)
+                // Labour Day
+                || (d == 1 && m == May)
+                // National leave
+                || (d == 15 && m == May)
+                // Eid ul-Adha
+                || (d == 27 && m == May)
+                // National leave
+                || (d == 28 && m == May)
+                // Pancasila Day
+                || (d == 1 && m == June)
+                // Islamic New Year
+                || (d == 16 && m == June)
+                // Birthday of the prophet Muhammad SAW
+                || (d == 25 && m == August)
+                // National leave
+                || (d == 24 && m == December)
+                // Trading Holiday
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
         return true;
     }
 
