@@ -48,9 +48,12 @@ namespace QuantLib {
         \note The fractional Adams scheme is the reference-quality but
               \f$ O(N^2) \f$ route to the characteristic function.  The
               Padè approximation is a closed form matching the short
-              and long-time asymptotics of the Riccati solution.  Future
-              pull requests will add other approximations, lifted Heston,
-              and forward-variance term structures.
+              and long-time asymptotics of the Riccati solution; it is
+              most precise for the strongly negative correlation typical of
+              equity indices and loses a few percent of accuracy as the
+              correlation moves towards zero or positive.  Future pull
+              requests will add other approximations, lifted Heston, and
+              forward-variance term structures.
 
         References:
 
