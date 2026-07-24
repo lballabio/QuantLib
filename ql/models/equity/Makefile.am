@@ -10,7 +10,8 @@ this_include_HEADERS = \
     hestonmodelhelper.hpp \
     hestonslvfdmmodel.hpp \
     hestonslvmcmodel.hpp \
-    piecewisetimedependenthestonmodel.hpp
+    piecewisetimedependenthestonmodel.hpp \
+    roughhestonmodel.hpp
 
 cpp_files = \
     batesmodel.cpp \
@@ -19,7 +20,8 @@ cpp_files = \
     hestonmodelhelper.cpp \
     hestonslvfdmmodel.cpp \
     hestonslvmcmodel.cpp \
-    piecewisetimedependenthestonmodel.cpp
+    piecewisetimedependenthestonmodel.cpp \
+    roughhestonmodel.cpp
 
 if UNITY_BUILD
 
