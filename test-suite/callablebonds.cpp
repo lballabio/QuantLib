@@ -1047,50 +1047,81 @@ BOOST_AUTO_TEST_CASE(testOasContinuityThroughExCouponWindow) {
 
 
 BOOST_AUTO_TEST_CASE(testEffectiveDurationAndConvexity) {
-    BOOST_TEST_MESSAGE("Testing effective duration and convexity of a callable fixed-rate bond...");
+    BOOST_TEST_MESSAGE("Testing effective duration and convexity of a callable fixed-rate bond using dirty price...");
 
-    Globals vars;
+    Date settlementDate(30, November, 2023);
+    Settings::instance().evaluationDate() = settlementDate;
 
-    vars.today = Date(20, September, 2022);
-    Settings::instance().evaluationDate() = vars.today;
-    vars.settlement = vars.calendar.advance(vars.today, 2, Days);
+    Date effectiveDate(20, May, 2021);
+    Date maturityDate(1, June, 2029);
+    Date firstCouponDate(1, December, 2021);
 
-    vars.termStructure.linkTo(vars.makeFlatCurve(0.05));
-    vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure, 0.03, 0.012));
+    Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
+    DayCounter dayCount = Thirty360(Thirty360::ISDA);
 
-    Schedule schedule = MakeSchedule()
-                            .from(vars.issueDate())
-                            .to(vars.maturityDate())
-                            .withCalendar(vars.calendar)
-                            .withFrequency(Semiannual)
-                            .withConvention(vars.rollingConvention)
-                            .withRule(DateGeneration::Backward);
-
-    std::vector<Rate> coupons(1, 0.04875);
+    Schedule schedule(effectiveDate, maturityDate, 6*Months,
+                     calendar, Unadjusted, Unadjusted,
+                     DateGeneration::Backward, true, firstCouponDate);
 
     CallabilitySchedule callSchedule;
     callSchedule.push_back(ext::make_shared<Callability>(
-        Bond::Price(1000.0, Bond::Price::Clean), Callability::Call, schedule.at(6)));
+        Bond::Price(102.438, Bond::Price::Clean),
+        Callability::Call, Date(1, June, 2024)));
+    callSchedule.push_back(ext::make_shared<Callability>(
+        Bond::Price(101.219, Bond::Price::Clean),
+        Callability::Call, Date(1, June, 2025)));
+    callSchedule.push_back(ext::make_shared<Callability>(
+        Bond::Price(100.0, Bond::Price::Clean),
+        Callability::Call, Date(1, June, 2026)));
+    callSchedule.push_back(ext::make_shared<Callability>(
+        Bond::Price(100.0, Bond::Price::Clean),
+        Callability::Call, Date(1, June, 2029)));
 
-    CallableFixedRateBond callableBond(2, 100.0, schedule, coupons, vars.dayCounter,
-                                       vars.rollingConvention, 100.0, vars.issueDate(),
-                                       callSchedule);
+    Natural settlementDays = 2;
+    Real faceAmount = 100.0;
+    std::vector<Rate> coupons = {0.04875};
+    Real redemption = 100.0;
 
-    Size timeSteps = 240;
-    ext::shared_ptr<PricingEngine> engine = ext::make_shared<TreeCallableFixedRateBondEngine>(
-        *(vars.model), timeSteps, vars.termStructure);
+    CallableFixedRateBond callableBond(settlementDays, faceAmount, schedule, coupons,
+                                       dayCount, Unadjusted, redemption,
+                                       effectiveDate, callSchedule);
+
+    Handle<YieldTermStructure> flatRate(
+        ext::make_shared<FlatForward>(settlementDays, calendar, 0.05, dayCount));
+
+    Real alpha = 0.03;
+    Real sigma = 0.012;
+    auto hw = ext::make_shared<HullWhite>(flatRate, alpha, sigma);
+
+    Size gridSteps = static_cast<Size>((maturityDate - settlementDate) / 30);
+    auto engine = ext::make_shared<TreeCallableFixedRateBondEngine>(hw, gridSteps);
     callableBond.setPricingEngine(engine);
 
     Real cleanPrice = 70.926;
-    Real oas = callableBond.OAS(cleanPrice, vars.termStructure, vars.dayCounter, Compounded, Semiannual);
+    Spread oas = callableBond.OAS(cleanPrice, flatRate, dayCount, Compounded, Semiannual, settlementDate);
 
-    Real bump = 0.001;
-    Real effDur = callableBond.effectiveDuration(oas, vars.termStructure, vars.dayCounter, Compounded, Semiannual, bump);
-    Real effConv = callableBond.effectiveConvexity(oas, vars.termStructure, vars.dayCounter, Compounded, Semiannual, bump);
+    Real shift = 0.001;
+    Real effDur = callableBond.effectiveDuration(oas, flatRate, dayCount, Compounded, Semiannual, shift);
+    Real effConv = callableBond.effectiveConvexity(oas, flatRate, dayCount, Compounded, Semiannual, shift);
 
-    BOOST_CHECK_GT(effDur, 0.0);
-    BOOST_CHECK_LT(effDur, 15.0);
-    BOOST_CHECK_NE(effConv, 0.0);
+    // Compute expected duration and convexity manually using dirty price
+    Real accrued = callableBond.accruedAmount(settlementDate);
+    Real P0 = callableBond.cleanPriceOAS(oas, flatRate, dayCount, Compounded, Semiannual, settlementDate) + accrued;
+    Real P_up = callableBond.cleanPriceOAS(oas + shift, flatRate, dayCount, Compounded, Semiannual, settlementDate) + accrued;
+    Real P_down = callableBond.cleanPriceOAS(oas - shift, flatRate, dayCount, Compounded, Semiannual, settlementDate) + accrued;
+
+    Real expectedEffDur = (P_down - P_up) / (2.0 * P0 * shift);
+    Real expectedEffConv = (P_down + P_up - 2.0 * P0) / (P0 * shift * shift);
+
+    // Value if clean price were incorrectly used in the denominator
+    Real cleanP0 = P0 - accrued;
+    Real incorrectEffDur = (P_down - P_up) / (2.0 * cleanP0 * shift);
+
+    BOOST_CHECK_CLOSE(effDur, expectedEffDur, 1e-4);
+    BOOST_CHECK_CLOSE(effConv, expectedEffConv, 1e-4);
+
+    // Verify that the result differs significantly from the clean-price-denominator calculation
+    BOOST_CHECK(std::abs(effDur - incorrectEffDur) > 0.01);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
