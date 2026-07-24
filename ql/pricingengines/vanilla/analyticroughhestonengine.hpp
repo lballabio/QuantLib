@@ -31,6 +31,7 @@
 #include <complex>
 #include <map>
 #include <tuple>
+#include <vector>
 
 namespace QuantLib {
 
@@ -128,6 +129,15 @@ namespace QuantLib {
       private:
         class AP_Helper;
 
+        //! Coefficients c0, c1, c2 of the Riccati equation h' = c0 + c1 h + c2 h^2
+        struct RiccatiCoefficients {
+            std::complex<Real> c0, c1, c2;
+        };
+        RiccatiCoefficients riccatiCoefficients(const std::complex<Real>& z) const;
+
+        // fractional Adams solution grid h(z, j dt), j = 0, ..., timeSteps_
+        std::vector<std::complex<Real>> solveAdamsRiccati(const std::complex<Real>& z, Time t) const;
+
         /*! Coefficients of the (3, 3) Gatheral-Radoicic rational
             approximation \f$ h(z, t) = N(y) / D(y) \f$ with
             \f$ y = \sigma t^a \f$, matching the short-time series and
@@ -138,7 +148,7 @@ namespace QuantLib {
         };
         PadeCoefficients padeCoefficients(const std::complex<Real>& z) const;
         std::complex<Real> padeRiccati(const std::complex<Real>& z, Time t) const;
-        static std::complex<Real> evaluatePade( const PadeCoefficients& c, Real y);
+        static std::complex<Real> evaluatePade(const PadeCoefficients& c, Real y);
 
         std::complex<Real> lnChFAdams(const std::complex<Real>& z, Time t) const;
         std::complex<Real> lnChFPade(const std::complex<Real>& z, Time t) const;
