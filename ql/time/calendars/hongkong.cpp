@@ -413,6 +413,21 @@ namespace QuantLib {
                 return false;
         }
 
+        // data from https://www.gov.hk/en/about/abouthk/holiday/2026.htm
+        if (y == 2026) {
+            if (// Lunar New Year
+                ((d >= 17 && d <= 19) && m == February)
+                // The day following Easter Monday
+                || (d == 7 && m == April)
+                // Buddha's birthday
+                || (d == 25 && m == May)
+                // Tuen Ng festival
+                || (d == 19 && m == June)
+                // Chung Yeung festival
+                || (d == 19 && m == October))
+                return false;
+        }
+
         return true;
     }
 

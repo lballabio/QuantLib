@@ -127,16 +127,28 @@ namespace QuantLib {
         bool endOfMonth,
         const ext::shared_ptr<OvernightIndex>& baseIndex,
         const ext::shared_ptr<IborIndex>& otherIndex,
-        Handle<YieldTermStructure> discountHandle)
+        Handle<YieldTermStructure> discountHandle,
+        bool bootstrapBaseCurve,
+        Integer paymentLag)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
-      discountHandle_(std::move(discountHandle)) {
+      discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve),
+      paymentLag_(paymentLag) {
 
         // we need to clone the index whose forecast curve we want to bootstrap
         // and copy the other one
-        baseIndex_ = baseIndex;
-        otherIndex_ = otherIndex->clone(termStructureHandle_);
-        otherIndex_->unregisterWith(termStructureHandle_);
+        if (bootstrapBaseCurve_) {
+            baseIndex_ = ext::dynamic_pointer_cast<OvernightIndex>(
+                baseIndex->clone(termStructureHandle_));
+            QL_REQUIRE(baseIndex_ != nullptr,
+                       "the base index did not clone into an overnight index");
+            baseIndex_->unregisterWith(termStructureHandle_);
+            otherIndex_ = otherIndex;
+        } else {
+            baseIndex_ = baseIndex;
+            otherIndex_ = otherIndex->clone(termStructureHandle_);
+            otherIndex_->unregisterWith(termStructureHandle_);
+        }
 
         registerWith(baseIndex_);
         registerWith(otherIndex_);
@@ -158,12 +170,21 @@ namespace QuantLib {
             .endOfMonth(endOfMonth_)
             .forwards();
 
-        Leg baseLeg = OvernightLeg(schedule, baseIndex_).withNotionals(100.0);
+        Leg baseLeg = OvernightLeg(schedule, baseIndex_)
+            .withNotionals(100.0)
+            .withPaymentLag(paymentLag_);
 
-        Leg otherLeg = IborLeg(schedule, otherIndex_).withNotionals(100.0);
+        Leg otherLeg = IborLeg(schedule, otherIndex_)
+            .withNotionals(100.0)
+            .withPaymentLag(paymentLag_);
         auto lastOtherCoupon = ext::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
 
-        latestRelevantDate_ = std::max(maturityDate_, lastOtherCoupon->fixingEndDate());
+        // the payment lag can push the last payment past the maturity date,
+        // in which case the discount curve is needed up to that date
+        Date lastPaymentDate = std::max(baseLeg.back()->date(), otherLeg.back()->date());
+
+        latestRelevantDate_ = std::max({maturityDate_, lastPaymentDate,
+                                        lastOtherCoupon->fixingEndDate()});
         pillarDate_ = latestRelevantDate_;
 
         swap_ = ext::make_shared<Swap>(baseLeg, otherLeg);

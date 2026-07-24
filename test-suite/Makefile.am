@@ -150,6 +150,7 @@ QL_TEST_SRCS = \
 	riskneutraldensitycalculator.cpp \
 	riskstats.cpp \
 	rngtraits.cpp \
+	roughhestonmodel.cpp \
 	rounding.cpp \
 	schedule.cpp \
 	settings.cpp \
