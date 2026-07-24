@@ -62,8 +62,8 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         \param recIndex           Floating rate index for the receive leg.
         \param recSpread          Spread over the floating rate for the receive leg.
         \param recGearing         Gearing factor for the receive leg.
-        \param payPaymentLag      Payment lag in days for the pay leg if overnight (default: 0).
-        \param recPaymentLag      Payment lag in days for the receive leg if overnight (default: 0).
+        \param payPaymentLag      Coupon payment lag in days for the pay leg (default: 0).
+        \param recPaymentLag      Coupon payment lag in days for the receive leg (default: 0).
         \param payCompoundSpread  Whether to compound the spread daily for the pay leg if overnight (default: false).
         \param payLookbackDays    Lookback days for the pay leg if overnight (default: null).
         \param payObservationShift  Whether the observation shift is applied for the pay leg if overnight (default: false).

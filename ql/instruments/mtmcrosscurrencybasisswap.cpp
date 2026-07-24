@@ -20,6 +20,7 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/instruments/mtmcrosscurrencybasisswap.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -121,7 +122,6 @@ void MtMCrossCurrencyBasisSwap::initialize() {
 
     Size resettingLegNo = resettingLegIndex();
     const Schedule& resettingSchedule = resettingLegNo == 0 ? fxBaseSchedule_ : fxQuoteSchedule_;
-    Integer paymentLag = resettingLegNo == 0 ? fxBasePaymentLag_ : fxQuotePaymentLag_;
     Calendar paymentCalendar = resettingSchedule.calendar();
 
     Leg resettingLeg;
@@ -132,14 +132,12 @@ void MtMCrossCurrencyBasisSwap::initialize() {
         auto coupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(cf);
         QL_REQUIRE(coupon, "unexpected non-coupon cash flow on the resettable leg");
         Date resetDate = coupon->accrualStartDate();
-        // The exchanges settle with the coupons: each period-boundary exchange
-        // pays on the maturing coupon's payment date, and the initial exchange
-        // follows the leg's own payment calendar, lag and convention (IborLeg
-        // and OvernightLeg adjust payment dates with Following by default).
+        // Interim exchanges settle with the coupons.  The initial exchange is
+        // made on the effective date instead of being delayed with the coupons.
         Date exchangeDate =
             previousPaymentDate != Date() ?
                 previousPaymentDate :
-                paymentCalendar.advance(resetDate, paymentLag, Days, Following);
+                paymentCalendar.adjust(earliestDate, Following);
         resettingLeg.push_back(ext::make_shared<FxResetNotionalExchange>(
             exchangeDate, constantLegNotional(), previousResetDate, resetDate));
         resettingLeg.push_back(ext::make_shared<FxResetCoupon>(coupon, constantLegNotional()));
@@ -147,19 +145,23 @@ void MtMCrossCurrencyBasisSwap::initialize() {
         previousPaymentDate = coupon->date();
     }
     resettingLeg.push_back(ext::make_shared<FxResetNotionalExchange>(
-        previousPaymentDate, constantLegNotional(), previousResetDate, Date()));
+        paymentCalendar.adjust(maturityDate, Following),
+        constantLegNotional(), previousResetDate, Date()));
+    std::stable_sort(resettingLeg.begin(), resettingLeg.end(),
+                     [](const ext::shared_ptr<CashFlow>& lhs,
+                        const ext::shared_ptr<CashFlow>& rhs) {
+                         return lhs->date() < rhs->date();
+                     });
     legs_[resettingLegNo] = resettingLeg;
 
     // Only the constant-notional leg gets the inception/maturity exchange flows.
     if (resettingLegNo != 0)
-        CrossCurrencySwap::addNotionalExchangesToLeg(
-            legs_[0], fxBaseSchedule_.calendar(), earliestDate, maturityDate, fxBasePaymentLag_,
-            fxBaseSchedule_.businessDayConvention(), fxBaseNominal_);
+        CrossCurrencySwap::addNotionalExchangesToLeg(legs_[0], fxBaseSchedule_.calendar(),
+                                                     earliestDate, maturityDate, fxBaseNominal_);
 
     if (resettingLegNo != 1)
-        CrossCurrencySwap::addNotionalExchangesToLeg(
-            legs_[1], fxQuoteSchedule_.calendar(), earliestDate, maturityDate, fxQuotePaymentLag_,
-            fxQuoteSchedule_.businessDayConvention(), fxQuoteNominal_);
+        CrossCurrencySwap::addNotionalExchangesToLeg(legs_[1], fxQuoteSchedule_.calendar(),
+                                                     earliestDate, maturityDate, fxQuoteNominal_);
 
     for (Size legNo = 0; legNo < 2; ++legNo) {
         for (auto& cf : legs_[legNo])

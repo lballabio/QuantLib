@@ -90,12 +90,12 @@ ConstNotionalCrossCurrencyFixedVsFloatingSwap::ConstNotionalCrossCurrencyFixedVs
                                  CashFlows::maturityDate(fixedLeg));
 
     // Add notional exchanges on float Leg
-    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(floatLeg, floatPaymentCalendar_, earliestDate, maturityDate,
-                                            floatPaymentLag_, floatPaymentBdc_, floatNominal_);
-    
+    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(floatLeg, floatPaymentCalendar_,
+                                                              earliestDate, maturityDate, floatNominal_);
+
     // Add notional exchanges on fixed leg
-    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(fixedLeg, fixedPaymentCalendar_, earliestDate, maturityDate,
-                                            fixedPaymentLag_, fixedPaymentBdc_, fixedNominal_);
+    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(fixedLeg, fixedPaymentCalendar_,
+                                                              earliestDate, maturityDate, fixedNominal_);
 
     // Deriving from cross currency swap where:
     //   First leg should hold the pay flows

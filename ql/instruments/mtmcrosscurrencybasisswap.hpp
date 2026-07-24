@@ -77,6 +77,11 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
                                    quote-currency (second) leg resets.  The other
                                    leg keeps a constant notional and exchanges it
                                    at inception and maturity.
+        \param fxBasePaymentLag  Coupon payment lag for the base-currency leg.
+        \param fxQuotePaymentLag Coupon payment lag for the quote-currency leg.
+
+        Initial and final notional exchanges remain on the effective and
+        maturity dates.  Interim reset exchanges settle with the coupons.
     */
     MtMCrossCurrencyBasisSwap(
         Type type,

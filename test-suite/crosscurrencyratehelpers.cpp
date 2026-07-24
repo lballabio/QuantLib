@@ -678,6 +678,69 @@ BOOST_AUTO_TEST_CASE(testConstNotionalCrossCurrencySwapRateHelperRelinking) {
     BOOST_CHECK(oldQuote != newQuote);
 }
 
+BOOST_AUTO_TEST_CASE(testPaymentLagDoesNotDelayNotionalExchanges) {
+    BOOST_TEST_MESSAGE("Testing that payment lag applies to coupons but not notional exchanges...");
+
+    SavedSettings backup;
+    Date today(15, July, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    Calendar cal = TARGET();
+    Handle<YieldTermStructure> collateralCurve(
+        ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
+    Handle<YieldTermStructure> forwardingCurve(
+        ext::make_shared<FlatForward>(today, 0.017, Actual365Fixed()));
+    auto euribor3m = ext::make_shared<Euribor3M>(forwardingCurve);
+
+    ConstNotionalCrossCurrencySwapRateHelper helper(
+        makeQuoteHandle(0.02), 3 * Months, 2, cal, Following, false,
+        Quarterly, Actual360(), euribor3m, collateralCurve, false, 2);
+
+    Date effectiveDate(17, July, 2026);
+    Date maturityDate(19, October, 2026);
+    Date couponPaymentDate(21, October, 2026);
+
+    const auto& swap = helper.swap();
+    for (const Leg& leg : swap->legs()) {
+        BOOST_REQUIRE_EQUAL(leg.size(), 3);
+        BOOST_CHECK_EQUAL(leg[0]->date(), effectiveDate);
+        BOOST_CHECK_EQUAL(leg[1]->date(), maturityDate);
+        BOOST_CHECK_EQUAL(leg[2]->date(), couponPaymentDate);
+    }
+
+    BOOST_CHECK_EQUAL(helper.earliestDate(), effectiveDate);
+    BOOST_CHECK_EQUAL(helper.maturityDate(), maturityDate);
+    BOOST_CHECK_EQUAL(helper.latestDate(), couponPaymentDate);
+}
+
+BOOST_AUTO_TEST_CASE(testBasisHelpersWithPaymentLagMatchUnderlyingSwaps) {
+    BOOST_TEST_MESSAGE("Testing payment-lagged basis helpers against their underlying swaps...");
+
+    CommonVars vars;
+    Handle<YieldTermStructure> collateralCurve = vars.quoteCcyIdxHandle;
+    auto bootstrappedCurve = vars.baseCcyIdxHandle.currentLink();
+    Handle<Quote> quote = makeQuoteHandle(-20.0 * vars.basisPoint);
+
+    ConstNotionalCrossCurrencyBasisSwapRateHelper constantHelper(
+        quote, 5 * Years, vars.instrumentSettlementDays, vars.calendar,
+        vars.businessConvention, vars.endOfMonth, vars.baseCcyIdx, vars.quoteCcyIdx,
+        collateralCurve, false, true, std::nullopt, 2);
+    constantHelper.setTermStructure(bootstrappedCurve.get());
+
+    BOOST_CHECK_SMALL(constantHelper.impliedQuote() - constantHelper.swap()->fairPaySpread(),
+                      1.0e-12);
+
+    MtMCrossCurrencyBasisSwapRateHelper resettingHelper(
+        quote, 5 * Years, vars.instrumentSettlementDays, vars.calendar,
+        vars.businessConvention, vars.endOfMonth, vars.baseCcyIdx, vars.quoteCcyIdx,
+        collateralCurve, false, true, false, std::nullopt, 2);
+    resettingHelper.setTermStructure(bootstrappedCurve.get());
+
+    BOOST_CHECK_SMALL(resettingHelper.impliedQuote() -
+                          resettingHelper.swap()->fairFxBaseSpread(),
+                      1.0e-12);
+}
+
 BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFixedLeg) {
     BOOST_TEST_MESSAGE("Testing const-notional CCS helper with collateral on fixed leg...");
 
@@ -854,11 +917,11 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFloatingLeg) {
                        .withPaymentAdjustment(euribor3m->businessDayConvention())
                        .withPaymentCalendar(cal);
 
-        Date initialPaymentDate = cal.advance(CashFlows::startDate(fixedLeg), paymentLag, Days, bdc);
+        Date initialPaymentDate = CashFlows::startDate(fixedLeg);
         fixedLeg.insert(fixedLeg.begin(), ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
         floatLeg.insert(floatLeg.begin(), ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
 
-        Date finalPaymentDate = cal.advance(CashFlows::maturityDate(fixedLeg), paymentLag, Days, bdc);
+        Date finalPaymentDate = CashFlows::maturityDate(fixedLeg);
         fixedLeg.push_back(ext::make_shared<SimpleCashFlow>(1.0, finalPaymentDate));
         floatLeg.push_back(ext::make_shared<SimpleCashFlow>(1.0, finalPaymentDate));
 

@@ -109,12 +109,12 @@ void ConstNotionalCrossCurrencyBasisSwap::initialize() {
                                  CashFlows::maturityDate(legs_[1]));
 
     // Add notional exchanges on payLeg
-    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(legs_[0], paySchedule_.calendar(), earliestDate, maturityDate,
-                                            payPaymentLag_, paySchedule_.businessDayConvention(), payNominal_);
+    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(legs_[0], paySchedule_.calendar(),
+                                                              earliestDate, maturityDate, payNominal_);
 
     // Add notional exchanges on recLeg
-    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(legs_[1], recSchedule_.calendar(), earliestDate, maturityDate,
-                                            recPaymentLag_, recSchedule_.businessDayConvention(), recNominal_);
+    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(legs_[1], recSchedule_.calendar(),
+                                                              earliestDate, maturityDate, recNominal_);
 
     // Register the instrument with all cashflows on each leg.
     for (Size legNo = 0; legNo < 2; legNo++) {

@@ -20,6 +20,7 @@
 
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/instruments/crosscurrencyswap.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -115,18 +116,28 @@ void CrossCurrencySwap::addNotionalExchangesToLeg(Leg& leg,
                                                   const Calendar& calendar,
                                                   const Date earliestDate,
                                                   const Date maturityDate,
-                                                  const Natural paymentLag,
-                                                  const BusinessDayConvention legBdc,
                                                   Real nominal) {
+    // Principal exchanges settle on the effective and maturity dates: the
+    // payment lag belongs to coupon payments only.  The dates are adjusted
+    // with Following — matching the legs' default payment adjustment — so
+    // that an unadjusted schedule cannot put an exchange on a non-business
+    // day, and both legs of the swap exchange notionals on the same date.
     // Initial notional exchange
-    Date aDate = calendar.advance(earliestDate, paymentLag, Days, legBdc);
+    Date aDate = calendar.adjust(earliestDate, Following);
     ext::shared_ptr<CashFlow> aCashflow = ext::make_shared<SimpleCashFlow>(-nominal, aDate);
     leg.insert(leg.begin(), aCashflow);
 
     // Final notional exchange
-    aDate = calendar.advance(maturityDate, paymentLag, Days, legBdc);
+    aDate = calendar.adjust(maturityDate, Following);
     aCashflow = ext::make_shared<SimpleCashFlow>(nominal, aDate);
     leg.push_back(aCashflow);
+
+    // A lagged final coupon can pay after the maturity-date exchange.
+    std::stable_sort(leg.begin(), leg.end(),
+                     [](const ext::shared_ptr<CashFlow>& lhs,
+                        const ext::shared_ptr<CashFlow>& rhs) {
+                         return lhs->date() < rhs->date();
+                     });
 }
 
 } // namespace QuantLib

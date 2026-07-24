@@ -130,7 +130,8 @@ namespace QuantLib {
                 payment frequency of the base-currency leg; if left unset (the
                 default) the schedule is derived from the base-currency index tenor.
             \param paymentLag
-                payment lag, in days, applied to both legs (default: 0).
+                coupon payment lag, in days, applied to both legs (default: 0).
+                Notional exchanges remain on the effective and maturity dates.
             \param quoteCurrencyPaymentFrequency
                 payment frequency of the quote-currency leg; if left unset (the
                 default) it defaults to \c paymentFrequency, and if that is unset as
@@ -192,7 +193,8 @@ namespace QuantLib {
                 payment frequency of the base-currency leg; if left unset (the
                 default) the schedule is derived from the base-currency index tenor.
             \param paymentLag
-                payment lag, in days, applied to both legs (default: 0).
+                coupon payment lag, in days, applied to both legs (default: 0).
+                Notional exchanges remain on the effective and maturity dates.
             \param quoteCurrencyPaymentFrequency
                 payment frequency of the quote-currency leg; if left unset (the
                 default) it defaults to \c paymentFrequency, and if that is unset as

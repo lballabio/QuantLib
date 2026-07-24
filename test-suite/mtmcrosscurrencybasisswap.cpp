@@ -19,6 +19,7 @@
 #include <ql/cashflows/coupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/fxresetcashflows.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/currencies/all.hpp>
 #include <ql/currencies/exchangeratemanager.hpp>
@@ -719,9 +720,8 @@ BOOST_AUTO_TEST_CASE(testSeasonedOvernightLegsMatchConstantNotional) {
     BOOST_CHECK_CLOSE(mtmCoupon->amount(), refCoupon->amount(), 1.0e-8);
 }
 
-BOOST_AUTO_TEST_CASE(testResetExchangesPayOnCouponPaymentDates) {
-    BOOST_TEST_MESSAGE("Testing that the reset exchanges of an unadjusted schedule settle on "
-                       "the coupon payment dates...");
+BOOST_AUTO_TEST_CASE(testResetExchangePaymentDates) {
+    BOOST_TEST_MESSAGE("Testing initial, interim and final reset-exchange payment dates...");
 
     SavedSettings backup;
     Date today(11, Sep, 2018);
@@ -734,8 +734,7 @@ BOOST_AUTO_TEST_CASE(testResetExchangesPayOnCouponPaymentDates) {
 
     TARGET cal;
     // Unadjusted schedule with period-end dates falling on weekends: the
-    // coupons still pay on the following business day, and the exchanges
-    // must settle with them.
+    // coupons still pay on the following business day.
     Date start(15, Sep, 2018); // a Saturday
     Schedule sch(start, start + 1 * Years, 3 * Months, cal, Unadjusted, Unadjusted,
                  DateGeneration::Forward, false);
@@ -745,24 +744,40 @@ BOOST_AUTO_TEST_CASE(testResetExchangesPayOnCouponPaymentDates) {
     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
         usdIndex, 0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, 0.0, 1.0,
-        /*isFxBaseCurrencyLegResettable=*/false);
+        /*isFxBaseCurrencyLegResettable=*/false,
+        /*fxBasePaymentLag=*/2, /*fxQuotePaymentLag=*/2);
     swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
         USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(spotFx)));
     BOOST_CHECK_NO_THROW(swap->NPV());
 
-    ext::shared_ptr<Coupon> lastCoupon;
+    std::vector<ext::shared_ptr<FxResetNotionalExchange> > exchanges;
+    std::vector<ext::shared_ptr<Coupon> > coupons;
     for (const auto& cf : swap->leg(swap->resettingLegIndex())) {
         if (auto exchange = ext::dynamic_pointer_cast<FxResetNotionalExchange>(cf)) {
-            BOOST_CHECK_MESSAGE(cal.isBusinessDay(exchange->date()),
-                                "reset exchange payment date " << exchange->date()
-                                                               << " is not a business day");
-            if (lastCoupon != nullptr) // boundary and final exchanges
-                BOOST_CHECK_EQUAL(exchange->date(), lastCoupon->date());
+            exchanges.push_back(exchange);
         } else if (auto coupon = ext::dynamic_pointer_cast<Coupon>(cf)) {
-            lastCoupon = coupon;
+            coupons.push_back(coupon);
         }
     }
-    BOOST_REQUIRE(lastCoupon != nullptr);
+
+    BOOST_REQUIRE_EQUAL(exchanges.size(), coupons.size() + 1);
+    BOOST_CHECK_EQUAL(exchanges.front()->date(), cal.adjust(start, Following));
+    BOOST_CHECK_EQUAL(exchanges.back()->date(), cal.adjust(start + 1 * Years, Following));
+
+    for (Size i = 1; i + 1 < exchanges.size(); ++i)
+        BOOST_CHECK_EQUAL(exchanges[i]->date(), coupons[i - 1]->date());
+
+    const Leg& constantLeg = swap->leg(swap->constantLegIndex());
+    std::vector<ext::shared_ptr<SimpleCashFlow> > constantNotionalExchanges;
+    for (const auto& cf : constantLeg)
+        if (auto exchange = ext::dynamic_pointer_cast<SimpleCashFlow>(cf))
+            constantNotionalExchanges.push_back(exchange);
+    BOOST_REQUIRE_EQUAL(constantNotionalExchanges.size(), 2);
+    // Both legs exchange notionals on the same business dates, even when the
+    // unadjusted schedule dates fall on a weekend.
+    BOOST_CHECK_EQUAL(constantNotionalExchanges.front()->date(), exchanges.front()->date());
+    BOOST_CHECK_EQUAL(constantNotionalExchanges.back()->date(), exchanges.back()->date());
+    BOOST_CHECK_NE(coupons.back()->date(), exchanges.back()->date());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

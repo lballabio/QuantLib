@@ -55,7 +55,7 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         \param fixedRate             Fixed interest rate for the fixed leg.
         \param fixedDayCount         Day count convention for the fixed leg.
         \param fixedPaymentBdc       Business day convention for fixed leg payments.
-        \param fixedPaymentLag       Payment lag for the fixed leg (default: 0).
+        \param fixedPaymentLag       Coupon payment lag for the fixed leg (default: 0).
         \param fixedPaymentCalendar  Calendar for fixed leg payments.
         \param floatNominal          Notional amount for the floating leg.
         \param floatCurrency         Currency of the floating leg.
@@ -63,7 +63,7 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         \param floatIndex            Floating rate index for the floating leg.
         \param floatSpread           Spread over the floating rate for the floating leg.
         \param floatPaymentBdc       Business day convention for floating leg payments.
-        \param floatPaymentLag       Payment lag for the floating leg (default: 0).
+        \param floatPaymentLag       Coupon payment lag for the floating leg (default: 0).
         \param floatPaymentCalendar  Calendar for floating leg payments.
         \param telescopicValueDates  For overnight legs, whether to use telescopic value dates (default: false).
         \param floatCompoundSpread   For overnight legs, whether to compound the spread daily (default: false).
