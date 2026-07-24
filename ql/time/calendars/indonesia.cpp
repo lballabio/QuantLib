@@ -52,6 +52,10 @@ namespace QuantLib {
             || (dd == em-3)
             // Ascension Thursday
             || (dd == em+38)
+            // Labour Day (national holiday since 2014)
+            || (d == 1 && m == May && y >= 2014)
+            // Pancasila Day (national holiday since 2017)
+            || (d == 1 && m == June && y >= 2017)
             // Independence Day
             || (d == 17 && m == August)
             // Christmas
@@ -258,8 +262,6 @@ namespace QuantLib {
                 || (d == 31 && m == January)
                 // Saka New Year
                 || (d == 31 && m == March)
-                // Labour Day
-                || (d == 1 && m == May)
                 // Birth of Buddha
                 || (d == 15 && m == May)
                 // Isra' Mi'raj of the prophet Muhammad SAW
@@ -279,8 +281,6 @@ namespace QuantLib {
         if (y == 2015) {
             if (// Chinese New Year
                 (d == 19 && m == February)
-                // Labour Day
-                || (d == 1 && m == May)
                 // Birth of Buddha
                 || (d == 2 && m == June)
                 // Ied ul-Fitr
@@ -330,12 +330,8 @@ namespace QuantLib {
                 || (d == 19 && m == April)
                 // Isra' Mi'raj of the prophet Muhammad SAW
                 || (d == 24 && m == April)
-                // Labour Day
-                || (d == 1 && m == May)
                 // Birth of Buddha
                 || (d == 11 && m == May)
-                // Pancasila Day
-                || (d == 1 && m == June)
                 // Ied ul-Fitr
                 || (d == 23 && m == June)
                 || (d >= 26 && d <= 30 && m == June)
@@ -354,12 +350,8 @@ namespace QuantLib {
         if (y == 2018) {
             if (// Chinese New Year
                 (d == 16 && m == February)
-                // Labour Day
-                || (d == 1 && m == May)
                 // Birth of Buddha
                 || (d == 29 && m == May)
-                // Pancasila Day
-                || (d == 1 && m == June)
                 // Ied ul-Fitr
                 || (d >= 11 && d <= 15 && m == June)
                 || ((d == 18 || d == 19) && m == June)
@@ -386,8 +378,6 @@ namespace QuantLib {
                 || (d == 3 && m == April)
                 // General elections
                 || (d == 17 && m == April)
-                // Labour Day
-                || (d == 1 && m == May)
                 // Ied ul-Fitr
                 || (d >= 3 && d <= 7 && m == June)
                 // National leave
@@ -401,15 +391,11 @@ namespace QuantLib {
         if (y == 2020) {
             if (// Saka New Year
                 (d == 25 && m == March)
-                // Labour Day
-                || (d == 1 && m == May)
                 // Birth of Buddha
                 || (d == 7 && m == May)
                 // Ied ul-Fitr
                 || (d == 22 && m == May)
                 || (d == 25 && m == May)
-                // Pancasila Day
-                || (d == 1 && m == June)
                 // Eid ul-Adha
                 || (d == 31 && m == July)
                 // Islamic New Year
@@ -441,8 +427,6 @@ namespace QuantLib {
                 || (d == 14 && m == May)
                 // Birth of Buddha
                 || (d == 26 && m == May)
-                // Pancasila Day
-                || (d == 1 && m == June)
                 // Eid ul-Adha
                 || (d == 20 && m == July)
                 // Islamic New Year
@@ -466,8 +450,6 @@ namespace QuantLib {
                 || ((d == 2 || d == 3) && m == May)
                 // Birth of Buddha
                 || (d == 16 && m == May)
-                // Pancasila Day
-                || (d == 1 && m == June)
                 )
                 return false;
         }
@@ -482,10 +464,6 @@ namespace QuantLib {
                 // Ied ul-Fitr
                 || (d >= 19 && d <= 21 && m == April)
                 || ((d == 24 || d == 25) && m == April)
-                // Labour Day
-                || (d == 1 && m == May)
-                // Pancasila Day
-                || (d == 1 && m == June)
                 // National leave
                 || (d == 2 && m == June)
                 || (d == 28 && m == June)
@@ -517,8 +495,6 @@ namespace QuantLib {
                 // Ied ul-Fitr
                 || (d >= 8 && d <= 12 && m == April)
                 || (d == 15 && m == April)
-                // Labour Day
-                || (d == 1 && m == May)
                 // National leave
                 || (d == 10 && m == May)
                 // Birth of Buddha
@@ -554,8 +530,6 @@ namespace QuantLib {
                 || (d == 31 && m == March)
                 || (d >= 1 && d <= 4 && m == April)
                 || (d == 7 && m == April)
-                // Labour Day
-                || (d == 1 && m == May)
                 // Birth of Buddha
                 || (d == 12 && m == May)
                 // National leave
@@ -591,16 +565,12 @@ namespace QuantLib {
                 // Ied ul-Fitr
                 || (d == 20 && m == March)
                 || ((d == 23 || d == 24) && m == March)
-                // Labour Day
-                || (d == 1 && m == May)
                 // National leave
                 || (d == 15 && m == May)
                 // Eid ul-Adha
                 || (d == 27 && m == May)
                 // National leave
                 || (d == 28 && m == May)
-                // Pancasila Day
-                || (d == 1 && m == June)
                 // Islamic New Year
                 || (d == 16 && m == June)
                 // Birthday of the prophet Muhammad SAW
