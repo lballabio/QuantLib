@@ -537,6 +537,9 @@
     <ClInclude Include="ql\cashflows\floatingratecoupon.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\cashflows\fxresetcashflows.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
     <ClInclude Include="ql\cashflows\iborcoupon.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
@@ -829,6 +832,12 @@
       <Filter>instruments</Filter>
     </ClInclude>
     <ClInclude Include="ql\instruments\constnotionalcrosscurrencybasisswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\crosscurrencyswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\mtmcrosscurrencybasisswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
     <ClInclude Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.hpp">
@@ -2769,6 +2778,9 @@
     <ClInclude Include="ql\pricingengines\swap\discountingconstnotionalcrosscurrencyswapengine.hpp">
       <Filter>pricingengines\swap</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\swap\discountingmtmcrosscurrencybasisswapengine.hpp">
+      <Filter>pricingengines\swap</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\swap\cvaswapengine.hpp">
       <Filter>pricingengines\swap</Filter>
     </ClInclude>
@@ -4658,6 +4670,9 @@
     <ClCompile Include="ql\cashflows\floatingratecoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
+    <ClCompile Include="ql\cashflows\fxresetcashflows.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
     <ClCompile Include="ql\cashflows\iborcoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
@@ -4838,10 +4853,13 @@
     <ClCompile Include="ql\instruments\constnotionalcrosscurrencybasisswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
-    <ClCompile Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.cpp">
+    <ClCompile Include="ql\instruments\crosscurrencyswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
-    <ClCompile Include="ql\instruments\constnotionalcrosscurrencyswap.cpp">
+    <ClCompile Include="ql\instruments\mtmcrosscurrencybasisswap.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\europeanoption.cpp">
@@ -6120,6 +6138,9 @@
       <Filter>pricingengines\bond</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\swap\discountingconstnotionalcrosscurrencyswapengine.cpp">
+      <Filter>pricingengines\swap</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\swap\discountingmtmcrosscurrencybasisswapengine.cpp">
       <Filter>pricingengines\swap</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\swap\cvaswapengine.cpp">

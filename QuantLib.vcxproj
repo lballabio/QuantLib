@@ -529,6 +529,7 @@
     <ClInclude Include="ql\cashflows\equitycashflow.hpp" />
     <ClInclude Include="ql\cashflows\fixedratecoupon.hpp" />
     <ClInclude Include="ql\cashflows\floatingratecoupon.hpp" />
+    <ClInclude Include="ql\cashflows\fxresetcashflows.hpp" />
     <ClInclude Include="ql\cashflows\iborcoupon.hpp" />
     <ClInclude Include="ql\cashflows\indexedcashflow.hpp" />
     <ClInclude Include="ql\cashflows\inflationcoupon.hpp" />
@@ -903,7 +904,9 @@
     <ClInclude Include="ql\instruments\cpicapfloor.hpp" />
     <ClInclude Include="ql\instruments\cpiswap.hpp" />
     <ClInclude Include="ql\instruments\creditdefaultswap.hpp" />
+    <ClInclude Include="ql\instruments\crosscurrencyswap.hpp" />
     <ClInclude Include="ql\instruments\constnotionalcrosscurrencybasisswap.hpp" />
+    <ClInclude Include="ql\instruments\mtmcrosscurrencybasisswap.hpp" />
     <ClInclude Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.hpp" />
     <ClInclude Include="ql\instruments\constnotionalcrosscurrencyswap.hpp" />
     <ClInclude Include="ql\instruments\dividendschedule.hpp" />
@@ -1585,6 +1588,7 @@
     <ClInclude Include="ql\pricingengines\quanto\quantoengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\all.hpp" />
     <ClInclude Include="ql\pricingengines\swap\discountingconstnotionalcrosscurrencyswapengine.hpp" />
+    <ClInclude Include="ql\pricingengines\swap\discountingmtmcrosscurrencybasisswapengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\cvaswapengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\discountingswapengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\discretizedswap.hpp" />
@@ -1970,6 +1974,7 @@
     <ClCompile Include="ql\cashflows\equitycashflow.cpp" />
     <ClCompile Include="ql\cashflows\fixedratecoupon.cpp" />
     <ClCompile Include="ql\cashflows\floatingratecoupon.cpp" />
+    <ClCompile Include="ql\cashflows\fxresetcashflows.cpp" />
     <ClCompile Include="ql\cashflows\iborcoupon.cpp" />
     <ClCompile Include="ql\cashflows\indexedcashflow.cpp" />
     <ClCompile Include="ql\cashflows\inflationcoupon.cpp" />
@@ -2208,9 +2213,10 @@
     <ClCompile Include="ql\instruments\cpicapfloor.cpp" />
     <ClCompile Include="ql\instruments\cpiswap.cpp" />
     <ClCompile Include="ql\instruments\creditdefaultswap.cpp" />
+    <ClCompile Include="ql\instruments\crosscurrencyswap.cpp" />
     <ClCompile Include="ql\instruments\constnotionalcrosscurrencybasisswap.cpp" />
+    <ClCompile Include="ql\instruments\mtmcrosscurrencybasisswap.cpp" />
     <ClCompile Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.cpp" />
-    <ClCompile Include="ql\instruments\constnotionalcrosscurrencyswap.cpp" />
     <ClCompile Include="ql\instruments\doublebarrieroption.cpp" />
     <ClCompile Include="ql\instruments\doublebarriertype.cpp" />
     <ClCompile Include="ql\instruments\equitytotalreturnswap.cpp" />
@@ -2673,6 +2679,7 @@
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp" />
     <ClCompile Include="ql\pricingengines\lookback\mclookbackengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discountingconstnotionalcrosscurrencyswapengine.cpp" />
+    <ClCompile Include="ql\pricingengines\swap\discountingmtmcrosscurrencybasisswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\cvaswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discountingswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discretizedswap.cpp" />

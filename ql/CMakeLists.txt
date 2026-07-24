@@ -20,6 +20,7 @@ set(QL_SOURCES
     cashflows/equitycashflow.cpp
     cashflows/fixedratecoupon.cpp
     cashflows/floatingratecoupon.cpp
+    cashflows/fxresetcashflows.cpp
     cashflows/iborcoupon.cpp
     cashflows/indexedcashflow.cpp
     cashflows/inflationcoupon.cpp
@@ -266,9 +267,10 @@ set(QL_SOURCES
     instruments/cpicapfloor.cpp
     instruments/cpiswap.cpp
     instruments/creditdefaultswap.cpp
+    instruments/crosscurrencyswap.cpp
     instruments/constnotionalcrosscurrencybasisswap.cpp
     instruments/constnotionalcrosscurrencyfixedvsfloatingswap.cpp
-    instruments/constnotionalcrosscurrencyswap.cpp
+    instruments/mtmcrosscurrencybasisswap.cpp
     instruments/doublebarrieroption.cpp
     instruments/doublebarriertype.cpp
     instruments/equitytotalreturnswap.cpp
@@ -735,6 +737,7 @@ set(QL_SOURCES
     pricingengines/lookback/analyticcontinuouspartialfloatinglookback.cpp
     pricingengines/lookback/mclookbackengine.cpp
     pricingengines/swap/discountingconstnotionalcrosscurrencyswapengine.cpp
+    pricingengines/swap/discountingmtmcrosscurrencybasisswapengine.cpp
     pricingengines/swap/cvaswapengine.cpp
     pricingengines/swap/discountingswapengine.cpp
     pricingengines/swap/discretizedswap.cpp
@@ -999,6 +1002,7 @@ set(QL_HEADERS
     cashflows/equitycashflow.hpp
     cashflows/fixedratecoupon.hpp
     cashflows/floatingratecoupon.hpp
+    cashflows/fxresetcashflows.hpp
     cashflows/iborcoupon.hpp
     cashflows/indexedcashflow.hpp
     cashflows/inflationcoupon.hpp
@@ -1356,8 +1360,10 @@ set(QL_HEADERS
     instruments/cpicapfloor.hpp
     instruments/cpiswap.hpp
     instruments/creditdefaultswap.hpp
+    instruments/crosscurrencyswap.hpp
     instruments/constnotionalcrosscurrencybasisswap.hpp
     instruments/constnotionalcrosscurrencyfixedvsfloatingswap.hpp
+    instruments/mtmcrosscurrencybasisswap.hpp
     instruments/constnotionalcrosscurrencyswap.hpp
     instruments/dividendschedule.hpp
     instruments/doublebarrieroption.hpp
@@ -1988,6 +1994,7 @@ set(QL_HEADERS
     pricingengines/mcsimulation.hpp
     pricingengines/quanto/quantoengine.hpp
     pricingengines/swap/discountingconstnotionalcrosscurrencyswapengine.hpp
+    pricingengines/swap/discountingmtmcrosscurrencybasisswapengine.hpp
     pricingengines/swap/cvaswapengine.hpp
     pricingengines/swap/discountingswapengine.hpp
     pricingengines/swap/discretizedswap.hpp

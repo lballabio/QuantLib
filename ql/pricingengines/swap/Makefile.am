@@ -6,6 +6,7 @@ this_include_HEADERS = \
     all.hpp \
     cvaswapengine.hpp \
     discountingconstnotionalcrosscurrencyswapengine.hpp \
+    discountingmtmcrosscurrencybasisswapengine.hpp \
     discountingswapengine.hpp \
     discretizedswap.hpp \
     treeswapengine.hpp
@@ -13,6 +14,7 @@ this_include_HEADERS = \
 cpp_files = \
     cvaswapengine.cpp \
     discountingconstnotionalcrosscurrencyswapengine.cpp \
+    discountingmtmcrosscurrencybasisswapengine.cpp \
     discountingswapengine.cpp \
     discretizedswap.cpp \
     treeswapengine.cpp
