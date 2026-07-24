@@ -42,48 +42,7 @@ class ConstNotionalCrossCurrencySwap : public CrossCurrencySwap {
     class arguments;
     class results;
     class engine;
-    //! \name Constructors
-    //@{
-    //! Constructs a cross-currency swap with two legs and their respective currencies
-    /*!
-        First leg is paid and the second is received.
-
-        \param firstLeg The sequence of cash flows for the first leg of the swap.
-        \param firstLegCcy The currency in which the first leg's cash flows are denominated.
-        \param secondLeg The sequence of cash flows for the second leg of the swap.
-        \param secondLegCcy The currency in which the second leg's cash flows are denominated.
-
-        \note The notional amounts, payment schedules, and other details of each leg must be
-            set up in the provided Leg objects before constructing the swap.
-    */
-    ConstNotionalCrossCurrencySwap(const Leg& firstLeg, const Currency& firstLegCcy, const Leg& secondLeg, const Currency& secondLegCcy);
-    //! Constructs a cross-currency swap with multiple legs and their respective currencies
-    /*!
-        Initializes a cross-currency swap with an arbitrary number of legs, each specified
-        by a sequence of cash flows (Leg) and associated with its own currency. The payer vector
-        determines the direction of each leg (payer or receiver).
-
-        \param legs A vector of cash flow sequences, one for each leg of the swap.
-        \param payer A vector of booleans indicating the direction of each leg:
-                    \c true for payer, \c false for receiver.
-        \param currencies A vector of currencies, one for each leg, specifying the currency
-                        in which the corresponding leg's cash flows are denominated.
-
-        \note The sizes of the \p legs, \p payer, and \p currencies vectors must all be equal.
-        \warning The notional amounts, payment schedules, and other details of each leg must be
-                set up in the provided Leg objects before constructing the swap.
-    */
-    ConstNotionalCrossCurrencySwap(const std::vector<Leg>& legs, const std::vector<bool>& payer, const std::vector<Currency>& currencies);
-    //@}
-protected:
-    //! \name Constructors
-    //@{
-    /*! This constructor can be used by derived classes that will
-        build their legs themselves.
-    */
-    explicit ConstNotionalCrossCurrencySwap(Size legs);
-    //@}
-    using CrossCurrencySwap::addNotionalExchangesToLeg;
+    using CrossCurrencySwap::CrossCurrencySwap;
 };
 
 

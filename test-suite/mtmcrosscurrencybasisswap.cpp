@@ -18,12 +18,15 @@
 #include "toplevelfixture.hpp"
 #include <ql/cashflows/coupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
+#include <ql/cashflows/fxresetcashflows.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/currencies/all.hpp>
 #include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
+#include <ql/indexes/ibor/estr.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/jpylibor.hpp>
+#include <ql/indexes/ibor/sofr.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/instruments/constnotionalcrosscurrencybasisswap.hpp>
 #include <ql/instruments/mtmcrosscurrencybasisswap.hpp>
@@ -221,6 +224,64 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
                             << "\n");
                 }
             }
+}
+
+BOOST_AUTO_TEST_CASE(testResettableLegCashFlowsMatchLegResults) {
+    BOOST_TEST_MESSAGE("Testing that enumerating the resettable leg's cash flows reproduces "
+                       "the leg NPV and the FX-reset notionals...");
+
+    SavedSettings backup;
+    Date today(11, Sep, 2018);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> usdCurve = flatCurve(today, 0.02);
+    Handle<YieldTermStructure> eurCurve = flatCurve(today, 0.01);
+    auto usdIndex = ext::make_shared<USDLibor>(3 * Months, usdCurve);
+    auto eurIndex = ext::make_shared<Euribor>(3 * Months, eurCurve);
+
+    TARGET cal;
+    Date start = cal.advance(today, 2 * Days);
+    Date end = start + 5 * Years;
+    Schedule sch(start, end, 3 * Months, cal, ModifiedFollowing, ModifiedFollowing,
+                 DateGeneration::Backward, false);
+
+    Real usdNominal = 10000000.0;
+    Rate spotFx = 1.10; // USD per EUR
+
+    // Base USD (constant notional), quote EUR (resettable leg).
+    auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
+        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
+        usdIndex, 0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, 10.0e-4, 1.0,
+        /*isFxBaseCurrencyLegResettable=*/false);
+    swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
+        USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(spotFx)));
+
+    Size resettingLegNo = swap->resettingLegIndex();
+    Real legNpv = swap->inCcyLegNPV(resettingLegNo); // triggers the calculation
+
+    // After pricing, the leg's cash flows are enumerable and self-describing:
+    // discounting them must reproduce the engine's in-currency leg NPV.
+    Real npv = 0.0;
+    Size couponCount = 0, exchangeCount = 0;
+    for (const auto& cf : swap->leg(resettingLegNo)) {
+        npv += cf->amount() * eurCurve->discount(cf->date());
+        if (auto coupon = ext::dynamic_pointer_cast<FxResetCoupon>(cf)) {
+            ++couponCount;
+            // The nominal is the constant-leg notional converted at the
+            // forward FX rate (EUR per USD) of the period's reset date.
+            Date reset = coupon->fxResetDate();
+            Real expected = usdNominal * (1.0 / spotFx) * usdCurve->discount(reset) /
+                            eurCurve->discount(reset);
+            BOOST_CHECK_CLOSE(coupon->nominal(), expected, 1.0e-8);
+        } else if (ext::dynamic_pointer_cast<FxResetNotionalExchange>(cf)) {
+            ++exchangeCount;
+        } else {
+            BOOST_ERROR("unexpected cash-flow type on the resettable leg");
+        }
+    }
+
+    BOOST_CHECK_EQUAL(exchangeCount, couponCount + 1);
+    BOOST_CHECK_SMALL(npv - legNpv, 1.0e-8 * usdNominal);
 }
 
 BOOST_AUTO_TEST_CASE(testSameDayResetUsesSpot) {
@@ -558,6 +619,125 @@ BOOST_AUTO_TEST_CASE(testSeasonedUsdJpyMarketExchangeRate) {
                     << std::setprecision(12) << "    MtM NPV: " << mtm->NPV() << "\n"
                     << "    ref NPV: " << ref->NPV() << "\n"
                     << "    diff:    " << diff << "\n");
+}
+
+BOOST_AUTO_TEST_CASE(testSeasonedOvernightLegsMatchConstantNotional) {
+    BOOST_TEST_MESSAGE("Testing that a seasoned MtM swap on overnight indices reprices to the "
+                       "equivalent constant-notional swap and accrues like its underlying "
+                       "overnight coupon...");
+
+    SavedSettings backup;
+    ExchangeRateManagerCleaner exchangeRateCleaner;
+    Date today(11, Sep, 2018);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> usdCurve = flatCurve(today, 0.02);
+    Handle<YieldTermStructure> eurCurve = flatCurve(today, 0.01);
+    auto usdIndex = ext::make_shared<Sofr>(usdCurve);
+    auto eurIndex = ext::make_shared<Estr>(eurCurve);
+
+    TARGET cal;
+    // a single in-progress 3M period (started a month ago)
+    Date start = cal.advance(today, -1 * Months);
+    Date end = start + 3 * Months;
+    Schedule sch(start, end, 3 * Months, cal, ModifiedFollowing, ModifiedFollowing,
+                 DateGeneration::Forward, false);
+
+    Real usdNominal = 10000000.0;
+    Rate spotFx = 1.10;            // USD per EUR
+    Spread eurBasis = 25 * 1.0e-4; // basis on the resettable EUR leg
+    Rate realisedFx = 0.92;        // realised EUR per USD at the past reset
+
+    // Seed the realised overnight fixings up to today.
+    for (const auto& index : {ext::shared_ptr<OvernightIndex>(usdIndex),
+                              ext::shared_ptr<OvernightIndex>(eurIndex)}) {
+        Rate fixing = index == usdIndex ? 0.021 : 0.012;
+        for (Date d = start; d < today; ++d)
+            if (index->fixingCalendar().isBusinessDay(d))
+                index->addFixing(d, fixing, true);
+    }
+    ExchangeRateManager::instance().add(ExchangeRate(USDCurrency(), EURCurrency(), realisedFx),
+                                        start, start);
+
+    auto spot = makeQuoteHandle(spotFx);
+    auto mtm = ext::make_shared<MtMCrossCurrencyBasisSwap>(
+        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
+        usdIndex, 0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, eurBasis, 1.0,
+        /*isFxBaseCurrencyLegResettable=*/false);
+    mtm->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
+        USDCurrency(), usdCurve, EURCurrency(), eurCurve, spot));
+
+    Real realisedEurNotional = usdNominal * realisedFx;
+    auto ref = ext::make_shared<ConstNotionalCrossCurrencyBasisSwap>(
+        usdNominal, USDCurrency(), sch, usdIndex, 0.0, 1.0, realisedEurNotional, EURCurrency(),
+        sch, eurIndex, eurBasis, 1.0);
+    ref->setPricingEngine(ext::make_shared<DiscountingConstNotionalCrossCurrencySwapEngine>(
+        USDCurrency(), usdCurve, EURCurrency(), eurCurve, spot));
+
+    Real tol = 1.0e-6 * usdNominal;
+    BOOST_CHECK_SMALL(mtm->NPV() - ref->NPV(), tol);
+
+    // The FX-resetting coupon must accrue like the reference constant-notional
+    // coupon built on the realised reset notional: only the overnight fixings
+    // realised so far compound into the accrued amount.
+    ext::shared_ptr<FxResetCoupon> mtmCoupon;
+    for (const auto& cf : mtm->leg(mtm->resettingLegIndex()))
+        if (auto c = ext::dynamic_pointer_cast<FxResetCoupon>(cf))
+            mtmCoupon = c;
+    ext::shared_ptr<Coupon> refCoupon;
+    for (const auto& cf : ref->leg(1))
+        if (auto c = ext::dynamic_pointer_cast<Coupon>(cf))
+            refCoupon = c;
+    BOOST_REQUIRE(mtmCoupon != nullptr && refCoupon != nullptr);
+    BOOST_CHECK_CLOSE(mtmCoupon->nominal(), refCoupon->nominal(), 1.0e-8);
+    BOOST_CHECK_CLOSE(mtmCoupon->accruedAmount(today), refCoupon->accruedAmount(today), 1.0e-8);
+    BOOST_CHECK_CLOSE(mtmCoupon->amount(), refCoupon->amount(), 1.0e-8);
+}
+
+BOOST_AUTO_TEST_CASE(testResetExchangesPayOnCouponPaymentDates) {
+    BOOST_TEST_MESSAGE("Testing that the reset exchanges of an unadjusted schedule settle on "
+                       "the coupon payment dates...");
+
+    SavedSettings backup;
+    Date today(11, Sep, 2018);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> usdCurve = flatCurve(today, 0.02);
+    Handle<YieldTermStructure> eurCurve = flatCurve(today, 0.01);
+    auto usdIndex = ext::make_shared<USDLibor>(3 * Months, usdCurve);
+    auto eurIndex = ext::make_shared<Euribor>(3 * Months, eurCurve);
+
+    TARGET cal;
+    // Unadjusted schedule with period-end dates falling on weekends: the
+    // coupons still pay on the following business day, and the exchanges
+    // must settle with them.
+    Date start(15, Sep, 2018); // a Saturday
+    Schedule sch(start, start + 1 * Years, 3 * Months, cal, Unadjusted, Unadjusted,
+                 DateGeneration::Forward, false);
+
+    Real usdNominal = 10000000.0;
+    Rate spotFx = 1.10;
+    auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
+        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
+        usdIndex, 0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, 0.0, 1.0,
+        /*isFxBaseCurrencyLegResettable=*/false);
+    swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
+        USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(spotFx)));
+    BOOST_CHECK_NO_THROW(swap->NPV());
+
+    ext::shared_ptr<Coupon> lastCoupon;
+    for (const auto& cf : swap->leg(swap->resettingLegIndex())) {
+        if (auto exchange = ext::dynamic_pointer_cast<FxResetNotionalExchange>(cf)) {
+            BOOST_CHECK_MESSAGE(cal.isBusinessDay(exchange->date()),
+                                "reset exchange payment date " << exchange->date()
+                                                               << " is not a business day");
+            if (lastCoupon != nullptr) // boundary and final exchanges
+                BOOST_CHECK_EQUAL(exchange->date(), lastCoupon->date());
+        } else if (auto coupon = ext::dynamic_pointer_cast<Coupon>(cf)) {
+            lastCoupon = coupon;
+        }
+    }
+    BOOST_REQUIRE(lastCoupon != nullptr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

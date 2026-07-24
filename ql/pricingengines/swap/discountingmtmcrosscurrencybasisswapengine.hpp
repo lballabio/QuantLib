@@ -33,13 +33,13 @@ namespace QuantLib {
 /*! Prices a MtMCrossCurrencyBasisSwap by discounting each leg on its own
     currency curve and converting to \p domesticCcy through the FX spot.
 
-    The constant-notional leg is discounted as usual (its notional-exchange
-    cash flows are already part of the leg).  The resettable leg is valued
-    analytically: each period's notional is the constant-leg notional times the
-    FX rate observed at the period's reset.  A future reset is projected as a
-    forward FX from the two discount curves, so no explicit FX-reset cash flows
-    are needed; an already-fixed reset (the in-progress period of a seasoned
-    swap) is read from \c ExchangeRateManager.
+    Both legs are discounted as usual; the only special treatment of the
+    resettable leg is that, before discounting, its FX-linked cash flows are
+    given a FxResetSource built from this engine's market data, from which
+    they obtain the FX rate of each reset.  A future reset is projected as a
+    forward FX from the spot quote and the two discount curves; an
+    already-fixed reset (the in-progress period of a seasoned swap) is read
+    from \c ExchangeRateManager.
 
     \ingroup engines
 */

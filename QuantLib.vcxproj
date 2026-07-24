@@ -529,6 +529,7 @@
     <ClInclude Include="ql\cashflows\equitycashflow.hpp" />
     <ClInclude Include="ql\cashflows\fixedratecoupon.hpp" />
     <ClInclude Include="ql\cashflows\floatingratecoupon.hpp" />
+    <ClInclude Include="ql\cashflows\fxresetcashflows.hpp" />
     <ClInclude Include="ql\cashflows\iborcoupon.hpp" />
     <ClInclude Include="ql\cashflows\indexedcashflow.hpp" />
     <ClInclude Include="ql\cashflows\inflationcoupon.hpp" />
@@ -1973,6 +1974,7 @@
     <ClCompile Include="ql\cashflows\equitycashflow.cpp" />
     <ClCompile Include="ql\cashflows\fixedratecoupon.cpp" />
     <ClCompile Include="ql\cashflows\floatingratecoupon.cpp" />
+    <ClCompile Include="ql\cashflows\fxresetcashflows.cpp" />
     <ClCompile Include="ql\cashflows\iborcoupon.cpp" />
     <ClCompile Include="ql\cashflows\indexedcashflow.cpp" />
     <ClCompile Include="ql\cashflows\inflationcoupon.cpp" />
@@ -2215,7 +2217,6 @@
     <ClCompile Include="ql\instruments\constnotionalcrosscurrencybasisswap.cpp" />
     <ClCompile Include="ql\instruments\mtmcrosscurrencybasisswap.cpp" />
     <ClCompile Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.cpp" />
-    <ClCompile Include="ql\instruments\constnotionalcrosscurrencyswap.cpp" />
     <ClCompile Include="ql\instruments\doublebarrieroption.cpp" />
     <ClCompile Include="ql\instruments\doublebarriertype.cpp" />
     <ClCompile Include="ql\instruments\equitytotalreturnswap.cpp" />

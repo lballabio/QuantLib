@@ -44,14 +44,18 @@ namespace QuantLib {
 
     Resetting the notional removes most of the FX exposure of the principal and
     is the market-standard convention for many currency pairs.  The resettable
-    leg therefore carries no explicit initial/final notional-exchange cash flows:
-    the per-period re-exchanges that replace them are accounted for analytically
-    by the pricing engine.  This instrument must be priced with an engine that
-    understands the resettable leg (see DiscountingMtMCrossCurrencyBasisSwapEngine);
-    pricing it with a plain constant-notional engine would ignore the resets.
+    leg is built from FX-linked cash flows: FxResetCoupon instances, whose
+    notional is the constant-leg notional converted at the FX rate observed at
+    each period start, and FxResetNotionalExchange instances paying the netted
+    notional differences (the first notional at inception, the reset difference
+    at each period boundary, and the last notional at maturity).
 
-    For a seasoned swap whose current reset period has already started, the
-    realized exchange rate on the period start date must be available from
+    The FX rates the cash flows convert at are supplied by the pricing engine,
+    which must therefore understand FX-resetting legs (see
+    DiscountingMtMCrossCurrencyBasisSwapEngine); a future reset is projected as
+    the forward FX implied by the engine's discount curves.  For a seasoned
+    swap whose current reset period has already started, the realized exchange
+    rate on the period start date must be available from
     \c ExchangeRateManager.  Direct, inverse, and derived exchange rates are
     supported.
 
@@ -59,27 +63,6 @@ namespace QuantLib {
 */
 class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
   public:
-    struct ResettingLegData {
-        ResettingLegData() = default;
-        ResettingLegData(Size resettingLegIndex,
-                         Size constantLegIndex,
-                         Real constantLegNotional,
-                         Integer paymentLag,
-                         Calendar paymentCalendar,
-                         BusinessDayConvention paymentConvention);
-
-        //! index of the resettable leg
-        Size resettingLegIndex = 0;
-        //! index of the constant-notional leg whose notional is converted at reset
-        Size constantLegIndex = 1;
-        //! notional of the constant leg, in its own currency
-        Real constantLegNotional = Null<Real>();
-        //! payment convention for the implicit reset exchanges
-        Integer paymentLag = 0;
-        Calendar paymentCalendar;
-        BusinessDayConvention paymentConvention = Following;
-    };
-
     class arguments;
     class results;
     class engine;
@@ -174,10 +157,12 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
 
     //! true if the base-currency (first) leg is the resettable leg
     bool isFxBaseCurrencyLegResettable() const { return isFxBaseCurrencyLegResettable_; }
-    const ResettingLegData& resettingLegData() const { return resettingLegData_; }
-    Size resettingLegIndex() const { return resettingLegData_.resettingLegIndex; }
-    Size constantLegIndex() const { return resettingLegData_.constantLegIndex; }
-    Real constantLegNotional() const { return resettingLegData_.constantLegNotional; }
+    Size resettingLegIndex() const { return isFxBaseCurrencyLegResettable_ ? 0 : 1; }
+    Size constantLegIndex() const { return isFxBaseCurrencyLegResettable_ ? 1 : 0; }
+    //! notional of the constant leg, in its own currency
+    Real constantLegNotional() const {
+        return isFxBaseCurrencyLegResettable_ ? fxQuoteNominal_ : fxBaseNominal_;
+    }
     //@}
 
     //! \name Additional interface
@@ -208,10 +193,8 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
 
   private:
     void initialize();
-    void validateResettingLegData() const;
 
     Type type_;
-    ResettingLegData resettingLegData_;
     Real fxBaseNominal_;
     Currency fxBaseCurrency_;
     Schedule fxBaseSchedule_;
@@ -251,7 +234,10 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
 
 class MtMCrossCurrencyBasisSwap::arguments : public CrossCurrencySwap::arguments {
   public:
-    ResettingLegData resettingLegData;
+    //! index of the resettable leg
+    Size resettingLegIndex = Null<Size>();
+    //! index of the constant-notional leg whose notional is converted at reset
+    Size constantLegIndex = Null<Size>();
     Spread fxBaseSpread = Null<Spread>();
     Spread fxQuoteSpread = Null<Spread>();
     void validate() const override;

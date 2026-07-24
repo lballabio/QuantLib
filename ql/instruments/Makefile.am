@@ -111,7 +111,6 @@ cpp_files = \
     constnotionalcrosscurrencybasisswap.cpp \
     constnotionalcrosscurrencyfixedvsfloatingswap.cpp \
     mtmcrosscurrencybasisswap.cpp \
-    constnotionalcrosscurrencyswap.cpp \
     doublebarrieroption.cpp \
     doublebarriertype.cpp \
     equitytotalreturnswap.cpp \

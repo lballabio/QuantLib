@@ -16,45 +16,13 @@
 */
 
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/fxresetcashflows.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
-#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/instruments/mtmcrosscurrencybasisswap.hpp>
 #include <utility>
 
 namespace QuantLib {
-
-namespace {
-
-void checkResettingLegData(
-    const MtMCrossCurrencyBasisSwap::ResettingLegData& resettingLegData,
-    Size numberOfLegs) {
-
-    QL_REQUIRE(resettingLegData.resettingLegIndex < numberOfLegs,
-               "Resetting leg index (" << resettingLegData.resettingLegIndex << ") out of range");
-    QL_REQUIRE(resettingLegData.constantLegIndex < numberOfLegs,
-               "Constant leg index (" << resettingLegData.constantLegIndex << ") out of range");
-    QL_REQUIRE(resettingLegData.resettingLegIndex != resettingLegData.constantLegIndex,
-               "Resetting leg and constant leg must be different");
-    QL_REQUIRE(resettingLegData.constantLegNotional != Null<Real>(),
-               "Constant leg notional cannot be null");
-    QL_REQUIRE(resettingLegData.constantLegNotional != 0.0,
-               "Constant leg notional cannot be zero");
-
-}
-
-}
-
-MtMCrossCurrencyBasisSwap::ResettingLegData::ResettingLegData(
-    Size resettingLegIndex,
-    Size constantLegIndex,
-    Real constantLegNotional,
-    Integer paymentLag,
-    Calendar paymentCalendar,
-    BusinessDayConvention paymentConvention)
-: resettingLegIndex(resettingLegIndex), constantLegIndex(constantLegIndex),
-  constantLegNotional(constantLegNotional), paymentLag(paymentLag),
-  paymentCalendar(std::move(paymentCalendar)), paymentConvention(paymentConvention) {}
 
 MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
     Type type,
@@ -71,14 +39,6 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
     const bool telescopicValueDates)
 : CrossCurrencySwap(2),
   type_(type),
-  resettingLegData_(isFxBaseCurrencyLegResettable ? 0 : 1,
-                    isFxBaseCurrencyLegResettable ? 1 : 0,
-                    isFxBaseCurrencyLegResettable ? fxQuoteNominal : fxBaseNominal,
-                    isFxBaseCurrencyLegResettable ? fxBasePaymentLag : fxQuotePaymentLag,
-                    isFxBaseCurrencyLegResettable ? fxBaseSchedule.calendar()
-                                                  : fxQuoteSchedule.calendar(),
-                    isFxBaseCurrencyLegResettable ? fxBaseSchedule.businessDayConvention()
-                                                  : fxQuoteSchedule.businessDayConvention()),
   fxBaseNominal_(fxBaseNominal),
   fxBaseCurrency_(std::move(fxBaseCurrency)), fxBaseSchedule_(std::move(fxBaseSchedule)),
   fxBaseIndex_(fxBaseIndex), fxBaseSpread_(fxBaseSpread), fxBaseGearing_(fxBaseGearing),
@@ -150,15 +110,53 @@ void MtMCrossCurrencyBasisSwap::initialize() {
     auto maturityDate =
         std::max(CashFlows::maturityDate(legs_[0]), CashFlows::maturityDate(legs_[1]));
 
-    // The resettable leg carries no explicit notional exchanges: the per-period
-    // FX re-exchanges that replace them are handled analytically by the engine.
+    // The resettable leg's coupons are replaced by FX-resetting equivalents,
+    // whose notional is the constant-leg notional converted at each period's
+    // reset, and the netted notional exchanges of a mark-to-market leg are
+    // added: the first notional at inception, the reset difference at each
+    // period boundary, and the last notional at maturity.  The FX rates the
+    // flows convert at are attached later by the pricing engine.
+    QL_REQUIRE(constantLegNotional() != Null<Real>(), "Constant leg notional cannot be null");
+    QL_REQUIRE(constantLegNotional() != 0.0, "Constant leg notional cannot be zero");
+
+    Size resettingLegNo = resettingLegIndex();
+    const Schedule& resettingSchedule = resettingLegNo == 0 ? fxBaseSchedule_ : fxQuoteSchedule_;
+    Integer paymentLag = resettingLegNo == 0 ? fxBasePaymentLag_ : fxQuotePaymentLag_;
+    Calendar paymentCalendar = resettingSchedule.calendar();
+
+    Leg resettingLeg;
+    resettingLeg.reserve(2 * legs_[resettingLegNo].size() + 1);
+    Date previousResetDate;    // null: the first exchange has no maturing period
+    Date previousPaymentDate;  // null: ditto
+    for (const auto& cf : legs_[resettingLegNo]) {
+        auto coupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(cf);
+        QL_REQUIRE(coupon, "unexpected non-coupon cash flow on the resettable leg");
+        Date resetDate = coupon->accrualStartDate();
+        // The exchanges settle with the coupons: each period-boundary exchange
+        // pays on the maturing coupon's payment date, and the initial exchange
+        // follows the leg's own payment calendar, lag and convention (IborLeg
+        // and OvernightLeg adjust payment dates with Following by default).
+        Date exchangeDate =
+            previousPaymentDate != Date() ?
+                previousPaymentDate :
+                paymentCalendar.advance(resetDate, paymentLag, Days, Following);
+        resettingLeg.push_back(ext::make_shared<FxResetNotionalExchange>(
+            exchangeDate, constantLegNotional(), previousResetDate, resetDate));
+        resettingLeg.push_back(ext::make_shared<FxResetCoupon>(coupon, constantLegNotional()));
+        previousResetDate = resetDate;
+        previousPaymentDate = coupon->date();
+    }
+    resettingLeg.push_back(ext::make_shared<FxResetNotionalExchange>(
+        previousPaymentDate, constantLegNotional(), previousResetDate, Date()));
+    legs_[resettingLegNo] = resettingLeg;
+
     // Only the constant-notional leg gets the inception/maturity exchange flows.
-    if (resettingLegIndex() != 0)
+    if (resettingLegNo != 0)
         CrossCurrencySwap::addNotionalExchangesToLeg(
             legs_[0], fxBaseSchedule_.calendar(), earliestDate, maturityDate, fxBasePaymentLag_,
             fxBaseSchedule_.businessDayConvention(), fxBaseNominal_);
 
-    if (resettingLegIndex() != 1)
+    if (resettingLegNo != 1)
         CrossCurrencySwap::addNotionalExchangesToLeg(
             legs_[1], fxQuoteSchedule_.calendar(), earliestDate, maturityDate, fxQuotePaymentLag_,
             fxQuoteSchedule_.businessDayConvention(), fxQuoteNominal_);
@@ -167,12 +165,6 @@ void MtMCrossCurrencyBasisSwap::initialize() {
         for (auto& cf : legs_[legNo])
             registerWith(cf);
     }
-
-    validateResettingLegData();
-}
-
-void MtMCrossCurrencyBasisSwap::validateResettingLegData() const {
-    checkResettingLegData(resettingLegData_, legs_.size());
 }
 
 void MtMCrossCurrencyBasisSwap::setupArguments(PricingEngine::arguments* args) const {
@@ -183,7 +175,8 @@ void MtMCrossCurrencyBasisSwap::setupArguments(PricingEngine::arguments* args) c
 
     QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
-    arguments->resettingLegData = resettingLegData_;
+    arguments->resettingLegIndex = resettingLegIndex();
+    arguments->constantLegIndex = constantLegIndex();
     arguments->fxBaseSpread = fxBaseSpread_;
     arguments->fxQuoteSpread = fxQuoteSpread_;
 }
@@ -220,7 +213,14 @@ void MtMCrossCurrencyBasisSwap::setupExpired() const {
 
 void MtMCrossCurrencyBasisSwap::arguments::validate() const {
     CrossCurrencySwap::arguments::validate();
-    checkResettingLegData(resettingLegData, legs.size());
+    QL_REQUIRE(resettingLegIndex != Null<Size>(), "Resetting leg index cannot be null");
+    QL_REQUIRE(constantLegIndex != Null<Size>(), "Constant leg index cannot be null");
+    QL_REQUIRE(resettingLegIndex < legs.size(),
+               "Resetting leg index (" << resettingLegIndex << ") out of range");
+    QL_REQUIRE(constantLegIndex < legs.size(),
+               "Constant leg index (" << constantLegIndex << ") out of range");
+    QL_REQUIRE(resettingLegIndex != constantLegIndex,
+               "Resetting leg and constant leg must be different");
     QL_REQUIRE(fxBaseSpread != Null<Spread>(), "FX-base spread cannot be null");
     QL_REQUIRE(fxQuoteSpread != Null<Spread>(), "FX-quote spread cannot be null");
 }

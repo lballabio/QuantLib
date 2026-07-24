@@ -20,6 +20,7 @@ set(QL_SOURCES
     cashflows/equitycashflow.cpp
     cashflows/fixedratecoupon.cpp
     cashflows/floatingratecoupon.cpp
+    cashflows/fxresetcashflows.cpp
     cashflows/iborcoupon.cpp
     cashflows/indexedcashflow.cpp
     cashflows/inflationcoupon.cpp
@@ -270,7 +271,6 @@ set(QL_SOURCES
     instruments/constnotionalcrosscurrencybasisswap.cpp
     instruments/constnotionalcrosscurrencyfixedvsfloatingswap.cpp
     instruments/mtmcrosscurrencybasisswap.cpp
-    instruments/constnotionalcrosscurrencyswap.cpp
     instruments/doublebarrieroption.cpp
     instruments/doublebarriertype.cpp
     instruments/equitytotalreturnswap.cpp
@@ -1002,6 +1002,7 @@ set(QL_HEADERS
     cashflows/equitycashflow.hpp
     cashflows/fixedratecoupon.hpp
     cashflows/floatingratecoupon.hpp
+    cashflows/fxresetcashflows.hpp
     cashflows/iborcoupon.hpp
     cashflows/indexedcashflow.hpp
     cashflows/inflationcoupon.hpp

@@ -537,6 +537,9 @@
     <ClInclude Include="ql\cashflows\floatingratecoupon.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\cashflows\fxresetcashflows.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
     <ClInclude Include="ql\cashflows\iborcoupon.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
@@ -4667,6 +4670,9 @@
     <ClCompile Include="ql\cashflows\floatingratecoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
+    <ClCompile Include="ql\cashflows\fxresetcashflows.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
     <ClCompile Include="ql\cashflows\iborcoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
@@ -4854,9 +4860,6 @@
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.cpp">
-      <Filter>instruments</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\instruments\constnotionalcrosscurrencyswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\europeanoption.cpp">
