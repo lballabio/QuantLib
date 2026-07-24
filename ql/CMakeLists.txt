@@ -394,6 +394,7 @@ set(QL_SOURCES
     math/modifiedbessel.cpp
     math/optimization/armijo.cpp
     math/optimization/bfgs.cpp
+    math/optimization/cmaes.cpp
     math/optimization/conjugategradient.cpp
     math/optimization/constraint.cpp
     math/optimization/differentialevolution.cpp
@@ -1530,6 +1531,7 @@ set(QL_HEADERS
     math/ode/adaptiverungekutta.hpp
     math/optimization/armijo.hpp
     math/optimization/bfgs.hpp
+    math/optimization/cmaes.hpp
     math/optimization/conjugategradient.hpp
     math/optimization/constraint.hpp
     math/optimization/costfunction.hpp
