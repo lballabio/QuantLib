@@ -42,6 +42,8 @@ class ConstNotionalCrossCurrencySwap : public CrossCurrencySwap {
     class arguments;
     class results;
     class engine;
+    //! inherited constructors
+    /*! @see CrossCurrencySwap::CrossCurrencySwap */
     using CrossCurrencySwap::CrossCurrencySwap;
 };
 
