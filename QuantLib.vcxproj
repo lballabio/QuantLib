@@ -1026,6 +1026,7 @@
     <ClInclude Include="ql\math\integrals\exponentialintegrals.hpp" />
     <ClInclude Include="ql\math\integrals\expsinhintegral.hpp" />
     <ClInclude Include="ql\math\integrals\filonintegral.hpp" />
+    <ClInclude Include="ql\math\integrals\fourierintegration.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianorthogonalpolynomial.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianquadratures.hpp" />
     <ClInclude Include="ql\math\integrals\gausslaguerrecosinepolynomial.hpp" />
@@ -1085,10 +1086,12 @@
     <ClInclude Include="ql\math\matrixutilities\tqreigendecomposition.hpp" />
     <ClInclude Include="ql\math\modifiedbessel.hpp" />
     <ClInclude Include="ql\math\ode\adaptiverungekutta.hpp" />
+    <ClInclude Include="ql\math\ode\fractionaladams.hpp" />
     <ClInclude Include="ql\math\ode\all.hpp" />
     <ClInclude Include="ql\math\optimization\all.hpp" />
     <ClInclude Include="ql\math\optimization\armijo.hpp" />
     <ClInclude Include="ql\math\optimization\bfgs.hpp" />
+    <ClInclude Include="ql\math\optimization\cmaes.hpp" />
     <ClInclude Include="ql\math\optimization\conjugategradient.hpp" />
     <ClInclude Include="ql\math\optimization\constraint.hpp" />
     <ClInclude Include="ql\math\optimization\costfunction.hpp" />
@@ -1320,6 +1323,7 @@
     <ClInclude Include="ql\models\equity\hestonslvfdmmodel.hpp" />
     <ClInclude Include="ql\models\equity\hestonslvmcmodel.hpp" />
     <ClInclude Include="ql\models\equity\piecewisetimedependenthestonmodel.hpp" />
+    <ClInclude Include="ql\models\equity\roughhestonmodel.hpp" />
     <ClInclude Include="ql\models\marketmodels\accountingengine.hpp" />
     <ClInclude Include="ql\models\marketmodels\all.hpp" />
     <ClInclude Include="ql\models\marketmodels\browniangenerator.hpp" />
@@ -1619,6 +1623,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\analytichestonhullwhiteengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analyticpdfhestonengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analyticptdhestonengine.hpp" />
+    <ClInclude Include="ql\pricingengines\vanilla\analyticroughhestonengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\baroneadesiwhaleyengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\batesengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\binomialengine.hpp" />
@@ -2315,6 +2320,7 @@
     <ClCompile Include="ql\math\integrals\discreteintegrals.cpp" />
     <ClCompile Include="ql\math\integrals\exponentialintegrals.cpp" />
     <ClCompile Include="ql\math\integrals\filonintegral.cpp" />
+    <ClCompile Include="ql\math\integrals\fourierintegration.cpp" />
     <ClCompile Include="ql\math\integrals\gaussianorthogonalpolynomial.cpp" />
     <ClCompile Include="ql\math\integrals\gaussianquadratures.cpp" />
     <ClCompile Include="ql\math\integrals\gausslobattointegral.cpp" />
@@ -2341,6 +2347,7 @@
     <ClCompile Include="ql\math\modifiedbessel.cpp" />
     <ClCompile Include="ql\math\optimization\armijo.cpp" />
     <ClCompile Include="ql\math\optimization\bfgs.cpp" />
+    <ClCompile Include="ql\math\optimization\cmaes.cpp" />
     <ClCompile Include="ql\math\optimization\conjugategradient.cpp" />
     <ClCompile Include="ql\math\optimization\constraint.cpp" />
     <ClCompile Include="ql\math\optimization\differentialevolution.cpp" />
@@ -2480,6 +2487,7 @@
     <ClCompile Include="ql\models\equity\hestonslvfdmmodel.cpp" />
     <ClCompile Include="ql\models\equity\hestonslvmcmodel.cpp" />
     <ClCompile Include="ql\models\equity\piecewisetimedependenthestonmodel.cpp" />
+    <ClCompile Include="ql\models\equity\roughhestonmodel.cpp" />
     <ClCompile Include="ql\models\marketmodels\accountingengine.cpp" />
     <ClCompile Include="ql\models\marketmodels\browniangenerators\mtbrowniangenerator.cpp" />
     <ClCompile Include="ql\models\marketmodels\browniangenerators\sobolbrowniangenerator.cpp" />
@@ -2707,6 +2715,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\analytichestonhullwhiteengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticpdfhestonengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticptdhestonengine.cpp" />
+    <ClCompile Include="ql\pricingengines\vanilla\analyticroughhestonengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\baroneadesiwhaleyengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\batesengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\bjerksundstenslandengine.cpp" />

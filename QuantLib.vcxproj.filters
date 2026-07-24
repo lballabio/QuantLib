@@ -1224,6 +1224,9 @@
     <ClInclude Include="ql\math\integrals\filonintegral.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\integrals\fourierintegration.hpp">
+      <Filter>math\integrals</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\integrals\gaussianorthogonalpolynomial.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
@@ -1390,6 +1393,9 @@
       <Filter>math\optimization</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\optimization\bfgs.hpp">
+      <Filter>math\optimization</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\optimization\cmaes.hpp">
       <Filter>math\optimization</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\optimization\conjugategradient.hpp">
@@ -1969,6 +1975,9 @@
       <Filter>models\equity</Filter>
     </ClInclude>
     <ClInclude Include="ql\models\equity\piecewisetimedependenthestonmodel.hpp">
+      <Filter>models\equity</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\models\equity\roughhestonmodel.hpp">
       <Filter>models\equity</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\all.hpp">
@@ -2635,6 +2644,9 @@
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\analyticptdhestonengine.hpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\vanilla\analyticroughhestonengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\baroneadesiwhaleyengine.hpp">
@@ -3757,6 +3769,9 @@
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\ode\adaptiverungekutta.hpp">
+      <Filter>math\ode</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\ode\fractionaladams.hpp">
       <Filter>math\ode</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp">
@@ -5096,6 +5111,9 @@
     <ClCompile Include="ql\math\integrals\filonintegral.cpp">
       <Filter>math\integrals</Filter>
     </ClCompile>
+    <ClCompile Include="ql\math\integrals\fourierintegration.cpp">
+      <Filter>math\integrals</Filter>
+    </ClCompile>
     <ClCompile Include="ql\math\integrals\gaussianorthogonalpolynomial.cpp">
       <Filter>math\integrals</Filter>
     </ClCompile>
@@ -5190,6 +5208,9 @@
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\bfgs.cpp">
+      <Filter>math\optimization</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\optimization\cmaes.cpp">
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\conjugategradient.cpp">
@@ -5624,6 +5645,9 @@
     <ClCompile Include="ql\models\equity\piecewisetimedependenthestonmodel.cpp">
       <Filter>models\equity</Filter>
     </ClCompile>
+    <ClCompile Include="ql\models\equity\roughhestonmodel.cpp">
+      <Filter>models\equity</Filter>
+    </ClCompile>
     <ClCompile Include="ql\termstructures\defaulttermstructure.cpp">
       <Filter>termstructures</Filter>
     </ClCompile>
@@ -6012,6 +6036,9 @@
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\analyticptdhestonengine.cpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\vanilla\analyticroughhestonengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\baroneadesiwhaleyengine.cpp">
