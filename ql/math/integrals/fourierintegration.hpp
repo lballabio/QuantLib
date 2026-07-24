@@ -40,21 +40,33 @@ namespace QuantLib {
     */
     class FourierIntegration {
       public:
-        // non adaptive integration algorithms based on Gaussian quadrature
+        /*! \name non-adaptive routines
+            non adaptive integration algorithms based on Gaussian quadrature
+        */
+        //@{
         static FourierIntegration gaussLaguerre    (Size integrationOrder = 128);
         static FourierIntegration gaussLegendre    (Size integrationOrder = 128);
         static FourierIntegration gaussChebyshev   (Size integrationOrder = 128);
         static FourierIntegration gaussChebyshev2nd(Size integrationOrder = 128);
+        //@}
 
-        // Gatheral's version has to be used for an adaptive integration
-        // algorithm .Be aware: using a too large number for maxEvaluations might
-        // result in a stack overflow as the these integrations are based on
-        // recursive algorithms.
+        /*! \name adaptive routines
+            Gatheral's version has to be used for an adaptive integration algorithm.
+        */
+        //@{
+        /*! \warning using a too large number for maxEvaluations might
+                     result in a stack overflow, as these integrations
+                     are based on recursive algorithms.
+        */
         static FourierIntegration gaussLobatto(Real relTolerance, Real absTolerance,
                                                Size maxEvaluations = 1000,
                                                bool useConvergenceEstimate = false);
+        //@}
 
-        // usually these routines have a poor convergence behavior.
+        /*! \name other routines
+            Usually these routines have a poor convergence behavior.
+        */
+        //@{
         static FourierIntegration gaussKronrod(Real absTolerance,
                                                Size maxEvaluations = 1000);
         static FourierIntegration simpson(Real absTolerance,
@@ -64,6 +76,7 @@ namespace QuantLib {
         static FourierIntegration discreteSimpson(Size evaluation = 1000);
         static FourierIntegration discreteTrapezoid(Size evaluation = 1000);
         static FourierIntegration expSinh(Real relTolerance = 1e-8);
+        //@}
 
         static Real andersenPiterbargIntegrationLimit(
             Real c_inf, Real epsilon, Real v0, Real t);

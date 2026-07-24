@@ -72,15 +72,16 @@ namespace QuantLib {
       public:
         typedef FourierIntegration Integration;
 
-        // Constructor using Gauss-Laguerre integration
+        //! Constructor using Gauss-Laguerre integration
         explicit AnalyticRoughHestonEngine(
             const ext::shared_ptr<RoughHestonModel>& model,
             Size integrationOrder = 128,
             Size timeSteps = 256);
 
-        // Constructor gives full control over the Fourier integration
-        // algorithm. \alpha is the payoff dampening exponent, which must
-        // lie in (-1, 0) to keep the required moments finite.
+        /*! Constructor giving full control over the Fourier integration
+            algorithm. alpha is the payoff dampening exponent, which must
+            lie in (-1, 0) to keep the required moments finite.
+        */
         AnalyticRoughHestonEngine(
             const ext::shared_ptr<RoughHestonModel>& model,
             const Integration& integration,
@@ -98,8 +99,9 @@ namespace QuantLib {
             const ext::shared_ptr<PlainVanillaPayoff>& payoff,
             Time maturity) const;
 
-        // normalized characteristic function of the log forward moneyness
-        // E[exp(i z ln(S_t/F_t))]
+        /*! normalized characteristic function of the log forward moneyness,
+            \f$ E\left[\exp(i z \ln(S_t/F_t))\right] \f$
+        */
         std::complex<Real> chF(const std::complex<Real>& z, Time t) const;
         std::complex<Real> lnChF(const std::complex<Real>& z, Time t) const;
 

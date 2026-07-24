@@ -54,17 +54,17 @@ namespace QuantLib {
                          Real rho,
                          Real hurst);
 
-        // variance mean reversion level
+        //! variance mean-reversion level
         Real theta() const { return arguments_[0](0.0); }
-        // variance mean reversion speed
+        //! variance mean-reversion speed
         Real kappa() const { return arguments_[1](0.0); }
-        // volatility of the volatility
+        //! volatility of the volatility
         Real sigma() const { return arguments_[2](0.0); }
-        // correlation
+        //! correlation
         Real rho()   const { return arguments_[3](0.0); }
-        // spot variance
+        //! spot variance
         Real v0()    const { return arguments_[4](0.0); }
-        // Hurst exponent of the variance process
+        //! Hurst exponent of the variance process
         Real hurst() const { return arguments_[5](0.0); }
 
         const Handle<YieldTermStructure>& riskFreeRate() const {
