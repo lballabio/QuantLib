@@ -26,7 +26,9 @@
 #define quantlib_crosscurrencyratehelpers_hpp
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
+#include <ql/instruments/constnotionalcrosscurrencybasisswap.hpp>
 #include <ql/instruments/constnotionalcrosscurrencyfixedvsfloatingswap.hpp>
+#include <ql/instruments/mtmcrosscurrencybasisswap.hpp>
 #include <ql/optional.hpp>
 
 namespace QuantLib {
@@ -92,6 +94,8 @@ namespace QuantLib {
         ext::optional<Frequency> paymentFrequency_;
         ext::optional<Frequency> quoteCcyPaymentFrequency_;
 
+        Schedule baseCcySchedule_;
+        Schedule quoteCcySchedule_;
         Leg baseCcyIborLeg_;
         Leg quoteCcyIborLeg_;
     };
@@ -153,11 +157,20 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+
+        const ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap>& swap() const { return swap_; }
         //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
+      protected:
+        void initializeDates() override;
+
+      private:
+        void buildSwap();
+
+        ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> swap_;
     };
 
 
@@ -207,12 +220,23 @@ namespace QuantLib {
         //@{
         Real impliedQuote() const override;
         //@}
+        //! \name Inspectors
+        //@{
+        //! the underlying par swap: unit notionals, zero spreads, spot FX = 1
+        const ext::shared_ptr<MtMCrossCurrencyBasisSwap>& swap() const { return swap_; }
+        //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
+      protected:
+        void initializeDates() override;
+
       private:
+        void buildSwap();
+
         bool isFxBaseCurrencyLegResettable_;
+        ext::shared_ptr<MtMCrossCurrencyBasisSwap> swap_;
     };
 
 
@@ -243,6 +267,10 @@ namespace QuantLib {
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
+
+        const ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap>& swap() const {
+            return xccySwap_;
+        }
 
       protected:
         void initializeDates() override;

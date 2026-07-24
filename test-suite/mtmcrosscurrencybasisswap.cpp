@@ -223,6 +223,31 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
                             << "    base ccy leg resettable: " << isFxBaseCurrencyLegResettable
                             << "\n");
                 }
+
+                // The helpers expose their underlying par swaps, priced on the
+                // helpers' internal handles: after bootstrapping, the fair
+                // spread of the basis leg must reproduce the helper quote.
+                for (Size i = 0; i < helpers.size(); ++i) {
+                    auto helper =
+                        ext::dynamic_pointer_cast<MtMCrossCurrencyBasisSwapRateHelper>(helpers[i]);
+                    BOOST_REQUIRE(helper != nullptr && helper->swap() != nullptr);
+                    auto underlying = helper->swap();
+                    underlying->deepUpdate();
+                    Spread fair = isBasisOnFxBaseCurrencyLeg ? underlying->fairFxBaseSpread() :
+                                                               underlying->fairFxQuoteSpread();
+                    Spread expected = basisData[i].second * bp;
+                    if (std::fabs(fair - expected) > tolerance)
+                        BOOST_ERROR("the exposed helper swap does not reproduce the helper quote\n"
+                                    << std::setprecision(5) << "    fair basis: " << fair / bp
+                                    << " bp\n"
+                                    << "    quote:      " << basisData[i].second << " bp\n"
+                                    << "    collateral in base ccy:  "
+                                    << isFxBaseCurrencyCollateralCurrency << "\n"
+                                    << "    basis on base ccy leg:   " << isBasisOnFxBaseCurrencyLeg
+                                    << "\n"
+                                    << "    base ccy leg resettable: "
+                                    << isFxBaseCurrencyLegResettable << "\n");
+                }
             }
 }
 
