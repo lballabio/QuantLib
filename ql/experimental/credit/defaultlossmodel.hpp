@@ -58,13 +58,11 @@ namespace QuantLib {
         DefaultLossModel() = default;
         //! \name Statistics
         //@{
-        /* Non mandatory implementations, fails if client is not providing what 
-        requested. */
-
-        /* Default implementation using the expectedLoss(Date) method. 
-          Typically this method is called repeatedly with the same 
-          date parameter which makes it innefficient. */
         //! Expected tranche loss as an absolute amount, not a fraction.
+        /*! Derived classes need to implement this method, as the default
+            implementation throws. Efficiency is a concern when calling this
+            method repeatedly with the same date parameter.
+        */
         virtual Real expectedTrancheLoss(const Date& d) const {
             QL_FAIL("expectedTrancheLoss Not implemented for this model.");
         }
