@@ -76,11 +76,21 @@ namespace QuantLib {
 
 
     //! Rate helper for bootstrapping over overnight-ibor basis swaps
-    /*! The swap is assumed to pay baseIndex + basis and receive
-        otherIndex.  This helper can be used to bootstrap the forecast
-        curve for otherIndex; baseIndex will need an existing forecast
-        curve.  An exogenous discount curve can be passed; if not,
-        the overnight-index curve will be used.
+    /*! The swap is assumed to pay overnight + basis and receive ibor.
+        As a default, the helper is used to bootstrap the forecast
+        curve for the ibor index; the overnight index will need an
+        existing forecast curve. If bootstrapBaseCurve is set to true,
+        instead, the helper will be used to bootstrap the forecast
+        curve for the overnight index; in this case, the ibor index
+        will need to be given a forecast curve.
+
+        An exogenous discount curve can be passed; if not, the
+        overnight-index curve will be used.  Note that when
+        bootstrapBaseCurve = true and no discount curve is passed, the
+        curve being bootstrapped is also used for discounting.
+
+        A payment lag can also be passed; it is applied to both legs,
+        which share the same schedule.
     */
     class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -92,7 +102,9 @@ namespace QuantLib {
                                          bool endOfMonth,
                                          const ext::shared_ptr<OvernightIndex>& baseIndex,
                                          const ext::shared_ptr<IborIndex>& otherIndex,
-                                         Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>());
+                                         Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>(),
+                                         bool bootstrapBaseCurve = false,
+                                         Integer paymentLag = 0);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -110,6 +122,8 @@ namespace QuantLib {
         ext::shared_ptr<OvernightIndex> baseIndex_;
         ext::shared_ptr<IborIndex> otherIndex_;
         Handle<YieldTermStructure> discountHandle_;
+        bool bootstrapBaseCurve_;
+        Integer paymentLag_;
 
         ext::shared_ptr<Swap> swap_;
 
