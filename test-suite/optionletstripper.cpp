@@ -1264,6 +1264,61 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1IborPaymentLag) {
     checkIborOptionletStripping(false, 2);
 }
 
+BOOST_AUTO_TEST_CASE(testIborReferenceDateCompatibility) {
+    BOOST_TEST_MESSAGE(
+        "Testing that Ibor stripping preserves the legacy volatility reference date...");
+
+    CommonVars vars;
+    Settings::instance().evaluationDate() = Date(28, October, 2013);
+    vars.setFlatTermVolSurface();
+
+    auto surface = ext::make_shared<CapFloorTermVolSurface>(
+        2, vars.calendar, Following, vars.optionTenors, vars.strikes,
+        vars.termV, vars.dayCounter);
+    auto iborIndex = ext::make_shared<Euribor6M>(vars.yieldTermStructure);
+    auto stripper1 = ext::make_shared<OptionletStripper1>(
+        surface, iborIndex, Null<Rate>(), vars.accuracy);
+
+    auto volQuote = ext::make_shared<SimpleQuote>();
+    auto legacyEngine = ext::make_shared<BlackCapFloorEngine>(
+        vars.yieldTermStructure, Handle<Quote>(volQuote), vars.dayCounter);
+    const Matrix& capFloorPrices = stripper1->capFloorPrices();
+    Period capFloorLength = 2 * iborIndex->tenor();
+    for (Size i=0; i<capFloorPrices.rows(); ++i) {
+        for (Size j=0; j<vars.strikes.size(); ++j) {
+            volQuote->setValue(
+                surface->volatility(capFloorLength, vars.strikes[j], true));
+            CapFloor::Type type = vars.strikes[j] < stripper1->switchStrike()
+                                      ? CapFloor::Floor : CapFloor::Cap;
+            ext::shared_ptr<CapFloor> legacyCap =
+                MakeCapFloor(type, capFloorLength, iborIndex, vars.strikes[j], 0 * Days)
+                    .withPricingEngine(legacyEngine);
+            BOOST_CHECK_SMALL(
+                capFloorPrices[i][j] - legacyCap->NPV(), 1.0e-12);
+        }
+        capFloorLength += iborIndex->tenor();
+    }
+
+    std::vector<Handle<Quote>> atmVols(vars.optionTenors.size());
+    for (auto& vol : atmVols)
+        vol = Handle<Quote>(ext::make_shared<SimpleQuote>(0.18));
+    Handle<CapFloorTermVolCurve> atmCurve(
+        ext::make_shared<CapFloorTermVolCurve>(
+            2, vars.calendar, Following, vars.optionTenors, atmVols,
+            vars.dayCounter));
+    auto stripper2 = ext::make_shared<OptionletStripper2>(stripper1, atmCurve);
+    const std::vector<Rate> atmStrikes = stripper2->atmCapFloorStrikes();
+    const std::vector<Real> atmPrices = stripper2->atmCapFloorPrices();
+    volQuote->setValue(0.18);
+    for (Size i=0; i<vars.optionTenors.size(); ++i) {
+        ext::shared_ptr<CapFloor> legacyCap =
+            MakeCapFloor(CapFloor::Cap, vars.optionTenors[i], iborIndex,
+                         atmStrikes[i], 0 * Days)
+                .withPricingEngine(legacyEngine);
+        BOOST_CHECK_SMALL(atmPrices[i] - legacyCap->NPV(), 1.0e-12);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testTermVolatilityStripping2IborPaymentLag) {
     BOOST_TEST_MESSAGE(
         "Testing ATM adjustment with OptionletStripper2 using an Ibor index "

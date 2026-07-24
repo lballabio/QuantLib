@@ -84,6 +84,9 @@ namespace QuantLib {
         constantOptionletVolatility(const Handle<Quote>& volatility) const;
         ext::shared_ptr<PricingEngine> makeCapFloorPricingEngine(
             const Handle<YieldTermStructure>& discountCurve,
+            const Handle<Quote>& volatility) const;
+        ext::shared_ptr<PricingEngine> makeCapFloorPricingEngine(
+            const Handle<YieldTermStructure>& discountCurve,
             const Handle<OptionletVolatilityStructure>& volatility) const;
         bool isOvernightIndex() const;
         ext::shared_ptr<CapFloorTermVolSurface> termVolSurface_;

@@ -93,8 +93,7 @@ namespace QuantLib {
             Handle<Quote> atmOptionVolHandle(
                 ext::make_shared<SimpleQuote>(atmOptionVol));
             auto engine = makeCapFloorPricingEngine(
-                iborIndex_->forwardingTermStructure(),
-                constantOptionletVolatility(atmOptionVolHandle));
+                iborIndex_->forwardingTermStructure(), atmOptionVolHandle);
 
             Leg leg = makeCapFloorLeg(optionExpiriesTenors[j]);
             for (const auto& cashflow : leg) {

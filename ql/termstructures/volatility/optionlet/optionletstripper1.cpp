@@ -120,7 +120,7 @@ namespace QuantLib {
         auto volQuote = ext::make_shared<SimpleQuote>();
         Handle<Quote> volHandle(volQuote);
         auto capFloorEngine = makeCapFloorPricingEngine(
-            discountCurve, constantOptionletVolatility(volHandle));
+            discountCurve, volHandle);
 
         for (Size j=0; j<nStrikes_; ++j) {
             // using out-of-the-money options

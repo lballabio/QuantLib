@@ -251,6 +251,22 @@ namespace QuantLib {
 
     ext::shared_ptr<PricingEngine> OptionletStripper::makeCapFloorPricingEngine(
         const Handle<YieldTermStructure>& discountCurve,
+        const Handle<Quote>& volatility) const {
+        if (isOvernightIndex_)
+            return makeCapFloorPricingEngine(
+                discountCurve, constantOptionletVolatility(volatility));
+        // Preserve the quote-based engines' zero-settlement reference date for Ibor.
+        if (volatilityType_ == ShiftedLognormal)
+            return ext::make_shared<BlackCapFloorEngine>(
+                discountCurve, volatility, termVolSurface_->dayCounter(), displacement_);
+        if (volatilityType_ == Normal)
+            return ext::make_shared<BachelierCapFloorEngine>(
+                discountCurve, volatility, termVolSurface_->dayCounter());
+        QL_FAIL("unknown volatility type: " << volatilityType_);
+    }
+
+    ext::shared_ptr<PricingEngine> OptionletStripper::makeCapFloorPricingEngine(
+        const Handle<YieldTermStructure>& discountCurve,
         const Handle<OptionletVolatilityStructure>& volatility) const {
         if (volatilityType_ == ShiftedLognormal)
             return ext::make_shared<BlackCapFloorEngine>(
