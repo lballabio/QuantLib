@@ -112,21 +112,17 @@ namespace QuantLib {
 
         // binomial trees with constant coefficient
         Handle<YieldTermStructure> flatRiskFree(
-            ext::shared_ptr<YieldTermStructure>(
-                new FlatForward(referenceDate, r, rfdc)));
+            ext::make_shared<FlatForward>(referenceDate, r, rfdc));
         Handle<YieldTermStructure> flatDividends(
-            ext::shared_ptr<YieldTermStructure>(
-                new FlatForward(referenceDate, q, divdc)));
+            ext::make_shared<FlatForward>(referenceDate, q, divdc));
         Handle<BlackVolTermStructure> flatVol(
-            ext::shared_ptr<BlackVolTermStructure>(
-                new BlackConstantVol(referenceDate, volcal, v, voldc)));
+            ext::make_shared<BlackConstantVol>(referenceDate, volcal, v, voldc));
 
         Time maturity = rfdc.yearFraction(referenceDate, maturityDate);
 
-        ext::shared_ptr<StochasticProcess1D> bs(
-                         new GeneralizedBlackScholesProcess(
+        auto bs = ext::make_shared<GeneralizedBlackScholesProcess>(
                                       process_->stateVariable(),
-                                      flatDividends, flatRiskFree, flatVol));
+                                      flatDividends, flatRiskFree, flatVol);
 
         // correct timesteps to ensure a (local) minimum, using Boyle and Lau
         // approach. See Journal of Derivatives, 1/1994,
@@ -157,11 +153,10 @@ namespace QuantLib {
 
         TimeGrid grid(maturity, optimum_steps);
 
-        ext::shared_ptr<T> tree(new T(bs, maturity, optimum_steps,
-                                        payoff->strike()));
+        auto tree = ext::make_shared<T>(bs, maturity, optimum_steps,
+                                        payoff->strike());
 
-        ext::shared_ptr<BlackScholesLattice<T> > lattice(
-            new BlackScholesLattice<T>(tree, r, maturity, optimum_steps));
+        auto lattice = ext::make_shared<BlackScholesLattice<T>>(tree, r, maturity, optimum_steps);
 
         D option(arguments_, *process_, grid);
         option.initialize(lattice, maturity);

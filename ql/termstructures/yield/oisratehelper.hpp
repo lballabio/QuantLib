@@ -54,8 +54,8 @@ namespace QuantLib {
           Pillar::Choice pillar = Pillar::LastRelevantDate,
           Date customPillarDate = Date(),
           RateAveraging::Type averagingMethod = RateAveraging::Compound,
-          ext::optional<bool> endOfMonth = ext::nullopt,
-          ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
+          std::optional<bool> endOfMonth = std::nullopt,
+          std::optional<Frequency> fixedPaymentFrequency = std::nullopt,
           Calendar fixedCalendar = Calendar(),
           Natural lookbackDays = Null<Natural>(),
           Natural lockoutDays = 0,
@@ -81,8 +81,8 @@ namespace QuantLib {
           Pillar::Choice pillar = Pillar::LastRelevantDate,
           Date customPillarDate = Date(),
           RateAveraging::Type averagingMethod = RateAveraging::Compound,
-          ext::optional<bool> endOfMonth = ext::nullopt,
-          ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
+          std::optional<bool> endOfMonth = std::nullopt,
+          std::optional<Frequency> fixedPaymentFrequency = std::nullopt,
           Calendar fixedCalendar = Calendar(),
           Natural lookbackDays = Null<Natural>(),
           Natural lockoutDays = 0,
@@ -131,8 +131,8 @@ namespace QuantLib {
         Handle<Quote> overnightSpread_;
         Pillar::Choice pillarChoice_;
         RateAveraging::Type averagingMethod_;
-        ext::optional<bool> endOfMonth_;
-        ext::optional<Frequency> fixedPaymentFrequency_;
+        std::optional<bool> endOfMonth_;
+        std::optional<Frequency> fixedPaymentFrequency_;
         Calendar fixedCalendar_;
         Calendar overnightCalendar_;
         BusinessDayConvention convention_;

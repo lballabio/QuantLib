@@ -252,7 +252,7 @@ ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> makeFixFloatXCCYS
 
 
 BOOST_AUTO_TEST_CASE(testFixFloatXCCYSwapPricing) {
-    BOOST_TEST_MESSAGE("Test cross currency fix float swap pricing against known results");
+    BOOST_TEST_MESSAGE("Test cross-currency fix/float swap pricing against known results...");
 
     SavedSettings backup;
     Settings::instance().evaluationDate() = Date(11, Sep, 2018);

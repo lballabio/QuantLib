@@ -363,7 +363,7 @@ ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> makeONBasisXCCY(Rate spotFx
 
 
 BOOST_AUTO_TEST_CASE(testBasisXCCYSwapPricing) {
-    BOOST_TEST_MESSAGE("Test cross currency basis swap pricing against known results");
+    BOOST_TEST_MESSAGE("Test cross-currency basis-swap pricing against known results...");
 
     SavedSettings backup;
     Settings::instance().evaluationDate() = Date(11, Sep, 2018);
@@ -391,7 +391,7 @@ BOOST_AUTO_TEST_CASE(testBasisXCCYSwapPricing) {
 }
 
 BOOST_AUTO_TEST_CASE(testBasisONXCCYSwapPricing) {
-    BOOST_TEST_MESSAGE("Test cross currency Overnight legs basis swap pricing against known results");
+    BOOST_TEST_MESSAGE("Test cross-currency overnight-index basis-swap pricing against known results...");
 
     SavedSettings backup;
     Settings::instance().evaluationDate() = Date(11, Sep, 2018);

@@ -70,9 +70,8 @@ namespace QuantLib {
             TimeGrid grid = timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
-            return ext::shared_ptr<path_generator_type>(
-                         new path_generator_type(process_,
-                                                 grid, gen, brownianBridge_));
+            return ext::make_shared<path_generator_type>(process_,
+                                                 grid, gen, brownianBridge_);
         }
         ext::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
@@ -278,8 +277,7 @@ namespace QuantLib {
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
 
-        return ext::shared_ptr<PricingEngine>(
-            new MCLookbackEngine<I,RNG,S>(process_,
+        return ext::make_shared<MCLookbackEngine<I,RNG,S>>(process_,
                                           steps_,
                                           stepsPerYear_,
                                           brownianBridge_,
@@ -287,7 +285,7 @@ namespace QuantLib {
                                           samples_,
                                           tolerance_,
                                           maxSamples_,
-                                          seed_));
+                                          seed_);
     }
 
 }

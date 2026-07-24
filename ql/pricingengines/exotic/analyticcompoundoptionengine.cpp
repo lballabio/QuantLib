@@ -85,9 +85,8 @@ namespace QuantLib {
             process_->riskFreeRate()->discount(helpMaturity);
 
 
-        ext::shared_ptr<ImpliedSpotHelper> f(
-                new ImpliedSpotHelper(dividendDiscount, riskFreeDiscount,
-                                      vol, payoffDaughter(), strikeMother()));
+        auto f = ext::make_shared<ImpliedSpotHelper>(dividendDiscount, riskFreeDiscount,
+                                      vol, payoffDaughter(), strikeMother());
 
         Brent solver;
         solver.setMaxEvaluations(1000);

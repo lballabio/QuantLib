@@ -119,13 +119,11 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<GJRGARCHProcess>(this->process_);
         QL_REQUIRE(process, "GJRGARCH process required");
 
-        return ext::shared_ptr<
-            typename MCEuropeanGJRGARCHEngine<RNG,S>::path_pricer_type>(
-                   new EuropeanGJRGARCHPathPricer(
+        return ext::make_shared<EuropeanGJRGARCHPathPricer>(
                                         payoff->optionType(),
                                         payoff->strike(),
                                         process->riskFreeRate()->discount(
-                                                   this->timeGrid().back())));
+                                                   this->timeGrid().back()));
     }
 
 
@@ -201,14 +199,13 @@ namespace QuantLib {
     operator ext::shared_ptr<PricingEngine>() const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
-        return ext::shared_ptr<PricingEngine>(
-                 new MCEuropeanGJRGARCHEngine<RNG,S>(process_,
+        return ext::make_shared<MCEuropeanGJRGARCHEngine<RNG,S>>(process_,
                                                    steps_,
                                                    stepsPerYear_,
                                                    antithetic_,
                                                    samples_, tolerance_,
                                                    maxSamples_,
-                                                   seed_));
+                                                   seed_);
     }
 
 

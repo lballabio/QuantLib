@@ -101,9 +101,8 @@ namespace QuantLib {
             Time forwardMeasureTime =
                 dayCounter.yearFraction(referenceDate,
                                         arguments_.endDates.back());
-            return ext::shared_ptr<path_pricer_type>(
-                     new detail::HullWhiteCapFloorPricer(arguments_, model_,
-                                                         forwardMeasureTime));
+            return ext::make_shared<detail::HullWhiteCapFloorPricer>(arguments_, model_,
+                                                         forwardMeasureTime);
         }
 
         TimeGrid timeGrid() const {
@@ -137,16 +136,14 @@ namespace QuantLib {
                                         arguments_.endDates.back());
             Array parameters = model_->params();
             Real a = parameters[0], sigma = parameters[1];
-            ext::shared_ptr<HullWhiteForwardProcess> process(
-                                new HullWhiteForwardProcess(curve, a, sigma));
+            auto process = ext::make_shared<HullWhiteForwardProcess>(curve, a, sigma);
             process->setForwardMeasureTime(forwardMeasureTime);
 
             TimeGrid grid = this->timeGrid();
             typename RNG::rsg_type generator =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
-            return ext::shared_ptr<path_generator_type>(
-                             new path_generator_type(process, grid, generator,
-                                                     brownianBridge_));
+            return ext::make_shared<path_generator_type>(process, grid, generator,
+                                                     brownianBridge_);
         }
     };
 
@@ -237,11 +234,10 @@ namespace QuantLib {
     template <class RNG, class S>
     inline MakeMCHullWhiteCapFloorEngine<RNG,S>::
     operator ext::shared_ptr<PricingEngine>() const {
-        return ext::shared_ptr<PricingEngine>(new
-            MCHullWhiteCapFloorEngine<RNG,S>(model_,
+        return ext::make_shared<MCHullWhiteCapFloorEngine<RNG,S>>(model_,
                                              brownianBridge_, antithetic_,
                                              samples_, tolerance_,
-                                             maxSamples_, seed_));
+                                             maxSamples_, seed_);
     }
 
 }

@@ -51,6 +51,7 @@ namespace QuantLib {
         MakeVanillaSwap& withNominal(Real n);
 
         MakeVanillaSwap& withSettlementDays(Natural settlementDays);
+        MakeVanillaSwap& withSettlementCalendar(const Calendar& cal);
         MakeVanillaSwap& withEffectiveDate(const Date&);
         MakeVanillaSwap& withTerminationDate(const Date&);
         MakeVanillaSwap& withRule(DateGeneration::Rule r);
@@ -84,7 +85,7 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& discountCurve);
         MakeVanillaSwap& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);
-        MakeVanillaSwap& withIndexedCoupons(const ext::optional<bool>& b = true);
+        MakeVanillaSwap& withIndexedCoupons(const std::optional<bool>& b = true);
         MakeVanillaSwap& withAtParCoupons(bool b = true);
       private:
         Period swapTenor_;
@@ -95,6 +96,7 @@ namespace QuantLib {
         Natural settlementDays_ = Null<Natural>();
         Date effectiveDate_, terminationDate_;
         Calendar fixedCalendar_, floatCalendar_;
+        Calendar settlementCalendar_;
 
         Swap::Type type_ = Swap::Payer;
         Real nominal_ = 1.0;
@@ -105,13 +107,13 @@ namespace QuantLib {
         DateGeneration::Rule fixedRule_ = DateGeneration::Backward,
                              floatRule_ = DateGeneration::Backward;
         bool fixedEndOfMonth_ = false, floatEndOfMonth_ = false;
-        ext::optional<bool> maturityEndOfMonth_;
+        std::optional<bool> maturityEndOfMonth_;
         Date fixedFirstDate_, fixedNextToLastDate_;
         Date floatFirstDate_, floatNextToLastDate_;
         Spread floatSpread_ = 0.0;
         DayCounter fixedDayCount_, floatDayCount_;
-        ext::optional<bool> useIndexedCoupons_;
-        ext::optional<BusinessDayConvention> paymentConvention_;
+        std::optional<bool> useIndexedCoupons_;
+        std::optional<BusinessDayConvention> paymentConvention_;
 
         ext::shared_ptr<PricingEngine> engine_;
     };

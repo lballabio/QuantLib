@@ -1,33 +1,2801 @@
-commit 974bb6143d544461f1713ac7062f26de763d8bac
+commit e7bd700dfd6416b4bb6749f018f3c2dc4ed19474
 Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
-Date:   Thu, 16 Apr 2026 14:31:36 +0000
+Date:   Mon, 13 Jul 2026 07:09:26 +0000
 
-    Set version to 1.42.1
+    Set version to 1.43
 
  CMakeLists.txt | 4 ++--
  configure.ac   | 2 +-
  ql/version.hpp | 4 ++--
  3 files changed, 5 insertions(+), 5 deletions(-)
 
-commit 12204e07675917a4075235970440ab202813e78d
+commit 4567efac4393f56eb52bd4ca5e63a6b1829e0a81
+Merge: 489847af9 2073a7089
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 Apr 2026 15:57:07 +0200
+Date:   Mon, 6 Jul 2026 08:58:03 +0200
+
+    Make L-BFGS-B compatible with expression-template Real types (#2647)
+
+commit 2073a7089aa1364a6f72d9c94c39fc3327d17db3
+Author: auto-differentiation-dev <107129969+auto-differentiation-dev@users.noreply.github.com>
+Date:   Sat, 4 Jul 2026 20:49:49 +0100
+
+    Make L-BFGS-B compatible with expression-template Real types
+    
+    Wrap mixed-type ternary and std::max operands in Real(...);
+    no-op for the default Real = double.
+
+ ql/math/optimization/lbfgsb.cpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 489847af9fd4a36236fd877795c60b326bb4676b
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Wed, 1 Jul 2026 15:55:00 +0000
+
+    Update changelog
+
+ ChangeLog.txt | 3397 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 3370 insertions(+), 27 deletions(-)
+
+commit 91c4ef46024b640427e3e43dbd8b4a5669664cf0
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Wed, 1 Jul 2026 15:55:00 +0000
+
+    Set version to 1.43-rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 0e5b4e0f531cc8d3749bdcb2f202b8d615a97697
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Jul 2026 12:18:15 +0200
+
+    Fix link to PR
+
+ News.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 7c776524bc22fe777e1857a0d7d6a1d2b61e0b67
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Jul 2026 12:15:32 +0200
 
     Update news
 
- News.md | 24 ++++--------------------
- 1 file changed, 4 insertions(+), 20 deletions(-)
+ News.md | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-commit aa7b3a1959f01e606f2737e28dc8686bddbaae49
+commit 0ee883bbe7716b34d1a913b6e5d2538fe7658a91
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Wed, 1 Jul 2026 08:55:23 +0000
+
+    Automated fixes by clang-tidy
+
+ ql/math/optimization/lbfgsb.cpp | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit d4aedd08b38784374f977d4f054ce4e791b3a0df
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 Apr 2026 15:32:55 +0200
+Date:   Wed, 1 Jul 2026 11:07:44 +0200
 
-    Fix action title
+    Update list of contributors
 
- .github/workflows/prepare-patch-release.yml | 2 +-
+ Contributors.txt | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+commit 92e247a1443f8ecf56b65b53b63a88779370695f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Jul 2026 11:07:30 +0200
+
+    Edit a few test messages
+
+ test-suite/constnotionalcrosscurrencybasisswap.cpp           | 4 ++--
+ test-suite/constnotionalcrosscurrencyfixedvsfloatingswap.cpp | 2 +-
+ test-suite/constnotionalcrosscurrencyswap.cpp                | 6 +++---
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 37afeaa399bf29f9003259a2e2d4880fea989347
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Sun, 28 Jun 2026 02:25:34 +0000
+
+    Automated fixes by clang-tidy
+
+ ql/math/optimization/lbfgsb.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit d99d5dff9b96051b803ac365bfd7e8dcfdf15be2
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Wed, 24 Jun 2026 09:47:30 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 3b921d4170834f6b96d8e93081fbc67a4db6a0f0
+Merge: 9863b578a 777a46dd1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 24 Jun 2026 11:40:48 +0200
+
+    Add L-BFGS-B Limited-Memory Bound-Constrained Optimizer (#2635)
+
+commit 777a46dd1c1213e82bee6595c39df3f900e05b78
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Tue, 23 Jun 2026 15:32:19 -0500
+
+    Adding context for algorithmic tradeoffs + fTol corrections.
+
+ ql/math/optimization/lbfgsb.hpp | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+commit baf7fdb789dcd70dba77d5ac926133432461757d
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Tue, 23 Jun 2026 15:28:42 -0500
+
+    Updating tests to use proper fTol instead of factr.
+
+ test-suite/optimizers.cpp | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+commit 9cd5964f96a6acb9eac040d3a810b66de9e51de8
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Tue, 23 Jun 2026 15:28:08 -0500
+
+    Update LBFGSB to use fTol instead of factr, similar to other optimization methods.
+
+ ql/math/optimization/lbfgsb.cpp | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+commit 9863b578af0caa4cecabf697196533e84a8308b6
+Merge: 7f697de95 42486f796
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 23 Jun 2026 11:03:29 +0200
+
+    introduce CashFlow::isCoupon() to replace dynamic casts (#2638)
+
+commit 7f697de95e4f32ffb46929ff2e9d4405ed94d5cd
+Merge: 37ef07e19 de0f71df4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 23 Jun 2026 10:59:53 +0200
+
+    Pricing Bonds with face values other than $100 (#2637)
+
+commit a14bcdceb9cbe51e51acbe431a6c807ab74d26aa
+Author: Colin Alberts <colin.albs@gmail.com>
+Date:   Mon, 22 Jun 2026 12:46:29 -0500
+
+    Adding l-bfgs-b files to other compilation files (cicd checks failed).
+
+ QuantLib.vcxproj         | 2 ++
+ QuantLib.vcxproj.filters | 6 ++++++
+ 2 files changed, 8 insertions(+)
+
+commit 42486f796fff424093c781771901ee69424dbf80
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 22 Jun 2026 18:47:36 +0200
+
+    replace dnyamic casts to Coupon
+
+ Examples/BermudanSwaption/BermudanSwaption.cpp     |  2 +-
+ ql/cashflows/cashflows.cpp                         | 30 +++++++++++-----------
+ ql/cashflows/conundrumpricer.cpp                   |  4 +--
+ ql/cashflows/lineartsrpricer.cpp                   |  2 +-
+ ql/experimental/basismodels/swaptioncfs.cpp        | 14 +++++-----
+ ql/experimental/callablebonds/callablebond.cpp     |  2 +-
+ ql/experimental/credit/integralcdoengine.cpp       |  6 ++---
+ ql/experimental/credit/midpointcdoengine.cpp       |  6 ++---
+ ql/instruments/assetswap.cpp                       |  2 +-
+ ql/instruments/bond.cpp                            |  2 +-
+ ql/instruments/creditdefaultswap.cpp               |  2 +-
+ .../utilities/fdmaffinemodelswapinnervalue.hpp     |  2 +-
+ ql/pricingengines/bond/riskybondengine.cpp         |  2 +-
+ test-suite/bermudanswaption.cpp                    | 10 ++++----
+ test-suite/cashflows.cpp                           | 18 ++++++-------
+ test-suite/creditdefaultswap.cpp                   | 14 +++++-----
+ 16 files changed, 59 insertions(+), 59 deletions(-)
+
+commit ed3b0ae805823064f085c5b5a8ebefb401b29091
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 22 Jun 2026 18:47:29 +0200
+
+    fix
+
+ ql/cashflow.hpp | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit fb7b4f3e144f8a0f3d1056bb34d1792a74fbae32
+commit 4fb260b134c88a6d54cc6c30ea6059e85b556cca
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 22 Jun 2026 18:41:01 +0200
+
+    Revert "introduce CashFlow::isCoupon() to replace dynamic casts"
+    
+    This reverts commit 057720f26b838e4b4bad7fd48d3adf83dce73185.
+
+ ql/cashflows/cashflows.cpp                         | 75 +++++++++++++---------
+ ql/cashflows/conundrumpricer.cpp                   |  8 +--
+ ql/cashflows/lineartsrpricer.cpp                   |  3 +-
+ ql/experimental/basismodels/swaptioncfs.cpp        | 28 ++++----
+ ql/experimental/callablebonds/callablebond.cpp     |  3 +-
+ ql/experimental/credit/integralcdoengine.cpp       | 17 ++---
+ ql/experimental/credit/midpointcdoengine.cpp       | 12 ++--
+ ql/instruments/assetswap.cpp                       |  7 +-
+ ql/instruments/bond.cpp                            |  4 +-
+ ql/instruments/creditdefaultswap.cpp               |  4 +-
+ .../utilities/fdmaffinemodelswapinnervalue.hpp     |  3 +-
+ ql/pricingengines/bond/riskybondengine.cpp         |  4 +-
+ 12 files changed, 83 insertions(+), 85 deletions(-)
+
+commit 1f3c4c5f1a10615edfa88b891b89d9e68bdd0dad
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 22 Jun 2026 18:40:33 +0200
+
+    Revert "fix scope"
+    
+    This reverts commit cbbb119b5456b766b753d15abf24faa5043d8d06.
+
+ ql/experimental/credit/midpointcdoengine.cpp | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+commit f6767709c528f549c24f48e53d30c990368f49ef
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 22 Jun 2026 18:40:33 +0200
+
+    Revert "typo"
+    
+    This reverts commit 8dab2eb701b691eec97fe6fce031801daadbddef.
+
+ ql/experimental/credit/midpointcdoengine.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 63caf8389c8709e428f55f5a8c6ac48365ba2bbd
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 22 Jun 2026 18:40:32 +0200
+
+    Revert "typos"
+    
+    This reverts commit d27af59b3addfe6e6c60317934f63f89eb3a3ee2.
+
+ ql/instruments/creditdefaultswap.cpp       | 2 +-
+ ql/pricingengines/bond/riskybondengine.cpp | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit ac020c660b1498434da2d02a5c726c82eaa1042b
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 22 Jun 2026 18:40:29 +0200
+
+    Revert "do not require a coupon"
+    
+    This reverts commit 0563fa85551b900dc6afd924fd2b41e33ffeb83e.
+
+ ql/experimental/callablebonds/callablebond.cpp | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit 3a7d6cf0747fbf83ee341074a1a745d2c5f53c86
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 22 Jun 2026 18:39:56 +0200
+
+    drop in replacement for dynamic cast to Coupon
+
+ ql/cashflow.hpp         | 9 ++++++---
+ ql/cashflows/coupon.cpp | 3 +++
+ ql/cashflows/coupon.hpp | 4 +++-
+ 3 files changed, 12 insertions(+), 4 deletions(-)
+
+commit 37ef07e19eb9df4d742aeb508eac586ab1c89e82
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 22 Jun 2026 11:22:30 +0000
+
+    Bump actions/checkout from 6 to 7
+    
+    Bumps [actions/checkout](https://github.com/actions/checkout) from 6 to 7.
+    - [Release notes](https://github.com/actions/checkout/releases)
+    - [Changelog](https://github.com/actions/checkout/blob/main/CHANGELOG.md)
+    - [Commits](https://github.com/actions/checkout/compare/v6...v7)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: actions/checkout
+      dependency-version: '7'
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/cmake-latest-runners.yml      |  2 +-
+ .github/workflows/cmake.yml                     | 12 ++++++------
+ .github/workflows/codeql-analysis.yml           |  2 +-
+ .github/workflows/copyrights.yml                |  2 +-
+ .github/workflows/coveralls.yml                 |  2 +-
+ .github/workflows/devenv-images.yml             |  2 +-
+ .github/workflows/doxygen.yml                   |  4 ++--
+ .github/workflows/filelists.yml                 |  2 +-
+ .github/workflows/generated-headers.yml         |  2 +-
+ .github/workflows/headers.yml                   |  2 +-
+ .github/workflows/includes.yml                  |  2 +-
+ .github/workflows/increase-version-number.yml   |  2 +-
+ .github/workflows/license-url.yml               |  2 +-
+ .github/workflows/linux-full-tests.yml          |  2 +-
+ .github/workflows/linux-nondefault.yml          |  2 +-
+ .github/workflows/linux.yml                     |  2 +-
+ .github/workflows/macos-nondefault.yml          |  2 +-
+ .github/workflows/macos.yml                     |  2 +-
+ .github/workflows/misspell.yml                  |  2 +-
+ .github/workflows/msvc-all-configs.yml          |  2 +-
+ .github/workflows/msvc-analysis.yml             |  2 +-
+ .github/workflows/msvc-nondefault.yml           |  2 +-
+ .github/workflows/msvc.yml                      |  2 +-
+ .github/workflows/namespaces.yml                |  2 +-
+ .github/workflows/prepare-patch-release.yml     |  2 +-
+ .github/workflows/prepare-release-candidate.yml |  2 +-
+ .github/workflows/prepare-release.yml           |  2 +-
+ .github/workflows/publish-release-candidate.yml |  2 +-
+ .github/workflows/publish-release.yml           |  6 +++---
+ .github/workflows/sanitizer.yml                 |  4 ++--
+ .github/workflows/sync-org-repo.yml             |  2 +-
+ .github/workflows/sync-qldefines.yml            |  2 +-
+ .github/workflows/test-macros.yml               |  2 +-
+ .github/workflows/test-times.yml                |  2 +-
+ .github/workflows/tidy.yml                      |  2 +-
+ 35 files changed, 44 insertions(+), 44 deletions(-)
+
+commit de0f71df438d3d56d8509d4cd6bfe3d8a80ef91f
+Author: Hetal Sharma <sharmaahetal@gmail.com>
+Date:   Mon, 22 Jun 2026 15:10:21 +0530
+
+    Pricing Bonds with face values other than
+
+ ql/instruments/bond.hpp                  | 6 ++++++
+ ql/pricingengines/bond/bondfunctions.hpp | 5 +++++
+ 2 files changed, 11 insertions(+)
+
+commit 0563fa85551b900dc6afd924fd2b41e33ffeb83e
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 22 Jun 2026 08:47:12 +0200
+
+    do not require a coupon
+
+ ql/experimental/callablebonds/callablebond.cpp | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+commit d27af59b3addfe6e6c60317934f63f89eb3a3ee2
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 21 Jun 2026 22:04:01 +0200
+
+    typos
+
+ ql/instruments/creditdefaultswap.cpp       | 2 +-
+ ql/pricingengines/bond/riskybondengine.cpp | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 8dab2eb701b691eec97fe6fce031801daadbddef
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 21 Jun 2026 21:55:18 +0200
+
+    typo
+
+ ql/experimental/credit/midpointcdoengine.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit cbbb119b5456b766b753d15abf24faa5043d8d06
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 21 Jun 2026 21:52:33 +0200
+
+    fix scope
+
+ ql/experimental/credit/midpointcdoengine.cpp | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+commit 057720f26b838e4b4bad7fd48d3adf83dce73185
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 21 Jun 2026 19:38:21 +0200
+
+    introduce CashFlow::isCoupon() to replace dynamic casts
+
+ ql/cashflow.hpp                                    |  2 +
+ ql/cashflows/cashflows.cpp                         | 75 +++++++++-------------
+ ql/cashflows/conundrumpricer.cpp                   |  8 +--
+ ql/cashflows/coupon.hpp                            |  1 +
+ ql/cashflows/lineartsrpricer.cpp                   |  3 +-
+ ql/experimental/basismodels/swaptioncfs.cpp        | 28 ++++----
+ ql/experimental/callablebonds/callablebond.cpp     |  3 +-
+ ql/experimental/credit/integralcdoengine.cpp       | 17 +++--
+ ql/experimental/credit/midpointcdoengine.cpp       | 12 ++--
+ ql/instruments/assetswap.cpp                       |  7 +-
+ ql/instruments/bond.cpp                            |  4 +-
+ ql/instruments/creditdefaultswap.cpp               |  4 +-
+ .../utilities/fdmaffinemodelswapinnervalue.hpp     |  3 +-
+ ql/pricingengines/bond/riskybondengine.cpp         |  4 +-
+ 14 files changed, 88 insertions(+), 83 deletions(-)
+
+commit 1616e3ce16138686874b50724546aaf9bfddc5b8
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sun, 21 Jun 2026 10:07:50 -0500
+
+    Shortening explanations.
+
+ test-suite/optimizers.cpp | 65 +++++++++++++++++++++++------------------------
+ 1 file changed, 32 insertions(+), 33 deletions(-)
+
+commit 5c9f2b130f5cd0b57fc962d9c77c011265bcff54
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sun, 21 Jun 2026 08:33:59 -0500
+
+    Formatting cleanup.
+
+ ql/math/optimization/lbfgsb.cpp | 88 ++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 74 insertions(+), 14 deletions(-)
+
+commit 6976545c85a2efccfbc80deabcbaba1d56a3b55e
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sun, 21 Jun 2026 08:29:39 -0500
+
+    Fixing Problem type.
+
+ ql/math/optimization/lbfgsb.hpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 044461cd372bdd99d8405e6d00b36cc12d1e04cc
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 19:16:30 -0500
+
+    Removing testing classes from header.
+
+ ql/math/optimization/lbfgsb.hpp | 16 +---------------
+ 1 file changed, 1 insertion(+), 15 deletions(-)
+
+commit f44cccdb30f58e585d2260fbacd89a932d664570
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 19:13:42 -0500
+
+    Removing comparison test against desnse BFGS to reduce bloat.
+
+ ql/math/optimization/lbfgsb.cpp | 22 ----------------------
+ 1 file changed, 22 deletions(-)
+
+commit 1c51bb006571bda4b36f279d8a67a697d08ce2ca
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 19:11:48 -0500
+
+    Adding compact hessian for unit testing.
+
+ ql/math/optimization/lbfgsb.cpp | 22 ++++++++++++++++++++++
+ ql/math/optimization/lbfgsb.hpp | 19 +++++++++++++++++--
+ 2 files changed, 39 insertions(+), 2 deletions(-)
+
+commit 29383fbfcf0c279388593017a69a0499f3aaf077
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 16:10:53 -0500
+
+    Active bound, limited memory tests.
+
+ test-suite/optimizers.cpp | 204 +++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 203 insertions(+), 1 deletion(-)
+
+commit 69e06b8e4003c88e7d46a4a6e782f9393b930138
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 15:36:51 -0500
+
+    min, max template deduction concerns.
+
+ ql/math/optimization/lbfgsb.cpp | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+commit 9bf8a9d2fbdece2f1ba6fc020a901216f4353a53
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 15:32:49 -0500
+
+    Formatting.
+
+ ql/math/optimization/lbfgsb.cpp |  54 ++++++-------
+ ql/math/optimization/lbfgsb.hpp |   3 +-
+ test-suite/optimizers.cpp       | 172 +++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 198 insertions(+), 31 deletions(-)
+
+commit 8761ad715772cf0912c72b7f8ca70bfe0f61a269
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 15:29:36 -0500
+
+    Reducing docustrings.
+
+ ql/math/optimization/lbfgsb.hpp | 50 ++++++++++-------------------------------
+ 1 file changed, 12 insertions(+), 38 deletions(-)
+
+commit 792352d40d505b9a55e1b2580eef738d6c6c2414
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 15:28:51 -0500
+
+    Update hilo conditions.
+
+ ql/math/optimization/lbfgsb.cpp | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+commit 3dcc50ff3c8a387e51193577d1e2a9c1cedd99ae
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 15:27:59 -0500
+
+    Adding l-BFGS header.
+
+ ql/math/optimization/all.hpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit a852a21bb27249ef4bc2aef41774d633848a3386
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 15:27:32 -0500
+
+    Adding L-BFGSB files.
+
+ ql/CMakeLists.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 85728054da0751b5ae1cdd58152f890005790ec8
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 15:26:48 -0500
+
+    Adding LBFGSB header.
+
+ ql/math/optimization/Makefile.am | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 4ed229914d9bfd6849ce569f0728221a105d3f5a
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 15:24:13 -0500
+
+    Initial lbfgs implementation.
+
+ ql/math/optimization/lbfgsb.cpp | 591 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 591 insertions(+)
+
+commit 4542aebaa92c941ac0361ea7c1cb972de5b28c3e
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 15:20:39 -0500
+
+    Initial L-BFGS header.
+
+ ql/math/optimization/lbfgsb.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 859a3065c2659501b4ce79b35a376c7e947dbef9
+Author: Colin <34983726+colalb1@users.noreply.github.com>
+Date:   Sat, 20 Jun 2026 15:19:49 -0500
+
+    Initial L-BFGS header.
+
+ ql/math/optimization/lbfgsb.hpp | 102 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 102 insertions(+)
+
+commit 3961a8a509522bd99ae1bdb0ecca5dde5576dbd1
+Merge: 53c6db6c1 af6caa28a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 18 Jun 2026 12:51:24 +0200
+
+    Make a few inspectors public in `GeneralizedHullWhite` (#2634)
+
+commit af6caa28a6b5dcf15142cf0412dc77578c2eef46
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 18 Jun 2026 09:58:43 +0200
+
+    Make a few inspectors public in GeneralizedHullWhite
+
+ ql/experimental/shortrate/generalizedhullwhite.cpp |  8 --------
+ ql/experimental/shortrate/generalizedhullwhite.hpp | 11 ++++++-----
+ 2 files changed, 6 insertions(+), 13 deletions(-)
+
+commit 53c6db6c1e51bd361fec3a8799b199ab3738ac1e
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Tue, 16 Jun 2026 12:59:12 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit bc4b3a651e1c0e05640fc4c8a5b18d23a6ea97d3
+Merge: e842bbe36 5d7d29d33
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 16 Jun 2026 14:29:25 +0200
+
+    Add Shir overnight index for ILS (#2628)
+
+commit e842bbe369598596ffe015511f2b9f3b408675b7
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Tue, 16 Jun 2026 08:35:09 +0000
+
+    Replace Boost macros that might not work with AAD types
+
+ test-suite/overnightindexedcoupon.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 5d7d29d33afcd3c64e7ce38f0869a36152fed849
+Author: Pratzz1202 <pratyushpatel1609@gmail.com>
+Date:   Mon, 15 Jun 2026 23:42:08 +0530
+
+    Add Shir overnight index for ILS
+
+ QuantLib.vcxproj            |  2 ++
+ QuantLib.vcxproj.filters    |  6 ++++++
+ ql/CMakeLists.txt           |  2 ++
+ ql/indexes/ibor/Makefile.am |  2 ++
+ ql/indexes/ibor/all.hpp     |  1 +
+ ql/indexes/ibor/shir.cpp    | 30 ++++++++++++++++++++++++++++++
+ ql/indexes/ibor/shir.hpp    | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ test-suite/indexes.cpp      | 20 ++++++++++++++++++--
+ 8 files changed, 106 insertions(+), 2 deletions(-)
+
+commit 3b1e28ec8a34db2772dacbdf8a724c387493ad49
+Merge: 9eac92aff d61d3f9fe
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 16 Jun 2026 10:08:36 +0200
+
+    Use make_shared in volatility-related code (#2619)
+
+commit 9eac92aff5acde9fcee28293d3c9bc2f543004c5
+Merge: c06232d06 e413dadb8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 16 Jun 2026 10:07:05 +0200
+
+    Add optional rounding precision to OvernightIndexedCoupon and OvernightLeg (#2624)
+
+commit e413dadb8e87a663df446e2a36876299f2497120
+Author: Disha Dugad <dishadugad16@gmail.com>
+Date:   Mon, 15 Jun 2026 23:38:11 +0530
+
+    Fix initializer order for rounding precision
+
+ ql/cashflows/overnightindexedcoupon.cpp | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit d61d3f9fee6c22d9fac0c6d0c98c6c1d0e52277e
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Mon, 15 Jun 2026 21:33:47 +0900
+
+    add auto when rhs and lhs types are identical
+
+ ql/experimental/variancegamma/fftengine.cpp                         | 3 +--
+ ql/termstructures/volatility/optionlet/optionletstripper1.cpp       | 4 ++--
+ ql/termstructures/volatility/optionlet/optionletstripper2.cpp       | 4 ++--
+ ql/termstructures/volatility/optionlet/strippedoptionletadapter.cpp | 2 +-
+ ql/termstructures/volatility/sabrinterpolatedsmilesection.cpp       | 2 +-
+ ql/termstructures/volatility/zabr.cpp                               | 2 +-
+ 6 files changed, 8 insertions(+), 9 deletions(-)
+
+commit c06232d06b6efa7dac581db27f93ab5f86c39eda
+Merge: ccd42d4ad 664084b6e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 15 Jun 2026 12:30:15 +0200
+
+    Reorder Israel calendar enumeration for backward compatibility (#2627)
+
+commit ccd42d4ad84c126e7ae3640466f74d26ed2ffd4d
+Merge: 433576448 97372b005
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 15 Jun 2026 12:29:23 +0200
+
+    Added virtual inheritance and fixed consequent performance issue for DefaultLossModel class. (#2625)
+
+commit 43357644881d4c22c28cbc72d38fa4e1420567d1
+Merge: 694762953 abfe572ca
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 15 Jun 2026 11:06:40 +0200
+
+    Fix issue #1817: allow coupon pricers in SwapRateHelper (#2626)
+
+commit 664084b6e851aa8d16846f930fcb43e69c84807d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 15 Jun 2026 09:11:20 +0200
+
+    Reorder Israel calendar enumeration for backward compatibility
+
+ ql/time/calendars/israel.hpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit abfe572ca97980cfcb64da19b893309c82145ada
+Author: prathmesh-sananse <sananse.prathmesh01@gmail.com>
+Date:   Mon, 15 Jun 2026 04:02:50 +0530
+
+    Allow passing coupon pricer to SwapRateHelper
+
+ ql/termstructures/yield/ratehelpers.cpp | 21 ++++++---
+ ql/termstructures/yield/ratehelpers.hpp | 11 +++--
+ test-suite/piecewiseyieldcurve.cpp      | 78 ++++++++++++++++++++++++++++++++-
+ 3 files changed, 100 insertions(+), 10 deletions(-)
+
+commit 1bde19dcf900f1ebf37dcd1762e3be8fff0f7732
+Author: Disha Dugad <dishadugad16@gmail.com>
+Date:   Sat, 13 Jun 2026 14:44:51 +0530
+
+    Remove invalid OvernightLeg rounding test
+
+ test-suite/overnightindexedcoupon.cpp | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+commit 4d2b64b30d7e510c5cfba69a5c21b6e9c94c152a
+Author: Disha Dugad <dishadugad16@gmail.com>
+Date:   Fri, 12 Jun 2026 22:59:03 +0530
+
+    Add optional rounding precision to overnight indexed coupons
+
+ ql/cashflows/overnightindexedcoupon.cpp | 21 ++++++++++--
+ ql/cashflows/overnightindexedcoupon.hpp |  9 +++--
+ test-suite/overnightindexedcoupon.cpp   | 60 +++++++++++++++++++++++++++++++++
+ 3 files changed, 86 insertions(+), 4 deletions(-)
+
+commit 69476295385ba4e4791279db821247c89fe485a4
+Merge: 954894429 16de99c1f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 11 Jun 2026 17:03:20 +0200
+
+    Fix AAD build of GaussianCopulaSpreadEngine (#2623)
+
+commit 97372b005a2fc48b46720059afafb5472e778d0f
+Author: Marco <27030240+MrC-D3@users.noreply.github.com>
+Date:   Thu, 11 Jun 2026 15:36:59 +0200
+
+    Added virtual inheritance and fixed consequent performance issue when setting the same Basket on DefaultLossModel.
+
+ ql/experimental/credit/defaultlossmodel.hpp | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+commit 16de99c1f9a4c9f46f9c1287306ae9404ed271c2
+Author: auto-differentiation-dev <107129969+auto-differentiation-dev@users.noreply.github.com>
+Date:   Thu, 11 Jun 2026 09:23:27 +0100
+
+    Use Real-compatible bounds in std::clamp for AAD in GaussianCopulaSpreadEngine
+
+ ql/pricingengines/basket/gaussiancopulaspreadengine.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 95489442901a52425ed96463e33c2a626051fe21
+Merge: 020372396 f115c2985
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 10 Jun 2026 11:21:48 +0200
+
+    Add `GaussianCopulaSpreadEngine` for spread option pricing (#2621)
+
+commit f115c29852e4b2b2718d953065b60f7b82c92518
+Author: Yassine Idyiahia <yassine.id@gmail.com>
+Date:   Tue, 26 May 2026 21:34:13 +0100
+
+    Add `GaussianCopulaSpreadEngine` for spread option pricing
+
+ QuantLib.vcxproj                                   |   2 +
+ QuantLib.vcxproj.filters                           |   6 +
+ ql/CMakeLists.txt                                  |   2 +
+ ql/pricingengines/basket/Makefile.am               |   2 +
+ ql/pricingengines/basket/all.hpp                   |   1 +
+ .../basket/gaussiancopulaspreadengine.cpp          | 129 +++++++++++++
+ .../basket/gaussiancopulaspreadengine.hpp          |  59 ++++++
+ test-suite/basketoption.cpp                        | 201 ++++++++++++++++++++-
+ 8 files changed, 397 insertions(+), 5 deletions(-)
+
+commit 0203723960ed822a878e52b029376d973ca1eec7
+Merge: 9f650475a 571cd478f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 9 Jun 2026 10:29:21 +0200
+
+    Avoid constexpr Real in TrinomialTree so AAD builds compile (#2620)
+
+commit 9f650475ae5c319cc1e9be2176e3058ae8b8a2a0
+Merge: e4c146c3d 398bf2cf4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 9 Jun 2026 10:24:03 +0200
+
+    Israel Calendar update - New TASE and TELBOR (#2613)
+
+commit e4c146c3d4c9d890b0ca2f4b752da3a93a0d349e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Jun 2026 14:46:52 +0200
+
+    Avoid unnecessary inclusions
+
+ test-suite/constnotionalcrosscurrencybasisswap.cpp           | 2 +-
+ test-suite/constnotionalcrosscurrencyfixedvsfloatingswap.cpp | 4 +++-
+ test-suite/constnotionalcrosscurrencyswap.cpp                | 4 +++-
+ 3 files changed, 7 insertions(+), 3 deletions(-)
+
+commit f9855e42b84e08ab91b4f323331cf395813219e6
+Merge: 3e784717f 2affee9df
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Jun 2026 17:37:33 +0200
+
+    Remove redundant calls to interpolation.update() (#2618)
+
+commit 398bf2cf43b82b37d1043153078248f109773252
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Jun 2026 17:33:46 +0200
+
+    Add test for Telbor calendar
+
+ test-suite/calendars.cpp | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+commit 3e784717f7721e468fbeb0479ec9f35f6309dfeb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Jun 2026 14:43:51 +0200
+
+    Update documentation
+
+ ql/indexes/inflationindex.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 67726f4add55a37c626b3d4f597611a14f537506
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Jun 2026 13:20:58 +0200
+
+    Deprecate generic Israel::Settlement
+
+ ql/time/calendars/israel.cpp |  2 ++
+ ql/time/calendars/israel.hpp | 11 ++++++-----
+ 2 files changed, 8 insertions(+), 5 deletions(-)
+
+commit c4e8f3e119800c4a401f9c383752c03379011ae3
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Jun 2026 13:15:17 +0200
+
+    Let TASE isWeekend() return the current Sat/Sun
+
+ ql/time/calendars/israel.cpp |  2 +-
+ test-suite/calendars.cpp     | 21 ++++++++++++++++++---
+ 2 files changed, 19 insertions(+), 4 deletions(-)
+
+commit d9298539f7e53134508a1da8ff84491af74e034a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Jun 2026 12:36:00 +0200
+
+    Update calendar docs
+
+ ql/time/calendars/israel.cpp |  4 ++--
+ ql/time/calendars/israel.hpp | 52 ++++++++++++++++++++++++++++++++++++++------
+ 2 files changed, 47 insertions(+), 9 deletions(-)
+
+commit 571cd478fbadd34f5261706332d020b284e50078
+Author: auto-differentiation-dev <107129969+auto-differentiation-dev@users.noreply.github.com>
+Date:   Mon, 8 Jun 2026 10:34:09 +0100
+
+    Use double instead of constexpr Real in TrinomialTree for AAD builds
+
+ ql/methods/lattices/trinomialtree.cpp | 2 +-
+ test-suite/trinomialtree.cpp          | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit d8f820f5b273571cada079587ed66761b9873d17
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Sun, 7 Jun 2026 12:06:23 +0900
+
+    Use make_shared in volatility-related code
+
+ .../callablebonds/callablebondconstantvol.cpp      | 10 +---
+ ql/experimental/variancegamma/fftengine.cpp        |  4 +-
+ ql/experimental/variancegamma/fftvanillaengine.cpp |  2 +-
+ .../variancegamma/fftvariancegammaengine.cpp       |  2 +-
+ .../variancegamma/variancegammaprocess.cpp         |  2 +-
+ ql/termstructures/volatility/abcdcalibration.cpp   |  7 +--
+ .../equityfx/andreasenhugevolatilityinterpl.hpp    |  2 +-
+ .../volatility/equityfx/blackconstantvol.hpp       |  4 +-
+ .../volatility/equityfx/localconstantvol.hpp       |  4 +-
+ .../volatility/equityfx/localvolsurface.cpp        |  3 +-
+ .../volatility/interpolatedsmilesection.hpp        | 12 ++--
+ .../volatility/optionlet/constantoptionletvol.cpp  | 11 ++--
+ .../volatility/optionlet/optionletstripper1.cpp    |  9 ++-
+ .../volatility/optionlet/optionletstripper2.cpp    | 22 +++----
+ .../volatility/optionlet/spreadedoptionletvol.cpp  |  6 +-
+ .../optionlet/strippedoptionletadapter.cpp         | 10 ++--
+ .../volatility/sabrinterpolatedsmilesection.cpp    | 18 +++---
+ .../interpolatedswaptionvolatilitycube.cpp         | 12 +---
+ .../volatility/swaption/spreadedswaptionvol.cpp    |  6 +-
+ .../volatility/swaption/swaptionconstantvol.cpp    | 15 +++--
+ .../volatility/swaption/swaptionvolmatrix.cpp      | 20 +++----
+ ql/termstructures/volatility/zabr.cpp              | 67 ++++++++++++----------
+ .../volatility/zabrinterpolatedsmilesection.hpp    |  7 +--
+ ql/termstructures/volatility/zabrsmilesection.hpp  |  8 +--
+ 24 files changed, 121 insertions(+), 142 deletions(-)
+
+commit 2affee9df57f170e4af677bbc2255198a31f3a11
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Fri, 5 Jun 2026 14:01:02 -0400
+
+    Remove redundant calls to interpolation.update()
+
+ .../volatility/interpolatedsmilesection.hpp         | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
+
+commit a924b400a138894c69a8df97c6b80dcdfdc9cd69
+Author: Sébastien Bouvard <71438320+sebastienbou@users.noreply.github.com>
+Date:   Fri, 5 Jun 2026 10:02:20 +0100
+
+    Fix week end logic + comment
+
+ ql/time/calendars/israel.cpp | 5 ++++-
+ ql/time/calendars/israel.hpp | 4 ++--
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+commit 5111c3a1442a29b73ab8ec1fdce3e55d14cddf02
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 5 Jun 2026 09:28:01 +0200
+
+    Update copyright attributions
+
+ Contributors.txt                                                        | 2 +-
+ LICENSE.TXT                                                             | 2 +-
+ ql/termstructures/volatility/equityfx/piecewiseblackvariancesurface.cpp | 2 +-
+ ql/termstructures/volatility/equityfx/piecewiseblackvariancesurface.hpp | 2 +-
+ test-suite/piecewiseblackvariancesurface.cpp                            | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 3408d5ae32ed62d6e3d3f13e52a1df6d9aabe46a
+Merge: 01e4d4df7 cd9a15124
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 5 Jun 2026 09:17:58 +0200
+
+    Use Real-compatible types so AAD builds compile (FX forward engine, variance surface test) (#2616)
+
+commit 01e4d4df7c472f72eb6b1a72bc96206ff8aea3c6
+Merge: 0b9aca861 80b0f1f3f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 5 Jun 2026 09:17:23 +0200
+
+    Fix trinomial tree excessive branching with gated dx floor (#364) (#2615)
+
+commit e61454700b03dae25440fe4d68826bcb411a2c5e
+Author: Sébastien Bouvard <71438320+sebastienbou@users.noreply.github.com>
+Date:   Fri, 5 Jun 2026 08:04:06 +0100
+
+    Switch date check within isBusinessDay
+
+ ql/time/calendars/israel.cpp | 49 +++++---------------------------------------
+ ql/time/calendars/israel.hpp |  2 +-
+ 2 files changed, 6 insertions(+), 45 deletions(-)
+
+commit 0b9aca8619f59c772e39064e2870af2aa4bca8c1
+Merge: e71bc3db8 4469508ca
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 4 Jun 2026 18:56:36 +0200
+
+    Add warning to `RelativeDateBootstrapHelper` documentation (#2614)
+
+commit cd9a1512481b5ab0f0af24fa138e701683c9cd9b
+Author: auto-differentiation-dev <107129969+auto-differentiation-dev@users.noreply.github.com>
+Date:   Thu, 4 Jun 2026 10:25:47 +0100
+
+    Use Real-compatible types for AAD in FX forward engine and variance surface test
+
+ ql/pricingengines/forward/discountingfxforwardengine.cpp | 4 ++--
+ test-suite/piecewiseblackvariancesurface.cpp             | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit e71bc3db890dd8feefe3a3dffc81887023137ea9
+Merge: ff1b15f6f b3468ef4b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 4 Jun 2026 10:07:55 +0200
+
+    Derive MakeVanillaSwap spot date on the index fixing calendar (#2611)
+
+commit 80b0f1f3fa02e19bffd06ee8767b4fc1f8abf6e9
+Author: pandashark <richard.amaya@mac.com>
+Date:   Thu, 4 Jun 2026 00:21:58 -0500
+
+    Register trinomialtree.cpp in autotools and MSBuild file lists
+    
+    The CMakeLists.txt registration was sufficient for the local CMake
+    build but the upstream filelists check requires the new test source
+    in Makefile.am, testsuite.vcxproj, and testsuite.vcxproj.filters.
+
+ test-suite/Makefile.am               | 1 +
+ test-suite/testsuite.vcxproj         | 1 +
+ test-suite/testsuite.vcxproj.filters | 3 +++
+ 3 files changed, 5 insertions(+)
+
+commit ff1b15f6f8ef9ffaeab94a21687623bb8e4aa472
+Merge: 55d2c60f5 a01bad90c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 3 Jun 2026 14:32:35 +0200
+
+    Discount FX forward NPV to reference date (#2606)
+
+commit 4469508ca517e97933b2f6dacc4cc5eb83f3a605
+Author: MrC-D3 <27030240+MrC-D3@users.noreply.github.com>
+Date:   Mon, 1 Jun 2026 11:31:24 +0000
+
+    Warning in RelativeDateBootstrapHelper.
+
+ ql/termstructures/bootstraphelper.hpp | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+commit 67b09d01141bfc415741a167e4ad703bd7797fc7
+Author: Sébastien Bouvard <71438320+sebastienbou@users.noreply.github.com>
+Date:   Tue, 2 Jun 2026 21:17:32 +0100
+
+    Add TelAvivNationalImpl and TelborImpl classes
+
+ ql/time/calendars/israel.hpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit a479b2c715fdcbe695f246733f2893ce66289106
+Merge: 5f0be3016 7ca043cdd
+Author: Sébastien Bouvard <71438320+sebastienbou@users.noreply.github.com>
+Date:   Tue, 2 Jun 2026 17:40:37 +0100
+
+    Merge pull request #1 from sebastienbou/sebastienboufix-ILS-Calendar
+    
+    Update israel.hpp
+
+commit 5f0be30168d8acf06c009306aa53b22d1e2bddd0
+Author: Sébastien Bouvard <71438320+sebastienbou@users.noreply.github.com>
+Date:   Tue, 2 Jun 2026 17:40:05 +0100
+
+    Update israel.cpp
+    
+    Add New TASE calendar and TELBOR
+
+ ql/time/calendars/israel.cpp | 107 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 107 insertions(+)
+
+commit 7ca043cdd69dd210084de8c71ddecd6e20a50d78
+Author: Sébastien Bouvard <71438320+sebastienbou@users.noreply.github.com>
+Date:   Tue, 2 Jun 2026 17:36:10 +0100
+
+    Update israel.hpp
+    
+    https://www.tase.co.il/en/content/about/tradingdays_change
+    
+    The TASE calendar switched to Monday-Friday working day on the 5th January 2026.
+    
+    In addition, adding the telbor calendar that is different that TASE or SHIR
+
+ ql/time/calendars/israel.hpp | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+commit b3468ef4be73e5e0601fcf50c6105cf4e411b76e
+Author: Lawson Darrow <lawson.darrow@gmail.com>
+Date:   Mon, 1 Jun 2026 22:14:19 -0400
+
+    Derive MakeVanillaSwap spot date on the index fixing calendar
+
+ Contributors.txt                   |  1 +
+ ql/instruments/makevanillaswap.cpp | 16 +++++++---
+ test-suite/swap.cpp                | 62 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 74 insertions(+), 5 deletions(-)
+
+commit 55d2c60f58748d60a45a0f869b5ee5f79ba1e31c
+Merge: 6e2d54f66 4a3f2c52e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 1 Jun 2026 09:48:38 +0200
+
+    Use make_shared in cap/floor volatilities and null calendar (#2610)
+
+commit 6e2d54f66e88d447c5dda10ef1b0d77a3b21ccaa
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Sun, 31 May 2026 02:10:53 +0000
+
+    Automated fixes by clang-tidy
+
+ .../constnotionalcrosscurrencybasisswap.cpp        | 17 ++++++++-------
+ .../constnotionalcrosscurrencybasisswap.hpp        |  6 +++---
+ ...nstnotionalcrosscurrencyfixedvsfloatingswap.cpp | 25 +++++++++++-----------
+ ...nstnotionalcrosscurrencyfixedvsfloatingswap.hpp | 14 ++++++------
+ ql/instruments/constnotionalcrosscurrencyswap.cpp  |  4 ++--
+ ql/instruments/constnotionalcrosscurrencyswap.hpp  |  4 ++--
+ ...ountingconstnotionalcrosscurrencyswapengine.cpp |  7 +++---
+ ...ountingconstnotionalcrosscurrencyswapengine.hpp |  4 ++--
+ test-suite/constnotionalcrosscurrencyswap.cpp      |  3 ++-
+ test-suite/fastfouriertransform.cpp                |  4 ++--
+ test-suite/piecewiseblackvariancesurface.cpp       | 16 +++++++-------
+ 11 files changed, 54 insertions(+), 50 deletions(-)
+
+commit 4a3f2c52e31d750f8fa31d0dfe02ec15b046d431
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Sat, 30 May 2026 14:00:26 +0900
+
+    Use make_shared in cap/floor volatilities and null calendar
+
+ ql/termstructures/volatility/capfloor/capfloortermvolcurve.cpp    | 6 ++----
+ ql/termstructures/volatility/capfloor/capfloortermvolsurface.cpp  | 8 ++++----
+ ql/termstructures/volatility/capfloor/constantcapfloortermvol.cpp | 4 ++--
+ ql/time/calendars/nullcalendar.hpp                                | 2 +-
+ 4 files changed, 9 insertions(+), 11 deletions(-)
+
+commit ba2df29d81e2e719c27e249839694b14fbbb0a8d
+Merge: 6c6e76e49 cc6fa4b16
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 29 May 2026 13:33:33 +0200
+
+    Added asymmetric payment frequency support for cross-currency basis swap rate helpers (#2528)
+
+commit 6c6e76e49f60355c740a350bfb4651c05664b7d4
+Merge: 4a05ede07 a6e957050
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 29 May 2026 10:30:44 +0200
+
+    Fix out-of-bounds read in mixed interpolation switch point (#2605)
+
+commit cc6fa4b169f3c861500173bad3deb5104550dcb6
+Author: Justin Li <justin53@bu.edu>
+Date:   Thu, 28 May 2026 16:08:58 -0400
+
+    Document payment-frequency parameters in cross-currency helpers
+    
+    Add \param documentation for the cross-currency basis-swap rate helpers
+    describing the index-tenor default and the quote-to-base fallback, and
+    rename the quoteCcyPaymentFrequency constructor parameter to
+    quoteCurrencyPaymentFrequency to match the sibling baseCurrencyIndex and
+    quoteCurrencyIndex parameters.  Add a test pinning the quote-to-base
+    fallback behavior.
+
+ .../termstructures/crosscurrencyratehelpers.cpp    | 15 ++++---
+ .../termstructures/crosscurrencyratehelpers.hpp    | 32 ++++++++++++--
+ test-suite/crosscurrencyratehelpers.cpp            | 51 ++++++++++++++++++++++
+ 3 files changed, 89 insertions(+), 9 deletions(-)
+
+commit 1e83cb5731c8f1e7c9ed60a07c51a0a7bbdcf39d
+Author: Justin Li <justin53@bu.edu>
+Date:   Thu, 28 May 2026 15:44:13 -0400
+
+    Treat NoFrequency as unset in cross-currency basis swap helpers
+    
+    A NoFrequency passed to the payment-frequency parameters now normalizes
+    to nullopt, preserving the pre-optional behavior (derive the schedule
+    from the index tenor) instead of building a zero-length Period(NoFrequency)
+    schedule, which Schedule silently maps to the Zero date-generation rule.
+
+ .../termstructures/crosscurrencyratehelpers.cpp    | 17 ++++++-
+ test-suite/crosscurrencyratehelpers.cpp            | 54 ++++++++++++++++++++++
+ 2 files changed, 69 insertions(+), 2 deletions(-)
+
+commit 4a05ede07c4841e00f5f403db2f79b90dc58c2e2
+Merge: 4d6697188 8a2a845d5
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 28 May 2026 10:41:18 +0200
+
+    Replace Boost macros that might not work with AAD types (#2609)
+
+commit 8a2a845d50231e74dfd6a872235ac9464d841d55
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Wed, 27 May 2026 12:59:14 +0000
+
+    Replace Boost macros that might not work with AAD types
+
+ test-suite/interpolations.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 4d669718878c1aedfad459b576df1af8044ff535
+Merge: c6aacfc24 29874e780
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 27 May 2026 14:58:38 +0200
+
+    Fix out-of-bounds read in Akima cubic interpolation with 3 points (#2603)
+
+commit c6aacfc24430df94bd443175101e040e65b8b04a
+Merge: 8a825ea16 5f13cd8b9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 27 May 2026 11:07:12 +0200
+
+    Use make_shared in day counters (#2607)
+
+commit a6e9570501d381a08772996b20ef9c9d34f1627d
+Author: metsw24-max <metsw24@gmail.com>
+Date:   Tue, 26 May 2026 21:04:52 +0530
+
+    updated
+
+ test-suite/interpolations.cpp | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit 29874e78057238d44a110d4a456142674dc15bbf
+Author: metsw24-max <metsw24@gmail.com>
+Date:   Tue, 26 May 2026 21:00:24 +0530
+
+    updated
+
+ test-suite/interpolations.cpp | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+commit 5f13cd8b97b8304a3a6ff4833d4fb922077ce272
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Tue, 26 May 2026 20:15:17 +0900
+
+    Use make_shared in day counters
+
+ ql/time/daycounters/actual360.hpp        |  3 +--
+ ql/time/daycounters/actual364.hpp        |  2 +-
+ ql/time/daycounters/actual36525.hpp      |  3 +--
+ ql/time/daycounters/actual365fixed.cpp   |  6 +++---
+ ql/time/daycounters/actual366.hpp        |  3 +--
+ ql/time/daycounters/actualactual.cpp     |  8 ++++----
+ ql/time/daycounters/business252.hpp      |  2 +-
+ ql/time/daycounters/one.hpp              |  3 +--
+ ql/time/daycounters/simpledaycounter.hpp |  3 +--
+ ql/time/daycounters/thirty360.cpp        | 12 ++++++------
+ ql/time/daycounters/thirty365.cpp        |  2 +-
+ 11 files changed, 21 insertions(+), 26 deletions(-)
+
+commit a01bad90c907b5ba03f2de887904c9210dd484c8
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Tue, 26 May 2026 19:56:51 +0900
+
+    Add const qualifiers to FX forward calculations
+
+ .../forward/discountingfxforwardengine.cpp         | 42 +++++++++++-----------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
+
+commit d9f8b08edcdcace1d6fb70ac713c3f2765664617
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Tue, 26 May 2026 19:53:47 +0900
+
+    Discount FX forward NPV to reference date
+
+ .../forward/discountingfxforwardengine.cpp         | 25 ++++++++++++++++------
+ .../forward/discountingfxforwardengine.hpp         | 18 +++++++++++-----
+ 2 files changed, 32 insertions(+), 11 deletions(-)
+
+commit 8a825ea16c6fc6ebe0add954f17139865b6624de
+Merge: a40d0c9c9 4af06f196
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 26 May 2026 12:35:15 +0200
+
+    Fix FX forward fair rate calculation (#2601)
+
+commit a40d0c9c97ae708235a02df4207f0b290f22ccf7
+Merge: c085121cf 5b0bf4250
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 26 May 2026 11:44:49 +0200
+
+    Fix out-of-bounds read in discrete integrals on degenerate grids (#2604)
+
+commit f95ac1746442fc1c470a80a60a318d0e0918c558
+Author: metsw24-max <metsw24@gmail.com>
+Date:   Mon, 25 May 2026 23:33:35 +0530
+
+    fix out-of-bounds read in mixed interpolation switch point
+
+ ql/math/interpolations/mixedinterpolation.hpp |  9 ++++-----
+ test-suite/interpolations.cpp                 | 25 +++++++++++++++++++++++++
+ 2 files changed, 29 insertions(+), 5 deletions(-)
+
+commit 5b0bf4250bafe4708e6962b54c1ac7d942053ec8
+Author: metsw24-max <metsw24@gmail.com>
+Date:   Mon, 25 May 2026 21:59:55 +0530
+
+    Fix out-of-bounds read in discrete integrals on degenerate grids
+
+ ql/math/integrals/discreteintegrals.cpp |  6 ++++++
+ test-suite/integrals.cpp                | 17 +++++++++++++++++
+ 2 files changed, 23 insertions(+)
+
+commit 70b509fecd15d54794ff92c2ac6052e80ec378ec
+Author: metsw24-max <metsw24@gmail.com>
+Date:   Mon, 25 May 2026 20:14:33 +0530
+
+    Fix out-of-bounds read in Akima cubic interpolation with 3 points
+
+ ql/math/interpolations/cubicinterpolation.hpp |  7 ++++++-
+ test-suite/interpolations.cpp                 | 22 ++++++++++++++++++++++
+ 2 files changed, 28 insertions(+), 1 deletion(-)
+
+commit c085121cf454be438f2838a992e816c38c51ddc4
+Merge: ffc72c07f d6dd745c6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 25 May 2026 10:12:28 +0200
+
+    Fix IrrFinder::derivative() returning modified duration instead of dP/dy (#2589)
+
+commit ffc72c07f81f90dc2795a3c3a97d811395dcb089
+Merge: e9600cd74 ee16ca97a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 25 May 2026 10:10:18 +0200
+
+    Add india nse 2026 holidays (#2586)
+
+commit e9600cd742e6a830c114e4a80ae0b2337e36b4c0
+Merge: b90289bd5 4d1c18672
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 25 May 2026 09:55:11 +0200
+
+    Fix out-of-bounds write in FastFourierTransform ctor for order=0 (#2597)
+
+commit b90289bd5e26ebaa4d5f1c1fdf92254fdc41f655
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 25 May 2026 08:58:44 +0200
+
+    Disable clang-tidy warning
+
+ .clang-tidy | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 4af06f19636491fc436a14ac4527dfec0e315985
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Sat, 23 May 2026 16:25:23 +0900
+
+    Update FX forward fair rate documentation
+
+ ql/pricingengines/forward/discountingfxforwardengine.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 8063355da60e56af6a7890d850e55ca45f7eee8a
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Sat, 23 May 2026 16:17:20 +0900
+
+    Fix FX forward fair rate calculation
+
+ ql/pricingengines/forward/discountingfxforwardengine.cpp |  4 ++--
+ test-suite/fxforward.cpp                                 | 12 +++++++++---
+ 2 files changed, 11 insertions(+), 5 deletions(-)
+
+commit 60f02879261fe9a34d0023299da1ed46bf32646e
+Author: Justin Li <justin53@bu.edu>
+Date:   Fri, 22 May 2026 17:26:12 -0400
+
+    Use ext::optional<Frequency> for payment frequency in cross-currency helpers
+    
+    Standardizes the cross-currency basis swap rate helpers on the
+    ext::optional<Frequency> pattern (with ext::nullopt default) that
+    other rate helpers in the codebase use, instead of the NoFrequency
+    sentinel value. Covers both paymentFrequency and quoteCcyPaymentFrequency
+    to keep the file internally consistent.
+
+ .../termstructures/crosscurrencyratehelpers.cpp    | 22 +++++++++++-----------
+ .../termstructures/crosscurrencyratehelpers.hpp    | 17 +++++++++--------
+ test-suite/crosscurrencyratehelpers.cpp            | 17 +++++++++--------
+ 3 files changed, 29 insertions(+), 27 deletions(-)
+
+commit d6dd745c68acaacace80de02c5e97080db9be63c
+Author: Benjamin Croud <98527451+Croudxd@users.noreply.github.com>
+Date:   Fri, 22 May 2026 20:50:30 +0000
+
+    Fix sign of derivative calculation in IrrFinder
+
+ ql/cashflows/cashflows.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit ee16ca97a80023faccc291f87b89acda8767cac4
+Author: Pratzz1202 <pratyushpatel1609@gmail.com>
+Date:   Fri, 22 May 2026 14:17:34 -0400
+
+    Use initializer list for expectedHol in testIndia
+
+ test-suite/calendars.cpp | 88 ++++++++++++++++++++++++------------------------
+ 1 file changed, 44 insertions(+), 44 deletions(-)
+
+commit 2eb86846efc496bf6ea0312fad2d31fec8c4ea13
+Merge: b0d5fc181 be5067e01
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 22 May 2026 17:35:16 +0200
+
+    Fix Vasicek zero-reversion limit (#2599)
+
+commit b0d5fc181300fc00c2247eeb3c78743efe4a6132
+Merge: 7e7fccd78 266454b24
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 22 May 2026 17:34:26 +0200
+
+    Add 2025 South Korea temporary holiday (#2598)
+
+commit 4d1c1867254d4c5bfede9194932d5a70d5cc8841
+Author: metsw24-max <metsw24@gmail.com>
+Date:   Fri, 22 May 2026 19:45:27 +0530
+
+    updated
+
+ test-suite/fastfouriertransform.cpp | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+commit be5067e01fb17d9d07bef46d8b1f019e7bb9018f
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Fri, 22 May 2026 20:46:16 +0900
+
+    Fix Vasicek zero-reversion limit
+
+ ql/models/shortrate/onefactormodels/vasicek.cpp |  6 +++--
+ test-suite/shortratemodels.cpp                  | 29 +++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+), 2 deletions(-)
+
+commit 266454b246bbad1c0d2c300bab094a85fa9b8363
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Fri, 22 May 2026 20:09:35 +0900
+
+    Add 2025 South Korea temporary holiday
+
+ ql/time/calendars/southkorea.cpp | 1 +
+ test-suite/calendars.cpp         | 2 ++
+ 2 files changed, 3 insertions(+)
+
+commit 7e7fccd784bc0bbdec6538156e02d9397870d190
+Merge: af13604dc cf5657758
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 22 May 2026 13:14:07 +0200
+
+    Use Real instead of auto and constexpr for AD type compatibility (#2596)
+
+commit af13604dc7a054bd1e19da805e515f6e8e40d890
+Merge: bed4bbfa9 99a43a7cc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 22 May 2026 13:12:53 +0200
+
+    Update HullWhite r0 when termstructure relinks (#2592)
+
+commit b604cd28347d706c01beac2dce81996baaa6c752
+Author: metsw24-max <metsw24@gmail.com>
+Date:   Fri, 22 May 2026 15:24:03 +0530
+
+    Fix out-of-bounds write in FastFourierTransform ctor for order=0
+    
+    The constructor allocated cs_ and sn_ with size 'order' and then
+    unconditionally wrote to cs_[order-1] and sn_[order-1]. When 'order'
+    is 0 (e.g. when callers chain FastFourierTransform::min_order(1),
+    which returns 0), both vectors are empty and the indexing wraps to
+    size_t(-1), producing an out-of-bounds write that segfaults under
+    debug-iterator-checked standard libraries.
+    
+    A transform of size 1 == 1<<0 reduces to a copy and needs no twiddle
+    factors, so skip the setup when order is 0. The transform loop body
+    'for (s = 1; s <= order; ++s)' already handles the order==0 case
+    correctly.
+
+ ql/math/fastfouriertransform.hpp | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+commit bed4bbfa90972a67d58795a1a94f915e5620b715
+Merge: 3e676cd71 a81da9201
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 22 May 2026 10:25:09 +0200
+
+    Fix yield term structure time error message (#2593)
+
+commit cf56577582edd3d078198727ef1db9f78f92f39f
+Author: auto-differentiation-dev <107129969+auto-differentiation-dev@users.noreply.github.com>
+Date:   Thu, 21 May 2026 17:18:22 +0100
+
+    Use Real-compatible types in SmileSectionRNDCalculator
+
+ .../finitedifferences/utilities/smilesectionrndcalculator.cpp       | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 78acb70908db3c19581e3e20abc741c357cf6e94
+Author: auto-differentiation-dev <107129969+auto-differentiation-dev@users.noreply.github.com>
+Date:   Thu, 21 May 2026 17:18:18 +0100
+
+    Use Real instead of auto in IntegralHestonVarianceOptionEngine
+
+ .../integralhestonvarianceoptionengine.cpp         | 40 +++++++++++-----------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
+
+commit 3e676cd71398f95cc933cee60917298b22c1b706
+Merge: d6abf67ea 19015b501
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 21 May 2026 16:50:04 +0200
+
+    Rename a couple of inspectors in the cross-currency swap engine (#2595)
+
+commit 99a43a7cc1301b7172d683340c59d6c5a83524b6
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Thu, 21 May 2026 22:18:07 +0900
+
+    comment applied
+
+ ql/models/shortrate/onefactormodels/hullwhite.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 19015b501c1268d9825d77bd6666bb81af332a03
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 21 May 2026 12:59:07 +0200
+
+    Rename inspectors
+
+ .../swap/discountingconstnotionalcrosscurrencyswapengine.hpp | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+commit d6abf67ea595886fff8ba75ef64754155d401966
+Merge: c788f8e6d 71121aea8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 21 May 2026 11:55:40 +0200
+
+    Use make_shared in indexes (#2590)
+
+commit e1d7603a859f431156d00a6bee1d44b7c0c83d24
+Author: Benjamin Croud <98527451+Croudxd@users.noreply.github.com>
+Date:   Wed, 20 May 2026 16:36:48 +0000
+
+    Fix NPV calculation order in cashflows.cpp
+
+ ql/cashflows/cashflows.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit c788f8e6dcccb3b5afd91867d6b2d19399a4298b
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Wed, 20 May 2026 10:07:16 +0000
+
+    Fix inclusions of ql headers in double quotes
+
+ ql/instruments/makecapfloor.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit a81da92010e6af8090ab1c09aa5aa6e05c090c1a
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Wed, 20 May 2026 19:57:40 +0900
+
+    Restore existing formatting
+
+ ql/termstructures/yieldtermstructure.cpp | 100 ++++++++++++++++++-------------
+ 1 file changed, 60 insertions(+), 40 deletions(-)
+
+commit 64ef5a54407a7c98fad3cfc4f7f43930caf79a68
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Wed, 20 May 2026 19:55:11 +0900
+
+    Comment applied
+
+ ql/termstructures/yieldtermstructure.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 50dc966b1f3abfecf3bc36af752ece7ca2017458
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Wed, 20 May 2026 19:46:35 +0900
+
+    comment applied
+
+ ql/termstructures/yieldtermstructure.cpp | 100 +++++++++++++------------------
+ 1 file changed, 40 insertions(+), 60 deletions(-)
+
+commit 219e2ae6561f7c782ff4522f7091e1575e76bf44
+Author: Benjamin Croud <98527451+Croudxd@users.noreply.github.com>
+Date:   Wed, 20 May 2026 09:40:10 +0000
+
+    Fix sign of modified duration calculation
+
+ ql/cashflows/cashflows.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 8d60143038870a002b8f5498d227d3951d20c757
+Merge: f5ba35d91 dbfd60ffd
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 20 May 2026 11:37:45 +0200
+
+    Fix incorrect 10-year label in BasketLosses example (#2584)
+
+commit f5ba35d91c657054f6aef5a4dcf4f4f48fd2d93d
+Merge: e7ba4f701 ce39ee391
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 20 May 2026 11:36:39 +0200
+
+    Allow `MakeCapFloor` to calculate ATM level when using the Bachelier engine (#2582)
+
+commit b32e9bab9bdbb12f9be268c8f630dea83284c26f
+Author: Justin Li <justin53@bu.edu>
+Date:   Wed, 1 Apr 2026 10:34:22 -0400
+
+    Added separate payment frequency for quote currency leg in cross-currency helpers
+
+ .../termstructures/crosscurrencyratehelpers.cpp    | 22 +++++++++++-----
+ .../termstructures/crosscurrencyratehelpers.hpp    | 10 +++++---
+ test-suite/crosscurrencyratehelpers.cpp            | 30 +++++++++++++++++-----
+ 3 files changed, 46 insertions(+), 16 deletions(-)
+
+commit 9cfb1b38ae4e6c61ae7178b706e6dcf75ee56fd2
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Tue, 19 May 2026 22:52:32 +0900
+
+    Fix yield term structure time error message
+
+ ql/termstructures/yieldtermstructure.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit b720ffe85cf7b93bb6bc33fc7e7d9ab898696d59
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Tue, 19 May 2026 22:42:53 +0900
+
+    Update HullWhite r0 when term structure relinks
+
+ ql/models/shortrate/onefactormodels/hullwhite.cpp |  2 +-
+ ql/models/shortrate/onefactormodels/hullwhite.hpp |  4 ----
+ test-suite/shortratemodels.cpp                    | 24 +++++++++++++++++++++++
+ 3 files changed, 25 insertions(+), 5 deletions(-)
+
+commit 71121aea8ec3ca9417266955df113f2233236858
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Tue, 19 May 2026 21:19:33 +0900
+
+    Use make_shared in indexes
+
+ ql/indexes/ibor/shibor.cpp       |  2 +-
+ ql/indexes/iborindex.cpp         | 13 ++++++-------
+ ql/indexes/region.cpp            | 13 ++++++-------
+ ql/indexes/swap/chfliborswap.cpp |  8 ++++----
+ ql/indexes/swap/euriborswap.cpp  | 24 ++++++++++++------------
+ ql/indexes/swap/eurliborswap.cpp | 24 ++++++++++++------------
+ ql/indexes/swap/gbpliborswap.cpp |  8 ++++----
+ ql/indexes/swap/jpyliborswap.cpp |  8 ++++----
+ ql/indexes/swap/usdliborswap.cpp |  8 ++++----
+ 9 files changed, 53 insertions(+), 55 deletions(-)
+
+commit e7ba4f701aa42c6f8374d17227e04f9eb9ee115c
+Merge: d4b2732e1 5bf39d92b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 19 May 2026 10:08:26 +0200
+
+    Use make_unique for unique_ptr construction (#2579)
+
+commit d4b2732e1c5d1927cac3cea11f008682cdc05d81
+Merge: f1fee5511 6406602fb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 19 May 2026 10:05:44 +0200
+
+    Override `atmLevel(Time)` on Heston and Andreasen-Huge vol surfaces (#2581)
+
+commit f1fee55110e799dea80ea4d2fd97864cdac25d0a
+Merge: 42125df9c 73e75f0e3
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 19 May 2026 10:04:28 +0200
+
+    Add `SmileSectionRNDCalculator` for smile-implied marginals (#2580)
+
+commit cc6c18a7e2119cd812196d33065d00d8c7981cf6
+Author: croudxd <benjamincroud@gmail.com>
+Date:   Mon, 18 May 2026 22:12:24 +0000
+
+    Fix IrrFinder::derivative() returning modified duration instead of dP/dy
+
+ ql/cashflows/cashflows.cpp | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit ce39ee3916c8e02d309467964be73fdd0743eb6e
+Author: croudxd <benjamincroud@gmail.com>
+Date:   Mon, 18 May 2026 21:47:58 +0000
+
+    Fix shadowed Handle declarations inside if-statement scopes
+
+ ql/instruments/makecapfloor.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 42125df9c3ea445c718eb3d533337f7081bd8a6f
+Merge: ae25d2846 1472b39ab
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 18 May 2026 18:18:19 +0200
+
+    Review default arguments in cross-currency swap constructors (#2588)
+
+commit 1472b39ab2f2b804756da8e8ae45455f9d3dcd2f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 18 May 2026 11:13:20 +0200
+
+    Uniform type and number of arguments in cross-currency swap constructors
+
+ .../constnotionalcrosscurrencybasisswap.cpp        | 42 +++++++++-------
+ .../constnotionalcrosscurrencybasisswap.hpp        | 58 ++++++++++++----------
+ ...nstnotionalcrosscurrencyfixedvsfloatingswap.cpp | 18 ++++---
+ ...nstnotionalcrosscurrencyfixedvsfloatingswap.hpp | 41 ++++++++-------
+ test-suite/constnotionalcrosscurrencybasisswap.cpp | 16 +++---
+ ...nstnotionalcrosscurrencyfixedvsfloatingswap.cpp |  2 +-
+ 6 files changed, 98 insertions(+), 79 deletions(-)
+
+commit d6b90051a85d7c73c1328bddd159fc8794b3727c
+Author: Pratzz1202 <pratyushpatel1609@gmail.com>
+Date:   Sun, 17 May 2026 18:19:31 -0400
+
+    Added India (NSE) clearing holidays for 2026
+
+ test-suite/calendars.cpp | 118 +++++++++++++++++++++++------------------------
+ 1 file changed, 59 insertions(+), 59 deletions(-)
+
+commit 5e0b803f47779ee8327ec746d2671e9e2242afaa
+Author: Pratzz1202 <pratyushpatel1609@gmail.com>
+Date:   Sun, 17 May 2026 18:04:15 -0400
+
+    Added India (NSE) clearing holidays for 2026
+
+ ql/time/calendars/india.cpp | 217 +++++++++++++++++--------------
+ ql/time/calendars/india.hpp |   2 +-
+ test-suite/calendars.cpp    | 307 ++++++++++++++++++--------------------------
+ 3 files changed, 245 insertions(+), 281 deletions(-)
+
+commit dbfd60ffdf9513718a72d235f22330469dca2a15
+Author: croudxd <benjamincroud@gmail.com>
+Date:   Sat, 16 May 2026 19:53:46 +0000
+
+    Fix incorrect 10-year label in BasketLosses example (60 months = 5 years)
+
+ Examples/BasketLosses/BasketLosses.cpp | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+commit 98fda2fce017b404ed63c7d04f62b7e71402b3b5
+Author: croudxd <benjamincroud@gmail.com>
+Date:   Fri, 15 May 2026 21:15:03 +0000
+
+    Added check to check if engine_ is either bacheliercapfloorengine or blackcapfloorengine, then uses correct discountCurve in atmrate call.
+
+ ql/instruments/makecapfloor.cpp | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
+
+commit 5bf39d92b6bcebee633fc36a2133d7c000e25454
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Fri, 15 May 2026 23:36:06 +0900
+
+     use auto for declaration
+
+ .../integralhestonvarianceoptionengine.cpp         | 81 +++++++++++-----------
+ ql/math/matrixutilities/qrdecomposition.cpp        | 12 ++--
+ ql/math/optimization/levenbergmarquardt.cpp        | 18 ++---
+ .../vanilla/analyticgjrgarchengine.cpp             |  6 +-
+ 4 files changed, 57 insertions(+), 60 deletions(-)
+
+commit ae25d2846d61c0db38bc701a3475ca5678812554
+Merge: 0c204a72e 0934f9100
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 15 May 2026 13:29:58 +0200
+
+    Const Notional Cross Currency Swaps (#2248)
+
+commit 0934f910072f32912cdffaffe2c5cceb2cca7b89
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 15 May 2026 12:04:13 +0200
+
+    Uniform EOL
+
+ .../constnotionalcrosscurrencybasisswap.cpp        | 368 ++++-----
+ .../constnotionalcrosscurrencybasisswap.hpp        | 362 ++++-----
+ ...nstnotionalcrosscurrencyfixedvsfloatingswap.cpp | 346 ++++-----
+ ...nstnotionalcrosscurrencyfixedvsfloatingswap.hpp | 382 +++++-----
+ test-suite/constnotionalcrosscurrencybasisswap.cpp | 842 ++++++++++-----------
+ ...nstnotionalcrosscurrencyfixedvsfloatingswap.cpp | 600 +++++++--------
+ 6 files changed, 1450 insertions(+), 1450 deletions(-)
+
+commit f61263103a58e55e7527587927ac0faa0f99b829
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 15 May 2026 12:01:08 +0200
+
+    More pedantic names
+
+ QuantLib.vcxproj                                   | 16 ++++----
+ QuantLib.vcxproj.filters                           | 16 ++++----
+ ql/CMakeLists.txt                                  | 16 ++++----
+ .../termstructures/crosscurrencyratehelpers.cpp    |  8 ++--
+ .../termstructures/crosscurrencyratehelpers.hpp    |  4 +-
+ ql/instruments/Makefile.am                         | 12 +++---
+ ql/instruments/all.hpp                             |  6 +--
+ ...cpp => constnotionalcrosscurrencybasisswap.cpp} | 46 ++++++++++-----------
+ ...hpp => constnotionalcrosscurrencybasisswap.hpp} | 43 ++++++++++---------
+ ...stnotionalcrosscurrencyfixedvsfloatingswap.cpp} | 39 +++++++++---------
+ ...stnotionalcrosscurrencyfixedvsfloatingswap.hpp} | 38 ++++++++---------
+ ...swap.cpp => constnotionalcrosscurrencyswap.cpp} | 32 +++++++--------
+ ...swap.hpp => constnotionalcrosscurrencyswap.hpp} | 48 +++++++++++-----------
+ ql/pricingengines/swap/Makefile.am                 |  4 +-
+ ql/pricingengines/swap/all.hpp                     |  2 +-
+ ...untingconstnotionalcrosscurrencyswapengine.cpp} | 10 ++---
+ ...untingconstnotionalcrosscurrencyswapengine.hpp} | 25 +++++------
+ test-suite/CMakeLists.txt                          |  6 +--
+ test-suite/Makefile.am                             |  6 +--
+ ...cpp => constnotionalcrosscurrencybasisswap.cpp} | 23 +++++------
+ ...stnotionalcrosscurrencyfixedvsfloatingswap.cpp} | 17 ++++----
+ ...swap.cpp => constnotionalcrosscurrencyswap.cpp} | 32 +++++++--------
+ test-suite/testsuite.vcxproj                       |  6 +--
+ test-suite/testsuite.vcxproj.filters               |  6 +--
+ 24 files changed, 224 insertions(+), 237 deletions(-)
+
+commit 73e75f0e3aaa60bc7f0148c2820b7179a55e527a
+Author: Yassine Idyiahia <yassine.id@gmail.com>
+Date:   Wed, 13 May 2026 10:16:02 +0100
+
+    Add SmileSectionRNDCalculator for smile-implied marginals
+
+ QuantLib.vcxproj                                   |   2 +
+ QuantLib.vcxproj.filters                           |   6 +
+ ql/CMakeLists.txt                                  |   2 +
+ ql/methods/finitedifferences/utilities/Makefile.am |   2 +
+ ql/methods/finitedifferences/utilities/all.hpp     |   1 +
+ .../utilities/smilesectionrndcalculator.cpp        | 132 +++++++++++++++++
+ .../utilities/smilesectionrndcalculator.hpp        |  69 +++++++++
+ test-suite/riskneutraldensitycalculator.cpp        | 158 +++++++++++++++++++++
+ 8 files changed, 372 insertions(+)
+
+commit a255d1c49f2e467a09d688d2d928e02cdbba9661
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Thu, 14 May 2026 21:53:26 +0900
+
+    Use make_unique for unique_ptr construction
+
+ .../integralhestonvarianceoptionengine.cpp             | 10 +++++-----
+ ql/math/matrixutilities/qrdecomposition.cpp            | 12 ++++++------
+ ql/math/optimization/levenbergmarquardt.cpp            | 18 +++++++++---------
+ .../callability/bermudanswaptionexercisevalue.cpp      |  2 +-
+ ql/models/marketmodels/callability/lsstrategy.cpp      |  2 +-
+ .../marketmodels/callability/nothingexercisevalue.cpp  |  2 +-
+ .../callability/parametricexerciseadapter.cpp          |  2 +-
+ ql/models/marketmodels/callability/swapbasissystem.cpp |  2 +-
+ .../callability/swapforwardbasissystem.cpp             |  2 +-
+ ql/models/marketmodels/callability/swapratetrigger.cpp |  2 +-
+ .../marketmodels/callability/triggeredswapexercise.cpp |  2 +-
+ .../marketmodels/callability/upperboundengine.cpp      |  2 +-
+ .../marketmodels/curvestates/cmswapcurvestate.cpp      |  2 +-
+ .../curvestates/coterminalswapcurvestate.cpp           |  2 +-
+ ql/models/marketmodels/curvestates/lmmcurvestate.cpp   |  2 +-
+ .../marketmodels/products/multiproductcomposite.cpp    |  2 +-
+ .../products/multistep/callspecifiedmultiproduct.cpp   |  2 +-
+ .../marketmodels/products/multistep/cashrebate.cpp     |  2 +-
+ .../products/multistep/exerciseadapter.cpp             |  2 +-
+ .../products/multistep/multistepcoinitialswaps.cpp     |  2 +-
+ .../products/multistep/multistepcoterminalswaps.cpp    |  2 +-
+ .../multistep/multistepcoterminalswaptions.cpp         |  2 +-
+ .../products/multistep/multistepforwards.cpp           |  2 +-
+ .../products/multistep/multistepinversefloater.cpp     |  2 +-
+ .../products/multistep/multistepnothing.cpp            |  2 +-
+ .../products/multistep/multistepoptionlets.cpp         |  2 +-
+ .../products/multistep/multisteppathwisewrapper.cpp    |  2 +-
+ .../multistep/multistepperiodcapletswaptions.cpp       |  2 +-
+ .../products/multistep/multistepratchet.cpp            |  2 +-
+ .../marketmodels/products/multistep/multistepswap.cpp  |  2 +-
+ .../products/multistep/multistepswaption.cpp           |  2 +-
+ .../marketmodels/products/multistep/multisteptarn.cpp  |  2 +-
+ .../products/onestep/onestepcoinitialswaps.cpp         |  2 +-
+ .../products/onestep/onestepcoterminalswaps.cpp        |  2 +-
+ .../marketmodels/products/onestep/onestepforwards.cpp  |  2 +-
+ .../products/onestep/onestepoptionlets.cpp             |  2 +-
+ .../products/pathwise/pathwiseproductcallspecified.cpp |  2 +-
+ .../products/pathwise/pathwiseproductcaplet.cpp        |  6 +++---
+ .../products/pathwise/pathwiseproductcashrebate.cpp    |  2 +-
+ .../pathwise/pathwiseproductinversefloater.cpp         |  2 +-
+ .../products/pathwise/pathwiseproductswap.cpp          |  2 +-
+ .../products/pathwise/pathwiseproductswaption.cpp      |  5 ++---
+ .../marketmodels/products/singleproductcomposite.cpp   |  2 +-
+ ql/patterns/observable.hpp                             |  6 +++---
+ ql/pricingengines/vanilla/analyticgjrgarchengine.cpp   |  6 +++---
+ 45 files changed, 69 insertions(+), 70 deletions(-)
+
+commit 6406602fbc886730e178622fe03199d93f817fa2
+Author: Yassine Idyiahia <yassine.id@gmail.com>
+Date:   Wed, 13 May 2026 23:20:19 +0100
+
+    Override atmLevel(Time) on Heston and Andreasen-Huge vol surfaces
+
+ .../equityfx/andreasenhugevolatilityadapter.cpp    |  3 ++
+ .../equityfx/andreasenhugevolatilityadapter.hpp    |  1 +
+ .../volatility/equityfx/hestonblackvolsurface.cpp  |  7 ++++
+ .../volatility/equityfx/hestonblackvolsurface.hpp  |  1 +
+ test-suite/andreasenhugevolatilityinterpl.cpp      | 43 ++++++++++++++++++++++
+ test-suite/hestonmodel.cpp                         | 34 +++++++++++++++++
+ 6 files changed, 89 insertions(+)
+
+commit 0c204a72ecd680f4b23afb1192dcce8af4d8da09
+Merge: 8e61faee4 ced8b90fc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 13 May 2026 15:02:20 +0200
+
+    Use Real instead of double in CompoundingOvernightIndexedCouponPricer lambda (#2577)
+
+commit 8e61faee43ff620f7ee8a83d879e1414f0e328da
+Merge: 464cca7bf 80a5b2d05
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 13 May 2026 10:35:30 +0200
+
+    Add `smileSection(...)` methods to `BlackVolTermStructure` (#2487)
+
+commit ced8b90fc32483853ed7df2ad6939acd76885ac8
+Author: auto-differentiation-dev <107129969+auto-differentiation-dev@users.noreply.github.com>
+Date:   Wed, 13 May 2026 09:31:10 +0100
+
+    Use Real instead of double in CompoundingOvernightIndexedCouponPricer lambda
+
+ ql/cashflows/overnightindexedcouponpricer.cpp | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+commit 464cca7bfcefde77dce50b62f1abf8d0f9da5257
+Merge: 572571b54 f45d0dcd7
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 13 May 2026 10:29:17 +0200
+
+    Add `PearsonSpreadEngine` for spread option pricing (#2569)
+
+commit 80a5b2d05859756012fcbc3218f5d4fa364cc6ae
+Author: Yassine Idyiahia <yassine.id@gmail.com>
+Date:   Sun, 15 Mar 2026 11:55:30 +0000
+
+    Add smileSection() to BlackVolTermStructure with default adapter
+
+ ql/shared_ptr.hpp                                  |   2 +
+ .../volatility/equityfx/blackvolsurfacedelta.cpp   |   5 +-
+ .../volatility/equityfx/blackvolsurfacedelta.hpp   |   9 +-
+ .../volatility/equityfx/blackvoltermstructure.cpp  |  42 ++++++++
+ .../volatility/equityfx/blackvoltermstructure.hpp  |  46 +++++++-
+ .../equityfx/piecewiseblackvariancesurface.cpp     |  10 ++
+ .../equityfx/piecewiseblackvariancesurface.hpp     |   2 +
+ test-suite/blackvolsurfacedelta.cpp                |  62 ++++++++++-
+ test-suite/piecewiseblackvariancesurface.cpp       | 119 +++++++++++++++++++++
+ 9 files changed, 290 insertions(+), 7 deletions(-)
+
+commit 572571b5452a7c8d6c49a3f0c716f25c08f744e1
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Tue, 12 May 2026 08:18:44 +0000
+
+    Update old license links
+
+ ql/time/calendars/uzbekistan.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 3eb4dd0fe2350023614966c7bab3d434760ede75
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Tue, 12 May 2026 08:18:53 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 28c2d66e1f6010501b8f804920e893d52394cff4
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Tue, 12 May 2026 08:20:45 +0000
+
+    Update generated headers
+
+ ql/time/calendars/all.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 8e3e07040f218ffe02434b5331a9c7ce68eecf10
+Merge: bb831ef1a 074d38fe1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 12 May 2026 10:18:30 +0200
+
+    Add some calendars, currencies, and the NOK NIBOR index (#2564)
+
+commit 074d38fe19ba4aa26179b0e2daad418760f81a51
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 12 May 2026 09:05:29 +0200
+
+    Follow Codacy suggestions about explicit constructors
+
+ ql/indexes/ibor/nibor.hpp            | 8 ++++----
+ ql/time/calendars/croatia.hpp        | 4 ++--
+ ql/time/calendars/malta.hpp          | 4 ++--
+ ql/time/calendars/montenegro.hpp     | 4 ++--
+ ql/time/calendars/northmacedonia.hpp | 4 ++--
+ ql/time/calendars/serbia.hpp         | 4 ++--
+ ql/time/calendars/slovenia.hpp       | 2 +-
+ ql/time/calendars/uzbekistan.hpp     | 4 ++--
+ 8 files changed, 17 insertions(+), 17 deletions(-)
+
+commit 0aedf93745c038b62285fa1ca65cc189d1186c07
+Author: ArsenP0doba <arsen.podoba@softsolutions.it>
+Date:   Mon, 11 May 2026 15:33:59 +0200
+
+    Fix type in nibor.hpp
+
+ ql/indexes/ibor/nibor.hpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit a5f6c57b1e5370e15cfeb65a50077ac94d7567aa
+Author: ArsenP0doba <arsen.podoba@softsolutions.it>
+Date:   Mon, 11 May 2026 15:23:16 +0200
+
+    Fix typo
+
+ ql/currencies/asia.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 7f49b94d64d9f43f8bab22b7c099d56dec0ef803
+Author: ArsenP0doba <arsen.podoba@softsolutions.it>
+Date:   Mon, 11 May 2026 14:52:36 +0200
+
+    Update visual studio project files
+
+ QuantLib.vcxproj         |  5828 +++++++++---------
+ QuantLib.vcxproj.filters | 14818 ++++++++++++++++++++++-----------------------
+ 2 files changed, 10323 insertions(+), 10323 deletions(-)
+
+commit 6f35f6a87bd29a4061d893c661703b21d7b6d691
+Author: ArsenP0doba <arsen.podoba@softsolutions.it>
+Date:   Mon, 11 May 2026 14:49:00 +0200
+
+    add nibor.hpp to all.hpp
+
+ ql/indexes/ibor/all.hpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 862086f709e52dff8eac5315144264f3761e02b0
+Author: ArsenP0doba <arsen.podoba@softsolutions.it>
+Date:   Mon, 11 May 2026 14:43:44 +0200
+
+    Fix typo in asia.hpp, rename NOKNibor to Nibor, change file attribution in calendar files
+
+ ql/CMakeLists.txt                           |  2 +-
+ ql/currencies/asia.hpp                      |  2 +-
+ ql/indexes/ibor/Makefile.am                 |  2 +-
+ ql/indexes/ibor/{noknibor.hpp => nibor.hpp} | 15 ++++++---------
+ ql/time/calendars/croatia.cpp               |  2 +-
+ ql/time/calendars/croatia.hpp               |  2 +-
+ ql/time/calendars/islamicholidays.cpp       |  2 +-
+ ql/time/calendars/islamicholidays.hpp       |  2 +-
+ ql/time/calendars/malta.cpp                 |  2 +-
+ ql/time/calendars/malta.hpp                 |  2 +-
+ ql/time/calendars/montenegro.cpp            |  2 +-
+ ql/time/calendars/montenegro.hpp            |  2 +-
+ ql/time/calendars/northmacedonia.cpp        |  2 +-
+ ql/time/calendars/northmacedonia.hpp        |  2 +-
+ ql/time/calendars/serbia.cpp                |  2 +-
+ ql/time/calendars/serbia.hpp                |  2 +-
+ ql/time/calendars/slovenia.cpp              |  2 +-
+ ql/time/calendars/slovenia.hpp              |  2 +-
+ ql/time/calendars/uzbekistan.cpp            |  3 +--
+ ql/time/calendars/uzbekistan.hpp            |  2 +-
+ 20 files changed, 25 insertions(+), 29 deletions(-)
+
+commit bb831ef1a2d267864e30f9b1aa2257b4f02e85a3
+Merge: 2d8ef3c72 244deda40
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 11 May 2026 12:58:33 +0200
+
+    Avoid dangling references in `FdmCEVOp` and `TrBDF2Scheme` classes (#2568)
+
+commit 2d8ef3c7241049c6e5edbbe1fdf9bcdff9eb63b4
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Sun, 10 May 2026 02:08:18 +0000
+
+    Automated fixes by clang-tidy
+
+ test-suite/overnightindexedcoupon.cpp | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+commit 4ef70a2d67e10bf37de7486d4f55daf39f1567a0
+Author: pandashark <richard.amaya@mac.com>
+Date:   Sun, 10 May 2026 16:41:05 -0500
+
+    Fix trinomial tree excessive branching with gated dx floor
+    
+    Closes #364.
+    
+    When a TimeGrid contains mandatory time points separated by very
+    short intervals (e.g. millisecond gaps inside an annual schedule),
+    the trinomial tree's per-step dx = v*sqrt(3) shrinks to a tiny
+    value at the short step.  Because subsequent steps still need to
+    cover the full state range, the integer-rounded `temp` index for
+    each parent node lands far from j=0, causing the j-range to
+    explode (Mandal observed several hundred nodes on a 50-step
+    grid).
+    
+    Apply a Clewlow-Strickland (1998) global dx floor based on the
+    largest natural dx in the grid, but only on grid steps that are
+    at least two orders of magnitude shorter than dtMax
+    (kFloorThreshold = 0.01).  This preserves classical
+    per-step dx = v*sqrt(3) on uniform and typical non-uniform grids
+    (weekend rolls, 1-day mismatches) while bounding node count on
+    the pathological small-mandatory-gap case.
+    
+    Probability formulas (dual branch on dxIsFloored):
+    
+      Unfloored regime (dxIsFloored == false): keep upstream's
+      classical Hull-White / Clewlow form character-identical:
+    
+          e3 = e*sqrt(3)
+          p1 = (1 + e^2/v^2 - e3/v) / 6
+          p2 = (2 - e^2/v^2) / 3
+          p3 = (1 + e^2/v^2 + e3/v) / 6
+    
+      This is the hot path covering every current cached-value
+      pricing test (bermudanswaption.cpp testCachedG2Values,
+      callablebonds.cpp), so cached values are bit-for-bit identical
+      to upstream master by code structure -- not by IEEE-754
+      coincidence as in the prior single-formula approach.
+    
+      Floored regime (dxIsFloored == true): use the general dx-based
+      moment-matching form, which redistributes mass toward the
+      middle node when dx is floored:
+    
+          p1 = (v^2 + e^2 - e*dx) / (2*dx^2)
+          p2 = 1 - (v^2 + e^2) / dx^2
+          p3 = (v^2 + e^2 + e*dx) / (2*dx^2)
+    
+      These reduce to (1/6, 2/3, 1/6) when dx = v*sqrt(3).
+      Non-negativity requires v^2 >= |e|*(dx - |e|), which always
+      holds in the unfloored regime with naturally-rounded temp;
+      in the floored regime when v << v_max the weights can go
+      slightly negative.  Documented in code as the accepted cost
+      of the pathology fix; first two moments are matched exactly,
+      so signed weights remain arithmetically consistent for linear
+      payoff propagation.  Hull-White-style alternative branching
+      does not solve this regime (it solves the orthogonal
+      boundary-drift problem).
+    
+    Branch flag semantics:
+    
+      dxIsFloored = (dxNext > dxNatural), defined post-computation,
+      tracks whether the floor was *effective* at this step rather
+      than whether the gate fired.  For Hull-White with constant
+      sigma the two definitions agree, but for time-dependent
+      diffusions a short step can have its natural dx already exceed
+      dxFloor -- the gate fires but dx is unchanged, and we should
+      use the classical formulas plus the safety assertion.
+    
+    Floor diagnostics:
+    - Floor activation threshold lifted to a file-scope constexpr
+      kFloorThreshold inside namespace QuantLib for clarity.
+    - Defensive QL_ENSURE on probability non-negativity in the
+      unfloored regime, gated on !dxIsFloored && !tempBumped.  The
+      tempBumped flag tracks the isPositive while-loop that bumps
+      `temp` upward to keep the underlying positive (CIR family);
+      in that bumped state |e| can exceed dx/2 and probabilities
+      can legitimately go negative, exactly as upstream allowed
+      before this change.  The guard still protects the most common
+      path (no floor, no bump) against future drift.
+    - dxFloor is computed via direct iteration over actual step
+      variances (dxFloor = sqrt(3 * max_i variance(t_i, 0, dt(i)))),
+      keeping the integration strictly within the declared grid
+      horizon by construction.  For Hull-White with constant sigma
+      this is identical to a dtMax-windowed form, so cached test
+      values are unchanged; for time-dependent diffusions it avoids
+      floating-point fragility from any `terminal - t_i` subtraction
+      and yields a slightly tighter bound.
+    - The preflight pass that derives dtMax and dxFloor also caches
+      per-step variances into std::vector<Real>; the main loop reads
+      v2 from the cache rather than re-invoking process->variance().
+      Halves the variance() call count, measurable for processes
+      with non-trivial variance evaluation cost.
+    
+    Test coverage (test-suite/trinomialtree.cpp):
+    - testSmallMandatoryGapDoesNotExplode exercises the small-
+      mandatory-gap pathology (1ms gap inside an annual grid) and
+      asserts bounded node count via the derived 2*nSteps+1 bound.
+    - testFloorThresholdBoundary probes immediately on either side
+      of kFloorThreshold (gapRatio = 0.0099 floored, 0.0101
+      unfloored).  The probe scans the constructed TimeGrid for the
+      minimum-dt step (rather than hard-coding an index that depends
+      on TimeGrid's prepend-t=0 behaviour) and reports both
+      tree.dx(shortIdx+1) and the natural reference computed in the
+      same operation order as production (sqrt(v2)*sqrt(3.0), not
+      sqrt(3.0*v2)) so BOOST_CHECK_EQUAL is bit-stable across
+      compilers.  The below-side asserts shortStepDx >
+      shortStepNaturalDx (floor positively active); the above-side
+      asserts strict equality (floor positively inactive).  This
+      catches drift of kFloorThreshold in either direction -- a
+      one-sided check would only detect upward drift.
+    
+    A pricing-level regression test for the floored regime
+    (Bermudan swaption / callable bond on a small-mandatory-gap
+    grid) is deliberately deferred: it would require modifying the
+    engine's internal TimeGrid construction to inject a mandatory
+    time outside any exercise date, which is outside the scope of
+    this trinomial-tree fix.  The unfloored hot path covering every
+    current cached-value pricing test is bit-for-bit identical to
+    upstream by construction; the floored regime's negative-
+    probability invariants are covered by static analysis in code
+    comments and the existing trinomial-tree unit tests.
+    
+    1293/1293 tests pass.
+
+ ql/methods/lattices/trinomialtree.cpp | 111 ++++++++++++++++++--
+ test-suite/CMakeLists.txt             |   1 +
+ test-suite/trinomialtree.cpp          | 185 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 291 insertions(+), 6 deletions(-)
+
+commit f45d0dcd788a765016aa6222306aea5069738ea7
+Author: Yassine Idyiahia <yassine.id@gmail.com>
+Date:   Wed, 11 Mar 2026 15:51:42 +0000
+
+    Add PearsonSpreadEngine for spread option pricing
+
+ QuantLib.vcxproj                                 |   2 +
+ QuantLib.vcxproj.filters                         |   6 ++
+ ql/CMakeLists.txt                                |   2 +
+ ql/pricingengines/basket/Makefile.am             |   2 +
+ ql/pricingengines/basket/all.hpp                 |   1 +
+ ql/pricingengines/basket/pearsonspreadengine.cpp |  93 +++++++++++++++++++
+ ql/pricingengines/basket/pearsonspreadengine.hpp |  60 +++++++++++++
+ test-suite/basketoption.cpp                      | 108 ++++++++++++++++++++++-
+ 8 files changed, 273 insertions(+), 1 deletion(-)
+
+commit 751b0fde1a8185ce1db014314a9f0dad5258b275
+Merge: af42ac4d5 00ea330f9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 8 May 2026 18:42:57 +0200
+
+    Add term structure to G2 processes (#2555)
+
+commit af42ac4d5f96fd83429d3c61188acff5bc72af50
+Merge: 024be57a2 f662e6b2a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 8 May 2026 11:55:29 +0200
+
+    Modernize small C++ constructs in selected files (#2561)
+
+commit 00ea330f915ed43b07ad7014111746b1597df600
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 8 May 2026 11:31:01 +0200
+
+    Syntax fix
+
+ ql/processes/g2process.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 778c18badd5b51b073c9d3aa4454c509a34e3dd2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 8 May 2026 11:30:00 +0200
+
+    Shorter syntax for empty handle
+
+ ql/processes/g2process.hpp | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+commit 024be57a20c70fe2218347108da8ee8bed5afd2f
+Merge: 714fed1e2 396cd15e5
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 8 May 2026 11:26:00 +0200
+
+    fuzz: add additional harnesses to be consumed by OSS-Fuzz (#2562)
+
+commit f662e6b2a3b1df710a66c78af5bf3653c2388774
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 8 May 2026 10:48:32 +0200
+
+    Use `push_back` instead of `emplace_back` when both have the same effect.
+
+ test-suite/cashflows.cpp  | 2 +-
+ test-suite/optimizers.cpp | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 73286132914665bc0256fc2ec556e41d71f6b97a
+Author: gjunjie <guojunjie920404@gmail.com>
+Date:   Thu, 7 May 2026 14:36:11 -0400
+
+    Make term-structure handle a trailing default arg in G2 processes
+    
+    Moves the Handle<YieldTermStructure> parameter introduced in a6d68458c
+    to the end of the G2Process and G2ForwardProcess constructor signatures
+    and defaults it to an empty handle, so existing code using the original
+    G2Process(a, sigma, b, eta, rho) / G2ForwardProcess(a, sigma, b, eta, rho)
+    calls keeps compiling. Test-suite call sites updated to match.
+    
+    No behavioural change: an empty handle still means "no curve", which the
+    existing implementation already handles in drift, expectation,
+    initialValues, and phi.
+    
+    Made-with: Cursor
+
+ ql/processes/g2process.cpp |  8 ++++----
+ ql/processes/g2process.hpp | 10 ++++++----
+ test-suite/g2process.cpp   | 20 ++++++++++----------
+ 3 files changed, 20 insertions(+), 18 deletions(-)
+
+commit 1a91f551b7fd5469043c54dce853a342d75e7f94
+Author: ArsenP0doba <arsen.podoba@softsolutions.it>
+Date:   Thu, 7 May 2026 16:06:35 +0200
+
+    Typo in montenegro.hpp/cpp
+
+ ql/time/calendars/montenegro.cpp | 2 +-
+ ql/time/calendars/montenegro.hpp | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit c1db9d9422e91b4bc5d0acda3ab3020f6315838d
+Author: ArsenP0doba <arsen.podoba@softsolutions.it>
+Date:   Thu, 7 May 2026 14:47:48 +0200
+
+    Add calendars (Croatia, Malta, Montenegro, North Macedonia, Serbia, Slovenia, Uzbekistan), currencies (MKD, UZS), and NOK-NIBOR index
+
+ QuantLib.vcxproj                      |  5809 ++++++-------
+ QuantLib.vcxproj.filters              | 14761 ++++++++++++++++----------------
+ ql/CMakeLists.txt                     |    17 +
+ ql/currencies/asia.cpp                |     6 +
+ ql/currencies/asia.hpp                |    10 +
+ ql/currencies/europe.cpp              |     9 +
+ ql/currencies/europe.hpp              |    11 +
+ ql/indexes/ibor/Makefile.am           |     1 +
+ ql/indexes/ibor/noknibor.hpp          |    54 +
+ ql/time/calendars/Makefile.am         |    16 +
+ ql/time/calendars/all.hpp             |     8 +
+ ql/time/calendars/croatia.cpp         |    73 +
+ ql/time/calendars/croatia.hpp         |    72 +
+ ql/time/calendars/islamicholidays.cpp |    75 +
+ ql/time/calendars/islamicholidays.hpp |    44 +
+ ql/time/calendars/malta.cpp           |    82 +
+ ql/time/calendars/malta.hpp           |    83 +
+ ql/time/calendars/montenegro.cpp      |    59 +
+ ql/time/calendars/montenegro.hpp      |    65 +
+ ql/time/calendars/northmacedonia.cpp  |    64 +
+ ql/time/calendars/northmacedonia.hpp  |    68 +
+ ql/time/calendars/serbia.cpp          |    66 +
+ ql/time/calendars/serbia.hpp          |    65 +
+ ql/time/calendars/slovenia.cpp        |    68 +
+ ql/time/calendars/slovenia.hpp        |    71 +
+ ql/time/calendars/uzbekistan.cpp      |    58 +
+ ql/time/calendars/uzbekistan.hpp      |    66 +
+ test-suite/calendars.cpp              |   312 +
+ 28 files changed, 11842 insertions(+), 10251 deletions(-)
+
+commit 3b11416b97fb9a30dad244a54077bfe858515280
+Author: Yassine Idyiahia <yassine.id@gmail.com>
+Date:   Sun, 8 Mar 2026 13:00:21 +0000
+
+    Fix dangling references in FdmCEVOp and TrBDF2Scheme
+
+ ql/methods/finitedifferences/operators/fdmcevop.hpp   | 2 +-
+ ql/methods/finitedifferences/schemes/trbdf2scheme.hpp | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 714fed1e254fdbcd536e6d1e5478bec75d325489
+Merge: fedf402ab 3d3a44f47
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 May 2026 18:14:51 +0200
+
+    Improve `CompoundingOvernightIndexedCouponPricer::compute` calculation (#2556)
+
+commit 3d3a44f47367baa3dbce8cb66d4cd2ff2eee1392
+Author: Steve Dacek <2327718+sdacek@users.noreply.github.com>
+Date:   Wed, 6 May 2026 11:16:17 -0400
+
+    add test covering exCouponDate set after accrualEndDate
+
+ test-suite/overnightindexedcoupon.cpp | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+commit 43ea1b46577eb6936208eade6db99c3b5803ff2a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 May 2026 14:45:59 +0200
+
+    Avoid incorrect parsing on Windows
+
+ test-suite/overnightindexedcoupon.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 153179b48a8020ef4a8313258c4cfd549cde6a39
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 May 2026 13:29:26 +0200
+
+    More test dates for ex-coupon accrued amount
+
+ test-suite/overnightindexedcoupon.cpp | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
+
+commit 396cd15e53ee5aaeac0292297e12b01662bf9435
+Author: David Korczynski <david@adalogics.com>
+Date:   Wed, 6 May 2026 03:49:21 -0700
+
+    fuzz: add additional harnesses to be consumed by OSS-Fuzz
+    
+    Adds additional fuzzingh harnesses that will be run on OSS-Fuzz. The
+    main goal is to increase code coverage, for which a recent code coverage
+    report is available at
+    https://storage.googleapis.com/oss-fuzz-coverage/quantlib/reports/20260504/linux/report.html
+    
+    The recent added harnesses has shown an increase, although there is
+    still much room to go:
+    https://introspector.oss-fuzz.com/project-profile?project=quantlib
+    
+    The harnesses added here roughly doubles the coverage on a short local
+    run.
+    
+    Signed-off-by: David Korczynski <david@adalogics.com>
+
+ fuzz-test-suite/CMakeLists.txt               |  51 ++++++++++-
+ fuzz-test-suite/fuzz_asianoption.cpp         |  99 ++++++++++++++++++++++
+ fuzz-test-suite/fuzz_barrieroption.cpp       |  93 ++++++++++++++++++++
+ fuzz-test-suite/fuzz_basketoption.cpp        | 121 +++++++++++++++++++++++++++
+ fuzz-test-suite/fuzz_cashflows.cpp           |  74 ++++++++++++++++
+ fuzz-test-suite/fuzz_exchangeratemanager.cpp |  57 +++++++++++++
+ fuzz-test-suite/fuzz_indexmanager.cpp        |  45 ++++++++++
+ fuzz-test-suite/fuzz_vanilla_option.cpp      | 110 ++++++++++++++++++++++++
+ 8 files changed, 649 insertions(+), 1 deletion(-)
+
+commit 68f59568e88483e37a5e697055126dbcead533fb
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Tue, 5 May 2026 11:56:17 +0900
+
+    commit to use modernized cpp for small parts
+
+ ql/math/array.hpp                                          | 14 +++++++-------
+ ql/methods/finitedifferences/utilities/fdmquantohelper.cpp |  9 +++++----
+ ql/time/date.hpp                                           |  2 +-
+ test-suite/cashflows.cpp                                   |  2 +-
+ test-suite/optimizers.cpp                                  | 11 +++++------
+ test-suite/quantlibbenchmark.cpp                           |  2 +-
+ 6 files changed, 20 insertions(+), 20 deletions(-)
+
+commit e7c77f39e8c4f7ef3d7d4603eaec09ddff65dc0a
+Author: gjunjie <guojunjie920404@gmail.com>
+Date:   Fri, 1 May 2026 10:23:11 -0400
+
+    Shift G2Process state so PathGenerator paths are curve-consistent (#1904)
+    
+    Following review on PR #2555, the simulated state of G2Process and
+    G2ForwardProcess is now (x + phi(t), y) instead of the raw zero-mean
+    OU pair, so that state[0] + state[1] = r(t) directly. This mirrors
+    HullWhiteProcess and means a MultiPathGenerator built on G2Process
+    produces short-rate paths whose expectation matches the initial curve.
+    
+    Concretely:
+    - drift gains a*phi(t) + phi'(t) on the first component
+    - expectation gains phi(t0+dt) - phi(t0)*exp(-a*dt) on the first component
+    - initialValues returns (phi(0), 0); x0() returns phi(0)
+    - shortRate(t, z1, z2) now returns z1 + z2
+    
+    diffusion, stdDeviation, and covariance are unchanged because the
+    shift is deterministic. phi(t) is unchanged and still exposes the
+    curve-implied offset. Empty-handle behaviour reduces to the old
+    zero-mean OU pair.
+    
+    Tests in test-suite/g2process.cpp updated to reflect the new
+    semantics, and a new MultiPathGenerator test verifies the empirical
+    mean of state[0] + state[1] matches phi(t).
+    
+    Made-with: Cursor
+
+ ql/processes/g2process.cpp |  79 +++++++++++++------
+ ql/processes/g2process.hpp |  24 +++++-
+ test-suite/g2process.cpp   | 191 +++++++++++++++++++++++++++++++++++----------
+ 3 files changed, 228 insertions(+), 66 deletions(-)
+
+commit 3298a86041cbab6354b64588f59485e3711d6b6a
+Author: Steve Dacek <2327718+sdacek@users.noreply.github.com>
+Date:   Thu, 30 Apr 2026 13:25:20 -0400
+
+    remove unnecessary min/max
+
+ ql/cashflows/overnightindexedcoupon.cpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit fedf402ab8423d027468757c110259e2d7a9c8cd
+Merge: 4c3594c7d 1e31d663b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 28 Apr 2026 09:12:59 +0200
+
+    Remove unused `yearFractionGuess` (#2559)
+
+commit 4c3594c7d1c9b952b315e2860f0f43694711c328
+Merge: f3b639427 0a544a477
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 28 Apr 2026 09:12:29 +0200
+
+    Add missing `<vector>` include in `blackvoltimeextrapolation.hpp` (#2558)
+
+commit b7c471871d2e3e1deb1bf72905016a62ae25c739
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Mon, 27 Apr 2026 19:28:58 +0200
+
+    Renamed crossccy classes adding the prefix as suggested, cleaning up the code as suggested
+
+ QuantLib.vcxproj                                   | 16 ++++----
+ QuantLib.vcxproj.filters                           | 16 ++++----
+ ql/CMakeLists.txt                                  | 16 ++++----
+ .../termstructures/crosscurrencyratehelpers.cpp    | 18 +++------
+ .../termstructures/crosscurrencyratehelpers.hpp    |  4 +-
+ ql/instruments/Makefile.am                         | 12 +++---
+ ql/instruments/all.hpp                             |  6 +--
+ ...swap.cpp => constnotionalcrossccybasisswap.cpp} | 44 +++++++++++-----------
+ ...swap.hpp => constnotionalcrossccybasisswap.hpp} | 12 +++---
+ ...p.cpp => constnotionalcrossccyfixfloatswap.cpp} | 38 +++++++++----------
+ ...p.hpp => constnotionalcrossccyfixfloatswap.hpp} | 15 ++++----
+ ...ssccyswap.cpp => constnotionalcrossccyswap.cpp} | 24 ++++++------
+ ...ssccyswap.hpp => constnotionalcrossccyswap.hpp} | 24 ++++++------
+ ql/pricingengines/swap/Makefile.am                 |  4 +-
+ ql/pricingengines/swap/all.hpp                     |  2 +-
+ ...ine.cpp => constnotionalcrossccyswapengine.cpp} |  8 ++--
+ ...ine.hpp => constnotionalcrossccyswapengine.hpp} | 12 +++---
+ test-suite/CMakeLists.txt                          |  6 +--
+ test-suite/Makefile.am                             |  6 +--
+ ...swap.cpp => constnotionalcrossccybasisswap.cpp} | 18 ++++-----
+ ...p.cpp => constnotionalcrossccyfixfloatswap.cpp} | 16 ++++----
+ ...ssccyswap.cpp => constnotionalcrossccyswap.cpp} | 24 ++++++------
+ test-suite/testsuite.vcxproj                       |  6 +--
+ test-suite/testsuite.vcxproj.filters               |  6 +--
+ 24 files changed, 173 insertions(+), 180 deletions(-)
+
+commit f3b63942792aa721a97146b7400cf434645e257c
+Merge: 1ae7615dc c9c286e9a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 27 Apr 2026 16:21:21 +0200
+
+    Make performCalculations methods on some curves protected (#2554)
+
+commit 1ae7615dc322aa8aac1b2e73156c5e7739de1b6f
+Merge: 5639d4962 d1bcc6706
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 27 Apr 2026 10:28:18 +0200
+
+    Prevent using non-default `boost::optional` with Boost 1.91 or later (#2560)
+
+commit 1e31d663b0dd412154a31d20c50e3f1758d1df9b
+Author: Eugene Toder <eltoder@users.noreply.github.com>
+Date:   Fri, 24 Apr 2026 19:36:05 -0400
+
+    Remove unused yearFractionGuess
+
+ ql/time/daycounters/actualactual.cpp | 11 -----------
+ 1 file changed, 11 deletions(-)
+
+commit f8d9ac069c49ac2f11fa90e86bbe17ab1b8356e1
+Author: Steve Dacek <2327718+sdacek@users.noreply.github.com>
+Date:   Fri, 24 Apr 2026 12:05:44 -0400
+
+    update testOvernightLegWeekendStub to use CashFlows::accruedAmount
+
+ test-suite/overnightindexedcoupon.cpp | 31 +++++++++++++++++++------------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
+
+commit d1bcc6706b5f6a35959f857a531d8f7720aeb4be
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 23 Apr 2026 09:37:56 +0200
+
+    Use Boost 1.91.0 in CI builds when possible
+
+ .ci/userconfig2022.alt.hpp                 | 2 +-
+ .ci/userconfig2026.alt.hpp                 | 2 +-
+ .github/workflows/cmake-latest-runners.yml | 4 ++--
+ .github/workflows/cmake.yml                | 8 ++++----
+ .github/workflows/linux-nondefault.yml     | 2 +-
+ .github/workflows/macos-nondefault.yml     | 2 +-
+ .github/workflows/msvc-analysis.yml        | 4 ++--
+ .github/workflows/msvc-nondefault.yml      | 4 ++--
+ 8 files changed, 14 insertions(+), 14 deletions(-)
+
+commit 3e443c13c465169cd05cbc74731dafd5b097eae7
+Author: Steve Dacek <2327718+sdacek@users.noreply.github.com>
+Date:   Fri, 24 Apr 2026 10:36:08 -0400
+
+    add test case covering weekend stub periods
+
+ test-suite/overnightindexedcoupon.cpp | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+commit 0a544a47757dfd41a60ef0717b0de0f96e28e39a
+Author: Krish0909 <krishnanvignesh148@gmail.com>
+Date:   Fri, 24 Apr 2026 13:26:30 +0100
+
+    Add missing <vector> include in blackvoltimeextrapolation.hpp
+
+ ql/termstructures/volatility/equityfx/blackvoltimeextrapolation.hpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit fcfc16f617105f2e19290e5481b91e70e7f1b0b7
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 24 Apr 2026 08:58:51 +0200
+
+    Forbid Boost >= 1.91 when using boost::optional instead of std::optional
+
+ Docs/pages/config.docs | 8 +++++---
+ configure.ac           | 9 +++++++--
+ ql/optional.hpp        | 3 +++
+ ql/userconfig.hpp      | 7 +++++--
+ 4 files changed, 20 insertions(+), 7 deletions(-)
+
+commit 5348d7a01e527e2434346de9e1f96143c34c9f99
+Author: Steve Dacek <2327718+sdacek@users.noreply.github.com>
+Date:   Wed, 15 Apr 2026 21:17:37 -0400
+
+    Improve `CompoundingOvernightIndexedCouponPricer::compute` calculation
+    
+    - Fix valueDate schedule generation when accrualStartDate falls on a fixing holiday (possible for SOFR swaps as they have different calendars for fixings and schedule generation).
+    - interestDates are no longer adjusted for lookback when applyObservationShift is enabled (we can use valueDates in this case). This is needed to determine how far through rate calculation period we are for the purposes of accruals.
+    - fix lockout date handling, so that lockouts only apply at the end of the period.
+    - expose exCouponDate on OvernightIndexedCoupon.
+
+ ql/cashflows/overnightindexedcoupon.cpp       |  83 +--
+ ql/cashflows/overnightindexedcoupon.hpp       |   3 +-
+ ql/cashflows/overnightindexedcouponpricer.cpp | 160 ++---
+ test-suite/overnightindexedcoupon.cpp         | 852 +++++++++++++++++++++++++-
+ 4 files changed, 934 insertions(+), 164 deletions(-)
+
+commit 3607425692ccdd9ae8df31d458cec2eb98a7fe43
+Author: gjunjie <guojunjie920404@gmail.com>
+Date:   Tue, 21 Apr 2026 20:00:33 -0400
+
+    Update copyright holder in test-suite/g2process.cpp
+    
+    Made-with: Cursor
+
+ test-suite/g2process.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit a6d68458c4571ff878bbe071b4e5dc84c0093ed7
+Author: gjunjie <guojunjie920404@gmail.com>
+Date:   Tue, 21 Apr 2026 19:54:38 -0400
+
+    Add term structure, phi, and shortRate to G2 processes
+    
+    Extends G2Process and G2ForwardProcess with a yield term structure
+    handle, deterministic drift phi(t), and a shortRate(t, x, y) helper
+    so the processes can be used for short-rate simulation consistent
+    with an initial curve. Also adds a corresponding g2process test.
+    
+    Made-with: Cursor
+
+ ql/processes/g2process.cpp           |  50 +++++++-
+ ql/processes/g2process.hpp           |  15 ++-
+ test-suite/CMakeLists.txt            |   1 +
+ test-suite/Makefile.am               |   1 +
+ test-suite/g2process.cpp             | 240 +++++++++++++++++++++++++++++++++++
+ test-suite/testsuite.vcxproj         |   1 +
+ test-suite/testsuite.vcxproj.filters |   3 +
+ 7 files changed, 305 insertions(+), 6 deletions(-)
+
+commit c9c286e9a21f89f42d22b4bbfc7fd4c3857e6a75
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Tue, 21 Apr 2026 10:54:21 -0400
+
+    Make performCalculations methods on some curves protected
+    
+    Having them private does not actually prevent subclasses from overriding
+    them, but it prevents subclasses from calling parent classes'
+    implementations.
+
+ ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp  | 3 ++-
+ ql/termstructures/inflation/piecewisezeroinflationcurve.hpp | 3 ++-
+ ql/termstructures/yield/piecewiseyieldcurve.hpp             | 2 +-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+commit 5639d4962357e15efda7538f46d611b68407dbdf
+Merge: cf2a42c98 ff678f64a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 21 Apr 2026 12:06:10 +0200
+
+    Deprecate selection of test cases via speed (#2552)
+
+commit cf2a42c982da78e3649f1ebc1f30c0e4a6684b98
+Merge: ed4f694c5 f9a2ff5e9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 21 Apr 2026 12:04:45 +0200
+
+    Pass allowExtrapolation=true to derivative() (#2550)
+
+commit ed4f694c58e779ec7366c88ca781ff9a34f32a40
+Merge: 98afd0b22 1eb19a3d1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 20 Apr 2026 15:21:52 +0200
+
+    Avoid repeated calls to `Interpolation::update()` (#2513)
+
+commit ff678f64ae1142840a7f99bab7ebfefb9e928270
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 20 Apr 2026 10:46:38 +0200
+
+    Deprecate selection of test cases via speed group
+
+ .github/workflows/test-times.yml              |  6 ---
+ test-suite/americanoption.cpp                 |  3 +-
+ test-suite/andreasenhugevolatilityinterpl.cpp | 11 +++---
+ test-suite/asianoptions.cpp                   |  7 ++--
+ test-suite/basketoption.cpp                   |  5 +--
+ test-suite/bermudanswaption.cpp               |  3 +-
+ test-suite/cdo.cpp                            |  3 +-
+ test-suite/dividendoption.cpp                 |  3 +-
+ test-suite/doublebarrieroption.cpp            |  3 +-
+ test-suite/fdheston.cpp                       |  5 +--
+ test-suite/fdmlinearop.cpp                    |  3 +-
+ test-suite/fdsabr.cpp                         |  3 +-
+ test-suite/forwardoption.cpp                  |  3 +-
+ test-suite/gjrgarchmodel.cpp                  |  5 +--
+ test-suite/hestonmodel.cpp                    |  7 ++--
+ test-suite/hestonslvmodel.cpp                 | 13 +++----
+ test-suite/hybridhestonhullwhiteprocess.cpp   |  7 ++--
+ test-suite/interpolations.cpp                 |  3 +-
+ test-suite/libormarketmodel.cpp               |  3 +-
+ test-suite/libormarketmodelprocess.cpp        |  3 +-
+ test-suite/lookbackoptions.cpp                |  3 +-
+ test-suite/lowdiscrepancysequences.cpp        |  3 +-
+ test-suite/marketmodel.cpp                    | 13 +++----
+ test-suite/marketmodel_cms.cpp                |  3 +-
+ test-suite/marketmodel_smm.cpp                |  3 +-
+ test-suite/markovfunctional.cpp               |  7 ++--
+ test-suite/mclongstaffschwartzengine.cpp      |  3 +-
+ test-suite/normalclvmodel.cpp                 |  3 +-
+ test-suite/nthorderderivativeop.cpp           |  3 +-
+ test-suite/nthtodefault.cpp                   |  5 +--
+ test-suite/optionletstripper.cpp              |  3 +-
+ test-suite/preconditions.cpp                  |  4 ++
+ test-suite/preconditions.hpp                  | 11 +++++-
+ test-suite/quantlibglobalfixture.cpp          | 36 +++++++-----------
+ test-suite/quantlibglobalfixture.hpp          |  9 ++++-
+ test-suite/riskneutraldensitycalculator.cpp   |  3 +-
+ test-suite/swaption.cpp                       |  5 +--
+ test-suite/swingoption.cpp                    |  5 +--
+ test-suite/vpp.cpp                            |  3 +-
+ test-suite/zabr.cpp                           |  3 +-
+ tools/check_test_times.py                     | 53 ++++++++++-----------------
+ 41 files changed, 116 insertions(+), 164 deletions(-)
+
+commit 98afd0b224365aa48586b9d80c0e6d3c50bf7ea0
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Sun, 19 Apr 2026 01:50:37 +0000
+
+    Automated fixes by clang-tidy
+
+ ql/experimental/inflation/interpolatedyoyoptionletstripper.hpp | 4 ++--
+ ql/indexes/inflationindex.hpp                                  | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit f9a2ff5e9d46e6bad60c1622ce0f32952e265dd1
+Author: Eugene Toder <eltoder@users.noreply.github.com>
+Date:   Fri, 17 Apr 2026 20:00:46 -0400
+
+    Pass allowExtrapolation=true to derivative()
+    
+    For consistency with other calls.
+
+ ql/math/interpolations/mixedinterpolation.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 2c087e479776d99e88f156163158913f032ab819
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 17 Apr 2026 18:52:58 +0200
+
+    Move a few tests in the Fast section
+
+ test-suite/cdo.cpp          | 2 +-
+ test-suite/nthtodefault.cpp | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 42223d17a55d11af20ba74f78457b5c9c112ac1d
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Fri, 17 Apr 2026 15:01:42 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit 87bbee58dc1522e69a29923fab3586987143c58d
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Fri, 17 Apr 2026 14:05:15 +0000
+
+    Update old license links
+
+ ql/indexes/ibor/zaronia.cpp | 2 +-
+ ql/indexes/ibor/zaronia.hpp | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit a1494b1a6bf76b61f9dd0f747ee4186e7e5bd4c7
+Merge: fc9cdf997 bf2309275
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 17 Apr 2026 16:05:02 +0200
+
+    Add FlatExtrapolator wrapper for 1-D interpolations (#2540)
+
+commit fc9cdf997f36ccfba61c0c60194c84c99750a845
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Fri, 17 Apr 2026 11:07:28 +0000
+
+    Update generated headers
+
+ ql/indexes/ibor/all.hpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 7e2969ebbd7d71ed1ab64959f59226d38663d666
+Merge: e9c089627 f310a3598
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 17 Apr 2026 12:31:21 +0200
+
+    Cache invariants in ImpliedTermStructure (#2533)
+
+commit e9c089627bc39682fedcf28310aceda8213043e4
+Merge: 89e215693 9305c2af6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 17 Apr 2026 12:30:47 +0200
+
+    Add ZARONIA (South African Rand Overnight Index Average) (#2537)
+
+commit bf2309275ce90b380598f511bdf37559220451e3
+Author: gjunjie <guojunjie920404@gmail.com>
+Date:   Thu, 16 Apr 2026 10:01:26 -0400
+
+    Add coverage tests for FlatExtrapolator
+    
+    Test primitive (below/above/in-range), in-range second derivative,
+    xValues/yValues accessors, isInRange, and update.
+    
+    Made-with: Cursor
+
+ test-suite/interpolations.cpp | 94 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
+
+commit 983936f087a406eb93334c19f3cde94750048375
+Author: gjunjie <guojunjie920404@gmail.com>
+Date:   Thu, 16 Apr 2026 09:57:56 -0400
+
+    Add flatextrapolation.hpp to VS project files
+    
+    The header was missing from QuantLib.vcxproj and
+    QuantLib.vcxproj.filters since it was first added.
+    
+    Made-with: Cursor
+
+ QuantLib.vcxproj         | 1 +
+ QuantLib.vcxproj.filters | 3 +++
+ 2 files changed, 4 insertions(+)
+
+commit 75a908a413585d924086b5936c7b1ebfaff68ee3
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Thu, 16 Apr 2026 14:59:01 +0200
 
@@ -38,28 +2806,642 @@ Date:   Thu, 16 Apr 2026 14:59:01 +0200
  .github/workflows/prepare-release.yml           |  4 +--
  3 files changed, 48 insertions(+), 4 deletions(-)
 
-commit 10e5d215d9a24ddf36d01fc42f15e95cff0ef931
-Merge: 41b0e1460 cf2dc1daf
+commit bf1f38ac4243026a94e74d4636e11c247fa411b0
+Author: gjunjie <guojunjie920404@gmail.com>
+Date:   Thu, 16 Apr 2026 07:48:14 -0400
+
+    Use std::clamp in FlatExtrapolatorImpl::bind
+    
+    Made-with: Cursor
+
+ ql/math/interpolations/flatextrapolation.hpp | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+commit 2adc8bb8d92f3cb698d6c7e970aaa4a4a43bd4d9
+Merge: fe7bf138f 415899521
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 Apr 2026 12:56:17 +0200
+Date:   Thu, 16 Apr 2026 13:00:37 +0200
 
-    Avoid notification loop in GSR model (#2543)
+    Add support and CI build for Visual Studio 2026 (#2542)
 
-commit cf2dc1daf12a6c23dd6f50f339b9cd7e9f85a1ab
+commit fe7bf138febef104da5cf2c39a0c012c6a6b6f0d
+Merge: 8aef029c0 6a643c2aa
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 Apr 2026 10:13:34 +0200
+Date:   Thu, 16 Apr 2026 12:59:34 +0200
 
-    Avoid notification loop in GSR model
+    Deprecated obsolete bits of interpolation code in year-on-year inflation indexes (#2541)
 
- ql/models/shortrate/onefactormodels/gsr.cpp |  6 ++--
- test-suite/gsr.cpp                          | 47 +++++++++++++++++++++++++++++
- 2 files changed, 50 insertions(+), 3 deletions(-)
+commit f310a35987a9f9cf159caed2472e0d5f719e0889
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Fri, 10 Apr 2026 07:14:37 -0400
 
-commit 05169469217ff94f06ab0b31aedc66c5577daa33
+    Cache invariants in ImpliedTermStructure
+    
+    Also, auto-enable extrapolation based on the original curve for
+    consistency with other derived curves.
+
+ ql/termstructures/yield/impliedtermstructure.hpp | 31 ++++++++++++++++++------
+ test-suite/termstructures.cpp                    | 24 +++++++++++-------
+ 2 files changed, 38 insertions(+), 17 deletions(-)
+
+commit 415899521f4a105e549d779ab71a02ebf3c0249d
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 Apr 2026 09:16:54 +0200
+Date:   Wed, 15 Apr 2026 09:27:55 +0200
 
-    Restore disabled test
+    Add support and CI build for Visual Studio 2026
 
- test-suite/gsr.cpp | 3 ---
- 1 file changed, 3 deletions(-)
+ .ci/VS2026.alt.props                   |  15 ++++
+ .ci/VS2026.props                       |  13 ++++
+ .ci/userconfig2026.alt.hpp             | 126 +++++++++++++++++++++++++++++++++
+ .github/workflows/msvc-all-configs.yml |  10 ++-
+ .github/workflows/msvc-nondefault.yml  |  10 ++-
+ .github/workflows/msvc.yml             |  10 ++-
+ QuantLib.props                         |   3 +-
+ 7 files changed, 180 insertions(+), 7 deletions(-)
+
+commit 8cc1b81de8934c3424064460e5f86efbd5d59802
+Author: gjunjie <guojunjie920404@gmail.com>
+Date:   Wed, 15 Apr 2026 07:34:15 -0400
+
+    Mark FlatExtrapolatorImpl as final
+    
+    Made-with: Cursor
+
+ ql/math/interpolations/flatextrapolation.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 8aef029c02935baf52c93391eb70dcdbd9ab88aa
+Merge: 41fff5ea0 1f761627f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 15 Apr 2026 10:06:09 +0200
+
+    Fix const-correctness of element access in `Matrix` class (#2527)
+
+commit 41fff5ea0f2e22d72cfbe2a8b565982ae09fb219
+Merge: da1704f8f 24448916b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 15 Apr 2026 10:04:54 +0200
+
+    Add fuzzing harness for Black formula (#2523)
+
+commit d8f321cc863db68c611cd2b580019366383df6a3
+Author: gjunjie <guojunjie920404@gmail.com>
+Date:   Tue, 14 Apr 2026 20:22:42 -0400
+
+    Add xValues() and yValues() accessors to Interpolation
+    
+    Made-with: Cursor
+
+ ql/math/interpolation.hpp | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+commit 2f1f45efe616920cd3eb4991092ab5bdeb17ca4c
+Author: gjunjie <guojunjie920404@gmail.com>
+Date:   Tue, 14 Apr 2026 17:33:53 -0400
+
+    Add FlatExtrapolator wrapper for 1-D interpolations
+    
+    Use it in MarkovFunctional to replace manual clamping logic,
+    resolving the existing FIXME about incorporating flat extrapolation
+    into the interpolation object.
+    
+    Made-with: Cursor
+
+ ql/CMakeLists.txt                                  |   1 +
+ ql/math/interpolations/Makefile.am                 |   1 +
+ ql/math/interpolations/all.hpp                     |   1 +
+ ql/math/interpolations/flatextrapolation.hpp       | 105 ++++++++++++++++++
+ .../shortrate/onefactormodels/markovfunctional.cpp |  19 ++--
+ test-suite/interpolations.cpp                      | 117 +++++++++++++++++++++
+ 6 files changed, 232 insertions(+), 12 deletions(-)
+
+commit 6a643c2aaa420f5e91e34f6709293d3f6fab195d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Apr 2026 18:45:33 +0200
+
+    Deprecate CPI::AsIndex
+
+ ql/cashflows/cpicoupon.hpp                         |  2 +-
+ ql/experimental/inflation/cpicapfloorengines.cpp   |  2 ++
+ .../inflation/interpolatedyoyoptionletstripper.hpp |  2 +-
+ ql/indexes/inflationindex.cpp                      | 10 +++++++--
+ ql/indexes/inflationindex.hpp                      |  9 +++++---
+ ql/instruments/cpicapfloor.hpp                     |  2 +-
+ ql/instruments/cpiswap.hpp                         |  2 +-
+ test-suite/inflation.cpp                           | 26 +++++++++++++---------
+ test-suite/inflationcpibond.cpp                    |  2 +-
+ test-suite/inflationcpicapfloor.cpp                |  4 ++--
+ test-suite/inflationcpiswap.cpp                    | 14 ++++++------
+ 11 files changed, 46 insertions(+), 29 deletions(-)
+
+commit e53cd8ab624779c2509950a52e23947b4bf6e87c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Apr 2026 15:24:08 +0200
+
+    Deprecate YoYInflationIndex::interpolated()
+
+ .../inflation/interpolatedyoyoptionletstripper.hpp |  2 +-
+ .../kinterpolatedyoyoptionletvolatilitysurface.hpp |  2 +-
+ ql/indexes/inflationindex.cpp                      | 23 ++++++++++++++++++----
+ ql/indexes/inflationindex.hpp                      | 16 ++++++++++++++-
+ test-suite/inflation.cpp                           |  5 ++++-
+ test-suite/inflationcapfloor.cpp                   |  2 +-
+ test-suite/inflationcapflooredcoupon.cpp           |  4 ++--
+ 7 files changed, 43 insertions(+), 11 deletions(-)
+
+commit da1704f8fbce6343007aa0d3fdfab9de9c56dfcb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Apr 2026 16:44:27 +0200
+
+    Avoid deprecated instruction in Dockerfile
+
+ dockerfiles/ci.Dockerfile | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit 982e18a799c14fb8b01f3940e6f07eddddeb1826
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Apr 2026 16:13:48 +0200
+
+    Use action from Microsoft to setup msbuild where possible
+
+ .github/workflows/msvc-all-configs.yml | 4 ++--
+ .github/workflows/msvc-nondefault.yml  | 4 ++--
+ .github/workflows/msvc.yml             | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 0af0ec4c8fdc1789900a9901777135da1b4b3176
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 13 Apr 2026 09:22:47 +0200
+
+    Add convenience workflow for pre-release checks
+
+ .github/workflows/cmake-latest-runners.yml |  1 +
+ .github/workflows/linux-full-tests.yml     |  1 +
+ .github/workflows/linux-nondefault.yml     |  1 +
+ .github/workflows/macos-nondefault.yml     |  1 +
+ .github/workflows/msvc-all-configs.yml     |  1 +
+ .github/workflows/msvc-nondefault.yml      |  1 +
+ .github/workflows/prerelease-checks.yml    | 18 ++++++++++++++++++
+ 7 files changed, 24 insertions(+)
+
+commit fce61e4b3753c01240b387f7c9f4a44d5035bdb1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Apr 2026 10:30:58 +0200
+
+    Increase version number automatically after release
+
+ .github/workflows/increase-version-number.yml | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+commit c810b509495acee8faa1fd8ce23344ff10ca5f11
+Merge: 82bd3acfd 4ba489d24
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Apr 2026 13:11:00 +0200
+
+    Remove features deprecated in version 1.38 (#2539)
+
+commit 82bd3acfdd3b391695f4a1de73a406cc7e246d74
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Tue, 14 Apr 2026 07:59:53 +0000
+
+    Set version to 1.43-dev
+
+ CMakeLists.txt | 6 +++---
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 9305c2af64072904d82a8d769e5557b3cd24cfe9
+Author: Francois Botha <igitur@gmail.com>
+Date:   Wed, 24 Jul 2024 18:28:08 +0200
+
+    Add ZARONIA (South African Rand Overnight Index Average)
+
+ QuantLib.vcxproj            |  2 ++
+ QuantLib.vcxproj.filters    |  6 ++++++
+ ql/CMakeLists.txt           |  2 ++
+ ql/indexes/ibor/Makefile.am |  4 +++-
+ ql/indexes/ibor/zaronia.cpp | 30 ++++++++++++++++++++++++++++++
+ ql/indexes/ibor/zaronia.hpp | 39 +++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 82 insertions(+), 1 deletion(-)
+
+commit 1f761627f201689b5419c80184a3d11e670d6e93
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Wed, 1 Apr 2026 20:10:19 +0900
+
+    fix const-correctness in Matrix class
+
+ ql/math/matrix.hpp | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+commit 24448916b5edf9c96c3ce6d7112ece0449c37059
+Author: David Korczynski <david@adalogics.com>
+Date:   Tue, 31 Mar 2026 08:59:48 -0700
+
+    fuzz: add fuzzing harness for Black Formula
+    
+    The goal is to improve code coverage of quantlib by way of OSS-Fuzz.
+    
+    Signed-off-by: David Korczynski <david@adalogics.com>
+
+ fuzz-test-suite/CMakeLists.txt       |   9 ++-
+ fuzz-test-suite/fuzzblackformula.cpp | 124 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 132 insertions(+), 1 deletion(-)
+
+commit 1eb19a3d11b173064b518cbaad2f5674dcf5af4e
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Wed, 25 Mar 2026 19:53:15 -0400
+
+    Avoid repeated calls to Interpolation::update()
+    
+    Add a flag (defaulting to true) for whether to run update when the
+    interpolation is constructed. This matches the current behavior of most
+    interpolations. Pass update=false when we don't need this, because we
+    will call update later. In particular, do this in composite
+    interpolations (log and mixed) and bootstrappers where we currently call
+    update multiple times unnecessarily (usually all but the last call are
+    before the data for the interpolation is set).
+    
+    Note that:
+    1. Interpolations that do not support the new update argument are called
+       without it.
+    2. Interpolations are assumed to call update during construction when
+       not passed update=false. This is true for most current interpolations
+       except XABR. Since XABR is not used in interpolated curves, this is
+       out of scope for this PR.
+    3. Interpolation2D implementations used a different convention and never
+       called update in constructors, so they are also out of scope for the
+       change.
+    4. GlobalBootstrap currently has an issue where for rates-based traits
+       it calls methods that use interpolation (zeroRate and forwardRate)
+       without updating it first. This will be addressed in a separate PR.
+    
+    Fixes #2447
+
+ .../credit/interpolatedaffinehazardratecurve.hpp   |   1 -
+ ql/math/interpolation.hpp                          |  20 +++-
+ ql/math/interpolations/abcdinterpolation.hpp       |  10 +-
+ .../interpolations/backwardflatinterpolation.hpp   |   9 +-
+ .../interpolations/convexmonotoneinterpolation.hpp |  15 +--
+ ql/math/interpolations/cubicinterpolation.hpp      |  11 ++-
+ .../interpolations/forwardflatinterpolation.hpp    |   9 +-
+ ql/math/interpolations/linearinterpolation.hpp     |   9 +-
+ ql/math/interpolations/loginterpolation.hpp        |  35 ++++---
+ ql/math/interpolations/mixedinterpolation.hpp      |  31 +++---
+ .../credit/interpolateddefaultdensitycurve.hpp     |   1 -
+ .../credit/interpolatedhazardratecurve.hpp         |   1 -
+ .../interpolatedsurvivalprobabilitycurve.hpp       |   1 -
+ .../inflation/interpolatedyoyinflationcurve.hpp    |   1 -
+ .../inflation/interpolatedzeroinflationcurve.hpp   |   1 -
+ ql/termstructures/iterativebootstrap.hpp           |   9 +-
+ .../volatility/capfloor/capfloortermvolcurve.cpp   |   3 +-
+ .../volatility/equityfx/blackvariancecurve.hpp     |   1 -
+ ql/termstructures/yield/discountcurve.hpp          |   1 -
+ ql/termstructures/yield/forwardcurve.hpp           |   1 -
+ .../yield/interpolatedsimplezerocurve.hpp          |   1 -
+ .../piecewiseforwardspreadedtermstructure.hpp      |  18 ++--
+ .../yield/piecewisezerospreadedtermstructure.hpp   |  10 +-
+ ql/termstructures/yield/spreaddiscountcurve.hpp    |   4 +-
+ ql/termstructures/yield/zerocurve.hpp              |   1 -
+ test-suite/interpolations.cpp                      | 104 ++++++++++++++-------
+ 26 files changed, 186 insertions(+), 122 deletions(-)
+
+commit 4ba489d2421285c6b1d21bc6b57d28450c7b0cc9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 20 Mar 2026 17:10:55 +0100
+
+    Remove features deprecated in version 1.38
+
+ QuantLib.vcxproj                                   |  13 --
+ QuantLib.vcxproj.filters                           |  39 ----
+ cmake/GenerateHeaders.cmake                        |  13 --
+ ql/CMakeLists.txt                                  |  13 --
+ ql/experimental/exoticoptions/Makefile.am          |  28 +--
+ .../analyticholderextensibleoptionengine.hpp       |  28 ---
+ .../analyticpartialtimebarrieroptionengine.hpp     |  28 ---
+ .../exoticoptions/analyticpdfhestonengine.hpp      |  29 ---
+ .../analytictwoassetbarrierengine.hpp              |  28 ---
+ .../analytictwoassetcorrelationengine.hpp          |  28 ---
+ .../analyticwriterextensibleoptionengine.hpp       |  28 ---
+ .../continuousarithmeticasianlevyengine.hpp        |  28 ---
+ .../exoticoptions/holderextensibleoption.hpp       |  28 ---
+ .../exoticoptions/partialtimebarrieroption.hpp     |  28 ---
+ .../exoticoptions/twoassetbarrieroption.hpp        |  29 ---
+ .../exoticoptions/twoassetcorrelationoption.hpp    |  28 ---
+ .../exoticoptions/writerextensibleoption.hpp       |  28 ---
+ ql/experimental/inflation/genericindexes.hpp       |  23 --
+ ql/indexes/ibor/Makefile.am                        |   3 +-
+ ql/indexes/ibor/tona.hpp                           |  28 ---
+ ql/indexes/inflation/aucpi.hpp                     |  21 --
+ ql/indexes/inflation/euhicp.hpp                    |  40 ----
+ ql/indexes/inflation/frhicp.hpp                    |  20 --
+ ql/indexes/inflation/ukrpi.hpp                     |  20 --
+ ql/indexes/inflation/uscpi.hpp                     |  20 --
+ ql/indexes/inflation/zacpi.hpp                     |  20 --
+ ql/indexes/inflationindex.cpp                      |  33 +--
+ ql/indexes/inflationindex.hpp                      |  24 --
+ test-suite/inflation.cpp                           | 258 ++++-----------------
+ 29 files changed, 52 insertions(+), 902 deletions(-)
+
+commit 3527ecb5f44ee24d5c247b0a38b3a0dc7218e8f7
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Sun, 15 Mar 2026 19:06:51 +0100
+
+    Add util static function for notional exchanges adjs
+
+ ql/instruments/crossccybasisswap.cpp    | 30 ++++++++++++++----------------
+ ql/instruments/crossccyfixfloatswap.cpp | 26 +++++++-------------------
+ ql/instruments/crossccyswap.cpp         | 16 ++++++++++++++++
+ ql/instruments/crossccyswap.hpp         |  6 ++++++
+ test-suite/crossccyfixfloatswap.cpp     |  2 +-
+ 5 files changed, 44 insertions(+), 36 deletions(-)
+
+commit b3f44c65572bf2e5cd63126c44b45179ec5c1660
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Sat, 7 Feb 2026 20:44:29 +0100
+
+    remove old code in xccyratehelper
+
+ .../termstructures/crosscurrencyratehelpers.cpp    | 35 ++--------------------
+ .../termstructures/crosscurrencyratehelpers.hpp    |  2 --
+ 2 files changed, 2 insertions(+), 35 deletions(-)
+
+commit c1e96da22ff6b1747dda40510a5f85043f6087aa
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Sat, 7 Feb 2026 20:37:03 +0100
+
+    using crossccyswap for impliedQuote calc in constnotionalxccyhelper, add paymentLag adj for notional exchanges
+
+ .../termstructures/crosscurrencyratehelpers.cpp    | 56 ++++++++++++++++++++--
+ .../termstructures/crosscurrencyratehelpers.hpp    |  2 +
+ ql/instruments/crossccyfixfloatswap.cpp            | 33 +++++++------
+ test-suite/crosscurrencyratehelpers.cpp            | 26 ++++++----
+ 4 files changed, 90 insertions(+), 27 deletions(-)
+
+commit f3466f676d956845eacf2ddab31e1de2d88b0bc5
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Fri, 26 Dec 2025 11:29:06 +0000
+
+    Update old license links
+
+ ql/instruments/crossccybasisswap.cpp          | 2 +-
+ ql/instruments/crossccybasisswap.hpp          | 2 +-
+ ql/instruments/crossccyfixfloatswap.cpp       | 2 +-
+ ql/instruments/crossccyfixfloatswap.hpp       | 2 +-
+ ql/instruments/crossccyswap.cpp               | 2 +-
+ ql/instruments/crossccyswap.hpp               | 2 +-
+ ql/pricingengines/swap/crossccyswapengine.cpp | 2 +-
+ ql/pricingengines/swap/crossccyswapengine.hpp | 2 +-
+ test-suite/crossccybasisswap.cpp              | 2 +-
+ test-suite/crossccyfixfloatswap.cpp           | 2 +-
+ test-suite/crossccyswap.cpp                   | 2 +-
+ 11 files changed, 11 insertions(+), 11 deletions(-)
+
+commit d82c3c933990228675bbf31fae7be125e46d558d
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Fri, 26 Dec 2025 11:29:06 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit 2edbcd37c53931155a5575e19de5d6ecc5f4eaa7
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Fri, 26 Dec 2025 12:30:31 +0100
+
+    Fix doc string and add ONXccy test
+
+ ql/instruments/crossccyswap.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit f5a7cf82b1357ef4bec5b79ccc19a28c5685caec
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Fri, 26 Dec 2025 12:28:54 +0100
+
+    Fix doc string and add ONXccy test
+
+ ql/instruments/crossccybasisswap.cpp    | 17 +++++---
+ ql/instruments/crossccybasisswap.hpp    | 17 +++++---
+ ql/instruments/crossccyfixfloatswap.cpp |  4 +-
+ ql/instruments/crossccyfixfloatswap.hpp |  1 +
+ ql/instruments/crossccyswap.cpp         |  1 +
+ ql/instruments/crossccyswap.hpp         |  1 +
+ test-suite/crossccybasisswap.cpp        | 70 ++++++++++++++++++++++++++++++++-
+ 7 files changed, 96 insertions(+), 15 deletions(-)
+
+commit 68e1ddab3cd4fe719bb021ac9ad07bd373d539b9
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Fri, 26 Dec 2025 11:22:22 +0100
+
+    Adjusted code to new ON coupon alignment
+
+ QuantLib.vcxproj                        |  1 -
+ ql/CMakeLists.txt                       |  1 -
+ ql/cashflows/overnightindexedcoupon.hpp |  1 -
+ ql/instruments/Makefile.am              |  1 -
+ ql/instruments/crossccybasisswap.cpp    | 17 +++++++++++------
+ ql/instruments/crossccybasisswap.hpp    | 16 +++++++++++-----
+ ql/instruments/crossccyfixfloatswap.cpp | 26 +++++++++++++++++++++++---
+ ql/instruments/crossccyfixfloatswap.hpp | 21 ++++++++++++++++++++-
+ test-suite/CMakeLists.txt               |  1 -
+ test-suite/Makefile.am                  |  1 -
+ test-suite/testsuite.vcxproj            |  1 -
+ 11 files changed, 65 insertions(+), 22 deletions(-)
+
+commit 68c83530bbcf3414f7bae0cf937f97cd80ff2f2d
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Fri, 1 Aug 2025 15:18:54 +0200
+
+    Rename xccyswapengine constructor params
+
+ ql/pricingengines/swap/crossccyswapengine.cpp | 44 +++++++++++++--------------
+ ql/pricingengines/swap/crossccyswapengine.hpp | 38 +++++++++++------------
+ 2 files changed, 41 insertions(+), 41 deletions(-)
+
+commit 9c82a36e02280f4a95cc99ba20e23350ebbdad33
+Author: Paolo D'Elia <paolo.delia99@gmail.com>
+Date:   Thu, 19 Jun 2025 15:15:13 +0200
+
+    Add constructor docstring in crossccyfixfloatswap.hpp
+
+ ql/instruments/crossccyfixfloatswap.hpp | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+
+commit 496d95d6226bb2dcf699dca689799a55fe4f9f55
+Author: Paolo D'Elia <paolo.delia99@gmail.com>
+Date:   Thu, 19 Jun 2025 15:13:14 +0200
+
+    Add constructor docstring in crossccybasisswap.hpp
+
+ ql/instruments/crossccybasisswap.hpp | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
+
+commit e35c609ae3e94c4a7313dde75ad7ccaae53f6810
+Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+Date:   Tue, 17 Jun 2025 17:25:20 +0000
+
+    Update generated headers
+
+ ql/instruments/all.hpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 77e673f17c998282af66294a7498846a663c1901
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Tue, 17 Jun 2025 19:23:11 +0200
+
+    Fix typo in crossccybasisswap filename in Makefile.am
+
+ test-suite/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit cecf12414b77f03f5d7f92355825ceb2ecbc7165
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Tue, 17 Jun 2025 19:17:14 +0200
+
+    Added crossccybasisswap and related tests
+
+ QuantLib.vcxproj                     |   2 +
+ QuantLib.vcxproj.filters             |   6 +
+ ql/CMakeLists.txt                    |   2 +
+ ql/instruments/Makefile.am           |   2 +
+ ql/instruments/crossccybasisswap.cpp | 176 +++++++++++++++++
+ ql/instruments/crossccybasisswap.hpp | 149 +++++++++++++++
+ test-suite/CMakeLists.txt            |   1 +
+ test-suite/Makefile.am               |   1 +
+ test-suite/crossccybasisswap.cpp     | 356 +++++++++++++++++++++++++++++++++++
+ test-suite/testsuite.vcxproj         |   1 +
+ test-suite/testsuite.vcxproj.filters |   3 +
+ 11 files changed, 699 insertions(+)
+
+commit ecdda37e9edd6116d3268749c7690bda2a58cf60
+Author: Paolo D'Elia <paolo.delia99@gmail.com>
+Date:   Tue, 17 Jun 2025 10:30:02 +0200
+
+    Add missing import in crossccyfixfloatswap tests
+
+ test-suite/crossccyfixfloatswap.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit a65859e7d9a00f8ed9fef0309ce2d21891314368
+Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+Date:   Tue, 17 Jun 2025 08:11:58 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 9b62fab040c1521577a8bad55ab438c7107259bc
+Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+Date:   Mon, 16 Jun 2025 17:15:30 +0000
+
+    Update generated headers
+
+ ql/instruments/all.hpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 59df14c7748282d7021ae226e129ad725128807b
+Author: Paolo D'Elia <paolo.delia99@gmail.com>
+Date:   Tue, 17 Jun 2025 10:11:44 +0200
+
+    add usingAtParCoupons, and fix code format in crossccyfixfloatswap.cpp
+
+ test-suite/crossccyfixfloatswap.cpp | 54 ++++++++++++++++++-------------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
+
+commit 960ab1552e011809f197bd3b822be06346cd29b2
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Mon, 16 Jun 2025 19:13:08 +0200
+
+    Fixed typo in comments
+
+ ql/instruments/crossccyfixfloatswap.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 63f267fff09df93f4f737ccf393f92fcfb28fdaa
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Mon, 16 Jun 2025 19:07:18 +0200
+
+    Add crossccyfixfloatswap
+
+ QuantLib.vcxproj                        |   2 +
+ QuantLib.vcxproj.filters                |   6 +
+ ql/CMakeLists.txt                       |   2 +
+ ql/instruments/Makefile.am              |   2 +
+ ql/instruments/crossccyfixfloatswap.cpp | 159 +++++++++++++++++
+ ql/instruments/crossccyfixfloatswap.hpp | 151 ++++++++++++++++
+ test-suite/CMakeLists.txt               |   1 +
+ test-suite/Makefile.am                  |   1 +
+ test-suite/crossccyfixfloatswap.cpp     | 300 ++++++++++++++++++++++++++++++++
+ test-suite/testsuite.vcxproj            |   1 +
+ test-suite/testsuite.vcxproj.filters    |   3 +
+ 11 files changed, 628 insertions(+)
+
+commit 2d8185cad835f601847b960ce76f153ba90ee88f
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Mon, 16 Jun 2025 18:55:50 +0200
+
+    Refactor xccy tests file
+
+ test-suite/crossccyswap.cpp | 122 +++++++++++++++++++++-----------------------
+ 1 file changed, 59 insertions(+), 63 deletions(-)
+
+commit 5884906557a37af881a8a650c1b87a7e5772b4b1
+Author: Paolo D'Elia <paolo.delia99@gmail.com>
+Date:   Mon, 16 Jun 2025 14:37:24 +0200
+
+    Fix tag typo in QuantLib.vcxproj
+
+ QuantLib.vcxproj | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit a88020166ec75e5f65d514364cc9ed42059517ce
+Author: Paolo D'Elia <paolo.delia99@gmail.com>
+Date:   Mon, 16 Jun 2025 14:00:06 +0200
+
+    Added missing imports in crossccyswapengine.hpp
+
+ ql/pricingengines/swap/crossccyswapengine.hpp | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit 373255666bd4a156d67940a6432e80988fe38f7b
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Sat, 14 Jun 2025 12:17:42 +0200
+
+    Update CrossCcySwap tests to account for usingAtParCoupons setting
+
+ test-suite/crossccyswap.cpp | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+commit 48e48aacf212c780c9cca7d96924584af2a24599
+Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+Date:   Fri, 13 Jun 2025 14:17:31 +0000
+
+    Update generated headers
+
+ ql/instruments/all.hpp         | 1 +
+ ql/pricingengines/swap/all.hpp | 1 +
+ 2 files changed, 2 insertions(+)
+
+commit af4d04446a3313501132ad696639b57bb71a7fc3
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Fri, 13 Jun 2025 16:15:16 +0200
+
+    Added base CrossCcySwap, CrossCcySwapEngine and related tests
+
+ QuantLib.vcxproj                              |   4 +
+ QuantLib.vcxproj.filters                      |  12 +
+ ql/CMakeLists.txt                             |   4 +
+ ql/instruments/Makefile.am                    |   2 +
+ ql/instruments/crossccyswap.cpp               | 107 ++++
+ ql/instruments/crossccyswap.hpp               | 147 ++++++
+ ql/pricingengines/swap/Makefile.am            |   2 +
+ ql/pricingengines/swap/crossccyswapengine.cpp | 165 ++++++
+ ql/pricingengines/swap/crossccyswapengine.hpp | 107 ++++
+ test-suite/CMakeLists.txt                     |   1 +
+ test-suite/Makefile.am                        |   1 +
+ test-suite/crossccyswap.cpp                   | 698 ++++++++++++++++++++++++++
+ test-suite/testsuite.vcxproj                  |   1 +
+ test-suite/testsuite.vcxproj.filters          |   3 +
+ 14 files changed, 1254 insertions(+)

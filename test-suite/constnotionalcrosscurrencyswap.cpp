@@ -583,7 +583,7 @@ ext::shared_ptr<ConstNotionalCrossCurrencySwap> makeFloatFloatXCCYSwap(Real leg1
 
 
 BOOST_AUTO_TEST_CASE(testFixFixXCCYSwapPricing) {
-    BOOST_TEST_MESSAGE("Test Fix-Fix cross currency swap pricing against known results");
+    BOOST_TEST_MESSAGE("Test fix/fix cross-currency swap pricing against known results...");
 
     // Create swap
     Real USDNominal = 125'000'000;
@@ -619,7 +619,7 @@ BOOST_AUTO_TEST_CASE(testFixFixXCCYSwapPricing) {
 }
 
 BOOST_AUTO_TEST_CASE(testFloatFixXCCYSwapPricing) {
-    BOOST_TEST_MESSAGE("Test Float-Fix cross currency pricing against known results");
+    BOOST_TEST_MESSAGE("Test float/fix cross-currency swap pricing against known results...");
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -657,7 +657,7 @@ BOOST_AUTO_TEST_CASE(testFloatFixXCCYSwapPricing) {
 }
 
 BOOST_AUTO_TEST_CASE(testFloatFloatXCCYSwapPricing) {
-    BOOST_TEST_MESSAGE("Test Float-Float cross currency pricing against known results");
+    BOOST_TEST_MESSAGE("Test float/float cross-currency swap pricing against known results...");
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 

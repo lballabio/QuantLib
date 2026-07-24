@@ -61,20 +61,9 @@ namespace QuantLib {
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date());
 
-        /*! \deprecated Use the overload that does not take a nominal curve.
-                        Deprecated in version 1.39.
-        */
-        [[deprecated("Use the overload that does not take a nominal curve.")]]
-        ZeroCouponInflationSwapHelper(
-            const Handle<Quote>& quote,
-            const Period& swapObsLag,
-            const Date& maturity,
-            Calendar calendar,
-            BusinessDayConvention paymentConvention,
-            DayCounter dayCounter,
-            const ext::shared_ptr<ZeroInflationIndex>& zii,
-            CPI::InterpolationType observationInterpolation,
-            Handle<YieldTermStructure> nominalTermStructure);
+        QL_DEPRECATED_DISABLE_WARNING
+        ~ZeroCouponInflationSwapHelper() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
 
         void setTermStructure(ZeroInflationTermStructure*) override;
         Real impliedQuote() const override;
@@ -95,22 +84,14 @@ namespace QuantLib {
         CPI::InterpolationType observationInterpolation_;
         Pillar::Choice pillarChoice_;
         ext::shared_ptr<ZeroCouponInflationSwap> zciis_;
+
+        /*! \deprecated Do not use; not needed for calculation.
+                        Deprecated in version 1.44.
+        */
+        [[deprecated("Do not use; not needed for calculation.")]]
         Handle<YieldTermStructure> nominalTermStructure_;
+
         RelinkableHandle<ZeroInflationTermStructure> termStructureHandle_;
-      private:
-        ZeroCouponInflationSwapHelper(
-            const Handle<Quote>& quote,
-            const Period& swapObsLag,
-            const Date& startDate,
-            const Date& endDate,
-            Calendar calendar,
-            BusinessDayConvention paymentConvention,
-            DayCounter dayCounter,
-            const ext::shared_ptr<ZeroInflationIndex>& zii,
-            CPI::InterpolationType observationInterpolation,
-            Handle<YieldTermStructure> nominalTermStructure,
-            Pillar::Choice pillar,
-            Date customPillarDate);
     };
 
 
