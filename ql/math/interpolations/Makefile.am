@@ -20,6 +20,7 @@ this_include_HEADERS = \
 	kernelinterpolation2d.hpp \
 	lagrangeinterpolation.hpp \
 	linearinterpolation.hpp \
+	linearthenflatinterpolation.hpp \
 	loginterpolation.hpp \
 	mixedinterpolation.hpp \
 	multicubicspline.hpp \
