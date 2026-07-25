@@ -225,6 +225,22 @@ BOOST_AUTO_TEST_CASE(testFairSpreadPayerReceiverConsistency) {
 }
 
 
+BOOST_AUTO_TEST_CASE(testExpiredSwapFairSpread) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing float-float swap fair spread calculation for expired swap...");
+
+    CommonVars vars;
+    auto swap = vars.makeSwap(Swap::Payer, 0.0, 0.0, 10);
+
+    Settings::instance().evaluationDate() = vars.settlement + Period(20, Years);
+
+    BOOST_CHECK_THROW(swap->fairSpread1(), Error);
+    BOOST_CHECK_THROW(swap->fairSpread2(), Error);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
+
