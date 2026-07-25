@@ -36,10 +36,12 @@ namespace QuantLib {
         const ext::shared_ptr<IborIndex>& baseIndex,
         const ext::shared_ptr<IborIndex>& otherIndex,
         Handle<YieldTermStructure> discountHandle,
-        bool bootstrapBaseCurve)
+        bool bootstrapBaseCurve,
+        const std::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
-      discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve) {
+      discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve),
+      useIndexedCoupons_(useIndexedCoupons) {
 
         // we need to clone the index whose forecast curve we want to bootstrap
         // and copy the other one
@@ -72,7 +74,9 @@ namespace QuantLib {
             .withConvention(convention_)
             .endOfMonth(endOfMonth_)
             .forwards();
-        Leg baseLeg = IborLeg(baseSchedule, baseIndex_).withNotionals(100.0);
+        Leg baseLeg = IborLeg(baseSchedule, baseIndex_)
+            .withNotionals(100.0)
+            .withIndexedCoupons(useIndexedCoupons_);
         auto lastBaseCoupon = ext::dynamic_pointer_cast<IborCoupon>(baseLeg.back());
 
         Schedule otherSchedule =
@@ -82,7 +86,9 @@ namespace QuantLib {
             .withConvention(convention_)
             .endOfMonth(endOfMonth_)
             .forwards();
-        Leg otherLeg = IborLeg(otherSchedule, otherIndex_).withNotionals(100.0);
+        Leg otherLeg = IborLeg(otherSchedule, otherIndex_)
+            .withNotionals(100.0)
+            .withIndexedCoupons(useIndexedCoupons_);
         auto lastOtherCoupon = ext::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
 
         latestRelevantDate_ = std::max(maturityDate_,

@@ -241,6 +241,45 @@ BOOST_AUTO_TEST_CASE(testIborIborOtherCurveBootstrap) {
     testIborIborBootstrap(false);
 }
 
+BOOST_AUTO_TEST_CASE(testIborIborIndexedCouponOverride) {
+    BOOST_TEST_MESSAGE("Testing the indexed-coupon override for IBOR-IBOR basis-swap rate helpers...");
+
+    struct IborCouponSettingsRestorer {
+        bool initiallyUsingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+        ~IborCouponSettingsRestorer() {
+            if (initiallyUsingAtParCoupons)
+                IborCoupon::Settings::instance().createAtParCoupons();
+            else
+                IborCoupon::Settings::instance().createIndexedCoupons();
+        }
+    } settingsRestorer;
+
+    Settings::instance().evaluationDate() = Date(27, January, 2010);
+    auto calendar = UnitedStates(UnitedStates::GovernmentBond);
+    Handle<YieldTermStructure> curve(flatRate(0.01, Actual365Fixed()));
+    auto baseIndex = ext::make_shared<USDLibor>(3 * Months, curve);
+    auto otherIndex = ext::make_shared<USDLibor>(6 * Months, curve);
+    Handle<Quote> basis(ext::make_shared<SimpleQuote>(0.0010));
+
+    IborCoupon::Settings::instance().createAtParCoupons();
+    IborIborBasisSwapRateHelper indexedHelper(basis, 2 * Years, 2, calendar, Following, false,
+                                               baseIndex, otherIndex, curve, false, true);
+
+    IborCoupon::Settings::instance().createIndexedCoupons();
+    IborIborBasisSwapRateHelper atParHelper(basis, 2 * Years, 2, calendar, Following, false,
+                                            baseIndex, otherIndex, curve, false, false);
+
+    for (Size i = 0; i < 2; ++i) {
+        auto indexedCoupon =
+            ext::dynamic_pointer_cast<IborCoupon>(indexedHelper.swap()->leg(i).front());
+        auto atParCoupon = ext::dynamic_pointer_cast<IborCoupon>(atParHelper.swap()->leg(i).front());
+        BOOST_REQUIRE(indexedCoupon);
+        BOOST_REQUIRE(atParCoupon);
+        BOOST_CHECK_EQUAL(indexedCoupon->fixingEndDate(), indexedCoupon->fixingMaturityDate());
+        BOOST_CHECK_NE(atParCoupon->fixingEndDate(), atParCoupon->fixingMaturityDate());
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithoutDiscountCurve) {
     BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers...");
 

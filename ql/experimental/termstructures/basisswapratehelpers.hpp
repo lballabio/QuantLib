@@ -37,6 +37,9 @@ namespace QuantLib {
         case bootstrapBaseCurve = false and baseIndex will need a
         forecast curve).
         In both cases, an exogenous discount curve is required.
+
+        The \c useIndexedCoupons parameter, if provided, overrides the global
+        IborCoupon setting for both legs.
     */
     class IborIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -49,7 +52,8 @@ namespace QuantLib {
                                     const ext::shared_ptr<IborIndex>& baseIndex,
                                     const ext::shared_ptr<IborIndex>& otherIndex,
                                     Handle<YieldTermStructure> discountHandle,
-                                    bool bootstrapBaseCurve);
+                                    bool bootstrapBaseCurve,
+                                    const std::optional<bool>& useIndexedCoupons = std::nullopt);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -68,6 +72,7 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> otherIndex_;
         Handle<YieldTermStructure> discountHandle_;
         bool bootstrapBaseCurve_;
+        std::optional<bool> useIndexedCoupons_;
 
         ext::shared_ptr<Swap> swap_;
 
