@@ -129,11 +129,16 @@ namespace QuantLib {
         const ext::shared_ptr<IborIndex>& otherIndex,
         Handle<YieldTermStructure> discountHandle,
         bool bootstrapBaseCurve,
-        Integer paymentLag)
+        Integer paymentLag,
+        std::optional<Frequency> overnightPaymentFrequency,
+        std::optional<Frequency> iborPaymentFrequency,
+        const std::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
       discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve),
-      paymentLag_(paymentLag) {
+      paymentLag_(paymentLag), overnightPaymentFrequency_(overnightPaymentFrequency),
+      iborPaymentFrequency_(iborPaymentFrequency),
+      useIndexedCoupons_(useIndexedCoupons) {
 
         // we need to clone the index whose forecast curve we want to bootstrap
         // and copy the other one
@@ -162,21 +167,34 @@ namespace QuantLib {
         earliestDate_ = calendar_.advance(today, settlementDays_ * Days, Following);
         maturityDate_ = calendar_.advance(earliestDate_, tenor_, convention_);
 
-        Schedule schedule =
+        Period overnightTenor =
+            overnightPaymentFrequency_ ? Period(*overnightPaymentFrequency_) : otherIndex_->tenor();
+        Schedule overnightSchedule =
             MakeSchedule().from(earliestDate_).to(maturityDate_)
-            .withTenor(otherIndex_->tenor())
+            .withTenor(overnightTenor)
             .withCalendar(calendar_)
             .withConvention(convention_)
             .endOfMonth(endOfMonth_)
             .forwards();
 
-        Leg baseLeg = OvernightLeg(schedule, baseIndex_)
+        Leg baseLeg = OvernightLeg(overnightSchedule, baseIndex_)
             .withNotionals(100.0)
             .withPaymentLag(paymentLag_);
 
-        Leg otherLeg = IborLeg(schedule, otherIndex_)
+        Period iborTenor =
+            iborPaymentFrequency_ ? Period(*iborPaymentFrequency_) : otherIndex_->tenor();
+        Schedule iborSchedule =
+            MakeSchedule().from(earliestDate_).to(maturityDate_)
+            .withTenor(iborTenor)
+            .withCalendar(calendar_)
+            .withConvention(convention_)
+            .endOfMonth(endOfMonth_)
+            .forwards();
+
+        Leg otherLeg = IborLeg(iborSchedule, otherIndex_)
             .withNotionals(100.0)
-            .withPaymentLag(paymentLag_);
+            .withPaymentLag(paymentLag_)
+            .withIndexedCoupons(useIndexedCoupons_);
         auto lastOtherCoupon = ext::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
 
         // the payment lag can push the last payment past the maturity date,

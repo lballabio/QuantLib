@@ -89,8 +89,14 @@ namespace QuantLib {
         bootstrapBaseCurve = true and no discount curve is passed, the
         curve being bootstrapped is also used for discounting.
 
-        A payment lag can also be passed; it is applied to both legs,
-        which share the same schedule.
+        A payment lag can also be passed; it is applied to both legs.
+
+        The payment frequency of each leg can be overridden independently.
+        If not specified, both payment frequencies default to the tenor of
+        the ibor index.
+
+        The \c useIndexedCoupons parameter, if provided, overrides the global
+        IborCoupon setting for the ibor leg.
     */
     class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -104,7 +110,10 @@ namespace QuantLib {
                                          const ext::shared_ptr<IborIndex>& otherIndex,
                                          Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>(),
                                          bool bootstrapBaseCurve = false,
-                                         Integer paymentLag = 0);
+                                         Integer paymentLag = 0,
+                                         std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
+                                         std::optional<Frequency> iborPaymentFrequency = std::nullopt,
+                                         const std::optional<bool>& useIndexedCoupons = std::nullopt);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -124,6 +133,9 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountHandle_;
         bool bootstrapBaseCurve_;
         Integer paymentLag_;
+        std::optional<Frequency> overnightPaymentFrequency_;
+        std::optional<Frequency> iborPaymentFrequency_;
+        std::optional<bool> useIndexedCoupons_;
 
         ext::shared_ptr<Swap> swap_;
 
