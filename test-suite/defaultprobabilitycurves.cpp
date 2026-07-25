@@ -528,6 +528,32 @@ BOOST_AUTO_TEST_CASE(testIterativeBootstrapRetries) {
     BOOST_CHECK_NO_THROW(dpts->survivalProbability(testDate));
 }
 
+
+BOOST_AUTO_TEST_CASE(testDefaultProbabilityBeforeReferenceDate) {
+
+    BOOST_TEST_MESSAGE("Testing default probability for dates prior to reference date...");
+
+    Date today = Settings::instance().evaluationDate();
+    DayCounter dayCounter = Actual360();
+    Handle<Quote> hazardRateQuote(ext::make_shared<SimpleQuote>(0.01));
+
+    FlatHazardRate curve(today, hazardRateQuote, dayCounter);
+
+    Date d1 = today - 10;
+    Date d2 = today - 5;
+
+    Probability p = curve.defaultProbability(d1, d2);
+    Real tolerance = 1.0e-10;
+    if (std::fabs(p - 0.0) > tolerance) {
+        BOOST_ERROR("default probability between dates before reference date:\n"
+                    << "    d1: " << d1 << "\n"
+                    << "    d2: " << d2 << "\n"
+                    << "    computed: " << p << "\n"
+                    << "    expected: 0.0");
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
+

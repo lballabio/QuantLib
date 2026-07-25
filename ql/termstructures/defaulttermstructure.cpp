@@ -109,7 +109,8 @@ namespace QuantLib {
                    "later than final date (" << d2 << ")");
         Probability p1 = d1 < referenceDate() ? 0.0 :
                                            defaultProbability(d1,extrapolate),
-                    p2 = defaultProbability(d2,extrapolate);
+                    p2 = d2 < referenceDate() ? 0.0 :
+                                           defaultProbability(d2,extrapolate);
         return p2 - p1;
     }
 
