@@ -121,93 +121,6 @@ namespace QuantLib {
             return { npv, bps };
         }
 
-        class ResettingLegHelper {
-          public:
-            explicit ResettingLegHelper(const YieldTermStructure& discountCurve,
-                                        const YieldTermStructure& foreignCurve)
-            : discountCurve_(discountCurve), foreignCurve_(foreignCurve) {}
-            DiscountFactor discount(const Date& d) const {
-                return discountCurve_.discount(d);
-            }
-            Real notionalAdjustment(const Date& d) const {
-                return foreignCurve_.discount(d) / discountCurve_.discount(d);
-            }
-
-          private:
-            const YieldTermStructure& discountCurve_;
-            const YieldTermStructure& foreignCurve_;
-        };
-
-        class ResettingLegCalculator : public AcyclicVisitor, public Visitor<Coupon> {
-          public:
-            explicit ResettingLegCalculator(const YieldTermStructure& discountCurve,
-                                            const YieldTermStructure& foreignCurve,
-                                            Integer paymentLag,
-                                            Calendar paymentCalendar,
-                                            BusinessDayConvention convention)
-            : helper_(discountCurve, foreignCurve), paymentLag_(paymentLag),
-              paymentCalendar_(std::move(paymentCalendar)), convention_(convention) {}
-
-            void visit(Coupon& c) override {
-                Date start = c.accrualStartDate();
-                Date end = c.accrualEndDate();
-                Time accrual = c.accrualPeriod();
-                Real adjustedNotional = c.nominal() * helper_.notionalAdjustment(start);
-
-                DiscountFactor discountStart, discountEnd;
-
-                if (paymentLag_ == 0) {
-                    discountStart = helper_.discount(start);
-                    discountEnd = helper_.discount(end);
-                } else {
-                    Date paymentStart =
-                        paymentCalendar_.advance(start, paymentLag_, Days, convention_);
-                    Date paymentEnd = paymentCalendar_.advance(end, paymentLag_, Days, convention_);
-                    discountStart = helper_.discount(paymentStart);
-                    discountEnd = helper_.discount(paymentEnd);
-                }
-
-                // NPV of a resetting coupon consists of a redemption of borrowed amount occurring
-                // at the end of the accrual period plus the accrued interest, minus the borrowed
-                // amount at the start of the period. All amounts are corrected by an adjustment
-                // corresponding to the implied forward exchange rate, which is estimated by
-                // the ratio of foreign and domestic curves discount factors.
-                Real npvRedeemedAmount =
-                    adjustedNotional * discountEnd * (1.0 + c.rate() * accrual);
-                Real npvBorrowedAmount = -adjustedNotional * discountStart;
-
-                npv_ += (npvRedeemedAmount + npvBorrowedAmount);
-                bps_ += adjustedNotional * discountEnd * accrual;
-            }
-            Real NPV() const { return npv_; }
-            Real BPS() const { return bps_; }
-
-          private:
-            ResettingLegHelper helper_;
-            Real npv_ = 0.0;
-            Real bps_ = 0.0;
-            Integer paymentLag_;
-            Calendar paymentCalendar_;
-            BusinessDayConvention convention_;
-        };
-
-        std::pair<Real, Real> npvbpsResettingLeg(const Leg& iborLeg,
-                                                 Integer paymentLag,
-                                                 const Calendar& paymentCalendar,
-                                                 BusinessDayConvention convention,
-                                                 const Handle<YieldTermStructure>& discountCurveHandle,
-                                                 const Handle<YieldTermStructure>& foreignCurveHandle) {
-            const YieldTermStructure& discountCurveRef = **discountCurveHandle;
-            const YieldTermStructure& foreignCurveRef = **foreignCurveHandle;
-
-            ResettingLegCalculator calc(discountCurveRef, foreignCurveRef, paymentLag,
-                                        paymentCalendar, convention);
-            for (const auto& i : iborLeg) {
-                CashFlow& cf = *i;
-                cf.accept(calc);
-            }
-            return { calc.NPV(), calc.BPS() };
-        }
     }
 
 
@@ -408,7 +321,9 @@ namespace QuantLib {
         bool isFxBaseCurrencyLegResettable,
         std::optional<Frequency> paymentFrequency,
         Integer paymentLag,
-        std::optional<Frequency> quoteCurrencyPaymentFrequency)
+        std::optional<Frequency> quoteCurrencyPaymentFrequency,
+        Natural fxResetFixingDays,
+        Calendar fxResetFixingCalendar)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
@@ -423,7 +338,10 @@ namespace QuantLib {
                                            paymentFrequency,
                                            paymentLag,
                                            quoteCurrencyPaymentFrequency),
-      isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable) {
+      isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
+      fxResetConvention_(fxResetFixingDays,
+                         fxResetFixingCalendar.empty() ? calendar_ :
+                                                        std::move(fxResetFixingCalendar)) {
         buildSwap();
     }
 
@@ -440,7 +358,8 @@ namespace QuantLib {
             MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency,
             1.0, baseCcyIdx_->currency(), baseCcySchedule_, baseCcyIdx_, 0.0, 1.0,
             1.0, quoteCcyIdx_->currency(), quoteCcySchedule_, quoteCcyIdx_, 0.0, 1.0,
-            isFxBaseCurrencyLegResettable_, paymentLag_, paymentLag_);
+            isFxBaseCurrencyLegResettable_, fxResetConvention_, paymentLag_, paymentLag_,
+            convention_, convention_);
         swap_->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
             quoteCcyIdx_->currency(), quoteCcyLegDiscountHandle(),
             baseCcyIdx_->currency(), baseCcyLegDiscountHandle(),
@@ -451,25 +370,10 @@ namespace QuantLib {
         QL_REQUIRE(!termStructureHandle_.empty(), "term structure not set");
         QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
 
-        auto [npvBaseCcy, bpsBaseCcy] =
-            isFxBaseCurrencyLegResettable_ ?
-                npvbpsResettingLeg(baseCcyIborLeg_, paymentLag_, calendar_, convention_,
-                                   baseCcyLegDiscountHandle(), quoteCcyLegDiscountHandle()) :
-                npvbpsConstNotionalLeg(baseCcyIborLeg_, initialNotionalExchangeDate_,
-                                       finalNotionalExchangeDate_, baseCcyLegDiscountHandle());
-
-        auto [npvQuoteCcy, bpsQuoteCcy] =
-            isFxBaseCurrencyLegResettable_ ?
-                npvbpsConstNotionalLeg(quoteCcyIborLeg_, initialNotionalExchangeDate_,
-                                       finalNotionalExchangeDate_, quoteCcyLegDiscountHandle()) :
-                npvbpsResettingLeg(quoteCcyIborLeg_, paymentLag_, calendar_, convention_,
-                                   quoteCcyLegDiscountHandle(), baseCcyLegDiscountHandle());
-
-        Real bps = isBasisOnFxBaseCurrencyLeg_ ? -bpsBaseCcy : bpsQuoteCcy;
-
-        QL_REQUIRE(std::fabs(bps) > 0.0, "null BPS");
-
-        return -(npvQuoteCcy - npvBaseCcy) / bps;
+        swap_->deepUpdate();
+        if (isBasisOnFxBaseCurrencyLeg_)
+            return swap_->fairFxBaseSpread();
+        return swap_->fairFxQuoteSpread();
     }
 
     void MtMCrossCurrencyBasisSwapRateHelper::accept(AcyclicVisitor& v) {

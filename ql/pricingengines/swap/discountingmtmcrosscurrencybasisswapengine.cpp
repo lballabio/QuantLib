@@ -24,6 +24,31 @@
 
 namespace QuantLib {
 
+namespace {
+
+    Leg copyWithFxResetPricer(const Leg& leg,
+                              const ext::shared_ptr<FxResetPricer>& pricer) {
+        Leg result;
+        result.reserve(leg.size());
+        for (const auto& cf : leg) {
+            if (auto coupon = ext::dynamic_pointer_cast<FxResetCoupon>(cf)) {
+                result.push_back(ext::make_shared<FxResetCoupon>(
+                    coupon->underlying(), coupon->constantLegNotional(), coupon->fxReset()));
+            } else if (auto exchange =
+                           ext::dynamic_pointer_cast<FxResetNotionalExchange>(cf)) {
+                result.push_back(ext::make_shared<FxResetNotionalExchange>(
+                    exchange->date(), exchange->constantLegNotional(),
+                    exchange->previousReset(), exchange->currentReset()));
+            } else {
+                result.push_back(cf);
+            }
+        }
+        setFxResetPricer(result, pricer);
+        return result;
+    }
+
+}
+
 DiscountingMtMCrossCurrencyBasisSwapEngine::DiscountingMtMCrossCurrencyBasisSwapEngine(
     Currency domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountcurve,
     Currency foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountcurve,
@@ -120,29 +145,30 @@ void DiscountingMtMCrossCurrencyBasisSwapEngine::calculate() const {
             }
             results_.npvDateDiscounts[legNo] = legDiscountCurve->discount(valuationDate);
 
+            const Leg* pricingLeg = &arguments_.legs[legNo];
+            Leg localResettingLeg;
+
             if (legNo == arguments_.resettingLegIndex) {
                 // The resettable leg pays in currency R; the constant-notional
                 // leg pays in currency C.  Its cash flows convert at FX rates
-                // quoted R per C, which they obtain from a source built from
-                // this engine's market data: attach it before discounting.
+                // quoted R per C, which they obtain from a pricer built from
+                // this engine's market data.  Price local wrappers so that a
+                // logically const engine calculation does not modify the
+                // instrument's live cash flows.
                 const Currency& resettableCcy = arguments_.currencies[legNo];
                 const Currency& constantLegCcy =
                     arguments_.currencies[arguments_.constantLegIndex];
                 bool spotIsResettablePerConstant = (resettableCcy == domesticCcy_);
-                auto fxResetSource = ext::make_shared<FxResetSource>(
+                auto fxResetPricer = ext::make_shared<DiscountingFxResetPricer>(
                     constantLegCcy, resettableCcy, otherLegCurve, legDiscountCurve, spotFX_,
-                    spotIsResettablePerConstant, spotFXSettleDate_);
-                for (const auto& cf : arguments_.legs[legNo]) {
-                    if (auto coupon = ext::dynamic_pointer_cast<FxResetCoupon>(cf))
-                        coupon->setFxResetSource(fxResetSource);
-                    else if (auto exchange =
-                                 ext::dynamic_pointer_cast<FxResetNotionalExchange>(cf))
-                        exchange->setFxResetSource(fxResetSource);
-                }
+                    spotIsResettablePerConstant, spotFXSettleDate);
+                localResettingLeg =
+                    copyWithFxResetPricer(arguments_.legs[legNo], fxResetPricer);
+                pricingLeg = &localResettingLeg;
             }
 
             std::tie(results_.inCcyLegNPV[legNo], results_.inCcyLegBPS[legNo]) =
-                CashFlows::npvbps(arguments_.legs[legNo], **legDiscountCurve,
+                CashFlows::npvbps(*pricingLeg, **legDiscountCurve,
                                   includeReferenceDateFlows, settlementDate, valuationDate);
 
             results_.inCcyLegNPV[legNo] *= arguments_.payer[legNo];

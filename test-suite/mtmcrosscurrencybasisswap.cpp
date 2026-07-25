@@ -16,6 +16,7 @@
 */
 
 #include "toplevelfixture.hpp"
+#include "utilities.hpp"
 #include <ql/cashflows/coupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/fxresetcashflows.hpp>
@@ -37,6 +38,8 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/schedule.hpp>
@@ -130,6 +133,7 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
     BusinessDayConvention conv = Following;
     DayCounter dc = Actual365Fixed();
     bool endOfMonth = false;
+    Natural fxResetFixingDays = 2;
 
     Date today = cal.adjust(Date(6, September, 2013));
     Settings::instance().evaluationDate() = today;
@@ -164,7 +168,8 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
                     helpers.push_back(ext::make_shared<MtMCrossCurrencyBasisSwapRateHelper>(
                         makeQuoteHandle(q.second * bp), q.first, fixingDays, cal, conv, endOfMonth,
                         eurIndex, usdIndex, collateral, isFxBaseCurrencyCollateralCurrency,
-                        isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable));
+                        isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable, std::nullopt, 0,
+                        std::nullopt, fxResetFixingDays, cal));
 
                 ext::shared_ptr<YieldTermStructure> bootstrapped(
                     new PiecewiseYieldCurve<Discount, LogLinear>(today, helpers, dc));
@@ -207,7 +212,8 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
                     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
                         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, 1.0, EURCurrency(),
                         eurSch, eurIndex, baseLegBasis, 1.0, 1.0, USDCurrency(), usdSch, usdIndex,
-                        quoteLegBasis, 1.0, isFxBaseCurrencyLegResettable);
+                        quoteLegBasis, 1.0, isFxBaseCurrencyLegResettable,
+                        FxResetConvention(fxResetFixingDays, cal));
                     swap->setPricingEngine(engine);
 
                     Real npv = swap->NPV();
@@ -231,8 +237,22 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
                     auto helper =
                         ext::dynamic_pointer_cast<MtMCrossCurrencyBasisSwapRateHelper>(helpers[i]);
                     BOOST_REQUIRE(helper != nullptr && helper->swap() != nullptr);
+                    BOOST_CHECK_EQUAL(helper->fxResetConvention().fixingDays(),
+                                      fxResetFixingDays);
                     auto underlying = helper->swap();
                     underlying->deepUpdate();
+                    bool foundFxResetCoupon = false;
+                    for (const auto& cf : underlying->resettingLeg()) {
+                        if (auto coupon = ext::dynamic_pointer_cast<FxResetCoupon>(cf)) {
+                            foundFxResetCoupon = true;
+                            Date expectedFixing = cal.advance(
+                                coupon->fxResetValueDate(),
+                                -static_cast<Integer>(fxResetFixingDays), Days);
+                            BOOST_CHECK_EQUAL(coupon->fxResetDate(), expectedFixing);
+                            break;
+                        }
+                    }
+                    BOOST_CHECK(foundFxResetCoupon);
                     Spread fair = isBasisOnFxBaseCurrencyLeg ? underlying->fairFxBaseSpread() :
                                                                underlying->fairFxQuoteSpread();
                     Spread expected = basisData[i].second * bp;
@@ -249,6 +269,207 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
                                     << isFxBaseCurrencyLegResettable << "\n");
                 }
             }
+}
+
+BOOST_AUTO_TEST_CASE(testFxResetObservationDatesAndProjection) {
+    BOOST_TEST_MESSAGE("Testing FX-reset fixing dates and value-date projection...");
+
+    SavedSettings backup;
+    Date today(1, July, 2024);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> eurCurve = flatCurve(today, 0.01);
+    Handle<YieldTermStructure> usdCurve = flatCurve(today, 0.05);
+    auto eurIndex = ext::make_shared<Euribor>(3 * Months, eurCurve);
+    auto usdIndex = ext::make_shared<USDLibor>(3 * Months, usdCurve);
+
+    Date start(8, July, 2024);
+    Schedule sch(start, start + 6 * Months, 3 * Months, TARGET(), Following, Following,
+                 DateGeneration::Forward, false);
+    Calendar fxCalendar = JointCalendar(TARGET(), UnitedStates(UnitedStates::Settlement),
+                                        JoinHolidays);
+    FxResetConvention fxResetConvention(2, fxCalendar);
+
+    Real eurNominal = 10000000.0;
+    Real spotFx = 1.10;
+    auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
+        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, eurNominal, EURCurrency(), sch,
+        eurIndex, 0.0, 1.0, eurNominal * spotFx, USDCurrency(), sch, usdIndex, 0.0, 1.0,
+        /*isFxBaseCurrencyLegResettable=*/false, fxResetConvention);
+    swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
+        USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(spotFx)));
+    BOOST_CHECK_NO_THROW(swap->NPV());
+
+    ext::shared_ptr<FxResetCoupon> firstCoupon;
+    ext::shared_ptr<FxResetNotionalExchange> firstExchange;
+    for (const auto& cf : swap->resettingLeg()) {
+        if (!firstExchange)
+            firstExchange = ext::dynamic_pointer_cast<FxResetNotionalExchange>(cf);
+        if (auto coupon = ext::dynamic_pointer_cast<FxResetCoupon>(cf)) {
+            firstCoupon = coupon;
+            break;
+        }
+    }
+    BOOST_REQUIRE(firstCoupon != nullptr);
+    BOOST_REQUIRE(firstExchange != nullptr);
+    BOOST_CHECK_EQUAL(firstCoupon->fxResetDate(), Date(3, July, 2024));
+    BOOST_CHECK_EQUAL(firstCoupon->fxResetValueDate(), start);
+    BOOST_CHECK(!firstExchange->previousReset());
+    BOOST_REQUIRE(firstExchange->currentReset());
+    BOOST_CHECK_EQUAL(firstExchange->currentReset()->fixingDate(), firstCoupon->fxResetDate());
+    BOOST_CHECK_EQUAL(firstExchange->currentReset()->valueDate(), firstCoupon->fxResetValueDate());
+    BOOST_CHECK(!firstCoupon->fxResetPricer());
+    BOOST_CHECK(!firstExchange->fxResetPricer());
+
+    auto fxResetPricer = ext::make_shared<DiscountingFxResetPricer>(
+        EURCurrency(), USDCurrency(), eurCurve, usdCurve, makeQuoteHandle(spotFx), true);
+    setFxResetPricer(swap->resettingLeg(), fxResetPricer);
+
+    Real expectedForward = spotFx * eurCurve->discount(start) / usdCurve->discount(start);
+    BOOST_CHECK_CLOSE(firstCoupon->nominal(), eurNominal * expectedForward, 1.0e-10);
+
+    Real fixingDateForward = spotFx * eurCurve->discount(firstCoupon->fxResetDate()) /
+                             usdCurve->discount(firstCoupon->fxResetDate());
+    BOOST_CHECK(std::fabs(firstCoupon->nominal() - eurNominal * fixingDateForward) > 1.0);
+}
+
+BOOST_AUTO_TEST_CASE(testResetFixingStateUsesEvaluationDate) {
+    BOOST_TEST_MESSAGE(
+        "Testing that FX-reset fixing state is determined from the evaluation date...");
+
+    SavedSettings backup;
+    ExchangeRateManagerCleaner cleaner;
+    Date today(1, July, 2024);
+    Settings::instance().evaluationDate() = today;
+
+    TARGET calendar;
+    Date spotDate = calendar.advance(today, 2 * Days);
+    Handle<YieldTermStructure> eurCurve = flatCurve(spotDate, 0.01);
+    Handle<YieldTermStructure> usdCurve = flatCurve(spotDate, 0.05);
+    Real spotFx = 1.10;
+    DiscountingFxResetPricer pricer(EURCurrency(), USDCurrency(), eurCurve, usdCurve,
+                                    makeQuoteHandle(spotFx), true, spotDate);
+    FxReset reset(today, spotDate);
+
+    // Although today's fixing precedes the curves' spot-date reference, it is
+    // forecast when no fixing has been published yet.
+    BOOST_CHECK_CLOSE(pricer.fxRate(reset), spotFx, 1.0e-12);
+
+    Real publishedFixing = 1.25;
+    ExchangeRateManager::instance().add(
+        ExchangeRate(EURCurrency(), USDCurrency(), publishedFixing), today, today);
+    BOOST_CHECK_CLOSE(pricer.fxRate(reset), publishedFixing, 1.0e-12);
+
+    ExchangeRateManager::instance().clear();
+    Settings::instance().enforcesTodaysHistoricFixings() = true;
+    BOOST_CHECK_THROW(pricer.fxRate(reset), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testFxResetCouponUpdates) {
+    BOOST_TEST_MESSAGE(
+        "Testing FX-reset coupon notifications and deep updates...");
+
+    SavedSettings backup;
+    Date today(1, July, 2024);
+    Settings::instance().evaluationDate() = today;
+
+    RelinkableHandle<YieldTermStructure> forecastCurve;
+    forecastCurve.linkTo(*flatCurve(today, 0.01));
+    auto index = ext::make_shared<Euribor>(3 * Months, forecastCurve);
+    TARGET calendar;
+    Date start = calendar.advance(today, 2 * Days);
+    Schedule schedule(start, start + 3 * Months, 3 * Months, calendar, Following,
+                      Following, DateGeneration::Forward, false);
+    Leg leg = IborLeg(schedule, index).withNotionals(1.0);
+    auto underlying = ext::dynamic_pointer_cast<FloatingRateCoupon>(leg.front());
+    BOOST_REQUIRE(underlying != nullptr);
+
+    auto coupon = ext::make_shared<FxResetCoupon>(underlying, 1000000.0,
+                                                   FxReset(start, start));
+    auto spotQuote = ext::make_shared<SimpleQuote>(1.10);
+    auto fxResetPricer = ext::make_shared<DiscountingFxResetPricer>(
+        USDCurrency(), EURCurrency(), forecastCurve, forecastCurve,
+        Handle<Quote>(spotQuote), false);
+    coupon->setFxResetPricer(fxResetPricer);
+    coupon->forwardFirstNotificationOnly();
+
+    // Make the wrapper calculated, then verify that both pricer and underlying
+    // coupon changes are forwarded even in first-notification-only mode.
+    coupon->amount();
+    Flag flag;
+    flag.registerWith(coupon);
+    spotQuote->setValue(1.11);
+    BOOST_CHECK(flag.isUp());
+
+    flag.lower();
+    coupon->amount();
+    forecastCurve.linkTo(*flatCurve(today, 0.02));
+    BOOST_CHECK(flag.isUp());
+
+    coupon->rate();
+    underlying->rate();
+    BOOST_CHECK(coupon->isCalculated());
+    BOOST_CHECK(underlying->isCalculated());
+    coupon->deepUpdate();
+    BOOST_CHECK(!coupon->isCalculated());
+    BOOST_CHECK(!underlying->isCalculated());
+}
+
+BOOST_AUTO_TEST_CASE(testKnownFxResetBeforeAccrualStart) {
+    BOOST_TEST_MESSAGE("Testing that an FX reset fixed before accrual start uses its fixing...");
+
+    SavedSettings backup;
+    ExchangeRateManagerCleaner cleaner;
+    Date today(5, July, 2024);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> eurCurve = flatCurve(today, 0.01);
+    Handle<YieldTermStructure> usdCurve = flatCurve(today, 0.05);
+    auto eurIndex = ext::make_shared<Euribor>(3 * Months, eurCurve);
+    auto usdIndex = ext::make_shared<USDLibor>(3 * Months, usdCurve);
+
+    Date start(8, July, 2024);
+    Schedule sch(start, start + 6 * Months, 3 * Months, TARGET(), Following, Following,
+                 DateGeneration::Forward, false);
+    Calendar fxCalendar = JointCalendar(TARGET(), UnitedStates(UnitedStates::Settlement),
+                                        JoinHolidays);
+    FxResetConvention fxResetConvention(2, fxCalendar);
+    Date fxFixingDate(3, July, 2024);
+    Real fixedFx = 1.25;
+    ExchangeRateManager::instance().add(ExchangeRate(EURCurrency(), USDCurrency(), fixedFx),
+                                        fxFixingDate, fxFixingDate);
+
+    Date eurFixingDate = eurIndex->fixingDate(start);
+    if (eurFixingDate < today)
+        eurIndex->addFixing(eurFixingDate, 0.01);
+    Date usdFixingDate = usdIndex->fixingDate(start);
+    if (usdFixingDate < today)
+        usdIndex->addFixing(usdFixingDate, 0.05);
+
+    Real eurNominal = 10000000.0;
+    auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
+        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, eurNominal, EURCurrency(), sch,
+        eurIndex, 0.0, 1.0, eurNominal * 1.10, USDCurrency(), sch, usdIndex, 0.0, 1.0,
+        /*isFxBaseCurrencyLegResettable=*/false, fxResetConvention);
+    swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
+        USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(1.10)));
+    BOOST_CHECK_NO_THROW(swap->NPV());
+
+    ext::shared_ptr<FxResetCoupon> firstCoupon;
+    for (const auto& cf : swap->resettingLeg()) {
+        if (auto coupon = ext::dynamic_pointer_cast<FxResetCoupon>(cf)) {
+            firstCoupon = coupon;
+            break;
+        }
+    }
+    BOOST_REQUIRE(firstCoupon != nullptr);
+    BOOST_CHECK_EQUAL(firstCoupon->fxResetDate(), fxFixingDate);
+    BOOST_CHECK_EQUAL(firstCoupon->fxResetValueDate(), start);
+    setFxResetPricer(
+        swap->resettingLeg(),
+        ext::make_shared<DiscountingFxResetPricer>(
+            EURCurrency(), USDCurrency(), eurCurve, usdCurve, makeQuoteHandle(1.10), true));
+    BOOST_CHECK_CLOSE(firstCoupon->nominal(), eurNominal * fixedFx, 1.0e-10);
 }
 
 BOOST_AUTO_TEST_CASE(testResettableLegCashFlowsMatchLegResults) {
@@ -283,9 +504,13 @@ BOOST_AUTO_TEST_CASE(testResettableLegCashFlowsMatchLegResults) {
 
     Size resettingLegNo = swap->resettingLegIndex();
     Real legNpv = swap->inCcyLegNPV(resettingLegNo); // triggers the calculation
+    setFxResetPricer(
+        swap->leg(resettingLegNo),
+        ext::make_shared<DiscountingFxResetPricer>(
+            USDCurrency(), EURCurrency(), usdCurve, eurCurve, makeQuoteHandle(spotFx), false));
 
-    // After pricing, the leg's cash flows are enumerable and self-describing:
-    // discounting them must reproduce the engine's in-currency leg NPV.
+    // With the same pricer assigned explicitly, enumerating and discounting the
+    // live leg's cash flows must reproduce the engine's in-currency leg NPV.
     Real npv = 0.0;
     Size couponCount = 0, exchangeCount = 0;
     for (const auto& cf : swap->leg(resettingLegNo)) {
@@ -479,7 +704,7 @@ BOOST_AUTO_TEST_CASE(testSeasonedTriangulatedResetMatchesConstantNotional) {
                 if (fd <= today)
                     frc->index()->addFixing(fd, legNo == 0 ? 0.021 : 0.012, true);
             }
-    for (const auto& cf : mtm->leg(mtm->resettingLegIndex()))
+    for (const auto& cf : mtm->resettingLeg())
         if (auto cpn = ext::dynamic_pointer_cast<Coupon>(cf)) {
             Date reset = cpn->accrualStartDate();
             if (reset <= today) {
@@ -553,7 +778,7 @@ BOOST_AUTO_TEST_CASE(testSeasonedEurUsdMarketExchangeRate) {
                 if (fd <= today)
                     frc->index()->addFixing(fd, legNo == 0 ? 0.011 : 0.021, true);
             }
-    for (const auto& cf : mtm->leg(mtm->resettingLegIndex()))
+    for (const auto& cf : mtm->resettingLeg())
         if (auto cpn = ext::dynamic_pointer_cast<Coupon>(cf)) {
             Date reset = cpn->accrualStartDate();
             if (reset <= today)
@@ -619,7 +844,7 @@ BOOST_AUTO_TEST_CASE(testSeasonedUsdJpyMarketExchangeRate) {
                 if (fd <= today)
                     frc->index()->addFixing(fd, legNo == 0 ? 0.021 : 0.0005, true);
             }
-    for (const auto& cf : mtm->leg(mtm->resettingLegIndex()))
+    for (const auto& cf : mtm->resettingLeg())
         if (auto cpn = ext::dynamic_pointer_cast<Coupon>(cf)) {
             Date reset = cpn->accrualStartDate();
             if (reset <= today)
@@ -706,7 +931,7 @@ BOOST_AUTO_TEST_CASE(testSeasonedOvernightLegsMatchConstantNotional) {
     // coupon built on the realised reset notional: only the overnight fixings
     // realised so far compound into the accrued amount.
     ext::shared_ptr<FxResetCoupon> mtmCoupon;
-    for (const auto& cf : mtm->leg(mtm->resettingLegIndex()))
+    for (const auto& cf : mtm->resettingLeg())
         if (auto c = ext::dynamic_pointer_cast<FxResetCoupon>(cf))
             mtmCoupon = c;
     ext::shared_ptr<Coupon> refCoupon;
@@ -714,6 +939,10 @@ BOOST_AUTO_TEST_CASE(testSeasonedOvernightLegsMatchConstantNotional) {
         if (auto c = ext::dynamic_pointer_cast<Coupon>(cf))
             refCoupon = c;
     BOOST_REQUIRE(mtmCoupon != nullptr && refCoupon != nullptr);
+    setFxResetPricer(
+        mtm->resettingLeg(),
+        ext::make_shared<DiscountingFxResetPricer>(
+            USDCurrency(), EURCurrency(), usdCurve, eurCurve, spot, false));
     BOOST_CHECK_CLOSE(mtmCoupon->nominal(), refCoupon->nominal(), 1.0e-8);
     BOOST_CHECK_CLOSE(mtmCoupon->accruedAmount(today), refCoupon->accruedAmount(today), 1.0e-8);
     BOOST_CHECK_CLOSE(mtmCoupon->amount(), refCoupon->amount(), 1.0e-8);
@@ -733,9 +962,9 @@ BOOST_AUTO_TEST_CASE(testResetExchangesPayOnCouponPaymentDates) {
     auto eurIndex = ext::make_shared<Euribor>(3 * Months, eurCurve);
 
     TARGET cal;
-    // Unadjusted schedule with period-end dates falling on weekends: the
-    // coupons still pay on the following business day, and the exchanges
-    // must settle with them.
+    // Unadjusted schedule with period-end dates falling on weekends.  Give
+    // the resettable leg an explicit Preceding payment convention; its reset
+    // exchanges must use the same convention and settle with its coupons.
     Date start(15, Sep, 2018); // a Saturday
     Schedule sch(start, start + 1 * Years, 3 * Months, cal, Unadjusted, Unadjusted,
                  DateGeneration::Forward, false);
@@ -745,14 +974,18 @@ BOOST_AUTO_TEST_CASE(testResetExchangesPayOnCouponPaymentDates) {
     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
         usdIndex, 0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, 0.0, 1.0,
-        /*isFxBaseCurrencyLegResettable=*/false);
+        /*isFxBaseCurrencyLegResettable=*/false, FxResetConvention(), 0, 0, Following,
+        Preceding);
     swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
         USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(spotFx)));
     BOOST_CHECK_NO_THROW(swap->NPV());
 
     ext::shared_ptr<Coupon> lastCoupon;
-    for (const auto& cf : swap->leg(swap->resettingLegIndex())) {
+    ext::shared_ptr<FxResetNotionalExchange> firstExchange;
+    for (const auto& cf : swap->resettingLeg()) {
         if (auto exchange = ext::dynamic_pointer_cast<FxResetNotionalExchange>(cf)) {
+            if (!firstExchange)
+                firstExchange = exchange;
             BOOST_CHECK_MESSAGE(cal.isBusinessDay(exchange->date()),
                                 "reset exchange payment date " << exchange->date()
                                                                << " is not a business day");
@@ -763,6 +996,8 @@ BOOST_AUTO_TEST_CASE(testResetExchangesPayOnCouponPaymentDates) {
         }
     }
     BOOST_REQUIRE(lastCoupon != nullptr);
+    BOOST_REQUIRE(firstExchange != nullptr);
+    BOOST_CHECK_EQUAL(firstExchange->date(), cal.adjust(start, Preceding));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

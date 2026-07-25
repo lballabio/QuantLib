@@ -30,11 +30,14 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/pricingengines/swap/discountingmtmcrosscurrencybasisswapengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/currencies/all.hpp>
@@ -46,6 +49,13 @@ using namespace boost::unit_test_framework;
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(CrossCurrencyRateHelpersTests)
+
+namespace {
+    struct ExchangeRateManagerCleaner {
+        ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
+        ~ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
+    };
+}
 
 struct XccyTestDatum {
     Integer n;
@@ -597,6 +607,130 @@ BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithPaymentLag) {
 
     testResettingCrossCurrencySwaps(isFxBaseCurrencyCollateralCurrency, isBasisOnFxBaseCurrencyLeg,
                                     isFxBaseCurrencyLegResettable, std::nullopt, 2);
+}
+
+BOOST_AUTO_TEST_CASE(testMtMHelperMatchesStandaloneWithAsymmetricFxHolidays) {
+    BOOST_TEST_MESSAGE(
+        "Testing helper/instrument equivalence across asymmetric FX holidays...");
+
+    SavedSettings backup;
+    ExchangeRateManagerCleaner exchangeRateCleaner;
+    Date today(3, July, 2024);
+    Settings::instance().evaluationDate() = today;
+
+    Calendar legCalendar = TARGET();
+    Calendar fxCalendar = JointCalendar(
+        TARGET(), UnitedStates(UnitedStates::Settlement), JoinHolidays);
+    Natural settlementDays = 3;
+    Natural fxResetFixingDays = 2;
+    Integer paymentLag = 2;
+    Date start = legCalendar.advance(today, settlementDays, Days);
+    Date expectedFxFixingDate = fxCalendar.advance(
+        start, -static_cast<Integer>(fxResetFixingDays), Days);
+
+    BOOST_REQUIRE_EQUAL(start, Date(8, July, 2024));
+    BOOST_REQUIRE_EQUAL(expectedFxFixingDate, today);
+    // July 4th is a TARGET business day but a US holiday.  This proves that
+    // the separate FX calendar, rather than the leg calendar, drives the reset.
+    BOOST_REQUIRE_EQUAL(
+        legCalendar.advance(start, -static_cast<Integer>(fxResetFixingDays), Days),
+        Date(4, July, 2024));
+
+    Handle<YieldTermStructure> eurForecast(
+        ext::make_shared<FlatForward>(today, 0.015, Actual365Fixed()));
+    Handle<YieldTermStructure> usdCurve(
+        ext::make_shared<FlatForward>(today, 0.030, Actual365Fixed()));
+    auto eurIndex = ext::make_shared<Euribor3M>(eurForecast);
+    auto usdIndex = ext::make_shared<USDLibor>(3 * Months, usdCurve);
+
+    Real observedFx = 1.25;
+    ExchangeRateManager::instance().add(
+        ExchangeRate(EURCurrency(), USDCurrency(), observedFx),
+        expectedFxFixingDate, expectedFxFixingDate);
+
+    Spread basis = 10.0e-4;
+    auto helper = ext::make_shared<MtMCrossCurrencyBasisSwapRateHelper>(
+        makeQuoteHandle(basis), 1 * Years, settlementDays, legCalendar, Following, false,
+        eurIndex, usdIndex, usdCurve,
+        /*isFxBaseCurrencyCollateralCurrency=*/false,
+        /*isBasisOnFxBaseCurrencyLeg=*/false,
+        /*isFxBaseCurrencyLegResettable=*/false,
+        Quarterly, paymentLag, Semiannual, fxResetFixingDays, fxCalendar);
+
+    std::vector<ext::shared_ptr<RateHelper> > helpers(1, helper);
+    auto eurDiscount = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
+        today, helpers, Actual365Fixed());
+    eurDiscount->enableExtrapolation();
+    eurDiscount->discount(helper->maturityDate());
+    Handle<YieldTermStructure> eurDiscountHandle(eurDiscount);
+
+    auto helperSwap = helper->swap();
+    auto standalone = ext::make_shared<MtMCrossCurrencyBasisSwap>(
+        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency,
+        1.0, EURCurrency(), helperSwap->fxBaseSchedule(), eurIndex, 0.0, 1.0,
+        1.0, USDCurrency(), helperSwap->fxQuoteSchedule(), usdIndex, 0.0, 1.0,
+        /*isFxBaseCurrencyLegResettable=*/false,
+        FxResetConvention(fxResetFixingDays, fxCalendar),
+        paymentLag, paymentLag, Following, Following);
+    standalone->setPricingEngine(
+        ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
+            USDCurrency(), usdCurve, EURCurrency(), eurDiscountHandle,
+            makeQuoteHandle(1.0), true));
+
+    const Leg& helperResettingLeg = helperSwap->resettingLeg();
+    const Leg& standaloneResettingLeg = standalone->resettingLeg();
+    BOOST_REQUIRE_EQUAL(helperResettingLeg.size(), standaloneResettingLeg.size());
+
+    ext::shared_ptr<FxResetCoupon> firstHelperCoupon;
+    for (Size i = 0; i < helperResettingLeg.size(); ++i) {
+        BOOST_CHECK_EQUAL(helperResettingLeg[i]->date(), standaloneResettingLeg[i]->date());
+        auto helperCoupon = ext::dynamic_pointer_cast<FxResetCoupon>(helperResettingLeg[i]);
+        auto standaloneCoupon =
+            ext::dynamic_pointer_cast<FxResetCoupon>(standaloneResettingLeg[i]);
+        BOOST_REQUIRE_EQUAL(helperCoupon != nullptr, standaloneCoupon != nullptr);
+        if (helperCoupon) {
+            if (!firstHelperCoupon)
+                firstHelperCoupon = helperCoupon;
+            BOOST_CHECK_EQUAL(helperCoupon->fxResetDate(), standaloneCoupon->fxResetDate());
+            BOOST_CHECK_EQUAL(helperCoupon->fxResetValueDate(),
+                              standaloneCoupon->fxResetValueDate());
+        }
+    }
+
+    BOOST_REQUIRE(firstHelperCoupon != nullptr);
+    BOOST_CHECK_EQUAL(firstHelperCoupon->fxResetDate(), expectedFxFixingDate);
+    BOOST_CHECK_EQUAL(firstHelperCoupon->fxResetValueDate(), start);
+    BOOST_CHECK_SMALL(helperSwap->NPV() - standalone->NPV(), 1.0e-12);
+    BOOST_CHECK_SMALL(helperSwap->fairFxQuoteSpread() - standalone->fairFxQuoteSpread(),
+                      1.0e-12);
+    BOOST_CHECK_SMALL(helperSwap->fairFxQuoteSpread() - basis, 1.0e-10);
+
+    // Under the previous zero-day convention the first reset is still in the
+    // future and is projected instead of using today's observed fixing.
+    auto zeroLagReset = ext::make_shared<MtMCrossCurrencyBasisSwap>(
+        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency,
+        1.0, EURCurrency(), helperSwap->fxBaseSchedule(), eurIndex, 0.0, 1.0,
+        1.0, USDCurrency(), helperSwap->fxQuoteSchedule(), usdIndex, 0.0, 1.0,
+        /*isFxBaseCurrencyLegResettable=*/false, FxResetConvention(),
+        paymentLag, paymentLag, Following, Following);
+    zeroLagReset->setPricingEngine(
+        ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
+            USDCurrency(), usdCurve, EURCurrency(), eurDiscountHandle,
+            makeQuoteHandle(1.0), true));
+
+    ext::shared_ptr<FxResetCoupon> firstZeroLagCoupon;
+    for (const auto& cashflow : zeroLagReset->resettingLeg()) {
+        firstZeroLagCoupon = ext::dynamic_pointer_cast<FxResetCoupon>(cashflow);
+        if (firstZeroLagCoupon)
+            break;
+    }
+    BOOST_REQUIRE(firstZeroLagCoupon != nullptr);
+    BOOST_CHECK_EQUAL(firstZeroLagCoupon->fxResetDate(), start);
+    Spread zeroLagFairSpreadDifference =
+        std::fabs(zeroLagReset->fairFxQuoteSpread() - standalone->fairFxQuoteSpread());
+    BOOST_CHECK_MESSAGE(zeroLagFairSpreadDifference > 1.0e-8,
+                        "zero-lag fair-spread difference was "
+                            << zeroLagFairSpreadDifference);
 }
 
 BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithOvernightIndex) {

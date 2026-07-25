@@ -31,7 +31,10 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
     Real fxQuoteNominal, Currency fxQuoteCurrency, Schedule fxQuoteSchedule,
     const ext::shared_ptr<IborIndex>& fxQuoteIndex, Spread fxQuoteSpread, Real fxQuoteGearing,
     bool isFxBaseCurrencyLegResettable,
+    FxResetConvention fxResetConvention,
     Integer fxBasePaymentLag, Integer fxQuotePaymentLag,
+    BusinessDayConvention fxBasePaymentConvention,
+    BusinessDayConvention fxQuotePaymentConvention,
     bool fxBaseCompoundSpread, Natural fxBaseLookbackDays, bool fxBaseObservationShift,
     Natural fxBaseLockoutDays, RateAveraging::Type fxBaseAveragingMethod,
     bool fxQuoteCompoundSpread, Natural fxQuoteLookbackDays, bool fxQuoteObservationShift,
@@ -46,7 +49,15 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
   fxQuoteSchedule_(std::move(fxQuoteSchedule)), fxQuoteIndex_(fxQuoteIndex),
   fxQuoteSpread_(fxQuoteSpread), fxQuoteGearing_(fxQuoteGearing),
   isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
+  fxResetConvention_(
+      fxResetConvention.fixingDays(),
+      fxResetConvention.fixingCalendar().empty() ?
+          (isFxBaseCurrencyLegResettable_ ? fxBaseSchedule_.calendar() :
+                                           fxQuoteSchedule_.calendar()) :
+          fxResetConvention.fixingCalendar()),
   fxBasePaymentLag_(fxBasePaymentLag), fxQuotePaymentLag_(fxQuotePaymentLag),
+  fxBasePaymentConvention_(fxBasePaymentConvention),
+  fxQuotePaymentConvention_(fxQuotePaymentConvention),
   fxBaseCompoundSpread_(fxBaseCompoundSpread), fxBaseLookbackDays_(fxBaseLookbackDays),
   fxBaseObservationShift_(fxBaseObservationShift), fxBaseLockoutDays_(fxBaseLockoutDays),
   fxBaseAveragingMethod_(fxBaseAveragingMethod),
@@ -65,6 +76,8 @@ void MtMCrossCurrencyBasisSwap::initialize() {
                        .withNotionals(fxBaseNominal_)
                        .withSpreads(fxBaseSpread_)
                        .withGearings(fxBaseGearing_)
+                       .withPaymentAdjustment(fxBasePaymentConvention_)
+                       .withPaymentCalendar(fxBaseSchedule_.calendar())
                        .withPaymentLag(fxBasePaymentLag_)
                        .compoundingSpreadDaily(fxBaseCompoundSpread_)
                        .withLookbackDays(fxBaseLookbackDays_)
@@ -77,6 +90,8 @@ void MtMCrossCurrencyBasisSwap::initialize() {
                        .withNotionals(fxBaseNominal_)
                        .withSpreads(fxBaseSpread_)
                        .withGearings(fxBaseGearing_)
+                       .withPaymentAdjustment(fxBasePaymentConvention_)
+                       .withPaymentCalendar(fxBaseSchedule_.calendar())
                        .withPaymentLag(fxBasePaymentLag_);
     }
     payer_[0] = paysFxBaseCurrency() ? -1.0 : +1.0;
@@ -88,6 +103,8 @@ void MtMCrossCurrencyBasisSwap::initialize() {
                        .withNotionals(fxQuoteNominal_)
                        .withSpreads(fxQuoteSpread_)
                        .withGearings(fxQuoteGearing_)
+                       .withPaymentAdjustment(fxQuotePaymentConvention_)
+                       .withPaymentCalendar(fxQuoteSchedule_.calendar())
                        .withPaymentLag(fxQuotePaymentLag_)
                        .compoundingSpreadDaily(fxQuoteCompoundSpread_)
                        .withLookbackDays(fxQuoteLookbackDays_)
@@ -100,6 +117,8 @@ void MtMCrossCurrencyBasisSwap::initialize() {
                        .withNotionals(fxQuoteNominal_)
                        .withSpreads(fxQuoteSpread_)
                        .withGearings(fxQuoteGearing_)
+                       .withPaymentAdjustment(fxQuotePaymentConvention_)
+                       .withPaymentCalendar(fxQuoteSchedule_.calendar())
                        .withPaymentLag(fxQuotePaymentLag_);
     }
     payer_[1] = -payer_[0];
@@ -122,44 +141,46 @@ void MtMCrossCurrencyBasisSwap::initialize() {
     Size resettingLegNo = resettingLegIndex();
     const Schedule& resettingSchedule = resettingLegNo == 0 ? fxBaseSchedule_ : fxQuoteSchedule_;
     Integer paymentLag = resettingLegNo == 0 ? fxBasePaymentLag_ : fxQuotePaymentLag_;
+    BusinessDayConvention paymentConvention =
+        resettingLegNo == 0 ? fxBasePaymentConvention_ : fxQuotePaymentConvention_;
     Calendar paymentCalendar = resettingSchedule.calendar();
 
     Leg resettingLeg;
     resettingLeg.reserve(2 * legs_[resettingLegNo].size() + 1);
-    Date previousResetDate;    // null: the first exchange has no maturing period
+    std::optional<FxReset> previousReset;  // empty: first exchange has no maturing period
     Date previousPaymentDate;  // null: ditto
     for (const auto& cf : legs_[resettingLegNo]) {
         auto coupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(cf);
         QL_REQUIRE(coupon, "unexpected non-coupon cash flow on the resettable leg");
-        Date resetDate = coupon->accrualStartDate();
+        FxReset reset = fxResetConvention_.reset(coupon->accrualStartDate());
         // The exchanges settle with the coupons: each period-boundary exchange
         // pays on the maturing coupon's payment date, and the initial exchange
-        // follows the leg's own payment calendar, lag and convention (IborLeg
-        // and OvernightLeg adjust payment dates with Following by default).
+        // follows the leg's own payment calendar, lag and convention.
         Date exchangeDate =
             previousPaymentDate != Date() ?
                 previousPaymentDate :
-                paymentCalendar.advance(resetDate, paymentLag, Days, Following);
+                paymentCalendar.advance(reset.valueDate(), paymentLag, Days, paymentConvention);
         resettingLeg.push_back(ext::make_shared<FxResetNotionalExchange>(
-            exchangeDate, constantLegNotional(), previousResetDate, resetDate));
-        resettingLeg.push_back(ext::make_shared<FxResetCoupon>(coupon, constantLegNotional()));
-        previousResetDate = resetDate;
+            exchangeDate, constantLegNotional(), previousReset, reset));
+        resettingLeg.push_back(
+            ext::make_shared<FxResetCoupon>(coupon, constantLegNotional(), reset));
+        previousReset = reset;
         previousPaymentDate = coupon->date();
     }
     resettingLeg.push_back(ext::make_shared<FxResetNotionalExchange>(
-        previousPaymentDate, constantLegNotional(), previousResetDate, Date()));
+        previousPaymentDate, constantLegNotional(), previousReset, std::nullopt));
     legs_[resettingLegNo] = resettingLeg;
 
     // Only the constant-notional leg gets the inception/maturity exchange flows.
     if (resettingLegNo != 0)
         CrossCurrencySwap::addNotionalExchangesToLeg(
             legs_[0], fxBaseSchedule_.calendar(), earliestDate, maturityDate, fxBasePaymentLag_,
-            fxBaseSchedule_.businessDayConvention(), fxBaseNominal_);
+            fxBasePaymentConvention_, fxBaseNominal_);
 
     if (resettingLegNo != 1)
         CrossCurrencySwap::addNotionalExchangesToLeg(
             legs_[1], fxQuoteSchedule_.calendar(), earliestDate, maturityDate, fxQuotePaymentLag_,
-            fxQuoteSchedule_.businessDayConvention(), fxQuoteNominal_);
+            fxQuotePaymentConvention_, fxQuoteNominal_);
 
     for (Size legNo = 0; legNo < 2; ++legNo) {
         for (auto& cf : legs_[legNo])
@@ -196,12 +217,18 @@ void MtMCrossCurrencyBasisSwap::fetchResults(const PricingEngine::results* r) co
 
     static Spread basisPoint = 1.0e-4;
     if (fairFxBaseSpread_ == Null<Spread>()) {
-        if (legBPS_[0] != Null<Real>())
+        if (legBPS_[0] != Null<Real>()) {
+            QL_REQUIRE(legBPS_[0] != 0.0,
+                       "cannot calculate fair FX-base spread: null leg BPS");
             fairFxBaseSpread_ = fxBaseSpread_ - NPV_ / (legBPS_[0] / basisPoint);
+        }
     }
     if (fairFxQuoteSpread_ == Null<Spread>()) {
-        if (legBPS_[1] != Null<Real>())
+        if (legBPS_[1] != Null<Real>()) {
+            QL_REQUIRE(legBPS_[1] != 0.0,
+                       "cannot calculate fair FX-quote spread: null leg BPS");
             fairFxQuoteSpread_ = fxQuoteSpread_ - NPV_ / (legBPS_[1] / basisPoint);
+        }
     }
 }
 

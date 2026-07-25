@@ -22,6 +22,7 @@
 #ifndef quantlib_mtm_cross_currency_basis_swap_hpp
 #define quantlib_mtm_cross_currency_basis_swap_hpp
 
+#include <ql/cashflows/fxresetcashflows.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/crosscurrencyswap.hpp>
@@ -32,9 +33,11 @@ namespace QuantLib {
 
 //! Mark-to-market cross-currency basis swap
 /*! A float-vs-float cross-currency basis swap in which the notional of one leg
-    (the \e resettable leg) is reset at the start of each coupon period to track
-    the prevailing FX rate, while the other leg keeps a constant notional that is
-    exchanged at inception and maturity.
+    (the \e resettable leg) is reset for each coupon period to track the
+    prevailing FX rate, while the other leg keeps a constant notional that is
+    exchanged at inception and maturity.  Each reset has a fixing date, on
+    which the FX rate is observed, and a value date at the start of the accrual
+    period.
 
     Following the convention of MtMCrossCurrencyBasisSwapRateHelper, the two legs
     are identified by their role in the FX pair: the \e base-currency leg and the
@@ -45,19 +48,20 @@ namespace QuantLib {
     Resetting the notional removes most of the FX exposure of the principal and
     is the market-standard convention for many currency pairs.  The resettable
     leg is built from FX-linked cash flows: FxResetCoupon instances, whose
-    notional is the constant-leg notional converted at the FX rate observed at
-    each period start, and FxResetNotionalExchange instances paying the netted
+    notional is the constant-leg notional converted at the period's FX-reset
+    observation, and FxResetNotionalExchange instances paying the netted
     notional differences (the first notional at inception, the reset difference
     at each period boundary, and the last notional at maturity).
 
-    The FX rates the cash flows convert at are supplied by the pricing engine,
-    which must therefore understand FX-resetting legs (see
-    DiscountingMtMCrossCurrencyBasisSwapEngine); a future reset is projected as
-    the forward FX implied by the engine's discount curves.  For a seasoned
-    swap whose current reset period has already started, the realized exchange
-    rate on the period start date must be available from
-    \c ExchangeRateManager.  Direct, inverse, and derived exchange rates are
-    supported.
+    During instrument pricing, the FX rates are supplied to local cash-flow
+    wrappers by an engine that understands FX-resetting legs (see
+    DiscountingMtMCrossCurrencyBasisSwapEngine).  Independently querying the
+    live reset cash flows requires assigning an FxResetPricer with
+    setFxResetPricer.  A future reset is projected as the forward FX implied by
+    its pricer's discount curves.  If a reset fixing date precedes the
+    evaluation date, the realized exchange rate must be available from
+    \c ExchangeRateManager on that fixing date.  Direct, inverse, and derived
+    exchange rates are supported.
 
     \ingroup instruments
 */
@@ -77,6 +81,16 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
                                    quote-currency (second) leg resets.  The other
                                    leg keeps a constant notional and exchanges it
                                    at inception and maturity.
+        \param fxResetConvention  Convention used to derive each FX fixing date
+                                   from its accrual-start value date.  The default
+                                   preserves the legacy behavior of fixing on the
+                                   accrual start date.  An empty fixing calendar
+                                   is replaced by the resettable leg's schedule
+                                   calendar.
+        \param fxBasePaymentConvention  Payment convention for the base-currency
+                                        leg and its notional exchanges.
+        \param fxQuotePaymentConvention Payment convention for the quote-currency
+                                        leg and its notional exchanges.
     */
     MtMCrossCurrencyBasisSwap(
         Type type,
@@ -89,7 +103,10 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
         Spread fxQuoteSpread,
         Real fxQuoteGearing,
         bool isFxBaseCurrencyLegResettable,
+        FxResetConvention fxResetConvention = FxResetConvention(),
         Integer fxBasePaymentLag = 0, Integer fxQuotePaymentLag = 0,
+        BusinessDayConvention fxBasePaymentConvention = Following,
+        BusinessDayConvention fxQuotePaymentConvention = Following,
         bool fxBaseCompoundSpread = false,
         Natural fxBaseLookbackDays = Null<Natural>(),
         bool fxBaseObservationShift = false,
@@ -159,9 +176,18 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
     bool isFxBaseCurrencyLegResettable() const { return isFxBaseCurrencyLegResettable_; }
     Size resettingLegIndex() const { return isFxBaseCurrencyLegResettable_ ? 0 : 1; }
     Size constantLegIndex() const { return isFxBaseCurrencyLegResettable_ ? 1 : 0; }
+    const Leg& resettingLeg() const { return legs_[resettingLegIndex()]; }
+    const Leg& constantLeg() const { return legs_[constantLegIndex()]; }
     //! notional of the constant leg, in its own currency
     Real constantLegNotional() const {
         return isFxBaseCurrencyLegResettable_ ? fxQuoteNominal_ : fxBaseNominal_;
+    }
+    const FxResetConvention& fxResetConvention() const { return fxResetConvention_; }
+    BusinessDayConvention fxBasePaymentConvention() const {
+        return fxBasePaymentConvention_;
+    }
+    BusinessDayConvention fxQuotePaymentConvention() const {
+        return fxQuotePaymentConvention_;
     }
     //@}
 
@@ -210,9 +236,12 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
     Real fxQuoteGearing_;
 
     bool isFxBaseCurrencyLegResettable_;
+    FxResetConvention fxResetConvention_;
 
     Integer fxBasePaymentLag_;
     Integer fxQuotePaymentLag_;
+    BusinessDayConvention fxBasePaymentConvention_;
+    BusinessDayConvention fxQuotePaymentConvention_;
 
     // OIS only
     bool fxBaseCompoundSpread_;
