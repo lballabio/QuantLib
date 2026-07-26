@@ -133,11 +133,12 @@ void CrossCurrencySwap::addNotionalExchangesToLeg(Leg& leg,
     leg.push_back(aCashflow);
 
     // A lagged final coupon can pay after the maturity-date exchange.
+    sortLegByDate(leg);
+}
+
+void CrossCurrencySwap::sortLegByDate(Leg& leg) {
     std::stable_sort(leg.begin(), leg.end(),
-                     [](const ext::shared_ptr<CashFlow>& lhs,
-                        const ext::shared_ptr<CashFlow>& rhs) {
-                         return lhs->date() < rhs->date();
-                     });
+                     earlier_than<ext::shared_ptr<CashFlow>>());
 }
 
 } // namespace QuantLib

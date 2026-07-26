@@ -22,7 +22,6 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/instruments/mtmcrosscurrencybasisswap.hpp>
-#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -172,11 +171,7 @@ void MtMCrossCurrencyBasisSwap::initialize() {
     resettingLeg.push_back(ext::make_shared<FxResetNotionalExchange>(
         paymentCalendar.adjust(maturityDate, paymentConvention),
         constantLegNotional(), previousReset, std::nullopt));
-    std::stable_sort(resettingLeg.begin(), resettingLeg.end(),
-                     [](const ext::shared_ptr<CashFlow>& lhs,
-                        const ext::shared_ptr<CashFlow>& rhs) {
-                         return lhs->date() < rhs->date();
-                     });
+    sortLegByDate(resettingLeg);
     legs_[resettingLegNo] = resettingLeg;
 
     // Only the constant-notional leg gets the inception/maturity exchange flows.
