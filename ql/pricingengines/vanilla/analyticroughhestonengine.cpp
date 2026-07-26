@@ -217,18 +217,19 @@ namespace QuantLib {
         const std::complex<Real> i{0.0, 1.0};
 
         const RiccatiCoefficients rc{riccatiCoefficients(z)};
-        const std::complex<Real>& c0{rc.c0};
-        const std::complex<Real>& c1{rc.c1};
+        const std::complex<Real> c0{rc.c0};
+        const std::complex<Real> c1{rc.c1};
         const Real c2{rc.c2.real()};
 
-        // c0 = -z(z+i)/2 vanishes exactly at z = 0 and z = -i. There,
+        // c0 = -z * (z + i) / 2 vanishes exactly at z = 0 and z = -i. There,
         // v = 0 solves the Riccati equation identically, so h is exactly 
-        // zero for all t. It also makes the long-time root gamma0 below 
-        // vanish, which degenerates the (3, 3) denominator system.
-        if (std::abs(c0) < 1e-14)
+        // zero for all t. It also makes the long-time root gamma0 vanish,
+        // which degenerates the (3, 3) system.
+        if (std::abs(c0) < 1e-14) {
             return {std::complex<Real>(0.0), std::complex<Real>(0.0),
                     std::complex<Real>(0.0), std::complex<Real>(0.0),
                     std::complex<Real>(0.0), std::complex<Real>(0.0)};
+        }
 
         const GammaFunction g;
 
@@ -260,10 +261,10 @@ namespace QuantLib {
         // A is the discriminant root separating the two fixed points of the
         // Riccati quadratic; near z where they coincide (A -> 0), gamma_1 and
         // gamma_2 below are ill-conditioned and the (3, 3) approximant is not
-        // reliable at this z.
+        // reliable here.
         QL_REQUIRE(std::abs(A) > 1e-8,
                    "Padè approximation is singular at z = " << z
-                   << " (degenerate Riccati root); use the Adams "
+                   << "; use the Adams "
                    "predictor-corrector engine for this contour point");
 
         const std::complex<Real> rMinus{w - A};
@@ -275,7 +276,10 @@ namespace QuantLib {
             + 0.5 * sigma * gamma1 * gamma1 / A};
 
         // The two matching sets pin down the denominator (q_1, q_2, q_3)
-        // through a 3x3 complex linear system.
+        // through a 3x3 complex linear system. QuantLib::determinant()
+        // only accepts a real-valued Matrix, so this closed-form cofactor
+        // expansion is used instead of routing through a boost::ublas LU
+        // decomposition for what is a fixed, known 3x3 size.
         const auto det3
             = [](const std::complex<Real>& a11, const std::complex<Real>& a12,
                  const std::complex<Real>& a13, const std::complex<Real>& a21,
@@ -317,6 +321,7 @@ namespace QuantLib {
         const PadeCoefficients& c, Real y) {
         const std::complex<Real> num{y * (c.p1 + y * (c.p2 + y * c.p3))};
         const std::complex<Real> den{1.0 + y * (c.q1 + y * (c.q2 + y * c.q3))};
+        
         return num / den;
     }
 
@@ -333,8 +338,9 @@ namespace QuantLib {
 
         QL_REQUIRE(t > 0.0, "maturity must be positive");
 
-        if (approximation_ == Pade)
+        if (approximation_ == Pade) {
             return padeRiccati(z, t);
+        }
 
         return solveAdamsRiccati(z, t).back();
     }
