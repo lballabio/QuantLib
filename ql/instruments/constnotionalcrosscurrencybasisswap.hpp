@@ -27,6 +27,7 @@
 
 #include <ql/indexes/iborindex.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
+#include <ql/optional.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/constnotionalcrosscurrencyswap.hpp>
 
@@ -75,6 +76,7 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         \param recLockoutDays     Lockout period (in business days) for the receive leg if overnight (default: 0).
         \param recAveragingMethod   Averaging method for the receive leg if overnight (default: compounding).
         \param telescopicValueDates Flag indicating whether telescopic value dates are used if overnight (default: false).
+        \param useIndexedCoupons If provided, overrides the global IborCoupon setting for both legs.
     */
     ConstNotionalCrossCurrencyBasisSwap(
         Real payNominal, Currency  payCurrency, Schedule  paySchedule,
@@ -85,7 +87,8 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         Natural payLockoutDays = 0, RateAveraging::Type payAveragingMethod = RateAveraging::Compound,
         bool recCompoundSpread = false, Natural recLookbackDays = Null<Natural>(), bool recObservationShift = false,
         Natural recLockoutDays = 0, RateAveraging::Type recAveragingMethod = RateAveraging::Compound,
-        bool telescopicValueDates = false);
+        bool telescopicValueDates = false,
+        std::optional<bool> useIndexedCoupons = std::nullopt);
     //@}
     //! \name Instrument interface
     //@{
@@ -148,6 +151,7 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
 
     Integer payPaymentLag_;
     Integer recPaymentLag_;
+    std::optional<bool> useIndexedCoupons_;
 
     // OIS only
     bool payCompoundSpread_;

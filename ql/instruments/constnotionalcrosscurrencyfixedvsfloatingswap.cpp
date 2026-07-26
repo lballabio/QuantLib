@@ -35,7 +35,8 @@ ConstNotionalCrossCurrencyFixedVsFloatingSwap::ConstNotionalCrossCurrencyFixedVs
     Schedule  floatSchedule, const ext::shared_ptr<IborIndex>& floatIndex, Spread floatSpread,
     BusinessDayConvention floatPaymentBdc, Natural floatPaymentLag, Calendar  floatPaymentCalendar,
     const bool telescopicValueDates, bool floatCompoundSpread, Natural floatLookbackDays,
-    bool floatObservationShift, Natural floatLockoutDays, RateAveraging::Type floatAveragingMethod)
+    bool floatObservationShift, Natural floatLockoutDays, RateAveraging::Type floatAveragingMethod,
+    std::optional<bool> useIndexedCoupons)
     : ConstNotionalCrossCurrencySwap(2), type_(type), fixedNominal_(fixedNominal), fixedCurrency_(std::move(fixedCurrency)),
       fixedSchedule_(std::move(fixedSchedule)), fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
       fixedPaymentBdc_(fixedPaymentBdc), fixedPaymentLag_(fixedPaymentLag), fixedPaymentCalendar_(fixedPaymentCalendar),
@@ -45,7 +46,8 @@ ConstNotionalCrossCurrencyFixedVsFloatingSwap::ConstNotionalCrossCurrencyFixedVs
       telescopicValueDates_(telescopicValueDates),
       floatCompoundSpread_(floatCompoundSpread), floatLookbackDays_(floatLookbackDays),
       floatObservationShift_(floatObservationShift),
-      floatLockoutDays_(floatLockoutDays), floatAveragingMethod_(floatAveragingMethod) {
+      floatLockoutDays_(floatLockoutDays), floatAveragingMethod_(floatAveragingMethod),
+      useIndexedCoupons_(useIndexedCoupons) {
 
     // Build the float leg
     Leg floatLeg;
@@ -68,7 +70,8 @@ ConstNotionalCrossCurrencyFixedVsFloatingSwap::ConstNotionalCrossCurrencyFixedVs
                        .withSpreads(floatSpread_)
                        .withPaymentAdjustment(floatPaymentBdc_)
                        .withPaymentLag(floatPaymentLag_)
-                       .withPaymentCalendar(floatPaymentCalendar_);
+                       .withPaymentCalendar(floatPaymentCalendar_)
+                       .withIndexedCoupons(useIndexedCoupons_);
     }
 
     // Register with each floating rate coupon

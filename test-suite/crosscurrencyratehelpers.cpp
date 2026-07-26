@@ -28,8 +28,10 @@
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/fxresetcashflows.hpp>
 #include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
@@ -55,6 +57,42 @@ namespace {
         ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
         ~ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
     };
+
+    struct IborCouponSettingsRestorer {
+        bool initiallyUsingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+        ~IborCouponSettingsRestorer() {
+            if (initiallyUsingAtParCoupons)
+                IborCoupon::Settings::instance().createAtParCoupons();
+            else
+                IborCoupon::Settings::instance().createIndexedCoupons();
+        }
+    };
+
+    ext::shared_ptr<IborCoupon> firstIborCoupon(const Leg& leg) {
+        for (const auto& cashflow : leg) {
+            if (auto coupon = ext::dynamic_pointer_cast<IborCoupon>(cashflow))
+                return coupon;
+            if (auto fxResetCoupon = ext::dynamic_pointer_cast<FxResetCoupon>(cashflow))
+                if (auto coupon =
+                        ext::dynamic_pointer_cast<IborCoupon>(fxResetCoupon->underlying()))
+                    return coupon;
+        }
+        return {};
+    }
+
+    void checkIndexedCouponMode(const std::vector<Leg>& legs, bool expectedIndexed) {
+        Size checkedLegs = 0;
+        for (const auto& leg : legs) {
+            auto coupon = firstIborCoupon(leg);
+            if (coupon) {
+                ++checkedLegs;
+                auto pricer = ext::dynamic_pointer_cast<IborCouponPricer>(coupon->pricer());
+                BOOST_REQUIRE(pricer);
+                BOOST_CHECK_EQUAL(pricer->useIndexedCoupon(), expectedIndexed);
+            }
+        }
+        BOOST_REQUIRE(checkedLegs > 0);
+    }
 }
 
 struct XccyTestDatum {
@@ -267,6 +305,32 @@ struct CommonVars {
     }
 };
 
+void checkCrossCurrencyHelperCouponModes(std::optional<bool> useIndexedCoupons,
+                                         bool expectedIndexed) {
+    CommonVars vars;
+    Handle<YieldTermStructure> collateralCurve = vars.quoteCcyIdxHandle;
+    Handle<Quote> quote = makeQuoteHandle(-20.0 * vars.basisPoint);
+
+    ConstNotionalCrossCurrencyBasisSwapRateHelper constantHelper(
+        quote, 2 * Years, vars.instrumentSettlementDays, vars.calendar,
+        vars.businessConvention, vars.endOfMonth, vars.baseCcyIdx, vars.quoteCcyIdx,
+        collateralCurve, false, true, Semiannual, 0, Semiannual, useIndexedCoupons);
+    checkIndexedCouponMode(constantHelper.swap()->legs(), expectedIndexed);
+
+    MtMCrossCurrencyBasisSwapRateHelper mtmHelper(
+        quote, 2 * Years, vars.instrumentSettlementDays, vars.calendar,
+        vars.businessConvention, vars.endOfMonth, vars.baseCcyIdx, vars.quoteCcyIdx,
+        collateralCurve, false, true, false, Semiannual, 0, Semiannual, 0, Calendar(),
+        useIndexedCoupons);
+    checkIndexedCouponMode(mtmHelper.swap()->legs(), expectedIndexed);
+
+    ConstNotionalCrossCurrencySwapRateHelper fixedVsFloatingHelper(
+        makeQuoteHandle(0.01), 2 * Years, vars.instrumentSettlementDays, vars.calendar,
+        vars.businessConvention, vars.endOfMonth, Annual, Thirty360(Thirty360::BondBasis),
+        vars.quoteCcyIdx, collateralCurve, false, 0, useIndexedCoupons);
+    checkIndexedCouponMode(fixedVsFloatingHelper.swap()->legs(), expectedIndexed);
+}
+
 
 void testConstantNotionalCrossCurrencySwapsNPV(bool isFxBaseCurrencyCollateralCurrency,
                                                bool isBasisOnFxBaseCurrencyLeg) {
@@ -375,6 +439,25 @@ void testResettingCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurrency,
                         << "    zero from const notional curve:    " << constNotionalZero << "\n"
                         << "    maturity:    " << maturity << "\n");
     }
+}
+
+BOOST_AUTO_TEST_CASE(testIndexedCouponOverrides) {
+    BOOST_TEST_MESSAGE(
+        "Testing indexed-coupon overrides for cross-currency rate helpers...");
+
+    IborCouponSettingsRestorer settingsRestorer;
+
+    IborCoupon::Settings::instance().createAtParCoupons();
+    checkCrossCurrencyHelperCouponModes(true, true);
+
+    IborCoupon::Settings::instance().createIndexedCoupons();
+    checkCrossCurrencyHelperCouponModes(false, false);
+
+    IborCoupon::Settings::instance().createAtParCoupons();
+    checkCrossCurrencyHelperCouponModes(std::nullopt, false);
+
+    IborCoupon::Settings::instance().createIndexedCoupons();
+    checkCrossCurrencyHelperCouponModes(std::nullopt, true);
 }
 
 BOOST_AUTO_TEST_CASE(testConstNotionalBasisSwapsWithCollateralInQuoteAndBasisInBaseCcy) {

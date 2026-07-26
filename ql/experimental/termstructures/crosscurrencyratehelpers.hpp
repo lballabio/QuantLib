@@ -81,7 +81,8 @@ namespace QuantLib {
                                              bool isBasisOnFxBaseCurrencyLeg,
                                              std::optional<Frequency> paymentFrequency = std::nullopt,
                                              Integer paymentLag = 0,
-                                             std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt);
+                                             std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
+                                             std::optional<bool> useIndexedCoupons = std::nullopt);
 
         void initializeDates() override;
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
@@ -93,6 +94,7 @@ namespace QuantLib {
         bool isBasisOnFxBaseCurrencyLeg_;
         std::optional<Frequency> paymentFrequency_;
         std::optional<Frequency> quoteCcyPaymentFrequency_;
+        std::optional<bool> useIndexedCoupons_;
 
         Schedule baseCcySchedule_;
         Schedule quoteCcySchedule_;
@@ -135,6 +137,8 @@ namespace QuantLib {
                 payment frequency of the quote-currency leg; if left unset (the
                 default) it defaults to \c paymentFrequency, and if that is unset as
                 well the schedule is derived from the quote-currency index tenor.
+            \param useIndexedCoupons
+                if provided, overrides the global IborCoupon setting for both legs.
             In both frequency parameters, \c NoFrequency is accepted as a synonym for
             an unset (null) value.
         */
@@ -152,7 +156,8 @@ namespace QuantLib {
             bool isBasisOnFxBaseCurrencyLeg,
             std::optional<Frequency> paymentFrequency = std::nullopt,
             Integer paymentLag = 0,
-            std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt);
+            std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
+            std::optional<bool> useIndexedCoupons = std::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -201,6 +206,8 @@ namespace QuantLib {
                 accrual-start value date (default: 0).
             \param fxResetFixingCalendar
                 calendar used for the FX fixing offset; if empty, \p calendar is used.
+            \param useIndexedCoupons
+                if provided, overrides the global IborCoupon setting for both legs.
             In both frequency parameters, \c NoFrequency is accepted as a synonym for
             an unset (null) value.
         */
@@ -220,7 +227,8 @@ namespace QuantLib {
                                             Integer paymentLag = 0,
                                             std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
                                             Natural fxResetFixingDays = 0,
-                                            Calendar fxResetFixingCalendar = Calendar());
+                                            Calendar fxResetFixingCalendar = Calendar(),
+                                            std::optional<bool> useIndexedCoupons = std::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -255,6 +263,9 @@ namespace QuantLib {
 
     The collateralOnFixedLeg flag determines which leg is discounted using the provided
     collateral curve, while the other leg’s discount curve is the one being bootstrapped.
+
+    If provided, the useIndexedCoupons parameter overrides the global
+    IborCoupon setting for the floating leg.
     */
     class ConstNotionalCrossCurrencySwapRateHelper : public CrossCurrencySwapRateHelperBase {
       public:
@@ -270,7 +281,8 @@ namespace QuantLib {
             const ext::shared_ptr<IborIndex>& floatIndex,
             const Handle<YieldTermStructure>& collateralCurve,
             bool collateralOnFixedLeg,
-            Integer paymentLag = 0);
+            Integer paymentLag = 0,
+            std::optional<bool> useIndexedCoupons = std::nullopt);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -288,6 +300,7 @@ namespace QuantLib {
         DayCounter fixedDayCount_;
         ext::shared_ptr<IborIndex> floatIndex_;
         bool collateralOnFixedLeg_;
+        std::optional<bool> useIndexedCoupons_;
 
         ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> xccySwap_;
     };

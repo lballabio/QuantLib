@@ -27,6 +27,7 @@
 
 #include <ql/indexes/iborindex.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
+#include <ql/optional.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/constnotionalcrosscurrencyswap.hpp>
 
@@ -71,6 +72,7 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         \param floatObservationShift For overnight legs, whether the observation shift is applied (default: false).
         \param floatLockoutDays      For overnight legs, optional lockout period in business days (default: 0).
         \param floatAveragingMethod  For overnight legs, averaging method (default: compounding).
+        \param useIndexedCoupons If provided, overrides the global IborCoupon setting for the floating leg.
     */
     ConstNotionalCrossCurrencyFixedVsFloatingSwap(
                          Type type, Real fixedNominal, Currency  fixedCurrency,
@@ -87,7 +89,8 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
                          Natural floatLookbackDays = Null<Natural>(),
                          bool floatObservationShift = false,
                          Natural floatLockoutDays = 0,
-                         RateAveraging::Type floatAveragingMethod = RateAveraging::Compound);
+                         RateAveraging::Type floatAveragingMethod = RateAveraging::Compound,
+                         std::optional<bool> useIndexedCoupons = std::nullopt);
     //@}
 
     //! \name Instrument interface
@@ -170,6 +173,7 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
     bool floatObservationShift_;
     Natural floatLockoutDays_;
     RateAveraging::Type floatAveragingMethod_;
+    std::optional<bool> useIndexedCoupons_;
 
     mutable Rate fairFixedRate_;
     mutable Spread fairSpread_;

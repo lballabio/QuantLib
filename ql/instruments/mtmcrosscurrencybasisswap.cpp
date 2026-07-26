@@ -39,7 +39,8 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
     Natural fxBaseLockoutDays, RateAveraging::Type fxBaseAveragingMethod,
     bool fxQuoteCompoundSpread, Natural fxQuoteLookbackDays, bool fxQuoteObservationShift,
     Natural fxQuoteLockoutDays, RateAveraging::Type fxQuoteAveragingMethod,
-    const bool telescopicValueDates)
+    const bool telescopicValueDates,
+    std::optional<bool> useIndexedCoupons)
 : CrossCurrencySwap(2),
   type_(type),
   fxBaseNominal_(fxBaseNominal),
@@ -58,6 +59,7 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
   fxBasePaymentLag_(fxBasePaymentLag), fxQuotePaymentLag_(fxQuotePaymentLag),
   fxBasePaymentConvention_(fxBasePaymentConvention),
   fxQuotePaymentConvention_(fxQuotePaymentConvention),
+  useIndexedCoupons_(useIndexedCoupons),
   fxBaseCompoundSpread_(fxBaseCompoundSpread), fxBaseLookbackDays_(fxBaseLookbackDays),
   fxBaseObservationShift_(fxBaseObservationShift), fxBaseLockoutDays_(fxBaseLockoutDays),
   fxBaseAveragingMethod_(fxBaseAveragingMethod),
@@ -92,7 +94,8 @@ void MtMCrossCurrencyBasisSwap::initialize() {
                        .withGearings(fxBaseGearing_)
                        .withPaymentAdjustment(fxBasePaymentConvention_)
                        .withPaymentCalendar(fxBaseSchedule_.calendar())
-                       .withPaymentLag(fxBasePaymentLag_);
+                       .withPaymentLag(fxBasePaymentLag_)
+                       .withIndexedCoupons(useIndexedCoupons_);
     }
     payer_[0] = paysFxBaseCurrency() ? -1.0 : +1.0;
     currencies_[0] = fxBaseCurrency_;
@@ -119,7 +122,8 @@ void MtMCrossCurrencyBasisSwap::initialize() {
                        .withGearings(fxQuoteGearing_)
                        .withPaymentAdjustment(fxQuotePaymentConvention_)
                        .withPaymentCalendar(fxQuoteSchedule_.calendar())
-                       .withPaymentLag(fxQuotePaymentLag_);
+                       .withPaymentLag(fxQuotePaymentLag_)
+                       .withIndexedCoupons(useIndexedCoupons_);
     }
     payer_[1] = -payer_[0];
     currencies_[1] = fxQuoteCurrency_;
