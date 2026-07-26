@@ -54,7 +54,7 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
   isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
   fxResetConvention_(
       fxResetConvention.fixingDays(),
-      fxResetConvention.fixingCalendar().empty() ?
+      fxResetConvention.fixingDays() != 0 && fxResetConvention.fixingCalendar().empty() ?
           (isFxBaseCurrencyLegResettable_ ? fxBaseSchedule_.calendar() :
                                            fxQuoteSchedule_.calendar()) :
           fxResetConvention.fixingCalendar()),
@@ -205,6 +205,7 @@ void MtMCrossCurrencyBasisSwap::setupArguments(PricingEngine::arguments* args) c
 
     arguments->resettingLegIndex = resettingLegIndex();
     arguments->constantLegIndex = constantLegIndex();
+    arguments->fxResetConvention = fxResetConvention_;
     arguments->fxBaseSpread = fxBaseSpread_;
     arguments->fxQuoteSpread = fxQuoteSpread_;
 }

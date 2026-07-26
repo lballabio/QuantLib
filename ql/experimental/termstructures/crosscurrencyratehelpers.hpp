@@ -208,7 +208,8 @@ namespace QuantLib {
                 number of business days by which each FX fixing precedes its
                 accrual-start value date (default: 0).
             \param fxResetFixingCalendar
-                calendar used for the FX fixing offset; if empty, \p calendar is used.
+                calendar used for the FX fixing offset; for a non-zero fixing lag,
+                \p calendar is used if this is empty.
             \param useIndexedCoupons
                 if provided, overrides the global IborCoupon setting for both legs.
             In both frequency parameters, \c NoFrequency is accepted as a synonym for

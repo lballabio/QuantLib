@@ -87,8 +87,13 @@ void DiscountingMtMCrossCurrencyBasisSwapEngine::calculate() const {
                             << ") cannot be before discount curve reference date ("
                             << referenceDate << ")");
 
-    Date spotFXSettleDate =
-        spotFXSettleDate_ == Date() ? referenceDate : spotFXSettleDate_;
+    Date spotFXSettleDate = spotFXSettleDate_;
+    if (spotFXSettleDate == Date()) {
+        spotFXSettleDate = arguments_.fxResetConvention.fixingCalendar().empty() ?
+                               referenceDate :
+                               arguments_.fxResetConvention.valueDate(
+                                   Settings::instance().evaluationDate());
+    }
     QL_REQUIRE(spotFXSettleDate >= referenceDate,
                "FX settlement date (" << spotFXSettleDate
                                        << ") cannot be before discount curve reference date ("

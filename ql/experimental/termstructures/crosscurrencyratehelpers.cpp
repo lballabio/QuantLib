@@ -352,8 +352,8 @@ namespace QuantLib {
                                            useIndexedCoupons),
       isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
       fxResetConvention_(fxResetFixingDays,
-                         fxResetFixingCalendar.empty() ? calendar_ :
-                                                        std::move(fxResetFixingCalendar)) {
+                         fxResetFixingDays != 0 && fxResetFixingCalendar.empty() ?
+                             calendar_ : std::move(fxResetFixingCalendar)) {
         buildSwap();
     }
 

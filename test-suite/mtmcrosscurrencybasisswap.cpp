@@ -299,9 +299,10 @@ BOOST_AUTO_TEST_CASE(testFxResetObservationDatesAndProjection) {
         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, eurNominal, EURCurrency(), sch,
         eurIndex, 0.0, 1.0, eurNominal * spotFx, USDCurrency(), sch, usdIndex, 0.0, 1.0,
         /*isFxBaseCurrencyLegResettable=*/false, fxResetConvention);
+    BOOST_CHECK(!swap->fxResetConvention().fixingCalendar().empty());
     swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
         USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(spotFx)));
-    BOOST_CHECK_NO_THROW(swap->NPV());
+    Real automaticallyDatedNpv = swap->NPV();
 
     ext::shared_ptr<FxResetCoupon> firstCoupon;
     ext::shared_ptr<FxResetNotionalExchange> firstExchange;
@@ -317,6 +318,9 @@ BOOST_AUTO_TEST_CASE(testFxResetObservationDatesAndProjection) {
     BOOST_REQUIRE(firstExchange != nullptr);
     BOOST_CHECK_EQUAL(firstCoupon->fxResetDate(), Date(3, July, 2024));
     BOOST_CHECK_EQUAL(firstCoupon->fxResetValueDate(), start);
+    Date spotFxSettleDate = fxResetConvention.valueDate(today);
+    BOOST_CHECK_EQUAL(spotFxSettleDate, Date(3, July, 2024));
+    BOOST_CHECK_EQUAL(fxResetConvention.valueDate(firstCoupon->fxResetDate()), start);
     BOOST_CHECK(!firstExchange->previousReset());
     BOOST_REQUIRE(firstExchange->currentReset());
     BOOST_CHECK_EQUAL(firstExchange->currentReset()->fixingDate(), firstCoupon->fxResetDate());
@@ -325,15 +329,30 @@ BOOST_AUTO_TEST_CASE(testFxResetObservationDatesAndProjection) {
     BOOST_CHECK(!firstExchange->fxResetPricer());
 
     auto fxResetPricer = ext::make_shared<DiscountingFxResetPricer>(
-        EURCurrency(), USDCurrency(), eurCurve, usdCurve, makeQuoteHandle(spotFx), true);
+        EURCurrency(), USDCurrency(), eurCurve, usdCurve, makeQuoteHandle(spotFx), true,
+        spotFxSettleDate);
     setFxResetPricer(swap->resettingLeg(), fxResetPricer);
 
-    Real expectedForward = spotFx * eurCurve->discount(start) / usdCurve->discount(start);
+    Real expectedForward = spotFx * usdCurve->discount(spotFxSettleDate) /
+                           eurCurve->discount(spotFxSettleDate) *
+                           eurCurve->discount(start) / usdCurve->discount(start);
     BOOST_CHECK_CLOSE(firstCoupon->nominal(), eurNominal * expectedForward, 1.0e-10);
 
-    Real fixingDateForward = spotFx * eurCurve->discount(firstCoupon->fxResetDate()) /
-                             usdCurve->discount(firstCoupon->fxResetDate());
-    BOOST_CHECK(std::fabs(firstCoupon->nominal() - eurNominal * fixingDateForward) > 1.0);
+    // Omitting the engine's explicit spot settlement date must derive the same
+    // date from the swap's reset convention.
+    swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
+        USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(spotFx),
+        std::nullopt, Date(), Date(), spotFxSettleDate));
+    BOOST_CHECK_SMALL(swap->NPV() - automaticallyDatedNpv, 1.0e-10 * eurNominal);
+
+    // The equivalent reference-date FX quote must give the same result when an
+    // explicit reference-date settlement overrides the convention.
+    Real referenceDateFx = spotFx * usdCurve->discount(spotFxSettleDate) /
+                           eurCurve->discount(spotFxSettleDate);
+    swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
+        USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(referenceDateFx),
+        std::nullopt, Date(), Date(), today));
+    BOOST_CHECK_SMALL(swap->NPV() - automaticallyDatedNpv, 1.0e-10 * eurNominal);
 }
 
 BOOST_AUTO_TEST_CASE(testResetFixingStateUsesEvaluationDate) {
@@ -502,6 +521,7 @@ BOOST_AUTO_TEST_CASE(testResettableLegCashFlowsMatchLegResults) {
         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
         usdIndex, 0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, 10.0e-4, 1.0,
         /*isFxBaseCurrencyLegResettable=*/false);
+    BOOST_CHECK(swap->fxResetConvention().fixingCalendar().empty());
     swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
         USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(spotFx)));
 

@@ -53,15 +53,20 @@ class DiscountingMtMCrossCurrencyBasisSwapEngine : public MtMCrossCurrencyBasisS
         \param foreignCcyDiscountCurve    Discount curve for foreign-currency flows.
         \param spotFX                     Units of \p domesticCcy per unit of
                                           \p foreignCcy, quoted for settlement on
-                                          \p spotFXSettleDate (or the curves'
-                                          reference date if none is given).
+                                          \p spotFXSettleDate.  If no date is
+                                          given, it is derived from the swap's FX
+                                          reset convention and the evaluation date;
+                                          if no fixing calendar was supplied, the
+                                          curves' reference date is used.
         \param includeSettlementDateFlows,settlementDate
                If includeSettlementDateFlows is true (false), cash flows on the
                settlementDate are (not) included in the NPV.  The settlement date
                defaults to the curves' reference date.
         \param npvDate                    Discount to this date; defaults to the
                                           curves' reference date.
-        \param spotFXSettleDate           Settlement date of the FX quote if given.
+        \param spotFXSettleDate           Settlement date of the FX quote if given;
+                                          overrides the date implied by the reset
+                                          convention.
     */
     DiscountingMtMCrossCurrencyBasisSwapEngine(
         Currency domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountCurve,

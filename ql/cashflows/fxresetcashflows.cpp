@@ -49,6 +49,14 @@ FxReset FxResetConvention::reset(const Date& valueDate) const {
     return FxReset(fixingDate, valueDate);
 }
 
+Date FxResetConvention::valueDate(const Date& fixingDate) const {
+    QL_REQUIRE(fixingDate != Date(), "null FX fixing date");
+    QL_REQUIRE(fixingDays_ == 0 || !fixingCalendar_.empty(),
+               "an FX reset fixing calendar is required when fixing days are non-zero");
+    return fixingDays_ == 0 ? fixingDate :
+        fixingCalendar_.advance(fixingDate, static_cast<Integer>(fixingDays_), Days);
+}
+
 DiscountingFxResetPricer::DiscountingFxResetPricer(
     Currency constantLegCurrency,
     Currency resettableLegCurrency,

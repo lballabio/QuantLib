@@ -87,9 +87,9 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
         \param fxResetConvention  Convention used to derive each FX fixing date
                                    from its accrual-start value date.  The default
                                    preserves the legacy behavior of fixing on the
-                                   accrual start date.  An empty fixing calendar
-                                   is replaced by the resettable leg's schedule
-                                   calendar.
+                                   accrual start date.  For a non-zero fixing lag,
+                                   an empty fixing calendar is replaced by the
+                                   resettable leg's schedule calendar.
         \param fxBasePaymentLag  Coupon payment lag for the base-currency leg.
         \param fxQuotePaymentLag Coupon payment lag for the quote-currency leg.
         \param fxBasePaymentConvention  Payment convention for the base-currency
@@ -280,6 +280,8 @@ class MtMCrossCurrencyBasisSwap::arguments : public CrossCurrencySwap::arguments
     Size resettingLegIndex = Null<Size>();
     //! index of the constant-notional leg whose notional is converted at reset
     Size constantLegIndex = Null<Size>();
+    //! convention for the FX fixing and its associated spot value date
+    FxResetConvention fxResetConvention;
     Spread fxBaseSpread = Null<Spread>();
     Spread fxQuoteSpread = Null<Spread>();
     void validate() const override;

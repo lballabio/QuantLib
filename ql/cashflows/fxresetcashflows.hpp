@@ -63,7 +63,10 @@ class FxResetConvention {
     explicit FxResetConvention(Natural fixingDays = 0,
                                Calendar fixingCalendar = Calendar());
 
+    //! derive the fixing observation associated with an FX value date
     FxReset reset(const Date& valueDate) const;
+    //! derive the FX spot value date associated with a fixing date
+    Date valueDate(const Date& fixingDate) const;
 
     Natural fixingDays() const { return fixingDays_; }
     const Calendar& fixingCalendar() const { return fixingCalendar_; }
