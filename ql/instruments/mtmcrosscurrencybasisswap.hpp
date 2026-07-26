@@ -28,6 +28,7 @@
 #include <ql/cashflows/rateaveraging.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/crosscurrencyswap.hpp>
+#include <ql/optional.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/time/schedule.hpp>
 
@@ -95,10 +96,12 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
                                         leg and its notional exchanges.
         \param fxQuotePaymentConvention Payment convention for the quote-currency
                                         leg and its notional exchanges.
-
         Initial and final notional exchanges remain on the effective and
         maturity dates, adjusted by their leg's payment convention.  Interim
         reset exchanges settle with the coupons.
+
+        \param useIndexedCoupons If provided, overrides the global IborCoupon
+                                  setting for both legs.
     */
     MtMCrossCurrencyBasisSwap(
         Type type,
@@ -125,7 +128,8 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
         bool fxQuoteObservationShift = false,
         Natural fxQuoteLockoutDays = 0,
         RateAveraging::Type fxQuoteAveragingMethod = RateAveraging::Compound,
-        bool telescopicValueDates = false);
+        bool telescopicValueDates = false,
+        std::optional<bool> useIndexedCoupons = std::nullopt);
     //@}
 
     //! \name Instrument interface
@@ -250,6 +254,7 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
     Integer fxQuotePaymentLag_;
     BusinessDayConvention fxBasePaymentConvention_;
     BusinessDayConvention fxQuotePaymentConvention_;
+    std::optional<bool> useIndexedCoupons_;
 
     // OIS only
     bool fxBaseCompoundSpread_;
