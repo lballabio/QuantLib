@@ -131,7 +131,8 @@ namespace QuantLib {
 
     std::complex<Real> AnalyticRoughHestonEngine::lnChF(
         const std::complex<Real>& z, Time t) const {
-        return approximation_ == Pade ? lnChFPade(z, t) : lnChFAdams(z, t);
+        return approximation_ == RoughHestonApproximation::Pade
+            ? lnChFPade(z, t) : lnChFAdams(z, t);
     }
 
     // Coefficients of the non-fractional Riccati equation satisfied by the
@@ -338,7 +339,7 @@ namespace QuantLib {
 
         QL_REQUIRE(t > 0.0, "maturity must be positive");
 
-        if (approximation_ == Pade) {
+        if (approximation_ == RoughHestonApproximation::Pade) {
             return padeRiccati(z, t);
         }
 
