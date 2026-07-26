@@ -89,10 +89,16 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
                                    accrual start date.  An empty fixing calendar
                                    is replaced by the resettable leg's schedule
                                    calendar.
+        \param fxBasePaymentLag  Coupon payment lag for the base-currency leg.
+        \param fxQuotePaymentLag Coupon payment lag for the quote-currency leg.
         \param fxBasePaymentConvention  Payment convention for the base-currency
                                         leg and its notional exchanges.
         \param fxQuotePaymentConvention Payment convention for the quote-currency
                                         leg and its notional exchanges.
+
+        Initial and final notional exchanges remain on the effective and
+        maturity dates, adjusted by their leg's payment convention.  Interim
+        reset exchanges settle with the coupons.
     */
     MtMCrossCurrencyBasisSwap(
         Type type,

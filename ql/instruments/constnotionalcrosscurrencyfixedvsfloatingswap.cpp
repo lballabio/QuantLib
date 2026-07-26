@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2016 Quaternion Risk Management Ltd
  Copyright (C) 2025 Paolo D'Elia
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -90,12 +91,14 @@ ConstNotionalCrossCurrencyFixedVsFloatingSwap::ConstNotionalCrossCurrencyFixedVs
                                  CashFlows::maturityDate(fixedLeg));
 
     // Add notional exchanges on float Leg
-    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(floatLeg, floatPaymentCalendar_, earliestDate, maturityDate,
-                                            floatPaymentLag_, floatPaymentBdc_, floatNominal_);
-    
+    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(floatLeg, floatPaymentCalendar_,
+                                                              earliestDate, maturityDate,
+                                                              floatPaymentBdc_, floatNominal_);
+
     // Add notional exchanges on fixed leg
-    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(fixedLeg, fixedPaymentCalendar_, earliestDate, maturityDate,
-                                            fixedPaymentLag_, fixedPaymentBdc_, fixedNominal_);
+    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(fixedLeg, fixedPaymentCalendar_,
+                                                              earliestDate, maturityDate,
+                                                              fixedPaymentBdc_, fixedNominal_);
 
     // Deriving from cross currency swap where:
     //   First leg should hold the pay flows

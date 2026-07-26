@@ -128,7 +128,6 @@ class CrossCurrencySwap : public Swap {
                                           const Calendar& calendar,
                                           Date earliestDate,
                                           Date maturityDate,
-                                          Natural paymentLag,
                                           BusinessDayConvention legBdc,
                                           Real nominal);
 

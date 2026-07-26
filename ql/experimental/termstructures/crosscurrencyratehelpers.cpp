@@ -159,13 +159,10 @@ namespace QuantLib {
         maturityDate_ = std::max(CashFlows::maturityDate(firstLeg),
                                  CashFlows::maturityDate(secondLeg));
 
-        if (paymentLag_ == 0) {
-            initialNotionalExchangeDate_ = earliestDate_;
-            finalNotionalExchangeDate_   = maturityDate_;
-        } else {
-            initialNotionalExchangeDate_ = calendar_.advance(earliestDate_, paymentLag_, Days, convention_);
-            finalNotionalExchangeDate_   = calendar_.advance(maturityDate_, paymentLag_, Days, convention_);
-        }
+        // Principal exchanges settle on the effective and maturity dates;
+        // payment lag applies only to coupons.
+        initialNotionalExchangeDate_ = calendar_.adjust(earliestDate_, convention_);
+        finalNotionalExchangeDate_   = calendar_.adjust(maturityDate_, convention_);
 
         Date lastPaymentDate =
             std::max(firstLeg.back()->date(),
