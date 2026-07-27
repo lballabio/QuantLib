@@ -295,13 +295,15 @@ BOOST_AUTO_TEST_CASE(testFxResetObservationDatesAndProjection) {
 
     Real eurNominal = 10000000.0;
     Real spotFx = 1.10;
+    auto spotQuote = ext::make_shared<SimpleQuote>(spotFx);
+    Handle<Quote> spotFxHandle(spotQuote);
     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, eurNominal, EURCurrency(), sch,
         eurIndex, 0.0, 1.0, eurNominal * spotFx, USDCurrency(), sch, usdIndex, 0.0, 1.0,
         /*isFxBaseCurrencyLegResettable=*/false, fxResetConvention);
     BOOST_CHECK(!swap->fxResetConvention().fixingCalendar().empty());
     swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
-        USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(spotFx)));
+        USDCurrency(), usdCurve, EURCurrency(), eurCurve, spotFxHandle));
     Real automaticallyDatedNpv = swap->NPV();
 
     ext::shared_ptr<FxResetCoupon> firstCoupon;
@@ -329,13 +331,39 @@ BOOST_AUTO_TEST_CASE(testFxResetObservationDatesAndProjection) {
     BOOST_CHECK(!firstExchange->fxResetPricer());
 
     auto fxResetPricer = ext::make_shared<DiscountingFxResetPricer>(
-        EURCurrency(), USDCurrency(), eurCurve, usdCurve, makeQuoteHandle(spotFx), true,
+        EURCurrency(), USDCurrency(), eurCurve, usdCurve, spotFxHandle, true,
         spotFxSettleDate);
-    setFxResetPricer(swap->resettingLeg(), fxResetPricer);
 
     Real expectedForward = spotFx * usdCurve->discount(spotFxSettleDate) /
                            eurCurve->discount(spotFxSettleDate) *
                            eurCurve->discount(start) / usdCurve->discount(start);
+    std::vector<Real> fxResetRates = swap->fxResetRates();
+    std::vector<Real> fxResetNotionals = swap->fxResetNotionals();
+    BOOST_REQUIRE_EQUAL(fxResetRates.size(), fxResetNotionals.size());
+
+    Size resetNo = 0;
+    for (const auto& cf : swap->resettingLeg()) {
+        if (auto coupon = ext::dynamic_pointer_cast<FxResetCoupon>(cf)) {
+            BOOST_REQUIRE(resetNo < fxResetRates.size());
+            Real expectedRate = fxResetPricer->fxRate(coupon->fxReset());
+            BOOST_CHECK_CLOSE(fxResetRates[resetNo], expectedRate, 1.0e-10);
+            BOOST_CHECK_CLOSE(fxResetNotionals[resetNo], eurNominal * expectedRate, 1.0e-10);
+            ++resetNo;
+        }
+    }
+    BOOST_CHECK_EQUAL(resetNo, fxResetRates.size());
+    BOOST_CHECK_CLOSE(fxResetRates.front(), expectedForward, 1.0e-10);
+
+    spotQuote->setValue(1.20);
+    std::vector<Real> bumpedFxResetRates = swap->fxResetRates();
+    std::vector<Real> bumpedFxResetNotionals = swap->fxResetNotionals();
+    BOOST_CHECK_CLOSE(bumpedFxResetRates.front(), fxResetRates.front() * 1.20 / spotFx,
+                      1.0e-10);
+    BOOST_CHECK_CLOSE(bumpedFxResetNotionals.front(),
+                      fxResetNotionals.front() * 1.20 / spotFx, 1.0e-10);
+    spotQuote->setValue(spotFx);
+
+    setFxResetPricer(swap->resettingLeg(), fxResetPricer);
     BOOST_CHECK_CLOSE(firstCoupon->nominal(), eurNominal * expectedForward, 1.0e-10);
 
     // Omitting the engine's explicit spot settlement date must derive the same
@@ -1018,8 +1046,10 @@ BOOST_AUTO_TEST_CASE(testResetExchangePaymentDates) {
     BOOST_CHECK_EQUAL(exchanges.front()->date(), cal.adjust(start, Preceding));
     BOOST_CHECK_EQUAL(exchanges.back()->date(), cal.adjust(start + 1 * Years, Preceding));
 
-    for (Size i = 1; i + 1 < exchanges.size(); ++i)
-        BOOST_CHECK_EQUAL(exchanges[i]->date(), coupons[i - 1]->date());
+    for (Size i = 1; i + 1 < exchanges.size(); ++i) {
+        BOOST_REQUIRE(exchanges[i]->currentReset());
+        BOOST_CHECK_EQUAL(exchanges[i]->date(), exchanges[i]->currentReset()->valueDate());
+    }
 
     const Leg& constantLeg = swap->leg(swap->constantLegIndex());
     std::vector<ext::shared_ptr<SimpleCashFlow> > constantNotionalExchanges;

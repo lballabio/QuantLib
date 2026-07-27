@@ -153,24 +153,23 @@ void MtMCrossCurrencyBasisSwap::initialize() {
     Leg resettingLeg;
     resettingLeg.reserve(2 * legs_[resettingLegNo].size() + 1);
     std::optional<FxReset> previousReset;  // empty: first exchange has no maturing period
-    Date previousPaymentDate;  // null: ditto
     for (const auto& cf : legs_[resettingLegNo]) {
         auto coupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(cf);
         QL_REQUIRE(coupon, "unexpected non-coupon cash flow on the resettable leg");
         FxReset reset = fxResetConvention_.reset(coupon->accrualStartDate());
-        // Interim exchanges settle with the coupons.  The initial exchange is
-        // made on the effective date, adjusted with the leg's payment
-        // convention but without its coupon payment lag.
+        // An interim exchange establishes the new notional at the current
+        // accrual period's FX value date.  Coupon payment lag does not apply
+        // to notional exchanges.  The initial exchange is made on the
+        // effective date, adjusted with the leg's payment convention.
         Date exchangeDate =
-            previousPaymentDate != Date() ?
-                previousPaymentDate :
+            previousReset ?
+                reset.valueDate() :
                 paymentCalendar.adjust(earliestDate, paymentConvention);
         resettingLeg.push_back(ext::make_shared<FxResetNotionalExchange>(
             exchangeDate, constantLegNotional(), previousReset, reset));
         resettingLeg.push_back(
             ext::make_shared<FxResetCoupon>(coupon, constantLegNotional(), reset));
         previousReset = reset;
-        previousPaymentDate = coupon->date();
     }
     resettingLeg.push_back(ext::make_shared<FxResetNotionalExchange>(
         paymentCalendar.adjust(maturityDate, paymentConvention),
@@ -218,9 +217,13 @@ void MtMCrossCurrencyBasisSwap::fetchResults(const PricingEngine::results* r) co
     if (results != nullptr) {
         fairFxBaseSpread_ = results->fairFxBaseSpread;
         fairFxQuoteSpread_ = results->fairFxQuoteSpread;
+        fxResetRates_ = results->fxResetRates;
+        fxResetNotionals_ = results->fxResetNotionals;
     } else {
         fairFxBaseSpread_ = Null<Spread>();
         fairFxQuoteSpread_ = Null<Spread>();
+        fxResetRates_.clear();
+        fxResetNotionals_.clear();
     }
 
     static Spread basisPoint = 1.0e-4;
@@ -244,6 +247,8 @@ void MtMCrossCurrencyBasisSwap::setupExpired() const {
     CrossCurrencySwap::setupExpired();
     fairFxBaseSpread_ = Null<Spread>();
     fairFxQuoteSpread_ = Null<Spread>();
+    fxResetRates_.clear();
+    fxResetNotionals_.clear();
 }
 
 void MtMCrossCurrencyBasisSwap::arguments::validate() const {
@@ -264,6 +269,8 @@ void MtMCrossCurrencyBasisSwap::results::reset() {
     CrossCurrencySwap::results::reset();
     fairFxBaseSpread = Null<Spread>();
     fairFxQuoteSpread = Null<Spread>();
+    fxResetRates.clear();
+    fxResetNotionals.clear();
 }
 
 } // namespace QuantLib

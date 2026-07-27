@@ -135,6 +135,8 @@ void DiscountingMtMCrossCurrencyBasisSwapEngine::calculate() const {
     results_.inCcyLegNPV.resize(numLegs);
     results_.inCcyLegBPS.resize(numLegs);
     results_.npvDateDiscounts.resize(numLegs);
+    results_.fxResetRates.clear();
+    results_.fxResetNotionals.clear();
 
     for (Size legNo = 0; legNo < numLegs; ++legNo) {
         try {
@@ -172,6 +174,17 @@ void DiscountingMtMCrossCurrencyBasisSwapEngine::calculate() const {
                 localResettingLeg =
                     copyWithFxResetPricer(arguments_.legs[legNo], fxResetPricer);
                 pricingLeg = &localResettingLeg;
+
+                for (const auto& cf : localResettingLeg) {
+                    if (auto coupon = ext::dynamic_pointer_cast<FxResetCoupon>(cf);
+                        coupon &&
+                        !coupon->hasOccurred(settlementDate, includeReferenceDateFlows)) {
+                        Real fxResetRate = fxResetPricer->fxRate(coupon->fxReset());
+                        results_.fxResetRates.push_back(fxResetRate);
+                        results_.fxResetNotionals.push_back(coupon->constantLegNotional() *
+                                                           fxResetRate);
+                    }
+                }
             }
 
             std::tie(results_.inCcyLegNPV[legNo], results_.inCcyLegBPS[legNo]) =

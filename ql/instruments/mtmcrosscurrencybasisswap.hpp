@@ -201,6 +201,24 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
     BusinessDayConvention fxQuotePaymentConvention() const {
         return fxQuotePaymentConvention_;
     }
+    /*! FX rates used to determine the resettable coupon notionals.
+
+        The values follow the order of the non-occurred FxResetCoupon
+        instances in resettingLeg().
+    */
+    const std::vector<Real>& fxResetRates() const {
+        calculate();
+        return fxResetRates_;
+    }
+    /*! Notionals of the resettable coupons, in resetting-leg currency.
+
+        The values follow the order of the non-occurred FxResetCoupon
+        instances in resettingLeg().
+    */
+    const std::vector<Real>& fxResetNotionals() const {
+        calculate();
+        return fxResetNotionals_;
+    }
     //@}
 
     //! \name Additional interface
@@ -271,6 +289,8 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
 
     mutable Spread fairFxBaseSpread_;
     mutable Spread fairFxQuoteSpread_;
+    mutable std::vector<Real> fxResetRates_;
+    mutable std::vector<Real> fxResetNotionals_;
 };
 
 
@@ -292,6 +312,8 @@ class MtMCrossCurrencyBasisSwap::results : public CrossCurrencySwap::results {
   public:
     Spread fairFxBaseSpread = Null<Spread>();
     Spread fairFxQuoteSpread = Null<Spread>();
+    std::vector<Real> fxResetRates;
+    std::vector<Real> fxResetNotionals;
     void reset() override;
 };
 
