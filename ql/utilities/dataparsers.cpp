@@ -31,7 +31,7 @@
 #include <string>
 #include <locale>
 #include <cctype>
-#if defined(BOOST_NO_STDC_NAMESPACE)
+#ifdef BOOST_NO_STDC_NAMESPACE
     namespace std { using ::toupper; }
 #endif
 

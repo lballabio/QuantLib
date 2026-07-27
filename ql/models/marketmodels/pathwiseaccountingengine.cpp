@@ -573,8 +573,9 @@ namespace QuantLib {
                                     thisDerivative +=  totalCashFlowsThisIndex_[j][cashFlowIndex][0]*deflatorAndDerivatives_[i];
                                     fullDerivatives_[i-1] = thisDerivative;
                                 }
-                                else
+                                else {
                                     fullDerivatives_[i-1] = thisDerivative;
+}
 
                                 V_[j][stepToUse][i-1] += thisDerivative; // zeroth row of V is t =0 not t_0
                             }
@@ -991,8 +992,9 @@ namespace QuantLib {
                                     thisDerivative +=  totalCashFlowsThisIndex_[j][cashFlowIndex][0]*deflatorAndDerivatives_[i];
                                     fullDerivatives_[i-1] = thisDerivative;
                                 }
-                                else
+                                else {
                                     fullDerivatives_[i-1] = thisDerivative;
+}
 
                                 V_[j][stepToUse][i-1] += thisDerivative; // zeroth row of V is t =0 not t_0
                             } // end of  for (Size i=1; i <= numberRates_; ++i)

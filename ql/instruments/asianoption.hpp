@@ -115,11 +115,11 @@ namespace QuantLib {
     class DiscreteAveragingAsianOption::arguments
         : public OneAssetOption::arguments {
       public:
-        arguments() : averageType(Average::Type(-1)),
+        arguments() : 
                       runningAccumulator(Null<Real>()),
                       pastFixings(Null<Size>()) {}
         void validate() const override;
-        Average::Type averageType;
+        Average::Type averageType = Average::Type(-1);
         Real runningAccumulator;
         Size pastFixings;
         std::vector<Date> fixingDates;
@@ -129,10 +129,10 @@ namespace QuantLib {
     class ContinuousAveragingAsianOption::arguments
         : public OneAssetOption::arguments {
       public:
-        arguments() : averageType(Average::Type(-1))
-                      {}
+        arguments()  
+                      = default;
         void validate() const override;
-        Average::Type averageType;
+        Average::Type averageType = Average::Type(-1);
         Date startDate;
     };
 

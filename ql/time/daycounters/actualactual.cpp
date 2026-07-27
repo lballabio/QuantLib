@@ -32,7 +32,7 @@ namespace QuantLib {
                                    Date refStart, Date refEnd) {
             // This will only work for day counts longer than 15 days.
             auto months = (Integer)std::lround(12 * Real(impl.dayCount(refStart, refEnd)) / 365.0);
-            return (Integer)std::lround(12.0 / Real(months));
+            return static_cast<Integer>(std::lround(12.0 / static_cast<Real>(months)));
         }
 
         std::vector<Date> getListOfPeriodDatesIncludingQuasiPayments(
@@ -194,7 +194,7 @@ namespace QuantLib {
                    << ", reference period end: " << refPeriodEnd);
 
         // estimate roughly the length in months of a period
-        auto months = (Integer)std::lround(12 * Real(refPeriodEnd - refPeriodStart) / 365);
+        auto months = static_cast<Integer>(std::lround(12 * static_cast<Real>(refPeriodEnd - refPeriodStart) / 365));
 
         // for short periods...
         if (months == 0) {
@@ -204,7 +204,7 @@ namespace QuantLib {
             months = 12;
         }
 
-        Time period = Real(months)/12.0;
+        Time period = static_cast<Real>(months)/12.0;
 
         if (d2 <= refPeriodEnd) {
             // here refPeriodEnd is a future (notional?) payment date
@@ -215,7 +215,7 @@ namespace QuantLib {
                 // [maybe the equality should be enforced, since
                 // refPeriodStart < d1 <= d2 < refPeriodEnd
                 // could give wrong results] ???
-                return period*Real(daysBetween(d1,d2)) /
+                return period*static_cast<Real>(daysBetween(d1,d2)) /
                     daysBetween(refPeriodStart,refPeriodEnd);
             } else {
                 // here refPeriodStart is the next (maybe notional)

@@ -173,7 +173,7 @@ namespace QuantLib {
             fct2fit[1] = gamma * (1 - fct2fit[0]) - beta;
             for (std::size_t i = 2; i < idx_.size(); ++i) {
                 target[i] = acf_[idx_[i]] / A4;
-                fct2fit[i] = std::pow(gamma, (int)idx_[i]-1)* fct2fit[1];
+                fct2fit[i] = std::pow(gamma, static_cast<int>(idx_[i])-1)* fct2fit[1];
             }
         }
 
@@ -196,7 +196,7 @@ namespace QuantLib {
             grad_fct2fit[1][1] = -gamma * grad_fct2fit[0][1] - 1;
             for (std::size_t i = 2; i < idx_.size(); ++i) {
                 target[i] = acf_[idx_[i]] / A4;
-                w1 = std::pow(gamma, (int)idx_[i]-1);
+                w1 = std::pow(gamma, static_cast<int>(idx_[i])-1);
                 fct2fit[i] = w1 * fct2fit[1];
                 grad_fct2fit[i][0] = (idx_[i]-1) * (w1/gamma)*fct2fit[1] + w1*grad_fct2fit[1][0];
                 grad_fct2fit[i][1] = w1 * grad_fct2fit[1][1];
@@ -235,7 +235,7 @@ namespace QuantLib {
             Real A = mean_r2*mean_r2/A4; // 1/sigma^2
             Real B = A21 / A4; // rho(1)
 
-            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : Real(tol_level);
+            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : (tol_level);
             Garch11Constraint constraints(gammaLower, 1.0 - tol_level);
 
             Real gamma = gammaLower + (1 - gammaLower) * 0.5;
@@ -321,7 +321,7 @@ namespace QuantLib {
             Real A4 = acf[0] + mean_r2*mean_r2;
             Real A = mean_r2*mean_r2/A4; // 1/sigma^2
             Real B = A21 / A4; // rho(1)
-            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : Real(tol_level);
+            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : (tol_level);
             Garch11Constraint constraints(gammaLower, 1.0 - tol_level);
 
             // ACF
@@ -403,7 +403,7 @@ namespace QuantLib {
                    Mode mode, const std::vector<Volatility> &r2, Real mean_r2,
                    OptimizationMethod &method, const EndCriteria &endCriteria,
                    Real &alpha, Real &beta, Real &omega) {
-        Real dataSize = Real(r2.size());
+        Real dataSize = static_cast<Real>(r2.size());
         alpha = 0.0;
         beta = 0.0;
         omega = 0.0;
@@ -413,7 +413,7 @@ namespace QuantLib {
         omega = mean_r2 * dataSize / (dataSize - 1);
 
         // ACF
-        Size maxLag = (Size)std::sqrt(dataSize);
+        Size maxLag = static_cast<Size>(std::sqrt(dataSize));
         Array acf(maxLag+1);
         std::vector<Volatility> tmp(r2.size());
         std::transform (r2.begin(), r2.end(), tmp.begin(),

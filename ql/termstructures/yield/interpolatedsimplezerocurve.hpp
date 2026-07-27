@@ -124,7 +124,7 @@ template <class T> DiscountFactor InterpolatedSimpleZeroCurve<T>::discountImpl(T
         R = (zMax * tMax + instFwdMax * (t - tMax)) / t;
     }
 
-	return DiscountFactor(1.0 / (1.0 + R * t));    
+	return static_cast<DiscountFactor>(1.0 / (1.0 + R * t));    
 }
 
 template <class T>

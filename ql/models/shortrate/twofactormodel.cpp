@@ -20,6 +20,7 @@
 
 #include <ql/models/shortrate/twofactormodel.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -30,10 +31,10 @@ namespace QuantLib {
     TwoFactorModel::tree(const TimeGrid& grid) const {
         ext::shared_ptr<ShortRateDynamics> dyn = dynamics();
 
-        ext::shared_ptr<TrinomialTree> tree1(
-                                    new TrinomialTree(dyn->xProcess(), grid));
-        ext::shared_ptr<TrinomialTree> tree2(
-                                    new TrinomialTree(dyn->yProcess(), grid));
+        ext::shared_ptr<TrinomialTree> tree1 = ext::make_shared<TrinomialTree>(
+                                    dyn->xProcess(), grid);
+        ext::shared_ptr<TrinomialTree> tree2 = ext::make_shared<TrinomialTree>(
+                                    dyn->yProcess(), grid);
 
         return ext::shared_ptr<Lattice>(
                         new TwoFactorModel::ShortRateTree(tree1, tree2, dyn));

@@ -273,11 +273,11 @@ Array Gaussian1dModel::yGrid(
         e_t_T = stateProcess_->expectation(t, x_t, T - t);
     }
 
-    Real h = stdDevs / ((Real)gridPoints);
+    Real h = stdDevs / (static_cast<Real>(gridPoints));
 
     for (int j = -gridPoints; j <= gridPoints; j++) {
         result[j + gridPoints] =
-            (e_t_T + stdDev_t_T * ((Real)j) * h - e_0_T) / stdDev_0_T;
+            (e_t_T + stdDev_t_T * (static_cast<Real>(j)) * h - e_0_T) / stdDev_0_T;
     }
 
     return result;

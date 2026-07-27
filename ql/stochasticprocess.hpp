@@ -252,7 +252,7 @@ namespace QuantLib {
     }
 
     inline Array StochasticProcess1D::drift(Time t, const Array& x) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(x.size() == 1, "1-D array required");
         #endif
         Array a(1, drift(t, x[0]));
@@ -260,7 +260,7 @@ namespace QuantLib {
     }
 
     inline Matrix StochasticProcess1D::diffusion(Time t, const Array& x) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(x.size() == 1, "1-D array required");
         #endif
         Matrix m(1, 1, diffusion(t, x[0]));
@@ -269,7 +269,7 @@ namespace QuantLib {
 
     inline Array StochasticProcess1D::expectation(
                                     Time t0, const Array& x0, Time dt) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(x0.size() == 1, "1-D array required");
         #endif
         Array a(1, expectation(t0, x0[0], dt));
@@ -278,7 +278,7 @@ namespace QuantLib {
 
     inline Matrix StochasticProcess1D::stdDeviation(
                                     Time t0, const Array& x0, Time dt) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(x0.size() == 1, "1-D array required");
         #endif
         Matrix m(1, 1, stdDeviation(t0, x0[0], dt));
@@ -287,7 +287,7 @@ namespace QuantLib {
 
     inline Matrix StochasticProcess1D::covariance(
                                     Time t0, const Array& x0, Time dt) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(x0.size() == 1, "1-D array required");
         #endif
         Matrix m(1, 1, variance(t0, x0[0], dt));
@@ -296,7 +296,7 @@ namespace QuantLib {
 
     inline Array StochasticProcess1D::evolve(Time t0, const Array& x0,
                                              Time dt, const Array& dw) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(x0.size() == 1, "1-D array required");
         QL_REQUIRE(dw.size() == 1, "1-D array required");
         #endif
@@ -306,7 +306,7 @@ namespace QuantLib {
 
     inline Array StochasticProcess1D::apply(const Array& x0,
                                             const Array& dx) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(x0.size() == 1, "1-D array required");
         QL_REQUIRE(dx.size() == 1, "1-D array required");
         #endif

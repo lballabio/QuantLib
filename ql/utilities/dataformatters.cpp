@@ -26,7 +26,7 @@ namespace QuantLib::detail {
                                  const ordinal_holder& holder) {
             Size n = holder.n;
             out << n;
-            if (n == Size(11) || n == Size(12) || n == Size(13)) {
+            if (n == static_cast<Size>(11) || n == static_cast<Size>(12) || n == static_cast<Size>(13)) {
                 out << "th";
             } else {
                 switch (n % 10) {
@@ -42,7 +42,7 @@ namespace QuantLib::detail {
         std::ostream& operator<<(std::ostream& out,
                                  const percent_holder& holder) {
             std::ios::fmtflags flags = out.flags();
-            Size width = (Size)out.width();
+            Size width = static_cast<Size>(out.width());
             if (width > 2)
                 out.width(width-2); // eat space used by percent sign
             out << std::fixed;

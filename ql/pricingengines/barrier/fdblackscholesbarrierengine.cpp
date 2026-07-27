@@ -186,7 +186,7 @@ namespace QuantLib {
             
             const Size min_grid_size = 50;
             const Size rebateDampingSteps 
-                = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
+                = (dampingSteps_ > 0) ? std::min(static_cast<Size>(1), dampingSteps_/2) : 0; 
 
             rebateOption.setPricingEngine(ext::make_shared<FdBlackScholesRebateEngine>(
                             process_, dividends_, tGrid_, std::max(min_grid_size, xGrid_/5), 

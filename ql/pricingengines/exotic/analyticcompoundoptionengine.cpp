@@ -148,11 +148,11 @@ namespace QuantLib {
 
     Real AnalyticCompoundOptionEngine::typeDaughter() const {
         // returns -1 or 1 according to put or call
-        return (Real) payoffDaughter()->optionType();
+        return static_cast<Real>(payoffDaughter()->optionType());
     }
 
     Real AnalyticCompoundOptionEngine::typeMother() const {
-        return (Real) payoffMother()->optionType();
+        return static_cast<Real>(payoffMother()->optionType());
     }
 
     Date AnalyticCompoundOptionEngine::maturityDaughter() const {

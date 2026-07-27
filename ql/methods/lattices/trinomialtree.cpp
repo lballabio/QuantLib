@@ -96,7 +96,7 @@ namespace QuantLib {
             for (Integer j=jMin; j<=jMax; j++) {
                 Real x = x0_ + j*dx_[i];
                 Real m = process->expectation(t, x, dt);
-                auto temp = Integer(std::floor((m - x0_) / dx_[i + 1] + 0.5));
+                auto temp = static_cast<Integer>(std::floor((m - x0_) / dx_[i + 1] + 0.5));
 
                 bool tempBumped = false;
                 if (isPositive) {

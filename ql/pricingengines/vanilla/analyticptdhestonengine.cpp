@@ -77,7 +77,7 @@ namespace QuantLib {
 
         // avoid numeric overflow for phi->0. 
         // todo: use l'Hospital's rule use to get lim_{phi->0}
-        phi = std::max(Real(std::numeric_limits<float>::epsilon()), phi);
+        phi = std::max(static_cast<Real>(std::numeric_limits<float>::epsilon()), phi);
         
         std::complex<Real> D = 0.0;
         std::complex<Real> C = 0.0;
@@ -95,7 +95,7 @@ namespace QuantLib {
                 const Real theta = model_->theta(t);
 
                 const Real sigma2 = sigma*sigma;
-                const Real t0 = kappa - ((j_== 1)? Real(rho*sigma) : 0);
+                const Real t0 = kappa - ((j_== 1)? (rho*sigma) : 0);
                 const Real rpsig = rho*sigma*phi;
 
                 const std::complex<Real> t1 = t0+std::complex<Real>(0, -rpsig);

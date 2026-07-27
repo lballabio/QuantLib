@@ -71,7 +71,7 @@ namespace QuantLib {
 
     void LMMDriftCalculator::compute(const std::vector<Rate>& fwds,
                                      std::vector<Real>& drifts) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
             QL_REQUIRE(fwds.size()==numberOfRates_, "numberOfRates <> dim");
             QL_REQUIRE(drifts.size()==numberOfRates_, "drifts.size() <> dim");
         #endif
@@ -103,7 +103,7 @@ namespace QuantLib {
         for (i=alive_; i<numberOfRates_; ++i) {
             drifts[i] = std::inner_product(tmp_.begin()+downs_[i],
                                            tmp_.begin()+ups_[i],
-                                           C_.row_begin(i)+downs_[i], Real(0.0));
+                                           C_.row_begin(i)+downs_[i], static_cast<Real>(0.0));
             if (numeraire_>i+1)
                 drifts[i] = -drifts[i];
         }

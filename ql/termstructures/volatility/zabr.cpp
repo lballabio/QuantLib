@@ -18,6 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/zabr.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 #include <ql/errors.hpp>
@@ -128,7 +129,7 @@ std::vector<Real> ZabrModel::fdPrice(const std::vector<Real> &strikes) const {
     const Size size = 500;                    // grid points
     const Real density = 0.1; // density for concentrating mesher
     const Size steps =
-        (Size)std::ceil(expiryTime_ * 24); // number of steps in dimension t
+        static_cast<Size>(std::ceil(expiryTime_ * 24)); // number of steps in dimension t
     const Size dampingSteps = 5;           // thereof damping steps
 
 #if defined(__GNUC__) && (__GNUC__ >= 12)
@@ -222,7 +223,7 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
 
     const Size sizef = 100;
     const Size sizev = 100;
-    const Size steps = Size(24 * expiryTime_ + 1);
+    const Size steps = static_cast<Size>(24 * expiryTime_ + 1);
     const Size dampingSteps = 5;
     const Real densityf = 0.1;
     const Real densityv = 0.1;
@@ -243,7 +244,7 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
     const Real x0 = std::min(forward_, strike);
     const Real x1 = std::max(forward_, strike);
     const Size sizefa = std::max<Size>(
-        4, (Size)std::ceil(((x0 + x1) / 2.0 - f0) / (f1 - f0) * (Real)sizef));
+        4, static_cast<Size>(std::ceil(((x0 + x1) / 2.0 - f0) / (f1 - f0) * static_cast<Real>(sizef))));
     const Size sizefb = sizef - sizefa + 1; // common point, so we can spend
     // one more here
     const ext::shared_ptr<Fdm1dMesher> mfa =
@@ -293,8 +294,8 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
     // Boundary conditions
     FdmBoundaryConditionSet boundaries;
 
-    ext::shared_ptr<FdmZabrOp> map(
-        new FdmZabrOp(mesher, beta_, nu_, rho_, gamma_));
+    ext::shared_ptr<FdmZabrOp> map = ext::make_shared<FdmZabrOp>(
+        mesher, beta_, nu_, rho_, gamma_);
     FdmBackwardSolver solver(map, boundaries,
                              ext::shared_ptr<FdmStepConditionComposite>(),
                              FdmSchemeDesc::/*CraigSneyd()*/ Hundsdorfer());
@@ -352,7 +353,7 @@ std::vector<Real> ZabrModel::x(const std::vector<Real> &strikes) const {
         for (int dir = 1; dir >= -1; dir -= 2) {
             Real y0 = 0.0, u0 = 0.0;
             for (int m = ynz + (dir == -1 ? -1 : 0);
-                 dir == -1 ? m >= 0 : m < (int)y.size(); m += dir) {
+                 dir == -1 ? m >= 0 : m < static_cast<int>(y.size()); m += dir) {
                 Real u = rk([&](Real _y, Real _u){ return F(_y, _u); },
                             u0, y0, y[m]);
                 result[y.size() - 1 - m] = u * pow(alpha_, 1.0 - gamma_);
@@ -371,9 +372,9 @@ Real ZabrModel::y(const Real strike) const {
         return std::log(forward_ / strike) * std::pow(alpha_, gamma_ - 2.0);
     } else {
         return (strike < 0.0
-                    ? Real(std::pow(forward_, 1.0 - beta_) +
+                    ? static_cast<Real>(std::pow(forward_, 1.0 - beta_) +
                           std::pow(-strike, 1.0 - beta_))
-                    : Real(std::pow(forward_, 1.0 - beta_) -
+                    : static_cast<Real>(std::pow(forward_, 1.0 - beta_) -
                           std::pow(strike, 1.0 - beta_))) *
                std::pow(alpha_, gamma_ - 2.0) / (1.0 - beta_);
     }

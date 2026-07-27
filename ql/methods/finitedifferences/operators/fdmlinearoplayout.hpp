@@ -65,7 +65,7 @@ namespace QuantLib {
         Size index(const std::vector<Size>& coordinates) const {
             return std::inner_product(coordinates.begin(),
                                       coordinates.end(),
-                                      spacing_.begin(), Size(0));
+                                      spacing_.begin(), static_cast<Size>(0));
         }
 
         Size neighbourhood(const FdmLinearOpIterator& iterator,

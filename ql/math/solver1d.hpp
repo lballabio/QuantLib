@@ -98,9 +98,9 @@ namespace QuantLib {
             fxMax_ = f(root_);
 
             // monotonically crescent bias, as in optionValue(volatility)
-            if (close(fxMax_,0.0))
+            if (close(fxMax_,0.0)) {
                 return root_;
-            else if (fxMax_ > 0.0) {
+            } else if (fxMax_ > 0.0) {
                 xMin_ = enforceBounds_(root_ - step);
                 fxMin_ = f(xMin_);
                 xMax_ = root_;

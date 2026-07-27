@@ -33,7 +33,7 @@ namespace QuantLib {
     dt_(dt), ot_(ot),
     dDiscount_(dDiscount), fDiscount_(fDiscount),
     stdDev_(stdDev), spot_(spot),
-    forward_(spot*fDiscount/dDiscount), phi_(Integer(ot)) {
+    forward_(spot*fDiscount/dDiscount), phi_(static_cast<Integer>(ot)) {
 
         QL_REQUIRE(spot_>0.0,
                    "positive spot value required: " <<
@@ -321,7 +321,7 @@ namespace QuantLib {
 
     void BlackDeltaCalculator::setOptionType(Option::Type ot){
         ot_=ot;
-        phi_=Integer(ot_);
+        phi_=static_cast<Integer>(ot_);
     }
 
 

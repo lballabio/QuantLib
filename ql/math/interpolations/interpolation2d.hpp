@@ -89,7 +89,7 @@ namespace QuantLib {
             std::vector<Real> yValues() const override { return std::vector<Real>(yBegin_, yEnd_); }
             const Matrix& zData() const override { return zData_; }
             bool isInRange(Real x, Real y) const override {
-#if defined(QL_EXTRA_SAFETY_CHECKS)
+#ifdef QL_EXTRA_SAFETY_CHECKS
                 for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; ++i, ++j)
                     QL_REQUIRE(*j > *i, "unsorted x values");
                 #endif
@@ -99,7 +99,7 @@ namespace QuantLib {
                                   close(x,x2);
                 if (!xIsInrange) return false;
 
-                #if defined(QL_EXTRA_SAFETY_CHECKS)
+                #ifdef QL_EXTRA_SAFETY_CHECKS
                 for (I2 k=yBegin_, l=yBegin_+1; l!=yEnd_; ++k, ++l)
                     QL_REQUIRE(*l > *k, "unsorted y values");
                 #endif
@@ -109,7 +109,7 @@ namespace QuantLib {
 
           protected:
             Size locateX(Real x) const override {
-#if defined(QL_EXTRA_SAFETY_CHECKS)
+#ifdef QL_EXTRA_SAFETY_CHECKS
                 for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; ++i, ++j)
                     QL_REQUIRE(*j > *i, "unsorted x values");
                 #endif
@@ -121,7 +121,7 @@ namespace QuantLib {
                     return std::upper_bound(xBegin_,xEnd_-1,x)-xBegin_-1;
             }
             Size locateY(Real y) const override {
-#if defined(QL_EXTRA_SAFETY_CHECKS)
+#ifdef QL_EXTRA_SAFETY_CHECKS
                 for (I2 k=yBegin_, l=yBegin_+1; l!=yEnd_; ++k, ++l)
                     QL_REQUIRE(*l > *k, "unsorted y values");
                 #endif

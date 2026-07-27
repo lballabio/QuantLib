@@ -215,7 +215,7 @@ namespace QuantLib {
         char ECBcode[6];
         std::snprintf(ECBcode, 6, "%3s%02u", month.data(), y);
 
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_ENSURE(isECBcode(ECBcode),
                   "the result " << ECBcode <<
                   " is an invalid ECB code");
@@ -304,7 +304,7 @@ namespace QuantLib {
                 incrementAndCheckForOverlow(nextCodeStr[3]);
         }
 
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_ENSURE(isECBcode(nextCodeStr),
                   "the result " << nextCodeStr <<
                   " is an invalid ECB code");

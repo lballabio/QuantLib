@@ -169,9 +169,9 @@ namespace QuantLib {
     }
 
     inline void ObservableSettings::unregisterDeferredObserver(Observer* o) {
-        if (updatesDeferred())
+        if (updatesDeferred()) {
             deferredObservers_.erase(o);
-        else
+        } else
         {
             auto it = deferredObservers_.find(o);
             if (it != deferredObservers_.end())

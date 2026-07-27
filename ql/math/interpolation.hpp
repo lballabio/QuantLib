@@ -92,7 +92,7 @@ namespace QuantLib {
                 return std::vector<Real>(yBegin_,yBegin_+(xEnd_-xBegin_));
             }
             bool isInRange(Real x) const override {
-#if defined(QL_EXTRA_SAFETY_CHECKS)
+#ifdef QL_EXTRA_SAFETY_CHECKS
                 for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; ++i, ++j)
                     QL_REQUIRE(*j > *i, "unsorted x values");
                 #endif
@@ -102,7 +102,7 @@ namespace QuantLib {
 
           protected:
             Size locate(Real x) const {
-                #if defined(QL_EXTRA_SAFETY_CHECKS)
+                #ifdef QL_EXTRA_SAFETY_CHECKS
                 for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; ++i, ++j)
                     QL_REQUIRE(*j > *i, "unsorted x values");
                 #endif

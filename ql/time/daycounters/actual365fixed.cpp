@@ -50,16 +50,16 @@ namespace QuantLib {
 
         Time dcs = daysBetween(d1,d2);
         Time dcc = daysBetween(refPeriodStart,refPeriodEnd);
-        auto months = Integer(std::lround(12 * dcc / 365));
+        auto months = static_cast<Integer>(std::lround(12 * dcc / 365));
         QL_REQUIRE(months != 0,
                    "invalid reference period for Act/365 Canadian; "
                    "must be longer than a month");
-        auto frequency = Integer(12 / months);
+        auto frequency = static_cast<Integer>(12 / months);
         QL_REQUIRE(frequency != 0,
                    "invalid reference period for Act/365 Canadian; "
                    "must not be longer than a year");
 
-        if (dcs < Integer(365/frequency))
+        if (dcs < static_cast<Integer>(365/frequency))
             return dcs/365.0;
 
         return 1./frequency - (dcc-dcs)/365.0;

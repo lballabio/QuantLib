@@ -44,7 +44,7 @@ namespace QuantLib {
             Real S, Real strike, Rate rf, Rate dy, Volatility vol, Time t, Time T)
         : tau(t), K(strike), sigma(vol), sigma2(sigma * sigma), v(sigma * std::sqrt(tau)), r(rf),
           q(dy), dr(std::exp(-r * tau)), dq(std::exp(-q * tau)),
-          ddr((std::abs(r*tau) > 1e-5)? Real(r/(1-dr)) : Real(1/(tau*(1-0.5*r*tau*(1-r*tau/3))))),
+          ddr((std::abs(r*tau) > 1e-5)? (r/(1-dr)) : static_cast<Real>(1/(tau*(1-0.5*r*tau*(1-r*tau/3))))),
           omega(2 * (r - q) / sigma2),
           lambda(0.5 *
                  (-(omega - 1) - std::sqrt(squared(omega - 1) + 8 * ddr / sigma2))),
@@ -144,15 +144,17 @@ namespace QuantLib {
                 const Real dp = std::log(S_*dq/(b_t*dr))/v + 0.5*v;
                 r = 2*z*(r_*K_*dr*Phi_(-dp+v) - q_*S_*dq*Phi_(-dp));
             }
-            else
+            else {
                 r = 0.0;
+}
         }
-        else if (close_enough(S_*dq, b_t*dr))
+        else if (close_enough(S_*dq, b_t*dr)) {
             r = z*(r_*K_*dr - q_*S_*dq);
-        else if (b_t*dr > S_*dq)
+        } else if (b_t*dr > S_*dq) {
             r = 2*z*(r_*K_*dr - q_*S_*dq);
-        else
+        } else {
             r = 0.0;
+}
 
         return r;
     }
@@ -216,7 +218,7 @@ namespace QuantLib {
             const Real npv0 = intrinsic(0.0);
             const Real npvT = intrinsic(T);
             const Real extremT
-                = close_enough(r, q)? QL_MAX_REAL : Real(std::log(r*K/(q*S))/(r-q));
+                = close_enough(r, q)? QL_MAX_REAL : static_cast<Real>(std::log(r*K/(q*S))/(r-q));
 
             if (extremT > 0.0 && extremT < T)
                 return std::max({npv0, npvT, intrinsic(extremT)});
@@ -281,7 +283,7 @@ namespace QuantLib {
             guess = 0.5*(xmax + S);
 
         if (guess >= xmax)
-            guess = std::nextafter(xmax, Real(-1));
+            guess = std::nextafter(xmax, static_cast<Real>(-1));
         else if (guess <= eval.xmin())
             guess = std::nextafter(eval.xmin(), QL_MAX_REAL);
 
@@ -294,7 +296,7 @@ namespace QuantLib {
 
         if (tau < QL_EPSILON)
             return std::pair<Size, Real>(
-                Size(0), xMax(K, r, q));
+                static_cast<Size>(0), xMax(K, r, q));
 
         const QdPlusBoundaryEvaluator eval(S, K, r, q, vol, tau, T);
 
@@ -323,8 +325,8 @@ namespace QuantLib {
                     const Real fPrime = eval.derivative(x);
                     const Real lf = fx*eval.fprime2(x)/(fPrime*fPrime);
                     const Real step = (solverType_ == Halley)
-                        ? Real(1/(1 - 0.5*lf)*fx/fPrime)
-                        : Real((1 + 0.5*lf/(1-lf))*fx/fPrime);
+                        ? static_cast<Real>(1/(1 - 0.5*lf)*fx/fPrime)
+                        : static_cast<Real>((1 + 0.5*lf/(1-lf))*fx/fPrime);
 
                     x = std::max(xmin, x - step);
                     resultCloseEnough = std::fabs(x-xOld) < 0.5*eps_;

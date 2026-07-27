@@ -67,7 +67,7 @@ namespace QuantLib {
         // We do NOT test daily seasonality because this will, in general, never be consistent
         // given weekends, holidays, leap years, etc.
         if(this->frequency() == Daily) return true;
-        if(Size(this->frequency()) == seasonalityFactors().size()) return true;
+        if(static_cast<Size>(this->frequency()) == seasonalityFactors().size()) return true;
 
         // how many years do you need to test?
         Size nTest = seasonalityFactors().size() / this->frequency();

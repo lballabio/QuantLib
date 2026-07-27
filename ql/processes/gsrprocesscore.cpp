@@ -58,7 +58,7 @@ void GsrProcessCore::checkTimesVolsReversions() const {
                    << vols_.size() << ") compared to number of times ("
                    << times_.size() << " must be bigger by one, or exactly "
                                        "1 reversion must be given");
-    for (int i = 0; i < ((int)times_.size()) - 1; i++)
+    for (int i = 0; i < (static_cast<int>(times_.size())) - 1; i++)
         QL_REQUIRE(times_[i] < times_[i + 1], "times must be increasing ("
                                                 << times_[i] << "@" << i << " , "
                                                 << times_[i + 1] << "@" << i + 1
@@ -66,7 +66,7 @@ void GsrProcessCore::checkTimesVolsReversions() const {
 }
 
 void GsrProcessCore::flushCache() const {
-    for (int i = 0; i < (int)reversions_.size(); i++)
+    for (int i = 0; i < static_cast<int>(reversions_.size()); i++)
         // small reversions cause numerical problems, so we keep them
         // away from zero
         if (std::fabs(reversions_[i]) < 1E-4)
@@ -118,7 +118,7 @@ Real GsrProcessCore::expectation_rn_part(const Time w,
         for (int l = 0; l <= k - 1; l++) {
             Real res2 = 1.0;
             // alpha_l
-            res2 *= revZero(l) ? Real(vol(l) * vol(l) * (time2(l + 1) - time2(l)))
+            res2 *= revZero(l) ? (vol(l) * vol(l) * (time2(l + 1) - time2(l)))
                                : vol(l) * vol(l) / (2.0 * rev(l)) *
                                      (1.0 - exp(-2.0 * rev(l) *
                                                 (time2(l + 1) - time2(l))));
@@ -131,10 +131,10 @@ Real GsrProcessCore::expectation_rn_part(const Time w,
             // zeta_k beta_k
             res2 *=
                 revZero(k)
-                    ? Real(2.0 * time2(k) - flooredTime(k, w) -
+                    ? static_cast<Real>(2.0 * time2(k) - flooredTime(k, w) -
                           cappedTime(k + 1, t) -
                           2.0 * (time2(k) - cappedTime(k + 1, t)))
-                    : Real((exp(rev(k) * (2.0 * time2(k) - flooredTime(k, w) -
+                    : static_cast<Real>((exp(rev(k) * (2.0 * time2(k) - flooredTime(k, w) -
                                      cappedTime(k + 1, t))) -
                        exp(2.0 * rev(k) * (time2(k) - cappedTime(k + 1, t)))) /
                           rev(k));
@@ -146,13 +146,13 @@ Real GsrProcessCore::expectation_rn_part(const Time w,
         // alpha_k zeta_k
         res2 *=
             revZero(k)
-                ? Real(vol(k) * vol(k) / 4.0 *
+                ? static_cast<Real>(vol(k) * vol(k) / 4.0 *
                       (4.0 * pow(cappedTime(k + 1, t) - time2(k), 2.0) -
                        (pow(flooredTime(k, w) - 2.0 * time2(k) +
                                 cappedTime(k + 1, t),
                             2.0) +
                         pow(cappedTime(k + 1, t) - flooredTime(k, w), 2.0))))
-                : Real(vol(k) * vol(k) / (2.0 * rev(k) * rev(k)) *
+                : static_cast<Real>(vol(k) * vol(k) / (2.0 * rev(k) * rev(k)) *
                       (exp(-2.0 * rev(k) * (cappedTime(k + 1, t) - time2(k))) +
                        1.0 -
                        (exp(-rev(k) * (flooredTime(k, w) - 2.0 * time2(k) +
@@ -192,7 +192,7 @@ Real GsrProcessCore::expectation_tf_part(const Time w,
             Real res3 = 1.0;
             // eta_l
             res3 *= revZero(l)
-                        ? Real(cappedTime(l + 1, T_) - time2(l))
+                        ? (cappedTime(l + 1, T_) - time2(l))
                         : (1.0 -
                            exp(-rev(l) * (cappedTime(l + 1, T_) - time2(l)))) /
                               rev(l);
@@ -205,11 +205,11 @@ Real GsrProcessCore::expectation_tf_part(const Time w,
             // zeta_k gamma_k
             res3 *=
                 revZero(k)
-                    ? Real((cappedTime(k + 1, t) - time2(k + 1) -
+                    ? static_cast<Real>((cappedTime(k + 1, t) - time2(k + 1) -
                        (2.0 * flooredTime(k, w) - cappedTime(k + 1, t) -
                         time2(k + 1))) /
                           2.0)
-                    : Real((exp(rev(k) * (cappedTime(k + 1, t) - time2(k + 1))) -
+                    : static_cast<Real>((exp(rev(k) * (cappedTime(k + 1, t) - time2(k + 1))) -
                        exp(rev(k) * (2.0 * flooredTime(k, w) -
                                      cappedTime(k + 1, t) - time2(k + 1)))) /
                           (2.0 * rev(k)));
@@ -221,13 +221,13 @@ Real GsrProcessCore::expectation_tf_part(const Time w,
         // eta_k zeta_k
         res3 *=
             revZero(k)
-                ? Real((-pow(cappedTime(k + 1, t) - cappedTime(k + 1, T_), 2.0) -
+                ? static_cast<Real>((-pow(cappedTime(k + 1, t) - cappedTime(k + 1, T_), 2.0) -
                    2.0 * pow(cappedTime(k + 1, t) - flooredTime(k, w), 2.0) +
                    pow(2.0 * flooredTime(k, w) - cappedTime(k + 1, T_) -
                            cappedTime(k + 1, t),
                        2.0)) /
                       4.0)
-                : Real((2.0 - exp(rev(k) *
+                : static_cast<Real>((2.0 - exp(rev(k) *
                              (cappedTime(k + 1, t) - cappedTime(k + 1, T_))) -
                    (2.0 * exp(-rev(k) *
                               (cappedTime(k + 1, t) - flooredTime(k, w))) -
@@ -264,7 +264,7 @@ Real GsrProcessCore::variance(const Time w, const Time dt) const {
         Real res2 = vol(k) * vol(k);
         // zeta_k^2
         res2 *= revZero(k)
-                    ? Real(-(flooredTime(k, w) - cappedTime(k + 1, t)))
+                    ? (-(flooredTime(k, w) - cappedTime(k + 1, t)))
                     : (1.0 - exp(2.0 * rev(k) *
                                  (flooredTime(k, w) - cappedTime(k + 1, t)))) /
                           (2.0 * rev(k));
@@ -292,7 +292,7 @@ Real GsrProcessCore::y(const Time t) const {
         for (int j = i + 1; j <= upperIndex(t) - 1; j++) {
             res2 *= exp(-2.0 * rev(j) * (cappedTime(j + 1, t) - time2(j)));
         }
-        res2 *= revZero(i) ? Real(vol(i) * vol(i) * (cappedTime(i + 1, t) - time2(i)))
+        res2 *= revZero(i) ? (vol(i) * vol(i) * (cappedTime(i + 1, t) - time2(i)))
                            : (vol(i) * vol(i) / (2.0 * rev(i)) *
                               (1.0 - exp(-2.0 * rev(i) *
                                          (cappedTime(i + 1, t) - time2(i)))));
@@ -316,7 +316,7 @@ Real GsrProcessCore::G(const Time t, const Time w) const {
         for (int j = lowerIndex(t); j <= i - 1; j++) {
             res2 *= exp(-rev(j) * (time2(j + 1) - flooredTime(j, t)));
         }
-        res2 *= revZero(i) ? Real(cappedTime(i + 1, w) - flooredTime(i, t))
+        res2 *= revZero(i) ? (cappedTime(i + 1, w) - flooredTime(i, t))
                            : (1.0 - exp(-rev(i) * (cappedTime(i + 1, w) -
                                                    flooredTime(i, t)))) /
                                  rev(i);

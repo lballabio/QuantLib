@@ -575,9 +575,9 @@ namespace QuantLib {
                         tmp_[i]=(Y_[i+1]-Y_[i])/dx_[i]-(2.0*D_[i]+D_[i+1])*dx_[i]/6.0;
                     tmp_[n_-1]=tmp_[n_-2]+D_[n_-2]*dx_[n_-2]+(D_[n_-1]-D_[n_-2])*dx_[n_-2]/2.0;
                 } else { // local schemes
-                    if (n_==2)
+                    if (n_==2) {
                         tmp_[0] = tmp_[1] = S_[0];
-                    else {
+                    } else {
                         switch (da_) {
                             case CubicInterpolation::FourthOrder:
                                 QL_FAIL("FourthOrder not implemented yet");
@@ -603,8 +603,9 @@ namespace QuantLib {
                                         else
                                             tmp_[i] = QL_MAX_REAL;
                                     }
-                                    else
+                                    else {
                                         tmp_[i] = 3.0*Smin*Smax/(Smax+2.0*Smin);
+}
                                 }
                                 // end points
                                 tmp_[0]    = ((2.0*dx_[   0]+dx_[   1])*S_[   0] - dx_[   0]*S_[   1]) / (dx_[   0]+dx_[   1]);

@@ -45,7 +45,7 @@ namespace QuantLib {
                    "number of volatilities ("
                        << vols_.size() << ") compared to number of times ("
                        << times_.size() << " must be bigger by one");
-        for (int i = 0; i < ((int)times_.size()) - 1; i++)
+        for (int i = 0; i < (static_cast<int>(times_.size())) - 1; i++)
             QL_REQUIRE(times_[i] < times_[i + 1], "times must be increasing ("
                                                     << times_[i] << "@" << i
                                                     << " , " << times_[i + 1]

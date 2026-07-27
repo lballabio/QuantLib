@@ -124,7 +124,7 @@ namespace QuantLib {
             // conservative estimate of how many samples are needed
             order = maxError(Real(error*error))/tolerance/tolerance;
             nextBatch =
-                Size(std::max<Real>(static_cast<Real>(sampleNumber)*order*0.8 - static_cast<Real>(sampleNumber),
+                static_cast<Size>(std::max<Real>(static_cast<Real>(sampleNumber)*order*0.8 - static_cast<Real>(sampleNumber),
                                     static_cast<Real>(minSamples)));
 
             // do not exceed maxSamples

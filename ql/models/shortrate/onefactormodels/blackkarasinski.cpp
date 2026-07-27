@@ -20,6 +20,7 @@
 #include <ql/models/shortrate/onefactormodels/blackkarasinski.hpp>
 #include <ql/methods/lattices/trinomialtree.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -71,8 +72,8 @@ namespace QuantLib {
 
         ext::shared_ptr<ShortRateDynamics> numericDynamics(
                          new Dynamics(phi_, a(), sigma()));
-        ext::shared_ptr<TrinomialTree> trinomial(
-                         new TrinomialTree(numericDynamics->process(), grid));
+        ext::shared_ptr<TrinomialTree> trinomial = ext::make_shared<TrinomialTree>(
+                         numericDynamics->process(), grid);
         ext::shared_ptr<ShortRateTree> numericTree(
                          new ShortRateTree(trinomial, numericDynamics, grid));
 

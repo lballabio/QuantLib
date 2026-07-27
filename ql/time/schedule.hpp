@@ -167,7 +167,7 @@ namespace QuantLib {
     }
 
     inline const Date& Schedule::operator[](Size i) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         return dates_.at(i);
         #else
         return dates_[i];

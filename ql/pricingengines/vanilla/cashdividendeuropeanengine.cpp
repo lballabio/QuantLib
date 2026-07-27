@@ -95,8 +95,9 @@ namespace QuantLib {
                     underlyings.back()->amount() + strike, maturityDate
             );
         }
-        else
+        else {
             underlyings.emplace_back(ext::make_shared<FixedDividend>(strike, maturityDate));
+}
 
         if (underlyings.size() == 1) {
             VanillaOption option(
@@ -170,11 +171,11 @@ namespace QuantLib {
             ext::make_shared<ChoiBasketEngine>(processes, rho, 10, 2000, false, true)
         );
 
-        if (payoff->optionType() == Option::Call)
+        if (payoff->optionType() == Option::Call) {
             results_.value = basketOption.NPV() * qTS->discount(maturityDate);
-        else {
+        } else {
             const Real divDiscounted = std::accumulate(
-                dividends.begin(), dividends.end(), Real(0),
+                dividends.begin(), dividends.end(), static_cast<Real>(0),
                 [&rTS, &qTS](Real acc, const ext::shared_ptr<Dividend>& div) -> Real {
                     return acc + div->amount() * rTS->discount(div->date()) / qTS->discount(div->date());
                 }

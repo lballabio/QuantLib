@@ -71,8 +71,9 @@ namespace QuantLib {
                                           defaultMoneyNormal + 27)
                       : std::vector<Real>(defaultMoney, defaultMoney + 21);
         }
-        else
+        else {
             tmp = std::vector<Real>(moneynessGrid);
+}
 
         Real shift = section.shift();
 
@@ -83,7 +84,7 @@ namespace QuantLib {
 
         bool minStrikeAdded = false, maxStrikeAdded = false;
         for (Real& i : tmp) {
-            Real k = section.volatilityType() == Normal ? Real(f_ + i) : Real(i * (f_ + shift) - shift);
+            Real k = section.volatilityType() == Normal ? (f_ + i) : (i * (f_ + shift) - shift);
             if ((section.volatilityType() == ShiftedLognormal && i <= QL_EPSILON) ||
                 (k >= section.minStrike() && k <= section.maxStrike())) {
                 if (!minStrikeAdded || !close(k, section.minStrike())) {
@@ -97,15 +98,15 @@ namespace QuantLib {
                      // in order to not loose too much information
                 if (k < section.minStrike() && !minStrikeAdded) {
                     m_.push_back(section.volatilityType() == Normal
-                                     ? Real(section.minStrike() - f_)
-                                     : Real((section.minStrike() + shift) / f_));
+                                     ? (section.minStrike() - f_)
+                                     : ((section.minStrike() + shift) / f_));
                     k_.push_back(section.minStrike());
                     minStrikeAdded = true;
                 }
                 if (k > section.maxStrike() && !maxStrikeAdded) {
                     m_.push_back(section.volatilityType() == Normal
-                                     ? Real(section.maxStrike() - f_)
-                                     : Real((section.maxStrike() + shift) / f_));
+                                     ? (section.maxStrike() - f_)
+                                     : ((section.maxStrike() + shift) / f_));
                     k_.push_back(section.maxStrike());
                     maxStrikeAdded = true;
                 }

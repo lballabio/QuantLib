@@ -60,7 +60,7 @@ namespace QuantLib {
         const Handle<YieldTermStructure> rTS = process_->riskFreeRate();
 
         if (   futureFixings > 0
-            && process_->time(fixingDates.front()) == Time(0)) {
+            && process_->time(fixingDates.front()) == static_cast<Time>(0)) {
             // push today fixing to past fixings
             fixingDates.erase(fixingDates.begin());
             futureFixings--;
@@ -85,7 +85,7 @@ namespace QuantLib {
             == fixingDates.end(), "two fixing dates are the same");
 
         const Real accruedAverage = (pastFixings != 0)
-            ? Real(runningAccumulator / (pastFixings + futureFixings))
+            ? (runningAccumulator / (pastFixings + futureFixings))
             : 0.0;
 
         const Real strike = payoff->strike() - accruedAverage;

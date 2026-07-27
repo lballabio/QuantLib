@@ -413,7 +413,7 @@ namespace QuantLib {
     }
 
     inline const Array& Array::operator/=(Real x) {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(x != 0.0, "division by zero");
         #endif
         std::transform(begin(), end(), begin(), [=](Real y) -> Real { return y / x; });
@@ -421,7 +421,7 @@ namespace QuantLib {
     }
 
     inline Real Array::operator[](Size i) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(i<n_,
                    "index (" << i << ") must be less than " << n_ <<
                    ": array access out of range");
@@ -437,21 +437,21 @@ namespace QuantLib {
     }
 
     inline Real Array::front() const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(n_>0, "null Array: array access out of range");
         #endif
         return data_.get()[0];
     }
 
     inline Real Array::back() const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(n_>0, "null Array: array access out of range");
         #endif
         return data_.get()[n_-1];
     }
 
     inline Real& Array::operator[](Size i) {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(i<n_,
                    "index (" << i << ") must be less than " << n_ <<
                    ": array access out of range");
@@ -467,14 +467,14 @@ namespace QuantLib {
     }
 
     inline Real& Array::front() {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(n_>0, "null Array: array access out of range");
         #endif
         return data_.get()[0];
     }
 
     inline Real& Array::back() {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(n_>0, "null Array: array access out of range");
         #endif
         return data_.get()[n_-1];
@@ -542,7 +542,7 @@ namespace QuantLib {
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be multiplied");
-        return std::inner_product(v1.begin(),v1.end(),v2.begin(),Real(0.0));
+        return std::inner_product(v1.begin(),v1.end(),v2.begin(),static_cast<Real>(0.0));
     }
 
     inline Real Norm2(const Array& v) {
@@ -897,8 +897,8 @@ namespace QuantLib {
         out << "[ ";
         if (!a.empty()) {
             for (Size n=0; n<a.size()-1; ++n)
-                out << std::setw(int(width)) << a[n] << "; ";
-            out << std::setw(int(width)) << a.back();
+                out << std::setw(static_cast<int>(width)) << a[n] << "; ";
+            out << std::setw(static_cast<int>(width)) << a.back();
         }
         out << " ]";
         return out;

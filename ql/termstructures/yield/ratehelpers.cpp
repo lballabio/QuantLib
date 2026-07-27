@@ -412,10 +412,10 @@ namespace QuantLib {
             }
         }
 
-        if (useIndexedCoupon_)
+        if (useIndexedCoupon_) {
             // latest relevant date is calculated from earliestDate_
             latestRelevantDate_ = iborIndex_->maturityDate(earliestDate_);
-        else {
+        } else {
             latestRelevantDate_ = maturityDate_;
             spanningTime_ = iborIndex_->dayCounter().yearFraction(earliestDate_, maturityDate_);
         }

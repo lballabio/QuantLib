@@ -114,7 +114,7 @@ namespace QuantLib {
             QL_FAIL("not an IMM month (and it should have been)");
         }
 
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_ENSURE(isIMMcode(IMMcode.str(), false),
                   "the result " << IMMcode.str() <<
                   " is an invalid IMM code");
@@ -171,7 +171,7 @@ namespace QuantLib {
         Size offset = mainCycle ? 3 : 1;
         Size skipMonths = offset-(m%offset);
         if (skipMonths != offset || refDate.dayOfMonth() > 21) {
-            skipMonths += Size(m);
+            skipMonths += static_cast<Size>(m);
             if (skipMonths<=12) {
                 m = QuantLib::Month(skipMonths);
             } else {

@@ -152,7 +152,7 @@ namespace QuantLib {
         for (Size i=0; i < processes_.size(); ++i) {
             const Size xGrid = (xGrids_.size() > 1)
                 ? xGrids_[i]
-                : std::max(Size(4), Size(xGrids_[0]*std::pow(l[i]/l[0], 0.1)));
+                : std::max(static_cast<Size>(4), static_cast<Size>(xGrids_[0]*std::pow(l[i]/l[0], 0.1)));
             QL_REQUIRE(xGrid >= 4, "minimum grid size is four");
 
             const Real xStepStize = (1.0-2*eps)/(xGrid-1);
@@ -203,7 +203,7 @@ namespace QuantLib {
         const ext::shared_ptr<FdmWienerOp> op =
             ext::make_shared<FdmWienerOp>(
                 mesher,
-                (isEuropean)? ext::shared_ptr<YieldTermStructure>() : rTS,
+                isEuropean? ext::shared_ptr<YieldTermStructure>() : rTS,
                 l);
 
         switch(processes_.size()) {

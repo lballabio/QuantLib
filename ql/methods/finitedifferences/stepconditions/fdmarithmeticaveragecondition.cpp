@@ -81,8 +81,8 @@ namespace QuantLib {
                                            tmp.begin());
                 for (Size j=0; j<a_.size(); ++j) {
                     Size index = i*xSpacing + j*aSpacing;
-                    a[index] = interp((iT-nTimes)/(double)(iT)*a_[j] +
-                                      nTimes/(double)(iT)*x_[i], true);
+                    a[index] = interp((iT-nTimes)/static_cast<double>iT*a_[j] +
+                                      nTimes/static_cast<double>iT*x_[i], true);
                 }
             }
         }

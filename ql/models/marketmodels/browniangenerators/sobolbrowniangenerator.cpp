@@ -184,7 +184,7 @@ namespace QuantLib {
     }
 
     Real SobolBrownianGeneratorBase::nextStep(std::vector<Real>& output) {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(output.size() == factors_, "size mismatch");
         QL_REQUIRE(lastStep_<steps_, "sequence exhausted");
         #endif

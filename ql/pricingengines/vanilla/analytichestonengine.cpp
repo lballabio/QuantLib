@@ -37,7 +37,7 @@
 #include <limits>
 #include <utility>
 
-#if defined(QL_PATCH_MSVC)
+#ifdef QL_PATCH_MSVC
 #pragma warning(disable: 4180)
 #endif
 
@@ -91,7 +91,7 @@ namespace QuantLib {
         dd_(x_-std::log(ratio)),
         sigma2_(sigma_*sigma_),
         rsigma_(rho*sigma_),
-        t0_(kappa - ((j== 1)? rho*sigma : Real(0))),
+        t0_(kappa - ((j== 1)? rho*sigma : static_cast<Real>(0))),
 
         engine_(engine)
     {
@@ -107,7 +107,7 @@ namespace QuantLib {
                       *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
         const std::complex<Real> ex = std::exp(-d*term_);
         const std::complex<Real> addOnTerm =
-            engine_ != nullptr ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
+            engine_ != nullptr ? engine_->addOnTerm(phi, term_, j_) : static_cast<Real>(0.0);
 
         if (cpxLog_ == Gatheral) {
             if (phi != 0.0) {
@@ -147,10 +147,11 @@ namespace QuantLib {
                                -kappa_*theta_*(kmr*term_+1.0) ) / (2*kmr*kmr)
                             - v0_*(1.0-std::exp(kmr*term_)) / (2.0*kmr);
                     }
-                    else
+                    else {
                         // \kappa = \rho * \sigma
                         return dd_-sx_ + 0.25*kappa_*theta_*term_*term_
                                        + 0.5*v0_*term_;
+}
                 }
                 else {
                     return dd_-sx_
@@ -225,7 +226,7 @@ namespace QuantLib {
       theta_(enginePtr->model_->theta()),
       sigma_(enginePtr->model_->sigma()),
       rho_(enginePtr->model_->rho()),
-      eps_(std::pow(2, -int(0.5*std::numeric_limits<Real>::digits))),
+      eps_(std::pow(2, -static_cast<int>(0.5*std::numeric_limits<Real>::digits))),
       enginePtr_(enginePtr)
       {
         km_ = k(0.0, -1);
@@ -336,7 +337,7 @@ namespace QuantLib {
                 return enginePtr_->lnChF(z, t_).real()
                     - std::log(alpha*(alpha+1)) + alpha*freq;
             },
-            lower, upper, int(0.5*std::numeric_limits<Real>::digits)
+            lower, upper, static_cast<int>(0.5*std::numeric_limits<Real>::digits)
         );
     }
 
@@ -462,8 +463,9 @@ namespace QuantLib {
                 * (phiBS - enginePtr_->chF(zPrime, term_)) / (z*zPrime)
                 ).real()*s_alpha_;
         }
-        else
+        else {
             QL_FAIL("unknown control variate");
+}
     }
 
     Real AnalyticHestonEngine::AP_Helper::controlVariateValue() const {
@@ -490,8 +492,9 @@ namespace QuantLib {
                   -0.5*((alpha_ ==  0.0)? fwd_ :0.0)
                   +0.5*((alpha_ == -1.0)? strike_: 0.0);
         }
-        else
+        else {
             QL_FAIL("unknown control variate");
+}
     }
 
     std::complex<Real> AnalyticHestonEngine::chF(
@@ -517,7 +520,7 @@ namespace QuantLib {
             return std::exp(-(((theta - v0 + ekt*((-1 + kt)*theta + v0))
                     *z*zpi)/ekt)/(2.*kappa))
 
-                + (std::exp(-(kt) - ((theta - v0 + ekt
+                + (std::exp(-kt - ((theta - v0 + ekt
                     *((-1 + kt)*theta + v0))*z*zpi)
                 /(2.*ekt*kappa))*rho*(2*theta + kt*theta -
                     v0 - kt*v0 + ekt*((-2 + kt)*theta + v0))
@@ -564,8 +567,9 @@ namespace QuantLib {
         if (D.real() != 0.0 || D.imag() != 0.0) {
             y = expm1(-D*t)/(2.0*D);
         }
-        else
+        else {
             y = -0.5*t;
+}
 
         const std::complex<Real> A
             = kappa*theta/sigma2*(r*t - 2.0*log1p(-r*y));
@@ -750,7 +754,7 @@ namespace QuantLib {
 
             const Real scalingFactor = (cpxLog_ != OptimalCV && cpxLog_ != AsymptoticChF)
                 ? std::max(0.25, std::min(1000.0, 0.25/std::sqrt(0.5*vAvg*maturity)))
-                : Real(1.0);
+                : static_cast<Real>(1.0);
 
             const Real h_cv =
                 fwd/M_PI*integration_->calculate(c_inf, cvHelper, uM, scalingFactor);

@@ -76,8 +76,8 @@ namespace QuantLib {
         for (Size i = 0; i < nStrikes_; ++i) {
             const Real K = kMin + (kMax - kMin) * i / (nStrikes_ - 1);
             const Real c = std::clamp(
-                Real(1.0 - smile_->digitalOptionPrice(K, Option::Call, 1.0)),
-                Real(0.0), Real(1.0));
+                static_cast<Real>(1.0 - smile_->digitalOptionPrice(K, Option::Call, 1.0)),
+                static_cast<Real>(0.0), static_cast<Real>(1.0));
             const Real cMono = std::max(c, lastCdf);
             if (cMono - lastCdf > dedupTol) {
                 strikes_.push_back(K);

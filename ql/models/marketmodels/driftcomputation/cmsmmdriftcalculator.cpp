@@ -73,7 +73,7 @@ namespace QuantLib {
 
     void CMSMMDriftCalculator::compute(const CMSwapCurveState& cs,
                                        std::vector<Real>& drifts) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(drifts.size()==cs.numberOfRates(),
                    "drifts.size() <> numberOfRates");
         #endif

@@ -40,6 +40,7 @@
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/timegrid.hpp>
@@ -317,7 +318,7 @@ namespace QuantLib {
 
         Time tIdx=0.0;
         std::vector<Time> times(1, tIdx);
-        times.reserve(Size(T*params_.tMinStepsPerYear));
+        times.reserve(static_cast<Size>(T*params_.tMinStepsPerYear));
         while (tIdx < T) {
             const Real decayFactor = std::exp(-params_.tStepNumberDecay*tIdx);
             const Time dt = maxDt*decayFactor + minDt*(1.0-decayFactor);
@@ -329,8 +330,8 @@ namespace QuantLib {
             times.push_back(dc.yearFraction(referenceDate, mandatoryDate));
         }
 
-        const ext::shared_ptr<TimeGrid> timeGrid(
-            new TimeGrid(times.begin(), times.end()));
+        const ext::shared_ptr<TimeGrid> timeGrid = ext::make_shared<TimeGrid>(
+            times.begin(), times.end());
 
         // build 1d meshers
         const LocalVolRNDCalculator localVolRND(
@@ -371,8 +372,9 @@ namespace QuantLib {
                         : timeGrid->back(),
                     vGrid, v0, params_));
             }
-            else
+            else {
                 vMesher.push_back(vMesher.back());
+}
         }
 
         // start probability distribution
@@ -383,7 +385,7 @@ namespace QuantLib {
         const Volatility lv0
             = localVol_->localVol(0.0, spot->value())/std::sqrt(v0);
 
-        ext::shared_ptr<Matrix> L(new Matrix(xGrid, timeGrid->size()));
+        ext::shared_ptr<Matrix> L = ext::make_shared<Matrix>(xGrid, timeGrid->size());
 
         const Real l0 = lv0;
         std::fill(L->column_begin(0),L->column_end(0), l0);
@@ -429,8 +431,8 @@ namespace QuantLib {
 
             if (   mesher->getFdm1dMeshers()[0] != xMesher[i]
                 || mesher->getFdm1dMeshers()[1] != vMesher[i]) {
-                const ext::shared_ptr<FdmMesherComposite> newMesher(
-                    new FdmMesherComposite(xMesher[i], vMesher[i]));
+                const ext::shared_ptr<FdmMesherComposite> newMesher = ext::make_shared<FdmMesherComposite>(
+                    xMesher[i], vMesher[i]);
 
                 p = reshapePDF<Bilinear>(p, mesher, newMesher);
                 mesher = newMesher;
@@ -479,7 +481,7 @@ namespace QuantLib {
                     const Volatility localVol = localVol_->localVol(t, x[j]);
 
                     const Real l = (scale >= 0.0)
-                      ? localVol*std::sqrt(scale) : Real(1.0);
+                      ? localVol*std::sqrt(scale) : static_cast<Real>(1.0);
 
                     (*L)[j][i] = std::min(50.0, std::max(0.001, l));
 

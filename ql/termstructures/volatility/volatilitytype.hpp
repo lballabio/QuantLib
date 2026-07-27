@@ -39,7 +39,7 @@ namespace QuantLib {
           case ShiftedLognormal:
             return out << "ShiftedLognormal";
           default:
-            return out << "Unknown volatility type (" << Integer(t) << ")";
+            return out << "Unknown volatility type (" << static_cast<Integer>(t) << ")";
         }
     }
 

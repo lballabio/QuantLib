@@ -104,7 +104,7 @@ namespace QuantLib {
         // Haug arbitrary criterium is:
         //for (i=0; i<11; i++) {
         for (i=0;  (lastContribution>relativeAccuracy_ && i<maxIterations_) 
-                 || i < Size(lambda*t); i++) {
+                 || i < static_cast<Size>(lambda*t); i++) {
 
             // constant vol/rate assumption. It should be relaxed
             v = std::sqrt((variance + i*jumpSquareVol)/t);
@@ -116,7 +116,7 @@ namespace QuantLib {
             baseArguments->validate();
             baseEngine.calculate();
 
-            weight = p(Size(i));
+            weight = p((i));
             results_.value       += weight * baseResults->value;
             results_.delta       += weight * baseResults->delta;
             results_.gamma       += weight * baseResults->gamma;
@@ -129,7 +129,7 @@ namespace QuantLib {
             results_.theta += weight *(baseResults->theta + theta_correction +
                                   lambda*baseResults->value);
             if(i != 0){
-                 results_.theta -= (p(Size(i-1))*lambda* baseResults->value);
+                 results_.theta -= (p((i-1))*lambda* baseResults->value);
             }
             //end theta calculation
             results_.rho         += weight * baseResults->rho;

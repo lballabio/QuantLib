@@ -133,7 +133,7 @@ namespace QuantLib {
         }
       private:
         Real sign(Real a, Real b) const {
-            return b >= 0.0 ? Real(std::fabs(a)) : Real(-std::fabs(a));
+            return b >= 0.0 ? static_cast<Real>(std::fabs(a)) : static_cast<Real>(-std::fabs(a));
         }
     };
 

@@ -22,6 +22,7 @@
 */
 
 #include <ql/math/functional.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <ql/models/equity/hestonslvmcmodel.hpp>
 #include <ql/processes/hestonslvprocess.hpp>
@@ -64,7 +65,7 @@ namespace QuantLib {
         gridTimes.push_back(dc.yearFraction(refDate, endDate));
 
         timeGrid_ = ext::make_shared<TimeGrid>(gridTimes.begin(), gridTimes.end(),
-                std::max(Size(2), Size(gridTimes.back()*timeStepsPerYear)));
+                std::max(static_cast<Size>(2), static_cast<Size>(gridTimes.back()*timeStepsPerYear)));
     }
 
     ext::shared_ptr<HestonProcess> HestonSLVMCModel::hestonProcess() const {
@@ -95,7 +96,7 @@ namespace QuantLib {
         const Volatility lv0
             = localVol_->localVol(0.0, spot->value())/std::sqrt(v0);
 
-        const ext::shared_ptr<Matrix> L(new Matrix(nBins_, timeGrid_->size()));
+        const ext::shared_ptr<Matrix> L = ext::make_shared<Matrix>(nBins_, timeGrid_->size());
 
         std::vector<ext::shared_ptr<std::vector<Real> > >
             vStrikes(timeGrid_->size());
@@ -105,7 +106,7 @@ namespace QuantLib {
 
             vStrikes[i] = ext::make_shared<std::vector<Real> >(nBins_);
 
-            for (Integer j=0; j < Integer(nBins_); ++j)
+            for (Integer j=0; j < static_cast<Integer>(nBins_); ++j)
                 vStrikes[i]->at(j) = spot->value() + (j - u)*dx;
         }
 

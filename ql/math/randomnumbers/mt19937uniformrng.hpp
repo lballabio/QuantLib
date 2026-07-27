@@ -54,7 +54,7 @@ namespace QuantLib {
         sample_type next() const { return {nextReal(), 1.0}; }
         //! return a random number in the (0.0, 1.0)-interval
         Real nextReal() const {
-            return (Real(nextInt32()) + 0.5)/4294967296.0;
+            return (static_cast<Real>(nextInt32()) + 0.5)/4294967296.0;
         }
         //! return a random integer in the [0,0xffffffff]-interval
         unsigned long nextInt32() const  {

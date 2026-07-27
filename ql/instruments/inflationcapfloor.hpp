@@ -133,8 +133,8 @@ namespace QuantLib {
     class YoYInflationCapFloor::arguments
         : public virtual PricingEngine::arguments {
       public:
-        arguments() : type(YoYInflationCapFloor::Type(-1)) {}
-        YoYInflationCapFloor::Type type;
+        arguments()  {}
+        YoYInflationCapFloor::Type type = YoYInflationCapFloor::Type(-1);
         ext::shared_ptr<YoYInflationIndex> index;
         Period observationLag;
         std::vector<Date> startDates;

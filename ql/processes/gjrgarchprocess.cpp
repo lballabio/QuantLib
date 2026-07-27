@@ -60,7 +60,7 @@ namespace QuantLib {
         const Real q2 = 1.0 + lambda_*lambda_;
         const Real q3 = lambda_*n + N + lambda_*lambda_*N;
         const Real vol = (x[1] > 0.0) ? std::sqrt(x[1])
-                         : (discretization_ == Reflection) ? Real(-std::sqrt(-x[1]))
+                         : (discretization_ == Reflection) ? static_cast<Real>(-std::sqrt(-x[1]))
                          : 0.0;
 
         return {
@@ -94,7 +94,7 @@ namespace QuantLib {
         const Real sigma13 = -2.0*n - 2*lambda_*N;
         const Real sigma23 = 2.0*N + sigma12*sigma13;
         const Real vol = (x[1] > 0.0) ? std::sqrt(x[1])
-                         : (discretization_ == Reflection) ? Real(- std::sqrt(-x[1]))
+                         : (discretization_ == Reflection) ? static_cast<Real>(- std::sqrt(-x[1]))
                          : 1e-8; // set vol to (almost) zero but still
                                  // expose some correlation information
         const Real rho1 = std::sqrt(daysPerYear_)*(alpha_*sigma12 
@@ -147,7 +147,7 @@ namespace QuantLib {
           //  stochastic volatility models",
           // Working Paper, Tinbergen Institute
           case PartialTruncation:
-            vol = (x0[1] > 0.0) ? Real(std::sqrt(x0[1])) : 0.0;
+            vol = (x0[1] > 0.0) ? static_cast<Real>(std::sqrt(x0[1])) : 0.0;
             mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
                   - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
                     - 0.5 * vol * vol;
@@ -158,7 +158,7 @@ namespace QuantLib {
             retVal[1] = x0[1] + nu*dt + sdt*vol*vol*(rho1*dw[0] + rho2*dw[1]);
             break;
           case FullTruncation:
-            vol = (x0[1] > 0.0) ? Real(std::sqrt(x0[1])) : 0.0;
+            vol = (x0[1] > 0.0) ? static_cast<Real>(std::sqrt(x0[1])) : 0.0;
             mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
                   - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
                     - 0.5 * vol * vol;

@@ -35,8 +35,8 @@ namespace QuantLib {
                 sumu += u[j];
                 sumu2 += u[j]*u[j];
             }
-            Real s = std::sqrt(sumu2/(Real)size_ - sumu*sumu / (Real) size_ /
-                               (Real) (size_+1));
+            Real s = std::sqrt(sumu2/static_cast<Real>(size_) - sumu*sumu / static_cast<Real>(size_) /
+                               static_cast<Real>(size_+1));
             retval[cur->first] = s;
             ++cur;
         }

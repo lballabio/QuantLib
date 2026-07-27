@@ -111,7 +111,7 @@ namespace QuantLib {
                 const Real h = 0.0001; // finite difference step in $y$, make
                                        // this a parameter of the engine ?
                 Real zSpreadDsc =
-                    oas_.empty() ? Real(1.0)
+                    oas_.empty() ? static_cast<Real>(1.0)
                                  : exp(-oas_->value() *
                                        onefactormodel_->termStructure()
                                            ->dayCounter()
@@ -188,10 +188,10 @@ namespace QuantLib {
 
                 Real maturity = fabs(solution[1]);
 
-                Size years = (Size)std::floor(maturity);
-                maturity -= (Real)years;
+                Size years = static_cast<Size>(std::floor(maturity));
+                maturity -= static_cast<Real>(years);
                 maturity *= 12.0;
-                Size months = (Size)std::floor(maturity + 0.5);
+                Size months = static_cast<Size>(std::floor(maturity + 0.5));
                 if (years == 0 && months == 0)
                     months = 1; // ensure a maturity of at least one months
                 // maturity -= (Real)months; maturity *= 365.25;

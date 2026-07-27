@@ -97,7 +97,7 @@ namespace QuantLib {
         Real tot = 0, term = 0;
         for (Size i = 1 ; i < maxIteration ; ++i)
         {
-           Real term1 = (lo_alpha-std::pow(-1.0, (int)i)*hi_alpha) /
+           Real term1 = (lo_alpha-std::pow(-1.0, static_cast<int>(i))*hi_alpha) /
                               (std::pow(alpha,2)+std::pow(i*PI/Z, 2));
            Real term2 = std::sin(i*PI/Z * std::log(spot/barrier_lo));
            Real term3 = std::exp(-0.5*(std::pow(i*PI/Z,2)-beta)*variance);
@@ -109,9 +109,9 @@ namespace QuantLib {
         // poor, see for example Hui "One-touch double barrier binary option value")
         QL_REQUIRE(std::fabs(term) < requiredConvergence, "serie did not converge sufficiently fast");
 
-        if (barrierType == DoubleBarrier::KnockOut)
+        if (barrierType == DoubleBarrier::KnockOut) {
            return std::max(tot, 0.0); // KO
-        else {
+        } else {
            Rate discount = process_->riskFreeRate()->discount(
                                              arguments_.exercise->lastDate());
            QL_REQUIRE(discount>0.0,

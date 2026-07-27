@@ -125,11 +125,11 @@ namespace QuantLib {
             index++;
         }
 
-        return Real(index-1);
+        return static_cast<Real>(index-1);
     }
 
     inline Real InverseCumulativePoisson::calcSummand(BigNatural index) const {
-        return std::exp(-lambda_) * std::pow(lambda_, Integer(index)) /
+        return std::exp(-lambda_) * std::pow(lambda_, static_cast<Integer>(index)) /
             Factorial::get(index);
     }
 

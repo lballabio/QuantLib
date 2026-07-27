@@ -48,8 +48,8 @@ namespace QuantLib {
                    "(risk-free discount factor: " << riskFreeDiscount << ")");
 
         // Calculation of seed value, Si
-        Real n= 2.0*std::log(dividendDiscount/riskFreeDiscount)/(variance);
-        Real m=-2.0*std::log(riskFreeDiscount)/(variance);
+        Real n= 2.0*std::log(dividendDiscount/riskFreeDiscount)/variance;
+        Real m=-2.0*std::log(riskFreeDiscount)/variance;
         Real bT = std::log(dividendDiscount/riskFreeDiscount);
 
         Real qu, Su, h, Si;
@@ -81,7 +81,7 @@ namespace QuantLib {
             std::sqrt(variance);
         CumulativeNormalDistribution cumNormalDist;
         Real K = (!close(riskFreeDiscount, 1.0, 1000))
-                ? Real(-2.0*std::log(riskFreeDiscount)
+                ? static_cast<Real>(-2.0*std::log(riskFreeDiscount)
                    / (variance*(1.0-riskFreeDiscount)))
                  : 2.0/variance;
         Real temp = blackFormula(payoff->optionType(), payoff->strike(),
@@ -203,7 +203,7 @@ namespace QuantLib {
                 /std::sqrt(variance);
             Real n = 2.0*std::log(dividendDiscount/riskFreeDiscount)/variance;
             Real K = (!close(riskFreeDiscount, 1.0, 1000))
-                    ? Real(-2.0*std::log(riskFreeDiscount)
+                    ? static_cast<Real>(-2.0*std::log(riskFreeDiscount)
                        / (variance*(1.0-riskFreeDiscount)))
                      : 2.0/variance;
             Real Q, a;

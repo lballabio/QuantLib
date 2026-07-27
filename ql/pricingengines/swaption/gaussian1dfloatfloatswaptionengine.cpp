@@ -227,7 +227,7 @@ namespace QuantLib {
                 Real price = 0.0, pricea = 0.0;
                 if (event1Time != Null<Real>()) {
                     Real zSpreadDf = oas_.empty()
-                                         ? Real(1.0)
+                                         ? static_cast<Real>(1.0)
                                          : std::exp(-oas_->value() *
                                                     (event1Time - event0Time));
                     Array yg =
@@ -342,7 +342,7 @@ namespace QuantLib {
                         if (event1Time != Null<Real>()) {
                             Real zSpreadDf =
                                 oas_.empty()
-                                    ? Real(1.0)
+                                    ? static_cast<Real>(1.0)
                                     : std::exp(-oas_->value() *
                                                (event1Time - event0Time));
                             Array yg = model_->yGrid(
@@ -437,7 +437,7 @@ namespace QuantLib {
                                  arguments_.leg1FixingDates.begin();
                         Real zSpreadDf =
                             oas_.empty()
-                                ? Real(1.0)
+                                ? static_cast<Real>(1.0)
                                 : std::exp(
                                       -oas_->value() *
                                       (model_->termStructure()
@@ -505,8 +505,9 @@ namespace QuantLib {
                                 j++;
                                 done =
                                     (event0 != arguments_.leg1FixingDates[j]);
-                            } else
+                            } else {
                                 done = true;
+}
 
                         } while (!done);
                     }
@@ -521,7 +522,7 @@ namespace QuantLib {
                                  arguments_.leg2FixingDates.begin();
                         Real zSpreadDf =
                             oas_.empty()
-                                ? Real(1.0)
+                                ? static_cast<Real>(1.0)
                                 : std::exp(
                                       -oas_->value() *
                                       (model_->termStructure()
@@ -582,8 +583,9 @@ namespace QuantLib {
                                 j++;
                                 done =
                                     (event0 != arguments_.leg2FixingDates[j]);
-                            } else
+                            } else {
                                 done = true;
+}
 
                         } while (!done);
                     }
@@ -601,7 +603,7 @@ namespace QuantLib {
                             rebateDate = rebatedExercise_->rebatePaymentDate(j);
                             zSpreadDf =
                                 oas_.empty()
-                                    ? Real(1.0)
+                                    ? static_cast<Real>(1.0)
                                     : std::exp(-oas_->value() *
                                                (model_->termStructure()
                                                     ->dayCounter()
@@ -621,7 +623,7 @@ namespace QuantLib {
                                 // the no call probability
                                 npvp0.back()[k] =
                                     probabilities_ == Naive
-                                        ? Real(1.0)
+                                        ? static_cast<Real>(1.0)
                                         : 1.0 / (model_->zerobond(
                                                      event0Time, 0.0, 0.0,
                                                      discountCurve_) *
@@ -632,7 +634,7 @@ namespace QuantLib {
                             if (exerciseValue >= npv0[k]) {
                                 npvp0[exIdx-1][k] =
                                     probabilities_ == Naive
-                                        ? Real(1.0)
+                                        ? static_cast<Real>(1.0)
                                         : 1.0 / (model_->zerobond(
                                                      event0Time, 0.0, 0.0,
                                                      discountCurve_) *

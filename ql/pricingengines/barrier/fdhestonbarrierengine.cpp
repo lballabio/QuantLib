@@ -184,7 +184,7 @@ namespace QuantLib {
             const Size xGridMin = 20;
             const Size vGridMin = 10;
             const Size rebateDampingSteps 
-                = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
+                = (dampingSteps_ > 0) ? std::min(static_cast<Size>(1), dampingSteps_/2) : 0; 
             rebateOption.setPricingEngine(
                 ext::make_shared<FdHestonRebateEngine>(*model_, dividends_,
                                                        tGrid_,

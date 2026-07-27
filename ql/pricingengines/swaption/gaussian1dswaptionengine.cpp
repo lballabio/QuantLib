@@ -119,7 +119,7 @@ namespace QuantLib {
 #endif
 
 #pragma omp parallel for default(shared) firstprivate(p) if(expiry0>settlement)
-            for (long k = 0; k < (expiry0 > settlement ? (long)npv0.size() : 1);
+            for (long k = 0; k < (expiry0 > settlement ? static_cast<long>(npv0.size()) : 1);
                  k++) {
 
                 Real price = 0.0;
@@ -287,7 +287,7 @@ namespace QuantLib {
                                           // the no call probability
                             npvp0.back()[k] =
                                 probabilities_ == Naive
-                                    ? Real(1.0)
+                                    ? static_cast<Real>(1.0)
                                     : 1.0 / (model_->zerobond(expiry0Time, 0.0,
                                                               0.0,
                                                               discountCurve_) *
@@ -296,7 +296,7 @@ namespace QuantLib {
                         if (exerciseValue >= npv0[k]) {
                             npvp0[idx - minIdxAlive][k] =
                                 probabilities_ == Naive
-                                    ? Real(1.0)
+                                    ? static_cast<Real>(1.0)
                                     : 1.0 /
                                           (model_->zerobond(expiry0Time, 0.0,
                                                             0.0,

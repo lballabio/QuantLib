@@ -66,8 +66,9 @@ namespace QuantLib {
                        "Displacement used for stripping and provided for "
                        "pricing differ. Model displacement was : "
                            << vol_->displacement());
-        } else
+        } else {
             displacement_ = vol_->displacement();
+}
         registerWith(discountCurve_);
         registerWith(vol_);
     }
@@ -130,7 +131,7 @@ namespace QuantLib {
                         floorletVega = blackFormulaStdDevDerivative(strike,
                             forward, stdDevs[i], discountedAccrual, displacement_) 
                             * sqrtTime;
-                        floorletDelta = Integer(Option::Put) * blackFormulaAssetItmProbability(
+                        floorletDelta = static_cast<Integer>(Option::Put) * blackFormulaAssetItmProbability(
                                                         Option::Put, strike, forward, 
                                                         stdDevs[i], displacement_);
                     }

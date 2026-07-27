@@ -36,8 +36,8 @@ namespace QuantLib {
                          ext::shared_ptr<LocalVolTermStructure> leverageFct,
                          Real mixingFactor = 1.0);
 
-        Size size() const override { return Size(2); }
-        Size factors() const override { return Size(2); }
+        Size size() const override { return static_cast<Size>(2); }
+        Size factors() const override { return static_cast<Size>(2); }
 
         void update() override;
 

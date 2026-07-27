@@ -137,8 +137,8 @@ namespace QuantLib {
     //! %Arguments for cap/floor calculation
     class CapFloor::arguments : public virtual PricingEngine::arguments {
       public:
-        arguments() : type(CapFloor::Type(-1)) {}
-        CapFloor::Type type;
+        arguments()  = default;
+        CapFloor::Type type = CapFloor::Type(-1);
         std::vector<Date> startDates;
         std::vector<Date> fixingDates;
         std::vector<Date> endDates;

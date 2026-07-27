@@ -38,7 +38,7 @@ namespace QuantLib::detail {
             Tracing();  // NOLINT(modernize-use-equals-delete)
           public:
             void enable() {
-                #if defined(QL_ENABLE_TRACING)
+                #ifdef QL_ENABLE_TRACING
                 enabled_ = true;
                 #else
                 QL_FAIL("tracing support not available");
@@ -211,7 +211,7 @@ namespace QuantLib::detail {
 
 /*! @} */
 
-#if defined(QL_ENABLE_TRACING)
+#ifdef QL_ENABLE_TRACING
 
 #define QL_DEFAULT_TRACER   QuantLib::detail::Tracing::instance()
 

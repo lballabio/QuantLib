@@ -66,7 +66,7 @@ namespace QuantLib {
 
         // 1st character needs to represent the correct month
         const boost::string_view validMonthCodes = mainCycle ? "HMUZ" : All_MONTH_CODES;
-        return validMonthCodes.find(std::toupper(in[0])) != boost::string_view::npos;
+        return validMonthCodes.contains(std::toupper(in[0]));
     }
 
     std::string ASX::code(const Date& date) {
@@ -126,7 +126,7 @@ namespace QuantLib {
         Size offset = mainCycle ? 3 : 1;
         Size skipMonths = offset-(m%offset);
         if (skipMonths != offset || refDate.dayOfMonth() > 14) {
-            skipMonths += Size(m);
+            skipMonths += static_cast<Size>(m);
             if (skipMonths<=12) {
                 m = QuantLib::Month(skipMonths);
             } else {

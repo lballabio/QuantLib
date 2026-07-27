@@ -87,7 +87,7 @@ namespace QuantLib {
         Real futureWeight = 1.0-pastWeight;
 
         Time timeSum = std::accumulate(fixingTimes.begin(),
-                                       fixingTimes.end(), Real(0.0));
+                                       fixingTimes.end(), static_cast<Real>(0.0));
 
         Volatility vola = process_->blackVolatility()->blackVol(
                                               arguments_.exercise->lastDate(),

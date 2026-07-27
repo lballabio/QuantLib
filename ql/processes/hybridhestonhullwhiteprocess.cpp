@@ -112,7 +112,7 @@ namespace QuantLib {
         const Real sigma     = hullWhiteProcess_->sigma();
         const Real rho       = corrEquityShortRate_;
         const Real xi        = hestonProcess_->rho();
-        const Volatility eta = (x0[1] > 0.0) ? Real(std::sqrt(x0[1])) : 0.0;
+        const Volatility eta = (x0[1] > 0.0) ? static_cast<Real>(std::sqrt(x0[1])) : 0.0;
         const Time s = t0;
         const Time t = t0 + dt;
         const Time T = T_;
@@ -190,8 +190,9 @@ namespace QuantLib {
             const Real vol = eta*std::sqrt(dt)*dw[0];
             retVal[0] = x0[0]*std::exp(mu + vol);            
         }
-        else
+        else {
             QL_FAIL("unknown discretization scheme");
+}
 
         return retVal;
     }

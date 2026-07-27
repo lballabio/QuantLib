@@ -185,7 +185,7 @@ namespace QuantLib {
                                                     bool includeLast) const {
         return (from < to) ? daysBetweenImpl(*this, from, to, includeFirst, includeLast) :
                (from > to) ? -daysBetweenImpl(*this, to, from, includeLast, includeFirst) :
-               Date::serial_type(includeFirst && includeLast && isBusinessDay(from));
+               static_cast<Date::serial_type>(includeFirst && includeLast && isBusinessDay(from));
     }
 
 

@@ -508,7 +508,7 @@ namespace QuantLib {
 
                     Real integral = 0.0;
 
-                    if (j == (int)(y_.size() - 1)) {
+                    if (j == static_cast<int>(y_.size() - 1)) {
                         if ((modelSettings_.adjustments_ &
                              ModelSettings::NoPayoffExtrapolation) == 0) {
                             if ((modelSettings_.adjustments_ &
@@ -566,7 +566,7 @@ namespace QuantLib {
                             i->first, i->second, digital, swapRate0,
                             i->second.rawSmileSection_->shift());
                     }
-                    if (check && j < (int)y_.size() - 1 &&
+                    if (check && j < static_cast<int>(y_.size()) - 1 &&
                         swapRate > swapRate0) {
                         QL_MFMESSAGE(
                             modelOutputs_,
@@ -653,7 +653,7 @@ namespace QuantLib {
                     modelPut, marketVega, marketRawCall, marketRawPut;
                 for (Size j = 0; j < money.size(); j++) {
                     strikes.push_back(sec->volatilityType() == Normal ?
-                                          Real(calibrationPoint.second.atm_ + money[j]) :
+                                          static_cast<Real>(calibrationPoint.second.atm_ + money[j]) :
                                           money[j] * (calibrationPoint.second.atm_ + shift) -
                                               shift);
                     try {
@@ -779,7 +779,7 @@ namespace QuantLib {
 
         Array ya(1, y);
         return numeraireArray(t, ya)[0] *
-               (yts.empty() ? Real(1.0)
+               (yts.empty() ? static_cast<Real>(1.0)
                             : (yts->discount(numeraireTime()) /
                                yts->discount(t) * termStructure()->discount(t) /
                                termStructure()->discount(numeraireTime())));
@@ -794,7 +794,7 @@ namespace QuantLib {
                                : yts->discount(T, true);
         Array ya(1, y);
         return zerobondArray(T, t, ya)[0] *
-               (yts.empty() ? Real(1.0) : (yts->discount(T) / yts->discount(t) *
+               (yts.empty() ? static_cast<Real>(1.0) : (yts->discount(T) / yts->discount(t) *
                                      termStructure()->discount(t) /
                                      termStructure()->discount(T)));
     }

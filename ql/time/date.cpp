@@ -41,7 +41,7 @@
 #endif
 #endif
 
-#if defined(BOOST_NO_STDC_NAMESPACE)
+#ifdef BOOST_NO_STDC_NAMESPACE
     namespace std { using ::time; using ::time_t; using ::tm;
                     using ::gmtime; using ::localtime; }
 #endif
@@ -56,7 +56,7 @@ namespace QuantLib {
 #ifndef QL_HIGH_RESOLUTION_DATE
     // constructors
     Date::Date()
-    : serialNumber_(Date::serial_type(0)) {}
+    : serialNumber_(static_cast<Date::serial_type>(0)) {}
 
     Date::Date(Date::serial_type serialNumber)
     : serialNumber_(serialNumber) {
@@ -144,7 +144,7 @@ namespace QuantLib {
             return date + 7*n;
           case Months: {
             Day d = date.dayOfMonth();
-            Integer m = Integer(date.month())+n;
+            Integer m = static_cast<Integer>(date.month())+n;
             Year y = date.year();
             while (m > 12) {
                 m -= 12;
@@ -788,10 +788,10 @@ namespace QuantLib {
     Date Date::todaysDate() {
         std::time_t t;
 
-        if (std::time(&t) == std::time_t(-1)) // -1 means time() didn't work
+        if (std::time(&t) == static_cast<std::time_t>(-1)) // -1 means time() didn't work
             return {};
         std::tm *lt = std::localtime(&t);
-        return {Day(lt->tm_mday), Month(lt->tm_mon + 1), Year(lt->tm_year + 1900)};
+        return {static_cast<Day>(lt->tm_mday), Month(lt->tm_mon + 1), static_cast<Year>(lt->tm_year + 1900)};
     }
 
     Date Date::nextWeekday(const Date& d, Weekday dayOfWeek) {
@@ -807,7 +807,7 @@ namespace QuantLib {
                    "no more than 5 weekday in a given (month, year)");
         Weekday first = Date(1, m, y).weekday();
         Size skip = nth - (dayOfWeek>=first ? 1 : 0);
-        return {Day((1 + dayOfWeek + skip * 7) - first), m, y};
+        return {static_cast<Day>((1 + dayOfWeek + skip * 7) - first), m, y};
     }
 
     // month formatting
@@ -898,7 +898,7 @@ namespace QuantLib {
                 out << "null date";
             } else {
                 FormatResetter resetter(out);
-                Integer dd = d.dayOfMonth(), mm = Integer(d.month()),
+                Integer dd = d.dayOfMonth(), mm = static_cast<Integer>(d.month()),
                         yyyy = d.year();
                 char filler = out.fill();
                 out << std::setw(2) << std::setfill('0') << mm << "/";
@@ -930,7 +930,7 @@ namespace QuantLib {
                 out << "null date";
             } else {
                 FormatResetter resetter(out);
-                Integer dd = d.dayOfMonth(), mm = Integer(d.month()),
+                Integer dd = d.dayOfMonth(), mm = static_cast<Integer>(d.month()),
                         yyyy = d.year();
                 out << yyyy << "-";
                 out << std::setw(2) << std::setfill('0') << mm << "-";

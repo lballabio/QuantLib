@@ -162,7 +162,7 @@ namespace QuantLib {
             Real S2 = capletVariance/theta - constQuadraticTerm;
 
             // if S2 < 0, there are no solutions so we take the best we can. 
-            Real S = S2 > 0 ? Real(std::sqrt(S2)) : 0;
+            Real S = S2 > 0 ? static_cast<Real>(std::sqrt(S2)) : 0;
 
             Real R = std::sqrt(thisSwapVariance);
 
@@ -215,11 +215,12 @@ namespace QuantLib {
                         Z2,
                         Z3);
                 }
-                else
+                else {
                     optimizer.findByProjection(
                     Z1,
                     Z2,
                     Z3);
+}
             }
 
             Array rotatedSolution(capletNumber+2,0.0);

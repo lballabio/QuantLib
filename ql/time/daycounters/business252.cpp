@@ -110,7 +110,7 @@ namespace QuantLib {
             d = Date(1,d1.month(),d1.year()) + 1*Months;
             total += calendar_.businessDaysBetween(d1, d);
             // ...then we add any remaining months, possibly cached
-            for (Integer m = Integer(d1.month())+1; m <= 12; ++m) {
+            for (Integer m = static_cast<Integer>(d1.month())+1; m <= 12; ++m) {
                 total += businessDays(cache, calendar_,
                                       Month(m), d.year());
             }
@@ -123,7 +123,7 @@ namespace QuantLib {
             }
             // finally, we get to the end of the period.
             // First, we add whole months...
-            for (Integer m = 1; m<Integer(d2.month()); ++m) {
+            for (Integer m = 1; m<static_cast<Integer>(d2.month()); ++m) {
                 total += businessDays(cache, calendar_,
                                       Month(m), d2.year());
             }

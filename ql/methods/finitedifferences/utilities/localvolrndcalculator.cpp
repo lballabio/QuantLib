@@ -248,7 +248,7 @@ namespace QuantLib {
         QL_REQUIRE(x.size() > 10, "x grid is too small. "
                                   "Minimum size is greater than 10");
 
-        const Size b = std::max(Size(1), Size(x.size()*0.04));
+        const Size b = std::max(static_cast<Size>(1), static_cast<Size>(x.size()*0.04));
 
         ext::shared_ptr<DouglasScheme> evolver(
             new DouglasScheme(0.5,

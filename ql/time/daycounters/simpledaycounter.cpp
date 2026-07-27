@@ -43,7 +43,7 @@ namespace QuantLib {
             (dm1 < dm2 && Date::isEndOfMonth(d1))) {
 
             return (d2.year()-d1.year()) +
-                (Integer(d2.month())-Integer(d1.month()))/12.0;
+                (static_cast<Integer>(d2.month())-static_cast<Integer>(d1.month()))/12.0;
 
         } else {
             return fallback.yearFraction(d1,d2);

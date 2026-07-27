@@ -22,7 +22,7 @@
 
 #include <ql/math/array.hpp>
 #include <ql/math/interpolation.hpp>
-#if defined(QL_EXTRA_SAFETY_CHECKS)
+#ifdef QL_EXTRA_SAFETY_CHECKS
 #include <set>
 #endif
 
@@ -48,7 +48,7 @@ namespace QuantLib {
             : Interpolation::templateImpl<I1, I2, UpdatedYInterpolation>(xBegin, xEnd, yBegin),
               n_(std::distance(xBegin, xEnd)),
               lambda_(n_) {
-                #if defined(QL_EXTRA_SAFETY_CHECKS)
+                #ifdef QL_EXTRA_SAFETY_CHECKS
                 QL_REQUIRE(std::set<Real>(xBegin, xEnd).size() == n_,
                         "x values must not contain duplicates");
                 #endif

@@ -54,7 +54,7 @@ namespace QuantLib {
     }
     Size QdFpLegendreScheme::getNumberOfJacobiNewtonFixedPointSteps()
         const {
-        return Size(1);
+        return static_cast<Size>(1);
     }
 
     ext::shared_ptr<Integrator>
@@ -87,7 +87,7 @@ namespace QuantLib {
     }
     Size QdFpTanhSinhIterationScheme::getNumberOfJacobiNewtonFixedPointSteps()
         const {
-        return Size(1);
+        return static_cast<Size>(1);
     }
 
     ext::shared_ptr<Integrator>
@@ -254,8 +254,9 @@ namespace QuantLib {
                         else
                             return 0.0;
                     }
-                    else
+                    else {
                         return df*stv*phi(d(m, b/B(tau-m)).second);
+}
                 }, -1, 1);
             }
             const std::pair<Real, Real> dpm = d(tau, b/K);
@@ -266,19 +267,20 @@ namespace QuantLib {
         const Real alpha = K*std::exp(-(r-q)*tau);
         Real fv;
         if (tau < squared(QL_EPSILON)) {
-            if (close_enough(b, K))
+            if (close_enough(b, K)) {
                 fv = alpha;
-            else if (b > K)
+            } else if (b > K) {
                 fv = 0.0;
-            else {
-                if (close_enough(q, Real(0)))
+            } else {
+                if (close_enough(q, static_cast<Real>(0)))
                     fv = alpha*r*((q < 0)? -1.0 : 1.0)/QL_EPSILON;
                 else
                     fv = alpha*r/q;
             }
         }
-        else
+        else {
             fv = alpha*N/D;
+}
 
         return std::make_tuple(N, D, fv);
     }
@@ -294,8 +296,9 @@ namespace QuantLib {
                     -(0.5*vol2 + r-q) / (b*vol*vol2*sqTau) + 1 / (b*vol*sqTau));
                 Nd = M_1_SQRTPI*M_SQRT_2 * (-0.5*vol2 + r-q)  / (b*vol*vol2*sqTau);
             }
-            else
+            else {
                 Dd = Nd = 0.0;
+}
         }
         else {
             const std::pair<Real, Real> dpm = d(tau, b/K);
@@ -349,10 +352,11 @@ namespace QuantLib {
                         if (close_enough(b, B(u)))
                             return 0.5*df;
                         else
-                            return df*((b < B(u)? 0.0: 1.0));
+                            return df*(b < B(u)? 0.0: 1.0);
                     }
-                    else
+                    else {
                         return df*Phi(d(tau - u, b/B(u)).second);
+}
                 }, 0, tau);
                 di = (*integrator)([&, this](Real u) -> Real {
                 	const Real df = std::exp(q*u);
@@ -360,10 +364,11 @@ namespace QuantLib {
                         if (close_enough(b, B(u)))
                             return 0.5*df;
                         else
-                            return df*((b < B(u)? 0.0: 1.0));
+                            return df*(b < B(u)? 0.0: 1.0);
                     }
-                    else
+                    else {
                         return df*Phi(d(tau - u, b/B(u)).first);
+}
                     }, 0, tau);
             }
 
@@ -376,17 +381,18 @@ namespace QuantLib {
         Real fv;
         const Real alpha = K*std::exp(-(r-q)*tau);
         if (tau < squared(QL_EPSILON)) {
-            if (close_enough(b, K) || b > K)
+            if (close_enough(b, K) || b > K) {
                 fv = alpha;
-            else {
-                if (close_enough(q, Real(0)))
+            } else {
+                if (close_enough(q, static_cast<Real>(0)))
                     fv = alpha*r*((q < 0)? -1.0 : 1.0)/QL_EPSILON;
                 else
                     fv = alpha*r/q;
             }
         }
-        else
+        else {
             fv = alpha*N/D;
+}
 
         return std::make_tuple(N, D, fv);
     }
@@ -445,7 +451,7 @@ namespace QuantLib {
 
         const auto B = [xmax, T, &interp](Real tau) -> Real {
             const Real z = 2*std::sqrt(std::abs(tau)/T)-1;
-            return xmax*std::exp(-std::sqrt(std::max(Real(0), (*interp)(z, true))));
+            return xmax*std::exp(-std::sqrt(std::max(static_cast<Real>(0), (*interp)(z, true))));
         };
 
         const auto h = [=](Real fv) -> Real {
@@ -478,9 +484,9 @@ namespace QuantLib {
                 const Real D = std::get<1>(results);
                 const Real fv = std::get<2>(results);
 
-                if (tau < QL_EPSILON)
+                if (tau < QL_EPSILON) {
                     y[i] = h(fv);
-                else {
+                } else {
                     const std::pair<Real, Real> ndd = eqn->NDd(tau, b);
                     const Real Nd = std::get<0>(ndd);
                     const Real Dd = std::get<1>(ndd);

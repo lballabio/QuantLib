@@ -92,8 +92,9 @@ namespace QuantLib {
             }
             rho[n_][n_] = 1.0;
         }
-        else
+        else {
             rho = rho_;
+}
 
         const Real strike = std::max(0.0, payoff->strike());
 
@@ -102,7 +103,7 @@ namespace QuantLib {
 
         const Size M = std::distance(
             p.begin(),
-            std::lower_bound(p.begin(), p.end(), Real(0),
+            std::lower_bound(p.begin(), p.end(), static_cast<Real>(0),
                 [](const auto& p, const Real& value) -> bool { return std::get<0>(p) > value;}            )
         );
 
@@ -122,11 +123,11 @@ namespace QuantLib {
             }
 
             const Real S0 = std::accumulate(
-                p.begin(), p.begin()+M, Real(0.0),
+                p.begin(), p.begin()+M, static_cast<Real>(0.0),
                 [](const Real& value, const auto& p) -> Real {
                     return value + std::get<0>(p)*std::get<2>(p);
             });
-            const Real F0 = std::accumulate(F.begin(), F.end(), Real(0.0));
+            const Real F0 = std::accumulate(F.begin(), F.end(), static_cast<Real>(0.0));
             const DiscountFactor dq_S0 = F0/S0*dr0;
 
             Real v_s = 0.0;
@@ -170,11 +171,11 @@ namespace QuantLib {
         const Real callValue
             = DengLiZhouBasketEngine::calculate_vanilla_call(Log(_s), dr0, _dq, _v, nRho, strike);
 
-        if (payoff->optionType() == Option::Call)
+        if (payoff->optionType() == Option::Call) {
             results_.value = std::max(0.0, callValue);
-        else {
+        } else {
             const Real fwd = _s[0]*_dq[0] - dr0*strike
-                - std::inner_product(_s.begin()+1, _s.end(), _dq.begin()+1, Real(0.0));
+                - std::inner_product(_s.begin()+1, _s.end(), _dq.begin()+1, static_cast<Real>(0.0));
             results_.value = std::max(0.0, callValue - fwd);
         }
     }
@@ -182,18 +183,18 @@ namespace QuantLib {
     Real DengLiZhouBasketEngine::I(Real u, Real tF2, const Matrix& D, const Matrix& DF, Size i) {
         const Real psi = 1.0/
             (1.0 + std::inner_product(
-                 D.row_begin(i), D.row_end(i), D.row_begin(i), Real(0.0)));
+                 D.row_begin(i), D.row_end(i), D.row_begin(i), static_cast<Real>(0.0)));
         const Real sqrtPsi = std::sqrt(psi);
 
         const Real n_uSqrtPsi = NormalDistribution()(u*sqrtPsi);
         const Real J_0 = CumulativeNormalDistribution()(u*sqrtPsi);
 
         const Real vFv = std::inner_product(
-            DF.row_begin(i), DF.row_end(i), D.row_begin(i), Real(0.0));
+            DF.row_begin(i), DF.row_end(i), D.row_begin(i), static_cast<Real>(0.0));
         const Real J_1 = psi*sqrtPsi*(psi*u*u - 1.0) * vFv * n_uSqrtPsi;
 
         const Real vFFv = std::inner_product(
-            DF.row_begin(i), DF.row_end(i), DF.row_begin(i), Real(0.0));
+            DF.row_begin(i), DF.row_end(i), DF.row_begin(i), static_cast<Real>(0.0));
         const Real J_2 = u*psi*sqrtPsi*n_uSqrtPsi*(
                 2 * tF2
                 + vFv*vFv*(squared(squared(psi*u))
@@ -212,7 +213,7 @@ namespace QuantLib {
         const Array nu = Sqrt(v);
 
         const Real R = std::accumulate(
-            mu.begin()+1, mu.end(), Real(0),
+            mu.begin()+1, mu.end(), static_cast<Real>(0),
             [](Real a, Real b) -> Real { return a + std::exp(b); }
         );
 
@@ -235,7 +236,7 @@ namespace QuantLib {
         for (Size i=1; i <= N; ++i)
             for (Size j=i; j <= N; ++j)
                 E(i-1, j-1) = E(j-1, i-1) =
-                     a*(((i==j)? squared(nu[j])*std::exp(mu[j])/(nu[0]*(R+K)) : Real(0.0))
+                     a*(((i==j)? squared(nu[j])*std::exp(mu[j])/(nu[0]*(R+K)) : static_cast<Real>(0.0))
                         -nu[i]*nu[j]*std::exp(mu[i]+mu[j])/(nu[0]*squared(R + K)) );
 
         const Matrix F = sqSig11*E*sqSig11;
@@ -245,7 +246,7 @@ namespace QuantLib {
             trF += F[i][i];
             trF2 += squared(F[i][i]) +
                  2.0*std::accumulate(
-                     F.row_begin(i)+i+1, F.row_end(i), Real(0),
+                     F.row_begin(i)+i+1, F.row_end(i), static_cast<Real>(0),
                      [](Real a, Real b) -> Real {return a+b*b;}
                  );
         }
@@ -267,7 +268,7 @@ namespace QuantLib {
         for (Size k=1; k < N+1; ++k)
             C[k] = c + trF + nu[k]*sig11d[k-1] + squared(nu[k])
                 * std::inner_product(sig11.row_begin(k-1), sig11.row_end(k-1),
-                                     Esig11.column_begin(k-1), Real(0.0));
+                                     Esig11.column_begin(k-1), static_cast<Real>(0.0));
 
         std::vector<Array> D(N+2);
         D[0] = sqSig11*(d + 2*nu[0]*Esig10);

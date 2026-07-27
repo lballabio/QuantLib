@@ -254,7 +254,7 @@ namespace QuantLib {
         const Real scalingFactor = (scaling_ == Null<Real>())
             ? (analyticCV != AnalyticHestonEngine::AsymptoticChF)
                     ? std::max(0.25, std::min(1000.0, 0.25/std::sqrt(0.5*vAvg*t)))
-                    : Real(1.0)
+                    : static_cast<Real>(1.0)
             : scaling_;
 
         Size n;
@@ -265,8 +265,8 @@ namespace QuantLib {
         }
         else {
             const Real lookup = std::fabs(scalingFactor*freq);
-            n = std::min(Size(moneyness_.size() - 1),
-                    Size(std::distance(moneyness_.begin(),
+            n = std::min(static_cast<Size>(moneyness_.size() - 1),
+                    static_cast<Size>(std::distance(moneyness_.begin(),
                         std::lower_bound(
                             moneyness_.begin(),
                             moneyness_.end(), lookup))));

@@ -52,7 +52,7 @@ namespace QuantLib {
         for (Time i=dt; i<t; i+=dt)
             sum += forwardImpl(i);
         sum += 0.5*forwardImpl(t);
-        return Rate(sum*dt/t);
+        return static_cast<Rate>(sum*dt/t);
     }
 
 }

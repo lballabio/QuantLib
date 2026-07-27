@@ -53,8 +53,9 @@ namespace QuantLib {
         if (isFloating_) {
             registerWith(Settings::instance().evaluationDate());
             referenceDate_ = Settings::instance().evaluationDate();
-        } else
+        } else {
             referenceDate_ = referenceDate;
+}
         SmileSection::initializeExerciseTime();
     }
 
@@ -80,7 +81,7 @@ namespace QuantLib {
         // minstrike, maxstrike interval
         if (volatilityType() == ShiftedLognormal)
             return blackFormula(type,strike,atm, std::fabs(strike+shift()) < QL_EPSILON ?
-                            0.2 : Real(sqrt(variance(strike))),discount,shift());
+                            0.2 : static_cast<Real>(sqrt(variance(strike))),discount,shift());
         else
             return bachelierBlackFormula(type,strike,atm,sqrt(variance(strike)),discount);
     }
@@ -89,7 +90,7 @@ namespace QuantLib {
                                           Option::Type type,
                                           Real discount,
                                           Real gap) const {
-        Real m = volatilityType() == ShiftedLognormal ? Real(-shift()) : -QL_MAX_REAL;
+        Real m = volatilityType() == ShiftedLognormal ? static_cast<Real>(-shift()) : -QL_MAX_REAL;
         Real kl = std::max(strike-gap/2.0,m);
         Real kr = kl+gap;
         return (type==Option::Call ? 1.0 : -1.0) *
@@ -97,7 +98,7 @@ namespace QuantLib {
     }
 
     Real SmileSection::density(Rate strike, Real discount, Real gap) const {
-        Real m = volatilityType() == ShiftedLognormal ? Real(-shift()) : -QL_MAX_REAL;
+        Real m = volatilityType() == ShiftedLognormal ? static_cast<Real>(-shift()) : -QL_MAX_REAL;
         Real kl = std::max(strike-gap/2.0,m);
         Real kr = kl+gap;
         return (digitalOptionPrice(kl,Option::Call,discount,gap) -

@@ -141,7 +141,7 @@ namespace QuantLib {
            inlined.
         */
         static Real tail_value(Real x);
-        #if defined(QL_PATCH_SOLARIS)
+        #ifdef QL_PATCH_SOLARIS
         CumulativeNormalDistribution f_;
         #else
         static const CumulativeNormalDistribution f_;
@@ -277,7 +277,7 @@ namespace QuantLib {
         Real exponent = -(deltax*deltax)/denominator_;
         // debian alpha had some strange problem in the very-low range
         return exponent <= -690.0 ? 0.0 :  // exp(x) < 1.0e-300 anyway
-            Real(normalizationFactor_*std::exp(exponent));
+            static_cast<Real>(normalizationFactor_*std::exp(exponent));
     }
 
     inline Real NormalDistribution::derivative(Real x) const {

@@ -181,12 +181,13 @@ namespace QuantLib {
                 std::copy(cv.begin(), cv.end(), retVal.begin() + cv.size());
 
                 return retVal;
-            } else if (putCostFct_ != nullptr)
+            } else if (putCostFct_ != nullptr) {
                 return putCostFct_->values(sig);
-            else if (callCostFct_ != nullptr)
+            } else if (callCostFct_ != nullptr) {
                 return callCostFct_->values(sig);
-            else
+            } else {
                 QL_FAIL("internal error: cost function not set");
+}
         }
 
         Array initialValues() const {
@@ -429,7 +430,7 @@ namespace QuantLib {
             }
 
             avgError_ +=
-                std::accumulate(vegaDiffs.begin(), vegaDiffs.end(), Real(0.0));
+                std::accumulate(vegaDiffs.begin(), vegaDiffs.end(), static_cast<Real>(0.0));
             minError_ = std::min(minError_,
                 *std::min_element(vegaDiffs.begin(), vegaDiffs.end()));
             maxError_ = std::max(maxError_,

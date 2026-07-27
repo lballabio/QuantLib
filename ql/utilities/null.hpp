@@ -62,10 +62,10 @@ namespace QuantLib {
         constexpr operator T() const {
             if constexpr (std::is_floating_point_v<T>) {
                 // a specific, unlikely value that should fit into any Real
-                return (std::numeric_limits<float>::max)();
+                return std::numeric_limits<float>::max();
             } else if constexpr (std::is_integral_v<T>) {
                 // this should fit into any Integer
-                return (std::numeric_limits<int>::max)();
+                return std::numeric_limits<int>::max();
             } else {
                 return T();
             }

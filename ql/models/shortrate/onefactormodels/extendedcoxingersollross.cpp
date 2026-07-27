@@ -21,6 +21,7 @@
 #include <ql/models/shortrate/onefactormodels/extendedcoxingersollross.hpp>
 #include <ql/methods/lattices/trinomialtree.hpp>
 #include <ql/math/distributions/chisquaredistribution.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -41,8 +42,8 @@ namespace QuantLib {
         ext::shared_ptr<Dynamics> numericDynamics(
                               new Dynamics(phi, theta(), k(), sigma(), x0()));
 
-        ext::shared_ptr<TrinomialTree> trinomial(
-                   new TrinomialTree(numericDynamics->process(), grid, true));
+        ext::shared_ptr<TrinomialTree> trinomial = ext::make_shared<TrinomialTree>(
+                   numericDynamics->process(), grid, true);
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
         ext::shared_ptr<NumericalImpl> impl =
