@@ -22,6 +22,7 @@
 #include <ql/mathconstants.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analyticroughhestonengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -101,7 +102,7 @@ namespace QuantLib {
 
     AnalyticRoughHestonEngine::AnalyticRoughHestonEngine(
         const ext::shared_ptr<RoughHestonModel>& model,
-        const Integration& integration,
+        Integration  integration,
         Size timeSteps,
         Real andersenPiterbargEpsilon,
         Real alpha)
@@ -109,7 +110,7 @@ namespace QuantLib {
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       timeSteps_(timeSteps),
-      integration_(integration),
+      integration_(std::move(integration)),
       andersenPiterbargEpsilon_(andersenPiterbargEpsilon),
       alpha_(alpha) {
         QL_REQUIRE(timeSteps > 0, "at least one time step required");

@@ -456,7 +456,8 @@ BOOST_AUTO_TEST_CASE(testMonotonicityAndBounds) {
     const std::vector<Real> strikes{
         60.0, 70.0, 80.0, 90.0, 100.0, 110.0, 120.0, 130.0, 140.0};
     std::vector<Real> prices;
-    for (Real k : strikes)
+    prices.reserve(strikes.size());
+for (Real k : strikes)
         prices.push_back(engine->priceVanillaPayoff(
             ext::make_shared<PlainVanillaPayoff>(Option::Call, k), t));
 
