@@ -25,6 +25,8 @@
 #define quantlib_basisswapratehelpers_hpp
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
+#include <ql/time/dategenerationrule.hpp>
+#include <optional>
 
 namespace QuantLib {
 
@@ -37,10 +39,6 @@ namespace QuantLib {
         case bootstrapBaseCurve = false and baseIndex will need a
         forecast curve).
         In both cases, an exogenous discount curve is required.
-
-        useIndexedCoupons is useful to decouple the estimated 
-		forward rate end date from the accrual end date.
-		Defaults to a global setting.
     */
     class IborIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -54,7 +52,8 @@ namespace QuantLib {
                                     const ext::shared_ptr<IborIndex>& otherIndex,
                                     Handle<YieldTermStructure> discountHandle,
                                     bool bootstrapBaseCurve,
-                                    const std::optional<bool>& useIndexedCoupons = std::nullopt);
+                                    std::optional<bool> useIndexedCoupons = std::nullopt,
+                                    DateGeneration::Rule rule = DateGeneration::Backward);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -74,6 +73,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountHandle_;
         bool bootstrapBaseCurve_;
         std::optional<bool> useIndexedCoupons_;
+        DateGeneration::Rule rule_;
 
         ext::shared_ptr<Swap> swap_;
 
@@ -97,13 +97,10 @@ namespace QuantLib {
 
         A payment lag can also be passed; it is applied to both legs.
 
-        The payment frequency of each leg can be overridden independently.
-        If not specified, both payment frequencies default to the tenor of
-        the ibor index.
-
-        useIndexedCoupons is useful to decouple the estimated 
-		forward rate end date from the accrual end date.
-		Defaults to a global setting.
+        The payment frequency of each leg can be overridden
+        independently; both default to the tenor of the ibor index.
+        The overnight leg accepts Once, paying a single compounded
+        coupon at maturity; the ibor leg does not.
     */
     class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -120,7 +117,8 @@ namespace QuantLib {
                                          Integer paymentLag = 0,
                                          std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
                                          std::optional<Frequency> iborPaymentFrequency = std::nullopt,
-                                         const std::optional<bool>& useIndexedCoupons = std::nullopt);
+                                         std::optional<bool> useIndexedCoupons = std::nullopt,
+                                         DateGeneration::Rule rule = DateGeneration::Backward);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -143,6 +141,7 @@ namespace QuantLib {
         std::optional<Frequency> overnightPaymentFrequency_;
         std::optional<Frequency> iborPaymentFrequency_;
         std::optional<bool> useIndexedCoupons_;
+        DateGeneration::Rule rule_;
 
         ext::shared_ptr<Swap> swap_;
 

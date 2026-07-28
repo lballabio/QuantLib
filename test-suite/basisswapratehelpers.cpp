@@ -254,6 +254,8 @@ BOOST_AUTO_TEST_CASE(testIborIborIndexedCouponOverride) {
         }
     } settingsRestorer;
 
+    // spot is the last UK business day of the month, so the end-of-month rule
+    // of the index makes the two dates below differ; other dates may not
     Settings::instance().evaluationDate() = Date(27, January, 2010);
     auto calendar = UnitedStates(UnitedStates::GovernmentBond);
     Handle<YieldTermStructure> curve(flatRate(0.01, Actual365Fixed()));
@@ -261,6 +263,8 @@ BOOST_AUTO_TEST_CASE(testIborIborIndexedCouponOverride) {
     auto otherIndex = ext::make_shared<USDLibor>(6 * Months, curve);
     Handle<Quote> basis(ext::make_shared<SimpleQuote>(0.0010));
 
+    // each helper is built against the opposite global setting, so the checks
+    // below can only pass if the override wins
     IborCoupon::Settings::instance().createAtParCoupons();
     IborIborBasisSwapRateHelper indexedHelper(basis, 2 * Years, 2, calendar, Following, false,
                                                baseIndex, otherIndex, curve, false, true);
@@ -318,6 +322,7 @@ BOOST_AUTO_TEST_CASE(testOvernightIborDifferentPaymentFrequencies) {
     BOOST_TEST_MESSAGE(
         "Testing overnight-IBOR basis-swap rate helpers with different payment frequencies...");
 
+    Settings::instance().evaluationDate() = Date(27, January, 2010);
     auto calendar = UnitedStates(UnitedStates::GovernmentBond);
     Handle<YieldTermStructure> curve(flatRate(0.01, Actual365Fixed()));
     auto overnightIndex = ext::make_shared<Sofr>(curve);
@@ -345,6 +350,8 @@ BOOST_AUTO_TEST_CASE(testOvernightIborIndexedCouponOverride) {
         }
     } settingsRestorer;
 
+    // see testIborIborIndexedCouponOverride for the choice of date
+    Settings::instance().evaluationDate() = Date(27, January, 2010);
     auto calendar = UnitedStates(UnitedStates::GovernmentBond);
     Handle<YieldTermStructure> curve(flatRate(0.01, Actual365Fixed()));
     auto overnightIndex = ext::make_shared<Sofr>(curve);
@@ -368,6 +375,46 @@ BOOST_AUTO_TEST_CASE(testOvernightIborIndexedCouponOverride) {
     BOOST_REQUIRE(atParCoupon);
     BOOST_CHECK_EQUAL(indexedCoupon->fixingEndDate(), indexedCoupon->fixingMaturityDate());
     BOOST_CHECK_NE(atParCoupon->fixingEndDate(), atParCoupon->fixingMaturityDate());
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborDateGenerationRule) {
+    BOOST_TEST_MESSAGE(
+        "Testing the date-generation rule of overnight-IBOR basis-swap rate helpers...");
+
+    Settings::instance().evaluationDate() = Date(27, January, 2010);
+    auto calendar = UnitedStates(UnitedStates::GovernmentBond);
+    Handle<YieldTermStructure> curve(flatRate(0.01, Actual365Fixed()));
+    auto overnightIndex = ext::make_shared<Sofr>(curve);
+    auto iborIndex = ext::make_shared<USDLibor>(3 * Months, curve);
+    Handle<Quote> basis(ext::make_shared<SimpleQuote>(0.0010));
+
+    Date spot = calendar.advance(Settings::instance().evaluationDate(), 2, Days);
+
+    // 18M against an annual frequency leaves a six-month stub
+    OvernightIborBasisSwapRateHelper backwardHelper(
+        basis, 18 * Months, 2, calendar, Following, false, overnightIndex, iborIndex, curve, false,
+        0, Annual, Annual, std::nullopt, DateGeneration::Backward);
+
+    OvernightIborBasisSwapRateHelper forwardHelper(
+        basis, 18 * Months, 2, calendar, Following, false, overnightIndex, iborIndex, curve, false,
+        0, Annual, Annual, std::nullopt, DateGeneration::Forward);
+
+    auto firstAccrualEnd = [](const OvernightIborBasisSwapRateHelper& h, Size leg) {
+        return ext::dynamic_pointer_cast<Coupon>(h.swap()->leg(leg).front())->accrualEndDate();
+    };
+
+    for (Size i = 0; i < 2; ++i) {
+        BOOST_CHECK_EQUAL(backwardHelper.swap()->leg(i).size(), 2);
+        BOOST_CHECK_EQUAL(forwardHelper.swap()->leg(i).size(), 2);
+        BOOST_CHECK_EQUAL(firstAccrualEnd(backwardHelper, i),
+                          calendar.adjust(spot + 6 * Months, Following));
+        BOOST_CHECK_EQUAL(firstAccrualEnd(forwardHelper, i),
+                          calendar.adjust(spot + 1 * Years, Following));
+    }
+
+    Date expectedMaturity = calendar.adjust(spot + 18 * Months, Following);
+    BOOST_CHECK_EQUAL(backwardHelper.maturityDate(), expectedMaturity);
+    BOOST_CHECK_EQUAL(forwardHelper.maturityDate(), expectedMaturity);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

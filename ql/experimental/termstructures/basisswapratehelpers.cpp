@@ -37,11 +37,12 @@ namespace QuantLib {
         const ext::shared_ptr<IborIndex>& otherIndex,
         Handle<YieldTermStructure> discountHandle,
         bool bootstrapBaseCurve,
-        const std::optional<bool>& useIndexedCoupons)
+        std::optional<bool> useIndexedCoupons,
+        DateGeneration::Rule rule)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
       discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve),
-      useIndexedCoupons_(useIndexedCoupons) {
+      useIndexedCoupons_(useIndexedCoupons), rule_(rule) {
 
         // we need to clone the index whose forecast curve we want to bootstrap
         // and copy the other one
@@ -65,8 +66,8 @@ namespace QuantLib {
     void IborIborBasisSwapRateHelper::initializeDates() {
         Date today = Settings::instance().evaluationDate();
         earliestDate_ = calendar_.advance(today, settlementDays_ * Days, Following);
+        // unadjusted, to avoid a spurious stub
         Date terminationDate = earliestDate_ + tenor_;
-        maturityDate_ = calendar_.adjust(terminationDate, convention_);
 
         Schedule baseSchedule =
             MakeSchedule().from(earliestDate_).to(terminationDate)
@@ -74,7 +75,7 @@ namespace QuantLib {
             .withCalendar(calendar_)
             .withConvention(convention_)
             .endOfMonth(endOfMonth_)
-            .backwards();
+            .withRule(rule_);
         Leg baseLeg = IborLeg(baseSchedule, baseIndex_)
             .withNotionals(100.0)
             .withIndexedCoupons(useIndexedCoupons_);
@@ -86,11 +87,13 @@ namespace QuantLib {
             .withCalendar(calendar_)
             .withConvention(convention_)
             .endOfMonth(endOfMonth_)
-            .backwards();
+            .withRule(rule_);
         Leg otherLeg = IborLeg(otherSchedule, otherIndex_)
             .withNotionals(100.0)
             .withIndexedCoupons(useIndexedCoupons_);
         auto lastOtherCoupon = ext::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
+
+        maturityDate_ = std::max(baseSchedule.endDate(), otherSchedule.endDate());
 
         latestRelevantDate_ = std::max(maturityDate_,
                                        std::max(lastBaseCoupon->fixingEndDate(),
@@ -139,13 +142,20 @@ namespace QuantLib {
         Integer paymentLag,
         std::optional<Frequency> overnightPaymentFrequency,
         std::optional<Frequency> iborPaymentFrequency,
-        const std::optional<bool>& useIndexedCoupons)
+        std::optional<bool> useIndexedCoupons,
+        DateGeneration::Rule rule)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
       discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve),
       paymentLag_(paymentLag), overnightPaymentFrequency_(overnightPaymentFrequency),
       iborPaymentFrequency_(iborPaymentFrequency),
-      useIndexedCoupons_(useIndexedCoupons) {
+      useIndexedCoupons_(useIndexedCoupons), rule_(rule) {
+
+        // these would collapse the ibor leg into a single coupon
+        QL_REQUIRE(!iborPaymentFrequency_ ||
+                       (*iborPaymentFrequency_ != Once && *iborPaymentFrequency_ != NoFrequency),
+                   "the ibor leg requires a positive payment frequency; got "
+                       << *iborPaymentFrequency_);
 
         // we need to clone the index whose forecast curve we want to bootstrap
         // and copy the other one
@@ -172,8 +182,8 @@ namespace QuantLib {
     void OvernightIborBasisSwapRateHelper::initializeDates() {
         Date today = Settings::instance().evaluationDate();
         earliestDate_ = calendar_.advance(today, settlementDays_ * Days, Following);
+        // unadjusted, to avoid a spurious stub
         Date terminationDate = earliestDate_ + tenor_;
-        maturityDate_ = calendar_.adjust(terminationDate, convention_);
 
         Period overnightTenor =
             overnightPaymentFrequency_ ? Period(*overnightPaymentFrequency_) : otherIndex_->tenor();
@@ -183,7 +193,7 @@ namespace QuantLib {
             .withCalendar(calendar_)
             .withConvention(convention_)
             .endOfMonth(endOfMonth_)
-            .backwards();
+            .withRule(rule_);
 
         Leg baseLeg = OvernightLeg(overnightSchedule, baseIndex_)
             .withNotionals(100.0)
@@ -197,13 +207,15 @@ namespace QuantLib {
             .withCalendar(calendar_)
             .withConvention(convention_)
             .endOfMonth(endOfMonth_)
-            .backwards();
+            .withRule(rule_);
 
         Leg otherLeg = IborLeg(iborSchedule, otherIndex_)
             .withNotionals(100.0)
             .withPaymentLag(paymentLag_)
             .withIndexedCoupons(useIndexedCoupons_);
         auto lastOtherCoupon = ext::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
+
+        maturityDate_ = std::max(overnightSchedule.endDate(), iborSchedule.endDate());
 
         // the payment lag can push the last payment past the maturity date,
         // in which case the discount curve is needed up to that date
