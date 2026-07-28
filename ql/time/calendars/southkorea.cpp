@@ -234,7 +234,7 @@ namespace QuantLib {
             || ((d == 28 || d == 29 || d == 30) && m == September && y == 2023)
             || ((d == 16 || d == 17 || d == 18) && m == September && y == 2024)
             || ((d ==  6 || d ==  7 || d ==  8) && m == October   && y == 2025)
-            || ((d == 24 || d == 25 || d == 26) && m == September && y == 2026)
+            || ((d >= 24 && d <= 28)            && m == September && y == 2026)
             || ((d == 14 || d == 15 || d == 16) && m == September && y == 2027)
             || ((d >=  2 && d <=  5)            && m == October   && y == 2028)
             || ((d >= 21 && d <= 24)            && m == September && y == 2029)
