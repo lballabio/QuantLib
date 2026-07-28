@@ -99,8 +99,7 @@ namespace QuantLib {
 
         The payment frequency of each leg can be overridden
         independently; both default to the tenor of the ibor index.
-        The overnight leg accepts Once, paying a single compounded
-        coupon at maturity; the ibor leg does not.
+        Once pays a single coupon at maturity, whatever the rule.
     */
     class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:

@@ -151,12 +151,6 @@ namespace QuantLib {
       iborPaymentFrequency_(iborPaymentFrequency),
       useIndexedCoupons_(useIndexedCoupons), rule_(rule) {
 
-        // these would collapse the ibor leg into a single coupon
-        QL_REQUIRE(!iborPaymentFrequency_ ||
-                       (*iborPaymentFrequency_ != Once && *iborPaymentFrequency_ != NoFrequency),
-                   "the ibor leg requires a positive payment frequency; got "
-                       << *iborPaymentFrequency_);
-
         // we need to clone the index whose forecast curve we want to bootstrap
         // and copy the other one
         if (bootstrapBaseCurve_) {
