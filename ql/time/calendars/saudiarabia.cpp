@@ -21,6 +21,7 @@
 #include <ql/time/calendars/saudiarabia.hpp>
 #include <ql/errors.hpp>
 #include <algorithm>
+#include <vector>
 
 namespace QuantLib {
 
@@ -78,7 +79,16 @@ namespace QuantLib {
                 Date(12, August, 2019),
                 Date(31, July, 2020),
                 Date(20, July, 2021),
-                Date(10, July, 2022)
+                Date(10, July, 2022),
+                // Approximate Gregorian Eid al-Adha dates; holiday window Eid-1..Eid+4
+                // as used historically for Tadawul (see Saudi Exchange holiday calendar).
+                Date(28, June, 2023),
+                Date(16, June, 2024),
+                Date(6, June, 2025),
+                Date(27, May, 2026),
+                Date(16, May, 2027),
+                Date(5, May, 2028),
+                Date(23, April, 2029)
             };
 
             return std::any_of(EidAlAdha.begin(), EidAlAdha.end(),
@@ -153,6 +163,9 @@ namespace QuantLib {
             || isEidAlFitr(date)
             // National Day
             || (d == 23 && m == September)
+            // Founding Day (from 2022; 2025 observed on Sunday 23 Feb per exchange calendar)
+            || (d == 22 && m == February && y >= 2022 && y != 2025)
+            || (d == 23 && m == February && y == 2025)
             // other one-shot holidays
             || (d == 26 && m == February && y==2011)
             || (d == 19 && m == March && y==2011)
