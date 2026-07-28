@@ -56,6 +56,8 @@ namespace QuantLib {
         std::vector<Real> dividends_;
         const ext::shared_ptr<FdmMesher> mesher_;
         const Size equityDirection_;
+        mutable Array aCopy_;
+        mutable Array tmp_;
     };
 }
 #endif
