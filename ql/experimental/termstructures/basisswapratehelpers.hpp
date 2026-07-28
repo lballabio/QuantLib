@@ -38,8 +38,9 @@ namespace QuantLib {
         forecast curve).
         In both cases, an exogenous discount curve is required.
 
-        The \c useIndexedCoupons parameter, if provided, overrides the global
-        IborCoupon setting for both legs.
+        useIndexedCoupons is useful to decouple the estimated 
+		forward rate end date from the accrual end date.
+		Defaults to a global setting.
     */
     class IborIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -100,8 +101,9 @@ namespace QuantLib {
         If not specified, both payment frequencies default to the tenor of
         the ibor index.
 
-        The \c useIndexedCoupons parameter, if provided, overrides the global
-        IborCoupon setting for the ibor leg.
+        useIndexedCoupons is useful to decouple the estimated 
+		forward rate end date from the accrual end date.
+		Defaults to a global setting.
     */
     class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
