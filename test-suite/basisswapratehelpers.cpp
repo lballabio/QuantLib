@@ -97,7 +97,7 @@ void testIborIborBootstrap(bool bootstrapBaseCurve) {
 
     for (auto q : quotes) {
         // create swaps and check they're fair
-        Date maturity = calendar.advance(spot, q.n, q.units, convention);
+        Date maturity = spot + Period(q.n, q.units);
 
         Schedule s1 =
             MakeSchedule()
@@ -105,7 +105,7 @@ void testIborIborBootstrap(bool bootstrapBaseCurve) {
             .withTenor(baseIndex->tenor())
             .withCalendar(calendar)
             .withConvention(convention)
-            .withRule(DateGeneration::Forward);
+            .withRule(DateGeneration::Backward);
         Leg leg1 = IborLeg(s1, baseIndex)
             .withSpreads(q.basis)
             .withNotionals(100.0);
@@ -116,7 +116,7 @@ void testIborIborBootstrap(bool bootstrapBaseCurve) {
             .withTenor(otherIndex->tenor())
             .withCalendar(calendar)
             .withConvention(convention)
-            .withRule(DateGeneration::Forward);
+            .withRule(DateGeneration::Backward);
         Leg leg2 = IborLeg(s2, otherIndex)
             .withNotionals(100.0);
 
@@ -193,7 +193,7 @@ void testOvernightIborBootstrap(bool externalDiscountCurve,
 
     for (auto q : quotes) {
         // create swaps and check they're fair
-        Date maturity = calendar.advance(spot, q.n, q.units, convention);
+        Date maturity = spot + Period(q.n, q.units);
 
         Schedule s =
             MakeSchedule()
@@ -201,7 +201,7 @@ void testOvernightIborBootstrap(bool externalDiscountCurve,
             .withTenor(otherIndex->tenor())
             .withCalendar(calendar)
             .withConvention(convention)
-            .withRule(DateGeneration::Forward);
+            .withRule(DateGeneration::Backward);
 
         Leg leg1 = OvernightLeg(s, baseIndex)
             .withSpreads(q.basis)

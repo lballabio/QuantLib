@@ -65,27 +65,28 @@ namespace QuantLib {
     void IborIborBasisSwapRateHelper::initializeDates() {
         Date today = Settings::instance().evaluationDate();
         earliestDate_ = calendar_.advance(today, settlementDays_ * Days, Following);
-        maturityDate_ = calendar_.advance(earliestDate_, tenor_, convention_);
+        Date terminationDate = earliestDate_ + tenor_;
+        maturityDate_ = calendar_.adjust(terminationDate, convention_);
 
         Schedule baseSchedule =
-            MakeSchedule().from(earliestDate_).to(maturityDate_)
+            MakeSchedule().from(earliestDate_).to(terminationDate)
             .withTenor(baseIndex_->tenor())
             .withCalendar(calendar_)
             .withConvention(convention_)
             .endOfMonth(endOfMonth_)
-            .forwards();
+            .backwards();
         Leg baseLeg = IborLeg(baseSchedule, baseIndex_)
             .withNotionals(100.0)
             .withIndexedCoupons(useIndexedCoupons_);
         auto lastBaseCoupon = ext::dynamic_pointer_cast<IborCoupon>(baseLeg.back());
 
         Schedule otherSchedule =
-            MakeSchedule().from(earliestDate_).to(maturityDate_)
+            MakeSchedule().from(earliestDate_).to(terminationDate)
             .withTenor(otherIndex_->tenor())
             .withCalendar(calendar_)
             .withConvention(convention_)
             .endOfMonth(endOfMonth_)
-            .forwards();
+            .backwards();
         Leg otherLeg = IborLeg(otherSchedule, otherIndex_)
             .withNotionals(100.0)
             .withIndexedCoupons(useIndexedCoupons_);
@@ -171,17 +172,18 @@ namespace QuantLib {
     void OvernightIborBasisSwapRateHelper::initializeDates() {
         Date today = Settings::instance().evaluationDate();
         earliestDate_ = calendar_.advance(today, settlementDays_ * Days, Following);
-        maturityDate_ = calendar_.advance(earliestDate_, tenor_, convention_);
+        Date terminationDate = earliestDate_ + tenor_;
+        maturityDate_ = calendar_.adjust(terminationDate, convention_);
 
         Period overnightTenor =
             overnightPaymentFrequency_ ? Period(*overnightPaymentFrequency_) : otherIndex_->tenor();
         Schedule overnightSchedule =
-            MakeSchedule().from(earliestDate_).to(maturityDate_)
+            MakeSchedule().from(earliestDate_).to(terminationDate)
             .withTenor(overnightTenor)
             .withCalendar(calendar_)
             .withConvention(convention_)
             .endOfMonth(endOfMonth_)
-            .forwards();
+            .backwards();
 
         Leg baseLeg = OvernightLeg(overnightSchedule, baseIndex_)
             .withNotionals(100.0)
@@ -190,12 +192,12 @@ namespace QuantLib {
         Period iborTenor =
             iborPaymentFrequency_ ? Period(*iborPaymentFrequency_) : otherIndex_->tenor();
         Schedule iborSchedule =
-            MakeSchedule().from(earliestDate_).to(maturityDate_)
+            MakeSchedule().from(earliestDate_).to(terminationDate)
             .withTenor(iborTenor)
             .withCalendar(calendar_)
             .withConvention(convention_)
             .endOfMonth(endOfMonth_)
-            .forwards();
+            .backwards();
 
         Leg otherLeg = IborLeg(iborSchedule, otherIndex_)
             .withNotionals(100.0)
