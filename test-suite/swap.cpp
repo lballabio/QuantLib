@@ -661,6 +661,20 @@ BOOST_AUTO_TEST_CASE(testSettlementCalendar) {
                 index->fixingCalendar().advance(today, 2 * Days));
 }
 
+BOOST_AUTO_TEST_CASE(testExpiredSwapFairRateAndSpread) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing vanilla swap fair rate/spread for expired swap...");
+
+    CommonVars vars;
+    ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(10, 0.0, 0.0);
+
+    Settings::instance().evaluationDate() = vars.settlement + Period(20, Years);
+
+    BOOST_CHECK_THROW(swap->fairRate(), Error);
+    BOOST_CHECK_THROW(swap->fairSpread(), Error);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
