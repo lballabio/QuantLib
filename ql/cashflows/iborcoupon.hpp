@@ -37,6 +37,28 @@
 
 namespace QuantLib {
 
+    //! Convention used to select an index for an irregular Ibor coupon
+    enum class BrokenIndexConvention {
+        CurrentIndex,
+        ClosestIndex,
+        Interpolated
+    };
+
+    //! Index selection data for irregular Ibor coupons
+    /*! The indices are supplied as fully constructed objects so that each one
+        can use its own conventions, fixing history and forwarding curve.
+
+        For ClosestIndex, the index whose maturity is closest to the coupon end
+        date is used.  For Interpolated, the two index maturities bracketing the
+        coupon end date are used for linear interpolation in calendar days.  All
+        candidate indices must resolve the coupon fixing date to the same value
+        date, which must equal the coupon accrual start date.
+    */
+    struct BrokenIndexConfig {
+        BrokenIndexConvention convention = BrokenIndexConvention::CurrentIndex;
+        std::vector<ext::shared_ptr<IborIndex> > indices;
+    };
+
     //! %Coupon paying a Libor-type index
     class IborCoupon : public FloatingRateCoupon {
       public:
@@ -106,6 +128,41 @@ namespace QuantLib {
     };
 
 
+    //! Irregular Ibor coupon using an explicitly supplied set of indices
+    /*! This coupon is intended for broken periods.  Candidate indices are
+        selected according to their maturity dates and retain their own
+        forwarding curves and fixing histories.
+    */
+    class StubIborCoupon : public IborCoupon {
+      public:
+        StubIborCoupon(const Date& paymentDate,
+                       Real nominal,
+                       const Date& startDate,
+                       const Date& endDate,
+                       Natural fixingDays,
+                       const ext::shared_ptr<IborIndex>& index,
+                       BrokenIndexConfig brokenIndexConfig,
+                       Real gearing = 1.0,
+                       Spread spread = 0.0,
+                       const Date& refPeriodStart = Date(),
+                       const Date& refPeriodEnd = Date(),
+                       const DayCounter& dayCounter = DayCounter(),
+                       bool isInArrears = false,
+                       const Date& exCouponDate = Date(),
+                       BusinessDayConvention fixingConvention = Preceding);
+
+        const BrokenIndexConfig& brokenIndexConfig() const {
+            return brokenIndexConfig_;
+        }
+
+        Rate indexFixing() const override;
+        void accept(AcyclicVisitor&) override;
+
+      private:
+        BrokenIndexConfig brokenIndexConfig_;
+    };
+
+
     //! Per-session settings for IborCoupon class
     class IborCoupon::Settings : public Singleton<IborCoupon::Settings> {
         friend class Singleton<IborCoupon::Settings>;
@@ -161,6 +218,8 @@ namespace QuantLib {
         IborLeg& withFixingConvention(BusinessDayConvention);
         IborLeg& withIndexedCoupons(std::optional<bool> b = true);
         IborLeg& withAtParCoupons(bool b = true);
+        //! sets index selection for uncapped schedule periods marked as irregular
+        IborLeg& withBrokenIndexConfig(const BrokenIndexConfig&);
         operator Leg() const;
 
       private:
@@ -182,6 +241,7 @@ namespace QuantLib {
         BusinessDayConvention exCouponAdjustment_ = Unadjusted;
         bool exCouponEndOfMonth_ = false;
         std::optional<bool> useIndexedCoupons_;
+        BrokenIndexConfig brokenIndexConfig_;
     };
 
 }
