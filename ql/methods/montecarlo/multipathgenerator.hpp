@@ -109,27 +109,26 @@ namespace QuantLib {
 
         } else {
 
-            typedef typename GSG::sample_type sequence_type;
-            const sequence_type& sequence_ =
+            const auto& sequence_ =
                 antithetic ? generator_.lastSequence()
                            : generator_.nextSequence();
 
-            Size m = process_->size();
-            Size n = process_->factors();
+            auto m = process_->size();
+            auto n = process_->factors();
 
-            MultiPath& path = next_.value;
+            auto& path = next_.value;
 
-            Array asset = process_->initialValues();
-            for (Size j=0; j<m; j++)
+            auto asset = process_->initialValues();
+            for (auto j=0u; j<m; j++)
                 path[j].front() = asset[j];
 
             Array temp(n);
             next_.weight = sequence_.weight;
 
-            const TimeGrid& timeGrid = path[0].timeGrid();
+            const auto& timeGrid = path[0].timeGrid();
             Time t, dt;
-            for (Size i = 1; i < path.pathSize(); i++) {
-                Size offset = (i-1)*n;
+            for (auto i = 1u; i < path.pathSize(); i++) {
+                auto offset = (i-1)*n;
                 t = timeGrid[i-1];
                 dt = timeGrid.dt(i-1);
                 if (antithetic)
@@ -143,7 +142,7 @@ namespace QuantLib {
                               temp.begin());
 
                 asset = process_->evolve(t, asset, dt, temp);
-                for (Size j=0; j<m; j++)
+                for (auto j=0u; j<m; j++)
                     path[j][i] = asset[j];
             }
             return next_;

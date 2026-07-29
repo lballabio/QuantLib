@@ -122,8 +122,7 @@ namespace QuantLib {
     const typename PathGenerator<GSG>::sample_type&
     PathGenerator<GSG>::next(bool antithetic) const {
 
-        typedef typename GSG::sample_type sequence_type;
-        const sequence_type& sequence_ =
+        const auto& sequence_ =
             antithetic ? generator_.lastSequence()
                        : generator_.nextSequence();
 
@@ -131,23 +130,21 @@ namespace QuantLib {
             bb_.transform(sequence_.value.begin(),
                           sequence_.value.end(),
                           temp_.begin());
-        } else {
-            std::copy(sequence_.value.begin(),
-                      sequence_.value.end(),
-                      temp_.begin());
         }
+        const auto& increments =
+            brownianBridge_ ? temp_ : sequence_.value;
 
         next_.weight = sequence_.weight;
 
         Path& path = next_.value;
         path.front() = process_->x0();
 
-        for (Size i=1; i<path.length(); i++) {
-            Time t = timeGrid_[i-1];
-            Time dt = timeGrid_.dt(i-1);
+        for (auto i=1u; i<path.length(); i++) {
+            auto t = timeGrid_[i-1];
+            auto dt = timeGrid_.dt(i-1);
             path[i] = process_->evolve(t, path[i-1], dt,
-                                       antithetic ? -temp_[i-1] :
-                                                     temp_[i-1]);
+                                       antithetic ? -increments[i-1] :
+                                                     increments[i-1]);
         }
 
         return next_;
