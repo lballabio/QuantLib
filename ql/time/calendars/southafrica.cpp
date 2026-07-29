@@ -70,18 +70,17 @@ namespace QuantLib {
             // Day of Goodwill (possibly moved to Monday)
             || ((d == 26 || (d == 27 && w == Monday))
                 && m == December)
-            // one-shot: Election day 2009
+            // Election Days
+            || (d == 14 && m == April && y == 2004)
             || (d == 22 && m == April && y == 2009)
-            // one-shot: Election day 2016
             || (d == 3 && m == August && y == 2016)
-            // one-shot: Election day 2021
             || (d == 1 && m == November && y == 2021)
+            || (d == 29 && m == May && y == 2024)
+            || (d == 4 && m == November && y == 2026)
             // one-shot: In lieu of Christmas falling on Sunday in 2022
             || (d == 27 && m == December && y == 2022)
             // one-shot: Special holiday to celebrate winning of Rugby World Cup 2023
             || (d == 15 && m == December && y == 2023)
-            // one-shot: Election day 2024
-            || (d == 29 && m == May && y == 2024)
             )
             return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
