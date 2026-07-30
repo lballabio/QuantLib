@@ -305,6 +305,13 @@ namespace QuantLib {
             ))
             return false;
 
+        if ((y == 2026) && ((d == 2 && m == January)     // Additional special holiday
+                            || (d == 3 && m == March)    // Makha Bucha Day
+                            || (d == 1 && m == June)     // Substitution for Visakha Bucha Day (Sunday 31st May 2026)
+                            || (d == 29 && m == July)    // Asarnha Bucha Day
+            ))
+            return false;
+
         return true;
     }
 
