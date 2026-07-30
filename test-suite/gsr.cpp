@@ -40,6 +40,8 @@
 #include <ql/currencies/europe.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/floatfloatswap.hpp>
 #include <ql/instruments/floatfloatswaption.hpp>
 #include <ql/pricingengines/swaption/gaussian1dfloatfloatswaptionengine.hpp>
@@ -53,6 +55,8 @@
 #include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/randomnumbers/sobolrsg.hpp>
 
 using namespace QuantLib;
 using boost::unit_test_framework::test_suite;
@@ -99,6 +103,312 @@ namespace {
             type, 1.0, schedule, strike, fixedDayCounter, overnightIndex, 0.0,
             0, Following, calendar, false, RateAveraging::Compound,
             lookbackDays, 0, true);
+    }
+
+    /* Independent constant-parameter Hull-White reference. The Monte Carlo
+       side does not use Gsr bonds, numeraires or its state process. Here x is
+       the zero-mean Ornstein-Uhlenbeck state under the risk-neutral measure. */
+    DiscountFactor hullWhiteDiscountBond(
+        const Handle<YieldTermStructure>& curve,
+        Time t,
+        Time maturity,
+        Real x,
+        Real reversion,
+        Real volatility) {
+
+        const Real b = (1.0 - std::exp(-reversion * (maturity - t))) /
+                       reversion;
+        const Real shift =
+            volatility * volatility / (2.0 * reversion * reversion) *
+            std::pow(1.0 - std::exp(-reversion * t), 2);
+        const Real variance =
+            volatility * volatility / (4.0 * reversion) *
+            (1.0 - std::exp(-2.0 * reversion * t));
+        return curve->discount(maturity) / curve->discount(t) *
+               std::exp(-b * x - b * shift - b * b * variance);
+    }
+
+    DiscountFactor hullWhiteDiscountBond(
+        const Handle<YieldTermStructure>& curve,
+        Time t,
+        const Date& maturity,
+        Real x,
+        Real reversion,
+        Real volatility) {
+        return hullWhiteDiscountBond(
+            curve, t, curve->timeFromReference(maturity), x, reversion,
+            volatility);
+    }
+
+    Rate conditionalFloatingRate(
+        const Handle<YieldTermStructure>& curve,
+        const ext::shared_ptr<FloatingRateCoupon>& coupon,
+        Time expiry,
+        Real x,
+        Real reversion,
+        Real volatility) {
+
+        if (const auto overnightCoupon =
+                ext::dynamic_pointer_cast<OvernightIndexedCoupon>(coupon)) {
+            const auto& valueDates = overnightCoupon->valueDates();
+            const auto& interestDates = overnightCoupon->interestDates();
+            const DayCounter& dayCounter = overnightCoupon->index()->dayCounter();
+            const Time rateAccrualTime =
+                overnightCoupon->applyObservationShift() &&
+                        overnightCoupon->fixingDays() > 0
+                    ? dayCounter.yearFraction(valueDates.front(),
+                                              valueDates.back())
+                    : dayCounter.yearFraction(interestDates.front(),
+                                              interestDates.back());
+            return (hullWhiteDiscountBond(
+                        curve, expiry, valueDates.front(), x,
+                        reversion, volatility) /
+                        hullWhiteDiscountBond(
+                            curve, expiry, valueDates.back(), x,
+                            reversion, volatility) -
+                    1.0) /
+                   rateAccrualTime;
+        }
+
+        const auto iborCoupon = ext::dynamic_pointer_cast<IborCoupon>(coupon);
+        QL_REQUIRE(iborCoupon != nullptr, "unsupported floating coupon");
+        return (hullWhiteDiscountBond(
+                    curve, expiry, iborCoupon->fixingValueDate(), x,
+                    reversion, volatility) /
+                    hullWhiteDiscountBond(
+                        curve, expiry, iborCoupon->fixingMaturityDate(), x,
+                        reversion, volatility) -
+                1.0) /
+               iborCoupon->spanningTimeIndexMaturity();
+    }
+
+    Real discountedEuropeanSwaptionPayoff(
+        const Handle<YieldTermStructure>& discountCurve,
+        const ext::shared_ptr<FixedVsFloatingSwap>& swap,
+        const Date& expiry,
+        Time expiryTime,
+        Real x,
+        Real pathDiscount,
+        Real reversion,
+        Real volatility) {
+
+        Real fixedLegNpv = 0.0;
+        for (const auto& cashflow : swap->fixedLeg()) {
+            const auto coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(cashflow);
+            QL_REQUIRE(coupon != nullptr, "unsupported fixed cashflow");
+            QL_REQUIRE(coupon->accrualStartDate() >= expiry,
+                       "fixed coupon starts before exercise");
+            fixedLegNpv += coupon->amount() * hullWhiteDiscountBond(
+                discountCurve, expiryTime, coupon->date(), x, reversion,
+                volatility);
+        }
+
+        const Handle<YieldTermStructure> forwardingCurve =
+            swap->iborIndex()->forwardingTermStructure();
+        Real floatingLegNpv = 0.0;
+        for (const auto& cashflow : swap->floatingLeg()) {
+            const auto coupon =
+                ext::dynamic_pointer_cast<FloatingRateCoupon>(cashflow);
+            QL_REQUIRE(coupon != nullptr, "unsupported floating cashflow");
+            QL_REQUIRE(coupon->accrualStartDate() >= expiry,
+                       "floating coupon starts before exercise");
+            const Rate rate = conditionalFloatingRate(
+                forwardingCurve, coupon, expiryTime, x, reversion, volatility);
+            // A delayed coupon is projected at exercise and discounted from
+            // its actual payment date, consistently with the GSR engine. This
+            // deliberately excludes post-exercise payment-delay convexity.
+            const Real amount =
+                coupon->nominal() * coupon->accrualPeriod() *
+                (coupon->gearing() * rate + coupon->spread());
+            floatingLegNpv += amount * hullWhiteDiscountBond(
+                discountCurve, expiryTime, coupon->date(), x, reversion,
+                volatility);
+        }
+
+        const Real payerNpv = floatingLegNpv - fixedLegNpv;
+        const Real exerciseValue =
+            swap->type() == Swap::Payer ? payerNpv : -payerNpv;
+        return pathDiscount * std::max(exerciseValue, 0.0);
+    }
+
+    Real hullWhiteMonteCarloEuropeanSwaption(
+        const Handle<YieldTermStructure>& curve,
+        Real reversion,
+        Real volatility,
+        const ext::shared_ptr<FixedVsFloatingSwap>& swap,
+        const Date& expiry,
+        Size samplePairs = 65536) {
+
+        const Time expiryTime = curve->timeFromReference(expiry);
+        // x_T and the integral of x over [0,T] are sampled jointly from their
+        // exact Gaussian distribution, avoiding a time-discretisation error in
+        // both the state and the path discount factor.
+        const Real varianceX =
+            volatility * volatility /
+            (2.0 * reversion) *
+            (1.0 - std::exp(-2.0 * reversion * expiryTime));
+        const Real varianceIntegral =
+            volatility * volatility / (reversion * reversion) *
+            (expiryTime -
+             2.0 * (1.0 - std::exp(-reversion * expiryTime)) / reversion +
+             (1.0 - std::exp(-2.0 * reversion * expiryTime)) /
+                 (2.0 * reversion));
+        const Real covariance =
+            volatility * volatility /
+            (2.0 * reversion * reversion) *
+            std::pow(1.0 - std::exp(-reversion * expiryTime), 2);
+        const Real stdDevX = std::sqrt(varianceX);
+        const Real integralLoading = covariance / stdDevX;
+        const Real residualStdDev = std::sqrt(
+            varianceIntegral - integralLoading * integralLoading);
+
+        SobolRsg sobol(2, 42, SobolRsg::JoeKuoD7);
+        const InverseCumulativeNormal inverseNormal;
+        Real sum = 0.0;
+        for (Size i = 0; i < samplePairs; ++i) {
+            const auto& sequence = sobol.nextSequence().value;
+            const Real z1 = inverseNormal(sequence[0]);
+            const Real z2 = inverseNormal(sequence[1]);
+            const Real x = stdDevX * z1;
+            const Real integral = integralLoading * z1 + residualStdDev * z2;
+            const Real pathDiscount =
+                curve->discount(expiryTime) *
+                std::exp(-integral - 0.5 * varianceIntegral);
+            sum += discountedEuropeanSwaptionPayoff(
+                curve, swap, expiry, expiryTime, x, pathDiscount, reversion,
+                volatility);
+            sum += discountedEuropeanSwaptionPayoff(
+                curve, swap, expiry, expiryTime, -x,
+                curve->discount(expiryTime) *
+                    std::exp(integral - 0.5 * varianceIntegral),
+                reversion, volatility);
+        }
+        return sum / (2.0 * samplePairs);
+    }
+
+    Handle<YieldTermStructure> gsrMonteCarloCurve(const Date& today) {
+        const DayCounter dc = Actual365Fixed();
+        std::vector<Date> dates = {today};
+        std::vector<Rate> rates = {0.02};
+        for (Size i = 1; i <= 15; ++i) {
+            dates.push_back(today + i * Years);
+            rates.push_back(0.02 + 0.015 * (1.0 - std::exp(-Real(i) / 4.0)));
+        }
+        return Handle<YieldTermStructure>(
+            ext::make_shared<InterpolatedZeroCurve<Linear> >(dates, rates, dc));
+    }
+
+    ext::shared_ptr<Gsr> gsrMonteCarloModel(
+        const Handle<YieldTermStructure>& curve,
+        Real reversion,
+        Real volatility) {
+        return ext::make_shared<Gsr>(
+            curve, std::vector<Date>(), std::vector<Real>{volatility},
+            reversion, 12.0);
+    }
+
+    void checkGsrIborSwaptionAgainstMonteCarlo() {
+        const Date today(30, June, 2025);
+        Settings::instance().evaluationDate() = today;
+        const Real reversion = 0.03;
+        const Real volatility = 0.009;
+        const Calendar calendar = TARGET();
+        const Handle<YieldTermStructure> curve = gsrMonteCarloCurve(today);
+        const auto index = ext::make_shared<Euribor6M>(curve);
+        const Date expiry = calendar.adjust(today + 2 * Years);
+        const Date start = calendar.advance(expiry, 2 * Days);
+        const Date end = calendar.advance(start, 5 * Years);
+        const Schedule fixedSchedule(start, end, 1 * Years, calendar,
+                                     ModifiedFollowing, ModifiedFollowing,
+                                     DateGeneration::Forward, false);
+        const Schedule floatingSchedule(start, end, 6 * Months, calendar,
+                                        ModifiedFollowing, ModifiedFollowing,
+                                        DateGeneration::Forward, false);
+        const auto discounting = ext::make_shared<DiscountingSwapEngine>(curve);
+        auto probe = ext::make_shared<VanillaSwap>(
+            Swap::Payer, 1.0, fixedSchedule, 0.0, Thirty360(Thirty360::BondBasis),
+            floatingSchedule, index, 0.0, Actual360());
+        probe->setPricingEngine(discounting);
+        auto swap = ext::make_shared<VanillaSwap>(
+            Swap::Payer, 1.0, fixedSchedule, probe->fairRate(),
+            Thirty360(Thirty360::BondBasis), floatingSchedule, index, 0.0,
+            Actual360());
+        const auto model =
+            gsrMonteCarloModel(curve, reversion, volatility);
+        Swaption swaption(swap, ext::make_shared<EuropeanExercise>(expiry));
+        swaption.setPricingEngine(
+            ext::make_shared<Gaussian1dSwaptionEngine>(model, 128, 8.0));
+
+        const Real calculated = swaption.NPV();
+        const Real expected = hullWhiteMonteCarloEuropeanSwaption(
+            curve, reversion, volatility, swap, expiry);
+        BOOST_CHECK_MESSAGE(
+            std::fabs(calculated - expected) < 2.0e-6,
+            "GSR Ibor swaption price " << calculated
+            << " differs from Monte Carlo " << expected);
+    }
+
+    void checkGsrSofrSwaptionAgainstMonteCarlo(
+        Integer paymentLag,
+        Natural lookbackDays,
+        bool applyObservationShift) {
+
+        const Date today(30, June, 2025);
+        Settings::instance().evaluationDate() = today;
+        const Real reversion = 0.03;
+        const Real volatility = 0.009;
+        const Handle<YieldTermStructure> curve = gsrMonteCarloCurve(today);
+        const auto sofr = ext::make_shared<Sofr>(curve);
+        const Calendar calendar = sofr->fixingCalendar();
+        const Date expiry = calendar.adjust(today + 2 * Years);
+        const Date start = calendar.advance(expiry, 10 * Days);
+        const Date end = calendar.advance(start, 5 * Years);
+        const Schedule schedule(start, end, 1 * Years, calendar,
+                                ModifiedFollowing, ModifiedFollowing,
+                                DateGeneration::Forward, false);
+        const auto discounting = ext::make_shared<DiscountingSwapEngine>(curve);
+        auto probe = ext::make_shared<OvernightIndexedSwap>(
+            Swap::Payer, 1.0, schedule, 0.0, Actual360(), sofr, 0.0,
+            paymentLag, Following, calendar, false, RateAveraging::Compound,
+            lookbackDays, 0, applyObservationShift);
+        probe->setPricingEngine(discounting);
+        auto swap = ext::make_shared<OvernightIndexedSwap>(
+            Swap::Payer, 1.0, schedule, probe->fairRate(), Actual360(), sofr,
+            0.0, paymentLag, Following, calendar, false,
+            RateAveraging::Compound, lookbackDays, 0,
+            applyObservationShift);
+        const auto firstCoupon =
+            ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+                swap->overnightLeg().front());
+        QL_REQUIRE(firstCoupon != nullptr, "expected overnight coupon");
+        QL_REQUIRE(firstCoupon->valueDates().front() > expiry,
+                   "observation period must start after exercise");
+        const Date expectedRateStart =
+            lookbackDays == Null<Natural>()
+                ? firstCoupon->accrualStartDate()
+                : calendar.advance(
+                      firstCoupon->accrualStartDate(),
+                      -static_cast<Integer>(lookbackDays), Days);
+        const Date expectedPaymentDate = calendar.advance(
+            firstCoupon->accrualEndDate(), paymentLag, Days, Following);
+        BOOST_CHECK_EQUAL(firstCoupon->valueDates().front(), expectedRateStart);
+        BOOST_CHECK_EQUAL(firstCoupon->date(), expectedPaymentDate);
+        const auto model =
+            gsrMonteCarloModel(curve, reversion, volatility);
+        Swaption swaption(swap, ext::make_shared<EuropeanExercise>(expiry));
+        swaption.setPricingEngine(
+            ext::make_shared<Gaussian1dSwaptionEngine>(model, 128, 8.0));
+
+        const Real calculated = swaption.NPV();
+        const Real expected = hullWhiteMonteCarloEuropeanSwaption(
+            curve, reversion, volatility, swap, expiry);
+        BOOST_CHECK_MESSAGE(
+            std::fabs(calculated - expected) < 2.0e-6,
+            "GSR SOFR swaption price " << calculated
+            << " differs from Monte Carlo " << expected
+            << " (payment lag " << paymentLag << ", lookback "
+            << lookbackDays << ", observation shift "
+            << applyObservationShift << ")");
     }
 
 }
@@ -442,6 +752,34 @@ BOOST_AUTO_TEST_CASE(testGsrModelQuoteUpdate) {
 
     Real after = stdswaption->NPV();
     BOOST_CHECK(std::fabs(before - after) > 0.01);
+}
+
+BOOST_AUTO_TEST_CASE(testGsrIborSwaptionAgainstMonteCarlo) {
+    BOOST_TEST_MESSAGE("Testing GSR Ibor swaption against Monte Carlo...");
+    checkGsrIborSwaptionAgainstMonteCarlo();
+}
+
+BOOST_AUTO_TEST_CASE(testGsrSofrSwaptionAgainstMonteCarlo) {
+    BOOST_TEST_MESSAGE("Testing GSR SOFR swaption against Monte Carlo...");
+    checkGsrSofrSwaptionAgainstMonteCarlo(0, Null<Natural>(), false);
+}
+
+BOOST_AUTO_TEST_CASE(testGsrSofrPaymentLagSwaptionAgainstMonteCarlo) {
+    BOOST_TEST_MESSAGE(
+        "Testing GSR payment-lagged SOFR swaption against Monte Carlo...");
+    checkGsrSofrSwaptionAgainstMonteCarlo(2, Null<Natural>(), false);
+}
+
+BOOST_AUTO_TEST_CASE(testGsrSofrObservationLagSwaptionAgainstMonteCarlo) {
+    BOOST_TEST_MESSAGE(
+        "Testing GSR observation-lagged SOFR swaption against Monte Carlo...");
+    checkGsrSofrSwaptionAgainstMonteCarlo(0, 5, true);
+}
+
+BOOST_AUTO_TEST_CASE(testGsrSofrPaymentAndObservationLagSwaptionAgainstMonteCarlo) {
+    BOOST_TEST_MESSAGE("Testing GSR payment- and observation-lagged SOFR "
+                       "swaption against Monte Carlo...");
+    checkGsrSofrSwaptionAgainstMonteCarlo(2, 5, true);
 }
 
 
