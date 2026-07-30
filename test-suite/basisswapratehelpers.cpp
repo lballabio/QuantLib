@@ -20,6 +20,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/termstructures/basisswapratehelpers.hpp>
+#include <ql/indexes/ibor/fedfunds.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
@@ -228,6 +229,109 @@ void testOvernightIborBootstrap(bool externalDiscountCurve,
     }
 }
 
+void testOvernightOvernightBootstrap(bool externalDiscountCurve,
+                                     bool bootstrapBaseCurve) {
+    std::vector<BasisSwapQuote> quotes = {
+        { 1, Years, 0.0008 },
+        { 2, Years, 0.0010 },
+        { 3, Years, 0.0011 },
+        { 5, Years, 0.0013 },
+        { 10, Years, 0.0015 },
+    };
+
+    auto settlementDays = 2;
+    auto calendar = UnitedStates(UnitedStates::GovernmentBond);
+    auto convention = Following;
+    auto endOfMonth = false;
+    auto paymentLag = 2;
+    auto paymentFrequency = Quarterly;
+    auto baseAveragingMethod = RateAveraging::Simple;
+    auto otherAveragingMethod = RateAveraging::Compound;
+
+    Handle<YieldTermStructure> knownForecastCurve(flatRate(0.01, Actual365Fixed()));
+
+    RelinkableHandle<YieldTermStructure> discountCurve;
+    if (externalDiscountCurve)
+        discountCurve.linkTo(flatRate(0.005, Actual365Fixed()));
+
+    ext::shared_ptr<OvernightIndex> baseIndex, otherIndex;
+    if (bootstrapBaseCurve) {
+        baseIndex = ext::make_shared<FedFunds>();
+        otherIndex = ext::make_shared<Sofr>(knownForecastCurve);
+    } else {
+        baseIndex = ext::make_shared<FedFunds>(knownForecastCurve);
+        otherIndex = ext::make_shared<Sofr>();
+    }
+
+    std::vector<ext::shared_ptr<OvernightOvernightBasisSwapRateHelper>> basisHelpers;
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    for (auto q : quotes) {
+        auto h = ext::make_shared<OvernightOvernightBasisSwapRateHelper>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(q.basis)),
+            Period(q.n, q.units), settlementDays, calendar, convention, endOfMonth,
+            baseIndex, otherIndex, discountCurve, bootstrapBaseCurve, paymentLag,
+            paymentFrequency, baseAveragingMethod, otherAveragingMethod);
+        basisHelpers.push_back(h);
+        helpers.push_back(h);
+    }
+
+    auto firstBaseCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+        basisHelpers.front()->swap()->leg(0).front());
+    auto firstOtherCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+        basisHelpers.front()->swap()->leg(1).front());
+    BOOST_REQUIRE(firstBaseCoupon);
+    BOOST_REQUIRE(firstOtherCoupon);
+    BOOST_CHECK_EQUAL(firstBaseCoupon->averagingMethod(), baseAveragingMethod);
+    BOOST_CHECK_EQUAL(firstOtherCoupon->averagingMethod(), otherAveragingMethod);
+    BOOST_CHECK_EQUAL(basisHelpers.front()->swap()->leg(0).size(), 4);
+    BOOST_CHECK_EQUAL(basisHelpers.front()->swap()->leg(1).size(), 4);
+
+    auto bootstrappedCurve = ext::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>(
+        0, calendar, helpers, Actual365Fixed());
+    Handle<YieldTermStructure> bootstrappedCurveHandle(bootstrappedCurve);
+
+    if (bootstrapBaseCurve) {
+        baseIndex = ext::make_shared<FedFunds>(bootstrappedCurveHandle);
+        otherIndex = ext::make_shared<Sofr>(knownForecastCurve);
+    } else {
+        baseIndex = ext::make_shared<FedFunds>(knownForecastCurve);
+        otherIndex = ext::make_shared<Sofr>(bootstrappedCurveHandle);
+    }
+
+    Date today = Settings::instance().evaluationDate();
+    Date spot = calendar.advance(today, settlementDays, Days);
+
+    for (Size i = 0; i < quotes.size(); ++i) {
+        const auto& q = quotes[i];
+        Date maturity = calendar.advance(spot, q.n, q.units, convention);
+
+        Schedule schedule =
+            MakeSchedule().from(spot).to(maturity)
+            .withFrequency(paymentFrequency)
+            .withCalendar(calendar)
+            .withConvention(convention)
+            .withRule(DateGeneration::Forward);
+
+        Leg baseLeg = OvernightLeg(schedule, baseIndex)
+            .withNotionals(100.0)
+            .withSpreads(q.basis)
+            .withPaymentLag(paymentLag)
+            .withAveragingMethod(baseAveragingMethod);
+        Leg otherLeg = OvernightLeg(schedule, otherIndex)
+            .withNotionals(100.0)
+            .withPaymentLag(paymentLag)
+            .withAveragingMethod(otherAveragingMethod);
+
+        Swap swap(baseLeg, otherLeg);
+        swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(
+            externalDiscountCurve ? discountCurve : bootstrappedCurveHandle));
+
+        Real tolerance = 1e-8;
+        BOOST_CHECK_SMALL(swap.NPV(), tolerance);
+        BOOST_CHECK_SMALL(basisHelpers[i]->impliedQuote() - q.basis, tolerance);
+    }
+}
+
 
 BOOST_AUTO_TEST_CASE(testIborIborBaseCurveBootstrap) {
     BOOST_TEST_MESSAGE("Testing IBOR-IBOR basis-swap rate helpers (base curve bootstrap)...");
@@ -273,6 +377,22 @@ BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithPaymentLag) {
     testOvernightIborBootstrap(true, false, 2);
     testOvernightIborBootstrap(false, true, 2);
     testOvernightIborBootstrap(true, true, 2);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightOvernightOtherCurveBootstrap) {
+    BOOST_TEST_MESSAGE("Testing overnight-overnight basis-swap rate helpers "
+                       "(other curve bootstrap)...");
+
+    testOvernightOvernightBootstrap(false, false);
+    testOvernightOvernightBootstrap(true, false);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightOvernightBaseCurveBootstrap) {
+    BOOST_TEST_MESSAGE("Testing overnight-overnight basis-swap rate helpers "
+                       "(base curve bootstrap)...");
+
+    testOvernightOvernightBootstrap(false, true);
+    testOvernightOvernightBootstrap(true, true);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
