@@ -84,54 +84,19 @@ namespace QuantLib {
             dayCounter = termStructure_->dayCounter();
         }
 
+        std::vector<Real> amounts(arguments_.fixedCoupons);
+        amounts.back() += arguments_.nominal;
+
         Real maturity = dayCounter.yearFraction(referenceDate,
                                                 arguments_.exercise->date(0));
 
-        std::vector<Real> amounts(arguments_.fixedCoupons);
         std::vector<Time> fixedPayTimes(arguments_.fixedPayDates.size());
         Time valueTime = dayCounter.yearFraction(referenceDate,arguments_.fixedResetDates[0]);
         for (Size i=0; i<fixedPayTimes.size(); i++)
             fixedPayTimes[i] = dayCounter.yearFraction(referenceDate,
                                                        arguments_.fixedPayDates[i]);
 
-        Date floatingAccrualEnd =
-            arguments_.swap->floatingSchedule().dates().back();
-        amounts.push_back(arguments_.nominal);
-        fixedPayTimes.push_back(
-            dayCounter.yearFraction(referenceDate, floatingAccrualEnd));
-
-        Real parNominal = arguments_.nominal;
-        {
-            const Handle<YieldTermStructure>& curve =
-                tsmodel != nullptr ? tsmodel->termStructure() : termStructure_;
-            const std::vector<Date>& floatDates =
-                arguments_.swap->floatingSchedule().dates();
-            const Date valueDate = arguments_.fixedResetDates[0];
-            if (valueDate >= curve->referenceDate()) {
-                const DiscountFactor dfValue = curve->discount(valueDate);
-                for (Size j = 0; j + 1 < floatDates.size() &&
-                                 j < arguments_.floatingPayDates.size(); ++j) {
-                    if (floatDates[j] < valueDate)
-                        continue;
-                    const Date accrualEnd = floatDates[j + 1];
-                    if (arguments_.floatingPayDates[j] > accrualEnd) {
-                        const DiscountFactor dfStart =
-                            curve->discount(floatDates[j]);
-                        const DiscountFactor dfEnd = curve->discount(accrualEnd);
-                        const DiscountFactor dfPay =
-                            curve->discount(arguments_.floatingPayDates[j]);
-                        // The delayed coupon is short by
-                        // N*(dfStart-dfEnd)*(1-dfPay/dfEnd). Jamshidian cannot
-                        // assign a separate discount date to each floating
-                        // coupon, so freeze this correction at time zero.
-                        parNominal -= arguments_.nominal * (dfStart - dfEnd) *
-                                      (1.0 - dfPay / dfEnd) / dfValue;
-                    }
-                }
-            }
-        }
-
-        rStarFinder finder(*model_, parNominal, maturity, valueTime,
+        rStarFinder finder(*model_, arguments_.nominal, maturity, valueTime,
                            fixedPayTimes, amounts);
         Brent s1d;
         Rate minStrike = -10.0;
@@ -142,12 +107,14 @@ namespace QuantLib {
         Rate rStar = s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
 
         Option::Type w = arguments_.type==Swap::Payer ? Option::Put : Option::Call;
-        Size size = amounts.size();
+        Size size = arguments_.fixedCoupons.size();
 
         Real value = 0.0;
         Real B = model_->discountBond(maturity, valueTime, rStar);
         for (Size i=0; i<size; i++) {
-            Real fixedPayTime = fixedPayTimes[i];
+            Real fixedPayTime =
+                dayCounter.yearFraction(referenceDate,
+                                        arguments_.fixedPayDates[i]);
             Real strike = model_->discountBond(maturity,
                                                fixedPayTime,
                                                rStar) / B;
@@ -161,3 +128,4 @@ namespace QuantLib {
     }
 
 }
+

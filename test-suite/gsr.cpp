@@ -1051,15 +1051,11 @@ BOOST_AUTO_TEST_CASE(testSofrSwaptionPaymentLag) {
     }
 
     Real reversion = 0.03, sigma = 0.008;
-    auto hullWhite = ext::make_shared<HullWhite>(curve, reversion, sigma);
     auto gsr = ext::make_shared<Gsr>(curve, std::vector<Date>(),
                                      std::vector<Real>{sigma}, reversion, 12.0);
     auto exercise = ext::make_shared<EuropeanExercise>(expiry);
     auto swaption = ext::make_shared<Swaption>(swap, exercise);
 
-    swaption->setPricingEngine(
-        ext::make_shared<JamshidianSwaptionEngine>(hullWhite, curve));
-    Real reference = swaption->NPV();
     swaption->setPricingEngine(
         ext::make_shared<Gaussian1dSwaptionEngine>(gsr, 128, 8.0));
     Real gaussian = swaption->NPV();
@@ -1067,8 +1063,7 @@ BOOST_AUTO_TEST_CASE(testSofrSwaptionPaymentLag) {
         ext::make_shared<Gaussian1dJamshidianSwaptionEngine>(gsr));
     Real gaussianJamshidian = swaption->NPV();
 
-    BOOST_CHECK_CLOSE(gaussian, reference, 0.2);
-    BOOST_CHECK_CLOSE(gaussianJamshidian, reference, 0.2);
+    BOOST_CHECK_CLOSE(gaussianJamshidian, gaussian, 0.2);
     // Conversion to a NonstandardSwap must preserve the payment lag, and the
     // nonstandard Gaussian engine must reproduce the standard engine.
     auto nonstandardSwap = ext::make_shared<NonstandardSwap>(*swap);

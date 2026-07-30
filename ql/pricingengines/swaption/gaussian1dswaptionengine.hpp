@@ -47,10 +47,8 @@ namespace QuantLib {
 
         This is exact for compounded rates (including with a lookback
         with observation shift). A lookback without observation shift and a
-        lockout are still priced but "approximated" (as if they did not exist) by the same endpoint ratio;
-        and where a lookback is before the exercise date, that already-realised
-        stub is frozen. Coupon cashflows are discounted to their actual payment
-        dates, so a payment delay is retained.
+        lockout are still priced but "approximated" (as if they did not exist)
+		Payment delay is handled (statically)
 
         \warning Cash settled swaptions are not supported
         \warning Arithmetic (simple) averaged overnight coupons are not supported
