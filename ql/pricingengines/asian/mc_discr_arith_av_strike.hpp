@@ -143,14 +143,12 @@ namespace QuantLib {
             }
         }
 
-        return ext::shared_ptr<typename
-            MCDiscreteArithmeticASEngine<RNG,S>::path_pricer_type>(
-                new ArithmeticASOPathPricer(
+        return ext::make_shared<ArithmeticASOPathPricer>(
                     payoff->optionType(),
                     process->riskFreeRate()->discount(exercise->lastDate()),
                     this->arguments_.runningAccumulator,
                     this->arguments_.pastFixings,
-                    fixingCount));
+                    fixingCount);
     }
 
 
@@ -238,13 +236,12 @@ namespace QuantLib {
     inline
     MakeMCDiscreteArithmeticASEngine<RNG,S>::
     operator ext::shared_ptr<PricingEngine>() const {
-        return ext::shared_ptr<PricingEngine>(
-            new MCDiscreteArithmeticASEngine<RNG,S>(process_,
+        return ext::make_shared<MCDiscreteArithmeticASEngine<RNG,S>>(process_,
                                                     brownianBridge_,
                                                     antithetic_,
                                                     samples_, tolerance_,
                                                     maxSamples_,
-                                                    seed_));
+                                                    seed_);
     }
 
 }

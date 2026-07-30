@@ -186,8 +186,8 @@ namespace QuantLib {
             Real displacement,
             CashAnnuityModel model)
         : discountCurve_(std::move(discountCurve)),
-          vol_(ext::shared_ptr<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(
-              0, NullCalendar(), Following, vol, dc, Spec().type, displacement))),
+          vol_(ext::make_shared<ConstantSwaptionVolatility>(
+              0, NullCalendar(), Following, vol, dc, Spec().type, displacement)),
           model_(model) {
             registerWith(discountCurve_);
         }
@@ -200,8 +200,8 @@ namespace QuantLib {
             Real displacement,
             CashAnnuityModel model)
         : discountCurve_(std::move(discountCurve)),
-          vol_(ext::shared_ptr<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(
-              0, NullCalendar(), Following, vol, dc, Spec().type, displacement))),
+          vol_(ext::make_shared<ConstantSwaptionVolatility>(
+              0, NullCalendar(), Following, vol, dc, Spec().type, displacement)),
           model_(model) {
             registerWith(discountCurve_);
             registerWith(vol_);

@@ -99,29 +99,25 @@ namespace QuantLib {
             xMax = std::log(arguments_.barrier);
         }
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(
+        const auto equityMesher = ext::make_shared<FdmBlackScholesMesher>(
                 xGrid_, process_, maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
-                dividends_));
+                dividends_);
         
-        const ext::shared_ptr<FdmMesher> mesher (
-            ext::make_shared<FdmMesherComposite>(equityMesher));
+        const auto mesher = ext::make_shared<FdmMesherComposite>(equityMesher);
 
         // 2. Calculator
-        ext::shared_ptr<FdmInnerValueCalculator> calculator(
-            ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0));
+        auto calculator = ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0);
 
         // 3. Step conditions
         std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
 
         // 3.1 Step condition if discrete dividends
-        ext::shared_ptr<FdmDividendHandler> dividendCondition(
-            ext::make_shared<FdmDividendHandler>(dividends_, mesher,
+        auto dividendCondition = ext::make_shared<FdmDividendHandler>(dividends_, mesher,
                                    process_->riskFreeRate()->referenceDate(),
-                                   process_->riskFreeRate()->dayCounter(), 0));
+                                   process_->riskFreeRate()->dayCounter(), 0);
 
         if (!dividends_.empty()) {
             stepConditions.push_back(dividendCondition);
@@ -132,8 +128,7 @@ namespace QuantLib {
             stoppingTimes.push_back(dividendTimes);
         }
 
-        ext::shared_ptr<FdmStepConditionComposite> conditions(
-            ext::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions));
+        auto conditions = ext::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions);
 
         // 4. Boundary conditions
         FdmBoundaryConditionSet boundaries;
@@ -156,11 +151,10 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
                                      maturity, tGrid_, dampingSteps_ };
 
-        ext::shared_ptr<FdmBlackScholesSolver> solver(
-            ext::make_shared<FdmBlackScholesSolver>(
+        auto solver = ext::make_shared<FdmBlackScholesSolver>(
                                Handle<GeneralizedBlackScholesProcess>(process_),
                                payoff->strike(), solverDesc, schemeDesc_,
-                               localVol_, illegalLocalVolOverwrite_));
+                               localVol_, illegalLocalVolOverwrite_);
 
         results_.value = solver->valueAt(spot);
         results_.delta = solver->deltaAt(spot);

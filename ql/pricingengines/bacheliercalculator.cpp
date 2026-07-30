@@ -54,7 +54,7 @@ namespace QuantLib {
         Option::Type optionType, Real strike, Real forward, Real stdDev, Real discount)
     : strike_(strike), forward_(forward), stdDev_(stdDev),
       discount_(discount), variance_(stdDev*stdDev) {
-        initialize(ext::shared_ptr<StrikedTypePayoff>(new PlainVanillaPayoff(optionType, strike)));
+        initialize(ext::make_shared<PlainVanillaPayoff>(optionType, strike));
     }
 
     void BachelierCalculator::initialize(const ext::shared_ptr<StrikedTypePayoff>& p) {

@@ -227,11 +227,10 @@ namespace QuantLib {
 
     void DepositRateHelper::initializeDates() {
         if (updateDates_) {
-            // if the evaluation date is not a business day
-            // then move to the next business day
-            Date referenceDate =
-                iborIndex_->fixingCalendar().adjust(evaluationDate_);
-            earliestDate_ = iborIndex_->valueDate(referenceDate);
+            // fixing days are counted from the actual evaluation date,
+            // even when it is not a business day (see issue #753)
+            earliestDate_ = iborIndex_->fixingCalendar().advance(
+                evaluationDate_, iborIndex_->fixingDays() * Days);
             fixingDate_ = iborIndex_->fixingDate(earliestDate_);
         } else {
             earliestDate_ = iborIndex_->valueDate(fixingDate_);
@@ -392,12 +391,10 @@ namespace QuantLib {
 
     void FraRateHelper::initializeDates() {
         if (updateDates_) {
-            // if the evaluation date is not a business day
-            // then move to the next business day
-            Date referenceDate =
-                iborIndex_->fixingCalendar().adjust(evaluationDate_);
+            // fixing days are counted from the actual evaluation date,
+            // even when it is not a business day (see issue #753)
             Date spotDate = iborIndex_->fixingCalendar().advance(
-                referenceDate, iborIndex_->fixingDays()*Days);
+                evaluationDate_, iborIndex_->fixingDays()*Days);
             if (periodToStart_) { // NOLINT(readability-implicit-bool-conversion)
                 earliestDate_ = iborIndex_->fixingCalendar().advance(
                     spotDate, *periodToStart_, iborIndex_->businessDayConvention(),
@@ -673,13 +670,10 @@ namespace QuantLib {
     }
 
     void BMASwapRateHelper::initializeDates() {
-        // if the evaluation date is not a business day
-        // then move to the next business day
-        JointCalendar jc(calendar_,
-                         iborIndex_->fixingCalendar());
-        Date referenceDate = jc.adjust(evaluationDate_);
+        // settlement days are counted from the actual evaluation date,
+        // even when it is not a business day (see issue #753)
         earliestDate_ =
-            calendar_.advance(referenceDate, settlementDays_ * Days, Following);
+            calendar_.advance(evaluationDate_, settlementDays_ * Days, Following);
 
         Date maturity = earliestDate_ + tenor_;
 

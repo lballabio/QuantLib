@@ -51,6 +51,7 @@ namespace QuantLib {
         MakeVanillaSwap& withNominal(Real n);
 
         MakeVanillaSwap& withSettlementDays(Natural settlementDays);
+        MakeVanillaSwap& withSettlementCalendar(const Calendar& cal);
         MakeVanillaSwap& withEffectiveDate(const Date&);
         MakeVanillaSwap& withTerminationDate(const Date&);
         MakeVanillaSwap& withRule(DateGeneration::Rule r);
@@ -95,6 +96,7 @@ namespace QuantLib {
         Natural settlementDays_ = Null<Natural>();
         Date effectiveDate_, terminationDate_;
         Calendar fixedCalendar_, floatCalendar_;
+        Calendar settlementCalendar_;
 
         Swap::Type type_ = Swap::Payer;
         Real nominal_ = 1.0;
