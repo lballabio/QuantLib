@@ -110,6 +110,14 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
                 Real y = 0.0,
                 const ext::shared_ptr<IborIndex>& iborIdx = ext::shared_ptr<IborIndex>()) const;
 
+    Real compoundedRate(
+        const Date& rateStart,
+        const Date& rateEnd,
+        Time rateAccrualTime,
+        const Date& referenceDate = Date(),
+        Real y = 0.0,
+        const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
+
     Real swapRate(const Date& fixing,
                   const Period& tenor,
                   const Date& referenceDate = Date(),

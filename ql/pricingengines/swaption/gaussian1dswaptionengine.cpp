@@ -54,68 +54,17 @@ namespace QuantLib {
         const Schedule& fixedSchedule = swap->fixedSchedule();
         const Schedule& floatSchedule = swap->floatingSchedule();
 
-        bool overnightIndexed =
-            ext::dynamic_pointer_cast<OvernightIndex>(swap->iborIndex()) != nullptr;
         Handle<YieldTermStructure> forwardingCurve =
             swap->iborIndex()->forwardingTermStructure();
-        // the curve zerobond() falls back to when the handle is empty
-        const Handle<YieldTermStructure>& projectionCurve =
-            forwardingCurve.empty() ? model_->termStructure() : forwardingCurve;
 
-        /* Daily compounding over the coupon's first to last value date V0, Vn
-           telescopes to P(t,V0)/P(t,Vn) - 1 (for calib performance). Note: we use value
-           dates rather than accrual dates (because of lookback).
-
-           This is exact when the daily accrual factors match the
-           periods of the rates they multiply. But some changes in settings can break that. 
-		   These settings are different combinations lookback, observation shift, lockout.
-		   We have two choices: silently accept (approx pricing) or reject.
-		   We choose to reject but silently accepting is probably fine too but rejecting is conservative 
-		   and tells the caller exactly what works accurately.
-		   We also reject arithmetic averaging - but that is probably normal as I'm not aware
-		   of any Bermudans or similar exotics with such settings. */
-        std::vector<Date> onStartDates, onEndDates;
-        if (overnightIndexed) {
-            const Leg& floatingLeg = swap->floatingLeg();
-            onStartDates.resize(floatingLeg.size());
-            onEndDates.resize(floatingLeg.size());
-            for (Size l = 0; l < floatingLeg.size(); ++l) {
-                auto coupon =
-                    ext::dynamic_pointer_cast<OvernightIndexedCoupon>(floatingLeg[l]);
-                if (coupon == nullptr) {
-                    // a VanillaSwap on an overnight index holds IborCoupons
-                    onStartDates[l] = floatSchedule.dates()[l];
-                    onEndDates[l] = floatSchedule.dates()[l + 1];
-                    continue;
-                }
-                QL_REQUIRE(coupon->canApplyTelescopicFormula() &&
-                               coupon->lockoutDays() == 0 &&
-                               coupon->averagingMethod() == RateAveraging::Compound,
-                           "overnight coupon convention does not telescope "
-                           "(lookback without observation shift, lockout or "
-                           "arithmetic averaging)");
-                onStartDates[l] = coupon->valueDates().front();
-                onEndDates[l] = coupon->valueDates().back();
-            }
-        }
-
-        // A payment delay enters only through the discount date - nothing special is done here
-        auto floatingRate = [&](Size l, const Date& expiryDate, Real y) -> Real {
-            if (overnightIndexed) {
-                Real compounding =
-                    onStartDates[l] < expiryDate
-                        ? Real(projectionCurve->discount(onStartDates[l], true) /
-                               projectionCurve->discount(expiryDate, true))
-                        : model_->zerobond(onStartDates[l], expiryDate, y,
-                                           forwardingCurve);
-                return (compounding / model_->zerobond(onEndDates[l], expiryDate,
-                                                       y, forwardingCurve) -
-                        1.0) /
-                       arguments_.floatingAccrualTimes[l];
-            }
-            return model_->forwardRate(arguments_.floatingFixingDates[l], expiryDate,
-                                       y, arguments_.swap->iborIndex());
-        };
+        /* A compounded overnight coupon telescopes to the zerobond ratio
+           P(t,V0)/P(t,Vn) - 1 over its first and last value dates V0, Vn. */
+        const Leg& floatingLeg = swap->floatingLeg();
+        std::vector<ext::shared_ptr<OvernightIndexedCoupon> >
+            overnightCoupons(floatingLeg.size());
+        for (Size l = 0; l < floatingLeg.size(); ++l)
+            overnightCoupons[l] =
+                ext::dynamic_pointer_cast<OvernightIndexedCoupon>(floatingLeg[l]);
 
         Array npv0(2 * integrationPoints_ + 1, 0.0),
             npv1(2 * integrationPoints_ + 1, 0.0);
@@ -168,7 +117,15 @@ namespace QuantLib {
                               expiry0Time, 0.0);
             if (expiry0 > settlement) {
                 for (Size l = k1; l < arguments_.floatingCoupons.size(); l++) {
-                    floatingRate(l, expiry0, 0.0);
+                    if (overnightCoupons[l] != nullptr)
+                        model_->compoundedRate(
+                            overnightCoupons[l]->rateStart(),
+                            overnightCoupons[l]->rateEnd(),
+                            overnightCoupons[l]->rateAccrualTime(), expiry0, 0.0,
+                            forwardingCurve);
+                    else
+                        model_->forwardRate(arguments_.floatingFixingDates[l],
+                                            expiry0, 0.0, swap->iborIndex());
                     model_->zerobond(arguments_.floatingPayDates[l], expiry0,
                                      0.0, discountCurve_);
                 }
@@ -318,11 +275,20 @@ namespace QuantLib {
                     Real floatingLegNpv = 0.0;
                     for (Size l = k1; l < arguments_.floatingCoupons.size();
                          l++) {
+                        const Real floatingRate = overnightCoupons[l] != nullptr
+                            ? model_->compoundedRate(
+                                  overnightCoupons[l]->rateStart(),
+                                  overnightCoupons[l]->rateEnd(),
+                                  overnightCoupons[l]->rateAccrualTime(), expiry0,
+                                  z[k], forwardingCurve)
+                            : model_->forwardRate(
+                                  arguments_.floatingFixingDates[l], expiry0,
+                                  z[k], swap->iborIndex());
                         floatingLegNpv +=
                             arguments_.nominal *
                             arguments_.floatingAccrualTimes[l] *
                             (arguments_.floatingSpreads[l] +
-                             floatingRate(l, expiry0, z[k])) *
+                             floatingRate) *
                             model_->zerobond(arguments_.floatingPayDates[l],
                                              expiry0, z[k], discountCurve_);
                     }

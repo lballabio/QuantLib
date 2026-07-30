@@ -25,18 +25,6 @@
 
 namespace QuantLib {
 
-    namespace {
-        // one dynamic_cast pass over the leg, reused across states and
-        // events; entries are null for non-overnight coupons
-        std::vector<ext::shared_ptr<OvernightIndexedCoupon> >
-        floatFloatOvernightCoupons(const Leg& leg) {
-            std::vector<ext::shared_ptr<OvernightIndexedCoupon> > result(leg.size());
-            for (Size i = 0; i < leg.size(); ++i)
-                result[i] = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(leg[i]);
-            return result;
-        }
-    }
-
     void Gaussian1dFloatFloatSwaptionEngine::calculate() const {
 
         QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
@@ -194,14 +182,27 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<SwapIndex>(arguments_.index2);
         ext::shared_ptr<SwapSpreadIndex> cmsspread2 =
             ext::dynamic_pointer_cast<SwapSpreadIndex>(arguments_.index2);
-        const auto onCoupons1 = floatFloatOvernightCoupons(arguments_.swap->leg1());
-        const auto onCoupons2 = floatFloatOvernightCoupons(arguments_.swap->leg2());
+        const Leg& leg1 = arguments_.swap->leg1();
+        const Leg& leg2 = arguments_.swap->leg2();
+        std::vector<ext::shared_ptr<OvernightIndexedCoupon> > onCoupons1(leg1.size()),
+            onCoupons2(leg2.size());
+        for (Size j = 0; j < leg1.size(); ++j)
+            onCoupons1[j] =
+                ext::dynamic_pointer_cast<OvernightIndexedCoupon>(leg1[j]);
+        for (Size j = 0; j < leg2.size(); ++j)
+            onCoupons2[j] =
+                ext::dynamic_pointer_cast<OvernightIndexedCoupon>(leg2[j]);
 
         QL_REQUIRE(ibor1 != nullptr || cms1 != nullptr || cmsspread1 != nullptr,
                    "index1 must be ibor or swap or swap spread index");
         QL_REQUIRE(ibor2 != nullptr || cms2 != nullptr || cmsspread2 != nullptr,
                    "index2 must be ibor or swap or swap spread index");
-
+        const Handle<YieldTermStructure> forwardingCurve1 =
+            ibor1 != nullptr ? ibor1->forwardingTermStructure()
+                             : Handle<YieldTermStructure>();
+        const Handle<YieldTermStructure> forwardingCurve2 =
+            ibor2 != nullptr ? ibor2->forwardingTermStructure()
+                             : Handle<YieldTermStructure>();
         do {
 
             // we are at event0 date, which can be a structured coupon fixing
@@ -468,19 +469,13 @@ namespace QuantLib {
                             } else {
                                 Real estFixing = 0.0;
                                 if (onCoupons1[j] != nullptr) {
-                                    // daily compounding telescopes to a
-                                    // zerobond ratio over the accrual period
-                                    estFixing =
-                                        (model_->zerobond(
-                                             onCoupons1[j]->accrualStartDate(),
-                                             event0, zk,
-                                             ibor1->forwardingTermStructure()) /
-                                             model_->zerobond(
-                                                 onCoupons1[j]->accrualEndDate(),
-                                                 event0, zk,
-                                                 ibor1->forwardingTermStructure()) -
-                                         1.0) /
-                                        arguments_.leg1AccrualTimes[j];
+                                    // daily compounding telescopes to a zerobond
+                                    // ratio over the coupon's value dates
+                                    estFixing = model_->compoundedRate(
+                                        onCoupons1[j]->rateStart(),
+                                        onCoupons1[j]->rateEnd(),
+                                        onCoupons1[j]->rateAccrualTime(), event0,
+                                        zk, forwardingCurve1);
                                 } else if (ibor1 != nullptr) {
                                     estFixing = model_->forwardRate(
                                         arguments_.leg1FixingDates[j], event0,
@@ -566,17 +561,11 @@ namespace QuantLib {
                             } else {
                                 Real estFixing = 0.0;
                                 if (onCoupons2[j] != nullptr) {
-                                    estFixing =
-                                        (model_->zerobond(
-                                             onCoupons2[j]->accrualStartDate(),
-                                             event0, zk,
-                                             ibor2->forwardingTermStructure()) /
-                                             model_->zerobond(
-                                                 onCoupons2[j]->accrualEndDate(),
-                                                 event0, zk,
-                                                 ibor2->forwardingTermStructure()) -
-                                         1.0) /
-                                        arguments_.leg2AccrualTimes[j];
+                                    estFixing = model_->compoundedRate(
+                                        onCoupons2[j]->rateStart(),
+                                        onCoupons2[j]->rateEnd(),
+                                        onCoupons2[j]->rateAccrualTime(), event0,
+                                        zk, forwardingCurve2);
                                 } else if (ibor2 != nullptr)
                                     estFixing = model_->forwardRate(arguments_.leg2FixingDates[j],event0,zk,ibor2);
                                 if (cms2 != nullptr)

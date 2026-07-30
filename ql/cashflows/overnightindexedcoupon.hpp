@@ -130,6 +130,16 @@ namespace QuantLib {
                 (applyObservationShift_ && index_->fixingDays() == 0);
         }
         //@}
+        //! \name Reference-rate period
+        /*! The compounded rate spans the whole coupon, from the first to the
+            last value date - not the index's one-day deposit period from
+            fixingDate(), which is the last observation date since the coupon
+            fixes in arrears. */
+        //@{
+        Date rateStart() const { return valueDates_.front(); }
+        Date rateEnd() const { return valueDates_.back(); }
+        Time rateAccrualTime() const;
+        //@}
       private:
         std::vector<Date> valueDates_, interestDates_, fixingDates_;
         mutable std::vector<Rate> fixings_;

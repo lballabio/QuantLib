@@ -50,6 +50,27 @@ namespace QuantLib {
                (dcf * zerobond(endDate, referenceDate, y, yts));
 }
 
+Real Gaussian1dModel::compoundedRate(
+    const Date& rateStart,
+    const Date& rateEnd,
+    const Time rateAccrualTime,
+    const Date& referenceDate,
+    const Real y,
+    const Handle<YieldTermStructure>& yts) const {
+
+    calculate();
+
+    const Handle<YieldTermStructure>& projectionCurve =
+        yts.empty() ? termStructure() : yts;
+    const Real compounding =
+        rateStart < referenceDate
+            ? projectionCurve->discount(rateStart, true) /
+                  projectionCurve->discount(referenceDate, true)
+            : zerobond(rateStart, referenceDate, y, yts);
+    return (compounding / zerobond(rateEnd, referenceDate, y, yts) - 1.0) /
+           rateAccrualTime;
+}
+
 Real Gaussian1dModel::swapRate(const Date& fixing,
                                const Period& tenor,
                                const Date& referenceDate,

@@ -247,10 +247,6 @@ namespace QuantLib {
 
         auto overnight1 = ext::dynamic_pointer_cast<OvernightIndex>(ibor1);
         if (overnight1 != nullptr) {
-            // compounded-in-arrears overnight (RFR) leg; capped / floored
-            // compounded coupons are not wired through the pricing arguments
-            // (CappedFlooredOvernightIndexedCoupon does not derive from
-            // CappedFlooredCoupon), so they are rejected rather than dropped
             QL_REQUIRE(cappedRate1_[0] == Null<Real>() &&
                            flooredRate1_[0] == Null<Real>(),
                        "capped/floored compounded overnight legs are not supported");
@@ -465,10 +461,10 @@ namespace QuantLib {
                 arguments->leg1AccrualTimes[i] = coupon->accrualPeriod();
                 arguments->leg1PayDates[i] = coupon->date();
                 arguments->leg1ResetDates[i] = coupon->accrualStartDate();
-                // compounded overnight coupons fix in arrears (fixingDate() is
-                // the last observation date); the engine must schedule their
-                // valuation at the accrual start, where the telescoped
-                // zerobond-ratio estimate is a function of the model state
+                // Use the accrual start as the engine event date so that a
+                // lookback cannot move the event before an applicable exercise.
+                // The engine still projects the rate from the coupon's actual
+                // first value date.
                 auto onCoupon1 =
                     ext::dynamic_pointer_cast<OvernightIndexedCoupon>(leg1Coupons[i]);
                 arguments->leg1FixingDates[i] = onCoupon1 != nullptr
@@ -519,10 +515,8 @@ namespace QuantLib {
                 arguments->leg2AccrualTimes[i] = coupon->accrualPeriod();
                 arguments->leg2PayDates[i] = coupon->date();
                 arguments->leg2ResetDates[i] = coupon->accrualStartDate();
-                // compounded overnight coupons fix in arrears (fixingDate() is
-                // the last observation date); the engine must schedule their
-                // valuation at the accrual start, where the telescoped
-                // zerobond-ratio estimate is a function of the model state
+                // See leg 1 above: this is an engine event date, not the first
+                // value date used in the telescoping calculation.
                 auto onCoupon2 =
                     ext::dynamic_pointer_cast<OvernightIndexedCoupon>(leg2Coupons[i]);
                 arguments->leg2FixingDates[i] = onCoupon2 != nullptr
