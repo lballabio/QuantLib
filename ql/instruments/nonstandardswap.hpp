@@ -26,8 +26,10 @@
 
 #include <ql/instruments/swap.hpp>
 #include <ql/instruments/fixedvsfloatingswap.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/utilities/null.hpp>
 #include <ql/optional.hpp>
 
 namespace QuantLib {
@@ -125,6 +127,11 @@ namespace QuantLib {
         BusinessDayConvention paymentConvention_;
         Integer paymentLag_;
         Calendar paymentCalendar_;
+        bool telescopicValueDates_ = false;
+        RateAveraging::Type averagingMethod_ = RateAveraging::Compound;
+        Natural lookbackDays_ = Null<Natural>();
+        Natural lockoutDays_ = 0;
+        bool applyObservationShift_ = false;
         const bool intermediateCapitalExchange_;
         const bool finalCapitalExchange_;
         // results

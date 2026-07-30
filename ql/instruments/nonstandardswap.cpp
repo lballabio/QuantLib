@@ -27,6 +27,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/instruments/nonstandardswap.hpp>
+#include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/optional.hpp>
@@ -55,6 +56,13 @@ namespace QuantLib {
           paymentCalendar_(fromVanilla.paymentCalendar()),
           intermediateCapitalExchange_(false), finalCapitalExchange_(false) {
 
+        if (const auto* ois = dynamic_cast<const OvernightIndexedSwap*>(&fromVanilla)) {
+            telescopicValueDates_ = ois->telescopicValueDates();
+            averagingMethod_ = ois->averagingMethod();
+            lookbackDays_ = ois->lookbackDays();
+            lockoutDays_ = ois->lockoutDays();
+            applyObservationShift_ = ois->applyObservationShift();
+        }
         init();
     }
 
@@ -183,7 +191,12 @@ namespace QuantLib {
                            .withPaymentLag(paymentLag_)
                            .withPaymentCalendar(paymentCalendar_)
                            .withSpreads(spread_)
-                           .withGearings(gearing_);
+                           .withGearings(gearing_)
+                           .withTelescopicValueDates(telescopicValueDates_)
+                           .withAveragingMethod(averagingMethod_)
+                           .withLookbackDays(lookbackDays_)
+                           .withLockoutDays(lockoutDays_)
+                           .withObservationShift(applyObservationShift_);
         } else {
             legs_[1] = IborLeg(floatingSchedule_, iborIndex_)
                            .withNotionals(floatingNominal_)
