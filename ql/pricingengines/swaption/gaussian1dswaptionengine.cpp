@@ -57,8 +57,6 @@ namespace QuantLib {
         Handle<YieldTermStructure> forwardingCurve =
             swap->iborIndex()->forwardingTermStructure();
 
-        /* A compounded overnight coupon telescopes to the zerobond ratio
-           P(t,V0)/P(t,Vn) - 1 over its first and last value dates V0, Vn. */
         const Leg& floatingLeg = swap->floatingLeg();
         std::vector<ext::shared_ptr<OvernightIndexedCoupon> >
             overnightCoupons(floatingLeg.size());
@@ -119,10 +117,7 @@ namespace QuantLib {
                 for (Size l = k1; l < arguments_.floatingCoupons.size(); l++) {
                     if (overnightCoupons[l] != nullptr)
                         model_->compoundedRate(
-                            overnightCoupons[l]->rateStart(),
-                            overnightCoupons[l]->rateEnd(),
-                            overnightCoupons[l]->rateAccrualTime(), expiry0, 0.0,
-                            forwardingCurve);
+                            *overnightCoupons[l], expiry0, 0.0, forwardingCurve);
                     else
                         model_->forwardRate(arguments_.floatingFixingDates[l],
                                             expiry0, 0.0, swap->iborIndex());
@@ -277,10 +272,8 @@ namespace QuantLib {
                          l++) {
                         const Real floatingRate = overnightCoupons[l] != nullptr
                             ? model_->compoundedRate(
-                                  overnightCoupons[l]->rateStart(),
-                                  overnightCoupons[l]->rateEnd(),
-                                  overnightCoupons[l]->rateAccrualTime(), expiry0,
-                                  z[k], forwardingCurve)
+                                  *overnightCoupons[l], expiry0, z[k],
+                                  forwardingCurve)
                             : model_->forwardRate(
                                   arguments_.floatingFixingDates[l], expiry0,
                                   z[k], swap->iborIndex());

@@ -225,16 +225,6 @@ const std::optional<Integer>& roundingPrecision)
         return pricer_->swapletRate();
     }
 
-    /* The normalising year fraction follows the pricer: the value dates under
-       an observation shift, the interest dates otherwise. It can therefore
-       differ from accrualPeriod(). */
-    Time OvernightIndexedCoupon::rateAccrualTime() const {
-        const DayCounter& dc = index_->dayCounter();
-        return (applyObservationShift_ && fixingDays_ > 0)
-                   ? dc.yearFraction(valueDates_.front(), valueDates_.back())
-                   : dc.yearFraction(interestDates_.front(), interestDates_.back());
-    }
-
     const vector<Rate>& OvernightIndexedCoupon::indexFixings() const {
         fixings_.resize(n_);
         for (Size i=0; i<n_; ++i)

@@ -76,9 +76,7 @@ namespace QuantLib {
             if (!arguments_.floatingIsRedemptionFlow[i]) {
                 const Real floatingRate = onCoupons[i] != nullptr
                     ? model_->compoundedRate(
-                          onCoupons[i]->rateStart(), onCoupons[i]->rateEnd(),
-                          onCoupons[i]->rateAccrualTime(), expiry, y,
-                          forwardingCurve)
+                          *onCoupons[i], expiry, y, forwardingCurve)
                     : model_->forwardRate(arguments_.floatingFixingDates[i],
                                           expiry, y,
                                           arguments_.swap->iborIndex());
@@ -400,10 +398,8 @@ namespace QuantLib {
                         else {
                             const Real floatingRate = onCoupons[l] != nullptr
                                 ? model_->compoundedRate(
-                                      onCoupons[l]->rateStart(),
-                                      onCoupons[l]->rateEnd(),
-                                      onCoupons[l]->rateAccrualTime(), expiry0,
-                                      z[k], forwardingCurve)
+                                      *onCoupons[l], expiry0, z[k],
+                                      forwardingCurve)
                                 : model_->forwardRate(
                                       arguments_.floatingFixingDates[l], expiry0,
                                       z[k], arguments_.swap->iborIndex());

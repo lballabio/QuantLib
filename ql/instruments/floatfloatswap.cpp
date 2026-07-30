@@ -28,7 +28,6 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/instruments/floatfloatswap.hpp>
-#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/optional.hpp>
 #include <utility>
@@ -245,18 +244,7 @@ namespace QuantLib {
         QL_REQUIRE(ibor2 != nullptr || cms2 != nullptr || cmsspread2 != nullptr,
                    "index2 must be ibor or cms");
 
-        auto overnight1 = ext::dynamic_pointer_cast<OvernightIndex>(ibor1);
-        if (overnight1 != nullptr) {
-            QL_REQUIRE(cappedRate1_[0] == Null<Real>() &&
-                           flooredRate1_[0] == Null<Real>(),
-                       "capped/floored compounded overnight legs are not supported");
-            legs_[0] = OvernightLeg(schedule1_, overnight1)
-                           .withNotionals(nominal1_)
-                           .withPaymentDayCounter(dayCount1_)
-                           .withPaymentAdjustment(paymentConvention1_)
-                           .withSpreads(spread1_)
-                           .withGearings(gearing1_);
-        } else if (ibor1 != nullptr) {
+        if (ibor1 != nullptr) {
             IborLeg leg(schedule1_, ibor1);
             leg = leg.withNotionals(nominal1_)
                       .withPaymentDayCounter(dayCount1_)
@@ -270,18 +258,7 @@ namespace QuantLib {
             legs_[0] = leg;
         }
 
-        auto overnight2 = ext::dynamic_pointer_cast<OvernightIndex>(ibor2);
-        if (overnight2 != nullptr) {
-            QL_REQUIRE(cappedRate2_[0] == Null<Real>() &&
-                           flooredRate2_[0] == Null<Real>(),
-                       "capped/floored compounded overnight legs are not supported");
-            legs_[1] = OvernightLeg(schedule2_, overnight2)
-                           .withNotionals(nominal2_)
-                           .withPaymentDayCounter(dayCount2_)
-                           .withPaymentAdjustment(paymentConvention2_)
-                           .withSpreads(spread2_)
-                           .withGearings(gearing2_);
-        } else if (ibor2 != nullptr) {
+        if (ibor2 != nullptr) {
             IborLeg leg(schedule2_, ibor2);
             leg = leg.withNotionals(nominal2_)
                       .withPaymentDayCounter(dayCount2_)
@@ -461,15 +438,7 @@ namespace QuantLib {
                 arguments->leg1AccrualTimes[i] = coupon->accrualPeriod();
                 arguments->leg1PayDates[i] = coupon->date();
                 arguments->leg1ResetDates[i] = coupon->accrualStartDate();
-                // Use the accrual start as the engine event date so that a
-                // lookback cannot move the event before an applicable exercise.
-                // The engine still projects the rate from the coupon's actual
-                // first value date.
-                auto onCoupon1 =
-                    ext::dynamic_pointer_cast<OvernightIndexedCoupon>(leg1Coupons[i]);
-                arguments->leg1FixingDates[i] = onCoupon1 != nullptr
-                    ? onCoupon1->accrualStartDate()
-                    : coupon->fixingDate();
+                arguments->leg1FixingDates[i] = coupon->fixingDate();
                 arguments->leg1Spreads[i] = coupon->spread();
                 arguments->leg1Gearings[i] = coupon->gearing();
                 try {
@@ -515,13 +484,7 @@ namespace QuantLib {
                 arguments->leg2AccrualTimes[i] = coupon->accrualPeriod();
                 arguments->leg2PayDates[i] = coupon->date();
                 arguments->leg2ResetDates[i] = coupon->accrualStartDate();
-                // See leg 1 above: this is an engine event date, not the first
-                // value date used in the telescoping calculation.
-                auto onCoupon2 =
-                    ext::dynamic_pointer_cast<OvernightIndexedCoupon>(leg2Coupons[i]);
-                arguments->leg2FixingDates[i] = onCoupon2 != nullptr
-                    ? onCoupon2->accrualStartDate()
-                    : coupon->fixingDate();
+                arguments->leg2FixingDates[i] = coupon->fixingDate();
                 arguments->leg2Spreads[i] = coupon->spread();
                 arguments->leg2Gearings[i] = coupon->gearing();
                 try {

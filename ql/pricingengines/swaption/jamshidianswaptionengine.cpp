@@ -94,7 +94,6 @@ namespace QuantLib {
             fixedPayTimes[i] = dayCounter.yearFraction(referenceDate,
                                                        arguments_.fixedPayDates[i]);
 
-        // handle SOFR with a payment lag
         Date floatingAccrualEnd =
             arguments_.swap->floatingSchedule().dates().back();
         amounts.push_back(arguments_.nominal);
@@ -103,28 +102,31 @@ namespace QuantLib {
 
         Real parNominal = arguments_.nominal;
         {
-            Handle<YieldTermStructure> curve =
+            const Handle<YieldTermStructure>& curve =
                 tsmodel != nullptr ? tsmodel->termStructure() : termStructure_;
             const std::vector<Date>& floatDates =
                 arguments_.swap->floatingSchedule().dates();
-            DiscountFactor dfValue =
-                curve->discount(arguments_.fixedResetDates[0]);
-            for (Size j = 0; j + 1 < floatDates.size() &&
-                             j < arguments_.floatingPayDates.size(); ++j) {
-                Date accrualEnd = floatDates[j + 1];
-                if (arguments_.floatingPayDates[j] > accrualEnd) {
-                    DiscountFactor dfStart = curve->discount(floatDates[j]);
-                    DiscountFactor dfEnd = curve->discount(accrualEnd);
-                    DiscountFactor dfPay =
-                        curve->discount(arguments_.floatingPayDates[j]);
-                    // A lagged coupon pays N*(dfStart/dfEnd - 1) at payDate,
-                    // leaving the leg short by
-                    // N*(dfStart-dfEnd)*(1-dfPay/dfEnd). Jamshidian cannot
-                    // discount coupons to separate dates, so that shortfall is
-                    // frozen at time zero - no payment-delay convexity - and
-                    // folded into the notional at the value date.
-                    parNominal -= arguments_.nominal * (dfStart - dfEnd) *
-                                  (1.0 - dfPay / dfEnd) / dfValue;
+            const Date valueDate = arguments_.fixedResetDates[0];
+            if (valueDate >= curve->referenceDate()) {
+                const DiscountFactor dfValue = curve->discount(valueDate);
+                for (Size j = 0; j + 1 < floatDates.size() &&
+                                 j < arguments_.floatingPayDates.size(); ++j) {
+                    if (floatDates[j] < valueDate)
+                        continue;
+                    const Date accrualEnd = floatDates[j + 1];
+                    if (arguments_.floatingPayDates[j] > accrualEnd) {
+                        const DiscountFactor dfStart =
+                            curve->discount(floatDates[j]);
+                        const DiscountFactor dfEnd = curve->discount(accrualEnd);
+                        const DiscountFactor dfPay =
+                            curve->discount(arguments_.floatingPayDates[j]);
+                        // The delayed coupon is short by
+                        // N*(dfStart-dfEnd)*(1-dfPay/dfEnd). Jamshidian cannot
+                        // assign a separate discount date to each floating
+                        // coupon, so freeze this correction at time zero.
+                        parNominal -= arguments_.nominal * (dfStart - dfEnd) *
+                                      (1.0 - dfPay / dfEnd) / dfValue;
+                    }
                 }
             }
         }

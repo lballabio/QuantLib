@@ -18,6 +18,7 @@
 */
 
 #include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/payoff.hpp>
 #include <cmath>
@@ -51,15 +52,21 @@ namespace QuantLib {
 }
 
 Real Gaussian1dModel::compoundedRate(
-    const Date& rateStart,
-    const Date& rateEnd,
-    const Time rateAccrualTime,
+    const OvernightIndexedCoupon& coupon,
     const Date& referenceDate,
     const Real y,
     const Handle<YieldTermStructure>& yts) const {
 
     calculate();
 
+    const bool observationShift =
+        coupon.applyObservationShift() && coupon.fixingDays() > 0;
+    const auto& rateDates =
+        observationShift ? coupon.valueDates() : coupon.interestDates();
+    const Date& rateStart = rateDates.front();
+    const Date& rateEnd = rateDates.back();
+    const Time rateAccrualTime =
+        coupon.index()->dayCounter().yearFraction(rateStart, rateEnd);
     const Handle<YieldTermStructure>& projectionCurve =
         yts.empty() ? termStructure() : yts;
     const Real compounding =

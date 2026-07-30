@@ -39,17 +39,18 @@ namespace QuantLib {
         part of the exercise into right.
 
         An overnight-indexed (RFR) underlying is supported: a compounded
-        coupon's daily compounding telescopes to the zerobond ratio
-        \f$ P(t,V_0)/P(t,V_n) - 1 \f$ over its first and last value dates for perf reasons.
-		Value dates are used so a lookback is accounted for, and the ratio is normalised by the coupon's own rate
+        coupon's daily compounding telescopes to a zerobond ratio over its rate
+        period for performance. Shifted value dates are used under an
+        observation shift, and the ratio is normalised by the coupon's own rate
         accrual so the projected amount matches OvernightIndexedCoupon::amount(),
         including under an observation shift.
 
         This is exact for compounded rates (including with a lookback
         with observation shift). A lookback without observation shift and a
         lockout are still priced but "approximated" (as if they did not exist) by the same endpoint ratio;
-		and where a lookback is before the exercise date, that already-realised stub is frozen.
-		A payment delay is handled (statically).
+        and where a lookback is before the exercise date, that already-realised
+        stub is frozen. Coupon cashflows are discounted to their actual payment
+        dates, so a payment delay is retained.
 
         \warning Cash settled swaptions are not supported
         \warning Arithmetic (simple) averaged overnight coupons are not supported

@@ -53,6 +53,8 @@
 
 namespace QuantLib {
 
+class OvernightIndexedCoupon;
+
 /*! One factor interest rate model interface class
     The only methods that must be implemented by subclasses
     are the numeraire and zerobond methods for an input array
@@ -111,9 +113,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
                 const ext::shared_ptr<IborIndex>& iborIdx = ext::shared_ptr<IborIndex>()) const;
 
     Real compoundedRate(
-        const Date& rateStart,
-        const Date& rateEnd,
-        Time rateAccrualTime,
+        const OvernightIndexedCoupon& coupon,
         const Date& referenceDate = Date(),
         Real y = 0.0,
         const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
