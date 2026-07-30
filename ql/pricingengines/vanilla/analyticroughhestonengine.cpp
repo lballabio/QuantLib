@@ -90,7 +90,7 @@ namespace QuantLib {
         const ext::shared_ptr<RoughHestonModel>& model,
         Size integrationOrder, 
         Size timeSteps,
-        RoughHestonApproximation approximation)
+        Approximation approximation)
     : GenericModelEngine<RoughHestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
@@ -108,7 +108,7 @@ namespace QuantLib {
         Size timeSteps,
         Real andersenPiterbargEpsilon,
         Real alpha,
-        RoughHestonApproximation approximation)
+        Approximation approximation)
     : GenericModelEngine<RoughHestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
@@ -131,7 +131,7 @@ namespace QuantLib {
 
     std::complex<Real> AnalyticRoughHestonEngine::lnChF(
         const std::complex<Real>& z, Time t) const {
-        return approximation_ == RoughHestonApproximation::Pade
+        return approximation_ == Approximation::Pade
             ? lnChFPade(z, t) : lnChFAdams(z, t);
     }
 
@@ -339,7 +339,7 @@ namespace QuantLib {
 
         QL_REQUIRE(t > 0.0, "maturity must be positive");
 
-        if (approximation_ == RoughHestonApproximation::Pade) {
+        if (approximation_ == Approximation::Pade) {
             return padeRiccati(z, t);
         }
 

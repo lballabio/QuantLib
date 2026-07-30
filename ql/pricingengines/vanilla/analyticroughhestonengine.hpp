@@ -85,15 +85,15 @@ namespace QuantLib {
         typedef FourierIntegration Integration;
 
         //! route used to solve the fractional Riccati equation
-        enum class RoughHestonApproximation { AdamsPredictorCorrector, Pade };
+        enum class Approximation { AdamsPredictorCorrector, Pade };
 
         //! Constructor using Gauss-Laguerre integration
         explicit AnalyticRoughHestonEngine(
             const ext::shared_ptr<RoughHestonModel>& model,
             Size integrationOrder = 128,
             Size timeSteps = 256,
-            RoughHestonApproximation approximation
-                = RoughHestonApproximation::AdamsPredictorCorrector);
+            Approximation approximation
+                = Approximation::AdamsPredictorCorrector);
 
         /*! Constructor giving full control over the Fourier integration
             algorithm. alpha is the payoff dampening exponent, which must
@@ -105,8 +105,8 @@ namespace QuantLib {
             Size timeSteps = 256,
             Real andersenPiterbargEpsilon = 1e-25,
             Real alpha = -0.5,
-            RoughHestonApproximation approximation
-                = RoughHestonApproximation::AdamsPredictorCorrector);
+            Approximation approximation
+                = Approximation::AdamsPredictorCorrector);
 
         void update() override;
         void calculate() const override;
@@ -165,7 +165,7 @@ namespace QuantLib {
         const Size timeSteps_;
         const Integration integration_;
         const Real andersenPiterbargEpsilon_, alpha_;
-        const RoughHestonApproximation approximation_;
+        const Approximation approximation_;
 
         mutable Size evaluations_{0};
         mutable std::map<std::tuple<Real, Real, Time>, std::complex<Real>>
