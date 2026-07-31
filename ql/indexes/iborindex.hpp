@@ -53,7 +53,7 @@ namespace QuantLib {
         BusinessDayConvention businessDayConvention() const;
         bool endOfMonth() const { return endOfMonth_; }
         //! the curve used to forecast fixings
-        Handle<YieldTermStructure> forwardingTermStructure() const;
+        const Handle<YieldTermStructure>& forwardingTermStructure() const;
         //@}
         //! \name Other methods
         //@{
@@ -104,7 +104,7 @@ namespace QuantLib {
         return convention_;
     }
 
-    inline Handle<YieldTermStructure>
+    inline const Handle<YieldTermStructure>&
     IborIndex::forwardingTermStructure() const {
         return termStructure_;
     }

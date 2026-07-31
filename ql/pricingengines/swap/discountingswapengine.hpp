@@ -44,7 +44,7 @@ namespace QuantLib {
             Date settlementDate = Date(),
             Date npvDate = Date());
         void calculate() const override;
-        Handle<YieldTermStructure> discountCurve() const {
+        const Handle<YieldTermStructure>& discountCurve() const {
             return discountCurve_;
         }
       private:

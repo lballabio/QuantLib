@@ -103,8 +103,8 @@ namespace QuantLib {
                       AccrualBias accrualBias = HalfDayBias,
                       ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise);
 
-        Handle<YieldTermStructure> isdaRateCurve() const { return discountCurve_; }
-        Handle<DefaultProbabilityTermStructure> isdaCreditCurve() const { return probability_; }
+        const Handle<YieldTermStructure>& isdaRateCurve() const { return discountCurve_; }
+        const Handle<DefaultProbabilityTermStructure>& isdaCreditCurve() const { return probability_; }
 
         void calculate() const override;
 
