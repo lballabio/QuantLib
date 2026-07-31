@@ -88,14 +88,17 @@ namespace QuantLib {
 
     AnalyticRoughHestonEngine::AnalyticRoughHestonEngine(
         const ext::shared_ptr<RoughHestonModel>& model,
-        Size integrationOrder, Size timeSteps)
+        Size integrationOrder, 
+        Size timeSteps,
+        Approximation approximation)
     : GenericModelEngine<RoughHestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       timeSteps_(timeSteps),
       integration_(Integration::gaussLaguerre(integrationOrder)),
       andersenPiterbargEpsilon_(1e-25),
-      alpha_(-0.5) {
+      alpha_(-0.5),
+      approximation_(approximation) {
         QL_REQUIRE(timeSteps > 0, "at least one time step required");
     }
 
@@ -104,14 +107,16 @@ namespace QuantLib {
         const Integration& integration,
         Size timeSteps,
         Real andersenPiterbargEpsilon,
-        Real alpha)
+        Real alpha,
+        Approximation approximation)
     : GenericModelEngine<RoughHestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       timeSteps_(timeSteps),
       integration_(integration),
       andersenPiterbargEpsilon_(andersenPiterbargEpsilon),
-      alpha_(alpha) {
+      alpha_(alpha),
+      approximation_(approximation) {
         QL_REQUIRE(timeSteps > 0, "at least one time step required");
         QL_REQUIRE(alpha > -1.0 && alpha < 0.0,
                    "alpha (" << alpha << ") must be in (-1, 0)");
@@ -126,32 +131,219 @@ namespace QuantLib {
 
     std::complex<Real> AnalyticRoughHestonEngine::lnChF(
         const std::complex<Real>& z, Time t) const {
+        return approximation_ == Approximation::Pade
+            ? lnChFPade(z, t) : lnChFAdams(z, t);
+    }
+
+    // Coefficients of the non-fractional Riccati equation satisfied by the
+    // rough Heston h(z, t), shared by the Adams and Padè routes
+    AnalyticRoughHestonEngine::RiccatiCoefficients
+    AnalyticRoughHestonEngine::riccatiCoefficients(
+        const std::complex<Real>& z) const {
+
+        const Real kappa = model_->kappa();
+        const Real sigma = model_->sigma();
+        const Real rho   = model_->rho();
+
+        const std::complex<Real> i{0.0, 1.0};
+
+        const std::complex<Real> c0{-0.5 * z * (z + i)};
+        const std::complex<Real> c1{i * (rho * sigma) * z - kappa};
+        const Real c2{0.5 * sigma * sigma};
+
+        return {c0, c1, std::complex<Real>(c2)};
+    }
+
+    std::vector<std::complex<Real>> AnalyticRoughHestonEngine::solveAdamsRiccati(
+        const std::complex<Real>& z, Time t) const {
+
+        const Real a{model_->hurst() + 0.5};
+        const RiccatiCoefficients c{riccatiCoefficients(z)};
+
+        return FractionalAdams<std::complex<Real>>(a).solve(
+            [&](Real, const std::complex<Real>& x) -> std::complex<Real> {
+                return c.c0 + (c.c1 + c.c2 * x) * x;
+            },
+            std::complex<Real>(0.0), t, timeSteps_);
+    }
+
+    std::complex<Real> AnalyticRoughHestonEngine::lnChFAdams(
+        const std::complex<Real>& z, Time t) const {
 
         const Real kappa = model_->kappa();
         const Real theta = model_->theta();
-        const Real sigma = model_->sigma();
-        const Real rho   = model_->rho();
         const Real v0    = model_->v0();
         const Real a     = model_->hurst() + 0.5;
 
-        const std::complex<Real> c0{
-            -0.5 * z * (z + std::complex<Real>(0.0, 1.0))};
-
-        const std::complex<Real> c1{
-            std::complex<Real>(0.0, rho * sigma) * z - kappa};
-
-        const Real c2{0.5 * sigma * sigma};
-
-        const std::vector<std::complex<Real>> h{
-            FractionalAdams<std::complex<Real>>(a).solve(
-                [&](Real, const std::complex<Real>& x)
-                    -> std::complex<Real> { return c0 + (c1 + c2 * x) * x; },
-                std::complex<Real>(0.0), t, timeSteps_)};
+        const std::vector<std::complex<Real>> h{solveAdamsRiccati(z, t)};
 
         const Real dt{t / timeSteps_};
 
         return kappa * theta * riemannLiouvilleIntegral(h, 1.0, dt)
             + v0 * riemannLiouvilleIntegral(h, 1.0 - a, dt);
+    }
+
+    std::complex<Real> AnalyticRoughHestonEngine::lnChFPade(
+        const std::complex<Real>& z, Time t) const {
+
+        const Real kappa = model_->kappa();
+        const Real theta = model_->theta();
+        const Real sigma = model_->sigma();
+        const Real v0    = model_->v0();
+        const Real a     = model_->hurst() + 0.5;
+
+        const PadeCoefficients c{padeCoefficients(z)};
+
+        const Real dt{t / timeSteps_};
+
+        std::vector<std::complex<Real>> h(timeSteps_ + 1);
+        for (Size j{0}; j <= timeSteps_; ++j) {
+            h[j] = evaluatePade(c, sigma * std::pow(Real(j) * dt, a));
+        }
+
+        return kappa * theta * riemannLiouvilleIntegral(h, 1.0, dt)
+            + v0 * riemannLiouvilleIntegral(h, 1.0 - a, dt);
+    }
+
+    // (3, 3) global rational approximation of Gatheral-Radoicic
+    AnalyticRoughHestonEngine::PadeCoefficients
+    AnalyticRoughHestonEngine::padeCoefficients(
+        const std::complex<Real>& z) const {
+
+        const Real kappa = model_->kappa();
+        const Real sigma = model_->sigma();
+        const Real rho   = model_->rho();
+        const Real a     = model_->hurst() + 0.5;
+
+        const std::complex<Real> i{0.0, 1.0};
+
+        const RiccatiCoefficients rc{riccatiCoefficients(z)};
+        const std::complex<Real> c0{rc.c0};
+        const std::complex<Real> c1{rc.c1};
+        const Real c2{rc.c2.real()};
+
+        // c0 = -z * (z + i) / 2 vanishes exactly at z = 0 and z = -i. There,
+        // v = 0 solves the Riccati equation identically, so h is exactly 
+        // zero for all t. It also makes the long-time root gamma0 vanish,
+        // which degenerates the (3, 3) system.
+        if (std::abs(c0) < 1e-14) {
+            return {std::complex<Real>(0.0), std::complex<Real>(0.0),
+                    std::complex<Real>(0.0), std::complex<Real>(0.0),
+                    std::complex<Real>(0.0), std::complex<Real>(0.0)};
+        }
+
+        const GammaFunction g;
+
+        // reciprocal gamma 1 / Gamma(x), which vanishes at the poles
+        // 0, -1, -2, ...; keeps the long-time coefficients finite as
+        // a -> 1
+        const auto rGamma
+            = [&g](Real x) -> Real { return 1.0 / g.value(x); };
+
+        // Short-time Taylor coefficients beta_k = b_k / sigma^k of
+        // h = sum_k b_k t^(k a), rescaled to the variable y = sigma t^a
+        const std::complex<Real> b1{c0 * rGamma(1.0 + a)};
+        const std::complex<Real> b2{
+            c1 * b1 * (g.value(1.0 + a) / g.value(1.0 + 2.0 * a))};
+        const std::complex<Real> b3{
+            (c1 * b2 + c2 * b1 * b1)
+            * (g.value(1.0 + 2.0 * a) / g.value(1.0 + 3.0 * a))};
+
+        const std::complex<Real> beta1{b1 / sigma};
+        const std::complex<Real> beta2{b2 / (sigma * sigma)};
+        const std::complex<Real> beta3{b3 / (sigma * sigma * sigma)};
+
+        // Long-time coefficients gamma_k = g_k sigma^k: h -> r_- / sigma,
+        // the attracting root of the Riccati quadratic, with algebraic
+        // corrections in 1 / y.
+        const std::complex<Real> w{kappa / sigma - i * (rho * z)};
+        const std::complex<Real> A{std::sqrt(z * (z + i) + w * w)};
+
+        // A is the discriminant root separating the two fixed points of the
+        // Riccati quadratic; near z where they coincide (A -> 0), gamma_1 and
+        // gamma_2 below are ill-conditioned and the (3, 3) approximant is not
+        // reliable here.
+        QL_REQUIRE(std::abs(A) > 1e-8,
+                   "Padè approximation is singular at z = " << z
+                   << "; use the Adams "
+                   "predictor-corrector engine for this contour point");
+
+        const std::complex<Real> rMinus{w - A};
+
+        const std::complex<Real> gamma0{rMinus / sigma};
+        const std::complex<Real> gamma1{-gamma0 * rGamma(1.0 - a) / A};
+        const std::complex<Real> gamma2{
+            gamma0 * rGamma(1.0 - 2.0 * a) / (A * A)
+            + 0.5 * sigma * gamma1 * gamma1 / A};
+
+        // The two matching sets pin down the denominator (q_1, q_2, q_3)
+        // through a 3x3 complex linear system. QuantLib::determinant()
+        // only accepts a real-valued Matrix, so this closed-form cofactor
+        // expansion is used instead of routing through a boost::ublas LU
+        // decomposition for what is a fixed, known 3x3 size.
+        const auto det3
+            = [](const std::complex<Real>& a11, const std::complex<Real>& a12,
+                 const std::complex<Real>& a13, const std::complex<Real>& a21,
+                 const std::complex<Real>& a22, const std::complex<Real>& a23,
+                 const std::complex<Real>& a31, const std::complex<Real>& a32,
+                 const std::complex<Real>& a33) -> std::complex<Real> {
+            return a11 * (a22 * a33 - a23 * a32)
+                 - a12 * (a21 * a33 - a23 * a31)
+                 + a13 * (a21 * a32 - a22 * a31);
+        };
+
+        const std::complex<Real> det{det3(
+            gamma0, gamma1, gamma2, -beta1, gamma0, gamma1, -beta2, -beta1,
+            gamma0)};
+
+        QL_REQUIRE(std::abs(det) > 1e-12,
+                   "Padè denominator system is ill-conditioned at z = " << z
+                   << "; use the Adams predictor-corrector engine for this "
+                   "contour point");
+
+        const std::complex<Real> q1{det3(
+            beta1, gamma1, gamma2, beta2, gamma0, gamma1, beta3, -beta1,
+            gamma0) / det};
+        const std::complex<Real> q2{det3(
+            gamma0, beta1, gamma2, -beta1, beta2, gamma1, -beta2, beta3,
+            gamma0) / det};
+        const std::complex<Real> q3{det3(
+            gamma0, gamma1, beta1, -beta1, gamma0, beta2, -beta2, -beta1,
+            beta3) / det};
+
+        const std::complex<Real> p1{beta1};
+        const std::complex<Real> p2{beta2 + beta1 * q1};
+        const std::complex<Real> p3{beta3 + beta2 * q1 + beta1 * q2};
+
+        return {p1, p2, p3, q1, q2, q3};
+    }
+
+    std::complex<Real> AnalyticRoughHestonEngine::evaluatePade(
+        const PadeCoefficients& c, Real y) {
+        const std::complex<Real> num{y * (c.p1 + y * (c.p2 + y * c.p3))};
+        const std::complex<Real> den{1.0 + y * (c.q1 + y * (c.q2 + y * c.q3))};
+        
+        return num / den;
+    }
+
+    std::complex<Real> AnalyticRoughHestonEngine::padeRiccati(
+        const std::complex<Real>& z, Time t) const {
+        const Real sigma = model_->sigma();
+        const Real a     = model_->hurst() + 0.5;
+        
+        return evaluatePade(padeCoefficients(z), sigma * std::pow(t, a));
+    }
+
+    std::complex<Real> AnalyticRoughHestonEngine::riccatiSolution(
+        const std::complex<Real>& z, Time t) const {
+
+        QL_REQUIRE(t > 0.0, "maturity must be positive");
+
+        if (approximation_ == Approximation::Pade) {
+            return padeRiccati(z, t);
+        }
+
+        return solveAdamsRiccati(z, t).back();
     }
 
     std::complex<Real> AnalyticRoughHestonEngine::chF(
