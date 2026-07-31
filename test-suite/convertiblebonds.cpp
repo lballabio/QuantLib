@@ -26,6 +26,7 @@
 #include <ql/instruments/bonds/floatingratebond.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/bond/binomialconvertibleengine.hpp>
+#include <ql/pricingengines/bond/discretizedconvertible.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
@@ -40,6 +41,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 
 using namespace QuantLib;
@@ -348,6 +350,40 @@ BOOST_AUTO_TEST_CASE(testOption) {
                     << "\n    error:      " << error
                     << "\n    tolerance:      " << tolerance);
     }
+}
+
+BOOST_AUTO_TEST_CASE(testDividendsSpanningSettlementDate) {
+    BOOST_TEST_MESSAGE(
+        "Testing convertible bond dividend values spanning the settlement date...");
+
+    Settings::instance().evaluationDate() = Date(15, January, 2024);
+    CommonVars vars;
+
+    ConvertibleBond::arguments args;
+    args.exercise = ext::make_shared<EuropeanExercise>(vars.maturityDate);
+    args.conversionRatio = vars.conversionRatio;
+    args.cashflows.push_back(
+        ext::make_shared<SimpleCashFlow>(vars.redemption, vars.maturityDate));
+    args.issueDate = vars.issueDate;
+    args.settlementDate =
+        vars.calendar.advance(vars.today, vars.settlementDays, Days);
+    args.settlementDays = vars.settlementDays;
+    args.redemption = vars.redemption;
+
+    const Date beforeSettlement = vars.calendar.advance(vars.today, 1, Days);
+    const Date afterSettlement = vars.calendar.advance(args.settlementDate, 1, Years);
+    const Real futureAmount = 10.0;
+    const DividendSchedule dividends = {
+        ext::make_shared<FixedDividend>(1.0, beforeSettlement),
+        ext::make_shared<FixedDividend>(futureAmount, afterSettlement)};
+
+    DiscretizedConvertible convertible(args, vars.process, dividends,
+                                       vars.creditSpread);
+
+    const Real expected =
+        futureAmount * vars.riskFreeRate->discount(afterSettlement);
+    BOOST_CHECK_EQUAL(convertible.dividendValues().size(), 1);
+    BOOST_CHECK_CLOSE(convertible.dividendValues()[0], expected, 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testRegression) {
