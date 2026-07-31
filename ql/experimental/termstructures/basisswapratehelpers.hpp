@@ -129,6 +129,7 @@ namespace QuantLib {
         ext::shared_ptr<Swap> swap_;
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
+        RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
     };
 
 
@@ -143,7 +144,9 @@ namespace QuantLib {
         Both legs share the same schedule and payment lag, but their
         averaging methods can be configured independently.  This allows,
         for instance, an arithmetically averaged Fed Funds leg to be matched
-        against a compounded SOFR leg.
+        against a compounded SOFR leg.  Telescopic value dates are only
+        applied to compounded legs. Arithmetically averaged legs retain their
+        full value-date schedule so that they are priced exactly.
     */
     class OvernightOvernightBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -190,6 +193,7 @@ namespace QuantLib {
         ext::shared_ptr<Swap> swap_;
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
+        RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
     };
 
 }

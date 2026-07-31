@@ -188,8 +188,8 @@ namespace QuantLib {
         pillarDate_ = latestRelevantDate_;
 
         swap_ = ext::make_shared<Swap>(baseLeg, otherLeg);
-        swap_->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(
-            discountHandle_.empty() ? termStructureHandle_ : discountHandle_));
+        swap_->setPricingEngine(
+            ext::make_shared<DiscountingSwapEngine>(discountRelinkableHandle_));
     }
 
     void OvernightIborBasisSwapRateHelper::setTermStructure(YieldTermStructure* t) {
@@ -199,6 +199,11 @@ namespace QuantLib {
 
         ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
+
+        if (discountHandle_.empty())
+            discountRelinkableHandle_.linkTo(temp, observer);
+        else
+            discountRelinkableHandle_.linkTo(*discountHandle_, observer);
 
         RelativeDateRateHelper::setTermStructure(t);
     }
@@ -288,13 +293,15 @@ namespace QuantLib {
         Leg baseLeg = OvernightLeg(schedule, baseIndex_)
             .withNotionals(100.0)
             .withPaymentLag(paymentLag_)
-            .withTelescopicValueDates(telescopicValueDates_)
+            .withTelescopicValueDates(
+                telescopicValueDates_ && baseAveragingMethod_ == RateAveraging::Compound)
             .withAveragingMethod(baseAveragingMethod_);
 
         Leg otherLeg = OvernightLeg(schedule, otherIndex_)
             .withNotionals(100.0)
             .withPaymentLag(paymentLag_)
-            .withTelescopicValueDates(telescopicValueDates_)
+            .withTelescopicValueDates(
+                telescopicValueDates_ && otherAveragingMethod_ == RateAveraging::Compound)
             .withAveragingMethod(otherAveragingMethod_);
 
         auto lastBaseCoupon =
@@ -316,8 +323,8 @@ namespace QuantLib {
         pillarDate_ = latestDate_ = latestRelevantDate_;
 
         swap_ = ext::make_shared<Swap>(baseLeg, otherLeg);
-        swap_->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(
-            discountHandle_.empty() ? termStructureHandle_ : discountHandle_));
+        swap_->setPricingEngine(
+            ext::make_shared<DiscountingSwapEngine>(discountRelinkableHandle_));
     }
 
     void OvernightOvernightBasisSwapRateHelper::setTermStructure(YieldTermStructure* t) {
@@ -327,6 +334,11 @@ namespace QuantLib {
 
         ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
+
+        if (discountHandle_.empty())
+            discountRelinkableHandle_.linkTo(temp, observer);
+        else
+            discountRelinkableHandle_.linkTo(*discountHandle_, observer);
 
         RelativeDateRateHelper::setTermStructure(t);
     }

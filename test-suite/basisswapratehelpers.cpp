@@ -135,7 +135,8 @@ void testIborIborBootstrap(bool bootstrapBaseCurve) {
 
 void testOvernightIborBootstrap(bool externalDiscountCurve,
                                 bool bootstrapBaseCurve = false,
-                                Integer paymentLag = 0) {
+                                Integer paymentLag = 0,
+                                bool linkDiscountCurveAfterConstruction = false) {
     std::vector<BasisSwapQuote> quotes = {
         { 1, Years,  0.0010 },
         { 2, Years,  0.0012 },
@@ -155,7 +156,7 @@ void testOvernightIborBootstrap(bool externalDiscountCurve,
     Handle<YieldTermStructure> knownForecastCurve(flatRate(0.01, Actual365Fixed()));
 
     RelinkableHandle<YieldTermStructure> discountCurve;
-    if (externalDiscountCurve)
+    if (externalDiscountCurve && !linkDiscountCurveAfterConstruction)
         discountCurve.linkTo(flatRate(0.005, Actual365Fixed()));
 
     ext::shared_ptr<OvernightIndex> baseIndex;
@@ -180,6 +181,11 @@ void testOvernightIborBootstrap(bool externalDiscountCurve,
 
     auto bootstrappedCurve = ext::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>
         (0, calendar, helpers, Actual365Fixed());
+
+    if (linkDiscountCurveAfterConstruction) {
+        bootstrappedCurve->discount(helpers.back()->pillarDate());
+        discountCurve.linkTo(flatRate(0.005, Actual365Fixed()));
+    }
 
     Date today = Settings::instance().evaluationDate();
     Date spot = calendar.advance(today, settlementDays, Days);
@@ -230,7 +236,8 @@ void testOvernightIborBootstrap(bool externalDiscountCurve,
 }
 
 void testOvernightOvernightBootstrap(bool externalDiscountCurve,
-                                     bool bootstrapBaseCurve) {
+                                     bool bootstrapBaseCurve,
+                                     bool linkDiscountCurveAfterConstruction = false) {
     std::vector<BasisSwapQuote> quotes = {
         { 1, Years, 0.0008 },
         { 2, Years, 0.0010 },
@@ -251,7 +258,7 @@ void testOvernightOvernightBootstrap(bool externalDiscountCurve,
     Handle<YieldTermStructure> knownForecastCurve(flatRate(0.01, Actual365Fixed()));
 
     RelinkableHandle<YieldTermStructure> discountCurve;
-    if (externalDiscountCurve)
+    if (externalDiscountCurve && !linkDiscountCurveAfterConstruction)
         discountCurve.linkTo(flatRate(0.005, Actual365Fixed()));
 
     ext::shared_ptr<OvernightIndex> baseIndex, otherIndex;
@@ -289,6 +296,11 @@ void testOvernightOvernightBootstrap(bool externalDiscountCurve,
     auto bootstrappedCurve = ext::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>(
         0, calendar, helpers, Actual365Fixed());
     Handle<YieldTermStructure> bootstrappedCurveHandle(bootstrappedCurve);
+
+    if (linkDiscountCurveAfterConstruction) {
+        bootstrappedCurve->discount(basisHelpers.back()->pillarDate());
+        discountCurve.linkTo(flatRate(0.005, Actual365Fixed()));
+    }
 
     if (bootstrapBaseCurve) {
         baseIndex = ext::make_shared<FedFunds>(bootstrappedCurveHandle);
@@ -357,6 +369,13 @@ BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithDiscountCurve) {
     testOvernightIborBootstrap(true);
 }
 
+BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithLateLinkedDiscountCurve) {
+    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers with a "
+                       "late-linked discount curve...");
+
+    testOvernightIborBootstrap(true, false, 0, true);
+}
+
 BOOST_AUTO_TEST_CASE(testOvernightIborBaseCurveBootstrapWithoutDiscountCurve) {
     BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers (base curve bootstrap)...");
 
@@ -393,6 +412,52 @@ BOOST_AUTO_TEST_CASE(testOvernightOvernightBaseCurveBootstrap) {
 
     testOvernightOvernightBootstrap(false, true);
     testOvernightOvernightBootstrap(true, true);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightOvernightBootstrapWithLateLinkedDiscountCurve) {
+    BOOST_TEST_MESSAGE("Testing overnight-overnight basis-swap rate helpers with a "
+                       "late-linked discount curve...");
+
+    testOvernightOvernightBootstrap(true, false, true);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightOvernightTelescopicValueDatesWithSimpleAveraging) {
+    BOOST_TEST_MESSAGE("Testing telescopic value dates with simple overnight averaging...");
+
+    auto calendar = UnitedStates(UnitedStates::GovernmentBond);
+    Handle<YieldTermStructure> forecastCurve(flatRate(0.01, Actual365Fixed()));
+    auto baseIndex = ext::make_shared<FedFunds>(forecastCurve);
+    auto otherIndex = ext::make_shared<Sofr>();
+
+    auto makeHelper = [&](bool telescopicValueDates) {
+        return ext::make_shared<OvernightOvernightBasisSwapRateHelper>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.0010)), 1 * Years, 2,
+            calendar, Following, false, baseIndex, otherIndex,
+            Handle<YieldTermStructure>(), false, 0, Annual, RateAveraging::Simple,
+            RateAveraging::Compound, telescopicValueDates);
+    };
+
+    auto fullScheduleHelper = makeHelper(false);
+    auto telescopicHelper = makeHelper(true);
+
+    auto fullSimpleCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+        fullScheduleHelper->swap()->leg(0).front());
+    auto telescopicSimpleCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+        telescopicHelper->swap()->leg(0).front());
+    auto fullCompoundedCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+        fullScheduleHelper->swap()->leg(1).front());
+    auto telescopicCompoundedCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+        telescopicHelper->swap()->leg(1).front());
+
+    BOOST_REQUIRE(fullSimpleCoupon);
+    BOOST_REQUIRE(telescopicSimpleCoupon);
+    BOOST_REQUIRE(fullCompoundedCoupon);
+    BOOST_REQUIRE(telescopicCompoundedCoupon);
+    BOOST_CHECK_EQUAL(telescopicSimpleCoupon->valueDates().size(),
+                      fullSimpleCoupon->valueDates().size());
+    BOOST_CHECK_LT(telescopicCompoundedCoupon->valueDates().size(),
+                   fullCompoundedCoupon->valueDates().size());
+    BOOST_CHECK_SMALL(telescopicSimpleCoupon->rate() - fullSimpleCoupon->rate(), 1.0e-14);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
