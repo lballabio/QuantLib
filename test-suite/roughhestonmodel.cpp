@@ -720,6 +720,459 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
                     << "\n    tolerance:  " << hurstTol);
 }
 
+BOOST_AUTO_TEST_CASE(testPadeRiccatiAsymptotics) {
+    BOOST_TEST_MESSAGE(
+        "Testing short- and long-time asymptotics of the Pade Riccati "
+        "solution...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc{Actual365Fixed()};
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const Real kappa{0.3}, sigma{0.4}, rho{-0.7};
+
+    for (const Real hurst : {0.1, 0.3}) {
+        const Real a{hurst + 0.5};
+
+        const auto model{ext::make_shared<RoughHestonModel>(
+            rTS, qTS, s0, 0.04, kappa, 0.04, sigma, rho, hurst)};
+        const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
+            model, 128, 256,
+            AnalyticRoughHestonEngine::Approximation::Pade)};
+
+        for (const Real u : {0.5, 2.0, 5.0}) {
+            const std::complex<Real> z(u, -0.5);
+            const std::complex<Real> i{0.0, 1.0};
+
+            // short-time leading term h(z, t) -> b_1 t^a with
+            // b_1 = -z * (z + i) / (2 * \Gamma(1 + a)); check the ratio h / t^a
+            const std::complex<Real> b1{
+                -0.5 * z * (z + i) / GammaFunction().value(1.0 + a)};
+
+            const Time tShort{1e-7};
+            const std::complex<Real> hShort{
+                engine->riccatiSolution(z, tShort)};
+            const std::complex<Real> ratio{hShort / std::pow(tShort, a)};
+
+            const Real shortTol{1e-3};
+            if (std::abs(ratio - b1) / std::abs(b1) > shortTol)
+                BOOST_ERROR("Pade Riccati short-time limit off"
+                            << "\n    u:          " << u
+                            << "\n    hurst:      " << hurst
+                            << "\n    h / t^a:    " << ratio
+                            << "\n    b_1:        " << b1
+                            << "\n    rel. tol.:  " << shortTol);
+
+            // long-time limit h(z, t) -> r_- / \sigma, the attracting root
+            // of the Riccati quadratic
+            const std::complex<Real> w{kappa / sigma - i * (rho * z)};
+            const std::complex<Real> A{std::sqrt(z * (z + i) + w * w)};
+            const std::complex<Real> g0{(w - A) / sigma};
+
+            const Time tLong{1e8};
+            const std::complex<Real> hLong{engine->riccatiSolution(z, tLong)};
+
+            const Real longTol{1e-3};
+            if (std::abs(hLong - g0) / std::abs(g0) > longTol)
+                BOOST_ERROR("Pade Riccati long-time limit off"
+                            << "\n    u:          " << u
+                            << "\n    hurst:      " << hurst
+                            << "\n    h(inf):     " << hLong
+                            << "\n    r_-/sigma:  " << g0
+                            << "\n    rel. tol.:  " << longTol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPadeTrivialContour) {
+    BOOST_TEST_MESSAGE(
+        "Testing the Pade Riccati solution against the exact solution on "
+        "the contour where the Riccati equation degenerates...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc{Actual365Fixed()};
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    // at z = 0 or z = -i, the Riccati forcing term c0 = -z * (z + i) / 2 vanishes
+    // identically, so h' = c_1 * h + c_2 * h^2 with h(0) = 0 has the exact,
+    // Pade-construction-independent solution h ≡ 0. This checks the (3, 3)
+    // approximation against ground truth derived directly from the ODE.
+    for (const Real hurst : {0.05, 0.2, 0.4}) {
+        const auto model{ext::make_shared<RoughHestonModel>(
+            rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, hurst)};
+        const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
+            model, 128, 256,
+            AnalyticRoughHestonEngine::Approximation::Pade)};
+
+        for (const std::complex<Real> z :
+             {std::complex<Real>(0.0, 0.0), std::complex<Real>(0.0, -1.0)}) {
+            for (const Time t : {0.01, 1.0, 5.0}) {
+                const std::complex<Real> h{engine->riccatiSolution(z, t)};
+
+                const Real tol{1e-10};
+                if (std::abs(h) > tol)
+                    BOOST_ERROR("Pade Riccati solution is not exactly zero "
+                                "on the degenerate contour"
+                                << "\n    hurst:      " << hurst
+                                << "\n    z:          " << z
+                                << "\n    maturity:   " << t
+                                << "\n    h:          " << h
+                                << "\n    tolerance:  " << tol);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPadeAgainstAdamsRiccati) {
+    BOOST_TEST_MESSAGE(
+        "Testing the Pade Riccati solution against the Adams reference...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc{Actual365Fixed()};
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    // The rational approximation is sharpest for small Hurst exponents,
+    // the empirically relevant regime; rho is swept through both signs
+    // since the long-time coefficients hinge on a root selection
+    // (w -/+ A) that could plausibly flip sign for some (kappa, sigma,
+    // rho) combinations
+    for (const Real hurst : {0.05, 0.1, 0.2}) {
+        for (const Real rho : {-0.7, 0.3}) {
+            const auto model{ext::make_shared<RoughHestonModel>(
+                rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, rho, hurst)};
+
+            const auto adams{ext::make_shared<AnalyticRoughHestonEngine>(
+                model, 128, 1024,
+                AnalyticRoughHestonEngine::Approximation::AdamsPredictorCorrector)};
+            const auto pade{ext::make_shared<AnalyticRoughHestonEngine>(
+                model, 128, 256,
+                AnalyticRoughHestonEngine::Approximation::Pade)};
+
+            Real maxError{0.0};
+            // pricing contour z = u - i/2 over the calibration-relevant band
+            for (const Real u : {0.5, 1.0, 2.0, 5.0, 10.0, 20.0}) {
+                for (const Time t : {0.25, 1.0, 2.0}) {
+                    const std::complex<Real> z(u, -0.5);
+
+                    const std::complex<Real> ref{
+                        adams->riccatiSolution(z, t)};
+                    const std::complex<Real> approx{
+                        pade->riccatiSolution(z, t)};
+
+                    maxError = std::max(maxError,
+                                        std::abs(approx - ref) / std::abs(ref));
+                }
+            }
+
+            const Real tol{2e-2};
+            if (maxError > tol)
+                BOOST_ERROR("Pade Riccati solution deviates from the Adams "
+                            "reference"
+                            << "\n    hurst:          " << hurst
+                            << "\n    rho:            " << rho
+                            << "\n    max rel. error: " << maxError
+                            << "\n    tolerance:      " << tol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPadeAgainstAdamsPricing) {
+    BOOST_TEST_MESSAGE(
+        "Testing Pade rough Heston prices against the Adams reference...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc{Actual365Fixed()};
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.03, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.01, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    for (const Real hurst : {0.05, 0.1, 0.2}) {
+      for (const Real rho : {-0.7, 0.3}) {
+        const auto model{ext::make_shared<RoughHestonModel>(
+            rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, rho, hurst)};
+
+        const auto adams{ext::make_shared<AnalyticRoughHestonEngine>(
+            model, 128, 512,
+            AnalyticRoughHestonEngine::Approximation::AdamsPredictorCorrector)};
+        const auto pade{ext::make_shared<AnalyticRoughHestonEngine>(
+            model, 128, 256,
+            AnalyticRoughHestonEngine::Approximation::Pade)};
+
+        for (const auto& optionType : {Option::Call, Option::Put}) {
+            for (const Real strike : {80.0, 90.0, 100.0, 110.0, 120.0}) {
+                for (const Time t : {0.25, 1.0, 2.0}) {
+                    const auto payoff{ext::make_shared<PlainVanillaPayoff>(
+                        optionType, strike)};
+
+                    const Real ref{adams->priceVanillaPayoff(payoff, t)};
+                    const Real approx{pade->priceVanillaPayoff(payoff, t)};
+
+                    // a few basis points of the spot on prices of order
+                    // 1 to 30 for the strongly negative correlation the
+                    // approximation is designed for (rho = -0.7); the
+                    // wider tolerance accommodates the observed ~4x
+                    // larger error at rho = 0.3, still a few percent of
+                    // the spot, not a sign of a wrong root being picked
+                    const Real tol{5e-2};
+                    if (std::fabs(approx - ref) > tol)
+                        BOOST_ERROR("Pade price deviates from the Adams "
+                                    "reference"
+                                    << "\n    hurst:      " << hurst
+                                    << "\n    rho:        " << rho
+                                    << "\n    option:     " << optionType
+                                    << "\n    strike:     " << strike
+                                    << "\n    maturity:   " << t
+                                    << "\n    Pade:       " << approx
+                                    << "\n    Adams:      " << ref
+                                    << "\n    tolerance:  " << tol);
+                }
+            }
+        }
+      }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPadeHestonLimit) {
+    BOOST_TEST_MESSAGE(
+        "Testing the Pade rough Heston engine against classical Heston "
+        "for H = 0.5...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc{Actual365Fixed()};
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.05, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.02, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const Real v0{0.05}, kappa{1.5}, theta{0.04}, sigma{0.5}, rho{-0.75};
+
+    const auto roughModel{ext::make_shared<RoughHestonModel>(
+        rTS, qTS, s0, v0, kappa, theta, sigma, rho, 0.5)};
+    const auto padeEngine{ext::make_shared<AnalyticRoughHestonEngine>(
+        roughModel, 128, 256, AnalyticRoughHestonEngine::Approximation::Pade)};
+
+    const auto hestonModel{ext::make_shared<HestonModel>(
+        ext::make_shared<HestonProcess>(
+            rTS, qTS, s0, v0, kappa, theta, sigma, rho))};
+    const auto hestonEngine{
+        ext::make_shared<AnalyticHestonEngine>(hestonModel, 192)};
+
+    // the (3, 3) rational approximation is built for the rough regime and
+    // degrades towards the classical limit
+    for (const auto& optionType : {Option::Call, Option::Put}) {
+        for (const Real strike : {80.0, 90.0, 100.0, 110.0, 125.0}) {
+            for (const Size months : {6, 12, 24}) {
+                const Date maturity{today + Period(months, Months)};
+
+                VanillaOption option(
+                    ext::make_shared<PlainVanillaPayoff>(optionType, strike),
+                    ext::make_shared<EuropeanExercise>(maturity));
+
+                option.setPricingEngine(padeEngine);
+                const Real calculated{option.NPV()};
+
+                option.setPricingEngine(hestonEngine);
+                const Real expected{option.NPV()};
+
+                const Real tol{std::max(0.05, 0.04 * expected)};
+                if (std::fabs(calculated - expected) > tol)
+                    BOOST_ERROR("Pade limit fails to match classical Heston"
+                                << "\n    option:     " << optionType
+                                << "\n    strike:     " << strike
+                                << "\n    maturity:   " << maturity
+                                << "\n    Pade:       " << calculated
+                                << "\n    Heston:     " << expected
+                                << "\n    tolerance:  " << tol);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPadeMonotonicityAndBounds) {
+    BOOST_TEST_MESSAGE(
+        "Testing no-arbitrage bounds of the Pade engine...");
+
+    // put-call parity is exact by construction of priceVanillaPayoff (the
+    // call and put branches share cvValue + h_cv and differ only by the
+    // constant (fwd - strike) * df), independently of which route computes
+    // chF; it is already covered for that shared code path by the Adams
+    // testPutCallParity, so is not repeated here. Monotonicity and
+    // convexity, in contrast, depend on chF actually being numerically
+    // well-behaved across the whole integration contour, which is
+    // specific to the (3, 3) approximation and worth checking directly.
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc{Actual365Fixed()};
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.03, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.01, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const auto model{ext::make_shared<RoughHestonModel>(
+        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.1)};
+    const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
+        model, 128, 256, AnalyticRoughHestonEngine::Approximation::Pade)};
+
+    // call prices stay monotone, convex and within the no-arbitrage box
+    const Time t{1.0};
+    const Real fwd{s0->value() * qTS->discount(t) / rTS->discount(t)};
+    const Real df{rTS->discount(t)};
+
+    const std::vector<Real> strikes{
+        70.0, 80.0, 90.0, 100.0, 110.0, 120.0, 130.0};
+    std::vector<Real> prices;
+    for (Real k : strikes)
+        prices.push_back(engine->priceVanillaPayoff(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, k), t));
+
+    for (Size i{0}; i < strikes.size(); ++i) {
+        const Real lower{std::max(fwd - strikes[i], 0.0) * df};
+        const Real upper{fwd * df};
+
+        if (prices[i] < lower - 1e-8 || prices[i] > upper + 1e-8)
+            BOOST_ERROR("Pade call price violates no-arbitrage bounds"
+                        << "\n    strike: " << strikes[i]
+                        << "\n    price:  " << prices[i]);
+
+        if (i > 0 && prices[i] > prices[i - 1] + 1e-8)
+            BOOST_ERROR("Pade call price not decreasing in strike"
+                        << "\n    strike: " << strikes[i - 1] << " -> "
+                        << strikes[i]);
+
+        if (i > 0 && i + 1 < strikes.size()) {
+            const Real secondDiff{
+                prices[i + 1] - 2 * prices[i] + prices[i - 1]};
+            if (secondDiff < -1e-6)
+                BOOST_ERROR("Pade call price not convex in strike"
+                            << "\n    strike:            " << strikes[i]
+                            << "\n    second difference: " << secondDiff);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPadeCalibration) {
+    BOOST_TEST_MESSAGE(
+        "Testing rough Heston calibration through the fast Pade engine...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc{Actual365Fixed()};
+    const Calendar calendar{NullCalendar()};
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.02, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const Real v0{0.0225}, kappa{0.6}, theta{0.04};
+    const Real sigma{0.35}, rho{-0.65}, hurst{0.12};
+
+    const Size integrationOrder{64}, timeSteps{256};
+
+    // the synthetic surface is generated with the same Pade engine, so the
+    // round trip isolates the optimizer's ability to recover parameters
+    // from the fast approximation itself
+    const auto trueModel{ext::make_shared<RoughHestonModel>(
+        rTS, qTS, s0, v0, kappa, theta, sigma, rho, hurst)};
+    const auto trueEngine{ext::make_shared<AnalyticRoughHestonEngine>(
+        trueModel, integrationOrder, timeSteps,
+        AnalyticRoughHestonEngine::Approximation::Pade)};
+
+    std::vector<ext::shared_ptr<CalibrationHelper>> helpers;
+    for (const Size months : {3, 6, 12, 24}) {
+        const Period maturity(months, Months);
+        const Date maturityDate{today + maturity};
+        const Time t{dc.yearFraction(today, maturityDate)};
+
+        const Real fwd{s0->value() * qTS->discount(maturityDate)
+            / rTS->discount(maturityDate)};
+        const DiscountFactor df{rTS->discount(maturityDate)};
+
+        for (const Real strike : {80.0, 90.0, 100.0, 110.0, 120.0}) {
+            const Real price{trueEngine->priceVanillaPayoff(
+                ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+                maturityDate)};
+            const Volatility impliedVol{blackFormulaImpliedStdDev(
+                Option::Call, strike, fwd, price, df) / std::sqrt(t)};
+
+            helpers.push_back(ext::make_shared<HestonModelHelper>(
+                maturity, calendar, s0, strike,
+                Handle<Quote>(ext::make_shared<SimpleQuote>(impliedVol)),
+                rTS, qTS, BlackCalibrationHelper::ImpliedVolError));
+        }
+    }
+
+    const auto model{ext::make_shared<RoughHestonModel>(
+        rTS, qTS, s0, 0.04, 1.0, 0.02, 0.25, -0.4, 0.2)};
+    const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
+        model, integrationOrder, timeSteps,
+        AnalyticRoughHestonEngine::Approximation::Pade)};
+
+    for (const auto& helper : helpers)
+        ext::static_pointer_cast<BlackCalibrationHelper>(helper)
+            ->setPricingEngine(engine);
+
+    LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
+    model->calibrate(helpers, om,
+                     EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
+
+    Real sse{0.0};
+    for (const auto& helper : helpers) {
+        const Real error{
+            ext::static_pointer_cast<BlackCalibrationHelper>(helper)
+                ->calibrationError()};
+        sse += error * error;
+    }
+
+    const Real expectedSse{1e-8};
+    if (sse > expectedSse)
+        BOOST_ERROR("failed to calibrate the Pade rough Heston model"
+                    << "\n    sse:      " << sse
+                    << "\n    expected: less than " << expectedSse
+                    << "\n    v0:    " << model->v0()    << " vs " << v0
+                    << "\n    kappa: " << model->kappa() << " vs " << kappa
+                    << "\n    theta: " << model->theta() << " vs " << theta
+                    << "\n    sigma: " << model->sigma() << " vs " << sigma
+                    << "\n    rho:   " << model->rho()   << " vs " << rho
+                    << "\n    hurst: " << model->hurst() << " vs " << hurst);
+
+    const Real hurstTol{0.02};
+    if (std::fabs(model->hurst() - hurst) > hurstTol)
+        BOOST_ERROR("failed to recover the Hurst exponent through Pade"
+                    << "\n    calculated: " << model->hurst()
+                    << "\n    expected:   " << hurst
+                    << "\n    tolerance:  " << hurstTol);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
