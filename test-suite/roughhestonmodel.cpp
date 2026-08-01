@@ -1181,9 +1181,8 @@ BOOST_AUTO_TEST_CASE(testFractionalKernelApproximation) {
 
     const Time tMax{1.0};
 
-    // relative L1 error of K^n against K on (0, tMax]. K is integrable at
-    // the origin, so no lower cut-off is needed and the measure is free of
-    // any time grid: it grades the model, not a discretisation of it.
+    // relative L1 error on (0, tMax]. K is integrable at the origin, so
+    // this needs no cut-off and is free of any time grid
     const auto l1Error = [tMax](const FractionalKernelApproximation& kernel,
                                 Real alpha) -> Real {
         const Size m{6}, q{4000};
@@ -1217,8 +1216,8 @@ BOOST_AUTO_TEST_CASE(testFractionalKernelApproximation) {
                             << "\n    calculated: " << kernel.size()
                             << "\n    expected:   " << n);
 
-            // non-negative weights and rates are what makes K^n completely
-            // monotone, and with it the lifted model well posed
+            // non-negativity is what keeps K^n completely monotone, and
+            // with it the lifted model well posed
             for (Size i{0}; i < n; ++i) {
                 if (kernel.weights()[i] < 0.0 || kernel.rates()[i] < 0.0)
                     BOOST_ERROR("negative kernel node"
@@ -1235,9 +1234,8 @@ BOOST_AUTO_TEST_CASE(testFractionalKernelApproximation) {
 
             const Real error{l1Error(kernel, alpha)};
 
-            // the sweep behind the default partition gives an empirical
-            // rate of about n^(-1.55), i.e. a factor of 2.9 per doubling;
-            // 1.7 leaves room for the coarse end of the range
+            // the measured rate is n^(-1.55), a factor of 2.9 per
+            // doubling; 1.7 leaves room at the coarse end
             const Real expected{previousError / 1.7};
             if (error > expected)
                 BOOST_ERROR("kernel approximation is not converging in n"
@@ -1250,10 +1248,9 @@ BOOST_AUTO_TEST_CASE(testFractionalKernelApproximation) {
         }
     }
 
-    // At alpha = 1 the representing measure degenerates to a point mass at
-    // the origin. The leading interval [0, eta_1] absorbs all of it, so the
-    // construction collapses to the single node (c, x) = (1, 0) and
-    // reproduces the constant kernel exactly - no special-casing involved.
+    // at alpha = 1 the measure is a point mass at the origin, which the
+    // leading interval absorbs entirely: the construction collapses to the
+    // single node (1, 0) and reproduces K exactly, with no special-casing
     const FractionalKernelApproximation classical(1.0, 20, tMax);
 
     const Real tol{10 * QL_EPSILON};
@@ -1292,10 +1289,9 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsRiccati) {
         ext::make_shared<FlatForward>(today, 0.0, dc));
     const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
-    // Unlike the Pade route, the lifted approximation has a convergence
-    // parameter: what is asserted here is not closeness at a fixed n but
-    // that the error keeps falling as n grows. psi^n is the direct
-    // analogue of h, so the comparison is meaningful term by term.
+    // unlike Pade, the lifted route has a convergence parameter, so what
+    // is asserted is not closeness at a fixed n but that the error keeps
+    // falling as n grows
     for (const Real hurst : {0.05, 0.1, 0.2}) {
         for (const Real rho : {-0.7, 0.3}) {
             const auto model{ext::make_shared<RoughHestonModel>(
@@ -1360,14 +1356,10 @@ BOOST_AUTO_TEST_CASE(testLiftedHestonLimit) {
         "Testing the lifted rough Heston engine against classical Heston "
         "for H = 0.5...");
 
-    // At H = 0.5 the representing measure is a point mass at the origin,
-    // which the leading interval of the partition captures exactly: the
-    // kernel becomes constant, the single surviving factor has x = 0, and
-    // the exponential integrator degenerates to the trapezoidal rule. The
-    // lifted route is therefore not an approximation here at all, and the
-    // tolerance is correspondingly tighter than the Pade one - which makes
-    // this the sharpest available check of the kernel construction, the
-    // step weights, both quadratures and the chF assembly at once.
+    // at H = 0.5 the kernel is constant, the surviving factor has x = 0
+    // and the integrator degenerates to the trapezoidal rule, so the
+    // lifted route is not an approximation here at all - hence a much
+    // tighter tolerance than the Pade equivalent
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -1477,10 +1469,8 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsPricing) {
             previousError = maxError;
         }
 
-        // absolute price error at the finest approximation, on prices of
-        // order 1 to 30; the bound is set by the roughest kernel
-        // (H = 0.05) at the longest maturity, where the sum of
-        // exponentials has the most work to do
+        // on prices of order 1 to 30; the bound is set by the roughest
+        // kernel (H = 0.05) at the longest maturity
         const Real tol{3e-3};
         if (previousError > tol)
             BOOST_ERROR("lifted price deviates from the Adams reference"
