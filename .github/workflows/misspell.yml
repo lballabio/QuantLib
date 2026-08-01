@@ -10,6 +10,8 @@ jobs:
     - uses: actions/checkout@v7
     - uses: sobolevn/misspell-fixer-action@master
     - uses: peter-evans/create-pull-request@v8
+      # Upstream-only machine account; skip cleanly on forks without the secret.
+      if: ${{ secrets.MACHINE_ACCOUNT_PAT != '' }}
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib

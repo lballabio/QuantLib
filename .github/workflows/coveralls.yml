@@ -36,7 +36,11 @@ jobs:
         lcov --add-tracefile ./tmp/lcov_base.info --add-tracefile ./tmp/lcov_run.info --output-file ./tmp/lcov_total.info
         lcov --remove ./tmp/lcov_total.info "$PWD/Examples/*" "$PWD/test-suite/*" --output-file ./coverage/lcov.info
     - name: Upload coverage to Coveralls
+      # Forks are often not registered on Coveralls; don't fail CI when upload
+      # returns 422 "Couldn't find a repository matching this job."
       uses: coverallsapp/github-action@v2
+      continue-on-error: true
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         file: ./coverage/lcov.info
+        fail-on-error: false
