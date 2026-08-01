@@ -42,7 +42,7 @@ namespace QuantLib {
         <li>Labour Day, May 1st</li>
         <li>Children's Day, May 5th</li>
         <li>Memorial Day, June 6th</li>
-        <li>Constitution Day, July 17th (until 2007)</li>
+        <li>Constitution Day, July 17th (until 2007; from 2026)</li>
         <li>Liberation Day, August 15th</li>
         <li>National Fondation Day, October 3th</li>
         <li>Hangeul Day, October 9th (from 2013)</li>
