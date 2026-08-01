@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/cashflows/fxresetcashflows.hpp>
 #include <ql/currencies/exchangeratemanager.hpp>
+#include <ql/experimental/fx/fxresetcashflows.hpp>
 #include <ql/money.hpp>
 #include <ql/quote.hpp>
 #include <ql/settings.hpp>

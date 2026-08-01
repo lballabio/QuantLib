@@ -23,6 +23,8 @@
 #include <ql/indexes/ibor/eonia.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/pricingengines/vanilla/all.hpp>
+#include <ql/experimental/fx/discountingmtmcrosscurrencybasisswapengine.hpp>
+#include <ql/experimental/fx/fxresetcashflows.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
 #include <ql/optional.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -32,11 +34,9 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
-#include <ql/cashflows/fxresetcashflows.hpp>
 #include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/pricingengines/swap/discountingmtmcrosscurrencybasisswapengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/time/calendars/target.hpp>

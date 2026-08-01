@@ -51,6 +51,9 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         \brief Constructs a cross-currency basis swap.
 
         First leg holds the pay currency cashflows and the second leg holds the receive currency cashflows.
+
+        Payment lags apply only to coupon payments.  Notional exchanges remain
+        on the effective and maturity dates.
         
         \param payNominal         Notional amount for the pay leg.
         \param payCurrency        Currency of the pay leg.

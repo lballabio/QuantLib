@@ -21,11 +21,13 @@
 #include "utilities.hpp"
 #include <ql/cashflows/coupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
-#include <ql/cashflows/fxresetcashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/currencies/all.hpp>
 #include <ql/currencies/exchangeratemanager.hpp>
+#include <ql/experimental/fx/discountingmtmcrosscurrencybasisswapengine.hpp>
+#include <ql/experimental/fx/fxresetcashflows.hpp>
+#include <ql/experimental/fx/mtmcrosscurrencybasisswap.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
 #include <ql/indexes/ibor/estr.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -33,10 +35,8 @@
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/instruments/constnotionalcrosscurrencybasisswap.hpp>
-#include <ql/instruments/mtmcrosscurrencybasisswap.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/pricingengines/swap/discountingconstnotionalcrosscurrencyswapengine.hpp>
-#include <ql/pricingengines/swap/discountingmtmcrosscurrencybasisswapengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
@@ -240,8 +240,8 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
                     auto helper =
                         ext::dynamic_pointer_cast<MtMCrossCurrencyBasisSwapRateHelper>(helpers[i]);
                     BOOST_REQUIRE(helper != nullptr && helper->swap() != nullptr);
-                    BOOST_CHECK_EQUAL(helper->fxResetConvention().fixingDays(),
-                                      fxResetFixingDays);
+                    BOOST_CHECK_EQUAL(helper->fxResetFixingDays(), fxResetFixingDays);
+                    BOOST_CHECK_EQUAL(helper->fxResetFixingCalendar(), cal);
                     auto underlying = helper->swap();
                     underlying->deepUpdate();
                     bool foundFxResetCoupon = false;

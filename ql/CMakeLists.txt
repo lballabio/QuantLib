@@ -20,7 +20,6 @@ set(QL_SOURCES
     cashflows/equitycashflow.cpp
     cashflows/fixedratecoupon.cpp
     cashflows/floatingratecoupon.cpp
-    cashflows/fxresetcashflows.cpp
     cashflows/iborcoupon.cpp
     cashflows/indexedcashflow.cpp
     cashflows/inflationcoupon.cpp
@@ -148,6 +147,9 @@ set(QL_SOURCES
     experimental/finitedifferences/glued1dmesher.cpp
     experimental/finitedifferences/vanillavppoption.cpp
     experimental/forward/analytichestonforwardeuropeanengine.cpp
+    experimental/fx/discountingmtmcrosscurrencybasisswapengine.cpp
+    experimental/fx/fxresetcashflows.cpp
+    experimental/fx/mtmcrosscurrencybasisswap.cpp
     experimental/inflation/cpicapfloorengines.cpp
     experimental/inflation/cpicapfloortermpricesurface.cpp
     experimental/inflation/yoycapfloortermpricesurface.cpp
@@ -270,7 +272,6 @@ set(QL_SOURCES
     instruments/crosscurrencyswap.cpp
     instruments/constnotionalcrosscurrencybasisswap.cpp
     instruments/constnotionalcrosscurrencyfixedvsfloatingswap.cpp
-    instruments/mtmcrosscurrencybasisswap.cpp
     instruments/doublebarrieroption.cpp
     instruments/doublebarriertype.cpp
     instruments/equitytotalreturnswap.cpp
@@ -740,7 +741,6 @@ set(QL_SOURCES
     pricingengines/lookback/analyticcontinuouspartialfloatinglookback.cpp
     pricingengines/lookback/mclookbackengine.cpp
     pricingengines/swap/discountingconstnotionalcrosscurrencyswapengine.cpp
-    pricingengines/swap/discountingmtmcrosscurrencybasisswapengine.cpp
     pricingengines/swap/cvaswapengine.cpp
     pricingengines/swap/discountingswapengine.cpp
     pricingengines/swap/discretizedswap.cpp
@@ -1006,7 +1006,6 @@ set(QL_HEADERS
     cashflows/equitycashflow.hpp
     cashflows/fixedratecoupon.hpp
     cashflows/floatingratecoupon.hpp
-    cashflows/fxresetcashflows.hpp
     cashflows/iborcoupon.hpp
     cashflows/indexedcashflow.hpp
     cashflows/inflationcoupon.hpp
@@ -1177,6 +1176,9 @@ set(QL_HEADERS
     experimental/forward/analytichestonforwardeuropeanengine.hpp
     experimental/fx/blackdeltacalculator.hpp
     experimental/fx/deltavolquote.hpp
+    experimental/fx/discountingmtmcrosscurrencybasisswapengine.hpp
+    experimental/fx/fxresetcashflows.hpp
+    experimental/fx/mtmcrosscurrencybasisswap.hpp
     experimental/inflation/cpicapfloorengines.hpp
     experimental/inflation/cpicapfloortermpricesurface.hpp
     experimental/inflation/genericindexes.hpp
@@ -1367,7 +1369,6 @@ set(QL_HEADERS
     instruments/crosscurrencyswap.hpp
     instruments/constnotionalcrosscurrencybasisswap.hpp
     instruments/constnotionalcrosscurrencyfixedvsfloatingswap.hpp
-    instruments/mtmcrosscurrencybasisswap.hpp
     instruments/constnotionalcrosscurrencyswap.hpp
     instruments/dividendschedule.hpp
     instruments/doublebarrieroption.hpp
@@ -2002,7 +2003,6 @@ set(QL_HEADERS
     pricingengines/mcsimulation.hpp
     pricingengines/quanto/quantoengine.hpp
     pricingengines/swap/discountingconstnotionalcrosscurrencyswapengine.hpp
-    pricingengines/swap/discountingmtmcrosscurrencybasisswapengine.hpp
     pricingengines/swap/cvaswapengine.hpp
     pricingengines/swap/discountingswapengine.hpp
     pricingengines/swap/discretizedswap.hpp

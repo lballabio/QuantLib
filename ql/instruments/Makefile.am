@@ -28,7 +28,6 @@ this_include_HEADERS = \
     crosscurrencyswap.hpp \
     constnotionalcrosscurrencybasisswap.hpp \
     constnotionalcrosscurrencyfixedvsfloatingswap.hpp \
-    mtmcrosscurrencybasisswap.hpp \
     constnotionalcrosscurrencyswap.hpp \
     dividendschedule.hpp \
     doublebarrieroption.hpp \
@@ -110,7 +109,6 @@ cpp_files = \
     crosscurrencyswap.cpp \
     constnotionalcrosscurrencybasisswap.cpp \
     constnotionalcrosscurrencyfixedvsfloatingswap.cpp \
-    mtmcrosscurrencybasisswap.cpp \
     doublebarrieroption.cpp \
     doublebarriertype.cpp \
     equitytotalreturnswap.cpp \

@@ -29,7 +29,7 @@
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/instruments/constnotionalcrosscurrencybasisswap.hpp>
 #include <ql/instruments/constnotionalcrosscurrencyfixedvsfloatingswap.hpp>
-#include <ql/instruments/mtmcrosscurrencybasisswap.hpp>
+#include <ql/experimental/fx/mtmcrosscurrencybasisswap.hpp>
 #include <ql/optional.hpp>
 
 namespace QuantLib {
@@ -183,8 +183,8 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over market-to-market cross-currency basis swaps
     /*!
     Helper for a cross currency swap with resetting notional.
-    This means that at each interest payment the notional on the MtM
-    leg is being reset to reflect the changes in the FX rate - reducing
+    This means that at each accrual-period boundary the notional on the MtM
+    leg is reset to reflect changes in the FX rate - reducing
     the counterparty and FX risk of the structure.
 
     For more details see:
@@ -241,7 +241,12 @@ namespace QuantLib {
         //@{
         //! the underlying par swap: unit notionals, zero spreads, spot FX = 1
         const ext::shared_ptr<MtMCrossCurrencyBasisSwap>& swap() const { return swap_; }
-        const FxResetConvention& fxResetConvention() const { return fxResetConvention_; }
+        //! the number of business days from an FX value date to its fixing date
+        Natural fxResetFixingDays() const { return fxResetConvention_.fixingDays(); }
+        //! the calendar used to determine FX fixing dates
+        const Calendar& fxResetFixingCalendar() const {
+            return fxResetConvention_.fixingCalendar();
+        }
         //@}
         //! \name Visitability
         //@{
@@ -267,6 +272,9 @@ namespace QuantLib {
 
     The collateralOnFixedLeg flag determines which leg is discounted using the provided
     collateral curve, while the other leg’s discount curve is the one being bootstrapped.
+
+    The paymentLag parameter, in days, applies to the coupons of both legs;
+    notional exchanges remain on the effective and maturity dates.
 
     If provided, the useIndexedCoupons parameter overrides the global
     IborCoupon setting for the floating leg.

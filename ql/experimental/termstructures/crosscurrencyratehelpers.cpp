@@ -24,9 +24,9 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/experimental/fx/discountingmtmcrosscurrencybasisswapengine.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
 #include <ql/pricingengines/swap/discountingconstnotionalcrosscurrencyswapengine.hpp>
-#include <ql/pricingengines/swap/discountingmtmcrosscurrencybasisswapengine.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>
 

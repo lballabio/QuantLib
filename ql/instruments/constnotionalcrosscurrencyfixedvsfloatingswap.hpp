@@ -50,6 +50,10 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         This instrument represents a cross-currency swap where one leg pays fixed-rate cashflows in one currency, 
         and the other leg pays floating-rate cashflows in another currency.
 
+        Payment lags apply only to coupon payments.  Notional exchanges remain
+        on the effective and maturity dates, adjusted by the corresponding
+        leg's payment convention.
+
         \param type                  The type of the swap (Receiver or Payer).
         \param fixedNominal          Notional amount for the fixed leg.
         \param fixedCurrency         Currency of the fixed leg.

@@ -24,8 +24,8 @@
 #ifndef quantlib_discounting_mtm_cross_currency_basis_swap_engine_hpp
 #define quantlib_discounting_mtm_cross_currency_basis_swap_engine_hpp
 
+#include <ql/experimental/fx/mtmcrosscurrencybasisswap.hpp>
 #include <ql/handle.hpp>
-#include <ql/instruments/mtmcrosscurrencybasisswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <optional>
 

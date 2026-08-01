@@ -18,8 +18,8 @@
 */
 
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/cashflows/fxresetcashflows.hpp>
-#include <ql/pricingengines/swap/discountingmtmcrosscurrencybasisswapengine.hpp>
+#include <ql/experimental/fx/discountingmtmcrosscurrencybasisswapengine.hpp>
+#include <ql/experimental/fx/fxresetcashflows.hpp>
 #include <ql/settings.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <utility>

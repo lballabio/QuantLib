@@ -18,10 +18,10 @@
 */
 
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/cashflows/fxresetcashflows.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
-#include <ql/instruments/mtmcrosscurrencybasisswap.hpp>
+#include <ql/experimental/fx/fxresetcashflows.hpp>
+#include <ql/experimental/fx/mtmcrosscurrencybasisswap.hpp>
 #include <utility>
 
 namespace QuantLib {

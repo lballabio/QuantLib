@@ -24,8 +24,8 @@
 #ifndef quantlib_mtm_cross_currency_basis_swap_hpp
 #define quantlib_mtm_cross_currency_basis_swap_hpp
 
-#include <ql/cashflows/fxresetcashflows.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
+#include <ql/experimental/fx/fxresetcashflows.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/crosscurrencyswap.hpp>
 #include <ql/optional.hpp>
@@ -78,7 +78,12 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
 
     //! \name Constructors
     //@{
-    /*! \param type  Pay or receive the FX base-currency leg.
+    /*! Payment lags apply only to coupon payments.  Initial and final notional
+        exchanges remain on the effective and maturity dates, adjusted by their
+        leg's payment convention.  Interim reset exchanges occur on the current
+        reset value date.
+
+        \param type  Pay or receive the FX base-currency leg.
         \param isFxBaseCurrencyLegResettable  If true the base-currency (first)
                                    leg is the resettable leg; otherwise the
                                    quote-currency (second) leg resets.  The other
@@ -96,10 +101,6 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
                                         leg and its notional exchanges.
         \param fxQuotePaymentConvention Payment convention for the quote-currency
                                         leg and its notional exchanges.
-        Initial and final notional exchanges remain on the effective and
-        maturity dates, adjusted by their leg's payment convention.  Interim
-        reset exchanges settle with the coupons.
-
         \param useIndexedCoupons If provided, overrides the global IborCoupon
                                   setting for both legs.
     */
