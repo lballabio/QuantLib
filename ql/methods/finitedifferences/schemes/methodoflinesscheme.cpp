@@ -35,15 +35,15 @@ namespace QuantLib {
         map_->setTime(t, t + 0.0001);
         bcSet_.applyBeforeApplying(*map_);
 
-        const Array dxdt = -map_->apply(Array(u.begin(), u.end()));
+        const auto dxdt = -map_->apply(Array(u.begin(), u.end()));
 
-        return std::vector<Real>(dxdt.begin(), dxdt.end());
+        return {dxdt.begin(), dxdt.end()};
     }
 
     void MethodOfLinesScheme::step(array_type& a, Time t) {
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
 
-        const std::vector<Real> v =
+        const auto v =
            AdaptiveRungeKutta<Real>(eps_, relInitStepSize_*dt_)(
                [&](Time _t, const std::vector<Real>& _u){ return apply(_t, _u); },
                std::vector<Real>(a.begin(), a.end()),
@@ -53,7 +53,7 @@ namespace QuantLib {
 
         bcSet_.applyAfterSolving(y);
 
-        a = y;
+        a = std::move(y);
     }
 
     void MethodOfLinesScheme::setStep(Time dt) {
