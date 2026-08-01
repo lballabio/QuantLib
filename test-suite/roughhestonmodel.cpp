@@ -1393,8 +1393,7 @@ BOOST_AUTO_TEST_CASE(testLiftedHestonLimit) {
     const auto classical{ext::make_shared<AnalyticHestonEngine>(
         hestonModel, 192)};
 
-    // calls only: puts differ from them by the exact constant of the
-    // shared priceVanillaPayoff, so they carry no extra information here
+    // calls only: puts differ by an exact constant in priceVanillaPayoff
     for (const Real strike : {80.0, 90.0, 100.0, 110.0, 125.0}) {
         for (const Size months : {6, 12, 24}) {
             const Date maturity{today + Period(months, Months)};
@@ -1453,7 +1452,6 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsPricing) {
                 model, 128, 512,
                 AnalyticRoughHestonEngine::Approximation::Lifted, n)};
 
-            // calls only, for the same reason as in testLiftedHestonLimit
             Real maxError{0.0};
             for (const Real strike : {80.0, 90.0, 100.0, 110.0, 120.0}) {
                 for (const Time t : {0.25, 1.0, 2.0}) {
@@ -1514,14 +1512,8 @@ BOOST_AUTO_TEST_CASE(testLiftedCalibration) {
 
     const Size integrationOrder{64}, timeSteps{256}, nFactors{20};
 
-    // The optimizer itself is already covered by the Adams and Pade
-    // calibrations; what is specific to the lifted route, and is only
-    // reachable here, is that update() invalidates the per-maturity grid
-    // cache. The kernel nodes depend on the Hurst exponent, so a missing
-    // clear() would leave every engine in this file correct - each builds
-    // its own - while calibration silently kept the initial guess's kernel
-    // and never fitted. Generator and calibrating engine share settings, so
-    // a failure here is that, not approximation bias.
+    // the kernel nodes depend on the Hurst exponent, so this is what
+    // catches update() failing to invalidate the per-maturity grid cache
     const auto trueModel{ext::make_shared<RoughHestonModel>(
         rTS, qTS, s0, v0, kappa, theta, sigma, rho, hurst)};
     const auto trueEngine{ext::make_shared<AnalyticRoughHestonEngine>(
