@@ -14,8 +14,8 @@ jobs:
         sed -i -e 's|^#if   defined(HAVE_CONFIG_H).*$|#if   defined(QL_HAVE_CONFIG_H) // Dynamically created by cmake|g' ql/qldefines.hpp.cfg
         sed -i -e 's|^/\* install-hook \*/.*$|#cmakedefine QL_HAVE_CONFIG_H|g' ql/qldefines.hpp.cfg
     - uses: peter-evans/create-pull-request@v8
-      # Upstream-only machine account; skip cleanly on forks without the secret.
-      if: ${{ secrets.MACHINE_ACCOUNT_PAT != '' }}
+      # Upstream-only machine account; do not fail forks without the secret.
+      continue-on-error: true
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib
