@@ -181,9 +181,8 @@ namespace QuantLib {
             // F_k, F_{k+1} in the step
             Array expDt, cExpDt, w0, w1;
             
-            // c_i (1 - e^{-x_i dt}) / x_i, the psi_i weights of the exact
-            // per-step quadrature of the psi integral, and their sum,
-            // which is the response of psi^n to a constant F
+            // c_i (1 - e^{-x_i dt}) / x_i and its sum, the psi_i and
+            // constant-F weights of the psi-integral quadrature
             Array cA;
             Real cASum;
 
