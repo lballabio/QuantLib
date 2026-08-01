@@ -1534,6 +1534,7 @@ set(QL_HEADERS
     math/modifiedbessel.hpp
     math/ode/adaptiverungekutta.hpp
     math/ode/fractionaladams.hpp
+    math/ode/fractionalkernelapproximation.hpp
     math/optimization/armijo.hpp
     math/optimization/bfgs.hpp
     math/optimization/cmaes.hpp

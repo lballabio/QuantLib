@@ -1084,6 +1084,7 @@
     <ClInclude Include="ql\math\modifiedbessel.hpp" />
     <ClInclude Include="ql\math\ode\adaptiverungekutta.hpp" />
     <ClInclude Include="ql\math\ode\fractionaladams.hpp" />
+    <ClInclude Include="ql\math\ode\fractionalkernelapproximation.hpp" />
     <ClInclude Include="ql\math\ode\all.hpp" />
     <ClInclude Include="ql\math\optimization\all.hpp" />
     <ClInclude Include="ql\math\optimization\armijo.hpp" />

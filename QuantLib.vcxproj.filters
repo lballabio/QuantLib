@@ -3762,6 +3762,9 @@
     <ClInclude Include="ql\math\ode\fractionaladams.hpp">
       <Filter>math\ode</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\ode\fractionalkernelapproximation.hpp">
+      <Filter>math\ode</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
