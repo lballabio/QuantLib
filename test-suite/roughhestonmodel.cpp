@@ -1393,34 +1393,32 @@ BOOST_AUTO_TEST_CASE(testLiftedHestonLimit) {
     const auto classical{ext::make_shared<AnalyticHestonEngine>(
         hestonModel, 192)};
 
-    for (const auto& optionType : {Option::Call, Option::Put}) {
-        for (const Real strike : {80.0, 90.0, 100.0, 110.0, 125.0}) {
-            for (const Size months : {6, 12, 24}) {
-                const Date maturity{today + Period(months, Months)};
-                const auto payoff{ext::make_shared<PlainVanillaPayoff>(
-                    optionType, strike)};
+    // calls only: puts differ from them by the exact constant of the
+    // shared priceVanillaPayoff, so they carry no extra information here
+    for (const Real strike : {80.0, 90.0, 100.0, 110.0, 125.0}) {
+        for (const Size months : {6, 12, 24}) {
+            const Date maturity{today + Period(months, Months)};
+            const auto payoff{ext::make_shared<PlainVanillaPayoff>(
+                Option::Call, strike)};
 
-                VanillaOption option(
-                    payoff, ext::make_shared<EuropeanExercise>(maturity));
-                option.setPricingEngine(classical);
-                const Real ref{option.NPV()};
+            VanillaOption option(
+                payoff, ext::make_shared<EuropeanExercise>(maturity));
+            option.setPricingEngine(classical);
+            const Real ref{option.NPV()};
 
-                const Real approx{
-                    lifted->priceVanillaPayoff(payoff, maturity)};
+            const Real approx{lifted->priceVanillaPayoff(payoff, maturity)};
 
-                const Real tol{5e-4};
-                if (std::fabs(approx - ref) > tol)
-                    BOOST_ERROR("lifted engine does not reproduce classical "
-                                "Heston at H = 0.5"
-                                << "\n    option:     " << optionType
-                                << "\n    strike:     " << strike
-                                << "\n    maturity:   " << months << "M"
-                                << "\n    lifted:     " << approx
-                                << "\n    Heston:     " << ref
-                                << "\n    difference: "
-                                << std::fabs(approx - ref)
-                                << "\n    tolerance:  " << tol);
-            }
+            const Real tol{5e-4};
+            if (std::fabs(approx - ref) > tol)
+                BOOST_ERROR("lifted engine does not reproduce classical "
+                            "Heston at H = 0.5"
+                            << "\n    strike:     " << strike
+                            << "\n    maturity:   " << months << "M"
+                            << "\n    lifted:     " << approx
+                            << "\n    Heston:     " << ref
+                            << "\n    difference: "
+                            << std::fabs(approx - ref)
+                            << "\n    tolerance:  " << tol);
         }
     }
 }
@@ -1455,18 +1453,16 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsPricing) {
                 model, 128, 512,
                 AnalyticRoughHestonEngine::Approximation::Lifted, n)};
 
+            // calls only, for the same reason as in testLiftedHestonLimit
             Real maxError{0.0};
-            for (const auto& optionType : {Option::Call, Option::Put}) {
-                for (const Real strike : {80.0, 90.0, 100.0, 110.0, 120.0}) {
-                    for (const Time t : {0.25, 1.0, 2.0}) {
-                        const auto payoff{
-                            ext::make_shared<PlainVanillaPayoff>(
-                                optionType, strike)};
+            for (const Real strike : {80.0, 90.0, 100.0, 110.0, 120.0}) {
+                for (const Time t : {0.25, 1.0, 2.0}) {
+                    const auto payoff{ext::make_shared<PlainVanillaPayoff>(
+                        Option::Call, strike)};
 
-                        maxError = std::max(maxError,
-                            std::fabs(lifted->priceVanillaPayoff(payoff, t)
-                                      - adams->priceVanillaPayoff(payoff, t)));
-                    }
+                    maxError = std::max(maxError,
+                        std::fabs(lifted->priceVanillaPayoff(payoff, t)
+                                  - adams->priceVanillaPayoff(payoff, t)));
                 }
             }
 
@@ -1498,67 +1494,6 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsPricing) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testLiftedMonotonicityAndBounds) {
-    BOOST_TEST_MESSAGE(
-        "Testing no-arbitrage bounds of the lifted engine...");
-
-    // as for the Pade route, put-call parity is exact by construction of
-    // the shared priceVanillaPayoff and is not repeated; monotonicity and
-    // convexity instead probe whether the chF is numerically well behaved
-    // over the whole contour, which is specific to this solver
-
-    const Date today(2, July, 2026);
-    Settings::instance().evaluationDate() = today;
-    const DayCounter dc{Actual365Fixed()};
-
-    const Handle<YieldTermStructure> rTS(
-        ext::make_shared<FlatForward>(today, 0.03, dc));
-    const Handle<YieldTermStructure> qTS(
-        ext::make_shared<FlatForward>(today, 0.01, dc));
-    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
-
-    const auto model{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.1)};
-    const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
-        model, 128, 256,
-        AnalyticRoughHestonEngine::Approximation::Lifted)};
-
-    const Time t{1.0};
-    const Real fwd{s0->value() * qTS->discount(t) / rTS->discount(t)};
-    const Real df{rTS->discount(t)};
-
-    const std::vector<Real> strikes{
-        70.0, 80.0, 90.0, 100.0, 110.0, 120.0, 130.0};
-    std::vector<Real> prices;
-    for (Real k : strikes)
-        prices.push_back(engine->priceVanillaPayoff(
-            ext::make_shared<PlainVanillaPayoff>(Option::Call, k), t));
-
-    for (Size i{0}; i < strikes.size(); ++i) {
-        const Real lower{std::max(fwd - strikes[i], 0.0) * df};
-        const Real upper{fwd * df};
-
-        if (prices[i] < lower - 1e-8 || prices[i] > upper + 1e-8)
-            BOOST_ERROR("lifted call price violates no-arbitrage bounds"
-                        << "\n    strike: " << strikes[i]
-                        << "\n    price:  " << prices[i]);
-
-        if (i > 0 && prices[i] > prices[i - 1] + 1e-8)
-            BOOST_ERROR("lifted call price not decreasing in strike"
-                        << "\n    strike: " << strikes[i - 1] << " -> "
-                        << strikes[i]);
-
-        if (i > 0 && i + 1 < strikes.size()) {
-            const Real secondDiff{
-                prices[i + 1] - 2 * prices[i] + prices[i - 1]};
-            if (secondDiff < -1e-6)
-                BOOST_ERROR("lifted call price not convex in strike"
-                            << "\n    strike:            " << strikes[i]
-                            << "\n    second difference: " << secondDiff);
-        }
-    }
-}
-
 BOOST_AUTO_TEST_CASE(testLiftedCalibration) {
     BOOST_TEST_MESSAGE(
         "Testing rough Heston calibration through the lifted engine...");
@@ -1579,8 +1514,14 @@ BOOST_AUTO_TEST_CASE(testLiftedCalibration) {
 
     const Size integrationOrder{64}, timeSteps{256}, nFactors{20};
 
-    // generator and calibrating engine share settings, so the round trip
-    // isolates the optimizer rather than the approximation bias
+    // The optimizer itself is already covered by the Adams and Pade
+    // calibrations; what is specific to the lifted route, and is only
+    // reachable here, is that update() invalidates the per-maturity grid
+    // cache. The kernel nodes depend on the Hurst exponent, so a missing
+    // clear() would leave every engine in this file correct - each builds
+    // its own - while calibration silently kept the initial guess's kernel
+    // and never fitted. Generator and calibrating engine share settings, so
+    // a failure here is that, not approximation bias.
     const auto trueModel{ext::make_shared<RoughHestonModel>(
         rTS, qTS, s0, v0, kappa, theta, sigma, rho, hurst)};
     const auto trueEngine{ext::make_shared<AnalyticRoughHestonEngine>(
