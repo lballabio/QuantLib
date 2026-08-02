@@ -42,7 +42,7 @@ namespace QuantLib {
 
         auto y0 = y;
 
-        for (auto i=0u; i < map_->size(); ++i) {
+        for (auto i=0U; i < map_->size(); ++i) {
             auto rhs = y - theta_*dt_*map_->apply_direction(i, a);
             y = map_->solve_splitting(i, rhs, -theta_*dt_);
         }
@@ -51,7 +51,7 @@ namespace QuantLib {
         auto yt = y0 + mu_*dt_*map_->apply_mixed(y-a);
         bcSet_.applyAfterApplying(yt);
 
-        for (auto i=0u; i < map_->size(); ++i) {
+        for (auto i=0U; i < map_->size(); ++i) {
             auto rhs = yt - theta_*dt_*map_->apply_direction(i, a);
             yt = map_->solve_splitting(i, rhs, -theta_*dt_);
         }
