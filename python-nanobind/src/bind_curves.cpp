@@ -1,5 +1,6 @@
 #include "bindings.hpp"
 
+#include <nanobind/ndarray.h>
 #include <nanobind/stl/shared_ptr.h>
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/vector.h>
@@ -15,10 +16,53 @@
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/calendar.hpp>
+#include <ql/time/date.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/time/frequency.hpp>
 #include <ql/time/period.hpp>
 
+#include <cstddef>
+#include <vector>
+
 using namespace QuantLib;
+
+namespace {
+
+using DiscountArray = nb::ndarray<nb::numpy, double, nb::ndim<1>>;
+using TimesArray = nb::ndarray<nb::numpy, const double, nb::ndim<1>>;
+
+DiscountArray discount_times_impl(const Handle<YieldTermStructure>& h,
+                                  TimesArray times,
+                                  bool extrapolate) {
+    QL_REQUIRE(!h.empty(), "empty yield term structure handle");
+    const size_t n = times.shape(0);
+    auto* data = new double[n];
+    const double* t = times.data();
+    for (size_t i = 0; i < n; ++i) {
+        data[i] = h->discount(t[i], extrapolate);
+    }
+    nb::capsule owner(data, [](void* p) noexcept {
+        delete[] static_cast<double*>(p);
+    });
+    return DiscountArray(data, {n}, owner);
+}
+
+DiscountArray discount_dates_impl(const Handle<YieldTermStructure>& h,
+                                  const std::vector<Date>& dates,
+                                  bool extrapolate) {
+    QL_REQUIRE(!h.empty(), "empty yield term structure handle");
+    const size_t n = dates.size();
+    auto* data = new double[n];
+    for (size_t i = 0; i < n; ++i) {
+        data[i] = h->discount(dates[i], extrapolate);
+    }
+    nb::capsule owner(data, [](void* p) noexcept {
+        delete[] static_cast<double*>(p);
+    });
+    return DiscountArray(data, {n}, owner);
+}
+
+} // namespace
 
 namespace {
 
@@ -112,6 +156,22 @@ void bind_curves(nb::module_& m) {
             nb::arg("frequency") = Annual,
             nb::arg("extrapolate") = false);
 
+    m.def("discount_times",
+          &discount_times_impl,
+          nb::arg("curve_handle"),
+          nb::arg("times"),
+          nb::arg("extrapolate") = false,
+          "Vectorized discounts for a 1-D NumPy array of times.\n"
+          "Returns a NumPy array of the same shape.");
+
+    m.def("discount_dates",
+          &discount_dates_impl,
+          nb::arg("curve_handle"),
+          nb::arg("dates"),
+          nb::arg("extrapolate") = false,
+          "Vectorized discounts for a list of Date values.\n"
+          "Returns a 1-D NumPy array.");
+
     m.def("FlatForward",
           &make_flat_forward_handle,
           nb::arg("reference_date"),
@@ -167,6 +227,83 @@ void bind_curves(nb::module_& m) {
         nb::arg("convention"),
         nb::arg("end_of_month"),
         nb::arg("day_counter"));
+
+    m.def(
+        "FraRateHelper",
+        [](Rate rate,
+           Natural months_to_start,
+           Natural months_to_end,
+           Natural fixing_days,
+           const Calendar& calendar,
+           BusinessDayConvention convention,
+           bool end_of_month,
+           const DayCounter& day_counter) {
+            return ext::shared_ptr<RateHelper>(ext::make_shared<FraRateHelper>(
+                rate, months_to_start, months_to_end, fixing_days, calendar,
+                convention, end_of_month, day_counter));
+        },
+        nb::arg("rate"),
+        nb::arg("months_to_start"),
+        nb::arg("months_to_end"),
+        nb::arg("fixing_days"),
+        nb::arg("calendar"),
+        nb::arg("convention"),
+        nb::arg("end_of_month"),
+        nb::arg("day_counter"));
+
+    m.def(
+        "FraRateHelper",
+        [](const Handle<Quote>& rate,
+           Natural months_to_start,
+           const ext::shared_ptr<IborIndex>& ibor_index) {
+            return ext::shared_ptr<RateHelper>(
+                ext::make_shared<FraRateHelper>(rate, months_to_start, ibor_index));
+        },
+        nb::arg("rate"),
+        nb::arg("months_to_start"),
+        nb::arg("ibor_index"));
+
+    m.def(
+        "SwapRateHelper",
+        [](Rate rate,
+           const Period& tenor,
+           const Calendar& calendar,
+           Frequency fixed_frequency,
+           BusinessDayConvention fixed_convention,
+           const DayCounter& fixed_day_count,
+           const ext::shared_ptr<IborIndex>& ibor_index) {
+            return ext::shared_ptr<RateHelper>(ext::make_shared<SwapRateHelper>(
+                rate, tenor, calendar, fixed_frequency, fixed_convention,
+                fixed_day_count, ibor_index));
+        },
+        nb::arg("rate"),
+        nb::arg("tenor"),
+        nb::arg("calendar"),
+        nb::arg("fixed_frequency"),
+        nb::arg("fixed_convention"),
+        nb::arg("fixed_day_count"),
+        nb::arg("ibor_index"));
+
+    m.def(
+        "SwapRateHelper",
+        [](const Handle<Quote>& rate,
+           const Period& tenor,
+           const Calendar& calendar,
+           Frequency fixed_frequency,
+           BusinessDayConvention fixed_convention,
+           const DayCounter& fixed_day_count,
+           const ext::shared_ptr<IborIndex>& ibor_index) {
+            return ext::shared_ptr<RateHelper>(ext::make_shared<SwapRateHelper>(
+                rate, tenor, calendar, fixed_frequency, fixed_convention,
+                fixed_day_count, ibor_index));
+        },
+        nb::arg("rate"),
+        nb::arg("tenor"),
+        nb::arg("calendar"),
+        nb::arg("fixed_frequency"),
+        nb::arg("fixed_convention"),
+        nb::arg("fixed_day_count"),
+        nb::arg("ibor_index"));
 
     m.def(
         "PiecewiseLogLinearDiscountCurve",
