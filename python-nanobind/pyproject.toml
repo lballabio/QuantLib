@@ -7,8 +7,8 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "qlnb"
-version = "0.4.0"
-description = "Nanobind Python bindings for QuantLib (phase 3: packaging & docs)"
+version = "0.5.0"
+description = "Nanobind Python bindings for QuantLib (phase 4: compat shim & pricing stretch)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "BSD-3-Clause" }
@@ -57,6 +57,9 @@ sdist.exclude = [
 
 [tool.scikit-build.cmake.define]
 QLNB_BUILD_QUANTLIB = "ON"
+# Opt-in: rebuild QuantLib with QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN.
+# Override at install time: -C cmake.define.QLNB_THREAD_SAFE_OBSERVER=ON
+QLNB_THREAD_SAFE_OBSERVER = "OFF"
 
 [tool.cibuildwheel]
 # Full QuantLib static link → large/slow wheels. Keep the matrix small.

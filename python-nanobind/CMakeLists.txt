@@ -8,6 +8,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(QLNB_BUILD_QUANTLIB
     "Build QuantLib from the parent source tree and link it statically"
     ON)
+option(QLNB_THREAD_SAFE_OBSERVER
+    "Pass QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN=ON when building QuantLib (threaded/free-threaded use)"
+    OFF)
 
 set(QLNB_QUANTLIB_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/.." CACHE PATH
     "Path to the QuantLib source root")
@@ -23,6 +26,9 @@ if (QLNB_BUILD_QUANTLIB)
     set(QL_INSTALL_BENCHMARK OFF CACHE BOOL "" FORCE)
     set(QL_INSTALL_EXAMPLES OFF CACHE BOOL "" FORCE)
     set(QL_INSTALL_TEST_SUITE OFF CACHE BOOL "" FORCE)
+    if (QLNB_THREAD_SAFE_OBSERVER)
+        set(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN ON CACHE BOOL "" FORCE)
+    endif()
 
     # Keep QuantLib install rules out of the Python wheel component.
     set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME "quantlib_internal")
@@ -50,6 +56,7 @@ nanobind_add_module(
     src/bind_curves.cpp
     src/bind_instruments.cpp
     src/bind_pricing.cpp
+    src/bind_experimental.cpp
 )
 
 target_link_libraries(_qlnb PRIVATE ${QLNB_QUANTLIB_TARGET})

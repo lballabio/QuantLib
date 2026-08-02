@@ -16,7 +16,16 @@ BENCH = ROOT / "benchmarks"
 
 
 def test_version_phase3():
-    assert ql.__version__ == "0.4.0"
+    parts = tuple(int(x) for x in ql.__version__.split(".")[:2])
+    assert parts >= (0, 3)
+
+
+def test_free_threading_doc_exists():
+    doc = ROOT / "docs" / "free-threading.md"
+    assert doc.is_file()
+    text = doc.read_text(encoding="utf-8")
+    assert "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN" in text
+    assert "QLNB_THREAD_SAFE_OBSERVER" in text
 
 
 def test_migration_doc_exists():
