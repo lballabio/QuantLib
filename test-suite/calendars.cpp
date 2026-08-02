@@ -42,6 +42,7 @@
 #include <ql/time/calendars/italy.hpp>
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/malaysia.hpp>
 #include <ql/time/calendars/malta.hpp>
 #include <ql/time/calendars/mexico.hpp>
 #include <ql/time/calendars/montenegro.hpp>
@@ -4062,6 +4063,72 @@ BOOST_AUTO_TEST_CASE(testCroatia) {
 
     Calendar c = Croatia();
     checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testMalaysia) {
+
+    BOOST_TEST_MESSAGE("Testing Malaysia holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    // 2024
+    expectedHol.emplace_back(1, January, 2024);      // New Year's Day
+    expectedHol.emplace_back(25, January, 2024);     // Thaipusam
+    expectedHol.emplace_back(1, February, 2024);     // Federal Territory Day
+    expectedHol.emplace_back(12, February, 2024);    // Chinese New Year (substitute)
+    expectedHol.emplace_back(28, March, 2024);       // Nuzul Al-Quran
+    expectedHol.emplace_back(10, April, 2024);       // Hari Raya Aidilfitri
+    expectedHol.emplace_back(11, April, 2024);       // Hari Raya Aidilfitri
+    expectedHol.emplace_back(1, May, 2024);          // Labour Day
+    expectedHol.emplace_back(22, May, 2024);         // Wesak Day
+    expectedHol.emplace_back(3, June, 2024);         // Agong's Birthday
+    expectedHol.emplace_back(17, June, 2024);        // Hari Raya Haji
+    expectedHol.emplace_back(18, June, 2024);        // Hari Raya Haji
+    expectedHol.emplace_back(8, July, 2024);         // Awal Muharram (substitute)
+    expectedHol.emplace_back(16, September, 2024);   // Malaysia Day / Maulidur Rasul
+    expectedHol.emplace_back(31, October, 2024);     // Deepavali
+    expectedHol.emplace_back(25, December, 2024);    // Christmas Day
+
+    // 2025
+    expectedHol.emplace_back(1, January, 2025);      // New Year's Day
+    expectedHol.emplace_back(29, January, 2025);     // Chinese New Year
+    expectedHol.emplace_back(30, January, 2025);     // Chinese New Year
+    expectedHol.emplace_back(11, February, 2025);    // Thaipusam
+    expectedHol.emplace_back(18, March, 2025);       // Nuzul Al-Quran
+    expectedHol.emplace_back(31, March, 2025);       // Hari Raya Aidilfitri
+    expectedHol.emplace_back(1, April, 2025);        // Hari Raya Aidilfitri
+    expectedHol.emplace_back(1, May, 2025);          // Labour Day
+    expectedHol.emplace_back(12, May, 2025);         // Wesak Day
+    expectedHol.emplace_back(2, June, 2025);         // Agong's Birthday
+    expectedHol.emplace_back(27, June, 2025);        // Awal Muharram
+    expectedHol.emplace_back(1, September, 2025);    // National Day (substitute)
+    expectedHol.emplace_back(5, September, 2025);    // Maulidur Rasul
+    expectedHol.emplace_back(15, September, 2025);   // Malaysia Day (additional)
+    expectedHol.emplace_back(16, September, 2025);   // Malaysia Day
+    expectedHol.emplace_back(20, October, 2025);     // Deepavali
+    expectedHol.emplace_back(25, December, 2025);    // Christmas Day
+
+    Calendar c = Malaysia();
+    checkHolidays(c.holidayList(Date(1, January, 2024), Date(31, December, 2025)), expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testMalaysiaFixedHolidaysOutsideTabulatedRange) {
+
+    BOOST_TEST_MESSAGE("Testing Malaysia fixed holidays outside the tabulated range...");
+
+    Calendar c = Malaysia();
+
+    // The variable festivals are tabulated only for 2015-2027, but the
+    // fixed-date federal holidays are rule-based and must hold in any year.
+    BOOST_CHECK(c.isHoliday(Date(1, January, 2035)));      // New Year's Day
+    BOOST_CHECK(c.isHoliday(Date(1, February, 2035)));     // Federal Territory Day
+    BOOST_CHECK(c.isHoliday(Date(1, May, 2035)));          // Labour Day
+    BOOST_CHECK(c.isHoliday(Date(31, August, 2035)));      // National Day
+    BOOST_CHECK(c.isHoliday(Date(25, December, 2035)));    // Christmas Day
+
+    // Malaysia Day only became a federal holiday in 2010.
+    BOOST_CHECK(c.isHoliday(Date(16, September, 2035)));
+    BOOST_CHECK(c.isBusinessDay(Date(16, September, 2009)));
 }
 
 BOOST_AUTO_TEST_CASE(testUzbekistan) {

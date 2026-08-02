@@ -929,6 +929,7 @@ set(QL_SOURCES
     time/calendars/italy.cpp
     time/calendars/japan.cpp
     time/calendars/jointcalendar.cpp
+    time/calendars/malaysia.cpp
     time/calendars/malta.cpp
     time/calendars/mexico.cpp
     time/calendars/montenegro.cpp
@@ -2243,6 +2244,7 @@ set(QL_HEADERS
     time/calendars/italy.hpp
     time/calendars/japan.hpp
     time/calendars/jointcalendar.hpp
+    time/calendars/malaysia.hpp
     time/calendars/malta.hpp
     time/calendars/mexico.hpp
     time/calendars/montenegro.hpp

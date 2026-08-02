@@ -29,6 +29,7 @@ this_include_HEADERS = \
 	italy.hpp \
 	japan.hpp \
 	jointcalendar.hpp \
+	malaysia.hpp \
 	malta.hpp \
 	mexico.hpp \
 	montenegro.hpp \
@@ -84,6 +85,7 @@ cpp_files = \
 	italy.cpp \
 	japan.cpp \
 	jointcalendar.cpp \
+	malaysia.cpp \
 	malta.cpp \
 	mexico.cpp \
 	montenegro.cpp \
