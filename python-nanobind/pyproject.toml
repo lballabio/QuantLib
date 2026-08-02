@@ -1,0 +1,45 @@
+[build-system]
+requires = [
+    "scikit-build-core>=0.10",
+    "nanobind>=2.0",
+]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "qlnb"
+version = "0.1.0"
+description = "Phase-0 nanobind Python bindings for QuantLib"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "BSD-3-Clause" }
+authors = [{ name = "QuantLib contributors" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: C++",
+    "Programming Language :: Python :: 3",
+    "Topic :: Office/Business :: Financial",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+bench = ["pytest>=7.0"]
+
+[tool.scikit-build]
+minimum-version = "0.10"
+build-dir = "build/{wheel_tag}"
+cmake.build-type = "Release"
+install.components = ["python"]
+wheel.py-api = "cp312"
+sdist.include = [
+    "CMakeLists.txt",
+    "src/**",
+    "README.md",
+]
+
+[tool.scikit-build.cmake.define]
+QLNB_BUILD_QUANTLIB = "ON"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
