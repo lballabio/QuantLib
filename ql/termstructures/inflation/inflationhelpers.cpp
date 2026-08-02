@@ -54,7 +54,7 @@ namespace QuantLib {
         const Date& endDate,
         Calendar calendar,
         BusinessDayConvention paymentConvention,
-        const DayCounter& dayCounter,
+        DayCounter  dayCounter,
         const ext::shared_ptr<ZeroInflationIndex>& zii,
         CPI::InterpolationType observationInterpolation,
         Pillar::Choice pillar,
@@ -62,7 +62,7 @@ namespace QuantLib {
     : RelativeDateBootstrapHelper<ZeroInflationTermStructure>(quote, startDate == Date()),
       swapObsLag_(swapObsLag), startDate_(startDate), maturity_(endDate),
       calendar_(std::move(calendar)), paymentConvention_(paymentConvention),
-      dayCounter_(dayCounter), observationInterpolation_(observationInterpolation),
+      dayCounter_(std::move(dayCounter)), observationInterpolation_(observationInterpolation),
       pillarChoice_(pillar) {
         zii_ = zii->clone(termStructureHandle_);
         // We want to be notified of changes of fixings, but we don't

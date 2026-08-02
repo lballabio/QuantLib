@@ -106,7 +106,7 @@ namespace QuantLib {
         if (a.empty()) {
             if (b.empty()) {
                 //#pragma omp parallel for
-                for (auto i=0u; i < size; ++i) {
+                for (auto i=0U; i < size; ++i) {
                     diag[i]  = y_diag[i];
                     lower[i] = y_lower[i];
                     upper[i] = y_upper[i];
@@ -116,7 +116,7 @@ namespace QuantLib {
                 Array::const_iterator bptr(b.begin());
                 const auto binc = (b.size() > 1) ? 1 : 0;
                 //#pragma omp parallel for
-                for (auto i=0u; i < size; ++i) {
+                for (auto i=0U; i < size; ++i) {
                     diag[i]  = y_diag[i] + bptr[i*binc];
                     lower[i] = y_lower[i];
                     upper[i] = y_upper[i];
@@ -132,7 +132,7 @@ namespace QuantLib {
             const auto *x_upper(x.upper_.get());
 
             //#pragma omp parallel for
-            for (auto i=0u; i < size; ++i) {
+            for (auto i=0U; i < size; ++i) {
                 const auto s = aptr[i*ainc];
                 diag[i]  = y_diag[i]  + s*x_diag[i];
                 lower[i] = y_lower[i] + s*x_lower[i];
@@ -151,7 +151,7 @@ namespace QuantLib {
             const auto *x_upper(x.upper_.get());
 
             //#pragma omp parallel for
-            for (auto i=0u; i < size; ++i) {
+            for (auto i=0U; i < size; ++i) {
                 const auto s = aptr[i*ainc];
                 diag[i]  = y_diag[i]  + s*x_diag[i] + bptr[i*binc];
                 lower[i] = y_lower[i] + s*x_lower[i];
@@ -165,7 +165,7 @@ namespace QuantLib {
         TripleBandLinearOp retVal(direction_, mesher_);
         const auto size = mesher_->layout()->size();
         //#pragma omp parallel for
-        for (auto i=0u; i < size; ++i) {
+        for (auto i=0U; i < size; ++i) {
             retVal.lower_[i]= lower_[i] + m.lower_[i];
             retVal.diag_[i] = diag_[i]  + m.diag_[i];
             retVal.upper_[i]= upper_[i] + m.upper_[i];
@@ -181,7 +181,7 @@ namespace QuantLib {
 
         const Size size = mesher_->layout()->size();
         //#pragma omp parallel for
-        for (auto i=0u; i < size; ++i) {
+        for (auto i=0U; i < size; ++i) {
             const auto s = u[i];
             retVal.lower_[i]= lower_[i]*s;
             retVal.diag_[i] = diag_[i]*s;
@@ -197,7 +197,7 @@ namespace QuantLib {
         TripleBandLinearOp retVal(direction_, mesher_);
 
         #pragma omp parallel for
-        for (auto i=0u; i < size; ++i) {
+        for (auto i=0U; i < size; ++i) {
             const auto sm1 = i > 0? u[i-1] : 1.0;
             const auto s0 = u[i];
             const auto sp1 = i < size-1? u[i+1] : 1.0;
@@ -215,7 +215,7 @@ namespace QuantLib {
 
         const auto size = mesher_->layout()->size();
         //#pragma omp parallel for
-        for (auto i=0u; i < size; ++i) {
+        for (auto i=0U; i < size; ++i) {
             retVal.lower_[i]= lower_[i];
             retVal.upper_[i]= upper_[i];
             retVal.diag_[i] = diag_[i]+u[i];
@@ -235,7 +235,7 @@ namespace QuantLib {
 
         array_type retVal(r.size());
         //#pragma omp parallel for
-        for (auto i=0u; i < mesher_->layout()->size(); ++i) {
+        for (auto i=0U; i < mesher_->layout()->size(); ++i) {
             retVal[i] = r[i0ptr[i]]*lptr[i]+r[i]*dptr[i]+r[i2ptr[i]]*uptr[i];
         }
 
@@ -246,7 +246,7 @@ namespace QuantLib {
         const auto n = mesher_->layout()->size();
 
         SparseMatrix retVal(n, n, 3*n);
-        for (auto i=0u; i < n; ++i) {
+        for (auto i=0U; i < n; ++i) {
             retVal(i, i0_[i]) += lower_[i];
             retVal(i, i     ) += diag_[i];
             retVal(i, i2_[i]) += upper_[i];
@@ -284,7 +284,7 @@ namespace QuantLib {
             beta = 1.0 / beta;
             result[previous] = r[previous] * beta;
 
-            for (auto j=1u; j<size; ++j) {
+            for (auto j=1U; j<size; ++j) {
                 const auto current = index(j);
                 temp_[j] = a * uptr[previous] * beta;
 

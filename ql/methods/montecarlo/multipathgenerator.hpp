@@ -119,7 +119,7 @@ namespace QuantLib {
             auto& path = next_.value;
 
             auto asset = process_->initialValues();
-            for (auto j=0u; j<m; j++)
+            for (auto j=0U; j<m; j++)
                 path[j].front() = asset[j];
 
             Array temp(n);
@@ -127,7 +127,7 @@ namespace QuantLib {
 
             const auto& timeGrid = path[0].timeGrid();
             Time t, dt;
-            for (auto i = 1u; i < path.pathSize(); i++) {
+            for (auto i = 1U; i < path.pathSize(); i++) {
                 auto offset = (i-1)*n;
                 t = timeGrid[i-1];
                 dt = timeGrid.dt(i-1);
@@ -142,7 +142,7 @@ namespace QuantLib {
                               temp.begin());
 
                 asset = process_->evolve(t, asset, dt, temp);
-                for (auto j=0u; j<m; j++)
+                for (auto j=0U; j<m; j++)
                     path[j][i] = asset[j];
             }
             return next_;
