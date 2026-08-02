@@ -1,10 +1,12 @@
-.venv/
 build/
 dist/
 *.egg-info/
-src/qlnb/*.so
-src/qlnb/*.pyd
-src/qlnb/_qlnb*.so
-__pycache__/
 .pytest_cache/
+__pycache__/
+*.pyc
+benchmarks/out/
+bench-artifacts/
+wheelhouse/
+.venv/
 *.whl
+*.so

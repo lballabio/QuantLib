@@ -27,6 +27,12 @@ Experimental Python package that binds a focused QuantLib surface with
 - `ForwardRateAgreement` (reuses curve / `Euribor` bindings)
 - New translation unit: `src/bind_pricing.cpp`
 
+### Phase 3 (productization)
+- cibuildwheel workflow (manylinux x86_64 Stable ABI / cp312)
+- Migration guide vs official SWIG bindings
+- Benchmark + NPV drift CI job
+- Packaging notes for monorepo wheel builds
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 
@@ -39,7 +45,16 @@ full C++ hierarchy. Day counters and calendars use QuantLib's value-semantic
 pimpl types. Option engines are attached via lambdas on concrete wrappers
 (no Instrument/OneAssetOption MI hierarchy in Python).
 
+## Docs
+
+- [SWIG → qlnb migration guide](docs/migration.md)
+- [Packaging / wheel build notes](docs/packaging.md)
+
 ## Build
+
+Wheels must be built from a **full QuantLib checkout** (the parent tree is
+compiled into the extension). An sdist of `python-nanobind/` alone is not
+sufficient — see [docs/packaging.md](docs/packaging.md).
 
 ```bash
 python -m venv .venv
@@ -49,10 +64,21 @@ pip install --no-build-isolation .
 pytest
 ```
 
-## Benchmark
+Optional local wheel:
+
+```bash
+pip install build
+python -m build --wheel
+```
+
+## Benchmark / NPV drift
 
 ```bash
 python benchmarks/bench_phase0.py
+python scripts/check_npv_drift.py --abs-tol 1e-8
 pip install QuantLib   # optional SWIG comparison
 python benchmarks/bench_phase0.py
 ```
+
+CI builds manylinux wheels and uploads benchmark artifacts via
+`.github/workflows/qlnb-wheels.yml`.

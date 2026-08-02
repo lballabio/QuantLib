@@ -7,8 +7,8 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "qlnb"
-version = "0.3.0"
-description = "Nanobind Python bindings for QuantLib (phase 2: pricing coverage)"
+version = "0.4.0"
+description = "Nanobind Python bindings for QuantLib (phase 3: packaging & docs)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "BSD-3-Clause" }
@@ -22,25 +22,58 @@ classifiers = [
     "Topic :: Office/Business :: Financial",
 ]
 
+[project.urls]
+Documentation = "https://github.com/zhangys2/QuantLib-1/blob/master/python-nanobind/docs/migration.md"
+Homepage = "https://github.com/zhangys2/QuantLib-1/tree/master/python-nanobind"
+
 [project.optional-dependencies]
 test = ["pytest>=7.0", "numpy>=1.24"]
-bench = ["pytest>=7.0"]
+bench = ["pytest>=7.0", "numpy>=1.24"]
 numpy = ["numpy>=1.24"]
+dev = ["pytest>=7.0", "numpy>=1.24", "build>=1.0"]
 
 [tool.scikit-build]
 minimum-version = "0.10"
 build-dir = "build/{wheel_tag}"
 cmake.build-type = "Release"
 install.components = ["python"]
+# Stable ABI wheel tag; one abi3 wheel covers CPython 3.12+.
 wheel.py-api = "cp312"
+# NOTE: An sdist of python-nanobind/ alone cannot build — QuantLib is compiled
+# from the parent source tree (../). Prefer building wheels from a full repo
+# checkout (see docs/packaging.md). These includes cover only the package tree.
 sdist.include = [
     "CMakeLists.txt",
     "src/**",
     "README.md",
+    "docs/**",
+    "benchmarks/**",
+    "scripts/**",
+    "tests/**",
+]
+sdist.exclude = [
+    "build/**",
 ]
 
 [tool.scikit-build.cmake.define]
 QLNB_BUILD_QUANTLIB = "ON"
+
+[tool.cibuildwheel]
+# Full QuantLib static link → large/slow wheels. Keep the matrix small.
+build = "cp312-manylinux_x86_64"
+skip = "pp* *-musllinux_*"
+build-verbosity = 1
+# QuantLib static build regularly exceeds default job budgets.
+build-frontend = "build"
+test-requires = ["pytest>=7.0", "numpy>=1.24"]
+test-command = "pytest {package}/tests -q"
+# Before-all: nothing special; scikit-build builds parent QuantLib.
+environment = { CMAKE_BUILD_PARALLEL_LEVEL = "2" }
+
+[tool.cibuildwheel.linux]
+# Boost is available in manylinux images via yum in before-all if needed;
+# QuantLib's bundled CMake finds system Boost when present.
+before-all = "yum install -y boost-devel || dnf install -y boost-devel || true"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -28,7 +28,7 @@ def _bsm_process(
 
 
 def test_version_is_phase2():
-    assert ql.__version__ == "0.3.0"
+    assert ql.__version__ == "0.4.0"
 
 
 def test_american_barone_adesi_whaley_haug_put():
