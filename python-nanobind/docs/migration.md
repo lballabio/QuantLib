@@ -321,7 +321,8 @@ opt.set_binomial_pricing_engine(process, steps=801)   # Cox–Ross–Rubinstein
 opt.set_fd_pricing_engine(process, t_grid=100, x_grid=100)
 ```
 
-Overnight indexes and a thin MakeOIS helper:
+Overnight indexes and a thin MakeOIS helper. `OvernightIndex` is a standalone
+opaque wrapper (not a Python subclass of `IborIndex` — Index MI):
 
 ```python
 sofr = ql.Sofr(curve)
@@ -330,6 +331,9 @@ ois = ql.make_ois(ql.Period(2, ql.TimeUnit.Years), sofr, 0.03)
 ois.set_pricing_engine(curve)
 print(ois.fair_rate(), ois.NPV())
 ```
+
+`FloatingRateBond(..., fixing_days=0)` means “use the index default”
+(`Null<Natural>` in C++). Pass a positive value to override.
 
 `qlnb.compat` adds camelCase aliases (`setBinomialPricingEngine`,
 `FloatingRateBond.cleanPrice`, `makeOIS`).
