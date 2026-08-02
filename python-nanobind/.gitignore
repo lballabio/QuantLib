@@ -6,5 +6,10 @@ src/qlnb/*.so
 src/qlnb/*.pyd
 src/qlnb/_qlnb*.so
 __pycache__/
+*.pyc
 .pytest_cache/
+benchmarks/out/
+bench-artifacts/
+wheelhouse/
 *.whl
+*.so

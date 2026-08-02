@@ -1,0 +1,134 @@
+name: qlnb wheels
+
+on:
+  push:
+    paths:
+      - "python-nanobind/**"
+      - ".github/workflows/qlnb-wheels.yml"
+      - "ql/**"
+      - "CMakeLists.txt"
+      - "cmake/**"
+  pull_request:
+    paths:
+      - "python-nanobind/**"
+      - ".github/workflows/qlnb-wheels.yml"
+      - "ql/**"
+      - "CMakeLists.txt"
+      - "cmake/**"
+  workflow_dispatch:
+
+concurrency:
+  group: qlnb-wheels-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_wheels:
+    name: cibuildwheel (manylinux x86_64)
+    runs-on: ubuntu-latest
+    # Full QuantLib static link is slow/large.
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.22.0
+        with:
+          package-dir: python-nanobind
+          output-dir: wheelhouse
+          config-file: python-nanobind/pyproject.toml
+        env:
+          # Stable-ABI / cp312 tag already in pyproject; keep matrix tiny.
+          CIBW_BUILD: cp312-manylinux_x86_64
+          CIBW_SKIP: pp* *-musllinux_*
+          CIBW_BUILD_VERBOSITY: 1
+          CIBW_ENVIRONMENT: CMAKE_BUILD_PARALLEL_LEVEL=2
+          # manylinux images vary; try to ensure Boost headers exist.
+          CIBW_BEFORE_ALL_LINUX: >-
+            (yum install -y boost-devel || dnf install -y boost-devel ||
+             apt-get update && apt-get install -y libboost-dev || true)
+          CIBW_TEST_REQUIRES: pytest>=7.0 numpy>=1.24
+          CIBW_TEST_COMMAND: pytest {package}/tests -q
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qlnb-wheels-manylinux-x86_64
+          path: wheelhouse/*.whl
+          if-no-files-found: error
+
+  # Optional extra OS — keep disabled-by-default via if: false so the workflow
+  # stays focused; flip to true when runners/time budget allow.
+  build_wheels_macos:
+    name: cibuildwheel (macOS, optional)
+    if: false
+    runs-on: macos-14
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.22.0
+        with:
+          package-dir: python-nanobind
+          output-dir: wheelhouse
+          config-file: python-nanobind/pyproject.toml
+        env:
+          CIBW_BUILD: cp312-macosx_arm64
+          CIBW_ENVIRONMENT: CMAKE_BUILD_PARALLEL_LEVEL=2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qlnb-wheels-macos
+          path: wheelhouse/*.whl
+
+  benchmark:
+    name: qlnb benchmarks + NPV drift
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake ninja-build libboost-dev
+          python -m pip install -U pip
+          python -m pip install nanobind scikit-build-core ninja pytest numpy
+
+      - name: Build and install qlnb
+        working-directory: python-nanobind
+        run: pip install --no-build-isolation .
+
+      - name: Run unit tests
+        working-directory: python-nanobind
+        run: pytest -q
+
+      - name: NPV drift check
+        working-directory: python-nanobind
+        run: |
+          mkdir -p bench-artifacts
+          python scripts/check_npv_drift.py \
+            --abs-tol 1e-8 \
+            --json-out bench-artifacts/npv_drift.json
+
+      - name: Microbenchmarks (qlnb)
+        working-directory: python-nanobind
+        env:
+          QLNB_BENCH_OUT: ${{ github.workspace }}/python-nanobind/bench-artifacts
+        run: python benchmarks/bench_phase0.py | tee bench-artifacts/bench_phase0.txt
+
+      - name: Optional SWIG comparison
+        working-directory: python-nanobind
+        continue-on-error: true
+        env:
+          QLNB_BENCH_OUT: ${{ github.workspace }}/python-nanobind/bench-artifacts
+        run: |
+          pip install QuantLib
+          python benchmarks/bench_phase0.py | tee -a bench-artifacts/bench_phase0.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qlnb-benchmark-results
+          path: python-nanobind/bench-artifacts/
+          if-no-files-found: error
