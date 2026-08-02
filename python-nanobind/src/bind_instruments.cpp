@@ -7,6 +7,7 @@
 #include <ql/handle.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
+#include <ql/instruments/bonds/zerocouponbond.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/swap.hpp>
@@ -193,6 +194,48 @@ void bind_instruments(nb::module_& m) {
         .def(
             "set_pricing_engine",
             [](FixedRateBond& b, const Handle<YieldTermStructure>& discount_curve) {
+                b.setPricingEngine(
+                    ext::make_shared<DiscountingBondEngine>(discount_curve));
+            },
+            nb::arg("discount_curve"));
+
+    // Zero-coupon bond (standalone; Bond/Instrument use MI via LazyObject).
+    nb::class_<ZeroCouponBond>(m, "ZeroCouponBond")
+        .def(
+            "__init__",
+            [](ZeroCouponBond* self,
+               Natural settlement_days,
+               const Calendar& calendar,
+               Real face_amount,
+               const Date& maturity_date,
+               BusinessDayConvention payment_convention,
+               Real redemption,
+               const Date& issue_date) {
+                new (self) ZeroCouponBond(settlement_days,
+                                          calendar,
+                                          face_amount,
+                                          maturity_date,
+                                          payment_convention,
+                                          redemption,
+                                          issue_date);
+            },
+            nb::arg("settlement_days"),
+            nb::arg("calendar"),
+            nb::arg("face_amount"),
+            nb::arg("maturity_date"),
+            nb::arg("payment_convention") = Following,
+            nb::arg("redemption") = 100.0,
+            nb::arg("issue_date") = Date())
+        .def("NPV", [](ZeroCouponBond& b) { return b.NPV(); })
+        .def("clean_price", [](ZeroCouponBond& b) { return b.cleanPrice(); })
+        .def("dirty_price", [](ZeroCouponBond& b) { return b.dirtyPrice(); })
+        .def("settlement_date",
+             [](const ZeroCouponBond& b) { return b.settlementDate(); })
+        .def("maturity_date",
+             [](const ZeroCouponBond& b) { return b.maturityDate(); })
+        .def(
+            "set_pricing_engine",
+            [](ZeroCouponBond& b, const Handle<YieldTermStructure>& discount_curve) {
                 b.setPricingEngine(
                     ext::make_shared<DiscountingBondEngine>(discount_curve));
             },

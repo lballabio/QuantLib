@@ -5,6 +5,8 @@
 
 #include <ql/time/businessdayconvention.hpp>
 #include <ql/time/calendar.hpp>
+#include <ql/time/calendars/germany.hpp>
+#include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
@@ -143,10 +145,22 @@ void bind_time(nb::module_& m) {
         .value("FederalReserve", UnitedStates::FederalReserve)
         .value("SOFR", UnitedStates::SOFR);
 
+    nb::enum_<Germany::Market>(m, "GermanyMarket")
+        .value("Settlement", Germany::Settlement)
+        .value("FrankfurtStockExchange", Germany::FrankfurtStockExchange)
+        .value("Xetra", Germany::Xetra)
+        .value("Eurex", Germany::Eurex)
+        .value("Euwax", Germany::Euwax);
+
     m.def("TARGET", []() { return Calendar(TARGET()); });
     m.def("NullCalendar", []() { return Calendar(NullCalendar()); });
     m.def("WeekendsOnly", []() { return Calendar(WeekendsOnly()); });
     m.def("UnitedKingdom", []() { return Calendar(UnitedKingdom()); });
+    m.def("Japan", []() { return Calendar(Japan()); });
+    m.def(
+        "Germany",
+        [](Germany::Market market) { return Calendar(Germany(market)); },
+        nb::arg("market") = Germany::FrankfurtStockExchange);
     m.def(
         "UnitedStates",
         [](UnitedStates::Market market) { return Calendar(UnitedStates(market)); },

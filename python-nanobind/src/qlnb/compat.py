@@ -153,10 +153,25 @@ def _install_aliases() -> None:
     FixedRateBond.maturityDate = FixedRateBond.maturity_date  # type: ignore[attr-defined]
     FixedRateBond.setPricingEngine = FixedRateBond.set_pricing_engine  # type: ignore[attr-defined]
 
+    ZeroCouponBond = getattr(_ql, "ZeroCouponBond", None)
+    if ZeroCouponBond is not None:
+        ZeroCouponBond.cleanPrice = ZeroCouponBond.clean_price  # type: ignore[attr-defined]
+        ZeroCouponBond.dirtyPrice = ZeroCouponBond.dirty_price  # type: ignore[attr-defined]
+        ZeroCouponBond.settlementDate = ZeroCouponBond.settlement_date  # type: ignore[attr-defined]
+        ZeroCouponBond.maturityDate = ZeroCouponBond.maturity_date  # type: ignore[attr-defined]
+        ZeroCouponBond.setPricingEngine = ZeroCouponBond.set_pricing_engine  # type: ignore[attr-defined]
+
     VanillaSwap = _ql.VanillaSwap
     VanillaSwap.fairRate = VanillaSwap.fair_rate  # type: ignore[attr-defined]
     VanillaSwap.fairSpread = VanillaSwap.fair_spread  # type: ignore[attr-defined]
     VanillaSwap.setPricingEngine = VanillaSwap.set_pricing_engine  # type: ignore[attr-defined]
+
+    Swaption = getattr(_ql, "Swaption", None)
+    if Swaption is not None:
+        Swaption.setPricingEngine = Swaption.set_pricing_engine  # type: ignore[attr-defined]
+        Swaption.settlementType = Swaption.settlement_type  # type: ignore[attr-defined]
+        Swaption.settlementMethod = Swaption.settlement_method  # type: ignore[attr-defined]
+        Swaption.isExpired = Swaption.is_expired  # type: ignore[attr-defined]
 
     EuropeanOption = _ql.EuropeanOption
     EuropeanOption.setPricingEngine = EuropeanOption.set_pricing_engine  # type: ignore[attr-defined]
@@ -197,6 +212,22 @@ _install_aliases()
 # Convenience aliases matching common SWIG free functions / names.
 setEvaluationDate = _ql.set_evaluation_date  # noqa: N816
 getEvaluationDate = _ql.get_evaluation_date  # noqa: N816
+
+# Settlement nested namespace (SWIG: ql.Settlement.Physical).
+class Settlement:
+    """SWIG-style Settlement.Physical / Settlement.Cash namespace."""
+
+    Physical = getattr(_ql, "SettlementType").Physical
+    Cash = getattr(_ql, "SettlementType").Cash
+    PhysicalOTC = getattr(_ql, "SettlementMethod").PhysicalOTC
+    PhysicalCleared = getattr(_ql, "SettlementMethod").PhysicalCleared
+    CollateralizedCashPrice = getattr(_ql, "SettlementMethod").CollateralizedCashPrice
+    ParYieldCurve = getattr(_ql, "SettlementMethod").ParYieldCurve
+
+
+# Attach Payer/Receiver on VanillaSwap class for SWIG-like access.
+_ql.VanillaSwap.Payer = _ql.SwapType.Payer  # type: ignore[attr-defined]
+_ql.VanillaSwap.Receiver = _ql.SwapType.Receiver  # type: ignore[attr-defined]
 
 
 __all__ = [name for name in globals() if not name.startswith("_")]

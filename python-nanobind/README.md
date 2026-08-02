@@ -41,6 +41,15 @@ Experimental Python package that binds a focused QuantLib surface with
 - Free-threading notes (`docs/free-threading.md`) and optional
   `QLNB_THREAD_SAFE_OBSERVER` CMake passthrough
 
+### Phase 5 (rates options + ergonomics)
+- European `Swaption` + Black swaption engine (`src/bind_rates_options.cpp`)
+- `ZeroCouponBond` + discounting engine (same pattern as `FixedRateBond`)
+- `make_vanilla_swap` helper for MakeVanillaSwap-style construction
+- NumPy helpers: `discount_times` / `discount_dates` on curve handles
+- Bootstrap helpers: `FraRateHelper`, `SwapRateHelper`
+- Calendars: `Japan()`, `Germany(...)`
+- Expanded `qlnb.compat` aliases (`Settlement.*`, bond/swaption camelCase)
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 

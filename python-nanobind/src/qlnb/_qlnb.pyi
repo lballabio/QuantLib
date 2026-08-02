@@ -81,6 +81,23 @@ class UnitedStatesMarket:
     GovernmentBond: UnitedStatesMarket
     SOFR: UnitedStatesMarket
 
+class GermanyMarket:
+    Settlement: GermanyMarket
+    FrankfurtStockExchange: GermanyMarket
+    Xetra: GermanyMarket
+    Eurex: GermanyMarket
+    Euwax: GermanyMarket
+
+class SettlementType:
+    Physical: SettlementType
+    Cash: SettlementType
+
+class SettlementMethod:
+    PhysicalOTC: SettlementMethod
+    PhysicalCleared: SettlementMethod
+    CollateralizedCashPrice: SettlementMethod
+    ParYieldCurve: SettlementMethod
+
 class Date:
     def __init__(self, day: int, month: Month, year: int) -> None: ...
     def day_of_month(self) -> int: ...
@@ -194,6 +211,24 @@ class FixedRateBond:
     def NPV(self) -> float: ...
     def clean_price(self) -> float: ...
     def dirty_price(self) -> float: ...
+    def set_pricing_engine(self, discount_curve: YieldTermStructureHandle) -> None: ...
+
+class ZeroCouponBond:
+    def __init__(
+        self,
+        settlement_days: int,
+        calendar: Calendar,
+        face_amount: float,
+        maturity_date: Date,
+        payment_convention: BusinessDayConvention = ...,
+        redemption: float = ...,
+        issue_date: Date = ...,
+    ) -> None: ...
+    def NPV(self) -> float: ...
+    def clean_price(self) -> float: ...
+    def dirty_price(self) -> float: ...
+    def settlement_date(self) -> Date: ...
+    def maturity_date(self) -> Date: ...
     def set_pricing_engine(self, discount_curve: YieldTermStructureHandle) -> None: ...
 
 class VanillaSwap:
@@ -343,9 +378,54 @@ class CapFloor:
         displacement: float = ...,
     ) -> None: ...
 
+class Swaption:
+    def __init__(
+        self,
+        swap: VanillaSwap,
+        exercise: EuropeanExercise,
+        delivery: SettlementType = ...,
+        settlement_method: SettlementMethod = ...,
+    ) -> None: ...
+    def NPV(self) -> float: ...
+    def type(self) -> SwapType: ...
+    def settlement_type(self) -> SettlementType: ...
+    def settlement_method(self) -> SettlementMethod: ...
+    def is_expired(self) -> bool: ...
+    def set_pricing_engine(
+        self,
+        discount_curve: YieldTermStructureHandle,
+        volatility: float,
+        day_counter: DayCounter = ...,
+        displacement: float = ...,
+    ) -> None: ...
+
 def set_evaluation_date(date: Date) -> None: ...
 def get_evaluation_date() -> Date: ...
 def make_quote_handle(value: float) -> QuoteHandle: ...
+def make_vanilla_swap(
+    swap_tenor: Period,
+    index: IborIndex,
+    fixed_rate: float,
+    effective_date: Date,
+    fixed_leg_tenor: Period = ...,
+    fixed_day_count: DayCounter = ...,
+    type: SwapType = ...,
+    nominal: float = ...,
+    floating_spread: float = ...,
+) -> VanillaSwap: ...
+def discount_times(
+    curve_handle: YieldTermStructureHandle,
+    times: object,
+    extrapolate: bool = ...,
+) -> object: ...
+def discount_dates(
+    curve_handle: YieldTermStructureHandle,
+    dates: Sequence[Date],
+    extrapolate: bool = ...,
+) -> object: ...
+def BlackSwaptionEngine(
+    discount_curve: YieldTermStructureHandle,
+) -> YieldTermStructureHandle: ...
 def AnalyticEuropeanEngine(
     process: BlackScholesMertonProcess,
 ) -> BlackScholesMertonProcess: ...
@@ -396,6 +476,8 @@ def TARGET() -> Calendar: ...
 def NullCalendar() -> Calendar: ...
 def WeekendsOnly() -> Calendar: ...
 def UnitedKingdom() -> Calendar: ...
+def Japan() -> Calendar: ...
+def Germany(market: GermanyMarket = ...) -> Calendar: ...
 def UnitedStates(market: UnitedStatesMarket = ...) -> Calendar: ...
 def FlatForward(
     reference_date: Date, forward: float | QuoteHandle, day_counter: DayCounter
@@ -408,6 +490,31 @@ def DepositRateHelper(
     convention: BusinessDayConvention,
     end_of_month: bool,
     day_counter: DayCounter,
+) -> RateHelper: ...
+def FraRateHelper(
+    rate: float | QuoteHandle,
+    months_to_start: int,
+    months_to_end: int = ...,
+    fixing_days: int = ...,
+    calendar: Calendar = ...,
+    convention: BusinessDayConvention = ...,
+    end_of_month: bool = ...,
+    day_counter: DayCounter = ...,
+) -> RateHelper: ...
+@overload
+def FraRateHelper(
+    rate: QuoteHandle,
+    months_to_start: int,
+    ibor_index: IborIndex,
+) -> RateHelper: ...
+def SwapRateHelper(
+    rate: float | QuoteHandle,
+    tenor: Period,
+    calendar: Calendar,
+    fixed_frequency: Frequency,
+    fixed_convention: BusinessDayConvention,
+    fixed_day_count: DayCounter,
+    ibor_index: IborIndex,
 ) -> RateHelper: ...
 def PiecewiseLogLinearDiscountCurve(
     reference_date: Date,

@@ -228,7 +228,7 @@ Requires NumPy at import/use time (`pip install qlnb[numpy]` or the `test` extra
 | Flat forward | curve object → wrap in handle | factory returns handle |
 | Engines | construct engine, `setPricingEngine` | `set_pricing_engine(handle_or_process)` |
 | Naming | camelCase | snake_case |
-| Coverage | broad SWIG surface | focused phase 0–4 surface |
+| Coverage | broad SWIG surface | focused phase 0–5 surface |
 
 ## Compatibility shim (`qlnb.compat`)
 
@@ -267,6 +267,39 @@ barrier.set_pricing_engine(process)  # AnalyticBarrierEngine
 cap = ql.make_cap(ql.Period(5, ql.TimeUnit.Years), ql.Euribor6M(curve), 0.07)
 cap.set_pricing_engine(curve, volatility=0.20)
 ```
+
+## Phase-5 rates options and curve helpers
+
+European swaptions and zero-coupon bonds use the same standalone-wrapper
+pattern. Engines are attached via `set_pricing_engine` helpers (no MI engine
+hierarchy in Python):
+
+```python
+swap = ql.make_vanilla_swap(
+    ql.Period(10, ql.TimeUnit.Years),
+    ql.Euribor6M(curve),
+    0.06,
+    effective_date,
+)
+swaption = ql.Swaption(swap, ql.EuropeanExercise(exercise_date))
+swaption.set_pricing_engine(curve, volatility=0.20)
+
+zcb = ql.ZeroCouponBond(2, ql.TARGET(), 100.0, maturity)
+zcb.set_pricing_engine(curve)
+```
+
+Vectorized discount factors (requires NumPy):
+
+```python
+import numpy as np
+
+dfs = ql.discount_times(curve, np.array([0.5, 1.0, 2.0]))
+dfs2 = ql.discount_dates(curve, [d1, d2, d3])
+```
+
+`FraRateHelper` / `SwapRateHelper` extend the deposit-only bootstrap surface.
+`qlnb.compat` adds `Settlement.Physical`, `VanillaSwap.Payer`, and camelCase
+aliases on `Swaption` / `ZeroCouponBond`.
 
 ## When to stay on SWIG
 

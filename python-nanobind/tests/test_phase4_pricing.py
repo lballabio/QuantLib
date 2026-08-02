@@ -27,8 +27,8 @@ def _bsm_process(
     )
 
 
-def test_version_is_phase4():
-    assert ql.__version__ == "0.5.0"
+def test_version_is_at_least_phase4():
+    assert ql.__version__ == "0.6.0"
 
 
 def test_barrier_down_in_call_haug_value():
