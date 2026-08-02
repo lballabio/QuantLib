@@ -46,6 +46,9 @@ nanobind_add_module(
     STABLE_ABI
     NB_STATIC
     src/module.cpp
+    src/bind_time.cpp
+    src/bind_curves.cpp
+    src/bind_instruments.cpp
 )
 
 target_link_libraries(_qlnb PRIVATE ${QLNB_QUANTLIB_TARGET})

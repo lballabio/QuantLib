@@ -1,22 +1,15 @@
-#include <nanobind/nanobind.h>
+#include "bindings.hpp"
+
 #include <nanobind/stl/shared_ptr.h>
 #include <nanobind/stl/string.h>
 
-#include <ql/errors.hpp>
-#include <ql/exercise.hpp>
 #include <ql/handle.hpp>
-#include <ql/instruments/europeanoption.hpp>
-#include <ql/instruments/payoffs.hpp>
-#include <ql/option.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/settings.hpp>
-#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/time/calendars/target.hpp>
 #include <ql/time/date.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/frequency.hpp>
+#include <ql/time/period.hpp>
+#include <ql/time/timeunit.hpp>
 
 namespace nb = nanobind;
 using namespace QuantLib;
@@ -31,48 +24,11 @@ void settings_set_evaluation_date(const Date& d) {
     Settings::instance().evaluationDate() = d;
 }
 
-// Factory helpers avoid binding MI-heavy QuantLib types as Python subclasses
-// where nanobind cannot adjust base pointers.
-Handle<YieldTermStructure> make_flat_forward_handle(const Date& reference_date,
-                                                    Rate forward,
-                                                    const DayCounter& day_counter) {
-    return Handle<YieldTermStructure>(
-        ext::make_shared<FlatForward>(reference_date, forward, day_counter));
-}
-
-Handle<YieldTermStructure> make_flat_forward_handle_quote(
-    const Date& reference_date,
-    const Handle<Quote>& forward,
-    const DayCounter& day_counter) {
-    return Handle<YieldTermStructure>(
-        ext::make_shared<FlatForward>(reference_date, forward, day_counter));
-}
-
-Handle<BlackVolTermStructure> make_black_constant_vol_handle(
-    const Date& reference_date,
-    const Calendar& calendar,
-    Volatility volatility,
-    const DayCounter& day_counter) {
-    return Handle<BlackVolTermStructure>(ext::make_shared<BlackConstantVol>(
-        reference_date, calendar, volatility, day_counter));
-}
-
-DiscountFactor yield_discount_date(const Handle<YieldTermStructure>& h,
-                                   const Date& d,
-                                   bool extrapolate) {
-    return h->discount(d, extrapolate);
-}
-
-DiscountFactor yield_discount_time(const Handle<YieldTermStructure>& h,
-                                   Time t,
-                                   bool extrapolate) {
-    return h->discount(t, extrapolate);
-}
-
 } // namespace
 
 NB_MODULE(_qlnb, m) {
-    m.doc() = "Phase-0 nanobind bindings for QuantLib";
+    m.doc() = "Nanobind bindings for QuantLib (phase 1)";
+    m.attr("__version__") = "0.2.0";
 
     nb::enum_<Month>(m, "Month")
         .value("January", January)
@@ -87,6 +43,51 @@ NB_MODULE(_qlnb, m) {
         .value("October", October)
         .value("November", November)
         .value("December", December);
+
+    // Period/TimeUnit before Date so Date can overload Period arithmetic.
+    nb::enum_<TimeUnit>(m, "TimeUnit")
+        .value("Days", Days)
+        .value("Weeks", Weeks)
+        .value("Months", Months)
+        .value("Years", Years)
+        .value("Hours", Hours)
+        .value("Minutes", Minutes)
+        .value("Seconds", Seconds)
+        .value("Milliseconds", Milliseconds)
+        .value("Microseconds", Microseconds);
+
+    nb::enum_<Frequency>(m, "Frequency")
+        .value("NoFrequency", NoFrequency)
+        .value("Once", Once)
+        .value("Annual", Annual)
+        .value("Semiannual", Semiannual)
+        .value("EveryFourthMonth", EveryFourthMonth)
+        .value("Quarterly", Quarterly)
+        .value("Bimonthly", Bimonthly)
+        .value("Monthly", Monthly)
+        .value("EveryFourthWeek", EveryFourthWeek)
+        .value("Biweekly", Biweekly)
+        .value("Weekly", Weekly)
+        .value("Daily", Daily)
+        .value("OtherFrequency", OtherFrequency);
+
+    nb::class_<Period>(m, "Period")
+        .def(nb::init<>())
+        .def(nb::init<Integer, TimeUnit>(), nb::arg("n"), nb::arg("units"))
+        .def(nb::init<Frequency>(), nb::arg("frequency"))
+        .def("length", &Period::length)
+        .def("units", &Period::units)
+        .def("frequency", &Period::frequency)
+        .def("normalize", &Period::normalize)
+        .def("normalized", &Period::normalized)
+        .def("__repr__",
+             [](const Period& p) {
+                 return "Period(" + std::to_string(p.length()) + ", " +
+                        std::to_string(static_cast<int>(p.units())) + ")";
+             })
+        .def("__eq__", [](const Period& a, const Period& b) { return a == b; })
+        .def("__ne__", [](const Period& a, const Period& b) { return a != b; })
+        .def("__mul__", [](const Period& p, Integer n) { return p * n; });
 
     nb::class_<Date>(m, "Date")
         .def(nb::init<>())
@@ -116,8 +117,10 @@ NB_MODULE(_qlnb, m) {
         .def("__ge__", [](const Date& a, const Date& b) { return a >= b; })
         .def("__add__",
              [](const Date& d, Date::serial_type n) { return d + n; })
+        .def("__add__", [](const Date& d, const Period& p) { return d + p; })
         .def("__sub__",
-             [](const Date& d, Date::serial_type n) { return d - n; });
+             [](const Date& d, Date::serial_type n) { return d - n; })
+        .def("__sub__", [](const Date& d, const Period& p) { return d - p; });
 
     m.def("get_evaluation_date", &settings_get_evaluation_date);
     m.def("set_evaluation_date", &settings_set_evaluation_date, nb::arg("date"));
@@ -168,10 +171,9 @@ NB_MODULE(_qlnb, m) {
             },
             nb::arg("value"))
         .def("reset", &RelinkableHandle<Quote>::reset)
-        .def("as_handle",
-             [](const RelinkableHandle<Quote>& h) {
-                 return Handle<Quote>(h);
-             });
+        .def("as_handle", [](const RelinkableHandle<Quote>& h) {
+            return Handle<Quote>(h);
+        });
 
     m.def(
         "make_quote_handle",
@@ -180,125 +182,7 @@ NB_MODULE(_qlnb, m) {
         },
         nb::arg("value"));
 
-    nb::class_<DayCounter>(m, "DayCounter")
-        .def("name", &DayCounter::name)
-        .def(
-            "year_fraction",
-            [](const DayCounter& dc, const Date& d1, const Date& d2) {
-                return dc.yearFraction(d1, d2);
-            },
-            nb::arg("d1"),
-            nb::arg("d2"));
-
-    // Value-semantic types: bind derived calendars/day counters as factories
-    // returning the base value type (pimpl), avoiding inheritance issues.
-    m.def("Actual365Fixed", []() { return DayCounter(Actual365Fixed()); });
-    m.def("TARGET", []() { return Calendar(TARGET()); });
-
-    nb::class_<Calendar>(m, "Calendar")
-        .def("name", &Calendar::name)
-        .def("is_business_day", &Calendar::isBusinessDay, nb::arg("date"));
-
-    nb::class_<Handle<YieldTermStructure>>(m, "YieldTermStructureHandle")
-        .def(nb::init<>())
-        .def("empty", &Handle<YieldTermStructure>::empty)
-        .def(
-            "discount",
-            [](const Handle<YieldTermStructure>& h, const Date& d, bool extrapolate) {
-                return yield_discount_date(h, d, extrapolate);
-            },
-            nb::arg("date"),
-            nb::arg("extrapolate") = false)
-        .def(
-            "discount",
-            [](const Handle<YieldTermStructure>& h, Time t, bool extrapolate) {
-                return yield_discount_time(h, t, extrapolate);
-            },
-            nb::arg("time"),
-            nb::arg("extrapolate") = false)
-        .def("reference_date",
-             [](const Handle<YieldTermStructure>& h) {
-                 return h->referenceDate();
-             });
-
-    m.def("FlatForward",
-          &make_flat_forward_handle,
-          nb::arg("reference_date"),
-          nb::arg("forward"),
-          nb::arg("day_counter"));
-    m.def("FlatForward",
-          &make_flat_forward_handle_quote,
-          nb::arg("reference_date"),
-          nb::arg("forward"),
-          nb::arg("day_counter"));
-
-    nb::class_<Handle<BlackVolTermStructure>>(m, "BlackVolTermStructureHandle")
-        .def(nb::init<>())
-        .def("empty", &Handle<BlackVolTermStructure>::empty);
-
-    m.def("BlackConstantVol",
-          &make_black_constant_vol_handle,
-          nb::arg("reference_date"),
-          nb::arg("calendar"),
-          nb::arg("volatility"),
-          nb::arg("day_counter"));
-
-    nb::class_<BlackScholesMertonProcess>(m, "BlackScholesMertonProcess")
-        .def(nb::init<const Handle<Quote>&,
-                      const Handle<YieldTermStructure>&,
-                      const Handle<YieldTermStructure>&,
-                      const Handle<BlackVolTermStructure>&>(),
-             nb::arg("x0"),
-             nb::arg("dividend_ts"),
-             nb::arg("risk_free_ts"),
-             nb::arg("black_vol_ts"));
-
-    nb::enum_<Option::Type>(m, "OptionType")
-        .value("Put", Option::Put)
-        .value("Call", Option::Call);
-
-    nb::class_<PlainVanillaPayoff>(m, "PlainVanillaPayoff")
-        .def(nb::init<Option::Type, Real>(), nb::arg("type"), nb::arg("strike"))
-        .def("strike",
-             [](const PlainVanillaPayoff& p) { return p.strike(); })
-        .def("option_type",
-             [](const PlainVanillaPayoff& p) { return p.optionType(); });
-
-    nb::class_<EuropeanExercise>(m, "EuropeanExercise")
-        .def(nb::init<const Date&>(), nb::arg("date"))
-        .def("last_date",
-             [](const EuropeanExercise& e) { return e.lastDate(); });
-
-    nb::class_<EuropeanOption>(m, "EuropeanOption")
-        .def(
-            "__init__",
-            [](EuropeanOption* self,
-               const PlainVanillaPayoff& payoff,
-               const EuropeanExercise& exercise) {
-                new (self) EuropeanOption(
-                    ext::make_shared<PlainVanillaPayoff>(payoff),
-                    ext::make_shared<EuropeanExercise>(exercise));
-            },
-            nb::arg("payoff"),
-            nb::arg("exercise"))
-        .def("NPV", [](EuropeanOption& opt) { return opt.NPV(); })
-        .def(
-            "set_pricing_engine",
-            [](EuropeanOption& opt,
-               const ext::shared_ptr<BlackScholesMertonProcess>& process) {
-                opt.setPricingEngine(
-                    ext::make_shared<AnalyticEuropeanEngine>(process));
-            },
-            nb::arg("process"));
-
-    // Phase-0 sugar: AnalyticEuropeanEngine(process) returns the process for
-    // option.set_pricing_engine(...). A dedicated engine type can come later.
-    m.def(
-        "AnalyticEuropeanEngine",
-        [](const ext::shared_ptr<BlackScholesMertonProcess>& process) {
-            return process;
-        },
-        nb::arg("process"));
-
-    m.attr("__version__") = "0.1.0";
+    bind_time(m);
+    bind_curves(m);
+    bind_instruments(m);
 }
