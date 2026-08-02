@@ -228,7 +228,45 @@ Requires NumPy at import/use time (`pip install qlnb[numpy]` or the `test` extra
 | Flat forward | curve object → wrap in handle | factory returns handle |
 | Engines | construct engine, `setPricingEngine` | `set_pricing_engine(handle_or_process)` |
 | Naming | camelCase | snake_case |
-| Coverage | broad SWIG surface | focused phase 0–2 surface |
+| Coverage | broad SWIG surface | focused phase 0–4 surface |
+
+## Compatibility shim (`qlnb.compat`)
+
+For scripts that expect SWIG-ish names, import the optional shim:
+
+```python
+import qlnb.compat as ql
+
+d = ql.Date(15, ql.May, 1998)                 # module-level month
+ql.Settings.instance().evaluationDate = d     # camelCase property
+payoff = ql.PlainVanillaPayoff(ql.Option.Put, 40.0)
+option = ql.EuropeanOption(payoff, ql.EuropeanExercise(d + 365))
+option.setPricingEngine(process)              # camelCase method alias
+bond.cleanPrice()                             # alias of clean_price()
+```
+
+**This is not full SWIG parity.** Prefer the native snake_case qlnb API for new
+code. The shim only covers common renames documented above (months, Option
+namespace, Settings, and camelCase aliases on types already bound by qlnb).
+
+## Phase-4 instruments
+
+Barrier options and caps/floors follow the same factory / concrete-wrapper
+pattern (no Instrument MI hierarchy in Python):
+
+```python
+barrier = ql.BarrierOption(
+    ql.BarrierType.DownIn,
+    90.0,
+    0.0,
+    ql.PlainVanillaPayoff(ql.OptionType.Call, 100.0),
+    ql.EuropeanExercise(maturity),
+)
+barrier.set_pricing_engine(process)  # AnalyticBarrierEngine
+
+cap = ql.make_cap(ql.Period(5, ql.TimeUnit.Years), ql.Euribor6M(curve), 0.07)
+cap.set_pricing_engine(curve, volatility=0.20)
+```
 
 ## When to stay on SWIG
 
@@ -236,4 +274,5 @@ Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,
 legacy examples, or full class hierarchies. Use `qlnb` when you want a smaller
 nanobind surface, Stable ABI wheels, and NumPy-friendly helpers.
 
-See also [packaging.md](packaging.md) for how wheels are built.
+See also [packaging.md](packaging.md) for how wheels are built and
+[free-threading.md](free-threading.md) for threaded / free-threaded notes.

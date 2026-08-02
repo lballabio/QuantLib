@@ -54,6 +54,17 @@ class Position:
     Long: Position
     Short: Position
 
+class BarrierType:
+    DownIn: BarrierType
+    UpIn: BarrierType
+    DownOut: BarrierType
+    UpOut: BarrierType
+
+class CapFloorType:
+    Cap: CapFloorType
+    Floor: CapFloorType
+    Collar: CapFloorType
+
 class ActualActualConvention:
     ISDA: ActualActualConvention
     ISMA: ActualActualConvention
@@ -294,6 +305,44 @@ class ForwardRateAgreement:
     def forward_rate(self) -> InterestRate: ...
     def fixing_date(self) -> Date: ...
 
+class BarrierOption:
+    def __init__(
+        self,
+        barrier_type: BarrierType,
+        barrier: float,
+        rebate: float,
+        payoff: PlainVanillaPayoff,
+        exercise: EuropeanExercise,
+    ) -> None: ...
+    def NPV(self) -> float: ...
+    def delta(self) -> float: ...
+    def gamma(self) -> float: ...
+    def vega(self) -> float: ...
+    def set_pricing_engine(self, process: BlackScholesMertonProcess) -> None: ...
+
+class CapFloor:
+    def __init__(
+        self,
+        type: CapFloorType,
+        schedule: Schedule,
+        index: IborIndex,
+        strike: float,
+        nominal: float = ...,
+        fixing_days: int = ...,
+    ) -> None: ...
+    def NPV(self) -> float: ...
+    def atm_rate(self, discount_curve: YieldTermStructureHandle) -> float: ...
+    def start_date(self) -> Date: ...
+    def maturity_date(self) -> Date: ...
+    def type(self) -> CapFloorType: ...
+    def set_pricing_engine(
+        self,
+        discount_curve: YieldTermStructureHandle,
+        volatility: float,
+        day_counter: DayCounter = ...,
+        displacement: float = ...,
+    ) -> None: ...
+
 def set_evaluation_date(date: Date) -> None: ...
 def get_evaluation_date() -> Date: ...
 def make_quote_handle(value: float) -> QuoteHandle: ...
@@ -303,12 +352,35 @@ def AnalyticEuropeanEngine(
 def BaroneAdesiWhaleyEngine(
     process: BlackScholesMertonProcess,
 ) -> BlackScholesMertonProcess: ...
+def AnalyticBarrierEngine(
+    process: BlackScholesMertonProcess,
+) -> BlackScholesMertonProcess: ...
 def BlackConstantVol(
     reference_date: Date,
     calendar: Calendar,
     volatility: float,
     day_counter: DayCounter,
 ) -> object: ...
+def make_cap(
+    tenor: Period,
+    index: IborIndex,
+    strike: float,
+    nominal: float = ...,
+    forward_start: Period = ...,
+) -> CapFloor: ...
+def make_floor(
+    tenor: Period,
+    index: IborIndex,
+    strike: float,
+    nominal: float = ...,
+    forward_start: Period = ...,
+) -> CapFloor: ...
+def BlackCapFloorEngine(
+    discount_curve: YieldTermStructureHandle,
+    volatility: float,
+    day_counter: DayCounter = ...,
+    displacement: float = ...,
+) -> YieldTermStructureHandle: ...
 def simulate_gbm_paths(
     process: BlackScholesMertonProcess,
     length: float,

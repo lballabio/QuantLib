@@ -33,6 +33,14 @@ Experimental Python package that binds a focused QuantLib surface with
 - Benchmark + NPV drift CI job
 - Packaging notes for monorepo wheel builds
 
+### Phase 4 (stretch)
+- `qlnb.compat` — best-effort SWIG-style aliases (`ql.May`, `Option.Put`,
+  camelCase methods, `evaluationDate`); not full SWIG parity
+- Experimental pricing: `BarrierOption` + `AnalyticBarrierEngine`,
+  `make_cap` / `make_floor` + Black cap/floor engine
+- Free-threading notes (`docs/free-threading.md`) and optional
+  `QLNB_THREAD_SAFE_OBSERVER` CMake passthrough
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 
@@ -49,6 +57,15 @@ pimpl types. Option engines are attached via lambdas on concrete wrappers
 
 - [SWIG → qlnb migration guide](docs/migration.md)
 - [Packaging / wheel build notes](docs/packaging.md)
+- [Free-threading readiness](docs/free-threading.md)
+
+Compatibility shim (optional):
+
+```python
+import qlnb.compat as ql   # SWIG-flavored aliases; prefer native qlnb for new code
+d = ql.Date(15, ql.May, 1998)
+ql.Settings.instance().evaluationDate = d
+```
 
 ## Build
 
