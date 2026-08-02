@@ -7,3 +7,4 @@ namespace nb = nanobind;
 void bind_time(nb::module_& m);
 void bind_curves(nb::module_& m);
 void bind_instruments(nb::module_& m);
+void bind_pricing(nb::module_& m);

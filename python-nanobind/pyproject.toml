@@ -7,8 +7,8 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "qlnb"
-version = "0.2.0"
-description = "Nanobind Python bindings for QuantLib (phase 1: market stack)"
+version = "0.3.0"
+description = "Nanobind Python bindings for QuantLib (phase 2: pricing coverage)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "BSD-3-Clause" }
@@ -23,8 +23,9 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest>=7.0"]
+test = ["pytest>=7.0", "numpy>=1.24"]
 bench = ["pytest>=7.0"]
+numpy = ["numpy>=1.24"]
 
 [tool.scikit-build]
 minimum-version = "0.10"

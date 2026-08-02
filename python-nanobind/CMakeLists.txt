@@ -49,6 +49,7 @@ nanobind_add_module(
     src/bind_time.cpp
     src/bind_curves.cpp
     src/bind_instruments.cpp
+    src/bind_pricing.cpp
 )
 
 target_link_libraries(_qlnb PRIVATE ${QLNB_QUANTLIB_TARGET})
