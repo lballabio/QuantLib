@@ -161,6 +161,16 @@ def _install_aliases() -> None:
         ZeroCouponBond.maturityDate = ZeroCouponBond.maturity_date  # type: ignore[attr-defined]
         ZeroCouponBond.setPricingEngine = ZeroCouponBond.set_pricing_engine  # type: ignore[attr-defined]
 
+    FloatingRateBond = getattr(_ql, "FloatingRateBond", None)
+    if FloatingRateBond is not None:
+        FloatingRateBond.cleanPrice = FloatingRateBond.clean_price  # type: ignore[attr-defined]
+        FloatingRateBond.dirtyPrice = FloatingRateBond.dirty_price  # type: ignore[attr-defined]
+        FloatingRateBond.settlementDate = FloatingRateBond.settlement_date  # type: ignore[attr-defined]
+        FloatingRateBond.maturityDate = FloatingRateBond.maturity_date  # type: ignore[attr-defined]
+        FloatingRateBond.setPricingEngine = (  # type: ignore[attr-defined]
+            FloatingRateBond.set_pricing_engine
+        )
+
     VanillaSwap = _ql.VanillaSwap
     VanillaSwap.fairRate = VanillaSwap.fair_rate  # type: ignore[attr-defined]
     VanillaSwap.fairSpread = VanillaSwap.fair_spread  # type: ignore[attr-defined]
@@ -179,6 +189,37 @@ def _install_aliases() -> None:
 
     VanillaOption = _ql.VanillaOption
     VanillaOption.setPricingEngine = VanillaOption.set_pricing_engine  # type: ignore[attr-defined]
+    if hasattr(VanillaOption, "set_binomial_pricing_engine"):
+        VanillaOption.setBinomialPricingEngine = (  # type: ignore[attr-defined]
+            VanillaOption.set_binomial_pricing_engine
+        )
+    if hasattr(VanillaOption, "set_fd_pricing_engine"):
+        VanillaOption.setFdPricingEngine = (  # type: ignore[attr-defined]
+            VanillaOption.set_fd_pricing_engine
+        )
+
+    OvernightIndexedSwap = getattr(_ql, "OvernightIndexedSwap", None)
+    if OvernightIndexedSwap is not None:
+        OvernightIndexedSwap.fairRate = OvernightIndexedSwap.fair_rate  # type: ignore[attr-defined]
+        OvernightIndexedSwap.fairSpread = (  # type: ignore[attr-defined]
+            OvernightIndexedSwap.fair_spread
+        )
+        OvernightIndexedSwap.setPricingEngine = (  # type: ignore[attr-defined]
+            OvernightIndexedSwap.set_pricing_engine
+        )
+
+    IborIndex = _ql.IborIndex
+    IborIndex.fixingCalendar = IborIndex.fixing_calendar  # type: ignore[attr-defined]
+    IborIndex.dayCounter = IborIndex.day_counter  # type: ignore[attr-defined]
+    IborIndex.fixingDays = IborIndex.fixing_days  # type: ignore[attr-defined]
+    IborIndex.addFixing = IborIndex.add_fixing  # type: ignore[attr-defined]
+
+    OvernightIndex = getattr(_ql, "OvernightIndex", None)
+    if OvernightIndex is not None:
+        OvernightIndex.fixingCalendar = OvernightIndex.fixing_calendar  # type: ignore[attr-defined]
+        OvernightIndex.dayCounter = OvernightIndex.day_counter  # type: ignore[attr-defined]
+        OvernightIndex.fixingDays = OvernightIndex.fixing_days  # type: ignore[attr-defined]
+        OvernightIndex.addFixing = OvernightIndex.add_fixing  # type: ignore[attr-defined]
 
     PlainVanillaPayoff = _ql.PlainVanillaPayoff
     PlainVanillaPayoff.optionType = PlainVanillaPayoff.option_type  # type: ignore[attr-defined]
@@ -228,6 +269,9 @@ class Settlement:
 # Attach Payer/Receiver on VanillaSwap class for SWIG-like access.
 _ql.VanillaSwap.Payer = _ql.SwapType.Payer  # type: ignore[attr-defined]
 _ql.VanillaSwap.Receiver = _ql.SwapType.Receiver  # type: ignore[attr-defined]
+
+# Phase-6 MakeOIS-style alias.
+makeOIS = getattr(_ql, "make_ois", None)
 
 
 __all__ = [name for name in globals() if not name.startswith("_")]

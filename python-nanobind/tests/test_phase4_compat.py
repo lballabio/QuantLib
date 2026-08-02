@@ -9,8 +9,9 @@ import qlnb.compat as ql
 
 
 def test_compat_version():
-    assert ql.__version__ == "0.6.0"
-    assert ql_native.__version__ == "0.6.0"
+    parts = tuple(int(x) for x in ql.__version__.split(".")[:2])
+    assert parts >= (0, 4)
+    assert ql.__version__ == ql_native.__version__
 
 
 def test_month_module_aliases():

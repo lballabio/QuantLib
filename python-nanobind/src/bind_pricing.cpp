@@ -11,9 +11,12 @@
 #include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/methods/lattices/binomialtree.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/position.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
+#include <ql/pricingengines/vanilla/binomialengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/date.hpp>
@@ -74,7 +77,7 @@ void bind_pricing(nb::module_& m) {
         .def("last_date",
              [](const AmericanExercise& e) { return e.lastDate(); });
 
-    // Standalone VanillaOption — American path with Barone-Adesi-Whaley.
+    // Standalone VanillaOption — American (BAW default) plus tree/FD engines.
     // Not declared as a Python subclass of Instrument/OneAssetOption (MI).
     nb::class_<VanillaOption>(m, "VanillaOption")
         .def(
@@ -85,6 +88,17 @@ void bind_pricing(nb::module_& m) {
                 new (self) VanillaOption(
                     ext::make_shared<PlainVanillaPayoff>(payoff),
                     ext::make_shared<AmericanExercise>(exercise));
+            },
+            nb::arg("payoff"),
+            nb::arg("exercise"))
+        .def(
+            "__init__",
+            [](VanillaOption* self,
+               const PlainVanillaPayoff& payoff,
+               const EuropeanExercise& exercise) {
+                new (self) VanillaOption(
+                    ext::make_shared<PlainVanillaPayoff>(payoff),
+                    ext::make_shared<EuropeanExercise>(exercise));
             },
             nb::arg("payoff"),
             nb::arg("exercise"))
@@ -100,7 +114,35 @@ void bind_pricing(nb::module_& m) {
                     ext::make_shared<BaroneAdesiWhaleyApproximationEngine>(
                         process));
             },
-            nb::arg("process"));
+            nb::arg("process"),
+            "Attach Barone-Adesi-Whaley approximation engine (American).")
+        .def(
+            "set_binomial_pricing_engine",
+            [](VanillaOption& opt,
+               const ext::shared_ptr<BlackScholesMertonProcess>& process,
+               Size steps) {
+                opt.setPricingEngine(
+                    ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(
+                        process, steps));
+            },
+            nb::arg("process"),
+            nb::arg("steps") = 801,
+            "Attach Cox-Ross-Rubinstein binomial tree engine.")
+        .def(
+            "set_fd_pricing_engine",
+            [](VanillaOption& opt,
+               const ext::shared_ptr<BlackScholesMertonProcess>& process,
+               Size t_grid,
+               Size x_grid,
+               Size damping_steps) {
+                opt.setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(
+                    process, t_grid, x_grid, damping_steps));
+            },
+            nb::arg("process"),
+            nb::arg("t_grid") = 100,
+            nb::arg("x_grid") = 100,
+            nb::arg("damping_steps") = 0,
+            "Attach FdBlackScholesVanillaEngine (NPV-only for v1; no grid export).");
 
     m.def(
         "BaroneAdesiWhaleyEngine",

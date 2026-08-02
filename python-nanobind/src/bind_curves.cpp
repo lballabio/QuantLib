@@ -7,7 +7,10 @@
 
 #include <ql/compounding.hpp>
 #include <ql/handle.hpp>
+#include <ql/indexes/ibor/eonia.hpp>
+#include <ql/indexes/ibor/estr.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/ibor/sofr.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/interestrate.hpp>
 #include <ql/quote.hpp>
@@ -324,7 +327,23 @@ void bind_curves(nb::module_& m) {
         .def("tenor", [](const IborIndex& i) { return i.tenor(); })
         .def("fixing_calendar",
              [](const IborIndex& i) { return i.fixingCalendar(); })
-        .def("day_counter", [](const IborIndex& i) { return i.dayCounter(); });
+        .def("day_counter", [](const IborIndex& i) { return i.dayCounter(); })
+        .def("fixing_days", [](const IborIndex& i) { return i.fixingDays(); })
+        .def(
+            "add_fixing",
+            [](IborIndex& i, const Date& fixing_date, Rate fixing, bool force) {
+                i.addFixing(fixing_date, fixing, force);
+            },
+            nb::arg("fixing_date"),
+            nb::arg("fixing"),
+            nb::arg("force_overwrite") = false)
+        .def(
+            "fixing",
+            [](const IborIndex& i, const Date& fixing_date, bool forecast_today) {
+                return i.fixing(fixing_date, forecast_today);
+            },
+            nb::arg("fixing_date"),
+            nb::arg("forecast_todays_fixing") = false);
 
     m.def("Euribor3M", []() {
         return ext::shared_ptr<IborIndex>(ext::make_shared<Euribor3M>());
@@ -342,6 +361,63 @@ void bind_curves(nb::module_& m) {
         "Euribor6M",
         [](const Handle<YieldTermStructure>& h) {
             return ext::shared_ptr<IborIndex>(ext::make_shared<Euribor6M>(h));
+        },
+        nb::arg("handle"));
+
+    // Overnight indexes as opaque shared_ptrs (standalone; Index hierarchy is MI-heavy).
+    nb::class_<OvernightIndex>(m, "OvernightIndex")
+        .def("name", [](const OvernightIndex& i) { return i.name(); })
+        .def("tenor", [](const OvernightIndex& i) { return i.tenor(); })
+        .def("fixing_calendar",
+             [](const OvernightIndex& i) { return i.fixingCalendar(); })
+        .def("day_counter",
+             [](const OvernightIndex& i) { return i.dayCounter(); })
+        .def("fixing_days",
+             [](const OvernightIndex& i) { return i.fixingDays(); })
+        .def(
+            "add_fixing",
+            [](OvernightIndex& i,
+               const Date& fixing_date,
+               Rate fixing,
+               bool force) { i.addFixing(fixing_date, fixing, force); },
+            nb::arg("fixing_date"),
+            nb::arg("fixing"),
+            nb::arg("force_overwrite") = false)
+        .def(
+            "fixing",
+            [](const OvernightIndex& i,
+               const Date& fixing_date,
+               bool forecast_today) {
+                return i.fixing(fixing_date, forecast_today);
+            },
+            nb::arg("fixing_date"),
+            nb::arg("forecast_todays_fixing") = false);
+
+    m.def("Sofr", []() {
+        return ext::shared_ptr<OvernightIndex>(ext::make_shared<Sofr>());
+    });
+    m.def(
+        "Sofr",
+        [](const Handle<YieldTermStructure>& h) {
+            return ext::shared_ptr<OvernightIndex>(ext::make_shared<Sofr>(h));
+        },
+        nb::arg("handle"));
+    m.def("Estr", []() {
+        return ext::shared_ptr<OvernightIndex>(ext::make_shared<Estr>());
+    });
+    m.def(
+        "Estr",
+        [](const Handle<YieldTermStructure>& h) {
+            return ext::shared_ptr<OvernightIndex>(ext::make_shared<Estr>(h));
+        },
+        nb::arg("handle"));
+    m.def("Eonia", []() {
+        return ext::shared_ptr<OvernightIndex>(ext::make_shared<Eonia>());
+    });
+    m.def(
+        "Eonia",
+        [](const Handle<YieldTermStructure>& h) {
+            return ext::shared_ptr<OvernightIndex>(ext::make_shared<Eonia>(h));
         },
         nb::arg("handle"));
 }

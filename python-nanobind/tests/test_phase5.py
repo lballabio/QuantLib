@@ -8,8 +8,10 @@ import pytest
 import qlnb as ql
 
 
-def test_version_is_phase5():
-    assert ql.__version__ == "0.6.0"
+def test_version_is_at_least_phase5():
+    # Package version advances with later phases; keep this as a presence check.
+    parts = tuple(int(x) for x in ql.__version__.split(".")[:2])
+    assert parts >= (0, 5)
 
 
 def test_european_swaption_black_cached_npv():

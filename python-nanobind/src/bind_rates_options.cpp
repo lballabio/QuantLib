@@ -5,9 +5,12 @@
 #include <ql/exercise.hpp>
 #include <ql/handle.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/instruments/makeois.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
+#include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/instruments/vanillaswap.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/daycounter.hpp>
@@ -108,4 +111,47 @@ void bind_rates_options(nb::module_& m) {
         nb::arg("discount_curve"),
         "Factory alias: pass the curve (and volatility) to "
         "Swaption.set_pricing_engine(discount_curve, volatility).");
+
+    // Overnight indexed swap (standalone; Swap/Instrument are MI-heavy).
+    nb::class_<OvernightIndexedSwap>(m, "OvernightIndexedSwap")
+        .def("NPV", [](OvernightIndexedSwap& s) { return s.NPV(); })
+        .def("fair_rate", [](OvernightIndexedSwap& s) { return s.fairRate(); })
+        .def("fair_spread",
+             [](OvernightIndexedSwap& s) { return s.fairSpread(); })
+        .def("fixed_leg_NPV",
+             [](OvernightIndexedSwap& s) { return s.fixedLegNPV(); })
+        .def("overnight_leg_NPV",
+             [](OvernightIndexedSwap& s) { return s.overnightLegNPV(); })
+        .def(
+            "set_pricing_engine",
+            [](OvernightIndexedSwap& s,
+               const Handle<YieldTermStructure>& discount_curve) {
+                s.setPricingEngine(
+                    ext::make_shared<DiscountingSwapEngine>(discount_curve));
+            },
+            nb::arg("discount_curve"));
+
+    m.def(
+        "make_ois",
+        [](const Period& swap_tenor,
+           const ext::shared_ptr<OvernightIndex>& overnight_index,
+           Rate fixed_rate,
+           const Period& forward_start,
+           Swap::Type type,
+           Real nominal,
+           Spread overnight_spread) {
+            MakeOIS maker(swap_tenor, overnight_index, fixed_rate, forward_start);
+            maker.withType(type)
+                .withNominal(nominal)
+                .withOvernightLegSpread(overnight_spread);
+            return OvernightIndexedSwap(maker);
+        },
+        nb::arg("swap_tenor"),
+        nb::arg("overnight_index"),
+        nb::arg("fixed_rate"),
+        nb::arg("forward_start") = Period(0, Days),
+        nb::arg("type") = Swap::Payer,
+        nb::arg("nominal") = 1.0,
+        nb::arg("overnight_spread") = 0.0,
+        "Build an OvernightIndexedSwap via QuantLib MakeOIS (value copy).");
 }

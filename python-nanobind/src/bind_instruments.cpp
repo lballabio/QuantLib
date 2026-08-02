@@ -3,10 +3,12 @@
 #include <nanobind/stl/shared_ptr.h>
 #include <nanobind/stl/vector.h>
 
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/exercise.hpp>
 #include <ql/handle.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
+#include <ql/instruments/bonds/floatingratebond.hpp>
 #include <ql/instruments/bonds/zerocouponbond.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/instruments/payoffs.hpp>
@@ -23,6 +25,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/utilities/null.hpp>
 
 using namespace QuantLib;
 
@@ -240,6 +243,80 @@ void bind_instruments(nb::module_& m) {
                     ext::make_shared<DiscountingBondEngine>(discount_curve));
             },
             nb::arg("discount_curve"));
+
+    // Floating-rate bond (standalone; Bond/Instrument use MI via LazyObject).
+    // set_pricing_engine attaches DiscountingBondEngine and a BlackIborCouponPricer.
+    nb::class_<FloatingRateBond>(m, "FloatingRateBond")
+        .def(
+            "__init__",
+            [](FloatingRateBond* self,
+               Natural settlement_days,
+               Real face_amount,
+               const Schedule& schedule,
+               const ext::shared_ptr<IborIndex>& ibor_index,
+               const DayCounter& accrual_day_counter,
+               BusinessDayConvention payment_convention,
+               Natural fixing_days,
+               const std::vector<Real>& gearings,
+               const std::vector<Spread>& spreads,
+               const std::vector<Rate>& caps,
+               const std::vector<Rate>& floors,
+               bool in_arrears,
+               Real redemption,
+               const Date& issue_date) {
+                const Natural ql_fixing_days =
+                    (fixing_days == 0) ? Null<Natural>() : fixing_days;
+                const std::vector<Real> ql_gearings =
+                    gearings.empty() ? std::vector<Real>{1.0} : gearings;
+                const std::vector<Spread> ql_spreads =
+                    spreads.empty() ? std::vector<Spread>{0.0} : spreads;
+                new (self) FloatingRateBond(settlement_days,
+                                            face_amount,
+                                            schedule,
+                                            ibor_index,
+                                            accrual_day_counter,
+                                            payment_convention,
+                                            ql_fixing_days,
+                                            ql_gearings,
+                                            ql_spreads,
+                                            caps,
+                                            floors,
+                                            in_arrears,
+                                            redemption,
+                                            issue_date);
+            },
+            nb::arg("settlement_days"),
+            nb::arg("face_amount"),
+            nb::arg("schedule"),
+            nb::arg("ibor_index"),
+            nb::arg("accrual_day_counter"),
+            nb::arg("payment_convention") = Following,
+            nb::arg("fixing_days") = 0,
+            nb::arg("gearings") = std::vector<Real>(),
+            nb::arg("spreads") = std::vector<Spread>(),
+            nb::arg("caps") = std::vector<Rate>(),
+            nb::arg("floors") = std::vector<Rate>(),
+            nb::arg("in_arrears") = false,
+            nb::arg("redemption") = 100.0,
+            nb::arg("issue_date") = Date())
+        .def("NPV", [](FloatingRateBond& b) { return b.NPV(); })
+        .def("clean_price", [](FloatingRateBond& b) { return b.cleanPrice(); })
+        .def("dirty_price", [](FloatingRateBond& b) { return b.dirtyPrice(); })
+        .def("settlement_date",
+             [](const FloatingRateBond& b) { return b.settlementDate(); })
+        .def("maturity_date",
+             [](const FloatingRateBond& b) { return b.maturityDate(); })
+        .def(
+            "set_pricing_engine",
+            [](FloatingRateBond& b,
+               const Handle<YieldTermStructure>& discount_curve) {
+                b.setPricingEngine(
+                    ext::make_shared<DiscountingBondEngine>(discount_curve));
+                setCouponPricer(b.cashflows(),
+                                ext::make_shared<BlackIborCouponPricer>());
+            },
+            nb::arg("discount_curve"),
+            "Attach DiscountingBondEngine and BlackIborCouponPricer on cashflows.");
 
     nb::enum_<Swap::Type>(m, "SwapType")
         .value("Receiver", Swap::Receiver)

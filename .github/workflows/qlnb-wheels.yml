@@ -96,8 +96,9 @@ jobs:
           path: wheelhouse/*.whl
           if-no-files-found: ignore
 
-  # Optional extra OS — keep disabled-by-default via if: false so the workflow
-  # stays focused; flip to true when runners/time budget allow.
+  # Optional macOS wheels (already scaffolded). Keep disabled-by-default via
+  # `if: false` so the default matrix stays manylinux-focused; flip to true
+  # (or gate on workflow_dispatch) when runners/time budget allow.
   build_wheels_macos:
     name: cibuildwheel (macOS, optional)
     if: false

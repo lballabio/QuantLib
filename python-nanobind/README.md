@@ -50,6 +50,14 @@ Experimental Python package that binds a focused QuantLib surface with
 - Calendars: `Japan()`, `Germany(...)`
 - Expanded `qlnb.compat` aliases (`Settlement.*`, bond/swaption camelCase)
 
+### Phase 6 (floating bonds, tree/FD, overnight indexes)
+- `FloatingRateBond` + discounting engine with `BlackIborCouponPricer` setup
+- Cox–Ross–Rubinstein binomial and FD Black–Scholes engines on `VanillaOption`
+  (`set_binomial_pricing_engine`, `set_fd_pricing_engine`)
+- Overnight indexes: `Sofr`, `Estr`, `Eonia` (`OvernightIndex`)
+- `make_ois` → `OvernightIndexedSwap` + discounting engine
+- `qlnb.compat` aliases for floating bonds / tree-FD / OIS
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 

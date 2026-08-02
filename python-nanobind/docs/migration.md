@@ -228,7 +228,7 @@ Requires NumPy at import/use time (`pip install qlnb[numpy]` or the `test` extra
 | Flat forward | curve object → wrap in handle | factory returns handle |
 | Engines | construct engine, `setPricingEngine` | `set_pricing_engine(handle_or_process)` |
 | Naming | camelCase | snake_case |
-| Coverage | broad SWIG surface | focused phase 0–5 surface |
+| Coverage | broad SWIG surface | focused phase 0–6 surface |
 
 ## Compatibility shim (`qlnb.compat`)
 
@@ -300,6 +300,39 @@ dfs2 = ql.discount_dates(curve, [d1, d2, d3])
 `FraRateHelper` / `SwapRateHelper` extend the deposit-only bootstrap surface.
 `qlnb.compat` adds `Settlement.Physical`, `VanillaSwap.Payer`, and camelCase
 aliases on `Swaption` / `ZeroCouponBond`.
+
+## Phase-6 floating bonds, tree/FD, overnight indexes
+
+Floating-rate bonds attach a discounting engine **and** a Black Ibor coupon
+pricer inside `set_pricing_engine`:
+
+```python
+bond = ql.FloatingRateBond(
+    2, 100.0, schedule, ql.Euribor6M(forecast), ql.ActualActual(ql.ActualActualConvention.ISDA)
+)
+bond.set_pricing_engine(discount)  # DiscountingBondEngine + BlackIborCouponPricer
+```
+
+American (or European) vanilla options can use tree / FD engines:
+
+```python
+opt = ql.VanillaOption(payoff, ql.AmericanExercise(today, maturity))
+opt.set_binomial_pricing_engine(process, steps=801)   # Cox–Ross–Rubinstein
+opt.set_fd_pricing_engine(process, t_grid=100, x_grid=100)
+```
+
+Overnight indexes and a thin MakeOIS helper:
+
+```python
+sofr = ql.Sofr(curve)
+estr = ql.Estr(curve)
+ois = ql.make_ois(ql.Period(2, ql.TimeUnit.Years), sofr, 0.03)
+ois.set_pricing_engine(curve)
+print(ois.fair_rate(), ois.NPV())
+```
+
+`qlnb.compat` adds camelCase aliases (`setBinomialPricingEngine`,
+`FloatingRateBond.cleanPrice`, `makeOIS`).
 
 ## When to stay on SWIG
 
