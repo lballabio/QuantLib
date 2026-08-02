@@ -15,6 +15,7 @@
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
@@ -87,6 +88,31 @@ void bind_instruments(nb::module_& m) {
             nb::arg("payoff"),
             nb::arg("exercise"))
         .def("NPV", [](EuropeanOption& opt) { return opt.NPV(); })
+        .def("delta", [](EuropeanOption& opt) { return opt.delta(); })
+        .def("gamma", [](EuropeanOption& opt) { return opt.gamma(); })
+        .def("vega", [](EuropeanOption& opt) { return opt.vega(); })
+        .def(
+            "implied_volatility",
+            [](EuropeanOption& opt,
+               Real target_price,
+               const ext::shared_ptr<BlackScholesMertonProcess>& process,
+               Real accuracy,
+               Size max_evaluations,
+               Volatility min_vol,
+               Volatility max_vol) {
+                return opt.impliedVolatility(target_price,
+                                             process,
+                                             accuracy,
+                                             max_evaluations,
+                                             min_vol,
+                                             max_vol);
+            },
+            nb::arg("target_price"),
+            nb::arg("process"),
+            nb::arg("accuracy") = 1.0e-4,
+            nb::arg("max_evaluations") = 100,
+            nb::arg("min_vol") = 1.0e-7,
+            nb::arg("max_vol") = 4.0)
         .def(
             "set_pricing_engine",
             [](EuropeanOption& opt,
@@ -94,7 +120,31 @@ void bind_instruments(nb::module_& m) {
                 opt.setPricingEngine(
                     ext::make_shared<AnalyticEuropeanEngine>(process));
             },
-            nb::arg("process"));
+            nb::arg("process"))
+        .def(
+            "set_mc_pricing_engine",
+            [](EuropeanOption& opt,
+               const ext::shared_ptr<BlackScholesMertonProcess>& process,
+               Size time_steps,
+               Size required_samples,
+               unsigned long seed,
+               bool antithetic,
+               bool brownian_bridge) {
+                ext::shared_ptr<PricingEngine> engine =
+                    MakeMCEuropeanEngine<PseudoRandom>(process)
+                        .withSteps(time_steps)
+                        .withSamples(required_samples)
+                        .withSeed(seed)
+                        .withAntitheticVariate(antithetic)
+                        .withBrownianBridge(brownian_bridge);
+                opt.setPricingEngine(engine);
+            },
+            nb::arg("process"),
+            nb::arg("time_steps"),
+            nb::arg("required_samples"),
+            nb::arg("seed") = 42UL,
+            nb::arg("antithetic") = true,
+            nb::arg("brownian_bridge") = false);
 
     m.def(
         "AnalyticEuropeanEngine",
