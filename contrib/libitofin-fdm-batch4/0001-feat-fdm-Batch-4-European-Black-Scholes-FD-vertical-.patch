@@ -1,0 +1,959 @@
+From 58f21ce5a24be605c09502641fec90350b0b5e72 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Thu, 30 Jul 2026 11:41:44 +0000
+Subject: [PATCH] feat(fdm): Batch 4 European Black-Scholes FD vertical (#635)
+
+Port FdmSolverDesc, Fdm1DimSolver, FdmBlackScholesSolver, and
+FdBlackScholesVanillaEngine for the plain European / no-dividend path.
+Oracles cover testFdEngines (value/delta/gamma/theta tolerances) and the
+Douglas + ImplicitEuler arms of testPDESchemes. Local-vol, quanto,
+dividends, American/Bermudan, and unported schemes stay deferred to #636.
+---
+ .../solvers/fdm1dimsolver.rs                  | 231 ++++++++++++
+ .../solvers/fdmblackscholessolver.rs          | 179 +++++++++
+ .../solvers/fdmsolverdesc.rs                  |  98 +++++
+ .../methods/finitedifferences/solvers/mod.rs  |   9 +-
+ crates/libitofin/src/pricingengines/mod.rs    |   1 +
+ .../vanilla/fdblackscholesvanillaengine.rs    | 347 ++++++++++++++++++
+ .../src/pricingengines/vanilla/mod.rs         |   2 +
+ 7 files changed, 866 insertions(+), 1 deletion(-)
+ create mode 100644 crates/libitofin/src/methods/finitedifferences/solvers/fdm1dimsolver.rs
+ create mode 100644 crates/libitofin/src/methods/finitedifferences/solvers/fdmblackscholessolver.rs
+ create mode 100644 crates/libitofin/src/methods/finitedifferences/solvers/fdmsolverdesc.rs
+ create mode 100644 crates/libitofin/src/pricingengines/vanilla/fdblackscholesvanillaengine.rs
+
+diff --git a/crates/libitofin/src/methods/finitedifferences/solvers/fdm1dimsolver.rs b/crates/libitofin/src/methods/finitedifferences/solvers/fdm1dimsolver.rs
+new file mode 100644
+index 0000000..baa307b
+--- /dev/null
++++ b/crates/libitofin/src/methods/finitedifferences/solvers/fdm1dimsolver.rs
+@@ -0,0 +1,231 @@
++//! One-dimensional finite-difference solver with cubic read-off.
++//!
++//! Port of `ql/methods/finitedifferences/solvers/fdm1dimsolver.{hpp,cpp}`.
++
++use std::cell::RefCell;
++
++use crate::errors::QlResult;
++use crate::math::array::Array;
++use crate::math::interpolations::Interpolation;
++use crate::math::interpolations::cubic::{CubicInterpolation, MonotonicCubicNaturalSpline};
++use crate::methods::finitedifferences::operators::FdmLinearOpComposite;
++use crate::methods::finitedifferences::stepconditions::{
++    FdmSnapshotCondition, FdmStepConditionComposite,
++};
++use crate::shared::{Shared, SharedMut, shared};
++use crate::types::Real;
++use crate::utilities::null::Null;
++
++use super::{FdmBackwardSolver, FdmSchemeDesc, FdmSolverDesc};
++
++/// Rolls a one-dimensional grid back and reads value / greeks off a cubic.
++///
++/// Construction seeds the terminal payoff and joins a theta-snapshot condition
++/// onto the caller's step conditions (`fdm1dimsolver.cpp:32-51`). The first
++/// read-off rolls the grid back through [`FdmBackwardSolver`] and builds a
++/// [`MonotonicCubicNaturalSpline`] through the result (`cpp:54-65`); later
++/// reads reuse that spline until a new solver is built.
++pub struct Fdm1DimSolver {
++    solver_desc: FdmSolverDesc,
++    scheme_desc: FdmSchemeDesc,
++    op: SharedMut<dyn FdmLinearOpComposite>,
++    theta_condition: Shared<FdmSnapshotCondition>,
++    conditions: Shared<FdmStepConditionComposite>,
++    x: Vec<Real>,
++    initial_values: Vec<Real>,
++    state: RefCell<Option<Solved>>,
++}
++
++struct Solved {
++    #[allow(dead_code)] // retained to mirror C++'s `resultValues_`
++    result_values: Array,
++    interpolation: CubicInterpolation,
++}
++
++impl Fdm1DimSolver {
++    /// Builds the solver over `op` for `solver_desc` / `scheme_desc`
++    /// (`fdm1dimsolver.cpp:32-51`).
++    pub fn new(
++        solver_desc: FdmSolverDesc,
++        scheme_desc: FdmSchemeDesc,
++        op: SharedMut<dyn FdmLinearOpComposite>,
++    ) -> Self {
++        let first_stopping = solver_desc
++            .condition
++            .stopping_times()
++            .first()
++            .copied()
++            .unwrap_or(solver_desc.maturity);
++        let theta_time = 0.99 * Real::min(1.0 / 365.0, first_stopping);
++        let theta_condition = shared(FdmSnapshotCondition::new(theta_time));
++        let conditions =
++            FdmStepConditionComposite::join_conditions(&theta_condition, &solver_desc.condition);
++
++        let layout = solver_desc.mesher.layout();
++        let size = layout.size();
++        let mut x = vec![0.0; size];
++        let mut initial_values = vec![0.0; size];
++        for iter in layout.iter() {
++            let index = iter.index();
++            initial_values[index] = solver_desc
++                .calculator
++                .avg_inner_value(&iter, solver_desc.maturity);
++            x[index] = solver_desc.mesher.location(&iter, 0);
++        }
++
++        Fdm1DimSolver {
++            solver_desc,
++            scheme_desc,
++            op,
++            theta_condition,
++            conditions,
++            x,
++            initial_values,
++            state: RefCell::new(None),
++        }
++    }
++
++    /// Interpolated solution at grid coordinate `x` (`cpp:67-70`).
++    pub fn interpolate_at(&self, x: Real) -> QlResult<Real> {
++        let state = self.ensure_calculated()?;
++        state.interpolation.value(x)
++    }
++
++    /// First derivative of the solution at `x` (`cpp:88-91`).
++    pub fn derivative_x(&self, x: Real) -> QlResult<Real> {
++        let state = self.ensure_calculated()?;
++        state.interpolation.derivative(x)
++    }
++
++    /// Second derivative of the solution at `x` (`cpp:93-96`).
++    pub fn derivative_xx(&self, x: Real) -> QlResult<Real> {
++        let state = self.ensure_calculated()?;
++        state.interpolation.second_derivative(x)
++    }
++
++    /// Finite-difference theta at `x` (`cpp:72-85`).
++    ///
++    /// Returns [`Real::null`] when the first stopping time is exactly zero, as
++    /// C++ does with `Null<Real>()`.
++    pub fn theta_at(&self, x: Real) -> QlResult<Real> {
++        if self.conditions.stopping_times().first().copied() == Some(0.0) {
++            return Ok(Real::null());
++        }
++
++        let state = self.ensure_calculated()?;
++        let theta_values = self.theta_condition.values();
++        let temp =
++            MonotonicCubicNaturalSpline::new(self.x.clone(), theta_values.to_vec())?.value(x)?;
++        let value = state.interpolation.value(x)?;
++        Ok((temp - value) / self.theta_condition.time())
++    }
++
++    fn ensure_calculated(&self) -> QlResult<std::cell::Ref<'_, Solved>> {
++        if self.state.borrow().is_none() {
++            let mut rhs = Array::from(self.initial_values.clone());
++            let mut solver = FdmBackwardSolver::new(
++                SharedMut::clone(&self.op),
++                self.solver_desc.bc_set.clone(),
++                Some(Shared::clone(&self.conditions)),
++                self.scheme_desc,
++            );
++            solver.rollback(
++                &mut rhs,
++                self.solver_desc.maturity,
++                0.0,
++                self.solver_desc.time_steps,
++                self.solver_desc.damping_steps,
++            )?;
++            let interpolation = MonotonicCubicNaturalSpline::new(self.x.clone(), rhs.to_vec())?;
++            *self.state.borrow_mut() = Some(Solved {
++                result_values: rhs,
++                interpolation,
++            });
++        }
++        Ok(std::cell::Ref::map(self.state.borrow(), |s| {
++            s.as_ref().expect("just calculated")
++        }))
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    use crate::instruments::PlainVanillaPayoff;
++    use crate::methods::finitedifferences::meshers::{
++        FdmMesher, FdmMesherComposite, fdm_black_scholes_mesher,
++    };
++    use crate::methods::finitedifferences::operators::FdmBlackScholesOp;
++    use crate::methods::finitedifferences::utilities::{
++        FdmInnerValueCalculator, fdm_log_inner_value,
++    };
++    use crate::option::OptionType;
++    use crate::payoff::Payoff;
++    use crate::pricingengines::vanilla::test_market;
++    use crate::shared::shared_mut;
++    use crate::types::Size;
++
++    fn european_solver() -> Fdm1DimSolver {
++        let market = test_market::market();
++        market.set(100.0, 0.05, 0.05, 0.20);
++        let maturity = 1.0;
++        let strike = 100.0;
++        let x_grid: Size = 100;
++        let t_grid: Size = 50;
++
++        let equity = fdm_black_scholes_mesher(
++            x_grid,
++            &market.process,
++            maturity,
++            strike,
++            None,
++            None,
++            0.0001,
++            1.5,
++            Some((strike, 0.1)),
++            &[],
++            0.0,
++        )
++        .unwrap();
++        let mesher = shared(FdmMesherComposite::new(vec![equity]));
++        let payoff: Shared<dyn Payoff> = shared(PlainVanillaPayoff::new(OptionType::Call, strike));
++        let calculator: Shared<dyn FdmInnerValueCalculator> = shared(fdm_log_inner_value(
++            payoff,
++            Shared::clone(&mesher) as Shared<dyn FdmMesher>,
++            0,
++        ));
++        let condition = shared(FdmStepConditionComposite::new(&[], Vec::new()));
++        let desc = FdmSolverDesc::new(
++            Shared::clone(&mesher) as _,
++            Vec::new(),
++            condition,
++            calculator,
++            maturity,
++            t_grid,
++            0,
++        );
++        let op = shared_mut(
++            FdmBlackScholesOp::new(Shared::clone(&mesher) as _, &market.process, strike, 0)
++                .unwrap(),
++        );
++        Fdm1DimSolver::new(desc, FdmSchemeDesc::douglas(), op as _)
++    }
++
++    #[test]
++    fn interpolate_at_the_spot_is_positive_for_an_atm_call() {
++        let solver = european_solver();
++        let value = solver.interpolate_at(100.0_f64.ln()).unwrap();
++        assert!(value > 0.0, "atm call value was {value}");
++        let delta = solver.derivative_x(100.0_f64.ln()).unwrap() / 100.0;
++        assert!(delta > 0.0 && delta < 1.0, "atm call delta was {delta}");
++    }
++
++    #[test]
++    fn theta_at_the_spot_is_finite() {
++        let solver = european_solver();
++        let theta = solver.theta_at(100.0_f64.ln()).unwrap();
++        assert!(theta.is_finite());
++        assert!(!theta.is_null());
++    }
++}
+diff --git a/crates/libitofin/src/methods/finitedifferences/solvers/fdmblackscholessolver.rs b/crates/libitofin/src/methods/finitedifferences/solvers/fdmblackscholessolver.rs
+new file mode 100644
+index 0000000..15f473a
+--- /dev/null
++++ b/crates/libitofin/src/methods/finitedifferences/solvers/fdmblackscholessolver.rs
+@@ -0,0 +1,179 @@
++//! Black-Scholes finite-difference solver over a prepared descriptor.
++//!
++//! Port of `ql/methods/finitedifferences/solvers/fdmblackscholessolver.{hpp,cpp}`.
++//! Local-vol and quanto branches are deferred to #636 and omitted from the
++//! constructor rather than accepted and ignored.
++
++use std::cell::RefCell;
++
++use crate::errors::QlResult;
++use crate::methods::finitedifferences::operators::{FdmBlackScholesOp, FdmLinearOpComposite};
++use crate::processes::GeneralizedBlackScholesProcess;
++use crate::shared::{Shared, SharedMut, shared_mut};
++use crate::types::Real;
++
++use super::{Fdm1DimSolver, FdmSchemeDesc, FdmSolverDesc};
++
++/// Prices a European option on a Black-Scholes process via finite differences.
++///
++/// Construction stores the process and descriptor (`fdmblackscholessolver.cpp:30-43`).
++/// The first greek / value read builds an [`FdmBlackScholesOp`] and an
++/// [`Fdm1DimSolver`] (`cpp:45-55`) and then reads off the log-spot cubic
++/// (`cpp:57-75`).
++pub struct FdmBlackScholesSolver {
++    process: Shared<GeneralizedBlackScholesProcess>,
++    strike: Real,
++    solver_desc: FdmSolverDesc,
++    scheme_desc: FdmSchemeDesc,
++    solver: RefCell<Option<Fdm1DimSolver>>,
++}
++
++impl FdmBlackScholesSolver {
++    /// Builds the solver for `process` at `strike` over `solver_desc`
++    /// (`fdmblackscholessolver.cpp:30-43`).
++    ///
++    /// The default scheme is Douglas, matching C++.
++    pub fn new(
++        process: Shared<GeneralizedBlackScholesProcess>,
++        strike: Real,
++        solver_desc: FdmSolverDesc,
++        scheme_desc: FdmSchemeDesc,
++    ) -> Self {
++        FdmBlackScholesSolver {
++            process,
++            strike,
++            solver_desc,
++            scheme_desc,
++            solver: RefCell::new(None),
++        }
++    }
++
++    /// Option value at spot `s` (`cpp:57-60`).
++    pub fn value_at(&self, s: Real) -> QlResult<Real> {
++        self.ensure_calculated()?.interpolate_at(s.ln())
++    }
++
++    /// Delta at spot `s` (`cpp:62-65`).
++    pub fn delta_at(&self, s: Real) -> QlResult<Real> {
++        Ok(self.ensure_calculated()?.derivative_x(s.ln())? / s)
++    }
++
++    /// Gamma at spot `s` (`cpp:67-71`).
++    pub fn gamma_at(&self, s: Real) -> QlResult<Real> {
++        let solver = self.ensure_calculated()?;
++        let log_s = s.ln();
++        Ok((solver.derivative_xx(log_s)? - solver.derivative_x(log_s)?) / (s * s))
++    }
++
++    /// Theta at spot `s` (`cpp:73-75`).
++    pub fn theta_at(&self, s: Real) -> QlResult<Real> {
++        self.ensure_calculated()?.theta_at(s.ln())
++    }
++
++    fn ensure_calculated(&self) -> QlResult<std::cell::Ref<'_, Fdm1DimSolver>> {
++        if self.solver.borrow().is_none() {
++            let op = shared_mut(FdmBlackScholesOp::new(
++                Shared::clone(&self.solver_desc.mesher),
++                &self.process,
++                self.strike,
++                0,
++            )?);
++            let solver = Fdm1DimSolver::new(
++                self.solver_desc.clone(),
++                self.scheme_desc,
++                op as SharedMut<dyn FdmLinearOpComposite>,
++            );
++            *self.solver.borrow_mut() = Some(solver);
++        }
++        Ok(std::cell::Ref::map(self.solver.borrow(), |s| {
++            s.as_ref().expect("just calculated")
++        }))
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    use crate::instrument::Instrument;
++    use crate::instruments::PlainVanillaPayoff;
++    use crate::methods::finitedifferences::meshers::{
++        FdmMesher, FdmMesherComposite, fdm_black_scholes_mesher,
++    };
++    use crate::methods::finitedifferences::stepconditions::FdmStepConditionComposite;
++    use crate::methods::finitedifferences::utilities::{
++        FdmInnerValueCalculator, fdm_log_inner_value,
++    };
++    use crate::option::OptionType;
++    use crate::payoff::Payoff;
++    use crate::pricingengines::vanilla::test_market;
++    use crate::shared::shared;
++
++    fn fixture() -> (test_market::Market, FdmBlackScholesSolver, Real) {
++        let market = test_market::market();
++        market.set(100.0, 0.05, 0.05, 0.20);
++        let maturity = 1.0;
++        let strike = 100.0;
++        let equity = fdm_black_scholes_mesher(
++            100,
++            &market.process,
++            maturity,
++            strike,
++            None,
++            None,
++            0.0001,
++            1.5,
++            Some((strike, 0.1)),
++            &[],
++            0.0,
++        )
++        .unwrap();
++        let mesher = shared(FdmMesherComposite::new(vec![equity]));
++        let payoff: Shared<dyn Payoff> = shared(PlainVanillaPayoff::new(OptionType::Call, strike));
++        let calculator: Shared<dyn FdmInnerValueCalculator> = shared(fdm_log_inner_value(
++            payoff,
++            Shared::clone(&mesher) as Shared<dyn FdmMesher>,
++            0,
++        ));
++        let condition = shared(FdmStepConditionComposite::new(&[], Vec::new()));
++        let desc = FdmSolverDesc::new(
++            Shared::clone(&mesher) as _,
++            Vec::new(),
++            condition,
++            calculator,
++            maturity,
++            50,
++            0,
++        );
++        let solver = FdmBlackScholesSolver::new(
++            Shared::clone(&market.process),
++            strike,
++            desc,
++            FdmSchemeDesc::douglas(),
++        );
++        (market, solver, strike)
++    }
++
++    #[test]
++    fn value_at_spot_matches_analytic_within_a_loose_band() {
++        let (market, solver, strike) = fixture();
++        let fd = solver.value_at(100.0).unwrap();
++
++        let expiry = test_market::today() + test_market::time_to_days(1.0);
++        let mut option = market.option(OptionType::Call, strike, expiry);
++        let analytic = option.npv().unwrap();
++
++        let rel = (fd - analytic).abs() / analytic;
++        assert!(rel < 5.0e-3, "fd={fd} analytic={analytic} rel={rel}");
++    }
++
++    #[test]
++    fn greeks_at_spot_are_finite() {
++        let (_market, solver, _) = fixture();
++        let delta = solver.delta_at(100.0).unwrap();
++        let gamma = solver.gamma_at(100.0).unwrap();
++        let theta = solver.theta_at(100.0).unwrap();
++        assert!(delta.is_finite() && gamma.is_finite() && theta.is_finite());
++        assert!(delta > 0.0 && delta < 1.0);
++    }
++}
+diff --git a/crates/libitofin/src/methods/finitedifferences/solvers/fdmsolverdesc.rs b/crates/libitofin/src/methods/finitedifferences/solvers/fdmsolverdesc.rs
+new file mode 100644
+index 0000000..751338f
+--- /dev/null
++++ b/crates/libitofin/src/methods/finitedifferences/solvers/fdmsolverdesc.rs
+@@ -0,0 +1,98 @@
++//! The inputs a finite-difference solver needs to roll a grid back.
++//!
++//! Port of `ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp:35-43`.
++
++use crate::methods::finitedifferences::meshers::FdmMesher;
++use crate::methods::finitedifferences::stepconditions::FdmStepConditionComposite;
++use crate::methods::finitedifferences::utilities::{
++    FdmBoundaryConditionSet, FdmInnerValueCalculator,
++};
++use crate::shared::Shared;
++use crate::types::{Size, Time};
++
++/// Everything a one-dimensional finite-difference solver needs to price once.
++///
++/// C++ holds every field `const` (`fdmsolverdesc.hpp:36-42`); they are plain
++/// public fields here. The struct is cheap to clone because every owned pointer
++/// is a [`Shared`].
++#[derive(Clone)]
++pub struct FdmSolverDesc {
++    /// The spatial grid the PDE is discretised on.
++    pub mesher: Shared<dyn FdmMesher>,
++    /// Boundary conditions applied at every step (empty on the plain European
++    /// path).
++    pub bc_set: FdmBoundaryConditionSet,
++    /// Step conditions applied between steps (empty for European / no
++    /// dividends; American, Bermudan and dividend handlers are #636).
++    pub condition: Shared<FdmStepConditionComposite>,
++    /// The terminal payoff sampled onto the grid at [`maturity`](Self::maturity).
++    pub calculator: Shared<dyn FdmInnerValueCalculator>,
++    /// Time from today to expiry, in the process's day-counter units.
++    pub maturity: Time,
++    /// Number of time steps the main scheme takes.
++    pub time_steps: Size,
++    /// Number of fully-implicit damping steps that precede the main scheme.
++    pub damping_steps: Size,
++}
++
++impl FdmSolverDesc {
++    /// Assembles the descriptor (`fdmsolverdesc.hpp:35-43`).
++    pub fn new(
++        mesher: Shared<dyn FdmMesher>,
++        bc_set: FdmBoundaryConditionSet,
++        condition: Shared<FdmStepConditionComposite>,
++        calculator: Shared<dyn FdmInnerValueCalculator>,
++        maturity: Time,
++        time_steps: Size,
++        damping_steps: Size,
++    ) -> Self {
++        FdmSolverDesc {
++            mesher,
++            bc_set,
++            condition,
++            calculator,
++            maturity,
++            time_steps,
++            damping_steps,
++        }
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    use crate::instruments::PlainVanillaPayoff;
++    use crate::methods::finitedifferences::meshers::{FdmMesherComposite, uniform_1d_mesher};
++    use crate::methods::finitedifferences::utilities::FdmCellAveragingInnerValue;
++    use crate::option::OptionType;
++    use crate::payoff::Payoff;
++    use crate::shared::shared;
++
++    #[test]
++    fn fields_round_trip_through_new() {
++        let mesher_1d = uniform_1d_mesher(0.0, 1.0, 5).unwrap();
++        let mesher = shared(FdmMesherComposite::new(vec![mesher_1d]));
++        let payoff: Shared<dyn Payoff> = shared(PlainVanillaPayoff::new(OptionType::Call, 100.0));
++        let calculator: Shared<dyn FdmInnerValueCalculator> = shared(
++            FdmCellAveragingInnerValue::new(payoff, Shared::clone(&mesher) as _, 0),
++        );
++        let condition = shared(FdmStepConditionComposite::new(&[], Vec::new()));
++
++        let desc = FdmSolverDesc::new(
++            Shared::clone(&mesher) as _,
++            Vec::new(),
++            Shared::clone(&condition),
++            Shared::clone(&calculator),
++            1.0,
++            100,
++            0,
++        );
++
++        assert_eq!(desc.maturity, 1.0);
++        assert_eq!(desc.time_steps, 100);
++        assert_eq!(desc.damping_steps, 0);
++        assert!(desc.bc_set.is_empty());
++        assert!(Shared::ptr_eq(&desc.condition, &condition));
++    }
++}
+diff --git a/crates/libitofin/src/methods/finitedifferences/solvers/mod.rs b/crates/libitofin/src/methods/finitedifferences/solvers/mod.rs
+index 77f603d..0603a79 100644
+--- a/crates/libitofin/src/methods/finitedifferences/solvers/mod.rs
++++ b/crates/libitofin/src/methods/finitedifferences/solvers/mod.rs
+@@ -2,10 +2,17 @@
+ //!
+ //! Port of `ql/methods/finitedifferences/solvers/`. The descriptor a solver
+ //! picks its scheme from landed first, then the backward solver that switches
+-//! on it.
++//! on it, then the one-dimensional solver and the Black-Scholes wrapper that
++//! drive a European FD engine.
+ 
++mod fdm1dimsolver;
+ mod fdmbackwardsolver;
++mod fdmblackscholessolver;
+ mod fdmschemedesc;
++mod fdmsolverdesc;
+ 
++pub use fdm1dimsolver::Fdm1DimSolver;
+ pub use fdmbackwardsolver::FdmBackwardSolver;
++pub use fdmblackscholessolver::FdmBlackScholesSolver;
+ pub use fdmschemedesc::{FdmSchemeDesc, FdmSchemeType};
++pub use fdmsolverdesc::FdmSolverDesc;
+diff --git a/crates/libitofin/src/pricingengines/mod.rs b/crates/libitofin/src/pricingengines/mod.rs
+index ac6c463..ce21d6f 100644
+--- a/crates/libitofin/src/pricingengines/mod.rs
++++ b/crates/libitofin/src/pricingengines/mod.rs
+@@ -21,6 +21,7 @@ pub use swaption::{
+     BlackSwaptionEngine, CashAnnuityModel, DiscretizedSwap, JamshidianSwaptionEngine,
+ };
+ pub use vanilla::AnalyticEuropeanEngine;
++pub use vanilla::FdBlackScholesVanillaEngine;
+ 
+ pub use blackformula::{
+     black_formula, black_formula_asset_itm_probability, black_formula_cash_itm_probability,
+diff --git a/crates/libitofin/src/pricingengines/vanilla/fdblackscholesvanillaengine.rs b/crates/libitofin/src/pricingengines/vanilla/fdblackscholesvanillaengine.rs
+new file mode 100644
+index 0000000..c2328fe
+--- /dev/null
++++ b/crates/libitofin/src/pricingengines/vanilla/fdblackscholesvanillaengine.rs
+@@ -0,0 +1,347 @@
++//! Finite-differences Black-Scholes vanilla option engine.
++//!
++//! Port of `ql/pricingengines/vanilla/fdblackscholesvanillaengine.{hpp,cpp}` for
++//! the plain European / no-dividend path. Local-vol, quanto, cash-dividend and
++//! American/Bermudan arms are deferred to #636 and omitted from the API rather
++//! than accepted and ignored.
++
++use crate::errors::QlResult;
++use crate::exercise::ExerciseType;
++use crate::fail;
++use crate::instruments::{Greeks, OneAssetOptionEngine, OneAssetOptionResults, OptionArguments};
++use crate::methods::finitedifferences::meshers::{
++    FdmMesher, FdmMesherComposite, fdm_black_scholes_mesher,
++};
++use crate::methods::finitedifferences::solvers::{
++    FdmBlackScholesSolver, FdmSchemeDesc, FdmSolverDesc,
++};
++use crate::methods::finitedifferences::stepconditions::FdmStepConditionComposite;
++use crate::methods::finitedifferences::utilities::{FdmInnerValueCalculator, fdm_log_inner_value};
++use crate::patterns::observable::AsObservable;
++use crate::payoff::Payoff;
++use crate::pricingengine::{Arguments, PricingEngine, Results};
++use crate::processes::GeneralizedBlackScholesProcess;
++use crate::shared::{Shared, shared};
++use crate::stochasticprocess::StochasticProcess1D;
++use crate::types::Size;
++use crate::utilities::null::Null;
++
++/// Finite-differences Black-Scholes engine for European vanilla options.
++///
++/// Defaults match C++ (`fdblackscholesvanillaengine.hpp:52-60`): `t_grid = 100`,
++/// `x_grid = 100`, `damping_steps = 0`, Douglas scheme.
++pub struct FdBlackScholesVanillaEngine {
++    base: OneAssetOptionEngine,
++    process: Shared<GeneralizedBlackScholesProcess>,
++    t_grid: Size,
++    x_grid: Size,
++    damping_steps: Size,
++    scheme_desc: FdmSchemeDesc,
++}
++
++impl FdBlackScholesVanillaEngine {
++    /// Builds the engine on `process` with QuantLib's default grid and scheme.
++    pub fn new(process: Shared<GeneralizedBlackScholesProcess>) -> Self {
++        Self::with_grid(process, 100, 100, 0, FdmSchemeDesc::douglas())
++    }
++
++    /// Builds the engine with an explicit grid and scheme
++    /// (`fdblackscholesvanillaengine.cpp:37-50`).
++    pub fn with_grid(
++        process: Shared<GeneralizedBlackScholesProcess>,
++        t_grid: Size,
++        x_grid: Size,
++        damping_steps: Size,
++        scheme_desc: FdmSchemeDesc,
++    ) -> Self {
++        let base =
++            OneAssetOptionEngine::new(OptionArguments::default(), OneAssetOptionResults::default());
++        base.register_with(process.observable());
++        FdBlackScholesVanillaEngine {
++            base,
++            process,
++            t_grid,
++            x_grid,
++            damping_steps,
++            scheme_desc,
++        }
++    }
++}
++
++impl AsObservable for FdBlackScholesVanillaEngine {
++    fn observable(&self) -> &crate::patterns::observable::Observable {
++        self.base.observable()
++    }
++}
++
++impl PricingEngine for FdBlackScholesVanillaEngine {
++    fn arguments_mut(&mut self) -> &mut dyn Arguments {
++        self.base.arguments_mut()
++    }
++
++    fn results(&self) -> &dyn Results {
++        self.base.results()
++    }
++
++    fn reset(&mut self) {
++        self.base.reset();
++    }
++
++    fn calculate(&mut self) -> QlResult<()> {
++        let arguments = self.base.arguments();
++        let Some(exercise) = &arguments.exercise else {
++            fail!("no exercise given");
++        };
++        if exercise.exercise_type() != ExerciseType::European {
++            fail!("not an European option");
++        }
++        let Some(payoff) = &arguments.payoff else {
++            fail!("no payoff given");
++        };
++        let strike = payoff.strike();
++        let maturity_date = exercise.last_date();
++        let maturity = self.process.time(&maturity_date)?;
++
++        // 1. Mesher (`fdblackscholesvanillaengine.cpp:154-167`). Quanto and
++        // dividend-schedule arms are #636; European / no-dividend uses an empty
++        // schedule and no spot adjustment.
++        let equity_mesher = fdm_black_scholes_mesher(
++            self.x_grid,
++            &self.process,
++            maturity,
++            strike,
++            None,
++            None,
++            0.0001,
++            1.5,
++            Some((strike, 0.1)),
++            &[],
++            0.0,
++        )?;
++        let mesher = shared(FdmMesherComposite::new(vec![equity_mesher]));
++
++        // 2. Calculator (`cpp:169-171`).
++        let payoff_as_payoff: Shared<dyn Payoff> = Shared::clone(payoff) as Shared<dyn Payoff>;
++        let calculator: Shared<dyn FdmInnerValueCalculator> = shared(fdm_log_inner_value(
++            payoff_as_payoff,
++            Shared::clone(&mesher) as Shared<dyn FdmMesher>,
++            0,
++        ));
++
++        // 3. Step conditions (`cpp:186-192`). Full `vanillaComposite` (American /
++        // Bermudan / dividends) is #636; the European / no-dividend path is an
++        // empty composite.
++        let conditions = shared(FdmStepConditionComposite::new(&[], Vec::new()));
++
++        // 4. Boundary conditions (`cpp:194-195`): empty.
++        let boundaries = Vec::new();
++
++        // 5. Solver (`cpp:197-214`).
++        let solver_desc = FdmSolverDesc::new(
++            Shared::clone(&mesher) as _,
++            boundaries,
++            conditions,
++            calculator,
++            maturity,
++            self.t_grid,
++            self.damping_steps,
++        );
++        let solver = FdmBlackScholesSolver::new(
++            Shared::clone(&self.process),
++            strike,
++            solver_desc,
++            self.scheme_desc,
++        );
++
++        let spot = self.process.x0()?;
++        let value = solver.value_at(spot)?;
++        let delta = solver.delta_at(spot)?;
++        let gamma = solver.gamma_at(spot)?;
++        let theta = solver.theta_at(spot)?;
++
++        let results = self.base.results_mut();
++        results.instrument.value = Some(value);
++        results.greeks = Greeks {
++            delta: Some(delta),
++            gamma: Some(gamma),
++            theta: if theta.is_null() { None } else { Some(theta) },
++            vega: None,
++            rho: None,
++            dividend_rho: None,
++        };
++        Ok(())
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    //! Oracles for `testFdEngines` and the ported arms of `testPDESchemes`
++    //! from `test-suite/europeanoption.cpp`.
++
++    use super::*;
++
++    use crate::exercise::EuropeanExercise;
++    use crate::instrument::Instrument;
++    use crate::instruments::{EuropeanOption, PlainVanillaPayoff};
++    use crate::methods::finitedifferences::solvers::FdmSchemeType;
++    use crate::option::OptionType;
++    use crate::pricingengines::vanilla::test_market::{self, Market};
++    use crate::shared::{SharedMut, shared, shared_mut};
++    use crate::types::Real;
++
++    fn relative_error(x1: Real, x2: Real, reference: Real) -> Real {
++        if reference != 0.0 {
++            (x1 - x2).abs() / reference
++        } else {
++            (x1 - x2).abs()
++        }
++    }
++
++    fn fd_option(
++        market: &Market,
++        option_type: OptionType,
++        strike: Real,
++        expiry: crate::time::date::Date,
++        t_grid: Size,
++        x_grid: Size,
++        scheme: FdmSchemeDesc,
++    ) -> EuropeanOption {
++        let payoff = shared(PlainVanillaPayoff::new(option_type, strike));
++        let exercise = shared(EuropeanExercise::new(expiry));
++        let mut option = EuropeanOption::new(payoff, exercise, Shared::clone(&market.settings));
++        let engine = shared_mut(FdBlackScholesVanillaEngine::with_grid(
++            Shared::clone(&market.process),
++            t_grid,
++            x_grid,
++            0,
++            scheme,
++        ));
++        option
++            .base_mut()
++            .set_pricing_engine(engine as SharedMut<dyn PricingEngine>);
++        option
++    }
++
++    /// `testFdEngines` (`europeanoption.cpp:1241-1254`): FD vs analytic over
++    /// the consistency grid, tolerances value 1e-4 / delta-gamma 1e-6 /
++    /// theta 1e-3. Grid is QuantLib's 500×500 (`cpp:1246-1247`).
++    #[test]
++    fn fd_engines_match_analytic_within_quantlib_tolerances() {
++        let market = test_market::market();
++        let types = [OptionType::Call, OptionType::Put];
++        let strikes = [75.0, 100.0, 125.0];
++        let underlyings = [100.0];
++        let q_rates = [0.00, 0.05];
++        let r_rates = [0.01, 0.05, 0.15];
++        let vols = [0.11, 0.50, 1.20];
++        let today = test_market::today();
++        let expiry = today + 360;
++
++        let tol_value = 1.0e-4;
++        let tol_delta = 1.0e-6;
++        let tol_gamma = 1.0e-6;
++        let tol_theta = 1.0e-3;
++
++        for option_type in types {
++            for strike in strikes {
++                let mut analytic = market.option(option_type, strike, expiry);
++                let mut fd = fd_option(
++                    &market,
++                    option_type,
++                    strike,
++                    expiry,
++                    500,
++                    500,
++                    FdmSchemeDesc::douglas(),
++                );
++                for u in underlyings {
++                    for q in q_rates {
++                        for r in r_rates {
++                            for v in vols {
++                                market.set(u, q, r, v);
++
++                                let expected_value = analytic.npv().unwrap();
++                                let calculated_value = fd.npv().unwrap();
++                                let err = relative_error(expected_value, calculated_value, u);
++                                assert!(
++                                    err <= tol_value,
++                                    "value type={option_type:?} K={strike} u={u} q={q} r={r} v={v}: \
++                                     expected={expected_value} calculated={calculated_value} err={err}"
++                                );
++
++                                if calculated_value > u * 1.0e-5 {
++                                    for (name, expected, calculated, tol) in [
++                                        (
++                                            "delta",
++                                            analytic.delta().unwrap(),
++                                            fd.delta().unwrap(),
++                                            tol_delta,
++                                        ),
++                                        (
++                                            "gamma",
++                                            analytic.gamma().unwrap(),
++                                            fd.gamma().unwrap(),
++                                            tol_gamma,
++                                        ),
++                                        (
++                                            "theta",
++                                            analytic.theta().unwrap(),
++                                            fd.theta().unwrap(),
++                                            tol_theta,
++                                        ),
++                                    ] {
++                                        let err = relative_error(expected, calculated, u);
++                                        assert!(
++                                            err <= tol,
++                                            "{name} type={option_type:?} K={strike} u={u} q={q} r={r} v={v}: \
++                                             expected={expected} calculated={calculated} err={err}"
++                                        );
++                                    }
++                                }
++                            }
++                        }
++                    }
++                }
++            }
++        }
++    }
++
++    /// Ported arms of `testPDESchemes` (`europeanoption.cpp:1479+`): Douglas
++    /// and ImplicitEuler only. The other scheme factories remain #636.
++    #[test]
++    fn ported_pde_schemes_match_analytic() {
++        let market = test_market::market();
++        market.set(100.0, 0.0, 0.05, 0.20);
++        let today = test_market::today();
++        let expiry = today + 365;
++        let strike = 100.0;
++
++        let mut analytic = market.option(OptionType::Call, strike, expiry);
++        let expected = analytic.npv().unwrap();
++
++        let schemes = [
++            (FdmSchemeDesc::douglas(), 15, 100),
++            (FdmSchemeDesc::implicit_euler(), 500, 100),
++        ];
++
++        for (scheme, t_grid, x_grid) in schemes {
++            let mut option = fd_option(
++                &market,
++                OptionType::Call,
++                strike,
++                expiry,
++                t_grid,
++                x_grid,
++                scheme,
++            );
++            let calculated = option.npv().unwrap();
++            let err = relative_error(expected, calculated, 100.0);
++            assert!(
++                err <= 1.0e-3,
++                "scheme={:?} expected={expected} calculated={calculated} err={err}",
++                scheme.scheme_type
++            );
++            assert_ne!(scheme.scheme_type, FdmSchemeType::CrankNicolson);
++        }
++    }
++}
+diff --git a/crates/libitofin/src/pricingengines/vanilla/mod.rs b/crates/libitofin/src/pricingengines/vanilla/mod.rs
+index 8030421..c36b72d 100644
+--- a/crates/libitofin/src/pricingengines/vanilla/mod.rs
++++ b/crates/libitofin/src/pricingengines/vanilla/mod.rs
+@@ -18,11 +18,13 @@
+ //!   wrong price.
+ 
+ pub mod analytichestonengine;
++pub mod fdblackscholesvanillaengine;
+ pub mod mceuropeanengine;
+ pub mod mceuropeanhestonengine;
+ pub mod mcvanillaengine;
+ 
+ pub use analytichestonengine::HestonChf;
++pub use fdblackscholesvanillaengine::FdBlackScholesVanillaEngine;
+ pub use mceuropeanengine::{EuropeanPathPricer, MCEuropeanEngine, MakeMcEuropeanEngine};
+ pub use mceuropeanhestonengine::{
+     EuropeanHestonPathPricer, MCEuropeanHestonEngine, MakeMcEuropeanHestonEngine,
+-- 
+2.43.0
+
