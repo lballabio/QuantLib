@@ -58,6 +58,14 @@ Experimental Python package that binds a focused QuantLib surface with
 - `make_ois` → `OvernightIndexedSwap` + discounting engine
 - `qlnb.compat` aliases for floating bonds / tree-FD / OIS
 
+### Phase 7 (CDS, Bermudan tree swaption, FD mesher NumPy)
+- `CreditDefaultSwap` + `MidPointCdsEngine`; `FlatHazardRate` → default-probability handle
+- Bermudan `Swaption` via `BermudanExercise` + `TreeSwaptionEngine` on `HullWhite`
+  (`set_tree_pricing_engine` / `set_jamshidian_pricing_engine`)
+- FD mesher NumPy helpers: `uniform_1d_mesher_locations`,
+  `fdm_black_scholes_mesher_locations`
+- New translation unit: `src/bind_credit.cpp`
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 

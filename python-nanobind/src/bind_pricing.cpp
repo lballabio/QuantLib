@@ -11,6 +11,9 @@
 #include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
 #include <ql/methods/lattices/binomialtree.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/position.hpp>
@@ -29,6 +32,7 @@ using namespace QuantLib;
 namespace {
 
 using PathArray = nb::ndarray<nb::numpy, double, nb::ndim<2>>;
+using MeshArray = nb::ndarray<nb::numpy, double, nb::ndim<1>>;
 
 PathArray simulate_gbm_paths(
     const ext::shared_ptr<BlackScholesMertonProcess>& process,
@@ -61,6 +65,46 @@ PathArray simulate_gbm_paths(
         delete[] static_cast<double*>(p);
     });
     return PathArray(data, {static_cast<size_t>(samples), cols}, owner);
+}
+
+MeshArray locations_to_numpy(const std::vector<Real>& locations) {
+    const size_t n = locations.size();
+    auto* data = new double[n];
+    for (size_t i = 0; i < n; ++i)
+        data[i] = locations[i];
+    nb::capsule owner(data, [](void* p) noexcept {
+        delete[] static_cast<double*>(p);
+    });
+    return MeshArray(data, {n}, owner);
+}
+
+MeshArray locations_to_numpy(const Array& locations) {
+    const size_t n = locations.size();
+    auto* data = new double[n];
+    for (size_t i = 0; i < n; ++i)
+        data[i] = locations[i];
+    nb::capsule owner(data, [](void* p) noexcept {
+        delete[] static_cast<double*>(p);
+    });
+    return MeshArray(data, {n}, owner);
+}
+
+MeshArray uniform_1d_mesher_locations(Real start, Real end, Size size) {
+    Uniform1dMesher mesher(start, end, size);
+    return locations_to_numpy(mesher.locations());
+}
+
+MeshArray fdm_black_scholes_mesher_locations(
+    Size size,
+    const ext::shared_ptr<BlackScholesMertonProcess>& process,
+    Time maturity,
+    Real strike) {
+    QL_REQUIRE(process, "null process");
+    auto mesher = ext::make_shared<FdmBlackScholesMesher>(
+        size, process, maturity, strike);
+    // Composite exposes the 1D locations along direction 0.
+    FdmMesherComposite composite(mesher);
+    return locations_to_numpy(composite.locations(0));
 }
 
 } // namespace
@@ -221,4 +265,19 @@ void bind_pricing(nb::module_& m) {
           nb::arg("seed") = 42UL,
           "Simulate GBM paths under a BlackScholesMertonProcess.\n"
           "Returns a NumPy array of shape (samples, time_steps+1).");
+
+    m.def("uniform_1d_mesher_locations",
+          &uniform_1d_mesher_locations,
+          nb::arg("start"),
+          nb::arg("end"),
+          nb::arg("size"),
+          "Return Uniform1dMesher locations as a NumPy 1-D array.");
+
+    m.def("fdm_black_scholes_mesher_locations",
+          &fdm_black_scholes_mesher_locations,
+          nb::arg("size"),
+          nb::arg("process"),
+          nb::arg("maturity"),
+          nb::arg("strike"),
+          "Return FdmBlackScholesMesher (ln-S) locations as a NumPy 1-D array.");
 }

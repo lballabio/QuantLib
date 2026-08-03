@@ -1,6 +1,7 @@
 #include "bindings.hpp"
 
 #include <nanobind/stl/shared_ptr.h>
+#include <nanobind/stl/vector.h>
 
 #include <ql/exercise.hpp>
 #include <ql/handle.hpp>
@@ -10,8 +11,11 @@
 #include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/instruments/vanillaswap.hpp>
+#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
+#include <ql/pricingengines/swaption/treeswaptionengine.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -62,6 +66,23 @@ void bind_rates_options(nb::module_& m) {
         nb::arg("floating_spread") = 0.0,
         "Build a VanillaSwap via QuantLib MakeVanillaSwap (value copy).");
 
+    // HullWhite is MI-heavy (Vasicek + TermStructureConsistentModel) —
+    // bind as a concrete type without exposing C++ bases.
+    nb::class_<HullWhite>(m, "HullWhite")
+        .def(nb::init<const Handle<YieldTermStructure>&, Real, Real>(),
+             nb::arg("term_structure"),
+             nb::arg("a") = 0.1,
+             nb::arg("sigma") = 0.01);
+
+    nb::class_<BermudanExercise>(m, "BermudanExercise")
+        .def(nb::init<const std::vector<Date>&, bool>(),
+             nb::arg("dates"),
+             nb::arg("payoff_at_expiry") = false)
+        .def("dates",
+             [](const BermudanExercise& e) { return e.dates(); })
+        .def("last_date",
+             [](const BermudanExercise& e) { return e.lastDate(); });
+
     // Swaption is MI-heavy (Option/Instrument) — standalone wrapper.
     nb::class_<Swaption>(m, "Swaption")
         .def(
@@ -74,6 +95,23 @@ void bind_rates_options(nb::module_& m) {
                 new (self) Swaption(
                     ext::make_shared<VanillaSwap>(swap),
                     ext::make_shared<EuropeanExercise>(exercise),
+                    delivery,
+                    settlement_method);
+            },
+            nb::arg("swap"),
+            nb::arg("exercise"),
+            nb::arg("delivery") = Settlement::Physical,
+            nb::arg("settlement_method") = Settlement::PhysicalOTC)
+        .def(
+            "__init__",
+            [](Swaption* self,
+               const VanillaSwap& swap,
+               const BermudanExercise& exercise,
+               Settlement::Type delivery,
+               Settlement::Method settlement_method) {
+                new (self) Swaption(
+                    ext::make_shared<VanillaSwap>(swap),
+                    ext::make_shared<BermudanExercise>(exercise),
                     delivery,
                     settlement_method);
             },
@@ -101,7 +139,27 @@ void bind_rates_options(nb::module_& m) {
             nb::arg("discount_curve"),
             nb::arg("volatility"),
             nb::arg("day_counter") = DayCounter(Actual365Fixed()),
-            nb::arg("displacement") = 0.0);
+            nb::arg("displacement") = 0.0,
+            "Attach BlackSwaptionEngine (European).")
+        .def(
+            "set_tree_pricing_engine",
+            [](Swaption& s,
+               const ext::shared_ptr<HullWhite>& model,
+               Size time_steps) {
+                s.setPricingEngine(
+                    ext::make_shared<TreeSwaptionEngine>(model, time_steps));
+            },
+            nb::arg("model"),
+            nb::arg("time_steps") = 50,
+            "Attach TreeSwaptionEngine on a HullWhite model (Bermudan/European).")
+        .def(
+            "set_jamshidian_pricing_engine",
+            [](Swaption& s, const ext::shared_ptr<HullWhite>& model) {
+                s.setPricingEngine(
+                    ext::make_shared<JamshidianSwaptionEngine>(model));
+            },
+            nb::arg("model"),
+            "Attach JamshidianSwaptionEngine on a HullWhite model (European).");
 
     m.def(
         "BlackSwaptionEngine",
@@ -111,6 +169,12 @@ void bind_rates_options(nb::module_& m) {
         nb::arg("discount_curve"),
         "Factory alias: pass the curve (and volatility) to "
         "Swaption.set_pricing_engine(discount_curve, volatility).");
+
+    m.def(
+        "TreeSwaptionEngine",
+        [](const ext::shared_ptr<HullWhite>& model) { return model; },
+        nb::arg("model"),
+        "Factory alias: pass model to Swaption.set_tree_pricing_engine.");
 
     // Overnight indexed swap (standalone; Swap/Instrument are MI-heavy).
     nb::class_<OvernightIndexedSwap>(m, "OvernightIndexedSwap")

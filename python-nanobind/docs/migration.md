@@ -228,7 +228,7 @@ Requires NumPy at import/use time (`pip install qlnb[numpy]` or the `test` extra
 | Flat forward | curve object → wrap in handle | factory returns handle |
 | Engines | construct engine, `setPricingEngine` | `set_pricing_engine(handle_or_process)` |
 | Naming | camelCase | snake_case |
-| Coverage | broad SWIG surface | focused phase 0–6 surface |
+| Coverage | broad SWIG surface | focused phase 0–7 surface |
 
 ## Compatibility shim (`qlnb.compat`)
 
@@ -337,6 +337,50 @@ print(ois.fair_rate(), ois.NPV())
 
 `qlnb.compat` adds camelCase aliases (`setBinomialPricingEngine`,
 `FloatingRateBond.cleanPrice`, `makeOIS`).
+
+## Phase-7 CDS, Bermudan tree swaption, FD mesher
+
+Credit default swaps use a flat hazard-rate factory that returns a
+`DefaultProbabilityTermStructureHandle` (same handle-factory pattern as
+`FlatForward`):
+
+```python
+prob = ql.FlatHazardRate(today, 0.01234, ql.Actual360())
+# or: ql.FlatHazardRate(0, calendar, 0.01234, ql.Actual360())
+cds = ql.CreditDefaultSwap(
+    ql.ProtectionSide.Seller,  # compat: ql.Protection.Seller
+    notional,
+    spread,
+    schedule,
+    ql.BusinessDayConvention.ModifiedFollowing,
+    ql.Actual360(),
+)
+cds.set_pricing_engine(prob, recovery_rate=0.4, discount_curve=curve)
+print(cds.NPV(), cds.fair_spread())
+```
+
+Bermudan swaptions attach a Hull–White tree engine (no Gaussian1d/LGM stack):
+
+```python
+model = ql.HullWhite(curve, a=0.05, sigma=0.006)
+berm = ql.Swaption(swap, ql.BermudanExercise(exercise_dates))
+berm.set_tree_pricing_engine(model, time_steps=50)
+
+euro = ql.Swaption(swap, ql.EuropeanExercise(exercise_dates[0]))
+euro.set_jamshidian_pricing_engine(model)  # same HW model, European
+```
+
+FD mesher locations as NumPy (requires NumPy):
+
+```python
+import numpy as np
+
+x = ql.uniform_1d_mesher_locations(0.0, 100.0, 51)
+ln_s = ql.fdm_black_scholes_mesher_locations(101, process, maturity=1.0, strike=100.0)
+```
+
+`qlnb.compat` adds `Protection.Buyer` / `Protection.Seller`, camelCase CDS /
+swaption tree aliases, and `uniform1dMesherLocations`.
 
 ## When to stay on SWIG
 

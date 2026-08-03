@@ -182,6 +182,50 @@ def _install_aliases() -> None:
         Swaption.settlementType = Swaption.settlement_type  # type: ignore[attr-defined]
         Swaption.settlementMethod = Swaption.settlement_method  # type: ignore[attr-defined]
         Swaption.isExpired = Swaption.is_expired  # type: ignore[attr-defined]
+        if hasattr(Swaption, "set_tree_pricing_engine"):
+            Swaption.setTreePricingEngine = (  # type: ignore[attr-defined]
+                Swaption.set_tree_pricing_engine
+            )
+        if hasattr(Swaption, "set_jamshidian_pricing_engine"):
+            Swaption.setJamshidianPricingEngine = (  # type: ignore[attr-defined]
+                Swaption.set_jamshidian_pricing_engine
+            )
+
+    CreditDefaultSwap = getattr(_ql, "CreditDefaultSwap", None)
+    if CreditDefaultSwap is not None:
+        CreditDefaultSwap.fairSpread = CreditDefaultSwap.fair_spread  # type: ignore[attr-defined]
+        CreditDefaultSwap.fairUpfront = CreditDefaultSwap.fair_upfront  # type: ignore[attr-defined]
+        CreditDefaultSwap.couponLegNPV = (  # type: ignore[attr-defined]
+            CreditDefaultSwap.coupon_leg_NPV
+        )
+        CreditDefaultSwap.defaultLegNPV = (  # type: ignore[attr-defined]
+            CreditDefaultSwap.default_leg_NPV
+        )
+        CreditDefaultSwap.runningSpread = (  # type: ignore[attr-defined]
+            CreditDefaultSwap.running_spread
+        )
+        CreditDefaultSwap.setPricingEngine = (  # type: ignore[attr-defined]
+            CreditDefaultSwap.set_pricing_engine
+        )
+        CreditDefaultSwap.isExpired = CreditDefaultSwap.is_expired  # type: ignore[attr-defined]
+
+    BermudanExercise = getattr(_ql, "BermudanExercise", None)
+    if BermudanExercise is not None:
+        BermudanExercise.lastDate = BermudanExercise.last_date  # type: ignore[attr-defined]
+
+    DefaultProbabilityTermStructureHandle = getattr(
+        _ql, "DefaultProbabilityTermStructureHandle", None
+    )
+    if DefaultProbabilityTermStructureHandle is not None:
+        DefaultProbabilityTermStructureHandle.survivalProbability = (  # type: ignore[attr-defined]
+            DefaultProbabilityTermStructureHandle.survival_probability
+        )
+        DefaultProbabilityTermStructureHandle.hazardRate = (  # type: ignore[attr-defined]
+            DefaultProbabilityTermStructureHandle.hazard_rate
+        )
+        DefaultProbabilityTermStructureHandle.referenceDate = (  # type: ignore[attr-defined]
+            DefaultProbabilityTermStructureHandle.reference_date
+        )
 
     EuropeanOption = _ql.EuropeanOption
     EuropeanOption.setPricingEngine = EuropeanOption.set_pricing_engine  # type: ignore[attr-defined]
@@ -272,6 +316,19 @@ _ql.VanillaSwap.Receiver = _ql.SwapType.Receiver  # type: ignore[attr-defined]
 
 # Phase-6 MakeOIS-style alias.
 makeOIS = getattr(_ql, "make_ois", None)
+
+# Phase-7 Protection nested namespace (SWIG: ql.Protection.Seller).
+class Protection:
+    """SWIG-style Protection.Buyer / Protection.Seller namespace."""
+
+    Buyer = getattr(_ql, "ProtectionSide").Buyer
+    Seller = getattr(_ql, "ProtectionSide").Seller
+
+# FD mesher NumPy helpers (camelCase aliases).
+uniform1dMesherLocations = getattr(_ql, "uniform_1d_mesher_locations", None)
+fdmBlackScholesMesherLocations = getattr(
+    _ql, "fdm_black_scholes_mesher_locations", None
+)
 
 
 __all__ = [name for name in globals() if not name.startswith("_")]

@@ -36,6 +36,13 @@ class BusinessDayConvention:
 class DateGeneration:
     Backward: DateGeneration
     Forward: DateGeneration
+    TwentiethIMM: DateGeneration
+    CDS: DateGeneration
+    CDS2015: DateGeneration
+
+class ProtectionSide:
+    Buyer: ProtectionSide
+    Seller: ProtectionSide
 
 class Compounding:
     Simple: Compounding
@@ -444,11 +451,71 @@ class CapFloor:
         displacement: float = ...,
     ) -> None: ...
 
+class BermudanExercise:
+    def __init__(
+        self, dates: Sequence[Date], payoff_at_expiry: bool = ...
+    ) -> None: ...
+    def dates(self) -> list[Date]: ...
+    def last_date(self) -> Date: ...
+
+class HullWhite:
+    def __init__(
+        self,
+        term_structure: YieldTermStructureHandle,
+        a: float = ...,
+        sigma: float = ...,
+    ) -> None: ...
+
+class DefaultProbabilityTermStructureHandle:
+    def empty(self) -> bool: ...
+    def survival_probability(
+        self, date: Date | float, extrapolate: bool = ...
+    ) -> float: ...
+    def hazard_rate(self, date: Date, extrapolate: bool = ...) -> float: ...
+    def reference_date(self) -> Date: ...
+
+class CreditDefaultSwap:
+    def __init__(
+        self,
+        side: ProtectionSide,
+        notional: float,
+        spread: float,
+        schedule: Schedule,
+        payment_convention: BusinessDayConvention,
+        day_counter: DayCounter,
+        settles_accrual: bool = ...,
+        pays_at_default_time: bool = ...,
+    ) -> None: ...
+    def NPV(self) -> float: ...
+    def fair_spread(self) -> float: ...
+    def fair_upfront(self) -> float: ...
+    def coupon_leg_NPV(self) -> float: ...
+    def default_leg_NPV(self) -> float: ...
+    def side(self) -> ProtectionSide: ...
+    def notional(self) -> float: ...
+    def running_spread(self) -> float: ...
+    def is_expired(self) -> bool: ...
+    def set_pricing_engine(
+        self,
+        probability: DefaultProbabilityTermStructureHandle,
+        recovery_rate: float,
+        discount_curve: YieldTermStructureHandle,
+    ) -> None: ...
+
 class Swaption:
+    @overload
     def __init__(
         self,
         swap: VanillaSwap,
         exercise: EuropeanExercise,
+        delivery: SettlementType = ...,
+        settlement_method: SettlementMethod = ...,
+    ) -> None: ...
+    @overload
+    def __init__(
+        self,
+        swap: VanillaSwap,
+        exercise: BermudanExercise,
         delivery: SettlementType = ...,
         settlement_method: SettlementMethod = ...,
     ) -> None: ...
@@ -464,6 +531,10 @@ class Swaption:
         day_counter: DayCounter = ...,
         displacement: float = ...,
     ) -> None: ...
+    def set_tree_pricing_engine(
+        self, model: HullWhite, time_steps: int = ...
+    ) -> None: ...
+    def set_jamshidian_pricing_engine(self, model: HullWhite) -> None: ...
 
 def set_evaluation_date(date: Date) -> None: ...
 def get_evaluation_date() -> Date: ...
@@ -557,6 +628,30 @@ def UnitedStates(market: UnitedStatesMarket = ...) -> Calendar: ...
 def FlatForward(
     reference_date: Date, forward: float | QuoteHandle, day_counter: DayCounter
 ) -> YieldTermStructureHandle: ...
+@overload
+def FlatHazardRate(
+    reference_date: Date, hazard_rate: float, day_counter: DayCounter
+) -> DefaultProbabilityTermStructureHandle: ...
+@overload
+def FlatHazardRate(
+    settlement_days: int,
+    calendar: Calendar,
+    hazard_rate: float,
+    day_counter: DayCounter,
+) -> DefaultProbabilityTermStructureHandle: ...
+def MidPointCdsEngine(
+    probability: DefaultProbabilityTermStructureHandle,
+) -> DefaultProbabilityTermStructureHandle: ...
+def TreeSwaptionEngine(model: HullWhite) -> HullWhite: ...
+def uniform_1d_mesher_locations(
+    start: float, end: float, size: int
+) -> object: ...
+def fdm_black_scholes_mesher_locations(
+    size: int,
+    process: BlackScholesMertonProcess,
+    maturity: float,
+    strike: float,
+) -> object: ...
 def DepositRateHelper(
     rate: float | QuoteHandle,
     tenor: Period,
