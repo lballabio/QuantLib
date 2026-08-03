@@ -54,17 +54,6 @@ namespace QuantLib {
 
         QL_REQUIRE(dc_ == atmCapFloorTermVolCurve->dayCounter(),
                    "different day counters provided");
-        QL_REQUIRE(termVolSurface_->settlementDays() ==
-                       atmCapFloorTermVolCurve_->settlementDays(),
-                   "different settlement days provided");
-        QL_REQUIRE(termVolSurface_->referenceDate() ==
-                       atmCapFloorTermVolCurve_->referenceDate(),
-                   "different reference dates provided");
-        QL_REQUIRE(termVolSurface_->calendar() == atmCapFloorTermVolCurve_->calendar(),
-                   "different calendars provided");
-        QL_REQUIRE(termVolSurface_->businessDayConvention() ==
-                       atmCapFloorTermVolCurve_->businessDayConvention(),
-                   "different business-day conventions provided");
     }
 
     void OptionletStripper2::performCalculations() const {
@@ -96,16 +85,24 @@ namespace QuantLib {
                 iborIndex_->forwardingTermStructure(), atmOptionVolHandle);
 
             Leg leg = makeCapFloorLeg(optionExpiriesTenors[j]);
-            for (const auto& cashflow : leg) {
-                auto coupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(cashflow);
-                QL_REQUIRE(coupon, "non-floating-rate coupon in cap/floor leg");
-                auto optionlet = std::find(
-                    optionletDates_.begin(), optionletDates_.end(), coupon->fixingDate());
-                QL_REQUIRE(optionlet != optionletDates_.end(),
-                           "ATM cap/floor fixing date " << coupon->fixingDate()
-                                                         << " is not represented in the source "
-                                                            "optionlet surface");
-                capOptionletIndices[j].push_back(optionlet - optionletDates_.begin());
+            if (isOvernightIndex()) {
+                for (const auto& cashflow : leg) {
+                    auto coupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(cashflow);
+                    QL_REQUIRE(coupon, "non-floating-rate coupon in cap/floor leg");
+                    auto optionlet = std::find(
+                        optionletDates_.begin(), optionletDates_.end(), coupon->fixingDate());
+                    QL_REQUIRE(optionlet != optionletDates_.end(),
+                               "ATM cap/floor fixing date " << coupon->fixingDate()
+                                                             << " is not represented in the source "
+                                                                "optionlet surface");
+                    capOptionletIndices[j].push_back(optionlet - optionletDates_.begin());
+                }
+            } else {
+                // Historical rule: the adjustment covers the optionlets up to
+                // the cap's leg size, inclusive.
+                for (Size i = 0; i < optionletVolatilities_.size(); ++i)
+                    if (i <= leg.size())
+                        capOptionletIndices[j].push_back(i);
             }
             atmCapFloorStrikes_[j] = CashFlows::atmRate(
                 leg, **iborIndex_->forwardingTermStructure(), false,

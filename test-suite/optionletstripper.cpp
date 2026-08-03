@@ -1227,7 +1227,11 @@ namespace {
             ext::make_shared<CapFloorTermVolCurve>(
                 0, vars.calendar, Following, tenors, atmVols, vars.dayCounter));
         auto stripper2 = ext::make_shared<OptionletStripper2>(stripper1, atmCurve);
-        BOOST_CHECK_THROW(stripper2->atmCapFloorPrices(), Error);
+        // Front-stub caps are not on the optionlet grid, but the historical
+        // behaviour is to strip them anyway rather than throw.
+        BOOST_CHECK_NO_THROW(stripper2->atmCapFloorPrices());
+        for (Volatility spread : stripper2->spreadsVol())
+            BOOST_CHECK(std::isfinite(spread));
     }
 
 }
@@ -1342,7 +1346,7 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping2SofrPaymentLag) {
 
 BOOST_AUTO_TEST_CASE(testTermVolatilityStripping2IborFrontStub) {
     BOOST_TEST_MESSAGE(
-        "Testing that OptionletStripper2 rejects an unsupported front-stub Ibor cap...");
+        "Testing that OptionletStripper2 still accepts a front-stub Ibor cap...");
     checkIborOptionletStripping2FrontStub();
 }
 
@@ -1367,9 +1371,9 @@ BOOST_AUTO_TEST_CASE(testOptionletStripper2RejectsEmptyIborCap) {
     BOOST_CHECK_THROW(stripper2->atmCapFloorPrices(), Error);
 }
 
-BOOST_AUTO_TEST_CASE(testOptionletStripper2RejectsMismatchedReferenceDate) {
+BOOST_AUTO_TEST_CASE(testOptionletStripper2ToleratesMismatchedReferenceDate) {
     BOOST_TEST_MESSAGE(
-        "Testing that OptionletStripper2 rejects mismatched volatility reference dates...");
+        "Testing that OptionletStripper2 still accepts mismatched volatility reference dates...");
     CommonVars vars;
     Settings::instance().evaluationDate() = Date(28, October, 2013);
     vars.setFlatTermVolSurface();
@@ -1380,12 +1384,13 @@ BOOST_AUTO_TEST_CASE(testOptionletStripper2RejectsMismatchedReferenceDate) {
     std::vector<Handle<Quote>> atmVols(vars.optionTenors.size());
     for (auto& vol : atmVols)
         vol = Handle<Quote>(ext::make_shared<SimpleQuote>(0.18));
+    // different settlement days than the source surface
     Handle<CapFloorTermVolCurve> atmCurve(
         ext::make_shared<CapFloorTermVolCurve>(
             2, vars.calendar, Following, vars.optionTenors, atmVols,
             vars.dayCounter));
-    BOOST_CHECK_THROW(
-        ext::make_shared<OptionletStripper2>(stripper1, atmCurve), Error);
+    auto stripper2 = ext::make_shared<OptionletStripper2>(stripper1, atmCurve);
+    BOOST_CHECK_NO_THROW(stripper2->atmCapFloorPrices());
 }
 
 BOOST_AUTO_TEST_CASE(testOptionletStripper2AdjustsZeroBaseVolatility) {
