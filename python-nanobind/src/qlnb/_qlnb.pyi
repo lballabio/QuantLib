@@ -67,6 +67,14 @@ class BarrierType:
     DownOut: BarrierType
     UpOut: BarrierType
 
+class AverageType:
+    Arithmetic: AverageType
+    Geometric: AverageType
+
+class CdsPricingModel:
+    Midpoint: CdsPricingModel
+    ISDA: CdsPricingModel
+
 class CapFloorType:
     Cap: CapFloorType
     Floor: CapFloorType
@@ -126,6 +134,7 @@ class Settings:
     @staticmethod
     def instance() -> Settings: ...
     evaluation_date: Date
+    include_todays_cash_flows: bool | None
 
 class Quote:
     def value(self) -> float: ...
@@ -592,6 +601,40 @@ class Swaption:
         extrapolate_payoff: bool = ...,
         flat_payoff_extrapolation: bool = ...,
     ) -> None: ...
+    def set_fd_hullwhite_pricing_engine(
+        self,
+        model: HullWhite,
+        t_grid: int = ...,
+        x_grid: int = ...,
+        damping_steps: int = ...,
+    ) -> None: ...
+
+class ContinuousAveragingAsianOption:
+    def __init__(
+        self,
+        average_type: AverageType,
+        payoff: PlainVanillaPayoff,
+        exercise: EuropeanExercise,
+    ) -> None: ...
+    def NPV(self) -> float: ...
+    def delta(self) -> float: ...
+    def gamma(self) -> float: ...
+    def set_pricing_engine(self, process: BlackScholesMertonProcess) -> None: ...
+
+class DiscreteAveragingAsianOption:
+    def __init__(
+        self,
+        average_type: AverageType,
+        running_accumulator: float,
+        past_fixings: int,
+        fixing_dates: Sequence[Date],
+        payoff: PlainVanillaPayoff,
+        exercise: EuropeanExercise,
+    ) -> None: ...
+    def NPV(self) -> float: ...
+    def set_pricing_engine(self, process: BlackScholesMertonProcess) -> None: ...
+
+class DefaultProbabilityHelper: ...
 
 def set_evaluation_date(date: Date) -> None: ...
 def get_evaluation_date() -> Date: ...
@@ -702,6 +745,26 @@ def InterpolatedHazardRateCurve(
     day_counter: DayCounter,
     calendar: Calendar = ...,
 ) -> DefaultProbabilityTermStructureHandle: ...
+def SpreadCdsHelper(
+    running_spread: float,
+    tenor: Period,
+    settlement_days: int,
+    calendar: Calendar,
+    frequency: Frequency,
+    payment_convention: BusinessDayConvention,
+    rule: DateGeneration,
+    day_counter: DayCounter,
+    recovery_rate: float,
+    discount_curve: YieldTermStructureHandle,
+    settles_accrual: bool = ...,
+    pays_at_default_time: bool = ...,
+    model: CdsPricingModel = ...,
+) -> DefaultProbabilityHelper: ...
+def PiecewiseHazardRateCurve(
+    reference_date: Date,
+    helpers: Sequence[DefaultProbabilityHelper],
+    day_counter: DayCounter,
+) -> DefaultProbabilityTermStructureHandle: ...
 def MidPointCdsEngine(
     probability: DefaultProbabilityTermStructureHandle,
 ) -> DefaultProbabilityTermStructureHandle: ...
@@ -710,6 +773,13 @@ def IsdaCdsEngine(
 ) -> DefaultProbabilityTermStructureHandle: ...
 def TreeSwaptionEngine(model: HullWhite) -> HullWhite: ...
 def Gaussian1dSwaptionEngine(model: Gsr) -> Gsr: ...
+def FdHullWhiteSwaptionEngine(model: HullWhite) -> HullWhite: ...
+def AnalyticContinuousGeometricAveragePriceAsianEngine(
+    process: BlackScholesMertonProcess,
+) -> BlackScholesMertonProcess: ...
+def AnalyticDiscreteGeometricAveragePriceAsianEngine(
+    process: BlackScholesMertonProcess,
+) -> BlackScholesMertonProcess: ...
 def uniform_1d_mesher_locations(
     start: float, end: float, size: int
 ) -> object: ...

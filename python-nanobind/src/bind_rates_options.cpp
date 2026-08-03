@@ -15,6 +15,7 @@
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <ql/pricingengines/swaption/fdhullwhiteswaptionengine.hpp>
 #include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
 #include <ql/pricingengines/swaption/treeswaptionengine.hpp>
@@ -228,7 +229,22 @@ void bind_rates_options(nb::module_& m) {
             nb::arg("stddevs") = 7.0,
             nb::arg("extrapolate_payoff") = true,
             nb::arg("flat_payoff_extrapolation") = false,
-            "Attach Gaussian1dSwaptionEngine on a Gsr model.");
+            "Attach Gaussian1dSwaptionEngine on a Gsr model.")
+        .def(
+            "set_fd_hullwhite_pricing_engine",
+            [](Swaption& s,
+               const ext::shared_ptr<HullWhite>& model,
+               Size t_grid,
+               Size x_grid,
+               Size damping_steps) {
+                s.setPricingEngine(ext::make_shared<FdHullWhiteSwaptionEngine>(
+                    model, t_grid, x_grid, damping_steps));
+            },
+            nb::arg("model"),
+            nb::arg("t_grid") = 100,
+            nb::arg("x_grid") = 100,
+            nb::arg("damping_steps") = 0,
+            "Attach FdHullWhiteSwaptionEngine (Bermudan/European).");
 
     m.def(
         "BlackSwaptionEngine",
@@ -250,6 +266,12 @@ void bind_rates_options(nb::module_& m) {
         [](const ext::shared_ptr<Gsr>& model) { return model; },
         nb::arg("model"),
         "Factory alias: pass model to Swaption.set_gaussian1d_pricing_engine.");
+
+    m.def(
+        "FdHullWhiteSwaptionEngine",
+        [](const ext::shared_ptr<HullWhite>& model) { return model; },
+        nb::arg("model"),
+        "Factory alias: pass model to Swaption.set_fd_hullwhite_pricing_engine.");
 
     // Overnight indexed swap (standalone; Swap/Instrument are MI-heavy).
     nb::class_<OvernightIndexedSwap>(m, "OvernightIndexedSwap")

@@ -194,6 +194,10 @@ def _install_aliases() -> None:
             Swaption.setGaussian1dPricingEngine = (  # type: ignore[attr-defined]
                 Swaption.set_gaussian1d_pricing_engine
             )
+        if hasattr(Swaption, "set_fd_hullwhite_pricing_engine"):
+            Swaption.setFdHullWhitePricingEngine = (  # type: ignore[attr-defined]
+                Swaption.set_fd_hullwhite_pricing_engine
+            )
 
     CreditDefaultSwap = getattr(_ql, "CreditDefaultSwap", None)
     if CreditDefaultSwap is not None:
@@ -350,6 +354,24 @@ fdmBlackScholesMesherLocations = getattr(
     _ql, "fdm_black_scholes_mesher_locations", None
 )
 fdmBlackScholesValues = getattr(_ql, "fdm_black_scholes_values", None)
+
+# Phase-9 CDS bootstrap / Asian aliases.
+SpreadCdsHelper = getattr(_ql, "SpreadCdsHelper", None)
+PiecewiseHazardRateCurve = getattr(_ql, "PiecewiseHazardRateCurve", None)
+ContinuousAveragingAsianOption = getattr(
+    _ql, "ContinuousAveragingAsianOption", None
+)
+DiscreteAveragingAsianOption = getattr(
+    _ql, "DiscreteAveragingAsianOption", None
+)
+if ContinuousAveragingAsianOption is not None:
+    ContinuousAveragingAsianOption.setPricingEngine = (  # type: ignore[attr-defined]
+        ContinuousAveragingAsianOption.set_pricing_engine
+    )
+if DiscreteAveragingAsianOption is not None:
+    DiscreteAveragingAsianOption.setPricingEngine = (  # type: ignore[attr-defined]
+        DiscreteAveragingAsianOption.set_pricing_engine
+    )
 
 
 __all__ = [name for name in globals() if not name.startswith("_")]
