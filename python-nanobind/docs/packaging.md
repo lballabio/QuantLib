@@ -44,6 +44,8 @@ python -m build --sdist
 
 Configuration lives in `[tool.cibuildwheel]` inside `pyproject.toml`. The
 GitHub Actions workflow `.github/workflows/qlnb-wheels.yml` builds
-`cp312-manylinux_x86_64` by default (full static QuantLib makes multi-OS
-matrices expensive). Artifacts are uploaded from CI; publishing to PyPI is out
-of scope for phase 3.
+`cp312-manylinux_x86_64` by default on the `manylinux_2_28` image (full static
+QuantLib makes multi-OS matrices expensive). Boost is installed with
+`dnf install -y boost-devel` inside the container — older `manylinux2014`
+images only ship Boost 1.53, which is below QuantLib's minimum (1.58).
+Artifacts are uploaded from CI; publishing to PyPI is out of scope for phase 3.

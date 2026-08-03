@@ -74,9 +74,10 @@ test-command = "pytest {package}/tests -q"
 environment = { CMAKE_BUILD_PARALLEL_LEVEL = "2" }
 
 [tool.cibuildwheel.linux]
-# Boost is available in manylinux images via yum in before-all if needed;
-# QuantLib's bundled CMake finds system Boost when present.
-before-all = "yum install -y boost-devel || dnf install -y boost-devel || true"
+# manylinux2014's yum boost-devel is 1.53; QuantLib requires >= 1.58.
+# Use manylinux_2_28 (AlmaLinux 8) and install Boost via dnf.
+manylinux-x86_64-image = "manylinux_2_28"
+before-all = "dnf install -y boost-devel"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

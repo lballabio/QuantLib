@@ -48,10 +48,10 @@ jobs:
           CIBW_SKIP: pp* *-musllinux_*
           CIBW_BUILD_VERBOSITY: 1
           CIBW_ENVIRONMENT: CMAKE_BUILD_PARALLEL_LEVEL=2
-          # manylinux images vary; try to ensure Boost headers exist.
-          CIBW_BEFORE_ALL_LINUX: >-
-            (yum install -y boost-devel || dnf install -y boost-devel ||
-             apt-get update && apt-get install -y libboost-dev || true)
+          # manylinux2014 ships Boost 1.53; QuantLib needs >= 1.58.
+          # manylinux_2_28 (AlmaLinux 8) provides a new-enough Boost via dnf.
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+          CIBW_BEFORE_ALL_LINUX: dnf install -y boost-devel
           CIBW_TEST_REQUIRES: pytest>=7.0 numpy>=1.24
           CIBW_TEST_COMMAND: pytest {package}/tests -q
 
@@ -85,9 +85,8 @@ jobs:
           CIBW_ENVIRONMENT: >-
             CMAKE_BUILD_PARALLEL_LEVEL=2
             CMAKE_ARGS=-DQLNB_THREAD_SAFE_OBSERVER=ON
-          CIBW_BEFORE_ALL_LINUX: >-
-            (yum install -y boost-devel || dnf install -y boost-devel ||
-             apt-get update && apt-get install -y libboost-dev || true)
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+          CIBW_BEFORE_ALL_LINUX: dnf install -y boost-devel
           CIBW_TEST_REQUIRES: pytest>=7.0 numpy>=1.24
           CIBW_TEST_COMMAND: pytest {package}/tests -q
       - uses: actions/upload-artifact@v4
