@@ -18,30 +18,30 @@
 */
 
 #include <ql/models/equity/roughhestonmodel.hpp>
-#include <utility>
 
 namespace QuantLib {
 
-    RoughHestonModel::RoughHestonModel(Handle<YieldTermStructure> riskFreeRate,
-                                       Handle<YieldTermStructure> dividendYield,
-                                       Handle<Quote> s0,
-                                       Real v0,
-                                       Real kappa,
-                                       Real theta,
-                                       Real sigma,
-                                       Real rho,
+    RoughHestonModel::RoughHestonModel(const ext::shared_ptr<HestonProcess> & process,
                                        Real hurst)
-    : CalibratedModel(6), riskFreeRate_(std::move(riskFreeRate)),
-      dividendYield_(std::move(dividendYield)), s0_(std::move(s0)) {
-        arguments_[0] = ConstantParameter(theta, PositiveConstraint());
-        arguments_[1] = ConstantParameter(kappa, PositiveConstraint());
-        arguments_[2] = ConstantParameter(sigma, PositiveConstraint());
-        arguments_[3] = ConstantParameter(rho, BoundaryConstraint(-1.0, 1.0));
-        arguments_[4] = ConstantParameter(v0, PositiveConstraint());
+    : CalibratedModel(6), process_(process) {
+        arguments_[0] = ConstantParameter(process_->theta(), PositiveConstraint());
+        arguments_[1] = ConstantParameter(process_->kappa(), PositiveConstraint());
+        arguments_[2] = ConstantParameter(process_->sigma(), PositiveConstraint());
+        arguments_[3] = ConstantParameter(process_->rho(), BoundaryConstraint(-1.0, 1.0));
+        arguments_[4] = ConstantParameter(process_->v0(), PositiveConstraint());
         arguments_[5] = ConstantParameter(hurst, BoundaryConstraint(0.0, 0.5));
 
-        registerWith(riskFreeRate_);
-        registerWith(dividendYield_);
-        registerWith(s0_);
+        registerWith(process_->riskFreeRate());
+        registerWith(process_->dividendYield());
+        registerWith(process_->s0());
     }
+
+    void RoughHestonModel::generateArguments() {
+        process_ = ext::make_shared<HestonProcess>(process_->riskFreeRate(),
+                                                   process_->dividendYield(),
+                                                   process_->s0(),
+                                                   v0(), kappa(), theta(),
+                                                   sigma(), rho());
+    }
+
 }
