@@ -1,7 +1,8 @@
-"""Nanobind bindings for QuantLib (phase 10)."""
+"""Nanobind bindings for QuantLib (phase 11)."""
 
 from qlnb._qlnb import *  # noqa: F403
 from qlnb._qlnb import __version__ as __version__
+from qlnb._qlnb import make_swap_spread_index as SwapSpreadIndex  # noqa: F401
 
 __all__ = [name for name in globals() if not name.startswith("_")]
 

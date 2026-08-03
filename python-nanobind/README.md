@@ -85,6 +85,12 @@ Experimental Python package that binds a focused QuantLib surface with
 - `CmsCoupon` + `make_cms` → standalone `Swap`
 - New translation unit: `src/bind_cms.cpp`
 
+### Phase 11 (CMS-spread)
+- `SwapIndex.add_fixing` / `fixing` / `value_date`
+- `SwapSpreadIndex` (`make_swap_spread_index`; also aliased as `ql.SwapSpreadIndex`)
+- `LinearTsrPricer`, `LognormalCmsSpreadPricer`
+- `CmsSpreadCoupon` / `CappedFlooredCmsSpreadCoupon`
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 

@@ -399,6 +399,24 @@ if SwapIndex is not None:
     SwapIndex.fixingDays = SwapIndex.fixing_days  # type: ignore[attr-defined]
     SwapIndex.fixingCalendar = SwapIndex.fixing_calendar  # type: ignore[attr-defined]
     SwapIndex.dayCounter = SwapIndex.day_counter  # type: ignore[attr-defined]
+    if hasattr(SwapIndex, "add_fixing"):
+        SwapIndex.addFixing = SwapIndex.add_fixing  # type: ignore[attr-defined]
+    if hasattr(SwapIndex, "value_date"):
+        SwapIndex.valueDate = SwapIndex.value_date  # type: ignore[attr-defined]
+
+# Phase-11 CMS-spread aliases.
+LinearTsrPricer = getattr(_ql, "LinearTsrPricer", None)
+LognormalCmsSpreadPricer = getattr(_ql, "LognormalCmsSpreadPricer", None)
+SwapSpreadIndex = getattr(_ql, "make_swap_spread_index", None)
+CmsSpreadCoupon = getattr(_ql, "CmsSpreadCoupon", None)
+if CmsSpreadCoupon is not None:
+    CmsSpreadCoupon.setPricer = CmsSpreadCoupon.set_pricer  # type: ignore[attr-defined]
+    CmsSpreadCoupon.fixingDate = CmsSpreadCoupon.fixing_date  # type: ignore[attr-defined]
+CappedFlooredCmsSpreadCoupon = getattr(_ql, "CappedFlooredCmsSpreadCoupon", None)
+if CappedFlooredCmsSpreadCoupon is not None:
+    CappedFlooredCmsSpreadCoupon.setPricer = (  # type: ignore[attr-defined]
+        CappedFlooredCmsSpreadCoupon.set_pricer
+    )
 
 # SWIG-style GFunctionFactory.Standard nested namespace.
 class GFunctionFactory:

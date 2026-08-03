@@ -7,8 +7,9 @@ import pytest
 import qlnb as ql
 
 
-def test_version_is_phase10():
-    assert ql.__version__ == "0.11.0"
+def test_version_is_at_least_phase10():
+    parts = tuple(int(x) for x in ql.__version__.split(".")[:2])
+    assert parts >= (0, 11)
 
 
 def _cms_market():
