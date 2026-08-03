@@ -72,6 +72,12 @@ Experimental Python package that binds a focused QuantLib surface with
 - `Gsr` model + `Swaption.set_gaussian1d_pricing_engine`
 - `fdm_black_scholes_values` → NumPy `(x_grid, 2)` `[spot, value]` grid
 
+### Phase 9 (CDS bootstrap, Asians, FD Hull–White swaption)
+- `SpreadCdsHelper` + `PiecewiseHazardRateCurve` hazard bootstrap
+- Continuous / discrete geometric Asian options (analytic engines)
+- `Swaption.set_fd_hullwhite_pricing_engine`
+- `Settings.include_todays_cash_flows` (needed for CDS bootstrap parity)
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 

@@ -1,7 +1,10 @@
 #include "bindings.hpp"
 
+#include <nanobind/stl/optional.h>
 #include <nanobind/stl/shared_ptr.h>
 #include <nanobind/stl/string.h>
+
+#include <optional>
 
 #include <ql/handle.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -27,8 +30,8 @@ void settings_set_evaluation_date(const Date& d) {
 } // namespace
 
 NB_MODULE(_qlnb, m) {
-    m.doc() = "Nanobind bindings for QuantLib (phase 8)";
-    m.attr("__version__") = "0.9.0";
+    m.doc() = "Nanobind bindings for QuantLib (phase 9)";
+    m.attr("__version__") = "0.10.0";
 
     nb::enum_<Month>(m, "Month")
         .value("January", January)
@@ -134,6 +137,14 @@ NB_MODULE(_qlnb, m) {
             "evaluation_date",
             [](Settings&) { return settings_get_evaluation_date(); },
             [](Settings&, const Date& d) { settings_set_evaluation_date(d); })
+        .def_prop_rw(
+            "include_todays_cash_flows",
+            [](Settings&) -> std::optional<bool> {
+                return Settings::instance().includeTodaysCashFlows();
+            },
+            [](Settings&, const std::optional<bool>& v) {
+                Settings::instance().includeTodaysCashFlows() = v;
+            })
         .def("anchor_evaluation_date",
              [](Settings&) { Settings::instance().anchorEvaluationDate(); })
         .def("reset_evaluation_date",

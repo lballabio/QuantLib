@@ -9,12 +9,18 @@
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/pricingengines/credit/isdacdsengine.hpp>
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
+#include <ql/termstructures/credit/defaultprobabilityhelpers.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/termstructures/credit/interpolatedhazardratecurve.hpp>
+#include <ql/termstructures/credit/piecewisedefaultcurve.hpp>
+#include <ql/termstructures/credit/probabilitytraits.hpp>
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/time/dategenerationrule.hpp>
+#include <ql/time/frequency.hpp>
+#include <ql/time/period.hpp>
 #include <ql/time/schedule.hpp>
 
 using namespace QuantLib;
@@ -51,12 +57,29 @@ Handle<DefaultProbabilityTermStructure> make_interpolated_hazard_rate_curve(
             dates, hazard_rates, day_counter, calendar));
 }
 
+using PiecewiseHazardRateCurve =
+    PiecewiseDefaultCurve<HazardRate, BackwardFlat>;
+
+Handle<DefaultProbabilityTermStructure> make_piecewise_hazard_rate_curve(
+    const Date& reference_date,
+    const std::vector<ext::shared_ptr<DefaultProbabilityHelper>>& helpers,
+    const DayCounter& day_counter) {
+    QL_REQUIRE(!helpers.empty(), "empty default-probability helper list");
+    return Handle<DefaultProbabilityTermStructure>(
+        ext::make_shared<PiecewiseHazardRateCurve>(
+            reference_date, helpers, day_counter));
+}
+
 } // namespace
 
 void bind_credit(nb::module_& m) {
     nb::enum_<Protection::Side>(m, "ProtectionSide")
         .value("Buyer", Protection::Buyer)
         .value("Seller", Protection::Seller);
+
+    nb::enum_<CreditDefaultSwap::PricingModel>(m, "CdsPricingModel")
+        .value("Midpoint", CreditDefaultSwap::Midpoint)
+        .value("ISDA", CreditDefaultSwap::ISDA);
 
     nb::enum_<IsdaCdsEngine::NumericalFix>(m, "IsdaCdsNumericalFix")
         .value("None", IsdaCdsEngine::None)
@@ -141,6 +164,65 @@ void bind_credit(nb::module_& m) {
           nb::arg("day_counter"),
           nb::arg("calendar") = Calendar(),
           "Factory: InterpolatedHazardRateCurve<BackwardFlat> → "
+          "DefaultProbabilityTermStructureHandle.");
+
+    // Default-probability helpers (opaque, like RateHelper).
+    nb::class_<DefaultProbabilityHelper>(m, "DefaultProbabilityHelper");
+
+    m.def(
+        "SpreadCdsHelper",
+        [](Rate running_spread,
+           const Period& tenor,
+           Integer settlement_days,
+           const Calendar& calendar,
+           Frequency frequency,
+           BusinessDayConvention payment_convention,
+           DateGeneration::Rule rule,
+           const DayCounter& day_counter,
+           Real recovery_rate,
+           const Handle<YieldTermStructure>& discount_curve,
+           bool settles_accrual,
+           bool pays_at_default_time,
+           CreditDefaultSwap::PricingModel model) {
+            return ext::shared_ptr<DefaultProbabilityHelper>(
+                ext::make_shared<SpreadCdsHelper>(running_spread,
+                                                  tenor,
+                                                  settlement_days,
+                                                  calendar,
+                                                  frequency,
+                                                  payment_convention,
+                                                  rule,
+                                                  day_counter,
+                                                  recovery_rate,
+                                                  discount_curve,
+                                                  settles_accrual,
+                                                  pays_at_default_time,
+                                                  Date(),
+                                                  DayCounter(),
+                                                  true,
+                                                  model));
+        },
+        nb::arg("running_spread"),
+        nb::arg("tenor"),
+        nb::arg("settlement_days"),
+        nb::arg("calendar"),
+        nb::arg("frequency"),
+        nb::arg("payment_convention"),
+        nb::arg("rule"),
+        nb::arg("day_counter"),
+        nb::arg("recovery_rate"),
+        nb::arg("discount_curve"),
+        nb::arg("settles_accrual") = true,
+        nb::arg("pays_at_default_time") = true,
+        nb::arg("model") = CreditDefaultSwap::Midpoint,
+        "Factory: SpreadCdsHelper → DefaultProbabilityHelper.");
+
+    m.def("PiecewiseHazardRateCurve",
+          &make_piecewise_hazard_rate_curve,
+          nb::arg("reference_date"),
+          nb::arg("helpers"),
+          nb::arg("day_counter"),
+          "Factory: PiecewiseDefaultCurve<HazardRate, BackwardFlat> → "
           "DefaultProbabilityTermStructureHandle.");
 
     // CreditDefaultSwap is MI-heavy (Instrument) — standalone wrapper.

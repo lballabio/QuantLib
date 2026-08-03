@@ -228,7 +228,7 @@ Requires NumPy at import/use time (`pip install qlnb[numpy]` or the `test` extra
 | Flat forward | curve object → wrap in handle | factory returns handle |
 | Engines | construct engine, `setPricingEngine` | `set_pricing_engine(handle_or_process)` |
 | Naming | camelCase | snake_case |
-| Coverage | broad SWIG surface | focused phase 0–8 surface |
+| Coverage | broad SWIG surface | focused phase 0–9 surface |
 
 ## Compatibility shim (`qlnb.compat`)
 
@@ -424,6 +424,45 @@ grid = ql.fdm_black_scholes_values(
     t_grid=50, x_grid=51,
 )
 # grid.shape == (51, 2)
+```
+
+## Phase-9 CDS bootstrap, Asians, FD Hull–White swaption
+
+Hazard-rate bootstrap from spread CDS quotes (same pattern as
+`DepositRateHelper` + piecewise yield curves):
+
+```python
+helpers = [
+    ql.SpreadCdsHelper(
+        0.005, ql.Period(1, ql.TimeUnit.Years), 1, cal,
+        ql.Frequency.Quarterly, ql.BusinessDayConvention.Following,
+        ql.DateGeneration.TwentiethIMM, ql.Thirty360(...), 0.4, discount,
+    ),
+    # ...
+]
+hazard = ql.PiecewiseHazardRateCurve(today, helpers, ql.Thirty360(...))
+# For fair-spread round-trip vs quotes, set:
+ql.Settings.instance().include_todays_cash_flows = True
+```
+
+Geometric Asian options (analytic engines only in this phase):
+
+```python
+cont = ql.ContinuousAveragingAsianOption(
+    ql.AverageType.Geometric, payoff, exercise
+)
+cont.set_pricing_engine(process)  # continuous geometric average-price
+
+disc = ql.DiscreteAveragingAsianOption(
+    ql.AverageType.Geometric, 1.0, 0, fixing_dates, payoff, exercise
+)
+disc.set_pricing_engine(process)  # discrete geometric average-price
+```
+
+FD Hull–White Bermudan swaption:
+
+```python
+berm.set_fd_hullwhite_pricing_engine(hw_model, t_grid=100, x_grid=100)
 ```
 
 ## When to stay on SWIG
