@@ -1316,7 +1316,9 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsRiccati) {
     for (const Real hurst : {0.05, 0.1, 0.2}) {
         for (const Real rho : {-0.7, 0.3}) {
             const auto model{ext::make_shared<RoughHestonModel>(
-                rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, rho, hurst)};
+                ext::make_shared<HestonProcess>(
+                    rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, rho),
+                hurst)};
 
             const auto adams{ext::make_shared<AnalyticRoughHestonEngine>(
                 model, 128, 1024,
@@ -1395,7 +1397,8 @@ BOOST_AUTO_TEST_CASE(testLiftedHestonLimit) {
     const Real v0{0.05}, kappa{1.5}, theta{0.04}, sigma{0.5}, rho{-0.75};
 
     const auto roughModel{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, v0, kappa, theta, sigma, rho, 0.5)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, v0, kappa, theta, sigma, rho),
+        0.5)};
     const auto lifted{ext::make_shared<AnalyticRoughHestonEngine>(
         roughModel, 128, 256,
         AnalyticRoughHestonEngine::Approximation::Lifted)};
@@ -1453,7 +1456,8 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsPricing) {
     for (const Real hurst : {0.05, 0.1, 0.2}) {
       for (const Real rho : {-0.7, 0.3}) {
         const auto model{ext::make_shared<RoughHestonModel>(
-            rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, rho, hurst)};
+            ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, rho),
+            hurst)};
 
         const auto adams{ext::make_shared<AnalyticRoughHestonEngine>(
             model, 128, 1024,
@@ -1526,7 +1530,8 @@ BOOST_AUTO_TEST_CASE(testLiftedCalibration) {
     // The kernel nodes depend on the Hurst exponent, so this is what
     // catches update() failing to invalidate the per-maturity grid cache
     const auto trueModel{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, v0, kappa, theta, sigma, rho, hurst)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, v0, kappa, theta, sigma, rho),
+        hurst)};
     const auto trueEngine{ext::make_shared<AnalyticRoughHestonEngine>(
         trueModel, integrationOrder, timeSteps,
         AnalyticRoughHestonEngine::Approximation::Lifted, nFactors)};
@@ -1556,7 +1561,8 @@ BOOST_AUTO_TEST_CASE(testLiftedCalibration) {
     }
 
     const auto model{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, 0.04, 1.0, 0.02, 0.25, -0.4, 0.2)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 1.0, 0.02, 0.25, -0.4),
+        0.2)};
     const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
         model, integrationOrder, timeSteps,
         AnalyticRoughHestonEngine::Approximation::Lifted, nFactors)};
