@@ -78,6 +78,13 @@ Experimental Python package that binds a focused QuantLib surface with
 - `Swaption.set_fd_hullwhite_pricing_engine`
 - `Settings.include_todays_cash_flows` (needed for CDS bootstrap parity)
 
+### Phase 10 (CMS / SwapIndex / Hagan)
+- `EuriborSwapIsdaFixA` → opaque `SwapIndex`
+- `ConstantSwaptionVolatility` → `SwaptionVolatilityStructureHandle`
+- `AnalyticHaganPricer` / `NumericHaganPricer` → `CmsCouponPricer`
+- `CmsCoupon` + `make_cms` → standalone `Swap`
+- New translation unit: `src/bind_cms.cpp`
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 

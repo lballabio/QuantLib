@@ -373,5 +373,41 @@ if DiscreteAveragingAsianOption is not None:
         DiscreteAveragingAsianOption.set_pricing_engine
     )
 
+# Phase-10 CMS / SwapIndex aliases.
+EuriborSwapIsdaFixA = getattr(_ql, "EuriborSwapIsdaFixA", None)
+ConstantSwaptionVolatility = getattr(_ql, "ConstantSwaptionVolatility", None)
+AnalyticHaganPricer = getattr(_ql, "AnalyticHaganPricer", None)
+NumericHaganPricer = getattr(_ql, "NumericHaganPricer", None)
+makeCms = getattr(_ql, "make_cms", None)
+
+CmsCoupon = getattr(_ql, "CmsCoupon", None)
+if CmsCoupon is not None:
+    CmsCoupon.setPricer = CmsCoupon.set_pricer  # type: ignore[attr-defined]
+    CmsCoupon.accrualStartDate = CmsCoupon.accrual_start_date  # type: ignore[attr-defined]
+    CmsCoupon.accrualEndDate = CmsCoupon.accrual_end_date  # type: ignore[attr-defined]
+
+Swap = getattr(_ql, "Swap", None)
+if Swap is not None:
+    Swap.setPricingEngine = Swap.set_pricing_engine  # type: ignore[attr-defined]
+    Swap.isExpired = Swap.is_expired  # type: ignore[attr-defined]
+    Swap.numberOfLegs = Swap.number_of_legs  # type: ignore[attr-defined]
+    if hasattr(Swap, "set_cms_coupon_pricer"):
+        Swap.setCmsCouponPricer = Swap.set_cms_coupon_pricer  # type: ignore[attr-defined]
+
+SwapIndex = getattr(_ql, "SwapIndex", None)
+if SwapIndex is not None:
+    SwapIndex.fixingDays = SwapIndex.fixing_days  # type: ignore[attr-defined]
+    SwapIndex.fixingCalendar = SwapIndex.fixing_calendar  # type: ignore[attr-defined]
+    SwapIndex.dayCounter = SwapIndex.day_counter  # type: ignore[attr-defined]
+
+# SWIG-style GFunctionFactory.Standard nested namespace.
+class GFunctionFactory:
+    """SWIG-style GFunctionFactory.Standard / ExactYield / … namespace."""
+
+    Standard = getattr(_ql, "YieldCurveModel").Standard
+    ExactYield = getattr(_ql, "YieldCurveModel").ExactYield
+    ParallelShifts = getattr(_ql, "YieldCurveModel").ParallelShifts
+    NonParallelShifts = getattr(_ql, "YieldCurveModel").NonParallelShifts
+
 
 __all__ = [name for name in globals() if not name.startswith("_")]
