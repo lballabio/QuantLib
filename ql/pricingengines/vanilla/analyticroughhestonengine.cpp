@@ -32,8 +32,7 @@ namespace QuantLib {
 
         /*! psi_p(theta) = sum_{m >= 0} (-theta)^m / (m + p)!, the entire
             functions generating the weights of the exponential integrator.
-            The closed forms cancel to nothing as theta -> 0, the more so
-            the higher the order, hence the series below the crossover.
+            The closed forms cancel to nothing as theta -> 0.
         */
         Real phiFunction(Size p, Real theta) {
             if (theta < 1.0) {
@@ -42,7 +41,14 @@ namespace QuantLib {
                     term /= k;
 
                 Real sum{term};
-                for (Size m{1}; m < 24; ++m) {
+
+                // Safety cap, not the operative stopping rule: the tolerance
+                // break below always fires first. Consecutive terms shrink
+                // by a factor theta / (m + p) < 1 / (m + p), so the
+                // slowest case (theta -> 1, p = 1) reaches the 1e-18
+                // relative tolerance by m = 19.
+                const Size maxTerms{24};
+                for (Size m{1}; m < maxTerms; ++m) {
                     term *= -theta / (m + p);
                     sum += term;
 
