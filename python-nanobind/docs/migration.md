@@ -228,7 +228,7 @@ Requires NumPy at import/use time (`pip install qlnb[numpy]` or the `test` extra
 | Flat forward | curve object → wrap in handle | factory returns handle |
 | Engines | construct engine, `setPricingEngine` | `set_pricing_engine(handle_or_process)` |
 | Naming | camelCase | snake_case |
-| Coverage | broad SWIG surface | focused phase 0–7 surface |
+| Coverage | broad SWIG surface | focused phase 0–8 surface |
 
 ## Compatibility shim (`qlnb.compat`)
 
@@ -381,6 +381,50 @@ ln_s = ql.fdm_black_scholes_mesher_locations(101, process, maturity=1.0, strike=
 
 `qlnb.compat` adds `Protection.Buyer` / `Protection.Seller`, camelCase CDS /
 swaption tree aliases, and `uniform1dMesherLocations`.
+
+## Phase-8 ISDA CDS, GSR / Gaussian1d, FD value grid
+
+ISDA Standard Model engine (same handle args as mid-point, plus numerical
+flags):
+
+```python
+cds.set_isda_pricing_engine(
+    prob,
+    recovery_rate=0.4,
+    discount_curve=curve,
+    numerical_fix=ql.IsdaCdsNumericalFix.Taylor,
+    accrual_bias=ql.IsdaCdsAccrualBias.HalfDayBias,
+    forwards_in_coupon_period=ql.IsdaCdsForwardsInCouponPeriod.Piecewise,
+)
+```
+
+Piecewise hazard rates via BackwardFlat interpolation:
+
+```python
+haz = ql.InterpolatedHazardRateCurve(
+    [today, today + ql.Period(5, ql.TimeUnit.Years)],
+    [0.01, 0.015],
+    ql.Actual365Fixed(),
+    ql.TARGET(),
+)
+```
+
+GSR / Gaussian1d European swaption (constant reversion / vol):
+
+```python
+model = ql.Gsr(curve, [], [0.01], 0.01, T=50.0)
+swaption.set_gaussian1d_pricing_engine(model)
+```
+
+FD value grid export (European Black–Scholes; columns `[spot, value]`):
+
+```python
+grid = ql.fdm_black_scholes_values(
+    process, strike=100.0, maturity=1.0, option_type=ql.OptionType.Call,
+    t_grid=50, x_grid=51,
+)
+# grid.shape == (51, 2)
+```
 
 ## When to stay on SWIG
 

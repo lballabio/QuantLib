@@ -190,6 +190,10 @@ def _install_aliases() -> None:
             Swaption.setJamshidianPricingEngine = (  # type: ignore[attr-defined]
                 Swaption.set_jamshidian_pricing_engine
             )
+        if hasattr(Swaption, "set_gaussian1d_pricing_engine"):
+            Swaption.setGaussian1dPricingEngine = (  # type: ignore[attr-defined]
+                Swaption.set_gaussian1d_pricing_engine
+            )
 
     CreditDefaultSwap = getattr(_ql, "CreditDefaultSwap", None)
     if CreditDefaultSwap is not None:
@@ -208,6 +212,10 @@ def _install_aliases() -> None:
             CreditDefaultSwap.set_pricing_engine
         )
         CreditDefaultSwap.isExpired = CreditDefaultSwap.is_expired  # type: ignore[attr-defined]
+        if hasattr(CreditDefaultSwap, "set_isda_pricing_engine"):
+            CreditDefaultSwap.setIsdaPricingEngine = (  # type: ignore[attr-defined]
+                CreditDefaultSwap.set_isda_pricing_engine
+            )
 
     BermudanExercise = getattr(_ql, "BermudanExercise", None)
     if BermudanExercise is not None:
@@ -226,6 +234,18 @@ def _install_aliases() -> None:
         DefaultProbabilityTermStructureHandle.referenceDate = (  # type: ignore[attr-defined]
             DefaultProbabilityTermStructureHandle.reference_date
         )
+        if hasattr(DefaultProbabilityTermStructureHandle, "default_probability"):
+            DefaultProbabilityTermStructureHandle.defaultProbability = (  # type: ignore[attr-defined]
+                DefaultProbabilityTermStructureHandle.default_probability
+            )
+        if hasattr(DefaultProbabilityTermStructureHandle, "max_date"):
+            DefaultProbabilityTermStructureHandle.maxDate = (  # type: ignore[attr-defined]
+                DefaultProbabilityTermStructureHandle.max_date
+            )
+
+    Gsr = getattr(_ql, "Gsr", None)
+    if Gsr is not None and hasattr(Gsr, "numeraire_time"):
+        Gsr.numeraireTime = Gsr.numeraire_time  # type: ignore[attr-defined]
 
     EuropeanOption = _ql.EuropeanOption
     EuropeanOption.setPricingEngine = EuropeanOption.set_pricing_engine  # type: ignore[attr-defined]
@@ -324,11 +344,12 @@ class Protection:
     Buyer = getattr(_ql, "ProtectionSide").Buyer
     Seller = getattr(_ql, "ProtectionSide").Seller
 
-# FD mesher NumPy helpers (camelCase aliases).
+# FD mesher / value-grid NumPy helpers (camelCase aliases).
 uniform1dMesherLocations = getattr(_ql, "uniform_1d_mesher_locations", None)
 fdmBlackScholesMesherLocations = getattr(
     _ql, "fdm_black_scholes_mesher_locations", None
 )
+fdmBlackScholesValues = getattr(_ql, "fdm_black_scholes_values", None)
 
 
 __all__ = [name for name in globals() if not name.startswith("_")]
