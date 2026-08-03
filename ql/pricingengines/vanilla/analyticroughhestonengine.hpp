@@ -178,7 +178,7 @@ namespace QuantLib {
             Array c;
             
             // e^{-x_i dt}, its c_i-weighted form, and the weights of
-            // F_k, F_{k+1} in the step
+            // F_k, F_{k + 1} in the step
             Array expDt, cExpDt, w0, w1;
             
             // c_i (1 - e^{-x_i dt}) / x_i and its sum, the psi_i and
@@ -186,7 +186,7 @@ namespace QuantLib {
             Array cA;
             Real cASum;
 
-            // the F_k and (F_{k+1} - F_k) weights of the same quadrature
+            // the F_k and (F_{k + 1} - F_k) weights of the same quadrature
             Real cP, cQ;
         };
         const LiftedGrid& liftedGrid(Time t) const;
