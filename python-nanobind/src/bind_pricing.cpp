@@ -14,6 +14,9 @@
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/lattices/binomialtree.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/position.hpp>
@@ -24,7 +27,9 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/date.hpp>
 
+#include <cmath>
 #include <cstdint>
+#include <utility>
 #include <vector>
 
 using namespace QuantLib;
@@ -33,6 +38,7 @@ namespace {
 
 using PathArray = nb::ndarray<nb::numpy, double, nb::ndim<2>>;
 using MeshArray = nb::ndarray<nb::numpy, double, nb::ndim<1>>;
+using GridArray = nb::ndarray<nb::numpy, double, nb::ndim<2>>;
 
 PathArray simulate_gbm_paths(
     const ext::shared_ptr<BlackScholesMertonProcess>& process,
@@ -105,6 +111,63 @@ MeshArray fdm_black_scholes_mesher_locations(
     // Composite exposes the 1D locations along direction 0.
     FdmMesherComposite composite(mesher);
     return locations_to_numpy(composite.locations(0));
+}
+
+GridArray fdm_black_scholes_values(
+    const ext::shared_ptr<BlackScholesMertonProcess>& process,
+    Real strike,
+    Time maturity,
+    Option::Type option_type,
+    Size t_grid,
+    Size x_grid,
+    Size damping_steps) {
+    QL_REQUIRE(process, "null process");
+    QL_REQUIRE(maturity > 0.0, "non-positive maturity");
+    QL_REQUIRE(t_grid > 0 && x_grid > 1, "invalid FD grid sizes");
+
+    const Date today = process->riskFreeRate()->referenceDate();
+    const DayCounter dc = process->riskFreeRate()->dayCounter();
+    // Map the requested maturity onto a calendar date so exercise stopping
+    // times and the PDE horizon stay consistent.
+    const Date exercise_date = today + Integer(std::lround(maturity * 365.0));
+    const Time T = process->time(exercise_date);
+    QL_REQUIRE(T > 0.0, "exercise date must be after the process reference");
+
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(option_type, strike);
+    auto equity_mesher =
+        ext::make_shared<FdmBlackScholesMesher>(x_grid, process, T, strike);
+    auto mesher = ext::make_shared<FdmMesherComposite>(equity_mesher);
+    auto calculator = ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0);
+    auto exercise = ext::make_shared<EuropeanExercise>(exercise_date);
+
+    auto conditions = FdmStepConditionComposite::vanillaComposite(
+        DividendSchedule(), exercise, mesher, calculator, today, dc);
+
+    FdmSolverDesc solver_desc = {mesher,
+                                 FdmBoundaryConditionSet(),
+                                 conditions,
+                                 calculator,
+                                 T,
+                                 t_grid,
+                                 damping_steps};
+
+    auto solver = ext::make_shared<FdmBlackScholesSolver>(
+        Handle<GeneralizedBlackScholesProcess>(process),
+        strike,
+        solver_desc);
+
+    const Array ln_s = mesher->locations(0);
+    const size_t n = ln_s.size();
+    auto* data = new double[n * 2];
+    for (size_t i = 0; i < n; ++i) {
+        const Real spot = std::exp(ln_s[i]);
+        data[i * 2] = spot;
+        data[i * 2 + 1] = solver->valueAt(spot);
+    }
+    nb::capsule owner(data, [](void* p) noexcept {
+        delete[] static_cast<double*>(p);
+    });
+    return GridArray(data, {n, static_cast<size_t>(2)}, owner);
 }
 
 } // namespace
@@ -280,4 +343,16 @@ void bind_pricing(nb::module_& m) {
           nb::arg("maturity"),
           nb::arg("strike"),
           "Return FdmBlackScholesMesher (ln-S) locations as a NumPy 1-D array.");
+
+    m.def("fdm_black_scholes_values",
+          &fdm_black_scholes_values,
+          nb::arg("process"),
+          nb::arg("strike"),
+          nb::arg("maturity"),
+          nb::arg("option_type") = Option::Call,
+          nb::arg("t_grid") = 100,
+          nb::arg("x_grid") = 100,
+          nb::arg("damping_steps") = 0,
+          "Solve a European vanilla on an FD Black–Scholes grid and return a "
+          "NumPy array of shape (x_grid, 2) with columns [spot, value].");
 }

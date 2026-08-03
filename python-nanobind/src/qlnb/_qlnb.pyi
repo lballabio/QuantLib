@@ -472,7 +472,47 @@ class DefaultProbabilityTermStructureHandle:
         self, date: Date | float, extrapolate: bool = ...
     ) -> float: ...
     def hazard_rate(self, date: Date, extrapolate: bool = ...) -> float: ...
+    def default_probability(
+        self, date: Date, extrapolate: bool = ...
+    ) -> float: ...
     def reference_date(self) -> Date: ...
+    def max_date(self) -> Date: ...
+
+class IsdaCdsNumericalFix:
+    None: IsdaCdsNumericalFix
+    Taylor: IsdaCdsNumericalFix
+
+class IsdaCdsAccrualBias:
+    HalfDayBias: IsdaCdsAccrualBias
+    NoBias: IsdaCdsAccrualBias
+
+class IsdaCdsForwardsInCouponPeriod:
+    Flat: IsdaCdsForwardsInCouponPeriod
+    Piecewise: IsdaCdsForwardsInCouponPeriod
+
+class Gsr:
+    @overload
+    def __init__(
+        self,
+        term_structure: YieldTermStructureHandle,
+        vol_step_dates: Sequence[Date],
+        volatilities: Sequence[float],
+        reversion: float,
+        T: float = ...,
+    ) -> None: ...
+    @overload
+    def __init__(
+        self,
+        term_structure: YieldTermStructureHandle,
+        vol_step_dates: Sequence[Date],
+        volatilities: Sequence[float],
+        reversions: Sequence[float],
+        T: float = ...,
+    ) -> None: ...
+    def zerobond(
+        self, maturity: float, t: float = ..., y: float = ...
+    ) -> float: ...
+    def numeraire_time(self) -> float: ...
 
 class CreditDefaultSwap:
     def __init__(
@@ -500,6 +540,15 @@ class CreditDefaultSwap:
         probability: DefaultProbabilityTermStructureHandle,
         recovery_rate: float,
         discount_curve: YieldTermStructureHandle,
+    ) -> None: ...
+    def set_isda_pricing_engine(
+        self,
+        probability: DefaultProbabilityTermStructureHandle,
+        recovery_rate: float,
+        discount_curve: YieldTermStructureHandle,
+        numerical_fix: IsdaCdsNumericalFix = ...,
+        accrual_bias: IsdaCdsAccrualBias = ...,
+        forwards_in_coupon_period: IsdaCdsForwardsInCouponPeriod = ...,
     ) -> None: ...
 
 class Swaption:
@@ -535,6 +584,14 @@ class Swaption:
         self, model: HullWhite, time_steps: int = ...
     ) -> None: ...
     def set_jamshidian_pricing_engine(self, model: HullWhite) -> None: ...
+    def set_gaussian1d_pricing_engine(
+        self,
+        model: Gsr,
+        integration_points: int = ...,
+        stddevs: float = ...,
+        extrapolate_payoff: bool = ...,
+        flat_payoff_extrapolation: bool = ...,
+    ) -> None: ...
 
 def set_evaluation_date(date: Date) -> None: ...
 def get_evaluation_date() -> Date: ...
@@ -639,10 +696,20 @@ def FlatHazardRate(
     hazard_rate: float,
     day_counter: DayCounter,
 ) -> DefaultProbabilityTermStructureHandle: ...
+def InterpolatedHazardRateCurve(
+    dates: Sequence[Date],
+    hazard_rates: Sequence[float],
+    day_counter: DayCounter,
+    calendar: Calendar = ...,
+) -> DefaultProbabilityTermStructureHandle: ...
 def MidPointCdsEngine(
     probability: DefaultProbabilityTermStructureHandle,
 ) -> DefaultProbabilityTermStructureHandle: ...
+def IsdaCdsEngine(
+    probability: DefaultProbabilityTermStructureHandle,
+) -> DefaultProbabilityTermStructureHandle: ...
 def TreeSwaptionEngine(model: HullWhite) -> HullWhite: ...
+def Gaussian1dSwaptionEngine(model: Gsr) -> Gsr: ...
 def uniform_1d_mesher_locations(
     start: float, end: float, size: int
 ) -> object: ...
@@ -651,6 +718,15 @@ def fdm_black_scholes_mesher_locations(
     process: BlackScholesMertonProcess,
     maturity: float,
     strike: float,
+) -> object: ...
+def fdm_black_scholes_values(
+    process: BlackScholesMertonProcess,
+    strike: float,
+    maturity: float,
+    option_type: OptionType = ...,
+    t_grid: int = ...,
+    x_grid: int = ...,
+    damping_steps: int = ...,
 ) -> object: ...
 def DepositRateHelper(
     rate: float | QuoteHandle,

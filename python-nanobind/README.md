@@ -66,6 +66,12 @@ Experimental Python package that binds a focused QuantLib surface with
   `fdm_black_scholes_mesher_locations`
 - New translation unit: `src/bind_credit.cpp`
 
+### Phase 8 (ISDA CDS, GSR/Gaussian1d, FD value grid)
+- `CreditDefaultSwap.set_isda_pricing_engine` + ISDA numerical enums
+- `InterpolatedHazardRateCurve` (BackwardFlat) factory
+- `Gsr` model + `Swaption.set_gaussian1d_pricing_engine`
+- `fdm_black_scholes_values` → NumPy `(x_grid, 2)` `[spot, value]` grid
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 
