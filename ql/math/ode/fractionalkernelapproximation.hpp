@@ -42,7 +42,7 @@ namespace QuantLib {
         /*! sin(pi b) / (pi b), the reflection-formula rewriting of
             \f$ 1 / ((1 - \alpha)\Gamma(\alpha)\Gamma(1 - \alpha)) \f$ for
             \f$ b = 1 - \alpha \f$.  \f$ \Gamma(1 - \alpha) \f$ overflows as
-            \f$ \alpha \to 1 \f$ whereas this form simply tends to one.
+            \f$ \alpha \to 1 \f$ whereas this form tends to one.
         */
         inline Real fractionalKernelNorm(Real b) {
             const Real y{M_PI * b};
@@ -57,30 +57,25 @@ namespace QuantLib {
             K(t) = \frac{t^{\alpha - 1}}{\Gamma(\alpha)},
             \qquad \alpha \in (0, 1],
         \f]
-        by \f$ K^n(t) = \sum_{i=1}^n c_i e^{-x_i t} \f$ with non-negative
-        weights and rates.  The construction is the one of Abi Jaber: the
-        kernel is completely monotone and admits the Bernstein
-        representation
+        by \f$ K^n(t) = \sum_{i=1}^n c_i e^{-x_i t} \f$. Following Abi
+        Jaber, K is completely monotone with Bernstein representation
         \f[
             K(t) = \int_0^\infty e^{-xt} \mu(dx),
             \qquad \mu(dx) = \frac{x^{-\alpha}}{\Gamma(\alpha)\Gamma(1-\alpha)} dx ,
         \f]
-        and a partition \f$ 0 = \eta_0 < \eta_1 < \ldots < \eta_n \f$
-        collapses the mass of each interval onto its barycentre,
+        and a partition \f$ 0 = \eta_0 < \eta_1 < \ldots < \eta_n \f$ gives
+        non-negative \f$ c_i, x_i \f$ — hence a \f$ K^n \f$ that is itself
+        completely monotone — by collapsing each interval's mass onto its
+        barycentre,
         \f[
             c_i = \int_{\eta_{i-1}}^{\eta_i} \mu(dx),
             \qquad
             x_i = \frac{1}{c_i}\int_{\eta_{i-1}}^{\eta_i} x\, \mu(dx).
         \f]
-        Because \f$ c_i, x_i \ge 0 \f$ the approximating kernel is itself
-        completely monotone, which is what makes the associated lifted
-        stochastic-volatility model well posed.
-
-        Taking \f$ \eta_0 = 0 \f$ is essential: the first interval carries
-        the low-frequency mass, and as \f$ \alpha \to 1 \f$ it absorbs all
-        of it, so that \f$ c_1 \to 1 \f$, \f$ x_1 \to 0 \f$ and
-        \f$ K^n \to 1 \equiv K \f$.  The non-fractional limit is therefore
-        recovered exactly, with no special-casing.
+        Taking \f$ \eta_0 = 0 \f$ recovers the non-fractional limit exactly:
+        as \f$ \alpha \to 1 \f$ the first interval absorbs all the mass, so
+        \f$ c_1 \to 1 \f$, \f$ x_1 \to 0 \f$ and \f$ K^n \to K \equiv 1 \f$,
+        with no special-casing.
 
         References:
 
@@ -98,9 +93,6 @@ namespace QuantLib {
     */
     class FractionalKernelApproximation {
       public:
-        /*! Geometric partition whose endpoints are scaled from the time
-            interval of interest and from n
-        */
         FractionalKernelApproximation(Real alpha, Size n, Time tMax);
 
         //! Weights \f$ c_i \f$
@@ -129,10 +121,10 @@ namespace QuantLib {
     /*! Both endpoints have to widen with n: refining n never subdivides the
         leading interval \f$ [0, \eta_{lo}] \f$, so holding it fixed stalls
         the error at a few percent, and \f$ \eta_{hi} \f$ is what represents
-        the singularity at the origin.  The exponents are empirical, chosen
-        by sweeping the relative \f$ L^1 \f$ kernel error over
-        \f$ H \in \{0.05, 0.1, 0.3\} \f$ and \f$ n \le 160 \f$, where the
-        error then falls off like \f$ n^{-1.55} \f$.
+        the singularity at the origin.  The exponents are empirical: the
+        relative \f$ L^1 \f$ kernel error, measured for
+        \f$ H \in \{0.05, 0.1, 0.3\} \f$ and \f$ n \le 160 \f$, falls off
+        like \f$ n^{-1.55} \f$.
     */
     inline FractionalKernelApproximation::FractionalKernelApproximation(
         Real alpha, Size n, Time tMax) {
@@ -176,8 +168,8 @@ namespace QuantLib {
         const Real r{std::exp(dL)};
 
         // Both weight and rate go through expm1, so that the differences
-        // eta_i^b - eta_{i-1}^b, which cancel to nothing as alpha -> 1, are
-        // never formed explicitly
+        // eta_i^b - eta_{i-1}^b, which suffer catastrophic cancellation as
+        // alpha -> 1, are never formed explicitly
         const Real weightFactor{std::expm1(b * dL) * norm};
         const Real rateFactor{detail::expm1OverX((1.0 + b) * dL)
             / detail::expm1OverX(b * dL)};
