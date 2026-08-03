@@ -858,4 +858,108 @@ def Eonia() -> OvernightIndex: ...
 @overload
 def Eonia(handle: YieldTermStructureHandle) -> OvernightIndex: ...
 
+class YieldCurveModel:
+    Standard: YieldCurveModel
+    ExactYield: YieldCurveModel
+    ParallelShifts: YieldCurveModel
+    NonParallelShifts: YieldCurveModel
+
+class VolatilityType:
+    ShiftedLognormal: VolatilityType
+    Normal: VolatilityType
+
+class SwapIndex:
+    def name(self) -> str: ...
+    def tenor(self) -> Period: ...
+    def fixing_days(self) -> int: ...
+    def fixing_calendar(self) -> Calendar: ...
+    def day_counter(self) -> DayCounter: ...
+
+class SwaptionVolatilityStructureHandle:
+    def empty(self) -> bool: ...
+    def volatility(
+        self,
+        option_date: Date,
+        swap_tenor: Period,
+        strike: float,
+        extrapolate: bool = ...,
+    ) -> float: ...
+
+class CmsCouponPricer: ...
+
+class CmsCoupon:
+    def __init__(
+        self,
+        payment_date: Date,
+        nominal: float,
+        start_date: Date,
+        end_date: Date,
+        fixing_days: int,
+        index: SwapIndex,
+        gearing: float = ...,
+        spread: float = ...,
+        ref_period_start: Date = ...,
+        ref_period_end: Date = ...,
+        day_counter: DayCounter = ...,
+        is_in_arrears: bool = ...,
+    ) -> None: ...
+    def rate(self) -> float: ...
+    def amount(self) -> float: ...
+    def nominal(self) -> float: ...
+    def accrual_start_date(self) -> Date: ...
+    def accrual_end_date(self) -> Date: ...
+    def set_pricer(self, pricer: CmsCouponPricer) -> None: ...
+
+class Swap:
+    def NPV(self) -> float: ...
+    def is_expired(self) -> bool: ...
+    def number_of_legs(self) -> int: ...
+    def set_pricing_engine(
+        self, discount_curve: YieldTermStructureHandle
+    ) -> None: ...
+    def set_cms_coupon_pricer(self, pricer: CmsCouponPricer) -> None: ...
+
+@overload
+def EuriborSwapIsdaFixA(
+    tenor: Period, handle: YieldTermStructureHandle = ...
+) -> SwapIndex: ...
+@overload
+def EuriborSwapIsdaFixA(
+    tenor: Period,
+    forwarding: YieldTermStructureHandle,
+    discounting: YieldTermStructureHandle,
+) -> SwapIndex: ...
+def ConstantSwaptionVolatility(
+    reference_date: Date,
+    calendar: Calendar,
+    bdc: BusinessDayConvention,
+    volatility: float,
+    day_counter: DayCounter,
+    type: VolatilityType = ...,
+    shift: float = ...,
+) -> SwaptionVolatilityStructureHandle: ...
+def AnalyticHaganPricer(
+    swaption_vol: SwaptionVolatilityStructureHandle,
+    model: YieldCurveModel,
+    mean_reversion: QuoteHandle,
+) -> CmsCouponPricer: ...
+def NumericHaganPricer(
+    swaption_vol: SwaptionVolatilityStructureHandle,
+    model: YieldCurveModel,
+    mean_reversion: QuoteHandle,
+    lower_limit: float = ...,
+    upper_limit: float = ...,
+    precision: float = ...,
+) -> CmsCouponPricer: ...
+def make_cms(
+    swap_tenor: Period,
+    swap_index: SwapIndex,
+    ibor_index: IborIndex,
+    ibor_spread: float = ...,
+    forward_start: Period = ...,
+    discount_curve: YieldTermStructureHandle = ...,
+    pricer: CmsCouponPricer | None = ...,
+    nominal: float = ...,
+) -> Swap: ...
+
 __version__: str

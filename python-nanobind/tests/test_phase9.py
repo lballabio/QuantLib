@@ -7,8 +7,9 @@ import pytest
 import qlnb as ql
 
 
-def test_version_is_phase9():
-    assert ql.__version__ == "0.10.0"
+def test_version_is_at_least_phase9():
+    parts = tuple(int(x) for x in ql.__version__.split(".")[:2])
+    assert parts >= (0, 10)
 
 
 def test_piecewise_hazard_bootstrap_fair_spreads():

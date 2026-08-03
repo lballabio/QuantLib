@@ -228,7 +228,7 @@ Requires NumPy at import/use time (`pip install qlnb[numpy]` or the `test` extra
 | Flat forward | curve object → wrap in handle | factory returns handle |
 | Engines | construct engine, `setPricingEngine` | `set_pricing_engine(handle_or_process)` |
 | Naming | camelCase | snake_case |
-| Coverage | broad SWIG surface | focused phase 0–9 surface |
+| Coverage | broad SWIG surface | focused phase 0–10 surface |
 
 ## Compatibility shim (`qlnb.compat`)
 
@@ -463,6 +463,26 @@ FD Hull–White Bermudan swaption:
 
 ```python
 berm.set_fd_hullwhite_pricing_engine(hw_model, t_grid=100, x_grid=100)
+```
+
+## Phase-10 CMS / SwapIndex / Hagan pricers
+
+```python
+swap_index = ql.EuriborSwapIsdaFixA(ql.Period(10, ql.TimeUnit.Years), curve)
+vol = ql.ConstantSwaptionVolatility(
+    today, ql.TARGET(), ql.BusinessDayConvention.Following, 0.20, ql.Actual365Fixed()
+)
+pricer = ql.AnalyticHaganPricer(vol, ql.YieldCurveModel.Standard, ql.make_quote_handle(0.0))
+# compat: ql.GFunctionFactory.Standard
+
+coupon = ql.CmsCoupon(pay, 1.0, start, pay, swap_index.fixing_days(), swap_index,
+                      day_counter=ibor.day_counter())
+coupon.set_pricer(pricer)
+print(coupon.rate())
+
+cms = ql.make_cms(ql.Period(5, ql.TimeUnit.Years), swap_index, ibor,
+                  discount_curve=curve, pricer=pricer)
+print(cms.NPV())
 ```
 
 ## When to stay on SWIG
