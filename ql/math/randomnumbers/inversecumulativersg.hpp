@@ -86,7 +86,7 @@ namespace QuantLib {
         const auto& sample =
             uniformSequenceGenerator_.nextSequence();
         x_.weight = sample.weight;
-        for (auto i = 0u; i < dimension_; i++) {
+        for (auto i = 0U; i < dimension_; i++) {
             x_.value[i] = ICD_(sample.value[i]);
         }
         return x_;

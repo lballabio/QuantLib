@@ -215,7 +215,9 @@ BOOST_AUTO_TEST_CASE(testEquivalenceWithHestonModel) {
 
     for (const auto& p : paramSets) {
         const auto roughModel{ext::make_shared<RoughHestonModel>(
-            rTS, qTS, s0, p.v0, p.kappa, p.theta, p.sigma, p.rho, 0.5)};
+            ext::make_shared<HestonProcess>(
+                rTS, qTS, s0, p.v0, p.kappa, p.theta, p.sigma, p.rho),
+            0.5)};
         const auto roughEngine{ext::make_shared<AnalyticRoughHestonEngine>(
             roughModel, 128, 512)};
 
@@ -296,7 +298,8 @@ BOOST_AUTO_TEST_CASE(testIntegrationAlgorithmConsistency) {
     const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
     const auto model{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.1)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7),
+        0.1)};
 
     const Size timeSteps{256};
     const auto laguerreEngine{ext::make_shared<AnalyticRoughHestonEngine>(
@@ -350,7 +353,8 @@ BOOST_AUTO_TEST_CASE(testKnownReferenceValues) {
     const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
     const auto model{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.1)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7),
+        0.1)};
     const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
         model, 128, 512)};
 
@@ -400,7 +404,8 @@ BOOST_AUTO_TEST_CASE(testPutCallParity) {
 
     for (const Real hurst : {0.1, 0.3, 0.5}) {
         const auto model{ext::make_shared<RoughHestonModel>(
-            rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, hurst)};
+            ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7),
+            hurst)};
         const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
             model, 128, 256)};
 
@@ -445,7 +450,8 @@ BOOST_AUTO_TEST_CASE(testMonotonicityAndBounds) {
     const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
     const auto model{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.15)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7),
+        0.15)};
     const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
         model, 128, 256)};
 
@@ -457,6 +463,7 @@ BOOST_AUTO_TEST_CASE(testMonotonicityAndBounds) {
     const std::vector<Real> strikes{
         60.0, 70.0, 80.0, 90.0, 100.0, 110.0, 120.0, 130.0, 140.0};
     std::vector<Real> prices;
+    prices.reserve(strikes.size());
     for (Real k : strikes)
         prices.push_back(engine->priceVanillaPayoff(
             ext::make_shared<PlainVanillaPayoff>(Option::Call, k), t));
@@ -503,7 +510,8 @@ BOOST_AUTO_TEST_CASE(testInputValidation) {
     const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
     const auto model{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.15)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7),
+        0.15)};
 
     const ExpectedErrorMessage noTimeSteps("at least one time step required");
     const ExpectedErrorMessage alphaOutOfRange("must be in (-1, 0)");
@@ -582,7 +590,8 @@ BOOST_AUTO_TEST_CASE(testShortMaturitySkewExplosion) {
     // classical Heston (H = 0.5) reference for the "materially less
     // explosion" comparison below
     const auto flatModel{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.5)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7),
+        0.5)};
     const auto flatEngine{ext::make_shared<AnalyticRoughHestonEngine>(
         flatModel, 128, 512)};
     const Real flatSkewRatio{atmSkew(flatEngine, t1) / atmSkew(flatEngine, t2)};
@@ -591,7 +600,8 @@ BOOST_AUTO_TEST_CASE(testShortMaturitySkewExplosion) {
     // models explodes like T^(H - 1/2) for T -> 0
     for (const Real hurst : {0.05, 0.1, 0.3}) {
         const auto model{ext::make_shared<RoughHestonModel>(
-            rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, hurst)};
+            ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7),
+            hurst)};
         const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
             model, 128, 512)};
 
@@ -645,7 +655,8 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
 
     // synthetic market surface generated from known parameters
     const auto trueModel{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, v0, kappa, theta, sigma, rho, hurst)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, v0, kappa, theta, sigma, rho),
+        hurst)};
     const auto trueEngine{ext::make_shared<AnalyticRoughHestonEngine>(
         trueModel, integrationOrder, timeSteps)};
 
@@ -678,7 +689,8 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
 
     // calibration starts from deliberately wrong parameters
     const auto model{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, 0.04, 1.0, 0.02, 0.25, -0.4, 0.2)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 1.0, 0.02, 0.25, -0.4),
+        0.2)};
     const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
         model, integrationOrder, timeSteps)};
 
@@ -742,7 +754,8 @@ BOOST_AUTO_TEST_CASE(testPadeRiccatiAsymptotics) {
         const Real a{hurst + 0.5};
 
         const auto model{ext::make_shared<RoughHestonModel>(
-            rTS, qTS, s0, 0.04, kappa, 0.04, sigma, rho, hurst)};
+            ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, kappa, 0.04, sigma, rho),
+            hurst)};
         const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
             model, 128, 256,
             AnalyticRoughHestonEngine::Approximation::Pade)};
@@ -812,7 +825,8 @@ BOOST_AUTO_TEST_CASE(testPadeTrivialContour) {
     // approximation against ground truth derived directly from the ODE.
     for (const Real hurst : {0.05, 0.2, 0.4}) {
         const auto model{ext::make_shared<RoughHestonModel>(
-            rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, hurst)};
+            ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7),
+            hurst)};
         const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
             model, 128, 256,
             AnalyticRoughHestonEngine::Approximation::Pade)};
@@ -858,7 +872,8 @@ BOOST_AUTO_TEST_CASE(testPadeAgainstAdamsRiccati) {
     for (const Real hurst : {0.05, 0.1, 0.2}) {
         for (const Real rho : {-0.7, 0.3}) {
             const auto model{ext::make_shared<RoughHestonModel>(
-                rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, rho, hurst)};
+                ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, rho),
+                                                hurst)};
 
             const auto adams{ext::make_shared<AnalyticRoughHestonEngine>(
                 model, 128, 1024,
@@ -912,7 +927,8 @@ BOOST_AUTO_TEST_CASE(testPadeAgainstAdamsPricing) {
     for (const Real hurst : {0.05, 0.1, 0.2}) {
       for (const Real rho : {-0.7, 0.3}) {
         const auto model{ext::make_shared<RoughHestonModel>(
-            rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, rho, hurst)};
+            ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, rho),
+            hurst)};
 
         const auto adams{ext::make_shared<AnalyticRoughHestonEngine>(
             model, 128, 512,
@@ -973,7 +989,8 @@ BOOST_AUTO_TEST_CASE(testPadeHestonLimit) {
     const Real v0{0.05}, kappa{1.5}, theta{0.04}, sigma{0.5}, rho{-0.75};
 
     const auto roughModel{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, v0, kappa, theta, sigma, rho, 0.5)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, v0, kappa, theta, sigma, rho),
+        0.5)};
     const auto padeEngine{ext::make_shared<AnalyticRoughHestonEngine>(
         roughModel, 128, 256, AnalyticRoughHestonEngine::Approximation::Pade)};
 
@@ -1038,7 +1055,8 @@ BOOST_AUTO_TEST_CASE(testPadeMonotonicityAndBounds) {
     const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
     const auto model{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7, 0.1)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, -0.7),
+        0.1)};
     const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
         model, 128, 256, AnalyticRoughHestonEngine::Approximation::Pade)};
 
@@ -1050,6 +1068,7 @@ BOOST_AUTO_TEST_CASE(testPadeMonotonicityAndBounds) {
     const std::vector<Real> strikes{
         70.0, 80.0, 90.0, 100.0, 110.0, 120.0, 130.0};
     std::vector<Real> prices;
+    prices.reserve(strikes.size());
     for (Real k : strikes)
         prices.push_back(engine->priceVanillaPayoff(
             ext::make_shared<PlainVanillaPayoff>(Option::Call, k), t));
@@ -1103,7 +1122,8 @@ BOOST_AUTO_TEST_CASE(testPadeCalibration) {
     // round trip isolates the optimizer's ability to recover parameters
     // from the fast approximation itself
     const auto trueModel{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, v0, kappa, theta, sigma, rho, hurst)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, v0, kappa, theta, sigma, rho),
+        hurst)};
     const auto trueEngine{ext::make_shared<AnalyticRoughHestonEngine>(
         trueModel, integrationOrder, timeSteps,
         AnalyticRoughHestonEngine::Approximation::Pade)};
@@ -1133,7 +1153,8 @@ BOOST_AUTO_TEST_CASE(testPadeCalibration) {
     }
 
     const auto model{ext::make_shared<RoughHestonModel>(
-        rTS, qTS, s0, 0.04, 1.0, 0.02, 0.25, -0.4, 0.2)};
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 1.0, 0.02, 0.25, -0.4),
+        0.2)};
     const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
         model, integrationOrder, timeSteps,
         AnalyticRoughHestonEngine::Approximation::Pade)};

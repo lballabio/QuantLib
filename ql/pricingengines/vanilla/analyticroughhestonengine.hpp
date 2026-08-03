@@ -113,7 +113,7 @@ namespace QuantLib {
         */
         AnalyticRoughHestonEngine(
             const ext::shared_ptr<RoughHestonModel>& model,
-            const Integration& integration,
+            Integration  integration,
             Size timeSteps = 256,
             Real andersenPiterbargEpsilon = 1e-25,
             Real alpha = -0.5,

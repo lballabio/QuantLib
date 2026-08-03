@@ -155,7 +155,7 @@ namespace QuantLib {
 
     AnalyticRoughHestonEngine::AnalyticRoughHestonEngine(
         const ext::shared_ptr<RoughHestonModel>& model,
-        const Integration& integration,
+        Integration  integration,
         Size timeSteps,
         Real andersenPiterbargEpsilon,
         Real alpha,
@@ -165,7 +165,7 @@ namespace QuantLib {
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       timeSteps_(timeSteps),
-      integration_(integration),
+      integration_(std::move(integration)),
       andersenPiterbargEpsilon_(andersenPiterbargEpsilon),
       alpha_(alpha),
       approximation_(approximation),
@@ -552,12 +552,12 @@ namespace QuantLib {
         const ext::shared_ptr<PlainVanillaPayoff>& payoff,
         const Date& maturity) const {
 
-        const Real fwd{model_->s0()->value()
-            * model_->dividendYield()->discount(maturity)
-            / model_->riskFreeRate()->discount(maturity)};
+        const Real fwd{model_->process()->s0()->value()
+            * model_->process()->dividendYield()->discount(maturity)
+            / model_->process()->riskFreeRate()->discount(maturity)};
 
         return priceVanillaPayoff(
-            payoff, model_->riskFreeRate()->timeFromReference(maturity), fwd);
+            payoff, model_->process()->riskFreeRate()->timeFromReference(maturity), fwd);
     }
 
     Real AnalyticRoughHestonEngine::priceVanillaPayoff(
@@ -566,9 +566,9 @@ namespace QuantLib {
 
         QL_REQUIRE(maturity > 0.0, "maturity must be positive");
 
-        const Real fwd{model_->s0()->value()
-            * model_->dividendYield()->discount(maturity)
-            / model_->riskFreeRate()->discount(maturity)};
+        const Real fwd{model_->process()->s0()->value()
+            * model_->process()->dividendYield()->discount(maturity)
+            / model_->process()->riskFreeRate()->discount(maturity)};
 
         return priceVanillaPayoff(payoff, maturity, fwd);
     }
@@ -579,10 +579,10 @@ namespace QuantLib {
 
         QL_REQUIRE(maturity > 0.0, "maturity must be positive");
 
-        const Real spot{model_->s0()->value()};
+        const Real spot{model_->process()->s0()->value()};
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
 
-        const DiscountFactor dr{model_->riskFreeRate()->discount(maturity)};
+        const DiscountFactor dr{model_->process()->riskFreeRate()->discount(maturity)};
         const Real strike{payoff->strike()};
 
         const Real kappa{model_->kappa()};
