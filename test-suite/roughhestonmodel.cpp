@@ -1181,7 +1181,7 @@ BOOST_AUTO_TEST_CASE(testFractionalKernelApproximation) {
 
     const Time tMax{1.0};
 
-    // relative L1 error on (0, tMax]. K is integrable at the origin, so
+    // Relative L1 error on (0, tMax]. K is integrable at the origin, so
     // this needs no cut-off and is free of any time grid
     const auto l1Error = [tMax](const FractionalKernelApproximation& kernel,
                                 Real alpha) -> Real {
@@ -1216,7 +1216,7 @@ BOOST_AUTO_TEST_CASE(testFractionalKernelApproximation) {
                             << "\n    calculated: " << kernel.size()
                             << "\n    expected:   " << n);
 
-            // non-negativity is what keeps K^n completely monotone, and
+            // Non-negativity is what keeps K^n completely monotone, and
             // with it the lifted model well posed
             for (Size i{0}; i < n; ++i) {
                 if (kernel.weights()[i] < 0.0 || kernel.rates()[i] < 0.0)
@@ -1234,7 +1234,7 @@ BOOST_AUTO_TEST_CASE(testFractionalKernelApproximation) {
 
             const Real error{l1Error(kernel, alpha)};
 
-            // the measured rate is n^(-1.55), a factor of 2.9 per
+            // The measured rate is n^(-1.55), a factor of 2.9 per
             // doubling; 1.7 leaves room at the coarse end
             const Real expected{previousError / 1.7};
             if (error > expected)
@@ -1248,7 +1248,7 @@ BOOST_AUTO_TEST_CASE(testFractionalKernelApproximation) {
         }
     }
 
-    // at alpha = 1 the measure is a point mass at the origin, which the
+    // At alpha = 1 the measure is a point mass at the origin, which the
     // leading interval absorbs entirely: the construction collapses to the
     // single node (1, 0) and reproduces K exactly, with no special-casing
     const FractionalKernelApproximation classical(1.0, 20, tMax);
@@ -1289,7 +1289,7 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsRiccati) {
         ext::make_shared<FlatForward>(today, 0.0, dc));
     const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
-    // unlike Pade, the lifted route has a convergence parameter, so what
+    // Unlike Pade, the lifted route has a convergence parameter, so what
     // is asserted is not closeness at a fixed n but that the error keeps
     // falling as n grows
     for (const Real hurst : {0.05, 0.1, 0.2}) {
@@ -1322,7 +1322,7 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsRiccati) {
                     }
                 }
 
-                // a factor of 16 in n at the measured rate n^(-1.5) is
+                // A factor of 16 in n at the measured rate n^(-1.5) is
                 // about 64; 6 is a wide margin on the worst contour point
                 const Real expected{previousError / 6.0};
                 if (maxError > expected)
@@ -1338,7 +1338,7 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsRiccati) {
                 previousError = maxError;
             }
 
-            // and the finest approximation is genuinely close
+            // And the finest approximation is genuinely close
             const Real tol{5e-3};
             if (previousError > tol)
                 BOOST_ERROR("lifted Riccati solution deviates from the Adams "
@@ -1356,7 +1356,7 @@ BOOST_AUTO_TEST_CASE(testLiftedHestonLimit) {
         "Testing the lifted rough Heston engine against classical Heston "
         "for H = 0.5...");
 
-    // at H = 0.5 the kernel is constant, the surviving factor has x = 0
+    // At H = 0.5 the kernel is constant, the surviving factor has x = 0
     // and the integrator degenerates to the trapezoidal rule, so the
     // lifted route is not an approximation here at all - hence a much
     // tighter tolerance than the Pade equivalent
@@ -1385,7 +1385,7 @@ BOOST_AUTO_TEST_CASE(testLiftedHestonLimit) {
     const auto classical{ext::make_shared<AnalyticHestonEngine>(
         hestonModel, 192)};
 
-    // calls only: puts differ by an exact constant in priceVanillaPayoff
+    // Calls only: puts differ by an exact constant in priceVanillaPayoff
     for (const Real strike : {80.0, 90.0, 100.0, 110.0, 125.0}) {
         for (const Size months : {6, 12, 24}) {
             const Date maturity{today + Period(months, Months)};
@@ -1469,7 +1469,7 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsPricing) {
             previousError = maxError;
         }
 
-        // on prices of order 1 to 30; the bound is set by the roughest
+        // On prices of order 1 to 30; the bound is set by the roughest
         // kernel (H = 0.05) at the longest maturity
         const Real tol{3e-3};
         if (previousError > tol)
@@ -1502,7 +1502,7 @@ BOOST_AUTO_TEST_CASE(testLiftedCalibration) {
 
     const Size integrationOrder{64}, timeSteps{256}, nFactors{20};
 
-    // the kernel nodes depend on the Hurst exponent, so this is what
+    // The kernel nodes depend on the Hurst exponent, so this is what
     // catches update() failing to invalidate the per-maturity grid cache
     const auto trueModel{ext::make_shared<RoughHestonModel>(
         rTS, qTS, s0, v0, kappa, theta, sigma, rho, hurst)};
