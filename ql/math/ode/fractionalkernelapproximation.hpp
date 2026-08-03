@@ -51,7 +51,7 @@ namespace QuantLib {
         }
     }
 
-    //! sum-of-exponentials approximation of the fractional kernel
+    //! Sum-of-exponentials approximation of the fractional kernel
     /*! Approximates the power-law kernel
         \f[
             K(t) = \frac{t^{\alpha - 1}}{\Gamma(\alpha)},
@@ -103,9 +103,9 @@ namespace QuantLib {
         */
         FractionalKernelApproximation(Real alpha, Size n, Time tMax);
 
-        //! weights \f$ c_i \f$
+        //! Weights \f$ c_i \f$
         const Array& weights() const { return c_; }
-        //! mean-reversion rates \f$ x_i \f$
+        //! Mean-reversion rates \f$ x_i \f$
         const Array& rates() const { return x_; }
 
         Size size() const { return c_.size(); }
@@ -160,11 +160,11 @@ namespace QuantLib {
         c_ = Array(n);
         x_ = Array(n);
 
-        // a one-factor partition has to put its single node at the fast end,
+        // A one-factor partition has to put its single node at the fast end,
         // so that the whole mass still sits on [0, eta_1]
         const Real eta1{(n == 1) ? etaHi : etaLo};
 
-        // the first interval is [0, eta_1], whose mass tends to the total
+        // The first interval is [0, eta_1], whose mass tends to the total
         // mass as alpha -> 1; this is what recovers the constant kernel
         c_[0] = std::pow(eta1, b) * norm;
         x_[0] = b / (1.0 + b) * eta1;
@@ -175,7 +175,7 @@ namespace QuantLib {
         const Real dL{std::log(etaHi / etaLo) / (n - 1)};
         const Real r{std::exp(dL)};
 
-        // both weight and rate go through expm1, so that the differences
+        // Both weight and rate go through expm1, so that the differences
         // eta_i^b - eta_{i-1}^b, which cancel to nothing as alpha -> 1, are
         // never formed explicitly
         const Real weightFactor{std::expm1(b * dL) * norm};

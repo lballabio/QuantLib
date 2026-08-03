@@ -36,7 +36,7 @@
 
 namespace QuantLib {
 
-    //! analytic rough Heston-model engine based on Fourier transform
+    //! Analytic rough Heston-model engine based on Fourier transform
     /*! The log-price characteristic function of the rough Heston model
         retains the affine structure of the classical Heston model, with
         the Riccati ODE replaced by a fractional Riccati equation.  This
@@ -92,7 +92,7 @@ namespace QuantLib {
       public:
         typedef FourierIntegration Integration;
 
-        //! route used to solve the fractional Riccati equation
+        //! Route used to solve the fractional Riccati equation
         enum class Approximation { AdamsPredictorCorrector, Pade, Lifted };
 
         /*! Constructor using Gauss-Laguerre integration. nFactors is the
@@ -131,13 +131,13 @@ namespace QuantLib {
             const ext::shared_ptr<PlainVanillaPayoff>& payoff,
             Time maturity) const;
 
-        /*! normalized characteristic function of the log forward moneyness,
+        /*! Normalized characteristic function of the log forward moneyness,
             \f$ E\left[\exp(i z \ln(S_t/F_t))\right] \f$
         */
         std::complex<Real> chF(const std::complex<Real>& z, Time t) const;
         std::complex<Real> lnChF(const std::complex<Real>& z, Time t) const;
 
-        /*! solution \f$ h(z, t) \f$ of the fractional Riccati equation,
+        /*! Solution \f$ h(z, t) \f$ of the fractional Riccati equation,
             computed by the route configured at construction
         */
         std::complex<Real> riccatiSolution(const std::complex<Real>& z, Time t) const;
@@ -153,7 +153,7 @@ namespace QuantLib {
         };
         RiccatiCoefficients riccatiCoefficients(const std::complex<Real>& z) const;
 
-        // fractional Adams solution grid h(z, j dt), j = 0, ..., timeSteps_
+        // Fractional Adams solution grid h(z, j dt), j = 0, ..., timeSteps_
         std::vector<std::complex<Real>> solveAdamsRiccati(const std::complex<Real>& z, Time t) const;
 
         /*! Coefficients of the (3, 3) Gatheral-Radoicic rational
@@ -186,7 +186,7 @@ namespace QuantLib {
             Array cA;
             Real cASum;
 
-            // the F_k and (F_{k + 1} - F_k) weights of the same quadrature
+            // The F_k and (F_{k + 1} - F_k) weights of the same quadrature
             Real cP, cQ;
         };
         const LiftedGrid& liftedGrid(Time t) const;

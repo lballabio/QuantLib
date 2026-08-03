@@ -178,7 +178,7 @@ namespace QuantLib {
 
     void AnalyticRoughHestonEngine::update() {
         chFCache_.clear();
-        // the kernel nodes depend on the Hurst exponent
+        // The kernel nodes depend on the Hurst exponent
         liftedGridCache_.clear();
         GenericModelEngine<RoughHestonModel,
                            VanillaOption::arguments,
@@ -297,7 +297,7 @@ namespace QuantLib {
 
         const GammaFunction g;
 
-        // reciprocal gamma 1 / Gamma(x), which vanishes at the poles
+        // Reciprocal gamma 1 / Gamma(x), which vanishes at the poles
         // 0, -1, -2, ...; keeps the long-time coefficients finite as
         // a -> 1
         const auto rGamma
@@ -438,7 +438,7 @@ namespace QuantLib {
             g.expDt[i] = std::exp(-theta);
             g.cExpDt[i] = g.c[i] * g.expDt[i];
 
-            // the two sum to dt * p1, the weight of a constant F
+            // The two sum to dt * p1, the weight of a constant F
             g.w0[i] = dt * (p1 - p2);
             g.w1[i] = dt * p2;
 
@@ -473,7 +473,7 @@ namespace QuantLib {
         std::complex<Real> fIntegral{0.0}, psiIntegral{0.0};
 
         for (Size k{0}; k < timeSteps_; ++k) {
-            // predictor: decay of the factors plus the response to a
+            // Predictor: decay of the factors plus the response to a
             // constant F over the step
             std::complex<Real> predicted{g.cASum * f};
             for (Size i{0}; i < n; ++i)
@@ -481,7 +481,7 @@ namespace QuantLib {
 
             const std::complex<Real> fPredicted{F(predicted)};
 
-            // accumulated before the factors advance: it weights psi(t_k)
+            // Accumulated before the factors advance: it weights psi(t_k)
             std::complex<Real> stepIntegral{0.0}, psiNext{0.0};
             for (Size i{0}; i < n; ++i) {
                 stepIntegral += g.cA[i] * psi[i];
@@ -594,7 +594,7 @@ namespace QuantLib {
 
         evaluations_ = 0;
 
-        // decay estimate of the characteristic function along the
+        // Decay estimate of the characteristic function along the
         // integration contour; recovers the classical Heston engine value
         // sqrt(1 - rho ^ 2)(v0 + kappa theta t) / sigma for alpha = 1
         // TODO: the a < 1 rescaling is a heuristic, not a derived asymptotic;
