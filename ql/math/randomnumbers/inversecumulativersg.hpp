@@ -83,10 +83,10 @@ namespace QuantLib {
     template <class USG, class IC>
     inline const typename InverseCumulativeRsg<USG, IC>::sample_type&
     InverseCumulativeRsg<USG, IC>::nextSequence() const {
-        typename USG::sample_type sample =
+        const auto& sample =
             uniformSequenceGenerator_.nextSequence();
         x_.weight = sample.weight;
-        for (Size i = 0; i < dimension_; i++) {
+        for (auto i = 0u; i < dimension_; i++) {
             x_.value[i] = ICD_(sample.value[i]);
         }
         return x_;

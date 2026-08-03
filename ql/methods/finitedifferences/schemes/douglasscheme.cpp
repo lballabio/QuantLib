@@ -37,13 +37,13 @@ namespace QuantLib {
         Array y = a + dt_*map_->apply(a);
         bcSet_.applyAfterApplying(y);
 
-        for (Size i=0; i < map_->size(); ++i) {
-            Array rhs = y - theta_*dt_*map_->apply_direction(i, a);
+        for (auto i=0u; i < map_->size(); ++i) {
+            auto rhs = y - theta_*dt_*map_->apply_direction(i, a);
             y = map_->solve_splitting(i, rhs, -theta_*dt_);
         }
         bcSet_.applyAfterSolving(y);
 
-        a = y;
+        a = std::move(y);
     }
 
     void DouglasScheme::setStep(Time dt) {

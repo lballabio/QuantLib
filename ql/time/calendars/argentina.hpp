@@ -47,7 +47,7 @@ namespace QuantLib {
             or Friday)</li>
         <li>Immaculate Conception, December 8th</li>
         <li>Christmas Eve, December 24th</li>
-        <li>New Year's Eve, December 31th</li>
+        <li>New Year's Eve, December 31st</li>
         </ul>
 
         \ingroup calendars
