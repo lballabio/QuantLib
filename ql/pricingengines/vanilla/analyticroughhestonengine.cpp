@@ -460,6 +460,8 @@ namespace QuantLib {
 
         const RiccatiCoefficients c{riccatiCoefficients(z)};
 
+        // RHS of the (non-fractional) Riccati equation, evaluated
+        // at the lifted state psi^n in place of the true h
         const auto F = [&c](const std::complex<Real>& p) -> std::complex<Real> {
             return c.c0 + (c.c1 + c.c2 * p) * p;
         };
