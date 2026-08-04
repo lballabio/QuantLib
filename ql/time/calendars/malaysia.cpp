@@ -145,7 +145,7 @@ namespace QuantLib {
                 Date(10, August, 2021),   // Awal Muharram
                 Date(19, October, 2021),  // Maulidur Rasul
                 Date(4, November, 2021),  // Deepavali
-                Date(3, December, 2022),  // Special Holiday
+                Date(3, December, 2021),  // Special Holiday (Federal Territories)
                 // 2022
                 Date(18, January, 2022),  // Thaipusam
                 Date(1, February, 2022),  // Chinese New Year
