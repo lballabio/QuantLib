@@ -228,7 +228,7 @@ Requires NumPy at import/use time (`pip install qlnb[numpy]` or the `test` extra
 | Flat forward | curve object → wrap in handle | factory returns handle |
 | Engines | construct engine, `setPricingEngine` | `set_pricing_engine(handle_or_process)` |
 | Naming | camelCase | snake_case |
-| Coverage | broad SWIG surface | focused phase 0–10 surface |
+| Coverage | broad SWIG surface | focused phase 0–11 surface |
 
 ## Compatibility shim (`qlnb.compat`)
 
@@ -483,6 +483,26 @@ print(coupon.rate())
 cms = ql.make_cms(ql.Period(5, ql.TimeUnit.Years), swap_index, ibor,
                   discount_curve=curve, pricer=pricer)
 print(cms.NPV())
+```
+
+## Phase-11 CMS-spread
+
+```python
+cms10 = ql.EuriborSwapIsdaFixA(ql.Period(10, ql.TimeUnit.Years), curve, curve)
+cms2 = ql.EuriborSwapIsdaFixA(ql.Period(2, ql.TimeUnit.Years), curve, curve)
+spread = ql.SwapSpreadIndex("cms10y2y", cms10, cms2)  # make_swap_spread_index
+
+tsr = ql.LinearTsrPricer(vol, ql.make_quote_handle(0.01), curve)
+sp_pricer = ql.LognormalCmsSpreadPricer(
+    tsr, ql.make_quote_handle(0.6), curve, integration_points=32
+)
+cpn = ql.CmsSpreadCoupon(pay, 10000.0, start, pay, spread.fixing_days(), spread,
+                         day_counter=ql.Actual360())
+cpn.set_pricer(sp_pricer)
+
+capped = ql.CappedFlooredCmsSpreadCoupon(
+    pay, 10000.0, start, pay, 2, spread, cap=0.03, day_counter=ql.Actual360()
+)
 ```
 
 ## When to stay on SWIG

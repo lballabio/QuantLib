@@ -1,5 +1,6 @@
 #include "bindings.hpp"
 
+#include <nanobind/stl/optional.h>
 #include <nanobind/stl/shared_ptr.h>
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/vector.h>
@@ -7,6 +8,10 @@
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/lineartsrpricer.hpp>
+#include <ql/experimental/coupons/cmsspreadcoupon.hpp>
+#include <ql/experimental/coupons/lognormalcmsspreadpricer.hpp>
+#include <ql/experimental/coupons/swapspreadindex.hpp>
 #include <ql/handle.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/indexes/swap/euriborswap.hpp>
@@ -24,6 +29,8 @@
 #include <ql/time/date.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/period.hpp>
+
+#include <optional>
 
 using namespace QuantLib;
 
@@ -45,7 +52,77 @@ void bind_cms(nb::module_& m) {
         .def("fixing_days", [](const SwapIndex& i) { return i.fixingDays(); })
         .def("fixing_calendar",
              [](const SwapIndex& i) { return i.fixingCalendar(); })
-        .def("day_counter", [](const SwapIndex& i) { return i.dayCounter(); });
+        .def("day_counter", [](const SwapIndex& i) { return i.dayCounter(); })
+        .def(
+            "add_fixing",
+            [](SwapIndex& i, const Date& fixing_date, Rate fixing, bool force) {
+                i.addFixing(fixing_date, fixing, force);
+            },
+            nb::arg("fixing_date"),
+            nb::arg("fixing"),
+            nb::arg("force_overwrite") = false)
+        .def(
+            "fixing",
+            [](const SwapIndex& i, const Date& fixing_date, bool forecast_today) {
+                return i.fixing(fixing_date, forecast_today);
+            },
+            nb::arg("fixing_date"),
+            nb::arg("forecast_today") = false)
+        .def(
+            "value_date",
+            [](const SwapIndex& i, const Date& fixing_date) {
+                return i.valueDate(fixing_date);
+            },
+            nb::arg("fixing_date"));
+
+    // SwapSpreadIndex is InterestRateIndex (MI) — opaque shared_ptr holder.
+    nb::class_<SwapSpreadIndex>(m, "SwapSpreadIndex")
+        .def("name", [](const SwapSpreadIndex& i) { return i.name(); })
+        .def("fixing_days",
+             [](const SwapSpreadIndex& i) { return i.fixingDays(); })
+        .def("fixing_calendar",
+             [](const SwapSpreadIndex& i) { return i.fixingCalendar(); })
+        .def("day_counter",
+             [](const SwapSpreadIndex& i) { return i.dayCounter(); })
+        .def("gearing1", [](const SwapSpreadIndex& i) { return i.gearing1(); })
+        .def("gearing2", [](const SwapSpreadIndex& i) { return i.gearing2(); })
+        .def("swap_index1",
+             [](SwapSpreadIndex& i) { return i.swapIndex1(); })
+        .def("swap_index2",
+             [](SwapSpreadIndex& i) { return i.swapIndex2(); })
+        .def(
+            "fixing",
+            [](const SwapSpreadIndex& i,
+               const Date& fixing_date,
+               bool forecast_today) {
+                return i.fixing(fixing_date, forecast_today);
+            },
+            nb::arg("fixing_date"),
+            nb::arg("forecast_today") = false)
+        .def(
+            "value_date",
+            [](const SwapSpreadIndex& i, const Date& fixing_date) {
+                return i.valueDate(fixing_date);
+            },
+            nb::arg("fixing_date"));
+
+    m.def(
+        "make_swap_spread_index",
+        [](const std::string& family_name,
+           const ext::shared_ptr<SwapIndex>& swap_index1,
+           const ext::shared_ptr<SwapIndex>& swap_index2,
+           Real gearing1,
+           Real gearing2) {
+            return ext::shared_ptr<SwapSpreadIndex>(
+                ext::make_shared<SwapSpreadIndex>(
+                    family_name, swap_index1, swap_index2, gearing1, gearing2));
+        },
+        nb::arg("family_name"),
+        nb::arg("swap_index1"),
+        nb::arg("swap_index2"),
+        nb::arg("gearing1") = 1.0,
+        nb::arg("gearing2") = -1.0,
+        "Factory: SwapSpreadIndex.");
 
     m.def(
         "EuriborSwapIsdaFixA",
@@ -153,6 +230,42 @@ void bind_cms(nb::module_& m) {
         nb::arg("precision") = 1.0e-6,
         "Factory: NumericHaganPricer → CmsCouponPricer.");
 
+    m.def(
+        "LinearTsrPricer",
+        [](const Handle<SwaptionVolatilityStructure>& swaption_vol,
+           const Handle<Quote>& mean_reversion,
+           const Handle<YieldTermStructure>& coupon_discount_curve) {
+            return ext::shared_ptr<CmsCouponPricer>(
+                ext::make_shared<LinearTsrPricer>(
+                    swaption_vol, mean_reversion, coupon_discount_curve));
+        },
+        nb::arg("swaption_vol"),
+        nb::arg("mean_reversion"),
+        nb::arg("coupon_discount_curve") = Handle<YieldTermStructure>(),
+        "Factory: LinearTsrPricer → CmsCouponPricer.");
+
+    // CmsSpreadCouponPricer hierarchy is MI-heavy — opaque + factory.
+    nb::class_<CmsSpreadCouponPricer>(m, "CmsSpreadCouponPricer");
+
+    m.def(
+        "LognormalCmsSpreadPricer",
+        [](const ext::shared_ptr<CmsCouponPricer>& cms_pricer,
+           const Handle<Quote>& correlation,
+           const Handle<YieldTermStructure>& coupon_discount_curve,
+           Size integration_points) {
+            return ext::shared_ptr<CmsSpreadCouponPricer>(
+                ext::make_shared<LognormalCmsSpreadPricer>(
+                    cms_pricer,
+                    correlation,
+                    coupon_discount_curve,
+                    integration_points));
+        },
+        nb::arg("cms_pricer"),
+        nb::arg("correlation"),
+        nb::arg("coupon_discount_curve") = Handle<YieldTermStructure>(),
+        nb::arg("integration_points") = 16,
+        "Factory: LognormalCmsSpreadPricer → CmsSpreadCouponPricer.");
+
     // CmsCoupon is FloatingRateCoupon (MI) — standalone wrapper.
     nb::class_<CmsCoupon>(m, "CmsCoupon")
         .def(
@@ -205,6 +318,119 @@ void bind_cms(nb::module_& m) {
         .def(
             "set_pricer",
             [](CmsCoupon& c, const ext::shared_ptr<CmsCouponPricer>& pricer) {
+                c.setPricer(pricer);
+            },
+            nb::arg("pricer"));
+
+    // CmsSpreadCoupon / CappedFlooredCmsSpreadCoupon — standalone wrappers.
+    nb::class_<CmsSpreadCoupon>(m, "CmsSpreadCoupon")
+        .def(
+            "__init__",
+            [](CmsSpreadCoupon* self,
+               const Date& payment_date,
+               Real nominal,
+               const Date& start_date,
+               const Date& end_date,
+               Natural fixing_days,
+               const ext::shared_ptr<SwapSpreadIndex>& index,
+               Real gearing,
+               Spread spread,
+               const Date& ref_period_start,
+               const Date& ref_period_end,
+               const DayCounter& day_counter,
+               bool is_in_arrears) {
+                new (self) CmsSpreadCoupon(payment_date,
+                                           nominal,
+                                           start_date,
+                                           end_date,
+                                           fixing_days,
+                                           index,
+                                           gearing,
+                                           spread,
+                                           ref_period_start,
+                                           ref_period_end,
+                                           day_counter,
+                                           is_in_arrears);
+            },
+            nb::arg("payment_date"),
+            nb::arg("nominal"),
+            nb::arg("start_date"),
+            nb::arg("end_date"),
+            nb::arg("fixing_days"),
+            nb::arg("index"),
+            nb::arg("gearing") = 1.0,
+            nb::arg("spread") = 0.0,
+            nb::arg("ref_period_start") = Date(),
+            nb::arg("ref_period_end") = Date(),
+            nb::arg("day_counter") = DayCounter(),
+            nb::arg("is_in_arrears") = false)
+        .def("rate", [](CmsSpreadCoupon& c) { return c.rate(); })
+        .def("amount", [](CmsSpreadCoupon& c) { return c.amount(); })
+        .def("fixing_date",
+             [](const CmsSpreadCoupon& c) { return c.fixingDate(); })
+        .def(
+            "set_pricer",
+            [](CmsSpreadCoupon& c,
+               const ext::shared_ptr<CmsSpreadCouponPricer>& pricer) {
+                c.setPricer(pricer);
+            },
+            nb::arg("pricer"));
+
+    nb::class_<CappedFlooredCmsSpreadCoupon>(m, "CappedFlooredCmsSpreadCoupon")
+        .def(
+            "__init__",
+            [](CappedFlooredCmsSpreadCoupon* self,
+               const Date& payment_date,
+               Real nominal,
+               const Date& start_date,
+               const Date& end_date,
+               Natural fixing_days,
+               const ext::shared_ptr<SwapSpreadIndex>& index,
+               Real gearing,
+               Spread spread,
+               const std::optional<Rate>& cap,
+               const std::optional<Rate>& floor,
+               const Date& ref_period_start,
+               const Date& ref_period_end,
+               const DayCounter& day_counter,
+               bool is_in_arrears) {
+                new (self) CappedFlooredCmsSpreadCoupon(
+                    payment_date,
+                    nominal,
+                    start_date,
+                    end_date,
+                    fixing_days,
+                    index,
+                    gearing,
+                    spread,
+                    cap.value_or(Null<Rate>()),
+                    floor.value_or(Null<Rate>()),
+                    ref_period_start,
+                    ref_period_end,
+                    day_counter,
+                    is_in_arrears);
+            },
+            nb::arg("payment_date"),
+            nb::arg("nominal"),
+            nb::arg("start_date"),
+            nb::arg("end_date"),
+            nb::arg("fixing_days"),
+            nb::arg("index"),
+            nb::arg("gearing") = 1.0,
+            nb::arg("spread") = 0.0,
+            nb::arg("cap") = nb::none(),
+            nb::arg("floor") = nb::none(),
+            nb::arg("ref_period_start") = Date(),
+            nb::arg("ref_period_end") = Date(),
+            nb::arg("day_counter") = DayCounter(),
+            nb::arg("is_in_arrears") = false)
+        .def("rate", [](CappedFlooredCmsSpreadCoupon& c) { return c.rate(); })
+        .def("amount",
+             [](CappedFlooredCmsSpreadCoupon& c) { return c.amount(); })
+        .def(
+            "set_pricer",
+            [](CappedFlooredCmsSpreadCoupon& c,
+               const ext::shared_ptr<CmsSpreadCouponPricer>& pricer) {
                 c.setPricer(pricer);
             },
             nb::arg("pricer"));
