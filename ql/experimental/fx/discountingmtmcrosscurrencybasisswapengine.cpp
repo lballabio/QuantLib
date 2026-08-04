@@ -89,9 +89,10 @@ void DiscountingMtMCrossCurrencyBasisSwapEngine::calculate() const {
 
     Date spotFXSettleDate = spotFXSettleDate_;
     if (spotFXSettleDate == Date()) {
-        spotFXSettleDate = arguments_.fxResetConvention.fixingCalendar().empty() ?
+        spotFXSettleDate = arguments_.fxResetFixingCalendar.empty() ?
                                referenceDate :
-                               arguments_.fxResetConvention.valueDate(
+                               FxResetConvention(arguments_.fxResetFixingDays,
+                                                 arguments_.fxResetFixingCalendar).valueDate(
                                    Settings::instance().evaluationDate());
     }
     QL_REQUIRE(spotFXSettleDate >= referenceDate,

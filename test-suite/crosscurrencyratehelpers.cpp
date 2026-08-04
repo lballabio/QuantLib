@@ -754,7 +754,7 @@ BOOST_AUTO_TEST_CASE(testMtMHelperMatchesStandaloneWithAsymmetricFxHolidays) {
         1.0, EURCurrency(), helperSwap->fxBaseSchedule(), eurIndex, 0.0, 1.0,
         1.0, USDCurrency(), helperSwap->fxQuoteSchedule(), usdIndex, 0.0, 1.0,
         /*isFxBaseCurrencyLegResettable=*/false,
-        FxResetConvention(fxResetFixingDays, fxCalendar),
+        fxResetFixingDays, fxCalendar,
         paymentLag, paymentLag, Following, Following);
     standalone->setPricingEngine(
         ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
@@ -795,7 +795,7 @@ BOOST_AUTO_TEST_CASE(testMtMHelperMatchesStandaloneWithAsymmetricFxHolidays) {
         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency,
         1.0, EURCurrency(), helperSwap->fxBaseSchedule(), eurIndex, 0.0, 1.0,
         1.0, USDCurrency(), helperSwap->fxQuoteSchedule(), usdIndex, 0.0, 1.0,
-        /*isFxBaseCurrencyLegResettable=*/false, FxResetConvention(),
+        /*isFxBaseCurrencyLegResettable=*/false, /*fxResetFixingDays=*/0, /*fxResetFixingCalendar=*/Calendar(),
         paymentLag, paymentLag, Following, Following);
     zeroLagReset->setPricingEngine(
         ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(

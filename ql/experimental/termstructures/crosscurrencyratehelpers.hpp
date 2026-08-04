@@ -242,11 +242,9 @@ namespace QuantLib {
         //! the underlying par swap: unit notionals, zero spreads, spot FX = 1
         const ext::shared_ptr<MtMCrossCurrencyBasisSwap>& swap() const { return swap_; }
         //! the number of business days from an FX value date to its fixing date
-        Natural fxResetFixingDays() const { return fxResetConvention_.fixingDays(); }
+        Natural fxResetFixingDays() const { return fxResetFixingDays_; }
         //! the calendar used to determine FX fixing dates
-        const Calendar& fxResetFixingCalendar() const {
-            return fxResetConvention_.fixingCalendar();
-        }
+        const Calendar& fxResetFixingCalendar() const { return fxResetFixingCalendar_; }
         //@}
         //! \name Visitability
         //@{
@@ -259,7 +257,8 @@ namespace QuantLib {
         void buildSwap();
 
         bool isFxBaseCurrencyLegResettable_;
-        FxResetConvention fxResetConvention_;
+        Natural fxResetFixingDays_;
+        Calendar fxResetFixingCalendar_;
         ext::shared_ptr<MtMCrossCurrencyBasisSwap> swap_;
     };
 

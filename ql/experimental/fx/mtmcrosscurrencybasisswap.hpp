@@ -89,12 +89,14 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
                                    quote-currency (second) leg resets.  The other
                                    leg keeps a constant notional and exchanges it
                                    at inception and maturity.
-        \param fxResetConvention  Convention used to derive each FX fixing date
+        \param fxResetFixingDays   Fixing days used to derive each FX fixing date
                                    from its accrual-start value date.  The default
                                    preserves the legacy behavior of fixing on the
-                                   accrual start date.  For a non-zero fixing lag,
-                                   an empty fixing calendar is replaced by the
-                                   resettable leg's schedule calendar.
+                                   accrual start date.
+        \param fxResetFixingCalendar   Calendar used to derive each FX fixing date.
+                                       For a non-zero fixing lag,
+                                       an empty fixing calendar is replaced by the
+                                       resettable leg's schedule calendar.
         \param fxBasePaymentLag  Coupon payment lag for the base-currency leg.
         \param fxQuotePaymentLag Coupon payment lag for the quote-currency leg.
         \param fxBasePaymentConvention  Payment convention for the base-currency
@@ -115,7 +117,8 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
         Spread fxQuoteSpread,
         Real fxQuoteGearing,
         bool isFxBaseCurrencyLegResettable,
-        FxResetConvention fxResetConvention = FxResetConvention(),
+        Natural fxResetFixingDays = 0,
+        Calendar fxResetFixingCalendar = Calendar(),
         Integer fxBasePaymentLag = 0, Integer fxQuotePaymentLag = 0,
         BusinessDayConvention fxBasePaymentConvention = Following,
         BusinessDayConvention fxQuotePaymentConvention = Following,
@@ -195,7 +198,8 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
     Real constantLegNotional() const {
         return isFxBaseCurrencyLegResettable_ ? fxQuoteNominal_ : fxBaseNominal_;
     }
-    const FxResetConvention& fxResetConvention() const { return fxResetConvention_; }
+    Natural fxResetFixingDays() const { return fxResetConvention_.fixingDays(); }
+    Calendar fxResetFixingCalendar() const { return fxResetConvention_.fixingCalendar(); }
     BusinessDayConvention fxBasePaymentConvention() const {
         return fxBasePaymentConvention_;
     }
@@ -302,7 +306,8 @@ class MtMCrossCurrencyBasisSwap::arguments : public CrossCurrencySwap::arguments
     //! index of the constant-notional leg whose notional is converted at reset
     Size constantLegIndex = Null<Size>();
     //! convention for the FX fixing and its associated spot value date
-    FxResetConvention fxResetConvention;
+    Natural fxResetFixingDays = 0;
+    Calendar fxResetFixingCalendar = Calendar();
     Spread fxBaseSpread = Null<Spread>();
     Spread fxQuoteSpread = Null<Spread>();
     void validate() const override;

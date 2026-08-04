@@ -33,7 +33,7 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
     Real fxQuoteNominal, Currency fxQuoteCurrency, Schedule fxQuoteSchedule,
     const ext::shared_ptr<IborIndex>& fxQuoteIndex, Spread fxQuoteSpread, Real fxQuoteGearing,
     bool isFxBaseCurrencyLegResettable,
-    FxResetConvention fxResetConvention,
+    Natural fxResetFixingDays, Calendar fxResetFixingCalendar,
     Integer fxBasePaymentLag, Integer fxQuotePaymentLag,
     BusinessDayConvention fxBasePaymentConvention,
     BusinessDayConvention fxQuotePaymentConvention,
@@ -53,11 +53,11 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
   fxQuoteSpread_(fxQuoteSpread), fxQuoteGearing_(fxQuoteGearing),
   isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
   fxResetConvention_(
-      fxResetConvention.fixingDays(),
-      fxResetConvention.fixingDays() != 0 && fxResetConvention.fixingCalendar().empty() ?
+      fxResetFixingDays,
+      fxResetFixingDays != 0 && fxResetFixingCalendar.empty() ?
           (isFxBaseCurrencyLegResettable_ ? fxBaseSchedule_.calendar() :
                                            fxQuoteSchedule_.calendar()) :
-          fxResetConvention.fixingCalendar()),
+          fxResetFixingCalendar),
   fxBasePaymentLag_(fxBasePaymentLag), fxQuotePaymentLag_(fxQuotePaymentLag),
   fxBasePaymentConvention_(fxBasePaymentConvention),
   fxQuotePaymentConvention_(fxQuotePaymentConvention),
@@ -204,7 +204,8 @@ void MtMCrossCurrencyBasisSwap::setupArguments(PricingEngine::arguments* args) c
 
     arguments->resettingLegIndex = resettingLegIndex();
     arguments->constantLegIndex = constantLegIndex();
-    arguments->fxResetConvention = fxResetConvention_;
+    arguments->fxResetFixingDays = fxResetConvention_.fixingDays();
+    arguments->fxResetFixingCalendar = fxResetConvention_.fixingCalendar();
     arguments->fxBaseSpread = fxBaseSpread_;
     arguments->fxQuoteSpread = fxQuoteSpread_;
 }

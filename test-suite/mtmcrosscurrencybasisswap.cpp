@@ -215,8 +215,7 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
                     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
                         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, 1.0, EURCurrency(),
                         eurSch, eurIndex, baseLegBasis, 1.0, 1.0, USDCurrency(), usdSch, usdIndex,
-                        quoteLegBasis, 1.0, isFxBaseCurrencyLegResettable,
-                        FxResetConvention(fxResetFixingDays, cal));
+                        quoteLegBasis, 1.0, isFxBaseCurrencyLegResettable, fxResetFixingDays, cal);
                     swap->setPricingEngine(engine);
 
                     Real npv = swap->NPV();
@@ -300,8 +299,8 @@ BOOST_AUTO_TEST_CASE(testFxResetObservationDatesAndProjection) {
     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, eurNominal, EURCurrency(), sch,
         eurIndex, 0.0, 1.0, eurNominal * spotFx, USDCurrency(), sch, usdIndex, 0.0, 1.0,
-        /*isFxBaseCurrencyLegResettable=*/false, fxResetConvention);
-    BOOST_CHECK(!swap->fxResetConvention().fixingCalendar().empty());
+        /*isFxBaseCurrencyLegResettable=*/false, fxResetConvention.fixingDays(), fxResetConvention.fixingCalendar());
+    BOOST_CHECK(!swap->fxResetFixingCalendar().empty());
     swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
         USDCurrency(), usdCurve, EURCurrency(), eurCurve, spotFxHandle));
     Real automaticallyDatedNpv = swap->NPV();
@@ -500,7 +499,7 @@ BOOST_AUTO_TEST_CASE(testKnownFxResetBeforeAccrualStart) {
     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, eurNominal, EURCurrency(), sch,
         eurIndex, 0.0, 1.0, eurNominal * 1.10, USDCurrency(), sch, usdIndex, 0.0, 1.0,
-        /*isFxBaseCurrencyLegResettable=*/false, fxResetConvention);
+        /*isFxBaseCurrencyLegResettable=*/false, fxResetConvention.fixingDays(), fxResetConvention.fixingCalendar());
     swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
         USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(1.10)));
     BOOST_CHECK_NO_THROW(swap->NPV());
@@ -549,7 +548,7 @@ BOOST_AUTO_TEST_CASE(testResettableLegCashFlowsMatchLegResults) {
         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
         usdIndex, 0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, 10.0e-4, 1.0,
         /*isFxBaseCurrencyLegResettable=*/false);
-    BOOST_CHECK(swap->fxResetConvention().fixingCalendar().empty());
+    BOOST_CHECK(swap->fxResetFixingCalendar().empty());
     swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
         USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(spotFx)));
 
@@ -1024,7 +1023,7 @@ BOOST_AUTO_TEST_CASE(testResetExchangePaymentDates) {
     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
         MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
         usdIndex, 0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, 0.0, 1.0,
-        /*isFxBaseCurrencyLegResettable=*/false, FxResetConvention(),
+        /*isFxBaseCurrencyLegResettable=*/false, /*fxResetFixingDays=*/0, /*fxResetFixingCalendar=*/Calendar(),
         /*fxBasePaymentLag=*/2, /*fxQuotePaymentLag=*/2,
         /*fxBasePaymentConvention=*/Preceding,
         /*fxQuotePaymentConvention=*/Preceding);
@@ -1056,7 +1055,7 @@ BOOST_AUTO_TEST_CASE(testResetExchangePaymentDates) {
     for (const auto& cf : constantLeg)
         if (auto exchange = ext::dynamic_pointer_cast<SimpleCashFlow>(cf))
             constantNotionalExchanges.push_back(exchange);
-    BOOST_REQUIRE_EQUAL(constantNotionalExchanges.size(), 2);
+    BOOST_REQUIRE_EQUAL(constantNotionalExchanges.size(), 2U);
     // Both legs exchange notionals on the same business dates, even when the
     // unadjusted schedule dates fall on a weekend.
     BOOST_CHECK_EQUAL(constantNotionalExchanges.front()->date(), exchanges.front()->date());

@@ -351,9 +351,7 @@ namespace QuantLib {
                                            quoteCurrencyPaymentFrequency,
                                            useIndexedCoupons),
       isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
-      fxResetConvention_(fxResetFixingDays,
-                         fxResetFixingDays != 0 && fxResetFixingCalendar.empty() ?
-                             calendar_ : std::move(fxResetFixingCalendar)) {
+      fxResetFixingDays_(fxResetFixingDays), fxResetFixingCalendar_(fxResetFixingCalendar) {
         buildSwap();
     }
 
@@ -370,7 +368,8 @@ namespace QuantLib {
             MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency,
             1.0, baseCcyIdx_->currency(), baseCcySchedule_, baseCcyIdx_, 0.0, 1.0,
             1.0, quoteCcyIdx_->currency(), quoteCcySchedule_, quoteCcyIdx_, 0.0, 1.0,
-            isFxBaseCurrencyLegResettable_, fxResetConvention_, paymentLag_, paymentLag_,
+            isFxBaseCurrencyLegResettable_, fxResetFixingDays_,
+            fxResetFixingCalendar_, paymentLag_, paymentLag_,
             convention_, convention_, false, Null<Natural>(), false, 0,
             RateAveraging::Compound, false, Null<Natural>(), false, 0,
             RateAveraging::Compound, false, useIndexedCoupons_);
