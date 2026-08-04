@@ -581,6 +581,36 @@ if RelinkableYoYInflationTermStructureHandle is not None:
         RelinkableYoYInflationTermStructureHandle.as_handle
     )
 
+# Phase-14 YoY inflation cap/floor aliases.
+ConstantYoYOptionletVolatility = getattr(
+    _ql, "ConstantYoYOptionletVolatility", None
+)
+makeYoYInflationCapFloor = getattr(_ql, "make_yoy_inflation_capfloor", None)
+MakeYoYInflationCapFloor = makeYoYInflationCapFloor
+
+YoYInflationCapFloor = getattr(_ql, "YoYInflationCapFloor", None)
+if YoYInflationCapFloor is not None:
+    YoYInflationCapFloor.setPricingEngine = (  # type: ignore[attr-defined]
+        YoYInflationCapFloor.set_pricing_engine
+    )
+    YoYInflationCapFloor.atmRate = (  # type: ignore[attr-defined]
+        YoYInflationCapFloor.atm_rate
+    )
+    YoYInflationCapFloor.startDate = (  # type: ignore[attr-defined]
+        YoYInflationCapFloor.start_date
+    )
+    YoYInflationCapFloor.maturityDate = (  # type: ignore[attr-defined]
+        YoYInflationCapFloor.maturity_date
+    )
+    YoYInflationCapFloor.isExpired = (  # type: ignore[attr-defined]
+        YoYInflationCapFloor.is_expired
+    )
+
+YoYInflationCapFloorType = getattr(_ql, "YoYInflationCapFloorType", None)
+YoYOptionletVolatilitySurfaceHandle = getattr(
+    _ql, "YoYOptionletVolatilitySurfaceHandle", None
+)
+
 # SWIG-style CPI.Flat nested namespace.
 class CPI:
     """SWIG-style CPI.Flat / CPI.Linear namespace."""
