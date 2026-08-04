@@ -11,6 +11,7 @@
  Copyright (C) 2020 Kline s.r.l.
  Copyright (C) 2022, 2024 Skandinaviska Enskilda Banken AB (publ)
  Copyright (C) 2023 Jonghee Lee
+ Copyright (C) 2026 Lawrenz Law
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,6 +43,7 @@
 #include <ql/time/calendars/italy.hpp>
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/malaysia.hpp>
 #include <ql/time/calendars/malta.hpp>
 #include <ql/time/calendars/mexico.hpp>
 #include <ql/time/calendars/montenegro.hpp>
@@ -3389,7 +3391,7 @@ BOOST_AUTO_TEST_CASE(testTASECalendar) {
     auto c = Israel(Israel::TASE);
 
     auto is_weekend = [](Date d) {
-        if (d >= Date {5, January, 2026})
+        if (d >= Date{5, January, 2026})
             return d.weekday() == Saturday || d.weekday() == Sunday;
         else
             return d.weekday() == Friday || d.weekday() == Saturday;
@@ -3455,22 +3457,18 @@ BOOST_AUTO_TEST_CASE(testTelborCalendar) {
     BOOST_TEST_MESSAGE("Testing Telbor calendar...");
 
     std::vector<Date> expected = {
-        {5, May, 2022},        {30, May, 2022},       {26, September, 2022},
-        {27, September, 2022}, {5, October, 2022},    {10, October, 2022},
-        {17, October, 2022},   {26, December, 2022},  {7, March, 2023},
-        {8, March, 2023},      {5, April, 2023},      {6, April, 2023},
-        {12, April, 2023},     {26, April, 2023},     {26, May, 2023},
-        {29, May, 2023},       {27, July, 2023},      {25, September, 2023},
-        {25, December, 2023},  {26, December, 2023},  {1, January, 2024},
-        {25, March, 2024},     {22, April, 2024},     {23, April, 2024},
-        {29, April, 2024},     {14, May, 2024},       {27, May, 2024},
-        {12, June, 2024},      {13, August, 2024},    {3, October, 2024},
-        {4, October, 2024},    {17, October, 2024},   {24, October, 2024},
-        {25, December, 2024},  {26, December, 2024},  {1, January, 2025},
-        {14, March, 2025},     {1, May, 2025},        {26, May, 2025},
-        {2, June, 2025},       {23, September, 2025}, {24, September, 2025},
-        {2, October, 2025},    {7, October, 2025},    {14, October, 2025},
-        {25, December, 2025},  {26, December, 2025},
+        {5, May, 2022},        {30, May, 2022},       {26, September, 2022}, {27, September, 2022},
+        {5, October, 2022},    {10, October, 2022},   {17, October, 2022},   {26, December, 2022},
+        {7, March, 2023},      {8, March, 2023},      {5, April, 2023},      {6, April, 2023},
+        {12, April, 2023},     {26, April, 2023},     {26, May, 2023},       {29, May, 2023},
+        {27, July, 2023},      {25, September, 2023}, {25, December, 2023},  {26, December, 2023},
+        {1, January, 2024},    {25, March, 2024},     {22, April, 2024},     {23, April, 2024},
+        {29, April, 2024},     {14, May, 2024},       {27, May, 2024},       {12, June, 2024},
+        {13, August, 2024},    {3, October, 2024},    {4, October, 2024},    {17, October, 2024},
+        {24, October, 2024},   {25, December, 2024},  {26, December, 2024},  {1, January, 2025},
+        {14, March, 2025},     {1, May, 2025},        {26, May, 2025},       {2, June, 2025},
+        {23, September, 2025}, {24, September, 2025}, {2, October, 2025},    {7, October, 2025},
+        {14, October, 2025},   {25, December, 2025},  {26, December, 2025},
     };
 
     auto c = Israel(Israel::Telbor);
@@ -4064,6 +4062,108 @@ BOOST_AUTO_TEST_CASE(testCroatia) {
     checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
 }
 
+BOOST_AUTO_TEST_CASE(testMalaysia) {
+
+    BOOST_TEST_MESSAGE("Testing Malaysia holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    // 2024
+    expectedHol.emplace_back(1, January, 2024);    // New Year's Day
+    expectedHol.emplace_back(25, January, 2024);   // Thaipusam
+    expectedHol.emplace_back(1, February, 2024);   // Federal Territory Day
+    expectedHol.emplace_back(12, February, 2024);  // Chinese New Year (substitute)
+    expectedHol.emplace_back(28, March, 2024);     // Nuzul Al-Quran
+    expectedHol.emplace_back(10, April, 2024);     // Hari Raya Aidilfitri
+    expectedHol.emplace_back(11, April, 2024);     // Hari Raya Aidilfitri
+    expectedHol.emplace_back(1, May, 2024);        // Labour Day
+    expectedHol.emplace_back(22, May, 2024);       // Wesak Day
+    expectedHol.emplace_back(3, June, 2024);       // Agong's Birthday
+    expectedHol.emplace_back(17, June, 2024);      // Hari Raya Haji
+    expectedHol.emplace_back(8, July, 2024);       // Awal Muharram (substitute)
+    expectedHol.emplace_back(16, September, 2024); // Malaysia Day / Maulidur Rasul
+    expectedHol.emplace_back(31, October, 2024);   // Deepavali
+    expectedHol.emplace_back(25, December, 2024);  // Christmas Day
+
+    // 2025
+    expectedHol.emplace_back(1, January, 2025);    // New Year's Day
+    expectedHol.emplace_back(29, January, 2025);   // Chinese New Year
+    expectedHol.emplace_back(30, January, 2025);   // Chinese New Year
+    expectedHol.emplace_back(11, February, 2025);  // Thaipusam
+    expectedHol.emplace_back(18, March, 2025);     // Nuzul Al-Quran
+    expectedHol.emplace_back(31, March, 2025);     // Hari Raya Aidilfitri
+    expectedHol.emplace_back(1, April, 2025);      // Hari Raya Aidilfitri
+    expectedHol.emplace_back(1, May, 2025);        // Labour Day
+    expectedHol.emplace_back(12, May, 2025);       // Wesak Day
+    expectedHol.emplace_back(2, June, 2025);       // Agong's Birthday
+    expectedHol.emplace_back(27, June, 2025);      // Awal Muharram
+    expectedHol.emplace_back(1, September, 2025);  // National Day (substitute)
+    expectedHol.emplace_back(5, September, 2025);  // Maulidur Rasul
+    expectedHol.emplace_back(15, September, 2025); // Malaysia Day (additional)
+    expectedHol.emplace_back(16, September, 2025); // Malaysia Day
+    expectedHol.emplace_back(20, October, 2025);   // Deepavali
+    expectedHol.emplace_back(25, December, 2025);  // Christmas Day
+
+    Calendar c = Malaysia();
+    checkHolidays(c.holidayList(Date(1, January, 2024), Date(31, December, 2025)), expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testMalaysiaVariableHolidays) {
+
+    BOOST_TEST_MESSAGE("Testing Malaysia variable holidays across the tabulated range...");
+
+    Calendar c = Malaysia();
+
+    // One festival per tabulated year, so that a date added out of order in the
+    // holiday table is caught: the table is looked up with a binary search, and
+    // an unsorted entry makes its neighbours unfindable.
+    BOOST_CHECK(c.isHoliday(Date(3, February, 2015))); // Thaipusam
+    BOOST_CHECK(c.isHoliday(Date(24, January, 2016)));
+    BOOST_CHECK(c.isHoliday(Date(9, February, 2017)));
+    BOOST_CHECK(c.isHoliday(Date(31, January, 2018)));
+    BOOST_CHECK(c.isHoliday(Date(21, January, 2019)));
+    BOOST_CHECK(c.isHoliday(Date(9, February, 2020)));
+    BOOST_CHECK(c.isHoliday(Date(28, January, 2021)));
+    BOOST_CHECK(c.isHoliday(Date(18, January, 2022)));
+    BOOST_CHECK(c.isHoliday(Date(5, February, 2023)));
+    BOOST_CHECK(c.isHoliday(Date(25, January, 2024)));
+    BOOST_CHECK(c.isHoliday(Date(11, February, 2025)));
+    BOOST_CHECK(c.isHoliday(Date(22, January, 2027)));
+
+    BOOST_CHECK(c.isHoliday(Date(19, February, 2015))); // Chinese New Year
+    BOOST_CHECK(c.isHoliday(Date(8, February, 2016)));
+    BOOST_CHECK(c.isHoliday(Date(28, January, 2017)));
+    BOOST_CHECK(c.isHoliday(Date(16, February, 2018)));
+    BOOST_CHECK(c.isHoliday(Date(5, February, 2019)));
+    BOOST_CHECK(c.isHoliday(Date(25, January, 2020)));
+    BOOST_CHECK(c.isHoliday(Date(12, February, 2021)));
+    BOOST_CHECK(c.isHoliday(Date(1, February, 2022)));
+    BOOST_CHECK(c.isHoliday(Date(22, January, 2023)));
+    BOOST_CHECK(c.isHoliday(Date(10, February, 2024)));
+    BOOST_CHECK(c.isHoliday(Date(29, January, 2025)));
+    BOOST_CHECK(c.isHoliday(Date(17, February, 2026)));
+    BOOST_CHECK(c.isHoliday(Date(6, February, 2027)));
+}
+
+BOOST_AUTO_TEST_CASE(testMalaysiaFixedHolidaysOutsideTabulatedRange) {
+
+    BOOST_TEST_MESSAGE("Testing Malaysia fixed holidays outside the tabulated range...");
+
+    Calendar c = Malaysia();
+
+    // The variable festivals are tabulated only for 2015-2027, but the
+    // fixed-date federal holidays are rule-based and must hold in any year.
+    BOOST_CHECK(c.isHoliday(Date(1, January, 2035)));   // New Year's Day
+    BOOST_CHECK(c.isHoliday(Date(1, February, 2035)));  // Federal Territory Day
+    BOOST_CHECK(c.isHoliday(Date(1, May, 2035)));       // Labour Day
+    BOOST_CHECK(c.isHoliday(Date(31, August, 2035)));   // National Day
+    BOOST_CHECK(c.isHoliday(Date(25, December, 2035))); // Christmas Day
+
+    // Malaysia Day only became a federal holiday in 2010.
+    BOOST_CHECK(c.isHoliday(Date(16, September, 2035)));
+    BOOST_CHECK(c.isBusinessDay(Date(16, September, 2009)));
+}
+
 BOOST_AUTO_TEST_CASE(testUzbekistan) {
 
     BOOST_TEST_MESSAGE("Testing Uzbekistan holiday list...");
@@ -4179,7 +4279,7 @@ BOOST_AUTO_TEST_CASE(testIndia) {
         // Christmas
         Date(25, December, 2026),
     };
-    
+
     // The following 2026 holidays fall on weekends and are
     // therefore not included above:
     // Mahashivratri:      15-Feb-2026 (Sunday)

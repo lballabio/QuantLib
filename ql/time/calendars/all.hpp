@@ -26,6 +26,7 @@
 #include <ql/time/calendars/italy.hpp>
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/malaysia.hpp>
 #include <ql/time/calendars/malta.hpp>
 #include <ql/time/calendars/mexico.hpp>
 #include <ql/time/calendars/montenegro.hpp>
