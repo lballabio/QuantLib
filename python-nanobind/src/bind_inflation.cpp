@@ -1,17 +1,22 @@
 #include "bindings.hpp"
 
+#include <nanobind/stl/optional.h>
 #include <nanobind/stl/shared_ptr.h>
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/vector.h>
 
+#include <ql/cashflows/yoyinflationcoupon.hpp>
 #include <ql/handle.hpp>
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/indexes/inflationindex.hpp>
+#include <ql/instruments/inflationcapfloor.hpp>
+#include <ql/instruments/makeyoyinflationcapfloor.hpp>
 #include <ql/instruments/swap.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/pricingengines/inflation/inflationcapfloorengines.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
@@ -20,6 +25,8 @@
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
+#include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/businessdayconvention.hpp>
 #include <ql/time/calendar.hpp>
@@ -28,6 +35,9 @@
 #include <ql/time/frequency.hpp>
 #include <ql/time/period.hpp>
 #include <ql/time/schedule.hpp>
+
+#include <optional>
+#include <string>
 
 using namespace QuantLib;
 
@@ -652,4 +662,214 @@ void bind_inflation(nb::module_& m) {
             },
             nb::arg("discount_curve"),
             "Attach DiscountingSwapEngine (standard for YYIIS).");
+
+    // --- Phase 14: YoY inflation caps / floors ---
+
+    nb::enum_<YoYInflationCapFloor::Type>(m, "YoYInflationCapFloorType")
+        .value("Cap", YoYInflationCapFloor::Cap)
+        .value("Floor", YoYInflationCapFloor::Floor)
+        .value("Collar", YoYInflationCapFloor::Collar);
+
+    nb::class_<Handle<YoYOptionletVolatilitySurface>>(
+        m, "YoYOptionletVolatilitySurfaceHandle")
+        .def(nb::init<>())
+        .def("empty", &Handle<YoYOptionletVolatilitySurface>::empty)
+        .def(
+            "volatility",
+            [](const Handle<YoYOptionletVolatilitySurface>& h,
+               const Date& d,
+               Rate strike,
+               bool extrapolate) {
+                return h->volatility(d, strike, Period(-1, Days), extrapolate);
+            },
+            nb::arg("date"),
+            nb::arg("strike"),
+            nb::arg("extrapolate") = false);
+
+    m.def(
+        "ConstantYoYOptionletVolatility",
+        [](Volatility volatility,
+           Natural settlement_days,
+           const Calendar& calendar,
+           BusinessDayConvention bdc,
+           const DayCounter& day_counter,
+           const Period& observation_lag,
+           Frequency frequency,
+           bool index_is_interpolated,
+           Rate min_strike,
+           Rate max_strike,
+           VolatilityType vol_type,
+           Real displacement) {
+            return Handle<YoYOptionletVolatilitySurface>(
+                ext::make_shared<ConstantYoYOptionletVolatility>(
+                    volatility,
+                    settlement_days,
+                    calendar,
+                    bdc,
+                    day_counter,
+                    observation_lag,
+                    frequency,
+                    index_is_interpolated,
+                    min_strike,
+                    max_strike,
+                    vol_type,
+                    displacement));
+        },
+        nb::arg("volatility"),
+        nb::arg("settlement_days"),
+        nb::arg("calendar"),
+        nb::arg("bdc"),
+        nb::arg("day_counter"),
+        nb::arg("observation_lag"),
+        nb::arg("frequency"),
+        nb::arg("index_is_interpolated") = false,
+        nb::arg("min_strike") = -1.0,
+        nb::arg("max_strike") = 100.0,
+        nb::arg("vol_type") = ShiftedLognormal,
+        nb::arg("displacement") = 0.0,
+        "Factory: ConstantYoYOptionletVolatility → "
+        "YoYOptionletVolatilitySurfaceHandle.");
+
+    nb::class_<YoYInflationCapFloor>(m, "YoYInflationCapFloor")
+        .def(
+            "__init__",
+            [](YoYInflationCapFloor* self,
+               YoYInflationCapFloor::Type type,
+               const Schedule& schedule,
+               const ext::shared_ptr<YoYInflationIndex>& index,
+               const Period& observation_lag,
+               CPI::InterpolationType observation_interpolation,
+               Rate strike,
+               const Calendar& payment_calendar,
+               const DayCounter& day_counter,
+               Real nominal,
+               BusinessDayConvention payment_convention,
+               Natural fixing_days,
+               std::optional<Rate> floor_strike) {
+                Leg leg = yoyInflationLeg(schedule,
+                                          payment_calendar,
+                                          index,
+                                          observation_lag,
+                                          observation_interpolation)
+                              .withNotionals(nominal)
+                              .withPaymentDayCounter(day_counter)
+                              .withPaymentAdjustment(payment_convention)
+                              .withFixingDays(fixing_days);
+                if (type == YoYInflationCapFloor::Cap) {
+                    new (self) YoYInflationCap(leg, std::vector<Rate>(1, strike));
+                } else if (type == YoYInflationCapFloor::Floor) {
+                    new (self)
+                        YoYInflationFloor(leg, std::vector<Rate>(1, strike));
+                } else if (type == YoYInflationCapFloor::Collar) {
+                    QL_REQUIRE(floor_strike.has_value(),
+                               "Collar requires floor_strike");
+                    new (self) YoYInflationCollar(
+                        leg,
+                        std::vector<Rate>(1, strike),
+                        std::vector<Rate>(1, *floor_strike));
+                } else {
+                    QL_FAIL("unknown YoYInflationCapFloor type");
+                }
+            },
+            nb::arg("type"),
+            nb::arg("schedule"),
+            nb::arg("index"),
+            nb::arg("observation_lag"),
+            nb::arg("observation_interpolation"),
+            nb::arg("strike"),
+            nb::arg("payment_calendar"),
+            nb::arg("day_counter"),
+            nb::arg("nominal") = 1000000.0,
+            nb::arg("payment_convention") = ModifiedFollowing,
+            nb::arg("fixing_days") = 0,
+            nb::arg("floor_strike") = nb::none(),
+            "Build a YoY inflation Cap/Floor/Collar from a YoY schedule.")
+        .def("NPV", [](YoYInflationCapFloor& cf) { return cf.NPV(); })
+        .def("type",
+             [](const YoYInflationCapFloor& cf) { return cf.type(); })
+        .def("start_date",
+             [](const YoYInflationCapFloor& cf) { return cf.startDate(); })
+        .def("maturity_date",
+             [](const YoYInflationCapFloor& cf) { return cf.maturityDate(); })
+        .def("is_expired",
+             [](const YoYInflationCapFloor& cf) { return cf.isExpired(); })
+        .def(
+            "atm_rate",
+            [](const YoYInflationCapFloor& cf,
+               const Handle<YieldTermStructure>& discount) {
+                return cf.atmRate(**discount);
+            },
+            nb::arg("discount_curve"))
+        .def(
+            "set_pricing_engine",
+            [](YoYInflationCapFloor& cf,
+               const ext::shared_ptr<YoYInflationIndex>& index,
+               const Handle<YoYOptionletVolatilitySurface>& vol,
+               const Handle<YieldTermStructure>& nominal,
+               const std::string& model) {
+                ext::shared_ptr<PricingEngine> engine;
+                if (model == "black" || model == "Black") {
+                    engine = ext::make_shared<YoYInflationBlackCapFloorEngine>(
+                        index, vol, nominal);
+                } else if (model == "unit_displaced_black" ||
+                           model == "UnitDisplacedBlack") {
+                    engine = ext::make_shared<
+                        YoYInflationUnitDisplacedBlackCapFloorEngine>(
+                        index, vol, nominal);
+                } else if (model == "bachelier" || model == "Bachelier") {
+                    engine =
+                        ext::make_shared<YoYInflationBachelierCapFloorEngine>(
+                            index, vol, nominal);
+                } else {
+                    QL_FAIL("unknown YoY cap/floor model '"
+                            << model
+                            << "' (use black|unit_displaced_black|bachelier)");
+                }
+                cf.setPricingEngine(engine);
+            },
+            nb::arg("index"),
+            nb::arg("volatility"),
+            nb::arg("nominal"),
+            nb::arg("model") = std::string("black"),
+            "Attach Black / unit-displaced Black / Bachelier YoY engine.");
+
+    m.def(
+        "make_yoy_inflation_capfloor",
+        [](YoYInflationCapFloor::Type type,
+           const ext::shared_ptr<YoYInflationIndex>& index,
+           Size length_years,
+           const Calendar& calendar,
+           const Period& observation_lag,
+           CPI::InterpolationType observation_interpolation,
+           Rate strike,
+           Real nominal,
+           const Date& effective_date,
+           const DayCounter& day_counter,
+           BusinessDayConvention payment_convention) {
+            MakeYoYInflationCapFloor maker(type,
+                                           index,
+                                           length_years,
+                                           calendar,
+                                           observation_lag,
+                                           observation_interpolation);
+            maker.withNominal(nominal).withStrike(strike).withPaymentAdjustment(
+                payment_convention);
+            if (effective_date != Date())
+                maker.withEffectiveDate(effective_date);
+            if (day_counter != DayCounter())
+                maker.withPaymentDayCounter(day_counter);
+            return YoYInflationCapFloor(maker);
+        },
+        nb::arg("type"),
+        nb::arg("index"),
+        nb::arg("length_years"),
+        nb::arg("calendar"),
+        nb::arg("observation_lag"),
+        nb::arg("observation_interpolation"),
+        nb::arg("strike"),
+        nb::arg("nominal") = 1000000.0,
+        nb::arg("effective_date") = Date(),
+        nb::arg("day_counter") = DayCounter(),
+        nb::arg("payment_convention") = ModifiedFollowing,
+        "Build a standard YoY inflation Cap/Floor via MakeYoYInflationCapFloor.");
 }

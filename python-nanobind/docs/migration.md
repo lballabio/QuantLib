@@ -564,6 +564,28 @@ yyiis.set_pricing_engine(nominal_curve)
 print(yyiis.NPV(), yyiis.fair_rate())
 ```
 
+## Phase-14 YoY inflation caps / floors
+
+```python
+vol = ql.ConstantYoYOptionletVolatility(
+    0.01, 0, cal, ql.BusinessDayConvention.ModifiedFollowing, dc,
+    ql.Period(2, ql.TimeUnit.Months), ql.Frequency.Annual,
+)
+cap = ql.YoYInflationCapFloor(
+    ql.YoYInflationCapFloorType.Cap, sched, yoy,
+    ql.Period(2, ql.TimeUnit.Months), ql.CPIInterpolationType.Flat,
+    0.03, cal, dc, nominal=1e6,
+)
+cap.set_pricing_engine(yoy, vol, nominal_curve, model="black")
+print(cap.NPV())
+
+# or MakeYoYInflationCapFloor helper:
+cap2 = ql.make_yoy_inflation_capfloor(
+    ql.YoYInflationCapFloorType.Cap, yoy, 5, cal,
+    ql.Period(2, ql.TimeUnit.Months), ql.CPIInterpolationType.Flat, 0.03,
+)
+```
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,

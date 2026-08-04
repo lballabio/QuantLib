@@ -1256,4 +1256,73 @@ def PiecewiseYoYInflationCurve(
     helpers: Sequence[YoYInflationHelper],
 ) -> YoYInflationTermStructureHandle: ...
 
+class YoYInflationCapFloorType:
+    Cap: YoYInflationCapFloorType
+    Floor: YoYInflationCapFloorType
+    Collar: YoYInflationCapFloorType
+
+class YoYOptionletVolatilitySurfaceHandle:
+    def empty(self) -> bool: ...
+    def volatility(
+        self, date: Date, strike: float, extrapolate: bool = ...
+    ) -> float: ...
+
+class YoYInflationCapFloor:
+    def __init__(
+        self,
+        type: YoYInflationCapFloorType,
+        schedule: Schedule,
+        index: YoYInflationIndex,
+        observation_lag: Period,
+        observation_interpolation: CPIInterpolationType,
+        strike: float,
+        payment_calendar: Calendar,
+        day_counter: DayCounter,
+        nominal: float = ...,
+        payment_convention: BusinessDayConvention = ...,
+        fixing_days: int = ...,
+        floor_strike: float | None = ...,
+    ) -> None: ...
+    def NPV(self) -> float: ...
+    def type(self) -> YoYInflationCapFloorType: ...
+    def start_date(self) -> Date: ...
+    def maturity_date(self) -> Date: ...
+    def is_expired(self) -> bool: ...
+    def atm_rate(self, discount_curve: YieldTermStructureHandle) -> float: ...
+    def set_pricing_engine(
+        self,
+        index: YoYInflationIndex,
+        volatility: YoYOptionletVolatilitySurfaceHandle,
+        nominal: YieldTermStructureHandle,
+        model: str = ...,
+    ) -> None: ...
+
+def ConstantYoYOptionletVolatility(
+    volatility: float,
+    settlement_days: int,
+    calendar: Calendar,
+    bdc: BusinessDayConvention,
+    day_counter: DayCounter,
+    observation_lag: Period,
+    frequency: Frequency,
+    index_is_interpolated: bool = ...,
+    min_strike: float = ...,
+    max_strike: float = ...,
+    vol_type: VolatilityType = ...,
+    displacement: float = ...,
+) -> YoYOptionletVolatilitySurfaceHandle: ...
+def make_yoy_inflation_capfloor(
+    type: YoYInflationCapFloorType,
+    index: YoYInflationIndex,
+    length_years: int,
+    calendar: Calendar,
+    observation_lag: Period,
+    observation_interpolation: CPIInterpolationType,
+    strike: float,
+    nominal: float = ...,
+    effective_date: Date = ...,
+    day_counter: DayCounter = ...,
+    payment_convention: BusinessDayConvention = ...,
+) -> YoYInflationCapFloor: ...
+
 __version__: str

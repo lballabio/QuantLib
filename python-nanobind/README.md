@@ -105,6 +105,12 @@ Experimental Python package that binds a focused QuantLib surface with
   `PiecewiseYoYInflationCurve` + `YearOnYearInflationSwapHelper`
 - `YearOnYearInflationSwap` + `DiscountingSwapEngine`
 
+### Phase 14 (YoY inflation caps / floors)
+- `ConstantYoYOptionletVolatility` → `YoYOptionletVolatilitySurfaceHandle`
+- `YoYInflationCapFloor` (Cap / Floor / Collar) + Black / unit-displaced /
+  Bachelier engines via `set_pricing_engine(..., model=...)`
+- `make_yoy_inflation_capfloor` (`MakeYoYInflationCapFloor`)
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 
