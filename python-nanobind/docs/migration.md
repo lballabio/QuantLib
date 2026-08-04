@@ -530,6 +530,40 @@ zcis.set_pricing_engine(nominal_curve)  # DiscountingSwapEngine
 print(zcis.NPV(), zcis.fair_rate())
 ```
 
+## Phase-13 YoY inflation / YYIIS
+
+```python
+hy = ql.RelinkableYoYInflationTermStructureHandle()
+rpi = ql.UKRPI()
+# add historic RPI fixings on rpi…
+yoy = ql.make_yoy_inflation_index(rpi, hy)  # ratio YoY index
+# or quoted: yoy = ql.YYUKRPI(hy)
+
+helpers = [
+    ql.YearOnYearInflationSwapHelper(
+        ql.make_quote_handle(0.0295), ql.Period(2, ql.TimeUnit.Months),
+        maturity, ql.UnitedKingdom(), ql.BusinessDayConvention.ModifiedFollowing,
+        ql.Thirty360(...), yoy, ql.CPIInterpolationType.Flat, nominal_curve,
+    )
+]
+curve = ql.PiecewiseYoYInflationCurve(
+    today, rpi.last_fixing_date(), 0.0295, ql.Frequency.Monthly, dc, helpers
+)
+hy.link_to(curve)
+
+sched = ql.Schedule(today, maturity, ql.Period(ql.Frequency.Annual), cal,
+                    ql.BusinessDayConvention.Unadjusted,
+                    ql.BusinessDayConvention.Unadjusted,
+                    ql.DateGeneration.Backward, False)
+yyiis = ql.YearOnYearInflationSwap(
+    ql.SwapType.Payer, 1e6, sched, 0.0295, dc, sched, yoy,
+    ql.Period(2, ql.TimeUnit.Months), ql.CPIInterpolationType.Flat,
+    0.0, dc, cal,
+)
+yyiis.set_pricing_engine(nominal_curve)
+print(yyiis.NPV(), yyiis.fair_rate())
+```
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,

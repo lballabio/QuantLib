@@ -9,12 +9,15 @@
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/instruments/swap.hpp>
+#include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
+#include <ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp>
 #include <ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp>
+#include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
@@ -24,14 +27,18 @@
 #include <ql/time/daycounter.hpp>
 #include <ql/time/frequency.hpp>
 #include <ql/time/period.hpp>
+#include <ql/time/schedule.hpp>
 
 using namespace QuantLib;
 
 namespace {
 
 using ZeroInflationHelper = BootstrapHelper<ZeroInflationTermStructure>;
+using YoYInflationHelper = BootstrapHelper<YoYInflationTermStructure>;
 using PiecewiseZeroInflationLinear =
     PiecewiseZeroInflationCurve<Linear>;
+using PiecewiseYoYInflationLinear =
+    PiecewiseYoYInflationCurve<Linear>;
 
 Handle<ZeroInflationTermStructure> make_zero_inflation_curve(
     const Date& reference_date,
@@ -71,6 +78,48 @@ Handle<ZeroInflationTermStructure> make_piecewise_zero_inflation_curve(
     return Handle<ZeroInflationTermStructure>(
         ext::make_shared<PiecewiseZeroInflationLinear>(
             reference_date, base_date, frequency, day_counter, helpers));
+}
+
+Handle<YoYInflationTermStructure> make_yoy_inflation_curve(
+    const Date& reference_date,
+    const std::vector<Date>& dates,
+    const std::vector<Rate>& rates,
+    Frequency frequency,
+    const DayCounter& day_counter) {
+    QL_REQUIRE(dates.size() == rates.size(), "dates/rates size mismatch");
+    QL_REQUIRE(dates.size() >= 2, "need at least two yoy-inflation nodes");
+    return Handle<YoYInflationTermStructure>(
+        ext::make_shared<InterpolatedYoYInflationCurve<Linear>>(
+            reference_date, dates, rates, frequency, day_counter));
+}
+
+Handle<YoYInflationTermStructure> make_flat_yoy_inflation_curve(
+    const Date& reference_date,
+    const Date& base_date,
+    const Date& max_date,
+    Rate rate,
+    Frequency frequency,
+    const DayCounter& day_counter) {
+    QL_REQUIRE(max_date > base_date, "max_date must be after base_date");
+    std::vector<Date> dates = {base_date, max_date};
+    std::vector<Rate> rates = {rate, rate};
+    return Handle<YoYInflationTermStructure>(
+        ext::make_shared<InterpolatedYoYInflationCurve<Linear>>(
+            reference_date, dates, rates, frequency, day_counter));
+}
+
+Handle<YoYInflationTermStructure> make_piecewise_yoy_inflation_curve(
+    const Date& reference_date,
+    const Date& base_date,
+    Rate base_yoy_rate,
+    Frequency frequency,
+    const DayCounter& day_counter,
+    const std::vector<ext::shared_ptr<YoYInflationHelper>>& helpers) {
+    QL_REQUIRE(!helpers.empty(), "empty yoy-inflation helper list");
+    return Handle<YoYInflationTermStructure>(
+        ext::make_shared<PiecewiseYoYInflationLinear>(
+            reference_date, base_date, base_yoy_rate, frequency, day_counter,
+            helpers));
 }
 
 } // namespace
@@ -320,4 +369,287 @@ void bind_inflation(nb::module_& m) {
             },
             nb::arg("discount_curve"),
             "Attach DiscountingSwapEngine (standard for ZCIS).");
+
+    // --- Phase 13: year-on-year inflation / YYIIS ---
+
+    nb::class_<Handle<YoYInflationTermStructure>>(
+        m, "YoYInflationTermStructureHandle")
+        .def(nb::init<>())
+        .def("empty", &Handle<YoYInflationTermStructure>::empty)
+        .def(
+            "yoy_rate",
+            [](const Handle<YoYInflationTermStructure>& h,
+               const Date& d,
+               bool extrapolate) { return h->yoyRate(d, extrapolate); },
+            nb::arg("date"),
+            nb::arg("extrapolate") = false)
+        .def("base_date",
+             [](const Handle<YoYInflationTermStructure>& h) {
+                 return h->baseDate();
+             })
+        .def("base_rate",
+             [](const Handle<YoYInflationTermStructure>& h) {
+                 return h->baseRate();
+             })
+        .def("max_date",
+             [](const Handle<YoYInflationTermStructure>& h) {
+                 return h->maxDate();
+             })
+        .def("frequency",
+             [](const Handle<YoYInflationTermStructure>& h) {
+                 return h->frequency();
+             })
+        .def("reference_date",
+             [](const Handle<YoYInflationTermStructure>& h) {
+                 return h->referenceDate();
+             });
+
+    nb::class_<RelinkableHandle<YoYInflationTermStructure>>(
+        m, "RelinkableYoYInflationTermStructureHandle")
+        .def(nb::init<>())
+        .def("empty",
+             [](const RelinkableHandle<YoYInflationTermStructure>& h) {
+                 return h.empty();
+             })
+        .def(
+            "link_to",
+            [](RelinkableHandle<YoYInflationTermStructure>& h,
+               const Handle<YoYInflationTermStructure>& target) {
+                h.linkTo(target.currentLink());
+            },
+            nb::arg("handle"))
+        .def("as_handle",
+             [](const RelinkableHandle<YoYInflationTermStructure>& h) {
+                 return Handle<YoYInflationTermStructure>(h);
+             })
+        .def(
+            "yoy_rate",
+            [](const RelinkableHandle<YoYInflationTermStructure>& h,
+               const Date& d,
+               bool extrapolate) { return h->yoyRate(d, extrapolate); },
+            nb::arg("date"),
+            nb::arg("extrapolate") = false);
+
+    // YoYInflationIndex is MI-heavy — opaque shared_ptr holder.
+    nb::class_<YoYInflationIndex>(m, "YoYInflationIndex")
+        .def("name", [](const YoYInflationIndex& i) { return i.name(); })
+        .def("frequency",
+             [](const YoYInflationIndex& i) { return i.frequency(); })
+        .def("availability_lag",
+             [](const YoYInflationIndex& i) { return i.availabilityLag(); })
+        .def("last_fixing_date",
+             [](const YoYInflationIndex& i) { return i.lastFixingDate(); })
+        .def("ratio", [](const YoYInflationIndex& i) { return i.ratio(); })
+        .def(
+            "add_fixing",
+            [](YoYInflationIndex& i,
+               const Date& fixing_date,
+               Rate fixing,
+               bool force) { i.addFixing(fixing_date, fixing, force); },
+            nb::arg("fixing_date"),
+            nb::arg("fixing"),
+            nb::arg("force_overwrite") = false)
+        .def(
+            "fixing",
+            [](const YoYInflationIndex& i,
+               const Date& fixing_date,
+               bool forecast_today) {
+                return i.fixing(fixing_date, forecast_today);
+            },
+            nb::arg("fixing_date"),
+            nb::arg("forecast_today") = false);
+
+    m.def(
+        "make_yoy_inflation_index",
+        [](const ext::shared_ptr<ZeroInflationIndex>& underlying,
+           const Handle<YoYInflationTermStructure>& h) {
+            return ext::shared_ptr<YoYInflationIndex>(
+                ext::make_shared<YoYInflationIndex>(underlying, h));
+        },
+        nb::arg("underlying"),
+        nb::arg("handle") = Handle<YoYInflationTermStructure>(),
+        "Factory: YoYInflationIndex(ZeroInflationIndex, handle) — ratio index.");
+
+    m.def(
+        "make_yoy_inflation_index",
+        [](const ext::shared_ptr<ZeroInflationIndex>& underlying,
+           const RelinkableHandle<YoYInflationTermStructure>& h) {
+            return ext::shared_ptr<YoYInflationIndex>(
+                ext::make_shared<YoYInflationIndex>(
+                    underlying, Handle<YoYInflationTermStructure>(h)));
+        },
+        nb::arg("underlying"),
+        nb::arg("handle"),
+        "Factory: YoYInflationIndex(ZeroInflationIndex, relinkable handle).");
+
+    m.def(
+        "YYUKRPI",
+        [](const Handle<YoYInflationTermStructure>& h) {
+            return ext::shared_ptr<YoYInflationIndex>(
+                ext::make_shared<YYUKRPI>(h));
+        },
+        nb::arg("handle") = Handle<YoYInflationTermStructure>(),
+        "Factory: YYUKRPI → YoYInflationIndex (quoted YoY).");
+
+    m.def(
+        "YYUKRPI",
+        [](const RelinkableHandle<YoYInflationTermStructure>& h) {
+            return ext::shared_ptr<YoYInflationIndex>(ext::make_shared<YYUKRPI>(
+                Handle<YoYInflationTermStructure>(h)));
+        },
+        nb::arg("handle"),
+        "Factory: YYUKRPI(relinkable handle) → YoYInflationIndex.");
+
+    m.def(
+        "YYEUHICP",
+        [](const Handle<YoYInflationTermStructure>& h) {
+            return ext::shared_ptr<YoYInflationIndex>(
+                ext::make_shared<YYEUHICP>(h));
+        },
+        nb::arg("handle") = Handle<YoYInflationTermStructure>(),
+        "Factory: YYEUHICP → YoYInflationIndex (quoted YoY).");
+
+    m.def("InterpolatedYoYInflationCurve",
+          &make_yoy_inflation_curve,
+          nb::arg("reference_date"),
+          nb::arg("dates"),
+          nb::arg("rates"),
+          nb::arg("frequency"),
+          nb::arg("day_counter"),
+          "Factory: InterpolatedYoYInflationCurve<Linear> → "
+          "YoYInflationTermStructureHandle.");
+
+    m.def("FlatYoYInflationCurve",
+          &make_flat_yoy_inflation_curve,
+          nb::arg("reference_date"),
+          nb::arg("base_date"),
+          nb::arg("max_date"),
+          nb::arg("rate"),
+          nb::arg("frequency"),
+          nb::arg("day_counter"),
+          "Factory: constant YoY-inflation rate via a 2-node linear curve.");
+
+    nb::class_<YoYInflationHelper>(m, "YoYInflationHelper");
+
+    m.def(
+        "YearOnYearInflationSwapHelper",
+        [](const Handle<Quote>& quote,
+           const Period& observation_lag,
+           const Date& maturity,
+           const Calendar& calendar,
+           BusinessDayConvention payment_convention,
+           const DayCounter& day_counter,
+           const ext::shared_ptr<YoYInflationIndex>& index,
+           CPI::InterpolationType observation_interpolation,
+           const Handle<YieldTermStructure>& nominal) {
+            return ext::shared_ptr<YoYInflationHelper>(
+                ext::make_shared<YearOnYearInflationSwapHelper>(
+                    quote,
+                    observation_lag,
+                    maturity,
+                    calendar,
+                    payment_convention,
+                    day_counter,
+                    index,
+                    observation_interpolation,
+                    nominal));
+        },
+        nb::arg("quote"),
+        nb::arg("observation_lag"),
+        nb::arg("maturity"),
+        nb::arg("calendar"),
+        nb::arg("payment_convention"),
+        nb::arg("day_counter"),
+        nb::arg("index"),
+        nb::arg("observation_interpolation"),
+        nb::arg("nominal"),
+        "Factory: YearOnYearInflationSwapHelper → YoYInflationHelper.");
+
+    m.def("PiecewiseYoYInflationCurve",
+          &make_piecewise_yoy_inflation_curve,
+          nb::arg("reference_date"),
+          nb::arg("base_date"),
+          nb::arg("base_yoy_rate"),
+          nb::arg("frequency"),
+          nb::arg("day_counter"),
+          nb::arg("helpers"),
+          "Factory: PiecewiseYoYInflationCurve<Linear> → "
+          "YoYInflationTermStructureHandle.");
+
+    // YearOnYearInflationSwap is Swap/Instrument (MI) — standalone wrapper.
+    nb::class_<YearOnYearInflationSwap>(m, "YearOnYearInflationSwap")
+        .def(
+            "__init__",
+            [](YearOnYearInflationSwap* self,
+               Swap::Type type,
+               Real nominal,
+               const Schedule& fixed_schedule,
+               Rate fixed_rate,
+               const DayCounter& fixed_day_count,
+               const Schedule& yoy_schedule,
+               const ext::shared_ptr<YoYInflationIndex>& yoy_index,
+               const Period& observation_lag,
+               CPI::InterpolationType observation_interpolation,
+               Spread spread,
+               const DayCounter& yoy_day_count,
+               const Calendar& payment_calendar,
+               BusinessDayConvention payment_convention) {
+                new (self) YearOnYearInflationSwap(type,
+                                                   nominal,
+                                                   fixed_schedule,
+                                                   fixed_rate,
+                                                   fixed_day_count,
+                                                   yoy_schedule,
+                                                   yoy_index,
+                                                   observation_lag,
+                                                   observation_interpolation,
+                                                   spread,
+                                                   yoy_day_count,
+                                                   payment_calendar,
+                                                   payment_convention);
+            },
+            nb::arg("type"),
+            nb::arg("nominal"),
+            nb::arg("fixed_schedule"),
+            nb::arg("fixed_rate"),
+            nb::arg("fixed_day_count"),
+            nb::arg("yoy_schedule"),
+            nb::arg("yoy_index"),
+            nb::arg("observation_lag"),
+            nb::arg("observation_interpolation"),
+            nb::arg("spread"),
+            nb::arg("yoy_day_count"),
+            nb::arg("payment_calendar"),
+            nb::arg("payment_convention") = ModifiedFollowing)
+        .def("NPV", [](YearOnYearInflationSwap& s) { return s.NPV(); })
+        .def("fair_rate",
+             [](YearOnYearInflationSwap& s) { return s.fairRate(); })
+        .def("fair_spread",
+             [](YearOnYearInflationSwap& s) { return s.fairSpread(); })
+        .def("fixed_rate",
+             [](const YearOnYearInflationSwap& s) { return s.fixedRate(); })
+        .def("spread",
+             [](const YearOnYearInflationSwap& s) { return s.spread(); })
+        .def("nominal",
+             [](const YearOnYearInflationSwap& s) { return s.nominal(); })
+        .def("type", [](const YearOnYearInflationSwap& s) { return s.type(); })
+        .def("start_date",
+             [](const YearOnYearInflationSwap& s) { return s.startDate(); })
+        .def("maturity_date",
+             [](const YearOnYearInflationSwap& s) { return s.maturityDate(); })
+        .def("fixed_leg_NPV",
+             [](YearOnYearInflationSwap& s) { return s.fixedLegNPV(); })
+        .def("yoy_leg_NPV",
+             [](YearOnYearInflationSwap& s) { return s.yoyLegNPV(); })
+        .def("is_expired",
+             [](const YearOnYearInflationSwap& s) { return s.isExpired(); })
+        .def(
+            "set_pricing_engine",
+            [](YearOnYearInflationSwap& s,
+               const Handle<YieldTermStructure>& discount_curve) {
+                s.setPricingEngine(
+                    ext::make_shared<DiscountingSwapEngine>(discount_curve));
+            },
+            nb::arg("discount_curve"),
+            "Attach DiscountingSwapEngine (standard for YYIIS).");
 }

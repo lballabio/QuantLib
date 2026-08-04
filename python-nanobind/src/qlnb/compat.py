@@ -495,6 +495,92 @@ if RelinkableZeroInflationTermStructureHandle is not None:
         RelinkableZeroInflationTermStructureHandle.as_handle
     )
 
+# Phase-13 YoY-inflation / YYIIS aliases.
+YYUKRPI = getattr(_ql, "YYUKRPI", None)
+YYEUHICP = getattr(_ql, "YYEUHICP", None)
+YoYInflationIndex = getattr(_ql, "make_yoy_inflation_index", None)
+YearOnYearInflationSwapHelper = getattr(
+    _ql, "YearOnYearInflationSwapHelper", None
+)
+PiecewiseYoYInflationCurve = getattr(_ql, "PiecewiseYoYInflationCurve", None)
+InterpolatedYoYInflationCurve = getattr(
+    _ql, "InterpolatedYoYInflationCurve", None
+)
+FlatYoYInflationCurve = getattr(_ql, "FlatYoYInflationCurve", None)
+
+_YoYInflationIndexType = getattr(_ql, "YoYInflationIndex", None)
+if _YoYInflationIndexType is not None:
+    _YoYInflationIndexType.addFixing = (  # type: ignore[attr-defined]
+        _YoYInflationIndexType.add_fixing
+    )
+    _YoYInflationIndexType.lastFixingDate = (  # type: ignore[attr-defined]
+        _YoYInflationIndexType.last_fixing_date
+    )
+    _YoYInflationIndexType.availabilityLag = (  # type: ignore[attr-defined]
+        _YoYInflationIndexType.availability_lag
+    )
+
+YearOnYearInflationSwap = getattr(_ql, "YearOnYearInflationSwap", None)
+if YearOnYearInflationSwap is not None:
+    YearOnYearInflationSwap.setPricingEngine = (  # type: ignore[attr-defined]
+        YearOnYearInflationSwap.set_pricing_engine
+    )
+    YearOnYearInflationSwap.fairRate = (  # type: ignore[attr-defined]
+        YearOnYearInflationSwap.fair_rate
+    )
+    YearOnYearInflationSwap.fairSpread = (  # type: ignore[attr-defined]
+        YearOnYearInflationSwap.fair_spread
+    )
+    YearOnYearInflationSwap.fixedRate = (  # type: ignore[attr-defined]
+        YearOnYearInflationSwap.fixed_rate
+    )
+    YearOnYearInflationSwap.fixedLegNPV = (  # type: ignore[attr-defined]
+        YearOnYearInflationSwap.fixed_leg_NPV
+    )
+    YearOnYearInflationSwap.yoyLegNPV = (  # type: ignore[attr-defined]
+        YearOnYearInflationSwap.yoy_leg_NPV
+    )
+    YearOnYearInflationSwap.startDate = (  # type: ignore[attr-defined]
+        YearOnYearInflationSwap.start_date
+    )
+    YearOnYearInflationSwap.maturityDate = (  # type: ignore[attr-defined]
+        YearOnYearInflationSwap.maturity_date
+    )
+    YearOnYearInflationSwap.isExpired = (  # type: ignore[attr-defined]
+        YearOnYearInflationSwap.is_expired
+    )
+
+YoYInflationTermStructureHandle = getattr(
+    _ql, "YoYInflationTermStructureHandle", None
+)
+if YoYInflationTermStructureHandle is not None:
+    YoYInflationTermStructureHandle.yoyRate = (  # type: ignore[attr-defined]
+        YoYInflationTermStructureHandle.yoy_rate
+    )
+    YoYInflationTermStructureHandle.baseDate = (  # type: ignore[attr-defined]
+        YoYInflationTermStructureHandle.base_date
+    )
+    YoYInflationTermStructureHandle.baseRate = (  # type: ignore[attr-defined]
+        YoYInflationTermStructureHandle.base_rate
+    )
+    YoYInflationTermStructureHandle.maxDate = (  # type: ignore[attr-defined]
+        YoYInflationTermStructureHandle.max_date
+    )
+    YoYInflationTermStructureHandle.referenceDate = (  # type: ignore[attr-defined]
+        YoYInflationTermStructureHandle.reference_date
+    )
+
+RelinkableYoYInflationTermStructureHandle = getattr(
+    _ql, "RelinkableYoYInflationTermStructureHandle", None
+)
+if RelinkableYoYInflationTermStructureHandle is not None:
+    RelinkableYoYInflationTermStructureHandle.linkTo = (  # type: ignore[attr-defined]
+        RelinkableYoYInflationTermStructureHandle.link_to
+    )
+    RelinkableYoYInflationTermStructureHandle.asHandle = (  # type: ignore[attr-defined]
+        RelinkableYoYInflationTermStructureHandle.as_handle
+    )
+
 # SWIG-style CPI.Flat nested namespace.
 class CPI:
     """SWIG-style CPI.Flat / CPI.Linear namespace."""
