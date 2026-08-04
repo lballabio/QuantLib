@@ -145,7 +145,7 @@ namespace QuantLib {
             registerWith(correlation_);
         }
 
-        Handle<Quote> correlation() const{
+        const Handle<Quote>& correlation() const{
             return correlation_;
         }
 

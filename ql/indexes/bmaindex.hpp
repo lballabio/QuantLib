@@ -48,7 +48,7 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        Handle<YieldTermStructure> forwardingTermStructure() const;
+        const Handle<YieldTermStructure>& forwardingTermStructure() const;
         //@}
         //! \name Date calculations
         //@{
