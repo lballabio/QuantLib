@@ -35,11 +35,34 @@ namespace QuantLib {
         : strike_(nominal), discountRatios_(fixedPayTimes.size()),
           rateCoefficients_(fixedPayTimes.size()), amounts_(amounts) {
 
+            /* Optimization: Since for exercise time t_e
+
+               P(t_e,T;r) = A(t_e,T) exp(-B(t_e,T) r)
+
+               the bond-price ratios used here in operator() are
+
+               R_i(r) = P(t_e,T_i;r) / P(t_e,T_0;r)
+                      = (A(t_e,T_i) / A(t_e,T_0)) exp(-[B(t_e,T_i)-B(t_e,T_0)] r)
+
+               that is, they have the form
+
+               R_i(r) = c_i exp(d_i r)
+
+               where the c_i (discount ratios) and the d_i (rate coefficients) don't depend on r.
+
+               The loop below determines c_i and d_i for each i by plugging r=0 and r=1
+               in the formula, yielding
+
+               R_i(0) = c_i
+               R_i(1) = c_i exp(d_i)
+
+               from which we get c_i = R_i(0) and d_i = log(R_i(1) / R_i(0)) that can be stored
+               and used in discountBondRatio() to save computation time.
+            */
+
             const Real valueDiscount0 = model->discountBond(maturity, valueTime, 0.0);
             const Real valueDiscount1 = model->discountBond(maturity, valueTime, 1.0);
 
-            // In an affine model, each discount-bond ratio is c * exp(d * x).
-            // Determine c and d once so that root evaluations only need an exponential.
             for (Size i = 0; i < fixedPayTimes.size(); ++i) {
                 const Real discount0 = model->discountBond(maturity, fixedPayTimes[i], 0.0);
                 const Real discount1 = model->discountBond(maturity, fixedPayTimes[i], 1.0);
