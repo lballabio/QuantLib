@@ -98,6 +98,13 @@ Experimental Python package that binds a focused QuantLib surface with
 - `ZeroCouponInflationSwap` + `DiscountingSwapEngine`
 - New translation unit: `src/bind_inflation.cpp`
 
+### Phase 13 (YoY inflation / YYIIS)
+- `YYUKRPI` / `YYEUHICP` → `YoYInflationIndex` (quoted YoY)
+- `make_yoy_inflation_index(zero_index, handle)` — ratio YoY from a zero index
+- `InterpolatedYoYInflationCurve` / `FlatYoYInflationCurve` /
+  `PiecewiseYoYInflationCurve` + `YearOnYearInflationSwapHelper`
+- `YearOnYearInflationSwap` + `DiscountingSwapEngine`
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 
