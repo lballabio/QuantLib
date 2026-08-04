@@ -195,6 +195,18 @@ void bind_time(nb::module_& m) {
             nb::arg("termination_date_convention"),
             nb::arg("rule"),
             nb::arg("end_of_month"))
+        .def(
+            "__init__",
+            [](Schedule* self,
+               const std::vector<Date>& dates,
+               const Calendar& calendar,
+               BusinessDayConvention convention) {
+                new (self) Schedule(dates, calendar, convention);
+            },
+            nb::arg("dates"),
+            nb::arg("calendar") = Calendar(),
+            nb::arg("convention") = Unadjusted,
+            "Build a Schedule from an explicit date list.")
         .def("size", &Schedule::size)
         .def("__len__", &Schedule::size)
         .def(

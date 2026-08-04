@@ -611,12 +611,38 @@ YoYOptionletVolatilitySurfaceHandle = getattr(
     _ql, "YoYOptionletVolatilitySurfaceHandle", None
 )
 
+# Phase-15 CPISwap / CPIBond aliases.
+GBPLibor = getattr(_ql, "GBPLibor", None)
+InterpolatedZeroCurve = getattr(_ql, "InterpolatedZeroCurve", None)
+CPISwap = getattr(_ql, "CPISwap", None)
+if CPISwap is not None:
+    CPISwap.setPricingEngine = CPISwap.set_pricing_engine  # type: ignore[attr-defined]
+    CPISwap.fairRate = CPISwap.fair_rate  # type: ignore[attr-defined]
+    CPISwap.fairSpread = CPISwap.fair_spread  # type: ignore[attr-defined]
+    CPISwap.fixedRate = CPISwap.fixed_rate  # type: ignore[attr-defined]
+    CPISwap.baseCPI = CPISwap.base_CPI  # type: ignore[attr-defined]
+    CPISwap.fixedLegNPV = CPISwap.fixed_leg_NPV  # type: ignore[attr-defined]
+    CPISwap.floatLegNPV = CPISwap.float_leg_NPV  # type: ignore[attr-defined]
+    CPISwap.isExpired = CPISwap.is_expired  # type: ignore[attr-defined]
+    CPISwap.inflationNominal = CPISwap.inflation_nominal  # type: ignore[attr-defined]
+
+CPIBond = getattr(_ql, "CPIBond", None)
+if CPIBond is not None:
+    CPIBond.setPricingEngine = CPIBond.set_pricing_engine  # type: ignore[attr-defined]
+    CPIBond.cleanPrice = CPIBond.clean_price  # type: ignore[attr-defined]
+    CPIBond.dirtyPrice = CPIBond.dirty_price  # type: ignore[attr-defined]
+    CPIBond.baseCPI = CPIBond.base_CPI  # type: ignore[attr-defined]
+    CPIBond.settlementDate = CPIBond.settlement_date  # type: ignore[attr-defined]
+    CPIBond.maturityDate = CPIBond.maturity_date  # type: ignore[attr-defined]
+    CPIBond.isExpired = CPIBond.is_expired  # type: ignore[attr-defined]
+
 # SWIG-style CPI.Flat nested namespace.
 class CPI:
     """SWIG-style CPI.Flat / CPI.Linear namespace."""
 
     Flat = getattr(_ql, "CPIInterpolationType").Flat
     Linear = getattr(_ql, "CPIInterpolationType").Linear
+    laggedFixing = staticmethod(getattr(_ql, "cpi_lagged_fixing"))
 
 # SWIG-style GFunctionFactory.Standard nested namespace.
 class GFunctionFactory:

@@ -10,13 +10,16 @@
 #include <ql/indexes/ibor/eonia.hpp>
 #include <ql/indexes/ibor/estr.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/ibor/gbplibor.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/interestrate.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/quote.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/date.hpp>
@@ -82,6 +85,17 @@ Handle<YieldTermStructure> make_flat_forward_handle_quote(
     const DayCounter& day_counter) {
     return Handle<YieldTermStructure>(
         ext::make_shared<FlatForward>(reference_date, forward, day_counter));
+}
+
+Handle<YieldTermStructure> make_zero_curve(
+    const std::vector<Date>& dates,
+    const std::vector<Rate>& yields,
+    const DayCounter& day_counter) {
+    QL_REQUIRE(dates.size() == yields.size(), "dates/yields size mismatch");
+    QL_REQUIRE(dates.size() >= 2, "need at least two zero-curve nodes");
+    return Handle<YieldTermStructure>(
+        ext::make_shared<InterpolatedZeroCurve<Linear>>(
+            dates, yields, day_counter));
 }
 
 using DiscountLogLinearCurve = PiecewiseYieldCurve<Discount, LogLinear>;
@@ -185,6 +199,13 @@ void bind_curves(nb::module_& m) {
           nb::arg("reference_date"),
           nb::arg("forward"),
           nb::arg("day_counter"));
+
+    m.def("InterpolatedZeroCurve",
+          &make_zero_curve,
+          nb::arg("dates"),
+          nb::arg("yields"),
+          nb::arg("day_counter"),
+          "Factory: InterpolatedZeroCurve<Linear> → YieldTermStructureHandle.");
 
     // Rate helpers are opaque shared_ptrs (MI-heavy).
     nb::class_<RateHelper>(m, "RateHelper");
@@ -363,6 +384,16 @@ void bind_curves(nb::module_& m) {
             return ext::shared_ptr<IborIndex>(ext::make_shared<Euribor6M>(h));
         },
         nb::arg("handle"));
+
+    m.def(
+        "GBPLibor",
+        [](const Period& tenor, const Handle<YieldTermStructure>& h) {
+            return ext::shared_ptr<IborIndex>(
+                ext::make_shared<GBPLibor>(tenor, h));
+        },
+        nb::arg("tenor"),
+        nb::arg("handle") = Handle<YieldTermStructure>(),
+        "Factory: GBPLibor → IborIndex.");
 
     // Overnight indexes as opaque shared_ptrs (standalone; Index hierarchy is MI-heavy).
     nb::class_<OvernightIndex>(m, "OvernightIndex")

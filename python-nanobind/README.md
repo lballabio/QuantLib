@@ -111,6 +111,11 @@ Experimental Python package that binds a focused QuantLib surface with
   Bachelier engines via `set_pricing_engine(..., model=...)`
 - `make_yoy_inflation_capfloor` (`MakeYoYInflationCapFloor`)
 
+### Phase 15 (CPISwap / CPIBond)
+- `CPISwap` + `DiscountingSwapEngine`; `cpi_lagged_fixing` (`CPI::laggedFixing`)
+- `CPIBond` + `DiscountingBondEngine`
+- Helpers: `GBPLibor`, `InterpolatedZeroCurve`, `Schedule(dates=…)`
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 
