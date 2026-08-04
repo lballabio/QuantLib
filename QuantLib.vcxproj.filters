@@ -831,6 +831,9 @@
     <ClInclude Include="ql\instruments\constnotionalcrosscurrencybasisswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\crosscurrencyswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -3279,6 +3282,15 @@
     <ClInclude Include="ql\experimental\fx\deltavolquote.hpp">
       <Filter>experimental\fx</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\fx\discountingmtmcrosscurrencybasisswapengine.hpp">
+      <Filter>experimental\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fx\fxresetcashflows.hpp">
+      <Filter>experimental\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fx\mtmcrosscurrencybasisswap.hpp">
+      <Filter>experimental\fx</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\all.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
@@ -4856,10 +4868,10 @@
     <ClCompile Include="ql\instruments\constnotionalcrosscurrencybasisswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
-    <ClCompile Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.cpp">
+    <ClCompile Include="ql\instruments\crosscurrencyswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
-    <ClCompile Include="ql\instruments\constnotionalcrosscurrencyswap.cpp">
+    <ClCompile Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\europeanoption.cpp">
@@ -7359,6 +7371,15 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\forward\analytichestonforwardeuropeanengine.cpp">
       <Filter>experimental\forward</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fx\discountingmtmcrosscurrencybasisswapengine.cpp">
+      <Filter>experimental\fx</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fx\fxresetcashflows.cpp">
+      <Filter>experimental\fx</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fx\mtmcrosscurrencybasisswap.cpp">
+      <Filter>experimental\fx</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\termstructures\basisswapratehelpers.cpp">
       <Filter>experimental\termstructures</Filter>

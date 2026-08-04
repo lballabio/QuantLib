@@ -687,6 +687,7 @@
     <ClCompile Include="covariance.cpp" />
     <ClCompile Include="creditdefaultswap.cpp" />
     <ClCompile Include="constnotionalcrosscurrencybasisswap.cpp" />
+    <ClCompile Include="mtmcrosscurrencybasisswap.cpp" />
     <ClCompile Include="constnotionalcrosscurrencyfixedvsfloatingswap.cpp" />
     <ClCompile Include="constnotionalcrosscurrencyswap.cpp" />
     <ClCompile Include="crosscurrencyratehelpers.cpp" />

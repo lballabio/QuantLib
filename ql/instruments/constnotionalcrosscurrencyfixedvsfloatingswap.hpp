@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2018 Quaternion Risk Management Ltd
  Copyright (C) 2025 Paolo D'Elia
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 
 #include <ql/indexes/iborindex.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
+#include <ql/optional.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/constnotionalcrosscurrencyswap.hpp>
 
@@ -48,6 +50,10 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         This instrument represents a cross-currency swap where one leg pays fixed-rate cashflows in one currency, 
         and the other leg pays floating-rate cashflows in another currency.
 
+        Payment lags apply only to coupon payments.  Notional exchanges remain
+        on the effective and maturity dates, adjusted by the corresponding
+        leg's payment convention.
+
         \param type                  The type of the swap (Receiver or Payer).
         \param fixedNominal          Notional amount for the fixed leg.
         \param fixedCurrency         Currency of the fixed leg.
@@ -55,7 +61,7 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         \param fixedRate             Fixed interest rate for the fixed leg.
         \param fixedDayCount         Day count convention for the fixed leg.
         \param fixedPaymentBdc       Business day convention for fixed leg payments.
-        \param fixedPaymentLag       Payment lag for the fixed leg (default: 0).
+        \param fixedPaymentLag       Coupon payment lag for the fixed leg (default: 0).
         \param fixedPaymentCalendar  Calendar for fixed leg payments.
         \param floatNominal          Notional amount for the floating leg.
         \param floatCurrency         Currency of the floating leg.
@@ -63,7 +69,7 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         \param floatIndex            Floating rate index for the floating leg.
         \param floatSpread           Spread over the floating rate for the floating leg.
         \param floatPaymentBdc       Business day convention for floating leg payments.
-        \param floatPaymentLag       Payment lag for the floating leg (default: 0).
+        \param floatPaymentLag       Coupon payment lag for the floating leg (default: 0).
         \param floatPaymentCalendar  Calendar for floating leg payments.
         \param telescopicValueDates  For overnight legs, whether to use telescopic value dates (default: false).
         \param floatCompoundSpread   For overnight legs, whether to compound the spread daily (default: false).
@@ -71,6 +77,7 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         \param floatObservationShift For overnight legs, whether the observation shift is applied (default: false).
         \param floatLockoutDays      For overnight legs, optional lockout period in business days (default: 0).
         \param floatAveragingMethod  For overnight legs, averaging method (default: compounding).
+        \param useIndexedCoupons If provided, overrides the global IborCoupon setting for the floating leg.
     */
     ConstNotionalCrossCurrencyFixedVsFloatingSwap(
                          Type type, Real fixedNominal, Currency  fixedCurrency,
@@ -87,7 +94,8 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
                          Natural floatLookbackDays = Null<Natural>(),
                          bool floatObservationShift = false,
                          Natural floatLockoutDays = 0,
-                         RateAveraging::Type floatAveragingMethod = RateAveraging::Compound);
+                         RateAveraging::Type floatAveragingMethod = RateAveraging::Compound,
+                         std::optional<bool> useIndexedCoupons = std::nullopt);
     //@}
 
     //! \name Instrument interface
@@ -170,6 +178,7 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
     bool floatObservationShift_;
     Natural floatLockoutDays_;
     RateAveraging::Type floatAveragingMethod_;
+    std::optional<bool> useIndexedCoupons_;
 
     mutable Rate fairFixedRate_;
     mutable Spread fairSpread_;
