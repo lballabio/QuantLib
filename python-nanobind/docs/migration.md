@@ -228,7 +228,7 @@ Requires NumPy at import/use time (`pip install qlnb[numpy]` or the `test` extra
 | Flat forward | curve object → wrap in handle | factory returns handle |
 | Engines | construct engine, `setPricingEngine` | `set_pricing_engine(handle_or_process)` |
 | Naming | camelCase | snake_case |
-| Coverage | broad SWIG surface | focused phase 0–11 surface |
+| Coverage | broad SWIG surface | focused phase 0–12 surface |
 
 ## Compatibility shim (`qlnb.compat`)
 
@@ -503,6 +503,31 @@ cpn.set_pricer(sp_pricer)
 capped = ql.CappedFlooredCmsSpreadCoupon(
     pay, 10000.0, start, pay, 2, spread, cap=0.03, day_counter=ql.Actual360()
 )
+```
+
+## Phase-12 zero inflation / ZCIS
+
+```python
+hz = ql.RelinkableZeroInflationTermStructureHandle()
+index = ql.UKRPI(hz)
+# add historic RPI fixings…
+helpers = [
+    ql.ZeroCouponInflationSwapHelper(
+        ql.make_quote_handle(0.0293), ql.Period(3, ql.TimeUnit.Months),
+        maturity, ql.UnitedKingdom(), ql.BusinessDayConvention.ModifiedFollowing,
+        ql.Thirty360(...), index, ql.CPIInterpolationType.Flat,  # compat: ql.CPI.Flat
+    )
+]
+curve = ql.PiecewiseZeroInflationCurve(today, index.last_fixing_date(),
+                                       ql.Frequency.Monthly, dc, helpers)
+hz.link_to(curve)
+
+zcis = ql.ZeroCouponInflationSwap(
+    ql.SwapType.Payer, 1e6, today, maturity, cal, bdc, dc, 0.0293,
+    index, ql.Period(3, ql.TimeUnit.Months), ql.CPIInterpolationType.Flat,
+)
+zcis.set_pricing_engine(nominal_curve)  # DiscountingSwapEngine
+print(zcis.NPV(), zcis.fair_rate())
 ```
 
 ## When to stay on SWIG

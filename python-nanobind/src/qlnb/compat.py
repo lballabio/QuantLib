@@ -418,6 +418,90 @@ if CappedFlooredCmsSpreadCoupon is not None:
         CappedFlooredCmsSpreadCoupon.set_pricer
     )
 
+# Phase-12 zero-inflation / ZCIS aliases.
+UKRPI = getattr(_ql, "UKRPI", None)
+EUHICP = getattr(_ql, "EUHICP", None)
+ZeroCouponInflationSwapHelper = getattr(
+    _ql, "ZeroCouponInflationSwapHelper", None
+)
+PiecewiseZeroInflationCurve = getattr(_ql, "PiecewiseZeroInflationCurve", None)
+InterpolatedZeroInflationCurve = getattr(
+    _ql, "InterpolatedZeroInflationCurve", None
+)
+FlatZeroInflationCurve = getattr(_ql, "FlatZeroInflationCurve", None)
+
+ZeroInflationIndex = getattr(_ql, "ZeroInflationIndex", None)
+if ZeroInflationIndex is not None:
+    ZeroInflationIndex.addFixing = ZeroInflationIndex.add_fixing  # type: ignore[attr-defined]
+    ZeroInflationIndex.lastFixingDate = (  # type: ignore[attr-defined]
+        ZeroInflationIndex.last_fixing_date
+    )
+    ZeroInflationIndex.availabilityLag = (  # type: ignore[attr-defined]
+        ZeroInflationIndex.availability_lag
+    )
+
+ZeroCouponInflationSwap = getattr(_ql, "ZeroCouponInflationSwap", None)
+if ZeroCouponInflationSwap is not None:
+    ZeroCouponInflationSwap.setPricingEngine = (  # type: ignore[attr-defined]
+        ZeroCouponInflationSwap.set_pricing_engine
+    )
+    ZeroCouponInflationSwap.fairRate = (  # type: ignore[attr-defined]
+        ZeroCouponInflationSwap.fair_rate
+    )
+    ZeroCouponInflationSwap.fixedRate = (  # type: ignore[attr-defined]
+        ZeroCouponInflationSwap.fixed_rate
+    )
+    ZeroCouponInflationSwap.fixedLegNPV = (  # type: ignore[attr-defined]
+        ZeroCouponInflationSwap.fixed_leg_NPV
+    )
+    ZeroCouponInflationSwap.inflationLegNPV = (  # type: ignore[attr-defined]
+        ZeroCouponInflationSwap.inflation_leg_NPV
+    )
+    ZeroCouponInflationSwap.startDate = (  # type: ignore[attr-defined]
+        ZeroCouponInflationSwap.start_date
+    )
+    ZeroCouponInflationSwap.maturityDate = (  # type: ignore[attr-defined]
+        ZeroCouponInflationSwap.maturity_date
+    )
+    ZeroCouponInflationSwap.isExpired = (  # type: ignore[attr-defined]
+        ZeroCouponInflationSwap.is_expired
+    )
+
+ZeroInflationTermStructureHandle = getattr(
+    _ql, "ZeroInflationTermStructureHandle", None
+)
+if ZeroInflationTermStructureHandle is not None:
+    ZeroInflationTermStructureHandle.zeroRate = (  # type: ignore[attr-defined]
+        ZeroInflationTermStructureHandle.zero_rate
+    )
+    ZeroInflationTermStructureHandle.baseDate = (  # type: ignore[attr-defined]
+        ZeroInflationTermStructureHandle.base_date
+    )
+    ZeroInflationTermStructureHandle.maxDate = (  # type: ignore[attr-defined]
+        ZeroInflationTermStructureHandle.max_date
+    )
+    ZeroInflationTermStructureHandle.referenceDate = (  # type: ignore[attr-defined]
+        ZeroInflationTermStructureHandle.reference_date
+    )
+
+RelinkableZeroInflationTermStructureHandle = getattr(
+    _ql, "RelinkableZeroInflationTermStructureHandle", None
+)
+if RelinkableZeroInflationTermStructureHandle is not None:
+    RelinkableZeroInflationTermStructureHandle.linkTo = (  # type: ignore[attr-defined]
+        RelinkableZeroInflationTermStructureHandle.link_to
+    )
+    RelinkableZeroInflationTermStructureHandle.asHandle = (  # type: ignore[attr-defined]
+        RelinkableZeroInflationTermStructureHandle.as_handle
+    )
+
+# SWIG-style CPI.Flat nested namespace.
+class CPI:
+    """SWIG-style CPI.Flat / CPI.Linear namespace."""
+
+    Flat = getattr(_ql, "CPIInterpolationType").Flat
+    Linear = getattr(_ql, "CPIInterpolationType").Linear
+
 # SWIG-style GFunctionFactory.Standard nested namespace.
 class GFunctionFactory:
     """SWIG-style GFunctionFactory.Standard / ExactYield / … namespace."""

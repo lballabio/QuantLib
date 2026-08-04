@@ -7,8 +7,9 @@ import pytest
 import qlnb as ql
 
 
-def test_version_is_phase11():
-    assert ql.__version__ == "0.12.0"
+def test_version_is_at_least_phase11():
+    parts = tuple(int(x) for x in ql.__version__.split(".")[:2])
+    assert parts >= (0, 12)
 
 
 def _spread_market():
