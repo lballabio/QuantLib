@@ -460,6 +460,12 @@ if ZeroCouponInflationSwap is not None:
     ZeroCouponInflationSwap.inflationLegNPV = (  # type: ignore[attr-defined]
         ZeroCouponInflationSwap.inflation_leg_NPV
     )
+    ZeroCouponInflationSwap.inflationLeg = (  # type: ignore[attr-defined]
+        ZeroCouponInflationSwap.inflation_leg
+    )
+    ZeroCouponInflationSwap.fixedLeg = (  # type: ignore[attr-defined]
+        ZeroCouponInflationSwap.fixed_leg
+    )
     ZeroCouponInflationSwap.startDate = (  # type: ignore[attr-defined]
         ZeroCouponInflationSwap.start_date
     )
@@ -769,6 +775,42 @@ if CappedFlooredYoYInflationCoupon is not None:
     )
     CappedFlooredYoYInflationCoupon.setPricer = (  # type: ignore[attr-defined]
         CappedFlooredYoYInflationCoupon.set_pricer
+    )
+
+# Phase-21 Indexed / CPI / ZeroInflation cash-flow aliases.
+IndexedCashFlow = getattr(_ql, "IndexedCashFlow", None)
+if IndexedCashFlow is not None:
+    IndexedCashFlow.baseDate = IndexedCashFlow.base_date  # type: ignore[attr-defined]
+    IndexedCashFlow.fixingDate = (  # type: ignore[attr-defined]
+        IndexedCashFlow.fixing_date
+    )
+    IndexedCashFlow.growthOnly = (  # type: ignore[attr-defined]
+        IndexedCashFlow.growth_only
+    )
+    IndexedCashFlow.baseFixing = (  # type: ignore[attr-defined]
+        IndexedCashFlow.base_fixing
+    )
+    IndexedCashFlow.indexFixing = (  # type: ignore[attr-defined]
+        IndexedCashFlow.index_fixing
+    )
+
+CPICashFlow = getattr(_ql, "CPICashFlow", None)
+if CPICashFlow is not None:
+    CPICashFlow.observationDate = (  # type: ignore[attr-defined]
+        CPICashFlow.observation_date
+    )
+    CPICashFlow.observationLag = (  # type: ignore[attr-defined]
+        CPICashFlow.observation_lag
+    )
+    CPICashFlow.cpiIndex = CPICashFlow.cpi_index  # type: ignore[attr-defined]
+
+ZeroInflationCashFlow = getattr(_ql, "ZeroInflationCashFlow", None)
+if ZeroInflationCashFlow is not None:
+    ZeroInflationCashFlow.zeroInflationIndex = (  # type: ignore[attr-defined]
+        ZeroInflationCashFlow.zero_inflation_index
+    )
+    ZeroInflationCashFlow.observationInterpolation = (  # type: ignore[attr-defined]
+        ZeroInflationCashFlow.observation_interpolation
     )
 
 # SWIG-style CPI.Flat nested namespace.
