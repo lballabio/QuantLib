@@ -645,6 +645,32 @@ start, end = ql.inflation_period(ql.Date(15, ql.Month.March, 2007),
                                  ql.Frequency.Monthly)
 ```
 
+## Phase-18 CPI coupons / CPILeg
+
+```python
+index.clear_fixings()  # IndexManager is process-global across tests
+
+leg = ql.make_cpi_leg(
+    schedule, index, ql.Period(3, ql.TimeUnit.Months), ql.Actual365Fixed(),
+    base_cpi=206.1, notional=1e6, fixed_rate=0.1,
+    payment_calendar=cal, subtract_inflation_nominal=False,
+)
+ql.set_cpi_coupon_pricer(leg, ql.CPICouponPricer(nominal_curve))
+npv = ql.cashflows_npv(leg, nominal_curve, settlement)
+accrued = ql.cashflows_accrued_amount(leg, settlement)
+clean = (npv - accrued) * 100.0 / 1e6
+
+cpn = ql.CPICoupon(
+    206.1, pay, 1e6, start, end, index, lag,
+    ql.CPIInterpolationType.Flat, ql.Actual365Fixed(), 0.1,
+)
+cpn.set_pricer(ql.CPICouponPricer(nominal_curve))
+print(cpn.rate(), cpn.index_fixing() / cpn.base_CPI() * cpn.fixed_rate())
+```
+
+`CPILeg` already attaches a default `CPICouponPricer`; `set_cpi_coupon_pricer`
+is optional when you need a nominal curve on the pricer.
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,
