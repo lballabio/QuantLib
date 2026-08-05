@@ -719,6 +719,34 @@ setCouponPricer = getattr(_ql, "set_cpi_coupon_pricer", None)
 CashFlows_npv = getattr(_ql, "cashflows_npv", None)
 CashFlows_accruedAmount = getattr(_ql, "cashflows_accrued_amount", None)
 
+# Phase-19 YoY coupon / yoyInflationLeg aliases.
+YoYInflationCouponPricer = getattr(_ql, "YoYInflationCouponPricer", None)
+BlackYoYInflationCouponPricer = getattr(
+    _ql, "BlackYoYInflationCouponPricer", None
+)
+UnitDisplacedBlackYoYInflationCouponPricer = getattr(
+    _ql, "UnitDisplacedBlackYoYInflationCouponPricer", None
+)
+BachelierYoYInflationCouponPricer = getattr(
+    _ql, "BachelierYoYInflationCouponPricer", None
+)
+YoYInflationCoupon = getattr(_ql, "YoYInflationCoupon", None)
+if YoYInflationCoupon is not None:
+    YoYInflationCoupon.setPricer = YoYInflationCoupon.set_pricer  # type: ignore[attr-defined]
+    YoYInflationCoupon.indexFixing = (  # type: ignore[attr-defined]
+        YoYInflationCoupon.index_fixing
+    )
+    YoYInflationCoupon.adjustedFixing = (  # type: ignore[attr-defined]
+        YoYInflationCoupon.adjusted_fixing
+    )
+    YoYInflationCoupon.fixingDate = (  # type: ignore[attr-defined]
+        YoYInflationCoupon.fixing_date
+    )
+    YoYInflationCoupon.yoyIndex = YoYInflationCoupon.yoy_index  # type: ignore[attr-defined]
+
+yoyInflationLeg = getattr(_ql, "make_yoy_inflation_leg", None)
+setYoYCouponPricer = getattr(_ql, "set_yoy_coupon_pricer", None)
+
 # SWIG-style CPI.Flat nested namespace.
 class CPI:
     """SWIG-style CPI.Flat / CPI.Linear namespace."""

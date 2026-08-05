@@ -1507,4 +1507,191 @@ void bind_inflation(nb::module_& m) {
         nb::arg("settlement"),
         nb::arg("include_settlement_date") = false,
         "CashFlows::accruedAmount for a leg.");
+
+    // --- Phase 19: YoY inflation coupons / yoyInflationLeg ---
+
+    nb::class_<YoYInflationCouponPricer, InflationCouponPricer>(
+        m, "YoYInflationCouponPricer")
+        .def(
+            "__init__",
+            [](YoYInflationCouponPricer* self,
+               const Handle<YieldTermStructure>& nominal,
+               const Handle<YoYOptionletVolatilitySurface>& vol) {
+                if (vol.empty())
+                    new (self) YoYInflationCouponPricer(nominal);
+                else
+                    new (self) YoYInflationCouponPricer(vol, nominal);
+            },
+            nb::arg("nominal") = Handle<YieldTermStructure>(),
+            nb::arg("caplet_vol") = Handle<YoYOptionletVolatilitySurface>(),
+            "YoY coupon pricer (swaplets; pass caplet_vol for optionlets).");
+
+    nb::class_<BlackYoYInflationCouponPricer, YoYInflationCouponPricer>(
+        m, "BlackYoYInflationCouponPricer")
+        .def(
+            "__init__",
+            [](BlackYoYInflationCouponPricer* self,
+               const Handle<YieldTermStructure>& nominal,
+               const Handle<YoYOptionletVolatilitySurface>& vol) {
+                if (vol.empty())
+                    new (self) BlackYoYInflationCouponPricer(nominal);
+                else
+                    new (self) BlackYoYInflationCouponPricer(vol, nominal);
+            },
+            nb::arg("nominal") = Handle<YieldTermStructure>(),
+            nb::arg("caplet_vol") = Handle<YoYOptionletVolatilitySurface>());
+
+    nb::class_<UnitDisplacedBlackYoYInflationCouponPricer,
+               YoYInflationCouponPricer>(
+        m, "UnitDisplacedBlackYoYInflationCouponPricer")
+        .def(
+            "__init__",
+            [](UnitDisplacedBlackYoYInflationCouponPricer* self,
+               const Handle<YieldTermStructure>& nominal,
+               const Handle<YoYOptionletVolatilitySurface>& vol) {
+                if (vol.empty())
+                    new (self)
+                        UnitDisplacedBlackYoYInflationCouponPricer(nominal);
+                else
+                    new (self) UnitDisplacedBlackYoYInflationCouponPricer(
+                        vol, nominal);
+            },
+            nb::arg("nominal") = Handle<YieldTermStructure>(),
+            nb::arg("caplet_vol") = Handle<YoYOptionletVolatilitySurface>());
+
+    nb::class_<BachelierYoYInflationCouponPricer, YoYInflationCouponPricer>(
+        m, "BachelierYoYInflationCouponPricer")
+        .def(
+            "__init__",
+            [](BachelierYoYInflationCouponPricer* self,
+               const Handle<YieldTermStructure>& nominal,
+               const Handle<YoYOptionletVolatilitySurface>& vol) {
+                if (vol.empty())
+                    new (self) BachelierYoYInflationCouponPricer(nominal);
+                else
+                    new (self)
+                        BachelierYoYInflationCouponPricer(vol, nominal);
+            },
+            nb::arg("nominal") = Handle<YieldTermStructure>(),
+            nb::arg("caplet_vol") = Handle<YoYOptionletVolatilitySurface>());
+
+    // SI view → CashFlow for Leg list round-trips (same pattern as CPICoupon).
+    nb::class_<YoYInflationCoupon, CashFlow>(m, "YoYInflationCoupon")
+        .def(
+            "__init__",
+            [](YoYInflationCoupon* self,
+               const Date& payment_date,
+               Real nominal,
+               const Date& start_date,
+               const Date& end_date,
+               Natural fixing_days,
+               const ext::shared_ptr<YoYInflationIndex>& index,
+               const Period& observation_lag,
+               CPI::InterpolationType observation_interpolation,
+               const DayCounter& day_counter,
+               Real gearing,
+               Spread spread) {
+                new (self) YoYInflationCoupon(payment_date,
+                                              nominal,
+                                              start_date,
+                                              end_date,
+                                              fixing_days,
+                                              index,
+                                              observation_lag,
+                                              observation_interpolation,
+                                              day_counter,
+                                              gearing,
+                                              spread);
+            },
+            nb::arg("payment_date"),
+            nb::arg("nominal"),
+            nb::arg("start_date"),
+            nb::arg("end_date"),
+            nb::arg("fixing_days"),
+            nb::arg("index"),
+            nb::arg("observation_lag"),
+            nb::arg("observation_interpolation"),
+            nb::arg("day_counter"),
+            nb::arg("gearing") = 1.0,
+            nb::arg("spread") = 0.0)
+        .def("rate", [](const YoYInflationCoupon& c) { return c.rate(); })
+        .def("gearing", [](const YoYInflationCoupon& c) { return c.gearing(); })
+        .def("spread", [](const YoYInflationCoupon& c) { return c.spread(); })
+        .def("index_fixing",
+             [](const YoYInflationCoupon& c) { return c.indexFixing(); })
+        .def("adjusted_fixing",
+             [](const YoYInflationCoupon& c) { return c.adjustedFixing(); })
+        .def("fixing_date",
+             [](const YoYInflationCoupon& c) { return c.fixingDate(); })
+        .def("nominal", [](const YoYInflationCoupon& c) { return c.nominal(); })
+        .def("interpolation",
+             [](const YoYInflationCoupon& c) { return c.interpolation(); })
+        .def(
+            "yoy_index",
+            [](const YoYInflationCoupon& c) { return c.yoyIndex(); })
+        .def(
+            "set_pricer",
+            [](YoYInflationCoupon& c,
+               const ext::shared_ptr<InflationCouponPricer>& pricer) {
+                c.setPricer(pricer);
+            },
+            nb::arg("pricer"));
+
+    m.def(
+        "make_yoy_inflation_leg",
+        [](const Schedule& schedule,
+           const Calendar& payment_calendar,
+           const ext::shared_ptr<YoYInflationIndex>& index,
+           const Period& observation_lag,
+           CPI::InterpolationType observation_interpolation,
+           const DayCounter& day_counter,
+           Real notional,
+           Natural fixing_days,
+           Real gearing,
+           Spread spread,
+           BusinessDayConvention payment_convention,
+           std::optional<Rate> cap,
+           std::optional<Rate> floor) {
+            yoyInflationLeg maker(schedule,
+                                  payment_calendar,
+                                  index,
+                                  observation_lag,
+                                  observation_interpolation);
+            maker.withNotionals(notional)
+                .withPaymentDayCounter(day_counter)
+                .withPaymentAdjustment(payment_convention)
+                .withFixingDays(fixing_days)
+                .withGearings(gearing)
+                .withSpreads(spread);
+            if (cap.has_value())
+                maker.withCaps(*cap);
+            if (floor.has_value())
+                maker.withFloors(*floor);
+            return Leg(maker);
+        },
+        nb::arg("schedule"),
+        nb::arg("payment_calendar"),
+        nb::arg("index"),
+        nb::arg("observation_lag"),
+        nb::arg("observation_interpolation"),
+        nb::arg("day_counter"),
+        nb::arg("notional") = 1000000.0,
+        nb::arg("fixing_days") = 0,
+        nb::arg("gearing") = 1.0,
+        nb::arg("spread") = 0.0,
+        nb::arg("payment_convention") = ModifiedFollowing,
+        nb::arg("cap") = nb::none(),
+        nb::arg("floor") = nb::none(),
+        "Build a yoyInflationLeg → list[CashFlow]. Caps/floors need a "
+        "vol-aware YoY pricer (Black / unit-displaced / Bachelier).");
+
+    m.def(
+        "set_yoy_coupon_pricer",
+        [](const Leg& leg,
+           const ext::shared_ptr<InflationCouponPricer>& pricer) {
+            setCouponPricer(leg, pricer);
+        },
+        nb::arg("leg"),
+        nb::arg("pricer"),
+        "Attach an InflationCouponPricer to YoY coupons in a leg.");
 }

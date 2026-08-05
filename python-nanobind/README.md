@@ -131,6 +131,12 @@ Experimental Python package that binds a focused QuantLib surface with
 - `set_cpi_coupon_pricer`, `cashflows_npv`, `cashflows_accrued_amount`
 - `clear_fixings` on zero / YoY inflation indexes (IndexManager isolation)
 
+### Phase 19 (YoY coupons / yoyInflationLeg)
+- `YoYInflationCoupon` + `YoYInflationCouponPricer` / `set_pricer`
+- Black / unit-displaced Black / Bachelier YoY coupon pricers
+- `make_yoy_inflation_leg` (`yoyInflationLeg`) → `list[CashFlow]`
+- `set_yoy_coupon_pricer`
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 
