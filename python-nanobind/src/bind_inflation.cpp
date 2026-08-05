@@ -7,6 +7,7 @@
 #include <nanobind/stl/vector.h>
 
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/capflooredinflationcoupon.hpp>
 #include <ql/cashflows/cpicoupon.hpp>
 #include <ql/cashflows/cpicouponpricer.hpp>
 #include <ql/cashflows/couponpricer.hpp>
@@ -861,6 +862,36 @@ void bind_inflation(nb::module_& m) {
             nb::arg("fixing_days") = 0,
             nb::arg("floor_strike") = nb::none(),
             "Build a YoY inflation Cap/Floor/Collar from a YoY schedule.")
+        .def(
+            "__init__",
+            [](YoYInflationCapFloor* self,
+               YoYInflationCapFloor::Type type,
+               const Leg& yoy_leg,
+               Rate strike,
+               std::optional<Rate> floor_strike) {
+                if (type == YoYInflationCapFloor::Cap) {
+                    new (self)
+                        YoYInflationCap(yoy_leg, std::vector<Rate>(1, strike));
+                } else if (type == YoYInflationCapFloor::Floor) {
+                    new (self) YoYInflationFloor(yoy_leg,
+                                                 std::vector<Rate>(1, strike));
+                } else if (type == YoYInflationCapFloor::Collar) {
+                    QL_REQUIRE(floor_strike.has_value(),
+                               "Collar requires floor_strike");
+                    new (self) YoYInflationCollar(
+                        yoy_leg,
+                        std::vector<Rate>(1, strike),
+                        std::vector<Rate>(1, *floor_strike));
+                } else {
+                    QL_FAIL("unknown YoYInflationCapFloor type");
+                }
+            },
+            nb::arg("type"),
+            nb::arg("yoy_leg"),
+            nb::arg("strike"),
+            nb::arg("floor_strike") = nb::none(),
+            "Build a YoY Cap/Floor/Collar from an existing YoY leg "
+            "(needed for geared decomposition identities).")
         .def("NPV", [](YoYInflationCapFloor& cf) { return cf.NPV(); })
         .def("type",
              [](const YoYInflationCapFloor& cf) { return cf.type(); })
@@ -1694,4 +1725,101 @@ void bind_inflation(nb::module_& m) {
         nb::arg("leg"),
         nb::arg("pricer"),
         "Attach an InflationCouponPricer to YoY coupons in a leg.");
+
+    // --- Phase 20: capped/floored YoY inflation coupons ---
+
+    nb::class_<CappedFlooredYoYInflationCoupon, YoYInflationCoupon>(
+        m, "CappedFlooredYoYInflationCoupon")
+        .def(
+            "__init__",
+            [](CappedFlooredYoYInflationCoupon* self,
+               const ext::shared_ptr<YoYInflationCoupon>& underlying,
+               std::optional<Rate> cap,
+               std::optional<Rate> floor) {
+                new (self) CappedFlooredYoYInflationCoupon(
+                    underlying,
+                    cap.value_or(Null<Rate>()),
+                    floor.value_or(Null<Rate>()));
+            },
+            nb::arg("underlying"),
+            nb::arg("cap") = nb::none(),
+            nb::arg("floor") = nb::none(),
+            "Wrap a YoYInflationCoupon with optional cap/floor.")
+        .def(
+            "__init__",
+            [](CappedFlooredYoYInflationCoupon* self,
+               const Date& payment_date,
+               Real nominal,
+               const Date& start_date,
+               const Date& end_date,
+               Natural fixing_days,
+               const ext::shared_ptr<YoYInflationIndex>& index,
+               const Period& observation_lag,
+               CPI::InterpolationType observation_interpolation,
+               const DayCounter& day_counter,
+               Real gearing,
+               Spread spread,
+               std::optional<Rate> cap,
+               std::optional<Rate> floor) {
+                new (self) CappedFlooredYoYInflationCoupon(
+                    payment_date,
+                    nominal,
+                    start_date,
+                    end_date,
+                    fixing_days,
+                    index,
+                    observation_lag,
+                    observation_interpolation,
+                    day_counter,
+                    gearing,
+                    spread,
+                    cap.value_or(Null<Rate>()),
+                    floor.value_or(Null<Rate>()));
+            },
+            nb::arg("payment_date"),
+            nb::arg("nominal"),
+            nb::arg("start_date"),
+            nb::arg("end_date"),
+            nb::arg("fixing_days"),
+            nb::arg("index"),
+            nb::arg("observation_lag"),
+            nb::arg("observation_interpolation"),
+            nb::arg("day_counter"),
+            nb::arg("gearing") = 1.0,
+            nb::arg("spread") = 0.0,
+            nb::arg("cap") = nb::none(),
+            nb::arg("floor") = nb::none())
+        .def("rate",
+             [](const CappedFlooredYoYInflationCoupon& c) { return c.rate(); })
+        .def("cap",
+             [](const CappedFlooredYoYInflationCoupon& c) { return c.cap(); })
+        .def("floor",
+             [](const CappedFlooredYoYInflationCoupon& c) { return c.floor(); })
+        .def("effective_cap",
+             [](const CappedFlooredYoYInflationCoupon& c) {
+                 return c.effectiveCap();
+             })
+        .def("effective_floor",
+             [](const CappedFlooredYoYInflationCoupon& c) {
+                 return c.effectiveFloor();
+             })
+        .def("underlying_rate",
+             [](const CappedFlooredYoYInflationCoupon& c) {
+                 return c.underlyingRate();
+             })
+        .def("is_capped",
+             [](const CappedFlooredYoYInflationCoupon& c) {
+                 return c.isCapped();
+             })
+        .def("is_floored",
+             [](const CappedFlooredYoYInflationCoupon& c) {
+                 return c.isFloored();
+             })
+        .def(
+            "set_pricer",
+            [](CappedFlooredYoYInflationCoupon& c,
+               const ext::shared_ptr<YoYInflationCouponPricer>& pricer) {
+                c.setPricer(pricer);
+            },
+            nb::arg("pricer"));
 }

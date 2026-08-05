@@ -747,6 +747,30 @@ if YoYInflationCoupon is not None:
 yoyInflationLeg = getattr(_ql, "make_yoy_inflation_leg", None)
 setYoYCouponPricer = getattr(_ql, "set_yoy_coupon_pricer", None)
 
+# Phase-20 capped/floored YoY coupon aliases.
+CappedFlooredYoYInflationCoupon = getattr(
+    _ql, "CappedFlooredYoYInflationCoupon", None
+)
+if CappedFlooredYoYInflationCoupon is not None:
+    CappedFlooredYoYInflationCoupon.effectiveCap = (  # type: ignore[attr-defined]
+        CappedFlooredYoYInflationCoupon.effective_cap
+    )
+    CappedFlooredYoYInflationCoupon.effectiveFloor = (  # type: ignore[attr-defined]
+        CappedFlooredYoYInflationCoupon.effective_floor
+    )
+    CappedFlooredYoYInflationCoupon.underlyingRate = (  # type: ignore[attr-defined]
+        CappedFlooredYoYInflationCoupon.underlying_rate
+    )
+    CappedFlooredYoYInflationCoupon.isCapped = (  # type: ignore[attr-defined]
+        CappedFlooredYoYInflationCoupon.is_capped
+    )
+    CappedFlooredYoYInflationCoupon.isFloored = (  # type: ignore[attr-defined]
+        CappedFlooredYoYInflationCoupon.is_floored
+    )
+    CappedFlooredYoYInflationCoupon.setPricer = (  # type: ignore[attr-defined]
+        CappedFlooredYoYInflationCoupon.set_pricer
+    )
+
 # SWIG-style CPI.Flat nested namespace.
 class CPI:
     """SWIG-style CPI.Flat / CPI.Linear namespace."""
