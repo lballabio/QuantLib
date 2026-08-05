@@ -629,6 +629,22 @@ cap.set_pricing_engine(surf)
 print(cap.NPV(), surf.cap_price(ql.Period(3, ql.TimeUnit.Years), 0.03))
 ```
 
+## Phase-17 inflation seasonality
+
+```python
+factors = [1.003245, 1.0, 0.999715, 1.000495, 1.000929, 0.998687,
+           0.995949, 0.994682, 0.995949, 1.000519, 1.003705, 1.004186]
+base = ql.Date(31, ql.Month.January, curve.base_date().year())
+seasonality = ql.MultiplicativePriceSeasonality(
+    base, ql.Frequency.Monthly, factors
+)
+curve.set_seasonality(seasonality)   # adjusts forecast fixings
+assert curve.has_seasonality()
+curve.set_seasonality()              # clear
+start, end = ql.inflation_period(ql.Date(15, ql.Month.March, 2007),
+                                 ql.Frequency.Monthly)
+```
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,

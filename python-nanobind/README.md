@@ -120,6 +120,11 @@ Experimental Python package that binds a focused QuantLib surface with
 - `Matrix` helper + `InterpolatedCPICapFloorTermPriceSurface` (Bilinear)
 - `CPICapFloor` + `InterpolatingCPICapFloorEngine` via `set_pricing_engine(surface)`
 
+### Phase 17 (inflation seasonality)
+- `MultiplicativePriceSeasonality` / `KerkhofSeasonality`
+- `set_seasonality` / `has_seasonality` on zero & YoY inflation handles
+- `inflation_period(date, frequency)` helper
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 
