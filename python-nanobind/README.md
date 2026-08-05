@@ -116,6 +116,10 @@ Experimental Python package that binds a focused QuantLib surface with
 - `CPIBond` + `DiscountingBondEngine`
 - Helpers: `GBPLibor`, `InterpolatedZeroCurve`, `Schedule(dates=…)`
 
+### Phase 16 (CPICapFloor)
+- `Matrix` helper + `InterpolatedCPICapFloorTermPriceSurface` (Bilinear)
+- `CPICapFloor` + `InterpolatingCPICapFloorEngine` via `set_pricing_engine(surface)`
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 

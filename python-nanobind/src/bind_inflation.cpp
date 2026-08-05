@@ -11,14 +11,20 @@
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/indexes/inflationindex.hpp>
+#include <ql/experimental/inflation/cpicapfloorengines.hpp>
+#include <ql/experimental/inflation/cpicapfloortermpricesurface.hpp>
 #include <ql/instruments/bonds/cpibond.hpp>
+#include <ql/instruments/cpicapfloor.hpp>
 #include <ql/instruments/cpiswap.hpp>
 #include <ql/instruments/inflationcapfloor.hpp>
 #include <ql/instruments/makeyoyinflationcapfloor.hpp>
 #include <ql/instruments/swap.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
+#include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/matrix.hpp>
+#include <ql/option.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/inflation/inflationcapfloorengines.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
@@ -1037,4 +1043,177 @@ void bind_inflation(nb::module_& m) {
             },
             nb::arg("discount_curve"),
             "Attach DiscountingBondEngine.");
+
+    // --- Phase 16: CPICapFloor + term price surface ---
+
+    nb::class_<Matrix>(m, "Matrix")
+        .def(
+            "__init__",
+            [](Matrix* self, Size rows, Size columns, const std::vector<Real>& data) {
+                QL_REQUIRE(data.size() == rows * columns,
+                           "Matrix data size must equal rows*columns");
+                new (self) Matrix(rows, columns);
+                for (Size i = 0; i < rows; ++i)
+                    for (Size j = 0; j < columns; ++j)
+                        (*self)[i][j] = data[i * columns + j];
+            },
+            nb::arg("rows"),
+            nb::arg("columns"),
+            nb::arg("data"),
+            "Build a Matrix from row-major flat data.")
+        .def("rows", &Matrix::rows)
+        .def("columns", &Matrix::columns)
+        .def(
+            "at",
+            [](const Matrix& m, Size row, Size column) {
+                QL_REQUIRE(row < m.rows() && column < m.columns(),
+                           "Matrix index out of range");
+                return m[row][column];
+            },
+            nb::arg("row"),
+            nb::arg("column"));
+
+    nb::class_<Handle<CPICapFloorTermPriceSurface>>(
+        m, "CPICapFloorTermPriceSurfaceHandle")
+        .def(nb::init<>())
+        .def("empty", &Handle<CPICapFloorTermPriceSurface>::empty)
+        .def(
+            "price",
+            [](const Handle<CPICapFloorTermPriceSurface>& h,
+               const Period& tenor,
+               Rate strike) { return h->price(tenor, strike); },
+            nb::arg("tenor"),
+            nb::arg("strike"))
+        .def(
+            "cap_price",
+            [](const Handle<CPICapFloorTermPriceSurface>& h,
+               const Period& tenor,
+               Rate strike) { return h->capPrice(tenor, strike); },
+            nb::arg("tenor"),
+            nb::arg("strike"))
+        .def(
+            "floor_price",
+            [](const Handle<CPICapFloorTermPriceSurface>& h,
+               const Period& tenor,
+               Rate strike) { return h->floorPrice(tenor, strike); },
+            nb::arg("tenor"),
+            nb::arg("strike"))
+        .def(
+            "atm_rate",
+            [](const Handle<CPICapFloorTermPriceSurface>& h, const Date& d) {
+                return h->atmRate(d);
+            },
+            nb::arg("maturity"));
+
+    m.def(
+        "InterpolatedCPICapFloorTermPriceSurface",
+        [](Real nominal,
+           Rate base_rate,
+           const Period& observation_lag,
+           const Calendar& calendar,
+           BusinessDayConvention bdc,
+           const DayCounter& day_counter,
+           const ext::shared_ptr<ZeroInflationIndex>& index,
+           CPI::InterpolationType observation_interpolation,
+           const Handle<YieldTermStructure>& nominal_curve,
+           const std::vector<Rate>& cap_strikes,
+           const std::vector<Rate>& floor_strikes,
+           const std::vector<Period>& maturities,
+           const Matrix& cap_prices,
+           const Matrix& floor_prices) {
+            return Handle<CPICapFloorTermPriceSurface>(
+                ext::make_shared<
+                    InterpolatedCPICapFloorTermPriceSurface<Bilinear>>(
+                    nominal,
+                    base_rate,
+                    observation_lag,
+                    calendar,
+                    bdc,
+                    day_counter,
+                    index,
+                    observation_interpolation,
+                    nominal_curve,
+                    cap_strikes,
+                    floor_strikes,
+                    maturities,
+                    cap_prices,
+                    floor_prices));
+        },
+        nb::arg("nominal"),
+        nb::arg("base_rate"),
+        nb::arg("observation_lag"),
+        nb::arg("calendar"),
+        nb::arg("bdc"),
+        nb::arg("day_counter"),
+        nb::arg("index"),
+        nb::arg("observation_interpolation"),
+        nb::arg("nominal_curve"),
+        nb::arg("cap_strikes"),
+        nb::arg("floor_strikes"),
+        nb::arg("maturities"),
+        nb::arg("cap_prices"),
+        nb::arg("floor_prices"),
+        "Factory: InterpolatedCPICapFloorTermPriceSurface<Bilinear> → handle.");
+
+    nb::class_<CPICapFloor>(m, "CPICapFloor")
+        .def(
+            "__init__",
+            [](CPICapFloor* self,
+               Option::Type type,
+               Real nominal,
+               const Date& start_date,
+               Real base_cpi,
+               const Date& maturity,
+               const Calendar& fix_calendar,
+               BusinessDayConvention fix_convention,
+               const Calendar& pay_calendar,
+               BusinessDayConvention pay_convention,
+               Rate strike,
+               const ext::shared_ptr<ZeroInflationIndex>& index,
+               const Period& observation_lag,
+               CPI::InterpolationType observation_interpolation) {
+                new (self) CPICapFloor(type,
+                                       nominal,
+                                       start_date,
+                                       base_cpi,
+                                       maturity,
+                                       fix_calendar,
+                                       fix_convention,
+                                       pay_calendar,
+                                       pay_convention,
+                                       strike,
+                                       index,
+                                       observation_lag,
+                                       observation_interpolation);
+            },
+            nb::arg("type"),
+            nb::arg("nominal"),
+            nb::arg("start_date"),
+            nb::arg("base_cpi"),
+            nb::arg("maturity"),
+            nb::arg("fix_calendar"),
+            nb::arg("fix_convention"),
+            nb::arg("pay_calendar"),
+            nb::arg("pay_convention"),
+            nb::arg("strike"),
+            nb::arg("index"),
+            nb::arg("observation_lag"),
+            nb::arg("observation_interpolation") = CPI::Flat)
+        .def("NPV", [](CPICapFloor& o) { return o.NPV(); })
+        .def("type", [](const CPICapFloor& o) { return o.type(); })
+        .def("nominal", [](const CPICapFloor& o) { return o.nominal(); })
+        .def("strike", [](const CPICapFloor& o) { return o.strike(); })
+        .def("fixing_date",
+             [](const CPICapFloor& o) { return o.fixingDate(); })
+        .def("pay_date", [](const CPICapFloor& o) { return o.payDate(); })
+        .def("is_expired", [](const CPICapFloor& o) { return o.isExpired(); })
+        .def(
+            "set_pricing_engine",
+            [](CPICapFloor& o,
+               const Handle<CPICapFloorTermPriceSurface>& surface) {
+                o.setPricingEngine(
+                    ext::make_shared<InterpolatingCPICapFloorEngine>(surface));
+            },
+            nb::arg("price_surface"),
+            "Attach InterpolatingCPICapFloorEngine.");
 }
