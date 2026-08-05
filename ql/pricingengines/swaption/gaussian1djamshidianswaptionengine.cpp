@@ -112,12 +112,22 @@ namespace QuantLib {
                     DiscountFactor dfEnd = curve->discount(accrualEnd);
                     DiscountFactor dfPay =
                         curve->discount(arguments_.floatingPayDates[j]);
-                    // A lagged coupon pays N*(dfStart/dfEnd - 1) at payDate,
-                    // leaving the leg short by
-                    // N*(dfStart-dfEnd)*(1-dfPay/dfEnd). Jamshidian cannot
-                    // discount coupons to separate dates, so that shortfall is
-                    // frozen at time zero - no payment-delay convexity - and
-                    // folded into the notional at the value date.
+                    /* Without a lag, the NPV is
+
+                           N * (dfStart/dfEnd - 1) * dfEnd = N * (dfStart - dfEnd)
+
+                       With a lag, it is
+
+                           N * (dfStart/dfEnd - 1) * dfPay = N * (dfStart - dfEnd) * (dfPay/dfEnd)
+
+                       Jamshidian cannot discount coupons to separate dates, so
+                       the difference between the two, i.e.,
+
+                           N * (dfStart - dfEnd) * (1 - dfPay/dfEnd)
+
+                       is frozen at time zero - no payment-delay convexity - and
+                       folded into the notional at the value date.
+                    */
                     parNominal -= arguments_.nominal * (dfStart - dfEnd) *
                                   (1.0 - dfPay / dfEnd) / dfValue;
                 }
