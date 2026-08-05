@@ -671,6 +671,30 @@ print(cpn.rate(), cpn.index_fixing() / cpn.base_CPI() * cpn.fixed_rate())
 `CPILeg` already attaches a default `CPICouponPricer`; `set_cpi_coupon_pricer`
 is optional when you need a nominal curve on the pricer.
 
+## Phase-19 YoY coupons / yoyInflationLeg
+
+```python
+leg = ql.make_yoy_inflation_leg(
+    schedule, calendar, yoy_index,
+    ql.Period(2, ql.TimeUnit.Months), ql.CPIInterpolationType.Flat,
+    ql.Thirty360(ql.Thirty360Convention.BondBasis),
+    notional=1e6,
+)
+ql.set_yoy_coupon_pricer(leg, ql.YoYInflationCouponPricer(nominal_curve))
+npv = ql.cashflows_npv(leg, nominal_curve, settlement)
+
+cpn = ql.YoYInflationCoupon(
+    pay, 1e6, start, end, 0, yoy_index, lag,
+    ql.CPIInterpolationType.Flat, dc, gearing=1.0, spread=0.0,
+)
+cpn.set_pricer(ql.YoYInflationCouponPricer(nominal_curve))
+print(cpn.fixing_date(), cpn.rate(), cpn.index_fixing())
+```
+
+Uncapped `yoyInflationLeg` attaches a default `YoYInflationCouponPricer`.
+Capped/floored legs need `BlackYoYInflationCouponPricer` (or unit-displaced /
+Bachelier) with a `YoYOptionletVolatilitySurfaceHandle`.
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,

@@ -1576,4 +1576,77 @@ def cashflows_accrued_amount(
     include_settlement_date: bool = ...,
 ) -> float: ...
 
+class YoYInflationCouponPricer(InflationCouponPricer):
+    def __init__(
+        self,
+        nominal: YieldTermStructureHandle = ...,
+        caplet_vol: YoYOptionletVolatilitySurfaceHandle = ...,
+    ) -> None: ...
+
+class BlackYoYInflationCouponPricer(YoYInflationCouponPricer):
+    def __init__(
+        self,
+        nominal: YieldTermStructureHandle = ...,
+        caplet_vol: YoYOptionletVolatilitySurfaceHandle = ...,
+    ) -> None: ...
+
+class UnitDisplacedBlackYoYInflationCouponPricer(YoYInflationCouponPricer):
+    def __init__(
+        self,
+        nominal: YieldTermStructureHandle = ...,
+        caplet_vol: YoYOptionletVolatilitySurfaceHandle = ...,
+    ) -> None: ...
+
+class BachelierYoYInflationCouponPricer(YoYInflationCouponPricer):
+    def __init__(
+        self,
+        nominal: YieldTermStructureHandle = ...,
+        caplet_vol: YoYOptionletVolatilitySurfaceHandle = ...,
+    ) -> None: ...
+
+class YoYInflationCoupon(CashFlow):
+    def __init__(
+        self,
+        payment_date: Date,
+        nominal: float,
+        start_date: Date,
+        end_date: Date,
+        fixing_days: int,
+        index: YoYInflationIndex,
+        observation_lag: Period,
+        observation_interpolation: CPIInterpolationType,
+        day_counter: DayCounter,
+        gearing: float = ...,
+        spread: float = ...,
+    ) -> None: ...
+    def rate(self) -> float: ...
+    def gearing(self) -> float: ...
+    def spread(self) -> float: ...
+    def index_fixing(self) -> float: ...
+    def adjusted_fixing(self) -> float: ...
+    def fixing_date(self) -> Date: ...
+    def nominal(self) -> float: ...
+    def interpolation(self) -> CPIInterpolationType: ...
+    def yoy_index(self) -> YoYInflationIndex: ...
+    def set_pricer(self, pricer: InflationCouponPricer) -> None: ...
+
+def make_yoy_inflation_leg(
+    schedule: Schedule,
+    payment_calendar: Calendar,
+    index: YoYInflationIndex,
+    observation_lag: Period,
+    observation_interpolation: CPIInterpolationType,
+    day_counter: DayCounter,
+    notional: float = ...,
+    fixing_days: int = ...,
+    gearing: float = ...,
+    spread: float = ...,
+    payment_convention: BusinessDayConvention = ...,
+    cap: float | None = ...,
+    floor: float | None = ...,
+) -> list[CashFlow]: ...
+def set_yoy_coupon_pricer(
+    leg: Sequence[CashFlow], pricer: InflationCouponPricer
+) -> None: ...
+
 __version__: str
