@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,7 +39,21 @@ namespace QuantLib {
         option expiry are considered to be
         part of the exercise into right.
 
+        An overnight-indexed (RFR) underlying is supported: a compounded
+        coupon's daily compounding telescopes to a zerobond ratio over its rate
+        period for performance. Shifted value dates are used under an
+        observation shift, and the ratio is normalised by the coupon's own rate
+        accrual so the projected amount matches OvernightIndexedCoupon::amount(),
+        including under an observation shift.
+
+        This is exact for compounded rates (including with a lookback
+        with observation shift). A lookback without observation shift and a
+        lockout are still priced but "approximated" (as if they did not exist)
+		Payment delay is handled (statically)
+
         \warning Cash settled swaptions are not supported
+        \warning Arithmetic (simple) averaged overnight coupons are not supported
+        \warning Lookback without observation shift and lockout are approximated
     */
 
     class Gaussian1dSwaptionEngine
