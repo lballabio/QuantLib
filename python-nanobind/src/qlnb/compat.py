@@ -664,6 +664,36 @@ if CPICapFloorTermPriceSurfaceHandle is not None:
         CPICapFloorTermPriceSurfaceHandle.atm_rate
     )
 
+# Phase-17 seasonality aliases.
+MultiplicativePriceSeasonality = getattr(
+    _ql, "MultiplicativePriceSeasonality", None
+)
+KerkhofSeasonality = getattr(_ql, "KerkhofSeasonality", None)
+inflationPeriod = getattr(_ql, "inflation_period", None)
+Seasonality = getattr(_ql, "Seasonality", None)
+
+for _hname in (
+    "ZeroInflationTermStructureHandle",
+    "RelinkableZeroInflationTermStructureHandle",
+    "YoYInflationTermStructureHandle",
+    "RelinkableYoYInflationTermStructureHandle",
+):
+    _h = getattr(_ql, _hname, None)
+    if _h is not None:
+        _h.setSeasonality = _h.set_seasonality  # type: ignore[attr-defined]
+        _h.hasSeasonality = _h.has_seasonality  # type: ignore[attr-defined]
+
+if MultiplicativePriceSeasonality is not None:
+    MultiplicativePriceSeasonality.seasonalityBaseDate = (  # type: ignore[attr-defined]
+        MultiplicativePriceSeasonality.seasonality_base_date
+    )
+    MultiplicativePriceSeasonality.seasonalityFactors = (  # type: ignore[attr-defined]
+        MultiplicativePriceSeasonality.seasonality_factors
+    )
+    MultiplicativePriceSeasonality.seasonalityFactor = (  # type: ignore[attr-defined]
+        MultiplicativePriceSeasonality.seasonality_factor
+    )
+
 # SWIG-style CPI.Flat nested namespace.
 class CPI:
     """SWIG-style CPI.Flat / CPI.Linear namespace."""

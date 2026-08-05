@@ -1,6 +1,7 @@
 #include "bindings.hpp"
 
 #include <nanobind/stl/optional.h>
+#include <nanobind/stl/pair.h>
 #include <nanobind/stl/shared_ptr.h>
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/vector.h>
@@ -35,6 +36,7 @@
 #include <ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp>
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
+#include <ql/termstructures/inflation/seasonality.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
 #include <ql/termstructures/volatility/volatilitytype.hpp>
@@ -176,7 +178,20 @@ void bind_inflation(nb::module_& m) {
         .def("reference_date",
              [](const Handle<ZeroInflationTermStructure>& h) {
                  return h->referenceDate();
-             });
+             })
+        .def(
+            "has_seasonality",
+            [](const Handle<ZeroInflationTermStructure>& h) {
+                return h->hasSeasonality();
+            })
+        .def(
+            "set_seasonality",
+            [](Handle<ZeroInflationTermStructure>& h,
+               const ext::shared_ptr<Seasonality>& seasonality) {
+                h->setSeasonality(seasonality);
+            },
+            nb::arg("seasonality") = ext::shared_ptr<Seasonality>(),
+            "Attach or clear (default/None) multiplicative seasonality.");
 
     nb::class_<RelinkableHandle<ZeroInflationTermStructure>>(
         m, "RelinkableZeroInflationTermStructureHandle")
@@ -202,7 +217,20 @@ void bind_inflation(nb::module_& m) {
                const Date& d,
                bool extrapolate) { return h->zeroRate(d, extrapolate); },
             nb::arg("date"),
-            nb::arg("extrapolate") = false);
+            nb::arg("extrapolate") = false)
+        .def(
+            "has_seasonality",
+            [](const RelinkableHandle<ZeroInflationTermStructure>& h) {
+                return h->hasSeasonality();
+            })
+        .def(
+            "set_seasonality",
+            [](RelinkableHandle<ZeroInflationTermStructure>& h,
+               const ext::shared_ptr<Seasonality>& seasonality) {
+                h->setSeasonality(seasonality);
+            },
+            nb::arg("seasonality") = ext::shared_ptr<Seasonality>(),
+            "Attach or clear (default/None) multiplicative seasonality.");
 
     // ZeroInflationIndex is MI-heavy — opaque shared_ptr holder.
     nb::class_<ZeroInflationIndex>(m, "ZeroInflationIndex")
@@ -423,7 +451,20 @@ void bind_inflation(nb::module_& m) {
         .def("reference_date",
              [](const Handle<YoYInflationTermStructure>& h) {
                  return h->referenceDate();
-             });
+             })
+        .def(
+            "has_seasonality",
+            [](const Handle<YoYInflationTermStructure>& h) {
+                return h->hasSeasonality();
+            })
+        .def(
+            "set_seasonality",
+            [](Handle<YoYInflationTermStructure>& h,
+               const ext::shared_ptr<Seasonality>& seasonality) {
+                h->setSeasonality(seasonality);
+            },
+            nb::arg("seasonality") = ext::shared_ptr<Seasonality>(),
+            "Attach or clear (default/None) multiplicative seasonality.");
 
     nb::class_<RelinkableHandle<YoYInflationTermStructure>>(
         m, "RelinkableYoYInflationTermStructureHandle")
@@ -449,7 +490,20 @@ void bind_inflation(nb::module_& m) {
                const Date& d,
                bool extrapolate) { return h->yoyRate(d, extrapolate); },
             nb::arg("date"),
-            nb::arg("extrapolate") = false);
+            nb::arg("extrapolate") = false)
+        .def(
+            "has_seasonality",
+            [](const RelinkableHandle<YoYInflationTermStructure>& h) {
+                return h->hasSeasonality();
+            })
+        .def(
+            "set_seasonality",
+            [](RelinkableHandle<YoYInflationTermStructure>& h,
+               const ext::shared_ptr<Seasonality>& seasonality) {
+                h->setSeasonality(seasonality);
+            },
+            nb::arg("seasonality") = ext::shared_ptr<Seasonality>(),
+            "Attach or clear (default/None) multiplicative seasonality.");
 
     // YoYInflationIndex is MI-heavy — opaque shared_ptr holder.
     nb::class_<YoYInflationIndex>(m, "YoYInflationIndex")
@@ -1216,4 +1270,66 @@ void bind_inflation(nb::module_& m) {
             },
             nb::arg("price_surface"),
             "Attach InterpolatingCPICapFloorEngine.");
+
+    // --- Phase 17: inflation seasonality ---
+
+    m.def(
+        "inflation_period",
+        [](const Date& d, Frequency frequency) {
+            return inflationPeriod(d, frequency);
+        },
+        nb::arg("date"),
+        nb::arg("frequency"),
+        "Return (period_start, period_end) for an inflation fixing date.");
+
+    nb::class_<Seasonality>(m, "Seasonality");
+
+    nb::class_<MultiplicativePriceSeasonality, Seasonality>(
+        m, "MultiplicativePriceSeasonality")
+        .def(
+            "__init__",
+            [](MultiplicativePriceSeasonality* self,
+               const Date& seasonality_base_date,
+               Frequency frequency,
+               const std::vector<Rate>& factors) {
+                new (self) MultiplicativePriceSeasonality(
+                    seasonality_base_date, frequency, factors);
+            },
+            nb::arg("seasonality_base_date"),
+            nb::arg("frequency"),
+            nb::arg("seasonality_factors"))
+        .def(
+            "set",
+            [](MultiplicativePriceSeasonality& s,
+               const Date& seasonality_base_date,
+               Frequency frequency,
+               const std::vector<Rate>& factors) {
+                s.set(seasonality_base_date, frequency, factors);
+            },
+            nb::arg("seasonality_base_date"),
+            nb::arg("frequency"),
+            nb::arg("seasonality_factors"))
+        .def("seasonality_base_date",
+             &MultiplicativePriceSeasonality::seasonalityBaseDate)
+        .def("frequency", &MultiplicativePriceSeasonality::frequency)
+        .def("seasonality_factors",
+             &MultiplicativePriceSeasonality::seasonalityFactors)
+        .def(
+            "seasonality_factor",
+            [](const MultiplicativePriceSeasonality& s, const Date& d) {
+                return s.seasonalityFactor(d);
+            },
+            nb::arg("date"));
+
+    nb::class_<KerkhofSeasonality, MultiplicativePriceSeasonality>(
+        m, "KerkhofSeasonality")
+        .def(
+            "__init__",
+            [](KerkhofSeasonality* self,
+               const Date& seasonality_base_date,
+               const std::vector<Rate>& factors) {
+                new (self) KerkhofSeasonality(seasonality_base_date, factors);
+            },
+            nb::arg("seasonality_base_date"),
+            nb::arg("seasonality_factors"));
 }
