@@ -2190,6 +2190,7 @@ set(QL_HEADERS
     termstructures/yield/bondhelpers.hpp
     termstructures/yield/bootstraptraits.hpp
     termstructures/yield/compositezeroyieldstructure.hpp
+    termstructures/yield/derivedtermstructure.hpp
     termstructures/yield/discountcurve.hpp
     termstructures/yield/fittedbonddiscountcurve.hpp
     termstructures/yield/flatforward.hpp

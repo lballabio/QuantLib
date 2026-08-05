@@ -27,6 +27,7 @@
 #include <ql/math/rounding.hpp>
 #include <ql/optional.hpp>
 #include <ql/quote.hpp>
+#include <ql/termstructures/yield/derivedtermstructure.hpp>
 #include <ql/termstructures/yield/zeroyieldstructure.hpp>
 #include <utility>
 
@@ -75,7 +76,8 @@ namespace QuantLib {
         - rounding of output rate with predefined compounding.
     */
 
-    class UltimateForwardTermStructure : public ZeroYieldStructure {
+    class UltimateForwardTermStructure
+        : public RelativeDerivedYieldTermStructure<ZeroYieldStructure> {
       public:
         UltimateForwardTermStructure(Handle<YieldTermStructure>,
                                      Handle<Quote> lastLiquidForwardRate,
@@ -87,15 +89,7 @@ namespace QuantLib {
                                      Frequency frequency = Annual);
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const override;
-        Calendar calendar() const override;
-        Natural settlementDays() const override;
-        const Date& referenceDate() const override;
         Date maxDate() const override;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update() override;
         //@}
       protected:
         //! returns the UFR extended zero yield rate
@@ -106,7 +100,6 @@ namespace QuantLib {
         Rate applyRounding(Rate r, Time t) const;
         //@}
 
-        Handle<YieldTermStructure> originalCurve_;
         Handle<Quote> llfr_;
         Handle<Quote> ufr_;
         Period fsp_;
@@ -127,49 +120,16 @@ namespace QuantLib {
         const std::optional<Integer>& roundingDigits,
         Compounding compounding,
         Frequency frequency)
-    : originalCurve_(std::move(h)), llfr_(std::move(lastLiquidForwardRate)),
+    : RelativeDerivedYieldTermStructure(std::move(h)), llfr_(std::move(lastLiquidForwardRate)),
       ufr_(std::move(ultimateForwardRate)), fsp_(firstSmoothingPoint), alpha_(alpha),
       roundingDigits_(roundingDigits), compounding_(compounding), frequency_(frequency) {
         QL_REQUIRE(fsp_.length() > 0,
                    "first smoothing point must be a period with positive length");
-        if (!originalCurve_.empty())
-            enableExtrapolation(originalCurve_->allowsExtrapolation());
-        registerWith(originalCurve_);
         registerWith(llfr_);
         registerWith(ufr_);
     }
 
-    inline DayCounter UltimateForwardTermStructure::dayCounter() const {
-        return originalCurve_->dayCounter();
-    }
-
-    inline Calendar UltimateForwardTermStructure::calendar() const {
-        return originalCurve_->calendar();
-    }
-
-    inline Natural UltimateForwardTermStructure::settlementDays() const {
-        return originalCurve_->settlementDays();
-    }
-
-    inline const Date& UltimateForwardTermStructure::referenceDate() const {
-        return originalCurve_->referenceDate();
-    }
-
     inline Date UltimateForwardTermStructure::maxDate() const { return Date::maxDate(); }
-
-    inline void UltimateForwardTermStructure::update() {
-        if (!originalCurve_.empty()) {
-            YieldTermStructure::update();
-            enableExtrapolation(originalCurve_->allowsExtrapolation());
-        } else {
-            /* The implementation inherited from YieldTermStructure
-               asks for our reference date, which we don't have since
-               the original curve is still not set. Therefore, we skip
-               over that and just call the base-class behavior. */
-            // NOLINTNEXTLINE(bugprone-parent-virtual-call)
-            TermStructure::update();
-        }
-    }
 
     inline Rate UltimateForwardTermStructure::applyRounding(Rate r, Time t) const {
         if (!roundingDigits_.has_value()) {
