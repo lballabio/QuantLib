@@ -636,6 +636,34 @@ if CPIBond is not None:
     CPIBond.maturityDate = CPIBond.maturity_date  # type: ignore[attr-defined]
     CPIBond.isExpired = CPIBond.is_expired  # type: ignore[attr-defined]
 
+# Phase-16 CPICapFloor aliases.
+Matrix = getattr(_ql, "Matrix", None)
+InterpolatedCPICapFloorTermPriceSurface = getattr(
+    _ql, "InterpolatedCPICapFloorTermPriceSurface", None
+)
+CPICapFloor = getattr(_ql, "CPICapFloor", None)
+if CPICapFloor is not None:
+    CPICapFloor.setPricingEngine = (  # type: ignore[attr-defined]
+        CPICapFloor.set_pricing_engine
+    )
+    CPICapFloor.fixingDate = CPICapFloor.fixing_date  # type: ignore[attr-defined]
+    CPICapFloor.payDate = CPICapFloor.pay_date  # type: ignore[attr-defined]
+    CPICapFloor.isExpired = CPICapFloor.is_expired  # type: ignore[attr-defined]
+
+CPICapFloorTermPriceSurfaceHandle = getattr(
+    _ql, "CPICapFloorTermPriceSurfaceHandle", None
+)
+if CPICapFloorTermPriceSurfaceHandle is not None:
+    CPICapFloorTermPriceSurfaceHandle.capPrice = (  # type: ignore[attr-defined]
+        CPICapFloorTermPriceSurfaceHandle.cap_price
+    )
+    CPICapFloorTermPriceSurfaceHandle.floorPrice = (  # type: ignore[attr-defined]
+        CPICapFloorTermPriceSurfaceHandle.floor_price
+    )
+    CPICapFloorTermPriceSurfaceHandle.atmRate = (  # type: ignore[attr-defined]
+        CPICapFloorTermPriceSurfaceHandle.atm_rate
+    )
+
 # SWIG-style CPI.Flat nested namespace.
 class CPI:
     """SWIG-style CPI.Flat / CPI.Linear namespace."""

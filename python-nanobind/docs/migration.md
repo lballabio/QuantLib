@@ -606,6 +606,29 @@ swap = ql.CPISwap(
 swap.set_pricing_engine(nominal_curve)
 ```
 
+## Phase-16 CPICapFloor
+
+```python
+cap_px = ql.Matrix(4, 7, flat_cap_prices)   # strikes × maturities, prices in absolute
+floor_px = ql.Matrix(4, 7, flat_floor_prices)
+surf = ql.InterpolatedCPICapFloorTermPriceSurface(
+    1.0, base_zero_rate, lag, cal, bdc, dc, index,
+    ql.CPIInterpolationType.Flat, nominal,
+    [0.03, 0.04, 0.05, 0.06], [-0.01, 0.0, 0.01, 0.02],
+    [ql.Period(3, ql.TimeUnit.Years), ...],
+    cap_px, floor_px,
+)
+base = ql.cpi_lagged_fixing(index, today, lag, ql.CPIInterpolationType.Linear)
+cap = ql.CPICapFloor(
+    ql.OptionType.Call, 1.0, today, base, today + ql.Period(3, ql.TimeUnit.Years),
+    cal, ql.BusinessDayConvention.Unadjusted, cal,
+    ql.BusinessDayConvention.ModifiedFollowing, 0.03, index, lag,
+    ql.CPIInterpolationType.Linear,
+)
+cap.set_pricing_engine(surf)
+print(cap.NPV(), surf.cap_price(ql.Period(3, ql.TimeUnit.Years), 0.03))
+```
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,
