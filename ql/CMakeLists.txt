@@ -147,6 +147,9 @@ set(QL_SOURCES
     experimental/finitedifferences/glued1dmesher.cpp
     experimental/finitedifferences/vanillavppoption.cpp
     experimental/forward/analytichestonforwardeuropeanengine.cpp
+    experimental/fx/discountingmtmcrosscurrencybasisswapengine.cpp
+    experimental/fx/fxresetcashflows.cpp
+    experimental/fx/mtmcrosscurrencybasisswap.cpp
     experimental/inflation/cpicapfloorengines.cpp
     experimental/inflation/cpicapfloortermpricesurface.cpp
     experimental/inflation/yoycapfloortermpricesurface.cpp
@@ -266,9 +269,9 @@ set(QL_SOURCES
     instruments/cpicapfloor.cpp
     instruments/cpiswap.cpp
     instruments/creditdefaultswap.cpp
+    instruments/crosscurrencyswap.cpp
     instruments/constnotionalcrosscurrencybasisswap.cpp
     instruments/constnotionalcrosscurrencyfixedvsfloatingswap.cpp
-    instruments/constnotionalcrosscurrencyswap.cpp
     instruments/doublebarrieroption.cpp
     instruments/doublebarriertype.cpp
     instruments/equitytotalreturnswap.cpp
@@ -929,6 +932,7 @@ set(QL_SOURCES
     time/calendars/italy.cpp
     time/calendars/japan.cpp
     time/calendars/jointcalendar.cpp
+    time/calendars/malaysia.cpp
     time/calendars/malta.cpp
     time/calendars/mexico.cpp
     time/calendars/montenegro.cpp
@@ -1173,6 +1177,9 @@ set(QL_HEADERS
     experimental/forward/analytichestonforwardeuropeanengine.hpp
     experimental/fx/blackdeltacalculator.hpp
     experimental/fx/deltavolquote.hpp
+    experimental/fx/discountingmtmcrosscurrencybasisswapengine.hpp
+    experimental/fx/fxresetcashflows.hpp
+    experimental/fx/mtmcrosscurrencybasisswap.hpp
     experimental/inflation/cpicapfloorengines.hpp
     experimental/inflation/cpicapfloortermpricesurface.hpp
     experimental/inflation/genericindexes.hpp
@@ -1360,6 +1367,7 @@ set(QL_HEADERS
     instruments/cpicapfloor.hpp
     instruments/cpiswap.hpp
     instruments/creditdefaultswap.hpp
+    instruments/crosscurrencyswap.hpp
     instruments/constnotionalcrosscurrencybasisswap.hpp
     instruments/constnotionalcrosscurrencyfixedvsfloatingswap.hpp
     instruments/constnotionalcrosscurrencyswap.hpp
@@ -2243,6 +2251,7 @@ set(QL_HEADERS
     time/calendars/italy.hpp
     time/calendars/japan.hpp
     time/calendars/jointcalendar.hpp
+    time/calendars/malaysia.hpp
     time/calendars/malta.hpp
     time/calendars/mexico.hpp
     time/calendars/montenegro.hpp

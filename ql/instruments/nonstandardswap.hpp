@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2013, 2016 Peter Caspers
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,8 +27,10 @@
 
 #include <ql/instruments/swap.hpp>
 #include <ql/instruments/fixedvsfloatingswap.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/utilities/null.hpp>
 #include <ql/optional.hpp>
 
 namespace QuantLib {
@@ -56,7 +59,9 @@ namespace QuantLib {
                         DayCounter floatingDayCount,
                         bool intermediateCapitalExchange = false,
                         bool finalCapitalExchange = false,
-                        std::optional<BusinessDayConvention> paymentConvention = std::nullopt);
+                        std::optional<BusinessDayConvention> paymentConvention = std::nullopt,
+                        Integer paymentLag = 0,
+                        Calendar paymentCalendar = Calendar());
         NonstandardSwap(Swap::Type type,
                         std::vector<Real> fixedNominal,
                         std::vector<Real> floatingNominal,
@@ -70,7 +75,9 @@ namespace QuantLib {
                         DayCounter floatingDayCount,
                         bool intermediateCapitalExchange = false,
                         bool finalCapitalExchange = false,
-                        std::optional<BusinessDayConvention> paymentConvention = std::nullopt);
+                        std::optional<BusinessDayConvention> paymentConvention = std::nullopt,
+                        Integer paymentLag = 0,
+                        Calendar paymentCalendar = Calendar());
         //! \name Inspectors
         //@{
         Swap::Type type() const;
@@ -90,6 +97,8 @@ namespace QuantLib {
         const DayCounter &floatingDayCount() const;
 
         BusinessDayConvention paymentConvention() const;
+        Integer paymentLag() const;
+        const Calendar& paymentCalendar() const;
 
         const Leg &fixedLeg() const;
         const Leg &floatingLeg() const;
@@ -117,6 +126,13 @@ namespace QuantLib {
         bool singleSpreadAndGearing_;
         DayCounter floatingDayCount_;
         BusinessDayConvention paymentConvention_;
+        Integer paymentLag_;
+        Calendar paymentCalendar_;
+        bool telescopicValueDates_ = false;
+        RateAveraging::Type averagingMethod_ = RateAveraging::Compound;
+        Natural lookbackDays_ = Null<Natural>();
+        Natural lockoutDays_ = 0;
+        bool applyObservationShift_ = false;
         const bool intermediateCapitalExchange_;
         const bool finalCapitalExchange_;
         // results
@@ -219,6 +235,12 @@ namespace QuantLib {
 
     inline BusinessDayConvention NonstandardSwap::paymentConvention() const {
         return paymentConvention_;
+    }
+
+    inline Integer NonstandardSwap::paymentLag() const { return paymentLag_; }
+
+    inline const Calendar& NonstandardSwap::paymentCalendar() const {
+        return paymentCalendar_;
     }
 
     inline const Leg &NonstandardSwap::fixedLeg() const { return legs_[0]; }

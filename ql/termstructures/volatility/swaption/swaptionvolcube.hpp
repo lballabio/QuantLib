@@ -73,7 +73,7 @@ namespace QuantLib {
             Date optionDate = optionDateFromTenor(optionTenor);
             return atmStrike(optionDate, swapTenor);
         }
-		Handle<SwaptionVolatilityStructure> atmVol() const { return atmVol_; }
+        const Handle<SwaptionVolatilityStructure>& atmVol() const { return atmVol_; }
         const std::vector<Spread>& strikeSpreads() const { return strikeSpreads_; }
         const std::vector<std::vector<Handle<Quote> > >& volSpreads() const { return volSpreads_; }
         ext::shared_ptr<SwapIndex> swapIndexBase() const { return swapIndexBase_; }

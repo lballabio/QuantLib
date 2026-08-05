@@ -38,7 +38,7 @@ namespace QuantLib {
           Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
           const std::optional<bool>& includeSettlementDateFlows = std::nullopt);
       void calculate() const override;
-      Handle<YieldTermStructure> discountCurve() const { return discountCurve_; }
+      const Handle<YieldTermStructure>& discountCurve() const { return discountCurve_; }
     protected:
       Real cashFlowRiskyValue(const ext::shared_ptr<CashFlow>& cf,
                               const NotionalPath& notionalPath) const;

@@ -175,7 +175,7 @@ namespace QuantLib {
         //! \name Other methods
         //@{
         Date lastFixingDate() const;
-        Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
+        const Handle<ZeroInflationTermStructure>& zeroInflationTermStructure() const;
         ext::shared_ptr<ZeroInflationIndex> clone(const Handle<ZeroInflationTermStructure>& h) const;
         bool needsForecast(const Date& fixingDate) const;
         //@}
@@ -239,7 +239,7 @@ namespace QuantLib {
         bool interpolated() const;
         bool ratio() const;
         ext::shared_ptr<ZeroInflationIndex> underlyingIndex() const;
-        Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
+        const Handle<YoYInflationTermStructure>& yoyInflationTermStructure() const;
 
         ext::shared_ptr<YoYInflationIndex> clone(const Handle<YoYInflationTermStructure>& h) const;
         bool needsForecast(const Date& fixingDate) const;
@@ -311,7 +311,7 @@ namespace QuantLib {
         return currency_;
     }
 
-    inline Handle<ZeroInflationTermStructure>
+    inline const Handle<ZeroInflationTermStructure>&
     ZeroInflationIndex::zeroInflationTermStructure() const {
         return zeroInflation_;
     }
@@ -330,7 +330,7 @@ namespace QuantLib {
         return underlyingIndex_;
     }
 
-    inline Handle<YoYInflationTermStructure>
+    inline const Handle<YoYInflationTermStructure>&
     YoYInflationIndex::yoyInflationTermStructure() const {
         return yoyInflation_;
     }

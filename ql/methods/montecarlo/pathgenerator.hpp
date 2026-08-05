@@ -139,7 +139,7 @@ namespace QuantLib {
         Path& path = next_.value;
         path.front() = process_->x0();
 
-        for (auto i=1u; i<path.length(); i++) {
+        for (auto i=1U; i<path.length(); i++) {
             auto t = timeGrid_[i-1];
             auto dt = timeGrid_.dt(i-1);
             path[i] = process_->evolve(t, path[i-1], dt,

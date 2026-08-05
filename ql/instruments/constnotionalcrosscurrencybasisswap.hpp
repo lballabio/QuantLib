@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2016 Quaternion Risk Management Ltd
  Copyright (C) 2025 Paolo D'Elia
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 
 #include <ql/indexes/iborindex.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
+#include <ql/optional.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/constnotionalcrosscurrencyswap.hpp>
 
@@ -49,6 +51,9 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         \brief Constructs a cross-currency basis swap.
 
         First leg holds the pay currency cashflows and the second leg holds the receive currency cashflows.
+
+        Payment lags apply only to coupon payments.  Notional exchanges remain
+        on the effective and maturity dates.
         
         \param payNominal         Notional amount for the pay leg.
         \param payCurrency        Currency of the pay leg.
@@ -62,8 +67,8 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         \param recIndex           Floating rate index for the receive leg.
         \param recSpread          Spread over the floating rate for the receive leg.
         \param recGearing         Gearing factor for the receive leg.
-        \param payPaymentLag      Payment lag in days for the pay leg if overnight (default: 0).
-        \param recPaymentLag      Payment lag in days for the receive leg if overnight (default: 0).
+        \param payPaymentLag      Coupon payment lag in days for the pay leg (default: 0).
+        \param recPaymentLag      Coupon payment lag in days for the receive leg (default: 0).
         \param payCompoundSpread  Whether to compound the spread daily for the pay leg if overnight (default: false).
         \param payLookbackDays    Lookback days for the pay leg if overnight (default: null).
         \param payObservationShift  Whether the observation shift is applied for the pay leg if overnight (default: false).
@@ -75,6 +80,7 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         \param recLockoutDays     Lockout period (in business days) for the receive leg if overnight (default: 0).
         \param recAveragingMethod   Averaging method for the receive leg if overnight (default: compounding).
         \param telescopicValueDates Flag indicating whether telescopic value dates are used if overnight (default: false).
+        \param useIndexedCoupons If provided, overrides the global IborCoupon setting for both legs.
     */
     ConstNotionalCrossCurrencyBasisSwap(
         Real payNominal, Currency  payCurrency, Schedule  paySchedule,
@@ -85,7 +91,8 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         Natural payLockoutDays = 0, RateAveraging::Type payAveragingMethod = RateAveraging::Compound,
         bool recCompoundSpread = false, Natural recLookbackDays = Null<Natural>(), bool recObservationShift = false,
         Natural recLockoutDays = 0, RateAveraging::Type recAveragingMethod = RateAveraging::Compound,
-        bool telescopicValueDates = false);
+        bool telescopicValueDates = false,
+        std::optional<bool> useIndexedCoupons = std::nullopt);
     //@}
     //! \name Instrument interface
     //@{
@@ -148,6 +155,7 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
 
     Integer payPaymentLag_;
     Integer recPaymentLag_;
+    std::optional<bool> useIndexedCoupons_;
 
     // OIS only
     bool payCompoundSpread_;

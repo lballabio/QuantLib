@@ -69,7 +69,7 @@ namespace QuantLib {
         }
 
         /*! \brief Returns the handle to the optionlet volatility structure used for caplets/floorlets */
-        Handle<OptionletVolatilityStructure> capletVolatility() const {
+        const Handle<OptionletVolatilityStructure>& capletVolatility() const {
             return capletVol_;
         }
         

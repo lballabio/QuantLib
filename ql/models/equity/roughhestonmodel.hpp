@@ -24,10 +24,8 @@
 #ifndef quantlib_rough_heston_model_hpp
 #define quantlib_rough_heston_model_hpp
 
-#include <ql/handle.hpp>
 #include <ql/models/model.hpp>
-#include <ql/quote.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/processes/hestonprocess.hpp>
 
 namespace QuantLib {
 
@@ -44,14 +42,7 @@ namespace QuantLib {
     */
     class RoughHestonModel : public CalibratedModel {
       public:
-        RoughHestonModel(Handle<YieldTermStructure> riskFreeRate,
-                         Handle<YieldTermStructure> dividendYield,
-                         Handle<Quote> s0,
-                         Real v0,
-                         Real kappa,
-                         Real theta,
-                         Real sigma,
-                         Real rho,
+        RoughHestonModel(const ext::shared_ptr<HestonProcess>& process,
                          Real hurst);
 
         //! variance mean-reversion level
@@ -67,18 +58,13 @@ namespace QuantLib {
         //! Hurst exponent of the variance process
         Real hurst() const { return arguments_[5](0.0); }
 
-        const Handle<YieldTermStructure>& riskFreeRate() const {
-            return riskFreeRate_;
-        }
-        const Handle<YieldTermStructure>& dividendYield() const {
-            return dividendYield_;
-        }
-        const Handle<Quote>& s0() const { return s0_; }
+        ext::shared_ptr<HestonProcess> process() const { return process_; }
 
       private:
-        const Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
-        const Handle<Quote> s0_;
+        void generateArguments() override;
+        ext::shared_ptr<HestonProcess> process_;
     };
+
 }
 
 #endif

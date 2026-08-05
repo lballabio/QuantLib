@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2013, 2015 Peter Caspers
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,6 +53,8 @@
 #include <unordered_map>
 
 namespace QuantLib {
+
+class OvernightIndexedCoupon;
 
 /*! One factor interest rate model interface class
     The only methods that must be implemented by subclasses
@@ -109,6 +112,12 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
                 const Date& referenceDate = Date(),
                 Real y = 0.0,
                 const ext::shared_ptr<IborIndex>& iborIdx = ext::shared_ptr<IborIndex>()) const;
+
+    Real compoundedRate(
+        const OvernightIndexedCoupon& coupon,
+        const Date& referenceDate = Date(),
+        Real y = 0.0,
+        const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
 
     Real swapRate(const Date& fixing,
                   const Period& tenor,
