@@ -7,8 +7,8 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "qlnb"
-version = "0.20.0"
-description = "Nanobind Python bindings for QuantLib (phase 19: YoY coupons / yoyInflationLeg)"
+version = "0.21.0"
+description = "Nanobind Python bindings for QuantLib (phase 20: capped/floored YoY coupons)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "BSD-3-Clause" }

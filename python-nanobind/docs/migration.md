@@ -695,6 +695,27 @@ Uncapped `yoyInflationLeg` attaches a default `YoYInflationCouponPricer`.
 Capped/floored legs need `BlackYoYInflationCouponPricer` (or unit-displaced /
 Bachelier) with a `YoYOptionletVolatilitySurfaceHandle`.
 
+## Phase-20 capped/floored YoY coupons
+
+```python
+vol = ql.ConstantYoYOptionletVolatility(
+    0.01, 0, cal, bdc, dc, lag, ql.Frequency.Annual,
+)
+pricer = ql.BlackYoYInflationCouponPricer(nominal, vol)
+
+capped = ql.make_yoy_inflation_leg(
+    schedule, cal, yoy, lag, interp, dc, cap=0.10,
+)
+ql.set_yoy_coupon_pricer(capped, pricer)
+assert isinstance(capped[0], ql.CappedFlooredYoYInflationCoupon)
+assert capped[0].is_capped() and capped[0].cap() == 0.10
+
+# Decomposition: capped ≈ vanilla − Cap (tol 1e-10)
+vanilla = ql.make_yoy_inflation_leg(schedule, cal, yoy, lag, interp, dc)
+cap = ql.YoYInflationCapFloor(ql.YoYInflationCapFloorType.Cap, vanilla, 0.10)
+cap.set_pricing_engine(yoy, vol, nominal, "black")
+```
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,
