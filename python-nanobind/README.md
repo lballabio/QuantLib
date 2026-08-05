@@ -125,6 +125,12 @@ Experimental Python package that binds a focused QuantLib surface with
 - `set_seasonality` / `has_seasonality` on zero & YoY inflation handles
 - `inflation_period(date, frequency)` helper
 
+### Phase 18 (CPI coupons / CPILeg)
+- `CPICoupon` + `CPICouponPricer` / `set_pricer`
+- `make_cpi_leg` (`CPILeg`) → `list[CashFlow]`
+- `set_cpi_coupon_pricer`, `cashflows_npv`, `cashflows_accrued_amount`
+- `clear_fixings` on zero / YoY inflation indexes (IndexManager isolation)
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 

@@ -6,6 +6,10 @@
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/vector.h>
 
+#include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/cpicoupon.hpp>
+#include <ql/cashflows/cpicouponpricer.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/yoyinflationcoupon.hpp>
 #include <ql/handle.hpp>
 #include <ql/indexes/iborindex.hpp>
@@ -250,6 +254,10 @@ void bind_inflation(nb::module_& m) {
             nb::arg("fixing_date"),
             nb::arg("fixing"),
             nb::arg("force_overwrite") = false)
+        .def(
+            "clear_fixings",
+            [](ZeroInflationIndex& i) { i.clearFixings(); },
+            "Clear IndexManager history for this index name (test isolation).")
         .def(
             "fixing",
             [](const ZeroInflationIndex& i,
@@ -524,6 +532,10 @@ void bind_inflation(nb::module_& m) {
             nb::arg("fixing_date"),
             nb::arg("fixing"),
             nb::arg("force_overwrite") = false)
+        .def(
+            "clear_fixings",
+            [](YoYInflationIndex& i) { i.clearFixings(); },
+            "Clear IndexManager history for this index name (test isolation).")
         .def(
             "fixing",
             [](const YoYInflationIndex& i,
@@ -1332,4 +1344,167 @@ void bind_inflation(nb::module_& m) {
             },
             nb::arg("seasonality_base_date"),
             nb::arg("seasonality_factors"));
+
+    // --- Phase 18: CPI coupons / CPILeg ---
+
+    nb::class_<CashFlow>(m, "CashFlow")
+        .def("amount", [](const CashFlow& c) { return c.amount(); })
+        .def("date", [](const CashFlow& c) { return c.date(); })
+        .def(
+            "has_occurred",
+            [](const CashFlow& c, const Date& ref) {
+                return c.hasOccurred(ref);
+            },
+            nb::arg("ref_date") = Date());
+
+    nb::class_<InflationCouponPricer>(m, "InflationCouponPricer");
+
+    nb::class_<CPICouponPricer, InflationCouponPricer>(m, "CPICouponPricer")
+        .def(
+            "__init__",
+            [](CPICouponPricer* self,
+               const Handle<YieldTermStructure>& nominal) {
+                new (self) CPICouponPricer(nominal);
+            },
+            nb::arg("nominal") = Handle<YieldTermStructure>(),
+            "CPI coupon pricer (swaplets; vol-dependent optionlets are TODO).");
+
+    // Single-inheritance view (C++ path is CPICoupon → … → CashFlow; MI on
+    // CashFlow itself is not exposed). Needed so Leg→list round-trips keep
+    // isinstance(cf, CashFlow) for Sequence[CashFlow] casters.
+    nb::class_<CPICoupon, CashFlow>(m, "CPICoupon")
+        .def(
+            "__init__",
+            [](CPICoupon* self,
+               Real base_cpi,
+               const Date& payment_date,
+               Real nominal,
+               const Date& start_date,
+               const Date& end_date,
+               const ext::shared_ptr<ZeroInflationIndex>& index,
+               const Period& observation_lag,
+               CPI::InterpolationType observation_interpolation,
+               const DayCounter& day_counter,
+               Real fixed_rate) {
+                new (self) CPICoupon(base_cpi,
+                                     payment_date,
+                                     nominal,
+                                     start_date,
+                                     end_date,
+                                     index,
+                                     observation_lag,
+                                     observation_interpolation,
+                                     day_counter,
+                                     fixed_rate);
+            },
+            nb::arg("base_cpi"),
+            nb::arg("payment_date"),
+            nb::arg("nominal"),
+            nb::arg("start_date"),
+            nb::arg("end_date"),
+            nb::arg("index"),
+            nb::arg("observation_lag"),
+            nb::arg("observation_interpolation"),
+            nb::arg("day_counter"),
+            nb::arg("fixed_rate"))
+        .def("rate", [](const CPICoupon& c) { return c.rate(); })
+        .def("fixed_rate", [](const CPICoupon& c) { return c.fixedRate(); })
+        .def("base_CPI", [](const CPICoupon& c) { return c.baseCPI(); })
+        .def("index_fixing",
+             [](const CPICoupon& c) { return c.indexFixing(); })
+        .def("adjusted_index_growth",
+             [](const CPICoupon& c) { return c.adjustedIndexGrowth(); })
+        .def("fixing_date",
+             [](const CPICoupon& c) { return c.fixingDate(); })
+        .def("nominal", [](const CPICoupon& c) { return c.nominal(); })
+        .def(
+            "set_pricer",
+            [](CPICoupon& c,
+               const ext::shared_ptr<InflationCouponPricer>& pricer) {
+                c.setPricer(pricer);
+            },
+            nb::arg("pricer"));
+
+    m.def(
+        "make_cpi_leg",
+        [](const Schedule& schedule,
+           const ext::shared_ptr<ZeroInflationIndex>& index,
+           const Period& observation_lag,
+           const DayCounter& day_counter,
+           std::optional<Real> base_cpi,
+           const Date& base_date,
+           Real notional,
+           Real fixed_rate,
+           BusinessDayConvention payment_convention,
+           const Calendar& payment_calendar,
+           CPI::InterpolationType observation_interpolation,
+           bool subtract_inflation_nominal) {
+            CPILeg maker(schedule,
+                         index,
+                         base_cpi.value_or(Null<Real>()),
+                         observation_lag);
+            maker.withNotionals(notional)
+                .withFixedRates(fixed_rate)
+                .withPaymentDayCounter(day_counter)
+                .withPaymentAdjustment(payment_convention)
+                .withObservationInterpolation(observation_interpolation)
+                .withSubtractInflationNominal(subtract_inflation_nominal);
+            if (payment_calendar != Calendar())
+                maker.withPaymentCalendar(payment_calendar);
+            if (base_date != Date())
+                maker.withBaseDate(base_date);
+            return Leg(maker);
+        },
+        nb::arg("schedule"),
+        nb::arg("index"),
+        nb::arg("observation_lag"),
+        nb::arg("day_counter"),
+        nb::arg("base_cpi") = nb::none(),
+        nb::arg("base_date") = Date(),
+        nb::arg("notional") = 1000000.0,
+        nb::arg("fixed_rate") = 0.0,
+        nb::arg("payment_convention") = ModifiedFollowing,
+        nb::arg("payment_calendar") = Calendar(),
+        nb::arg("observation_interpolation") = CPI::Flat,
+        nb::arg("subtract_inflation_nominal") = true,
+        "Build a CPILeg → list[CashFlow]. Pass base_cpi and/or base_date.");
+
+    m.def(
+        "set_cpi_coupon_pricer",
+        [](const Leg& leg,
+           const ext::shared_ptr<InflationCouponPricer>& pricer) {
+            setCouponPricer(leg, pricer);
+        },
+        nb::arg("leg"),
+        nb::arg("pricer"),
+        "Attach an InflationCouponPricer to CPI coupons in a leg.");
+
+    m.def(
+        "cashflows_npv",
+        [](const Leg& leg,
+           const Handle<YieldTermStructure>& discount,
+           const Date& settlement,
+           bool include_settlement_date) {
+            return CashFlows::npv(leg,
+                                  **discount,
+                                  include_settlement_date,
+                                  settlement,
+                                  settlement);
+        },
+        nb::arg("leg"),
+        nb::arg("discount_curve"),
+        nb::arg("settlement"),
+        nb::arg("include_settlement_date") = false,
+        "CashFlows::npv for a CPI (or other) leg.");
+
+    m.def(
+        "cashflows_accrued_amount",
+        [](const Leg& leg, const Date& settlement, bool include_settlement_date) {
+            return CashFlows::accruedAmount(
+                leg, include_settlement_date, settlement);
+        },
+        nb::arg("leg"),
+        nb::arg("settlement"),
+        nb::arg("include_settlement_date") = false,
+        "CashFlows::accruedAmount for a leg.");
 }

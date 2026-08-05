@@ -433,6 +433,9 @@ FlatZeroInflationCurve = getattr(_ql, "FlatZeroInflationCurve", None)
 ZeroInflationIndex = getattr(_ql, "ZeroInflationIndex", None)
 if ZeroInflationIndex is not None:
     ZeroInflationIndex.addFixing = ZeroInflationIndex.add_fixing  # type: ignore[attr-defined]
+    ZeroInflationIndex.clearFixings = (  # type: ignore[attr-defined]
+        ZeroInflationIndex.clear_fixings
+    )
     ZeroInflationIndex.lastFixingDate = (  # type: ignore[attr-defined]
         ZeroInflationIndex.last_fixing_date
     )
@@ -512,6 +515,9 @@ _YoYInflationIndexType = getattr(_ql, "YoYInflationIndex", None)
 if _YoYInflationIndexType is not None:
     _YoYInflationIndexType.addFixing = (  # type: ignore[attr-defined]
         _YoYInflationIndexType.add_fixing
+    )
+    _YoYInflationIndexType.clearFixings = (  # type: ignore[attr-defined]
+        _YoYInflationIndexType.clear_fixings
     )
     _YoYInflationIndexType.lastFixingDate = (  # type: ignore[attr-defined]
         _YoYInflationIndexType.last_fixing_date
@@ -693,6 +699,25 @@ if MultiplicativePriceSeasonality is not None:
     MultiplicativePriceSeasonality.seasonalityFactor = (  # type: ignore[attr-defined]
         MultiplicativePriceSeasonality.seasonality_factor
     )
+
+# Phase-18 CPI coupon / CPILeg aliases.
+CashFlow = getattr(_ql, "CashFlow", None)
+CPICouponPricer = getattr(_ql, "CPICouponPricer", None)
+CPICoupon = getattr(_ql, "CPICoupon", None)
+if CPICoupon is not None:
+    CPICoupon.setPricer = CPICoupon.set_pricer  # type: ignore[attr-defined]
+    CPICoupon.fixedRate = CPICoupon.fixed_rate  # type: ignore[attr-defined]
+    CPICoupon.baseCPI = CPICoupon.base_CPI  # type: ignore[attr-defined]
+    CPICoupon.indexFixing = CPICoupon.index_fixing  # type: ignore[attr-defined]
+    CPICoupon.adjustedIndexGrowth = (  # type: ignore[attr-defined]
+        CPICoupon.adjusted_index_growth
+    )
+    CPICoupon.fixingDate = CPICoupon.fixing_date  # type: ignore[attr-defined]
+
+CPILeg = getattr(_ql, "make_cpi_leg", None)
+setCouponPricer = getattr(_ql, "set_cpi_coupon_pricer", None)
+CashFlows_npv = getattr(_ql, "cashflows_npv", None)
+CashFlows_accruedAmount = getattr(_ql, "cashflows_accrued_amount", None)
 
 # SWIG-style CPI.Flat nested namespace.
 class CPI:

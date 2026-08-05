@@ -7,8 +7,8 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "qlnb"
-version = "0.18.0"
-description = "Nanobind Python bindings for QuantLib (phase 17: inflation seasonality)"
+version = "0.19.0"
+description = "Nanobind Python bindings for QuantLib (phase 18: CPI coupons / CPILeg)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "BSD-3-Clause" }
