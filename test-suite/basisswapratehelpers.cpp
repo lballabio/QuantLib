@@ -285,40 +285,6 @@ BOOST_AUTO_TEST_CASE(testIborIborIndexedCouponOverride) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithoutDiscountCurve) {
-    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers...");
-
-    testOvernightIborBootstrap(false);
-}
-
-BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithDiscountCurve) {
-    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers with external discount curve...");
-
-    testOvernightIborBootstrap(true);
-}
-
-BOOST_AUTO_TEST_CASE(testOvernightIborBaseCurveBootstrapWithoutDiscountCurve) {
-    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers (base curve bootstrap)...");
-
-    testOvernightIborBootstrap(false, true);
-}
-
-BOOST_AUTO_TEST_CASE(testOvernightIborBaseCurveBootstrapWithDiscountCurve) {
-    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers "
-                       "(base curve bootstrap with external discount curve)...");
-
-    testOvernightIborBootstrap(true, true);
-}
-
-BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithPaymentLag) {
-    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers with payment lag...");
-
-    testOvernightIborBootstrap(false, false, 2);
-    testOvernightIborBootstrap(true, false, 2);
-    testOvernightIborBootstrap(false, true, 2);
-    testOvernightIborBootstrap(true, true, 2);
-}
-
 BOOST_AUTO_TEST_CASE(testOvernightIborDifferentPaymentFrequencies) {
     BOOST_TEST_MESSAGE(
         "Testing overnight-IBOR basis-swap rate helpers with different payment frequencies...");
@@ -416,6 +382,40 @@ BOOST_AUTO_TEST_CASE(testOvernightIborDateGenerationRule) {
     Date expectedMaturity = calendar.adjust(spot + 18 * Months, Following);
     BOOST_CHECK_EQUAL(backwardHelper.maturityDate(), expectedMaturity);
     BOOST_CHECK_EQUAL(forwardHelper.maturityDate(), expectedMaturity);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithoutDiscountCurve) {
+    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers...");
+
+    testOvernightIborBootstrap(false);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithDiscountCurve) {
+    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers with external discount curve...");
+
+    testOvernightIborBootstrap(true);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborBaseCurveBootstrapWithoutDiscountCurve) {
+    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers (base curve bootstrap)...");
+
+    testOvernightIborBootstrap(false, true);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborBaseCurveBootstrapWithDiscountCurve) {
+    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers "
+                       "(base curve bootstrap with external discount curve)...");
+
+    testOvernightIborBootstrap(true, true);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithPaymentLag) {
+    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers with payment lag...");
+
+    testOvernightIborBootstrap(false, false, 2);
+    testOvernightIborBootstrap(true, false, 2);
+    testOvernightIborBootstrap(false, true, 2);
+    testOvernightIborBootstrap(true, true, 2);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
