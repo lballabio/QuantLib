@@ -92,7 +92,8 @@ namespace QuantLib {
                   const Date& startDate = Date(),
                   DayCounter lastPeriodDayCounter = DayCounter(),
                   bool rebatesAccrual = true,
-                  CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+                  CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint,
+                  const Date& tradeDate = Date());
 
         void setTermStructure(DefaultProbabilityTermStructure*) override;
         // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
@@ -125,6 +126,7 @@ namespace QuantLib {
         //! protection effective date.
         Date protectionStart_;
         Date startDate_;
+        Date tradeDate_;
     };
 
     //! Spread-quoted CDS hazard rate bootstrap helper.
@@ -145,7 +147,8 @@ namespace QuantLib {
                         const Date& startDate = Date(),
                         const DayCounter& lastPeriodDayCounter = DayCounter(),
                         bool rebatesAccrual = true,
-                        CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+                        CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint,
+                        const Date& tradeDate = Date());
 
         Real impliedQuote() const override;
 
@@ -174,7 +177,8 @@ namespace QuantLib {
                          const Date& startDate = Date(),
                          const DayCounter& lastPeriodDayCounter = DayCounter(),
                          bool rebatesAccrual = true,
-                         CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+                         CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint,
+                         const Date& tradeDate = Date());
 
         Real impliedQuote() const override;
 

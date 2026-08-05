@@ -48,8 +48,8 @@ namespace QuantLib {
                                    Handle<YieldTermStructure> nominalTermStructure);
 
         ext::shared_ptr<YoYInflationIndex> index() const { return index_;}
-        Handle<YoYOptionletVolatilitySurface> volatility() const { return volatility_; }
-        Handle<YieldTermStructure> nominalTermStructure() const { return nominalTermStructure_; }
+        const Handle<YoYOptionletVolatilitySurface>& volatility() const { return volatility_; }
+        const Handle<YieldTermStructure>& nominalTermStructure() const { return nominalTermStructure_; }
 
         void setVolatility(const Handle<YoYOptionletVolatilitySurface>& vol);
 

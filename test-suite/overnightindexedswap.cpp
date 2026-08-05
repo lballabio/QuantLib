@@ -4,6 +4,7 @@
  Copyright (C) 2009 Roland Lichters
  Copyright (C) 2014 Peter Caspers
  Copyright (C) 2026 Sergio Araujo
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,6 +25,7 @@
 
 #include <ql/termstructures/yield/oisratehelper.hpp>
 #include <ql/instruments/makeois.hpp>
+#include <ql/instruments/nonstandardswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -43,6 +45,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/math/rounding.hpp>
 #include <ql/currencies/europe.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
@@ -1046,6 +1049,67 @@ BOOST_AUTO_TEST_CASE(testMakeOisEndOfMonthRegression2453) {
 
     BOOST_CHECK_EQUAL(swap.overnightSchedule()[0], Date(17, December, 2025));
     BOOST_CHECK_EQUAL(swap.overnightSchedule()[1], Date(17, December, 2026));
+}
+
+BOOST_AUTO_TEST_CASE(testNonstandardSwapConversionPreservesObservationConventions) {
+
+    BOOST_TEST_MESSAGE("Testing preservation of overnight conventions when "
+                       "converting to NonstandardSwap...");
+
+    const Date today(30, June, 2025);
+    Settings::instance().evaluationDate() = today;
+    const Handle<YieldTermStructure> curve(
+        ext::make_shared<FlatForward>(today, 0.03, Actual360()));
+    const auto sofr = ext::make_shared<Sofr>(curve);
+    const Calendar calendar = sofr->fixingCalendar();
+    const Date start = calendar.advance(today, 1 * Years);
+    const Date end = calendar.advance(start, 2 * Years);
+    const Schedule schedule(start, end, 6 * Months, calendar,
+                            ModifiedFollowing, ModifiedFollowing,
+                            DateGeneration::Forward, false);
+
+    const auto source = ext::make_shared<OvernightIndexedSwap>(
+        Swap::Payer, 1.0, schedule, 0.03, Actual360(), sofr, 0.0, 2,
+        Following, calendar, true, RateAveraging::Compound, 5, 2, true);
+    const auto converted = ext::make_shared<NonstandardSwap>(*source);
+    const auto sourceCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+        source->overnightLeg().front());
+    const auto convertedCoupon =
+        ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+            converted->floatingLeg().front());
+
+    BOOST_REQUIRE(sourceCoupon != nullptr);
+    BOOST_REQUIRE(convertedCoupon != nullptr);
+    BOOST_CHECK_EQUAL(convertedCoupon->fixingDays(), sourceCoupon->fixingDays());
+    BOOST_CHECK_EQUAL(convertedCoupon->lockoutDays(), sourceCoupon->lockoutDays());
+    BOOST_CHECK_EQUAL(convertedCoupon->applyObservationShift(),
+                      sourceCoupon->applyObservationShift());
+    BOOST_CHECK_EQUAL_COLLECTIONS(
+        convertedCoupon->valueDates().begin(), convertedCoupon->valueDates().end(),
+        sourceCoupon->valueDates().begin(), sourceCoupon->valueDates().end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(
+        convertedCoupon->fixingDates().begin(), convertedCoupon->fixingDates().end(),
+        sourceCoupon->fixingDates().begin(), sourceCoupon->fixingDates().end());
+
+    const auto simpleSource = ext::make_shared<OvernightIndexedSwap>(
+        Swap::Payer, 1.0, schedule, 0.03, Actual360(), sofr, 0.0, 2,
+        Following, calendar, false, RateAveraging::Simple);
+    const auto simpleConverted =
+        ext::make_shared<NonstandardSwap>(*simpleSource);
+    const auto simpleConvertedCoupon =
+        ext::dynamic_pointer_cast<OvernightIndexedCoupon>(
+            simpleConverted->floatingLeg().front());
+    BOOST_REQUIRE(simpleConvertedCoupon != nullptr);
+    BOOST_CHECK(simpleConvertedCoupon->averagingMethod() ==
+                RateAveraging::Simple);
+
+    const auto engine = ext::make_shared<DiscountingSwapEngine>(curve);
+    source->setPricingEngine(engine);
+    converted->setPricingEngine(engine);
+    simpleSource->setPricingEngine(engine);
+    simpleConverted->setPricingEngine(engine);
+    BOOST_CHECK_SMALL(converted->NPV() - source->NPV(), 1.0e-12);
+    BOOST_CHECK_SMALL(simpleConverted->NPV() - simpleSource->NPV(), 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testSettlementDaysEffectiveDateConflict) {

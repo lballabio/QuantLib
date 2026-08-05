@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,6 +19,7 @@
 */
 
 #include <ql/pricingengines/swaption/gaussian1dnonstandardswaptionengine.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/rebatedexercise.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -31,6 +33,14 @@ namespace QuantLib {
     Real
     Gaussian1dNonstandardSwaptionEngine::underlyingNpv(const Date &expiry,
                                                        const Real y) const {
+        const Leg& floatingLeg = arguments_.swap->floatingLeg();
+        std::vector<ext::shared_ptr<OvernightIndexedCoupon> >
+            onCoupons(floatingLeg.size());
+        const Handle<YieldTermStructure> forwardingCurve =
+            arguments_.swap->iborIndex()->forwardingTermStructure();
+        for (Size i = 0; i < floatingLeg.size(); ++i)
+            onCoupons[i] =
+                ext::dynamic_pointer_cast<OvernightIndexedCoupon>(floatingLeg[i]);
 
         // determine the indices on both legs representing the cashflows that
         // are part of the exercise into right
@@ -64,16 +74,21 @@ namespace QuantLib {
         for (Size i = floatingIdx; i < arguments_.floatingResetDates.size();
              i++) {
             Real amount;
-            if (!arguments_.floatingIsRedemptionFlow[i])
+            if (!arguments_.floatingIsRedemptionFlow[i]) {
+                const Real floatingRate = onCoupons[i] != nullptr
+                    ? model_->compoundedRate(
+                          *onCoupons[i], expiry, y, forwardingCurve)
+                    : model_->forwardRate(arguments_.floatingFixingDates[i],
+                                          expiry, y,
+                                          arguments_.swap->iborIndex());
                 amount = (arguments_.floatingGearings[i] *
-                              model_->forwardRate(
-                                  arguments_.floatingFixingDates[i], expiry, y,
-                                  arguments_.swap->iborIndex()) +
+                               floatingRate +
                           arguments_.floatingSpreads[i]) *
                          arguments_.floatingAccrualTimes[i] *
                          arguments_.floatingNominal[i];
-            else
+            } else {
                 amount = arguments_.floatingCoupons[i];
+            }
             npv +=
                 amount * model_->zerobond(arguments_.floatingPayDates[i],
                                           expiry, y, discountCurve_) *
@@ -156,6 +171,14 @@ namespace QuantLib {
             arguments_.exercise->dates().begin());
 
         NonstandardSwap swap = *arguments_.swap;
+        const Leg& floatingLeg = arguments_.swap->floatingLeg();
+        std::vector<ext::shared_ptr<OvernightIndexedCoupon> >
+            onCoupons(floatingLeg.size());
+        const Handle<YieldTermStructure> forwardingCurve =
+            arguments_.swap->iborIndex()->forwardingTermStructure();
+        for (Size i = 0; i < floatingLeg.size(); ++i)
+            onCoupons[i] =
+                ext::dynamic_pointer_cast<OvernightIndexedCoupon>(floatingLeg[i]);
         Option::Type type =
             arguments_.type == Swap::Payer ? Option::Call : Option::Put;
 
@@ -373,15 +396,20 @@ namespace QuantLib {
                         Real amount;
                         if (arguments_.floatingIsRedemptionFlow[l])
                             amount = arguments_.floatingCoupons[l];
-                        else
+                        else {
+                            const Real floatingRate = onCoupons[l] != nullptr
+                                ? model_->compoundedRate(
+                                      *onCoupons[l], expiry0, z[k],
+                                      forwardingCurve)
+                                : model_->forwardRate(
+                                      arguments_.floatingFixingDates[l], expiry0,
+                                      z[k], arguments_.swap->iborIndex());
                             amount = arguments_.floatingNominal[l] *
                                      arguments_.floatingAccrualTimes[l] *
                                      (arguments_.floatingGearings[l] *
-                                          model_->forwardRate(
-                                              arguments_.floatingFixingDates[l],
-                                              expiry0, z[k],
-                                              arguments_.swap->iborIndex()) +
+                                           floatingRate +
                                       arguments_.floatingSpreads[l]);
+                        }
                         floatingLegNpv +=
                             amount *
                             model_->zerobond(arguments_.floatingPayDates[l],
