@@ -7,18 +7,23 @@
 
 #include <ql/cashflows/yoyinflationcoupon.hpp>
 #include <ql/handle.hpp>
+#include <ql/indexes/iborindex.hpp>
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/indexes/inflationindex.hpp>
+#include <ql/instruments/bonds/cpibond.hpp>
+#include <ql/instruments/cpiswap.hpp>
 #include <ql/instruments/inflationcapfloor.hpp>
 #include <ql/instruments/makeyoyinflationcapfloor.hpp>
 #include <ql/instruments/swap.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/inflation/inflationcapfloorengines.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/utilities/null.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp>
 #include <ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp>
@@ -872,4 +877,164 @@ void bind_inflation(nb::module_& m) {
         nb::arg("day_counter") = DayCounter(),
         nb::arg("payment_convention") = ModifiedFollowing,
         "Build a standard YoY inflation Cap/Floor via MakeYoYInflationCapFloor.");
+
+    // --- Phase 15: CPISwap / CPIBond ---
+
+    m.def(
+        "cpi_lagged_fixing",
+        [](const ext::shared_ptr<ZeroInflationIndex>& index,
+           const Date& date,
+           const Period& observation_lag,
+           CPI::InterpolationType interpolation) {
+            return CPI::laggedFixing(index, date, observation_lag, interpolation);
+        },
+        nb::arg("index"),
+        nb::arg("date"),
+        nb::arg("observation_lag"),
+        nb::arg("interpolation"),
+        "CPI::laggedFixing — lagged CPI observation for a payment date.");
+
+    nb::class_<CPISwap>(m, "CPISwap")
+        .def(
+            "__init__",
+            [](CPISwap* self,
+               Swap::Type type,
+               Real nominal,
+               bool subtract_inflation_nominal,
+               Spread spread,
+               const DayCounter& float_day_count,
+               const Schedule& float_schedule,
+               BusinessDayConvention float_roll,
+               Natural fixing_days,
+               std::optional<ext::shared_ptr<IborIndex>> float_index,
+               Rate fixed_rate,
+               Real base_cpi,
+               const DayCounter& fixed_day_count,
+               const Schedule& fixed_schedule,
+               BusinessDayConvention fixed_roll,
+               const Period& observation_lag,
+               const ext::shared_ptr<ZeroInflationIndex>& fixed_index,
+               CPI::InterpolationType observation_interpolation,
+               std::optional<Real> inflation_nominal) {
+                const Real inf_nom = inflation_nominal.value_or(Null<Real>());
+                ext::shared_ptr<IborIndex> float_idx =
+                    float_index.value_or(ext::shared_ptr<IborIndex>());
+                new (self) CPISwap(type,
+                                   nominal,
+                                   subtract_inflation_nominal,
+                                   spread,
+                                   float_day_count,
+                                   float_schedule,
+                                   float_roll,
+                                   fixing_days,
+                                   float_idx,
+                                   fixed_rate,
+                                   base_cpi,
+                                   fixed_day_count,
+                                   fixed_schedule,
+                                   fixed_roll,
+                                   observation_lag,
+                                   fixed_index,
+                                   observation_interpolation,
+                                   inf_nom);
+            },
+            nb::arg("type"),
+            nb::arg("nominal"),
+            nb::arg("subtract_inflation_nominal"),
+            nb::arg("spread"),
+            nb::arg("float_day_count"),
+            nb::arg("float_schedule"),
+            nb::arg("float_roll"),
+            nb::arg("fixing_days"),
+            nb::arg("float_index") = nb::none(),
+            nb::arg("fixed_rate"),
+            nb::arg("base_cpi"),
+            nb::arg("fixed_day_count"),
+            nb::arg("fixed_schedule"),
+            nb::arg("fixed_roll"),
+            nb::arg("observation_lag"),
+            nb::arg("fixed_index"),
+            nb::arg("observation_interpolation") = CPI::Flat,
+            nb::arg("inflation_nominal") = nb::none(),
+            "Type refers to the floating leg (Payer/Receiver).")
+        .def("NPV", [](CPISwap& s) { return s.NPV(); })
+        .def("fair_rate", [](CPISwap& s) { return s.fairRate(); })
+        .def("fair_spread", [](CPISwap& s) { return s.fairSpread(); })
+        .def("fixed_rate", [](const CPISwap& s) { return s.fixedRate(); })
+        .def("base_CPI", [](const CPISwap& s) { return s.baseCPI(); })
+        .def("spread", [](const CPISwap& s) { return s.spread(); })
+        .def("nominal", [](const CPISwap& s) { return s.nominal(); })
+        .def("inflation_nominal",
+             [](const CPISwap& s) { return s.inflationNominal(); })
+        .def("type", [](const CPISwap& s) { return s.type(); })
+        .def("fixed_leg_NPV", [](CPISwap& s) { return s.fixedLegNPV(); })
+        .def("float_leg_NPV", [](CPISwap& s) { return s.floatLegNPV(); })
+        .def("is_expired", [](const CPISwap& s) { return s.isExpired(); })
+        .def(
+            "set_pricing_engine",
+            [](CPISwap& s, const Handle<YieldTermStructure>& discount_curve) {
+                s.setPricingEngine(
+                    ext::make_shared<DiscountingSwapEngine>(discount_curve));
+            },
+            nb::arg("discount_curve"),
+            "Attach DiscountingSwapEngine.");
+
+    nb::class_<CPIBond>(m, "CPIBond")
+        .def(
+            "__init__",
+            [](CPIBond* self,
+               Natural settlement_days,
+               Real face_amount,
+               Real base_cpi,
+               const Period& observation_lag,
+               const ext::shared_ptr<ZeroInflationIndex>& cpi_index,
+               CPI::InterpolationType observation_interpolation,
+               const Schedule& schedule,
+               const std::vector<Rate>& coupons,
+               const DayCounter& accrual_day_counter,
+               BusinessDayConvention payment_convention,
+               const Date& issue_date,
+               const Calendar& payment_calendar) {
+                new (self) CPIBond(settlement_days,
+                                   face_amount,
+                                   base_cpi,
+                                   observation_lag,
+                                   cpi_index,
+                                   observation_interpolation,
+                                   schedule,
+                                   coupons,
+                                   accrual_day_counter,
+                                   payment_convention,
+                                   issue_date,
+                                   payment_calendar);
+            },
+            nb::arg("settlement_days"),
+            nb::arg("face_amount"),
+            nb::arg("base_cpi"),
+            nb::arg("observation_lag"),
+            nb::arg("cpi_index"),
+            nb::arg("observation_interpolation"),
+            nb::arg("schedule"),
+            nb::arg("coupons"),
+            nb::arg("accrual_day_counter"),
+            nb::arg("payment_convention") = ModifiedFollowing,
+            nb::arg("issue_date") = Date(),
+            nb::arg("payment_calendar") = Calendar())
+        .def("NPV", [](CPIBond& b) { return b.NPV(); })
+        .def("clean_price", [](CPIBond& b) { return b.cleanPrice(); })
+        .def("dirty_price", [](CPIBond& b) { return b.dirtyPrice(); })
+        .def("base_CPI", [](const CPIBond& b) { return b.baseCPI(); })
+        .def("settlement_date",
+             [](const CPIBond& b) { return b.settlementDate(); })
+        .def("maturity_date",
+             [](const CPIBond& b) { return b.maturityDate(); })
+        .def("is_expired", [](const CPIBond& b) { return b.isExpired(); })
+        .def(
+            "set_pricing_engine",
+            [](CPIBond& b, const Handle<YieldTermStructure>& discount_curve) {
+                b.setPricingEngine(
+                    ext::make_shared<DiscountingBondEngine>(discount_curve));
+            },
+            nb::arg("discount_curve"),
+            "Attach DiscountingBondEngine.");
 }

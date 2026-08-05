@@ -586,6 +586,26 @@ cap2 = ql.make_yoy_inflation_capfloor(
 )
 ```
 
+## Phase-15 CPISwap / CPIBond
+
+```python
+base = ql.cpi_lagged_fixing(index, today, lag, ql.CPIInterpolationType.Flat)
+bond = ql.CPIBond(
+    3, 1e6, 206.1, ql.Period(3, ql.TimeUnit.Months), index,
+    ql.CPIInterpolationType.Flat, schedule, [0.1], ql.Actual365Fixed(),
+)
+bond.set_pricing_engine(nominal_curve)
+print(bond.clean_price(), bond.dirty_price())
+
+swap = ql.CPISwap(
+    ql.SwapType.Payer, 1e6, True, 0.0, ql.Actual365Fixed(), float_sched,
+    ql.BusinessDayConvention.ModifiedFollowing, 0, ql.GBPLibor(ql.Period(6, ql.TimeUnit.Months), nominal),
+    0.1, 206.1, ql.Actual365Fixed(), fixed_sched,
+    ql.BusinessDayConvention.ModifiedFollowing, lag, index,
+)
+swap.set_pricing_engine(nominal_curve)
+```
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,
