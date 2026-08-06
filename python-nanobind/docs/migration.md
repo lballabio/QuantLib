@@ -736,6 +736,25 @@ assert isinstance(zcis.inflation_leg()[0], ql.ZeroInflationCashFlow)
 `subtract_inflation_nominal` on `make_cpi_leg` maps to CPICashFlow `growth_only`
 (False = bond notional × ratio; True = swap-style ratio − 1).
 
+## Phase-22 YoY cap/floor term price surface
+
+```python
+nominal = ql.InterpolatedZeroCurve(dates, yields, ql.Actual365Fixed(), "cubic")
+surface = ql.InterpolatedYoYCapFloorTermPriceSurface(
+    0, ql.Period(3, ql.TimeUnit.Months), yoy_index,
+    ql.CPIInterpolationType.Linear, nominal, ql.Actual365Fixed(),
+    ql.TARGET(), ql.BusinessDayConvention.ModifiedFollowing,
+    cap_strikes, floor_strikes, maturities, cap_prices, floor_prices,
+)
+times, rates = surface.atm_yoy_swap_time_rates()
+dates, _ = surface.atm_yoy_swap_date_rates()
+print(surface.atm_yoy_swap_rate(dates[0]), surface.atm_yoy_rate(dates[0]))
+yoy_ts = surface.yoy_ts()  # bootstrapped from put-call parity
+```
+
+Cap/floor matrix entries are **absolute prices** (unlike CPI Phase-16 which
+uses quote/10000). YoY optionlet strippers remain deferred (`\bug` in QL).
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,

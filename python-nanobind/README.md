@@ -145,6 +145,11 @@ Experimental Python package that binds a focused QuantLib surface with
 - `IndexedCashFlow`, `CPICashFlow`, `ZeroInflationCashFlow`
 - `ZeroCouponInflationSwap.inflation_leg` / `fixed_leg`
 
+### Phase 22 (YoY cap/floor term price surface)
+- `InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic>` → handle
+- ATM YoY swap / forward rates from put-call parity
+- `InterpolatedZeroCurve(..., interpolation="cubic")` support
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 

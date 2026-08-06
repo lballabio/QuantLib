@@ -21,6 +21,7 @@
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/experimental/inflation/cpicapfloorengines.hpp>
 #include <ql/experimental/inflation/cpicapfloortermpricesurface.hpp>
+#include <ql/experimental/inflation/yoycapfloortermpricesurface.hpp>
 #include <ql/instruments/bonds/cpibond.hpp>
 #include <ql/instruments/cpicapfloor.hpp>
 #include <ql/instruments/cpiswap.hpp>
@@ -29,7 +30,9 @@
 #include <ql/instruments/swap.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/option.hpp>
@@ -1931,4 +1934,134 @@ void bind_inflation(nb::module_& m) {
             [](const ZeroInflationCashFlow& c) {
                 return c.observationInterpolation();
             });
+
+    // --- Phase 22: YoY cap/floor term price surface (ATM) ---
+
+    nb::class_<Handle<YoYCapFloorTermPriceSurface>>(
+        m, "YoYCapFloorTermPriceSurfaceHandle")
+        .def(nb::init<>())
+        .def("empty", &Handle<YoYCapFloorTermPriceSurface>::empty)
+        .def(
+            "price",
+            [](const Handle<YoYCapFloorTermPriceSurface>& h,
+               const Period& tenor,
+               Rate strike) { return h->price(tenor, strike); },
+            nb::arg("tenor"),
+            nb::arg("strike"))
+        .def(
+            "cap_price",
+            [](const Handle<YoYCapFloorTermPriceSurface>& h,
+               const Period& tenor,
+               Rate strike) { return h->capPrice(tenor, strike); },
+            nb::arg("tenor"),
+            nb::arg("strike"))
+        .def(
+            "floor_price",
+            [](const Handle<YoYCapFloorTermPriceSurface>& h,
+               const Period& tenor,
+               Rate strike) { return h->floorPrice(tenor, strike); },
+            nb::arg("tenor"),
+            nb::arg("strike"))
+        .def(
+            "atm_yoy_swap_rate",
+            [](const Handle<YoYCapFloorTermPriceSurface>& h,
+               const Date& d,
+               bool extrapolate) {
+                return h->atmYoYSwapRate(d, extrapolate);
+            },
+            nb::arg("date"),
+            nb::arg("extrapolate") = true)
+        .def(
+            "atm_yoy_rate",
+            [](const Handle<YoYCapFloorTermPriceSurface>& h,
+               const Date& d,
+               bool extrapolate) { return h->atmYoYRate(d, Period(-1, Days), extrapolate); },
+            nb::arg("date"),
+            nb::arg("extrapolate") = true)
+        .def(
+            "atm_yoy_swap_time_rates",
+            [](const Handle<YoYCapFloorTermPriceSurface>& h) {
+                return h->atmYoYSwapTimeRates();
+            },
+            "Return (times, rates) ATM YoY swap curve from put-call parity.")
+        .def(
+            "atm_yoy_swap_date_rates",
+            [](const Handle<YoYCapFloorTermPriceSurface>& h) {
+                return h->atmYoYSwapDateRates();
+            },
+            "Return (dates, rates) ATM YoY swap curve from put-call parity.")
+        .def(
+            "yoy_ts",
+            [](const Handle<YoYCapFloorTermPriceSurface>& h) {
+                return Handle<YoYInflationTermStructure>(h->YoYTS());
+            },
+            "Bootstrapped YoYInflationTermStructureHandle from the surface.")
+        .def(
+            "cap_strikes",
+            [](const Handle<YoYCapFloorTermPriceSurface>& h) {
+                return h->capStrikes();
+            })
+        .def(
+            "floor_strikes",
+            [](const Handle<YoYCapFloorTermPriceSurface>& h) {
+                return h->floorStrikes();
+            })
+        .def(
+            "maturities",
+            [](const Handle<YoYCapFloorTermPriceSurface>& h) {
+                return h->maturities();
+            })
+        .def(
+            "observation_lag",
+            [](const Handle<YoYCapFloorTermPriceSurface>& h) {
+                return h->observationLag();
+            });
+
+    m.def(
+        "InterpolatedYoYCapFloorTermPriceSurface",
+        [](Natural fixing_days,
+           const Period& yy_lag,
+           const ext::shared_ptr<YoYInflationIndex>& yoy_index,
+           CPI::InterpolationType observation_interpolation,
+           const Handle<YieldTermStructure>& nominal,
+           const DayCounter& day_counter,
+           const Calendar& calendar,
+           BusinessDayConvention bdc,
+           const std::vector<Rate>& cap_strikes,
+           const std::vector<Rate>& floor_strikes,
+           const std::vector<Period>& maturities,
+           const Matrix& cap_prices,
+           const Matrix& floor_prices) {
+            return Handle<YoYCapFloorTermPriceSurface>(
+                ext::make_shared<
+                    InterpolatedYoYCapFloorTermPriceSurface<Bicubic, Cubic>>(
+                    fixing_days,
+                    yy_lag,
+                    yoy_index,
+                    observation_interpolation,
+                    nominal,
+                    day_counter,
+                    calendar,
+                    bdc,
+                    cap_strikes,
+                    floor_strikes,
+                    maturities,
+                    cap_prices,
+                    floor_prices));
+        },
+        nb::arg("fixing_days"),
+        nb::arg("yy_lag"),
+        nb::arg("yoy_index"),
+        nb::arg("observation_interpolation"),
+        nb::arg("nominal_curve"),
+        nb::arg("day_counter"),
+        nb::arg("calendar"),
+        nb::arg("bdc"),
+        nb::arg("cap_strikes"),
+        nb::arg("floor_strikes"),
+        nb::arg("maturities"),
+        nb::arg("cap_prices"),
+        nb::arg("floor_prices"),
+        "Factory: InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic> → "
+        "handle. Cap/floor prices are absolute (not /10000).");
 }
