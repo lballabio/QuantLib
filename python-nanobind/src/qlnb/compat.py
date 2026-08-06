@@ -892,6 +892,68 @@ if CallableZeroCouponBond is not None:
         CallableZeroCouponBond.set_tree_pricing_engine
     )
 
+# Phase-24 currency / FX aliases.
+Currency = getattr(_ql, "Currency", None)
+USDCurrency = getattr(_ql, "USDCurrency", None)
+EURCurrency = getattr(_ql, "EURCurrency", None)
+GBPCurrency = getattr(_ql, "GBPCurrency", None)
+SGDCurrency = getattr(_ql, "SGDCurrency", None)
+MoneyConversionType = getattr(_ql, "MoneyConversionType", None)
+Money = getattr(_ql, "Money", None)
+ExchangeRateType = getattr(_ql, "ExchangeRateType", None)
+ExchangeRate = getattr(_ql, "ExchangeRate", None)
+FxForward = getattr(_ql, "FxForward", None)
+if Currency is not None:
+    Currency.numericCode = Currency.numeric_code  # type: ignore[attr-defined]
+    Currency.fractionSymbol = (  # type: ignore[attr-defined]
+        Currency.fraction_symbol
+    )
+    Currency.fractionsPerUnit = (  # type: ignore[attr-defined]
+        Currency.fractions_per_unit
+    )
+if FxForward is not None:
+    FxForward.sourceNominal = (  # type: ignore[attr-defined]
+        FxForward.source_nominal
+    )
+    FxForward.targetNominal = (  # type: ignore[attr-defined]
+        FxForward.target_nominal
+    )
+    FxForward.sourceCurrency = (  # type: ignore[attr-defined]
+        FxForward.source_currency
+    )
+    FxForward.targetCurrency = (  # type: ignore[attr-defined]
+        FxForward.target_currency
+    )
+    FxForward.maturityDate = (  # type: ignore[attr-defined]
+        FxForward.maturity_date
+    )
+    FxForward.paySourceCurrency = (  # type: ignore[attr-defined]
+        FxForward.pay_source_currency
+    )
+    FxForward.forwardRate = FxForward.forward_rate  # type: ignore[attr-defined]
+    FxForward.settlementDays = (  # type: ignore[attr-defined]
+        FxForward.settlement_days
+    )
+    FxForward.settlementCalendar = (  # type: ignore[attr-defined]
+        FxForward.settlement_calendar
+    )
+    FxForward.settlementDate = (  # type: ignore[attr-defined]
+        FxForward.settlement_date
+    )
+    FxForward.isExpired = FxForward.is_expired  # type: ignore[attr-defined]
+    FxForward.fairForwardRate = (  # type: ignore[attr-defined]
+        FxForward.fair_forward_rate
+    )
+    FxForward.npvSourceCurrency = (  # type: ignore[attr-defined]
+        FxForward.npv_source_currency
+    )
+    FxForward.npvTargetCurrency = (  # type: ignore[attr-defined]
+        FxForward.npv_target_currency
+    )
+    FxForward.setPricingEngine = (  # type: ignore[attr-defined]
+        FxForward.set_pricing_engine
+    )
+
 # SWIG-style CPI.Flat nested namespace.
 class CPI:
     """SWIG-style CPI.Flat / CPI.Linear namespace."""
