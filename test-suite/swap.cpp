@@ -661,6 +661,27 @@ BOOST_AUTO_TEST_CASE(testSettlementCalendar) {
                 index->fixingCalendar().advance(today, 2 * Days));
 }
 
+BOOST_AUTO_TEST_CASE(testZeroBpsFairRateAndSpread) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing vanilla swap fair rate/spread calculation with zero BPS...");
+
+    CommonVars vars;
+    vars.nominal = 0.0;
+    ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(10, 0.0, 0.0);
+
+    BOOST_CHECK(!swap->isExpired());
+    BOOST_CHECK_EQUAL(swap->legBPS(0), 0.0);
+    BOOST_CHECK_EQUAL(swap->legBPS(1), 0.0);
+
+    BOOST_CHECK_EXCEPTION(
+        swap->fairRate(), Error,
+        ExpectedErrorMessage("result not available"));
+    BOOST_CHECK_EXCEPTION(
+        swap->fairSpread(), Error,
+        ExpectedErrorMessage("result not available"));
+}
+
 BOOST_AUTO_TEST_CASE(testExpiredSwapFairRateAndSpread) {
 
     BOOST_TEST_MESSAGE(
@@ -671,8 +692,13 @@ BOOST_AUTO_TEST_CASE(testExpiredSwapFairRateAndSpread) {
 
     Settings::instance().evaluationDate() = vars.settlement + Period(20, Years);
 
-    BOOST_CHECK_THROW(swap->fairRate(), Error);
-    BOOST_CHECK_THROW(swap->fairSpread(), Error);
+    BOOST_CHECK(swap->isExpired());
+    BOOST_CHECK_EXCEPTION(
+        swap->fairRate(), Error,
+        ExpectedErrorMessage("result not available"));
+    BOOST_CHECK_EXCEPTION(
+        swap->fairSpread(), Error,
+        ExpectedErrorMessage("result not available"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
