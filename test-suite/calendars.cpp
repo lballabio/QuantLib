@@ -50,6 +50,7 @@
 #include <ql/time/calendars/newzealand.hpp>
 #include <ql/time/calendars/northmacedonia.hpp>
 #include <ql/time/calendars/russia.hpp>
+#include <ql/time/calendars/saudiarabia.hpp>
 #include <ql/time/calendars/serbia.hpp>
 #include <ql/time/calendars/slovenia.hpp>
 #include <ql/time/calendars/southkorea.hpp>
@@ -3868,6 +3869,30 @@ BOOST_AUTO_TEST_CASE(testSerbia) {
 
     Calendar c = Serbia();
     checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testSaudiArabiaFoundingDayAndEidAlAdha) {
+    BOOST_TEST_MESSAGE("Testing Saudi Arabia Founding Day and Eid Al-Adha holidays...");
+
+    Calendar saudi = SaudiArabia();
+
+    // Founding Day observed on Sunday 23 Feb 2025 (22 Feb is Saturday)
+    BOOST_CHECK(saudi.isHoliday(Date(23, February, 2025)));
+
+    // Founding Day on Sunday 22 Feb 2026
+    BOOST_CHECK(saudi.isHoliday(Date(22, February, 2026)));
+    BOOST_CHECK(saudi.isBusinessDay(Date(19, February, 2026)));
+
+    // Eid Al-Adha 2025 (Saudi Exchange: 5-10 Jun, resume 11 Jun)
+    BOOST_CHECK(saudi.isHoliday(Date(5, June, 2025)));
+    BOOST_CHECK(saudi.isHoliday(Date(10, June, 2025)));
+    BOOST_CHECK(saudi.isBusinessDay(Date(4, June, 2025)));
+    BOOST_CHECK(saudi.isBusinessDay(Date(11, June, 2025)));
+
+    // Eid Al-Adha 2026 (Saudi Exchange: 22-30 May, resume 31 May)
+    BOOST_CHECK(saudi.isHoliday(Date(25, May, 2026)));
+    BOOST_CHECK(saudi.isBusinessDay(Date(21, May, 2026)));
+    BOOST_CHECK(saudi.isBusinessDay(Date(31, May, 2026)));
 }
 
 BOOST_AUTO_TEST_CASE(testSlovenia) {

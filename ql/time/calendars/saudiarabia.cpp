@@ -21,6 +21,7 @@
 #include <ql/time/calendars/saudiarabia.hpp>
 #include <ql/errors.hpp>
 #include <algorithm>
+#include <utility>
 #include <vector>
 
 namespace QuantLib {
@@ -51,48 +52,49 @@ namespace QuantLib {
         // 2012-08-19    16-24     -1,+4     because of weekend 16-24 is same as 18-23
 
         bool isEidAlAdha(Date d) {
-            // Eid al Adha dates taken from:
+            // Eid al Adha holiday windows for Tadawul.  Dates through 2022 use
+            // Eid-1 to Eid+4 around the Gregorian Eid dates from
             // https://en.wikipedia.org/wiki/Eid_al-Adha#Eid_al-Adha_in_the_Gregorian_calendar
-            static std::vector<Date> EidAlAdha = {
-                Date(7, April, 1998),
-                Date(27, March, 1999),
-                Date(16, March, 2000),
-                Date(5, March, 2001),
-                Date(23, February, 2002),
-                Date(12, February, 2003),
-                Date(1, February, 2004),
-                Date(21, January, 2005),
-                Date(10, January, 2006),
-                Date(31, December, 2006),
-                Date(20, December, 2007),
-                Date(8, December, 2008),
-                Date(27, November, 2009),
-                Date(16, November, 2010),
-                Date(6, November, 2011),
-                Date(26, October, 2012),
-                Date(15, October, 2013),
-                Date(4, October, 2014),
-                Date(24, September, 2015),
-                Date(11, September, 2016),
-                Date(1, September, 2017),
-                Date(23, August, 2018),
-                Date(12, August, 2019),
-                Date(31, July, 2020),
-                Date(20, July, 2021),
-                Date(10, July, 2022),
-                // Approximate Gregorian Eid al-Adha dates; holiday window Eid-1..Eid+4
-                // as used historically for Tadawul (see Saudi Exchange holiday calendar).
-                Date(28, June, 2023),
-                Date(16, June, 2024),
-                Date(6, June, 2025),
-                Date(27, May, 2026),
-                Date(16, May, 2027),
-                Date(5, May, 2028),
-                Date(23, April, 2029)
+            // Windows from 2023 through 2029 are taken from the Saudi Exchange
+            // holiday calendar at https://www.saudiexchange.sa
+            static std::vector<std::pair<Date, Date>> EidAlAdha = {
+                {Date(6, April, 1998), Date(11, April, 1998)},
+                {Date(26, March, 1999), Date(31, March, 1999)},
+                {Date(15, March, 2000), Date(20, March, 2000)},
+                {Date(4, March, 2001), Date(9, March, 2001)},
+                {Date(22, February, 2002), Date(27, February, 2002)},
+                {Date(11, February, 2003), Date(16, February, 2003)},
+                {Date(31, January, 2004), Date(5, February, 2004)},
+                {Date(20, January, 2005), Date(25, January, 2005)},
+                {Date(9, January, 2006), Date(14, January, 2006)},
+                {Date(30, December, 2006), Date(4, January, 2007)},
+                {Date(19, December, 2007), Date(24, December, 2007)},
+                {Date(7, December, 2008), Date(12, December, 2008)},
+                {Date(26, November, 2009), Date(1, December, 2009)},
+                {Date(15, November, 2010), Date(20, November, 2010)},
+                {Date(5, November, 2011), Date(10, November, 2011)},
+                {Date(25, October, 2012), Date(30, October, 2012)},
+                {Date(14, October, 2013), Date(19, October, 2013)},
+                {Date(3, October, 2014), Date(8, October, 2014)},
+                {Date(23, September, 2015), Date(28, September, 2015)},
+                {Date(10, September, 2016), Date(15, September, 2016)},
+                {Date(31, August, 2017), Date(5, September, 2017)},
+                {Date(22, August, 2018), Date(27, August, 2018)},
+                {Date(11, August, 2019), Date(16, August, 2019)},
+                {Date(30, July, 2020), Date(4, August, 2020)},
+                {Date(19, July, 2021), Date(24, July, 2021)},
+                {Date(9, July, 2022), Date(14, July, 2022)},
+                {Date(23, June, 2023), Date(1, July, 2023)},
+                {Date(14, June, 2024), Date(22, June, 2024)},
+                {Date(5, June, 2025), Date(10, June, 2025)},
+                {Date(22, May, 2026), Date(30, May, 2026)},
+                {Date(16, May, 2027), Date(20, May, 2027)},
+                {Date(3, May, 2028), Date(9, May, 2028)},
+                {Date(22, April, 2029), Date(26, April, 2029)},
             };
 
             return std::any_of(EidAlAdha.begin(), EidAlAdha.end(),
-                               [=](Date p) { return d >= p - 1 && d <= p + 4; });
+                               [=](const auto& p) { return d >= p.first && d <= p.second; });
         }
 
         bool isEidAlFitr(Date d) {
@@ -157,15 +159,16 @@ namespace QuantLib {
         Day d = date.dayOfMonth();
         Month m = date.month();
         Year y = date.year();
+        Weekday w = date.weekday();
 
         if (isTrueWeekend(date)
             || isEidAlAdha(date)
             || isEidAlFitr(date)
             // National Day
             || (d == 23 && m == September)
-            // Founding Day (from 2022; 2025 observed on Sunday 23 Feb per exchange calendar)
-            || (d == 22 && m == February && y >= 2022 && y != 2025)
-            || (d == 23 && m == February && y == 2025)
+            // Founding Day (from 2022; rolls to the following Sunday when on Fri/Sat)
+            || ((d == 22 || ((d == 23 || d == 24) && w == Sunday))
+                && m == February && y >= 2022)
             // other one-shot holidays
             || (d == 26 && m == February && y==2011)
             || (d == 19 && m == March && y==2011)
