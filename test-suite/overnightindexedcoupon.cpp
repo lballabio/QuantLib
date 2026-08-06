@@ -1939,6 +1939,52 @@ BOOST_AUTO_TEST_CASE(testExCouponAccruedAmountAroundAccrualEndDate) {
     CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(Date(1, April, 2027)), 0.0, 1e-12);
 }
 
+BOOST_AUTO_TEST_CASE(testExCouponAccruedAmountWithSlopedCurve) {
+    BOOST_TEST_MESSAGE(
+        "Test ex-coupon accrued uses average rate at accrual end on a sloped curve...");
+
+    CommonVars vars(Date(26, March, 2026));
+
+    std::vector<Date> curveDates = {
+        Date(26, March, 2026),
+        Date(31, March, 2027),
+        Date(2, April, 2027)
+    };
+    std::vector<Rate> zeroRates = {0.03, 0.06, 0.09};
+
+    auto curve = ext::make_shared<InterpolatedZeroCurve<Linear>>(
+        curveDates, zeroRates, Actual360(), UnitedStates(UnitedStates::SOFR));
+    curve->enableExtrapolation();
+    vars.forecastCurve.linkTo(curve);
+
+    const auto exCpnDate = Date(27, March, 2027);
+    auto coupon = vars.makeCoupon(Date(31, March, 2026), Date(31, March, 2027), 0, 0, false, true,
+                                  RateAveraging::Compound, Date(2, April, 2027), 100.0, DayCounter(),
+                                  Date(), Date(), exCpnDate);
+
+    const Date accrualEnd = coupon->accrualEndDate();
+    const Date accrualDate = Date(30, March, 2027);
+    const DayCounter& dc = coupon->dayCounter();
+
+    const auto pricer =
+        ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(coupon->pricer());
+    const Rate rateAtEnd = pricer->averageRate(accrualEnd);
+    const Rate rateAtDate = pricer->averageRate(accrualDate);
+    const Real remainingPeriod = dc.yearFraction(accrualDate, accrualEnd);
+
+    BOOST_CHECK(rateAtDate != rateAtEnd);
+
+    const Real expected = coupon->nominal() * rateAtEnd * remainingPeriod;
+    CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(accrualDate),
+                            expected, 1e-8);
+
+    const Real oldFormula = coupon->nominal() * rateAtDate * coupon->accruedPeriod(accrualDate);
+    BOOST_CHECK_MESSAGE(std::fabs(expected - oldFormula) > 1e-8,
+                        "sloped curve should distinguish ex-coupon accrued formulas:\n"
+                            << "    expected: " << expected << "\n"
+                            << "    old formula: " << oldFormula);
+}
+
 BOOST_AUTO_TEST_CASE(testAccruedAmountExCouponDateAfterAccrualEndDate) {
     BOOST_TEST_MESSAGE("Test ex-coupon accrued amount when ex-coupon date is after the accrual end date...");
     CommonVars vars(Date(26, March, 2026));
