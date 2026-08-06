@@ -19,12 +19,59 @@
 
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/ode/fractionaladams.hpp>
+#include <ql/math/ode/fractionalkernelapproximation.hpp>
 #include <ql/mathconstants.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analyticroughhestonengine.hpp>
+#include <cmath>
 #include <utility>
 
 namespace QuantLib {
+
+    namespace {
+
+        /*! psi_p(theta) = sum_{m >= 0} (-theta)^m / (m + p)!, the entire
+            functions generating the weights of the exponential integrator.
+            The closed forms cancel to nothing as theta -> 0.
+        */
+        Real phiFunction(Size p, Real theta) {
+            if (theta < 1.0) {
+                Real term{1.0};
+                for (Size k{2}; k <= p; ++k)
+                    term /= k;
+
+                Real sum{term};
+
+                // Safety cap, not the operative stopping rule: the tolerance
+                // break below always fires first. Consecutive terms shrink
+                // by a factor theta / (m + p) < 1 / (m + p), so the
+                // slowest case (theta -> 1, p = 1) reaches the 1e-18
+                // relative tolerance by m = 19.
+                const Size maxTerms{24};
+                for (Size m{1}; m < maxTerms; ++m) {
+                    term *= -theta / (m + p);
+                    sum += term;
+
+                    if (std::fabs(term) <= 1e-18 * std::fabs(sum))
+                        break;
+                }
+                return sum;
+            }
+
+            const Real e{std::expm1(-theta)};
+            switch (p) {
+              case 1:
+                return -e / theta;
+              case 2:
+                return (theta + e) / (theta * theta);
+              case 3:
+                return (0.5 * theta * theta - theta - e)
+                       / (theta * theta * theta);
+              default:
+                QL_FAIL("unsupported phi function order " << p);
+            }
+        }
+    }
 
     // Andersen-Piterbarg integrand with Black-Scholes control variate,
     // following AnalyticHestonEngine::AP_Helper
@@ -89,9 +136,10 @@ namespace QuantLib {
 
     AnalyticRoughHestonEngine::AnalyticRoughHestonEngine(
         const ext::shared_ptr<RoughHestonModel>& model,
-        Size integrationOrder, 
+        Size integrationOrder,
         Size timeSteps,
-        Approximation approximation)
+        Approximation approximation,
+        Size nFactors)
     : GenericModelEngine<RoughHestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
@@ -99,8 +147,10 @@ namespace QuantLib {
       integration_(Integration::gaussLaguerre(integrationOrder)),
       andersenPiterbargEpsilon_(1e-25),
       alpha_(-0.5),
-      approximation_(approximation) {
+      approximation_(approximation),
+      nFactors_(nFactors) {
         QL_REQUIRE(timeSteps > 0, "at least one time step required");
+        QL_REQUIRE(nFactors > 0, "at least one lifted factor required");
     }
 
     AnalyticRoughHestonEngine::AnalyticRoughHestonEngine(
@@ -109,7 +159,8 @@ namespace QuantLib {
         Size timeSteps,
         Real andersenPiterbargEpsilon,
         Real alpha,
-        Approximation approximation)
+        Approximation approximation,
+        Size nFactors)
     : GenericModelEngine<RoughHestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
@@ -117,14 +168,18 @@ namespace QuantLib {
       integration_(std::move(integration)),
       andersenPiterbargEpsilon_(andersenPiterbargEpsilon),
       alpha_(alpha),
-      approximation_(approximation) {
+      approximation_(approximation),
+      nFactors_(nFactors) {
         QL_REQUIRE(timeSteps > 0, "at least one time step required");
         QL_REQUIRE(alpha > -1.0 && alpha < 0.0,
                    "alpha (" << alpha << ") must be in (-1, 0)");
+        QL_REQUIRE(nFactors > 0, "at least one lifted factor required");
     }
 
     void AnalyticRoughHestonEngine::update() {
         chFCache_.clear();
+        // The kernel nodes depend on the Hurst exponent
+        liftedGridCache_.clear();
         GenericModelEngine<RoughHestonModel,
                            VanillaOption::arguments,
                            VanillaOption::results>::update();
@@ -132,8 +187,15 @@ namespace QuantLib {
 
     std::complex<Real> AnalyticRoughHestonEngine::lnChF(
         const std::complex<Real>& z, Time t) const {
-        return approximation_ == Approximation::Pade
-            ? lnChFPade(z, t) : lnChFAdams(z, t);
+
+        switch (approximation_) {
+          case Approximation::Pade:
+            return lnChFPade(z, t);
+          case Approximation::Lifted:
+            return lnChFLifted(z, t);
+          default:
+            return lnChFAdams(z, t);
+        }
     }
 
     // Coefficients of the non-fractional Riccati equation satisfied by the
@@ -235,7 +297,7 @@ namespace QuantLib {
 
         const GammaFunction g;
 
-        // reciprocal gamma 1 / Gamma(x), which vanishes at the poles
+        // Reciprocal gamma 1 / Gamma(x), which vanishes at the poles
         // 0, -1, -2, ...; keeps the long-time coefficients finite as
         // a -> 1
         const auto rGamma
@@ -335,16 +397,141 @@ namespace QuantLib {
         return evaluatePade(padeCoefficients(z), sigma * std::pow(t, a));
     }
 
+    /*! Kernel nodes and step weights of the lifted route.  The linear part
+        -x_i psi_i is integrated exactly through its integrating factor and
+        F as its linear interpolant over the step.  None of it depends on
+        the frequency z, hence the per-maturity cache.
+    */
+    const AnalyticRoughHestonEngine::LiftedGrid&
+    AnalyticRoughHestonEngine::liftedGrid(Time t) const {
+
+        const auto cached{liftedGridCache_.find(t)};
+        if (cached != liftedGridCache_.end())
+            return cached->second;
+
+        const Real a{model_->hurst() + 0.5};
+        const FractionalKernelApproximation kernel(a, nFactors_, t);
+
+        const Real dt{t / timeSteps_};
+        const Size n{kernel.size()};
+
+        LiftedGrid g;
+        g.c = kernel.weights();
+        g.expDt = Array(n);
+        g.cExpDt = Array(n);
+        g.w0 = Array(n);
+        g.w1 = Array(n);
+        g.cA = Array(n);
+        g.cASum = 0.0;
+        g.cP = 0.0;
+        g.cQ = 0.0;
+
+        const Array& x{kernel.rates()};
+
+        for (Size i{0}; i < n; ++i) {
+            const Real theta{x[i] * dt};
+
+            const Real p1{phiFunction(1, theta)};
+            const Real p2{phiFunction(2, theta)};
+            const Real p3{phiFunction(3, theta)};
+
+            g.expDt[i] = std::exp(-theta);
+            g.cExpDt[i] = g.c[i] * g.expDt[i];
+
+            // The two sum to dt * p1, the weight of a constant F
+            g.w0[i] = dt * (p1 - p2);
+            g.w1[i] = dt * p2;
+
+            g.cA[i] = g.c[i] * dt * p1;
+            g.cASum += g.cA[i];
+            g.cP += g.c[i] * dt * dt * p2;
+            g.cQ += g.c[i] * dt * dt * p3;
+        }
+
+        return liftedGridCache_.emplace(t, std::move(g)).first->second;
+    }
+
+    AnalyticRoughHestonEngine::LiftedSolution
+    AnalyticRoughHestonEngine::solveLiftedRiccati(
+        const std::complex<Real>& z, Time t) const {
+
+        const LiftedGrid& g{liftedGrid(t)};
+        const Size n{g.c.size()};
+
+        const RiccatiCoefficients c{riccatiCoefficients(z)};
+
+        // RHS of the (non-fractional) Riccati equation, evaluated
+        // at the lifted state psi^n in place of the true h
+        const auto F = [&c](const std::complex<Real>& p) -> std::complex<Real> {
+            return c.c0 + (c.c1 + c.c2 * p) * p;
+        };
+
+        const Real dt{t / timeSteps_};
+
+        std::vector<std::complex<Real>> psi(n, std::complex<Real>(0.0));
+        std::complex<Real> psiN{0.0}, f{F(psiN)};
+        std::complex<Real> fIntegral{0.0}, psiIntegral{0.0};
+
+        for (Size k{0}; k < timeSteps_; ++k) {
+            // Predictor: decay of the factors plus the response to a
+            // constant F over the step
+            std::complex<Real> predicted{g.cASum * f};
+            for (Size i{0}; i < n; ++i)
+                predicted += g.cExpDt[i] * psi[i];
+
+            const std::complex<Real> fPredicted{F(predicted)};
+
+            // Accumulated before the factors advance: it weights psi(t_k)
+            std::complex<Real> stepIntegral{0.0}, psiNext{0.0};
+            for (Size i{0}; i < n; ++i) {
+                stepIntegral += g.cA[i] * psi[i];
+
+                psi[i] = g.expDt[i] * psi[i]
+                    + g.w0[i] * f + g.w1[i] * fPredicted;
+
+                psiNext += g.c[i] * psi[i];
+            }
+
+            const std::complex<Real> fNext{F(psiNext)};
+
+            fIntegral += 0.5 * dt * (f + fNext);
+            psiIntegral += stepIntegral + g.cP * f + g.cQ * (fNext - f);
+
+            psiN = psiNext;
+            f = fNext;
+        }
+
+        return {psiN, fIntegral, psiIntegral};
+    }
+
+    /*! The lifted characteristic function is
+        \f$ \ln \varphi = V_0 \int_0^t F(z, \psi^n) + \kappa\theta \int_0^t \psi^n \f$,
+        the exact counterpart of the fractional
+        \f$ \kappa\theta I^1 h + V_0 I^{1-a} h \f$ because
+        \f$ I^{1-a} h = I^{1-a} I^a F(z, h) = I^1 F(z, h) \f$.
+    */
+    std::complex<Real> AnalyticRoughHestonEngine::lnChFLifted(
+        const std::complex<Real>& z, Time t) const {
+
+        const LiftedSolution s{solveLiftedRiccati(z, t)};
+
+        return model_->v0() * s.fIntegral
+            + model_->kappa() * model_->theta() * s.psiIntegral;
+    }
+
     std::complex<Real> AnalyticRoughHestonEngine::riccatiSolution(
         const std::complex<Real>& z, Time t) const {
 
         QL_REQUIRE(t > 0.0, "maturity must be positive");
 
-        if (approximation_ == Approximation::Pade) {
+        switch (approximation_) {
+          case Approximation::Pade:
             return padeRiccati(z, t);
+          case Approximation::Lifted:
+            return solveLiftedRiccati(z, t).psi;
+          default:
+            return solveAdamsRiccati(z, t).back();
         }
-
-        return solveAdamsRiccati(z, t).back();
     }
 
     std::complex<Real> AnalyticRoughHestonEngine::chF(
@@ -407,7 +594,7 @@ namespace QuantLib {
 
         evaluations_ = 0;
 
-        // decay estimate of the characteristic function along the
+        // Decay estimate of the characteristic function along the
         // integration contour; recovers the classical Heston engine value
         // sqrt(1 - rho ^ 2)(v0 + kappa theta t) / sigma for alpha = 1
         // TODO: the a < 1 rescaling is a heuristic, not a derived asymptotic;
