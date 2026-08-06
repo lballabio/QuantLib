@@ -150,6 +150,11 @@ Experimental Python package that binds a focused QuantLib surface with
 - ATM YoY swap / forward rates from put-call parity
 - `InterpolatedZeroCurve(..., interpolation="cubic")` support
 
+### Phase 23 (callable / puttable bonds)
+- `BondPrice` / `Callability` (`make_callability`)
+- `CallableFixedRateBond` / `CallableZeroCouponBond`
+- `set_tree_pricing_engine(HullWhite, time_steps, discount_curve)`
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 

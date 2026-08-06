@@ -1767,4 +1767,87 @@ def InterpolatedYoYCapFloorTermPriceSurface(
     floor_prices: Matrix,
 ) -> YoYCapFloorTermPriceSurfaceHandle: ...
 
+class BondPriceType:
+    Clean: BondPriceType
+    Dirty: BondPriceType
+
+class BondPrice:
+    def __init__(
+        self, amount: float, type: BondPriceType = ...
+    ) -> None: ...
+    def amount(self) -> float: ...
+    def type(self) -> BondPriceType: ...
+    def is_valid(self) -> bool: ...
+
+class CallabilityType:
+    Call: CallabilityType
+    Put: CallabilityType
+
+class Callability:
+    def price(self) -> BondPrice: ...
+    def type(self) -> CallabilityType: ...
+    def date(self) -> Date: ...
+
+@overload
+def make_callability(
+    price: BondPrice, type: CallabilityType, date: Date
+) -> Callability: ...
+@overload
+def make_callability(
+    amount: float,
+    price_type: BondPriceType,
+    type: CallabilityType,
+    date: Date,
+) -> Callability: ...
+
+class CallableFixedRateBond:
+    def __init__(
+        self,
+        settlement_days: int,
+        face_amount: float,
+        schedule: Schedule,
+        coupons: Sequence[float],
+        accrual_day_counter: DayCounter,
+        payment_convention: BusinessDayConvention = ...,
+        redemption: float = ...,
+        issue_date: Date = ...,
+        put_call_schedule: Sequence[Callability] = ...,
+    ) -> None: ...
+    def NPV(self) -> float: ...
+    def clean_price(self) -> float: ...
+    def dirty_price(self) -> float: ...
+    def settlement_date(self) -> Date: ...
+    def maturity_date(self) -> Date: ...
+    def set_tree_pricing_engine(
+        self,
+        model: HullWhite,
+        time_steps: int = ...,
+        discount_curve: YieldTermStructureHandle = ...,
+    ) -> None: ...
+
+class CallableZeroCouponBond:
+    def __init__(
+        self,
+        settlement_days: int,
+        face_amount: float,
+        calendar: Calendar,
+        maturity_date: Date,
+        day_counter: DayCounter,
+        payment_convention: BusinessDayConvention = ...,
+        redemption: float = ...,
+        issue_date: Date = ...,
+        put_call_schedule: Sequence[Callability] = ...,
+    ) -> None: ...
+    def NPV(self) -> float: ...
+    def clean_price(self) -> float: ...
+    def dirty_price(self) -> float: ...
+    def settlement_date(self) -> Date: ...
+    def maturity_date(self) -> Date: ...
+    def set_tree_pricing_engine(
+        self,
+        model: HullWhite,
+        time_steps: int = ...,
+        discount_curve: YieldTermStructureHandle = ...,
+    ) -> None: ...
+
 __version__: str

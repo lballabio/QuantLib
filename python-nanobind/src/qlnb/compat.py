@@ -852,6 +852,46 @@ if YoYCapFloorTermPriceSurfaceHandle is not None:
         YoYCapFloorTermPriceSurfaceHandle.observation_lag
     )
 
+# Phase-23 callable / puttable bond aliases.
+BondPriceType = getattr(_ql, "BondPriceType", None)
+BondPrice = getattr(_ql, "BondPrice", None)
+CallabilityType = getattr(_ql, "CallabilityType", None)
+Callability = getattr(_ql, "make_callability", None)
+CallableFixedRateBond = getattr(_ql, "CallableFixedRateBond", None)
+if CallableFixedRateBond is not None:
+    CallableFixedRateBond.cleanPrice = (  # type: ignore[attr-defined]
+        CallableFixedRateBond.clean_price
+    )
+    CallableFixedRateBond.dirtyPrice = (  # type: ignore[attr-defined]
+        CallableFixedRateBond.dirty_price
+    )
+    CallableFixedRateBond.settlementDate = (  # type: ignore[attr-defined]
+        CallableFixedRateBond.settlement_date
+    )
+    CallableFixedRateBond.maturityDate = (  # type: ignore[attr-defined]
+        CallableFixedRateBond.maturity_date
+    )
+    CallableFixedRateBond.setTreePricingEngine = (  # type: ignore[attr-defined]
+        CallableFixedRateBond.set_tree_pricing_engine
+    )
+CallableZeroCouponBond = getattr(_ql, "CallableZeroCouponBond", None)
+if CallableZeroCouponBond is not None:
+    CallableZeroCouponBond.cleanPrice = (  # type: ignore[attr-defined]
+        CallableZeroCouponBond.clean_price
+    )
+    CallableZeroCouponBond.dirtyPrice = (  # type: ignore[attr-defined]
+        CallableZeroCouponBond.dirty_price
+    )
+    CallableZeroCouponBond.settlementDate = (  # type: ignore[attr-defined]
+        CallableZeroCouponBond.settlement_date
+    )
+    CallableZeroCouponBond.maturityDate = (  # type: ignore[attr-defined]
+        CallableZeroCouponBond.maturity_date
+    )
+    CallableZeroCouponBond.setTreePricingEngine = (  # type: ignore[attr-defined]
+        CallableZeroCouponBond.set_tree_pricing_engine
+    )
+
 # SWIG-style CPI.Flat nested namespace.
 class CPI:
     """SWIG-style CPI.Flat / CPI.Linear namespace."""

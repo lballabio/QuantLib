@@ -755,6 +755,27 @@ yoy_ts = surface.yoy_ts()  # bootstrapped from put-call parity
 Cap/floor matrix entries are **absolute prices** (unlike CPI Phase-16 which
 uses quote/10000). YoY optionlet strippers remain deferred (`\bug` in QL).
 
+## Phase-23 callable / puttable bonds
+
+```python
+calls = [
+    ql.make_callability(110.0, ql.BondPriceType.Clean, ql.CallabilityType.Call, d)
+    for d in call_dates
+]
+bond = ql.CallableFixedRateBond(
+    3, 10000.0, schedule, [0.05],
+    ql.Thirty360(ql.Thirty360Convention.BondBasis),
+    ql.BusinessDayConvention.ModifiedFollowing,
+    100.0, issue, calls,
+)
+model = ql.HullWhite(discount_curve)  # a=0.1, sigma=0.01
+bond.set_tree_pricing_engine(model, 240, discount_curve)
+print(bond.clean_price())
+```
+
+Tree engine only (Black callable engine deferred). Compat alias:
+`import qlnb.compat as ql` → `ql.Callability(...)` maps to `make_callability`.
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,
