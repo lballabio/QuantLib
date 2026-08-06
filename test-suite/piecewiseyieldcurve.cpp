@@ -1544,6 +1544,77 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapVariables) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testGlobalBootstrapInitialGuessFn, *precondition(usingAtParCoupons())) {
+
+    CommonVars vars(Date(25, Sep, 2019));
+
+    // Create a setup that is sensitive to the initial guess.
+    auto calendar = Euribor6M().fixingCalendar();
+    std::vector<Date> pillarDates = {Date(1, Oct, 2019)};
+    for (Size i = 0; i < 8; ++i) {
+        pillarDates.push_back(calendar.adjust(pillarDates.back() + 45));
+    }
+    for (const auto& helper : vars.instruments) {
+        if (helper->pillarDate() > pillarDates.back())
+            pillarDates.push_back(helper->pillarDate());
+    }
+
+    auto penalties = [&](const std::vector<Time>& times, const std::vector<Real>& data) {
+        const Size nInst = vars.instruments.size();
+        Array errors(nInst + times.size() - 2);
+        // instruments errors
+        std::transform(
+            vars.instruments.begin(), vars.instruments.end(), errors.begin(),
+            [](const ext::shared_ptr<RateHelper>& h) { return h->quoteError(); });
+        // gradient penalties
+        Array rates(data.size() - 1);
+        for (Size i = 0; i < times.size() - 1; ++i) {
+            rates[i] = (data[i] / data[i+1] - 1.0) / (times[i+1] - times[i]);
+        }
+        for (Size i = 0; i < times.size() - 2; ++i) {
+            errors[nInst + i] = 1e-2 * (rates[i+1] - rates[i]) / (times[i+1] - times[i]);
+        }
+        return errors;
+    };
+
+    int initialGuessCalls = 0;
+    auto initialGuessFn = [&](const std::vector<Time>& times, const std::vector<Real>& data) {
+        initialGuessCalls++;
+        return Array(times.size() - 1, 1.0);
+    };
+
+    typedef PiecewiseYieldCurve<Discount, LogLinear, GlobalBootstrap> Curve;
+    auto curve = ext::make_shared<Curve>(
+        vars.settlement, std::vector<ext::shared_ptr<RateHelper>>(), Actual365Fixed(),
+        Curve::bootstrap_type(vars.instruments, [&]() { return pillarDates; }, penalties,
+                              1e-12, nullptr, nullptr, nullptr, {}, initialGuessFn));
+
+    static const Date expectedDates[] = {
+        Date(27, Sep, 2019), Date(1, Oct, 2019), Date(15, Nov, 2019), Date(30, Dec, 2019),
+        Date(13, Feb, 2020), Date(30, Mar, 2020), Date(14, May, 2020), Date(29, Jun, 2020),
+        Date(13, Aug, 2020), Date(28, Sep, 2020), Date(27, Sep, 2021), Date(27, Sep, 2022),
+        Date(27, Sep, 2023), Date(27, Sep, 2024), Date(29, Sep, 2025), Date(28, Sep, 2026),
+        Date(27, Sep, 2027), Date(27, Sep, 2028), Date(27, Sep, 2029), Date(29, Sep, 2031),
+        Date(27, Sep, 2034), Date(27, Sep, 2039), Date(27, Sep, 2044), Date(27, Sep, 2049)
+    };
+    static const DiscountFactor expectedDFs[] = {
+        1.0,                0.9994923431162580, 0.9938069118457880, 0.9882401711181712,
+        0.9828381250775845, 0.9774079566030049, 0.9721182498392723, 0.9667951580943512,
+        0.9617336341824015, 0.9564548068987965, 0.9135007024272714, 0.8698607442445871,
+        0.8266650007699866, 0.7829682196126155, 0.7399209887960153, 0.6973589159124343,
+        0.6565792747227167, 0.6180250998622848, 0.5818438569698231, 0.5127051907762759,
+        0.4218543471337612, 0.3050840671400172, 0.2225943633033588, 0.165544906093695
+    };
+
+    auto nodes = curve->nodes();
+    BOOST_REQUIRE_EQUAL(nodes.size(), std::size(expectedDates));
+    for (Size i = 0; i < nodes.size(); ++i) {
+        BOOST_CHECK_EQUAL(nodes[i].first, expectedDates[i]);
+        QL_CHECK_SMALL(nodes[i].second - expectedDFs[i], 1e-10);
+    }
+    BOOST_CHECK_EQUAL(initialGuessCalls, 1);
+}
+
 BOOST_AUTO_TEST_CASE(testMultiCurveTwoPiecewiseYieldCurves) {
 
     BOOST_TEST_MESSAGE("Testing multicurve bootstrap with two piecewise yield curves...");
