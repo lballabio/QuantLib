@@ -14,6 +14,7 @@
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/interestrate.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/quote.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -28,6 +29,7 @@
 #include <ql/time/period.hpp>
 
 #include <cstddef>
+#include <string>
 #include <vector>
 
 using namespace QuantLib;
@@ -90,12 +92,22 @@ Handle<YieldTermStructure> make_flat_forward_handle_quote(
 Handle<YieldTermStructure> make_zero_curve(
     const std::vector<Date>& dates,
     const std::vector<Rate>& yields,
-    const DayCounter& day_counter) {
+    const DayCounter& day_counter,
+    const std::string& interpolation) {
     QL_REQUIRE(dates.size() == yields.size(), "dates/yields size mismatch");
     QL_REQUIRE(dates.size() >= 2, "need at least two zero-curve nodes");
-    return Handle<YieldTermStructure>(
-        ext::make_shared<InterpolatedZeroCurve<Linear>>(
-            dates, yields, day_counter));
+    if (interpolation == "linear" || interpolation == "Linear") {
+        return Handle<YieldTermStructure>(
+            ext::make_shared<InterpolatedZeroCurve<Linear>>(
+                dates, yields, day_counter));
+    }
+    if (interpolation == "cubic" || interpolation == "Cubic") {
+        return Handle<YieldTermStructure>(
+            ext::make_shared<InterpolatedZeroCurve<Cubic>>(
+                dates, yields, day_counter));
+    }
+    QL_FAIL("unknown InterpolatedZeroCurve interpolation '"
+            << interpolation << "' (use linear|cubic)");
 }
 
 using DiscountLogLinearCurve = PiecewiseYieldCurve<Discount, LogLinear>;
@@ -205,7 +217,9 @@ void bind_curves(nb::module_& m) {
           nb::arg("dates"),
           nb::arg("yields"),
           nb::arg("day_counter"),
-          "Factory: InterpolatedZeroCurve<Linear> → YieldTermStructureHandle.");
+          nb::arg("interpolation") = std::string("linear"),
+          "Factory: InterpolatedZeroCurve<Linear|Cubic> → "
+          "YieldTermStructureHandle.");
 
     // Rate helpers are opaque shared_ptrs (MI-heavy).
     nb::class_<RateHelper>(m, "RateHelper");

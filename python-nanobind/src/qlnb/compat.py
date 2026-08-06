@@ -813,6 +813,45 @@ if ZeroInflationCashFlow is not None:
         ZeroInflationCashFlow.observation_interpolation
     )
 
+# Phase-22 YoY cap/floor term price surface aliases.
+InterpolatedYoYCapFloorTermPriceSurface = getattr(
+    _ql, "InterpolatedYoYCapFloorTermPriceSurface", None
+)
+YoYCapFloorTermPriceSurfaceHandle = getattr(
+    _ql, "YoYCapFloorTermPriceSurfaceHandle", None
+)
+if YoYCapFloorTermPriceSurfaceHandle is not None:
+    YoYCapFloorTermPriceSurfaceHandle.capPrice = (  # type: ignore[attr-defined]
+        YoYCapFloorTermPriceSurfaceHandle.cap_price
+    )
+    YoYCapFloorTermPriceSurfaceHandle.floorPrice = (  # type: ignore[attr-defined]
+        YoYCapFloorTermPriceSurfaceHandle.floor_price
+    )
+    YoYCapFloorTermPriceSurfaceHandle.atmYoYSwapRate = (  # type: ignore[attr-defined]
+        YoYCapFloorTermPriceSurfaceHandle.atm_yoy_swap_rate
+    )
+    YoYCapFloorTermPriceSurfaceHandle.atmYoYRate = (  # type: ignore[attr-defined]
+        YoYCapFloorTermPriceSurfaceHandle.atm_yoy_rate
+    )
+    YoYCapFloorTermPriceSurfaceHandle.atmYoYSwapTimeRates = (  # type: ignore[attr-defined]
+        YoYCapFloorTermPriceSurfaceHandle.atm_yoy_swap_time_rates
+    )
+    YoYCapFloorTermPriceSurfaceHandle.atmYoYSwapDateRates = (  # type: ignore[attr-defined]
+        YoYCapFloorTermPriceSurfaceHandle.atm_yoy_swap_date_rates
+    )
+    YoYCapFloorTermPriceSurfaceHandle.YoYTS = (  # type: ignore[attr-defined]
+        YoYCapFloorTermPriceSurfaceHandle.yoy_ts
+    )
+    YoYCapFloorTermPriceSurfaceHandle.capStrikes = (  # type: ignore[attr-defined]
+        YoYCapFloorTermPriceSurfaceHandle.cap_strikes
+    )
+    YoYCapFloorTermPriceSurfaceHandle.floorStrikes = (  # type: ignore[attr-defined]
+        YoYCapFloorTermPriceSurfaceHandle.floor_strikes
+    )
+    YoYCapFloorTermPriceSurfaceHandle.observationLag = (  # type: ignore[attr-defined]
+        YoYCapFloorTermPriceSurfaceHandle.observation_lag
+    )
+
 # SWIG-style CPI.Flat nested namespace.
 class CPI:
     """SWIG-style CPI.Flat / CPI.Linear namespace."""
