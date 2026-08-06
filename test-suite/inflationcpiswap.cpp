@@ -18,6 +18,7 @@
  */
 
 #include "toplevelfixture.hpp"
+#include "utilities.hpp"
 #include <ql/types.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
@@ -488,6 +489,131 @@ BOOST_AUTO_TEST_CASE(cpibondconsistency) {
     cpiB.setPricingEngine(dbe);
 
     QL_REQUIRE(fabs(cpiB.NPV() - zisV.legNPV(0))<1e-5,"cpi bond does not equal equivalent cpi swap leg");
+}
+
+BOOST_AUTO_TEST_CASE(testZeroBpsFairRateAndSpread) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing CPI swap fair rate/spread calculation with zero BPS...");
+
+    CommonVars common;
+
+    Swap::Type type = Swap::Payer;
+    Real nominal = 0.0;
+    bool subtractInflationNominal = true;
+    Spread spread = 0.0;
+    DayCounter floatDayCount = Actual365Fixed();
+    BusinessDayConvention floatPaymentConvention = ModifiedFollowing;
+    Natural fixingDays = 0;
+    ext::shared_ptr<IborIndex> floatIndex(
+        new GBPLibor(Period(6, Months), common.nominalTS));
+
+    Rate fixedRate = 0.1;
+    Real baseCPI = 206.1;
+    DayCounter fixedDayCount = Actual365Fixed();
+    BusinessDayConvention fixedPaymentConvention = ModifiedFollowing;
+    ext::shared_ptr<ZeroInflationIndex> fixedIndex = common.ii;
+    Period contractObservationLag = common.contractObservationLag;
+    CPI::InterpolationType observationInterpolation =
+        common.contractObservationInterpolation;
+
+    Date startDate(2, October, 2007);
+    Date endDate(2, October, 2052);
+    Schedule floatSchedule =
+        MakeSchedule().from(startDate).to(endDate)
+            .withTenor(Period(6, Months))
+            .withCalendar(UnitedKingdom())
+            .withConvention(floatPaymentConvention)
+            .backwards();
+    Schedule fixedSchedule =
+        MakeSchedule().from(startDate).to(endDate)
+            .withTenor(Period(6, Months))
+            .withCalendar(UnitedKingdom())
+            .withConvention(Unadjusted)
+            .backwards();
+
+    CPISwap swap(type, nominal, subtractInflationNominal, spread,
+                 floatDayCount, floatSchedule, floatPaymentConvention,
+                 fixingDays, floatIndex, fixedRate, baseCPI, fixedDayCount,
+                 fixedSchedule, fixedPaymentConvention, contractObservationLag,
+                 fixedIndex, observationInterpolation);
+
+    ext::shared_ptr<DiscountingSwapEngine> dse(
+        new DiscountingSwapEngine(common.nominalTS));
+    swap.setPricingEngine(dse);
+
+    BOOST_CHECK(!swap.isExpired());
+    BOOST_CHECK_EQUAL(swap.legBPS(0), 0.0);
+    BOOST_CHECK_EQUAL(swap.legBPS(1), 0.0);
+
+    BOOST_CHECK_EXCEPTION(
+        swap.fairRate(), Error,
+        ExpectedErrorMessage("result not available"));
+    BOOST_CHECK_EXCEPTION(
+        swap.fairSpread(), Error,
+        ExpectedErrorMessage("result not available"));
+}
+
+BOOST_AUTO_TEST_CASE(testExpiredSwapFairRateAndSpread) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing CPI swap fair rate/spread for expired swap...");
+
+    CommonVars common;
+
+    Swap::Type type = Swap::Payer;
+    Real nominal = 1000000.0;
+    bool subtractInflationNominal = true;
+    Spread spread = 0.0;
+    DayCounter floatDayCount = Actual365Fixed();
+    BusinessDayConvention floatPaymentConvention = ModifiedFollowing;
+    Natural fixingDays = 0;
+    ext::shared_ptr<IborIndex> floatIndex(
+        new GBPLibor(Period(6, Months), common.nominalTS));
+
+    Rate fixedRate = 0.1;
+    Real baseCPI = 206.1;
+    DayCounter fixedDayCount = Actual365Fixed();
+    BusinessDayConvention fixedPaymentConvention = ModifiedFollowing;
+    ext::shared_ptr<ZeroInflationIndex> fixedIndex = common.ii;
+    Period contractObservationLag = common.contractObservationLag;
+    CPI::InterpolationType observationInterpolation =
+        common.contractObservationInterpolation;
+
+    Date startDate(2, October, 2007);
+    Date endDate(2, October, 2052);
+    Schedule floatSchedule =
+        MakeSchedule().from(startDate).to(endDate)
+            .withTenor(Period(6, Months))
+            .withCalendar(UnitedKingdom())
+            .withConvention(floatPaymentConvention)
+            .backwards();
+    Schedule fixedSchedule =
+        MakeSchedule().from(startDate).to(endDate)
+            .withTenor(Period(6, Months))
+            .withCalendar(UnitedKingdom())
+            .withConvention(Unadjusted)
+            .backwards();
+
+    CPISwap swap(type, nominal, subtractInflationNominal, spread,
+                 floatDayCount, floatSchedule, floatPaymentConvention,
+                 fixingDays, floatIndex, fixedRate, baseCPI, fixedDayCount,
+                 fixedSchedule, fixedPaymentConvention, contractObservationLag,
+                 fixedIndex, observationInterpolation);
+
+    ext::shared_ptr<DiscountingSwapEngine> dse(
+        new DiscountingSwapEngine(common.nominalTS));
+    swap.setPricingEngine(dse);
+
+    Settings::instance().evaluationDate() = endDate + Period(1, Years);
+
+    BOOST_CHECK(swap.isExpired());
+    BOOST_CHECK_EXCEPTION(
+        swap.fairRate(), Error,
+        ExpectedErrorMessage("result not available"));
+    BOOST_CHECK_EXCEPTION(
+        swap.fairSpread(), Error,
+        ExpectedErrorMessage("result not available"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
