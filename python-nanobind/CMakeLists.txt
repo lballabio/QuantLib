@@ -61,6 +61,7 @@ nanobind_add_module(
     src/bind_credit.cpp
     src/bind_cms.cpp
     src/bind_inflation.cpp
+    src/bind_fx.cpp
     src/bind_experimental.cpp
 )
 

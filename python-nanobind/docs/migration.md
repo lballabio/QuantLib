@@ -776,6 +776,28 @@ print(bond.clean_price())
 Tree engine only (Black callable engine deferred). Compat alias:
 `import qlnb.compat as ql` → `ql.Callability(...)` maps to `make_callability`.
 
+## Phase-24 currencies / FX forward
+
+```python
+usd, sgd = ql.USDCurrency(), ql.SGDCurrency()
+eur_usd = ql.ExchangeRate(ql.EURCurrency(), usd, 1.2042)
+ql.set_money_conversion(ql.MoneyConversionType.NoConversion)
+assert eur_usd.exchange(50000.0 * ql.EURCurrency()).value() == 60210.0
+
+today = ql.Date(15, ql.Month.March, 2024)
+ql.set_evaluation_date(today)
+maturity = today + ql.Period(6, ql.TimeUnit.Months)
+usd_curve = ql.FlatForward(today, 0.05, ql.Actual365Fixed())
+sgd_curve = ql.FlatForward(today, 0.035, ql.Actual365Fixed())
+fwd = ql.FxForward(1e6, usd, 1.35e6, sgd, maturity, True)
+fwd.set_pricing_engine(usd_curve, sgd_curve, 1.35)
+print(fwd.fair_forward_rate(), fwd.NPV())
+```
+
+Currency subclasses are sliced to value `Currency` (no MI hierarchy).
+`FxForward` is a standalone wrapper; attach `DiscountingFxForwardEngine` via
+`set_pricing_engine`. Spot FX is target per unit of source.
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,

@@ -155,6 +155,11 @@ Experimental Python package that binds a focused QuantLib surface with
 - `CallableFixedRateBond` / `CallableZeroCouponBond`
 - `set_tree_pricing_engine(HullWhite, time_steps, discount_curve)`
 
+### Phase 24 (currencies / FX forward)
+- `Currency` factories: `USDCurrency` / `EURCurrency` / `GBPCurrency` / `SGDCurrency`
+- `Money`, `ExchangeRate` (+ `chain` / `exchange`), `ExchangeRateManager` helpers
+- `FxForward` + `set_pricing_engine(src_curve, tgt_curve, spot)` → `DiscountingFxForwardEngine`
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 
