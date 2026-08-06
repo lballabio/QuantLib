@@ -40,9 +40,10 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (Eid Al-Adha windows through 2022 use Eid-1 to Eid+4 around published
-        Gregorian dates; windows from 2023 through 2029 follow the Saudi
-        Exchange holiday calendar):
+        (Eid Al-Adha and Eid Al-Fitr windows through 2022 use published
+        Gregorian dates, with exchange-documented ranges for 2012-2015;
+        windows from 2023 through 2029 follow the Saudi Exchange holiday
+        calendar):
         <ul>
         <li>Eid Al-Adha</li>
         <li>Eid Al-Fitr</li>

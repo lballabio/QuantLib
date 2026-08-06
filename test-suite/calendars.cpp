@@ -3871,8 +3871,8 @@ BOOST_AUTO_TEST_CASE(testSerbia) {
     checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
 }
 
-BOOST_AUTO_TEST_CASE(testSaudiArabiaFoundingDayAndEidAlAdha) {
-    BOOST_TEST_MESSAGE("Testing Saudi Arabia Founding Day and Eid Al-Adha holidays...");
+BOOST_AUTO_TEST_CASE(testSaudiArabiaFoundingDayAndEidHolidays) {
+    BOOST_TEST_MESSAGE("Testing Saudi Arabia Founding Day and Eid holidays...");
 
     Calendar saudi = SaudiArabia();
 
@@ -3883,11 +3883,26 @@ BOOST_AUTO_TEST_CASE(testSaudiArabiaFoundingDayAndEidAlAdha) {
     BOOST_CHECK(saudi.isHoliday(Date(22, February, 2026)));
     BOOST_CHECK(saudi.isBusinessDay(Date(19, February, 2026)));
 
+    // Eid Al-Fitr 2015 (exchange: 18-21 Jul)
+    BOOST_CHECK(saudi.isHoliday(Date(21, July, 2015)));
+    BOOST_CHECK(saudi.isBusinessDay(Date(16, July, 2015)));
+    BOOST_CHECK(saudi.isBusinessDay(Date(22, July, 2015)));
+
+    // Eid Al-Adha 2015 (exchange: 22-27 Sep)
+    BOOST_CHECK(saudi.isHoliday(Date(22, September, 2015)));
+    BOOST_CHECK(saudi.isBusinessDay(Date(21, September, 2015)));
+    BOOST_CHECK(saudi.isBusinessDay(Date(28, September, 2015)));
+
     // Eid Al-Adha 2025 (Saudi Exchange: 5-10 Jun, resume 11 Jun)
     BOOST_CHECK(saudi.isHoliday(Date(5, June, 2025)));
     BOOST_CHECK(saudi.isHoliday(Date(10, June, 2025)));
     BOOST_CHECK(saudi.isBusinessDay(Date(4, June, 2025)));
     BOOST_CHECK(saudi.isBusinessDay(Date(11, June, 2025)));
+
+    // Eid Al-Fitr 2026 (Saudi Exchange: 17-23 Mar, resume 24 Mar)
+    BOOST_CHECK(saudi.isHoliday(Date(20, March, 2026)));
+    BOOST_CHECK(saudi.isBusinessDay(Date(16, March, 2026)));
+    BOOST_CHECK(saudi.isBusinessDay(Date(24, March, 2026)));
 
     // Eid Al-Adha 2026 (Saudi Exchange: 22-30 May, resume 31 May)
     BOOST_CHECK(saudi.isHoliday(Date(25, May, 2026)));
