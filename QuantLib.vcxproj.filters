@@ -2208,6 +2208,9 @@
     <ClInclude Include="ql\termstructures\yield\compositezeroyieldstructure.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\derivedtermstructure.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\yield\discountcurve.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
