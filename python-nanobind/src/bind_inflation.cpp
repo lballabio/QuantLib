@@ -11,7 +11,9 @@
 #include <ql/cashflows/cpicoupon.hpp>
 #include <ql/cashflows/cpicouponpricer.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/cashflows/yoyinflationcoupon.hpp>
+#include <ql/cashflows/zeroinflationcashflow.hpp>
 #include <ql/handle.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/indexes/inflation/euhicp.hpp>
@@ -416,6 +418,14 @@ void bind_inflation(nb::module_& m) {
              [](ZeroCouponInflationSwap& s) { return s.fixedLegNPV(); })
         .def("inflation_leg_NPV",
              [](ZeroCouponInflationSwap& s) { return s.inflationLegNPV(); })
+        .def(
+            "inflation_leg",
+            [](const ZeroCouponInflationSwap& s) { return s.inflationLeg(); },
+            "ZCIS inflation leg → list[CashFlow] (ZeroInflationCashFlow).")
+        .def(
+            "fixed_leg",
+            [](const ZeroCouponInflationSwap& s) { return s.fixedLeg(); },
+            "ZCIS fixed leg → list[CashFlow].")
         .def("is_expired",
              [](const ZeroCouponInflationSwap& s) { return s.isExpired(); })
         .def(
@@ -1822,4 +1832,103 @@ void bind_inflation(nb::module_& m) {
                 c.setPricer(pricer);
             },
             nb::arg("pricer"));
+
+    // --- Phase 21: Indexed / CPI / ZeroInflation cash flows ---
+
+    nb::class_<IndexedCashFlow, CashFlow>(m, "IndexedCashFlow")
+        .def("notional",
+             [](const IndexedCashFlow& c) { return c.notional(); })
+        .def("base_date",
+             [](const IndexedCashFlow& c) { return c.baseDate(); })
+        .def("fixing_date",
+             [](const IndexedCashFlow& c) { return c.fixingDate(); })
+        .def("growth_only",
+             [](const IndexedCashFlow& c) { return c.growthOnly(); })
+        .def("base_fixing",
+             [](const IndexedCashFlow& c) { return c.baseFixing(); })
+        .def("index_fixing",
+             [](const IndexedCashFlow& c) { return c.indexFixing(); });
+
+    nb::class_<CPICashFlow, IndexedCashFlow>(m, "CPICashFlow")
+        .def(
+            "__init__",
+            [](CPICashFlow* self,
+               Real notional,
+               const ext::shared_ptr<ZeroInflationIndex>& index,
+               const Date& base_date,
+               Real base_fixing,
+               const Date& observation_date,
+               const Period& observation_lag,
+               CPI::InterpolationType interpolation,
+               const Date& payment_date,
+               bool growth_only) {
+                new (self) CPICashFlow(notional,
+                                       index,
+                                       base_date,
+                                       base_fixing,
+                                       observation_date,
+                                       observation_lag,
+                                       interpolation,
+                                       payment_date,
+                                       growth_only);
+            },
+            nb::arg("notional"),
+            nb::arg("index"),
+            nb::arg("base_date"),
+            nb::arg("base_fixing"),
+            nb::arg("observation_date"),
+            nb::arg("observation_lag"),
+            nb::arg("interpolation"),
+            nb::arg("payment_date"),
+            nb::arg("growth_only") = false)
+        .def("observation_date",
+             [](const CPICashFlow& c) { return c.observationDate(); })
+        .def("observation_lag",
+             [](const CPICashFlow& c) { return c.observationLag(); })
+        .def("interpolation",
+             [](const CPICashFlow& c) { return c.interpolation(); })
+        .def("frequency", [](const CPICashFlow& c) { return c.frequency(); })
+        .def("cpi_index",
+             [](const CPICashFlow& c) { return c.cpiIndex(); });
+
+    nb::class_<ZeroInflationCashFlow, IndexedCashFlow>(
+        m, "ZeroInflationCashFlow")
+        .def(
+            "__init__",
+            [](ZeroInflationCashFlow* self,
+               Real notional,
+               const ext::shared_ptr<ZeroInflationIndex>& index,
+               CPI::InterpolationType observation_interpolation,
+               const Date& start_date,
+               const Date& end_date,
+               const Period& observation_lag,
+               const Date& payment_date,
+               bool growth_only) {
+                new (self) ZeroInflationCashFlow(notional,
+                                                 index,
+                                                 observation_interpolation,
+                                                 start_date,
+                                                 end_date,
+                                                 observation_lag,
+                                                 payment_date,
+                                                 growth_only);
+            },
+            nb::arg("notional"),
+            nb::arg("index"),
+            nb::arg("observation_interpolation"),
+            nb::arg("start_date"),
+            nb::arg("end_date"),
+            nb::arg("observation_lag"),
+            nb::arg("payment_date"),
+            nb::arg("growth_only") = false)
+        .def(
+            "zero_inflation_index",
+            [](const ZeroInflationCashFlow& c) {
+                return c.zeroInflationIndex();
+            })
+        .def(
+            "observation_interpolation",
+            [](const ZeroInflationCashFlow& c) {
+                return c.observationInterpolation();
+            });
 }

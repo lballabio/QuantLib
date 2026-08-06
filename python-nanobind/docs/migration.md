@@ -716,6 +716,26 @@ cap = ql.YoYInflationCapFloor(ql.YoYInflationCapFloorType.Cap, vanilla, 0.10)
 cap.set_pricing_engine(yoy, vol, nominal, "black")
 ```
 
+## Phase-21 Indexed / CPI / ZeroInflation cash flows
+
+```python
+leg = ql.make_cpi_leg(..., base_cpi=206.1, subtract_inflation_nominal=False)
+terminal = leg[-1]  # CPICashFlow (bond-style: notional * I(T)/I(0))
+assert isinstance(terminal, ql.CPICashFlow)
+assert terminal.amount() == terminal.notional() * terminal.index_fixing() / terminal.base_fixing()
+
+cf = ql.ZeroInflationCashFlow(
+    1e6, index, ql.CPIInterpolationType.Flat,
+    start, end, lag, payment, growth_only=True,
+)
+# ZCIS inflation leg exposes the same type:
+zcis = ql.ZeroCouponInflationSwap(...)
+assert isinstance(zcis.inflation_leg()[0], ql.ZeroInflationCashFlow)
+```
+
+`subtract_inflation_nominal` on `make_cpi_leg` maps to CPICashFlow `growth_only`
+(False = bond notional × ratio; True = swap-style ratio − 1).
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,
