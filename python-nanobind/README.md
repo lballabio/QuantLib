@@ -160,6 +160,10 @@ Experimental Python package that binds a focused QuantLib surface with
 - `Money`, `ExchangeRate` (+ `chain` / `exchange`), `ExchangeRateManager` helpers
 - `FxForward` + `set_pricing_engine(src_curve, tgt_curve, spot)` → `DiscountingFxForwardEngine`
 
+### Phase 25 (double-barrier options)
+- `DoubleBarrierType` (`KnockIn` / `KnockOut` / `KIKO` / `KOKI`)
+- `DoubleBarrierOption` + `AnalyticDoubleBarrierEngine` (Ikeda/Kunitomo)
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 
