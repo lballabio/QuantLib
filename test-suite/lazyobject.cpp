@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2016 StatPro Italia srl
+ Copyright (C) 2026 Musawer Ahmad Saqif
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,6 +22,13 @@
 #include "utilities.hpp"
 #include <ql/instruments/stock.hpp>
 #include <ql/quotes/simplequote.hpp>
+
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+#include <atomic>
+#include <chrono>
+#include <future>
+#include <thread>
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -271,6 +279,212 @@ BOOST_AUTO_TEST_CASE(testNotificationAfterFailedCalculation) {
     if (f.isUp())
         BOOST_FAIL("Observer was notified of second change without recalculation");
 }
+
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+
+class BlockingLazyObject : public LazyObject {
+  public:
+    explicit BlockingLazyObject(bool failFirst = false) : failFirst_(failFirst) {}
+
+    Real value() const {
+        calculate();
+        return value_;
+    }
+
+    void waitUntilCalculationStarts() const {
+        while (!calculationStarted_.load(std::memory_order_acquire))
+            std::this_thread::yield();
+    }
+
+    void releaseCalculation() const {
+        calculationMayFinish_.store(true, std::memory_order_release);
+    }
+
+    Size calculationCount() const {
+        return calculationCount_.load(std::memory_order_relaxed);
+    }
+
+  protected:
+    void performCalculations() const override {
+        const Size count = calculationCount_.fetch_add(1, std::memory_order_relaxed) + 1;
+        if (count == 1) {
+            calculationStarted_.store(true, std::memory_order_release);
+            while (!calculationMayFinish_.load(std::memory_order_acquire))
+                std::this_thread::yield();
+            if (failFirst_)
+                QL_FAIL("intentional failure");
+        }
+        value_ = 42.0;
+    }
+
+  private:
+    bool failFirst_;
+    mutable std::atomic<bool> calculationStarted_{false};
+    mutable std::atomic<bool> calculationMayFinish_{false};
+    mutable std::atomic<Size> calculationCount_{0};
+    mutable Real value_ = Null<Real>();
+};
+
+BOOST_AUTO_TEST_CASE(testConcurrentCalculation) {
+    BOOST_TEST_MESSAGE("Testing concurrent calculation of a lazy object...");
+
+    BlockingLazyObject object;
+
+    auto first = std::async(std::launch::async, [&object] { return object.value(); });
+    object.waitUntilCalculationStarts();
+
+    auto second = std::async(std::launch::async, [&object] { return object.value(); });
+    const auto status = second.wait_for(std::chrono::milliseconds(20));
+    object.releaseCalculation();
+
+    BOOST_CHECK(status == std::future_status::timeout);
+    BOOST_CHECK_EQUAL(first.get(), 42.0);
+    BOOST_CHECK_EQUAL(second.get(), 42.0);
+    BOOST_CHECK_EQUAL(object.calculationCount(), 1);
+}
+
+BOOST_AUTO_TEST_CASE(testConcurrentCalculationAfterFailure) {
+    BOOST_TEST_MESSAGE("Testing concurrent calculation after a failure...");
+
+    BlockingLazyObject object(true);
+
+    auto first = std::async(std::launch::async, [&object] {
+        try {
+            object.value();
+            return false;
+        } catch (const Error&) {
+            return true;
+        }
+    });
+    object.waitUntilCalculationStarts();
+
+    auto second = std::async(std::launch::async, [&object] { return object.value(); });
+    const auto status = second.wait_for(std::chrono::milliseconds(20));
+    object.releaseCalculation();
+
+    BOOST_CHECK(status == std::future_status::timeout);
+    BOOST_CHECK(first.get());
+    BOOST_CHECK_EQUAL(second.get(), 42.0);
+    BOOST_CHECK_EQUAL(object.calculationCount(), 2);
+}
+
+BOOST_AUTO_TEST_CASE(testConcurrentExpiredInstrumentCalculation) {
+    BOOST_TEST_MESSAGE("Testing concurrent calculation of an expired instrument...");
+
+    class ExpiredInstrument : public Instrument {
+      public:
+        bool isExpired() const override {
+            return true;
+        }
+
+        void waitUntilCalculationStarts() const {
+            while (!calculationStarted_.load(std::memory_order_acquire))
+                std::this_thread::yield();
+        }
+
+        void releaseCalculation() const {
+            calculationMayFinish_.store(true, std::memory_order_release);
+        }
+
+        Size calculationCount() const {
+            return calculationCount_.load(std::memory_order_relaxed);
+        }
+
+      protected:
+        void setupExpired() const override {
+            const Size count = calculationCount_.fetch_add(1, std::memory_order_relaxed) + 1;
+            if (count == 1) {
+                calculationStarted_.store(true, std::memory_order_release);
+                while (!calculationMayFinish_.load(std::memory_order_acquire))
+                    std::this_thread::yield();
+            }
+            Instrument::setupExpired();
+        }
+
+      private:
+        mutable std::atomic<bool> calculationStarted_{false};
+        mutable std::atomic<bool> calculationMayFinish_{false};
+        mutable std::atomic<Size> calculationCount_{0};
+    } object;
+
+    auto first = std::async(std::launch::async, [&object] { return object.NPV(); });
+    object.waitUntilCalculationStarts();
+
+    auto second = std::async(std::launch::async, [&object] { return object.NPV(); });
+    const auto status = second.wait_for(std::chrono::milliseconds(20));
+    object.releaseCalculation();
+
+    BOOST_CHECK(status == std::future_status::timeout);
+    BOOST_CHECK_EQUAL(first.get(), 0.0);
+    BOOST_CHECK_EQUAL(second.get(), 0.0);
+    BOOST_CHECK_EQUAL(object.calculationCount(), 1);
+}
+
+BOOST_AUTO_TEST_CASE(testRecursiveCalculation) {
+    BOOST_TEST_MESSAGE("Testing recursive calculation of a lazy object...");
+
+    class RecursiveLazyObject : public LazyObject {
+      public:
+        Real value() const {
+            calculate();
+            return value_;
+        }
+
+        Size calculationCount() const {
+            return calculationCount_;
+        }
+
+      protected:
+        void performCalculations() const override {
+            ++calculationCount_;
+            calculate();
+            value_ = 42.0;
+        }
+
+      private:
+        mutable Size calculationCount_ = 0;
+        mutable Real value_ = Null<Real>();
+    };
+
+    RecursiveLazyObject object;
+    BOOST_CHECK_EQUAL(object.value(), 42.0);
+    BOOST_CHECK_EQUAL(object.calculationCount(), 1);
+}
+
+BOOST_AUTO_TEST_CASE(testCopyingWithThreadSafeCalculations) {
+    BOOST_TEST_MESSAGE("Testing copies of lazy objects with thread-safe calculations...");
+
+    class CopyableLazyObject : public LazyObject {
+      public:
+        explicit CopyableLazyObject(Real value = 0.0) : input_(value) {}
+
+        Real value() const {
+            calculate();
+            return result_;
+        }
+
+      protected:
+        void performCalculations() const override {
+            result_ = input_;
+        }
+
+      private:
+        Real input_;
+        mutable Real result_ = Null<Real>();
+    };
+
+    CopyableLazyObject original(42.0);
+    BOOST_CHECK_EQUAL(original.value(), 42.0);
+
+    CopyableLazyObject copied(original);
+    BOOST_CHECK_EQUAL(copied.value(), 42.0);
+
+    CopyableLazyObject assigned;
+    assigned = original;
+    BOOST_CHECK_EQUAL(assigned.value(), 42.0);
+}
+
+#endif
 
 BOOST_AUTO_TEST_SUITE_END()
 
