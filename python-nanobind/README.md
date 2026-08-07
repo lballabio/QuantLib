@@ -164,6 +164,11 @@ Experimental Python package that binds a focused QuantLib surface with
 - `DoubleBarrierType` (`KnockIn` / `KnockOut` / `KIKO` / `KOKI`)
 - `DoubleBarrierOption` + `AnalyticDoubleBarrierEngine` (Ikeda/Kunitomo)
 
+### Phase 26 (double-barrier binary options)
+- `CashOrNothingPayoff`
+- `DoubleBarrierOption.set_binary_pricing_engine` → `AnalyticDoubleBarrierBinaryEngine`
+- European exercise for KnockIn/KnockOut; American for KIKO/KOKI
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 

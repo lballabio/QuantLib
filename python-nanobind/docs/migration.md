@@ -814,6 +814,23 @@ print(opt.NPV())
 Standalone wrapper (no `OneAssetOption` MI hierarchy). Analytic engine covers
 KnockIn/KnockOut European vanilla payoffs; binary / FD-Heston / MC deferred.
 
+## Phase-26 double-barrier binary options
+
+```python
+payoff = ql.CashOrNothingPayoff(ql.OptionType.Call, 0.0, 10.0)
+# KnockIn / KnockOut → EuropeanExercise; KIKO / KOKI → AmericanExercise
+opt = ql.DoubleBarrierOption(
+    ql.DoubleBarrierType.KnockOut,
+    80.0, 120.0, 0.0, payoff, ql.EuropeanExercise(maturity),
+)
+opt.set_binary_pricing_engine(process)  # AnalyticDoubleBarrierBinaryEngine
+print(opt.NPV())
+```
+
+Vanilla double-barrier path is unchanged (`set_pricing_engine` →
+`AnalyticDoubleBarrierEngine`). Use the binary engine attach for cash-or-nothing
+payoffs. FD-Heston / MC / lookbacks remain deferred.
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,

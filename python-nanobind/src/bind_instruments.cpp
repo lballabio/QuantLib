@@ -74,6 +74,18 @@ void bind_instruments(nb::module_& m) {
         .def("option_type",
              [](const PlainVanillaPayoff& p) { return p.optionType(); });
 
+    // Standalone binary payoff (no Payoff / StrikedTypePayoff MI hierarchy).
+    nb::class_<CashOrNothingPayoff>(m, "CashOrNothingPayoff")
+        .def(nb::init<Option::Type, Real, Real>(),
+             nb::arg("type"),
+             nb::arg("strike"),
+             nb::arg("cash_payoff"))
+        .def("strike", [](const CashOrNothingPayoff& p) { return p.strike(); })
+        .def("option_type",
+             [](const CashOrNothingPayoff& p) { return p.optionType(); })
+        .def("cash_payoff",
+             [](const CashOrNothingPayoff& p) { return p.cashPayoff(); });
+
     nb::class_<EuropeanExercise>(m, "EuropeanExercise")
         .def(nb::init<const Date&>(), nb::arg("date"))
         .def("last_date",
