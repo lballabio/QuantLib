@@ -1967,7 +1967,9 @@ BOOST_AUTO_TEST_CASE(testExCouponAccruedAmountWithSlopedCurve) {
     const DayCounter& dc = coupon->dayCounter();
 
     const auto pricer =
-        ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(coupon->pricer());
+        ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(coupon->pricer());
+    QL_REQUIRE(pricer, "overnight indexed coupon pricer required");
+
     const Rate rateAtEnd = pricer->averageRate(accrualEnd);
     const Rate rateAtDate = pricer->averageRate(accrualDate);
     const Real remainingPeriod = dc.yearFraction(accrualDate, accrualEnd);
