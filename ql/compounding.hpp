@@ -29,11 +29,11 @@
 namespace QuantLib {
 
     //! Interest rate coumpounding rule
-    enum Compounding { Simple = 0,          //!< \f$ 1+rt \f$
-                       Compounded = 1,      //!< \f$ (1+r)^t \f$
-                       Continuous = 2,      //!< \f$ e^{rt} \f$
-                       SimpleThenCompounded, //!< Simple up to the first period then Compounded
-                       CompoundedThenSimple //!< Compounded up to the first period then Simple
+    enum Compounding { Simple = 0,           //!< \f$ 1+rt \f$
+                       Compounded = 1,       //!< \f$ (1+r)^t \f$
+                       Continuous = 2,       //!< \f$ e^{rt} \f$
+                       SimpleThenCompounded, //!< Simple in first period, otherwise compounded
+                       CompoundedThenSimple  //!< Simple in last period, otherwise compounded
     };
 
     inline std::ostream& operator<<(std::ostream& out, const Compounding& compounding) {
