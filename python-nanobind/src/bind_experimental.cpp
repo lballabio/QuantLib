@@ -17,12 +17,14 @@
 #include <ql/instruments/lookbackoption.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/instruments/softbarrieroption.hpp>
 #include <ql/option.hpp>
 #include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
+#include <ql/pricingengines/barrier/analyticsoftbarrierengine.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuousfixedlookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
@@ -179,6 +181,51 @@ void bind_experimental(nb::module_& m) {
         },
         nb::arg("process"),
         "Factory alias: pass the returned process to BarrierOption.set_pricing_engine.");
+
+    // --- Phase 29: soft barrier options (standalone; OneAssetOption MI) -----
+    nb::class_<SoftBarrierOption>(m, "SoftBarrierOption")
+        .def(
+            "__init__",
+            [](SoftBarrierOption* self,
+               Barrier::Type barrier_type,
+               Real barrier_lo,
+               Real barrier_hi,
+               const PlainVanillaPayoff& payoff,
+               const EuropeanExercise& exercise) {
+                new (self) SoftBarrierOption(
+                    barrier_type,
+                    barrier_lo,
+                    barrier_hi,
+                    ext::make_shared<PlainVanillaPayoff>(payoff),
+                    ext::make_shared<EuropeanExercise>(exercise));
+            },
+            nb::arg("barrier_type"),
+            nb::arg("barrier_lo"),
+            nb::arg("barrier_hi"),
+            nb::arg("payoff"),
+            nb::arg("exercise"))
+        .def("NPV", [](SoftBarrierOption& opt) { return opt.NPV(); })
+        .def("delta", [](SoftBarrierOption& opt) { return opt.delta(); })
+        .def("gamma", [](SoftBarrierOption& opt) { return opt.gamma(); })
+        .def("vega", [](SoftBarrierOption& opt) { return opt.vega(); })
+        .def(
+            "set_pricing_engine",
+            [](SoftBarrierOption& opt,
+               const ext::shared_ptr<BlackScholesMertonProcess>& process) {
+                opt.setPricingEngine(
+                    ext::make_shared<AnalyticSoftBarrierEngine>(process));
+            },
+            nb::arg("process"),
+            "Attach AnalyticSoftBarrierEngine (Hart/Ross / Haug p.165).");
+
+    m.def(
+        "AnalyticSoftBarrierEngine",
+        [](const ext::shared_ptr<BlackScholesMertonProcess>& process) {
+            return process;
+        },
+        nb::arg("process"),
+        "Factory alias: pass the returned process to "
+        "SoftBarrierOption.set_pricing_engine.");
 
     // --- Phase 25/26: double-barrier options (standalone; OneAssetOption MI)
     nb::enum_<DoubleBarrier::Type>(m, "DoubleBarrierType")

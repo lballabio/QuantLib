@@ -368,6 +368,14 @@ def _install_aliases() -> None:
     if BarrierOption is not None:
         BarrierOption.setPricingEngine = BarrierOption.set_pricing_engine  # type: ignore[attr-defined]
 
+    # Phase-29 soft barrier aliases.
+    SoftBarrierOption = getattr(_ql, "SoftBarrierOption", None)
+    AnalyticSoftBarrierEngine = getattr(_ql, "AnalyticSoftBarrierEngine", None)
+    if SoftBarrierOption is not None:
+        SoftBarrierOption.setPricingEngine = (  # type: ignore[attr-defined]
+            SoftBarrierOption.set_pricing_engine
+        )
+
     # Phase-25/26 double-barrier aliases.
     DoubleBarrierType = getattr(_ql, "DoubleBarrierType", None)
     DoubleBarrierOption = getattr(_ql, "DoubleBarrierOption", None)

@@ -876,6 +876,23 @@ partial_fixed.set_pricing_engine(process)
 Standalone wrappers. The Python kwarg is `lambda_` (avoids the Python keyword).
 MC lookback engines remain deferred.
 
+## Phase-29 soft barrier options
+
+```python
+opt = ql.SoftBarrierOption(
+    ql.BarrierType.DownOut,
+    90.0,   # barrier_lo
+    95.0,   # barrier_hi
+    ql.PlainVanillaPayoff(ql.OptionType.Call, 100.0),
+    ql.EuropeanExercise(maturity),
+)
+opt.set_pricing_engine(process)  # AnalyticSoftBarrierEngine
+print(opt.NPV())
+```
+
+Knock-in/out is proportional across `[barrier_lo, barrier_hi]` rather than a
+hard barrier. Analytic engine only (Haug p.165); European payoff style.
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,
