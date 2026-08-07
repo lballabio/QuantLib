@@ -66,16 +66,20 @@ namespace QuantLib {
         /*
           the following assumes
           1. cashflows are in ascending order !
-          2. considers as income: all coupons paid between settlementDate()
-          and contract delivery/maturity date
+          2. considers as income: all coupons the holder is entitled to
+          between settlementDate() and contract delivery/maturity date.
+          When an ex-coupon date is given, entitlement follows it: a coupon
+          trading ex at spot settlement belongs to the seller, while a
+          coupon whose ex date has been reached by delivery belongs to the
+          holder even though it pays after delivery.
         */
         for (auto& i : cf) {
-            if (!i->hasOccurred(settlement, false)) {
-                if (i->hasOccurred(maturityDate_, false)) {
-                    income += i->amount() * incomeDiscountCurve->discount(i->date());
-                } else {
-                    break;
-                }
+            if (i->hasOccurred(settlement, false) || i->tradingExCoupon(settlement))
+                continue;
+            if (i->hasOccurred(maturityDate_, false) || i->tradingExCoupon(maturityDate_)) {
+                income += i->amount() * incomeDiscountCurve->discount(i->date());
+            } else {
+                break;
             }
         }
 
