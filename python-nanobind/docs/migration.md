@@ -831,6 +831,29 @@ Vanilla double-barrier path is unchanged (`set_pricing_engine` →
 `AnalyticDoubleBarrierEngine`). Use the binary engine attach for cash-or-nothing
 payoffs. FD-Heston / MC / lookbacks remain deferred.
 
+## Phase-27 continuous lookback options
+
+```python
+# Floating strike (minmax = prior extremum)
+float_opt = ql.ContinuousFloatingLookbackOption(
+    100.0,
+    ql.FloatingTypePayoff(ql.OptionType.Call),
+    ql.EuropeanExercise(maturity),
+)
+float_opt.set_pricing_engine(process)  # AnalyticContinuousFloatingLookbackEngine
+
+# Fixed strike
+fixed_opt = ql.ContinuousFixedLookbackOption(
+    100.0,
+    ql.PlainVanillaPayoff(ql.OptionType.Call, 95.0),
+    ql.EuropeanExercise(maturity),
+)
+fixed_opt.set_pricing_engine(process)  # AnalyticContinuousFixedLookbackEngine
+```
+
+Standalone wrappers (no `OneAssetOption` MI hierarchy). Partial-time lookbacks
+and MC engines are deferred.
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,

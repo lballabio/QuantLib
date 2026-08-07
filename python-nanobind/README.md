@@ -169,6 +169,11 @@ Experimental Python package that binds a focused QuantLib surface with
 - `DoubleBarrierOption.set_binary_pricing_engine` → `AnalyticDoubleBarrierBinaryEngine`
 - European exercise for KnockIn/KnockOut; American for KIKO/KOKI
 
+### Phase 27 (continuous lookback options)
+- `FloatingTypePayoff`
+- `ContinuousFloatingLookbackOption` + `AnalyticContinuousFloatingLookbackEngine`
+- `ContinuousFixedLookbackOption` + `AnalyticContinuousFixedLookbackEngine`
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 

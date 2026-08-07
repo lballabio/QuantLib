@@ -14,6 +14,7 @@
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/instruments/doublebarriertype.hpp>
+#include <ql/instruments/lookbackoption.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/option.hpp>
@@ -23,6 +24,8 @@
 #include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/lookback/analyticcontinuousfixedlookback.hpp>
+#include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/date.hpp>
@@ -295,6 +298,88 @@ void bind_experimental(nb::module_& m) {
         nb::arg("process"),
         "Factory alias: pass the returned process to "
         "DoubleBarrierOption.set_binary_pricing_engine.");
+
+    // --- Phase 27: continuous lookbacks (standalone; OneAssetOption MI) -----
+    nb::class_<ContinuousFloatingLookbackOption>(
+        m, "ContinuousFloatingLookbackOption")
+        .def(
+            "__init__",
+            [](ContinuousFloatingLookbackOption* self,
+               Real current_minmax,
+               const FloatingTypePayoff& payoff,
+               const EuropeanExercise& exercise) {
+                new (self) ContinuousFloatingLookbackOption(
+                    current_minmax,
+                    ext::make_shared<FloatingTypePayoff>(payoff),
+                    ext::make_shared<EuropeanExercise>(exercise));
+            },
+            nb::arg("current_minmax"),
+            nb::arg("payoff"),
+            nb::arg("exercise"))
+        .def("NPV",
+             [](ContinuousFloatingLookbackOption& opt) { return opt.NPV(); })
+        .def("delta",
+             [](ContinuousFloatingLookbackOption& opt) { return opt.delta(); })
+        .def("gamma",
+             [](ContinuousFloatingLookbackOption& opt) { return opt.gamma(); })
+        .def(
+            "set_pricing_engine",
+            [](ContinuousFloatingLookbackOption& opt,
+               const ext::shared_ptr<BlackScholesMertonProcess>& process) {
+                opt.setPricingEngine(
+                    ext::make_shared<AnalyticContinuousFloatingLookbackEngine>(
+                        process));
+            },
+            nb::arg("process"),
+            "Attach AnalyticContinuousFloatingLookbackEngine.");
+
+    nb::class_<ContinuousFixedLookbackOption>(m, "ContinuousFixedLookbackOption")
+        .def(
+            "__init__",
+            [](ContinuousFixedLookbackOption* self,
+               Real current_minmax,
+               const PlainVanillaPayoff& payoff,
+               const EuropeanExercise& exercise) {
+                new (self) ContinuousFixedLookbackOption(
+                    current_minmax,
+                    ext::make_shared<PlainVanillaPayoff>(payoff),
+                    ext::make_shared<EuropeanExercise>(exercise));
+            },
+            nb::arg("current_minmax"),
+            nb::arg("payoff"),
+            nb::arg("exercise"))
+        .def("NPV",
+             [](ContinuousFixedLookbackOption& opt) { return opt.NPV(); })
+        .def("delta",
+             [](ContinuousFixedLookbackOption& opt) { return opt.delta(); })
+        .def("gamma",
+             [](ContinuousFixedLookbackOption& opt) { return opt.gamma(); })
+        .def(
+            "set_pricing_engine",
+            [](ContinuousFixedLookbackOption& opt,
+               const ext::shared_ptr<BlackScholesMertonProcess>& process) {
+                opt.setPricingEngine(
+                    ext::make_shared<AnalyticContinuousFixedLookbackEngine>(
+                        process));
+            },
+            nb::arg("process"),
+            "Attach AnalyticContinuousFixedLookbackEngine.");
+
+    m.def(
+        "AnalyticContinuousFloatingLookbackEngine",
+        [](const ext::shared_ptr<BlackScholesMertonProcess>& process) {
+            return process;
+        },
+        nb::arg("process"),
+        "Factory alias for ContinuousFloatingLookbackOption.set_pricing_engine.");
+
+    m.def(
+        "AnalyticContinuousFixedLookbackEngine",
+        [](const ext::shared_ptr<BlackScholesMertonProcess>& process) {
+            return process;
+        },
+        nb::arg("process"),
+        "Factory alias for ContinuousFixedLookbackOption.set_pricing_engine.");
 
     // --- Cap / Floor + Black engine (standalone; CapFloor uses MI) ----------
     nb::enum_<CapFloor::Type>(m, "CapFloorType")

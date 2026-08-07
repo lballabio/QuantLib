@@ -86,6 +86,12 @@ void bind_instruments(nb::module_& m) {
         .def("cash_payoff",
              [](const CashOrNothingPayoff& p) { return p.cashPayoff(); });
 
+    // Floating-strike payoff for lookbacks (no TypePayoff MI hierarchy).
+    nb::class_<FloatingTypePayoff>(m, "FloatingTypePayoff")
+        .def(nb::init<Option::Type>(), nb::arg("type"))
+        .def("option_type",
+             [](const FloatingTypePayoff& p) { return p.optionType(); });
+
     nb::class_<EuropeanExercise>(m, "EuropeanExercise")
         .def(nb::init<const Date&>(), nb::arg("date"))
         .def("last_date",
