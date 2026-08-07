@@ -178,6 +178,9 @@ Experimental Python package that binds a focused QuantLib surface with
 - `ContinuousPartialFloatingLookbackOption` + analytic engine (Haug 2006 p.146)
 - `ContinuousPartialFixedLookbackOption` + analytic engine (Haug 2006 p.148)
 
+### Phase 29 (soft barrier options)
+- `SoftBarrierOption` + `AnalyticSoftBarrierEngine` (Hart/Ross / Haug p.165)
+
 QuantLib is built from the parent source tree as a **static** library with
 `QL_USE_STD_SHARED_PTR=ON` and `CMAKE_POSITION_INDEPENDENT_CODE=ON`.
 
