@@ -500,43 +500,24 @@ BOOST_AUTO_TEST_CASE(testZeroBpsFairRateAndSpread) {
 
     Swap::Type type = Swap::Payer;
     Real nominal = 0.0;
-    bool subtractInflationNominal = true;
-    Spread spread = 0.0;
-    DayCounter floatDayCount = Actual365Fixed();
-    BusinessDayConvention floatPaymentConvention = ModifiedFollowing;
-    Natural fixingDays = 0;
-    ext::shared_ptr<IborIndex> floatIndex(
-        new GBPLibor(Period(6, Months), common.nominalTS));
+    Date startDate(common.evaluationDate);
+    Date endDate(25, November, 2059);
+    Calendar cal = UnitedKingdom();
+    BusinessDayConvention paymentConvention = ModifiedFollowing;
+    DayCounter dummyDC;
+    Period observationLag(2, Months);
+    CPI::InterpolationType interpolation = CPI::Flat;
 
-    Rate fixedRate = 0.1;
-    Real baseCPI = 206.1;
-    DayCounter fixedDayCount = Actual365Fixed();
-    BusinessDayConvention fixedPaymentConvention = ModifiedFollowing;
-    ext::shared_ptr<ZeroInflationIndex> fixedIndex = common.ii;
-    Period contractObservationLag = common.contractObservationLag;
-    CPI::InterpolationType observationInterpolation =
-        common.contractObservationInterpolation;
+    std::vector<Date> oneDate = {endDate};
+    Schedule schOneDate(oneDate, cal, paymentConvention);
 
-    Date startDate(2, October, 2007);
-    Date endDate(2, October, 2052);
-    Schedule floatSchedule =
-        MakeSchedule().from(startDate).to(endDate)
-            .withTenor(Period(6, Months))
-            .withCalendar(UnitedKingdom())
-            .withConvention(floatPaymentConvention)
-            .backwards();
-    Schedule fixedSchedule =
-        MakeSchedule().from(startDate).to(endDate)
-            .withTenor(Period(6, Months))
-            .withCalendar(UnitedKingdom())
-            .withConvention(Unadjusted)
-            .backwards();
+    Real baseCPI = CPI::laggedFixing(common.ii, startDate, observationLag, interpolation);
+    ext::shared_ptr<IborIndex> dummyFloatIndex;
 
-    CPISwap swap(type, nominal, subtractInflationNominal, spread,
-                 floatDayCount, floatSchedule, floatPaymentConvention,
-                 fixingDays, floatIndex, fixedRate, baseCPI, fixedDayCount,
-                 fixedSchedule, fixedPaymentConvention, contractObservationLag,
-                 fixedIndex, observationInterpolation);
+    CPISwap swap(type, nominal, true, 0.0, dummyDC, schOneDate,
+                 paymentConvention, 0, dummyFloatIndex,
+                 0.1, baseCPI, dummyDC, schOneDate, paymentConvention,
+                 observationLag, common.ii, interpolation);
 
     ext::shared_ptr<DiscountingSwapEngine> dse(
         new DiscountingSwapEngine(common.nominalTS));
@@ -563,43 +544,24 @@ BOOST_AUTO_TEST_CASE(testExpiredSwapFairRateAndSpread) {
 
     Swap::Type type = Swap::Payer;
     Real nominal = 1000000.0;
-    bool subtractInflationNominal = true;
-    Spread spread = 0.0;
-    DayCounter floatDayCount = Actual365Fixed();
-    BusinessDayConvention floatPaymentConvention = ModifiedFollowing;
-    Natural fixingDays = 0;
-    ext::shared_ptr<IborIndex> floatIndex(
-        new GBPLibor(Period(6, Months), common.nominalTS));
+    Date startDate(common.evaluationDate);
+    Date endDate(25, November, 2059);
+    Calendar cal = UnitedKingdom();
+    BusinessDayConvention paymentConvention = ModifiedFollowing;
+    DayCounter dummyDC;
+    Period observationLag(2, Months);
+    CPI::InterpolationType interpolation = CPI::Flat;
 
-    Rate fixedRate = 0.1;
-    Real baseCPI = 206.1;
-    DayCounter fixedDayCount = Actual365Fixed();
-    BusinessDayConvention fixedPaymentConvention = ModifiedFollowing;
-    ext::shared_ptr<ZeroInflationIndex> fixedIndex = common.ii;
-    Period contractObservationLag = common.contractObservationLag;
-    CPI::InterpolationType observationInterpolation =
-        common.contractObservationInterpolation;
+    std::vector<Date> oneDate = {endDate};
+    Schedule schOneDate(oneDate, cal, paymentConvention);
 
-    Date startDate(2, October, 2007);
-    Date endDate(2, October, 2052);
-    Schedule floatSchedule =
-        MakeSchedule().from(startDate).to(endDate)
-            .withTenor(Period(6, Months))
-            .withCalendar(UnitedKingdom())
-            .withConvention(floatPaymentConvention)
-            .backwards();
-    Schedule fixedSchedule =
-        MakeSchedule().from(startDate).to(endDate)
-            .withTenor(Period(6, Months))
-            .withCalendar(UnitedKingdom())
-            .withConvention(Unadjusted)
-            .backwards();
+    Real baseCPI = CPI::laggedFixing(common.ii, startDate, observationLag, interpolation);
+    ext::shared_ptr<IborIndex> dummyFloatIndex;
 
-    CPISwap swap(type, nominal, subtractInflationNominal, spread,
-                 floatDayCount, floatSchedule, floatPaymentConvention,
-                 fixingDays, floatIndex, fixedRate, baseCPI, fixedDayCount,
-                 fixedSchedule, fixedPaymentConvention, contractObservationLag,
-                 fixedIndex, observationInterpolation);
+    CPISwap swap(type, nominal, true, 0.0, dummyDC, schOneDate,
+                 paymentConvention, 0, dummyFloatIndex,
+                 0.1, baseCPI, dummyDC, schOneDate, paymentConvention,
+                 observationLag, common.ii, interpolation);
 
     ext::shared_ptr<DiscountingSwapEngine> dse(
         new DiscountingSwapEngine(common.nominalTS));

@@ -28,6 +28,7 @@
 #include <ql/indexes/inflation/aucpi.hpp>
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
+#include <ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/date.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -1134,6 +1135,13 @@ BOOST_AUTO_TEST_CASE(testZeroBpsYoYInflationSwapFairRateAndSpread) {
     DayCounter dc = Thirty360(Thirty360::BondBasis);
     CPI::InterpolationType interpolation = CPI::Flat;
 
+    std::vector<Date> yoyDates = {evaluationDate, Date(13, August, 2012)};
+    std::vector<Rate> yoyRates = {0.03, 0.03};
+    auto yoyTs = ext::make_shared<InterpolatedYoYInflationCurve<Linear>>(
+        evaluationDate, yoyDates, yoyRates, iir->frequency(), dc);
+    yoyTs->enableExtrapolation();
+    hy.linkTo(yoyTs);
+
     Schedule yoySchedule =
         MakeSchedule().from(nominalTS->referenceDate())
             .to(Date(13, August, 2012))
@@ -1200,6 +1208,13 @@ BOOST_AUTO_TEST_CASE(testExpiredYoYInflationSwapFairRateAndSpread) {
     DayCounter dc = Thirty360(Thirty360::BondBasis);
     CPI::InterpolationType interpolation = CPI::Flat;
     Date maturity(13, August, 2012);
+
+    std::vector<Date> yoyDates = {evaluationDate, maturity};
+    std::vector<Rate> yoyRates = {0.03, 0.03};
+    auto yoyTs = ext::make_shared<InterpolatedYoYInflationCurve<Linear>>(
+        evaluationDate, yoyDates, yoyRates, iir->frequency(), dc);
+    yoyTs->enableExtrapolation();
+    hy.linkTo(yoyTs);
 
     Schedule yoySchedule =
         MakeSchedule().from(nominalTS->referenceDate())
