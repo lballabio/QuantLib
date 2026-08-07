@@ -851,8 +851,30 @@ fixed_opt = ql.ContinuousFixedLookbackOption(
 fixed_opt.set_pricing_engine(process)  # AnalyticContinuousFixedLookbackEngine
 ```
 
-Standalone wrappers (no `OneAssetOption` MI hierarchy). Partial-time lookbacks
-and MC engines are deferred.
+Standalone wrappers (no `OneAssetOption` MI hierarchy).
+
+## Phase-28 partial-time continuous lookbacks
+
+```python
+# Floating: lookback from t=0 to lookback_period_end; lambda_ scales extremum
+partial_float = ql.ContinuousPartialFloatingLookbackOption(
+    90.0, 1.0, lookback_end,
+    ql.FloatingTypePayoff(ql.OptionType.Call),
+    ql.EuropeanExercise(maturity),
+)
+partial_float.set_pricing_engine(process)
+
+# Fixed: lookback starts at lookback_period_start
+partial_fixed = ql.ContinuousPartialFixedLookbackOption(
+    lookback_start,
+    ql.PlainVanillaPayoff(ql.OptionType.Call, 90.0),
+    ql.EuropeanExercise(maturity),
+)
+partial_fixed.set_pricing_engine(process)
+```
+
+Standalone wrappers. The Python kwarg is `lambda_` (avoids the Python keyword).
+MC lookback engines remain deferred.
 
 ## When to stay on SWIG
 

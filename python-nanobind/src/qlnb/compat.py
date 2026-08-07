@@ -330,6 +330,29 @@ def _install_aliases() -> None:
         _ql, "AnalyticContinuousFixedLookbackEngine", None
     )
 
+    ContinuousPartialFloatingLookbackOption = getattr(
+        _ql, "ContinuousPartialFloatingLookbackOption", None
+    )
+    if ContinuousPartialFloatingLookbackOption is not None:
+        ContinuousPartialFloatingLookbackOption.setPricingEngine = (  # type: ignore[attr-defined]
+            ContinuousPartialFloatingLookbackOption.set_pricing_engine
+        )
+
+    ContinuousPartialFixedLookbackOption = getattr(
+        _ql, "ContinuousPartialFixedLookbackOption", None
+    )
+    if ContinuousPartialFixedLookbackOption is not None:
+        ContinuousPartialFixedLookbackOption.setPricingEngine = (  # type: ignore[attr-defined]
+            ContinuousPartialFixedLookbackOption.set_pricing_engine
+        )
+
+    AnalyticContinuousPartialFloatingLookbackEngine = getattr(
+        _ql, "AnalyticContinuousPartialFloatingLookbackEngine", None
+    )
+    AnalyticContinuousPartialFixedLookbackEngine = getattr(
+        _ql, "AnalyticContinuousPartialFixedLookbackEngine", None
+    )
+
     EuropeanExercise = _ql.EuropeanExercise
     EuropeanExercise.lastDate = EuropeanExercise.last_date  # type: ignore[attr-defined]
 
