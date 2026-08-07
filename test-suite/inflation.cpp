@@ -28,6 +28,7 @@
 #include <ql/indexes/inflation/aucpi.hpp>
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
+#include <ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/date.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -1093,6 +1094,152 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
                             );
     }
     // remove circular refernce
+    hy.reset();
+}
+
+BOOST_AUTO_TEST_CASE(testZeroBpsYoYInflationSwapFairRateAndSpread) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing YoY inflation swap fair rate/spread with zero BPS...");
+
+    Calendar calendar = UnitedKingdom();
+    Date evaluationDate(13, August, 2007);
+    evaluationDate = calendar.adjust(evaluationDate);
+    Settings::instance().evaluationDate() = evaluationDate;
+
+    Date from(1, January, 2005);
+    Date to(1, July, 2007);
+    Schedule rpiSchedule =
+        MakeSchedule().from(from).to(to)
+            .withTenor(1 * Months)
+            .withCalendar(UnitedKingdom())
+            .withConvention(ModifiedFollowing);
+    Real fixData[] = {
+        189.9, 189.9, 189.6, 190.5, 191.6, 192.0, 192.2, 192.2, 192.6, 193.1,
+        193.3, 193.6, 194.1, 193.4, 194.2, 195.0, 196.5, 197.7, 198.5, 198.5,
+        199.2, 200.1, 200.4, 201.1, 202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
+        207.3};
+
+    RelinkableHandle<YoYInflationTermStructure> hy;
+    auto rpi = ext::make_shared<UKRPI>();
+    auto iir = ext::make_shared<YoYInflationIndex>(rpi, hy);
+    for (Size i = 0; i < std::size(fixData); i++) {
+        rpi->addFixing(rpiSchedule[i], fixData[i]);
+    }
+
+    ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
+    Handle<YieldTermStructure> hTS(nominalTS);
+    ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
+
+    Period observationLag = Period(2, Months);
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
+    CPI::InterpolationType interpolation = CPI::Flat;
+
+    std::vector<Date> yoyDates = {evaluationDate, Date(13, August, 2012)};
+    std::vector<Rate> yoyRates = {0.03, 0.03};
+    auto yoyTs = ext::make_shared<InterpolatedYoYInflationCurve<Linear>>(
+        evaluationDate, yoyDates, yoyRates, iir->frequency(), dc);
+    yoyTs->enableExtrapolation();
+    hy.linkTo(yoyTs);
+
+    Schedule yoySchedule =
+        MakeSchedule().from(nominalTS->referenceDate())
+            .to(Date(13, August, 2012))
+            .withConvention(Unadjusted)
+            .withCalendar(calendar)
+            .withTenor(1 * Years)
+            .backwards();
+
+    YearOnYearInflationSwap swap(Swap::Payer, 0.0, yoySchedule, 0.03, dc,
+                                 yoySchedule, iir, observationLag,
+                                 interpolation, 0.0, dc, UnitedKingdom());
+
+    swap.setPricingEngine(sppe);
+
+    BOOST_CHECK(!swap.isExpired());
+    BOOST_CHECK_EQUAL(swap.legBPS(0), 0.0);
+    BOOST_CHECK_EQUAL(swap.legBPS(1), 0.0);
+
+    BOOST_CHECK_EXCEPTION(
+        swap.fairRate(), Error,
+        ExpectedErrorMessage("result not available"));
+    BOOST_CHECK_EXCEPTION(
+        swap.fairSpread(), Error,
+        ExpectedErrorMessage("result not available"));
+
+    hy.reset();
+}
+
+BOOST_AUTO_TEST_CASE(testExpiredYoYInflationSwapFairRateAndSpread) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing YoY inflation swap fair rate/spread for expired swap...");
+
+    Calendar calendar = UnitedKingdom();
+    Date evaluationDate(13, August, 2007);
+    evaluationDate = calendar.adjust(evaluationDate);
+    Settings::instance().evaluationDate() = evaluationDate;
+
+    Date from(1, January, 2005);
+    Date to(1, July, 2007);
+    Schedule rpiSchedule =
+        MakeSchedule().from(from).to(to)
+            .withTenor(1 * Months)
+            .withCalendar(UnitedKingdom())
+            .withConvention(ModifiedFollowing);
+    Real fixData[] = {
+        189.9, 189.9, 189.6, 190.5, 191.6, 192.0, 192.2, 192.2, 192.6, 193.1,
+        193.3, 193.6, 194.1, 193.4, 194.2, 195.0, 196.5, 197.7, 198.5, 198.5,
+        199.2, 200.1, 200.4, 201.1, 202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
+        207.3};
+
+    RelinkableHandle<YoYInflationTermStructure> hy;
+    auto rpi = ext::make_shared<UKRPI>();
+    auto iir = ext::make_shared<YoYInflationIndex>(rpi, hy);
+    for (Size i = 0; i < std::size(fixData); i++) {
+        rpi->addFixing(rpiSchedule[i], fixData[i]);
+    }
+
+    ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
+    Handle<YieldTermStructure> hTS(nominalTS);
+    ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
+
+    Period observationLag = Period(2, Months);
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
+    CPI::InterpolationType interpolation = CPI::Flat;
+    Date maturity(13, August, 2012);
+
+    std::vector<Date> yoyDates = {evaluationDate, maturity};
+    std::vector<Rate> yoyRates = {0.03, 0.03};
+    auto yoyTs = ext::make_shared<InterpolatedYoYInflationCurve<Linear>>(
+        evaluationDate, yoyDates, yoyRates, iir->frequency(), dc);
+    yoyTs->enableExtrapolation();
+    hy.linkTo(yoyTs);
+
+    Schedule yoySchedule =
+        MakeSchedule().from(nominalTS->referenceDate())
+            .to(maturity)
+            .withConvention(Unadjusted)
+            .withCalendar(calendar)
+            .withTenor(1 * Years)
+            .backwards();
+
+    YearOnYearInflationSwap swap(Swap::Payer, 1000000.0, yoySchedule, 0.03, dc,
+                                 yoySchedule, iir, observationLag,
+                                 interpolation, 0.0, dc, UnitedKingdom());
+
+    swap.setPricingEngine(sppe);
+
+    Settings::instance().evaluationDate() = maturity + Period(1, Years);
+
+    BOOST_CHECK(swap.isExpired());
+    BOOST_CHECK_EXCEPTION(
+        swap.fairRate(), Error,
+        ExpectedErrorMessage("result not available"));
+    BOOST_CHECK_EXCEPTION(
+        swap.fairSpread(), Error,
+        ExpectedErrorMessage("result not available"));
+
     hy.reset();
 }
 
