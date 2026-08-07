@@ -1934,13 +1934,11 @@ BOOST_AUTO_TEST_CASE(testExCouponAccruedAmountAroundAccrualEndDate) {
                                   Date(), Date(), exCpnDate);
     BOOST_CHECK(coupon->tradingExCoupon(exCpnDate));
     const Rate rateAtEnd = coupon->rate();
-    const DayCounter& dc = coupon->dayCounter();
-    const Date accrualEnd = coupon->accrualEndDate();
     CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(Date(27, March, 2027)),
-                            coupon->nominal() * rateAtEnd * dc.yearFraction(Date(27, March, 2027), accrualEnd),
+                            coupon->nominal() * rateAtEnd * coupon->accruedPeriod(Date(27, March, 2027)),
                             1e-8);
     CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(Date(30, March, 2027)),
-                            coupon->nominal() * rateAtEnd * dc.yearFraction(Date(30, March, 2027), accrualEnd),
+                            coupon->nominal() * rateAtEnd * coupon->accruedPeriod(Date(30, March, 2027)),
                             1e-8);
     CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(Date(31, March, 2027)), 0.0, 1e-12);
     CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(Date(1, April, 2027)), 0.0, 1e-12);
@@ -1969,12 +1967,9 @@ BOOST_AUTO_TEST_CASE(testExCouponAccruedAmountWithSlopedCurve) {
                                   RateAveraging::Compound, Date(2, April, 2027), 100.0, DayCounter(),
                                   Date(), Date(), exCpnDate);
 
-    const Date accrualEnd = coupon->accrualEndDate();
     const Date accrualDate = Date(30, March, 2027);
-    const DayCounter& dc = coupon->dayCounter();
 
     const Rate rateAtEnd = coupon->rate();
-    const Real remainingPeriod = dc.yearFraction(accrualDate, accrualEnd);
 
     const auto pricer =
         ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(coupon->pricer());
@@ -1983,7 +1978,7 @@ BOOST_AUTO_TEST_CASE(testExCouponAccruedAmountWithSlopedCurve) {
 
     BOOST_CHECK(rateAtDate != rateAtEnd);
 
-    const Real expected = coupon->nominal() * rateAtEnd * remainingPeriod;
+    const Real expected = coupon->nominal() * rateAtEnd * coupon->accruedPeriod(accrualDate);
     CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(accrualDate),
                             expected, 1e-8);
 
