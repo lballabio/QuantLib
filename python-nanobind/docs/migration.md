@@ -829,7 +829,7 @@ print(opt.NPV())
 
 Vanilla double-barrier path is unchanged (`set_pricing_engine` →
 `AnalyticDoubleBarrierEngine`). Use the binary engine attach for cash-or-nothing
-payoffs. FD-Heston / MC / lookbacks remain deferred.
+payoffs. FD-Heston / MC remain deferred.
 
 ## Phase-27 continuous lookback options
 
