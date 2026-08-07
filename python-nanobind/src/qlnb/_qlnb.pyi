@@ -341,6 +341,14 @@ class PlainVanillaPayoff:
     def strike(self) -> float: ...
     def option_type(self) -> OptionType: ...
 
+class CashOrNothingPayoff:
+    def __init__(
+        self, type: OptionType, strike: float, cash_payoff: float
+    ) -> None: ...
+    def strike(self) -> float: ...
+    def option_type(self) -> OptionType: ...
+    def cash_payoff(self) -> float: ...
+
 class BlackScholesMertonProcess:
     def __init__(
         self,
@@ -450,6 +458,7 @@ class BarrierOption:
     def set_pricing_engine(self, process: BlackScholesMertonProcess) -> None: ...
 
 class DoubleBarrierOption:
+    @overload
     def __init__(
         self,
         barrier_type: DoubleBarrierType,
@@ -459,11 +468,34 @@ class DoubleBarrierOption:
         payoff: PlainVanillaPayoff,
         exercise: EuropeanExercise,
     ) -> None: ...
+    @overload
+    def __init__(
+        self,
+        barrier_type: DoubleBarrierType,
+        barrier_lo: float,
+        barrier_hi: float,
+        rebate: float,
+        payoff: CashOrNothingPayoff,
+        exercise: EuropeanExercise,
+    ) -> None: ...
+    @overload
+    def __init__(
+        self,
+        barrier_type: DoubleBarrierType,
+        barrier_lo: float,
+        barrier_hi: float,
+        rebate: float,
+        payoff: CashOrNothingPayoff,
+        exercise: AmericanExercise,
+    ) -> None: ...
     def NPV(self) -> float: ...
     def delta(self) -> float: ...
     def gamma(self) -> float: ...
     def vega(self) -> float: ...
     def set_pricing_engine(self, process: BlackScholesMertonProcess) -> None: ...
+    def set_binary_pricing_engine(
+        self, process: BlackScholesMertonProcess
+    ) -> None: ...
 
 class CapFloor:
     def __init__(
@@ -710,6 +742,9 @@ def AnalyticBarrierEngine(
     process: BlackScholesMertonProcess,
 ) -> BlackScholesMertonProcess: ...
 def AnalyticDoubleBarrierEngine(
+    process: BlackScholesMertonProcess,
+) -> BlackScholesMertonProcess: ...
+def AnalyticDoubleBarrierBinaryEngine(
     process: BlackScholesMertonProcess,
 ) -> BlackScholesMertonProcess: ...
 def BlackConstantVol(

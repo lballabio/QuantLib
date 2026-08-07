@@ -20,6 +20,7 @@
 #include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
@@ -174,7 +175,7 @@ void bind_experimental(nb::module_& m) {
         nb::arg("process"),
         "Factory alias: pass the returned process to BarrierOption.set_pricing_engine.");
 
-    // --- Phase 25: double-barrier options (standalone; OneAssetOption MI) ---
+    // --- Phase 25/26: double-barrier options (standalone; OneAssetOption MI)
     nb::enum_<DoubleBarrier::Type>(m, "DoubleBarrierType")
         .value("KnockIn", DoubleBarrier::KnockIn)
         .value("KnockOut", DoubleBarrier::KnockOut)
@@ -205,6 +206,52 @@ void bind_experimental(nb::module_& m) {
             nb::arg("rebate"),
             nb::arg("payoff"),
             nb::arg("exercise"))
+        .def(
+            "__init__",
+            [](DoubleBarrierOption* self,
+               DoubleBarrier::Type barrier_type,
+               Real barrier_lo,
+               Real barrier_hi,
+               Real rebate,
+               const CashOrNothingPayoff& payoff,
+               const EuropeanExercise& exercise) {
+                new (self) DoubleBarrierOption(
+                    barrier_type,
+                    barrier_lo,
+                    barrier_hi,
+                    rebate,
+                    ext::make_shared<CashOrNothingPayoff>(payoff),
+                    ext::make_shared<EuropeanExercise>(exercise));
+            },
+            nb::arg("barrier_type"),
+            nb::arg("barrier_lo"),
+            nb::arg("barrier_hi"),
+            nb::arg("rebate"),
+            nb::arg("payoff"),
+            nb::arg("exercise"))
+        .def(
+            "__init__",
+            [](DoubleBarrierOption* self,
+               DoubleBarrier::Type barrier_type,
+               Real barrier_lo,
+               Real barrier_hi,
+               Real rebate,
+               const CashOrNothingPayoff& payoff,
+               const AmericanExercise& exercise) {
+                new (self) DoubleBarrierOption(
+                    barrier_type,
+                    barrier_lo,
+                    barrier_hi,
+                    rebate,
+                    ext::make_shared<CashOrNothingPayoff>(payoff),
+                    ext::make_shared<AmericanExercise>(exercise));
+            },
+            nb::arg("barrier_type"),
+            nb::arg("barrier_lo"),
+            nb::arg("barrier_hi"),
+            nb::arg("rebate"),
+            nb::arg("payoff"),
+            nb::arg("exercise"))
         .def("NPV", [](DoubleBarrierOption& opt) { return opt.NPV(); })
         .def("delta", [](DoubleBarrierOption& opt) { return opt.delta(); })
         .def("gamma", [](DoubleBarrierOption& opt) { return opt.gamma(); })
@@ -217,7 +264,19 @@ void bind_experimental(nb::module_& m) {
                     ext::make_shared<AnalyticDoubleBarrierEngine>(process));
             },
             nb::arg("process"),
-            "Attach AnalyticDoubleBarrierEngine (Ikeda/Kunitomo).");
+            "Attach AnalyticDoubleBarrierEngine (Ikeda/Kunitomo).")
+        .def(
+            "set_binary_pricing_engine",
+            [](DoubleBarrierOption& opt,
+               const ext::shared_ptr<BlackScholesMertonProcess>& process) {
+                opt.setPricingEngine(
+                    ext::make_shared<AnalyticDoubleBarrierBinaryEngine>(
+                        process));
+            },
+            nb::arg("process"),
+            "Attach AnalyticDoubleBarrierBinaryEngine (Hui / Haug p.180). "
+            "Use European exercise for KnockIn/KnockOut; American for "
+            "KIKO/KOKI.");
 
     m.def(
         "AnalyticDoubleBarrierEngine",
@@ -227,6 +286,15 @@ void bind_experimental(nb::module_& m) {
         nb::arg("process"),
         "Factory alias: pass the returned process to "
         "DoubleBarrierOption.set_pricing_engine.");
+
+    m.def(
+        "AnalyticDoubleBarrierBinaryEngine",
+        [](const ext::shared_ptr<BlackScholesMertonProcess>& process) {
+            return process;
+        },
+        nb::arg("process"),
+        "Factory alias: pass the returned process to "
+        "DoubleBarrierOption.set_binary_pricing_engine.");
 
     // --- Cap / Floor + Black engine (standalone; CapFloor uses MI) ----------
     nb::enum_<CapFloor::Type>(m, "CapFloorType")

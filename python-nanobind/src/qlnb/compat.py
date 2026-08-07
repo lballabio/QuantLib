@@ -292,6 +292,15 @@ def _install_aliases() -> None:
     PlainVanillaPayoff = _ql.PlainVanillaPayoff
     PlainVanillaPayoff.optionType = PlainVanillaPayoff.option_type  # type: ignore[attr-defined]
 
+    CashOrNothingPayoff = getattr(_ql, "CashOrNothingPayoff", None)
+    if CashOrNothingPayoff is not None:
+        CashOrNothingPayoff.optionType = (  # type: ignore[attr-defined]
+            CashOrNothingPayoff.option_type
+        )
+        CashOrNothingPayoff.cashPayoff = (  # type: ignore[attr-defined]
+            CashOrNothingPayoff.cash_payoff
+        )
+
     EuropeanExercise = _ql.EuropeanExercise
     EuropeanExercise.lastDate = EuropeanExercise.last_date  # type: ignore[attr-defined]
 
@@ -307,16 +316,23 @@ def _install_aliases() -> None:
     if BarrierOption is not None:
         BarrierOption.setPricingEngine = BarrierOption.set_pricing_engine  # type: ignore[attr-defined]
 
-    # Phase-25 double-barrier aliases.
+    # Phase-25/26 double-barrier aliases.
     DoubleBarrierType = getattr(_ql, "DoubleBarrierType", None)
     DoubleBarrierOption = getattr(_ql, "DoubleBarrierOption", None)
     AnalyticDoubleBarrierEngine = getattr(
         _ql, "AnalyticDoubleBarrierEngine", None
     )
+    AnalyticDoubleBarrierBinaryEngine = getattr(
+        _ql, "AnalyticDoubleBarrierBinaryEngine", None
+    )
     if DoubleBarrierOption is not None:
         DoubleBarrierOption.setPricingEngine = (  # type: ignore[attr-defined]
             DoubleBarrierOption.set_pricing_engine
         )
+        if hasattr(DoubleBarrierOption, "set_binary_pricing_engine"):
+            DoubleBarrierOption.setBinaryPricingEngine = (  # type: ignore[attr-defined]
+                DoubleBarrierOption.set_binary_pricing_engine
+            )
 
     CapFloor = getattr(_ql, "CapFloor", None)
     if CapFloor is not None:
