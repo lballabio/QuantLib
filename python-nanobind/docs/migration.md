@@ -798,6 +798,22 @@ Currency subclasses are sliced to value `Currency` (no MI hierarchy).
 `FxForward` is a standalone wrapper; attach `DiscountingFxForwardEngine` via
 `set_pricing_engine`. Spot FX is target per unit of source.
 
+## Phase-25 double-barrier options
+
+```python
+opt = ql.DoubleBarrierOption(
+    ql.DoubleBarrierType.KnockOut,
+    50.0, 150.0, 0.0,
+    ql.PlainVanillaPayoff(ql.OptionType.Call, 100.0),
+    ql.EuropeanExercise(maturity),
+)
+opt.set_pricing_engine(process)  # AnalyticDoubleBarrierEngine
+print(opt.NPV())
+```
+
+Standalone wrapper (no `OneAssetOption` MI hierarchy). Analytic engine covers
+KnockIn/KnockOut European vanilla payoffs; binary / FD-Heston / MC deferred.
+
 ## When to stay on SWIG
 
 Use the official `QuantLib` PyPI wheel if you need broad instrument coverage,

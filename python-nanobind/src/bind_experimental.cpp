@@ -12,12 +12,15 @@
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/instruments/barriertype.hpp>
 #include <ql/instruments/capfloor.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
+#include <ql/instruments/doublebarriertype.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/option.hpp>
 #include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
@@ -170,6 +173,60 @@ void bind_experimental(nb::module_& m) {
         },
         nb::arg("process"),
         "Factory alias: pass the returned process to BarrierOption.set_pricing_engine.");
+
+    // --- Phase 25: double-barrier options (standalone; OneAssetOption MI) ---
+    nb::enum_<DoubleBarrier::Type>(m, "DoubleBarrierType")
+        .value("KnockIn", DoubleBarrier::KnockIn)
+        .value("KnockOut", DoubleBarrier::KnockOut)
+        .value("KIKO", DoubleBarrier::KIKO)
+        .value("KOKI", DoubleBarrier::KOKI);
+
+    nb::class_<DoubleBarrierOption>(m, "DoubleBarrierOption")
+        .def(
+            "__init__",
+            [](DoubleBarrierOption* self,
+               DoubleBarrier::Type barrier_type,
+               Real barrier_lo,
+               Real barrier_hi,
+               Real rebate,
+               const PlainVanillaPayoff& payoff,
+               const EuropeanExercise& exercise) {
+                new (self) DoubleBarrierOption(
+                    barrier_type,
+                    barrier_lo,
+                    barrier_hi,
+                    rebate,
+                    ext::make_shared<PlainVanillaPayoff>(payoff),
+                    ext::make_shared<EuropeanExercise>(exercise));
+            },
+            nb::arg("barrier_type"),
+            nb::arg("barrier_lo"),
+            nb::arg("barrier_hi"),
+            nb::arg("rebate"),
+            nb::arg("payoff"),
+            nb::arg("exercise"))
+        .def("NPV", [](DoubleBarrierOption& opt) { return opt.NPV(); })
+        .def("delta", [](DoubleBarrierOption& opt) { return opt.delta(); })
+        .def("gamma", [](DoubleBarrierOption& opt) { return opt.gamma(); })
+        .def("vega", [](DoubleBarrierOption& opt) { return opt.vega(); })
+        .def(
+            "set_pricing_engine",
+            [](DoubleBarrierOption& opt,
+               const ext::shared_ptr<BlackScholesMertonProcess>& process) {
+                opt.setPricingEngine(
+                    ext::make_shared<AnalyticDoubleBarrierEngine>(process));
+            },
+            nb::arg("process"),
+            "Attach AnalyticDoubleBarrierEngine (Ikeda/Kunitomo).");
+
+    m.def(
+        "AnalyticDoubleBarrierEngine",
+        [](const ext::shared_ptr<BlackScholesMertonProcess>& process) {
+            return process;
+        },
+        nb::arg("process"),
+        "Factory alias: pass the returned process to "
+        "DoubleBarrierOption.set_pricing_engine.");
 
     // --- Cap / Floor + Black engine (standalone; CapFloor uses MI) ----------
     nb::enum_<CapFloor::Type>(m, "CapFloorType")

@@ -67,6 +67,12 @@ class BarrierType:
     DownOut: BarrierType
     UpOut: BarrierType
 
+class DoubleBarrierType:
+    KnockIn: DoubleBarrierType
+    KnockOut: DoubleBarrierType
+    KIKO: DoubleBarrierType
+    KOKI: DoubleBarrierType
+
 class AverageType:
     Arithmetic: AverageType
     Geometric: AverageType
@@ -443,6 +449,22 @@ class BarrierOption:
     def vega(self) -> float: ...
     def set_pricing_engine(self, process: BlackScholesMertonProcess) -> None: ...
 
+class DoubleBarrierOption:
+    def __init__(
+        self,
+        barrier_type: DoubleBarrierType,
+        barrier_lo: float,
+        barrier_hi: float,
+        rebate: float,
+        payoff: PlainVanillaPayoff,
+        exercise: EuropeanExercise,
+    ) -> None: ...
+    def NPV(self) -> float: ...
+    def delta(self) -> float: ...
+    def gamma(self) -> float: ...
+    def vega(self) -> float: ...
+    def set_pricing_engine(self, process: BlackScholesMertonProcess) -> None: ...
+
 class CapFloor:
     def __init__(
         self,
@@ -685,6 +707,9 @@ def BaroneAdesiWhaleyEngine(
     process: BlackScholesMertonProcess,
 ) -> BlackScholesMertonProcess: ...
 def AnalyticBarrierEngine(
+    process: BlackScholesMertonProcess,
+) -> BlackScholesMertonProcess: ...
+def AnalyticDoubleBarrierEngine(
     process: BlackScholesMertonProcess,
 ) -> BlackScholesMertonProcess: ...
 def BlackConstantVol(

@@ -1,4 +1,4 @@
-"""Nanobind bindings for QuantLib (phase 24)."""
+"""Nanobind bindings for QuantLib (phase 25)."""
 
 from qlnb._qlnb import *  # noqa: F403
 from qlnb._qlnb import __version__ as __version__

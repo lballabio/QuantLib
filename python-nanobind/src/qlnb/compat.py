@@ -307,6 +307,17 @@ def _install_aliases() -> None:
     if BarrierOption is not None:
         BarrierOption.setPricingEngine = BarrierOption.set_pricing_engine  # type: ignore[attr-defined]
 
+    # Phase-25 double-barrier aliases.
+    DoubleBarrierType = getattr(_ql, "DoubleBarrierType", None)
+    DoubleBarrierOption = getattr(_ql, "DoubleBarrierOption", None)
+    AnalyticDoubleBarrierEngine = getattr(
+        _ql, "AnalyticDoubleBarrierEngine", None
+    )
+    if DoubleBarrierOption is not None:
+        DoubleBarrierOption.setPricingEngine = (  # type: ignore[attr-defined]
+            DoubleBarrierOption.set_pricing_engine
+        )
+
     CapFloor = getattr(_ql, "CapFloor", None)
     if CapFloor is not None:
         CapFloor.setPricingEngine = CapFloor.set_pricing_engine  # type: ignore[attr-defined]
