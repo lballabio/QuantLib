@@ -301,6 +301,35 @@ def _install_aliases() -> None:
             CashOrNothingPayoff.cash_payoff
         )
 
+    FloatingTypePayoff = getattr(_ql, "FloatingTypePayoff", None)
+    if FloatingTypePayoff is not None:
+        FloatingTypePayoff.optionType = (  # type: ignore[attr-defined]
+            FloatingTypePayoff.option_type
+        )
+
+    ContinuousFloatingLookbackOption = getattr(
+        _ql, "ContinuousFloatingLookbackOption", None
+    )
+    if ContinuousFloatingLookbackOption is not None:
+        ContinuousFloatingLookbackOption.setPricingEngine = (  # type: ignore[attr-defined]
+            ContinuousFloatingLookbackOption.set_pricing_engine
+        )
+
+    ContinuousFixedLookbackOption = getattr(
+        _ql, "ContinuousFixedLookbackOption", None
+    )
+    if ContinuousFixedLookbackOption is not None:
+        ContinuousFixedLookbackOption.setPricingEngine = (  # type: ignore[attr-defined]
+            ContinuousFixedLookbackOption.set_pricing_engine
+        )
+
+    AnalyticContinuousFloatingLookbackEngine = getattr(
+        _ql, "AnalyticContinuousFloatingLookbackEngine", None
+    )
+    AnalyticContinuousFixedLookbackEngine = getattr(
+        _ql, "AnalyticContinuousFixedLookbackEngine", None
+    )
+
     EuropeanExercise = _ql.EuropeanExercise
     EuropeanExercise.lastDate = EuropeanExercise.last_date  # type: ignore[attr-defined]
 
