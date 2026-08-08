@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2010 Ferdinando Ametrano
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,10 +19,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/indexes/iborindex.hpp>
-#include <ql/instruments/makecapfloor.hpp>
+#include <ql/instruments/capfloor.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
@@ -41,7 +43,8 @@ namespace QuantLib {
                         Handle<YieldTermStructure>(),
                         optionletStripper1->volatilityType(),
                         optionletStripper1->displacement(),
-                        optionletStripper1->optionletFrequency()),
+                        optionletStripper1->optionletFrequency(),
+                        optionletStripper1->paymentLag()),
       stripper1_(optionletStripper1), atmCapFloorTermVolCurve_(atmCapFloorTermVolCurve),
       dc_(stripper1_->termVolSurface()->dayCounter()),
       nOptionExpiries_(atmCapFloorTermVolCurve->optionTenors().size()),
@@ -72,65 +75,132 @@ namespace QuantLib {
                                     atmCapFloorTermVolCurve_->optionTenors();
         const std::vector<Time>& optionExpiriesTimes =
                                     atmCapFloorTermVolCurve_->optionTimes();
+        std::vector<std::vector<Size>> capOptionletIndices(nOptionExpiries_);
 
         for (Size j=0; j<nOptionExpiries_; ++j) {
             Volatility atmOptionVol = atmCapFloorTermVolCurve_->volatility(
                 optionExpiriesTimes[j], 33.3333); // dummy strike
-            auto engine =
-                ext::make_shared<BlackCapFloorEngine>(
-                    iborIndex_->forwardingTermStructure(), atmOptionVol, dc_);
-            caps_[j] = MakeCapFloor(CapFloor::Cap,
-                                    optionExpiriesTenors[j],
-                                    iborIndex_,
-                                    Null<Rate>(),
-                                    0*Days).withPricingEngine(engine);
-            atmCapFloorStrikes_[j] =
-                caps_[j]->atmRate(**iborIndex_->forwardingTermStructure());
+            Handle<Quote> atmOptionVolHandle(
+                ext::make_shared<SimpleQuote>(atmOptionVol));
+            auto engine = makeCapFloorPricingEngine(
+                iborIndex_->forwardingTermStructure(), atmOptionVolHandle);
+
+            Leg leg = makeCapFloorLeg(optionExpiriesTenors[j]);
+            if (isOvernightIndex()) {
+                for (const auto& cashflow : leg) {
+                    auto coupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(cashflow);
+                    QL_REQUIRE(coupon, "non-floating-rate coupon in cap/floor leg");
+                    auto optionlet = std::find(
+                        optionletDates_.begin(), optionletDates_.end(), coupon->fixingDate());
+                    QL_REQUIRE(optionlet != optionletDates_.end(),
+                               "ATM cap/floor fixing date " << coupon->fixingDate()
+                                                             << " is not represented in the source "
+                                                                "optionlet surface");
+                    capOptionletIndices[j].push_back(optionlet - optionletDates_.begin());
+                }
+            } else {
+                // Historical rule: the adjustment covers the optionlets up to
+                // the cap's leg size, inclusive.
+                for (Size i = 0; i < optionletVolatilities_.size(); ++i)
+                    if (i <= leg.size())
+                        capOptionletIndices[j].push_back(i);
+            }
+            atmCapFloorStrikes_[j] = CashFlows::atmRate(
+                leg, **iborIndex_->forwardingTermStructure(), false,
+                iborIndex_->forwardingTermStructure()->referenceDate());
+            caps_[j] = ext::make_shared<CapFloor>(
+                CapFloor::Cap, leg, std::vector<Rate>(1, atmCapFloorStrikes_[j]));
+            caps_[j]->setPricingEngine(engine);
             atmCapFloorPrices_[j] = caps_[j]->NPV();
         }
 
-        spreadsVolImplied_ = spreadsVolImplied();
-
-        StrippedOptionletAdapter adapter(stripper1_);
-        adapter.enableExtrapolation();
+        Handle<OptionletVolatilityStructure> adapter(
+            ext::make_shared<StrippedOptionletAdapter>(stripper1_));
+        adapter->enableExtrapolation();
+        spreadsVolImplied_ = spreadsVolImplied(adapter);
 
         Volatility unadjustedVol, adjustedVol;
         for (Size j=0; j<nOptionExpiries_; ++j) {
-            for (Size i=0; i<optionletVolatilities_.size(); ++i) {
-                if (i<=caps_[j]->floatingLeg().size()) {
-                    unadjustedVol = adapter.volatility(optionletTimes_[i],
-                                                       atmCapFloorStrikes_[j]);
-                    adjustedVol = unadjustedVol + spreadsVolImplied_[j];
+            for (Size i : capOptionletIndices[j]) {
+                unadjustedVol = adapter->volatility(optionletTimes_[i],
+                                                    atmCapFloorStrikes_[j]);
+                adjustedVol = unadjustedVol + spreadsVolImplied_[j];
 
-                    // insert adjusted volatility
-                    auto previous =
-                        std::lower_bound(optionletStrikes_[i].begin(),
-                                         optionletStrikes_[i].end(),
-                                         atmCapFloorStrikes_[j]);
-                    Size insertIndex = previous - optionletStrikes_[i].begin();
+                // insert adjusted volatility
+                auto previous =
+                    std::lower_bound(optionletStrikes_[i].begin(),
+                                     optionletStrikes_[i].end(),
+                                     atmCapFloorStrikes_[j]);
+                Size insertIndex = previous - optionletStrikes_[i].begin();
 
-                    optionletStrikes_[i].insert(
-                                optionletStrikes_[i].begin() + insertIndex,
-                                atmCapFloorStrikes_[j]);
-                    optionletVolatilities_[i].insert(
-                                optionletVolatilities_[i].begin() + insertIndex,
-                                adjustedVol);
-                }
+                optionletStrikes_[i].insert(
+                            optionletStrikes_[i].begin() + insertIndex,
+                            atmCapFloorStrikes_[j]);
+                optionletVolatilities_[i].insert(
+                            optionletVolatilities_[i].begin() + insertIndex,
+                            adjustedVol);
             }
         }
     }
 
-    std::vector<Volatility> OptionletStripper2::spreadsVolImplied() const {
+    std::vector<Volatility> OptionletStripper2::spreadsVolImplied(
+        const Handle<OptionletVolatilityStructure>& baseVolatility) const {
 
         Brent solver;
         std::vector<Volatility> result(nOptionExpiries_);
-        Volatility guess = 0.0001, minSpread = -0.1, maxSpread = 0.1;
+        const Volatility maxSpread = 0.1;
         for (Size j=0; j<nOptionExpiries_; ++j) {
-            ObjectiveFunction f(stripper1_, caps_[j], atmCapFloorPrices_[j]);
+            Volatility minBaseVol = QL_MAX_REAL;
+            for (const auto& cashflow : caps_[j]->floatingLeg()) {
+                auto coupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(cashflow);
+                QL_REQUIRE(coupon, "non-floating-rate coupon in cap/floor leg");
+                minBaseVol = std::min(
+                    minBaseVol,
+                    baseVolatility->volatility(
+                        coupon->fixingDate(), atmCapFloorStrikes_[j], true));
+            }
+            QL_REQUIRE(minBaseVol != QL_MAX_REAL,
+                       "empty cap/floor leg for option expiry "
+                           << atmCapFloorTermVolCurve_->optionTenors()[j]);
+            QL_REQUIRE(minBaseVol >= 0.0,
+                       "negative optionlet volatility at ATM strike "
+                           << atmCapFloorStrikes_[j]);
+
+            auto spreadQuote = ext::make_shared<SimpleQuote>(-1.0);
+            Handle<OptionletVolatilityStructure> spreadedVolatility(
+                ext::make_shared<SpreadedOptionletVolatility>(
+                    baseVolatility, Handle<Quote>(spreadQuote)));
+            caps_[j]->setPricingEngine(makeCapFloorPricingEngine(
+                iborIndex_->forwardingTermStructure(), spreadedVolatility));
+
+            ObjectiveFunction f(spreadQuote, caps_[j], atmCapFloorPrices_[j]);
             solver.setMaxEvaluations(maxEvaluations_);
-            Volatility root = solver.solve(f, accuracy_, guess,
-                                           minSpread, maxSpread);
-            result[j] = root;
+            Real valueAtZero = f(0.0);
+            if (close(valueAtZero, 0.0)) {
+                result[j] = 0.0;
+            } else if (valueAtZero > 0.0) {
+                QL_REQUIRE(minBaseVol > 0.0,
+                           "ATM cap/floor price for option expiry "
+                               << atmCapFloorTermVolCurve_->optionTenors()[j]
+                               << " is below the minimum attainable price");
+                Volatility minSpread = -minBaseVol;
+                Real valueAtMinSpread = f(minSpread);
+                QL_REQUIRE(valueAtMinSpread <= 0.0,
+                           "ATM cap/floor price for option expiry "
+                               << atmCapFloorTermVolCurve_->optionTenors()[j]
+                               << " is below the minimum attainable price");
+                result[j] = solver.solve(
+                    f, accuracy_, 0.5 * minSpread, minSpread, 0.0);
+            } else {
+                Real valueAtMaxSpread = f(maxSpread);
+                QL_REQUIRE(valueAtMaxSpread >= 0.0,
+                           "ATM cap/floor price for option expiry "
+                               << atmCapFloorTermVolCurve_->optionTenors()[j]
+                               << " requires a volatility spread greater than "
+                               << maxSpread);
+                result[j] = solver.solve(
+                    f, accuracy_, 0.5 * maxSpread, 0.0, maxSpread);
+            }
         }
         return result;
     }
@@ -155,29 +225,11 @@ namespace QuantLib {
 //==========================================================================//
 
     OptionletStripper2::ObjectiveFunction::ObjectiveFunction(
-        const ext::shared_ptr<OptionletStripper1>& optionletStripper1,
+        ext::shared_ptr<SimpleQuote> spreadQuote,
         ext::shared_ptr<CapFloor> cap,
         Real targetValue)
-    : cap_(std::move(cap)), targetValue_(targetValue) {
-        ext::shared_ptr<OptionletVolatilityStructure> adapter =
-            ext::make_shared<StrippedOptionletAdapter>(optionletStripper1);
-        adapter->enableExtrapolation();
-
-        // set an implausible value, so that calculation is forced
-        // at first operator()(Volatility x) call
-        spreadQuote_ = ext::make_shared<SimpleQuote>(-1.0);
-
-        ext::shared_ptr<OptionletVolatilityStructure> spreadedAdapter =
-            ext::make_shared<SpreadedOptionletVolatility>(
-                Handle<OptionletVolatilityStructure>(adapter), Handle<Quote>(spreadQuote_));
-
-        auto engine =
-            ext::make_shared<BlackCapFloorEngine>(
-                optionletStripper1->iborIndex()->forwardingTermStructure(),
-                Handle<OptionletVolatilityStructure>(spreadedAdapter));
-
-        cap_->setPricingEngine(engine);
-    }
+    : spreadQuote_(std::move(spreadQuote)), cap_(std::move(cap)),
+      targetValue_(targetValue) {}
 
     Real OptionletStripper2::ObjectiveFunction::operator()(Volatility s) const
     {

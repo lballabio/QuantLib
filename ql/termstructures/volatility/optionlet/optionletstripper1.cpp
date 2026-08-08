@@ -7,6 +7,7 @@
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2015 Michael von den Driesch
  Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,10 +24,8 @@
 */
 
 #include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
-#include <ql/instruments/makecapfloor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengine.hpp>
-#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -44,8 +43,10 @@ namespace QuantLib {
         const VolatilityType type,
         const Real displacement,
         bool dontThrow,
-        std::optional<Period> optionletFrequency)
-    : OptionletStripper(termVolSurface, index, discount, type, displacement, optionletFrequency),
+        std::optional<Period> optionletFrequency,
+        Natural paymentLag)
+    : OptionletStripper(termVolSurface, index, discount, type, displacement,
+                        optionletFrequency, paymentLag),
       floatingSwitchStrike_(switchStrike == Null<Rate>()), switchStrike_(switchStrike),
       accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow) {
 
@@ -63,16 +64,35 @@ namespace QuantLib {
         // update dates
         const Date& referenceDate = termVolSurface_->referenceDate();
         const DayCounter& dc = termVolSurface_->dayCounter();
+        Leg fullOvernightLeg;
+        if (isOvernightIndex())
+            fullOvernightLeg = makeCapFloorLeg(capFloorLengths_.back());
+        auto makeCapFloor = [&](CapFloor::Type capFloorType,
+                                Size optionletIndex,
+                                Rate strike,
+                                const ext::shared_ptr<PricingEngine>& engine) {
+            Leg leg;
+            if (isOvernightIndex()) {
+                QL_REQUIRE(optionletIndex < fullOvernightLeg.size(),
+                           "optionlet index out of range");
+                leg = Leg(fullOvernightLeg.begin(),
+                          fullOvernightLeg.begin() + optionletIndex + 1);
+            } else {
+                leg = makeCapFloorLeg(capFloorLengths_[optionletIndex]);
+            }
+            auto capFloor = ext::make_shared<CapFloor>(capFloorType, leg, std::vector<Rate>(1, strike));
+            capFloor->setPricingEngine(engine);
+            return capFloor;
+        };
+
         auto dummy =
             ext::make_shared<BlackCapFloorEngine>( // discounting does not matter here
                 iborIndex_->forwardingTermStructure(), 0.20, dc);
         for (Size i=0; i<nOptionletTenors_; ++i) {
-            CapFloor temp = MakeCapFloor(CapFloor::Cap,
-                                         capFloorLengths_[i],
-                                         iborIndex_,
-                                         0.04, // dummy strike
-                                         0*Days)
-                .withPricingEngine(dummy);
+            CapFloor temp = *makeCapFloor(CapFloor::Cap,
+                                          i,
+                                          0.04, // dummy strike
+                                          dummy);
             ext::shared_ptr<FloatingRateCoupon> lFRC =
                                                 temp.lastFloatingRateCoupon();
             optionletDates_[i] = lFRC->fixingDate();
@@ -80,7 +100,7 @@ namespace QuantLib {
             optionletAccrualPeriods_[i] = lFRC->accrualPeriod();
             optionletTimes_[i] = dc.yearFraction(referenceDate,
                                                  optionletDates_[i]);
-            atmOptionletRate_[i] = lFRC->indexFixing();
+            atmOptionletRate_[i] = isOvernightIndex() ? lFRC->adjustedFixing() : lFRC->indexFixing();
         }
 
         if (floatingSwitchStrike_) {
@@ -98,22 +118,10 @@ namespace QuantLib {
 
         const std::vector<Rate>& strikes = termVolSurface_->strikes();
 
-        ext::shared_ptr<PricingEngine> capFloorEngine;
         auto volQuote = ext::make_shared<SimpleQuote>();
-
-        if (volatilityType_ == ShiftedLognormal) {
-            capFloorEngine = ext::make_shared<BlackCapFloorEngine>(
-                        
-                            discountCurve, Handle<Quote>(volQuote),
-                            dc, displacement_);
-        } else if (volatilityType_ == Normal) {
-            capFloorEngine = ext::make_shared<BachelierCapFloorEngine>(
-                        
-                            discountCurve, Handle<Quote>(volQuote),
-                            dc);
-        } else {
-            QL_FAIL("unknown volatility type: " << volatilityType_);
-        }
+        Handle<Quote> volHandle(volQuote);
+        auto capFloorEngine = makeCapFloorPricingEngine(
+            discountCurve, volHandle);
 
         for (Size j=0; j<nStrikes_; ++j) {
             // using out-of-the-money options
@@ -129,9 +137,7 @@ namespace QuantLib {
                     capFloorLengths_[i], strikes[j], true);
                 volQuote->setValue(capFloorVols_[i][j]);
                 ext::shared_ptr<CapFloor> capFloor =
-                    MakeCapFloor(capFloorType, capFloorLengths_[i],
-                                 iborIndex_, strikes[j], -0 * Days)
-                        .withPricingEngine(capFloorEngine);
+                    makeCapFloor(capFloorType, i, strikes[j], capFloorEngine);
                 capFloorPrices_[i][j] = capFloor->NPV();
                 optionletPrices_[i][j] = capFloorPrices_[i][j] -
                                                         previousCapFloorPrice;
