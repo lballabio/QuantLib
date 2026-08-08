@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2013, 2015 Peter Caspers
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,6 +19,7 @@
 */
 
 #include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/payoff.hpp>
 #include <cmath>
@@ -48,6 +50,33 @@ namespace QuantLib {
         return (zerobond(valueDate, referenceDate, y, yts) -
                 zerobond(endDate, referenceDate, y, yts)) /
                (dcf * zerobond(endDate, referenceDate, y, yts));
+}
+
+Real Gaussian1dModel::compoundedRate(
+    const OvernightIndexedCoupon& coupon,
+    const Date& referenceDate,
+    const Real y,
+    const Handle<YieldTermStructure>& yts) const {
+
+    calculate();
+
+    const bool observationShift =
+        coupon.applyObservationShift() && coupon.fixingDays() > 0;
+    const auto& rateDates =
+        observationShift ? coupon.valueDates() : coupon.interestDates();
+    const Date& rateStart = rateDates.front();
+    const Date& rateEnd = rateDates.back();
+    const Time rateAccrualTime =
+        coupon.index()->dayCounter().yearFraction(rateStart, rateEnd);
+    const Handle<YieldTermStructure>& projectionCurve =
+        yts.empty() ? termStructure() : yts;
+    const Real compounding =
+        rateStart < referenceDate
+            ? projectionCurve->discount(rateStart, true) /
+                  projectionCurve->discount(referenceDate, true)
+            : zerobond(rateStart, referenceDate, y, yts);
+    return (compounding / zerobond(rateEnd, referenceDate, y, yts) - 1.0) /
+           rateAccrualTime;
 }
 
 Real Gaussian1dModel::swapRate(const Date& fixing,

@@ -68,8 +68,8 @@ namespace QuantLib {
         Period fixedLegTenor() const { return fixedLegTenor_; }
         BusinessDayConvention fixedLegConvention() const;
         ext::shared_ptr<IborIndex> iborIndex() const { return iborIndex_; }
-        Handle<YieldTermStructure> forwardingTermStructure() const;
-        Handle<YieldTermStructure> discountingTermStructure() const;
+        const Handle<YieldTermStructure>& forwardingTermStructure() const;
+        const Handle<YieldTermStructure>& discountingTermStructure() const;
         bool exogenousDiscount() const;
         /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.

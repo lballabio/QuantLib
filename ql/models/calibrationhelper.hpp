@@ -64,7 +64,7 @@ namespace QuantLib {
         }
 
         //! returns the volatility Handle
-        Handle<Quote> volatility() const { return volatility_; }
+        const Handle<Quote>& volatility() const { return volatility_; }
 
         //! returns the volatility type
         VolatilityType volatilityType() const { return volatilityType_; }
