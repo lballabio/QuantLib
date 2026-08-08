@@ -411,14 +411,16 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& collateralCurve,
         bool collateralOnFixedLeg,
         Integer paymentLag,
-        std::optional<bool> useIndexedCoupons)
+        std::optional<bool> useIndexedCoupons,
+        std::optional<BusinessDayConvention> floatingLegConvention)
     : CrossCurrencySwapRateHelperBase(fixedRate, tenor, fixingDays, calendar, convention, endOfMonth,
                                       collateralCurve, paymentLag),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(std::move(fixedDayCount)),
       floatIndex_(floatIndex),
       collateralOnFixedLeg_(collateralOnFixedLeg),
-      useIndexedCoupons_(useIndexedCoupons) {
+      useIndexedCoupons_(useIndexedCoupons),
+      floatingLegConvention_(floatingLegConvention) {
 
         QL_REQUIRE(floatIndex_, "floating index required");
         registerWith(floatIndex_);
@@ -438,10 +440,12 @@ namespace QuantLib {
         }
 
         Real nominal = 1.0;
+        BusinessDayConvention floatingConvention =
+            floatingLegConvention_.value_or(floatIndex_->businessDayConvention());
         Schedule fixedSch = legSchedule(evaluationDate_, tenor_, Period(fixedFrequency_), fixingDays_, calendar_,
                                        convention_, endOfMonth_);
-        Schedule floatSch = legSchedule(evaluationDate_, tenor_, floatFreqPeriod, fixingDays_, floatIndex_->fixingCalendar(),
-                                    floatIndex_->businessDayConvention(), endOfMonth_);
+        Schedule floatSch = legSchedule(evaluationDate_, tenor_, floatFreqPeriod, fixingDays_,
+                                        floatIndex_->fixingCalendar(), floatingConvention, endOfMonth_);
 
         xccySwap_ = ext::make_shared<ConstNotionalCrossCurrencyFixedVsFloatingSwap>(
             Swap::Payer,
@@ -458,7 +462,7 @@ namespace QuantLib {
             floatSch,
             floatIndex_,
             Spread(0.0),
-            floatIndex_->businessDayConvention(),
+            floatingConvention,
             paymentLag_,
             calendar_,
             false, false, Null<Natural>(), false, 0,

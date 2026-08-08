@@ -42,6 +42,7 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/currencies/all.hpp>
 
@@ -894,6 +895,36 @@ BOOST_AUTO_TEST_CASE(testConstNotionalCrossCurrencySwapRateHelperRelinking) {
     Real newQuote = h.impliedQuote();
 
     BOOST_CHECK(oldQuote != newQuote);
+}
+
+BOOST_AUTO_TEST_CASE(testConstNotionalHelperFloatingLegConvention) {
+    BOOST_TEST_MESSAGE("Testing the floating-leg convention of fixed-vs-floating helpers...");
+
+    SavedSettings backup;
+    Date today(29, July, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    Calendar calendar = WeekendsOnly();
+    Handle<YieldTermStructure> collateralCurve(
+        ext::make_shared<FlatForward>(today, 0.04, Actual360()));
+    auto overnightIndex = ext::make_shared<OvernightIndex>(
+        "ON", 2, USDCurrency(), calendar, Actual360(), collateralCurve);
+
+    ConstNotionalCrossCurrencySwapRateHelper defaultConventionHelper(
+        makeQuoteHandle(0.0), 1 * Years, 2, calendar, ModifiedFollowing, false,
+        Semiannual, Actual365Fixed(), overnightIndex, collateralCurve, false);
+    ConstNotionalCrossCurrencySwapRateHelper overriddenConventionHelper(
+        makeQuoteHandle(0.0), 1 * Years, 2, calendar, ModifiedFollowing, false,
+        Semiannual, Actual365Fixed(), overnightIndex, collateralCurve, false, 0,
+        std::nullopt, ModifiedFollowing);
+
+    Date expectedMaturity(30, July, 2027);
+    BOOST_CHECK_EQUAL(defaultConventionHelper.maturityDate(), Date(2, August, 2027));
+    BOOST_CHECK_EQUAL(defaultConventionHelper.swap()->floatPaymentBdc(), Following);
+    BOOST_CHECK_EQUAL(overriddenConventionHelper.maturityDate(), expectedMaturity);
+    BOOST_CHECK_EQUAL(overriddenConventionHelper.swap()->fixedSchedule().endDate(), expectedMaturity);
+    BOOST_CHECK_EQUAL(overriddenConventionHelper.swap()->floatSchedule().endDate(), expectedMaturity);
+    BOOST_CHECK_EQUAL(overriddenConventionHelper.swap()->floatPaymentBdc(), ModifiedFollowing);
 }
 
 BOOST_AUTO_TEST_CASE(testPaymentLagDoesNotDelayNotionalExchanges) {

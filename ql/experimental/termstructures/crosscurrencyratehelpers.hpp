@@ -275,8 +275,13 @@ namespace QuantLib {
     The paymentLag parameter, in days, applies to the coupons of both legs;
     notional exchanges remain on the effective and maturity dates.
 
+    The convention parameter applies to the fixed-leg schedule and payments.
+
     If provided, the useIndexedCoupons parameter overrides the global
     IborCoupon setting for the floating leg.
+
+    If provided, the floatingLegConvention parameter applies to the floating-leg
+    schedule and payments.  Otherwise, the convention of the floating index is used.
     */
     class ConstNotionalCrossCurrencySwapRateHelper : public CrossCurrencySwapRateHelperBase {
       public:
@@ -293,7 +298,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& collateralCurve,
             bool collateralOnFixedLeg,
             Integer paymentLag = 0,
-            std::optional<bool> useIndexedCoupons = std::nullopt);
+            std::optional<bool> useIndexedCoupons = std::nullopt,
+            std::optional<BusinessDayConvention> floatingLegConvention = std::nullopt);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -312,6 +318,7 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> floatIndex_;
         bool collateralOnFixedLeg_;
         std::optional<bool> useIndexedCoupons_;
+        std::optional<BusinessDayConvention> floatingLegConvention_;
 
         ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> xccySwap_;
     };
