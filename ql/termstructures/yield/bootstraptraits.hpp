@@ -27,11 +27,13 @@
 #ifndef ql_bootstrap_traits_hpp
 #define ql_bootstrap_traits_hpp
 
+#include <ql/math/array.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/interpolatedsimplezerocurve.hpp>
 #include <ql/termstructures/yield/forwardcurve.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -75,6 +77,21 @@ namespace QuantLib {
             // flat rate extrapolation
             Real r = -std::log(c->data()[i-1])/c->times()[i-1];
             return std::exp(-r * c->times()[i]);
+        }
+
+        // guess for the whole curve and whether it needs to be transformed
+        template <class C>
+        static std::pair<Array, bool> globalGuess(const C* c, bool validData)
+        {
+            if (validData)
+                return {Array(c->data().begin() + 1, c->data().end()), true};
+
+            Array guess(c->times().begin() + 1, c->times().end());
+            guess *= -detail::avgRate;
+            // Discount::transformInverse() is log(), so we simply don't call exp() here
+            // and return false for needsTransform. This saves one pair of exp()/log()
+            // calls per pillar.
+            return {std::move(guess), false};
         }
 
         // possible constraints based on previous values
@@ -162,6 +179,16 @@ namespace QuantLib {
                                Continuous, Annual, true);
         }
 
+        // guess for the whole curve and whether it needs to be transformed
+        template <class C>
+        static std::pair<Array, bool> globalGuess(const C* c, bool validData)
+        {
+            if (validData)
+                return {Array(c->data().begin() + 1, c->data().end()), true};
+
+            return {Array(c->times().size() - 1, detail::avgRate), true};
+        }
+
         // possible constraints based on previous values
         template <class C>
         static Real minValueAfter(Size,
@@ -190,18 +217,6 @@ namespace QuantLib {
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
             return detail::maxRate;
-        }
-
-        // transformation to add constraints to an unconstrained optimization
-        template <class C>
-        static Real transformDirect(Real x, Size i, const C* c)
-        {
-            return x;
-        }
-        template <class C>
-        static Real transformInverse(Real x, Size i, const C* c)
-        {
-            return x;
         }
 
         // root-finding update
@@ -255,6 +270,16 @@ namespace QuantLib {
                                   Continuous, Annual, true);
         }
 
+        // guess for the whole curve and whether it needs to be transformed
+        template <class C>
+        static std::pair<Array, bool> globalGuess(const C* c, bool validData)
+        {
+            if (validData)
+                return {Array(c->data().begin() + 1, c->data().end()), true};
+
+            return {Array(c->times().size() - 1, detail::avgRate), true};
+        }
+
         // possible constraints based on previous values
         template <class C>
         static Real minValueAfter(Size,
@@ -283,18 +308,6 @@ namespace QuantLib {
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
             return detail::maxRate;
-        }
-
-        // transformation to add constraints to an unconstrained optimization
-        template <class C>
-        static Real transformDirect(Real x, Size i, const C* c)
-        {
-            return x;
-        }
-        template <class C>
-        static Real transformInverse(Real x, Size i, const C* c)
-        {
-            return x;
         }
 
         // root-finding update
@@ -345,6 +358,16 @@ namespace QuantLib {
             Date d = c->dates()[i];
             return c->zeroRate(d, c->dayCounter(),
                                Simple, Annual, true);
+        }
+
+        // guess for the whole curve and whether it needs to be transformed
+        template <class C>
+        static std::pair<Array, bool> globalGuess(const C* c, bool validData)
+        {
+            if (validData)
+                return {Array(c->data().begin() + 1, c->data().end()), true};
+
+            return {Array(c->times().size() - 1, detail::avgRate), true};
         }
 
         // possible constraints based on previous values
