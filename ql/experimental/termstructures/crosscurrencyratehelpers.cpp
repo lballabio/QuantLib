@@ -351,7 +351,7 @@ namespace QuantLib {
                                            quoteCurrencyPaymentFrequency,
                                            useIndexedCoupons),
       isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
-      fxResetFixingDays_(fxResetFixingDays), fxResetFixingCalendar_(fxResetFixingCalendar) {
+      fxResetFixingDays_(fxResetFixingDays), fxResetFixingCalendar_(std::move(std::move(fxResetFixingCalendar))) {
         buildSwap();
     }
 
