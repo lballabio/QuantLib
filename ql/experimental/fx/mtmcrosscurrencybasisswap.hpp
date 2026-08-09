@@ -118,7 +118,7 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
         Real fxQuoteGearing,
         bool isFxBaseCurrencyLegResettable,
         Natural fxResetFixingDays = 0,
-        Calendar fxResetFixingCalendar = Calendar(),
+        const Calendar& fxResetFixingCalendar = Calendar(),
         Integer fxBasePaymentLag = 0, Integer fxQuotePaymentLag = 0,
         BusinessDayConvention fxBasePaymentConvention = Following,
         BusinessDayConvention fxQuotePaymentConvention = Following,
@@ -307,7 +307,7 @@ class MtMCrossCurrencyBasisSwap::arguments : public CrossCurrencySwap::arguments
     Size constantLegIndex = Null<Size>();
     //! convention for the FX fixing and its associated spot value date
     Natural fxResetFixingDays = 0;
-    Calendar fxResetFixingCalendar = Calendar();
+    Calendar fxResetFixingCalendar;
     Spread fxBaseSpread = Null<Spread>();
     Spread fxQuoteSpread = Null<Spread>();
     void validate() const override;

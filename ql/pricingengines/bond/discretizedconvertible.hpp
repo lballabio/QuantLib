@@ -35,7 +35,7 @@ namespace QuantLib {
       public:
         DiscretizedConvertible(ConvertibleBond::arguments,
                                ext::shared_ptr<GeneralizedBlackScholesProcess> process,
-                               DividendSchedule dividends,
+                               const DividendSchedule& dividends,
                                Handle<Quote> creditSpread,
                                const TimeGrid& grid = TimeGrid());
 
