@@ -54,12 +54,12 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 BOOST_AUTO_TEST_SUITE(CrossCurrencyRateHelpersTests)
 
 namespace {
-    struct ExchangeRateManagerCleaner {
+    struct ExchangeRateManagerCleaner { // NOLINT(cppcoreguidelines-special-member-functions)
         ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
         ~ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
     };
 
-    struct IborCouponSettingsRestorer {
+    struct IborCouponSettingsRestorer { // NOLINT(cppcoreguidelines-special-member-functions)
         bool initiallyUsingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
         ~IborCouponSettingsRestorer() {
             if (initiallyUsingAtParCoupons)

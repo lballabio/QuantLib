@@ -64,7 +64,7 @@ namespace {
             ext::make_shared<FlatForward>(ref, r, Actual360()));
     }
 
-    struct ExchangeRateManagerCleaner {
+    struct ExchangeRateManagerCleaner { // NOLINT(cppcoreguidelines-special-member-functions)
         ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
         ~ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
     };
@@ -167,6 +167,7 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
                     isFxBaseCurrencyCollateralCurrency ? eurForecast : usdForecast;
 
                 std::vector<ext::shared_ptr<RateHelper> > helpers;
+                helpers.reserve(basisData.size());
                 for (const auto& q : basisData)
                     helpers.push_back(ext::make_shared<MtMCrossCurrencyBasisSwapRateHelper>(
                         makeQuoteHandle(q.second * bp), q.first, fixingDays, cal, conv, endOfMonth,
@@ -324,8 +325,8 @@ BOOST_AUTO_TEST_CASE(testFxResetObservationDatesAndProjection) {
     BOOST_CHECK_EQUAL(fxResetConvention.valueDate(firstCoupon->fxResetDate()), start);
     BOOST_CHECK(!firstExchange->previousReset());
     BOOST_REQUIRE(firstExchange->currentReset());
-    BOOST_CHECK_EQUAL(firstExchange->currentReset()->fixingDate(), firstCoupon->fxResetDate());
-    BOOST_CHECK_EQUAL(firstExchange->currentReset()->valueDate(), firstCoupon->fxResetValueDate());
+    BOOST_CHECK_EQUAL(firstExchange->currentReset()->fixingDate(), firstCoupon->fxResetDate());     // NOLINT(bugprone-unchecked-optional-access)
+    BOOST_CHECK_EQUAL(firstExchange->currentReset()->valueDate(), firstCoupon->fxResetValueDate()); // NOLINT(bugprone-unchecked-optional-access)
     BOOST_CHECK(!firstCoupon->fxResetPricer());
     BOOST_CHECK(!firstExchange->fxResetPricer());
 
@@ -1047,7 +1048,7 @@ BOOST_AUTO_TEST_CASE(testResetExchangePaymentDates) {
 
     for (Size i = 1; i + 1 < exchanges.size(); ++i) {
         BOOST_REQUIRE(exchanges[i]->currentReset());
-        BOOST_CHECK_EQUAL(exchanges[i]->date(), exchanges[i]->currentReset()->valueDate());
+        BOOST_CHECK_EQUAL(exchanges[i]->date(), exchanges[i]->currentReset()->valueDate()); // NOLINT(bugprone-unchecked-optional-access)
     }
 
     const Leg& constantLeg = swap->leg(swap->constantLegIndex());
