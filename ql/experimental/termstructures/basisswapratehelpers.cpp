@@ -142,14 +142,12 @@ namespace QuantLib {
         bool bootstrapBaseCurve,
         Integer paymentLag,
         std::optional<Frequency> overnightPaymentFrequency,
-        std::optional<Frequency> iborPaymentFrequency,
         std::optional<bool> useIndexedCoupons,
         DateGeneration::Rule rule)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
       discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve),
       paymentLag_(paymentLag), overnightPaymentFrequency_(overnightPaymentFrequency),
-      iborPaymentFrequency_(iborPaymentFrequency),
       useIndexedCoupons_(useIndexedCoupons), rule_(rule) {
 
         // we need to clone the index whose forecast curve we want to bootstrap
@@ -194,11 +192,11 @@ namespace QuantLib {
             .withNotionals(100.0)
             .withPaymentLag(paymentLag_);
 
-        Period iborTenor =
-            iborPaymentFrequency_ ? Period(*iborPaymentFrequency_) : otherIndex_->tenor();
+        // an ibor leg pays one coupon per fixing, so its payment frequency
+        // is the tenor of its own index
         Schedule iborSchedule =
             MakeSchedule().from(earliestDate_).to(terminationDate)
-            .withTenor(iborTenor)
+            .withTenor(otherIndex_->tenor())
             .withCalendar(calendar_)
             .withConvention(convention_)
             .endOfMonth(endOfMonth_)

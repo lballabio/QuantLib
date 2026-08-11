@@ -98,9 +98,9 @@ namespace QuantLib {
 
         A payment lag can also be passed; it is applied to both legs.
 
-        The payment frequency of each leg can be overridden
-        independently; both default to the tenor of the ibor index.
-        Once pays a single coupon at maturity, whatever the rule.
+        The payment frequency of the overnight leg can be overridden.
+        It defaults to the tenor of the ibor index.  The ibor leg
+        always pays at the tenor of its own index.
     */
     class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -116,7 +116,6 @@ namespace QuantLib {
                                          bool bootstrapBaseCurve = false,
                                          Integer paymentLag = 0,
                                          std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
-                                         std::optional<Frequency> iborPaymentFrequency = std::nullopt,
                                          std::optional<bool> useIndexedCoupons = std::nullopt,
                                          DateGeneration::Rule rule = DateGeneration::Backward);
 
@@ -139,7 +138,6 @@ namespace QuantLib {
         bool bootstrapBaseCurve_;
         Integer paymentLag_;
         std::optional<Frequency> overnightPaymentFrequency_;
-        std::optional<Frequency> iborPaymentFrequency_;
         std::optional<bool> useIndexedCoupons_;
         DateGeneration::Rule rule_;
 
