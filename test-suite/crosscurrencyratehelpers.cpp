@@ -926,18 +926,6 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperFloatingLegConvention) {
     BOOST_CHECK_EQUAL(helper.swap()->floatSchedule().endDate(), expectedMaturity);
     BOOST_CHECK_EQUAL(helper.swap()->fixedPaymentBdc(), ModifiedFollowing);
     BOOST_CHECK_EQUAL(helper.swap()->floatPaymentBdc(), ModifiedFollowing);
-
-    // The override is only needed when the legs are meant to roll differently.
-    ConstNotionalCrossCurrencySwapRateHelper overriddenHelper(
-        makeQuoteHandle(0.0), 1 * Years, 2, calendar, ModifiedFollowing, false,
-        Semiannual, Actual365Fixed(), overnightIndex, collateralCurve, false, 0,
-        std::nullopt, Following);
-
-    BOOST_CHECK_EQUAL(overriddenHelper.swap()->fixedSchedule().endDate(), expectedMaturity);
-    BOOST_CHECK_EQUAL(overriddenHelper.swap()->floatSchedule().endDate(), Date(2, August, 2027));
-    BOOST_CHECK_EQUAL(overriddenHelper.swap()->floatPaymentBdc(), Following);
-    // The pillar is the later of the two legs.
-    BOOST_CHECK_EQUAL(overriddenHelper.maturityDate(), Date(2, August, 2027));
 }
 
 BOOST_AUTO_TEST_CASE(testConstNotionalHelperIgnoresIndexFixingCalendar) {
@@ -978,69 +966,6 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperIgnoresIndexFixingCalendar) {
     BOOST_CHECK_EQUAL(usHelper.maturityDate(), weekendHelper.maturityDate());
     // The index keeps its own calendar for its fixings.
     BOOST_CHECK(usIndex->fixingCalendar() != weekendIndex->fixingCalendar());
-}
-
-BOOST_AUTO_TEST_CASE(testBasisHelperPerLegConventions) {
-    BOOST_TEST_MESSAGE("Testing per-leg conventions of cross-currency basis helpers...");
-
-    SavedSettings backup;
-    Date today(29, July, 2026);
-    Settings::instance().evaluationDate() = today;
-
-    Calendar calendar = WeekendsOnly();
-    Handle<YieldTermStructure> collateralCurve(
-        ext::make_shared<FlatForward>(today, 0.04, Actual360()));
-    auto baseIndex = ext::make_shared<OvernightIndex>(
-        "ON base", 2, EURCurrency(), calendar, Actual360(), collateralCurve);
-    auto quoteIndex = ext::make_shared<OvernightIndex>(
-        "ON quote", 2, USDCurrency(), calendar, Actual360(), collateralCurve);
-
-    Date modifiedFollowingMaturity(30, July, 2027);
-    Date followingMaturity(2, August, 2027);
-
-    // Both legs follow the helper convention unless overridden.
-    ConstNotionalCrossCurrencyBasisSwapRateHelper constNotionalHelper(
-        makeQuoteHandle(0.0), 1 * Years, 2, calendar, ModifiedFollowing, false,
-        baseIndex, quoteIndex, collateralCurve, true, true, Semiannual, 0, Semiannual,
-        std::nullopt);
-
-    BOOST_CHECK_EQUAL(constNotionalHelper.swap()->paySchedule().endDate(),
-                      modifiedFollowingMaturity);
-    BOOST_CHECK_EQUAL(constNotionalHelper.swap()->recSchedule().endDate(),
-                      modifiedFollowingMaturity);
-
-    ConstNotionalCrossCurrencyBasisSwapRateHelper overriddenConstNotionalHelper(
-        makeQuoteHandle(0.0), 1 * Years, 2, calendar, ModifiedFollowing, false,
-        baseIndex, quoteIndex, collateralCurve, true, true, Semiannual, 0, Semiannual,
-        std::nullopt, std::nullopt, Following);
-
-    BOOST_CHECK_EQUAL(overriddenConstNotionalHelper.swap()->paySchedule().endDate(),
-                      modifiedFollowingMaturity);
-    BOOST_CHECK_EQUAL(overriddenConstNotionalHelper.swap()->recSchedule().endDate(),
-                      followingMaturity);
-
-    // The MtM helper carries its conventions into the swap's payment
-    // conventions as well as its schedules.
-    MtMCrossCurrencyBasisSwapRateHelper mtmHelper(
-        makeQuoteHandle(0.0), 1 * Years, 2, calendar, ModifiedFollowing, false,
-        baseIndex, quoteIndex, collateralCurve, true, true, true, Semiannual, 0, Semiannual,
-        0, Calendar(), std::nullopt);
-
-    BOOST_CHECK_EQUAL(mtmHelper.swap()->fxBaseSchedule().endDate(), modifiedFollowingMaturity);
-    BOOST_CHECK_EQUAL(mtmHelper.swap()->fxQuoteSchedule().endDate(), modifiedFollowingMaturity);
-    BOOST_CHECK_EQUAL(mtmHelper.swap()->fxBasePaymentConvention(), ModifiedFollowing);
-    BOOST_CHECK_EQUAL(mtmHelper.swap()->fxQuotePaymentConvention(), ModifiedFollowing);
-
-    MtMCrossCurrencyBasisSwapRateHelper overriddenMtMHelper(
-        makeQuoteHandle(0.0), 1 * Years, 2, calendar, ModifiedFollowing, false,
-        baseIndex, quoteIndex, collateralCurve, true, true, true, Semiannual, 0, Semiannual,
-        0, Calendar(), std::nullopt, Following);
-
-    BOOST_CHECK_EQUAL(overriddenMtMHelper.swap()->fxBaseSchedule().endDate(), followingMaturity);
-    BOOST_CHECK_EQUAL(overriddenMtMHelper.swap()->fxQuoteSchedule().endDate(),
-                      modifiedFollowingMaturity);
-    BOOST_CHECK_EQUAL(overriddenMtMHelper.swap()->fxBasePaymentConvention(), Following);
-    BOOST_CHECK_EQUAL(overriddenMtMHelper.swap()->fxQuotePaymentConvention(), ModifiedFollowing);
 }
 
 BOOST_AUTO_TEST_CASE(testPaymentLagDoesNotDelayNotionalExchanges) {
@@ -1164,11 +1089,11 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFixedLeg) {
                             cal, bdc, bdc,
                             DateGeneration::Forward, endOfMonth);
 
+        // The helper rolls both legs on its own calendar and convention; the
+        // index only supplies its fixing calendar for fixings.
         Schedule floatSched(settlement, maturity,
                             euribor3m->tenor(),
-                            euribor3m->fixingCalendar(),
-                            euribor3m->businessDayConvention(),
-                            euribor3m->businessDayConvention(),
+                            cal, bdc, bdc,
                             DateGeneration::Forward, false);
 
         Leg fixedLeg = FixedRateLeg(fixedSched)
@@ -1261,11 +1186,11 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFloatingLeg) {
                             cal, bdc, bdc,
                             DateGeneration::Forward, endOfMonth);
 
+        // The helper rolls both legs on its own calendar and convention; the
+        // index only supplies its fixing calendar for fixings.
         Schedule floatSched(settlement, maturity,
                             euribor3m->tenor(),
-                            euribor3m->fixingCalendar(),
-                            euribor3m->businessDayConvention(),
-                            euribor3m->businessDayConvention(),
+                            cal, bdc, bdc,
                             DateGeneration::Forward, false);
 
         Leg fixedLeg = FixedRateLeg(fixedSched)
@@ -1279,7 +1204,7 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFloatingLeg) {
                        .withNotionals(1.0)
                        .withSpreads(0.0)
                        .withPaymentLag(paymentLag)
-                       .withPaymentAdjustment(euribor3m->businessDayConvention())
+                       .withPaymentAdjustment(bdc)
                        .withPaymentCalendar(cal);
 
         Date initialPaymentDate = CashFlows::startDate(fixedLeg);
