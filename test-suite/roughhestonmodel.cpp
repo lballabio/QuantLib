@@ -23,6 +23,7 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/ode/fractionaladams.hpp>
+#include <ql/math/ode/fractionalkernelapproximation.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
@@ -177,8 +178,7 @@ BOOST_AUTO_TEST_CASE(testRiemannLiouvilleIntegral) {
                 std::complex<Real>(1.0, 1.0) * expected};
 
             if (std::abs(calculatedC - expectedC) > tol)
-                BOOST_ERROR("failed to reproduce complex fractional integral "
-                            "of t^p"
+                BOOST_ERROR("failed to reproduce complex fractional integral of t^p"
                             << "\n    p:          " << p
                             << "\n    alpha:      " << a
                             << "\n    calculated: " << calculatedC
@@ -190,8 +190,7 @@ BOOST_AUTO_TEST_CASE(testRiemannLiouvilleIntegral) {
 
 BOOST_AUTO_TEST_CASE(testEquivalenceWithHestonModel) {
     BOOST_TEST_MESSAGE(
-        "Testing rough Heston engine against the classical Heston engine "
-        "for H = 0.5...");
+        "Testing rough Heston engine against the classical Heston engine for H = 0.5...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -265,8 +264,7 @@ BOOST_AUTO_TEST_CASE(testEquivalenceWithHestonModel) {
 
                     const Real tol{5e-4};
                     if (std::fabs(calculated - expected) > tol)
-                        BOOST_ERROR("failed to reproduce Heston price for "
-                                    "H = 0.5"
+                        BOOST_ERROR("failed to reproduce Heston price for H = 0.5"
                                     << "\n    rho:        " << p.rho
                                     << "\n    sigma:      " << p.sigma
                                     << "\n    option:     " << optionType
@@ -283,8 +281,7 @@ BOOST_AUTO_TEST_CASE(testEquivalenceWithHestonModel) {
 
 BOOST_AUTO_TEST_CASE(testIntegrationAlgorithmConsistency) {
     BOOST_TEST_MESSAGE(
-        "Testing consistency of rough Heston prices across Fourier "
-        "integration algorithms...");
+        "Testing consistency of rough Heston prices across Fourier integration algorithms...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -325,8 +322,7 @@ BOOST_AUTO_TEST_CASE(testIntegrationAlgorithmConsistency) {
 
             const Real tol{1e-6};
             if (std::fabs(laguerreNPV - lobattoNPV) > tol)
-                BOOST_ERROR("Gauss-Laguerre and Gauss-Lobatto rough Heston "
-                            "prices differ"
+                BOOST_ERROR("Gauss-Laguerre and Gauss-Lobatto rough Heston prices differ"
                             << "\n    strike:        " << strike
                             << "\n    maturity:      " << maturity
                             << "\n    Gauss-Laguerre: " << laguerreNPV
@@ -338,8 +334,7 @@ BOOST_AUTO_TEST_CASE(testIntegrationAlgorithmConsistency) {
 
 BOOST_AUTO_TEST_CASE(testKnownReferenceValues) {
     BOOST_TEST_MESSAGE(
-        "Testing rough Heston prices against an independent reference "
-        "implementation...");
+        "Testing rough Heston prices against an independent reference implementation...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -435,8 +430,7 @@ BOOST_AUTO_TEST_CASE(testPutCallParity) {
 
 BOOST_AUTO_TEST_CASE(testMonotonicityAndBounds) {
     BOOST_TEST_MESSAGE(
-        "Testing rough Heston call-price monotonicity, convexity and "
-        "no-arbitrage bounds...");
+        "Testing rough Heston call-price monotonicity, convexity and no-arbitrage bounds...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -711,8 +705,7 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
 
     const Real expectedSse{1e-8};
     if (sse > expectedSse)
-        BOOST_ERROR("failed to calibrate rough Heston model to a synthetic "
-                    "surface"
+        BOOST_ERROR("failed to calibrate rough Heston model to a synthetic surface"
                     << "\n    sse:      " << sse
                     << "\n    expected: less than " << expectedSse
                     << "\n    v0:    " << model->v0()    << " vs " << v0
@@ -734,8 +727,7 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
 
 BOOST_AUTO_TEST_CASE(testPadeRiccatiAsymptotics) {
     BOOST_TEST_MESSAGE(
-        "Testing short- and long-time asymptotics of the Pade Riccati "
-        "solution...");
+        "Testing short- and long-time asymptotics of the Pade Riccati solution...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -899,8 +891,7 @@ BOOST_AUTO_TEST_CASE(testPadeAgainstAdamsRiccati) {
 
             const Real tol{2e-2};
             if (maxError > tol)
-                BOOST_ERROR("Pade Riccati solution deviates from the Adams "
-                            "reference"
+                BOOST_ERROR("Pade Riccati solution deviates from the Adams reference"
                             << "\n    hurst:          " << hurst
                             << "\n    rho:            " << rho
                             << "\n    max rel. error: " << maxError
@@ -953,8 +944,7 @@ BOOST_AUTO_TEST_CASE(testPadeAgainstAdamsPricing) {
                     // the spot, not a sign of a wrong root being picked
                     const Real tol{5e-2};
                     if (std::fabs(approx - ref) > tol)
-                        BOOST_ERROR("Pade price deviates from the Adams "
-                                    "reference"
+                        BOOST_ERROR("Pade price deviates from the Adams reference"
                                     << "\n    hurst:      " << hurst
                                     << "\n    rho:        " << rho
                                     << "\n    option:     " << optionType
@@ -972,8 +962,7 @@ BOOST_AUTO_TEST_CASE(testPadeAgainstAdamsPricing) {
 
 BOOST_AUTO_TEST_CASE(testPadeHestonLimit) {
     BOOST_TEST_MESSAGE(
-        "Testing the Pade rough Heston engine against classical Heston "
-        "for H = 0.5...");
+        "Testing the Pade rough Heston engine against classical Heston for H = 0.5...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -1189,6 +1178,407 @@ BOOST_AUTO_TEST_CASE(testPadeCalibration) {
     const Real hurstTol{0.02};
     if (std::fabs(model->hurst() - hurst) > hurstTol)
         BOOST_ERROR("failed to recover the Hurst exponent through Pade"
+                    << "\n    calculated: " << model->hurst()
+                    << "\n    expected:   " << hurst
+                    << "\n    tolerance:  " << hurstTol);
+}
+
+BOOST_AUTO_TEST_CASE(testFractionalKernelApproximation) {
+    BOOST_TEST_MESSAGE(
+        "Testing the sum-of-exponentials approximation of the fractional kernel...");
+
+    const Time tMax{1.0};
+
+    // Relative L1 error on (0, tMax]. K is integrable at the origin, so
+    // this needs no cut-off and is free of any time grid
+    const auto l1Error = [tMax](const FractionalKernelApproximation& kernel,
+                                Real alpha) -> Real {
+        const Size m{6}, q{4000};
+
+        Real error{0.0};
+        for (Size j{0}; j < q; ++j) {
+            const Real u{(j + 0.5) / q};
+            // t = tMax u^m concentrates the nodes near the singularity
+            const Real t{tMax * std::pow(u, Real(m))};
+            const Real weight{tMax * m * std::pow(u, Real(m - 1)) / q};
+
+            const Real exact{std::pow(t, alpha - 1.0)
+                / GammaFunction().value(alpha)};
+
+            error += weight * std::fabs(kernel(t) - exact);
+        }
+
+        return error / (std::pow(tMax, alpha)
+            / GammaFunction().value(1.0 + alpha));
+    };
+
+    for (const Real hurst : {0.05, 0.1, 0.3}) {
+        const Real alpha{hurst + 0.5};
+
+        Real previousError{QL_MAX_REAL};
+        for (const Size n : {10, 20, 40, 80}) {
+            const FractionalKernelApproximation kernel(alpha, n, tMax);
+
+            if (kernel.size() != n)
+                BOOST_ERROR("wrong number of kernel nodes"
+                            << "\n    calculated: " << kernel.size()
+                            << "\n    expected:   " << n);
+
+            // Non-negativity is what keeps K^n completely monotone, and
+            // with it the lifted model well posed
+            for (Size i{0}; i < n; ++i) {
+                if (kernel.weights()[i] < 0.0 || kernel.rates()[i] < 0.0)
+                    BOOST_ERROR("negative kernel node"
+                                << "\n    index:  " << i
+                                << "\n    weight: " << kernel.weights()[i]
+                                << "\n    rate:   " << kernel.rates()[i]);
+
+                if (i > 0 && kernel.rates()[i] <= kernel.rates()[i - 1])
+                    BOOST_ERROR("kernel rates are not increasing"
+                                << "\n    index: " << i
+                                << "\n    rates: " << kernel.rates()[i - 1]
+                                << " -> " << kernel.rates()[i]);
+            }
+
+            const Real error{l1Error(kernel, alpha)};
+
+            // The measured rate is n^(-1.55), a factor of 2.9 per
+            // doubling; 1.7 leaves room at the coarse end
+            const Real expected{previousError / 1.7};
+            if (error > expected)
+                BOOST_ERROR("kernel approximation is not converging in n"
+                            << "\n    hurst:      " << hurst
+                            << "\n    factors:    " << n
+                            << "\n    L1 error:   " << error
+                            << "\n    expected:   less than " << expected);
+
+            previousError = error;
+        }
+    }
+
+    // At alpha = 1 the measure is a point mass at the origin, which the
+    // leading interval absorbs entirely: the construction collapses to the
+    // single node (1, 0) and reproduces K exactly, with no special-casing
+    const FractionalKernelApproximation classical(1.0, 20, tMax);
+
+    const Real tol{10 * QL_EPSILON};
+    if (std::fabs(classical.weights()[0] - 1.0) > tol
+            || classical.rates()[0] != 0.0)
+        BOOST_ERROR("alpha = 1 does not collapse to the single node (1, 0)"
+                    << "\n    weight: " << classical.weights()[0]
+                    << "\n    rate:   " << classical.rates()[0]);
+
+    for (Size i{1}; i < classical.size(); ++i)
+        if (std::fabs(classical.weights()[i]) > tol)
+            BOOST_ERROR("alpha = 1 leaves a non-vanishing node"
+                        << "\n    index:  " << i
+                        << "\n    weight: " << classical.weights()[i]);
+
+    for (const Time t : {0.1, 0.5, 1.0})
+        if (std::fabs(classical(t) - 1.0) > tol)
+            BOOST_ERROR("alpha = 1 does not reproduce the constant kernel"
+                        << "\n    t:          " << t
+                        << "\n    calculated: " << classical(t)
+                        << "\n    expected:   1");
+}
+
+BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsRiccati) {
+    BOOST_TEST_MESSAGE(
+        "Testing convergence of the lifted Riccati solution to the Adams reference...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc{Actual365Fixed()};
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    // Unlike Pade, the lifted route has a convergence parameter, so what
+    // is asserted is not closeness at a fixed n but that the error keeps
+    // falling as n grows
+    for (const Real hurst : {0.05, 0.1, 0.2}) {
+        for (const Real rho : {-0.7, 0.3}) {
+            const auto model{ext::make_shared<RoughHestonModel>(
+                ext::make_shared<HestonProcess>(
+                    rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, rho),
+                hurst)};
+
+            const auto adams{ext::make_shared<AnalyticRoughHestonEngine>(
+                model, 128, 1024,
+                AnalyticRoughHestonEngine::Approximation::AdamsPredictorCorrector)};
+
+            Real previousError{QL_MAX_REAL};
+            for (const Size n : {10, 40, 160}) {
+                const auto lifted{ext::make_shared<AnalyticRoughHestonEngine>(
+                    model, 128, 512,
+                    AnalyticRoughHestonEngine::Approximation::Lifted, n)};
+
+                Real maxError{0.0};
+                for (const Real u : {0.5, 1.0, 2.0, 5.0, 10.0, 20.0}) {
+                    for (const Time t : {0.25, 1.0, 2.0}) {
+                        const std::complex<Real> z(u, -0.5);
+
+                        const std::complex<Real> ref{
+                            adams->riccatiSolution(z, t)};
+                        const std::complex<Real> approx{
+                            lifted->riccatiSolution(z, t)};
+
+                        maxError = std::max(
+                            maxError, std::abs(approx - ref) / std::abs(ref));
+                    }
+                }
+
+                // A factor of 16 in n at the measured rate n^(-1.5) is
+                // about 64; 6 is a wide margin on the worst contour point
+                const Real expected{previousError / 6.0};
+                if (maxError > expected)
+                    BOOST_ERROR("lifted Riccati solution is not converging "
+                                "to the Adams reference"
+                                << "\n    hurst:          " << hurst
+                                << "\n    rho:            " << rho
+                                << "\n    factors:        " << n
+                                << "\n    max rel. error: " << maxError
+                                << "\n    expected:       less than "
+                                << expected);
+
+                previousError = maxError;
+            }
+
+            // And the finest approximation is genuinely close
+            const Real tol{5e-3};
+            if (previousError > tol)
+                BOOST_ERROR("lifted Riccati solution deviates from the Adams reference"
+                            << "\n    hurst:          " << hurst
+                            << "\n    rho:            " << rho
+                            << "\n    max rel. error: " << previousError
+                            << "\n    tolerance:      " << tol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testLiftedHestonLimit) {
+    BOOST_TEST_MESSAGE(
+        "Testing the lifted rough Heston engine against classical Heston for H = 0.5...");
+
+    // At H = 0.5 the kernel is constant, the surviving factor has x = 0
+    // and the integrator degenerates to the trapezoidal rule, so the
+    // lifted route is not an approximation here at all - hence a much
+    // tighter tolerance than the Pade equivalent
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc{Actual365Fixed()};
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.05, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.02, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const Real v0{0.05}, kappa{1.5}, theta{0.04}, sigma{0.5}, rho{-0.75};
+
+    const auto roughModel{ext::make_shared<RoughHestonModel>(
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, v0, kappa, theta, sigma, rho),
+        0.5)};
+    const auto lifted{ext::make_shared<AnalyticRoughHestonEngine>(
+        roughModel, 128, 256,
+        AnalyticRoughHestonEngine::Approximation::Lifted)};
+
+    const auto hestonModel{ext::make_shared<HestonModel>(
+        ext::make_shared<HestonProcess>(
+            rTS, qTS, s0, v0, kappa, theta, sigma, rho))};
+    const auto classical{ext::make_shared<AnalyticHestonEngine>(
+        hestonModel, 192)};
+
+    // Calls only: puts differ by an exact constant in priceVanillaPayoff
+    for (const Real strike : {80.0, 90.0, 100.0, 110.0, 125.0}) {
+        for (const Size months : {6, 12, 24}) {
+            const Date maturity{today + Period(months, Months)};
+            const auto payoff{ext::make_shared<PlainVanillaPayoff>(
+                Option::Call, strike)};
+
+            VanillaOption option(
+                payoff, ext::make_shared<EuropeanExercise>(maturity));
+            option.setPricingEngine(classical);
+            const Real ref{option.NPV()};
+
+            const Real approx{lifted->priceVanillaPayoff(payoff, maturity)};
+
+            const Real tol{5e-4};
+            if (std::fabs(approx - ref) > tol)
+                BOOST_ERROR("lifted engine does not reproduce classical Heston at H = 0.5"
+                            << "\n    strike:     " << strike
+                            << "\n    maturity:   " << months << "M"
+                            << "\n    lifted:     " << approx
+                            << "\n    Heston:     " << ref
+                            << "\n    difference: "
+                            << std::fabs(approx - ref)
+                            << "\n    tolerance:  " << tol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsPricing) {
+    BOOST_TEST_MESSAGE(
+        "Testing convergence of lifted rough Heston prices to the Adams reference...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc{Actual365Fixed()};
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.03, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.01, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    for (const Real hurst : {0.05, 0.1, 0.2}) {
+      for (const Real rho : {-0.7, 0.3}) {
+        const auto model{ext::make_shared<RoughHestonModel>(
+            ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 0.3, 0.04, 0.4, rho),
+            hurst)};
+
+        const auto adams{ext::make_shared<AnalyticRoughHestonEngine>(
+            model, 128, 1024,
+            AnalyticRoughHestonEngine::Approximation::AdamsPredictorCorrector)};
+
+        Real previousError{QL_MAX_REAL};
+        for (const Size n : {10, 40, 160}) {
+            const auto lifted{ext::make_shared<AnalyticRoughHestonEngine>(
+                model, 128, 512,
+                AnalyticRoughHestonEngine::Approximation::Lifted, n)};
+
+            Real maxError{0.0};
+            for (const Real strike : {80.0, 90.0, 100.0, 110.0, 120.0}) {
+                for (const Time t : {0.25, 1.0, 2.0}) {
+                    const auto payoff{ext::make_shared<PlainVanillaPayoff>(
+                        Option::Call, strike)};
+
+                    maxError = std::max(maxError,
+                        std::fabs(lifted->priceVanillaPayoff(payoff, t)
+                                  - adams->priceVanillaPayoff(payoff, t)));
+                }
+            }
+
+            const Real expected{previousError / 4.0};
+            if (maxError > expected)
+                BOOST_ERROR("lifted prices are not converging to the Adams reference"
+                            << "\n    hurst:     " << hurst
+                            << "\n    rho:       " << rho
+                            << "\n    factors:   " << n
+                            << "\n    max error: " << maxError
+                            << "\n    expected:  less than " << expected);
+
+            previousError = maxError;
+        }
+
+        // On prices of order 1 to 30; the bound is set by the roughest
+        // kernel (H = 0.05) at the longest maturity
+        const Real tol{3e-3};
+        if (previousError > tol)
+            BOOST_ERROR("lifted price deviates from the Adams reference"
+                        << "\n    hurst:     " << hurst
+                        << "\n    rho:       " << rho
+                        << "\n    max error: " << previousError
+                        << "\n    tolerance: " << tol);
+      }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testLiftedCalibration) {
+    BOOST_TEST_MESSAGE(
+        "Testing rough Heston calibration through the lifted engine...");
+
+    const Date today(2, July, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc{Actual365Fixed()};
+    const Calendar calendar{NullCalendar()};
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<FlatForward>(today, 0.02, dc));
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const Real v0{0.0225}, kappa{0.6}, theta{0.04};
+    const Real sigma{0.35}, rho{-0.65}, hurst{0.12};
+
+    const Size integrationOrder{64}, timeSteps{256}, nFactors{20};
+
+    // The kernel nodes depend on the Hurst exponent, so this is what
+    // catches update() failing to invalidate the per-maturity grid cache
+    const auto trueModel{ext::make_shared<RoughHestonModel>(
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, v0, kappa, theta, sigma, rho),
+        hurst)};
+    const auto trueEngine{ext::make_shared<AnalyticRoughHestonEngine>(
+        trueModel, integrationOrder, timeSteps,
+        AnalyticRoughHestonEngine::Approximation::Lifted, nFactors)};
+
+    std::vector<ext::shared_ptr<CalibrationHelper>> helpers;
+    for (const Size months : {3, 6, 12, 24}) {
+        const Period maturity(months, Months);
+        const Date maturityDate{today + maturity};
+        const Time t{dc.yearFraction(today, maturityDate)};
+
+        const Real fwd{s0->value() * qTS->discount(maturityDate)
+            / rTS->discount(maturityDate)};
+        const DiscountFactor df{rTS->discount(maturityDate)};
+
+        for (const Real strike : {80.0, 90.0, 100.0, 110.0, 120.0}) {
+            const Real price{trueEngine->priceVanillaPayoff(
+                ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+                maturityDate)};
+            const Volatility impliedVol{blackFormulaImpliedStdDev(
+                Option::Call, strike, fwd, price, df) / std::sqrt(t)};
+
+            helpers.push_back(ext::make_shared<HestonModelHelper>(
+                maturity, calendar, s0, strike,
+                Handle<Quote>(ext::make_shared<SimpleQuote>(impliedVol)),
+                rTS, qTS, BlackCalibrationHelper::ImpliedVolError));
+        }
+    }
+
+    const auto model{ext::make_shared<RoughHestonModel>(
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 1.0, 0.02, 0.25, -0.4),
+        0.2)};
+    const auto engine{ext::make_shared<AnalyticRoughHestonEngine>(
+        model, integrationOrder, timeSteps,
+        AnalyticRoughHestonEngine::Approximation::Lifted, nFactors)};
+
+    for (const auto& helper : helpers)
+        ext::static_pointer_cast<BlackCalibrationHelper>(helper)
+            ->setPricingEngine(engine);
+
+    LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
+    model->calibrate(helpers, om,
+                     EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
+
+    Real sse{0.0};
+    for (const auto& helper : helpers) {
+        const Real error{
+            ext::static_pointer_cast<BlackCalibrationHelper>(helper)
+                ->calibrationError()};
+        sse += error * error;
+    }
+
+    const Real expectedSse{1e-8};
+    if (sse > expectedSse)
+        BOOST_ERROR("failed to calibrate the lifted rough Heston model"
+                    << "\n    sse:      " << sse
+                    << "\n    expected: less than " << expectedSse
+                    << "\n    v0:    " << model->v0()    << " vs " << v0
+                    << "\n    kappa: " << model->kappa() << " vs " << kappa
+                    << "\n    theta: " << model->theta() << " vs " << theta
+                    << "\n    sigma: " << model->sigma() << " vs " << sigma
+                    << "\n    rho:   " << model->rho()   << " vs " << rho
+                    << "\n    hurst: " << model->hurst() << " vs " << hurst);
+
+    const Real hurstTol{0.02};
+    if (std::fabs(model->hurst() - hurst) > hurstTol)
+        BOOST_ERROR("failed to recover the Hurst exponent through the lifted engine"
                     << "\n    calculated: " << model->hurst()
                     << "\n    expected:   " << hurst
                     << "\n    tolerance:  " << hurstTol);
