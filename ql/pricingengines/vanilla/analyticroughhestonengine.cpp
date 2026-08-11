@@ -30,7 +30,7 @@ namespace QuantLib {
 
     namespace {
 
-        /*! psi_p(theta) = sum_{m >= 0} (-theta)^m / (m + p)!, the entire
+        /*  psi_p(theta) = sum_{m >= 0} (-theta)^m / (m + p)!, the entire
             functions generating the weights of the exponential integrator.
             The closed forms cancel to nothing as theta -> 0.
         */
@@ -397,7 +397,7 @@ namespace QuantLib {
         return evaluatePade(padeCoefficients(z), sigma * std::pow(t, a));
     }
 
-    /*! Kernel nodes and step weights of the lifted route.  The linear part
+    /*  Kernel nodes and step weights of the lifted route.  The linear part
         -x_i psi_i is integrated exactly through its integrating factor and
         F as its linear interpolant over the step.  None of it depends on
         the frequency z, hence the per-maturity cache.
@@ -504,7 +504,7 @@ namespace QuantLib {
         return {psiN, fIntegral, psiIntegral};
     }
 
-    /*! The lifted characteristic function is
+    /*  The lifted characteristic function is
         \f$ \ln \varphi = V_0 \int_0^t F(z, \psi^n) + \kappa\theta \int_0^t \psi^n \f$,
         the exact counterpart of the fractional
         \f$ \kappa\theta I^1 h + V_0 I^{1-a} h \f$ because

@@ -39,7 +39,7 @@ namespace QuantLib {
             return (std::fabs(y) < 1e-8) ? 1.0 + 0.5 * y : std::expm1(y) / y;
         }
 
-        /*! sin(pi b) / (pi b), the reflection-formula rewriting of
+        /*  sin(pi b) / (pi b), the reflection-formula rewriting of
             \f$ 1 / ((1 - \alpha)\Gamma(\alpha)\Gamma(1 - \alpha)) \f$ for
             \f$ b = 1 - \alpha \f$.  \f$ \Gamma(1 - \alpha) \f$ overflows as
             \f$ \alpha \to 1 \f$ whereas this form tends to one.
