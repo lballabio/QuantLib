@@ -178,8 +178,7 @@ BOOST_AUTO_TEST_CASE(testRiemannLiouvilleIntegral) {
                 std::complex<Real>(1.0, 1.0) * expected};
 
             if (std::abs(calculatedC - expectedC) > tol)
-                BOOST_ERROR("failed to reproduce complex fractional integral "
-                            "of t^p"
+                BOOST_ERROR("failed to reproduce complex fractional integral of t^p"
                             << "\n    p:          " << p
                             << "\n    alpha:      " << a
                             << "\n    calculated: " << calculatedC
@@ -191,8 +190,7 @@ BOOST_AUTO_TEST_CASE(testRiemannLiouvilleIntegral) {
 
 BOOST_AUTO_TEST_CASE(testEquivalenceWithHestonModel) {
     BOOST_TEST_MESSAGE(
-        "Testing rough Heston engine against the classical Heston engine "
-        "for H = 0.5...");
+        "Testing rough Heston engine against the classical Heston engine for H = 0.5...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -266,8 +264,7 @@ BOOST_AUTO_TEST_CASE(testEquivalenceWithHestonModel) {
 
                     const Real tol{5e-4};
                     if (std::fabs(calculated - expected) > tol)
-                        BOOST_ERROR("failed to reproduce Heston price for "
-                                    "H = 0.5"
+                        BOOST_ERROR("failed to reproduce Heston price for H = 0.5"
                                     << "\n    rho:        " << p.rho
                                     << "\n    sigma:      " << p.sigma
                                     << "\n    option:     " << optionType
@@ -284,8 +281,7 @@ BOOST_AUTO_TEST_CASE(testEquivalenceWithHestonModel) {
 
 BOOST_AUTO_TEST_CASE(testIntegrationAlgorithmConsistency) {
     BOOST_TEST_MESSAGE(
-        "Testing consistency of rough Heston prices across Fourier "
-        "integration algorithms...");
+        "Testing consistency of rough Heston prices across Fourier integration algorithms...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -326,8 +322,7 @@ BOOST_AUTO_TEST_CASE(testIntegrationAlgorithmConsistency) {
 
             const Real tol{1e-6};
             if (std::fabs(laguerreNPV - lobattoNPV) > tol)
-                BOOST_ERROR("Gauss-Laguerre and Gauss-Lobatto rough Heston "
-                            "prices differ"
+                BOOST_ERROR("Gauss-Laguerre and Gauss-Lobatto rough Heston prices differ"
                             << "\n    strike:        " << strike
                             << "\n    maturity:      " << maturity
                             << "\n    Gauss-Laguerre: " << laguerreNPV
@@ -339,8 +334,7 @@ BOOST_AUTO_TEST_CASE(testIntegrationAlgorithmConsistency) {
 
 BOOST_AUTO_TEST_CASE(testKnownReferenceValues) {
     BOOST_TEST_MESSAGE(
-        "Testing rough Heston prices against an independent reference "
-        "implementation...");
+        "Testing rough Heston prices against an independent reference implementation...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -436,8 +430,7 @@ BOOST_AUTO_TEST_CASE(testPutCallParity) {
 
 BOOST_AUTO_TEST_CASE(testMonotonicityAndBounds) {
     BOOST_TEST_MESSAGE(
-        "Testing rough Heston call-price monotonicity, convexity and "
-        "no-arbitrage bounds...");
+        "Testing rough Heston call-price monotonicity, convexity and no-arbitrage bounds...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -712,8 +705,7 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
 
     const Real expectedSse{1e-8};
     if (sse > expectedSse)
-        BOOST_ERROR("failed to calibrate rough Heston model to a synthetic "
-                    "surface"
+        BOOST_ERROR("failed to calibrate rough Heston model to a synthetic surface"
                     << "\n    sse:      " << sse
                     << "\n    expected: less than " << expectedSse
                     << "\n    v0:    " << model->v0()    << " vs " << v0
@@ -735,8 +727,7 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
 
 BOOST_AUTO_TEST_CASE(testPadeRiccatiAsymptotics) {
     BOOST_TEST_MESSAGE(
-        "Testing short- and long-time asymptotics of the Pade Riccati "
-        "solution...");
+        "Testing short- and long-time asymptotics of the Pade Riccati solution...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -900,8 +891,7 @@ BOOST_AUTO_TEST_CASE(testPadeAgainstAdamsRiccati) {
 
             const Real tol{2e-2};
             if (maxError > tol)
-                BOOST_ERROR("Pade Riccati solution deviates from the Adams "
-                            "reference"
+                BOOST_ERROR("Pade Riccati solution deviates from the Adams reference"
                             << "\n    hurst:          " << hurst
                             << "\n    rho:            " << rho
                             << "\n    max rel. error: " << maxError
@@ -954,8 +944,7 @@ BOOST_AUTO_TEST_CASE(testPadeAgainstAdamsPricing) {
                     // the spot, not a sign of a wrong root being picked
                     const Real tol{5e-2};
                     if (std::fabs(approx - ref) > tol)
-                        BOOST_ERROR("Pade price deviates from the Adams "
-                                    "reference"
+                        BOOST_ERROR("Pade price deviates from the Adams reference"
                                     << "\n    hurst:      " << hurst
                                     << "\n    rho:        " << rho
                                     << "\n    option:     " << optionType
@@ -973,8 +962,7 @@ BOOST_AUTO_TEST_CASE(testPadeAgainstAdamsPricing) {
 
 BOOST_AUTO_TEST_CASE(testPadeHestonLimit) {
     BOOST_TEST_MESSAGE(
-        "Testing the Pade rough Heston engine against classical Heston "
-        "for H = 0.5...");
+        "Testing the Pade rough Heston engine against classical Heston for H = 0.5...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -1197,8 +1185,7 @@ BOOST_AUTO_TEST_CASE(testPadeCalibration) {
 
 BOOST_AUTO_TEST_CASE(testFractionalKernelApproximation) {
     BOOST_TEST_MESSAGE(
-        "Testing the sum-of-exponentials approximation of the fractional "
-        "kernel...");
+        "Testing the sum-of-exponentials approximation of the fractional kernel...");
 
     const Time tMax{1.0};
 
@@ -1297,8 +1284,7 @@ BOOST_AUTO_TEST_CASE(testFractionalKernelApproximation) {
 
 BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsRiccati) {
     BOOST_TEST_MESSAGE(
-        "Testing convergence of the lifted Riccati solution to the Adams "
-        "reference...");
+        "Testing convergence of the lifted Riccati solution to the Adams reference...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -1364,8 +1350,7 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsRiccati) {
             // And the finest approximation is genuinely close
             const Real tol{5e-3};
             if (previousError > tol)
-                BOOST_ERROR("lifted Riccati solution deviates from the Adams "
-                            "reference"
+                BOOST_ERROR("lifted Riccati solution deviates from the Adams reference"
                             << "\n    hurst:          " << hurst
                             << "\n    rho:            " << rho
                             << "\n    max rel. error: " << previousError
@@ -1376,8 +1361,7 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsRiccati) {
 
 BOOST_AUTO_TEST_CASE(testLiftedHestonLimit) {
     BOOST_TEST_MESSAGE(
-        "Testing the lifted rough Heston engine against classical Heston "
-        "for H = 0.5...");
+        "Testing the lifted rough Heston engine against classical Heston for H = 0.5...");
 
     // At H = 0.5 the kernel is constant, the surviving factor has x = 0
     // and the integrator degenerates to the trapezoidal rule, so the
@@ -1425,8 +1409,7 @@ BOOST_AUTO_TEST_CASE(testLiftedHestonLimit) {
 
             const Real tol{5e-4};
             if (std::fabs(approx - ref) > tol)
-                BOOST_ERROR("lifted engine does not reproduce classical "
-                            "Heston at H = 0.5"
+                BOOST_ERROR("lifted engine does not reproduce classical Heston at H = 0.5"
                             << "\n    strike:     " << strike
                             << "\n    maturity:   " << months << "M"
                             << "\n    lifted:     " << approx
@@ -1440,8 +1423,7 @@ BOOST_AUTO_TEST_CASE(testLiftedHestonLimit) {
 
 BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsPricing) {
     BOOST_TEST_MESSAGE(
-        "Testing convergence of lifted rough Heston prices to the Adams "
-        "reference...");
+        "Testing convergence of lifted rough Heston prices to the Adams reference...");
 
     const Date today(2, July, 2026);
     Settings::instance().evaluationDate() = today;
@@ -1483,8 +1465,7 @@ BOOST_AUTO_TEST_CASE(testLiftedAgainstAdamsPricing) {
 
             const Real expected{previousError / 4.0};
             if (maxError > expected)
-                BOOST_ERROR("lifted prices are not converging to the Adams "
-                            "reference"
+                BOOST_ERROR("lifted prices are not converging to the Adams reference"
                             << "\n    hurst:     " << hurst
                             << "\n    rho:       " << rho
                             << "\n    factors:   " << n
@@ -1597,8 +1578,7 @@ BOOST_AUTO_TEST_CASE(testLiftedCalibration) {
 
     const Real hurstTol{0.02};
     if (std::fabs(model->hurst() - hurst) > hurstTol)
-        BOOST_ERROR("failed to recover the Hurst exponent through the lifted "
-                    "engine"
+        BOOST_ERROR("failed to recover the Hurst exponent through the lifted engine"
                     << "\n    calculated: " << model->hurst()
                     << "\n    expected:   " << hurst
                     << "\n    tolerance:  " << hurstTol);
