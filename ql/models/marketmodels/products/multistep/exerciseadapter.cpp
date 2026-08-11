@@ -51,7 +51,7 @@ namespace QuantLib {
 
     std::unique_ptr<MarketModelMultiProduct>
     ExerciseAdapter::clone() const {
-        return std::unique_ptr<MarketModelMultiProduct>(new ExerciseAdapter(*this));
+        return std::make_unique<ExerciseAdapter>(*this);
     }
 
 }

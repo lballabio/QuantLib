@@ -4,6 +4,7 @@
  Copyright (C) 2003, 2004, 2005, 2008 StatPro Italia srl
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2004 Neil Firth
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,12 +29,16 @@
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/basket/fdndimblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/basket/kirkengine.hpp>
+#include <ql/pricingengines/basket/pearsonspreadengine.hpp>
 #include <ql/pricingengines/basket/choibasketengine.hpp>
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/pricingengines/basket/mceuropeanbasketengine.hpp>
 #include <ql/pricingengines/basket/operatorsplittingspreadengine.hpp>
 #include <ql/pricingengines/basket/singlefactorbsmbasketengine.hpp>
 #include <ql/pricingengines/basket/denglizhoubasketengine.hpp>
+#include <ql/pricingengines/basket/gaussiancopulaspreadengine.hpp>
+#include <ql/experimental/volatility/svismilesection.hpp>
+#include <ql/termstructures/volatility/equityfx/piecewiseblackvariancesurface.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
@@ -1366,22 +1371,24 @@ BOOST_AUTO_TEST_CASE(testPDEvsApproximations) {
     const ext::shared_ptr<SimpleQuote> v1 = ext::make_shared<SimpleQuote>(0.25);
     const ext::shared_ptr<SimpleQuote> v2 = ext::make_shared<SimpleQuote>(0.4);
 
+    // The spread option has a single discount.
+    const Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
+
     const ext::shared_ptr<BlackProcess> p1 =
         ext::make_shared<BlackProcess>(
-            Handle<Quote>(s1),
-            Handle<YieldTermStructure>(flatRate(today, r, dc)),
+            Handle<Quote>(s1), rTS,
             Handle<BlackVolTermStructure>(flatVol(today, v1, dc))
     );
     const ext::shared_ptr<BlackProcess> p2 =
         ext::make_shared<BlackProcess>(
-            Handle<Quote>(s2),
-            Handle<YieldTermStructure>(flatRate(today, r, dc)),
+            Handle<Quote>(s2), rTS,
             Handle<BlackVolTermStructure>(flatVol(today, v2, dc))
     );
 
     const Real strike = 5;
 
-    IncrementalStatistics statKirk, statBS2014, statOs1, statOs2;
+    IncrementalStatistics statKirk, statBS2014, statOs1, statOs2,
+                          statPearson, statGaussianCopula;
 
     for (Option::Type type: {Option::Call, Option::Put}) {
         BasketOption option(
@@ -1403,6 +1410,12 @@ BOOST_AUTO_TEST_CASE(testPDEvsApproximations) {
             const ext::shared_ptr<PricingEngine> osEngine2
                 = ext::make_shared<OperatorSplittingSpreadEngine>(
                     p1, p2, rho, OperatorSplittingSpreadEngine::Second);
+
+            const ext::shared_ptr<PricingEngine> pearsonEngine
+                = ext::make_shared<PearsonSpreadEngine>(p1, p2, rho);
+
+            const ext::shared_ptr<PricingEngine> gaussianCopulaEngine
+                = ext::make_shared<GaussianCopulaSpreadEngine>(p1, p2, rho);
 
             const ext::shared_ptr<PricingEngine> fdEngine
                 = ext::make_shared<Fd2dBlackScholesVanillaEngine>(
@@ -1427,6 +1440,12 @@ BOOST_AUTO_TEST_CASE(testPDEvsApproximations) {
 
                     option.setPricingEngine(osEngine2);
                     statOs2.add(option.NPV() - fdNPV);
+
+                    option.setPricingEngine(pearsonEngine);
+                    statPearson.add(option.NPV() - fdNPV);
+
+                    option.setPricingEngine(gaussianCopulaEngine);
+                    statGaussianCopula.add(option.NPV() - fdNPV);
                 }
             }
         }
@@ -1459,6 +1478,22 @@ BOOST_AUTO_TEST_CASE(testPDEvsApproximations) {
                 " with Operator-Splitting engine (second order)."
                    << std::fixed << std::setprecision(5)
                    << "\n    stdev     : " << statOs2.standardDeviation()
+                   << "\n    tolerance : " << 0.02);
+    }
+
+    if (statPearson.standardDeviation() > 0.02) {
+        BOOST_FAIL("failed to reproduce PDE spread option prices"
+                " with Pearson engine."
+                   << std::fixed << std::setprecision(5)
+                   << "\n    stdev     : " << statPearson.standardDeviation()
+                   << "\n    tolerance : " << 0.02);
+    }
+
+    if (statGaussianCopula.standardDeviation() > 0.02) {
+        BOOST_FAIL("failed to reproduce PDE spread option prices"
+                " with Gaussian Copula spread engine."
+                   << std::fixed << std::setprecision(5)
+                   << "\n    stdev     : " << statGaussianCopula.standardDeviation()
                    << "\n    tolerance : " << 0.02);
     }
 }
@@ -2020,7 +2055,7 @@ BOOST_AUTO_TEST_CASE(testGoldenChoiBasketEngineExample) {
 
             const std::string deltaName = "forwardDelta " + std::to_string(k);
             const Real deltaDiff = std::abs(expectedDeltaFwd
-                - ext::any_cast<Real>(option.additionalResults().at(deltaName)));
+                - std::any_cast<Real>(option.additionalResults().at(deltaName)));
             const Real deltaTol = 5e-5;
 
             if (deltaDiff > deltaTol)
@@ -2227,6 +2262,11 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
         return ext::make_shared<DengLiZhouBasketEngine>(p, rho);
     };
 
+    const auto pearsonEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time)
+        -> ext::shared_ptr<PricingEngine> {
+        return ext::make_shared<PearsonSpreadEngine>(p[0], p[1], rho[0][1]);
+    };
+
     const auto kirkEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time)
         -> ext::shared_ptr<PricingEngine> {
         return ext::make_shared<KirkEngine>(p[0], p[1], rho[0][1]);
@@ -2272,6 +2312,7 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
         {"Choi", choiEngine, 0.000182177},
         {"Choi Control Variate", choiCvEngine, 0.000228738},
         {"Deng-Li-Zhou", dengLiZhouEngine, 0.0629703},
+        {"Pearson", pearsonEngine, 0.0005},
         {"Kirk", kirkEngine, 0.030673},
         {"Quasi-Monte-Carlo", qmcEngine, 0.28862},
         {"Bjerksund-Stensland", bsEngine, 0.0222423},
@@ -2571,6 +2612,262 @@ BOOST_AUTO_TEST_CASE(testNoDivByZeroOperatorSplitting) {
            << "\n    tolerance:   " << tol);
 }
 
+
+BOOST_AUTO_TEST_CASE(testPearsonSpreadEngine) {
+    BOOST_TEST_MESSAGE("Testing Pearson spread engine...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(1, March, 2025);
+    const Date maturity = today + Period(12, Months);
+
+    const ext::shared_ptr<EuropeanExercise> exercise
+        = ext::make_shared<EuropeanExercise>(maturity);
+
+    const Real rho = 0.75;
+    const Real f1 = 100, f2 = 110;
+    const Handle<YieldTermStructure> r
+        = Handle<YieldTermStructure>(flatRate(today, 0.05, dc));
+    const ext::shared_ptr<BlackProcess> p1 =
+        ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(f1)), r,
+            Handle<BlackVolTermStructure>(flatVol(today, 0.25, dc))
+    );
+    const ext::shared_ptr<BlackProcess> p2 =
+        ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(f2)), r,
+            Handle<BlackVolTermStructure>(flatVol(today, 0.35, dc))
+    );
+
+    const ext::shared_ptr<PricingEngine> engine
+        = ext::make_shared<PearsonSpreadEngine>(p1, p2, rho);
+
+    // 1. Put-call parity: (C - P) / df = F1 - F2 - K
+    const Real strike = 5;
+    BasketOption callOption(ext::make_shared<SpreadBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, strike)),
+        exercise);
+    callOption.setPricingEngine(engine);
+    const Real callNPV = callOption.NPV();
+
+    BasketOption putOption(ext::make_shared<SpreadBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Put, strike)),
+        exercise);
+    putOption.setPricingEngine(engine);
+    const Real putNPV = putOption.NPV();
+
+    const DiscountFactor df = r->discount(maturity);
+    const Real fwd = (callNPV - putNPV)/df;
+    Real diff = std::abs(fwd - (f1 - f2 - strike));
+    constexpr double tol = 1e-10;
+
+    if (diff > tol) {
+        BOOST_FAIL("failed to reproduce call-put parity "
+                "using the Pearson spread engine."
+                   << std::fixed << std::setprecision(8)
+                   << "\n    calculated fwd: " << fwd
+                   << "\n    expected fwd  : " << f1 - f2 - strike
+                   << "\n    diff          : " << diff
+                   << "\n    tolerance     : " << tol);
+    }
+
+    // 2. Exchange option (K=0): should match Bjerksund-Stensland
+    const Real exchangeStrike = 0.0;
+    BasketOption exchangeOption(ext::make_shared<SpreadBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, exchangeStrike)),
+        exercise);
+
+    exchangeOption.setPricingEngine(engine);
+    const Real pearsonExchange = exchangeOption.NPV();
+
+    const ext::shared_ptr<PricingEngine> bsEngine
+        = ext::make_shared<BjerksundStenslandSpreadEngine>(p1, p2, rho);
+    exchangeOption.setPricingEngine(bsEngine);
+    const Real bsExchange = exchangeOption.NPV();
+
+    diff = std::abs(pearsonExchange - bsExchange);
+    if (diff > 1e-6) {
+        BOOST_FAIL("failed to reproduce exchange option price "
+                "using the Pearson spread engine."
+                   << std::fixed << std::setprecision(8)
+                   << "\n    Pearson   : " << pearsonExchange
+                   << "\n    BS2014    : " << bsExchange
+                   << "\n    diff      : " << diff
+                   << "\n    tolerance : " << 1e-6);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testGaussianCopulaSpreadEngineFlatVol) {
+    BOOST_TEST_MESSAGE("Testing Gaussian Copula spread engine "
+                       "with flat volatility...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(1, March, 2025);
+    const Date maturity = today + Period(12, Months);
+
+    const ext::shared_ptr<EuropeanExercise> exercise
+        = ext::make_shared<EuropeanExercise>(maturity);
+
+    const Real rho = 0.5;
+    const Real f1 = 100, f2 = 96;
+    const Handle<YieldTermStructure> r
+        = Handle<YieldTermStructure>(flatRate(today, 0.05, dc));
+    const ext::shared_ptr<BlackProcess> p1 =
+        ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(f1)), r,
+            Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc))
+    );
+    const ext::shared_ptr<BlackProcess> p2 =
+        ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(f2)), r,
+            Handle<BlackVolTermStructure>(flatVol(today, 0.25, dc))
+    );
+
+    const ext::shared_ptr<PricingEngine> copulaEngine
+        = ext::make_shared<GaussianCopulaSpreadEngine>(p1, p2, rho);
+
+    // 1. Put-call parity: (C - P) / df = F1 - F2 - K
+    const Real strike = 3;
+    BasketOption callOption(ext::make_shared<SpreadBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, strike)),
+        exercise);
+    callOption.setPricingEngine(copulaEngine);
+    const Real callNPV = callOption.NPV();
+
+    BasketOption putOption(ext::make_shared<SpreadBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Put, strike)),
+        exercise);
+    putOption.setPricingEngine(copulaEngine);
+    const Real putNPV = putOption.NPV();
+
+    const DiscountFactor df = r->discount(maturity);
+    const Real fwd = (callNPV - putNPV) / df;
+    const Real expectedFwd = f1 - f2 - strike;
+    Real relError = relativeError(fwd, expectedFwd, f1);
+    constexpr double parityRelTol = 1e-3;
+
+    if (relError > parityRelTol) {
+        BOOST_FAIL("failed to reproduce call-put parity "
+                "using the Gaussian Copula spread engine."
+                   << std::fixed << std::setprecision(8)
+                   << "\n    calculated fwd: " << fwd
+                   << "\n    expected fwd : " << expectedFwd
+                   << "\n    rel error    : " << relError
+                   << "\n    tolerance    : " << parityRelTol);
+    }
+
+    // 2. Exchange option (K=0): should match Margrabe via Bjerksund-Stensland
+    const Real exchangeStrike = 0.0;
+    BasketOption exchangeOption(ext::make_shared<SpreadBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(
+                Option::Call, exchangeStrike)),
+        exercise);
+
+    exchangeOption.setPricingEngine(copulaEngine);
+    const Real copulaExchange = exchangeOption.NPV();
+
+    const ext::shared_ptr<PricingEngine> bsEngine
+        = ext::make_shared<BjerksundStenslandSpreadEngine>(p1, p2, rho);
+    exchangeOption.setPricingEngine(bsEngine);
+    const Real bsExchange = exchangeOption.NPV();
+
+    relError = relativeError(copulaExchange, bsExchange, f1);
+    constexpr double exchangeRelTol = 1e-3;
+    if (relError > exchangeRelTol) {
+        BOOST_FAIL("failed to reproduce exchange option price "
+                "using the Gaussian Copula spread engine."
+                   << std::fixed << std::setprecision(8)
+                   << "\n    Copula    : " << copulaExchange
+                   << "\n    BS2014    : " << bsExchange
+                   << "\n    rel error : " << relError
+                   << "\n    tolerance : " << exchangeRelTol);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testGaussianCopulaSpreadEngineSVI) {
+    BOOST_TEST_MESSAGE("Testing Gaussian Copula spread engine "
+                       "with SVI smile vs 2D Dupire PDE...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(1, March, 2025);
+    const Date maturity = today + Period(12, Months);
+
+    const ext::shared_ptr<EuropeanExercise> exercise
+        = ext::make_shared<EuropeanExercise>(maturity);
+
+    const Real rho = 0.5;
+    const Real spot1 = 100, spot2 = 96;
+
+    // SVI parameters: { a, b, sigma, rho_svi, m }
+    const std::vector<Real> sviParams1 = { 0.04, 0.10, 0.30, -0.40, 0.0 };
+    const std::vector<Real> sviParams2 = { 0.02, 0.08, 0.25, -0.30, 0.0 };
+
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.05, dc));
+    const DiscountFactor df = rTS->discount(maturity);
+    const Real fwd1 = spot1 / df;
+    const Real fwd2 = spot2 / df;
+
+    const Time T = dc.yearFraction(today, maturity);
+
+    const auto sviSmile1 =
+        ext::make_shared<SviSmileSection>(T, fwd1, sviParams1);
+    const auto sviSmile2 =
+        ext::make_shared<SviSmileSection>(T, fwd2, sviParams2);
+
+    const Handle<BlackVolTermStructure> sviVolTS1(
+        ext::make_shared<PiecewiseBlackVarianceSurface>(
+            today, maturity, sviSmile1, dc));
+    const Handle<BlackVolTermStructure> sviVolTS2(
+        ext::make_shared<PiecewiseBlackVarianceSurface>(
+            today, maturity, sviSmile2, dc));
+
+    const ext::shared_ptr<BlackProcess> p1 =
+        ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(spot1)),
+            rTS, sviVolTS1);
+    const ext::shared_ptr<BlackProcess> p2 =
+        ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(spot2)),
+            rTS, sviVolTS2);
+
+    const ext::shared_ptr<PricingEngine> copulaEngine
+        = ext::make_shared<GaussianCopulaSpreadEngine>(p1, p2, rho);
+
+    // 2D PDE with Dupire local vol
+    const ext::shared_ptr<PricingEngine> pdeEngine
+        = ext::make_shared<Fd2dBlackScholesVanillaEngine>(
+            p1, p2, rho, 100, 100, 50, 0,
+            FdmSchemeDesc::Hundsdorfer(), true);
+
+    constexpr double tol = 5e-3;
+    const Real f1 = fwd1;
+
+    for (Real strike : { -2.0, 0.0, 4.0, 8.0 }) {
+
+        BasketOption option(
+            ext::make_shared<SpreadBasketPayoff>(
+                ext::make_shared<PlainVanillaPayoff>(Option::Call, strike)),
+            exercise);
+
+        option.setPricingEngine(copulaEngine);
+        const Real copulaNPV = option.NPV();
+
+        option.setPricingEngine(pdeEngine);
+        const Real pdeNPV = option.NPV();
+
+        const Real relError = relativeError(copulaNPV, pdeNPV, f1);
+
+        if (relError > tol) {
+            BOOST_FAIL("failed to reproduce SVI-smile spread option price "
+                       "using the Gaussian Copula spread engine vs 2D PDE."
+                       << std::fixed << std::setprecision(8)
+                       << "\n    strike     : " << strike
+                       << "\n    Copula     : " << copulaNPV
+                       << "\n    2D PDE     : " << pdeNPV
+                       << "\n    rel error  : " << relError
+                       << "\n    tolerance  : " << tol);
+        }
+    }
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

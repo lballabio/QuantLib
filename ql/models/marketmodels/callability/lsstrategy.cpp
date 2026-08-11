@@ -156,7 +156,7 @@ namespace QuantLib {
 
     std::unique_ptr<ExerciseStrategy<CurveState>>
     LongstaffSchwartzExerciseStrategy::clone() const {
-        return std::unique_ptr<ExerciseStrategy<CurveState>>(new LongstaffSchwartzExerciseStrategy(*this));
+        return std::make_unique<LongstaffSchwartzExerciseStrategy>(*this);
     }
 
 }

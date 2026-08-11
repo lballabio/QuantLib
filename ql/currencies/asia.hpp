@@ -331,6 +331,16 @@ namespace QuantLib {
         LKRCurrency();
     };
 
+    //! Uzbekistani Som
+    /*! The ISO three-letter code is UZS; the numeric code is 860.
+     It is divided into 100 tiyin.
+     \ingroup currencies
+    */
+    class UZSCurrency : public Currency {
+      public:
+        UZSCurrency();
+    };
+
 }
 
 #if defined(QL_PATCH_MSVC)

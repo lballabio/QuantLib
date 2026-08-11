@@ -67,7 +67,7 @@ namespace QuantLib {
 
     std::unique_ptr<MarketModelMultiProduct>
     MultiStepRatchet::clone() const {
-        return std::unique_ptr<MarketModelMultiProduct>(new MultiStepRatchet(*this));
+        return std::make_unique<MultiStepRatchet>(*this);
     }
 
 }

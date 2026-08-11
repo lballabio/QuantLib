@@ -36,7 +36,7 @@ namespace QuantLib {
     IsdaCdsEngine::IsdaCdsEngine(Handle<DefaultProbabilityTermStructure> probability,
                                  Real recoveryRate,
                                  Handle<YieldTermStructure> discountCurve,
-                                 const ext::optional<bool>& includeSettlementDateFlows,
+                                 const std::optional<bool>& includeSettlementDateFlows,
                                  const NumericalFix numericalFix,
                                  const AccrualBias accrualBias,
                                  const ForwardsInCouponPeriod forwardsInCouponPeriod)

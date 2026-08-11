@@ -35,20 +35,20 @@ namespace QuantLib {
     Thirty360::implementation(Thirty360::Convention c, const Date& terminationDate) {
         switch (c) {
           case USA:
-            return ext::shared_ptr<DayCounter::Impl>(new US_Impl);
+            return ext::make_shared<US_Impl>();
           case European:
           case EurobondBasis:
-            return ext::shared_ptr<DayCounter::Impl>(new EU_Impl);
+            return ext::make_shared<EU_Impl>();
           case Italian:
-            return ext::shared_ptr<DayCounter::Impl>(new IT_Impl);
+            return ext::make_shared<IT_Impl>();
           case ISMA:
           case BondBasis:
-            return ext::shared_ptr<DayCounter::Impl>(new ISMA_Impl);
+            return ext::make_shared<ISMA_Impl>();
           case ISDA:
           case German:
-            return ext::shared_ptr<DayCounter::Impl>(new ISDA_Impl(terminationDate));
+            return ext::make_shared<ISDA_Impl>(terminationDate);
           case NASD:
-            return ext::shared_ptr<DayCounter::Impl>(new NASD_Impl);
+            return ext::make_shared<NASD_Impl>();
           default:
             QL_FAIL("unknown 30/360 convention");
         }

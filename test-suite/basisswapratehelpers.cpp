@@ -132,7 +132,9 @@ void testIborIborBootstrap(bool bootstrapBaseCurve) {
     }
 }
 
-void testOvernightIborBootstrap(bool externalDiscountCurve) {
+void testOvernightIborBootstrap(bool externalDiscountCurve,
+                                bool bootstrapBaseCurve = false,
+                                Integer paymentLag = 0) {
     std::vector<BasisSwapQuote> quotes = {
         { 1, Years,  0.0010 },
         { 2, Years,  0.0012 },
@@ -155,15 +157,23 @@ void testOvernightIborBootstrap(bool externalDiscountCurve) {
     if (externalDiscountCurve)
         discountCurve.linkTo(flatRate(0.005, Actual365Fixed()));
 
-    auto baseIndex = ext::make_shared<Sofr>(knownForecastCurve);
-    auto otherIndex = ext::make_shared<USDLibor>(6 * Months);
+    ext::shared_ptr<OvernightIndex> baseIndex;
+    ext::shared_ptr<IborIndex> otherIndex;
+
+    if (bootstrapBaseCurve) {
+        baseIndex = ext::make_shared<Sofr>();
+        otherIndex = ext::make_shared<USDLibor>(6 * Months, knownForecastCurve);
+    } else {
+        baseIndex = ext::make_shared<Sofr>(knownForecastCurve);
+        otherIndex = ext::make_shared<USDLibor>(6 * Months);
+    }
 
     std::vector<ext::shared_ptr<RateHelper>> helpers;
     for (auto q : quotes) {
         auto h = ext::make_shared<OvernightIborBasisSwapRateHelper>(
                 Handle<Quote>(ext::make_shared<SimpleQuote>(q.basis)),
                 Period(q.n, q.units), settlementDays, calendar, convention, endOfMonth,
-                baseIndex, otherIndex, discountCurve);
+                baseIndex, otherIndex, discountCurve, bootstrapBaseCurve, paymentLag);
         helpers.push_back(h);
     }
 
@@ -173,7 +183,13 @@ void testOvernightIborBootstrap(bool externalDiscountCurve) {
     Date today = Settings::instance().evaluationDate();
     Date spot = calendar.advance(today, settlementDays, Days);
 
-    otherIndex = ext::make_shared<USDLibor>(6 * Months, Handle<YieldTermStructure>(bootstrappedCurve));
+    if (bootstrapBaseCurve) {
+        baseIndex = ext::make_shared<Sofr>(Handle<YieldTermStructure>(bootstrappedCurve));
+        otherIndex = ext::make_shared<USDLibor>(6 * Months, knownForecastCurve);
+    } else {
+        baseIndex = ext::make_shared<Sofr>(knownForecastCurve);
+        otherIndex = ext::make_shared<USDLibor>(6 * Months, Handle<YieldTermStructure>(bootstrappedCurve));
+    }
 
     for (auto q : quotes) {
         // create swaps and check they're fair
@@ -189,9 +205,11 @@ void testOvernightIborBootstrap(bool externalDiscountCurve) {
 
         Leg leg1 = OvernightLeg(s, baseIndex)
             .withSpreads(q.basis)
-            .withNotionals(100.0);
+            .withNotionals(100.0)
+            .withPaymentLag(paymentLag);
         Leg leg2 = IborLeg(s, otherIndex)
-            .withNotionals(100.0);
+            .withNotionals(100.0)
+            .withPaymentLag(paymentLag);
 
         Swap swap(leg1, leg2);
         if (externalDiscountCurve) {
@@ -233,6 +251,28 @@ BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithDiscountCurve) {
     BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers with external discount curve...");
 
     testOvernightIborBootstrap(true);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborBaseCurveBootstrapWithoutDiscountCurve) {
+    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers (base curve bootstrap)...");
+
+    testOvernightIborBootstrap(false, true);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborBaseCurveBootstrapWithDiscountCurve) {
+    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers "
+                       "(base curve bootstrap with external discount curve)...");
+
+    testOvernightIborBootstrap(true, true);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithPaymentLag) {
+    BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers with payment lag...");
+
+    testOvernightIborBootstrap(false, false, 2);
+    testOvernightIborBootstrap(true, false, 2);
+    testOvernightIborBootstrap(false, true, 2);
+    testOvernightIborBootstrap(true, true, 2);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

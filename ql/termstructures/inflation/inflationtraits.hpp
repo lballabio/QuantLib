@@ -26,9 +26,11 @@
 #ifndef ql_inflation_bootstrap_traits_hpp
 #define ql_inflation_bootstrap_traits_hpp
 
+#include <ql/math/array.hpp>
 #include <ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp>
 #include <ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -63,6 +65,16 @@ namespace QuantLib {
                 return c->data()[i];
 
             return detail::avgInflation;
+        }
+
+        // guess for the whole curve and whether it needs to be transformed
+        template <class C>
+        static std::pair<Array, bool> globalGuess(const C* c, bool validData)
+        {
+            if (validData)
+                return {Array(c->data().begin() + 1, c->data().end()), true};
+
+            return {Array(c->times().size() - 1, detail::avgInflation), true};
         }
 
         // constraints
@@ -101,15 +113,6 @@ namespace QuantLib {
             if (i==1)
                 data[0] = level; // the first point is updated as well
         }
-        // transformation to add constraints to an unconstrained optimization
-        template <class C>
-        static Real transformDirect(Real x, Size, const C*) {
-            return x;
-        }
-        template <class C>
-        static Real transformInverse(Real x, Size, const C*) {
-            return x;
-        }
         // upper bound for convergence loop
         static Size maxIterations() { return 40; }
     };
@@ -141,6 +144,16 @@ namespace QuantLib {
                 return c->data()[i];
 
             return detail::avgInflation;
+        }
+
+        // guess for the whole curve and whether it needs to be transformed
+        template <class C>
+        static std::pair<Array, bool> globalGuess(const C* c, bool validData)
+        {
+            if (validData)
+                return {Array(c->data().begin() + 1, c->data().end()), true};
+
+            return {Array(c->times().size() - 1, detail::avgInflation), true};
         }
 
         // constraints
@@ -176,15 +189,6 @@ namespace QuantLib {
                                 Rate level,
                                 Size i) {
             data[i] = level;
-        }
-        // transformation to add constraints to an unconstrained optimization
-        template <class C>
-        static Real transformDirect(Real x, Size, const C*) {
-            return x;
-        }
-        template <class C>
-        static Real transformInverse(Real x, Size, const C*) {
-            return x;
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 40; }

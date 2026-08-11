@@ -85,7 +85,7 @@ namespace QuantLib {
 
     std::unique_ptr<MarketModelMultiProduct>
     MultiStepTarn::clone() const {
-        return std::unique_ptr<MarketModelMultiProduct>(new MultiStepTarn(*this));
+        return std::make_unique<MultiStepTarn>(*this);
     }
 
 

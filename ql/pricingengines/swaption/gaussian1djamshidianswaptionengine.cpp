@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -80,19 +81,63 @@ namespace QuantLib {
         referenceDate = model_->termStructure()->referenceDate();
         dayCounter = model_->termStructure()->dayCounter();
 
-        std::vector<Real> amounts(arguments_.fixedCoupons);
-        amounts.back() += arguments_.nominal;
-
         Size startIndex = std::upper_bound(arguments_.fixedResetDates.begin(),
                                            arguments_.fixedResetDates.end(),
                                            arguments_.exercise->date(0) - 1) -
                           arguments_.fixedResetDates.begin();
         // only consider coupons with start date >= exercise dates
 
-        rStarFinder finder(*model_, arguments_.nominal,
+        // handle SOFR with a payment lag
+        std::vector<Real> amounts(arguments_.fixedCoupons);
+        std::vector<Date> payDates(arguments_.fixedPayDates);
+        Date floatingAccrualEnd =
+            arguments_.swap->floatingSchedule().dates().back();
+        amounts.push_back(arguments_.nominal);
+        payDates.push_back(floatingAccrualEnd);
+
+        Real parNominal = arguments_.nominal;
+        {
+            Handle<YieldTermStructure> curve = model_->termStructure();
+            const std::vector<Date>& floatDates =
+                arguments_.swap->floatingSchedule().dates();
+            DiscountFactor dfValue =
+                curve->discount(arguments_.fixedResetDates[startIndex]);
+            for (Size j = 0; j + 1 < floatDates.size() &&
+                             j < arguments_.floatingPayDates.size(); ++j) {
+                if (floatDates[j] < arguments_.fixedResetDates[startIndex])
+                    continue;
+                Date accrualEnd = floatDates[j + 1];
+                if (arguments_.floatingPayDates[j] > accrualEnd) {
+                    DiscountFactor dfStart = curve->discount(floatDates[j]);
+                    DiscountFactor dfEnd = curve->discount(accrualEnd);
+                    DiscountFactor dfPay =
+                        curve->discount(arguments_.floatingPayDates[j]);
+                    /* Without a lag, the NPV is
+
+                           N * (dfStart/dfEnd - 1) * dfEnd = N * (dfStart - dfEnd)
+
+                       With a lag, it is
+
+                           N * (dfStart/dfEnd - 1) * dfPay = N * (dfStart - dfEnd) * (dfPay/dfEnd)
+
+                       Jamshidian cannot discount coupons to separate dates, so
+                       the difference between the two, i.e.,
+
+                           N * (dfStart - dfEnd) * (1 - dfPay/dfEnd)
+
+                       is frozen at time zero - no payment-delay convexity - and
+                       folded into the notional at the value date.
+                    */
+                    parNominal -= arguments_.nominal * (dfStart - dfEnd) *
+                                  (1.0 - dfPay / dfEnd) / dfValue;
+                }
+            }
+        }
+
+        rStarFinder finder(*model_, parNominal,
                            arguments_.exercise->date(0),
                            arguments_.fixedResetDates[startIndex],
-                           arguments_.fixedPayDates, amounts, startIndex);
+                           payDates, amounts, startIndex);
         Brent s1d;
         Rate minStrike = -8.0;
         Rate maxStrike = 8.0;
@@ -104,21 +149,19 @@ namespace QuantLib {
 
         Option::Type w =
             arguments_.type == Swap::Payer ? Option::Put : Option::Call;
-        Size size = arguments_.fixedCoupons.size();
+        Size size = amounts.size();
 
         Real value = 0.0;
         for (Size i = startIndex; i < size; i++) {
-            // Real fixedPayTime =
-            // dayCounter.yearFraction(referenceDate,arguments_.fixedPayDates[i]);
             Real strike =
-                model_->zerobond(arguments_.fixedPayDates[i],
+                model_->zerobond(payDates[i],
                                  arguments_.exercise->date(0), rStar) /
                 model_->zerobond(arguments_.fixedResetDates[startIndex],
                                  arguments_.exercise->date(0), rStar);
             Real dboValue =
                 model_->zerobondOption(w, arguments_.exercise->date(0),
                                        arguments_.fixedResetDates[startIndex],
-                                       arguments_.fixedPayDates[i], strike);
+                                       payDates[i], strike);
             value += amounts[i] * dboValue;
         }
         results_.value = value;

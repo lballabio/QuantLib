@@ -686,6 +686,10 @@
     <ClCompile Include="convertiblebonds.cpp" />
     <ClCompile Include="covariance.cpp" />
     <ClCompile Include="creditdefaultswap.cpp" />
+    <ClCompile Include="constnotionalcrosscurrencybasisswap.cpp" />
+    <ClCompile Include="mtmcrosscurrencybasisswap.cpp" />
+    <ClCompile Include="constnotionalcrosscurrencyfixedvsfloatingswap.cpp" />
+    <ClCompile Include="constnotionalcrosscurrencyswap.cpp" />
     <ClCompile Include="crosscurrencyratehelpers.cpp" />
     <ClCompile Include="currency.cpp" />
     <ClCompile Include="curvestates.cpp" />
@@ -790,6 +794,7 @@
     <ClCompile Include="riskneutraldensitycalculator.cpp" />
     <ClCompile Include="riskstats.cpp" />
     <ClCompile Include="rngtraits.cpp" />
+    <ClCompile Include="roughhestonmodel.cpp" />
     <ClCompile Include="rounding.cpp" />
     <ClCompile Include="schedule.cpp" />
     <ClCompile Include="settings.cpp" />
@@ -811,6 +816,7 @@
     <ClCompile Include="timeseries.cpp" />
     <ClCompile Include="tqreigendecomposition.cpp" />
     <ClCompile Include="tracing.cpp" />
+    <ClCompile Include="trinomialtree.cpp" />
     <ClCompile Include="twoassetbarrieroption.cpp" />
     <ClCompile Include="twoassetcorrelationoption.cpp" />
     <ClCompile Include="ultimateforwardtermstructure.cpp" />

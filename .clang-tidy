@@ -50,6 +50,7 @@ Checks: >
           -misc-unused-parameters,
         modernize-*,
           -modernize-avoid-c-arrays,
+          -modernize-concat-nested-namespaces,
           -modernize-macro-to-enum,
           -modernize-return-braced-init-list,
           -modernize-use-trailing-return-type,

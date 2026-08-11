@@ -124,7 +124,7 @@ namespace QuantLib {
 
         void calculate() const override;
 
-        Handle<YieldTermStructure> discountingCurve() const {
+        const Handle<YieldTermStructure>& discountingCurve() const {
             return discountCurve_.empty() ? model_->termStructure()
                                           : discountCurve_;
         }

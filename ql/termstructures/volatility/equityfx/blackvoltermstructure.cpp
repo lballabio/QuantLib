@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,8 +19,32 @@
 */
 
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
+#include <ql/termstructures/volatility/smilesection.hpp>
 
 namespace QuantLib {
+
+    namespace {
+
+        class BlackVolSmileSectionAdapter : public SmileSection {
+          public:
+            BlackVolSmileSectionAdapter(
+                ext::shared_ptr<const BlackVolTermStructure> vol,
+                Time t)
+            : SmileSection(t, vol->dayCounter()), vol_(std::move(vol)) {}
+            Real minStrike() const override { return vol_->minStrike(); }
+            Real maxStrike() const override { return vol_->maxStrike(); }
+            Real atmLevel() const override {
+                return vol_->atmLevel(exerciseTime());
+            }
+          protected:
+            Volatility volatilityImpl(Rate strike) const override {
+                return vol_->blackVol(exerciseTime(), strike, true);
+            }
+          private:
+            ext::shared_ptr<const BlackVolTermStructure> vol_;
+        };
+
+    }
 
     BlackVolTermStructure::BlackVolTermStructure(BusinessDayConvention bdc,
                                                  const DayCounter& dc)
@@ -150,5 +175,22 @@ namespace QuantLib {
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
     : BlackVolTermStructure(settlementDays, cal, bdc, dc) {}
+
+    ext::shared_ptr<SmileSection>
+    BlackVolTermStructure::smileSectionImpl(Time t) const {
+        try {
+            return ext::make_shared<BlackVolSmileSectionAdapter>(
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+                ext::dynamic_pointer_cast<const BlackVolTermStructure>(
+                    shared_from_this()),
+#else
+                shared_from_this(),
+#endif
+                t);
+        } catch (const ext::bad_weak_ptr&) {
+            QL_FAIL("smileSection() requires the BlackVolTermStructure "
+                    "to be held by a shared_ptr");
+        }
+    }
 
 }

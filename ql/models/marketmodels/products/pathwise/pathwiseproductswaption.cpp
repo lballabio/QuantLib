@@ -89,7 +89,7 @@ namespace QuantLib {
     std::unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseCoterminalSwaptionsDeflated::clone() const 
     {
-        return std::unique_ptr<MarketModelPathwiseMultiProduct>(new MarketModelPathwiseCoterminalSwaptionsDeflated(*this));
+        return std::make_unique<MarketModelPathwiseCoterminalSwaptionsDeflated>(*this);
     }
 
     std::vector<Size> MarketModelPathwiseCoterminalSwaptionsDeflated::suggestedNumeraires() const
@@ -210,8 +210,7 @@ namespace QuantLib {
     std::unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseCoterminalSwaptionsNumericalDeflated::clone() const 
     {
-        return std::unique_ptr<MarketModelPathwiseMultiProduct>(
-          new MarketModelPathwiseCoterminalSwaptionsNumericalDeflated(*this));
+        return std::make_unique<MarketModelPathwiseCoterminalSwaptionsNumericalDeflated>(*this);
     }
 
     std::vector<Size> MarketModelPathwiseCoterminalSwaptionsNumericalDeflated::suggestedNumeraires() const

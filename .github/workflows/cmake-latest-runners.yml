@@ -48,7 +48,7 @@ jobs:
     runs-on: ${{ matrix.settings.os }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Determine ccache variant
         shell: bash

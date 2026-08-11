@@ -69,6 +69,13 @@ namespace QuantLib {
         return std::numeric_limits<Real>::max();
     }
 
+    Real HestonBlackVolSurface::atmLevel(Time t) const {
+        const ext::shared_ptr<HestonProcess>& process = hestonModel_->process();
+        return process->s0()->value()
+            * process->dividendYield()->discount(t, true)
+            / process->riskFreeRate()->discount(t, true);
+    }
+
     Real HestonBlackVolSurface::blackVarianceImpl(Time t, Real strike) const {
         return squared(blackVolImpl(t, strike))*t;
     }

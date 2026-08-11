@@ -44,6 +44,7 @@ namespace QuantLib {
         Date maxDate() const override;
         Real minStrike() const override;
         Real maxStrike() const override;
+        Real atmLevel(Time t) const override;
 
       protected:
         Real blackVarianceImpl(Time t, Real strike) const override;

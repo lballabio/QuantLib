@@ -87,7 +87,7 @@ namespace QuantLib {
 
     std::unique_ptr<MarketModelParametricExercise>
     TriggeredSwapExercise::clone() const {
-        return std::unique_ptr<MarketModelParametricExercise>(new TriggeredSwapExercise(*this));
+        return std::make_unique<TriggeredSwapExercise>(*this);
     }
 
 }

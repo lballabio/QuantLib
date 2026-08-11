@@ -45,10 +45,10 @@ namespace QuantLib {
     basket loss models, which might require recalculations (of the basket) or 
     not depending on the pricing order.
     */
-    class DefaultLossModel : public Observable {// joint-? basket?-defaultLoss
+    class DefaultLossModel : public virtual Observable {// joint-? basket?-defaultLoss
      /* Protection together with frienship to avoid the need of checking the 
-     basket-argument pointer integrity. It is the responsibility of the basket 
-     now; our only caller.
+      basket-argument pointer integrity. It is the responsibility of the basket 
+      now; our only caller.
      */
         friend class Basket;
     protected:
@@ -58,12 +58,11 @@ namespace QuantLib {
         DefaultLossModel() = default;
         //! \name Statistics
         //@{
-        /* Non mandatory implementations, fails if client is not providing what 
-        requested. */
-
-        /* Default implementation using the expectedLoss(Date) method. 
-          Typically this method is called repeatedly with the same 
-          date parameter which makes it innefficient. */
+        //! Expected tranche loss as an absolute amount, not a fraction.
+        /*! Derived classes need to implement this method, as the default
+            implementation throws. Efficiency is a concern when calling this
+            method repeatedly with the same date parameter.
+        */
         virtual Real expectedTrancheLoss(const Date& d) const {
             QL_FAIL("expectedTrancheLoss Not implemented for this model.");
         }
@@ -148,6 +147,9 @@ namespace QuantLib {
             until the basket takes in a new model....
             ..alternatively both old basket and model could be forced reset here
             */
+            if (!basket_.empty() && basket_.currentLink().get() == bskt)
+                return; // already linked to this basket, nothing to reset
+            
             basket_.linkTo(ext::shared_ptr<Basket>(bskt, null_deleter()),
                            false);
             resetModel();// or rename to setBasketImpl(...)

@@ -77,9 +77,8 @@ namespace QuantLib {
             ext::shared_ptr<P> process = ext::dynamic_pointer_cast<P>(this->process_);
             QL_REQUIRE(process, "Heston-like process required");
 
-            ext::shared_ptr<HestonModel> hestonModel(new HestonModel(process));
-            return ext::shared_ptr<PricingEngine>(new
-                AnalyticHestonEngine(hestonModel));
+            auto hestonModel = ext::make_shared<HestonModel>(process);
+            return ext::make_shared<AnalyticHestonEngine>(hestonModel);
         }
     };
 
@@ -173,14 +172,12 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<P>(this->process_);
         QL_REQUIRE(process, "Heston like process required");
 
-        return ext::shared_ptr<typename
-            MCForwardEuropeanHestonEngine<RNG,S,P>::path_pricer_type>(
-                new ForwardEuropeanHestonPathPricer(
+        return ext::make_shared<ForwardEuropeanHestonPathPricer>(
                                         payoff->optionType(),
                                         this->arguments_.moneyness,
                                         resetIndex,
                                         process->riskFreeRate()->discount(
-                                                   timeGrid.back())));
+                                                   timeGrid.back()));
     }
 
     template <class RNG, class S, class P>
@@ -206,14 +203,12 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<P>(this->process_);
         QL_REQUIRE(process, "Heston like process required");
 
-        return ext::shared_ptr<typename
-            MCForwardEuropeanHestonEngine<RNG,S,P>::path_pricer_type>(
-                new ForwardEuropeanHestonPathPricer(
+        return ext::make_shared<ForwardEuropeanHestonPathPricer>(
                                         payoff->optionType(),
                                         this->arguments_.moneyness,
                                         resetIndex,
                                         process->riskFreeRate()->discount(
-                                                   timeGrid.back())));
+                                                   timeGrid.back()));
     }
 
     template <class RNG, class S, class P>
@@ -293,8 +288,7 @@ namespace QuantLib {
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified - set EITHER steps OR stepsPerYear");
-        return ext::shared_ptr<PricingEngine>(new
-            MCForwardEuropeanHestonEngine<RNG,S,P>(process_,
+        return ext::make_shared<MCForwardEuropeanHestonEngine<RNG,S,P>>(process_,
                                                    steps_,
                                                    stepsPerYear_,
                                                    antithetic_,
@@ -302,7 +296,7 @@ namespace QuantLib {
                                                    tolerance_,
                                                    maxSamples_,
                                                    seed_,
-                                                   controlVariate_));
+                                                   controlVariate_);
     }
 }
 

@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2026 Rich Amaya
+ Copyright (C) 2026 Richard Amaya
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,6 +19,7 @@
 */
 
 #include <ql/termstructures/volatility/equityfx/piecewiseblackvariancesurface.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
 #include <ql/utilities/null.hpp>
@@ -155,6 +157,14 @@ namespace QuantLib {
 
         return ext::make_shared<PiecewiseBlackVarianceSurface>(
             referenceDate, dates, std::move(sections), dc);
+    }
+
+    ext::shared_ptr<SmileSection>
+    PiecewiseBlackVarianceSurface::smileSectionImpl(Time t) const {
+        auto it = std::lower_bound(times_.begin(), times_.end(), t);
+        if (it != times_.end() && close_enough(t, *it))
+            return smileSections_[std::distance(times_.begin(), it)];
+        return BlackVarianceTermStructure::smileSectionImpl(t);
     }
 
     void PiecewiseBlackVarianceSurface::accept(AcyclicVisitor& v) {

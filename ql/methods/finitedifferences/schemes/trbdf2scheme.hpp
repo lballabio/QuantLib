@@ -68,7 +68,7 @@ namespace QuantLib {
 
         const Real alpha_;
         const ext::shared_ptr<FdmLinearOpComposite> map_;
-        const ext::shared_ptr<TrapezoidalScheme>& trapezoidalScheme_;
+        const ext::shared_ptr<TrapezoidalScheme> trapezoidalScheme_;
         const BoundaryConditionSchemeHelper bcSet_;
         const Real relTol_;
         const SolverType solverType_;

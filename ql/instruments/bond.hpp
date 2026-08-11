@@ -49,6 +49,12 @@ namespace QuantLib {
                  cash flow at the same date. In particular, if there's
                  one single redemption, it must be the last cash flow,
 
+        \note Pricing methods (cleanPrice, dirtyPrice, settlementValue, etc.)
+              assume and return values as a percentage of par (per 100).
+              For bonds with a face value other than 100 (e.g., 25), the actual
+              cash price must be calculated by the user: `cash price = quote * face / 100`.
+              Yield and Z-spread methods also expect prices to be passed per 100.
+
         \ingroup instruments
 
         \test

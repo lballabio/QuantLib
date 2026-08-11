@@ -115,12 +115,13 @@ namespace QuantLib {
 
         Size i = 0;
         const Size n = determineNumberOfFixings(interestDates, date);
-        const auto growthFactor = [&, applyObservationShift, compoundSpreadDaily](double fixing, Size idx) {
-            const auto span = (applyObservationShift || date >= interestDates[idx + 1])
+        const auto growthFactor = [&, applyObservationShift, compoundSpreadDaily](Real fixing, Size idx) {
+            const Time span = (applyObservationShift || date >= interestDates[idx + 1])
                               ? dt[idx]
                               : dc.yearFraction(interestDates[idx], date);
-            const auto gf = 1.0 + fixing * span;
-            return std::make_pair(gf, compoundSpreadDaily ? gf + couponSpread * span : gf);
+            const Real gf = 1.0 + fixing * span;
+            const Real gfSpread = compoundSpreadDaily ? Real(gf + couponSpread * span) : gf;
+            return std::make_pair(gf, gfSpread);
         };
 
         Real compoundFactor = 1.0, compoundFactorWithoutSpread = 1.0;

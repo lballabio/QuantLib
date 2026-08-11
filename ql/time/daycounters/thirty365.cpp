@@ -36,6 +36,6 @@ namespace QuantLib {
     }
 
     Thirty365::Thirty365()
-    : DayCounter(ext::shared_ptr<DayCounter::Impl>(new Thirty365::Impl)) {}
+    : DayCounter(ext::make_shared<Thirty365::Impl>()) {}
 
 }

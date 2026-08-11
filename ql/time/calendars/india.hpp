@@ -45,7 +45,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2005-2014, 2019-2025 only:)
+        (data available for 2005-2014, 2019-2026 only:)
         <ul>
         <li>Bakri Id</li>
         <li>Moharram</li>

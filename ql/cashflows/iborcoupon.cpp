@@ -264,7 +264,7 @@ namespace QuantLib {
         return *this;
     }
 
-    IborLeg& IborLeg::withIndexedCoupons(ext::optional<bool> b) {
+    IborLeg& IborLeg::withIndexedCoupons(std::optional<bool> b) {
         useIndexedCoupons_ = b;
         return *this;
     }

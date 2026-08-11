@@ -3350,6 +3350,40 @@ BOOST_AUTO_TEST_CASE(testOptimalAlphaKmax) {
             .alphaGreaterZero(strike).first;
     QL_CHECK_SMALL(alphaStar - 0.28006, 1e-4);
 }
+
+BOOST_AUTO_TEST_CASE(testHestonBlackVolSurfaceAtmLevel) {
+    BOOST_TEST_MESSAGE("Testing atmLevel on HestonBlackVolSurface...");
+
+    const Date today(4, March, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+
+    const Real s0 = 100.0;
+    const Rate r = 0.05, q = 0.02;
+
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
+    const Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, q, dc));
+
+    const auto process = ext::make_shared<HestonProcess>(
+        rTS, qTS, spot, 0.04, 1.0, 0.04, 0.3, -0.5);
+    const auto model = ext::make_shared<HestonModel>(process);
+    const Handle<HestonModel> modelH(model);
+    const HestonBlackVolSurface surface(modelH);
+
+    const Real tol = 1e-12;
+    for (Time t : { 0.25, 1.0, 5.0 }) {
+        const Real expected = s0 * qTS->discount(t) / rTS->discount(t);
+        const Real calculated = surface.atmLevel(t);
+        if (std::fabs(calculated - expected) > tol)
+            BOOST_FAIL("HestonBlackVolSurface::atmLevel mismatch"
+                       << "\n   t:          " << t
+                       << "\n   calculated: " << calculated
+                       << "\n   expected:   " << expected
+                       << "\n   diff:       " << calculated - expected
+                       << "\n   tolerance:  " << tol);
+    }
+}
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(HestonModelExperimentalTest)

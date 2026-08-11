@@ -72,9 +72,9 @@ namespace QuantLib {
         BusinessDayConvention businessDayConvention() const;
         const DayCounter& dayCounter() const;
         //! term structure relevant to the contract (e.g. repo curve)
-        Handle<YieldTermStructure> discountCurve() const;
+        const Handle<YieldTermStructure>& discountCurve() const;
         //! term structure that discounts the underlying's income cash flows
-        Handle<YieldTermStructure> incomeDiscountCurve() const;
+        const Handle<YieldTermStructure>& incomeDiscountCurve() const;
         //! returns whether the instrument is still tradable.
         bool isExpired() const override;
         //@}
@@ -177,11 +177,11 @@ namespace QuantLib {
         return dayCounter_;
     }
 
-    inline Handle<YieldTermStructure> Forward::discountCurve() const {
+    inline const Handle<YieldTermStructure>& Forward::discountCurve() const {
         return discountCurve_;
     }
 
-    inline Handle<YieldTermStructure> Forward::incomeDiscountCurve() const {
+    inline const Handle<YieldTermStructure>& Forward::incomeDiscountCurve() const {
         return incomeDiscountCurve_;
     }
 

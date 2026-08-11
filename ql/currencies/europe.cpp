@@ -144,6 +144,15 @@ namespace QuantLib {
         data_ = lvlData;
     }
 
+    // Macedonian denar
+    /* The ISO three-letter code is MKD; the numeric code is 807.
+       It is divided in 100 deni.
+    */
+    MKDCurrency::MKDCurrency() {
+        static auto mkdData = ext::make_shared<Data>("Macedonian denar", "MKD", 807, "den", "", 100, Rounding());
+        data_ = mkdData;
+    }
+
     // Norwegian krone
     /* The ISO three-letter code is NOK; the numeric code is 578.
        It is divided in 100 øre.

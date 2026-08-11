@@ -81,11 +81,11 @@ namespace QuantLib {
         //! The index currency
         Currency currency() const { return currency_; }
         //! the rate curve used to forecast fixings
-        Handle<YieldTermStructure> equityInterestRateCurve() const { return interest_; }
+        const Handle<YieldTermStructure>& equityInterestRateCurve() const { return interest_; }
         //! the dividend curve used to forecast fixings
-        Handle<YieldTermStructure> equityDividendCurve() const { return dividend_; }
+        const Handle<YieldTermStructure>& equityDividendCurve() const { return dividend_; }
         //! index spot value
-        Handle<Quote> spot() const { return spot_; }
+        const Handle<Quote>& spot() const { return spot_; }
         //@}
         //! \name Fixing calculations
         //@{

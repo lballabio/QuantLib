@@ -67,11 +67,11 @@ namespace QuantLib {
       public:
         explicit IborCouponPricer(
             Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
-            ext::optional<bool> useIndexedCoupon = ext::nullopt);
+            std::optional<bool> useIndexedCoupon = std::nullopt);
 
         bool useIndexedCoupon() const { return useIndexedCoupon_; }
 
-        Handle<OptionletVolatilityStructure> capletVolatility() const {
+        const Handle<OptionletVolatilityStructure>& capletVolatility() const {
             return capletVol_;
         }
         void setCapletVolatility(
@@ -115,7 +115,7 @@ namespace QuantLib {
             const Handle<OptionletVolatilityStructure>& v = Handle<OptionletVolatilityStructure>(),
             const TimingAdjustment timingAdjustment = Black76,
             Handle<Quote> correlation = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))),
-            const ext::optional<bool> useIndexedCoupon = ext::nullopt)
+            const std::optional<bool> useIndexedCoupon = std::nullopt)
         : IborCouponPricer(v, useIndexedCoupon), timingAdjustment_(timingAdjustment),
           correlation_(std::move(correlation)) {
             { // this additional scope seems required to avoid a misleading-indentation warning
@@ -154,7 +154,7 @@ namespace QuantLib {
             registerWith(swaptionVol_);
         }
 
-        Handle<SwaptionVolatilityStructure> swaptionVolatility() const{
+        const Handle<SwaptionVolatilityStructure>& swaptionVolatility() const {
             return swaptionVol_;
         }
         void setSwaptionVolatility(

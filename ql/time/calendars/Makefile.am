@@ -13,6 +13,7 @@ this_include_HEADERS = \
 	canada.hpp \
 	chile.hpp \
 	china.hpp \
+	croatia.hpp \
 	czechrepublic.hpp \
 	denmark.hpp \
 	finland.hpp \
@@ -23,20 +24,27 @@ this_include_HEADERS = \
 	iceland.hpp \
 	india.hpp \
 	indonesia.hpp \
+	islamicholidays.hpp \
 	israel.hpp \
 	italy.hpp \
 	japan.hpp \
 	jointcalendar.hpp \
+	malaysia.hpp \
+	malta.hpp \
 	mexico.hpp \
+	montenegro.hpp \
 	newzealand.hpp \
+	northmacedonia.hpp \
 	norway.hpp \
 	nullcalendar.hpp \
 	poland.hpp \
 	romania.hpp \
 	russia.hpp \
 	saudiarabia.hpp \
+	serbia.hpp \
 	singapore.hpp \
 	slovakia.hpp \
+	slovenia.hpp \
 	southafrica.hpp \
 	southkorea.hpp \
 	sweden.hpp \
@@ -48,6 +56,7 @@ this_include_HEADERS = \
 	ukraine.hpp \
 	unitedkingdom.hpp \
 	unitedstates.hpp \
+	uzbekistan.hpp \
 	weekendsonly.hpp
 
 cpp_files = \
@@ -60,6 +69,7 @@ cpp_files = \
 	canada.cpp \
 	chile.cpp \
 	china.cpp \
+	croatia.cpp \
 	czechrepublic.cpp \
 	denmark.cpp \
 	finland.cpp \
@@ -70,19 +80,26 @@ cpp_files = \
 	iceland.cpp \
 	india.cpp \
 	indonesia.cpp \
+	islamicholidays.cpp \
 	israel.cpp \
 	italy.cpp \
 	japan.cpp \
 	jointcalendar.cpp \
+	malaysia.cpp \
+	malta.cpp \
 	mexico.cpp \
+	montenegro.cpp \
 	newzealand.cpp \
+	northmacedonia.cpp \
 	norway.cpp \
 	poland.cpp \
 	romania.cpp \
 	russia.cpp \
 	saudiarabia.cpp \
+	serbia.cpp \
 	singapore.cpp \
 	slovakia.cpp \
+	slovenia.cpp \
 	southafrica.cpp \
 	southkorea.cpp \
 	sweden.cpp \
@@ -94,6 +111,7 @@ cpp_files = \
 	ukraine.cpp \
 	unitedkingdom.cpp \
 	unitedstates.cpp \
+	uzbekistan.cpp \
 	weekendsonly.cpp
 
 if UNITY_BUILD

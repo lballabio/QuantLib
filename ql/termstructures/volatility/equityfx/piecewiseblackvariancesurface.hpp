@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2026 Rich Amaya
+ Copyright (C) 2026 Richard Amaya
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -76,6 +77,7 @@ namespace QuantLib {
 
       protected:
         Real blackVarianceImpl(Time t, Real strike) const override;
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time t) const override;
 
       private:
         Real sectionVariance(Size i, Real strike) const;

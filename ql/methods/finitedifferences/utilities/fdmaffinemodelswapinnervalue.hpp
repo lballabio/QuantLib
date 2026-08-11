@@ -152,7 +152,7 @@ namespace QuantLib {
         for (Size j = 0; j < 2; j++) {
             for (const auto& i : swap_->leg(j)) {
                 npv +=
-                    ext::dynamic_pointer_cast<Coupon>(i)->accrualStartDate() >= iterExerciseDate ?
+                    coupon_cast(i)->accrualStartDate() >= iterExerciseDate ?
                         Real(i->amount() * disTs_->discount(i->date())) :
                         0.0;
             }

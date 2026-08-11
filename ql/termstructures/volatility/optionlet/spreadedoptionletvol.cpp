@@ -37,16 +37,14 @@ namespace QuantLib {
     SpreadedOptionletVolatility::smileSectionImpl(const Date& d) const {
         ext::shared_ptr<SmileSection> baseSmile =
             baseVol_->smileSection(d, true);
-        return ext::shared_ptr<SmileSection>(new
-            SpreadedSmileSection(baseSmile, spread_));
+        return ext::make_shared<SpreadedSmileSection>(baseSmile, spread_);
     }
 
     ext::shared_ptr<SmileSection>
     SpreadedOptionletVolatility::smileSectionImpl(Time optionTime) const {
         ext::shared_ptr<SmileSection> baseSmile =
             baseVol_->smileSection(optionTime, true);
-        return ext::shared_ptr<SmileSection>(new
-            SpreadedSmileSection(baseSmile, spread_));
+        return ext::make_shared<SpreadedSmileSection>(baseSmile, spread_);
     }
 
     Volatility SpreadedOptionletVolatility::volatilityImpl(Time t,

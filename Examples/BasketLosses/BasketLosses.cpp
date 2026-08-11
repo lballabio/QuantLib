@@ -111,7 +111,7 @@ int main(int, char* []) {
                 fctrsWeights[0][0] * fctrsWeights[0][0], recoveries);
         theBskt->setLossModel(lmGLHP);
 
-        std::cout << "GLHP Expected 10-Yr Losses: "  << std::endl;
+        std::cout << "GLHP Expected 5-Yr Losses: "  << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
         // --- G Binomial model --------------------
@@ -121,7 +121,7 @@ int main(int, char* []) {
         auto lmBinomial = ext::make_shared<GaussianBinomialLossModel>(ktLossLM);
         theBskt->setLossModel(lmBinomial);
 
-        std::cout << "Gaussian Binomial Expected 10-Yr Losses: "  << std::endl;
+        std::cout << "Gaussian Binomial Expected 5-Yr Losses: "  << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
         #endif
@@ -137,7 +137,7 @@ int main(int, char* []) {
         auto lmTBinomial = ext::make_shared<TBinomialLossModel>(ktTLossLM);
         theBskt->setLossModel(lmTBinomial);
 
-        std::cout << "T Binomial Expected 10-Yr Losses: "  << std::endl;
+        std::cout << "T Binomial Expected 5-Yr Losses: "  << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
         // --- G Inhomogeneous model ---------------
@@ -153,7 +153,7 @@ int main(int, char* []) {
         auto inhomogeneousLM = ext::make_shared<IHGaussPoolLossModel>(gLM, numBuckets);
         theBskt->setLossModel(inhomogeneousLM);
 
-        std::cout << "G Inhomogeneous Expected 10-Yr Losses: "  << std::endl;
+        std::cout << "G Inhomogeneous Expected 5-Yr Losses: "  << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
         // --- G Random model ---------------------
@@ -168,7 +168,7 @@ int main(int, char* []) {
         //        recoveries, numSimulations, 1.e-6, 2863311530);
         theBskt->setLossModel(rdlmG);
 
-        std::cout << "Random G Expected 10-Yr Losses: "  << std::endl;
+        std::cout << "Random G Expected 5-Yr Losses: "  << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
         #endif
 
@@ -182,7 +182,7 @@ int main(int, char* []) {
         //        recoveries, numSimulations, 1.e-6, 2863311530);
         theBskt->setLossModel(rdlmT);
 
-        std::cout << "Random T Expected 10-Yr Losses: "  << std::endl;
+        std::cout << "Random T Expected 5-Yr Losses: "  << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
 
@@ -207,7 +207,7 @@ int main(int, char* []) {
                 numSimulations, 1.e-6, 2863311530UL);
         theBskt->setLossModel(rdLlmG);
 
-        std::cout << "Random Loss G Expected 10-Yr Losses: "  << std::endl;
+        std::cout << "Random Loss G Expected 5-Yr Losses: "  << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
         // --- T Random Loss model ---------------------
@@ -217,7 +217,7 @@ int main(int, char* []) {
                 numSimulations, 1.e-6, 2863311530UL);
         theBskt->setLossModel(rdLlmT);
 
-        std::cout << "Random Loss T Expected 10-Yr Losses: "  << std::endl;
+        std::cout << "Random Loss T Expected 5-Yr Losses: "  << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
         // Base Correlation model set up to test coherence with base LHP model
@@ -256,7 +256,7 @@ int main(int, char* []) {
 
         theBskt->setLossModel(bcLMG_LHP_Bilin);
 
-        std::cout << "Base Correlation GLHP Expected 10-Yr Losses: "  
+        std::cout << "Base Correlation GLHP Expected 5-Yr Losses: "  
             << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
         #endif

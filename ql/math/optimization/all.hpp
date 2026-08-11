@@ -3,12 +3,14 @@
 
 #include <ql/math/optimization/armijo.hpp>
 #include <ql/math/optimization/bfgs.hpp>
+#include <ql/math/optimization/cmaes.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/math/optimization/endcriteria.hpp>
 #include <ql/math/optimization/goldstein.hpp>
+#include <ql/math/optimization/lbfgsb.hpp>
 #include <ql/math/optimization/leastsquare.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/linesearch.hpp>

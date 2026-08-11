@@ -142,7 +142,7 @@ namespace QuantLib {
 
     std::unique_ptr<CurveState>
     CoterminalSwapCurveState::clone() const {
-        return std::unique_ptr<CurveState>(new CoterminalSwapCurveState(*this));
+        return std::make_unique<CoterminalSwapCurveState>(*this);
     }
 
 }

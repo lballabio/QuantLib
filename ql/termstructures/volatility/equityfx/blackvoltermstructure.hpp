@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,14 +31,24 @@
 
 namespace QuantLib {
 
+    class SmileSection;
+
     //! Black-volatility term structure
     /*! This abstract class defines the interface of concrete
         Black-volatility term structures which will be derived from
         this one.
 
         Volatilities are assumed to be expressed on an annual basis.
+
+        Instances are expected to be held by \c shared_ptr; the default
+        \c smileSectionImpl() adapter uses \c shared_from_this() to keep
+        the surface alive for as long as the returned SmileSection.
     */
-    class BlackVolTermStructure : public VolatilityTermStructure {
+    class BlackVolTermStructure : public VolatilityTermStructure
+#ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+                                  , public ext::enable_shared_from_this<BlackVolTermStructure>
+#endif
+    {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -102,6 +113,17 @@ namespace QuantLib {
                                   Real strike,
                                   bool extrapolate = false) const;
         //@}
+        //! \name Smile
+        //@{
+        //! at-the-money level at time t, or \c Null<Real>() if not known
+        virtual Real atmLevel(Time t) const { return Null<Real>(); }
+        //! returns the smile for a given option date
+        ext::shared_ptr<SmileSection> smileSection(const Date& maturity,
+                                                   bool extrapolate = false) const;
+        //! returns the smile for a given option time
+        ext::shared_ptr<SmileSection> smileSection(Time maturity,
+                                                   bool extrapolate = false) const;
+        //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
@@ -119,6 +141,14 @@ namespace QuantLib {
         virtual Real blackVarianceImpl(Time t, Real strike) const = 0;
         //! Black volatility calculation
         virtual Volatility blackVolImpl(Time t, Real strike) const = 0;
+        /*! Smile section calculation.  The default implementation wraps
+            the vol surface into a SmileSection adapter that holds a
+            \c shared_ptr to \c *this (via \c shared_from_this()), so the
+            surface stays alive for the lifetime of the returned section.
+            Derived classes with a native smile representation can override
+            to return self-contained objects.
+        */
+        virtual ext::shared_ptr<SmileSection> smileSectionImpl(Time t) const;
         //@}
     };
 
@@ -246,6 +276,20 @@ namespace QuantLib {
         checkRange(t, extrapolate);
         checkStrike(strike, extrapolate);
         return blackVarianceImpl(t, strike);
+    }
+
+    inline ext::shared_ptr<SmileSection>
+    BlackVolTermStructure::smileSection(const Date& d,
+                                         bool extrapolate) const {
+        checkRange(d, extrapolate);
+        return smileSectionImpl(timeFromReference(d));
+    }
+
+    inline ext::shared_ptr<SmileSection>
+    BlackVolTermStructure::smileSection(Time t,
+                                         bool extrapolate) const {
+        checkRange(t, extrapolate);
+        return smileSectionImpl(t);
     }
 
     inline void BlackVolTermStructure::accept(AcyclicVisitor& v) {

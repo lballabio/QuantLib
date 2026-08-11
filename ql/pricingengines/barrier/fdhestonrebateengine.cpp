@@ -76,8 +76,7 @@ namespace QuantLib {
         const Size tGridMin = 5;
         const Size tGridAvgSteps = std::max(tGridMin, tGrid_/50);
 
-        const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> vMesher
-            = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>(
+        const auto vMesher = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>(
                   vGrid_, process, leverageFct_, maturity, tGridAvgSteps, 0.0001, mixingFactor_);
 
         // 1.2 The equity mesher
@@ -95,8 +94,7 @@ namespace QuantLib {
             xMax = std::log(arguments_.barrier);
         }
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(
+        const auto equityMesher = ext::make_shared<FdmBlackScholesMesher>(
                 xGrid_,
                 FdmBlackScholesMesher::processHelper(
                     process->s0(), process->dividendYield(),
@@ -104,16 +102,13 @@ namespace QuantLib {
                 maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
-                dividends_));
+                dividends_);
 
-        const ext::shared_ptr<FdmMesher> mesher (
-            new FdmMesherComposite(equityMesher, vMesher));
+        const auto mesher = ext::make_shared<FdmMesherComposite>(equityMesher, vMesher);
 
         // 2. Calculator
-        const ext::shared_ptr<StrikedTypePayoff> rebatePayoff(
-                new CashOrNothingPayoff(Option::Call, 0.0, arguments_.rebate));
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-                                new FdmLogInnerValue(rebatePayoff, mesher, 0));
+        const auto rebatePayoff = ext::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, arguments_.rebate);
+        const auto calculator = ext::make_shared<FdmLogInnerValue>(rebatePayoff, mesher, 0);
 
         // 3. Step conditions
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
@@ -130,16 +125,14 @@ namespace QuantLib {
         FdmBoundaryConditionSet boundaries;
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::DownOut) {
-            boundaries.push_back(FdmBoundaryConditionSet::value_type(
-                new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
-                                         FdmDirichletBoundary::Lower)));
+            boundaries.push_back(ext::make_shared<FdmDirichletBoundary>(
+                mesher, arguments_.rebate, 0, FdmDirichletBoundary::Lower));
 
         }
         if (   arguments_.barrierType == Barrier::UpIn
             || arguments_.barrierType == Barrier::UpOut) {
-            boundaries.push_back(FdmBoundaryConditionSet::value_type(
-                new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
-                                         FdmDirichletBoundary::Upper)));
+            boundaries.push_back(ext::make_shared<FdmDirichletBoundary>(
+                mesher, arguments_.rebate, 0, FdmDirichletBoundary::Upper));
         }
 
         // 5. Solver
@@ -147,9 +140,9 @@ namespace QuantLib {
                                      calculator, maturity,
                                      tGrid_, dampingSteps_ };
 
-        ext::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
+        auto solver = ext::make_shared<FdmHestonSolver>(
                     Handle<HestonProcess>(process), solverDesc, schemeDesc_,
-                    Handle<FdmQuantoHelper>(), leverageFct_, mixingFactor_));
+                    Handle<FdmQuantoHelper>(), leverageFct_, mixingFactor_);
 
         const Real spot = process->s0()->value();
         results_.value = solver->valueAt(spot, process->v0());

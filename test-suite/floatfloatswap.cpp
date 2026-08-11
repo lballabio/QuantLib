@@ -225,6 +225,49 @@ BOOST_AUTO_TEST_CASE(testFairSpreadPayerReceiverConsistency) {
 }
 
 
+BOOST_AUTO_TEST_CASE(testZeroBpsFairSpread) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing float-float swap fair spread calculation with zero BPS...");
+
+    CommonVars vars;
+    vars.nominal = 0.0;
+    auto swap = vars.makeSwap(Swap::Payer, 0.0, 0.0);
+
+    BOOST_CHECK(!swap->isExpired());
+    BOOST_CHECK_EQUAL(swap->legBPS(0), 0.0);
+    BOOST_CHECK_EQUAL(swap->legBPS(1), 0.0);
+
+    BOOST_CHECK_EXCEPTION(
+        swap->fairSpread1(), Error,
+        ExpectedErrorMessage("fair spread 1 not available"));
+    BOOST_CHECK_EXCEPTION(
+        swap->fairSpread2(), Error,
+        ExpectedErrorMessage("fair spread 2 not available"));
+}
+
+
+BOOST_AUTO_TEST_CASE(testExpiredSwapFairSpread) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing float-float swap fair spread calculation for expired swap...");
+
+    CommonVars vars;
+    auto swap = vars.makeSwap(Swap::Payer, 0.0, 0.0, 10);
+
+    Settings::instance().evaluationDate() = vars.settlement + Period(20, Years);
+
+    BOOST_CHECK(swap->isExpired());
+    BOOST_CHECK_EXCEPTION(
+        swap->fairSpread1(), Error,
+        ExpectedErrorMessage("fair spread 1 not available"));
+    BOOST_CHECK_EXCEPTION(
+        swap->fairSpread2(), Error,
+        ExpectedErrorMessage("fair spread 2 not available"));
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
+

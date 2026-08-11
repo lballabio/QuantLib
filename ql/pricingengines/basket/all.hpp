@@ -6,10 +6,12 @@
 #include <ql/pricingengines/basket/denglizhoubasketengine.hpp>
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/basket/fdndimblackscholesvanillaengine.hpp>
+#include <ql/pricingengines/basket/gaussiancopulaspreadengine.hpp>
 #include <ql/pricingengines/basket/kirkengine.hpp>
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/pricingengines/basket/mceuropeanbasketengine.hpp>
 #include <ql/pricingengines/basket/operatorsplittingspreadengine.hpp>
+#include <ql/pricingengines/basket/pearsonspreadengine.hpp>
 #include <ql/pricingengines/basket/singlefactorbsmbasketengine.hpp>
 #include <ql/pricingengines/basket/spreadblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>

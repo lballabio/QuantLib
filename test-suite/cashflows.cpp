@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE(testSettings) {
     //         today's date
 
     Settings::instance().includeReferenceDateEvents() = false;
-    Settings::instance().includeTodaysCashFlows() = ext::nullopt;
+    Settings::instance().includeTodaysCashFlows() = std::nullopt;
 
     CHECK_INCLUSION(0, 0, false);
     CHECK_INCLUSION(0, 1, false);
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(testSettings) {
     //         today's date
 
     Settings::instance().includeReferenceDateEvents() = true;
-    Settings::instance().includeTodaysCashFlows() = ext::nullopt;
+    Settings::instance().includeTodaysCashFlows() = std::nullopt;
 
     CHECK_INCLUSION(0, 0, true);
     CHECK_INCLUSION(0, 1, false);
@@ -165,7 +165,7 @@ BOOST_AUTO_TEST_CASE(testSettings) {
     } while (false);
 
     // no override
-    Settings::instance().includeTodaysCashFlows() = ext::nullopt;
+    Settings::instance().includeTodaysCashFlows() = std::nullopt;
 
     CHECK_NPV(false, 2.0);
     CHECK_NPV(true, 3.0);
@@ -284,7 +284,7 @@ BOOST_AUTO_TEST_CASE(testExCouponDates) {
     // no ex-coupon dates
     Leg l1 = FixedRateLeg(schedule).withNotionals(100.0).withCouponRates(0.03, Actual360());
     for (auto& i : l1) {
-        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
+        ext::shared_ptr<Coupon> c = coupon_cast(i);
         if (c->exCouponDate() != Date()) {
             BOOST_ERROR("ex-coupon date found (none expected)");
         }
@@ -294,7 +294,7 @@ BOOST_AUTO_TEST_CASE(testExCouponDates) {
     ext::shared_ptr<IborIndex> index(new Euribor3M);
     Leg l2 = IborLeg(schedule, index).withNotionals(100.0);
     for (auto& i : l2) {
-        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
+        ext::shared_ptr<Coupon> c = coupon_cast(i);
         if (c->exCouponDate() != Date()) {
             BOOST_ERROR("ex-coupon date found (none expected)");
         }
@@ -306,7 +306,7 @@ BOOST_AUTO_TEST_CASE(testExCouponDates) {
                  .withCouponRates(0.03, Actual360())
                  .withExCouponPeriod(Period(2, Days), NullCalendar(), Unadjusted, false);
     for (auto& i : l5) {
-        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
+        ext::shared_ptr<Coupon> c = coupon_cast(i);
         Date expected = c->accrualEndDate() - 2;
         if (c->exCouponDate() != expected) {
             BOOST_ERROR("ex-coupon date = " << c->exCouponDate() << " (" << expected
@@ -318,7 +318,7 @@ BOOST_AUTO_TEST_CASE(testExCouponDates) {
                  .withNotionals(100.0)
                  .withExCouponPeriod(Period(2, Days), NullCalendar(), Unadjusted, false);
     for (auto& i : l6) {
-        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
+        ext::shared_ptr<Coupon> c = coupon_cast(i);
         Date expected = c->accrualEndDate() - 2;
         if (c->exCouponDate() != expected) {
             BOOST_ERROR("ex-coupon date = " << c->exCouponDate() << " (" << expected
@@ -332,7 +332,7 @@ BOOST_AUTO_TEST_CASE(testExCouponDates) {
                  .withCouponRates(0.03, Actual360())
                  .withExCouponPeriod(Period(2, Days), TARGET(), Preceding, false);
     for (auto& i : l7) {
-        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
+        ext::shared_ptr<Coupon> c = coupon_cast(i);
         Date expected = TARGET().advance(c->accrualEndDate(), -2, Days);
         if (c->exCouponDate() != expected) {
             BOOST_ERROR("ex-coupon date = " << c->exCouponDate() << " (" << expected
@@ -344,7 +344,7 @@ BOOST_AUTO_TEST_CASE(testExCouponDates) {
                  .withNotionals(100.0)
                  .withExCouponPeriod(Period(2, Days), TARGET(), Preceding, false);
     for (auto& i : l8) {
-        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
+        ext::shared_ptr<Coupon> c = coupon_cast(i);
         Date expected = TARGET().advance(c->accrualEndDate(), -2, Days);
         if (c->exCouponDate() != expected) {
             BOOST_ERROR("ex-coupon date = " << c->exCouponDate() << " (" << expected
@@ -368,7 +368,7 @@ BOOST_AUTO_TEST_CASE(testIrregularFirstCouponReferenceDatesAtEndOfMonth) {
         .withCouponRates(0.01, Actual360());
 
     ext::shared_ptr<Coupon> firstCoupon =
-        ext::dynamic_pointer_cast<Coupon>(leg.front());
+        coupon_cast(leg.front());
 
     if (firstCoupon->referencePeriodStart() != Date(31, August, 2016))
         BOOST_ERROR("Expected reference start date at end of month, "
@@ -394,7 +394,7 @@ BOOST_AUTO_TEST_CASE(testIrregularFirstCouponReferenceDatesAtEndOfCalendarMonth)
         .withCouponRates(0.01875, ActualActual(ActualActual::ISMA));
 
     ext::shared_ptr<Coupon> firstCoupon =
-        ext::dynamic_pointer_cast<Coupon>(leg.front());
+        coupon_cast(leg.front());
     if (firstCoupon->referencePeriodStart() != Date(30, September, 2017))
         BOOST_ERROR("Expected reference start date at end of calendar day of the month, "
                     "got " << firstCoupon->referencePeriodStart());
@@ -418,7 +418,7 @@ BOOST_AUTO_TEST_CASE(testIrregularLastCouponReferenceDatesAtEndOfMonth) {
             .withCouponRates(0.01, Actual360());
 
     ext::shared_ptr<Coupon> lastCoupon =
-            ext::dynamic_pointer_cast<Coupon>(leg.back());
+            coupon_cast(leg.back());
 
     if (lastCoupon->referencePeriodEnd() != Date(31, August, 2018))
         BOOST_ERROR("Expected reference end date at end of month, "
@@ -436,7 +436,7 @@ BOOST_AUTO_TEST_CASE(testPartialScheduleLegConstruction) {
                             .backwards();
     // same schedule, date based, with metadata
     Schedule schedule2(schedule.dates(), NullCalendar(), Unadjusted, Unadjusted,
-                       6 * Months, ext::nullopt, schedule.endOfMonth(),
+                       6 * Months, std::nullopt, schedule.endOfMonth(),
                        schedule.isRegular());
     // same schedule, date based, without metadata
     Schedule schedule3(schedule.dates());

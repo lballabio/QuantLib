@@ -23,8 +23,6 @@
 
 namespace QuantLib {
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     InflationTermStructure::InflationTermStructure(
                                         Date baseDate,
                                         Frequency frequency,
@@ -69,8 +67,6 @@ namespace QuantLib {
                        "Seasonality inconsistent with inflation term structure");
         }
     }
-
-    QL_DEPRECATED_ENABLE_WARNING
 
     Date InflationTermStructure::baseDate() const {
         return baseDate_;

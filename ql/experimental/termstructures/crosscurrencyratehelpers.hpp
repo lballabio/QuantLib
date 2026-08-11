@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2021 Marcin Rybacki
  Copyright (C) 2025 Uzair Beg
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,10 @@
 #define quantlib_crosscurrencyratehelpers_hpp
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
+#include <ql/instruments/constnotionalcrosscurrencybasisswap.hpp>
+#include <ql/instruments/constnotionalcrosscurrencyfixedvsfloatingswap.hpp>
+#include <ql/experimental/fx/mtmcrosscurrencybasisswap.hpp>
+#include <ql/optional.hpp>
 
 namespace QuantLib {
 
@@ -75,8 +80,10 @@ namespace QuantLib {
                                              Handle<YieldTermStructure> collateralCurve,
                                              bool isFxBaseCurrencyCollateralCurrency,
                                              bool isBasisOnFxBaseCurrencyLeg,
-                                             Frequency paymentFrequency = NoFrequency,
-                                             Integer paymentLag = 0);
+                                             std::optional<Frequency> paymentFrequency = std::nullopt,
+                                             Integer paymentLag = 0,
+                                             std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
+                                             std::optional<bool> useIndexedCoupons = std::nullopt);
 
         void initializeDates() override;
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
@@ -86,8 +93,12 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> quoteCcyIdx_;
         bool isFxBaseCurrencyCollateralCurrency_;
         bool isBasisOnFxBaseCurrencyLeg_;
-        Frequency paymentFrequency_;
+        std::optional<Frequency> paymentFrequency_;
+        std::optional<Frequency> quoteCcyPaymentFrequency_;
+        std::optional<bool> useIndexedCoupons_;
 
+        Schedule baseCcySchedule_;
+        Schedule quoteCcySchedule_;
         Leg baseCcyIborLeg_;
         Leg quoteCcyIborLeg_;
     };
@@ -118,6 +129,21 @@ namespace QuantLib {
     */
     class ConstNotionalCrossCurrencyBasisSwapRateHelper : public CrossCurrencyBasisSwapRateHelperBase {
       public:
+        /*! \param paymentFrequency
+                payment frequency of the base-currency leg; if left unset (the
+                default) the schedule is derived from the base-currency index tenor.
+            \param paymentLag
+                coupon payment lag, in days, applied to both legs (default: 0).
+                Notional exchanges remain on the effective and maturity dates.
+            \param quoteCurrencyPaymentFrequency
+                payment frequency of the quote-currency leg; if left unset (the
+                default) it defaults to \c paymentFrequency, and if that is unset as
+                well the schedule is derived from the quote-currency index tenor.
+            \param useIndexedCoupons
+                if provided, overrides the global IborCoupon setting for both legs.
+            In both frequency parameters, \c NoFrequency is accepted as a synonym for
+            an unset (null) value.
+        */
         ConstNotionalCrossCurrencyBasisSwapRateHelper(
             const Handle<Quote>& basis,
             const Period& tenor,
@@ -130,24 +156,35 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& collateralCurve,
             bool isFxBaseCurrencyCollateralCurrency,
             bool isBasisOnFxBaseCurrencyLeg,
-            Frequency paymentFrequency = NoFrequency,
-            Integer paymentLag = 0);
+            std::optional<Frequency> paymentFrequency = std::nullopt,
+            Integer paymentLag = 0,
+            std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
+            std::optional<bool> useIndexedCoupons = std::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+
+        const ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap>& swap() const { return swap_; }
         //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
+      protected:
+        void initializeDates() override;
+
+      private:
+        void buildSwap();
+
+        ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> swap_;
     };
 
 
     //! Rate helper for bootstrapping over market-to-market cross-currency basis swaps
     /*!
     Helper for a cross currency swap with resetting notional.
-    This means that at each interest payment the notional on the MtM
-    leg is being reset to reflect the changes in the FX rate - reducing
+    This means that at each accrual-period boundary the notional on the MtM
+    leg is reset to reflect changes in the FX rate - reducing
     the counterparty and FX risk of the structure.
 
     For more details see:
@@ -157,6 +194,27 @@ namespace QuantLib {
     */
     class MtMCrossCurrencyBasisSwapRateHelper : public CrossCurrencyBasisSwapRateHelperBase {
       public:
+        /*! \param paymentFrequency
+                payment frequency of the base-currency leg; if left unset (the
+                default) the schedule is derived from the base-currency index tenor.
+            \param paymentLag
+                coupon payment lag, in days, applied to both legs (default: 0).
+                Notional exchanges remain on the effective and maturity dates.
+            \param quoteCurrencyPaymentFrequency
+                payment frequency of the quote-currency leg; if left unset (the
+                default) it defaults to \c paymentFrequency, and if that is unset as
+                well the schedule is derived from the quote-currency index tenor.
+            \param fxResetFixingDays
+                number of business days by which each FX fixing precedes its
+                accrual-start value date (default: 0).
+            \param fxResetFixingCalendar
+                calendar used for the FX fixing offset; for a non-zero fixing lag,
+                \p calendar is used if this is empty.
+            \param useIndexedCoupons
+                if provided, overrides the global IborCoupon setting for both legs.
+            In both frequency parameters, \c NoFrequency is accepted as a synonym for
+            an unset (null) value.
+        */
         MtMCrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
                                             const Period& tenor,
                                             Natural fixingDays,
@@ -169,18 +227,39 @@ namespace QuantLib {
                                             bool isFxBaseCurrencyCollateralCurrency,
                                             bool isBasisOnFxBaseCurrencyLeg,
                                             bool isFxBaseCurrencyLegResettable,
-                                            Frequency paymentFrequency = NoFrequency,
-                                            Integer paymentLag = 0);
+                                            std::optional<Frequency> paymentFrequency = std::nullopt,
+                                            Integer paymentLag = 0,
+                                            std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
+                                            Natural fxResetFixingDays = 0,
+                                            Calendar fxResetFixingCalendar = Calendar(),
+                                            std::optional<bool> useIndexedCoupons = std::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+        //@}
+        //! \name Inspectors
+        //@{
+        //! the underlying par swap: unit notionals, zero spreads, spot FX = 1
+        const ext::shared_ptr<MtMCrossCurrencyBasisSwap>& swap() const { return swap_; }
+        //! the number of business days from an FX value date to its fixing date
+        Natural fxResetFixingDays() const { return fxResetFixingDays_; }
+        //! the calendar used to determine FX fixing dates
+        const Calendar& fxResetFixingCalendar() const { return fxResetFixingCalendar_; }
         //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
+      protected:
+        void initializeDates() override;
+
       private:
+        void buildSwap();
+
         bool isFxBaseCurrencyLegResettable_;
+        Natural fxResetFixingDays_;
+        Calendar fxResetFixingCalendar_;
+        ext::shared_ptr<MtMCrossCurrencyBasisSwap> swap_;
     };
 
 
@@ -192,6 +271,12 @@ namespace QuantLib {
 
     The collateralOnFixedLeg flag determines which leg is discounted using the provided
     collateral curve, while the other leg’s discount curve is the one being bootstrapped.
+
+    The paymentLag parameter, in days, applies to the coupons of both legs;
+    notional exchanges remain on the effective and maturity dates.
+
+    If provided, the useIndexedCoupons parameter overrides the global
+    IborCoupon setting for the floating leg.
     */
     class ConstNotionalCrossCurrencySwapRateHelper : public CrossCurrencySwapRateHelperBase {
       public:
@@ -207,10 +292,15 @@ namespace QuantLib {
             const ext::shared_ptr<IborIndex>& floatIndex,
             const Handle<YieldTermStructure>& collateralCurve,
             bool collateralOnFixedLeg,
-            Integer paymentLag = 0);
+            Integer paymentLag = 0,
+            std::optional<bool> useIndexedCoupons = std::nullopt);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
+
+        const ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap>& swap() const {
+            return xccySwap_;
+        }
 
       protected:
         void initializeDates() override;
@@ -221,9 +311,9 @@ namespace QuantLib {
         DayCounter fixedDayCount_;
         ext::shared_ptr<IborIndex> floatIndex_;
         bool collateralOnFixedLeg_;
+        std::optional<bool> useIndexedCoupons_;
 
-        Leg fixedLeg_;
-        Leg floatLeg_;
+        ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> xccySwap_;
     };
 
 }

@@ -60,7 +60,7 @@ namespace QuantLib {
         std::vector<SparseMatrix> toMatrixDecomp() const override;
 
       private:
-        const ext::shared_ptr<YieldTermStructure>& rTS_;
+        const ext::shared_ptr<YieldTermStructure> rTS_;
         const Size direction_;
         const TripleBandLinearOp dxxMap_;
         TripleBandLinearOp mapT_;

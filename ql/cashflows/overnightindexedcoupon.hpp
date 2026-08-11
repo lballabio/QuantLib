@@ -34,6 +34,7 @@
 #include <ql/cashflows/rateaveraging.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/optional.hpp>
 
 
 namespace QuantLib {
@@ -73,7 +74,8 @@ namespace QuantLib {
                     bool compoundSpread = false,
                     const Date& rateComputationStartDate = Date(),
                     const Date& rateComputationEndDate = Date(),
-                    const Date& exCouponDate = Date());
+                    const Date& exCouponDate = Date(),
+                    const std::optional<Integer>& roundingPrecision = std::nullopt);
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded
@@ -111,6 +113,7 @@ namespace QuantLib {
         //! the date when the coupon is fully determined
         Date fixingDate() const override { return fixingDates_.back(); }
         Real accruedAmount(const Date&) const override;
+        Real amount() const override;
         //@}
         //! \name Visitability
         //@{
@@ -137,7 +140,7 @@ namespace QuantLib {
         bool applyObservationShift_;
         bool compoundSpreadDaily_;
         Date rateComputationStartDate_, rateComputationEndDate_;
-
+        std::optional<Integer> roundingPrecision_;
         Rate averageRate(const Date& date) const;
     };
 
@@ -228,7 +231,7 @@ namespace QuantLib {
         OvernightLeg& withLockoutDays(Natural lockoutDays);
         OvernightLeg& withObservationShift(bool applyObservationShift = true);
         OvernightLeg& compoundingSpreadDaily(bool compoundSpreadDaily = true);
-        OvernightLeg& withLookback(const Period& lookback);
+        OvernightLeg& withRoundingPrecision(Integer roundingPrecision);
         OvernightLeg& withCaps(Rate cap);
         OvernightLeg& withCaps(const std::vector<Rate>& caps);
         OvernightLeg& withFloors(Rate floor);
@@ -236,7 +239,7 @@ namespace QuantLib {
         OvernightLeg& withNakedOption(bool nakedOption);
         OvernightLeg& withDailyCapFloor(bool dailyCapFloor = true);
         OvernightLeg& inArrears(bool inArrears);
-        OvernightLeg& withLastRecentPeriod(const ext::optional<Period>& lastRecentPeriod);
+        OvernightLeg& withLastRecentPeriod(const std::optional<Period>& lastRecentPeriod);
         OvernightLeg& withLastRecentPeriodCalendar(const Calendar& lastRecentPeriodCalendar);
         OvernightLeg& withPaymentDates(const std::vector<Date>& paymentDates);
         OvernightLeg& withCouponPricer(const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer);
@@ -258,11 +261,12 @@ namespace QuantLib {
         Natural lockoutDays_ = 0;
         bool applyObservationShift_ = false;
         bool compoundSpreadDaily_ = false;
+        std::optional<Integer> roundingPrecision_;
         std::vector<Rate> caps_, floors_;
         bool nakedOption_ = false;
         bool dailyCapFloor_ = false;
         bool inArrears_ = true;
-        ext::optional<Period> lastRecentPeriod_;
+        std::optional<Period> lastRecentPeriod_;
         Calendar lastRecentPeriodCalendar_;
         std::vector<Date> paymentDates_;
         ext::shared_ptr<OvernightIndexedCouponPricer> couponPricer_;

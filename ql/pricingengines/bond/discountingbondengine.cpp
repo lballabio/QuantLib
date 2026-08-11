@@ -27,7 +27,7 @@ namespace QuantLib {
 
     DiscountingBondEngine::DiscountingBondEngine(
         Handle<YieldTermStructure> discountCurve,
-        const ext::optional<bool>& includeSettlementDateFlows)
+        const std::optional<bool>& includeSettlementDateFlows)
     : discountCurve_(std::move(discountCurve)),
       includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(discountCurve_);

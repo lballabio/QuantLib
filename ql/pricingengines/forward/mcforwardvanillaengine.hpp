@@ -74,9 +74,8 @@ namespace QuantLib {
             TimeGrid grid = this->timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
-            return ext::shared_ptr<path_generator_type>(
-                         new path_generator_type(process_, grid,
-                                                 gen, brownianBridge_));
+            return ext::make_shared<path_generator_type>(process_, grid,
+                                                 gen, brownianBridge_);
         }
         // data members
         ext::shared_ptr<StochasticProcess> process_;
@@ -159,8 +158,7 @@ namespace QuantLib {
         Real moneyness = this->arguments_.moneyness;
         Real strike = moneyness * spot;
 
-        ext::shared_ptr<StrikedTypePayoff> newPayoff(new
-            PlainVanillaPayoff(payoff->optionType(), strike));
+        auto newPayoff = ext::make_shared<PlainVanillaPayoff>(payoff->optionType(), strike);
 
         auto* controlArguments = dynamic_cast<VanillaOption::arguments*>(controlPE->getArguments());
 

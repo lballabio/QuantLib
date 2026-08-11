@@ -25,6 +25,7 @@
 #include <ql/indexes/ibor/kofr.hpp>
 #include <ql/indexes/ibor/libor.hpp>
 #include <ql/indexes/ibor/mosprime.hpp>
+#include <ql/indexes/ibor/nibor.hpp>
 #include <ql/indexes/ibor/nzdlibor.hpp>
 #include <ql/indexes/ibor/nzocr.hpp>
 #include <ql/indexes/ibor/pribor.hpp>
@@ -32,6 +33,7 @@
 #include <ql/indexes/ibor/saron.hpp>
 #include <ql/indexes/ibor/seklibor.hpp>
 #include <ql/indexes/ibor/shibor.hpp>
+#include <ql/indexes/ibor/shir.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/indexes/ibor/sonia.hpp>
 #include <ql/indexes/ibor/swestr.hpp>

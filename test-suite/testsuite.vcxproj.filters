@@ -368,6 +368,9 @@
     <ClCompile Include="rngtraits.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="roughhestonmodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="rounding.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -423,6 +426,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tracing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="trinomialtree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="twoassetbarrieroption.cpp">
@@ -508,6 +514,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="basisswapratehelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="constnotionalcrosscurrencybasisswap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mtmcrosscurrencybasisswap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="constnotionalcrosscurrencyfixedvsfloatingswap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="constnotionalcrosscurrencyswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="crosscurrencyratehelpers.cpp">

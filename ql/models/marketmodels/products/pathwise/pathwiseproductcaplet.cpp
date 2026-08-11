@@ -94,7 +94,7 @@ namespace QuantLib {
     std::unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseMultiCaplet::clone() const 
     {
-        return std::unique_ptr<MarketModelPathwiseMultiProduct>(new MarketModelPathwiseMultiCaplet(*this));
+        return std::make_unique<MarketModelPathwiseMultiCaplet>(*this);
     }
 
     std::vector<Size> MarketModelPathwiseMultiCaplet::suggestedNumeraires() const
@@ -241,7 +241,7 @@ namespace QuantLib {
     std::unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseMultiDeflatedCaplet::clone() const 
     {
-        return std::unique_ptr<MarketModelPathwiseMultiProduct>(new MarketModelPathwiseMultiDeflatedCaplet(*this));
+        return std::make_unique<MarketModelPathwiseMultiDeflatedCaplet>(*this);
     }
 
     std::vector<Size> MarketModelPathwiseMultiDeflatedCaplet::suggestedNumeraires() const
@@ -375,7 +375,7 @@ namespace QuantLib {
     std::unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseMultiDeflatedCap::clone() const
     {
-        return std::unique_ptr<MarketModelPathwiseMultiProduct>(new MarketModelPathwiseMultiDeflatedCap(*this));
+        return std::make_unique<MarketModelPathwiseMultiDeflatedCap>(*this);
     }
 
 }

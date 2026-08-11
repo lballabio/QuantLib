@@ -53,7 +53,7 @@ namespace QuantLib {
             VolatilityType type = ShiftedLognormal,
             Real displacement = 0.0,
             bool dontThrow = false,
-            ext::optional<Period> optionletFrequency = ext::nullopt);
+            std::optional<Period> optionletFrequency = std::nullopt);
 
         const Matrix& capFloorPrices() const;
         const Matrix &capletVols() const;

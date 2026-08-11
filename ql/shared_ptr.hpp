@@ -43,6 +43,7 @@ namespace QuantLib::ext {
         using std::static_pointer_cast;          // NOLINT(misc-unused-using-decls)
         using std::dynamic_pointer_cast;         // NOLINT(misc-unused-using-decls)
         using std::enable_shared_from_this;      // NOLINT(misc-unused-using-decls)
+        using std::bad_weak_ptr;                 // NOLINT(misc-unused-using-decls)
         #else
         using boost::shared_ptr;                 // NOLINT(misc-unused-using-decls)
         using boost::weak_ptr;                   // NOLINT(misc-unused-using-decls)
@@ -50,6 +51,7 @@ namespace QuantLib::ext {
         using boost::static_pointer_cast;        // NOLINT(misc-unused-using-decls)
         using boost::dynamic_pointer_cast;       // NOLINT(misc-unused-using-decls)
         using boost::enable_shared_from_this;    // NOLINT(misc-unused-using-decls)
+        using boost::bad_weak_ptr;               // NOLINT(misc-unused-using-decls)
         #endif
 
     }

@@ -42,6 +42,7 @@ namespace QuantLib {
 
     class SwapIndex;
     class Quote;
+    class FloatingRateCouponPricer;
 
     typedef BootstrapHelper<YieldTermStructure> RateHelper;
     typedef RelativeDateBootstrapHelper<YieldTermStructure>
@@ -183,8 +184,8 @@ namespace QuantLib {
       private:
         void initializeDates() override;
         Date fixingDate_;
-        ext::optional<Period> periodToStart_;
-        ext::optional<Natural> immOffsetStart_, immOffsetEnd_;
+        std::optional<Period> periodToStart_;
+        std::optional<Natural> immOffsetStart_, immOffsetEnd_;
         Pillar::Choice pillarChoice_;
         ext::shared_ptr<IborIndex> iborIndex_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
@@ -206,7 +207,8 @@ namespace QuantLib {
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
-                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
+                       const std::optional<bool>& useIndexedCoupons = std::nullopt,
+                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {});
         SwapRateHelper(const std::variant<Rate, Handle<Quote>>& rate,
                        const Period& tenor,
                        Calendar calendar,
@@ -224,8 +226,9 @@ namespace QuantLib {
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
-                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt,
-                       const ext::optional<BusinessDayConvention>& floatConvention = ext::nullopt);
+                       const std::optional<bool>& useIndexedCoupons = std::nullopt,
+                       const std::optional<BusinessDayConvention>& floatConvention = std::nullopt,
+                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {});
         SwapRateHelper(const std::variant<Rate, Handle<Quote>>& rate,
                        const Date& startDate,
                        const Date& endDate,
@@ -242,8 +245,9 @@ namespace QuantLib {
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
-                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt,
-                       const ext::optional<BusinessDayConvention>& floatConvention = ext::nullopt);
+                       const std::optional<bool>& useIndexedCoupons = std::nullopt,
+                       const std::optional<BusinessDayConvention>& floatConvention = std::nullopt,
+                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {});
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -280,8 +284,9 @@ namespace QuantLib {
         Period fwdStart_;
         Handle<YieldTermStructure> discountHandle_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
-        ext::optional<bool> useIndexedCoupons_;
-        ext::optional<BusinessDayConvention> floatConvention_;
+        std::optional<bool> useIndexedCoupons_;
+        std::optional<BusinessDayConvention> floatConvention_;
+        ext::shared_ptr<FloatingRateCouponPricer> couponPricer_;
     };
 
 

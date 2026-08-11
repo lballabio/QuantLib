@@ -184,7 +184,7 @@ namespace QuantLib {
 
             Real gx = 0.0, gy = 0.0;
             for (const auto& i : swapFixedLeg) {
-                ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
+                ext::shared_ptr<Coupon> c = coupon_cast(i);
                 Real yf = c->accrualPeriod();
                 Date d = c->date();
                 Real pv = yf * discountCurve_->discount(d);

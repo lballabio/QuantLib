@@ -43,6 +43,7 @@ namespace QuantLib {
         DayCounter dayCounter() const override;
         Natural settlementDays() const override;
         const Date& referenceDate() const override;
+        Real atmLevel(Time t) const override;
 
       protected:
         Real blackVarianceImpl(Time t, Real strike) const override;

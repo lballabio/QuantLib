@@ -25,6 +25,7 @@ this_include_HEADERS = \
     hestonrndcalculator.hpp \
     localvolrndcalculator.hpp \
     riskneutraldensitycalculator.hpp \
+    smilesectionrndcalculator.hpp \
     squarerootprocessrndcalculator.hpp
 
 cpp_files = \
@@ -48,6 +49,7 @@ cpp_files = \
     hestonrndcalculator.cpp \
     localvolrndcalculator.cpp \
     riskneutraldensitycalculator.cpp \
+    smilesectionrndcalculator.cpp \
     squarerootprocessrndcalculator.cpp
 
 if UNITY_BUILD

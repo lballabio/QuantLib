@@ -53,8 +53,8 @@ namespace QuantLib {
                                    const Real spread2,
                                    const Real cappedRate2,
                                    const Real flooredRate2,
-                                   const ext::optional<BusinessDayConvention>& paymentConvention1,
-                                   const ext::optional<BusinessDayConvention>& paymentConvention2)
+                                   const std::optional<BusinessDayConvention>& paymentConvention1,
+                                   const std::optional<BusinessDayConvention>& paymentConvention2)
     : Swap(2), type_(type), nominal1_(std::vector<Real>(schedule1.size() - 1, nominal1)),
       nominal2_(std::vector<Real>(schedule2.size() - 1, nominal2)),
       schedule1_(std::move(schedule1)), schedule2_(std::move(schedule2)),
@@ -93,8 +93,8 @@ namespace QuantLib {
                                    std::vector<Real> spread2,
                                    std::vector<Real> cappedRate2,
                                    std::vector<Real> flooredRate2,
-                                   const ext::optional<BusinessDayConvention>& paymentConvention1,
-                                   const ext::optional<BusinessDayConvention>& paymentConvention2)
+                                   const std::optional<BusinessDayConvention>& paymentConvention1,
+                                   const std::optional<BusinessDayConvention>& paymentConvention2)
     : Swap(2), type_(type), nominal1_(std::move(nominal1)), nominal2_(std::move(nominal2)),
       schedule1_(std::move(schedule1)), schedule2_(std::move(schedule2)),
       index1_(std::move(index1)), index2_(std::move(index2)), gearing1_(std::move(gearing1)),
@@ -109,8 +109,8 @@ namespace QuantLib {
     }
 
     void FloatFloatSwap::init(
-        ext::optional<BusinessDayConvention> paymentConvention1,
-        ext::optional<BusinessDayConvention> paymentConvention2) {
+        std::optional<BusinessDayConvention> paymentConvention1,
+        std::optional<BusinessDayConvention> paymentConvention2) {
 
         QL_REQUIRE(nominal1_.size() == schedule1_.size() - 1,
                    "nominal1 size (" << nominal1_.size()
@@ -557,13 +557,13 @@ namespace QuantLib {
         }
 
         if (fairSpread1_ == Null<Spread>()) {
-            if (!legBPS_.empty() && legBPS_[0] != Null<Real>()) {
+            if (!legBPS_.empty() && legBPS_[0] != Null<Real>() && legBPS_[0] != 0.0) {
                 Real currentSpread = spread1_.empty() ? 0.0 : spread1_[0];
                 fairSpread1_ = currentSpread - NPV_/(legBPS_[0]/basisPoint);
             }
         }
         if (fairSpread2_ == Null<Spread>()) {
-            if (legBPS_.size() > 1 && legBPS_[1] != Null<Real>()) {
+            if (legBPS_.size() > 1 && legBPS_[1] != Null<Real>() && legBPS_[1] != 0.0) {
                 Real currentSpread = spread2_.empty() ? 0.0 : spread2_[0];
                 fairSpread2_ = currentSpread - NPV_/(legBPS_[1]/basisPoint);
             }

@@ -72,7 +72,7 @@ namespace QuantLib {
             Real minStrike = Null<Real>(),
             Real maxStrike = Null<Real>(),
             ext::shared_ptr<OptimizationMethod> optimizationMethod =
-                ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt),
+                ext::make_shared<LevenbergMarquardt>(),
             const EndCriteria& endCriteria = EndCriteria(500, 100, 1e-12, 1e-10, 1e-10));
 
         Date maxDate() const;

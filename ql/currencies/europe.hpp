@@ -191,6 +191,17 @@ namespace QuantLib {
         LVLCurrency();
     };
 
+    //! Macedonian denar
+    /*! The ISO three-letter code is MKD; the numeric code is 807.
+        It is divided in 100 deni.
+
+        \ingroup currencies
+    */
+    class MKDCurrency : public Currency {
+      public:
+        MKDCurrency();
+    };
+
     //! Norwegian krone
     /*! The ISO three-letter code is NOK; the numeric code is 578.
         It is divided in 100 øre.

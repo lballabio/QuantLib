@@ -88,7 +88,7 @@ namespace QuantLib
     std::unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseSwap::clone() const 
     {
-        return std::unique_ptr<MarketModelPathwiseMultiProduct>(new MarketModelPathwiseSwap(*this));
+        return std::make_unique<MarketModelPathwiseSwap>(*this);
     }
 
     std::vector<Size> MarketModelPathwiseSwap::suggestedNumeraires() const

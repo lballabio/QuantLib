@@ -70,7 +70,7 @@ namespace QuantLib {
 
     std::unique_ptr<ExerciseStrategy<CurveState>>
     SwapRateTrigger::clone() const {
-        return std::unique_ptr<ExerciseStrategy<CurveState>>(new SwapRateTrigger(*this));
+        return std::make_unique<SwapRateTrigger>(*this);
     }
 
 }

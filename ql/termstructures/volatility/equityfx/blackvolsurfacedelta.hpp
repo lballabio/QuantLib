@@ -2,6 +2,7 @@
  Copyright (C) 2019 Quaternion Risk Management Ltd
  Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
  Copyright (C) 2025 Paolo D'Elia
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -90,7 +91,7 @@ namespace QuantLib {
                                     const Handle<YieldTermStructure>& foreignTS,
                                     DeltaVolQuote::DeltaType deltaType = DeltaVolQuote::DeltaType::Spot,
                                     DeltaVolQuote::AtmType atmType = DeltaVolQuote::AtmType::AtmDeltaNeutral,
-                                    ext::optional<DeltaVolQuote::DeltaType> atmDeltaType = ext::nullopt,
+                                    std::optional<DeltaVolQuote::DeltaType> atmDeltaType = std::nullopt,
                                     SmileInterpolationMethod interpolationMethod =
                                         SmileInterpolationMethod::Linear,
                                     bool flatStrikeExtrapolation = false,
@@ -99,7 +100,7 @@ namespace QuantLib {
                                     const Period& switchTenor = 0 * Days,
                                     DeltaVolQuote::DeltaType longTermDeltaType = DeltaVolQuote::DeltaType::Fwd,
                                     DeltaVolQuote::AtmType longTermAtmType = DeltaVolQuote::AtmType::AtmDeltaNeutral,
-                                    ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType = ext::nullopt);
+                                    std::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType = std::nullopt);
         //@}
 
         //! \name TermStructure interface
@@ -110,6 +111,11 @@ namespace QuantLib {
         //@{
         Real minStrike() const override { return 0; }
         Real maxStrike() const override { return QL_MAX_REAL; }
+        //@}
+        //! \name BlackVolTermStructure interface
+        //@{
+        //! at-the-money level (forward) at time t
+        Real atmLevel(Time t) const override;
         //@}
         //! \name Visitability
         //@{
@@ -187,9 +193,6 @@ namespace QuantLib {
         DeltaVolQuote::AtmType longTermAtmType_;
         DeltaVolQuote::DeltaType longTermAtmDeltaType_;
         Real switchTime_;
-
-        // calculate forward for time $t$
-        Real forward(Time t) const;
     };
 
     // inline definitions

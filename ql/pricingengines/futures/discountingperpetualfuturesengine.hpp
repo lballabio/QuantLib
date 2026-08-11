@@ -49,9 +49,9 @@ namespace QuantLib {
             InterpolationType fundingInterpType = PiecewiseConstant,
             Real maxT = 60.);
         void calculate() const override;
-        Handle<YieldTermStructure> domesticDiscountCurve() const { return domesticDiscountCurve_; }
-        Handle<YieldTermStructure> foreignDiscountCurve() const { return foreignDiscountCurve_; }
-        Handle<Quote> assetSpot() const { return assetSpot_; }
+        const Handle<YieldTermStructure>& domesticDiscountCurve() const { return domesticDiscountCurve_; }
+        const Handle<YieldTermStructure>& foreignDiscountCurve() const { return foreignDiscountCurve_; }
+        const Handle<Quote>& assetSpot() const { return assetSpot_; }
         const std::vector<Time>& fundingTimes() const { return fundingTimes_; }
         const std::vector<Rate>& fundingRates() const { return fundingRates_; }
         const std::vector<Spread>& interestRateDiffs() const { return interestRateDiffs_; }

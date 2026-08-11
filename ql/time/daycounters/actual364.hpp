@@ -42,7 +42,7 @@ namespace QuantLib {
         };
       public:
         Actual364()
-        : DayCounter(ext::shared_ptr<DayCounter::Impl>(new Actual364::Impl)) {}
+        : DayCounter(ext::make_shared<Actual364::Impl>()) {}
     };
 
 }

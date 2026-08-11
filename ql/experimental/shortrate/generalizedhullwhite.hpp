@@ -127,10 +127,14 @@ namespace QuantLib {
         //! vector to pass to 'calibrate' to fit only volatility
         std::vector<bool> fixedReversion() const;
 
-      protected:
-        //Analytical calibration of HW
         Real a() const { return a_(0.0); }
         Real sigma() const { return sigma_(0.0); }
+
+        std::function<Real (Time)> speed() const { return speed_; }
+        std::function<Real (Time)> vol() const { return vol_; }
+
+      protected:
+        //Analytical calibration of HW
         void generateArguments() override;
         Real A(Time t, Time T) const override;
         Real B(Time t, Time T) const override;
@@ -148,9 +152,6 @@ namespace QuantLib {
         std::vector<Time> volperiods_;
         Interpolation speed_;
         Interpolation vol_;
-
-        std::function<Real (Time)> speed() const;
-        std::function<Real (Time)> vol() const;
 
         Parameter& a_;
         Parameter& sigma_;

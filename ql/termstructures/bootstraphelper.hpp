@@ -121,7 +121,17 @@ namespace QuantLib {
 
     //! Bootstrap helper with date schedule relative to global evaluation date
     /*! Derived classes must takes care of rebuilding the date schedule when
-        the global evaluation date changes
+        the global evaluation date changes.
+
+        \warning Using this helper together with a bootstrapped curve constructed 
+                 with a fixed reference date causes the curve to re-bootstrap on 
+                 every evaluation date change, even though the result is identical. 
+                 This is because the helper registers with the global evaluation 
+                 date and notifies the curve on every change. To avoid the unnecessary 
+                 work, either:
+                 - call \c freeze() on the curve after the initial bootstrap; 
+                 - use the fixed-effective-date constructors of the helpers so that 
+                 they do not register with the global evaluation date at all.
     */
     template <class TS>
     class RelativeDateBootstrapHelper : public BootstrapHelper<TS> {

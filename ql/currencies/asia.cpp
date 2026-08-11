@@ -255,5 +255,11 @@ namespace QuantLib {
         data_ = lkrData;
     }
 
+    // Uzbekistani Som
+    UZSCurrency::UZSCurrency() {
+        static auto uzsData = ext::make_shared<Data>("Uzbekistani Som", "UZS", 860, "UZS", "", 100, Rounding());
+        data_ = uzsData;
+    }
+
 }
 
