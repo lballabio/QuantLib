@@ -54,10 +54,6 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 BOOST_AUTO_TEST_SUITE(CrossCurrencyRateHelpersTests)
 
 namespace {
-    struct ExchangeRateManagerCleaner { // NOLINT(cppcoreguidelines-special-member-functions)
-        ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
-        ~ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
-    };
 
     struct IborCouponSettingsRestorer { // NOLINT(cppcoreguidelines-special-member-functions)
         bool initiallyUsingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
@@ -698,7 +694,6 @@ BOOST_AUTO_TEST_CASE(testMtMHelperMatchesStandaloneWithAsymmetricFxHolidays) {
         "Testing helper/instrument equivalence across asymmetric FX holidays...");
 
     SavedSettings backup;
-    ExchangeRateManagerCleaner exchangeRateCleaner;
     Date today(3, July, 2024);
     Settings::instance().evaluationDate() = today;
 
@@ -920,7 +915,7 @@ BOOST_AUTO_TEST_CASE(testPaymentLagDoesNotDelayNotionalExchanges) {
 
     const auto& swap = helper.swap();
     for (const Leg& leg : swap->legs()) {
-        BOOST_REQUIRE_EQUAL(leg.size(), 3);
+        BOOST_REQUIRE_EQUAL(leg.size(), 3U);
         BOOST_CHECK_EQUAL(leg[0]->date(), effectiveDate);
         BOOST_CHECK_EQUAL(leg[1]->date(), maturityDate);
         BOOST_CHECK_EQUAL(leg[2]->date(), couponPaymentDate);
