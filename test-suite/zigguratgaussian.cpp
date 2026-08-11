@@ -65,11 +65,23 @@ namespace {
             u = 2*((r >> 11) + 0.5)/2^53 - 1,      i = r & 0xff
 
         so inverting it lets a test ask for a specific (layer, u) pair.
+
+        The preconditions are load-bearing rather than decorative: a layer of
+        256 or more would alias through `r & 0xff` (256 becomes layer 0, the
+        tail case), and u = 1 would round the bucket up to 2^53, whose shift
+        overflows to zero and decodes back as u = -1. Either would silently
+        encode a different draw than the one asked for.
     */
     std::uint64_t drawFor(int layer, Real u) {
-        const Real scaled = (u + 1.0) / 2.0 * Real(1ULL << 53) - 0.5;
-        return (static_cast<std::uint64_t>(std::llround(scaled)) << 11) |
-               static_cast<std::uint64_t>(layer);
+        QL_REQUIRE(layer >= 0 && layer <= 0xFF, "layer " << layer << " outside [0, 255]");
+        QL_REQUIRE(u >= -1.0 && u < 1.0, "u " << u << " outside [-1, 1)");
+
+        const Real twoPow53 = std::ldexp(1.0, 53);
+        const auto bucket =
+            static_cast<std::uint64_t>(std::llround((u + 1.0) / 2.0 * twoPow53 - 0.5));
+        QL_REQUIRE(bucket < (1ULL << 53), "bucket " << bucket << " overflows for u = " << u);
+
+        return (bucket << 11) | static_cast<std::uint64_t>(layer);
     }
 
 }
