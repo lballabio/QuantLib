@@ -89,12 +89,12 @@ namespace QuantLib {
             ext::make_shared<BlackCapFloorEngine>( // discounting does not matter here
                 iborIndex_->forwardingTermStructure(), 0.20, dc);
         for (Size i=0; i<nOptionletTenors_; ++i) {
-            CapFloor temp = *makeCapFloor(CapFloor::Cap,
-                                          i,
-                                          0.04, // dummy strike
-                                          dummy);
+            auto temp = makeCapFloor(CapFloor::Cap,
+                                     i,
+                                     0.04, // dummy strike
+                                     dummy);
             ext::shared_ptr<FloatingRateCoupon> lFRC =
-                                                temp.lastFloatingRateCoupon();
+                                                temp->lastFloatingRateCoupon();
             optionletDates_[i] = lFRC->fixingDate();
             optionletPaymentDates_[i] = lFRC->date();
             optionletAccrualPeriods_[i] = lFRC->accrualPeriod();

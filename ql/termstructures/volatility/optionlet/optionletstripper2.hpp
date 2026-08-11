@@ -32,7 +32,6 @@ namespace QuantLib {
 
     class CapFloorTermVolCurve;
     class OptionletStripper1;
-    class SimpleQuote;
     class CapFloor;
 
     /*! Helper class to extend an OptionletStripper1 object stripping
@@ -59,18 +58,6 @@ namespace QuantLib {
       private:
         std::vector<Volatility> spreadsVolImplied(
             const Handle<OptionletVolatilityStructure>& baseVolatility) const;
-
-        class ObjectiveFunction {
-          public:
-            ObjectiveFunction(ext::shared_ptr<SimpleQuote> spreadQuote,
-                              ext::shared_ptr<CapFloor>,
-                              Real targetValue);
-            Real operator()(Volatility spreadVol) const;
-          private:
-            ext::shared_ptr<SimpleQuote> spreadQuote_;
-            ext::shared_ptr<CapFloor> cap_;
-            Real targetValue_;
-        };
 
         const ext::shared_ptr<OptionletStripper1> stripper1_;
         const Handle<CapFloorTermVolCurve> atmCapFloorTermVolCurve_;

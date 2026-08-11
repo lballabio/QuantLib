@@ -30,7 +30,6 @@
 #include <ql/termstructures/volatility/optionlet/optionletstripper2.hpp>
 #include <ql/termstructures/volatility/optionlet/spreadedoptionletvol.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
-#include <utility>
 
 
 namespace QuantLib {
@@ -75,7 +74,13 @@ namespace QuantLib {
                                     atmCapFloorTermVolCurve_->optionTenors();
         const std::vector<Time>& optionExpiriesTimes =
                                     atmCapFloorTermVolCurve_->optionTimes();
-        std::vector<std::vector<Size>> capOptionletIndices(nOptionExpiries_);
+        /* For each ATM cap/floor expiry j, capOptionletCounts[j] is the number of
+           optionlets whose volatilities that cap adjusts; the optionlets are then
+           0 ... count-1, and the adjustment is applied at the end of this method.
+
+           Note: if the first coupon fixes before the first optionlet date, we
+           extrapolate its volatility from the first two optionlet nodes. */
+        std::vector<Size> capOptionletCounts(nOptionExpiries_);
 
         for (Size j=0; j<nOptionExpiries_; ++j) {
             Volatility atmOptionVol = atmCapFloorTermVolCurve_->volatility(
@@ -86,24 +91,20 @@ namespace QuantLib {
                 iborIndex_->forwardingTermStructure(), atmOptionVolHandle);
 
             Leg leg = makeCapFloorLeg(optionExpiriesTenors[j]);
-            if (isOvernightIndex()) {
-                for (const auto& cashflow : leg) {
-                    auto coupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(cashflow);
-                    QL_REQUIRE(coupon, "non-floating-rate coupon in cap/floor leg");
-                    auto optionlet = std::find(
-                        optionletDates_.begin(), optionletDates_.end(), coupon->fixingDate());
-                    QL_REQUIRE(optionlet != optionletDates_.end(),
-                               "ATM cap/floor fixing date " << coupon->fixingDate()
-                                                             << " is not represented in the source "
-                                                                "optionlet surface");
-                    capOptionletIndices[j].push_back(optionlet - optionletDates_.begin());
-                }
-            } else {
-                // Historical rule: the adjustment covers the optionlets up to
-                // the cap's leg size, inclusive.
-                for (Size i = 0; i < optionletVolatilities_.size(); ++i)
-                    if (i <= leg.size())
-                        capOptionletIndices[j].push_back(i);
+            if (isOvernightIndex())
+                QL_REQUIRE(leg.size() <= optionletVolatilities_.size(),
+                           "ATM cap/floor for expiry " << optionExpiriesTenors[j]
+                               << " extends beyond the source optionlet surface");
+            capOptionletCounts[j] =
+                std::min(leg.size(), optionletVolatilities_.size());
+            auto firstCoupon =
+                ext::static_pointer_cast<FloatingRateCoupon>(leg.front());
+            if (firstCoupon->fixingDate() < optionletDates_.front()) {
+                QL_REQUIRE(optionletVolatilities_.size() >= 2,
+                           "cannot extrapolate an ATM cap/floor fixing before the "
+                           "first optionlet date from fewer than two optionlet nodes");
+                capOptionletCounts[j] =
+                    std::max(capOptionletCounts[j], Size(2));
             }
             atmCapFloorStrikes_[j] = CashFlows::atmRate(
                 leg, **iborIndex_->forwardingTermStructure(), false,
@@ -121,7 +122,7 @@ namespace QuantLib {
 
         Volatility unadjustedVol, adjustedVol;
         for (Size j=0; j<nOptionExpiries_; ++j) {
-            for (Size i : capOptionletIndices[j]) {
+            for (Size i = 0; i < capOptionletCounts[j]; ++i) {
                 unadjustedVol = adapter->volatility(optionletTimes_[i],
                                                     atmCapFloorStrikes_[j]);
                 adjustedVol = unadjustedVol + spreadsVolImplied_[j];
@@ -152,8 +153,7 @@ namespace QuantLib {
         for (Size j=0; j<nOptionExpiries_; ++j) {
             Volatility minBaseVol = QL_MAX_REAL;
             for (const auto& cashflow : caps_[j]->floatingLeg()) {
-                auto coupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(cashflow);
-                QL_REQUIRE(coupon, "non-floating-rate coupon in cap/floor leg");
+                auto coupon = ext::static_pointer_cast<FloatingRateCoupon>(cashflow);
                 minBaseVol = std::min(
                     minBaseVol,
                     baseVolatility->volatility(
@@ -173,7 +173,11 @@ namespace QuantLib {
             caps_[j]->setPricingEngine(makeCapFloorPricingEngine(
                 iborIndex_->forwardingTermStructure(), spreadedVolatility));
 
-            ObjectiveFunction f(spreadQuote, caps_[j], atmCapFloorPrices_[j]);
+            auto f = [&](Volatility s) {
+                if (s != spreadQuote->value())
+                    spreadQuote->setValue(s);
+                return caps_[j]->NPV() - atmCapFloorPrices_[j];
+            };
             solver.setMaxEvaluations(maxEvaluations_);
             Real valueAtZero = f(0.0);
             if (close(valueAtZero, 0.0)) {
@@ -220,21 +224,4 @@ namespace QuantLib {
         return atmCapFloorPrices_;
     }
 
-//==========================================================================//
-//                 OptionletStripper2::ObjectiveFunction                    //
-//==========================================================================//
-
-    OptionletStripper2::ObjectiveFunction::ObjectiveFunction(
-        ext::shared_ptr<SimpleQuote> spreadQuote,
-        ext::shared_ptr<CapFloor> cap,
-        Real targetValue)
-    : spreadQuote_(std::move(spreadQuote)), cap_(std::move(cap)),
-      targetValue_(targetValue) {}
-
-    Real OptionletStripper2::ObjectiveFunction::operator()(Volatility s) const
-    {
-        if (s!=spreadQuote_->value())
-            spreadQuote_->setValue(s);
-        return cap_->NPV()-targetValue_;
-    }
 }

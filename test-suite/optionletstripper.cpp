@@ -1222,8 +1222,8 @@ namespace {
 
         std::vector<Period> tenors = {9 * Months, 1 * Years};
         std::vector<Handle<Quote>> atmVols = {
-            Handle<Quote>(ext::make_shared<SimpleQuote>(0.18)),
-            Handle<Quote>(ext::make_shared<SimpleQuote>(0.18))};
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.19)),
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.19))};
         Handle<CapFloorTermVolCurve> atmCurve(
             ext::make_shared<CapFloorTermVolCurve>(
                 0, vars.calendar, Following, tenors, atmVols, vars.dayCounter));
@@ -1233,6 +1233,19 @@ namespace {
         BOOST_CHECK_NO_THROW(stripper2->atmCapFloorPrices());
         for (Volatility spread : stripper2->spreadsVol())
             BOOST_CHECK(std::isfinite(spread));
+
+        Handle<OptionletVolatilityStructure> vol(
+            ext::make_shared<StrippedOptionletAdapter>(stripper2));
+        vol->enableExtrapolation();
+        auto engine = ext::make_shared<BlackCapFloorEngine>(
+            vars.yieldTermStructure, vol);
+        const std::vector<Rate> strikes = stripper2->atmCapFloorStrikes();
+        const std::vector<Real> targetPrices = stripper2->atmCapFloorPrices();
+        ext::shared_ptr<CapFloor> cap =
+            MakeCapFloor(CapFloor::Cap, tenors.front(), iborIndex,
+                         strikes.front(), 0 * Days)
+                .withPricingEngine(engine);
+        BOOST_CHECK_SMALL(cap->NPV() - targetPrices.front(), vars.tolerance);
     }
 
 }
