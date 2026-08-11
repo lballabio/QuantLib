@@ -280,6 +280,12 @@ namespace QuantLib {
 
     If provided, the useIndexedCoupons parameter overrides the global
     IborCoupon setting for the floating leg.
+
+    The floatPaymentFrequency parameter is the payment frequency of the floating
+    leg.  If left unset (the default) the schedule is derived from the floating
+    index tenor, which is only meaningful for an ibor index; an overnight index
+    has no payment frequency of its own, so one must be given explicitly.
+    \c NoFrequency is accepted as a synonym for an unset (null) value.
     */
     class ConstNotionalCrossCurrencySwapRateHelper : public CrossCurrencySwapRateHelperBase {
       public:
@@ -296,7 +302,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& collateralCurve,
             bool collateralOnFixedLeg,
             Integer paymentLag = 0,
-            std::optional<bool> useIndexedCoupons = std::nullopt);
+            std::optional<bool> useIndexedCoupons = std::nullopt,
+            std::optional<Frequency> floatPaymentFrequency = std::nullopt);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -315,6 +322,7 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> floatIndex_;
         bool collateralOnFixedLeg_;
         std::optional<bool> useIndexedCoupons_;
+        std::optional<Frequency> floatPaymentFrequency_;
 
         ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> xccySwap_;
     };

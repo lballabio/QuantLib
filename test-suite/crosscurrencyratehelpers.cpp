@@ -918,7 +918,8 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperFloatingLegConvention) {
     // rolls back to the 30th instead of forward into August.
     ConstNotionalCrossCurrencySwapRateHelper helper(
         makeQuoteHandle(0.0), 1 * Years, 2, calendar, ModifiedFollowing, false,
-        Semiannual, Actual365Fixed(), overnightIndex, collateralCurve, false);
+        Semiannual, Actual365Fixed(), overnightIndex, collateralCurve, false, 0,
+        std::nullopt, Semiannual);
 
     Date expectedMaturity(30, July, 2027);
     BOOST_CHECK_EQUAL(helper.maturityDate(), expectedMaturity);
@@ -954,7 +955,8 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperIgnoresIndexFixingCalendar) {
     auto makeHelper = [&](const ext::shared_ptr<IborIndex>& index) {
         return ConstNotionalCrossCurrencySwapRateHelper(
             makeQuoteHandle(0.0), 1 * Years, 2, calendar, ModifiedFollowing, false,
-            Semiannual, Actual365Fixed(), index, collateralCurve, false);
+            Semiannual, Actual365Fixed(), index, collateralCurve, false, 0,
+            std::nullopt, Semiannual);
     };
     auto weekendHelper = makeHelper(weekendIndex);
     auto usHelper = makeHelper(usIndex);
@@ -966,6 +968,50 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperIgnoresIndexFixingCalendar) {
     BOOST_CHECK_EQUAL(usHelper.maturityDate(), weekendHelper.maturityDate());
     // The index keeps its own calendar for its fixings.
     BOOST_CHECK(usIndex->fixingCalendar() != weekendIndex->fixingCalendar());
+}
+
+BOOST_AUTO_TEST_CASE(testConstNotionalHelperFloatingPaymentFrequency) {
+    BOOST_TEST_MESSAGE("Testing the floating-leg payment frequency of fixed-vs-floating helpers...");
+
+    SavedSettings backup;
+    Date today(15, July, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    Calendar calendar = TARGET();
+    Handle<YieldTermStructure> collateralCurve(
+        ext::make_shared<FlatForward>(today, 0.04, Actual360()));
+    auto overnightIndex = ext::make_shared<OvernightIndex>(
+        "ON", 0, EURCurrency(), calendar, Actual360(), collateralCurve);
+    auto euribor3m = ext::make_shared<Euribor3M>(collateralCurve);
+
+    auto makeHelper = [&](const ext::shared_ptr<IborIndex>& index,
+                          std::optional<Frequency> floatFrequency) {
+        return ConstNotionalCrossCurrencySwapRateHelper(
+            makeQuoteHandle(0.01), 1 * Years, 2, calendar, Following, false,
+            Annual, Actual365Fixed(), index, collateralCurve, false, 0,
+            std::nullopt, floatFrequency);
+    };
+
+    // An overnight index has a one-day tenor, which is not a payment frequency;
+    // asking it for one would silently produce a daily-paying leg.
+    BOOST_CHECK_THROW(makeHelper(overnightIndex, std::nullopt), Error);
+
+    // Given a frequency, the overnight leg pays on that schedule.
+    auto overnightHelper = makeHelper(overnightIndex, Semiannual);
+    BOOST_CHECK_EQUAL(overnightHelper.swap()->floatSchedule().size(), 3);
+    BOOST_CHECK_EQUAL(overnightHelper.swap()->fixedSchedule().size(), 2);
+
+    // An ibor index still falls back to its own tenor.
+    auto iborHelper = makeHelper(euribor3m, std::nullopt);
+    BOOST_CHECK_EQUAL(iborHelper.swap()->floatSchedule().size(), 5);
+
+    // An explicit frequency overrides the ibor tenor.
+    auto iborSemiannualHelper = makeHelper(euribor3m, Semiannual);
+    BOOST_CHECK_EQUAL(iborSemiannualHelper.swap()->floatSchedule().size(), 3);
+
+    // NoFrequency is a synonym for an unset value, as in the basis helpers.
+    auto iborNoFrequencyHelper = makeHelper(euribor3m, NoFrequency);
+    BOOST_CHECK_EQUAL(iborNoFrequencyHelper.swap()->floatSchedule().size(), 5);
 }
 
 BOOST_AUTO_TEST_CASE(testPaymentLagDoesNotDelayNotionalExchanges) {

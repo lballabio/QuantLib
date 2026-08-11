@@ -411,14 +411,16 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& collateralCurve,
         bool collateralOnFixedLeg,
         Integer paymentLag,
-        std::optional<bool> useIndexedCoupons)
+        std::optional<bool> useIndexedCoupons,
+        std::optional<Frequency> floatPaymentFrequency)
     : CrossCurrencySwapRateHelperBase(fixedRate, tenor, fixingDays, calendar, convention, endOfMonth,
                                       collateralCurve, paymentLag),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(std::move(fixedDayCount)),
       floatIndex_(floatIndex),
       collateralOnFixedLeg_(collateralOnFixedLeg),
-      useIndexedCoupons_(useIndexedCoupons) {
+      useIndexedCoupons_(useIndexedCoupons),
+      floatPaymentFrequency_(normalizedPaymentFrequency(floatPaymentFrequency)) {
 
         QL_REQUIRE(floatIndex_, "floating index required");
         registerWith(floatIndex_);
@@ -427,16 +429,6 @@ namespace QuantLib {
     }
 
     void ConstNotionalCrossCurrencySwapRateHelper::initializeDates() {
-        auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(floatIndex_);
-
-        Period floatFreqPeriod;
-        if (floatIndex_->tenor().frequency() == NoFrequency) {
-            QL_REQUIRE(!overnightIndex, "Require payment frequency for overnight indices.");
-            floatFreqPeriod = floatIndex_->tenor();
-        } else {
-            floatFreqPeriod = Period(floatIndex_->tenor().frequency());
-        }
-
         Real nominal = 1.0;
         // Both legs roll on the helper's calendar and convention.  The floating
         // index supplies its fixing calendar for fixings, not for the accrual schedule.
@@ -444,8 +436,11 @@ namespace QuantLib {
         // two legs diverge at a month-end roll and move the implied pillar.
         Schedule fixedSch = legSchedule(evaluationDate_, tenor_, Period(fixedFrequency_), fixingDays_, calendar_,
                                        convention_, endOfMonth_);
-        Schedule floatSch = legSchedule(evaluationDate_, tenor_, floatFreqPeriod, fixingDays_,
-                                        calendar_, convention_, endOfMonth_);
+        // An overnight index has no payment frequency of its own, so
+        // floatingLegSchedule requires one to have been supplied.
+        Schedule floatSch = floatingLegSchedule(evaluationDate_, tenor_, fixingDays_, calendar_,
+                                                convention_, endOfMonth_, floatIndex_,
+                                                floatPaymentFrequency_);
 
         xccySwap_ = ext::make_shared<ConstNotionalCrossCurrencyFixedVsFloatingSwap>(
             Swap::Payer,
