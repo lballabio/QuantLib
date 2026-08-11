@@ -276,8 +276,7 @@ namespace QuantLib {
     notional exchanges remain on the effective and maturity dates.
 
     The convention parameter applies to the schedule and payments of both legs,
-    and the calendar parameter is used to roll and to pay on both legs; the
-    floating index only supplies its own fixing calendar for its fixings.
+    and the calendar parameter is used to roll and to pay on both legs.
 
     If provided, the useIndexedCoupons parameter overrides the global
     IborCoupon setting for the floating leg.
