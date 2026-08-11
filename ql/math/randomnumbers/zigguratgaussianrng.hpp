@@ -103,7 +103,7 @@ namespace QuantLib {
                 // compute a random number in the tail by hand
                 return zeroCase(u);
             }
-            if (normF(i + 1) + (normF(i) - normF(i + 1) * uint64Generator_.nextReal()) < pdf(x)) {
+            if (normF(i + 1) + (normF(i) - normF(i + 1)) * uint64Generator_.nextReal() < pdf(x)) {
                 return x;
             }
         }
