@@ -192,7 +192,9 @@ namespace QuantLib {
         std::optional<Frequency> paymentFrequency,
         Integer paymentLag,
         std::optional<Frequency> quoteCurrencyPaymentFrequency,
-        std::optional<bool> useIndexedCoupons)
+        std::optional<bool> useIndexedCoupons,
+        std::optional<BusinessDayConvention> baseCurrencyLegConvention,
+        std::optional<BusinessDayConvention> quoteCurrencyLegConvention)
     : CrossCurrencySwapRateHelperBase(basis, tenor, fixingDays, std::move(calendar), convention, endOfMonth,
                                       std::move(collateralCurve), paymentLag),
       baseCcyIdx_(std::move(baseCurrencyIndex)), quoteCcyIdx_(std::move(quoteCurrencyIndex)),
@@ -200,7 +202,9 @@ namespace QuantLib {
       isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg),
       paymentFrequency_(normalizedPaymentFrequency(paymentFrequency)),
       quoteCcyPaymentFrequency_(normalizedPaymentFrequency(quoteCurrencyPaymentFrequency)),
-      useIndexedCoupons_(useIndexedCoupons) {
+      useIndexedCoupons_(useIndexedCoupons),
+      baseCcyLegConvention_(baseCurrencyLegConvention),
+      quoteCcyLegConvention_(quoteCurrencyLegConvention) {
         registerWith(baseCcyIdx_);
         registerWith(quoteCcyIdx_);
 
@@ -209,7 +213,7 @@ namespace QuantLib {
 
     void CrossCurrencyBasisSwapRateHelperBase::initializeDates() {
         baseCcySchedule_ = floatingLegSchedule(evaluationDate_, tenor_, fixingDays_, calendar_,
-                                               convention_, endOfMonth_, baseCcyIdx_,
+                                               baseCcyConvention(), endOfMonth_, baseCcyIdx_,
                                                paymentFrequency_);
         baseCcyIborLeg_ = buildFloatingLeg(
             baseCcySchedule_, baseCcyIdx_, paymentLag_, useIndexedCoupons_);
@@ -220,7 +224,7 @@ namespace QuantLib {
         std::optional<Frequency> effectiveQuoteCcyFreq =
             quoteCcyPaymentFrequency_ ? quoteCcyPaymentFrequency_ : paymentFrequency_;
         quoteCcySchedule_ = floatingLegSchedule(evaluationDate_, tenor_, fixingDays_, calendar_,
-                                                convention_, endOfMonth_, quoteCcyIdx_,
+                                                quoteCcyConvention(), endOfMonth_, quoteCcyIdx_,
                                                 effectiveQuoteCcyFreq);
         quoteCcyIborLeg_ = buildFloatingLeg(
             quoteCcySchedule_, quoteCcyIdx_, paymentLag_, useIndexedCoupons_);
@@ -253,7 +257,9 @@ namespace QuantLib {
         std::optional<Frequency> paymentFrequency,
         Integer paymentLag,
         std::optional<Frequency> quoteCurrencyPaymentFrequency,
-        std::optional<bool> useIndexedCoupons)
+        std::optional<bool> useIndexedCoupons,
+        std::optional<BusinessDayConvention> baseCurrencyLegConvention,
+        std::optional<BusinessDayConvention> quoteCurrencyLegConvention)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
@@ -268,7 +274,9 @@ namespace QuantLib {
                                            paymentFrequency,
                                            paymentLag,
                                            quoteCurrencyPaymentFrequency,
-                                           useIndexedCoupons) {
+                                           useIndexedCoupons,
+                                           baseCurrencyLegConvention,
+                                           quoteCurrencyLegConvention) {
         buildSwap();
     }
 
@@ -334,7 +342,9 @@ namespace QuantLib {
         std::optional<Frequency> quoteCurrencyPaymentFrequency,
         Natural fxResetFixingDays,
         Calendar fxResetFixingCalendar,
-        std::optional<bool> useIndexedCoupons)
+        std::optional<bool> useIndexedCoupons,
+        std::optional<BusinessDayConvention> baseCurrencyLegConvention,
+        std::optional<BusinessDayConvention> quoteCurrencyLegConvention)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
@@ -349,7 +359,9 @@ namespace QuantLib {
                                            paymentFrequency,
                                            paymentLag,
                                            quoteCurrencyPaymentFrequency,
-                                           useIndexedCoupons),
+                                           useIndexedCoupons,
+                                           baseCurrencyLegConvention,
+                                           quoteCurrencyLegConvention),
       isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
       fxResetFixingDays_(fxResetFixingDays), fxResetFixingCalendar_(fxResetFixingCalendar) {
         buildSwap();
@@ -370,7 +382,7 @@ namespace QuantLib {
             1.0, quoteCcyIdx_->currency(), quoteCcySchedule_, quoteCcyIdx_, 0.0, 1.0,
             isFxBaseCurrencyLegResettable_, fxResetFixingDays_,
             fxResetFixingCalendar_, paymentLag_, paymentLag_,
-            convention_, convention_, false, Null<Natural>(), false, 0,
+            baseCcyConvention(), quoteCcyConvention(), false, Null<Natural>(), false, 0,
             RateAveraging::Compound, false, Null<Natural>(), false, 0,
             RateAveraging::Compound, false, useIndexedCoupons_);
         swap_->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
@@ -440,12 +452,16 @@ namespace QuantLib {
         }
 
         Real nominal = 1.0;
-        BusinessDayConvention floatingConvention =
-            floatingLegConvention_.value_or(floatIndex_->businessDayConvention());
+        // Both legs roll on the helper's calendar and, unless explicitly
+        // overridden, on the helper's convention.  The floating index supplies
+        // its fixing calendar for its fixings, not for the accrual schedule.
+        // taking the roll convention or calendar from the index would make the
+        // two legs diverge at a month-end roll and move the implied pillar.
+        BusinessDayConvention floatingConvention = floatingLegConvention_.value_or(convention_);
         Schedule fixedSch = legSchedule(evaluationDate_, tenor_, Period(fixedFrequency_), fixingDays_, calendar_,
                                        convention_, endOfMonth_);
         Schedule floatSch = legSchedule(evaluationDate_, tenor_, floatFreqPeriod, fixingDays_,
-                                        floatIndex_->fixingCalendar(), floatingConvention, endOfMonth_);
+                                        calendar_, floatingConvention, endOfMonth_);
 
         xccySwap_ = ext::make_shared<ConstNotionalCrossCurrencyFixedVsFloatingSwap>(
             Swap::Payer,

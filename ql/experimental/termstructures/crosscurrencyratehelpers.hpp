@@ -83,11 +83,22 @@ namespace QuantLib {
                                              std::optional<Frequency> paymentFrequency = std::nullopt,
                                              Integer paymentLag = 0,
                                              std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
-                                             std::optional<bool> useIndexedCoupons = std::nullopt);
+                                             std::optional<bool> useIndexedCoupons = std::nullopt,
+                                             std::optional<BusinessDayConvention> baseCurrencyLegConvention = std::nullopt,
+                                             std::optional<BusinessDayConvention> quoteCurrencyLegConvention = std::nullopt);
 
         void initializeDates() override;
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
         const Handle<YieldTermStructure>& quoteCcyLegDiscountHandle() const;
+
+        //! convention of the base-currency leg; \c convention if not overridden
+        BusinessDayConvention baseCcyConvention() const {
+            return baseCcyLegConvention_.value_or(convention_);
+        }
+        //! convention of the quote-currency leg; \c convention if not overridden
+        BusinessDayConvention quoteCcyConvention() const {
+            return quoteCcyLegConvention_.value_or(convention_);
+        }
 
         ext::shared_ptr<IborIndex> baseCcyIdx_;
         ext::shared_ptr<IborIndex> quoteCcyIdx_;
@@ -96,6 +107,8 @@ namespace QuantLib {
         std::optional<Frequency> paymentFrequency_;
         std::optional<Frequency> quoteCcyPaymentFrequency_;
         std::optional<bool> useIndexedCoupons_;
+        std::optional<BusinessDayConvention> baseCcyLegConvention_;
+        std::optional<BusinessDayConvention> quoteCcyLegConvention_;
 
         Schedule baseCcySchedule_;
         Schedule quoteCcySchedule_;
@@ -141,6 +154,12 @@ namespace QuantLib {
                 well the schedule is derived from the quote-currency index tenor.
             \param useIndexedCoupons
                 if provided, overrides the global IborCoupon setting for both legs.
+            \param baseCurrencyLegConvention
+                if provided, the roll and payment convention of the base-currency
+                leg; otherwise \p convention is used.
+            \param quoteCurrencyLegConvention
+                if provided, the roll and payment convention of the quote-currency
+                leg; otherwise \p convention is used.
             In both frequency parameters, \c NoFrequency is accepted as a synonym for
             an unset (null) value.
         */
@@ -159,7 +178,9 @@ namespace QuantLib {
             std::optional<Frequency> paymentFrequency = std::nullopt,
             Integer paymentLag = 0,
             std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
-            std::optional<bool> useIndexedCoupons = std::nullopt);
+            std::optional<bool> useIndexedCoupons = std::nullopt,
+            std::optional<BusinessDayConvention> baseCurrencyLegConvention = std::nullopt,
+            std::optional<BusinessDayConvention> quoteCurrencyLegConvention = std::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -212,6 +233,12 @@ namespace QuantLib {
                 \p calendar is used if this is empty.
             \param useIndexedCoupons
                 if provided, overrides the global IborCoupon setting for both legs.
+            \param baseCurrencyLegConvention
+                if provided, the roll and payment convention of the base-currency
+                leg; otherwise \p convention is used.
+            \param quoteCurrencyLegConvention
+                if provided, the roll and payment convention of the quote-currency
+                leg; otherwise \p convention is used.
             In both frequency parameters, \c NoFrequency is accepted as a synonym for
             an unset (null) value.
         */
@@ -232,7 +259,9 @@ namespace QuantLib {
                                             std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
                                             Natural fxResetFixingDays = 0,
                                             Calendar fxResetFixingCalendar = Calendar(),
-                                            std::optional<bool> useIndexedCoupons = std::nullopt);
+                                            std::optional<bool> useIndexedCoupons = std::nullopt,
+                                            std::optional<BusinessDayConvention> baseCurrencyLegConvention = std::nullopt,
+                                            std::optional<BusinessDayConvention> quoteCurrencyLegConvention = std::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -275,13 +304,16 @@ namespace QuantLib {
     The paymentLag parameter, in days, applies to the coupons of both legs;
     notional exchanges remain on the effective and maturity dates.
 
-    The convention parameter applies to the fixed-leg schedule and payments.
+    The convention parameter applies to the schedule and payments of both legs,
+    and the calendar parameter is used to roll and to pay on both legs; the
+    floating index only supplies its own fixing calendar for its fixings.
 
     If provided, the useIndexedCoupons parameter overrides the global
     IborCoupon setting for the floating leg.
 
-    If provided, the floatingLegConvention parameter applies to the floating-leg
-    schedule and payments.  Otherwise, the convention of the floating index is used.
+    If provided, the floatingLegConvention parameter overrides convention on the
+    floating-leg schedule and payments; this is only needed when the two legs are
+    meant to roll differently.
     */
     class ConstNotionalCrossCurrencySwapRateHelper : public CrossCurrencySwapRateHelperBase {
       public:
