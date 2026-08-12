@@ -3,8 +3,9 @@
 #ifndef quantlib_spread_discount_curve_hpp
 #define quantlib_spread_discount_curve_hpp
 
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/interpolatedcurve.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/yield/derivedtermstructure.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <utility>
 
@@ -24,7 +25,7 @@ namespace QuantLib {
 
     template <class Interpolator>
     class InterpolatedSpreadDiscountCurve
-        : public YieldTermStructure,
+        : public RelativeDerivedYieldTermStructure<>,
           protected InterpolatedCurve<Interpolator> {
       public:
         InterpolatedSpreadDiscountCurve(
@@ -34,10 +35,6 @@ namespace QuantLib {
             const Interpolator& interpolator = {});
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const override;
-        Natural settlementDays() const override;
-        Calendar calendar() const override;
-        const Date& referenceDate() const override;
         Date maxDate() const override;
         //@}
         //@}
@@ -64,7 +61,6 @@ namespace QuantLib {
         void updateInterpolation();
         DiscountFactor calcSpread(Time t) const;
 
-        Handle<YieldTermStructure> baseCurve_;
         DayCounter prevDayCount_;
     };
 
@@ -86,8 +82,9 @@ namespace QuantLib {
         std::vector<Date> dates,
         std::vector<DiscountFactor> dfs,
         const T& interpolator)
-    : InterpolatedCurve<T>({}, std::move(dfs), interpolator),
-      dates_(std::move(dates)), baseCurve_(std::move(baseCurve)) {
+    : RelativeDerivedYieldTermStructure(std::move(baseCurve)),
+      InterpolatedCurve<T>({}, std::move(dfs), interpolator),
+      dates_(std::move(dates)) {
         QL_REQUIRE(dates_.size() >= T::requiredPoints,
                    "not enough input dates given");
         QL_REQUIRE(this->data_.size() == dates_.size(),
@@ -99,11 +96,10 @@ namespace QuantLib {
             QL_REQUIRE(this->data_[i] > 0.0, "negative discount");
         }
 
-        registerWith(baseCurve_);
         this->times_.resize(dates_.size());
         this->interpolation_ = detail::interpolateWithoutUpdate(
             this->interpolator_, this->times_.begin(), this->times_.end(), this->data_.begin());
-        if (!baseCurve_.empty())
+        if (!originalCurve_.empty())
             updateInterpolation();
     }
 
@@ -111,43 +107,21 @@ namespace QuantLib {
     inline InterpolatedSpreadDiscountCurve<T>::InterpolatedSpreadDiscountCurve(
         Handle<YieldTermStructure> baseCurve,
         const T& interpolator)
-    : InterpolatedCurve<T>(interpolator), baseCurve_(std::move(baseCurve))
-    {
-        registerWith(baseCurve_);
-    }
+    : RelativeDerivedYieldTermStructure(std::move(baseCurve)),
+      InterpolatedCurve<T>(interpolator) {}
 
     #endif
 
     template <class T>
-    inline DayCounter InterpolatedSpreadDiscountCurve<T>::dayCounter() const {
-        return baseCurve_->dayCounter();
-    }
-
-    template <class T>
-    inline Calendar InterpolatedSpreadDiscountCurve<T>::calendar() const {
-        return baseCurve_->calendar();
-    }
-
-    template <class T>
-    inline Natural InterpolatedSpreadDiscountCurve<T>::settlementDays() const {
-        return baseCurve_->settlementDays();
-    }
-
-    template <class T>
-    inline const Date& InterpolatedSpreadDiscountCurve<T>::referenceDate() const {
-        return baseCurve_->referenceDate();
-    }
-
-    template <class T>
     inline Date InterpolatedSpreadDiscountCurve<T>::maxDate() const {
         Date maxDate = this->maxDate_ != Date() ? this->maxDate_ : dates_.back();
-        return std::min(baseCurve_->maxDate(), maxDate);
+        return std::min(originalCurve_->maxDate(), maxDate);
     }
 
     template <class T>
     inline const Handle<YieldTermStructure>&
     InterpolatedSpreadDiscountCurve<T>::baseCurve() const {
-        return baseCurve_;
+        return originalCurve_;
     }
 
     template <class T>
@@ -180,7 +154,7 @@ namespace QuantLib {
     template <class T>
     inline DiscountFactor
     InterpolatedSpreadDiscountCurve<T>::discountImpl(Time t) const {
-        return baseCurve_->discount(t) * calcSpread(t);
+        return originalCurve_->discount(t) * calcSpread(t);
     }
 
     template <class T>
@@ -198,18 +172,9 @@ namespace QuantLib {
 
     template <class T>
     inline void InterpolatedSpreadDiscountCurve<T>::update() {
-        if (!baseCurve_.empty()) {
-            if (!dates_.empty())
-                updateInterpolation();
-            YieldTermStructure::update();
-        } else {
-            /* The implementation inherited from YieldTermStructure
-               asks for our reference date, which we don't have since
-               the original curve is still not set. Therefore, we skip
-               over that and just call the base-class behavior. */
-            // NOLINTNEXTLINE(bugprone-parent-virtual-call)
-            TermStructure::update();
-        }
+        if (!originalCurve_.empty() && !dates_.empty())
+            updateInterpolation();
+        RelativeDerivedYieldTermStructure::update();
     }
 
     template <class T>
