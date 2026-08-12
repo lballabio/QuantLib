@@ -96,10 +96,26 @@ weekly `schedule`, by `workflow_dispatch`, or by `workflow_call`:
 - `linux-nondefault.yml`, `linux-full-tests.yml`, `msvc-nondefault.yml`,
   `cmake-latest-runners.yml`
 
-For portability-sensitive changes they still need to be checked, which means
-running them on GitHub (`workflow_dispatch`) or reading the last scheduled run.
-An agent cannot do that on its own, so it should ask the maintainer to trigger
-them and flag in the PR that the change may affect these matrices.
+For portability-sensitive changes they still need to be checked. All four accept
+`workflow_dispatch`, so an agent can trigger them itself in the contributor's
+fork:
+
+```bash
+gh workflow run linux-nondefault.yml --repo <fork> --ref <branch>
+gh run list --workflow=linux-nondefault.yml --repo <fork> --limit 1
+```
+
+**These matrices are long running, so use them sparingly.** An agent must ask
+for explicit approval before dispatching one — never start a run on its own
+initiative. Prefer reading the most recent scheduled run, dispatch only the
+workflow that covers the change, and flag in the PR that the change may affect
+these matrices.
+
+The non-default settings themselves can also be exercised locally, which is
+usually enough: the `./configure` flags from section 2, the matching `QL_*`
+CMake variables from section 1, or the `.ci/*.props` files for MSVC from
+section 3. Only the compiler/Boost spread and the runner images really need the
+remote matrices.
 
 Automation workflows (e.g., generated headers/includes/namespaces/copyright)
 also exist and can change over time; header and file-list touches should stay
