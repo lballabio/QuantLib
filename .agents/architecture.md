@@ -113,15 +113,6 @@ ql/
 │   ├── calendars/     # ~60 market calendars
 │   └── daycounters/   # Day count conventions
 ├── cashflows/         # CashFlow/Coupon hierarchy, pricers, leg builders
-│   ├── coupon.hpp                  # Coupon base (accrual, nominal, rate)
-│   ├── fixedratecoupon.hpp         # FixedRateCoupon + FixedRateLeg
-│   ├── floatingratecoupon.hpp      # base (index, gearing, spread)
-│   ├── iborcoupon.hpp              # IborCoupon + IborLeg
-│   ├── overnightindexedcoupon.hpp  # OvernightIndexedCoupon + OvernightLeg
-│   ├── cmscoupon.hpp               # CmsCoupon + CmsLeg
-│   ├── couponpricer.hpp            # Floating/Ibor/Cms coupon pricers
-│   ├── cashflows.hpp               # npv, bps, yield, duration, zSpread
-│   └── simplecashflow.hpp          # SimpleCashFlow, Redemption, ...
 ├── indexes/           # Market indexes (Ibor, OIS, inflation, equity)
 ├── currencies/        # Currency definitions
 ├── patterns/          # Design pattern implementations

@@ -3,12 +3,6 @@
 > How AI coding agents should understand, navigate, and contribute to this
 > codebase.
 
-## Header Metadata
-
-- **Author**: RalfKonrad
-- **License**: BSD 3-Clause (`LICENSE.TXT`)
-- **Last verified against repository state:** 2026-08-12
-
 ## 1. Project Snapshot
 
 QuantLib is a C++17 quantitative-finance library (with CI coverage through newer
@@ -18,8 +12,8 @@ on lazy evaluation and observer-driven dependency propagation.
 - **Primary language**: C++17 (`.clang-format` sets `Standard: c++17`)
 - **Dependencies**: Boost headers (minimum checks in `configure.ac`; CMake
   requires newer Boost for C++20)
-- **Build systems**: CMake (primary), Autotools (actively used in CI), Visual
-  Studio solution
+- **Build systems**: CMake, Autotools, and a Visual Studio solution — all three
+  are exercised in CI
 - **Platforms in CI**: Linux, macOS, Windows
 - **Test framework**: Boost.Test (`test-suite/`)
 

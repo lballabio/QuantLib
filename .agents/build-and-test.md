@@ -4,7 +4,11 @@ Companion to [`AGENTS.md`](../AGENTS.md), which carries only the two commands
 needed most often. This file holds the full set of build options, test
 invocations, and CI entry points.
 
-## 1. CMake (Recommended)
+## 1. CMake (recommended for agents)
+
+Autotools and the Visual Studio solution are equally supported and exercised in
+CI; CMake is only the shortest path for an agent in a fresh checkout, because
+`CMakePresets.json` already spells out the toolchain and options.
 
 ```bash
 mkdir build && cd build
@@ -86,10 +90,16 @@ Workflows are under `.github/workflows/`. Core validation files include:
 - `linux.yml`, `macos.yml`, `msvc.yml`, `cmake.yml`
 - `tidy.yml`, `headers.yml`, `filelists.yml`
 
-For portability-sensitive changes, also check non-default matrices such as:
+The following matrices do **not** run on pull requests — they are triggered by a
+weekly `schedule`, by `workflow_dispatch`, or by `workflow_call`:
 
 - `linux-nondefault.yml`, `linux-full-tests.yml`, `msvc-nondefault.yml`,
   `cmake-latest-runners.yml`
+
+For portability-sensitive changes they still need to be checked, which means
+running them on GitHub (`workflow_dispatch`) or reading the last scheduled run.
+An agent cannot do that on its own, so it should ask the maintainer to trigger
+them and flag in the PR that the change may affect these matrices.
 
 Automation workflows (e.g., generated headers/includes/namespaces/copyright)
 also exist and can change over time; header and file-list touches should stay
