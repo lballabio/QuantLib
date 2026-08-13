@@ -53,6 +53,8 @@ graph TD
 ```
 
 - `CashFlow` API: `date()`, `amount()`, `hasOccurred()`, `exCouponDate()`.
+- `Leg` is a type alias, not a class: `std::vector<ext::shared_ptr<CashFlow> >`
+  (`ql/cashflow.hpp`). There is nothing to derive from or extend.
 - `Coupon` adds accrual data (`nominal()`, `rate()`, `dayCounter()`,
   `accrualPeriod()`).
 - `FloatingRateCoupon` delegates pricing to `FloatingRateCouponPricer`
@@ -87,40 +89,7 @@ graph TD
 - `freeze()`/`unfreeze()` can intentionally suppress/release notifications.
 - `LazyObject::Defaults` changes apply to **newly created** lazy objects.
 
-## 4. Module Map
-
-```text
-ql/
-├── instruments/       # VanillaOption, Bond, Swap, CDS, etc.
-├── pricingengines/    # Engines, organized by instrument type
-│   ├── vanilla/       # ~80 engines (analytic, MC, FD, lattice)
-│   ├── bond/          # Bond pricing engines
-│   ├── swap/          # Swap pricing engines
-│   └── ...
-├── termstructures/    # Term structure hierarchy
-│   ├── yield/         # FlatForward, PiecewiseYieldCurve, ZeroCurve, ...
-│   ├── volatility/    # Vol surfaces (Black, local, stochastic)
-│   ├── credit/        # Default probability curves
-│   └── inflation/     # Inflation term structures
-├── models/            # Stochastic models (HullWhite, Heston, G2, etc.)
-├── processes/         # Stochastic processes (BlackScholesMerton, Heston)
-├── methods/           # Lattices, finite differences, Monte Carlo
-├── math/              # Math utilities
-│   ├── interpolations/  # 1D/2D interpolation (linear, cubic, SABR, ...)
-│   ├── solvers1d/       # Root finders (Brent, Newton, Bisection, ...)
-│   └── optimization/    # Multi-dim optimization (LM, Simplex, DE, ...)
-├── time/              # Date, Calendar, DayCounter, Schedule, Period
-│   ├── calendars/     # ~60 market calendars
-│   └── daycounters/   # Day count conventions
-├── cashflows/         # CashFlow/Coupon hierarchy, pricers, leg builders
-├── indexes/           # Market indexes (Ibor, OIS, inflation, equity)
-├── currencies/        # Currency definitions
-├── patterns/          # Design pattern implementations
-├── experimental/      # Unstable/in-progress features
-└── utilities/         # Null, dataformatters, tracing, etc.
-```
-
-## 5. About `ql/experimental/`
+## 4. About `ql/experimental/`
 
 Treat `ql/experimental/*` as unstable API: useful, often production-grade in
 parts, but not guaranteed to keep interface compatibility across releases.
