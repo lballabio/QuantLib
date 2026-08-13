@@ -137,10 +137,12 @@ namespace QuantLib {
         BusinessDayConvention convention,
         bool endOfMonth,
         Handle<YieldTermStructure> collateralCurve,
-        Integer paymentLag)
+        Integer paymentLag,
+        bool paymentLagOnNotionalExchanges)
     : RelativeDateRateHelper(quote), tenor_(tenor), fixingDays_(fixingDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
-      paymentLag_(paymentLag), collateralHandle_(std::move(collateralCurve)) {
+      paymentLag_(paymentLag), paymentLagOnNotionalExchanges_(paymentLagOnNotionalExchanges),
+      collateralHandle_(std::move(collateralCurve)) {
         registerWith(collateralHandle_);
     }
 
@@ -163,10 +165,15 @@ namespace QuantLib {
         maturityDate_ = std::max(CashFlows::maturityDate(firstLeg),
                                  CashFlows::maturityDate(secondLeg));
 
-        // Principal exchanges settle on the effective and maturity dates;
-        // payment lag applies only to coupons.
-        initialNotionalExchangeDate_ = calendar_.adjust(earliestDate_, convention_);
-        finalNotionalExchangeDate_   = calendar_.adjust(maturityDate_, convention_);
+        // Principal exchanges settle on the effective and maturity dates:
+        // the payment lag applies only to coupons -- unless the swap's
+        // convention lags the principal flows too, in which case both
+        // exchanges move by the same lag as the coupons and the final
+        // exchange settles together with the final coupon.  advance() with
+        // zero days reduces to adjust(), preserving the default behaviour.
+        Integer exchangeLag = paymentLagOnNotionalExchanges_ ? paymentLag_ : 0;
+        initialNotionalExchangeDate_ = calendar_.advance(earliestDate_, exchangeLag, Days, convention_);
+        finalNotionalExchangeDate_   = calendar_.advance(maturityDate_, exchangeLag, Days, convention_);
 
         Date lastPaymentDate =
             std::max(firstLeg.back()->date(),
@@ -192,9 +199,11 @@ namespace QuantLib {
         std::optional<Frequency> paymentFrequency,
         Integer paymentLag,
         std::optional<Frequency> quoteCurrencyPaymentFrequency,
-        std::optional<bool> useIndexedCoupons)
+        std::optional<bool> useIndexedCoupons,
+        bool paymentLagOnNotionalExchanges)
     : CrossCurrencySwapRateHelperBase(basis, tenor, fixingDays, std::move(calendar), convention, endOfMonth,
-                                      std::move(collateralCurve), paymentLag),
+                                      std::move(collateralCurve), paymentLag,
+                                      paymentLagOnNotionalExchanges),
       baseCcyIdx_(std::move(baseCurrencyIndex)), quoteCcyIdx_(std::move(quoteCurrencyIndex)),
       isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
       isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg),
@@ -253,7 +262,8 @@ namespace QuantLib {
         std::optional<Frequency> paymentFrequency,
         Integer paymentLag,
         std::optional<Frequency> quoteCurrencyPaymentFrequency,
-        std::optional<bool> useIndexedCoupons)
+        std::optional<bool> useIndexedCoupons,
+        bool paymentLagOnNotionalExchanges)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
@@ -268,7 +278,8 @@ namespace QuantLib {
                                            paymentFrequency,
                                            paymentLag,
                                            quoteCurrencyPaymentFrequency,
-                                           useIndexedCoupons) {
+                                           useIndexedCoupons,
+                                           paymentLagOnNotionalExchanges) {
         buildSwap();
     }
 
@@ -286,7 +297,8 @@ namespace QuantLib {
             1.0, quoteCcyIdx_->currency(), quoteCcySchedule_, quoteCcyIdx_, 0.0, 1.0,
             paymentLag_, paymentLag_, false, Null<Natural>(), false, 0,
             RateAveraging::Compound, false, Null<Natural>(), false, 0,
-            RateAveraging::Compound, false, useIndexedCoupons_);
+            RateAveraging::Compound, false, useIndexedCoupons_,
+            paymentLagOnNotionalExchanges_);
         swap_->setPricingEngine(ext::make_shared<DiscountingConstNotionalCrossCurrencySwapEngine>(
             quoteCcyIdx_->currency(), quoteCcyLegDiscountHandle(),
             baseCcyIdx_->currency(), baseCcyLegDiscountHandle(),

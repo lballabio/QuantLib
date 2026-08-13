@@ -129,7 +129,8 @@ class CrossCurrencySwap : public Swap {
                                           Date earliestDate,
                                           Date maturityDate,
                                           BusinessDayConvention legBdc,
-                                          Real nominal);
+                                          Real nominal,
+                                          Integer paymentLag = 0);
     static void sortLegByDate(Leg& leg);
 
     std::vector<Currency> currencies_;

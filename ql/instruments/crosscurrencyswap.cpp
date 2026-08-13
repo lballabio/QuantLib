@@ -118,17 +118,22 @@ void CrossCurrencySwap::addNotionalExchangesToLeg(Leg& leg,
                                                   const Date earliestDate,
                                                   const Date maturityDate,
                                                   const BusinessDayConvention legBdc,
-                                                  Real nominal) {
-    // Principal exchanges settle on the effective and maturity dates: the
-    // payment lag belongs to coupon payments only.  The dates are adjusted
-    // with the leg's payment convention.
+                                                  Real nominal,
+                                                  Integer paymentLag) {
+    // By default principal exchanges settle on the effective and maturity
+    // dates: the payment lag belongs to coupon payments only, and the dates
+    // are adjusted with the leg's payment convention.  A non-zero paymentLag
+    // instead lags both exchanges like the coupons, so the final exchange
+    // settles together with the final coupon and the initial exchange falls
+    // on the lagged settlement date.  (advance() with zero days reduces to
+    // adjust(), so the default keeps the effective/maturity behaviour.)
     // Initial notional exchange
-    Date aDate = calendar.adjust(earliestDate, legBdc);
+    Date aDate = calendar.advance(earliestDate, paymentLag, Days, legBdc);
     ext::shared_ptr<CashFlow> aCashflow = ext::make_shared<SimpleCashFlow>(-nominal, aDate);
     leg.insert(leg.begin(), aCashflow);
 
     // Final notional exchange
-    aDate = calendar.adjust(maturityDate, legBdc);
+    aDate = calendar.advance(maturityDate, paymentLag, Days, legBdc);
     aCashflow = ext::make_shared<SimpleCashFlow>(nominal, aDate);
     leg.push_back(aCashflow);
 

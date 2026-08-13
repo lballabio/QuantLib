@@ -53,8 +53,11 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         First leg holds the pay currency cashflows and the second leg holds the receive currency cashflows.
 
         Payment lags apply only to coupon payments.  Notional exchanges remain
-        on the effective and maturity dates.
-        
+        on the effective and maturity dates, unless paymentLagOnNotionalExchanges
+        is set, in which case each leg's exchanges are lagged by that leg's
+        coupon payment lag: the final exchange settles together with the final
+        coupon and the initial exchange falls on the lagged settlement date.
+
         \param payNominal         Notional amount for the pay leg.
         \param payCurrency        Currency of the pay leg.
         \param paySchedule        Payment schedule for the pay leg.
@@ -81,6 +84,7 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         \param recAveragingMethod   Averaging method for the receive leg if overnight (default: compounding).
         \param telescopicValueDates Flag indicating whether telescopic value dates are used if overnight (default: false).
         \param useIndexedCoupons If provided, overrides the global IborCoupon setting for both legs.
+        \param paymentLagOnNotionalExchanges Whether the notional exchanges are lagged by each leg's coupon payment lag (default: false).
     */
     ConstNotionalCrossCurrencyBasisSwap(
         Real payNominal, Currency  payCurrency, Schedule  paySchedule,
@@ -92,7 +96,8 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         bool recCompoundSpread = false, Natural recLookbackDays = Null<Natural>(), bool recObservationShift = false,
         Natural recLockoutDays = 0, RateAveraging::Type recAveragingMethod = RateAveraging::Compound,
         bool telescopicValueDates = false,
-        std::optional<bool> useIndexedCoupons = std::nullopt);
+        std::optional<bool> useIndexedCoupons = std::nullopt,
+        bool paymentLagOnNotionalExchanges = false);
     //@}
     //! \name Instrument interface
     //@{
@@ -156,6 +161,7 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
     Integer payPaymentLag_;
     Integer recPaymentLag_;
     std::optional<bool> useIndexedCoupons_;
+    bool paymentLagOnNotionalExchanges_;
 
     // OIS only
     bool payCompoundSpread_;

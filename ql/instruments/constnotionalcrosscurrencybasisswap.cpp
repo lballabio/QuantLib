@@ -39,12 +39,14 @@ ConstNotionalCrossCurrencyBasisSwap::ConstNotionalCrossCurrencyBasisSwap(
                                      bool recCompoundSpread, Natural recLookbackDays, bool recObservationShift,
                                      Natural recLockoutDays, RateAveraging::Type recAveragingMethod,
                                      const bool telescopicValueDates,
-                                     std::optional<bool> useIndexedCoupons)
+                                     std::optional<bool> useIndexedCoupons,
+                                     const bool paymentLagOnNotionalExchanges)
     : ConstNotionalCrossCurrencySwap(2), payNominal_(payNominal), payCurrency_(std::move(payCurrency)), paySchedule_(std::move(paySchedule)),
       payIndex_(payIndex), paySpread_(paySpread), payGearing_(payGearing), recNominal_(recNominal),
       recCurrency_(std::move(recCurrency)), recSchedule_(std::move(recSchedule)), recIndex_(recIndex), recSpread_(recSpread),
       recGearing_(recGearing), payPaymentLag_(payPaymentLag), recPaymentLag_(recPaymentLag),
       useIndexedCoupons_(useIndexedCoupons),
+      paymentLagOnNotionalExchanges_(paymentLagOnNotionalExchanges),
       payCompoundSpread_(payCompoundSpread), payLookbackDays_(payLookbackDays),
       payObservationShift_(payObservationShift), payLockoutDays_(payLockoutDays),
       payAveragingMethod_(payAveragingMethod), recCompoundSpread_(recCompoundSpread),
@@ -117,13 +119,15 @@ void ConstNotionalCrossCurrencyBasisSwap::initialize() {
     ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(legs_[0], paySchedule_.calendar(),
                                                               earliestDate, maturityDate,
                                                               paySchedule_.businessDayConvention(),
-                                                              payNominal_);
+                                                              payNominal_,
+                                                              paymentLagOnNotionalExchanges_ ? payPaymentLag_ : 0);
 
     // Add notional exchanges on recLeg
     ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(legs_[1], recSchedule_.calendar(),
                                                               earliestDate, maturityDate,
                                                               recSchedule_.businessDayConvention(),
-                                                              recNominal_);
+                                                              recNominal_,
+                                                              paymentLagOnNotionalExchanges_ ? recPaymentLag_ : 0);
 
     // Register the instrument with all cashflows on each leg.
     for (Size legNo = 0; legNo < 2; legNo++) {
