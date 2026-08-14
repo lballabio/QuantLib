@@ -24,6 +24,7 @@
 #ifndef quantlib_mtm_cross_currency_basis_swap_hpp
 #define quantlib_mtm_cross_currency_basis_swap_hpp
 
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
 #include <ql/experimental/fx/fxresetcashflows.hpp>
 #include <ql/indexes/iborindex.hpp>
@@ -105,6 +106,10 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
                                         leg and its notional exchanges.
         \param useIndexedCoupons If provided, overrides the global IborCoupon
                                   setting for both legs.
+        \param fxBaseBrokenIndexConfig  Index selection applied to irregular
+                                  coupons of the base-currency leg when it is an
+                                  Ibor leg (see BrokenIndexConfig).  The default
+                                  prices broken periods off the leg's own index.
     */
     MtMCrossCurrencyBasisSwap(
         Type type,
@@ -133,7 +138,8 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
         Natural fxQuoteLockoutDays = 0,
         RateAveraging::Type fxQuoteAveragingMethod = RateAveraging::Compound,
         bool telescopicValueDates = false,
-        std::optional<bool> useIndexedCoupons = std::nullopt);
+        std::optional<bool> useIndexedCoupons = std::nullopt,
+        BrokenIndexConfig fxBaseBrokenIndexConfig = {});
     //@}
 
     //! \name Instrument interface
@@ -154,6 +160,9 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
     const ext::shared_ptr<IborIndex>& fxBaseIndex() const { return fxBaseIndex_; }
     Spread fxBaseSpread() const { return fxBaseSpread_; }
     Real fxBaseGearing() const { return fxBaseGearing_; }
+    const BrokenIndexConfig& fxBaseBrokenIndexConfig() const {
+        return fxBaseBrokenIndexConfig_;
+    }
 
     Real fxQuoteNominal() const { return fxQuoteNominal_; }
     const Currency& fxQuoteCurrency() const { return fxQuoteCurrency_; }
@@ -262,6 +271,7 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
     ext::shared_ptr<IborIndex> fxBaseIndex_;
     Spread fxBaseSpread_;
     Real fxBaseGearing_;
+    BrokenIndexConfig fxBaseBrokenIndexConfig_;
 
     Real fxQuoteNominal_;
     Currency fxQuoteCurrency_;

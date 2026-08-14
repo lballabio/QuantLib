@@ -222,6 +222,10 @@ namespace QuantLib {
                 \p calendar is used if this is empty.
             \param useIndexedCoupons
                 if provided, overrides the global IborCoupon setting for both legs.
+            \param baseBrokenIndexConfig
+                index selection applied to irregular coupons of the base-currency
+                leg when it is an Ibor leg (see BrokenIndexConfig).  The default
+                prices broken periods off the leg's own index.
             In both frequency parameters, \c NoFrequency is accepted as a synonym for
             an unset (null) value.
         */
@@ -242,7 +246,8 @@ namespace QuantLib {
                                             std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
                                             Natural fxResetFixingDays = 0,
                                             Calendar fxResetFixingCalendar = Calendar(),
-                                            std::optional<bool> useIndexedCoupons = std::nullopt);
+                                            std::optional<bool> useIndexedCoupons = std::nullopt,
+                                            BrokenIndexConfig baseBrokenIndexConfig = {});
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -269,6 +274,7 @@ namespace QuantLib {
         bool isFxBaseCurrencyLegResettable_;
         Natural fxResetFixingDays_;
         Calendar fxResetFixingCalendar_;
+        BrokenIndexConfig baseBrokenIndexConfig_;
         ext::shared_ptr<MtMCrossCurrencyBasisSwap> swap_;
     };
 

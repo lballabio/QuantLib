@@ -346,7 +346,8 @@ namespace QuantLib {
         std::optional<Frequency> quoteCurrencyPaymentFrequency,
         Natural fxResetFixingDays,
         Calendar fxResetFixingCalendar,
-        std::optional<bool> useIndexedCoupons)
+        std::optional<bool> useIndexedCoupons,
+        BrokenIndexConfig baseBrokenIndexConfig)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
@@ -363,7 +364,10 @@ namespace QuantLib {
                                            quoteCurrencyPaymentFrequency,
                                            useIndexedCoupons),
       isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
-      fxResetFixingDays_(fxResetFixingDays), fxResetFixingCalendar_(std::move(fxResetFixingCalendar)) {
+      fxResetFixingDays_(fxResetFixingDays), fxResetFixingCalendar_(std::move(fxResetFixingCalendar)),
+      baseBrokenIndexConfig_(std::move(baseBrokenIndexConfig)) {
+        for (const auto& candidate : baseBrokenIndexConfig_.indices)
+            registerWith(candidate);
         buildSwap();
     }
 
@@ -384,7 +388,8 @@ namespace QuantLib {
             fxResetFixingCalendar_, paymentLag_, paymentLag_,
             convention_, convention_, false, Null<Natural>(), false, 0,
             RateAveraging::Compound, false, Null<Natural>(), false, 0,
-            RateAveraging::Compound, false, useIndexedCoupons_);
+            RateAveraging::Compound, false, useIndexedCoupons_,
+            baseBrokenIndexConfig_);
         swap_->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
             quoteCcyIdx_->currency(), quoteCcyLegDiscountHandle(),
             baseCcyIdx_->currency(), baseCcyLegDiscountHandle(),
