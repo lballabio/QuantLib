@@ -68,7 +68,8 @@ namespace QuantLib {
         BlackCalculator black(payoff, forwardPrice,
                               std::sqrt(variance), riskFreeDiscount);
 
-        if (dividendDiscount>=1.0 && payoff->optionType()==Option::Call) {
+        if (dividendDiscount>=1.0 && dividendDiscount>=riskFreeDiscount &&
+            payoff->optionType()==Option::Call) {
             // early exercise never optimal
             results_.value        = black.value();
             results_.delta        = black.delta(spot);
