@@ -41,6 +41,8 @@ namespace QuantLib {
         case bootstrapBaseCurve = false and baseIndex will need a
         forecast curve).
         In both cases, an exogenous discount curve is required.
+
+        A payment lag can also be passed; it is applied to both legs.
     */
     class IborIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -55,7 +57,8 @@ namespace QuantLib {
                                     Handle<YieldTermStructure> discountHandle,
                                     bool bootstrapBaseCurve,
                                     std::optional<bool> useIndexedCoupons = std::nullopt,
-                                    DateGeneration::Rule rule = DateGeneration::Backward);
+                                    DateGeneration::Rule rule = DateGeneration::Backward,
+                                    Integer paymentLag = 0);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -76,6 +79,7 @@ namespace QuantLib {
         bool bootstrapBaseCurve_;
         std::optional<bool> useIndexedCoupons_;
         DateGeneration::Rule rule_;
+        Integer paymentLag_;
 
         ext::shared_ptr<Swap> swap_;
 
@@ -92,16 +96,19 @@ namespace QuantLib {
         curve for the overnight index; in this case, the ibor index
         will need to be given a forecast curve.
 
-        An exogenous discount curve can be passed; if not, the
-        overnight-index curve will be used.  Note that when
-        bootstrapBaseCurve = true and no discount curve is passed, the
-        curve being bootstrapped is also used for discounting.
+        An exogenous discount curve can be passed; if not, the curve being
+        bootstrapped is also used for discounting.
 
         A payment lag can also be passed; it is applied to both legs.
 
         The payment frequency of the overnight leg can be overridden.
         It defaults to the tenor of the ibor index.  The ibor leg
-        always pays at the tenor of its own index.
+        always pays at the tenor of its own index.  Passing NoFrequency
+        creates a single overnight coupon spanning the full swap tenor.
+
+        The averaging method and use of telescopic value dates can be
+        configured for the overnight leg.  Telescopic value dates are only
+        applied to compounded coupons.
     */
     class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -118,7 +125,9 @@ namespace QuantLib {
                                          Integer paymentLag = 0,
                                          std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
                                          std::optional<bool> useIndexedCoupons = std::nullopt,
-                                         DateGeneration::Rule rule = DateGeneration::Backward);
+                                         DateGeneration::Rule rule = DateGeneration::Backward,
+                                         RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                                         bool telescopicValueDates = false);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -141,6 +150,8 @@ namespace QuantLib {
         std::optional<Frequency> overnightPaymentFrequency_;
         std::optional<bool> useIndexedCoupons_;
         DateGeneration::Rule rule_;
+        RateAveraging::Type averagingMethod_;
+        bool telescopicValueDates_;
 
         ext::shared_ptr<Swap> swap_;
 
@@ -163,6 +174,9 @@ namespace QuantLib {
         against a compounded SOFR leg.  Telescopic value dates are only
         applied to compounded legs. Arithmetically averaged legs retain their
         full value-date schedule so that they are priced exactly.
+
+        Passing NoFrequency as the payment frequency creates one coupon on
+        each leg spanning the full swap tenor.
     */
     class OvernightOvernightBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -181,7 +195,8 @@ namespace QuantLib {
             Frequency paymentFrequency = Annual,
             RateAveraging::Type baseAveragingMethod = RateAveraging::Compound,
             RateAveraging::Type otherAveragingMethod = RateAveraging::Compound,
-            bool telescopicValueDates = false);
+            bool telescopicValueDates = false,
+            DateGeneration::Rule rule = DateGeneration::Backward);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -205,6 +220,7 @@ namespace QuantLib {
         RateAveraging::Type baseAveragingMethod_;
         RateAveraging::Type otherAveragingMethod_;
         bool telescopicValueDates_;
+        DateGeneration::Rule rule_;
 
         ext::shared_ptr<Swap> swap_;
 
