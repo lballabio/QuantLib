@@ -148,7 +148,7 @@ FxResetCoupon::FxResetCoupon(const ext::shared_ptr<FloatingRateCoupon>& underlyi
                      underlying->exCouponDate(),
                      underlying->fixingConvention()),
   underlying_(underlying), constantLegNotional_(constantLegNotional),
-  fxReset_(std::move(fxReset)) {
+  fxReset_(fxReset) {
     QL_REQUIRE(underlying_->nominal() != 0.0,
                "underlying coupon nominal cannot be zero");
     registerWith(underlying_);
@@ -204,7 +204,7 @@ FxResetNotionalExchange::FxResetNotionalExchange(const Date& paymentDate,
                                                  std::optional<FxReset> previousReset,
                                                  std::optional<FxReset> currentReset)
 : paymentDate_(paymentDate), constantLegNotional_(constantLegNotional),
-  previousReset_(std::move(previousReset)), currentReset_(std::move(currentReset)) {
+  previousReset_(previousReset), currentReset_(currentReset) {
     QL_REQUIRE(paymentDate_ != Date(), "null payment date");
     QL_REQUIRE(previousReset_ || currentReset_,
                "at least one of the reset dates must be given");

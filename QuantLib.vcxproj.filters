@@ -2208,6 +2208,9 @@
     <ClInclude Include="ql\termstructures\yield\compositezeroyieldstructure.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\derivedtermstructure.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\yield\discountcurve.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
@@ -3775,6 +3778,9 @@
       <Filter>math\ode</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\ode\fractionaladams.hpp">
+      <Filter>math\ode</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\ode\fractionalkernelapproximation.hpp">
       <Filter>math\ode</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp">

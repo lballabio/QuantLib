@@ -80,7 +80,7 @@ class FxResetConvention {
 //! Interface for obtaining the rate of an FX-reset observation
 class FxResetPricer : public virtual Observer, public virtual Observable {
   public:
-    virtual ~FxResetPricer() = default;
+    ~FxResetPricer() override = default;
     virtual Real fxRate(const FxReset& reset) const = 0;
     void update() override { notifyObservers(); }
 };

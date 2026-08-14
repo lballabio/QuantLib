@@ -1542,6 +1542,7 @@ set(QL_HEADERS
     math/modifiedbessel.hpp
     math/ode/adaptiverungekutta.hpp
     math/ode/fractionaladams.hpp
+    math/ode/fractionalkernelapproximation.hpp
     math/optimization/armijo.hpp
     math/optimization/bfgs.hpp
     math/optimization/cmaes.hpp
@@ -2198,6 +2199,7 @@ set(QL_HEADERS
     termstructures/yield/bondhelpers.hpp
     termstructures/yield/bootstraptraits.hpp
     termstructures/yield/compositezeroyieldstructure.hpp
+    termstructures/yield/derivedtermstructure.hpp
     termstructures/yield/discountcurve.hpp
     termstructures/yield/fittedbonddiscountcurve.hpp
     termstructures/yield/flatforward.hpp

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2021 StatPro Italia srl
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,8 @@
 
 #include <ql/cashflows/rateaveraging.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
+#include <ql/time/dategenerationrule.hpp>
+#include <optional>
 
 namespace QuantLib {
 
@@ -50,7 +53,9 @@ namespace QuantLib {
                                     const ext::shared_ptr<IborIndex>& baseIndex,
                                     const ext::shared_ptr<IborIndex>& otherIndex,
                                     Handle<YieldTermStructure> discountHandle,
-                                    bool bootstrapBaseCurve);
+                                    bool bootstrapBaseCurve,
+                                    std::optional<bool> useIndexedCoupons = std::nullopt,
+                                    DateGeneration::Rule rule = DateGeneration::Backward);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -69,6 +74,8 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> otherIndex_;
         Handle<YieldTermStructure> discountHandle_;
         bool bootstrapBaseCurve_;
+        std::optional<bool> useIndexedCoupons_;
+        DateGeneration::Rule rule_;
 
         ext::shared_ptr<Swap> swap_;
 
@@ -90,8 +97,11 @@ namespace QuantLib {
         bootstrapBaseCurve = true and no discount curve is passed, the
         curve being bootstrapped is also used for discounting.
 
-        A payment lag can also be passed; it is applied to both legs,
-        which share the same schedule.
+        A payment lag can also be passed; it is applied to both legs.
+
+        The payment frequency of the overnight leg can be overridden.
+        It defaults to the tenor of the ibor index.  The ibor leg
+        always pays at the tenor of its own index.
     */
     class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -105,7 +115,10 @@ namespace QuantLib {
                                          const ext::shared_ptr<IborIndex>& otherIndex,
                                          Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>(),
                                          bool bootstrapBaseCurve = false,
-                                         Integer paymentLag = 0);
+                                         Integer paymentLag = 0,
+                                         std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
+                                         std::optional<bool> useIndexedCoupons = std::nullopt,
+                                         DateGeneration::Rule rule = DateGeneration::Backward);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -125,6 +138,9 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountHandle_;
         bool bootstrapBaseCurve_;
         Integer paymentLag_;
+        std::optional<Frequency> overnightPaymentFrequency_;
+        std::optional<bool> useIndexedCoupons_;
+        DateGeneration::Rule rule_;
 
         ext::shared_ptr<Swap> swap_;
 

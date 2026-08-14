@@ -46,7 +46,8 @@ namespace QuantLib {
                                         BusinessDayConvention convention,
                                         bool endOfMonth,
                                         Handle<YieldTermStructure> collateralCurve,
-                                        Integer paymentLag);
+                                        Integer paymentLag,
+                                        bool paymentLagOnNotionalExchanges = false);
 
         void initializeDatesFromLegs(const Leg& firstLeg, const Leg& secondLeg);
 
@@ -56,6 +57,7 @@ namespace QuantLib {
         BusinessDayConvention convention_;
         bool endOfMonth_;
         Integer paymentLag_;
+        bool paymentLagOnNotionalExchanges_;
 
         Handle<YieldTermStructure> collateralHandle_;
 
@@ -83,7 +85,8 @@ namespace QuantLib {
                                              std::optional<Frequency> paymentFrequency = std::nullopt,
                                              Integer paymentLag = 0,
                                              std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
-                                             std::optional<bool> useIndexedCoupons = std::nullopt);
+                                             std::optional<bool> useIndexedCoupons = std::nullopt,
+                                             bool paymentLagOnNotionalExchanges = false);
 
         void initializeDates() override;
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
@@ -134,13 +137,19 @@ namespace QuantLib {
                 default) the schedule is derived from the base-currency index tenor.
             \param paymentLag
                 coupon payment lag, in days, applied to both legs (default: 0).
-                Notional exchanges remain on the effective and maturity dates.
+                Notional exchanges remain on the effective and maturity dates
+                unless \c paymentLagOnNotionalExchanges is set.
             \param quoteCurrencyPaymentFrequency
                 payment frequency of the quote-currency leg; if left unset (the
                 default) it defaults to \c paymentFrequency, and if that is unset as
                 well the schedule is derived from the quote-currency index tenor.
             \param useIndexedCoupons
                 if provided, overrides the global IborCoupon setting for both legs.
+            \param paymentLagOnNotionalExchanges
+                if true, both notional exchanges are lagged by \c paymentLag like
+                the coupons: the final exchange settles together with the final
+                coupon and the initial exchange falls on the lagged settlement
+                date (default: false).
             In both frequency parameters, \c NoFrequency is accepted as a synonym for
             an unset (null) value.
         */
@@ -159,7 +168,8 @@ namespace QuantLib {
             std::optional<Frequency> paymentFrequency = std::nullopt,
             Integer paymentLag = 0,
             std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
-            std::optional<bool> useIndexedCoupons = std::nullopt);
+            std::optional<bool> useIndexedCoupons = std::nullopt,
+            bool paymentLagOnNotionalExchanges = false);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -275,8 +285,17 @@ namespace QuantLib {
     The paymentLag parameter, in days, applies to the coupons of both legs;
     notional exchanges remain on the effective and maturity dates.
 
+    The convention parameter applies to the schedule and payments of both legs,
+    and the calendar parameter is used to roll and to pay on both legs.
+
     If provided, the useIndexedCoupons parameter overrides the global
     IborCoupon setting for the floating leg.
+
+    The floatPaymentFrequency parameter is the payment frequency of the floating
+    leg.  If left unset (the default) the schedule is derived from the floating
+    index tenor, which is only meaningful for an ibor index; an overnight index
+    has no payment frequency of its own, so one must be given explicitly.
+    \c NoFrequency is accepted as a synonym for an unset (null) value.
     */
     class ConstNotionalCrossCurrencySwapRateHelper : public CrossCurrencySwapRateHelperBase {
       public:
@@ -293,7 +312,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& collateralCurve,
             bool collateralOnFixedLeg,
             Integer paymentLag = 0,
-            std::optional<bool> useIndexedCoupons = std::nullopt);
+            std::optional<bool> useIndexedCoupons = std::nullopt,
+            std::optional<Frequency> floatPaymentFrequency = std::nullopt);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -312,6 +332,7 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> floatIndex_;
         bool collateralOnFixedLeg_;
         std::optional<bool> useIndexedCoupons_;
+        std::optional<Frequency> floatPaymentFrequency_;
 
         ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> xccySwap_;
     };

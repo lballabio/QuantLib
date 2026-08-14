@@ -33,7 +33,7 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
     Real fxQuoteNominal, Currency fxQuoteCurrency, Schedule fxQuoteSchedule,
     const ext::shared_ptr<IborIndex>& fxQuoteIndex, Spread fxQuoteSpread, Real fxQuoteGearing,
     bool isFxBaseCurrencyLegResettable,
-    Natural fxResetFixingDays, Calendar fxResetFixingCalendar,
+    Natural fxResetFixingDays, const Calendar& fxResetFixingCalendar,
     Integer fxBasePaymentLag, Integer fxQuotePaymentLag,
     BusinessDayConvention fxBasePaymentConvention,
     BusinessDayConvention fxQuotePaymentConvention,

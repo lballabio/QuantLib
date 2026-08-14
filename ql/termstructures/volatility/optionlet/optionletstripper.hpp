@@ -4,6 +4,7 @@
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,14 +27,18 @@
 #ifndef quantlib_optionletstripper_hpp
 #define quantlib_optionletstripper_hpp
 
-#include <ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp>
+#include <ql/cashflow.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp>
 #include <ql/termstructures/volatility/volatilitytype.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 
     class IborIndex;
+    class OptionletVolatilityStructure;
+    class PricingEngine;
+    class Quote;
 
     /*! StrippedOptionletBase specialization. It's up to derived
         classes to implement LazyObject::performCalculations
@@ -65,6 +70,7 @@ namespace QuantLib {
         Real displacement() const override;
         VolatilityType volatilityType() const override;
         std::optional<Period> optionletFrequency() const;
+        Natural paymentLag() const;
 
       protected:
         OptionletStripper(const ext::shared_ptr<CapFloorTermVolSurface>&,
@@ -72,7 +78,18 @@ namespace QuantLib {
                           Handle<YieldTermStructure> discount = {},
                           VolatilityType type = ShiftedLognormal,
                           Real displacement = 0.0,
-                          std::optional<Period> optionletFrequency = std::nullopt);
+                          std::optional<Period> optionletFrequency = std::nullopt,
+                          Natural paymentLag = 0);
+        Leg makeCapFloorLeg(const Period& capFloorLength) const;
+        Handle<OptionletVolatilityStructure>
+        constantOptionletVolatility(const Handle<Quote>& volatility) const;
+        ext::shared_ptr<PricingEngine> makeCapFloorPricingEngine(
+            const Handle<YieldTermStructure>& discountCurve,
+            const Handle<Quote>& volatility) const;
+        ext::shared_ptr<PricingEngine> makeCapFloorPricingEngine(
+            const Handle<YieldTermStructure>& discountCurve,
+            const Handle<OptionletVolatilityStructure>& volatility) const;
+        bool isOvernightIndex() const;
         ext::shared_ptr<CapFloorTermVolSurface> termVolSurface_;
         ext::shared_ptr<IborIndex> iborIndex_;
         Handle<YieldTermStructure> discount_;
@@ -93,6 +110,8 @@ namespace QuantLib {
         const VolatilityType volatilityType_;
         const Real displacement_;
         std::optional<Period> optionletFrequency_;
+        const Natural paymentLag_;
+        const bool isOvernightIndex_;
     };
 
 }

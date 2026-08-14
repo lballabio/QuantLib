@@ -64,11 +64,6 @@ namespace {
             ext::make_shared<FlatForward>(ref, r, Actual360()));
     }
 
-    struct ExchangeRateManagerCleaner {
-        ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
-        ~ExchangeRateManagerCleaner() { ExchangeRateManager::instance().clear(); }
-    };
-
 }
 
 BOOST_AUTO_TEST_CASE(testFairFxQuoteSpreadRepricesToZero) {
@@ -167,6 +162,7 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
                     isFxBaseCurrencyCollateralCurrency ? eurForecast : usdForecast;
 
                 std::vector<ext::shared_ptr<RateHelper> > helpers;
+                helpers.reserve(basisData.size());
                 for (const auto& q : basisData)
                     helpers.push_back(ext::make_shared<MtMCrossCurrencyBasisSwapRateHelper>(
                         makeQuoteHandle(q.second * bp), q.first, fixingDays, cal, conv, endOfMonth,
@@ -324,8 +320,8 @@ BOOST_AUTO_TEST_CASE(testFxResetObservationDatesAndProjection) {
     BOOST_CHECK_EQUAL(fxResetConvention.valueDate(firstCoupon->fxResetDate()), start);
     BOOST_CHECK(!firstExchange->previousReset());
     BOOST_REQUIRE(firstExchange->currentReset());
-    BOOST_CHECK_EQUAL(firstExchange->currentReset()->fixingDate(), firstCoupon->fxResetDate());
-    BOOST_CHECK_EQUAL(firstExchange->currentReset()->valueDate(), firstCoupon->fxResetValueDate());
+    BOOST_CHECK_EQUAL(firstExchange->currentReset()->fixingDate(), firstCoupon->fxResetDate());     // NOLINT(bugprone-unchecked-optional-access)
+    BOOST_CHECK_EQUAL(firstExchange->currentReset()->valueDate(), firstCoupon->fxResetValueDate()); // NOLINT(bugprone-unchecked-optional-access)
     BOOST_CHECK(!firstCoupon->fxResetPricer());
     BOOST_CHECK(!firstExchange->fxResetPricer());
 
@@ -387,7 +383,6 @@ BOOST_AUTO_TEST_CASE(testResetFixingStateUsesEvaluationDate) {
         "Testing that FX-reset fixing state is determined from the evaluation date...");
 
     SavedSettings backup;
-    ExchangeRateManagerCleaner cleaner;
     Date today(1, July, 2024);
     Settings::instance().evaluationDate() = today;
 
@@ -468,7 +463,6 @@ BOOST_AUTO_TEST_CASE(testKnownFxResetBeforeAccrualStart) {
     BOOST_TEST_MESSAGE("Testing that an FX reset fixed before accrual start uses its fixing...");
 
     SavedSettings backup;
-    ExchangeRateManagerCleaner cleaner;
     Date today(5, July, 2024);
     Settings::instance().evaluationDate() = today;
 
@@ -588,7 +582,6 @@ BOOST_AUTO_TEST_CASE(testSameDayResetUsesSpot) {
     BOOST_TEST_MESSAGE("Testing that a reset on the curve reference date uses spot FX...");
 
     SavedSettings backup;
-    ExchangeRateManagerCleaner exchangeRateCleaner;
     Date today(11, Sep, 2018);
     Settings::instance().evaluationDate() = today;
 
@@ -681,7 +674,6 @@ BOOST_AUTO_TEST_CASE(testSeasonedResetPeriodNeedsExchangeRate) {
         "Testing that an already-started MtM reset period requires a stored exchange rate...");
 
     SavedSettings backup;
-    ExchangeRateManagerCleaner exchangeRateCleaner;
     Date today(11, Sep, 2018);
     Settings::instance().evaluationDate() = today;
 
@@ -717,7 +709,6 @@ BOOST_AUTO_TEST_CASE(testSeasonedTriangulatedResetMatchesConstantNotional) {
                        "realised reset notional...");
 
     SavedSettings backup;
-    ExchangeRateManagerCleaner exchangeRateCleaner;
     Date today(11, Sep, 2018);
     Settings::instance().evaluationDate() = today;
 
@@ -794,7 +785,6 @@ BOOST_AUTO_TEST_CASE(testSeasonedEurUsdMarketExchangeRate) {
                        "swap...");
 
     SavedSettings backup;
-    ExchangeRateManagerCleaner exchangeRateCleaner;
     Date today(11, Sep, 2018);
     Settings::instance().evaluationDate() = today;
 
@@ -861,7 +851,6 @@ BOOST_AUTO_TEST_CASE(testSeasonedUsdJpyMarketExchangeRate) {
                        "swap...");
 
     SavedSettings backup;
-    ExchangeRateManagerCleaner exchangeRateCleaner;
     Date today(11, Sep, 2018);
     Settings::instance().evaluationDate() = today;
 
@@ -927,7 +916,6 @@ BOOST_AUTO_TEST_CASE(testSeasonedOvernightLegsMatchConstantNotional) {
                        "overnight coupon...");
 
     SavedSettings backup;
-    ExchangeRateManagerCleaner exchangeRateCleaner;
     Date today(11, Sep, 2018);
     Settings::instance().evaluationDate() = today;
 
@@ -1047,7 +1035,7 @@ BOOST_AUTO_TEST_CASE(testResetExchangePaymentDates) {
 
     for (Size i = 1; i + 1 < exchanges.size(); ++i) {
         BOOST_REQUIRE(exchanges[i]->currentReset());
-        BOOST_CHECK_EQUAL(exchanges[i]->date(), exchanges[i]->currentReset()->valueDate());
+        BOOST_CHECK_EQUAL(exchanges[i]->date(), exchanges[i]->currentReset()->valueDate()); // NOLINT(bugprone-unchecked-optional-access)
     }
 
     const Leg& constantLeg = swap->leg(swap->constantLegIndex());

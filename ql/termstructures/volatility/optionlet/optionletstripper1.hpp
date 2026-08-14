@@ -7,6 +7,7 @@
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2015 Peter Caspers
  Copyright (C) 2015 Michael von den Driesch
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -53,7 +54,8 @@ namespace QuantLib {
             VolatilityType type = ShiftedLognormal,
             Real displacement = 0.0,
             bool dontThrow = false,
-            std::optional<Period> optionletFrequency = std::nullopt);
+            std::optional<Period> optionletFrequency = std::nullopt,
+            Natural paymentLag = 0);
 
         const Matrix& capFloorPrices() const;
         const Matrix &capletVols() const;
