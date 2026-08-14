@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2016 Quaternion Risk Management Ltd
  Copyright (C) 2025 Paolo D'Elia
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,11 +38,15 @@ ConstNotionalCrossCurrencyBasisSwap::ConstNotionalCrossCurrencyBasisSwap(
                                      Natural payLockoutDays, RateAveraging::Type payAveragingMethod,
                                      bool recCompoundSpread, Natural recLookbackDays, bool recObservationShift,
                                      Natural recLockoutDays, RateAveraging::Type recAveragingMethod,
-                                     const bool telescopicValueDates)
+                                     const bool telescopicValueDates,
+                                     std::optional<bool> useIndexedCoupons,
+                                     const bool paymentLagOnNotionalExchanges)
     : ConstNotionalCrossCurrencySwap(2), payNominal_(payNominal), payCurrency_(std::move(payCurrency)), paySchedule_(std::move(paySchedule)),
       payIndex_(payIndex), paySpread_(paySpread), payGearing_(payGearing), recNominal_(recNominal),
       recCurrency_(std::move(recCurrency)), recSchedule_(std::move(recSchedule)), recIndex_(recIndex), recSpread_(recSpread),
       recGearing_(recGearing), payPaymentLag_(payPaymentLag), recPaymentLag_(recPaymentLag),
+      useIndexedCoupons_(useIndexedCoupons),
+      paymentLagOnNotionalExchanges_(paymentLagOnNotionalExchanges),
       payCompoundSpread_(payCompoundSpread), payLookbackDays_(payLookbackDays),
       payObservationShift_(payObservationShift), payLockoutDays_(payLockoutDays),
       payAveragingMethod_(payAveragingMethod), recCompoundSpread_(recCompoundSpread),
@@ -73,7 +78,8 @@ void ConstNotionalCrossCurrencyBasisSwap::initialize() {
                        .withNotionals(payNominal_)
                        .withSpreads(paySpread_)
                        .withGearings(payGearing_)
-                       .withPaymentLag(payPaymentLag_);
+                       .withPaymentLag(payPaymentLag_)
+                       .withIndexedCoupons(useIndexedCoupons_);
     }
     payer_[0] = -1.0;
     currencies_[0] = payCurrency_;
@@ -98,7 +104,8 @@ void ConstNotionalCrossCurrencyBasisSwap::initialize() {
                        .withNotionals(recNominal_)
                        .withSpreads(recSpread_)
                        .withGearings(recGearing_)
-                       .withPaymentLag(recPaymentLag_);
+                       .withPaymentLag(recPaymentLag_)
+                       .withIndexedCoupons(useIndexedCoupons_);
     }
     payer_[1] = +1.0;
     currencies_[1] = recCurrency_;
@@ -109,12 +116,18 @@ void ConstNotionalCrossCurrencyBasisSwap::initialize() {
                                  CashFlows::maturityDate(legs_[1]));
 
     // Add notional exchanges on payLeg
-    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(legs_[0], paySchedule_.calendar(), earliestDate, maturityDate,
-                                            payPaymentLag_, paySchedule_.businessDayConvention(), payNominal_);
+    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(legs_[0], paySchedule_.calendar(),
+                                                              earliestDate, maturityDate,
+                                                              paySchedule_.businessDayConvention(),
+                                                              payNominal_,
+                                                              paymentLagOnNotionalExchanges_ ? payPaymentLag_ : 0);
 
     // Add notional exchanges on recLeg
-    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(legs_[1], recSchedule_.calendar(), earliestDate, maturityDate,
-                                            recPaymentLag_, recSchedule_.businessDayConvention(), recNominal_);
+    ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(legs_[1], recSchedule_.calendar(),
+                                                              earliestDate, maturityDate,
+                                                              recSchedule_.businessDayConvention(),
+                                                              recNominal_,
+                                                              paymentLagOnNotionalExchanges_ ? recPaymentLag_ : 0);
 
     // Register the instrument with all cashflows on each leg.
     for (Size legNo = 0; legNo < 2; legNo++) {

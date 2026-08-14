@@ -45,7 +45,7 @@ namespace QuantLib {
         <li>Christmas Eve, December 24th</li>
         <li>Christmas Day, December 25th</li>
         <li>Boxing Day, December 26th</li>
-        <li>New Year's Eve, December 31th</li>
+        <li>New Year's Eve, December 31st</li>
         </ul>
 
         \ingroup calendars

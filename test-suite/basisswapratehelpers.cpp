@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2021 StatPro Italia srl
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -97,7 +98,7 @@ void testIborIborBootstrap(bool bootstrapBaseCurve) {
 
     for (auto q : quotes) {
         // create swaps and check they're fair
-        Date maturity = calendar.advance(spot, q.n, q.units, convention);
+        Date maturity = spot + Period(q.n, q.units);
 
         Schedule s1 =
             MakeSchedule()
@@ -105,7 +106,7 @@ void testIborIborBootstrap(bool bootstrapBaseCurve) {
             .withTenor(baseIndex->tenor())
             .withCalendar(calendar)
             .withConvention(convention)
-            .withRule(DateGeneration::Forward);
+            .withRule(DateGeneration::Backward);
         Leg leg1 = IborLeg(s1, baseIndex)
             .withSpreads(q.basis)
             .withNotionals(100.0);
@@ -116,7 +117,7 @@ void testIborIborBootstrap(bool bootstrapBaseCurve) {
             .withTenor(otherIndex->tenor())
             .withCalendar(calendar)
             .withConvention(convention)
-            .withRule(DateGeneration::Forward);
+            .withRule(DateGeneration::Backward);
         Leg leg2 = IborLeg(s2, otherIndex)
             .withNotionals(100.0);
 
@@ -193,7 +194,7 @@ void testOvernightIborBootstrap(bool externalDiscountCurve,
 
     for (auto q : quotes) {
         // create swaps and check they're fair
-        Date maturity = calendar.advance(spot, q.n, q.units, convention);
+        Date maturity = spot + Period(q.n, q.units);
 
         Schedule s =
             MakeSchedule()
@@ -201,7 +202,7 @@ void testOvernightIborBootstrap(bool externalDiscountCurve,
             .withTenor(otherIndex->tenor())
             .withCalendar(calendar)
             .withConvention(convention)
-            .withRule(DateGeneration::Forward);
+            .withRule(DateGeneration::Backward);
 
         Leg leg1 = OvernightLeg(s, baseIndex)
             .withSpreads(q.basis)
@@ -239,6 +240,150 @@ BOOST_AUTO_TEST_CASE(testIborIborOtherCurveBootstrap) {
     BOOST_TEST_MESSAGE("Testing IBOR-IBOR basis-swap rate helpers (other curve bootstrap)...");
 
     testIborIborBootstrap(false);
+}
+
+BOOST_AUTO_TEST_CASE(testIborIborIndexedCouponOverride) {
+    BOOST_TEST_MESSAGE("Testing the indexed-coupon override for IBOR-IBOR basis-swap rate helpers...");
+
+    struct IborCouponSettingsRestorer {
+        bool initiallyUsingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+        ~IborCouponSettingsRestorer() {
+            if (initiallyUsingAtParCoupons)
+                IborCoupon::Settings::instance().createAtParCoupons();
+            else
+                IborCoupon::Settings::instance().createIndexedCoupons();
+        }
+    } settingsRestorer;
+
+    // spot is the last UK business day of the month, so the end-of-month rule
+    // of the index makes the two dates below differ; other dates may not
+    Settings::instance().evaluationDate() = Date(27, January, 2010);
+    auto calendar = UnitedStates(UnitedStates::GovernmentBond);
+    Handle<YieldTermStructure> curve(flatRate(0.01, Actual365Fixed()));
+    auto baseIndex = ext::make_shared<USDLibor>(3 * Months, curve);
+    auto otherIndex = ext::make_shared<USDLibor>(6 * Months, curve);
+    Handle<Quote> basis(ext::make_shared<SimpleQuote>(0.0010));
+
+    // each helper is built against the opposite global setting, so the checks
+    // below can only pass if the override wins
+    IborCoupon::Settings::instance().createAtParCoupons();
+    IborIborBasisSwapRateHelper indexedHelper(basis, 2 * Years, 2, calendar, Following, false,
+                                               baseIndex, otherIndex, curve, false, true);
+
+    IborCoupon::Settings::instance().createIndexedCoupons();
+    IborIborBasisSwapRateHelper atParHelper(basis, 2 * Years, 2, calendar, Following, false,
+                                            baseIndex, otherIndex, curve, false, false);
+
+    for (Size i = 0; i < 2; ++i) {
+        auto indexedCoupon =
+            ext::dynamic_pointer_cast<IborCoupon>(indexedHelper.swap()->leg(i).front());
+        auto atParCoupon = ext::dynamic_pointer_cast<IborCoupon>(atParHelper.swap()->leg(i).front());
+        BOOST_REQUIRE(indexedCoupon);
+        BOOST_REQUIRE(atParCoupon);
+        BOOST_CHECK_EQUAL(indexedCoupon->fixingEndDate(), indexedCoupon->fixingMaturityDate());
+        BOOST_CHECK_NE(atParCoupon->fixingEndDate(), atParCoupon->fixingMaturityDate());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborDifferentPaymentFrequencies) {
+    BOOST_TEST_MESSAGE(
+        "Testing overnight-IBOR basis-swap rate helpers with different payment frequencies...");
+
+    Settings::instance().evaluationDate() = Date(27, January, 2010);
+    auto calendar = UnitedStates(UnitedStates::GovernmentBond);
+    Handle<YieldTermStructure> curve(flatRate(0.01, Actual365Fixed()));
+    auto overnightIndex = ext::make_shared<Sofr>(curve);
+    auto iborIndex = ext::make_shared<USDLibor>(3 * Months, curve);
+
+    // the overnight leg pays annually, the ibor leg at the tenor of its index
+    OvernightIborBasisSwapRateHelper helper(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.0010)), 2 * Years, 2, calendar, Following,
+        false, overnightIndex, iborIndex, curve, false, 0, Annual);
+
+    BOOST_CHECK_EQUAL(helper.swap()->leg(0).size(), 2);
+    BOOST_CHECK_EQUAL(helper.swap()->leg(1).size(), 8);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborIndexedCouponOverride) {
+    BOOST_TEST_MESSAGE(
+        "Testing the indexed-coupon override for overnight-IBOR basis-swap rate helpers...");
+
+    struct IborCouponSettingsRestorer {
+        bool initiallyUsingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+        ~IborCouponSettingsRestorer() {
+            if (initiallyUsingAtParCoupons)
+                IborCoupon::Settings::instance().createAtParCoupons();
+            else
+                IborCoupon::Settings::instance().createIndexedCoupons();
+        }
+    } settingsRestorer;
+
+    // see testIborIborIndexedCouponOverride for the choice of date
+    Settings::instance().evaluationDate() = Date(27, January, 2010);
+    auto calendar = UnitedStates(UnitedStates::GovernmentBond);
+    Handle<YieldTermStructure> curve(flatRate(0.01, Actual365Fixed()));
+    auto overnightIndex = ext::make_shared<Sofr>(curve);
+    auto iborIndex = ext::make_shared<USDLibor>(3 * Months, curve);
+    Handle<Quote> basis(ext::make_shared<SimpleQuote>(0.0010));
+
+    IborCoupon::Settings::instance().createAtParCoupons();
+    OvernightIborBasisSwapRateHelper indexedHelper(basis, 2 * Years, 2, calendar, Following, false,
+                                                   overnightIndex, iborIndex, curve, false, 0,
+                                                   Annual, true);
+
+    IborCoupon::Settings::instance().createIndexedCoupons();
+    OvernightIborBasisSwapRateHelper atParHelper(basis, 2 * Years, 2, calendar, Following, false,
+                                                 overnightIndex, iborIndex, curve, false, 0, Annual,
+                                                 false);
+
+    auto indexedCoupon =
+        ext::dynamic_pointer_cast<IborCoupon>(indexedHelper.swap()->leg(1).front());
+    auto atParCoupon = ext::dynamic_pointer_cast<IborCoupon>(atParHelper.swap()->leg(1).front());
+    BOOST_REQUIRE(indexedCoupon);
+    BOOST_REQUIRE(atParCoupon);
+    BOOST_CHECK_EQUAL(indexedCoupon->fixingEndDate(), indexedCoupon->fixingMaturityDate());
+    BOOST_CHECK_NE(atParCoupon->fixingEndDate(), atParCoupon->fixingMaturityDate());
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborDateGenerationRule) {
+    BOOST_TEST_MESSAGE(
+        "Testing the date-generation rule of overnight-IBOR basis-swap rate helpers...");
+
+    Settings::instance().evaluationDate() = Date(27, January, 2010);
+    auto calendar = UnitedStates(UnitedStates::GovernmentBond);
+    Handle<YieldTermStructure> curve(flatRate(0.01, Actual365Fixed()));
+    auto overnightIndex = ext::make_shared<Sofr>(curve);
+    // an annual index, so that both legs have the same stub
+    auto iborIndex = ext::make_shared<USDLibor>(1 * Years, curve);
+    Handle<Quote> basis(ext::make_shared<SimpleQuote>(0.0010));
+
+    Date spot = calendar.advance(Settings::instance().evaluationDate(), 2, Days);
+
+    // 18M against an annual frequency leaves a six-month stub
+    OvernightIborBasisSwapRateHelper backwardHelper(
+        basis, 18 * Months, 2, calendar, Following, false, overnightIndex, iborIndex, curve, false,
+        0, Annual, std::nullopt, DateGeneration::Backward);
+
+    OvernightIborBasisSwapRateHelper forwardHelper(
+        basis, 18 * Months, 2, calendar, Following, false, overnightIndex, iborIndex, curve, false,
+        0, Annual, std::nullopt, DateGeneration::Forward);
+
+    auto firstAccrualEnd = [](const OvernightIborBasisSwapRateHelper& h, Size leg) {
+        return ext::dynamic_pointer_cast<Coupon>(h.swap()->leg(leg).front())->accrualEndDate();
+    };
+
+    for (Size i = 0; i < 2; ++i) {
+        BOOST_CHECK_EQUAL(backwardHelper.swap()->leg(i).size(), 2);
+        BOOST_CHECK_EQUAL(forwardHelper.swap()->leg(i).size(), 2);
+        BOOST_CHECK_EQUAL(firstAccrualEnd(backwardHelper, i),
+                          calendar.adjust(spot + 6 * Months, Following));
+        BOOST_CHECK_EQUAL(firstAccrualEnd(forwardHelper, i),
+                          calendar.adjust(spot + 1 * Years, Following));
+    }
+
+    Date expectedMaturity = calendar.adjust(spot + 18 * Months, Following);
+    BOOST_CHECK_EQUAL(backwardHelper.maturityDate(), expectedMaturity);
+    BOOST_CHECK_EQUAL(forwardHelper.maturityDate(), expectedMaturity);
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithoutDiscountCurve) {

@@ -42,7 +42,7 @@ namespace QuantLib {
             Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
             const std::optional<bool>& includeSettlementDateFlows = std::nullopt);
         void calculate() const override;
-        Handle<YieldTermStructure> discountCurve() const {
+        const Handle<YieldTermStructure>& discountCurve() const {
             return discountCurve_;
         }
       private:

@@ -61,11 +61,11 @@ namespace QuantLib {
         registerWith(discount_);
     }
 
-    Handle<YieldTermStructure> SwapIndex::forwardingTermStructure() const {
+    const Handle<YieldTermStructure>& SwapIndex::forwardingTermStructure() const {
         return iborIndex_->forwardingTermStructure();
     }
 
-    Handle<YieldTermStructure> SwapIndex::discountingTermStructure() const {
+    const Handle<YieldTermStructure>& SwapIndex::discountingTermStructure() const {
         return discount_;  // empty if not exogenous
     }
 

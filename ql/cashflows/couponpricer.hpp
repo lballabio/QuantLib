@@ -71,7 +71,7 @@ namespace QuantLib {
 
         bool useIndexedCoupon() const { return useIndexedCoupon_; }
 
-        Handle<OptionletVolatilityStructure> capletVolatility() const {
+        const Handle<OptionletVolatilityStructure>& capletVolatility() const {
             return capletVol_;
         }
         void setCapletVolatility(
@@ -154,7 +154,7 @@ namespace QuantLib {
             registerWith(swaptionVol_);
         }
 
-        Handle<SwaptionVolatilityStructure> swaptionVolatility() const{
+        const Handle<SwaptionVolatilityStructure>& swaptionVolatility() const {
             return swaptionVol_;
         }
         void setSwaptionVolatility(

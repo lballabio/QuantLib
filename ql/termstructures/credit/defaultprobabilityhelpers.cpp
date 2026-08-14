@@ -44,13 +44,14 @@ namespace QuantLib {
                          const Date& startDate,
                          DayCounter lastPeriodDayCounter,
                          const bool rebatesAccrual,
-                         const CreditDefaultSwap::PricingModel model)
+                         const CreditDefaultSwap::PricingModel model,
+                         const Date& tradeDate)
     : RelativeDateDefaultProbabilityHelper(quote), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), frequency_(frequency), paymentConvention_(paymentConvention),
       rule_(rule), dayCounter_(std::move(dayCounter)), recoveryRate_(recoveryRate),
       discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
       paysAtDefaultTime_(paysAtDefaultTime), lastPeriodDC_(std::move(lastPeriodDayCounter)),
-      rebatesAccrual_(rebatesAccrual), model_(model), startDate_(startDate) {
+      rebatesAccrual_(rebatesAccrual), model_(model), startDate_(startDate), tradeDate_(tradeDate) {
 
         CdsHelper::initializeDates();
 
@@ -123,11 +124,12 @@ namespace QuantLib {
                               const Date& startDate,
                               const DayCounter& lastPeriodDayCounter,
                               const bool rebatesAccrual,
-                              const CreditDefaultSwap::PricingModel model)
+                              const CreditDefaultSwap::PricingModel model,
+                              const Date& tradeDate)
     : CdsHelper(runningSpread, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
                 recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
-                startDate, lastPeriodDayCounter, rebatesAccrual, model) {}
+                startDate, lastPeriodDayCounter, rebatesAccrual, model, tradeDate) {}
 
     Real SpreadCdsHelper::impliedQuote() const {
         swap_->recalculate();
@@ -138,7 +140,7 @@ namespace QuantLib {
         swap_ = ext::make_shared<CreditDefaultSwap>(
             Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,
             dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_,
-            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_, evaluationDate_);
+            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_, tradeDate_);
 
         switch (model_) {
           case CreditDefaultSwap::ISDA:
@@ -174,11 +176,12 @@ namespace QuantLib {
                               const Date& startDate,
                               const DayCounter& lastPeriodDayCounter,
                               const bool rebatesAccrual,
-                              const CreditDefaultSwap::PricingModel model)
+                              const CreditDefaultSwap::PricingModel model,
+                              const Date& tradeDate)
     : CdsHelper(upfront, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
                 recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
-                startDate, lastPeriodDayCounter, rebatesAccrual, model),
+                startDate, lastPeriodDayCounter, rebatesAccrual, model, tradeDate),
       upfrontSettlementDays_(upfrontSettlementDays),
       upfrontDate_(upfrontDate()),
       runningSpread_(runningSpread) {}
@@ -197,8 +200,7 @@ namespace QuantLib {
             Protection::Buyer, 100.0, 0.01, runningSpread_, schedule_,
             paymentConvention_, dayCounter_, settlesAccrual_,
             paysAtDefaultTime_, protectionStart_, upfrontDate_,
-            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_,
-            evaluationDate_);
+            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_, tradeDate_);
 
         switch (model_) {
           case CreditDefaultSwap::ISDA:

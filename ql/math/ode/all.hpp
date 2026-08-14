@@ -3,4 +3,5 @@
 
 #include <ql/math/ode/adaptiverungekutta.hpp>
 #include <ql/math/ode/fractionaladams.hpp>
+#include <ql/math/ode/fractionalkernelapproximation.hpp>
 

@@ -103,7 +103,7 @@ namespace QuantLib {
         BusinessDayConvention businessDayConvention() const;
         const DayCounter& dayCounter() const;
         //! term structure relevant to the contract (e.g. repo curve)
-        Handle<YieldTermStructure> discountCurve() const;
+        const Handle<YieldTermStructure>& discountCurve() const;
 
         Date fixingDate() const;
 
@@ -147,7 +147,7 @@ namespace QuantLib {
 
     inline const DayCounter& ForwardRateAgreement::dayCounter() const { return dayCounter_; }
 
-    inline Handle<YieldTermStructure> ForwardRateAgreement::discountCurve() const {
+    inline const Handle<YieldTermStructure>& ForwardRateAgreement::discountCurve() const {
         return discountCurve_;
     }
 

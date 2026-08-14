@@ -53,7 +53,8 @@ namespace QuantLib {
             Array lowerBound, upperBound;
             Array initialMean;
 
-            Configuration() {}
+            Configuration() {} // NOLINT(modernize-use-equals-default)
+
             Configuration& withPopulationSize(Size n) {
                 populationSize = n;
                 return *this;

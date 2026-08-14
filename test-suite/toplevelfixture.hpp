@@ -23,6 +23,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <ql/indexes/indexmanager.hpp>
+#include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/settings.hpp>
 
 namespace QuantLib {
@@ -39,6 +40,7 @@ namespace QuantLib {
 
         ~TopLevelFixture() {
             IndexManager::instance().clearHistories();
+            ExchangeRateManager::instance().clear();
             BOOST_CHECK(true);
         }
 
