@@ -79,7 +79,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
-        bool hasFixed() const;
+        virtual bool hasFixed() const;
         //@}
         //! \name FloatingRateCoupon interface
         //@{
@@ -156,9 +156,16 @@ namespace QuantLib {
         }
 
         Rate indexFixing() const override;
+        bool hasFixed() const override;
         void accept(AcyclicVisitor&) override;
 
       private:
+        //! the candidate indices the coupon fixes on, with their weights
+        /*! A single entry with weight 1 for ClosestIndex or an exact
+            Interpolated match; the two bracketing indices otherwise.
+        */
+        std::vector<std::pair<ext::shared_ptr<IborIndex>, Real> > selectedIndices() const;
+
         BrokenIndexConfig brokenIndexConfig_;
     };
 

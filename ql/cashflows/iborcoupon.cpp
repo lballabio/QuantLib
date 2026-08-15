@@ -28,6 +28,7 @@
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/optional.hpp>
+#include <algorithm>
 #include <cmath>
 #include <utility>
 
@@ -171,7 +172,8 @@ namespace QuantLib {
         }
     }
 
-    Rate StubIborCoupon::indexFixing() const {
+    std::vector<std::pair<ext::shared_ptr<IborIndex>, Real> >
+    StubIborCoupon::selectedIndices() const {
         const Date valueDate = fixingValueDate();
         QL_REQUIRE(valueDate == accrualStartDate(),
                    "stub coupon value date " << valueDate << " does not match accrual start date "
@@ -201,7 +203,7 @@ namespace QuantLib {
                     (distance == closestDistance && candidate.maturity < closest->maturity))
                     closest = &candidate;
             }
-            return closest->index->fixing(fixingDate());
+            return {{closest->index, 1.0}};
         }
 
         QL_REQUIRE(brokenIndexConfig_.convention == BrokenIndexConvention::Interpolated,
@@ -211,7 +213,7 @@ namespace QuantLib {
         const Candidate* longer = nullptr;
         for (const auto& candidate : candidates) {
             if (candidate.maturity == target)
-                return candidate.index->fixing(fixingDate());
+                return {{candidate.index, 1.0}};
             if (candidate.maturity < target &&
                 (shorter == nullptr || candidate.maturity > shorter->maturity))
                 shorter = &candidate;
@@ -225,11 +227,31 @@ namespace QuantLib {
         QL_REQUIRE(shorter->maturity < longer->maturity,
                    "candidate indices have the same maturity " << shorter->maturity);
 
-        const Rate shortRate = shorter->index->fixing(fixingDate());
-        const Rate longRate = longer->index->fixing(fixingDate());
         const Real weight = Real(target - shorter->maturity) /
                             Real(longer->maturity - shorter->maturity);
-        return shortRate + (longRate - shortRate) * weight;
+        return {{shorter->index, 1.0 - weight}, {longer->index, weight}};
+    }
+
+    Rate StubIborCoupon::indexFixing() const {
+        Rate rate = 0.0;
+        for (const auto& [index, weight] : selectedIndices())
+            rate += weight * index->fixing(fixingDate());
+        return rate;
+    }
+
+    bool StubIborCoupon::hasFixed() const {
+        const Date today = QuantLib::Settings::instance().evaluationDate();
+        if (fixingDate() > today)
+            return false;
+        if (fixingDate() < today)
+            return true;
+        if (QuantLib::Settings::instance().enforcesTodaysHistoricFixings())
+            return true;
+        // the coupon has fixed only once every index it fixes on has published
+        const auto selected = selectedIndices();
+        return std::all_of(selected.begin(), selected.end(), [this](const auto& entry) {
+            return entry.first->hasHistoricalFixing(fixingDate());
+        });
     }
 
     void StubIborCoupon::accept(AcyclicVisitor& v) {

@@ -841,6 +841,52 @@ BOOST_AUTO_TEST_CASE(testIborStubCouponHistoricalFixingsAndRelinking) {
     bkbm3m->clearFixings();
 }
 
+BOOST_AUTO_TEST_CASE(testIborStubCouponHasFixedUsesSelectedIndices) {
+    BOOST_TEST_MESSAGE("Testing that a stub coupon has fixed only once its selected indices have...");
+
+    SavedSettings backup;
+    const Date fixingDate(29, May, 2026);
+    const Date start = fixingDate;
+    const Date end(28, August, 2026);
+    Settings::instance().evaluationDate() = fixingDate;
+
+    Handle<YieldTermStructure> twoMonthCurve(flatRate(fixingDate, 0.02, Actual365Fixed()));
+    Handle<YieldTermStructure> threeMonthCurve(flatRate(fixingDate, 0.04, Actual365Fixed()));
+    auto bkbm2m = ext::make_shared<Bkbm2M>(twoMonthCurve);
+    auto bkbm3m = ext::make_shared<Bkbm3M>(threeMonthCurve);
+    BrokenIndexConfig convention{
+        BrokenIndexConvention::Interpolated, {bkbm2m, bkbm3m}};
+    Schedule schedule({start, end}, bkbm3m->fixingCalendar(), ModifiedFollowing,
+                      std::nullopt, 3 * Months, DateGeneration::Backward, true, {false});
+    Leg leg = IborLeg(schedule, bkbm3m)
+                  .withNotionals(1.0)
+                  .withIndexedCoupons(true)
+                  .withBrokenIndexConfig(convention);
+    auto coupon = ext::dynamic_pointer_cast<StubIborCoupon>(leg.front());
+    BOOST_REQUIRE(coupon);
+    BOOST_CHECK_EQUAL(coupon->fixingDate(), fixingDate);
+
+    BOOST_CHECK(!coupon->hasFixed());
+
+    // The leg index's own print must not flip the stub to fixed: the coupon
+    // reads the bracketing candidates, and the 2M print is still missing.
+    // Checked through a base-class pointer so the virtual dispatch is covered.
+    bkbm3m->addFixing(fixingDate, 0.08);
+    const ext::shared_ptr<IborCoupon> asIborCoupon = coupon;
+    BOOST_CHECK(!asIborCoupon->hasFixed());
+
+    bkbm2m->addFixing(fixingDate, 0.05);
+    BOOST_CHECK(asIborCoupon->hasFixed());
+
+    const Date shortMaturity = bkbm2m->maturityDate(start);
+    const Date longMaturity = bkbm3m->maturityDate(start);
+    const Real weight = Real(end - shortMaturity) / Real(longMaturity - shortMaturity);
+    BOOST_CHECK_SMALL(coupon->indexFixing() - (0.05 + (0.08 - 0.05) * weight), 1.0e-14);
+
+    bkbm2m->clearFixings();
+    bkbm3m->clearFixings();
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
