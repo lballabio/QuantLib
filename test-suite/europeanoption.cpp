@@ -1812,6 +1812,46 @@ BOOST_AUTO_TEST_CASE(testFFTEngines) {
     testEngineConsistency(engine,steps,samples,relativeTol);
 }
 
+BOOST_AUTO_TEST_CASE(testBinomialGreeksWithCoincidentNodes) {
+
+    BOOST_TEST_MESSAGE("Testing binomial greeks when the tree collapses to one price...");
+
+    // At low volatility deep in the money the Leisen-Reimer up probability is
+    // 0.99999999999999645, and the up and down factors round to one double.
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto vol = ext::make_shared<SimpleQuote>(0.01);
+
+    auto stochProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot),
+        Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 20.0);
+    auto exercise = ext::make_shared<EuropeanExercise>(today + Period(1, Years));
+
+    VanillaOption option(payoff, exercise);
+    option.setPricingEngine(
+        ext::make_shared<BinomialVanillaEngine<LeisenReimer>>(stochProcess, 801));
+
+    VanillaOption reference(payoff, exercise);
+    reference.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(stochProcess));
+
+    BOOST_CHECK_CLOSE(option.NPV(), reference.NPV(), 1.0e-8);
+
+    BOOST_CHECK_EXCEPTION(option.delta(), Error,
+                          ExpectedErrorMessage("delta not provided"));
+    BOOST_CHECK_EXCEPTION(option.gamma(), Error,
+                          ExpectedErrorMessage("gamma not provided"));
+    BOOST_CHECK_EXCEPTION(option.theta(), Error,
+                          ExpectedErrorMessage("theta not provided"));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
