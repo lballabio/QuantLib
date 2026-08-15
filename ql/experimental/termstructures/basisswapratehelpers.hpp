@@ -25,6 +25,7 @@
 #ifndef quantlib_basisswapratehelpers_hpp
 #define quantlib_basisswapratehelpers_hpp
 
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/time/dategenerationrule.hpp>
 #include <optional>
@@ -101,6 +102,13 @@ namespace QuantLib {
         The payment frequency of the overnight leg can be overridden.
         It defaults to the tenor of the ibor index.  The ibor leg
         always pays at the tenor of its own index.
+
+        A stub-index configuration can be passed for the ibor leg; it is
+        applied to that leg's irregular coupons (see StubIndexConfig).
+        Since the candidate indices keep their own forwarding curves,
+        this is only allowed when bootstrapBaseCurve is true, i.e. when
+        the ibor index has an exogenous forecast curve; otherwise the
+        candidates could not track the curve under construction.
     */
     class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -117,7 +125,8 @@ namespace QuantLib {
                                          Integer paymentLag = 0,
                                          std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
                                          std::optional<bool> useIndexedCoupons = std::nullopt,
-                                         DateGeneration::Rule rule = DateGeneration::Backward);
+                                         DateGeneration::Rule rule = DateGeneration::Backward,
+                                         StubIndexConfig iborStubIndexConfig = {});
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -140,6 +149,7 @@ namespace QuantLib {
         std::optional<Frequency> overnightPaymentFrequency_;
         std::optional<bool> useIndexedCoupons_;
         DateGeneration::Rule rule_;
+        StubIndexConfig iborStubIndexConfig_;
 
         ext::shared_ptr<Swap> swap_;
 

@@ -21,6 +21,8 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/termstructures/basisswapratehelpers.hpp>
+#include <ql/currencies/oceania.hpp>
+#include <ql/indexes/ibor/bkbm.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
@@ -28,6 +30,7 @@
 #include <ql/instruments/swap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/time/calendars/newzealand.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 
 using namespace QuantLib;
@@ -418,6 +421,69 @@ BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithPaymentLag) {
     testOvernightIborBootstrap(true, false, 2);
     testOvernightIborBootstrap(false, true, 2);
     testOvernightIborBootstrap(true, true, 2);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightIborStubIndexBootstrap) {
+    BOOST_TEST_MESSAGE(
+        "Testing overnight-IBOR bootstrap with an interpolated stub on the ibor leg...");
+
+    auto calendar = NewZealand();
+
+    Handle<YieldTermStructure> shortForecastCurve(flatRate(0.02, Actual365Fixed()));
+    Handle<YieldTermStructure> iborForecastCurve(flatRate(0.04, Actual365Fixed()));
+
+    auto overnight = ext::make_shared<OvernightIndex>(
+        "Nzionia", 0, NZDCurrency(), calendar, Actual365Fixed());
+    auto bkbm1m = ext::make_shared<Bkbm1M>(shortForecastCurve);
+    auto bkbm3m = ext::make_shared<Bkbm3M>(iborForecastCurve);
+
+    StubIndexConfig stubIndexConfig{StubIndexConvention::Interpolated, {bkbm1m, bkbm3m}};
+
+    auto makeHelper = [&](Spread basis, const Period& tenor, const StubIndexConfig& config) {
+        return ext::make_shared<OvernightIborBasisSwapRateHelper>(
+            makeQuoteHandle(basis), tenor, 0, calendar, ModifiedFollowing, false,
+            overnight, bkbm3m, Handle<YieldTermStructure>(),
+            true,  // bootstrap the overnight curve; the ibor leg is exogenous
+            0, std::nullopt, true, DateGeneration::Backward, config);
+    };
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers = {
+        makeHelper(10e-4, 6 * Months, stubIndexConfig),
+        makeHelper(12e-4, 8 * Months, stubIndexConfig),
+        makeHelper(15e-4, 1 * Years, stubIndexConfig)};
+
+    // the 8M helper's backward quarterly ibor schedule has a broken front period
+    auto stubHelper = ext::dynamic_pointer_cast<OvernightIborBasisSwapRateHelper>(helpers[1]);
+    auto stubCoupon =
+        ext::dynamic_pointer_cast<StubIborCoupon>(stubHelper->swap()->leg(1).front());
+    BOOST_REQUIRE(stubCoupon);
+
+    const Date fixingDate = stubCoupon->fixingDate();
+    const Date valueDate = stubCoupon->accrualStartDate();
+    const Date target = stubCoupon->accrualEndDate();
+    const Date shortMaturity = bkbm1m->maturityDate(valueDate);
+    const Date longMaturity = bkbm3m->maturityDate(valueDate);
+    BOOST_REQUIRE(shortMaturity < target && target < longMaturity);
+    const Real weight = Real(target - shortMaturity) / Real(longMaturity - shortMaturity);
+    const Rate expected = bkbm1m->fixing(fixingDate) +
+        (bkbm3m->fixing(fixingDate) - bkbm1m->fixing(fixingDate)) * weight;
+    QL_CHECK_SMALL(stubCoupon->indexFixing() - expected, 1e-14);
+
+    auto curve = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(
+        0, calendar, helpers, Actual365Fixed());
+    curve->discount(1.0);
+    for (const auto& h : helpers)
+        QL_CHECK_SMALL(h->impliedQuote() - h->quote()->value(), 1e-10);
+
+    // the config is rejected when the ibor forecast curve is the one being bootstrapped
+    auto overnightWithCurve = ext::make_shared<OvernightIndex>(
+        "Nzionia", 0, NZDCurrency(), calendar, Actual365Fixed(), shortForecastCurve);
+    BOOST_CHECK_THROW(
+        ext::make_shared<OvernightIborBasisSwapRateHelper>(
+            makeQuoteHandle(10e-4), 8 * Months, 0, calendar, ModifiedFollowing, false,
+            overnightWithCurve, bkbm3m, Handle<YieldTermStructure>(), false, 0,
+            std::nullopt, true, DateGeneration::Backward, stubIndexConfig),
+        Error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

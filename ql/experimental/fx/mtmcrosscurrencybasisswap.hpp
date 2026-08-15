@@ -106,9 +106,9 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
                                         leg and its notional exchanges.
         \param useIndexedCoupons If provided, overrides the global IborCoupon
                                   setting for both legs.
-        \param fxBaseBrokenIndexConfig  Index selection applied to irregular
+        \param fxBaseStubIndexConfig  Index selection applied to irregular
                                   coupons of the base-currency leg when it is an
-                                  Ibor leg (see BrokenIndexConfig).  The default
+                                  Ibor leg (see StubIndexConfig).  The default
                                   prices broken periods off the leg's own index.
     */
     MtMCrossCurrencyBasisSwap(
@@ -139,7 +139,7 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
         RateAveraging::Type fxQuoteAveragingMethod = RateAveraging::Compound,
         bool telescopicValueDates = false,
         std::optional<bool> useIndexedCoupons = std::nullopt,
-        BrokenIndexConfig fxBaseBrokenIndexConfig = {});
+        StubIndexConfig fxBaseStubIndexConfig = {});
     //@}
 
     //! \name Instrument interface
@@ -160,8 +160,8 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
     const ext::shared_ptr<IborIndex>& fxBaseIndex() const { return fxBaseIndex_; }
     Spread fxBaseSpread() const { return fxBaseSpread_; }
     Real fxBaseGearing() const { return fxBaseGearing_; }
-    const BrokenIndexConfig& fxBaseBrokenIndexConfig() const {
-        return fxBaseBrokenIndexConfig_;
+    const StubIndexConfig& fxBaseStubIndexConfig() const {
+        return fxBaseStubIndexConfig_;
     }
 
     Real fxQuoteNominal() const { return fxQuoteNominal_; }
@@ -271,7 +271,7 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
     ext::shared_ptr<IborIndex> fxBaseIndex_;
     Spread fxBaseSpread_;
     Real fxBaseGearing_;
-    BrokenIndexConfig fxBaseBrokenIndexConfig_;
+    StubIndexConfig fxBaseStubIndexConfig_;
 
     Real fxQuoteNominal_;
     Currency fxQuoteCurrency_;

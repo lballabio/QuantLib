@@ -40,13 +40,15 @@ ConstNotionalCrossCurrencyBasisSwap::ConstNotionalCrossCurrencyBasisSwap(
                                      Natural recLockoutDays, RateAveraging::Type recAveragingMethod,
                                      const bool telescopicValueDates,
                                      std::optional<bool> useIndexedCoupons,
-                                     const bool paymentLagOnNotionalExchanges)
+                                     const bool paymentLagOnNotionalExchanges,
+                                     StubIndexConfig payStubIndexConfig)
     : ConstNotionalCrossCurrencySwap(2), payNominal_(payNominal), payCurrency_(std::move(payCurrency)), paySchedule_(std::move(paySchedule)),
       payIndex_(payIndex), paySpread_(paySpread), payGearing_(payGearing), recNominal_(recNominal),
       recCurrency_(std::move(recCurrency)), recSchedule_(std::move(recSchedule)), recIndex_(recIndex), recSpread_(recSpread),
       recGearing_(recGearing), payPaymentLag_(payPaymentLag), recPaymentLag_(recPaymentLag),
       useIndexedCoupons_(useIndexedCoupons),
       paymentLagOnNotionalExchanges_(paymentLagOnNotionalExchanges),
+      payStubIndexConfig_(std::move(payStubIndexConfig)),
       payCompoundSpread_(payCompoundSpread), payLookbackDays_(payLookbackDays),
       payObservationShift_(payObservationShift), payLockoutDays_(payLockoutDays),
       payAveragingMethod_(payAveragingMethod), recCompoundSpread_(recCompoundSpread),
@@ -60,6 +62,8 @@ ConstNotionalCrossCurrencyBasisSwap::ConstNotionalCrossCurrencyBasisSwap(
 void ConstNotionalCrossCurrencyBasisSwap::initialize() {
     // Pay leg
     if (auto on = ext::dynamic_pointer_cast<OvernightIndex>(payIndex_)) {
+        QL_REQUIRE(payStubIndexConfig_.convention == StubIndexConvention::CurrentIndex,
+                   "stub index conventions do not apply to an overnight pay leg");
         // ON leg
         legs_[0] = OvernightLeg(paySchedule_, on)
                         .withNotionals(payNominal_)
@@ -79,7 +83,8 @@ void ConstNotionalCrossCurrencyBasisSwap::initialize() {
                        .withSpreads(paySpread_)
                        .withGearings(payGearing_)
                        .withPaymentLag(payPaymentLag_)
-                       .withIndexedCoupons(useIndexedCoupons_);
+                       .withIndexedCoupons(useIndexedCoupons_)
+                       .withStubIndexConfig(payStubIndexConfig_);
     }
     payer_[0] = -1.0;
     currencies_[0] = payCurrency_;

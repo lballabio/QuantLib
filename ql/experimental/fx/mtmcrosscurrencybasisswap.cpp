@@ -43,13 +43,13 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
     Natural fxQuoteLockoutDays, RateAveraging::Type fxQuoteAveragingMethod,
     const bool telescopicValueDates,
     std::optional<bool> useIndexedCoupons,
-    BrokenIndexConfig fxBaseBrokenIndexConfig)
+    StubIndexConfig fxBaseStubIndexConfig)
 : CrossCurrencySwap(2),
   type_(type),
   fxBaseNominal_(fxBaseNominal),
   fxBaseCurrency_(std::move(fxBaseCurrency)), fxBaseSchedule_(std::move(fxBaseSchedule)),
   fxBaseIndex_(fxBaseIndex), fxBaseSpread_(fxBaseSpread), fxBaseGearing_(fxBaseGearing),
-  fxBaseBrokenIndexConfig_(std::move(fxBaseBrokenIndexConfig)),
+  fxBaseStubIndexConfig_(std::move(fxBaseStubIndexConfig)),
   fxQuoteNominal_(fxQuoteNominal), fxQuoteCurrency_(std::move(fxQuoteCurrency)),
   fxQuoteSchedule_(std::move(fxQuoteSchedule)), fxQuoteIndex_(fxQuoteIndex),
   fxQuoteSpread_(fxQuoteSpread), fxQuoteGearing_(fxQuoteGearing),
@@ -78,8 +78,8 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
 void MtMCrossCurrencyBasisSwap::initialize() {
     // Base-currency leg
     if (auto on = ext::dynamic_pointer_cast<OvernightIndex>(fxBaseIndex_)) {
-        QL_REQUIRE(fxBaseBrokenIndexConfig_.convention == BrokenIndexConvention::CurrentIndex,
-                   "broken-index conventions do not apply to an overnight base leg");
+        QL_REQUIRE(fxBaseStubIndexConfig_.convention == StubIndexConvention::CurrentIndex,
+                   "stub index conventions do not apply to an overnight base leg");
         legs_[0] = OvernightLeg(fxBaseSchedule_, on)
                        .withNotionals(fxBaseNominal_)
                        .withSpreads(fxBaseSpread_)
@@ -102,7 +102,7 @@ void MtMCrossCurrencyBasisSwap::initialize() {
                        .withPaymentCalendar(fxBaseSchedule_.calendar())
                        .withPaymentLag(fxBasePaymentLag_)
                        .withIndexedCoupons(useIndexedCoupons_)
-                       .withBrokenIndexConfig(fxBaseBrokenIndexConfig_);
+                       .withStubIndexConfig(fxBaseStubIndexConfig_);
     }
     payer_[0] = paysFxBaseCurrency() ? -1.0 : +1.0;
     currencies_[0] = fxBaseCurrency_;

@@ -38,7 +38,7 @@
 namespace QuantLib {
 
     //! Convention used to select an index for an irregular Ibor coupon
-    enum class BrokenIndexConvention {
+    enum class StubIndexConvention {
         CurrentIndex,
         ClosestIndex,
         Interpolated
@@ -47,15 +47,22 @@ namespace QuantLib {
     //! Index selection data for irregular Ibor coupons
     /*! The indices are supplied as fully constructed objects so that each one
         can use its own conventions, fixing history and forwarding curve.
+        Because of this, none of them can track a curve that is still being
+        bootstrapped; they must all use exogenous forwarding curves.
 
         For ClosestIndex, the index whose maturity is closest to the coupon end
-        date is used.  For Interpolated, the two index maturities bracketing the
-        coupon end date are used for linear interpolation in calendar days.  All
-        candidate indices must resolve the coupon fixing date to the same value
-        date, which must equal the coupon accrual start date.
+        date is used (ties go to the shorter index).  For Interpolated, the two
+        index maturities bracketing the coupon end date are used for linear
+        interpolation in calendar days.  All candidate indices must resolve the
+        coupon fixing date to a value date equal to the coupon accrual start
+        date, and their maturities must be distinct.
+
+        The resulting coupons always fix each candidate index over its own
+        deposit period, so legs using these conventions must be built with
+        indexed coupons; the par-coupon approximation is not supported.
     */
-    struct BrokenIndexConfig {
-        BrokenIndexConvention convention = BrokenIndexConvention::CurrentIndex;
+    struct StubIndexConfig {
+        StubIndexConvention convention = StubIndexConvention::CurrentIndex;
         std::vector<ext::shared_ptr<IborIndex> > indices;
     };
 
@@ -132,6 +139,11 @@ namespace QuantLib {
     /*! This coupon is intended for broken periods.  Candidate indices are
         selected according to their maturity dates and retain their own
         forwarding curves and fixing histories.
+
+        The selection depends on dates only, so it is performed once at
+        construction; invalid configurations (candidates whose value date
+        differs from the accrual start date, duplicate maturities, maturities
+        not bracketing the coupon end date) throw from the constructor.
     */
     class StubIborCoupon : public IborCoupon {
       public:
@@ -141,7 +153,7 @@ namespace QuantLib {
                        const Date& endDate,
                        Natural fixingDays,
                        const ext::shared_ptr<IborIndex>& index,
-                       BrokenIndexConfig brokenIndexConfig,
+                       StubIndexConfig stubIndexConfig,
                        Real gearing = 1.0,
                        Spread spread = 0.0,
                        const Date& refPeriodStart = Date(),
@@ -151,8 +163,17 @@ namespace QuantLib {
                        const Date& exCouponDate = Date(),
                        BusinessDayConvention fixingConvention = Preceding);
 
-        const BrokenIndexConfig& brokenIndexConfig() const {
-            return brokenIndexConfig_;
+        const StubIndexConfig& stubIndexConfig() const {
+            return stubIndexConfig_;
+        }
+
+        //! the candidate indices the coupon fixes on, with their weights
+        /*! A single entry with weight 1 for ClosestIndex or an exact
+            Interpolated match; the two bracketing indices otherwise.
+        */
+        const std::vector<std::pair<ext::shared_ptr<IborIndex>, Real> >&
+        selectedIndices() const {
+            return selectedIndices_;
         }
 
         Rate indexFixing() const override;
@@ -160,13 +181,8 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
 
       private:
-        //! the candidate indices the coupon fixes on, with their weights
-        /*! A single entry with weight 1 for ClosestIndex or an exact
-            Interpolated match; the two bracketing indices otherwise.
-        */
-        std::vector<std::pair<ext::shared_ptr<IborIndex>, Real> > selectedIndices() const;
-
-        BrokenIndexConfig brokenIndexConfig_;
+        StubIndexConfig stubIndexConfig_;
+        std::vector<std::pair<ext::shared_ptr<IborIndex>, Real> > selectedIndices_;
     };
 
 
@@ -226,7 +242,8 @@ namespace QuantLib {
         IborLeg& withIndexedCoupons(std::optional<bool> b = true);
         IborLeg& withAtParCoupons(bool b = true);
         //! sets index selection for uncapped schedule periods marked as irregular
-        IborLeg& withBrokenIndexConfig(const BrokenIndexConfig&);
+        /*! Requires indexed coupons; see StubIndexConfig. */
+        IborLeg& withStubIndexConfig(const StubIndexConfig&);
         operator Leg() const;
 
       private:
@@ -248,7 +265,7 @@ namespace QuantLib {
         BusinessDayConvention exCouponAdjustment_ = Unadjusted;
         bool exCouponEndOfMonth_ = false;
         std::optional<bool> useIndexedCoupons_;
-        BrokenIndexConfig brokenIndexConfig_;
+        StubIndexConfig stubIndexConfig_;
     };
 
 }

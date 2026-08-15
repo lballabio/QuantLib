@@ -143,12 +143,21 @@ namespace QuantLib {
         Integer paymentLag,
         std::optional<Frequency> overnightPaymentFrequency,
         std::optional<bool> useIndexedCoupons,
-        DateGeneration::Rule rule)
+        DateGeneration::Rule rule,
+        StubIndexConfig iborStubIndexConfig)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
       discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve),
       paymentLag_(paymentLag), overnightPaymentFrequency_(overnightPaymentFrequency),
-      useIndexedCoupons_(useIndexedCoupons), rule_(rule) {
+      useIndexedCoupons_(useIndexedCoupons), rule_(rule),
+      iborStubIndexConfig_(std::move(iborStubIndexConfig)) {
+
+        // stub candidates keep their own forwarding curves, so they cannot
+        // track the ibor curve if that is the one being bootstrapped
+        QL_REQUIRE(bootstrapBaseCurve_ ||
+                       iborStubIndexConfig_.convention == StubIndexConvention::CurrentIndex,
+                   "stub index conventions are not supported on the leg "
+                   "whose forecast curve is being bootstrapped");
 
         // we need to clone the index whose forecast curve we want to bootstrap
         // and copy the other one
@@ -168,6 +177,8 @@ namespace QuantLib {
         registerWith(baseIndex_);
         registerWith(otherIndex_);
         registerWith(discountHandle_);
+        for (const auto& candidate : iborStubIndexConfig_.indices)
+            registerWith(candidate);
 
         OvernightIborBasisSwapRateHelper::initializeDates();
     }
@@ -205,7 +216,8 @@ namespace QuantLib {
         Leg otherLeg = IborLeg(iborSchedule, otherIndex_)
             .withNotionals(100.0)
             .withPaymentLag(paymentLag_)
-            .withIndexedCoupons(useIndexedCoupons_);
+            .withIndexedCoupons(useIndexedCoupons_)
+            .withStubIndexConfig(iborStubIndexConfig_);
         auto lastOtherCoupon = ext::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
 
         maturityDate_ = std::max(overnightSchedule.endDate(), iborSchedule.endDate());
