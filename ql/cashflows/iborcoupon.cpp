@@ -179,57 +179,51 @@ namespace QuantLib {
                    "stub coupon value date " << valueDate << " does not match accrual start date "
                                               << accrualStartDate());
 
-        struct Candidate {
-            Date maturity;
-            ext::shared_ptr<IborIndex> index;
-        };
-
-        std::vector<Candidate> candidates;
+        // (maturity, index) pairs, sorted by maturity so the two conventions
+        // below reduce to a nearest-neighbour and a bracket search.
+        std::vector<std::pair<Date, ext::shared_ptr<IborIndex> > > candidates;
         candidates.reserve(brokenIndexConfig_.indices.size());
         for (const auto& candidate : brokenIndexConfig_.indices) {
             const Date candidateValueDate = candidate->valueDate(fixingDate());
             QL_REQUIRE(candidateValueDate == valueDate,
                        candidate->name() << " value date " << candidateValueDate
                                          << " does not match stub value date " << valueDate);
-            candidates.push_back({candidate->maturityDate(valueDate), candidate});
+            candidates.emplace_back(candidate->maturityDate(valueDate), candidate);
         }
+        std::sort(candidates.begin(), candidates.end(),
+                  [](const auto& a, const auto& b) { return a.first < b.first; });
+
         const Date target = accrualEndDate();
         if (brokenIndexConfig_.convention == BrokenIndexConvention::ClosestIndex) {
-            const Candidate* closest = &candidates.front();
-            for (const auto& candidate : candidates) {
-                const Integer distance = std::abs(candidate.maturity - target);
-                const Integer closestDistance = std::abs(closest->maturity - target);
-                if (distance < closestDistance ||
-                    (distance == closestDistance && candidate.maturity < closest->maturity))
-                    closest = &candidate;
-            }
-            return {{closest->index, 1.0}};
+            // candidates are sorted by maturity, so the first minimum found by
+            // min_element is also the closest one with the smaller maturity.
+            auto closest = std::min_element(
+                candidates.begin(), candidates.end(), [target](const auto& a, const auto& b) {
+                    return std::abs(a.first - target) < std::abs(b.first - target);
+                });
+            return {{closest->second, 1.0}};
         }
 
         QL_REQUIRE(brokenIndexConfig_.convention == BrokenIndexConvention::Interpolated,
                    "unknown broken-index convention");
 
-        const Candidate* shorter = nullptr;
-        const Candidate* longer = nullptr;
-        for (const auto& candidate : candidates) {
-            if (candidate.maturity == target)
-                return {{candidate.index, 1.0}};
-            if (candidate.maturity < target &&
-                (shorter == nullptr || candidate.maturity > shorter->maturity))
-                shorter = &candidate;
-            if (candidate.maturity > target &&
-                (longer == nullptr || candidate.maturity < longer->maturity))
-                longer = &candidate;
-        }
-
-        QL_REQUIRE(shorter != nullptr && longer != nullptr,
+        auto longer = std::lower_bound(
+            candidates.begin(), candidates.end(), target,
+            [](const auto& candidate, const Date& d) { return candidate.first < d; });
+        QL_REQUIRE(longer != candidates.end(),
                    "index maturities do not bracket irregular coupon end date " << target);
-        QL_REQUIRE(shorter->maturity < longer->maturity,
-                   "candidate indices have the same maturity " << shorter->maturity);
+        if (longer->first == target)
+            return {{longer->second, 1.0}};
 
-        const Real weight = Real(target - shorter->maturity) /
-                            Real(longer->maturity - shorter->maturity);
-        return {{shorter->index, 1.0 - weight}, {longer->index, weight}};
+        QL_REQUIRE(longer != candidates.begin(),
+                   "index maturities do not bracket irregular coupon end date " << target);
+        auto shorter = std::prev(longer);
+        QL_REQUIRE(shorter->first < longer->first,
+                   "candidate indices have the same maturity " << shorter->first);
+
+        const Real weight =
+            Real(target - shorter->first) / Real(longer->first - shorter->first);
+        return {{shorter->second, 1.0 - weight}, {longer->second, weight}};
     }
 
     Rate StubIborCoupon::indexFixing() const {
