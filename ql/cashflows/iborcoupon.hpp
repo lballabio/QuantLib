@@ -39,13 +39,16 @@ namespace QuantLib {
 
     //! Convention used to select an index for an irregular Ibor coupon
     enum class StubIndexConvention {
-        CurrentIndex,
         ClosestIndex,
         Interpolated
     };
 
-    //! Index selection data for irregular Ibor coupons
-    /*! The indices are supplied as fully constructed objects so that each one
+    //! Index selection for irregular Ibor coupons
+    /*! A default-constructed configuration is empty, meaning that broken
+        periods fix on the leg's own index as usual.  A non-empty one supplies
+        the candidate indices used instead.
+
+        The indices are supplied as fully constructed objects so that each one
         can use its own conventions, fixing history and forwarding curve.
         Because of this, none of them can track a curve that is still being
         bootstrapped; they must all use exogenous forwarding curves.
@@ -61,9 +64,20 @@ namespace QuantLib {
         deposit period, so legs using these conventions must be built with
         indexed coupons; the par-coupon approximation is not supported.
     */
-    struct StubIndexConfig {
-        StubIndexConvention convention = StubIndexConvention::CurrentIndex;
-        std::vector<ext::shared_ptr<IborIndex> > indices;
+    class StubIndexConfig {
+      public:
+        //! empty configuration: broken periods fix on the leg's own index
+        StubIndexConfig() = default;
+        StubIndexConfig(StubIndexConvention convention,
+                        std::vector<ext::shared_ptr<IborIndex> > indices);
+
+        bool empty() const { return indices_.empty(); }
+        StubIndexConvention convention() const { return convention_; }
+        const std::vector<ext::shared_ptr<IborIndex> >& indices() const { return indices_; }
+
+      private:
+        StubIndexConvention convention_ = StubIndexConvention::ClosestIndex;
+        std::vector<ext::shared_ptr<IborIndex> > indices_;
     };
 
     //! %Coupon paying a Libor-type index
@@ -141,9 +155,10 @@ namespace QuantLib {
         forwarding curves and fixing histories.
 
         The selection depends on dates only, so it is performed once at
-        construction; invalid configurations (candidates whose value date
-        differs from the accrual start date, duplicate maturities, maturities
-        not bracketing the coupon end date) throw from the constructor.
+        construction; configurations invalid for this coupon (candidates whose
+        value date differs from the accrual start date, duplicate maturities,
+        maturities not bracketing the coupon end date) throw from the
+        constructor.
     */
     class StubIborCoupon : public IborCoupon {
       public:

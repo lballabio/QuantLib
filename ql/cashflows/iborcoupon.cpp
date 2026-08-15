@@ -143,6 +143,15 @@ namespace QuantLib {
     }
 
 
+    StubIndexConfig::StubIndexConfig(StubIndexConvention convention,
+                                     std::vector<ext::shared_ptr<IborIndex> > indices)
+    : convention_(convention), indices_(std::move(indices)) {
+        QL_REQUIRE(!indices_.empty(), "no candidate indices provided for stub index selection");
+        for (const auto& candidate : indices_)
+            QL_REQUIRE(candidate, "null candidate index for stub index selection");
+    }
+
+
     StubIborCoupon::StubIborCoupon(const Date& paymentDate,
                                    Real nominal,
                                    const Date& startDate,
@@ -162,19 +171,16 @@ namespace QuantLib {
                  refPeriodStart, refPeriodEnd, dayCounter, isInArrears, exCouponDate,
                  fixingConvention),
       stubIndexConfig_(std::move(stubIndexConfig)) {
-        QL_REQUIRE(stubIndexConfig_.convention != StubIndexConvention::CurrentIndex,
-                   "StubIborCoupon requires a non-current stub-index convention");
-        QL_REQUIRE(!stubIndexConfig_.indices.empty(),
-                   "no candidate indices provided for irregular Ibor coupon");
+        QL_REQUIRE(!stubIndexConfig_.empty(),
+                   "StubIborCoupon requires a non-empty stub index configuration");
 
         // (maturity, index) pairs, sorted by maturity so the two conventions
         // below reduce to a nearest-neighbour and a bracket search.  The
         // selection depends on dates only, so it is made once here; this also
         // surfaces configuration errors at construction time.
         std::vector<std::pair<Date, ext::shared_ptr<IborIndex> > > candidates;
-        candidates.reserve(stubIndexConfig_.indices.size());
-        for (const auto& candidate : stubIndexConfig_.indices) {
-            QL_REQUIRE(candidate, "null candidate index for irregular Ibor coupon");
+        candidates.reserve(stubIndexConfig_.indices().size());
+        for (const auto& candidate : stubIndexConfig_.indices()) {
             registerWith(candidate);
             const Date candidateValueDate = candidate->valueDate(fixingDate());
             QL_REQUIRE(candidateValueDate == accrualStartDate(),
@@ -190,7 +196,7 @@ namespace QuantLib {
                        "duplicate candidate index maturity " << candidates[i].first);
 
         const Date target = accrualEndDate();
-        if (stubIndexConfig_.convention == StubIndexConvention::ClosestIndex) {
+        if (stubIndexConfig_.convention() == StubIndexConvention::ClosestIndex) {
             // candidates are sorted by maturity, so the first minimum found by
             // min_element is also the closest one with the smaller maturity.
             auto closest = std::min_element(
@@ -201,8 +207,8 @@ namespace QuantLib {
             return;
         }
 
-        QL_REQUIRE(stubIndexConfig_.convention == StubIndexConvention::Interpolated,
-                   "unknown stub-index convention");
+        QL_REQUIRE(stubIndexConfig_.convention() == StubIndexConvention::Interpolated,
+                   "unknown stub index convention");
 
         auto longer = std::lower_bound(
             candidates.begin(), candidates.end(), target,
@@ -401,7 +407,7 @@ namespace QuantLib {
 			             exCouponPeriod_, exCouponCalendar_, exCouponAdjustment_, exCouponEndOfMonth_,
 			             fixingConvention_);
 
-        if (stubIndexConfig_.convention != StubIndexConvention::CurrentIndex) {
+        if (!stubIndexConfig_.empty()) {
             QL_REQUIRE(caps_.empty() && floors_.empty(),
                        "stub index conventions are not supported for capped/floored Ibor legs");
             QL_REQUIRE(!inArrears_,

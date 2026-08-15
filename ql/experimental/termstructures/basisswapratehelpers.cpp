@@ -154,8 +154,7 @@ namespace QuantLib {
 
         // stub candidates keep their own forwarding curves, so they cannot
         // track the ibor curve if that is the one being bootstrapped
-        QL_REQUIRE(bootstrapBaseCurve_ ||
-                       iborStubIndexConfig_.convention == StubIndexConvention::CurrentIndex,
+        QL_REQUIRE(bootstrapBaseCurve_ || iborStubIndexConfig_.empty(),
                    "stub index conventions are not supported on the leg "
                    "whose forecast curve is being bootstrapped");
 
@@ -177,7 +176,7 @@ namespace QuantLib {
         registerWith(baseIndex_);
         registerWith(otherIndex_);
         registerWith(discountHandle_);
-        for (const auto& candidate : iborStubIndexConfig_.indices)
+        for (const auto& candidate : iborStubIndexConfig_.indices())
             registerWith(candidate);
 
         OvernightIborBasisSwapRateHelper::initializeDates();

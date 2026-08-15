@@ -698,6 +698,19 @@ BOOST_AUTO_TEST_CASE(testInterpolatedIborStubCoupon) {
                                            .withIndexedCoupons(true)
                                            .withStubIndexConfig(duplicate)),
                       Error);
+
+    // a default-constructed configuration is empty and leaves the leg alone
+    BOOST_CHECK(StubIndexConfig().empty());
+    Leg defaultLeg = IborLeg(schedule, bkbm3m)
+                         .withNotionals(1.0)
+                         .withIndexedCoupons(true)
+                         .withStubIndexConfig(StubIndexConfig());
+    BOOST_CHECK(!ext::dynamic_pointer_cast<StubIborCoupon>(defaultLeg.front()));
+
+    // configurations without usable candidates are rejected on construction
+    BOOST_CHECK_THROW(StubIndexConfig(StubIndexConvention::Interpolated, {}), Error);
+    BOOST_CHECK_THROW(
+        StubIndexConfig(StubIndexConvention::Interpolated, {bkbm2m, nullptr}), Error);
 }
 
 BOOST_AUTO_TEST_CASE(testIborStubInterpolationEndpointsAndRegularSchedule) {

@@ -62,8 +62,6 @@ ConstNotionalCrossCurrencyBasisSwap::ConstNotionalCrossCurrencyBasisSwap(
 void ConstNotionalCrossCurrencyBasisSwap::initialize() {
     // Pay leg
     if (auto on = ext::dynamic_pointer_cast<OvernightIndex>(payIndex_)) {
-        QL_REQUIRE(payStubIndexConfig_.convention == StubIndexConvention::CurrentIndex,
-                   "stub index conventions do not apply to an overnight pay leg");
         // ON leg
         legs_[0] = OvernightLeg(paySchedule_, on)
                         .withNotionals(payNominal_)

@@ -100,8 +100,6 @@ namespace QuantLib {
                              std::optional<bool> useIndexedCoupons,
                              const StubIndexConfig& stubIndexConfig = {}) {
             if (auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(idx)) {
-                QL_REQUIRE(stubIndexConfig.convention == StubIndexConvention::CurrentIndex,
-                           "stub index conventions do not apply to an overnight leg");
                 return OvernightLeg(schedule, overnightIndex)
                     .withNotionals(1.0)
                     .withPaymentLag(paymentLag);
@@ -218,7 +216,7 @@ namespace QuantLib {
       baseStubIndexConfig_(std::move(baseStubIndexConfig)) {
         registerWith(baseCcyIdx_);
         registerWith(quoteCcyIdx_);
-        for (const auto& candidate : baseStubIndexConfig_.indices)
+        for (const auto& candidate : baseStubIndexConfig_.indices())
             registerWith(candidate);
 
         CrossCurrencyBasisSwapRateHelperBase::initializeDates();

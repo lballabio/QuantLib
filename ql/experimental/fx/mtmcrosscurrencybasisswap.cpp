@@ -78,8 +78,6 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
 void MtMCrossCurrencyBasisSwap::initialize() {
     // Base-currency leg
     if (auto on = ext::dynamic_pointer_cast<OvernightIndex>(fxBaseIndex_)) {
-        QL_REQUIRE(fxBaseStubIndexConfig_.convention == StubIndexConvention::CurrentIndex,
-                   "stub index conventions do not apply to an overnight base leg");
         legs_[0] = OvernightLeg(fxBaseSchedule_, on)
                        .withNotionals(fxBaseNominal_)
                        .withSpreads(fxBaseSpread_)
