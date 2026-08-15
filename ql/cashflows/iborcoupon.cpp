@@ -6,6 +6,7 @@
  Copyright (C) 2010, 2011 Ferdinando Ametrano
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,6 +31,7 @@
 #include <ql/optional.hpp>
 #include <algorithm>
 #include <cmath>
+#include <iterator>
 #include <utility>
 
 namespace QuantLib {
@@ -152,6 +154,65 @@ namespace QuantLib {
     }
 
 
+    static std::vector<std::pair<ext::shared_ptr<IborIndex>, Real> >
+    selectStubIndices(const StubIndexConfig& config,
+                      const Date& fixingDate,
+                      const Date& accrualStartDate,
+                      const Date& accrualEndDate) {
+        QL_REQUIRE(!config.empty(),
+                   "StubIborCoupon requires a non-empty stub index configuration");
+
+        // (maturity, index) pairs, sorted by maturity so selection reduces to
+        // a nearest-neighbour or bracket search.
+        std::vector<std::pair<Date, ext::shared_ptr<IborIndex> > > candidates;
+        candidates.reserve(config.indices().size());
+        for (const auto& candidate : config.indices()) {
+            const Date candidateValueDate = candidate->valueDate(fixingDate);
+            QL_REQUIRE(candidateValueDate == accrualStartDate,
+                       candidate->name() << " value date " << candidateValueDate
+                                         << " does not match accrual start date "
+                                         << accrualStartDate);
+            candidates.emplace_back(candidate->maturityDate(candidateValueDate), candidate);
+        }
+        std::sort(candidates.begin(), candidates.end(),
+                  [](const auto& a, const auto& b) { return a.first < b.first; });
+        for (Size i = 1; i < candidates.size(); ++i)
+            QL_REQUIRE(candidates[i - 1].first < candidates[i].first,
+                       "duplicate candidate index maturity " << candidates[i].first);
+
+        if (config.convention() == StubIndexConvention::ClosestIndex) {
+            // Since candidates are sorted, ties select the smaller maturity.
+            const auto closest = std::min_element(
+                candidates.begin(), candidates.end(),
+                [accrualEndDate](const auto& a, const auto& b) {
+                    return std::abs(a.first - accrualEndDate) <
+                           std::abs(b.first - accrualEndDate);
+                });
+            return {{closest->second, 1.0}};
+        }
+
+        QL_REQUIRE(config.convention() == StubIndexConvention::Interpolated,
+                   "unknown stub index convention");
+
+        const auto longer = std::lower_bound(
+            candidates.begin(), candidates.end(), accrualEndDate,
+            [](const auto& candidate, const Date& d) { return candidate.first < d; });
+        QL_REQUIRE(longer != candidates.end(),
+                   "index maturities do not bracket irregular coupon end date "
+                       << accrualEndDate);
+        if (longer->first == accrualEndDate)
+            return {{longer->second, 1.0}};
+
+        QL_REQUIRE(longer != candidates.begin(),
+                   "index maturities do not bracket irregular coupon end date "
+                       << accrualEndDate);
+        const auto shorter = std::prev(longer);
+        const Real weight = Real(accrualEndDate - shorter->first) /
+                            Real(longer->first - shorter->first);
+        return {{shorter->second, 1.0 - weight}, {longer->second, weight}};
+    }
+
+
     StubIborCoupon::StubIborCoupon(const Date& paymentDate,
                                    Real nominal,
                                    const Date& startDate,
@@ -170,63 +231,11 @@ namespace QuantLib {
     : IborCoupon(paymentDate, nominal, startDate, endDate, fixingDays, index, gearing, spread,
                  refPeriodStart, refPeriodEnd, dayCounter, isInArrears, exCouponDate,
                  fixingConvention),
-      stubIndexConfig_(std::move(stubIndexConfig)) {
-        QL_REQUIRE(!stubIndexConfig_.empty(),
-                   "StubIborCoupon requires a non-empty stub index configuration");
-
-        // (maturity, index) pairs, sorted by maturity so the two conventions
-        // below reduce to a nearest-neighbour and a bracket search.  The
-        // selection depends on dates only, so it is made once here; this also
-        // surfaces configuration errors at construction time.
-        std::vector<std::pair<Date, ext::shared_ptr<IborIndex> > > candidates;
-        candidates.reserve(stubIndexConfig_.indices().size());
-        for (const auto& candidate : stubIndexConfig_.indices()) {
-            registerWith(candidate);
-            const Date candidateValueDate = candidate->valueDate(fixingDate());
-            QL_REQUIRE(candidateValueDate == accrualStartDate(),
-                       candidate->name() << " value date " << candidateValueDate
-                                         << " does not match accrual start date "
-                                         << accrualStartDate());
-            candidates.emplace_back(candidate->maturityDate(candidateValueDate), candidate);
-        }
-        std::sort(candidates.begin(), candidates.end(),
-                  [](const auto& a, const auto& b) { return a.first < b.first; });
-        for (Size i = 1; i < candidates.size(); ++i)
-            QL_REQUIRE(candidates[i - 1].first < candidates[i].first,
-                       "duplicate candidate index maturity " << candidates[i].first);
-
-        const Date target = accrualEndDate();
-        if (stubIndexConfig_.convention() == StubIndexConvention::ClosestIndex) {
-            // candidates are sorted by maturity, so the first minimum found by
-            // min_element is also the closest one with the smaller maturity.
-            auto closest = std::min_element(
-                candidates.begin(), candidates.end(), [target](const auto& a, const auto& b) {
-                    return std::abs(a.first - target) < std::abs(b.first - target);
-                });
-            selectedIndices_ = {{closest->second, 1.0}};
-            return;
-        }
-
-        QL_REQUIRE(stubIndexConfig_.convention() == StubIndexConvention::Interpolated,
-                   "unknown stub index convention");
-
-        auto longer = std::lower_bound(
-            candidates.begin(), candidates.end(), target,
-            [](const auto& candidate, const Date& d) { return candidate.first < d; });
-        QL_REQUIRE(longer != candidates.end(),
-                   "index maturities do not bracket irregular coupon end date " << target);
-        if (longer->first == target) {
-            selectedIndices_ = {{longer->second, 1.0}};
-            return;
-        }
-
-        QL_REQUIRE(longer != candidates.begin(),
-                   "index maturities do not bracket irregular coupon end date " << target);
-        auto shorter = std::prev(longer);
-
-        const Real weight =
-            Real(target - shorter->first) / Real(longer->first - shorter->first);
-        selectedIndices_ = {{shorter->second, 1.0 - weight}, {longer->second, weight}};
+      stubIndexConfig_(std::move(stubIndexConfig)),
+      selectedIndices_(selectStubIndices(
+          stubIndexConfig_, fixingDate(), accrualStartDate(), accrualEndDate())) {
+        for (const auto& selected : selectedIndices_)
+            registerWith(selected.first);
     }
 
     Rate StubIborCoupon::indexFixing() const {
