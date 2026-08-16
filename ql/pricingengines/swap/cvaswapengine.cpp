@@ -122,7 +122,7 @@ namespace QuantLib {
 
     Real cumOptVal = 0., 
         cumPutVal = 0.;
-    // Vanilla swap so 0 leg is floater
+    // Vanilla swap, so leg 0 is fixed
 
     auto nextFD = 
       arguments_.fixedPayDates.begin();
