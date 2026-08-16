@@ -1111,6 +1111,18 @@ BOOST_AUTO_TEST_CASE(testSobolBurleySkipping) {
         }
 }
 
+BOOST_AUTO_TEST_CASE(testSobolBurleyReproducibilityWithZeroSeed) {
+    BOOST_TEST_MESSAGE(
+        "Testing Sobol Burley reproducibility with a zero Sobol seed...");
+
+    Burley2020SobolRsg rsg1(33, 0, SobolRsg::Jaeckel, 7);
+    Burley2020SobolRsg rsg2(33, 0, SobolRsg::Jaeckel, 7);
+
+    const auto& s1 = rsg1.nextInt32Sequence();
+    const auto& s2 = rsg2.nextInt32Sequence();
+    BOOST_CHECK_EQUAL_COLLECTIONS(s1.begin(), s1.end(), s2.begin(), s2.end());
+}
+
 BOOST_AUTO_TEST_CASE(testHighDimensionalIntegrals) {
     BOOST_TEST_MESSAGE("Testing high-dimensional integrals...");
 
