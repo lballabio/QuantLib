@@ -321,8 +321,6 @@ namespace QuantLib {
 
     The floatStubIndexConfig parameter selects the indices used for irregular
     coupons of the floating leg when it is an Ibor leg (see StubIndexConfig).
-    The candidate indices must use exogenous forwarding curves; the default
-    prices broken periods off the leg's own index.
     */
     class ConstNotionalCrossCurrencySwapRateHelper : public CrossCurrencySwapRateHelperBase {
       public:
