@@ -110,6 +110,8 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
                                   coupons of the base-currency leg when it is an
                                   Ibor leg (see StubIndexConfig).  The default
                                   prices broken periods off the leg's own index.
+        \param fxQuoteStubIndexConfig  As fxBaseStubIndexConfig, for the
+                                  quote-currency leg.
     */
     MtMCrossCurrencyBasisSwap(
         Type type,
@@ -139,7 +141,8 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
         RateAveraging::Type fxQuoteAveragingMethod = RateAveraging::Compound,
         bool telescopicValueDates = false,
         std::optional<bool> useIndexedCoupons = std::nullopt,
-        StubIndexConfig fxBaseStubIndexConfig = {});
+        StubIndexConfig fxBaseStubIndexConfig = {},
+        StubIndexConfig fxQuoteStubIndexConfig = {});
     //@}
 
     //! \name Instrument interface
@@ -162,6 +165,9 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
     Real fxBaseGearing() const { return fxBaseGearing_; }
     const StubIndexConfig& fxBaseStubIndexConfig() const {
         return fxBaseStubIndexConfig_;
+    }
+    const StubIndexConfig& fxQuoteStubIndexConfig() const {
+        return fxQuoteStubIndexConfig_;
     }
 
     Real fxQuoteNominal() const { return fxQuoteNominal_; }
@@ -279,6 +285,7 @@ class MtMCrossCurrencyBasisSwap : public CrossCurrencySwap {
     ext::shared_ptr<IborIndex> fxQuoteIndex_;
     Spread fxQuoteSpread_;
     Real fxQuoteGearing_;
+    StubIndexConfig fxQuoteStubIndexConfig_;
 
     bool isFxBaseCurrencyLegResettable_;
     FxResetConvention fxResetConvention_;

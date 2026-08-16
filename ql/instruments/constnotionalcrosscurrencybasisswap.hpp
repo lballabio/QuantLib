@@ -90,6 +90,7 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
                                    of the pay leg when it is an Ibor leg (see
                                    StubIndexConfig).  The default prices broken
                                    periods off the leg's own index.
+        \param recStubIndexConfig  As payStubIndexConfig, for the receive leg.
     */
     ConstNotionalCrossCurrencyBasisSwap(
         Real payNominal, Currency  payCurrency, Schedule  paySchedule,
@@ -103,7 +104,8 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         bool telescopicValueDates = false,
         std::optional<bool> useIndexedCoupons = std::nullopt,
         bool paymentLagOnNotionalExchanges = false,
-        StubIndexConfig payStubIndexConfig = {});
+        StubIndexConfig payStubIndexConfig = {},
+        StubIndexConfig recStubIndexConfig = {});
     //@}
     //! \name Instrument interface
     //@{
@@ -126,6 +128,7 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
     Spread recSpread() const { return recSpread_; }
     Real recGearing() const { return recGearing_; }
     const StubIndexConfig& payStubIndexConfig() const { return payStubIndexConfig_; }
+    const StubIndexConfig& recStubIndexConfig() const { return recStubIndexConfig_; }
     //@}
 
     //! \name Additional interface
@@ -170,6 +173,7 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
     std::optional<bool> useIndexedCoupons_;
     bool paymentLagOnNotionalExchanges_;
     StubIndexConfig payStubIndexConfig_;
+    StubIndexConfig recStubIndexConfig_;
 
     // OIS only
     bool payCompoundSpread_;

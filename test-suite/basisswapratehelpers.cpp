@@ -486,6 +486,68 @@ BOOST_AUTO_TEST_CASE(testOvernightIborStubIndexBootstrap) {
         Error);
 }
 
+BOOST_AUTO_TEST_CASE(testIborIborStubIndexBootstrap) {
+    BOOST_TEST_MESSAGE(
+        "Testing ibor-ibor bootstrap with an interpolated stub on the exogenous leg...");
+
+    auto calendar = NewZealand();
+
+    Handle<YieldTermStructure> shortForecastCurve(flatRate(0.02, Actual365Fixed()));
+    Handle<YieldTermStructure> otherForecastCurve(flatRate(0.04, Actual365Fixed()));
+    Handle<YieldTermStructure> discountCurve(flatRate(0.03, Actual365Fixed()));
+
+    auto bkbm1m = ext::make_shared<Bkbm1M>(shortForecastCurve);
+    auto bkbm3m = ext::make_shared<Bkbm3M>();  // curve to be bootstrapped
+    auto bkbm6m = ext::make_shared<Bkbm6M>(otherForecastCurve);
+
+    StubIndexConfig otherConfig{StubIndexConvention::Interpolated, {bkbm1m, bkbm6m}};
+
+    auto makeHelper = [&](Spread basis, const Period& tenor) {
+        return ext::make_shared<IborIborBasisSwapRateHelper>(
+            makeQuoteHandle(basis), tenor, 0, calendar, ModifiedFollowing, false,
+            bkbm3m, bkbm6m, discountCurve,
+            true,  // bootstrap the base (3M) curve; the 6M leg is exogenous
+            true, DateGeneration::Backward, StubIndexConfig{}, otherConfig);
+    };
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers = {
+        makeHelper(10e-4, 6 * Months),
+        makeHelper(12e-4, 8 * Months),
+        makeHelper(15e-4, 1 * Years)};
+
+    // the 8M helper's backward semiannual schedule has a broken front period
+    // on the exogenous 6M leg
+    auto stubHelper = ext::dynamic_pointer_cast<IborIborBasisSwapRateHelper>(helpers[1]);
+    auto stubCoupon =
+        ext::dynamic_pointer_cast<StubIborCoupon>(stubHelper->swap()->leg(1).front());
+    BOOST_REQUIRE(stubCoupon);
+
+    const Date fixingDate = stubCoupon->fixingDate();
+    const Date valueDate = stubCoupon->accrualStartDate();
+    const Date target = stubCoupon->accrualEndDate();
+    const Date shortMaturity = bkbm1m->maturityDate(valueDate);
+    const Date longMaturity = bkbm6m->maturityDate(valueDate);
+    BOOST_REQUIRE(shortMaturity < target && target < longMaturity);
+    const Real weight = Real(target - shortMaturity) / Real(longMaturity - shortMaturity);
+    const Rate expected = bkbm1m->fixing(fixingDate) +
+        (bkbm6m->fixing(fixingDate) - bkbm1m->fixing(fixingDate)) * weight;
+    QL_CHECK_SMALL(stubCoupon->indexFixing() - expected, 1e-14);
+
+    auto curve = ext::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>(
+        0, calendar, helpers, Actual365Fixed());
+    curve->discount(1.0);
+    for (const auto& h : helpers)
+        QL_CHECK_SMALL(h->impliedQuote() - h->quote()->value(), 1e-10);
+
+    // the config is rejected on the leg whose curve is being bootstrapped
+    BOOST_CHECK_THROW(
+        ext::make_shared<IborIborBasisSwapRateHelper>(
+            makeQuoteHandle(10e-4), 8 * Months, 0, calendar, ModifiedFollowing, false,
+            bkbm3m, bkbm6m, discountCurve, true, true, DateGeneration::Backward,
+            otherConfig, StubIndexConfig{}),
+        Error);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

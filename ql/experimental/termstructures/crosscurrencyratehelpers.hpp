@@ -87,7 +87,8 @@ namespace QuantLib {
                                              std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
                                              std::optional<bool> useIndexedCoupons = std::nullopt,
                                              bool paymentLagOnNotionalExchanges = false,
-                                             StubIndexConfig baseStubIndexConfig = {});
+                                             StubIndexConfig baseStubIndexConfig = {},
+                                             StubIndexConfig quoteStubIndexConfig = {});
 
         void initializeDates() override;
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
@@ -101,6 +102,7 @@ namespace QuantLib {
         std::optional<Frequency> quoteCcyPaymentFrequency_;
         std::optional<bool> useIndexedCoupons_;
         StubIndexConfig baseStubIndexConfig_;
+        StubIndexConfig quoteStubIndexConfig_;
 
         Schedule baseCcySchedule_;
         Schedule quoteCcySchedule_;
@@ -157,6 +159,8 @@ namespace QuantLib {
                 leg when it is an Ibor leg (see StubIndexConfig).  The candidate
                 indices must use exogenous forwarding curves; the default prices
                 broken periods off the leg's own index.
+            \param quoteStubIndexConfig
+                as baseStubIndexConfig, for the quote-currency leg.
             In both frequency parameters, \c NoFrequency is accepted as a synonym for
             an unset (null) value.
         */
@@ -177,7 +181,8 @@ namespace QuantLib {
             std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
             std::optional<bool> useIndexedCoupons = std::nullopt,
             bool paymentLagOnNotionalExchanges = false,
-            StubIndexConfig baseStubIndexConfig = {});
+            StubIndexConfig baseStubIndexConfig = {},
+            StubIndexConfig quoteStubIndexConfig = {});
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -235,6 +240,8 @@ namespace QuantLib {
                 leg when it is an Ibor leg (see StubIndexConfig).  The candidate
                 indices must use exogenous forwarding curves; the default prices
                 broken periods off the leg's own index.
+            \param quoteStubIndexConfig
+                as baseStubIndexConfig, for the quote-currency leg.
             In both frequency parameters, \c NoFrequency is accepted as a synonym for
             an unset (null) value.
         */
@@ -256,7 +263,8 @@ namespace QuantLib {
                                             Natural fxResetFixingDays = 0,
                                             Calendar fxResetFixingCalendar = Calendar(),
                                             std::optional<bool> useIndexedCoupons = std::nullopt,
-                                            StubIndexConfig baseStubIndexConfig = {});
+                                            StubIndexConfig baseStubIndexConfig = {},
+                                            StubIndexConfig quoteStubIndexConfig = {});
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -310,6 +318,11 @@ namespace QuantLib {
     index tenor, which is only meaningful for an ibor index; an overnight index
     has no payment frequency of its own, so one must be given explicitly.
     \c NoFrequency is accepted as a synonym for an unset (null) value.
+
+    The floatStubIndexConfig parameter selects the indices used for irregular
+    coupons of the floating leg when it is an Ibor leg (see StubIndexConfig).
+    The candidate indices must use exogenous forwarding curves; the default
+    prices broken periods off the leg's own index.
     */
     class ConstNotionalCrossCurrencySwapRateHelper : public CrossCurrencySwapRateHelperBase {
       public:
@@ -327,7 +340,8 @@ namespace QuantLib {
             bool collateralOnFixedLeg,
             Integer paymentLag = 0,
             std::optional<bool> useIndexedCoupons = std::nullopt,
-            std::optional<Frequency> floatPaymentFrequency = std::nullopt);
+            std::optional<Frequency> floatPaymentFrequency = std::nullopt,
+            StubIndexConfig floatStubIndexConfig = {});
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -347,6 +361,7 @@ namespace QuantLib {
         bool collateralOnFixedLeg_;
         std::optional<bool> useIndexedCoupons_;
         std::optional<Frequency> floatPaymentFrequency_;
+        StubIndexConfig floatStubIndexConfig_;
 
         ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> xccySwap_;
     };

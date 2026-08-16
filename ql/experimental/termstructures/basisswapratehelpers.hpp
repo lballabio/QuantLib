@@ -41,6 +41,9 @@ namespace QuantLib {
         case bootstrapBaseCurve = false and baseIndex will need a
         forecast curve).
         In both cases, an exogenous discount curve is required.
+
+        Limitation: we cannot bootstrap the forecasting curve with stubs 
+		computed off self for now.
     */
     class IborIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -55,7 +58,9 @@ namespace QuantLib {
                                     Handle<YieldTermStructure> discountHandle,
                                     bool bootstrapBaseCurve,
                                     std::optional<bool> useIndexedCoupons = std::nullopt,
-                                    DateGeneration::Rule rule = DateGeneration::Backward);
+                                    DateGeneration::Rule rule = DateGeneration::Backward,
+                                    StubIndexConfig baseStubIndexConfig = {},
+                                    StubIndexConfig otherStubIndexConfig = {});
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -76,6 +81,8 @@ namespace QuantLib {
         bool bootstrapBaseCurve_;
         std::optional<bool> useIndexedCoupons_;
         DateGeneration::Rule rule_;
+        StubIndexConfig baseStubIndexConfig_;
+        StubIndexConfig otherStubIndexConfig_;
 
         ext::shared_ptr<Swap> swap_;
 

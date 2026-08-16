@@ -41,7 +41,8 @@ ConstNotionalCrossCurrencyBasisSwap::ConstNotionalCrossCurrencyBasisSwap(
                                      const bool telescopicValueDates,
                                      std::optional<bool> useIndexedCoupons,
                                      const bool paymentLagOnNotionalExchanges,
-                                     StubIndexConfig payStubIndexConfig)
+                                     StubIndexConfig payStubIndexConfig,
+                                     StubIndexConfig recStubIndexConfig)
     : ConstNotionalCrossCurrencySwap(2), payNominal_(payNominal), payCurrency_(std::move(payCurrency)), paySchedule_(std::move(paySchedule)),
       payIndex_(payIndex), paySpread_(paySpread), payGearing_(payGearing), recNominal_(recNominal),
       recCurrency_(std::move(recCurrency)), recSchedule_(std::move(recSchedule)), recIndex_(recIndex), recSpread_(recSpread),
@@ -49,6 +50,7 @@ ConstNotionalCrossCurrencyBasisSwap::ConstNotionalCrossCurrencyBasisSwap(
       useIndexedCoupons_(useIndexedCoupons),
       paymentLagOnNotionalExchanges_(paymentLagOnNotionalExchanges),
       payStubIndexConfig_(std::move(payStubIndexConfig)),
+      recStubIndexConfig_(std::move(recStubIndexConfig)),
       payCompoundSpread_(payCompoundSpread), payLookbackDays_(payLookbackDays),
       payObservationShift_(payObservationShift), payLockoutDays_(payLockoutDays),
       payAveragingMethod_(payAveragingMethod), recCompoundSpread_(recCompoundSpread),
@@ -108,7 +110,8 @@ void ConstNotionalCrossCurrencyBasisSwap::initialize() {
                        .withSpreads(recSpread_)
                        .withGearings(recGearing_)
                        .withPaymentLag(recPaymentLag_)
-                       .withIndexedCoupons(useIndexedCoupons_);
+                       .withIndexedCoupons(useIndexedCoupons_)
+                       .withStubIndexConfig(recStubIndexConfig_);
     }
     payer_[1] = +1.0;
     currencies_[1] = recCurrency_;

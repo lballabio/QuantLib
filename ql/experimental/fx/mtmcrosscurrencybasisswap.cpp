@@ -43,7 +43,7 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
     Natural fxQuoteLockoutDays, RateAveraging::Type fxQuoteAveragingMethod,
     const bool telescopicValueDates,
     std::optional<bool> useIndexedCoupons,
-    StubIndexConfig fxBaseStubIndexConfig)
+    StubIndexConfig fxBaseStubIndexConfig, StubIndexConfig fxQuoteStubIndexConfig)
 : CrossCurrencySwap(2),
   type_(type),
   fxBaseNominal_(fxBaseNominal),
@@ -53,6 +53,7 @@ MtMCrossCurrencyBasisSwap::MtMCrossCurrencyBasisSwap(
   fxQuoteNominal_(fxQuoteNominal), fxQuoteCurrency_(std::move(fxQuoteCurrency)),
   fxQuoteSchedule_(std::move(fxQuoteSchedule)), fxQuoteIndex_(fxQuoteIndex),
   fxQuoteSpread_(fxQuoteSpread), fxQuoteGearing_(fxQuoteGearing),
+  fxQuoteStubIndexConfig_(std::move(fxQuoteStubIndexConfig)),
   isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
   fxResetConvention_(
       fxResetFixingDays,
@@ -128,7 +129,8 @@ void MtMCrossCurrencyBasisSwap::initialize() {
                        .withPaymentAdjustment(fxQuotePaymentConvention_)
                        .withPaymentCalendar(fxQuoteSchedule_.calendar())
                        .withPaymentLag(fxQuotePaymentLag_)
-                       .withIndexedCoupons(useIndexedCoupons_);
+                       .withIndexedCoupons(useIndexedCoupons_)
+                       .withStubIndexConfig(fxQuoteStubIndexConfig_);
     }
     payer_[1] = -payer_[0];
     currencies_[1] = fxQuoteCurrency_;
