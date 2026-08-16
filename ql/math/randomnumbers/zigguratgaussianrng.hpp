@@ -26,6 +26,7 @@
 
 #include <ql/methods/montecarlo/sample.hpp>
 #include <cstdint>
+#include <utility>
 
 namespace QuantLib {
 
@@ -57,8 +58,8 @@ namespace QuantLib {
       public:
         typedef Sample<Real> sample_type;
 
-        explicit ZigguratGaussianRng(const RNG& uint64Generator)
-        : uint64Generator_(uint64Generator) {}
+        explicit ZigguratGaussianRng(RNG  uint64Generator)
+        : uint64Generator_(std::move(uint64Generator)) {}
 
         //! returns a sample from a Gaussian distribution
         sample_type next() const { return {nextReal(), 1.0}; }

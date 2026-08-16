@@ -49,7 +49,7 @@ namespace QuantLib {
     class ImpliedTermStructure : public DerivedYieldTermStructure<> {
       public:
         ImpliedTermStructure(Handle<YieldTermStructure>, const Date& referenceDate);
-        ImpliedTermStructure(Handle<YieldTermStructure>, Natural settlementDays, Calendar);
+        ImpliedTermStructure(Handle<YieldTermStructure>, Natural settlementDays, const Calendar&);
       protected:
         //! \name YieldTermStructure interface
         //@{
@@ -73,8 +73,8 @@ namespace QuantLib {
 
     inline ImpliedTermStructure::ImpliedTermStructure(Handle<YieldTermStructure> h,
                                                       Natural settlementDays,
-                                                      Calendar calendar)
-    : DerivedYieldTermStructure(std::move(h), settlementDays, std::move(calendar)) {}
+                                                      const Calendar& calendar)
+    : DerivedYieldTermStructure(std::move(h), settlementDays, calendar) {}
 
     inline void ImpliedTermStructure::update() {
         refDf_ = Null<DiscountFactor>();
