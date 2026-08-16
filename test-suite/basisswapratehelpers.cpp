@@ -479,7 +479,7 @@ BOOST_AUTO_TEST_CASE(testOvernightIborStubIndexBootstrap) {
     auto overnightWithCurve = ext::make_shared<OvernightIndex>(
         "Nzionia", 0, NZDCurrency(), calendar, Actual365Fixed(), shortForecastCurve);
     BOOST_CHECK_THROW(
-        ext::make_shared<OvernightIborBasisSwapRateHelper>(
+        auto rejected = ext::make_shared<OvernightIborBasisSwapRateHelper>(
             makeQuoteHandle(10e-4), 8 * Months, 0, calendar, ModifiedFollowing, false,
             overnightWithCurve, bkbm3m, Handle<YieldTermStructure>(), false, 0,
             std::nullopt, true, DateGeneration::Backward, stubIndexConfig),
@@ -541,7 +541,7 @@ BOOST_AUTO_TEST_CASE(testIborIborStubIndexBootstrap) {
 
     // the config is rejected on the leg whose curve is being bootstrapped
     BOOST_CHECK_THROW(
-        ext::make_shared<IborIborBasisSwapRateHelper>(
+        auto rejected = ext::make_shared<IborIborBasisSwapRateHelper>(
             makeQuoteHandle(10e-4), 8 * Months, 0, calendar, ModifiedFollowing, false,
             bkbm3m, bkbm6m, discountCurve, true, true, DateGeneration::Backward,
             otherConfig, StubIndexConfig{}),
