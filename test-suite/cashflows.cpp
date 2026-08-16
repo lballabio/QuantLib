@@ -686,18 +686,18 @@ BOOST_AUTO_TEST_CASE(testInterpolatedIborStubCoupon) {
     BOOST_CHECK_SMALL(closestCoupon->indexFixing() - longRate, 1.0e-14);
 
     // stub index conventions require indexed coupons...
-    BOOST_CHECK_THROW(static_cast<Leg>(IborLeg(schedule, bkbm3m)
-                                           .withNotionals(1.0)
-                                           .withIndexedCoupons(false)
-                                           .withStubIndexConfig(convention)),
+    BOOST_CHECK_THROW(Leg parLeg = IborLeg(schedule, bkbm3m)
+                                       .withNotionals(1.0)
+                                       .withIndexedCoupons(false)
+                                       .withStubIndexConfig(convention),
                       Error);
 
     // ...and candidates with distinct maturities
     StubIndexConfig duplicate{StubIndexConvention::Interpolated, {bkbm2m, bkbm3m, bkbm3m}};
-    BOOST_CHECK_THROW(static_cast<Leg>(IborLeg(schedule, bkbm3m)
-                                           .withNotionals(1.0)
-                                           .withIndexedCoupons(true)
-                                           .withStubIndexConfig(duplicate)),
+    BOOST_CHECK_THROW(Leg duplicateLeg = IborLeg(schedule, bkbm3m)
+                                             .withNotionals(1.0)
+                                             .withIndexedCoupons(true)
+                                             .withStubIndexConfig(duplicate),
                       Error);
 
     // a default-constructed configuration is empty and leaves the leg alone
