@@ -19,13 +19,14 @@
 */
 
 /*! \file basisswapratehelpers.hpp
-    \brief ibor-ibor and ois-ibor basis swap rate helpers
+    \brief ibor-ibor, ois-ibor and ois-ois basis swap rate helpers
 */
 
 #ifndef quantlib_basisswapratehelpers_hpp
 #define quantlib_basisswapratehelpers_hpp
 
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/time/dategenerationrule.hpp>
 #include <optional>
@@ -42,8 +43,10 @@ namespace QuantLib {
         forecast curve).
         In both cases, an exogenous discount curve is required.
 
-        Limitation: we cannot bootstrap the forecasting curve with stubs 
-		computed off self for now.
+        A payment lag can also be passed; it is applied to both legs.
+
+        Limitation: we cannot bootstrap the forecasting curve with stubs
+        computed off self for now.
     */
     class IborIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -59,6 +62,7 @@ namespace QuantLib {
                                     bool bootstrapBaseCurve,
                                     std::optional<bool> useIndexedCoupons = std::nullopt,
                                     DateGeneration::Rule rule = DateGeneration::Backward,
+                                    Integer paymentLag = 0,
                                     StubIndexConfig baseStubIndexConfig = {},
                                     StubIndexConfig otherStubIndexConfig = {});
 
@@ -81,6 +85,7 @@ namespace QuantLib {
         bool bootstrapBaseCurve_;
         std::optional<bool> useIndexedCoupons_;
         DateGeneration::Rule rule_;
+        Integer paymentLag_;
         StubIndexConfig baseStubIndexConfig_;
         StubIndexConfig otherStubIndexConfig_;
 
@@ -99,16 +104,19 @@ namespace QuantLib {
         curve for the overnight index; in this case, the ibor index
         will need to be given a forecast curve.
 
-        An exogenous discount curve can be passed; if not, the
-        overnight-index curve will be used.  Note that when
-        bootstrapBaseCurve = true and no discount curve is passed, the
-        curve being bootstrapped is also used for discounting.
+        An exogenous discount curve can be passed; if not, the curve being
+        bootstrapped is also used for discounting.
 
         A payment lag can also be passed; it is applied to both legs.
 
         The payment frequency of the overnight leg can be overridden.
         It defaults to the tenor of the ibor index.  The ibor leg
-        always pays at the tenor of its own index.
+        always pays at the tenor of its own index.  Passing NoFrequency
+        creates a single overnight coupon spanning the full swap tenor.
+
+        The averaging method and use of telescopic value dates can be
+        configured for the overnight leg.  Telescopic value dates are only
+        applied to compounded coupons.
 
         A stub-index configuration can be passed for the ibor leg; it is
         applied to that leg's irregular coupons (see StubIndexConfig).
@@ -133,6 +141,8 @@ namespace QuantLib {
                                          std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
                                          std::optional<bool> useIndexedCoupons = std::nullopt,
                                          DateGeneration::Rule rule = DateGeneration::Backward,
+                                         RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                                         bool telescopicValueDates = false,
                                          StubIndexConfig iborStubIndexConfig = {});
 
         Real impliedQuote() const override;
@@ -156,11 +166,83 @@ namespace QuantLib {
         std::optional<Frequency> overnightPaymentFrequency_;
         std::optional<bool> useIndexedCoupons_;
         DateGeneration::Rule rule_;
+        RateAveraging::Type averagingMethod_;
+        bool telescopicValueDates_;
         StubIndexConfig iborStubIndexConfig_;
 
         ext::shared_ptr<Swap> swap_;
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
+        RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
+    };
+
+
+    //! Rate helper for bootstrapping over overnight-overnight basis swaps
+    /*! The swap is assumed to pay baseIndex + basis and receive otherIndex.
+        The helper can be used to bootstrap the forecast curve for either
+        index; the other index must have an existing forecast curve.
+
+        An exogenous discount curve can be passed.  If none is passed, the
+        curve being bootstrapped is also used for discounting.
+
+        Both legs share the same schedule and payment lag, but their
+        averaging methods can be configured independently.  This allows,
+        for instance, an arithmetically averaged Fed Funds leg to be matched
+        against a compounded SOFR leg.  Telescopic value dates are only
+        applied to compounded legs. Arithmetically averaged legs retain their
+        full value-date schedule so that they are priced exactly.
+
+        Passing NoFrequency as the payment frequency creates one coupon on
+        each leg spanning the full swap tenor.
+    */
+    class OvernightOvernightBasisSwapRateHelper : public RelativeDateRateHelper {
+      public:
+        OvernightOvernightBasisSwapRateHelper(
+            const Handle<Quote>& basis,
+            const Period& tenor,
+            Natural settlementDays,
+            Calendar calendar,
+            BusinessDayConvention convention,
+            bool endOfMonth,
+            const ext::shared_ptr<OvernightIndex>& baseIndex,
+            const ext::shared_ptr<OvernightIndex>& otherIndex,
+            Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>(),
+            bool bootstrapBaseCurve = false,
+            Integer paymentLag = 0,
+            Frequency paymentFrequency = Annual,
+            RateAveraging::Type baseAveragingMethod = RateAveraging::Compound,
+            RateAveraging::Type otherAveragingMethod = RateAveraging::Compound,
+            bool telescopicValueDates = false,
+            DateGeneration::Rule rule = DateGeneration::Backward);
+
+        Real impliedQuote() const override;
+        void accept(AcyclicVisitor&) override;
+        // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
+        ext::shared_ptr<Swap> swap() const { return swap_; }
+      private:
+        void initializeDates() override;
+        void setTermStructure(YieldTermStructure*) override;
+
+        Period tenor_;
+        Natural settlementDays_;
+        Calendar calendar_;
+        BusinessDayConvention convention_;
+        bool endOfMonth_;
+        ext::shared_ptr<OvernightIndex> baseIndex_;
+        ext::shared_ptr<OvernightIndex> otherIndex_;
+        Handle<YieldTermStructure> discountHandle_;
+        bool bootstrapBaseCurve_;
+        Integer paymentLag_;
+        Frequency paymentFrequency_;
+        RateAveraging::Type baseAveragingMethod_;
+        RateAveraging::Type otherAveragingMethod_;
+        bool telescopicValueDates_;
+        DateGeneration::Rule rule_;
+
+        ext::shared_ptr<Swap> swap_;
+
+        RelinkableHandle<YieldTermStructure> termStructureHandle_;
+        RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
     };
 
 }
