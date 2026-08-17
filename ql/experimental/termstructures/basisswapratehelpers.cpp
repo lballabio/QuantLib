@@ -39,11 +39,15 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountHandle,
         bool bootstrapBaseCurve,
         std::optional<bool> useIndexedCoupons,
-        DateGeneration::Rule rule)
+        DateGeneration::Rule rule,
+        Integer paymentLag)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
       discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve),
-      useIndexedCoupons_(useIndexedCoupons), rule_(rule) {
+      useIndexedCoupons_(useIndexedCoupons), rule_(rule), paymentLag_(paymentLag) {
+
+        QL_REQUIRE(baseIndex, "null base ibor index");
+        QL_REQUIRE(otherIndex, "null other ibor index");
 
         // we need to clone the index whose forecast curve we want to bootstrap
         // and copy the other one
@@ -79,6 +83,7 @@ namespace QuantLib {
             .withRule(rule_);
         Leg baseLeg = IborLeg(baseSchedule, baseIndex_)
             .withNotionals(100.0)
+            .withPaymentLag(paymentLag_)
             .withIndexedCoupons(useIndexedCoupons_);
         auto lastBaseCoupon = ext::dynamic_pointer_cast<IborCoupon>(baseLeg.back());
 
@@ -91,14 +96,16 @@ namespace QuantLib {
             .withRule(rule_);
         Leg otherLeg = IborLeg(otherSchedule, otherIndex_)
             .withNotionals(100.0)
+            .withPaymentLag(paymentLag_)
             .withIndexedCoupons(useIndexedCoupons_);
         auto lastOtherCoupon = ext::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
 
         maturityDate_ = std::max(baseSchedule.endDate(), otherSchedule.endDate());
 
-        latestRelevantDate_ = std::max(maturityDate_,
-                                       std::max(lastBaseCoupon->fixingEndDate(),
-                                                lastOtherCoupon->fixingEndDate()));
+        Date lastPaymentDate = std::max(baseLeg.back()->date(), otherLeg.back()->date());
+        latestRelevantDate_ = std::max({maturityDate_, lastPaymentDate,
+                                        lastBaseCoupon->fixingEndDate(),
+                                        lastOtherCoupon->fixingEndDate()});
         pillarDate_ = latestRelevantDate_;
 
         swap_ = ext::make_shared<Swap>(baseLeg, otherLeg);
@@ -143,20 +150,24 @@ namespace QuantLib {
         Integer paymentLag,
         std::optional<Frequency> overnightPaymentFrequency,
         std::optional<bool> useIndexedCoupons,
-        DateGeneration::Rule rule)
+        DateGeneration::Rule rule,
+        RateAveraging::Type averagingMethod,
+        bool telescopicValueDates)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
       discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve),
       paymentLag_(paymentLag), overnightPaymentFrequency_(overnightPaymentFrequency),
-      useIndexedCoupons_(useIndexedCoupons), rule_(rule) {
+      useIndexedCoupons_(useIndexedCoupons), rule_(rule), averagingMethod_(averagingMethod),
+      telescopicValueDates_(telescopicValueDates) {
+
+        QL_REQUIRE(baseIndex, "null base overnight index");
+        QL_REQUIRE(otherIndex, "null other ibor index");
 
         // we need to clone the index whose forecast curve we want to bootstrap
         // and copy the other one
         if (bootstrapBaseCurve_) {
             baseIndex_ = ext::dynamic_pointer_cast<OvernightIndex>(
                 baseIndex->clone(termStructureHandle_));
-            QL_REQUIRE(baseIndex_ != nullptr,
-                       "the base index did not clone into an overnight index");
             baseIndex_->unregisterWith(termStructureHandle_);
             otherIndex_ = otherIndex;
         } else {
@@ -190,7 +201,12 @@ namespace QuantLib {
 
         Leg baseLeg = OvernightLeg(overnightSchedule, baseIndex_)
             .withNotionals(100.0)
-            .withPaymentLag(paymentLag_);
+            .withPaymentLag(paymentLag_)
+            .withTelescopicValueDates(
+                telescopicValueDates_ && averagingMethod_ == RateAveraging::Compound)
+            .withAveragingMethod(averagingMethod_);
+        auto lastBaseCoupon =
+            ext::dynamic_pointer_cast<OvernightIndexedCoupon>(baseLeg.back());
 
         // an ibor leg pays one coupon per fixing, so its payment frequency
         // is the tenor of its own index
@@ -213,14 +229,17 @@ namespace QuantLib {
         // the payment lag can push the last payment past the maturity date,
         // in which case the discount curve is needed up to that date
         Date lastPaymentDate = std::max(baseLeg.back()->date(), otherLeg.back()->date());
+        Date lastBaseFixingEndDate = baseIndex_->maturityDate(
+            baseIndex_->valueDate(lastBaseCoupon->fixingDate()));
 
         latestRelevantDate_ = std::max({maturityDate_, lastPaymentDate,
+                                        lastBaseFixingEndDate,
                                         lastOtherCoupon->fixingEndDate()});
         pillarDate_ = latestRelevantDate_;
 
         swap_ = ext::make_shared<Swap>(baseLeg, otherLeg);
-        swap_->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(
-            discountHandle_.empty() ? termStructureHandle_ : discountHandle_));
+        swap_->setPricingEngine(
+            ext::make_shared<DiscountingSwapEngine>(discountRelinkableHandle_));
     }
 
     void OvernightIborBasisSwapRateHelper::setTermStructure(YieldTermStructure* t) {
@@ -230,6 +249,11 @@ namespace QuantLib {
 
         ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
+
+        if (discountHandle_.empty())
+            discountRelinkableHandle_.linkTo(temp, observer);
+        else
+            discountRelinkableHandle_.linkTo(*discountHandle_, observer);
 
         RelativeDateRateHelper::setTermStructure(t);
     }
@@ -241,6 +265,137 @@ namespace QuantLib {
 
     void OvernightIborBasisSwapRateHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<OvernightIborBasisSwapRateHelper>*>(&v);
+        if (v1 != nullptr)
+            v1->visit(*this);
+        else
+            RateHelper::accept(v);
+    }
+
+
+
+    OvernightOvernightBasisSwapRateHelper::OvernightOvernightBasisSwapRateHelper(
+        const Handle<Quote>& basis,
+        const Period& tenor,
+        Natural settlementDays,
+        Calendar calendar,
+        BusinessDayConvention convention,
+        bool endOfMonth,
+        const ext::shared_ptr<OvernightIndex>& baseIndex,
+        const ext::shared_ptr<OvernightIndex>& otherIndex,
+        Handle<YieldTermStructure> discountHandle,
+        bool bootstrapBaseCurve,
+        Integer paymentLag,
+        Frequency paymentFrequency,
+        RateAveraging::Type baseAveragingMethod,
+        RateAveraging::Type otherAveragingMethod,
+        bool telescopicValueDates,
+        DateGeneration::Rule rule)
+    : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
+      calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
+      discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve),
+      paymentLag_(paymentLag), paymentFrequency_(paymentFrequency),
+      baseAveragingMethod_(baseAveragingMethod),
+      otherAveragingMethod_(otherAveragingMethod),
+      telescopicValueDates_(telescopicValueDates), rule_(rule) {
+
+        QL_REQUIRE(baseIndex, "null base overnight index");
+        QL_REQUIRE(otherIndex, "null other overnight index");
+
+        // We need to clone the index whose forecast curve we want to
+        // bootstrap and copy the other one.
+        if (bootstrapBaseCurve_) {
+            baseIndex_ = ext::dynamic_pointer_cast<OvernightIndex>(
+                baseIndex->clone(termStructureHandle_));
+            baseIndex_->unregisterWith(termStructureHandle_);
+            otherIndex_ = otherIndex;
+        } else {
+            baseIndex_ = baseIndex;
+            otherIndex_ = ext::dynamic_pointer_cast<OvernightIndex>(
+                otherIndex->clone(termStructureHandle_));
+            otherIndex_->unregisterWith(termStructureHandle_);
+        }
+
+        registerWith(baseIndex_);
+        registerWith(otherIndex_);
+        registerWith(discountHandle_);
+
+        OvernightOvernightBasisSwapRateHelper::initializeDates();
+    }
+
+    void OvernightOvernightBasisSwapRateHelper::initializeDates() {
+        Date today = Settings::instance().evaluationDate();
+        earliestDate_ = calendar_.advance(today, settlementDays_ * Days, Following);
+        // unadjusted, to avoid a spurious stub
+        Date terminationDate = earliestDate_ + tenor_;
+
+        Schedule schedule =
+            MakeSchedule().from(earliestDate_).to(terminationDate)
+            .withFrequency(paymentFrequency_)
+            .withCalendar(calendar_)
+            .withConvention(convention_)
+            .endOfMonth(endOfMonth_)
+            .withRule(rule_);
+
+        maturityDate_ = schedule.endDate();
+
+        Leg baseLeg = OvernightLeg(schedule, baseIndex_)
+            .withNotionals(100.0)
+            .withPaymentLag(paymentLag_)
+            .withTelescopicValueDates(
+                telescopicValueDates_ && baseAveragingMethod_ == RateAveraging::Compound)
+            .withAveragingMethod(baseAveragingMethod_);
+
+        Leg otherLeg = OvernightLeg(schedule, otherIndex_)
+            .withNotionals(100.0)
+            .withPaymentLag(paymentLag_)
+            .withTelescopicValueDates(
+                telescopicValueDates_ && otherAveragingMethod_ == RateAveraging::Compound)
+            .withAveragingMethod(otherAveragingMethod_);
+
+        auto lastBaseCoupon =
+            ext::dynamic_pointer_cast<OvernightIndexedCoupon>(baseLeg.back());
+        auto lastOtherCoupon =
+            ext::dynamic_pointer_cast<OvernightIndexedCoupon>(otherLeg.back());
+
+        Date lastPaymentDate = std::max(baseLeg.back()->date(), otherLeg.back()->date());
+        Date lastBaseFixingEndDate = baseIndex_->maturityDate(
+            baseIndex_->valueDate(lastBaseCoupon->fixingDate()));
+        Date lastOtherFixingEndDate = otherIndex_->maturityDate(
+            otherIndex_->valueDate(lastOtherCoupon->fixingDate()));
+
+        latestRelevantDate_ = std::max({maturityDate_, lastPaymentDate,
+                                        lastBaseFixingEndDate,
+                                        lastOtherFixingEndDate});
+        pillarDate_ = latestRelevantDate_;
+
+        swap_ = ext::make_shared<Swap>(baseLeg, otherLeg);
+        swap_->setPricingEngine(
+            ext::make_shared<DiscountingSwapEngine>(discountRelinkableHandle_));
+    }
+
+    void OvernightOvernightBasisSwapRateHelper::setTermStructure(YieldTermStructure* t) {
+        // Do not set the relinkable handle as an observer: force
+        // recalculation when needed; the index is not lazy.
+        bool observer = false;
+
+        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
+        termStructureHandle_.linkTo(temp, observer);
+
+        if (discountHandle_.empty())
+            discountRelinkableHandle_.linkTo(temp, observer);
+        else
+            discountRelinkableHandle_.linkTo(*discountHandle_, observer);
+
+        RelativeDateRateHelper::setTermStructure(t);
+    }
+
+    Real OvernightOvernightBasisSwapRateHelper::impliedQuote() const {
+        swap_->deepUpdate();
+        return -(swap_->NPV() / swap_->legBPS(0)) * 1.0e-4;
+    }
+
+    void OvernightOvernightBasisSwapRateHelper::accept(AcyclicVisitor& v) {
+        auto* v1 = dynamic_cast<Visitor<OvernightOvernightBasisSwapRateHelper>*>(&v);
         if (v1 != nullptr)
             v1->visit(*this);
         else
