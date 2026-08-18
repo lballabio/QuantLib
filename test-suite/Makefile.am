@@ -107,6 +107,7 @@ QL_TEST_SRCS = \
 	linearleastsquaresregression.cpp \
 	lookbackoptions.cpp \
 	lowdiscrepancysequences.cpp \
+	makecrosscurrencyswap.cpp \
 	margrabeoption.cpp \
 	marketmodel.cpp \
 	marketmodel_cms.cpp \
