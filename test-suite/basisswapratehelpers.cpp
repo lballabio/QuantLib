@@ -792,6 +792,122 @@ BOOST_AUTO_TEST_CASE(testOvernightOvernightTelescopicValueDatesWithSimpleAveragi
     BOOST_CHECK_SMALL(telescopicSimpleCoupon->rate() - fullSimpleCoupon->rate(), 1.0e-14);
 }
 
+BOOST_AUTO_TEST_CASE(testOvernightIborMarginOnIborLeg) {
+    BOOST_TEST_MESSAGE(
+        "Testing overnight-ibor basis-swap helper with the margin quoted on the ibor leg...");
+
+    std::vector<BasisSwapQuote> quotes = {
+        { 1, Years,  0.0010 },
+        { 2, Years,  0.0012 },
+        { 5, Years,  0.0015 },
+        { 10, Years, 0.0020 },
+    };
+
+    Natural settlementDays = 2;
+    auto calendar = UnitedStates(UnitedStates::GovernmentBond);
+    auto convention = Following;
+    auto endOfMonth = false;
+
+    Handle<YieldTermStructure> knownForecastCurve(flatRate(0.01, Actual365Fixed()));
+    Handle<YieldTermStructure> discountCurve(flatRate(0.005, Actual365Fixed()));
+
+    // The market quote is a margin of -basis on the ibor leg.  basisOnIborLeg
+    // solves for it directly; passing +basis on the overnight leg is the
+    // negation shortcut, which is only equivalent when the two spread
+    // annuities match.
+    auto bootstrap = [&](bool basisOnIborLeg, Real sign,
+                         std::optional<Frequency> overnightPaymentFrequency) {
+        auto baseIndex = ext::make_shared<Sofr>(knownForecastCurve);
+        auto otherIndex = ext::make_shared<USDLibor>(6 * Months);
+        std::vector<ext::shared_ptr<RateHelper>> helpers;
+        for (auto q : quotes)
+            helpers.push_back(ext::make_shared<OvernightIborBasisSwapRateHelper>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(sign * q.basis)),
+                Period(q.n, q.units), settlementDays, calendar, convention, endOfMonth,
+                baseIndex, otherIndex, discountCurve, false, 0,
+                overnightPaymentFrequency, std::nullopt, DateGeneration::Backward,
+                RateAveraging::Compound, false, basisOnIborLeg));
+        auto curve = ext::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>(
+            0, calendar, helpers, Actual365Fixed());
+        curve->enableExtrapolation();
+        return curve;
+    };
+
+    // NPV of a swap paying overnight and receiving ibor + margin, off the
+    // bootstrapped ibor curve.  Zero means the curve reproduces the quote in
+    // the ibor-leg convention.
+    auto iborMarginSwapNPV = [&](const ext::shared_ptr<YieldTermStructure>& curve,
+                                 const BasisSwapQuote& q,
+                                 std::optional<Frequency> overnightPaymentFrequency) {
+        auto baseIndex = ext::make_shared<Sofr>(knownForecastCurve);
+        auto otherIndex = ext::make_shared<USDLibor>(6 * Months,
+                                                    Handle<YieldTermStructure>(curve));
+        Date spot = calendar.advance(Settings::instance().evaluationDate(),
+                                     settlementDays, Days);
+        Date maturity = spot + Period(q.n, q.units);
+        auto schedule = [&](const Period& tenor) {
+            return MakeSchedule().from(spot).to(maturity).withTenor(tenor)
+                .withCalendar(calendar).withConvention(convention)
+                .withRule(DateGeneration::Backward);
+        };
+        Leg overnightLeg =
+            OvernightLeg(schedule(overnightPaymentFrequency
+                                      ? Period(*overnightPaymentFrequency)
+                                      : otherIndex->tenor()),
+                         baseIndex).withNotionals(100.0);
+        Leg iborLeg = IborLeg(schedule(otherIndex->tenor()), otherIndex)
+            .withNotionals(100.0)
+            .withSpreads(-q.basis);
+        Swap swap(overnightLeg, iborLeg);
+        swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discountCurve));
+        return swap.NPV();
+    };
+
+    Real tolerance = 1e-8;
+
+    // 1. matched legs (both semiannual, both Actual/360): the helper reproduces
+    //    the ibor-leg margin ...
+    auto matched = bootstrap(true, -1.0, std::nullopt);
+    for (const auto& q : quotes) {
+        Real NPV = iborMarginSwapNPV(matched, q, std::nullopt);
+        if (std::fabs(NPV) > tolerance)
+            BOOST_ERROR("Failed to price fair " << q.n << "-year(s) ibor-margin swap:"
+                        << "\n    calculated: " << NPV);
+    }
+
+    // ... and there the negation shortcut agrees with it exactly.
+    auto matchedShortcut = bootstrap(false, 1.0, std::nullopt);
+    for (const auto& q : quotes) {
+        Date pillar = calendar.advance(Settings::instance().evaluationDate(),
+                                       settlementDays, Days) + Period(q.n, q.units);
+        BOOST_CHECK_SMALL(matched->discount(pillar) - matchedShortcut->discount(pillar),
+                          1.0e-14);
+    }
+
+    // 2. mismatched legs (annual overnight vs semiannual ibor): the helper still
+    //    reproduces the ibor-leg margin ...
+    auto mismatched = bootstrap(true, -1.0, Annual);
+    for (const auto& q : quotes) {
+        Real NPV = iborMarginSwapNPV(mismatched, q, Annual);
+        if (std::fabs(NPV) > tolerance)
+            BOOST_ERROR("Failed to price fair " << q.n
+                        << "-year(s) ibor-margin swap with an annual overnight leg:"
+                        << "\n    calculated: " << NPV);
+    }
+
+    // ... but the negation shortcut no longer does, because the two legs' spread
+    // annuities differ.  If this ever stopped holding the option would be
+    // cosmetic, so check the shortcut really is wrong.
+    auto mismatchedShortcut = bootstrap(false, 1.0, Annual);
+    Date longPillar = calendar.advance(Settings::instance().evaluationDate(),
+                                       settlementDays, Days) + Period(10, Years);
+    BOOST_CHECK_GT(std::fabs(mismatched->discount(longPillar)
+                             - mismatchedShortcut->discount(longPillar)),
+                   1.0e-6);
+    BOOST_CHECK_GT(std::fabs(iborMarginSwapNPV(mismatchedShortcut, quotes.back(), Annual)),
+                   1.0e-4);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

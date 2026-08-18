@@ -109,6 +109,9 @@ namespace QuantLib {
         The averaging method and use of telescopic value dates can be
         configured for the overnight leg.  Telescopic value dates are only
         applied to compounded coupons.
+
+        The basis is quoted on the overnight (base) leg by default.  Setting
+        basisOnIborLeg solves for a margin quoted on the ibor leg instead.
     */
     class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -127,7 +130,8 @@ namespace QuantLib {
                                          std::optional<bool> useIndexedCoupons = std::nullopt,
                                          DateGeneration::Rule rule = DateGeneration::Backward,
                                          RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                                         bool telescopicValueDates = false);
+                                         bool telescopicValueDates = false,
+                                         bool basisOnIborLeg = false);
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -152,6 +156,7 @@ namespace QuantLib {
         DateGeneration::Rule rule_;
         RateAveraging::Type averagingMethod_;
         bool telescopicValueDates_;
+        bool basisOnIborLeg_;
 
         ext::shared_ptr<Swap> swap_;
 
