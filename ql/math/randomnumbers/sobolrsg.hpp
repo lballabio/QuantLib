@@ -121,6 +121,10 @@ namespace QuantLib {
             underlying SobolRsg not using the Gray code on the other hand due to its specific way of constructing the
             integer sequence.
 
+            If the given seed is 0, a random seed will be chosen based on clock(). The seed
+            only affects the direction integers beyond those tabulated for the chosen
+            DirectionIntegers, so lower dimensionalities give the same sequence for any seed.
+
             \pre dimensionality must be <= PPMT_MAX_DIM
          */
         explicit SobolRsg(Size dimensionality,
