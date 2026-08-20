@@ -792,6 +792,78 @@ BOOST_AUTO_TEST_CASE(testOvernightOvernightTelescopicValueDatesWithSimpleAveragi
     BOOST_CHECK_SMALL(telescopicSimpleCoupon->rate() - fullSimpleCoupon->rate(), 1.0e-14);
 }
 
+BOOST_AUTO_TEST_CASE(testOvernightIborMarginOnIborLeg) {
+    BOOST_TEST_MESSAGE(
+        "Testing overnight-ibor basis-swap helper with the margin quoted on the ibor leg...");
+
+    std::vector<BasisSwapQuote> quotes = {
+        { 1, Years,  -0.0010 },
+        { 2, Years,  -0.0012 },
+        { 5, Years,  -0.0015 },
+        { 10, Years, -0.0020 },
+    };
+
+    Natural settlementDays = 2;
+    auto calendar = UnitedStates(UnitedStates::GovernmentBond);
+    auto convention = Following;
+    auto endOfMonth = false;
+
+    Handle<YieldTermStructure> knownForecastCurve(flatRate(0.01, Actual365Fixed()));
+    Handle<YieldTermStructure> discountCurve(flatRate(0.005, Actual365Fixed()));
+
+    ext::shared_ptr<OvernightIndex> baseIndex = ext::make_shared<Sofr>(knownForecastCurve);
+    ext::shared_ptr<IborIndex> otherIndex = ext::make_shared<USDLibor>(6 * Months);
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    for (auto q : quotes) {
+        auto h = ext::make_shared<OvernightIborBasisSwapRateHelper>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(q.basis)),
+                Period(q.n, q.units), settlementDays, calendar, convention, endOfMonth,
+                baseIndex, otherIndex, discountCurve, false, 0,
+                std::nullopt, std::nullopt, DateGeneration::Backward,
+                RateAveraging::Compound, false, true);
+        helpers.push_back(h);
+    }
+
+    auto bootstrappedCurve = ext::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>
+        (0, calendar, helpers, Actual365Fixed());
+
+    Date today = Settings::instance().evaluationDate();
+    Date spot = calendar.advance(today, settlementDays, Days);
+
+    otherIndex = ext::make_shared<USDLibor>(6 * Months,
+                                            Handle<YieldTermStructure>(bootstrappedCurve));
+
+    for (auto q : quotes) {
+        // create swaps and check they're fair
+        Date maturity = spot + Period(q.n, q.units);
+
+        Schedule s =
+            MakeSchedule()
+            .from(spot).to(maturity)
+            .withTenor(otherIndex->tenor())
+            .withCalendar(calendar)
+            .withConvention(convention)
+            .withRule(DateGeneration::Backward);
+
+        Leg leg1 = OvernightLeg(s, baseIndex)
+            .withNotionals(100.0);
+        Leg leg2 = IborLeg(s, otherIndex)
+            .withSpreads(q.basis)
+            .withNotionals(100.0);
+
+        Swap swap(leg1, leg2);
+        swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discountCurve));
+
+        Real NPV = swap.NPV();
+        Real tolerance = 1e-8;
+        if (std::fabs(NPV) > tolerance) {
+            BOOST_ERROR("Failed to price fair " << q.n << "-year(s) swap:"
+                        << "\n    calculated: " << NPV);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
