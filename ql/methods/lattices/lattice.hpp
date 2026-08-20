@@ -166,8 +166,13 @@ namespace QuantLib {
     template <class Impl>
     void TreeLattice<Impl>::stepback(Size i, const Array& values,
                                      Array& newValues) const {
-        #pragma omp parallel for
-        for (long j=0; j<(long)this->impl().size(i); j++) {
+        // Only parallelise when the tree is wide enough to amortise
+        // OMP fork/join overhead (~2-5 us).  num_threads caps thread
+        // participation so each thread gets >= 256 iterations.
+        #pragma omp parallel for \
+            if(!omp_in_parallel() && this->impl().size(i) >= 1024) \
+            num_threads((int)(this->impl().size(i) / 256))
+        for (Size j=0; j<this->impl().size(i); j++) {
             Real value = 0.0;
             for (Size l=0; l<n_; l++) {
                 value += this->impl().probability(i,j,l) *
