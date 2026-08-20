@@ -20,6 +20,7 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
@@ -68,8 +69,19 @@ namespace QuantLib {
         BlackCalculator black(payoff, forwardPrice,
                               std::sqrt(variance), riskFreeDiscount);
 
-        if (dividendDiscount>=1.0 && payoff->optionType()==Option::Call) {
-            // early exercise never optimal
+        // Besides the well-known case of a call on a non-dividend-paying
+        // stock, early exercise is never optimal for a put when the
+        // risk-free rate is null or negative and the dividend yield is not
+        // negative: exercising yields K-S, while just holding the option is
+        // worth at least K*riskFreeDiscount - S*dividendDiscount >= K-S.
+        // The critical price would be 0 in that case and the approximation
+        // below would break down.
+        bool earlyExerciseNeverOptimal =
+            (dividendDiscount >= 1.0 && payoff->optionType() == Option::Call)
+            || (riskFreeDiscount >= 1.0 && dividendDiscount <= 1.0
+                && payoff->optionType() == Option::Put);
+
+        if (earlyExerciseNeverOptimal) {
             results_.value        = black.value();
             results_.delta        = black.delta(spot);
             results_.deltaForward = black.deltaForward();
@@ -123,10 +135,24 @@ namespace QuantLib {
                 default:
                   QL_FAIL("unknown option type");
             }
-            //it can throw: to be fixed
-            Real temp_root = std::sqrt ((beta-1)*(beta-1) + (4*alpha)/h);
+            // When the risk-free rate goes to 0, both alpha and h go to 0
+            // as well; their ratio, though, tends to the finite limit
+            // 2/variance (the same limit already used inside
+            // BaroneAdesiWhaleyApproximationEngine::criticalPrice above).
+            // The formulas below are therefore written in terms of
+            // alpha/h, alpha*lambda_prime and alpha*V_E_h so that no
+            // intermediate quantity diverges in that case.
+            Real alphaOverH = (!close(riskFreeDiscount, 1.0, 1000))
+                              ? Real(alpha/h)
+                              : Real(2.0/variance);
+
+            Real temp_root = std::sqrt ((beta-1)*(beta-1) + 4*alphaOverH);
             Real lambda = (-(beta-1) + phi * temp_root) / 2;
-            Real lambda_prime = - phi * alpha / (h*h * temp_root);
+            // lambda_prime = -phi*alpha/(h*h*temp_root) diverges when the
+            // risk-free rate goes to 0, but it only ever enters the formulas
+            // below multiplied by alpha, and that product doesn't.
+            Real alpha_lambda_prime =
+                - phi * alphaOverH * alphaOverH / temp_root;
 
             Real black_Sk = blackFormula(payoff->optionType(), payoff->strike(),
                                          forwardSk, std::sqrt(variance)) * riskFreeDiscount;
@@ -135,16 +161,20 @@ namespace QuantLib {
             Real d1_Sk = (std::log(forwardSk/payoff->strike()) + 0.5*variance)
                 /std::sqrt(variance);
             Real d2_Sk = d1_Sk - std::sqrt(variance);
-            Real part1 = forwardSk * normalDist(d1_Sk) /
-                                        (alpha * std::sqrt(variance));
-            Real part2 = - phi * forwardSk * cumNormalDist(phi * d1_Sk) *
-                      std::log(dividendDiscount) / std::log(riskFreeDiscount);
-            Real part3 = + phi * payoff->strike() * cumNormalDist(phi * d2_Sk);
-            Real V_E_h = part1 + part2 + part3;
+            // the three terms below are alpha times the corresponding
+            // terms of V_E_h; in part2, alpha/std::log(riskFreeDiscount)
+            // simplifies exactly to -2/variance.
+            Real part1 = forwardSk * normalDist(d1_Sk) / std::sqrt(variance);
+            Real part2 = 2.0 * phi * forwardSk * cumNormalDist(phi * d1_Sk) *
+                      std::log(dividendDiscount) / variance;
+            Real part3 = + phi * alpha * payoff->strike() *
+                                        cumNormalDist(phi * d2_Sk);
+            Real alpha_V_E_h = part1 + part2 + part3;
 
-            Real b = (1-h) * alpha * lambda_prime / (2*(2*lambda + beta - 1));
-            Real c = - ((1 - h) * alpha / (2 * lambda + beta - 1)) *
-                (V_E_h / (hA) + 1 / h + lambda_prime / (2*lambda + beta - 1));
+            Real b = (1-h) * alpha_lambda_prime / (2*(2*lambda + beta - 1));
+            Real c = - ((1 - h) / (2 * lambda + beta - 1)) *
+                (alpha_V_E_h / (hA) + alphaOverH +
+                 alpha_lambda_prime / (2*lambda + beta - 1));
             Real temp_spot_ratio = std::log(spot / Sk);
             Real chi = temp_spot_ratio * (b * temp_spot_ratio + c);
 

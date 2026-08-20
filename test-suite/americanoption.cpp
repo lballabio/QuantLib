@@ -372,6 +372,68 @@ BOOST_AUTO_TEST_CASE(testJuValues) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testJuValuesAtZeroRate) {
+
+    BOOST_TEST_MESSAGE("Testing Ju approximation for American options "
+                       "at zero risk-free rate...");
+
+    // The approximation used to return NaN when the risk-free rate was
+    // exactly 0; see <https://github.com/lballabio/QuantLib/issues/2737>.
+    // The results are compared against those for a negligible but non-null
+    // rate, of which they are the limit.
+
+    const Date today = Date(19, August, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual360();
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+    const auto qRate = ext::make_shared<SimpleQuote>(0.04);
+    const auto qTS = flatRate(today, qRate, dc);
+    const auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    const auto rTS = flatRate(today, rRate, dc);
+    const auto vol = ext::make_shared<SimpleQuote>(0.30);
+    const auto volTS = flatVol(today, vol, dc);
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(qTS),
+        Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(volTS));
+    const auto engine =
+        ext::make_shared<JuQuadraticApproximationEngine>(process);
+
+    const auto exercise =
+        ext::make_shared<AmericanExercise>(today, today + 1 * Years);
+
+    const Real tolerance = 1.0e-6;
+
+    for (auto type : {Option::Call, Option::Put}) {
+        for (Real q : {0.04, 0.0}) {
+            for (Real s : {70.0, 85.0, 100.0, 115.0, 130.0}) {
+
+                const auto payoff =
+                    ext::make_shared<PlainVanillaPayoff>(type, 100.0);
+                VanillaOption option(payoff, exercise);
+                option.setPricingEngine(engine);
+
+                spot->setValue(s);
+                qRate->setValue(q);
+
+                rRate->setValue(0.0);
+                const Real calculated = option.NPV();
+
+                rRate->setValue(1.0e-10);
+                const Real expected = option.NPV();
+
+                const Real error = std::fabs(calculated - expected);
+                if (!(error <= tolerance)) {
+                    REPORT_FAILURE("value at zero rate", payoff, exercise, s, q,
+                                   0.0, today, vol->value(), expected,
+                                   calculated, error, tolerance);
+                }
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testFdValues) {
 
     BOOST_TEST_MESSAGE("Testing finite-difference and QR+ engine for American options...");
