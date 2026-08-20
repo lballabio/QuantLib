@@ -32,6 +32,7 @@
 
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/indexes/weightediborindex.hpp>
 #include <ql/patterns/singleton.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/optional.hpp>
@@ -45,25 +46,18 @@ namespace QuantLib {
     };
 
     //! Index selection for irregular Ibor coupons
-    /*! A default-constructed configuration is empty, meaning that broken
+    /*! A default constructor is empty, meaning that broken
         periods fix on the leg's own index as usual.  A non-empty one supplies
         the candidate indices used instead.
 
         The indices are supplied as fully constructed objects so that each one
         can use its own conventions, fixing history and forwarding curve.
-        Because of this, none of them can track a curve that is still being
-        bootstrapped; they must all use exogenous forwarding curves.
 
         For ClosestIndex, the index whose maturity is closest to the coupon end
-        date is used (ties go to the shorter index).  For Interpolated, the two
-        index maturities bracketing the coupon end date are used for linear
-        interpolation in calendar days.  All candidate indices must resolve the
-        coupon fixing date to a value date equal to the coupon accrual start
-        date, and their maturities must be distinct.
+        date is used. For Interpolated, the two index maturities bracketing 
+        the coupon end date are used for linear interpolation in calendar days.
 
-        The resulting coupons always fix each candidate index over its own
-        deposit period, so legs using these conventions must be built with
-        indexed coupons; the par-coupon approximation is not supported.
+        The weights depend on the accrual dates.
     */
     class StubIndexConfig {
       public:
@@ -76,10 +70,26 @@ namespace QuantLib {
         StubIndexConvention convention() const { return convention_; }
         const std::vector<ext::shared_ptr<IborIndex> >& indices() const { return indices_; }
 
+        //! the indices an accrual period fixes on, with their weights
+        /*! All candidates should start the rate on \p accrualStartDate, 
+            and their maturities must be distinct.
+        */
+        std::vector<WeightedIborIndex::Component>
+        components(const Date& fixingDate,
+                   const Date& accrualStartDate,
+                   const Date& accrualEndDate) const;
+
+        //! the index an accrual period fixes on
+        /*! Builds a WeightedIborIndex from components(). */
+        ext::shared_ptr<WeightedIborIndex> makeIndex(const Date& fixingDate,
+                                                     const Date& accrualStartDate,
+                                                     const Date& accrualEndDate) const;
+
       private:
         StubIndexConvention convention_ = StubIndexConvention::ClosestIndex;
         std::vector<ext::shared_ptr<IborIndex> > indices_;
     };
+
 
     //! %Coupon paying a Libor-type index
     class IborCoupon : public FloatingRateCoupon {
@@ -150,16 +160,9 @@ namespace QuantLib {
     };
 
 
-    //! Irregular Ibor coupon using an explicitly supplied set of indices
-    /*! This coupon is intended for broken periods.  Candidate indices are
-        selected according to their maturity dates and retain their own
-        forwarding curves and fixing histories.
-
-        The selection depends on dates only, so it is performed once at
-        construction; configurations invalid for this coupon (candidates whose
-        value date differs from the accrual start date, duplicate maturities,
-        maturities not bracketing the coupon end date) throw from the
-        constructor.
+    //! Stub Ibor coupon fixing on an explicitly supplied set of indices
+    /*! This coupon is intended for broken periods.  It fixes on a
+        WeightedIborIndex built from the given configuration.
     */
     class StubIborCoupon : public IborCoupon {
       public:
@@ -168,7 +171,6 @@ namespace QuantLib {
                        const Date& startDate,
                        const Date& endDate,
                        Natural fixingDays,
-                       const ext::shared_ptr<IborIndex>& index,
                        StubIndexConfig stubIndexConfig,
                        Real gearing = 1.0,
                        Spread spread = 0.0,
@@ -183,13 +185,9 @@ namespace QuantLib {
             return stubIndexConfig_;
         }
 
-        //! the candidate indices the coupon fixes on, with their weights
-        /*! A single entry with weight 1 for ClosestIndex or an exact
-            Interpolated match; the two bracketing indices otherwise.
-        */
-        const std::vector<std::pair<ext::shared_ptr<IborIndex>, Real> >&
-        selectedIndices() const {
-            return selectedIndices_;
+        //! the combination of indices the coupon fixes on
+        const ext::shared_ptr<WeightedIborIndex>& weightedIndex() const {
+            return weightedIndex_;
         }
 
         Rate indexFixing() const override;
@@ -197,8 +195,24 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
 
       private:
+        StubIborCoupon(const Date& paymentDate,
+                       Real nominal,
+                       const Date& startDate,
+                       const Date& endDate,
+                       Natural fixingDays,
+                       ext::shared_ptr<WeightedIborIndex> weightedIndex,
+                       StubIndexConfig stubIndexConfig,
+                       Real gearing,
+                       Spread spread,
+                       const Date& refPeriodStart,
+                       const Date& refPeriodEnd,
+                       const DayCounter& dayCounter,
+                       bool isInArrears,
+                       const Date& exCouponDate,
+                       BusinessDayConvention fixingConvention);
+
         StubIndexConfig stubIndexConfig_;
-        std::vector<std::pair<ext::shared_ptr<IborIndex>, Real> > selectedIndices_;
+        ext::shared_ptr<WeightedIborIndex> weightedIndex_;
     };
 
 

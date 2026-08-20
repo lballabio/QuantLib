@@ -153,20 +153,17 @@ namespace QuantLib {
             QL_REQUIRE(candidate, "null candidate index for stub index selection");
     }
 
-
-    static std::vector<std::pair<ext::shared_ptr<IborIndex>, Real> >
-    selectStubIndices(const StubIndexConfig& config,
-                      const Date& fixingDate,
-                      const Date& accrualStartDate,
-                      const Date& accrualEndDate) {
-        QL_REQUIRE(!config.empty(),
-                   "StubIborCoupon requires a non-empty stub index configuration");
+    std::vector<WeightedIborIndex::Component>
+    StubIndexConfig::components(const Date& fixingDate,
+                                const Date& accrualStartDate,
+                                const Date& accrualEndDate) const {
+        QL_REQUIRE(!empty(), "no candidate indices provided for stub index selection");
 
         // (maturity, index) pairs, sorted by maturity so selection reduces to
         // a nearest-neighbour or bracket search.
         std::vector<std::pair<Date, ext::shared_ptr<IborIndex> > > candidates;
-        candidates.reserve(config.indices().size());
-        for (const auto& candidate : config.indices()) {
+        candidates.reserve(indices_.size());
+        for (const auto& candidate : indices_) {
             const Date candidateValueDate = candidate->valueDate(fixingDate);
             QL_REQUIRE(candidateValueDate == accrualStartDate,
                        candidate->name() << " value date " << candidateValueDate
@@ -180,7 +177,7 @@ namespace QuantLib {
             QL_REQUIRE(candidates[i - 1].first < candidates[i].first,
                        "duplicate candidate index maturity " << candidates[i].first);
 
-        if (config.convention() == StubIndexConvention::ClosestIndex) {
+        if (convention_ == StubIndexConvention::ClosestIndex) {
             // Since candidates are sorted, ties select the smaller maturity.
             const auto closest = std::min_element(
                 candidates.begin(), candidates.end(),
@@ -191,7 +188,7 @@ namespace QuantLib {
             return {{closest->second, 1.0}};
         }
 
-        QL_REQUIRE(config.convention() == StubIndexConvention::Interpolated,
+        QL_REQUIRE(convention_ == StubIndexConvention::Interpolated,
                    "unknown stub index convention");
 
         const auto longer = std::lower_bound(
@@ -212,13 +209,38 @@ namespace QuantLib {
         return {{shorter->second, 1.0 - weight}, {longer->second, weight}};
     }
 
+    ext::shared_ptr<WeightedIborIndex>
+    StubIndexConfig::makeIndex(const Date& fixingDate,
+                               const Date& accrualStartDate,
+                               const Date& accrualEndDate) const {
+        return ext::make_shared<WeightedIborIndex>(
+            components(fixingDate, accrualStartDate, accrualEndDate));
+    }
+
+    static ext::shared_ptr<WeightedIborIndex>
+    makeStubIndex(const StubIndexConfig& config,
+                  const Date& startDate,
+                  const Date& endDate,
+                  Natural fixingDays,
+                  bool isInArrears,
+                  BusinessDayConvention fixingConvention) {
+        QL_REQUIRE(!config.empty(),
+                   "StubIborCoupon requires a non-empty stub index configuration");
+        QL_REQUIRE(!isInArrears,
+                   "stub index selection is not supported for in-arrears coupons");
+
+        const Date fixingDate = config.indices().front()->fixingCalendar().advance(
+            startDate, -static_cast<Integer>(fixingDays), Days, fixingConvention);
+
+        return config.makeIndex(fixingDate, startDate, endDate);
+    }
+
 
     StubIborCoupon::StubIborCoupon(const Date& paymentDate,
                                    Real nominal,
                                    const Date& startDate,
                                    const Date& endDate,
                                    Natural fixingDays,
-                                   const ext::shared_ptr<IborIndex>& index,
                                    StubIndexConfig stubIndexConfig,
                                    Real gearing,
                                    Spread spread,
@@ -228,21 +250,41 @@ namespace QuantLib {
                                    bool isInArrears,
                                    const Date& exCouponDate,
                                    BusinessDayConvention fixingConvention)
-    : IborCoupon(paymentDate, nominal, startDate, endDate, fixingDays, index, gearing, spread,
-                 refPeriodStart, refPeriodEnd, dayCounter, isInArrears, exCouponDate,
+    : StubIborCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
+                     makeStubIndex(stubIndexConfig, startDate, endDate, fixingDays, isInArrears,
+                                   fixingConvention),
+                     stubIndexConfig, gearing, spread, refPeriodStart, refPeriodEnd, dayCounter,
+                     isInArrears, exCouponDate, fixingConvention) {}
+
+    StubIborCoupon::StubIborCoupon(const Date& paymentDate,
+                                   Real nominal,
+                                   const Date& startDate,
+                                   const Date& endDate,
+                                   Natural fixingDays,
+                                   ext::shared_ptr<WeightedIborIndex> weightedIndex,
+                                   StubIndexConfig stubIndexConfig,
+                                   Real gearing,
+                                   Spread spread,
+                                   const Date& refPeriodStart,
+                                   const Date& refPeriodEnd,
+                                   const DayCounter& dayCounter,
+                                   bool isInArrears,
+                                   const Date& exCouponDate,
+                                   BusinessDayConvention fixingConvention)
+    : IborCoupon(paymentDate, nominal, startDate, endDate, fixingDays, weightedIndex, gearing,
+                 spread, refPeriodStart, refPeriodEnd, dayCounter, isInArrears, exCouponDate,
                  fixingConvention),
       stubIndexConfig_(std::move(stubIndexConfig)),
-      selectedIndices_(selectStubIndices(
-          stubIndexConfig_, fixingDate(), accrualStartDate(), accrualEndDate())) {
-        for (const auto& selected : selectedIndices_)
-            registerWith(selected.first);
+      weightedIndex_(std::move(weightedIndex)) {
+        for (const auto& component : weightedIndex_->components())
+            QL_REQUIRE(component.first->valueDate(fixingDate()) == accrualStartDate(),
+                       component.first->name()
+                           << " value date for the coupon fixing date " << fixingDate()
+                           << " does not match accrual start date " << accrualStartDate());
     }
 
     Rate StubIborCoupon::indexFixing() const {
-        Rate rate = 0.0;
-        for (const auto& [index, weight] : selectedIndices_)
-            rate += weight * index->fixing(fixingDate());
-        return rate;
+        return weightedIndex_->fixing(fixingDate());
     }
 
     bool StubIborCoupon::hasFixed() const {
@@ -253,10 +295,10 @@ namespace QuantLib {
             return true;
         if (QuantLib::Settings::instance().enforcesTodaysHistoricFixings())
             return true;
-        // the coupon has fixed only once every index it fixes on has published
-        return std::all_of(selectedIndices_.begin(), selectedIndices_.end(),
-                           [this](const auto& entry) {
-                               return entry.first->hasHistoricalFixing(fixingDate());
+        const auto& components = weightedIndex_->components();
+        return std::all_of(components.begin(), components.end(),
+                           [this](const auto& component) {
+                               return component.first->hasHistoricalFixing(fixingDate());
                            });
     }
 
@@ -438,7 +480,7 @@ namespace QuantLib {
 
                 leg[i] = ext::make_shared<StubIborCoupon>(
                     coupon->date(), coupon->nominal(), coupon->accrualStartDate(),
-                    coupon->accrualEndDate(), coupon->fixingDays(), index_, stubIndexConfig_,
+                    coupon->accrualEndDate(), coupon->fixingDays(), stubIndexConfig_,
                     coupon->gearing(), coupon->spread(), coupon->referencePeriodStart(),
                     coupon->referencePeriodEnd(), coupon->dayCounter(), coupon->isInArrears(),
                     coupon->exCouponDate(), coupon->fixingConvention());
