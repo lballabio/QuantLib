@@ -875,6 +875,7 @@
     <ClInclude Include="ql\indexes\swap\jpyliborswap.hpp" />
     <ClInclude Include="ql\indexes\swap\usdliborswap.hpp" />
     <ClInclude Include="ql\indexes\swapindex.hpp" />
+    <ClInclude Include="ql\indexes\weightediborindex.hpp" />
     <ClInclude Include="ql\instruments\all.hpp" />
     <ClInclude Include="ql\instruments\asianoption.hpp" />
     <ClInclude Include="ql\instruments\assetswap.hpp" />
@@ -2195,6 +2196,7 @@
     <ClCompile Include="ql\indexes\swap\jpyliborswap.cpp" />
     <ClCompile Include="ql\indexes\swap\usdliborswap.cpp" />
     <ClCompile Include="ql\indexes\swapindex.cpp" />
+    <ClCompile Include="ql\indexes\weightediborindex.cpp" />
     <ClCompile Include="ql\instruments\asianoption.cpp" />
     <ClCompile Include="ql\instruments\assetswap.cpp" />
     <ClCompile Include="ql\instruments\averagetype.cpp" />
