@@ -2294,6 +2294,27 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyNegativeRates) {
 
     BOOST_CHECK_EXCEPTION(callOption.NPV(), Error,
                           ExpectedErrorMessage("negative interest rates"));
+
+    // With r < q <= 0 early exercise is optimal, so the European shortcut
+    // must not fire. Ju goes through the same critical price.
+    spot->setValue(100.0);
+    qRate->setValue(0.0);
+    rRate->setValue(-0.05);
+    vol->setValue(0.03);
+
+    auto itmCallPayoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 80.0);
+    auto longExercise = ext::make_shared<AmericanExercise>(today, today + Period(3, Years));
+    VanillaOption itmCall(itmCallPayoff, longExercise);
+
+    itmCall.setPricingEngine(
+        ext::make_shared<BaroneAdesiWhaleyApproximationEngine>(stochProcess));
+    BOOST_CHECK_EXCEPTION(itmCall.NPV(), Error,
+                          ExpectedErrorMessage("negative interest rates"));
+
+    itmCall.setPricingEngine(
+        ext::make_shared<JuQuadraticApproximationEngine>(stochProcess));
+    BOOST_CHECK_EXCEPTION(itmCall.NPV(), Error,
+                          ExpectedErrorMessage("negative interest rates"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
