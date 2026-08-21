@@ -118,6 +118,9 @@ namespace QuantLib {
         configured for the overnight leg.  Telescopic value dates are only
         applied to compounded coupons.
 
+        The basis is quoted on the overnight (base) leg by default.  Setting
+        basisOnIborLeg solves for a margin quoted on the ibor leg instead.
+
         A stub-index configuration can be passed for the ibor leg; it is
         applied to that leg's irregular coupons (see StubIndexConfig).
         Since the candidate indices keep their own forwarding curves,
@@ -143,6 +146,7 @@ namespace QuantLib {
                                          DateGeneration::Rule rule = DateGeneration::Backward,
                                          RateAveraging::Type averagingMethod = RateAveraging::Compound,
                                          bool telescopicValueDates = false,
+                                         bool basisOnIborLeg = false,
                                          StubIndexConfig iborStubIndexConfig = {});
 
         Real impliedQuote() const override;
@@ -168,6 +172,7 @@ namespace QuantLib {
         DateGeneration::Rule rule_;
         RateAveraging::Type averagingMethod_;
         bool telescopicValueDates_;
+        bool basisOnIborLeg_;
         StubIndexConfig iborStubIndexConfig_;
 
         ext::shared_ptr<Swap> swap_;
