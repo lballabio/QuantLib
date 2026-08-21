@@ -7,6 +7,7 @@
  Copyright (C) 2007 StatPro Italia srl
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,11 +32,64 @@
 
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/indexes/weightediborindex.hpp>
 #include <ql/patterns/singleton.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/optional.hpp>
 
 namespace QuantLib {
+
+    //! Convention used to select an index for an irregular Ibor coupon
+    enum class StubIndexConvention {
+        ClosestIndex,
+        Interpolated
+    };
+
+    //! Index selection for irregular Ibor coupons
+    /*! A default constructor is empty, meaning that broken
+        periods fix on the leg's own index as usual.  A non-empty one supplies
+        the candidate indices used instead.
+
+        The indices are supplied as fully constructed objects so that each one
+        can use its own conventions, fixing history and forwarding curve.
+
+        For ClosestIndex, the index whose maturity is closest to the coupon end
+        date is used. For Interpolated, the two index maturities bracketing 
+        the coupon end date are used for linear interpolation in calendar days.
+
+        The weights depend on the accrual dates.
+    */
+    class StubIndexConfig {
+      public:
+        //! empty configuration: broken periods fix on the leg's own index
+        StubIndexConfig() = default;
+        StubIndexConfig(StubIndexConvention convention,
+                        std::vector<ext::shared_ptr<IborIndex> > indices);
+
+        bool empty() const { return indices_.empty(); }
+        StubIndexConvention convention() const { return convention_; }
+        const std::vector<ext::shared_ptr<IborIndex> >& indices() const { return indices_; }
+
+        //! the indices an accrual period fixes on, with their weights
+        /*! All candidates should start the rate on \p accrualStartDate, 
+            and their maturities must be distinct.
+        */
+        std::vector<WeightedIborIndex::Component>
+        components(const Date& fixingDate,
+                   const Date& accrualStartDate,
+                   const Date& accrualEndDate) const;
+
+        //! the index an accrual period fixes on
+        /*! Builds a WeightedIborIndex from components(). */
+        ext::shared_ptr<WeightedIborIndex> makeIndex(const Date& fixingDate,
+                                                     const Date& accrualStartDate,
+                                                     const Date& accrualEndDate) const;
+
+      private:
+        StubIndexConvention convention_ = StubIndexConvention::ClosestIndex;
+        std::vector<ext::shared_ptr<IborIndex> > indices_;
+    };
+
 
     //! %Coupon paying a Libor-type index
     class IborCoupon : public FloatingRateCoupon {
@@ -57,7 +111,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
-        bool hasFixed() const;
+        virtual bool hasFixed() const;
         //@}
         //! \name FloatingRateCoupon interface
         //@{
@@ -103,6 +157,62 @@ namespace QuantLib {
       public:
         // IborCoupon::Settings forward declaration
         class Settings;
+    };
+
+
+    //! Stub Ibor coupon fixing on an explicitly supplied set of indices
+    /*! This coupon is intended for broken periods.  It fixes on a
+        WeightedIborIndex built from the given configuration.
+    */
+    class StubIborCoupon : public IborCoupon {
+      public:
+        StubIborCoupon(const Date& paymentDate,
+                       Real nominal,
+                       const Date& startDate,
+                       const Date& endDate,
+                       Natural fixingDays,
+                       StubIndexConfig stubIndexConfig,
+                       Real gearing = 1.0,
+                       Spread spread = 0.0,
+                       const Date& refPeriodStart = Date(),
+                       const Date& refPeriodEnd = Date(),
+                       const DayCounter& dayCounter = DayCounter(),
+                       bool isInArrears = false,
+                       const Date& exCouponDate = Date(),
+                       BusinessDayConvention fixingConvention = Preceding);
+
+        const StubIndexConfig& stubIndexConfig() const {
+            return stubIndexConfig_;
+        }
+
+        //! the combination of indices the coupon fixes on
+        const ext::shared_ptr<WeightedIborIndex>& weightedIndex() const {
+            return weightedIndex_;
+        }
+
+        Rate indexFixing() const override;
+        bool hasFixed() const override;
+        void accept(AcyclicVisitor&) override;
+
+      private:
+        StubIborCoupon(const Date& paymentDate,
+                       Real nominal,
+                       const Date& startDate,
+                       const Date& endDate,
+                       Natural fixingDays,
+                       ext::shared_ptr<WeightedIborIndex> weightedIndex,
+                       StubIndexConfig stubIndexConfig,
+                       Real gearing,
+                       Spread spread,
+                       const Date& refPeriodStart,
+                       const Date& refPeriodEnd,
+                       const DayCounter& dayCounter,
+                       bool isInArrears,
+                       const Date& exCouponDate,
+                       BusinessDayConvention fixingConvention);
+
+        StubIndexConfig stubIndexConfig_;
+        ext::shared_ptr<WeightedIborIndex> weightedIndex_;
     };
 
 
@@ -161,6 +271,9 @@ namespace QuantLib {
         IborLeg& withFixingConvention(BusinessDayConvention);
         IborLeg& withIndexedCoupons(std::optional<bool> b = true);
         IborLeg& withAtParCoupons(bool b = true);
+        //! sets index selection for uncapped schedule periods marked as irregular
+        /*! Requires indexed coupons; see StubIndexConfig. */
+        IborLeg& withStubIndexConfig(const StubIndexConfig&);
         operator Leg() const;
 
       private:
@@ -182,6 +295,7 @@ namespace QuantLib {
         BusinessDayConvention exCouponAdjustment_ = Unadjusted;
         bool exCouponEndOfMonth_ = false;
         std::optional<bool> useIndexedCoupons_;
+        StubIndexConfig stubIndexConfig_;
     };
 
 }

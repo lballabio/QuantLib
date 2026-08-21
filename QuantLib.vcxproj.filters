@@ -603,6 +603,9 @@
     <ClInclude Include="ql\indexes\swapindex.hpp">
       <Filter>indexes</Filter>
     </ClInclude>
+    <ClInclude Include="ql\indexes\weightediborindex.hpp">
+      <Filter>indexes</Filter>
+    </ClInclude>
     <ClInclude Include="ql\indexes\ibor\all.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
@@ -4752,6 +4755,9 @@
       <Filter>indexes</Filter>
     </ClCompile>
     <ClCompile Include="ql\indexes\swapindex.cpp">
+      <Filter>indexes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\indexes\weightediborindex.cpp">
       <Filter>indexes</Filter>
     </ClCompile>
     <ClCompile Include="ql\indexes\ibor\bibor.cpp">

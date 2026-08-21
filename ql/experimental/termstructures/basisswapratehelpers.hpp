@@ -25,6 +25,7 @@
 #ifndef quantlib_basisswapratehelpers_hpp
 #define quantlib_basisswapratehelpers_hpp
 
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/time/dategenerationrule.hpp>
@@ -43,6 +44,9 @@ namespace QuantLib {
         In both cases, an exogenous discount curve is required.
 
         A payment lag can also be passed; it is applied to both legs.
+
+        Limitation: we cannot bootstrap the forecasting curve with stubs
+        computed off self for now.
     */
     class IborIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -58,7 +62,9 @@ namespace QuantLib {
                                     bool bootstrapBaseCurve,
                                     std::optional<bool> useIndexedCoupons = std::nullopt,
                                     DateGeneration::Rule rule = DateGeneration::Backward,
-                                    Integer paymentLag = 0);
+                                    Integer paymentLag = 0,
+                                    StubIndexConfig baseStubIndexConfig = {},
+                                    StubIndexConfig otherStubIndexConfig = {});
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -80,6 +86,8 @@ namespace QuantLib {
         std::optional<bool> useIndexedCoupons_;
         DateGeneration::Rule rule_;
         Integer paymentLag_;
+        StubIndexConfig baseStubIndexConfig_;
+        StubIndexConfig otherStubIndexConfig_;
 
         ext::shared_ptr<Swap> swap_;
 
@@ -112,6 +120,13 @@ namespace QuantLib {
 
         The basis is quoted on the overnight (base) leg by default.  Setting
         basisOnIborLeg solves for a margin quoted on the ibor leg instead.
+
+        A stub-index configuration can be passed for the ibor leg; it is
+        applied to that leg's irregular coupons (see StubIndexConfig).
+        Since the candidate indices keep their own forwarding curves,
+        this is only allowed when bootstrapBaseCurve is true, i.e. when
+        the ibor index has an exogenous forecast curve; otherwise the
+        candidates could not track the curve under construction.
     */
     class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -131,7 +146,8 @@ namespace QuantLib {
                                          DateGeneration::Rule rule = DateGeneration::Backward,
                                          RateAveraging::Type averagingMethod = RateAveraging::Compound,
                                          bool telescopicValueDates = false,
-                                         bool basisOnIborLeg = false);
+                                         bool basisOnIborLeg = false,
+                                         StubIndexConfig iborStubIndexConfig = {});
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -157,6 +173,7 @@ namespace QuantLib {
         RateAveraging::Type averagingMethod_;
         bool telescopicValueDates_;
         bool basisOnIborLeg_;
+        StubIndexConfig iborStubIndexConfig_;
 
         ext::shared_ptr<Swap> swap_;
 

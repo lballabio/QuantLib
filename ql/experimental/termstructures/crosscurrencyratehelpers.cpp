@@ -97,7 +97,8 @@ namespace QuantLib {
         Leg buildFloatingLeg(const Schedule& schedule,
                              const ext::shared_ptr<IborIndex>& idx,
                              Integer paymentLag,
-                             std::optional<bool> useIndexedCoupons) {
+                             std::optional<bool> useIndexedCoupons,
+                             const StubIndexConfig& stubIndexConfig = {}) {
             if (auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(idx)) {
                 return OvernightLeg(schedule, overnightIndex)
                     .withNotionals(1.0)
@@ -106,7 +107,8 @@ namespace QuantLib {
             return IborLeg(schedule, idx)
                 .withNotionals(1.0)
                 .withPaymentLag(paymentLag)
-                .withIndexedCoupons(useIndexedCoupons);
+                .withIndexedCoupons(useIndexedCoupons)
+                .withStubIndexConfig(stubIndexConfig);
         }
 
         std::pair<Real, Real>
@@ -200,7 +202,9 @@ namespace QuantLib {
         Integer paymentLag,
         std::optional<Frequency> quoteCurrencyPaymentFrequency,
         std::optional<bool> useIndexedCoupons,
-        bool paymentLagOnNotionalExchanges)
+        bool paymentLagOnNotionalExchanges,
+        StubIndexConfig baseStubIndexConfig,
+        StubIndexConfig quoteStubIndexConfig)
     : CrossCurrencySwapRateHelperBase(basis, tenor, fixingDays, std::move(calendar), convention, endOfMonth,
                                       std::move(collateralCurve), paymentLag,
                                       paymentLagOnNotionalExchanges),
@@ -209,9 +213,15 @@ namespace QuantLib {
       isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg),
       paymentFrequency_(normalizedPaymentFrequency(paymentFrequency)),
       quoteCcyPaymentFrequency_(normalizedPaymentFrequency(quoteCurrencyPaymentFrequency)),
-      useIndexedCoupons_(useIndexedCoupons) {
+      useIndexedCoupons_(useIndexedCoupons),
+      baseStubIndexConfig_(std::move(baseStubIndexConfig)),
+      quoteStubIndexConfig_(std::move(quoteStubIndexConfig)) {
         registerWith(baseCcyIdx_);
         registerWith(quoteCcyIdx_);
+        for (const auto& candidate : baseStubIndexConfig_.indices())
+            registerWith(candidate);
+        for (const auto& candidate : quoteStubIndexConfig_.indices())
+            registerWith(candidate);
 
         CrossCurrencyBasisSwapRateHelperBase::initializeDates();
     }
@@ -221,7 +231,8 @@ namespace QuantLib {
                                                convention_, endOfMonth_, baseCcyIdx_,
                                                paymentFrequency_);
         baseCcyIborLeg_ = buildFloatingLeg(
-            baseCcySchedule_, baseCcyIdx_, paymentLag_, useIndexedCoupons_);
+            baseCcySchedule_, baseCcyIdx_, paymentLag_, useIndexedCoupons_,
+            baseStubIndexConfig_);
 
         // If no quote-currency payment frequency was given, fall back to the
         // base-currency payment frequency (which may itself be unset, in which
@@ -232,7 +243,8 @@ namespace QuantLib {
                                                 convention_, endOfMonth_, quoteCcyIdx_,
                                                 effectiveQuoteCcyFreq);
         quoteCcyIborLeg_ = buildFloatingLeg(
-            quoteCcySchedule_, quoteCcyIdx_, paymentLag_, useIndexedCoupons_);
+            quoteCcySchedule_, quoteCcyIdx_, paymentLag_, useIndexedCoupons_,
+            quoteStubIndexConfig_);
 
         initializeDatesFromLegs(baseCcyIborLeg_, quoteCcyIborLeg_);
     }
@@ -263,7 +275,9 @@ namespace QuantLib {
         Integer paymentLag,
         std::optional<Frequency> quoteCurrencyPaymentFrequency,
         std::optional<bool> useIndexedCoupons,
-        bool paymentLagOnNotionalExchanges)
+        bool paymentLagOnNotionalExchanges,
+        StubIndexConfig baseStubIndexConfig,
+        StubIndexConfig quoteStubIndexConfig)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
@@ -279,7 +293,9 @@ namespace QuantLib {
                                            paymentLag,
                                            quoteCurrencyPaymentFrequency,
                                            useIndexedCoupons,
-                                           paymentLagOnNotionalExchanges) {
+                                           paymentLagOnNotionalExchanges,
+                                           std::move(baseStubIndexConfig),
+                                           std::move(quoteStubIndexConfig)) {
         buildSwap();
     }
 
@@ -298,7 +314,8 @@ namespace QuantLib {
             paymentLag_, paymentLag_, false, Null<Natural>(), false, 0,
             RateAveraging::Compound, false, Null<Natural>(), false, 0,
             RateAveraging::Compound, false, useIndexedCoupons_,
-            paymentLagOnNotionalExchanges_);
+            paymentLagOnNotionalExchanges_, baseStubIndexConfig_,
+            quoteStubIndexConfig_);
         swap_->setPricingEngine(ext::make_shared<DiscountingConstNotionalCrossCurrencySwapEngine>(
             quoteCcyIdx_->currency(), quoteCcyLegDiscountHandle(),
             baseCcyIdx_->currency(), baseCcyLegDiscountHandle(),
@@ -346,7 +363,9 @@ namespace QuantLib {
         std::optional<Frequency> quoteCurrencyPaymentFrequency,
         Natural fxResetFixingDays,
         Calendar fxResetFixingCalendar,
-        std::optional<bool> useIndexedCoupons)
+        std::optional<bool> useIndexedCoupons,
+        StubIndexConfig baseStubIndexConfig,
+        StubIndexConfig quoteStubIndexConfig)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
@@ -361,7 +380,10 @@ namespace QuantLib {
                                            paymentFrequency,
                                            paymentLag,
                                            quoteCurrencyPaymentFrequency,
-                                           useIndexedCoupons),
+                                           useIndexedCoupons,
+                                           false,
+                                           std::move(baseStubIndexConfig),
+                                           std::move(quoteStubIndexConfig)),
       isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
       fxResetFixingDays_(fxResetFixingDays), fxResetFixingCalendar_(std::move(fxResetFixingCalendar)) {
         buildSwap();
@@ -384,7 +406,8 @@ namespace QuantLib {
             fxResetFixingCalendar_, paymentLag_, paymentLag_,
             convention_, convention_, false, Null<Natural>(), false, 0,
             RateAveraging::Compound, false, Null<Natural>(), false, 0,
-            RateAveraging::Compound, false, useIndexedCoupons_);
+            RateAveraging::Compound, false, useIndexedCoupons_,
+            baseStubIndexConfig_, quoteStubIndexConfig_);
         swap_->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
             quoteCcyIdx_->currency(), quoteCcyLegDiscountHandle(),
             baseCcyIdx_->currency(), baseCcyLegDiscountHandle(),
@@ -424,7 +447,8 @@ namespace QuantLib {
         bool collateralOnFixedLeg,
         Integer paymentLag,
         std::optional<bool> useIndexedCoupons,
-        std::optional<Frequency> floatPaymentFrequency)
+        std::optional<Frequency> floatPaymentFrequency,
+        StubIndexConfig floatStubIndexConfig)
     : CrossCurrencySwapRateHelperBase(fixedRate, tenor, fixingDays, calendar, convention, endOfMonth,
                                       collateralCurve, paymentLag),
       fixedFrequency_(fixedFrequency),
@@ -432,10 +456,13 @@ namespace QuantLib {
       floatIndex_(floatIndex),
       collateralOnFixedLeg_(collateralOnFixedLeg),
       useIndexedCoupons_(useIndexedCoupons),
-      floatPaymentFrequency_(normalizedPaymentFrequency(floatPaymentFrequency)) {
+      floatPaymentFrequency_(normalizedPaymentFrequency(floatPaymentFrequency)),
+      floatStubIndexConfig_(std::move(floatStubIndexConfig)) {
 
         QL_REQUIRE(floatIndex_, "floating index required");
         registerWith(floatIndex_);
+        for (const auto& candidate : floatStubIndexConfig_.indices())
+            registerWith(candidate);
 
         initializeDates();
     }
@@ -473,7 +500,8 @@ namespace QuantLib {
             paymentLag_,
             calendar_,
             false, false, Null<Natural>(), false, 0,
-            RateAveraging::Compound, useIndexedCoupons_
+            RateAveraging::Compound, useIndexedCoupons_,
+            floatStubIndexConfig_
         );
         auto engine = ext::make_shared<DiscountingConstNotionalCrossCurrencySwapEngine>(
             floatIndex_->currency(), floatingLegDiscountHandle(),

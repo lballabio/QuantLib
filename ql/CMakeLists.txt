@@ -240,6 +240,7 @@ set(QL_SOURCES
     indexes/swap/jpyliborswap.cpp
     indexes/swap/usdliborswap.cpp
     indexes/swapindex.cpp
+    indexes/weightediborindex.cpp
     instrument.cpp
     instruments/asianoption.cpp
     instruments/assetswap.cpp
@@ -1337,6 +1338,7 @@ set(QL_HEADERS
     indexes/swap/jpyliborswap.hpp
     indexes/swap/usdliborswap.hpp
     indexes/swapindex.hpp
+    indexes/weightediborindex.hpp
     instrument.hpp
     instruments/asianoption.hpp
     instruments/assetswap.hpp

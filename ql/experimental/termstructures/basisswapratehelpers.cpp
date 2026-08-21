@@ -40,14 +40,25 @@ namespace QuantLib {
         bool bootstrapBaseCurve,
         std::optional<bool> useIndexedCoupons,
         DateGeneration::Rule rule,
-        Integer paymentLag)
+        Integer paymentLag,
+        StubIndexConfig baseStubIndexConfig,
+        StubIndexConfig otherStubIndexConfig)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
       discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve),
-      useIndexedCoupons_(useIndexedCoupons), rule_(rule), paymentLag_(paymentLag) {
+      useIndexedCoupons_(useIndexedCoupons), rule_(rule), paymentLag_(paymentLag),
+      baseStubIndexConfig_(std::move(baseStubIndexConfig)),
+      otherStubIndexConfig_(std::move(otherStubIndexConfig)) {
 
         QL_REQUIRE(baseIndex, "null base ibor index");
         QL_REQUIRE(otherIndex, "null other ibor index");
+
+        // stub candidates keep their own forwarding curves, so they cannot
+        // track the curve being bootstrapped
+        QL_REQUIRE(bootstrapBaseCurve_ ? baseStubIndexConfig_.empty()
+                                       : otherStubIndexConfig_.empty(),
+                   "stub index conventions are not supported on the leg "
+                   "whose forecast curve is being bootstrapped");
 
         // we need to clone the index whose forecast curve we want to bootstrap
         // and copy the other one
@@ -64,6 +75,10 @@ namespace QuantLib {
         registerWith(baseIndex_);
         registerWith(otherIndex_);
         registerWith(discountHandle_);
+        for (const auto& candidate : baseStubIndexConfig_.indices())
+            registerWith(candidate);
+        for (const auto& candidate : otherStubIndexConfig_.indices())
+            registerWith(candidate);
 
         IborIborBasisSwapRateHelper::initializeDates();
     }
@@ -84,7 +99,8 @@ namespace QuantLib {
         Leg baseLeg = IborLeg(baseSchedule, baseIndex_)
             .withNotionals(100.0)
             .withPaymentLag(paymentLag_)
-            .withIndexedCoupons(useIndexedCoupons_);
+            .withIndexedCoupons(useIndexedCoupons_)
+            .withStubIndexConfig(baseStubIndexConfig_);
         auto lastBaseCoupon = ext::dynamic_pointer_cast<IborCoupon>(baseLeg.back());
 
         Schedule otherSchedule =
@@ -97,7 +113,8 @@ namespace QuantLib {
         Leg otherLeg = IborLeg(otherSchedule, otherIndex_)
             .withNotionals(100.0)
             .withPaymentLag(paymentLag_)
-            .withIndexedCoupons(useIndexedCoupons_);
+            .withIndexedCoupons(useIndexedCoupons_)
+            .withStubIndexConfig(otherStubIndexConfig_);
         auto lastOtherCoupon = ext::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
 
         maturityDate_ = std::max(baseSchedule.endDate(), otherSchedule.endDate());
@@ -153,16 +170,24 @@ namespace QuantLib {
         DateGeneration::Rule rule,
         RateAveraging::Type averagingMethod,
         bool telescopicValueDates,
-        bool basisOnIborLeg)
+        bool basisOnIborLeg,
+        StubIndexConfig iborStubIndexConfig)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
       discountHandle_(std::move(discountHandle)), bootstrapBaseCurve_(bootstrapBaseCurve),
       paymentLag_(paymentLag), overnightPaymentFrequency_(overnightPaymentFrequency),
       useIndexedCoupons_(useIndexedCoupons), rule_(rule), averagingMethod_(averagingMethod),
-      telescopicValueDates_(telescopicValueDates), basisOnIborLeg_(basisOnIborLeg) {
+      telescopicValueDates_(telescopicValueDates), basisOnIborLeg_(basisOnIborLeg),
+      iborStubIndexConfig_(std::move(iborStubIndexConfig)) {
 
         QL_REQUIRE(baseIndex, "null base overnight index");
         QL_REQUIRE(otherIndex, "null other ibor index");
+
+        // stub candidates keep their own forwarding curves, so they cannot
+        // track the ibor curve if that is the one being bootstrapped
+        QL_REQUIRE(bootstrapBaseCurve_ || iborStubIndexConfig_.empty(),
+                   "stub index conventions are not supported on the leg "
+                   "whose forecast curve is being bootstrapped");
 
         // we need to clone the index whose forecast curve we want to bootstrap
         // and copy the other one
@@ -180,6 +205,8 @@ namespace QuantLib {
         registerWith(baseIndex_);
         registerWith(otherIndex_);
         registerWith(discountHandle_);
+        for (const auto& candidate : iborStubIndexConfig_.indices())
+            registerWith(candidate);
 
         OvernightIborBasisSwapRateHelper::initializeDates();
     }
@@ -222,7 +249,8 @@ namespace QuantLib {
         Leg otherLeg = IborLeg(iborSchedule, otherIndex_)
             .withNotionals(100.0)
             .withPaymentLag(paymentLag_)
-            .withIndexedCoupons(useIndexedCoupons_);
+            .withIndexedCoupons(useIndexedCoupons_)
+            .withStubIndexConfig(iborStubIndexConfig_);
         auto lastOtherCoupon = ext::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
 
         maturityDate_ = std::max(overnightSchedule.endDate(), iborSchedule.endDate());
