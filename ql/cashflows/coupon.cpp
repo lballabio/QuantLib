@@ -71,6 +71,8 @@ namespace QuantLib {
     Date::serial_type Coupon::accruedDays(const Date& d) const {
         if (d <= accrualStartDate_ || d > paymentDate_) {
             return 0;
+        } else if (tradingExCoupon(d)) {
+            return -dayCounter().dayCount(d, std::max(d, accrualEndDate_));
         } else {
             return dayCounter().dayCount(accrualStartDate_,
                                          std::min(d, accrualEndDate_));
