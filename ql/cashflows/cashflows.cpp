@@ -599,6 +599,89 @@ namespace QuantLib {
             }
         }
 
+        Compounding stepwiseCompounding(const InterestRate& yield,
+                                        bool inFirstPeriod,
+                                        const Date& cashFlowDate,
+                                        const Date& finalCashFlowDate) {
+            // The hybrid conventions are positional: the first interval is
+            // simple for SimpleThenCompounded and the final interval is
+            // simple for CompoundedThenSimple.
+            switch (yield.compounding()) {
+                case SimpleThenCompounded:
+                    return inFirstPeriod ? Simple : Compounded;
+                case CompoundedThenSimple:
+                    return cashFlowDate == finalCashFlowDate ? Simple : Compounded;
+                default:
+                    return yield.compounding();
+            }
+        }
+
+        struct CashFlowResults {
+            Real npv = 0.0;
+            Real firstDerivative = 0.0;
+            Real secondDerivative = 0.0;
+            Real weightedTime = 0.0;
+        };
+
+        CashFlowResults cashFlowResults(
+            const Leg& leg,
+            const InterestRate& yield,
+            const std::optional<bool>& includeSettlementDateFlows,
+            const Date& settlementDate,
+            const Date& npvDate) {
+            CashFlowResults results;
+            DiscountFactor discount = 1.0;
+            Real firstDerivative = 0.0;
+            Real secondDerivative = 0.0;
+            Time t = 0.0;
+            Date lastDate = npvDate;
+            const DayCounter& dc = yield.dayCounter();
+            bool inFirstPeriod = true;
+
+            for (const auto& cashFlow : leg) {
+                if (cashFlow->hasOccurred(settlementDate,
+                                          includeSettlementDateFlows))
+                    continue;
+
+                Real amount = cashFlow->amount();
+                if (cashFlow->tradingExCoupon(settlementDate))
+                    amount = 0.0;
+
+                const Time dt =
+                    getStepwiseDiscountTime(cashFlow, dc, npvDate, lastDate);
+                t += dt;
+
+                const DiscountFactor previousDiscount = discount;
+                const Real previousFirstDerivative = firstDerivative;
+                const Real previousSecondDerivative = secondDerivative;
+
+                const Compounding stepComp =
+                    stepwiseCompounding(yield, inFirstPeriod, cashFlow->date(), leg.back()->date());
+                const Real thisDiscount = yield.discountFactor(dt, stepComp);
+                const Real thisFirstDerivative = yield.discountFactorFirstDerivative(dt, stepComp);
+                const Real thisSecondDerivative = yield.discountFactorSecondDerivative(dt, stepComp);
+
+                // Differentiate the product of this interval's discount
+                // factor and all preceding factors.
+                discount = previousDiscount * thisDiscount;
+                firstDerivative =
+                    previousFirstDerivative * thisDiscount + previousDiscount * thisFirstDerivative;
+                secondDerivative = previousSecondDerivative * thisDiscount +
+                                   2.0 * previousFirstDerivative * thisFirstDerivative +
+                                   previousDiscount * thisSecondDerivative;
+
+                results.npv += amount * discount;
+                results.firstDerivative += amount * firstDerivative;
+                results.secondDerivative += amount * secondDerivative;
+                results.weightedTime += t * amount * discount;
+
+                lastDate = cashFlow->date();
+                inFirstPeriod = false;
+            }
+
+            return results;
+        }
+
         Real simpleDuration(const Leg& leg,
                             const InterestRate& y,
                             const std::optional<bool>& includeSettlementDateFlows,
@@ -613,30 +696,12 @@ namespace QuantLib {
             if (npvDate == Date())
                 npvDate = settlementDate;
 
-            Real P = 0.0;
-            Real dPdy = 0.0;
-            Time t = 0.0;
-            Date lastDate = npvDate;
-            const DayCounter& dc = y.dayCounter();
-            for (const auto& i : leg) {
-                if (i->hasOccurred(settlementDate, includeSettlementDateFlows))
-                    continue;
-
-                Real c = i->amount();
-                if (i->tradingExCoupon(settlementDate)) {
-                    c = 0.0;
-                }
-
-                t += getStepwiseDiscountTime(i, dc, npvDate, lastDate);
-                DiscountFactor B = y.discountFactor(t);
-                P += c * B;
-                dPdy += t * c * B;
-
-                lastDate = i->date();
-            }
-            if (P == 0.0) // no cashflows
+            const CashFlowResults results =
+                cashFlowResults(leg, y, includeSettlementDateFlows,
+                                settlementDate, npvDate);
+            if (results.npv == 0.0) // no cashflows
                 return 0.0;
-            return dPdy/P;
+            return results.weightedTime / results.npv;
         }
 
         Real modifiedDuration(const Leg& leg,
@@ -653,57 +718,12 @@ namespace QuantLib {
             if (npvDate == Date())
                 npvDate = settlementDate;
 
-            Real P = 0.0;
-            Time t = 0.0;
-            Real dPdy = 0.0;
-            Rate r = y.rate();
-            Natural N = y.frequency();
-            Date lastDate = npvDate;
-            const DayCounter& dc = y.dayCounter();
-            for (const auto& i : leg) {
-                if (i->hasOccurred(settlementDate, includeSettlementDateFlows))
-                    continue;
-
-                Real c = i->amount();
-                if (i->tradingExCoupon(settlementDate)) {
-                    c = 0.0;
-                }
-
-                t += getStepwiseDiscountTime(i, dc, npvDate, lastDate);
-                DiscountFactor B = y.discountFactor(t);
-                P += c * B;
-                switch (y.compounding()) {
-                  case Simple:
-                    dPdy -= c * B*B * t;
-                    break;
-                  case Compounded:
-                    dPdy -= c * t * B/(1+r/N);
-                    break;
-                  case Continuous:
-                    dPdy -= c * B * t;
-                    break;
-                  case SimpleThenCompounded:
-                    if (t<=1.0/N)
-                        dPdy -= c * B*B * t;
-                    else
-                        dPdy -= c * t * B/(1+r/N);
-                    break;
-                  case CompoundedThenSimple:
-                    if (t>1.0/N)
-                        dPdy -= c * B*B * t;
-                    else
-                        dPdy -= c * t * B/(1+r/N);
-                    break;
-                  default:
-                    QL_FAIL("unknown compounding convention (" <<
-                            Integer(y.compounding()) << ")");
-                }
-                lastDate = i->date();
-            }
-
-            if (P == 0.0) // no cashflows
+            const CashFlowResults results =
+                cashFlowResults(leg, y, includeSettlementDateFlows,
+                                settlementDate, npvDate);
+            if (results.npv == 0.0) // no cashflows
                 return 0.0;
-            return -dPdy/P; // reverse derivative sign
+            return -results.firstDerivative / results.npv;
         }
 
         Real macaulayDuration(const Leg& leg,
@@ -835,20 +855,24 @@ namespace QuantLib {
         DiscountFactor discount = 1.0;
         Date lastDate = npvDate;
         const DayCounter& dc = y.dayCounter();
-        for (const auto& i : leg) {
-            if (i->hasOccurred(settlementDate, includeSettlementDateFlows))
+        bool inFirstPeriod = true;
+
+        for (const auto& cashFlow : leg) {
+            if (cashFlow->hasOccurred(settlementDate,
+                                      includeSettlementDateFlows))
                 continue;
 
-            Real amount = i->amount();
-            if (i->tradingExCoupon(settlementDate)) {
+            Real amount = cashFlow->amount();
+            if (cashFlow->tradingExCoupon(settlementDate))
                 amount = 0.0;
-            }
 
-            DiscountFactor b = y.discountFactor(getStepwiseDiscountTime(i, dc, npvDate, lastDate));
-            discount *= b;
-            lastDate = i->date();
-
+            const Time dt = getStepwiseDiscountTime(cashFlow, dc, npvDate, lastDate);
+            discount *= y.discountFactor(
+                dt, stepwiseCompounding(y, inFirstPeriod, cashFlow->date(), leg.back()->date()));
             npv += amount * discount;
+
+            lastDate = cashFlow->date();
+            inFirstPeriod = false;
         }
 
         return npv;
@@ -986,60 +1010,14 @@ namespace QuantLib {
         if (npvDate == Date())
             npvDate = settlementDate;
 
-        const DayCounter& dc = y.dayCounter();
-
-        Real P = 0.0;
-        Time t = 0.0;
-        Real d2Pdy2 = 0.0;
-        Rate r = y.rate();
-        Natural N = y.frequency();
-        Date lastDate = npvDate;
-        for (const auto& i : leg) {
-            if (i->hasOccurred(settlementDate, includeSettlementDateFlows))
-                continue;
-
-            Real c = i->amount();
-            if (i->tradingExCoupon(settlementDate)) {
-                c = 0.0;
-            }
-
-            t += getStepwiseDiscountTime(i, dc, npvDate, lastDate);
-            DiscountFactor B = y.discountFactor(t);
-            P += c * B;
-            switch (y.compounding()) {
-              case Simple:
-                d2Pdy2 += c * 2.0*B*B*B*t*t;
-                break;
-              case Compounded:
-                d2Pdy2 += c * B*t*(N*t+1)/(N*(1+r/N)*(1+r/N));
-                break;
-              case Continuous:
-                d2Pdy2 += c * B*t*t;
-                break;
-              case SimpleThenCompounded:
-                if (t<=1.0/N)
-                    d2Pdy2 += c * 2.0*B*B*B*t*t;
-                else
-                    d2Pdy2 += c * B*t*(N*t+1)/(N*(1+r/N)*(1+r/N));
-                break;
-              case CompoundedThenSimple:
-                if (t>1.0/N)
-                    d2Pdy2 += c * 2.0*B*B*B*t*t;
-                else
-                    d2Pdy2 += c * B*t*(N*t+1)/(N*(1+r/N)*(1+r/N));
-                break;
-              default:
-                QL_FAIL("unknown compounding convention (" <<
-                        Integer(y.compounding()) << ")");
-            }
-            lastDate = i->date();
-        }
-
-        if (P == 0.0)
+        const CashFlowResults results =
+            cashFlowResults(leg, y, includeSettlementDateFlows,
+                            settlementDate, npvDate);
+        if (results.npv == 0.0)
             // no cashflows
             return 0.0;
 
-        return d2Pdy2/P;
+        return results.secondDerivative / results.npv;
     }
 
 
