@@ -43,6 +43,9 @@ namespace QuantLib {
     class HaltonRsg {
       public:
         typedef Sample<std::vector<Real> > sample_type;
+        /*! if the given seed is 0, a random seed will be chosen
+            based on clock(); the seed is only used when randomStart or
+            randomShift is true */
         explicit HaltonRsg(Size dimensionality,
                            unsigned long seed = 0,
                            bool randomStart = true,

@@ -831,6 +831,9 @@
     <ClInclude Include="ql\instruments\constnotionalcrosscurrencybasisswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\crosscurrencyswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -1215,6 +1218,9 @@
     <ClInclude Include="ql\math\integrals\filonintegral.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\integrals\fourierintegration.hpp">
+      <Filter>math\integrals</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\integrals\gaussianorthogonalpolynomial.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
@@ -1381,6 +1387,9 @@
       <Filter>math\optimization</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\optimization\bfgs.hpp">
+      <Filter>math\optimization</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\optimization\cmaes.hpp">
       <Filter>math\optimization</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\optimization\conjugategradient.hpp">
@@ -1962,6 +1971,9 @@
     <ClInclude Include="ql\models\equity\piecewisetimedependenthestonmodel.hpp">
       <Filter>models\equity</Filter>
     </ClInclude>
+    <ClInclude Include="ql\models\equity\roughhestonmodel.hpp">
+      <Filter>models\equity</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\all.hpp">
       <Filter>termstructures</Filter>
     </ClInclude>
@@ -2194,6 +2206,9 @@
       <Filter>termstructures\yield</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\yield\compositezeroyieldstructure.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\derivedtermstructure.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\yield\discountcurve.hpp">
@@ -2628,6 +2643,9 @@
     <ClInclude Include="ql\pricingengines\vanilla\analyticptdhestonengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\vanilla\analyticroughhestonengine.hpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\baroneadesiwhaleyengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
@@ -2952,6 +2970,9 @@
     <ClInclude Include="ql\time\calendars\jointcalendar.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\calendars\malaysia.hpp">
+      <Filter>time\calendars</Filter>
+    </ClInclude>
     <ClInclude Include="ql\time\calendars\malta.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
@@ -3262,6 +3283,15 @@
       <Filter>experimental\fx</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\fx\deltavolquote.hpp">
+      <Filter>experimental\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fx\discountingmtmcrosscurrencybasisswapengine.hpp">
+      <Filter>experimental\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fx\fxresetcashflows.hpp">
+      <Filter>experimental\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fx\mtmcrosscurrencybasisswap.hpp">
       <Filter>experimental\fx</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\all.hpp">
@@ -3745,6 +3775,12 @@
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\ode\adaptiverungekutta.hpp">
+      <Filter>math\ode</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\ode\fractionaladams.hpp">
+      <Filter>math\ode</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\ode\fractionalkernelapproximation.hpp">
       <Filter>math\ode</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp">
@@ -4838,10 +4874,10 @@
     <ClCompile Include="ql\instruments\constnotionalcrosscurrencybasisswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
-    <ClCompile Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.cpp">
+    <ClCompile Include="ql\instruments\crosscurrencyswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
-    <ClCompile Include="ql\instruments\constnotionalcrosscurrencyswap.cpp">
+    <ClCompile Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\europeanoption.cpp">
@@ -5078,6 +5114,9 @@
     <ClCompile Include="ql\math\integrals\filonintegral.cpp">
       <Filter>math\integrals</Filter>
     </ClCompile>
+    <ClCompile Include="ql\math\integrals\fourierintegration.cpp">
+      <Filter>math\integrals</Filter>
+    </ClCompile>
     <ClCompile Include="ql\math\integrals\gaussianorthogonalpolynomial.cpp">
       <Filter>math\integrals</Filter>
     </ClCompile>
@@ -5172,6 +5211,9 @@
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\bfgs.cpp">
+      <Filter>math\optimization</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\optimization\cmaes.cpp">
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\conjugategradient.cpp">
@@ -5606,6 +5648,9 @@
     <ClCompile Include="ql\models\equity\piecewisetimedependenthestonmodel.cpp">
       <Filter>models\equity</Filter>
     </ClCompile>
+    <ClCompile Include="ql\models\equity\roughhestonmodel.cpp">
+      <Filter>models\equity</Filter>
+    </ClCompile>
     <ClCompile Include="ql\termstructures\defaulttermstructure.cpp">
       <Filter>termstructures</Filter>
     </ClCompile>
@@ -5996,6 +6041,9 @@
     <ClCompile Include="ql\pricingengines\vanilla\analyticptdhestonengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\vanilla\analyticroughhestonengine.cpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\baroneadesiwhaleyengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
@@ -6282,6 +6330,9 @@
       <Filter>time\calendars</Filter>
     </ClCompile>
     <ClCompile Include="ql\time\calendars\jointcalendar.cpp">
+      <Filter>time\calendars</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\time\calendars\malaysia.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
     <ClCompile Include="ql\time\calendars\malta.cpp">
@@ -7326,6 +7377,15 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\forward\analytichestonforwardeuropeanengine.cpp">
       <Filter>experimental\forward</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fx\discountingmtmcrosscurrencybasisswapengine.cpp">
+      <Filter>experimental\fx</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fx\fxresetcashflows.cpp">
+      <Filter>experimental\fx</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fx\mtmcrosscurrencybasisswap.cpp">
+      <Filter>experimental\fx</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\termstructures\basisswapratehelpers.cpp">
       <Filter>experimental\termstructures</Filter>

@@ -368,6 +368,9 @@
     <ClCompile Include="rngtraits.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="roughhestonmodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="rounding.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -514,6 +517,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="constnotionalcrosscurrencybasisswap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mtmcrosscurrencybasisswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="constnotionalcrosscurrencyfixedvsfloatingswap.cpp">

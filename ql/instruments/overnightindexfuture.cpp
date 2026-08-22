@@ -107,8 +107,9 @@ namespace QuantLib {
                 Real r = history[today];
                 if (r != Null<Real>()) {
                     Date tomorrow = calendar.advance(today, 1, Days);
-                    prod *= 1 + r * dayCounter.yearFraction(today, tomorrow);
-                    forwardDiscountStart = tomorrow;
+                    Date accrualEnd = std::min(tomorrow, maturityDate_);
+                    prod *= 1 + r * dayCounter.yearFraction(today, accrualEnd);
+                    forwardDiscountStart = accrualEnd;
                 }
             }
         }

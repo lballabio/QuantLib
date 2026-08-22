@@ -122,8 +122,6 @@ namespace QuantLib {
 
     Real cumOptVal = 0., 
         cumPutVal = 0.;
-    // Vanilla swap so 0 leg is floater
-
     auto nextFD = 
       arguments_.fixedPayDates.begin();
     Date swapletStart = priceDate;

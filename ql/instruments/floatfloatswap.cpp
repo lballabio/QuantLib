@@ -557,13 +557,13 @@ namespace QuantLib {
         }
 
         if (fairSpread1_ == Null<Spread>()) {
-            if (!legBPS_.empty() && legBPS_[0] != Null<Real>()) {
+            if (!legBPS_.empty() && legBPS_[0] != Null<Real>() && legBPS_[0] != 0.0) {
                 Real currentSpread = spread1_.empty() ? 0.0 : spread1_[0];
                 fairSpread1_ = currentSpread - NPV_/(legBPS_[0]/basisPoint);
             }
         }
         if (fairSpread2_ == Null<Spread>()) {
-            if (legBPS_.size() > 1 && legBPS_[1] != Null<Real>()) {
+            if (legBPS_.size() > 1 && legBPS_[1] != Null<Real>() && legBPS_[1] != 0.0) {
                 Real currentSpread = spread2_.empty() ? 0.0 : spread2_[0];
                 fairSpread2_ = currentSpread - NPV_/(legBPS_[1]/basisPoint);
             }

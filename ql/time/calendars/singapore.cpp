@@ -247,6 +247,22 @@ namespace QuantLib {
                 || (d == 9 && m == November))
                 return false;
         }
+
+        // https://data.gov.sg/datasets/d_0ba69fc6d56717ff0bf8083c6af3bb84/view
+        if (y == 2027)
+        {
+            if (// Chinese New Year (Sat/Sun 6-7 Feb, observed Monday 8 Feb)
+                (d == 8 && m == February)
+                // Hari Raya Puasa
+                || (d == 10 && m == March)
+                // Hari Raya Haji
+                || (d == 17 && m == May)
+                // Vesak Day
+                || (d == 20 && m == May)
+                // Deepavali
+                || (d == 28 && m == October))
+                return false;
+        }
         return true;
     }
 

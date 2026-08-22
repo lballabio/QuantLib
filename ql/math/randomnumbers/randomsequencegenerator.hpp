@@ -59,6 +59,8 @@ namespace QuantLib {
                      "dimensionality must be greater than 0");
         }
 
+        /*! if the given seed is 0, a random seed will be chosen
+            based on clock() */
         explicit RandomSequenceGenerator(Size dimensionality,
                                          BigNatural seed = 0)
         : dimensionality_(dimensionality), rng_(seed),

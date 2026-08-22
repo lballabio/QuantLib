@@ -112,9 +112,8 @@ namespace QuantLib {
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
 
-            return ext::shared_ptr<path_generator_type>(
-                         new path_generator_type(process_, grid, gen,
-                                                 brownianBridge_));
+            return ext::make_shared<path_generator_type>(process_, grid, gen,
+                                                 brownianBridge_);
         }
         // data members
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
@@ -215,9 +214,7 @@ namespace QuantLib {
         typename MCVarianceSwapEngine<RNG,S>::path_pricer_type>
     MCVarianceSwapEngine<RNG,S>::pathPricer() const {
 
-        return ext::shared_ptr<
-            typename MCVarianceSwapEngine<RNG,S>::path_pricer_type>(
-                                            new VariancePathPricer(process_));
+        return ext::make_shared<VariancePathPricer>(process_);
     }
 
 
@@ -297,15 +294,14 @@ namespace QuantLib {
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return ext::shared_ptr<PricingEngine>(
-                         new MCVarianceSwapEngine<RNG,S>(process_,
+        return ext::make_shared<MCVarianceSwapEngine<RNG,S>>(process_,
                                                          steps_,
                                                          stepsPerYear_,
                                                          brownianBridge_,
                                                          antithetic_,
                                                          samples_, tolerance_,
                                                          maxSamples_,
-                                                         seed_));
+                                                         seed_);
     }
 
 

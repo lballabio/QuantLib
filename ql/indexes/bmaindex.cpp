@@ -64,7 +64,7 @@ namespace QuantLib {
         return cal.isBusinessDay(date);
     }
 
-    Handle<YieldTermStructure> BMAIndex::forwardingTermStructure() const {
+    const Handle<YieldTermStructure>& BMAIndex::forwardingTermStructure() const {
         return termStructure_;
     }
 

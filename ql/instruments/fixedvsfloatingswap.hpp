@@ -4,6 +4,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2006, 2008 Ferdinando Ametrano
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -87,6 +88,8 @@ namespace QuantLib {
         const DayCounter& floatingDayCount() const;
 
         BusinessDayConvention paymentConvention() const;
+        Integer paymentLag() const;
+        const Calendar& paymentCalendar() const;
 
         const Leg& fixedLeg() const;
         const Leg& floatingLeg() const;
@@ -120,6 +123,8 @@ namespace QuantLib {
         Spread spread_;
         DayCounter floatingDayCount_;
         BusinessDayConvention paymentConvention_;
+        Integer paymentLag_;
+        Calendar paymentCalendar_;
         // results
         mutable Rate fairRate_;
         mutable Spread fairSpread_;
@@ -216,6 +221,14 @@ namespace QuantLib {
 
     inline BusinessDayConvention FixedVsFloatingSwap::paymentConvention() const {
         return paymentConvention_;
+    }
+
+    inline Integer FixedVsFloatingSwap::paymentLag() const {
+        return paymentLag_;
+    }
+
+    inline const Calendar& FixedVsFloatingSwap::paymentCalendar() const {
+        return paymentCalendar_;
     }
 
     inline const Leg& FixedVsFloatingSwap::fixedLeg() const {

@@ -28,6 +28,7 @@
 
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/quote.hpp>
+#include <ql/termstructures/yield/derivedtermstructure.hpp>
 #include <ql/termstructures/yield/zeroyieldstructure.hpp>
 #include <utility>
 #include <vector>
@@ -46,7 +47,8 @@ namespace QuantLib {
   */
 
   template <class Interpolator>
-  class InterpolatedPiecewiseZeroSpreadedTermStructure : public ZeroYieldStructure {
+  class InterpolatedPiecewiseZeroSpreadedTermStructure
+        : public RelativeDerivedYieldTermStructure<ZeroYieldStructure> {
     public:
       InterpolatedPiecewiseZeroSpreadedTermStructure(Handle<YieldTermStructure>,
                                                      std::vector<Handle<Quote>> spreads,
@@ -68,10 +70,6 @@ namespace QuantLib {
                                                      Interpolator factory = Interpolator());
       //! \name YieldTermStructure interface
       //@{
-      DayCounter dayCounter() const override;
-      Natural settlementDays() const override;
-      Calendar calendar() const override;
-      const Date& referenceDate() const override;
       Date maxDate() const override;
       //@}
     protected:
@@ -82,7 +80,6 @@ namespace QuantLib {
     private:
       void updateInterpolation();
       Real calcSpread(Time t) const;
-      Handle<YieldTermStructure> originalCurve_;
       std::vector<Handle<Quote> > spreads_;
       std::vector<Date> dates_;
       std::vector<Time> times_;
@@ -111,13 +108,12 @@ namespace QuantLib {
                                                            Compounding comp,
                                                            Frequency freq,
                                                            T factory)
-    : originalCurve_(std::move(h)), spreads_(std::move(spreads)), dates_(std::move(dates)),
-      times_(dates_.size()), spreadValues_(dates_.size()), comp_(comp), freq_(freq),
-      factory_(std::move(factory)) {
+    : RelativeDerivedYieldTermStructure(std::move(h)), spreads_(std::move(spreads)),
+      dates_(std::move(dates)), times_(dates_.size()), spreadValues_(dates_.size()),
+      comp_(comp), freq_(freq), factory_(std::move(factory)) {
         QL_REQUIRE(!spreads_.empty(), "no spreads given");
         QL_REQUIRE(spreads_.size() == dates_.size(),
                    "spread and date vector have different sizes");
-        registerWith(originalCurve_);
         for (auto& spread : spreads_)
             registerWith(spread);
         interpolator_ = detail::interpolateWithoutUpdate(
@@ -140,27 +136,6 @@ namespace QuantLib {
     ) {}
 
     #endif
-
-    template <class T>
-    inline DayCounter InterpolatedPiecewiseZeroSpreadedTermStructure<T>::dayCounter() const {
-        return originalCurve_->dayCounter();
-    }
-
-    template <class T>
-    inline Calendar InterpolatedPiecewiseZeroSpreadedTermStructure<T>::calendar() const {
-        return originalCurve_->calendar();
-    }
-
-    template <class T>
-    inline Natural InterpolatedPiecewiseZeroSpreadedTermStructure<T>::settlementDays() const {
-        return originalCurve_->settlementDays();
-    }
-
-    template <class T>
-    inline const Date&
-    InterpolatedPiecewiseZeroSpreadedTermStructure<T>::referenceDate() const {
-        return originalCurve_->referenceDate();
-    }
 
     template <class T>
     inline Date InterpolatedPiecewiseZeroSpreadedTermStructure<T>::maxDate() const {
@@ -193,17 +168,9 @@ namespace QuantLib {
 
     template <class T>
     inline void InterpolatedPiecewiseZeroSpreadedTermStructure<T>::update() {
-        if (!originalCurve_.empty()) {
+        if (!originalCurve_.empty())
             updateInterpolation();
-            ZeroYieldStructure::update();
-        } else {
-            /* The implementation inherited from YieldTermStructure
-               asks for our reference date, which we don't have since
-               the original curve is still not set. Therefore, we skip
-               over that and just call the base-class behavior. */
-            // NOLINTNEXTLINE(bugprone-parent-virtual-call)
-            TermStructure::update();
-        }
+        RelativeDerivedYieldTermStructure::update();
     }
 
     template <class T>

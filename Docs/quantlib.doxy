@@ -1,4 +1,4 @@
-# Doxyfile 1.14.0
+# Doxyfile 1.17.0
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -42,6 +42,7 @@ OPTIMIZE_OUTPUT_VHDL   = NO
 OPTIMIZE_OUTPUT_SLICE  = NO
 EXTENSION_MAPPING      =
 MARKDOWN_SUPPORT       = YES
+MARKDOWN_STRICT        = YES
 TOC_INCLUDE_HEADINGS   = 0
 MARKDOWN_ID_STYLE      = DOXYGEN
 AUTOLINK_SUPPORT       = YES
@@ -95,6 +96,8 @@ GENERATE_TODOLIST      = NO
 GENERATE_TESTLIST      = YES
 GENERATE_BUGLIST       = YES
 GENERATE_DEPRECATEDLIST= YES
+GENERATE_REQUIREMENTS  = YES
+REQ_TRACEABILITY_INFO  = YES
 ENABLED_SECTIONS       =
 MAX_INITIALIZER_LINES  = 30
 SHOW_USED_FILES        = NO
@@ -328,6 +331,7 @@ EXTERNAL_PAGES         = YES
 HIDE_UNDOC_RELATIONS   = NO
 HAVE_DOT               = YES
 DOT_NUM_THREADS        = 0
+DOT_BATCH_SIZE         = 50
 DOT_COMMON_ATTR        = "fontname=Helvetica,fontsize=10"
 DOT_EDGE_ATTR          = "labelfontname=Helvetica,labelfontsize=10"
 DOT_NODE_ATTR          = "shape=box,height=0.2,width=0.4"
@@ -358,9 +362,13 @@ PLANTUML_JAR_PATH      =
 PLANTUML_CFG_FILE      =
 PLANTUML_INCLUDE_PATH  =
 PLANTUMLFILE_DIRS      =
+MERMAID_PATH           =
+MERMAID_CONFIG_FILE    =
+MERMAID_RENDER_MODE    = AUTO
+MERMAID_JS_URL         = https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs
+MERMAIDFILE_DIRS       =
 DOT_GRAPH_MAX_NODES    = 150
 MAX_DOT_GRAPH_DEPTH    = 2
-DOT_MULTI_TARGETS      = NO
 GENERATE_LEGEND        = YES
 DOT_CLEANUP            = YES
 MSCGEN_TOOL            =

@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2010 Ferdinando Ametrano
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,7 +32,6 @@ namespace QuantLib {
 
     class CapFloorTermVolCurve;
     class OptionletStripper1;
-    class SimpleQuote;
     class CapFloor;
 
     /*! Helper class to extend an OptionletStripper1 object stripping
@@ -56,19 +56,8 @@ namespace QuantLib {
         void performCalculations() const override;
         //@}
       private:
-        std::vector<Volatility> spreadsVolImplied() const;
-
-        class ObjectiveFunction {
-          public:
-            ObjectiveFunction(const ext::shared_ptr<OptionletStripper1>&,
-                              ext::shared_ptr<CapFloor>,
-                              Real targetValue);
-            Real operator()(Volatility spreadVol) const;
-          private:
-            ext::shared_ptr<SimpleQuote> spreadQuote_;
-            ext::shared_ptr<CapFloor> cap_;
-            Real targetValue_;
-        };
+        std::vector<Volatility> spreadsVolImplied(
+            const Handle<OptionletVolatilityStructure>& baseVolatility) const;
 
         const ext::shared_ptr<OptionletStripper1> stripper1_;
         const Handle<CapFloorTermVolCurve> atmCapFloorTermVolCurve_;

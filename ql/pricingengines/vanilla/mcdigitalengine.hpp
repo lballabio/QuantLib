@@ -176,13 +176,11 @@ namespace QuantLib {
         PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                             PseudoRandom::urng_type(76));
 
-        return ext::shared_ptr<
-                        typename MCDigitalEngine<RNG,S>::path_pricer_type>(
-          new DigitalPathPricer(payoff,
+        return ext::make_shared<DigitalPathPricer>(payoff,
                                 exercise,
                                 process->riskFreeRate(),
                                 process,
-                                sequenceGen));
+                                sequenceGen);
     }
 
 
@@ -263,15 +261,14 @@ namespace QuantLib {
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return ext::shared_ptr<PricingEngine>(new
-            MCDigitalEngine<RNG,S>(process_,
+        return ext::make_shared<MCDigitalEngine<RNG,S>>(process_,
                                    steps_,
                                    stepsPerYear_,
                                    brownianBridge_,
                                    antithetic_,
                                    samples_, tolerance_,
                                    maxSamples_,
-                                   seed_));
+                                   seed_);
     }
 
 }

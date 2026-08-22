@@ -298,7 +298,7 @@ void testBootstrapFromUpfront() {
                                   upfrontDate,
                                   ext::shared_ptr<Claim>(),
                                   Actual360(true),
-                                  true, today);
+                                  true);
             cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
                            new MidPointCdsEngine(piecewiseCurve, recoveryRate,
                                                  discountCurve, true)));

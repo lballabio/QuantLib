@@ -25,7 +25,7 @@
 #ifndef quantlib_implied_term_structure_hpp
 #define quantlib_implied_term_structure_hpp
 
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/yield/derivedtermstructure.hpp>
 #include <ql/utilities/null.hpp>
 #include <utility>
 
@@ -46,17 +46,13 @@ namespace QuantLib {
         - observability against changes in the underlying term
           structure is checked.
     */
-    class ImpliedTermStructure : public YieldTermStructure {
+    class ImpliedTermStructure : public DerivedYieldTermStructure<> {
       public:
         ImpliedTermStructure(Handle<YieldTermStructure>, const Date& referenceDate);
+        ImpliedTermStructure(Handle<YieldTermStructure>, Natural settlementDays, const Calendar&);
+      protected:
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const override;
-        Calendar calendar() const override;
-        Natural settlementDays() const override;
-        Date maxDate() const override;
-
-      protected:
         DiscountFactor discountImpl(Time) const override;
         //@}
         //! \name Observer interface
@@ -64,7 +60,6 @@ namespace QuantLib {
         void update() override;
         //@}
       private:
-        Handle<YieldTermStructure> originalCurve_;
         mutable DiscountFactor refDf_ = Null<DiscountFactor>();
         mutable Time refTime_ = Null<Time>();
     };
@@ -74,34 +69,17 @@ namespace QuantLib {
 
     inline ImpliedTermStructure::ImpliedTermStructure(Handle<YieldTermStructure> h,
                                                       const Date& referenceDate)
-    : YieldTermStructure(referenceDate), originalCurve_(std::move(h)) {
-        if (!originalCurve_.empty())
-            enableExtrapolation(originalCurve_->allowsExtrapolation());
-        registerWith(originalCurve_);
-    }
+    : DerivedYieldTermStructure(std::move(h), referenceDate) {}
 
-    inline DayCounter ImpliedTermStructure::dayCounter() const {
-        return originalCurve_->dayCounter();
-    }
-
-    inline Calendar ImpliedTermStructure::calendar() const {
-        return originalCurve_->calendar();
-    }
-
-    inline Natural ImpliedTermStructure::settlementDays() const {
-        return originalCurve_->settlementDays();
-    }
-
-    inline Date ImpliedTermStructure::maxDate() const {
-        return originalCurve_->maxDate();
-    }
+    inline ImpliedTermStructure::ImpliedTermStructure(Handle<YieldTermStructure> h,
+                                                      Natural settlementDays,
+                                                      const Calendar& calendar)
+    : DerivedYieldTermStructure(std::move(h), settlementDays, calendar) {}
 
     inline void ImpliedTermStructure::update() {
         refDf_ = Null<DiscountFactor>();
         refTime_ = Null<Time>();
-        if (!originalCurve_.empty())
-            enableExtrapolation(originalCurve_->allowsExtrapolation());
-        YieldTermStructure::update();
+        DerivedYieldTermStructure::update();
     }
 
     inline DiscountFactor ImpliedTermStructure::discountImpl(Time t) const {

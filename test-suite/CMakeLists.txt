@@ -43,6 +43,7 @@ set(QL_TEST_SOURCES
     creditdefaultswap.cpp
     constnotionalcrosscurrencybasisswap.cpp
     constnotionalcrosscurrencyfixedvsfloatingswap.cpp
+    mtmcrosscurrencybasisswap.cpp
     constnotionalcrosscurrencyswap.cpp
     crosscurrencyratehelpers.cpp
     currency.cpp
@@ -148,6 +149,7 @@ set(QL_TEST_SOURCES
     riskneutraldensitycalculator.cpp
     riskstats.cpp
     rngtraits.cpp
+    roughhestonmodel.cpp
     rounding.cpp
     schedule.cpp
     settings.cpp

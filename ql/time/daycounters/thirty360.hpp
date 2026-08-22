@@ -36,7 +36,7 @@ namespace QuantLib {
         US convention: if the starting date is the 31st of a month or
         the last day of February, it becomes equal to the 30th of the
         same month.  If the ending date is the 31st of a month and the
-        starting date is the 30th or 31th of a month, the ending date
+        starting date is the 30th or 31st of a month, the ending date
         becomes equal to the 30th.  If the ending date is the last of
         February and the starting date is also the last of February,
         the ending date becomes equal to the 30th.
@@ -45,7 +45,7 @@ namespace QuantLib {
         Bond Basis convention: if the starting date is the 31st of a
         month, it becomes equal to the 30th of the same month.
         If the ending date is the 31st of a month and the starting
-        date is the 30th or 31th of a month, the ending date
+        date is the 30th or 31st of a month, the ending date
         also becomes equal to the 30th of the month.
         Also known as "US (ISMA)".
 

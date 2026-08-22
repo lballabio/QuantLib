@@ -26,6 +26,7 @@
 #define quantlib_analytic_heston_engine_hpp
 
 #include <ql/utilities/null.hpp>
+#include <ql/math/integrals/fourierintegration.hpp>
 #include <ql/math/integrals/integral.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
@@ -93,7 +94,8 @@ namespace QuantLib {
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
-        class Integration;
+        typedef FourierIntegration Integration;
+
         class OptimalAlpha;
         class AP_Helper;
 
@@ -194,65 +196,6 @@ namespace QuantLib {
         const Real andersenPiterbargEpsilon_, alpha_;
     };
 
-
-    class AnalyticHestonEngine::Integration {
-      public:
-        // non adaptive integration algorithms based on Gaussian quadrature
-        static Integration gaussLaguerre    (Size integrationOrder = 128);
-        static Integration gaussLegendre    (Size integrationOrder = 128);
-        static Integration gaussChebyshev   (Size integrationOrder = 128);
-        static Integration gaussChebyshev2nd(Size integrationOrder = 128);
-
-        // Gatheral's version has to be used for an adaptive integration
-        // algorithm .Be aware: using a too large number for maxEvaluations might
-        // result in a stack overflow as the these integrations are based on
-        // recursive algorithms.
-        static Integration gaussLobatto(Real relTolerance, Real absTolerance,
-                                        Size maxEvaluations = 1000,
-                                        bool useConvergenceEstimate = false);
-
-        // usually these routines have a poor convergence behavior.
-        static Integration gaussKronrod(Real absTolerance,
-                                        Size maxEvaluations = 1000);
-        static Integration simpson(Real absTolerance,
-                                   Size maxEvaluations = 1000);
-        static Integration trapezoid(Real absTolerance,
-                                     Size maxEvaluations = 1000);
-        static Integration discreteSimpson(Size evaluation = 1000);
-        static Integration discreteTrapezoid(Size evaluation = 1000);
-        static Integration expSinh(Real relTolerance = 1e-8);
-
-        static Real andersenPiterbargIntegrationLimit(
-            Real c_inf, Real epsilon, Real v0, Real t);
-
-        Real calculate(Real c_inf,
-                       const std::function<Real(Real)>& f,
-                       const std::function<Real()>& maxBound = {},
-                       Real scaling = 1.0) const;
-
-        Real calculate(Real c_inf,
-                       const std::function<Real(Real)>& f,
-                       Real maxBound) const;
-
-        Size numberOfEvaluations() const;
-        bool isAdaptiveIntegration() const;
-
-      private:
-        enum Algorithm
-            { GaussLobatto, GaussKronrod, Simpson, Trapezoid,
-              DiscreteTrapezoid, DiscreteSimpson,
-              GaussLaguerre, GaussLegendre,
-              GaussChebyshev, GaussChebyshev2nd,
-              ExpSinh};
-
-        Integration(Algorithm intAlgo, ext::shared_ptr<GaussianQuadrature> quadrature);
-
-        Integration(Algorithm intAlgo, ext::shared_ptr<Integrator> integrator);
-
-        const Algorithm intAlgo_;
-        const ext::shared_ptr<Integrator> integrator_;
-        const ext::shared_ptr<GaussianQuadrature> gaussianQuadrature_;
-    };
 
     class AnalyticHestonEngine::AP_Helper {
       public:

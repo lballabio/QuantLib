@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE(ecbIsECBcode) {
 BOOST_AUTO_TEST_CASE(ecbDates) {
     BOOST_TEST_MESSAGE("Testing ECB dates...");
 
-    const std::set<Date> knownDates = ECB::knownDates();
+    const std::set<Date>& knownDates = ECB::knownDates();
     BOOST_TEST(!knownDates.empty(),
                    "empty ECB date vector");
 

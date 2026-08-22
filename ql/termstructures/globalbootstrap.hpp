@@ -31,6 +31,8 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <algorithm>
 #include <functional>
+#include <tuple>
+#include <type_traits>
 #include <utility>
 
 namespace QuantLib {
@@ -98,21 +100,23 @@ class AdditionalBootstrapVariables {
   for a concrete implementation of this interface.
 
   WARNING: This class is known to work with Traits Discount, ZeroYield, Forward,
-  i.e. the usual IR curves traits in QL. It requires Traits::transformDirect()
-  and Traits::transformInverse() to be implemented. Also, check the usage of
-  Traits::updateGuess(), Traits::guess() in this class.
+  i.e. the usual IR curves traits in QL. For new Traits you may want to implement
+  Traits::transformDirect()/transformInverse()/globalGuess().
 */
 template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapContributor {
     typedef typename Curve::traits_type Traits;             // ZeroYield, Discount, ForwardRate
     typedef typename Curve::interpolator_type Interpolator; // Linear, LogLinear, ...
     typedef std::function<Array(const std::vector<Time>&, const std::vector<Real>&)>
         AdditionalPenalties;
+    typedef std::function<Array(const std::vector<Time>&, const std::vector<Real>&)>
+        InitialGuessFn;
 
   public:
     GlobalBootstrap(Real accuracy = Null<Real>(),
                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                     ext::shared_ptr<EndCriteria> endCriteria = nullptr,
-                    std::vector<Real> instrumentWeights = {});
+                    std::vector<Real> instrumentWeights = {},
+                    InitialGuessFn initialGuessFn = nullptr);
     GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper>> additionalHelpers,
                     std::function<std::vector<Date>()> additionalDates,
                     AdditionalPenalties additionalPenalties,
@@ -120,7 +124,8 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                     ext::shared_ptr<EndCriteria> endCriteria = nullptr,
                     ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables = nullptr,
-                    std::vector<Real> instrumentWeights = {});
+                    std::vector<Real> instrumentWeights = {},
+                    InitialGuessFn initialGuessFn = nullptr);
     GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper>> additionalHelpers,
                     std::function<std::vector<Date>()> additionalDates,
                     std::function<Array()> additionalPenalties,
@@ -128,15 +133,23 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                     ext::shared_ptr<EndCriteria> endCriteria = nullptr,
                     ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables = nullptr,
-                    std::vector<Real> instrumentWeights = {});
+                    std::vector<Real> instrumentWeights = {},
+                    InitialGuessFn initialGuessFn = nullptr);
     void setup(Curve *ts);
     void calculate() const;
 
   private:
+    template <class T, class = void>
+    static constexpr bool hasTransform = false;
+
+    template <class T, class = void>
+    static constexpr bool hasGlobalGuess = false;
+
     void initialize() const;
     void
     setParentBootstrapper(const ext::shared_ptr<MultiCurveBootstrap>& b) const override;
     Array setupCostFunction() const override;
+    Array makeInitialGuess() const;
     void setCostFunctionArgument(const Array& v) const override;
     Array evaluateCostFunction() const override;
     void setToValid() const override;
@@ -152,6 +165,7 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
     ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables_;
     mutable std::vector<Real> instrumentWeights_;
     mutable std::vector<Real> aliveInstrumentWeights_;
+    InitialGuessFn initialGuessFn_;
     mutable bool initialized_ = false, validCurve_ = false;
     mutable ext::shared_ptr<MultiCurveBootstrap> parentBootstrapper_ = nullptr;
 };
@@ -159,12 +173,26 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
 // template definitions
 
 template <class Curve>
+template <class T>
+constexpr bool GlobalBootstrap<Curve>::hasTransform<
+    T,
+    std::void_t<decltype(T::transformDirect(Real(), Size(), std::declval<const Curve*>()))>> = true;
+
+template <class Curve>
+template <class T>
+constexpr bool GlobalBootstrap<Curve>::hasGlobalGuess<
+    T,
+    std::void_t<decltype(T::globalGuess(std::declval<const Curve*>(), true))>> = true;
+
+template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy,
                                         ext::shared_ptr<OptimizationMethod> optimizer,
                                         ext::shared_ptr<EndCriteria> endCriteria,
-                                        std::vector<Real> instrumentWeights)
+                                        std::vector<Real> instrumentWeights,
+                                        InitialGuessFn initialGuessFn)
 : ts_(nullptr), accuracy_(accuracy), optimizer_(std::move(optimizer)),
-  endCriteria_(std::move(endCriteria)), instrumentWeights_(std::move(instrumentWeights)) {}
+  endCriteria_(std::move(endCriteria)), instrumentWeights_(std::move(instrumentWeights)),
+  initialGuessFn_(std::move(initialGuessFn)) {}
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
@@ -175,13 +203,15 @@ GlobalBootstrap<Curve>::GlobalBootstrap(
     ext::shared_ptr<OptimizationMethod> optimizer,
     ext::shared_ptr<EndCriteria> endCriteria,
     ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables,
-    std::vector<Real> instrumentWeights)
+    std::vector<Real> instrumentWeights,
+    InitialGuessFn initialGuessFn)
 : ts_(nullptr), accuracy_(accuracy), optimizer_(std::move(optimizer)),
   endCriteria_(std::move(endCriteria)), additionalHelpers_(std::move(additionalHelpers)),
   additionalDates_(std::move(additionalDates)),
   additionalPenalties_(std::move(additionalPenalties)),
   additionalVariables_(std::move(additionalVariables)),
-  instrumentWeights_(std::move(instrumentWeights)) {}
+  instrumentWeights_(std::move(instrumentWeights)),
+  initialGuessFn_(std::move(initialGuessFn)) {}
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
@@ -192,7 +222,8 @@ GlobalBootstrap<Curve>::GlobalBootstrap(
     ext::shared_ptr<OptimizationMethod> optimizer,
     ext::shared_ptr<EndCriteria> endCriteria,
     ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables,
-    std::vector<Real> instrumentWeights)
+    std::vector<Real> instrumentWeights,
+    InitialGuessFn initialGuessFn)
 : GlobalBootstrap(std::move(additionalHelpers),
                   std::move(additionalDates),
                   additionalPenalties ?
@@ -203,7 +234,8 @@ GlobalBootstrap<Curve>::GlobalBootstrap(
                   std::move(optimizer),
                   std::move(endCriteria),
                   std::move(additionalVariables),
-                  std::move(instrumentWeights)) {}
+                  std::move(instrumentWeights),
+                  std::move(initialGuessFn)) {}
 
 template <class Curve>
 void GlobalBootstrap<Curve>::setParentBootstrapper(const ext::shared_ptr<MultiCurveBootstrap>& b) const {
@@ -353,25 +385,53 @@ template <class Curve> Array GlobalBootstrap<Curve>::setupCostFunction() const {
 
     // setup interpolation
     if (!validCurve_) {
-        ts_->interpolation_ = ts_->interpolator_.interpolate(ts_->times_.begin(), ts_->times_.end(),
-                                                             ts_->data_.begin());
+        ts_->interpolation_ = detail::interpolateWithoutUpdate(
+            ts_->interpolator_, ts_->times_.begin(), ts_->times_.end(), ts_->data_.begin());
     }
 
     // Initial guess. We have guesses for the curve values first (numberPillars),
     // followed by guesses for the additional variables.
-    Array additionalGuesses;
+    Array guess = makeInitialGuess();
     if (additionalVariables_) {
-        additionalGuesses = additionalVariables_->initialize(validCurve_);
+        Array additionalGuesses = additionalVariables_->initialize(validCurve_);
+        Size oldSize = guess.size();
+        guess.resize(oldSize + additionalGuesses.size());
+        std::copy(additionalGuesses.begin(), additionalGuesses.end(), guess.begin() + oldSize);
     }
-    Array guess(ts_->times_.size() - 1 + additionalGuesses.size());
-    for (Size i = 0; i < ts_->times_.size() - 1; ++i) {
-        // just pass zero as the first alive helper, it's not used in the standard QL traits anyway
-        // update ts_->data_ since Traits::guess() usually depends on previous values
-        Traits::updateGuess(ts_->data_, Traits::guess(i + 1, ts_, validCurve_, 0), i + 1);
-        guess[i] = Traits::transformInverse(ts_->data_[i + 1], i + 1, ts_);
+    return guess;
+}
+
+template <class Curve> Array GlobalBootstrap<Curve>::makeInitialGuess() const {
+    Array guess;
+    bool needsTransform = true;
+    if (initialGuessFn_) {
+        const std::vector<Real> noData;
+        guess = initialGuessFn_(ts_->times_, validCurve_ ? ts_->data_ : noData);
+    } else if constexpr (hasGlobalGuess<Traits>) {
+        std::tie(guess, needsTransform) = Traits::globalGuess(ts_, validCurve_);
+    } else {
+        // Update interpolation because Traits::guess() might rely on it. This is not quite
+        // correct -- we need to call update() in the loop after every Traits::updateGuess().
+        // This is probably much slower and was not done before, so we keep the existing
+        // behavior. Implementing Traits::globalGuess() is a more efficient option.
+        if (!validCurve_)
+            ts_->interpolation_.update();
+
+        guess.resize(ts_->times_.size() - 1);
+        for (Size i = 0, size = guess.size(); i < size; ++i) {
+            // Just pass zero as the first alive helper, it's not used in the standard QL traits
+            // anyway. Update ts_->data_ since Traits::guess() usually depends on previous values.
+            Traits::updateGuess(ts_->data_, Traits::guess(i + 1, ts_, validCurve_, 0), i + 1);
+            guess[i] = ts_->data_[i + 1];
+        }
     }
-    std::copy(additionalGuesses.begin(), additionalGuesses.end(),
-              guess.begin() + ts_->times_.size() - 1);
+    if constexpr (hasTransform<Traits>) {
+        if (needsTransform) {
+            for (Size i = 0, size = guess.size(); i < size; ++i) {
+                guess[i] = Traits::transformInverse(guess[i], i + 1, ts_);
+            }
+        }
+    }
     return guess;
 }
 
@@ -380,7 +440,11 @@ void GlobalBootstrap<Curve>::setCostFunctionArgument(const Array& x) const {
     // x has the same layout as guess above: the first numberPillars values go into
     // the curve, while the rest are new values for the additional variables.
     for (Size i = 0; i < ts_->times_.size() - 1; ++i) {
-        Traits::updateGuess(ts_->data_, Traits::transformDirect(x[i], i + 1, ts_), i + 1);
+        Real value = x[i];
+        if constexpr (hasTransform<Traits>) {
+            value = Traits::transformDirect(value, i + 1, ts_);
+        }
+        Traits::updateGuess(ts_->data_, value, i + 1);
     }
     ts_->interpolation_.update();
     if (additionalVariables_) {

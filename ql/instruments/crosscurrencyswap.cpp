@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2016 Quaternion Risk Management Ltd
  Copyright (C) 2025 Paolo D'Elia
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,47 +19,54 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/constnotionalcrosscurrencyswap.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
+#include <ql/instruments/crosscurrencyswap.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
-ConstNotionalCrossCurrencySwap::ConstNotionalCrossCurrencySwap(const Leg& firstLeg, const Currency& firstLegCcy,
-                                                                       const Leg& secondLeg, const Currency& secondLegCcy)
-    : Swap(firstLeg, secondLeg), inCcyLegNPV_(2, 0.0), inCcyLegBPS_(2, 0.0), npvDateDiscounts_(2, 0.0) {
+CrossCurrencySwap::CrossCurrencySwap(const Leg& firstLeg,
+                                     const Currency& firstLegCcy,
+                                     const Leg& secondLeg,
+                                     const Currency& secondLegCcy)
+: Swap(firstLeg, secondLeg), inCcyLegNPV_(2, 0.0), inCcyLegBPS_(2, 0.0),
+  npvDateDiscounts_(2, 0.0) {
     currencies_.resize(2);
     currencies_[0] = firstLegCcy;
     currencies_[1] = secondLegCcy;
 }
 
-ConstNotionalCrossCurrencySwap::ConstNotionalCrossCurrencySwap(const std::vector<Leg>& legs, const std::vector<bool>& payer,
-                                                                       const std::vector<Currency>& currencies)
-    : Swap(legs, payer), currencies_(currencies), inCcyLegNPV_(legs.size(), 0.0), inCcyLegBPS_(legs.size(), 0.0), npvDateDiscounts_(legs.size(), 0.0)  {
+CrossCurrencySwap::CrossCurrencySwap(const std::vector<Leg>& legs,
+                                     const std::vector<bool>& payer,
+                                     const std::vector<Currency>& currencies)
+: Swap(legs, payer), currencies_(currencies), inCcyLegNPV_(legs.size(), 0.0),
+  inCcyLegBPS_(legs.size(), 0.0), npvDateDiscounts_(legs.size(), 0.0) {
     QL_REQUIRE(payer.size() == currencies_.size(), "Size mismatch "
                                                    "between payer ("
                                                        << payer.size() << ") and currencies (" << currencies_.size()
                                                        << ")");
 }
 
-ConstNotionalCrossCurrencySwap::ConstNotionalCrossCurrencySwap(Size legs)
-    : Swap(legs), currencies_(legs), inCcyLegNPV_(legs, 0.0), inCcyLegBPS_(legs, 0.0), npvDateDiscounts_(legs, 0.0) {}
+CrossCurrencySwap::CrossCurrencySwap(Size legs)
+: Swap(legs), currencies_(legs), inCcyLegNPV_(legs, 0.0), inCcyLegBPS_(legs, 0.0),
+  npvDateDiscounts_(legs, 0.0) {}
 
-void ConstNotionalCrossCurrencySwap::setupArguments(PricingEngine::arguments* args) const {
+void CrossCurrencySwap::setupArguments(PricingEngine::arguments* args) const {
 
     Swap::setupArguments(args);
 
-    auto* arguments = dynamic_cast<ConstNotionalCrossCurrencySwap::arguments*>(args);
+    auto* arguments = dynamic_cast<CrossCurrencySwap::arguments*>(args);
     QL_REQUIRE(arguments, "The arguments are not of type "
                           "cross currency swap");
 
     arguments->currencies = currencies_;
 }
 
-void ConstNotionalCrossCurrencySwap::fetchResults(const PricingEngine::results* r) const {
+void CrossCurrencySwap::fetchResults(const PricingEngine::results* r) const {
 
     Swap::fetchResults(r);
 
-    const auto* results = dynamic_cast<const ConstNotionalCrossCurrencySwap::results*>(r);
+    const auto* results = dynamic_cast<const CrossCurrencySwap::results*>(r);
     QL_REQUIRE(results, "The results are not of type cross currency swap");
 
     if (!results->inCcyLegNPV.empty()) {
@@ -86,28 +94,39 @@ void ConstNotionalCrossCurrencySwap::fetchResults(const PricingEngine::results* 
     }
 }
 
-void ConstNotionalCrossCurrencySwap::setupExpired() const {
+void CrossCurrencySwap::setupExpired() const {
     Swap::setupExpired();
     std::fill(inCcyLegBPS_.begin(), inCcyLegBPS_.end(), 0.0);
     std::fill(inCcyLegNPV_.begin(), inCcyLegNPV_.end(), 0.0);
     std::fill(npvDateDiscounts_.begin(), npvDateDiscounts_.end(), 0.0);
 }
 
-void ConstNotionalCrossCurrencySwap::arguments::validate() const {
+void CrossCurrencySwap::arguments::validate() const {
     Swap::arguments::validate();
     QL_REQUIRE(legs.size() == currencies.size(), "Number of legs is not equal to number of currencies");
 }
 
-void ConstNotionalCrossCurrencySwap::results::reset() {
+void CrossCurrencySwap::results::reset() {
     Swap::results::reset();
     inCcyLegNPV.clear();
     inCcyLegBPS.clear();
     npvDateDiscounts.clear();
 }
 
-void ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(Leg& leg, const Calendar& calendar, 
-    const Date earliestDate, const Date maturityDate, const Natural paymentLag, 
-    const BusinessDayConvention legBdc, Real nominal) {
+void CrossCurrencySwap::addNotionalExchangesToLeg(Leg& leg,
+                                                  const Calendar& calendar,
+                                                  const Date earliestDate,
+                                                  const Date maturityDate,
+                                                  const BusinessDayConvention legBdc,
+                                                  Real nominal,
+                                                  Integer paymentLag) {
+    // By default principal exchanges settle on the effective and maturity
+    // dates: the payment lag belongs to coupon payments only, and the dates
+    // are adjusted with the leg's payment convention.  A non-zero paymentLag
+    // instead lags both exchanges like the coupons, so the final exchange
+    // settles together with the final coupon and the initial exchange falls
+    // on the lagged settlement date.  (advance() with zero days reduces to
+    // adjust(), so the default keeps the effective/maturity behaviour.)
     // Initial notional exchange
     Date aDate = calendar.advance(earliestDate, paymentLag, Days, legBdc);
     ext::shared_ptr<CashFlow> aCashflow = ext::make_shared<SimpleCashFlow>(-nominal, aDate);
@@ -117,6 +136,14 @@ void ConstNotionalCrossCurrencySwap::addNotionalExchangesToLeg(Leg& leg, const C
     aDate = calendar.advance(maturityDate, paymentLag, Days, legBdc);
     aCashflow = ext::make_shared<SimpleCashFlow>(nominal, aDate);
     leg.push_back(aCashflow);
+
+    // A lagged final coupon can pay after the maturity-date exchange.
+    sortLegByDate(leg);
+}
+
+void CrossCurrencySwap::sortLegByDate(Leg& leg) {
+    std::stable_sort(leg.begin(), leg.end(),
+                     earlier_than<ext::shared_ptr<CashFlow>>());
 }
 
 } // namespace QuantLib

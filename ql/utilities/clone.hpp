@@ -88,7 +88,8 @@ namespace QuantLib {
 
     template <class T>
     inline Clone<T>& Clone<T>::operator=(const Clone<T>& t) {
-        ptr_.reset(t.empty() ? (T*)nullptr : t->clone().release());
+        if (&t != this)
+            ptr_.reset(t.empty() ? (T*)nullptr : t->clone().release());
         return *this;
     }
 

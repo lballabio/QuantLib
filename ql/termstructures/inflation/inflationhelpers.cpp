@@ -54,7 +54,7 @@ namespace QuantLib {
         const Date& endDate,
         Calendar calendar,
         BusinessDayConvention paymentConvention,
-        const DayCounter& dayCounter,
+        DayCounter  dayCounter,
         const ext::shared_ptr<ZeroInflationIndex>& zii,
         CPI::InterpolationType observationInterpolation,
         Pillar::Choice pillar,

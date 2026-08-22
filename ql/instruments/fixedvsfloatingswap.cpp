@@ -4,6 +4,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,7 +47,8 @@ namespace QuantLib {
     : Swap(2), type_(type), fixedNominals_(std::move(fixedNominals)), fixedSchedule_(std::move(fixedSchedule)),
       fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
       floatingNominals_(std::move(floatingNominals)), floatingSchedule_(std::move(floatingSchedule)),
-      iborIndex_(std::move(iborIndex)), spread_(spread), floatingDayCount_(std::move(floatingDayCount)) {
+      iborIndex_(std::move(iborIndex)), spread_(spread), floatingDayCount_(std::move(floatingDayCount)),
+      paymentLag_(paymentLag), paymentCalendar_(paymentCalendar) {
 
         QL_REQUIRE(iborIndex_, "null floating index provided");
 
@@ -196,12 +198,12 @@ namespace QuantLib {
 
         if (fairRate_ == Null<Rate>()) {
             // calculate it from other results
-            if (legBPS_[0] != Null<Real>())
+            if (legBPS_[0] != Null<Real>() && legBPS_[0] != 0.0)
                 fairRate_ = fixedRate_ - NPV_/(legBPS_[0]/basisPoint);
         }
         if (fairSpread_ == Null<Spread>()) {
             // ditto
-            if (legBPS_[1] != Null<Real>())
+            if (legBPS_[1] != Null<Real>() && legBPS_[1] != 0.0)
                 fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
         }
     }
