@@ -599,59 +599,6 @@ namespace QuantLib {
             }
         }
 
-        struct DiscountFactorDerivatives {
-            DiscountFactor discount;
-            Real firstDerivative;
-            Real secondDerivative;
-        };
-
-        DiscountFactor stepwiseDiscountFactor(const InterestRate& yield,
-                                              Time t,
-                                              Compounding compounding) {
-            const Rate r = yield.rate();
-            QL_REQUIRE(t >= 0.0, "negative time (" << t << ") not allowed");
-            QL_REQUIRE(r != Null<Rate>(), "null interest rate");
-
-            switch (compounding) {
-              case Simple:
-                return 1.0 / (1.0 + r * t);
-              case Compounded: {
-                const Real frequency = Real(yield.frequency());
-                return std::pow(1.0 + r / frequency, -frequency * t);
-              }
-              case Continuous:
-                return std::exp(-r * t);
-              default:
-                QL_FAIL("unsupported stepwise compounding convention (" <<
-                        Integer(compounding) << ")");
-            }
-        }
-
-        DiscountFactorDerivatives discountFactorDerivatives(
-            const InterestRate& yield, Time t, Compounding compounding) {
-            const Rate r = yield.rate();
-            const DiscountFactor discount =
-                stepwiseDiscountFactor(yield, t, compounding);
-
-            switch (compounding) {
-              case Simple:
-                return {discount, -t * discount * discount,
-                        2.0 * t * t * discount * discount * discount};
-              case Compounded: {
-                const Real frequency = Real(yield.frequency());
-                const Real compound = 1.0 + r / frequency;
-                return {discount, -t * discount / compound,
-                        discount * t * (frequency * t + 1.0) /
-                            (frequency * compound * compound)};
-              }
-              case Continuous:
-                return {discount, -t * discount, t * t * discount};
-              default:
-                QL_FAIL("unsupported stepwise compounding convention (" <<
-                        Integer(compounding) << ")");
-            }
-        }
-
         Compounding stepwiseCompounding(const InterestRate& yield,
                                         bool inFirstPeriod,
                                         const Date& cashFlowDate,
@@ -660,12 +607,12 @@ namespace QuantLib {
             // simple for SimpleThenCompounded and the final interval is
             // simple for CompoundedThenSimple.
             switch (yield.compounding()) {
-              case SimpleThenCompounded:
-                return inFirstPeriod ? Simple : Compounded;
-              case CompoundedThenSimple:
-                return cashFlowDate == finalCashFlowDate ? Simple : Compounded;
-              default:
-                return yield.compounding();
+                case SimpleThenCompounded:
+                    return inFirstPeriod ? Simple : Compounded;
+                case CompoundedThenSimple:
+                    return cashFlowDate == finalCashFlowDate ? Simple : Compounded;
+                default:
+                    return yield.compounding();
             }
         }
 
@@ -704,23 +651,24 @@ namespace QuantLib {
                     getStepwiseDiscountTime(cashFlow, dc, npvDate, lastDate);
                 t += dt;
 
-                const DiscountFactorDerivatives step =
-                    discountFactorDerivatives(
-                        yield, dt,
-                        stepwiseCompounding(yield, inFirstPeriod,
-                                            cashFlow->date(), leg.back()->date()));
-
                 const DiscountFactor previousDiscount = discount;
                 const Real previousFirstDerivative = firstDerivative;
                 const Real previousSecondDerivative = secondDerivative;
+
+                const Compounding stepComp =
+                    stepwiseCompounding(yield, inFirstPeriod, cashFlow->date(), leg.back()->date());
+                const Real thisDiscount = yield.discountFactor(dt, stepComp);
+                const Real thisFirstDerivative = yield.discountFactorFirstDerivative(dt, stepComp);
+                const Real thisSecondDerivative = yield.discountFactorSecondDerivative(dt, stepComp);
+
                 // Differentiate the product of this interval's discount
                 // factor and all preceding factors.
-                discount = previousDiscount * step.discount;
-                firstDerivative = previousFirstDerivative * step.discount +
-                                  previousDiscount * step.firstDerivative;
-                secondDerivative = previousSecondDerivative * step.discount +
-                    2.0 * previousFirstDerivative * step.firstDerivative +
-                    previousDiscount * step.secondDerivative;
+                discount = previousDiscount * thisDiscount;
+                firstDerivative =
+                    previousFirstDerivative * thisDiscount + previousDiscount * thisFirstDerivative;
+                secondDerivative = previousSecondDerivative * thisDiscount +
+                                   2.0 * previousFirstDerivative * thisFirstDerivative +
+                                   previousDiscount * thisSecondDerivative;
 
                 results.npv += amount * discount;
                 results.firstDerivative += amount * firstDerivative;
@@ -918,11 +866,9 @@ namespace QuantLib {
             if (cashFlow->tradingExCoupon(settlementDate))
                 amount = 0.0;
 
-            const Time dt =
-                getStepwiseDiscountTime(cashFlow, dc, npvDate, lastDate);
-            discount *= stepwiseDiscountFactor(
-                y, dt, stepwiseCompounding(y, inFirstPeriod,
-                                           cashFlow->date(), leg.back()->date()));
+            const Time dt = getStepwiseDiscountTime(cashFlow, dc, npvDate, lastDate);
+            discount *= y.discountFactor(
+                dt, stepwiseCompounding(y, inFirstPeriod, cashFlow->date(), leg.back()->date()));
             npv += amount * discount;
 
             lastDate = cashFlow->date();

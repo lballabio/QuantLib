@@ -27,6 +27,8 @@
 #include <ql/compounding.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 
+#include <optional>
+
 namespace QuantLib {
 
     //! Concrete interest rate class
@@ -66,8 +68,9 @@ namespace QuantLib {
         /*! \warning Time must be measured using InterestRate's own
                      day counter.
         */
-        DiscountFactor discountFactor(Time t) const {
-            return 1.0/compoundFactor(t);
+        DiscountFactor discountFactor(Time t,
+                                      const std::optional<Compounding>& comp = std::nullopt) const {
+            return 1.0/compoundFactor(t, comp);
         }
 
         //! discount factor implied by the rate compounded between two dates
@@ -89,7 +92,7 @@ namespace QuantLib {
             \warning Time must be measured using InterestRate's own
                      day counter.
         */
-        Real compoundFactor(Time t) const;
+        Real compoundFactor(Time t, const std::optional<Compounding>& comp = std::nullopt) const;
 
         //! compound factor implied by the rate compounded between two dates
         /*! returns the compound (a.k.a capitalization) factor
@@ -105,6 +108,16 @@ namespace QuantLib {
             Time t = dc_.yearFraction(d1, d2, refStart, refEnd);
             return compoundFactor(t);
         }
+
+        //! discount factor first derivative
+        Real
+        discountFactorFirstDerivative(Time t,
+                                      const std::optional<Compounding>& comp = std::nullopt) const;
+
+        //! discount factor second derivative
+        Real
+        discountFactorSecondDerivative(Time t,
+                                       const std::optional<Compounding>& comp = std::nullopt) const;
         //@}
 
         //! \name implied rate calculations
