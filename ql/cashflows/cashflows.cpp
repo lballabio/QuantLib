@@ -933,7 +933,7 @@ namespace QuantLib {
             inFirstPeriod = false;
         }
 
-        return bps;
+        return basisPoint_ * bps;
     }
 
     Real CashFlows::bps(const Leg& leg,
