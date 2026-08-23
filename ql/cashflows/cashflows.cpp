@@ -920,11 +920,27 @@ namespace QuantLib {
         if (npvDate == Date())
             npvDate = settlementDate;
 
-        FlatForward flatRate(settlementDate, yield.rate(), yield.dayCounter(),
-                             yield.compounding(), yield.frequency());
-        return bps(leg, flatRate,
-                   includeSettlementDateFlows,
-                   settlementDate, npvDate);
+        Real bps = 0.0;
+        DiscountFactor discount = 1.0;
+        Date lastDate = npvDate;
+        const DayCounter& dc = yield.dayCounter();
+        bool inFirstPeriod = true;
+        for (const auto& cashFlow : leg) {
+            if (cashFlow->hasOccurred(settlementDate, includeSettlementDateFlows))
+                continue;
+            ext::shared_ptr<Coupon> coupon = coupon_cast(cashFlow);
+            if (!coupon)
+                continue;
+            const Time dt = getStepwiseDiscountTime(cashFlow, dc, npvDate, lastDate);
+            discount *=
+                yield.discountFactor(dt, stepwiseCompounding(yield, inFirstPeriod, cashFlow->date(),
+                                                             leg.back()->date()));
+            bps += coupon->nominal() * coupon->accrualPeriod() * discount;
+            lastDate = cashFlow->date();
+            inFirstPeriod = false;
+        }
+
+        return bps;
     }
 
     Real CashFlows::bps(const Leg& leg,
