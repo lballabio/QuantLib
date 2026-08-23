@@ -623,12 +623,15 @@ namespace QuantLib {
             Real weightedTime = 0.0;
         };
 
-        CashFlowResults cashFlowResults(
-            const Leg& leg,
-            const InterestRate& yield,
-            const std::optional<bool>& includeSettlementDateFlows,
-            const Date& settlementDate,
-            const Date& npvDate) {
+        CashFlowResults cashFlowResults(const Leg& leg,
+                                        const InterestRate& yield,
+                                        const std::optional<bool>& includeSettlementDateFlows,
+                                        const Date& settlementDate,
+                                        const Date& npvDate,
+                                        const bool computeFirstDerivative,
+                                        const bool computeSecondDerivative,
+                                        const bool computeWeightedTime) {
+
             CashFlowResults results;
             DiscountFactor discount = 1.0;
             Real firstDerivative = 0.0;
@@ -637,43 +640,56 @@ namespace QuantLib {
             Date lastDate = npvDate;
             const DayCounter& dc = yield.dayCounter();
             bool inFirstPeriod = true;
+            Real previousDiscount;
+            Real previousFirstDerivative;
+            Real previousSecondDerivative;
+            Real thisDiscount;
+            Real thisFirstDerivative;
+            Real thisSecondDerivative;
 
             for (const auto& cashFlow : leg) {
-                if (cashFlow->hasOccurred(settlementDate,
-                                          includeSettlementDateFlows))
+                if (cashFlow->hasOccurred(settlementDate, includeSettlementDateFlows))
                     continue;
 
                 Real amount = cashFlow->amount();
                 if (cashFlow->tradingExCoupon(settlementDate))
                     amount = 0.0;
 
-                const Time dt =
-                    getStepwiseDiscountTime(cashFlow, dc, npvDate, lastDate);
+                const Time dt = getStepwiseDiscountTime(cashFlow, dc, npvDate, lastDate);
                 t += dt;
 
-                const DiscountFactor previousDiscount = discount;
-                const Real previousFirstDerivative = firstDerivative;
-                const Real previousSecondDerivative = secondDerivative;
+                previousDiscount = discount;
+                if (computeFirstDerivative) {
+                    previousFirstDerivative = firstDerivative;
+                    if (computeSecondDerivative)
+                        previousSecondDerivative = secondDerivative;
+                }
 
                 const Compounding stepComp =
                     stepwiseCompounding(yield, inFirstPeriod, cashFlow->date(), leg.back()->date());
-                const Real thisDiscount = yield.discountFactor(dt, stepComp);
-                const Real thisFirstDerivative = yield.discountFactorFirstDerivative(dt, stepComp);
-                const Real thisSecondDerivative = yield.discountFactorSecondDerivative(dt, stepComp);
-
-                // Differentiate the product of this interval's discount
-                // factor and all preceding factors.
+                thisDiscount = yield.discountFactor(dt, stepComp);
                 discount = previousDiscount * thisDiscount;
-                firstDerivative =
-                    previousFirstDerivative * thisDiscount + previousDiscount * thisFirstDerivative;
-                secondDerivative = previousSecondDerivative * thisDiscount +
-                                   2.0 * previousFirstDerivative * thisFirstDerivative +
-                                   previousDiscount * thisSecondDerivative;
+                
+                if (computeFirstDerivative) {
+                    // Differentiate the product of this interval's discount
+                    // factor and all preceding factors.
+                    thisFirstDerivative = yield.discountFactorFirstDerivative(dt, stepComp);
+                    firstDerivative = previousFirstDerivative * thisDiscount +
+                                      previousDiscount * thisFirstDerivative;
+                    results.firstDerivative += amount * firstDerivative;
+                    if (computeSecondDerivative) {
+                        thisSecondDerivative = yield.discountFactorSecondDerivative(dt, stepComp);
+                        secondDerivative = previousSecondDerivative * thisDiscount +
+                                           2.0 * previousFirstDerivative * thisFirstDerivative +
+                                           previousDiscount * thisSecondDerivative;
+                        results.secondDerivative += amount * secondDerivative;
+                    }
+                }
 
                 results.npv += amount * discount;
-                results.firstDerivative += amount * firstDerivative;
-                results.secondDerivative += amount * secondDerivative;
-                results.weightedTime += t * amount * discount;
+                
+                if (computeWeightedTime)
+                    results.weightedTime += t * amount * discount;
 
                 lastDate = cashFlow->date();
                 inFirstPeriod = false;
@@ -696,9 +712,8 @@ namespace QuantLib {
             if (npvDate == Date())
                 npvDate = settlementDate;
 
-            const CashFlowResults results =
-                cashFlowResults(leg, y, includeSettlementDateFlows,
-                                settlementDate, npvDate);
+            const CashFlowResults results = cashFlowResults(
+                leg, y, includeSettlementDateFlows, settlementDate, npvDate, false, false, true);
             if (results.npv == 0.0) // no cashflows
                 return 0.0;
             return results.weightedTime / results.npv;
@@ -718,9 +733,8 @@ namespace QuantLib {
             if (npvDate == Date())
                 npvDate = settlementDate;
 
-            const CashFlowResults results =
-                cashFlowResults(leg, y, includeSettlementDateFlows,
-                                settlementDate, npvDate);
+            const CashFlowResults results = cashFlowResults(
+                leg, y, includeSettlementDateFlows, settlementDate, npvDate, true, false, false);
             if (results.npv == 0.0) // no cashflows
                 return 0.0;
             return -results.firstDerivative / results.npv;
@@ -1010,9 +1024,8 @@ namespace QuantLib {
         if (npvDate == Date())
             npvDate = settlementDate;
 
-        const CashFlowResults results =
-            cashFlowResults(leg, y, includeSettlementDateFlows,
-                            settlementDate, npvDate);
+        const CashFlowResults results = cashFlowResults(leg, y, includeSettlementDateFlows,
+                                                        settlementDate, npvDate, true, true, false);
         if (results.npv == 0.0)
             // no cashflows
             return 0.0;
