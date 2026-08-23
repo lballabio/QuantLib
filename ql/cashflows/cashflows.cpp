@@ -640,12 +640,12 @@ namespace QuantLib {
             Date lastDate = npvDate;
             const DayCounter& dc = yield.dayCounter();
             bool inFirstPeriod = true;
-            Real previousDiscount;
-            Real previousFirstDerivative;
-            Real previousSecondDerivative;
-            Real thisDiscount;
-            Real thisFirstDerivative;
-            Real thisSecondDerivative;
+            Real previousDiscount = 1.0;
+            Real previousFirstDerivative = 0.0;
+            Real previousSecondDerivative = 0.0;
+            Real thisDiscount = 1.0;
+            Real thisFirstDerivative = 0.0;
+            Real thisSecondDerivative = 0.0;
 
             for (const auto& cashFlow : leg) {
                 if (cashFlow->hasOccurred(settlementDate, includeSettlementDateFlows))
