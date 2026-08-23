@@ -395,24 +395,20 @@ namespace QuantLib {
     // YieldTermStructure utility functions
     namespace {
 
-        class BPSCalculator : public AcyclicVisitor,
-                              public Visitor<CashFlow>,
-                              public Visitor<Coupon> {
+        class BPSCalculator {
           public:
             explicit BPSCalculator(const YieldTermStructure& discountCurve)
             : discountCurve_(discountCurve) {}
-            void visit(Coupon& c) override {
-                Real bps = c.nominal() *
-                           c.accrualPeriod() *
-                           discountCurve_.discount(c.date());
-                bps_ += bps;
-            }
-            void visit(CashFlow& cf) override {
-                nonSensNPV_ += cf.amount() * 
-                               discountCurve_.discount(cf.date());
+            void operator()(const ext::shared_ptr<CashFlow>& c) {
+                if (auto cpn = coupon_cast(c))
+                    bps_ +=
+                        cpn->nominal() * cpn->accrualPeriod() * discountCurve_.discount(c->date());
+                else
+                    nonSensNPV_ += c->amount() * discountCurve_.discount(c->date());
             }
             Real bps() const { return bps_; }
             Real nonSensNPV() const { return nonSensNPV_; }
+
           private:
             const YieldTermStructure& discountCurve_;
             Real bps_ = 0.0, nonSensNPV_ = 0.0;
@@ -464,9 +460,9 @@ namespace QuantLib {
         for (const auto& i : leg) {
             if (!i->hasOccurred(settlementDate, includeSettlementDateFlows) &&
                 !i->tradingExCoupon(settlementDate))
-                i->accept(calc);
+                calc(i);
         }
-        return basisPoint_*calc.bps()/discountCurve.discount(npvDate);
+        return basisPoint_ * calc.bps() / discountCurve.discount(npvDate);
     }
 
     std::pair<Real, Real> CashFlows::npvbps(const Leg& leg,
@@ -524,13 +520,10 @@ namespace QuantLib {
         Real npv = 0.0;
         BPSCalculator calc(discountCurve);
         for (const auto& i : leg) {
-            CashFlow& cf = *i;
-            if (!cf.hasOccurred(settlementDate,
-                                includeSettlementDateFlows) &&
-                !cf.tradingExCoupon(settlementDate)) {
-                npv += cf.amount() *
-                       discountCurve.discount(cf.date());
-                cf.accept(calc);
+            if (!i->hasOccurred(settlementDate, includeSettlementDateFlows) &&
+                !i->tradingExCoupon(settlementDate)) {
+                npv += i->amount() * discountCurve.discount(i->date());
+                calc(i);
             }
         }
 
