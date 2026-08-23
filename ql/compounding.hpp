@@ -29,11 +29,16 @@
 namespace QuantLib {
 
     //! Interest rate coumpounding rule
-    enum Compounding { Simple = 0,           //!< \f$ 1+rt \f$
-                       Compounded = 1,       //!< \f$ (1+r)^t \f$
-                       Continuous = 2,       //!< \f$ e^{rt} \f$
-                       SimpleThenCompounded, //!< Simple in first period, otherwise compounded
-                       CompoundedThenSimple  //!< Simple in last period, otherwise compounded
+    /*! SimpleThenCompounded and CompoundedThenSimple express that the compounding
+        style depends on the position of the cashflow. As such they are not
+        compounding styles on their own and are treated the same as Compounded when
+        the cashflow position is not available from the context of a calculation. */
+    enum Compounding {
+        Simple = 0,               //!< \f$ 1+rt \f$
+        Compounded = 1,           //!< \f$ (1+r)^t \f$
+        Continuous = 2,           //!< \f$ e^{rt} \f$
+        SimpleThenCompounded = 3, //!< Simple in first period, otherwise compounded
+        CompoundedThenSimple = 4  //!< Simple in last period, otherwise compounded
     };
 
     inline std::ostream& operator<<(std::ostream& out, const Compounding& compounding) {
