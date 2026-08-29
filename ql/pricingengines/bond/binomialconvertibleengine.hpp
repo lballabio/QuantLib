@@ -100,6 +100,16 @@ namespace QuantLib {
         QL_REQUIRE(s0 > 0.0,
             "negative value after subtracting dividends");
 
+        // Roll the dividend-adjusted spot forward to the settlement date.
+        // The tree and DiscretizedConvertible anchor all dividend/coupon/
+        // callability times at arguments_.settlementDate (see issue #2701),
+        // so a dividend falling between referenceDate and settlementDate is
+        // subtracted from s0 above but treated as "already occurred" inside
+        // the tree and never added back.  Dividing by the settlement-date
+        // discount factor rolls the (ex-dividend) spot forward so the tree
+        // starts from the correct settlement-date forward price.
+        s0 /= process_->riskFreeRate()->discount(arguments_.settlementDate);
+
         // binomial trees with constant coefficient
         Handle<Quote> underlying(ext::make_shared<SimpleQuote>(s0));
         Handle<YieldTermStructure> flatRiskFree(ext::make_shared<FlatForward>(referenceDate, riskFreeRate, rfdc));
