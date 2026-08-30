@@ -2459,6 +2459,52 @@ BOOST_AUTO_TEST_CASE(testHelperDatesFromNonBusinessEvaluationDate) {
                     "    obtained: " << bmaHelper->earliestDate());
 }
 
+BOOST_AUTO_TEST_CASE(testSwapRateHelperDateGenerationRule) {
+    BOOST_TEST_MESSAGE("Testing SwapRateHelper date-generation rule...");
+
+    const Date startDate(20, March, 2026);
+    const Date endDate(20, March, 2031);
+    auto index = ext::make_shared<Euribor6M>();
+
+    auto defaultHelper = ext::make_shared<SwapRateHelper>(
+        0.02, startDate, endDate, TARGET(), Annual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), index);
+
+    auto forwardHelper = ext::make_shared<SwapRateHelper>(
+        0.02, startDate, endDate, TARGET(), Annual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), index, Handle<Quote>(),
+        Handle<YieldTermStructure>(), Pillar::LastRelevantDate, Date(),
+        false, std::nullopt, std::nullopt,
+        ext::shared_ptr<FloatingRateCouponPricer>(),
+        DateGeneration::Forward);
+
+    BOOST_CHECK(defaultHelper->swap()->fixedSchedule().rule() ==
+                DateGeneration::Backward);
+    BOOST_CHECK(defaultHelper->swap()->floatingSchedule().rule() ==
+                DateGeneration::Backward);
+
+    BOOST_CHECK(forwardHelper->swap()->fixedSchedule().rule() ==
+                DateGeneration::Forward);
+    BOOST_CHECK(forwardHelper->swap()->floatingSchedule().rule() ==
+                DateGeneration::Forward);
+
+    auto tenorForwardHelper = ext::make_shared<SwapRateHelper>(
+        0.02, 5 * Years, TARGET(), Annual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), index, Handle<Quote>(), 0 * Days,
+        Handle<YieldTermStructure>(), Null<Natural>(),
+        Pillar::LastRelevantDate, Date(), false, std::nullopt, std::nullopt,
+        ext::shared_ptr<FloatingRateCouponPricer>(),
+        DateGeneration::Forward);
+
+    BOOST_CHECK(tenorForwardHelper->swap()->fixedSchedule().rule() ==
+                DateGeneration::Forward);
+    BOOST_CHECK(tenorForwardHelper->swap()->floatingSchedule().rule() ==
+                DateGeneration::Forward);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
+
+
 
 BOOST_AUTO_TEST_SUITE_END()
