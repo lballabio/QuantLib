@@ -163,6 +163,12 @@ namespace QuantLib {
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
         BlackCalculator black(payoff, forwardPrice, std::sqrt(variance),
                               riskFreeDiscount);
+        // SAFETY FIX: Prevent division by zero and nan/inf crashes when volatility is tiny.
+        if (variance < 1.0e-8) {
+            Real intrinsicValue = (*payoff)(spot);
+            results_.value = std::max(black.value(), intrinsicValue);
+            return;
+        }
 
         if (dividendDiscount>=1.0 && payoff->optionType()==Option::Call) {
             // early exercise never optimal
