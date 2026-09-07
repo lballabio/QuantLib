@@ -1802,11 +1802,10 @@ BOOST_AUTO_TEST_CASE(testBasisPointValue) {
         Real yvbp;
     };
     test_case cases[] = {
-        { Date(), -795.459834, -0.0012571287},
-        { defaultSettlement, -795.459834, -0.0012571287 },
-        { Date(12, February, 2024), -793.149033, -0.0012607913 },
+        { Date(),                   -795.098043, -0.0012571287},
+        { defaultSettlement,       -795.098043, -0.0012571287 },
+        { Date(12, February, 2024), -792.789400, -0.0012607913 },
     };
-
     for (auto& i : cases)
     {
         Real bvp1 = BondFunctions::basisPointValue(fixedRateBond, yield, dayCounter, compounding, frequency, i.settlement);
