@@ -497,6 +497,76 @@ BOOST_AUTO_TEST_CASE(testJuValuesAtZeroRate) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuAtLowVolatility) {
+
+    BOOST_TEST_MESSAGE("Testing Barone-Adesi-Whaley and Ju approximations "
+                       "at very low volatility...");
+
+    // Both engines used to throw an uncaught error for an American put once
+    // sigma*sqrt(T) dropped below roughly 7e-4, for ordinary positive rates;
+    // see <https://github.com/lballabio/QuantLib/issues/2749>. With no time
+    // value the American price is the European one floored at intrinsic.
+
+    const Date today = Date(15, May, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual365Fixed();
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+    const auto qTS = flatRate(today, 0.02, dc);
+    const auto rTS = flatRate(today, 0.05, dc);
+    const auto vol = ext::make_shared<SimpleQuote>(0.20);
+    const auto volTS = flatVol(today, vol, dc);
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(qTS),
+        Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(volTS));
+
+    const Date exDate = today + 180 * Days;
+    const auto exercise = ext::make_shared<AmericanExercise>(today, exDate);
+    const auto euExercise = ext::make_shared<EuropeanExercise>(exDate);
+
+    // as the volatility vanishes the early-exercise premium does too, so the
+    // approximation should land between the floor and a small band above it
+    const Real tolerance = 1.0e-6;
+    const Real band = 1.0e-2;
+
+    for (auto type : {Option::Put, Option::Call}) {
+        for (Real s : {80.0, 100.0, 120.0}) {
+            for (Real v : {1.0e-3, 5.0e-4, 0.0}) {
+                spot->setValue(s);
+                vol->setValue(v);
+
+                const auto payoff =
+                    ext::make_shared<PlainVanillaPayoff>(type, 100.0);
+                const Real intrinsic = (*payoff)(s);
+
+                VanillaOption european(payoff, euExercise);
+                european.setPricingEngine(
+                    ext::make_shared<AnalyticEuropeanEngine>(process));
+                const Real floor = std::max(european.NPV(), intrinsic);
+
+                for (const ext::shared_ptr<PricingEngine>& engine :
+                     {ext::shared_ptr<PricingEngine>(
+                          new BaroneAdesiWhaleyApproximationEngine(process)),
+                      ext::shared_ptr<PricingEngine>(
+                          new JuQuadraticApproximationEngine(process))}) {
+
+                    VanillaOption option(payoff, exercise);
+                    option.setPricingEngine(engine);
+
+                    const Real calculated = option.NPV();
+                    if (!(calculated >= floor - tolerance &&
+                          calculated <= floor + band)) {
+                        REPORT_FAILURE("low-volatility value", payoff, exercise,
+                                       s, 0.02, 0.05, today, v, floor,
+                                       calculated, calculated - floor, band);
+                    }
+                }
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testFdValues) {
 
     BOOST_TEST_MESSAGE("Testing finite-difference and QR+ engine for American options...");

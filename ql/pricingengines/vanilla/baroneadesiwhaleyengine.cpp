@@ -24,6 +24,8 @@
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
+#include <algorithm>
+#include <cmath>
 #include <utility>
 
 namespace QuantLib {
@@ -68,6 +70,10 @@ namespace QuantLib {
             h = (bT - 2.0*std::sqrt(variance)) * payoff->strike() /
                 (payoff->strike() - Su);
             Si = Su + (payoff->strike() - Su) * std::exp(h);
+            // for a vanishing variance h diverges and the seed overflows; Su is
+            // its finite limit (the critical price tends to the strike)
+            if (!(Si > 0.0) || !std::isfinite(Si))
+                Si = Su;
             break;
           default:
             QL_FAIL("unknown option type");
@@ -199,6 +205,10 @@ namespace QuantLib {
 
             results_.strikeSensitivity  = black.strikeSensitivity();
             results_.itmCashProbability = black.itmCashProbability();
+        } else if (variance < QL_EPSILON) {
+            // no time value: the critical-price calculation degenerates, and the
+            // American price is just the European one floored at intrinsic
+            results_.value = std::max(black.value(), (*payoff)(spot));
         } else {
             // early exercise can be optimal
             CumulativeNormalDistribution cumNormalDist;
