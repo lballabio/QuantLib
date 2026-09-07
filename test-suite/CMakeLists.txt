@@ -39,6 +39,7 @@ set(QL_TEST_SOURCES
     compiledboostversion.cpp
     compoundoption.cpp
     convertiblebonds.cpp
+    copulas.cpp
     covariance.cpp
     creditdefaultswap.cpp
     constnotionalcrosscurrencybasisswap.cpp

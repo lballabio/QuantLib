@@ -684,6 +684,7 @@
     <ClCompile Include="compiledboostversion.cpp" />
     <ClCompile Include="compoundoption.cpp" />
     <ClCompile Include="convertiblebonds.cpp" />
+    <ClCompile Include="copulas.cpp" />
     <ClCompile Include="covariance.cpp" />
     <ClCompile Include="creditdefaultswap.cpp" />
     <ClCompile Include="constnotionalcrosscurrencybasisswap.cpp" />

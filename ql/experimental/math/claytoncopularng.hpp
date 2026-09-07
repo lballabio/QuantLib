@@ -46,7 +46,7 @@ namespace QuantLib {
 
     template <class RNG>
     ClaytonCopulaRng<RNG>::ClaytonCopulaRng(const RNG& ug, Real th)
-    : uniformGenerator_(ug), theta_(th) {
+    : theta_(th), uniformGenerator_(ug) {
         QL_REQUIRE(th >= -1.0,
                    "theta (" << th << ") must be greater or equal to -1");
         QL_REQUIRE(th != 0.0,

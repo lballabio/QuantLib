@@ -110,6 +110,9 @@
     <ClCompile Include="convertiblebonds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="copulas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="covariance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
