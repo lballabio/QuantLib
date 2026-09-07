@@ -121,7 +121,7 @@ namespace QuantLib {
     }
 
 
-    StubIndexSelection::StubIndexSelection(StubIndexConvention convention,
+    StubIndexSelection::StubIndexSelection(Convention convention,
                                            std::vector<ext::shared_ptr<IborIndex> > indices)
     : convention_(convention), indices_(std::move(indices)) {
         QL_REQUIRE(!indices_.empty(), "no candidate indices provided for stub index selection");
@@ -162,36 +162,41 @@ namespace QuantLib {
                 QL_REQUIRE(candidates[i - 1].first < candidates[i].first,
                            "duplicate candidate index maturity " << candidates[i].first);
 
-            if (selection.convention() == StubIndexConvention::ClosestIndex) {
-                // Since candidates are sorted, ties select the smaller maturity.
-                const auto closest = std::min_element(
-                    candidates.begin(), candidates.end(),
-                    [accrualEndDate](const auto& a, const auto& b) {
-                        return std::abs(a.first - accrualEndDate) <
-                               std::abs(b.first - accrualEndDate);
-                    });
-                return {{closest->second, 1.0}};
+            switch (selection.convention()) {
+
+              case StubIndexSelection::ClosestIndex: {
+                  // Since candidates are sorted, ties select the smaller maturity.
+                  const auto closest = std::min_element(
+                      candidates.begin(), candidates.end(),
+                      [accrualEndDate](const auto& a, const auto& b) {
+                          return std::abs(a.first - accrualEndDate) <
+                                 std::abs(b.first - accrualEndDate);
+                      });
+                  return {{closest->second, 1.0}};
+              }
+
+              case StubIndexSelection::Interpolated: {
+                  const auto longer = std::lower_bound(
+                      candidates.begin(), candidates.end(), accrualEndDate,
+                      [](const auto& candidate, const Date& d) { return candidate.first < d; });
+                  QL_REQUIRE(longer != candidates.end(),
+                             "index maturities do not bracket irregular coupon end date "
+                             << accrualEndDate);
+                  if (longer->first == accrualEndDate)
+                      return {{longer->second, 1.0}};
+
+                  QL_REQUIRE(longer != candidates.begin(),
+                             "index maturities do not bracket irregular coupon end date "
+                             << accrualEndDate);
+                  const auto shorter = std::prev(longer);
+                  const Real weight = Real(accrualEndDate - shorter->first) /
+                      Real(longer->first - shorter->first);
+                  return {{shorter->second, 1.0 - weight}, {longer->second, weight}};
+              }
+
+              default:
+                QL_FAIL("unknown stub index convention");
             }
-
-            QL_REQUIRE(selection.convention() == StubIndexConvention::Interpolated,
-                       "unknown stub index convention");
-
-            const auto longer = std::lower_bound(
-                candidates.begin(), candidates.end(), accrualEndDate,
-                [](const auto& candidate, const Date& d) { return candidate.first < d; });
-            QL_REQUIRE(longer != candidates.end(),
-                       "index maturities do not bracket irregular coupon end date "
-                           << accrualEndDate);
-            if (longer->first == accrualEndDate)
-                return {{longer->second, 1.0}};
-
-            QL_REQUIRE(longer != candidates.begin(),
-                       "index maturities do not bracket irregular coupon end date "
-                           << accrualEndDate);
-            const auto shorter = std::prev(longer);
-            const Real weight = Real(accrualEndDate - shorter->first) /
-                                Real(longer->first - shorter->first);
-            return {{shorter->second, 1.0 - weight}, {longer->second, weight}};
         }
 
         ext::shared_ptr<StubIborCoupon::WeightedIndex>

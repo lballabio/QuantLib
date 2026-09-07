@@ -31,12 +31,6 @@
 
 namespace QuantLib {
 
-    //! Convention used to select an index for an irregular Ibor coupon
-    enum class StubIndexConvention {
-        ClosestIndex,
-        Interpolated
-    };
-
     //! Index selection for irregular Ibor coupons
     /*! A default constructor is empty, meaning that broken
         periods fix on the leg's own index as usual.  A non-empty one supplies
@@ -53,17 +47,23 @@ namespace QuantLib {
     */
     class StubIndexSelection {
       public:
+        //! Convention used to select an index for an irregular Ibor coupon
+        enum Convention {
+            ClosestIndex,
+            Interpolated
+        };
+
         //! empty selection: broken periods fix on the leg's own index
         StubIndexSelection() = default;
-        StubIndexSelection(StubIndexConvention convention,
+        StubIndexSelection(Convention convention,
                            std::vector<ext::shared_ptr<IborIndex> > indices);
 
         bool empty() const { return indices_.empty(); }
-        StubIndexConvention convention() const { return convention_; }
+        Convention convention() const { return convention_; }
         const std::vector<ext::shared_ptr<IborIndex> >& indices() const { return indices_; }
 
       private:
-        StubIndexConvention convention_ = StubIndexConvention::ClosestIndex;
+        Convention convention_ = ClosestIndex;
         std::vector<ext::shared_ptr<IborIndex> > indices_;
     };
 

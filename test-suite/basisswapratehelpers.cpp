@@ -612,7 +612,7 @@ BOOST_AUTO_TEST_CASE(testOvernightIborStubIndexBootstrap) {
     auto bkbm1m = ext::make_shared<Bkbm1M>(shortForecastCurve);
     auto bkbm3m = ext::make_shared<Bkbm3M>(iborForecastCurve);
 
-    StubIndexSelection stubIndexSelection{StubIndexConvention::Interpolated, {bkbm1m, bkbm3m}};
+    StubIndexSelection stubIndexSelection{StubIndexSelection::Interpolated, {bkbm1m, bkbm3m}};
 
     auto makeHelper = [&](Spread basis, const Period& tenor, const StubIndexSelection& selection) {
         return ext::make_shared<OvernightIborBasisSwapRateHelper>(
@@ -677,7 +677,7 @@ BOOST_AUTO_TEST_CASE(testIborIborStubIndexBootstrap) {
     auto bkbm3m = ext::make_shared<Bkbm3M>();  // curve to be bootstrapped
     auto bkbm6m = ext::make_shared<Bkbm6M>(otherForecastCurve);
 
-    StubIndexSelection otherConfig{StubIndexConvention::Interpolated, {bkbm1m, bkbm6m}};
+    StubIndexSelection otherConfig{StubIndexSelection::Interpolated, {bkbm1m, bkbm6m}};
 
     auto makeHelper = [&](Spread basis, const Period& tenor) {
         return ext::make_shared<IborIborBasisSwapRateHelper>(
