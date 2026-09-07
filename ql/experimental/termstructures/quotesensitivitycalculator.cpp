@@ -22,6 +22,7 @@
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/stubiborcoupon.hpp>
 #include <ql/errors.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/patterns/lazyobject.hpp>
@@ -97,6 +98,49 @@ namespace QuantLib {
                 a.supported = true;
                 a.ntau = fixed->nominal()*fixed->accrualPeriod();
                 a.amount = fixed->amount();
+                return a;
+            }
+
+            // This should come before the IborCoupon case below
+            if (auto stub = ext::dynamic_pointer_cast<StubIborCoupon>(cf)) {
+                if (stub->isInArrears())
+                    return a;
+                a.supported = true;
+                a.ntau = stub->nominal()*stub->accrualPeriod();
+                Real gearing = stub->gearing();
+                a.amount = a.ntau*(gearing*stub->indexFixing() + stub->spread());
+                if (!stub->hasFixed()) {
+                    auto weighted = ext::dynamic_pointer_cast<
+                        StubIborCoupon::WeightedIndex>(stub->iborIndex());
+                    if (weighted == nullptr)
+                        return {};
+                    const Date& fixingDate = stub->fixingDate();
+                    Date today = Settings::instance().evaluationDate();
+                    for (const auto& [index, weight] : weighted->components()) {
+                        // f_i = (P_i(v)/P_i(e)-1)/tau_i on each component's
+                        // own forecast curve, weighted into the fixing
+                        bool componentFixed = fixingDate < today ||
+                            (fixingDate == today &&
+                             (Settings::instance().enforcesTodaysHistoricFixings() ||
+                              index->hasHistoricalFixing(fixingDate)));
+                        if (componentFixed)
+                            continue;
+                        const Handle<YieldTermStructure>& curve =
+                            index->forwardingTermStructure();
+                        if (curve.empty())
+                            return {};
+                        Date v = index->valueDate(fixingDate);
+                        Date e = index->maturityDate(v);
+                        Time tau = index->dayCounter().yearFraction(v, e);
+                        DiscountFactor Pv = curve->discount(v);
+                        DiscountFactor Pe = curve->discount(e);
+                        Real k = gearing*a.ntau*weight/tau;
+                        a.amountSensitivities.push_back(
+                            {key(&**curve), v, k/Pe});
+                        a.amountSensitivities.push_back(
+                            {key(&**curve), e, -k*Pv/(Pe*Pe)});
+                    }
+                }
                 return a;
             }
 
