@@ -31,6 +31,7 @@ set(QL_SOURCES
     cashflows/rangeaccrual.cpp
     cashflows/replication.cpp
     cashflows/simplecashflow.cpp
+    cashflows/stubiborcoupon.cpp
     cashflows/timebasket.cpp
     cashflows/yoyinflationcoupon.cpp
     cashflows/zeroinflationcashflow.cpp
@@ -1020,6 +1021,7 @@ set(QL_HEADERS
     cashflows/rateaveraging.hpp
     cashflows/replication.hpp
     cashflows/simplecashflow.hpp
+    cashflows/stubiborcoupon.hpp
     cashflows/timebasket.hpp
     cashflows/yoyinflationcoupon.hpp
     cashflows/zeroinflationcashflow.hpp

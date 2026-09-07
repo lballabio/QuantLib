@@ -573,6 +573,9 @@
     <ClInclude Include="ql\cashflows\simplecashflow.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\cashflows\stubiborcoupon.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
     <ClInclude Include="ql\cashflows\timebasket.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
@@ -4746,6 +4749,9 @@
       <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflows\simplecashflow.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\cashflows\stubiborcoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflows\timebasket.cpp">
