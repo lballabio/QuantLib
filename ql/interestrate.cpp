@@ -49,11 +49,19 @@ namespace QuantLib {
           case Simple:
             return 1.0 + r_*t;
           case Compounded:
-          case SimpleThenCompounded:
-          case CompoundedThenSimple:
             return std::pow(1.0+r_/freq_, freq_*t);
           case Continuous:
             return std::exp(r_*t);
+          case SimpleThenCompounded:
+            if (t<=1.0/Real(freq_))
+                return 1.0 + r_*t;
+            else
+                return std::pow(1.0+r_/freq_, freq_*t);
+          case CompoundedThenSimple:
+            if (t>1.0/Real(freq_))
+                return 1.0 + r_*t;
+            else
+                return std::pow(1.0+r_/freq_, freq_*t);
           default:
             QL_FAIL("unknown compounding convention");
         }
@@ -62,39 +70,40 @@ namespace QuantLib {
     Real InterestRate::discountFactorFirstDerivative(Time t) const {
         Real discount = discountFactor(t);
         switch (comp_) {
-            case Simple:
-                return -t * discount * discount;
-            case Compounded:
-            case SimpleThenCompounded:
-            case CompoundedThenSimple: {
-                Real freq = Real(frequency());
-                Real compound = 1 + r_ / freq;
-                return -t * discount / compound;
-            }
-            case Continuous:
-                return -t * discount;
-            default:
-                QL_FAIL("unknown compounding convention");
+          case Simple:
+            return -t * discount * discount;
+          case Compounded: {
+              Real freq = Real(frequency());
+              Real compound = 1 + r_ / freq;
+              return -t * discount / compound;
+          }
+          case Continuous:
+            return -t * discount;
+          case SimpleThenCompounded:
+          case CompoundedThenSimple:
+            QL_FAIL("unsupported convention for discount derivatives: " << comp_);
+          default:
+            QL_FAIL("unknown compounding convention");
         }
     }
 
-    Real
-    InterestRate::discountFactorSecondDerivative(Time t) const {
+    Real InterestRate::discountFactorSecondDerivative(Time t) const {
         Real discount = discountFactor(t);
         switch (comp_) {
-            case Simple:
-                return 2.0 * t * t * discount * discount * discount;
-            case Compounded:
-            case SimpleThenCompounded:
-            case CompoundedThenSimple: {
-                Real freq = Real(frequency());
-                Real compound = 1 + r_ / freq;
-                return discount * t * (freq * t + 1.0) / (freq * compound * compound);
-            }
-            case Continuous:
-                return t * t * discount;
-            default:
-                QL_FAIL("unknown compounding convention");
+          case Simple:
+            return 2.0 * t * t * discount * discount * discount;
+          case Compounded: {
+              Real freq = Real(frequency());
+              Real compound = 1 + r_ / freq;
+              return discount * t * (freq * t + 1.0) / (freq * compound * compound);
+          }
+          case Continuous:
+            return t * t * discount;
+          case SimpleThenCompounded:
+          case CompoundedThenSimple:
+            QL_FAIL("unsupported convention for discount derivatives: " << comp_);
+          default:
+            QL_FAIL("unknown compounding convention");
         }
     }
 
@@ -117,12 +126,22 @@ namespace QuantLib {
                 r = (compound - 1.0)/t;
                 break;
               case Compounded:
-              case SimpleThenCompounded:
-              case CompoundedThenSimple:
                 r = (std::pow(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
                 break;
               case Continuous:
                 r = std::log(compound)/t;
+                break;
+              case SimpleThenCompounded:
+                if (t<=1.0/Real(freq))
+                    r = (compound - 1.0)/t;
+                else
+                    r = (std::pow(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
+                break;
+              case CompoundedThenSimple:
+                if (t>1.0/Real(freq))
+                    r = (compound - 1.0)/t;
+                else
+                    r = (std::pow(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
                 break;
               default:
                 QL_FAIL("unknown compounding convention ("
@@ -143,8 +162,6 @@ namespace QuantLib {
             out << "simple compounding";
             break;
           case Compounded:
-          case SimpleThenCompounded:
-          case CompoundedThenSimple:
             switch (ir.frequency()) {
               case NoFrequency:
               case Once:
@@ -156,6 +173,30 @@ namespace QuantLib {
             break;
           case Continuous:
             out << "continuous compounding";
+            break;
+          case SimpleThenCompounded:
+            switch (ir.frequency()) {
+              case NoFrequency:
+              case Once:
+                QL_FAIL(ir.frequency() << " frequency not allowed "
+                        "for this interest rate");
+              default:
+                out << "simple compounding up to "
+                    << Integer(12/ir.frequency()) << " months, then "
+                    << ir.frequency() << " compounding";
+            }
+            break;
+          case CompoundedThenSimple:
+            switch (ir.frequency()) {
+              case NoFrequency:
+              case Once:
+                QL_FAIL(ir.frequency() << " frequency not allowed "
+                        "for this interest rate");
+              default:
+                out << "compounding up to "
+                    << Integer(12/ir.frequency()) << " months, then "
+                    << ir.frequency() << " simple compounding";
+            }
             break;
           default:
             QL_FAIL("unknown compounding convention ("
