@@ -28,8 +28,10 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/credit/defaultprobabilityhelpers.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/termstructures/credit/interpolatedhazardratecurve.hpp>
 #include <ql/termstructures/credit/piecewisedefaultcurve.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
@@ -526,6 +528,58 @@ BOOST_AUTO_TEST_CASE(testIterativeBootstrapRetries) {
     IterativeBootstrap<SPCurve> ibNoThrow(Null<Real>(), Null<Real>(), Null<Real>(), 5, 1.0, 10.0, true, 2);
     dpts = ext::make_shared<SPCurve>(asof, instruments, tsDayCounter, ibNoThrow);
     BOOST_CHECK_NO_THROW(dpts->survivalProbability(testDate));
+}
+
+BOOST_AUTO_TEST_CASE(testJumps) {
+
+    BOOST_TEST_MESSAGE("Testing that credit-curve jumps behave like yield-curve jumps...");
+
+    Date today(15, June, 2024);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    double tolerance = 1.0e-10;
+
+    std::vector<Date> dates = {today, today + 10 * 365};
+    std::vector<Rate> rates = {0.02, 0.02};
+
+    // for each scenario the yield curve is the reference: with a flat rate the
+    // jump factor is discount(t) / exp(-0.02 t), and survival should match it.
+    auto ratio = [&](const std::vector<Handle<Quote> >& jumps,
+                     const std::vector<Date>& jumpDates, Time t) {
+        InterpolatedZeroCurve<Linear> yield(dates, rates, dc, Calendar(), jumps, jumpDates);
+        InterpolatedHazardRateCurve<Linear> credit(dates, rates, dc, Calendar(), jumps, jumpDates);
+        Real bare = std::exp(-0.02 * t);
+        return std::make_pair(yield.discount(t) / bare, credit.survivalProbability(t) / bare);
+    };
+
+    Handle<Quote> q(ext::make_shared<SimpleQuote>(0.99));
+
+    // a jump whose date is already in the past must be ignored
+    {
+        auto [y, c] = ratio({q}, {today - 30}, 1.0);
+        BOOST_CHECK_CLOSE(y, 1.0, tolerance);
+        BOOST_CHECK_CLOSE(c, y, tolerance);
+    }
+    // a jump on the reference date must be ignored
+    {
+        auto [y, c] = ratio({q}, {today}, 1.0);
+        BOOST_CHECK_CLOSE(y, 1.0, tolerance);
+        BOOST_CHECK_CLOSE(c, y, tolerance);
+    }
+    // unsorted jump dates: the jump before t applies, the one after does not
+    {
+        Handle<Quote> a(ext::make_shared<SimpleQuote>(0.90));
+        Handle<Quote> b(ext::make_shared<SimpleQuote>(0.95));
+        auto [y, c] = ratio({a, b}, {today + 5 * 365, today + 365}, 2.0);
+        BOOST_CHECK_CLOSE(y, 0.95, tolerance);
+        BOOST_CHECK_CLOSE(c, y, tolerance);
+    }
+    // a jump inside the interval still applies
+    {
+        auto [y, c] = ratio({q}, {today + 180}, 1.0);
+        BOOST_CHECK_CLOSE(y, 0.99, tolerance);
+        BOOST_CHECK_CLOSE(c, y, tolerance);
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
