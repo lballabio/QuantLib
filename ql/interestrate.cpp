@@ -41,11 +41,11 @@ namespace QuantLib {
         }
     }
 
-    Real InterestRate::compoundFactor(Time t, const std::optional<Compounding>& comp) const {
+    Real InterestRate::compoundFactor(Time t) const {
 
         QL_REQUIRE(t>=0.0, "negative time (" << t << ") not allowed");
         QL_REQUIRE(r_ != Null<Rate>(), "null interest rate");
-        switch (comp ? *comp : comp_) {
+        switch (comp_) {
           case Simple:
             return 1.0 + r_*t;
           case Compounded:
@@ -59,10 +59,9 @@ namespace QuantLib {
         }
     }
 
-    Real InterestRate::discountFactorFirstDerivative(Time t,
-                                                     const std::optional<Compounding>& comp) const {
-        Real discount = discountFactor(t, comp);
-        switch (comp ? *comp : comp_) {
+    Real InterestRate::discountFactorFirstDerivative(Time t) const {
+        Real discount = discountFactor(t);
+        switch (comp_) {
             case Simple:
                 return -t * discount * discount;
             case Compounded:
@@ -80,10 +79,9 @@ namespace QuantLib {
     }
 
     Real
-    InterestRate::discountFactorSecondDerivative(Time t,
-                                                 const std::optional<Compounding>& comp) const {
-        Real discount = discountFactor(t, comp);
-        switch (comp ? *comp : comp_) {
+    InterestRate::discountFactorSecondDerivative(Time t) const {
+        Real discount = discountFactor(t);
+        switch (comp_) {
             case Simple:
                 return 2.0 * t * t * discount * discount * discount;
             case Compounded:
