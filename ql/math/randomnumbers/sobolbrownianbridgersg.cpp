@@ -27,9 +27,11 @@
 namespace QuantLib {
 
     namespace {
-        void setNextSequence(SobolBrownianGeneratorBase& gen, std::vector<Real>& seq) {
+        void setNextSequence(SobolBrownianGeneratorBase& gen,
+                             std::vector<Real>& seq,
+                             std::vector<Real>& output) {
+            output.resize(gen.numberOfFactors());
             gen.nextPath();
-            std::vector<Real> output(gen.numberOfFactors());
             for (Size i = 0; i < gen.numberOfSteps(); ++i) {
                 gen.nextStep(output);
                 std::copy(output.begin(), output.end(), seq.begin() + i * gen.numberOfFactors());
@@ -47,7 +49,7 @@ namespace QuantLib {
 
     const SobolBrownianBridgeRsg::sample_type&
     SobolBrownianBridgeRsg::nextSequence() const {
-        setNextSequence(gen_, seq_.value);
+        setNextSequence(gen_, seq_.value, stepBuffer_);
         return seq_;
 
     }
@@ -73,7 +75,7 @@ namespace QuantLib {
 
     const Burley2020SobolBrownianBridgeRsg::sample_type&
     Burley2020SobolBrownianBridgeRsg::nextSequence() const {
-        setNextSequence(gen_, seq_.value);
+        setNextSequence(gen_, seq_.value, stepBuffer_);
         return seq_;
     }
 
