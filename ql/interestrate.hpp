@@ -105,6 +105,12 @@ namespace QuantLib {
             Time t = dc_.yearFraction(d1, d2, refStart, refEnd);
             return compoundFactor(t);
         }
+
+        //! first derivative of discount factor
+        Real discountFactorFirstDerivative(Time t) const;
+
+        //! second derivative of discount factor
+        Real discountFactorSecondDerivative(Time t) const;
         //@}
 
         //! \name implied rate calculations
