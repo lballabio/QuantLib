@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2015 Klaus Spanderen
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -183,6 +184,36 @@ BOOST_AUTO_TEST_CASE(testObservableSettings) {
    if (updateCounter.counter() != 3 || updateCounter2.counter() != 1) {
        BOOST_FAIL("update counter values are not correct");
    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testDuplicateRegistration) {
+    BOOST_TEST_MESSAGE("Testing duplicate observer registration...");
+
+    const ext::shared_ptr<Observable> observable = ext::make_shared<Observable>();
+    UpdateCounter firstObserver;
+    UpdateCounter secondObserver;
+
+    const auto firstRegistration = firstObserver.registerWith(observable);
+    const auto duplicateRegistration = firstObserver.registerWith(observable);
+    secondObserver.registerWith(observable);
+
+    BOOST_CHECK(firstRegistration.second);
+    BOOST_CHECK(!duplicateRegistration.second);
+
+    observable->notifyObservers();
+    BOOST_CHECK_EQUAL(firstObserver.counter(), 1);
+    BOOST_CHECK_EQUAL(secondObserver.counter(), 1);
+
+    BOOST_CHECK_EQUAL(firstObserver.unregisterWith(observable), 1);
+    observable->notifyObservers();
+    BOOST_CHECK_EQUAL(firstObserver.counter(), 1);
+    BOOST_CHECK_EQUAL(secondObserver.counter(), 2);
+
+    BOOST_CHECK(firstObserver.registerWith(observable).second);
+    observable->notifyObservers();
+    BOOST_CHECK_EQUAL(firstObserver.counter(), 2);
+    BOOST_CHECK_EQUAL(secondObserver.counter(), 3);
 }
 
 
