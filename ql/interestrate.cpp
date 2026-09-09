@@ -108,7 +108,7 @@ namespace QuantLib {
 
         QL_REQUIRE(compound>0.0, "positive compound factor required");
 
-        Rate r;
+        Rate r = Null<Rate>();
         if (compound==1.0) {
             QL_REQUIRE(t>=0.0, "non negative time (" << t << ") required");
             r = 0.0;
