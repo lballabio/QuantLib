@@ -307,6 +307,9 @@
     <Filter Include="experimental\termstructures">
       <UniqueIdentifier>{8a1123c5-a617-4cf2-93df-e554735531ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\termstructures\jacobian">
+      <UniqueIdentifier>{8b64a5d3-2c5a-4b8e-9a41-7f1e2d4c9b01}</UniqueIdentifier>
+    </Filter>
     <Filter Include="experimental\variancegamma">
       <UniqueIdentifier>{12b22ebc-4102-4d94-b640-8490b20365b7}</UniqueIdentifier>
     </Filter>
@@ -4479,6 +4482,27 @@
     <ClInclude Include="ql\experimental\termstructures\crosscurrencyratehelpers.hpp">
       <Filter>experimental\termstructures</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\jacobian\all.hpp">
+      <Filter>experimental\termstructures\jacobian</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\jacobian\bootstrapequationjacobian.hpp">
+      <Filter>experimental\termstructures\jacobian</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\jacobian\curvechainrulecalculator.hpp">
+      <Filter>experimental\termstructures\jacobian</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\jacobian\curvecrossjacobian.hpp">
+      <Filter>experimental\termstructures\jacobian</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\jacobian\curvejacobiangraph.hpp">
+      <Filter>experimental\termstructures\jacobian</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\jacobian\curvesensitivitypropagation.hpp">
+      <Filter>experimental\termstructures\jacobian</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\quotesensitivitycalculator.hpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\fdblackscholesshoutengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
@@ -7397,6 +7421,9 @@
       <Filter>experimental\termstructures</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\termstructures\crosscurrencyratehelpers.cpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\termstructures\quotesensitivitycalculator.cpp">
       <Filter>experimental\termstructures</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.cpp">

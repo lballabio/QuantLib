@@ -5,6 +5,7 @@
  Copyright (C) 2008 Chris Kenyon
  Copyright (C) 2008 Roland Lichters
  Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,6 +31,7 @@
 #include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/quote.hpp>
+#include <ql/experimental/termstructures/jacobian/bootstrapequationjacobian.hpp>
 #include <ql/termstructures/credit/probabilitytraits.hpp>
 #include <ql/termstructures/iterativebootstrap.hpp>
 #include <utility>
@@ -182,6 +184,25 @@ namespace QuantLib {
         const std::vector<Real>& data() const;
         std::vector<std::pair<Date, Real> > nodes() const;
         //@}
+        //! \name Jacobian
+        //@{
+        /*! Jacobian of helper quotes with respect to curve nodes.
+            Credit helpers currently use central finite differences.
+        */
+        Matrix jacobian(std::vector<bool>* analyticEquations = nullptr) const {
+            calculate();
+            detail::BootstrapJacobian result = calculateJacobian();
+            if (analyticEquations != nullptr)
+                *analyticEquations = result.analyticEquations;
+            return std::move(result.matrix);
+        }
+        //! Jacobian of curve nodes with respect to helper quotes
+        Matrix inverseJacobian(
+                std::vector<bool>* analyticEquations = nullptr) const {
+            return detail::inverseBootstrapEquationJacobian(
+                jacobian(analyticEquations));
+        }
+        //@}
         //! \name Observer interface
         //@{
         void update() override;
@@ -192,6 +213,7 @@ namespace QuantLib {
         void performCalculations() const override;
         //@}
         // methods
+        detail::BootstrapJacobian calculateJacobian() const;
         Probability survivalProbabilityImpl(Time) const override;
         Real defaultDensityImpl(Time) const override;
         Real hazardRateImpl(Time) const override;
@@ -204,11 +226,20 @@ namespace QuantLib {
         // it would increase the complexity---which is high enough
         // already.
         friend class Bootstrap<this_curve>;
+        template <class> friend struct detail::BootstrapJacobianAccess;
         Bootstrap<this_curve> bootstrap_;
     };
 
 
     // inline definitions
+
+    template <class C, class I, template <class> class B>
+    detail::BootstrapJacobian
+    PiecewiseDefaultCurve<C, I, B>::calculateJacobian() const {
+        return detail::bootstrapEquationJacobian<C>(
+            this, instruments_, this->times_, this->data_, this->interpolation_,
+            !this->jumpDates().empty());
+    }
 
     template <class C, class I, template <class> class B>
     inline Date PiecewiseDefaultCurve<C,I,B>::maxDate() const {

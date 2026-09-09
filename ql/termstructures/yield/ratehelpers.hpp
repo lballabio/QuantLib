@@ -8,6 +8,7 @@
  Copyright (C) 2015 Maddalena Zanzi
  Copyright (C) 2015 Paolo Mazzocchi
  Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -74,6 +75,7 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         //@}
         //! \name FuturesRateHelper inspectors
         //@{
@@ -107,6 +109,7 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         void setTermStructure(YieldTermStructure*) override;
         //@}
         //! \name Visitability
@@ -175,6 +178,7 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         void setTermStructure(YieldTermStructure*) override;
         //@}
         //! \name Visitability
@@ -251,6 +255,7 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         void setTermStructure(YieldTermStructure*) override;
         //@}
         //! \name SwapRateHelper inspectors
@@ -384,6 +389,7 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         void setTermStructure(YieldTermStructure*) override;
         //@}
         //! \name FxSwapRateHelper inspectors

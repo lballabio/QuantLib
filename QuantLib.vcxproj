@@ -774,6 +774,13 @@
     <ClInclude Include="ql\experimental\termstructures\all.hpp" />
     <ClInclude Include="ql\experimental\termstructures\basisswapratehelpers.hpp" />
     <ClInclude Include="ql\experimental\termstructures\crosscurrencyratehelpers.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\jacobian\all.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\jacobian\bootstrapequationjacobian.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\jacobian\curvechainrulecalculator.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\jacobian\curvecrossjacobian.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\jacobian\curvejacobiangraph.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\jacobian\curvesensitivitypropagation.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\quotesensitivitycalculator.hpp" />
     <ClInclude Include="ql\experimental\variancegamma\all.hpp" />
     <ClInclude Include="ql\experimental\variancegamma\analyticvariancegammaengine.hpp" />
     <ClInclude Include="ql\experimental\variancegamma\fftengine.hpp" />
@@ -2143,6 +2150,7 @@
     <ClCompile Include="ql\experimental\swaptions\irregularswaption.cpp" />
     <ClCompile Include="ql\experimental\termstructures\basisswapratehelpers.cpp" />
     <ClCompile Include="ql\experimental\termstructures\crosscurrencyratehelpers.cpp" />
+    <ClCompile Include="ql\experimental\termstructures\quotesensitivitycalculator.cpp" />
     <ClCompile Include="ql\experimental\variancegamma\analyticvariancegammaengine.cpp" />
     <ClCompile Include="ql\experimental\variancegamma\fftengine.cpp" />
     <ClCompile Include="ql\experimental\variancegamma\fftvanillaengine.cpp" />

@@ -4,6 +4,7 @@
  Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2007, 2009, 2015 Ferdinando Ametrano
  Copyright (C) 2015 Paolo Mazzocchi
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,9 +34,27 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/settings.hpp>
 #include <ql/time/date.hpp>
+#include <map>
+#include <set>
 #include <utility>
+#include <vector>
 
 namespace QuantLib {
+
+    class TermStructure;
+
+    //! per-curve sensitivities of an implied quote
+    /*! Values are sensitivities to the term-structure values queried at
+        the given dates. Yield-curve values are discount factors.
+    */
+    struct ImpliedQuoteSensitivities {
+        //! whether analytical sensitivities are available
+        bool available = false;
+        //! per-curve sensitivities \f$ (d, \partial Q/\partial P(d)) \f$
+        std::map<const TermStructure*, std::vector<std::pair<Date, Real>>> sensitivities;
+        //! curves with incomplete contributions in the map
+        std::set<const TermStructure*> incomplete;
+    };
 
     struct Pillar {
         //! Alternatives ways of determining the pillar date
@@ -68,6 +87,44 @@ namespace QuantLib {
         const Handle<Quote>& quote() const { return quote_; }
         virtual Real impliedQuote() const = 0;
         Real quoteError() const { return quote_->value() - impliedQuote(); }
+        //! analytical sensitivities of the implied quote by term structure
+        /*! Term structures are identified by the pointers from their
+            handles. The default result means sensitivities are unavailable.
+        */
+        virtual ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const {
+            return {};
+        }
+        //! sensitivities to the curve being bootstrapped
+        /*! Returns pairs \f$ (t, \partial Q / \partial v(t)) \f$ where
+            \f$ Q \f$ is the implied quote and \f$ v(t) \f$ is the value
+            queried from the term structure being bootstrapped at time t
+            (measured with the term structure's day counter). For yield
+            term structures \f$ v(t) \f$ is the discount factor at t.
+            An empty vector means sensitivities are unavailable and triggers
+            numerical differentiation.
+        */
+        virtual std::vector<std::pair<Time, Real>> impliedQuoteSensitivities() const {
+            if (termStructure_ == nullptr)
+                return {};
+            ImpliedQuoteSensitivities s = impliedQuoteSensitivitiesByCurve();
+            const auto* own = static_cast<const TermStructure*>(termStructure_);
+            if (!s.available || s.incomplete.count(own) != 0)
+                return {};
+            for (const auto& [curve, entries] : s.sensitivities)
+                if (curve != own && !entries.empty())
+                    return {};
+            for (const auto* curve : s.incomplete)
+                if (curve != own)
+                    return {};
+            auto i = s.sensitivities.find(own);
+            if (i == s.sensitivities.end())
+                return {};
+            std::vector<std::pair<Time, Real>> result;
+            result.reserve(i->second.size());
+            for (const auto& [date, dQdP] : i->second)
+                result.emplace_back(termStructure_->timeFromReference(date), dQdP);
+            return result;
+        }
         //! sets the term structure to be used for pricing
         /*! \warning Being a pointer and not a shared_ptr, the term
                      structure is not guaranteed to remain allocated
@@ -79,6 +136,9 @@ namespace QuantLib {
                      to <b>this</b>, i.e., the term structure itself.
         */
         virtual void setTermStructure(TS*);
+
+        //! the term structure the helper is currently based on
+        TS* termStructure() const { return termStructure_; }
 
         //! earliest relevant date
         /*! The earliest date at which data are needed by the

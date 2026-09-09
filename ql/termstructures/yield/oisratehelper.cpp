@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2009, 2012 Roland Lichters
  Copyright (C) 2009, 2012 Ferdinando Ametrano
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,6 +22,7 @@
 #include <ql/instruments/makeois.hpp>
 #include <ql/instruments/simplifynotificationgraph.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/experimental/termstructures/quotesensitivitycalculator.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
@@ -231,6 +233,20 @@ namespace QuantLib {
         Real totNPV = - (floatingLegNPV+spreadNPV);
         Real result = totNPV/(swap_->fixedLegBPS()/basisPoint);
         return result;
+    }
+
+    ImpliedQuoteSensitivities OISRateHelper::impliedQuoteSensitivitiesByCurve() const {
+        if (termStructure_ == nullptr || discountRelinkableHandle_.empty())
+            return {};
+        // custom pricer adjustments are not covered
+        // coupon-level checks handle other unsupported features
+        if (pricer_ != nullptr)
+            return {};
+
+        Spread s = overnightSpread_.empty() ? 0.0 : overnightSpread_->value();
+        return detail::fairRateSensitivities(
+            swap_->fixedLeg(), swap_->overnightLeg(), s,
+            **discountRelinkableHandle_);
     }
 
     void OISRateHelper::accept(AcyclicVisitor& v) {
