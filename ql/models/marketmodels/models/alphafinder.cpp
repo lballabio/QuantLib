@@ -354,7 +354,7 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
         Real bilimit = alpha0;
 
         if (bottomValue > targetVariance && topValue > targetVariance) {
-            // see if if ok at some intermediate point by stepping through
+            // see if ok at some intermediate point by stepping through
             Integer i=1;
             while ( i < steps && topValue> targetVariance) {
                 topAlpha = alpha0 + (alphaMax-alpha0)*(i+0.0)/(steps+0.0);
@@ -367,7 +367,7 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
         }
 
         if (bottomValue > targetVariance && topValue > targetVariance) {
-            // see if if ok at some intermediate point by stepping through
+            // see if ok at some intermediate point by stepping through
             Integer i=1;
             while ( i < steps && topValue> targetVariance) {
                 bottomAlpha = alpha0 + (alphaMin-alpha0)*(i+0.0)/(steps+0.0);

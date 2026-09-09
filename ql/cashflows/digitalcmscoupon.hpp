@@ -32,7 +32,7 @@
 
 namespace QuantLib {
 
-    //! Cms-rate coupon with digital digital call/put option
+    //! Cms-rate coupon with digital call/put option
     class DigitalCmsCoupon : public DigitalCoupon {
       public:
         DigitalCmsCoupon(
