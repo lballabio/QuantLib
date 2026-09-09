@@ -22,6 +22,12 @@
 #include <ql/instruments/stock.hpp>
 #include <ql/quotes/simplequote.hpp>
 
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+#include <atomic>
+#include <thread>
+#include <vector>
+#endif
+
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 using ext::shared_ptr;
@@ -271,6 +277,52 @@ BOOST_AUTO_TEST_CASE(testNotificationAfterFailedCalculation) {
     if (f.isUp())
         BOOST_FAIL("Observer was notified of second change without recalculation");
 }
+
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+
+BOOST_AUTO_TEST_CASE(testConcurrentCalculate) {
+
+    BOOST_TEST_MESSAGE("Testing concurrent calls to LazyObject::calculate()...");
+
+    // calculate() reads and writes calculated_/frozen_/failed_ (and,
+    // via the UpdateChecker used by update(), updating_) without any
+    // synchronization of its own. QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+    // only makes Observable/Observer registration thread-safe; it does
+    // not protect LazyObject's own calculation state. So calling
+    // calculate() concurrently on the same object is a data race
+    // (reported by ThreadSanitizer) and can, in principle, let
+    // performCalculations() run more than once for what should be a
+    // single calculation. See
+    // https://github.com/lballabio/QuantLib/issues/2633
+    class Counter : public LazyObject {
+      public:
+        void doCalculate() const { calculate(); }
+        mutable std::atomic<int> computations{0};
+
+      protected:
+        void performCalculations() const override { ++computations; }
+    };
+
+    for (Size trial = 0; trial < 500; ++trial) {
+        auto obj = ext::make_shared<Counter>();
+
+        std::vector<std::thread> threads;
+        threads.reserve(8);
+        for (Size t = 0; t < 8; ++t)
+            threads.emplace_back([obj]() { obj->doCalculate(); });
+        for (auto& thread : threads)
+            thread.join();
+
+        if (!obj->isCalculated())
+            BOOST_FAIL("object should be calculated after "
+                       "concurrent calculate() calls");
+        if (obj->computations != 1)
+            BOOST_FAIL("performCalculations() should have run exactly once, "
+                       "but ran " << obj->computations << " times");
+    }
+}
+
+#endif
 
 BOOST_AUTO_TEST_SUITE_END()
 

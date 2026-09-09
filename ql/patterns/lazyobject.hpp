@@ -27,6 +27,10 @@
 #include <ql/patterns/observable.hpp>
 #include <ql/shared_ptr.hpp>
 
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+#include <mutex>
+#endif
+
 namespace QuantLib {
 
     //! Framework for calculation on demand and result caching.
@@ -131,6 +135,31 @@ namespace QuantLib {
         mutable bool calculated_ = false, frozen_ = false, failed_ = false, alwaysForward_;
       private:
         bool updating_ = false;
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        /*! Guards calculated_/frozen_/failed_/updating_/alwaysForward_
+            so that calculate() (and the other methods touching this
+            object's calculation state) are safe to call concurrently
+            from multiple threads, as promised by
+            QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN.
+
+            Wrapped so that LazyObject keeps its existing implicit
+            copy/move semantics: copying or moving a LazyObject gives
+            the copy a fresh, unlocked mutex rather than trying to
+            copy the mutex itself.
+        */
+        class RecursiveMutex {
+          public:
+            RecursiveMutex() = default;
+            RecursiveMutex(const RecursiveMutex&) noexcept {}
+            RecursiveMutex(RecursiveMutex&&) noexcept {}
+            RecursiveMutex& operator=(const RecursiveMutex&) noexcept { return *this; }
+            RecursiveMutex& operator=(RecursiveMutex&&) noexcept { return *this; }
+            std::recursive_mutex& get() const { return mutex_; }
+          private:
+            mutable std::recursive_mutex mutex_;
+        };
+        mutable RecursiveMutex mutex_;
+        #endif
         class UpdateChecker {  // NOLINT(cppcoreguidelines-special-member-functions)
             LazyObject* subject_;
           public:
@@ -188,6 +217,9 @@ namespace QuantLib {
     : alwaysForward_(LazyObject::Defaults::instance().forwardsAllNotifications()) {}
 
     inline void LazyObject::update() {
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        std::lock_guard<std::recursive_mutex> lock(mutex_.get());
+        #endif
         if (updating_) {
             #ifdef QL_THROW_IN_CYCLES
             QL_FAIL("recursive notification loop detected; you probably created an object cycle");
@@ -219,6 +251,9 @@ namespace QuantLib {
     }
 
     inline void LazyObject::recalculate() {
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        std::lock_guard<std::recursive_mutex> lock(mutex_.get());
+        #endif
         bool wasFrozen = frozen_;
         calculated_ = frozen_ = failed_ = false;
         try {
@@ -233,10 +268,16 @@ namespace QuantLib {
     }
 
     inline void LazyObject::freeze() {
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        std::lock_guard<std::recursive_mutex> lock(mutex_.get());
+        #endif
         frozen_ = true;
     }
 
     inline void LazyObject::unfreeze() {
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        std::lock_guard<std::recursive_mutex> lock(mutex_.get());
+        #endif
         // send notifications, just in case we lost any,
         // but only once, i.e. if it was frozen
         if (frozen_) {
@@ -246,14 +287,23 @@ namespace QuantLib {
     }
 
     inline void LazyObject::forwardFirstNotificationOnly() {
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        std::lock_guard<std::recursive_mutex> lock(mutex_.get());
+        #endif
         alwaysForward_ = false;
     }
 
     inline void LazyObject::alwaysForwardNotifications() {
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        std::lock_guard<std::recursive_mutex> lock(mutex_.get());
+        #endif
         alwaysForward_ = true;
     }
 
     inline void LazyObject::calculate() const {
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        std::lock_guard<std::recursive_mutex> lock(mutex_.get());
+        #endif
         if (!calculated_ && !frozen_) {
             calculated_ = true;   // prevent infinite recursion in
                                   // case of bootstrapping
@@ -270,10 +320,16 @@ namespace QuantLib {
     }
 
     inline bool LazyObject::isCalculated() const {
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        std::lock_guard<std::recursive_mutex> lock(mutex_.get());
+        #endif
         return calculated_;
     }
 
     inline void LazyObject::setCalculated(const bool c) const {
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        std::lock_guard<std::recursive_mutex> lock(mutex_.get());
+        #endif
         calculated_ = c;
     }
 }
