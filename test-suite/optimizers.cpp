@@ -1101,6 +1101,94 @@ BOOST_AUTO_TEST_CASE(testCMAES) {
                         << "\n    expected:   " << expected
                         << "\n    x error:    " << xError);
     }
+
+    // Ill-conditioned covariance: weights spanning twelve decades drive the
+    // factorization of C over roughly six orders of magnitude in scale.
+    {
+        const Size n = 6;
+        Array center(n, 0.0), weight(n);
+        for (Size i = 0; i < n; ++i)
+            weight[i] = std::pow(10.0, 12.0 * i / Real(n - 1));
+
+        WeightedQuadratic f(center, weight);
+        NoConstraint c;
+        Array x0(n, 1.0);
+        EndCriteria endCriteria(5000, 200, 1e-16, 1e-16, Null<Real>());
+        Problem problem(f, c, x0);
+        Cmaes optimizer(Cmaes::Configuration().withSigma(1.0).withSeed(11));
+
+        optimizer.minimize(problem, endCriteria);
+
+        if (problem.functionValue() > 1e-8)
+            BOOST_ERROR("CMA-ES condition-1e12 f = " << problem.functionValue()
+                        << " (expected < 1e-8)");
+    }
+
+    // Rank-deficient objective: the last coordinate carries zero weight, so C
+    // collapses in that direction. The search must stay usable and stop on a
+    // termination criterion rather than throwing or going non-finite.
+    {
+        const Size n = 5;
+        Array center(n, 0.0), weight(n, 1.0);
+        weight[n - 1] = 0.0;
+
+        WeightedQuadratic f(center, weight);
+        NoConstraint c;
+        Array x0(n, 1.0);
+        EndCriteria endCriteria(5000, 200, 1e-16, 1e-16, Null<Real>());
+        Problem problem(f, c, x0);
+        Cmaes optimizer(Cmaes::Configuration().withSigma(0.5).withSeed(13));
+
+        EndCriteria::Type ecType = optimizer.minimize(problem, endCriteria);
+
+        if (problem.functionValue() > 1e-8)
+            BOOST_ERROR("CMA-ES rank-deficient f = " << problem.functionValue()
+                        << " (expected < 1e-8)");
+        if (ecType == EndCriteria::None)
+            BOOST_ERROR("CMA-ES rank-deficient did not terminate on a criterion");
+    }
+
+    // Rotated ill-conditioned quadratic. Unlike the separable case above, the
+    // rotation correlates every coordinate, which reduces the smallest Cholesky
+    // pivot below its floor multiple times per run. Convergence must be unaffected.
+    {
+        const Size n = 4;
+        Matrix Q(n, n, 0.0);
+        for (Size i = 0; i < n; ++i)
+            Q[i][i] = 1.0;
+
+        // fixed Givens rotations; no RNG, so the test is reproducible
+        const Size p[4] = {0, 1, 2, 0};
+        const Size q[4] = {1, 2, 3, 3};
+        const Real angle[4] = {0.7, 1.1, 0.4, 0.9};
+        for (Size k = 0; k < 4; ++k) {
+            Matrix G(n, n, 0.0);
+            for (Size i = 0; i < n; ++i)
+                G[i][i] = 1.0;
+            G[p[k]][p[k]] = std::cos(angle[k]);
+            G[p[k]][q[k]] = -std::sin(angle[k]);
+            G[q[k]][p[k]] = std::sin(angle[k]);
+            G[q[k]][q[k]] = std::cos(angle[k]);
+            Q = G * Q;
+        }
+
+        Matrix D(n, n, 0.0);
+        for (Size i = 0; i < n; ++i)
+            D[i][i] = std::pow(1e12, Real(i) / Real(n - 1));
+
+        QuadraticForm f(transpose(Q) * D * Q);
+        NoConstraint c;
+        Array x0(n, 1.0);
+        EndCriteria endCriteria(3000, 500, 1e-18, 1e-18, Null<Real>());
+        Problem problem(f, c, x0);
+        Cmaes optimizer(Cmaes::Configuration().withSigma(0.5).withSeed(17));
+
+        optimizer.minimize(problem, endCriteria);
+
+        if (problem.functionValue() > 1e-8)
+            BOOST_ERROR("CMA-ES rotated ill-conditioned f = "
+                        << problem.functionValue() << " (expected < 1e-8)");
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
