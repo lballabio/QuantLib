@@ -34,12 +34,19 @@ namespace QuantLib {
 
     class SmileSection;
 
+    /*! Tabulates log-moneyness against the normal quantile
+        \f$ z = \Phi^{-1}(P(S \leq K)) \f$, which is linear for a lognormal law
+        and stays well conditioned in the wings.
+
+        \param nStd half-width of the tabulated range in normal quantiles, or
+                    the deepest the smile still prices. invcdf saturates there.
+    */
     class SmileSectionRNDCalculator : public RiskNeutralDensityCalculator {
       public:
         explicit SmileSectionRNDCalculator(
             ext::shared_ptr<SmileSection> smile,
             Size nStrikes = 200,
-            Real nStd = 5.0);
+            Real nStd = 8.0);
 
         // x = ln(S)
         Real pdf(Real x, Time t) const override;
@@ -60,7 +67,8 @@ namespace QuantLib {
         Real nStd_;
 
         mutable bool initialized_ = false;
-        mutable std::vector<Real> strikes_, cdf_;
+        mutable Real forward_ = 0.0, zMin_ = 0.0, zMax_ = 0.0;
+        mutable std::vector<Real> z_, logMoneyness_;
         mutable ext::shared_ptr<MonotonicCubicNaturalSpline> quantileFn_;
     };
 
