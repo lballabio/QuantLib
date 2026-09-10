@@ -119,6 +119,72 @@ namespace QuantLib {
     };
 
 
+    //! quadrature weights of the product-trapezoidal Riemann-Liouville integral
+    /*!
+        The weights depend only on the integration order \f$ \alpha \f$ and on
+        the number of grid steps. Callers that integrate repeatedly on the same grid,
+        as the rough Heston characteristic function does once per quadrature node, can
+        build once and reuse.
+    */
+    class RiemannLiouvilleWeights {
+      public:
+        RiemannLiouvilleWeights(Real alpha, Size steps);
+
+        Real alpha() const { return alpha_; }
+
+        //! \f$ I^{\alpha} y(t_N) \f$ for grid values y of spacing dt
+        template <class T>
+        T integrate(const std::vector<T>& y, Real dt) const {
+            QL_REQUIRE(y.size() == steps_ + 1, "grid size (" << y.size()
+                                                             << ") does not match the weights ("
+                                                             << steps_ + 1 << " values expected)");
+            QL_REQUIRE(dt > 0.0, "grid spacing dt (" << dt << ") must be positive");
+
+            // y[steps_] carries weight exactly 1 and is not stored, so w_ is
+            // one shorter than y
+            T sum{0};
+
+            for (Size j{0}; j < steps_; ++j) {
+                sum += w_[j] * y[j];
+            }
+            sum += y[steps_];
+
+            return std::pow(dt, alpha_) / gamma_ * sum;
+        }
+
+      private:
+        Real alpha_{0.0};
+        Size steps_{0};
+        Real gamma_{0.0};
+        std::vector<Real> w_;
+    };
+
+    inline RiemannLiouvilleWeights::RiemannLiouvilleWeights(Real alpha, Size steps) {
+        QL_REQUIRE(alpha >= 0.0, "integration order alpha (" << alpha << ") must be non-negative");
+        QL_REQUIRE(steps > 0, "at least one grid step required");
+
+        alpha_ = alpha;
+        steps_ = steps;
+        gamma_ = GammaFunction().value(alpha + 2.0);
+        w_ = std::vector<Real>(steps);
+
+        // powers m ^ (alpha + 1) for m = 0, ..., steps + 1, reused across the
+        // shifted (k - 1, k, k + 1) terms in the weights below
+        std::vector<Real> powAlphaPlus1(steps + 2);
+        for (Size m{0}; m <= steps + 1; ++m) {
+            powAlphaPlus1[m] = std::pow(static_cast<Real>(m), alpha + 1.0);
+        }
+
+        // weight of y_0: (n - 1) ^ (alpha + 1) - (n - 1 - alpha) n ^ alpha
+        w_[0] = powAlphaPlus1[steps - 1] - (steps - 1 - alpha) * std::pow(Real(steps), alpha);
+
+        for (Size j{1}; j < steps; ++j) {
+            const Size k{steps - j};
+            w_[j] = powAlphaPlus1[k + 1] + powAlphaPlus1[k - 1] - 2.0 * powAlphaPlus1[k];
+        }
+    }
+
+
     //! product-trapezoidal Riemann-Liouville fractional integral
     /*! Approximates
         \f[
@@ -130,6 +196,10 @@ namespace QuantLib {
         piecewise linear interpolant of \f$ y \f$ against the kernel.
         For \f$ \alpha = 1 \f$ this is the trapezoidal rule;
         \f$ \alpha \to 0 \f$ recovers the identity.
+
+        \note The weights are rebuilt on every call.  Callers integrating
+              repeatedly on the same \f$ (\alpha, N) \f$ grid should hold a
+              RiemannLiouvilleWeights instead.
     */
     template <class T = Real>
     T riemannLiouvilleIntegral(const std::vector<T>& y, Real alpha, Real dt) {
@@ -137,24 +207,7 @@ namespace QuantLib {
         QL_REQUIRE(y.size() >= 2, "at least two grid values required");
         QL_REQUIRE(dt > 0.0, "grid spacing dt (" << dt << ") must be positive");
 
-        const Size n{y.size() - 1};
-
-        // powers m ^ (alpha + 1) for m = 0, ..., n + 1, reused across the shifted
-        // (k - 1, k, k + 1) terms in the quadrature weights below
-        std::vector<Real> powAlphaPlus1(n + 2);
-        for (Size m{0}; m <= n + 1; ++m)
-            powAlphaPlus1[m] = std::pow(static_cast<Real>(m), alpha + 1.0);
-
-        // weight of y_0: (n - 1) ^ (alpha + 1) - (n - 1 - alpha) n ^ alpha
-        T sum{(powAlphaPlus1[n - 1] - (n - 1 - alpha) * std::pow(Real(n), alpha)) * y[0]};
-
-        for (Size j{1}; j < n; ++j) {
-            const Size k{n - j};
-            sum += (powAlphaPlus1[k + 1] + powAlphaPlus1[k - 1] - 2.0 * powAlphaPlus1[k]) * y[j];
-        }
-        sum += y[n];
-
-        return std::pow(dt, alpha) / GammaFunction().value(alpha + 2.0) * sum;
+        return RiemannLiouvilleWeights(alpha, y.size() - 1).integrate(y, dt);
     }
 }
 
