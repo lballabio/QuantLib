@@ -94,17 +94,19 @@ namespace QuantLib {
             for (Size n{0}; n < steps; ++n) {
                 const Real tNext{(n + 1) * dt};
 
-                T predictorSum{predictorWeights[n] * f[0]};
-                for (Size j{1}; j <= n; ++j)
-                    predictorSum += predictorWeights[n - j] * f[j];
-                const T yP{y0 + dtAlpha / gamma1 * predictorSum};
-
                 // corrector weight of f_0: n ^ (alpha + 1) - (n - alpha)(n + 1) ^ alpha
                 const Real a0{alphaPlusOnePowers[n] - (n - alpha_) * alphaPowers[n + 1]};
 
+                T predictorSum{predictorWeights[n] * f[0]};
                 T correctorSum{a0 * f[0]};
-                for (Size j{1}; j <= n; ++j)
-                    correctorSum += correctorWeights[n - j] * f[j];
+
+                for (Size j{1}; j <= n; ++j) {
+                    const T& fj{f[j]};
+                    predictorSum += predictorWeights[n - j] * fj;
+                    correctorSum += correctorWeights[n - j] * fj;
+                }
+
+                const T yP{y0 + dtAlpha / gamma1 * predictorSum};
                 correctorSum += ode(tNext, yP);
 
                 y[n + 1] = y0 + dtAlpha / gamma2 * correctorSum;
