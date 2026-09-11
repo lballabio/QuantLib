@@ -284,7 +284,7 @@ BOOST_AUTO_TEST_CASE(testNormal) {
 
     e = norm(diff.begin(), diff.end(), h);
     if (e > 1.0e-7) {
-        BOOST_ERROR("norm of MaddokInvCum . cum minus identity: "
+        BOOST_ERROR("norm of MaddockInvCum . cum minus identity: "
                     << std::scientific << e << "\n"
                     << "tolerance exceeded");
     }
@@ -366,21 +366,26 @@ BOOST_AUTO_TEST_CASE(testMoroInverseCumulativeNormal) {
     BOOST_CHECK_THROW(moroInvCum(1.0), Error);
     BOOST_CHECK_THROW(moroInvCum(-1.0e-8), Error);
     BOOST_CHECK_THROW(moroInvCum(1.0 + 1.0e-8), Error);
-    BOOST_CHECK(std::isfinite(moroInvCum(0.08)));
-    BOOST_CHECK(std::isfinite(moroInvCum(0.080001)));
-    BOOST_CHECK(std::isfinite(moroInvCum(0.919999)));
-    BOOST_CHECK(std::isfinite(moroInvCum(0.92)));
-    for (Real probability : { 0.08, 0.080001, 0.919999, 0.92 }) {
+
+    // Moro switches from its tail approximation to the central approximation
+    // at |p - 0.5| = 0.42, corresponding to p = 0.08 and p = 0.92.
+    const Real moroBoundaryProbabilities[] = { 0.08, 0.080001,
+                                                0.919999, 0.92 };
+    for (Real probability : moroBoundaryProbabilities) {
+        BOOST_CHECK(std::isfinite(moroInvCum(probability)));
+        // Acklam provides a more accurate independent reference here.
         BOOST_CHECK_CLOSE(moroInvCum(probability), invCum(probability), 1.0e-3);
     }
+
+    // The two approximations should not introduce a visible jump at the switch.
     BOOST_CHECK_SMALL(
         std::fabs((moroInvCum(0.080001) - moroInvCum(0.08)) -
                   (invCum(0.080001) - invCum(0.08))),
-        1.0e-4);
+        1.0e-4); // absolute continuity tolerance
     BOOST_CHECK_SMALL(
         std::fabs((moroInvCum(0.92) - moroInvCum(0.919999)) -
                   (invCum(0.92) - invCum(0.919999))),
-        1.0e-4);
+        1.0e-4); // absolute continuity tolerance
     BOOST_CHECK_THROW(MoroInverseCumulativeNormal(0.0, -1.0), Error);
     BOOST_CHECK_THROW(MoroInverseCumulativeNormal(
                           0.0, std::numeric_limits<Real>::quiet_NaN()), Error);
@@ -392,6 +397,7 @@ BOOST_AUTO_TEST_CASE(testMaddockNormalDistributions) {
 
     MaddockInverseCumulativeNormal maddockInvCum;
     MaddockCumulativeNormal maddockCum;
+    // Use Boost.Math independently to check the Boost-backed wrappers.
     const boost::math::normal_distribution<Real> standardNormal;
     const Real probabilities[] = { 1.0e-10, 1.0e-6, 0.01, 0.1, 0.5, 0.9,
                                    0.99, 1.0 - 1.0e-6, 1.0 - 1.0e-10 };
@@ -402,6 +408,7 @@ BOOST_AUTO_TEST_CASE(testMaddockNormalDistributions) {
         BOOST_CHECK_CLOSE(maddockCum(maddockInvCum(probability)), probability,
                           1.0e-10);
     }
+    // Boost.Math throws at exact inverse-CDF endpoints.
     BOOST_CHECK_THROW(maddockInvCum(0.0), std::exception);
     BOOST_CHECK_THROW(maddockInvCum(1.0), std::exception);
     BOOST_CHECK_CLOSE(maddockCum(0.0), 0.5, 1.0e-12);
@@ -427,6 +434,8 @@ BOOST_AUTO_TEST_CASE(testCumulativeNormal) {
     const boost::math::normal_distribution<Real> standardNormal;
     Real previous = 0.0;
     for (Real x : { -6.0, -10.0, -20.0 }) {
+        // The asymptotic implementation is less accurate than Boost here,
+        // but remains within this relative tolerance in the lower tail.
         BOOST_CHECK_CLOSE(cumulative(x), boost::math::cdf(standardNormal, x),
                           1.0e-5);
     }
