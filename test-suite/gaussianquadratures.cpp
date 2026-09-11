@@ -178,6 +178,29 @@ BOOST_AUTO_TEST_CASE(testLaguerre) {
                 x_inv_exp, 1.0);
 }
 
+BOOST_AUTO_TEST_CASE(testLaguerreLargeOrder) {
+     BOOST_TEST_MESSAGE("Testing Gauss-Laguerre integration for large orders...");
+
+     // Beyond n ~ 200 the Laguerre weight function w(x) = x^s*exp(-x) underflows
+     // to zero at the largest quadrature node, which used to turn the weight
+     // computation into an inf*0 -> NaN (see issue #2776). AnalyticHestonEngine
+     // relies on GaussLaguerreIntegration(192) (test-suite/hestonmodel.cpp), just
+     // below that threshold, so this also covers orders spanning across it.
+     // testSingle's tolerance check does not fire on NaN (any comparison with
+     // NaN is false), so finiteness is asserted explicitly here first.
+     for (Size n = 184; n <= 232; n += 8) {
+         const GaussLaguerreIntegration quad(n);
+         const Real calculated = quad(inv_exp);
+         if (!std::isfinite(calculated)) {
+             BOOST_ERROR("GaussLaguerreIntegration(" << n << ") returned a "
+                         "non-finite result integrating f(x) = exp(-x): "
+                         << calculated);
+         } else {
+             testSingle(quad, "f(x) = exp(-x)", inv_exp, 1.0);
+         }
+     }
+}
+
 BOOST_AUTO_TEST_CASE(testHermite) {
      BOOST_TEST_MESSAGE("Testing Gauss-Hermite integration...");
 
