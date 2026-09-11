@@ -178,6 +178,34 @@ BOOST_AUTO_TEST_CASE(testLaguerre) {
                 x_inv_exp, 1.0);
 }
 
+BOOST_AUTO_TEST_CASE(testLaguerreHighOrder) {
+     BOOST_TEST_MESSAGE("Testing high-order Gauss-Laguerre integration...");
+
+     /* For large orders the biggest node grows roughly as 4n, so the weight
+        function exp(-x) underflows to zero there and the weights used to come
+        back as inf, turning the whole integral into NaN (issue #2776).
+        The integral of exp(-x) over [0, inf) is exactly one at every order. */
+
+     for (Size n : { 184, 192, 200, 256, 320, 400 }) {
+         const Real calculated = GaussLaguerreIntegration(n)(inv_exp);
+         const Real tol = 1e-12;
+
+         if (!std::isfinite(calculated)) {
+             BOOST_ERROR("non-finite result from high-order Gauss-Laguerre"
+                         << "\n    order:      " << n
+                         << "\n    calculated: " << calculated);
+         } else if (std::fabs(calculated - 1.0) > tol) {
+             BOOST_ERROR("failed to reproduce high-order Gauss-Laguerre integral"
+                         << std::setprecision(12)
+                         << "\n    order:      " << n
+                         << "\n    calculated: " << calculated
+                         << "\n    expected:   " << 1.0
+                         << "\n    diff:       " << std::fabs(calculated - 1.0)
+                         << "\n    tolerance:  " << tol);
+         }
+     }
+}
+
 BOOST_AUTO_TEST_CASE(testHermite) {
      BOOST_TEST_MESSAGE("Testing Gauss-Hermite integration...");
 

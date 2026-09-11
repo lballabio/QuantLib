@@ -55,6 +55,16 @@ namespace QuantLib {
         virtual Real beta(Size i)  const = 0;
         virtual Real w(Real x)     const = 0;
 
+        /*! Logarithm of the weight function.
+
+            The default implementation returns <tt>std::log(w(x))</tt>.
+            Subclasses whose weight function underflows to zero for large
+            arguments should override this with a closed form that stays
+            in range; the Gauss quadrature weights are then built from it
+            without forming \f$ w(x) \f$ itself.
+        */
+        virtual Real logW(Real x) const;
+
         Real value(Size i, Real x) const;
         Real weightedValue(Size i, Real x) const;
     };
@@ -68,6 +78,7 @@ namespace QuantLib {
         Real alpha(Size i) const override;
         Real beta(Size i) const override;
         Real w(Real x) const override;
+        Real logW(Real x) const override;
 
       private:
         const Real s_;
@@ -82,6 +93,7 @@ namespace QuantLib {
         Real alpha(Size i) const override;
         Real beta(Size i) const override;
         Real w(Real x) const override;
+        Real logW(Real x) const override;
 
       private:
         const Real mu_;

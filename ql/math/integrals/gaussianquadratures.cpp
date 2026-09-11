@@ -27,6 +27,7 @@
 #include <ql/math/matrixutilities/tqreigendecomposition.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 
+#include <cmath>
 #include <map>
 
 namespace QuantLib {
@@ -56,7 +57,18 @@ namespace QuantLib {
 
         Real mu_0 = orthPoly.mu_0();
         for (i=0; i<n; ++i) {
-            w_[i] = mu_0*ev[0][i]*ev[0][i] / orthPoly.w(x_[i]);
+            const Real wx = orthPoly.w(x_[i]);
+            if (wx > 0.0) {
+                w_[i] = mu_0*ev[0][i]*ev[0][i] / wx;
+            } else {
+                /* w(x) has underflowed to zero, which happens for the
+                   largest nodes once the order is high enough. The quotient
+                   itself is still of order one there, so form it in
+                   logarithms to keep every intermediate in range. */
+                w_[i] = std::exp(std::log(mu_0)
+                                 + 2.0*std::log(std::fabs(ev[0][i]))
+                                 - orthPoly.logW(x_[i]));
+            }
         }
     }
 
