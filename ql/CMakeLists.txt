@@ -150,6 +150,7 @@ set(QL_SOURCES
     experimental/forward/analytichestonforwardeuropeanengine.cpp
     experimental/fx/discountingmtmcrosscurrencybasisswapengine.cpp
     experimental/fx/fxresetcashflows.cpp
+    experimental/fx/makemtmcrosscurrencybasisswap.cpp
     experimental/fx/mtmcrosscurrencybasisswap.cpp
     experimental/inflation/cpicapfloorengines.cpp
     experimental/inflation/cpicapfloortermpricesurface.cpp
@@ -292,6 +293,9 @@ set(QL_SOURCES
     instruments/makecapfloor.cpp
     instruments/makecds.cpp
     instruments/makecms.cpp
+    instruments/makeconstnotionalcrosscurrencybasisswap.cpp
+    instruments/makeconstnotionalcrosscurrencyfixedvsfloatingswap.cpp
+    instruments/makeconstnotionalcrosscurrencyswap.cpp
     instruments/makemultipleresetsswap.cpp
     instruments/makeois.cpp
     instruments/makeswaption.cpp
@@ -1181,6 +1185,7 @@ set(QL_HEADERS
     experimental/fx/deltavolquote.hpp
     experimental/fx/discountingmtmcrosscurrencybasisswapengine.hpp
     experimental/fx/fxresetcashflows.hpp
+    experimental/fx/makemtmcrosscurrencybasisswap.hpp
     experimental/fx/mtmcrosscurrencybasisswap.hpp
     experimental/inflation/cpicapfloorengines.hpp
     experimental/inflation/cpicapfloortermpricesurface.hpp
@@ -1393,6 +1398,9 @@ set(QL_HEADERS
     instruments/makecapfloor.hpp
     instruments/makecds.hpp
     instruments/makecms.hpp
+    instruments/makeconstnotionalcrosscurrencybasisswap.hpp
+    instruments/makeconstnotionalcrosscurrencyfixedvsfloatingswap.hpp
+    instruments/makeconstnotionalcrosscurrencyswap.hpp
     instruments/makemultipleresetsswap.hpp
     instruments/makeois.hpp
     instruments/makeswaption.hpp

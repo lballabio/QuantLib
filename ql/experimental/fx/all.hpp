@@ -3,5 +3,6 @@
 
 #include <ql/experimental/fx/discountingmtmcrosscurrencybasisswapengine.hpp>
 #include <ql/experimental/fx/fxresetcashflows.hpp>
+#include <ql/experimental/fx/makemtmcrosscurrencybasisswap.hpp>
 #include <ql/experimental/fx/mtmcrosscurrencybasisswap.hpp>
 

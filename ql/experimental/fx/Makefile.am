@@ -8,11 +8,13 @@ this_include_HEADERS = \
     deltavolquote.hpp \
     discountingmtmcrosscurrencybasisswapengine.hpp \
     fxresetcashflows.hpp \
+    makemtmcrosscurrencybasisswap.hpp \
     mtmcrosscurrencybasisswap.hpp
 
 cpp_files = \
     discountingmtmcrosscurrencybasisswapengine.cpp \
     fxresetcashflows.cpp \
+    makemtmcrosscurrencybasisswap.cpp \
     mtmcrosscurrencybasisswap.cpp
 
 if UNITY_BUILD
