@@ -25,6 +25,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <algorithm>
+#include <limits>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/math/distributions/bivariatestudenttdistribution.hpp>
@@ -309,6 +310,58 @@ BOOST_AUTO_TEST_CASE(testNormal) {
                     << std::scientific << e << "\n"
                     << "tolerance exceeded");
     }
+}
+
+BOOST_AUTO_TEST_CASE(testNormalTailAndErrorCases) {
+
+    BOOST_TEST_MESSAGE("Testing normal-distribution tails and invalid inputs...");
+
+    InverseCumulativeNormal invCum;
+    BOOST_CHECK(std::isfinite(invCum(0.0)));
+    BOOST_CHECK(std::isfinite(invCum(1.0)));
+    BOOST_CHECK(std::isfinite(invCum(QL_EPSILON)));
+    BOOST_CHECK(std::isfinite(invCum(1.0 - QL_EPSILON)));
+    BOOST_CHECK(invCum(0.0) < 0.0);
+    BOOST_CHECK(invCum(1.0) > 0.0);
+    BOOST_CHECK_CLOSE(invCum(0.02425), -1.972961049,
+                      1.0e-6);
+    BOOST_CHECK_CLOSE(invCum(0.97575), 1.972961049,
+                      1.0e-6);
+    BOOST_CHECK_CLOSE(invCum(0.1), -invCum(0.9), 1.0e-12);
+    BOOST_CHECK_THROW(invCum(-1.0e-8), Error);
+    BOOST_CHECK_THROW(invCum(1.0 + 1.0e-4), Error);
+
+    MoroInverseCumulativeNormal moroInvCum;
+    BOOST_CHECK(std::isfinite(moroInvCum(QL_EPSILON)));
+    BOOST_CHECK(std::isfinite(moroInvCum(1.0 - QL_EPSILON)));
+    BOOST_CHECK_THROW(moroInvCum(0.0), Error);
+    BOOST_CHECK_THROW(moroInvCum(1.0), Error);
+    BOOST_CHECK_THROW(moroInvCum(-1.0e-8), Error);
+    BOOST_CHECK_THROW(moroInvCum(1.0 + 1.0e-8), Error);
+
+    MaddockInverseCumulativeNormal maddockInvCum;
+    BOOST_CHECK(std::isfinite(maddockInvCum(0.5)));
+    BOOST_CHECK(std::isfinite(maddockInvCum(QL_EPSILON)));
+    BOOST_CHECK(std::isfinite(maddockInvCum(1.0 - QL_EPSILON)));
+
+    MaddockCumulativeNormal maddockCum;
+    BOOST_CHECK_CLOSE(maddockCum(0.0), 0.5, 1.0e-12);
+    BOOST_CHECK(maddockCum(-1.0) < 0.5);
+    BOOST_CHECK(maddockCum(1.0) > 0.5);
+
+    BOOST_CHECK_THROW(NormalDistribution(0.0, 0.0), Error);
+    BOOST_CHECK_THROW(CumulativeNormalDistribution(0.0, 0.0), Error);
+    BOOST_CHECK_THROW(InverseCumulativeNormal(0.0, 0.0), Error);
+    BOOST_CHECK_THROW(MoroInverseCumulativeNormal(0.0, 0.0), Error);
+    BOOST_CHECK_THROW(MaddockInverseCumulativeNormal(0.0, 0.0), Error);
+    BOOST_CHECK_THROW(MaddockCumulativeNormal(0.0, 0.0), Error);
+
+    NormalDistribution normal;
+    BOOST_CHECK_EQUAL(normal.derivative(QL_MAX_REAL), 0.0);
+    BOOST_CHECK_EQUAL(normal.derivative(-QL_MAX_REAL), 0.0);
+    const Real infinity = std::numeric_limits<Real>::infinity();
+    BOOST_CHECK_EQUAL(normal.derivative(infinity), 0.0);
+    BOOST_CHECK_EQUAL(normal.derivative(-infinity), 0.0);
 }
 
 BOOST_AUTO_TEST_CASE(testBivariate) {
