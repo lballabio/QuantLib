@@ -145,7 +145,10 @@ namespace QuantLib {
         Real result;
         Real temp=x-0.5;
 
-        if (std::fabs(temp) < 0.42) {
+        // Moro's central approximation is used for |x - 0.5| < 0.42;
+        // the alternative approximation is more accurate in the tails.
+        constexpr Real centralRegionHalfWidth = 0.42;
+        if (std::fabs(temp) < centralRegionHalfWidth) {
             // Beasley and Springer, 1977
             result=temp*temp;
             result=temp*
