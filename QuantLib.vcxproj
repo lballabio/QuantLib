@@ -774,6 +774,7 @@
     <ClInclude Include="ql\experimental\termstructures\all.hpp" />
     <ClInclude Include="ql\experimental\termstructures\basisswapratehelpers.hpp" />
     <ClInclude Include="ql\experimental\termstructures\crosscurrencyratehelpers.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\overnightindexedfundingratehelper.hpp" />
     <ClInclude Include="ql\experimental\variancegamma\all.hpp" />
     <ClInclude Include="ql\experimental\variancegamma\analyticvariancegammaengine.hpp" />
     <ClInclude Include="ql\experimental\variancegamma\fftengine.hpp" />
@@ -2143,6 +2144,7 @@
     <ClCompile Include="ql\experimental\swaptions\irregularswaption.cpp" />
     <ClCompile Include="ql\experimental\termstructures\basisswapratehelpers.cpp" />
     <ClCompile Include="ql\experimental\termstructures\crosscurrencyratehelpers.cpp" />
+    <ClCompile Include="ql\experimental\termstructures\overnightindexedfundingratehelper.cpp" />
     <ClCompile Include="ql\experimental\variancegamma\analyticvariancegammaengine.cpp" />
     <ClCompile Include="ql\experimental\variancegamma\fftengine.cpp" />
     <ClCompile Include="ql\experimental\variancegamma\fftvanillaengine.cpp" />

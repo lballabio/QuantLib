@@ -3,4 +3,5 @@
 
 #include <ql/experimental/termstructures/basisswapratehelpers.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
+#include <ql/experimental/termstructures/overnightindexedfundingratehelper.hpp>
 

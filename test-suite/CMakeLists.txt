@@ -132,6 +132,7 @@ set(QL_TEST_SOURCES
     optimizers.cpp
     optionletstripper.cpp
     overnightindexedcoupon.cpp
+    overnightindexedfundingratehelper.cpp
     overnightindexedswap.cpp
     pagodaoption.cpp
     partialtimebarrieroption.cpp
