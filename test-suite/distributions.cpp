@@ -361,6 +361,17 @@ BOOST_AUTO_TEST_CASE(testNormalTailAndErrorCases) {
     BOOST_CHECK(std::isfinite(moroInvCum(0.080001)));
     BOOST_CHECK(std::isfinite(moroInvCum(0.919999)));
     BOOST_CHECK(std::isfinite(moroInvCum(0.92)));
+    for (Real probability : { 0.08, 0.080001, 0.919999, 0.92 }) {
+        BOOST_CHECK_CLOSE(moroInvCum(probability), invCum(probability), 1.0e-3);
+    }
+    BOOST_CHECK_SMALL(
+        std::fabs((moroInvCum(0.080001) - moroInvCum(0.08)) -
+                  (invCum(0.080001) - invCum(0.08))),
+        1.0e-4);
+    BOOST_CHECK_SMALL(
+        std::fabs((moroInvCum(0.92) - moroInvCum(0.919999)) -
+                  (invCum(0.92) - invCum(0.919999))),
+        1.0e-4);
 
     MaddockInverseCumulativeNormal maddockInvCum;
     BOOST_CHECK(std::isfinite(maddockInvCum(0.5)));
