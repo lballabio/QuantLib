@@ -330,6 +330,12 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativeNormal) {
                       1.0e-6);
     BOOST_CHECK_CLOSE(invCum(0.1), -invCum(0.9), 1.0e-12);
 
+    // Values sufficiently close to the endpoints are recovered as finite
+    // sentinels; values outside that recovery tolerance are rejected.
+    BOOST_CHECK_EQUAL(invCum(-0.5 * QL_EPSILON), QL_MIN_REAL);
+    BOOST_CHECK_THROW(invCum(-2.0 * QL_EPSILON), Error);
+    BOOST_CHECK_THROW(invCum(1.0 + 100.0 * QL_EPSILON), Error);
+
     const Real probabilities[] = { 1.0e-6, 0.01, 0.1, 0.5, 0.9, 0.99,
                                    1.0 - 1.0e-6 };
     Real previous = -QL_MAX_REAL;
@@ -360,6 +366,7 @@ BOOST_AUTO_TEST_CASE(testMoroInverseCumulativeNormal) {
 
     InverseCumulativeNormal invCum;
     MoroInverseCumulativeNormal moroInvCum;
+    const boost::math::normal_distribution<Real> standardNormal;
     BOOST_CHECK(std::isfinite(moroInvCum(QL_EPSILON)));
     BOOST_CHECK(std::isfinite(moroInvCum(1.0 - QL_EPSILON)));
     BOOST_CHECK_THROW(moroInvCum(0.0), Error);
@@ -375,6 +382,10 @@ BOOST_AUTO_TEST_CASE(testMoroInverseCumulativeNormal) {
         BOOST_CHECK(std::isfinite(moroInvCum(probability)));
         // Acklam provides a more accurate independent reference here.
         BOOST_CHECK_CLOSE(moroInvCum(probability), invCum(probability), 1.0e-3);
+        // Boost.Math provides a second independent reference for the tails.
+        BOOST_CHECK_CLOSE(moroInvCum(probability),
+                          boost::math::quantile(standardNormal, probability),
+                          1.0e-3);
     }
 
     // The two approximations should not introduce a visible jump at the switch.
@@ -402,11 +413,27 @@ BOOST_AUTO_TEST_CASE(testMaddockNormalDistributions) {
     const Real probabilities[] = { 1.0e-10, 1.0e-6, 0.01, 0.1, 0.5, 0.9,
                                    0.99, 1.0 - 1.0e-6, 1.0 - 1.0e-10 };
     for (Real probability : probabilities) {
+        // Check inverse-CDF accuracy against Boost and the CDF/inverse round trip.
         BOOST_CHECK_CLOSE(maddockInvCum(probability),
                           boost::math::quantile(standardNormal, probability),
                           1.0e-10);
         BOOST_CHECK_CLOSE(maddockCum(maddockInvCum(probability)), probability,
                           1.0e-10);
+    }
+    // Verify the location-scale transformation against an independent Boost
+    // distribution, in addition to the standard-normal round-trip checks.
+    MaddockInverseCumulativeNormal shiftedMaddockInvCum(3.0, 2.0);
+    MaddockCumulativeNormal shiftedMaddockCum(3.0, 2.0);
+    const boost::math::normal_distribution<Real> shiftedStandardNormal(3.0, 2.0);
+    for (Real probability : probabilities) {
+        // Check the inverse location-scale transformation against Boost.
+        BOOST_CHECK_CLOSE(shiftedMaddockInvCum(probability),
+                          boost::math::quantile(shiftedStandardNormal, probability),
+                          1.0e-10);
+        // Check the corresponding transformed CDF round trip.
+        BOOST_CHECK_CLOSE(shiftedMaddockCum(3.0 + 2.0 *
+                                            maddockInvCum(probability)),
+                          probability, 1.0e-10);
     }
     // Boost.Math throws at exact inverse-CDF endpoints.
     BOOST_CHECK_THROW(maddockInvCum(0.0), std::exception);
@@ -433,6 +460,12 @@ BOOST_AUTO_TEST_CASE(testCumulativeNormal) {
     BOOST_CHECK_EQUAL(cumulative(infinity), 1.0);
     const boost::math::normal_distribution<Real> standardNormal;
     Real previous = 0.0;
+    // Probe both sides of the direct/asymptotic CDF switch at probability 1e-8.
+    const Real cdfSwitch = boost::math::quantile(standardNormal, 1.0e-8);
+    for (Real x : { cdfSwitch - 1.0e-6, cdfSwitch, cdfSwitch + 1.0e-6 }) {
+        BOOST_CHECK_SMALL(cumulative(x) - boost::math::cdf(standardNormal, x),
+                          1.0e-14);
+    }
     for (Real x : { -6.0, -10.0, -20.0 }) {
         // The asymptotic implementation is less accurate than Boost here,
         // but remains within this relative tolerance in the lower tail.
@@ -445,6 +478,21 @@ BOOST_AUTO_TEST_CASE(testCumulativeNormal) {
         BOOST_CHECK(value >= 0.0);
         BOOST_CHECK(value <= 1.0);
         previous = value;
+    }
+    for (Real x : { 6.0, 10.0, 20.0 }) {
+        BOOST_CHECK_SMALL(cumulative(x) - boost::math::cdf(standardNormal, x),
+                          1.0e-14);
+    }
+
+    NormalDistribution shiftedNormal(3.0, 2.0);
+    CumulativeNormalDistribution shiftedCumulative(3.0, 2.0);
+    NormalDistribution standardDensity;
+    for (Real x : { 1.0, 3.0, 5.0 }) {
+        const Real standardValue = (x - 3.0) / 2.0;
+        BOOST_CHECK_CLOSE(shiftedNormal(x), standardDensity(standardValue) / 2.0,
+                          1.0e-12);
+        BOOST_CHECK_CLOSE(shiftedCumulative(x), cumulative(standardValue),
+                          1.0e-12);
     }
 
     BOOST_CHECK_THROW(NormalDistribution(0.0, 0.0), Error);
