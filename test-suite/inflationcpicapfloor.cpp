@@ -103,9 +103,8 @@ struct CommonVars {
     ext::shared_ptr<UKRPI> ii;
     Size zciisDataLength;
 
-    RelinkableHandle<YieldTermStructure> nominalUK;
-    RelinkableHandle<ZeroInflationTermStructure> cpiUK;
-    RelinkableHandle<ZeroInflationTermStructure> hcpi;
+    Handle<YieldTermStructure> nominalUK;
+    Handle<ZeroInflationTermStructure> cpiUK;
 
     std::vector<Rate> cStrikesUK;
     std::vector<Rate> fStrikesUK;
@@ -118,7 +117,6 @@ struct CommonVars {
     // setup
     CommonVars()
     : nominals(1,1000000) {
-        //std::cout <<"CommonVars" << std::endl;
         // option variables
         frequency = Annual;
         // usual setup
@@ -152,7 +150,7 @@ struct CommonVars {
         };
 
         // link from cpi index to cpi TS
-        ii = ext::make_shared<UKRPI>(hcpi);
+        ii = ext::make_shared<UKRPI>();
         for (Size i=0; i<rpiSchedule.size();i++) {
             ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
         };
@@ -203,7 +201,7 @@ struct CommonVars {
         ext::shared_ptr<YieldTermStructure> nominalTS =
             ext::make_shared<InterpolatedZeroCurve<Linear>>(nomD,nomR,dcNominal);
 
-        nominalUK.linkTo(nominalTS);
+        nominalUK = Handle<YieldTermStructure>(nominalTS);
 
 
         // now build the zero inflation curve
@@ -249,11 +247,11 @@ struct CommonVars {
         Date baseDate = ii->lastFixingDate();
         auto pCPIts = ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
                                     evaluationDate, baseDate, ii->frequency(), dcZCIIS, helpers);
-        pCPIts->recalculate();
-        cpiUK.linkTo(pCPIts);
+
+        cpiUK = Handle<ZeroInflationTermStructure>(pCPIts);
 
         // make sure that the index has the latest zero inflation term structure
-        hcpi.linkTo(pCPIts);
+        ii = ext::make_shared<UKRPI>(cpiUK);
 
         // cpi CF price surf data
         Period cfMat[] = {3*Years, 5*Years, 7*Years, 10*Years, 15*Years, 20*Years, 30*Years};
@@ -362,9 +360,6 @@ BOOST_AUTO_TEST_CASE(cpicapfloorpricesurface) {
         BOOST_ERROR("The requested premium, " << premium
             << ", does not equal the expected premium, " << expPremium << ".");
     }
-
-    // remove circular refernce
-    common.hcpi.reset();
 }
 
 BOOST_AUTO_TEST_CASE(cpicapfloorpricer) {
@@ -424,9 +419,6 @@ BOOST_AUTO_TEST_CASE(cpicapfloorpricer) {
 
     QL_REQUIRE(fabs(cached - aCap.NPV())<1e-10,"InterpolatingCPICapFloorEngine does not reproduce cached price: "
                << cached << " vs " << aCap.NPV());
-
-    // remove circular refernce
-    common.hcpi.reset();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
