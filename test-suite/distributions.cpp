@@ -34,6 +34,7 @@
 #include <ql/math/distributions/poissondistribution.hpp>
 #include <ql/math/randomnumbers/stochasticcollocationinvcdf.hpp>
 #include <ql/math/comparison.hpp>
+#include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 
 using namespace QuantLib;
@@ -316,6 +317,7 @@ BOOST_AUTO_TEST_CASE(testNormalTailAndErrorCases) {
 
     BOOST_TEST_MESSAGE("Testing normal-distribution tails and invalid inputs...");
 
+    const Real infinity = std::numeric_limits<Real>::infinity();
     InverseCumulativeNormal invCum;
     BOOST_CHECK(std::isfinite(invCum(0.0)));
     BOOST_CHECK(std::isfinite(invCum(1.0)));
@@ -328,6 +330,23 @@ BOOST_AUTO_TEST_CASE(testNormalTailAndErrorCases) {
     BOOST_CHECK_CLOSE(invCum(0.97575), 1.972961049,
                       1.0e-6);
     BOOST_CHECK_CLOSE(invCum(0.1), -invCum(0.9), 1.0e-12);
+
+    const Real probabilities[] = { 1.0e-6, 0.01, 0.1, 0.5, 0.9, 0.99,
+                                   1.0 - 1.0e-6 };
+    Real previous = -QL_MAX_REAL;
+    for (Real probability : probabilities) {
+        const Real value = invCum(probability);
+        BOOST_CHECK(value > previous);
+        previous = value;
+    }
+
+    InverseCumulativeNormal shiftedInvCum(3.0, 2.0);
+    for (Real probability : probabilities) {
+        BOOST_CHECK_CLOSE(shiftedInvCum(probability),
+                          3.0 + 2.0 * invCum(probability),
+                          1.0e-12);
+    }
+
     BOOST_CHECK_THROW(invCum(-1.0e-8), Error);
     BOOST_CHECK_THROW(invCum(1.0 + 1.0e-4), Error);
 
@@ -338,6 +357,10 @@ BOOST_AUTO_TEST_CASE(testNormalTailAndErrorCases) {
     BOOST_CHECK_THROW(moroInvCum(1.0), Error);
     BOOST_CHECK_THROW(moroInvCum(-1.0e-8), Error);
     BOOST_CHECK_THROW(moroInvCum(1.0 + 1.0e-8), Error);
+    BOOST_CHECK(std::isfinite(moroInvCum(0.08)));
+    BOOST_CHECK(std::isfinite(moroInvCum(0.080001)));
+    BOOST_CHECK(std::isfinite(moroInvCum(0.919999)));
+    BOOST_CHECK(std::isfinite(moroInvCum(0.92)));
 
     MaddockInverseCumulativeNormal maddockInvCum;
     BOOST_CHECK(std::isfinite(maddockInvCum(0.5)));
@@ -349,6 +372,15 @@ BOOST_AUTO_TEST_CASE(testNormalTailAndErrorCases) {
     BOOST_CHECK(maddockCum(-1.0) < 0.5);
     BOOST_CHECK(maddockCum(1.0) > 0.5);
 
+    CumulativeNormalDistribution cumulative;
+    BOOST_CHECK_EQUAL(cumulative(-infinity), 0.0);
+    BOOST_CHECK_EQUAL(cumulative(infinity), 1.0);
+    const boost::math::normal_distribution<Real> standardNormal;
+    for (Real x : { -6.0, -10.0, -20.0 }) {
+        BOOST_CHECK_CLOSE(cumulative(x), boost::math::cdf(standardNormal, x),
+                          1.0e-5);
+    }
+
     BOOST_CHECK_THROW(NormalDistribution(0.0, 0.0), Error);
     BOOST_CHECK_THROW(CumulativeNormalDistribution(0.0, 0.0), Error);
     BOOST_CHECK_THROW(InverseCumulativeNormal(0.0, 0.0), Error);
@@ -359,7 +391,6 @@ BOOST_AUTO_TEST_CASE(testNormalTailAndErrorCases) {
     NormalDistribution normal;
     BOOST_CHECK_EQUAL(normal.derivative(QL_MAX_REAL), 0.0);
     BOOST_CHECK_EQUAL(normal.derivative(-QL_MAX_REAL), 0.0);
-    const Real infinity = std::numeric_limits<Real>::infinity();
     BOOST_CHECK_EQUAL(normal.derivative(infinity), 0.0);
     BOOST_CHECK_EQUAL(normal.derivative(-infinity), 0.0);
 }
