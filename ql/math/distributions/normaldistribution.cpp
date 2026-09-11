@@ -170,7 +170,12 @@ namespace QuantLib {
 
     MaddockInverseCumulativeNormal::MaddockInverseCumulativeNormal(
         Real average, Real sigma)
-    : average_(average), sigma_(sigma) {}
+    : average_(average), sigma_(sigma) {
+
+        QL_REQUIRE(sigma_ > 0.0,
+                   "sigma must be greater than 0.0 ("
+                   << sigma_ << " not allowed)");
+    }
 
     Real MaddockInverseCumulativeNormal::operator()(Real x) const {
         return boost::math::quantile(
@@ -179,7 +184,12 @@ namespace QuantLib {
 
     MaddockCumulativeNormal::MaddockCumulativeNormal(
         Real average, Real sigma)
-    : average_(average), sigma_(sigma) {}
+    : average_(average), sigma_(sigma) {
+
+        QL_REQUIRE(sigma_ > 0.0,
+                   "sigma must be greater than 0.0 ("
+                   << sigma_ << " not allowed)");
+    }
 
     Real MaddockCumulativeNormal::operator()(Real x) const {
         return boost::math::cdf(
