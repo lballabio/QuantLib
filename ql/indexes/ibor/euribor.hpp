@@ -41,7 +41,7 @@ namespace QuantLib {
     */
     class Euribor : public IborIndex {
       public:
-        Euribor(const Period& tenor,
+        explicit Euribor(const Period& tenor,
                 const Handle<YieldTermStructure>& h = {});
     };
 
@@ -52,7 +52,7 @@ namespace QuantLib {
     */
     class Euribor365 : public IborIndex {
       public:
-        Euribor365(const Period& tenor,
+        explicit Euribor365(const Period& tenor,
                    const Handle<YieldTermStructure>& h = {});
     };
 

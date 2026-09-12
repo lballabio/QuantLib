@@ -55,7 +55,7 @@ namespace QuantLib {
             /*!    Constructs parameters with a given xm and alpha
                 Requires: alpha > 0
             */
-            param_type(Real xm = 1.0, Real alpha = 1.0)
+            explicit param_type(Real xm = 1.0, Real alpha = 1.0)
               : xm_(xm), alpha_(alpha) { QL_REQUIRE(alpha_ > 0.0, "alpha must be larger than 0"); }
 
             //! Returns the xm parameter of the distribution
@@ -100,7 +100,7 @@ namespace QuantLib {
         { return QL_MAX_REAL; }
 
         //! Returns the parameters of the distribution
-        param_type param() const { return {xm_, alpha_}; }
+        param_type param() const { return param_type{xm_, alpha_}; }
         //@}
         
         //! Sets the parameters of the distribution

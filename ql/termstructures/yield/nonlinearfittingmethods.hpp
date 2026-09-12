@@ -50,7 +50,7 @@ namespace QuantLib {
     class ExponentialSplinesFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-        ExponentialSplinesFitting(bool constrainAtZero = true,
+        explicit ExponentialSplinesFitting(bool constrainAtZero = true,
                                   const Array& weights = Array(),
                                   const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                                   const Array& l2 = Array(),
@@ -96,7 +96,7 @@ namespace QuantLib {
     class NelsonSiegelFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-        NelsonSiegelFitting(const Array& weights = Array(),
+        explicit NelsonSiegelFitting(const Array& weights = Array(),
                             const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                             const Array& l2 = Array(),
                             Real minCutoffTime = 0.0,
@@ -129,7 +129,7 @@ namespace QuantLib {
     class SvenssonFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-        SvenssonFitting(const Array& weights = Array(),
+        explicit SvenssonFitting(const Array& weights = Array(),
                         const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                         const Array& l2 = Array(),
                         Real minCutoffTime = 0.0,
@@ -169,7 +169,7 @@ namespace QuantLib {
     class CubicBSplinesFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-        CubicBSplinesFitting(const std::vector<Time>& knotVector,
+        explicit CubicBSplinesFitting(const std::vector<Time>& knotVector,
                              bool constrainAtZero = true,
                              const Array& weights = Array(),
                              const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
@@ -245,7 +245,7 @@ namespace QuantLib {
     class SimplePolynomialFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-        SimplePolynomialFitting(Natural degree,
+        explicit SimplePolynomialFitting(Natural degree,
                                 bool constrainAtZero = true,
                                 const Array& weights = Array(),
                                 const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},

@@ -66,7 +66,7 @@ namespace QuantLib {
             Digital
         };
 
-        Gaussian1dSwaptionEngine(
+        explicit Gaussian1dSwaptionEngine(
             const ext::shared_ptr<Gaussian1dModel>& model,
             const int integrationPoints = 64,
             const Real stddevs = 7.0,
@@ -83,7 +83,7 @@ namespace QuantLib {
                 registerWith(discountCurve_);
         }
 
-        Gaussian1dSwaptionEngine(
+        explicit Gaussian1dSwaptionEngine(
             const Handle<Gaussian1dModel>& model,
             const int integrationPoints = 64,
             const Real stddevs = 7.0,

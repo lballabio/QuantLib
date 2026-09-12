@@ -95,7 +95,7 @@ namespace QuantLib {
     class CovarianceDecomposition {
       public:
         /*! \pre covarianceMatrix must be symmetric */
-        CovarianceDecomposition(
+        explicit CovarianceDecomposition(
             const Matrix& covarianceMatrix,
             Real tolerance = 1.0e-12);
         /*! returns the variances Array */

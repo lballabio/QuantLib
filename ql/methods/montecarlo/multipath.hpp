@@ -41,7 +41,7 @@ namespace QuantLib {
         MultiPath() = default;
         MultiPath(Size nAsset,
                   const TimeGrid& timeGrid);
-        MultiPath(std::vector<Path> multiPath);
+        explicit MultiPath(std::vector<Path> multiPath);
         //! \name inspectors
         //@{
         Size assetNumber() const { return multiPath_.size(); }

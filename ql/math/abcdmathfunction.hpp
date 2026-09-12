@@ -35,11 +35,11 @@ namespace QuantLib {
     class AbcdMathFunction {
 
       public:
-        AbcdMathFunction(Real a = 0.002,
+        explicit AbcdMathFunction(Real a = 0.002,
                          Real b = 0.001, 
                          Real c = 0.16,
                          Real d = 0.0005);
-        AbcdMathFunction(std::vector<Real> abcd);
+        explicit AbcdMathFunction(std::vector<Real> abcd);
 
         //! function value at time t: \f[ f(t) \f]
         Real operator()(Time t) const;
