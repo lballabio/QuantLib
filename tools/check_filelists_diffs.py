@@ -1,9 +1,12 @@
 #!/usr/bin/python
 
-import sys
+"""Report inconsistencies between generated and maintained source-file lists."""
 
-inputs = [
-    ("ql.dist.diff", "Some Makefile.am"),
+import sys
+from typing import Tuple
+
+INPUTS: Tuple[Tuple[str, str], ...] = (
+    ("ql.dist.diff", "ql/Makefile.am"),
     ("test-suite.dist.diff", "test-suite/Makefile.am"),
     ("ql.cmake.diff", "ql/CMakeLists.txt"),
     ("test-suite.cmake.diff", "test-suite/CMakeLists.txt"),
@@ -11,19 +14,17 @@ inputs = [
     ("ql.vcx.filters.diff", "QuantLib.vcxproj.filters"),
     ("test-suite.vcx.diff", "test-suite/testsuite.vcxproj"),
     ("test-suite.vcx.filters.diff", "test-suite/testsuite.vcxproj.filters"),
-]
-
-result = 0
+)
 
 
-def format(line):
+def describe_file(line: str) -> str:
+    """Describe the source file referenced by a diff output line."""
     filename = line[2:].strip()
     if filename.endswith(".hpp"):
-        return "header file %s" % filename
-    elif filename.endswith(".cpp"):
-        return "source file %s" % filename
-    else:
-        return "file %s" % filename
+        return f"header file {filename}"
+    if filename.endswith(".cpp"):
+        return f"source file {filename}"
+    return f"file {filename}"
 
 
 CYAN = "\033[96m"
@@ -32,19 +33,27 @@ GREEN = "\033[92m"
 BOLD = "\033[1m"
 RESET = "\033[0m"
 
-print(BOLD + CYAN + "\n=============================== RESULTS ================================\n" + RESET)
 
-for diffs, target in inputs:
-    with open(diffs) as f:
-        for line in f:
-            if line.startswith("< "):
-                print(RED + "%s contains extra %s" % (target, format(line)) + RESET)
-                result = 1
-            if line.startswith("> "):
-                print(RED + "%s doesn't contain %s" % (target, format(line)) + RESET)
-                result = 1
+def main() -> int:
+    """Print file-list differences and return a process exit status."""
+    result = 0
+    heading = "\n=============================== RESULTS ================================\n"
+    print(BOLD + CYAN + heading + RESET)
 
-if result == 0:
-    print(GREEN + "All clear." + RESET)
+    for diffs, target in INPUTS:
+        with open(diffs, encoding="utf-8") as diff_file:
+            for line in diff_file:
+                if line.startswith("< "):
+                    print(RED + f"{target} contains extra {describe_file(line)}" + RESET)
+                    result = 1
+                if line.startswith("> "):
+                    print(RED + f"{target} doesn't contain {describe_file(line)}" + RESET)
+                    result = 1
 
-sys.exit(result)
+    if result == 0:
+        print(GREEN + "All clear." + RESET)
+    return result
+
+
+if __name__ == "__main__":
+    sys.exit(main())
