@@ -35,12 +35,12 @@ namespace QuantLib {
     /*! Given x, it returns its probability in a Gaussian normal distribution.
         It provides the first derivative too.
 
-      For average $ \mu $ and standard deviation $ \sigma $, the
+      For average \f$ \mu \f$ and standard deviation \f$ \sigma \f$, the
       density is
-      [
+      \f[
         f(x) = \frac{1}{\sigma\sqrt{2\pi}}
              \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right).
-      ]
+      \f]
       The standard deviation must be strictly positive.
 
         \test the correctness of the returned value is tested by
@@ -66,13 +66,13 @@ namespace QuantLib {
 
     //! Cumulative normal distribution function
     /*! Given x, it provides an approximation to the cumulative probability
-      of a Gaussian normal distribution with average $ \mu $ and
-      standard deviation $ \sigma $:
-      [
+      of a Gaussian normal distribution with average \f$ \mu \f$ and
+      standard deviation \f$ \sigma \f$:
+      \f[
         F(x) = \frac{1}{\sigma\sqrt{2\pi}}
              \int_{-\infty}^{x}
              \exp\left(-\frac{(t-\mu)^2}{2\sigma^2}\right)dt.
-      ]
+      \f]
       The result is between zero and one, and derivative() returns the
       corresponding normal density. The lower tail uses an asymptotic
       expansion when the direct error-function calculation loses precision.
@@ -96,12 +96,12 @@ namespace QuantLib {
 
 
     //! Inverse cumulative normal distribution function
-    /*! Given a probability $ p $ between zero and one, this class
-      provides $ y = F^{-1}(p) $ such that
+    /*! Given a probability \f$ p \f$ between zero and one, this class
+      provides \f$ y = F^{-1}(p) \f$ such that
       \f[
           F(y) = p,
       \f]
-      where $ F $ is the cumulative normal distribution.
+      where \f$ F \f$ is the cumulative normal distribution.
 
       It uses Acklam's approximation:
       by Peter J. Acklam, University of Oslo, Statistics Division.
@@ -241,12 +241,12 @@ namespace QuantLib {
     };
 
     //! Maddock's Inverse cumulative normal distribution class
-    /*! Given a probability $ p $ between zero and one, this class
-      provides $ y = F^{-1}(p) $ such that
-      [
+    /*! Given a probability \f$ p \f$ between zero and one, this class
+      provides \f$ y = F^{-1}(p) \f$ such that
+      \f[
         F(y) = p,
-      ]
-      where $ F $ is the cumulative normal distribution.
+      \f]
+      where \f$ F \f$ is the cumulative normal distribution.
 
         From the boost documentation:
          These functions use a rational approximation devised by
