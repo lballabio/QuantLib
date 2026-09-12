@@ -31,6 +31,7 @@ Mathl. Comput. Modelling, 967-973, 1989
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/problem.hpp>
 #include <ql/shared_ptr.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -209,8 +210,9 @@ namespace QuantLib {
             temperature_(currentTemperature, currentTemperature, annealStep);
 
             //Check if temperature condition is breached
-            for (Size i = 0; i < n; i++)
-                temperatureBreached = temperatureBreached && currentTemperature[i] < endTemperature_;
+            temperatureBreached = std::all_of(
+                currentTemperature.begin(), currentTemperature.end(),
+                [this](Real temperature) { return temperature < endTemperature_; });
         }
         
         //Change end criteria type if appropriate
