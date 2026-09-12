@@ -72,7 +72,7 @@ namespace QuantLib {
     */
     class TermStructureConsistentModel : public virtual Observable {
       public:
-        TermStructureConsistentModel(Handle<YieldTermStructure> termStructure)
+        explicit TermStructureConsistentModel(Handle<YieldTermStructure> termStructure)
         : termStructure_(std::move(termStructure)) {}
         const Handle<YieldTermStructure>& termStructure() const {
             return termStructure_;
@@ -85,7 +85,7 @@ namespace QuantLib {
     //! Calibrated model class
     class CalibratedModel : public virtual Observer, public virtual Observable {
       public:
-        CalibratedModel(Size nArguments);
+        explicit CalibratedModel(Size nArguments);
 
         void update() override {
             generateArguments();

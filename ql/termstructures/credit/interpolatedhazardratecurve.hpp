@@ -72,7 +72,7 @@ namespace QuantLib {
         std::vector<std::pair<Date, Real> > nodes() const;
         //@}
       protected:
-        InterpolatedHazardRateCurve(
+        explicit InterpolatedHazardRateCurve(
             const DayCounter&,
             const std::vector<Handle<Quote> >& jumps = {},
             const std::vector<Date>& jumpDates = {},

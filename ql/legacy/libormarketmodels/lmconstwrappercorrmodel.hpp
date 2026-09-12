@@ -30,7 +30,7 @@ namespace QuantLib {
 
     class LmConstWrapperCorrelationModel : public LmCorrelationModel {
       public:
-        LmConstWrapperCorrelationModel(
+        explicit LmConstWrapperCorrelationModel(
             const ext::shared_ptr<LmCorrelationModel> & corrModel)
         : LmCorrelationModel(corrModel->size(), 0),
           corrModel_(corrModel) {

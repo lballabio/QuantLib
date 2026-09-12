@@ -39,6 +39,8 @@
 #include <boost/config.hpp>
 #include <boost/version.hpp>
 #if BOOST_VERSION < 104800
+    // Intentionally reject unsupported Boost versions during preprocessing.
+    // cppcheck-suppress preprocessorErrorDirective
     #error using an old version of Boost, please update.
 #endif
 #if !defined(BOOST_ENABLE_ASSERT_HANDLER)

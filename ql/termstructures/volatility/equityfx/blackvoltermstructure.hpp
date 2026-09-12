@@ -60,10 +60,10 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolTermStructure(BusinessDayConvention bdc = Following,
+        explicit BlackVolTermStructure(BusinessDayConvention bdc = Following,
                               const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
-        BlackVolTermStructure(const Date& referenceDate,
+        explicit BlackVolTermStructure(const Date& referenceDate,
                               const Calendar& cal = Calendar(),
                               BusinessDayConvention bdc = Following,
                               const DayCounter& dc = DayCounter());
@@ -171,10 +171,10 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolatilityTermStructure(BusinessDayConvention bdc = Following,
+        explicit BlackVolatilityTermStructure(BusinessDayConvention bdc = Following,
                                      const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
-        BlackVolatilityTermStructure(const Date& referenceDate,
+        explicit BlackVolatilityTermStructure(const Date& referenceDate,
                                      const Calendar& cal = Calendar(),
                                      BusinessDayConvention bdc = Following,
                                      const DayCounter& dc = DayCounter());
@@ -216,10 +216,10 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVarianceTermStructure(BusinessDayConvention bdc = Following,
+        explicit BlackVarianceTermStructure(BusinessDayConvention bdc = Following,
                                    const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
-        BlackVarianceTermStructure(const Date& referenceDate,
+        explicit BlackVarianceTermStructure(const Date& referenceDate,
                                    const Calendar& cal = Calendar(),
                                    BusinessDayConvention bdc = Following,
                                    const DayCounter& dc = DayCounter());

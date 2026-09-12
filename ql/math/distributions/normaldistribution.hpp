@@ -43,7 +43,7 @@ namespace QuantLib {
     */
     class NormalDistribution {
       public:
-        NormalDistribution(Real average = 0.0,
+        explicit NormalDistribution(Real average = 0.0,
                            Real sigma = 1.0);
         // function
         Real operator()(Real x) const;
@@ -67,7 +67,7 @@ namespace QuantLib {
     */
     class CumulativeNormalDistribution {
       public:
-        CumulativeNormalDistribution(Real average = 0.0,
+        explicit CumulativeNormalDistribution(Real average = 0.0,
                                      Real sigma   = 1.0);
         // function
         Real operator()(Real x) const;
@@ -99,7 +99,7 @@ namespace QuantLib {
     */
     class InverseCumulativeNormal {
       public:
-        InverseCumulativeNormal(Real average = 0.0,
+        explicit InverseCumulativeNormal(Real average = 0.0,
                                 Real sigma   = 1.0);
         // function
         Real operator()(Real x) const {
@@ -197,7 +197,7 @@ namespace QuantLib {
     */
     class MoroInverseCumulativeNormal {
       public:
-        MoroInverseCumulativeNormal(Real average = 0.0,
+        explicit MoroInverseCumulativeNormal(Real average = 0.0,
                                     Real sigma   = 1.0);
         // function
         Real operator()(Real x) const;
@@ -237,7 +237,7 @@ namespace QuantLib {
     */
     class MaddockInverseCumulativeNormal {
       public:
-        MaddockInverseCumulativeNormal(Real average = 0.0,
+        explicit MaddockInverseCumulativeNormal(Real average = 0.0,
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;
 
@@ -248,7 +248,7 @@ namespace QuantLib {
     //! Maddock's cumulative normal distribution class
     class MaddockCumulativeNormal {
       public:
-        MaddockCumulativeNormal(Real average = 0.0,
+        explicit MaddockCumulativeNormal(Real average = 0.0,
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;
 

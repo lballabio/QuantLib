@@ -111,7 +111,7 @@ namespace QuantLib {
     class BlackIborCouponPricer : public IborCouponPricer {
       public:
         enum TimingAdjustment { Black76, BivariateLognormal };
-        BlackIborCouponPricer(
+        explicit BlackIborCouponPricer(
             const Handle<OptionletVolatilityStructure>& v = Handle<OptionletVolatilityStructure>(),
             const TimingAdjustment timingAdjustment = Black76,
             Handle<Quote> correlation = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))),

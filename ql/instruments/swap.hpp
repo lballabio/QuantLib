@@ -123,7 +123,7 @@ namespace QuantLib {
         /*! This constructor can be used by derived classes that will
             build their legs themselves.
         */
-        Swap(Size legs);
+        explicit Swap(Size legs);
         //@}
         //! \name Instrument interface
         //@{

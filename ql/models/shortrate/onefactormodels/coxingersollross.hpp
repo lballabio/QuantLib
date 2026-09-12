@@ -43,7 +43,7 @@ namespace QuantLib {
     */
     class CoxIngersollRoss : public OneFactorAffineModel {
       public:
-        CoxIngersollRoss(Rate r0 = 0.05,
+        explicit CoxIngersollRoss(Rate r0 = 0.05,
                          Real theta = 0.1,
                          Real k = 0.1,
                          Real sigma = 0.1,

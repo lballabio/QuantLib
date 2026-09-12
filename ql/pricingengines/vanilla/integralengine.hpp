@@ -38,7 +38,7 @@ namespace QuantLib {
     */
     class IntegralEngine : public VanillaOption::engine {
       public:
-        IntegralEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
+        explicit IntegralEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         void calculate() const override;
 
       private:

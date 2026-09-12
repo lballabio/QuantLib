@@ -43,7 +43,7 @@ namespace QuantLib {
     */
     class JPYLibor : public Libor {
       public:
-        JPYLibor(const Period& tenor,
+        explicit JPYLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h = {})
         : Libor("JPYLibor", tenor,
                 2,
@@ -55,7 +55,7 @@ namespace QuantLib {
     //! base class for the one day deposit ICE %JPY %LIBOR indexes
     class DailyTenorJPYLibor : public DailyTenorLibor {
       public:
-        DailyTenorJPYLibor(Natural settlementDays,
+        explicit DailyTenorJPYLibor(Natural settlementDays,
                            const Handle<YieldTermStructure>& h = {})
         : DailyTenorLibor("JPYLibor", settlementDays,
                           JPYCurrency(),

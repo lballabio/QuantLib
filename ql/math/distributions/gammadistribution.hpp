@@ -32,7 +32,7 @@ namespace QuantLib {
 
     class CumulativeGammaDistribution {
       public:
-        CumulativeGammaDistribution(Real a) : a_(a) {
+        explicit CumulativeGammaDistribution(Real a) : a_(a) {
             QL_REQUIRE(a>0.0, "invalid parameter for gamma distribution");
         }
         Real operator()(Real x) const;

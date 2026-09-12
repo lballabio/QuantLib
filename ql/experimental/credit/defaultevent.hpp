@@ -64,7 +64,7 @@ namespace QuantLib {
             /*! When NoSeniority is passed all seniorities are assumed
                 to have settled to the recovery passed.
             */
-            DefaultSettlement(const Date& date = Date(),
+            explicit DefaultSettlement(const Date& date = Date(),
                               Seniority seniority = NoSeniority,
                               Real recoveryRate = 0.4);
           public:

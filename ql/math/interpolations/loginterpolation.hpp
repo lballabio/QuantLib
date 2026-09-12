@@ -96,7 +96,7 @@ namespace QuantLib {
     /*! \ingroup interpolations */
     class LogCubic {
       public:
-        LogCubic(CubicInterpolation::DerivativeApprox da,
+        explicit LogCubic(CubicInterpolation::DerivativeApprox da,
                   bool monotonic = true,
                   CubicInterpolation::BoundaryCondition leftCondition
                       = CubicInterpolation::SecondDerivative,

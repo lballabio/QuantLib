@@ -30,7 +30,7 @@ namespace QuantLib {
 
     class FwdToCotSwapAdapter : public MarketModel {
       public:
-        FwdToCotSwapAdapter(
+        explicit FwdToCotSwapAdapter(
                           const ext::shared_ptr<MarketModel>& forwardModel);
         //! \name MarketModel interface
         //@{
@@ -53,7 +53,7 @@ namespace QuantLib {
     class FwdToCotSwapAdapterFactory : public MarketModelFactory,
                                               public Observer {
       public:
-        FwdToCotSwapAdapterFactory(
+        explicit FwdToCotSwapAdapterFactory(
               const ext::shared_ptr<MarketModelFactory>& forwardFactory);
         ext::shared_ptr<MarketModel> create(const EvolutionDescription&,
                                             Size numberOfFactors) const override;

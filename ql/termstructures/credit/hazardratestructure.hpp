@@ -52,11 +52,11 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        HazardRateStructure(
+        explicit HazardRateStructure(
             const DayCounter& dayCounter = DayCounter(),
             const std::vector<Handle<Quote> >& jumps = {},
             const std::vector<Date>& jumpDates = {});
-        HazardRateStructure(
+        explicit HazardRateStructure(
             const Date& referenceDate,
             const Calendar& cal = Calendar(),
             const DayCounter& dayCounter = DayCounter(),

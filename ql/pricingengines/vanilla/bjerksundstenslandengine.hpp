@@ -39,7 +39,7 @@ namespace QuantLib {
     class BjerksundStenslandApproximationEngine
         : public VanillaOption::engine {
       public:
-        BjerksundStenslandApproximationEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
+        explicit BjerksundStenslandApproximationEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         void calculate() const override;
 
       private:
