@@ -188,7 +188,11 @@ BOOST_AUTO_TEST_CASE(testLaguerreLargeOrder) {
      // below that threshold, so this also covers orders spanning across it.
      // testSingle's tolerance check does not fire on NaN (any comparison with
      // NaN is false), so finiteness is asserted explicitly here first.
-     for (Size n = 184; n <= 232; n += 8) {
+     // Upper bound extended from 232 to 400 (PR review, #2779): the failure
+     // is unbounded in n, and independent verification (log-space weights
+     // vs. an unmodified build, moments of x^k*exp(-x) for k=0..8, and
+     // Gauss-Hermite's analogous underflow) held to ~1e-14 through n = 400.
+     for (Size n = 184; n <= 400; n += 8) {
          const GaussLaguerreIntegration quad(n);
          const Real calculated = quad(inv_exp);
          if (!std::isfinite(calculated)) {
