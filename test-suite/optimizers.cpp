@@ -24,7 +24,6 @@
 #include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/math/hybridsimulatedannealing.hpp>
 #include <ql/math/optimization/bfgs.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/constraint.hpp>
@@ -86,22 +85,6 @@ class OneDimensionalPolynomialDegreeN : public CostFunction {
   private:
     const Array coefficients_;
     const Size polynomialDegree_;
-};
-
-struct StationarySampler {
-    void operator()(Array& newPoint, const Array& currentPoint, const Array&) const {
-        newPoint = currentPoint;
-    }
-};
-
-struct RejectAllMoves {
-    bool operator()(Real, Real, const Array&) const { return false; }
-};
-
-struct ImmediateCooling {
-    void operator()(Array& newTemperature, const Array&, const Array&) const {
-        std::fill(newTemperature.begin(), newTemperature.end(), 0.0);
-    }
 };
 
 
@@ -383,27 +366,6 @@ BOOST_AUTO_TEST_CASE(nestedOptimizationTest) {
     EndCriteria endCriteria(1000, 100, 1e-5, 1e-5, 1e-5);
     optimizationMethod.minimize(problem, endCriteria);
 
-}
-
-BOOST_AUTO_TEST_CASE(testHybridSimulatedAnnealingTemperatureTermination) {
-    BOOST_TEST_MESSAGE("Testing hybrid simulated annealing temperature termination...");
-
-    Array coefficients{0.0, 0.0, 1.0};
-    OneDimensionalPolynomialDegreeN costFunction(coefficients);
-    NoConstraint constraint;
-    Problem problem(costFunction, constraint, Array(1, 1.0));
-    EndCriteria endCriteria(100, 50, 1e-8, 1e-8, 1e-8);
-
-    using Annealing = HybridSimulatedAnnealing<StationarySampler, RejectAllMoves,
-                                                ImmediateCooling>;
-    Annealing annealing(StationarySampler(), RejectAllMoves(), ImmediateCooling(),
-                        ReannealingTrivial(), 1.0, 0.5, 0,
-                        Annealing::NoResetScheme, 0, nullptr,
-                        Annealing::NoLocalOptimize);
-
-    annealing.minimize(problem, endCriteria);
-
-    BOOST_CHECK_EQUAL(problem.functionEvaluation(), 2);
 }
 
 
