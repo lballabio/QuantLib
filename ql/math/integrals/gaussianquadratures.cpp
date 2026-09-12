@@ -56,7 +56,17 @@ namespace QuantLib {
 
         Real mu_0 = orthPoly.mu_0();
         for (i=0; i<n; ++i) {
-            w_[i] = mu_0*ev[0][i]*ev[0][i] / orthPoly.w(x_[i]);
+            // orthPoly.w(x_[i]) can underflow to zero for large orders (e.g. Gauss-Laguerre
+            // beyond n ~ 200) while the quotient itself stays representable; forming it in
+            // logarithms keeps every intermediate value in range in that case.
+            const Real wx = orthPoly.w(x_[i]);
+            if (wx > 0.0) {
+                w_[i] = mu_0*ev[0][i]*ev[0][i] / wx;
+            } else {
+                w_[i] = std::exp(std::log(mu_0)
+                                  + 2.0*std::log(std::fabs(ev[0][i]))
+                                  - orthPoly.logW(x_[i]));
+            }
         }
     }
 
