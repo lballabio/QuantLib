@@ -94,15 +94,31 @@ struct StationarySampler {
     }
 };
 
+struct ImprovingSampler {
+    void operator()(Array& newPoint, const Array& currentPoint, const Array&) const {
+        newPoint = currentPoint / 2.0;
+    }
+};
+
 struct RejectAllMoves {
     bool operator()(Real, Real, const Array&) const { return false; }
+};
+
+struct AcceptAllMoves {
+    bool operator()(Real, Real, const Array&) const { return true; }
 };
 
 struct StagedCooling {
     void operator()(Array& newTemperature, const Array&, const Array& steps) const {
         std::fill(newTemperature.begin(), newTemperature.end(), 0.0);
         if (steps[0] <= 2.0)
-            newTemperature[1] = 1.0;
+            newTemperature[1] = 0.5;
+    }
+};
+
+struct ConstantTemperature {
+    void operator()(Array& newTemperature, const Array& currentTemperature, const Array&) const {
+        newTemperature = currentTemperature;
     }
 };
 
@@ -112,6 +128,25 @@ class MultidimensionalQuadratic : public CostFunction {
 
     Array values(const Array& x) const override { return Array(1, value(x)); }
 };
+
+template <class Sampler, class Probability, class Temperature>
+std::pair<EndCriteria::Type, Size> runHybridAnnealing(const Sampler& sampler,
+                                                      const Probability& probability,
+                                                      Temperature temperature,
+                                                      Size maxIterations,
+                                                      Size maxStationaryStateIterations) {
+    MultidimensionalQuadratic costFunction;
+    NoConstraint constraint;
+    Problem problem(costFunction, constraint, Array(2, 1.0));
+    EndCriteria endCriteria(maxIterations, maxStationaryStateIterations, 1e-8, 1e-8, 1e-8);
+
+    using Annealing = HybridSimulatedAnnealing<Sampler, Probability, Temperature>;
+    Annealing annealing(sampler, probability, std::move(temperature), ReannealingTrivial(), 1.0,
+                        0.5, 0, Annealing::NoResetScheme, 0, nullptr, Annealing::NoLocalOptimize);
+
+    const EndCriteria::Type result = annealing.minimize(problem, endCriteria);
+    return std::make_pair(result, problem.functionEvaluation());
+}
 
 
 // The goal of this cost function is simply to call another optimization inside
@@ -397,21 +432,31 @@ BOOST_AUTO_TEST_CASE(nestedOptimizationTest) {
 BOOST_AUTO_TEST_CASE(testHybridSimulatedAnnealingTemperatureTermination) {
     BOOST_TEST_MESSAGE("Testing hybrid simulated annealing temperature termination...");
 
-    MultidimensionalQuadratic costFunction;
-    NoConstraint constraint;
-    Problem problem(costFunction, constraint, Array(2, 1.0));
-    EndCriteria endCriteria(100, 50, 1e-8, 1e-8, 1e-8);
+    const auto result =
+        runHybridAnnealing(StationarySampler(), RejectAllMoves(), StagedCooling(), 100, 50);
 
-    using Annealing = HybridSimulatedAnnealing<StationarySampler, RejectAllMoves,
-                                                StagedCooling>;
-    Annealing annealing(StationarySampler(), RejectAllMoves(), StagedCooling(),
-                        ReannealingTrivial(), 1.0, 0.5, 0,
-                        Annealing::NoResetScheme, 0, nullptr,
-                        Annealing::NoLocalOptimize);
+    BOOST_CHECK_EQUAL(result.first, EndCriteria::None);
+    BOOST_CHECK_EQUAL(result.second, 3);
+}
 
-    annealing.minimize(problem, endCriteria);
+BOOST_AUTO_TEST_CASE(testHybridSimulatedAnnealingIterationTermination) {
+    BOOST_TEST_MESSAGE("Testing hybrid simulated annealing iteration termination...");
 
-    BOOST_CHECK_EQUAL(problem.functionEvaluation(), 3);
+    const auto result =
+        runHybridAnnealing(ImprovingSampler(), AcceptAllMoves(), ConstantTemperature(), 3, 2);
+
+    BOOST_CHECK_EQUAL(result.first, EndCriteria::MaxIterations);
+    BOOST_CHECK_EQUAL(result.second, 4);
+}
+
+BOOST_AUTO_TEST_CASE(testHybridSimulatedAnnealingStationaryTermination) {
+    BOOST_TEST_MESSAGE("Testing hybrid simulated annealing stationary-point termination...");
+
+    const auto result =
+        runHybridAnnealing(StationarySampler(), RejectAllMoves(), ConstantTemperature(), 100, 2);
+
+    BOOST_CHECK_EQUAL(result.first, EndCriteria::StationaryPoint);
+    BOOST_CHECK_EQUAL(result.second, 3);
 }
 
 
