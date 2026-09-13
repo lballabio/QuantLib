@@ -226,7 +226,7 @@ namespace QuantLib {
                                    const Date& startDate,
                                    const Date& endDate,
                                    Natural fixingDays,
-                                   StubIndexSelection stubIndexSelection,
+                                   const StubIndexSelection& stubIndexSelection,
                                    Real gearing,
                                    Spread spread,
                                    const Date& refPeriodStart,

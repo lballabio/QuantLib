@@ -1931,14 +1931,14 @@ void checkSensitivities(const Bond& bond,
 // after the final coupon with its own quote.
 struct FinalCouponPeriodVars {
     Date issue, maturity, settlement;
-    Rate couponRate;
+    Rate couponRate = 0.02125;
     DayCounter dayCounter;
     Schedule schedule;
     Bond::Price cleanPrice;
 
     FinalCouponPeriodVars()
     : issue(1, June, 2016), maturity(1, June, 2026), settlement(5, March, 2026),
-      couponRate(0.02125), dayCounter(ActualActual(ActualActual::ISMA)),
+       dayCounter(ActualActual(ActualActual::ISMA)),
       schedule(issue, maturity, Period(Semiannual), NullCalendar(),
                Unadjusted, Unadjusted, DateGeneration::Backward, false),
       cleanPrice(100.185, Bond::Price::Clean) {}

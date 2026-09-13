@@ -174,7 +174,7 @@ BOOST_AUTO_TEST_CASE(testConversions) {
     ir = InterestRate(0.03, Actual360(), SimpleThenCompounded, Semiannual);
     ir2 = InterestRate(0.03, Actual360(), CompoundedThenSimple, Semiannual);
 
-    for (auto i: {ir, ir2}) {
+    for (const auto& i: {ir, ir2}) {
         BOOST_CHECK_EXCEPTION(i.discountFactor(1.0), Error, ExpectedErrorMessage("not supported"));
         BOOST_CHECK_EXCEPTION(i.discountFactorFirstDerivative(1.0), Error, ExpectedErrorMessage("not supported"));
         BOOST_CHECK_EXCEPTION(i.discountFactorSecondDerivative(1.0), Error, ExpectedErrorMessage("not supported"));
