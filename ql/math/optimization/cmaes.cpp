@@ -19,7 +19,7 @@
 
 #include <ql/math/optimization/cmaes.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
+#include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include <algorithm>
 #include <cmath>
 #include <numeric>
@@ -27,6 +27,24 @@
 #include <vector>
 
 namespace QuantLib {
+
+    namespace {
+
+        //! solves the lower-triangular system \f$ L t = b \f$ for t
+        Array forwardSubstitution(const Matrix& L, const Array& b) {
+            const Size n{b.size()};
+            Array t(n);
+
+            for (Size i{0}; i < n; ++i) {
+                const Matrix::const_row_iterator row{L.row_begin(i)};
+                const Real dot{std::inner_product(row, row + i, t.begin(), Real(0.0))};
+
+                t[i] = (b[i] - dot) / L[i][i];
+            }
+
+            return t;
+        }
+    }
 
     Cmaes::Cmaes(Configuration configuration)
     : configuration_(std::move(configuration)), rng_(configuration_.seed) {}
@@ -69,12 +87,11 @@ namespace QuantLib {
 
         Real sigma{configuration_.sigma};
 
-        // C = B diag(D)^2 * B^T, initialised to the identity
+        // C = L L^T, initialised to the identity
         Matrix C(n, n, 0.0);
         for (Size i{0}; i < n; ++i)
             C[i][i] = 1.0;
-        Matrix B(C);
-        Array D(n, 1.0);
+        Matrix L(C);
 
         Array pSigma(n, 0.0);
         Array pCov(n, 0.0);
@@ -94,12 +111,10 @@ namespace QuantLib {
 
         const InverseCumulativeNormal icn;
 
-        // B/D refresh cadence, amortising the decomposition
-        const Size eigenEvery{std::max<Size>(1, Size(1.0 / (10.0 * n * (c1 + cMu))))};
-
         const Size maxResample{10};      // resample attempts before clamping
         const Real gamma{1.0};           // out-of-bounds penalty weight
         const Real degenerateScale{1e-12};
+        const Real pivotFloor{std::sqrt(QL_EPSILON)};
 
         std::vector<Array> xSamples(lambda, Array(n));
         std::vector<Array> ySamples(lambda, Array(n));
@@ -112,21 +127,25 @@ namespace QuantLib {
 
         while (!endCriteria.checkMaxIterations(g, ecType)) {
 
-            // Symmetrize C to shed round-off before decomposing
-            if (g % eigenEvery == 0) {
-                for (Size i{0}; i < n; ++i)
-                    for (Size j{0}; j < i; ++j) {
-                        const Real avg{0.5 * (C[i][j] + C[j][i])};
-                        C[i][j] = C[j][i] = avg;
+            // Cholesky absorbs a semi-definite C by zeroing the pivot. Every 
+            // term of the update below is elementwise symmetric.
+            L = CholeskyDecomposition(C, true);
+
+            /*  
+                A pivot at or below the floor means that direction has
+                collapsed. Flooring the diagonal alone is not sufficient as the
+                subsequent column was already divided by the pre-floor pivot.
+                This means L would factor nothing like C. Thus we zero it, leaving the
+                direction contributing only its floored variance.
+            */
+            for (Size i{0}; i < n; ++i) {
+                if (!(L[i][i] > pivotFloor)) {
+                    L[i][i] = pivotFloor;
+
+                    for (Size j{i + 1}; j < n; ++j) {
+                        L[j][i] = 0.0;
                     }
-
-                SymmetricSchurDecomposition schur(C);
-                B = schur.eigenvectors();
-
-                // floor the eigenvalues to keep D positive-definite
-                const Array& ev = schur.eigenvalues();
-                std::transform(ev.begin(), ev.end(), D.begin(),
-                               [](Real e) { return std::sqrt(std::max(e, QL_EPSILON)); });
+                }
             }
 
             // per-sample scratch, reused across offspring
@@ -141,7 +160,7 @@ namespace QuantLib {
                     std::generate(z.begin(), z.end(),
                                   [&] { return icn(rng_.next().value); });
 
-                    y = B * (D * z);             // element-wise D*z
+                    y = L * z;
                     x = mean + sigma * y;
 
                     is_feasible = P.constraint().test(x);
@@ -182,10 +201,7 @@ namespace QuantLib {
                 bestX = xSamples[order[0]];
             }
 
-            // cInvSqrtYw = C^{-1/2} yw, without forming or inverting a matrix
-            Array t(transpose(B) * yw);
-            t /= D;
-            const Array cInvSqrtYw(B * t);
+            const Array cInvSqrtYw(forwardSubstitution(L, yw));
 
             pSigma = (1.0 - cSigma) * pSigma
                    + pSigmaGain * cInvSqrtYw;
@@ -210,7 +226,14 @@ namespace QuantLib {
 
             sigma = sigma * std::exp((cSigma / dSigma) * (pSigmaNorm / chiN - 1.0));
 
-            if (sigma * (*std::max_element(D.begin(), D.end())) < degenerateScale) {
+            // largest per-coordinate standard deviation of the search
+            // distribution, standing in for the largest eigenvalue's root
+            Real maxVariance{0.0};
+            for (Size i{0}; i < n; ++i) {
+                maxVariance = std::max(maxVariance, C[i][i]);
+            }
+
+            if (sigma * std::sqrt(maxVariance) < degenerateScale) {
                 ecType = EndCriteria::StationaryFunctionValue;
                 break;
             }
