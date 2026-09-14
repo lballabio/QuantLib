@@ -461,7 +461,7 @@ BOOST_AUTO_TEST_CASE(testBachelierImpliedVolAtIntrinsic) {
                 const Real price = bachelierBlackFormula(
                     type, strike, forward, vol * std::sqrt(tte));
 
-                Real impliedVol;
+                Real impliedVol = -1.0;
                 BOOST_CHECK_NO_THROW(
                     impliedVol = bachelierBlackFormulaImpliedVol(
                         type, strike, forward, tte, price));
