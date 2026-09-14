@@ -1,4 +1,5 @@
 # Compilation artifacts
+__pycache__/
 configure
 quantlib-config
 libtool
