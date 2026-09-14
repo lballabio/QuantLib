@@ -64,12 +64,16 @@ namespace QuantLib {
 
     void ExtendedBlackVarianceSurface::setVariances() {
 
-        for (Size i=0; i<times_.size()+1; i++) {
+        // times_ carries a leading 0.0, so there is one fewer date (and one
+        // fewer volatility per strike) than there are times.
+        Size dates = times_.size() - 1;
+
+        for (Size i=0; i<times_.size(); i++) {
             variances_[0][i] = 0.0;
         }
-        for (Size j=1; j<=times_.size(); j++) {
+        for (Size j=1; j<times_.size(); j++) {
             for (Size i=0; i<strikes_.size(); i++) {
-                Volatility sigma = volatilities_[i*times_.size()+j-1]->value();
+                Volatility sigma = volatilities_[i*dates+j-1]->value();
                 variances_[i][j] = times_[j] * sigma * sigma;
                 QL_REQUIRE(variances_[i][j]>=variances_[i][j-1],
                            "variance must be non-decreasing");
