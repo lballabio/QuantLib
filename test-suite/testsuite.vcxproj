@@ -708,6 +708,7 @@
     <ClCompile Include="equitytotalreturnswap.cpp" />
     <ClCompile Include="europeanoption.cpp" />
     <ClCompile Include="everestoption.cpp" />
+    <ClCompile Include="extendedblackvariancesurface.cpp" />
     <ClCompile Include="exchangerate.cpp" />
     <ClCompile Include="extendedtrees.cpp" />
     <ClCompile Include="extensibleoptions.cpp" />

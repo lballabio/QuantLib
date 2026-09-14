@@ -155,6 +155,9 @@
     <ClCompile Include="everestoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="extendedblackvariancesurface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="exchangerate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
