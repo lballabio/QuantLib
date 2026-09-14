@@ -604,16 +604,16 @@ namespace QuantLib {
               case CompoundedThenSimple:
                 return { clone(y, Compounded), clone(y, Simple) };
               default:
-                return { y, {} };
+                return { y, y };
             }
         }
 
-        const InterestRate& choose(const InterestRate& main,
-                                   const InterestRate& exception,
-                                   Compounding compounding,
-                                   bool inFirstPeriod,
-                                   const Date& cashFlowDate,
-                                   const Date& finalCashFlowDate) {
+        InterestRate choose(const InterestRate& main,
+                            const InterestRate& exception,
+                            Compounding compounding,
+                            bool inFirstPeriod,
+                            const Date& cashFlowDate,
+                            const Date& finalCashFlowDate) {
             // The exceptions are positional: the first interval is
             // simple for SimpleThenCompounded and the final interval is
             // simple for CompoundedThenSimple.
