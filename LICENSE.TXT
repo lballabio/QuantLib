@@ -138,8 +138,6 @@ Copyright (C) 2017, 2022 Oleg Kulkov
 Copyright (C) 2018 Alexey Indiryakov
 Copyright (C) 2018 Jose Garcia
 Copyright (C) 2018 Matthias Groncki
-Copyright (C) 2018 Matthias Lungwitz
-Copyright (C) 2018 Roy Zywina
 Copyright (C) 2018 Sebastian Schlenkrich
 Copyright (C) 2018 Tom Anderson
 
