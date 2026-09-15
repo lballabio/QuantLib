@@ -601,7 +601,7 @@ namespace QuantLib {
         auto sign = Integer(optionType);
 
         if (stdDev==0.0)
-            return (forward * sign < strike * sign ? 1.0 : 0.0);
+            return (forward * sign > strike * sign ? 1.0 : 0.0);
 
         forward = forward + displacement;
         strike = strike + displacement;
@@ -958,9 +958,10 @@ namespace QuantLib {
                         Real stdDev) {
         QL_REQUIRE(stdDev>=0.0,
                    "stdDev (" << stdDev << ") must be non-negative");
-        Real d = (forward - strike) * Integer(optionType), h = d / stdDev;
+        Real d = (forward - strike) * Integer(optionType);
         if (stdDev==0.0)
-            return std::max(d, 0.0);
+            return (d > 0.0 ? 1.0 : 0.0);
+        Real h = d / stdDev;
         CumulativeNormalDistribution phi;
         Real result = phi(h);
         return result;

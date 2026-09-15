@@ -471,6 +471,84 @@ BOOST_AUTO_TEST_CASE(testBachelierImpliedVolAtIntrinsic) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testBlackAssetItmProbabilityAtZeroStdDev) {
+    BOOST_TEST_MESSAGE("Testing deterministic Black asset ITM probabilities...");
+
+    struct TestCase {
+        Option::Type type;
+        Real forward, expected;
+    };
+    const TestCase cases[] = {
+        {Option::Call, 80.0, 0.0}, {Option::Call, 100.0, 0.0}, {Option::Call, 120.0, 1.0},
+        {Option::Put, 80.0, 1.0},  {Option::Put, 100.0, 0.0},  {Option::Put, 120.0, 0.0}
+    };
+    const Real strike = 100.0;
+
+    for (const auto& c : cases) {
+        for (Real displacement : {0.0, 50.0}) {
+            BOOST_TEST_CONTEXT("type=" << c.type << ", forward=" << c.forward
+                               << ", displacement=" << displacement) {
+                auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, strike);
+                BOOST_CHECK_EQUAL(blackFormulaAssetItmProbability(
+                                      c.type, strike, c.forward, 0.0, displacement),
+                                  c.expected);
+                BOOST_CHECK_EQUAL(blackFormulaAssetItmProbability(
+                                      payoff, c.forward, 0.0, displacement),
+                                  c.expected);
+
+                // Keep the strict-ITM convention at the strike; the price has a kink there.
+                if (c.forward != strike) {
+                    const Real bump = 1e-4;
+                    const Real slope =
+                        (blackFormula(c.type, strike, c.forward + bump, 0.0, 1.0, displacement) -
+                         blackFormula(c.type, strike, c.forward - bump, 0.0, 1.0, displacement)) /
+                        (2.0 * bump);
+                    QL_CHECK_SMALL(Integer(c.type) * c.expected - slope, 1e-8);
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBachelierAssetItmProbabilityAtZeroStdDev) {
+    BOOST_TEST_MESSAGE("Testing deterministic Bachelier asset ITM probabilities...");
+
+    struct TestCase {
+        Option::Type type;
+        Real strike, forward, expected;
+    };
+    const TestCase cases[] = {
+        {Option::Call, 100.0, 80.0, 0.0},   {Option::Call, 100.0, 100.0, 0.0},
+        {Option::Call, 100.0, 120.0, 1.0},  {Option::Put, 100.0, 80.0, 1.0},
+        {Option::Put, 100.0, 100.0, 0.0},   {Option::Put, 100.0, 120.0, 0.0},
+        {Option::Call, -100.0, -80.0, 1.0}, {Option::Put, -100.0, -120.0, 1.0}
+    };
+
+    for (const auto& c : cases) {
+        for (Real scale : {0.001, 1.0, 1000.0}) {
+            const Real strike = c.strike * scale, forward = c.forward * scale;
+            BOOST_TEST_CONTEXT("type=" << c.type << ", strike=" << strike
+                               << ", forward=" << forward) {
+                auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, strike);
+                BOOST_CHECK_EQUAL(bachelierBlackFormulaAssetItmProbability(
+                                      c.type, strike, forward, 0.0),
+                                  c.expected);
+                BOOST_CHECK_EQUAL(
+                    bachelierBlackFormulaAssetItmProbability(payoff, forward, 0.0), c.expected);
+
+                if (c.forward != c.strike) {
+                    const Real bump = 1e-4 * scale;
+                    const Real slope =
+                        (bachelierBlackFormula(c.type, strike, forward + bump, 0.0) -
+                         bachelierBlackFormula(c.type, strike, forward - bump, 0.0)) /
+                        (2.0 * bump);
+                    QL_CHECK_SMALL(Integer(c.type) * c.expected - slope, 1e-8);
+                }
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
