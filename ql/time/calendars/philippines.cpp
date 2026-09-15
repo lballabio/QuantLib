@@ -29,7 +29,7 @@ namespace QuantLib {
         // Chinese festivals, the additional special (non-working) days
         // proclaimed in a given year only, election days, and the days on
         // which the exchange itself was closed.
-        bool isTabulatedHoliday(const Date& date) {
+        bool isTabulatedPhilippineHoliday(const Date& date) {
             static const std::vector<Date> holidays = {
                 // 2020
                 Date(25, January, 2020),  // Chinese New Year
@@ -98,7 +98,7 @@ namespace QuantLib {
 
         // Rule-based holidays that a proclamation moved to another date or
         // turned into a special working day for one year only.
-        bool isWithdrawnHoliday(const Date& date) {
+        bool isWithdrawnPhilippineHoliday(const Date& date) {
             static const std::vector<Date> withdrawn = {
                 Date(31, December, 2021), // declared a special working day
                 Date(30, November, 2023), // Bonifacio Day moved to November 27th
@@ -125,7 +125,7 @@ namespace QuantLib {
         if (isWeekend(w))
             return false;
 
-        if (isWithdrawnHoliday(date))
+        if (isWithdrawnPhilippineHoliday(date))
             return true;
 
         if ( // New Year's Day
@@ -158,7 +158,7 @@ namespace QuantLib {
             || (d == 31 && m == December))
             return false;
 
-        return !isTabulatedHoliday(date);
+        return !isTabulatedPhilippineHoliday(date);
     }
 
 }
