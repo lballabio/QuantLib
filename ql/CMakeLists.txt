@@ -940,6 +940,7 @@ set(QL_SOURCES
     time/calendars/newzealand.cpp
     time/calendars/northmacedonia.cpp
     time/calendars/norway.cpp
+    time/calendars/philippines.cpp
     time/calendars/poland.cpp
     time/calendars/romania.cpp
     time/calendars/russia.cpp
@@ -2263,6 +2264,7 @@ set(QL_HEADERS
     time/calendars/northmacedonia.hpp
     time/calendars/norway.hpp
     time/calendars/nullcalendar.hpp
+    time/calendars/philippines.hpp
     time/calendars/poland.hpp
     time/calendars/romania.hpp
     time/calendars/russia.hpp

@@ -49,6 +49,7 @@
 #include <ql/time/calendars/montenegro.hpp>
 #include <ql/time/calendars/newzealand.hpp>
 #include <ql/time/calendars/northmacedonia.hpp>
+#include <ql/time/calendars/philippines.hpp>
 #include <ql/time/calendars/russia.hpp>
 #include <ql/time/calendars/saudiarabia.hpp>
 #include <ql/time/calendars/serbia.hpp>
@@ -4070,6 +4071,147 @@ BOOST_AUTO_TEST_CASE(testMalaysiaFixedHolidaysOutsideTabulatedRange) {
     BOOST_CHECK(c.isHoliday(Date(16, September, 2035)));
     BOOST_CHECK(c.isBusinessDay(Date(16, September, 2009)));
 }
+
+BOOST_AUTO_TEST_CASE(testPhilippines) {
+
+    BOOST_TEST_MESSAGE("Testing Philippine holiday list...");
+
+    std::vector<Date> expectedHol = {
+        // 2024
+        {1, January, 2024},   // New Year's Day
+        {9, February, 2024},  // Additional special (non-working) day
+        // Saturday: {10, February, 2024},  // Chinese New Year
+        {28, March, 2024},    // Maundy Thursday
+        {29, March, 2024},    // Good Friday
+        // Saturday: {30, March, 2024},     // Black Saturday
+        {9, April, 2024},     // Araw ng Kagitingan
+        {10, April, 2024},    // Eid'l Fitr
+        {1, May, 2024},       // Labor Day
+        {12, June, 2024},     // Independence Day
+        {17, June, 2024},     // Eid'l Adha
+        {24, July, 2024},     // Exchange closed by Typhoon Carina
+        {23, August, 2024},   // Ninoy Aquino Day, moved from August 21st
+        {26, August, 2024},   // National Heroes Day
+        {1, November, 2024},  // All Saints' Day
+        // Saturday: {2, November, 2024},   // All Souls' Day
+        // Saturday: {30, November, 2024},  // Bonifacio Day
+        // Sunday: {8, December, 2024},     // Immaculate Conception
+        {24, December, 2024}, // Christmas Eve
+        {25, December, 2024}, // Christmas Day
+        {30, December, 2024}, // Rizal Day
+        {31, December, 2024}, // Last Day of the Year
+
+        // 2025
+        {1, January, 2025},   // New Year's Day
+        {29, January, 2025},  // Chinese New Year
+        {1, April, 2025},     // Eid'l Fitr
+        {9, April, 2025},     // Araw ng Kagitingan
+        {17, April, 2025},    // Maundy Thursday
+        {18, April, 2025},    // Good Friday
+        // Saturday: {19, April, 2025},     // Black Saturday
+        {1, May, 2025},       // Labor Day
+        {12, May, 2025},      // National and local elections
+        {6, June, 2025},      // Eid'l Adha
+        {12, June, 2025},     // Independence Day
+        // Sunday: {27, July, 2025},        // Iglesia ni Cristo anniversary
+        {21, August, 2025},   // Ninoy Aquino Day
+        {25, August, 2025},   // National Heroes Day
+        {31, October, 2025},  // Additional special (non-working) day
+        // Saturday: {1, November, 2025},   // All Saints' Day
+        // Sunday: {30, November, 2025},    // Bonifacio Day
+        {8, December, 2025},  // Immaculate Conception
+        {24, December, 2025}, // Christmas Eve
+        {25, December, 2025}, // Christmas Day
+        {30, December, 2025}, // Rizal Day
+        {31, December, 2025}, // Last Day of the Year
+
+        // 2026
+        {1, January, 2026},   // New Year's Day
+        {17, February, 2026}, // Chinese New Year
+        {20, March, 2026},    // Eid'l Fitr
+        {2, April, 2026},     // Maundy Thursday
+        {3, April, 2026},     // Good Friday
+        // Saturday: {4, April, 2026},      // Black Saturday
+        {9, April, 2026},     // Araw ng Kagitingan
+        {1, May, 2026},       // Labor Day
+        {27, May, 2026},      // Eid'l Adha
+        {12, June, 2026},     // Independence Day
+        {21, August, 2026},   // Ninoy Aquino Day
+        {31, August, 2026},   // National Heroes Day
+        // Sunday: {1, November, 2026},     // All Saints' Day
+        {2, November, 2026},  // All Souls' Day
+        {30, November, 2026}, // Bonifacio Day
+        {8, December, 2026},  // Immaculate Conception
+        {24, December, 2026}, // Christmas Eve
+        {25, December, 2026}, // Christmas Day
+        {30, December, 2026}, // Rizal Day
+        {31, December, 2026}, // Last Day of the Year
+    };
+
+    Calendar c = Philippines();
+    checkHolidays(c.holidayList(Date(1, January, 2024), Date(31, December, 2026)), expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testPhilippinesTransferredHolidays) {
+
+    BOOST_TEST_MESSAGE("Testing Philippine transferred and withdrawn holidays...");
+
+    Calendar c = Philippines();
+
+    // Araw ng Kagitingan was moved from April 9th (a Sunday) to April 10th
+    // in 2023, and Bonifacio Day from November 30th to November 27th.
+    BOOST_CHECK(c.isHoliday(Date(10, April, 2023)));
+    BOOST_CHECK(c.isBusinessDay(Date(30, November, 2023)));
+    BOOST_CHECK(c.isHoliday(Date(27, November, 2023)));
+
+    // Ninoy Aquino Day was moved from August 21st to August 23rd in 2024.
+    BOOST_CHECK(c.isBusinessDay(Date(21, August, 2024)));
+    BOOST_CHECK(c.isHoliday(Date(23, August, 2024)));
+
+    // The Last Day of the Year was declared a special working day in 2021.
+    BOOST_CHECK(c.isBusinessDay(Date(31, December, 2021)));
+    BOOST_CHECK(c.isHoliday(Date(31, December, 2020)));
+
+    // The EDSA anniversary was a special non-working day up to 2023 and a
+    // special working day from 2025.
+    BOOST_CHECK(c.isHoliday(Date(25, February, 2022)));
+    BOOST_CHECK(c.isHoliday(Date(24, February, 2023)));
+    BOOST_CHECK(c.isBusinessDay(Date(25, February, 2025)));
+
+    // The exchange was closed by the COVID-19 trading suspension.
+    BOOST_CHECK(c.isHoliday(Date(17, March, 2020)));
+    BOOST_CHECK(c.isHoliday(Date(18, March, 2020)));
+    BOOST_CHECK(c.isBusinessDay(Date(19, March, 2020)));
+}
+
+BOOST_AUTO_TEST_CASE(testPhilippinesFixedHolidaysOutsideTabulatedRange) {
+
+    BOOST_TEST_MESSAGE("Testing Philippine fixed holidays outside the tabulated range...");
+
+    Calendar c = Philippines();
+
+    // The proclaimed festivals are tabulated only for 2020-2027, but the
+    // rule-based holidays must hold in any year.
+    BOOST_CHECK(c.isHoliday(Date(1, January, 2035)));   // New Year's Day
+    BOOST_CHECK(c.isHoliday(Date(9, April, 2035)));     // Araw ng Kagitingan
+    BOOST_CHECK(c.isHoliday(Date(1, May, 2035)));       // Labor Day
+    BOOST_CHECK(c.isHoliday(Date(12, June, 2035)));     // Independence Day
+    BOOST_CHECK(c.isHoliday(Date(21, August, 2035)));   // Ninoy Aquino Day
+    BOOST_CHECK(c.isHoliday(Date(27, August, 2035)));   // National Heroes Day
+    BOOST_CHECK(c.isHoliday(Date(1, November, 2035)));  // All Saints' Day
+    BOOST_CHECK(c.isHoliday(Date(30, November, 2035))); // Bonifacio Day
+    BOOST_CHECK(c.isHoliday(Date(25, December, 2035))); // Christmas Day
+    BOOST_CHECK(c.isHoliday(Date(31, December, 2035))); // Last Day of the Year
+
+    // National Heroes Day is the last Monday of August, not a fixed date.
+    BOOST_CHECK(c.isBusinessDay(Date(20, August, 2035)));
+
+    // Ninoy Aquino Day became a holiday under RA 9256 in 2004, and the Feast
+    // of the Immaculate Conception under RA 10966 in 2018.
+    BOOST_CHECK(c.isBusinessDay(Date(21, August, 2003)));
+    BOOST_CHECK(c.isBusinessDay(Date(8, December, 2015)));
+}
+
 
 BOOST_AUTO_TEST_CASE(testUzbekistan) {
 
