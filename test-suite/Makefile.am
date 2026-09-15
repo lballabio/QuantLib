@@ -64,6 +64,7 @@ QL_TEST_SRCS = \
 	equitytotalreturnswap.cpp \
 	europeanoption.cpp \
 	everestoption.cpp \
+	extendedblackvariancesurface.cpp \
 	exchangerate.cpp \
 	extendedtrees.cpp \
 	extensibleoptions.cpp \

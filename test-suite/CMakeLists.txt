@@ -63,6 +63,7 @@ set(QL_TEST_SOURCES
     equitytotalreturnswap.cpp
     europeanoption.cpp
     everestoption.cpp
+    extendedblackvariancesurface.cpp
     exchangerate.cpp
     extendedtrees.cpp
     extensibleoptions.cpp
