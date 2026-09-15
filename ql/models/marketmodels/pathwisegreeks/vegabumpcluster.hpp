@@ -100,7 +100,7 @@ namespace QuantLib
     {
     public:
 
-        VegaBumpCollection(const ext::shared_ptr<MarketModel>& volStructure, 
+        explicit VegaBumpCollection(const ext::shared_ptr<MarketModel>& volStructure,
                            bool allowFactorwiseBumping = true);
 
         VegaBumpCollection(std::vector<VegaBumpCluster> allBumps,

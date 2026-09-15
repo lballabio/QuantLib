@@ -40,7 +40,7 @@ namespace QuantLib {
         /*! \note the term structure is only needed when the short-rate
                   model cannot provide one itself.
         */
-        AnalyticCapFloorEngine(
+        explicit AnalyticCapFloorEngine(
             const ext::shared_ptr<AffineModel>& model,
             Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>());
         void calculate() const override;

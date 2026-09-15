@@ -60,7 +60,7 @@ namespace QuantLib {
     class LeastSquareFunction : public CostFunction {
       public:
         //! Default constructor
-        LeastSquareFunction(LeastSquareProblem& lsp) : lsp_(lsp) {}
+        explicit LeastSquareFunction(LeastSquareProblem& lsp) : lsp_(lsp) {}
         //! Destructor
         ~LeastSquareFunction() override = default;
 
@@ -97,7 +97,7 @@ namespace QuantLib {
     class NonLinearLeastSquare {
       public:
         //! Default constructor
-        NonLinearLeastSquare(Constraint& c,
+        explicit NonLinearLeastSquare(Constraint& c,
                              Real accuracy = 1e-4,
                              Size maxiter = 100);
         //! Default constructor

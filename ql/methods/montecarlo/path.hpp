@@ -39,7 +39,7 @@ namespace QuantLib {
     */
     class Path {
       public:
-        Path(TimeGrid timeGrid, Array values = Array());
+        explicit Path(TimeGrid timeGrid, Array values = Array());
         //! \name inspectors
         //@{
         bool empty() const;

@@ -58,7 +58,7 @@ namespace QuantLib {
     class Simplex : public OptimizationMethod {
       public:
         /*! Constructor taking as input the characteristic length */
-        Simplex(Real lambda) : lambda_(lambda) {}
+        explicit Simplex(Real lambda) : lambda_(lambda) {}
         EndCriteria::Type minimize(Problem& P, const EndCriteria& endCriteria) override;
         Real lambda() const { return lambda_; }
 

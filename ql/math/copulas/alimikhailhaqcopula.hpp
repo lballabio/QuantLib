@@ -33,7 +33,7 @@ namespace QuantLib {
     //! Ali-Mikhail-Haq copula
     class AliMikhailHaqCopula {
       public:
-        AliMikhailHaqCopula(Real theta);
+        explicit AliMikhailHaqCopula(Real theta);
         Real operator()(Real x, Real y) const;
       private:
         Real theta_;

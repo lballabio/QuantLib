@@ -550,6 +550,9 @@ for( k=jp1; k<n; k++ )
         ij += 1; /* [i+m*k] */
         jj += 1; /* [i+m*j] */
         }
+    // Preserve the generic MINPACK non-pivoting path even though QuantLib's
+    // current caller always enables pivoting.
+    // cppcheck-suppress knownConditionTrueFalse
     if( (pivot != 0) && (rdiag[k] != zero) )
         {
         temp = a[j+m*k]/rdiag[k];
