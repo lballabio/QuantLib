@@ -108,6 +108,7 @@ set(QL_TEST_SOURCES
     linearleastsquaresregression.cpp
     lookbackoptions.cpp
     lowdiscrepancysequences.cpp
+    makecrosscurrencyswap.cpp
     margrabeoption.cpp
     marketmodel.cpp
     marketmodel_cms.cpp
