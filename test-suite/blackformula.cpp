@@ -442,6 +442,35 @@ BOOST_AUTO_TEST_CASE(testBachelierBlackFormulaForwardDerivativeWithZeroVolatilit
     assertBachelierBlackFormulaForwardDerivative(Option::Put, strikes, vol);
 }
 
+BOOST_AUTO_TEST_CASE(testBachelierImpliedVolAtIntrinsic) {
+
+    BOOST_TEST_MESSAGE("Testing Bachelier implied volatility for prices at intrinsic value...");
+
+    // For a deep in-the-money option the Bachelier price rounds to the
+    // intrinsic value, so the time value computed by the inversion can come
+    // out a few ulps below zero.  Such a price must still invert instead of
+    // being rejected as arbitrageable.
+    const Real tte = 0.01;
+    const Real vol = 1e-5;
+
+    for (Real forward : {-0.01, 0.005, 0.05, 1.0}) {
+        for (Real offset : {0.01, 0.03, 0.07}) {
+            for (auto type : {Option::Call, Option::Put}) {
+                const Real strike =
+                    (type == Option::Call) ? forward - offset : forward + offset;
+                const Real price = bachelierBlackFormula(
+                    type, strike, forward, vol * std::sqrt(tte));
+
+                Real impliedVol = -1.0;
+                BOOST_CHECK_NO_THROW(
+                    impliedVol = bachelierBlackFormulaImpliedVol(
+                        type, strike, forward, tte, price));
+                BOOST_CHECK(impliedVol >= 0.0);
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
