@@ -323,6 +323,9 @@
     <ClCompile Include="overnightindexedcoupon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="overnightindexedfundingratehelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="overnightindexedswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

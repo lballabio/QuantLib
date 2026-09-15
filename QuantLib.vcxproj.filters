@@ -4479,6 +4479,9 @@
     <ClInclude Include="ql\experimental\termstructures\crosscurrencyratehelpers.hpp">
       <Filter>experimental\termstructures</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\overnightindexedfundingratehelper.hpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\fdblackscholesshoutengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
@@ -7397,6 +7400,9 @@
       <Filter>experimental\termstructures</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\termstructures\crosscurrencyratehelpers.cpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\termstructures\overnightindexedfundingratehelper.cpp">
       <Filter>experimental\termstructures</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.cpp">
