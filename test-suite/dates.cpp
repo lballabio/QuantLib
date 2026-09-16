@@ -32,6 +32,8 @@
 #include <ql/time/asx.hpp>
 #include <ql/utilities/dataparsers.hpp>
 
+#include <boost/date_time/gregorian/gregorian.hpp>
+
 #include <sstream>
 #include <unordered_set>
 
@@ -553,6 +555,24 @@ BOOST_AUTO_TEST_CASE(nullDate) {
 
     BOOST_CHECK_NO_THROW(null_date.serialNumber());
     BOOST_CHECK_NO_THROW(hasher(null_date));
+}
+
+BOOST_AUTO_TEST_CASE(todaysDate) {
+    BOOST_TEST_MESSAGE("Testing today's date...");
+
+    const Date today = Date::todaysDate();
+
+    BOOST_CHECK_MESSAGE(today != Date(), "Date::todaysDate() returned a null date");
+
+    // cross-check against an independent implementation
+    const boost::gregorian::date d = boost::gregorian::day_clock::local_day();
+    const Date expected(Day(d.day()), Month(static_cast<Integer>(d.month())),
+                        Year(d.year()));
+
+    // the two calls above may straddle midnight, so allow one day of slack
+    BOOST_CHECK_MESSAGE(today >= expected - 1 && today <= expected + 1,
+                        "Date::todaysDate() returned " << today
+                        << ", expected " << expected);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
