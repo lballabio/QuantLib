@@ -51,7 +51,6 @@ namespace {
 }
 
 BOOST_AUTO_TEST_CASE(testUsdCofStyleBootstrap) {
-    SavedSettings backup;
     Date today(30, September, 2025);
     Settings::instance().evaluationDate() = today;
 
@@ -97,7 +96,6 @@ BOOST_AUTO_TEST_CASE(testUsdCofStyleBootstrap) {
 }
 
 BOOST_AUTO_TEST_CASE(testLaggedCashFlowsAndDatedConstructor) {
-    SavedSettings backup;
     Date today(30, September, 2025);
     Settings::instance().evaluationDate() = today;
 
@@ -144,7 +142,6 @@ BOOST_AUTO_TEST_CASE(testLaggedCashFlowsAndDatedConstructor) {
 }
 
 BOOST_AUTO_TEST_CASE(testSameDayOvernightPillar) {
-    SavedSettings backup;
     Date today(15, July, 2026);
     Settings::instance().evaluationDate() = today;
     Settings::instance().includeReferenceDateEvents() = false;
