@@ -44,7 +44,8 @@ namespace QuantLib {
                                Rate strike)
     : swapIndex_(std::move(swapIndex)), delivery_(Settlement::Physical),
       settlementMethod_(Settlement::PhysicalOTC), optionConvention_(ModifiedFollowing),
-      fixingDate_(fixingDate), strike_(strike), underlyingType_(Swap::Payer) {}
+      fixingDate_(fixingDate), strike_(strike), underlyingType_(Swap::Payer),
+      nominal_(1.0) {}
 
     MakeSwaption::operator Swaption() const {
         ext::shared_ptr<Swaption> swaption = *this;

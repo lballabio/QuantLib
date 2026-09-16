@@ -53,15 +53,48 @@ namespace QuantLib {
           case Continuous:
             return std::exp(r_*t);
           case SimpleThenCompounded:
-            if (t<=1.0/Real(freq_))
-                return 1.0 + r_*t;
-            else
-                return std::pow(1.0+r_/freq_, freq_*t);
           case CompoundedThenSimple:
-            if (t>1.0/Real(freq_))
-                return 1.0 + r_*t;
-            else
-                return std::pow(1.0+r_/freq_, freq_*t);
+            QL_FAIL(comp_ << " is not supported for direct calculations: use the CashFlow methods");
+          default:
+            QL_FAIL("unknown compounding convention");
+        }
+    }
+
+    Real InterestRate::discountFactorFirstDerivative(Time t) const {
+        Real discount = discountFactor(t);
+        switch (comp_) {
+          case Simple:
+            return -t * discount * discount;
+          case Compounded: {
+              Real freq = Real(frequency());
+              Real compound = 1 + r_ / freq;
+              return -t * discount / compound;
+          }
+          case Continuous:
+            return -t * discount;
+          case SimpleThenCompounded:
+          case CompoundedThenSimple:
+            QL_FAIL(comp_ << " is not supported for direct calculations: use the CashFlow methods");
+          default:
+            QL_FAIL("unknown compounding convention");
+        }
+    }
+
+    Real InterestRate::discountFactorSecondDerivative(Time t) const {
+        Real discount = discountFactor(t);
+        switch (comp_) {
+          case Simple:
+            return 2.0 * t * t * discount * discount * discount;
+          case Compounded: {
+              Real freq = Real(frequency());
+              Real compound = 1 + r_ / freq;
+              return discount * t * (freq * t + 1.0) / (freq * compound * compound);
+          }
+          case Continuous:
+            return t * t * discount;
+          case SimpleThenCompounded:
+          case CompoundedThenSimple:
+            QL_FAIL(comp_ << " is not supported for direct calculations: use the CashFlow methods");
           default:
             QL_FAIL("unknown compounding convention");
         }
@@ -75,7 +108,7 @@ namespace QuantLib {
 
         QL_REQUIRE(compound>0.0, "positive compound factor required");
 
-        Rate r;
+        Rate r = Null<Rate>();
         if (compound==1.0) {
             QL_REQUIRE(t>=0.0, "non negative time (" << t << ") required");
             r = 0.0;
@@ -92,20 +125,8 @@ namespace QuantLib {
                 r = std::log(compound)/t;
                 break;
               case SimpleThenCompounded:
-                if (t<=1.0/Real(freq))
-                    r = (compound - 1.0)/t;
-                else
-                    r = (std::pow(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
-                break;
               case CompoundedThenSimple:
-                if (t>1.0/Real(freq))
-                    r = (compound - 1.0)/t;
-                else
-                    r = (std::pow(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
-                break;
-              default:
-                QL_FAIL("unknown compounding convention ("
-                        << Integer(comp) << ")");
+                QL_FAIL(comp << " is not supported for direct calculations: use the CashFlow methods");
             }
         }
         return InterestRate(r, resultDC, comp, freq);

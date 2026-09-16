@@ -181,6 +181,69 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValues) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValuesAtNonPositiveRate) {
+
+    BOOST_TEST_MESSAGE("Testing Barone-Adesi and Whaley approximation for "
+                       "American puts at non-positive risk-free rates...");
+
+    // criticalPrice() rejects a discount factor above 1, so these puts were
+    // refused.  Holding dominates; the value is European.
+
+    const Date today = Date(19, August, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual360();
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+    const auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    const auto qTS = flatRate(today, qRate, dc);
+    const auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    const auto rTS = flatRate(today, rRate, dc);
+    const auto vol = ext::make_shared<SimpleQuote>(0.30);
+    const auto volTS = flatVol(today, vol, dc);
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(qTS),
+        Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(volTS));
+
+    const Date maturity = today + 1 * Years;
+    const auto american = ext::make_shared<AmericanExercise>(today, maturity);
+    const auto european = ext::make_shared<EuropeanExercise>(maturity);
+
+    const Real tolerance = 1.0e-6;
+
+    for (Real r : {0.0, -1.0e-10, -0.05}) {
+        for (Real q : {0.0, 0.04}) {
+            for (Real s : {70.0, 85.0, 100.0, 115.0, 130.0}) {
+
+                spot->setValue(s);
+                qRate->setValue(q);
+                rRate->setValue(r);
+
+                const auto payoff =
+                    ext::make_shared<PlainVanillaPayoff>(Option::Put, 100.0);
+
+                VanillaOption reference(payoff, european);
+                reference.setPricingEngine(
+                    ext::make_shared<AnalyticEuropeanEngine>(process));
+                const Real expected = reference.NPV();
+
+                VanillaOption option(payoff, american);
+                option.setPricingEngine(
+                    ext::make_shared<BaroneAdesiWhaleyApproximationEngine>(
+                        process));
+                const Real calculated = option.NPV();
+
+                const Real error = std::fabs(calculated - expected);
+                if (!(error <= tolerance)) {
+                    REPORT_FAILURE("value at non-positive rate", payoff,
+                                   american, s, q, r, today, vol->value(),
+                                   expected, calculated, error, tolerance);
+                }
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testBjerksundStenslandValues) {
 
     BOOST_TEST_MESSAGE("Testing Bjerksund and Stensland approximation for American options...");
@@ -428,6 +491,76 @@ BOOST_AUTO_TEST_CASE(testJuValuesAtZeroRate) {
                     REPORT_FAILURE("value at zero rate", payoff, exercise, s, q,
                                    0.0, today, vol->value(), expected,
                                    calculated, error, tolerance);
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuAtLowVolatility) {
+
+    BOOST_TEST_MESSAGE("Testing Barone-Adesi-Whaley and Ju approximations "
+                       "at very low volatility...");
+
+    // Both engines used to throw an uncaught error for an American put once
+    // sigma*sqrt(T) dropped below roughly 7e-4, for ordinary positive rates;
+    // see <https://github.com/lballabio/QuantLib/issues/2749>. With no time
+    // value the American price is the European one floored at intrinsic.
+
+    const Date today = Date(15, May, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual365Fixed();
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+    const auto qTS = flatRate(today, 0.02, dc);
+    const auto rTS = flatRate(today, 0.05, dc);
+    const auto vol = ext::make_shared<SimpleQuote>(0.20);
+    const auto volTS = flatVol(today, vol, dc);
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(qTS),
+        Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(volTS));
+
+    const Date exDate = today + 180 * Days;
+    const auto exercise = ext::make_shared<AmericanExercise>(today, exDate);
+    const auto euExercise = ext::make_shared<EuropeanExercise>(exDate);
+
+    // as the volatility vanishes the early-exercise premium does too, so the
+    // approximation should land between the floor and a small band above it
+    const Real tolerance = 1.0e-6;
+    const Real band = 1.0e-2;
+
+    for (auto type : {Option::Put, Option::Call}) {
+        for (Real s : {80.0, 100.0, 120.0}) {
+            for (Real v : {1.0e-3, 5.0e-4, 0.0}) {
+                spot->setValue(s);
+                vol->setValue(v);
+
+                const auto payoff =
+                    ext::make_shared<PlainVanillaPayoff>(type, 100.0);
+                const Real intrinsic = (*payoff)(s);
+
+                VanillaOption european(payoff, euExercise);
+                european.setPricingEngine(
+                    ext::make_shared<AnalyticEuropeanEngine>(process));
+                const Real floor = std::max(european.NPV(), intrinsic);
+
+                for (const ext::shared_ptr<PricingEngine>& engine :
+                     {ext::shared_ptr<PricingEngine>(
+                          new BaroneAdesiWhaleyApproximationEngine(process)),
+                      ext::shared_ptr<PricingEngine>(
+                          new JuQuadraticApproximationEngine(process))}) {
+
+                    VanillaOption option(payoff, exercise);
+                    option.setPricingEngine(engine);
+
+                    const Real calculated = option.NPV();
+                    if (!(calculated >= floor - tolerance &&
+                          calculated <= floor + band)) {
+                        REPORT_FAILURE("low-volatility value", payoff, exercise,
+                                       s, 0.02, 0.05, today, v, floor,
+                                       calculated, calculated - floor, band);
+                    }
                 }
             }
         }
@@ -2344,8 +2477,17 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyNegativeRates) {
     option.setPricingEngine(
         ext::make_shared<BaroneAdesiWhaleyApproximationEngine>(stochProcess));
 
-    BOOST_CHECK_EXCEPTION(option.NPV(), Error,
-                          ExpectedErrorMessage("negative interest rates"));
+    // With r <= 0 and q >= r the put takes the European shortcut, not the
+    // critical price.  Ju agrees.
+    VanillaOption europeanPut(payoff,
+                              ext::make_shared<EuropeanExercise>(exDate));
+    europeanPut.setPricingEngine(
+        ext::make_shared<AnalyticEuropeanEngine>(stochProcess));
+    BOOST_CHECK_SMALL(option.NPV() - europeanPut.NPV(), 1.0e-6);
+
+    option.setPricingEngine(
+        ext::make_shared<JuQuadraticApproximationEngine>(stochProcess));
+    BOOST_CHECK_SMALL(option.NPV() - europeanPut.NPV(), 1.0e-6);
 
     // also verify with a call and positive dividends
     auto callPayoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 40.0);

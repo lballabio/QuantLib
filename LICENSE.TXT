@@ -182,11 +182,13 @@ Copyright (C) 2025, 2026 Eugene Toder
 Copyright (C) 2025, 2026 Paolo D'Elia
 
 Copyright (C) 2026 Aaditya Panikath
+Copyright (C) 2026 Abhay Chaudhary
 Copyright (C) 2026 Chirag Desai
 Copyright (C) 2026 Colin Alberts
 Copyright (C) 2026 David Korczynski
 Copyright (C) 2026 Junjie Guo
 Copyright (C) 2026 Kyrylo Protsenko
+Copyright (C) 2026 LW Osterbrink
 Copyright (C) 2026 Lawrenz Law
 Copyright (C) 2026 Pratyush Patel
 Copyright (C) 2026 Richard Amaya

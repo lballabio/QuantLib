@@ -3000,6 +3000,9 @@
     <ClInclude Include="ql\time\calendars\nullcalendar.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\calendars\philippines.hpp">
+      <Filter>time\calendars</Filter>
+    </ClInclude>
     <ClInclude Include="ql\time\calendars\poland.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
@@ -4501,6 +4504,9 @@
       <Filter>experimental\termstructures\jacobian</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\termstructures\quotesensitivitycalculator.hpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\overnightindexedfundingratehelper.hpp">
       <Filter>experimental\termstructures</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\fdblackscholesshoutengine.hpp">
@@ -6383,6 +6389,9 @@
     <ClCompile Include="ql\time\calendars\norway.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
+    <ClCompile Include="ql\time\calendars\philippines.cpp">
+      <Filter>time\calendars</Filter>
+    </ClCompile>
     <ClCompile Include="ql\time\calendars\poland.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
@@ -7424,6 +7433,9 @@
       <Filter>experimental\termstructures</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\termstructures\quotesensitivitycalculator.cpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\termstructures\overnightindexedfundingratehelper.cpp">
       <Filter>experimental\termstructures</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.cpp">

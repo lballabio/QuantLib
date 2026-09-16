@@ -37,6 +37,7 @@ this_include_HEADERS = \
 	northmacedonia.hpp \
 	norway.hpp \
 	nullcalendar.hpp \
+	philippines.hpp \
 	poland.hpp \
 	romania.hpp \
 	russia.hpp \
@@ -92,6 +93,7 @@ cpp_files = \
 	newzealand.cpp \
 	northmacedonia.cpp \
 	norway.cpp \
+	philippines.cpp \
 	poland.cpp \
 	romania.cpp \
 	russia.cpp \

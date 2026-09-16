@@ -343,8 +343,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
         202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
         207.3};
 
-    RelinkableHandle<ZeroInflationTermStructure> hz;
-    auto ii = ext::make_shared<UKRPI>(hz);
+    auto ii = ext::make_shared<UKRPI>();
     for (Size i=0; i<std::size(fixData); i++) {
         ii->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -390,7 +389,6 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
     ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS =
         ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
             evaluationDate, baseDate, frequency, dc, helpers);
-    hz.linkTo(pZITS);
 
     //===========================================================================================
     // first check that the quoted swaps are repriced correctly
@@ -398,6 +396,9 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
     const Real eps = 1.0e-7;
     const Spread basisPoint = 1.0e-4;
     auto engine = ext::make_shared<DiscountingSwapEngine>(nominalTS);
+
+    Handle<ZeroInflationTermStructure> hz(pZITS);
+    ii = ext::make_shared<UKRPI>(hz);
 
     for (const auto& datum: zcData) {
         ZeroCouponInflationSwap nzcis(Swap::Payer,
@@ -505,9 +506,6 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
                             << "\n    maturity: " << nzcis.maturityDate()
                             << "\n    rate:     " << datum.rate);
     }
-
-    // remove circular refernce
-    hz.reset();
 }
 
 BOOST_AUTO_TEST_CASE(testZeroTermStructureLazyBaseDate) {
@@ -618,8 +616,7 @@ BOOST_AUTO_TEST_CASE(testSeasonalityCorrection) {
         202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
         207.3};
 
-    RelinkableHandle<ZeroInflationTermStructure> hz;
-    auto ii = ext::make_shared<UKRPI>(hz);
+    auto ii = ext::make_shared<UKRPI>();
     for (Size i=0; i<std::size(fixData); i++) {
         ii->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -667,9 +664,10 @@ BOOST_AUTO_TEST_CASE(testSeasonalityCorrection) {
 
     auto zeroCurve = ext::make_shared<InterpolatedZeroInflationCurve<Linear>>(
                                  evaluationDate, nodes, rates, frequency, dc);
-    hz.linkTo(zeroCurve);
 
-    // Perform checks on the seasonality for this non-interpolated index
+    Handle<ZeroInflationTermStructure> hz(zeroCurve);
+    ii = ext::make_shared<UKRPI>(hz);
+
     checkSeasonality(hz, ii);
 }
 
@@ -961,9 +959,8 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
         207.3
     };
 
-    RelinkableHandle<YoYInflationTermStructure> hy;
     auto rpi = ext::make_shared<UKRPI>();
-    auto iir = ext::make_shared<YoYInflationIndex>(rpi, hy);
+    auto iir = ext::make_shared<YoYInflationIndex>(rpi);
     for (Size i=0; i<std::size(fixData); i++) {
         rpi->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -1022,7 +1019,8 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
 
     // make sure that the index has the latest yoy term structure
-    hy.linkTo(pYYTS);
+    Handle<YoYInflationTermStructure> hy(pYYTS);
+    iir = ext::make_shared<YoYInflationIndex>(rpi, hy);
 
     for (Size j = 1; j < yyData.size(); j++) {
 
@@ -1093,8 +1091,6 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
                             <<", legs "<< yyS3.legNPV(0) << " and " << yyS3.legNPV(1)
                             );
     }
-    // remove circular refernce
-    hy.reset();
 }
 
 BOOST_AUTO_TEST_CASE(testZeroBpsYoYInflationSwapFairRateAndSpread) {
@@ -1120,9 +1116,8 @@ BOOST_AUTO_TEST_CASE(testZeroBpsYoYInflationSwapFairRateAndSpread) {
         199.2, 200.1, 200.4, 201.1, 202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
         207.3};
 
-    RelinkableHandle<YoYInflationTermStructure> hy;
     auto rpi = ext::make_shared<UKRPI>();
-    auto iir = ext::make_shared<YoYInflationIndex>(rpi, hy);
+    auto iir = ext::make_shared<YoYInflationIndex>(rpi);
     for (Size i = 0; i < std::size(fixData); i++) {
         rpi->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -1140,7 +1135,9 @@ BOOST_AUTO_TEST_CASE(testZeroBpsYoYInflationSwapFairRateAndSpread) {
     auto yoyTs = ext::make_shared<InterpolatedYoYInflationCurve<Linear>>(
         evaluationDate, yoyDates, yoyRates, iir->frequency(), dc);
     yoyTs->enableExtrapolation();
-    hy.linkTo(yoyTs);
+
+    Handle<YoYInflationTermStructure> hy(yoyTs);
+    iir = ext::make_shared<YoYInflationIndex>(rpi, hy);
 
     Schedule yoySchedule =
         MakeSchedule().from(nominalTS->referenceDate())
@@ -1166,8 +1163,6 @@ BOOST_AUTO_TEST_CASE(testZeroBpsYoYInflationSwapFairRateAndSpread) {
     BOOST_CHECK_EXCEPTION(
         swap.fairSpread(), Error,
         ExpectedErrorMessage("result not available"));
-
-    hy.reset();
 }
 
 BOOST_AUTO_TEST_CASE(testExpiredYoYInflationSwapFairRateAndSpread) {
@@ -1193,9 +1188,8 @@ BOOST_AUTO_TEST_CASE(testExpiredYoYInflationSwapFairRateAndSpread) {
         199.2, 200.1, 200.4, 201.1, 202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
         207.3};
 
-    RelinkableHandle<YoYInflationTermStructure> hy;
     auto rpi = ext::make_shared<UKRPI>();
-    auto iir = ext::make_shared<YoYInflationIndex>(rpi, hy);
+    auto iir = ext::make_shared<YoYInflationIndex>(rpi);
     for (Size i = 0; i < std::size(fixData); i++) {
         rpi->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -1214,7 +1208,9 @@ BOOST_AUTO_TEST_CASE(testExpiredYoYInflationSwapFairRateAndSpread) {
     auto yoyTs = ext::make_shared<InterpolatedYoYInflationCurve<Linear>>(
         evaluationDate, yoyDates, yoyRates, iir->frequency(), dc);
     yoyTs->enableExtrapolation();
-    hy.linkTo(yoyTs);
+
+    Handle<YoYInflationTermStructure> hy(yoyTs);
+    iir = ext::make_shared<YoYInflationIndex>(rpi, hy);
 
     Schedule yoySchedule =
         MakeSchedule().from(nominalTS->referenceDate())
@@ -1239,8 +1235,6 @@ BOOST_AUTO_TEST_CASE(testExpiredYoYInflationSwapFairRateAndSpread) {
     BOOST_CHECK_EXCEPTION(
         swap.fairSpread(), Error,
         ExpectedErrorMessage("result not available"));
-
-    hy.reset();
 }
 
 BOOST_AUTO_TEST_CASE(testPeriod) {
@@ -1748,8 +1742,7 @@ BOOST_AUTO_TEST_CASE(testUsCpiLinearBootstrapAtMonthStart) {
 
         Settings::instance().evaluationDate() = evalDate;
 
-        RelinkableHandle<ZeroInflationTermStructure> hz;
-        auto index = ext::make_shared<USCPI>(hz);
+        auto index = ext::make_shared<USCPI>();
 
         for (auto& [d, v] : fixings)
             index->addFixing(d, v);
@@ -1767,7 +1760,6 @@ BOOST_AUTO_TEST_CASE(testUsCpiLinearBootstrapAtMonthStart) {
         try {
             auto curve = ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
                 evalDate, baseDate, Monthly, dc, helpers);
-            hz.linkTo(curve);
             curve->zeroRate(evalDate + 1*Years);
         } catch (const std::exception&) {
             failureCount++;
@@ -1826,8 +1818,7 @@ BOOST_AUTO_TEST_CASE(testEuHicpFlatBootstrapAtMonthStart) {
 
         Settings::instance().evaluationDate() = evalDate;
 
-        RelinkableHandle<ZeroInflationTermStructure> hz;
-        auto index = ext::make_shared<EUHICPXT>(hz);
+        auto index = ext::make_shared<EUHICPXT>();
 
         for (auto& [d, v] : fixings)
             index->addFixing(d, v);
@@ -1846,20 +1837,16 @@ BOOST_AUTO_TEST_CASE(testEuHicpFlatBootstrapAtMonthStart) {
         try {
             auto curve = ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
                 evalDate, baseDate, Monthly, dc, helpers);
-            hz.linkTo(curve);
             curve->zeroRate(evalDate + 1*Years);
         } catch (const std::exception&) {
             failureCount++;
         }
-
-        hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 
         // GlobalBootstrap
         try {
             auto curve = ext::make_shared<
                 PiecewiseZeroInflationCurve<Linear, GlobalBootstrap>>(
                 evalDate, baseDate, Monthly, dc, helpers);
-            hz.linkTo(curve);
             curve->zeroRate(evalDate + 1*Years);
         } catch (const std::exception&) {
             globalFailureCount++;
@@ -1919,8 +1906,7 @@ BOOST_AUTO_TEST_CASE(testUkRpiFlatBootstrapAtMonthStart) {
 
         Settings::instance().evaluationDate() = evalDate;
 
-        RelinkableHandle<ZeroInflationTermStructure> hz;
-        auto index = ext::make_shared<UKRPI>(hz);
+        auto index = ext::make_shared<UKRPI>();
 
         for (auto& [d, v] : fixings)
             index->addFixing(d, v);
@@ -1940,20 +1926,16 @@ BOOST_AUTO_TEST_CASE(testUkRpiFlatBootstrapAtMonthStart) {
         try {
             auto curve = ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
                 evalDate, baseDate, Monthly, dc, helpers);
-            hz.linkTo(curve);
             curve->zeroRate(evalDate + 1*Years);
         } catch (const std::exception&) {
             failureCount++;
         }
-
-        hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 
         // GlobalBootstrap
         try {
             auto curve = ext::make_shared<
                 PiecewiseZeroInflationCurve<Linear, GlobalBootstrap>>(
                 evalDate, baseDate, Monthly, dc, helpers);
-            hz.linkTo(curve);
             curve->zeroRate(evalDate + 1*Years);
         } catch (const std::exception&) {
             globalFailureCount++;
@@ -2012,8 +1994,7 @@ BOOST_AUTO_TEST_CASE(testUsCpiLinearGlobalBootstrapAtMonthStart) {
 
         Settings::instance().evaluationDate() = evalDate;
 
-        RelinkableHandle<ZeroInflationTermStructure> hz;
-        auto index = ext::make_shared<USCPI>(hz);
+        auto index = ext::make_shared<USCPI>();
 
         for (auto& [d, v] : fixings)
             index->addFixing(d, v);
@@ -2032,7 +2013,6 @@ BOOST_AUTO_TEST_CASE(testUsCpiLinearGlobalBootstrapAtMonthStart) {
             auto curve = ext::make_shared<
                 PiecewiseZeroInflationCurve<Linear, GlobalBootstrap>>(
                 evalDate, baseDate, Monthly, dc, helpers);
-            hz.linkTo(curve);
             curve->zeroRate(evalDate + 1*Years);
         } catch (const std::exception&) {
             failureCount++;
@@ -2103,8 +2083,7 @@ BOOST_AUTO_TEST_CASE(testPillarCollisionWithDifferentMonthLengths) {
 
         Settings::instance().evaluationDate() = evalDate;
 
-        RelinkableHandle<ZeroInflationTermStructure> hz;
-        auto index = ext::make_shared<USCPI>(hz);
+        auto index = ext::make_shared<USCPI>();
 
         for (auto& [d, v] : fixings)
             index->addFixing(d, v);
@@ -2122,7 +2101,6 @@ BOOST_AUTO_TEST_CASE(testPillarCollisionWithDifferentMonthLengths) {
         try {
             auto curve = ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
                 evalDate, baseDate, Monthly, dc, helpers);
-            hz.linkTo(curve);
             curve->zeroRate(evalDate + 1*Years);
         } catch (const std::exception&) {
             failureCount++;

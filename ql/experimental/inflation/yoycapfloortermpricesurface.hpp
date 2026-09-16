@@ -493,7 +493,7 @@ namespace QuantLib {
                 atmYoYSwapDateRates_.first.push_back(referenceDate()+cfMaturities_[i]);
                 atmYoYSwapTimeRates_.first.push_back(timeFromReference(referenceDate()+cfMaturities_[i]));
                 // atmYoYSwapRates_->second.push_back(interpol((*cfMaturities_)[i]));
-                // Heuristic: overwrite the the swap rate with a value that guarantees that the
+                // Heuristic: overwrite the swap rate with a value that guarantees that the
                 // intrinsic value of all options is lower than the price
                 Real newSwapRate = minSwapRateIntersection[i] + intrinsicValueAddOn;
                 if (newSwapRate > maxSwapRateIntersection[i])

@@ -98,9 +98,9 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
     ext::shared_ptr<UKRPI> ii;
     Size zciisDataLength;
 
-    RelinkableHandle<YieldTermStructure> nominalTS;
+    Handle<YieldTermStructure> nominalTS;
     ext::shared_ptr<ZeroInflationTermStructure> cpiTS;
-    RelinkableHandle<ZeroInflationTermStructure> hcpi;
+    Handle<ZeroInflationTermStructure> hcpi;
 
     // setup
     CommonVars()
@@ -138,7 +138,7 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
         };
 
         // link from cpi index to cpi TS
-        ii = ext::make_shared<UKRPI>(hcpi);
+        ii = ext::make_shared<UKRPI>();
         for (Size i=0; i<rpiSchedule.size();i++) {
             ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
         };
@@ -186,7 +186,7 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
         ext::shared_ptr<YieldTermStructure> nominal =
             ext::make_shared<InterpolatedZeroCurve<Linear>>(nomD,nomR,dcNominal);
 
-        nominalTS.linkTo(nominal);
+        nominalTS = Handle<YieldTermStructure>(nominal);
 
         // now build the zero inflation curve
         observationLag = Period(2,Months);
@@ -231,17 +231,12 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
         auto pCPIts =
             ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
                                     evaluationDate, baseDate, ii->frequency(), dcZCIIS, helpers);
-        pCPIts->recalculate();
+
         cpiTS = ext::dynamic_pointer_cast<ZeroInflationTermStructure>(pCPIts);
 
         // make sure that the index has the latest zero inflation term structure
-        hcpi.linkTo(pCPIts);
-    }
-
-    // teardown
-    ~CommonVars() {
-        // break circular references and allow curves to be destroyed
-        hcpi.reset();
+        hcpi = Handle<ZeroInflationTermStructure>(pCPIts);
+        ii = ext::make_shared<UKRPI>(hcpi);
     }
 };
 

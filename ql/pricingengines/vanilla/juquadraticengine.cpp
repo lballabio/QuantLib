@@ -26,6 +26,7 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -112,6 +113,10 @@ namespace QuantLib {
 
             results_.strikeSensitivity  = black.strikeSensitivity();
             results_.itmCashProbability = black.itmCashProbability();
+        } else if (variance < QL_EPSILON) {
+            // no time value: the critical-price calculation degenerates, and the
+            // American price is just the European one floored at intrinsic
+            results_.value = std::max(black.value(), (*payoff)(spot));
         } else {
             // early exercise can be optimal
             CumulativeNormalDistribution cumNormalDist;

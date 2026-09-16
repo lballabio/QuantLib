@@ -187,6 +187,7 @@ set(QL_SOURCES
     experimental/termstructures/basisswapratehelpers.cpp
     experimental/termstructures/crosscurrencyratehelpers.cpp
     experimental/termstructures/quotesensitivitycalculator.cpp
+    experimental/termstructures/overnightindexedfundingratehelper.cpp
     experimental/variancegamma/analyticvariancegammaengine.cpp
     experimental/variancegamma/fftengine.cpp
     experimental/variancegamma/fftvanillaengine.cpp
@@ -941,6 +942,7 @@ set(QL_SOURCES
     time/calendars/newzealand.cpp
     time/calendars/northmacedonia.cpp
     time/calendars/norway.cpp
+    time/calendars/philippines.cpp
     time/calendars/poland.cpp
     time/calendars/romania.cpp
     time/calendars/russia.cpp
@@ -1247,6 +1249,7 @@ set(QL_HEADERS
     experimental/termstructures/jacobian/curvejacobiangraph.hpp
     experimental/termstructures/jacobian/curvesensitivitypropagation.hpp
     experimental/termstructures/quotesensitivitycalculator.hpp
+    experimental/termstructures/overnightindexedfundingratehelper.hpp
     experimental/variancegamma/analyticvariancegammaengine.hpp
     experimental/variancegamma/fftengine.hpp
     experimental/variancegamma/fftvanillaengine.hpp
@@ -2270,6 +2273,7 @@ set(QL_HEADERS
     time/calendars/northmacedonia.hpp
     time/calendars/norway.hpp
     time/calendars/nullcalendar.hpp
+    time/calendars/philippines.hpp
     time/calendars/poland.hpp
     time/calendars/romania.hpp
     time/calendars/russia.hpp

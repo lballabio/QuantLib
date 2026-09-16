@@ -4,5 +4,6 @@
 #include <ql/experimental/termstructures/basisswapratehelpers.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
 #include <ql/experimental/termstructures/quotesensitivitycalculator.hpp>
+#include <ql/experimental/termstructures/overnightindexedfundingratehelper.hpp>
 
 #include <ql/experimental/termstructures/jacobian/all.hpp>

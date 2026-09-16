@@ -39,6 +39,7 @@ set(QL_TEST_SOURCES
     compiledboostversion.cpp
     compoundoption.cpp
     convertiblebonds.cpp
+    copulas.cpp
     covariance.cpp
     creditdefaultswap.cpp
     constnotionalcrosscurrencybasisswap.cpp
@@ -62,6 +63,7 @@ set(QL_TEST_SOURCES
     equitytotalreturnswap.cpp
     europeanoption.cpp
     everestoption.cpp
+    extendedblackvariancesurface.cpp
     exchangerate.cpp
     extendedtrees.cpp
     extensibleoptions.cpp
@@ -131,6 +133,7 @@ set(QL_TEST_SOURCES
     optimizers.cpp
     optionletstripper.cpp
     overnightindexedcoupon.cpp
+    overnightindexedfundingratehelper.cpp
     overnightindexedswap.cpp
     pagodaoption.cpp
     partialtimebarrieroption.cpp

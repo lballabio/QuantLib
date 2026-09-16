@@ -106,9 +106,9 @@ struct CommonVars {
     DayCounter dc;
     ext::shared_ptr<YoYInflationIndex> iir;
 
-    RelinkableHandle<YieldTermStructure> nominalTS;
+    Handle<YieldTermStructure> nominalTS;
     ext::shared_ptr<YoYInflationTermStructure> yoyTS;
-    RelinkableHandle<YoYInflationTermStructure> hy;
+    Handle<YoYInflationTermStructure> hy;
 
     // setup
     CommonVars()
@@ -147,12 +147,11 @@ struct CommonVars {
         for (Size i=0; i<rpiSchedule.size();i++) {
             rpi->addFixing(rpiSchedule[i], fixData[i]);
         }
-        // link from yoy index to yoy TS
-        iir = ext::make_shared<YoYInflationIndex>(rpi, hy);
+        iir = ext::make_shared<YoYInflationIndex>(rpi);
 
         ext::shared_ptr<YieldTermStructure> nominalFF(
                         new FlatForward(evaluationDate, 0.05, ActualActual(ActualActual::ISDA)));
-        nominalTS.linkTo(nominalFF);
+        nominalTS = Handle<YieldTermStructure>(nominalFF);
 
         // now build the YoY inflation curve
         Period observationLag = Period(2,Months);
@@ -181,7 +180,7 @@ struct CommonVars {
                         observationLag,
                         CPI::Flat,
                         calendar, convention, dc,
-                        Handle<YieldTermStructure>(nominalTS));
+                        nominalTS);
 
         Date baseDate = rpi->lastFixingDate();
         Rate baseYYRate = yyData[0].rate/100.0;
@@ -191,7 +190,8 @@ struct CommonVars {
         yoyTS = ext::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
 
         // make sure that the index has the latest yoy term structure
-        hy.linkTo(pYYTS);
+        hy = Handle<YoYInflationTermStructure>(pYYTS);
+        iir = ext::make_shared<YoYInflationIndex>(rpi, hy);
     }
 
     // utilities
@@ -674,8 +674,6 @@ BOOST_AUTO_TEST_CASE(testDecomposition) {
                     << "\n" <<
                     "  Diff: " << error );
     }
-    // remove circular refernce
-    vars.hy.reset();
 }
 
 BOOST_AUTO_TEST_CASE(testInstrumentEquality) {
@@ -729,8 +727,7 @@ BOOST_AUTO_TEST_CASE(testInstrumentEquality) {
                                                  vars.dc,
                                                  UnitedKingdom());
 
-                    Handle<YieldTermStructure> hTS(vars.nominalTS);
-                    ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
+                    ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(vars.nominalTS));
                     swap.setPricingEngine(sppe);
 
                     Leg leg2 = vars.makeYoYCapFlooredLeg(whichPricer, from, length,
@@ -775,8 +772,6 @@ BOOST_AUTO_TEST_CASE(testInstrumentEquality) {
             }
         }
     }
-    // remove circular refernce
-    vars.hy.reset();
 }
 
 BOOST_AUTO_TEST_SUITE_END()

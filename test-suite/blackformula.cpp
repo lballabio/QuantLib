@@ -442,6 +442,76 @@ BOOST_AUTO_TEST_CASE(testBachelierBlackFormulaForwardDerivativeWithZeroVolatilit
     assertBachelierBlackFormulaForwardDerivative(Option::Put, strikes, vol);
 }
 
+BOOST_AUTO_TEST_CASE(testBachelierImpliedVolAtIntrinsic) {
+
+    BOOST_TEST_MESSAGE("Testing Bachelier implied volatility for prices at intrinsic value...");
+
+    // For a deep in-the-money option the Bachelier price rounds to the
+    // intrinsic value, so the time value computed by the inversion can come
+    // out a few ulps below zero.  Such a price must still invert instead of
+    // being rejected as arbitrageable.
+    const Real tte = 0.01;
+    const Real vol = 1e-5;
+
+    for (Real forward : {-0.01, 0.005, 0.05, 1.0}) {
+        for (Real offset : {0.01, 0.03, 0.07}) {
+            for (auto type : {Option::Call, Option::Put}) {
+                const Real strike =
+                    (type == Option::Call) ? forward - offset : forward + offset;
+                const Real price = bachelierBlackFormula(
+                    type, strike, forward, vol * std::sqrt(tte));
+
+                Real impliedVol = -1.0;
+                BOOST_CHECK_NO_THROW(
+                    impliedVol = bachelierBlackFormulaImpliedVol(
+                        type, strike, forward, tte, price));
+                BOOST_CHECK(impliedVol >= 0.0);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testDeepInTheMoneyPricesNotBelowIntrinsic) {
+
+    BOOST_TEST_MESSAGE("Testing that deep in-the-money Black and Bachelier prices "
+                       "are not below their intrinsic value...");
+
+    // With a small enough standard deviation the cumulative normal
+    // saturates and the price has to reduce to the discounted intrinsic
+    // value exactly; a result a few ulps below it is rejected by the
+    // no-arbitrage checks of the implied-volatility inversions.
+    struct Case {
+        Option::Type type;
+        Real strike, forward;
+    };
+    const Case cases[] = {{Option::Call, 50.0, 100.0},    {Option::Put, 100.0, 50.0},
+                          {Option::Call, 0.03, 0.05},     {Option::Put, 0.05, 0.03},
+                          {Option::Call, 1000.0, 1234.5}, {Option::Put, 1234.5, 1000.0}};
+
+    for (const Case& c : cases) {
+        Real theta = (c.type == Option::Call) ? 1.0 : -1.0;
+        Real moneyness = theta * (c.forward - c.strike);
+        for (Real discount : {1.0, 0.97}) {
+            Real intrinsic = discount * std::max(moneyness, 0.0);
+
+            // both d1 and d2 are above 20
+            Real black = blackFormula(c.type, c.strike, c.forward, 0.01, discount);
+            if (black < intrinsic)
+                BOOST_ERROR("Black price for strike " << c.strike << ", forward " << c.forward
+                            << ", discount " << discount << " is below intrinsic by "
+                            << intrinsic - black);
+
+            // (forward - strike)/stdDev is 20
+            Real bachelier =
+                bachelierBlackFormula(c.type, c.strike, c.forward, moneyness / 20.0, discount);
+            if (bachelier < intrinsic)
+                BOOST_ERROR("Bachelier price for strike " << c.strike << ", forward "
+                            << c.forward << ", discount " << discount
+                            << " is below intrinsic by " << intrinsic - bachelier);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -8,12 +8,14 @@ this_include_HEADERS = \
     all.hpp \
     basisswapratehelpers.hpp \
     crosscurrencyratehelpers.hpp \
-    quotesensitivitycalculator.hpp
+    quotesensitivitycalculator.hpp \
+    overnightindexedfundingratehelper.hpp
 
 cpp_files = \
     basisswapratehelpers.cpp \
     crosscurrencyratehelpers.cpp \
-    quotesensitivitycalculator.cpp
+    quotesensitivitycalculator.cpp \
+    overnightindexedfundingratehelper.cpp
 
 
 if UNITY_BUILD

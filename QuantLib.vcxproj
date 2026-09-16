@@ -781,6 +781,7 @@
     <ClInclude Include="ql\experimental\termstructures\jacobian\curvejacobiangraph.hpp" />
     <ClInclude Include="ql\experimental\termstructures\jacobian\curvesensitivitypropagation.hpp" />
     <ClInclude Include="ql\experimental\termstructures\quotesensitivitycalculator.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\overnightindexedfundingratehelper.hpp" />
     <ClInclude Include="ql\experimental\variancegamma\all.hpp" />
     <ClInclude Include="ql\experimental\variancegamma\analyticvariancegammaengine.hpp" />
     <ClInclude Include="ql\experimental\variancegamma\fftengine.hpp" />
@@ -1868,6 +1869,7 @@
     <ClInclude Include="ql\time\calendars\northmacedonia.hpp" />
     <ClInclude Include="ql\time\calendars\norway.hpp" />
     <ClInclude Include="ql\time\calendars\nullcalendar.hpp" />
+    <ClInclude Include="ql\time\calendars\philippines.hpp" />
     <ClInclude Include="ql\time\calendars\poland.hpp" />
     <ClInclude Include="ql\time\calendars\romania.hpp" />
     <ClInclude Include="ql\time\calendars\russia.hpp" />
@@ -2151,6 +2153,7 @@
     <ClCompile Include="ql\experimental\termstructures\basisswapratehelpers.cpp" />
     <ClCompile Include="ql\experimental\termstructures\crosscurrencyratehelpers.cpp" />
     <ClCompile Include="ql\experimental\termstructures\quotesensitivitycalculator.cpp" />
+    <ClCompile Include="ql\experimental\termstructures\overnightindexedfundingratehelper.cpp" />
     <ClCompile Include="ql\experimental\variancegamma\analyticvariancegammaengine.cpp" />
     <ClCompile Include="ql\experimental\variancegamma\fftengine.cpp" />
     <ClCompile Include="ql\experimental\variancegamma\fftvanillaengine.cpp" />
@@ -2894,6 +2897,7 @@
     <ClCompile Include="ql\time\calendars\newzealand.cpp" />
     <ClCompile Include="ql\time\calendars\northmacedonia.cpp" />
     <ClCompile Include="ql\time\calendars\norway.cpp" />
+    <ClCompile Include="ql\time\calendars\philippines.cpp" />
     <ClCompile Include="ql\time\calendars\poland.cpp" />
     <ClCompile Include="ql\time\calendars\romania.cpp" />
     <ClCompile Include="ql\time\calendars\russia.cpp" />

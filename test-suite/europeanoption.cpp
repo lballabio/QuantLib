@@ -1238,6 +1238,109 @@ BOOST_AUTO_TEST_CASE(testJOSHIBinomialEngines) {
     testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
+BOOST_AUTO_TEST_CASE(testFarOutOfTheMoneyBinomialEngines) {
+
+    BOOST_TEST_MESSAGE("Testing binomial European engines "
+                       "far out of the money...");
+
+    DayCounter dc = Actual365Fixed();
+    Date today = Date(15, August, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.01);
+    auto rRate = ext::make_shared<SimpleQuote>(0.03);
+    auto vol = ext::make_shared<SimpleQuote>(0.15);
+
+    auto stochProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot),
+        Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 500.0);
+    auto exercise = ext::make_shared<EuropeanExercise>(today + Period(1, Days));
+    EuropeanOption option(payoff, exercise);
+
+    Size steps = 801;
+
+    option.setPricingEngine(
+        ext::make_shared<AnalyticEuropeanEngine>(stochProcess));
+    Real expected = option.NPV();
+
+    option.setPricingEngine(
+        ext::make_shared<BinomialVanillaEngine<LeisenReimer> >(stochProcess, steps));
+    Real calculated = option.NPV();
+    Real tolerance = 1.0e-6;
+    if (std::fabs(calculated - expected) > tolerance*expected)
+        REPORT_FAILURE("value", payoff, exercise, spot->value(), qRate->value(),
+                       rRate->value(), today, vol->value(), expected, calculated,
+                       std::fabs(calculated-expected), tolerance);
+
+    // the Joshi up probability is an asymptotic series, and diverges this
+    // far from the money
+    option.setPricingEngine(
+        ext::make_shared<BinomialVanillaEngine<Joshi4> >(stochProcess, steps));
+    BOOST_CHECK_EXCEPTION(option.NPV(), Error,
+                          ExpectedErrorMessage("invalid up probability"));
+
+    // the other direction rounds the Leisen-Reimer up probability to one,
+    // leaving the tree without a down step
+    auto deepPayoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 20.0);
+    EuropeanOption deepOption(deepPayoff, exercise);
+    deepOption.setPricingEngine(
+        ext::make_shared<BinomialVanillaEngine<LeisenReimer> >(stochProcess, steps));
+    BOOST_CHECK_EXCEPTION(deepOption.NPV(), Error,
+                          ExpectedErrorMessage("invalid up probability"));
+}
+
+BOOST_AUTO_TEST_CASE(testLargeDriftBinomialEngines) {
+
+    BOOST_TEST_MESSAGE("Testing binomial European engines "
+                       "with a large drift per step...");
+
+    DayCounter dc = Actual365Fixed();
+    Date today = Date(15, August, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.10);
+    auto vol = ext::make_shared<SimpleQuote>(0.02);
+
+    auto stochProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot),
+        Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+    auto exercise = ext::make_shared<EuropeanExercise>(today + Period(1, Years));
+    EuropeanOption option(payoff, exercise);
+
+    option.setPricingEngine(
+        ext::make_shared<AnalyticEuropeanEngine>(stochProcess));
+    Real expected = option.NPV();
+
+    // at ten steps 4*variance is below 3*drift^2, so the equal-probability
+    // up step has no real solution
+    option.setPricingEngine(
+        ext::make_shared<BinomialVanillaEngine<AdditiveEQPBinomialTree> >(
+            stochProcess, 10));
+    BOOST_CHECK_EXCEPTION(option.NPV(), Error,
+                          ExpectedErrorMessage("more steps are needed"));
+
+    option.setPricingEngine(
+        ext::make_shared<BinomialVanillaEngine<AdditiveEQPBinomialTree> >(
+            stochProcess, 501));
+    Real calculated = option.NPV();
+    Real tolerance = 0.02;
+    if (std::fabs(calculated - expected) > tolerance*expected)
+        REPORT_FAILURE("value", payoff, exercise, spot->value(), qRate->value(),
+                       rRate->value(), today, vol->value(), expected, calculated,
+                       std::fabs(calculated-expected), tolerance);
+}
+
 BOOST_AUTO_TEST_CASE(testFdEngines) {
 
     BOOST_TEST_MESSAGE("Testing finite-difference European engines "
