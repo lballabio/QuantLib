@@ -21,8 +21,10 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/experimental/volatility/svismilesection.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
@@ -856,6 +858,75 @@ BOOST_AUTO_TEST_CASE(testSmileSectionRNDvsBSM) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testSmileSectionRNDQuantileRange) {
+    BOOST_TEST_MESSAGE("Testing SmileSectionRNDCalculator quantile-range "
+                       "saturation...");
+
+    const Time T = 1.0;
+    const Real fwd = 100.0;
+    const Volatility vol = 0.20;
+    const Real nStd = 1.0;
+    const auto smile = ext::make_shared<FlatSmileSection>(
+        T, vol, DayCounter(), fwd);
+    const SmileSectionRNDCalculator rnd(smile, 200, nStd);
+    const CumulativeNormalDistribution Phi;
+
+    const Real logMean = std::log(fwd) - 0.5 * vol * vol * T;
+    const Real tol = 1e-6;
+    for (Real sign : { -1.0, 1.0 }) {
+        const Real probability = Phi(sign * 2.0 * nStd);
+        const Real calculated = rnd.invcdf(probability);
+        const Real expected = logMean + sign * nStd * vol * std::sqrt(T);
+
+        if (std::fabs(calculated - expected) > tol) {
+            BOOST_FAIL("failed to saturate at the requested normal quantile"
+                       << "\n   side:       " << sign
+                       << "\n   calculated: " << calculated
+                       << "\n   expected:   " << expected
+                       << "\n   difference: " << calculated - expected
+                       << "\n   tolerance:  " << tol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSmileSectionRNDLowVolFatWings) {
+    BOOST_TEST_MESSAGE("Testing SmileSectionRNDCalculator quantile range at a "
+                       "low at-the-money volatility...");
+
+    // Wings reaching far in log-moneyness on a 5% ATM volatility, which a
+    // search stepping in ATM standard deviations cannot cross.
+    const std::vector<Real> svi = { -0.7124561725, 0.2210528950, 3.2365013812,
+                                    -0.0171352352, -0.0547257886 };
+    const Real fwd = 50.0;
+    const Real nStd = 8.0;
+
+    const auto smile = ext::make_shared<SviSmileSection>(1.0, fwd, svi);
+    const SmileSectionRNDCalculator rnd(smile, 200, nStd);
+    const CumulativeNormalDistribution Phi;
+    const InverseCumulativeNormal invPhi;
+
+    const Real tol = 1e-3;
+    const Real edge = rnd.invcdf(Phi(-nStd));
+    const Real reached = invPhi(rnd.cdf(edge));
+
+    if (std::fabs(reached + nStd) > tol) {
+        BOOST_FAIL("failed to reach the requested quantile"
+                   << "\n   requested: " << -nStd
+                   << "\n   reached:   " << reached
+                   << "\n   at x:      " << edge
+                   << "\n   tolerance: " << tol);
+    }
+
+    // Beyond the range the quantile saturates.
+    const Real beyond = rnd.invcdf(Phi(-nStd - 1.0));
+    if (std::fabs(beyond - edge) > tol) {
+        BOOST_FAIL("failed to saturate past the tabulated range"
+                   << "\n   at the edge: " << edge
+                   << "\n   beyond it:   " << beyond
+                   << "\n   tolerance:   " << tol);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testSmileSectionRNDvsHeston) {
     BOOST_TEST_MESSAGE("Testing SmileSectionRNDCalculator on a Heston-implied "
                        "smile against HestonRNDCalculator...");
@@ -934,6 +1005,129 @@ BOOST_AUTO_TEST_CASE(testSmileSectionRNDMissingAtmLevel) {
     BOOST_CHECK_EXCEPTION(
         rnd.invcdf(0.5, T), QuantLib::Error,
         ExpectedErrorMessage("AtmSmileSection"));
+}
+
+BOOST_AUTO_TEST_CASE(testSmileSectionRNDMartingale) {
+    BOOST_TEST_MESSAGE("Testing that SmileSectionRNDCalculator reproduces the "
+                       "forward across volatility levels...");
+
+    // Scaling SVI total variance by c^2 fattens the wings while holding their
+    // shape. The tail then carries a share of E[S] far out of proportion to its
+    // probability, which is what a coarse or truncated quantile grid loses.
+    const Date today = Settings::instance().evaluationDate();
+    const Date maturity = today + 1 * Years;
+    const Time T = Actual365Fixed().yearFraction(today, maturity);
+    const Real fwd = 50.0;
+    // The residual is the tabulated quantile range, not the grid: refining the
+    // grid stalls at this level because invcdf takes a probability, which pins
+    // the deepest reachable quantile near 8 standard deviations.
+    const Real tol = 5.0e-3;
+
+    GaussHermiteIntegration gh(64);
+    const Array& nodes = gh.x();
+    const Array& weights = gh.weights();
+    const CumulativeNormalDistribution Phi;
+
+    for (Real c : { 0.7, 1.0, 1.5, 2.0, 2.5 }) {
+        const std::vector<Real> svi = { c * c * 0.1125, c * c * 0.10,
+                                        0.10, 0.525, 0.0 };
+        const auto smile = ext::make_shared<SviSmileSection>(T, fwd, svi);
+        const SmileSectionRNDCalculator rnd(smile);
+
+        Real mean = 0.0;
+        for (Size i = 0; i < gh.order(); ++i) {
+            const Real x = nodes[i];
+            const Real u = std::clamp(Phi(M_SQRT2 * x),
+                                      Real(QL_EPSILON), Real(1.0 - QL_EPSILON));
+            mean += weights[i] * std::exp(-x * x) * std::exp(rnd.invcdf(u));
+        }
+        mean /= std::sqrt(M_PI);
+
+        const Real relError = std::fabs(mean - fwd) / fwd;
+        if (relError > tol) {
+            BOOST_FAIL("failed to reproduce the forward from the "
+                       "SmileSectionRNDCalculator quantile"
+                       << std::fixed << std::setprecision(8)
+                       << "\n   vol scale : " << c
+                       << "\n   atm vol   : " << smile->volatility(fwd)
+                       << "\n   E[S]      : " << mean
+                       << "\n   forward   : " << fwd
+                       << "\n   rel error : " << relError
+                       << "\n   tolerance : " << tol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSmileSectionRNDLeftTailCdf) {
+    BOOST_TEST_MESSAGE("Testing SmileSectionRNDCalculator cdf deep in the "
+                       "left tail...");
+
+    // Below the forward the cdf is the small number, so taking it as
+    // 1 - P(S > K) spends it against a value close to one: at four standard
+    // deviations that left ~3 correct bits, and by six it returned zero. The
+    // put digital carries the same probability directly.
+    const Date today = Settings::instance().evaluationDate();
+    const Date maturity = today + 1 * Years;
+    const Time T = Actual365Fixed().yearFraction(today, maturity);
+    const Real fwd = 50.0;
+    const std::vector<Real> svi = { 0.1125, 0.10, 0.10, 0.525, 0.0 };
+
+    // A flat smile has an analytic left tail, so the reference here is
+    // independent of how the calculator obtains it.
+    const Volatility flatVol = 0.20;
+    const Real stdDev = flatVol * std::sqrt(T);
+    const auto flat = ext::make_shared<FlatSmileSection>(
+        T, flatVol, DayCounter(), fwd);
+    const SmileSectionRNDCalculator flatRnd(flat);
+    const CumulativeNormalDistribution Phi;
+
+    // Difference-quotient error grows as the probability shrinks, to a
+    // measured 1.4e-5 at the deepest point below.
+    const Real flatTol = 1e-4;
+    for (Real nStdDev : { 2.0, 3.0, 4.0, 5.0, 6.0 }) {
+        const Real x = std::log(fwd) - nStdDev * stdDev;
+        const Real d2 =
+            (std::log(fwd) - x) / stdDev - 0.5 * stdDev;
+
+        const Real calculated = flatRnd.cdf(x, T);
+        const Real expected = Phi(-d2);
+
+        BOOST_REQUIRE(value(expected) > 0.0);
+        const Real relError = std::fabs(calculated - expected) / expected;
+        if (relError > flatTol) {
+            BOOST_FAIL("failed to reproduce the analytic left-tail cdf"
+                       << "\n   std deviations: " << nStdDev
+                       << "\n   calculated:     " << calculated
+                       << "\n   expected:       " << expected
+                       << "\n   rel error:      " << relError
+                       << "\n   tolerance:      " << flatTol);
+        }
+    }
+
+    const auto smile = ext::make_shared<SviSmileSection>(T, fwd, svi);
+    const SmileSectionRNDCalculator rnd(smile);
+
+    const Real tol = 1e-6;
+    for (Real offset : { -2.0, -3.0, -4.0, -5.0, -6.0 }) {
+        const Real x = std::log(fwd) + offset;
+        const Real K = std::exp(x);
+
+        const Real calculated = rnd.cdf(x, T);
+        const Real expected = smile->digitalOptionPrice(
+            K, Option::Put, 1.0, std::abs(K) * 2.0e-6);
+
+        BOOST_REQUIRE(value(expected) > 0.0);
+        const Real relError = std::fabs(calculated - expected) / expected;
+        if (relError > tol) {
+            BOOST_FAIL("failed to reproduce the left-tail cdf"
+                       << "\n   log-moneyness: " << offset
+                       << "\n   strike:        " << K
+                       << "\n   calculated:    " << calculated
+                       << "\n   expected:      " << expected
+                       << "\n   rel error:     " << relError
+                       << "\n   tolerance:     " << tol);
+        }
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

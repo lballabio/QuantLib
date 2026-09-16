@@ -2869,6 +2869,81 @@ BOOST_AUTO_TEST_CASE(testGaussianCopulaSpreadEngineSVI) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testGaussianCopulaSpreadEngineParityAcrossVols) {
+    BOOST_TEST_MESSAGE("Testing Gaussian Copula spread engine put-call parity "
+                       "across volatility levels...");
+
+    // Parity only needs each marginal to price its own forward. A smile with fat
+    // wings is where that marginal construction is actually stressed.
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(1, March, 2025);
+    const Date maturity = today + Period(12, Months);
+    const Time T = dc.yearFraction(today, maturity);
+
+    const ext::shared_ptr<EuropeanExercise> exercise
+        = ext::make_shared<EuropeanExercise>(maturity);
+
+    const Real rho = 0.5, strike = 20.0;
+    const Real f1 = 50.0, f2 = 30.0;
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.0, dc));
+
+    constexpr double parityRelTol = 1e-4;
+
+    for (Real c : { 0.7, 1.0, 1.5, 2.0 }) {
+        const std::vector<Real> svi1 = { c * c * 0.1125, c * c * 0.10,
+                                         0.10, 0.525, 0.0 };
+        const std::vector<Real> svi2 = { c * c * 0.08, c * c * 0.10,
+                                         0.10, 0.18, 0.0 };
+
+        const auto smile1 = ext::make_shared<SviSmileSection>(T, f1, svi1);
+        const auto smile2 = ext::make_shared<SviSmileSection>(T, f2, svi2);
+
+        const Handle<BlackVolTermStructure> volTS1(
+            ext::make_shared<PiecewiseBlackVarianceSurface>(
+                today, maturity, smile1, dc));
+        const Handle<BlackVolTermStructure> volTS2(
+            ext::make_shared<PiecewiseBlackVarianceSurface>(
+                today, maturity, smile2, dc));
+
+        const ext::shared_ptr<BlackProcess> p1 =
+            ext::make_shared<BlackProcess>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(f1)), rTS, volTS1);
+        const ext::shared_ptr<BlackProcess> p2 =
+            ext::make_shared<BlackProcess>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(f2)), rTS, volTS2);
+
+        const ext::shared_ptr<PricingEngine> engine
+            = ext::make_shared<GaussianCopulaSpreadEngine>(p1, p2, rho);
+
+        BasketOption callOption(ext::make_shared<SpreadBasketPayoff>(
+                ext::make_shared<PlainVanillaPayoff>(Option::Call, strike)),
+            exercise);
+        callOption.setPricingEngine(engine);
+
+        BasketOption putOption(ext::make_shared<SpreadBasketPayoff>(
+                ext::make_shared<PlainVanillaPayoff>(Option::Put, strike)),
+            exercise);
+        putOption.setPricingEngine(engine);
+
+        const Real fwd = (callOption.NPV() - putOption.NPV())
+            / rTS->discount(maturity);
+        const Real expectedFwd = f1 - f2 - strike;
+        const Real relError = std::fabs(fwd - expectedFwd) / f1;
+
+        if (relError > parityRelTol) {
+            BOOST_FAIL("failed to reproduce call-put parity using the "
+                       "Gaussian Copula spread engine with an SVI smile."
+                       << std::fixed << std::setprecision(8)
+                       << "\n    vol scale     : " << c
+                       << "\n    atm vol leg 1 : " << smile1->volatility(f1)
+                       << "\n    calculated fwd: " << fwd
+                       << "\n    expected fwd  : " << expectedFwd
+                       << "\n    rel error     : " << relError
+                       << "\n    tolerance     : " << parityRelTol);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
