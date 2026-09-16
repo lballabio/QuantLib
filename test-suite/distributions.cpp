@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <limits>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/errorfunction.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/math/distributions/bivariatestudenttdistribution.hpp>
 #include <ql/math/distributions/studenttdistribution.hpp>
@@ -1036,6 +1037,54 @@ BOOST_AUTO_TEST_CASE(testSankaranApproximation) {
                 }
             }
         }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testCumulativeNormalTail) {
+
+    BOOST_TEST_MESSAGE("Testing error function and cumulative normal in the upper tail...");
+
+    // erf(x) rounds to 1 for x >= 6 (erfc(6) is about 2e-17), so the
+    // implementation has to saturate to exactly 1 there.  If it stops
+    // short of 1, the cumulative normal built on it is no longer
+    // monotonic and deep in-the-money option prices fall below their
+    // intrinsic value.
+    ErrorFunction erf;
+    for (Real x : {6.0, 6.5, 7.0, 10.0, 28.0, 100.0}) {
+        Real y = erf(x);
+        if (y != 1.0)
+            BOOST_ERROR("erf(" << x << ") is below 1 by " << 1.0 - y);
+        y = erf(-x);
+        if (y != -1.0)
+            BOOST_ERROR("erf(" << -x << ") is above -1 by " << y + 1.0);
+    }
+
+    // erf must not decrease when crossing the saturation threshold
+    Real previous = erf(5.5);
+    for (Size i = 1; i <= 1000; ++i) {
+        Real x = 5.5 + i * 0.001;
+        Real y = erf(x);
+        if (y < previous || y > 1.0)
+            BOOST_ERROR("erf is not monotonic at x = " << x
+                        << ": decreased by " << previous - y);
+        previous = y;
+    }
+
+    CumulativeNormalDistribution cum;
+    for (Real z : {8.5, 9.0, 10.0, 20.0, 40.0}) {
+        Real p = cum(z);
+        if (p != 1.0)
+            BOOST_ERROR("N(" << z << ") is below 1 by " << 1.0 - p);
+    }
+
+    previous = cum(7.0);
+    for (Size i = 1; i <= 3000; ++i) {
+        Real z = 7.0 + i * 0.001;
+        Real p = cum(z);
+        if (p < previous || p > 1.0)
+            BOOST_ERROR("cumulative normal is not monotonic at z = " << z
+                        << ": decreased by " << previous - p);
+        previous = p;
     }
 }
 
