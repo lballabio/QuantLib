@@ -39,7 +39,8 @@ namespace QuantLib {
     */
     class Path {
       public:
-        explicit Path(TimeGrid timeGrid, Array values = Array());
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        Path(TimeGrid timeGrid, Array values = Array());
         //! \name inspectors
         //@{
         bool empty() const;

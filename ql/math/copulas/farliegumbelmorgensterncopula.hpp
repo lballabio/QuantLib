@@ -32,7 +32,9 @@ namespace QuantLib {
     //! Farlie-Gumbel-Morgenstern copula
     class FarlieGumbelMorgensternCopula {
       public:
-        explicit FarlieGumbelMorgensternCopula(Real theta);
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        FarlieGumbelMorgensternCopula(Real theta);
         Real operator()(Real x, Real y) const;
       private:
         Real theta_;

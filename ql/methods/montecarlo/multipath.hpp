@@ -41,7 +41,8 @@ namespace QuantLib {
         MultiPath() = default;
         MultiPath(Size nAsset,
                   const TimeGrid& timeGrid);
-        explicit MultiPath(std::vector<Path> multiPath);
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        MultiPath(std::vector<Path> multiPath);
         //! \name inspectors
         //@{
         Size assetNumber() const { return multiPath_.size(); }

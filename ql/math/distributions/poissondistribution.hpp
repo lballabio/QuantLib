@@ -39,7 +39,9 @@ namespace QuantLib {
     */
     class PoissonDistribution {
       public:
-        explicit PoissonDistribution(Real mu);
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        PoissonDistribution(Real mu);
         // function
         Real operator()(BigNatural k) const;
       private:
@@ -60,7 +62,9 @@ namespace QuantLib {
     */
     class CumulativePoissonDistribution {
       public:
-        explicit CumulativePoissonDistribution(Real mu) : mu_(mu) {}
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        CumulativePoissonDistribution(Real mu) : mu_(mu) {}
         Real operator()(BigNatural k) const {
             return 1.0 - incompleteGammaFunction(k+1, mu_);
         }
@@ -75,7 +79,9 @@ namespace QuantLib {
     */
     class InverseCumulativePoisson {
       public:
-        explicit InverseCumulativePoisson(Real lambda = 1.0);
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        InverseCumulativePoisson(Real lambda = 1.0);
         Real operator()(Real x) const;
       private:
         Real lambda_;

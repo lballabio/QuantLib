@@ -74,7 +74,9 @@ namespace QuantLib {
         AmericanExercise(const Date& earliestDate,
                          const Date& latestDate,
                          bool payoffAtExpiry = false);
-        explicit AmericanExercise(const Date& latestDate,
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        AmericanExercise(const Date& latestDate,
                          bool payoffAtExpiry = false);
     };
 
@@ -83,7 +85,8 @@ namespace QuantLib {
     */
     class BermudanExercise : public EarlyExercise {
       public:
-        explicit BermudanExercise(const std::vector<Date>& dates,
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        BermudanExercise(const std::vector<Date>& dates,
                          bool payoffAtExpiry = false);
     };
 
@@ -92,7 +95,8 @@ namespace QuantLib {
     */
     class EuropeanExercise : public Exercise {
       public:
-        explicit EuropeanExercise(const Date& date);
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        EuropeanExercise(const Date& date);
     };
 
 }

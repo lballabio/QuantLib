@@ -43,7 +43,9 @@ namespace QuantLib {
     */
     class NormalDistribution {
       public:
-        explicit NormalDistribution(Real average = 0.0,
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        NormalDistribution(Real average = 0.0,
                            Real sigma = 1.0);
         // function
         Real operator()(Real x) const;
@@ -67,7 +69,9 @@ namespace QuantLib {
     */
     class CumulativeNormalDistribution {
       public:
-        explicit CumulativeNormalDistribution(Real average = 0.0,
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        CumulativeNormalDistribution(Real average = 0.0,
                                      Real sigma   = 1.0);
         // function
         Real operator()(Real x) const;
@@ -99,7 +103,9 @@ namespace QuantLib {
     */
     class InverseCumulativeNormal {
       public:
-        explicit InverseCumulativeNormal(Real average = 0.0,
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        InverseCumulativeNormal(Real average = 0.0,
                                 Real sigma   = 1.0);
         // function
         Real operator()(Real x) const {
@@ -197,7 +203,9 @@ namespace QuantLib {
     */
     class MoroInverseCumulativeNormal {
       public:
-        explicit MoroInverseCumulativeNormal(Real average = 0.0,
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        MoroInverseCumulativeNormal(Real average = 0.0,
                                     Real sigma   = 1.0);
         // function
         Real operator()(Real x) const;
@@ -237,7 +245,9 @@ namespace QuantLib {
     */
     class MaddockInverseCumulativeNormal {
       public:
-        explicit MaddockInverseCumulativeNormal(Real average = 0.0,
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        MaddockInverseCumulativeNormal(Real average = 0.0,
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;
 
@@ -248,7 +258,9 @@ namespace QuantLib {
     //! Maddock's cumulative normal distribution class
     class MaddockCumulativeNormal {
       public:
-        explicit MaddockCumulativeNormal(Real average = 0.0,
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        MaddockCumulativeNormal(Real average = 0.0,
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;
 

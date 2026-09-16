@@ -33,7 +33,9 @@ namespace QuantLib {
     //! Plackett copula
     class PlackettCopula {
       public:
-        explicit PlackettCopula(Real theta);
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        PlackettCopula(Real theta);
         Real operator()(Real x, Real y) const;
       private:
         Real theta_;

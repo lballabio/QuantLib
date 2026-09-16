@@ -99,7 +99,7 @@ namespace QuantLib {
         MakeMCDigitalEngine& withSeed(BigNatural seed);
         MakeMCDigitalEngine& withAntitheticVariate(bool b = true);
         // conversion to pricing engine
-        // Intentionally implicit to support passing the fluent builder as a pricing engine.
+        // TODO: Review whether this conversion should remain implicit.
         // NOLINTNEXTLINE(google-explicit-constructor)
         operator ext::shared_ptr<PricingEngine>() const;
       private:

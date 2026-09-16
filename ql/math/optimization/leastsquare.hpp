@@ -60,7 +60,9 @@ namespace QuantLib {
     class LeastSquareFunction : public CostFunction {
       public:
         //! Default constructor
-        explicit LeastSquareFunction(LeastSquareProblem& lsp) : lsp_(lsp) {}
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        LeastSquareFunction(LeastSquareProblem& lsp) : lsp_(lsp) {}
         //! Destructor
         ~LeastSquareFunction() override = default;
 
