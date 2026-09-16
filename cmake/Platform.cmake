@@ -44,6 +44,11 @@ if (MSVC)
 
     add_compile_options(/wd4267 /wd4819 /wd26812 /w34127 /w34702 /w35262)
 
-    # Silence all C++17 deprecation warnings, same as in the vcxproj files
-    add_compile_definitions(_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS)
+    # In C++17 std::iterator is deprecated.  Older versions of boost::ublas,
+    # which we include e.g. through ql/math/matrixutilities/sparsematrix.hpp,
+    # still derive their iterators from it.  The supported boost versions go
+    # back to 1.58, so silence that one deprecation rather than all of them --
+    # a blanket _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS would also hide any
+    # deprecated construct we introduced ourselves.
+    add_compile_definitions(_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
 endif()
