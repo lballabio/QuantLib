@@ -52,6 +52,15 @@
 // QuantLib::Size == size_t (64 bit) to QuantLib::Integer == int (32
 // bit under x64 Windows). We disable this warning until a better
 // solution is suggested.
+//
+// This is deliberately not wrapped in warning(push)/warning(pop): the
+// suppression has to stay in effect for the whole translation unit,
+// since it is QuantLib's own inline and template code in the headers
+// that triggers it.  As a side effect it also silences C4267 in the
+// including code for the rest of that translation unit.
+//
+// A cmake build never sees this file -- it selects the generated
+// ql/config.hpp instead -- and gets /wd4267 from cmake/Platform.cmake.
 #ifdef _M_X64
 #pragma warning(disable : 4267)
 #endif
