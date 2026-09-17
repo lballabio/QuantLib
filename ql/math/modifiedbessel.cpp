@@ -85,8 +85,117 @@ namespace QuantLib {
             }
         }
 
+        // psi(m) for positive integer m: psi(1) = -gamma and
+        // psi(m) = -gamma + sum_{j=1}^{m-1} 1/j. The integer-order series
+        // below only ever needs the digamma function at positive integers,
+        // so the general function is not required.
+        Real digammaInteger(Size m) {
+            // Euler-Mascheroni constant
+            static const Real gamma = 0.57721566490153286060651209008240243;
+
+            Real s = -gamma;
+            for (Size j=1; j < m; ++j)
+                s += 1.0/static_cast<Real>(j);
+            return s;
+        }
+
+        // K_n for integer n, Abramowitz & Stegun 9.6.11. The
+        // I_(-nu) - I_nu route cannot be used here: sin(nu*pi) vanishes at
+        // integer order, so the quotient is 0/0 at nu = 0 and catastrophically
+        // ill-conditioned at nu = 1, 2, ...
+        template <class T, template <class> class W>
+        T modifiedBesselFunction_k_integer_impl(Size n, const T& x) {
+            const T half = 0.5*x;
+            const T y = half*half;
+
+            T sum1 = T(0.0);
+            if (n > 0) {
+                // (1/2) (x/2)^-n sum_{k=0}^{n-1} ((n-k-1)!/k!) (-x^2/4)^k
+                Real coeff = 1.0;
+                for (Size j=1; j < n; ++j)
+                    coeff *= static_cast<Real>(j);   // (n-1)!
+                T minusY = T(1.0);
+                Real kFactorial = 1.0;
+                for (Size k=0; k < n; ++k) {
+                    if (k > 0) {
+                        kFactorial *= static_cast<Real>(k);
+                        coeff /= static_cast<Real>(n-k);
+                        minusY *= -y;
+                    }
+                    sum1 += (coeff/kFactorial) * minusY;
+                }
+                sum1 *= 0.5 * std::pow(half, -static_cast<Real>(n));
+            }
+
+            const Real sign = (n % 2 == 0) ? -1.0 : 1.0;
+            const T sum2 = sign * std::log(half) *
+                modifiedBesselFunction_i_impl<T, Unweighted>(
+                    static_cast<Real>(n), x);
+
+            T sum3 = T(0.0), yPower = T(1.0);
+            Real kFactorial = 1.0, nkFactorial = 1.0;
+            for (Size j=1; j <= n; ++j)
+                nkFactorial *= static_cast<Real>(j);      // n!
+            for (Size k=0; k < 1000; ++k) {
+                if (k > 0) {
+                    kFactorial *= static_cast<Real>(k);
+                    nkFactorial *= static_cast<Real>(n+k);
+                    yPower *= y;
+                }
+                const T term = (digammaInteger(k+1) + digammaInteger(n+k+1))
+                               * yPower / (kFactorial*nkFactorial);
+                sum3 += term;
+                if (k > 2 && std::abs(term) <= std::abs(sum3)*QL_EPSILON)
+                    break;
+            }
+            sum3 *= -sign * 0.5 * std::pow(half, static_cast<Real>(n));
+
+            return (sum1 + sum2 + sum3) * W<T>().weightSmallX(x);
+        }
+
         template <class T, template <class> class W>
         T modifiedBesselFunction_k_impl(Real nu, const T& x) {
+            if (std::abs(x) >= 13.0) {
+                // K cannot be recovered from the difference of the two I
+                // series out here: that asymptotic expansion depends on nu
+                // only through nu*nu, so I_(-nu) and I_nu are identical and
+                // the difference is exactly zero rather than merely
+                // ill-conditioned. Sum the K expansion directly instead; it
+                // shares the coefficients of the I expansion but without the
+                // alternating sign, and having no sin(nu*pi) denominator it
+                // is also unaffected by integer order. Note this only bites
+                // for real arguments: for std::complex the i*exp(i*nu*pi)
+                // term above is non-zero, so the two I values differ there
+                // and the subtraction remains usable.
+                Real na_k=1.0;
+                T da_k=T(1.0), s=T(1.0);
+
+                for (Size k=1; k < 30; ++k) {
+                    na_k *= (4.0 * nu * nu -
+                             (2.0 * static_cast<Real>(k) - 1.0) *
+                                 (2.0 * static_cast<Real>(k) - 1.0));
+                    da_k *= (8.0 * k) * x;
+                    s += na_k/da_k;
+                }
+
+                return std::sqrt(M_PI / (2.0 * x)) *
+                       W<T>().weight2LargeX(x) * s;
+            }
+
+            // At integer order sin(nu*pi) vanishes together with the
+            // numerator: the singularity is removable, but evaluating the
+            // quotient directly gives 0/0 at nu = 0 and a result wrong by
+            // many orders of magnitude, with an arbitrary sign, at
+            // nu = 1, 2, ... Use the integer-order series instead. The
+            // threshold is deliberately tight: away from it the quotient
+            // below is the more accurate of the two.
+            const Real nearest = std::floor(std::abs(nu) + 0.5);
+            if (std::abs(std::abs(nu) - nearest) < 1e-9) {
+                // K is even in nu, so K_(-n) = K_n
+                return modifiedBesselFunction_k_integer_impl<T, W>(
+                    static_cast<Size>(nearest), x);
+            }
+
             return M_PI_2 * (modifiedBesselFunction_i_impl<T,W>(-nu, x) -
                              modifiedBesselFunction_i_impl<T,W>(nu, x)) /
                              std::sin(M_PI * nu);

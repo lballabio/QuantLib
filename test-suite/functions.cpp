@@ -239,6 +239,60 @@ BOOST_AUTO_TEST_CASE(testModifiedBesselFunctions) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testModifiedBesselFunctionsRegressionCases) {
+    BOOST_TEST_MESSAGE(
+        "Testing modified Bessel functions at integer order and large argument...");
+
+    // Every reference point in testModifiedBesselFunctions sits outside the
+    // two regimes below: the orders there are all non-integer and the largest
+    // argument is 2. Reference values from boost::math::cyl_bessel_i/k.
+    Real r[][4] = {
+        // integer order: the I_(-nu) - I_nu quotient is 0/0 here
+        { 0, 2, 2.279585302336067, 0.1138938727495334 },
+        { 1, 2, 1.590636854637329, 0.1398658818165224 },
+        { 2, 2, 0.6889484476987382, 0.2537597545660559 },
+        { 5, 2, 0.009825679323131702, 9.431049100596468 },
+        // large argument: the same quotient used to collapse to exactly zero
+        { 0.5, 13, 48951.57328321644, 7.857058697340969e-07 },
+        { 0.5, 14, 128223.8446632749, 2.785307663176792e-07 },
+        { 2.3, 20, 38035457.61215977, 6.531642087006757e-10 },
+        { 1.2, 30, 762821352844.8658, 2.183426121339329e-14 }
+    };
+
+    for (auto& i : r) {
+        const Real nu = i[0];
+        const Real x = i[1];
+        const Real expected_i = i[2];
+        const Real expected_k = i[3];
+
+        // Unlike the check above this scales the second-kind tolerance by the
+        // second-kind value: out here I is many orders of magnitude larger
+        // than K, so a bound taken from max(I, K) would accept anything.
+        const Real tol_i = 5e4 * QL_EPSILON * std::fabs(expected_i);
+        const Real tol_k = 5e4 * QL_EPSILON * std::fabs(expected_k);
+
+        const Real calculated_i = modifiedBesselFunction_i(nu, x);
+        const Real calculated_k = modifiedBesselFunction_k(nu, x);
+
+        if (std::fabs(expected_i - calculated_i) > tol_i) {
+            BOOST_ERROR("failed to reproduce modified Bessel "
+                        << "function of first kind"
+                        << "\n order      : " << nu
+                        << "\n argument   : " << x
+                        << "\n calculated : " << calculated_i
+                        << "\n expected   : " << expected_i);
+        }
+        if (std::fabs(expected_k - calculated_k) > tol_k) {
+            BOOST_ERROR("failed to reproduce modified Bessel "
+                        << "function of second kind"
+                        << "\n order      : " << nu
+                        << "\n argument   : " << x
+                        << "\n calculated : " << calculated_k
+                        << "\n expected   : " << expected_k);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testWeightedModifiedBesselFunctions) {
     BOOST_TEST_MESSAGE("Testing weighted modified Bessel functions...");
     for (Real nu = -5.0; nu <= 5.0; nu += 0.5) {
@@ -246,9 +300,11 @@ BOOST_AUTO_TEST_CASE(testWeightedModifiedBesselFunctions) {
             Real calculated_i = modifiedBesselFunction_i_exponentiallyWeighted(nu, x);
             Real expected_i = modifiedBesselFunction_i(nu, x) * exp(-x);
             Real calculated_k = modifiedBesselFunction_k_exponentiallyWeighted(nu, x);
-            Real expected_k =
-                M_PI_2 * (modifiedBesselFunction_i(-nu, x) - modifiedBesselFunction_i(nu, x)) *
-                exp(-x) / std::sin(M_PI * nu);
+            // Mirror the check above for the first kind rather than
+            // inlining the old I_(-nu) - I_nu quotient: that expression is
+            // 0/0 at integer order, so using it here made the test assert
+            // the very failure it should catch.
+            Real expected_k = modifiedBesselFunction_k(nu, x) * exp(-x);
             Real tol_i = std::max(QL_EPSILON, 1e3 * QL_EPSILON * std::fabs(expected_i) * std::max(exp(x), 1.0));
             Real tol_k = std::max(QL_EPSILON, 1e3 * QL_EPSILON * std::fabs(expected_k) * std::max(exp(x), 1.0));
             if (std::abs(expected_i - calculated_i) > tol_i) {
@@ -282,10 +338,11 @@ BOOST_AUTO_TEST_CASE(testWeightedModifiedBesselFunctions) {
                 std::complex<Real> expected_i = modifiedBesselFunction_i(nu, z) * exp(-z);
                 std::complex<Real> calculated_k =
                     modifiedBesselFunction_k_exponentiallyWeighted(nu, z);
-                std::complex<Real> expected_k = M_PI_2 *
-                                                      (modifiedBesselFunction_i(-nu, z) * exp(-z) -
-                                                       modifiedBesselFunction_i(nu, z) * exp(-z)) /
-                                                      std::sin(M_PI * nu);
+                // As above, check against the unweighted function rather
+                // than against the old I_(-nu) - I_nu quotient, which is
+                // 0/0 at integer order.
+                std::complex<Real> expected_k =
+                    modifiedBesselFunction_k(nu, z) * exp(-z);
                 Real tol_i = std::max(QL_EPSILON, 1e3 * QL_EPSILON * std::abs(calculated_i));
                 Real tol_k = std::max(QL_EPSILON, 1e3 * QL_EPSILON * std::abs(calculated_k));
                 if (std::abs(calculated_i - expected_i) > tol_i) {
