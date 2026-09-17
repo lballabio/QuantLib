@@ -17,11 +17,15 @@ if (MSVC)
 
     add_compile_definitions(NOMINMAX)
 
-    # caused by ql\time\date.cpp: warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead.
-    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
-
     # /wd4267
-    # Suppress warnings: assignment of 64-bit value to 32-bit QuantLib::Integer (x64)
+    # Suppress warnings: assignment of 64-bit value to 32-bit QuantLib::Integer (x64).
+    # There are several hundred such narrowing conversions, most of them at call
+    # boundaries into public Integer/Natural parameters, so removing them would
+    # mean changing the public API.
+    # The Visual Studio projects get the same suppression from the #pragma in
+    # ql/config.msvc.hpp instead; a cmake build never includes that header, since
+    # CMakeLists.txt sets QL_HAVE_CONFIG_H and thus selects the generated
+    # ql/config.hpp.  The two are not redundant.
 
     # /wd4819
     # Suppress warnings: The file contains a character that cannot be represented in the current code page
