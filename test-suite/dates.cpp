@@ -560,17 +560,23 @@ BOOST_AUTO_TEST_CASE(nullDate) {
 BOOST_AUTO_TEST_CASE(todaysDate) {
     BOOST_TEST_MESSAGE("Testing today's date...");
 
-    const Date today = Date::todaysDate();
+    auto localDay = [] {
+        const boost::gregorian::date d = boost::gregorian::day_clock::local_day();
+        return Date(Day(d.day()), Month(static_cast<Integer>(d.month())), Year(d.year()));
+    };
+
+    Date today = Date::todaysDate();
 
     BOOST_CHECK_MESSAGE(today != Date(), "Date::todaysDate() returned a null date");
 
     // cross-check against an independent implementation
-    const boost::gregorian::date d = boost::gregorian::day_clock::local_day();
-    const Date expected(Day(d.day()), Month(static_cast<Integer>(d.month())),
-                        Year(d.year()));
-
-    // the two calls above may straddle midnight, so allow one day of slack
-    BOOST_CHECK_MESSAGE(today >= expected - 1 && today <= expected + 1,
+    Date expected = localDay();
+    if (today != expected) {
+        // the two calls straddled midnight; it has passed now, so retry
+        today = Date::todaysDate();
+        expected = localDay();
+    }
+    BOOST_CHECK_MESSAGE(today == expected,
                         "Date::todaysDate() returned " << today
                         << ", expected " << expected);
 }
