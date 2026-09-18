@@ -46,6 +46,7 @@ namespace QuantLib {
 
       private:
         mutable sample_type seq_;
+        mutable std::vector<Real> stepBuffer_;
         mutable SobolBrownianGenerator gen_;
     };
 
@@ -67,6 +68,7 @@ namespace QuantLib {
 
       private:
         mutable sample_type seq_;
+        mutable std::vector<Real> stepBuffer_;
         mutable Burley2020SobolBrownianGenerator gen_;
     };
 }
