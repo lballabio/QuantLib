@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2026 Junjie Guo
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -84,6 +85,16 @@ namespace QuantLib {
                 if (x < xMin() || x > xMax())
                     return 0.0;
                 return decoratedInterp_->secondDerivative(x, true);
+            }
+            std::vector<std::pair<Size, Real>> nodeWeights(Real x) const override {
+                return decoratedInterp_->nodeWeights(bind(x), true);
+            }
+            std::vector<std::pair<Size, Real>> derivativeNodeWeights(Real x) const override {
+                if (x < xMin() || x > xMax())
+                    // A non-empty zero weight distinguishes an implemented
+                    // zero derivative from unavailable node sensitivities.
+                    return {{Size(0), 0.0}};
+                return decoratedInterp_->derivativeNodeWeights(x, true);
             }
 
           private:
