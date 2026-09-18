@@ -1006,7 +1006,7 @@ BOOST_AUTO_TEST_CASE(testSviSmileSection) {
     Volatility volHigh = surface.blackVol(expiry, 120.0);
 
     if (std::fabs(volLow - volAtm) < 1.0e-6 && std::fabs(volHigh - volAtm) < 1.0e-6) {
-        BOOST_FAIL("SVI surface appears flat — expected a smile"
+        BOOST_FAIL("SVI surface appears flat - expected a smile"
                    << std::fixed << std::setprecision(6)
                    << "\n    vol(80):  " << volLow
                    << "\n    vol(100): " << volAtm
