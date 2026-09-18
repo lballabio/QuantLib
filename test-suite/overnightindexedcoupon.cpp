@@ -1933,10 +1933,60 @@ BOOST_AUTO_TEST_CASE(testExCouponAccruedAmountAroundAccrualEndDate) {
                                   RateAveraging::Compound, Date(2, April, 2027), 100.0, DayCounter(),
                                   Date(), Date(), exCpnDate);
     BOOST_CHECK(coupon->tradingExCoupon(exCpnDate));
-    CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(Date(27, March, 2027)), -0.0445, 1e-5);
-    CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(Date(30, March, 2027)), -0.01134, 1e-5);
+    const Rate rateAtEnd = coupon->rate();
+    CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(Date(27, March, 2027)),
+                            coupon->nominal() * rateAtEnd * coupon->accruedPeriod(Date(27, March, 2027)),
+                            1e-8);
+    CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(Date(30, March, 2027)),
+                            coupon->nominal() * rateAtEnd * coupon->accruedPeriod(Date(30, March, 2027)),
+                            1e-8);
     CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(Date(31, March, 2027)), 0.0, 1e-12);
     CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(Date(1, April, 2027)), 0.0, 1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testExCouponAccruedAmountWithSlopedCurve) {
+    BOOST_TEST_MESSAGE(
+        "Test ex-coupon accrued uses average rate at accrual end on a sloped curve...");
+
+    CommonVars vars(Date(26, March, 2026));
+
+    std::vector<Date> curveDates = {
+        Date(26, March, 2026),
+        Date(31, March, 2027),
+        Date(2, April, 2027)
+    };
+    std::vector<Rate> zeroRates = {0.03, 0.06, 0.09};
+
+    auto curve = ext::make_shared<InterpolatedZeroCurve<Linear>>(
+        curveDates, zeroRates, Actual360(), UnitedStates(UnitedStates::SOFR));
+    curve->enableExtrapolation();
+    vars.forecastCurve.linkTo(curve);
+
+    const auto exCpnDate = Date(27, March, 2027);
+    auto coupon = vars.makeCoupon(Date(31, March, 2026), Date(31, March, 2027), 0, 0, false, true,
+                                  RateAveraging::Compound, Date(2, April, 2027), 100.0, DayCounter(),
+                                  Date(), Date(), exCpnDate);
+
+    const Date accrualDate = Date(30, March, 2027);
+
+    const Rate rateAtEnd = coupon->rate();
+
+    const auto pricer =
+        ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(coupon->pricer());
+    QL_REQUIRE(pricer, "overnight indexed coupon pricer required");
+    const Rate rateAtDate = pricer->averageRate(accrualDate);
+
+    BOOST_CHECK(rateAtDate != rateAtEnd);
+
+    const Real expected = coupon->nominal() * rateAtEnd * coupon->accruedPeriod(accrualDate);
+    CHECK_OIS_COUPON_RESULT("exCoupon accrued amount", coupon->accruedAmount(accrualDate),
+                            expected, 1e-8);
+
+    const Real oldFormula = coupon->nominal() * rateAtDate * coupon->accruedPeriod(accrualDate);
+    BOOST_CHECK_MESSAGE(std::fabs(expected - oldFormula) > 1e-8,
+                        "sloped curve should distinguish ex-coupon accrued formulas:\n"
+                            << "    expected: " << expected << "\n"
+                            << "    old formula: " << oldFormula);
 }
 
 BOOST_AUTO_TEST_CASE(testAccruedAmountExCouponDateAfterAccrualEndDate) {
