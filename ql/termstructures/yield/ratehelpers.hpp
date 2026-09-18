@@ -36,6 +36,7 @@
 #include <ql/instruments/futures.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/time/dategenerationrule.hpp>
 #include <ql/optional.hpp>
 
 namespace QuantLib {
@@ -208,7 +209,8 @@ namespace QuantLib {
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
                        const std::optional<bool>& useIndexedCoupons = std::nullopt,
-                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {});
+                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {},
+                       DateGeneration::Rule rule = DateGeneration::Backward);
         SwapRateHelper(const std::variant<Rate, Handle<Quote>>& rate,
                        const Period& tenor,
                        Calendar calendar,
@@ -228,7 +230,8 @@ namespace QuantLib {
                        bool endOfMonth = false,
                        const std::optional<bool>& useIndexedCoupons = std::nullopt,
                        const std::optional<BusinessDayConvention>& floatConvention = std::nullopt,
-                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {});
+                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {},
+                       DateGeneration::Rule rule = DateGeneration::Backward);
         SwapRateHelper(const std::variant<Rate, Handle<Quote>>& rate,
                        const Date& startDate,
                        const Date& endDate,
@@ -247,7 +250,8 @@ namespace QuantLib {
                        bool endOfMonth = false,
                        const std::optional<bool>& useIndexedCoupons = std::nullopt,
                        const std::optional<BusinessDayConvention>& floatConvention = std::nullopt,
-                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {});
+                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {},
+                       DateGeneration::Rule rule = DateGeneration::Backward);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -287,6 +291,7 @@ namespace QuantLib {
         std::optional<bool> useIndexedCoupons_;
         std::optional<BusinessDayConvention> floatConvention_;
         ext::shared_ptr<FloatingRateCouponPricer> couponPricer_;
+        DateGeneration::Rule rule_ = DateGeneration::Backward;
     };
 
 
