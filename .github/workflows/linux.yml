@@ -152,7 +152,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - name: Cache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}
         restore-keys: |
