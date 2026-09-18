@@ -386,6 +386,97 @@ BOOST_AUTO_TEST_CASE(testDividendsSpanningSettlementDate) {
     BOOST_CHECK_CLOSE(convertible.dividendValues()[0], expected, 1.0e-12);
 }
 
+BOOST_AUTO_TEST_CASE(testDividendBetweenEvaluationAndSettlement) {
+    BOOST_TEST_MESSAGE(
+        "Testing that a dividend between evaluation and settlement date "
+        "is not silently dropped from the convertible bond price (issue #2701)...");
+
+    // Evaluation date with a non-zero settlement lag so that a dividend
+    // can fall strictly between the evaluation date and the settlement date.
+    Date today = Date(15, January, 2024);
+    Settings::instance().evaluationDate() = today;
+
+    Calendar calendar = TARGET();
+    DayCounter dayCounter = Actual360();
+    Natural settlementDays = 3;
+    Date settlementDate = calendar.advance(today, settlementDays, Days);
+
+    // A dividend strictly between the evaluation date and settlement date.
+    Date exDivDate = calendar.advance(today, 1, Days);
+    QL_REQUIRE(exDivDate > today && exDivDate < settlementDate,
+               "test setup: ex-div date must fall in the settlement lag");
+    Real dividendAmount = 2.0;
+
+    // Build a simple zero-coupon convertible bond.
+    Date maturityDate = calendar.advance(today, 2, Years);
+    Real faceAmount = 100.0;
+    Real redemption = 100.0;
+    Real conversionRatio = 1.0;
+    Real spot = 50.0;
+
+    Handle<Quote> underlying(ext::make_shared<SimpleQuote>(spot));
+    Handle<YieldTermStructure> dividendYield(
+        ext::make_shared<FlatForward>(today, 0.0, dayCounter));
+    Handle<YieldTermStructure> riskFreeRate(
+        ext::make_shared<FlatForward>(today, 0.05, dayCounter));
+    Handle<BlackVolTermStructure> volatility(
+        ext::make_shared<BlackConstantVol>(today, calendar, 0.20, dayCounter));
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        underlying, dividendYield, riskFreeRate, volatility);
+
+    Handle<Quote> creditSpread(ext::make_shared<SimpleQuote>(0.0));
+
+    Schedule schedule(maturityDate - 1*Years, maturityDate,
+                      Period(Annual), calendar,
+                      Unadjusted, Unadjusted,
+                      DateGeneration::Backward, false);
+
+    auto exercise = ext::make_shared<EuropeanExercise>(maturityDate);
+    ConvertibleZeroCouponBond bond(exercise, conversionRatio,
+                                    CallabilitySchedule(),
+                                    today, settlementDays,
+                                    dayCounter, schedule,
+                                    redemption);
+
+    DividendSchedule dividendsWith = {
+        ext::make_shared<FixedDividend>(dividendAmount, exDivDate)};
+    DividendSchedule dividendsEmpty;
+
+    auto engineWith = ext::make_shared<BinomialConvertibleEngine<CoxRossRubinstein> >(
+        process, 500, creditSpread, dividendsWith);
+    auto engineWithout = ext::make_shared<BinomialConvertibleEngine<CoxRossRubinstein> >(
+        process, 500, creditSpread, dividendsEmpty);
+
+    bond.setPricingEngine(engineWith);
+    Real priceWithDividend = bond.NPV();
+
+    bond.setPricingEngine(engineWithout);
+    Real priceWithoutDividend = bond.NPV();
+
+    // The in-lag dividend must reduce the price: before the fix it was
+    // subtracted from s0 but never added back inside the tree (which is
+    // anchored at settlementDate), so its value silently vanished.
+    if (priceWithDividend >= priceWithoutDividend) {
+        BOOST_ERROR("in-lag dividend did not reduce the convertible bond price:"
+                    << "\n    with dividend:    " << priceWithDividend
+                    << "\n    without dividend: " << priceWithoutDividend
+                    << "\n    expected: with < without (dividend value must not vanish)");
+    }
+
+    // The price drop should be economically meaningful: roughly the dividend
+    // amount rolled forward to the settlement date (zero rates here, so
+    // approximately the dividend amount itself).  We use a wide tolerance
+    // because the convertible's optionality dampens the spot sensitivity.
+    Real expectedDrop = dividendAmount * conversionRatio;
+    Real actualDrop = priceWithoutDividend - priceWithDividend;
+    if (actualDrop < 0.5 * expectedDrop) {
+        BOOST_ERROR("in-lag dividend price drop is too small:"
+                    << "\n    actual drop:   " << actualDrop
+                    << "\n    expected (~):  " << expectedDrop
+                    << "\n    the dividend value is likely still being silently dropped");
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testRegression) {
 
     BOOST_TEST_MESSAGE(
