@@ -35,6 +35,8 @@ namespace QuantLib {
         volatility smile sections */
     class SmileSectionUtils {
       public:
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
         SmileSectionUtils(const SmileSection& section,
                           const std::vector<Real>& moneynessGrid = std::vector<Real>(),
                           Real atm = Null<Real>(),

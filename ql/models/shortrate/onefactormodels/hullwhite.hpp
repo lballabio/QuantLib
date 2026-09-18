@@ -45,7 +45,7 @@ namespace QuantLib {
     */
     class HullWhite : public Vasicek, public TermStructureConsistentModel {
       public:
-        HullWhite(const Handle<YieldTermStructure>& termStructure,
+        explicit HullWhite(const Handle<YieldTermStructure>& termStructure,
                   Real a = 0.1, Real sigma = 0.01);
 
         ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;

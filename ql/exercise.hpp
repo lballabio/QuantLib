@@ -56,7 +56,7 @@ namespace QuantLib {
     /*! The payoff can be at exercise (the default) or at expiry */
     class EarlyExercise : public Exercise {
       public:
-        EarlyExercise(Type type,
+        explicit EarlyExercise(Type type,
                       bool payoffAtExpiry = false)
         : Exercise(type), payoffAtExpiry_(payoffAtExpiry) {}
         bool payoffAtExpiry() const { return payoffAtExpiry_; }
@@ -74,6 +74,8 @@ namespace QuantLib {
         AmericanExercise(const Date& earliestDate,
                          const Date& latestDate,
                          bool payoffAtExpiry = false);
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
         AmericanExercise(const Date& latestDate,
                          bool payoffAtExpiry = false);
     };
@@ -83,6 +85,7 @@ namespace QuantLib {
     */
     class BermudanExercise : public EarlyExercise {
       public:
+        // NOLINTNEXTLINE(google-explicit-constructor)
         BermudanExercise(const std::vector<Date>& dates,
                          bool payoffAtExpiry = false);
     };
@@ -92,6 +95,7 @@ namespace QuantLib {
     */
     class EuropeanExercise : public Exercise {
       public:
+        // NOLINTNEXTLINE(google-explicit-constructor)
         EuropeanExercise(const Date& date);
     };
 

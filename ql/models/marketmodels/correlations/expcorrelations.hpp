@@ -47,6 +47,8 @@ namespace QuantLib {
     class ExponentialForwardCorrelation :
         public PiecewiseConstantCorrelation {
       public:
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
         ExponentialForwardCorrelation(const std::vector<Time>& rateTimes,
                                       Real longTermCorr = 0.5,
                                       Real beta = 0.2,

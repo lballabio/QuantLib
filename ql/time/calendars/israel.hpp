@@ -108,6 +108,7 @@ namespace QuantLib {
               SHIR = 2,    //!< SHIR fixing calendar (Sat/Sun weekends)
               Telbor = 3,  //!< Telbor fixing calendar (Sat/Sun weekends)
           };
+          // NOLINTNEXTLINE(google-explicit-constructor)
           Israel(Market market = TASE);
     };
 

@@ -40,7 +40,7 @@ namespace QuantLib {
         : public HazardRateStructure,
           protected InterpolatedCurve<Interpolator> {
       public:
-        InterpolatedHazardRateCurve(
+        explicit InterpolatedHazardRateCurve(
             const std::vector<Date>& dates,
             const std::vector<Rate>& hazardRates,
             const DayCounter& dayCounter,

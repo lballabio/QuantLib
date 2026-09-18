@@ -169,6 +169,8 @@ namespace QuantLib {
     //! RendistatoCalculator equivalent swap lenth Quote adapter
     class RendistatoEquivalentSwapLengthQuote : public Quote {
       public:
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
         RendistatoEquivalentSwapLengthQuote(ext::shared_ptr<RendistatoCalculator> r);
         Real value() const override;
         bool isValid() const override;
@@ -180,6 +182,8 @@ namespace QuantLib {
     //! RendistatoCalculator equivalent swap spread Quote adapter
     class RendistatoEquivalentSwapSpreadQuote : public Quote {
       public:
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
         RendistatoEquivalentSwapSpreadQuote(ext::shared_ptr<RendistatoCalculator> r);
         Real value() const override;
         bool isValid() const override;

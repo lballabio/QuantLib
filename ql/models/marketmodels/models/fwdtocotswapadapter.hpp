@@ -30,6 +30,8 @@ namespace QuantLib {
 
     class FwdToCotSwapAdapter : public MarketModel {
       public:
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
         FwdToCotSwapAdapter(
                           const ext::shared_ptr<MarketModel>& forwardModel);
         //! \name MarketModel interface
@@ -53,6 +55,7 @@ namespace QuantLib {
     class FwdToCotSwapAdapterFactory : public MarketModelFactory,
                                               public Observer {
       public:
+        // NOLINTNEXTLINE(google-explicit-constructor)
         FwdToCotSwapAdapterFactory(
               const ext::shared_ptr<MarketModelFactory>& forwardFactory);
         ext::shared_ptr<MarketModel> create(const EvolutionDescription&,

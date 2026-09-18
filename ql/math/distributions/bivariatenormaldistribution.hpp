@@ -58,6 +58,8 @@ namespace QuantLib {
     */
     class BivariateCumulativeNormalDistributionDr78 {
       public:
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
         BivariateCumulativeNormalDistributionDr78(Real rho);
         // function
         Real operator()(Real a, Real b) const;
@@ -91,6 +93,8 @@ namespace QuantLib {
     */
     class BivariateCumulativeNormalDistributionWe04DP {
       public:
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
         BivariateCumulativeNormalDistributionWe04DP(Real rho);
         // function
         Real operator()(Real a, Real b) const;

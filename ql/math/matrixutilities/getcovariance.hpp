@@ -95,6 +95,8 @@ namespace QuantLib {
     class CovarianceDecomposition {
       public:
         /*! \pre covarianceMatrix must be symmetric */
+        // TODO: Review whether this constructor should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
         CovarianceDecomposition(
             const Matrix& covarianceMatrix,
             Real tolerance = 1.0e-12);
