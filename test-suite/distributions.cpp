@@ -633,6 +633,43 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativePoisson) {
                         << "    expected:   " << Real(i));
         }
     }
+
+    BOOST_CHECK_EQUAL(icp(0.0), 0.0);
+    BOOST_CHECK_EQUAL(icp(1.0), QL_MAX_REAL);
+
+    InverseCumulativePoisson icp4(4.0);
+    Real previous = -1.0;
+    for (Real probability : {0.1, 0.5, 0.9, 0.99}) {
+        Real calculated = icp4(probability);
+        BOOST_CHECK_GT(calculated, previous);
+        previous = calculated;
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPoissonInvalidParameters) {
+    BOOST_CHECK_EXCEPTION(
+        PoissonDistribution(-1.0), Error,
+        ExpectedErrorMessage("mu must be non negative"));
+    BOOST_CHECK_EXCEPTION(
+        (PoissonDistribution(std::numeric_limits<Real>::quiet_NaN())), Error,
+        ExpectedErrorMessage("mu must be non negative"));
+    BOOST_CHECK_EXCEPTION(
+        InverseCumulativePoisson(0.0), Error,
+        ExpectedErrorMessage("lambda must be positive"));
+    BOOST_CHECK_EXCEPTION(
+        InverseCumulativePoisson(-1.0), Error,
+        ExpectedErrorMessage("lambda must be positive"));
+
+    InverseCumulativePoisson inverse;
+    BOOST_CHECK_EXCEPTION(
+        inverse(-0.1), Error,
+        ExpectedErrorMessage("only defined on the interval [0,1]"));
+    BOOST_CHECK_EXCEPTION(
+        inverse(1.1), Error,
+        ExpectedErrorMessage("only defined on the interval [0,1]"));
+    BOOST_CHECK_EXCEPTION(
+        inverse(std::numeric_limits<Real>::quiet_NaN()), Error,
+        ExpectedErrorMessage("only defined on the interval [0,1]"));
 }
 
 BOOST_AUTO_TEST_CASE(testInverseCumulativeStudent) {
