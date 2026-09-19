@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <limits>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/distributions/binomialdistribution.hpp>
 #include <ql/math/errorfunction.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/math/distributions/bivariatestudenttdistribution.hpp>
@@ -529,6 +530,57 @@ BOOST_AUTO_TEST_CASE(testBivariate) {
                                                         "West 2004", 1.0e-6);
     checkBivariateTail<BivariateCumulativeNormalDistributionWe04DP>(
                                                         "West 2004", 1.0e-8);
+}
+
+BOOST_AUTO_TEST_CASE(testBinomialDistribution) {
+    BOOST_TEST_MESSAGE("Testing binomial distributions...");
+
+    BOOST_CHECK_CLOSE(binomialCoefficientLn(5, 2), std::log(10.0), 1.0e-12);
+    BOOST_CHECK_EQUAL(binomialCoefficient(5, 2), 10.0);
+    BOOST_CHECK_EQUAL(binomialCoefficient(5, 0), 1.0);
+    BOOST_CHECK_EXCEPTION(
+        binomialCoefficientLn(2, 3), Error,
+        ExpectedErrorMessage("n<k not allowed"));
+
+    BinomialDistribution pmf(0.25, 4);
+    BOOST_CHECK_CLOSE(pmf(0), std::pow(0.75, 4), 1.0e-12);
+    BOOST_CHECK_CLOSE(pmf(2), 6.0 * std::pow(0.25, 2) * std::pow(0.75, 2), 1.0e-12);
+    BOOST_CHECK_EQUAL(pmf(5), 0.0);
+
+    BinomialDistribution zeroP(0.0, 4);
+    BOOST_CHECK_EQUAL(zeroP(0), 1.0);
+    BOOST_CHECK_EQUAL(zeroP(1), 0.0);
+    BinomialDistribution oneP(1.0, 4);
+    BOOST_CHECK_EQUAL(oneP(3), 0.0);
+    BOOST_CHECK_EQUAL(oneP(4), 1.0);
+    BOOST_CHECK_EXCEPTION(
+        BinomialDistribution(-0.1, 4), Error,
+        ExpectedErrorMessage("negative p not allowed"));
+    BOOST_CHECK_EXCEPTION(
+        BinomialDistribution(1.1, 4), Error,
+        ExpectedErrorMessage("p>1.0 not allowed"));
+
+    CumulativeBinomialDistribution cdf(0.25, 4);
+    BOOST_CHECK_CLOSE(cdf(2), pmf(0) + pmf(1) + pmf(2), 1.0e-12);
+    BOOST_CHECK_EQUAL(cdf(4), 1.0);
+    CumulativeBinomialDistribution zeroPCdf(0.0, 4);
+    BOOST_CHECK_EQUAL(zeroPCdf(0), 1.0);
+    CumulativeBinomialDistribution onePCdf(1.0, 4);
+    BOOST_CHECK_EQUAL(onePCdf(3), 0.0);
+    BOOST_CHECK_EXCEPTION(
+        CumulativeBinomialDistribution(-0.1, 4), Error,
+        ExpectedErrorMessage("negative p not allowed"));
+    BOOST_CHECK_EXCEPTION(
+        CumulativeBinomialDistribution(1.1, 4), Error,
+        ExpectedErrorMessage("p>1.0 not allowed"));
+
+    Real upper = PeizerPrattMethod2Inversion(1.0, 5);
+    Real lower = PeizerPrattMethod2Inversion(-1.0, 5);
+    BOOST_CHECK_CLOSE(upper + lower, 1.0, 1.0e-12);
+    BOOST_CHECK_EQUAL(PeizerPrattMethod2Inversion(0.0, 5), 0.5);
+    BOOST_CHECK_EXCEPTION(
+        PeizerPrattMethod2Inversion(0.0, 4), Error,
+        ExpectedErrorMessage("n must be an odd number"));
 }
 
 BOOST_AUTO_TEST_CASE(testPoisson) {
