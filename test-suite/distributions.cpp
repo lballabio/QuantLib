@@ -1244,6 +1244,18 @@ BOOST_AUTO_TEST_CASE(testCumulativeNormalTail) {
                         << ": decreased by " << previous - p);
         previous = p;
     }
+
+}
+
+BOOST_AUTO_TEST_CASE(testCumulativeChiSquareDistribution) {
+    CumulativeChiSquareDistribution chiSquare(2.0);
+    BOOST_CHECK_EQUAL(chiSquare(-1.0), 0.0);
+    BOOST_CHECK_EQUAL(chiSquare(0.0), 0.0);
+    BOOST_CHECK_CLOSE(chiSquare(2.0), 1.0 - std::exp(-1.0), 1.0e-5);
+
+    NonCentralCumulativeChiSquareDistribution nonCentral(4.0, 1.0);
+    BOOST_CHECK_EQUAL(nonCentral(0.0), 0.0);
+    BOOST_CHECK_EQUAL(nonCentral(-1.0), 0.0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
