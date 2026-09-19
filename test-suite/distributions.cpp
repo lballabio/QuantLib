@@ -913,6 +913,45 @@ BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentInvalidParameters) {
     BOOST_CHECK_EXCEPTION(
         BivariateCumulativeStudentDistribution(1, 1.1), Error,
         ExpectedErrorMessage("rho must be in [-1, 1]"));
+    BOOST_CHECK_EXCEPTION(
+        BivariateCumulativeStudentDistribution(1, std::numeric_limits<Real>::quiet_NaN()), Error,
+        ExpectedErrorMessage("rho must be in [-1, 1]"));
+    BOOST_CHECK_EXCEPTION(
+        BivariateCumulativeStudentDistribution(1, std::numeric_limits<Real>::infinity()), Error,
+        ExpectedErrorMessage("rho must be in [-1, 1]"));
+    BOOST_CHECK_EXCEPTION(
+        BivariateCumulativeStudentDistribution(1, -std::numeric_limits<Real>::infinity()), Error,
+        ExpectedErrorMessage("rho must be in [-1, 1]"));
+}
+
+BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentBoundaryContinuity) {
+    Natural n = 5;
+    CumulativeStudentDistribution univariate(n);
+    BivariateCumulativeStudentDistribution perfectlyPositive(n, 1.0);
+    BivariateCumulativeStudentDistribution perfectlyNegative(n, -1.0);
+    BivariateCumulativeStudentDistribution symmetric(n, 0.5);
+    Real points[] = {-2.0, -0.25, 0.0, 1.5};
+    Real tolerance = 1.0e-10;
+
+    for (Real x : points) {
+        for (Real y : points) {
+            Real positiveExpected = univariate(std::min(x, y));
+            BOOST_CHECK_SMALL(perfectlyPositive(x, y) - positiveExpected, tolerance);
+
+            Real negativeExpected = x < -y ? 0.0 : univariate(x) - univariate(-y);
+            BOOST_CHECK_SMALL(perfectlyNegative(x, y) - negativeExpected, tolerance);
+        }
+    }
+
+    BOOST_CHECK_SMALL(symmetric(0.75, -1.25) - symmetric(-1.25, 0.75), tolerance);
+
+    Real epsilon = 1.0e-7;
+    BOOST_CHECK_SMALL(perfectlyPositive(1.0, 1.0 + epsilon) -
+                         perfectlyPositive(1.0, 1.0 - epsilon),
+                     1.0e-6);
+    BOOST_CHECK_SMALL(perfectlyNegative(1.0, -1.0 + epsilon) -
+                         perfectlyNegative(1.0, -1.0 - epsilon),
+                     1.0e-6);
 }
 
 BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentVsBivariate) {
