@@ -836,6 +836,24 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativeStudent) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testStudentDistribution) {
+    StudentDistribution cauchy(1);
+    BOOST_CHECK_CLOSE(cauchy(0.0), 1.0 / M_PI, 1.0e-10);
+    BOOST_CHECK_CLOSE(cauchy(1.0), 0.5 / M_PI, 1.0e-10);
+
+    StudentDistribution student(5);
+    BOOST_CHECK_CLOSE(student(-1.0), student(1.0), 1.0e-12);
+
+    CumulativeStudentDistribution cumulative(5);
+    BOOST_CHECK_CLOSE(cumulative(0.0), 0.5, 1.0e-12);
+    BOOST_CHECK_CLOSE(cumulative(-1.0), 1.0 - cumulative(1.0), 1.0e-12);
+
+    BOOST_CHECK_EXCEPTION(StudentDistribution(0), Error,
+                          ExpectedErrorMessage("invalid parameter for t-distribution"));
+    BOOST_CHECK_EXCEPTION(CumulativeStudentDistribution(0), Error,
+                          ExpectedErrorMessage("invalid parameter for t-distribution"));
+}
+
 BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudent) {
     BOOST_TEST_MESSAGE(
         "Testing bivariate cumulative Student t distribution...");
