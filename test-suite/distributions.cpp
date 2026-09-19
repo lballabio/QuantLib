@@ -903,6 +903,18 @@ BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudent) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentInvalidParameters) {
+    BOOST_CHECK_EXCEPTION(
+        BivariateCumulativeStudentDistribution(0, 0.0), Error,
+        ExpectedErrorMessage("degrees of freedom must be positive"));
+    BOOST_CHECK_EXCEPTION(
+        BivariateCumulativeStudentDistribution(1, -1.1), Error,
+        ExpectedErrorMessage("rho must be in [-1, 1]"));
+    BOOST_CHECK_EXCEPTION(
+        BivariateCumulativeStudentDistribution(1, 1.1), Error,
+        ExpectedErrorMessage("rho must be in [-1, 1]"));
+}
+
 BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentVsBivariate) {
     BOOST_TEST_MESSAGE(
         "Testing bivariate cumulative Student t distribution for large N...");
