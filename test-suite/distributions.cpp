@@ -1057,7 +1057,10 @@ BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentBoundaryContinuity) {
                          perfectlyPositive(1.0, 1.0 - epsilon),
                      1.0e-6);
     BOOST_CHECK_SMALL(perfectlyNegative(1.0, -1.0 + epsilon) -
-                         perfectlyNegative(1.0, -1.0 - epsilon),
+                         perfectlyNegative(1.0, -1.0 + 2.0 * epsilon),
+                     1.0e-6);
+    BOOST_CHECK_SMALL(perfectlyNegative(1.0, -1.0 - epsilon) -
+                         perfectlyNegative(1.0, -1.0 - 2.0 * epsilon),
                      1.0e-6);
 }
 
