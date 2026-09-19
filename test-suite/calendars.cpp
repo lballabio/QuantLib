@@ -32,13 +32,20 @@
 #include <ql/errors.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/time/calendar.hpp>
+#include <ql/time/calendars/argentina.hpp>
+#include <ql/time/calendars/austria.hpp>
 #include <ql/time/calendars/bespokecalendar.hpp>
 #include <ql/time/calendars/brazil.hpp>
+#include <ql/time/calendars/australia.hpp>
+#include <ql/time/calendars/canada.hpp>
+#include <ql/time/calendars/chile.hpp>
 #include <ql/time/calendars/china.hpp>
 #include <ql/time/calendars/croatia.hpp>
 #include <ql/time/calendars/denmark.hpp>
 #include <ql/time/calendars/germany.hpp>
+#include <ql/time/calendars/hongkong.hpp>
 #include <ql/time/calendars/india.hpp>
+#include <ql/time/calendars/indonesia.hpp>
 #include <ql/time/calendars/israel.hpp>
 #include <ql/time/calendars/italy.hpp>
 #include <ql/time/calendars/japan.hpp>
@@ -53,9 +60,15 @@
 #include <ql/time/calendars/russia.hpp>
 #include <ql/time/calendars/saudiarabia.hpp>
 #include <ql/time/calendars/serbia.hpp>
+#include <ql/time/calendars/singapore.hpp>
 #include <ql/time/calendars/slovenia.hpp>
 #include <ql/time/calendars/southkorea.hpp>
+#include <ql/time/calendars/switzerland.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/taiwan.hpp>
+#include <ql/time/calendars/thailand.hpp>
+#include <ql/time/calendars/france.hpp>
+#include <ql/time/calendars/romania.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/uzbekistan.hpp>
@@ -2726,6 +2739,214 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
 
     Calendar c = SouthKorea(SouthKorea::KRX);
     checkHolidays(c.holidayList(Date(1, January, 2004), Date(31, December, 2050)), expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testHongKong) {
+    BOOST_TEST_MESSAGE("Testing Hong Kong Stock Exchange holiday list...");
+
+    Calendar calendar = HongKong(HongKong::HKEx);
+    BOOST_CHECK_EQUAL(calendar.name(), "Hong Kong stock exchange");
+    BOOST_CHECK(calendar.isHoliday(Date(6, January, 2024))); // Saturday
+    BOOST_CHECK(calendar.isHoliday(Date(7, January, 2024))); // Sunday
+    BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(29, March, 2024))); // Good Friday
+    BOOST_CHECK(calendar.isHoliday(Date(1, April, 2024)));  // Easter Monday
+    BOOST_CHECK(calendar.isHoliday(Date(1, May, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(1, July, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(1, October, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(25, December, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(26, December, 2024)));
+    BOOST_CHECK(calendar.isBusinessDay(Date(2, January, 2024)));
+
+    // Historical exceptions and observed fixed holidays.
+    BOOST_CHECK(calendar.isHoliday(Date(22, January, 2004)));
+    BOOST_CHECK(calendar.isHoliday(Date(5, April, 2004)));
+    BOOST_CHECK(calendar.isHoliday(Date(2, January, 2006))); // observed New Year
+
+    const std::vector<Date> expected = {
+        {1, January, 2026},  {17, February, 2026}, {18, February, 2026},
+        {19, February, 2026}, {3, April, 2026},   {6, April, 2026},
+        {7, April, 2026},   {1, May, 2026},       {25, May, 2026},
+        {19, June, 2026},   {1, July, 2026},      {1, October, 2026},
+        {19, October, 2026}, {25, December, 2026}
+    };
+    checkHolidays(calendar.holidayList(Date(1, January, 2026),
+                                       Date(31, December, 2026)), expected);
+    const Date historical[] = {
+        {23, January, 2004}, {26, May, 2004}, {9, February, 2005},
+        {5, May, 2006}, {17, February, 2007}, {12, May, 2008},
+        {4, April, 2009}, {21, May, 2010}, {3, February, 2011},
+        {10, May, 2012}, {17, May, 2013}, {31, January, 2014},
+        {19, February, 2015}, {8, February, 2016}, {3, May, 2017},
+        {16, February, 2018}, {5, February, 2019}, {30, April, 2020},
+        {12, February, 2021}, {1, February, 2022}, {5, April, 2023},
+        {15, May, 2024}, {5, May, 2025}
+    };
+    for (const Date& date : historical)
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
+}
+
+BOOST_AUTO_TEST_CASE(testArgentinaCalendar) {
+    Calendar calendar = Argentina();
+    BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(28, March, 2024))); // Holy Thursday
+    BOOST_CHECK(calendar.isHoliday(Date(29, March, 2024))); // Good Friday
+    BOOST_CHECK(calendar.isHoliday(Date(17, June, 2024)));  // Belgrano
+    BOOST_CHECK(calendar.isHoliday(Date(19, August, 2024))); // San Martin
+    BOOST_CHECK(calendar.isHoliday(Date(24, December, 2024)));
+    BOOST_CHECK(calendar.isBusinessDay(Date(2, January, 2024)));
+}
+
+BOOST_AUTO_TEST_CASE(testIndonesiaCalendar) {
+    Calendar calendar = Indonesia(Indonesia::IDX);
+    BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(29, March, 2024))); // Good Friday
+    BOOST_CHECK(calendar.isHoliday(Date(1, May, 2024)));    // Labour Day
+    BOOST_CHECK(calendar.isHoliday(Date(1, June, 2024)));   // Pancasila Day
+    BOOST_CHECK(calendar.isHoliday(Date(17, August, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(25, December, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(21, January, 2005))); // Idul Adha
+    BOOST_CHECK(calendar.isBusinessDay(Date(2, January, 2024)));
+    const Date historical[] = {
+        {9, February, 2005}, {11, March, 2005}, {24, May, 2005},
+        {10, January, 2006}, {30, March, 2006}, {24, October, 2006},
+        {19, March, 2007}, {20, December, 2007}, {7, February, 2008},
+        {30, September, 2008}, {26, January, 2009}, {18, September, 2009},
+        {3, February, 2011}, {23, January, 2012}
+    };
+    for (const Date& date : historical)
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
+}
+
+BOOST_AUTO_TEST_CASE(testTaiwanCalendar) {
+    Calendar calendar = Taiwan(Taiwan::TSEC);
+    BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(28, February, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(1, May, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(10, October, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(9, February, 2024))); // Lunar New Year
+    BOOST_CHECK(calendar.isHoliday(Date(9, February, 2002)));
+    BOOST_CHECK(calendar.isBusinessDay(Date(2, January, 2024)));
+    const Date historical[] = {
+        {4, June, 2003}, {21, January, 2004},
+        {9, February, 2005}, {5, April, 2006}, {19, February, 2007},
+        {7, February, 2008}, {26, January, 2009},
+        {2, February, 2011}, {23, January, 2012}, {11, February, 2013},
+        {31, January, 2014}, {8, February, 2016}, {27, January, 2017},
+        {16, February, 2018}, {5, February, 2019}, {27, January, 2020},
+        {12, February, 2021}, {1, February, 2022}, {23, January, 2023}
+    };
+    for (const Date& date : historical)
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
+}
+
+BOOST_AUTO_TEST_CASE(testThailandCalendar) {
+    Calendar calendar = Thailand();
+    BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(15, April, 2019))); // Songkran
+    BOOST_CHECK(calendar.isBusinessDay(Date(15, April, 2020))); // cancelled
+    BOOST_CHECK(calendar.isHoliday(Date(4, May, 2020)));
+    BOOST_CHECK(calendar.isHoliday(Date(3, June, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(29, July, 2024))); // substitution
+    BOOST_CHECK(calendar.isHoliday(Date(14, October, 2024))); // substitution
+    BOOST_CHECK(calendar.isBusinessDay(Date(2, January, 2024)));
+    const Date historical[] = {
+        {5, May, 2001},
+        {23, February, 2005}, {23, May, 2005}, {22, July, 2005},
+        {13, February, 2006}, {12, June, 2006}, {11, July, 2006},
+        {5, March, 2007}, {31, May, 2007}, {24, December, 2007},
+        {21, February, 2008}, {19, May, 2008}, {17, July, 2008},
+        {2, January, 2012}, {7, May, 2012}, {4, June, 2012},
+        {6, May, 2013}, {23, October, 2013},
+        {4, May, 2019}, {3, June, 2019}
+    };
+    for (const Date& date : historical)
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
+}
+
+BOOST_AUTO_TEST_CASE(testSingaporeCalendar) {
+    Calendar calendar = Singapore();
+    BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(29, March, 2024))); // Good Friday
+    BOOST_CHECK(calendar.isHoliday(Date(1, May, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(9, August, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(25, December, 2024)));
+    BOOST_CHECK(calendar.isBusinessDay(Date(2, January, 2024)));
+}
+
+BOOST_AUTO_TEST_CASE(testAustriaCalendars) {
+    Calendar settlement = Austria(Austria::Settlement);
+    Calendar exchange = Austria(Austria::Exchange);
+    BOOST_CHECK(settlement.isHoliday(Date(1, January, 2024)));
+    BOOST_CHECK(settlement.isHoliday(Date(1, May, 2024)));
+    BOOST_CHECK(settlement.isHoliday(Date(26, October, 2024)));
+    BOOST_CHECK(exchange.isHoliday(Date(29, March, 2024))); // Good Friday
+    BOOST_CHECK(exchange.isHoliday(Date(24, December, 2024)));
+    BOOST_CHECK(exchange.isBusinessDay(Date(2, January, 2024)));
+}
+
+BOOST_AUTO_TEST_CASE(testFranceCalendars) {
+    Calendar settlement = France(France::Settlement);
+    Calendar exchange = France(France::Exchange);
+    BOOST_CHECK(settlement.isHoliday(Date(1, January, 2024)));
+    BOOST_CHECK(settlement.isHoliday(Date(1, May, 2024)));
+    BOOST_CHECK(settlement.isHoliday(Date(14, July, 2024)));
+    BOOST_CHECK(exchange.isHoliday(Date(29, March, 2024))); // Good Friday
+    BOOST_CHECK(exchange.isHoliday(Date(24, December, 2024)));
+    BOOST_CHECK(exchange.isBusinessDay(Date(2, January, 2024)));
+}
+
+BOOST_AUTO_TEST_CASE(testRomaniaCalendars) {
+    Calendar publicCalendar = Romania(Romania::Public);
+    Calendar exchange = Romania(Romania::BVB);
+    BOOST_CHECK(publicCalendar.isHoliday(Date(1, January, 2024)));
+    BOOST_CHECK(publicCalendar.isHoliday(Date(24, January, 2024)));
+    BOOST_CHECK(publicCalendar.isHoliday(Date(1, May, 2024)));
+    BOOST_CHECK(publicCalendar.isHoliday(Date(1, June, 2024)));
+    BOOST_CHECK(exchange.isHoliday(Date(1, January, 2014)));
+    BOOST_CHECK(exchange.isBusinessDay(Date(3, January, 2024)));
+}
+
+BOOST_AUTO_TEST_CASE(testAustraliaCalendars) {
+    Calendar settlement = Australia(Australia::Settlement);
+    Calendar exchange = Australia(Australia::ASX);
+    BOOST_CHECK(settlement.isHoliday(Date(1, January, 2024)));
+    BOOST_CHECK(settlement.isHoliday(Date(26, January, 2024)));
+    BOOST_CHECK(settlement.isHoliday(Date(25, April, 2024)));
+    BOOST_CHECK(exchange.isHoliday(Date(29, March, 2024))); // Good Friday
+    BOOST_CHECK(exchange.isHoliday(Date(10, June, 2024))); // King's Birthday
+    BOOST_CHECK(exchange.isBusinessDay(Date(2, January, 2024)));
+}
+
+BOOST_AUTO_TEST_CASE(testCanadaCalendars) {
+    Calendar settlement = Canada(Canada::Settlement);
+    Calendar exchange = Canada(Canada::TSX);
+    BOOST_CHECK(settlement.isHoliday(Date(1, January, 2024)));
+    BOOST_CHECK(settlement.isHoliday(Date(19, February, 2024))); // Family Day
+    BOOST_CHECK(settlement.isHoliday(Date(1, July, 2024)));
+    BOOST_CHECK(exchange.isHoliday(Date(29, March, 2024))); // Good Friday
+    BOOST_CHECK(exchange.isHoliday(Date(11, November, 2024)) == false);
+    BOOST_CHECK(exchange.isBusinessDay(Date(2, January, 2024)));
+}
+
+BOOST_AUTO_TEST_CASE(testChileCalendar) {
+    Calendar calendar = Chile();
+    BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(29, March, 2024))); // Good Friday
+    BOOST_CHECK(calendar.isHoliday(Date(21, May, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(18, September, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(19, September, 2024)));
+    BOOST_CHECK(calendar.isBusinessDay(Date(2, January, 2024)));
+}
+
+BOOST_AUTO_TEST_CASE(testSwitzerlandCalendar) {
+    Calendar calendar = Switzerland();
+    BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(2, January, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(29, March, 2024))); // Good Friday
+    BOOST_CHECK(calendar.isHoliday(Date(1, May, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(1, August, 2024)));
+    BOOST_CHECK(calendar.isBusinessDay(Date(3, January, 2024)));
 }
 
 BOOST_AUTO_TEST_CASE(testChinaSSE) {
