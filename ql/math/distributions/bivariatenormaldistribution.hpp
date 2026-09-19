@@ -67,7 +67,7 @@ namespace QuantLib {
     };
 
 
-    //! Cumulative bivariate normal distibution function (West 2004)
+    //! Cumulative bivariate normal distribution function (West 2004)
     /*! The implementation derives from the article "Better
         Approximations To Cumulative Normal Distibutions", Graeme
         West, Dec 2004 available at www.finmod.co.za. Also available
