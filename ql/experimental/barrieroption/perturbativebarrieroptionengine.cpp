@@ -48,10 +48,14 @@ namespace QuantLib {
     namespace {
 
     constexpr Real PI = 3.14159265358979324;
+    constexpr Real halfPi = PI / 2.0;
+    constexpr Real twoPi = 2.0 * PI;
     constexpr Real sqrtTwo = 1.4142135623730950488;
     constexpr Real sqrtPi = 1.7724538509055160273;
-    constexpr Real sqrtTwoPi = 2.506628274631001;
+    constexpr Real sqrtTwoPi = sqrtTwo * sqrtPi;
 
+    // TODO: review these local distribution helpers against the existing
+    // QuantLib implementations before consolidating them.
     Real ND2(Real a, Real b, Real rho);
     // standard normal cumulative distribution function
     Real PHID(Real Z);
@@ -844,7 +848,7 @@ namespace QuantLib {
         Real EPS, TVT;
         Real PT, H1, H2, H3, R12, R13, R23, RUA, RUB, AR, RUC;
         EPS = max( 1.e-14, epsi );
-        PT=PI/2.0;
+        PT=halfPi;
 
         H1 = limit[1];
         H2 = limit[2];
@@ -1163,7 +1167,7 @@ namespace QuantLib {
             }
         else
             {
-                TPI = 2.0*PI;
+                TPI = twoPi;
                 SNU = (double)NU;
                 SNU = std::sqrt(SNU);
                 ORS = 1.0 - R*R;
@@ -1294,7 +1298,6 @@ namespace QuantLib {
          *   DK  DOUBLE PRECISION, integration limit
          *   R   DOUBLE PRECISION, correlation coefficient
          */
-        constexpr Real TWOPI = 6.283185307179586;
         Real result, DK, DH, R;
         int I, IS, LG, NG;
 
@@ -1357,7 +1360,7 @@ namespace QuantLib {
 
                     }
                 }
-                BVN = BVN*ASR/( 2*TWOPI );
+                BVN = BVN*ASR/( 2*twoPi );
 
             }
 
@@ -1382,7 +1385,7 @@ namespace QuantLib {
                     if( ASR > -100 ) BVN = AA*exp(ASR)*( 1 - C*( BS - AS )*( 1 - D*BS/5 )/3 + C*D*AS*AS/5 );
                     if( -HK<100 ){
                         BB = std::sqrt(BS);
-                        BVN = BVN - exp( -HK/2 )*std::sqrt(TWOPI)*PHID(-BB/AA)*BB*( 1 - C*BS*( 1 - D*BS/5 )/3 );
+                        BVN = BVN - exp( -HK/2 )*sqrtTwoPi*PHID(-BB/AA)*BB*( 1 - C*BS*( 1 - D*BS/5 )/3 );
                     }
                     AA = AA/2   ;
                     for (I = 1; I<= LG;I++){
@@ -1398,7 +1401,7 @@ namespace QuantLib {
                             }
                         }
                     }
-                    BVN = -BVN/TWOPI;
+                    BVN = -BVN/twoPi;
                 }
                 if ( R > 0 )  {
 
