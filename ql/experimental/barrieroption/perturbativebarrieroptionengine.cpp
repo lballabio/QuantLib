@@ -293,7 +293,6 @@ namespace QuantLib {
 
                 caux=-ddvv(s,p,tt,-x,xstar,gm)+ddvv(s,p,tt,x,xstar,gm);
                 caux=caux+(-dvv(s,p,tt,-x,-xstar,gm)+dvv(s,p,tt,x,-xstar,gm));
-                caux2=barrierFactor;
 
                 v2pp=v2pp+caux2*caux;
 
@@ -1085,7 +1084,6 @@ namespace QuantLib {
         /*
           Student t Distribution Function
         */
-        int J;
         const Real ZRO=0.0, ONE=1.0;
         Real CSSTHE, SNTHE, POLYN, TT, TS, RN;
         Real result;
@@ -1099,7 +1097,7 @@ namespace QuantLib {
                 TT = T*T;
                 CSSTHE = 1/( 1 + TT/double(NU) );
                 POLYN = 1;
-                for( J = NU-2; J>= 2; J=J-2)
+                for (int J = NU-2; J >= 2; J -= 2)
                     {
                         POLYN = 1.0 + ( J - 1.0 )*CSSTHE*POLYN/(double)J;
                     }
@@ -1149,7 +1147,7 @@ namespace QuantLib {
           DK 2nd lower integration limit
           R   correlation coefficient
         */
-        int J, HS, KS;
+        int HS, KS;
         Real TPI, ORS, HRK, KRH, BVT, SNU;
         Real GMPH, GMPK, XNKH, XNHK, QHRK, HKN, HPK, HKRN;
         Real BTNCKH, BTNCHK, BTPDKH, BTPDHK, ONE, EPS;
@@ -1196,7 +1194,7 @@ namespace QuantLib {
                         BTPDKH = 2*std::sqrt(XNKH*(1-XNKH))/PI;
                         BTNCHK = 2*atan2( std::sqrt(XNHK), std::sqrt(1-XNHK) )/PI;
                         BTPDHK = 2*std::sqrt(XNHK*(1-XNHK))/PI;
-                        for( J = 1; J<= NU/2;J++)
+                        for (int J = 1; J <= NU/2; ++J)
                             {
                                 BVT = BVT + GMPH*( 1 + KS*BTNCKH );
                                 BVT = BVT + GMPK*( 1 + HS*BTNCHK );
@@ -1222,7 +1220,7 @@ namespace QuantLib {
                         BTPDKH = BTNCKH;
                         BTNCHK = std::sqrt(XNHK);
                         BTPDHK = BTNCHK;
-                        for( J = 1;J<= ( NU - 1 )/2; J++)
+                        for (int J = 1; J <= (NU - 1)/2; ++J)
                             {
                                 BVT = BVT + GMPH*( 1 + KS*BTNCKH );
                                 BVT = BVT + GMPK*( 1 + HS*BTNCHK );
