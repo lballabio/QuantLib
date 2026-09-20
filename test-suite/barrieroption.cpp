@@ -1346,12 +1346,14 @@ BOOST_AUTO_TEST_CASE(testPerturbativeOrder2Fast) {
                       1.0e-6);
 }
 
-BOOST_AUTO_TEST_CASE(testPerturbativeOrder2FullResolution,
-                     * boost::unit_test::disabled()) {
+#ifdef QL_ENABLE_SLOW_TESTS
+// Define QL_ENABLE_SLOW_TESTS to include the full-resolution order-2 test.
+BOOST_AUTO_TEST_CASE(testPerturbativeOrder2FullResolution) {
     // Takes about 10-20 seconds on Apple Silicon (2026).
     BOOST_TEST_MESSAGE("Testing perturbative barrier engine, full-resolution order 2...");
     BOOST_CHECK_SMALL(perturbativeBarrierOptionValue(2) - 0.8943769, 1.0e-6);
 }
+#endif
 
 BOOST_AUTO_TEST_CASE(testVannaVolgaSimpleBarrierValues) {
     BOOST_TEST_MESSAGE("Testing barrier FX options against Vanna/Volga values...");
