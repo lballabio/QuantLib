@@ -53,8 +53,6 @@ namespace QuantLib {
     constexpr Real sqrtTwoPi = 2.506628274631001;
 
     Real ND2(Real a, Real b, Real rho);
-    using TrivariateIntegrand = std::function<Real(Real)>;
-
     // standard normal cumulative distribution function
     Real PHID(Real Z);
 
@@ -65,7 +63,7 @@ namespace QuantLib {
                  Real c, Real gm);
 
     // Functions used to compute the second order approximation
-    Real derivn3(Real limit[4],Real sigmarho[4], int idx);
+    Real derivn3(Real limit[4], Real sigmarho[4], Real sigma[4], int idx);
     Real ddvv(Real s, Real p, Real tt, Real a,
                 Real b, Real gm);
     Real ddff(Real s, Real p,Real tt,Real a,Real b,Real gm);
@@ -77,6 +75,8 @@ namespace QuantLib {
     Real dff(Real s, Real p,Real tt,Real a,Real b,Real gm);
     Real tvtl(int jj, const Real limit[4], const Real sigmarho[4], Real epsi);
 
+    template <class Integr, class IntegralAlpha, class IntegralVariance,
+              class Alpha, class SigmaQ>
     Real BarrierUPD(Real kprice,
                     Real stock,
                     Real hbarr,
@@ -84,11 +84,11 @@ namespace QuantLib {
                     Real taumax,
                     int iord,
                     int igm,
-                    const std::function<Real(Real, Real)>& integr,
-                    const std::function<Real(Real, Real)>& integalpha,
-                    const std::function<Real(Real, Real)>& integs,
-                    const std::function<Real(Real)>& alpha,
-                    const std::function<Real(Real)>& sigmaq) {
+                    const Integr& integr,
+                    const IntegralAlpha& integalpha,
+                    const IntegralVariance& integs,
+                    const Alpha& alpha,
+                    const SigmaQ& sigmaq) {
         Real v0=0.0, v1=0.0, v1p=0.0, v2p=0.0, v2pp=0.0, gm=0.0;
         int i=0,j=0;
         Real tmp=0.0, e1=0.0, e2=0.0, e3=0.0, e4=0.0;
@@ -622,7 +622,7 @@ namespace QuantLib {
     {
         Real result;
         Real aa,caux,caux1;
-        Real sigmarho[4],limit[4];
+        Real sigmarho[4],sigma[4],limit[4];
         int idx;
         Real epsi;
 
@@ -633,18 +633,21 @@ namespace QuantLib {
         sigmarho[1]=std::sqrt((tt-p)/(tt-s));
         sigmarho[2]=std::sqrt((tt-p)/tt);
         sigmarho[3]=std::sqrt((tt-s)/tt);
+        sigma[1]=std::sqrt(1.0-sigmarho[1]*sigmarho[1]);
+        sigma[2]=std::sqrt(1.0-sigmarho[2]*sigmarho[2]);
+        sigma[3]=std::sqrt(1.0-sigmarho[3]*sigmarho[3]);
 
         caux=0.5*bx*tvtl(0,limit,sigmarho,epsi);
 
 
         idx=1;
-        caux=caux+derivn3(limit,sigmarho,idx)/std::sqrt(2.0*(tt-p));
+        caux=caux+derivn3(limit,sigmarho,sigma,idx)/std::sqrt(2.0*(tt-p));
 
         idx=2;
-        caux=caux+derivn3(limit,sigmarho,idx)/std::sqrt(2.0*(tt-s));
+        caux=caux+derivn3(limit,sigmarho,sigma,idx)/std::sqrt(2.0*(tt-s));
 
         idx=3;
-        caux=caux+derivn3(limit,sigmarho,idx)/std::sqrt(2.0*tt);
+        caux=caux+derivn3(limit,sigmarho,sigma,idx)/std::sqrt(2.0*tt);
 
         caux=exp(0.5*ax*bx)*caux;
 
@@ -654,18 +657,21 @@ namespace QuantLib {
         sigmarho[1]=-std::sqrt((tt-p)/(tt-s));
         sigmarho[2]=-std::sqrt((tt-p)/tt);
         sigmarho[3]=std::sqrt((tt-s)/tt);
+        sigma[1]=std::sqrt(1.0-sigmarho[1]*sigmarho[1]);
+        sigma[2]=std::sqrt(1.0-sigmarho[2]*sigmarho[2]);
+        sigma[3]=std::sqrt(1.0-sigmarho[3]*sigmarho[3]);
 
         caux1=0.5*bx*tvtl(0,limit,sigmarho,epsi);
 
         idx=1;
-        caux1=caux1-derivn3(limit,sigmarho,idx)/std::sqrt(2.0*(tt-p));
+        caux1=caux1-derivn3(limit,sigmarho,sigma,idx)/std::sqrt(2.0*(tt-p));
 
         idx=2;
-        caux1=caux1+derivn3(limit,sigmarho,idx)/std::sqrt(2.0*(tt-s));
+        caux1=caux1+derivn3(limit,sigmarho,sigma,idx)/std::sqrt(2.0*(tt-s));
 
 
         idx=3;
-        caux1=caux1+derivn3(limit,sigmarho,idx)/std::sqrt(2.0*tt);
+        caux1=caux1+derivn3(limit,sigmarho,sigma,idx)/std::sqrt(2.0*tt);
 
         caux1=exp(-0.5*ax*bx)*caux1;
 
@@ -745,7 +751,7 @@ namespace QuantLib {
       !! distribution with respect to one of the integration limits
       !!
     */
-    Real derivn3(Real limit[4],Real sigmarho[4], int idx)
+    Real derivn3(Real limit[4], Real sigmarho[4], Real sigma[4], int idx)
     {
         Real aa;
         Real xx,yy,rho,sc;
@@ -755,9 +761,9 @@ namespace QuantLib {
         if(idx==1)
             {
                 aa=exp(-0.5*limit[1]*limit[1]);
-                xx=(limit[3]-sigmarho[2]*limit[1])/std::sqrt(1.0-sigmarho[2]*sigmarho[2]);
-                yy=(limit[2]-sigmarho[1]*limit[1])/std::sqrt(1.0-sigmarho[1]*sigmarho[1]);
-                rho=(sigmarho[3]-sigmarho[1]*sigmarho[2])/std::sqrt((1.0-sigmarho[1]*sigmarho[1])*(1.0-sigmarho[2]*sigmarho[2]));
+                xx=(limit[3]-sigmarho[2]*limit[1])/sigma[2];
+                yy=(limit[2]-sigmarho[1]*limit[1])/sigma[1];
+                rho=(sigmarho[3]-sigmarho[1]*sigmarho[2])/(sigma[1]*sigma[2]);
                 deriv=aa*ND2(-xx,-yy,rho)/sc;
             }
         else
@@ -765,10 +771,9 @@ namespace QuantLib {
                 if(idx==2)
                     {
                         aa=exp(-0.5*limit[2]*limit[2]);
-                        xx=(limit[1]-sigmarho[1]*limit[2])/std::sqrt(1.0-sigmarho[1]*sigmarho[1]);
-                        yy=(limit[3]-sigmarho[3]*limit[2])/std::sqrt(1.0-sigmarho[3]*sigmarho[3]);
-                        rho=(sigmarho[2]-sigmarho[1]*sigmarho[3])/ \
-                            std::sqrt((1.0-sigmarho[1]*sigmarho[1])*(1.0-sigmarho[3]*sigmarho[3]));
+                        xx=(limit[1]-sigmarho[1]*limit[2])/sigma[1];
+                        yy=(limit[3]-sigmarho[3]*limit[2])/sigma[3];
+                        rho=(sigmarho[2]-sigmarho[1]*sigmarho[3])/(sigma[1]*sigma[3]);
                         deriv=aa*ND2(-xx,-yy,rho)/sc;
                     }
                 else
@@ -776,10 +781,9 @@ namespace QuantLib {
                         //!!! idx=3
                         aa=exp(-0.5*limit[3]*limit[3]);
 
-                        xx=(limit[1]-sigmarho[2]*limit[3])/std::sqrt(1.0-sigmarho[2]*sigmarho[2]);
-                        yy=(limit[2]-sigmarho[3]*limit[3])/std::sqrt(1.0-sigmarho[3]*sigmarho[3]);
-                        rho=(sigmarho[1]-sigmarho[2]*sigmarho[3])/ \
-                            std::sqrt((1.0-sigmarho[2]*sigmarho[2])*(1.0-sigmarho[3]*sigmarho[3]));
+                        xx=(limit[1]-sigmarho[2]*limit[3])/sigma[2];
+                        yy=(limit[2]-sigmarho[3]*limit[3])/sigma[3];
+                        rho=(sigmarho[1]-sigmarho[2]*sigmarho[3])/(sigma[2]*sigma[3]);
                         deriv=aa*ND2(-xx,-yy,rho)/sc;
                     }
 
@@ -792,8 +796,11 @@ namespace QuantLib {
     Real TVTMFN(Real X, Real H1, Real H2, Real H3,
                   Real R23, Real RUA, Real RUB, Real AR,
                   Real RUC, int NUC);
-    Real ADONET(Real ZRO, Real ONE, Real EPS,
-                const TrivariateIntegrand& integrand);
+    template <class Integrand>
+    Real KRNRDT(Real A, Real B, const Integrand& integrand, Real& error);
+
+    template <class Integrand>
+    Real ADONET(Real A, Real B, Real TOL, const Integrand& integrand);
 
     Real tvtl(int NU, const Real limit[4], const Real sigmarho[4], Real epsi) {
         /*
@@ -896,7 +903,7 @@ namespace QuantLib {
                 RUB = asin( R13 );
                 AR = asin( R23);
                 RUC = SIGN( PT, AR ) - AR;
-                const TrivariateIntegrand integrand = [&](Real X) {
+                const auto integrand = [&](Real X) {
                     return TVTMFN(X, H1, H2, H3, R23, RUA, RUB, AR, RUC, NU);
                 };
                 TVT = TVT + ADONET(ZRO, ONE, EPS, integrand) / (4.0 * PT);
@@ -957,9 +964,8 @@ namespace QuantLib {
     }
     //
 
-    Real KRNRDT(Real A, Real B, const TrivariateIntegrand& integrand, Real& error);
-
-    Real ADONET(Real A, Real B, Real TOL, const TrivariateIntegrand& integrand) {
+    template <class Integrand>
+    Real ADONET(Real A, Real B, Real TOL, const Integrand& integrand) {
         //
         //     One Dimensional Globally Adaptive Integration Function
         //
@@ -998,7 +1004,8 @@ namespace QuantLib {
     }
     //
 
-    Real KRNRDT(Real A, Real B, const TrivariateIntegrand& integrand, Real& ERR) {
+    template <class Integrand>
+    Real KRNRDT(Real A, Real B, const Integrand& integrand, Real& ERR) {
 
         //
         //     Kronrod Rule
