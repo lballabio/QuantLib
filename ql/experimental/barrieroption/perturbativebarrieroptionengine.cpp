@@ -84,6 +84,8 @@ namespace QuantLib {
                     Real taumax,
                     int iord,
                     int igm,
+                    Size npoint,
+                    Size npoint2,
                     const Integr& integr,
                     const IntegralAlpha& integalpha,
                     const IntegralVariance& integs,
@@ -95,7 +97,6 @@ namespace QuantLib {
         Real xstar=0.0, s0=0.0;
         Real sigmat=0.0, disc=0.0, d1=0.0,d2=0.0,d3=0.0,d4=0.0;
         Real et=0.0,tt=0.0, dt=0.0,p=0.0;
-        int npoint,npoint2;
         Real dsqpi;
         Real caux=0.0,ccaux=0.0;
         Real auxnew=0.0;
@@ -164,9 +165,6 @@ namespace QuantLib {
           !!                                           !!
           !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         */
-
-        npoint=1000;
-        npoint2=100;
 
         dt=(taumax-taumin)/double(npoint);
 
@@ -1479,8 +1477,10 @@ namespace QuantLib {
 
 
     PerturbativeBarrierOptionEngine::PerturbativeBarrierOptionEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process, Natural order, bool zeroGamma)
-    : process_(std::move(process)), order_(order), zeroGamma_(zeroGamma) {
+                ext::shared_ptr<GeneralizedBlackScholesProcess> process, Natural order,
+                bool zeroGamma, Size npoint, Size npoint2)
+        : process_(std::move(process)), order_(order), zeroGamma_(zeroGamma),
+            npoint_(npoint), npoint2_(npoint2) {
         registerWith(process_);
     }
 
@@ -1505,11 +1505,13 @@ namespace QuantLib {
         Time tauMax = process_->time(arguments_.exercise->lastDate());
 
         QL_REQUIRE(order_ <= 2, "order must be <= 2");
+        QL_REQUIRE(npoint_ > 0 && npoint2_ > 0,
+               "integration point counts must be positive");
 
         int igm = zeroGamma_ ? 0 : 1;
         
         results_.value = BarrierUPD(kprice, stock, hbarr,
-                                    tauMin, tauMax, order_, igm,
+                                    tauMin, tauMax, order_, igm, npoint_, npoint2_,
                                     integr_adapter(process_),
                                     integalpha_adapter(process_),
                                     integs_adapter(process_),
