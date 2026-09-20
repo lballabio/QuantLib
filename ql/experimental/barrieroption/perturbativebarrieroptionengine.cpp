@@ -96,7 +96,7 @@ namespace QuantLib {
                     const Alpha& alpha,
                     const SigmaQ& sigmaq) {
         Real v0=0.0, v1=0.0, v1p=0.0, v2p=0.0, v2pp=0.0, gm=0.0;
-        int i=0,j=0;
+        Size i=0,j=0;
         Real tmp=0.0, e1=0.0, e2=0.0, e3=0.0, e4=0.0;
         Real xstar=0.0, s0=0.0;
         Real sigmat=0.0, disc=0.0, d1=0.0,d2=0.0,d3=0.0,d4=0.0;
@@ -225,7 +225,7 @@ namespace QuantLib {
             v1p=v1p+auxnew;
 
             b=gm+1.0;
-            auxnew=-exp(gm*p)*gm*hbarr*(ff(p,tt,x,b,gm)-ff(p,tt,-x,b,gm));
+            auxnew=-expGammaP*gm*hbarr*(ff(p,tt,x,b,gm)-ff(p,tt,-x,b,gm));
             v1p=v1p+auxnew;
 
             v1=v1+(alpha(tmp)-gm*0.5*sigmaq(tmp))*v1p;
@@ -971,8 +971,9 @@ namespace QuantLib {
         //
         //     One Dimensional Globally Adaptive Integration Function
         //
-        int NL=100, I, IM, IP;
-        Real EI[101], AI[101], BI[101], FI[101], FIN;
+        const Size NL=100;
+        Size I, IM, IP;
+        Real EI[101], AI[101], BI[101], FI[101], FIN=0.0;
         Real result,ERR;
 
 
