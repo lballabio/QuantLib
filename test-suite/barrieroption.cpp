@@ -1353,6 +1353,21 @@ BOOST_AUTO_TEST_CASE(testPerturbative) {
                     << "\n  expected:   " << std::setprecision(8) << expected);
     }
 
+    // Fast order-2 smoke test: reduce the integration grid to 100 x 10 points.
+    order = 2;
+    engine = ext::make_shared<PerturbativeBarrierOptionEngine>(
+        stochProcess, order, zeroGamma, 100, 10);
+
+    option.setPricingEngine(engine);
+
+    calculated = option.NPV();
+    expected = 0.8943769;
+    if (std::fabs(calculated-expected) > tolerance) {
+        BOOST_ERROR("Failed to reproduce expected value"
+                    << "\n  calculated: " << std::setprecision(8) << calculated
+                    << "\n  expected:   " << std::setprecision(8) << expected);
+    }
+
     /* Takes about 14 seconds on Apple Silicon Debug; about 12 seconds with -O3.
     order = 2;
     engine = ext::make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
