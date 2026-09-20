@@ -1353,7 +1353,7 @@ BOOST_AUTO_TEST_CASE(testPerturbative) {
                     << "\n  expected:   " << std::setprecision(8) << expected);
     }
 
-    /* Too slow, skip
+    /* Takes about 14 seconds on Apple Silicon Debug; about 12 seconds with -O3.
     order = 2;
     engine = ext::make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
                                                                  order,
