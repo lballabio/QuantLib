@@ -1147,7 +1147,6 @@ namespace QuantLib {
           DK 2nd lower integration limit
           R   correlation coefficient
         */
-        int KS;
         Real TPI, ORS, HRK, KRH, BVT, SNU;
         Real GMPH, GMPK, XNKH, XNHK, QHRK, HKN, HPK, HKRN;
         Real BTNCKH, BTNCHK, BTPDKH, BTPDHK, ONE, EPS;
@@ -1167,6 +1166,7 @@ namespace QuantLib {
         else
             {
                 const int HS = static_cast<int>(SIGN(ONE, DH - R*DK));
+                const int KS = static_cast<int>(SIGN(ONE, DK - R*DH));
                 TPI = twoPi;
                 SNU = (double)NU;
                 SNU = std::sqrt(SNU);
@@ -1184,7 +1184,6 @@ namespace QuantLib {
                         XNKH = 0.0;
                     }
 
-                KS =(int)SIGN( ONE, DK - R*DH );
                 if((NU-2*(int)(NU/2))==0 )
                     {
                         BVT = atan2( std::sqrt(ORS), -R )/TPI;
