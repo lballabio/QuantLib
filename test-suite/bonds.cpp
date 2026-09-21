@@ -1792,7 +1792,7 @@ BOOST_AUTO_TEST_CASE(testBasisPointValue) {
     Bond::Price cleanPrice(102.890625, Bond::Price::Clean);
 
     Real tolerance = 1e-6;
-    Real bpvtolerance = 1e-3;
+    Real bpvTolerance = 1e-3;
 
     Real yield = BondFunctions::yield(fixedRateBond, cleanPrice, dayCounter, compounding, frequency);
     ASSERT_CLOSE("yield", defaultSettlement, yield, 0.041301, tolerance);
