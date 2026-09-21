@@ -5,5 +5,6 @@
   <Rules AnalyzerId="Microsoft.Analyzers.NativeCodeAnalysis" RuleNamespace="Microsoft.Rules.Native">
     <Rule Id="C26495" Action="None" /> <!-- Uninitialized members: too many -->
     <Rule Id="C26451" Action="None" /> <!-- Arithmetic overflow: too many -->
+    <Rule Id="C26812" Action="None" /> <!-- Prefer 'enum class' over 'enum' (Enum.3): the enums are public API -->
   </Rules>
 </RuleSet>
