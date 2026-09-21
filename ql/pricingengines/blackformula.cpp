@@ -901,11 +901,14 @@ namespace QuantLib {
         }
 
         // handle case strike != forward
+        Real intrinsic = std::max(theta * (forward - strike), 0.0);
+        Real timeValue = bachelierPrice - intrinsic;
 
-        Real timeValue = bachelierPrice - std::max(theta * (forward - strike), 0.0);
+        Real tolerance = 42 * QL_EPSILON * std::max(std::fabs(intrinsic), std::fabs(bachelierPrice));
 
-        if (close_enough(timeValue, 0.0))
+        if (std::fabs(timeValue)<=tolerance){
             return 0.0;
+        }
 
         QL_REQUIRE(timeValue > 0.0, "bachelierBlackFormulaImpliedVolExact(theta="
                                         << theta << ",strike=" << strike << ",forward=" << forward

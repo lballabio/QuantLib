@@ -33,6 +33,29 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(BlackFormulaTests)
 
+BOOST_AUTO_TEST_CASE(testBachelierImpliedVolNearIntrinsic) {
+    Real forward = -0.01;
+    Real strike = -0.02;
+    Real tte = 0.01;
+    Real bpvol = 1e-5;
+    Real discount = 1.0;
+
+    Real stdDev = bpvol * std::sqrt(tte);
+
+    Real price = bachelierBlackFormula(
+        Option::Call, strike, forward, stdDev, discount);
+
+    Real impliedVol = Null<Real>();
+
+    BOOST_CHECK_NO_THROW(
+        impliedVol = bachelierBlackFormulaImpliedVol(
+            Option::Call, strike, forward, tte, price, discount));
+
+    if (impliedVol != Null<Real>()) {
+        BOOST_CHECK_EQUAL(impliedVol, 0.0);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testBachelierImpliedVol) {
 
     BOOST_TEST_MESSAGE("Testing Bachelier implied vol...");
