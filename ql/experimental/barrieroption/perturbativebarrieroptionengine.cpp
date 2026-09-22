@@ -47,12 +47,12 @@ namespace QuantLib {
 
     namespace {
 
-    constexpr Real PI = 3.14159265358979324;
-    constexpr Real halfPi = PI / 2.0;
-    constexpr Real twoPi = 2.0 * PI;
-    constexpr Real sqrtTwo = 1.4142135623730950488;
-    constexpr Real sqrtPi = 1.7724538509055160273;
-    constexpr Real sqrtTwoPi = sqrtTwo * sqrtPi;
+    constexpr double PI = 3.14159265358979324;
+    constexpr double halfPi = PI / 2.0;
+    constexpr double twoPi = 2.0 * PI;
+    constexpr double sqrtTwo = 1.4142135623730950488;
+    constexpr double sqrtPi = 1.7724538509055160273;
+    constexpr double sqrtTwoPi = sqrtTwo * sqrtPi;
 
     // TODO: review these local distribution helpers against the existing
     // QuantLib implementations before consolidating them.
@@ -948,7 +948,7 @@ namespace QuantLib {
         /*
           Computes SIN(X), COS(X)^2, with series approx. for |X| near PI/2
         */
-        const Real PT = 1.57079632679489661923132169163975;
+        constexpr double PT = 1.57079632679489661923132169163975;
         Real EE;
         EE = (PT - fabs(X))*(PT - fabs(X));
 
