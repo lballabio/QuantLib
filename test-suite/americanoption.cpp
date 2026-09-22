@@ -619,6 +619,80 @@ BOOST_AUTO_TEST_CASE(testJuNotBelowExerciseValue) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testBjerksundStenslandAtUnitBeta) {
+
+    BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland where beta is one...");
+
+    // A call with q = 0 and -sigma^2/2 <= r < 0, or by symmetry a put with
+    // r = 0 and -sigma^2/2 <= q < 0, gives beta = 1 and an infinite perpetual
+    // boundary. The results there must match those for a carry a hair away.
+
+    const Date today = Date(15, August, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual365Fixed();
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+    const auto exercise =
+        ext::make_shared<AmericanExercise>(today, today + 5 * Years);
+
+    struct Case {
+        Option::Type type;
+        Rate r;
+        Rate q;
+        Rate rBumped;
+        Rate qBumped;
+    };
+    const Case cases[] = {
+        {Option::Call, -0.005, 0.0, -0.005, 1.0e-6},
+        {Option::Put, 0.0, -0.005, 1.0e-6, -0.005},
+    };
+
+    for (const auto& c : cases) {
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, 100.0);
+        const auto engineFor = [&](Rate r, Rate q) {
+            return ext::make_shared<BjerksundStenslandApproximationEngine>(
+                ext::make_shared<BlackScholesMertonProcess>(
+                    Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, q, dc)),
+                    Handle<YieldTermStructure>(flatRate(today, r, dc)),
+                    Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc))));
+        };
+
+        VanillaOption option(payoff, exercise);
+        option.setPricingEngine(engineFor(c.r, c.q));
+        VanillaOption bumped(payoff, exercise);
+        bumped.setPricingEngine(engineFor(c.rBumped, c.qBumped));
+
+        const std::pair<std::string, std::function<Real(const VanillaOption&)>> results[] = {
+            {"value", [](const VanillaOption& o) { return o.NPV(); }},
+            {"delta", [](const VanillaOption& o) { return o.delta(); }},
+            {"gamma", [](const VanillaOption& o) { return o.gamma(); }},
+            {"rho", [](const VanillaOption& o) { return o.rho(); }},
+            {"dividend rho", [](const VanillaOption& o) { return o.dividendRho(); }},
+            {"vega", [](const VanillaOption& o) { return o.vega(); }},
+        };
+        for (const auto& [name, get] : results) {
+            const Real calculated = get(option);
+            const Real expected = get(bumped);
+            const Real error = std::fabs(calculated - expected);
+            if (!(error <= 1.0e-3 * std::max(1.0, std::fabs(expected)))) {
+                REPORT_FAILURE(name, payoff, exercise, spot->value(), c.q, c.r, today,
+                               0.20, expected, calculated, error, 1.0e-3);
+            }
+        }
+    }
+
+    // where r = -sigma^2/2 exactly, rounding can take the radicand of beta
+    // below zero
+    const auto call = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+    VanillaOption kink(call, exercise);
+    kink.setPricingEngine(ext::make_shared<BjerksundStenslandApproximationEngine>(
+        ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, 0.0, Actual360())),
+            Handle<YieldTermStructure>(flatRate(today, -0.02, Actual360())),
+            Handle<BlackVolTermStructure>(flatVol(today, 0.20, Actual360())))));
+    BOOST_CHECK(std::isfinite(kink.NPV()));
+}
+
 BOOST_AUTO_TEST_CASE(testFdValues) {
 
     BOOST_TEST_MESSAGE("Testing finite-difference and QR+ engine for American options...");
