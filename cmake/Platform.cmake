@@ -35,9 +35,6 @@ if (MSVC)
     # so setting the execution character set along with the source one has no
     # effect on the generated code.
 
-    # /wd26812
-    # Suppress warnings: "Prefer enum class over enum" (Enum.3)
-
     # /w34127
     # Enable warning under W3: conditional expression is constant
 
@@ -47,7 +44,7 @@ if (MSVC)
     # /w35262
     # Enable warning under W3: implicit fall-through occurs here; are you missing a break statement?
 
-    add_compile_options(/wd4267 /utf-8 /wd26812 /w34127 /w34702 /w35262)
+    add_compile_options(/wd4267 /utf-8 /w34127 /w34702 /w35262)
 
     # Two C++17 deprecations reach us from boost, which we still support back
     # to 1.58:
