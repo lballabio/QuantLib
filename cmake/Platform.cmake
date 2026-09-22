@@ -46,6 +46,16 @@ if (MSVC)
 
     add_compile_options(/wd4267 /utf-8 /w34127 /w34702 /w35262)
 
-    # Silence all C++17 deprecation warnings, same as in the vcxproj files
-    add_compile_definitions(_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS)
+    # Two C++17 deprecations reach us from boost, which we still support back
+    # to 1.58:
+    #  - std::iterator, which older boost::ublas derives its iterators from
+    #    (included e.g. through ql/math/matrixutilities/sparsematrix.hpp);
+    #  - the old std::allocator members, which older boost::unordered uses
+    #    (exercised by test-suite/timeseries.cpp).
+    # Silence those two rather than all of them: a blanket
+    # _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS would also hide any deprecated
+    # construct we introduced ourselves.
+    add_compile_definitions(
+        _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING
+        _SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING)
 endif()
