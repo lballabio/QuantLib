@@ -146,18 +146,26 @@ namespace QuantLib {
           !!                                       !!
           !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         */
-        d1=(xstar-log(s0)+oneMinusGamma*0.5*sigmat)/std::sqrt(sigmat);
-        d2=(xstar+log(s0)+oneMinusGamma*0.5*sigmat)/std::sqrt(sigmat);
-        d3=(xstar-log(s0)-onePlusGamma*0.5*sigmat)/std::sqrt(sigmat);
-        d4=(xstar+log(s0)-onePlusGamma*0.5*sigmat)/std::sqrt(sigmat);
+        x=log(s0);
+        const Real invSqrtSigmat = 1.0 / std::sqrt(sigmat);
+        const Real halfSigmat = 0.5 * sigmat;
+        const Real minusGammaNumerator = xstar + oneMinusGamma * halfSigmat;
+        const Real plusGammaNumerator = xstar - onePlusGamma * halfSigmat;
+        const Real scaledLogS0 = x * invSqrtSigmat;
+        const Real scaledMinusGammaNumerator = minusGammaNumerator * invSqrtSigmat;
+        const Real scaledPlusGammaNumerator = plusGammaNumerator * invSqrtSigmat;
+        d1=scaledMinusGammaNumerator-scaledLogS0;
+        d2=scaledMinusGammaNumerator+scaledLogS0;
+        d3=scaledPlusGammaNumerator-scaledLogS0;
+        d4=scaledPlusGammaNumerator+scaledLogS0;
 
         e1=PHID(d1);
         e2=PHID(d2);
         e3=PHID(d3);
         e4=PHID(d4);
 
-        v0=kprice*e1-kprice*std::pow(s0,oneMinusGamma)*e2;
-        v0=v0+exp(gm*0.5*sigmat)*(-hbarr*s0*e3+hbarr*std::pow(s0,-gm)*e4);
+        v0=kprice*e1-kprice*exp(oneMinusGamma*x)*e2;
+        v0=v0+exp(gm*halfSigmat)*(-hbarr*s0*e3+hbarr*exp(-gm*x)*e4);
         v0=v0*exp(disc);
 
         if(iord==0) return v0;
@@ -174,7 +182,6 @@ namespace QuantLib {
 
         tt=0.5*integs(taumin,taumax);
 
-        x=log(s0);
         et=exp(0.5*(1.0-gm)*x);
 
         dsqpi=sqrtPi;
@@ -243,7 +250,7 @@ namespace QuantLib {
           !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         */
 
-        Real v2,dtp, tmp1,s,caux2;
+        Real v2,dtp, tmp1,s;
         v2=0.0;
 
         for(i=1;i<=npoint;i++) {
@@ -271,8 +278,7 @@ namespace QuantLib {
 
                 caux=+dvv(s,p,tt,-x,xstar,gm)-dvv(s,p,tt,x,xstar,gm);
                 caux=caux+(dvv(s,p,tt,-x,-xstar,gm)-dvv(s,p,tt,x,-xstar,gm));
-                caux2=barrierFactor;
-                v2pp=v2pp+caux2*caux;
+                v2pp=v2pp+barrierFactor*caux;
 
                 caux=dff(s,p,tt,-x,-1.0+gm,gm)-dff(s,p,tt,x,-1.0+gm,gm);
                 v2pp=v2pp-(1.0-gm)*kprice*caux;
@@ -286,21 +292,21 @@ namespace QuantLib {
                 v2pp=v2pp+caux*kprice*(1.0-gm);
 
                 caux=-ddll(s,p,tt,-x,-1.0-gm,xstar,gm)+ddll(s,p,tt,x,-1.0-gm,xstar,gm);
-                v2pp=v2pp-exp(gm*s)*hbarr*caux;
+                v2pp=v2pp-expGammaS*hbarr*caux;
 
                 caux=-ddll(s,p,tt,-x,1.0+gm,-xstar,gm)+ddll(s,p,tt,x,1.0+gm,-xstar,gm);
-                v2pp=v2pp+exp(gm*s)*gm*hbarr*caux;
+                v2pp=v2pp+expGammaS*gm*hbarr*caux;
 
                 caux=-ddvv(s,p,tt,-x,xstar,gm)+ddvv(s,p,tt,x,xstar,gm);
                 caux=caux+(-dvv(s,p,tt,-x,-xstar,gm)+dvv(s,p,tt,x,-xstar,gm));
 
-                v2pp=v2pp+caux2*caux;
+                v2pp=v2pp+barrierFactor*caux;
 
                 caux=-ddff(s,p,tt,-x,-1+gm,gm)+ddff(s,p,tt,x,-1+gm,gm);
                 v2pp=v2pp-(1.0-gm)*kprice*caux;
 
                 caux=-ddff(s,p,tt,-x,1.0+gm,gm)+ddff(s,p,tt,x,1.0+gm,gm);
-                v2pp=v2pp-exp(gm*s)*gm*hbarr*caux;
+                v2pp=v2pp-expGammaS*gm*hbarr*caux;
 
                 v2p=v2p+innerPerturbation*v2pp;
             }
