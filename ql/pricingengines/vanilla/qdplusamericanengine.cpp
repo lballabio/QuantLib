@@ -193,6 +193,9 @@ namespace QuantLib {
             results_.value = calculatePutWithEdgeCases(K, S, q, r, vol, T);
         else
             QL_FAIL("unknown option type");
+
+        // the holder can always exercise, so the value is at least the payoff
+        results_.value = std::max(results_.value, (*payoff)(S));
     }
 
     Real detail::QdPutCallParityEngine::calculatePutWithEdgeCases(

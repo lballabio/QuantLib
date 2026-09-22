@@ -1997,6 +1997,59 @@ BOOST_AUTO_TEST_CASE(testQdEngineWithLobattoIntegral) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testQdEnginesNotBelowExerciseValue) {
+
+    BOOST_TEST_MESSAGE("Testing that the QD+ and QD fixed-point engines are "
+                       "never worth less than immediate exercise...");
+
+    const Date today = Date(15, August, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual365Fixed();
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+
+    struct Case {
+        Option::Type type;
+        Real strike;
+        Rate r;
+        Rate q;
+        Volatility v;
+        Integer years;
+    };
+    const Case cases[] = {
+        {Option::Call, 60.0, -0.10, 0.06, 0.40, 10},
+        {Option::Call, 80.0, -0.05, 0.06, 0.20, 10},
+        {Option::Put, 140.0, 0.06, 0.00, 0.20, 10},
+    };
+
+    for (const auto& c : cases) {
+        const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, c.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, c.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, c.v, dc)));
+
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, c.strike);
+        const auto exercise =
+            ext::make_shared<AmericanExercise>(today, today + c.years * Years);
+        const Real intrinsic = (*payoff)(spot->value());
+
+        for (const auto& engine : {ext::shared_ptr<PricingEngine>(
+                                       ext::make_shared<QdPlusAmericanEngine>(process)),
+                                   ext::shared_ptr<PricingEngine>(
+                                       ext::make_shared<QdFpAmericanEngine>(process))}) {
+            VanillaOption option(payoff, exercise);
+            option.setPricingEngine(engine);
+
+            const Real calculated = option.NPV();
+            if (calculated < intrinsic) {
+                REPORT_FAILURE("value below exercise", payoff, exercise, spot->value(),
+                               c.q, c.r, today, c.v, intrinsic, calculated,
+                               intrinsic - calculated, 0.0);
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testQdNegativeDividendYield) {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                         "with positive or zero interest rate and "
