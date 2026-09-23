@@ -170,8 +170,9 @@ namespace QuantLib {
                                 +2*m2*(m1im3i/(m1-m3)-m2im3i/(m2-m3))/(m1-m2))
                     + 3*b0*m2*h1*h1*m2im3i/(m2-m3) 
                     + m3i*h1*h1*h1; // ko
-                Real Eh3_2 = .375*std::pow(Eh,-0.5)*Eh2+.625*std::pow(Eh,1.5);
-                Real Eh5_2 = 1.875*std::pow(Eh,0.5)*Eh2-.875*std::pow(Eh,2.5);
+                Real sqrtEh = std::sqrt(Eh);
+                Real Eh3_2 = .375*Eh2/sqrtEh+.625*std::pow(Eh,1.5);
+                Real Eh5_2 = 1.875*sqrtEh*Eh2-.875*std::pow(Eh,2.5);
                 sEh += Eh;
                 sEh2 += Eh2;
                 sEh3 += Eh3;
