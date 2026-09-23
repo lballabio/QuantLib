@@ -337,7 +337,7 @@ namespace QuantLib {
         Real vol = volatility();
         Time t1 = firstExpiryTime();
 
-        return (log(S / X1) + (b + pow(vol, 2) / 2)*t1) / (vol*sqrt(t1));
+        return (log(S / X1) + (b + squared(vol) / 2)*t1) / (vol*sqrt(t1));
     }
 
 }

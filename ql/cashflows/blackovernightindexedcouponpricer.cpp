@@ -19,6 +19,7 @@
 */
 #include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
 
+#include <ql/math/functional.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
 #include <utility>
@@ -74,7 +75,8 @@ namespace QuantLib {
                     std::max(fixingDates.front(), capletVolatility()->referenceDate() + 1), effStrike);
                 Real T = std::max(fixingStartTime, 0.0);
                 if (!close_enough(fixingEndTime, T))
-                    T += std::pow(fixingEndTime - T, 3.0) / std::pow(fixingEndTime - fixingStartTime, 2.0) / 3.0;
+                    T += squared(fixingEndTime - T) * (fixingEndTime - T) /
+                        squared(fixingEndTime - fixingStartTime) / 3.0;
                 stdDev = sigma * std::sqrt(T);
             }
             if (optionType == Option::Type::Call)
@@ -327,7 +329,8 @@ namespace QuantLib {
                     std::max(fixingDates.front(), capletVolatility()->referenceDate() + 1), effStrike);
                 Real T = std::max(fixingStartTime, 0.0);
                 if (!close_enough(fixingEndTime, T))
-                    T += std::pow(fixingEndTime - T, 3.0) / std::pow(fixingEndTime - fixingStartTime, 2.0) / 3.0;
+                    T += squared(fixingEndTime - T) * (fixingEndTime - T) /
+                        squared(fixingEndTime - fixingStartTime) / 3.0;
                 stdDev = sigma * std::sqrt(T);
             }
             if (optionType == Option::Type::Call)

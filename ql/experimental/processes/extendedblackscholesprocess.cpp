@@ -55,8 +55,8 @@ namespace QuantLib {
         switch (discretization_) {
           case Milstein:
             // Milstein scheme
-            return apply(x0, drift(t0, x0)*dt
-                           + 0.5*std::pow(diffusion(t0, x0),2)*(dw*dw-1)*dt
+              return apply(x0, drift(t0, x0)*dt
+                             + 0.5*squared(diffusion(t0, x0))*(dw*dw-1)*dt
                            + diffusion(t0,x0)*std::sqrt(dt)*dw);
           case Euler:
             // Usual Euler scheme

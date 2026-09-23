@@ -23,6 +23,7 @@
 */
 
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
+#include <ql/math/functional.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -310,7 +311,7 @@ namespace QuantLib {
                 /*convexity adjustment due to payment dalay of each
                 overnight fixing, supposing an Hull-White short rate model*/
                 Real convAdj = exp(
-                    0.5 * pow(vol_, 2.0) / pow(mrs_, 3.0) * (exp(2 * mrs_ * ti1) - 1) *
+                    0.5 * squared(vol_) / (squared(mrs_) * mrs_) * (exp(2 * mrs_ * ti1) - 1) *
                     (exp(-mrs_ * ti2) - exp(-mrs_ * te)) * (exp(-mrs_ * ti2) - exp(-mrs_ * ti1)));
                 accumulatedRate += convAdj * (1 + forecastFixing * dt[i]) - 1;
                 ++i;
@@ -322,13 +323,13 @@ namespace QuantLib {
     }
 
     Real ArithmeticAveragedOvernightIndexedCouponPricer::convAdj1(Time ts, Time te) const {
-        return vol_ * vol_ / (4.0 * pow(mrs_, 3.0)) * (1.0 - exp(-2.0 * mrs_ * ts)) *
-               pow((1.0 - exp(-mrs_ * (te - ts))), 2.0);
+         return squared(vol_) / (4.0 * squared(mrs_) * mrs_) * (1.0 - exp(-2.0 * mrs_ * ts)) *
+             squared(1.0 - exp(-mrs_ * (te - ts)));
     }
 
     Real ArithmeticAveragedOvernightIndexedCouponPricer::convAdj2(Time ts, Time te) const {
-        return vol_ * vol_ / (2.0 * pow(mrs_, 2.0)) *
-               ((te - ts) - pow(1.0 - exp(-mrs_ * (te - ts)), 2.0) / mrs_ -
+         return squared(vol_) / (2.0 * squared(mrs_)) *
+             ((te - ts) - squared(1.0 - exp(-mrs_ * (te - ts))) / mrs_ -
                 (1.0 - exp(-2.0 * mrs_ * (te - ts))) / (2.0 * mrs_));
     }
 }
