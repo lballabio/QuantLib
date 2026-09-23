@@ -64,8 +64,8 @@ namespace QuantLib {
         // NOLINTNEXTLINE(google-explicit-constructor)
         RandomizedLDS(const LDS& ldsg);
         explicit RandomizedLDS(Size dimensionality,
-                      BigNatural ldsSeed = 0,
-                      BigNatural prsSeed = 0);
+                               BigNatural ldsSeed = 0,
+                               BigNatural prsSeed = 0);
         //! returns next sample using a given randomizing vector
         const sample_type& nextSequence() const;
         const sample_type& lastSequence() const {

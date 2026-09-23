@@ -65,8 +65,8 @@ namespace QuantLib {
                 to have settled to the recovery passed.
             */
             explicit DefaultSettlement(const Date& date = Date(),
-                              Seniority seniority = NoSeniority,
-                              Real recoveryRate = 0.4);
+                                       Seniority seniority = NoSeniority,
+                                       Real recoveryRate = 0.4);
           public:
             Date date() const override;
             /*! Returns the recovery rate of a default event which has already

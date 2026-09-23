@@ -57,7 +57,7 @@ namespace QuantLib {
     class EarlyExercise : public Exercise {
       public:
         explicit EarlyExercise(Type type,
-                      bool payoffAtExpiry = false)
+                               bool payoffAtExpiry = false)
         : Exercise(type), payoffAtExpiry_(payoffAtExpiry) {}
         bool payoffAtExpiry() const { return payoffAtExpiry_; }
       private:

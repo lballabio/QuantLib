@@ -100,8 +100,8 @@ namespace QuantLib {
       public:
         //! Default constructor
         explicit NonLinearLeastSquare(Constraint& c,
-                             Real accuracy = 1e-4,
-                             Size maxiter = 100);
+                                      Real accuracy = 1e-4,
+                                      Size maxiter = 100);
         //! Default constructor
         NonLinearLeastSquare(Constraint& c,
                              Real accuracy,
