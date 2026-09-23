@@ -1278,6 +1278,70 @@ BOOST_AUTO_TEST_CASE(testLowVolatility) {
     check(  95.0,  Option::Call,      99.0,   Barrier::DownIn,     4.0,   0.01,   0.04,        2.0);  // fwd = 97, call, ITM
 }
 
+BOOST_AUTO_TEST_CASE(testZeroVolatility) {
+    BOOST_TEST_MESSAGE("Testing barrier options with zero volatility...");
+
+    DayCounter dc = Actual365Fixed();
+
+    Date today(11, February, 2018);
+    Settings::instance().evaluationDate() = today;
+
+    Date maturity = today + Period(1, Years);
+
+    Real spot = 100.0;
+
+    auto Q = ext::make_shared<SimpleQuote>();
+    auto R = ext::make_shared<SimpleQuote>();
+
+    Handle<Quote> s0(ext::make_shared<SimpleQuote>(spot));
+    Handle<YieldTermStructure> qTS(flatRate(today, Q, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, R, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, 0.0, dc));
+
+    auto process = ext::make_shared<BlackScholesMertonProcess>(s0, qTS, rTS, volTS);
+    auto engine = ext::make_shared<AnalyticBarrierEngine>(process);
+
+    auto check = [&](Real strike, Option::Type optionType,
+                     Real barrier, Barrier::Type barrierType, Real rebate,
+                     Rate r, Rate q, Real expected) {
+        R->setValue(r);
+        Q->setValue(q);
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(optionType, strike);
+        auto exercise = ext::make_shared<EuropeanExercise>(maturity);
+        BarrierOption option(barrierType, barrier, rebate, payoff, exercise);
+        option.setPricingEngine(engine);
+        Real value = option.NPV();
+        Real diff = std::fabs(value - expected);
+        if (!(diff <= 1.0e-10)) {
+            BOOST_ERROR("Failed to match expected price:"
+                        << "\n    strike:         " << strike
+                        << "\n    option type:    " << optionType
+                        << "\n    barrier:        " << barrier
+                        << "\n    barrier type:   " << barrierType
+                        << "\n    rebate:         " << rebate
+                        << "\n    risk-free rate: " << r
+                        << "\n    dividend yield: " << q
+                        << "\n    expected:       " << expected
+                        << "\n    calculated:     " << value);
+        }
+    };
+
+    // the underlying follows its forward; a knock-out rebate is paid when the forward
+    // reaches the barrier, a knock-in rebate at maturity
+
+    //    strike          type     barrier     barrier type     rebate       r      q    expected
+
+    check( 105.0,   Option::Put,     107.0,    Barrier::UpOut,     4.0,   0.03,   0.01,   2.891797647676558);  // not hit
+    check( 105.0,   Option::Put,     101.0,    Barrier::UpOut,     4.0,   0.03,   0.01,   3.940741347366294);  // hit at 0.4975
+    check( 100.0,  Option::Call,     101.0,     Barrier::UpIn,     4.0,   0.03,    0.0,   2.955446645149196);  // hit
+    check( 105.0,  Option::Call,     107.0,     Barrier::UpIn,     4.0,   0.03,    0.0,   3.881782134194033);  // not hit
+    check(  91.0,  Option::Call,      93.0,  Barrier::DownOut,     4.0,   0.01,   0.03,   6.950018483676519);  // not hit
+    check( 101.0,   Option::Put,      99.0,  Barrier::DownOut,     4.0,   0.01,   0.03,   3.979949748426480);  // hit at 0.5025
+    check( 100.0,   Option::Put,      99.0,   Barrier::DownIn,     4.0,   0.01,   0.04,   2.926039459684483);  // hit
+    check(  91.0,  Option::Call,      93.0,   Barrier::DownIn,     4.0,   0.01,   0.04,   3.960199334996672);  // not hit
+    check(  95.0,  Option::Call,     100.0,  Barrier::DownOut,     4.0,   0.03,    0.0,   4.0);                // spot on the barrier
+}
+
 Real perturbativeBarrierOptionValue(Natural order, Size npoint = 1000,
                                     Size npoint2 = 100) {
     Real S = 100.0;
