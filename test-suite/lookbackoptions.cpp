@@ -271,6 +271,92 @@ BOOST_AUTO_TEST_CASE(testAnalyticContinuousFixedLookback) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testAnalyticContinuousLookbackZeroCarry) {
+
+    BOOST_TEST_MESSAGE(
+           "Testing analytic continuous lookback options with zero carry...");
+
+    // with r equal to q the formulas are 0/0; the expected values are their
+    // limit, evaluated in 50-digit arithmetic
+
+    LookbackOptionData floatingValues[] = {
+        // type,             strike, minmax, s,     q,    r,    t,    v,    l, t1, result,             tol
+        {  Option::Call,     0,       90,    100.0, 0.05, 0.05, 1.00, 0.30, 0, 0,  21.817075601551579, 1.0e-8},
+        {  Option::Put,      0,      110,    100.0, 0.05, 0.05, 1.00, 0.30, 0, 0,  26.407720137984153, 1.0e-8},
+    };
+
+    LookbackOptionData fixedValues[] = {
+        // type,             strike, minmax, s,     q,    r,    t,    v,    l, t1, result,             tol
+        {  Option::Call,     95,     110,    100.0, 0.05, 0.05, 1.00, 0.30, 0, 0,  31.163867260487723, 1.0e-8},
+        {  Option::Call,     105,    100,    100.0, 0.05, 0.05, 1.00, 0.30, 0, 0,  20.604933499041011, 1.0e-8},
+        {  Option::Put,      105,     90,    100.0, 0.05, 0.05, 1.00, 0.30, 0, 0,  26.573222724055149, 1.0e-8},
+        {  Option::Put,      95,     100,    100.0, 0.05, 0.05, 1.00, 0.30, 0, 0,  16.226584162874658, 1.0e-8},
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+                        new BlackScholesMertonProcess(
+                                   Handle<Quote>(spot),
+                                   Handle<YieldTermStructure>(qTS),
+                                   Handle<YieldTermStructure>(rTS),
+                                   Handle<BlackVolTermStructure>(volTS)));
+
+    for (auto& value : floatingValues) {
+        ext::shared_ptr<Exercise> exercise(
+                          new EuropeanExercise(today + timeToDays(value.t)));
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
+
+        ext::shared_ptr<FloatingTypePayoff> payoff(new FloatingTypePayoff(value.type));
+        ContinuousFloatingLookbackOption option(value.minmax, payoff, exercise);
+        option.setPricingEngine(ext::shared_ptr<PricingEngine>(
+                  new AnalyticContinuousFloatingLookbackEngine(stochProcess)));
+
+        Real calculated = option.NPV();
+        Real error = std::fabs(calculated - value.result);
+        if (!(error <= value.tol)) {
+            REPORT_FAILURE_FLOATING("value", value.minmax, payoff, exercise, value.s, value.q,
+                                    value.r, today, value.v, value.result, calculated, error,
+                                    value.tol);
+        }
+    }
+
+    for (auto& value : fixedValues) {
+        ext::shared_ptr<Exercise> exercise(
+                          new EuropeanExercise(today + timeToDays(value.t)));
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
+
+        ext::shared_ptr<StrikedTypePayoff> payoff(
+                                 new PlainVanillaPayoff(value.type, value.strike));
+        ContinuousFixedLookbackOption option(value.minmax, payoff, exercise);
+        option.setPricingEngine(ext::shared_ptr<PricingEngine>(
+                  new AnalyticContinuousFixedLookbackEngine(stochProcess)));
+
+        Real calculated = option.NPV();
+        Real error = std::fabs(calculated - value.result);
+        if (!(error <= value.tol)) {
+            REPORT_FAILURE_FIXED("value", value.minmax, payoff, exercise, value.s, value.q,
+                                 value.r, today, value.v, value.result, calculated, error,
+                                 value.tol);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testAnalyticContinuousPartialFloatingLookback) {
 
     BOOST_TEST_MESSAGE(

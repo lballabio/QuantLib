@@ -20,6 +20,7 @@
 
 #include <ql/exercise.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
+#include <cmath>
 #include <utility>
 
 namespace QuantLib {
@@ -100,11 +101,14 @@ namespace QuantLib {
         Real n3 = f_(eta*(-d1+lambda*stdDeviation()));
         Real n4 = f_(eta*-d1);
         Real pow_s = std::pow(s, -lambda);
+        // with no carry lambda vanishes and the ratio below is 0/0; its limit
+        // is stdDev * (eta * n(d1) - d1 * N(-eta * d1))
+        Real ratio = std::fabs(lambda) < 1.0e-7
+            ? stdDeviation() * (eta * f_.derivative(d1) - d1 * n4)
+            : (pow_s * n3 - dividendDiscount() * n4 / riskFreeDiscount()) / lambda;
         return eta*((underlying() * dividendDiscount() * n1 -
                     minmax() * riskFreeDiscount() * n2) +
-                    (underlying() * riskFreeDiscount() *
-                    (pow_s * n3 - dividendDiscount()* n4/riskFreeDiscount())/
-            lambda));
+                    underlying() * riskFreeDiscount() * ratio);
     }
 
 }
