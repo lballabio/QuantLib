@@ -567,6 +567,58 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuAtLowVolatility) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testJuNotBelowExerciseValue) {
+
+    BOOST_TEST_MESSAGE("Testing that the Ju approximation is never "
+                       "worth less than immediate exercise...");
+
+    // Deep in the money the Ju-Zhong correction term can take the price
+    // below the exercise value at ordinary positive rates.
+
+    const Date today = Date(15, August, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual365Fixed();
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+
+    struct Case {
+        Option::Type type;
+        Real strike;
+        Rate r;
+        Rate q;
+        Volatility v;
+        Integer years;
+    };
+    const Case cases[] = {
+        {Option::Call, 60.0, 0.03, 0.02, 0.10, 3},
+        {Option::Call, 60.0, 0.06, 0.04, 0.10, 10},
+        {Option::Put, 140.0, 0.03, 0.04, 0.03, 10},
+    };
+
+    for (const auto& c : cases) {
+        const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, c.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, c.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, c.v, dc)));
+
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, c.strike);
+        const auto exercise =
+            ext::make_shared<AmericanExercise>(today, today + c.years * Years);
+
+        VanillaOption option(payoff, exercise);
+        option.setPricingEngine(
+            ext::make_shared<JuQuadraticApproximationEngine>(process));
+
+        const Real intrinsic = (*payoff)(spot->value());
+        const Real calculated = option.NPV();
+        if (calculated < intrinsic) {
+            REPORT_FAILURE("value below exercise", payoff, exercise, spot->value(),
+                           c.q, c.r, today, c.v, intrinsic, calculated,
+                           intrinsic - calculated, 0.0);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testFdValues) {
 
     BOOST_TEST_MESSAGE("Testing finite-difference and QR+ engine for American options...");
