@@ -19,6 +19,7 @@
 
 #include <ql/experimental/barrieroption/vannavolgabarrierengine.hpp>
 #include <ql/experimental/barrieroption/vannavolgainterpolation.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/blackdeltacalculator.hpp>
@@ -214,19 +215,22 @@ namespace QuantLib {
             //Analytical Black Scholes formula for vanilla option
             NormalDistribution norm;
             Real d1atm = (std::log(forward/atmStrike) 
-                           + 0.5*std::pow(atmVolQuote->value(),2.0) * T_)/(atmVolQuote->value() * sqrt(T_));
+                                                       + 0.5 * squared(atmVolQuote->value()) * T_)
+                                                         /(atmVolQuote->value() * sqrt(T_));
             Real vegaAtm_Analytical = x0Quote->value() * norm(d1atm) * sqrt(T_) * foreignTS_->discount(T_);
             Real vannaAtm_Analytical = vegaAtm_Analytical/x0Quote->value() *(1.0 - d1atm/(atmVolQuote->value()*sqrt(T_)));
             Real volgaAtm_Analytical = vegaAtm_Analytical * d1atm * (d1atm - atmVolQuote->value() * sqrt(T_))/atmVolQuote->value();
 
             Real d125call = (std::log(forward/call25Strike) 
-                           + 0.5*std::pow(atmVolQuote->value(),2.0) * T_)/(atmVolQuote->value() * sqrt(T_));
+                                                       + 0.5 * squared(atmVolQuote->value()) * T_)
+                                                         /(atmVolQuote->value() * sqrt(T_));
             Real vega25Call_Analytical = x0Quote->value() * norm(d125call) * sqrt(T_) * foreignTS_->discount(T_);
             Real vanna25Call_Analytical = vega25Call_Analytical/x0Quote->value() *(1.0 - d125call/(atmVolQuote->value()*sqrt(T_)));
             Real volga25Call_Analytical = vega25Call_Analytical * d125call * (d125call - atmVolQuote->value() * sqrt(T_))/atmVolQuote->value();
 
             Real d125Put = (std::log(forward/put25Strike) 
-                           + 0.5*std::pow(atmVolQuote->value(),2.0) * T_)/(atmVolQuote->value() * sqrt(T_));
+                                                       + 0.5 * squared(atmVolQuote->value()) * T_)
+                                                         /(atmVolQuote->value() * sqrt(T_));
             Real vega25Put_Analytical = x0Quote->value() * norm(d125Put) * sqrt(T_) * foreignTS_->discount(T_);
             Real vanna25Put_Analytical = vega25Put_Analytical/x0Quote->value() *(1.0 - d125Put/(atmVolQuote->value()*sqrt(T_)));
             Real volga25Put_Analytical = vega25Put_Analytical * d125Put * (d125Put - atmVolQuote->value() * sqrt(T_))/atmVolQuote->value();
@@ -310,14 +314,17 @@ namespace QuantLib {
 
             //touch probability
             CumulativeNormalDistribution cnd;
-            Real mu = domesticTS_->zeroRate(T_, Continuous).rate() - foreignTS_->zeroRate(T_, Continuous).rate() - pow(atmVol_->value(), 2.0)/2.0;
+                Real mu = domesticTS_->zeroRate(T_, Continuous).rate() - foreignTS_->zeroRate(T_, Continuous).rate()
+                    - squared(atmVol_->value()) / 2.0;
             Real h2 = (log(arguments_.barrier/x0Quote->value()) + mu*T_)/(atmVol_->value()*sqrt(T_));
             Real h2Prime = (log(x0Quote->value()/arguments_.barrier) + mu*T_)/(atmVol_->value()*sqrt(T_));
             Real probTouch = 0.0;
             if(arguments_.barrierType == Barrier::UpIn || arguments_.barrierType == Barrier::UpOut)
-                probTouch = cnd(h2Prime) + pow(arguments_.barrier/x0Quote->value(), 2.0*mu/pow(atmVol_->value(), 2.0))*cnd(-h2);
+                probTouch = cnd(h2Prime) + pow(arguments_.barrier/x0Quote->value(),
+                                               2.0*mu/squared(atmVol_->value()))*cnd(-h2);
             else
-                probTouch = cnd(-h2Prime) + pow(arguments_.barrier/x0Quote->value(), 2.0*mu/pow(atmVol_->value(), 2.0))*cnd(h2);
+                probTouch = cnd(-h2Prime) + pow(arguments_.barrier/x0Quote->value(),
+                                               2.0*mu/squared(atmVol_->value()))*cnd(h2);
             Real p_survival = 1.0 - probTouch;
 
             Real lambda = p_survival ;

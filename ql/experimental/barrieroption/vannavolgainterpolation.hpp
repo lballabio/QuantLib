@@ -24,6 +24,7 @@
 #ifndef quantlib_vanna_volga_interpolation_hpp
 #define quantlib_vanna_volga_interpolation_hpp
 
+#include <ql/math/functional.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
@@ -142,7 +143,8 @@ namespace QuantLib {
             Time T_;
 
             Real vega(Real k) const {
-                Real d1 = (std::log(fwd_/k) + 0.5 * std::pow(atmVol_, 2.0) * T_)/(atmVol_ * std::sqrt(T_));
+                Real d1 = (std::log(fwd_/k) + 0.5 * squared(atmVol_) * T_)
+                         /(atmVol_ * std::sqrt(T_));
                 NormalDistribution norm;
                 return spot_ * dDiscount_ * std::sqrt(T_) * norm(d1);
             }

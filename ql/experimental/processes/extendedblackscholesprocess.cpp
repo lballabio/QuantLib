@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/processes/extendedblackscholesprocess.hpp>
+#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
@@ -70,13 +71,13 @@ namespace QuantLib {
             rate0 =
                 riskFreeRate()->forwardRate(t0,t1,Continuous,NoFrequency,true).rate()
               - dividendYield()->forwardRate(t0,t1,Continuous,NoFrequency,true).rate()
-              - 0.5*std::pow(sigma0,2);
+              - 0.5*squared(sigma0);
             rate1 =
                 riskFreeRate()->forwardRate(t0+dt,t1+dt,Continuous,
                                             NoFrequency,true).rate()
               - dividendYield()->forwardRate(t0+dt,t1+dt,
                                              Continuous,NoFrequency,true).rate()
-              - 0.5*std::pow(sigma1,2);
+              - 0.5*squared(sigma1);
             driftterm = 0.5*rate1+0.5*rate0;
             diffusionterm = 0.5*(sigma1+sigma0);
             corrector =

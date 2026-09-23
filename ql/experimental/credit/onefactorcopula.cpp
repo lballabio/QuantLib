@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/credit/onefactorcopula.hpp>
+#include <ql/math/functional.hpp>
 
 using namespace std;
 
@@ -104,7 +105,7 @@ namespace QuantLib {
         for (Size i = 0; i < steps(); i++) {
             norm += densitydm (i);
             mean += m(i) * densitydm (i);
-            var += pow (m(i), 2) * densitydm (i);
+            var += squared(m(i)) * densitydm (i);
         }
 
         QL_REQUIRE (fabs (norm - 1.0) < tolerance, "norm out of tolerance range");

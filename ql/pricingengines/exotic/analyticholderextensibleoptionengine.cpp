@@ -18,6 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/pricingengines/exotic/analyticholderextensibleoptionengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <utility>
@@ -304,7 +305,7 @@ namespace QuantLib {
         Real vol = volatility();
         Time t1 = firstExpiryTime();
 
-        return (log(S / I2) + (b + pow(vol, 2) / 2)*t1) / (vol*sqrt(t1));
+        return (log(S / I2) + (b + squared(vol) / 2)*t1) / (vol*sqrt(t1));
     }
 
     Real AnalyticHolderExtensibleOptionEngine::y2(Option::Type type) const {
@@ -315,7 +316,7 @@ namespace QuantLib {
         Real vol = volatility();
         Time t1 = firstExpiryTime();
 
-        return (log(S / I1) + (b + pow(vol, 2) / 2)*t1) / (vol*sqrt(t1));
+        return (log(S / I1) + (b + squared(vol) / 2)*t1) / (vol*sqrt(t1));
     }
 
     Real AnalyticHolderExtensibleOptionEngine::z1() const {
@@ -325,7 +326,7 @@ namespace QuantLib {
         Real vol = volatility();
         Time T2 = secondExpiryTime();
 
-        return (log(S / X2) + (b + pow(vol, 2) / 2)*T2) / (vol*sqrt(T2));
+        return (log(S / X2) + (b + squared(vol) / 2)*T2) / (vol*sqrt(T2));
     }
 
     Real AnalyticHolderExtensibleOptionEngine::z2() const {
