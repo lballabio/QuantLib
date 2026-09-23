@@ -31,6 +31,7 @@ namespace QuantLib {
     Date yearFractionToDate(
         const DayCounter& dayCounter, const Date& referenceDate, Time t);
 
+    Date roundToDayStart(const Date& d);
 }
 
 #endif
