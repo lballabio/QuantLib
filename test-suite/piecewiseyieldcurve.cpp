@@ -71,6 +71,7 @@
 #include <ql/utilities/null_deleter.hpp>
 #include <iomanip>
 #include <map>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>  
@@ -85,7 +86,8 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(PiecewiseYieldCurveTests)
 
-// seems that cmsspread.cpp has using namespace pointing to boost detail, so just set detail to QuantLib
+// seems that cmsspread.cpp has using namespace pointing to boost detail,
+// so just set detail to QuantLib
 namespace detail = QuantLib::detail;
 
 struct Datum {
@@ -2446,6 +2448,54 @@ BOOST_AUTO_TEST_CASE(testDatedSwapHelpers) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testSwapHelperSensitivitiesOnSettlementDate) {
+    BOOST_TEST_MESSAGE("Testing swap helper sensitivities with settlement-date payments...");
+
+    Date today(15, September, 2026);
+    Settings::instance().evaluationDate() = today;
+    Date start(15, September, 2025), end(15, September, 2028);
+    auto euribor = ext::make_shared<Euribor6M>();
+    auto estr = ext::make_shared<Estr>();
+
+    // The coupon paid today is fully fixed. Supply its history, including the
+    // Ibor fixing before the start date and any fixing needed for the next coupon.
+    for (Date d = start - 1 * Weeks; d < today; ++d) {
+        if (euribor->isValidFixingDate(d))
+            euribor->addFixing(d, 0.025);
+        if (estr->isValidFixingDate(d))
+            estr->addFixing(d, 0.025);
+    }
+
+    auto swapHelper = ext::make_shared<SwapRateHelper>(
+        0.03, start, end, TARGET(), Annual, Unadjusted,
+        Thirty360(Thirty360::BondBasis), euribor);
+    auto oisHelper = ext::make_shared<OISRateHelper>(start, end, 0.03, estr);
+    BOOST_REQUIRE_EQUAL(swapHelper->swap()->fixedLeg().front()->date(), today);
+    BOOST_REQUIRE_EQUAL(oisHelper->swap()->fixedLeg().front()->date(), today);
+    BOOST_REQUIRE_EQUAL(oisHelper->swap()->overnightLeg().front()->date(), today);
+
+    auto curve = ext::make_shared<FlatForward>(today, 0.03, Actual360());
+    std::vector<ext::shared_ptr<RateHelper>> helpers = {swapHelper, oisHelper};
+    for (const auto& helper : helpers)
+        helper->setTermStructure(curve.get());
+
+    // The helper engines exclude settlement-date flows, regardless of the
+    // reference-date-events setting. Today's cash-flow override still applies
+    // to both the engine and the sensitivities through CashFlow::hasOccurred().
+    for (bool includeReferenceDateEvents : {false, true}) {
+        Settings::instance().includeReferenceDateEvents() = includeReferenceDateEvents;
+        for (const auto& includeToday :
+             std::vector<std::optional<bool>>{std::nullopt, false, true}) {
+            Settings::instance().includeTodaysCashFlows() = includeToday;
+            BOOST_TEST_CONTEXT("includeReferenceDateEvents=" << includeReferenceDateEvents
+                               << ", includeTodaysCashFlows="
+                               << (includeToday ? (*includeToday ? "true" : "false") : "unset")) {
+                checkAnalyticQuoteSensitivities(helpers, "settlement-date swap/OIS");
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testSwapRateHelperWithCouponPricer) {
     BOOST_TEST_MESSAGE("Testing SwapRateHelper with a custom coupon pricer...");
 
@@ -2687,6 +2737,76 @@ BOOST_AUTO_TEST_CASE(testJacobianWithOISHelpers) {
     auto curve = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(
         0, TARGET(), helpers, Actual360());
     checkJacobian(curve, quotes, true);
+}
+
+BOOST_AUTO_TEST_CASE(testNumericalJacobianRestoresHelperInstruments) {
+
+    BOOST_TEST_MESSAGE("Testing that numerical Jacobians restore helper instrument values...");
+
+    Settings::instance().evaluationDate() = Date(15, September, 2026);
+
+    class ThrowingOISRateHelper : public OISRateHelper {
+      public:
+        using OISRateHelper::OISRateHelper;
+        mutable bool throwOnNextQuote_ = false;
+
+        Real impliedQuote() const override {
+            if (throwOnNextQuote_) {
+                throwOnNextQuote_ = false;
+                QL_FAIL("test failure during numerical differentiation");
+            }
+            return OISRateHelper::impliedQuote();
+        }
+    };
+
+    auto estr = ext::make_shared<Estr>();
+    std::vector<ext::shared_ptr<ThrowingOISRateHelper>> oisHelpers;
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    for (Integer years : {1, 3, 5}) {
+        auto helper = ext::make_shared<ThrowingOISRateHelper>(
+            2, years * Years, 0.02 + 0.001 * years, estr);
+        oisHelpers.push_back(helper);
+        helpers.push_back(helper);
+    }
+
+    // Forward-rate traits force numerical differentiation for every helper.
+    auto curve = ext::make_shared<PiecewiseYieldCurve<ForwardRate, BackwardFlat>>(
+        0, TARGET(), helpers, Actual360());
+    const std::vector<Real> originalData = curve->data();
+    std::vector<Real> originalNPVs;
+    for (const auto& helper : oisHelpers) {
+        helper->impliedQuote();
+        originalNPVs.push_back(helper->swap()->NPV());
+    }
+
+    auto checkRestored = [&] {
+        const auto& data = curve->data();
+        BOOST_CHECK_EQUAL_COLLECTIONS(data.begin(), data.end(),
+                                      originalData.begin(), originalData.end());
+        for (Size i = 0; i < oisHelpers.size(); ++i) {
+            // Read the cached instrument directly, without impliedQuote() or deepUpdate().
+            // Unit notionals make 1e-12 much smaller than the NPV change from a node bump.
+            QL_CHECK_SMALL(oisHelpers[i]->swap()->NPV() - originalNPVs[i], 1.0e-12);
+        }
+    };
+
+    std::vector<bool> analytic;
+    curve->jacobian(&analytic);
+    BOOST_REQUIRE_EQUAL(analytic.size(), helpers.size());
+    BOOST_CHECK(std::none_of(analytic.begin(), analytic.end(), [](bool x) { return x; }));
+    checkRestored();
+    curve->inverseJacobian();
+    checkRestored();
+
+    // An exception during a bump must still restore the nodes and allow a later calculation.
+    oisHelpers.back()->throwOnNextQuote_ = true;
+    BOOST_CHECK_EXCEPTION(curve->jacobian(), Error,
+                          ExpectedErrorMessage("test failure during numerical differentiation"));
+    const auto& restoredData = curve->data();
+    BOOST_CHECK_EQUAL_COLLECTIONS(restoredData.begin(), restoredData.end(),
+                                  originalData.begin(), originalData.end());
+    curve->jacobian();
+    checkRestored();
 }
 
 BOOST_AUTO_TEST_CASE(testJacobianWithSharedHelpers) {

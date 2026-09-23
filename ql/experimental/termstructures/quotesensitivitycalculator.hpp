@@ -143,11 +143,15 @@ namespace QuantLib {
                                       const QuotientSensitivitySpec& spec);
 
         //! sensitivities of a fixed-vs-floating fair rate
+        /*! includeSettlementDateFlows must match the swap engine that
+            prices the helper's implied quote.
+        */
         ImpliedQuoteSensitivities fairRateSensitivities(
             const Leg& fixedLeg,
-                              const Leg& floatingLeg,
-                              Spread helperSpread,
-                              const YieldTermStructure& discountCurve);
+            const Leg& floatingLeg,
+            Spread helperSpread,
+            const YieldTermStructure& discountCurve,
+            std::optional<bool> includeSettlementDateFlows);
 
         //! sensitivities of floating-vs-floating fair basis \f$ b=(O-B)/A \f$
         ImpliedQuoteSensitivities fairBasisSensitivities(

@@ -25,7 +25,6 @@
 #include <ql/cashflows/stubiborcoupon.hpp>
 #include <ql/errors.hpp>
 #include <ql/indexes/iborindex.hpp>
-#include <ql/patterns/lazyobject.hpp>
 #include <ql/settings.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
@@ -61,8 +60,7 @@ namespace QuantLib {
                avoid notification loops so we do refreshes
             */
             void refreshCachedResults(const ext::shared_ptr<CashFlow>& cf) {
-                if (auto lazy = ext::dynamic_pointer_cast<LazyObject>(cf))
-                    lazy->deepUpdate();
+                cf->deepUpdate();
             }
 
         }
@@ -151,7 +149,7 @@ namespace QuantLib {
                 a.ntau = ibor->nominal()*ibor->accrualPeriod();
                 Real gearing = ibor->gearing();
                 a.amount = a.ntau*(gearing*ibor->indexFixing() + ibor->spread());
-                if (withSensitivities && !ibor->hasFixed()) {
+                if (!ibor->hasFixed()) {
                     // f = (P(v)/P(e)-1)/tau on the index's forecast curve
                     const Handle<YieldTermStructure>& curve =
                         ibor->iborIndex()->forwardingTermStructure();
@@ -183,8 +181,6 @@ namespace QuantLib {
                 a.ntau = overnight->nominal()*overnight->accrualPeriod();
                 Real rate = overnight->rate();
                 a.amount = a.ntau*rate;
-                if (!withSensitivities)
-                    return a;
 
                 // C = C_past * boundary factors * P(v_s)/P(v_e)
                 auto index = ext::dynamic_pointer_cast<OvernightIndex>(overnight->index());
@@ -372,14 +368,15 @@ namespace QuantLib {
         }
 
         ImpliedQuoteSensitivities fairRateSensitivities(
-            const Leg& fixedLeg,
-                              const Leg& floatingLeg,
-                              Spread helperSpread,
-                              const YieldTermStructure& discountCurve) {
+                const Leg& fixedLeg,
+                const Leg& floatingLeg,
+                Spread helperSpread,
+                const YieldTermStructure& discountCurve,
+                std::optional<bool> includeSettlementDateFlows) {
             ImpliedQuoteSensitivities result;
             LegContribution fixed, floating;
-            if (!decomposeLeg(fixedLeg, discountCurve, result, fixed) ||
-                !decomposeLeg(floatingLeg, discountCurve, result, floating))
+            if (!decomposeLeg(fixedLeg, discountCurve, result, fixed, includeSettlementDateFlows) ||
+                !decomposeLeg(floatingLeg, discountCurve, result, floating, includeSettlementDateFlows))
                 return {};
 
             // fair rate = (floating NPV + spread * floating annuity) / fixed annuity

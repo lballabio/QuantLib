@@ -186,6 +186,10 @@ namespace QuantLib {
                     std::copy(savedData.begin(), savedData.end(), data.begin());
                     interpolation.update();
                 }
+
+                // Restoring nodes (to reset the last bumped pricing results)
+                for (Size i : numericalRows)
+                    alive[i]->impliedQuote();
             }
 
             return {std::move(J), std::move(analytic)};

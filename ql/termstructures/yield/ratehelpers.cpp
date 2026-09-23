@@ -702,7 +702,7 @@ namespace QuantLib {
         Spread s = spread_.empty() ? 0.0 : spread_->value();
         return detail::fairRateSensitivities(
             swap_->fixedLeg(), swap_->floatingLeg(), s,
-            **discountRelinkableHandle_);
+            **discountRelinkableHandle_, false);
     }
 
     void SwapRateHelper::accept(AcyclicVisitor& v) {

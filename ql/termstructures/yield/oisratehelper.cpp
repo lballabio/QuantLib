@@ -246,7 +246,7 @@ namespace QuantLib {
         Spread s = overnightSpread_.empty() ? 0.0 : overnightSpread_->value();
         return detail::fairRateSensitivities(
             swap_->fixedLeg(), swap_->overnightLeg(), s,
-            **discountRelinkableHandle_);
+            **discountRelinkableHandle_, false);
     }
 
     void OISRateHelper::accept(AcyclicVisitor& v) {

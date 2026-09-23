@@ -43,7 +43,8 @@ namespace QuantLib {
         explicit CurveJacobianGraph(bool errorOnIncomplete = false)
         : errorOnIncomplete_(errorOnIncomplete) {}
 
-        /*! Whether every curve dependency reported by curves and their helpers are represented in the graph.
+        /*! Whether every curve dependency reported by curves and their
+            helpers is represented in the graph.
         */
         bool isComplete() const {
             for (const auto& node : nodes_) {
@@ -101,7 +102,7 @@ namespace QuantLib {
                                std::vector<bool>* analyticEquations = nullptr) const {
             requireComplete();
             Size a = index(of), b = index(withRespectTo);
-            detail::CurveCrossJacobianContext context = jacobianContext(false);
+            detail::CurveCrossJacobianContext context = jacobianContext();
             detail::CurveJacobianBlocks blocks =
                 detail::curveJacobianBlocks(nodes_, context);
             Matrix block = detail::inverseCurveJacobianBlock(blocks, a, b);
@@ -117,7 +118,7 @@ namespace QuantLib {
             const std::map<const YieldTermStructure*, Array>& nodeSensitivities,
             std::vector<bool>* analyticEquations = nullptr) const {
             requireComplete();
-            detail::CurveCrossJacobianContext context = jacobianContext(false);
+            detail::CurveCrossJacobianContext context = jacobianContext();
             detail::CurveJacobianBlocks blocks =
                 detail::curveJacobianBlocks(nodes_, context);
 
@@ -174,9 +175,7 @@ namespace QuantLib {
                 return;
 
             auto provider = ext::dynamic_pointer_cast<CurveJacobianNodeProvider>(curve);
-            QL_REQUIRE(provider,
-                       "underlying curve does not expose a Jacobian adapter; "
-                       "add it explicitly or pass addUnderlying = false");
+            QL_REQUIRE(provider, "underlying curve does not expose a Jacobian adapter");
             addNode(provider->makeJacobianNode(curve));
         }
 
@@ -212,15 +211,11 @@ namespace QuantLib {
             return nodes_[index(curve)];
         }
 
-        detail::CurveCrossJacobianContext jacobianContext(bool includeAccountedCurves = true) const {
+        detail::CurveCrossJacobianContext jacobianContext() const {
             detail::CurveCrossJacobianContext result;
             result.assumeUnlistedCurvesIndependent();
-            for (const auto& node : nodes_) {
-                if (includeAccountedCurves)
-                    result.addCurve(node.id, node.valueDependencies());
-                else
-                    result.addDependencies(node.id, node.valueDependencies());
-            }
+            for (const auto& node : nodes_)
+                result.addCurve(node.id, node.valueDependencies());
             return result;
         }
 

@@ -86,9 +86,9 @@ namespace QuantLib {
             Helpers without dependency metadata are treated as reaching every
             curve and are differentiated numerically.
         */
-    inline CurveJacobianBlocks curveJacobianBlocks(
-        const std::vector<CurveJacobianNode>& curves,
-                            const CurveCrossJacobianContext& baseContext = {}) {
+        inline CurveJacobianBlocks curveJacobianBlocks(
+                const std::vector<CurveJacobianNode>& curves,
+                const CurveCrossJacobianContext& baseContext = {}) {
             Size n = curves.size();
             CurveJacobianBlocks blocks;
             blocks.nodeOffset.assign(n + 1, 0);
