@@ -44,11 +44,6 @@ namespace QuantLib {
                          Actual365Fixed(), h) {}
     };
 
-    /*! \deprecated Renamed to Tonar.
-                    Deprecated in version 1.40.
-    */
-    [[deprecated("Renamed to Tonar")]] typedef Tonar Tona;
-
 }
 
 #endif
