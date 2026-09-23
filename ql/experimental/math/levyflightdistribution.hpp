@@ -55,7 +55,6 @@ namespace QuantLib {
             /*!    Constructs parameters with a given xm and alpha
                 Requires: alpha > 0
             */
-            // NOLINTNEXTLINE(google-explicit-constructor)
             param_type(Real xm = 1.0, Real alpha = 1.0)
               : xm_(xm), alpha_(alpha) { QL_REQUIRE(alpha_ > 0.0, "alpha must be larger than 0"); }
 

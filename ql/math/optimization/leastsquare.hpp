@@ -61,7 +61,6 @@ namespace QuantLib {
       public:
         //! Default constructor
         // TODO: Review whether this constructor should remain implicit.
-        // NOLINTNEXTLINE(google-explicit-constructor)
         LeastSquareFunction(LeastSquareProblem& lsp) : lsp_(lsp) {}
         //! Destructor
         ~LeastSquareFunction() override = default;

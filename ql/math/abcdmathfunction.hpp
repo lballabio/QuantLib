@@ -41,7 +41,6 @@ namespace QuantLib {
             Real c = 0.16,
             Real d = 0.0005);
         // TODO: Review whether this constructor should remain implicit.
-        // NOLINTNEXTLINE(google-explicit-constructor)
         AbcdMathFunction(std::vector<Real> abcd);
 
         //! function value at time t: \f[ f(t) \f]

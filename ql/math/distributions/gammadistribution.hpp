@@ -33,7 +33,6 @@ namespace QuantLib {
     class CumulativeGammaDistribution {
       public:
         // TODO: Review whether this constructor should remain implicit.
-        // NOLINTNEXTLINE(google-explicit-constructor)
         CumulativeGammaDistribution(Real a) : a_(a) {
             QL_REQUIRE(a>0.0, "invalid parameter for gamma distribution");
         }

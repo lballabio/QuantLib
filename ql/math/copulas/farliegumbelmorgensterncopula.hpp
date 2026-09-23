@@ -33,7 +33,6 @@ namespace QuantLib {
     class FarlieGumbelMorgensternCopula {
       public:
         // TODO: Review whether this constructor should remain implicit.
-        // NOLINTNEXTLINE(google-explicit-constructor)
         FarlieGumbelMorgensternCopula(Real theta);
         Real operator()(Real x, Real y) const;
       private:

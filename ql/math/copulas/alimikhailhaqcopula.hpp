@@ -34,7 +34,6 @@ namespace QuantLib {
     class AliMikhailHaqCopula {
       public:
         // TODO: Review whether this constructor should remain implicit.
-        // NOLINTNEXTLINE(google-explicit-constructor)
         AliMikhailHaqCopula(Real theta);
         Real operator()(Real x, Real y) const;
       private:

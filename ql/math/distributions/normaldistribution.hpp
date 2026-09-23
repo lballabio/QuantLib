@@ -44,7 +44,6 @@ namespace QuantLib {
     class NormalDistribution {
       public:
         // TODO: Review whether this constructor should remain implicit.
-        // NOLINTNEXTLINE(google-explicit-constructor)
         NormalDistribution(Real average = 0.0,
                            Real sigma = 1.0);
         // function
@@ -70,7 +69,6 @@ namespace QuantLib {
     class CumulativeNormalDistribution {
       public:
         // TODO: Review whether this constructor should remain implicit.
-        // NOLINTNEXTLINE(google-explicit-constructor)
         CumulativeNormalDistribution(Real average = 0.0,
                                      Real sigma   = 1.0);
         // function
@@ -104,7 +102,6 @@ namespace QuantLib {
     class InverseCumulativeNormal {
       public:
         // TODO: Review whether this constructor should remain implicit.
-        // NOLINTNEXTLINE(google-explicit-constructor)
         InverseCumulativeNormal(Real average = 0.0,
                                 Real sigma   = 1.0);
         // function
@@ -204,7 +201,6 @@ namespace QuantLib {
     class MoroInverseCumulativeNormal {
       public:
         // TODO: Review whether this constructor should remain implicit.
-        // NOLINTNEXTLINE(google-explicit-constructor)
         MoroInverseCumulativeNormal(Real average = 0.0,
                                     Real sigma   = 1.0);
         // function
@@ -246,7 +242,6 @@ namespace QuantLib {
     class MaddockInverseCumulativeNormal {
       public:
         // TODO: Review whether this constructor should remain implicit.
-        // NOLINTNEXTLINE(google-explicit-constructor)
         MaddockInverseCumulativeNormal(Real average = 0.0,
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;
@@ -259,7 +254,6 @@ namespace QuantLib {
     class MaddockCumulativeNormal {
       public:
         // TODO: Review whether this constructor should remain implicit.
-        // NOLINTNEXTLINE(google-explicit-constructor)
         MaddockCumulativeNormal(Real average = 0.0,
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;

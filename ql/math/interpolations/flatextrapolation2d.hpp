@@ -36,7 +36,6 @@ namespace QuantLib {
     class FlatExtrapolator2D : public Interpolation2D {
       public:
         // TODO: Review whether this constructor should remain implicit.
-        // NOLINTNEXTLINE(google-explicit-constructor)
         FlatExtrapolator2D(const ext::shared_ptr<Interpolation2D>& decoratedInterpolation) {
             impl_ = ext::shared_ptr<Interpolation2D::Impl>(
                   new FlatExtrapolator2DImpl(decoratedInterpolation));
