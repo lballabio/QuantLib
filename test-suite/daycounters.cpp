@@ -1369,8 +1369,7 @@ BOOST_AUTO_TEST_CASE(testYearFraction2DateRounding) {
     BOOST_TEST_MESSAGE("Testing YearFractionToDate rounding to closer date...");
 
     const std::vector<DayCounter> dayCounters
-        = {Thirty360(Thirty360::USA), Actual360(true)
-           };
+        = {Thirty360(Thirty360::USA), Actual360(true)};
     const Date d1(1, February, 2023), d2(17, February, 2124);
 
     for (const DayCounter& dc : dayCounters) {

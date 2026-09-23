@@ -19,11 +19,14 @@
 
 #include <ql/math/comparison.hpp>
 #include <ql/time/daycounters/yearfractiontodate.hpp>
+
+#ifdef QL_HIGH_RESOLUTION_DATE
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual364.hpp>
 #include <ql/time/daycounters/actual366.hpp>
 #include <ql/time/daycounters/actual36525.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#endif
 
 #include <boost/numeric/conversion/cast.hpp>
 #include <cmath>
