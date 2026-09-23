@@ -117,6 +117,8 @@ namespace QuantLib {
 
         if (x == 1.0)
             return QL_MAX_REAL;
+        if (x == 0.0)
+            return 0.0;
 
         Real sum = 0.0;
         BigNatural index = 0;

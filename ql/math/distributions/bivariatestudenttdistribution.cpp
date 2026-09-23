@@ -162,7 +162,11 @@ namespace QuantLib {
     BivariateCumulativeStudentDistribution::
     BivariateCumulativeStudentDistribution(Natural n,
                                            Real rho)
-    : n_(n), rho_(rho) {}
+    : n_(n), rho_(rho) {
+        QL_REQUIRE(n_ > 0, "degrees of freedom must be positive");
+        QL_REQUIRE(rho_ >= -1.0 && rho_ <= 1.0,
+                   "rho must be in [-1, 1] (" << rho_ << " not allowed)");
+    }
 
     Real BivariateCumulativeStudentDistribution::operator()(Real x,
                                                             Real y) const {
