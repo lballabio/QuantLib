@@ -1423,7 +1423,7 @@ BOOST_AUTO_TEST_CASE(testYearFractionToDateForLinearDayCounter) {
             else {
                 const boost::posix_time::time_duration td
                     = d2.dateTime() - calculated.dateTime();
-                const long diff = std::abs(td.total_microseconds());
+                const long diff = long(std::abs(td.total_microseconds()));
                 // rounding errors: 1us plus 1us every 10 years
                 const long tol = long(1 + 0.1*std::abs(t));
 
