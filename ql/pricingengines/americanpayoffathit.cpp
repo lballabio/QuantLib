@@ -19,8 +19,23 @@
 
 #include <ql/pricingengines/americanpayoffathit.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/mathconstants.hpp>
+#include <cmath>
 
 namespace QuantLib {
+
+    namespace {
+
+        // log N(x), with the asymptotic tail where N(x) underflows
+        Real logCumNormal(Real x) {
+            if (x > -30.0)
+                return std::log(CumulativeNormalDistribution()(x));
+            Real z2 = 1.0/(x*x);
+            return -0.5*x*x - std::log(-x) - 0.5*std::log(M_TWOPI)
+                + std::log1p(-z2*(1.0 - z2*(3.0 - 15.0*z2)));
+        }
+
+    }
 
     AmericanPayoffAtHit::AmericanPayoffAtHit(
          Real spot, DiscountFactor discount, DiscountFactor dividendDiscount,
@@ -48,7 +63,7 @@ namespace QuantLib {
 
         log_H_S_ = std::log(strike_/spot_);
 
-        Real n_d1, n_d2;
+        Real n_d1, n_d2, cum_minus_d1, cum_minus_d2;
         if (variance_>=QL_EPSILON) {
             if (discount_==0.0 && dividendDiscount_==0.0) {
                 mu_     = - 0.5;
@@ -64,6 +79,9 @@ namespace QuantLib {
             CumulativeNormalDistribution f;
             cum_d1_ = f(D1_);
             cum_d2_ = f(D2_);
+            // N(-d) directly, since 1 - N(d) loses the tail to cancellation
+            cum_minus_d1 = f(-D1_);
+            cum_minus_d2 = f(-D2_);
             n_d1 = f.derivative(D1_);
             n_d2 = f.derivative(D2_);
         } else {
@@ -79,6 +97,8 @@ namespace QuantLib {
             }
             n_d1 = 0.0;
             n_d2 = 0.0;
+            cum_minus_d1 = 1.0 - cum_d1_;
+            cum_minus_d2 = 1.0 - cum_d2_;
         }
 
 
@@ -87,9 +107,9 @@ namespace QuantLib {
             // a.k.a. american call with cash-or-nothing payoff
             case Option::Call:
                 if (strike_>spot_) {
-                    alpha_     = 1.0-cum_d1_;//  N(-d1)
+                    alpha_     = cum_minus_d1;//  N(-d1)
                     DalphaDd1_ =    -  n_d1;// -n( d1)
-                    beta_      = 1.0-cum_d2_;//  N(-d2)
+                    beta_      = cum_minus_d2;//  N(-d2)
                     DbetaDd2_  =    -  n_d2;// -n( d2)
                 } else {
                     alpha_     = 0.5;
@@ -131,6 +151,21 @@ namespace QuantLib {
             forward_   = std::pow(strike_/spot_, muPlusLambda_);
             X_         = std::pow(strike_/spot_, muMinusLambda_);
 //            DXDstrike_ = ......;
+            // at small variance a power can overflow where the probability it
+            // multiplies underflows; the product is finite, so it is taken in logs
+            Real sign = (type == Option::Call) ? -1.0 : 1.0;
+            if (!std::isfinite(forward_) && variance_ >= QL_EPSILON) {
+                alpha_ = std::exp(muPlusLambda_*log_H_S_ + logCumNormal(sign*D1_));
+                DalphaDd1_ = sign * std::exp(muPlusLambda_*log_H_S_ - 0.5*D1_*D1_
+                                             - 0.5*std::log(M_TWOPI));
+                forward_ = 1.0;
+            }
+            if (!std::isfinite(X_) && variance_ >= QL_EPSILON) {
+                beta_ = std::exp(muMinusLambda_*log_H_S_ + logCumNormal(sign*D2_));
+                DbetaDd2_ = sign * std::exp(muMinusLambda_*log_H_S_ - 0.5*D2_*D2_
+                                            - 0.5*std::log(M_TWOPI));
+                X_ = 1.0;
+            }
         }
 
 
