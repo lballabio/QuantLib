@@ -75,7 +75,7 @@ namespace QuantLib {
                     std::max(fixingDates.front(), capletVolatility()->referenceDate() + 1), effStrike);
                 Real T = std::max(fixingStartTime, 0.0);
                 if (!close_enough(fixingEndTime, T))
-                    T += squared(fixingEndTime - T) * (fixingEndTime - T) /
+                    T += cubed(fixingEndTime - T) /
                         squared(fixingEndTime - fixingStartTime) / 3.0;
                 stdDev = sigma * std::sqrt(T);
             }
@@ -329,7 +329,7 @@ namespace QuantLib {
                     std::max(fixingDates.front(), capletVolatility()->referenceDate() + 1), effStrike);
                 Real T = std::max(fixingStartTime, 0.0);
                 if (!close_enough(fixingEndTime, T))
-                    T += squared(fixingEndTime - T) * (fixingEndTime - T) /
+                    T += cubed(fixingEndTime - T) /
                         squared(fixingEndTime - fixingStartTime) / 3.0;
                 stdDev = sigma * std::sqrt(T);
             }

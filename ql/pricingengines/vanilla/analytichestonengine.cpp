@@ -533,7 +533,7 @@ namespace QuantLib {
                     + kt*(zpi + rho2*(2 + kt)*z))) + kappa*theta*(zpi + e2kt
                 *(-5.0*zpi - 24*rho2*z+ 2*kt*(zpi + 4*rho2*z)) +
                 4*ekt*(zpi + 6*rho2*z + kt*(zpi + rho2*(4 + kt)*z)))))
-                /(16.*squared(squared(kappa)))*sigma2;
+                /(16.*quartic(kappa))*sigma2;
         }
     }
 

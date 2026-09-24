@@ -311,7 +311,7 @@ namespace QuantLib {
                 /*convexity adjustment due to payment dalay of each
                 overnight fixing, supposing an Hull-White short rate model*/
                 Real convAdj = exp(
-                    0.5 * squared(vol_) / (squared(mrs_) * mrs_) * (exp(2 * mrs_ * ti1) - 1) *
+                    0.5 * squared(vol_) / cubed(mrs_) * (exp(2 * mrs_ * ti1) - 1) *
                     (exp(-mrs_ * ti2) - exp(-mrs_ * te)) * (exp(-mrs_ * ti2) - exp(-mrs_ * ti1)));
                 accumulatedRate += convAdj * (1 + forecastFixing * dt[i]) - 1;
                 ++i;
@@ -323,7 +323,7 @@ namespace QuantLib {
     }
 
     Real ArithmeticAveragedOvernightIndexedCouponPricer::convAdj1(Time ts, Time te) const {
-         return squared(vol_) / (4.0 * squared(mrs_) * mrs_) * (1.0 - exp(-2.0 * mrs_ * ts)) *
+         return squared(vol_) / (4.0 * cubed(mrs_)) * (1.0 - exp(-2.0 * mrs_ * ts)) *
              squared(1.0 - exp(-mrs_ * (te - ts)));
     }
 

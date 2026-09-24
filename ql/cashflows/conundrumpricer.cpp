@@ -819,7 +819,7 @@ namespace QuantLib {
                 swapPaymentDiscounts_[i]*std::exp(-shapedSwapPaymentTimes_[i]*x);
         }
 
-        const Real denominator = squared(squared(denOfRfunztion));
+        const Real denominator = quartic(denOfRfunztion);
 
         Real numOfDerR = 0;
         numOfDerR += shapedSwapPaymentTimes_.back()* swapPaymentDiscounts_.back()*
