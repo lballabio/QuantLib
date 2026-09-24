@@ -5,6 +5,7 @@
  Copyright (C) 2011 Ferdinando Ametrano
  Copyright (C) 2007 Chris Kenyon
  Copyright (C) 2019 SoftSolutions! S.r.l.
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,6 +34,7 @@
 #include <ql/termstructures/yield/interpolatedsimplezerocurve.hpp>
 #include <ql/termstructures/yield/forwardcurve.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -138,6 +140,51 @@ namespace QuantLib {
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 100; }
+
+        static constexpr bool supportsAnalyticJacobian = true;
+        template <class C>
+        static Real discountFactorDerivative(Time, const C*) {
+            // curve data are discount factors
+            return 1.0;
+        }
+        template <class C>
+        static std::vector<std::pair<Size, Real>> extrapolationNodeWeights(
+            Time t, const C* c,
+                                 const Interpolation& interpolation) {
+            // InterpolatedDiscountCurve extrapolates with the instantaneous
+            // forward at its last node. Its tail therefore depends on both
+            // the endpoint discount and the endpoint interpolation slope.
+            Time tMax = c->times().back();
+            DiscountFactor dMax = c->data().back();
+            Real slope = interpolation.derivative(tMax, true);
+            auto valueWeights = interpolation.nodeWeights(tMax, true);
+            auto slopeWeights =
+                interpolation.derivativeNodeWeights(tMax, true);
+            if (valueWeights.empty() || slopeWeights.empty())
+                return {};
+
+            std::vector<std::pair<Size, Real>> result;
+            result.reserve(valueWeights.size() + slopeWeights.size());
+            DiscountFactor d = c->discount(t, true);
+            Time dt = t-tMax;
+            for (const auto& [j, w] : valueWeights) {
+                Real coefficient = d*w*(1.0/dMax-dt*slope/(dMax*dMax));
+                result.emplace_back(j, coefficient);
+            }
+            for (const auto& [j, w] : slopeWeights) {
+                Real coefficient = d*dt*w/dMax;
+                auto found = std::find_if(
+                    result.begin(), result.end(),
+                    [j = j](const auto& entry) { return entry.first == j; });
+                if (found == result.end())
+                    result.emplace_back(j, coefficient);
+                else
+                    found->second += coefficient;
+            }
+            return result;
+        }
+        // updateGuess leaves data[0] fixed
+        static constexpr bool firstDataPointTracksSecond = false;
     };
 
 
@@ -229,6 +276,37 @@ namespace QuantLib {
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 100; }
+
+        static constexpr bool supportsAnalyticJacobian = true;
+        template <class C>
+        static Real discountFactorDerivative(Time t, const C* c) {
+            // P(t) = exp(-z(t)*t) with interpolated z
+            return -t * c->discount(t, true);
+        }
+        template <class C>
+        static std::vector<std::pair<Size, Real>> extrapolationNodeWeights(
+            Time t, const C* c,
+                                 const Interpolation& interpolation) {
+            Time tMax = c->times().back();
+            auto valueWeights = interpolation.nodeWeights(tMax, true);
+            auto slopeWeights =
+                interpolation.derivativeNodeWeights(tMax, true);
+            if (valueWeights.empty() || slopeWeights.empty())
+                return {};
+
+            Real slopeScale = tMax*(t-tMax)/t;
+            for (const auto& [j, w] : slopeWeights) {
+                auto found = std::find_if(
+                    valueWeights.begin(), valueWeights.end(),
+                    [j = j](const auto& entry) { return entry.first == j; });
+                if (found == valueWeights.end())
+                    valueWeights.emplace_back(j, slopeScale*w);
+                else
+                    found->second += slopeScale*w;
+            }
+            return valueWeights;
+        }
+        static constexpr bool firstDataPointTracksSecond = true;
     };
 
 
@@ -425,6 +503,38 @@ namespace QuantLib {
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 100; }
+
+        static constexpr bool supportsAnalyticJacobian = true;
+        template <class C>
+        static Real discountFactorDerivative(Time t, const C* c) {
+            // P(t) = 1/(1+z(t)*t) with interpolated z
+            DiscountFactor d = c->discount(t, true);
+            return -t * d * d;
+        }
+        template <class C>
+        static std::vector<std::pair<Size, Real>> extrapolationNodeWeights(
+            Time t, const C* c,
+                                 const Interpolation& interpolation) {
+            Time tMax = c->times().back();
+            auto valueWeights = interpolation.nodeWeights(tMax, true);
+            auto slopeWeights =
+                interpolation.derivativeNodeWeights(tMax, true);
+            if (valueWeights.empty() || slopeWeights.empty())
+                return {};
+
+            Real slopeScale = tMax*(t-tMax)/t;
+            for (const auto& [j, w] : slopeWeights) {
+                auto found = std::find_if(
+                    valueWeights.begin(), valueWeights.end(),
+                    [j = j](const auto& entry) { return entry.first == j; });
+                if (found == valueWeights.end())
+                    valueWeights.emplace_back(j, slopeScale*w);
+                else
+                    found->second += slopeScale*w;
+            }
+            return valueWeights;
+        }
+        static constexpr bool firstDataPointTracksSecond = true;
     };
 
 
