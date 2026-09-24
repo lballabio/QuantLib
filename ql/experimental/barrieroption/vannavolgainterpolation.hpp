@@ -143,8 +143,7 @@ namespace QuantLib {
             Time T_;
 
             Real vega(Real k) const {
-                Real d1 = (std::log(fwd_/k) + 0.5 * squared(atmVol_) * T_)
-                         /(atmVol_ * std::sqrt(T_));
+                Real d1 = (std::log(fwd_/k) + 0.5 * squared(atmVol_) * T_)/(atmVol_ * std::sqrt(T_));
                 NormalDistribution norm;
                 return spot_ * dDiscount_ * std::sqrt(T_) * norm(d1);
             }
