@@ -191,5 +191,13 @@ namespace QuantLib {
         return 1/std::cosh(x);
     }
 
+    Real GaussHyperbolicPolynomial::logW(Real x) const {
+        // cosh overflows above |x| of about 710, which would make the
+        // inherited log(w(x)) return -infinity. Use
+        // log(cosh x) = |x| - log 2 + log1p(exp(-2|x|)) instead.
+        const Real ax = std::fabs(x);
+        return -(ax - M_LN2 + std::log1p(std::exp(-2.0*ax)));
+    }
+
 }
 
