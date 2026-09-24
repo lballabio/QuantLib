@@ -323,12 +323,12 @@ namespace QuantLib {
     }
 
     Real ArithmeticAveragedOvernightIndexedCouponPricer::convAdj1(Time ts, Time te) const {
-         return squared(vol_) / (4.0 * cubed(mrs_)) * (1.0 - exp(-2.0 * mrs_ * ts)) *
+         return vol_ * vol_ / (4.0 * cubed(mrs_)) * (1.0 - exp(-2.0 * mrs_ * ts)) *
              squared(1.0 - exp(-mrs_ * (te - ts)));
     }
 
     Real ArithmeticAveragedOvernightIndexedCouponPricer::convAdj2(Time ts, Time te) const {
-         return squared(vol_) / (2.0 * squared(mrs_)) *
+         return vol_ * vol_ / (2.0 * squared(mrs_)) *
              ((te - ts) - squared(1.0 - exp(-mrs_ * (te - ts))) / mrs_ -
                 (1.0 - exp(-2.0 * mrs_ * (te - ts))) / (2.0 * mrs_));
     }
