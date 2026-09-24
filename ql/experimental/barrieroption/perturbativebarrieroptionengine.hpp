@@ -41,13 +41,17 @@ namespace QuantLib {
       public:
         explicit PerturbativeBarrierOptionEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>,
                                                  Natural order = 1,
-                                                 bool zeroGamma = false);
+                                                 bool zeroGamma = false,
+                                                 Size npoint = 1000,
+                                                 Size npoint2 = 100);
         void calculate() const override;
 
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Natural order_;
         bool zeroGamma_;
+        Size npoint_;
+        Size npoint2_;
     };
 
 }

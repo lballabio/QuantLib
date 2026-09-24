@@ -1278,9 +1278,8 @@ BOOST_AUTO_TEST_CASE(testLowVolatility) {
     check(  95.0,  Option::Call,      99.0,   Barrier::DownIn,     4.0,   0.01,   0.04,        2.0);  // fwd = 97, call, ITM
 }
 
-BOOST_AUTO_TEST_CASE(testPerturbative) {
-    BOOST_TEST_MESSAGE("Testing perturbative engine for barrier options...");
-
+Real perturbativeBarrierOptionValue(Natural order, Size npoint = 1000,
+                                    Size npoint2 = 100) {
     Real S = 100.0;
     Real rebate = 0.0;
     Rate r = 0.03;
@@ -1321,54 +1320,36 @@ BOOST_AUTO_TEST_CASE(testPerturbative) {
 
     BarrierOption option(Barrier::UpOut, barrier, rebate, payoff, exercise);
 
-    Natural order = 0;
-    bool zeroGamma = false;
+    const bool zeroGamma = false;
     ext::shared_ptr<PricingEngine> engine =
         ext::make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
-                                                          order, zeroGamma);
+                                                          order, zeroGamma,
+                                                          npoint, npoint2);
 
     option.setPricingEngine(engine);
+    return option.NPV();
+}
 
-    Real calculated = option.NPV();
-    Real expected = 0.897365;
-    Real tolerance = 1.0e-6;
-    if (std::fabs(calculated-expected) > tolerance) {
-        BOOST_ERROR("Failed to reproduce expected value"
-                    << "\n  calculated: " << std::setprecision(8) << calculated
-                    << "\n  expected:   " << std::setprecision(8) << expected);
-    }
+BOOST_AUTO_TEST_CASE(testPerturbativeOrder0) {
+    BOOST_TEST_MESSAGE("Testing perturbative barrier engine, order 0...");
+    BOOST_CHECK_SMALL(perturbativeBarrierOptionValue(0) - 0.897365, 1.0e-6);
+}
 
-    order = 1;
-    engine = ext::make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
-                                                               order,
-                                                               zeroGamma);
+BOOST_AUTO_TEST_CASE(testPerturbativeOrder1) {
+    BOOST_TEST_MESSAGE("Testing perturbative barrier engine, order 1...");
+    BOOST_CHECK_SMALL(perturbativeBarrierOptionValue(1) - 0.894374, 1.0e-6);
+}
 
-    option.setPricingEngine(engine);
+BOOST_AUTO_TEST_CASE(testPerturbativeOrder2Fast) {
+    BOOST_TEST_MESSAGE("Testing perturbative barrier engine, fast order 2...");
+    BOOST_CHECK_SMALL(perturbativeBarrierOptionValue(2, 100, 10) - 0.8943769,
+                      1.0e-6);
+}
 
-    calculated = option.NPV();
-    expected = 0.894374;
-    if (std::fabs(calculated-expected) > tolerance) {
-        BOOST_ERROR("Failed to reproduce expected value"
-                    << "\n  calculated: " << std::setprecision(8) << calculated
-                    << "\n  expected:   " << std::setprecision(8) << expected);
-    }
-
-    /* Too slow, skip
-    order = 2;
-    engine = ext::make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
-                                                                 order,
-                                                                 zeroGamma);
-
-    option.setPricingEngine(engine);
-
-    calculated = option.NPV();
-    expected = 0.8943769;
-    if (std::fabs(calculated-expected) > tolerance) {
-        BOOST_ERROR("Failed to reproduce expected value"
-                    << "\n  calculated: " << std::setprecision(8) << calculated
-                    << "\n  expected:   " << std::setprecision(8) << expected);
-    }
-    */
+BOOST_AUTO_TEST_CASE(testPerturbativeOrder2FullResolution) {
+    // Takes about 10-20 seconds on Apple Silicon (2026).
+    BOOST_TEST_MESSAGE("Testing perturbative barrier engine, full-resolution order 2...");
+    BOOST_CHECK_SMALL(perturbativeBarrierOptionValue(2) - 0.8943769, 1.0e-6);
 }
 
 BOOST_AUTO_TEST_CASE(testVannaVolgaSimpleBarrierValues) {
