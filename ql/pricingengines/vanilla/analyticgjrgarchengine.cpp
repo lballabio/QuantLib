@@ -24,6 +24,7 @@
 
 #include <ql/pricingengines/vanilla/analyticgjrgarchengine.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <cmath>
 
@@ -246,8 +247,8 @@ namespace QuantLib {
             k3 = ex3 - 3*sigma*ex - ex*ex*ex;
             // 4th central moment mu4
             k4 = ex4 + 6*ex*ex*ex2 - 3*ex*ex*ex*ex - 4*ex*ex3;
-            k3 /= sigma * std::sqrt(sigma); // 3rd standardized moment, ie skewness
-            k4 /= pow(sigma,2); // 4th standardized moment, ie kurtosis
+            k3 /= std::pow(sigma,1.5); // 3rd standardized moment, ie skewness
+            k4 /= squared(sigma); // 4th standardized moment, ie kurtosis
             ex_ = ex; sigma_ = sigma; 
             k3_ = k3; k4_ = k4; r_ = r; T_ = T; b0_ = b0; h1_ = h1;
         } else {

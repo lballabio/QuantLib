@@ -626,7 +626,7 @@ namespace QuantLib {
             Real midFactor = pBuffer * std::exp(lossInDef * saddle);
             Real denominator = 1.-pBuffer + midFactor;
             sum += lossInDef * lossInDef * midFactor / denominator - 
-                std::pow(lossInDef * midFactor / denominator , 2.);
+                squared(lossInDef * midFactor / denominator);
         }
        return sum;
     }
@@ -656,7 +656,7 @@ namespace QuantLib {
             const Real suma2  = lossInDef * suma1;
             const Real suma3  = lossInDef * suma2;
 
-            sum += (suma3 + (2.*std::pow(suma1, 3.)/suma0 - 
+            sum += (suma3 + (2.*cubic(suma1)/suma0 - 
                 3.*suma1*suma2)/suma0)/suma0;
         }
        return sum;
@@ -690,7 +690,7 @@ namespace QuantLib {
 
             sum += (suma4 + (-4.*suma1*suma3 - 3.*suma2*suma2 + 
                 (12.*suma1*suma1*suma2 - 
-                    6.*std::pow(suma1,4.)/suma0)/suma0)/suma0)/suma0;
+                    6.*quartic(suma1)/suma0)/suma0)/suma0)/suma0;
         }
        return sum;
     }
@@ -727,12 +727,12 @@ namespace QuantLib {
             // To do: optimize these:
             deriv0 += std::log(suma0);
             //deriv1 += suma1 / suma0;
-            deriv2 += suma2 / suma0 - std::pow(suma1 / suma0 , 2.);
-            deriv3 += (suma3 + (2.*std::pow(suma1, 3.)/suma0 - 
+            deriv2 += suma2 / suma0 - squared(suma1 / suma0);
+            deriv3 += (suma3 + (2.*cubed(suma1)/suma0 - 
                 3.*suma1*suma2)/suma0)/suma0;
             deriv4 += (suma4 + (-4.*suma1*suma3 - 3.*suma2*suma2 + 
                 (12.*suma1*suma1*suma2 - 
-                    6.*std::pow(suma1,4.)/suma0)/suma0)/suma0)/suma0;
+                    6.*quartic(suma1)/suma0)/suma0)/suma0)/suma0;
         }
         return {deriv0, deriv2, deriv3, deriv4};
     }
@@ -765,7 +765,7 @@ namespace QuantLib {
             // To do: optimize these:
             deriv0 += std::log(suma0);
             //deriv1 += suma1 / suma0;
-            deriv2 += suma2 / suma0 - std::pow(suma1 / suma0 , 2.);
+            deriv2 += suma2 / suma0 - squared(suma1 / suma0);
         }
         return {deriv0, deriv2};
     }
@@ -1105,9 +1105,9 @@ namespace QuantLib {
             (
             1.
             + K4Saddle
-                /(8.*std::pow(K2Saddle, 2.))
-            - 5.*std::pow(K3Saddle,2.)
-                /(24.*std::pow(K2Saddle, 3.))
+                /(8.*squared(K2Saddle))
+            - 5.*squared(K3Saddle)
+                /(24.*cubic(K2Saddle))
             ) * std::exp(K0Saddle - saddlePt * relativeLoss)
              / (std::sqrt(2. * M_PI * K2Saddle));
     }
