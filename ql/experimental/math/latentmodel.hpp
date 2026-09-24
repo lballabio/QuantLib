@@ -408,7 +408,7 @@ namespace QuantLib {
         public:
             typedef Sample<std::vector<Real> > sample_type;
             explicit FactorSampler(const copulaType& copula, 
-                BigNatural seed = 0) 
+                                   BigNatural seed = 0)
             : sequenceGen_(copula.numFactors(), seed), // base case construction
               x_(std::vector<Real>(copula.numFactors()), 1.0),
               copula_(copula) { }
@@ -512,8 +512,8 @@ namespace QuantLib {
         */
         explicit LatentModel(
             const std::vector<std::vector<Real> >& factorsWeights, 
-            const typename copulaType::initTraits& ini = 
-                typename copulaType::initTraits());
+                                             const typename copulaType::initTraits& ini =
+                                                 typename copulaType::initTraits());
         /*! Constructs a LM with an arbitrary number of latent variables 
           depending only on one random factor but contributing to each latent
           variable through different weights.
@@ -553,9 +553,9 @@ namespace QuantLib {
             in LatentModel)
         */
         explicit LatentModel(const Handle<Quote>& singleFactorCorrel,
-            Size nVariables,
-            const typename copulaType::initTraits& ini = 
-                typename copulaType::initTraits());
+                                      Size nVariables,
+                                      const typename copulaType::initTraits& ini =
+                                          typename copulaType::initTraits());
 
         //! Provides values of the factors \f$ a_{i,k} \f$ 
         const std::vector<std::vector<Real> >& factorWeights() const {

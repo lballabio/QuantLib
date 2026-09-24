@@ -42,8 +42,8 @@ namespace QuantLib {
     class JumpDiffusionEngine : public VanillaOption::engine {
       public:
         explicit JumpDiffusionEngine(ext::shared_ptr<Merton76Process>,
-                            Real relativeAccuracy_ = 1e-4,
-                            Size maxIterations = 100);
+                                     Real relativeAccuracy_ = 1e-4,
+                                     Size maxIterations = 100);
         void calculate() const override;
 
       private:

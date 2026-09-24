@@ -44,10 +44,10 @@ namespace QuantLib {
     class CoxIngersollRoss : public OneFactorAffineModel {
       public:
         explicit CoxIngersollRoss(Rate r0 = 0.05,
-                         Real theta = 0.1,
-                         Real k = 0.1,
-                         Real sigma = 0.1,
-                         bool withFellerConstraint = true);
+                                  Real theta = 0.1,
+                                  Real k = 0.1,
+                                  Real sigma = 0.1,
+                                  bool withFellerConstraint = true);
 
         Real discountBondOption(Option::Type type,
                                 Real strike,

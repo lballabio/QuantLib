@@ -50,7 +50,7 @@ namespace QuantLib {
     class THBFIX : public IborIndex {
       public:
         explicit THBFIX(const Period& tenor,
-               const Handle<YieldTermStructure>& h = {})
+                        const Handle<YieldTermStructure>& h = {})
         : IborIndex("THBFIX", tenor,
                     2,
                     THBCurrency(),

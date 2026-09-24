@@ -51,14 +51,14 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         explicit ExponentialSplinesFitting(bool constrainAtZero = true,
-                                  const Array& weights = Array(),
-                                  const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
-                                  const Array& l2 = Array(),
-                                  Real minCutoffTime = 0.0,
-                                  Real maxCutoffTime = QL_MAX_REAL,
-                                  Size numCoeffs = 9,
-                                  Real fixedKappa = Null<Real>(),
-                                  Constraint constraint = NoConstraint());
+                                           const Array& weights = Array(),
+                                           const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
+                                           const Array& l2 = Array(),
+                                           Real minCutoffTime = 0.0,
+                                           Real maxCutoffTime = QL_MAX_REAL,
+                                           Size numCoeffs = 9,
+                                           Real fixedKappa = Null<Real>(),
+                                           Constraint constraint = NoConstraint());
         ExponentialSplinesFitting(bool constrainAtZero,
                                   const Array& weights,
                                   const Array& l2,
@@ -97,11 +97,11 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         explicit NelsonSiegelFitting(const Array& weights = Array(),
-                            const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
-                            const Array& l2 = Array(),
-                            Real minCutoffTime = 0.0,
-                            Real maxCutoffTime = QL_MAX_REAL,
-                            Constraint constraint = NoConstraint());
+                                     const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
+                                     const Array& l2 = Array(),
+                                     Real minCutoffTime = 0.0,
+                                     Real maxCutoffTime = QL_MAX_REAL,
+                                     Constraint constraint = NoConstraint());
         NelsonSiegelFitting(const Array& weights,
                             const Array& l2,
                             Real minCutoffTime = 0.0,
@@ -130,11 +130,11 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         explicit SvenssonFitting(const Array& weights = Array(),
-                        const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
-                        const Array& l2 = Array(),
-                        Real minCutoffTime = 0.0,
-                        Real maxCutoffTime = QL_MAX_REAL,
-                        Constraint constraint = NoConstraint());
+                                 const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
+                                 const Array& l2 = Array(),
+                                 Real minCutoffTime = 0.0,
+                                 Real maxCutoffTime = QL_MAX_REAL,
+                                 Constraint constraint = NoConstraint());
         SvenssonFitting(const Array& weights,
                         const Array& l2,
                         Real minCutoffTime = 0.0,
@@ -170,13 +170,13 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         explicit CubicBSplinesFitting(const std::vector<Time>& knotVector,
-                             bool constrainAtZero = true,
-                             const Array& weights = Array(),
-                             const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
-                             const Array& l2 = Array(),
-                             Real minCutoffTime = 0.0,
-                             Real maxCutoffTime = QL_MAX_REAL,
-                             Constraint constraint = NoConstraint());
+                                      bool constrainAtZero = true,
+                                      const Array& weights = Array(),
+                                      const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
+                                      const Array& l2 = Array(),
+                                      Real minCutoffTime = 0.0,
+                                      Real maxCutoffTime = QL_MAX_REAL,
+                                      Constraint constraint = NoConstraint());
         CubicBSplinesFitting(const std::vector<Time>& knotVector,
                              bool constrainAtZero,
                              const Array& weights,
@@ -246,13 +246,13 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         explicit SimplePolynomialFitting(Natural degree,
-                                bool constrainAtZero = true,
-                                const Array& weights = Array(),
-                                const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
-                                const Array& l2 = Array(),
-                                Real minCutoffTime = 0.0,
-                                Real maxCutoffTime = QL_MAX_REAL,
-                                Constraint constraint = NoConstraint());
+                                         bool constrainAtZero = true,
+                                         const Array& weights = Array(),
+                                         const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
+                                         const Array& l2 = Array(),
+                                         Real minCutoffTime = 0.0,
+                                         Real maxCutoffTime = QL_MAX_REAL,
+                                         Constraint constraint = NoConstraint());
         SimplePolynomialFitting(Natural degree,
                                 bool constrainAtZero,
                                 const Array& weights,

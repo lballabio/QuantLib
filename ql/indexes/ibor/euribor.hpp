@@ -42,7 +42,7 @@ namespace QuantLib {
     class Euribor : public IborIndex {
       public:
         explicit Euribor(const Period& tenor,
-                const Handle<YieldTermStructure>& h = {});
+                         const Handle<YieldTermStructure>& h = {});
     };
 
     //! Actual/365 %Euribor index
@@ -53,7 +53,7 @@ namespace QuantLib {
     class Euribor365 : public IborIndex {
       public:
         explicit Euribor365(const Period& tenor,
-                   const Handle<YieldTermStructure>& h = {});
+                            const Handle<YieldTermStructure>& h = {});
     };
 
     //! 1-week %Euribor index

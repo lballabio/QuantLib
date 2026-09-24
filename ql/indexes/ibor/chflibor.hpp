@@ -43,7 +43,7 @@ namespace QuantLib {
     class CHFLibor : public Libor {
       public:
         explicit CHFLibor(const Period& tenor,
-                 const Handle<YieldTermStructure>& h = {})
+                          const Handle<YieldTermStructure>& h = {})
         : Libor("CHFLibor", tenor,
                 2,
                 CHFCurrency(),
@@ -55,7 +55,7 @@ namespace QuantLib {
     class DailyTenorCHFLibor : public DailyTenorLibor {
       public:
         explicit DailyTenorCHFLibor(Natural settlementDays,
-                           const Handle<YieldTermStructure>& h = {})
+                                    const Handle<YieldTermStructure>& h = {})
         : DailyTenorLibor("CHFLibor", settlementDays,
                           CHFCurrency(),
                           Switzerland(),

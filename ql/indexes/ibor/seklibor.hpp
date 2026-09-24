@@ -39,7 +39,7 @@ namespace QuantLib {
     class SEKLibor : public Libor {
       public:
         explicit SEKLibor(const Period& tenor,
-                 const Handle<YieldTermStructure>& h = {})
+                          const Handle<YieldTermStructure>& h = {})
         : Libor("SEKLibor", tenor,
                 2,
                 SEKCurrency(),
