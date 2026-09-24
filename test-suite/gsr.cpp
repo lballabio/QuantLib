@@ -55,6 +55,8 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
+#include <functional>
+#include <sstream>
 
 using namespace QuantLib;
 using boost::unit_test_framework::test_suite;
@@ -529,6 +531,107 @@ BOOST_AUTO_TEST_CASE(testGsrProcess) {
     p.setForwardMeasureTime(10.0);
 
     // add more test cases here ...
+}
+
+BOOST_AUTO_TEST_CASE(testGsrProcessNearZeroReversion) {
+
+    BOOST_TEST_MESSAGE("Testing GSR process for reversions near zero...");
+
+    Handle<YieldTermStructure> yts0(ext::shared_ptr<YieldTermStructure>(
+        new FlatForward(0, TARGET(), 0.00, Actual365Fixed())));
+    Real modelvol = 0.01;
+    Real T = 20.0;
+    Real hwTol = 1E-10;
+    for (Real reversion : {5.0E-5, 9.99E-5, 1.0001E-4}) {
+        GsrProcess gsr(Array(), Array(1, modelvol), Array(1, reversion), T);
+        HullWhiteForwardProcess hw(yts0, reversion, modelvol);
+        hw.setForwardMeasureTime(T);
+        for (Real w : {0.0, 1.5, 7.0}) {
+            for (Real t : {w + 0.25, w + 3.0, T}) {
+                for (Real xw : {-0.05, 0.0, 0.05}) {
+                    Real hwVal = hw.expectation(w, xw, t - w);
+                    Real gsrVal = gsr.expectation(w, xw, t - w);
+                    if (std::fabs(hwVal - gsrVal) > hwTol)
+                        BOOST_ERROR("Expectation E^{T=" << T << "}(x(" << t << ") | x(" << w
+                                    << ") = " << xw << ") with reversion " << reversion
+                                    << " is different in HullWhiteForwardProcess (" << hwVal
+                                    << ") and GsrProcess (" << gsrVal << ")");
+                }
+                Real hwVal = hw.variance(w, 0.0, t - w);
+                Real gsrVal = gsr.variance(w, 0.0, t - w);
+                if (std::fabs(hwVal - gsrVal) > hwTol)
+                    BOOST_ERROR("Variance V(x(" << t << ") | x(" << w << ")) with reversion "
+                                << reversion << " is different in HullWhiteForwardProcess ("
+                                << hwVal << ") and GsrProcess (" << gsrVal << ")");
+            }
+        }
+    }
+
+    Array times = {1.0, 2.5, 5.0};
+    Array vols = {0.006, 0.009, 0.012, 0.008};
+    T = 30.0;
+    Real h = 1E-4;
+    Real smoothTol = 1E-10;
+    std::vector<Real> nodes = {-2.0 * h, -h, 0.0, h, 2.0 * h};
+    auto process = [&](bool constantReversion, Real kappa) {
+        Array reversions = constantReversion ? Array(4, kappa) :
+                                               Array({0.03, kappa, -0.02, kappa});
+        return ext::make_shared<GsrProcess>(times, vols, reversions, T);
+    };
+    struct Quantity {
+        std::string name;
+        std::function<Real(const GsrProcess&)> value;
+    };
+    std::vector<Quantity> quantities;
+    for (Real w : {0.0, 0.7, 2.5, 4.0}) {
+        for (Real t : {w + 0.3, w + 2.0, w + 9.0, 25.0}) {
+            std::ostringstream where;
+            where << "(w, t) = (" << w << ", " << t << ")";
+            quantities.push_back({"expectation " + where.str(), [=](const GsrProcess& p) {
+                                      return p.expectation(w, 0.01, t - w);
+                                  }});
+            quantities.push_back({"variance " + where.str(),
+                                  [=](const GsrProcess& p) { return p.variance(w, 0.0, t - w); }});
+        }
+    }
+    for (Real t : {0.5, 3.0, 12.0, 30.0}) {
+        std::ostringstream where;
+        where << "(t) = (" << t << ")";
+        quantities.push_back({"y" + where.str(), [=](const GsrProcess& p) { return p.y(t); }});
+        quantities.push_back(
+            {"G" + where.str(), [=](const GsrProcess& p) { return p.G(t, 30.0, 0.0); }});
+    }
+    for (bool constantReversion : {true, false}) {
+        std::vector<ext::shared_ptr<GsrProcess>> nodeProcesses;
+        for (Real node : nodes)
+            nodeProcesses.push_back(process(constantReversion, node));
+        for (const auto& q : quantities) {
+            std::vector<Real> nodeValues;
+            for (const auto& p : nodeProcesses)
+                nodeValues.push_back(q.value(*p));
+            Real q0 = nodeValues[2];
+            for (Real kappa : {1E-14, 1E-12, 1E-10, 1E-7, 5E-5, 9.99E-5, 1.5E-4}) {
+                for (Real sign : {-1.0, 1.0}) {
+                    Real k = sign * kappa;
+                    Real expected = 0.0;
+                    for (Size i = 0; i < nodes.size(); ++i) {
+                        Real weight = 1.0;
+                        for (Size j = 0; j < nodes.size(); ++j)
+                            if (j != i)
+                                weight *= (k - nodes[j]) / (nodes[i] - nodes[j]);
+                        expected += weight * nodeValues[i];
+                    }
+                    Real actual = q.value(*process(constantReversion, k));
+                    if (std::fabs(actual - expected) > smoothTol * std::fabs(q0) + 1E-15)
+                        BOOST_ERROR(q.name << " with "
+                                    << (constantReversion ? "constant" : "piecewise")
+                                    << " reversion " << k << " is " << actual
+                                    << ", but a quartic in the reversion through -2h, -h, 0, h, "
+                                    << "2h (h = " << h << ") gives " << expected);
+                }
+            }
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testGsrModel) {

@@ -93,7 +93,6 @@ class GsrProcessCore {
         cache3_, cache5_;
     mutable std::map<Real, Real> cache4_;
     Time T_;
-    mutable std::vector<bool> revZero_;
 }; // GsrProcessCore
 
 // inline definitions

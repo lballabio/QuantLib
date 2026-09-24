@@ -21,14 +21,22 @@
 #include <cmath>
 
 using std::exp;
-using std::pow;
 
 namespace QuantLib::detail {
+
+namespace {
+
+    // exprel(x) = (exp(x) - 1) / x
+    Real exprel(const Real x) {
+        return x == 0.0 ? Real(1.0) : Real(std::expm1(x) / x);
+    }
+
+}
 
 GsrProcessCore::GsrProcessCore(Array times, Array vols,
                                Array reversions, const Real T)
     : times_(std::move(times)), vols_(std::move(vols)), reversions_(std::move(reversions)),
-      T_(T), revZero_(reversions_.size(), false) {
+      T_(T) {
     flushCache();
     checkTimesVolsReversions();
 }
@@ -66,13 +74,6 @@ void GsrProcessCore::checkTimesVolsReversions() const {
 }
 
 void GsrProcessCore::flushCache() const {
-    for (int i = 0; i < (int)reversions_.size(); i++)
-        // small reversions cause numerical problems, so we keep them
-        // away from zero
-        if (std::fabs(reversions_[i]) < 1E-4)
-            revZero_[i] = true;
-        else
-            revZero_[i] = false;
     cache1_.clear();
     cache2a_.clear();
     cache2b_.clear();
@@ -118,10 +119,8 @@ Real GsrProcessCore::expectation_rn_part(const Time w,
         for (int l = 0; l <= k - 1; l++) {
             Real res2 = 1.0;
             // alpha_l
-            res2 *= revZero(l) ? Real(vol(l) * vol(l) * (time2(l + 1) - time2(l)))
-                               : vol(l) * vol(l) / (2.0 * rev(l)) *
-                                     (1.0 - exp(-2.0 * rev(l) *
-                                                (time2(l + 1) - time2(l))));
+            const Real dl = time2(l + 1) - time2(l);
+            res2 *= vol(l) * vol(l) * dl * (revZero(l) ? Real(1.0) : exprel(-2.0 * rev(l) * dl));
             // zeta_i (i>k)
             for (int i = k + 1; i <= upperIndex(t) - 1; i++)
                 res2 *= exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
@@ -129,36 +128,18 @@ Real GsrProcessCore::expectation_rn_part(const Time w,
             for (int j = l + 1; j <= k - 1; j++)
                 res2 *= exp(-2.0 * rev(j) * (time2(j + 1) - time2(j)));
             // zeta_k beta_k
-            res2 *=
-                revZero(k)
-                    ? Real(2.0 * time2(k) - flooredTime(k, w) -
-                          cappedTime(k + 1, t) -
-                          2.0 * (time2(k) - cappedTime(k + 1, t)))
-                    : Real((exp(rev(k) * (2.0 * time2(k) - flooredTime(k, w) -
-                                     cappedTime(k + 1, t))) -
-                       exp(2.0 * rev(k) * (time2(k) - cappedTime(k + 1, t)))) /
-                          rev(k));
+            const Real b = cappedTime(k + 1, t) - flooredTime(k, w);
+            res2 *= b * (revZero(k) ? Real(1.0) : Real(exp(2.0 * rev(k) * (time2(k) - cappedTime(k + 1, t))) * exprel(rev(k) * b)));
             // add to sum
             res += res2;
         }
         // l=k
         Real res2 = 1.0;
-        // alpha_k zeta_k
-        res2 *=
-            revZero(k)
-                ? Real(vol(k) * vol(k) / 4.0 *
-                      (4.0 * pow(cappedTime(k + 1, t) - time2(k), 2.0) -
-                       (pow(flooredTime(k, w) - 2.0 * time2(k) +
-                                cappedTime(k + 1, t),
-                            2.0) +
-                        pow(cappedTime(k + 1, t) - flooredTime(k, w), 2.0))))
-                : Real(vol(k) * vol(k) / (2.0 * rev(k) * rev(k)) *
-                      (exp(-2.0 * rev(k) * (cappedTime(k + 1, t) - time2(k))) +
-                       1.0 -
-                       (exp(-rev(k) * (flooredTime(k, w) - 2.0 * time2(k) +
-                                       cappedTime(k + 1, t))) +
-                        exp(-rev(k) *
-                            (cappedTime(k + 1, t) - flooredTime(k, w))))));
+        // alpha_k zeta_k = vol^2 / (2 r^2) (1 - exp(-r a)) (1 - exp(-r b)),
+        // a = f - 2 t_k + c, b = c - f, f = flooredTime(k, w), c = cappedTime(k + 1, t)
+        const Real a = flooredTime(k, w) - 2.0 * time2(k) + cappedTime(k + 1, t);
+        const Real b = cappedTime(k + 1, t) - flooredTime(k, w);
+        res2 *= vol(k) * vol(k) / 2.0 * a * b * (revZero(k) ? Real(1.0) : Real(exprel(-rev(k) * a) * exprel(-rev(k) * b)));
         // zeta_i (i>k)
         for (int i = k + 1; i <= upperIndex(t) - 1; i++)
             res2 *= exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
@@ -191,11 +172,8 @@ Real GsrProcessCore::expectation_tf_part(const Time w,
         for (int l = k + 1; l <= upperIndex(T_) - 1; l++) {
             Real res3 = 1.0;
             // eta_l
-            res3 *= revZero(l)
-                        ? Real(cappedTime(l + 1, T_) - time2(l))
-                        : (1.0 -
-                           exp(-rev(l) * (cappedTime(l + 1, T_) - time2(l)))) /
-                              rev(l);
+            const Real el = cappedTime(l + 1, T_) - time2(l);
+            res3 *= el * (revZero(l) ? Real(1.0) : exprel(-rev(l) * el));
             // zeta_i (i>k)
             for (int i = k + 1; i <= upperIndex(t) - 1; i++)
                 res3 *= exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
@@ -203,38 +181,24 @@ Real GsrProcessCore::expectation_tf_part(const Time w,
             for (int j = k + 1; j <= l - 1; j++)
                 res3 *= exp(-rev(j) * (time2(j + 1) - time2(j)));
             // zeta_k gamma_k
-            res3 *=
-                revZero(k)
-                    ? Real((cappedTime(k + 1, t) - time2(k + 1) -
-                       (2.0 * flooredTime(k, w) - cappedTime(k + 1, t) -
-                        time2(k + 1))) /
-                          2.0)
-                    : Real((exp(rev(k) * (cappedTime(k + 1, t) - time2(k + 1))) -
-                       exp(rev(k) * (2.0 * flooredTime(k, w) -
-                                     cappedTime(k + 1, t) - time2(k + 1)))) /
-                          (2.0 * rev(k)));
+            const Real b = cappedTime(k + 1, t) - flooredTime(k, w);
+            res3 *= b * (revZero(k) ? Real(1.0) : Real(exp(rev(k) * (2.0 * flooredTime(k, w) - cappedTime(k + 1, t) - time2(k + 1))) * exprel(2.0 * rev(k) * b)));
             // add to sum
             res2 += res3;
         }
         // l=k
         Real res3 = 1.0;
-        // eta_k zeta_k
-        res3 *=
-            revZero(k)
-                ? Real((-pow(cappedTime(k + 1, t) - cappedTime(k + 1, T_), 2.0) -
-                   2.0 * pow(cappedTime(k + 1, t) - flooredTime(k, w), 2.0) +
-                   pow(2.0 * flooredTime(k, w) - cappedTime(k + 1, T_) -
-                           cappedTime(k + 1, t),
-                       2.0)) /
-                      4.0)
-                : Real((2.0 - exp(rev(k) *
-                             (cappedTime(k + 1, t) - cappedTime(k + 1, T_))) -
-                   (2.0 * exp(-rev(k) *
-                              (cappedTime(k + 1, t) - flooredTime(k, w))) -
-                    exp(rev(k) *
-                        (2.0 * flooredTime(k, w) - cappedTime(k + 1, T_) -
-                         cappedTime(k + 1, t))))) /
-                      (2.0 * rev(k) * rev(k)));
+        // eta_k zeta_k = ((1 - exp(-r a)) (1 - exp(-2 r b)) + (1 - exp(-r b))^2) / (2 r^2),
+        // a = C - c, b = c - f, C = cappedTime(k + 1, T), c = cappedTime(k + 1, t),
+        // f = flooredTime(k, w)
+        const Real a = cappedTime(k + 1, T_) - cappedTime(k + 1, t);
+        const Real b = cappedTime(k + 1, t) - flooredTime(k, w);
+        if (revZero(k)) {
+            res3 *= a * b + b * b / 2.0;
+        } else {
+            const Real eb = exprel(-rev(k) * b);
+            res3 *= a * b * exprel(-rev(k) * a) * exprel(-2.0 * rev(k) * b) + b * b / 2.0 * eb * eb;
+        }
         // zeta_i (i>k)
         for (int i = k + 1; i <= upperIndex(t) - 1; i++)
             res3 *= exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
@@ -263,11 +227,8 @@ Real GsrProcessCore::variance(const Time w, const Time dt) const {
     for (int k = lowerIndex(w); k <= upperIndex(t) - 1; k++) {
         Real res2 = vol(k) * vol(k);
         // zeta_k^2
-        res2 *= revZero(k)
-                    ? Real(-(flooredTime(k, w) - cappedTime(k + 1, t)))
-                    : (1.0 - exp(2.0 * rev(k) *
-                                 (flooredTime(k, w) - cappedTime(k + 1, t)))) /
-                          (2.0 * rev(k));
+        const Real b = cappedTime(k + 1, t) - flooredTime(k, w);
+        res2 *= b * (revZero(k) ? Real(1.0) : exprel(-2.0 * rev(k) * b));
         // zeta_i (i>k)
         for (int i = k + 1; i <= upperIndex(t) - 1; i++) {
             res2 *= exp(-2.0 * rev(i) * (cappedTime(i + 1, t) - time2(i)));
@@ -292,10 +253,8 @@ Real GsrProcessCore::y(const Time t) const {
         for (int j = i + 1; j <= upperIndex(t) - 1; j++) {
             res2 *= exp(-2.0 * rev(j) * (cappedTime(j + 1, t) - time2(j)));
         }
-        res2 *= revZero(i) ? Real(vol(i) * vol(i) * (cappedTime(i + 1, t) - time2(i)))
-                           : (vol(i) * vol(i) / (2.0 * rev(i)) *
-                              (1.0 - exp(-2.0 * rev(i) *
-                                         (cappedTime(i + 1, t) - time2(i)))));
+        const Real d = cappedTime(i + 1, t) - time2(i);
+        res2 *= vol(i) * vol(i) * d * (revZero(i) ? Real(1.0) : exprel(-2.0 * rev(i) * d));
         res += res2;
     }
 
@@ -316,10 +275,8 @@ Real GsrProcessCore::G(const Time t, const Time w) const {
         for (int j = lowerIndex(t); j <= i - 1; j++) {
             res2 *= exp(-rev(j) * (time2(j + 1) - flooredTime(j, t)));
         }
-        res2 *= revZero(i) ? Real(cappedTime(i + 1, w) - flooredTime(i, t))
-                           : (1.0 - exp(-rev(i) * (cappedTime(i + 1, w) -
-                                                   flooredTime(i, t)))) /
-                                 rev(i);
+        const Real d = cappedTime(i + 1, w) - flooredTime(i, t);
+        res2 *= d * (revZero(i) ? Real(1.0) : exprel(-rev(i) * d));
         res += res2;
     }
 
@@ -373,9 +330,7 @@ Real GsrProcessCore::rev(const Size index) const {
 }
 
 bool GsrProcessCore::revZero(const Size index) const {
-    if (index >= revZero_.size())
-        return revZero_.back();
-    return revZero_[index];
+    return std::fabs(rev(index)) < 1E-12;
 }
 
 } // namesapce QuantLib
