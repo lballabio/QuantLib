@@ -513,7 +513,7 @@ namespace QuantLib {
         explicit LatentModel(
             const std::vector<std::vector<Real> >& factorsWeights, 
             const typename copulaType::initTraits& ini =
-                                      typename copulaType::initTraits());
+                typename copulaType::initTraits());
         /*! Constructs a LM with an arbitrary number of latent variables 
           depending only on one random factor but contributing to each latent
           variable through different weights.
@@ -526,7 +526,7 @@ namespace QuantLib {
         explicit LatentModel(
             const std::vector<Real>& factorsWeight,
             const typename copulaType::initTraits& ini =
-                                      typename copulaType::initTraits());
+                typename copulaType::initTraits());
         /*! Constructs a LM with an arbitrary number of latent variables 
           depending only on one random factor with the same weight for all
           latent variables.
