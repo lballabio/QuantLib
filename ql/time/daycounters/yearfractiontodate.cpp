@@ -26,6 +26,8 @@
 #include <ql/time/daycounters/actual366.hpp>
 #include <ql/time/daycounters/actual36525.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <vector>
+#include <algorithm>
 #endif
 
 #include <boost/numeric/conversion/cast.hpp>
@@ -82,8 +84,8 @@ namespace QuantLib {
             const Time dt = t - guessTime;
 
             const Real rs = dt/dtPerDay * (24*60*60);
-            const Second s(rs);
-            const Microsecond us = std::round((rs - s) * 1e6);
+            const Integer s = boost::numeric_cast<Integer>(rs);
+            const Integer us = boost::numeric_cast<Integer>(std::round((rs - s) * 1e6));
 
             return guessDate + Period(s, Seconds) + Period(us, Microseconds);
         }
