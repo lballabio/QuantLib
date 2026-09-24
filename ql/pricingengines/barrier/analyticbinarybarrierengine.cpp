@@ -22,9 +22,24 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/barrier/analyticbinarybarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/mathconstants.hpp>
+#include <cmath>
 #include <utility>
 
 namespace QuantLib {
+
+    namespace {
+
+        // log N(x), with the asymptotic tail where N(x) underflows
+        Real logCumNormal(Real x) {
+            if (x > -30.0)
+                return std::log(CumulativeNormalDistribution()(x));
+            Real z2 = 1.0/(x*x);
+            return -0.5*x*x - std::log(-x) - 0.5*std::log(M_TWOPI)
+                + std::log1p(-z2*(1.0 - z2*(3.0 - 15.0*z2)));
+        }
+
+    }
 
     // calc helper object 
     class AnalyticBinaryBarrierEngine_helper
@@ -198,6 +213,14 @@ namespace QuantLib {
             cum_x2 = f(x2);
             cum_y1 = f(y1);
             cum_y2 = f(y2);
+
+            // at small variance (H/S)^(2 mu) can overflow where N(y) underflows;
+            // the product is finite, so it is taken in logs
+            if (!std::isfinite(H_S_2mu)) {
+                cum_y1 = std::exp(2.0*mu*log_H_S + logCumNormal(y1));
+                cum_y2 = std::exp(2.0*mu*log_H_S + logCumNormal(y2));
+                H_S_2mu = 1.0;
+            }
         } else {
             if (log_S_X>0)
                 cum_x1= 1.0;
