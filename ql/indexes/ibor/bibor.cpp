@@ -56,7 +56,7 @@ namespace QuantLib {
     }
 
     Bibor::Bibor(const Period& tenor,
-                     const Handle<YieldTermStructure>& h)
+                 const Handle<YieldTermStructure>& h)
     : IborIndex("Bibor", tenor,
                 2, // settlement days
                 THBCurrency(), Thailand(),

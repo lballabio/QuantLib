@@ -37,8 +37,8 @@ namespace QuantLib {
     */
     class AUDLibor : public Libor {
       public:
-        AUDLibor(const Period& tenor,
-                 const Handle<YieldTermStructure>& h = {})
+        explicit AUDLibor(const Period& tenor,
+                          const Handle<YieldTermStructure>& h = {})
         : Libor("AUDLibor", tenor,
                 2,
                 AUDCurrency(),

@@ -83,7 +83,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCPerformanceEngine {
       public:
-        MakeMCPerformanceEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
+        explicit MakeMCPerformanceEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         // named parameters
         MakeMCPerformanceEngine& withBrownianBridge(bool b = true);
         MakeMCPerformanceEngine& withAntitheticVariate(bool b = true);
@@ -92,6 +92,8 @@ namespace QuantLib {
         MakeMCPerformanceEngine& withMaxSamples(Size samples);
         MakeMCPerformanceEngine& withSeed(BigNatural seed);
         // conversion to pricing engine
+        // Intentionally implicit to support passing the fluent builder as a pricing engine.
+        // NOLINTNEXTLINE(google-explicit-constructor)
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;

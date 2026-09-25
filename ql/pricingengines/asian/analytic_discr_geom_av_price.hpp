@@ -49,7 +49,7 @@ namespace QuantLib {
     class AnalyticDiscreteGeometricAveragePriceAsianEngine
         : public DiscreteAveragingAsianOption::engine {
       public:
-        AnalyticDiscreteGeometricAveragePriceAsianEngine(
+        explicit AnalyticDiscreteGeometricAveragePriceAsianEngine(
             ext::shared_ptr<GeneralizedBlackScholesProcess> process);
         void calculate() const override;
 

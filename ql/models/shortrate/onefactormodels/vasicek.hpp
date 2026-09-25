@@ -41,9 +41,9 @@ namespace QuantLib {
     */
     class Vasicek : public OneFactorAffineModel {
       public:
-        Vasicek(Rate r0 = 0.05,
-                Real a = 0.1, Real b = 0.05, Real sigma = 0.01,
-                Real lambda = 0.0);
+        explicit Vasicek(Rate r0 = 0.05,
+                         Real a = 0.1, Real b = 0.05, Real sigma = 0.01,
+                         Real lambda = 0.0);
         Real discountBondOption(Option::Type type,
                                 Real strike,
                                 Time maturity,

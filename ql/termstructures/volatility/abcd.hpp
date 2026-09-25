@@ -34,10 +34,10 @@ namespace QuantLib {
     class AbcdFunction : public AbcdMathFunction {
 
       public:
-        AbcdFunction(Real a = -0.06,
-                     Real b =  0.17,
-                     Real c =  0.54,
-                     Real d =  0.17);
+        explicit AbcdFunction(Real a = -0.06,
+                              Real b =  0.17,
+                              Real c =  0.54,
+                              Real d =  0.17);
 
         //! maximum value of the volatility function
         Real maximumVolatility() const { return maximumValue(); }

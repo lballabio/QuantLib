@@ -32,6 +32,7 @@ namespace QuantLib {
     //! Gumbel copula
     class GumbelCopula {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         GumbelCopula(Real theta);
         Real operator()(Real x, Real y) const;
       private:

@@ -56,8 +56,8 @@ namespace QuantLib {
     /*! The payoff can be at exercise (the default) or at expiry */
     class EarlyExercise : public Exercise {
       public:
-        EarlyExercise(Type type,
-                      bool payoffAtExpiry = false)
+        explicit EarlyExercise(Type type,
+                               bool payoffAtExpiry = false)
         : Exercise(type), payoffAtExpiry_(payoffAtExpiry) {}
         bool payoffAtExpiry() const { return payoffAtExpiry_; }
       private:
@@ -74,6 +74,7 @@ namespace QuantLib {
         AmericanExercise(const Date& earliestDate,
                          const Date& latestDate,
                          bool payoffAtExpiry = false);
+        // TODO: Review whether this constructor should remain implicit.
         AmericanExercise(const Date& latestDate,
                          bool payoffAtExpiry = false);
     };

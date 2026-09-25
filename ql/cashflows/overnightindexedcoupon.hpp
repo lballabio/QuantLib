@@ -150,10 +150,10 @@ namespace QuantLib {
         /*! capped / floored compounded, backward-looking on coupon.  The cap can be applied to the
             effective period rate (the default) or to the daily rates. */
         explicit CappedFlooredOvernightIndexedCoupon(const ext::shared_ptr<OvernightIndexedCoupon>& underlying,
-                                            Real cap = Null<Real>(),
-                                            Real floor = Null<Real>(), 
-                                            bool nakedOption = false,
-                                            bool dailyCapFloor = false);
+                                                     Real cap = Null<Real>(),
+                                                     Real floor = Null<Real>(),
+                                                     bool nakedOption = false,
+                                                     bool dailyCapFloor = false);
 
         //! \name Observer interface
         //@{
