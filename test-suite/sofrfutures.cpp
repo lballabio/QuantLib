@@ -266,6 +266,23 @@ BOOST_AUTO_TEST_CASE(testOvernightIndexFutureRateHelperNotification) {
     BOOST_ASSERT(!f.isUp());
 }
 
+BOOST_AUTO_TEST_CASE(testHelperFuture) {
+    BOOST_TEST_MESSAGE("Testing the future underlying a SOFR futures helper...");
+
+    Date today = Date(26, October, 2018);
+    Settings::instance().evaluationDate() = today;
+
+    SofrFutureRateHelper helper(97.8175, Oct, 2018, Monthly);
+
+    auto future = helper.future();
+    BOOST_REQUIRE(future);
+    BOOST_CHECK_EQUAL(future->valueDate(), Date(1, October, 2018));
+    BOOST_CHECK_EQUAL(future->maturityDate(), Date(1, November, 2018));
+    BOOST_CHECK_EQUAL(future->valueDate(), helper.earliestDate());
+    BOOST_CHECK_EQUAL(future->overnightIndex()->name(), Sofr().name());
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
