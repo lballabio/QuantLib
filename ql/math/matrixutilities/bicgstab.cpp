@@ -41,11 +41,28 @@ namespace QuantLib {
             return result;
         }
 
-        Array x = ((!x0.empty()) ? x0 : Array(b.size(), 0.0));
-        Array r = b - A_(x);
+        const Size n = b.size();
+        if (workspaceX_.size() != n) {
+            workspaceX_.resize(n);
+            workspaceR_.resize(n);
+            workspaceRTld_.resize(n);
+            workspaceP_.resize(n);
+            workspacePTld_.resize(n);
+            workspaceV_.resize(n);
+            workspaceS_.resize(n);
+            workspaceSTld_.resize(n);
+            workspaceT_.resize(n);
+        }
 
-        Array rTld = r;
-        Array p, pTld, v, s, sTld, t;
+        Array& x = workspaceX_;
+        x = ((!x0.empty()) ? x0 : Array(n, 0.0));
+        Array& r = workspaceR_;
+        r = b - A_(x);
+
+        Array& rTld = workspaceRTld_;
+        rTld = r;
+        Array &p = workspaceP_, &pTld = workspacePTld_, &v = workspaceV_,
+              &s = workspaceS_, &sTld = workspaceSTld_, &t = workspaceT_;
         Real omega = 1.0;
         Real rho, rhoTld=1.0;
         Real alpha = 0.0, beta;
