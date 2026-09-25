@@ -21,6 +21,7 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
 #include <ql/experimental/callablebonds/callablebond.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <utility>
@@ -401,7 +402,7 @@ namespace QuantLib {
             return 0;
         else
             {
-                return (Ppp + Pmm - 2*P) / ( std::pow(bump,2) * dirtyP);
+                return (Ppp + Pmm - 2*P) / ( squared(bump) * dirtyP);
             }
 
     }

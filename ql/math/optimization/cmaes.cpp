@@ -19,6 +19,7 @@
 
 #include <ql/math/optimization/cmaes.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include <algorithm>
 #include <cmath>
@@ -73,9 +74,9 @@ namespace QuantLib {
         const Real dSigma{1.0 + 2.0 * std::max(0.0, std::sqrt((muEff - 1.0) / (n + 1.0)) - 1.0)
                               + cSigma};
         const Real cc{(4.0 + muEff / n) / (n + 4.0 + 2.0 * muEff / n)};
-        const Real c1{2.0 / (std::pow(n + 1.3, 2) + muEff)};
+        const Real c1{2.0 / (squared(n + 1.3) + muEff)};
         const Real cMu{std::min(1.0 - c1,
-                                2.0 * (muEff - 2.0 + 1.0 / muEff) / (std::pow(n + 2.0, 2) + muEff))};
+                                2.0 * (muEff - 2.0 + 1.0 / muEff) / (squared(n + 2.0) + muEff))};
         const Real chiN{std::sqrt(Real(n)) * (1.0 - 1.0 / (4.0 * n) + 1.0 / (21.0 * n * n))};
 
         const Real pSigmaGain{std::sqrt(cSigma * (2.0 - cSigma) * muEff)};

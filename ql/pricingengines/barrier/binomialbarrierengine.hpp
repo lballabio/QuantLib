@@ -25,6 +25,7 @@
 #define quantlib_binomial_barrier_engine_hpp
 
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/methods/lattices/binomialtree.hpp>
 #include <ql/methods/lattices/bsmlattice.hpp>
 #include <ql/pricingengines/barrier/discretizedbarrieroption.hpp>
@@ -134,9 +135,9 @@ namespace QuantLib {
             maxTimeSteps_ > timeSteps_ && s0 > 0 && arguments_.barrier > 0) {
             Real divisor;
             if (s0 > arguments_.barrier)
-               divisor = std::pow(std::log(s0 / arguments_.barrier), 2);
+               divisor = squared(std::log(s0 / arguments_.barrier));
             else
-               divisor = std::pow(std::log(arguments_.barrier / s0), 2);
+               divisor = squared(std::log(arguments_.barrier / s0));
             if (!close(divisor,0)) {
                 for (Size i=1; i < timeSteps_ ; ++i) {
                     Size optimum = Size(( i*i * v*v * maturity) / divisor);
