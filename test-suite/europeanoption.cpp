@@ -31,6 +31,8 @@
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdcirvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/experimental/variancegamma/fftvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/integralengine.hpp>
@@ -1850,6 +1852,46 @@ BOOST_AUTO_TEST_CASE(testBinomialGreeksWithCoincidentNodes) {
                           ExpectedErrorMessage("gamma not provided"));
     BOOST_CHECK_EXCEPTION(option.theta(), Error,
                           ExpectedErrorMessage("theta not provided"));
+}
+
+BOOST_AUTO_TEST_CASE(testFdEnginesWithNonStrikedPayoff) {
+    BOOST_TEST_MESSAGE("Testing FD vanilla engines with a non-striked payoff...");
+
+    class CappedCallPayoff : public Payoff {
+      public:
+        std::string name() const override { return "CappedCall"; }
+        std::string description() const override { return name(); }
+        Real operator()(Real s) const override {
+            return std::min(std::max(s - 100.0, 0.0), 20.0);
+        }
+    };
+
+    Date today(15, May, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual360();
+
+    Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    Handle<YieldTermStructure> rTS(flatRate(today, 0.03, dc));
+    Handle<YieldTermStructure> qTS(flatRate(today, 0.0, dc));
+    auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(
+        spot, qTS, rTS, Handle<BlackVolTermStructure>(flatVol(today, 0.2, dc)));
+    auto hestonModel = ext::make_shared<HestonModel>(
+        ext::make_shared<HestonProcess>(rTS, qTS, spot, 0.04, 1.0, 0.04, 0.5, -0.7));
+    auto cirProcess = ext::make_shared<CoxIngersollRossProcess>(1.0, 0.02, 0.03, 0.03);
+
+    OneAssetOption option(ext::make_shared<CappedCallPayoff>(),
+                          ext::make_shared<EuropeanExercise>(today + 1 * Years));
+
+    const ext::shared_ptr<PricingEngine> engines[] = {
+        ext::make_shared<FdBlackScholesVanillaEngine>(bsProcess),
+        ext::make_shared<FdHestonVanillaEngine>(hestonModel),
+        MakeFdCIRVanillaEngine(cirProcess, bsProcess, 0.0)
+    };
+    for (const auto& engine : engines) {
+        option.setPricingEngine(engine);
+        BOOST_CHECK_EXCEPTION(option.NPV(), Error,
+                              ExpectedErrorMessage("non-striked payoff given"));
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
