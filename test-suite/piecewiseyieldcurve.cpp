@@ -2470,6 +2470,31 @@ BOOST_AUTO_TEST_CASE(testHelperDatesFromNonBusinessEvaluationDate) {
                     "    obtained: " << bmaHelper->earliestDate());
 }
 
+BOOST_AUTO_TEST_CASE(testBmaHelperSwap) {
+
+    BOOST_TEST_MESSAGE("Testing the swap underlying a BMA swap-rate helper...");
+
+    Date today(15, January, 2024);
+    Settings::instance().evaluationDate() = today;
+
+    Calendar bmaCalendar = JointCalendar(BMAIndex().fixingCalendar(),
+                                         USDLibor(3 * Months).fixingCalendar());
+    auto bmaIndex = ext::make_shared<BMAIndex>();
+    auto helper = ext::make_shared<BMASwapRateHelper>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.75)),
+        5 * Years, 2, bmaCalendar, Period(Quarterly), Following, Actual360(),
+        bmaIndex, ext::make_shared<USDLibor>(3 * Months));
+
+    auto swap = helper->swap();
+    BOOST_REQUIRE(swap);
+    BOOST_CHECK_EQUAL(swap->startDate(), helper->earliestDate());
+    BOOST_CHECK_EQUAL(swap->bmaLeg().size(), 20U);
+
+    Settings::instance().evaluationDate() = bmaCalendar.advance(today, 1 * Months);
+    BOOST_CHECK(helper->swap() != swap);
+    BOOST_CHECK_EQUAL(helper->swap()->startDate(), helper->earliestDate());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

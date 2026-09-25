@@ -183,6 +183,25 @@ BOOST_AUTO_TEST_CASE(testRateHelper) {
 }
 
 
+BOOST_AUTO_TEST_CASE(testRateHelperSwap) {
+    BOOST_TEST_MESSAGE("Testing the swap underlying a multiple-resets swap helper...");
+
+    CommonVars vars;
+
+    auto helper = ext::make_shared<MultipleResetsSwapRateHelper>(
+        0, 2 * Years, Handle<Quote>(ext::make_shared<SimpleQuote>(0.05)), vars.euribor3m, 2);
+
+    auto swap = helper->swap();
+    BOOST_REQUIRE(swap);
+    BOOST_CHECK_EQUAL(swap->startDate(), helper->earliestDate());
+    BOOST_CHECK_EQUAL(swap->floatingLeg().size(), 4U);
+
+    Settings::instance().evaluationDate() = vars.calendar.advance(vars.today, 1 * Years);
+    BOOST_CHECK(helper->swap() != swap);
+    BOOST_CHECK_EQUAL(helper->swap()->startDate(), helper->earliestDate());
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
