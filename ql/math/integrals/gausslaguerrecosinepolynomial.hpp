@@ -110,7 +110,7 @@ namespace QuantLib {
 
     //! Gauss-Laguerre Sine integration
 
-    /*! This class performs a 1-dimensional Gauss-Laguerre-Cosine integration.
+    /*! This class performs a 1-dimensional Gauss-Laguerre-Sine integration.
         \f[
         \int_{0}^{\inf} f(x) \mathrm{d}x
         \f]

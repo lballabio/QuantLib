@@ -76,6 +76,7 @@ namespace QuantLib {
         static FourierIntegration discreteSimpson(Size evaluation = 1000);
         static FourierIntegration discreteTrapezoid(Size evaluation = 1000);
         static FourierIntegration expSinh(Real relTolerance = 1e-8);
+        static FourierIntegration tanhSinh(Real relTolerance = 1e-8);
         //@}
 
         static Real andersenPiterbargIntegrationLimit(
@@ -99,7 +100,7 @@ namespace QuantLib {
               DiscreteTrapezoid, DiscreteSimpson,
               GaussLaguerre, GaussLegendre,
               GaussChebyshev, GaussChebyshev2nd,
-              ExpSinh};
+              ExpSinh, TanhSinh};
 
         FourierIntegration(Algorithm intAlgo, ext::shared_ptr<GaussianQuadrature> quadrature);
 
