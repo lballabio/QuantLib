@@ -436,7 +436,7 @@ namespace QuantLib {
 
         QL_REQUIRE(result > -std::sqrt(eps_),
             "RangeAccrualPricerByBgm::digitalPriceWithSmile: result< 0 Result:"<<result);
-        QL_REQUIRE(result/deflator <=  1.0 + squared(eps_),
+        QL_REQUIRE(result/deflator <=  1.0 + std::pow(eps_,.2),
             "RangeAccrualPricerByBgm::digitalPriceWithSmile: result/deflator > 1. Ratio: "
             << result/deflator << " result: " << result<< " deflator: " << deflator);
 
@@ -492,7 +492,7 @@ namespace QuantLib {
 
         result *= deflator;
 
-        QL_REQUIRE(std::fabs(result/deflator) <= 1.0 + squared(eps_),
+        QL_REQUIRE(std::fabs(result/deflator) <= 1.0 + std::pow(eps_,.2),
             "RangeAccrualPricerByBgm::smileCorrection: abs(result/deflator) > 1. Ratio: "
             << result/deflator << " result: " << result<< " deflator: " << deflator);
 

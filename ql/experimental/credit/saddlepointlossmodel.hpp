@@ -22,6 +22,7 @@
 
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/newton.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
@@ -656,7 +657,7 @@ namespace QuantLib {
             const Real suma2  = lossInDef * suma1;
             const Real suma3  = lossInDef * suma2;
 
-            sum += (suma3 + (2.*cubic(suma1)/suma0 - 
+            sum += (suma3 + (2.*cubed(suma1)/suma0 -
                 3.*suma1*suma2)/suma0)/suma0;
         }
        return sum;
@@ -1107,7 +1108,7 @@ namespace QuantLib {
             + K4Saddle
                 /(8.*squared(K2Saddle))
             - 5.*squared(K3Saddle)
-                /(24.*cubic(K2Saddle))
+                /(24.*cubed(K2Saddle))
             ) * std::exp(K0Saddle - saddlePt * relativeLoss)
              / (std::sqrt(2. * M_PI * K2Saddle));
     }
