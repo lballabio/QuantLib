@@ -27,6 +27,7 @@
 #include <ql/math/matrixutilities/tqreigendecomposition.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 
+#include <cmath>
 #include <map>
 
 namespace QuantLib {
@@ -66,6 +67,23 @@ namespace QuantLib {
                 w_[i] = std::exp(std::log(mu_0)
                                   + 2.0*std::log(std::fabs(ev[0][i]))
                                   - orthPoly.logW(x_[i]));
+            }
+
+            if (!std::isfinite(w_[i])) {
+                // w(x) can come back subnormal rather than zero, in which
+                // case the division above overflows and the branch on wx
+                // does not catch it. Retry in logarithms.
+                if (ev[0][i] != 0.0)
+                    w_[i] = std::exp(std::log(mu_0)
+                                      + 2.0*std::log(std::fabs(ev[0][i]))
+                                      - orthPoly.logW(x_[i]));
+
+                // Once ev[0][i] has underflowed to zero the weight cannot
+                // be recovered. Such a node sits far enough into the tail
+                // that its contribution is negligible, so drop it rather
+                // than leave a NaN to poison the whole integral.
+                if (!std::isfinite(w_[i]))
+                    w_[i] = 0.0;
             }
         }
     }

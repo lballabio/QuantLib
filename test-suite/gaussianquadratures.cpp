@@ -485,6 +485,48 @@ BOOST_AUTO_TEST_CASE(testMultiDimensionalGaussIntegration) {
 }
 
 
+
+BOOST_AUTO_TEST_CASE(testHighOrderWeightsStayFinite) {
+    BOOST_TEST_MESSAGE("Testing quadrature weights at high orders...");
+
+    // At high orders the outermost nodes move far enough into the tail
+    // that the weight function underflows, and a single non-finite weight
+    // turns the whole integral into NaN.  #2776 covered Gauss-Laguerre;
+    // Gauss-Hermite and the hyperbolic quadrature fail the same way.
+
+    // Note the explicit isfinite check: abs(NaN - expected) > tol is false,
+    // so a tolerance test on its own would let a NaN through.
+
+    for (Size n: {200, 300, 400, 500}) {
+        const GaussLaguerreIntegration laguerre(n);
+        const Real l = laguerre([](Real x) { return std::exp(-x); });
+        if (!std::isfinite(l) || std::abs(l - 1.0) > 1e-12)
+            BOOST_ERROR("failed to reproduce Gauss-Laguerre integral"
+                        << std::setprecision(16)
+                        << "\n    order:      " << n
+                        << "\n    calculated: " << l
+                        << "\n    expected:   " << 1.0);
+
+        const GaussHermiteIntegration hermite(n);
+        const Real h = hermite([](Real x) { return std::exp(-x*x); });
+        if (!std::isfinite(h) || std::abs(h - std::sqrt(M_PI)) > 1e-12)
+            BOOST_ERROR("failed to reproduce Gauss-Hermite integral"
+                        << std::setprecision(16)
+                        << "\n    order:      " << n
+                        << "\n    calculated: " << h
+                        << "\n    expected:   " << std::sqrt(M_PI));
+
+        const GaussHyperbolicIntegration hyperbolic(n);
+        const Real y = hyperbolic([](Real x) { return 1.0/std::cosh(x); });
+        if (!std::isfinite(y) || std::abs(y - M_PI) > 1e-12)
+            BOOST_ERROR("failed to reproduce Gauss-hyperbolic integral"
+                        << std::setprecision(16)
+                        << "\n    order:      " << n
+                        << "\n    calculated: " << y
+                        << "\n    expected:   " << M_PI);
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
