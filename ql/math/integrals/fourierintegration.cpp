@@ -231,8 +231,7 @@ namespace QuantLib {
                 0.0, std::numeric_limits<Real>::max());
             break;
           case TanhSinh:
-            retVal = (*integrator_)([f](Real x) -> Real { return f(x);},
-                0.0, std::numeric_limits<Real>::max());
+            retVal = (*integrator_)(f, 0.0, std::numeric_limits<Real>::max());
             break;            
           case Simpson:
           case Trapezoid:
