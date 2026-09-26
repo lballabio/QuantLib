@@ -36,7 +36,9 @@ namespace QuantLib {
 //! YieldTermStructure based on interpolation of zero rates
 /*! \ingroup yieldtermstructures */
 template <class Interpolator>
-class InterpolatedSimpleZeroCurve : public YieldTermStructure, protected InterpolatedCurve<Interpolator> {
+class InterpolatedSimpleZeroCurve : public YieldTermStructure,
+                                    protected InterpolatedCurve<Interpolator>,
+                                    public InterpolatedNodes {
   public:
     // constructor
     InterpolatedSimpleZeroCurve(const std::vector<Date> &dates, const std::vector<Rate> &yields,
@@ -55,9 +57,9 @@ class InterpolatedSimpleZeroCurve : public YieldTermStructure, protected Interpo
     //@}
     //! \name other inspectors
     //@{
-    const std::vector<Time> &times() const;
-    const std::vector<Date> &dates() const;
-    const std::vector<Real> &data() const;
+    const std::vector<Time> &times() const override;
+    const std::vector<Date> &dates() const override;
+    const std::vector<Real> &data() const override;
     const std::vector<Rate> &zeroRates() const;
     std::vector<std::pair<Date, Real> > nodes() const;
     //@}
