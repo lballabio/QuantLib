@@ -1068,6 +1068,8 @@ namespace QuantLib {
     template<class Model> void XabrSwaptionVolatilityCube<Model>::recalibration(const std::vector<Real> &beta,
                                          const Period& swapTenor) {
 
+        calculate();
+
         QL_REQUIRE(beta.size() == nOptionTenors_,
                    "beta size ("
                        << beta.size()

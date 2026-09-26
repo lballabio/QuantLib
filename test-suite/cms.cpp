@@ -460,6 +460,18 @@ BOOST_AUTO_TEST_CASE(testParity) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testSabrCubeRecalibrationInitializesLazily) {
+
+    BOOST_TEST_MESSAGE("Testing lazy SABR cube initialization before recalibration...");
+
+    CommonVars vars;
+    const ext::shared_ptr<SabrSwaptionVolatilityCube> sabrCube =
+        ext::dynamic_pointer_cast<SabrSwaptionVolatilityCube>(*vars.SabrVolCube1);
+    std::vector<Real> beta(sabrCube->optionTenors().size(), 0.5);
+
+    BOOST_REQUIRE_NO_THROW(sabrCube->recalibration(beta, sabrCube->swapTenors().front()));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
