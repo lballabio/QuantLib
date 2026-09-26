@@ -34,6 +34,11 @@
 #include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp>
 #include <ql/termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp>
+#include <ql/termstructures/volatility/swaption/cmsmarket.hpp>
+#include <ql/termstructures/volatility/swaption/cmsmarketcalibration.hpp>
+#include <ql/math/optimization/endcriteria.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/simplex.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>
@@ -458,6 +463,120 @@ BOOST_AUTO_TEST_CASE(testParity) {
             }
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testCmsMarketCalibration) {
+
+    BOOST_TEST_MESSAGE("Testing CMS market calibration...");
+
+    CommonVars vars;
+    std::vector<Period> swapLengths = {1 * Years, 5 * Years, 10 * Years, 20 * Years};
+    const ext::shared_ptr<SabrSwaptionVolatilityCube> sabrCube =
+        ext::dynamic_pointer_cast<SabrSwaptionVolatilityCube>(*vars.SabrVolCube1);
+    const Period calibrationTenor = sabrCube->swapTenors().front();
+    std::vector<ext::shared_ptr<SwapIndex> > swapIndexes = {
+        ext::make_shared<EuriborSwapIsdaFixA>(calibrationTenor, vars.termStructure)};
+    std::vector<std::vector<Handle<Quote> > > bidAskSpreads(4);
+    bidAskSpreads[0] = {
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.01)),
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.011))};
+    bidAskSpreads[1] = {
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.012)),
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.013))};
+    bidAskSpreads[2] = {
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.014)),
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.015))};
+    bidAskSpreads[3] = {
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.016)),
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.017))};
+    std::vector<ext::shared_ptr<CmsCouponPricer> > pricers = {vars.analyticPricers[0]};
+    ext::shared_ptr<CmsMarket> cmsMarket = ext::make_shared<CmsMarket>(
+        swapLengths, swapIndexes, vars.iborIndex, bidAskSpreads, pricers,
+        vars.termStructure);
+    Matrix weights(4, 1, 1.0);
+    ext::shared_ptr<EndCriteria> endCriteria =
+        ext::make_shared<EndCriteria>(20, 10, 1e-6, 1e-6, 1e-6);
+    ext::shared_ptr<OptimizationMethod> method =
+        ext::make_shared<LevenbergMarquardt>(1e-8, 1e-8, 1e-8);
+    ext::shared_ptr<OptimizationMethod> simplex = ext::make_shared<Simplex>(0.1);
+
+    BOOST_CHECK_CLOSE(CmsMarketCalibration::betaTransformDirect(
+                          CmsMarketCalibration::betaTransformInverse(0.5)),
+                      0.5, 1e-12);
+    BOOST_CHECK_EQUAL(CmsMarketCalibration::betaTransformDirect(20.0), 0.000001);
+    BOOST_CHECK_EQUAL(CmsMarketCalibration::betaTransformDirect(-20.0), 0.000001);
+    BOOST_CHECK_CLOSE(CmsMarketCalibration::reversionTransformDirect(
+                          CmsMarketCalibration::reversionTransformInverse(0.01)),
+                      0.01, 1e-12);
+
+    for (CmsMarketCalibration::CalibrationType calibrationType : {
+             CmsMarketCalibration::OnSpread,
+             CmsMarketCalibration::OnPrice,
+             CmsMarketCalibration::OnForwardCmsPrice}) {
+        CmsMarketCalibration calibration(vars.SabrVolCube1, cmsMarket, weights,
+                                         calibrationType);
+        Array guess(2);
+        guess[0] = 0.5;
+        guess[1] = 0.01;
+        Array result = calibration.compute(endCriteria, method, guess, false);
+        BOOST_CHECK_EQUAL(result.size(), 2);
+        BOOST_CHECK(result[0] > 0.0 && result[0] < 1.0);
+        BOOST_CHECK(result[1] >= 0.0);
+        BOOST_CHECK(std::isfinite(calibration.error()));
+        BOOST_CHECK(calibration.error() < 1.0);
+    }
+
+    CmsMarketCalibration fixedCalibration(vars.SabrVolCube1, cmsMarket, weights,
+                                           CmsMarketCalibration::OnSpread);
+    Array fixedGuess(2);
+    fixedGuess[0] = 0.5;
+    fixedGuess[1] = 0.01;
+    Array fixedResult = fixedCalibration.compute(endCriteria, method, fixedGuess, true);
+    BOOST_CHECK_EQUAL(fixedResult.size(), 2);
+    BOOST_CHECK_EQUAL(fixedResult[1], fixedGuess[1]);
+
+    Matrix matrixGuess(4, 1, 0.5);
+    Matrix matrixResult = fixedCalibration.compute(
+        endCriteria, method, matrixGuess, true, 0.01);
+    BOOST_CHECK_EQUAL(matrixResult.rows(), 4);
+    BOOST_CHECK_EQUAL(matrixResult.columns(), 2);
+    BOOST_CHECK_EQUAL(matrixResult[0][1], 0.01);
+
+    Matrix freeMatrixResult = fixedCalibration.compute(
+        endCriteria, simplex, matrixGuess, false, 0.01);
+    BOOST_CHECK_EQUAL(freeMatrixResult.rows(), 4);
+    BOOST_CHECK_EQUAL(freeMatrixResult.columns(), 2);
+
+    Matrix parametricGuess(3, 1, 0.5);
+    parametricGuess[2][0] = 0.1;
+    Matrix parametricResult = fixedCalibration.computeParametric(
+        endCriteria, method, parametricGuess, true, 0.01);
+    BOOST_CHECK_EQUAL(parametricResult.rows(), 3);
+    BOOST_CHECK_EQUAL(parametricResult.columns(), 2);
+    BOOST_CHECK_EQUAL(parametricResult[0][1], 0.01);
+
+    Matrix freeParametricResult = fixedCalibration.computeParametric(
+        endCriteria, method, parametricGuess, false, 0.01);
+    BOOST_CHECK_EQUAL(freeParametricResult.rows(), 3);
+    BOOST_CHECK_EQUAL(freeParametricResult.columns(), 2);
+    BOOST_CHECK(freeParametricResult[0][1] >= 0.0);
+
+    BOOST_CHECK_THROW(CmsMarketCalibration(vars.SabrVolCube1, cmsMarket,
+                                           Matrix(2, 1, 1.0),
+                                           CmsMarketCalibration::OnSpread),
+                      Error);
+    BOOST_CHECK_THROW(CmsMarketCalibration(vars.SabrVolCube1, cmsMarket,
+                                           Matrix(1, 2, 1.0),
+                                           CmsMarketCalibration::OnSpread),
+                      Error);
+    BOOST_CHECK_THROW(fixedCalibration.compute(endCriteria, method, Array(1, 0.5), false),
+                      Error);
+    BOOST_CHECK_THROW(fixedCalibration.compute(endCriteria, method, Matrix(5, 1, 0.5),
+                                               true, 0.01),
+                      Error);
+    BOOST_CHECK_THROW(fixedCalibration.computeParametric(
+                          endCriteria, method, Matrix(2, 1, 0.5), true, 0.01),
+                      Error);
 }
 
 BOOST_AUTO_TEST_CASE(testSabrCubeRecalibrationInitializesLazily) {
