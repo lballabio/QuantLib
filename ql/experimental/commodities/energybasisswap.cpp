@@ -19,9 +19,45 @@
 
 #include <ql/experimental/commodities/commoditysettings.hpp>
 #include <ql/experimental/commodities/energybasisswap.hpp>
+#include <ql/experimental/commodities/unitofmeasureconversionmanager.hpp>
+#include <set>
 #include <utility>
 
 namespace QuantLib {
+
+    namespace {
+
+        // Factor has units of toUnitOfMeasure per fromUnitOfMeasure.
+        Real calculateQuantityUomConversionFactor(
+            const CommodityType& commodityType,
+            const UnitOfMeasure& fromUnitOfMeasure,
+            const UnitOfMeasure& toUnitOfMeasure) {
+            if (fromUnitOfMeasure == toUnitOfMeasure)
+                return 1.0;
+
+            UnitOfMeasureConversion conversion =
+                UnitOfMeasureConversionManager::instance().lookup(
+                    commodityType, fromUnitOfMeasure, toUnitOfMeasure);
+            if (fromUnitOfMeasure == conversion.source() &&
+                toUnitOfMeasure == conversion.target())
+                return conversion.conversionFactor();
+            if (fromUnitOfMeasure == conversion.target() &&
+                toUnitOfMeasure == conversion.source())
+                return 1.0 / conversion.conversionFactor();
+
+            QL_FAIL("unit conversion does not match requested source and target units");
+        }
+
+        // Per-unit price factor has units of priceUnitOfMeasure per baseUnitOfMeasure.
+        Real calculateUnitPriceUomConversionFactor(
+            const CommodityType& commodityType,
+            const UnitOfMeasure& priceUnitOfMeasure,
+            const UnitOfMeasure& baseUnitOfMeasure) {
+            return 1.0 / calculateQuantityUomConversionFactor(
+                             commodityType, priceUnitOfMeasure, baseUnitOfMeasure);
+        }
+
+    }
 
     EnergyBasisSwap::EnergyBasisSwap(const Calendar& calendar,
                                      ext::shared_ptr<CommodityIndex> spreadIndex,
@@ -45,9 +81,18 @@ namespace QuantLib {
       receiveLegTermStructure_(std::move(receiveLegTermStructure)),
       discountTermStructure_(std::move(discountTermStructure)) {
         QL_REQUIRE(!pricingPeriods_.empty(), "no payment dates");
+        // The exposed cash-flow map holds one flow per payment date (limitation in paymentCashFlow)
+        std::set<Date> paymentDates;
+        for (const auto& pricingPeriod : pricingPeriods_) {
+            QL_REQUIRE(paymentDates.insert(pricingPeriod->paymentDate()).second,
+                       "duplicate payment date " << pricingPeriod->paymentDate());
+        }
         registerWith(spreadIndex_);
         registerWith(payIndex_);
         registerWith(receiveIndex_);
+        registerWith(payLegTermStructure_);
+        registerWith(receiveLegTermStructure_);
+        registerWith(discountTermStructure_);
     }
 
     void EnergyBasisSwap::performCalculations() const {
@@ -92,19 +137,18 @@ namespace QuantLib {
             const UnitOfMeasure baseUnitOfMeasure =
                 CommoditySettings::instance().unitOfMeasure();
 
-            Real quantityUomConversionFactor =
-                calculateUomConversionFactor(
-                               pricingPeriods_[0]->quantity().commodityType(),
-                               baseUnitOfMeasure,
-                               pricingPeriods_[0]->quantity().unitOfMeasure());
+            const Quantity& periodQuantity = pricingPeriods_[0]->quantity();
+            Real quantityUomConversionFactor = calculateQuantityUomConversionFactor(
+                periodQuantity.commodityType(), periodQuantity.unitOfMeasure(),
+                baseUnitOfMeasure);
             Real payIndexUomConversionFactor =
-                calculateUomConversionFactor(payIndex_->commodityType(),
-                                             payIndex_->unitOfMeasure(),
-                                             baseUnitOfMeasure);
+                calculateUnitPriceUomConversionFactor(payIndex_->commodityType(),
+                                                      payIndex_->unitOfMeasure(),
+                                                      baseUnitOfMeasure);
             Real receiveIndexUomConversionFactor =
-                calculateUomConversionFactor(receiveIndex_->commodityType(),
-                                             receiveIndex_->unitOfMeasure(),
-                                             baseUnitOfMeasure);
+                calculateUnitPriceUomConversionFactor(receiveIndex_->commodityType(),
+                                                      receiveIndex_->unitOfMeasure(),
+                                                      baseUnitOfMeasure);
 
             Real payIndexFxConversionFactor =
                 calculateFxConversionFactor(payIndex_->currency(),
@@ -120,15 +164,15 @@ namespace QuantLib {
                                             evaluationDate);
 
             Real basisUomConversionFactor =
-                calculateUomConversionFactor(
-                               pricingPeriods_[0]->quantity().commodityType(),
-                               basis_.unitOfMeasure(), baseUnitOfMeasure);
+                calculateUnitPriceUomConversionFactor(
+                    pricingPeriods_[0]->quantity().commodityType(),
+                    basis_.unitOfMeasure(), baseUnitOfMeasure);
             Real basisFxConversionFactor =
-                calculateFxConversionFactor(baseCurrency,
-                                            basis_.amount().currency(),
+                calculateFxConversionFactor(basis_.amount().currency(),
+                                            baseCurrency,
                                             evaluationDate);
 
-            Real basisValue = basis_.amount().value() *
+            Real basisValueInBaseCurrency = basis_.amount().value() *
                 basisUomConversionFactor * basisFxConversionFactor;
 
             Date lastPayIndexQuoteDate = payIndex_->lastQuoteDate();
@@ -149,9 +193,6 @@ namespace QuantLib {
                 addPricingError(PricingError::Warning, message.str());
             }
 
-            Date lastQuoteDate = std::min(lastPayIndexQuoteDate,
-                                          lastReceiveIndexQuoteDate);
-
             Real totalQuantityAmount = 0;
 
             // price each period
@@ -169,13 +210,15 @@ namespace QuantLib {
                     Real payQuoteValue = 0;
                     Real receiveQuoteValue = 0;
 
-                    if (stepDate <= lastQuoteDate) {
+                    if (stepDate <= lastPayIndexQuoteDate) {
                         payQuoteValue = payIndex_->fixing(stepDate);
-                        receiveQuoteValue = receiveIndex_->fixing(stepDate);
                     } else {
                         payQuoteValue = payIndex_->forwardPrice(stepDate);
-                        receiveQuoteValue =
-                            receiveIndex_->forwardPrice(stepDate);
+                    }
+                    if (stepDate <= lastReceiveIndexQuoteDate) {
+                        receiveQuoteValue = receiveIndex_->fixing(stepDate);
+                    } else {
+                        receiveQuoteValue = receiveIndex_->forwardPrice(stepDate);
                     }
 
                     if (payQuoteValue == 0) {
@@ -210,9 +253,9 @@ namespace QuantLib {
                         receiveIndexFxConversionFactor;
 
                     if (spreadToPayLeg_)
-                        payLegPriceValue += basisValue;
+                        payLegPriceValue += basisValueInBaseCurrency;
                     else
-                        receiveLegPriceValue += basisValue;
+                        receiveLegPriceValue += basisValueInBaseCurrency;
 
                     dailyPositions_[stepDate] =
                         EnergyDailyPosition(stepDate, payLegPriceValue,
