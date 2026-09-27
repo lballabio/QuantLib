@@ -34,7 +34,7 @@ namespace {
         UnitOfMeasure unitOfMeasure_;
     };
 
-    class EnergyBasisSwapTestFixture : public TopLevelFixture {
+    class EnergyBasisSwapTestFixture {
       public:
         EnergyBasisSwapTestFixture()
         : evaluationDate_(2, January, 2025), calendar_(NullCalendar()),
@@ -122,8 +122,8 @@ namespace {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTests, EnergyBasisSwapTestFixture)
-BOOST_AUTO_TEST_SUITE(EnergyBasisSwapTests)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(EnergyBasisSwapTests, EnergyBasisSwapTestFixture)
 
 BOOST_AUTO_TEST_CASE(testBasisFxConvertsIntoCommodityCurrency) {
     const Date periodDate(6, January, 2025);
