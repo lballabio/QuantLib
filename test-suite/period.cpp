@@ -243,6 +243,43 @@ BOOST_AUTO_TEST_CASE(testNormalization) {
 
 }
 
+BOOST_AUTO_TEST_CASE(testNegativePeriodComparison) {
+
+    BOOST_TEST_MESSAGE("Testing comparison of negative periods...");
+
+    Period test_values[] = {
+        1 * Days,    27 * Days,  28 * Days,  30 * Days,  31 * Days,
+        32 * Days,   365 * Days, 366 * Days, 367 * Days, 1 * Weeks,
+        4 * Weeks,   5 * Weeks,  52 * Weeks, 53 * Weeks, 1 * Months,
+        2 * Months,  12 * Months, 1 * Years, 2 * Years
+    };
+
+    // negating both periods must reverse their ordering, and must
+    // keep undecidable comparisons undecidable
+    for (Period p1 : test_values) {
+        for (Period p2 : test_values) {
+            std::optional<bool> positive, negative;
+            try {
+                positive = (p1 < p2);
+            } catch (Error&) {
+                ;
+            }
+            try {
+                negative = (-p2 < -p1);
+            } catch (Error&) {
+                ;
+            }
+
+            if (positive != negative) {
+                BOOST_ERROR("comparing " << p1 << " < " << p2 << " gives "
+                            << (positive ? (*positive ? "true" : "false") : "undecidable")
+                            << " but comparing " << -p2 << " < " << -p1 << " gives "
+                            << (negative ? (*negative ? "true" : "false") : "undecidable"));
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testFrequencyComputation) {
     BOOST_TEST_MESSAGE("Testing computation of frequency from period...");
 
