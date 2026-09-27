@@ -57,6 +57,10 @@ namespace QuantLib {
                              commodityType, priceUnitOfMeasure, baseUnitOfMeasure);
         }
 
+        bool hasUsableForwardCurve(const ext::shared_ptr<CommodityIndex>& index) {
+            return index->forwardCurve() && !index->forwardCurve()->empty();
+        }
+
     }
 
     EnergyBasisSwap::EnergyBasisSwap(const Calendar& calendar,
@@ -99,8 +103,13 @@ namespace QuantLib {
 
         try {
 
-            if (payIndex_->empty()) {
-                if (payIndex_->forwardCurveEmpty()) {
+            const bool payIndexHasQuotes = !payIndex_->empty();
+            const bool receiveIndexHasQuotes = !receiveIndex_->empty();
+            const bool payIndexHasForwardCurve = hasUsableForwardCurve(payIndex_);
+            const bool receiveIndexHasForwardCurve = hasUsableForwardCurve(receiveIndex_);
+
+            if (!payIndexHasQuotes) {
+                if (!payIndexHasForwardCurve) {
                     QL_FAIL("index [" + payIndex_->name() +
                             "] does not have any quotes or forward prices");
                 } else {
@@ -111,8 +120,8 @@ namespace QuantLib {
                                     payIndex_->forwardCurve()->name() + "]");
                 }
             }
-            if (receiveIndex_->empty()) {
-                if (receiveIndex_->forwardCurveEmpty()) {
+            if (!receiveIndexHasQuotes) {
+                if (!receiveIndexHasForwardCurve) {
                     QL_FAIL("index [" + receiveIndex_->name() +
                             "] does not have any quotes or forward prices");
                 } else {
@@ -175,17 +184,19 @@ namespace QuantLib {
             Real basisValueInBaseCurrency = basis_.amount().value() *
                 basisUomConversionFactor * basisFxConversionFactor;
 
-            Date lastPayIndexQuoteDate = payIndex_->lastQuoteDate();
-            Date lastReceiveIndexQuoteDate = receiveIndex_->lastQuoteDate();
+            Date lastPayIndexQuoteDate =
+                payIndexHasQuotes ? payIndex_->lastQuoteDate() : Date();
+            Date lastReceiveIndexQuoteDate =
+                receiveIndexHasQuotes ? receiveIndex_->lastQuoteDate() : Date();
 
-            if (lastPayIndexQuoteDate < evaluationDate - 1) {
+            if (payIndexHasQuotes && lastPayIndexQuoteDate < evaluationDate - 1) {
                 std::ostringstream message;
                 message << "index [" << payIndex_->name()
                         << "] has last quote date of "
                         << io::iso_date(lastPayIndexQuoteDate);
                 addPricingError(PricingError::Warning, message.str());
             }
-            if (lastReceiveIndexQuoteDate < evaluationDate - 1) {
+            if (receiveIndexHasQuotes && lastReceiveIndexQuoteDate < evaluationDate - 1) {
                 std::ostringstream message;
                 message << "index [" << receiveIndex_->name()
                         << "] has last quote date of "
@@ -210,14 +221,20 @@ namespace QuantLib {
                     Real payQuoteValue = 0;
                     Real receiveQuoteValue = 0;
 
-                    if (stepDate <= lastPayIndexQuoteDate) {
+                    if (payIndexHasQuotes && stepDate <= lastPayIndexQuoteDate) {
                         payQuoteValue = payIndex_->fixing(stepDate);
                     } else {
+                        QL_REQUIRE(payIndexHasForwardCurve,
+                                   "index [" << payIndex_->name()
+                                             << "] has no forward price for date " << stepDate);
                         payQuoteValue = payIndex_->forwardPrice(stepDate);
                     }
-                    if (stepDate <= lastReceiveIndexQuoteDate) {
+                    if (receiveIndexHasQuotes && stepDate <= lastReceiveIndexQuoteDate) {
                         receiveQuoteValue = receiveIndex_->fixing(stepDate);
                     } else {
+                        QL_REQUIRE(receiveIndexHasForwardCurve,
+                                   "index [" << receiveIndex_->name()
+                                             << "] has no forward price for date " << stepDate);
                         receiveQuoteValue = receiveIndex_->forwardPrice(stepDate);
                     }
 

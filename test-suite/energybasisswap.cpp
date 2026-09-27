@@ -415,6 +415,68 @@ BOOST_AUTO_TEST_CASE(testMissingCommodityQuotesRaiseAnError) {
     BOOST_CHECK_EQUAL(swap->pricingErrors().back().errorLevel, PricingError::Error);
 }
 
+BOOST_AUTO_TEST_CASE(testEmptyIndexWithoutForwardCurveRaisesAnError) {
+    const Date periodDate(6, January, 2025);
+    auto payIndex = ext::make_shared<CommodityIndex>(
+        "empty-pay-no-forward", commodityType_, USDCurrency(), BarrelUnitOfMeasure(),
+        calendar_, 1.0, ext::shared_ptr<CommodityCurve>(),
+        ext::shared_ptr<ExchangeContracts>(), 0);
+    auto receiveIndex = makeIndex("empty-receive-with-forward", USDCurrency(),
+                                  BarrelUnitOfMeasure(),
+                                  {periodDate, periodDate + 1}, {90.0, 90.0});
+    auto pricingPeriods = periods(periodDate, periodDate, Date(10, January, 2025),
+                                  Quantity(commodityType_, BarrelUnitOfMeasure(), 1.0));
+    auto swap = makeSwap(payIndex, receiveIndex, pricingPeriods, noBasis());
+
+    BOOST_CHECK_THROW(swap->NPV(), Error);
+    BOOST_CHECK(!swap->pricingErrors().empty());
+    BOOST_CHECK_EQUAL(swap->pricingErrors().back().errorLevel, PricingError::Error);
+}
+
+BOOST_AUTO_TEST_CASE(testForwardOnlyIndexesUseTheirCurves) {
+    const Date periodDate(6, January, 2025);
+    auto payCurve = ext::make_shared<CommodityCurve>(
+        "forward-only-pay", commodityType_, USDCurrency(), BarrelUnitOfMeasure(),
+        calendar_, std::vector<Date>{periodDate, periodDate + 1},
+        std::vector<Real>{100.0, 100.0});
+    auto receiveCurve = ext::make_shared<CommodityCurve>(
+        "forward-only-receive", commodityType_, USDCurrency(), BarrelUnitOfMeasure(),
+        calendar_, std::vector<Date>{periodDate, periodDate + 1},
+        std::vector<Real>{90.0, 90.0});
+    auto payIndex = ext::make_shared<CommodityIndex>(
+        "forward-only-pay", commodityType_, USDCurrency(), BarrelUnitOfMeasure(),
+        calendar_, 1.0, payCurve, ext::shared_ptr<ExchangeContracts>(), 0);
+    auto receiveIndex = ext::make_shared<CommodityIndex>(
+        "forward-only-receive", commodityType_, USDCurrency(), BarrelUnitOfMeasure(),
+        calendar_, 1.0, receiveCurve, ext::shared_ptr<ExchangeContracts>(), 0);
+    auto pricingPeriods = periods(periodDate, periodDate, Date(10, January, 2025),
+                                  Quantity(commodityType_, BarrelUnitOfMeasure(), 1.0));
+    auto swap = makeSwap(payIndex, receiveIndex, pricingPeriods, noBasis());
+
+    BOOST_CHECK_SMALL(swap->NPV() + 10.0, 1.0e-10);
+    BOOST_CHECK_EQUAL(swap->pricingErrors().size(), 2U);
+    for (const PricingError& error : swap->pricingErrors())
+        BOOST_CHECK_EQUAL(error.errorLevel, PricingError::Warning);
+}
+
+BOOST_AUTO_TEST_CASE(testStaleFixingsWithoutForwardCurveRaiseAnError) {
+    const Date periodDate(6, January, 2025);
+    auto payIndex = ext::make_shared<CommodityIndex>(
+        "stale-pay-no-forward", commodityType_, USDCurrency(), BarrelUnitOfMeasure(),
+        calendar_, 1.0, ext::shared_ptr<CommodityCurve>(),
+        ext::shared_ptr<ExchangeContracts>(), 0);
+    auto receiveIndex = makeIndex("stale-receive", USDCurrency(), BarrelUnitOfMeasure(),
+                                  {periodDate, periodDate + 1}, {90.0, 90.0});
+    payIndex->addFixing(evaluationDate_, 100.0);
+    auto pricingPeriods = periods(periodDate, periodDate, Date(10, January, 2025),
+                                  Quantity(commodityType_, BarrelUnitOfMeasure(), 1.0));
+    auto swap = makeSwap(payIndex, receiveIndex, pricingPeriods, noBasis());
+
+    BOOST_CHECK_THROW(swap->NPV(), Error);
+    BOOST_CHECK(!swap->pricingErrors().empty());
+    BOOST_CHECK_EQUAL(swap->pricingErrors().back().errorLevel, PricingError::Error);
+}
+
 BOOST_AUTO_TEST_CASE(testNearPaymentDatesSkipDiscounting) {
     const Date periodDate(3, January, 2025);
     const Date paymentDate(3, January, 2025);
