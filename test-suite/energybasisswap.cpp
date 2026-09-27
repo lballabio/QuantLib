@@ -34,7 +34,7 @@ namespace {
         UnitOfMeasure unitOfMeasure_;
     };
 
-    class EnergyBasisSwapTestFixture {
+    class EnergyBasisSwapTestFixture : public TopLevelFixture {
       public:
         EnergyBasisSwapTestFixture()
         : evaluationDate_(2, January, 2025), calendar_(NullCalendar()),
