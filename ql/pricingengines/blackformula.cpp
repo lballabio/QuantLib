@@ -290,10 +290,24 @@ namespace QuantLib {
         const Real b = std::exp(M_2_PI*y);
         const Real B = 4.0*(b + 1/b)
             - 2*K/F*(a + 1.0/a)*(ey2 + 1 - R2);
-        const Real C = (R2-squared(ey-1))*(squared(ey+1)-R2)/ey2;
+        // At a price sitting on intrinsic, R equals ey - 1 and this is
+        // exactly zero; rounding can leave it slightly negative, which would
+        // make beta negative and its logarithm not a number.
+        const Real C = std::max(0.0, (R2-squared(ey-1))*(squared(ey+1)-R2)/ey2);
 
         const Real beta = 2*C/(B+std::sqrt(B*B+4*A*C));
         const Real gamma = -M_PI_2*std::log(beta);
+
+        // beta underflows to zero for deep in-the-money options at low
+        // volatility, which sends gamma to infinity. The difference below
+        // then evaluates as inf - inf. Written in the equivalent conjugate
+        // form it stays finite and tends to zero, which is what the price
+        // collapsing onto intrinsic means.
+        const auto sqrtDiff = [](Real g, Real yy) {
+            const Real hi = std::sqrt(g + yy), lo = std::sqrt(g - yy);
+            return (std::isfinite(hi) && std::isfinite(lo)) ? Real(hi - lo)
+                                                            : Real(2.0 * yy / (hi + lo));
+        };
 
         if (y >= 0.0) {
             const Real M0 = K*df*(
@@ -301,7 +315,7 @@ namespace QuantLib {
                                        : 0.5-ey*Af(-std::sqrt(2*y)));
 
             if (marketValue <= M0)
-                return std::sqrt(gamma+y)-std::sqrt(gamma-y);
+                return sqrtDiff(gamma, y);
             else
                 return std::sqrt(gamma+y)+std::sqrt(gamma-y);
         }
@@ -311,7 +325,7 @@ namespace QuantLib {
                                        : Af(std::sqrt(-2*y)) - 0.5*ey);
 
             if (marketValue <= M0)
-                return std::sqrt(gamma-y)-std::sqrt(gamma+y);
+                return sqrtDiff(gamma, -y);
             else
                 return std::sqrt(gamma+y)+std::sqrt(gamma-y);
         }
