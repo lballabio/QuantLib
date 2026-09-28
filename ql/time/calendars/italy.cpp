@@ -29,6 +29,7 @@ namespace QuantLib {
                                                    new Italy::SettlementImpl);
         static ext::shared_ptr<Calendar::Impl> exchangeImpl(
                                                    new Italy::ExchangeImpl);
+        QL_DEPRECATED_DISABLE_WARNING
         switch (market) {
           case Settlement:
             impl_ = settlementImpl;
@@ -39,6 +40,7 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown market");
         }
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
 
@@ -63,6 +65,8 @@ namespace QuantLib {
             || (d == 2 && m == June && y >= 2000)
             // Assumption
             || (d == 15 && m == August)
+            // Saint Francis of Assisi
+            || (d == 4 && m == October && y >= 2026)
             // All Saints' Day
             || (d == 1 && m == November)
             // Immaculate Conception
