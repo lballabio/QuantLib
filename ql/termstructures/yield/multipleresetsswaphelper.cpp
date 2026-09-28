@@ -17,10 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/multipleresetscoupon.hpp>
 #include <ql/instruments/makemultipleresetsswap.hpp>
 #include <ql/instruments/simplifynotificationgraph.hpp>
 #include <ql/termstructures/yield/multipleresetsswaphelper.hpp>
 #include <ql/utilities/null_deleter.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -67,8 +69,20 @@ namespace QuantLib {
         simplifyNotificationGraph(*swap_, true);
 
         earliestDate_ = swap_->startDate();
+        maturityDate_ = swap_->maturityDate();
+
+        // The last fixing forecasts the index until its own maturity, which
+        // can be later than the end of the swap if the last reset date was
+        // adjusted; the curve must extend at least that far.
+        auto lastCoupon =
+            ext::dynamic_pointer_cast<MultipleResetsCoupon>(swap_->floatingLeg().back());
+        QL_REQUIRE(lastCoupon, "multiple-resets coupon expected");
+        Date lastFixingEndDate =
+            iborIndex_->maturityDate(iborIndex_->valueDate(lastCoupon->fixingDates().back()));
+
         latestRelevantDate_ = latestDate_ =
-            std::max(swap_->fixedLeg().back()->date(), swap_->floatingLeg().back()->date());
+            std::max({swap_->fixedLeg().back()->date(), swap_->floatingLeg().back()->date(),
+                      lastFixingEndDate});
     }
 
     void MultipleResetsSwapRateHelper::setTermStructure(YieldTermStructure* t) {
