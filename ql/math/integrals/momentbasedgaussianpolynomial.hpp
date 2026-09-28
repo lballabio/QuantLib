@@ -41,7 +41,7 @@ namespace QuantLib {
         M. Morandi Cecchi and M. Redivo Zaglia, Computing the coefficients
         of a recurrence formula for numerical integration by moments and
         modified moments.
-        http://ac.els-cdn.com/0377042793901522/1-s2.0-0377042793901522-main.pdf?_tid=643d5dca-a05d-11e6-9a56-00000aab0f27&acdnat=1478023545_cf7c87cba4cc9e37a136e68a2564d411
+        https://www.sciencedirect.com/science/article/pii/0377042793901522
     */
 
     template <class mp_real>

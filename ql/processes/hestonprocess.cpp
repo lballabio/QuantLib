@@ -25,6 +25,7 @@
 #include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/math/modifiedbessel.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/integrals/exponentialintegrals.hpp>
 #include <ql/processes/eulerdiscretization.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -185,67 +186,6 @@ namespace QuantLib {
                            /(y*(1-rho*rho)));
         }
 
-
-        Real pade(Real x, const Real* nominator, const Real* denominator, Size m) {
-            Real n=0.0, d=0.0;
-            for (Integer i=m-1; i >= 0; --i) {
-                n = (n+nominator[i])*x;
-                d = (d+denominator[i])*x;
-            }
-            return (1+n)/(1+d);
-        }
-
-        // For the definition of the Pade approximation please see e.g.
-        // http://wikipedia.org/wiki/Sine_integral#Sine_integral
-        Real Si(Real x) {
-            if (x <=4.0) {
-                const Real n[] =
-                    { -4.54393409816329991e-2,1.15457225751016682e-3,
-                      -1.41018536821330254e-5,9.43280809438713025e-8,
-                      -3.53201978997168357e-10,7.08240282274875911e-13,
-                      -6.05338212010422477e-16 };
-                const Real d[] =
-                    {  1.01162145739225565e-2,4.99175116169755106e-5,
-                       1.55654986308745614e-7,3.28067571055789734e-10,
-                       4.5049097575386581e-13,3.21107051193712168e-16,
-                       0.0 };
-
-                return x*pade(x*x, n, d, sizeof(n)/sizeof(Real));
-            }
-            else {
-                const Real y = 1/(x*x);
-                const Real fn[] =
-                    { 7.44437068161936700618e2,1.96396372895146869801e5,
-                      2.37750310125431834034e7,1.43073403821274636888e9,
-                      4.33736238870432522765e10,6.40533830574022022911e11,
-                      4.20968180571076940208e12,1.00795182980368574617e13,
-                      4.94816688199951963482e12,-4.94701168645415959931e11 };
-                const Real fd[] =
-                    { 7.46437068161927678031e2,1.97865247031583951450e5,
-                      2.41535670165126845144e7,1.47478952192985464958e9,
-                      4.58595115847765779830e10,7.08501308149515401563e11,
-                      5.06084464593475076774e12,1.43468549171581016479e13,
-                      1.11535493509914254097e13, 0.0 };
-                const Real f = pade(y, fn, fd, 10)/x;
-
-                const Real gn[] =
-                    { 8.1359520115168615e2,2.35239181626478200e5,
-                      3.12557570795778731e7,2.06297595146763354e9,
-                      6.83052205423625007e10,1.09049528450362786e12,
-                      7.57664583257834349e12,1.81004487464664575e13,
-                      6.43291613143049485e12,-1.36517137670871689e12 };
-                const Real gd[] =
-                    { 8.19595201151451564e2,2.40036752835578777e5,
-                      3.26026661647090822e7,2.23355543278099360e9,
-                      7.87465017341829930e10,1.39866710696414565e12,
-                      1.17164723371736605e13,4.01839087307656620e13,
-                      3.99653257887490811e13, 0.0};
-                const Real g = y*pade(y, gn, gd, 10);
-
-                return M_PI_2 - f*std::cos(x)-g*std::sin(x);
-            }
-        }
-
         Real cornishFisherEps(const HestonProcess& process,
                               Real nu_0, Real nu_t, Time dt, Real eps) {
             // use moment generating function to get the
@@ -327,14 +267,14 @@ namespace QuantLib {
               {
                 const Real h = 0.05;
 
-                Real si = Si(0.5*h*x);
+                Real si = ExponentialIntegral::Si(0.5*h*x);
                 Real s = M_2_PI*si;
                 std::complex<Real> f;
                 Size j = 0;
                 do {
                     ++j;
                     const Real u = h*j;
-                    const Real si_n = Si(x*(u+0.5*h));
+                    const Real si_n = ExponentialIntegral::Si(x*(u+0.5*h));
 
                     f = Phi(process, u, nu_0, nu_t, dt);
                     s+= M_2_PI*f.real()*(si_n-si);
