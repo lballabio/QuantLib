@@ -265,10 +265,13 @@ namespace QuantLib {
                 return std::make_pair(p.length(), p.length());
               case Weeks:
                 return std::make_pair(7*p.length(), 7*p.length());
+              // for negative lengths, the longer month or year gives the minimum
               case Months:
-                return std::make_pair(28*p.length(), 31*p.length());
+                return p.length() >= 0 ? std::make_pair(28*p.length(), 31*p.length())
+                                       : std::make_pair(31*p.length(), 28*p.length());
               case Years:
-                return std::make_pair(365*p.length(), 366*p.length());
+                return p.length() >= 0 ? std::make_pair(365*p.length(), 366*p.length())
+                                       : std::make_pair(366*p.length(), 365*p.length());
               default:
                 QL_FAIL("unknown time unit (" << Integer(p.units()) << ")");
             }
