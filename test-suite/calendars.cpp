@@ -706,39 +706,67 @@ BOOST_AUTO_TEST_CASE(testUKMetals) {
     checkHolidays(c.holidayList(Date(1, January, 2004), Date(31, December, 2007)), expectedHol);
 }
 
-BOOST_AUTO_TEST_CASE(testItalyExchange) {
-    BOOST_TEST_MESSAGE("Testing Milan Stock Exchange holiday list...");
+BOOST_AUTO_TEST_CASE(testItaly) {
+    BOOST_TEST_MESSAGE("Testing Italian holiday list...");
 
-    std::vector<Date> expectedHol = {
-        {1, January, 2002},
-        {29, March, 2002},
-        {1, April, 2002},
-        {1, May, 2002},
-        {15, August, 2002},
-        {24, December, 2002},
-        {25, December, 2002},
-        {26, December, 2002},
-        {31, December, 2002},
+    Calendar c = Italy(Italy::Settlement);
 
-        {1, January, 2003},
-        {18, April, 2003},
-        {21, April, 2003},
-        {1, May, 2003},
-        {15, August, 2003},
-        {24, December, 2003},
-        {25, December, 2003},
-        {26, December, 2003},
-        {31, December, 2003},
+    checkHolidays(c.holidayList(Date(1, January, 2002), Date(31, December, 2004)),
+                 {
+                     {1, January, 2002},
+                     {1, April, 2002},
+                     {25, April, 2002},
+                     {1, May, 2002},
+                     {15, August, 2002},
+                     {1, November, 2002},
+                     {25, December, 2002},
+                     {26, December, 2002},
 
-        {1, January, 2004},
-        {9, April, 2004},
-        {12, April, 2004},
-        {24, December, 2004},
-        {31, December, 2004},
-    };
+                     {1, January, 2003},
+                     {6, January, 2003},
+                     {21, April, 2003},
+                     {25, April, 2003},
+                     {1, May, 2003},
+                     {2, June, 2003},
+                     {15, August, 2003},
+                     {8, December, 2003},
+                     {25, December, 2003},
+                     {26, December, 2003},
 
-    Calendar c = Italy(Italy::Exchange);
-    checkHolidays(c.holidayList(Date(1, January, 2002), Date(31, December, 2004)), expectedHol);
+                     {1, January, 2004},
+                     {6, January, 2004},
+                     {12, April, 2004},
+                     {2, June, 2004},
+                     {1, November, 2004},
+                     {8, December, 2004},
+                 });
+
+
+    checkHolidays(c.holidayList(Date(1, January, 1999), Date(31, December, 1999)),
+                 {
+                     {1, January, 1999},
+                     {6, January, 1999},
+                     {5, April, 1999},
+                     {1, November, 1999},
+                     {8, December, 1999},
+                     {31, December, 1999},
+                 });
+
+    checkHolidays(c.holidayList(Date(1, January, 2028), Date(31, December, 2028)),
+                 {
+                     {6, January, 2028},
+                     {17, April, 2028},
+                     {25, April, 2028},
+                     {1, May, 2028},
+                     {2, June, 2028},
+                     {15, August, 2028},
+                     {4, October, 2028},
+                     {1, November, 2028},
+                     {8, December, 2028},
+                     {25, December, 2028},
+                     {26, December, 2028},
+                 });
+
 }
 
 BOOST_AUTO_TEST_CASE(testRussia) {

@@ -67,7 +67,7 @@ namespace QuantLib {
                  Real c, Real gm);
 
     // Functions used to compute the second order approximation
-    Real derivn3(Real limit[4], Real sigmarho[4], Real sigma[4], int idx);
+    Real derivn3(const Real limit[4], const Real sigmarho[4], const Real sigma[4], int idx);
     Real ddvv(Real s, Real p, Real tt, Real a,
                 Real b, Real gm);
     Real ddff(Real s, Real p,Real tt,Real a,Real b,Real gm);
@@ -758,7 +758,7 @@ namespace QuantLib {
       !! distribution with respect to one of the integration limits
       !!
     */
-    Real derivn3(Real limit[4], Real sigmarho[4], Real sigma[4], int idx)
+    Real derivn3(const Real limit[4], const Real sigmarho[4], const Real sigma[4], int idx)
     {
         Real aa;
         Real xx,yy,rho,sc;
