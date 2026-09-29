@@ -562,19 +562,6 @@ BOOST_AUTO_TEST_CASE(testImpliedStdDevApproximationRSStaysFinite) {
     BOOST_TEST_MESSAGE(
         "Testing RS implied-standard-deviation approximation away from the money...");
 
-    // Two separate paths used to leave the representable range here.
-    //
-    // beta underflows to zero for an in-the-money option at low volatility,
-    // which sends gamma to infinity and makes the returned difference of two
-    // square roots evaluate as inf - inf.
-    //
-    // C is exactly zero when the price sits on intrinsic, since R equals
-    // ey - 1 there, but rounding can leave it slightly negative, making beta
-    // negative and its logarithm not a number.
-    //
-    // Either way the result was NaN rather than merely approximate, and
-    // blackFormulaImpliedStdDevLiRS seeds its iteration from this value.
-
     const Real forward = 1.0;
     const Real discount = 1.0;
 
