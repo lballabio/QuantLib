@@ -446,6 +446,24 @@ BOOST_AUTO_TEST_CASE(testUSFederalReserveJuneteenth) {
         BOOST_ERROR(notMovedToFriday << " should not be a holiday for " << fedCalendar.name());
 }
 
+BOOST_AUTO_TEST_CASE(testUSLiborImpactCalendar) {
+    Calendar settlement = UnitedStates(UnitedStates::Settlement);
+    Calendar liborImpact = UnitedStates(UnitedStates::LiborImpact);
+    BOOST_CHECK_EQUAL(liborImpact.name(), "US with Libor impact");
+    Date observedIndependenceDay(3, July, 2020);
+    BOOST_CHECK(settlement.isHoliday(observedIndependenceDay));
+    BOOST_CHECK(liborImpact.isBusinessDay(observedIndependenceDay));
+}
+
+BOOST_AUTO_TEST_CASE(testUSNercCalendar) {
+    Calendar settlement = UnitedStates(UnitedStates::Settlement);
+    Calendar nerc = UnitedStates(UnitedStates::NERC);
+    BOOST_CHECK_EQUAL(nerc.name(), "North American Energy Reliability Council");
+    Date juneteenth(19, June, 2024);
+    BOOST_CHECK(settlement.isHoliday(juneteenth));
+    BOOST_CHECK(nerc.isBusinessDay(juneteenth));
+}
+
 BOOST_AUTO_TEST_CASE(testTARGET) {
     BOOST_TEST_MESSAGE("Testing TARGET holiday list...");
 
@@ -569,6 +587,24 @@ BOOST_AUTO_TEST_CASE(testGermanyXetra) {
     Calendar c = Germany(Germany::Xetra);
     BOOST_CHECK_EQUAL(c.name(), "Xetra");
     checkHolidays(c.holidayList(Date(1, January, 2003), Date(31, December, 2004)), expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testGermanySettlementCalendar) {
+    Calendar settlement = Germany(Germany::Settlement);
+    Calendar frankfurt = Germany(Germany::FrankfurtStockExchange);
+    BOOST_CHECK_EQUAL(settlement.name(), "German settlement");
+    Date corpusChristi(30, May, 2024);
+    BOOST_CHECK(settlement.isHoliday(corpusChristi));
+    BOOST_CHECK(frankfurt.isBusinessDay(corpusChristi));
+}
+
+BOOST_AUTO_TEST_CASE(testGermanyEuwaxCalendar) {
+    Calendar euwax = Germany(Germany::Euwax);
+    Calendar xetra = Germany(Germany::Xetra);
+    BOOST_CHECK_EQUAL(euwax.name(), "Euwax");
+    Date whitMonday(20, May, 2024);
+    BOOST_CHECK(euwax.isHoliday(whitMonday));
+    BOOST_CHECK(xetra.isBusinessDay(whitMonday));
 }
 
 BOOST_AUTO_TEST_CASE(testUKSettlement) {
@@ -767,6 +803,12 @@ BOOST_AUTO_TEST_CASE(testItaly) {
                      {26, December, 2028},
                  });
 
+    QL_DEPRECATED_DISABLE_WARNING
+    Calendar exchange = Italy(Italy::Exchange);
+    QL_DEPRECATED_ENABLE_WARNING
+    Date republicDay(2, June, 2025);
+    BOOST_CHECK(c.isHoliday(republicDay));
+    BOOST_CHECK(exchange.isBusinessDay(republicDay));
 }
 
 BOOST_AUTO_TEST_CASE(testRussia) {
@@ -1354,9 +1396,15 @@ BOOST_AUTO_TEST_CASE(testRussia) {
         {31, December, 2016},
     };
 
-    Calendar c = Russia(Russia::MOEX);
-    checkHolidays(c.holidayList(Date(1, January, 2012), Date(31, December, 2016), true),
+    Calendar moex = Russia(Russia::MOEX);
+    checkHolidays(moex.holidayList(Date(1, January, 2012), Date(31, December, 2016), true),
                   expectedHol);
+
+    Calendar settlement = Russia(Russia::Settlement);
+    Date holiday(6, January, 2012);
+    BOOST_CHECK(settlement.isHoliday(holiday));
+    BOOST_CHECK(moex.isBusinessDay(holiday));
+
 }
 
 BOOST_AUTO_TEST_CASE(testBrazil) {
@@ -1390,8 +1438,13 @@ BOOST_AUTO_TEST_CASE(testBrazil) {
         {25, December, 2006},
     };
 
-    Calendar c = Brazil();
-    checkHolidays(c.holidayList(Date(1, January, 2005), Date(31, December, 2006)), expectedHol);
+    Calendar settlement = Brazil(Brazil::Settlement);
+    checkHolidays(settlement.holidayList(Date(1, January, 2005), Date(31, December, 2006)), expectedHol);
+
+    Calendar exchange = Brazil(Brazil::Exchange);
+    Date christmasEve(24, December, 2024);
+    BOOST_CHECK(settlement.isBusinessDay(christmasEve));
+    BOOST_CHECK(exchange.isHoliday(christmasEve));
 }
 
 BOOST_AUTO_TEST_CASE(testDenmark) {
@@ -3019,66 +3072,6 @@ BOOST_AUTO_TEST_CASE(testUkraineCalendar) {
     Calendar calendar = Ukraine(Ukraine::USE);
     BOOST_CHECK(calendar.isHoliday(Date(14, October, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(15, October, 2024)));
-}
-
-BOOST_AUTO_TEST_CASE(testBrazilExchangeCalendar) {
-    Calendar settlement = Brazil(Brazil::Settlement);
-    Calendar exchange = Brazil(Brazil::Exchange);
-    Date christmasEve(24, December, 2024);
-    BOOST_CHECK(settlement.isBusinessDay(christmasEve));
-    BOOST_CHECK(exchange.isHoliday(christmasEve));
-}
-
-BOOST_AUTO_TEST_CASE(testGermanySettlementCalendar) {
-    Calendar settlement = Germany(Germany::Settlement);
-    Calendar frankfurt = Germany(Germany::FrankfurtStockExchange);
-    BOOST_CHECK_EQUAL(settlement.name(), "German settlement");
-    Date corpusChristi(30, May, 2024);
-    BOOST_CHECK(settlement.isHoliday(corpusChristi));
-    BOOST_CHECK(frankfurt.isBusinessDay(corpusChristi));
-}
-
-BOOST_AUTO_TEST_CASE(testGermanyEuwaxCalendar) {
-    Calendar euwax = Germany(Germany::Euwax);
-    Calendar xetra = Germany(Germany::Xetra);
-    BOOST_CHECK_EQUAL(euwax.name(), "Euwax");
-    Date whitMonday(20, May, 2024);
-    BOOST_CHECK(euwax.isHoliday(whitMonday));
-    BOOST_CHECK(xetra.isBusinessDay(whitMonday));
-}
-
-BOOST_AUTO_TEST_CASE(testItalySettlementCalendar) {
-    Calendar settlement = Italy(Italy::Settlement);
-    Calendar exchange = Italy(Italy::Exchange);
-    Date republicDay(2, June, 2025);
-    BOOST_CHECK(settlement.isHoliday(republicDay));
-    BOOST_CHECK(exchange.isBusinessDay(republicDay));
-}
-
-BOOST_AUTO_TEST_CASE(testRussiaSettlementCalendar) {
-    Calendar settlement = Russia(Russia::Settlement);
-    Calendar moex = Russia(Russia::MOEX);
-    Date holiday(6, January, 2012);
-    BOOST_CHECK(settlement.isHoliday(holiday));
-    BOOST_CHECK(moex.isBusinessDay(holiday));
-}
-
-BOOST_AUTO_TEST_CASE(testUSLiborImpactCalendar) {
-    Calendar settlement = UnitedStates(UnitedStates::Settlement);
-    Calendar liborImpact = UnitedStates(UnitedStates::LiborImpact);
-    BOOST_CHECK_EQUAL(liborImpact.name(), "US with Libor impact");
-    Date observedIndependenceDay(3, July, 2020);
-    BOOST_CHECK(settlement.isHoliday(observedIndependenceDay));
-    BOOST_CHECK(liborImpact.isBusinessDay(observedIndependenceDay));
-}
-
-BOOST_AUTO_TEST_CASE(testUSNercCalendar) {
-    Calendar settlement = UnitedStates(UnitedStates::Settlement);
-    Calendar nerc = UnitedStates(UnitedStates::NERC);
-    BOOST_CHECK_EQUAL(nerc.name(), "North American Energy Reliability Council");
-    Date juneteenth(19, June, 2024);
-    BOOST_CHECK(settlement.isHoliday(juneteenth));
-    BOOST_CHECK(nerc.isBusinessDay(juneteenth));
 }
 
 BOOST_AUTO_TEST_CASE(testSingaporeCalendar) {
