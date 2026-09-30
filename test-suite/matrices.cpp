@@ -255,6 +255,9 @@ BOOST_AUTO_TEST_CASE(testPseudoSqrtValidationAndPrincipalTolerance) {
         pseudoSqrt(Matrix(2, 3, 1.0), SalvagingAlgorithm::None), Error,
         ExpectedErrorMessage("non square matrix"));
     BOOST_CHECK_EXCEPTION(
+        pseudoSqrt(Matrix(0, 0), SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("matrix must not be empty"));
+    BOOST_CHECK_EXCEPTION(
         pseudoSqrt(M1, static_cast<SalvagingAlgorithm::Type>(99)), Error,
         ExpectedErrorMessage("unknown salvaging algorithm"));
 
@@ -309,6 +312,9 @@ BOOST_AUTO_TEST_CASE(testRankReducedPseudoSqrtBranches) {
     BOOST_CHECK_EXCEPTION(
         rankReducedSqrt(M1, 0, 1.0, SalvagingAlgorithm::None), Error,
         ExpectedErrorMessage("max rank required < 1"));
+    BOOST_CHECK_EXCEPTION(
+        rankReducedSqrt(Matrix(0, 0), 1, 1.0, SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("matrix must not be empty"));
     BOOST_CHECK_EXCEPTION(
         rankReducedSqrt(M1, 3, 1.0, SalvagingAlgorithm::Hypersphere), Error,
         ExpectedErrorMessage("unknown or invalid salvaging algorithm"));
