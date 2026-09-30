@@ -139,7 +139,6 @@ namespace QuantLib {
 
         int idx = events.size() - 1;
 
-        FloatFloatSwap swap = *arguments_.swap;
         Option::Type type =
             arguments_.type == Swap::Payer ? Option::Call : Option::Put;
 
@@ -225,6 +224,17 @@ namespace QuantLib {
 
             // todo add openmp support later on (as in gaussian1dswaptionengine)
 
+            CubicInterpolation payoff0(
+                z.begin(), z.end(), npv1.begin(),
+                CubicInterpolation::Spline, true,
+                CubicInterpolation::Lagrange, 0.0,
+                CubicInterpolation::Lagrange, 0.0);
+            CubicInterpolation payoff0a(
+                z.begin(), z.end(), npv1a.begin(),
+                CubicInterpolation::Spline, true,
+                CubicInterpolation::Lagrange, 0.0,
+                CubicInterpolation::Lagrange, 0.0);
+
             for (Size k = 0; k < (event0 > expiry ? npv0.size() : 1); k++) {
 
                 // roll back
@@ -238,16 +248,6 @@ namespace QuantLib {
                     Array yg =
                         model_->yGrid(stddevs_, integrationPoints_, event1Time,
                                       event0Time, event0 > expiry ? z[k] : y);
-                    CubicInterpolation payoff0(
-                        z.begin(), z.end(), npv1.begin(),
-                        CubicInterpolation::Spline, true,
-                        CubicInterpolation::Lagrange, 0.0,
-                        CubicInterpolation::Lagrange, 0.0);
-                    CubicInterpolation payoff0a(
-                        z.begin(), z.end(), npv1a.begin(),
-                        CubicInterpolation::Spline, true,
-                        CubicInterpolation::Lagrange, 0.0,
-                        CubicInterpolation::Lagrange, 0.0);
                     for (Size i = 0; i < yg.size(); i++) {
                         p[i] = payoff0(yg[i], true);
                         pa[i] = payoff0a(yg[i], true);
