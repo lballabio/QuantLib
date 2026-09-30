@@ -198,7 +198,9 @@ const std::optional<Integer>& roundingPrecision)
             // out of coupon range
             return 0.0;
         } else if (tradingExCoupon(d)) {
-            return nominal() * averageRate(d) * accruedPeriod(d);
+            // Match FixedRateCoupon: negative of interest from d to accrual end,
+            // using the rate projected to the end of the accrual period.
+            return -nominal() * averageRate(accrualEndDate_) * (-accruedPeriod(d));
         } else {
             // usual case
             return nominal() * averageRate(std::min(d, accrualEndDate_)) * accruedPeriod(d);
