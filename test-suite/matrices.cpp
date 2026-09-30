@@ -314,6 +314,33 @@ BOOST_AUTO_TEST_CASE(testRankReducedPseudoSqrtBranches) {
         ExpectedErrorMessage("unknown or invalid salvaging algorithm"));
 }
 
+BOOST_AUTO_TEST_CASE(testPseudoSqrtDegenerateInputs) {
+    BOOST_TEST_MESSAGE("Testing pseudo square root degenerate inputs...");
+
+    Matrix zero(3, 3, 0.0);
+    const Matrix zeroSpectral = pseudoSqrt(zero, SalvagingAlgorithm::Spectral);
+    const Matrix zeroPrincipal = pseudoSqrt(zero, SalvagingAlgorithm::Principal);
+    const Matrix zeroRankReduced = rankReducedSqrt(
+        zero, 10, 1.0, SalvagingAlgorithm::Spectral);
+
+    for (const Matrix& root : {zeroSpectral, zeroPrincipal, zeroRankReduced}) {
+        for (Size i = 0; i < root.rows(); ++i)
+            for (Size j = 0; j < root.columns(); ++j)
+                BOOST_CHECK(std::isfinite(root[i][j]));
+        BOOST_CHECK_SMALL(norm(root * transpose(root)), 1.0e-12);
+    }
+
+    Matrix singular(2, 2);
+    singular[0][0] = singular[0][1] = singular[1][0] = singular[1][1] = 1.0;
+    const Matrix spectral = pseudoSqrt(singular, SalvagingAlgorithm::Spectral);
+    const Matrix principal = pseudoSqrt(singular, SalvagingAlgorithm::Principal);
+    const Matrix rankReduced = rankReducedSqrt(
+        singular, 10, 1.0, SalvagingAlgorithm::None);
+
+    for (const Matrix& root : {spectral, principal, rankReduced})
+        BOOST_CHECK_SMALL(norm(root * transpose(root) - singular), 1.0e-12);
+}
+
 BOOST_AUTO_TEST_CASE(testSVD) {
 
     BOOST_TEST_MESSAGE("Testing singular value decomposition...");
