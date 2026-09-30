@@ -355,7 +355,8 @@ BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionCoverage) {
                            Gaussian1dFloatFloatSwaptionEngine::Probabilities probabilities,
                            bool extrapolate,
                            bool flatExtrapolation,
-                           bool useOas) {
+                           bool useOas,
+                           std::vector<Real>* probabilitiesOut = nullptr) {
         const auto swaption = ext::make_shared<FloatFloatSwaption>(swap, swaptionExercise);
         const auto engine = ext::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
             model, 12, 5.0, extrapolate, flatExtrapolation,
@@ -367,20 +368,29 @@ BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionCoverage) {
         if (probabilities != Gaussian1dFloatFloatSwaptionEngine::None) {
             const auto exerciseProbabilities = swaption->result<std::vector<Real>>(
                 "probabilities");
+            if (probabilitiesOut != nullptr)
+                *probabilitiesOut = exerciseProbabilities;
             BOOST_CHECK_EQUAL(exerciseProbabilities.size(), swaptionExercise->dates().size() + 1);
+            Real probabilitySum = 0.0;
             for (Real probability : exerciseProbabilities) {
                 BOOST_CHECK_GE(probability, 0.0);
                 BOOST_CHECK_LE(probability, 1.0 + 1.0e-12);
+                probabilitySum += probability;
             }
+            BOOST_CHECK_GT(probabilitySum, 0.0);
         }
         return value;
     };
 
     const auto iborSwap = makeSwap(Swap::Payer, vars.index1, vars.index2, false, false);
+    std::vector<Real> flatCallProbabilities;
     const Real nonFlatCall = price(iborSwap, exercise,
         Gaussian1dFloatFloatSwaptionEngine::None, true, false, false);
     const Real flatCall = price(iborSwap, exercise,
-        Gaussian1dFloatFloatSwaptionEngine::Naive, true, true, true);
+        Gaussian1dFloatFloatSwaptionEngine::Naive, true, true, true,
+        &flatCallProbabilities);
+    const Real flatCallWithoutOas = price(iborSwap, exercise,
+        Gaussian1dFloatFloatSwaptionEngine::Naive, true, true, false);
     const Real receiverPrice = price(
         makeSwap(Swap::Receiver, vars.index1, vars.index2, false, false), exercise,
         Gaussian1dFloatFloatSwaptionEngine::None, true, false, false);
@@ -392,6 +402,13 @@ BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionCoverage) {
     const Real extrapolatedDigitalPut = price(
         makeSwap(Swap::Receiver, vars.index1, vars.index2, false, false), exercise,
         Gaussian1dFloatFloatSwaptionEngine::Digital, true, false, false);
+    BOOST_CHECK_SMALL(flatCall - 4.1503974670013793e-06, 1.0e-10);
+    BOOST_CHECK_SMALL(flatCallWithoutOas - 4.1437978754246558e-06, 1.0e-10);
+    const std::vector<Real> expectedProbabilities{
+        0.0, 0.00021123900304688715, 0.99380672505088874};
+    BOOST_CHECK_EQUAL(flatCallProbabilities.size(), expectedProbabilities.size());
+    for (Size i = 0; i < expectedProbabilities.size(); ++i)
+        BOOST_CHECK_SMALL(flatCallProbabilities[i] - expectedProbabilities[i], 1.0e-10);
     BOOST_CHECK_SMALL(nonFlatCall - 4.1426336441813841e-06, 1.0e-10);
     BOOST_CHECK(std::isfinite(nonFlatCall - flatCall));
     BOOST_CHECK(std::isfinite(noExtrapolationPut));
@@ -399,6 +416,7 @@ BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionCoverage) {
     BOOST_CHECK(std::isfinite(extrapolatedDigitalPut));
     BOOST_CHECK_GT(nonFlatCall, 0.0);
     BOOST_CHECK_GT(receiverPrice, 0.0);
+    BOOST_CHECK_GT(std::fabs(flatCall - flatCallWithoutOas), 1.0e-12);
 
     const auto rebateExercise = ext::make_shared<RebatedExercise>(
         *exercise, std::vector<Real>{100.0, 50.0}, 2, vars.calendar);
