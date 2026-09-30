@@ -296,9 +296,8 @@ namespace QuantLib {
         const Real gamma = -M_PI_2*std::log(beta);
 
         const auto sqrtDiff = [](Real g, Real yy) {
-            const Real hi = std::sqrt(g + yy), lo = std::sqrt(g - yy);
-            return (std::isfinite(hi) && std::isfinite(lo)) ? Real(hi - lo)
-                                                            : Real(2.0 * yy / (hi + lo));
+            return std::isfinite(g) ? Real(std::sqrt(g + yy) - std::sqrt(g - yy))
+                                    : Real(0.0);
         };
 
         if (y >= 0.0) {
