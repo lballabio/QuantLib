@@ -381,6 +381,9 @@ BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionCoverage) {
         Gaussian1dFloatFloatSwaptionEngine::None, true, false, false);
     const Real flatCall = price(iborSwap, exercise,
         Gaussian1dFloatFloatSwaptionEngine::Naive, true, true, true);
+    const Real receiverPrice = price(
+        makeSwap(Swap::Receiver, vars.index1, vars.index2, false, false), exercise,
+        Gaussian1dFloatFloatSwaptionEngine::None, true, false, false);
     const Real noExtrapolationPut = price(
         makeSwap(Swap::Receiver, vars.index1, vars.index2, false, false), exercise,
         Gaussian1dFloatFloatSwaptionEngine::Digital, false, false, false);
@@ -393,6 +396,8 @@ BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionCoverage) {
     BOOST_CHECK(std::isfinite(noExtrapolationPut));
     BOOST_CHECK(std::isfinite(extrapolatedDigitalCall));
     BOOST_CHECK(std::isfinite(extrapolatedDigitalPut));
+    BOOST_CHECK_GT(nonFlatCall, 0.0);
+    BOOST_CHECK_GT(receiverPrice, 0.0);
 
     const auto rebateExercise = ext::make_shared<RebatedExercise>(
         *exercise, std::vector<Real>{100.0, 50.0}, 2, vars.calendar);
@@ -434,6 +439,62 @@ BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionCoverage) {
         ext::make_shared<Gaussian1dFloatFloatSwaptionEngine>(model, 12, 5.0));
     BOOST_CHECK_EXCEPTION(cashSettledSwaption->NPV(), Error,
         ExpectedErrorMessage("cash settled (ParYieldCurve) swaptions not priced"));
+}
+
+BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionCalibrationInitialGuessBoundaries) {
+    CommonVars vars;
+    const auto model = ext::make_shared<Gsr>(
+        vars.termStructure, std::vector<Date>(), std::vector<Real>{0.01}, 0.03, 60.0);
+    const auto swaptionVolatility = ext::make_shared<ConstantSwaptionVolatility>(
+        vars.settlementDays, vars.calendar, Following, 0.20, Actual365Fixed());
+    const auto standardSwapBase = ext::make_shared<EuriborSwapIsdaFixA>(
+        5 * Years, vars.termStructure);
+    const auto engine = ext::make_shared<Gaussian1dFloatFloatSwaptionEngine>(model, 12, 5.0);
+
+    const Date start = vars.settlement;
+    const Date oneYear = vars.calendar.advance(start, 1 * Years);
+    const Schedule oneYearSchedule(start, oneYear, 6 * Months, vars.calendar,
+                                   ModifiedFollowing, ModifiedFollowing,
+                                   DateGeneration::Forward, false);
+    const auto oneYearSwap = ext::make_shared<FloatFloatSwap>(
+        Swap::Payer, vars.nominal, vars.nominal,
+        oneYearSchedule, vars.index2, vars.index2->dayCounter(),
+        oneYearSchedule, vars.index2, vars.index2->dayCounter());
+    const Date expiryAfterLastReset = vars.calendar.advance(start, 9 * Months);
+    const EuropeanExercise europeanExpiry(expiryAfterLastReset);
+    const auto rebateExercise = ext::make_shared<RebatedExercise>(
+        europeanExpiry, 100.0, 2, vars.calendar);
+    const auto noResetSwaption = ext::make_shared<FloatFloatSwaption>(
+        oneYearSwap, rebateExercise);
+    noResetSwaption->setPricingEngine(engine);
+    BOOST_CHECK_EXCEPTION(
+        noResetSwaption->calibrationBasket(
+            standardSwapBase, swaptionVolatility,
+            BasketGeneratingEngine::MaturityStrikeByDeltaGamma),
+        Error, ExpectedErrorMessage("no leg 1 reset dates remain"));
+
+    const Date fiveYears = vars.calendar.advance(start, 5 * Years);
+    const Schedule quarterlySchedule(start, fiveYears, 3 * Months, vars.calendar,
+                                     ModifiedFollowing, ModifiedFollowing,
+                                     DateGeneration::Forward, false);
+    std::vector<Real> notionals1(quarterlySchedule.size() - 1, 0.0);
+    notionals1[notionals1.size() - 2] = vars.nominal;
+    notionals1.back() = -vars.nominal;
+    const std::vector<Real> notionals2(
+        quarterlySchedule.size() - 1, vars.nominal);
+    const auto cancellingNotionalSwap = ext::make_shared<FloatFloatSwap>(
+        Swap::Payer, notionals1, notionals2,
+        quarterlySchedule, vars.index1, vars.index1->dayCounter(),
+        quarterlySchedule, vars.index1, vars.index1->dayCounter());
+    const auto cancellingNotionalSwaption = ext::make_shared<FloatFloatSwaption>(
+        cancellingNotionalSwap,
+        ext::make_shared<EuropeanExercise>(vars.calendar.advance(vars.today, 2 * Years)));
+    cancellingNotionalSwaption->setPricingEngine(engine);
+    BOOST_CHECK_EXCEPTION(
+        cancellingNotionalSwaption->calibrationBasket(
+            standardSwapBase, swaptionVolatility,
+            BasketGeneratingEngine::MaturityStrikeByDeltaGamma),
+        Error, ExpectedErrorMessage("remaining leg 1 notionals sum to zero"));
 }
 
 

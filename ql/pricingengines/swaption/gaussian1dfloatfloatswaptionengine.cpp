@@ -75,6 +75,9 @@ namespace QuantLib {
             std::upper_bound(arguments_.leg1ResetDates.begin(),
                              arguments_.leg1ResetDates.end(), expiry - 1) -
             arguments_.leg1ResetDates.begin();
+        const Size remainingResetCount = arguments_.leg1ResetDates.size() - idx1;
+        QL_REQUIRE(remainingResetCount > 0,
+                   "no leg 1 reset dates remain at calibration expiry " << expiry);
 
         // very simple initial guess
         // check guess for nominal and weighted maturity !
@@ -83,8 +86,10 @@ namespace QuantLib {
         for (Size i = idx1; i < arguments_.leg1ResetDates.size(); i++) {
             nominalSum1 += arguments_.nominal1[i];
         }
-        Real nominalAvg1 = nominalSum1 /
-            (arguments_.leg1ResetDates.size() - idx1);
+        QL_REQUIRE(nominalSum1 != 0.0,
+                   "remaining leg 1 notionals sum to zero at calibration expiry "
+                       << expiry);
+        Real nominalAvg1 = nominalSum1 / remainingResetCount;
         Real weightedMaturity1 = 0.0;
         for (Size i = idx1; i < arguments_.leg1ResetDates.size(); i++) {
             weightedMaturity1 +=
