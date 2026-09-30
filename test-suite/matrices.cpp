@@ -210,6 +210,110 @@ BOOST_AUTO_TEST_CASE(testHighamSqrt) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testPseudoSqrtSalvagingAlgorithms) {
+    BOOST_TEST_MESSAGE("Testing pseudo square root salvaging algorithms...");
+
+    setup();
+
+    const Matrix spectral = pseudoSqrt(M2, SalvagingAlgorithm::Spectral);
+    const Matrix hypersphere = pseudoSqrt(M2, SalvagingAlgorithm::Hypersphere);
+    const Matrix lowerDiagonal = pseudoSqrt(M2, SalvagingAlgorithm::LowerDiagonal);
+
+    for (const Matrix& root : {spectral, hypersphere, lowerDiagonal}) {
+        const Matrix covariance = root * transpose(root);
+        const SymmetricSchurDecomposition decomposition(covariance);
+
+        for (Size i = 0; i < M2.rows(); ++i) {
+            BOOST_CHECK_SMALL(covariance[i][i] - M2[i][i], 1.0e-12);
+            BOOST_CHECK_GE(decomposition.eigenvalues()[i], -1.0e-12);
+        }
+    }
+
+    const Matrix positiveHypersphere =
+        pseudoSqrt(M1, SalvagingAlgorithm::Hypersphere);
+    const Matrix positiveLowerDiagonal =
+        pseudoSqrt(M1, SalvagingAlgorithm::LowerDiagonal);
+    BOOST_CHECK_SMALL(
+        norm(positiveHypersphere * transpose(positiveHypersphere) - M1), 1.0e-12);
+    BOOST_CHECK_SMALL(
+        norm(positiveLowerDiagonal * transpose(positiveLowerDiagonal) - M1),
+        1.0e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testPseudoSqrtValidationAndPrincipalTolerance) {
+    BOOST_TEST_MESSAGE("Testing pseudo square root validation and tolerances...");
+
+    setup();
+
+    BOOST_CHECK_EXCEPTION(
+        pseudoSqrt(M2, SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("negative eigenvalue(s)"));
+    BOOST_CHECK_EXCEPTION(
+        pseudoSqrt(M2, SalvagingAlgorithm::Principal), Error,
+        ExpectedErrorMessage("negative eigenvalue(s)"));
+    BOOST_CHECK_EXCEPTION(
+        pseudoSqrt(Matrix(2, 3, 1.0), SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("non square matrix"));
+    BOOST_CHECK_EXCEPTION(
+        pseudoSqrt(M1, static_cast<SalvagingAlgorithm::Type>(99)), Error,
+        ExpectedErrorMessage("unknown salvaging algorithm"));
+
+    Matrix nearlyPositive = M1;
+    nearlyPositive[0][0] += 1.0e-14;
+    nearlyPositive[1][1] += 1.0e-14;
+    const Matrix principal = pseudoSqrt(nearlyPositive, SalvagingAlgorithm::Principal);
+    BOOST_CHECK_SMALL(
+        norm(principal * transpose(principal) - nearlyPositive), 1.0e-12);
+
+    Matrix almostSemidefinite(1, 1);
+    almostSemidefinite[0][0] = -QL_EPSILON;
+    const Matrix principalAlmostSemidefinite =
+        pseudoSqrt(almostSemidefinite, SalvagingAlgorithm::Principal);
+    BOOST_CHECK_SMALL(principalAlmostSemidefinite[0][0], 1.0e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testRankReducedPseudoSqrtBranches) {
+    BOOST_TEST_MESSAGE("Testing rank-reduced pseudo square root branches...");
+
+    setup();
+
+    const Matrix fullRank = rankReducedSqrt(
+        M1, 3, 1.0, SalvagingAlgorithm::None);
+    const Matrix rankOne = rankReducedSqrt(
+        M1, 1, 1.0, SalvagingAlgorithm::None);
+    const Matrix halfSpectrum = rankReducedSqrt(
+        M1, 3, 0.5, SalvagingAlgorithm::None);
+
+    BOOST_CHECK_EQUAL(fullRank.columns(), 3);
+    BOOST_CHECK_EQUAL(rankOne.columns(), 1);
+    BOOST_CHECK_LE(halfSpectrum.columns(), 3);
+    for (const Matrix& root : {fullRank, rankOne, halfSpectrum}) {
+        const Matrix covariance = root * transpose(root);
+        for (Size i = 0; i < M1.rows(); ++i)
+            BOOST_CHECK_SMALL(covariance[i][i] - M1[i][i], 1.0e-12);
+    }
+
+    const Matrix spectral = rankReducedSqrt(
+        M2, 3, 1.0, SalvagingAlgorithm::Spectral);
+    const Matrix higham = rankReducedSqrt(
+        M5, 4, 1.0, SalvagingAlgorithm::Higham);
+    BOOST_CHECK_EQUAL(spectral.columns(), 3);
+    BOOST_CHECK_EQUAL(higham.columns(), 4);
+
+    BOOST_CHECK_EXCEPTION(
+        rankReducedSqrt(M1, 3, 0.0, SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("no eigenvalues retained"));
+    BOOST_CHECK_EXCEPTION(
+        rankReducedSqrt(M1, 3, 1.1, SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("percentage to be retained > 100%"));
+    BOOST_CHECK_EXCEPTION(
+        rankReducedSqrt(M1, 0, 1.0, SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("max rank required < 1"));
+    BOOST_CHECK_EXCEPTION(
+        rankReducedSqrt(M1, 3, 1.0, SalvagingAlgorithm::Hypersphere), Error,
+        ExpectedErrorMessage("unknown or invalid salvaging algorithm"));
+}
+
 BOOST_AUTO_TEST_CASE(testSVD) {
 
     BOOST_TEST_MESSAGE("Testing singular value decomposition...");
