@@ -392,6 +392,7 @@ BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionCoverage) {
     const Real extrapolatedDigitalPut = price(
         makeSwap(Swap::Receiver, vars.index1, vars.index2, false, false), exercise,
         Gaussian1dFloatFloatSwaptionEngine::Digital, true, false, false);
+    BOOST_CHECK_SMALL(nonFlatCall - 4.1426336441813841e-06, 1.0e-10);
     BOOST_CHECK(std::isfinite(nonFlatCall - flatCall));
     BOOST_CHECK(std::isfinite(noExtrapolationPut));
     BOOST_CHECK(std::isfinite(extrapolatedDigitalCall));
