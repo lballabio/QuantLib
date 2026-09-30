@@ -19,10 +19,18 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/experimental/coupons/swapspreadindex.hpp>
+#include <ql/exercise.hpp>
 #include <ql/instruments/floatfloatswap.hpp>
+#include <ql/instruments/floatfloatswaption.hpp>
+#include <ql/models/shortrate/onefactormodels/gsr.hpp>
+#include <ql/pricingengines/swaption/gaussian1dfloatfloatswaptionengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/rebatedexercise.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -264,6 +272,168 @@ BOOST_AUTO_TEST_CASE(testExpiredSwapFairSpread) {
     BOOST_CHECK_EXCEPTION(
         swap->fairSpread2(), Error,
         ExpectedErrorMessage("fair spread 2 not available"));
+}
+
+BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionAndCalibrationBasket) {
+    CommonVars vars;
+    const auto model = ext::make_shared<Gsr>(
+        vars.termStructure, std::vector<Date>(), std::vector<Real>{0.01}, 0.03, 60.0);
+    const Date start = vars.settlement;
+    const Date maturity = vars.calendar.advance(start, 5 * Years);
+    const Schedule schedule1(start, maturity, 3 * Months, vars.calendar,
+                             ModifiedFollowing, ModifiedFollowing,
+                             DateGeneration::Forward, false);
+    const Schedule schedule2(start, maturity, 6 * Months, vars.calendar,
+                             ModifiedFollowing, ModifiedFollowing,
+                             DateGeneration::Forward, false);
+    const auto swap = ext::make_shared<FloatFloatSwap>(
+        Swap::Payer, vars.nominal, vars.nominal, schedule1, vars.index1,
+        vars.index1->dayCounter(), schedule2, vars.index2,
+        vars.index2->dayCounter());
+    const Date firstExercise = vars.calendar.advance(vars.today, 2 * Years);
+    const Date secondExercise = vars.calendar.advance(vars.today, 3 * Years);
+    const auto exercise = ext::make_shared<BermudanExercise>(
+        std::vector<Date>{firstExercise, secondExercise});
+    const auto swaption = ext::make_shared<FloatFloatSwaption>(swap, exercise);
+    const auto engine = ext::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
+        model, 16, 5.0);
+    swaption->setPricingEngine(engine);
+
+    const Real value = swaption->NPV();
+    BOOST_CHECK(std::isfinite(value));
+    BOOST_CHECK(std::isfinite(swaption->result<Real>("underlyingValue")));
+
+    const auto swaptionVolatility = ext::make_shared<ConstantSwaptionVolatility>(
+        vars.settlementDays, vars.calendar, Following, 0.20, Actual365Fixed());
+    const auto standardSwapBase = ext::make_shared<EuriborSwapIsdaFixA>(
+        5 * Years, vars.termStructure);
+
+    const auto naiveBasket = swaption->calibrationBasket(
+        standardSwapBase, swaptionVolatility, BasketGeneratingEngine::Naive);
+    BOOST_CHECK_EQUAL(naiveBasket.size(), exercise->dates().size());
+
+    const auto fittedBasket = swaption->calibrationBasket(
+        standardSwapBase, swaptionVolatility,
+        BasketGeneratingEngine::MaturityStrikeByDeltaGamma);
+    BOOST_CHECK_EQUAL(fittedBasket.size(), exercise->dates().size());
+}
+
+BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionCoverage) {
+    CommonVars vars;
+    const auto model = ext::make_shared<Gsr>(
+        vars.termStructure, std::vector<Date>(), std::vector<Real>{0.01}, 0.03, 60.0);
+    const Date start = vars.settlement;
+    const Date maturity = vars.calendar.advance(start, 5 * Years);
+    const Schedule schedule1(start, maturity, 3 * Months, vars.calendar,
+                             ModifiedFollowing, ModifiedFollowing,
+                             DateGeneration::Forward, false);
+    const Schedule schedule2(start, maturity, 6 * Months, vars.calendar,
+                             ModifiedFollowing, ModifiedFollowing,
+                             DateGeneration::Forward, false);
+    const Date firstExercise = vars.calendar.advance(vars.today, 2 * Years);
+    const Date secondExercise = vars.calendar.advance(vars.today, 3 * Years);
+    const auto exercise = ext::make_shared<BermudanExercise>(
+        std::vector<Date>{firstExercise, secondExercise});
+    const Handle<Quote> oas(ext::make_shared<SimpleQuote>(0.002));
+
+    const auto makeSwap = [&](Swap::Type type,
+                              const ext::shared_ptr<InterestRateIndex>& index1,
+                              const ext::shared_ptr<InterestRateIndex>& index2,
+                              bool exchangePrincipal,
+                              bool capAndFloor) {
+        const Rate cap = capAndFloor ? 0.01 : Null<Real>();
+        const Rate floor = capAndFloor ? 0.001 : Null<Real>();
+        return ext::make_shared<FloatFloatSwap>(
+            type, vars.nominal, vars.nominal, schedule1, index1,
+            index1->dayCounter(), schedule2, index2, index2->dayCounter(),
+            exchangePrincipal, exchangePrincipal,
+            1.0, 0.001, cap, floor, 1.0, -0.001, cap, floor);
+    };
+
+    const auto price = [&](const ext::shared_ptr<FloatFloatSwap>& swap,
+                           const ext::shared_ptr<Exercise>& swaptionExercise,
+                           Gaussian1dFloatFloatSwaptionEngine::Probabilities probabilities,
+                           bool extrapolate,
+                           bool flatExtrapolation,
+                           bool useOas) {
+        const auto swaption = ext::make_shared<FloatFloatSwaption>(swap, swaptionExercise);
+        const auto engine = ext::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
+            model, 12, 5.0, extrapolate, flatExtrapolation,
+            useOas ? oas : Handle<Quote>(), vars.termStructure, false, probabilities);
+        swaption->setPricingEngine(engine);
+        const Real value = swaption->NPV();
+        BOOST_CHECK(std::isfinite(value));
+        BOOST_CHECK(std::isfinite(swaption->result<Real>("underlyingValue")));
+        if (probabilities != Gaussian1dFloatFloatSwaptionEngine::None) {
+            const auto exerciseProbabilities = swaption->result<std::vector<Real>>(
+                "probabilities");
+            BOOST_CHECK_EQUAL(exerciseProbabilities.size(), swaptionExercise->dates().size() + 1);
+            for (Real probability : exerciseProbabilities) {
+                BOOST_CHECK_GE(probability, 0.0);
+                BOOST_CHECK_LE(probability, 1.0 + 1.0e-12);
+            }
+        }
+        return value;
+    };
+
+    const auto iborSwap = makeSwap(Swap::Payer, vars.index1, vars.index2, false, false);
+    const Real nonFlatCall = price(iborSwap, exercise,
+        Gaussian1dFloatFloatSwaptionEngine::None, true, false, false);
+    const Real flatCall = price(iborSwap, exercise,
+        Gaussian1dFloatFloatSwaptionEngine::Naive, true, true, true);
+    const Real noExtrapolationPut = price(
+        makeSwap(Swap::Receiver, vars.index1, vars.index2, false, false), exercise,
+        Gaussian1dFloatFloatSwaptionEngine::Digital, false, false, false);
+    const Real extrapolatedDigitalCall = price(iborSwap, exercise,
+        Gaussian1dFloatFloatSwaptionEngine::Digital, true, false, false);
+    const Real extrapolatedDigitalPut = price(
+        makeSwap(Swap::Receiver, vars.index1, vars.index2, false, false), exercise,
+        Gaussian1dFloatFloatSwaptionEngine::Digital, true, false, false);
+    BOOST_CHECK(std::isfinite(nonFlatCall - flatCall));
+    BOOST_CHECK(std::isfinite(noExtrapolationPut));
+    BOOST_CHECK(std::isfinite(extrapolatedDigitalCall));
+    BOOST_CHECK(std::isfinite(extrapolatedDigitalPut));
+
+    const auto rebateExercise = ext::make_shared<RebatedExercise>(
+        *exercise, std::vector<Real>{100.0, 50.0}, 2, vars.calendar);
+    const Real rebatedValue = price(iborSwap, rebateExercise,
+        Gaussian1dFloatFloatSwaptionEngine::Naive, true, false, true);
+    BOOST_CHECK(std::isfinite(rebatedValue));
+
+    const auto exchangedCappedSwap = makeSwap(
+        Swap::Payer, vars.index1, vars.index2, true, true);
+    BOOST_CHECK(std::isfinite(price(exchangedCappedSwap, exercise,
+        Gaussian1dFloatFloatSwaptionEngine::None, true, false, false)));
+
+    const auto cms3m = ext::make_shared<EuriborSwapIsdaFixA>(
+        5 * Years, vars.termStructure);
+    const auto cms10y = ext::make_shared<EuriborSwapIsdaFixA>(
+        10 * Years, vars.termStructure);
+    const auto spreadIndex = ext::make_shared<SwapSpreadIndex>(
+        "test cms spread", cms10y, cms3m);
+    BOOST_CHECK(std::isfinite(price(makeSwap(
+        Swap::Payer, cms10y, vars.index2, false, false), exercise,
+        Gaussian1dFloatFloatSwaptionEngine::None, false, false, false)));
+    BOOST_CHECK(std::isfinite(price(makeSwap(
+        Swap::Receiver, spreadIndex, cms3m, false, false), exercise,
+        Gaussian1dFloatFloatSwaptionEngine::None, true, false, false)));
+    BOOST_CHECK(std::isfinite(price(makeSwap(
+        Swap::Payer, vars.index1, spreadIndex, false, false), exercise,
+        Gaussian1dFloatFloatSwaptionEngine::None, true, false, false)));
+
+    const auto expiredSwaption = ext::make_shared<FloatFloatSwaption>(
+        iborSwap, ext::make_shared<EuropeanExercise>(vars.settlement));
+    expiredSwaption->setPricingEngine(ext::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
+        model, 12, 5.0));
+    BOOST_CHECK_EQUAL(expiredSwaption->NPV(), 0.0);
+
+    const auto cashSettledSwaption = ext::make_shared<FloatFloatSwaption>(
+        iborSwap, ext::make_shared<EuropeanExercise>(firstExercise),
+        Settlement::Cash, Settlement::ParYieldCurve);
+    cashSettledSwaption->setPricingEngine(
+        ext::make_shared<Gaussian1dFloatFloatSwaptionEngine>(model, 12, 5.0));
+    BOOST_CHECK_EXCEPTION(cashSettledSwaption->NPV(), Error,
+        ExpectedErrorMessage("cash settled (ParYieldCurve) swaptions not priced"));
 }
 
 
