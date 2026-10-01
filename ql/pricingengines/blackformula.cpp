@@ -531,6 +531,9 @@ namespace QuantLib {
             x = -x;
         }
 
+        if (cs == 0.0)
+            return 0.0;
+
         Size nIter = 0;
         Real dv, vk, vkp1 = guess;
 

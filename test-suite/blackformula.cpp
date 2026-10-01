@@ -594,6 +594,49 @@ BOOST_AUTO_TEST_CASE(testImpliedStdDevApproximationRSStaysFinite) {
     }
 }
 
+
+BOOST_AUTO_TEST_CASE(testImpliedStdDevLiRSAtIntrinsic) {
+    BOOST_TEST_MESSAGE("Testing Li-RS implied standard deviation at intrinsic...");
+
+    const Real forward = 1.0;
+    const Real discount = 1.0;
+
+    for (Real ratio: {1.5, 2.0, 5.0, 10.0}) {
+        const Real strike = forward / ratio;
+        for (Real stdDev: {1e-7, 1e-4, 0.01}) {
+            const Real price = blackFormula(Option::Call, strike, forward, stdDev, discount);
+            const Real expected = blackFormulaImpliedStdDev(Option::Call, strike, forward,
+                                                            price, discount);
+            if (expected != 0.0)
+                continue;
+
+            Real calculated;
+            try {
+                calculated = blackFormulaImpliedStdDevLiRS(Option::Call, strike, forward,
+                                                           price, discount);
+            } catch (const std::exception& e) {
+                BOOST_ERROR("Li-RS threw where the price sits on intrinsic"
+                            << std::setprecision(16)
+                            << "\n    forward: " << forward
+                            << "\n    strike:  " << strike
+                            << "\n    std dev: " << stdDev
+                            << "\n    price:   " << price
+                            << "\n    error:   " << e.what());
+                continue;
+            }
+
+            if (calculated != expected)
+                BOOST_ERROR("failed to reproduce Li-RS implied standard deviation"
+                            << std::setprecision(16)
+                            << "\n    forward:    " << forward
+                            << "\n    strike:     " << strike
+                            << "\n    std dev:    " << stdDev
+                            << "\n    calculated: " << calculated
+                            << "\n    expected:   " << expected);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
