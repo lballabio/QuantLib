@@ -27,6 +27,7 @@
 #include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/vannavolgainterpolation.hpp>
 #include <ql/quotes/deltavolquote.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/blackdeltacalculator.hpp>
@@ -223,7 +224,7 @@ namespace QuantLib {
                      NormalDistribution norm;
                      Real d1atm = (std::log(x0Quote->value() * foreignTS_->discount(T_) /
                                             domesticTS_->discount(T_) / atmStrike) +
-                                   0.5 * std::pow(atmVolQuote->value(), 2.0) * T_) /
+                                   0.5 * squared(atmVolQuote->value()) * T_) /
                                   (atmVolQuote->value() * sqrt(T_));
                      Real vegaAtm_Analytical =
                          x0Quote->value() * norm(d1atm) * sqrt(T_) * foreignTS_->discount(T_);
@@ -235,7 +236,7 @@ namespace QuantLib {
 
                      Real d125call = (std::log(x0Quote->value() * foreignTS_->discount(T_) /
                                                domesticTS_->discount(T_) / call25Strike) +
-                                      0.5 * std::pow(atmVolQuote->value(), 2.0) * T_) /
+                                      0.5 * squared(atmVolQuote->value()) * T_) /
                                      (atmVolQuote->value() * sqrt(T_));
                      Real vega25Call_Analytical =
                          x0Quote->value() * norm(d125call) * sqrt(T_) * foreignTS_->discount(T_);
@@ -248,7 +249,7 @@ namespace QuantLib {
 
                      Real d125Put = (std::log(x0Quote->value() * foreignTS_->discount(T_) /
                                               domesticTS_->discount(T_) / put25Strike) +
-                                     0.5 * std::pow(atmVolQuote->value(), 2.0) * T_) /
+                                     0.5 * squared(atmVolQuote->value()) * T_) /
                                     (atmVolQuote->value() * sqrt(T_));
                      Real vega25Put_Analytical =
                          x0Quote->value() * norm(d125Put) * sqrt(T_) * foreignTS_->discount(T_);

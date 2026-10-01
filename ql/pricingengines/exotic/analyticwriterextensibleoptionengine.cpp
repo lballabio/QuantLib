@@ -18,6 +18,7 @@
 */
 
 #include <ql/pricingengines/exotic/analyticwriterextensibleoptionengine.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <utility>
@@ -95,9 +96,9 @@ namespace QuantLib {
         // Standard bivariate normal distribution:
         Real ro = std::sqrt(t1/t2);
         Real z1 = (std::log(spot/payoff2->strike()) +
-                   (b+std::pow(volatility, 2)/2)*t2)/(volatility*std::sqrt(t2));
+                   (b+squared(volatility)/2)*t2)/(volatility*std::sqrt(t2));
         Real z2 = (std::log(spot/payoff1->strike()) +
-                   (b+std::pow(volatility, 2)/2)*t1)/(volatility*std::sqrt(t1));
+                   (b+squared(volatility)/2)*t1)/(volatility*std::sqrt(t1));
 
         // Call the bivariate method:
         BivariateCumulativeNormalDistributionWe04DP biv(-ro);

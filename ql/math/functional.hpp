@@ -36,6 +36,11 @@ namespace QuantLib {
     template <class T>
     inline T squared(T x) { return x * x; }
 
+    template <class T>
+    inline T cubed(T x) { return x * x * x; }
+
+    template <class T>
+    inline T quartic(T x) { return x * x * x * x; }
 }
 
 

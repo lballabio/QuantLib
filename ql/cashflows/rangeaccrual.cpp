@@ -21,6 +21,7 @@
 
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/blackformula.hpp>
@@ -433,7 +434,7 @@ namespace QuantLib {
                      smileCorrection(strike, initialValue, expiry, deflator);
         }
 
-        QL_REQUIRE(result > -std::pow(eps_,.5),
+        QL_REQUIRE(result > -std::sqrt(eps_),
             "RangeAccrualPricerByBgm::digitalPriceWithSmile: result< 0 Result:"<<result);
         QL_REQUIRE(result/deflator <=  1.0 + std::pow(eps_,.2),
             "RangeAccrualPricerByBgm::digitalPriceWithSmile: result/deflator > 1. Ratio: "

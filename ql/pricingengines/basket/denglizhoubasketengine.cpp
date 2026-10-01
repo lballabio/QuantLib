@@ -196,7 +196,7 @@ namespace QuantLib {
             DF.row_begin(i), DF.row_end(i), DF.row_begin(i), Real(0.0));
         const Real J_2 = u*psi*sqrtPsi*n_uSqrtPsi*(
                 2 * tF2
-                + vFv*vFv*(squared(squared(psi*u))
+                + vFv*vFv*(quartic(psi*u)
                            - 10.0*psi*psi*psi*u*u + 15*psi*psi)
                 + vFFv * (4*psi*psi*u*u - 12*psi)
         );

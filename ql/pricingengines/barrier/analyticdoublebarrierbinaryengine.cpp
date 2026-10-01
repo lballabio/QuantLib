@@ -18,6 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
 #include <utility>
 
@@ -88,9 +89,9 @@ namespace QuantLib {
         Real b = r - q;
 
         Real alpha = -0.5 * ( 2*b/sigmaq - 1);
-        Real beta = -0.25 * std::pow(( 2*b/sigmaq - 1), 2) - 2 * r/sigmaq;
+        Real beta = -0.25 * squared(2*b/sigmaq - 1) - 2 * r/sigmaq;
         Real Z = std::log(barrier_hi / barrier_lo);
-        Real factor = ((2*PI*cash)/std::pow(Z,2)); // common factor
+        Real factor = ((2*PI*cash)/squared(Z)); // common factor
         Real lo_alpha = std::pow(spot/barrier_lo, alpha); 
         Real hi_alpha = std::pow(spot/barrier_hi, alpha); 
 
@@ -98,9 +99,9 @@ namespace QuantLib {
         for (Size i = 1 ; i < maxIteration ; ++i)
         {
            Real term1 = (lo_alpha-std::pow(-1.0, (int)i)*hi_alpha) /
-                              (std::pow(alpha,2)+std::pow(i*PI/Z, 2));
+                              (squared(alpha)+squared(i*PI/Z));
            Real term2 = std::sin(i*PI/Z * std::log(spot/barrier_lo));
-           Real term3 = std::exp(-0.5*(std::pow(i*PI/Z,2)-beta)*variance);
+           Real term3 = std::exp(-0.5*(squared(i*PI/Z)-beta)*variance);
            term = factor * i * term1 * term2 * term3;
            tot += term;
         }

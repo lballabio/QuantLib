@@ -22,6 +22,7 @@
 
 #include <ql/stochasticprocess.hpp>
 #include <ql/experimental/credit/onefactoraffinesurvival.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/termstructures/credit/probabilitytraits.hpp>
 #include <ql/termstructures/interpolatedcurve.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
@@ -294,7 +295,7 @@ namespace QuantLib {
         Time t) const 
     {
         // the way x0 is defined:
-        Real initValHR = std::pow(model_->dynamics()->process()->x0(), 2);
+        Real initValHR = squared(model_->dynamics()->process()->x0());
 
         if (t == 0.0)
             return model_->discountBond(0., t, initValHR);
