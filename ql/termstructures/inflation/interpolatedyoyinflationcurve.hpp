@@ -41,7 +41,8 @@ namespace QuantLib {
     template<class Interpolator>
     class InterpolatedYoYInflationCurve
         : public YoYInflationTermStructure,
-          protected InterpolatedCurve<Interpolator> {
+          protected InterpolatedCurve<Interpolator>,
+          public InterpolatedNodes {
       public:
         InterpolatedYoYInflationCurve(const Date& referenceDate,
                                       std::vector<Date> dates,
@@ -58,9 +59,9 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        const std::vector<Date>& dates() const;
-        const std::vector<Time>& times() const;
-        const std::vector<Real>& data() const;
+        const std::vector<Date>& dates() const override;
+        const std::vector<Time>& times() const override;
+        const std::vector<Real>& data() const override;
         const std::vector<Rate>& rates() const;
         std::vector<std::pair<Date,Rate> > nodes() const;
         //@}

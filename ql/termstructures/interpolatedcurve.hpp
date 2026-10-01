@@ -33,6 +33,20 @@
 
 namespace QuantLib {
 
+    //! Node inspectors shared by interpolated term structures
+    /*! Access to the interpolated nodes of yield curves
+    */
+    class InterpolatedNodes {
+      public:
+        virtual ~InterpolatedNodes() = default;
+        //! node dates, including the reference date
+        virtual const std::vector<Date>& dates() const = 0;
+        //! node times, including the reference time
+        virtual const std::vector<Time>& times() const = 0;
+        //! node values in the trait space of the curve
+        virtual const std::vector<Real>& data() const = 0;
+    };
+
     //! Helper class to build interpolated term structures
     /*! Interpolated term structures can use protected or private
         inheritance from this class to obtain the relevant data

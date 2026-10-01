@@ -39,7 +39,8 @@ namespace QuantLib {
     template <class Interpolator>
     class InterpolatedDiscountCurve
         : public YieldTermStructure,
-          protected InterpolatedCurve<Interpolator> {
+          protected InterpolatedCurve<Interpolator>,
+          public InterpolatedNodes {
       public:
         InterpolatedDiscountCurve(
             const std::vector<Date>& dates,
@@ -66,9 +67,9 @@ namespace QuantLib {
         //@}
         //! \name other inspectors
         //@{
-        const std::vector<Time>& times() const;
-        const std::vector<Date>& dates() const;
-        const std::vector<Real>& data() const;
+        const std::vector<Time>& times() const override;
+        const std::vector<Date>& dates() const override;
+        const std::vector<Real>& data() const override;
         const std::vector<DiscountFactor>& discounts() const;
         std::vector<std::pair<Date, Real> > nodes() const;
         //@}

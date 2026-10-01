@@ -177,9 +177,9 @@ namespace QuantLib {
         //@}
         //! \name base_curve interface
         //@{
-        const std::vector<Time>& times() const;
-        const std::vector<Date>& dates() const;
-        const std::vector<Real>& data() const;
+        const std::vector<Time>& times() const override;
+        const std::vector<Date>& dates() const override;
+        const std::vector<Real>& data() const override;
         std::vector<std::pair<Date, Real> > nodes() const;
         //@}
         //! \name Observer interface
