@@ -90,7 +90,12 @@ namespace QuantLib {
             maturityDate, divdc, Continuous, NoFrequency);
         Date referenceDate = process_->riskFreeRate()->referenceDate();
 
-        // subtract dividends
+        // Subtract every dividend that has not yet occurred as of the
+        // evaluation date. Note that a dividend falling strictly between the
+        // evaluation date and the settlement date is subtracted here but never
+        // added back: the tree prices the bond at the settlement date, where
+        // the underlying already reflects that dividend as already paid, so
+        // dropping it on the spot is the correct thing to do.
         Size i;
         for (i=0; i<dividends_.size(); i++) {
             if (dividends_[i]->date() >= referenceDate)
@@ -99,6 +104,15 @@ namespace QuantLib {
         }
         QL_REQUIRE(s0 > 0.0,
             "negative value after subtracting dividends");
+
+        // Roll the spot forward from the evaluation date to the settlement
+        // date by dividing out the discount factor between the two. This is
+        // correct even in the absence of any dividends: the tree and
+        // DiscretizedConvertible anchor all dividend/coupon/callability times
+        // at arguments_.settlementDate (see issue #2701), so the spot the
+        // tree prices from must be the settlement-date forward price, not the
+        // evaluation-date spot.
+        s0 /= process_->riskFreeRate()->discount(arguments_.settlementDate);
 
         // binomial trees with constant coefficient
         Handle<Quote> underlying(ext::make_shared<SimpleQuote>(s0));
