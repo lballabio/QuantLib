@@ -681,6 +681,7 @@
     <ClCompile Include="cms_normal.cpp" />
     <ClCompile Include="cmsspread.cpp" />
     <ClCompile Include="commodityunitofmeasure.cpp" />
+    <ClCompile Include="energybasisswap.cpp" />
     <ClCompile Include="compiledboostversion.cpp" />
     <ClCompile Include="compoundoption.cpp" />
     <ClCompile Include="convertiblebonds.cpp" />

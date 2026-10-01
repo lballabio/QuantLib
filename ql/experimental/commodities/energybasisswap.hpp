@@ -59,6 +59,7 @@ namespace QuantLib {
       protected:
         void performCalculations() const override;
 
+        // Currently observed, but not used by performCalculations(); clarify its intended role.
         ext::shared_ptr<CommodityIndex> spreadIndex_;
         ext::shared_ptr<CommodityIndex> payIndex_;
         ext::shared_ptr<CommodityIndex> receiveIndex_;
