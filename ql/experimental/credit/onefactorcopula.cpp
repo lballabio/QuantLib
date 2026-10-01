@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/credit/onefactorcopula.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 using namespace std;
 
@@ -27,7 +28,9 @@ namespace QuantLib {
     Real OneFactorCopula::conditionalProbability(Real p, Real m) const {
     //-------------------------------------------------------------------------
         calculate ();
-        // FIXME
+        // Guard against p near zero to avoid numerical issues in
+        // inverseCumulativeY(p) when the tail of the distribution is
+        // not well-resolved by the tabulated grid.
         if (p < 1e-10) return 0;
 
         Real c = correlation_->value();
@@ -111,9 +114,12 @@ namespace QuantLib {
         QL_REQUIRE (fabs (mean) < tolerance, "mean out of tolerance range");
         QL_REQUIRE (fabs (var - 1.0) < tolerance, "variance out of tolerance range");
 
-        // FIXME: define range for Y via cutoff quantil?
-        Real zMin = -10;
-        Real zMax = +10;
+        // Use tail quantile to derive integration range instead of hardcoding ±10.
+        // Z is always unit-variance Gaussian in OneFactorCopula.
+        const Real cutoff = 1e-7;
+        const Real zBound = InverseCumulativeNormal()(1.0 - cutoff);
+        Real zMin = -zBound;
+        Real zMax =  zBound;
         Size zSteps = 200;
         norm = 0;
         mean = 0;
@@ -132,9 +138,11 @@ namespace QuantLib {
         QL_REQUIRE (fabs (mean) < tolerance, "mean out of tolerance range");
         QL_REQUIRE (fabs (var - 1.0) < tolerance, "variance out of tolerance range");
 
-        // FIXME: define range for Y via cutoff quantil?
-        Real yMin = -10;
-        Real yMax = +10;
+        // Use the bounds of the tabulated Y grid, which were already derived
+        // from tail quantiles in performCalculations() of the derived class.
+        QL_REQUIRE(!y_.empty(), "cumulative Y not tabulated yet");
+        Real yMin = y_.front();
+        Real yMax = y_.back();
         Size ySteps = 200;
         norm = 0;
         mean = 0;
