@@ -126,6 +126,11 @@ jobs:
             tag: resolute
             cc: clang
             cxx: clang++
+          - name: "Clang 22"
+            shortname: clang22
+            tag: stonking
+            cc: clang
+            cxx: clang++
           - name: "C++17 mode"
             shortname: c++17
             tag: rolling
