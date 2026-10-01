@@ -34,7 +34,7 @@ namespace QuantLib {
 
     //! Units used to describe time periods
     /*! \ingroup datetime */
-    enum TimeUnit { Days,
+    enum TimeUnit { Days,       //!< legacy unit: calendar days except in Calendar::advance
                     Weeks,
                     Months,
                     Years,
@@ -42,7 +42,9 @@ namespace QuantLib {
                     Minutes,
                     Seconds,
                     Milliseconds,
-					Microseconds
+                    Microseconds,
+                    CalendarDays,
+                    BusinessDays
     };
 
     /*! \relates TimeUnit */
