@@ -66,38 +66,42 @@ namespace QuantLib {
     }
 
     void FdmDividendHandler::applyTo(Array& a, Time t) const {
-        Array aCopy(a);
-
         auto iter = std::find(dividendTimes_.begin(), dividendTimes_.end(), t);
 
-        if (iter != dividendTimes_.end()) {
-            const Real dividend = dividends_[iter - dividendTimes_.begin()];
+        if (iter == dividendTimes_.end())
+            return;
 
-            if (mesher_->layout()->dim().size() == 1) {
-                LinearInterpolation interp(x_.begin(), x_.end(), aCopy.begin());
-                for (Size k=0; k<x_.size(); ++k) {
-                    a[k] = interp(std::max(x_[0], x_[k]-dividend), true);
-                }
+        if (aCopy_.size() != a.size())
+            aCopy_.resize(a.size());
+        std::copy(a.begin(), a.end(), aCopy_.begin());
+
+        const Real dividend = dividends_[iter - dividendTimes_.begin()];
+
+        if (mesher_->layout()->dim().size() == 1) {
+            LinearInterpolation interp(x_.begin(), x_.end(), aCopy_.begin());
+            for (Size k=0; k<x_.size(); ++k) {
+                a[k] = interp(std::max(x_[0], x_[k]-dividend), true);
             }
-            else {
-                Array tmp(x_.size());
-                Size xSpacing = mesher_->layout()->spacing()[equityDirection_];
-                
-                for (Size i=0; i<mesher_->layout()->dim().size(); ++i) {
-                    if (i!=equityDirection_) {
-                        Size ySpacing = mesher_->layout()->spacing()[i];
-                        for (Size j=0; j<mesher_->layout()->dim()[i]; ++j) {
-                            for (Size k=0; k<x_.size(); ++k) {
-                                Size index = j*ySpacing + k*xSpacing;
-                                tmp[k] = aCopy[index];
-                            }
-                            LinearInterpolation interp(x_.begin(), x_.end(),
-                                                       tmp.begin());
-                            for (Size k=0; k<x_.size(); ++k) {
-                                Size index = j*ySpacing + k*xSpacing;
-                                a[index] = interp(
-                                        std::max(x_[0], x_[k]-dividend), true);
-                            }
+        }
+        else {
+            if (tmp_.size() != x_.size())
+                tmp_.resize(x_.size());
+            Size xSpacing = mesher_->layout()->spacing()[equityDirection_];
+            
+            for (Size i=0; i<mesher_->layout()->dim().size(); ++i) {
+                if (i!=equityDirection_) {
+                    Size ySpacing = mesher_->layout()->spacing()[i];
+                    for (Size j=0; j<mesher_->layout()->dim()[i]; ++j) {
+                        for (Size k=0; k<x_.size(); ++k) {
+                            Size index = j*ySpacing + k*xSpacing;
+                            tmp_[k] = aCopy_[index];
+                        }
+                        LinearInterpolation interp(x_.begin(), x_.end(),
+                                                   tmp_.begin());
+                        for (Size k=0; k<x_.size(); ++k) {
+                            Size index = j*ySpacing + k*xSpacing;
+                            a[index] = interp(
+                                    std::max(x_[0], x_[k]-dividend), true);
                         }
                     }
                 }
