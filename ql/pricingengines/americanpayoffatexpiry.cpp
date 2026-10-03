@@ -19,8 +19,23 @@
 
 #include <ql/pricingengines/americanpayoffatexpiry.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/mathconstants.hpp>
+#include <cmath>
 
 namespace QuantLib {
+
+    namespace {
+
+        // log N(x), with the asymptotic tail where N(x) underflows
+        Real logCumNormal(Real x) {
+            if (x > -30.0)
+                return std::log(CumulativeNormalDistribution()(x));
+            Real z2 = 1.0/(x*x);
+            return -0.5*x*x - std::log(-x) - 0.5*std::log(M_TWOPI)
+                + std::log1p(-z2*(1.0 - z2*(3.0 - 15.0*z2)));
+        }
+
+    }
 
     AmericanPayoffAtExpiry::AmericanPayoffAtExpiry(
          Real spot, DiscountFactor discount, DiscountFactor dividendDiscount,
@@ -170,10 +185,15 @@ namespace QuantLib {
             Y_ = 1.0;
         } else {
             X_ = 1.0;
-            if (cum_d2_ == 0.0)
-                Y_ = 0.0; // check needed on some extreme cases
-            else
-                Y_ = std::pow(Real(strike_/spot_), Real(2.0*mu_));
+            Y_ = std::pow(Real(strike_/spot_), Real(2.0*mu_));
+            if (variance_ >= QL_EPSILON && (cum_d2_ == 0.0 || !std::isfinite(Y_))) {
+                // at small variance the power can overflow where N(D2) underflows;
+                // the product is finite, so it is taken in logs
+                cum_d2_ = std::exp(2.0*mu_*log_H_S_ + logCumNormal(D2_));
+                Y_ = 1.0;
+            } else if (cum_d2_ == 0.0) {
+                Y_ = 0.0;
+            }
         }
         if (!knock_in_)
            Y_ *= -1.0; 
