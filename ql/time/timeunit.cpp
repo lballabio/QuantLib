@@ -45,6 +45,10 @@ namespace QuantLib {
                 return out << "Milliseconds";
             case Microseconds:
                 return out << "Microseconds";
+            case CalendarDays:
+                return out << "CalendarDays";
+            case BusinessDays:
+                return out << "BusinessDays";
             default:
                 QL_FAIL("unknown TimeUnit");
         }

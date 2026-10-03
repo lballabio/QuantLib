@@ -160,6 +160,11 @@ namespace QuantLib {
     inline Period operator*(const Period& p, Integer n) { return {n * p.length(), p.units()}; }
 
     inline bool operator==(const Period& p1, const Period& p2) {
+        if (p1.length() == 0 && p2.length() == 0)
+            return true;
+        if (p1.units() != p2.units() &&
+            (p1.units() == BusinessDays || p2.units() == BusinessDays))
+            return false;
         return !(p1 < p2 || p2 < p1);
     }
 
