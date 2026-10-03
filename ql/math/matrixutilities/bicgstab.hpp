@@ -47,7 +47,9 @@ namespace QuantLib {
       protected:
         const MatrixMult A_, M_;
         const Size maxIter_;
-        const Real relTol_;  
+        const Real relTol_;
+        mutable Array workspaceX_, workspaceR_, workspaceRTld_, workspaceP_,
+            workspacePTld_, workspaceV_, workspaceS_, workspaceSTld_, workspaceT_;
     };
 }
 
