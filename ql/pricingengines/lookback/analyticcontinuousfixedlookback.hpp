@@ -63,6 +63,7 @@ namespace QuantLib {
         Real A(Real eta) const;
         Real B(Real eta) const;
         Real C(Real eta) const;
+        Real ratio(Real lambda, Real d1, Real N3, Real N4, Real powss, Real eta) const;
     };
 
 }
