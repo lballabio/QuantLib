@@ -86,18 +86,34 @@ namespace QuantLib {
     }
 
     Time AbcdMathFunction::maximumLocation() const {
-        if (b_==0.0) {
-            if (a_>=0.0)
+        if (b_ == 0.0) {
+            // f(t) = a*exp(-c*t) + d: monotonically decreasing (a>0) or increasing (a<0)
+            if (a_ >= 0.0)
                 return 0.0;
             else
                 return QL_MAX_REAL;
         }
 
-        // stationary point
-        // TODO check if minimum
-        // TODO check if maximum at +inf
-        Real zeroFirstDerivative = 1.0/c_-a_/b_;
-        return (zeroFirstDerivative>0.0 ? zeroFirstDerivative : 0.0);
+        // Stationary point: f'(t*) = 0  =>  t* = 1/c - a/b
+        Time t_star = 1.0/c_ - a_/b_;
+
+        if (b_ > 0.0) {
+            // f''(t*) = -c*b*exp(-c*t*) < 0  =>  t* is a maximum.
+            // If t* <= 0 the function is decreasing on [0, inf), maximum is at t=0.
+            return (t_star > 0.0 ? t_star : 0.0);
+        } else {
+            // b_ < 0: f''(t*) > 0  =>  t* is a minimum, not a maximum.
+            if (t_star <= 0.0) {
+                // No interior minimum on [0, inf): function is monotonically
+                // increasing toward d_; maximum is at t -> +inf.
+                return QL_MAX_REAL;
+            } else {
+                // Interior minimum at t* > 0: function decreases then increases.
+                // Maximum is at one of the two boundaries: t=0 (value a_+d_) or
+                // t -> +inf (value d_).  validate() guarantees a_+d_ >= 0 and d_ >= 0.
+                return (a_ >= 0.0 ? 0.0 : QL_MAX_REAL);
+            }
+        }
     }
 
     Real AbcdMathFunction::definiteIntegral(Time t1,
