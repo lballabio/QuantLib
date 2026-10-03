@@ -2222,6 +2222,8 @@ set(QL_HEADERS
     termstructures/yield/piecewisezerospreadedtermstructure.hpp
     termstructures/yield/quantotermstructure.hpp
     termstructures/yield/ratehelpers.hpp
+    termstructures/yield/shiftedtermstructure.hpp
+    termstructures/yield/splicedtermstructure.hpp
     termstructures/yield/spreadbootstraptraits.hpp
     termstructures/yield/spreaddiscountcurve.hpp
     termstructures/yield/ultimateforwardtermstructure.hpp

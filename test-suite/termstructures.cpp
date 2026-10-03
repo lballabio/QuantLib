@@ -26,6 +26,8 @@
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
 #include <ql/termstructures/yield/forwardspreadedtermstructure.hpp>
 #include <ql/termstructures/yield/piecewiseforwardspreadedtermstructure.hpp>
+#include <ql/termstructures/yield/shiftedtermstructure.hpp>
+#include <ql/termstructures/yield/splicedtermstructure.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
@@ -620,6 +622,53 @@ BOOST_AUTO_TEST_CASE(testNullTimeToReference) {
                     << std::fixed << std::setprecision(10)
                     << "    calculated: " << calculated << "\n"
                     << "    expected:   " << expected);
+}
+
+BOOST_AUTO_TEST_CASE(testShifted) {
+    BOOST_TEST_MESSAGE("Testing consistency of shifted term structure...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto flatRate = ext::make_shared<SimpleQuote>();
+    auto baseTermStructure = ext::make_shared<FlatForward>(
+        today, Handle<Quote>(flatRate), Actual360());
+    auto shift = 3*Years;
+    Date futureDate = today + shift;
+    Date testDate = futureDate + 5*Years;
+    auto shifted = ext::make_shared<ShiftedYieldTermStructure>(
+        Handle<YieldTermStructure>(baseTermStructure), futureDate);
+    for (Real rate : {0.01, 0.02, 0.03}) {
+        flatRate->setValue(rate);
+        BOOST_CHECK_CLOSE(
+            shifted->discount(testDate + shift), baseTermStructure->discount(testDate), 1e-10);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSpliced) {
+    BOOST_TEST_MESSAGE("Testing consistency of spliced term structure...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto rate1 = ext::make_shared<SimpleQuote>(0.02);
+    auto rate2 = ext::make_shared<SimpleQuote>(0.04);
+
+    auto curve1 = ext::make_shared<FlatForward>(today, Handle<Quote>(rate1), Actual360());
+    auto curve2 = ext::make_shared<FlatForward>(today + 1*Years, Handle<Quote>(rate2), Actual360());
+
+    Date switchDate = today + 2*Years;
+    auto spliced = ext::make_shared<SplicedYieldTermStructure>(
+        Handle<YieldTermStructure>(curve1), Handle<YieldTermStructure>(curve2), switchDate);
+
+    Real tolerance = 1e-10;
+    Date d = today + 1*Years;
+    BOOST_CHECK_CLOSE(spliced->discount(d), curve1->discount(d), tolerance);
+    Real adj = curve1->discount(switchDate) / curve2->discount(switchDate);
+    d = today + 3*Years;
+    BOOST_CHECK_CLOSE(spliced->discount(d), (adj * curve2->discount(d)), tolerance);
+    auto fwdrate = [&](Date d1, Date d2) {
+        return spliced->forwardRate(d1, d2, Actual360(), Continuous).rate();
+    };
+    BOOST_CHECK_SMALL(fwdrate(switchDate-1, switchDate) - rate1->value(), tolerance);
+    BOOST_CHECK_SMALL(fwdrate(switchDate, switchDate+1) - rate2->value(), tolerance);
+    BOOST_CHECK_CLOSE(spliced->discount(switchDate), curve1->discount(switchDate), tolerance);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

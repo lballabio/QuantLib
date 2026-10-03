@@ -1816,6 +1816,8 @@
     <ClInclude Include="ql\termstructures\yield\piecewisezerospreadedtermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yield\quantotermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yield\ratehelpers.hpp" />
+    <ClInclude Include="ql\termstructures\yield\shiftedtermstructure.hpp" />
+    <ClInclude Include="ql\termstructures\yield\splicedtermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yield\spreadbootstraptraits.hpp" />
     <ClInclude Include="ql\termstructures\yield\spreaddiscountcurve.hpp" />
     <ClInclude Include="ql\termstructures\yield\ultimateforwardtermstructure.hpp" />

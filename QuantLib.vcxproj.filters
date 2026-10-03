@@ -2265,6 +2265,12 @@
     <ClInclude Include="ql\termstructures\yield\ratehelpers.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\shiftedtermstructure.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\splicedtermstructure.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\yield\spreadbootstraptraits.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
