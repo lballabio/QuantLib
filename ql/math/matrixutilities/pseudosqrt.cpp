@@ -53,7 +53,7 @@ namespace QuantLib {
             Size size = matrix.rows();
             QL_REQUIRE(size == pseudo.rows(),
                        "matrix/pseudo mismatch: matrix rows are " << size <<
-                       " while pseudo rows are " << pseudo.columns());
+                       " while pseudo columns are " << pseudo.columns());
             Size pseudoCols = pseudo.columns();
 
             // row normalization
@@ -357,6 +357,7 @@ namespace QuantLib {
                    "non square matrix: " << size << " rows, " <<
                    matrix.columns() << " columns");
         #endif
+        QL_REQUIRE(size > 0, "matrix must not be empty");
 
         // spectral (a.k.a Principal Component) analysis
         SymmetricSchurDecomposition jd(matrix);
@@ -467,6 +468,7 @@ namespace QuantLib {
                    "non square matrix: " << size << " rows, " <<
                    matrix.columns() << " columns");
         #endif
+        QL_REQUIRE(size > 0, "matrix must not be empty");
 
         QL_REQUIRE(componentRetainedPercentage>0.0,
                    "no eigenvalues retained");
