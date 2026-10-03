@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/credit/onefactorstudentcopula.hpp>
+#include <ql/math/distributions/studenttdistribution.hpp>
 
 namespace QuantLib {
 
@@ -45,11 +46,15 @@ namespace QuantLib {
         y_.clear();
         cumulativeY_.clear();
 
-        // FIXME:
-        // compute F(ymin) and F(ymax) for the fattest case nm = nz = 2
-        // set a desired confidence and work out ymin, ymax
-        Real ymin = -10;
-        Real ymax = +10;
+        // Derive range from the tail quantile of the fattest marginal.
+        // Y = sqrt(c)*M + sqrt(1-c)*Z where M~t(nm)/scaleM and Z~t(nz)/scaleZ.
+        // A conservative bound uses the sum of the two tail quantiles scaled
+        // by their respective spreads, at a tight cutoff probability.
+        const Real cutoff = 1e-6;
+        const Real qm = InverseCumulativeStudent(nm_)(1.0 - cutoff) * scaleM_;
+        const Real qz = InverseCumulativeStudent(nz_)(1.0 - cutoff) * scaleZ_;
+        const Real ymin = -(qm + qz);
+        const Real ymax =  (qm + qz);
         Size steps = 200;
         for (Size i = 0; i <= steps; i++) {
             Real y = ymin + (ymax - ymin) * i / steps;
@@ -73,11 +78,13 @@ namespace QuantLib {
         StudentDistribution dz (nz_);
         StudentDistribution dm (nm_);
 
-        // FIXME:
-        // Find a sensitive way of setting these parameters,
-        // e.g. depending on nm and nz, and the desired table range
-        Real minimum = -10; // -15
-        Real maximum = +10; // +15
+        // Integration range derived from tail quantiles at a tight cutoff
+        // probability so that the truncated tails contribute negligibly.
+        const Real cutoff = 1e-6;
+        const Real qm = InverseCumulativeStudent(nm_)(1.0 - cutoff) * scaleM_;
+        const Real qz = InverseCumulativeStudent(nz_)(1.0 - cutoff) * scaleZ_;
+        Real minimum = -std::max(qm, qz);
+        Real maximum =  std::max(qm, qz);
         int steps = 400;
 
         Real delta = (maximum - minimum) / steps;
@@ -127,11 +134,13 @@ namespace QuantLib {
         y_.clear();
         cumulativeY_.clear();
 
-        // FIXME:
-        // compute F(ymin) and F(ymax) for the fattest case nm = nz = 2
-        // set a desired confidence and work out ymin, ymax
-        Real ymin = -10;
-        Real ymax = +10;
+        // Range derived from per-marginal tail quantiles at cutoff probability:
+        // M is Gaussian, Z is Student-t(nz). Bound = qm + qz covers Y = sqrt(c)*M + sqrt(1-c)*Z.
+        const Real cutoff = 1e-6;
+        const Real qz = InverseCumulativeStudent(nz_)(1.0 - cutoff) * scaleZ_;
+        const Real qm = InverseCumulativeNormal()(1.0 - cutoff); // Gaussian M
+        const Real ymin = -(qm + qz);
+        const Real ymax =  (qm + qz);
         Size steps = 200;
         for (Size i = 0; i <= steps; i++) {
             Real y = ymin + (ymax - ymin) * i / steps;
@@ -155,11 +164,13 @@ namespace QuantLib {
         StudentDistribution dz (nz_);
         NormalDistribution dm;
 
-        // FIXME:
-        // Find a sensitive way of setting these parameters,
-        // e.g. depending on nm and nz, and the desired table range
-        Real minimum = -10;
-        Real maximum = +10;
+        // Integration range: M is Gaussian, Z is Student-t(nz).
+        // Use per-marginal tail quantiles at a tight cutoff probability.
+        const Real cutoff = 1e-6;
+        const Real qm = InverseCumulativeNormal()(1.0 - cutoff);
+        const Real qz = InverseCumulativeStudent(nz_)(1.0 - cutoff) * scaleZ_;
+        Real minimum = -std::max(qm, qz);
+        Real maximum =  std::max(qm, qz);
         int steps = 400;
 
         Real delta = (maximum - minimum) / steps;
@@ -209,11 +220,13 @@ namespace QuantLib {
         y_.clear();
         cumulativeY_.clear();
 
-        // FIXME:
-        // compute F(ymin) and F(ymax) for the fattest case nm = nz = 2
-        // set a desired confidence and work out ymin, ymax
-        Real ymin = -10;
-        Real ymax = +10;
+        // FIXME (resolved): range derived from per-marginal tail quantiles.
+        // M is Student-t(nm), Z is Gaussian; use the wider of the two.
+        const Real cutoff = 1e-6;
+        const Real qm = InverseCumulativeStudent(nm_)(1.0 - cutoff) * scaleM_;
+        const Real qz = InverseCumulativeNormal()(1.0 - cutoff);
+        const Real ymin = -(qm + qz);
+        const Real ymax =  (qm + qz);
         Size steps = 200;
         for (Size i = 0; i <= steps; i++) {
             Real y = ymin + (ymax - ymin) * i / steps;
@@ -238,11 +251,13 @@ namespace QuantLib {
         StudentDistribution dm (nm_);
         NormalDistribution dz;
 
-        // FIXME:
-        // Find a sensitive way of setting these parameters,
-        // e.g. depending on nm and nz, and the desired table range
-        Real minimum = -10;
-        Real maximum = +10;
+        // Integration range: M is Student-t(nm), Z is Gaussian.
+        // Use per-marginal tail quantiles at a tight cutoff probability.
+        const Real cutoff = 1e-6;
+        const Real qm = InverseCumulativeStudent(nm_)(1.0 - cutoff) * scaleM_;
+        const Real qz = InverseCumulativeNormal()(1.0 - cutoff);
+        Real minimum = -std::max(qm, qz);
+        Real maximum =  std::max(qm, qz);
         int steps = 400;
 
         Real delta = (maximum - minimum) / steps;
