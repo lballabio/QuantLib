@@ -102,7 +102,6 @@ void Gsr::updateTimes() const {
     int j = 0;
     for (auto i = volstepdates_.begin(); i != volstepdates_.end(); ++i, ++j) {
         volsteptimes_.push_back(termStructure()->timeFromReference(*i));
-        volsteptimesArray_[j] = volsteptimes_[j];
         if (j == 0)
             QL_REQUIRE(volsteptimes_[0] > 0.0, "volsteptimes must be positive ("
                                                    << volsteptimes_[0] << ")");
@@ -114,7 +113,8 @@ void Gsr::updateTimes() const {
     }
     if (stateProcess_ != nullptr) {
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
-        ext::static_pointer_cast<GsrProcess>(stateProcess_)->setTimes(volsteptimesArray_);
+        ext::static_pointer_cast<GsrProcess>(stateProcess_)->setTimes(
+            Array(volsteptimes_.begin(), volsteptimes_.end()));
     }
 }
 
@@ -135,8 +135,6 @@ void Gsr::updateReversion() {
 }
 
 void Gsr::initialize(Real T) {
-
-    volsteptimesArray_ = Array(volstepdates_.size());
 
     updateTimes();
 
@@ -165,7 +163,7 @@ void Gsr::initialize(Real T) {
     }
 
     stateProcess_ = ext::make_shared<GsrProcess>(
-        volsteptimesArray_, sigma_.params(), reversion_.params(), T);
+        Array(volsteptimes_.begin(), volsteptimes_.end()), sigma_.params(), reversion_.params(), T);
 
     registerWith(termStructure());
 
