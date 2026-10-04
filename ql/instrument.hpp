@@ -32,6 +32,9 @@
 #include <ql/any.hpp>
 #include <map>
 #include <string>
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+#include <mutex>
+#endif
 
 namespace QuantLib {
 
@@ -128,6 +131,10 @@ namespace QuantLib {
     // inline definitions
 
     inline void Instrument::calculate() const {
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        // calculated_ is checked and set below; see LazyObject::calculate()
+        std::lock_guard<std::recursive_mutex> lock(calculationMutex());
+        #endif
         if (!calculated_) {
             if (isExpired()) {
                 setupExpired();

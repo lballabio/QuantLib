@@ -21,6 +21,12 @@
 #include "utilities.hpp"
 #include <ql/instruments/stock.hpp>
 #include <ql/quotes/simplequote.hpp>
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+#include <atomic>
+#include <chrono>
+#include <thread>
+#include <vector>
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -198,6 +204,100 @@ BOOST_AUTO_TEST_CASE(testNotificationLoop) {
     s2->unregisterWithAll();
     s3->unregisterWithAll();
 }
+
+namespace {
+
+    // calls back into itself while calculating, as curves do when bootstrapping
+    class ReentrantLazyObject : public LazyObject {
+      public:
+        Real result() const {
+            calculate();
+            return result_;
+        }
+        Size calculations() const { return calculations_; }
+
+      private:
+        void performCalculations() const override {
+            ++calculations_;
+            result_ = 1.0;
+            result_ = result() + 1.0;
+        }
+        mutable Real result_ = 0.0;
+        mutable Size calculations_ = 0;
+    };
+
+}
+
+BOOST_AUTO_TEST_CASE(testReentrantCalculation) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing that lazy objects can call back into themselves while calculating...");
+
+    ReentrantLazyObject object;
+
+    BOOST_CHECK_EQUAL(object.result(), 2.0);
+    BOOST_CHECK_EQUAL(object.result(), 2.0);
+    BOOST_CHECK_EQUAL(object.calculations(), 1);
+}
+
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+
+namespace {
+
+    // takes its time to calculate, so that concurrent calls overlap
+    class SlowLazyObject : public LazyObject {
+      public:
+        Real result() const {
+            calculate();
+            return result_;
+        }
+        int calculations() const { return calculations_; }
+        bool overlapped() const { return overlapped_; }
+
+      private:
+        void performCalculations() const override {
+            if (running_.exchange(true))
+                overlapped_ = true;
+            ++calculations_;
+            result_ = 0.0;
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            result_ = 42.0;
+            running_ = false;
+        }
+        mutable Real result_ = 0.0;
+        mutable std::atomic<int> calculations_{0};
+        mutable std::atomic<bool> running_{false}, overlapped_{false};
+    };
+
+}
+
+BOOST_AUTO_TEST_CASE(testConcurrentCalculation) {
+
+    BOOST_TEST_MESSAGE("Testing that concurrent calculations of a lazy object are serialized...");
+
+    SlowLazyObject object;
+
+    const Size n = 8;
+    std::vector<Real> results(n, 0.0);
+    std::vector<std::thread> threads;
+    threads.reserve(n);
+    for (Size i = 0; i < n; ++i)
+        threads.emplace_back([&object, &results, i] { results[i] = object.result(); });
+    for (auto& t : threads)
+        t.join();
+
+    if (object.calculations() != 1)
+        BOOST_ERROR("calculations were performed " << object.calculations() << " times");
+    if (object.overlapped())
+        BOOST_ERROR("calculations were performed concurrently");
+    for (Size i = 0; i < n; ++i) {
+        if (results[i] != 42.0)
+            BOOST_ERROR("thread " << i << " read " << results[i]
+                                  << " while the calculation was still running");
+    }
+}
+
+#endif
 
 BOOST_AUTO_TEST_CASE(testNotificationAfterFailedCalculation) {
 
