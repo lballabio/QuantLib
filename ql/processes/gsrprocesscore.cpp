@@ -48,6 +48,15 @@ void GsrProcessCore::setReversions(Array reversions) {
     checkTimesVolsReversions();
 }
 
+void GsrProcessCore::setForwardMeasureTime(Real T) {
+    QL_REQUIRE(times_.empty() || T >= times_.back(),
+               "forward measure time (" << T
+                   << ") must be greater than or equal to the last "
+                      "vol/reversion pillar time (" << times_.back() << ")");
+    T_ = T;
+    flushCache();
+}
+
 void GsrProcessCore::checkTimesVolsReversions() const {
     QL_REQUIRE(times_.size() == vols_.size() - 1,
                "number of volatilities ("
@@ -354,9 +363,8 @@ Real GsrProcessCore::time2(const Size index) const {
     if (index == 0)
         return 0.0;
     if (index > times_.size())
-        return T_; // FIXME how to ensure that forward
-                   // measure time is geq all times
-                   // given
+        return T_; // T_ is the forward measure time, kept >= all pillar times
+                   // by setForwardMeasureTime()
     return times_[index - 1];
 }
 

@@ -79,6 +79,7 @@ class GsrProcessCore {
     void setTimes(Array times);
     void setVols(Array vols);
     void setReversions(Array reversions);
+    void setForwardMeasureTime(Real T);
     void checkTimesVolsReversions() const;
     int lowerIndex(Time t) const;
     int upperIndex(Time t) const;
