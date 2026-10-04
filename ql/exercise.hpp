@@ -74,8 +74,7 @@ namespace QuantLib {
         AmericanExercise(const Date& earliestDate,
                          const Date& latestDate,
                          bool payoffAtExpiry = false);
-        // TODO: Review whether this constructor should remain implicit.
-        AmericanExercise(const Date& latestDate,
+        explicit AmericanExercise(const Date& latestDate,
                          bool payoffAtExpiry = false);
     };
 
