@@ -78,6 +78,7 @@ class ZabrModel {
     Real lognormalVolatilityHelper(Real strike, Real x) const;
     Real normalVolatilityHelper(Real strike, Real x) const;
     Real localVolatilityHelper(Real f, Real x) const;
+    Real localVolatilityHelper(Real f, Real x, Real y) const; // avoids recomputing y
 };
 }
 
