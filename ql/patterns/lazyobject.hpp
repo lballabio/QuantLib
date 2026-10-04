@@ -26,6 +26,9 @@
 
 #include <ql/patterns/observable.hpp>
 #include <ql/shared_ptr.hpp>
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+#include <mutex>
+#endif
 
 namespace QuantLib {
 
@@ -89,6 +92,18 @@ namespace QuantLib {
             \warning Should this method be redefined in derived
                      classes, LazyObject::calculate() should be called
                      in the overriding method.
+
+            \note If QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN is defined,
+                  concurrent calls on the same object are serialized:
+                  the first thread performs the calculations, and the
+                  others wait and then use the cached results.
+                  Derived classes that redefine this method and
+                  inspect the status of the object before calling
+                  LazyObject::calculate() must hold the mutex returned
+                  by <i><b>calculationMutex</b></i> while doing so.
+                  Notifications and other non-const methods are not
+                  synchronized, and must not be called on an object
+                  while other threads might be using it.
         */
         virtual void calculate() const;
         /*! This method must implement any calculations which must be
@@ -129,7 +144,27 @@ namespace QuantLib {
 
       protected:
         mutable bool calculated_ = false, frozen_ = false, failed_ = false, alwaysForward_;
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        /*! This mutex is held by <i><b>calculate</b></i>. It is
+            recursive, so that calculations can call back into the
+            same object as it happens, e.g., during bootstrapping.
+        */
+        std::recursive_mutex& calculationMutex() const;
+        #endif
       private:
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        // A mutex can't be copied; this wrapper gives each copy of a
+        // lazy object its own mutex, so that lazy objects keep their
+        // implicitly-defined copy operations.
+        struct CalculationMutex {
+            CalculationMutex() = default;
+            CalculationMutex(const CalculationMutex&) {}
+            CalculationMutex& operator=(const CalculationMutex&) { return *this; }
+            ~CalculationMutex() = default;
+            std::recursive_mutex mutex;
+        };
+        mutable CalculationMutex calculationMutex_;
+        #endif
         bool updating_ = false;
         class UpdateChecker {  // NOLINT(cppcoreguidelines-special-member-functions)
             LazyObject* subject_;
@@ -253,7 +288,20 @@ namespace QuantLib {
         alwaysForward_ = true;
     }
 
+    #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+    inline std::recursive_mutex& LazyObject::calculationMutex() const {
+        return calculationMutex_.mutex;
+    }
+    #endif
+
     inline void LazyObject::calculate() const {
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        // Without this, two threads could both find the object not
+        // calculated and run performCalculations() at the same time,
+        // or one of them could read the results while the other is
+        // still writing them.
+        std::lock_guard<std::recursive_mutex> lock(calculationMutex());
+        #endif
         if (!calculated_ && !frozen_) {
             calculated_ = true;   // prevent infinite recursion in
                                   // case of bootstrapping
@@ -270,10 +318,16 @@ namespace QuantLib {
     }
 
     inline bool LazyObject::isCalculated() const {
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        std::lock_guard<std::recursive_mutex> lock(calculationMutex());
+        #endif
         return calculated_;
     }
 
     inline void LazyObject::setCalculated(const bool c) const {
+        #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        std::lock_guard<std::recursive_mutex> lock(calculationMutex());
+        #endif
         calculated_ = c;
     }
 }
