@@ -207,12 +207,16 @@ namespace QuantLib {
 
     Array FxSabrSmileSection::initialParams() const
     {
-        // SABR params: alpha, nu, rho (beta fixed at 1)
+        // alpha ~ ATM vol for beta = 1, nu = 0.5, rho = 0, in the fit's coordinates
         Array guess(3);
-        guess[0] = referenceVol();  // alpha ~ atm vol for beta=1
-        guess[1] = 0.5;            // nu
-        guess[2] = 0.0;            // rho
+        guess[0] = std::log(referenceVol());
+        guess[1] = std::log(0.5);
+        guess[2] = 0.0;
         return guess;
+    }
+
+    void FxSabrSmileSection::setParams(const Array& x) const {
+        params_ = {std::exp(x[0]), std::exp(x[1]), std::tanh(x[2])};
     }
 
     Volatility FxSabrSmileSection::volByStrikeImpl(Rate strike,
@@ -263,17 +267,35 @@ namespace QuantLib {
 
     Array FxSviSmileSection::initialParams() const
     {
-        // SVI raw: w(k) = a + b*(rho*(k-m) + sqrt((k-m)^2 + sigma^2))
-        // At ATM k=0: w(0) = a + b*(rho*(-m) + sqrt(m^2 + sigma^2))
-        // Start with m=0, rho=0: w(0) = a + b*sigma = atm_vol^2 * tau
-        Real atmVar = referenceVol() * referenceVol();
+        // With m = 0 and rho = 0 the minimum total variance a + b sigma is
+        // at the money: start it at the reference total variance, with
+        // slope b = 0.1 and curvature sigma = 0.1, in the fit's coordinates.
         Array guess(5);
-        guess[0] = atmVar;  // a: base variance level
-        guess[1] = 0.1;     // b: slope
-        guess[2] = 0.0;     // rho: skew
-        guess[3] = 0.0;     // m: translation
-        guess[4] = 0.1;     // sigma: curvature
+        guess[0] = std::log(referenceVol() * referenceVol() * exerciseTime());
+        guess[1] = std::log(0.1);
+        guess[2] = 0.0;
+        guess[3] = 0.0;
+        guess[4] = std::log(0.1);
         return guess;
+    }
+
+    void FxSviSmileSection::setParams(const Array& x) const {
+        const Real b = std::exp(x[1]), rho = std::tanh(x[2]), sigma = std::exp(x[4]);
+        const Real a = std::exp(x[0]) - b * sigma * std::sqrt(1.0 - rho * rho);
+        params_ = {a, b, rho, x[3], sigma};
+    }
+
+    void FxSviSmileSection::calibrate() const {
+        FxSmileSectionByStrike::calibrate();
+        const Real b = params_[1], rho = params_[2];
+        QL_ENSURE(b * (1.0 + std::fabs(rho)) <= 2.0,
+                  "SVI wing slope " << b * (1.0 + std::fabs(rho))
+                                    << " exceeds 2: the smile admits arbitrage at extreme strikes");
+    }
+
+    Real FxSviSmileSection::minimumVariance() const {
+        calculate();
+        return params_[0] + params_[1] * params_[4] * std::sqrt(1.0 - params_[2] * params_[2]);
     }
 
     Volatility FxSviSmileSection::volByStrikeImpl(Rate strike,
@@ -283,9 +305,10 @@ namespace QuantLib {
     {
         Real k = std::log(strike / fwd);
         Real km = k - params[3];
+        // positive for valid parameters, which the fit guarantees
         Real totalVar = params[0] + params[1] * (params[2] * km +
                         std::sqrt(km * km + params[4] * params[4]));
-        return std::sqrt(std::max(totalVar, 0.0) / tau);
+        return std::sqrt(totalVar / tau);
     }
     //@}
 

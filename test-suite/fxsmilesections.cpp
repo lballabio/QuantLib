@@ -793,6 +793,51 @@ BOOST_AUTO_TEST_CASE(testQuarticRoots) {
     check({1.0, 0.0, 2.0, 0.0, 1.0}, {});                          // (w^2+1)^2
 }
 
+BOOST_AUTO_TEST_CASE(testSviAndSabrParametersStayValid) {
+    BOOST_TEST_MESSAGE("Testing that calibrated FX SVI and SABR parameters are valid...");
+
+    // Quotes that a valid SVI fits exactly, and quotes that would need
+    // |rho| > 1 (steep risk reversals against flat wings, and a put skew):
+    // the fit must stay valid and miss instead.
+    MarketData md;
+    struct Quotes { const char* name; Real atm, rr25, rr10, bf25, bf10; };
+    for (const auto& data : {Quotes{"market", 0.14483, 0.0277, 0.048752, 0.007425, 0.02376},
+                             Quotes{"steep", 0.14483, 0.0577, 0.101575, 0.007425, 0.016125},
+                             Quotes{"put skew", 0.10, -0.03, -0.054, 0.004, 0.0128}}) {
+        auto quotes = ext::make_shared<FxRrBfQuotes>(
+            makeQuoteHandle(data.atm),
+            std::vector<Handle<Quote>>{makeQuoteHandle(data.rr25), makeQuoteHandle(data.rr10)},
+            std::vector<Handle<Quote>>{makeQuoteHandle(data.bf25), makeQuoteHandle(data.bf10)},
+            std::vector<Real>{0.25, 0.10}, FxRrBfQuotes::SmileStrangle);
+        for (auto dt : {DeltaVolQuote::Spot, DeltaVolQuote::PaSpot}) {
+            for (int years : {1, 5}) {
+                std::ostringstream name;
+                name << data.name << " quotes, " << dt << ", " << years << "Y";
+                const Date expiry = md.todaysDate + years * Years;
+                try {
+                    FxSviSmileSection svi(expiry, md.spot, quotes, md.forDiscount, md.domDiscount,
+                                          dt, md.atmType, Actual365Fixed(), md.settlement);
+                    BOOST_CHECK_MESSAGE(svi.b() > 0.0, name.str() << ": SVI b = " << svi.b());
+                    BOOST_CHECK_MESSAGE(std::fabs(svi.rho()) <= 1.0, name.str() << ": SVI rho = " << svi.rho());
+                    BOOST_CHECK_MESSAGE(svi.sigma() > 0.0, name.str() << ": SVI sigma = " << svi.sigma());
+                    BOOST_CHECK_MESSAGE(svi.minimumVariance() > 0.0,
+                                        name.str() << ": SVI minimum variance = " << svi.minimumVariance());
+                    BOOST_CHECK_MESSAGE(svi.b() * (1.0 + std::fabs(svi.rho())) <= 2.0,
+                                        name.str() << ": SVI wing slope too steep");
+
+                    FxSabrSmileSection sabr(expiry, md.spot, quotes, md.forDiscount, md.domDiscount,
+                                            dt, md.atmType, Actual365Fixed(), md.settlement);
+                    BOOST_CHECK_MESSAGE(sabr.alpha() > 0.0, name.str() << ": SABR alpha = " << sabr.alpha());
+                    BOOST_CHECK_MESSAGE(sabr.nu() > 0.0, name.str() << ": SABR nu = " << sabr.nu());
+                    BOOST_CHECK_MESSAGE(std::fabs(sabr.rho()) < 1.0, name.str() << ": SABR rho = " << sabr.rho());
+                } catch (std::exception& e) {
+                    BOOST_ERROR(name.str() << ": " << e.what());
+                }
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testMarketDataReactivity) {
     BOOST_TEST_MESSAGE("Testing FX smile section reactivity to market data changes...");
 

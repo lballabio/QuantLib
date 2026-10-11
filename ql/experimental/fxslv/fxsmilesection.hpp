@@ -234,14 +234,6 @@ namespace QuantLib {
         mutable bool calibrating_ = false;  // the quotes are calibrating this section
         mutable bool fitRequested_ = false; // the quotes called fitToTargets() during this calibration
 
-        //! Fits the smile to targets_.
-        /*! By default a least-squares fit of the vega-weighted target
-            residuals over the model parameters, starting from
-            initialParams(), which fails if it does not converge; models
-            with a closed-form fit can override it.
-        */
-        virtual void calibrate() const;
-
         Volatility volatilityImpl(Rate strike) const override { return volByStrike(strike); }
 
         DeltaVolQuote::DeltaType deltaType_;
@@ -255,6 +247,15 @@ namespace QuantLib {
         mutable Date spotDate_, deliveryDate_;
 
       protected:
+        //! Fits the smile to targets_.
+        /*! By default a least-squares fit of the vega-weighted target
+            residuals over the model parameters, starting from
+            initialParams(), which fails if it does not converge; models
+            with a closed-form fit can override it, and others can extend
+            it, e.g. to check the fitted parameters.
+        */
+        virtual void calibrate() const;
+
         //! Vol scale used to seed the smile: the quotes' reference vol.
         /*! Depends on the quotes only.  Initial parameters, root-search
             guesses and starting points must use this, never atmVol_, so

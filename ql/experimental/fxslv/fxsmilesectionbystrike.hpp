@@ -165,7 +165,16 @@ namespace QuantLib {
         //@}
 
       protected:
+        //! \name FxSmileSection interface
+        /*! The fit searches \f$ x \f$ with \f$ \alpha = e^{x_0} \f$,
+            \f$ \nu = e^{x_1} \f$ and \f$ \rho = \tanh x_2 \f$, so that
+            every point it tries is a valid SABR smile: \f$ \alpha > 0 \f$,
+            \f$ \nu > 0 \f$, \f$ |\rho| < 1 \f$.
+        */
+        //@{
         Array initialParams() const override;
+        void setParams(const Array& x) const override;
+        //@}
     };
 
 
@@ -175,7 +184,12 @@ namespace QuantLib {
         where \f$ k = \log(K / F) \f$ is the log-moneyness.
         Implied volatility is \f$ \sigma_{impl} = \sqrt{w(k) / \tau} \f$.
 
-        Parameters: a, b, rho, m, sigma (5 parameters).
+        Parameters: a, b, rho, m, sigma (5 parameters), with
+        \f$ b > 0 \f$, \f$ |\rho| < 1 \f$, \f$ \sigma > 0 \f$ and a
+        positive minimum total variance
+        \f$ a + b \sigma \sqrt{1 - \rho^2} > 0 \f$, which the fit
+        guarantees.  The wing slopes \f$ b(1 \pm \rho) \f$ must not
+        exceed 2 (Roger Lee's moment bound), which is checked after the fit.
     */
     class FxSviSmileSection : public FxSmileSectionByStrike {
       public:
@@ -207,6 +221,8 @@ namespace QuantLib {
         Real rho() const { calculate(); return params_[2]; }
         Real m() const { calculate(); return params_[3]; }
         Real sigma() const { calculate(); return params_[4]; }
+        //! Minimum total variance, \f$ a + b \sigma \sqrt{1 - \rho^2} \f$.
+        Real minimumVariance() const;
 
       private:
         //! \name FxSmileSectionByStrike interface
@@ -218,7 +234,19 @@ namespace QuantLib {
         //@}
 
       protected:
+        //! \name FxSmileSection interface
+        /*! The fit searches \f$ x \f$ with \f$ b = e^{x_1} \f$,
+            \f$ \rho = \tanh x_2 \f$, \f$ m = x_3 \f$,
+            \f$ \sigma = e^{x_4} \f$ and minimum total variance
+            \f$ e^{x_0} \f$, i.e.
+            \f$ a = e^{x_0} - b \sigma \sqrt{1 - \rho^2} \f$, so that
+            every point it tries is a valid SVI smile.
+        */
+        //@{
         Array initialParams() const override;
+        void setParams(const Array& x) const override;
+        void calibrate() const override;
+        //@}
     };
 
 } // namespace QuantLib
