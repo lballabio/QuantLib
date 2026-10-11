@@ -763,18 +763,19 @@ BOOST_AUTO_TEST_CASE(testTradingTimeIsMonotonicAndContinuous) {
 BOOST_AUTO_TEST_CASE(testTradingTimeEventJumps) {
     BOOST_TEST_MESSAGE("Testing trading time jumps at events...");
 
+    using Jump = tradingTimeTermStructure::Jump;
     const Date today(5, January, 2024);  // a Friday
     Settings::instance().evaluationDate() = today;
     const Date eventDate(10, January, 2024);  // the next Wednesday
     const Real timeOfDay = 13.5 / 24.0;
     auto size = ext::make_shared<SimpleQuote>(2.0);
-    auto past = ext::make_shared<SimpleQuote>(5.0);
     tradingTimeTermStructure plain(today, WeekendsOnly(), 0.0);
-    tradingTimeTermStructure ts(today, WeekendsOnly(), 0.0,
-                                {Handle<Quote>(size), Handle<Quote>(past)},
-                                {eventDate, Date(4, January, 2024)}, {timeOfDay, 0.5});
+    tradingTimeTermStructure ts(
+        today, WeekendsOnly(), 0.0,
+        {Jump(eventDate, timeOfDay, Handle<Quote>(size)),
+         Jump(Date(4, January, 2024), 0.5, makeQuoteHandle(5.0))});
 
-    // the event before the reference date has happened; the other jumps at its time
+    // the jump before the reference date has happened; the other is at its time
     const Time te = (eventDate - today + timeOfDay) / 365.0;
     const std::vector<Time> jumps = ts.jumpTimes();
     BOOST_REQUIRE_EQUAL(jumps.size(), Size(1));
@@ -788,8 +789,7 @@ BOOST_AUTO_TEST_CASE(testTradingTimeEventJumps) {
 
     // the jump follows its quote, and the change is notified
     auto observed = ext::make_shared<tradingTimeTermStructure>(
-        today, WeekendsOnly(), 0.0, std::vector<Handle<Quote>>{Handle<Quote>(size)},
-        std::vector<Date>{eventDate}, std::vector<Real>{timeOfDay});
+        today, WeekendsOnly(), 0.0, std::vector<Jump>{Jump(eventDate, timeOfDay, Handle<Quote>(size))});
     Flag flag;
     flag.registerWith(observed);
     size->setValue(3.0);
@@ -798,6 +798,28 @@ BOOST_AUTO_TEST_CASE(testTradingTimeEventJumps) {
                           3.0 / 365.0, 1.0e-15);
     size->setValue(-1.0);
     BOOST_CHECK_THROW(observed->tradingTime(eventDate + 1), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testTradingTimeJumpsNeedAnExplicitTime) {
+    BOOST_TEST_MESSAGE("Testing that trading time jumps need an explicit time of day...");
+
+    using Jump = tradingTimeTermStructure::Jump;
+    const Date eventDate(10, January, 2024);
+    const Handle<Quote> size = makeQuoteHandle(1.0);
+    // no time, or midnight, is not accepted
+    BOOST_CHECK_THROW(Jump(eventDate, size), Error);
+    BOOST_CHECK_THROW(Jump(eventDate, 0.0, size), Error);
+    BOOST_CHECK_THROW(Jump(eventDate, 1.0, size), Error);
+    BOOST_CHECK_THROW(Jump(eventDate, 0.5, Handle<Quote>()), Error);
+#ifdef QL_HIGH_RESOLUTION_DATE
+    // a date carrying a time gives it; giving it twice is ambiguous
+    const Date eventTime(10, January, 2024, 13, 30, 0);
+    const Jump fromDate(eventTime, size);
+    BOOST_CHECK_EQUAL(fromDate.date(), eventDate);
+    BOOST_CHECK_SMALL(fromDate.timeOfDay() - 13.5 / 24.0, 1.0e-12);
+    BOOST_CHECK_THROW(Jump(eventTime, 0.5, size), Error);
+    BOOST_CHECK_THROW(Jump(Date(10, January, 2024, 0, 0, 0), size), Error);
+#endif
 }
 
 BOOST_AUTO_TEST_CASE(testTradingTimeFloatingReference) {
@@ -839,12 +861,6 @@ BOOST_AUTO_TEST_CASE(testTradingTimeEdgeCasesAndValidation) {
 
     BOOST_CHECK_THROW(tradingTimeTermStructure(saturday, WeekendsOnly(), -0.1), Error);
     BOOST_CHECK_THROW(tradingTimeTermStructure(saturday, WeekendsOnly(), 1.1), Error);
-    BOOST_CHECK_THROW(tradingTimeTermStructure(saturday, WeekendsOnly(), 0.0,
-                                               {makeQuoteHandle(1.0)}, {}),
-                      Error);
-    BOOST_CHECK_THROW(tradingTimeTermStructure(saturday, WeekendsOnly(), 0.0,
-                                               {makeQuoteHandle(1.0)}, {saturday + 3}, {1.0}),
-                      Error);
     // default construction: reference date at the evaluation date, on a business day
     tradingTimeTermStructure byDefault;
     BOOST_CHECK_EQUAL(byDefault.referenceDate(), WeekendsOnly().adjust(saturday));

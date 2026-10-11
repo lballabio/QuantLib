@@ -25,53 +25,45 @@
 
 namespace QuantLib {
 
-    namespace {
+    tradingTimeTermStructure::Jump::Jump(const Date& date, Real timeOfDay, Handle<Quote> size)
+    : date_(date), timeOfDay_(timeOfDay), size_(std::move(size)) {
+        QL_REQUIRE(date.fractionOfDay() == 0.0,
+                   "jump date " << date << " carries a time of day; give the time once");
+        QL_REQUIRE(timeOfDay > 0.0 && timeOfDay < 1.0,
+                   "jump time of day must be in (0, 1), not at midnight: " << timeOfDay);
+        QL_REQUIRE(!size_.empty(), "no jump size given");
+    }
 
-        void checkInputs(Real weekendWeight,
-                         const std::vector<Handle<Quote>>& events,
-                         const std::vector<Date>& eventDates,
-                         const std::vector<Real>& eventTimesOfDay) {
-            QL_REQUIRE(weekendWeight >= 0.0 && weekendWeight <= 1.0,
-                       "weekend weight must be in [0, 1]: " << weekendWeight);
-            QL_REQUIRE(eventDates.size() == events.size(),
-                       "mismatch between number of events (" << events.size()
-                           << ") and event dates (" << eventDates.size() << ")");
-            QL_REQUIRE(eventTimesOfDay.empty() || eventTimesOfDay.size() == events.size(),
-                       "mismatch between number of events (" << events.size()
-                           << ") and event times of day (" << eventTimesOfDay.size() << ")");
-            for (Real tod : eventTimesOfDay)
-                QL_REQUIRE(tod >= 0.0 && tod < 1.0,
-                           "event time of day must be a fraction of the day in [0, 1): " << tod);
-        }
-
+    tradingTimeTermStructure::Jump::Jump(const Date& dateTime, Handle<Quote> size)
+    : date_(dateTime.serialNumber()), timeOfDay_(dateTime.fractionOfDay()), size_(std::move(size)) {
+        QL_REQUIRE(timeOfDay_ > 0.0,
+                   "jump on " << dateTime << " has no time of day: give it explicitly"
+                              << " (a date carries one only with high-resolution dates)");
+        QL_REQUIRE(!size_.empty(), "no jump size given");
     }
 
     tradingTimeTermStructure::tradingTimeTermStructure(const Date& referenceDate,
                                                        Calendar calendar,
                                                        Real weekendWeight,
-                                                       std::vector<Handle<Quote>> events,
-                                                       std::vector<Date> eventDates,
-                                                       std::vector<Real> eventTimesOfDay)
+                                                       std::vector<Jump> jumps)
     : TermStructure(referenceDate, std::move(calendar), Actual365Fixed()),
-      weekendWeight_(weekendWeight), events_(std::move(events)),
-      eventDates_(std::move(eventDates)), eventTimesOfDay_(std::move(eventTimesOfDay)) {
-        checkInputs(weekendWeight_, events_, eventDates_, eventTimesOfDay_);
-        for (const auto& e : events_)
-            registerWith(e);
+      weekendWeight_(weekendWeight), jumps_(std::move(jumps)) {
+        QL_REQUIRE(weekendWeight_ >= 0.0 && weekendWeight_ <= 1.0,
+                   "weekend weight must be in [0, 1]: " << weekendWeight_);
+        for (const auto& j : jumps_)
+            registerWith(j.size());
     }
 
     tradingTimeTermStructure::tradingTimeTermStructure(Natural settlementDays,
                                                        Calendar calendar,
                                                        Real weekendWeight,
-                                                       std::vector<Handle<Quote>> events,
-                                                       std::vector<Date> eventDates,
-                                                       std::vector<Real> eventTimesOfDay)
+                                                       std::vector<Jump> jumps)
     : TermStructure(settlementDays, std::move(calendar), Actual365Fixed()),
-      weekendWeight_(weekendWeight), events_(std::move(events)),
-      eventDates_(std::move(eventDates)), eventTimesOfDay_(std::move(eventTimesOfDay)) {
-        checkInputs(weekendWeight_, events_, eventDates_, eventTimesOfDay_);
-        for (const auto& e : events_)
-            registerWith(e);
+      weekendWeight_(weekendWeight), jumps_(std::move(jumps)) {
+        QL_REQUIRE(weekendWeight_ >= 0.0 && weekendWeight_ <= 1.0,
+                   "weekend weight must be in [0, 1]: " << weekendWeight_);
+        for (const auto& j : jumps_)
+            registerWith(j.size());
     }
 
     void tradingTimeTermStructure::update() {
@@ -86,13 +78,10 @@ namespace QuantLib {
         latestReference_ = ref;
         referenceTimeOfDay_ = ref.fractionOfDay();
         cumulative_.assign(1, 0.0);
-        eventDays_.resize(events_.size());
-        for (Size i = 0; i < events_.size(); ++i) {
-            const Real timeOfDay =
-                eventTimesOfDay_.empty() ? eventDates_[i].fractionOfDay() : eventTimesOfDay_[i];
-            eventDays_[i] = static_cast<Real>(eventDates_[i].serialNumber() - ref.serialNumber()) +
-                            timeOfDay - referenceTimeOfDay_;
-        }
+        jumpDays_.resize(jumps_.size());
+        for (Size i = 0; i < jumps_.size(); ++i)
+            jumpDays_[i] = static_cast<Real>(jumps_[i].date().serialNumber() - ref.serialNumber()) +
+                           jumps_[i].timeOfDay() - referenceTimeOfDay_;
     }
 
     Real tradingTimeTermStructure::daysFromReferenceDay(const Date& d) const {
@@ -117,13 +106,14 @@ namespace QuantLib {
 
     Real tradingTimeTermStructure::jumpDays(Real x1, Real x2) const {
         Real sum = 0.0;
-        for (Size i = 0; i < events_.size(); ++i) {
-            const Real xe = eventDays_[i];
-            if (xe > 0.0 && xe > x1 && xe <= x2) {
-                QL_REQUIRE(events_[i]->isValid(), "invalid " << io::ordinal(i + 1) << " event quote");
-                const Real size = events_[i]->value();
-                QL_REQUIRE(size >= 0.0, io::ordinal(i + 1) << " event has a negative size: " << size);
-                sum += size;
+        for (Size i = 0; i < jumps_.size(); ++i) {
+            const Real xj = jumpDays_[i];
+            if (xj > 0.0 && xj > x1 && xj <= x2) {
+                const Handle<Quote>& size = jumps_[i].size();
+                QL_REQUIRE(size->isValid(), "invalid size of the " << io::ordinal(i + 1) << " jump");
+                QL_REQUIRE(size->value() >= 0.0,
+                           io::ordinal(i + 1) << " jump has a negative size: " << size->value());
+                sum += size->value();
             }
         }
         return sum;
@@ -151,9 +141,9 @@ namespace QuantLib {
     std::vector<Time> tradingTimeTermStructure::jumpTimes() const {
         checkReference();
         std::vector<Time> times;
-        for (Real xe : eventDays_)
-            if (xe > 0.0)
-                times.push_back(xe / 365.0);
+        for (Real xj : jumpDays_)
+            if (xj > 0.0)
+                times.push_back(xj / 365.0);
         return times;
     }
 
