@@ -45,6 +45,7 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/calendars/target.hpp>
 #include <ql/settings.hpp>
 #include <cmath>
 
@@ -703,6 +704,150 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
     BOOST_CHECK_MESSAGE(relDiff < 0.20,
         "SLV and local-vol 4M NPVs differ by " << relDiff * 100.0
         << "% (SLV=" << slvNpv << " LV=" << lvNpv << ")");
+}
+
+BOOST_AUTO_TEST_CASE(testTradingTimeFormsAgree) {
+    BOOST_TEST_MESSAGE("Testing that trading time from dates and from times agree...");
+
+    const Date today(5, January, 2024);  // a Friday
+    Settings::instance().evaluationDate() = today;
+    for (const Calendar& calendar : {Calendar(WeekendsOnly()), Calendar(TARGET())}) {
+        for (Real w : {0.0, 0.3, 1.0}) {
+            tradingTimeTermStructure ts(today, calendar, w);
+            // every day for seven years, beyond any fixed holiday horizon
+            for (Date d = today; d <= today + 7 * Years; ++d) {
+                const Time byDate = ts.tradingTime(d);
+                const Time byTime = ts.tradingTime(ts.timeFromReference(d));
+                if (std::fabs(byDate - byTime) > 1.0e-14) {
+                    BOOST_ERROR(calendar.name() << ", weekend weight " << w << ", " << d
+                                                << ": " << byDate << " from the date, " << byTime
+                                                << " from the time");
+                    break;
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testTradingTimeIsMonotonicAndContinuous) {
+    BOOST_TEST_MESSAGE("Testing that trading time runs at rate 1 on business days and the weekend weight otherwise...");
+
+    const Date today(5, January, 2024);
+    Settings::instance().evaluationDate() = today;
+    for (Real w : {0.0, 0.3, 1.0}) {
+        tradingTimeTermStructure ts(today, TARGET(), w);
+        // in tenths of a day over two months, including weekends and New Year
+        const Real step = 0.1 / 365.0;
+        Time previous = ts.tradingTime(0.0);
+        BOOST_CHECK_EQUAL(previous, 0.0);
+        for (Size i = 1; i <= 600; ++i) {
+            const Time t = i * step, tt = ts.tradingTime(t);
+            const Real rate = (tt - previous) / step;
+            if (rate < w - 1.0e-9 || rate > 1.0 + 1.0e-9) {
+                BOOST_ERROR("weekend weight " << w << ": rate " << rate << " at "
+                                              << t * 365.0 << " days");
+                break;
+            }
+            previous = tt;
+        }
+        if (w == 1.0)
+            BOOST_CHECK_SMALL(ts.tradingTime(3.0) - 3.0, 1.0e-14);
+    }
+
+    // with weekends not counted, a week has five trading days whatever its first day
+    tradingTimeTermStructure ts(today, WeekendsOnly(), 0.0);
+    for (Integer start = 0; start < 7; ++start)
+        BOOST_CHECK_SMALL(ts.tradingTime(today + start, today + start + 7) * 365.0 - 5.0, 1.0e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testTradingTimeEventJumps) {
+    BOOST_TEST_MESSAGE("Testing trading time jumps at events...");
+
+    const Date today(5, January, 2024);  // a Friday
+    Settings::instance().evaluationDate() = today;
+    const Date eventDate(10, January, 2024);  // the next Wednesday
+    const Real timeOfDay = 13.5 / 24.0;
+    auto size = ext::make_shared<SimpleQuote>(2.0);
+    auto past = ext::make_shared<SimpleQuote>(5.0);
+    tradingTimeTermStructure plain(today, WeekendsOnly(), 0.0);
+    tradingTimeTermStructure ts(today, WeekendsOnly(), 0.0,
+                                {Handle<Quote>(size), Handle<Quote>(past)},
+                                {eventDate, Date(4, January, 2024)}, {timeOfDay, 0.5});
+
+    // the event before the reference date has happened; the other jumps at its time
+    const Time te = (eventDate - today + timeOfDay) / 365.0;
+    const std::vector<Time> jumps = ts.jumpTimes();
+    BOOST_REQUIRE_EQUAL(jumps.size(), Size(1));
+    BOOST_CHECK_SMALL(jumps[0] - te, 1.0e-15);
+    BOOST_CHECK_SMALL(ts.tradingTime(te - 1.0e-9) - plain.tradingTime(te - 1.0e-9), 1.0e-15);
+    BOOST_CHECK_SMALL(ts.tradingTime(te) - plain.tradingTime(te) - 2.0 / 365.0, 1.0e-15);
+    // by date: not yet at the start of the event day, included the day after
+    BOOST_CHECK_SMALL(ts.tradingTime(eventDate) - plain.tradingTime(eventDate), 1.0e-15);
+    BOOST_CHECK_SMALL(ts.tradingTime(eventDate + 1) - plain.tradingTime(eventDate + 1) - 2.0 / 365.0,
+                      1.0e-15);
+
+    // the jump follows its quote, and the change is notified
+    auto observed = ext::make_shared<tradingTimeTermStructure>(
+        today, WeekendsOnly(), 0.0, std::vector<Handle<Quote>>{Handle<Quote>(size)},
+        std::vector<Date>{eventDate}, std::vector<Real>{timeOfDay});
+    Flag flag;
+    flag.registerWith(observed);
+    size->setValue(3.0);
+    BOOST_CHECK(flag.isUp());
+    BOOST_CHECK_SMALL(observed->tradingTime(eventDate + 1) - plain.tradingTime(eventDate + 1) -
+                          3.0 / 365.0, 1.0e-15);
+    size->setValue(-1.0);
+    BOOST_CHECK_THROW(observed->tradingTime(eventDate + 1), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testTradingTimeFloatingReference) {
+    BOOST_TEST_MESSAGE("Testing trading time with a reference date following the evaluation date...");
+
+    const Date today(5, January, 2024);
+    Settings::instance().evaluationDate() = today;
+    tradingTimeTermStructure floating(0, TARGET(), 0.2);
+    floating.tradingTime(today + 30);  // build the state for the first reference date
+    for (Integer days : {1, 7, 400}) {
+        // with no settlement days the reference date is the evaluation
+        // date moved to a business day, as for any term structure
+        Settings::instance().evaluationDate() = today + days;
+        const Date reference = floating.referenceDate();
+        BOOST_CHECK_EQUAL(reference, TARGET().adjust(today + days));
+        tradingTimeTermStructure fixed(reference, TARGET(), 0.2);
+        for (Integer ahead : {1, 30, 365}) {
+            BOOST_CHECK_SMALL(floating.tradingTime(reference + ahead) -
+                                  fixed.tradingTime(reference + ahead), 1.0e-15);
+            BOOST_CHECK_SMALL(floating.tradingTime(ahead / 365.0) - fixed.tradingTime(ahead / 365.0),
+                              1.0e-15);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testTradingTimeEdgeCasesAndValidation) {
+    BOOST_TEST_MESSAGE("Testing trading time edge cases and input validation...");
+
+    const Date saturday(6, January, 2024);
+    Settings::instance().evaluationDate() = saturday;
+    tradingTimeTermStructure ts(saturday, WeekendsOnly(), 0.25);
+    BOOST_CHECK_EQUAL(ts.tradingTime(saturday, saturday), 0.0);
+    // starting on a weekend, time runs at the weekend weight
+    BOOST_CHECK_SMALL(ts.tradingTime(0.5 / 365.0) * 365.0 - 0.125, 1.0e-12);
+    BOOST_CHECK_SMALL(ts.tradingTime(saturday + 3, saturday + 1) + ts.tradingTime(saturday + 1, saturday + 3),
+                      1.0e-15);
+    BOOST_CHECK_THROW(ts.tradingTime(saturday - 1), Error);
+    BOOST_CHECK_THROW(ts.tradingTime(-1.0 / 365.0), Error);
+
+    BOOST_CHECK_THROW(tradingTimeTermStructure(saturday, WeekendsOnly(), -0.1), Error);
+    BOOST_CHECK_THROW(tradingTimeTermStructure(saturday, WeekendsOnly(), 1.1), Error);
+    BOOST_CHECK_THROW(tradingTimeTermStructure(saturday, WeekendsOnly(), 0.0,
+                                               {makeQuoteHandle(1.0)}, {}),
+                      Error);
+    BOOST_CHECK_THROW(tradingTimeTermStructure(saturday, WeekendsOnly(), 0.0,
+                                               {makeQuoteHandle(1.0)}, {saturday + 3}, {1.0}),
+                      Error);
+    // default construction: reference date at the evaluation date, on a business day
+    tradingTimeTermStructure byDefault;
+    BOOST_CHECK_EQUAL(byDefault.referenceDate(), WeekendsOnly().adjust(saturday));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

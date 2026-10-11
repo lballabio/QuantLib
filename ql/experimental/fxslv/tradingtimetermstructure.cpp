@@ -20,138 +20,141 @@
 #include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <cmath>
+#include <utility>
 
 namespace QuantLib {
 
-    tradingTimeTermStructure::tradingTimeTermStructure(DayCounter dc, Real weekendWeight) 
-        : TermStructure(dc), weekendWeight_(weekendWeight) 
-    {}
+    namespace {
+
+        void checkInputs(Real weekendWeight,
+                         const std::vector<Handle<Quote>>& events,
+                         const std::vector<Date>& eventDates,
+                         const std::vector<Real>& eventTimesOfDay) {
+            QL_REQUIRE(weekendWeight >= 0.0 && weekendWeight <= 1.0,
+                       "weekend weight must be in [0, 1]: " << weekendWeight);
+            QL_REQUIRE(eventDates.size() == events.size(),
+                       "mismatch between number of events (" << events.size()
+                           << ") and event dates (" << eventDates.size() << ")");
+            QL_REQUIRE(eventTimesOfDay.empty() || eventTimesOfDay.size() == events.size(),
+                       "mismatch between number of events (" << events.size()
+                           << ") and event times of day (" << eventTimesOfDay.size() << ")");
+            for (Real tod : eventTimesOfDay)
+                QL_REQUIRE(tod >= 0.0 && tod < 1.0,
+                           "event time of day must be a fraction of the day in [0, 1): " << tod);
+        }
+
+    }
 
     tradingTimeTermStructure::tradingTimeTermStructure(const Date& referenceDate,
                                                        Calendar calendar,
                                                        Real weekendWeight,
                                                        std::vector<Handle<Quote>> events,
-                                                       const std::vector<Date>& eventDates)
-    : TermStructure(referenceDate, calendar, Actual365Fixed()), weekendWeight_(weekendWeight), 
-      events_(std::move(events)), eventDates_(eventDates),
-      eventTimes_(eventDates.size()), nEvents_(events_.size())
-    {
-        setEvents(tradingTimeTermStructure::referenceDate());
-        for (Size i = 0; i < nEvents_; ++i)
-            registerWith(events_[i]);
+                                                       std::vector<Date> eventDates,
+                                                       std::vector<Real> eventTimesOfDay)
+    : TermStructure(referenceDate, std::move(calendar), Actual365Fixed()),
+      weekendWeight_(weekendWeight), events_(std::move(events)),
+      eventDates_(std::move(eventDates)), eventTimesOfDay_(std::move(eventTimesOfDay)) {
+        checkInputs(weekendWeight_, events_, eventDates_, eventTimesOfDay_);
+        for (const auto& e : events_)
+            registerWith(e);
     }
 
     tradingTimeTermStructure::tradingTimeTermStructure(Natural settlementDays,
                                                        Calendar calendar,
                                                        Real weekendWeight,
                                                        std::vector<Handle<Quote>> events,
-                                                       const std::vector<Date>& eventDates)
-    : TermStructure(settlementDays, calendar, Actual365Fixed()), weekendWeight_(weekendWeight),
-      events_(std::move(events)), eventDates_(eventDates),
-      eventTimes_(eventDates.size()), nEvents_(events_.size()) 
-    {
-        setEvents(tradingTimeTermStructure::referenceDate());
-        for (Size i = 0; i < nEvents_; ++i)
-            registerWith(events_[i]);
+                                                       std::vector<Date> eventDates,
+                                                       std::vector<Real> eventTimesOfDay)
+    : TermStructure(settlementDays, std::move(calendar), Actual365Fixed()),
+      weekendWeight_(weekendWeight), events_(std::move(events)),
+      eventDates_(std::move(eventDates)), eventTimesOfDay_(std::move(eventTimesOfDay)) {
+        checkInputs(weekendWeight_, events_, eventDates_, eventTimesOfDay_);
+        for (const auto& e : events_)
+            registerWith(e);
     }
 
-    void tradingTimeTermStructure::setEvents(const Date& referenceDate, Period period) 
-    {
-        // handle weekends and holidays
-        // given a weekend weight of w ( < 1.0) set an event with 
-        // a weight of (w - 1) (which is < 0)! This is to handle 
-        // the trading time calculation for a given time. Since 
-        // this time is based on an Act/365 day counter, we need 
-        // to include weekends as a negative weight!
-        holidayDates_ = calendar().holidayList(referenceDate, calendar().advance(referenceDate, period), true);
-        holidayTimes_.reserve(holidayDates_.size());
-        for (Size j = 0; j < holidayDates_.size(); j++)
-            holidayTimes_.push_back(timeFromReference(holidayDates_[j]));
-
-        // fixed dates
-        QL_REQUIRE(eventDates_.size() == nEvents_, "mismatch between number of events ("
-                                                       << nEvents_ << ") and event dates ("
-                                                       << eventDates_.size() << ")");
-        
-        for (Size i = 0; i < nEvents_; ++i)
-            eventTimes_[i] = timeFromReference(eventDates_[i]);
-
-        latestReference_ = referenceDate;
-    }
-    
     void tradingTimeTermStructure::update() {
+        // the computed state follows the reference date lazily, see checkReference()
         TermStructure::update();
-        Date newReference = Date();
-        try {
-            newReference = referenceDate();
-            if (newReference != latestReference_)
-                setEvents(newReference);
-        } catch (Error&) {
-            if (newReference == Date()) {
-                // the curve couldn't calculate the reference
-                // date. Most of the times, this is because some
-                // underlying handle wasn't set, so we can just absorb
-                // the exception and continue; the jumps will be set
-                // correctly when a valid underlying is set.
-                return;
-            } else {
-                // something else happened during the call to
-                // setEvents(), so we let the exception bubble up.
-                throw;
+    }
+
+    void tradingTimeTermStructure::checkReference() const {
+        const Date& ref = referenceDate();
+        if (ref == latestReference_ && latestReference_ != Date())
+            return;
+        latestReference_ = ref;
+        referenceTimeOfDay_ = ref.fractionOfDay();
+        cumulative_.assign(1, 0.0);
+        eventDays_.resize(events_.size());
+        for (Size i = 0; i < events_.size(); ++i) {
+            const Real timeOfDay =
+                eventTimesOfDay_.empty() ? eventDates_[i].fractionOfDay() : eventTimesOfDay_[i];
+            eventDays_[i] = static_cast<Real>(eventDates_[i].serialNumber() - ref.serialNumber()) +
+                            timeOfDay - referenceTimeOfDay_;
+        }
+    }
+
+    Real tradingTimeTermStructure::daysFromReferenceDay(const Date& d) const {
+        const Date& ref = referenceDate();
+        QL_REQUIRE(d >= ref, "date (" << d << ") before the reference date (" << ref << ")");
+        return static_cast<Real>(d.serialNumber() - ref.serialNumber()) + d.fractionOfDay();
+    }
+
+    Real tradingTimeTermStructure::tradingDays(Real y) const {
+        // the rate is 1 on business days and the weekend weight on other
+        // days; cumulative_[k] holds the trading days before day k
+        const Size k = static_cast<Size>(std::floor(y));
+        const Date refDay = Date(referenceDate().serialNumber());
+        while (cumulative_.size() < k + 2) {
+            const Size j = cumulative_.size() - 1;
+            const Date day = refDay + static_cast<Date::serial_type>(j);
+            cumulative_.push_back(cumulative_.back() +
+                                  (calendar().isBusinessDay(day) ? 1.0 : weekendWeight_));
+        }
+        return cumulative_[k] + (y - static_cast<Real>(k)) * (cumulative_[k + 1] - cumulative_[k]);
+    }
+
+    Real tradingTimeTermStructure::jumpDays(Real x1, Real x2) const {
+        Real sum = 0.0;
+        for (Size i = 0; i < events_.size(); ++i) {
+            const Real xe = eventDays_[i];
+            if (xe > 0.0 && xe > x1 && xe <= x2) {
+                QL_REQUIRE(events_[i]->isValid(), "invalid " << io::ordinal(i + 1) << " event quote");
+                const Real size = events_[i]->value();
+                QL_REQUIRE(size >= 0.0, io::ordinal(i + 1) << " event has a negative size: " << size);
+                sum += size;
             }
         }
+        return sum;
     }
 
-    Real tradingTimeTermStructure::tradingTime(const Date& d1, const Date& d2) const {
-        // get the business days between the two dates - ignore beginning and ending dates
-        Time bizDays = calendar().businessDaysBetween(d1, d2, false, false);
-        
-        // adjust for the beginning and ending day
-        bizDays += (calendar().isBusinessDay(d1)) ? 1. - d1.fractionOfDay() : 0.0;
-        bizDays += (calendar().isBusinessDay(d2)) ? d2.fractionOfDay() : 0.0;
-
-        Time totalDays = daysBetween(d1, d2);  // this already accounts for intraday time!
-
-        Time adjDays = bizDays + (totalDays - bizDays) * weekendWeight_; // account for weekends + holidays
-
-        // now adjust for events!
-        for (Size i = 0; i < nEvents_; ++i) {
-            if (eventDates_[i] > d1 && eventDates_[i] <= d2) {
-                QL_REQUIRE(events_[i]->isValid(), "invalid " << io::ordinal(i + 1) << " jump quote");
-                adjDays += events_[i]->value();
-            }
-        }
-
-        // trading time is the year fraction, adjusted for the ratio of 
-        // trading days to total days. We are assuming that the yearFraction
-        // scales linearly with totalDays. This is trivially true for Act/365 
-        // which is what is genrally used in FX. However, for other day counters
-        // this might cause an issue so be careful! 
-        return dayCounter().yearFraction(d1, d2) * adjDays / totalDays;
+    Time tradingTimeTermStructure::tradingTime(Time t) const {
+        QL_REQUIRE(t >= 0.0, "negative time: " << t);
+        checkReference();
+        const Real x = t * 365.0;
+        const Real days = tradingDays(x + referenceTimeOfDay_) - tradingDays(referenceTimeOfDay_) +
+                          jumpDays(0.0, x);
+        return days / 365.0;
     }
 
-    Real tradingTimeTermStructure::tradingTime(Time t) const {
-        // t is the year fraction calcuated using the dayCounter
-        // of the term structure. This is assumed to be Act/365 
-        // which is the deault for FX. 
-        // Holiday/weekend weights and event weights are speicfied in 
-        // number of days. Therefore, to convert from real time to 
-        // trading time, we calculate the number of days to be adjusted
-        // by and then scale that by 365 to get the trading time!
-        // This will clearly break down with other day counters!
-        Real eventWeight = 0, holidayWeight = 0;
-        for (Size i = 0; i < eventTimes_.size(); i++) {
-            if (eventTimes_[i] <= t)
-                eventWeight += events_[i]->value();
-        }
-
-        for (Size j = 0; j < holidayTimes_.size(); j++) {
-            if (holidayTimes_[j] <= t)
-                holidayWeight += (weekendWeight_ - 1.);
-        }
-
-        return t + eventWeight / 365. + holidayWeight / 365.;
+    Time tradingTimeTermStructure::tradingTime(const Date& d1, const Date& d2) const {
+        checkReference();
+        if (d2 < d1)
+            return -tradingTime(d2, d1);
+        const Real y1 = daysFromReferenceDay(d1), y2 = daysFromReferenceDay(d2);
+        const Real days = tradingDays(y2) - tradingDays(y1) +
+                          jumpDays(y1 - referenceTimeOfDay_, y2 - referenceTimeOfDay_);
+        return days / 365.0;
     }
 
+    std::vector<Time> tradingTimeTermStructure::jumpTimes() const {
+        checkReference();
+        std::vector<Time> times;
+        for (Real xe : eventDays_)
+            if (xe > 0.0)
+                times.push_back(xe / 365.0);
+        return times;
+    }
 
 }
