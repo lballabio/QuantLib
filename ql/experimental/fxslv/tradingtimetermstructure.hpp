@@ -73,19 +73,40 @@ namespace QuantLib {
             Handle<Quote> size_;
         };
 
+        //! An event that adds trading time spread over whole days
+        /*! The weight, in days, is spread evenly over the days from the
+            start date up to the end date, excluded.  It may be negative,
+            e.g. -0.5 over one day for a half day, as long as the rate of
+            trading time stays non-negative on every day.
+        */
+        class DiffuseEvent {
+          public:
+            DiffuseEvent(const Date& start, const Date& end, Handle<Quote> weight);
+
+            const Date& start() const { return start_; }
+            const Date& end() const { return end_; }
+            const Handle<Quote>& weight() const { return weight_; }
+
+          private:
+            Date start_, end_;
+            Handle<Quote> weight_;
+        };
+
         //! \name Constructors
         //@{
         //! Fixed reference date.
         tradingTimeTermStructure(const Date& referenceDate,
                                  Calendar calendar = WeekendsOnly(),
                                  Real weekendWeight = 0.0,
-                                 std::vector<Jump> jumps = {});
+                                 std::vector<Jump> jumps = {},
+                                 std::vector<DiffuseEvent> diffuseEvents = {});
 
         //! Reference date floating with the evaluation date.
         explicit tradingTimeTermStructure(Natural settlementDays = 0,
                                           Calendar calendar = WeekendsOnly(),
                                           Real weekendWeight = 0.0,
-                                          std::vector<Jump> jumps = {});
+                                          std::vector<Jump> jumps = {},
+                                          std::vector<DiffuseEvent> diffuseEvents = {});
         //@}
 
         //! \name Observer interface
@@ -118,6 +139,8 @@ namespace QuantLib {
       private:
         // trading days from the start of the reference day to y days after it
         Real tradingDays(Real y) const;
+        // rate of trading time on the given day
+        Real rate(const Date& day) const;
         // trading days of the jumps in (x1, x2], in days since the reference instant
         Real jumpDays(Real x1, Real x2) const;
         // days from the start of the reference day to the given date, with its time of day
@@ -127,6 +150,7 @@ namespace QuantLib {
 
         Real weekendWeight_;
         std::vector<Jump> jumps_;
+        std::vector<DiffuseEvent> diffuseEvents_;
 
         // computed from the reference date, rebuilt when it changes
         mutable Date latestReference_;

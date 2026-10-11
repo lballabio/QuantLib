@@ -822,6 +822,62 @@ BOOST_AUTO_TEST_CASE(testTradingTimeJumpsNeedAnExplicitTime) {
 #endif
 }
 
+BOOST_AUTO_TEST_CASE(testTradingTimeDiffuseEvents) {
+    BOOST_TEST_MESSAGE("Testing trading time with diffuse events over whole days...");
+
+    using DiffuseEvent = tradingTimeTermStructure::DiffuseEvent;
+    const Date today(18, December, 2023);  // a Monday
+    Settings::instance().evaluationDate() = today;
+    const Date christmasEve(22, December, 2023), quietStart(25, December, 2023);
+    auto halfDay = ext::make_shared<SimpleQuote>(-0.5);
+    const Real w = 0.5;
+    tradingTimeTermStructure plain(today, WeekendsOnly(), w);
+    tradingTimeTermStructure ts(
+        today, WeekendsOnly(), w, {},
+        {DiffuseEvent(christmasEve, christmasEve + 1, Handle<Quote>(halfDay)),
+         DiffuseEvent(quietStart, quietStart + 7, makeQuoteHandle(-2.8))});
+    auto days = [](const tradingTimeTermStructure& c, const Date& d1, const Date& d2) {
+        return c.tradingTime(d1, d2) * 365.0;
+    };
+
+    // a half day counts half, through the day
+    BOOST_CHECK_SMALL(days(ts, christmasEve, christmasEve + 1) - 0.5, 1.0e-12);
+    BOOST_CHECK_SMALL(ts.tradingTime(ts.timeFromReference(christmasEve) + 0.5 / 365.0) -
+                          ts.tradingTime(christmasEve) - 0.25 / 365.0, 1.0e-15);
+    // a quiet week takes 0.4 days from each of its seven days
+    BOOST_CHECK_SMALL(days(ts, quietStart, quietStart + 7) - (days(plain, quietStart, quietStart + 7) - 2.8),
+                      1.0e-12);
+    BOOST_CHECK_SMALL(days(ts, quietStart, quietStart + 1) - 0.6, 1.0e-12);
+    // elsewhere nothing changes
+    BOOST_CHECK_SMALL(days(ts, today, christmasEve) - days(plain, today, christmasEve), 1.0e-12);
+
+    // the two forms still agree, and the rate stays non-negative
+    for (Date d = today; d <= today + 60; ++d)
+        BOOST_CHECK_SMALL(ts.tradingTime(d) - ts.tradingTime(ts.timeFromReference(d)), 1.0e-14);
+
+    // the weight follows its quote, and the change is notified
+    auto observed = ext::make_shared<tradingTimeTermStructure>(
+        today, WeekendsOnly(), w, std::vector<tradingTimeTermStructure::Jump>{},
+        std::vector<DiffuseEvent>{DiffuseEvent(christmasEve, christmasEve + 1, Handle<Quote>(halfDay))});
+    BOOST_CHECK_SMALL(days(*observed, christmasEve, christmasEve + 1) - 0.5, 1.0e-12);
+    Flag flag;
+    flag.registerWith(observed);
+    halfDay->setValue(0.5);
+    BOOST_CHECK(flag.isUp());
+    BOOST_CHECK_SMALL(days(*observed, christmasEve, christmasEve + 1) - 1.5, 1.0e-12);
+    // more than the day's own rate cannot be taken away
+    halfDay->setValue(-1.5);
+    BOOST_CHECK_THROW(observed->tradingTime(christmasEve + 1), Error);
+
+    BOOST_CHECK_THROW(DiffuseEvent(christmasEve, christmasEve, makeQuoteHandle(1.0)), Error);
+    BOOST_CHECK_THROW(DiffuseEvent(christmasEve, christmasEve + 1, Handle<Quote>()), Error);
+#ifdef QL_HIGH_RESOLUTION_DATE
+    BOOST_CHECK_THROW(DiffuseEvent(Date(22, December, 2023, 12, 0, 0), christmasEve + 1,
+                                   makeQuoteHandle(1.0)),
+                      Error);
+#endif
+}
+
 BOOST_AUTO_TEST_CASE(testTradingTimeFloatingReference) {
     BOOST_TEST_MESSAGE("Testing trading time with a reference date following the evaluation date...");
 

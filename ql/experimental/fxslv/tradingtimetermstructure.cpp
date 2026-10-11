@@ -42,32 +42,52 @@ namespace QuantLib {
         QL_REQUIRE(!size_.empty(), "no jump size given");
     }
 
+    tradingTimeTermStructure::DiffuseEvent::DiffuseEvent(const Date& start,
+                                                         const Date& end,
+                                                         Handle<Quote> weight)
+    : start_(start), end_(end), weight_(std::move(weight)) {
+        QL_REQUIRE(start.fractionOfDay() == 0.0 && end.fractionOfDay() == 0.0,
+                   "diffuse events cover whole days: " << start << " to " << end);
+        QL_REQUIRE(start < end, "diffuse event must end after it starts: " << start << " to " << end);
+        QL_REQUIRE(!weight_.empty(), "no diffuse event weight given");
+    }
+
     tradingTimeTermStructure::tradingTimeTermStructure(const Date& referenceDate,
                                                        Calendar calendar,
                                                        Real weekendWeight,
-                                                       std::vector<Jump> jumps)
+                                                       std::vector<Jump> jumps,
+                                                       std::vector<DiffuseEvent> diffuseEvents)
     : TermStructure(referenceDate, std::move(calendar), Actual365Fixed()),
-      weekendWeight_(weekendWeight), jumps_(std::move(jumps)) {
+      weekendWeight_(weekendWeight), jumps_(std::move(jumps)),
+      diffuseEvents_(std::move(diffuseEvents)) {
         QL_REQUIRE(weekendWeight_ >= 0.0 && weekendWeight_ <= 1.0,
                    "weekend weight must be in [0, 1]: " << weekendWeight_);
         for (const auto& j : jumps_)
             registerWith(j.size());
+        for (const auto& e : diffuseEvents_)
+            registerWith(e.weight());
     }
 
     tradingTimeTermStructure::tradingTimeTermStructure(Natural settlementDays,
                                                        Calendar calendar,
                                                        Real weekendWeight,
-                                                       std::vector<Jump> jumps)
+                                                       std::vector<Jump> jumps,
+                                                       std::vector<DiffuseEvent> diffuseEvents)
     : TermStructure(settlementDays, std::move(calendar), Actual365Fixed()),
-      weekendWeight_(weekendWeight), jumps_(std::move(jumps)) {
+      weekendWeight_(weekendWeight), jumps_(std::move(jumps)),
+      diffuseEvents_(std::move(diffuseEvents)) {
         QL_REQUIRE(weekendWeight_ >= 0.0 && weekendWeight_ <= 1.0,
                    "weekend weight must be in [0, 1]: " << weekendWeight_);
         for (const auto& j : jumps_)
             registerWith(j.size());
+        for (const auto& e : diffuseEvents_)
+            registerWith(e.weight());
     }
 
     void tradingTimeTermStructure::update() {
-        // the computed state follows the reference date lazily, see checkReference()
+        // the computed state is rebuilt lazily, see checkReference(); a
+        // diffuse event's weight may have changed, so rebuild in any case
+        latestReference_ = Date();
         TermStructure::update();
     }
 
@@ -90,16 +110,27 @@ namespace QuantLib {
         return static_cast<Real>(d.serialNumber() - ref.serialNumber()) + d.fractionOfDay();
     }
 
+    Real tradingTimeTermStructure::rate(const Date& day) const {
+        // 1 on business days, the weekend weight on other days, plus the
+        // share of each diffuse event covering the day
+        Real r = calendar().isBusinessDay(day) ? 1.0 : weekendWeight_;
+        for (const auto& e : diffuseEvents_) {
+            if (day >= e.start() && day < e.end()) {
+                QL_REQUIRE(e.weight()->isValid(), "invalid diffuse event weight");
+                r += e.weight()->value() / static_cast<Real>(e.end() - e.start());
+            }
+        }
+        QL_REQUIRE(r >= 0.0, "trading time would run backwards on " << day << ": rate " << r);
+        return r;
+    }
+
     Real tradingTimeTermStructure::tradingDays(Real y) const {
-        // the rate is 1 on business days and the weekend weight on other
-        // days; cumulative_[k] holds the trading days before day k
+        // cumulative_[k] holds the trading days before day k
         const Size k = static_cast<Size>(std::floor(y));
         const Date refDay = Date(referenceDate().serialNumber());
         while (cumulative_.size() < k + 2) {
             const Size j = cumulative_.size() - 1;
-            const Date day = refDay + static_cast<Date::serial_type>(j);
-            cumulative_.push_back(cumulative_.back() +
-                                  (calendar().isBusinessDay(day) ? 1.0 : weekendWeight_));
+            cumulative_.push_back(cumulative_.back() + rate(refDay + static_cast<Date::serial_type>(j)));
         }
         return cumulative_[k] + (y - static_cast<Real>(k)) * (cumulative_[k + 1] - cumulative_[k]);
     }
