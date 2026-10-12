@@ -1,4 +1,44 @@
-commit b92bce3e2866e7f3f07969c6a438ed1113ecc1ea
+commit 55e05cbc31303e8a838ed9c3013aed4663b6f7dd
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Mon, 12 Oct 2026 06:28:24 +0000
+
+    Set version to 1.44
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 966a4cc101049ca36a888b2ce223aa96d3f3b22d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 3 Oct 2026 13:43:40 +0200
+
+    Add download links to generated prerelease
+
+ .github/workflows/publish-release-candidate.yml | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+commit 28976268a65344ef07aaf89dca0ecc692aedbaf5
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 2 Oct 2026 22:24:19 +0200
+
+    Remove obsoleted macos-14 from CI builds
+
+ .github/workflows/cmake-latest-runners.yml | 1 -
+ .github/workflows/macos-nondefault.yml     | 2 +-
+ .github/workflows/macos.yml                | 2 +-
+ 3 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 2d7a355e26f4ef2497ccbec3ceee7e5e6c63b1a3
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Fri, 2 Oct 2026 10:38:16 +0000
+
+    Update changelog
+
+ ChangeLog.txt | 8644 +++++++++++++++++++++++++++++++++++++++------------------
+ 1 file changed, 5998 insertions(+), 2646 deletions(-)
+
+commit eb3f7423630f6504b76c77140f44e14a43a4a1a2
 Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
 Date:   Fri, 2 Oct 2026 10:38:15 +0000
 
