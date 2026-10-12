@@ -71,7 +71,7 @@ namespace QuantLib {
                           const std::vector<Real>& deltas,
                           const Handle<YieldTermStructure>& forTs,
                           const Handle<YieldTermStructure>& domTs,
-                          const Handle<tradingTimeTermStructure>& timesTs,
+                          const Handle<TradingTimeTermStructure>& timesTs,
                           DeltaVolQuote::DeltaType deltaType,
                           DeltaVolQuote::AtmType atmType,
                           FxRrBfQuotes::FlyType flyType,
@@ -114,7 +114,7 @@ namespace QuantLib {
         const std::vector<Date> pillars_;
         const Handle<YieldTermStructure> forTs_;
         const Handle<YieldTermStructure> domTs_;
-        const Handle<tradingTimeTermStructure> timeTs_;
+        const Handle<TradingTimeTermStructure> timeTs_;
 
         Date maxDate_;
         std::vector<Time> times_;
@@ -138,7 +138,7 @@ namespace QuantLib {
                                             const std::vector<Real>& deltas,
                                             const Handle<YieldTermStructure>& forTs,
                                             const Handle<YieldTermStructure>& domTs,
-                                            const Handle<tradingTimeTermStructure>& timeTs,
+                                            const Handle<TradingTimeTermStructure>& timeTs,
                                             DeltaVolQuote::DeltaType deltaType,
                                             DeltaVolQuote::AtmType atmType,
                                             FxRrBfQuotes::FlyType flyType,
@@ -311,7 +311,7 @@ namespace QuantLib {
                                const std::vector<Real>& deltas,
                                const Handle<YieldTermStructure>& forTs,
                                const Handle<YieldTermStructure>& domTs,
-                               const Handle<tradingTimeTermStructure>& timesTs,
+                               const Handle<TradingTimeTermStructure>& timesTs,
                                DeltaVolQuote::DeltaType deltaType,
                                DeltaVolQuote::AtmType atmType,
                                FxRrBfQuotes::FlyType flyType,
@@ -333,7 +333,7 @@ namespace QuantLib {
                                                       const std::vector<Real>& deltas,
                                                       const Handle<YieldTermStructure>& forTs,
                                                       const Handle<YieldTermStructure>& domTs,
-                                                      const Handle<tradingTimeTermStructure>& timeTs,
+                                                      const Handle<TradingTimeTermStructure>& timeTs,
                                                       DeltaVolQuote::DeltaType deltaType,
                                                       DeltaVolQuote::AtmType atmType,
                                                       FxRrBfQuotes::FlyType flyType,
@@ -410,7 +410,7 @@ namespace QuantLib {
                              const std::vector<Real>& deltas,
                              const Handle<YieldTermStructure>& forTs,
                              const Handle<YieldTermStructure>& domTs,
-                             const Handle<tradingTimeTermStructure>& timesTs,
+                             const Handle<TradingTimeTermStructure>& timesTs,
                              DeltaVolQuote::DeltaType deltaType,
                              DeltaVolQuote::AtmType atmType,
                              FxRrBfQuotes::FlyType flyType,
@@ -433,7 +433,7 @@ namespace QuantLib {
                                                   const std::vector<Real>& deltas,
                                                   const Handle<YieldTermStructure>& forTs,
                                                   const Handle<YieldTermStructure>& domTs,
-                                                  const Handle<tradingTimeTermStructure>& timeTs,
+                                                  const Handle<TradingTimeTermStructure>& timeTs,
                                                   DeltaVolQuote::DeltaType deltaType,
                                                   DeltaVolQuote::AtmType atmType,
                                                   FxRrBfQuotes::FlyType flyType,

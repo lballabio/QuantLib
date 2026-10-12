@@ -29,18 +29,18 @@ namespace QuantLib {
 
     namespace {
 
-        // the fraction of the day carried by a date; dates carry none
-        // without high-resolution dates
+        // the fraction of the day carried by a date; dates 
+        // carry none without high-resolution dates
         Real fractionOfDay(const Date& d) {
 #ifdef QL_HIGH_RESOLUTION_DATE
             return d.fractionOfDay();
 #else
-            (void)d;
+            (void)d;  // avoid compiler wrning on unused d
             return 0.0;
 #endif
         }
 
-        Real dayNumber(const Date& date, Real timeOfDay) {
+        Real datetimeSerialNumber(const Date& date, Real timeOfDay) {
             return static_cast<Real>(date.serialNumber()) + timeOfDay;
         }
 
@@ -63,15 +63,15 @@ namespace QuantLib {
     JumpTradingTimeEvent::JumpTradingTimeEvent(const Date& date,
                                                Real timeOfDay,
                                                Handle<Quote> weight)
-    : TradingTimeEvent(dayNumber(date, timeOfDay), dayNumber(date, timeOfDay), std::move(weight)) {
+    : TradingTimeEvent(datetimeSerialNumber(date, timeOfDay), datetimeSerialNumber(date, timeOfDay), std::move(weight)) {
         requireNoTimeOfDay(date);
         QL_REQUIRE(timeOfDay > 0.0 && timeOfDay < 1.0,
                    "jump time of day must be in (0, 1), not at midnight: " << timeOfDay);
     }
 
     JumpTradingTimeEvent::JumpTradingTimeEvent(const Date& dateTime, Handle<Quote> weight)
-    : TradingTimeEvent(dayNumber(dateTime, fractionOfDay(dateTime)),
-                       dayNumber(dateTime, fractionOfDay(dateTime)),
+    : TradingTimeEvent(datetimeSerialNumber(dateTime, fractionOfDay(dateTime)),
+                       datetimeSerialNumber(dateTime, fractionOfDay(dateTime)),
                        std::move(weight)) {
         QL_REQUIRE(fractionOfDay(dateTime) > 0.0,
                    "jump on " << dateTime << " has no time of day: give it explicitly"
@@ -83,8 +83,8 @@ namespace QuantLib {
                                                      const Date& endDate,
                                                      Real endTimeOfDay,
                                                      Handle<Quote> weight)
-    : TradingTimeEvent(dayNumber(startDate, startTimeOfDay),
-                       std::max(dayNumber(endDate, endTimeOfDay), dayNumber(startDate, startTimeOfDay)),
+    : TradingTimeEvent(datetimeSerialNumber(startDate, startTimeOfDay),
+                       std::max(datetimeSerialNumber(endDate, endTimeOfDay), datetimeSerialNumber(startDate, startTimeOfDay)),
                        std::move(weight)) {
         requireNoTimeOfDay(startDate);
         requireNoTimeOfDay(endDate);
@@ -92,7 +92,7 @@ namespace QuantLib {
                    "start time of day must be in [0, 1): " << startTimeOfDay);
         QL_REQUIRE(endTimeOfDay >= 0.0 && endTimeOfDay < 1.0,
                    "end time of day must be in [0, 1): " << endTimeOfDay);
-        QL_REQUIRE(dayNumber(startDate, startTimeOfDay) < dayNumber(endDate, endTimeOfDay),
+        QL_REQUIRE(datetimeSerialNumber(startDate, startTimeOfDay) < datetimeSerialNumber(endDate, endTimeOfDay),
                    "diffuse event must end after it starts: " << startDate << " + "
                        << startTimeOfDay << " to " << endDate << " + " << endTimeOfDay);
     }
@@ -100,9 +100,9 @@ namespace QuantLib {
     DiffuseTradingTimeEvent::DiffuseTradingTimeEvent(const Date& startDateTime,
                                                      const Date& endDateTime,
                                                      Handle<Quote> weight)
-    : TradingTimeEvent(dayNumber(startDateTime, fractionOfDay(startDateTime)),
-                       std::max(dayNumber(endDateTime, fractionOfDay(endDateTime)),
-                                dayNumber(startDateTime, fractionOfDay(startDateTime))),
+    : TradingTimeEvent(datetimeSerialNumber(startDateTime, fractionOfDay(startDateTime)),
+                       std::max(datetimeSerialNumber(endDateTime, fractionOfDay(endDateTime)),
+                                datetimeSerialNumber(startDateTime, fractionOfDay(startDateTime))),
                        std::move(weight)) {
         QL_REQUIRE(fractionOfDay(startDateTime) > 0.0 && fractionOfDay(endDateTime) > 0.0,
                    "diffuse event from " << startDateTime << " to " << endDateTime
@@ -125,11 +125,10 @@ namespace QuantLib {
     }
 
 
-    tradingTimeTermStructure::tradingTimeTermStructure(
-        const Date& referenceDate,
-        Calendar calendar,
-        Real holidayWeight,
-        std::vector<ext::shared_ptr<TradingTimeEvent>> events)
+    TradingTimeTermStructure::TradingTimeTermStructure(const Date& referenceDate,
+                                                       Calendar calendar,
+                                                       Real holidayWeight,
+                                                       std::vector<ext::shared_ptr<TradingTimeEvent>> events)
     : TermStructure(referenceDate, std::move(calendar), Actual365Fixed()),
       holidayWeight_(holidayWeight), events_(std::move(events)) {
         QL_REQUIRE(holidayWeight_ >= 0.0 && holidayWeight_ <= 1.0,
@@ -140,10 +139,9 @@ namespace QuantLib {
         }
     }
 
-    tradingTimeTermStructure::tradingTimeTermStructure(
-        Calendar calendar,
-        Real holidayWeight,
-        std::vector<ext::shared_ptr<TradingTimeEvent>> events)
+    TradingTimeTermStructure::TradingTimeTermStructure(Calendar calendar,
+                                                       Real holidayWeight,
+                                                       std::vector<ext::shared_ptr<TradingTimeEvent>> events)
     : TermStructure(Null<Natural>(), std::move(calendar), Actual365Fixed()),
       holidayWeight_(holidayWeight), events_(std::move(events)) {
         QL_REQUIRE(holidayWeight_ >= 0.0 && holidayWeight_ <= 1.0,
@@ -154,7 +152,7 @@ namespace QuantLib {
         }
     }
 
-    const Date& tradingTimeTermStructure::referenceDate() const {
+    const Date& TradingTimeTermStructure::referenceDate() const {
         if (!moving_)
             return TermStructure::referenceDate();
         // the evaluation date converts to a Date by value, so keep a copy
@@ -164,31 +162,26 @@ namespace QuantLib {
         return floatingReference_;
     }
 
-    void tradingTimeTermStructure::update() {
+    void TradingTimeTermStructure::update() {
         // an event weight or the evaluation date may have changed; the
         // computed state is rebuilt lazily, see checkReference()
         upToDate_ = false;
         TermStructure::update();
     }
 
-    void tradingTimeTermStructure::resetBaseDays() const {
-        // no trading days before the start of the reference day
-        cumulativeBaseDays_.assign(1, 0.0);
-    }
-
-    void tradingTimeTermStructure::checkReference() const {
+    void TradingTimeTermStructure::checkReference() const {
         const Date& ref = referenceDate();
         if (upToDate_ && ref == latestReference_)
             return;
 
-        // the base days depend only on the reference day, not on its
-        // time of day or on the events
+        // the base days depend only on the reference day, 
+        // not on its time of day or on the events
         if (cumulativeBaseDays_.empty() || ref.serialNumber() != referenceDay_)
-            resetBaseDays();
+            cumulativeBaseDays_.assign(1, 0.0);
         latestReference_ = ref;
         referenceDay_ = ref.serialNumber();
         referenceDayFraction_ = fractionOfDay(ref);
-        referenceInstant_ = dayNumber(ref, referenceDayFraction_);
+        referenceInstant_ = datetimeSerialNumber(ref, referenceDayFraction_);
 
         // events fully released by the reference instant add nothing
         pendingEvents_.clear();
@@ -211,9 +204,12 @@ namespace QuantLib {
         upToDate_ = true;
     }
 
-    void tradingTimeTermStructure::checkRateIsNonNegative() const {
-        // only negative weights can make the rate negative, and only
-        // while they are releasing
+    void TradingTimeTermStructure::checkRateIsNonNegative() const {
+        // trading time can never go negative. however, its passage can be 
+        // slower than real time. for eg over xmas or on holidays. this can 
+        // be done by a negative weighetd deiffuse trading event. in these 
+        // scenarions we need to make sure that trading time is still 
+        // monotonically increasing when negative weights events are releasing
         std::vector<Real> breaks;
         Real first = QL_MAX_REAL, last = -QL_MAX_REAL;
         for (Size k = 0; k < pendingEvents_.size(); ++k) {
@@ -249,7 +245,7 @@ namespace QuantLib {
         }
     }
 
-    Real tradingTimeTermStructure::daysFromReference(const Date& d) const {
+    Real TradingTimeTermStructure::daysFromReference(const Date& d) const {
         const Date& ref = referenceDate();
         QL_REQUIRE(d >= ref, "date (" << d << ") before the reference date (" << ref << ")");
         // the whole days separately, to keep the precision of the fractions
@@ -257,11 +253,7 @@ namespace QuantLib {
                (fractionOfDay(d) - referenceDayFraction_);
     }
 
-    Real tradingTimeTermStructure::baseRate(const Date& day) const {
-        return calendar().isBusinessDay(day) ? 1.0 : holidayWeight_;
-    }
-
-    Real tradingTimeTermStructure::baseDaysSinceReferenceDay(Real y) const {
+    Real TradingTimeTermStructure::baseDaysSinceReferenceDay(Real y) const {
         // cumulativeBaseDays_[k] holds the base trading days before day k
         const Size k = static_cast<Size>(std::floor(y));
         const Date day0(referenceDay_);
@@ -274,7 +266,7 @@ namespace QuantLib {
                (y - static_cast<Real>(k)) * (cumulativeBaseDays_[k + 1] - cumulativeBaseDays_[k]);
     }
 
-    Real tradingTimeTermStructure::tradingDaysSinceReference(Real x) const {
+    Real TradingTimeTermStructure::tradingDaysSinceReference(Real x) const {
         Real days = baseDaysSinceReferenceDay(referenceDayFraction_ + x) -
                     baseDaysSinceReferenceDay(referenceDayFraction_);
         const Real instant = referenceInstant_ + x;
@@ -284,13 +276,17 @@ namespace QuantLib {
         return days;
     }
 
-    Time tradingTimeTermStructure::tradingTime(Time t) const {
+    Real TradingTimeTermStructure::baseRate(const Date& day) const {
+        return calendar().isBusinessDay(day) ? 1.0 : holidayWeight_;
+    }
+
+    Time TradingTimeTermStructure::tradingTime(Time t) const {
         QL_REQUIRE(t >= 0.0, "negative time: " << t);
         checkReference();
         return tradingDaysSinceReference(t * 365.0) / 365.0;
     }
 
-    Time tradingTimeTermStructure::tradingTime(const Date& d1, const Date& d2) const {
+    Time TradingTimeTermStructure::tradingTime(const Date& d1, const Date& d2) const {
         checkReference();
         if (d2 < d1)
             return -tradingTime(d2, d1);
@@ -298,7 +294,7 @@ namespace QuantLib {
                 tradingDaysSinceReference(daysFromReference(d1))) / 365.0;
     }
 
-    std::vector<std::pair<Time, Time>> tradingTimeTermStructure::eventIntervals() const {
+    std::vector<std::pair<Time, Time>> TradingTimeTermStructure::eventIntervals() const {
         checkReference();
         std::vector<std::pair<Time, Time>> intervals;
         intervals.reserve(pendingEvents_.size());

@@ -188,8 +188,8 @@ namespace {
             }
 
             // Build the variance surface (trading-time interpolation).
-            auto timeTs = Handle<tradingTimeTermStructure>(
-                ext::make_shared<tradingTimeTermStructure>(today, calendar, 0.0));
+            auto timeTs = Handle<TradingTimeTermStructure>(
+                ext::make_shared<TradingTimeTermStructure>(today, calendar, 0.0));
 
             volSurface = ext::make_shared<fxVarianceSurfaceNCP<FxQuadraticSmileSection>>(
                 today, spot, pillars, atms, rrs, bfs, deltas,

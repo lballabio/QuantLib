@@ -39,7 +39,7 @@ namespace QuantLib {
     /*! Instants are given as day numbers: the serial number of the date
         plus the fraction of the day passed.  The weight, in trading days,
         is a quote; released() gives the fraction of it released by an
-        instant, from 0 up to the start to 1 from the end on.
+        instant, from 0 at the start to 1 by the end.
     */
     class TradingTimeEvent {
       public:
@@ -137,21 +137,20 @@ namespace QuantLib {
         \warning Results are cached lazily in mutable state, so an instance
                  must not be used from several threads at once.
     */
-    class tradingTimeTermStructure : public TermStructure {
+    class TradingTimeTermStructure : public TermStructure {
       public:
         //! \name Constructors
         //@{
         //! Fixed reference date.
-        tradingTimeTermStructure(const Date& referenceDate,
+        TradingTimeTermStructure(const Date& referenceDate,
                                  Calendar calendar = WeekendsOnly(),
                                  Real holidayWeight = 0.0,
                                  std::vector<ext::shared_ptr<TradingTimeEvent>> events = {});
 
         //! Reference date floating with the evaluation date.
-        explicit tradingTimeTermStructure(
-            Calendar calendar = WeekendsOnly(),
-            Real holidayWeight = 0.0,
-            std::vector<ext::shared_ptr<TradingTimeEvent>> events = {});
+        explicit TradingTimeTermStructure(Calendar calendar = WeekendsOnly(),
+                                          Real holidayWeight = 0.0,
+                                          std::vector<ext::shared_ptr<TradingTimeEvent>> events = {});
         //@}
 
         //! \name Observer interface
@@ -190,14 +189,12 @@ namespace QuantLib {
       private:
         // days from the reference instant to the given date, with its time of day
         Real daysFromReference(const Date& d) const;
+        // eventless trading days, from the start of the reference day to y days after
+        Real baseDaysSinceReferenceDay(Real y) const;
         // trading days from the reference instant to x days after it
         Real tradingDaysSinceReference(Real x) const;
-        // base trading days, without events, from the start of the reference day to y days after it
-        Real baseDaysSinceReferenceDay(Real y) const;
         // base rate of trading time on the given day
         Real baseRate(const Date& day) const;
-        // empties the cache of base trading days, for a new reference day
-        void resetBaseDays() const;
         // rebuilds the computed state if the reference date or the weights have changed
         void checkReference() const;
         // fails if trading time would run backwards after the reference instant
@@ -211,11 +208,11 @@ namespace QuantLib {
 
         // computed from the reference date and the weights, rebuilt when either changes
         mutable bool upToDate_ = false;
-        mutable Date latestReference_;
-        mutable Date::serial_type referenceDay_ = 0;  // serial number of the reference day
+        mutable Date latestReference_;                 // last reference value for cumulative_ calc
+        mutable Date::serial_type referenceDay_ = 0;   // serial number of the reference day
         mutable Real referenceDayFraction_ = 0.0;      // fraction of the reference day passed
         mutable Real referenceInstant_ = 0.0;          // the two above, as a day number
-        mutable std::vector<Size> pendingEvents_;      // events still releasing after the reference
+        mutable std::vector<Size> pendingEvents_;      // events still to be released after reference
         mutable std::vector<Real> weights_;            // their weights
         mutable std::vector<Real> releasedAtReference_;  // their fractions released by the reference
         // base trading days before each day since the reference day; extended
