@@ -104,7 +104,10 @@ namespace QuantLib {
         
       private:
         void registerWithMarketData();
-        void getTradingTimes();
+        // recomputes the pillar times, if stale
+        void checkTradingTimes() const;
+        // trading time to a time from the surface's reference date
+        Time tradingTime(Time t) const;
         // total variance at a node: the reference date, a pillar or a point of the grid
         Real nodeVariance(Integer pillar, long index, Real strike) const;
         // interpolated smile at a point of the grid, built once and cached
@@ -121,8 +124,10 @@ namespace QuantLib {
         const Handle<TradingTimeTermStructure> timeTs_;
 
         Date maxDate_;
-        std::vector<Time> tradingTimes_;  // vector of trading times for pillar smile sections
-        std::vector<Time> pillarTimes_;   // calendar times of the pillars
+        // computed lazily, after a notification, see checkTradingTimes()
+        mutable bool tradingTimesStale_ = true;
+        mutable std::vector<Time> tradingTimes_;  // trading times of the pillars, after a 0
+        mutable std::vector<Time> pillarTimes_;   // calendar times of the pillars
         Time nodeSpacing_;                // calendar time between points of the grid
 
         mutable std::vector<ext::shared_ptr<T>> smileSections_;
@@ -176,19 +181,21 @@ namespace QuantLib {
         }
 
         registerWithMarketData();
-        getTradingTimes();
     }
 
     template<class T>
     inline void fxVarianceSurface<T>::update()
     {
+        // recomputing here could throw in the middle of a notification,
+        // e.g. when the evaluation date moves; do it when next needed
         smileCache_.clear();
+        tradingTimesStale_ = true;
         BlackVarianceTermStructure::update();
-        getTradingTimes();
     }
 
     template <class T>
     Real fxVarianceSurface<T>::atmVar(Date d) const {
+        checkTradingTimes();
         // quick routine for atm variance - avoids smile calibration!
         Time tau = timeTs_->tradingTime(referenceDate(), d);
         if (tau <= tradingTimes_.back()) {
@@ -232,6 +239,7 @@ namespace QuantLib {
 
     template <class T>
     Real fxVarianceSurface<T>::blackVarianceImpl(Time t, Real strike) const {
+        checkTradingTimes();
         // Total variance is interpolated between nodes: the reference date,
         // the pillars and the points of a grid in calendar time.  Between
         // two nodes it is linear in trading time, so it stays flat over a
@@ -258,19 +266,30 @@ namespace QuantLib {
 
         const Real moneyness = strike / fwd(t);
         const Real wa = nodeVariance(pa, j, moneyness * fwd(ta));
-        const Time tauA = timeTs_->tradingTime(ta), tauB = timeTs_->tradingTime(tb);
+        const Time tauA = tradingTime(ta), tauB = tradingTime(tb);
         if (tauB <= tauA)
             return wa;  // no trading time between the nodes
         const Real wb = nodeVariance(pb, j + 1, moneyness * fwd(tb));
-        const Real lambda = (timeTs_->tradingTime(t) - tauA) / (tauB - tauA);
+        const Real lambda = (tradingTime(t) - tauA) / (tauB - tauA);
         return wa + lambda * (wb - wa);
+    }
+
+    template <class T>
+    Time fxVarianceSurface<T>::tradingTime(Time t) const {
+        // the trading-time curve measures times from its own reference
+        // date, so both must agree; a floating curve under a fixed surface
+        // would drift apart as the evaluation date moves
+        QL_REQUIRE(timeTs_->referenceDate() == referenceDate(),
+                   "trading-time reference date (" << timeTs_->referenceDate()
+                       << ") differs from the variance surface's (" << referenceDate() << ")");
+        return timeTs_->tradingTime(t);
     }
 
     template <class T>
     Real fxVarianceSurface<T>::nodeVariance(Integer pillar, long index, Real strike) const {
         if (pillar >= 0)
             return smileSections_[pillar]->variance(strike);
-        if (timeTs_->tradingTime(index * nodeSpacing_) <= 0.0)
+        if (tradingTime(index * nodeSpacing_) <= 0.0)
             return 0.0;  // the reference date, or no trading time since
         return gridSmileSection(index)->variance(strike);
     }
@@ -282,7 +301,7 @@ namespace QuantLib {
             return it->second;
 
         const Time t = index * nodeSpacing_;
-        const Time tau = timeTs_->tradingTime(t);
+        const Time tau = tradingTime(t);
         Handle<T> section;
         if (tau <= tradingTimes_[1]) {
             // before the first pillar: scale the first smile
@@ -315,7 +334,9 @@ namespace QuantLib {
     }
 
     template <class T>
-    void fxVarianceSurface<T>::getTradingTimes() {
+    void fxVarianceSurface<T>::checkTradingTimes() const {
+        if (!tradingTimesStale_)
+            return;
         tradingTimes_ = std::vector<Time>(pillars_.size() + 1); // these are market times, NOT real times!
         tradingTimes_[0] = 0.0;
         for (Size j = 1; j <= pillars_.size(); j++) {
@@ -324,6 +345,7 @@ namespace QuantLib {
         pillarTimes_.resize(pillars_.size());
         for (Size j = 0; j < pillars_.size(); ++j)
             pillarTimes_[j] = timeFromReference(pillars_[j]);
+        tradingTimesStale_ = false;
     }
 
 

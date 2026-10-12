@@ -875,6 +875,32 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceShortAndLongTenors) {
     BOOST_CHECK_MESSAGE(vol > 0.25 && vol < 0.45, "vol " << vol << " after three years");
 }
 
+BOOST_AUTO_TEST_CASE(testVarianceSurfaceTradingTimeReference) {
+    BOOST_TEST_MESSAGE("Testing that the variance surface and its trading time share a reference date...");
+
+    FxMarket m;
+    auto surfaceWith = [&](const Handle<TradingTimeTermStructure>& timeTs) {
+        return fxVarianceSurfaceNCP<FxQuadraticSmileSection>(
+            m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.eurTs, m.usdTs, timeTs,
+            m.deltaType, m.atmType, m.flyType, FxSettlementConvention(WeekendsOnly(), 2));
+    };
+    const Date d(15, May, 2024);
+
+    // a fixed trading-time curve from another date
+    const auto shifted = surfaceWith(Handle<TradingTimeTermStructure>(
+        ext::make_shared<TradingTimeTermStructure>(m.today - 3, WeekendsOnly(), 0.0)));
+    BOOST_CHECK_THROW(shifted.blackVariance(d, m.spot->value()), Error);
+
+    // a floating one agrees until the evaluation date moves
+    const auto floating = surfaceWith(Handle<TradingTimeTermStructure>(
+        ext::make_shared<TradingTimeTermStructure>(WeekendsOnly(), 0.0)));
+    const Real before = floating.blackVariance(d, m.spot->value());
+    BOOST_CHECK_SMALL(before - m.surface->blackVariance(d, m.spot->value()), 1.0e-15);
+    // moving the evaluation date must not throw; using the surface then does
+    BOOST_CHECK_NO_THROW(Settings::instance().evaluationDate() = m.today + 1);
+    BOOST_CHECK_THROW(floating.blackVariance(d, m.spot->value()), Error);
+}
+
 BOOST_AUTO_TEST_CASE(testTradingTimeFormsAgree) {
     BOOST_TEST_MESSAGE("Testing that trading time from dates and from times agree...");
 
