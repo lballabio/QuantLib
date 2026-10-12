@@ -34,8 +34,7 @@
 #include <ql/experimental/fxslv/fxcostsmilesection.hpp>
 #include <ql/quote.hpp>
 #include <ql/pricingengines/blackdeltacalculator.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/math/solvers1d/brent.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <map>
 
@@ -525,7 +524,8 @@ namespace QuantLib {
         Real dfor = this->foreignDiscountCurve()->discount(t);
         Real spt = this->spot()->value();
 
-        auto interpNcp = [t, wInit, wFinal, ssInit, ssFinal, spt, ddom, dfor](Real k2) {
+        // used only here, while the sections are alive, so capture by reference
+        auto interpNcp = [&](Real k2) {
             Real m2 = k2 / ssFinal.forward();                // long moneyness
             Real p = ssFinal.exerciseProbability(m2);        // its exercise probability
             Real m1 = ssInit.moneynessFromProbability(p);   // short moneyness, same probability
@@ -538,10 +538,10 @@ namespace QuantLib {
             Real k = fwd * (wInit * m1 + wFinal * m2);     // strike
             Real c = fwd * (wInit * ncp1 + wFinal * ncp2); // prem
 
-            Brent solver;
-            solver.setMaxEvaluations(10000);
-            Real iw = solver.solve([&](Real w) { return BlackCalculator(Option::Call, k, fwd, w).value() - c; },
-                                    1e-12, 0.1, 0.01, 0.5);
+            // undiscounted price, so a unit discount; this inverts the
+            // out-of-the-money option, and bounds the std dev only by [0, 24]
+            Real iw = blackFormulaImpliedStdDev(Option::Call, k, fwd, c, 1.0, 0.0, Null<Real>(),
+                                                1.0e-10, 100);
 
             Real v = iw / std::sqrt(t); // black calculator uses total vol so scale by sqrt(time)
 

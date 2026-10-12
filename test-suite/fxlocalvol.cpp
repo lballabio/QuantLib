@@ -842,6 +842,39 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceEventBetweenPillars) {
     BOOST_CHECK_SMALL(w(t1) - w(t1 - eps) - rate * eps, 1.0e-12);
 }
 
+BOOST_AUTO_TEST_CASE(testVarianceSurfaceShortAndLongTenors) {
+    BOOST_TEST_MESSAGE("Testing NCP interpolation at very short and very long tenors...");
+
+    FxMarket m;
+    auto q = [](Real v) { return makeQuoteHandle(v); };
+    auto surfaceWith = [&](const std::vector<Date>& pillars, Real atm, Real rr25, Real bf25) {
+        std::vector<Handle<Quote>> atms;
+        std::vector<std::vector<Handle<Quote>>> rrs, bfs;
+        for (Size i = 0; i < pillars.size(); ++i) {
+            atms.push_back(q(atm));
+            rrs.push_back({q(rr25), q(1.8 * rr25)});
+            bfs.push_back({q(bf25), q(3.2 * bf25)});
+        }
+        return fxVarianceSurfaceNCP<FxQuadraticSmileSection>(
+            m.today, m.spot, pillars, atms, rrs, bfs, m.deltas, m.eurTs, m.usdTs, m.timeTs,
+            m.deltaType, m.atmType, m.flyType, FxSettlementConvention(WeekendsOnly(), 2));
+    };
+
+    // between O/N and 1W at 7%, the std dev at the nodes is below 0.01
+    const auto shortEnd = surfaceWith({m.today + 1, m.today + 7}, 0.07, -0.005, 0.002);
+    for (Integer days : {3, 5}) {
+        const Date d = m.today + days;
+        const Volatility vol = shortEnd.blackVol(d, shortEnd.fwd(d));
+        BOOST_CHECK_MESSAGE(vol > 0.05 && vol < 0.10, "vol " << vol << " after " << days << " days");
+    }
+
+    // between 1Y and 5Y at 35%, the std dev at the nodes is above 0.5
+    const auto longEnd = surfaceWith({Date(2, January, 2025), Date(2, January, 2029)}, 0.35, -0.03, 0.01);
+    const Date d(3, January, 2027);
+    const Volatility vol = longEnd.blackVol(d, longEnd.fwd(d));
+    BOOST_CHECK_MESSAGE(vol > 0.25 && vol < 0.45, "vol " << vol << " after three years");
+}
+
 BOOST_AUTO_TEST_CASE(testTradingTimeFormsAgree) {
     BOOST_TEST_MESSAGE("Testing that trading time from dates and from times agree...");
 
