@@ -886,11 +886,11 @@ BOOST_AUTO_TEST_CASE(testTradingTimeFloatingReference) {
     tradingTimeTermStructure floating(TARGET(), 0.2);
     floating.tradingTime(today + 30);  // build the state for the first reference date
     for (Integer days : {1, 7, 400}) {
-        // with no settlement days the reference date is the evaluation
-        // date moved to a business day, as for any term structure
+        // the reference date is the evaluation date, even on a weekend:
+        // trading time runs from now
         Settings::instance().evaluationDate() = today + days;
         const Date reference = floating.referenceDate();
-        BOOST_CHECK_EQUAL(reference, TARGET().adjust(today + days));
+        BOOST_CHECK_EQUAL(reference, today + days);
         tradingTimeTermStructure fixed(reference, TARGET(), 0.2);
         for (Integer ahead : {1, 30, 365}) {
             BOOST_CHECK_SMALL(floating.tradingTime(reference + ahead) -
@@ -917,9 +917,9 @@ BOOST_AUTO_TEST_CASE(testTradingTimeEdgeCasesAndValidation) {
 
     BOOST_CHECK_THROW(tradingTimeTermStructure(saturday, WeekendsOnly(), -0.1), Error);
     BOOST_CHECK_THROW(tradingTimeTermStructure(saturday, WeekendsOnly(), 1.1), Error);
-    // default construction: reference date at the evaluation date, on a business day
+    // default construction: reference date at the evaluation date, even on a weekend
     tradingTimeTermStructure byDefault;
-    BOOST_CHECK_EQUAL(byDefault.referenceDate(), WeekendsOnly().adjust(saturday));
+    BOOST_CHECK_EQUAL(byDefault.referenceDate(), saturday);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

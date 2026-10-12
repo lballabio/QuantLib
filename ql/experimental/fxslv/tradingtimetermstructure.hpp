@@ -155,6 +155,9 @@ namespace QuantLib {
         std::vector<JumpEvent> jumps_;
         std::vector<DiffuseEvent> diffuseEvents_;
 
+        // the evaluation date, for a floating reference date
+        mutable Date floatingReference_;
+
         // computed from the reference date, rebuilt when it changes
         mutable Date latestReference_;
         mutable Real referenceTimeOfDay_ = 0.0;  // fraction of the reference day already passed

@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
+#include <ql/settings.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <cmath>
@@ -86,8 +87,11 @@ namespace QuantLib {
     const Date& tradingTimeTermStructure::referenceDate() const {
         if (!moving_)
             return TermStructure::referenceDate();
-        return Settings::instance().evaluationDate();
-        
+        // the evaluation date converts to a Date by value, so keep a copy
+        // to return a reference to; not moved to a business day, since
+        // trading time runs from now, weekends included
+        floatingReference_ = Settings::instance().evaluationDate();
+        return floatingReference_;
     }
 
     void tradingTimeTermStructure::update() {
