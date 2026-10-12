@@ -762,6 +762,86 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceAtmVariance) {
     BOOST_CHECK_SMALL(m.surface->atmVar(later) - var6M * tau(later) / tau(m.expiry6M), 1.0e-12);
 }
 
+BOOST_AUTO_TEST_CASE(testVarianceSurfaceReproducesPillars) {
+    BOOST_TEST_MESSAGE("Testing that the variance surface reproduces its pillar smiles...");
+
+    FxMarket m;
+    for (Size i = 0; i < m.pillars.size(); ++i) {
+        FxQuadraticSmileSection pillar(
+            m.pillars[i], m.spot,
+            ext::make_shared<FxRrBfQuotes>(m.atms[i], m.rrs[i], m.bfs[i], m.deltas, m.flyType),
+            m.eurTs, m.usdTs, m.deltaType, m.atmType, Actual365Fixed(),
+            FxSettlementConvention(WeekendsOnly(), 2), m.today);
+        for (Real strike : {1.00, 1.05, 1.085, 1.12, 1.17})
+            BOOST_CHECK_SMALL(m.surface->blackVariance(m.pillars[i], strike) - pillar.variance(strike),
+                              1.0e-12);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testVarianceSurfaceInTradingTime) {
+    BOOST_TEST_MESSAGE("Testing that the variance surface accrues variance in trading time...");
+
+    FxMarket m;
+    // at a given forward moneyness, nothing accrues over a weekend, which
+    // has no trading time here, although the forward moves with the carry
+    const Date saturday(3, February, 2024), monday(5, February, 2024);
+    for (Real k : {0.93, 1.0, 1.07}) {
+        const Real wSaturday = m.surface->blackVariance(saturday, k * m.surface->fwd(saturday));
+        const Real wMonday = m.surface->blackVariance(monday, k * m.surface->fwd(monday));
+        BOOST_CHECK_SMALL(wMonday - wSaturday, 1.0e-14);
+    }
+
+    // through the pillars and beyond, variance at a given forward moneyness
+    // never decreases and grows at a bounded rate: no staircase, no spikes
+    const Time dt = 1.0e-4;
+    for (Real k : {0.93, 1.0, 1.07}) {
+        for (Time t = dt; t < 0.55; t += dt) {
+            const Real w1 = m.surface->blackVariance(t, k * m.surface->fwd(t), true);
+            const Real w2 = m.surface->blackVariance(t + dt, k * m.surface->fwd(t + dt), true);
+            const Real rate = (w2 - w1) / dt;
+            if (rate < -1.0e-10 || rate > 0.03) {
+                BOOST_ERROR("moneyness " << k << ": variance rate " << rate << " at time " << t);
+                break;
+            }
+        }
+    }
+
+    BOOST_CHECK_THROW(fxVarianceSurfaceNCP<FxQuadraticSmileSection>(
+                          m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.eurTs,
+                          m.usdTs, m.timeTs, m.deltaType, m.atmType, m.flyType,
+                          FxSettlementConvention(WeekendsOnly(), 2), WeekendsOnly(), Following,
+                          true, 0.0),
+                      Error);
+}
+
+BOOST_AUTO_TEST_CASE(testVarianceSurfaceEventBetweenPillars) {
+    BOOST_TEST_MESSAGE("Testing that the variance surface jumps at an event between pillars...");
+
+    FxMarket m;
+    const Date eventDate(10, April, 2024);  // a Wednesday between the pillars
+    const Real timeOfDay = 13.0 / 24.0, size = 2.0;
+    auto timeTs = Handle<TradingTimeTermStructure>(ext::make_shared<TradingTimeTermStructure>(
+        m.today, WeekendsOnly(), 0.0,
+        std::vector<ext::shared_ptr<TradingTimeEvent>>{ext::make_shared<JumpTradingTimeEvent>(
+            eventDate, timeOfDay, makeQuoteHandle(size))}));
+    fxVarianceSurfaceNCP<FxQuadraticSmileSection> surface(
+        m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.eurTs, m.usdTs, timeTs,
+        m.deltaType, m.atmType, m.flyType, FxSettlementConvention(WeekendsOnly(), 2));
+
+    // the jump adds trading time at the rate variance accrues around it
+    const Time te = (eventDate - m.today + timeOfDay) / 365.0, eps = 1.0e-7;
+    auto w = [&](Time t) { return surface.blackVariance(t, surface.fwd(t)); };
+    const Real jump = w(te + eps) - w(te - eps);
+    const Time t0 = te - 0.5 / 365.0;  // earlier on the same day
+    const Real rate = (w(te - eps) - w(t0)) / (timeTs->tradingTime(te - eps) - timeTs->tradingTime(t0));
+    BOOST_CHECK_MESSAGE(std::fabs(jump / (rate * size / 365.0) - 1.0) < 1.0e-4,
+                        "variance jump " << jump << " at the event, expected "
+                                         << rate * size / 365.0);
+    // and nothing elsewhere: just the ordinary accrual
+    const Time t1 = te - 0.25 / 365.0;
+    BOOST_CHECK_SMALL(w(t1) - w(t1 - eps) - rate * eps, 1.0e-12);
+}
+
 BOOST_AUTO_TEST_CASE(testTradingTimeFormsAgree) {
     BOOST_TEST_MESSAGE("Testing that trading time from dates and from times agree...");
 
