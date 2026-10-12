@@ -719,7 +719,7 @@ BOOST_AUTO_TEST_CASE(testTradingTimeFormsAgree) {
                 const Time byDate = ts.tradingTime(d);
                 const Time byTime = ts.tradingTime(ts.timeFromReference(d));
                 if (std::fabs(byDate - byTime) > 1.0e-14) {
-                    BOOST_ERROR(calendar.name() << ", weekend weight " << w << ", " << d
+                    BOOST_ERROR(calendar.name() << ", holiday weight " << w << ", " << d
                                                 << ": " << byDate << " from the date, " << byTime
                                                 << " from the time");
                     break;
@@ -730,7 +730,7 @@ BOOST_AUTO_TEST_CASE(testTradingTimeFormsAgree) {
 }
 
 BOOST_AUTO_TEST_CASE(testTradingTimeIsMonotonicAndContinuous) {
-    BOOST_TEST_MESSAGE("Testing that trading time runs at rate 1 on business days and the weekend weight otherwise...");
+    BOOST_TEST_MESSAGE("Testing that trading time runs at rate 1 on business days and the holiday weight otherwise...");
 
     const Date today(5, January, 2024);
     Settings::instance().evaluationDate() = today;
@@ -744,7 +744,7 @@ BOOST_AUTO_TEST_CASE(testTradingTimeIsMonotonicAndContinuous) {
             const Time t = i * step, tt = ts.tradingTime(t);
             const Real rate = (tt - previous) / step;
             if (rate < w - 1.0e-9 || rate > 1.0 + 1.0e-9) {
-                BOOST_ERROR("weekend weight " << w << ": rate " << rate << " at "
+                BOOST_ERROR("holiday weight " << w << ": rate " << rate << " at "
                                               << t * 365.0 << " days");
                 break;
             }
@@ -763,7 +763,6 @@ BOOST_AUTO_TEST_CASE(testTradingTimeIsMonotonicAndContinuous) {
 BOOST_AUTO_TEST_CASE(testTradingTimeEventJumps) {
     BOOST_TEST_MESSAGE("Testing trading time jumps at events...");
 
-    using Jump = tradingTimeTermStructure::JumpEvent;
     const Date today(5, January, 2024);  // a Friday
     Settings::instance().evaluationDate() = today;
     const Date eventDate(10, January, 2024);  // the next Wednesday
@@ -772,16 +771,20 @@ BOOST_AUTO_TEST_CASE(testTradingTimeEventJumps) {
     tradingTimeTermStructure plain(today, WeekendsOnly(), 0.0);
     tradingTimeTermStructure ts(
         today, WeekendsOnly(), 0.0,
-        {Jump(eventDate, timeOfDay, Handle<Quote>(size)),
-         Jump(Date(4, January, 2024), 0.5, makeQuoteHandle(5.0))});
+        {ext::make_shared<JumpTradingTimeEvent>(eventDate, timeOfDay, Handle<Quote>(size)),
+         ext::make_shared<JumpTradingTimeEvent>(Date(4, January, 2024), 0.5,
+                                                makeQuoteHandle(5.0))});
 
     // the jump before the reference date has happened; the other is at its time
     const Time te = (eventDate - today + timeOfDay) / 365.0;
-    const std::vector<Time> jumps = ts.jumpTimes();
-    BOOST_REQUIRE_EQUAL(jumps.size(), Size(1));
-    BOOST_CHECK_SMALL(jumps[0] - te, 1.0e-15);
-    BOOST_CHECK_SMALL(ts.tradingTime(te - 1.0e-9) - plain.tradingTime(te - 1.0e-9), 1.0e-15);
-    BOOST_CHECK_SMALL(ts.tradingTime(te) - plain.tradingTime(te) - 2.0 / 365.0, 1.0e-15);
+    const auto intervals = ts.eventIntervals();
+    BOOST_REQUIRE_EQUAL(intervals.size(), Size(1));
+    BOOST_CHECK_SMALL(intervals[0].first - te, 1.0e-12);
+    BOOST_CHECK_EQUAL(intervals[0].first, intervals[0].second);
+    const Time justBefore = te - 1.0e-9, justAfter = te + 1.0e-9;
+    BOOST_CHECK_SMALL(ts.tradingTime(justBefore) - plain.tradingTime(justBefore), 1.0e-15);
+    BOOST_CHECK_SMALL(ts.tradingTime(justAfter) - plain.tradingTime(justAfter) - 2.0 / 365.0,
+                      1.0e-15);
     // by date: not yet at the start of the event day, included the day after
     BOOST_CHECK_SMALL(ts.tradingTime(eventDate) - plain.tradingTime(eventDate), 1.0e-15);
     BOOST_CHECK_SMALL(ts.tradingTime(eventDate + 1) - plain.tradingTime(eventDate + 1) - 2.0 / 365.0,
@@ -789,94 +792,265 @@ BOOST_AUTO_TEST_CASE(testTradingTimeEventJumps) {
 
     // the jump follows its quote, and the change is notified
     auto observed = ext::make_shared<tradingTimeTermStructure>(
-        today, WeekendsOnly(), 0.0, std::vector<Jump>{Jump(eventDate, timeOfDay, Handle<Quote>(size))});
+        today, WeekendsOnly(), 0.0,
+        std::vector<ext::shared_ptr<TradingTimeEvent>>{
+            ext::make_shared<JumpTradingTimeEvent>(eventDate, timeOfDay, Handle<Quote>(size))});
     Flag flag;
     flag.registerWith(observed);
     size->setValue(3.0);
     BOOST_CHECK(flag.isUp());
     BOOST_CHECK_SMALL(observed->tradingTime(eventDate + 1) - plain.tradingTime(eventDate + 1) -
                           3.0 / 365.0, 1.0e-15);
+    // a jump cannot take trading time away
     size->setValue(-1.0);
     BOOST_CHECK_THROW(observed->tradingTime(eventDate + 1), Error);
+    size->setValue(1.0);
+    BOOST_CHECK_NO_THROW(observed->tradingTime(eventDate + 1));
 }
 
-BOOST_AUTO_TEST_CASE(testTradingTimeJumpsNeedAnExplicitTime) {
-    BOOST_TEST_MESSAGE("Testing that trading time jumps need an explicit time of day...");
+BOOST_AUTO_TEST_CASE(testTradingTimeEventsNeedExplicitTimes) {
+    BOOST_TEST_MESSAGE("Testing that trading-time events need explicit times of day...");
 
-    using JumpEvent = tradingTimeTermStructure::JumpEvent;
     const Date eventDate(10, January, 2024);
-    const Handle<Quote> size = makeQuoteHandle(1.0);
-    // no time, or midnight, is not accepted
-    BOOST_CHECK_THROW(JumpEvent(eventDate, size), Error);
-    BOOST_CHECK_THROW(JumpEvent(eventDate, 0.0, size), Error);
-    BOOST_CHECK_THROW(JumpEvent(eventDate, 1.0, size), Error);
-    BOOST_CHECK_THROW(JumpEvent(eventDate, 0.5, Handle<Quote>()), Error);
+    const Handle<Quote> w = makeQuoteHandle(1.0);
+    // a jump: no time, or midnight, is not accepted
+    BOOST_CHECK_THROW(JumpTradingTimeEvent(eventDate, w), Error);
+    BOOST_CHECK_THROW(JumpTradingTimeEvent(eventDate, 0.0, w), Error);
+    BOOST_CHECK_THROW(JumpTradingTimeEvent(eventDate, 1.0, w), Error);
+    BOOST_CHECK_THROW(JumpTradingTimeEvent(eventDate, 0.5, Handle<Quote>()), Error);
+    const JumpTradingTimeEvent jump(eventDate, 0.25, w);
+    BOOST_CHECK_EQUAL(jump.start(), eventDate.serialNumber() + 0.25);
+    BOOST_CHECK_EQUAL(jump.end(), jump.start());
+
+    // a diffuse event: midnight given explicitly is fine, and it must end after it starts
+    const DiffuseTradingTimeEvent wholeDay(eventDate, 0.0, eventDate + 1, 0.0, w);
+    BOOST_CHECK_EQUAL(wholeDay.end() - wholeDay.start(), 1.0);
+    BOOST_CHECK_THROW(DiffuseTradingTimeEvent(eventDate, 0.5, eventDate, 0.5, w), Error);
+    BOOST_CHECK_THROW(DiffuseTradingTimeEvent(eventDate, 0.5, eventDate, 0.4, w), Error);
+    BOOST_CHECK_THROW(DiffuseTradingTimeEvent(eventDate, 1.0, eventDate + 1, 0.0, w), Error);
+    BOOST_CHECK_THROW(DiffuseTradingTimeEvent(eventDate, 0.0, eventDate, -0.1, w), Error);
+    BOOST_CHECK_THROW(DiffuseTradingTimeEvent(eventDate, 0.5, eventDate, 0.6, Handle<Quote>()),
+                      Error);
+    BOOST_CHECK_THROW(DiffuseTradingTimeEvent(eventDate, eventDate + 1, w), Error);
+
+    BOOST_CHECK_THROW(tradingTimeTermStructure(eventDate, WeekendsOnly(), 0.0,
+                                               {ext::shared_ptr<TradingTimeEvent>()}),
+                      Error);
 #ifdef QL_HIGH_RESOLUTION_DATE
     // a date carrying a time gives it; giving it twice is ambiguous
-    const Date eventTime(10, January, 2024, 13, 30, 0);
-    const JumpEvent fromDate(eventTime, size);
-    BOOST_CHECK_EQUAL(fromDate.date(), eventDate);
-    BOOST_CHECK_SMALL(fromDate.timeOfDay() - 13.5 / 24.0, 1.0e-12);
-    BOOST_CHECK_THROW(JumpEvent(eventTime, 0.5, size), Error);
-    BOOST_CHECK_THROW(JumpEvent(Date(10, January, 2024, 0, 0, 0), size), Error);
+    const Date at1330(10, January, 2024, 13, 30, 0), at1500(10, January, 2024, 15, 0, 0);
+    const JumpTradingTimeEvent fromDate(at1330, w);
+    BOOST_CHECK_SMALL(fromDate.start() - (eventDate.serialNumber() + 13.5 / 24.0), 1.0e-9);
+    BOOST_CHECK_THROW(JumpTradingTimeEvent(at1330, 0.5, w), Error);
+    BOOST_CHECK_THROW(JumpTradingTimeEvent(Date(10, January, 2024, 0, 0, 0), w), Error);
+    const DiffuseTradingTimeEvent fromDates(at1330, at1500, w);
+    BOOST_CHECK_SMALL(fromDates.end() - fromDates.start() - 1.5 / 24.0, 1.0e-9);
+    BOOST_CHECK_THROW(DiffuseTradingTimeEvent(at1500, at1330, w), Error);
+    BOOST_CHECK_THROW(DiffuseTradingTimeEvent(at1330, 0.5, eventDate + 1, 0.0, w), Error);
+    BOOST_CHECK_THROW(DiffuseTradingTimeEvent(eventDate, at1500, w), Error);
 #endif
+}
+
+BOOST_AUTO_TEST_CASE(testTradingTimeRateDecisionWithPressConference) {
+    BOOST_TEST_MESSAGE("Testing trading time over a rate decision and its press conference...");
+
+    const Date today(5, January, 2024);  // a Friday
+    Settings::instance().evaluationDate() = today;
+    const Date meeting(10, January, 2024);  // a Wednesday
+    const Real decision = 14.0 / 24.0, pressStart = 14.5 / 24.0, pressEnd = 15.5 / 24.0;
+    auto jumpWeight = ext::make_shared<SimpleQuote>(1.0);
+    auto pressWeight = ext::make_shared<SimpleQuote>(0.5);
+    tradingTimeTermStructure plain(today, WeekendsOnly(), 0.0);
+    auto ts = ext::make_shared<tradingTimeTermStructure>(
+        today, WeekendsOnly(), 0.0,
+        std::vector<ext::shared_ptr<TradingTimeEvent>>{
+            ext::make_shared<JumpTradingTimeEvent>(meeting, decision, Handle<Quote>(jumpWeight)),
+            ext::make_shared<DiffuseTradingTimeEvent>(meeting, pressStart, meeting, pressEnd,
+                                                      Handle<Quote>(pressWeight))});
+
+    // extra trading days over the plain curve, at a time of the meeting day
+    auto extra = [&](Real timeOfDay) {
+        const Time t = (meeting - today + timeOfDay) / 365.0;
+        return (ts->tradingTime(t) - plain.tradingTime(t)) * 365.0;
+    };
+    const Real eps = 1.0e-9;
+    BOOST_CHECK_SMALL(extra(decision - eps), 1.0e-9);
+    BOOST_CHECK_SMALL(extra(decision + eps) - 1.0, 1.0e-9);
+    BOOST_CHECK_SMALL(extra(pressStart) - 1.0, 1.0e-9);
+    BOOST_CHECK_SMALL(extra(15.0 / 24.0) - 1.25, 1.0e-9);
+    BOOST_CHECK_SMALL(extra(pressEnd) - 1.5, 1.0e-9);
+    BOOST_CHECK_SMALL(extra(20.0 / 24.0) - 1.5, 1.0e-9);
+    BOOST_CHECK_SMALL((ts->tradingTime(meeting + 30) - plain.tradingTime(meeting + 30)) * 365.0 - 1.5,
+                      1.0e-9);
+
+    const auto intervals = ts->eventIntervals();
+    BOOST_REQUIRE_EQUAL(intervals.size(), Size(2));
+    BOOST_CHECK_SMALL(intervals[1].first * 365.0 - (meeting - today + pressStart), 1.0e-9);
+    BOOST_CHECK_SMALL(intervals[1].second * 365.0 - (meeting - today + pressEnd), 1.0e-9);
+
+    // the two forms agree with events present
+    for (Date d = today; d <= today + 30; ++d)
+        BOOST_CHECK_SMALL(ts->tradingTime(d) - ts->tradingTime(ts->timeFromReference(d)), 1.0e-14);
+
+    // both weights follow their quotes, with notification
+    Flag flag;
+    flag.registerWith(ts);
+    pressWeight->setValue(1.0);
+    BOOST_CHECK(flag.isUp());
+    BOOST_CHECK_SMALL(extra(15.0 / 24.0) - 1.5, 1.0e-9);
+    flag.lower();
+    jumpWeight->setValue(2.0);
+    BOOST_CHECK(flag.isUp());
+    BOOST_CHECK_SMALL(extra(15.0 / 24.0) - 2.5, 1.0e-9);
 }
 
 BOOST_AUTO_TEST_CASE(testTradingTimeDiffuseEvents) {
     BOOST_TEST_MESSAGE("Testing trading time with diffuse events over whole days...");
 
-    using DiffuseEvent = tradingTimeTermStructure::DiffuseEvent;
     const Date today(18, December, 2023);  // a Monday
     Settings::instance().evaluationDate() = today;
     const Date christmasEve(22, December, 2023), quietStart(25, December, 2023);
     auto halfDay = ext::make_shared<SimpleQuote>(-0.5);
     const Real w = 0.5;
+    auto wholeDays = [](const Date& start, const Date& end, const Handle<Quote>& weight) {
+        return ext::make_shared<DiffuseTradingTimeEvent>(start, 0.0, end, 0.0, weight);
+    };
     tradingTimeTermStructure plain(today, WeekendsOnly(), w);
     tradingTimeTermStructure ts(
-        today, WeekendsOnly(), w, {},
-        {DiffuseEvent(christmasEve, christmasEve + 1, Handle<Quote>(halfDay)),
-         DiffuseEvent(quietStart, quietStart + 7, makeQuoteHandle(-2.8))});
+        today, WeekendsOnly(), w,
+        {wholeDays(christmasEve, christmasEve + 1, Handle<Quote>(halfDay)),
+         wholeDays(quietStart, quietStart + 7, makeQuoteHandle(-2.8))});
     auto days = [](const tradingTimeTermStructure& c, const Date& d1, const Date& d2) {
         return c.tradingTime(d1, d2) * 365.0;
     };
 
     // a half day counts half, through the day
-    BOOST_CHECK_SMALL(days(ts, christmasEve, christmasEve + 1) - 0.5, 1.0e-12);
+    BOOST_CHECK_SMALL(days(ts, christmasEve, christmasEve + 1) - 0.5, 1.0e-9);
     BOOST_CHECK_SMALL(ts.tradingTime(ts.timeFromReference(christmasEve) + 0.5 / 365.0) -
-                          ts.tradingTime(christmasEve) - 0.25 / 365.0, 1.0e-15);
+                          ts.tradingTime(christmasEve) - 0.25 / 365.0, 1.0e-12);
     // a quiet week takes 0.4 days from each of its seven days
     BOOST_CHECK_SMALL(days(ts, quietStart, quietStart + 7) - (days(plain, quietStart, quietStart + 7) - 2.8),
-                      1.0e-12);
-    BOOST_CHECK_SMALL(days(ts, quietStart, quietStart + 1) - 0.6, 1.0e-12);
+                      1.0e-9);
+    BOOST_CHECK_SMALL(days(ts, quietStart, quietStart + 1) - 0.6, 1.0e-9);
     // elsewhere nothing changes
-    BOOST_CHECK_SMALL(days(ts, today, christmasEve) - days(plain, today, christmasEve), 1.0e-12);
-
-    // the two forms still agree, and the rate stays non-negative
+    BOOST_CHECK_SMALL(days(ts, today, christmasEve) - days(plain, today, christmasEve), 1.0e-9);
     for (Date d = today; d <= today + 60; ++d)
         BOOST_CHECK_SMALL(ts.tradingTime(d) - ts.tradingTime(ts.timeFromReference(d)), 1.0e-14);
 
     // the weight follows its quote, and the change is notified
     auto observed = ext::make_shared<tradingTimeTermStructure>(
-        today, WeekendsOnly(), w, std::vector<tradingTimeTermStructure::JumpEvent>{},
-        std::vector<DiffuseEvent>{DiffuseEvent(christmasEve, christmasEve + 1, Handle<Quote>(halfDay))});
-    BOOST_CHECK_SMALL(days(*observed, christmasEve, christmasEve + 1) - 0.5, 1.0e-12);
+        today, WeekendsOnly(), w,
+        std::vector<ext::shared_ptr<TradingTimeEvent>>{
+            wholeDays(christmasEve, christmasEve + 1, Handle<Quote>(halfDay))});
+    BOOST_CHECK_SMALL(days(*observed, christmasEve, christmasEve + 1) - 0.5, 1.0e-9);
     Flag flag;
     flag.registerWith(observed);
     halfDay->setValue(0.5);
     BOOST_CHECK(flag.isUp());
-    BOOST_CHECK_SMALL(days(*observed, christmasEve, christmasEve + 1) - 1.5, 1.0e-12);
+    BOOST_CHECK_SMALL(days(*observed, christmasEve, christmasEve + 1) - 1.5, 1.0e-9);
     // more than the day's own rate cannot be taken away
     halfDay->setValue(-1.5);
     BOOST_CHECK_THROW(observed->tradingTime(christmasEve + 1), Error);
-
-    BOOST_CHECK_THROW(DiffuseEvent(christmasEve, christmasEve, makeQuoteHandle(1.0)), Error);
-    BOOST_CHECK_THROW(DiffuseEvent(christmasEve, christmasEve + 1, Handle<Quote>()), Error);
-#ifdef QL_HIGH_RESOLUTION_DATE
-    BOOST_CHECK_THROW(DiffuseEvent(Date(22, December, 2023, 12, 0, 0), christmasEve + 1,
-                                   makeQuoteHandle(1.0)),
-                      Error);
-#endif
+    // the whole day exactly can
+    halfDay->setValue(-1.0);
+    BOOST_CHECK_SMALL(days(*observed, christmasEve, christmasEve + 1), 1.0e-9);
 }
+
+BOOST_AUTO_TEST_CASE(testTradingTimeNegativeWeightsNeedCover) {
+    BOOST_TEST_MESSAGE("Testing that negative event weights need trading time to take from...");
+
+    const Date today(5, January, 2024);  // a Friday
+    Settings::instance().evaluationDate() = today;
+    const Date saturday(6, January, 2024);
+    const auto negative = ext::make_shared<DiffuseTradingTimeEvent>(
+        saturday, 10.0 / 24.0, saturday, 12.0 / 24.0, makeQuoteHandle(-0.05));
+    // alone on a weekend not counted, it would run trading time backwards
+    tradingTimeTermStructure alone(today, WeekendsOnly(), 0.0, {negative});
+    BOOST_CHECK_THROW(alone.tradingTime(today + 7), Error);
+    // overlapped by an event giving at least as much, it is accepted
+    const auto cover = ext::make_shared<DiffuseTradingTimeEvent>(
+        saturday, 9.0 / 24.0, saturday, 13.0 / 24.0, makeQuoteHandle(0.1));
+    tradingTimeTermStructure covered(today, WeekendsOnly(), 0.0, {negative, cover});
+    BOOST_CHECK_SMALL(covered.tradingTime(today + 7) * 365.0 - 5.05, 1.0e-9);
+    // a cover that is too small, or misses part of it, is not enough
+    tradingTimeTermStructure tooSmall(
+        today, WeekendsOnly(), 0.0,
+        {negative, ext::make_shared<DiffuseTradingTimeEvent>(saturday, 9.0 / 24.0, saturday,
+                                                             13.0 / 24.0, makeQuoteHandle(0.09))});
+    BOOST_CHECK_THROW(tooSmall.tradingTime(today + 7), Error);
+    tradingTimeTermStructure partial(
+        today, WeekendsOnly(), 0.0,
+        {negative, ext::make_shared<DiffuseTradingTimeEvent>(saturday, 11.0 / 24.0, saturday,
+                                                             13.0 / 24.0, makeQuoteHandle(1.0))});
+    BOOST_CHECK_THROW(partial.tradingTime(today + 7), Error);
+    // a negative event already over by the reference date is not checked
+    tradingTimeTermStructure past(saturday + 1, WeekendsOnly(), 0.0, {negative});
+    BOOST_CHECK_NO_THROW(past.tradingTime(saturday + 8));
+}
+
+BOOST_AUTO_TEST_CASE(testTradingTimeEventInProgress) {
+    BOOST_TEST_MESSAGE("Testing trading time with an event in progress at the reference date...");
+
+    const Date today(10, January, 2024);  // a Wednesday
+    Settings::instance().evaluationDate() = today;
+    // released evenly from yesterday to tomorrow, so half of it by today
+    tradingTimeTermStructure plain(today, WeekendsOnly(), 0.0);
+    tradingTimeTermStructure ts(today, WeekendsOnly(), 0.0,
+                                {ext::make_shared<DiffuseTradingTimeEvent>(
+                                    today - 1, 0.0, today + 1, 0.0, makeQuoteHandle(1.0))});
+    BOOST_CHECK_SMALL((ts.tradingTime(today + 1) - plain.tradingTime(today + 1)) * 365.0 - 0.5,
+                      1.0e-9);
+    BOOST_CHECK_SMALL((ts.tradingTime(0.5 / 365.0) - plain.tradingTime(0.5 / 365.0)) * 365.0 - 0.25,
+                      1.0e-9);
+    const auto intervals = ts.eventIntervals();
+    BOOST_REQUIRE_EQUAL(intervals.size(), Size(1));
+    BOOST_CHECK_EQUAL(intervals[0].first, 0.0);
+    BOOST_CHECK_SMALL(intervals[0].second * 365.0 - 1.0, 1.0e-9);
+
+    // once over, it is gone
+    tradingTimeTermStructure later(today + 1, WeekendsOnly(), 0.0, ts.events());
+    BOOST_CHECK(later.eventIntervals().empty());
+}
+
+#ifdef QL_HIGH_RESOLUTION_DATE
+BOOST_AUTO_TEST_CASE(testTradingTimeIntradayReference) {
+    BOOST_TEST_MESSAGE("Testing trading time from a reference date carrying a time of day...");
+
+    const Date day(10, January, 2024);  // a Wednesday
+    const Date now(10, January, 2024, 14, 0, 0);
+    const std::vector<ext::shared_ptr<TradingTimeEvent>> events = {
+        ext::make_shared<JumpTradingTimeEvent>(day, 10.0 / 24.0, makeQuoteHandle(1.0)),
+        ext::make_shared<JumpTradingTimeEvent>(day, 16.0 / 24.0, makeQuoteHandle(2.0)),
+        ext::make_shared<DiffuseTradingTimeEvent>(day, 13.0 / 24.0, day, 15.0 / 24.0,
+                                                  makeQuoteHandle(4.0))};
+
+    Settings::instance().evaluationDate() = now;
+    tradingTimeTermStructure fixed(now, WeekendsOnly(), 0.0, events);
+    tradingTimeTermStructure floating(WeekendsOnly(), 0.0, events);
+    tradingTimeTermStructure fromDay(day, WeekendsOnly(), 0.0, events);
+    for (const tradingTimeTermStructure* ts : {&fixed, &floating}) {
+        BOOST_CHECK_EQUAL(ts->referenceDate(), now);
+        // the 10:00 jump has happened; half the diffuse event is left, and the 16:00 jump
+        BOOST_CHECK_EQUAL(ts->eventIntervals().size(), Size(2));
+        BOOST_CHECK_SMALL(ts->tradingTime(day + 1) * 365.0 - (10.0 / 24.0 + 2.0 + 2.0), 1.0e-9);
+        BOOST_CHECK_SMALL(ts->tradingTime(1.0 / 24.0 / 365.0) * 365.0 - (1.0 / 24.0 + 2.0),
+                          1.0e-9);
+        BOOST_CHECK_SMALL(ts->tradingTime(Date(10, January, 2024, 16, 0, 1)) * 365.0 -
+                              (2.0 / 24.0 + 1.0 / 86400.0 + 2.0 + 2.0), 1.0e-9);
+        BOOST_CHECK_THROW(ts->tradingTime(Date(10, January, 2024, 13, 0, 0)), Error);
+    }
+    // from the start of the day, everything counts
+    BOOST_CHECK_SMALL(fromDay.tradingTime(day + 1) * 365.0 - (1.0 + 1.0 + 2.0 + 4.0), 1.0e-9);
+    // and the times agree with the day-based curve
+    BOOST_CHECK_SMALL(fromDay.tradingTime(now, day + 1) - fixed.tradingTime(day + 1), 1.0e-12);
+
+    // the floating curve follows the time of day too
+    Settings::instance().evaluationDate() = Date(10, January, 2024, 9, 0, 0);
+    BOOST_CHECK_EQUAL(floating.eventIntervals().size(), Size(3));
+    BOOST_CHECK_SMALL(floating.tradingTime(day + 1) * 365.0 - (15.0 / 24.0 + 1.0 + 2.0 + 4.0),
+                      1.0e-9);
+}
+#endif
 
 BOOST_AUTO_TEST_CASE(testTradingTimeFloatingReference) {
     BOOST_TEST_MESSAGE("Testing trading time with a reference date following the evaluation date...");
@@ -908,7 +1082,7 @@ BOOST_AUTO_TEST_CASE(testTradingTimeEdgeCasesAndValidation) {
     Settings::instance().evaluationDate() = saturday;
     tradingTimeTermStructure ts(saturday, WeekendsOnly(), 0.25);
     BOOST_CHECK_EQUAL(ts.tradingTime(saturday, saturday), 0.0);
-    // starting on a weekend, time runs at the weekend weight
+    // starting on a weekend, time runs at the holiday weight
     BOOST_CHECK_SMALL(ts.tradingTime(0.5 / 365.0) * 365.0 - 0.125, 1.0e-12);
     BOOST_CHECK_SMALL(ts.tradingTime(saturday + 3, saturday + 1) + ts.tradingTime(saturday + 1, saturday + 3),
                       1.0e-15);

@@ -21,67 +21,137 @@
 #include <ql/settings.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <algorithm>
 #include <cmath>
 #include <utility>
 
 namespace QuantLib {
 
-    tradingTimeTermStructure::JumpEvent::JumpEvent(const Date& date, Real timeOfDay, Handle<Quote> size)
-    : date_(date), timeOfDay_(timeOfDay), size_(std::move(size)) {
-        QL_REQUIRE(date.fractionOfDay() == 0.0,
-                   "jump date " << date << " carries a time of day; give the time once");
+    namespace {
+
+        // the fraction of the day carried by a date; dates carry none
+        // without high-resolution dates
+        Real fractionOfDay(const Date& d) {
+#ifdef QL_HIGH_RESOLUTION_DATE
+            return d.fractionOfDay();
+#else
+            (void)d;
+            return 0.0;
+#endif
+        }
+
+        Real dayNumber(const Date& date, Real timeOfDay) {
+            return static_cast<Real>(date.serialNumber()) + timeOfDay;
+        }
+
+        void requireNoTimeOfDay(const Date& date) {
+            QL_REQUIRE(fractionOfDay(date) == 0.0,
+                       "date " << date << " carries a time of day; give the time once");
+        }
+
+        // rates below this are rounding errors on a rate of zero
+        const Real rateTolerance = 1.0e-10;
+
+    }
+
+    TradingTimeEvent::TradingTimeEvent(Real start, Real end, Handle<Quote> weight)
+    : start_(start), end_(end), weight_(std::move(weight)) {
+        QL_REQUIRE(start_ <= end_, "event ends before it starts");
+        QL_REQUIRE(!weight_.empty(), "no event weight given");
+    }
+
+    JumpTradingTimeEvent::JumpTradingTimeEvent(const Date& date,
+                                               Real timeOfDay,
+                                               Handle<Quote> weight)
+    : TradingTimeEvent(dayNumber(date, timeOfDay), dayNumber(date, timeOfDay), std::move(weight)) {
+        requireNoTimeOfDay(date);
         QL_REQUIRE(timeOfDay > 0.0 && timeOfDay < 1.0,
                    "jump time of day must be in (0, 1), not at midnight: " << timeOfDay);
-        QL_REQUIRE(!size_.empty(), "no jump size given");
     }
 
-    tradingTimeTermStructure::JumpEvent::JumpEvent(const Date& dateTime, Handle<Quote> size)
-    : date_(dateTime.serialNumber()), timeOfDay_(dateTime.fractionOfDay()), size_(std::move(size)) {
-        QL_REQUIRE(timeOfDay_ > 0.0,
+    JumpTradingTimeEvent::JumpTradingTimeEvent(const Date& dateTime, Handle<Quote> weight)
+    : TradingTimeEvent(dayNumber(dateTime, fractionOfDay(dateTime)),
+                       dayNumber(dateTime, fractionOfDay(dateTime)),
+                       std::move(weight)) {
+        QL_REQUIRE(fractionOfDay(dateTime) > 0.0,
                    "jump on " << dateTime << " has no time of day: give it explicitly"
                               << " (a date carries one only with high-resolution dates)");
-        QL_REQUIRE(!size_.empty(), "no jump size given");
     }
 
-    tradingTimeTermStructure::DiffuseEvent::DiffuseEvent(const Date& start,
-                                                         const Date& end,
-                                                         Handle<Quote> weight)
-    : start_(start), end_(end), weight_(std::move(weight)) {
-        QL_REQUIRE(start.fractionOfDay() == 0.0 && end.fractionOfDay() == 0.0,
-                   "diffuse events cover whole days: " << start << " to " << end);
-        QL_REQUIRE(start < end, "diffuse event must end after it starts: " << start << " to " << end);
-        QL_REQUIRE(!weight_.empty(), "no diffuse event weight given");
+    DiffuseTradingTimeEvent::DiffuseTradingTimeEvent(const Date& startDate,
+                                                     Real startTimeOfDay,
+                                                     const Date& endDate,
+                                                     Real endTimeOfDay,
+                                                     Handle<Quote> weight)
+    : TradingTimeEvent(dayNumber(startDate, startTimeOfDay),
+                       std::max(dayNumber(endDate, endTimeOfDay), dayNumber(startDate, startTimeOfDay)),
+                       std::move(weight)) {
+        requireNoTimeOfDay(startDate);
+        requireNoTimeOfDay(endDate);
+        QL_REQUIRE(startTimeOfDay >= 0.0 && startTimeOfDay < 1.0,
+                   "start time of day must be in [0, 1): " << startTimeOfDay);
+        QL_REQUIRE(endTimeOfDay >= 0.0 && endTimeOfDay < 1.0,
+                   "end time of day must be in [0, 1): " << endTimeOfDay);
+        QL_REQUIRE(dayNumber(startDate, startTimeOfDay) < dayNumber(endDate, endTimeOfDay),
+                   "diffuse event must end after it starts: " << startDate << " + "
+                       << startTimeOfDay << " to " << endDate << " + " << endTimeOfDay);
     }
 
-    tradingTimeTermStructure::tradingTimeTermStructure(const Date& referenceDate,
-                                                       Calendar calendar,
-                                                       Real weekendWeight,
-                                                       std::vector<JumpEvent> jumps,
-                                                       std::vector<DiffuseEvent> diffuseEvents)
+    DiffuseTradingTimeEvent::DiffuseTradingTimeEvent(const Date& startDateTime,
+                                                     const Date& endDateTime,
+                                                     Handle<Quote> weight)
+    : TradingTimeEvent(dayNumber(startDateTime, fractionOfDay(startDateTime)),
+                       std::max(dayNumber(endDateTime, fractionOfDay(endDateTime)),
+                                dayNumber(startDateTime, fractionOfDay(startDateTime))),
+                       std::move(weight)) {
+        QL_REQUIRE(fractionOfDay(startDateTime) > 0.0 && fractionOfDay(endDateTime) > 0.0,
+                   "diffuse event from " << startDateTime << " to " << endDateTime
+                       << " has no time of day: give it explicitly"
+                       << " (a date carries one only with high-resolution dates)");
+        QL_REQUIRE(startDateTime < endDateTime, "diffuse event must end after it starts: "
+                                                    << startDateTime << " to " << endDateTime);
+    }
+
+    Real DiffuseTradingTimeEvent::released(Real day) const {
+        if (day <= start())
+            return 0.0;
+        if (day >= end())
+            return 1.0;
+        return (day - start()) / (end() - start());
+    }
+
+    Real DiffuseTradingTimeEvent::releaseRate(Real day) const {
+        return day > start() && day < end() ? 1.0 / (end() - start()) : 0.0;
+    }
+
+
+    tradingTimeTermStructure::tradingTimeTermStructure(
+        const Date& referenceDate,
+        Calendar calendar,
+        Real holidayWeight,
+        std::vector<ext::shared_ptr<TradingTimeEvent>> events)
     : TermStructure(referenceDate, std::move(calendar), Actual365Fixed()),
-      holidayWeight_(weekendWeight), jumps_(std::move(jumps)),
-      diffuseEvents_(std::move(diffuseEvents)) {
+      holidayWeight_(holidayWeight), events_(std::move(events)) {
         QL_REQUIRE(holidayWeight_ >= 0.0 && holidayWeight_ <= 1.0,
-                   "weekend weight must be in [0, 1]: " << holidayWeight_);
-        for (const auto& j : jumps_)
-            registerWith(j.size());
-        for (const auto& e : diffuseEvents_)
-            registerWith(e.weight());
+                   "holiday weight must be in [0, 1]: " << holidayWeight_);
+        for (const auto& e : events_) {
+            QL_REQUIRE(e, "null trading-time event given");
+            registerWith(e->weight());
+        }
     }
 
-    tradingTimeTermStructure::tradingTimeTermStructure(Calendar calendar,
-                                                       Real weekendWeight,
-                                                       std::vector<JumpEvent> jumps,
-                                                       std::vector<DiffuseEvent> diffuseEvents)
+    tradingTimeTermStructure::tradingTimeTermStructure(
+        Calendar calendar,
+        Real holidayWeight,
+        std::vector<ext::shared_ptr<TradingTimeEvent>> events)
     : TermStructure(Null<Natural>(), std::move(calendar), Actual365Fixed()),
-      holidayWeight_(weekendWeight), jumps_(std::move(jumps)),
-      diffuseEvents_(std::move(diffuseEvents)) {
+      holidayWeight_(holidayWeight), events_(std::move(events)) {
         QL_REQUIRE(holidayWeight_ >= 0.0 && holidayWeight_ <= 1.0,
-                   "weekend weight must be in [0, 1]: " << holidayWeight_);
-        for (const auto& j : jumps_)
-            registerWith(j.size());
-        for (const auto& e : diffuseEvents_)
-            registerWith(e.weight());
+                   "holiday weight must be in [0, 1]: " << holidayWeight_);
+        for (const auto& e : events_) {
+            QL_REQUIRE(e, "null trading-time event given");
+            registerWith(e->weight());
+        }
     }
 
     const Date& tradingTimeTermStructure::referenceDate() const {
@@ -95,97 +165,149 @@ namespace QuantLib {
     }
 
     void tradingTimeTermStructure::update() {
-        // the computed state is rebuilt lazily, see checkReference(); a
-        // diffuse event's weight may have changed, so rebuild in any case
-        latestReference_ = Date();  // this forces a recalc of cumulative_
+        // an event weight or the evaluation date may have changed; the
+        // computed state is rebuilt lazily, see checkReference()
+        upToDate_ = false;
         TermStructure::update();
+    }
+
+    void tradingTimeTermStructure::resetBaseDays() const {
+        // no trading days before the start of the reference day
+        cumulativeBaseDays_.assign(1, 0.0);
     }
 
     void tradingTimeTermStructure::checkReference() const {
         const Date& ref = referenceDate();
-        if (ref == latestReference_ && latestReference_ != Date())
+        if (upToDate_ && ref == latestReference_)
             return;
+
+        // the base days depend only on the reference day, not on its
+        // time of day or on the events
+        if (cumulativeBaseDays_.empty() || ref.serialNumber() != referenceDay_)
+            resetBaseDays();
         latestReference_ = ref;
-        referenceTimeOfDay_ = ref.fractionOfDay();
-        cumulative_.assign(1, 0.0);
-        jumpDays_.resize(jumps_.size());
-        for (Size i = 0; i < jumps_.size(); ++i)
-            jumpDays_[i] = static_cast<Real>(jumps_[i].date().serialNumber() - ref.serialNumber()) +
-                           jumps_[i].timeOfDay() - referenceTimeOfDay_;
+        referenceDay_ = ref.serialNumber();
+        referenceDayFraction_ = fractionOfDay(ref);
+        referenceInstant_ = dayNumber(ref, referenceDayFraction_);
+
+        // events fully released by the reference instant add nothing
+        pendingEvents_.clear();
+        weights_.clear();
+        releasedAtReference_.clear();
+        for (Size i = 0; i < events_.size(); ++i) {
+            const TradingTimeEvent& e = *events_[i];
+            if (e.end() <= referenceInstant_)
+                continue;
+            QL_REQUIRE(e.weight()->isValid(),
+                       "invalid weight of the " << io::ordinal(i + 1) << " trading-time event");
+            const Real w = e.weight()->value();
+            QL_REQUIRE(w >= 0.0 || e.allowsNegativeWeight(),
+                       io::ordinal(i + 1) << " trading-time event has a negative weight: " << w);
+            pendingEvents_.push_back(i);
+            weights_.push_back(w);
+            releasedAtReference_.push_back(e.released(referenceInstant_));
+        }
+        checkRateIsNonNegative();
+        upToDate_ = true;
     }
 
-    Real tradingTimeTermStructure::daysFromReferenceDay(const Date& d) const {
+    void tradingTimeTermStructure::checkRateIsNonNegative() const {
+        // only negative weights can make the rate negative, and only
+        // while they are releasing
+        std::vector<Real> breaks;
+        Real first = QL_MAX_REAL, last = -QL_MAX_REAL;
+        for (Size k = 0; k < pendingEvents_.size(); ++k) {
+            const TradingTimeEvent& e = *events_[pendingEvents_[k]];
+            breaks.push_back(e.start());
+            breaks.push_back(e.end());
+            if (weights_[k] < 0.0) {
+                first = std::min(first, e.start());
+                last = std::max(last, e.end());
+            }
+        }
+        if (first > last)
+            return;
+
+        // the rate is constant between event starts and ends and day
+        // boundaries, so checking it at the middle of each piece is exact
+        breaks.push_back(referenceInstant_);
+        for (Real day = std::floor(first) + 1.0; day < last; day += 1.0)
+            breaks.push_back(day);
+        std::sort(breaks.begin(), breaks.end());
+        breaks.erase(std::unique(breaks.begin(), breaks.end()), breaks.end());
+        for (Size j = 1; j < breaks.size(); ++j) {
+            const Real a = std::max(breaks[j - 1], first), b = std::min(breaks[j], last);
+            if (b <= a || b <= referenceInstant_)
+                continue;
+            const Real m = 0.5 * (a + b);
+            const Date day(static_cast<Date::serial_type>(std::floor(m)));
+            Real rate = baseRate(day);
+            for (Size k = 0; k < pendingEvents_.size(); ++k)
+                rate += weights_[k] * events_[pendingEvents_[k]]->releaseRate(m);
+            QL_REQUIRE(rate >= -rateTolerance,
+                       "trading time would run backwards on " << day << ": rate " << rate);
+        }
+    }
+
+    Real tradingTimeTermStructure::daysFromReference(const Date& d) const {
         const Date& ref = referenceDate();
         QL_REQUIRE(d >= ref, "date (" << d << ") before the reference date (" << ref << ")");
-        return static_cast<Real>(d.serialNumber() - ref.serialNumber()) + d.fractionOfDay();
+        // the whole days separately, to keep the precision of the fractions
+        return static_cast<Real>(d.serialNumber() - referenceDay_) +
+               (fractionOfDay(d) - referenceDayFraction_);
     }
 
-    Real tradingTimeTermStructure::rate(const Date& day) const {
-        // 1 on business days, the weekend weight on other days, plus the
-        // share of each diffuse event covering the day
-        Real r = calendar().isBusinessDay(day) ? 1.0 : holidayWeight_;
-        for (const auto& e : diffuseEvents_) {
-            if (day >= e.start() && day < e.end()) {
-                QL_REQUIRE(e.weight()->isValid(), "invalid diffuse event weight");
-                r += e.weight()->value() / static_cast<Real>(e.end() - e.start());
-            }
-        }
-        QL_REQUIRE(r >= 0.0, "trading time would run backwards on " << day << ": rate " << r);
-        return r;
+    Real tradingTimeTermStructure::baseRate(const Date& day) const {
+        return calendar().isBusinessDay(day) ? 1.0 : holidayWeight_;
     }
 
-    Real tradingTimeTermStructure::tradingDays(Real y) const {
-        // cumulative_[k] holds the trading days before day k
+    Real tradingTimeTermStructure::baseDaysSinceReferenceDay(Real y) const {
+        // cumulativeBaseDays_[k] holds the base trading days before day k
         const Size k = static_cast<Size>(std::floor(y));
-        const Date refDay = Date(referenceDate().serialNumber());
-        while (cumulative_.size() < k + 2) {
-            const Size j = cumulative_.size() - 1;
-            cumulative_.push_back(cumulative_.back() + rate(refDay + static_cast<Date::serial_type>(j)));
+        const Date day0(referenceDay_);
+        while (cumulativeBaseDays_.size() < k + 2) {
+            const Size j = cumulativeBaseDays_.size() - 1;
+            cumulativeBaseDays_.push_back(cumulativeBaseDays_.back() +
+                                          baseRate(day0 + static_cast<Date::serial_type>(j)));
         }
-        return cumulative_[k] + (y - static_cast<Real>(k)) * (cumulative_[k + 1] - cumulative_[k]);
+        return cumulativeBaseDays_[k] +
+               (y - static_cast<Real>(k)) * (cumulativeBaseDays_[k + 1] - cumulativeBaseDays_[k]);
     }
 
-    Real tradingTimeTermStructure::jumpDays(Real x1, Real x2) const {
-        Real sum = 0.0;
-        for (Size i = 0; i < jumps_.size(); ++i) {
-            const Real xj = jumpDays_[i];
-            if (xj > 0.0 && xj > x1 && xj <= x2) {
-                const Handle<Quote>& size = jumps_[i].size();
-                QL_REQUIRE(size->isValid(), "invalid size of the " << io::ordinal(i + 1) << " jump");
-                QL_REQUIRE(size->value() >= 0.0,
-                           io::ordinal(i + 1) << " jump has a negative size: " << size->value());
-                sum += size->value();
-            }
-        }
-        return sum;
+    Real tradingTimeTermStructure::tradingDaysSinceReference(Real x) const {
+        Real days = baseDaysSinceReferenceDay(referenceDayFraction_ + x) -
+                    baseDaysSinceReferenceDay(referenceDayFraction_);
+        const Real instant = referenceInstant_ + x;
+        for (Size k = 0; k < pendingEvents_.size(); ++k)
+            days += weights_[k] *
+                    (events_[pendingEvents_[k]]->released(instant) - releasedAtReference_[k]);
+        return days;
     }
 
     Time tradingTimeTermStructure::tradingTime(Time t) const {
         QL_REQUIRE(t >= 0.0, "negative time: " << t);
         checkReference();
-        const Real x = t * 365.0;
-        const Real days = tradingDays(x + referenceTimeOfDay_) - tradingDays(referenceTimeOfDay_) +
-                          jumpDays(0.0, x);
-        return days / 365.0;
+        return tradingDaysSinceReference(t * 365.0) / 365.0;
     }
 
     Time tradingTimeTermStructure::tradingTime(const Date& d1, const Date& d2) const {
         checkReference();
         if (d2 < d1)
             return -tradingTime(d2, d1);
-        const Real y1 = daysFromReferenceDay(d1), y2 = daysFromReferenceDay(d2);
-        const Real days = tradingDays(y2) - tradingDays(y1) +
-                          jumpDays(y1 - referenceTimeOfDay_, y2 - referenceTimeOfDay_);
-        return days / 365.0;
+        return (tradingDaysSinceReference(daysFromReference(d2)) -
+                tradingDaysSinceReference(daysFromReference(d1))) / 365.0;
     }
 
-    std::vector<Time> tradingTimeTermStructure::jumpTimes() const {
+    std::vector<std::pair<Time, Time>> tradingTimeTermStructure::eventIntervals() const {
         checkReference();
-        std::vector<Time> times;
-        for (Real xj : jumpDays_)
-            if (xj > 0.0)
-                times.push_back(xj / 365.0);
-        return times;
+        std::vector<std::pair<Time, Time>> intervals;
+        intervals.reserve(pendingEvents_.size());
+        for (Size i : pendingEvents_) {
+            const TradingTimeEvent& e = *events_[i];
+            intervals.emplace_back(std::max(e.start() - referenceInstant_, 0.0) / 365.0,
+                                   (e.end() - referenceInstant_) / 365.0);
+        }
+        return intervals;
     }
 
 }
