@@ -763,7 +763,7 @@ BOOST_AUTO_TEST_CASE(testTradingTimeIsMonotonicAndContinuous) {
 BOOST_AUTO_TEST_CASE(testTradingTimeEventJumps) {
     BOOST_TEST_MESSAGE("Testing trading time jumps at events...");
 
-    using Jump = tradingTimeTermStructure::Jump;
+    using Jump = tradingTimeTermStructure::JumpEvent;
     const Date today(5, January, 2024);  // a Friday
     Settings::instance().evaluationDate() = today;
     const Date eventDate(10, January, 2024);  // the next Wednesday
@@ -803,22 +803,22 @@ BOOST_AUTO_TEST_CASE(testTradingTimeEventJumps) {
 BOOST_AUTO_TEST_CASE(testTradingTimeJumpsNeedAnExplicitTime) {
     BOOST_TEST_MESSAGE("Testing that trading time jumps need an explicit time of day...");
 
-    using Jump = tradingTimeTermStructure::Jump;
+    using Jump = tradingTimeTermStructure::JumpEvent;
     const Date eventDate(10, January, 2024);
     const Handle<Quote> size = makeQuoteHandle(1.0);
     // no time, or midnight, is not accepted
-    BOOST_CHECK_THROW(Jump(eventDate, size), Error);
-    BOOST_CHECK_THROW(Jump(eventDate, 0.0, size), Error);
-    BOOST_CHECK_THROW(Jump(eventDate, 1.0, size), Error);
-    BOOST_CHECK_THROW(Jump(eventDate, 0.5, Handle<Quote>()), Error);
+    BOOST_CHECK_THROW(JumpEvent(eventDate, size), Error);
+    BOOST_CHECK_THROW(JumpEvent(eventDate, 0.0, size), Error);
+    BOOST_CHECK_THROW(JumpEvent(eventDate, 1.0, size), Error);
+    BOOST_CHECK_THROW(JumpEvent(eventDate, 0.5, Handle<Quote>()), Error);
 #ifdef QL_HIGH_RESOLUTION_DATE
     // a date carrying a time gives it; giving it twice is ambiguous
     const Date eventTime(10, January, 2024, 13, 30, 0);
     const Jump fromDate(eventTime, size);
     BOOST_CHECK_EQUAL(fromDate.date(), eventDate);
     BOOST_CHECK_SMALL(fromDate.timeOfDay() - 13.5 / 24.0, 1.0e-12);
-    BOOST_CHECK_THROW(Jump(eventTime, 0.5, size), Error);
-    BOOST_CHECK_THROW(Jump(Date(10, January, 2024, 0, 0, 0), size), Error);
+    BOOST_CHECK_THROW(JumpEvent(eventTime, 0.5, size), Error);
+    BOOST_CHECK_THROW(JumpEvent(Date(10, January, 2024, 0, 0, 0), size), Error);
 #endif
 }
 
@@ -857,7 +857,7 @@ BOOST_AUTO_TEST_CASE(testTradingTimeDiffuseEvents) {
 
     // the weight follows its quote, and the change is notified
     auto observed = ext::make_shared<tradingTimeTermStructure>(
-        today, WeekendsOnly(), w, std::vector<tradingTimeTermStructure::Jump>{},
+        today, WeekendsOnly(), w, std::vector<tradingTimeTermStructure::JumpEvent>{},
         std::vector<DiffuseEvent>{DiffuseEvent(christmasEve, christmasEve + 1, Handle<Quote>(halfDay))});
     BOOST_CHECK_SMALL(days(*observed, christmasEve, christmasEve + 1) - 0.5, 1.0e-12);
     Flag flag;

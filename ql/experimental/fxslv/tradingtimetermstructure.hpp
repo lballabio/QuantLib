@@ -55,12 +55,12 @@ namespace QuantLib {
     class tradingTimeTermStructure : public TermStructure {
       public:
         //! An event that adds trading time at an instant
-        class Jump {
+        class JumpEvent {
           public:
             //! At the given time of day, a fraction of the day in (0, 1), on a date without a time.
-            Jump(const Date& date, Real timeOfDay, Handle<Quote> size);
+            JumpEvent(const Date& date, Real timeOfDay, Handle<Quote> size);
             //! At the date's own time of day, which must not be midnight (high-resolution dates).
-            Jump(const Date& dateTime, Handle<Quote> size);
+            JumpEvent(const Date& dateTime, Handle<Quote> size);
 
             const Date& date() const { return date_; }
             Real timeOfDay() const { return timeOfDay_; }
@@ -97,15 +97,14 @@ namespace QuantLib {
         //! Fixed reference date.
         tradingTimeTermStructure(const Date& referenceDate,
                                  Calendar calendar = WeekendsOnly(),
-                                 Real weekendWeight = 0.0,
-                                 std::vector<Jump> jumps = {},
+                                 Real holidayWeight = 0.0,
+                                 std::vector<JumpEvent> jumps = {},
                                  std::vector<DiffuseEvent> diffuseEvents = {});
 
         //! Reference date floating with the evaluation date.
-        explicit tradingTimeTermStructure(Natural settlementDays = 0,
-                                          Calendar calendar = WeekendsOnly(),
-                                          Real weekendWeight = 0.0,
-                                          std::vector<Jump> jumps = {},
+        explicit tradingTimeTermStructure(Calendar calendar = WeekendsOnly(),
+                                          Real holidayWeight = 0.0,
+                                          std::vector<JumpEvent> jumps = {},
                                           std::vector<DiffuseEvent> diffuseEvents = {});
         //@}
 
@@ -117,6 +116,9 @@ namespace QuantLib {
         //! \name TermStructure interface
         //@{
         Date maxDate() const override { return Date::maxDate(); }
+
+        //! the date at which discount = 1.0 and/or variance = 0.0
+        const Date& referenceDate() const override;
         //@}
 
         //! \name Trading time
@@ -131,25 +133,26 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        Real weekendWeight() const { return weekendWeight_; }
+        Real weekendWeight() const { return holidayWeight_; }
         //! Times of the jumps still to happen, in years from the reference date.
         std::vector<Time> jumpTimes() const;
         //@}
 
       private:
-        // trading days from the start of the reference day to y days after it
-        Real tradingDays(Real y) const;
-        // rate of trading time on the given day
-        Real rate(const Date& day) const;
-        // trading days of the jumps in (x1, x2], in days since the reference instant
-        Real jumpDays(Real x1, Real x2) const;
         // days from the start of the reference day to the given date, with its time of day
         Real daysFromReferenceDay(const Date& d) const;
+        // rate of trading time on the given day
+        Real rate(const Date& day) const; 
+        // trading days from the start of the reference day to y days after it
+        Real tradingDays(Real y) const;
+        // trading days of the jumps in (x1, x2], in days since the reference instant
+        Real jumpDays(Real x1, Real x2) const;
+        
         // rebuilds the computed state if the reference date has moved
         void checkReference() const;
 
-        Real weekendWeight_;
-        std::vector<Jump> jumps_;
+        Real holidayWeight_;
+        std::vector<JumpEvent> jumps_;
         std::vector<DiffuseEvent> diffuseEvents_;
 
         // computed from the reference date, rebuilt when it changes
