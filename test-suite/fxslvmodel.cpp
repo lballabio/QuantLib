@@ -49,7 +49,7 @@
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
-#include <ql/experimental/fxslv/fxsmilesectionbydelta.hpp>
+#include <ql/experimental/fxslv/fxsmilesectionbystrike.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
@@ -78,6 +78,11 @@ BOOST_AUTO_TEST_SUITE(FxSLVModelTests)
 
 namespace {
 
+    // Smile sections for the local-vol and SLV tests.  Quadratic smiles are
+    // a convenient approximation but fail in practice, notably in the wings
+    // that Dupire and SLV depend on, so these tests use SABR (SVI also works).
+    using TestSmileSection = FxSabrSmileSection;
+
     struct SLVMarket {
         Date today;
         DayCounter dc;
@@ -105,7 +110,7 @@ namespace {
         DeltaVolQuote::AtmType   atmType;
         FxRrBfQuotes::FlyType  flyType;
 
-        ext::shared_ptr<fxVarianceSurfaceNCP<FxQuadraticSmileSection>> volSurface;
+        ext::shared_ptr<fxVarianceSurfaceNCP<TestSmileSection>> volSurface;
         Handle<BlackVolTermStructure> volSurfaceHandle;
 
         ext::shared_ptr<NoExceptLocalVolSurface> localVolSurface;
@@ -191,7 +196,7 @@ namespace {
             auto timeTs = Handle<TradingTimeTermStructure>(
                 ext::make_shared<TradingTimeTermStructure>(today, calendar, 0.0));
 
-            volSurface = ext::make_shared<fxVarianceSurfaceNCP<FxQuadraticSmileSection>>(
+            volSurface = ext::make_shared<fxVarianceSurfaceNCP<TestSmileSection>>(
                 today, spot, pillars, atms, rrs, bfs, deltas,
                 eurTs, usdTs, timeTs,
                 deltaType, atmType, flyType,
