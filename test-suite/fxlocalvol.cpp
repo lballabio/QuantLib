@@ -731,6 +731,37 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceFollowsQuotes) {
     BOOST_CHECK(flag.isUp());
 }
 
+BOOST_AUTO_TEST_CASE(testVarianceSurfaceAtmVariance) {
+    BOOST_TEST_MESSAGE("Testing ATM variance of the variance surface in trading time...");
+
+    FxMarket m;
+    auto tau = [&](const Date& d) { return m.timeTs->tradingTime(d); };
+    const Real var3M = m.surface->atmVar(m.expiry3M), var6M = m.surface->atmVar(m.expiry6M);
+
+    // at the pillars, the ATM vol over calendar time; the sections take it
+    // from their fitted smiles, a few hundredths of a vol point from the quotes
+    for (Size i = 0; i < m.pillars.size(); ++i) {
+        const Time T = m.dc.yearFraction(m.today, m.pillars[i]);
+        BOOST_CHECK_SMALL(std::sqrt(m.surface->atmVar(m.pillars[i]) / T) - m.atmSQs[i]->value(),
+                          1.0e-3);
+    }
+
+    // between them, linear in trading time
+    const Date mid(15, May, 2024);
+    const Real w = (tau(mid) - tau(m.expiry3M)) / (tau(m.expiry6M) - tau(m.expiry3M));
+    BOOST_CHECK_SMALL(m.surface->atmVar(mid) - ((1.0 - w) * var3M + w * var6M), 1.0e-12);
+
+    // before the first pillar, proportional to trading time, so flat over a weekend
+    const Date saturday(3, February, 2024), monday(5, February, 2024);
+    BOOST_CHECK_SMALL(m.surface->atmVar(saturday) - var3M * tau(saturday) / tau(m.expiry3M),
+                      1.0e-12);
+    BOOST_CHECK_SMALL(m.surface->atmVar(monday) - m.surface->atmVar(saturday), 1.0e-12);
+
+    // after the last pillar, at the last pillar's rate per unit of trading time
+    const Date later(2, October, 2024);
+    BOOST_CHECK_SMALL(m.surface->atmVar(later) - var6M * tau(later) / tau(m.expiry6M), 1.0e-12);
+}
+
 BOOST_AUTO_TEST_CASE(testTradingTimeFormsAgree) {
     BOOST_TEST_MESSAGE("Testing that trading time from dates and from times agree...");
 
