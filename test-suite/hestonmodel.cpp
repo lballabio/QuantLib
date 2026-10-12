@@ -30,6 +30,7 @@
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
@@ -3406,6 +3407,102 @@ BOOST_AUTO_TEST_CASE(testHestonBlackVolSurfaceAtmLevel) {
                        << "\n   tolerance:  " << tol);
     }
 }
+
+BOOST_AUTO_TEST_CASE(testAsymptoticCVwithOptimalAlpha) {
+    BOOST_TEST_MESSAGE("Testing asymptotic "
+        "control variate with optimal alpha...");
+
+    SavedSettings backup;
+
+    const Date settlementDate(29, September, 2026);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    const DayCounter dayCounter = Actual365Fixed();
+    const Handle<YieldTermStructure> riskFreeTS(flatRate(0.07, dayCounter));
+    const Handle<YieldTermStructure> dividendTS(flatRate(0.185, dayCounter));
+
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const Real strike= 110.0;
+    const Real v0    = 0.1;
+    const Real sigma = 1.0;
+    const std::vector<Real> rhos {-0.9, -0.5, -0.1, 0.8};
+    const std::vector<Real> kappas {1.0, 0.5, 0.3};
+    const std::vector<Real> thetas { 0.01, 0.3, 0.5 };
+    
+    for (Real rho: rhos) {
+        for (Real kappa: kappas) {
+            for (Real theta: thetas) {
+    
+                const ext::shared_ptr<HestonModel> model =
+                    ext::make_shared<HestonModel>(
+                        ext::make_shared<HestonProcess>(
+                            riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho
+                        )
+                    );
+            
+                const Date maturityDate(5, July, 2027);
+                
+                VanillaOption option(
+                    ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+                    ext::make_shared<EuropeanExercise>(maturityDate)
+                );
+            
+                const ext::shared_ptr<AnalyticHestonEngine> engine = 
+                    ext::make_shared<AnalyticHestonEngine>(
+                        model,
+                        AnalyticHestonEngine::OptimalCV,
+                        FourierIntegration::expSinh(1e-10)
+                    );
+                    
+                option.setPricingEngine(engine);
+                const Real expected = option.NPV();
+                
+                const AnalyticHestonEngine::OptimalAlpha optimalAlpha(
+                    dayCounter.yearFraction(settlementDate, maturityDate),
+                    engine.get()
+                );
+                const Real alphaMin = 0.9*optimalAlpha.alphaMin(strike);
+                const Real alphaMax = 0.9*optimalAlpha.alphaMax(strike);
+                const Real alphaOpt = optimalAlpha(strike);
+                const Concentrating1dMesher mesher(
+                    alphaMin, alphaMax, 10, std::make_pair(alphaOpt, 0.1)
+                );
+
+                for (Real alpha: mesher.locations()) {
+                    option.setPricingEngine(
+                        ext::make_shared<AnalyticHestonEngine>(
+                            model,
+                            AnalyticHestonEngine::AsymptoticChF,
+                            FourierIntegration::expSinh(1e-10), 
+                            1e-25, alpha 
+                        )
+                    );
+                        
+                    const Real calculated = option.NPV();
+                    const Real diff = std::abs(calculated - expected);
+                    const Real tol = 1e-10;
+                    
+                    if (diff > tol) {
+                        BOOST_ERROR("failed to reproduce Heston option values with "
+                                    "AsymptoticChF "
+                                << "\n  calculated: " << calculated
+                                << "\n  expected  : " << expected
+                                << "\n  difference: " << diff
+                                << "\n  tolerance : " << tol
+                                << "\n  alpha     : " << alpha
+                                << "\n  theta     : " << theta
+                                << "\n  kappa     : " << kappa
+                                << "\n  rho       : " << rho);
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(HestonModelExperimentalTest)
