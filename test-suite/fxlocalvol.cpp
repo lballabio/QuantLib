@@ -706,6 +706,31 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
         << "% (SLV=" << slvNpv << " LV=" << lvNpv << ")");
 }
 
+BOOST_AUTO_TEST_CASE(testVarianceSurfaceFollowsQuotes) {
+    BOOST_TEST_MESSAGE("Testing that the variance surface follows its market quotes...");
+
+    FxMarket m;
+    // between the pillars, so that an interpolated smile is built and cached
+    const Date d(15, May, 2024);
+    const Time t = m.surface->timeFromReference(d);
+    const Real strike = m.spot->value() * m.eurTs->discount(t) / m.usdTs->discount(t);
+    const Volatility before = m.surface->blackVol(d, strike);
+
+    Flag flag;
+    flag.registerWith(m.surface);
+    m.atmSQs[1]->setValue(m.atmSQs[1]->value() + 0.01);
+    BOOST_CHECK(flag.isUp());
+    const Volatility after = m.surface->blackVol(d, strike);
+    BOOST_CHECK_MESSAGE(after > before + 0.001,
+                        "vol did not follow the 6M ATM quote: " << before << " before, "
+                                                                << after << " after");
+
+    // the spot and the curves are observed too
+    flag.lower();
+    m.spotSQ->setValue(m.spotSQ->value() * 1.01);
+    BOOST_CHECK(flag.isUp());
+}
+
 BOOST_AUTO_TEST_CASE(testTradingTimeFormsAgree) {
     BOOST_TEST_MESSAGE("Testing that trading time from dates and from times agree...");
 
