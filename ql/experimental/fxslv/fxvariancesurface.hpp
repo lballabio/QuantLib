@@ -363,8 +363,8 @@ namespace QuantLib {
         // For scaling a single smile (before first / after last pillar):
         // one weight is 0, the other is the variance scaling factor.
         const Time t1 = ssInit.exerciseTime(), t2 = ssFinal.exerciseTime();
-        auto flatFwdVar = [wInit, wFinal](Volatility v1, Volatility v2) {
-            return std::sqrt(wInit * v1 * v1 * t1 + wFinal * v2 * v2 * t2);
+        auto flatFwdVar = [wInit, wFinal, t1, t2, t](Volatility v1, Volatility v2) {
+            return std::sqrt((wInit * v1 * v1 * t1 + wFinal * v2 * v2 * t2) / t);
         };
 
         Handle<Quote> atm = makeQuoteHandle(flatFwdVar(ssInit.atmVol(),
@@ -459,7 +459,7 @@ namespace QuantLib {
         // Scaling case: same smile on both sides — scale variance rather than
         // interpolating in probability space.
         if (&ssInit == &ssFinal) {
-            Real s = std::sqrt(wInit + wFinal); // vol scaling factor
+            Real s = std::sqrt((wInit + wFinal) * ssInit.exerciseTime() / t); // vol scaling factor
 
             Handle<Quote> atm = makeQuoteHandle(ssInit.atmVol() * s);
 
