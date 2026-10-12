@@ -83,11 +83,11 @@ namespace QuantLib {
             registerWith(e.weight());
     }
 
-    const Date& TermStructure::referenceDate() const {
-        if (moving_) {
-            return Settings::instance().evaluationDate();
-        }
-        return referenceDate_;
+    const Date& tradingTimeTermStructure::referenceDate() const {
+        if (!moving_)
+            return TermStructure::referenceDate();
+        return Settings::instance().evaluationDate();
+        
     }
 
     void tradingTimeTermStructure::update() {

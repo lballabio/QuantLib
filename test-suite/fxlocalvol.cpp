@@ -803,7 +803,7 @@ BOOST_AUTO_TEST_CASE(testTradingTimeEventJumps) {
 BOOST_AUTO_TEST_CASE(testTradingTimeJumpsNeedAnExplicitTime) {
     BOOST_TEST_MESSAGE("Testing that trading time jumps need an explicit time of day...");
 
-    using Jump = tradingTimeTermStructure::JumpEvent;
+    using JumpEvent = tradingTimeTermStructure::JumpEvent;
     const Date eventDate(10, January, 2024);
     const Handle<Quote> size = makeQuoteHandle(1.0);
     // no time, or midnight, is not accepted
@@ -814,7 +814,7 @@ BOOST_AUTO_TEST_CASE(testTradingTimeJumpsNeedAnExplicitTime) {
 #ifdef QL_HIGH_RESOLUTION_DATE
     // a date carrying a time gives it; giving it twice is ambiguous
     const Date eventTime(10, January, 2024, 13, 30, 0);
-    const Jump fromDate(eventTime, size);
+    const JumpEvent fromDate(eventTime, size);
     BOOST_CHECK_EQUAL(fromDate.date(), eventDate);
     BOOST_CHECK_SMALL(fromDate.timeOfDay() - 13.5 / 24.0, 1.0e-12);
     BOOST_CHECK_THROW(JumpEvent(eventTime, 0.5, size), Error);
@@ -883,7 +883,7 @@ BOOST_AUTO_TEST_CASE(testTradingTimeFloatingReference) {
 
     const Date today(5, January, 2024);
     Settings::instance().evaluationDate() = today;
-    tradingTimeTermStructure floating(0, TARGET(), 0.2);
+    tradingTimeTermStructure floating(TARGET(), 0.2);
     floating.tradingTime(today + 30);  // build the state for the first reference date
     for (Integer days : {1, 7, 400}) {
         // with no settlement days the reference date is the evaluation

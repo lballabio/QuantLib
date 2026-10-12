@@ -133,7 +133,7 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        Real weekendWeight() const { return holidayWeight_; }
+        Real holidayWeight() const { return holidayWeight_; }
         //! Times of the jumps still to happen, in years from the reference date.
         std::vector<Time> jumpTimes() const;
         //@}
