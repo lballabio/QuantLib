@@ -35,7 +35,7 @@ namespace QuantLib {
 #ifdef QL_HIGH_RESOLUTION_DATE
             return d.fractionOfDay();
 #else
-            (void)d;  // avoid compiler wrning on unused d
+            (void)d;  // avoid compiler warning on unused d
             return 0.0;
 #endif
         }
@@ -205,9 +205,9 @@ namespace QuantLib {
     }
 
     void TradingTimeTermStructure::checkRateIsNonNegative() const {
-        // trading time can never go negative. however, its passage can be 
+        // trading time can never decrease. However, its passage can be 
         // slower than real time. for eg over xmas or on holidays. this can 
-        // be done by a negative weighetd deiffuse trading event. in these 
+        // be done by a negative weighted diffuse trading event. in these 
         // scenarions we need to make sure that trading time is still 
         // monotonically increasing when negative weights events are releasing
         std::vector<Real> breaks;

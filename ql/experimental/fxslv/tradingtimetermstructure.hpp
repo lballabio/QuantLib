@@ -208,11 +208,11 @@ namespace QuantLib {
 
         // computed from the reference date and the weights, rebuilt when either changes
         mutable bool upToDate_ = false;
-        mutable Date latestReference_;                 // last reference value for cumulative_ calc
+        mutable Date latestReference_;                 // reference value cumulativeBaseDays_ is built for
         mutable Date::serial_type referenceDay_ = 0;   // serial number of the reference day
         mutable Real referenceDayFraction_ = 0.0;      // fraction of the reference day passed
         mutable Real referenceInstant_ = 0.0;          // the two above, as a day number
-        mutable std::vector<Size> pendingEvents_;      // events still to be released after reference
+        mutable std::vector<Size> pendingEvents_;      // events still to be released at or after reference
         mutable std::vector<Real> weights_;            // their weights
         mutable std::vector<Real> releasedAtReference_;  // their fractions released by the reference
         // base trading days before each day since the reference day; extended

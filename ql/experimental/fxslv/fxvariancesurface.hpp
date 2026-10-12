@@ -117,9 +117,9 @@ namespace QuantLib {
         const Handle<TradingTimeTermStructure> timeTs_;
 
         Date maxDate_;
-        std::vector<Time> times_;
+        std::vector<Time> tradingTimes_;  // vector of trading times for pillar smile sections
 
-        mutable std::vector<T> smileSections_;
+        mutable std::vector<ext::shared_ptr<T>> smileSections_;
 
         // Cache for interpolated smile sections, keyed by discretized trading time.
         // Precision matches the pillar-snapping tolerance of 1/(365*8).
@@ -159,11 +159,13 @@ namespace QuantLib {
         smileSections_.clear();
         for (Size j = 0; j < atms.size(); j++) {
             // this will also register the smile section with spot, vol quotes and discount curves
-            smileSections_.emplace_back(pillars[j], spot_,
-                                        ext::make_shared<FxRrBfQuotes>(atms[j], rrs[j], bfs[j],
-                                                                       deltas, flyType),
-                                        forTs_, domTs_, deltaType, atmType,
-                                        Actual365Fixed(), settlement, referenceDate);
+            auto section = ext::make_shared<T>(pillars[j], spot_,
+                                               ext::make_shared<FxRrBfQuotes>(atms[j], rrs[j], bfs[j], 
+                                                                                deltas, flyType), 
+                                               forTs_, domTs_, deltaType, atmType, Actual365Fixed(), 
+                                               settlement, referenceDate);
+            registerWith(section);
+            smileSections_.push_back(section);
         }
 
         registerWithMarketData();
@@ -182,29 +184,29 @@ namespace QuantLib {
     Real fxVarianceSurface<T>::atmVar(Date d) const {
         // quick routine for atm variance - avoids smile calibration!
         Time tau = timeTs_->tradingTime(referenceDate(), d);
-        if (tau <= times_.back()) {
+        if (tau <= tradingTimes_.back()) {
             // before final expiry...
 
-            if (tau <= times_[1]) {
+            if (tau <= tradingTimes_[1]) {
                 // before first expiry
                 Real vol = smileSections_.front().atmVol();
-                return (vol * vol * tau) / times_[1];
+                return (vol * vol * tau) / tradingTimes_[1];
             } 
             else 
             {
                 // interpolate between two smiles
                 Size i = 0;
-                while (times_[i + 1] < tau)
+                while (tradingTimes_[i + 1] < tau)
                     i++;
 
                 // times_ starts at 0 but there is no smile section
                 // so adjust i accordingly when accessing smileSections_
                 Real frontVol = smileSections_[i - 1].atmVol();
                 Real backVol = smileSections_[i].atmVol();
-                Real frontVar = frontVol * frontVol * times_[i];
-                Real backVar = backVol * backVol * times_[i + 1];
-                Real slopeVar = (backVar - frontVar) / (times_[i + 1] - times_[i]);
-                return frontVar + slopeVar * (tau - times_[i]);
+                Real frontVar = frontVol * frontVol * tradingTimes_[i];
+                Real backVar = backVol * backVol * tradingTimes_[i + 1];
+                Real slopeVar = (backVar - frontVar) / (tradingTimes_[i + 1] - tradingTimes_[i]);
+                return frontVar + slopeVar * (tau - tradingTimes_[i]);
             }
         } 
         else {
@@ -212,7 +214,7 @@ namespace QuantLib {
             // there might be events beyond the last expiry - this will 
             // account for that as we are working in trading time!
             Real vol = smileSections_.back().atmVol();
-            return (vol * vol * tau) / times_.back();
+            return (vol * vol * tau) / tradingTimes_.back();
         }
     }
 
@@ -242,35 +244,35 @@ namespace QuantLib {
         if (it == smileCache_.end()) {
             // cache miss — build the interpolated smile
 
-            if (tau <= times_[1]) {
+            if (tau <= tradingTimes_[1]) {
                 // before first expiry — scale down the first smile
-                Real wFinal = tau / times_[1];
+                Real wFinal = tau / tradingTimes_[1];
                 it = smileCache_.emplace(key, interpolatedSmileSection(t, 0.0, smileSections_.front(),
                                                                         wFinal, smileSections_.front())).first;
             } 
-            else if (tau <= times_.back()) {
+            else if (tau <= tradingTimes_.back()) {
                 // between two pillar smiles
                 Size i = 0;
-                while (times_[i + 1] < tau)
+                while (tradingTimes_[i + 1] < tau)
                     i++;
 
                 // snap to pillar if within tolerance
-                if ((tau - times_[i]) < (1. / (365 * 8))) {
+                if ((tau - tradingTimes_[i]) < (1. / (365 * 8))) {
                     Volatility vol = smileSections_[i - 1].volByStrike(strike);
                     return (vol * vol * t);
                 }
-                if ((times_[i + 1] - tau) < (1. / (365 * 8))) {
+                if ((tradingTimes_[i + 1] - tau) < (1. / (365 * 8))) {
                     Volatility vol = smileSections_[i].volByStrike(strike);
                     return (vol * vol * t);
                 }
 
-                Real w = (tau - times_[i]) / (times_[i + 1] - times_[i]);
+                Real w = (tau - tradingTimes_[i]) / (tradingTimes_[i + 1] - tradingTimes_[i]);
                 it = smileCache_.emplace(key, interpolatedSmileSection(t, 1.0 - w, smileSections_[i - 1],
                                                                         w, smileSections_[i])).first;
             } 
             else {
                 // beyond final expiry — scale up the last smile
-                Real wInit = tau / times_.back();
+                Real wInit = tau / tradingTimes_.back();
                 it = smileCache_.emplace(key, interpolatedSmileSection(t, wInit, smileSections_.back(),
                                                                         0.0, smileSections_.back())).first;
             }
@@ -289,10 +291,10 @@ namespace QuantLib {
 
     template <class T>
     void fxVarianceSurface<T>::getTradingTimes() {
-        times_ = std::vector<Time>(pillars_.size() + 1); // these are market times, NOT real times!
-        times_[0] = 0.0;
+        tradingTimes_ = std::vector<Time>(pillars_.size() + 1); // these are market times, NOT real times!
+        tradingTimes_[0] = 0.0;
         for (Size j = 1; j <= pillars_.size(); j++) {
-            times_[j] = timeTs_->tradingTime(referenceDate(), pillars_[j - 1]);
+            tradingTimes_[j] = timeTs_->tradingTime(referenceDate(), pillars_[j - 1]);
         }
     }
 
