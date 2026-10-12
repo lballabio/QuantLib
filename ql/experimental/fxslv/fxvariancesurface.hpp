@@ -190,7 +190,7 @@ namespace QuantLib {
             if (tau <= tradingTimes_[1]) {
                 // before first expiry
                 Real vol = smileSections_.front()->atmVol();
-                return (vol * vol * tau) / tradingTimes_[1];
+                return (vol * vol * smileSections_.front()->exerciseTime()) * tau / tradingTimes_[1];
             } 
             else 
             {
@@ -203,8 +203,8 @@ namespace QuantLib {
                 // so adjust i accordingly when accessing smileSections_
                 Real frontVol = smileSections_[i - 1]->atmVol();
                 Real backVol = smileSections_[i]->atmVol();
-                Real frontVar = frontVol * frontVol * tradingTimes_[i];
-                Real backVar = backVol * backVol * tradingTimes_[i + 1];
+                Real frontVar = frontVol * frontVol * smileSections_[i - 1]->exerciseTime();
+                Real backVar = backVol * backVol * smileSections_[i]->exerciseTime();
                 Real slopeVar = (backVar - frontVar) / (tradingTimes_[i + 1] - tradingTimes_[i]);
                 return frontVar + slopeVar * (tau - tradingTimes_[i]);
             }
@@ -214,7 +214,7 @@ namespace QuantLib {
             // there might be events beyond the last expiry - this will 
             // account for that as we are working in trading time!
             Real vol = smileSections_.back()->atmVol();
-            return (vol * vol * tau) / tradingTimes_.back();
+            return (vol * vol * smileSections_.back()->exerciseTime()) * tau / tradingTimes_.back();
         }
     }
 
@@ -362,8 +362,9 @@ namespace QuantLib {
         // For interpolation between two pillars: wInit = 1-w, wFinal = w.
         // For scaling a single smile (before first / after last pillar):
         // one weight is 0, the other is the variance scaling factor.
+        const Time t1 = ssInit.exerciseTime(), t2 = ssFinal.exerciseTime();
         auto flatFwdVar = [wInit, wFinal](Volatility v1, Volatility v2) {
-            return std::sqrt(v1 * v1 * wInit + v2 * v2 * wFinal);
+            return std::sqrt(wInit * v1 * v1 * t1 + wFinal * v2 * v2 * t2);
         };
 
         Handle<Quote> atm = makeQuoteHandle(flatFwdVar(ssInit.atmVol(),
