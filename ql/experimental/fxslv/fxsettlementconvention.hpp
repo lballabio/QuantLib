@@ -66,7 +66,9 @@ namespace QuantLib {
 
         //! Spot date of the given trade date.
         Date spotDate(const Date& tradeDate) const {
-            return calendar_.advance(tradeDate, static_cast<Integer>(spotLag_), Days);
+            // value dates carry no time of day, even when the trade date does
+            const Date tradeDay(tradeDate.serialNumber());
+            return calendar_.advance(tradeDay, static_cast<Integer>(spotLag_), Days);
         }
 
         //! Delivery date of an option expiring on the given date.

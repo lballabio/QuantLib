@@ -901,6 +901,82 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceTradingTimeReference) {
     BOOST_CHECK_THROW(floating.blackVariance(d, m.spot->value()), Error);
 }
 
+BOOST_AUTO_TEST_CASE(testVarianceSurfaceSettlementForward) {
+    BOOST_TEST_MESSAGE("Testing that the variance surface uses settlement forwards throughout...");
+
+    FxMarket m;
+    const FxSettlementConvention settlement(WeekendsOnly(), 2);
+
+    // at the pillars, the pillar sections' own forwards
+    for (Size i = 0; i < m.pillars.size(); ++i) {
+        FxQuadraticSmileSection pillar(
+            m.pillars[i], m.spot,
+            ext::make_shared<FxRrBfQuotes>(m.atms[i], m.rrs[i], m.bfs[i], m.deltas, m.flyType),
+            m.eurTs, m.usdTs, m.deltaType, m.atmType, Actual365Fixed(), settlement, m.today);
+        BOOST_CHECK_CLOSE(m.surface->fwd(m.pillars[i]), pillar.forward(), 1.0e-12);
+    }
+
+    // a Friday expiry delivers on Tuesday, two days later than the time
+    // to expiry alone would give
+    const Date friday(12, April, 2024);
+    const Date spotDate = settlement.spotDate(m.today), delivery = settlement.deliveryDate(friday);
+    BOOST_CHECK_EQUAL(delivery, Date(16, April, 2024));
+    const Real expected = m.spot->value() *
+                          (m.eurTs->discount(delivery) / m.eurTs->discount(spotDate)) /
+                          (m.usdTs->discount(delivery) / m.usdTs->discount(spotDate));
+    BOOST_CHECK_CLOSE(m.surface->fwd(friday), expected, 1.0e-12);
+    const Time tFriday = m.surface->timeFromReference(friday);
+    BOOST_CHECK_CLOSE(m.surface->fwd(tFriday), expected, 1.0e-12);
+    // between nodes, the log of the forward is linear
+    const Real noon = m.surface->fwd(tFriday + 0.5 / 365.0);
+    BOOST_CHECK_CLOSE(noon, std::sqrt(expected * m.surface->fwd(friday + 1)), 1.0e-10);
+
+    // curves referenced to the spot date give the same surface
+    const Handle<YieldTermStructure> eurFromSpot(
+        ext::make_shared<FlatForward>(2, WeekendsOnly(), 0.04, m.dc));
+    const Handle<YieldTermStructure> usdFromSpot(
+        ext::make_shared<FlatForward>(2, WeekendsOnly(), 0.0525, m.dc));
+    BOOST_REQUIRE_EQUAL(eurFromSpot->referenceDate(), spotDate);
+    fxVarianceSurfaceNCP<FxQuadraticSmileSection> fromSpot(
+        m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, eurFromSpot, usdFromSpot,
+        m.timeTs, m.deltaType, m.atmType, m.flyType, settlement);
+    for (const Date& d : {Date(20, February, 2024), friday, Date(15, May, 2024)}) {
+        BOOST_CHECK_CLOSE(fromSpot.fwd(d), m.surface->fwd(d), 1.0e-12);
+        for (Real k : {0.95, 1.0, 1.05})
+            BOOST_CHECK_CLOSE(fromSpot.blackVol(d, k * fromSpot.fwd(d)),
+                              m.surface->blackVol(d, k * m.surface->fwd(d)), 1.0e-9);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testVarianceSurfaceNodeSpacing) {
+    BOOST_TEST_MESSAGE("Testing variance surface nodes within a day...");
+
+    FxMarket m;
+    auto surfaceWith = [&](Time spacing) {
+        return fxVarianceSurfaceNCP<FxQuadraticSmileSection>(
+            m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.eurTs, m.usdTs,
+            m.timeTs, m.deltaType, m.atmType, m.flyType, FxSettlementConvention(WeekendsOnly(), 2),
+            WeekendsOnly(), Following, true, spacing);
+    };
+    BOOST_CHECK_NO_THROW(surfaceWith(2.0 / 365.0));
+#ifdef QL_HIGH_RESOLUTION_DATE
+    // nodes every six hours: a same-day expiry, and agreement with daily
+    // nodes up to the noise of refitting a smile at every node
+    const auto sixHourly = surfaceWith(0.25 / 365.0);
+    const Date sameDay(2, January, 2024, 16, 0, 0);
+    const Volatility sameDayVol = sixHourly.blackVol(sameDay, sixHourly.fwd(sameDay));
+    BOOST_CHECK_MESSAGE(sameDayVol > 0.05 && sameDayVol < 0.20,
+                        "same-day vol " << sameDayVol);
+    const Date midday(15, May, 2024, 12, 0, 0);
+    for (Real k : {0.95, 1.0, 1.05})
+        BOOST_CHECK_CLOSE(sixHourly.blackVariance(midday, k * sixHourly.fwd(midday)),
+                          m.surface->blackVariance(midday, k * m.surface->fwd(midday)), 0.1);
+#else
+    // a node within a day needs a date with a time
+    BOOST_CHECK_THROW(surfaceWith(0.25 / 365.0), Error);
+#endif
+}
+
 BOOST_AUTO_TEST_CASE(testTradingTimeFormsAgree) {
     BOOST_TEST_MESSAGE("Testing that trading time from dates and from times agree...");
 

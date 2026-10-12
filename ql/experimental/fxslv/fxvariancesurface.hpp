@@ -92,17 +92,38 @@ namespace QuantLib {
         Real atmVar(Date d) const;  // atm variance
         Real atmVol(Date d) const;  // atm vol
 
-        // helper functions
-        Real fwd(Date d) const { return spot_->value() * forTs_->discount(d) / domTs_->discount(d); };
-        Real fwd(Time t) const { return spot_->value() * forTs_->discount(t) / domTs_->discount(t); };
+        //! Forward for an option expiring on the given date.
+        /*! It runs from the spot date of the reference date to the
+            delivery date of the expiry, as in the smile sections.
+        */
+        Real fwd(const Date& expiry) const;
+        //! Forward at a time from the reference date, between those of the nodes.
+        /*! \f$ \ln F \f$ is interpolated linearly between the nodes.
+        */
+        Real fwd(Time t) const;
 
         // Introspection
         Handle<Quote> spot() const { return spot_; };
         const FxSettlementConvention& settlement() const { return settlement_; }
         Handle<YieldTermStructure> domesticDiscountCurve() const { return domTs_; };
         Handle<YieldTermStructure> foreignDiscountCurve() const { return forTs_; };
-        
+
+      protected:
+        //! Foreign and domestic discount factors from the spot date to the delivery date.
+        std::pair<DiscountFactor, DiscountFactor> settlementDiscounts(const Date& expiry) const;
+
       private:
+        // the nodes either side of a time: points of the grid, unless a pillar is closer
+        struct Bracket {
+            long index;      // grid point at or before the time
+            Time ta, tb;     // times of the nodes
+            Integer pa, pb;  // pillars at the nodes, or -1
+        };
+        Bracket bracket(Time t) const;
+        // expiry date and time of a point of the grid
+        Date nodeDate(long index) const;
+        Time nodeTime(long index) const { return timeFromReference(nodeDate(index)); }
+        Real nodeForward(Integer pillar, long index) const;
         void registerWithMarketData();
         // recomputes the pillar times, if stale
         void checkTradingTimes() const;
@@ -113,7 +134,9 @@ namespace QuantLib {
         // interpolated smile at a point of the grid, built once and cached
         const Handle<T>& gridSmileSection(long index) const;
 
-        virtual Handle<T> interpolatedSmileSection(Time t, Real wInit, const T& ssInit, Real wFinal, const T& ssFinal) const = 0;
+        // a smile expiring on the given date, at the given time from the reference date
+        virtual Handle<T> interpolatedSmileSection(const Date& expiry, Time t, Real wInit, const T& ssInit,
+                                                   Real wFinal, const T& ssFinal) const = 0;
         Real blackVarianceImpl(Time t, Real strike) const;  // smile variance
 
         const Handle<Quote> spot_;
@@ -123,12 +146,12 @@ namespace QuantLib {
         const Handle<YieldTermStructure> domTs_;
         const Handle<TradingTimeTermStructure> timeTs_;
 
+        Time nodeSpacing_;  // calendar time between points of the grid
         Date maxDate_;
         // computed lazily, after a notification, see checkTradingTimes()
         mutable bool tradingTimesStale_ = true;
         mutable std::vector<Time> tradingTimes_;  // trading times of the pillars, after a 0
         mutable std::vector<Time> pillarTimes_;   // calendar times of the pillars
-        Time nodeSpacing_;                // calendar time between points of the grid
 
         mutable std::vector<ext::shared_ptr<T>> smileSections_;
 
@@ -167,6 +190,13 @@ namespace QuantLib {
         // cannot have dates[0] = referenceDate, since vol at dates[0] must be 0!
         QL_REQUIRE(pillars[0] > referenceDate, "cannot have dates[0] <= referenceDate");
         QL_REQUIRE(nodeSpacing_ > 0.0, "positive node spacing required: " << nodeSpacing_);
+#ifndef QL_HIGH_RESOLUTION_DATE
+        // each node is an expiry date, so it falls within a day only with
+        // high-resolution dates
+        const Real spacingDays = nodeSpacing_ * 365.0;
+        QL_REQUIRE(std::fabs(spacingDays - std::round(spacingDays)) < 1.0e-9,
+                   "a node spacing of " << spacingDays << " days needs high-resolution dates");
+#endif
 
         smileSections_.clear();
         for (Size j = 0; j < atms.size(); j++) {
@@ -239,39 +269,88 @@ namespace QuantLib {
 
     template <class T>
     Real fxVarianceSurface<T>::blackVarianceImpl(Time t, Real strike) const {
-        checkTradingTimes();
         // Total variance is interpolated between nodes: the reference date,
         // the pillars and the points of a grid in calendar time.  Between
         // two nodes it is linear in trading time, so it stays flat over a
         // weekend and jumps with trading time at an event, whatever the
         // spacing; the spacing only sets how closely the smile follows the
         // interpolation between pillars.  Nodes are in calendar time since
-        // each interpolated smile is built at a calendar time.  Both nodes
+        // each interpolated smile is built for an expiry date.  Both nodes
         // are taken at the same forward moneyness, since the forward keeps
         // moving with the carry when trading time does not.
-        // a time on a point of the grid, up to rounding, is taken to be on it
-        const long j = static_cast<long>(std::floor(t / nodeSpacing_ + 1.0e-9));
-        Time ta = j * nodeSpacing_, tb = (j + 1) * nodeSpacing_;
-        Integer pa = -1, pb = -1;  // the pillars at the nodes, if any
-        for (Size i = 0; i < pillarTimes_.size(); ++i) {
-            if (pillarTimes_[i] <= t && pillarTimes_[i] >= ta) {
-                ta = pillarTimes_[i];
-                pa = static_cast<Integer>(i);
-            }
-            if (pillarTimes_[i] > t && pillarTimes_[i] <= tb) {
-                tb = pillarTimes_[i];
-                pb = static_cast<Integer>(i);
-            }
-        }
-
-        const Real moneyness = strike / fwd(t);
-        const Real wa = nodeVariance(pa, j, moneyness * fwd(ta));
-        const Time tauA = tradingTime(ta), tauB = tradingTime(tb);
+        const Bracket b = bracket(t);
+        const Real fa = nodeForward(b.pa, b.index);
+        const Time tauA = tradingTime(b.ta), tauB = tradingTime(b.tb);
         if (tauB <= tauA)
-            return wa;  // no trading time between the nodes
-        const Real wb = nodeVariance(pb, j + 1, moneyness * fwd(tb));
+            return nodeVariance(b.pa, b.index, strike * fa / fwd(t));  // no trading time between
+        const Real fb = nodeForward(b.pb, b.index + 1);
+        const Real moneyness = strike / fwd(t);
+        const Real wa = nodeVariance(b.pa, b.index, moneyness * fa);
+        const Real wb = nodeVariance(b.pb, b.index + 1, moneyness * fb);
         const Real lambda = (tradingTime(t) - tauA) / (tauB - tauA);
         return wa + lambda * (wb - wa);
+    }
+
+    template <class T>
+    typename fxVarianceSurface<T>::Bracket fxVarianceSurface<T>::bracket(Time t) const {
+        checkTradingTimes();
+        // a time on a point of the grid, up to rounding, is taken to be on it
+        const long j = static_cast<long>(std::floor(t / nodeSpacing_ + 1.0e-9));
+        Bracket b{j, nodeTime(j), nodeTime(j + 1), -1, -1};
+        for (Size i = 0; i < pillarTimes_.size(); ++i) {
+            if (pillarTimes_[i] <= t && pillarTimes_[i] >= b.ta) {
+                b.ta = pillarTimes_[i];
+                b.pa = static_cast<Integer>(i);
+            }
+            if (pillarTimes_[i] > t && pillarTimes_[i] <= b.tb) {
+                b.tb = pillarTimes_[i];
+                b.pb = static_cast<Integer>(i);
+            }
+        }
+        return b;
+    }
+
+    template <class T>
+    Date fxVarianceSurface<T>::nodeDate(long index) const {
+#ifdef QL_HIGH_RESOLUTION_DATE
+        const auto offset = boost::posix_time::microseconds(
+            std::llround(index * nodeSpacing_ * 365.0 * 86400.0e6));
+        return Date(referenceDate().dateTime() + offset);
+#else
+        // whole days, as checked on construction
+        return referenceDate() +
+               static_cast<Date::serial_type>(index * std::lround(nodeSpacing_ * 365.0));
+#endif
+    }
+
+    template <class T>
+    Real fxVarianceSurface<T>::nodeForward(Integer pillar, long index) const {
+        return fwd(pillar >= 0 ? pillars_[pillar] : nodeDate(index));
+    }
+
+    template <class T>
+    std::pair<DiscountFactor, DiscountFactor>
+    fxVarianceSurface<T>::settlementDiscounts(const Date& expiry) const {
+        const Date spotDate = settlement_.spotDate(referenceDate());
+        const Date deliveryDate = settlement_.deliveryDate(expiry);
+        return {forTs_->discount(deliveryDate) / forTs_->discount(spotDate),
+                domTs_->discount(deliveryDate) / domTs_->discount(spotDate)};
+    }
+
+    template <class T>
+    Real fxVarianceSurface<T>::fwd(const Date& expiry) const {
+        const auto [dfor, ddom] = settlementDiscounts(expiry);
+        return spot_->value() * dfor / ddom;
+    }
+
+    template <class T>
+    Real fxVarianceSurface<T>::fwd(Time t) const {
+        const Bracket b = bracket(t);
+        const Real fa = nodeForward(b.pa, b.index);
+        if (b.tb <= b.ta)
+            return fa;
+        const Real fb = nodeForward(b.pb, b.index + 1);
+        return fa * std::pow(fb / fa, (t - b.ta) / (b.tb - b.ta));
     }
 
     template <class T>
@@ -289,7 +368,7 @@ namespace QuantLib {
     Real fxVarianceSurface<T>::nodeVariance(Integer pillar, long index, Real strike) const {
         if (pillar >= 0)
             return smileSections_[pillar]->variance(strike);
-        if (tradingTime(index * nodeSpacing_) <= 0.0)
+        if (tradingTime(nodeTime(index)) <= 0.0)
             return 0.0;  // the reference date, or no trading time since
         return gridSmileSection(index)->variance(strike);
     }
@@ -300,12 +379,13 @@ namespace QuantLib {
         if (it != smileCache_.end())
             return it->second;
 
-        const Time t = index * nodeSpacing_;
+        const Date expiry = nodeDate(index);
+        const Time t = nodeTime(index);
         const Time tau = tradingTime(t);
         Handle<T> section;
         if (tau <= tradingTimes_[1]) {
             // before the first pillar: scale the first smile
-            section = interpolatedSmileSection(t, 0.0, *smileSections_.front(),
+            section = interpolatedSmileSection(expiry, t, 0.0, *smileSections_.front(),
                                                tau / tradingTimes_[1], *smileSections_.front());
         } else if (tau <= tradingTimes_.back()) {
             // between two pillars; tradingTimes_ starts at the reference
@@ -314,11 +394,11 @@ namespace QuantLib {
             while (tradingTimes_[i + 1] < tau)
                 ++i;
             const Real w = (tau - tradingTimes_[i]) / (tradingTimes_[i + 1] - tradingTimes_[i]);
-            section = interpolatedSmileSection(t, 1.0 - w, *smileSections_[i - 1],
+            section = interpolatedSmileSection(expiry, t, 1.0 - w, *smileSections_[i - 1],
                                                w, *smileSections_[i]);
         } else {
             // after the last pillar: scale the last smile
-            section = interpolatedSmileSection(t, tau / tradingTimes_.back(), *smileSections_.back(),
+            section = interpolatedSmileSection(expiry, t, tau / tradingTimes_.back(), *smileSections_.back(),
                                                0.0, *smileSections_.back());
         }
         return smileCache_.emplace(index, section).first->second;
@@ -374,7 +454,8 @@ namespace QuantLib {
                                Time nodeSpacing = 1.0 / 365);
 
       private:
-        Handle<T> interpolatedSmileSection(Time t, Real wInit, const T& ssInit, Real wFinal, const T& ssFinal) const;
+        Handle<T> interpolatedSmileSection(const Date& expiry, Time t, Real wInit, const T& ssInit,
+                                           Real wFinal, const T& ssFinal) const override;
     };
 
     template <class T>
@@ -401,7 +482,8 @@ namespace QuantLib {
 
 
     template <class T>
-    Handle<T> fxVarianceSurfaceClark<T>::interpolatedSmileSection(Time t,
+    Handle<T> fxVarianceSurfaceClark<T>::interpolatedSmileSection(const Date& expiry,
+                                                                  Time t,
                                                                   Real wInit,
                                                                   const T& ssInit,
                                                                   Real wFinal,
@@ -438,7 +520,7 @@ namespace QuantLib {
         Handle<Quote> bf10 = makeQuoteHandle((v10c + v10p) / 2. - atm->value());
 
         // create and return the smile section
-        return Handle<T>(ext::make_shared<T>(t, this->spot(),
+        return Handle<T>(ext::make_shared<T>(expiry, this->spot(),
                                              // butterflies built from smile vols are smile strangles
                                              ext::make_shared<FxRrBfQuotes>(
                                                  atm, std::vector<Handle<Quote>>{rr25, rr10},
@@ -447,7 +529,8 @@ namespace QuantLib {
                                              this->foreignDiscountCurve(),
                                              this->domesticDiscountCurve(),
                                              ssInit.deltaType(), ssInit.atmType(),
-                                             this->dayCounter()));
+                                             this->dayCounter(), this->settlement(),
+                                             this->referenceDate()));
     }
     //@}
 
@@ -477,7 +560,8 @@ namespace QuantLib {
                              Time nodeSpacing = 1.0 / 365);
 
       private:
-        Handle<T> interpolatedSmileSection(Time t, Real wInit, const T& ssInit, Real wFinal, const T& ssFinal) const;
+        Handle<T> interpolatedSmileSection(const Date& expiry, Time t, Real wInit, const T& ssInit,
+                                           Real wFinal, const T& ssFinal) const override;
     };
 
 
@@ -505,7 +589,8 @@ namespace QuantLib {
 
 
     template <class T>
-    Handle<T> fxVarianceSurfaceNCP<T>::interpolatedSmileSection(Time t,
+    Handle<T> fxVarianceSurfaceNCP<T>::interpolatedSmileSection(const Date& expiry,
+                                                                Time t,
                                                                 Real wInit,
                                                                 const T& ssInit,
                                                                 Real wFinal,
@@ -529,7 +614,7 @@ namespace QuantLib {
             Handle<Quote> rr10 = makeQuoteHandle(v10c - v10p);
             Handle<Quote> bf10 = makeQuoteHandle((v10c + v10p) / 2. - atm->value());
 
-            return Handle<T>(ext::make_shared<T>(t, this->spot(),
+            return Handle<T>(ext::make_shared<T>(expiry, this->spot(),
                                                  // butterflies built from smile vols are smile strangles
                                                  ext::make_shared<FxRrBfQuotes>(
                                                      atm, std::vector<Handle<Quote>>{rr25, rr10},
@@ -538,12 +623,13 @@ namespace QuantLib {
                                                  this->foreignDiscountCurve(),
                                                  this->domesticDiscountCurve(),
                                                  ssInit.deltaType(), ssInit.atmType(),
-                                                 this->dayCounter()));
+                                                 this->dayCounter(), this->settlement(),
+                                             this->referenceDate()));
         }
 
         // Interpolation in probability space using normed call prices [Gope, Fries 2011].
-        Real ddom = this->domesticDiscountCurve()->discount(t);
-        Real dfor = this->foreignDiscountCurve()->discount(t);
+        // discount factors and forward from the spot date to the delivery date
+        const auto [dfor, ddom] = this->settlementDiscounts(expiry);
         Real spt = this->spot()->value();
 
         // used only here, while the sections are alive, so capture by reference
@@ -600,12 +686,13 @@ namespace QuantLib {
         quotes.push_back(interpNcp(k_c10));
 
         // create and return the smile section
-        return Handle<T>(ext::make_shared<T>(t, this->spot(),
+        return Handle<T>(ext::make_shared<T>(expiry, this->spot(),
                                              ext::make_shared<FxDeltaVolQuotes>(quotes),
                                              this->foreignDiscountCurve(),
                                              this->domesticDiscountCurve(),
                                              ssInit.deltaType(), ssInit.atmType(),
-                                             this->dayCounter()));
+                                             this->dayCounter(), this->settlement(),
+                                             this->referenceDate()));
     }
     //@}
 
