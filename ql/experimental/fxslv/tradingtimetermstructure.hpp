@@ -43,6 +43,7 @@ namespace QuantLib {
     */
     class TradingTimeEvent {
       public:
+        // polymorphic base class so declare a virtual destructor
         virtual ~TradingTimeEvent() = default;
 
         //! Instant the release starts, as a day number.
@@ -188,11 +189,11 @@ namespace QuantLib {
 
       private:
         // days from the reference instant to the given date, with its time of day
-        Real daysFromReference(const Date& d) const;
+        Real daysFromReferenceInstant(const Date& d) const;
         // eventless trading days, from the start of the reference day to y days after
-        Real baseDaysSinceReferenceDay(Real y) const;
-        // trading days from the reference instant to x days after it
-        Real tradingDaysSinceReference(Real x) const;
+        Real baseDaysFromReferenceDay(Real y) const;
+        // trading days from the reference instant to y days after it
+        Real tradingDaysFromReferenceInstant(Real y) const;
         // base rate of trading time on the given day
         Real baseRate(const Date& day) const;
         // rebuilds the computed state if the reference date or the weights have changed
@@ -208,10 +209,10 @@ namespace QuantLib {
 
         // computed from the reference date and the weights, rebuilt when either changes
         mutable bool upToDate_ = false;
-        mutable Date latestReference_;                 // reference value cumulativeBaseDays_ is built for
+        mutable Date referenceDatetime_;                 // reference value cumulativeBaseDays_ is built for
         mutable Date::serial_type referenceDay_ = 0;   // serial number of the reference day
         mutable Real referenceDayFraction_ = 0.0;      // fraction of the reference day passed
-        mutable Real referenceInstant_ = 0.0;          // the two above, as a day number
+        mutable Real referenceSerial_ = 0.0;          // the two above, as a day number
         mutable std::vector<Size> pendingEvents_;      // events still to be released at or after reference
         mutable std::vector<Real> weights_;            // their weights
         mutable std::vector<Real> releasedAtReference_;  // their fractions released by the reference

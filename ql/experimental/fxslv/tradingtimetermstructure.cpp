@@ -171,17 +171,17 @@ namespace QuantLib {
 
     void TradingTimeTermStructure::checkReference() const {
         const Date& ref = referenceDate();
-        if (upToDate_ && ref == latestReference_)
+        if (upToDate_ && ref == referenceDatetime_)
             return;
 
         // the base days depend only on the reference day, 
         // not on its time of day or on the events
         if (cumulativeBaseDays_.empty() || ref.serialNumber() != referenceDay_)
             cumulativeBaseDays_.assign(1, 0.0);
-        latestReference_ = ref;
+        referenceDatetime_ = ref;
         referenceDay_ = ref.serialNumber();
         referenceDayFraction_ = fractionOfDay(ref);
-        referenceInstant_ = datetimeSerialNumber(ref, referenceDayFraction_);
+        referenceSerial_ = datetimeSerialNumber(ref, referenceDayFraction_);
 
         // events fully released by the reference instant add nothing
         pendingEvents_.clear();
@@ -189,7 +189,7 @@ namespace QuantLib {
         releasedAtReference_.clear();
         for (Size i = 0; i < events_.size(); ++i) {
             const TradingTimeEvent& e = *events_[i];
-            if (e.end() <= referenceInstant_)
+            if (e.end() <= referenceSerial_)
                 continue;
             QL_REQUIRE(e.weight()->isValid(),
                        "invalid weight of the " << io::ordinal(i + 1) << " trading-time event");
@@ -198,7 +198,7 @@ namespace QuantLib {
                        io::ordinal(i + 1) << " trading-time event has a negative weight: " << w);
             pendingEvents_.push_back(i);
             weights_.push_back(w);
-            releasedAtReference_.push_back(e.released(referenceInstant_));
+            releasedAtReference_.push_back(e.released(referenceSerial_));
         }
         checkRateIsNonNegative();
         upToDate_ = true;
@@ -226,14 +226,14 @@ namespace QuantLib {
 
         // the rate is constant between event starts and ends and day
         // boundaries, so checking it at the middle of each piece is exact
-        breaks.push_back(referenceInstant_);
+        breaks.push_back(referenceSerial_);
         for (Real day = std::floor(first) + 1.0; day < last; day += 1.0)
             breaks.push_back(day);
         std::sort(breaks.begin(), breaks.end());
         breaks.erase(std::unique(breaks.begin(), breaks.end()), breaks.end());
         for (Size j = 1; j < breaks.size(); ++j) {
             const Real a = std::max(breaks[j - 1], first), b = std::min(breaks[j], last);
-            if (b <= a || b <= referenceInstant_)
+            if (b <= a || b <= referenceSerial_)
                 continue;
             const Real m = 0.5 * (a + b);
             const Date day(static_cast<Date::serial_type>(std::floor(m)));
@@ -245,7 +245,7 @@ namespace QuantLib {
         }
     }
 
-    Real TradingTimeTermStructure::daysFromReference(const Date& d) const {
+    Real TradingTimeTermStructure::daysFromReferenceInstant(const Date& d) const {
         const Date& ref = referenceDate();
         QL_REQUIRE(d >= ref, "date (" << d << ") before the reference date (" << ref << ")");
         // the whole days separately, to keep the precision of the fractions
@@ -253,7 +253,7 @@ namespace QuantLib {
                (fractionOfDay(d) - referenceDayFraction_);
     }
 
-    Real TradingTimeTermStructure::baseDaysSinceReferenceDay(Real y) const {
+    Real TradingTimeTermStructure::baseDaysFromReferenceDay(Real y) const {
         // cumulativeBaseDays_[k] holds the base trading days before day k
         const Size k = static_cast<Size>(std::floor(y));
         const Date day0(referenceDay_);
@@ -266,10 +266,10 @@ namespace QuantLib {
                (y - static_cast<Real>(k)) * (cumulativeBaseDays_[k + 1] - cumulativeBaseDays_[k]);
     }
 
-    Real TradingTimeTermStructure::tradingDaysSinceReference(Real x) const {
-        Real days = baseDaysSinceReferenceDay(referenceDayFraction_ + x) -
-                    baseDaysSinceReferenceDay(referenceDayFraction_);
-        const Real instant = referenceInstant_ + x;
+    Real TradingTimeTermStructure::tradingDaysFromReferenceInstant(Real y) const {
+        Real days = baseDaysFromReferenceDay(referenceDayFraction_ + y) -
+                    baseDaysFromReferenceDay(referenceDayFraction_);
+        const Real instant = referenceSerial_ + y;
         for (Size k = 0; k < pendingEvents_.size(); ++k)
             days += weights_[k] *
                     (events_[pendingEvents_[k]]->released(instant) - releasedAtReference_[k]);
@@ -283,15 +283,15 @@ namespace QuantLib {
     Time TradingTimeTermStructure::tradingTime(Time t) const {
         QL_REQUIRE(t >= 0.0, "negative time: " << t);
         checkReference();
-        return tradingDaysSinceReference(t * 365.0) / 365.0;
+        return tradingDaysFromReferenceInstant(t * 365.0) / 365.0;
     }
 
     Time TradingTimeTermStructure::tradingTime(const Date& d1, const Date& d2) const {
         checkReference();
         if (d2 < d1)
             return -tradingTime(d2, d1);
-        return (tradingDaysSinceReference(daysFromReference(d2)) -
-                tradingDaysSinceReference(daysFromReference(d1))) / 365.0;
+        return (tradingDaysFromReferenceInstant(daysFromReferenceInstant(d2)) -
+                tradingDaysFromReferenceInstant(daysFromReferenceInstant(d1))) / 365.0;
     }
 
     std::vector<std::pair<Time, Time>> TradingTimeTermStructure::eventIntervals() const {
@@ -300,8 +300,8 @@ namespace QuantLib {
         intervals.reserve(pendingEvents_.size());
         for (Size i : pendingEvents_) {
             const TradingTimeEvent& e = *events_[i];
-            intervals.emplace_back(std::max(e.start() - referenceInstant_, 0.0) / 365.0,
-                                   (e.end() - referenceInstant_) / 365.0);
+            intervals.emplace_back(std::max(e.start() - referenceSerial_, 0.0) / 365.0,
+                                   (e.end() - referenceSerial_) / 365.0);
         }
         return intervals;
     }
