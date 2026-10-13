@@ -67,6 +67,12 @@ namespace QuantLib {
         Real result = 0;
         constexpr double minusInf = -std::numeric_limits<double>::infinity();
 
+        // extension never pays if it is not worth the premium at X1
+        if (bsCalculator(X1, payoff->optionType()).value() <= A) {
+            results_.value = BlackScholesCalculator(payoff, S, growth, vol*sqrt(t1), discount).value();
+            return;
+        }
+
         Real y1 = this->y1(payoff->optionType()),
              y2 = this->y2(payoff->optionType());
         if (payoff->optionType() == Option::Call) {
@@ -84,8 +90,8 @@ namespace QuantLib {
             ext::shared_ptr<PlainVanillaPayoff> vanillaPutPayoff =
                 ext::make_shared<PlainVanillaPayoff>(Option::Put, X1);
             result = BlackScholesCalculator(vanillaPutPayoff, S, growth, vol*sqrt(t1), discount).value()
-                - S*exp((b - r)*T2)*M2(y1, y2, minusInf, -z1, rho)
-                + X2*exp(-r*T2)*M2(y1 - vol*sqrt(t1), y2 - vol*sqrt(t1), minusInf, -z1 + vol*sqrt(T2), rho)
+                - S*exp((b - r)*T2)*M2(y1, y2, minusInf, -z1, -rho)
+                + X2*exp(-r*T2)*M2(y1 - vol*sqrt(t1), y2 - vol*sqrt(t1), minusInf, -z1 + vol*sqrt(T2), -rho)
                 + S*exp((b - r)*t1)*N2(z2, y2) - X1*exp(-r*t1)*N2(z2 - vol*sqrt(t1), y2 - vol*sqrt(t1))
                 - A*exp(-r*t1)*N2(y1 - vol*sqrt(t1), y2 - vol*sqrt(t1));
         }
@@ -93,7 +99,7 @@ namespace QuantLib {
     }
 
     Real AnalyticHolderExtensibleOptionEngine::I1Call() const {
-        Real Sv = process_->x0();
+        Real Sv = strike();
         Real A = arguments_.premium;
 
         if(A==0)
@@ -127,7 +133,7 @@ namespace QuantLib {
     }
 
     Real AnalyticHolderExtensibleOptionEngine::I2Call() const {
-        Real Sv = process_->x0();
+        Real Sv = strike();
         Real X1 = strike();
         Real X2 = arguments_.secondStrike;
         Real A = arguments_.premium;
@@ -136,7 +142,8 @@ namespace QuantLib {
         Real r=riskFreeRate();
 
         Real val=X1-X2*std::exp(-r*(T2-t1));
-        if(A< val){
+        // with dividends, exercise beats extension at a high enough spot
+        if(A< val && dividendDiscount(T2-t1) >= 1.0){
             return std::numeric_limits<Real>::infinity();
         } else {
             BlackScholesCalculator bs = bsCalculator(Sv, Option::Call);
@@ -164,11 +171,18 @@ namespace QuantLib {
     }
 
     Real AnalyticHolderExtensibleOptionEngine::I1Put() const {
-        Real Sv = process_->x0();
+        Real Sv = strike();
         //Srtike
         Real X1 = strike();
         //Premium
         Real A = arguments_.premium;
+        Real X2 = arguments_.secondStrike;
+        Time T2 = secondExpiryTime();
+        Time t1 = firstExpiryTime();
+        Real r = riskFreeRate();
+
+        if (A <= X2*std::exp(-r*(T2-t1)) - X1)
+            return 0.0;
 
         BlackScholesCalculator bs = bsCalculator(Sv, Option::Put);
         Real pi = bs.value();
@@ -176,7 +190,7 @@ namespace QuantLib {
 
         Real yi = pi - A + Sv - X1;
         //da/ds = 1
-        Real di = dc - 1;
+        Real di = dc + 1;
         Real epsilon = 0.001;
 
         //Newton-Raphson prosess
@@ -188,13 +202,13 @@ namespace QuantLib {
             dc = bs.delta();
 
             yi = pi - A + Sv - X1;
-            di = dc - 1;
+            di = dc + 1;
         }
         return Sv;
     }
 
     Real AnalyticHolderExtensibleOptionEngine::I2Put() const {
-        Real Sv = process_->x0();
+        Real Sv = strike();
         Real A = arguments_.premium;
         if(A==0){
             return std::numeric_limits<Real>::infinity();
