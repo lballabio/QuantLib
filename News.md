@@ -26,7 +26,5 @@ Finally, in a couple of release we will be changing the default of the` QL_NULL_
 Full list of pull requests
 --------------------------
 
-All the pull requests merged in this release are listed on its release page at <https://github.com/lballabio/QuantLib/releases/tag/v1.44>.
-
-The list of commits since the previous release is available in `ChangeLog.txt`.
+All the pull requests merged in this release are listed on its release page at <https://github.com/lballabio/QuantLib/releases/tag/v1.44>.  The same page also provides the full list of commits since the previous release.
 

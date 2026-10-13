@@ -30,10 +30,6 @@ jobs:
         sed -i -e "s/^set(PACKAGE_VERSION  .*$/set(PACKAGE_VERSION       \"1.${LAST_MINOR}.${NEXT_PATCH}\"\)/g" CMakeLists.txt
         sed -i -e "s/^set(PACKAGE_VERSION_HEX.*$/set(PACKAGE_VERSION_HEX   \"0x01${LAST_MINOR}0${NEXT_PATCH}f0\"\)/g" CMakeLists.txt
         git commit -a -m "Set version to 1.${LAST_MINOR}.${NEXT_PATCH}"
-    - name: Update ChangeLog
-      run: |
-        git log --pretty=medium --date=rfc --stat --grep='Merge [^p]' --grep='[Mm]erged' --grep='[Pp]ull from' --invert-grep ${LATEST_TAG}.. > ChangeLog.txt
-        git commit -a -m "Update changelog"
     - uses: peter-evans/create-pull-request@v8
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
