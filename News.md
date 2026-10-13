@@ -18,7 +18,9 @@ A number of features were deprecated in this release and will be removed in a fu
 - The `Italy::Exchange` element of the `Italy::Market` enumeration; the exchange follows the TARGET calendar.
 - The `QL_DEPRECATED` macro; use `[[deprecated("message")]]` and suggest an alternative in the message.
 
-Also, in a couple of release we will be changing the default of the` QL_NULL_AS_FUNCTIONS` macro from undefined to defined.
+We were still able to test this release with Visual C++ 2017.  Due to limitations of our available CI environments, this might not be the case for future releases.
+
+Finally, in a couple of release we will be changing the default of the` QL_NULL_AS_FUNCTIONS` macro from undefined to defined.
 
 
 Full list of pull requests
