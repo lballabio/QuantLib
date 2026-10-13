@@ -27,6 +27,7 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <iostream>
 #include <utility>
@@ -119,7 +120,11 @@ namespace QuantLib {
 
         /*! \param option            Vanilla option to price.
             \param process           GBS process (spot, domestic/foreign curves,
-                                     FX variance surface).
+                                     FX variance surface).  For its forward to
+                                     agree with the surface's, its foreign
+                                     curve should be an FxSettlementForeignCurve.
+                                     Local vol is taken from an FxLocalVolSurface
+                                     on its surface; where it fails, pricing fails.
             \param spotQuote         \c SimpleQuote underlying the spot handle —
                                      bumped for delta/gamma/vanna.
             \param atmVolQuotes      All pillar ATM \c SimpleQuote objects — bumped
@@ -165,6 +170,14 @@ namespace QuantLib {
             Size lvStrikePts = 50,
             Real lvStrikeSpread = 3.5);
 
+        //! Use the given volatility where Dupire local vol is not defined.
+        /*! By default there is none, and pricing fails there; the number
+            of substitutions is reported by localVolFallbacks().
+        */
+        void setLocalVolFallback(Volatility fallbackVol);
+        //! Number of times the local vol fallback was used.
+        Size localVolFallbacks() const { return localVol_->fallbacks(); }
+
         //! Compute all Greeks via bump-and-reval.
         FxVanillaGreeks calculate(bool localVol = true,
                                   StickyType sticky = StickyType::Delta) const;
@@ -185,6 +198,8 @@ namespace QuantLib {
                       bool localVol) const;
 
         ext::shared_ptr<PricingEngine> makeEngine(bool localVol) const;
+        // Dupire local vol of the process's surface, allowing periods without variance
+        void buildLocalVol(Volatility fallbackVol);
         ext::shared_ptr<PricingEngine> makeAnalyticEngine() const;
 
         std::pair<std::vector<Time>, std::vector<Real>> buildLvGrid() const;
@@ -206,6 +221,9 @@ namespace QuantLib {
         Size tGrid_, xGrid_;
         Size lvTimePts_, lvStrikePts_;
         Real lvStrikeSpread_;
+        // the local vol, and the process with it given explicitly
+        ext::shared_ptr<FxLocalVolSurface> localVol_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> localVolProcess_;
     };
 
 }

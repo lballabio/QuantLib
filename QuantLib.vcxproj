@@ -709,8 +709,10 @@
     <ClInclude Include="ql\experimental\fxslv\all.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxcostsmilesection.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxdeltaconverter.hpp" />
+    <ClInclude Include="ql\experimental\fxslv\fxlocalvolsurface.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxrootbracketing.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxsettlementconvention.hpp" />
+    <ClInclude Include="ql\experimental\fxslv\fxsettlementforeigncurve.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxslvpricingcontext.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxsmilequotes.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxsmilesection.hpp" />
@@ -2128,6 +2130,8 @@
     <ClCompile Include="ql\experimental\fx\mtmcrosscurrencybasisswap.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxcostsmilesection.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxdeltaconverter.cpp" />
+    <ClCompile Include="ql\experimental\fxslv\fxlocalvolsurface.cpp" />
+    <ClCompile Include="ql\experimental\fxslv\fxsettlementforeigncurve.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxslvpricingcontext.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxsmilequotes.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxsmilesection.cpp" />

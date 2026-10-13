@@ -48,7 +48,9 @@
 #endif
 
 // FX vol surface
+#include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
 #include <ql/experimental/fxslv/fxsettlementconvention.hpp>
+#include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/experimental/fxslv/fxsmilesectionbystrike.hpp>
 #include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
@@ -63,7 +65,6 @@
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/experimental/fxslv/fxvanillagreeks.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
 
 // Instruments
 #include <ql/instruments/vanillaoption.hpp>
@@ -147,6 +148,10 @@ int main(int, char*[]) {
 
         Handle<YieldTermStructure> eurTs(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0400, dc));
         Handle<YieldTermStructure> usdTs(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0525, dc));
+        // the foreign curve giving processes the settlement forward: from the
+        // spot date to the delivery date of each expiry, as the surface uses
+        Handle<YieldTermStructure> eurFwdTs(ext::make_shared<FxSettlementForeignCurve>(
+            eurTs, usdTs, FxSettlementConvention(WeekendsOnly(), 2)));
 
         Handle<TradingTimeTermStructure> timeTs(ext::make_shared<TradingTimeTermStructure>(today, WeekendsOnly(), 0.0));
 
@@ -231,7 +236,7 @@ int main(int, char*[]) {
         //  3. Build the GeneralizedBlackScholesProcess
         // ──────────────────────────────────────────────────────────────────────
         auto process = ext::make_shared<GeneralizedBlackScholesProcess>(spot,
-                                                                        eurTs,  // dividendYield = foreign (EUR) rate
+                                                                        eurFwdTs,  // dividendYield = foreign (EUR), to the settlement forward
                                                                         usdTs,  // riskFreeRate  = domestic (USD) rate
                                                                         Handle<BlackVolTermStructure>(fxVolSurface));
 
@@ -241,7 +246,7 @@ int main(int, char*[]) {
         Date expiryDate = pillars[5]; // 3M pillar (index 5 in the 11-pillar set)
         Time T          = dc.yearFraction(today, expiryDate);
         Real Bd         = usdTs->discount(T);
-        Real Bf         = eurTs->discount(T);
+        Real Bf         = eurFwdTs->discount(T);
         Real fwd        = spot->value() * Bf / Bd;
         Real strike     = fwd; // ATM forward
 
@@ -309,8 +314,15 @@ int main(int, char*[]) {
                                    100, /*tGrid=*/
                                    100 /*xGrid=*/
                                    );
+        // The short-dated wings of this surface have calendar arbitrage, so
+        // Dupire local vol is not defined everywhere; opt in to a fallback
+        // there, and report how often it is used, rather than fail.
+        const Volatility localVolFallback = 0.01;
+        riskCalc.setLocalVolFallback(localVolFallback);
 
         FxVanillaGreeks lvGreeks = riskCalc.calculate(/*localVol=*/true);
+        std::cout << "  Local vol fallback (" << localVolFallback * 100.0 << "%) used at "
+                  << riskCalc.localVolFallbacks() << " points\n";
         FxVanillaGreeks bsGreeks = riskCalc.calculate(/*localVol=*/false);
 
         // ──────────────────────────────────────────────────────────────────────
@@ -421,14 +433,13 @@ int main(int, char*[]) {
 
         // ──────────────────────────────────────────────────────────────────────
         //  7. Build the Dupire local vol surface from the calibrated variance
-        //     surface.  NoExceptLocalVolSurface suppresses the occasional
-        //     negative Dupire value that arises from numerical differentiation
-        //     near surface edges, replacing it with a small fallback.
+        //     surface.  It is zero where no variance accrues, e.g. over
+        //     weekends in trading time, and fails on arbitrage rather than
+        //     substituting a value.
         // ──────────────────────────────────────────────────────────────────────
-        auto localVolSurface = ext::make_shared<NoExceptLocalVolSurface>(Handle<BlackVolTermStructure>(fxVolSurface),
-                                                                         usdTs, eurTs, spot,
-                                                                         0.01  /*illegalLocalVolOverwrite=*/
-                                                                         );
+        auto localVolSurface = ext::make_shared<FxLocalVolSurface>(Handle<BlackVolTermStructure>(fxVolSurface),
+                                                                   usdTs, eurFwdTs, spot,
+                                                                   1.0e-7, 0.0, localVolFallback);
         localVolSurface->enableExtrapolation();
         Handle<LocalVolTermStructure> localVolHandle(localVolSurface);
 
@@ -471,7 +482,7 @@ int main(int, char*[]) {
         // and is the factory for pricing engines.
         Handle<BlackVolTermStructure> volHandle(fxVolSurface);
 
-        FxSLVPricingContext slvCtx(spot, usdTs, eurTs, volHandle, localVolHandle, calendar);
+        FxSLVPricingContext slvCtx(spot, usdTs, eurFwdTs, volHandle, localVolHandle, calendar);
 
         HestonCalibrator hestonCal(hp);
 
@@ -609,13 +620,13 @@ int main(int, char*[]) {
                   << std::fixed << std::setprecision(0) << notional << "\n";
 
         // ── Local vol baseline price ─────────────────────────────────────────
-        auto gbsProcess4M = ext::make_shared<GeneralizedBlackScholesProcess>(spot, eurTs, usdTs, volHandle);
+        auto gbsProcess4M = ext::make_shared<GeneralizedBlackScholesProcess>(spot, eurFwdTs, usdTs,
+                                                                             volHandle, localVolHandle);
         auto call4M_lv = ext::make_shared<VanillaOption>(payoff4M, exercise4M);
         call4M_lv->setPricingEngine(MakeFdBlackScholesVanillaEngine(gbsProcess4M)
                                         .withTGrid(100)
                                         .withXGrid(100)
-                                        .withLocalVol(true)
-                                        .withIllegalLocalVolOverwrite(0.01));
+                                        .withLocalVol(true));
         const Real lvNpv4M = call4M_lv->NPV() * notional;
 
         // ── SLV price ────────────────────────────────────────────────────────
@@ -687,6 +698,9 @@ int main(int, char*[]) {
         std::cout << "\n  Note: Theta shown is the local-vol proxy.  Computing\n"
                   << "  SLV theta exactly requires re-calibrating the leverage\n"
                   << "  function at the shifted date — typically done overnight.\n\n";
+
+        std::cout << "  Local vol fallback used at " << localVolSurface->fallbacks()
+                  << " points in the SLV and local-vol pricing above.\n\n";
 
         printSeparator();
         std::cout << "  Done.\n";

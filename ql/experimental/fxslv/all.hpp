@@ -3,8 +3,10 @@
 
 #include <ql/experimental/fxslv/fxcostsmilesection.hpp>
 #include <ql/experimental/fxslv/fxdeltaconverter.hpp>
+#include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
 #include <ql/experimental/fxslv/fxrootbracketing.hpp>
 #include <ql/experimental/fxslv/fxsettlementconvention.hpp>
+#include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
 #include <ql/experimental/fxslv/fxslvpricingcontext.hpp>
 #include <ql/experimental/fxslv/fxsmilequotes.hpp>
 #include <ql/experimental/fxslv/fxsmilesection.hpp>

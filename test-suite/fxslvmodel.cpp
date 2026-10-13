@@ -46,6 +46,8 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/settings.hpp>
 #include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
+#include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
+#include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
@@ -90,6 +92,7 @@ namespace {
 
         Handle<YieldTermStructure> usdTs;  // domestic
         Handle<YieldTermStructure> eurTs;  // foreign
+        Handle<YieldTermStructure> eurFwdTs;  // foreign, giving processes the settlement forward
 
         ext::shared_ptr<SimpleQuote> spotSQ;
         Handle<Quote> spot;
@@ -113,7 +116,7 @@ namespace {
         ext::shared_ptr<fxVarianceSurfaceNCP<TestSmileSection>> volSurface;
         Handle<BlackVolTermStructure> volSurfaceHandle;
 
-        ext::shared_ptr<NoExceptLocalVolSurface> localVolSurface;
+        ext::shared_ptr<FxLocalVolSurface> localVolSurface;
         Handle<LocalVolTermStructure> localVolHandle;
 
         // ─── Construction ───────────────────────────────────────────────────
@@ -127,6 +130,8 @@ namespace {
                 ext::make_shared<FlatForward>(0, NullCalendar(), 0.0525, dc));
             eurTs = Handle<YieldTermStructure>(
                 ext::make_shared<FlatForward>(0, NullCalendar(), 0.0400, dc));
+            eurFwdTs = Handle<YieldTermStructure>(ext::make_shared<FxSettlementForeignCurve>(
+                eurTs, usdTs, FxSettlementConvention(calendar, 2)));
 
             spotSQ = ext::make_shared<SimpleQuote>(1.0850);
             spot   = Handle<Quote>(spotSQ);
@@ -205,11 +210,11 @@ namespace {
             volSurface->enableExtrapolation();
             volSurfaceHandle = Handle<BlackVolTermStructure>(volSurface);
 
-            // Build the Dupire local vol surface.  NoExceptLocalVolSurface
-            // replaces occasional negative Dupire values (from numerical
-            // differentiation noise) with the supplied fallback value.
-            localVolSurface = ext::make_shared<NoExceptLocalVolSurface>(
-                volSurfaceHandle, usdTs, eurTs, spot, 0.01);
+            // Build the Dupire local vol surface.  It is zero where no
+            // variance accrues, e.g. over weekends in trading time, and
+            // fails on arbitrage rather than substituting a value.
+            localVolSurface = ext::make_shared<FxLocalVolSurface>(
+                volSurfaceHandle, usdTs, eurFwdTs, spot);
             localVolSurface->enableExtrapolation();
             localVolHandle = Handle<LocalVolTermStructure>(localVolSurface);
         }
@@ -293,7 +298,7 @@ BOOST_AUTO_TEST_CASE(testHestonCalibration) {
         EndCriteria(500, 200, 1.0e-8, 1.0e-8, 1.0e-8),
         BlackCalibrationHelper::ImpliedVolError);
 
-    cal.calibrate(mkt.spot, mkt.usdTs, mkt.eurTs,
+    cal.calibrate(mkt.spot, mkt.usdTs, mkt.eurFwdTs,
                   mkt.volSurfaceHandle, mkt.calendar,
                   mkt.hestonPillars());
 
@@ -346,7 +351,7 @@ BOOST_AUTO_TEST_CASE(testLeverageFunctionCalibration) {
 
     // Step 1: Calibrate Heston.
     HestonCalibrator hestonCal(mkt.initialHestonParams());
-    hestonCal.calibrate(mkt.spot, mkt.usdTs, mkt.eurTs,
+    hestonCal.calibrate(mkt.spot, mkt.usdTs, mkt.eurFwdTs,
                         mkt.volSurfaceHandle, mkt.calendar,
                         mkt.hestonPillars());
 
@@ -391,7 +396,7 @@ BOOST_AUTO_TEST_CASE(testSLVPricingNonPillarTenor) {
 
     // Build the FX SLV pricing context.
     FxSLVPricingContext ctx(
-        mkt.spot, mkt.usdTs, mkt.eurTs,
+        mkt.spot, mkt.usdTs, mkt.eurFwdTs,
         mkt.volSurfaceHandle, mkt.localVolHandle, mkt.calendar);
 
     HestonCalibrator   hestonCal(mkt.initialHestonParams());
@@ -427,10 +432,10 @@ BOOST_AUTO_TEST_CASE(testSLVPricingNonPillarTenor) {
     // of each other; the leverage function is designed to make them consistent
     // in the marginal distribution sense.
     auto process = ext::make_shared<GeneralizedBlackScholesProcess>(
-        mkt.spot, mkt.eurTs, mkt.usdTs, mkt.volSurfaceHandle);
+        mkt.spot, mkt.eurFwdTs, mkt.usdTs, mkt.volSurfaceHandle, mkt.localVolHandle);
     auto call4M_lv = mkt.makeEuropean(Option::Call, 4*Months);
     call4M_lv->setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(
-        process, 100, 100));
+        process, 100, 100, 0, FdmSchemeDesc::Douglas(), true));
     const Real lvNpv = call4M_lv->NPV();
     BOOST_CHECK_MESSAGE(lvNpv > 0.0,
         "Local vol 4M call NPV must be positive: " << lvNpv);
@@ -459,7 +464,7 @@ BOOST_AUTO_TEST_CASE(testSLVGreeks) {
     SLVMarket mkt;
 
     FxSLVPricingContext ctx(
-        mkt.spot, mkt.usdTs, mkt.eurTs,
+        mkt.spot, mkt.usdTs, mkt.eurFwdTs,
         mkt.volSurfaceHandle, mkt.localVolHandle, mkt.calendar);
 
     HestonCalibrator   hestonCal(mkt.initialHestonParams());
@@ -535,7 +540,7 @@ BOOST_AUTO_TEST_CASE(testMixingFactorZero) {
 
     // Build context with mixing factor = 0 (leverage L ≡ 1).
     FxSLVPricingContext ctx(
-        mkt.spot, mkt.usdTs, mkt.eurTs,
+        mkt.spot, mkt.usdTs, mkt.eurFwdTs,
         mkt.volSurfaceHandle, mkt.localVolHandle, mkt.calendar);
 
     HestonCalibrator hestonCal(mkt.initialHestonParams());

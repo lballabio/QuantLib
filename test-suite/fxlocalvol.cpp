@@ -25,6 +25,8 @@
 #include "utilities.hpp"
 
 #include <ql/experimental/fxslv/fxsettlementconvention.hpp>
+#include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
+#include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/experimental/fxslv/fxsmilesectionbystrike.hpp>
 #include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
@@ -47,6 +49,9 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/settings.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
+#include <sstream>
 #include <cmath>
 
 using namespace QuantLib;
@@ -75,6 +80,7 @@ namespace {
         DayCounter dc;
         Handle<YieldTermStructure> eurTs; // foreign
         Handle<YieldTermStructure> usdTs; // domestic
+        Handle<YieldTermStructure> eurFwdTs; // foreign, giving the process the settlement forward
         Handle<TradingTimeTermStructure> timeTs;
 
         ext::shared_ptr<SimpleQuote> spotSQ;
@@ -108,6 +114,8 @@ namespace {
                 ext::make_shared<FlatForward>(0, NullCalendar(), 0.04, dc));
             usdTs = Handle<YieldTermStructure>(
                 ext::make_shared<FlatForward>(0, NullCalendar(), 0.0525, dc));
+            eurFwdTs = Handle<YieldTermStructure>(ext::make_shared<FxSettlementForeignCurve>(
+                eurTs, usdTs, FxSettlementConvention(WeekendsOnly(), 2)));
             timeTs = Handle<TradingTimeTermStructure>(
                 ext::make_shared<TradingTimeTermStructure>(today, WeekendsOnly(), 0.0));
 
@@ -161,7 +169,7 @@ namespace {
             surface->enableExtrapolation();
 
             process = ext::make_shared<GeneralizedBlackScholesProcess>(
-                spot, eurTs, usdTs,
+                spot, eurFwdTs, usdTs,
                 Handle<BlackVolTermStructure>(surface));
         }
 
@@ -196,10 +204,10 @@ BOOST_AUTO_TEST_CASE(testLocalVolSurfaceNonNegative) {
 
     FxMarket mkt;
 
-    LocalVolSurface lv(mkt.process->blackVolatility(),
-                        mkt.process->riskFreeRate(),
-                        mkt.process->dividendYield(),
-                        mkt.process->x0());
+    FxLocalVolSurface lv(mkt.process->blackVolatility(),
+                         mkt.process->riskFreeRate(),
+                         mkt.process->dividendYield(),
+                         mkt.process->stateVariable());
     lv.enableExtrapolation();
 
     std::vector<Time> times  = { 1.0/12, 3.0/12, 6.0/12 };
@@ -234,10 +242,10 @@ BOOST_AUTO_TEST_CASE(testFixedLocalVolConsistency) {
     auto fixedLV = riskCalc.buildFixedLocalVolSurface(times, strikes);
     fixedLV->enableExtrapolation();
 
-    LocalVolSurface lvDupire(mkt.process->blackVolatility(),
-                              mkt.process->riskFreeRate(),
-                              mkt.process->dividendYield(),
-                              mkt.process->x0());
+    FxLocalVolSurface lvDupire(mkt.process->blackVolatility(),
+                               mkt.process->riskFreeRate(),
+                               mkt.process->dividendYield(),
+                               mkt.process->stateVariable());
     lvDupire.enableExtrapolation();
 
     const Real tol = 1e-10;
@@ -541,6 +549,9 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
         ext::make_shared<FlatForward>(0, NullCalendar(), 0.0525, dc));  // domestic
     const Handle<YieldTermStructure> eurTs(
         ext::make_shared<FlatForward>(0, NullCalendar(), 0.0400, dc));  // foreign
+    // the foreign curve giving processes the settlement forward
+    const Handle<YieldTermStructure> eurFwdTs(ext::make_shared<FxSettlementForeignCurve>(
+        eurTs, usdTs, FxSettlementConvention(calendar, 2)));
 
     auto spotSQ = ext::make_shared<SimpleQuote>(1.0850);
     Handle<Quote> spot(spotSQ);
@@ -606,8 +617,7 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
     Handle<BlackVolTermStructure> volHandle(volSurface);
 
     // ── Dupire local vol surface ─────────────────────────────────────────────
-    auto localVol = ext::make_shared<NoExceptLocalVolSurface>(
-        volHandle, usdTs, eurTs, spot, 0.01);
+    auto localVol = ext::make_shared<FxLocalVolSurface>(volHandle, usdTs, eurFwdTs, spot);
     localVol->enableExtrapolation();
     Handle<LocalVolTermStructure> localVolHandle(localVol);
 
@@ -633,7 +643,7 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
     hp.sigma = 0.40;
     hp.rho   = -0.25;
 
-    FxSLVPricingContext ctx(spot, usdTs, eurTs, volHandle, localVolHandle, calendar);
+    FxSLVPricingContext ctx(spot, usdTs, eurFwdTs, volHandle, localVolHandle, calendar);
 
     HestonCalibrator hestonCal(hp);
 
@@ -699,10 +709,11 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
 
     // ── SLV vs local-vol Dupire price comparison ─────────────────────────────
     auto process = ext::make_shared<GeneralizedBlackScholesProcess>(
-        spot, eurTs, usdTs, volHandle);
+        spot, eurFwdTs, usdTs, volHandle, localVolHandle);
     auto call4M_lv = ext::make_shared<VanillaOption>(payoff4M, exercise4M);
     call4M_lv->setPricingEngine(
-        ext::make_shared<FdBlackScholesVanillaEngine>(process, 100, 100));
+        ext::make_shared<FdBlackScholesVanillaEngine>(process, 100, 100, 0,
+                                                      FdmSchemeDesc::Douglas(), true));
     const Real lvNpv = call4M_lv->NPV();
 
     const Real relDiff = std::fabs(slvNpv - lvNpv) / lvNpv;
@@ -938,9 +949,10 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceSettlementForward) {
     BOOST_CHECK_CLOSE(m.surface->fwd(friday), expected, 1.0e-12);
     const Time tFriday = m.surface->timeFromReference(friday);
     BOOST_CHECK_CLOSE(m.surface->fwd(tFriday), expected, 1.0e-12);
-    // between nodes, the log of the forward is linear
-    const Real noon = m.surface->fwd(tFriday + 0.5 / 365.0);
-    BOOST_CHECK_CLOSE(noon, std::sqrt(expected * m.surface->fwd(friday + 1)), 1.0e-10);
+    // every option expiring on Friday delivers on Tuesday: the forward
+    // holds through the day and steps at midnight
+    BOOST_CHECK_CLOSE(m.surface->fwd(tFriday + 0.5 / 365.0), expected, 1.0e-12);
+    BOOST_CHECK_CLOSE(m.surface->fwd(tFriday + 1.0 / 365.0), m.surface->fwd(friday + 1), 1.0e-12);
 
     // curves referenced to the spot date give the same surface
     const Handle<YieldTermStructure> eurFromSpot(
@@ -986,6 +998,141 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceNodeSpacing) {
     // a node within a day needs a date with a time
     BOOST_CHECK_THROW(surfaceWith(0.25 / 365.0), Error);
 #endif
+}
+
+BOOST_AUTO_TEST_CASE(testFxSettlementForeignCurve) {
+    BOOST_TEST_MESSAGE("Testing that the settlement foreign curve gives processes the settlement forward...");
+
+    FxMarket m;
+    // the process forward is the surface's settlement forward, through the
+    // day and across weekends
+    auto processForward = [&](Time t) {
+        return m.spot->value() * m.process->dividendYield()->discount(t) /
+               m.process->riskFreeRate()->discount(t);
+    };
+    BOOST_CHECK_CLOSE(processForward(0.0), m.spot->value(), 1.0e-12);
+    for (const Date& d : {Date(4, January, 2024), Date(12, April, 2024), Date(13, April, 2024),
+                          Date(15, April, 2024), m.expiry3M, Date(2, January, 2025)}) {
+        const Time t = m.surface->timeFromReference(d);
+        for (Real hours : {0.0, 9.0, 23.0}) {
+            const Time th = t + hours / 24.0 / 365.0;
+            BOOST_CHECK_CLOSE(processForward(th), m.surface->fwd(th), 1.0e-12);
+        }
+        BOOST_CHECK_CLOSE(processForward(t), m.surface->fwd(d), 1.0e-12);
+    }
+
+    // it follows its curves
+    RelinkableHandle<YieldTermStructure> foreign(m.eurTs.currentLink());
+    auto curve = ext::make_shared<FxSettlementForeignCurve>(foreign, m.usdTs,
+                                                           FxSettlementConvention(WeekendsOnly(), 2));
+    const Time t1Y = m.surface->timeFromReference(Date(2, January, 2025));
+    const Real before = curve->discount(t1Y);
+    Flag flag;
+    flag.registerWith(curve);
+    foreign.linkTo(ext::make_shared<FlatForward>(0, NullCalendar(), 0.05, m.dc));
+    BOOST_CHECK(flag.isUp());
+    BOOST_CHECK(curve->discount(t1Y) < before);
+}
+
+BOOST_AUTO_TEST_CASE(testFxLocalVolSurfaceWithoutWeekendVariance) {
+    BOOST_TEST_MESSAGE("Testing Dupire local vol where trading time stops over weekends...");
+
+    FxMarket m;
+    FxLocalVolSurface lv(m.process->blackVolatility(), m.process->riskFreeRate(),
+                         m.process->dividendYield(), m.process->stateVariable());
+    lv.enableExtrapolation();
+
+    // defined everywhere, zero exactly over weekends, positive otherwise
+    Size weekend = 0, weekday = 0;
+    for (Real strike : {1.03, 1.06, 1.085, 1.11, 1.14}) {
+        for (Size i = 1; i < 365; ++i) {
+            const Time t = (i + 0.5) / 4.0 / 365.0;
+            const Date d = m.today + Integer(std::floor(t * 365.0));
+            Volatility vol = Null<Volatility>();
+            BOOST_REQUIRE_NO_THROW(vol = lv.localVol(t, strike, true));
+            if (d.weekday() == Saturday || d.weekday() == Sunday) {
+                BOOST_CHECK_EQUAL(vol, 0.0);
+                ++weekend;
+            } else {
+                BOOST_CHECK(vol > 0.0);
+                ++weekday;
+            }
+        }
+    }
+    BOOST_CHECK(weekend > 0 && weekday > 0);
+
+    // on weekdays, QuantLib's Dupire on the same inputs agrees
+    LocalVolSurface upstream(m.process->blackVolatility(), m.process->riskFreeRate(),
+                             m.process->dividendYield(), m.process->stateVariable());
+    upstream.enableExtrapolation();
+    for (Real strike : {1.06, 1.085, 1.11}) {
+        const Time t = m.surface->timeFromReference(Date(14, February, 2024)) + 0.3 / 365.0;
+        BOOST_CHECK_CLOSE(lv.localVol(t, strike, true), upstream.localVol(t, strike, true), 1.0e-10);
+    }
+
+    // a floor, where given, applies over weekends too
+    FxLocalVolSurface floored(m.process->blackVolatility(), m.process->riskFreeRate(),
+                              m.process->dividendYield(), m.process->stateVariable(), 1.0e-7, 0.01);
+    floored.enableExtrapolation();
+    const Time saturday = m.surface->timeFromReference(Date(3, February, 2024)) + 0.5 / 365.0;
+    BOOST_CHECK_EQUAL(floored.localVol(saturday, 1.085, true), 0.01);
+}
+
+BOOST_AUTO_TEST_CASE(testFxLocalVolSurfaceArbitrage) {
+    BOOST_TEST_MESSAGE("Testing that Dupire local vol fails on arbitrage, saying so...");
+
+    const Date today(2, January, 2024);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+    const Handle<YieldTermStructure> rates(ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<Quote> spot = makeQuoteHandle(1.0);
+
+    // total variance falling between two expiries
+    auto falling = ext::make_shared<BlackVarianceCurve>(
+        today, std::vector<Date>{today + 90, today + 180},
+        std::vector<Volatility>{0.20, 0.10}, dc, false);
+    FxLocalVolSurface calendar(Handle<BlackVolTermStructure>(falling), rates, rates, spot);
+    try {
+        calendar.localVol(120.0 / 365.0, 1.0, true);
+        BOOST_ERROR("no error on calendar arbitrage");
+    } catch (Error& e) {
+        BOOST_CHECK_MESSAGE(std::string(e.what()).find("calendar arbitrage") != std::string::npos,
+                            "unexpected error: " << e.what());
+    }
+
+    // a smile too peaked to have a positive density
+    Matrix vols(3, 2);
+    vols[0][0] = vols[0][1] = 0.05;
+    vols[1][0] = vols[1][1] = 0.60;
+    vols[2][0] = vols[2][1] = 0.05;
+    auto peaked = ext::make_shared<BlackVarianceSurface>(
+        today, NullCalendar(), std::vector<Date>{today + 90, today + 180},
+        std::vector<Real>{0.9, 1.0, 1.1}, vols, dc);
+    FxLocalVolSurface butterfly(Handle<BlackVolTermStructure>(peaked), rates, rates, spot);
+    try {
+        butterfly.localVol(120.0 / 365.0, 1.0, true);
+        BOOST_ERROR("no error on butterfly arbitrage");
+    } catch (Error& e) {
+        BOOST_CHECK_MESSAGE(std::string(e.what()).find("butterfly arbitrage") != std::string::npos,
+                            "unexpected error: " << e.what());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testFxVanillaBumpRiskLocalVolDefined) {
+    BOOST_TEST_MESSAGE("Testing that the bump-risk local vol needs no substitute values...");
+
+    FxMarket m;
+    FxVanillaBumpRisk riskCalc(m.makeAtmCall(), m.process, m.spotSQ, m.atmSQs);
+    std::vector<Time> times;
+    std::vector<Real> strikes;
+    for (Size i = 1; i <= 20; ++i)
+        times.push_back(0.25 * i / 20.0);
+    for (Size j = 0; j < 15; ++j)
+        strikes.push_back(1.00 + 0.012 * j);
+    std::ostringstream out;
+    riskCalc.printLocalVolComparison(times, strikes, out);
+    BOOST_CHECK_MESSAGE(out.str().find("defined on the whole grid") != std::string::npos,
+                        "Dupire failed somewhere:\n" << out.str());
 }
 
 BOOST_AUTO_TEST_CASE(testTradingTimeFormsAgree) {

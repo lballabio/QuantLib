@@ -6,8 +6,10 @@ this_include_HEADERS = \
     all.hpp \
     fxcostsmilesection.hpp \
     fxdeltaconverter.hpp \
+    fxlocalvolsurface.hpp \
     fxrootbracketing.hpp \
     fxsettlementconvention.hpp \
+    fxsettlementforeigncurve.hpp \
     fxslvpricingcontext.hpp \
     fxsmilequotes.hpp \
     fxsmilesection.hpp \
@@ -23,6 +25,8 @@ this_include_HEADERS = \
 cpp_files = \
     fxcostsmilesection.cpp \
     fxdeltaconverter.cpp \
+    fxlocalvolsurface.cpp \
+    fxsettlementforeigncurve.cpp \
     fxslvpricingcontext.cpp \
     fxsmilequotes.cpp \
     fxsmilesection.cpp \

@@ -26,6 +26,7 @@
 
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
 #include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -97,8 +98,11 @@ namespace QuantLib {
             delivery date of the expiry, as in the smile sections.
         */
         Real fwd(const Date& expiry) const;
-        //! Forward at a time from the reference date, between those of the nodes.
-        /*! \f$ \ln F \f$ is interpolated linearly between the nodes.
+        //! Forward for an option expiring at a time from the reference date.
+        /*! It is the forward of the expiry day containing the time, since
+            every option expiring that day delivers on the same date; it
+            steps at midnight.  An FxSettlementForeignCurve gives a
+            Black-Scholes process the same forward.
         */
         Real fwd(Time t) const;
 
@@ -345,12 +349,7 @@ namespace QuantLib {
 
     template <class T>
     Real fxVarianceSurface<T>::fwd(Time t) const {
-        const Bracket b = bracket(t);
-        const Real fa = nodeForward(b.pa, b.index);
-        if (b.tb <= b.ta)
-            return fa;
-        const Real fb = nodeForward(b.pb, b.index + 1);
-        return fa * std::pow(fb / fa, (t - b.ta) / (b.tb - b.ta));
+        return fwd(detail::dayContaining(*this, t));
     }
 
     template <class T>

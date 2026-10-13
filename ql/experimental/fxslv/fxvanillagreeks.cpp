@@ -22,7 +22,6 @@
 #include <ql/exercise.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-#include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/settings.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -57,6 +56,8 @@ namespace QuantLib {
       rrBump_(rrBump), bfBump_(bfBump), tGrid_(tGrid), xGrid_(xGrid),
       lvTimePts_(lvTimePts), lvStrikePts_(lvStrikePts), lvStrikeSpread_(lvStrikeSpread) 
     {
+        QL_REQUIRE(option_ != nullptr, "null option");
+        QL_REQUIRE(process_ != nullptr, "null process");
         QL_REQUIRE(spotQuote_ != nullptr, "null spot quote");
         QL_REQUIRE(!atmVolQuotes_.empty(), "at least one ATM vol quote required");
         QL_REQUIRE(rrPillarQuotes_.size() == rrPillarTimes_.size(),
@@ -70,22 +71,42 @@ namespace QuantLib {
         QL_REQUIRE(lvTimePts_ >= 2, "lvTimePts must be at least 2");
         QL_REQUIRE(lvStrikePts_ >= 2, "lvStrikePts must be at least 2");
         QL_REQUIRE(lvStrikeSpread_ > 0.0, "lvStrikeSpread must be positive");
+
+        buildLocalVol(Null<Volatility>());
+    }
+
+    void FxVanillaBumpRisk::setLocalVolFallback(Volatility fallbackVol) {
+        buildLocalVol(fallbackVol);
+    }
+
+    void FxVanillaBumpRisk::buildLocalVol(Volatility fallbackVol) {
+        localVol_ = ext::make_shared<FxLocalVolSurface>(
+            process_->blackVolatility(), process_->riskFreeRate(), process_->dividendYield(),
+            process_->stateVariable(), 1.0e-7, 0.0, fallbackVol);
+        localVol_->enableExtrapolation();
+        // the engines take the local vol from the process; give it ours
+        localVolProcess_ = ext::make_shared<GeneralizedBlackScholesProcess>(
+            process_->stateVariable(), process_->dividendYield(), process_->riskFreeRate(),
+            process_->blackVolatility(), Handle<LocalVolTermStructure>(localVol_));
     }
 
     ext::shared_ptr<PricingEngine> FxVanillaBumpRisk::makeEngineFor(const ext::shared_ptr<GeneralizedBlackScholesProcess>& proc,
                                                                     bool localVol) const 
     {
+        // no overwrite of failed local vols: a failure is an error, not a
+        // number to substitute
         return ext::make_shared<FdBlackScholesVanillaEngine>(proc, tGrid_, xGrid_,
                                                              0, /*dampingSteps=*/
                                                              FdmSchemeDesc::Douglas(),
                                                              localVol,
-                                                             localVol ? 0.20 : -Null<Real>() /*illegalLocalVolOverwrite*/
+                                                             -Null<Real>() /*illegalLocalVolOverwrite*/
                                                              );
     }
 
     ext::shared_ptr<PricingEngine> FxVanillaBumpRisk::makeEngine(bool localVol) const {
-        return makeEngineFor(process_, localVol);
+        return makeEngineFor(localVol ? localVolProcess_ : process_, localVol);
     }
+
 
     ext::shared_ptr<PricingEngine> FxVanillaBumpRisk::makeAnalyticEngine() const {
         return ext::make_shared<AnalyticEuropeanEngine>(process_);
@@ -388,19 +409,10 @@ namespace QuantLib {
         QL_REQUIRE(!times.empty(), "time grid is empty");
         QL_REQUIRE(!strikes.empty(), "strike grid is empty");
 
-        /*LocalVolSurface lvDupire(process_->blackVolatility(),
-                                 process_->riskFreeRate(),
-                                 process_->dividendYield(),
-                                 process_->x0());*/
-        NoExceptLocalVolSurface lvDupire(process_->blackVolatility(), process_->riskFreeRate(),
-                                         process_->dividendYield(), process_->x0(), 0.20);
-        
-        lvDupire.enableExtrapolation();
-
         auto lvMatrix = ext::make_shared<Matrix>(strikes.size(), times.size());
         for (Size ti = 0; ti < times.size(); ++ti)
             for (Size si = 0; si < strikes.size(); ++si)
-                (*lvMatrix)[si][ti] = lvDupire.localVol(times[ti], strikes[si], true);
+                (*lvMatrix)[si][ti] = localVol_->localVol(times[ti], strikes[si], true);
 
         return ext::make_shared<FixedLocalVolSurface>(process_->blackVolatility()->referenceDate(),
                                                       times, strikes, lvMatrix,
@@ -410,101 +422,80 @@ namespace QuantLib {
     void FxVanillaBumpRisk::printLocalVolComparison(const std::vector<Time>& times,
                                                      const std::vector<Real>& strikes,
                                                      std::ostream& out) const {
-        /*LocalVolSurface lvDupire(process_->blackVolatility(),
-                                 process_->riskFreeRate(),
-                                 process_->dividendYield(),
-                                 process_->x0());*/
-        NoExceptLocalVolSurface lvDupire(process_->blackVolatility(), process_->riskFreeRate(),
-                                         process_->dividendYield(), process_->x0(), 0.20);
-        
-        lvDupire.enableExtrapolation();
-
-        // Throwing version used only to identify which cells fall back.
-        LocalVolSurface lvDupireStrict(process_->blackVolatility(), process_->riskFreeRate(),
-                                       process_->dividendYield(), process_->x0());
-        lvDupireStrict.enableExtrapolation();
-
         const Size nT = times.size();
         const Size nK = strikes.size();
 
-        // Build fallback map: fallback[si][ti] == true where Dupire would throw.
-        std::vector<std::vector<bool>> fallback(nK, std::vector<bool>(nT, false));
-        Size nFallback = 0;
+        // Dupire local vols, or the cells where they fail or fall back
+        std::vector<std::vector<Real>> dupire(nK, std::vector<Real>(nT, Null<Real>()));
+        std::vector<std::vector<bool>> fellBack(nK, std::vector<bool>(nT, false));
+        std::vector<std::string> errors;
+        Size nFallbacks = 0;
         for (Size si = 0; si < nK; ++si) {
             for (Size ti = 0; ti < nT; ++ti) {
                 try {
-                    lvDupireStrict.localVol(times[ti], strikes[si], true);
-                } 
-                catch (Error&) 
-                {
-                    fallback[si][ti] = true;
-                    ++nFallback;
+                    const Size before = localVol_->fallbacks();
+                    dupire[si][ti] = localVol_->localVol(times[ti], strikes[si], true);
+                    if (localVol_->fallbacks() > before) {
+                        fellBack[si][ti] = true;
+                        ++nFallbacks;
+                    }
+                } catch (Error& e) {
+                    if (errors.empty())
+                        errors.emplace_back(e.what());
+                    else
+                        errors.emplace_back();
                 }
             }
         }
-
-        auto fixedLV = buildFixedLocalVolSurface(times, strikes);
-        fixedLV->enableExtrapolation();
+        ext::shared_ptr<FixedLocalVolSurface> fixedLV;
+        if (errors.empty()) {
+            fixedLV = buildFixedLocalVolSurface(times, strikes);
+            fixedLV->enableExtrapolation();
+        }
 
         const int wt = 10;
         const int wv = 9;
         const int wk = 8;
 
         out << "\n--- Local vol surface: Dupire (D) vs FixedLocalVolSurface (F) ---\n";
-        out << "(* on D row = Dupire fallback; local vol capped at 20%)\n";
+        out << "(err on a D row = Dupire failed there; * = the fallback vol was used)\n";
         out << std::setw(wk) << "K\\t";
         for (Time t : times)
             out << std::setw(wt) << std::fixed << std::setprecision(2) << t;
-        //out << "\n" << std::string(wk + wt * times.size(), '-') << "\n";
         out << "\n" << std::string(wk + wt * nT, '-') << "\n";
 
-        //for (Real K : strikes) {
         for (Size si = 0; si < nK; ++si) {
             const Real K = strikes[si];
             out << std::setw(wk - 1) << std::fixed << std::setprecision(4) << K << "D";
-            /*for (Time t : times)
-                out << std::setw(wv) << std::fixed << std::setprecision(2)
-                    << lvDupire.localVol(t, K, true) * 100.0;*/
             for (Size ti = 0; ti < nT; ++ti) {
                 std::ostringstream cell;
-                cell << std::fixed << std::setprecision(2)
-                     << lvDupire.localVol(times[ti], K, true) * 100.0;
-                if (fallback[si][ti])
-                    cell << "*";
+                if (dupire[si][ti] == Null<Real>())
+                    cell << "err";
+                else
+                    cell << std::fixed << std::setprecision(2) << dupire[si][ti] * 100.0
+                         << (fellBack[si][ti] ? "*" : "");
                 out << std::setw(wv) << cell.str();
             }
             out << "\n";
 
-            out << std::setw(wk - 1) << std::fixed << std::setprecision(4) << K << "F";
-            //for (Time t : times)
-            for (Size ti = 0; ti < nT; ++ti)
-                out << std::setw(wv) << std::fixed << std::setprecision(2)
-                    //<< fixedLV->localVol(t, K, true) * 100.0;
-                    << fixedLV->localVol(times[ti], K, true) * 100.0;
-            out << "\n\n";
-        }
-
-        // Fallback summary map.
-        if (nFallback > 0) {
-            out << "\n--- Dupire fallback map (* = capped) ---\n";
-            out << std::setw(wk) << "K\\t";
-            for (Time t : times)
-                out << std::setw(4) << std::fixed << std::setprecision(2) << t;
-            out << "\n" << std::string(wk + 4 * nT, '-') << "\n";
-            for (Size si = 0; si < nK; ++si) {
-                out << std::setw(wk - 1) << std::fixed << std::setprecision(4) << strikes[si]
-                    << " ";
+            if (fixedLV) {
+                out << std::setw(wk - 1) << std::fixed << std::setprecision(4) << K << "F";
                 for (Size ti = 0; ti < nT; ++ti)
-                    out << std::setw(4) << (fallback[si][ti] ? " *" : " .");
+                    out << std::setw(wv) << std::fixed << std::setprecision(2)
+                        << fixedLV->localVol(times[ti], K, true) * 100.0;
                 out << "\n";
             }
-            out << "\nFallback triggered at " << nFallback << " / " << nT * nK << " cells ("
-                << std::fixed << std::setprecision(1)
-                << 100.0 * nFallback / static_cast<Real>(nT * nK) << "%).\n";
-        } 
-        else 
-        {
-            out << "\nNo Dupire fallbacks on this grid.\n";
+            out << "\n";
+        }
+
+        if (errors.empty() && nFallbacks == 0) {
+            out << "\nDupire local vol defined on the whole grid.\n";
+        } else if (errors.empty()) {
+            out << "\nDupire local vol not defined at " << nFallbacks << " / " << nT * nK
+                << " cells, where the fallback vol was used.\n";
+        } else {
+            out << "\nDupire failed at " << errors.size() << " / " << nT * nK
+                << " cells; the first error was:\n  " << errors.front() << "\n";
         }
     }
 
