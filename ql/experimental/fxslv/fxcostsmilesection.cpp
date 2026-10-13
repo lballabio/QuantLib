@@ -323,6 +323,7 @@ namespace QuantLib {
         //
         //   f(rho) = p0 + (2*p1 - s*p2)*rho^(1+a) - 2*p2*x*rho^(a-1)
         //          + p3*x^2*rho^(2a-2) - (p3/4)*rho^(2+2a)  =  0
+        // => p3*x^2 - 2*p2*x*rho^(1-a) + p0*rho^(2-2a) + (2*p1 - s*p2)*rho^(3-a) - (p3/4)*rho^4
         //
         // where  s = -1 (standard, d- in vanna term) or +1 (premium-adjusted, d+ in vanna term).
         // p = [Cgamma, Ctheta, Ceta, Comega] normalised so that p0 = 1.

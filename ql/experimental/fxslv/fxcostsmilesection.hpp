@@ -64,10 +64,10 @@ namespace QuantLib {
             d(rho) = c * rho^alpha
 
         The default volByStrikeImpl() solves the cost equation by Newton-Raphson.
-                                    Derived classes may override volByStrikeImpl() with closed-form solvers when
-                                    alpha takes a special value (0 → quartic, 1 → biquadratic/quadratic).
-                                    */
-                                    class FxCostSmileSection : public FxSmileSectionByStrike {
+        Derived classes may override volByStrikeImpl() with closed-form solvers when
+        alpha takes a special value (0 → quartic, 1 → biquadratic/quadratic).
+    */
+    class FxCostSmileSection : public FxSmileSectionByStrike {
       public:
         //! Date mode (see FxSmileSection).
         FxCostSmileSection(const Date& exerciseDate,
