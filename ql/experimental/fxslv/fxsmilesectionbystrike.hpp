@@ -64,6 +64,7 @@ namespace QuantLib {
       private:
         virtual Volatility volByStrikeImpl(Real strike,
                                            Real fwd,
+                                           Time tau,
                                            const std::vector<Real>& params) const = 0;
 
 
@@ -115,6 +116,7 @@ namespace QuantLib {
         //@{
         Volatility volByStrikeImpl(Real strike,
                                    Real fwd,
+                                   Time tau,
                                    const std::vector<Real>& params) const override;
         //@}
 
@@ -158,6 +160,7 @@ namespace QuantLib {
         //@{
         Volatility volByStrikeImpl(Real strike,
                                    Real fwd,
+                                   Time tau,
                                    const std::vector<Real>& params) const override;
         //@}
 
@@ -226,6 +229,7 @@ namespace QuantLib {
         //@{
         Volatility volByStrikeImpl(Real strike,
                                    Real fwd,
+                                   Time tau,
                                    const std::vector<Real>& params) const override;
         //@}
 

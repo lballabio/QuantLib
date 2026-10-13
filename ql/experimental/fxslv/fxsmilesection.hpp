@@ -234,7 +234,7 @@ namespace QuantLib {
         //! Fits the smile to the given targets; only valid while the quotes calibrate the section.
         void fitToTargets(FxSmileTargets targets) const;
         mutable bool calibrating_ = false;  // the quotes are calibrating this section
-        mutable bool fitted_ = false; // the quotes called fitToTargets() during this calibration
+        mutable bool fittedToTargets_ = false; // the quotes called fitToTargets() during this calibration
 
         Volatility volatilityImpl(Rate strike) const override { return volByStrike(strike); }
 

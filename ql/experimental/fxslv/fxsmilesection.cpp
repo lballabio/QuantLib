@@ -321,7 +321,7 @@ namespace QuantLib {
         // The quotes drive the fit; check they actually fitted the section,
         // otherwise it would silently keep a previous calibration.
         calibrating_ = true;
-        fitted_ = false;
+        fittedToTargets_ = false;
         try {
             smileQuotes_->calibrate(*this);
         } catch (...) {
@@ -329,7 +329,7 @@ namespace QuantLib {
             throw;
         }
         calibrating_ = false;
-        QL_ENSURE(fitted_, "smile quotes did not fit the smile section");
+        QL_ENSURE(fittedToTargets_, "smile quotes did not fit the smile section");
 
         // the calibrated atm might differ from the quoted one, so take it
         // from the calibrated smile
@@ -354,7 +354,7 @@ namespace QuantLib {
             QL_ENSURE(std::isfinite(calibrationResiduals_[i]),
                       "calibrated smile gives a non-finite residual for target " << i);
         }
-        fitted_ = true;
+        fittedToTargets_ = true;
     }
 
     void FxSmileSection::calibrate() const {

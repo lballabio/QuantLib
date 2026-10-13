@@ -49,7 +49,7 @@ namespace QuantLib {
          * allows the addition of events which are treated as jumps in trading time.
          *
          * All quotes first have to be converted into total variances using real time. We assume
-         * a paramteric form for assigning trading time to each day (in the simplest case this
+         * a parametric form for assigning trading time to each day (in the simplest case this
          * can be a piecewise constant function between pillar tenors) Events are treated as
          * multiples of the underlying trading time.
          *

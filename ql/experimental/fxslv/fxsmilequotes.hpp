@@ -44,8 +44,8 @@ namespace QuantLib {
     */
     class FxSmileTarget {
       public:
-        // polymorphic base class where conrete instances are held as
-        // pointers to base class. virtual destructor to preent leaks
+        // polymorphic base class where concrete instances are held as
+        // pointers to base class. virtual destructor to prevent leaks
         virtual ~FxSmileTarget() = default;
 
         //! Residual of the section's current smile, in vol units.
@@ -82,7 +82,7 @@ namespace QuantLib {
     */
     class FxDeltaVolTarget : public FxSmileTarget {
       public:
-        // single argument construtor. to avoid implicit conversion make it explicit
+        // single argument constructor. to avoid implicit conversion make it explicit
         explicit FxDeltaVolTarget(Handle<DeltaVolQuote> quote) : quote_(std::move(quote)) {}
         Real residual(const FxSmileSection& section) const override;
         //! \f$ n(d_+) \f$ at the quote's strike and vol.
@@ -146,14 +146,14 @@ namespace QuantLib {
         Instances observe their quotes and forward notifications, so the
         smile section only needs to register with this object.
 
-        Quantlib only provides support for DeltaVolQuotes so this class
-        handles both DeltaVol quotes and RR/BF quotes, espescially for
+        QuantLib only provides support for DeltaVolQuotes so this class
+        handles both DeltaVol quotes and RR/BF quotes, especially for
         broker strangles.
     */
     class FxSmileQuotes : public Observer, public Observable {
       public:
-        // polymrphic base class so make destructor virtual
-        // Observer alerady has a virtual destructor so doesnt
+        // polymorphic base class so make destructor virtual
+        // Observer already has a virtual destructor so doesn't
         // do much but good practice!
         ~FxSmileQuotes() override = default;
 

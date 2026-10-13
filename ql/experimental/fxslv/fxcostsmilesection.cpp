@@ -314,6 +314,7 @@ namespace QuantLib {
 
     Volatility FxCostSmileSection::volByStrikeImpl(Real strike,
                                                    Real fwd,
+                                                   Time tau,
                                                    const std::vector<Real>& params) const
     {
         // Solve f(rho) = 0 for total vol rho = sigma*sqrt(tau) at log-moneyness x = ln(F/K).
@@ -329,7 +330,6 @@ namespace QuantLib {
         Real x = std::log(fwd / strike);
         Real a = alpha_;
         Real s = premiumAdjust() ? 1.0 : -1.0;
-        Time tau = exerciseTime();
 
         auto f = [&](Real rho) -> Real {
             return params[3] * x * x
@@ -417,11 +417,11 @@ namespace QuantLib {
 
     Volatility FxCostSmileSectionFlatDynamics::volByStrikeImpl(Real strike,
                                                                Real fwd,
+                                                               Time tau,
                                                                const std::vector<Real>& params) const
     {
         Real x = std::log(fwd / strike);
         Integer s = premiumAdjust() ? 1 : -1;
-        Time tau = exerciseTime();
 
         QuarticPolynomial q(std::vector<Real>{-x * x * params[3], 2 * x * params[2], -params[0],
                                     s * params[2] - 2 * params[1], params[3] / 4.});
@@ -435,7 +435,7 @@ namespace QuantLib {
                    "cost equation has no non-negative real root at strike " << strike);
         Real w = *root;
 
-        // improve root if necc
+        // improve root if necessary
         Real err = q(w);
         if (std::abs(err) > 1.0e-16) {
             Brent solver;
@@ -487,6 +487,7 @@ namespace QuantLib {
 
     Volatility FxCostSmileSectionScaledDynamics::volByStrikeImpl(Real strike,
                                                                  Real fwd,
+                                                                 Time tau,
                                                                  const std::vector<Real>& params) const
     {
         Real x = std::log(fwd / strike);
@@ -503,7 +504,7 @@ namespace QuantLib {
         if (w < 0)
             w = z;
 
-        return std::sqrt(w / exerciseTime());
+        return std::sqrt(w / tau);
     }
 
 }
