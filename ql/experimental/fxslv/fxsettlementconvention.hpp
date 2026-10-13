@@ -18,7 +18,7 @@
 */
 
 /*! \file fxsettlementconvention.hpp
-    \brief Spot-lag settlement convention of an FX currency pair
+    \brief Settle conventions for FX
 */
 
 #ifndef quantlib_fx_settlement_convention_hpp
@@ -30,33 +30,24 @@
 
 namespace QuantLib {
 
-    //! Settlement convention of an FX currency pair
-    /*! Derives the two settlement dates an FX option needs from its
-        trade and expiry dates:
+    //! Settle conventions for FX pairs
+    /*! An FX option needs two settle dates for its trade date and expiry:
 
-        - the spot date \f$ s_0 \f$ of the trade date \f$ t_0 \f$, on
-          which the spot rate is quoted for settlement and the option
-          premium is paid;
+        - the value date \f$ s_0 \f$ of the trade date \f$ t_0 \f$, on
+          which the spot is quoted for settlement, and spot premium is
+          exchanged;
         - the delivery date \f$ T_d \f$ of an option expiring on
-          \f$ T_e \f$, which by market convention is the spot date of
-          the expiry date.
+          \f$ T_e \f$, which is the value date of the expiry date.
 
         Both are obtained by advancing the given date by the spot lag
         in business days of the calendar.
 
-        The calendar should be the joint calendar of the two
-        currencies, and of USD when the pair settles through USD.  The
-        spot lag is 2 business days for most pairs and 1 for a few,
-        e.g. USD/CAD.
-
-        \warning Some markets apply finer rules, e.g. for USD pairs
-                 the first day of the lag only needs to be a business
-                 day of the non-USD currency.  These are not modelled;
-                 a joint calendar is used for every day of the lag.
+        The calendar should be the joint calendar of the two currencies
+        (and of US when the pair settles through USD).
     */
-    class FxSettlementConvention {
+    class FxSettleConvention {
       public:
-        explicit FxSettlementConvention(Calendar calendar, Natural spotLag = 2)
+        explicit FxSettleConvention(Calendar calendar, Natural spotLag = 2)
         : calendar_(std::move(calendar)), spotLag_(spotLag) {
             QL_REQUIRE(!calendar_.empty(), "FX settlement convention requires a calendar");
         }
@@ -64,15 +55,15 @@ namespace QuantLib {
         const Calendar& calendar() const { return calendar_; }
         Natural spotLag() const { return spotLag_; }
 
-        //! Spot date of the given trade date.
-        Date spotDate(const Date& tradeDate) const {
+        //! Value/Settle date of the given trade date.
+        Date valueDate(const Date& tradeDate) const {
             // value dates carry no time of day, even when the trade date does
             const Date tradeDay(tradeDate.serialNumber());
             return calendar_.advance(tradeDay, static_cast<Integer>(spotLag_), Days);
         }
 
         //! Delivery date of an option expiring on the given date.
-        Date deliveryDate(const Date& expiryDate) const { return spotDate(expiryDate); }
+        //Date deliveryDate(const Date& expiryDate) const { return settleDate(expiryDate); }
 
       private:
         Calendar calendar_;

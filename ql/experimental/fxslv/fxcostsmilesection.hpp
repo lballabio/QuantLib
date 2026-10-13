@@ -79,7 +79,7 @@ namespace QuantLib {
                            DeltaVolQuote::AtmType atmType,
                            Real alpha,
                            const DayCounter& dayCounter,
-                           const FxSettlementConvention& settlement,
+                           const FxSettleConvention& settlement,
                            const Date& referenceDate = Date(),
                            bool weightedCalibrationFlag = true);
 
@@ -136,7 +136,7 @@ namespace QuantLib {
                                        DeltaVolQuote::DeltaType deltaType,
                                        DeltaVolQuote::AtmType atmType,
                                        const DayCounter& dayCounter,
-                                       const FxSettlementConvention& settlement,
+                                       const FxSettleConvention& settlement,
                                        const Date& referenceDate = Date(),
                                        bool weightedCalibrationFlag = true);
 
@@ -177,7 +177,7 @@ namespace QuantLib {
                                          DeltaVolQuote::DeltaType deltaType,
                                          DeltaVolQuote::AtmType atmType,
                                          const DayCounter& dayCounter,
-                                         const FxSettlementConvention& settlement,
+                                         const FxSettleConvention& settlement,
                                          const Date& referenceDate = Date(),
                                          bool weightedCalibrationFlag = true);
 

@@ -43,15 +43,15 @@ namespace QuantLib {
 
     FxSettlementForeignCurve::FxSettlementForeignCurve(Handle<YieldTermStructure> foreignCurve,
                                                        Handle<YieldTermStructure> domesticCurve,
-                                                       FxSettlementConvention settlement)
+                                                       FxSettleConvention settlement)
     : RelativeDerivedYieldTermStructure<YieldTermStructure>(std::move(domesticCurve)),
       foreignCurve_(std::move(foreignCurve)), settlement_(std::move(settlement)) {
         registerWith(foreignCurve_);
     }
 
     Real FxSettlementForeignCurve::forwardOverSpot(Time t) const {
-        const Date spotDate = settlement_.spotDate(referenceDate());
-        const Date deliveryDate = settlement_.deliveryDate(detail::dayContaining(*this, t));
+        const Date spotDate = settlement_.valueDate(referenceDate());
+        const Date deliveryDate = settlement_.valueDate(detail::dayContaining(*this, t));
         const Handle<YieldTermStructure>& domestic = originalCurve_;
         return (foreignCurve_->discount(deliveryDate, true) / foreignCurve_->discount(spotDate, true)) /
                (domestic->discount(deliveryDate, true) / domestic->discount(spotDate, true));

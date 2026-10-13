@@ -75,7 +75,7 @@ namespace QuantLib {
                           DeltaVolQuote::DeltaType deltaType,
                           DeltaVolQuote::AtmType atmType,
                           FxRrBfQuotes::FlyType flyType,
-                          const FxSettlementConvention& settlement,
+                          const FxSettleConvention& settlement,
                           const Calendar& cal = WeekendsOnly(),
                           BusinessDayConvention bdc = Following,
                           bool forceMonotoneVariance = true,
@@ -108,7 +108,7 @@ namespace QuantLib {
 
         // Introspection
         Handle<Quote> spot() const { return spot_; };
-        const FxSettlementConvention& settlement() const { return settlement_; }
+        const FxSettleConvention& settlement() const { return settlement_; }
         Handle<YieldTermStructure> domesticDiscountCurve() const { return domTs_; };
         Handle<YieldTermStructure> foreignDiscountCurve() const { return forTs_; };
 
@@ -144,7 +144,7 @@ namespace QuantLib {
         Real blackVarianceImpl(Time t, Real strike) const;  // smile variance
 
         const Handle<Quote> spot_;
-        const FxSettlementConvention settlement_;
+        const FxSettleConvention settlement_;
         const std::vector<Date> pillars_;
         const Handle<YieldTermStructure> forTs_;
         const Handle<YieldTermStructure> domTs_;
@@ -178,7 +178,7 @@ namespace QuantLib {
                                             DeltaVolQuote::DeltaType deltaType,
                                             DeltaVolQuote::AtmType atmType,
                                             FxRrBfQuotes::FlyType flyType,
-                                            const FxSettlementConvention& settlement,
+                                            const FxSettleConvention& settlement,
                                             const Calendar& cal,
                                             BusinessDayConvention bdc,
                                             bool forceMonotoneVariance,
@@ -335,8 +335,8 @@ namespace QuantLib {
     template <class T>
     std::pair<DiscountFactor, DiscountFactor>
     fxVarianceSurface<T>::settlementDiscounts(const Date& expiry) const {
-        const Date spotDate = settlement_.spotDate(referenceDate());
-        const Date deliveryDate = settlement_.deliveryDate(expiry);
+        const Date spotDate = settlement_.valueDate(referenceDate());
+        const Date deliveryDate = settlement_.valueDate(expiry);
         return {forTs_->discount(deliveryDate) / forTs_->discount(spotDate),
                 domTs_->discount(deliveryDate) / domTs_->discount(spotDate)};
     }
@@ -446,7 +446,7 @@ namespace QuantLib {
                                DeltaVolQuote::DeltaType deltaType,
                                DeltaVolQuote::AtmType atmType,
                                FxRrBfQuotes::FlyType flyType,
-                               const FxSettlementConvention& settlement,
+                               const FxSettleConvention& settlement,
                                const Calendar& cal = WeekendsOnly(),
                                BusinessDayConvention bdc = Following,
                                bool forceMonotoneVariance = true,
@@ -470,7 +470,7 @@ namespace QuantLib {
                                                       DeltaVolQuote::DeltaType deltaType,
                                                       DeltaVolQuote::AtmType atmType,
                                                       FxRrBfQuotes::FlyType flyType,
-                                                      const FxSettlementConvention& settlement,
+                                                      const FxSettleConvention& settlement,
                                                       const Calendar& cal,
                                                       BusinessDayConvention bdc,
                                                       bool forceMonotoneVariance,
@@ -552,7 +552,7 @@ namespace QuantLib {
                              DeltaVolQuote::DeltaType deltaType,
                              DeltaVolQuote::AtmType atmType,
                              FxRrBfQuotes::FlyType flyType,
-                             const FxSettlementConvention& settlement,
+                             const FxSettleConvention& settlement,
                              const Calendar& cal = WeekendsOnly(),
                              BusinessDayConvention bdc = Following,
                              bool forceMonotoneVariance = true,
@@ -577,7 +577,7 @@ namespace QuantLib {
                                                   DeltaVolQuote::DeltaType deltaType,
                                                   DeltaVolQuote::AtmType atmType,
                                                   FxRrBfQuotes::FlyType flyType,
-                                                  const FxSettlementConvention& settlement,
+                                                  const FxSettleConvention& settlement,
                                                   const Calendar& cal,
                                                   BusinessDayConvention bdc,
                                                   bool forceMonotoneVariance,

@@ -34,7 +34,7 @@ namespace QuantLib::detail {
     //! Whether a function rises or falls with its argument.
     enum class Slope { Increasing, Decreasing };
 
-    //! Brackets the root of a monotonic function, walking from a start point.
+    //! Brackets the root of a monotonic function, walking from a start.
     /*! The sign of \f$ f(x_0) \f$ and the slope give the side the root
         is on; the walk goes that way in steps starting at \c step and
         growing by half each time, until the sign changes.  Only points

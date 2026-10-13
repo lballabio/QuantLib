@@ -151,7 +151,7 @@ int main(int, char*[]) {
         // the foreign curve giving processes the settlement forward: from the
         // spot date to the delivery date of each expiry, as the surface uses
         Handle<YieldTermStructure> eurFwdTs(ext::make_shared<FxSettlementForeignCurve>(
-            eurTs, usdTs, FxSettlementConvention(WeekendsOnly(), 2)));
+            eurTs, usdTs, FxSettleConvention(WeekendsOnly(), 2)));
 
         Handle<TradingTimeTermStructure> timeTs(ext::make_shared<TradingTimeTermStructure>(today, WeekendsOnly(), 0.0));
 
@@ -227,7 +227,7 @@ int main(int, char*[]) {
         // ──────────────────────────────────────────────────────────────────────
         auto fxVolSurface = ext::make_shared<fxVarianceSurfaceNCP<FxSabrSmileSection>>(today, spot, pillars, atms, rrs, bfs, deltas,
                                                                                        eurTs, usdTs, timeTs, deltaType, atmType, flyType,
-                                                                                       FxSettlementConvention(calendar, 2),
+                                                                                       FxSettleConvention(calendar, 2),
                                                                                        calendar, Following, true);
 
         fxVolSurface->enableExtrapolation();

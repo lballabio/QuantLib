@@ -41,7 +41,7 @@ namespace QuantLib {
                                    DeltaVolQuote::DeltaType deltaType,
                                    DeltaVolQuote::AtmType atmType,
                                    const DayCounter& dayCounter,
-                                   const FxSettlementConvention& settlement,
+                                   const FxSettleConvention& settlement,
                                    const Date& referenceDate)
     : SmileSection(exerciseDate, dayCounter, referenceDate, ShiftedLognormal, 0.0),
       deltaType_(deltaType), atmType_(atmType), spot_(spot), smileQuotes_(quotes),
@@ -108,8 +108,8 @@ namespace QuantLib {
             // the delivery date of the expiry.  Taking ratios of discount
             // factors by date makes the result independent of the curves'
             // own reference dates and day counters.
-            spotDate_ = settleConvention_->spotDate(referenceDate());
-            deliveryDate_ = settleConvention_->deliveryDate(exerciseDate());
+            spotDate_ = settleConvention_->valueDate(referenceDate());
+            deliveryDate_ = settleConvention_->valueDate(exerciseDate());
             checkCurveCovers(foreignDiscount_, "foreign", spotDate_, deliveryDate_);
             checkCurveCovers(domesticDiscount_, "domestic", spotDate_, deliveryDate_);
             dfor_ = foreignDiscount_->discount(deliveryDate_) / foreignDiscount_->discount(spotDate_);

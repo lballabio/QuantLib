@@ -37,10 +37,10 @@ namespace QuantLib {
 
     class FxSmileSection;
 
-    //! A condition the calibrated smile should meet
+    //! A condition the calibrated smile should satisfy
     /*! Each target gives a residual, in vol units, for the section's
-        current smile. During calibration the section holds trial
-        parameters, so residual() measures that trial smile.
+        current (trial) smile. During calibration the section holds 
+        trial parameters, so residual() measures that trial smile.
     */
     class FxSmileTarget {
       public:
@@ -53,12 +53,12 @@ namespace QuantLib {
         /*! Proportional to the vega of the target's options,
             \f$ n(d_+) \f$, so that a fit weighs vol errors roughly as
             price errors; the factor \f$ F\sqrt{\tau} \f$, common to
-            all targets of a section, is left out. It must not depend on
+            all targets of a section, is left out. Should not depend on
             the section's trial smile. The default is 1.
         */
         virtual Real weight(const FxSmileSection&) const { return 1.0; }
 
-        //! The (strike, vol) on the section's smile this target fixes (if any)
+        //! The (strike, vol) on the smile this target fixes (if any)
         /*! For models with closed-form fits to points (e.g. the cost
             models). The strike depends on the section's forward and
             conventions, so it is worked out for the given section.
@@ -131,16 +131,21 @@ namespace QuantLib {
 
 
     //! Market quotes for FX smile section calibration
-    /*! Separates how the market quotes a smile from how a section
-        parameterises it.  An FxSmileQuotes object can store market
-        quotes as RRs/BFs or a set of DeltaVolQuotes, and turns them into
-        calibration targets; market conventions on smile and broker
+    /*! Separates how the market quotes/parametrizes a smile from how a 
+        section parameterises it. An FxSmileQuotes object can store market
+        quotes as RRs/BFs or a set of DeltaVolQuotes. When calibrating a 
+        smile section, these market quotes are converted into targets for
+        the calibration to satisfa; market conventions on smile and broker
         strangles are handled here, providing a uniform interface to
         FxSmileSection, which fits its smile to the targets in one
         least-squares problem.
-
+        
         Instances observe their quotes and forward notifications, so the
         smile section only needs to register with this object.
+
+        Quantlib only provides support for DeltaVolQuotes so this class
+        handles both DeltaVol quotes and RR/BF quotes, espscially for
+        broker strangles.
     */
     class FxSmileQuotes : public Observer, public Observable {
       public:
@@ -151,15 +156,15 @@ namespace QuantLib {
         void update() override { notifyObservers(); }
         //@}
 
-        //! Atm vol used to seed the calibration.
-        /*! It depends only on the quotes, never on a previous calibration,
-            so that the same quotes always give the same smile.
+        //! the vol used to seed/initialize the calibration.
+        /*! It depends only on the quotes, not on a previous 
+            calibration, so the same quotes give the same smile.
         */
         virtual Volatility referenceVol() const = 0;
 
       protected:
         //! Fits the section's smile to the given targets.
-        /*! For use inside calibrate() only; the section rejects fits
+        /*! For use inside calibrate() only; the smile section rejects fits
             requested at any other time.
         */
         static void fit(const FxSmileSection& section, FxSmileTargets targets);
@@ -235,7 +240,7 @@ namespace QuantLib {
     };
 
 
-    //! Generic set of delta-vol quotes
+    //! A delta+vol quote - basically a wrapper around DeltaVolQuote
     /*! The quotes are fitted as given, each in its own delta and ATM
         conventions (see FxDeltaVolTarget); the ATM quote, if any, is
         fitted like the others.

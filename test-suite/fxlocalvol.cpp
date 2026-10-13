@@ -115,7 +115,7 @@ namespace {
             usdTs = Handle<YieldTermStructure>(
                 ext::make_shared<FlatForward>(0, NullCalendar(), 0.0525, dc));
             eurFwdTs = Handle<YieldTermStructure>(ext::make_shared<FxSettlementForeignCurve>(
-                eurTs, usdTs, FxSettlementConvention(WeekendsOnly(), 2)));
+                eurTs, usdTs, FxSettleConvention(WeekendsOnly(), 2)));
             timeTs = Handle<TradingTimeTermStructure>(
                 ext::make_shared<TradingTimeTermStructure>(today, WeekendsOnly(), 0.0));
 
@@ -164,7 +164,7 @@ namespace {
                 today, spot, pillars, atms, rrs, bfs, deltas,
                 eurTs, usdTs, timeTs,
                 deltaType, atmType, flyType,
-                FxSettlementConvention(WeekendsOnly(), 2),
+                FxSettleConvention(WeekendsOnly(), 2),
                 WeekendsOnly(), Following, true);
             surface->enableExtrapolation();
 
@@ -551,7 +551,7 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
         ext::make_shared<FlatForward>(0, NullCalendar(), 0.0400, dc));  // foreign
     // the foreign curve giving processes the settlement forward
     const Handle<YieldTermStructure> eurFwdTs(ext::make_shared<FxSettlementForeignCurve>(
-        eurTs, usdTs, FxSettlementConvention(calendar, 2)));
+        eurTs, usdTs, FxSettleConvention(calendar, 2)));
 
     auto spotSQ = ext::make_shared<SimpleQuote>(1.0850);
     Handle<Quote> spot(spotSQ);
@@ -611,7 +611,7 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
         today, spot, pillars, atms, rrs, bfs, deltas,
         eurTs, usdTs, timeTs,
         DeltaVolQuote::Fwd, DeltaVolQuote::AtmFwd, FxRrBfQuotes::SmileStrangle,
-        FxSettlementConvention(calendar, 2),
+        FxSettleConvention(calendar, 2),
         calendar, Following, true);
     volSurface->enableExtrapolation();
     Handle<BlackVolTermStructure> volHandle(volSurface);
@@ -760,7 +760,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceAtmVariance) {
             m.pillars[i], m.spot,
             ext::make_shared<FxRrBfQuotes>(m.atms[i], m.rrs[i], m.bfs[i], m.deltas, m.flyType),
             m.eurTs, m.usdTs, m.deltaType, m.atmType, Actual365Fixed(),
-            FxSettlementConvention(WeekendsOnly(), 2), m.today);
+            FxSettleConvention(WeekendsOnly(), 2), m.today);
         const Time T = m.dc.yearFraction(m.today, m.pillars[i]);
         BOOST_CHECK_SMALL(std::sqrt(m.surface->atmVar(m.pillars[i]) / T) - pillar.atmVol(), 1.0e-12);
     }
@@ -790,7 +790,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceReproducesPillars) {
             m.pillars[i], m.spot,
             ext::make_shared<FxRrBfQuotes>(m.atms[i], m.rrs[i], m.bfs[i], m.deltas, m.flyType),
             m.eurTs, m.usdTs, m.deltaType, m.atmType, Actual365Fixed(),
-            FxSettlementConvention(WeekendsOnly(), 2), m.today);
+            FxSettleConvention(WeekendsOnly(), 2), m.today);
         for (Real strike : {1.00, 1.05, 1.085, 1.12, 1.17})
             BOOST_CHECK_SMALL(m.surface->blackVariance(m.pillars[i], strike) - pillar.variance(strike),
                               1.0e-12);
@@ -831,7 +831,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceInTradingTime) {
     BOOST_CHECK_THROW(fxVarianceSurfaceNCP<TestSmileSection>(
                           m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.eurTs,
                           m.usdTs, m.timeTs, m.deltaType, m.atmType, m.flyType,
-                          FxSettlementConvention(WeekendsOnly(), 2), WeekendsOnly(), Following,
+                          FxSettleConvention(WeekendsOnly(), 2), WeekendsOnly(), Following,
                           true, 0.0),
                       Error);
 }
@@ -848,7 +848,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceEventBetweenPillars) {
             eventDate, timeOfDay, makeQuoteHandle(size))}));
     fxVarianceSurfaceNCP<TestSmileSection> surface(
         m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.eurTs, m.usdTs, timeTs,
-        m.deltaType, m.atmType, m.flyType, FxSettlementConvention(WeekendsOnly(), 2));
+        m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2));
 
     // the jump adds trading time at the rate variance accrues around it
     const Time te = (eventDate - m.today + timeOfDay) / 365.0, eps = 1.0e-7;
@@ -879,7 +879,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceShortAndLongTenors) {
         }
         return fxVarianceSurfaceNCP<TestSmileSection>(
             m.today, m.spot, pillars, atms, rrs, bfs, m.deltas, m.eurTs, m.usdTs, m.timeTs,
-            m.deltaType, m.atmType, m.flyType, FxSettlementConvention(WeekendsOnly(), 2));
+            m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2));
     };
 
     // between O/N and 1W at 7%, the std dev at the nodes is below 0.01
@@ -904,7 +904,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceTradingTimeReference) {
     auto surfaceWith = [&](const Handle<TradingTimeTermStructure>& timeTs) {
         return fxVarianceSurfaceNCP<TestSmileSection>(
             m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.eurTs, m.usdTs, timeTs,
-            m.deltaType, m.atmType, m.flyType, FxSettlementConvention(WeekendsOnly(), 2));
+            m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2));
     };
     const Date d(15, May, 2024);
 
@@ -927,7 +927,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceSettlementForward) {
     BOOST_TEST_MESSAGE("Testing that the variance surface uses settlement forwards throughout...");
 
     FxMarket m;
-    const FxSettlementConvention settlement(WeekendsOnly(), 2);
+    const FxSettleConvention settlement(WeekendsOnly(), 2);
 
     // at the pillars, the pillar sections' own forwards
     for (Size i = 0; i < m.pillars.size(); ++i) {
@@ -941,7 +941,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceSettlementForward) {
     // a Friday expiry delivers on Tuesday, two days later than the time
     // to expiry alone would give
     const Date friday(12, April, 2024);
-    const Date spotDate = settlement.spotDate(m.today), delivery = settlement.deliveryDate(friday);
+    const Date spotDate = settlement.valueDate(m.today), delivery = settlement.valueDate(friday);
     BOOST_CHECK_EQUAL(delivery, Date(16, April, 2024));
     const Real expected = m.spot->value() *
                           (m.eurTs->discount(delivery) / m.eurTs->discount(spotDate)) /
@@ -978,7 +978,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceNodeSpacing) {
     auto surfaceWith = [&](Time spacing) {
         return fxVarianceSurfaceNCP<TestSmileSection>(
             m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.eurTs, m.usdTs,
-            m.timeTs, m.deltaType, m.atmType, m.flyType, FxSettlementConvention(WeekendsOnly(), 2),
+            m.timeTs, m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2),
             WeekendsOnly(), Following, true, spacing);
     };
     BOOST_CHECK_NO_THROW(surfaceWith(2.0 / 365.0));
@@ -1024,7 +1024,7 @@ BOOST_AUTO_TEST_CASE(testFxSettlementForeignCurve) {
     // it follows its curves
     RelinkableHandle<YieldTermStructure> foreign(m.eurTs.currentLink());
     auto curve = ext::make_shared<FxSettlementForeignCurve>(foreign, m.usdTs,
-                                                           FxSettlementConvention(WeekendsOnly(), 2));
+                                                           FxSettleConvention(WeekendsOnly(), 2));
     const Time t1Y = m.surface->timeFromReference(Date(2, January, 2025));
     const Real before = curve->discount(t1Y);
     Flag flag;

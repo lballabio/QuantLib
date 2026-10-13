@@ -36,17 +36,60 @@ namespace QuantLib {
                                                           << foreignDiscount);
     }
 
-    BlackDeltaCalculator FxDeltaConverter::calculator(Option::Type type, Real stdDev) const {
-        return BlackDeltaCalculator(type, type_, spot_, domesticDiscount_, foreignDiscount_,
+    BlackDeltaCalculator FxDeltaConverter::calculator(Option::Type parity, Real stdDev) const {
+        return BlackDeltaCalculator(parity, type_, spot_, domesticDiscount_, foreignDiscount_,
                                     stdDev);
     }
 
-    Real FxDeltaConverter::delta(Option::Type type, Rate strike, Real stdDev) const {
-        return calculator(type, stdDev).deltaFromStrike(strike);
+    Real FxDeltaConverter::delta(Option::Type parity, Rate strike, Real stdDev) const {
+        return calculator(parity, stdDev).deltaFromStrike(strike);
     }
 
     Rate FxDeltaConverter::atmStrike(DeltaVolQuote::AtmType type, Real stdDev) const {
         return calculator(Option::Call, stdDev).atmStrike(type);
+    }
+
+    Rate FxDeltaConverter::peakCallStrike(Real stdDev) const {
+        QL_REQUIRE(premiumAdjusted(), "the call delta only peaks for premium-adjusted deltas");
+        QL_REQUIRE(stdDev > 0.0, "positive standard deviation required: " << stdDev);
+        // The premium-adjusted call delta is proportional to (K/F) N(d2);
+        // its derivative in K vanishes where w x N(d2) = n(d2), w = stdDev.
+        // h(d) = w x N(d) - n(d) falls to its minimum at d = -w, where it is
+        // negative, and rises to w after it, so it has a single root above -w.
+        const Real w = stdDev;
+        CumulativeNormalDistribution N;
+        NormalDistribution n;
+        auto h = [&](Real d) { return w * N(d) - n(d); };
+        const Real d2 = detail::findRoot(h, -w, 1.0, detail::Slope::Increasing, 1.0e-14);
+        // d2 = log(F/K)/w - w/2
+        return forward_ * std::exp(-w * d2 - 0.5 * w * w);
+    }
+
+    Rate FxDeltaConverter::strike(Option::Type parity, Real delta, Real stdDev) const {
+        QL_REQUIRE(stdDev > 0.0, "positive standard deviation required: " << stdDev);
+        QL_REQUIRE(delta * static_cast<Real>(parity) > 0.0,
+                   "option type and delta are incoherent: " << parity << ", " << delta);
+
+        if (!premiumAdjusted())
+            return calculator(parity, stdDev).strikeFromDelta(delta);
+
+        // Premium-adjusted deltas are solved for in log-strike.  Puts fall
+        // monotonically from 0 to -infinity as the strike grows; calls
+        // fall from their peak to 0 above the peak strike.
+        auto error = [&](Real x) { return this->delta(parity, std::exp(x), stdDev) - delta; };
+
+        Real start = std::log(forward_);
+        if (parity == Option::Call) {
+            const Rate kPeak = peakCallStrike(stdDev);
+            const Real maxDelta = this->delta(Option::Call, kPeak, stdDev);
+            QL_REQUIRE(delta <= maxDelta,
+                       "call delta " << delta << " not attainable: the largest premium-adjusted "
+                                     << "call delta at a standard deviation of " << stdDev << " is "
+                                     << maxDelta);
+            // the error is not negative at the peak, and falls above it
+            start = std::log(kPeak);
+        }
+        return std::exp(detail::findRoot(error, start, stdDev, detail::Slope::Decreasing, 1.0e-12));
     }
 
     Real FxDeltaConverter::callMinusPutDelta(Rate strike) const {
@@ -70,47 +113,8 @@ namespace QuantLib {
         return callMinusPutDelta(forward_);
     }
 
-    Rate FxDeltaConverter::peakCallStrike(Real stdDev) const {
-        QL_REQUIRE(premiumAdjusted(), "the call delta only peaks for premium-adjusted deltas");
-        QL_REQUIRE(stdDev > 0.0, "positive standard deviation required: " << stdDev);
-        // The premium-adjusted call delta is proportional to (K/F) N(d2);
-        // its derivative in K vanishes where w N(d2) = n(d2), w = stdDev.
-        // h(d) = w N(d) - n(d) falls to its minimum at d = -w, where it is
-        // negative, and rises to w after it, so it has a single root above -w.
-        const Real w = stdDev;
-        CumulativeNormalDistribution N;
-        NormalDistribution n;
-        auto h = [&](Real d) { return w * N(d) - n(d); };
-        const Real d2 = detail::findRoot(h, -w, 1.0, detail::Slope::Increasing, 1.0e-14);
-        // d2 = log(F/K)/w - w/2
-        return forward_ * std::exp(-w * d2 - 0.5 * w * w);
-    }
+    
 
-    Rate FxDeltaConverter::strike(Option::Type type, Real delta, Real stdDev) const {
-        QL_REQUIRE(stdDev > 0.0, "positive standard deviation required: " << stdDev);
-        QL_REQUIRE(delta * static_cast<Real>(type) > 0.0,
-                   "option type and delta are incoherent: " << type << ", " << delta);
-
-        if (!premiumAdjusted())
-            return calculator(type, stdDev).strikeFromDelta(delta);
-
-        // Premium-adjusted deltas are solved for in log-strike.  Puts fall
-        // monotonically from 0 to -infinity as the strike grows; calls
-        // fall from their peak to 0 above the peak strike.
-        auto error = [&](Real x) { return this->delta(type, std::exp(x), stdDev) - delta; };
-
-        Real start = std::log(forward_);
-        if (type == Option::Call) {
-            const Rate kPeak = peakCallStrike(stdDev);
-            const Real maxDelta = this->delta(Option::Call, kPeak, stdDev);
-            QL_REQUIRE(delta <= maxDelta,
-                       "call delta " << delta << " not attainable: the largest premium-adjusted "
-                                     << "call delta at a standard deviation of " << stdDev
-                                     << " is " << maxDelta);
-            // the error is not negative at the peak, and falls above it
-            start = std::log(kPeak);
-        }
-        return std::exp(detail::findRoot(error, start, stdDev, detail::Slope::Decreasing, 1.0e-12));
-    }
+    
 
 }

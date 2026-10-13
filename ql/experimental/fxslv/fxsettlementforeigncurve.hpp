@@ -62,7 +62,7 @@ namespace QuantLib {
       public:
         FxSettlementForeignCurve(Handle<YieldTermStructure> foreignCurve,
                                  Handle<YieldTermStructure> domesticCurve,
-                                 FxSettlementConvention settlement);
+                                 FxSettleConvention settlement);
 
         //! Forward for an option expiring at the given time, over spot.
         Real forwardOverSpot(Time t) const;
@@ -72,7 +72,7 @@ namespace QuantLib {
 
       private:
         Handle<YieldTermStructure> foreignCurve_;
-        FxSettlementConvention settlement_;
+        FxSettleConvention settlement_;
     };
 
 }

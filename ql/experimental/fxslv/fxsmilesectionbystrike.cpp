@@ -37,7 +37,7 @@ namespace QuantLib {
                                                    DeltaVolQuote::DeltaType deltaType,
                                                    DeltaVolQuote::AtmType atmType,
                                                    const DayCounter& dayCounter,
-                                                   const FxSettlementConvention& settlement,
+                                                   const FxSettleConvention& settlement,
                                                    const Date& referenceDate)
     : FxSmileSection(exerciseDate, spot, quotes,
                      foreignDiscount, domesticDiscount,
@@ -123,7 +123,7 @@ namespace QuantLib {
                                                    DeltaVolQuote::DeltaType deltaType,
                                                    DeltaVolQuote::AtmType atmType,
                                                    const DayCounter& dayCounter,
-                                                   const FxSettlementConvention& settlement,
+                                                   const FxSettleConvention& settlement,
                                                    const Date& referenceDate)
     : FxSmileSectionByStrike(exerciseDate, spot, quotes,
                              foreignDiscount, domesticDiscount,
@@ -181,7 +181,7 @@ namespace QuantLib {
                                            DeltaVolQuote::DeltaType deltaType,
                                            DeltaVolQuote::AtmType atmType,
                                            const DayCounter& dayCounter,
-                                           const FxSettlementConvention& settlement,
+                                           const FxSettleConvention& settlement,
                                            const Date& referenceDate)
     : FxSmileSectionByStrike(exerciseDate, spot, quotes,
                              foreignDiscount, domesticDiscount,
@@ -241,7 +241,7 @@ namespace QuantLib {
                                          DeltaVolQuote::DeltaType deltaType,
                                          DeltaVolQuote::AtmType atmType,
                                          const DayCounter& dayCounter,
-                                         const FxSettlementConvention& settlement,
+                                         const FxSettleConvention& settlement,
                                          const Date& referenceDate)
     : FxSmileSectionByStrike(exerciseDate, spot, quotes,
                              foreignDiscount, domesticDiscount,

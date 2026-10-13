@@ -37,7 +37,7 @@ namespace QuantLib {
                                                  DeltaVolQuote::DeltaType deltaType,
                                                  DeltaVolQuote::AtmType atmType,
                                                  const DayCounter& dayCounter,
-                                                 const FxSettlementConvention& settlement,
+                                                 const FxSettleConvention& settlement,
                                                  const Date& referenceDate)
     : FxSmileSection(exerciseDate, spot, quotes,                     
                      foreignDiscount, domesticDiscount,
@@ -130,12 +130,11 @@ namespace QuantLib {
         // delta at a fixed strike lies in a range independent of the vol.
         const FxDeltaConverter conv = deltaConverter();
         const Real sqrtT = std::sqrt(exerciseTime());
-        const auto range = conv.putDeltaRange(strike);
-        const Real dmin = range.first;
+        const Real dmin = conv.putDeltaLimit(strike);
         // The upper end is 0 rather than -epsilon: a deep out-of-the-money
         // put can have a delta smaller in magnitude than epsilon, and the
         // fixed-point form never needs to invert delta -> strike at 0.
-        const Real dmax = range.second;
+        const Real dmax = 0.0;
         Real d0 = conv.delta(Option::Put, strike, referenceVol() * sqrtT);
         if (!(d0 > dmin && d0 < dmax))
             d0 = 0.5 * (dmin + dmax);
@@ -173,7 +172,7 @@ namespace QuantLib {
                                                  DeltaVolQuote::DeltaType deltaType,
                                                  DeltaVolQuote::AtmType atmType,
                                                  const DayCounter& dayCounter,
-                                                 const FxSettlementConvention& settlement,
+                                                 const FxSettleConvention& settlement,
                                                  const Date& referenceDate)
     : FxSmileSectionByDelta(exerciseDate, spot, quotes,
                             foreignDiscount, domesticDiscount,

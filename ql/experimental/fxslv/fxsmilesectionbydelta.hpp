@@ -40,7 +40,7 @@ namespace QuantLib {
                               DeltaVolQuote::DeltaType deltaType,
                               DeltaVolQuote::AtmType atmType,
                               const DayCounter& dayCounter,
-                              const FxSettlementConvention& settlement,
+                              const FxSettleConvention& settlement,
                               const Date& referenceDate = Date());
 
         //! Time mode (see FxSmileSection).
@@ -98,7 +98,7 @@ namespace QuantLib {
                                 DeltaVolQuote::DeltaType deltaType,
                                 DeltaVolQuote::AtmType atmType,
                                 const DayCounter& dayCounter,
-                                const FxSettlementConvention& settlement,
+                                const FxSettleConvention& settlement,
                                 const Date& referenceDate = Date());
 
         //! Time mode (see FxSmileSection).

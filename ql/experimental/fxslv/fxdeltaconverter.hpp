@@ -18,7 +18,7 @@
 */
 
 /*! \file fxdeltaconverter.hpp
-    \brief Strike and delta conversions in an FX delta convention
+    \brief Strike and delta conversions for different FX delta conventions
 */
 
 #ifndef quantlib_fx_delta_converter_hpp
@@ -31,14 +31,14 @@
 
 namespace QuantLib {
 
-    //! Strike and delta conversions in an FX delta convention
+    //! Strike and delta conversions by various FX delta conventions
     /*! Holds the market state the conversions need (spot and the
-        discount factors from spot to delivery) and the delta type, and
-        converts at a given total volatility \f$ \sigma\sqrt{\tau} \f$.
-        It knows nothing of a smile: conversions along a smile, where the
-        vol depends on the strike, belong to FxSmileSection.
+        discount factors from spot to delivery) and the delta convention.
+        Converts at a given total volatility \f$ \sigma\sqrt{\tau} \f$.
+        These are algebraic identities independent of smile. Smile logic
+        belongs to FxSmileSection.
 
-        Two identities hold whatever the vol, with \f$ D_f \f$ the
+        Two identities hold independent of vol, with \f$ D_f \f$ the
         foreign discount factor:
         - call delta minus put delta at a strike is \f$ D_f \f$
           (spot), 1 (forward), \f$ D_f K/F \f$ (premium-adjusted spot)
@@ -46,9 +46,9 @@ namespace QuantLib {
         - the put delta at a strike lies between minus that and 0.
 
         Premium-adjusted call deltas are not monotonic in strike: they
-        peak, so below the peak strike every call delta is attained
-        twice and higher deltas not at all.  Strikes are those above the
-        peak, as quoted in the market.
+        peak at an ITM strike (so below ATM) and below the peak strike 
+        premium adjusted call deltas DECREASE as strike moves lower. 
+        Strikes are those above the peak, as quoted in the market.
     */
     class FxDeltaConverter {
       public:
@@ -60,13 +60,13 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         DeltaVolQuote::DeltaType type() const { return type_; }
-        bool premiumAdjusted() const {
-            return type_ == DeltaVolQuote::PaSpot || type_ == DeltaVolQuote::PaFwd;
-        }
         Real spot() const { return spot_; }
         Real forward() const { return forward_; }
         DiscountFactor domesticDiscount() const { return domesticDiscount_; }
         DiscountFactor foreignDiscount() const { return foreignDiscount_; }
+        bool premiumAdjusted() const {
+            return type_ == DeltaVolQuote::PaSpot || type_ == DeltaVolQuote::PaFwd;
+        }
         //@}
 
         //! The same market in another delta convention.
@@ -77,18 +77,18 @@ namespace QuantLib {
         //! \name Conversions at a given total vol
         //@{
         //! Delta of the option at the given strike.
-        Real delta(Option::Type type, Rate strike, Real stdDev) const;
+        Real delta(Option::Type parity, Rate strike, Real stdDev) const;
+        //! ATM strike under the given convention.
+        Rate atmStrike(DeltaVolQuote::AtmType type, Real stdDev) const;
+        //! Strike at which the premium-adjusted call delta peaks at this vol.
+        Rate peakCallStrike(Real stdDev) const;
         //! Strike of the option with the given delta.
         /*! For premium-adjusted calls, the strike above the peak; fails
             with a clear message if the delta is above the peak delta at
             this vol.  Premium-adjusted put deltas below \f$ -D_f \f$
             (resp. -1), i.e. in-the-money puts, are handled too.
         */
-        Rate strike(Option::Type type, Real delta, Real stdDev) const;
-        //! ATM strike under the given convention.
-        Rate atmStrike(DeltaVolQuote::AtmType type, Real stdDev) const;
-        //! Strike at which the premium-adjusted call delta peaks at this vol.
-        Rate peakCallStrike(Real stdDev) const;
+        Rate strike(Option::Type parity, Real delta, Real stdDev) const;
         //@}
 
         //! \name Identities at any vol
@@ -96,8 +96,8 @@ namespace QuantLib {
         //! Call delta minus put delta at the given strike.
         Real callMinusPutDelta(Rate strike) const;
         //! Range of the put delta at the given strike, whatever the vol.
-        std::pair<Real, Real> putDeltaRange(Rate strike) const {
-            return {-callMinusPutDelta(strike), 0.0};
+        Real putDeltaLimit(Rate strike) const {
+            return -callMinusPutDelta(strike);
         }
         //! Supremum of the call delta, attained at zero strike, for unadjusted types.
         /*! For premium-adjusted types it depends on the vol at each
@@ -107,7 +107,7 @@ namespace QuantLib {
         //@}
 
       private:
-        BlackDeltaCalculator calculator(Option::Type type, Real stdDev) const;
+        BlackDeltaCalculator calculator(Option::Type parity, Real stdDev) const;
 
         DeltaVolQuote::DeltaType type_;
         Real spot_, forward_;

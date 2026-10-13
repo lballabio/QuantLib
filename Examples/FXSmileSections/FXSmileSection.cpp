@@ -180,7 +180,7 @@ int main(int, char*[]) {
         // Settlement: generic pair, weekends-only calendar, T+2 spot lag.
         // For a real pair use the joint calendar of both currencies (and USD
         // if the pair settles through USD) and the pair's spot lag.
-        FxSettlementConvention   settlement(WeekendsOnly(), 2);
+        FxSettleConvention   settlement(WeekendsOnly(), 2);
 
         // Market quotes, shared by all the sections below
         auto smileQuotes = ext::make_shared<FxRrBfQuotes>(v_atm, rrs, bfs, deltas, flyType);

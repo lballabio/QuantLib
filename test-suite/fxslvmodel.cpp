@@ -131,7 +131,7 @@ namespace {
             eurTs = Handle<YieldTermStructure>(
                 ext::make_shared<FlatForward>(0, NullCalendar(), 0.0400, dc));
             eurFwdTs = Handle<YieldTermStructure>(ext::make_shared<FxSettlementForeignCurve>(
-                eurTs, usdTs, FxSettlementConvention(calendar, 2)));
+                eurTs, usdTs, FxSettleConvention(calendar, 2)));
 
             spotSQ = ext::make_shared<SimpleQuote>(1.0850);
             spot   = Handle<Quote>(spotSQ);
@@ -205,7 +205,7 @@ namespace {
                 today, spot, pillars, atms, rrs, bfs, deltas,
                 eurTs, usdTs, timeTs,
                 deltaType, atmType, flyType,
-                FxSettlementConvention(calendar, 2),
+                FxSettleConvention(calendar, 2),
                 calendar, Following, true);
             volSurface->enableExtrapolation();
             volSurfaceHandle = Handle<BlackVolTermStructure>(volSurface);

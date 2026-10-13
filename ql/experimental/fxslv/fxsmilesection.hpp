@@ -89,7 +89,7 @@ namespace QuantLib {
                        DeltaVolQuote::DeltaType deltaType,
                        DeltaVolQuote::AtmType atmType,
                        const DayCounter& dayCounter,
-                       const FxSettlementConvention& settlement,
+                       const FxSettleConvention& settlement,
                        const Date& referenceDate = Date());
 
         //! Time mode.
@@ -140,7 +140,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> domesticDiscount() const { return domesticDiscount_; }
 
         //! Settlement convention; empty for sections built in time mode.
-        const std::optional<FxSettlementConvention>& settleConvention() const { return settleConvention_; }
+        const std::optional<FxSettleConvention>& settleConvention() const { return settleConvention_; }
 
         Date spotDate() const;      //!< Spot date of the reference date (date mode only).
         Date deliveryDate() const;  //!< Delivery date of the expiry (date mode only).
@@ -243,7 +243,7 @@ namespace QuantLib {
         ext::shared_ptr<FxSmileQuotes> smileQuotes_;
         Handle<YieldTermStructure> foreignDiscount_;
         Handle<YieldTermStructure> domesticDiscount_;
-        std::optional<FxSettlementConvention> settleConvention_;
+        std::optional<FxSettleConvention> settleConvention_;
         mutable Date spotDate_, deliveryDate_;
 
       protected:

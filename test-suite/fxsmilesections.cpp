@@ -75,7 +75,7 @@ namespace {
         DeltaVolQuote::DeltaType deltaType;
         DeltaVolQuote::AtmType atmType;
         FxRrBfQuotes::FlyType flyType;
-        FxSettlementConvention settlement{WeekendsOnly(), 2};
+        FxSettleConvention settlement{WeekendsOnly(), 2};
 
         ext::shared_ptr<FxSmileQuotes> rrBfQuotes() const {
             return ext::make_shared<FxRrBfQuotes>(
@@ -630,8 +630,8 @@ BOOST_AUTO_TEST_CASE(testDeltaConverter) {
                 const Real put = conv.delta(Option::Put, K, w);
                 // parity, and the put delta within its range
                 BOOST_CHECK_SMALL(call - put - conv.callMinusPutDelta(K), 1.0e-14);
-                const auto range = conv.putDeltaRange(K);
-                BOOST_CHECK(put >= range.first && put <= range.second);
+                const Real minPutDelta = conv.putDeltaLimit(K);
+                BOOST_CHECK(put >= minPutDelta && put <= 0.0);
                 // the same deltas as BlackDeltaCalculator
                 BOOST_CHECK_SMALL(call - BlackDeltaCalculator(Option::Call, dt, spot, ddom, dfor, w)
                                              .deltaFromStrike(K), 1.0e-15);
@@ -924,16 +924,16 @@ namespace {
 BOOST_AUTO_TEST_CASE(testSettlementConventionDates) {
     BOOST_TEST_MESSAGE("Testing FX spot and delivery dates...");
 
-    FxSettlementConvention conv(WeekendsOnly(), 2);
+    FxSettleConvention conv(WeekendsOnly(), 2);
     // Tuesday -> Thursday
-    BOOST_CHECK_EQUAL(conv.spotDate(Date(2, January, 2024)), Date(4, January, 2024));
+    BOOST_CHECK_EQUAL(conv.valueDate(Date(2, January, 2024)), Date(4, January, 2024));
     // Thursday -> Monday: the lag skips the weekend
-    BOOST_CHECK_EQUAL(conv.deliveryDate(Date(2, January, 2025)), Date(6, January, 2025));
+    BOOST_CHECK_EQUAL(conv.valueDate(Date(2, January, 2025)), Date(6, January, 2025));
     // T+1 pairs
-    BOOST_CHECK_EQUAL(FxSettlementConvention(WeekendsOnly(), 1).spotDate(Date(5, January, 2024)),
+    BOOST_CHECK_EQUAL(FxSettleConvention(WeekendsOnly(), 1).valueDate(Date(5, January, 2024)),
                       Date(8, January, 2024));
 
-    BOOST_CHECK_THROW(FxSettlementConvention(Calendar(), 2), Error);
+    BOOST_CHECK_THROW(FxSettleConvention(Calendar(), 2), Error);
 }
 
 BOOST_AUTO_TEST_CASE(testDateModeForwardUsesSpotToDelivery) {
@@ -965,7 +965,7 @@ BOOST_AUTO_TEST_CASE(testDateModeIgnoresCurveReferenceDate) {
                        "reference dates...");
 
     MarketData md;
-    const Date spotDate = md.settlement.spotDate(md.todaysDate);
+    const Date spotDate = md.settlement.valueDate(md.todaysDate);
     // same continuously-compounded rates, but curves starting on the spot date
     Handle<YieldTermStructure> forFromSpot(
         ext::make_shared<FlatForward>(spotDate, 0.05, Actual365Fixed()));
