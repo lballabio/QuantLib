@@ -44,6 +44,8 @@ namespace QuantLib {
     */
     class FxSmileTarget {
       public:
+        // polymorphic base class where conrete instances are held as
+        // pointers to base class. virtual destructor to preent leaks
         virtual ~FxSmileTarget() = default;
 
         //! Residual of the section's current smile, in vol units.
@@ -80,6 +82,7 @@ namespace QuantLib {
     */
     class FxDeltaVolTarget : public FxSmileTarget {
       public:
+        // single argument construtor. to avoid implicit conversion make it explicit
         explicit FxDeltaVolTarget(Handle<DeltaVolQuote> quote) : quote_(std::move(quote)) {}
         Real residual(const FxSmileSection& section) const override;
         //! \f$ n(d_+) \f$ at the quote's strike and vol.
@@ -135,7 +138,7 @@ namespace QuantLib {
         section parameterises it. An FxSmileQuotes object can store market
         quotes as RRs/BFs or a set of DeltaVolQuotes. When calibrating a 
         smile section, these market quotes are converted into targets for
-        the calibration to satisfa; market conventions on smile and broker
+        the calibration to satisfy; market conventions on smile and broker
         strangles are handled here, providing a uniform interface to
         FxSmileSection, which fits its smile to the targets in one
         least-squares problem.
@@ -144,11 +147,14 @@ namespace QuantLib {
         smile section only needs to register with this object.
 
         Quantlib only provides support for DeltaVolQuotes so this class
-        handles both DeltaVol quotes and RR/BF quotes, espscially for
+        handles both DeltaVol quotes and RR/BF quotes, espescially for
         broker strangles.
     */
     class FxSmileQuotes : public Observer, public Observable {
       public:
+        // polymrphic base class so make destructor virtual
+        // Observer alerady has a virtual destructor so doesnt
+        // do much but good practice!
         ~FxSmileQuotes() override = default;
 
         //! \name Observer interface
@@ -240,7 +246,8 @@ namespace QuantLib {
     };
 
 
-    //! A delta+vol quote - basically a wrapper around DeltaVolQuote
+    //! A set of simple delta-vol quotes - so basically a wrapper around 
+    //! std::vector<Handle<DeltaVolQuote>>
     /*! The quotes are fitted as given, each in its own delta and ATM
         conventions (see FxDeltaVolTarget); the ATM quote, if any, is
         fitted like the others.

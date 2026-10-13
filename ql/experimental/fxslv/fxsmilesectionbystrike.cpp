@@ -60,7 +60,7 @@ namespace QuantLib {
     Volatility FxSmileSectionByStrike::volByStrike(Rate strike) const 
     {
         calculate();
-        return volByStrikeImpl(strike, fwd_, exerciseTime(), params_);
+        return volByStrikeImpl(strike, fwd_, params_);
     }
 
     Volatility FxSmileSectionByStrike::volByDelta(Real delta, Option::Type parity) const 
@@ -72,7 +72,6 @@ namespace QuantLib {
     Real FxSmileSectionByStrike::deltaByStrike(Rate strike, Option::Type parity) const 
     {
         calculate();
-
         return deltaConverter().delta(parity, strike,
                                        volByStrike(strike) * std::sqrt(exerciseTime()));
     }
@@ -160,10 +159,10 @@ namespace QuantLib {
 
     Volatility FxPolynomialSmileSection::volByStrikeImpl(Rate strike,
                                                          Real fwd,
-                                                         Time tau,
                                                          const std::vector<Real>& params) const
     {
         CumulativeNormalDistribution f;
+        Time tau = exerciseTime();
         Real atmfVol = std::exp(params[0] / 4. + params[1] / 2. + params[2]);
         Real x = f(std::log(fwd / strike) / (atmfVol * std::sqrt(tau)));
         return std::exp(params[0] * x * x + params[1] * x + params[2]);
@@ -221,10 +220,9 @@ namespace QuantLib {
 
     Volatility FxSabrSmileSection::volByStrikeImpl(Rate strike,
                                                    Real fwd,
-                                                   Time tau,
                                                    const std::vector<Real>& params) const
     {
-        return unsafeShiftedSabrVolatility(strike, fwd, tau,
+        return unsafeShiftedSabrVolatility(strike, fwd, exerciseTime(),
                                            params[0], 1.0, params[1], params[2],
                                            0.0, volatilityType());
     }
@@ -300,7 +298,6 @@ namespace QuantLib {
 
     Volatility FxSviSmileSection::volByStrikeImpl(Rate strike,
                                                   Real fwd,
-                                                  Time tau,
                                                   const std::vector<Real>& params) const
     {
         Real k = std::log(strike / fwd);
@@ -308,7 +305,7 @@ namespace QuantLib {
         // positive for valid parameters, which the fit guarantees
         Real totalVar = params[0] + params[1] * (params[2] * km +
                         std::sqrt(km * km + params[4] * params[4]));
-        return std::sqrt(totalVar / tau);
+        return std::sqrt(totalVar / exerciseTime());
     }
     //@}
 

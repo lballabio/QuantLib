@@ -109,7 +109,7 @@ namespace QuantLib {
         }
 
         // got vol as a function of delta
-        return volByDeltaImpl(delta, fwd_, exerciseTime(), params_);
+        return volByDeltaImpl(delta, fwd_, params_);
     }
 
     Rate FxSmileSectionByDelta::strikeByDelta(Real delta, Option::Type parity) const 
@@ -211,7 +211,6 @@ namespace QuantLib {
 
     Volatility FxQuadraticSmileSection::volByDeltaImpl(Real delta,
                                                        Real fwd,
-                                                       Time tau,
                                                        const std::vector<Real>& params) const
     {
         return params[0] * delta * delta + params[1] * delta + params[2];

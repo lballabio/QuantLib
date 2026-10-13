@@ -703,7 +703,7 @@ namespace {
             return guess;
         }
       private:
-        Volatility volByStrikeImpl(Real strike, Real fwd, Time, const std::vector<Real>& p) const override {
+        Volatility volByStrikeImpl(Real strike, Real fwd, const std::vector<Real>& p) const override {
             const Real k = std::log(strike / fwd);
             if (std::fabs(k) > 0.5)
                 return std::numeric_limits<Real>::quiet_NaN();

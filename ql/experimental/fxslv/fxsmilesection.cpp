@@ -75,10 +75,10 @@ namespace QuantLib {
 
     namespace {
 
-        void checkCurveCovers(const Handle<YieldTermStructure>& curve,
-                              const std::string& name,
-                              const Date& spotDate,
-                              const Date& deliveryDate) {
+        void checkCurveValidity(const Handle<YieldTermStructure>& curve,
+                                const std::string& name,
+                                const Date& spotDate,
+                                const Date& deliveryDate) {
             QL_REQUIRE(!curve.empty(), name << " discount curve is empty");
             QL_REQUIRE(curve->referenceDate() <= spotDate,
                        name << " discount curve reference date (" << curve->referenceDate()
@@ -102,152 +102,9 @@ namespace QuantLib {
         return deliveryDate_;
     }
 
-    void FxSmileSection::calculateForward() const {
-        if (settleConvention_) {
-            // Date mode: rates run from the spot date of the trade date to
-            // the delivery date of the expiry.  Taking ratios of discount
-            // factors by date makes the result independent of the curves'
-            // own reference dates and day counters.
-            spotDate_ = settleConvention_->valueDate(referenceDate());
-            deliveryDate_ = settleConvention_->valueDate(exerciseDate());
-            checkCurveCovers(foreignDiscount_, "foreign", spotDate_, deliveryDate_);
-            checkCurveCovers(domesticDiscount_, "domestic", spotDate_, deliveryDate_);
-            dfor_ = foreignDiscount_->discount(deliveryDate_) / foreignDiscount_->discount(spotDate_);
-            ddom_ = domesticDiscount_->discount(deliveryDate_) / domesticDiscount_->discount(spotDate_);
-        } else {
-            // Time mode: the expiry time is read on the curves' time axis,
-            // which is only well defined if both curves share it.
-            QL_REQUIRE(!foreignDiscount_.empty() && !domesticDiscount_.empty(), "empty discount curve");
-            QL_REQUIRE(foreignDiscount_->referenceDate() == domesticDiscount_->referenceDate(),
-                       "time-based FX smile section requires both discount curves to have the "
-                       "same reference date: foreign "
-                           << foreignDiscount_->referenceDate() << ", domestic "
-                           << domesticDiscount_->referenceDate());
-            QL_REQUIRE(foreignDiscount_->dayCounter() == domesticDiscount_->dayCounter(),
-                       "time-based FX smile section requires both discount curves to have the "
-                       "same day counter: foreign "
-                           << foreignDiscount_->dayCounter() << ", domestic "
-                           << domesticDiscount_->dayCounter());
-            dfor_ = foreignDiscount_->discount(exerciseTime());
-            ddom_ = domesticDiscount_->discount(exerciseTime());
-        }
-        fwd_ = spot_->value() * dfor_ / ddom_;
-    }
-
-    void FxSmileSection::calculateAtm() const {
-        // Called from performCalculations() after the fit.  The ATM strike
-        // is the fixed point K = K_atm(vol(K)); search in log-strike from
-        // the forward, in steps of one reference standard deviation, widening as
-        // needed, so that far-away strikes where a smile may be undefined
-        // are only visited if the root is really out there.
-        const FxDeltaConverter conv = deltaConverter();
-        const Real stdDev = referenceVol() * std::sqrt(exerciseTime());
-
-        auto atmStrikeError = [&](Real logStrike) {
-            const Real strike = std::exp(logStrike);
-            const Volatility v = volByStrike(strike);
-            const Real kAtm = conv.atmStrike(atmType(), v * std::sqrt(exerciseTime()));
-            return logStrike - std::log(kAtm);
-        };
-
-        Brent solver;
-        solver.setMaxEvaluations(1000);
-        const Rate k = std::exp(solver.solve(atmStrikeError, 1.0e-12, std::log(fwd_), stdDev));
-
-        atmStrike_ = k;
-        atmVol_ = volByStrike(k);
-    }
-
-    void FxSmileSection::stripDeltaVolQuotes() const {
-        // No ATM vol until the new smile is fitted; the fit is seeded from
-        // referenceVol(), so the same quotes always give the same smile.
-        atmVol_ = Null<Volatility>();
-        atmStrike_ = Null<Real>();
-        calibrationResiduals_ = Array();
-
-        // The quotes drive the fit; check they actually fitted the section,
-        // otherwise it would silently keep a previous calibration.
-        calibrating_ = true;
-        fitRequested_ = false;
-        try {
-            smileQuotes_->calibrate(*this);
-        } catch (...) {
-            calibrating_ = false;
-            throw;
-        }
-        calibrating_ = false;
-        QL_ENSURE(fitRequested_, "smile quotes did not fit the smile section");
-
-        // the calibrated atm might differ from the quoted one, so take it
-        // from the calibrated smile
-        calculateAtm();
-    }
-
-    void FxSmileSection::fitToTargets(FxSmileTargets targets) const {
-        QL_REQUIRE(calibrating_, "smile section can only be fitted while its quotes calibrate it");
-        QL_REQUIRE(!targets.empty(), "no calibration targets");
-        targets_ = std::move(targets);
-        calibrate();
-
-        // measure the fit the same way whatever the model's calibrate() did
-        calibrationResiduals_ = Array(targets_.size());
-        for (Size i = 0; i < targets_.size(); ++i) {
-            calibrationResiduals_[i] = targets_[i]->residual(*this);
-            QL_ENSURE(std::isfinite(calibrationResiduals_[i]),
-                      "calibrated smile gives a non-finite residual for target " << i);
-        }
-        fitRequested_ = true;
-    }
-
-    const Array& FxSmileSection::calibrationResiduals() const {
+    FxDeltaConverter FxSmileSection::deltaConverter() const {
         calculate();
-        return calibrationResiduals_;
-    }
-
-    Real FxSmileSection::calibrationError() const {
-        calculate();
-        Real sum = 0.0;
-        for (Real r : calibrationResiduals_)
-            sum += r * r;
-        return std::sqrt(sum / static_cast<Real>(calibrationResiduals_.size()));
-    }
-
-    void FxSmileSection::calibrate() const {
-        // Least squares over the model parameters: each evaluation loads
-        // the trial parameters, so the targets measure the trial smile
-        // through the section's own functions.  Residuals are weighted by
-        // vega, so that errors count roughly as price errors.
-        Array weights(targets_.size());
-        for (Size i = 0; i < targets_.size(); ++i) {
-            weights[i] = targets_[i]->weight(*this);
-            QL_REQUIRE(weights[i] > 0.0 && std::isfinite(weights[i]),
-                       "calibration target " << i << " has an invalid weight: " << weights[i]);
-        }
-
-        auto residuals = [&](const Array& params) -> Array {
-            setParams(params);
-            Array r(targets_.size());
-            for (Size i = 0; i < targets_.size(); ++i)
-                r[i] = weights[i] * targets_[i]->residual(*this);
-            return r;
-        };
-
-        SimpleCostFunction<decltype(residuals)> costFunction(residuals);
-        NoConstraint constraint;
-        Problem problem(costFunction, constraint, initialParams());
-        LevenbergMarquardt lm;
-        EndCriteria endCriteria(1000, 100, 1.0e-12, 1.0e-12, 1.0e-12);
-        const EndCriteria::Type result = lm.minimize(problem, endCriteria);
-        // MINPACK's "cannot reduce further" (FunctionEpsilonTooSmall) is a
-        // converged fit too, typically an exact one
-        QL_ENSURE(EndCriteria::succeeded(result) || result == EndCriteria::FunctionEpsilonTooSmall,
-                  "smile calibration did not converge: " << result);
-
-        setParams(problem.currentValue());
-    }
-
-    Real FxSmileSection::volResidual(Rate strike, Volatility vol) const {
-        return volByStrike(strike) - vol;
+        return FxDeltaConverter(deltaType_, spot_->value(), ddom_, dfor_);
     }
 
     Rate FxSmileSection::peakCallDeltaStrike() const {
@@ -260,7 +117,8 @@ namespace QuantLib {
             const Rate strike = std::exp(x);
             const Volatility vol = volByStrike(strike);
             QL_REQUIRE(std::isfinite(vol) && vol >= 0.0,
-                       "smile not defined at strike " << strike << " (vol " << vol
+                       "smile not defined at strike "
+                           << strike << " (vol " << vol
                            << ") while looking for the peak premium-adjusted call delta");
             return conv.delta(Option::Call, strike, vol * sqrtT);
         };
@@ -322,14 +180,21 @@ namespace QuantLib {
         return conv.delta(Option::Call, strike, volByStrike(strike) * std::sqrt(exerciseTime()));
     }
 
-    FxDeltaConverter FxSmileSection::deltaConverter() const {
+    const Array& FxSmileSection::calibrationResiduals() const {
         calculate();
-        return FxDeltaConverter(deltaType_, spot_->value(), ddom_, dfor_);
+        return calibrationResiduals_;
     }
 
-    void FxSmileSection::performCalculations() const {
-        calculateForward();
-        stripDeltaVolQuotes();
+    Real FxSmileSection::calibrationError() const {
+        calculate();
+        Real sum = 0.0;
+        for (Real r : calibrationResiduals_)
+            sum += r * r;
+        return std::sqrt(sum / static_cast<Real>(calibrationResiduals_.size()));
+    }
+
+    Real FxSmileSection::volResidual(Rate strike, Volatility vol) const {
+        return volByStrike(strike) - vol;
     }
 
     Real FxSmileSection::volDerivative(Rate strike) const {
@@ -386,8 +251,144 @@ namespace QuantLib {
         const Real h = 1.0e-4 * k;
         QL_ENSURE(exerciseProbability(k + h) <= exerciseProbability(k - h) + 1.0e-12,
                   "negative density at moneyness " << k
-                      << ": the smile has butterfly arbitrage there");
+                                                   << ": the smile has butterfly arbitrage there");
         return k;
+    }
+
+    void FxSmileSection::calculateForward() const {
+        if (settleConvention_) {
+            // Date mode: rates run from the spot date of the trade date to
+            // the delivery date of the expiry. Taking ratios of discount
+            // factors by date makes the result independent of the curves'
+            // own reference dates and day counters.
+            spotDate_ = settleConvention_->valueDate(referenceDate());
+            deliveryDate_ = settleConvention_->valueDate(exerciseDate());
+            checkCurveValidity(foreignDiscount_, "foreign", spotDate_, deliveryDate_);
+            checkCurveValidity(domesticDiscount_, "domestic", spotDate_, deliveryDate_);
+            dfor_ = foreignDiscount_->discount(deliveryDate_) / foreignDiscount_->discount(spotDate_);
+            ddom_ = domesticDiscount_->discount(deliveryDate_) / domesticDiscount_->discount(spotDate_);
+        } else {
+            // Time mode: the expiry time is read on the curves' time axis,
+            // which is only well defined if both curves share it.
+            QL_REQUIRE(!foreignDiscount_.empty() && !domesticDiscount_.empty(), "empty discount curve");
+            QL_REQUIRE(foreignDiscount_->referenceDate() == domesticDiscount_->referenceDate(),
+                       "time-based FX smile section requires both discount curves to have the "
+                       "same reference date: foreign "
+                           << foreignDiscount_->referenceDate() << ", domestic "
+                           << domesticDiscount_->referenceDate());
+            QL_REQUIRE(foreignDiscount_->dayCounter() == domesticDiscount_->dayCounter(),
+                       "time-based FX smile section requires both discount curves to have the "
+                       "same day counter: foreign "
+                           << foreignDiscount_->dayCounter() << ", domestic "
+                           << domesticDiscount_->dayCounter());
+            dfor_ = foreignDiscount_->discount(exerciseTime());
+            ddom_ = domesticDiscount_->discount(exerciseTime());
+        }
+        fwd_ = spot_->value() * dfor_ / ddom_;
+    }
+
+    void FxSmileSection::calculateAtm() const {
+        // Called from performCalculations() after the fit.  The ATM strike
+        // is the fixed point K = K_atm(vol(K)); search in log-strike from
+        // the forward, in steps of one reference standard deviation, widening as
+        // needed, so that far-away strikes where a smile may be undefined
+        // are only visited if the root is really out there.
+        const FxDeltaConverter conv = deltaConverter();
+        const Real stdDev = referenceVol() * std::sqrt(exerciseTime());
+
+        auto atmStrikeError = [&](Real logStrike) {
+            const Real strike = std::exp(logStrike);
+            const Volatility v = volByStrike(strike);
+            const Real kAtm = conv.atmStrike(atmType(), v * std::sqrt(exerciseTime()));
+            return logStrike - std::log(kAtm);
+        };
+
+        Brent solver;
+        solver.setMaxEvaluations(1000);
+        const Rate k = std::exp(solver.solve(atmStrikeError, 1.0e-12, std::log(fwd_), stdDev));
+
+        atmStrike_ = k;
+        atmVol_ = volByStrike(k);
+    }
+
+    void FxSmileSection::stripDeltaVolQuotes() const {
+        // No ATM vol until the new smile is fitted; the fit is seeded from
+        // referenceVol(), so the same quotes always give the same smile.
+        atmVol_ = Null<Volatility>();
+        atmStrike_ = Null<Real>();
+        calibrationResiduals_ = Array();
+
+        // The quotes drive the fit; check they actually fitted the section,
+        // otherwise it would silently keep a previous calibration.
+        calibrating_ = true;
+        fitted_ = false;
+        try {
+            smileQuotes_->calibrate(*this);
+        } catch (...) {
+            calibrating_ = false;
+            throw;
+        }
+        calibrating_ = false;
+        QL_ENSURE(fitted_, "smile quotes did not fit the smile section");
+
+        // the calibrated atm might differ from the quoted one, so take it
+        // from the calibrated smile
+        calculateAtm();
+    }
+
+    void FxSmileSection::performCalculations() const {
+        calculateForward();
+        stripDeltaVolQuotes();
+    }
+
+    void FxSmileSection::fitToTargets(FxSmileTargets targets) const {
+        QL_REQUIRE(calibrating_, "smile section can only be fitted while its quotes calibrate it");
+        QL_REQUIRE(!targets.empty(), "no calibration targets");
+        targets_ = std::move(targets);
+        calibrate();
+
+        // measure the fit the same way whatever the model's calibrate() did
+        calibrationResiduals_ = Array(targets_.size());
+        for (Size i = 0; i < targets_.size(); ++i) {
+            calibrationResiduals_[i] = targets_[i]->residual(*this);
+            QL_ENSURE(std::isfinite(calibrationResiduals_[i]),
+                      "calibrated smile gives a non-finite residual for target " << i);
+        }
+        fitted_ = true;
+    }
+
+    void FxSmileSection::calibrate() const {
+        // Least squares over the model parameters: each evaluation loads
+        // the trial parameters, so the targets measure the trial smile
+        // through the section's own functions.  Residuals are weighted by
+        // vega, so that errors count roughly as price errors.
+        Array weights(targets_.size());
+        for (Size i = 0; i < targets_.size(); ++i) {
+            weights[i] = targets_[i]->weight(*this);
+            QL_REQUIRE(weights[i] > 0.0 && std::isfinite(weights[i]),
+                       "calibration target " << i << " has an invalid weight: " << weights[i]);
+        }
+
+        auto residuals = [&](const Array& params) -> Array {
+            setParams(params);
+            Array r(targets_.size());
+            for (Size i = 0; i < targets_.size(); ++i)
+                r[i] = weights[i] * targets_[i]->residual(*this);
+            return r;
+        };
+
+        SimpleCostFunction<decltype(residuals)> costFunction(residuals);
+        NoConstraint constraint;
+        Problem problem(costFunction, constraint, initialParams());
+        LevenbergMarquardt lm;
+        EndCriteria endCriteria(1000, 100, 1.0e-12, 1.0e-12, 1.0e-12);
+        const EndCriteria::Type result = lm.minimize(problem, endCriteria);
+        // MINPACK's "cannot reduce further" (FunctionEpsilonTooSmall) is a
+        // converged fit too, typically an exact one
+        QL_ENSURE(EndCriteria::succeeded(result) || result == EndCriteria::FunctionEpsilonTooSmall,
+                  "smile calibration did not converge: " << result);
+
+        setParams(problem.currentValue());
     }
 
 }

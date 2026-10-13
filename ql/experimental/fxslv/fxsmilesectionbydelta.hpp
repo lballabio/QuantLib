@@ -66,7 +66,6 @@ namespace QuantLib {
       private:
         virtual Volatility volByDeltaImpl(Real delta,
                                           Real fwd,
-                                          Time tau,
                                           const std::vector<Real>& params) const = 0;
 
 
@@ -121,7 +120,6 @@ namespace QuantLib {
         //@{
         Volatility volByDeltaImpl(Real delta,
                                   Real fwd,
-                                  Time tau,
                                   const std::vector<Real>& params) const override;
         //@}
 

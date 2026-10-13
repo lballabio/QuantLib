@@ -40,42 +40,42 @@
 
 namespace QuantLib {
 
-    //! Base class for FX smile sections calibrated to delta-quoted vols
+    //! Base class for FX smile sections calibrated to delta-vol quotes
     /*! A section can be built in one of two modes.
 
-        <b>Date mode</b> (constructors taking an expiry date and an
-        FxSettlementConvention).  The reference date \f$ t_0 \f$ is the
+        <b>Date mode</b> (constructors take an expiry date and an
+        FxSettlementConvention). The reference date \f$ t_0 \f$ is the
         trade date: by default the evaluation date, in which case the
         section floats with it; if a reference date is passed, it is
-        fixed.  The exercise date is the expiry date \f$ T_e \f$.  Two
+        fixed. The exercise date is the expiry date \f$ T_e \f$.  Two
         clocks are used:
         - vol time \f$ \tau = \mathrm{yf}(t_0, T_e) \f$, measured with
           the given day counter, which is exerciseTime() and is used for
           the Black standard deviation \f$ \sigma\sqrt{\tau} \f$;
         - the rate period from the spot date \f$ s_0 \f$ to the delivery
-          date \f$ T_d \f$, both given by the settlement convention.  The
+          date \f$ T_d \f$, both given by the settlement convention. The
           discount factors \f$ P(s_0, T_d) = P(t, T_d) / P(t, s_0) \f$
           used in the forward, in the delta conventions and in premium
           adjustment are taken from each curve by date, so they do not
           depend on the curves' reference dates or day counters.
         The forward is \f$ F = S \, P_f(s_0, T_d) / P_d(s_0, T_d) \f$.
 
-        <b>Time mode</b> (constructors taking an expiry time).  An
+        <b>Time mode</b> (constructors take an expiry time). An
         idealised setup for model work, tests and interpolation at
         arbitrary times: the time to expiry is fixed (the section does
         not float), there is no settlement lag, and the same time is
         used as vol time and as rate time, i.e.
         \f$ F = S \, P_f(\tau) / P_d(\tau) \f$ on the curves' time
-        axis.  For this to be meaningful both curves must share a
+        axis. For this to be meaningful both curves must share a
         reference date and a day counter; this is checked on
-        calculation.  The section's own day counter is not used in this
-        mode, since no date has to be converted to a time.
+        calculation. The section's own day counter is not needed in 
+        this mode, since no date has to be converted to a time.
 
         The market quotes are given as an FxSmileQuotes object: either
         FxRrBfQuotes (ATM, risk reversals and smile or broker strangles
-        per delta) or FxDeltaVolQuotes (generic delta-vol quotes).  The
-        section fits its smile to the delta-vol quotes that object
-        produces and then derives its ATM vol from the fitted smile, so
+        per delta) or FxDeltaVolQuotes (generic delta-vol quotes). The
+        section fits its smile to the FxSmileTargets produced by the
+        quotes and then derives its ATM vol from the fitted smile, so
         that atmVol() always lies on the calibrated curve.
     */
     class FxSmileSection : public SmileSection, public LazyObject {
@@ -112,7 +112,8 @@ namespace QuantLib {
         //! The smile is defined for every positive strike.
         Real minStrike() const override { return QL_MIN_POSITIVE_REAL; }
         Real maxStrike() const override { return QL_MAX_REAL; }
-        //! The forward, as SmileSection requires; see atmStrike() for the ATM strike.
+        //! The forward, as SmileSection requires; use atmStrike() for the 
+        //! ATM strike appropriate for the market convention
         /*! SmileSection's pricing functions (optionPrice(), vega(),
             density(), ...) use this as the forward.
         */
@@ -129,11 +130,12 @@ namespace QuantLib {
         // Introspection
         Handle<Quote> spot() const { return spot_; }
         //! ATM vol of the calibrated smile, under the section's ATM convention.
-        /*! A value, not a quote: it changes whenever the section
-            recalibrates, so observe the section to be notified.
+        /*! A value, not a quote: it changes whenever the section recalibrates, 
+            so observe the section to be notified of changes to this.
         */
         Volatility atmVol() const { calculate(); return atmVol_; }
-        //! ATM strike under the section's ATM convention, at which atmVol() is quoted.
+        //! ATM strike under the section's ATM convention, 
+        //! at which atmVol() is quoted after calibration.
         Rate atmStrike() const { calculate(); return atmStrike_; }
         Real forward() const { calculate(); return fwd_; }
         Handle<YieldTermStructure> foreignDiscount() const { return foreignDiscount_; }
@@ -232,7 +234,7 @@ namespace QuantLib {
         //! Fits the smile to the given targets; only valid while the quotes calibrate the section.
         void fitToTargets(FxSmileTargets targets) const;
         mutable bool calibrating_ = false;  // the quotes are calibrating this section
-        mutable bool fitRequested_ = false; // the quotes called fitToTargets() during this calibration
+        mutable bool fitted_ = false; // the quotes called fitToTargets() during this calibration
 
         Volatility volatilityImpl(Rate strike) const override { return volByStrike(strike); }
 
