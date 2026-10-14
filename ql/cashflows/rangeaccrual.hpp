@@ -54,30 +54,6 @@ namespace QuantLib {
                                    Real lowerTrigger,
                                    Real upperTrigger);
 
-        /*! \deprecated Use the overload taking a Schedule instead.
-                        Deprecated in version 1.40.
-        */
-        [[deprecated("Use the overload taking a Schedule instead")]]
-        RangeAccrualFloatersCoupon(const Date& paymentDate,
-                                   Real nominal,
-                                   const ext::shared_ptr<IborIndex>& index,
-                                   const Date& startDate,
-                                   const Date& endDate,
-                                   Natural fixingDays,
-                                   const DayCounter& dayCounter,
-                                   Real gearing,
-                                   Rate spread,
-                                   const Date& refPeriodStart,
-                                   const Date& refPeriodEnd,
-                                   const ext::shared_ptr<Schedule>& observationsSchedule,
-                                   Real lowerTrigger,
-                                   Real upperTrigger)
-        : RangeAccrualFloatersCoupon(paymentDate, nominal, index, startDate, endDate,
-                                     fixingDays, dayCounter, gearing, spread,
-                                     refPeriodStart, refPeriodEnd,
-                                     *observationsSchedule,
-                                     lowerTrigger, upperTrigger) {}
-
         Real startTime() const {return startTime_; }
         Real endTime() const {return endTime_; }
         Real lowerTrigger() const {return lowerTrigger_; }
@@ -90,13 +66,6 @@ namespace QuantLib {
             return observationTimes_;
         }
         const Schedule& observationSchedule() const { return observationSchedule_; }
-        /*! \deprecated Use observationSchedule instead.
-                        Deprecated in version 1.40.
-        */
-        [[deprecated("Use observationSchedule instead")]]
-        ext::shared_ptr<Schedule> observationsSchedule() const {
-            return ext::make_shared<Schedule>(observationSchedule_);
-        }
 
         Real priceWithoutOptionality(
                        const Handle<YieldTermStructure>& discountCurve) const;

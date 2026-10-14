@@ -3285,12 +3285,6 @@
     <ClInclude Include="ql\experimental\fx\all.hpp">
       <Filter>experimental\fx</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\fx\blackdeltacalculator.hpp">
-      <Filter>experimental\fx</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\fx\deltavolquote.hpp">
-      <Filter>experimental\fx</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\fx\discountingmtmcrosscurrencybasisswapengine.hpp">
       <Filter>experimental\fx</Filter>
     </ClInclude>
