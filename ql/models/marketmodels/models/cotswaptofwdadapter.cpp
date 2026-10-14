@@ -89,10 +89,8 @@ namespace QuantLib {
     CotSwapToFwdAdapterFactory::create(
                                         const EvolutionDescription& evolution,
                                         Size numberOfFactors) const {
-        ext::shared_ptr<MarketModel> coterminalModel =
-            coterminalFactory_->create(evolution,numberOfFactors);
-        return ext::shared_ptr<MarketModel>(
-                             new CotSwapToFwdAdapter(coterminalModel));
+        auto coterminalModel = coterminalFactory_->create(evolution,numberOfFactors);
+        return ext::make_shared<CotSwapToFwdAdapter>(coterminalModel);
     }
 
     void CotSwapToFwdAdapterFactory::update() {
