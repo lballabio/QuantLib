@@ -52,9 +52,11 @@ namespace QuantLib {
     Real FxSettlementForeignCurve::forwardOverSpot(Time t) const {
         const Date spotDate = settlement_.valueDate(referenceDate());
         const Date deliveryDate = settlement_.valueDate(detail::dayContaining(*this, t));
-        const Handle<YieldTermStructure>& domestic = originalCurve_;
-        return (foreignCurve_->discount(deliveryDate, true) / foreignCurve_->discount(spotDate, true)) /
-               (domestic->discount(deliveryDate, true) / domestic->discount(spotDate, true));
+        Real domesticDiscountFactor = (originalCurve_->discount(deliveryDate, true) /
+                                       originalCurve_->discount(spotDate, true));
+        Real foreignDiscountFactor = (foreignCurve_->discount(deliveryDate, true) / 
+                                       foreignCurve_->discount(spotDate, true));
+        return foreignDiscountFactor / domesticDiscountFactor;
     }
 
     DiscountFactor FxSettlementForeignCurve::discountImpl(Time t) const {

@@ -31,27 +31,32 @@ namespace QuantLib {
 
     namespace detail {
 
-        //! The day, at midnight, containing the given time from a term structure's reference date.
+        //! The date containing the instant t away from term structure's ref date.
         Date dayContaining(const TermStructure& ts, Time t);
 
     }
 
     //! Foreign curve giving a Black-Scholes process the FX settlement forward
-    /*! A Black-Scholes process takes its forward to a time \f$ t \f$ as
-        \f$ S\,P_f(t)/P_d(t) \f$, from today to the expiry.  An FX option
-        expiring at \f$ t \f$ delivers on the delivery date of its expiry
-        day, and its forward runs from the spot date to that delivery
-        date:
+    /*! In theory, A Black-Scholes process uses the same time to \f$ t \f$ for
+        the volatility and for the forward diffusion. Therefore, \f$ t \f$ is
+        \f$ S\,D_f(t)/D_d(t) \f$, from today to the expiry. In practice, an FX
+        option expiring at \f$ t \f$ delivers on the delivery date of its expiry
+        day, and its forward runs from the spot date to that delivery date:
         \f[
-            F(t) = S\,\frac{P_f(s_0, T_d)}{P_d(s_0, T_d)}.
+            F(t) = S\,\frac{D_f(s_0, T_d)}{D_d(s_0, T_d)}.
         \f]
-        The two differ by the carry over the difference between the spot
-        and delivery lags, which a weekend or holiday in one lag and not
-        the other makes non-zero.  Passed to the process as its foreign
-        (dividend) curve with the domestic curve as its risk-free curve,
-        this curve makes the process forward \f$ F(t) \f$, so that the
-        process, Dupire local volatility and an FX variance surface all
-        use the same forward.
+        The two differ by the carry over the difference between the spot and 
+        delivery lags, which can diverge over weekends and holidays.
+        In QuantLib, this is an issue when using the 
+        GenerzliedBlackScholesProcess whch applies the drift assuming the same
+        time for the volatility and the forward.
+
+        This class helps to bridge the gap so that we can continue to use the
+        QuantLib machinery by creating an adjusted foreign curve which when 
+        passed to the process as its foreign (dividend) curve with the domestic 
+        curve as its risk-free curve, this curve makes the process forward 
+        \f$ F(t) \f$, so that the process, Dupire local volatility and an FX 
+        variance surface all use the same forward.
 
         It shares the domestic curve's reference date, day counter and
         time axis.  \f$ F(t) \f$ is constant within each expiry day and

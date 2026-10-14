@@ -80,8 +80,8 @@ namespace QuantLib {
                                 default, so that failures propagate.
         */
         FxLocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
-                          Handle<YieldTermStructure> riskFreeTS,
-                          Handle<YieldTermStructure> dividendTS,
+                          Handle<YieldTermStructure> domesticCurve,
+                          Handle<YieldTermStructure> foreignCurve,
                           Handle<Quote> underlying,
                           Real tolerance = 1.0e-7,
                           Volatility minLocalVol = 0.0,
@@ -103,16 +103,16 @@ namespace QuantLib {
         Size fallbacks() const { return fallbacks_; }
 
       protected:
-        Volatility localVolImpl(Time t, Real underlyingLevel) const override;
+        Volatility localVolImpl(Time t, Real strike) const override;
 
       private:
-        Volatility dupireVol(Time t, Real underlyingLevel) const;
+        Volatility dupireVol(Time t, Real strike) const;
         // the variance at a later time, or the earlier one where they differ only by rounding;
         // fails if it decreases by more
         Real laterVariance(Real earlier, Real later, Real strike, Time t1, Time t2) const;
 
         Handle<BlackVolTermStructure> blackTS_;
-        Handle<YieldTermStructure> riskFreeTS_, dividendTS_;
+        Handle<YieldTermStructure> domesticCurve_, foreignCurve_;
         Handle<Quote> underlying_;
         Real tolerance_;
         Volatility minLocalVol_;

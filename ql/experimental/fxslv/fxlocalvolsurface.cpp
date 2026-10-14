@@ -27,14 +27,14 @@
 namespace QuantLib {
 
     FxLocalVolSurface::FxLocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
-                                         Handle<YieldTermStructure> riskFreeTS,
-                                         Handle<YieldTermStructure> dividendTS,
+                                         Handle<YieldTermStructure> domesticCurve,
+                                         Handle<YieldTermStructure> foreignCurve,
                                          Handle<Quote> underlying,
                                          Real tolerance,
                                          Volatility minLocalVol,
                                          Volatility fallbackVol)
     : LocalVolTermStructure(blackTS->businessDayConvention(), blackTS->dayCounter()),
-      blackTS_(blackTS), riskFreeTS_(std::move(riskFreeTS)), dividendTS_(std::move(dividendTS)),
+      blackTS_(blackTS), domesticCurve_(std::move(domesticCurve)), foreignCurve_(std::move(foreignCurve)),
       underlying_(std::move(underlying)), tolerance_(tolerance), minLocalVol_(minLocalVol),
       fallbackVol_(fallbackVol) {
         QL_REQUIRE(tolerance_ >= 0.0, "negative tolerance: " << tolerance_);
@@ -42,8 +42,8 @@ namespace QuantLib {
         QL_REQUIRE(fallbackVol_ == Null<Volatility>() || fallbackVol_ >= 0.0,
                    "negative fallback volatility: " << fallbackVol_);
         registerWith(blackTS_);
-        registerWith(riskFreeTS_);
-        registerWith(dividendTS_);
+        registerWith(domesticCurve_);
+        registerWith(foreignCurve_);
         registerWith(underlying_);
     }
 
@@ -58,27 +58,28 @@ namespace QuantLib {
         return later;
     }
 
-    Volatility FxLocalVolSurface::localVolImpl(Time t, Real underlyingLevel) const {
+    Volatility FxLocalVolSurface::localVolImpl(Time t, Real strike) const {
         if (fallbackVol_ == Null<Volatility>())
-            return dupireVol(t, underlyingLevel);
+            return dupireVol(t, strike);
         try {
-            return dupireVol(t, underlyingLevel);
+            return dupireVol(t, strike);
         } catch (Error&) {
             ++fallbacks_;
             return fallbackVol_;
         }
     }
 
-    Volatility FxLocalVolSurface::dupireVol(Time t, Real underlyingLevel) const {
-        const DiscountFactor dr = riskFreeTS_->discount(t, true);
-        const DiscountFactor dq = dividendTS_->discount(t, true);
+    Volatility FxLocalVolSurface::dupireVol(Time t, Real strike) const {
+        const DiscountFactor dr = domesticCurve_->discount(t, true);
+        const DiscountFactor dq = foreignCurve_->discount(t, true);
         const Real forwardValue = underlying_->value() * dq / dr;
 
         // strike derivatives at the given time
-        const Real strike = underlyingLevel;
+        //const Real strike = strike;
         const Real y = std::log(strike / forwardValue);
         const Real dy = (std::fabs(y) > 0.001) ? Real(y * 0.0001) : 0.000001;
-        const Real strikep = strike * std::exp(dy), strikem = strike / std::exp(dy);
+        const Real strikep = strike * std::exp(dy);
+        const Real strikem = strike / std::exp(dy);
         const Real w = blackTS_->blackVariance(t, strike, true);
         const Real wp = blackTS_->blackVariance(t, strikep, true);
         const Real wm = blackTS_->blackVariance(t, strikem, true);
@@ -89,17 +90,17 @@ namespace QuantLib {
         Real dwdt;
         if (t == 0.0) {
             const Time dt = 0.0001;
-            const Real strikept = strike * dr * dividendTS_->discount(t + dt, true) /
-                                  (riskFreeTS_->discount(t + dt, true) * dq);
+            const Real strikept = strike * dr * foreignCurve_->discount(t + dt, true) /
+                                  (domesticCurve_->discount(t + dt, true) * dq);
             const Real wpt =
                 laterVariance(w, blackTS_->blackVariance(t + dt, strikept, true), strike, t, t + dt);
             dwdt = (wpt - w) / dt;
         } else {
             const Time dt = std::min<Time>(0.0001, t / 2.0);
-            const Real strikept = strike * dr * dividendTS_->discount(t + dt, true) /
-                                  (riskFreeTS_->discount(t + dt, true) * dq);
-            const Real strikemt = strike * dr * dividendTS_->discount(t - dt, true) /
-                                  (riskFreeTS_->discount(t - dt, true) * dq);
+            const Real strikept = strike * dr * foreignCurve_->discount(t + dt, true) /
+                                  (domesticCurve_->discount(t + dt, true) * dq);
+            const Real strikemt = strike * dr * foreignCurve_->discount(t - dt, true) /
+                                  (domesticCurve_->discount(t - dt, true) * dq);
             const Real wpt =
                 laterVariance(w, blackTS_->blackVariance(t + dt, strikept, true), strike, t, t + dt);
             Real wmt = blackTS_->blackVariance(t - dt, strikemt, true);
@@ -132,11 +133,14 @@ namespace QuantLib {
                           const FxSettleConvention& settlement,
                           const Handle<BlackVolTermStructure>& volSurface,
                           Volatility localVolFallback) {
+        // create the adjusted settlement curve
         const Handle<YieldTermStructure> settlementForeignCurve(
             ext::make_shared<FxSettlementForeignCurve>(foreignCurve, domesticCurve, settlement));
+        // create the local vol sruface 
         auto localVol = ext::make_shared<FxLocalVolSurface>(
             volSurface, domesticCurve, settlementForeignCurve, spot, 1.0e-7, 0.0, localVolFallback);
         localVol->enableExtrapolation();
+        // return the generalized Black-Scholes process
         return ext::make_shared<GeneralizedBlackScholesProcess>(
             spot, settlementForeignCurve, domesticCurve, volSurface,
             Handle<LocalVolTermStructure>(localVol));
