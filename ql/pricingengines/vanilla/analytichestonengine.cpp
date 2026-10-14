@@ -431,7 +431,7 @@ namespace QuantLib {
             [[fallthrough]];
           case AngledContourNoCV:
             {
-              const Real r = rho - sigma*freq_ / (v0 + kappa*theta*term);
+              const Real r = rho - sigma*freq_ / (v0 + kappa*theta*term);              
               tanPhi_ = std::tan(
                      (r*freq_ < 0.0)? M_PI/12*boost::math::sign(freq_) : 0.0
                 );

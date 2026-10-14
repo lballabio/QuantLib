@@ -3409,7 +3409,7 @@ BOOST_AUTO_TEST_CASE(testHestonBlackVolSurfaceAtmLevel) {
 }
 
 BOOST_AUTO_TEST_CASE(testAsymptoticCVwithOptimalAlpha) {
-    BOOST_TEST_MESSAGE("Testing asymptotic "
+    BOOST_TEST_MESSAGE("Testing optimal asymptotic "
         "control variate with optimal alpha...");
 
     SavedSettings backup;
