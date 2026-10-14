@@ -18,6 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/pricingengines/barrier/analyticpartialtimebarrieroptionengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -284,7 +285,7 @@ namespace QuantLib {
         Real T = residualTime();
         Real sigma = volatility(T, strike);
         return (std::log(S / strike) + 2 * std::log(barrier / S) + 
-              (b + (std::pow(sigma, 2) / 2))*T) / (sigma*std::sqrt(T));
+              (b + (squared(sigma) / 2))*T) / (sigma*std::sqrt(T));
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::f2(Real barrier, Real strike, Rate b) const {

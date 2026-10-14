@@ -21,8 +21,6 @@
 
 namespace QuantLib {
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     BlackDeltaCalculator::BlackDeltaCalculator(
                         Option::Type ot,
                         DeltaVolQuote::DeltaType dt,
@@ -324,37 +322,4 @@ namespace QuantLib {
         phi_=Integer(ot_);
     }
 
-
-    // helper classes
-
-    BlackDeltaPremiumAdjustedSolverClass::BlackDeltaPremiumAdjustedSolverClass(
-                        Option::Type ot,
-                        DeltaVolQuote::DeltaType dt,
-                        Real spot,
-                        DiscountFactor dDiscount,   // domestic discount
-                        DiscountFactor fDiscount,   // foreign  discount
-                        Real stdDev,
-                        Real delta):
-    bdc_(ot,dt,spot,dDiscount,fDiscount,stdDev), delta_(delta) {}
-
-
-    Real BlackDeltaPremiumAdjustedSolverClass::operator()(Real strike) const {
-        return bdc_.deltaFromStrike(strike)-delta_;
-    }
-
-
-    BlackDeltaPremiumAdjustedMaxStrikeClass::BlackDeltaPremiumAdjustedMaxStrikeClass(
-                        Option::Type ot,
-                        DeltaVolQuote::DeltaType dt,
-                        Real spot,
-                        DiscountFactor dDiscount,   // domestic discount
-                        DiscountFactor fDiscount,   // foreign  discount
-                        Real stdDev):
-    bdc_(ot,dt,spot,dDiscount,fDiscount,stdDev), stdDev_(stdDev) {}
-
-    Real BlackDeltaPremiumAdjustedMaxStrikeClass::operator()(Real strike) const {
-        return bdc_.cumD2(strike)*stdDev_ - bdc_.nD2(strike);
-    }
-
-    QL_DEPRECATED_ENABLE_WARNING
 }

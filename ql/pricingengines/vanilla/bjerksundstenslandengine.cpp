@@ -186,14 +186,22 @@ namespace QuantLib {
         const Real bT = std::log(dD/rfD);
         const Real rT = std::log(1.0/rfD);
 
+        // with q = 0 the radicand is a perfect square, so rounding can take
+        // it just below zero where r = -variance/2
         const Real beta = (0.5 - bT/variance) +
-            std::sqrt(squared(bT/variance - 0.5) + 2.0 * rT/variance);
+            std::sqrt(std::max(0.0, squared(bT/variance - 0.5) + 2.0 * rT/variance));
 
         const Real BInfinity = beta / (beta - 1.0) * X;
         const Real B0 = (bT == rT) ? X : std::max(X, rT / (rT - bT) * X);
         const Real ht = -(bT + 2.0*std::sqrt(variance)) * B0 / (BInfinity - B0);
 
-        const Real I = B0 + (BInfinity - B0) * (1 - std::exp(ht));
+        // as beta tends to 1 the perpetual boundary runs to infinity, and I
+        // and its derivatives tend to limits in a = (bT + 2 sqrt(v)) B0
+        const bool infiniteBoundary = std::fabs(beta - 1.0) < 1e-8;
+        const Real a = (bT + 2.0*std::sqrt(variance)) * B0;
+        const Real I = infiniteBoundary
+            ? B0 + a
+            : B0 + (BInfinity - B0) * (1 - std::exp(ht));
 
         const Real fwd = S * dD/rfD;
         const Real q = std::log(I/fwd)/std::sqrt(variance);
@@ -253,8 +261,11 @@ namespace QuantLib {
                 - (bT + 2.0*std::sqrt(variance))
                     *(B0Dq*(BInfinity - B0) - B0*(BInfinityDq - B0Dq))
                         /squared(BInfinity - B0);
-            const Real IDq = B0Dq + (BInfinityDq - B0Dq) * (1 - std::exp(ht))
-                - (BInfinity - B0) * std::exp(ht)*htDq;
+            const Real IDq = infiniteBoundary
+                ? B0Dq - tq*B0 + (bT + 2.0*std::sqrt(variance))*B0Dq
+                    - squared(a)*betaDq/(2*X)
+                : B0Dq + (BInfinityDq - B0Dq) * (1 - std::exp(ht))
+                    - (BInfinity - B0) * std::exp(ht)*htDq;
 
             const Real phi_H_S_beta_I_I_rT_bT_v
                 = phi_H(S, beta, I, I, rT, bT, variance);
@@ -317,8 +328,11 @@ namespace QuantLib {
                 - (bT + 2.0*std::sqrt(variance))
                     *(B0Dr*(BInfinity - B0) - B0*(BInfinityDr - B0Dr))
                         /squared(BInfinity - B0);
-            const Real IDr = B0Dr + (BInfinityDr - B0Dr) * (1 - std::exp(ht))
-                - (BInfinity - B0) * std::exp(ht)*htDr;
+            const Real IDr = infiniteBoundary
+                ? B0Dr + tr*B0 + (bT + 2.0*std::sqrt(variance))*B0Dr
+                    - squared(a)*betaDr/(2*X)
+                : B0Dr + (BInfinityDr - B0Dr) * (1 - std::exp(ht))
+                    - (BInfinity - B0) * std::exp(ht)*htDr;
 
             results.rho =
                 (IDr*std::pow(S/I, beta)
@@ -346,7 +360,7 @@ namespace QuantLib {
                      + phi_bt_S_0_X_I_rT_bT_v*tr);
 
             const Real beta = (0.5 - bT/variance) +
-                std::sqrt(squared(bT/variance - 0.5) + 2.0 * rT/variance);
+                std::sqrt(std::max(0.0, squared(bT/variance - 0.5) + 2.0 * rT/variance));
 
             const DayCounter vdc = process_->blackVolatility()->dayCounter();
             const Time tv = vdc.yearFraction(refDate, exerciseDate);
@@ -360,8 +374,10 @@ namespace QuantLib {
             const Real htDv = -1/std::sqrt(variance)*varianceDv*B0/(BInfinity-B0)
                     + (bT + 2*std::sqrt(variance))*B0/squared(BInfinity-B0)*BInfinityDv;
 
-            const Real IDv = BInfinityDv*(1-std::exp(ht))
-                - (BInfinity-B0)*std::exp(ht)*htDv;
+            const Real IDv = infiniteBoundary
+                ? varianceDv/std::sqrt(variance)*B0 - squared(a)*betaDv/(2*X)
+                : BInfinityDv*(1-std::exp(ht))
+                    - (BInfinity-B0)*std::exp(ht)*htDv;
 
             results.vega =
                 (IDv*std::pow(S/I, beta)

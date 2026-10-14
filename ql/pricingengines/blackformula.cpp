@@ -290,10 +290,15 @@ namespace QuantLib {
         const Real b = std::exp(M_2_PI*y);
         const Real B = 4.0*(b + 1/b)
             - 2*K/F*(a + 1.0/a)*(ey2 + 1 - R2);
-        const Real C = (R2-squared(ey-1))*(squared(ey+1)-R2)/ey2;
+        const Real C = std::max(0.0, (R2-squared(ey-1))*(squared(ey+1)-R2)/ey2);
 
         const Real beta = 2*C/(B+std::sqrt(B*B+4*A*C));
         const Real gamma = -M_PI_2*std::log(beta);
+
+        const auto sqrtDiff = [](Real g, Real yy) {
+            return std::isfinite(g) ? Real(std::sqrt(g + yy) - std::sqrt(g - yy))
+                                    : Real(0.0);
+        };
 
         if (y >= 0.0) {
             const Real M0 = K*df*(
@@ -301,7 +306,7 @@ namespace QuantLib {
                                        : 0.5-ey*Af(-std::sqrt(2*y)));
 
             if (marketValue <= M0)
-                return std::sqrt(gamma+y)-std::sqrt(gamma-y);
+                return sqrtDiff(gamma, y);
             else
                 return std::sqrt(gamma+y)+std::sqrt(gamma-y);
         }
@@ -311,7 +316,7 @@ namespace QuantLib {
                                        : Af(std::sqrt(-2*y)) - 0.5*ey);
 
             if (marketValue <= M0)
-                return std::sqrt(gamma-y)-std::sqrt(gamma+y);
+                return sqrtDiff(gamma, -y);
             else
                 return std::sqrt(gamma+y)+std::sqrt(gamma-y);
         }
@@ -526,6 +531,9 @@ namespace QuantLib {
             x = -x;
         }
 
+        if (cs == 0.0)
+            return 0.0;
+
         Size nIter = 0;
         Real dv, vk, vkp1 = guess;
 
@@ -601,7 +609,7 @@ namespace QuantLib {
         auto sign = Integer(optionType);
 
         if (stdDev==0.0)
-            return (forward * sign < strike * sign ? 1.0 : 0.0);
+            return (forward * sign > strike * sign ? 1.0 : 0.0);
 
         forward = forward + displacement;
         strike = strike + displacement;
@@ -958,11 +966,11 @@ namespace QuantLib {
                         Real stdDev) {
         QL_REQUIRE(stdDev>=0.0,
                    "stdDev (" << stdDev << ") must be non-negative");
-        Real d = (forward - strike) * Integer(optionType), h = d / stdDev;
+        Real d = (forward - strike) * Integer(optionType);
         if (stdDev==0.0)
-            return std::max(d, 0.0);
+            return (d > 0.0 ? 1.0 : 0.0);
         CumulativeNormalDistribution phi;
-        Real result = phi(h);
+        Real result = phi(d / stdDev);
         return result;
     }
 
