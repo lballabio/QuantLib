@@ -297,7 +297,7 @@ namespace QuantLib {
 
             shiftAtms(+dv);
             const Real Vvp = option_->NPV() * notional_;
-            shiftAtms(-2.0 * dv);
+            shiftAtms(-dv);
             const Real Vvm = option_->NPV() * notional_;
             restoreAtms();
 
@@ -310,14 +310,14 @@ namespace QuantLib {
             spotQuote_->setValue(S + ds);
             shiftAtms(+dv);
             const Real Vpp = option_->NPV() * notional_;
-            shiftAtms(-2.0 * dv);
+            shiftAtms(-dv);
             const Real Vpm = option_->NPV() * notional_;
             restoreAtms();
 
             spotQuote_->setValue(S - ds);
             shiftAtms(+dv);
             const Real Vmp = option_->NPV() * notional_;
-            shiftAtms(-2.0 * dv);
+            shiftAtms(-dv);
             const Real Vmm = option_->NPV() * notional_;
             restoreAtms();
 
@@ -341,7 +341,7 @@ namespace QuantLib {
             shiftAtms(+dv);
             auto stickyVp = makeStickyProcess(times, strikes);
 
-            shiftAtms(-2.0 * dv);
+            shiftAtms(-dv);
             auto stickyVm = makeStickyProcess(times, strikes);
 
             restoreAtms();
