@@ -701,8 +701,6 @@
     <ClInclude Include="ql\experimental\forward\all.hpp" />
     <ClInclude Include="ql\experimental\forward\analytichestonforwardeuropeanengine.hpp" />
     <ClInclude Include="ql\experimental\fx\all.hpp" />
-    <ClInclude Include="ql\experimental\fx\blackdeltacalculator.hpp" />
-    <ClInclude Include="ql\experimental\fx\deltavolquote.hpp" />
     <ClInclude Include="ql\experimental\fx\discountingmtmcrosscurrencybasisswapengine.hpp" />
     <ClInclude Include="ql\experimental\fx\fxresetcashflows.hpp" />
     <ClInclude Include="ql\experimental\fx\mtmcrosscurrencybasisswap.hpp" />
