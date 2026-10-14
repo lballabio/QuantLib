@@ -80,7 +80,6 @@ namespace {
         DayCounter dc;
         Handle<YieldTermStructure> eurTs; // foreign
         Handle<YieldTermStructure> usdTs; // domestic
-        Handle<YieldTermStructure> eurFwdTs; // foreign, giving the process the settlement forward
         Handle<TradingTimeTermStructure> timeTs;
 
         ext::shared_ptr<SimpleQuote> spotSQ;
@@ -114,8 +113,6 @@ namespace {
                 ext::make_shared<FlatForward>(0, NullCalendar(), 0.04, dc));
             usdTs = Handle<YieldTermStructure>(
                 ext::make_shared<FlatForward>(0, NullCalendar(), 0.0525, dc));
-            eurFwdTs = Handle<YieldTermStructure>(ext::make_shared<FxSettlementForeignCurve>(
-                eurTs, usdTs, FxSettleConvention(WeekendsOnly(), 2)));
             timeTs = Handle<TradingTimeTermStructure>(
                 ext::make_shared<TradingTimeTermStructure>(today, WeekendsOnly(), 0.0));
 
@@ -168,9 +165,9 @@ namespace {
                 WeekendsOnly(), Following, true);
             surface->enableExtrapolation();
 
-            process = ext::make_shared<GeneralizedBlackScholesProcess>(
-                spot, eurFwdTs, usdTs,
-                Handle<BlackVolTermStructure>(surface));
+            process = makeFxLocalVolProcess(spot, eurTs, usdTs,
+                                            FxSettleConvention(WeekendsOnly(), 2),
+                                            Handle<BlackVolTermStructure>(surface));
         }
 
         // Build a 3M EUR call at ATM forward
@@ -549,9 +546,6 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
         ext::make_shared<FlatForward>(0, NullCalendar(), 0.0525, dc));  // domestic
     const Handle<YieldTermStructure> eurTs(
         ext::make_shared<FlatForward>(0, NullCalendar(), 0.0400, dc));  // foreign
-    // the foreign curve giving processes the settlement forward
-    const Handle<YieldTermStructure> eurFwdTs(ext::make_shared<FxSettlementForeignCurve>(
-        eurTs, usdTs, FxSettleConvention(calendar, 2)));
 
     auto spotSQ = ext::make_shared<SimpleQuote>(1.0850);
     Handle<Quote> spot(spotSQ);
@@ -616,10 +610,11 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
     volSurface->enableExtrapolation();
     Handle<BlackVolTermStructure> volHandle(volSurface);
 
-    // ── Dupire local vol surface ─────────────────────────────────────────────
-    auto localVol = ext::make_shared<FxLocalVolSurface>(volHandle, usdTs, eurFwdTs, spot);
-    localVol->enableExtrapolation();
-    Handle<LocalVolTermStructure> localVolHandle(localVol);
+    // ── Local-vol process: settlement forward and Dupire local vol ──────────
+    const auto process = makeFxLocalVolProcess(spot, eurTs, usdTs, FxSettleConvention(calendar, 2),
+                                               volHandle);
+    const Handle<YieldTermStructure> eurFwdTs = process->dividendYield();
+    const Handle<LocalVolTermStructure> localVolHandle = process->localVolatility();
 
     // ── SLV calibration ──────────────────────────────────────────────────────
     // Use 5 tenors × 3 strikes for Heston calibration.
@@ -708,8 +703,6 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
         "SLV 4M call vega must be positive: " << slvVega);
 
     // ── SLV vs local-vol Dupire price comparison ─────────────────────────────
-    auto process = ext::make_shared<GeneralizedBlackScholesProcess>(
-        spot, eurFwdTs, usdTs, volHandle, localVolHandle);
     auto call4M_lv = ext::make_shared<VanillaOption>(payoff4M, exercise4M);
     call4M_lv->setPricingEngine(
         ext::make_shared<FdBlackScholesVanillaEngine>(process, 100, 100, 0,
@@ -998,6 +991,47 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceNodeSpacing) {
     // a node within a day needs a date with a time
     BOOST_CHECK_THROW(surfaceWith(0.25 / 365.0), Error);
 #endif
+}
+
+BOOST_AUTO_TEST_CASE(testMakeFxLocalVolProcess) {
+    BOOST_TEST_MESSAGE("Testing the FX local-vol process factory...");
+
+    FxMarket m;  // its process comes from makeFxLocalVolProcess
+    // the pieces it wires
+    BOOST_REQUIRE(ext::dynamic_pointer_cast<FxSettlementForeignCurve>(
+        m.process->dividendYield().currentLink()));
+    const auto localVol =
+        ext::dynamic_pointer_cast<FxLocalVolSurface>(m.process->localVolatility().currentLink());
+    BOOST_REQUIRE(localVol);
+    BOOST_CHECK(m.process->riskFreeRate().currentLink() == m.usdTs.currentLink());
+    BOOST_CHECK(m.process->blackVolatility().currentLink() == m.surface);
+
+    // one forward for the process and the surface, and local vol zero over a weekend
+    for (const Date& d : {Date(12, April, 2024), Date(13, April, 2024), m.expiry6M}) {
+        const Time t = m.surface->timeFromReference(d) + 0.4 / 365.0;
+        BOOST_CHECK_CLOSE(m.spot->value() * m.process->dividendYield()->discount(t) /
+                              m.process->riskFreeRate()->discount(t),
+                          m.surface->fwd(t), 1.0e-12);
+    }
+    const Time saturday = m.surface->timeFromReference(Date(3, February, 2024)) + 0.5 / 365.0;
+    BOOST_CHECK_EQUAL(m.process->localVolatility()->localVol(saturday, 1.085, true), 0.0);
+
+    // without a fallback, undefined local vol fails; with one, it is counted
+    const Date today(2, January, 2024);
+    const DayCounter dc = Actual365Fixed();
+    const Handle<YieldTermStructure> rates(ext::make_shared<FlatForward>(today, 0.0, dc));
+    const Handle<BlackVolTermStructure> falling(ext::make_shared<BlackVarianceCurve>(
+        today, std::vector<Date>{today + 90, today + 180}, std::vector<Volatility>{0.20, 0.10}, dc,
+        false));
+    const Handle<Quote> one = makeQuoteHandle(1.0);
+    const FxSettleConvention settlement(WeekendsOnly(), 2);
+    const auto strict = makeFxLocalVolProcess(one, rates, rates, settlement, falling);
+    BOOST_CHECK_THROW(strict->localVolatility()->localVol(120.0 / 365.0, 1.0, true), Error);
+    const auto lenient = makeFxLocalVolProcess(one, rates, rates, settlement, falling, 0.3);
+    BOOST_CHECK_EQUAL(lenient->localVolatility()->localVol(120.0 / 365.0, 1.0, true), 0.3);
+    BOOST_CHECK_EQUAL(ext::dynamic_pointer_cast<FxLocalVolSurface>(
+                          lenient->localVolatility().currentLink())->fallbacks(),
+                      Size(1));
 }
 
 BOOST_AUTO_TEST_CASE(testFxSettlementForeignCurve) {

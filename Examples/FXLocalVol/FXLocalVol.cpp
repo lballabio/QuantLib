@@ -50,7 +50,6 @@
 // FX vol surface
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
 #include <ql/experimental/fxslv/fxsettlementconvention.hpp>
-#include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/experimental/fxslv/fxsmilesectionbystrike.hpp>
 #include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
@@ -148,10 +147,6 @@ int main(int, char*[]) {
 
         Handle<YieldTermStructure> eurTs(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0400, dc));
         Handle<YieldTermStructure> usdTs(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0525, dc));
-        // the foreign curve giving processes the settlement forward: from the
-        // spot date to the delivery date of each expiry, as the surface uses
-        Handle<YieldTermStructure> eurFwdTs(ext::make_shared<FxSettlementForeignCurve>(
-            eurTs, usdTs, FxSettleConvention(WeekendsOnly(), 2)));
 
         Handle<TradingTimeTermStructure> timeTs(ext::make_shared<TradingTimeTermStructure>(today, WeekendsOnly(), 0.0));
 
@@ -233,12 +228,19 @@ int main(int, char*[]) {
         fxVolSurface->enableExtrapolation();
 
         // ──────────────────────────────────────────────────────────────────────
-        //  3. Build the GeneralizedBlackScholesProcess
+        //  3. Build the local-vol process.  It takes its forward from the
+        //     spot date to the delivery date of each expiry, as the surface
+        //     does, and its local vol by Dupire from the surface.  The
+        //     short-dated wings of this surface have calendar arbitrage, so
+        //     local vol is not defined everywhere: opt in to a fallback
+        //     there, and report how often it is used, rather than fail.
         // ──────────────────────────────────────────────────────────────────────
-        auto process = ext::make_shared<GeneralizedBlackScholesProcess>(spot,
-                                                                        eurFwdTs,  // dividendYield = foreign (EUR), to the settlement forward
-                                                                        usdTs,  // riskFreeRate  = domestic (USD) rate
-                                                                        Handle<BlackVolTermStructure>(fxVolSurface));
+        const Volatility localVolFallback = 0.01;
+        auto process = makeFxLocalVolProcess(spot, eurTs, usdTs, FxSettleConvention(WeekendsOnly(), 2),
+                                             Handle<BlackVolTermStructure>(fxVolSurface),
+                                             localVolFallback);
+        // the foreign curve consistent with the process's forward
+        const Handle<YieldTermStructure> eurFwdTs = process->dividendYield();
 
         // ──────────────────────────────────────────────────────────────────────
         //  4. Define the option: 3M EUR call at ATM forward
@@ -314,10 +316,7 @@ int main(int, char*[]) {
                                    100, /*tGrid=*/
                                    100 /*xGrid=*/
                                    );
-        // The short-dated wings of this surface have calendar arbitrage, so
-        // Dupire local vol is not defined everywhere; opt in to a fallback
-        // there, and report how often it is used, rather than fail.
-        const Volatility localVolFallback = 0.01;
+        // the same fallback as the process's local vol, see 3.
         riskCalc.setLocalVolFallback(localVolFallback);
 
         FxVanillaGreeks lvGreeks = riskCalc.calculate(/*localVol=*/true);
@@ -432,16 +431,13 @@ int main(int, char*[]) {
         // ══════════════════════════════════════════════════════════════════════
 
         // ──────────────────────────────────────────────────────────────────────
-        //  7. Build the Dupire local vol surface from the calibrated variance
-        //     surface.  It is zero where no variance accrues, e.g. over
-        //     weekends in trading time, and fails on arbitrage rather than
-        //     substituting a value.
+        //  7. The Dupire local vol surface: the process's, built in 3.  It is
+        //     zero where no variance accrues, e.g. over weekends in trading
+        //     time, and uses the fallback where it is not defined.
         // ──────────────────────────────────────────────────────────────────────
-        auto localVolSurface = ext::make_shared<FxLocalVolSurface>(Handle<BlackVolTermStructure>(fxVolSurface),
-                                                                   usdTs, eurFwdTs, spot,
-                                                                   1.0e-7, 0.0, localVolFallback);
-        localVolSurface->enableExtrapolation();
-        Handle<LocalVolTermStructure> localVolHandle(localVolSurface);
+        const Handle<LocalVolTermStructure> localVolHandle = process->localVolatility();
+        const auto localVolSurface =
+            ext::dynamic_pointer_cast<FxLocalVolSurface>(localVolHandle.currentLink());
 
         // ──────────────────────────────────────────────────────────────────────
         //  8. Calibrate the Heston stochastic vol model
@@ -620,10 +616,8 @@ int main(int, char*[]) {
                   << std::fixed << std::setprecision(0) << notional << "\n";
 
         // ── Local vol baseline price ─────────────────────────────────────────
-        auto gbsProcess4M = ext::make_shared<GeneralizedBlackScholesProcess>(spot, eurFwdTs, usdTs,
-                                                                             volHandle, localVolHandle);
         auto call4M_lv = ext::make_shared<VanillaOption>(payoff4M, exercise4M);
-        call4M_lv->setPricingEngine(MakeFdBlackScholesVanillaEngine(gbsProcess4M)
+        call4M_lv->setPricingEngine(MakeFdBlackScholesVanillaEngine(process)
                                         .withTGrid(100)
                                         .withXGrid(100)
                                         .withLocalVol(true));

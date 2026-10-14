@@ -56,6 +56,9 @@ namespace QuantLib {
         It shares the domestic curve's reference date, day counter and
         time axis.  \f$ F(t) \f$ is constant within each expiry day and
         steps at midnight, as the delivery date rolls.
+
+        makeFxLocalVolProcess() builds a process with this curve and a
+        consistent local vol, and is the preferred way to use it.
     */
     class FxSettlementForeignCurve
     : public RelativeDerivedYieldTermStructure<YieldTermStructure> {

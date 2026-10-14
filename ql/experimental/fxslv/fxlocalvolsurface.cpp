@@ -19,6 +19,7 @@
 */
 
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
+#include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
 #include <algorithm>
 #include <cmath>
 #include <utility>
@@ -122,6 +123,23 @@ namespace QuantLib {
                                   << strike << " and time " << t << " (Dupire denominator " << den
                                   << ")");
         return std::max<Volatility>(std::sqrt(dwdt / den), minLocalVol_);
+    }
+
+    ext::shared_ptr<GeneralizedBlackScholesProcess>
+    makeFxLocalVolProcess(const Handle<Quote>& spot,
+                          const Handle<YieldTermStructure>& foreignCurve,
+                          const Handle<YieldTermStructure>& domesticCurve,
+                          const FxSettleConvention& settlement,
+                          const Handle<BlackVolTermStructure>& volSurface,
+                          Volatility localVolFallback) {
+        const Handle<YieldTermStructure> settlementForeignCurve(
+            ext::make_shared<FxSettlementForeignCurve>(foreignCurve, domesticCurve, settlement));
+        auto localVol = ext::make_shared<FxLocalVolSurface>(
+            volSurface, domesticCurve, settlementForeignCurve, spot, 1.0e-7, 0.0, localVolFallback);
+        localVol->enableExtrapolation();
+        return ext::make_shared<GeneralizedBlackScholesProcess>(
+            spot, settlementForeignCurve, domesticCurve, volSurface,
+            Handle<LocalVolTermStructure>(localVol));
     }
 
 }

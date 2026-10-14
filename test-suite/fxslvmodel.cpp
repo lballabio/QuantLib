@@ -47,7 +47,6 @@
 #include <ql/settings.hpp>
 #include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
-#include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
@@ -116,7 +115,7 @@ namespace {
         ext::shared_ptr<fxVarianceSurfaceNCP<TestSmileSection>> volSurface;
         Handle<BlackVolTermStructure> volSurfaceHandle;
 
-        ext::shared_ptr<FxLocalVolSurface> localVolSurface;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> localVolProcess;
         Handle<LocalVolTermStructure> localVolHandle;
 
         // ─── Construction ───────────────────────────────────────────────────
@@ -130,8 +129,6 @@ namespace {
                 ext::make_shared<FlatForward>(0, NullCalendar(), 0.0525, dc));
             eurTs = Handle<YieldTermStructure>(
                 ext::make_shared<FlatForward>(0, NullCalendar(), 0.0400, dc));
-            eurFwdTs = Handle<YieldTermStructure>(ext::make_shared<FxSettlementForeignCurve>(
-                eurTs, usdTs, FxSettleConvention(calendar, 2)));
 
             spotSQ = ext::make_shared<SimpleQuote>(1.0850);
             spot   = Handle<Quote>(spotSQ);
@@ -210,13 +207,16 @@ namespace {
             volSurface->enableExtrapolation();
             volSurfaceHandle = Handle<BlackVolTermStructure>(volSurface);
 
-            // Build the Dupire local vol surface.  It is zero where no
-            // variance accrues, e.g. over weekends in trading time, and
-            // fails on arbitrage rather than substituting a value.
-            localVolSurface = ext::make_shared<FxLocalVolSurface>(
-                volSurfaceHandle, usdTs, eurFwdTs, spot);
-            localVolSurface->enableExtrapolation();
-            localVolHandle = Handle<LocalVolTermStructure>(localVolSurface);
+            // The local-vol process: the settlement forward, and a Dupire
+            // local vol that is zero where no variance accrues, e.g. over
+            // weekends in trading time, and fails on arbitrage rather than
+            // substituting a value.  Its foreign curve and local vol are
+            // passed on to the SLV calibration.
+            localVolProcess = makeFxLocalVolProcess(spot, eurTs, usdTs,
+                                                    FxSettleConvention(calendar, 2),
+                                                    volSurfaceHandle);
+            eurFwdTs = localVolProcess->dividendYield();
+            localVolHandle = localVolProcess->localVolatility();
         }
 
         // ── Heston calibration pillars ───────────────────────────────────────
@@ -431,8 +431,7 @@ BOOST_AUTO_TEST_CASE(testSLVPricingNonPillarTenor) {
     // Compare SLV price to local-vol Dupire price.  They should be within 20%
     // of each other; the leverage function is designed to make them consistent
     // in the marginal distribution sense.
-    auto process = ext::make_shared<GeneralizedBlackScholesProcess>(
-        mkt.spot, mkt.eurFwdTs, mkt.usdTs, mkt.volSurfaceHandle, mkt.localVolHandle);
+    const auto process = mkt.localVolProcess;
     auto call4M_lv = mkt.makeEuropean(Option::Call, 4*Months);
     call4M_lv->setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(
         process, 100, 100, 0, FdmSchemeDesc::Douglas(), true));
