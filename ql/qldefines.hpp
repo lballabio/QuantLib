@@ -26,7 +26,7 @@
 #ifndef quantlib_defines_hpp
 #define quantlib_defines_hpp
 
-/* install-hook */
+#define QL_HAVE_CONFIG_H
 
 #ifdef _MSC_VER
 /* Microsoft-specific, but needs to be defined before
@@ -90,7 +90,7 @@
     #define QL_DEBUG
 #endif
 
-#if   defined(HAVE_CONFIG_H)    // Dynamically created by configure
+#if   defined(QL_HAVE_CONFIG_H) // Dynamically created by cmake
    #include <ql/config.hpp>
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
