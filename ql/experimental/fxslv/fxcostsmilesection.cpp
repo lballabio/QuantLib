@@ -682,20 +682,20 @@ namespace QuantLib {
         ts.clear();
         for (Size i = 0; i < targets_.size(); i++) {
             const PointCache& c = cache[i];
-            const Real beta = slopes[i];
+            //const Real beta = slopes[i];
 
-            ts.push_back(c.x * c.x);
             ts.push_back(c.x);
             ts.push_back(1.);
         }
 
-        Matrix A(targets_.size(), 3, ts.begin(), ts.end());
+        Matrix A(targets_.size(), 2, ts.begin(), ts.end());
         Matrix b(targets_.size(), 1, slopes.begin(), slopes.end());
         Matrix v = inverse(transpose(A) * A) * transpose(A) * b;
-       
+
+        //Real sign = (v[0][0] < 0) ? -1. : 1.;
         params_.push_back(v[0][0]);
         params_.push_back(v[1][0]);
-        params_.push_back(v[2][0]);
+        //params_.push_back(sign * v[2][0]);
 
 
     }
@@ -705,11 +705,11 @@ namespace QuantLib {
         Real x = std::log(fwd / strike);
         Integer pa = premiumAdjust() ? 1 : -1;
 
-        Real beta = params_[4] * x * x + params_[5] * x + params_[6];
+        Real beta = params_[4] * x + params_[5];
         Real eps = 0.0;
         do {
-            Real q = params_[0] * beta * beta - 2 * params_[2] * beta + params_[3];
-            Real l = params_[2] - params_[0] * beta;
+            const Real q = params_[0] * beta * beta - 2 * params_[2] * beta + params_[3];
+            const Real l = params_[2] - params_[0] * beta;
 
             QuarticPolynomial Q(std::vector<Real>{q / 4., pa * l - 2 * params_[1], -params_[0],
                                                   2 * x * l, -x * x * q});
@@ -720,7 +720,7 @@ namespace QuantLib {
                 std::find_if(omega.begin(), omega.end(), [](Real r) { return r >= 0.0; });
             QL_REQUIRE(root != omega.end(),
                        "cost equation has no non-negative real root at strike " << strike);
-            Real w = *root;
+            const Real w = *root;
 
             // now form the cubic in slopes and solve to update slope
             CubicPolynomial P(std::vector<Real>{
@@ -733,19 +733,20 @@ namespace QuantLib {
             P.roots(ss);
 
             // the the closest root to the previous guess
-            Real target = beta;
-            auto closest = std::min_element(ss.begin(), ss.end(), [target](double a, double b) {
-                return std::abs(a - target) < std::abs(b - target);
+            auto closest = std::min_element(ss.begin(), ss.end(), [beta](double a, double b) {
+                return std::abs(a - beta) < std::abs(b - beta);
             });
-            eps = (beta - *closest) * (beta - *closest);
+            const Real prevBeta = beta;
             beta = *closest;
+            eps = (beta - prevBeta) * (beta - prevBeta);
         } while (eps > 1.0e-5);
 
+        // run one final root finding with the converged slope
         Real q = params_[0] * beta * beta - 2 * params_[2] * beta + params_[3];
         Real l = params_[2] - params_[0] * beta;
 
-        QuarticPolynomial Q(
-            std::vector<Real>{q / 4., pa * l - 2 * params_[1], -params_[0], 2 * x * l, -x * x * q});
+        QuarticPolynomial Q(std::vector<Real>{q / 4., pa * l - 2 * params_[1], -params_[0], 
+                                                2 * x * l, -x * x * q});
         std::vector<Real> omega;
         Q.roots(omega);
 

@@ -333,7 +333,23 @@ int main(int, char*[]) {
         }
 
         // ------------------------------------------------------------------
-        //  6. Quadratic smile section (delta-parameterised, 3 params)
+        //  6. Cost smile section — flat dynamics with sticky delta
+        //
+        //     As above but uses a scaled (proportional) smile dynamics where
+        //     the relative smile shape is preserved as spot moves.  Also
+        //     calibrates exactly.
+        // ------------------------------------------------------------------
+
+        {
+            FxCostSmileSectionStickyDelta ss(expiryDate, spot, smileQuotes, forDiscount,
+                                                domDiscount, deltaType, atmType, dc, settlement,
+                                                Date(), true);
+            printRow("Cost model — sticky delta", ss, mkt_atm, mkt_rr25, mkt_bf25, mkt_rr10,
+                     mkt_bf10);
+        }
+
+        // ------------------------------------------------------------------
+        //  7. Quadratic smile section (delta-parameterised, 3 params)
         //
         //     Implied vol is a quadratic function of put delta:
         //       sigma(delta) = a*delta^2 + b*delta + c
