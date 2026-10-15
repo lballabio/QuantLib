@@ -508,4 +508,117 @@ namespace QuantLib {
         return std::sqrt(w / tau);
     }
 
+    // -----------------------------------------------------------------------
+    //  FxCostSmileSectionStickyDelta — constructors (forward alpha=0)
+    // -----------------------------------------------------------------------
+
+    FxCostSmileSectionStickyDelta::FxCostSmileSectionStickyDelta(const Date& exerciseDate,
+                                                                 const Handle<Quote>& spot,
+                                                                 const ext::shared_ptr<FxSmileQuotes>& quotes,
+                                                                 const Handle<YieldTermStructure>& foreignDiscount,
+                                                                 const Handle<YieldTermStructure>& domesticDiscount,
+                                                                 DeltaVolQuote::DeltaType deltaType,
+                                                                 DeltaVolQuote::AtmType atmType,
+                                                                 const DayCounter& dayCounter,
+                                                                 const FxSettleConvention& settlement,
+                                                                 const Date& referenceDate,
+                                                                 bool weightedCalibrationFlag)
+    : FxCostSmileSection(exerciseDate, spot, quotes,
+                         foreignDiscount, domesticDiscount,
+                         deltaType, atmType, 0.0,
+                         dayCounter, settlement, referenceDate, weightedCalibrationFlag) {}
+
+    FxCostSmileSectionStickyDelta::FxCostSmileSectionStickyDelta(Time exerciseTime,
+                                                                 const Handle<Quote>& spot,
+                                                                 const ext::shared_ptr<FxSmileQuotes>& quotes,
+                                                                 const Handle<YieldTermStructure>& foreignDiscount,
+                                                                 const Handle<YieldTermStructure>& domesticDiscount,
+                                                                 DeltaVolQuote::DeltaType deltaType,
+                                                                 DeltaVolQuote::AtmType atmType,
+                                                                 const DayCounter& dayCounter,
+                                                                 bool weightedCalibrationFlag)
+    : FxCostSmileSection(exerciseTime, spot, quotes,
+                         foreignDiscount, domesticDiscount,
+                         deltaType, atmType, 0.0,
+                         dayCounter, weightedCalibrationFlag) {}
+
+    void FxCostSmileSectionStickyDelta::calibrate() const {
+        // Build the regressor matrix for the general-alpha cost equation.
+        //
+        // The cost equation at a quoted point with total vol w = sigma * sqrt(T) is:
+        //
+        //   Cgamma + 2*Ctheta*w^(1+alpha) - 2*Ceta*d+(w)*w^alpha + Comega*d+(w)*d-(w)*w^(2*alpha) =
+        //   0
+        //
+        // Columns: [Cgamma, Ctheta, Ceta, Comega]
+        // Regressors: [1, 2*w^(1+a), -2*d+*w^a, d+*d-*w^(2a)]   (times optional weight)
+        //
+        // Note: d+ is used for the vanna regressor in both the standard and premium-adjusted
+        // cases — this is consistent with the existing per-class behaviour preserved here.
+
+        auto dp = [&](Real k, Real iw) { return std::log(fwd_ / k) / iw + iw / 2.; };
+        auto dm = [&](Real k, Real iw) { return std::log(fwd_ / k) / iw - iw / 2.; };
+
+        Real htau = std::sqrt(exerciseTime());
+
+        std::vector<Real> ts;
+        Real w, k, wt;
+        CumulativeNormalDistribution f;
+
+        // check all quotes are delta-vol quotes - cannot be calibrated otherwise
+        for (Size i = 0; i < targets_.size(); i++) {
+            // the closed form needs points on the smile (delta-vol quotes
+            // or smile strangles); broker strangles are not points
+            const auto point = targets_[i]->point(*this);
+            QL_REQUIRE(point, "cost smile sections can only be calibrated to points on the "
+                              "smile (delta-vol quotes or smile strangles), not to broker "
+                              "strangles");
+        }
+
+        
+        // sort the targets by strike
+        struct sortByStrike {
+            bool operator() const(const FxSmileTarget& L, const FxSmileTarget& R) {
+                return L.point()[0] < R.point[0]
+            };
+        }
+
+        targets_ = std::sort(targets_.begin(), targets_.end(), sortByStrike());
+
+
+        for (Size i = 0; i < targets_.size(); i++) {
+            // the closed form needs points on the smile (delta-vol quotes
+            // or smile strangles); broker strangles are not points
+            const auto point = targets_[i]->point(*this);
+            QL_REQUIRE(point, "cost smile sections can only be calibrated to points on the "
+                              "smile (delta-vol quotes or smile strangles), not to broker "
+                              "strangles");
+            k = point->first;
+            w = point->second * htau;
+
+            wt = weightedCalibration() ? f.derivative(dp(k, w)) : 1.0;
+
+            ts.push_back(1.0 * wt);
+            ts.push_back(2.0 * std::pow(w, 1.0 + alpha()) * wt);
+            if (premiumAdjust()) {
+                ts.push_back(-2.0 * dp(k, w) * std::pow(w, alpha()) * wt);
+            } else {
+                ts.push_back(-2.0 * dm(k, w) * std::pow(w, alpha()) * wt);
+            }
+
+            ts.push_back(dp(k, w) * dm(k, w) * std::pow(w, 2.0 * alpha()) * wt);
+        }
+
+        Matrix A(targets_.size(), 4, ts.begin(), ts.end());
+        SVD svd(A);
+
+        const Matrix V = svd.V();
+
+        params_.clear();
+        params_.push_back(1.0);
+        params_.push_back(V(1, 3) / V(0, 3));
+        params_.push_back(V(2, 3) / V(0, 3));
+        params_.push_back(V(3, 3) / V(0, 3));
+    }
+
 }

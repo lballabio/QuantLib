@@ -101,7 +101,7 @@ namespace QuantLib {
       private:
         //! \name FxSmileSection interface
         //@{
-        void calibrate() const override;
+        virtual void calibrate() const override;
         //@}
 
         //! \name FxSmileSectionByStrike interface
@@ -202,6 +202,52 @@ namespace QuantLib {
         //@}
     };
 
+    /*! FX cost smile section with alpha = 0 (flat / constant-vol dynamics).
+
+        The cost equation reduces to a quartic in total vol rho, which is solved
+        analytically (Ferrari's method).  Calibration is inherited from the base
+        class using alpha = 0.
+    */
+    class FxCostSmileSectionStickyDelta : public FxCostSmileSection {
+      public:
+        //! Date mode (see FxSmileSection).
+        FxCostSmileSectionStickyDelta(const Date& exerciseDate,
+                                      const Handle<Quote>& spot,
+                                      const ext::shared_ptr<FxSmileQuotes>& quotes,
+                                      const Handle<YieldTermStructure>& foreignDiscount,
+                                      const Handle<YieldTermStructure>& domesticDiscount,
+                                      DeltaVolQuote::DeltaType deltaType,
+                                      DeltaVolQuote::AtmType atmType,
+                                      const DayCounter& dayCounter,
+                                      const FxSettleConvention& settlement,
+                                      const Date& referenceDate = Date(),
+                                      bool weightedCalibrationFlag = true);
+
+        //! Time mode (see FxSmileSection).
+        FxCostSmileSectionStickyDelta(Time exerciseTime,
+                                      const Handle<Quote>& spot,
+                                      const ext::shared_ptr<FxSmileQuotes>& quotes,
+                                      const Handle<YieldTermStructure>& foreignDiscount,
+                                      const Handle<YieldTermStructure>& domesticDiscount,
+                                      DeltaVolQuote::DeltaType deltaType,
+                                      DeltaVolQuote::AtmType atmType,
+                                      const DayCounter& dayCounter = DayCounter(),
+                                      bool weightedCalibrationFlag = true);
+
+      private:
+        //! \name FxSmileSection interface
+        //@{
+        virtual void calibrate() const override;
+        //@}
+        
+        //! \name FxSmileSectionByStrike interface
+        //@{
+        Volatility volByStrikeImpl(Real strike,
+                                   Real fwd,
+                                   Time tau,
+                                   const std::vector<Real>& params) const override;
+        //@}
+    };
 } // namespace QuantLib
 
 #endif
