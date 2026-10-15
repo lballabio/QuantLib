@@ -19,6 +19,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <cmath>
 #include <ql/termstructures/yield/compositezeroyieldstructure.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -620,6 +621,60 @@ BOOST_AUTO_TEST_CASE(testNullTimeToReference) {
                     << std::fixed << std::setprecision(10)
                     << "    calculated: " << calculated << "\n"
                     << "    expected:   " << expected);
+}
+
+
+BOOST_AUTO_TEST_CASE(testWeekendDepositAndIndexedFraForecast) {
+    BOOST_TEST_MESSAGE("Testing weekend rate helpers without and with historical fixings...");
+
+    SavedSettings backup;
+    const Date today(10, October, 2026); // Saturday
+    Settings::instance().evaluationDate() = today;
+
+    const auto index = ext::make_shared<IborIndex>(
+        "weekend-rate-helper", 6 * Months, 2, Currency(), TARGET(),
+        ModifiedFollowing, false, Actual360());
+    index->clearFixings();
+
+    const auto deposit = ext::make_shared<DepositRateHelper>(0.022, index);
+    const auto fra = ext::make_shared<FraRateHelper>(0.022, 0, index);
+    const auto swap = ext::make_shared<SwapRateHelper>(
+        0.024, 2 * Years, TARGET(), Annual, Unadjusted,
+        Thirty360(Thirty360::BondBasis), index);
+
+    // Since #2653, the deposit and zero-start FRA begin on Tuesday, but
+    // their indexed fixing is the previous Friday (before evaluation).
+    const Date expectedStart(13, October, 2026);
+    const Date pastFixing = index->fixingDate(expectedStart);
+    BOOST_CHECK(deposit->earliestDate() == expectedStart);
+    BOOST_CHECK(fra->earliestDate() == expectedStart);
+    BOOST_CHECK(pastFixing < today);
+
+    const auto bootstrappedDiscount =
+        [&](const ext::shared_ptr<RateHelper>& shortRateHelper) {
+            std::vector<ext::shared_ptr<RateHelper>> helpers{shortRateHelper, swap};
+            const auto curve = ext::make_shared<
+                PiecewiseYieldCurve<Discount, LogLinear>>(
+                    today, helpers, Actual365Fixed());
+            return curve->discount(Date(10, October, 2027));
+        };
+
+    // A weekend bootstrap must not demand a Friday market fixing.
+    const Real depositDiscount = bootstrappedDiscount(deposit);
+    const Real fraDiscount = bootstrappedDiscount(fra);
+    BOOST_CHECK(std::isfinite(depositDiscount));
+    BOOST_CHECK(std::isfinite(fraDiscount));
+    BOOST_CHECK(depositDiscount > 0.0 && depositDiscount < 1.0);
+    BOOST_CHECK(fraDiscount > 0.0 && fraDiscount < 1.0);
+
+    // Historical fixings must not overwrite the calibration quote: both
+    // deposits and indexed FRA helpers must always project from the curve.
+    index->addFixing(pastFixing, 0.08);
+    const Real depositWithFixing = bootstrappedDiscount(deposit);
+    const Real fraWithFixing = bootstrappedDiscount(fra);
+    BOOST_CHECK_SMALL(std::fabs(depositWithFixing - depositDiscount), 1e-12);
+    BOOST_CHECK_SMALL(std::fabs(fraWithFixing - fraDiscount), 1e-12);
+    index->clearFixings();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
