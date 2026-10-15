@@ -581,7 +581,6 @@ namespace QuantLib {
 
         // initialize slope estimates
         std::vector<std::optional<std::pair<Rate, Volatility>>> points;
-        const FxDeltaConverter conv = deltaConverter();
         for (Size i = 0; i < targets_.size(); i++) {
             points.push_back(targets_[i]->point(*this));
         }
@@ -603,29 +602,45 @@ namespace QuantLib {
         // final one
         slopes.push_back(discreteSlope(points[targets_.size() - 2], points[targets_.size() - 1]));
 
-        std::vector<Real> ts;
-        Real w, k, wt, eps, phi_p, phi_m, phi_v, beta, x, pa;
-        std::vector<Real> ss;
+        // Precompute all per-point quantities that are constant across iterations.
+        // Only slopes[i] changes; everything else depends only on quotes and the forward.
+        struct PointCache {
+            Real k, w, x;      // strike, total vol, log-moneyness
+            Real phi_p, phi_m; // d+, d-
+            Real phi_v;        // d+ (premium-adjusted) or d- (standard) for vanna regressor
+            Real wt;           // calibration weight
+        };
+
         CumulativeNormalDistribution f;
-        eps = 100.;
+        const Real pa = premiumAdjust() ? 1. : -1.;
+
+        // pre-compute value for iterative procedure below
+        std::vector<PointCache> cache;
+        cache.reserve(targets_.size());
+        for (Size i = 0; i < targets_.size(); i++) {
+            PointCache c;
+            c.k = points[i]->first;
+            c.w = points[i]->second * htau;
+            c.x = std::log(forward() / c.k);
+            c.phi_p = dp(c.k, c.w);
+            c.phi_m = dm(c.k, c.w);
+            c.phi_v = premiumAdjust() ? c.phi_p : c.phi_m;
+            c.wt = weightedCalibration() ? f.derivative(c.phi_p) : 1.0;
+            cache.push_back(c);
+        }
+
+        std::vector<Real> ts, ss;
+        Real eps = 100.;
         do {
             ts.clear();
             for (Size i = 0; i < targets_.size(); i++) {
-                k = points[i]->first;
-                w = points[i]->second * htau;
-                //x = std::log(forward() / k);
-                pa = 1. ? premiumAdjust() : -1.;
+                const PointCache& c = cache[i];
+                const Real beta = slopes[i];
 
-                phi_p = dp(k, w);
-                phi_m = dm(k, w);
-                phi_v = premiumAdjust() ? phi_p : phi_m;
-                wt = weightedCalibration() ? f.derivative(dp(k, w)) : 1.0;
-                beta = slopes[i];
-
-                ts.push_back(wt * (1 + 2 * beta * phi_v + beta * beta * phi_p * phi_m));
-                ts.push_back(2.0 * w * wt);
-                ts.push_back(-2.0 * wt * (phi_v + beta * phi_p * phi_m));
-                ts.push_back(wt * phi_p * phi_m);
+                ts.push_back(c.wt * (1 + 2 * beta * c.phi_v + beta * beta * c.phi_p * c.phi_m));
+                ts.push_back(2.0 * c.w * c.wt);
+                ts.push_back(-2.0 * c.wt * (c.phi_v + beta * c.phi_p * c.phi_m));
+                ts.push_back(c.wt * c.phi_p * c.phi_m);
             }
 
             Matrix A(targets_.size(), 4, ts.begin(), ts.end());
@@ -641,16 +656,14 @@ namespace QuantLib {
 
             eps = 0.0;
             for (Size i = 0; i < targets_.size(); i++) {
-                k = points[i]->first;
-                w = points[i]->second * htau;
-                x = std::log(forward() / k);
-
+                const PointCache& c = cache[i];
+                
                 // form the cubic in slopes and solve
                 CubicPolynomial P(std::vector<Real>{
-                    2 * (x * params_[3] - w * params_[2]),
-                    w * w * (w * params_[3] + 3 * (pa * params_[2] - 2 * params_[1])) -
-                        2 * x * params_[2],
-                    -w * w * (pa * 3 * params_[0] + 2 * params_[2] * w), w * w * w * params_[0]});
+                    2 * (c.x * params_[3] - c.w * params_[2]),
+                    c.w * c.w * (c.w * params_[3] + 3 * (pa * params_[2] - 2 * params_[1])) - 2 * c.x * params_[2],
+                    -c.w * c.w * (pa * 3 * params_[0] + 2 * params_[2] * c.w), 
+                    c.w * c.w * c.w * params_[0]});
 
                 P.roots(ss);
 
@@ -664,32 +677,82 @@ namespace QuantLib {
             }
             
         } while (eps > 1.0e-5);
+
+        // set-up a quadratic for initializing slope
+        ts.clear();
+        for (Size i = 0; i < targets_.size(); i++) {
+            const PointCache& c = cache[i];
+            const Real beta = slopes[i];
+
+            ts.push_back(c.x * c.x);
+            ts.push_back(c.x);
+            ts.push_back(1.);
+        }
+
+        Matrix A(targets_.size(), 3, ts.begin(), ts.end());
+        Matrix b(targets_.size(), 1, slopes.begin(), slopes.end());
+        Matrix v = inverse(transpose(A) * A) * transpose(A) * b;
+       
+        params_.push_back(v[0][0]);
+        params_.push_back(v[1][0]);
+        params_.push_back(v[2][0]);
+
+
     }
 
     Volatility FxCostSmileSectionStickyDelta::volByStrikeImpl(
         Real strike, Real fwd, Time tau, const std::vector<Real>& params) const {
         Real x = std::log(fwd / strike);
-        Integer s = premiumAdjust() ? 1 : -1;
+        Integer pa = premiumAdjust() ? 1 : -1;
 
-        QuarticPolynomial q(std::vector<Real>{-x * x * params[3], 2 * x * params[2], -params[0],
-                                              s * params[2] - 2 * params[1], params[3] / 4.});
+        Real beta = params_[4] * x * x + params_[5] * x + params_[6];
+        Real eps = 0.0;
+        do {
+            Real q = params_[0] * beta * beta - 2 * params_[2] * beta + params_[3];
+            Real l = params_[2] - params_[0] * beta;
+
+            QuarticPolynomial Q(std::vector<Real>{q / 4., pa * l - 2 * params_[1], -params_[0],
+                                                  2 * x * l, -x * x * q});
+            std::vector<Real> omega;
+            Q.roots(omega);
+
+            const auto root =
+                std::find_if(omega.begin(), omega.end(), [](Real r) { return r >= 0.0; });
+            QL_REQUIRE(root != omega.end(),
+                       "cost equation has no non-negative real root at strike " << strike);
+            Real w = *root;
+
+            // now form the cubic in slopes and solve to update slope
+            CubicPolynomial P(std::vector<Real>{
+                2 * (x * params_[3] - w * params_[2]),
+                w * w * (w * params_[3] + 3 * (pa * params_[2] - 2 * params_[1])) - 2 * x * params_[2],
+                -w * w * (pa * 3 * params_[0] + 2 * params_[2] * w), 
+                w * w * w * params_[0]});
+
+            std::vector<Real> ss;
+            P.roots(ss);
+
+            // the the closest root to the previous guess
+            Real target = beta;
+            auto closest = std::min_element(ss.begin(), ss.end(), [target](double a, double b) {
+                return std::abs(a - target) < std::abs(b - target);
+            });
+            eps = (beta - *closest) * (beta - *closest);
+            beta = *closest;
+        } while (eps > 1.0e-5);
+
+        Real q = params_[0] * beta * beta - 2 * params_[2] * beta + params_[3];
+        Real l = params_[2] - params_[0] * beta;
+
+        QuarticPolynomial Q(
+            std::vector<Real>{q / 4., pa * l - 2 * params_[1], -params_[0], 2 * x * l, -x * x * q});
         std::vector<Real> omega;
-        q.roots(omega);
+        Q.roots(omega);
 
-        // the first non-negative real root; which root to take when there
-        // are several is an open question
         const auto root = std::find_if(omega.begin(), omega.end(), [](Real r) { return r >= 0.0; });
         QL_REQUIRE(root != omega.end(),
                    "cost equation has no non-negative real root at strike " << strike);
         Real w = *root;
-
-        // improve root if necessary
-        Real err = q(w);
-        if (std::abs(err) > 1.0e-16) {
-            Brent solver;
-            w = solver.solve([&](Real x) { return q(x); }, 1e-16, w, w - 0.001 * std::sqrt(tau),
-                             w + 0.001 * std::sqrt(tau));
-        }
 
         return w / std::sqrt(tau);
     }
