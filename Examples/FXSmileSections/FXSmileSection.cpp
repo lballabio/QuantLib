@@ -161,15 +161,15 @@ int main(int, char*[]) {
             ext::make_shared<FlatForward>(todaysDate, 0.03, Actual365Fixed()));
 
         Handle<Quote> spot  = makeQuoteHandle(1.7554);
-        Handle<Quote> v_atm = makeQuoteHandle(0.14483);
+        Handle<Quote> v_atm = makeQuoteHandle(0.069);
 
         // Risk-reversal and broker-fly quotes at two delta tenors
         // 10D risk reversal about 1.8x and 10D fly about 3.2x the 25D ones,
         // as is typical of FX smiles
-        std::vector<Handle<Quote>> rrs = { makeQuoteHandle(0.02770),
-                                           makeQuoteHandle(0.048752) };
-        std::vector<Handle<Quote>> bfs = { makeQuoteHandle(0.007425),
-                                           makeQuoteHandle(0.02376) };
+        std::vector<Handle<Quote>> rrs = { makeQuoteHandle(0.0079),
+                                           makeQuoteHandle(0.0158) };
+        std::vector<Handle<Quote>> bfs = { makeQuoteHandle(0.0030),
+                                           makeQuoteHandle(0.01005) };
         std::vector<Real> deltas = { 0.25, 0.10 };
 
         DeltaVolQuote::DeltaType deltaType = DeltaVolQuote::PaSpot;

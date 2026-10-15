@@ -561,10 +561,6 @@ namespace QuantLib {
 
         Real htau = std::sqrt(exerciseTime());
 
-        std::vector<Real> ts;
-        Real w, k, wt;
-        CumulativeNormalDistribution f;
-
         // check all quotes are delta-vol quotes - cannot be calibrated otherwise
         for (Size i = 0; i < targets_.size(); i++) {
             // the closed form needs points on the smile (delta-vol quotes
@@ -575,50 +571,126 @@ namespace QuantLib {
                               "strangles");
         }
 
-        
         // sort the targets by strike
-        struct sortByStrike {
-            bool operator() const(const FxSmileTarget& L, const FxSmileTarget& R) {
-                return L.point()[0] < R.point[0]
-            };
+        auto sortByStrike = [&](const ext::shared_ptr<FxSmileTarget>& L,
+                                const ext::shared_ptr<FxSmileTarget>& R) {
+            return L->point(*this)->first < R->point(*this)->first;
+        };
+
+        std::sort(targets_.begin(), targets_.end(), sortByStrike);
+
+        // initialize slope estimates
+        std::vector<std::optional<std::pair<Rate, Volatility>>> points;
+        const FxDeltaConverter conv = deltaConverter();
+        for (Size i = 0; i < targets_.size(); i++) {
+            points.push_back(targets_[i]->point(*this));
         }
 
-        targets_ = std::sort(targets_.begin(), targets_.end(), sortByStrike());
+        std::vector<Real> slopes;
+        Real sd, su;
+        auto discreteSlope = [&](const std::optional<std::pair<Rate, Volatility>>& p1,
+                                 const std::optional<std::pair<Rate, Volatility>>& p2) {
+            return (p2->second - p1->second) * htau * (p2->first + p1->first) /
+                   (2 * (p2->first - p1->first));
+        };
 
+        slopes.push_back(discreteSlope(points[0], points[1]));
+        for (Size i = 1; i < targets_.size() - 1; i++) {
+            sd = discreteSlope(points[i - 1], points[i]);
+            su = discreteSlope(points[i], points[i + 1]);
+            slopes.push_back((sd + su) / 2.);
+        }
+        // final one
+        slopes.push_back(discreteSlope(points[targets_.size() - 2], points[targets_.size() - 1]));
 
-        for (Size i = 0; i < targets_.size(); i++) {
-            // the closed form needs points on the smile (delta-vol quotes
-            // or smile strangles); broker strangles are not points
-            const auto point = targets_[i]->point(*this);
-            QL_REQUIRE(point, "cost smile sections can only be calibrated to points on the "
-                              "smile (delta-vol quotes or smile strangles), not to broker "
-                              "strangles");
-            k = point->first;
-            w = point->second * htau;
+        std::vector<Real> ts;
+        Real w, k, wt, eps, phi_p, phi_m, phi_v, beta, x, pa;
+        std::vector<Real> ss;
+        CumulativeNormalDistribution f;
+        eps = 100.;
+        do {
+            ts.clear();
+            for (Size i = 0; i < targets_.size(); i++) {
+                k = points[i]->first;
+                w = points[i]->second * htau;
+                //x = std::log(forward() / k);
+                pa = 1. ? premiumAdjust() : -1.;
 
-            wt = weightedCalibration() ? f.derivative(dp(k, w)) : 1.0;
+                phi_p = dp(k, w);
+                phi_m = dm(k, w);
+                phi_v = premiumAdjust() ? phi_p : phi_m;
+                wt = weightedCalibration() ? f.derivative(dp(k, w)) : 1.0;
+                beta = slopes[i];
 
-            ts.push_back(1.0 * wt);
-            ts.push_back(2.0 * std::pow(w, 1.0 + alpha()) * wt);
-            if (premiumAdjust()) {
-                ts.push_back(-2.0 * dp(k, w) * std::pow(w, alpha()) * wt);
-            } else {
-                ts.push_back(-2.0 * dm(k, w) * std::pow(w, alpha()) * wt);
+                ts.push_back(wt * (1 + 2 * beta * phi_v + beta * beta * phi_p * phi_m));
+                ts.push_back(2.0 * w * wt);
+                ts.push_back(-2.0 * wt * (phi_v + beta * phi_p * phi_m));
+                ts.push_back(wt * phi_p * phi_m);
             }
 
-            ts.push_back(dp(k, w) * dm(k, w) * std::pow(w, 2.0 * alpha()) * wt);
-        }
+            Matrix A(targets_.size(), 4, ts.begin(), ts.end());
+            SVD svd(A);
 
-        Matrix A(targets_.size(), 4, ts.begin(), ts.end());
-        SVD svd(A);
+            const Matrix V = svd.V();
 
-        const Matrix V = svd.V();
+            params_.clear();
+            params_.push_back(1.0);
+            params_.push_back(V(1, 3) / V(0, 3));
+            params_.push_back(V(2, 3) / V(0, 3));
+            params_.push_back(V(3, 3) / V(0, 3));
 
-        params_.clear();
-        params_.push_back(1.0);
-        params_.push_back(V(1, 3) / V(0, 3));
-        params_.push_back(V(2, 3) / V(0, 3));
-        params_.push_back(V(3, 3) / V(0, 3));
+            eps = 0.0;
+            for (Size i = 0; i < targets_.size(); i++) {
+                k = points[i]->first;
+                w = points[i]->second * htau;
+                x = std::log(forward() / k);
+
+                // form the cubic in slopes and solve
+                CubicPolynomial P(std::vector<Real>{
+                    2 * (x * params_[3] - w * params_[2]),
+                    w * w * (w * params_[3] + 3 * (pa * params_[2] - 2 * params_[1])) -
+                        2 * x * params_[2],
+                    -w * w * (pa * 3 * params_[0] + 2 * params_[2] * w), w * w * w * params_[0]});
+
+                P.roots(ss);
+
+                // the the closest root to the previous guess
+                Real target = slopes[i];
+                auto closest = std::min_element(ss.begin(), ss.end(), [target](double a, double b) {
+                    return std::abs(a - target) < std::abs(b - target);
+                });
+                eps += (slopes[i] - *closest) * (slopes[i] - *closest);
+                slopes[i] = *closest;
+            }
+            
+        } while (eps > 1.0e-5);
     }
 
+    Volatility FxCostSmileSectionStickyDelta::volByStrikeImpl(
+        Real strike, Real fwd, Time tau, const std::vector<Real>& params) const {
+        Real x = std::log(fwd / strike);
+        Integer s = premiumAdjust() ? 1 : -1;
+
+        QuarticPolynomial q(std::vector<Real>{-x * x * params[3], 2 * x * params[2], -params[0],
+                                              s * params[2] - 2 * params[1], params[3] / 4.});
+        std::vector<Real> omega;
+        q.roots(omega);
+
+        // the first non-negative real root; which root to take when there
+        // are several is an open question
+        const auto root = std::find_if(omega.begin(), omega.end(), [](Real r) { return r >= 0.0; });
+        QL_REQUIRE(root != omega.end(),
+                   "cost equation has no non-negative real root at strike " << strike);
+        Real w = *root;
+
+        // improve root if necessary
+        Real err = q(w);
+        if (std::abs(err) > 1.0e-16) {
+            Brent solver;
+            w = solver.solve([&](Real x) { return q(x); }, 1e-16, w, w - 0.001 * std::sqrt(tau),
+                             w + 0.001 * std::sqrt(tau));
+        }
+
+        return w / std::sqrt(tau);
+    }
 }
