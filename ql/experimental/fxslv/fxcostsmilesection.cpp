@@ -542,6 +542,7 @@ namespace QuantLib {
                          deltaType, atmType, 0.0,
                          dayCounter, weightedCalibrationFlag) {}
 
+
     void FxCostSmileSectionStickyDelta::calibrate() const {
         // Build the regressor matrix for the general-alpha cost equation.
         //
@@ -711,8 +712,8 @@ namespace QuantLib {
             const Real q = params_[0] * beta * beta - 2 * params_[2] * beta + params_[3];
             const Real l = params_[2] - params_[0] * beta;
 
-            QuarticPolynomial Q(std::vector<Real>{q / 4., pa * l - 2 * params_[1], -params_[0],
-                                                  2 * x * l, -x * x * q});
+            QuarticPolynomial Q(std::vector<Real>{x * x * q, -2 * x * l, params_[0],
+                                                  2 * params_[1] - pa * l, -q / 4.});
             std::vector<Real> omega;
             Q.roots(omega);
 
@@ -745,8 +746,8 @@ namespace QuantLib {
         Real q = params_[0] * beta * beta - 2 * params_[2] * beta + params_[3];
         Real l = params_[2] - params_[0] * beta;
 
-        QuarticPolynomial Q(std::vector<Real>{q / 4., pa * l - 2 * params_[1], -params_[0], 
-                                                2 * x * l, -x * x * q});
+        QuarticPolynomial Q(std::vector<Real>{x * x * q, -2 * x * l, params_[0], 
+                                                2 * params_[1] - pa * l, -q / 4.});
         std::vector<Real> omega;
         Q.roots(omega);
 
