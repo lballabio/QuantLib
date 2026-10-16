@@ -569,6 +569,79 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuAtLowVolatility) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuWithCarryAboveVolatility) {
+
+    BOOST_TEST_MESSAGE("Testing Barone-Adesi-Whaley and Ju approximations "
+                       "when the carry outweighs the volatility...");
+
+    // When |b|T exceeds 2*sigma*sqrt(T), with the sign that makes early
+    // exercise worth considering, the seed of the critical-price iteration
+    // used to land on the wrong side of the strike: negative for calls, or
+    // far above the strike for puts. The engines then threw instead of
+    // returning a price; see <https://github.com/lballabio/QuantLib/issues/2905>.
+
+    const Date today = Date(15, October, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual365Fixed();
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+
+    struct Case {
+        Option::Type type;
+        Real strike;
+        Rate r;
+        Rate q;
+        Volatility v;
+        Integer years;
+    };
+    const Case cases[] = {
+        {Option::Call, 100.0, 0.0257, 0.0571, 0.0166, 3},
+        {Option::Call, 100.0, 0.0257, 0.0571, 0.0100, 3},
+        {Option::Put, 100.0, 0.0647, 0.0234, 0.0089, 3},
+        {Option::Put, 120.0, 0.1077, 0.0329, 0.0149, 10},
+    };
+
+    // the approximations are not exact; the band only checks that the
+    // returned price is close to the high-precision one
+    const Real tolerance = 1.0e-2;
+
+    for (const auto& c : cases) {
+        const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, c.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, c.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, c.v, dc)));
+
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, c.strike);
+        const auto exercise = ext::make_shared<AmericanExercise>(today, today + c.years * Years);
+
+        VanillaOption reference(payoff, exercise);
+        reference.setPricingEngine(ext::make_shared<QdFpAmericanEngine>(
+            process, QdFpAmericanEngine::highPrecisionScheme()));
+        const Real expected = reference.NPV();
+
+        for (const ext::shared_ptr<PricingEngine>& engine :
+             {ext::shared_ptr<PricingEngine>(
+                  ext::make_shared<BaroneAdesiWhaleyApproximationEngine>(process)),
+              ext::shared_ptr<PricingEngine>(
+                  ext::make_shared<JuQuadraticApproximationEngine>(process))}) {
+
+            VanillaOption option(payoff, exercise);
+            option.setPricingEngine(engine);
+
+            Real calculated = Null<Real>();
+            BOOST_CHECK_NO_THROW(calculated = option.NPV());
+            if (calculated == Null<Real>())
+                continue;
+
+            const Real error = std::fabs(calculated - expected);
+            if (!(error <= tolerance * c.strike)) {
+                REPORT_FAILURE("value", payoff, exercise, spot->value(), c.q, c.r, today, c.v,
+                               expected, calculated, error, tolerance * c.strike);
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testJuNotBelowExerciseValue) {
 
     BOOST_TEST_MESSAGE("Testing that the Ju approximation is never "
