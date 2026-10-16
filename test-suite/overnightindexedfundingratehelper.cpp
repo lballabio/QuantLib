@@ -20,15 +20,20 @@
 #include "toplevelfixture.hpp"
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/coupon.hpp>
+#include <ql/experimental/termstructures/jacobian/curvejacobiangraph.hpp>
 #include <ql/experimental/termstructures/overnightindexedfundingratehelper.hpp>
 #include <ql/indexes/ibor/aonia.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
+#include <ql/math/matrix.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/time/calendars/australia.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/utilities/null_deleter.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -46,6 +51,52 @@ namespace {
 
     ext::shared_ptr<YieldTermStructure> flatCurve(const Date& referenceDate, Rate rate) {
         return ext::make_shared<FlatForward>(referenceDate, rate, Actual365Fixed(), Continuous);
+    }
+
+    // check that the helper provides complete analytical sensitivities and
+    // that the own-curve bucket matches a finite-difference tilt of the curve
+    void checkAnalyticQuoteSensitivities(
+        const std::vector<ext::shared_ptr<RateHelper>>& helpers) {
+        for (Size i = 0; i < helpers.size(); ++i) {
+            ImpliedQuoteSensitivities sensitivities =
+                helpers[i]->impliedQuoteSensitivitiesByCurve();
+            BOOST_REQUIRE_MESSAGE(sensitivities.available,
+                                  "funding helper " << i
+                                      << " did not provide analytical sensitivities");
+            BOOST_CHECK_MESSAGE(sensitivities.incomplete.empty(),
+                                "funding helper " << i << " reported incomplete sensitivities");
+
+            // replace the curve C the helper is seated on by C*exp(-eps*t);
+            // the reported sensitivities predict the derivative at eps=0 as
+            // sum of dQ/dP(d) * (-t(d)) * P(d)
+            YieldTermStructure* own = helpers[i]->termStructure();
+            BOOST_REQUIRE(own != nullptr);
+            Real predicted = 0.0;
+            auto bucket = sensitivities.sensitivities.find(own);
+            if (bucket != sensitivities.sensitivities.end())
+                for (const auto& [date, dQdP] : bucket->second)
+                    predicted += dQdP * (-own->timeFromReference(date)) * own->discount(date, true);
+            auto spread = ext::make_shared<SimpleQuote>(0.0);
+            auto tilted = ext::make_shared<ZeroSpreadedTermStructure>(
+                Handle<YieldTermStructure>(
+                    ext::shared_ptr<YieldTermStructure>(own, null_deleter())),
+                Handle<Quote>(spread));
+            tilted->enableExtrapolation();
+            helpers[i]->setTermStructure(tilted.get());
+            Real h = 1.0e-7;
+            spread->setValue(+h);
+            Real up = helpers[i]->impliedQuote();
+            spread->setValue(-h);
+            Real down = helpers[i]->impliedQuote();
+            spread->setValue(0.0);
+            helpers[i]->setTermStructure(own);
+            Real numerical = (up - down) / (2.0 * h);
+            BOOST_CHECK_MESSAGE(std::fabs(predicted - numerical) <
+                                    1.0e-5 * std::max(1.0, std::fabs(numerical)),
+                                "funding helper " << i << " own-curve sensitivity " << predicted
+                                                  << " does not match finite difference "
+                                                  << numerical);
+        }
     }
 
 }
@@ -80,6 +131,18 @@ BOOST_AUTO_TEST_CASE(testUsdCofStyleBootstrap) {
     auto curve = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(today, helpers,
                                                                             Actual365Fixed());
     curve->discount(helpers.back()->pillarDate());
+    checkAnalyticQuoteSensitivities(helpers);
+
+    // in the cross-curve graph the exogenous projection curve is treated as
+    // independent, so every bootstrap-equation row must be analytical
+    CurveJacobianGraph graph;
+    graph.add(curve);
+    std::vector<bool> analytic;
+    Matrix J = graph.crossJacobian(*curve, *curve, &analytic);
+    BOOST_REQUIRE_EQUAL(J.rows(), helpers.size());
+    BOOST_REQUIRE_EQUAL(analytic.size(), helpers.size());
+    for (Size i = 0; i < analytic.size(); ++i)
+        BOOST_CHECK_MESSAGE(analytic[i], "row " << i << " fell back to a numerical Jacobian");
 
     Date start = calendar.advance(today, 2, Days, Following);
     for (Size i = 0; i < quotes.size(); ++i) {
@@ -161,6 +224,7 @@ BOOST_AUTO_TEST_CASE(testSameDayOvernightPillar) {
     BOOST_CHECK_EQUAL(helper->pillarDate(), Date(16, July, 2026));
     curve->discount(helper->pillarDate());
     BOOST_CHECK_SMALL(helper->impliedQuote() - margin, 1.0e-11);
+    checkAnalyticQuoteSensitivities(helpers);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
