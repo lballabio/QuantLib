@@ -35,8 +35,7 @@ namespace QuantLib {
         volatility smile sections */
     class SmileSectionUtils {
       public:
-        // TODO: Review whether this constructor should remain implicit.
-        SmileSectionUtils(const SmileSection& section,
+        explicit SmileSectionUtils(const SmileSection& section,
                           const std::vector<Real>& moneynessGrid = std::vector<Real>(),
                           Real atm = Null<Real>(),
                           bool deleteArbitragePoints = false);
