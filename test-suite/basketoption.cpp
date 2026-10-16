@@ -1154,7 +1154,7 @@ BOOST_AUTO_TEST_CASE(testOperatorSplittingSpreadEngine) {
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(1, March, 2025);
-    const Date maturity = yearFractionToDate(dc, today, 1.0);
+    const Date maturity = roundToDayStart(yearFractionToDate(dc, today, 1.0));
 
     const Handle<YieldTermStructure> r
         = Handle<YieldTermStructure>(flatRate(today, 0.05, dc));
@@ -1284,7 +1284,7 @@ BOOST_AUTO_TEST_CASE(testStrangSplittingSpreadEngineVsMathematica) {
     for (const auto& testCase: testCases) {
         const Real rho = testCase.rho;;
         const Real strike = testCase.K;
-        const Date maturityDate = yearFractionToDate(dc, today, testCase.T);
+        const Date maturityDate = roundToDayStart(yearFractionToDate(dc, today, testCase.T));
         const auto volTS1 = Handle<BlackVolTermStructure>(flatVol(today, testCase.vol1, dc));
 
         BasketOption option(
@@ -2350,7 +2350,7 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
                             rho[i][j] = (i == j) ? 1.0 : cor[0][0];
 
                 for (Real t: b.maturities) {
-                    const Date maturityDate = yearFractionToDate(dc, today, t);
+                    const Date maturityDate = roundToDayStart(yearFractionToDate(dc, today, t));
                     const ext::shared_ptr<Exercise> exercise =
                         ext::make_shared<EuropeanExercise>(maturityDate);
 

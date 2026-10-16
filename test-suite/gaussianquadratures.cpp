@@ -178,6 +178,33 @@ BOOST_AUTO_TEST_CASE(testLaguerre) {
                 x_inv_exp, 1.0);
 }
 
+BOOST_AUTO_TEST_CASE(testLaguerreLargeOrder) {
+     BOOST_TEST_MESSAGE("Testing Gauss-Laguerre integration for large orders...");
+
+     // Beyond n ~ 200 the Laguerre weight function w(x) = x^s*exp(-x) underflows
+     // to zero at the largest quadrature node, which used to turn the weight
+     // computation into an inf*0 -> NaN (see issue #2776). AnalyticHestonEngine
+     // relies on GaussLaguerreIntegration(192) (test-suite/hestonmodel.cpp), just
+     // below that threshold, so this also covers orders spanning across it.
+     // testSingle's tolerance check does not fire on NaN (any comparison with
+     // NaN is false), so finiteness is asserted explicitly here first.
+     // Upper bound extended from 232 to 400 (PR review, #2779): the failure
+     // is unbounded in n, and independent verification (log-space weights
+     // vs. an unmodified build, moments of x^k*exp(-x) for k=0..8, and
+     // Gauss-Hermite's analogous underflow) held to ~1e-14 through n = 400.
+     for (Size n = 184; n <= 400; n += 8) {
+         const GaussLaguerreIntegration quad(n);
+         const Real calculated = quad(inv_exp);
+         if (!std::isfinite(calculated)) {
+             BOOST_ERROR("GaussLaguerreIntegration(" << n << ") returned a "
+                         "non-finite result integrating f(x) = exp(-x): "
+                         << calculated);
+         } else {
+             testSingle(quad, "f(x) = exp(-x)", inv_exp, 1.0);
+         }
+     }
+}
+
 BOOST_AUTO_TEST_CASE(testHermite) {
      BOOST_TEST_MESSAGE("Testing Gauss-Hermite integration...");
 
@@ -457,6 +484,48 @@ BOOST_AUTO_TEST_CASE(testMultiDimensionalGaussIntegration) {
         }
 }
 
+
+
+BOOST_AUTO_TEST_CASE(testHighOrderWeightsStayFinite) {
+    BOOST_TEST_MESSAGE("Testing quadrature weights at high orders...");
+
+    // At high orders the outermost nodes move far enough into the tail
+    // that the weight function underflows, and a single non-finite weight
+    // turns the whole integral into NaN.  #2776 covered Gauss-Laguerre;
+    // Gauss-Hermite and the hyperbolic quadrature fail the same way.
+
+    // Note the explicit isfinite check: abs(NaN - expected) > tol is false,
+    // so a tolerance test on its own would let a NaN through.
+
+    for (Size n: {200, 300, 400, 500}) {
+        const GaussLaguerreIntegration laguerre(n);
+        const Real l = laguerre([](Real x) { return std::exp(-x); });
+        if (!std::isfinite(l) || std::abs(l - 1.0) > 1e-12)
+            BOOST_ERROR("failed to reproduce Gauss-Laguerre integral"
+                        << std::setprecision(16)
+                        << "\n    order:      " << n
+                        << "\n    calculated: " << l
+                        << "\n    expected:   " << 1.0);
+
+        const GaussHermiteIntegration hermite(n);
+        const Real h = hermite([](Real x) { return std::exp(-x*x); });
+        if (!std::isfinite(h) || std::abs(h - std::sqrt(M_PI)) > 1e-12)
+            BOOST_ERROR("failed to reproduce Gauss-Hermite integral"
+                        << std::setprecision(16)
+                        << "\n    order:      " << n
+                        << "\n    calculated: " << h
+                        << "\n    expected:   " << std::sqrt(M_PI));
+
+        const GaussHyperbolicIntegration hyperbolic(n);
+        const Real y = hyperbolic([](Real x) { return 1.0/std::cosh(x); });
+        if (!std::isfinite(y) || std::abs(y - M_PI) > 1e-12)
+            BOOST_ERROR("failed to reproduce Gauss-hyperbolic integral"
+                        << std::setprecision(16)
+                        << "\n    order:      " << n
+                        << "\n    calculated: " << y
+                        << "\n    expected:   " << M_PI);
+    }
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

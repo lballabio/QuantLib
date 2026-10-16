@@ -210,6 +210,14 @@ namespace QuantLib {
                         + lambda * (lambda - 1) / (spot * spot * (1 - chi)))
                     * (phi * (Sk - payoff->strike()) - black_Sk)
                     * std::pow((spot/Sk), lambda);
+                // deep in the money the correction can land below the
+                // exercise value, which the holder can always take instead
+                Real exerciseValue = (*payoff)(spot);
+                if (results_.value < exerciseValue) {
+                    results_.value = exerciseValue;
+                    results_.delta = phi;
+                    results_.gamma = 0;
+                }
             } else {
                 results_.value = phi * (spot - payoff->strike());
                 results_.delta = phi;

@@ -122,6 +122,8 @@ namespace QuantLib {
         /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.
         */
+        // Intentionally hides the base method to return the concrete swap type.
+        // cppcheck-suppress duplInheritedMember
         ext::shared_ptr<OvernightIndexedSwap> underlyingSwap(
                                                 const Date& fixingDate) const;
         //@}

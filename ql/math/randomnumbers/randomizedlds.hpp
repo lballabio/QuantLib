@@ -60,10 +60,11 @@ namespace QuantLib {
       public:
         typedef Sample<std::vector<Real> > sample_type;
         RandomizedLDS(const LDS& ldsg, PRS prsg);
+        // TODO: Review whether this constructor should remain implicit.
         RandomizedLDS(const LDS& ldsg);
-        RandomizedLDS(Size dimensionality,
-                      BigNatural ldsSeed = 0,
-                      BigNatural prsSeed = 0);
+        explicit RandomizedLDS(Size dimensionality,
+                               BigNatural ldsSeed = 0,
+                               BigNatural prsSeed = 0);
         //! returns next sample using a given randomizing vector
         const sample_type& nextSequence() const;
         const sample_type& lastSequence() const {

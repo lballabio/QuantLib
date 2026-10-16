@@ -192,7 +192,7 @@ Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
         return yts.empty() ? this->termStructure()->discount(T, true)
                            : yts->discount(T, true);
 
-    ext::shared_ptr<GsrProcess> p = ext::static_pointer_cast<GsrProcess>(stateProcess_);
+    auto p = ext::static_pointer_cast<GsrProcess>(stateProcess_);
 
     Real x = y * stateProcess_->stdDeviation(0.0, 0.0, t) +
              stateProcess_->expectation(0.0, 0.0, t);
@@ -211,7 +211,7 @@ Real Gsr::numeraireImpl(const Time t, const Real y,
 
     calculate();
 
-    ext::shared_ptr<GsrProcess> p = ext::static_pointer_cast<GsrProcess>(stateProcess_);
+    auto p = ext::static_pointer_cast<GsrProcess>(stateProcess_);
 
     if (t == 0)
         return yts.empty()

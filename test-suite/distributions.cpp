@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <limits>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/distributions/binomialdistribution.hpp>
 #include <ql/math/errorfunction.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/math/distributions/bivariatestudenttdistribution.hpp>
@@ -531,6 +532,57 @@ BOOST_AUTO_TEST_CASE(testBivariate) {
                                                         "West 2004", 1.0e-8);
 }
 
+BOOST_AUTO_TEST_CASE(testBinomialDistribution) {
+    BOOST_TEST_MESSAGE("Testing binomial distributions...");
+
+    BOOST_CHECK_CLOSE(binomialCoefficientLn(5, 2), std::log(10.0), 1.0e-12);
+    BOOST_CHECK_EQUAL(binomialCoefficient(5, 2), 10.0);
+    BOOST_CHECK_EQUAL(binomialCoefficient(5, 0), 1.0);
+    BOOST_CHECK_EXCEPTION(
+        binomialCoefficientLn(2, 3), Error,
+        ExpectedErrorMessage("n<k not allowed"));
+
+    BinomialDistribution pmf(0.25, 4);
+    BOOST_CHECK_CLOSE(pmf(0), std::pow(0.75, 4), 1.0e-12);
+    BOOST_CHECK_CLOSE(pmf(2), 6.0 * std::pow(0.25, 2) * std::pow(0.75, 2), 1.0e-12);
+    BOOST_CHECK_EQUAL(pmf(5), 0.0);
+
+    BinomialDistribution zeroP(0.0, 4);
+    BOOST_CHECK_EQUAL(zeroP(0), 1.0);
+    BOOST_CHECK_EQUAL(zeroP(1), 0.0);
+    BinomialDistribution oneP(1.0, 4);
+    BOOST_CHECK_EQUAL(oneP(3), 0.0);
+    BOOST_CHECK_EQUAL(oneP(4), 1.0);
+    BOOST_CHECK_EXCEPTION(
+        BinomialDistribution(-0.1, 4), Error,
+        ExpectedErrorMessage("negative p not allowed"));
+    BOOST_CHECK_EXCEPTION(
+        BinomialDistribution(1.1, 4), Error,
+        ExpectedErrorMessage("p>1.0 not allowed"));
+
+    CumulativeBinomialDistribution cdf(0.25, 4);
+    BOOST_CHECK_CLOSE(cdf(2), pmf(0) + pmf(1) + pmf(2), 1.0e-12);
+    BOOST_CHECK_EQUAL(cdf(4), 1.0);
+    CumulativeBinomialDistribution zeroPCdf(0.0, 4);
+    BOOST_CHECK_EQUAL(zeroPCdf(0), 1.0);
+    CumulativeBinomialDistribution onePCdf(1.0, 4);
+    BOOST_CHECK_EQUAL(onePCdf(3), 0.0);
+    BOOST_CHECK_EXCEPTION(
+        CumulativeBinomialDistribution(-0.1, 4), Error,
+        ExpectedErrorMessage("negative p not allowed"));
+    BOOST_CHECK_EXCEPTION(
+        CumulativeBinomialDistribution(1.1, 4), Error,
+        ExpectedErrorMessage("p>1.0 not allowed"));
+
+    Real upper = PeizerPrattMethod2Inversion(1.0, 5);
+    Real lower = PeizerPrattMethod2Inversion(-1.0, 5);
+    BOOST_CHECK_CLOSE(upper + lower, 1.0, 1.0e-12);
+    BOOST_CHECK_EQUAL(PeizerPrattMethod2Inversion(0.0, 5), 0.5);
+    BOOST_CHECK_EXCEPTION(
+        PeizerPrattMethod2Inversion(0.0, 4), Error,
+        ExpectedErrorMessage("n must be an odd number"));
+}
+
 BOOST_AUTO_TEST_CASE(testPoisson) {
 
     BOOST_TEST_MESSAGE("Testing Poisson distribution...");
@@ -633,6 +685,43 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativePoisson) {
                         << "    expected:   " << Real(i));
         }
     }
+
+    BOOST_CHECK_EQUAL(icp(0.0), 0.0);
+    BOOST_CHECK_EQUAL(icp(1.0), QL_MAX_REAL);
+
+    InverseCumulativePoisson icp4(4.0);
+    Real previous = -1.0;
+    for (Real probability : {0.1, 0.5, 0.9, 0.99}) {
+        Real calculated = icp4(probability);
+        BOOST_CHECK_GT(calculated, previous);
+        previous = calculated;
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPoissonInvalidParameters) {
+    BOOST_CHECK_EXCEPTION(
+        PoissonDistribution(-1.0), Error,
+        ExpectedErrorMessage("mu must be non negative"));
+    BOOST_CHECK_EXCEPTION(
+        (PoissonDistribution(std::numeric_limits<Real>::quiet_NaN())), Error,
+        ExpectedErrorMessage("mu must be non negative"));
+    BOOST_CHECK_EXCEPTION(
+        InverseCumulativePoisson(0.0), Error,
+        ExpectedErrorMessage("lambda must be positive"));
+    BOOST_CHECK_EXCEPTION(
+        InverseCumulativePoisson(-1.0), Error,
+        ExpectedErrorMessage("lambda must be positive"));
+
+    InverseCumulativePoisson inverse;
+    BOOST_CHECK_EXCEPTION(
+        inverse(-0.1), Error,
+        ExpectedErrorMessage("only defined on the interval [0,1]"));
+    BOOST_CHECK_EXCEPTION(
+        inverse(1.1), Error,
+        ExpectedErrorMessage("only defined on the interval [0,1]"));
+    BOOST_CHECK_EXCEPTION(
+        inverse(std::numeric_limits<Real>::quiet_NaN()), Error,
+        ExpectedErrorMessage("only defined on the interval [0,1]"));
 }
 
 BOOST_AUTO_TEST_CASE(testInverseCumulativeStudent) {
@@ -745,6 +834,24 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativeStudent) {
                             << "\n    error:        " << error);
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testStudentDistribution) {
+    StudentDistribution cauchy(1);
+    BOOST_CHECK_CLOSE(cauchy(0.0), 1.0 / M_PI, 1.0e-10);
+    BOOST_CHECK_CLOSE(cauchy(1.0), 0.5 / M_PI, 1.0e-10);
+
+    StudentDistribution student(5);
+    BOOST_CHECK_CLOSE(student(-1.0), student(1.0), 1.0e-12);
+
+    CumulativeStudentDistribution cumulative(5);
+    BOOST_CHECK_CLOSE(cumulative(0.0), 0.5, 1.0e-12);
+    BOOST_CHECK_CLOSE(cumulative(-1.0), 1.0 - cumulative(1.0), 1.0e-12);
+
+    BOOST_CHECK_EXCEPTION(StudentDistribution(0), Error,
+                          ExpectedErrorMessage("invalid parameter for t-distribution"));
+    BOOST_CHECK_EXCEPTION(CumulativeStudentDistribution(0), Error,
+                          ExpectedErrorMessage("invalid parameter for t-distribution"));
 }
 
 BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudent) {
@@ -901,6 +1008,60 @@ BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudent) {
                         << "\n    y:   " << i.y << "\n    calculated: " << calculated
                         << "\n    expected:   " << expected);
     }
+}
+
+BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentInvalidParameters) {
+    BOOST_CHECK_EXCEPTION(
+        BivariateCumulativeStudentDistribution(0, 0.0), Error,
+        ExpectedErrorMessage("degrees of freedom must be positive"));
+    BOOST_CHECK_EXCEPTION(
+        BivariateCumulativeStudentDistribution(1, -1.1), Error,
+        ExpectedErrorMessage("rho must be in [-1, 1]"));
+    BOOST_CHECK_EXCEPTION(
+        BivariateCumulativeStudentDistribution(1, 1.1), Error,
+        ExpectedErrorMessage("rho must be in [-1, 1]"));
+    BOOST_CHECK_EXCEPTION(
+        BivariateCumulativeStudentDistribution(1, std::numeric_limits<Real>::quiet_NaN()), Error,
+        ExpectedErrorMessage("rho must be in [-1, 1]"));
+    BOOST_CHECK_EXCEPTION(
+        BivariateCumulativeStudentDistribution(1, std::numeric_limits<Real>::infinity()), Error,
+        ExpectedErrorMessage("rho must be in [-1, 1]"));
+    BOOST_CHECK_EXCEPTION(
+        BivariateCumulativeStudentDistribution(1, -std::numeric_limits<Real>::infinity()), Error,
+        ExpectedErrorMessage("rho must be in [-1, 1]"));
+}
+
+BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentBoundaryContinuity) {
+    Natural n = 5;
+    CumulativeStudentDistribution univariate(n);
+    BivariateCumulativeStudentDistribution perfectlyPositive(n, 1.0);
+    BivariateCumulativeStudentDistribution perfectlyNegative(n, -1.0);
+    BivariateCumulativeStudentDistribution symmetric(n, 0.5);
+    Real points[] = {-2.0, -0.25, 0.0, 1.5};
+    Real tolerance = 1.0e-10;
+
+    for (Real x : points) {
+        for (Real y : points) {
+            Real positiveExpected = univariate(std::min(x, y));
+            BOOST_CHECK_SMALL(perfectlyPositive(x, y) - positiveExpected, tolerance);
+
+            Real negativeExpected = x < -y ? 0.0 : univariate(x) - univariate(-y);
+            BOOST_CHECK_SMALL(perfectlyNegative(x, y) - negativeExpected, tolerance);
+        }
+    }
+
+    BOOST_CHECK_SMALL(symmetric(0.75, -1.25) - symmetric(-1.25, 0.75), tolerance);
+
+    Real epsilon = 1.0e-7;
+    BOOST_CHECK_SMALL(perfectlyPositive(1.0, 1.0 + epsilon) -
+                         perfectlyPositive(1.0, 1.0 - epsilon),
+                     1.0e-6);
+    BOOST_CHECK_SMALL(perfectlyNegative(1.0, -1.0 + epsilon) -
+                         perfectlyNegative(1.0, -1.0 + 2.0 * epsilon),
+                     1.0e-6);
+    BOOST_CHECK_SMALL(perfectlyNegative(1.0, -1.0 - epsilon) -
+                         perfectlyNegative(1.0, -1.0 - 2.0 * epsilon),
+                     1.0e-6);
 }
 
 BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentVsBivariate) {
@@ -1086,6 +1247,18 @@ BOOST_AUTO_TEST_CASE(testCumulativeNormalTail) {
                         << ": decreased by " << previous - p);
         previous = p;
     }
+
+}
+
+BOOST_AUTO_TEST_CASE(testCumulativeChiSquareDistribution) {
+    CumulativeChiSquareDistribution chiSquare(2.0);
+    BOOST_CHECK_EQUAL(chiSquare(-1.0), 0.0);
+    BOOST_CHECK_EQUAL(chiSquare(0.0), 0.0);
+    BOOST_CHECK_CLOSE(chiSquare(2.0), 1.0 - std::exp(-1.0), 1.0e-5);
+
+    NonCentralCumulativeChiSquareDistribution nonCentral(4.0, 1.0);
+    BOOST_CHECK_EQUAL(nonCentral(0.0), 0.0);
+    BOOST_CHECK_EQUAL(nonCentral(-1.0), 0.0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

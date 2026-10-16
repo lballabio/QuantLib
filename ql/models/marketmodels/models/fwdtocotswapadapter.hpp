@@ -30,6 +30,7 @@ namespace QuantLib {
 
     class FwdToCotSwapAdapter : public MarketModel {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         FwdToCotSwapAdapter(
                           const ext::shared_ptr<MarketModel>& forwardModel);
         //! \name MarketModel interface

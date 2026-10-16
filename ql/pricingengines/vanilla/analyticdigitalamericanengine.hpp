@@ -54,7 +54,7 @@ namespace QuantLib {
     */
     class AnalyticDigitalAmericanEngine : public VanillaOption::engine {
       public:
-        AnalyticDigitalAmericanEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
+        explicit AnalyticDigitalAmericanEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         void calculate() const override;
         virtual bool knock_in() const {
            return true;
@@ -88,7 +88,7 @@ namespace QuantLib {
     class AnalyticDigitalAmericanKOEngine : 
                               public AnalyticDigitalAmericanEngine {
       public:
-        AnalyticDigitalAmericanKOEngine(
+        explicit AnalyticDigitalAmericanKOEngine(
                     const ext::shared_ptr<GeneralizedBlackScholesProcess> 
                                  &engine):
         AnalyticDigitalAmericanEngine(engine) {}

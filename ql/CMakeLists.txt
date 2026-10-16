@@ -1180,8 +1180,6 @@ set(QL_HEADERS
     experimental/finitedifferences/glued1dmesher.hpp
     experimental/finitedifferences/vanillavppoption.hpp
     experimental/forward/analytichestonforwardeuropeanengine.hpp
-    experimental/fx/blackdeltacalculator.hpp
-    experimental/fx/deltavolquote.hpp
     experimental/fx/discountingmtmcrosscurrencybasisswapengine.hpp
     experimental/fx/fxresetcashflows.hpp
     experimental/fx/mtmcrosscurrencybasisswap.hpp

@@ -18,6 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/pricingengines/exotic/analyticcomplexchooserengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <utility>
@@ -49,16 +50,16 @@ namespace QuantLib {
 
         b = riskFreeRate(T) - dividendYield(T);
         v = volatility(T);
-        Real d1 = (log(S / i) + (b + pow(v, 2) / 2)*T) / (v*sqrt(T));
+        Real d1 = (log(S / i) + (b + squared(v) / 2)*T) / (v*sqrt(T));
         Real d2 = d1 - v*sqrt(T);
 
         b = riskFreeRate(T + Tc) - dividendYield(T + Tc);
         v = volatility(Tc);
-        Real y1 = (log(S / Xc) + (b + pow(v, 2) / 2)*Tc) / (v*sqrt(Tc));
+        Real y1 = (log(S / Xc) + (b + squared(v) / 2)*Tc) / (v*sqrt(Tc));
 
         b = riskFreeRate(T + Tp) - dividendYield(T + Tp);
         v = volatility(Tp);
-        Real y2 = (log(S / Xp) + (b + pow(v, 2) / 2)*Tp) / (v*sqrt(Tp));
+        Real y2 = (log(S / Xp) + (b + squared(v) / 2)*Tp) / (v*sqrt(Tp));
 
         Real rho1 = sqrt(T / Tc);
         Real rho2 = sqrt(T / Tp);

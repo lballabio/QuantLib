@@ -65,8 +65,8 @@ class MultiCurveBootstrap : public ext::enable_shared_from_this<MultiCurveBootst
   public:
     explicit MultiCurveBootstrap(Real accuracy, bool analyticJacobian = false);
     explicit MultiCurveBootstrap(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
-                        ext::shared_ptr<EndCriteria> endCriteria = nullptr,
-                        bool analyticJacobian = false);
+                                 ext::shared_ptr<EndCriteria> endCriteria = nullptr,
+                                 bool analyticJacobian = false);
     void add(const MultiCurveBootstrapContributor* c);
     void addObserver(Observer* o);
     void runMultiCurveBootstrap();

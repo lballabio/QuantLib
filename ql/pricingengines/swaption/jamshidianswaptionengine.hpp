@@ -49,7 +49,7 @@ namespace QuantLib {
         /*! \note the term structure is only needed when the short-rate
                   model cannot provide one itself.
         */
-        JamshidianSwaptionEngine(
+        explicit JamshidianSwaptionEngine(
             const ext::shared_ptr<OneFactorAffineModel>& model,
             Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>())
         : GenericModelEngine<OneFactorAffineModel, Swaption::arguments, Swaption::results>(model),

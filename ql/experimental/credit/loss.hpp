@@ -30,6 +30,7 @@ namespace QuantLib {
 
 class Loss {
     public:
+        // TODO: Review whether this constructor should remain implicit.
         Loss(Real t = 0.0, Real a = 0.0) : time(t), amount(a) {};
         Real time, amount;
     };

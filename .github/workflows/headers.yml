@@ -15,7 +15,7 @@ jobs:
         sudo apt update
         sudo apt install -y libboost-dev ccache
     - name: Cache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: single-headers-${{ github.ref }}
         restore-keys: |

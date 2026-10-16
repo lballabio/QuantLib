@@ -46,8 +46,7 @@ namespace QuantLib {
     }
 
     ext::shared_ptr<TwoFactorModel::ShortRateDynamics> G2::dynamics() const {
-        return ext::shared_ptr<ShortRateDynamics>(new
-            Dynamics(phi_, a(), sigma(), b(), eta(), rho()));
+        return ext::make_shared<Dynamics>(phi_, a(), sigma(), b(), eta(), rho());
     }
 
     void G2::generateArguments() {
@@ -221,8 +220,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments.nominal != Null<Real>(),
                    "non-constant nominals are not supported yet");
 
-        Date settlement = termStructure()->referenceDate();
-        DayCounter dayCounter = termStructure()->dayCounter();
+        auto settlement = termStructure()->referenceDate();
+        auto dayCounter = termStructure()->dayCounter();
         Time start = dayCounter.yearFraction(settlement,
                                              arguments.floatingResetDates[0]);
         Real w = (arguments.type==Swap::Payer ? 1 : -1 );

@@ -61,6 +61,13 @@ Use the QuantLib portability aliases in `ql/shared_ptr.hpp`:
 
 Use `std::unique_ptr` for strict local ownership in implementations.
 
+Prefer `ext::make_shared<T>(arg1, arg2)` to `ext::shared_ptr<T>(new T(arg1, arg2))`,
+prefer `ext::make_shared<Derived>(arg1, arg2)` to `ext::shared_ptr<Base>(new Derived(arg1, arg2))`,
+and prefer `auto x = ext::make_shared<Derived>(arg1, arg2)` when declaring a variable.
+If some code that you're already working on can be improved as above, do it (even
+if `x` was previously declared as a `shared_ptr<Base>`).
+The same goes for `unique_ptr` and `make_unique`.
+
 ### 3.4 Error Handling
 
 Use the `ql/errors.hpp` macros, not raw `throw`/`assert`:

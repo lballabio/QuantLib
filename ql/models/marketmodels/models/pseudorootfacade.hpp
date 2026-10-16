@@ -32,6 +32,7 @@ namespace QuantLib
 {
     class PseudoRootFacade : public MarketModel {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         PseudoRootFacade(const ext::shared_ptr<CTSMMCapletCalibration>& calibrator);
         PseudoRootFacade(const std::vector<Matrix>& covariancePseudoRoots,
                          const std::vector<Rate>& rateTimes,

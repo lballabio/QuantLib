@@ -63,10 +63,10 @@ namespace QuantLib {
             enum FundingType { FundingWithPreviousSpot, FundingWithCurrentSpot };
 
             explicit PerpetualFutures(PerpetualFutures::PayoffType payoffType,
-                             PerpetualFutures::FundingType fundingType = PerpetualFutures::FundingWithCurrentSpot,
-                             Period fundingFrequency = Period(8, Hours),
-                             Calendar cal = NullCalendar(),
-                             DayCounter dc = ActualActual(ActualActual::ISDA));
+                                      PerpetualFutures::FundingType fundingType = PerpetualFutures::FundingWithCurrentSpot,
+                                      Period fundingFrequency = Period(8, Hours),
+                                      Calendar cal = NullCalendar(),
+                                      DayCounter dc = ActualActual(ActualActual::ISDA));
             bool isExpired() const override { return false; }
             void setupArguments(PricingEngine::arguments*) const override;
     

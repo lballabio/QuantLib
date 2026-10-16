@@ -88,6 +88,8 @@ namespace QuantLib {
 
             // the set of unique tuples
             std::set<std::vector<Size> > tuples;
+            // Keep the temporary outside the loops so assignments can reuse its allocation.
+            // cppcheck-suppress variableScope
             std::vector<Size> x;
             for(Size i=0; i<dim; ++i) {
                 // increase i-th value in every tuple by 1

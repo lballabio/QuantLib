@@ -45,6 +45,10 @@ namespace QuantLib {
         return std::sqrt(w(x))*value(n, x);
     }
 
+    Real GaussianOrthogonalPolynomial::logW(Real x) const {
+        return std::log(w(x));
+    }
+
 
     GaussLaguerrePolynomial::GaussLaguerrePolynomial(Real s)
     : s_(s) {
@@ -67,6 +71,10 @@ namespace QuantLib {
         return std::pow(x, s_)*std::exp(-x);
     }
 
+    Real GaussLaguerrePolynomial::logW(Real x) const {
+        return s_*std::log(x) - x;
+    }
+
 
     GaussHermitePolynomial::GaussHermitePolynomial(Real mu)
     : mu_(mu) {
@@ -87,6 +95,10 @@ namespace QuantLib {
 
     Real GaussHermitePolynomial::w(Real x) const {
         return std::pow(std::fabs(x), 2*mu_)*std::exp(-x*x);
+    }
+
+    Real GaussHermitePolynomial::logW(Real x) const {
+        return 2.0*mu_*std::log(std::fabs(x)) - x*x;
     }
 
     GaussJacobiPolynomial::GaussJacobiPolynomial(Real alpha, Real beta)
@@ -177,6 +189,14 @@ namespace QuantLib {
 
     Real GaussHyperbolicPolynomial::w(Real x) const {
         return 1/std::cosh(x);
+    }
+
+    Real GaussHyperbolicPolynomial::logW(Real x) const {
+        // cosh overflows above |x| of about 710, which would make the
+        // inherited log(w(x)) return -infinity. Use
+        // log(cosh x) = |x| - log 2 + log1p(exp(-2|x|)) instead.
+        const Real ax = std::fabs(x);
+        return -(ax - M_LN2 + std::log1p(std::exp(-2.0*ax)));
     }
 
 }

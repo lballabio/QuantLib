@@ -352,7 +352,7 @@ namespace QuantLib {
         // gamma_2 below are ill-conditioned and the (3, 3) approximant is not
         // reliable here.
         QL_REQUIRE(std::abs(A) > 1e-8,
-                   "Padè approximation is singular at z = " << z
+                   "Pade approximation is singular at z = " << z
                    << "; use the Adams "
                    "predictor-corrector engine for this contour point");
 
@@ -385,7 +385,7 @@ namespace QuantLib {
             gamma0)};
 
         QL_REQUIRE(std::abs(det) > 1e-12,
-                   "Padè denominator system is ill-conditioned at z = " << z
+                   "Pade denominator system is ill-conditioned at z = " << z
                    << "; use the Adams predictor-corrector engine for this "
                    "contour point");
 

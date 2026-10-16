@@ -68,7 +68,8 @@ namespace QuantLib {
                       Time from,
                       Time to,
                       Size steps) {
-            rollbackImpl(a, from, to, steps, (const condition_type*)nullptr);
+            rollbackImpl(a, from, to, steps,
+                         static_cast<const condition_type*>(nullptr));
         }
         /*! solves the problem between the given times,
             applying a condition at every step.

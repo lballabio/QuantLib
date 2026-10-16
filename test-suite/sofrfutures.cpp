@@ -306,7 +306,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticQuoteSensitivities) {
 
 BOOST_AUTO_TEST_CASE(testOvernightIndexFutureRateHelperNotification) {
     BOOST_TEST_MESSAGE(
-        "Testing OvernightIndexRateFutureHelper is not notified via curve build");
+        "Testing that OvernightIndexRateFutureHelper is not notified during bootstrap...");
     Date today(26, October, 2018);
     Settings::instance().evaluationDate() = today;
     auto futHelper = ext::make_shared<OvernightIndexFutureRateHelper>(
@@ -319,6 +319,23 @@ BOOST_AUTO_TEST_CASE(testOvernightIndexFutureRateHelperNotification) {
     curve->nodes();  // force evaluation
     BOOST_ASSERT(!f.isUp());
 }
+
+BOOST_AUTO_TEST_CASE(testHelperFuture) {
+    BOOST_TEST_MESSAGE("Testing the future underlying a SOFR futures helper...");
+
+    Date today = Date(26, October, 2018);
+    Settings::instance().evaluationDate() = today;
+
+    SofrFutureRateHelper helper(97.8175, Oct, 2018, Monthly);
+
+    auto future = helper.future();
+    BOOST_REQUIRE(future);
+    BOOST_CHECK_EQUAL(future->valueDate(), Date(1, October, 2018));
+    BOOST_CHECK_EQUAL(future->maturityDate(), Date(1, November, 2018));
+    BOOST_CHECK_EQUAL(future->valueDate(), helper.earliestDate());
+    BOOST_CHECK_EQUAL(future->overnightIndex()->name(), Sofr().name());
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

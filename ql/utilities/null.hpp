@@ -32,34 +32,9 @@
 
 namespace QuantLib {
 
-    #ifdef QL_NULL_AS_FUNCTIONS
-
-    //! template function providing a null value for a given type.
-    template <typename T>
-    constexpr T Null() {
-        if constexpr (std::is_floating_point_v<T>) {
-            // a specific, unlikely value that should fit into any Real
-            return (std::numeric_limits<float>::max)();
-        } else if constexpr (std::is_integral_v<T>) {
-            // this should fit into any Integer
-            return (std::numeric_limits<int>::max)();
-        } else {
-            return T();
-        }
-    }
-
-    #else
-
-    //! template class providing a null value for a given type.
-    template <class Type>
-    class Null;
-
-    // default implementation for built-in types
-    template <typename T>
-    class Null {
-      public:
-        constexpr Null() = default;
-        constexpr operator T() const {
+    namespace detail {
+        template <typename T>
+        constexpr T Null() {
             if constexpr (std::is_floating_point_v<T>) {
                 // a specific, unlikely value that should fit into any Real
                 return (std::numeric_limits<float>::max)();
@@ -70,6 +45,21 @@ namespace QuantLib {
                 return T();
             }
         }
+    }
+
+    #ifdef QL_NULL_AS_FUNCTIONS
+
+    //! template function providing a null value for a given type.
+    using detail::Null;
+
+    #else
+
+    //! template class providing a null value for a given type.
+    template <typename T>
+    class Null {
+      public:
+        constexpr Null() = default;
+        constexpr operator T() const { return detail::Null<T>(); }
     };
 
     #endif

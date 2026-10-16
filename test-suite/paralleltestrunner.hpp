@@ -63,7 +63,6 @@ namespace bp = boost::process;
 #include <fstream>
 #include <chrono>
 #include <string>
-#include <cstring>
 #include <thread>
 #include <limits>
 
@@ -434,16 +433,19 @@ int main( int argc, char* argv[] )
             output_logstream(log_stream(), oldBuf, logBuf);
             log_stream().rdbuf(oldBuf);
 
-            RuntimeLog log;
-            log.testCaseName[sizeof(log.testCaseName)-1] = '\0';
+            // zero-initialized: the whole struct goes over the queue,
+            // padding and unused buffer tail included.
+            RuntimeLog log = {};
 
             message_queue lq(open_only, testRuntimeLogName);
             for (run_time_list_type::const_iterator iter = runTimeLogs.begin();
                 iter != runTimeLogs.end(); ++iter) {
                 log.time = iter->second;
 
-                std::strncpy(log.testCaseName, iter->first.c_str(),
-                    sizeof(log.testCaseName)-1);
+                const std::string& name = iter->first;
+                const std::string::size_type n =
+                    name.copy(log.testCaseName, sizeof(log.testCaseName)-1);
+                log.testCaseName[n] = '\0';
 
                 lq.send(&log, sizeof(RuntimeLog), 0);
             }
