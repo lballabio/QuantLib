@@ -96,9 +96,12 @@ std::vector<Real> ZabrModel::normalVolatility(const std::vector<Real> &strikes) 
 
 Real ZabrModel::localVolatilityHelper(const Real f, const Real x) const {
     return alpha_ * std::pow(std::fabs(f), beta_) /
-           F(y(f), std::pow(alpha_, gamma_ - 1.0) *
-                       x); // TODO optimize this, y is comoputed together
-                           // with x already
+           F(y(f), std::pow(alpha_, gamma_ - 1.0) * x);
+}
+
+Real ZabrModel::localVolatilityHelper(const Real f, const Real x, const Real yval) const {
+    return alpha_ * std::pow(std::fabs(f), beta_) /
+           F(yval, std::pow(alpha_, gamma_ - 1.0) * x);
 }
 
 Real ZabrModel::localVolatility(const Real f) const {
@@ -106,10 +109,16 @@ Real ZabrModel::localVolatility(const Real f) const {
 }
 
 std::vector<Real> ZabrModel::localVolatility(const std::vector<Real> &f) const {
+    // Compute y and x in one pass: x() internally needs y() for the ODE,
+    // so we pre-compute y here and avoid a second round of y() calls inside
+    // localVolatilityHelper (the original TODO optimize comment).
     std::vector<Real> x_ = x(f);
+    std::vector<Real> y_(f.size());
+    std::transform(f.begin(), f.end(), y_.begin(),
+                   [&](Real _f) { return y(_f); });
     std::vector<Real> result(f.size());
-    std::transform(f.begin(), f.end(), x_.begin(), result.begin(),
-                   [&](Real _f, Real _x) { return localVolatilityHelper(_f, _x); });
+    for (Size i = 0; i < f.size(); ++i)
+        result[i] = localVolatilityHelper(f[i], x_[i], y_[i]);
     return result;
 }
 
@@ -119,7 +128,10 @@ Real ZabrModel::fdPrice(const Real strike) const {
 
 std::vector<Real> ZabrModel::fdPrice(const std::vector<Real> &strikes) const {
 
-    // TODO check strikes to be increasing
+    QL_REQUIRE(!strikes.empty(), "strikes must not be empty");
+    for (auto i = strikes.begin() + 1; i != strikes.end(); ++i)
+        QL_REQUIRE(*i > *(i - 1),
+                   "strikes must be strictly ascending (" << *(i-1) << ", " << *i << ")");
     // TODO put these parameters somewhere
     const Real start =
         std::min(0.00001, strikes.front() * 0.5); // lowest strike for grid
