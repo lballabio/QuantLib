@@ -23,6 +23,46 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        // (1 - exp(-x))/x, accurate for small x as well
+        Real oneMinusExpOverX(Real x) {
+            return x == 0.0 ? 1.0 : -std::expm1(-x)/x;
+        }
+
+        // The two functions
+        //   phi(x) = (exp(-x) - 1 + x)/x^2
+        //   h(x)   = (4 exp(-x) - exp(-2x) - 3 + 2x)/x^3
+        // appear in the exponent of A. Their closed forms cancel
+        // catastrophically for small x, so we use the Taylor series
+        //   phi(x) = sum_k (k+3) p_k
+        //   h(x)   = sum_k (2^(k+3) - 4) p_k
+        // with p_k = (-x)^k/(k+3)!, which converges quickly and
+        // without significant cancellation for |x| < 1.
+        void phiAndH(Real x, Real& phi, Real& h) {
+            if (std::fabs(x) < 1.0) {
+                Real p = 1.0/6.0;
+                Real twoPower = 8.0;
+                phi = h = 0.0;
+                for (Size k=0; k<40; ++k) {
+                    const Real hTerm = (twoPower - 4.0)*p;
+                    phi += (k + 3.0)*p;
+                    h += hTerm;
+                    if (std::fabs(hTerm) <= QL_EPSILON*std::fabs(h))
+                        break;
+                    p *= -x/(k + 4.0);
+                    twoPower *= 2.0;
+                }
+            } else {
+                const Real e1 = std::expm1(-x);
+                const Real e2 = std::expm1(-2.0*x);
+                phi = (e1 + x)/(x*x);
+                h = (4.0*e1 - e2 + 2.0*x)/(x*x*x);
+            }
+        }
+
+    }
+
     Vasicek::Vasicek(Rate r0, Real a, Real b, Real sigma, Real lambda)
     : OneFactorAffineModel(4), r0_(r0),
       a_(arguments_[0]), b_(arguments_[1]), sigma_(arguments_[2]),
@@ -34,27 +74,23 @@ namespace QuantLib {
     }
 
     Real Vasicek::A(Time t, Time T) const {
-        Real _a = a();
-        if (_a < std::sqrt(QL_EPSILON)) {
-            const Real sigma2 = sigma()*sigma();
-            const Real tau = T - t;
-            return std::exp(-0.5*lambda()*sigma()*tau*tau +
-                            sigma2*tau*tau*tau/6.0);
-        } else {
-            Real sigma2 = sigma()*sigma();
-            Real bt = B(t, T);
-            return std::exp((b() + lambda()*sigma()/_a
-                             - 0.5*sigma2/(_a*_a))*(bt - (T - t))
-                             - 0.25*sigma2*bt*bt/_a);
-        }
+        // A(t,T) = exp((b + lambda*sigma/a - sigma^2/(2a^2))*(B - tau)
+        //               - sigma^2*B^2/(4a))
+        // rewritten as exp(-(a*b + lambda*sigma)*tau^2*phi(a*tau)
+        //                  + sigma^2*tau^3*h(a*tau)/4),
+        // which is free of cancellation and has the correct limit
+        // for a -> 0.
+        const Real tau = T - t;
+        const Real sigma2 = sigma()*sigma();
+        Real phi, h;
+        phiAndH(a()*tau, phi, h);
+        return std::exp(-(a()*b() + lambda()*sigma())*tau*tau*phi +
+                        0.25*sigma2*tau*tau*tau*h);
     }
 
     Real Vasicek::B(Time t, Time T) const {
-        Real _a = a();
-        if (_a < std::sqrt(QL_EPSILON))
-            return (T - t);
-        else
-            return (1.0 - std::exp(-_a*(T - t)))/_a;
+        const Time tau = T - t;
+        return tau*oneMinusExpOverX(a()*tau);
     }
 
     Real Vasicek::discountBondOption(Option::Type type,
@@ -62,14 +98,12 @@ namespace QuantLib {
                                      Time bondMaturity) const {
 
         Real v;
-        Real _a = a();
         if (std::fabs(maturity) < QL_EPSILON) {
             v = 0.0;
-        } else if (_a < std::sqrt(QL_EPSILON)) {
-            v = sigma()*B(maturity, bondMaturity)* std::sqrt(maturity);
         } else {
-            v = sigma()*B(maturity, bondMaturity)*
-                std::sqrt(0.5*(1.0 - std::exp(-2.0*_a*maturity))/_a);
+            // 0.5*(1 - exp(-2*a*maturity))/a
+            const Real variance = maturity*oneMinusExpOverX(2.0*a()*maturity);
+            v = sigma()*B(maturity, bondMaturity)*std::sqrt(variance);
         }
         Real f = discountBond(0.0, bondMaturity, r0_);
         Real k = discountBond(0.0, maturity, r0_)*strike;
