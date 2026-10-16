@@ -64,8 +64,33 @@ namespace QuantLib {
                                     mergedEvolutionTimes,
                                     isPresent_);
 
-        // TODO: add relevant rates
-        evolution_ = EvolutionDescription(rateTimes1, mergedEvolutionTimes);
+        // Build relevanceRates for each merged step as the union of the
+        // underlying's and rebate's relevant rate ranges at that step.
+        const auto& undRates = d1.relevanceRates();
+        const auto& rebRates = rebate_->evolution().relevanceRates();
+        Size nMergedSteps = mergedEvolutionTimes.size();
+        std::vector<std::pair<Size,Size> > relevanceRates(nMergedSteps);
+        Size undStep = 0, rebStep = 0;
+        for (Size i = 0; i < nMergedSteps; ++i) {
+            Size lo = d1.numberOfRates(), hi = 0;
+            if (isPresent_[0][i]) {
+                lo = std::min(lo, undRates[undStep].first);
+                hi = std::max(hi, undRates[undStep].second);
+                ++undStep;
+            }
+            if (isPresent_[2][i]) {
+                lo = std::min(lo, rebRates[rebStep].first);
+                hi = std::max(hi, rebRates[rebStep].second);
+                ++rebStep;
+            }
+            // If neither underlying nor rebate active at this step
+            // (pure exercise or strategy step) keep the full range.
+            if (lo > hi) { lo = 0; hi = d1.numberOfRates(); }
+            relevanceRates[i] = std::make_pair(lo, hi);
+        }
+
+        evolution_ = EvolutionDescription(rateTimes1, mergedEvolutionTimes,
+                                          relevanceRates);
 
         cashFlowTimes_ = underlying_->possibleCashFlowTimes();
         rebateOffset_ = cashFlowTimes_.size();
