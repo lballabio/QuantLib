@@ -28,7 +28,10 @@
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
+#include <ql/math/integrals/kronrodintegral.hpp>
+#include <algorithm>
 #include <iostream>
+#include <vector>
 
 
 namespace QuantLib {
@@ -96,7 +99,16 @@ namespace QuantLib {
         }
 
         // soft barrier pricing logic
-        Real w = knockInValue(S, X, r, sigma, T, U, L, b, optionType,eta);
+        // The closed form integrates the single-barrier down-and-in call (up-and-in put)
+        // prices over the band, which are given by a single expression when the strike
+        // is beyond the band and the barrier has not been crossed. Otherwise we average
+        // the single-barrier prices over the band numerically.
+        const bool isDown = (barrierType == Barrier::DownIn || barrierType == Barrier::DownOut);
+        const bool closedFormApplies = isDown ? (optionType == Option::Call && S >= U && X >= U)
+                                              : (optionType == Option::Put && S <= L && X <= L);
+        Real w = closedFormApplies
+            ? knockInValue(S, X, r, sigma, T, U, L, b, optionType, eta)
+            : bandAverageKnockInValue(S, X, U, L, barrierType);
         results_.value = (barrierType == Barrier::DownIn || barrierType == Barrier::UpIn)
             ? w                     // knock in price
             : vanillaEquivalent() - w;  // knock out price
@@ -158,6 +170,55 @@ namespace QuantLib {
         // final result
         Real w = (1.0 / (U - L)) * (term1 - term2);
         return w;
+    }
+
+
+    // A soft knock-in option pays the vanilla payoff times the fraction of the band [L, U]
+    // that has been crossed, i.e. it is the average over the barrier level H in [L, U] of
+    // the single-barrier knock-in options (Hart and Ross):
+    //     1/(U-L) * int_L^U knockIn(H) dH.
+    // Barrier levels the spot has already crossed (H >= S for a down barrier, H <= S for
+    // an up barrier) are knocked in and are worth the vanilla option.
+    Real AnalyticSoftBarrierEngine::bandAverageKnockInValue(Real S, Real X, Real U, Real L,
+                                                            Barrier::Type barrierType) const {
+        const bool isDown = (barrierType == Barrier::DownIn || barrierType == Barrier::DownOut);
+        const Barrier::Type knockInType = isDown ? Barrier::DownIn : Barrier::UpIn;
+
+        const Real vanilla = vanillaEquivalent();
+        if (vanilla <= 0.0)
+            return 0.0;
+
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non-striked payoff given");
+        auto barrierEngine = ext::make_shared<AnalyticBarrierEngine>(process_);
+        auto knockIn = [&](Real H) {
+            BarrierOption option(knockInType, H, 0.0, payoff, arguments_.exercise);
+            option.setPricingEngine(barrierEngine);
+            return option.NPV();
+        };
+
+        // The integrand is smooth except at H = S (where the barrier is crossed) and at
+        // H = X (where the single-barrier formulas change), so we split the band there.
+        std::vector<Real> knots = {L, U};
+        for (Real kink : {S, X}) {
+            if (kink > L && kink < U)
+                knots.push_back(kink);
+        }
+        std::sort(knots.begin(), knots.end());
+
+        const Real tolerance = std::max(1e-11 * vanilla * (U - L), 2.0 * QL_EPSILON);
+        GaussKronrodAdaptive integrator(tolerance, 10000);
+
+        Real integral = 0.0;
+        for (Size i = 0; i + 1 < knots.size(); ++i) {
+            const Real lo = knots[i];
+            const Real hi = knots[i + 1];
+            const Real mid = 0.5 * (lo + hi);
+            const bool crossed = isDown ? (mid >= S) : (mid <= S);
+            integral += crossed ? vanilla * (hi - lo) : integrator(knockIn, lo, hi);
+        }
+        return integral / (U - L);
     }
 
 
