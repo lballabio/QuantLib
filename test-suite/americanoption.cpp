@@ -666,15 +666,13 @@ BOOST_AUTO_TEST_CASE(testJuNotBelowEuropeanValue) {
         european.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(process));
 
         VanillaOption option(payoff, exercise);
-        option.setPricingEngine(
-            ext::make_shared<JuQuadraticApproximationEngine>(process));
+        option.setPricingEngine(ext::make_shared<JuQuadraticApproximationEngine>(process));
 
         const Real expected = european.NPV();
         const Real calculated = option.NPV();
         if (calculated < expected) {
-            REPORT_FAILURE("value below European", payoff, exercise, spot->value(),
-                           c.q, c.r, today, c.v, expected, calculated,
-                           expected - calculated, 0.0);
+            REPORT_FAILURE("value below European", payoff, exercise, spot->value(), c.q, c.r, today,
+                           c.v, expected, calculated, expected - calculated, 0.0);
         }
     }
 }
