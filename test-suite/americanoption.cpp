@@ -621,6 +621,64 @@ BOOST_AUTO_TEST_CASE(testJuNotBelowExerciseValue) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testJuNotBelowEuropeanValue) {
+
+    BOOST_TEST_MESSAGE("Testing that the Ju approximation is never "
+                       "worth less than the European option...");
+
+    // For short-dated, highly volatile options the Ju-Zhong correction term
+    // can turn negative and take the price below the European one; see
+    // <https://github.com/lballabio/QuantLib/issues/2904>. This happens both
+    // when the price was floored at an exercise value lower than the European
+    // price and, at the money, when the exercise floor doesn't apply at all.
+
+    const Date today = Date(15, October, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual365Fixed();
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+
+    struct Case {
+        Option::Type type;
+        Real strike;
+        Rate r;
+        Rate q;
+        Volatility v;
+        Integer days;
+    };
+    const Case cases[] = {
+        {Option::Put, 110.0, 0.02, 0.00, 0.80, 3},
+        {Option::Put, 100.0, 0.05, 0.03, 1.20, 1},
+        {Option::Call, 90.0, 0.01, 0.03, 1.20, 3},
+    };
+
+    for (const auto& c : cases) {
+        const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, c.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, c.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, c.v, dc)));
+
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, c.strike);
+        const Date exDate = today + c.days * Days;
+        const auto exercise = ext::make_shared<AmericanExercise>(today, exDate);
+
+        VanillaOption european(payoff, ext::make_shared<EuropeanExercise>(exDate));
+        european.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(process));
+
+        VanillaOption option(payoff, exercise);
+        option.setPricingEngine(
+            ext::make_shared<JuQuadraticApproximationEngine>(process));
+
+        const Real expected = european.NPV();
+        const Real calculated = option.NPV();
+        if (calculated < expected) {
+            REPORT_FAILURE("value below European", payoff, exercise, spot->value(),
+                           c.q, c.r, today, c.v, expected, calculated,
+                           expected - calculated, 0.0);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testBjerksundStenslandAtUnitBeta) {
 
     BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland where beta is one...");
