@@ -46,8 +46,11 @@ namespace QuantLib {
       sigma_(arguments_[0]), volstepdates_(std::move(volstepdates)),
       volatilities_(std::move(volatilities)), swaptionVol_(swaptionVol),
       swaptionExpiries_(swaptionExpiries), swaptionTenors_(swaptionTenors),
-      swapIndexBase_(swapIndexBase), iborIndex_(swapIndexBase->iborIndex()) {
+      swapIndexBase_(swapIndexBase) {
 
+        QL_REQUIRE(swapIndexBase_, "null swap index");
+        iborIndex_ = swapIndexBase_->iborIndex();
+        QL_REQUIRE(iborIndex_, "null ibor index");
         QL_REQUIRE(swaptionExpiries.size() == swaptionTenors.size(),
                    "number of swaption expiries ("
                        << swaptionExpiries.size()
@@ -77,6 +80,7 @@ namespace QuantLib {
       volatilities_(std::move(volatilities)), capletVol_(capletVol),
       capletExpiries_(capletExpiries), iborIndex_(std::move(iborIndex)) {
 
+        QL_REQUIRE(iborIndex_, "null ibor index");
         QL_REQUIRE(!capletExpiries.empty(),
                    "need at least one caplet expiry to calibrate numeraire");
         QL_REQUIRE(!termStructure.empty(),

@@ -892,6 +892,39 @@ BOOST_AUTO_TEST_CASE(testSmileSectionUtilsWShapedSmile) {
                     << idx.first << ", right index " << idx.second);
 }
 
+BOOST_AUTO_TEST_CASE(testNullSwapIndex) {
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+    std::vector<Date> expiries = {TARGET().advance(referenceDate, 1 * Years)};
+    std::vector<Period> tenors = {1 * Years};
+    std::vector<Real> volatilities = {1.0};
+    BOOST_CHECK_EXCEPTION(
+        MarkovFunctional(flatYts(), 0.01, std::vector<Date>(), volatilities, flatSwaptionVts(),
+                         expiries, tenors, ext::shared_ptr<SwapIndex>()),
+        Error, ExpectedErrorMessage("null swap index"));
+
+    auto base = ext::make_shared<EuriborSwapIsdaFixA>(1 * Years);
+    auto withoutIbor = ext::make_shared<SwapIndex>(
+        "MissingIbor", base->tenor(), base->fixingDays(), base->currency(),
+        base->fixingCalendar(), base->fixedLegTenor(), base->fixedLegConvention(),
+        base->dayCounter(), ext::shared_ptr<IborIndex>());
+    BOOST_CHECK_EXCEPTION(
+        MarkovFunctional(flatYts(), 0.01, std::vector<Date>(), volatilities, flatSwaptionVts(),
+                         expiries, tenors, withoutIbor),
+        Error, ExpectedErrorMessage("null ibor index"));
+}
+
+BOOST_AUTO_TEST_CASE(testNullIborIndex) {
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+    std::vector<Date> expiries = {TARGET().advance(referenceDate, 1 * Years)};
+    std::vector<Real> volatilities = {1.0};
+    BOOST_CHECK_EXCEPTION(
+        MarkovFunctional(flatYts(), 0.01, std::vector<Date>(), volatilities, flatOptionletVts(),
+                         expiries, ext::shared_ptr<IborIndex>()),
+        Error, ExpectedErrorMessage("null ibor index"));
+}
+
 BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet) {
     BOOST_TEST_MESSAGE(
         "Testing Markov functional calibration to one instrument set...");
