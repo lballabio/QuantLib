@@ -159,11 +159,11 @@ namespace QuantLib {
                     addAdjustment(KahaleInterpolation);
                 }
 
-                QL_REQUIRE((adjustments_ & SabrSmile) == 0 ||
-                           (adjustments_ & KahaleSmile) == 0 ||
-                           (adjustments_ & CustomSmile) == 0
-                           ,
-                           "Only one of KahaleSmile, SabrSmile and CustomSmile"
+                const int smileTreatments = ((adjustments_ & KahaleSmile) != 0) +
+                                            ((adjustments_ & SabrSmile) != 0) +
+                                            ((adjustments_ & CustomSmile) != 0);
+                QL_REQUIRE(smileTreatments <= 1,
+                           "At most one of KahaleSmile, SabrSmile and CustomSmile "
                            "can be specified at the same time");
                 QL_REQUIRE(yGridPoints_ > 0, "At least one grid point ("
                                                  << yGridPoints_

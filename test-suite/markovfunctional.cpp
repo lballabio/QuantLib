@@ -892,6 +892,75 @@ BOOST_AUTO_TEST_CASE(testSmileSectionUtilsWShapedSmile) {
                     << idx.first << ", right index " << idx.second);
 }
 
+namespace {
+
+    class ValidationOnlySmileFactory : public MarkovFunctional::CustomSmileFactory {
+      public:
+        ext::shared_ptr<MarkovFunctional::CustomSmileSection>
+        smileSection(const ext::shared_ptr<SmileSection>&, Real) const override {
+            QL_FAIL("smile factory must not be called during settings validation");
+        }
+    };
+
+}
+
+BOOST_AUTO_TEST_CASE(testConflictingSmileSettings) {
+    using ModelSettings = MarkovFunctional::ModelSettings;
+    auto factory = ext::make_shared<ValidationOnlySmileFactory>();
+    int conflicts[] = {ModelSettings::KahaleSmile | ModelSettings::SabrSmile,
+                       ModelSettings::KahaleSmile | ModelSettings::CustomSmile,
+                       ModelSettings::SabrSmile | ModelSettings::CustomSmile,
+                       ModelSettings::KahaleSmile | ModelSettings::SabrSmile |
+                           ModelSettings::CustomSmile,
+                       ModelSettings::KahaleInterpolation | ModelSettings::SabrSmile,
+                       ModelSettings::KahaleInterpolation | ModelSettings::CustomSmile};
+    for (int adjustments : conflicts) {
+        BOOST_TEST_CONTEXT("adjustments=" << adjustments) {
+            auto settings = ModelSettings()
+                                .withAdjustments(adjustments)
+                                .withCustomSmileFactory(factory);
+            BOOST_CHECK_EXCEPTION(
+                settings.validate(), Error,
+                ExpectedErrorMessage("At most one of KahaleSmile, SabrSmile and CustomSmile "
+                                     "can be specified at the same time"));
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSmileSettingsValidation) {
+    using ModelSettings = MarkovFunctional::ModelSettings;
+    ModelSettings defaults;
+    BOOST_CHECK_NO_THROW(defaults.validate());
+
+    auto factory = ext::make_shared<ValidationOnlySmileFactory>();
+    int valid[] = {ModelSettings::AdjustNone,
+                   ModelSettings::KahaleSmile,
+                   ModelSettings::SabrSmile,
+                   ModelSettings::CustomSmile,
+                   ModelSettings::KahaleInterpolation,
+                   ModelSettings::KahaleSmile | ModelSettings::SmileDeleteArbitragePoints,
+                   ModelSettings::SabrSmile | ModelSettings::SmileExponentialExtrapolation,
+                   ModelSettings::AdjustDigitals | ModelSettings::AdjustYts |
+                       ModelSettings::ExtrapolatePayoffFlat | ModelSettings::NoPayoffExtrapolation};
+    for (int adjustments : valid) {
+        BOOST_TEST_CONTEXT("adjustments=" << adjustments) {
+            auto settings = ModelSettings()
+                                .withAdjustments(adjustments)
+                                .withCustomSmileFactory(factory);
+            BOOST_CHECK_NO_THROW(settings.validate());
+            if ((adjustments & ModelSettings::KahaleInterpolation) != 0)
+                BOOST_CHECK((settings.adjustments_ & ModelSettings::KahaleSmile) != 0);
+            if ((adjustments & ModelSettings::KahaleSmile) != 0 &&
+                (adjustments & ModelSettings::SmileDeleteArbitragePoints) != 0)
+                BOOST_CHECK((settings.adjustments_ & ModelSettings::KahaleInterpolation) != 0);
+        }
+    }
+
+    auto withoutFactory = ModelSettings().withAdjustments(ModelSettings::CustomSmile);
+    BOOST_CHECK_EXCEPTION(withoutFactory.validate(), Error,
+                          ExpectedErrorMessage("missing CustomSmile"));
+}
+
 BOOST_AUTO_TEST_CASE(testNullSwapIndex) {
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
