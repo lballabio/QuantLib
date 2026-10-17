@@ -513,6 +513,8 @@ namespace QuantLib {
                              ModelSettings::NoPayoffExtrapolation) == 0) {
                             if ((modelSettings_.adjustments_ &
                                  ModelSettings::ExtrapolatePayoffFlat) != 0) {
+                                // Note: Flat right-tail extrapolation uses the penultimate
+                                // grid value rather than the boundary value.
                                 integral = gaussianShiftedPolynomialIntegral(
                                     0.0, 0.0, 0.0, 0.0,
                                     discreteDeflatedAnnuities[j - 1], y_[j - 1],
@@ -1069,6 +1071,8 @@ namespace QuantLib {
              ModelSettings::NoPayoffExtrapolation) == 0) {
             if ((modelSettings_.adjustments_ &
                  ModelSettings::ExtrapolatePayoffFlat) != 0) {
+                // Note: Flat right-tail extrapolation uses the penultimate
+                // grid value rather than the boundary value.
                 price += gaussianShiftedPolynomialIntegral(
                     0.0, 0.0, 0.0, 0.0, p.back(), z.back(), z.back(), 100.0);
                 price += gaussianShiftedPolynomialIntegral(
@@ -1152,6 +1156,8 @@ namespace QuantLib {
              ModelSettings::NoPayoffExtrapolation) == 0) {
             if ((modelSettings_.adjustments_ &
                  ModelSettings::ExtrapolatePayoffFlat) != 0) {
+                // Note: Flat right-tail extrapolation uses the penultimate
+                // grid value rather than the boundary value.
                 price += gaussianShiftedPolynomialIntegral(
                     0.0, 0.0, 0.0, 0.0, p.back(), z.back(), z.back(), 100.0);
                 price += gaussianShiftedPolynomialIntegral(
