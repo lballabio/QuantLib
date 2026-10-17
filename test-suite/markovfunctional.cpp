@@ -1154,6 +1154,35 @@ BOOST_AUTO_TEST_CASE(testTimeZeroNumeraireAfterDateChange) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testModelOutputsAfterRecalculation) {
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+    Date expiry = TARGET().advance(referenceDate, 1 * Years);
+    auto model = ext::make_shared<MarkovFunctional>(
+        flatYts(), 0.01, std::vector<Date>(), std::vector<Real>{1.0}, flatOptionletVts(),
+        std::vector<Date>{expiry}, ext::make_shared<Euribor>(6 * Months),
+        MarkovFunctional::ModelSettings()
+            .withYGridPoints(8)
+            .withGaussHermitePoints(8)
+            .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone));
+    const auto initial = model->modelOutputs();
+    BOOST_REQUIRE_EQUAL(initial.expiries_.size(), 1);
+    BOOST_REQUIRE_EQUAL(initial.atm_.size(), 1);
+    BOOST_REQUIRE_EQUAL(initial.annuity_.size(), 1);
+    for (Size iteration = 0; iteration < 2; ++iteration) {
+        BOOST_TEST_CONTEXT("recalculation=" << iteration + 1) {
+            model->recalculate();
+            const auto& outputs = model->modelOutputs();
+            BOOST_CHECK(!outputs.dirty_);
+            BOOST_CHECK_EQUAL(outputs.expiries_.size(), initial.expiries_.size());
+            BOOST_REQUIRE_EQUAL(outputs.atm_.size(), initial.atm_.size());
+            BOOST_REQUIRE_EQUAL(outputs.annuity_.size(), initial.annuity_.size());
+            BOOST_CHECK_SMALL(outputs.atm_.front() - initial.atm_.front(), 1.0e-12);
+            BOOST_CHECK_SMALL(outputs.annuity_.front() - initial.annuity_.front(), 1.0e-12);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testModelOutputsTrace) {
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;

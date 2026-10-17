@@ -627,6 +627,8 @@ namespace QuantLib {
             }
 
             // volatility surface
+            modelOutputs_.atm_.clear();
+            modelOutputs_.annuity_.clear();
             modelOutputs_.smileStrikes_.clear();
             modelOutputs_.marketCallPremium_.clear();
             modelOutputs_.marketPutPremium_.clear();
