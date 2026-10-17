@@ -432,8 +432,7 @@ namespace QuantLib {
                         modelSettings_.digitalGap_);
                 i->second.maxRateDigital_ =
                     i->second.smileSection_->digitalOptionPrice(
-                        modelSettings_.upperRateBound_ -
-                            i->second.smileSection_->shift(),
+                        modelSettings_.upperRateBound_,
                         Option::Call, i->second.annuity_,
                         modelSettings_.digitalGap_);
             }
