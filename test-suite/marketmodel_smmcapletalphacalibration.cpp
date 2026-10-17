@@ -59,6 +59,7 @@
 #include <ql/math/statistics/convergencestatistics.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
+#include <cmath>
 #include <sstream>
 
 using namespace QuantLib;
@@ -67,6 +68,79 @@ using namespace boost::unit_test_framework;
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(MarketModelSmmCapletAlphaCalibrationTests)
+
+namespace {
+
+    class BoundedLinearAlphaForm : public AlphaForm {
+      public:
+        BoundedLinearAlphaForm(Real offset, Real slope) : offset_(offset), slope_(slope) {}
+
+        Real operator()(Integer index) const override {
+            return index == 0 ? 1.0 : offset_ + slope_ * alpha_;
+        }
+
+        void setAlpha(Real alpha) override {
+            QL_REQUIRE(++evaluations_ <= 10000, "alpha evaluation limit exceeded");
+            alpha_ = alpha;
+        }
+
+      private:
+        Real offset_, slope_, alpha_ = 0.0;
+        Size evaluations_ = 0;
+    };
+
+}
+
+BOOST_AUTO_TEST_CASE(testAlphaFinderExactBisectionRoot) {
+    for (bool increasing : {false, true}) {
+        BOOST_TEST_CONTEXT("increasing=" << increasing) {
+            auto form = ext::make_shared<BoundedLinearAlphaForm>(increasing ? 0.0 : 1.0,
+                                                                increasing ? 1.0 : -1.0);
+            AlphaFinder finder(form);
+            std::vector<Volatility> calibratedVols(3);
+            Real alpha, scale, lastScale;
+            bool success = false;
+            BOOST_REQUIRE_NO_THROW(success = finder.solve(
+                increasing ? 1.0 : 0.0, 1, {1.0, 0.0}, {1.0, 1.0, 1.0}, {-1.0, 0.0},
+                1.0, 1.0, 1.0 - 0.8, 1.0e-12, 1.0, 0.0, 100,
+                alpha, scale, lastScale, calibratedVols));
+            BOOST_REQUIRE(success);
+            BOOST_CHECK_SMALL(alpha - 0.5, 1.0e-12);
+            BOOST_CHECK_SMALL(calibratedVols[0] - 0.8, 1.0e-12);
+            BOOST_CHECK_SMALL(calibratedVols[1] - 0.4, 1.0e-12);
+            BOOST_CHECK_SMALL(calibratedVols[2] - std::sqrt(2.2), 1.0e-12);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testAlphaFinderBisectionStagnation) {
+    for (bool increasing : {false, true}) {
+        BOOST_TEST_CONTEXT("increasing=" << increasing) {
+            auto form = ext::make_shared<BoundedLinearAlphaForm>(increasing ? 0.0 : 1.0,
+                                                                increasing ? 1.0 : -1.0);
+            AlphaFinder finder(form);
+            std::vector<Volatility> calibratedVols(3);
+            Real alpha, scale, lastScale;
+            bool success = false;
+            BOOST_REQUIRE_NO_THROW(success = finder.solve(
+                increasing ? 1.0 : 0.0, 1, {1.0, 0.0}, {1.0, 1.0, 1.0}, {-1.0, 0.0},
+                1.0, 1.0, 0.3, 1.0e-20, 1.0, 0.0, 100,
+                alpha, scale, lastScale, calibratedVols));
+            BOOST_REQUIRE(success);
+            Real expectedAlpha = increasing ? std::sqrt(3.0 / 7.0) : 1.0 - std::sqrt(3.0 / 7.0);
+            BOOST_CHECK_SMALL(alpha - expectedAlpha, 1.0e-12);
+            Real targetVariance = (1.0 - calibratedVols[0]) * (1.0 - calibratedVols[0]) +
+                                  calibratedVols[1] * calibratedVols[1];
+            Real totalVariance = 0.0;
+            for (Volatility volatility : calibratedVols) {
+                BOOST_CHECK(std::isfinite(volatility));
+                totalVariance += volatility * volatility;
+            }
+            BOOST_CHECK_SMALL(targetVariance - 0.3, 1.0e-12);
+            BOOST_CHECK_SMALL(totalVariance - 3.0, 1.0e-12);
+        }
+    }
+}
 
 BOOST_AUTO_TEST_CASE(testAlphaFinderRejectsNegativeRemainingVariance) {
     auto form = ext::make_shared<AlphaFormInverseLinear>(std::vector<Time>{1.0, 2.0});

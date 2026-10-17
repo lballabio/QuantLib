@@ -40,8 +40,12 @@ namespace
         do {
             if (y < target) low = x;
             else if (y > target) high = x;
+            else return x;
 
+            const Real previous = x;
             x = 0.5*(low+high);
+            if (x == previous)
+                return x;
             y = (theObject.*Value)(x);
         } while ((std::fabs(high-low) > tolerance));
 
