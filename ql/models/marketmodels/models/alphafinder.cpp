@@ -333,7 +333,7 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
         Real valueAtTP = valueAtTurningPoint(alpha0);
 
         if (valueAtTP <= targetVariance) {
-            finalPart(alpha0,
+            return finalPart(alpha0,
                       stepindex,
                       ratetwohomogeneousvols,
                       quadraticPart_,
@@ -343,7 +343,6 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
                       a,
                       b,
                       ratetwovols);
-            return true;
         }
 
         // we now have to solve
@@ -402,7 +401,7 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
                                          *this,
                                          &AlphaFinder::minusValueAtTurningPoint);
         }
-        finalPart(alpha,
+        return finalPart(alpha,
                   stepindex,
                   ratetwohomogeneousvols,
                   quadraticPart_,
@@ -412,7 +411,6 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
                   a,
                   b,
                   ratetwovols);
-        return true;
     }
 
     bool AlphaFinder::solveWithMaxHomogeneity(
@@ -547,7 +545,7 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
                                         &AlphaFinder::testIfSolutionExists,
                                         failed) ;
 
-        finalPart(alpha,
+        return finalPart(alpha,
                   stepindex,
                   ratetwohomogeneousvols,
                   computeQuadraticPart(alpha),
@@ -557,7 +555,5 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
                   a,
                   b,
                   ratetwovols);
-
-        return true;;
     }
 }

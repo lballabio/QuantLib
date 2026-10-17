@@ -22,6 +22,8 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/models/marketmodels/models/alphafinder.hpp>
+#include <ql/models/marketmodels/models/alphaformconcrete.hpp>
 #include <ql/models/marketmodels/models/capletcoterminalalphacalibration.hpp>
 #include <ql/models/marketmodels/correlations/cotswapfromfwdcorrelation.hpp>
 #include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
@@ -65,6 +67,19 @@ using namespace boost::unit_test_framework;
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(MarketModelSmmCapletAlphaCalibrationTests)
+
+BOOST_AUTO_TEST_CASE(testAlphaFinderRejectsNegativeRemainingVariance) {
+    auto form = ext::make_shared<AlphaFormInverseLinear>(std::vector<Time>{1.0, 2.0});
+    AlphaFinder finder(form);
+    std::vector<Volatility> firstVols = {1.0};
+    std::vector<Volatility> homogeneousVols = {0.1, 0.1};
+    std::vector<Real> correlations = {-1.0};
+    std::vector<Volatility> calibratedVols(2);
+    Real alpha, scale, lastScale;
+    BOOST_CHECK(!finder.solve(0.0, 0, firstVols, homogeneousVols, correlations, 1.0, 1.0,
+                             0.25, 1.0e-10, 1.0, -0.5, 100,
+                             alpha, scale, lastScale, calibratedVols));
+}
 
 Date todaysDate_, startDate_, endDate_;
 std::vector<Time> rateTimes_;
