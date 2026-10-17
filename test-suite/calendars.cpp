@@ -84,6 +84,7 @@
 #include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/uzbekistan.hpp>
+#include <ql/time/calendars/weekendsonly.hpp>
 #include <fstream>
 
 using namespace QuantLib;
@@ -3822,6 +3823,28 @@ BOOST_AUTO_TEST_CASE(testEndOfMonth) {
                               << eom);
         counter = counter + 1;
     }
+}
+
+BOOST_AUTO_TEST_CASE(testExplicitDayUnits) {
+    BOOST_TEST_MESSAGE("Testing explicit calendar-day and business-day advancement...");
+
+    const Calendar calendar = WeekendsOnly();
+    const Date friday(5, January, 2024);
+
+    BOOST_TEST(calendar.advance(friday, 1, BusinessDays, Unadjusted) ==
+               Date(8, January, 2024));
+    BOOST_TEST(calendar.advance(friday, 1, CalendarDays, Unadjusted) ==
+               Date(6, January, 2024));
+    BOOST_TEST(calendar.advance(friday, 2, CalendarDays, Following) ==
+               Date(8, January, 2024));
+    BOOST_TEST(calendar.advance(friday, 2, BusinessDays, Following) ==
+               Date(9, January, 2024));
+
+    // The legacy unit keeps its context-dependent behavior for compatibility.
+    BOOST_TEST(calendar.advance(friday, 1, Days, Unadjusted) == Date(8, January, 2024));
+
+    BOOST_TEST(friday + Period(1, CalendarDays) == Date(6, January, 2024));
+    BOOST_CHECK_THROW(friday + Period(1, BusinessDays), QuantLib::Error);
 }
 
 BOOST_AUTO_TEST_CASE(testBusinessDaysBetween) {
