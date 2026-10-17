@@ -768,6 +768,7 @@ namespace QuantLib {
         const Time t, const Real y,
         const Handle<YieldTermStructure> &yts) const {
 
+        calculate();
         if (t == 0)
             return yts.empty()
                        ? this->termStructure()->discount(numeraireTime(), true)

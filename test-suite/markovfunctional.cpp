@@ -1118,6 +1118,42 @@ BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testTimeZeroNumeraireAfterDateChange) {
+    Date referenceDate(14, November, 2012);
+    for (bool useDiscountCurve : {false, true}) {
+        BOOST_TEST_CONTEXT("useDiscountCurve=" << useDiscountCurve) {
+            Settings::instance().evaluationDate() = referenceDate;
+            Handle<YieldTermStructure> curve = flatYts();
+            Handle<YieldTermStructure> discountCurve;
+            if (useDiscountCurve)
+                discountCurve = Handle<YieldTermStructure>(
+                    ext::make_shared<FlatForward>(0, TARGET(), 0.05, Actual365Fixed()));
+            Date expiry = TARGET().advance(referenceDate, 1 * Years);
+            auto model = ext::make_shared<MarkovFunctional>(
+                curve, 0.01, std::vector<Date>(), std::vector<Real>{1.0}, flatOptionletVts(),
+                std::vector<Date>{expiry}, ext::make_shared<Euribor>(6 * Months),
+                MarkovFunctional::ModelSettings()
+                    .withYGridPoints(8)
+                    .withGaussHermitePoints(8)
+                    .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone));
+            const Handle<YieldTermStructure>& expectedCurve =
+                useDiscountCurve ? discountCurve : curve;
+            Real initial = model->numeraire(0.0, 0.0, discountCurve);
+            BOOST_CHECK_SMALL(initial - expectedCurve->discount(model->numeraireDate(), true),
+                              1.0e-12);
+            for (Integer days : {1, 2}) {
+                BOOST_TEST_CONTEXT("days=" << days) {
+                    Settings::instance().evaluationDate() = referenceDate + days;
+                    Real actual = model->numeraire(0.0, 0.0, discountCurve);
+                    Real expected = expectedCurve->discount(model->numeraireDate(), true);
+                    BOOST_CHECK_SMALL(actual - expected, 1.0e-12);
+                    BOOST_CHECK_GT(actual, initial);
+                }
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testModelOutputsTrace) {
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
