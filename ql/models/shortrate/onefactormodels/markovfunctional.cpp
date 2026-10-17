@@ -46,8 +46,11 @@ namespace QuantLib {
       sigma_(arguments_[0]), volstepdates_(std::move(volstepdates)),
       volatilities_(std::move(volatilities)), swaptionVol_(swaptionVol),
       swaptionExpiries_(swaptionExpiries), swaptionTenors_(swaptionTenors),
-      swapIndexBase_(swapIndexBase), iborIndex_(swapIndexBase->iborIndex()) {
+      swapIndexBase_(swapIndexBase) {
 
+        QL_REQUIRE(swapIndexBase_, "null swap index");
+        iborIndex_ = swapIndexBase_->iborIndex();
+        QL_REQUIRE(iborIndex_, "null ibor index");
         QL_REQUIRE(swaptionExpiries.size() == swaptionTenors.size(),
                    "number of swaption expiries ("
                        << swaptionExpiries.size()
@@ -77,6 +80,7 @@ namespace QuantLib {
       volatilities_(std::move(volatilities)), capletVol_(capletVol),
       capletExpiries_(capletExpiries), iborIndex_(std::move(iborIndex)) {
 
+        QL_REQUIRE(iborIndex_, "null ibor index");
         QL_REQUIRE(!capletExpiries.empty(),
                    "need at least one caplet expiry to calibrate numeraire");
         QL_REQUIRE(!termStructure.empty(),
@@ -427,8 +431,7 @@ namespace QuantLib {
                         modelSettings_.digitalGap_);
                 i->second.maxRateDigital_ =
                     i->second.smileSection_->digitalOptionPrice(
-                        modelSettings_.upperRateBound_ -
-                            i->second.smileSection_->shift(),
+                        modelSettings_.upperRateBound_,
                         Option::Call, i->second.annuity_,
                         modelSettings_.digitalGap_);
             }
@@ -509,6 +512,8 @@ namespace QuantLib {
                              ModelSettings::NoPayoffExtrapolation) == 0) {
                             if ((modelSettings_.adjustments_ &
                                  ModelSettings::ExtrapolatePayoffFlat) != 0) {
+                                // Note: Flat right-tail extrapolation uses the penultimate
+                                // grid value rather than the boundary value.
                                 integral = gaussianShiftedPolynomialIntegral(
                                     0.0, 0.0, 0.0, 0.0,
                                     discreteDeflatedAnnuities[j - 1], y_[j - 1],
@@ -608,9 +613,8 @@ namespace QuantLib {
     const MarkovFunctional::ModelOutputs &
     MarkovFunctional::modelOutputs() const {
 
+        calculate();
         if (modelOutputs_.dirty_) {
-
-            calculate();
 
             // yield term structure
             modelOutputs_.marketZerorate_.clear();
@@ -627,6 +631,8 @@ namespace QuantLib {
             }
 
             // volatility surface
+            modelOutputs_.atm_.clear();
+            modelOutputs_.annuity_.clear();
             modelOutputs_.smileStrikes_.clear();
             modelOutputs_.marketCallPremium_.clear();
             modelOutputs_.marketPutPremium_.clear();
@@ -768,6 +774,7 @@ namespace QuantLib {
         const Time t, const Real y,
         const Handle<YieldTermStructure> &yts) const {
 
+        calculate();
         if (t == 0)
             return yts.empty()
                        ? this->termStructure()->discount(numeraireTime(), true)
@@ -1057,6 +1064,8 @@ namespace QuantLib {
              ModelSettings::NoPayoffExtrapolation) == 0) {
             if ((modelSettings_.adjustments_ &
                  ModelSettings::ExtrapolatePayoffFlat) != 0) {
+                // Note: Flat right-tail extrapolation uses the penultimate
+                // grid value rather than the boundary value.
                 price += gaussianShiftedPolynomialIntegral(
                     0.0, 0.0, 0.0, 0.0, p[z.size() - 2], z[z.size() - 2],
                     z[z.size() - 1], 100.0);
@@ -1134,6 +1143,8 @@ namespace QuantLib {
              ModelSettings::NoPayoffExtrapolation) == 0) {
             if ((modelSettings_.adjustments_ &
                  ModelSettings::ExtrapolatePayoffFlat) != 0) {
+                // Note: Flat right-tail extrapolation uses the penultimate
+                // grid value rather than the boundary value.
                 price += gaussianShiftedPolynomialIntegral(
                     0.0, 0.0, 0.0, 0.0, p[z.size() - 2], z[z.size() - 2],
                     z[z.size() - 1], 100.0);
