@@ -601,9 +601,12 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuWithCarryAboveVolatility) {
         {Option::Put, 120.0, 0.1077, 0.0329, 0.0149, 10},
     };
 
-    // the approximations are not exact; the band only checks that the
-    // returned price is close to the high-precision one
-    const Real tolerance = 1.0e-2;
+    // The approximations are not exact. The relative tolerances are the
+    // accuracy each engine already reaches just above the threshold, where
+    // the seed was valid: about 5% for Barone-Adesi-Whaley and 0.5% for Ju
+    // for the first call at sigma = 1.8% and 2%.
+    const Real bawTolerance = 5.0e-2;
+    const Real juTolerance = 1.0e-2;
 
     for (const auto& c : cases) {
         const auto process = ext::make_shared<BlackScholesMertonProcess>(
@@ -619,11 +622,11 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuWithCarryAboveVolatility) {
             process, QdFpAmericanEngine::highPrecisionScheme()));
         const Real expected = reference.NPV();
 
-        for (const ext::shared_ptr<PricingEngine>& engine :
-             {ext::shared_ptr<PricingEngine>(
-                  ext::make_shared<BaroneAdesiWhaleyApproximationEngine>(process)),
-              ext::shared_ptr<PricingEngine>(
-                  ext::make_shared<JuQuadraticApproximationEngine>(process))}) {
+        const std::pair<ext::shared_ptr<PricingEngine>, Real> engines[] = {
+            {ext::make_shared<BaroneAdesiWhaleyApproximationEngine>(process), bawTolerance},
+            {ext::make_shared<JuQuadraticApproximationEngine>(process), juTolerance},
+        };
+        for (const auto& [engine, tolerance] : engines) {
 
             VanillaOption option(payoff, exercise);
             option.setPricingEngine(engine);
@@ -634,9 +637,9 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuWithCarryAboveVolatility) {
                 continue;
 
             const Real error = std::fabs(calculated - expected);
-            if (!(error <= tolerance * c.strike)) {
+            if (!(error <= tolerance * expected)) {
                 REPORT_FAILURE("value", payoff, exercise, spot->value(), c.q, c.r, today, c.v,
-                               expected, calculated, error, tolerance * c.strike);
+                               expected, calculated, error, tolerance * expected);
             }
         }
     }
