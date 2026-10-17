@@ -35,24 +35,44 @@ namespace QuantLib {
             return 0.0;
 
         const Real errmax = 1e-12;
-        const Size itrmax = 10000;
+        const Size itrmax = 1000000;
+        const Real minLog = std::log(QL_MIN_POSITIVE_REAL);
         Real lam = 0.5*ncp_;
 
-        Real u = std::exp(-lam);
+        // For large ncp or x, the Poisson weight exp(-lam) and the first
+        // terms t of the series underflow to zero, and so would the whole
+        // sum.  Until they become representable we follow them through
+        // their logarithms and skip the corresponding (negligible) terms.
+        Real lu = -lam;
+        bool uSmall = lu < minLog;
+        Real u = uSmall ? Real(0.0) : std::exp(lu);
         Real v = u;
         Real x2 = 0.5*x;
         Real f2 = 0.5*df_;
         Real f_x_2n = df_ - x;
 
-        Real t = 0.0;
+        Real t = 0.0, lt;
         if (f2*QL_EPSILON > 0.125 &&
             std::fabs(x2-f2) < std::sqrt(QL_EPSILON)*f2) {
             t = std::exp((1 - t) *
                          (2 - t/(f2+1)))/std::sqrt(2.0*M_PI*(f2 + 1.0));
+            lt = std::log(t);
         }
         else {
-            t = std::exp(f2*std::log(x2) - x2 -
-                         GammaFunction().logValue(f2 + 1));
+            lt = f2*std::log(x2) - x2 - GammaFunction().logValue(f2 + 1);
+            if (lt >= minLog)
+                t = std::exp(lt);
+        }
+        bool tSmall = lt < minLog;
+
+        if (tSmall && x > df_ + ncp_) {
+            // Chernoff bound on the upper tail.  If it's negligible,
+            // return 1 instead of summing about x/2 terms to get there.
+            Real w = (df_ + std::sqrt(df_*df_ + 4.0*x*ncp_)) / (2.0*x);
+            Real logBound = -0.5*(1.0-w)*x - 0.5*df_*std::log(w)
+                + 0.5*ncp_*(1.0-w)/w;
+            if (logBound < std::log(errmax))
+                return 1.0;
         }
 
         Real ans = v*t;
@@ -69,10 +89,27 @@ namespace QuantLib {
                 goto L10;
             }
             for (;;) {
-                u *= lam / n;
-                v += u;
-                t *= x / f_2n;
-                ans += v*t;
+                if (uSmall) {
+                    lu += std::log(lam / n);
+                    if (lu >= minLog) {
+                        u = v = std::exp(lu);
+                        uSmall = false;
+                    }
+                } else {
+                    u *= lam / n;
+                    v += u;
+                }
+                if (tSmall) {
+                    lt += std::log(x / f_2n);
+                    if (lt >= minLog) {
+                        t = std::exp(lt);
+                        tSmall = false;
+                    }
+                } else {
+                    t *= x / f_2n;
+                }
+                if (!uSmall && !tSmall)
+                    ans += v*t;
                 n++;
                 f_2n += 2.0;
                 f_x_2n += 2.0;
@@ -85,7 +122,9 @@ namespace QuantLib {
             }
         }
     L_End:
-        if (bound > errmax) QL_FAIL("didn't converge");
+        // f_x_2n <= 0 means that we ran out of iterations before
+        // the error bound could even be computed
+        if (f_x_2n <= 0 || bound > errmax) QL_FAIL("didn't converge");
         return (ans);
 
     }
