@@ -142,6 +142,34 @@ BOOST_AUTO_TEST_CASE(testAlphaFinderBisectionStagnation) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testAlphaFinderMaximumHomogeneity) {
+    for (bool increasing : {false, true}) {
+        BOOST_TEST_CONTEXT("increasing=" << increasing) {
+            auto form = ext::make_shared<BoundedLinearAlphaForm>(increasing ? 2.0 : 0.0,
+                                                                increasing ? 1.0 : -1.0);
+            AlphaFinder finder(form);
+            std::vector<Volatility> calibratedVols(3);
+            Real alpha, scale, lastScale;
+            BOOST_REQUIRE(finder.solveWithMaxHomogeneity(
+                -1.0, 1, {2.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0}, 1.0, -1.0,
+                1.0, 1.0e-10, -0.5, -1.5, 100,
+                alpha, scale, lastScale, calibratedVols));
+            BOOST_CHECK_SMALL(alpha + 1.0, 1.0e-6);
+            BOOST_CHECK_SMALL(scale - 1.0, 1.0e-6);
+            BOOST_CHECK_SMALL(lastScale - 1.0, 1.0e-6);
+            Real totalVariance = 0.0;
+            for (Volatility volatility : calibratedVols) {
+                BOOST_CHECK_SMALL(volatility - 1.0, 1.0e-6);
+                totalVariance += volatility * volatility;
+            }
+            Real targetVariance = (2.0 - calibratedVols[0]) * (2.0 - calibratedVols[0]) +
+                                  (1.0 - calibratedVols[1]) * (1.0 - calibratedVols[1]);
+            BOOST_CHECK_SMALL(targetVariance - 1.0, 1.0e-10);
+            BOOST_CHECK_SMALL(totalVariance - 3.0, 1.0e-10);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testAlphaFinderRejectsNegativeRemainingVariance) {
     auto form = ext::make_shared<AlphaFormInverseLinear>(std::vector<Time>{1.0, 2.0});
     AlphaFinder finder(form);

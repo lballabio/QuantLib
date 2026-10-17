@@ -118,7 +118,7 @@ namespace
             {
                 Real tentativeNewMid = W*low+(1-W)*x;
                 Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
-                bool conditioner = (theObject.*Condition)(tentativeNewMidValue);
+                bool conditioner = (theObject.*Condition)(tentativeNewMid);
                 if (!conditioner) {
                     if  ((theObject.*Condition)(x))
                         return x;
@@ -146,7 +146,7 @@ namespace
             {
                 Real tentativeNewMid = W*x+(1-W)*high;
                 Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
-                bool conditioner = (theObject.*Condition)(tentativeNewMidValue);
+                bool conditioner = (theObject.*Condition)(tentativeNewMid);
                 if (!conditioner) {
                     if  ((theObject.*Condition)(x))
                         return x;
