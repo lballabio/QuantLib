@@ -165,7 +165,7 @@ namespace QuantLib {
                 QL_REQUIRE(smileTreatments <= 1,
                            "At most one of KahaleSmile, SabrSmile and CustomSmile "
                            "can be specified at the same time");
-                QL_REQUIRE(yGridPoints_ > 0, "At least one grid point ("
+                QL_REQUIRE(yGridPoints_ >= 2, "At least two grid points ("
                                                  << yGridPoints_
                                                  << ") for the state process "
                                                     "discretization must be "

@@ -961,6 +961,16 @@ BOOST_AUTO_TEST_CASE(testSmileSettingsValidation) {
                           ExpectedErrorMessage("missing CustomSmile"));
 }
 
+BOOST_AUTO_TEST_CASE(testMinimumYGridPoints) {
+    for (Size points : {0, 1}) {
+        auto settings = MarkovFunctional::ModelSettings().withYGridPoints(points);
+        BOOST_CHECK_EXCEPTION(settings.validate(), Error,
+                              ExpectedErrorMessage("At least two grid points"));
+    }
+    auto settings = MarkovFunctional::ModelSettings().withYGridPoints(2);
+    BOOST_CHECK_NO_THROW(settings.validate());
+}
+
 BOOST_AUTO_TEST_CASE(testNullSwapIndex) {
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
