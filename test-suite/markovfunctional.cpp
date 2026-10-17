@@ -28,6 +28,7 @@
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/models/shortrate/onefactormodels/markovfunctional.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/gaussian1dcapfloorengine.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
@@ -1394,6 +1395,76 @@ BOOST_AUTO_TEST_CASE(testSabrSmileCalibration) {
         }
     }
     BOOST_CHECK_EQUAL(model->arbitrageIndices().size(), 1);
+}
+
+BOOST_AUTO_TEST_CASE(testShiftedSmileUpperRateBound) {
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+    Date expiry = TARGET().advance(referenceDate, 1 * Years);
+    Handle<YieldTermStructure> curve(
+        ext::make_shared<FlatForward>(referenceDate, 0.03, Actual365Fixed()));
+    auto index = ext::make_shared<EuriborSwapIsdaFixA>(1 * Years);
+    Volatility volatility = 0.5;
+    for (Real shift : {0.0, 0.05}) {
+        for (Rate upperBound : {0.10, 2.0}) {
+            BOOST_TEST_CONTEXT("shift=" << shift << ", upperBound=" << upperBound) {
+                Handle<SwaptionVolatilityStructure> surface(
+                    ext::make_shared<ConstantSwaptionVolatility>(
+                        referenceDate, TARGET(), Following, volatility, Actual365Fixed(),
+                        ShiftedLognormal, shift));
+                BOOST_CHECK_EQUAL(surface->smileSection(expiry, 1 * Years, true)->shift(), shift);
+                auto model = ext::make_shared<MarkovFunctional>(
+                    curve, 0.01, std::vector<Date>(), std::vector<Real>{1.0}, surface,
+                    std::vector<Date>{expiry}, std::vector<Period>{1 * Years}, index,
+                    MarkovFunctional::ModelSettings()
+                        .withYGridPoints(64)
+                        .withYStdDevs(7.0)
+                        .withGaussHermitePoints(32)
+                        .withUpperRateBound(upperBound)
+                        .withDigitalGap(1.0e-7)
+                        .withMarketRateAccuracy(1.0e-10)
+                        .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone));
+                Date terminal = model->numeraireDate();
+                Real accrual = index->dayCounter().yearFraction(expiry, terminal);
+                Real forward = (curve->discount(expiry) / curve->discount(terminal) - 1.0) /
+                               accrual;
+                Real stdDev = volatility * std::sqrt(curve->timeFromReference(expiry));
+                for (Real state : {0.0, 1.09375, 3.0625}) {
+                    BOOST_TEST_CONTEXT("state=" << state) {
+                        Real uncappedRate = (forward + shift) *
+                                                std::exp(-0.5 * stdDev * stdDev + stdDev * state) -
+                                            shift;
+                        Real expectedRate = std::min(uncappedRate, upperBound);
+                        Real modelRate = (1.0 / model->zerobond(terminal, expiry, state) - 1.0) /
+                                         accrual;
+                        BOOST_CHECK(std::isfinite(modelRate));
+                        BOOST_CHECK_SMALL(modelRate - expectedRate, 1.0e-8);
+                    }
+                }
+
+                const auto& outputs = model->modelOutputs();
+                BOOST_REQUIRE_EQUAL(outputs.expiries_.size(), 1);
+                const auto& strikes = outputs.smileStrikes_.front();
+                BOOST_REQUIRE(!strikes.empty());
+                Size atmIndex = 0;
+                for (Size strike = 1; strike < strikes.size(); ++strike) {
+                    if (std::fabs(strikes[strike] - forward) <
+                        std::fabs(strikes[atmIndex] - forward))
+                        atmIndex = strike;
+                }
+                BOOST_CHECK_SMALL(strikes[atmIndex] - forward, 1.0e-12);
+                Real annuity = accrual * curve->discount(terminal);
+                Real uncappedCall = blackFormula(Option::Call, strikes[atmIndex], forward,
+                                                 stdDev, annuity, shift);
+                Real callAboveUpperBound = blackFormula(Option::Call, upperBound, forward,
+                                                        stdDev, annuity, shift);
+                Real expectedCappedCall = uncappedCall - callAboveUpperBound;
+                Real modelCall = outputs.modelCallPremium_.front()[atmIndex];
+                BOOST_CHECK(std::isfinite(modelCall));
+                BOOST_CHECK_SMALL(modelCall - expectedCappedCall, 1.0e-5);
+            }
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testPayoffExtrapolation) {
