@@ -102,7 +102,12 @@ namespace QuantLib {
                     pGrid[i]+=tp[j].second/(e-b);
                 }
             }
-        } 
+
+            // with a small vol of vol, the variance can drift away from
+            // v0 and leave it outside the quantiles; use the default mesh
+            QL_REQUIRE(vGrid.back() >= process->v0(),
+                       "variance grid doesn't contain v0");
+        }
         catch (const Error&) {
             // use default mesh
             const Real vol = mixedSigma*
