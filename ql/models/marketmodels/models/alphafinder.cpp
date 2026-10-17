@@ -372,7 +372,7 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
         if (bottomValue > targetVariance && topValue > targetVariance) {
             // see if ok at some intermediate point by stepping through
             Integer i=1;
-            while ( i < steps && topValue> targetVariance) {
+            while ( i < steps && bottomValue> targetVariance) {
                 bottomAlpha = alpha0 + (alphaMin-alpha0)*(i+0.0)/(steps+0.0);
                 bottomValue=valueAtTurningPoint(bottomAlpha);
                 ++i;

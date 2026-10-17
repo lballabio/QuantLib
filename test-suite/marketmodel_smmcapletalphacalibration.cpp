@@ -89,6 +89,21 @@ namespace {
         Size evaluations_ = 0;
     };
 
+        class InteriorTestAlphaForm : public AlphaForm {
+            public:
+                explicit InteriorTestAlphaForm(Real center) : center_(center) {}
+
+                Real operator()(Integer index) const override {
+                        Real distance = alpha_ - center_;
+                        return index == 0 ? 1.0 : 0.2 + 4.0 * distance * distance;
+                }
+
+                void setAlpha(Real alpha) override { alpha_ = alpha; }
+
+            private:
+                Real center_, alpha_ = 0.0;
+        };
+
 }
 
 BOOST_AUTO_TEST_CASE(testAlphaFinderExactBisectionRoot) {
@@ -168,6 +183,28 @@ BOOST_AUTO_TEST_CASE(testAlphaFinderMaximumHomogeneity) {
             BOOST_CHECK_SMALL(totalVariance - 3.0, 1.0e-10);
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testAlphaFinderDownwardInteriorSearch) {
+    auto form = ext::make_shared<InteriorTestAlphaForm>(-0.5);
+    AlphaFinder finder(form);
+    std::vector<Volatility> calibratedVols(3);
+    Real alpha, scale, lastScale;
+    BOOST_REQUIRE(finder.solve(
+        0.0, 1, {1.0, 0.0}, {1.0, 1.0, 1.0}, {-1.0, 0.0},
+        1.0, 1.0, 0.3, 1.0e-10, 1.0, -1.0, 100,
+        alpha, scale, lastScale, calibratedVols));
+    Real expectedAlpha = -0.5 + 0.5 * std::sqrt(std::sqrt(3.0 / 7.0) - 0.2);
+    BOOST_CHECK_SMALL(alpha - expectedAlpha, 1.0e-8);
+    Real totalVariance = 0.0;
+    for (Volatility volatility : calibratedVols) {
+        BOOST_CHECK(std::isfinite(volatility));
+        totalVariance += volatility * volatility;
+    }
+    Real targetVariance = (1.0 - calibratedVols[0]) * (1.0 - calibratedVols[0]) +
+                          calibratedVols[1] * calibratedVols[1];
+    BOOST_CHECK_SMALL(totalVariance - 3.0, 1.0e-8);
+    BOOST_CHECK_SMALL(targetVariance - 0.3, 1.0e-8);
 }
 
 BOOST_AUTO_TEST_CASE(testAlphaFinderRejectsNegativeRemainingVariance) {
