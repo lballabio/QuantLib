@@ -442,7 +442,7 @@ enum MeasureType { ProductSuggested, Terminal,
 enum EvolverType { Ipc, Pc , NormalPc};
 
 
-BOOST_AUTO_TEST_CASE(testFunction) {
+void testAlphaCalibration(bool maximizeHomogeneity) {
 
     BOOST_TEST_MESSAGE("Testing alpha caplet calibration "
                        "in a lognormal coterminal swap market model...");
@@ -477,7 +477,6 @@ BOOST_AUTO_TEST_CASE(testFunction) {
     std::vector<Real> alphaInitial(numberOfRates, alpha_);
     std::vector<Real> alphaMax(numberOfRates,  1.0);
     std::vector<Real> alphaMin(numberOfRates, -1.0);
-    bool maximizeHomogeneity = false; //?
     if (printReport_) {
         BOOST_TEST_MESSAGE("caplet market vols: " << std::fixed <<
                            std::setprecision(4) << io::sequence(capletVols_));
@@ -569,6 +568,14 @@ BOOST_AUTO_TEST_CASE(testFunction) {
                         "\n error:            " << error <<
                         "\n tolerance:        " << capletTolerance);
     }
+}
+
+BOOST_AUTO_TEST_CASE(testFunction) {
+    testAlphaCalibration(false);
+}
+
+BOOST_AUTO_TEST_CASE(testMaximumHomogeneityCalibration) {
+    testAlphaCalibration(true);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
