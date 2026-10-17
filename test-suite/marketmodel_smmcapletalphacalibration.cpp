@@ -158,17 +158,31 @@ BOOST_AUTO_TEST_CASE(testAlphaFinderBisectionStagnation) {
 }
 
 BOOST_AUTO_TEST_CASE(testAlphaFinderMaximumHomogeneity) {
-    for (bool increasing : {false, true}) {
-        BOOST_TEST_CONTEXT("increasing=" << increasing) {
-            auto form = ext::make_shared<BoundedLinearAlphaForm>(increasing ? 2.0 : 0.0,
-                                                                increasing ? 1.0 : -1.0);
+    struct TestCase {
+        bool increasing;
+        Real initial, minimum, maximum;
+    };
+    TestCase cases[] = {{false, -1.0, -1.5, -0.5},
+                        {true, -1.0, -1.5, -0.5},
+                        {true, -1.0, -1.2, -0.8},
+                        {false, -1.4, -1.5, -0.5},
+                        {true, -0.6, -1.5, -0.5},
+                        {true, -0.75, -1.0, -0.5},
+                        {false, -1.25, -1.5, -1.0}};
+    for (const auto& test : cases) {
+        BOOST_TEST_CONTEXT("increasing=" << test.increasing << ", initial=" << test.initial <<
+                           ", bounds=[" << test.minimum << ", " << test.maximum << "]") {
+            auto form = ext::make_shared<BoundedLinearAlphaForm>(test.increasing ? 2.0 : 0.0,
+                                                                test.increasing ? 1.0 : -1.0);
             AlphaFinder finder(form);
             std::vector<Volatility> calibratedVols(3);
             Real alpha, scale, lastScale;
             BOOST_REQUIRE(finder.solveWithMaxHomogeneity(
-                -1.0, 1, {2.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0}, 1.0, -1.0,
-                1.0, 1.0e-10, -0.5, -1.5, 100,
+                test.initial, 1, {2.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0}, 1.0, -1.0,
+                1.0, 1.0e-10, test.maximum, test.minimum, 100,
                 alpha, scale, lastScale, calibratedVols));
+            BOOST_CHECK_GE(alpha, test.minimum);
+            BOOST_CHECK_LE(alpha, test.maximum);
             BOOST_CHECK_SMALL(alpha + 1.0, 1.0e-6);
             BOOST_CHECK_SMALL(scale - 1.0, 1.0e-6);
             BOOST_CHECK_SMALL(lastScale - 1.0, 1.0e-6);
@@ -207,6 +221,52 @@ BOOST_AUTO_TEST_CASE(testAlphaFinderDownwardInteriorSearch) {
     BOOST_CHECK_SMALL(targetVariance - 0.3, 1.0e-8);
 }
 
+BOOST_AUTO_TEST_CASE(testAlphaFinderInteriorSearch) {
+    struct TestCase {
+        Real center;
+        bool maximizeHomogeneity;
+    };
+    TestCase cases[] = {{0.5, false}, {-0.5, true}, {0.5, true}};
+    for (const auto& test : cases) {
+        BOOST_TEST_CONTEXT("center=" << test.center <<
+                           ", maximizeHomogeneity=" << test.maximizeHomogeneity) {
+            auto form = ext::make_shared<InteriorTestAlphaForm>(test.center);
+            AlphaFinder finder(form);
+            std::vector<Volatility> calibratedVols(3);
+            Real alpha, scale, lastScale;
+            bool success;
+            if (test.maximizeHomogeneity) {
+                success = finder.solveWithMaxHomogeneity(
+                    0.0, 1, {1.0, 0.0}, {1.0, 1.0, 1.0}, {-1.0, 0.0},
+                    1.0, 1.0, 0.3, 1.0e-10, 1.0, -1.0, 100,
+                    alpha, scale, lastScale, calibratedVols);
+            } else {
+                success = finder.solve(
+                    0.0, 1, {1.0, 0.0}, {1.0, 1.0, 1.0}, {-1.0, 0.0},
+                    1.0, 1.0, 0.3, 1.0e-10, 1.0, -1.0, 100,
+                    alpha, scale, lastScale, calibratedVols);
+            }
+            BOOST_REQUIRE(success);
+            Real halfWidth = 0.5 * std::sqrt(std::sqrt(3.0 / 7.0) - 0.2);
+            BOOST_CHECK_GE(alpha, test.center - halfWidth - 1.0e-8);
+            BOOST_CHECK_LE(alpha, test.center + halfWidth + 1.0e-8);
+            if (!test.maximizeHomogeneity)
+                BOOST_CHECK_SMALL(alpha - (test.center - halfWidth), 1.0e-8);
+            BOOST_CHECK(std::isfinite(scale));
+            BOOST_CHECK(std::isfinite(lastScale));
+            Real totalVariance = 0.0;
+            for (Volatility volatility : calibratedVols) {
+                BOOST_CHECK(std::isfinite(volatility));
+                totalVariance += volatility * volatility;
+            }
+            Real targetVariance = (1.0 - calibratedVols[0]) * (1.0 - calibratedVols[0]) +
+                                  calibratedVols[1] * calibratedVols[1];
+            BOOST_CHECK_SMALL(totalVariance - 3.0, 1.0e-8);
+            BOOST_CHECK_SMALL(targetVariance - 0.3, 1.0e-8);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testAlphaFinderRejectsNegativeRemainingVariance) {
     auto form = ext::make_shared<AlphaFormInverseLinear>(std::vector<Time>{1.0, 2.0});
     AlphaFinder finder(form);
@@ -218,6 +278,22 @@ BOOST_AUTO_TEST_CASE(testAlphaFinderRejectsNegativeRemainingVariance) {
     BOOST_CHECK(!finder.solve(0.0, 0, firstVols, homogeneousVols, correlations, 1.0, 1.0,
                              0.25, 1.0e-10, 1.0, -0.5, 100,
                              alpha, scale, lastScale, calibratedVols));
+    BOOST_CHECK(!finder.solveWithMaxHomogeneity(
+        0.0, 0, firstVols, homogeneousVols, correlations, 1.0, 1.0,
+        0.25, 1.0e-10, 1.0, -0.5, 100, alpha, scale, lastScale, calibratedVols));
+}
+
+BOOST_AUTO_TEST_CASE(testAlphaFinderNoRealSolution) {
+    auto form = ext::make_shared<AlphaFormInverseLinear>(std::vector<Time>{1.0, 2.0});
+    AlphaFinder finder(form);
+    std::vector<Volatility> calibratedVols(2);
+    Real alpha, scale, lastScale;
+    BOOST_CHECK(!finder.solve(0.0, 0, {1.0}, {1.0, 1.0}, {0.0}, 1.0, 1.0,
+                             0.5, 1.0e-10, 1.0, -0.5, 100,
+                             alpha, scale, lastScale, calibratedVols));
+    BOOST_CHECK(!finder.solveWithMaxHomogeneity(
+        0.0, 0, {1.0}, {1.0, 1.0}, {0.0}, 1.0, 1.0,
+        0.5, 1.0e-10, 1.0, -0.5, 100, alpha, scale, lastScale, calibratedVols));
 }
 
 Date todaysDate_, startDate_, endDate_;
