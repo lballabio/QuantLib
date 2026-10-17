@@ -117,7 +117,6 @@ namespace
             if (x - low > high -x) // left interval is bigger
             {
                 Real tentativeNewMid = W*low+(1-W)*x;
-                Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
                 bool conditioner = (theObject.*Condition)(tentativeNewMid);
                 if (!conditioner) {
                     if  ((theObject.*Condition)(x))
@@ -129,6 +128,7 @@ namespace
                             return high;
                 }
 
+                Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
                 if (tentativeNewMidValue < midValue) // go left
                 {
                     high =x;
@@ -145,7 +145,6 @@ namespace
             else
             {
                 Real tentativeNewMid = W*x+(1-W)*high;
-                Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
                 bool conditioner = (theObject.*Condition)(tentativeNewMid);
                 if (!conditioner) {
                     if  ((theObject.*Condition)(x))
@@ -157,6 +156,7 @@ namespace
                             return high;
                 }
 
+                Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
                 if (tentativeNewMidValue < midValue) // go right
                 {
                     low =x;
