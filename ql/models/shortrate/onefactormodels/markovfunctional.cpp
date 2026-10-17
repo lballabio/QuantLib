@@ -608,9 +608,8 @@ namespace QuantLib {
     const MarkovFunctional::ModelOutputs &
     MarkovFunctional::modelOutputs() const {
 
+        calculate();
         if (modelOutputs_.dirty_) {
-
-            calculate();
 
             // yield term structure
             modelOutputs_.marketZerorate_.clear();

@@ -33,6 +33,7 @@
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
 #include <ql/processes/mfstateprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
 #include <ql/termstructures/volatility/kahalesmilesection.hpp>
@@ -1179,6 +1180,55 @@ BOOST_AUTO_TEST_CASE(testModelOutputsAfterRecalculation) {
             BOOST_REQUIRE_EQUAL(outputs.annuity_.size(), initial.annuity_.size());
             BOOST_CHECK_SMALL(outputs.atm_.front() - initial.atm_.front(), 1.0e-12);
             BOOST_CHECK_SMALL(outputs.annuity_.front() - initial.annuity_.front(), 1.0e-12);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testModelOutputsAfterMarketUpdate) {
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+    auto rateQuote = ext::make_shared<SimpleQuote>(0.03);
+    Handle<YieldTermStructure> curve(ext::make_shared<FlatForward>(
+        referenceDate, Handle<Quote>(rateQuote), Actual365Fixed()));
+    Date expiry = TARGET().advance(referenceDate, 1 * Years);
+    auto index = ext::make_shared<Euribor>(6 * Months);
+    auto model = ext::make_shared<MarkovFunctional>(
+        curve, 0.01, std::vector<Date>(), std::vector<Real>{1.0}, flatOptionletVts(),
+        std::vector<Date>{expiry}, index,
+        MarkovFunctional::ModelSettings()
+            .withYGridPoints(8)
+            .withGaussHermitePoints(8)
+            .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone));
+    const auto initial = model->modelOutputs();
+    BOOST_REQUIRE_EQUAL(initial.marketZerorate_.size(), 1);
+    BOOST_CHECK_SMALL(initial.marketZerorate_.front() - 0.03, 1.0e-12);
+
+    for (Rate rate : {0.04, 0.02}) {
+        BOOST_TEST_CONTEXT("rate=" << rate) {
+            rateQuote->setValue(rate);
+            const auto outputs = model->modelOutputs();
+            BOOST_CHECK(!outputs.dirty_);
+            BOOST_REQUIRE_EQUAL(outputs.expiries_.size(), 1);
+            BOOST_REQUIRE_EQUAL(outputs.marketZerorate_.size(), 1);
+            BOOST_REQUIRE_EQUAL(outputs.atm_.size(), 1);
+            BOOST_REQUIRE_EQUAL(outputs.annuity_.size(), 1);
+            BOOST_CHECK_SMALL(outputs.marketZerorate_.front() - rate, 1.0e-12);
+            Real accrual = index->dayCounter().yearFraction(expiry, model->numeraireDate());
+            Real expectedAnnuity = accrual * curve->discount(model->numeraireDate());
+            Real expectedAtm = (curve->discount(expiry) -
+                                curve->discount(model->numeraireDate())) / expectedAnnuity;
+            BOOST_CHECK_SMALL(outputs.annuity_.front() - expectedAnnuity, 1.0e-12);
+            BOOST_CHECK_SMALL(outputs.atm_.front() - expectedAtm, 1.0e-12);
+
+            const auto& cached = model->modelOutputs();
+            BOOST_CHECK_EQUAL_COLLECTIONS(cached.marketZerorate_.begin(),
+                                          cached.marketZerorate_.end(),
+                                          outputs.marketZerorate_.begin(),
+                                          outputs.marketZerorate_.end());
+            BOOST_CHECK_EQUAL_COLLECTIONS(cached.atm_.begin(), cached.atm_.end(),
+                                          outputs.atm_.begin(), outputs.atm_.end());
+            BOOST_CHECK_EQUAL_COLLECTIONS(cached.annuity_.begin(), cached.annuity_.end(),
+                                          outputs.annuity_.begin(), outputs.annuity_.end());
         }
     }
 }
