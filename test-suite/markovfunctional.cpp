@@ -27,7 +27,9 @@
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
+#include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
 #include <ql/models/shortrate/onefactormodels/markovfunctional.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/gaussian1dcapfloorengine.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
@@ -1114,6 +1116,82 @@ BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet) {
                     << outputs4.modelPutPremium_[i][j] << ")");
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testFlatPayoffExtrapolationUsesLastGridPoint) {
+
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+
+    auto yts = flatYts();
+    auto optionletVol = flatOptionletVts();
+    auto iborIndex = ext::make_shared<Euribor>(6 * Months);
+    const Size gridPoints = 16;
+    const Real yStdDevs = 1.0;
+
+    MarkovFunctional::ModelSettings settings;
+    settings.withYGridPoints(gridPoints)
+        .withYStdDevs(yStdDevs)
+        .withAdjustments(MarkovFunctional::ModelSettings::ExtrapolatePayoffFlat)
+        .withSmileMoneynessCheckpoints(
+            {0.1, 0.25, 0.50, 0.75, 1.0, 1.25, 1.50, 2.0, 5.0});
+
+    const Date expiry = TARGET().advance(referenceDate, 18 * Months);
+    auto model = ext::make_shared<MarkovFunctional>(
+        yts, 0.01, std::vector<Date>(), std::vector<Real>{1.0}, optionletVol,
+        std::vector<Date>{expiry}, iborIndex, settings);
+    const auto& outputs = model->modelOutputs();
+
+    const Real strike = outputs.smileStrikes_.front().front();
+    const Time fixingTime = yts->timeFromReference(expiry);
+    const Array z = model->yGrid(yStdDevs, gridPoints);
+    const Array yg = model->yGrid(yStdDevs, gridPoints, fixingTime);
+    Array p(yg.size());
+
+    const Date valueDate = iborIndex->valueDate(expiry);
+    const Date endDate = iborIndex->fixingCalendar().advance(
+        valueDate, iborIndex->tenor(), iborIndex->businessDayConvention(),
+        iborIndex->endOfMonth());
+    const Real dcf = iborIndex->dayCounter().yearFraction(expiry, endDate);
+
+    for (Size i = 0; i < yg.size(); ++i) {
+        const Real annuity = model->zerobond(endDate, expiry, yg[i]) * dcf;
+        const Rate forward =
+            (model->zerobond(expiry, expiry, yg[i]) -
+             model->zerobond(endDate, expiry, yg[i])) /
+            (dcf * model->zerobond(endDate, expiry, yg[i]));
+        p[i] = annuity * std::max(forward - strike, 0.0) /
+               model->numeraire(fixingTime, yg[i]);
+    }
+
+    CubicInterpolation payoff(z.begin(), z.end(), p.begin(),
+                              CubicInterpolation::Spline, true,
+                              CubicInterpolation::Lagrange, 0.0,
+                              CubicInterpolation::Lagrange, 0.0);
+
+    Real expectedPrice = 0.0;
+    for (Size i = 0; i < z.size() - 1; ++i) {
+        expectedPrice += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
+            0.0, payoff.cCoefficients()[i], payoff.bCoefficients()[i],
+            payoff.aCoefficients()[i], p[i], z[i], z[i], z[i + 1]);
+    }
+
+    const Size lastNode = z.size() - 1;
+    const Size lastInterval = lastNode - 1;
+    const Real correctTail =
+        Gaussian1dModel::gaussianShiftedPolynomialIntegral(
+            0.0, 0.0, 0.0, 0.0, p.back(), z.back(), z.back(), 100.0);
+    const Real oldTail = Gaussian1dModel::gaussianShiftedPolynomialIntegral(
+        0.0, 0.0, 0.0, 0.0, p[lastInterval], z[lastInterval], z.back(), 100.0);
+    BOOST_CHECK_GT(std::fabs(correctTail - oldTail), 1e-12);
+
+    expectedPrice += correctTail;
+    expectedPrice += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
+        0.0, 0.0, 0.0, 0.0, p.front(), z.front(), -100.0, z.front());
+    expectedPrice *= model->numeraire(0.0);
+
+    BOOST_CHECK_SMALL(outputs.modelCallPremium_.front().front() - expectedPrice,
+                      1e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testVanillaEngines) {
