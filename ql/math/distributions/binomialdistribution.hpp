@@ -26,6 +26,7 @@
 
 #include <ql/math/factorial.hpp>
 #include <ql/math/beta.hpp>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -147,6 +148,92 @@ namespace QuantLib {
             return 0.5*(1.0+root);
         else
             return 0.5*result/(1.0+root);
+    }
+
+    //! Log of PeizerPrattMethod2Inversion, finite when the probability underflows.
+    inline Real PeizerPrattMethod2LogInversion(Real z, BigNatural n) {
+
+        QL_REQUIRE(n%2==1,
+                   "n must be an odd number: " << n << " not allowed");
+
+        Real denom = n + 1.0/3.0 + 0.1/(n+1.0);
+        Real exponent = (z/denom)*(z/denom)*(n + 1.0/6.0);
+        Real result = std::exp(-exponent);
+        Real root = std::sqrt(1.0 - result);
+        if (z > 0.0)
+            return std::log(0.5*(1.0 + root));
+        // log(0.5*result/(1+root)), with result = exp(-exponent)
+        return -exponent + std::log(0.5) - std::log(1.0 + root);
+    }
+
+    //! One Leisen-Reimer step: probabilities and multiplicative moves.
+    /*!
+        For an up probability strictly inside (0, 1) the moves are the
+        historical ones. Once that probability rounds to 0 or 1, the
+        complementary probability is Peizer-Pratt at \f$-z\f$, which is
+        \f$1-p\f$ without cancelling a probability against 1. If the
+        complementary probability underflows as well, the moves are formed
+        from the log inversion so the factors stay finite.
+    */
+    struct LeisenReimerStep {
+        Real upProbability;
+        Real downProbability;
+        Real up;
+        Real down;
+    };
+
+    inline LeisenReimerStep leisenReimerStep(Real d2,
+                                             Real ermqdt,
+                                             Real variance,
+                                             BigNatural oddSteps) {
+        const Real width = std::sqrt(variance);
+        const Real pu = PeizerPrattMethod2Inversion(d2, oddSteps);
+        const Real pdash = PeizerPrattMethod2Inversion(d2 + width, oddSteps);
+
+        LeisenReimerStep step;
+        // Keep the historical moves whenever pu still has a complementary digit.
+        // Prices on this branch stay exactly what they were before.
+        if (pu > 0.0 && pu < 1.0) {
+            step.upProbability = pu;
+            step.downProbability = 1.0 - pu;
+            step.up = ermqdt * pdash / pu;
+            step.down = (ermqdt - pu * step.up) / (1.0 - pu);
+            return step;
+        }
+
+        const Real pd = PeizerPrattMethod2Inversion(-d2, oddSteps);
+        const Real pdashDown =
+            PeizerPrattMethod2Inversion(-(d2 + width), oddSteps);
+        if (pu > 0.0 && pd > 0.0 && pdash > 0.0 && pdashDown > 0.0) {
+            step.upProbability = pu;
+            step.downProbability = pd;
+            step.up = ermqdt * pdash / pu;
+            step.down = ermqdt * pdashDown / pd;
+            return step;
+        }
+
+        const Real logUp = PeizerPrattMethod2LogInversion(d2 + width, oddSteps)
+                           - PeizerPrattMethod2LogInversion(d2, oddSteps);
+        const Real logDown = PeizerPrattMethod2LogInversion(-(d2 + width), oddSteps)
+                             - PeizerPrattMethod2LogInversion(-d2, oddSteps);
+        step.up = ermqdt * std::exp(logUp);
+        step.down = ermqdt * std::exp(logDown);
+        step.upProbability = pu > 0.0 ? pu : 0.0;
+        step.downProbability = pd > 0.0 ? pd : 0.0;
+        if (step.upProbability == 0.0 && step.downProbability == 0.0) {
+            if (d2 >= 0.0)
+                step.upProbability = 1.0;
+            else
+                step.downProbability = 1.0;
+        } else if (step.upProbability == 0.0) {
+            step.downProbability = 1.0;
+        } else if (step.downProbability == 0.0) {
+            step.upProbability = 1.0;
+        }
+        QL_REQUIRE(std::isfinite(step.up) && std::isfinite(step.down)
+                       && step.up > 0.0 && step.down > 0.0,
+                   "invalid Leisen-Reimer factors: " << step.up << ", " << step.down);
+        return step;
     }
 
 }
