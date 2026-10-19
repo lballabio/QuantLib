@@ -23,6 +23,7 @@
 #include "utilities.hpp"
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
@@ -1238,6 +1239,88 @@ BOOST_AUTO_TEST_CASE(testJOSHIBinomialEngines) {
     relativeTol["gamma"] = 1.0e-4;
     relativeTol["theta"] = 0.03;
     testEngineConsistency(engine,steps,samples,relativeTol,true);
+}
+
+BOOST_AUTO_TEST_CASE(testBinomialAmericanExerciseAtMaturity) {
+
+    BOOST_TEST_MESSAGE("Testing binomial American exercise at maturity...");
+
+    Date today(21, September, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    Date maturity = today + 91;
+
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto stochProcess = makeProcess(spot, flatRate(today, 0.0, dc),
+                                   flatRate(today, 0.05, dc), flatVol(today, 0.15, dc));
+    auto americanExercise = ext::make_shared<AmericanExercise>(today, maturity);
+    auto europeanExercise = ext::make_shared<EuropeanExercise>(maturity);
+
+    // At 51 steps, the last grid time can round below the unsnapped maturity.
+    Size steps[] = {3, 7, 13, 25, 51, 75, 101, 151, 251, 299};
+    Real tolerance = 1.0e-10;
+    for (Size n : steps) {
+        std::map<std::string, ext::shared_ptr<PricingEngine>> engines = {
+            {"CRR", ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(stochProcess, n)},
+            {"JR", ext::make_shared<BinomialVanillaEngine<JarrowRudd>>(stochProcess, n)},
+            {"LR", ext::make_shared<BinomialVanillaEngine<LeisenReimer>>(stochProcess, n)}
+        };
+        for (const auto& engine : engines) {
+            for (auto type : {Option::Call, Option::Put}) {
+                auto payoff = ext::make_shared<PlainVanillaPayoff>(type, 85.0);
+                VanillaOption american(payoff, americanExercise);
+                VanillaOption european(payoff, europeanExercise);
+                american.setPricingEngine(engine.second);
+                european.setPricingEngine(engine.second);
+                Real americanValue = american.NPV();
+                Real europeanValue = european.NPV();
+
+                // The American exercise set includes exercise at European expiry.
+                BOOST_CHECK_MESSAGE(americanValue >= europeanValue - tolerance,
+                                    engine.first << " " << type << " with " << n << " steps: "
+                                    << "American value " << americanValue
+                                    << " is below European value " << europeanValue);
+
+                // With no dividends and positive rates, early call exercise has no value.
+                if (engine.first == "CRR" && n == 51 && type == Option::Call) {
+                    BOOST_CHECK_MESSAGE(std::fabs(americanValue - europeanValue) <= tolerance,
+                                        "Non-dividend-paying CRR call with 51 steps: "
+                                        << "American value " << americanValue
+                                        << " differs from European value " << europeanValue);
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBinomialAmericanExerciseOnlyAtMaturity) {
+
+    BOOST_TEST_MESSAGE("Testing binomial American exercise only at maturity...");
+
+    Date today(21, September, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    Date maturity = today + 91;
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto stochProcess = makeProcess(spot, flatRate(today, 0.0, dc),
+                                   flatRate(today, 0.05, dc), flatVol(today, 0.15, dc));
+    auto engine = ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(stochProcess, 101);
+    auto americanExercise = ext::make_shared<AmericanExercise>(maturity, maturity);
+    auto europeanExercise = ext::make_shared<EuropeanExercise>(maturity);
+
+    // At 101 steps, the snapped lower bound rounds above the unsnapped maturity.
+    for (auto type : {Option::Call, Option::Put}) {
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(type, 85.0);
+        VanillaOption american(payoff, americanExercise);
+        VanillaOption european(payoff, europeanExercise);
+        american.setPricingEngine(engine);
+        european.setPricingEngine(engine);
+        Real americanValue = american.NPV();
+        Real europeanValue = european.NPV();
+        BOOST_CHECK_MESSAGE(std::fabs(americanValue - europeanValue) <= 1.0e-10,
+                            type << " with 101 steps: terminal-only American value "
+                            << americanValue << " differs from European value " << europeanValue);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testFarOutOfTheMoneyBinomialEngines) {

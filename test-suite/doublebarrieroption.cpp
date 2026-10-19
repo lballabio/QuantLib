@@ -33,6 +33,7 @@
 #include <ql/pricingengines/barrier/fdhestondoublebarrierengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
@@ -41,6 +42,7 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -49,6 +51,49 @@ using namespace boost::unit_test_framework;
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(DoubleBarrierOptionTests)
+
+BOOST_AUTO_TEST_CASE(testBinomialExerciseAtMaturity) {
+
+    BOOST_TEST_MESSAGE("Testing binomial double-barrier exercise at maturity...");
+
+    Date today(21, September, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    Date maturity = today + 91;
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, 0.0, dc)),
+        Handle<YieldTermStructure>(flatRate(today, 0.05, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, 0.15, dc)));
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 85.0);
+    auto europeanExercise = ext::make_shared<EuropeanExercise>(maturity);
+    auto americanExercise = ext::make_shared<AmericanExercise>(today, maturity);
+    Size timeSteps = 51;
+    auto engine = ext::make_shared<
+        BinomialDoubleBarrierEngine<CoxRossRubinstein, DiscretizedDoubleBarrierOption>>(
+            process, timeSteps);
+    VanillaOption vanilla(payoff, europeanExercise);
+    vanilla.setPricingEngine(
+        ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(process, timeSteps));
+    Real expected = vanilla.NPV();
+    Real tolerance = 1.0e-10;
+
+    // All stock nodes lie between 58 and 171, so neither barrier can knock out.
+    DoubleBarrierOption european(DoubleBarrier::KnockOut, 1.0, 1000.0, 0.0,
+                                 payoff, europeanExercise);
+    DoubleBarrierOption american(DoubleBarrier::KnockOut, 1.0, 1000.0, 0.0,
+                                 payoff, americanExercise);
+    european.setPricingEngine(engine);
+    american.setPricingEngine(engine);
+    Real europeanValue = european.NPV();
+    Real americanValue = american.NPV();
+    BOOST_CHECK_MESSAGE(std::fabs(europeanValue - expected) <= tolerance,
+                        "European double-barrier value " << europeanValue
+                        << " differs from vanilla value " << expected);
+    BOOST_CHECK_MESSAGE(std::fabs(americanValue - expected) <= tolerance,
+                        "Non-dividend-paying American double-barrier value " << americanValue
+                        << " differs from vanilla value " << expected);
+}
 
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, barrierType, barrierlo, barrierhi, \

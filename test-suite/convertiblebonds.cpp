@@ -31,6 +31,7 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -290,6 +291,56 @@ BOOST_AUTO_TEST_CASE(testBond) {
                     << "\n    expected:   " << floating.settlementValue()
                     << "\n    error:      " << error);
     }
+}
+
+BOOST_AUTO_TEST_CASE(testBinomialConversionAtMaturity) {
+
+    BOOST_TEST_MESSAGE("Testing binomial convertible-bond conversion at maturity...");
+
+    Date today(21, September, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    Date maturity = today + 91;
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    Rate r = 0.05;
+    Volatility sigma = 0.15;
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, 0.0, dc)),
+        Handle<YieldTermStructure>(flatRate(today, r, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, sigma, dc)));
+    Handle<Quote> creditSpread(ext::make_shared<SimpleQuote>(0.0));
+    Size timeSteps = 51;
+    auto engine = ext::make_shared<BinomialConvertibleEngine<CoxRossRubinstein>>(
+        process, timeSteps, creditSpread);
+    auto europeanExercise = ext::make_shared<EuropeanExercise>(maturity);
+    auto americanExercise = ext::make_shared<AmericanExercise>(maturity, maturity);
+    Schedule schedule = MakeSchedule().from(today).to(maturity).withFrequency(Once)
+                                      .withCalendar(NullCalendar()).withConvention(Unadjusted);
+    Real conversionRatio = 2.0;
+    Real redemption = 100.0;
+    CallabilitySchedule noCallability;
+    ConvertibleZeroCouponBond european(europeanExercise, conversionRatio, noCallability,
+                                       today, 0, dc, schedule, redemption);
+    ConvertibleZeroCouponBond american(americanExercise, conversionRatio, noCallability,
+                                       today, 0, dc, schedule, redemption);
+    european.setPricingEngine(engine);
+    american.setPricingEngine(engine);
+    Real europeanValue = european.NPV();
+    Real americanValue = american.NPV();
+
+    // Even the lowest terminal CRR stock node converts for more than redemption.
+    // Discounting that minimum payoff with the TF lattice's simple rate gives a lower bound.
+    Time dt = dc.yearFraction(today, maturity) / timeSteps;
+    Real minimumConversion = conversionRatio * spot->value()
+                           * std::exp(-(timeSteps * sigma * std::sqrt(dt)));
+    Real lowerBound = minimumConversion / std::pow(1.0 + r * dt, timeSteps);
+    BOOST_REQUIRE_GT(minimumConversion, redemption);
+    BOOST_CHECK_MESSAGE(americanValue >= lowerBound - 1.0e-10,
+                        "Terminal-only American convertible value " << americanValue
+                        << " is below discounted minimum conversion value " << lowerBound);
+    BOOST_CHECK_MESSAGE(std::fabs(americanValue - europeanValue) <= 1.0e-10,
+                        "Terminal-only American convertible value " << americanValue
+                        << " differs from European value " << europeanValue);
 }
 
 BOOST_AUTO_TEST_CASE(testOption) {
