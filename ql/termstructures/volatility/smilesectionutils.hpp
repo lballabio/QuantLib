@@ -36,7 +36,7 @@ namespace QuantLib {
     class SmileSectionUtils {
       public:
         explicit SmileSectionUtils(const SmileSection& section,
-                          const std::vector<Real>& moneynessGrid = std::vector<Real>(),
+                                   const std::vector<Real>& moneynessGrid = std::vector<Real>(),
                           Real atm = Null<Real>(),
                           bool deleteArbitragePoints = false);
 

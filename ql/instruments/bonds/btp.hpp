@@ -170,7 +170,7 @@ namespace QuantLib {
     class RendistatoEquivalentSwapLengthQuote : public Quote {
       public:
         explicit RendistatoEquivalentSwapLengthQuote(ext::shared_ptr<RendistatoCalculator> r);
-        Real value() const override;
+                                                     Real value() const override;
         bool isValid() const override;
 
       private:
@@ -181,7 +181,7 @@ namespace QuantLib {
     class RendistatoEquivalentSwapSpreadQuote : public Quote {
       public:
         explicit RendistatoEquivalentSwapSpreadQuote(ext::shared_ptr<RendistatoCalculator> r);
-        Real value() const override;
+                                                     Real value() const override;
         bool isValid() const override;
 
       private:

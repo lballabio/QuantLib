@@ -52,7 +52,7 @@ namespace QuantLib {
     class NormalDistribution {
       public:
         explicit NormalDistribution(Real average = 0.0,
-                           Real sigma = 1.0);
+                                    Real sigma = 1.0);
         // function
         Real operator()(Real x) const;
         Real derivative(Real x) const;
@@ -84,7 +84,7 @@ namespace QuantLib {
     class CumulativeNormalDistribution {
       public:
         explicit CumulativeNormalDistribution(Real average = 0.0,
-                                     Real sigma   = 1.0);
+                                              Real sigma   = 1.0);
         // function
         Real operator()(Real x) const;
         Real derivative(Real x) const;
@@ -118,7 +118,7 @@ namespace QuantLib {
     class InverseCumulativeNormal {
       public:
         explicit InverseCumulativeNormal(Real average = 0.0,
-                                Real sigma   = 1.0);
+                                         Real sigma   = 1.0);
         // function
         Real operator()(Real x) const {
             return average_ + sigma_*standard_value(x);
@@ -216,7 +216,7 @@ namespace QuantLib {
     class MoroInverseCumulativeNormal {
       public:
         explicit MoroInverseCumulativeNormal(Real average = 0.0,
-                                    Real sigma   = 1.0);
+                                             Real sigma   = 1.0);
         // function
         Real operator()(Real x) const;
       private:
@@ -258,7 +258,7 @@ namespace QuantLib {
     class MaddockInverseCumulativeNormal {
       public:
         explicit MaddockInverseCumulativeNormal(Real average = 0.0,
-                                       Real sigma   = 1.0);
+                                                Real sigma   = 1.0);
         Real operator()(Real x) const;
 
       private:
@@ -269,7 +269,7 @@ namespace QuantLib {
     class MaddockCumulativeNormal {
       public:
         explicit MaddockCumulativeNormal(Real average = 0.0,
-                                       Real sigma   = 1.0);
+                                         Real sigma   = 1.0);
         Real operator()(Real x) const;
 
       private:
