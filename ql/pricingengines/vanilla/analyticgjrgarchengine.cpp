@@ -24,6 +24,7 @@
 
 #include <ql/pricingengines/vanilla/analyticgjrgarchengine.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <cmath>
 
@@ -170,8 +171,9 @@ namespace QuantLib {
                                 +2*m2*(m1im3i/(m1-m3)-m2im3i/(m2-m3))/(m1-m2))
                     + 3*b0*m2*h1*h1*m2im3i/(m2-m3) 
                     + m3i*h1*h1*h1; // ko
-                Real Eh3_2 = .375*std::pow(Eh,-0.5)*Eh2+.625*std::pow(Eh,1.5);
-                Real Eh5_2 = 1.875*std::pow(Eh,0.5)*Eh2-.875*std::pow(Eh,2.5);
+                Real sqrtEh = std::sqrt(Eh);
+                Real Eh3_2 = .375*Eh2/sqrtEh+.625*sqrtEh*Eh;
+                Real Eh5_2 = 1.875*sqrtEh*Eh2-.875*sqrtEh*Eh*Eh;
                 sEh += Eh;
                 sEh2 += Eh2;
                 sEh3 += Eh3;
@@ -190,9 +192,10 @@ namespace QuantLib {
                         + v2*m2ai[j]*Eh5_2; // ko
                     Real Ehij = b0*(1-m1ai[i+j+1])/(1-m1) 
                         + m1ai[i+j+1]*h1; // ko
-                    Real Ehh3_2 = 0.375*Ehh2/std::sqrt(Ehij) 
-                        + 0.75*std::sqrt(Ehij)*Ehh 
-                        - 0.125*std::pow(Ehij,1.5)*Eh; // ko
+                    Real sqrtEhij = std::sqrt(Ehij);
+                    Real Ehh3_2 = 0.375*Ehh2/sqrtEhij
+                        + 0.75*sqrtEhij*Ehh
+                        - 0.125*sqrtEhij*Ehij*Eh; // ko
                     Real Eh3_2eh = v1*m1ai[j]*Eh5_2; // ko
                     Real Eh3_2e3h = x1*m1ai[j]*Eh5_2; // ok
                     Real Eh1_2eh3_2 = 0.375*Eh1_2eh2/std::sqrt(Ehij) 
@@ -244,8 +247,8 @@ namespace QuantLib {
             k3 = ex3 - 3*sigma*ex - ex*ex*ex;
             // 4th central moment mu4
             k4 = ex4 + 6*ex*ex*ex2 - 3*ex*ex*ex*ex - 4*ex*ex3;
-            k3 /= std::pow(sigma,1.5); // 3rd standardized moment, ie skewness 
-            k4 /= pow(sigma,2); // 4th standardized moment, ie kurtosis
+            k3 /= std::pow(sigma,1.5); // 3rd standardized moment, ie skewness
+            k4 /= squared(sigma); // 4th standardized moment, ie kurtosis
             ex_ = ex; sigma_ = sigma; 
             k3_ = k3; k4_ = k4; r_ = r; T_ = T; b0_ = b0; h1_ = h1;
         } else {

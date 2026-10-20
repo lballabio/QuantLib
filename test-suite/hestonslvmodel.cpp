@@ -1961,6 +1961,58 @@ BOOST_AUTO_TEST_CASE(testMonteCarloVsFdmPricing) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testMonteCarloCalibrationTimeDependentLocalVol) {
+    BOOST_TEST_MESSAGE("Testing Monte-Carlo calibration with time-dependent local volatility...");
+
+    const Date todaysDate(5, Jan, 2016);
+    Settings::instance().evaluationDate() = todaysDate;
+    const DayCounter dc = ActualActual(ActualActual::ISDA);
+    const Date maturityDate = todaysDate + Period(1, Years);
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    const Handle<YieldTermStructure> rTS(flatRate(0.05, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(0.02, dc));
+
+    const std::vector<Time> times = {0.0, 0.5, 1.0};
+    const std::vector<Real> strikes = {50.0, 150.0};
+    const auto localVolMatrix = ext::make_shared<Matrix>(strikes.size(), times.size());
+    for (Size i = 0; i < strikes.size(); ++i)
+        for (Size j = 0; j < times.size(); ++j)
+            (*localVolMatrix)[i][j] = 0.2 + 0.2 * times[j];
+    const auto localVol = ext::make_shared<FixedLocalVolSurface>(
+        todaysDate, times, strikes, localVolMatrix, dc);
+
+    // Almost deterministic, stationary variance gives L(t, S) = sigma_LV(t) / sqrt(v0).
+    // A small positive vol-of-vol avoids the singular zero-vol-of-vol process limit.
+    const Real v0 = 0.04;
+    const auto hestonProcess = ext::make_shared<HestonProcess>(
+        rTS, qTS, spot, v0, 1.0, v0, 1e-6, 0.0);
+    const auto hestonModel = ext::make_shared<HestonModel>(hestonProcess);
+    const auto generator = ext::make_shared<MTBrownianGeneratorFactory>(1234UL);
+
+    // Include a mandatory date to cover unequal time steps as well.
+    const std::vector<Date> mandatoryDates = {todaysDate + 73};
+    const Time maturity = dc.yearFraction(todaysDate, maturityDate);
+    const std::vector<Time> gridTimes = {
+        dc.yearFraction(todaysDate, mandatoryDates.front()), maturity};
+    const Size timeStepsPerYear = 4;
+    const TimeGrid grid(gridTimes.begin(), gridTimes.end(),
+                        Size(maturity * timeStepsPerYear));
+    const ext::shared_ptr<LocalVolTermStructure> leverage =
+        HestonSLVMCModel(Handle<LocalVolTermStructure>(localVol), Handle<HestonModel>(hestonModel),
+                        generator, maturityDate, timeStepsPerYear, 16, 2048, mandatoryDates)
+            .leverageFunction();
+
+    // Allow for the small residual variance randomness; a one-step lag is much larger.
+    const Real tolerance = 1e-4;
+    for (Time t : grid) {
+        const Real expected = localVol->localVol(t, spot->value(), true) / std::sqrt(v0);
+        for (Real strike : {80.0, 100.0, 120.0}) {
+            const Real calculated = leverage->localVol(t, strike, true);
+            BOOST_CHECK_SMALL(calculated - expected, tolerance);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testMonteCarloCalibration) {
     BOOST_TEST_MESSAGE(
         "Testing Monte-Carlo Calibration...");

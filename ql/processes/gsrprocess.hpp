@@ -83,7 +83,7 @@ namespace QuantLib {
     // inline definitions
 
     inline void GsrProcess::setForwardMeasureTime(Time t) {
-        flushCache();
+        core_.setForwardMeasureTime(t); // keeps core T_ in sync; also flushes cache
         ForwardMeasureProcess1D::setForwardMeasureTime(t);
     }
 

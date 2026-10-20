@@ -1778,6 +1778,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {1, May, 2025},
         {5, May, 2025},
         {6, May, 2025},
+        {3, June, 2025},
         {6, June, 2025},
         {15, August, 2025},
         {3, October, 2025},
@@ -2449,6 +2450,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {1, May, 2025},
         {5, May, 2025},
         {6, May, 2025},
+        {3, June, 2025},
         {6, June, 2025},
         {15, August, 2025},
         {3, October, 2025},
@@ -3101,6 +3103,12 @@ BOOST_AUTO_TEST_CASE(testFranceCalendars) {
     BOOST_CHECK(settlement.isHoliday(Date(1, January, 2024)));
     BOOST_CHECK(settlement.isHoliday(Date(1, May, 2024)));
     BOOST_CHECK(settlement.isHoliday(Date(14, July, 2024)));
+    BOOST_CHECK(settlement.isHoliday(Date(9, May, 2024)));  // Ascension
+    BOOST_CHECK(settlement.isHoliday(Date(20, May, 2024))); // Whit Monday
+    BOOST_CHECK(settlement.isHoliday(Date(29, May, 2025))); // Ascension
+    BOOST_CHECK(settlement.isHoliday(Date(9, June, 2025))); // Whit Monday
+    BOOST_CHECK(settlement.isBusinessDay(Date(10, May, 2024)));
+    BOOST_CHECK(settlement.isBusinessDay(Date(21, May, 2024)));
     BOOST_CHECK(exchange.isHoliday(Date(29, March, 2024))); // Good Friday
     BOOST_CHECK(exchange.isHoliday(Date(24, December, 2024)));
     BOOST_CHECK(exchange.isBusinessDay(Date(2, January, 2024)));
