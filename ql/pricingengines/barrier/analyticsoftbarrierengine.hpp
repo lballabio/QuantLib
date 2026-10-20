@@ -33,6 +33,16 @@ namespace QuantLib {
     //! Pricing engine for soft barrier european options using an analytical formula
     /*! Formulas are taken from "The complete guide to option pricing formulas 2nd Ed", E.G. Haug, p.165.
         Implements a closed form solution for soft barrier options originally introduced by Hart and Ross (1994).
+
+        A soft knock-in option pays the vanilla payoff times the fraction of
+        the barrier band that has been crossed, so its value is the average
+        over the band of the single-barrier knock-in values. The closed form
+        integrates the single-barrier formulas for down-and-in calls and
+        up-and-in puts with the strike and the spot beyond the band. In all
+        other cases (down-and-in puts, up-and-in calls, strikes inside or on
+        the other side of the band, spot inside the band) the engine
+        integrates the single-barrier formulas of AnalyticBarrierEngine over
+        the band numerically. Knock-out values follow from in-out parity.
     */
 
     class AnalyticSoftBarrierEngine : public SoftBarrierOption::engine {
@@ -70,6 +80,8 @@ namespace QuantLib {
         Real vanillaEquivalent() const;    // Computes the equivalent vanilla  option price (with no barriers)
         Real standardBarrierEquivalent() const; // for when U=L
         Real knockInValue(Real S, Real X, Rate r, Volatility sigma, Time T, Real U, Real L, Real b, Option::Type optionType, Integer eta) const;
+        // Knock-in value as the average of the single-barrier knock-in values over the band
+        Real bandAverageKnockInValue(Real S, Real X, Real U, Real L, Barrier::Type barrierType) const;
 
     };
 
