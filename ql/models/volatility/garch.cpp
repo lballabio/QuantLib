@@ -46,8 +46,7 @@ namespace QuantLib {
             };
           public:
             Garch11Constraint(Real gammaLower, Real gammaUpper)
-            : Constraint(ext::shared_ptr<Constraint::Impl>(
-                      new Garch11Constraint::Impl(gammaLower, gammaUpper))) {}
+            : Constraint(ext::make_shared<Garch11Constraint::Impl>(gammaLower, gammaUpper)) {}
         };
 
 
@@ -219,8 +218,7 @@ namespace QuantLib {
             };
           public:
             FitAcfConstraint(Real gammaLower, Real gammaUpper)
-            : Constraint(ext::shared_ptr<Constraint::Impl>(
-                       new FitAcfConstraint::Impl(gammaLower, gammaUpper))) {}
+            : Constraint(ext::make_shared<FitAcfConstraint::Impl>(gammaLower, gammaUpper)) {}
         };
 
 
@@ -556,4 +554,3 @@ namespace QuantLib {
     }
 
 }
-

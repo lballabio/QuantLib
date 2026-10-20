@@ -252,7 +252,7 @@ BOOST_AUTO_TEST_CASE(testPillarDates) {
 
 BOOST_AUTO_TEST_CASE(testOvernightIndexFutureRateHelperNotification) {
     BOOST_TEST_MESSAGE(
-        "Testing OvernightIndexRateFutureHelper is not notified via curve build");
+        "Testing that OvernightIndexRateFutureHelper is not notified during bootstrap...");
     Date today(26, October, 2018);
     Settings::instance().evaluationDate() = today;
     auto futHelper = ext::make_shared<OvernightIndexFutureRateHelper>(

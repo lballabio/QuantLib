@@ -499,8 +499,8 @@ BOOST_AUTO_TEST_CASE(testJuValuesAtZeroRate) {
 
 BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuAtLowVolatility) {
 
-    BOOST_TEST_MESSAGE("Testing Barone-Adesi-Whaley and Ju approximations "
-                       "at very low volatility...");
+    BOOST_TEST_MESSAGE("Testing Barone-Adesi-Whaley, Ju and Bjerksund-Stensland "
+                       "approximations at very low volatility...");
 
     // Both engines used to throw an uncaught error for an American put once
     // sigma*sqrt(T) dropped below roughly 7e-4, for ordinary positive rates;
@@ -549,7 +549,9 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuAtLowVolatility) {
                      {ext::shared_ptr<PricingEngine>(
                           new BaroneAdesiWhaleyApproximationEngine(process)),
                       ext::shared_ptr<PricingEngine>(
-                          new JuQuadraticApproximationEngine(process))}) {
+                          new JuQuadraticApproximationEngine(process)),
+                      ext::shared_ptr<PricingEngine>(
+                          new BjerksundStenslandApproximationEngine(process))}) {
 
                     VanillaOption option(payoff, exercise);
                     option.setPricingEngine(engine);
