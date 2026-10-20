@@ -42,9 +42,7 @@ namespace QuantLib {
                                                                              // use model curve
 
         auto valueDate = iborIdx->valueDate(fixing);
-        auto endDate = iborIdx->fixingCalendar().advance(
-            valueDate, iborIdx->tenor(), iborIdx->businessDayConvention(), iborIdx->endOfMonth());
-        // FIXME Here we should use the calculation date calendar ?
+        auto endDate = iborIdx->maturityDate(valueDate);
         Real dcf = iborIdx->dayCounter().yearFraction(valueDate, endDate);
 
         return (zerobond(valueDate, referenceDate, y, yts) -
