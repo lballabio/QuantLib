@@ -2935,7 +2935,14 @@ BOOST_AUTO_TEST_CASE(testTaiwanCalendar) {
     BOOST_CHECK(calendar.isHoliday(Date(10, October, 2024)));
     BOOST_CHECK(calendar.isHoliday(Date(9, February, 2024))); // Lunar New Year
     BOOST_CHECK(calendar.isHoliday(Date(9, February, 2002)));
+    BOOST_CHECK(calendar.isHoliday(Date(29, September, 2025))); // Teachers' Day (adjusted)
+    BOOST_CHECK(calendar.isHoliday(Date(24, October, 2025))); // Retrocession Day (adjusted)
+    BOOST_CHECK(calendar.isHoliday(Date(25, December, 2025))); // Constitution Day
+    BOOST_CHECK(calendar.isHoliday(Date(28, September, 2026)));
+    BOOST_CHECK(calendar.isHoliday(Date(26, October, 2026)));
+    BOOST_CHECK(calendar.isHoliday(Date(25, December, 2026)));
     BOOST_CHECK(calendar.isBusinessDay(Date(2, January, 2024)));
+    BOOST_CHECK(calendar.isBusinessDay(Date(25, December, 2024)));
     const Date historical[] = {
         {4, June, 2003}, {21, January, 2004},
         {9, February, 2005}, {5, April, 2006}, {19, February, 2007},
