@@ -3121,7 +3121,16 @@ BOOST_AUTO_TEST_CASE(testRomaniaCalendars) {
     BOOST_CHECK(publicCalendar.isHoliday(Date(24, January, 2024)));
     BOOST_CHECK(publicCalendar.isHoliday(Date(1, May, 2024)));
     BOOST_CHECK(publicCalendar.isHoliday(Date(1, June, 2024)));
+    BOOST_CHECK(publicCalendar.isHoliday(Date(6, April, 2018))); // Good Friday
+    BOOST_CHECK(publicCalendar.isHoliday(Date(6, January, 2025))); // Epiphany
+    BOOST_CHECK(publicCalendar.isHoliday(Date(7, January, 2025))); // St John the Baptist
+    BOOST_CHECK(publicCalendar.isBusinessDay(Date(14, April, 2017)));
+    BOOST_CHECK(publicCalendar.isBusinessDay(Date(6, January, 2023)));
     BOOST_CHECK(exchange.isHoliday(Date(1, January, 2014)));
+    BOOST_CHECK(exchange.isHoliday(Date(18, April, 2025))); // Good Friday
+    BOOST_CHECK(exchange.isHoliday(Date(6, January, 2026)));
+    BOOST_CHECK(exchange.isHoliday(Date(7, January, 2026)));
+    BOOST_CHECK(exchange.isHoliday(Date(10, April, 2026))); // Good Friday
     BOOST_CHECK(exchange.isBusinessDay(Date(3, January, 2024)));
 }
 
