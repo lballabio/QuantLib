@@ -41,8 +41,8 @@ namespace QuantLib {
         Handle<YieldTermStructure> yts = iborIdx->forwardingTermStructure(); // might be empty, then
                                                                              // use model curve
 
-        Date valueDate = iborIdx->valueDate(fixing);
-        Date endDate = iborIdx->maturityDate(valueDate);
+        auto valueDate = iborIdx->valueDate(fixing);
+        auto endDate = iborIdx->maturityDate(valueDate);
         Real dcf = iborIdx->dayCounter().yearFraction(valueDate, endDate);
 
         return (zerobond(valueDate, referenceDate, y, yts) -
