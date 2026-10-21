@@ -36,9 +36,11 @@
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/quotes/simplequote.hpp>
 
@@ -515,6 +517,54 @@ BOOST_AUTO_TEST_CASE(testVasicekDiscountFactorForSmallMeanReversion) {
                     << "\n  tolerance : " << tolerance);
     }
 }
+BOOST_AUTO_TEST_CASE(testHullWhiteForwardStartBondOptionForSmallMeanReversion) {
+    BOOST_TEST_MESSAGE("Testing Hull-White forward-start bond option across small mean-reversion speeds...");
+
+    // Reference values: the model's own closed form for the forward-start
+    // option variance, evaluated in 60-digit arithmetic so that the
+    // cancellation between its exponential terms does not occur.
+    // Flat 3% curve, sigma = 1%, call struck at 0.9 with a 5-year maturity
+    // on a zero-coupon bond running from 7 to 10 years.
+    const Date today(6, October, 2026);
+    const Handle<YieldTermStructure> curve(
+        ext::make_shared<FlatForward>(today, 0.03, Actual365Fixed()));
+    const Volatility sigma = 0.01;
+
+    struct Datum {
+        Real a;
+        Real expected;
+    };
+    const Datum data[] = {
+        {  1e-10, 0.02583033167966132 },
+        {  1e-08, 0.025830330541905436 },
+        {  1e-07, 0.025830320198673824 },
+        {  1e-06, 0.02583021676672261 },
+        {  1e-05, 0.025829182483700523 },
+        { 0.0001, 0.025818843301606956 },
+        {  0.001, 0.025715815418306653 },
+        {   0.01, 0.024721072199122764 },
+        {    0.1, 0.017614510032769554 }
+    };
+
+    const Real tolerance = 1e-13;
+    for (const auto& d : data) {
+        const HullWhite model(curve, d.a, sigma);
+        const Real calculated =
+            model.discountBondOption(Option::Call, 0.9, 5.0, 7.0, 10.0);
+        const Real error = std::fabs(calculated - d.expected);
+        if (error > tolerance) {
+            BOOST_ERROR("Failed to reproduce forward-start bond option price for small mean reversion:"
+                        << "\n  a         : " << d.a
+                        << std::setprecision(16)
+                        << "\n  calculated: " << calculated
+                        << "\n  expected  : " << d.expected
+                        << std::scientific
+                        << "\n  error     : " << error
+                        << "\n  tolerance : " << tolerance);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
