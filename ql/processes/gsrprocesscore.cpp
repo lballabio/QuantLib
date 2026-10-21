@@ -18,6 +18,7 @@
 */
 
 #include <ql/processes/gsrprocesscore.hpp>
+#include <ql/math/functional.hpp>
 #include <cmath>
 
 using std::exp;
@@ -46,6 +47,15 @@ void GsrProcessCore::setVols(Array vols) {
 void GsrProcessCore::setReversions(Array reversions) {
     reversions_ = std::move(reversions);
     checkTimesVolsReversions();
+}
+
+void GsrProcessCore::setForwardMeasureTime(Real T) {
+    QL_REQUIRE(times_.empty() || T >= times_.back(),
+               "forward measure time (" << T
+                   << ") must be greater than or equal to the last "
+                      "vol/reversion pillar time (" << times_.back() << ")");
+    T_ = T;
+    flushCache();
 }
 
 void GsrProcessCore::checkTimesVolsReversions() const {
@@ -147,11 +157,9 @@ Real GsrProcessCore::expectation_rn_part(const Time w,
         res2 *=
             revZero(k)
                 ? Real(vol(k) * vol(k) / 4.0 *
-                      (4.0 * pow(cappedTime(k + 1, t) - time2(k), 2.0) -
-                       (pow(flooredTime(k, w) - 2.0 * time2(k) +
-                                cappedTime(k + 1, t),
-                            2.0) +
-                        pow(cappedTime(k + 1, t) - flooredTime(k, w), 2.0))))
+                      (4.0 * squared(cappedTime(k + 1, t) - time2(k)) -
+                       (squared(flooredTime(k, w) - 2.0 * time2(k) + cappedTime(k + 1, t)) +
+                        squared(cappedTime(k + 1, t) - flooredTime(k, w)))))
                 : Real(vol(k) * vol(k) / (2.0 * rev(k) * rev(k)) *
                       (exp(-2.0 * rev(k) * (cappedTime(k + 1, t) - time2(k))) +
                        1.0 -
@@ -221,11 +229,10 @@ Real GsrProcessCore::expectation_tf_part(const Time w,
         // eta_k zeta_k
         res3 *=
             revZero(k)
-                ? Real((-pow(cappedTime(k + 1, t) - cappedTime(k + 1, T_), 2.0) -
-                   2.0 * pow(cappedTime(k + 1, t) - flooredTime(k, w), 2.0) +
-                   pow(2.0 * flooredTime(k, w) - cappedTime(k + 1, T_) -
-                           cappedTime(k + 1, t),
-                       2.0)) /
+                ? Real((-squared(cappedTime(k + 1, t) - cappedTime(k + 1, T_)) -
+                   2.0 * squared(cappedTime(k + 1, t) - flooredTime(k, w)) +
+                   squared(2.0 * flooredTime(k, w) - cappedTime(k + 1, T_) -
+                       cappedTime(k + 1, t))) /
                       4.0)
                 : Real((2.0 - exp(rev(k) *
                              (cappedTime(k + 1, t) - cappedTime(k + 1, T_))) -
@@ -354,9 +361,8 @@ Real GsrProcessCore::time2(const Size index) const {
     if (index == 0)
         return 0.0;
     if (index > times_.size())
-        return T_; // FIXME how to ensure that forward
-                   // measure time is geq all times
-                   // given
+        return T_; // T_ is the forward measure time, kept >= all pillar times
+                   // by setForwardMeasureTime()
     return times_[index - 1];
 }
 

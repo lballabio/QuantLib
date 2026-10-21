@@ -21,8 +21,11 @@
 #include "utilities.hpp"
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/lineartsrpricer.hpp>
+#include <ql/currencies/america.hpp>
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>
 #include <ql/experimental/coupons/lognormalcmsspreadpricer.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/indexes/swapindex.hpp>
 #include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/math/array.hpp>
 #include <ql/math/comparison.hpp>
@@ -31,13 +34,18 @@
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/mean.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
+
+#include <cmath>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -344,6 +352,89 @@ BOOST_AUTO_TEST_CASE(testCouponPricing) {
                                mcReferenceValue(cpn2a, cpn2b, 0.03, 0.01, d.swN,
                                                 d.correlation->value())),
                       tol);
+}
+
+BOOST_AUTO_TEST_CASE(testShiftedLognormalDifferentShifts) {
+    BOOST_TEST_MESSAGE(
+        "Testing shifted-lognormal CMS spread pricing with different shifts...");
+
+    const Date refDate(21, September, 2026);
+    Settings::instance().evaluationDate() = refDate;
+    const DayCounter curveDayCounter = Actual365Fixed();
+    const Calendar calendar = NullCalendar();
+    const Handle<YieldTermStructure> curve(
+        ext::make_shared<FlatForward>(refDate, 0.03, curveDayCounter));
+    const ext::shared_ptr<IborIndex> ibor = ext::make_shared<IborIndex>(
+        "I6M", Period(6, Months), 0, USDCurrency(), calendar, Unadjusted,
+        false, Actual360(), curve);
+    const auto swapIndex = [&](const Integer years) {
+        return ext::make_shared<SwapIndex>(
+            "S", Period(years, Years), 0, USDCurrency(), calendar,
+            Period(1, Years), Unadjusted,
+            Thirty360(Thirty360::European), ibor);
+    };
+    const ext::shared_ptr<SwapIndex> swap10y = swapIndex(10);
+    const ext::shared_ptr<SwapIndex> swap2y = swapIndex(2);
+    const ext::shared_ptr<SwapSpreadIndex> spreadIndex =
+        ext::make_shared<SwapSpreadIndex>("SP", swap10y, swap2y, 1.0, -1.0);
+    const Date fixingDate = refDate + Period(5, Years);
+    const Date paymentDate = fixingDate + Period(1, Years);
+    const std::vector<Real> shifts1{0.01, 0.0, 0.01};
+    const std::vector<Real> shifts2{0.01, 0.01, 0.0};
+
+    for (Size i = 0; i < shifts1.size(); ++i) {
+        const Real shift1 = shifts1[i];
+        const Real shift2 = shifts2[i];
+        Matrix vols(2, 2, 0.20);
+        Matrix shifts(2, 2);
+        shifts[0][0] = shifts[1][0] = shift2;
+        shifts[0][1] = shifts[1][1] = shift1;
+        const ext::shared_ptr<SwaptionVolatilityMatrix> vol =
+            ext::make_shared<SwaptionVolatilityMatrix>(
+                calendar, Following,
+                std::vector<Period>{Period(1, Years), Period(10, Years)},
+                std::vector<Period>{Period(2, Years), Period(10, Years)},
+                vols, curveDayCounter, false, ShiftedLognormal, shifts);
+        vol->enableExtrapolation();
+        const Handle<SwaptionVolatilityStructure> volHandle(vol);
+        const ext::shared_ptr<CmsCouponPricer> cmsPricer =
+            ext::make_shared<LinearTsrPricer>(
+                volHandle, Handle<Quote>(ext::make_shared<SimpleQuote>(0.0)));
+        const Handle<Quote> correlation(
+            ext::make_shared<SimpleQuote>(0.5));
+        const ext::shared_ptr<LognormalCmsSpreadPricer> spreadPricer =
+            ext::make_shared<LognormalCmsSpreadPricer>(cmsPricer, correlation);
+        const ext::shared_ptr<CmsSpreadCoupon> coupon =
+            ext::make_shared<CmsSpreadCoupon>(
+                paymentDate, 1e6, fixingDate, paymentDate, 0, spreadIndex,
+                1.0, 0.0, Date(), Date(), Actual360(), false);
+        coupon->setPricer(spreadPricer);
+        const Rate swaplet = coupon->rate();
+
+        const Rate displacedStrikeBoundary = shift2 - shift1;
+        std::vector<Real> strikes{displacedStrikeBoundary - 0.002,
+                                  displacedStrikeBoundary,
+                                  displacedStrikeBoundary + 0.002};
+        if (shift1 == 0.0 && shift2 == 0.01) {
+            strikes.push_back(-0.002);
+            strikes.push_back(0.002);
+        }
+        for (const Real strike : strikes) {
+            const Rate cap = spreadPricer->capletRate(strike);
+            const Rate floor = spreadPricer->floorletRate(strike);
+            BOOST_CHECK(std::isfinite(cap));
+            BOOST_CHECK(std::isfinite(floor));
+            BOOST_CHECK_SMALL(std::abs(cap - floor - (swaplet - strike)),
+                              1e-12);
+
+            if (shift1 == 0.0 && shift2 == 0.01) {
+                if (std::abs(strike + 0.002) < 1e-12)
+                    BOOST_CHECK_SMALL(std::abs(cap - 0.0080778180), 1e-8);
+                if (std::abs(strike - 0.002) < 1e-12)
+                    BOOST_CHECK_SMALL(std::abs(cap - 0.0058457681), 1e-8);
+            }
+        }
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -483,7 +483,10 @@ namespace QuantLib {
             QL_FAIL("double-boundary case r<q<0 for a call given");
 
 
-        if (dividendDiscount >= 1.0 && dividendDiscount >= riskFreeDiscount) {
+        if (variance < QL_EPSILON ||
+            (dividendDiscount >= 1.0 && dividendDiscount >= riskFreeDiscount)) {
+            // with no variance the approximation divides by zero; the European
+            // value is floored at intrinsic below, as in Barone-Adesi-Whaley
             results_ = europeanCallResults(
                 spot, strike, riskFreeDiscount, dividendDiscount, variance);
         } else {

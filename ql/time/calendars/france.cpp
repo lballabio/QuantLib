@@ -58,9 +58,9 @@ namespace QuantLib {
             // Victoire 1945
             || (d == 8 && m == May)
             // Ascension
-            || (d == 10 && m == May)
-            // Pentecote
-            || (d == 21 && m == May)
+            || (dd == em+38)
+            // Lundi de Pentecote
+            || (dd == em+49)
             // Fete nationale
             || (d == 14 && m == July)
             // Assomption

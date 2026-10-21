@@ -532,6 +532,86 @@ BOOST_AUTO_TEST_CASE(testBivariate) {
                                                         "West 2004", 1.0e-8);
 }
 
+BOOST_AUTO_TEST_CASE(testBivariateDr78DegenerateCorrelations) {
+    BOOST_TEST_MESSAGE("Testing Drezner bivariate normal at degenerate correlations...");
+
+    const Real arguments[][2] = {
+        {0.1, 0.0}, {-0.5, 0.3}, {0.5, 0.5}, {-0.5, -0.5}, {0.0, 0.0},
+        {0.5, -0.5}, {0.3, 0.5}, {0.5, 0.3}, {5.6e-17, 0.766}, {-0.766, -1e-9}
+    };
+    CumulativeNormalDistribution normal;
+    for (Real rho : {-1.0, 1.0}) {
+        BivariateCumulativeNormalDistributionDr78 drezner(rho);
+        for (const auto& argumentsPair : arguments) {
+            Real a = argumentsPair[0], b = argumentsPair[1];
+            BOOST_TEST_CONTEXT("a = " << a << ", b = " << b << ", rho = " << rho) {
+                // At rho = 1, Y = X; at rho = -1, Y = -X.
+                Real expected = rho == 1.0 ? normal(std::min(a, b)) :
+                    std::max<Real>(0.0, normal(a) + normal(b) - 1.0);
+                Real calculated = std::numeric_limits<Real>::quiet_NaN();
+                BOOST_CHECK_NO_THROW(calculated = drezner(a, b));
+                BOOST_CHECK(std::isfinite(calculated));
+                BOOST_CHECK_SMALL(calculated - expected, 1e-15);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBivariateDr78NearZero) {
+    BOOST_TEST_MESSAGE("Testing Drezner bivariate normal continuity near zero...");
+
+    // Dr78's quadrature is only accurate to about 1e-6.
+    const Real tolerance = 1e-6;
+    for (Real rho : {-0.707, 0.707}) {
+        BivariateCumulativeNormalDistributionDr78 drezner(rho);
+        BivariateCumulativeNormalDistributionWe04DP west(rho);
+        for (Real tiny : {5.6e-17, 1e-9, 3e-9}) {
+            for (Real a : {-tiny, tiny}) {
+                for (Real b : {-1.0, -0.766, 0.766, 1.0}) {
+                    BOOST_TEST_CONTEXT("a = " << a << ", b = " << b << ", rho = " << rho) {
+                        Real calculated = std::numeric_limits<Real>::quiet_NaN();
+                        Real swapped = std::numeric_limits<Real>::quiet_NaN();
+                        BOOST_CHECK_NO_THROW(calculated = drezner(a, b));
+                        BOOST_CHECK_NO_THROW(swapped = drezner(b, a));
+                        BOOST_CHECK(std::isfinite(calculated));
+                        BOOST_CHECK(std::isfinite(swapped));
+                        BOOST_CHECK_SMALL(calculated - west(a, b), tolerance);
+                        BOOST_CHECK_SMALL(swapped - west(b, a), tolerance);
+                        BOOST_CHECK_SMALL(calculated - drezner(0.0, b), tolerance);
+                        BOOST_CHECK_SMALL(swapped - drezner(b, 0.0), tolerance);
+                        BOOST_CHECK_SMALL(calculated - swapped, 1e-15);
+                    }
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBivariateDr78NearDegenerateCorrelations) {
+    BOOST_TEST_MESSAGE("Testing Drezner bivariate normal near degenerate correlations...");
+
+    // Dr78's quadrature is only accurate to about 1e-6.
+    const Real tolerance = 1e-6;
+    const Real nearOne = std::nextafter(Real(1.0), Real(0.0));
+    const Real a = 0.0001;
+    for (Real rho : {-nearOne, nearOne}) {
+        const Real b = rho > 0.0 ? a : -a;
+        BivariateCumulativeNormalDistributionDr78 drezner(rho);
+        BivariateCumulativeNormalDistributionWe04DP west(rho);
+        BOOST_TEST_CONTEXT("a = " << a << ", b = " << b << ", rho = " << rho) {
+            Real calculated = std::numeric_limits<Real>::quiet_NaN();
+            Real swapped = std::numeric_limits<Real>::quiet_NaN();
+            BOOST_CHECK_NO_THROW(calculated = drezner(a, b));
+            BOOST_CHECK_NO_THROW(swapped = drezner(b, a));
+            BOOST_CHECK(std::isfinite(calculated));
+            BOOST_CHECK(std::isfinite(swapped));
+            BOOST_CHECK_SMALL(calculated - west(a, b), tolerance);
+            BOOST_CHECK_SMALL(swapped - west(b, a), tolerance);
+            BOOST_CHECK_SMALL(calculated - swapped, 1e-15);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testBinomialDistribution) {
     BOOST_TEST_MESSAGE("Testing binomial distributions...");
 

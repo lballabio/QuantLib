@@ -32,6 +32,7 @@
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
+#include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesshoutengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
@@ -39,7 +40,9 @@
 #include <ql/pricingengines/vanilla/qdplusamericanengine.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
@@ -81,6 +84,149 @@ struct AmericanOptionData {
     Volatility v;  // volatility
     Real result;   // expected result
 };
+
+BOOST_AUTO_TEST_CASE(testBinomialTheta) {
+
+    BOOST_TEST_MESSAGE("Testing binomial theta for American options...");
+
+    Date today(21, September, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    Date maturity = today + 91;
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto exercise = ext::make_shared<AmericanExercise>(today, maturity);
+
+    struct TestCase {
+        Option::Type type;
+        Real strike;
+        Rate q, r;
+        bool exercised;
+    };
+    TestCase cases[] = {
+        {Option::Put, 115.0, 0.00,  0.05, true},
+        {Option::Put, 100.0, 0.00,  0.05, false},
+        {Option::Call, 85.0, 0.10,  0.01, true},
+        {Option::Call, 85.0, 0.00, -0.05, true}
+    };
+    for (const auto& data : cases) {
+        auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, data.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, data.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, 0.15, dc)));
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(data.type, data.strike);
+        VanillaOption option(payoff, exercise);
+        Size steps = data.exercised ? 201 : 1001;
+        std::pair<std::string, ext::shared_ptr<PricingEngine>> engines[] = {
+            {"CRR", ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(process, steps)},
+            {"JR", ext::make_shared<BinomialVanillaEngine<JarrowRudd>>(process, steps)},
+            {"EQP", ext::make_shared<BinomialVanillaEngine<AdditiveEQPBinomialTree>>(
+                        process, steps)},
+            {"Trigeorgis", ext::make_shared<BinomialVanillaEngine<Trigeorgis>>(process, steps)},
+            {"Tian", ext::make_shared<BinomialVanillaEngine<Tian>>(process, steps)},
+            {"LR", ext::make_shared<BinomialVanillaEngine<LeisenReimer>>(process, steps)},
+            {"Joshi", ext::make_shared<BinomialVanillaEngine<Joshi4>>(process, steps)}
+        };
+
+        Real expectedTheta = 0.0;
+        if (!data.exercised) {
+            // At fixed spot, shortening maturity is equivalent to advancing time
+            // in this flat market. Use an independent finite-difference engine.
+            VanillaOption shorter(payoff,
+                                  ext::make_shared<AmericanExercise>(today, maturity - 1));
+            VanillaOption longer(payoff,
+                                 ext::make_shared<AmericanExercise>(today, maturity + 1));
+            auto fdEngine = ext::make_shared<FdBlackScholesVanillaEngine>(process, 400, 400);
+            shorter.setPricingEngine(fdEngine);
+            longer.setPricingEngine(fdEngine);
+            expectedTheta = (shorter.NPV() - longer.NPV()) /
+                            dc.yearFraction(maturity - 1, maturity + 1);
+        }
+
+        for (const auto& engine : engines) {
+            BOOST_TEST_CONTEXT(engine.first << " tree, " << data.type << ", strike "
+                               << data.strike << ", r " << data.r << ", q " << data.q) {
+                option.setPricingEngine(engine.second);
+                if (data.exercised) {
+                    // Immediate exercise gives an affine, time-independent payoff.
+                    BOOST_CHECK_SMALL(option.NPV() - 15.0, 1.0e-10);
+                    BOOST_CHECK_SMALL(option.delta() - Real(data.type), 1.0e-10);
+                    BOOST_CHECK_SMALL(option.gamma(), 1.0e-10);
+                    BOOST_CHECK_SMALL(option.theta(), 1.0e-8);
+                } else {
+                    BOOST_CHECK_GT(option.NPV(), (*payoff)(spot->value()));
+                    // Allow for tree discretization and the one-day time bump.
+                    BOOST_CHECK_SMALL(option.theta() - expectedTheta, 0.05);
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBinomialThetaNonFlatCurve) {
+
+    BOOST_TEST_MESSAGE("Testing binomial American theta with a non-flat curve...");
+
+    Date today(21, September, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    Date maturity = today + 365;
+    // The initial rate is 1%, the one-year zero rate is 5%. Non-decreasing,
+    // positive zero rates give positive forwards, so this call never exercises early.
+    auto riskFree = ext::make_shared<ZeroCurve>(
+        std::vector<Date>{today, today + 1, maturity},
+        std::vector<Rate>{0.01, 0.01, 0.05}, dc);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(flatRate(today, 0.0, dc)),
+        Handle<YieldTermStructure>(riskFree),
+        Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc)));
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+    VanillaOption american(payoff, ext::make_shared<AmericanExercise>(today, maturity));
+    VanillaOption european(payoff, ext::make_shared<EuropeanExercise>(maturity));
+    european.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(process));
+    // Use closed-form European value and spatial derivatives in the PDE at t=0.
+    // AnalyticEuropeanEngine::theta itself uses the maturity zero rate.
+    Real expectedTheta = 0.01 * (european.NPV() - 100.0 * european.delta())
+                         - 0.5 * 0.20 * 0.20 * 100.0 * 100.0 * european.gamma();
+    for (Size steps : {1001, 4001}) {
+        BOOST_TEST_CONTEXT("CRR tree, " << steps << " steps") {
+            auto engine = ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(
+                process, steps);
+            american.setPricingEngine(engine);
+            european.setPricingEngine(engine);
+            BOOST_CHECK_GT(american.NPV(), (*payoff)(100.0));
+            BOOST_CHECK_SMALL(american.NPV() - european.NPV(), 1.0e-10);
+            BOOST_CHECK_SMALL(american.theta() - european.theta(), 1.0e-10);
+            // Allow for discretization of the spatial Greeks by the tree.
+            BOOST_CHECK_SMALL(american.theta() - expectedTheta, 0.005);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBinomialThetaDeferredExercise) {
+
+    BOOST_TEST_MESSAGE("Testing binomial theta with deferred American exercise...");
+
+    Date today(21, September, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(flatRate(today, 0.0, dc)),
+        Handle<YieldTermStructure>(flatRate(today, 0.05, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, 0.15, dc)));
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 115.0);
+    VanillaOption option(payoff,
+                         ext::make_shared<AmericanExercise>(today + 1, today + 91));
+    option.setPricingEngine(
+        ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(process, 2));
+    // The coarse grid snaps the earliest exercise date to t=0 and returns intrinsic.
+    // The actual earliest date still forbids exercise now, so retain PDE theta r*K.
+    BOOST_CHECK_SMALL(option.NPV() - 15.0, 1.0e-10);
+    BOOST_CHECK_SMALL(option.delta() + 1.0, 1.0e-10);
+    BOOST_CHECK_SMALL(option.gamma(), 1.0e-10);
+    BOOST_CHECK_SMALL(option.theta() - 0.05 * 115.0, 1.0e-8);
+}
 
 BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValues) {
 
@@ -499,8 +645,8 @@ BOOST_AUTO_TEST_CASE(testJuValuesAtZeroRate) {
 
 BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuAtLowVolatility) {
 
-    BOOST_TEST_MESSAGE("Testing Barone-Adesi-Whaley and Ju approximations "
-                       "at very low volatility...");
+    BOOST_TEST_MESSAGE("Testing Barone-Adesi-Whaley, Ju and Bjerksund-Stensland "
+                       "approximations at very low volatility...");
 
     // Both engines used to throw an uncaught error for an American put once
     // sigma*sqrt(T) dropped below roughly 7e-4, for ordinary positive rates;
@@ -549,7 +695,9 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuAtLowVolatility) {
                      {ext::shared_ptr<PricingEngine>(
                           new BaroneAdesiWhaleyApproximationEngine(process)),
                       ext::shared_ptr<PricingEngine>(
-                          new JuQuadraticApproximationEngine(process))}) {
+                          new JuQuadraticApproximationEngine(process)),
+                      ext::shared_ptr<PricingEngine>(
+                          new BjerksundStenslandApproximationEngine(process))}) {
 
                     VanillaOption option(payoff, exercise);
                     option.setPricingEngine(engine);
