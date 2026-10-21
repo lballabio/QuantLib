@@ -19,6 +19,10 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/experimental/credit/onefactorcopula.hpp>
+#include <ql/experimental/credit/onefactorstudentcopula.hpp>
+#include <ql/handle.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/experimental/math/claytoncopularng.hpp>
 #include <ql/experimental/math/farliegumbelmorgensterncopularng.hpp>
 #include <ql/experimental/math/frankcopularng.hpp>
@@ -136,6 +140,83 @@ BOOST_AUTO_TEST_CASE(testFrankCopulaRng) {
     for (Real theta : {-5.0, -1.0, 1.0, 5.0}) {
         FrankCopulaRng<MersenneTwisterUniformRng> rng(MersenneTwisterUniformRng(seed), theta);
         checkSamples("Frank copula", theta, rng, FrankCopula(theta));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testOneFactorStudentCopulaMoments) {
+    BOOST_TEST_MESSAGE("Testing OneFactorStudentCopula moments with "
+                       "quantile-based integration range...");
+
+    // checkMoments(tol) triggers performCalculations(), integrates the
+    // marginal density of M (Gaussian) and Y (marginal of the copula), and
+    // raises QL_REQUIRE if mean or variance deviate from 0 / 1 by more than
+    // tol.  This validates that the quantile-based integration range covers
+    // enough tail mass for each combination of degrees of freedom.
+    //
+    // We use a loose tolerance (3%) because the coarse default grid (200
+    // steps) is not intended for high accuracy; the test is checking that the
+    // range is wide enough, not that the quadrature is precise.
+    Real tol = 0.03;
+
+    auto makeQuote = [](Real v) {
+        return Handle<Quote>(ext::make_shared<SimpleQuote>(v));
+    };
+
+    // Full Student-t: M ~ t(nz), Z ~ t(nm)  (note: constructor order is nz, nm)
+    for (int nz : {3, 5, 10}) {
+        for (int nm : {3, 5, 10}) {
+            OneFactorStudentCopula copula(makeQuote(0.5), nz, nm);
+            BOOST_CHECK_NO_THROW(copula.checkMoments(tol));
+        }
+    }
+
+    // Gaussian M, Student-t Z
+    for (int nz : {3, 5, 10}) {
+        OneFactorGaussianStudentCopula copula(makeQuote(0.3), nz);
+        BOOST_CHECK_NO_THROW(copula.checkMoments(tol));
+    }
+
+    // Student-t M, Gaussian Z
+    for (int nm : {3, 5, 10}) {
+        OneFactorStudentGaussianCopula copula(makeQuote(0.3), nm);
+        BOOST_CHECK_NO_THROW(copula.checkMoments(tol));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testOneFactorStudentCopulaConditionalProbability) {
+    BOOST_TEST_MESSAGE("Testing OneFactorStudentCopula conditional probability "
+                       "is a proper CDF...");
+
+    // conditionalProbability(p, y) should be:
+    // - bounded in [0, 1]
+    // - strictly increasing in p for fixed y
+    // - equal to p when correlation = 0 (independence)
+    Real tol = 1.0e-3;
+
+    auto makeQuote = [](Real v) {
+        return Handle<Quote>(ext::make_shared<SimpleQuote>(v));
+    };
+
+    // nz=5, nm=5 (constructor order: nz then nm)
+    OneFactorStudentCopula copula(makeQuote(0.5), /*nz=*/5, /*nm=*/5);
+
+    Real prev = -1.0;
+    for (int i = 1; i <= 9; ++i) {
+        Real p = i * 0.1;
+        Real cp = copula.conditionalProbability(p, /*y=*/0.0);
+        BOOST_CHECK_GE(cp, 0.0);
+        BOOST_CHECK_LE(cp, 1.0);
+        BOOST_CHECK_GT(cp, prev);
+        prev = cp;
+    }
+
+    // At zero correlation the copula factors: conditionalProbability(p, y) = p
+    OneFactorStudentCopula indep(makeQuote(0.0), /*nz=*/5, /*nm=*/5);
+    for (Real p : {0.1, 0.3, 0.5, 0.7, 0.9}) {
+        Real cp = indep.conditionalProbability(p, /*y=*/0.5);
+        if (std::fabs(cp - p) > tol)
+            BOOST_ERROR("zero-correlation: conditionalProbability(" << p
+                << ", 0.5) = " << cp << ", expected " << p);
     }
 }
 
