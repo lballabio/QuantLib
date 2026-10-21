@@ -49,9 +49,9 @@ namespace QuantLib {
       public:
         explicit ExponentialForwardCorrelation(const std::vector<Time>& rateTimes,
                                                Real longTermCorr = 0.5,
-                                      Real beta = 0.2,
-                                      Real gamma = 1.0,
-                                      std::vector<Time> times = std::vector<Time>());
+                                               Real beta = 0.2,
+                                               Real gamma = 1.0,
+                                               std::vector<Time> times = std::vector<Time>());
         const std::vector<Time>& times() const override;
         const std::vector<Time>& rateTimes() const override;
         const std::vector<Matrix>& correlations() const override;

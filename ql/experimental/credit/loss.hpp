@@ -31,7 +31,7 @@ namespace QuantLib {
 class Loss {
     public:
         explicit Loss(Real t = 0.0, Real a = 0.0) : time(t), amount(a) {};
-                      Real time, amount;
+        Real time, amount;
     };
 
     inline bool operator<(const Loss& l1, const Loss& l2) {
