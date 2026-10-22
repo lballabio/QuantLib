@@ -672,8 +672,8 @@ BOOST_AUTO_TEST_CASE(testWeekendDepositAndIndexedFraForecast) {
     index->addFixing(pastFixing, 0.08);
     const Real depositWithFixing = bootstrappedDiscount(deposit);
     const Real fraWithFixing = bootstrappedDiscount(fra);
-    BOOST_CHECK_SMALL(std::fabs(depositWithFixing - depositDiscount), 1e-12);
-    BOOST_CHECK_SMALL(std::fabs(fraWithFixing - fraDiscount), 1e-12);
+    QL_CHECK_SMALL(std::fabs(depositWithFixing - depositDiscount), 1e-12);
+    QL_CHECK_SMALL(std::fabs(fraWithFixing - fraDiscount), 1e-12);
     index->clearFixings();
 }
 

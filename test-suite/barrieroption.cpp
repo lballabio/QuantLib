@@ -1446,24 +1446,24 @@ Real perturbativeBarrierOptionValue(Natural order, Size npoint = 1000,
 
 BOOST_AUTO_TEST_CASE(testPerturbativeOrder0) {
     BOOST_TEST_MESSAGE("Testing perturbative barrier engine, order 0...");
-    BOOST_CHECK_SMALL(perturbativeBarrierOptionValue(0) - 0.897365, 1.0e-6);
+    QL_CHECK_SMALL(perturbativeBarrierOptionValue(0) - 0.897365, 1.0e-6);
 }
 
 BOOST_AUTO_TEST_CASE(testPerturbativeOrder1) {
     BOOST_TEST_MESSAGE("Testing perturbative barrier engine, order 1...");
-    BOOST_CHECK_SMALL(perturbativeBarrierOptionValue(1) - 0.894374, 1.0e-6);
+    QL_CHECK_SMALL(perturbativeBarrierOptionValue(1) - 0.894374, 1.0e-6);
 }
 
 BOOST_AUTO_TEST_CASE(testPerturbativeOrder2Fast) {
     BOOST_TEST_MESSAGE("Testing perturbative barrier engine, fast order 2...");
-    BOOST_CHECK_SMALL(perturbativeBarrierOptionValue(2, 100, 10) - 0.8943769,
+    QL_CHECK_SMALL(perturbativeBarrierOptionValue(2, 100, 10) - 0.8943769,
                       1.0e-6);
 }
 
 BOOST_AUTO_TEST_CASE(testPerturbativeOrder2FullResolution) {
     // Takes about 10-20 seconds on Apple Silicon (2026).
     BOOST_TEST_MESSAGE("Testing perturbative barrier engine, full-resolution order 2...");
-    BOOST_CHECK_SMALL(perturbativeBarrierOptionValue(2) - 0.8943769, 1.0e-6);
+    QL_CHECK_SMALL(perturbativeBarrierOptionValue(2) - 0.8943769, 1.0e-6);
 }
 
 BOOST_AUTO_TEST_CASE(testVannaVolgaSimpleBarrierValues) {
