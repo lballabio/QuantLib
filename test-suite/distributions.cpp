@@ -464,7 +464,7 @@ BOOST_AUTO_TEST_CASE(testCumulativeNormal) {
     Real previous = 0.0;
     // Probe both sides of the direct/asymptotic CDF switch at probability 1e-8.
     const Real cdfSwitch = boost::math::quantile(standardNormal, 1.0e-8);
-    for (Real x : { cdfSwitch - 1.0e-6, cdfSwitch, cdfSwitch + 1.0e-6 }) {
+    for (Real x : { Real(cdfSwitch - 1.0e-6), cdfSwitch, Real(cdfSwitch + 1.0e-6) }) {
         QL_CHECK_SMALL(cumulative(x) - boost::math::cdf(standardNormal, x),
                           1.0e-14);
     }
@@ -566,7 +566,7 @@ BOOST_AUTO_TEST_CASE(testBivariateDr78NearZero) {
         BivariateCumulativeNormalDistributionDr78 drezner(rho);
         BivariateCumulativeNormalDistributionWe04DP west(rho);
         for (Real tiny : {5.6e-17, 1e-9, 3e-9}) {
-            for (Real a : {-tiny, tiny}) {
+            for (Real a : {Real(-tiny), tiny}) {
                 for (Real b : {-1.0, -0.766, 0.766, 1.0}) {
                     BOOST_TEST_CONTEXT("a = " << a << ", b = " << b << ", rho = " << rho) {
                         Real calculated = std::numeric_limits<Real>::quiet_NaN();
@@ -594,7 +594,7 @@ BOOST_AUTO_TEST_CASE(testBivariateDr78NearDegenerateCorrelations) {
     const Real tolerance = 1e-6;
     const Real nearOne = std::nextafter(Real(1.0), Real(0.0));
     const Real a = 0.0001;
-    for (Real rho : {-nearOne, nearOne}) {
+    for (Real rho : {Real(-nearOne), nearOne}) {
         const Real b = rho > 0.0 ? a : -a;
         BivariateCumulativeNormalDistributionDr78 drezner(rho);
         BivariateCumulativeNormalDistributionWe04DP west(rho);
