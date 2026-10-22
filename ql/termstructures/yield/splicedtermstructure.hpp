@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2026 Stephen Dacek
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -136,6 +138,9 @@ namespace QuantLib {
         }
         if (t <= switchTime_)
             return curve1_->discount(t, true);
+        // subtracting offset_ from switchTime_ and t below implicitly assumes
+        // that the supplied daycount convention is additive such that
+        // yearFraction(d1, d3) == yearFraction(d1, d2) + yearFraction(d2, d3).
         if (anchor_ == Null<Real>()) {
             anchor_ = curve1_->discount(switchTime_, true) /
                       curve2_->discount(switchTime_ - offset_, true);
