@@ -1125,7 +1125,7 @@ BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentBoundaryContinuity) {
             Real positiveExpected = univariate(std::min(x, y));
             BOOST_CHECK_SMALL(perfectlyPositive(x, y) - positiveExpected, tolerance);
 
-            Real negativeExpected = x < -y ? 0.0 : univariate(x) - univariate(-y);
+            Real negativeExpected = x < -y ? Real(0.0) : Real(univariate(x) - univariate(-y));
             BOOST_CHECK_SMALL(perfectlyNegative(x, y) - negativeExpected, tolerance);
         }
     }
