@@ -23,6 +23,10 @@
 #include <ql/math/matrix.hpp>
 #include <ql/math/array.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
+#include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/endcriteria.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/problem.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/experimental/fxslv/fxcostsmilesection.hpp>
@@ -630,6 +634,11 @@ namespace QuantLib {
             cache.push_back(c);
         }
 
+        // Ensure params_ is initialised so the convergence check on the first
+        // iteration does not read uninitialised memory.
+        if (params_.size() < 4)
+            params_.assign(4, 0.0);
+
         std::vector<Real> ts, ss;
         Real eps;
         do {
@@ -725,6 +734,53 @@ namespace QuantLib {
         params_.push_back(v[0][0]);
         params_.push_back(v[1][0]);
 
+        // Refine cost parameters via Levenberg-Marquardt, minimising the
+        // weighted squared differences between model-implied and quoted vols.
+        // The SVD result above is the warm start.  Slope params (indices 4,5)
+        // are held fixed; only costs (indices 1,2,3) are varied.
+        //
+        // Residual i = wt_i * ( volByStrikeImpl(k_i; costs) - sigma_quoted_i )
+        // where wt_i = phi(d+_i) is the vega-proportional weight (or 1 if
+        // unweighted), matching the SVD weighting above.
+
+        struct VolMismatch : public CostFunction {
+            const FxCostSmileSectionStickyDelta& sec_;
+            const std::vector<PointCache>& cache_;
+            std::vector<Real> params_; // local copy; slots 0-3 costs, 4-5 slopes
+            Real fwd_, tau_;
+
+            VolMismatch(const FxCostSmileSectionStickyDelta& sec,
+                        const std::vector<PointCache>& cache,
+                        const std::vector<Real>& params,
+                        Real fwd, Real tau)
+                : sec_(sec), cache_(cache), params_(params), fwd_(fwd), tau_(tau) {}
+
+            Array values(const Array& x) const override {
+                std::vector<Real> p = {1.0, x[0], x[1], x[2], params_[4], params_[5]};
+                Array res(cache_.size());
+                const Real htau = std::sqrt(tau_);
+                for (Size i = 0; i < cache_.size(); i++) {
+                    const Real modelVol = sec_.volByStrikeImpl(cache_[i].k, fwd_, tau_, p);
+                    const Real quotedVol = cache_[i].w / htau;
+                    res[i] = cache_[i].wt * (modelVol - quotedVol);
+                }
+                return res;
+            }
+        };
+
+        VolMismatch costFn(*this, cache, params_, forward(), exerciseTime());
+        NoConstraint noConstraint;
+        Array x0 = {params_[1], params_[2], params_[3]};
+        Problem lmProblem(costFn, noConstraint, x0);
+
+        LevenbergMarquardt lm(1.0e-8, 1.0e-8, 1.0e-8);
+        EndCriteria ec(1000, 100, 1.0e-8, 1.0e-8, 1.0e-8);
+        lm.minimize(lmProblem, ec);
+
+        const Array& xOpt = lmProblem.currentValue();
+        params_[1] = xOpt[0];
+        params_[2] = xOpt[1];
+        params_[3] = xOpt[2];
     }
 
     Volatility FxCostSmileSectionStickyDelta::volByStrikeImpl(
