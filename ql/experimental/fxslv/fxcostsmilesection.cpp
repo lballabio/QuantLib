@@ -737,89 +737,39 @@ namespace QuantLib {
         // Refine cost parameters via Levenberg-Marquardt, minimising the
         // weighted squared differences between model-implied and quoted vols.
         // The SVD result above is the warm start.  Only costs (indices 1,2,3)
-        // are varied; the calibrated slopes are held fixed as beta initialisers.
+        // are varied; slope params (indices 4,5) are held fixed.
         //
-        // Residual i = wt_i * ( w_model_i / sqrt(tau) - sigma_quoted_i )
-        // where wt_i = phi(d+_i) matching the SVD weighting.
+        // Residual i = wt_i * ( volByStrikeImpl(k_i; costs) - sigma_quoted_i )
         //
-        // The vol computation is inlined (rather than delegating to
-        // volByStrikeImpl) so that quartic root selection can use c.w — the
-        // quoted total vol — as a stable prior.  "First non-negative root" is
-        // order-dependent and jumps discontinuously as LM perturbs the costs,
-        // which sends the optimiser in the wrong direction.
+        // volByStrikeImpl uses "smallest positive root" selection (see below),
+        // which is stable and monotone in the cost parameters, giving LM a
+        // well-defined, smooth landscape.
 
         struct VolMismatch : public CostFunction {
+            const FxCostSmileSectionStickyDelta& sec_;
             const std::vector<PointCache>& cache_;
-            const std::vector<Real>& slopes_;
-            Real tau_;
-            Integer pa_; // +1 PA, -1 standard
+            std::vector<Real> params_; // local copy: slots 0-3 costs, 4-5 slopes
+            Real fwd_, tau_;
 
-            VolMismatch(const std::vector<PointCache>& cache,
-                        const std::vector<Real>& slopes,
-                        Real tau, bool premiumAdjust)
-                : cache_(cache), slopes_(slopes), tau_(tau),
-                  pa_(premiumAdjust ? 1 : -1) {}
+            VolMismatch(const FxCostSmileSectionStickyDelta& sec,
+                        const std::vector<PointCache>& cache,
+                        const std::vector<Real>& params,
+                        Real fwd, Real tau)
+                : sec_(sec), cache_(cache), params_(params), fwd_(fwd), tau_(tau) {}
 
             Array values(const Array& x) const override {
-                // trial costs: p[0]=C_gamma=1, p[1]=C_theta, p[2]=C_eta, p[3]=C_omega
-                const Real p0 = 1.0, p1 = x[0], p2 = x[1], p3 = x[2];
+                std::vector<Real> p = {1.0, x[0], x[1], x[2], params_[4], params_[5]};
                 const Real htau = std::sqrt(tau_);
                 Array res(cache_.size());
                 for (Size i = 0; i < cache_.size(); i++) {
-                    const Real xi = cache_[i].x;
-                    const Real wi = cache_[i].w; // quoted total vol — root prior
-                    Real beta = slopes_[i];
-                    Real w = wi;
-                    Real eps;
-                    do {
-                        const Real q = p0 * beta * beta - 2.0 * p2 * beta + p3;
-                        QuarticPolynomial Q(std::vector<Real>{
-                            xi * xi * q,
-                            2.0 * xi * (beta * p0 - p2),
-                            p0,
-                            2.0 * p1 - pa_ * p2 - beta * p0,
-                            -q / 4.0});
-                        std::vector<Real> omega;
-                        Q.roots(omega);
-                        // Select the positive root closest to the current w.
-                        // This is continuous in the cost parameters, unlike
-                        // "first non-negative" which can jump as roots reorder.
-                        Real wNew = w;
-                        Real bestDist = QL_MAX_REAL;
-                        for (Real r : omega) {
-                            if (r > 0.0 && std::abs(r - w) < bestDist) {
-                                bestDist = std::abs(r - w);
-                                wNew = r;
-                            }
-                        }
-                        CubicPolynomial P(std::vector<Real>{
-                            2.0 * (xi * p3 - wNew * p2),
-                            wNew * wNew * (wNew * p3 + 3.0 * (pa_ * p2 - 2.0 * p1)) -
-                                2.0 * xi * p2,
-                            wNew * wNew * (3.0 * p0 - 2.0 * p2 * wNew),
-                            wNew * wNew * wNew * p0});
-                        std::vector<Real> ss;
-                        P.roots(ss);
-                        const Real prevBeta = beta;
-                        const Real prevW = w;
-                        if (!ss.empty()) {
-                            auto closest = std::min_element(
-                                ss.begin(), ss.end(), [beta](Real a, Real b) {
-                                    return std::abs(a - beta) < std::abs(b - beta);
-                                });
-                            beta = *closest;
-                        }
-                        w = wNew;
-                        eps = (beta - prevBeta) * (beta - prevBeta) +
-                              (w - prevW) * (w - prevW);
-                    } while (eps > 1.0e-8);
-                    res[i] = cache_[i].wt * (w / htau - wi / htau);
+                    const Real modelVol = sec_.volByStrikeImpl(cache_[i].k, fwd_, tau_, p);
+                    res[i] = cache_[i].wt * (modelVol - cache_[i].w / htau);
                 }
                 return res;
             }
         };
 
-        VolMismatch costFn(cache, slopes, exerciseTime(), premiumAdjust());
+        VolMismatch costFn(*this, cache, params_, forward(), exerciseTime());
         NoConstraint noConstraint;
         Array x0 = {params_[1], params_[2], params_[3]};
         Problem lmProblem(costFn, noConstraint, x0);
@@ -849,11 +799,14 @@ namespace QuantLib {
             std::vector<Real> omega;
             Q.roots(omega);
 
-            const auto root =
-                std::find_if(omega.begin(), omega.end(), [](Real r) { return r >= 0.0; });
-            QL_REQUIRE(root != omega.end(),
-                       "cost equation has no non-negative real root at strike " << strike);
-            const Real w = *root;
+            // Smallest positive root is the physical total vol.  "First
+            // non-negative" is order-dependent and can jump discontinuously as
+            // parameters change, giving LM a wrong gradient.
+            const auto posEnd = std::remove_if(omega.begin(), omega.end(),
+                                               [](Real r) { return r <= 0.0; });
+            QL_REQUIRE(posEnd != omega.begin(),
+                       "cost equation has no positive real root at strike " << strike);
+            const Real w = *std::min_element(omega.begin(), posEnd);
 
             // now form the cubic in slopes and solve to update slope
             CubicPolynomial P(std::vector<Real>{
@@ -881,10 +834,11 @@ namespace QuantLib {
         std::vector<Real> omega;
         Q.roots(omega);
 
-        const auto root = std::find_if(omega.begin(), omega.end(), [](Real r) { return r >= 0.0; });
-        QL_REQUIRE(root != omega.end(),
-                   "cost equation has no non-negative real root at strike " << strike);
-        const Real w = *root;
+        const auto posEnd = std::remove_if(omega.begin(), omega.end(),
+                                           [](Real r) { return r <= 0.0; });
+        QL_REQUIRE(posEnd != omega.begin(),
+                   "cost equation has no positive real root at strike " << strike);
+        const Real w = *std::min_element(omega.begin(), posEnd);
 
         return w / std::sqrt(tau);
     }
