@@ -21,6 +21,7 @@
 #include <complex>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/matrix.hpp>
+#include <ql/math/array.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -635,22 +636,49 @@ namespace QuantLib {
             eps = 0.0;
 
             ts.clear();
+            std::vector<Real> normCost(targets_.size());
+            // cost-equation rows (n rows)
             for (Size i = 0; i < targets_.size(); i++) {
                 const PointCache& c = cache[i];
                 const Real beta = slopes[i];
-                ts.push_back(c.wt * (1 + 2 * beta * c.phi_m + beta * beta * c.phi_p * c.phi_m));
-                ts.push_back(c.wt * 2.0 * c.w);
-                ts.push_back(-c.wt * 2.0 * (c.phi_v + beta * c.phi_p * c.phi_m));
-                ts.push_back(c.wt * c.phi_p * c.phi_m);
+                const Real r1 = c.wt * (1 + 2 * beta * c.phi_m + beta * beta * c.phi_p * c.phi_m);
+                const Real r2 = c.wt * 2.0 * c.w;
+                const Real r3 = -c.wt * 2.0 * (c.phi_v + beta * c.phi_p * c.phi_m);
+                const Real r4 = c.wt * c.phi_p * c.phi_m;
+                ts.push_back(r1);
+                ts.push_back(r2);
+                ts.push_back(r3);
+                ts.push_back(r4);
+                //normCost[i] = std::sqrt(r1 * r1 + r2 * r2 + r3 * r3 + r4 * r4);
             }
 
-            Matrix A(targets_.size(), 4, ts.begin(), ts.end());
+            // slope condition rows
+            for (Size i = 0; i < targets_.size(); i++) {
+                const PointCache& c = cache[i];
+                const Real beta = slopes[i];
+                const Real w = c.w, x = c.x;
+                const Real w2 = w * w, w3 = w2 * w;
+                const Real s1 = c.wt * beta * beta * w2 * (3.0 + beta * w);
+                const Real s2 = c.wt * (-6.0 * beta * w2);
+                const Real s3 = c.wt * (beta * w2 * (3.0 * pa - 2.0 * beta * w) - 2.0 * w);
+                const Real s4 = c.wt * (beta * w3 + 2.0 * x);
+                //const Real normS = std::sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s4 * s4) + 1e-14;
+                const Real scale = 1.0; // normCost[i] / normS;
+                ts.push_back(scale * s1);
+                ts.push_back(scale * s2);
+                ts.push_back(scale * s3);
+                ts.push_back(scale * s4);
+            }
+
+            Matrix A(2 * targets_.size(), 4, ts.begin(), ts.end());
             SVD svd(A);
             const Matrix V = svd.V();
+            const Array s = svd.singularValues();
 
             eps += (params_[1] - V(1, 3) / V(0, 3)) * (params_[1] - V(1, 3) / V(0, 3));
             eps += (params_[2] - V(2, 3) / V(0, 3)) * (params_[2] - V(2, 3) / V(0, 3));
             eps += (params_[3] - V(3, 3) / V(0, 3)) * (params_[3] - V(3, 3) / V(0, 3));
+            //eps = s[3];
 
             params_.clear();
             params_.push_back(1.0);
@@ -723,9 +751,8 @@ namespace QuantLib {
             // now form the cubic in slopes and solve to update slope
             CubicPolynomial P(std::vector<Real>{
                 2 * (x * params[3] - w * params[2]),
-                w * w * (w * params[3] + 3 * (pa * params[2]  - 2 * params[1])) -
-                    2 * x * params[2],
-                w * w * (3 * params[0] - 2 * params[2] * w), w * w * w * params_[0]});
+                w * w * (w * params[3] + 3 * (pa * params[2]  - 2 * params[1])) - 2 * x * params[2],
+                w * w * (3 * params[0] - 2 * params[2] * w), w * w * w * params[0]});
 
             std::vector<Real> ss;
             P.roots(ss);
@@ -743,8 +770,7 @@ namespace QuantLib {
         Real q = params[0] * beta * beta - 2 * params[2] * beta + params[3];
 
         QuarticPolynomial Q(std::vector<Real>{x * x * q, 2 * x * (beta * params[0] - params[2]),
-                                              params[0], 
-                                                2 * params[1] - pa * params[2] - beta * params[0], -q / 4.});
+                                              params[0], 2 * params[1] - pa * params[2] - beta * params[0], -q / 4.});
         std::vector<Real> omega;
         Q.roots(omega);
 
