@@ -78,38 +78,38 @@ namespace QuantLib {
         StudentDistribution dz (nz_);
         StudentDistribution dm (nm_);
 
-        // Integration range derived from tail quantiles at a tight cutoff
-        // probability so that the truncated tails contribute negligibly.
+        // Use per-variable integration bounds: M is integrated over [-qm, qm]
+        // and Z over [-qz, qz], each derived from the tail quantile of its own
+        // marginal.  This is more accurate than a shared max(qm, qz) bound and
+        // consistent with performCalculations() which uses qm + qz for the
+        // combined Y range (Y = sqrt(c)*M + sqrt(1-c)*Z needs the sum; each
+        // individual factor only needs its own tail quantile).
         const Real cutoff = 1e-6;
         const Real qm = InverseCumulativeStudent(nm_)(1.0 - cutoff) * scaleM_;
         const Real qz = InverseCumulativeStudent(nz_)(1.0 - cutoff) * scaleZ_;
-        Real minimum = -std::max(qm, qz);
-        Real maximum =  std::max(qm, qz);
         int steps = 400;
 
-        Real delta = (maximum - minimum) / steps;
+        Real deltaM = 2.0 * qm / steps;
+        Real deltaZ = 2.0 * qz / steps;
         Real cumulated = 0;
 
         if (c < 0.5) {
-            // outer integral -> 1 for c -> 0
-            // inner integral -> cumulativeStudent(nz)(y) for c-> 0
-            for (Real m = minimum + delta/2; m < maximum; m += delta)
-                for (Real z = minimum + delta/2;
-                     z < (y - std::sqrt(c) * m) / std::sqrt (1. - c); z += delta)
-                    cumulated += dm (m / scaleM_) / scaleM_
-                        * dz (z / scaleZ_) / scaleZ_;
-        }
-        else {
-            // outer integral -> 1 for c -> 1
-            // inner integral -> cumulativeStudent(nm)(y) for c-> 1
-            for (Real z = minimum + delta/2; z < maximum; z += delta)
-                for (Real m = minimum + delta/2;
-                     m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c); m += delta)
-                    cumulated += dm (m / scaleM_) / scaleM_
-                        * dz (z / scaleZ_) / scaleZ_;
+            // outer integral over M in [-qm, qm], inner over Z in [-qz, limit]
+            for (Real m = -qm + deltaM/2; m < qm; m += deltaM)
+                for (Real z = -qz + deltaZ/2;
+                     z < (y - std::sqrt(c) * m) / std::sqrt(1. - c); z += deltaZ)
+                    cumulated += dm(m / scaleM_) / scaleM_
+                               * dz(z / scaleZ_) / scaleZ_ * deltaM * deltaZ;
+        } else {
+            // outer integral over Z in [-qz, qz], inner over M in [-qm, limit]
+            for (Real z = -qz + deltaZ/2; z < qz; z += deltaZ)
+                for (Real m = -qm + deltaM/2;
+                     m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c); m += deltaM)
+                    cumulated += dm(m / scaleM_) / scaleM_
+                               * dz(z / scaleZ_) / scaleZ_ * deltaM * deltaZ;
         }
 
-        return cumulated * delta * delta;
+        return cumulated;
     }
 
     //-------------------------------------------------------------------------
@@ -164,38 +164,34 @@ namespace QuantLib {
         StudentDistribution dz (nz_);
         NormalDistribution dm;
 
-        // Integration range: M is Gaussian, Z is Student-t(nz).
-        // Use per-marginal tail quantiles at a tight cutoff probability.
+        // Use per-variable bounds: M (Gaussian) over [-qm, qm], Z (Student-t)
+        // over [-qz, qz], each from its own marginal's tail quantile.
         const Real cutoff = 1e-6;
         const Real qm = InverseCumulativeNormal()(1.0 - cutoff);
         const Real qz = InverseCumulativeStudent(nz_)(1.0 - cutoff) * scaleZ_;
-        Real minimum = -std::max(qm, qz);
-        Real maximum =  std::max(qm, qz);
         int steps = 400;
 
-        Real delta = (maximum - minimum) / steps;
+        Real deltaM = 2.0 * qm / steps;
+        Real deltaZ = 2.0 * qz / steps;
         Real cumulated = 0;
 
         if (c < 0.5) {
-            // outer integral -> 1 for c -> 0
-            // inner integral -> cumulativeStudent(nz)(y) for c-> 0
-            for (Real m = minimum + delta/2; m < maximum; m += delta)
-                for (Real z = minimum + delta/2;
-                     z < (y - std::sqrt(c) * m) / std::sqrt (1. - c);
-                     z += delta)
-                    cumulated += dm (m) * dz (z / scaleZ_) / scaleZ_;
-        }
-        else {
-            // outer integral -> 1 for c -> 1
-            // inner integral -> cumulativeNormal(y) for c-> 1
-            for (Real z = minimum + delta/2; z < maximum; z += delta)
-                for (Real m = minimum + delta/2;
+            // outer integral over M in [-qm, qm], inner over Z in [-qz, limit]
+            for (Real m = -qm + deltaM/2; m < qm; m += deltaM)
+                for (Real z = -qz + deltaZ/2;
+                     z < (y - std::sqrt(c) * m) / std::sqrt(1. - c);
+                     z += deltaZ)
+                    cumulated += dm(m) * dz(z / scaleZ_) / scaleZ_ * deltaM * deltaZ;
+        } else {
+            // outer integral over Z in [-qz, qz], inner over M in [-qm, limit]
+            for (Real z = -qz + deltaZ/2; z < qz; z += deltaZ)
+                for (Real m = -qm + deltaM/2;
                      m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c);
-                     m += delta)
-                    cumulated += dm (m) * dz (z / scaleZ_) / scaleZ_;
+                     m += deltaM)
+                    cumulated += dm(m) * dz(z / scaleZ_) / scaleZ_ * deltaM * deltaZ;
         }
 
-        return cumulated * delta * delta;
+        return cumulated;
     }
 
     //-------------------------------------------------------------------------
@@ -251,38 +247,34 @@ namespace QuantLib {
         StudentDistribution dm (nm_);
         NormalDistribution dz;
 
-        // Integration range: M is Student-t(nm), Z is Gaussian.
-        // Use per-marginal tail quantiles at a tight cutoff probability.
+        // Use per-variable bounds: M (Student-t) over [-qm, qm], Z (Gaussian)
+        // over [-qz, qz], each from its own marginal's tail quantile.
         const Real cutoff = 1e-6;
         const Real qm = InverseCumulativeStudent(nm_)(1.0 - cutoff) * scaleM_;
         const Real qz = InverseCumulativeNormal()(1.0 - cutoff);
-        Real minimum = -std::max(qm, qz);
-        Real maximum =  std::max(qm, qz);
         int steps = 400;
 
-        Real delta = (maximum - minimum) / steps;
+        Real deltaM = 2.0 * qm / steps;
+        Real deltaZ = 2.0 * qz / steps;
         Real cumulated = 0;
 
         if (c < 0.5) {
-            // outer integral -> 1 for c -> 0
-            // inner integral -> cumulativeNormal(y) for c-> 0
-            for (Real m = minimum + delta/2; m < maximum; m += delta)
-                for (Real z = minimum + delta/2;
-                     z < (y - std::sqrt(c) * m) / std::sqrt (1. - c);
-                     z += delta)
-                    cumulated += dm (m / scaleM_) / scaleM_ * dz (z);
-        }
-        else {
-            // outer integral -> 1 for c -> 1
-            // inner integral -> cumulativeStudent(nm)(y) for c-> 1
-            for (Real z = minimum + delta/2; z < maximum; z += delta)
-                for (Real m = minimum + delta/2;
+            // outer integral over M in [-qm, qm], inner over Z in [-qz, limit]
+            for (Real m = -qm + deltaM/2; m < qm; m += deltaM)
+                for (Real z = -qz + deltaZ/2;
+                     z < (y - std::sqrt(c) * m) / std::sqrt(1. - c);
+                     z += deltaZ)
+                    cumulated += dm(m / scaleM_) / scaleM_ * dz(z) * deltaM * deltaZ;
+        } else {
+            // outer integral over Z in [-qz, qz], inner over M in [-qm, limit]
+            for (Real z = -qz + deltaZ/2; z < qz; z += deltaZ)
+                for (Real m = -qm + deltaM/2;
                      m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c);
-                     m += delta)
-                    cumulated += dm (m / scaleM_) / scaleM_ * dz (z);
+                     m += deltaM)
+                    cumulated += dm(m / scaleM_) / scaleM_ * dz(z) * deltaM * deltaZ;
         }
 
-        return cumulated * delta * delta;
+        return cumulated;
     }
 
 }
