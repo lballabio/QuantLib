@@ -48,7 +48,7 @@ namespace QuantLib {
         if (close_enough(guessTime, t))
             return guessDate;
 
-        const Integer searchDirection
+        const auto searchDirection
             = boost::numeric_cast<Integer>(std::copysign(1.0, t - guessTime));
 
         const Time compT = t + searchDirection*500*QL_EPSILON;

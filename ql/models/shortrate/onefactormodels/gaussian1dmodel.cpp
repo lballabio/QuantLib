@@ -41,10 +41,8 @@ namespace QuantLib {
         Handle<YieldTermStructure> yts = iborIdx->forwardingTermStructure(); // might be empty, then
                                                                              // use model curve
 
-        Date valueDate = iborIdx->valueDate(fixing);
-        Date endDate = iborIdx->fixingCalendar().advance(
-            valueDate, iborIdx->tenor(), iborIdx->businessDayConvention(), iborIdx->endOfMonth());
-        // FIXME Here we should use the calculation date calendar ?
+        auto valueDate = iborIdx->valueDate(fixing);
+        auto endDate = iborIdx->maturityDate(valueDate);
         Real dcf = iborIdx->dayCounter().yearFraction(valueDate, endDate);
 
         return (zerobond(valueDate, referenceDate, y, yts) -
@@ -100,13 +98,11 @@ Real Gaussian1dModel::swapRate(const Date& fixing,
 
     Schedule sched, floatSched;
 
-    ext::shared_ptr<VanillaSwap> underlying =
-        underlyingSwap(swapIdx, fixing, tenor);
+    auto underlying = underlyingSwap(swapIdx, fixing, tenor);
 
     sched = underlying->fixedSchedule();
 
-    ext::shared_ptr<OvernightIndexedSwapIndex> oisIdx =
-        ext::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIdx);
+    auto oisIdx = ext::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIdx);
     if (oisIdx != nullptr) {
         floatSched = sched;
     } else {
@@ -153,10 +149,9 @@ Real Gaussian1dModel::swapAnnuity(const Date& fixing,
         swapIdx->discountingTermStructure(); // might be empty, then use
                                              // model curve
 
-    ext::shared_ptr<VanillaSwap> underlying =
-        underlyingSwap(swapIdx, fixing, tenor);
+    auto underlying = underlyingSwap(swapIdx, fixing, tenor);
 
-    Schedule sched = underlying->fixedSchedule();
+    auto sched = underlying->fixedSchedule();
 
     Real annuity = 0.0;
     for (unsigned int j = 1; j < sched.size(); j++) {

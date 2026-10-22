@@ -30,7 +30,7 @@ using std::vector;
 namespace QuantLib {
 
     CalibratedModel::CalibratedModel(Size nArguments)
-    : arguments_(nArguments), constraint_(new PrivateConstraint(arguments_)) {}
+    : arguments_(nArguments), constraint_(ext::make_shared<PrivateConstraint>(arguments_)) {}
 
     class CalibratedModel::CalibrationFunction : public CostFunction {
       public:
@@ -136,7 +136,7 @@ namespace QuantLib {
     }
 
     void CalibratedModel::setParams(const Array& params) {
-        Array::const_iterator p = params.begin();
+        auto p = params.begin();
         for (auto& argument : arguments_) {
             for (Size j = 0; j < argument.size(); ++j, ++p) {
                 QL_REQUIRE(p!=params.end(),"parameter array too small");

@@ -25,6 +25,7 @@
 #include "utilities.hpp"
 #include <ql/pricingengines/blackformula.hpp>
 #include <cmath>
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -442,6 +443,50 @@ BOOST_AUTO_TEST_CASE(testBachelierBlackFormulaForwardDerivativeWithZeroVolatilit
     assertBachelierBlackFormulaForwardDerivative(Option::Put, strikes, vol);
 }
 
+BOOST_AUTO_TEST_CASE(testItmProbabilitiesWithZeroVolatility) {
+
+    BOOST_TEST_MESSAGE("Testing in-the-money probabilities with zero volatility...");
+
+    // With zero standard deviation the probabilities must be the limit of the
+    // formulas as the standard deviation goes to zero, i.e. 1 if the option is
+    // in the money and 0 if it is out of the money.
+    struct Case {
+        Option::Type type;
+        Real strike, forward;
+    };
+    const Case cases[] = {{Option::Call, 0.03, 0.05}, {Option::Call, 0.05, 0.03},
+                          {Option::Put, 0.03, 0.05},  {Option::Put, 0.05, 0.03},
+                          {Option::Call, 90.0, 100.0}, {Option::Put, 90.0, 100.0}};
+
+    const Real tinyStdDev = 1.0e-8;
+    for (const Case& c : cases) {
+        Real theta = (c.type == Option::Call) ? 1.0 : -1.0;
+        Real expected = (theta * (c.forward - c.strike) > 0.0) ? 1.0 : 0.0;
+
+        Real results[] = {
+            blackFormulaCashItmProbability(c.type, c.strike, c.forward, 0.0),
+            blackFormulaAssetItmProbability(c.type, c.strike, c.forward, 0.0),
+            bachelierBlackFormulaAssetItmProbability(c.type, c.strike, c.forward, 0.0)};
+        Real limits[] = {
+            blackFormulaCashItmProbability(c.type, c.strike, c.forward, tinyStdDev),
+            blackFormulaAssetItmProbability(c.type, c.strike, c.forward, tinyStdDev),
+            bachelierBlackFormulaAssetItmProbability(c.type, c.strike, c.forward, tinyStdDev)};
+        const char* names[] = {"Black cash", "Black asset", "Bachelier asset"};
+
+        for (Size i = 0; i < 3; ++i) {
+            if (std::fabs(limits[i] - expected) > 1.0e-12)
+                BOOST_FAIL("unexpected " << names[i] << " probability with tiny std dev");
+            if (std::fabs(results[i] - expected) > 1.0e-12)
+                BOOST_ERROR(names[i] << " in-the-money probability with zero std dev"
+                            << "\n option type: " << c.type
+                            << "\n strike:      " << c.strike
+                            << "\n forward:     " << c.forward
+                            << "\n calculated:  " << results[i]
+                            << "\n expected:    " << expected);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testBachelierImpliedVolAtIntrinsic) {
 
     BOOST_TEST_MESSAGE("Testing Bachelier implied volatility for prices at intrinsic value...");
@@ -508,6 +553,86 @@ BOOST_AUTO_TEST_CASE(testDeepInTheMoneyPricesNotBelowIntrinsic) {
                 BOOST_ERROR("Bachelier price for strike " << c.strike << ", forward "
                             << c.forward << ", discount " << discount
                             << " is below intrinsic by " << intrinsic - bachelier);
+        }
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testImpliedStdDevApproximationRSStaysFinite) {
+    BOOST_TEST_MESSAGE(
+        "Testing RS implied-standard-deviation approximation away from the money...");
+
+    const Real forward = 1.0;
+    const Real discount = 1.0;
+
+    for (Real ratio: {1.01, 1.1, 1.5, 2.0, 3.0, 5.0, 10.0}) {
+        const Real strike = forward / ratio;
+        for (Real stdDev: {0.01, 0.05, 0.1, 0.2, 0.4, 0.8, 1.5}) {
+            for (auto type: {Option::Call, Option::Put}) {
+                const Real price = blackFormula(type, strike, forward, stdDev, discount);
+                const Real approx = blackFormulaImpliedStdDevApproximationRS(
+                    type, strike, forward, price, discount);
+
+                if (!std::isfinite(approx))
+                    BOOST_ERROR("RS approximation is not finite"
+                                << std::setprecision(16)
+                                << "\n    forward:    " << forward
+                                << "\n    strike:     " << strike
+                                << "\n    std dev:    " << stdDev
+                                << "\n    price:      " << price
+                                << "\n    calculated: " << approx);
+
+                if (approx < 0.0)
+                    BOOST_ERROR("RS approximation is negative"
+                                << std::setprecision(16)
+                                << "\n    forward:    " << forward
+                                << "\n    strike:     " << strike
+                                << "\n    std dev:    " << stdDev
+                                << "\n    calculated: " << approx);
+            }
+        }
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testImpliedStdDevLiRSAtIntrinsic) {
+    BOOST_TEST_MESSAGE("Testing Li-RS implied standard deviation at intrinsic...");
+
+    const Real forward = 1.0;
+    const Real discount = 1.0;
+
+    for (Real ratio: {1.5, 2.0, 5.0, 10.0}) {
+        const Real strike = forward / ratio;
+        for (Real stdDev: {1e-7, 1e-4, 0.01}) {
+            const Real price = blackFormula(Option::Call, strike, forward, stdDev, discount);
+            const Real expected = blackFormulaImpliedStdDev(Option::Call, strike, forward,
+                                                            price, discount);
+            if (expected != 0.0)
+                continue;
+
+            Real calculated;
+            try {
+                calculated = blackFormulaImpliedStdDevLiRS(Option::Call, strike, forward,
+                                                           price, discount);
+            } catch (const std::exception& e) {
+                BOOST_ERROR("Li-RS threw where the price sits on intrinsic"
+                            << std::setprecision(16)
+                            << "\n    forward: " << forward
+                            << "\n    strike:  " << strike
+                            << "\n    std dev: " << stdDev
+                            << "\n    price:   " << price
+                            << "\n    error:   " << e.what());
+                continue;
+            }
+
+            if (calculated != expected)
+                BOOST_ERROR("failed to reproduce Li-RS implied standard deviation"
+                            << std::setprecision(16)
+                            << "\n    forward:    " << forward
+                            << "\n    strike:     " << strike
+                            << "\n    std dev:    " << stdDev
+                            << "\n    calculated: " << calculated
+                            << "\n    expected:   " << expected);
         }
     }
 }

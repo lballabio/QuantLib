@@ -20,7 +20,6 @@ jobs:
             { os: windows-latest, cc: cl,       cxx: cl }
 
             ##### This is the full set of currently available runners and compilers. #####
-            # { os: macos-14,       cc: clang,    cxx: clang++ },
             # { os: macos-15,       cc: clang,    cxx: clang++ },
             #
             # { os: ubuntu-22.04,   cc: clang-13, cxx: clang++-13 },

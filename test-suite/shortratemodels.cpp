@@ -27,6 +27,7 @@
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/models/shortrate/onefactormodels/vasicek.hpp>
 #include <ql/models/shortrate/onefactormodels/extendedcoxingersollross.hpp>
+#include <ql/models/shortrate/twofactormodels/g2.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
 #include <ql/pricingengines/swap/treeswapengine.hpp>
@@ -458,6 +459,69 @@ BOOST_AUTO_TEST_CASE(testFuturesConvexityBias) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testG2DiscountBondForSmallMeanReversion) {
+    BOOST_TEST_MESSAGE("Testing zero-bond pricing for G2 model with "
+                       "mean reversion close to zero...");
+
+    struct Case {
+        Rate r;
+        Real a;
+        Volatility sigma;
+        Real b;
+        Volatility eta;
+        Real rho;
+        Time t, T;
+        Real x, y;
+        Real expected;
+    };
+
+    // reference values computed with 60-digit arithmetic
+    const Case cases[] = {
+        { 0.03, 1e-9, 0.01, 0.1, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.88003659072582035 },
+        { 0.03, 1e-8, 0.01, 0.1, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.88003659138856715 },
+        { 0.03, 1e-7, 0.01, 0.1, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.88003659801603423 },
+        { 0.03, 1e-6, 0.01, 0.1, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.88003666429061573 },
+        { 0.03, 1e-5, 0.01, 0.1, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.88003732702749102 },
+        { 0.03, 0.0001, 0.01, 0.1, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.88004395350237115 },
+        { 0.03, 0.001, 0.01, 0.1, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.88011012895729353 },
+        { 0.03, 0.1, 0.01, 1e-9, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.89274066161481982 },
+        { 0.03, 0.1, 0.01, 1e-7, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.89274065456434843 },
+        { 0.03, 0.1, 0.01, 1e-5, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.89273994952677022 },
+        { 0.03, 0.1, 0.01, 0.001, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.89266954128089552 },
+        { 0.03, 1e-7, 0.01, 2e-7, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.88625548898935952 },
+        { 0.03, 1e-6, 0.01, 1e-6, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.8862554988312159 },
+        { 0.03, 1e-5, 0.01, 0.001, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.88618543097653418 },
+        { 0.03, 0.2, 0.01, 0.3, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.88288328570041449 },
+        { 0.03, 0.4, 0.01, 0.1, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.89837482145762172 },
+        { 0.03, 0.5, 0.01, 0.125, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.899459669703478 },
+        { 0.03, 0.45, 0.01, 0.04, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.90323235067173138 },
+        { 0.03, 1.0, 0.01, 0.03, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.91184613030830664 },
+        { 0.03, 3.0, 0.01, 5.0, 0.005, -0.5, 1.0, 5.0, 0.01, -0.01, 0.88573682792113109 },
+        { 0.05, 1e-6, 0.02, 0.05, 0.01, 0.8, 0.5, 10.0, -0.02, 0.015, 0.6600529015892483 },
+        { 0.05, 0.03, 0.02, 1e-7, 0.01, -0.9, 2.0, 30.0, 0.0, 0.0, 0.23888590049897576 },
+    };
+
+    const Date today = Settings::instance().evaluationDate();
+    const Real tolerance = 1e-14;
+    for (const auto& c : cases) {
+        const Handle<YieldTermStructure> termStructure(flatRate(today, c.r, Actual365Fixed()));
+        const G2 model(termStructure, c.a, c.sigma, c.b, c.eta, c.rho);
+        const Real calculated = model.discountBond(c.t, c.T, c.x, c.y);
+        const Real error = std::fabs(calculated/c.expected - 1.0);
+        if (error > tolerance) {
+            BOOST_ERROR("Failed to reproduce zero-bond price:"
+                        << "\n  a, b          : " << c.a << ", " << c.b
+                        << "\n  t, T          : " << c.t << ", " << c.T
+                        << std::setprecision(17)
+                        << "\n  calculated    : " << calculated
+                        << "\n  expected      : " << c.expected
+                        << std::scientific
+                        << "\n  rel. error    : " << error
+                        << "\n  tolerance     : " << tolerance);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testExtendedCoxIngersollRossDiscountFactor) {
     BOOST_TEST_MESSAGE("Testing zero-bond pricing for extended CIR model...");
 
@@ -513,6 +577,104 @@ BOOST_AUTO_TEST_CASE(testVasicekDiscountFactorForSmallMeanReversion) {
                     << std::scientific
                     << "\n  error     : " << error
                     << "\n  tolerance : " << tolerance);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testVasicekDiscountFactorJustAboveSmallMeanReversionCutoff) {
+    BOOST_TEST_MESSAGE("Testing zero-bond pricing for Vasicek model with "
+                       "mean reversion close to zero...");
+
+    struct Case {
+        Rate r0;
+        Real a, b;
+        Volatility sigma;
+        Real lambda;
+        Time maturity;
+        Real expected;
+    };
+
+    // reference values computed with 60-digit arithmetic
+    const Case cases[] = {
+        { 0.03, 1.5e-8, 0.03, 0.01, 0.0,  5.0, 0.86250298709518503 },
+        { 0.03, 2.0e-8, 0.03, 0.01, 0.0,  5.0, 0.86250298706149353 },
+        { 0.03, 5.0e-8, 0.03, 0.01, 0.0,  5.0, 0.86250298685934446 },
+        { 0.03, 1.0e-7, 0.03, 0.01, 0.0,  5.0, 0.86250298652242929 },
+        { 0.03, 1.0e-6, 0.03, 0.01, 0.0,  5.0, 0.8625029804579708  },
+        { 0.03, 1.0e-5, 0.03, 0.01, 0.0,  5.0, 0.86250291981478866 },
+        { 0.03, 1.0e-4, 0.03, 0.01, 0.0,  5.0, 0.86250231352326301 },
+        { 0.05, 1.0e-9, 0.04, 0.02, -0.3, 10.0, 0.87517331816777411 },
+        { 0.05, 1.5e-8, 0.04, 0.02, -0.3, 10.0, 0.87517330591534837 },
+        { 0.05, 1.0e-7, 0.04, 0.02, -0.3, 10.0, 0.87517323152564763 },
+        { 0.05, 1.0e-5, 0.04, 0.02, -0.3, 10.0, 0.87516456763064299 },
+        { 0.05, 1.0e-3, 0.04, 0.02, -0.3, 10.0, 0.87430134378833069 },
+        { 0.05, 0.05,   0.04, 0.02, -0.3, 10.0, 0.8382610373371705  },
+        { 0.05, 0.4,    0.04, 0.02, -0.3, 10.0, 0.73828243526215487 },
+        { 0.05, 2.0,    0.04, 0.02, -0.3, 10.0, 0.68657658594684234 }
+    };
+
+    const Real tolerance = 1e-14;
+    for (const auto& c : cases) {
+        const Vasicek model(c.r0, c.a, c.b, c.sigma, c.lambda);
+        const Real calculated = model.discountBond(0.0, c.maturity, c.r0);
+        const Real error = std::fabs(calculated/c.expected - 1.0);
+        if (error > tolerance) {
+            BOOST_ERROR("Failed to reproduce zero-bond price:"
+                        << "\n  mean reversion: " << c.a
+                        << "\n  maturity      : " << c.maturity
+                        << std::setprecision(17)
+                        << "\n  calculated    : " << calculated
+                        << "\n  expected      : " << c.expected
+                        << std::scientific
+                        << "\n  rel. error    : " << error
+                        << "\n  tolerance     : " << tolerance);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testVasicekDiscountBondOptionForSmallMeanReversion) {
+    BOOST_TEST_MESSAGE("Testing bond option pricing for Vasicek model with "
+                       "mean reversion close to zero...");
+
+    const Rate r0 = 0.05;
+    const Real b = 0.05;
+    const Volatility sigma = 0.02;
+    const Real lambda = 0.1;
+    const Time maturity = 2.0;
+    const Time bondMaturity = 7.0;
+    const Real strike = 0.9;
+
+    struct Case {
+        Real a;
+        Real call, put;
+    };
+
+    // reference values computed with 60-digit arithmetic
+    const Case cases[] = {
+        { 1.0e-7, 0.0061208618684224086, 0.13114554144413559 },
+        { 1.0e-5, 0.006120132213223925,  0.13114486562595751 },
+        { 0.1,    0.0015560169600970369, 0.12618440799746233 }
+    };
+
+    const Real tolerance = 1e-13;
+    for (const auto& c : cases) {
+        const Vasicek model(r0, c.a, b, sigma, lambda);
+        for (Option::Type type : {Option::Call, Option::Put}) {
+            const Real calculated =
+                model.discountBondOption(type, strike, maturity, bondMaturity);
+            const Real expected = (type == Option::Call ? c.call : c.put);
+            const Real error = std::fabs(calculated - expected);
+            if (error > tolerance) {
+                BOOST_ERROR("Failed to reproduce bond option price:"
+                            << "\n  mean reversion: " << c.a
+                            << "\n  option type   : " << type
+                            << std::setprecision(17)
+                            << "\n  calculated    : " << calculated
+                            << "\n  expected      : " << expected
+                            << std::scientific
+                            << "\n  error         : " << error
+                            << "\n  tolerance     : " << tolerance);
+            }
+        }
     }
 }
 BOOST_AUTO_TEST_SUITE_END()

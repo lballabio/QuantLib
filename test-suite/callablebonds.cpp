@@ -734,6 +734,68 @@ BOOST_AUTO_TEST_CASE(testUnexercisableCallability) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testCallabilityTypeAfterSettledCallability) {
+
+    BOOST_TEST_MESSAGE("Testing callability types after a settled callability...");
+
+    Globals vars;
+
+    vars.today = Date(3, June, 2004);
+    Settings::instance().evaluationDate() = vars.today;
+    vars.settlement = vars.calendar.advance(vars.today, 3, Days);
+
+    vars.termStructure.linkTo(vars.makeFlatCurve(0.032));
+    vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));
+
+    Schedule schedule = MakeSchedule()
+                            .from(vars.issueDate())
+                            .to(vars.maturityDate())
+                            .withCalendar(vars.calendar)
+                            .withFrequency(Semiannual)
+                            .withConvention(vars.rollingConvention)
+                            .withRule(DateGeneration::Backward);
+
+    Size timeSteps = 240;
+
+    auto engine = ext::make_shared<TreeCallableFixedRateBondEngine>(*(vars.model), timeSteps,
+                                                                    vars.termStructure);
+
+    auto price = [&](const CallabilitySchedule& exercises) {
+        CallableFixedRateBond bond(3, 10000.0, schedule, std::vector<Rate>(1, 0.05),
+                                   Thirty360(Thirty360::BondBasis), vars.rollingConvention, 100.0,
+                                   vars.issueDate(), exercises);
+        bond.setPricingEngine(engine);
+        return bond.cleanPrice();
+    };
+
+    Real tolerance = 1e-10;
+
+    for (auto type : {Callability::Call, Callability::Put}) {
+        auto settledType = (type == Callability::Call) ? Callability::Put : Callability::Call;
+
+        CallabilitySchedule live;
+        for (Size i : {4, 8})
+            live.push_back(ext::make_shared<Callability>(Bond::Price(100.0, Bond::Price::Clean),
+                                                         type, schedule.date(i)));
+
+        // a callability on the settlement date has already occurred
+        CallabilitySchedule exercises;
+        exercises.push_back(ext::make_shared<Callability>(Bond::Price(100.0, Bond::Price::Clean),
+                                                          settledType, vars.settlement));
+        exercises.insert(exercises.end(), live.begin(), live.end());
+
+        Real expected = price(live);
+        Real calculated = price(exercises);
+        if (std::fabs(calculated - expected) > tolerance)
+            BOOST_ERROR("settled " << ((settledType == Callability::Call) ? "call" : "put")
+                                   << " changed the price of a bond with later "
+                                   << ((type == Callability::Call) ? "calls" : "puts") << ":\n"
+                                   << std::setprecision(12) << "    calculated: " << calculated
+                                   << "\n"
+                                   << "    expected:   " << expected);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testBlackEngine) {
 
     BOOST_TEST_MESSAGE("Testing Black engine for European callable bonds...");

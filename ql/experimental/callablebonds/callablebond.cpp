@@ -21,6 +21,7 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
 #include <ql/experimental/callablebonds/callablebond.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <utility>
@@ -65,6 +66,8 @@ namespace QuantLib {
 
         QL_REQUIRE(callabilityDates.size() == callabilityPrices.size(),
                    "different number of callability dates and prices");
+        QL_REQUIRE(callabilityDates.size() == callabilityTypes.size(),
+                   "different number of callability dates and types");
         QL_REQUIRE(couponDates.size() == couponAmounts.size(),
                    "different number of coupon dates and amounts");
     }
@@ -401,7 +404,7 @@ namespace QuantLib {
             return 0;
         else
             {
-                return (Ppp + Pmm - 2*P) / ( std::pow(bump,2) * dirtyP);
+                return (Ppp + Pmm - 2*P) / ( squared(bump) * dirtyP);
             }
 
     }
@@ -438,8 +441,10 @@ namespace QuantLib {
 
         arguments->callabilityPrices.clear();
         arguments->callabilityDates.clear();
+        arguments->callabilityTypes.clear();
         arguments->callabilityPrices.reserve(putCallSchedule_.size());
         arguments->callabilityDates.reserve(putCallSchedule_.size());
+        arguments->callabilityTypes.reserve(putCallSchedule_.size());
 
         arguments->paymentDayCounter = paymentDayCounter_;
         arguments->frequency = frequency_;
@@ -448,6 +453,7 @@ namespace QuantLib {
         for (const auto& i : putCallSchedule_) {
             if (!i->hasOccurred(settlement, false)) {
                 arguments->callabilityDates.push_back(i->date());
+                arguments->callabilityTypes.push_back(i->type());
                 arguments->callabilityPrices.push_back(i->price().amount());
 
                 if (i->price().type() == Bond::Price::Clean) {

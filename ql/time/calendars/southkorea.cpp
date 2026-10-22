@@ -152,6 +152,7 @@ namespace QuantLib {
             || (d ==  9 && m == March    && y == 2022) // Presidency
             || (d ==  1 && m == June     && y == 2022) // Local election
             || (d == 10 && m == April    && y == 2024) // National Assembly
+            || (d ==  3 && m == June     && y == 2025) // Presidency
             // Buddha's birthday
             || (d == 26 && m == May   && y == 2004)
             || (d == 15 && m == May   && y == 2005)

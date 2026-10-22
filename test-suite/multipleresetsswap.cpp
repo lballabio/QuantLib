@@ -19,6 +19,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/multipleresetscoupon.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/instruments/makemultipleresetsswap.hpp>
 #include <ql/instruments/nonstandardswap.hpp>
@@ -199,6 +200,65 @@ BOOST_AUTO_TEST_CASE(testRateHelperSwap) {
     Settings::instance().evaluationDate() = vars.calendar.advance(vars.today, 1 * Years);
     BOOST_CHECK(helper->swap() != swap);
     BOOST_CHECK_EQUAL(helper->swap()->startDate(), helper->earliestDate());
+}
+
+
+BOOST_AUTO_TEST_CASE(testMaturityOnHoliday) {
+    BOOST_TEST_MESSAGE("Testing multiple-resets swap schedules when the maturity is a holiday...");
+
+    CommonVars vars;
+
+    // Four years from January 15th, 2024 is Saturday, January 15th, 2028.
+    // The schedules must still start on the start date, without a stub.
+    ext::shared_ptr<MultipleResetsSwap> swap = MakeMultipleResetsSwap(4 * Years, vars.euribor3m, 2)
+                                                   .withFixedRate(0.05)
+                                                   .withSettlementDays(0);
+
+    BOOST_CHECK_EQUAL(swap->floatingLeg().size(), 8U);
+    BOOST_CHECK_EQUAL(swap->fixedLeg().size(), 8U);
+    BOOST_CHECK_EQUAL(swap->fixedSchedule().startDate(), vars.today);
+    BOOST_CHECK_EQUAL(swap->floatingSchedule().startDate(), vars.today);
+    BOOST_CHECK_EQUAL(swap->maturityDate(), Date(17, January, 2028));
+
+    // With one reset per coupon no error is raised, so a stub would go unnoticed
+    ext::shared_ptr<MultipleResetsSwap> single = MakeMultipleResetsSwap(4 * Years, vars.euribor3m, 1)
+                                                     .withFixedRate(0.05)
+                                                     .withSettlementDays(0);
+
+    BOOST_CHECK_EQUAL(single->floatingLeg().size(), 16U);
+    BOOST_CHECK_EQUAL(single->fixedLeg().size(), 16U);
+    BOOST_CHECK_EQUAL(single->fixedSchedule().startDate(), vars.today);
+    BOOST_CHECK_EQUAL(single->fixedSchedule().at(1), Date(15, April, 2024));
+}
+
+
+BOOST_AUTO_TEST_CASE(testRateHelperLastRelevantDate) {
+    BOOST_TEST_MESSAGE("Testing multiple-resets swap helper last relevant date...");
+
+    // The last reset starts on Monday, October 10th, 2016, since the 8th
+    // is a Saturday, so its fixing forecasts Euribor until January 10th, 2017;
+    // that is one day after the end of the swap.  The curve must reach that
+    // date, or the bootstrap fails since the helper's pillar is too early.
+    Date today(6, January, 2016);
+    Settings::instance().evaluationDate() = today;
+
+    auto euribor3m = ext::make_shared<Euribor3M>();
+    auto helper = ext::make_shared<MultipleResetsSwapRateHelper>(2, 1 * Years, 0.02, euribor3m, 2);
+
+    auto lastCoupon =
+        ext::dynamic_pointer_cast<MultipleResetsCoupon>(helper->swap()->floatingLeg().back());
+    BOOST_REQUIRE(lastCoupon);
+    Date lastFixingEndDate =
+        euribor3m->maturityDate(euribor3m->valueDate(lastCoupon->fixingDates().back()));
+    if (helper->latestRelevantDate() < lastFixingEndDate)
+        BOOST_ERROR("latest relevant date (" << helper->latestRelevantDate()
+                    << ") is earlier than the end of the last fixing period ("
+                    << lastFixingEndDate << ")");
+    BOOST_CHECK_EQUAL(helper->maturityDate(), helper->swap()->maturityDate());
+
+    PiecewiseYieldCurve<Discount, LogLinear> curve(
+        today, std::vector<ext::shared_ptr<RateHelper>>(1, helper), Actual365Fixed());
+    BOOST_CHECK_NO_THROW(curve.discount(1.0));
 }
 
 
