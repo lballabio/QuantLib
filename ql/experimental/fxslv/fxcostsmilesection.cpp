@@ -645,8 +645,10 @@ namespace QuantLib {
             eps = 0.0;
 
             ts.clear();
-            std::vector<Real> normCost(targets_.size());
-            // cost-equation rows (n rows)
+            // cost-equation rows only (n x 4); slope condition constrains beta
+            // via the cubic update below — adding it here as extra rows over-
+            // determines the SVD (10 constraints on 3 free costs) and degrades
+            // the cost-equation fit relative to the base-class calibration
             for (Size i = 0; i < targets_.size(); i++) {
                 const PointCache& c = cache[i];
                 const Real beta = slopes[i];
@@ -658,28 +660,9 @@ namespace QuantLib {
                 ts.push_back(r2);
                 ts.push_back(r3);
                 ts.push_back(r4);
-                //normCost[i] = std::sqrt(r1 * r1 + r2 * r2 + r3 * r3 + r4 * r4);
             }
 
-            // slope condition rows
-            for (Size i = 0; i < targets_.size(); i++) {
-                const PointCache& c = cache[i];
-                const Real beta = slopes[i];
-                const Real w = c.w, x = c.x;
-                const Real w2 = w * w, w3 = w2 * w;
-                const Real s1 = c.wt * beta * beta * w2 * (3.0 + beta * w);
-                const Real s2 = c.wt * (-6.0 * beta * w2);
-                const Real s3 = c.wt * (beta * w2 * (3.0 * pa - 2.0 * beta * w) - 2.0 * w);
-                const Real s4 = c.wt * (beta * w3 + 2.0 * x);
-                //const Real normS = std::sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s4 * s4) + 1e-14;
-                const Real scale = 1.0; // normCost[i] / normS;
-                ts.push_back(scale * s1);
-                ts.push_back(scale * s2);
-                ts.push_back(scale * s3);
-                ts.push_back(scale * s4);
-            }
-
-            Matrix A(2 * targets_.size(), 4, ts.begin(), ts.end());
+            Matrix A(targets_.size(), 4, ts.begin(), ts.end());
             SVD svd(A);
             const Matrix V = svd.V();
             const Array s = svd.singularValues();
