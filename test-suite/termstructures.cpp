@@ -648,8 +648,8 @@ BOOST_AUTO_TEST_CASE(testSpliced) {
     BOOST_TEST_MESSAGE("Testing consistency of spliced term structure...");
 
     Date today = Settings::instance().evaluationDate();
-    auto rate1 = ext::make_shared<SimpleQuote>(0.02);
-    auto rate2 = ext::make_shared<SimpleQuote>(0.04);
+    auto rate1 = ext::make_shared<SimpleQuote>();
+    auto rate2 = ext::make_shared<SimpleQuote>();
 
     auto curve1 = ext::make_shared<FlatForward>(today, Handle<Quote>(rate1), Actual360());
     auto curve2 = ext::make_shared<FlatForward>(today + 1*Years, Handle<Quote>(rate2), Actual360());
@@ -659,17 +659,23 @@ BOOST_AUTO_TEST_CASE(testSpliced) {
         Handle<YieldTermStructure>(curve1), Handle<YieldTermStructure>(curve2), switchDate);
 
     Real tolerance = 1e-10;
-    Date d = today + 1*Years;
-    BOOST_CHECK_CLOSE(spliced->discount(d), curve1->discount(d), tolerance);
-    Real adj = curve1->discount(switchDate) / curve2->discount(switchDate);
-    d = today + 3*Years;
-    BOOST_CHECK_CLOSE(spliced->discount(d), (adj * curve2->discount(d)), tolerance);
-    auto fwdrate = [&](Date d1, Date d2) {
-        return spliced->forwardRate(d1, d2, Actual360(), Continuous).rate();
-    };
-    BOOST_CHECK_SMALL(fwdrate(switchDate-1, switchDate) - rate1->value(), tolerance);
-    BOOST_CHECK_SMALL(fwdrate(switchDate, switchDate+1) - rate2->value(), tolerance);
-    BOOST_CHECK_CLOSE(spliced->discount(switchDate), curve1->discount(switchDate), tolerance);
+    for (Real r1 : {0.01, 0.02, 0.03}) {
+        for (Real r2 : {0.01, 0.02, 0.03}) {
+            rate1->setValue(r1);
+            rate2->setValue(r2);
+            Date d = today + 1*Years;
+            BOOST_CHECK_CLOSE(spliced->discount(d), curve1->discount(d), tolerance);
+            Real adj = curve1->discount(switchDate) / curve2->discount(switchDate);
+            d = today + 3*Years;
+            BOOST_CHECK_CLOSE(spliced->discount(d), (adj * curve2->discount(d)), tolerance);
+            auto fwdrate = [&](Date d1, Date d2) {
+                return spliced->forwardRate(d1, d2, Actual360(), Continuous).rate();
+            };
+            BOOST_CHECK_SMALL(fwdrate(switchDate-1, switchDate) - r1, tolerance);
+            BOOST_CHECK_SMALL(fwdrate(switchDate, switchDate+1) - r2, tolerance);
+            BOOST_CHECK_CLOSE(spliced->discount(switchDate), curve1->discount(switchDate), tolerance);
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testWeekendDepositAndIndexedFraForecast) {
