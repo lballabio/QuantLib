@@ -104,4 +104,12 @@ set_target_properties(Fuzz_BasketOption PROPERTIES
     COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
     LINK_FLAGS "${FUZZING_LINK_FLAGS}"
 )
+
+add_executable(CalendarsFuzzer fuzz_calendars.cpp)
+set_target_properties(CalendarsFuzzer PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(CalendarsFuzzer ql_library ${QL_THREAD_LIBRARIES})
+
 target_link_libraries(Fuzz_BasketOption ql_library ${QL_THREAD_LIBRARIES})
