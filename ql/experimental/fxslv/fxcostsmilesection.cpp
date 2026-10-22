@@ -782,25 +782,6 @@ namespace QuantLib {
         params_[1] = xOpt[0];
         params_[2] = xOpt[1];
         params_[3] = xOpt[2];
-
-        // Post-LM: pin ATM vol exactly via 1-D Brent search on C_theta (params_[1]).
-        // The system is overdetermined (n quotes, 3 free costs) so LM leaves a
-        // residual at every point; this step enforces exact ATM fit.
-        const Size atmIdx =
-            std::min_element(cache.begin(), cache.end(), [](const PointCache& a, const PointCache& b) {
-                return std::abs(a.x) < std::abs(b.x);
-            }) - cache.begin();
-        const Real kAtm     = cache[atmIdx].k;
-        const Real sigmaAtm = cache[atmIdx].w / htau;
-
-        auto atmError = [&](Real ctheta) -> Real {
-            std::vector<Real> p = {params_[0], ctheta, params_[2], params_[3],
-                                   params_[4], params_[5]};
-            return volByStrikeImpl(kAtm, forward(), exerciseTime(), p) - sigmaAtm;
-        };
-
-        Brent brent;
-        params_[1] = brent.solve(atmError, 1.0e-10, params_[1], 0.1);
     }
 
     Volatility FxCostSmileSectionStickyDelta::volByStrikeImpl(
