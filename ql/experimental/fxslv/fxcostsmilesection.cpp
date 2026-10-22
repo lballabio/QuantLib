@@ -717,28 +717,27 @@ namespace QuantLib {
         params_.push_back(v[0][0]);
         params_.push_back(v[1][0]);
 
-        // Refine all free parameters via Levenberg-Marquardt, minimising the
+        // Refine cost parameters via Levenberg-Marquardt, minimising the
         // weighted squared differences between model-implied and quoted vols.
-        // The SVD+linear-slope result above is the warm start.
+        // The SVD result above is the warm start.  Slope params (indices 4,5)
+        // are held fixed; only the 3 free costs are varied.
         //
-        // Free parameters: costs (indices 1,2,3) + slope coefficients (indices 4,5)
-        // = 5 unknowns for 5 quoted strikes => exactly-determined system.
-        //
-        // Residual i = wt_i * ( volByStrikeImpl(k_i; params) - sigma_quoted_i )
+        // Residual i = wt_i * ( volByStrikeImpl(k_i; costs) - sigma_quoted_i )
 
         struct VolMismatch : public CostFunction {
             const FxCostSmileSectionStickyDelta& sec_;
             const std::vector<PointCache>& cache_;
+            std::vector<Real> params_;
             Real fwd_, tau_;
 
             VolMismatch(const FxCostSmileSectionStickyDelta& sec,
                         const std::vector<PointCache>& cache,
+                        const std::vector<Real>& params,
                         Real fwd, Real tau)
-                : sec_(sec), cache_(cache), fwd_(fwd), tau_(tau) {}
+                : sec_(sec), cache_(cache), params_(params), fwd_(fwd), tau_(tau) {}
 
             Array values(const Array& x) const override {
-                // x = {C_theta, C_eta, C_omega, slope_a, slope_b}
-                std::vector<Real> p = {1.0, x[0], x[1], x[2], x[3], x[4]};
+                std::vector<Real> p = {1.0, x[0], x[1], x[2], params_[4], params_[5]};
                 const Real htau = std::sqrt(tau_);
                 Array res(cache_.size());
                 for (Size i = 0; i < cache_.size(); i++) {
@@ -749,9 +748,9 @@ namespace QuantLib {
             }
         };
 
-        VolMismatch costFn(*this, cache, forward(), exerciseTime());
+        VolMismatch costFn(*this, cache, params_, forward(), exerciseTime());
         NoConstraint noConstraint;
-        Array x0 = {params_[1], params_[2], params_[3], params_[4], params_[5]};
+        Array x0 = {params_[1], params_[2], params_[3]};
         Problem lmProblem(costFn, noConstraint, x0);
 
         LevenbergMarquardt lm(1.0e-8, 1.0e-8, 1.0e-8);
@@ -762,8 +761,6 @@ namespace QuantLib {
         params_[1] = xOpt[0];
         params_[2] = xOpt[1];
         params_[3] = xOpt[2];
-        params_[4] = xOpt[3];
-        params_[5] = xOpt[4];
     }
 
     Volatility FxCostSmileSectionStickyDelta::volByStrikeImpl(
