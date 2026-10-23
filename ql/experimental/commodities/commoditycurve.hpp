@@ -30,12 +30,13 @@
 #include <ql/experimental/commodities/exchangecontract.hpp>
 #include <ql/currency.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
+#include <ql/termstructures/interpolatedcurve.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 
 namespace QuantLib {
 
     //! Commodity term structure
-    class CommodityCurve : public TermStructure {
+    class CommodityCurve : public TermStructure, public InterpolatedNodes {
         friend class CommodityIndex;
       public:
         // constructor
@@ -62,10 +63,10 @@ namespace QuantLib {
         const UnitOfMeasure& unitOfMeasure() const;
         const Currency& currency() const;
         Date maxDate() const override;
-        const std::vector<Time>& times() const;
-        const std::vector<Date>& dates() const;
+        const std::vector<Time>& times() const override;
+        const std::vector<Date>& dates() const override;
+        const std::vector<Real>& data() const override;
         const std::vector<Real>& prices() const;
-        std::vector<std::pair<Date,Real> > nodes() const;
         bool empty() const;
 
         void setPrices(std::map<Date, Real>& prices);
@@ -139,6 +140,10 @@ namespace QuantLib {
         return dates_;
     }
 
+    inline const std::vector<Real>& CommodityCurve::data() const {
+        return data_;
+    }
+
     inline const std::vector<Real>& CommodityCurve::prices() const {
         return data_;
     }
@@ -150,13 +155,6 @@ namespace QuantLib {
     inline const ext::shared_ptr<CommodityCurve>&
     CommodityCurve::basisOfCurve() const {
         return basisOfCurve_;
-    }
-
-    inline std::vector<std::pair<Date,Real> > CommodityCurve::nodes() const {
-        std::vector<std::pair<Date,Real> > results(dates_.size());
-        for (Size i = 0; i < dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i], data_[i]);
-        return results;
     }
 
     inline Real CommodityCurve::basisOfPrice(const Date& d) const {
