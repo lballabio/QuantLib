@@ -111,13 +111,12 @@ namespace QuantLib {
         Real ermqdt = std::exp(driftPerStep_ + 0.5*variance/oddSteps);
         Real d2 = (std::log(x0_/strike) + driftPerStep_*oddSteps ) /
                                                           std::sqrt(variance);
-        pu_ = PeizerPrattMethod2Inversion(d2, oddSteps);
-        QL_REQUIRE(pu_ > 0.0 && pu_ < 1.0, "invalid up probability: " << pu_);
-        pd_ = 1.0 - pu_;
-        Real pdash = PeizerPrattMethod2Inversion(d2+std::sqrt(variance),
-                                                 oddSteps);
-        up_ = ermqdt * pdash / pu_;
-        down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
+        const LeisenReimerStep step =
+            leisenReimerStep(d2, ermqdt, variance, oddSteps);
+        pu_ = step.upProbability;
+        pd_ = step.downProbability;
+        up_ = step.up;
+        down_ = step.down;
     }
 
     Real Joshi4::computeUpProb(Real k, Real dj) const {
