@@ -90,12 +90,17 @@ namespace QuantLib {
                 grid.insert(std::pair<Real, Real>(qMin, epsilon));
                 
                 for (Size i=1; i < size; ++i) {
-                    ps = (1 - epsilon - p)/(size-i);
-                    p += ps;
-                    const Real tmp = k[l]*InverseNonCentralCumulativeChiSquareDistribution(
-                        df, ncp[l], 100, 1e-8)(p);
+                    Real vx = vTmp+minVStep;
+                    // beyond the 1-epsilon quantile, p can only decrease
+                    // and its quantile is below vTmp; no need to compute it
+                    if (p < 1 - epsilon) {
+                        ps = (1 - epsilon - p)/(size-i);
+                        p += ps;
+                        const Real tmp = k[l]*InverseNonCentralCumulativeChiSquareDistribution(
+                            df, ncp[l], 100, 1e-8)(p);
 
-                    const Real vx = std::max(vTmp+minVStep, tmp);
+                        vx = std::max(vx, tmp);
+                    }
                     p = NonCentralCumulativeChiSquareDistribution(df, ncp[l])(vx/k[l]);
                     vTmp=vx;
                     grid.insert(std::pair<Real, Real>(vx, p));
