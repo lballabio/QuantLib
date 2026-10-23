@@ -187,6 +187,7 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
 
         const ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap>& swap() const { return swap_; }
         //@}
@@ -269,6 +270,7 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         //@}
         //! \name Inspectors
         //@{

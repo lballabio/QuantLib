@@ -22,10 +22,15 @@
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/experimental/termstructures/quotesensitivitycalculator.hpp>
+#include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/experimental/fx/discountingmtmcrosscurrencybasisswapengine.hpp>
+#include <ql/experimental/fx/fxresetcashflows.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
+#include <ql/money.hpp>
 #include <ql/pricingengines/swap/discountingconstnotionalcrosscurrencyswapengine.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>
@@ -336,6 +341,38 @@ namespace QuantLib {
         return -(npvQuoteCcy - npvBaseCcy) / bps;
     }
 
+    ImpliedQuoteSensitivities ConstNotionalCrossCurrencyBasisSwapRateHelper::impliedQuoteSensitivitiesByCurve() const {
+        if (termStructure_ == nullptr || termStructureHandle_.empty() ||
+            collateralHandle_.empty())
+            return {};
+
+        // Discount each leg on its own curve and project its coupons
+        ImpliedQuoteSensitivities result;
+        const Leg* legs[2] = {&baseCcyIborLeg_, &quoteCcyIborLeg_};
+        const Handle<YieldTermStructure> discountHandles[2] = {
+            baseCcyLegDiscountHandle(), quoteCcyLegDiscountHandle()};
+        detail::LegContribution legContribution[2];
+        for (Size legNo = 0; legNo < 2; ++legNo) {
+            if (!detail::decomposeLeg(*legs[legNo], **discountHandles[legNo], result,
+                                    legContribution[legNo],
+                                    /*includeSettlementDateFlows=*/true))
+                return {};
+            legContribution[legNo].addFlow(initialNotionalExchangeDate_, -1.0);
+            legContribution[legNo].addFlow(finalNotionalExchangeDate_, 1.0);
+        }
+
+        // Q = -(npvQuote - npvBase)/bps, bps = -A_base or A_quote
+        Size basisLegNo = isBasisOnFxBaseCurrencyLeg_ ? 0 : 1;
+        detail::QuotientSensitivitySpec spec;
+        spec.numerator = {{&legContribution[0], 1.0, 0.0}, {&legContribution[1], -1.0, 0.0}};
+        spec.denominator = {{&legContribution[basisLegNo], 0.0,
+                             basisLegNo == 0 ? -1.0 : 1.0}};
+        if (!detail::addQuotientSensitivities(result, spec))
+            return {};
+        result.available = true;
+        return result;
+    }
+
     void ConstNotionalCrossCurrencyBasisSwapRateHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<ConstNotionalCrossCurrencyBasisSwapRateHelper>*>(&v);
         if (v1 != nullptr)
@@ -422,6 +459,167 @@ namespace QuantLib {
         if (isBasisOnFxBaseCurrencyLeg_)
             return swap_->fairFxBaseSpread();
         return swap_->fairFxQuoteSpread();
+    }
+
+    ImpliedQuoteSensitivities MtMCrossCurrencyBasisSwapRateHelper::impliedQuoteSensitivitiesByCurve() const {
+        if (termStructure_ == nullptr || termStructureHandle_.empty() ||
+            collateralHandle_.empty())
+            return {};
+
+        // Q = -NPV/B
+        // NPV = -fx*N_base + N_quote
+        // B = payer_k*fxconv_k*A_k
+        ImpliedQuoteSensitivities result;
+        const Handle<YieldTermStructure>& baseDisc = baseCcyLegDiscountHandle();
+        const Handle<YieldTermStructure>& quoteDisc = quoteCcyLegDiscountHandle();
+        const auto* baseKey = static_cast<const TermStructure*>(&**baseDisc);
+        const auto* quoteKey = static_cast<const TermStructure*>(&**quoteDisc);
+        Date refDate = termStructureHandle_->referenceDate();
+        Date today = Settings::instance().evaluationDate();
+
+        Size resettingLegNo = isFxBaseCurrencyLegResettable_ ? 0 : 1;
+        const Handle<YieldTermStructure>& resetCurve =
+            resettingLegNo == 0 ? baseDisc : quoteDisc;
+        const Handle<YieldTermStructure>& constCurve =
+            resettingLegNo == 0 ? quoteDisc : baseDisc;
+        const auto* resetKey = static_cast<const TermStructure*>(&**resetCurve);
+        const auto* constKey = static_cast<const TermStructure*>(&**constCurve);
+        const Currency& resetCcy =
+            resettingLegNo == 0 ? baseCcyIdx_->currency() : quoteCcyIdx_->currency();
+        const Currency& constCcy =
+            resettingLegNo == 0 ? quoteCcyIdx_->currency() : baseCcyIdx_->currency();
+
+        // FX settlement date used by the swap engine
+        Calendar fxCalendar = (fxResetFixingDays_ != 0 && fxResetFixingCalendar_.empty())
+            ? calendar_ : fxResetFixingCalendar_;
+        Date fxSettle = fxCalendar.empty() ? refDate :
+            FxResetConvention(fxResetFixingDays_, fxCalendar).valueDate(today);
+
+        // base-to-quote conversion at unit spot
+        Real fx = quoteDisc->discount(fxSettle)/baseDisc->discount(fxSettle);
+        const detail::CurvePointSensitivities dFx = {
+            {quoteKey, fxSettle, fx/quoteDisc->discount(fxSettle)},
+            {baseKey, fxSettle, -fx/baseDisc->discount(fxSettle)}};
+
+        // same convention as DiscountingFxResetPricer::fxRate at unit spot
+        auto historicalReset = [&](const Date& fixingDate) -> Real {
+            try {
+                ExchangeRate rate = ExchangeRateManager::instance().lookup(
+                    constCcy, resetCcy, fixingDate);
+                return rate.exchange(Money(1.0, constCcy)).value();
+            } catch (Error&) {
+                return Null<Real>();
+            }
+        };
+        struct Reset { Real rate; bool forecast; };
+        auto decomposeReset = [&](const FxReset& reset) -> Reset {
+            if (reset.fixingDate() <= today) {
+                Real rate = historicalReset(reset.fixingDate());
+                if (rate != Null<Real>())
+                    return {rate, false};
+                if (reset.fixingDate() < today ||
+                    Settings::instance().enforcesTodaysHistoricFixings())
+                    return {Null<Real>(), false};
+            }
+            Real rate = (resetCurve->discount(fxSettle)/constCurve->discount(fxSettle))
+                * (constCurve->discount(reset.valueDate())
+                   /resetCurve->discount(reset.valueDate()));
+            return {rate, true};
+        };
+        // d(scale * fxRate)/dP for both discount curves
+        auto addResetSensitivities = [&](const FxReset& reset, const Reset& r, Real scale,
+                                         detail::CurvePointSensitivities& out) {
+            if (!r.forecast)
+                return;
+            out.push_back({resetKey, fxSettle,
+                           scale*r.rate/resetCurve->discount(fxSettle)});
+            out.push_back({resetKey, reset.valueDate(),
+                           -scale*r.rate/resetCurve->discount(reset.valueDate())});
+            out.push_back({constKey, fxSettle,
+                           -scale*r.rate/constCurve->discount(fxSettle)});
+            out.push_back({constKey, reset.valueDate(),
+                           scale*r.rate/constCurve->discount(reset.valueDate())});
+        };
+
+        // Handle FX-reset flows here and leave the others to decomposeLeg
+        auto fxResetFlows = [&](const ext::shared_ptr<CashFlow>& cf,
+                                detail::FlowSensitivityData& d) {
+            if (auto coupon = ext::dynamic_pointer_cast<FxResetCoupon>(cf)) {
+                auto r = decomposeReset(coupon->fxReset());
+                if (r.rate == Null<Real>())
+                    return detail::FlowHandling::Unsupported;
+                // scale the underlying coupon by the reset notional
+                detail::CouponContribution ua;
+                if (!detail::decomposeCouponWithFallback(coupon->underlying(), ua, result))
+                    return detail::FlowHandling::Unsupported;
+                Real underlyingScale =
+                    coupon->constantLegNotional()/coupon->underlying()->nominal();
+                Real notionalAccrual =
+                    coupon->constantLegNotional()*coupon->accrualPeriod();
+                d.amount = ua.amount*underlyingScale*r.rate;
+                d.ntau = notionalAccrual*r.rate;
+                addResetSensitivities(coupon->fxReset(), r,
+                                      ua.amount*underlyingScale, d.amountSensitivities);
+                addResetSensitivities(coupon->fxReset(), r,
+                                      notionalAccrual, d.ntauSensitivities);
+                // underlying coupon forecast sensitivity
+                for (const auto& sensitivity : ua.amountSensitivities)
+                    d.amountSensitivities.push_back(
+                        {sensitivity.curve, sensitivity.date,
+                         underlyingScale*r.rate*sensitivity.derivative});
+                return detail::FlowHandling::Decomposed;
+            }
+            if (auto exchange = ext::dynamic_pointer_cast<FxResetNotionalExchange>(cf)) {
+                if (exchange->previousReset()) {
+                    auto r = decomposeReset(*exchange->previousReset());
+                    if (r.rate == Null<Real>())
+                        return detail::FlowHandling::Unsupported;
+                    d.amount += exchange->constantLegNotional()*r.rate;
+                    addResetSensitivities(*exchange->previousReset(), r,
+                                          exchange->constantLegNotional(),
+                                          d.amountSensitivities);
+                }
+                if (exchange->currentReset()) {
+                    auto r = decomposeReset(*exchange->currentReset());
+                    if (r.rate == Null<Real>())
+                        return detail::FlowHandling::Unsupported;
+                    d.amount -= exchange->constantLegNotional()*r.rate;
+                    addResetSensitivities(*exchange->currentReset(), r,
+                                          -exchange->constantLegNotional(),
+                                          d.amountSensitivities);
+                }
+                return detail::FlowHandling::Decomposed;
+            }
+            return detail::FlowHandling::NotApplicable;
+        };
+
+        detail::LegContribution legContribution[2];
+        for (Size legNo = 0; legNo < 2; ++legNo) {
+            const Handle<YieldTermStructure>& legCurve = legNo == 0 ? baseDisc : quoteDisc;
+            if (!detail::decomposeLeg(swap_->leg(legNo), **legCurve, result,
+                                    legContribution[legNo],
+                                    /*includeSettlementDateFlows=*/true, fxResetFlows))
+                return {};
+        }
+
+        // -NPV = fx*N_base - N_quote,  B = payerBasis*fxconvBasis*A_basis
+        Size basisLegNo = isBasisOnFxBaseCurrencyLeg_ ? 0 : 1;
+        Real payerBasis = basisLegNo == 0 ? -1.0 : 1.0;
+        Real fxconvBasis = basisLegNo == 0 ? fx : 1.0;
+        detail::QuotientSensitivitySpec spec;
+        spec.numerator = {{&legContribution[0], fx, 0.0}, {&legContribution[1], -1.0, 0.0}};
+        spec.denominator = {{&legContribution[basisLegNo], 0.0, payerBasis*fxconvBasis}};
+        // FX conversion depends on both discount curves
+        for (const auto& e : dFx) {
+            spec.numeratorExtra.push_back({e.curve, e.date, legContribution[0].npv*e.derivative});
+            if (basisLegNo == 0)
+                spec.denominatorExtra.push_back(
+                    {e.curve, e.date, payerBasis*legContribution[0].annuity*e.derivative});
+        }
+        if (!detail::addQuotientSensitivities(result, spec))
+            return {};
+        result.available = true;
+        return result;
     }
 
     void MtMCrossCurrencyBasisSwapRateHelper::accept(AcyclicVisitor& v) {
