@@ -169,7 +169,10 @@ namespace QuantLib {
     Date Date::advance(const Date& date, Integer n, TimeUnit units) {
         switch (units) {
           case Days:
+          case CalendarDays:
             return date + n;
+          case BusinessDays:
+            QL_FAIL("cannot advance a date by business days without a calendar");
           case Weeks:
             return date + 7*n;
           case Months: {
@@ -486,8 +489,11 @@ namespace QuantLib {
 
             switch (units) {
               case Days:
+              case CalendarDays:
                 dt += boost::gregorian::days(n);
                 break;
+              case BusinessDays:
+                QL_FAIL("cannot advance a date by business days without a calendar");
               case Weeks:
                 dt += boost::gregorian::weeks(n);
                 break;
