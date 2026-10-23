@@ -51,6 +51,7 @@ namespace {
 }
 
 BOOST_AUTO_TEST_CASE(testUsdCofStyleBootstrap) {
+    BOOST_TEST_MESSAGE("Testing USD COF-style bootstrap...");
     Date today(30, September, 2025);
     Settings::instance().evaluationDate() = today;
 
@@ -96,6 +97,7 @@ BOOST_AUTO_TEST_CASE(testUsdCofStyleBootstrap) {
 }
 
 BOOST_AUTO_TEST_CASE(testLaggedCashFlowsAndDatedConstructor) {
+    BOOST_TEST_MESSAGE("Testing lagged cash flows and dated constructor...");
     Date today(30, September, 2025);
     Settings::instance().evaluationDate() = today;
 
@@ -142,6 +144,7 @@ BOOST_AUTO_TEST_CASE(testLaggedCashFlowsAndDatedConstructor) {
 }
 
 BOOST_AUTO_TEST_CASE(testSameDayOvernightPillar) {
+    BOOST_TEST_MESSAGE("Testing same-day overnight pillar...");
     Date today(15, July, 2026);
     Settings::instance().evaluationDate() = today;
     Settings::instance().includeReferenceDateEvents() = false;

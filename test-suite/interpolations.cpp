@@ -296,6 +296,7 @@ class TestInterpNew {
 };
 
 BOOST_AUTO_TEST_CASE(testInterpolateWithoutUpdate) {
+    BOOST_TEST_MESSAGE("Testing interpolation without update...");
     std::vector<Real> x, y;
     x = xRange(-2.0, 2.0, 4);
     y = parabolic(x);
@@ -1354,6 +1355,7 @@ BOOST_AUTO_TEST_CASE(testForwardFlat) {
 }
 
 BOOST_AUTO_TEST_CASE(testMixedLinearCubicMatchDerivatives) {
+    BOOST_TEST_MESSAGE("Testing derivative matching of mixed linear-cubic interpolation...");
     Size n = 6;
     Size k = 2;
 

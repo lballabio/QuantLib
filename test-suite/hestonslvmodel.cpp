@@ -1495,6 +1495,7 @@ BOOST_AUTO_TEST_CASE(testBlackScholesFokkerPlanckFwdEquationLocalVol) {
 }
 
 //BOOST_AUTO_TEST_CASE(testFDMCalibration) {
+//    BOOST_TEST_MESSAGE("Testing stochastic local volatility calibration...");
 //    const HestonSLVFokkerPlanckFdmParams plainParams =
 //        { 201, 301, 1000, 25, 3.0, 0, 2,
 //          0.1, 1e-4, 10000,
@@ -1532,7 +1533,6 @@ BOOST_AUTO_TEST_CASE(testBlackScholesFokkerPlanckFwdEquationLocalVol) {
 //
 //
 //    for (Size i=0; i < std::size(testCases); ++i) {
-//        BOOST_TEST_MESSAGE("Testing stochastic local volatility calibration case " << i << " ...");
 //        lsvCalibrationTest(testCases[i]);
 //    }
 //

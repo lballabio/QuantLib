@@ -779,6 +779,7 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativePoisson) {
 }
 
 BOOST_AUTO_TEST_CASE(testPoissonInvalidParameters) {
+    BOOST_TEST_MESSAGE("Testing Poisson distribution with invalid parameters...");
     BOOST_CHECK_EXCEPTION(
         PoissonDistribution(-1.0), Error,
         ExpectedErrorMessage("mu must be non negative"));
@@ -917,6 +918,7 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativeStudent) {
 }
 
 BOOST_AUTO_TEST_CASE(testStudentDistribution) {
+    BOOST_TEST_MESSAGE("Testing Student distribution...");
     StudentDistribution cauchy(1);
     BOOST_CHECK_CLOSE(cauchy(0.0), 1.0 / M_PI, 1.0e-10);
     BOOST_CHECK_CLOSE(cauchy(1.0), 0.5 / M_PI, 1.0e-10);
@@ -1091,6 +1093,7 @@ BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudent) {
 }
 
 BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentInvalidParameters) {
+    BOOST_TEST_MESSAGE("Testing bivariate cumulative Student distribution with invalid parameters...");
     BOOST_CHECK_EXCEPTION(
         BivariateCumulativeStudentDistribution(0, 0.0), Error,
         ExpectedErrorMessage("degrees of freedom must be positive"));
@@ -1112,6 +1115,7 @@ BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentInvalidParameters) {
 }
 
 BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentBoundaryContinuity) {
+    BOOST_TEST_MESSAGE("Testing bivariate cumulative Student distribution at the correlation boundaries...");
     Natural n = 5;
     CumulativeStudentDistribution univariate(n);
     BivariateCumulativeStudentDistribution perfectlyPositive(n, 1.0);
@@ -1331,6 +1335,7 @@ BOOST_AUTO_TEST_CASE(testCumulativeNormalTail) {
 }
 
 BOOST_AUTO_TEST_CASE(testCumulativeChiSquareDistribution) {
+    BOOST_TEST_MESSAGE("Testing cumulative chi-square distribution...");
     CumulativeChiSquareDistribution chiSquare(2.0);
     BOOST_CHECK_EQUAL(chiSquare(-1.0), 0.0);
     BOOST_CHECK_EQUAL(chiSquare(0.0), 0.0);
