@@ -289,7 +289,7 @@ BOOST_AUTO_TEST_CASE(testRankReducedPseudoSqrtBranches) {
 
     BOOST_CHECK_EQUAL(fullRank.columns(), 3);
     BOOST_CHECK_EQUAL(rankOne.columns(), 1);
-    BOOST_CHECK_LE(halfSpectrum.columns(), 3);
+    BOOST_CHECK_LE(halfSpectrum.columns(), 3U);
     for (const Matrix& root : {fullRank, rankOne, halfSpectrum}) {
         const Matrix covariance = root * transpose(root);
         for (Size i = 0; i < M1.rows(); ++i)

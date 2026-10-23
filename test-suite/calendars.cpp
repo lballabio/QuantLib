@@ -1778,6 +1778,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {1, May, 2025},
         {5, May, 2025},
         {6, May, 2025},
+        {3, June, 2025},
         {6, June, 2025},
         {15, August, 2025},
         {3, October, 2025},
@@ -2449,6 +2450,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {1, May, 2025},
         {5, May, 2025},
         {6, May, 2025},
+        {3, June, 2025},
         {6, June, 2025},
         {15, August, 2025},
         {3, October, 2025},
@@ -3101,6 +3103,12 @@ BOOST_AUTO_TEST_CASE(testFranceCalendars) {
     BOOST_CHECK(settlement.isHoliday(Date(1, January, 2024)));
     BOOST_CHECK(settlement.isHoliday(Date(1, May, 2024)));
     BOOST_CHECK(settlement.isHoliday(Date(14, July, 2024)));
+    BOOST_CHECK(settlement.isHoliday(Date(9, May, 2024)));  // Ascension
+    BOOST_CHECK(settlement.isHoliday(Date(20, May, 2024))); // Whit Monday
+    BOOST_CHECK(settlement.isHoliday(Date(29, May, 2025))); // Ascension
+    BOOST_CHECK(settlement.isHoliday(Date(9, June, 2025))); // Whit Monday
+    BOOST_CHECK(settlement.isBusinessDay(Date(10, May, 2024)));
+    BOOST_CHECK(settlement.isBusinessDay(Date(21, May, 2024)));
     BOOST_CHECK(exchange.isHoliday(Date(29, March, 2024))); // Good Friday
     BOOST_CHECK(exchange.isHoliday(Date(24, December, 2024)));
     BOOST_CHECK(exchange.isBusinessDay(Date(2, January, 2024)));
@@ -3113,7 +3121,16 @@ BOOST_AUTO_TEST_CASE(testRomaniaCalendars) {
     BOOST_CHECK(publicCalendar.isHoliday(Date(24, January, 2024)));
     BOOST_CHECK(publicCalendar.isHoliday(Date(1, May, 2024)));
     BOOST_CHECK(publicCalendar.isHoliday(Date(1, June, 2024)));
+    BOOST_CHECK(publicCalendar.isHoliday(Date(6, April, 2018))); // Good Friday
+    BOOST_CHECK(publicCalendar.isHoliday(Date(6, January, 2025))); // Epiphany
+    BOOST_CHECK(publicCalendar.isHoliday(Date(7, January, 2025))); // St John the Baptist
+    BOOST_CHECK(publicCalendar.isBusinessDay(Date(14, April, 2017)));
+    BOOST_CHECK(publicCalendar.isBusinessDay(Date(6, January, 2023)));
     BOOST_CHECK(exchange.isHoliday(Date(1, January, 2014)));
+    BOOST_CHECK(exchange.isHoliday(Date(18, April, 2025))); // Good Friday
+    BOOST_CHECK(exchange.isHoliday(Date(6, January, 2026)));
+    BOOST_CHECK(exchange.isHoliday(Date(7, January, 2026)));
+    BOOST_CHECK(exchange.isHoliday(Date(10, April, 2026))); // Good Friday
     BOOST_CHECK(exchange.isBusinessDay(Date(3, January, 2024)));
 }
 

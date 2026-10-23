@@ -19,6 +19,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <cmath>
 #include <ql/termstructures/yield/compositezeroyieldstructure.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -26,6 +27,8 @@
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
 #include <ql/termstructures/yield/forwardspreadedtermstructure.hpp>
 #include <ql/termstructures/yield/piecewiseforwardspreadedtermstructure.hpp>
+#include <ql/termstructures/yield/shiftedtermstructure.hpp>
+#include <ql/termstructures/yield/splicedtermstructure.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
@@ -620,6 +623,111 @@ BOOST_AUTO_TEST_CASE(testNullTimeToReference) {
                     << std::fixed << std::setprecision(10)
                     << "    calculated: " << calculated << "\n"
                     << "    expected:   " << expected);
+}
+
+BOOST_AUTO_TEST_CASE(testShifted) {
+    BOOST_TEST_MESSAGE("Testing consistency of shifted term structure...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto flatRate = ext::make_shared<SimpleQuote>();
+    auto baseTermStructure = ext::make_shared<FlatForward>(
+        today, Handle<Quote>(flatRate), Actual360());
+    auto shift = 3*Years;
+    Date futureDate = today + shift;
+    Date testDate = futureDate + 5*Years;
+    auto shifted = ext::make_shared<ShiftedYieldTermStructure>(
+        Handle<YieldTermStructure>(baseTermStructure), futureDate);
+    for (Real rate : {0.01, 0.02, 0.03}) {
+        flatRate->setValue(rate);
+        BOOST_CHECK_CLOSE(
+            shifted->discount(testDate + shift), baseTermStructure->discount(testDate), 1e-10);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSpliced) {
+    BOOST_TEST_MESSAGE("Testing consistency of spliced term structure...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto rate1 = ext::make_shared<SimpleQuote>();
+    auto rate2 = ext::make_shared<SimpleQuote>();
+
+    auto curve1 = ext::make_shared<FlatForward>(today, Handle<Quote>(rate1), Actual360());
+    auto curve2 = ext::make_shared<FlatForward>(today + 1*Years, Handle<Quote>(rate2), Actual360());
+
+    Date switchDate = today + 2*Years;
+    auto spliced = ext::make_shared<SplicedYieldTermStructure>(
+        Handle<YieldTermStructure>(curve1), Handle<YieldTermStructure>(curve2), switchDate);
+
+    Real tolerance = 1e-10;
+    for (Real r1 : {0.01, 0.02, 0.03}) {
+        for (Real r2 : {0.01, 0.02, 0.03}) {
+            rate1->setValue(r1);
+            rate2->setValue(r2);
+            Date d = today + 1*Years;
+            BOOST_CHECK_CLOSE(spliced->discount(d), curve1->discount(d), tolerance);
+            Real adj = curve1->discount(switchDate) / curve2->discount(switchDate);
+            d = today + 3*Years;
+            BOOST_CHECK_CLOSE(spliced->discount(d), (adj * curve2->discount(d)), tolerance);
+            auto fwdrate = [&](Date d1, Date d2) {
+                return spliced->forwardRate(d1, d2, Actual360(), Continuous).rate();
+            };
+            BOOST_CHECK_SMALL(fwdrate(switchDate-1, switchDate) - r1, tolerance);
+            BOOST_CHECK_SMALL(fwdrate(switchDate, switchDate+1) - r2, tolerance);
+            BOOST_CHECK_CLOSE(spliced->discount(switchDate), curve1->discount(switchDate), tolerance);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testWeekendDepositAndIndexedFraForecast) {
+    BOOST_TEST_MESSAGE("Testing weekend rate helpers without and with historical fixings...");
+
+    SavedSettings backup;
+    const Date today(10, October, 2026); // Saturday
+    Settings::instance().evaluationDate() = today;
+
+    const auto index = ext::make_shared<IborIndex>(
+        "weekend-rate-helper", 6 * Months, 2, Currency(), TARGET(),
+        ModifiedFollowing, false, Actual360());
+    index->clearFixings();
+
+    const auto deposit = ext::make_shared<DepositRateHelper>(0.022, index);
+    const auto fra = ext::make_shared<FraRateHelper>(0.022, 0, index);
+    const auto swap = ext::make_shared<SwapRateHelper>(
+        0.024, 2 * Years, TARGET(), Annual, Unadjusted,
+        Thirty360(Thirty360::BondBasis), index);
+
+    // Since #2653, the deposit and zero-start FRA begin on Tuesday, but
+    // their indexed fixing is the previous Friday (before evaluation).
+    const Date expectedStart(13, October, 2026);
+    const Date pastFixing = index->fixingDate(expectedStart);
+    BOOST_CHECK(deposit->earliestDate() == expectedStart);
+    BOOST_CHECK(fra->earliestDate() == expectedStart);
+    BOOST_CHECK(pastFixing < today);
+
+    const auto bootstrappedDiscount =
+        [&](const ext::shared_ptr<RateHelper>& shortRateHelper) {
+            std::vector<ext::shared_ptr<RateHelper>> helpers{shortRateHelper, swap};
+            const auto curve = ext::make_shared<
+                PiecewiseYieldCurve<Discount, LogLinear>>(
+                    today, helpers, Actual365Fixed());
+            return curve->discount(Date(10, October, 2027));
+        };
+
+    // A weekend bootstrap must not demand a Friday market fixing.
+    const Real depositDiscount = bootstrappedDiscount(deposit);
+    const Real fraDiscount = bootstrappedDiscount(fra);
+    BOOST_CHECK(std::isfinite(depositDiscount));
+    BOOST_CHECK(std::isfinite(fraDiscount));
+    BOOST_CHECK(depositDiscount > 0.0 && depositDiscount < 1.0);
+    BOOST_CHECK(fraDiscount > 0.0 && fraDiscount < 1.0);
+
+    // Historical fixings must not overwrite the calibration quote: both
+    // deposits and indexed FRA helpers must always project from the curve.
+    index->addFixing(pastFixing, 0.08);
+    const Real depositWithFixing = bootstrappedDiscount(deposit);
+    const Real fraWithFixing = bootstrappedDiscount(fra);
+    BOOST_CHECK_SMALL(std::fabs(depositWithFixing - depositDiscount), 1e-12);
+    BOOST_CHECK_SMALL(std::fabs(fraWithFixing - fraDiscount), 1e-12);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

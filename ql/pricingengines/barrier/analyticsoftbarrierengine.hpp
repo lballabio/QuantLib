@@ -33,6 +33,10 @@ namespace QuantLib {
     //! Pricing engine for soft barrier european options using an analytical formula
     /*! Formulas are taken from "The complete guide to option pricing formulas 2nd Ed", E.G. Haug, p.165.
         Implements a closed form solution for soft barrier options originally introduced by Hart and Ross (1994).
+
+        The formula covers down-and-in and down-and-out calls and
+        up-and-in and up-and-out puts.  Other combinations of barrier
+        and option type raise an error.
     */
 
     class AnalyticSoftBarrierEngine : public SoftBarrierOption::engine {
