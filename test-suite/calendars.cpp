@@ -2941,8 +2941,10 @@ BOOST_AUTO_TEST_CASE(testTaiwanCalendar) {
     BOOST_CHECK(calendar.isHoliday(Date(28, September, 2026)));
     BOOST_CHECK(calendar.isHoliday(Date(26, October, 2026)));
     BOOST_CHECK(calendar.isHoliday(Date(25, December, 2026)));
+    BOOST_CHECK(calendar.isHoliday(Date(24, December, 2027))); // Constitution Day (adjusted)
     BOOST_CHECK(calendar.isBusinessDay(Date(2, January, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(25, December, 2024)));
+    BOOST_CHECK(calendar.isBusinessDay(Date(24, December, 2021)));
     const Date historical[] = {
         {4, June, 2003}, {21, January, 2004},
         {9, February, 2005}, {5, April, 2006}, {19, February, 2007},

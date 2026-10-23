@@ -46,14 +46,17 @@ namespace QuantLib {
             || (d == 28 && m == February)
             // Labor Day
             || (d == 1 && m == May)
-            // Teachers' Day (since 2025)
-            || (d == 28 && m == September && y >= 2025)
+            // Teachers' Day (since 2025, possibly moved to Friday or Monday)
+            || ((d == 28 || (d == 27 && w == Friday) || (d == 29 && w == Monday))
+                && m == September && y >= 2025)
             // Double Tenth
             || (d == 10 && m == October)
-            // Taiwan Retrocession Day (since 2025)
-            || (d == 25 && m == October && y >= 2025)
-            // Constitution Day (since 2025)
-            || (d == 25 && m == December && y >= 2025)
+            // Taiwan Retrocession Day (since 2025, possibly moved to Friday or Monday)
+            || ((d == 25 || (d == 24 && w == Friday) || (d == 26 && w == Monday))
+                && m == October && y >= 2025)
+            // Constitution Day (since 2025, possibly moved to Friday or Monday)
+            || ((d == 25 || (d == 24 && w == Friday) || (d == 26 && w == Monday))
+                && m == December && y >= 2025)
             )
             return false;
 
@@ -478,12 +481,8 @@ namespace QuantLib {
                 || (d == 4 && m == April)
                 // adjusted holiday
                 || (d == 30 && m == May)
-                // adjusted holiday (Teachers' Day falls on Sunday)
-                || (d == 29 && m == September)
                 // Mid-Autumn Festival
                 || (d == 6 && m == October)
-                // adjusted holiday (Retrocession Day falls on Saturday)
-                || (d == 24 && m == October)
                 )
                 return false;
         }
@@ -505,8 +504,6 @@ namespace QuantLib {
                 || (d == 25 && m == September)
                 // adjusted holiday (National Day falls on Saturday)
                 || (d == 9 && m == October)
-                // adjusted holiday (Retrocession Day falls on Sunday)
-                || (d == 26 && m == October)
                 )
                 return false;
         }
