@@ -61,7 +61,8 @@ namespace QuantLib {
 
             const Real qMin = 0.0; // v_min = 0.0;
             std::vector<Real> ncp(tAvgSteps+1), k(tAvgSteps+1), qMax(tAvgSteps+1);
-            bool containsV0 = false;
+            const Real z = InverseCumulativeNormal()(1-epsilon);
+            bool narrow = true;
             for (Size l=1; l<=tAvgSteps; ++l) {
                 const Real t = (maturity*l)/tAvgSteps;
                 ncp[l] = 4*process->kappa()*std::exp(-process->kappa()*t)/(squared(mixedSigma)
@@ -69,6 +70,20 @@ namespace QuantLib {
                 k[l] = squared(mixedSigma)
                     *(1-std::exp(-process->kappa()*t))/(4*process->kappa());
 
+                // normal approximation of the quantiles, compared below
+                // with the (size-1) minimum steps of the grid
+                const Real sd = std::sqrt(2*(df+2*ncp[l]));
+                const Real q = std::max(process->v0(), k[l]*(df+ncp[l]+z*sd));
+                if (2*z*sd*k[l] >= (size-1)*(q-qMin)/(50*size))
+                    narrow = false;
+            }
+            // with a small vol of vol, the distribution can be so narrow
+            // that the minimum steps take most points beyond its quantiles
+            // and the grid is degenerate; use the default mesh
+            QL_REQUIRE(!narrow, "variance distribution too narrow");
+
+            bool containsV0 = false;
+            for (Size l=1; l<=tAvgSteps; ++l) {
                 const Real q = k[l]*InverseNonCentralCumulativeChiSquareDistribution(
                                             df, ncp[l], 100, 1e-8)(1-epsilon);
                 qMax[l] = std::max(process->v0(), q);
