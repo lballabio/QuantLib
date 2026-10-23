@@ -4,6 +4,7 @@
  Copyright (C) 2003, 2007 Ferdinando Ametrano
  Copyright (C) 2003, 2007 StatPro Italia srl
  Copyright (C) 2009 Klaus Spanderen
+ Copyright (C) 2026 Mahimn Patel
  
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,8 +29,10 @@
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanvasicekengine.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdcirvanillaengine.hpp>
@@ -41,6 +44,7 @@
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/forwardcurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
@@ -1974,6 +1978,128 @@ BOOST_AUTO_TEST_CASE(testFdEnginesWithNonStrikedPayoff) {
         option.setPricingEngine(engine);
         BOOST_CHECK_EXCEPTION(option.NPV(), Error,
                               ExpectedErrorMessage("non-striked payoff given"));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBlackVasicekEngineWithDeterministicRates) {
+
+    BOOST_TEST_MESSAGE("Testing Black-Vasicek engine with deterministic rates...");
+
+    // With a vanishing short-rate volatility and a long-term mean equal to the
+    // initial rate, the Vasicek rate stays constant and the price must match
+    // Black-Scholes, including dividends and a volatility term structure.
+    DayCounter dc = Actual365Fixed();
+    Date today = Settings::instance().evaluationDate();
+    Date maturity = today + Period(1, Years);
+
+    Rate r = 0.05;
+    Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
+    auto vasicek = ext::make_shared<Vasicek>(r, 0.3, r, 1.0e-10);
+
+    std::vector<Handle<BlackVolTermStructure>> volCurves = {
+        Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc)),
+        Handle<BlackVolTermStructure>(ext::make_shared<BlackVarianceCurve>(
+            today, std::vector<Date>{today + Period(3, Months), maturity},
+            std::vector<Volatility>{0.10, 0.20}, dc))
+    };
+
+    Real tolerance = 1.0e-8;
+    for (Size i = 0; i < volCurves.size(); ++i) {
+        auto process =
+            ext::make_shared<BlackScholesMertonProcess>(spot, qTS, rTS, volCurves[i]);
+        auto vasicekEngine =
+            ext::make_shared<AnalyticBlackVasicekEngine>(process, vasicek, 0.0);
+        auto blackEngine = ext::make_shared<AnalyticEuropeanEngine>(process);
+
+        for (Option::Type type : {Option::Call, Option::Put}) {
+            for (Real strike : {80.0, 100.0, 120.0}) {
+                auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
+                auto exercise = ext::make_shared<EuropeanExercise>(maturity);
+                VanillaOption option(payoff, exercise);
+                option.setPricingEngine(vasicekEngine);
+                VanillaOption reference(payoff, exercise);
+                reference.setPricingEngine(blackEngine);
+
+                // changing the dividend yield after the first pricing also
+                // checks that the engine is notified of the change
+                for (Rate q : {0.0, 0.03}) {
+                    qRate->setValue(q);
+                    Real calculated = option.NPV();
+                    Real expected = reference.NPV();
+
+                    if (std::fabs(calculated - expected) > tolerance)
+                        BOOST_ERROR("failed to reproduce Black-Scholes price"
+                                    << "\n    option type:    " << type
+                                    << "\n    strike:         " << strike
+                                    << "\n    dividend yield: " << io::rate(q)
+                                    << "\n    vol curve:      "
+                                    << (i == 0 ? "flat" : "term structure")
+                                    << "\n    calculated:     " << calculated
+                                    << "\n    expected:       " << expected
+                                    << "\n    tolerance:      " << tolerance);
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBlackVasicekEngineWithStochasticRates) {
+
+    BOOST_TEST_MESSAGE("Testing Black-Vasicek engine against closed-form total variance...");
+
+    DayCounter dc = Actual365Fixed();
+    Date today = Settings::instance().evaluationDate();
+    Date maturity = today + Period(2, Years);
+
+    Real s0 = 100.0;
+    Rate q = 0.02;
+    Volatility sigmaS = 0.25;
+    Real a = 0.4, b = 0.04, r0 = 0.03, sigmaR = 0.015;
+
+    Handle<YieldTermStructure> qTS(flatRate(today, q, dc));
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(s0)), qTS,
+        Handle<YieldTermStructure>(flatRate(today, r0, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, sigmaS, dc)));
+    auto vasicek = ext::make_shared<Vasicek>(r0, a, b, sigmaR);
+
+    Time T = dc.yearFraction(today, maturity);
+    DiscountFactor zcb = vasicek->discountBond(0.0, T, r0);
+    Real forward = s0 * qTS->discount(maturity) / zcb;
+    Real g = (1.0 - std::exp(-a * T)) / a;
+
+    Real tolerance = 1.0e-6;
+    for (Real rho : {-0.5, 0.0, 0.5}) {
+        // integral over [0, T] of sigmaS^2 + 2 rho sigmaS sigmaR g(u) + sigmaR^2 g(u)^2,
+        // with g(u) = (1 - exp(-a u)) / a
+        Real variance = sigmaS * sigmaS * T
+            + 2.0 * rho * sigmaS * sigmaR * (T - g) / a
+            + sigmaR * sigmaR
+                  * (T - 2.0 * g + (1.0 - std::exp(-2.0 * a * T)) / (2.0 * a)) / (a * a);
+
+        auto engine = ext::make_shared<AnalyticBlackVasicekEngine>(process, vasicek, rho);
+
+        for (Option::Type type : {Option::Call, Option::Put}) {
+            for (Real strike : {80.0, 100.0, 120.0}) {
+                VanillaOption option(ext::make_shared<PlainVanillaPayoff>(type, strike),
+                                     ext::make_shared<EuropeanExercise>(maturity));
+                option.setPricingEngine(engine);
+                Real calculated = option.NPV();
+                Real expected = blackFormula(type, strike, forward, std::sqrt(variance), zcb);
+
+                if (std::fabs(calculated - expected) > tolerance)
+                    BOOST_ERROR("failed to reproduce closed-form price"
+                                << "\n    option type: " << type
+                                << "\n    strike:      " << strike
+                                << "\n    correlation: " << rho
+                                << "\n    calculated:  " << calculated
+                                << "\n    expected:    " << expected
+                                << "\n    tolerance:   " << tolerance);
+            }
+        }
     }
 }
 
