@@ -913,10 +913,15 @@ namespace QuantLib {
         Real intrinsicValue = std::max(theta * (forward - strike), 0.0);
         Real timeValue = bachelierPrice - intrinsicValue;
 
-        // the subtraction above cancels, so compare the two operands directly:
-        // close_enough against 0 degrades to an absolute tolerance of
-        // (n*epsilon)^2, far below the rounding error of the difference itself
-        if (close_enough(bachelierPrice, intrinsicValue))
+        // When the price is within a factor of two of the intrinsic value the
+        // subtraction above is exact (Sterbenz), so a positive time value is
+        // genuine information about the volatility and is inverted below, even
+        // if it is only a few ulps of the price.  Only prices on or slightly
+        // below intrinsic, as produced by rounding in a pricer or in the
+        // discounting above, are mapped to zero.  close_enough compares the
+        // operands directly because against 0 it degrades to an absolute
+        // tolerance of (n*epsilon)^2.
+        if (timeValue <= 0.0 && close_enough(bachelierPrice, intrinsicValue))
             return 0.0;
 
         QL_REQUIRE(timeValue > 0.0, "bachelierBlackFormulaImpliedVolExact(theta="
