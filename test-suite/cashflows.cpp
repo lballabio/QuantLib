@@ -53,6 +53,7 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 BOOST_AUTO_TEST_SUITE(CashFlowTests)
 
 BOOST_AUTO_TEST_CASE(testSimpleDuration) {
+    BOOST_TEST_MESSAGE("Testing cash-flow duration with multiple compounding conventions...");
     Date settlement(15, January, 2024);
     Settings::instance().evaluationDate() = settlement;
     DayCounter dayCounter = Actual365Fixed();
@@ -102,6 +103,7 @@ BOOST_AUTO_TEST_CASE(testSimpleDuration) {
 }
 
 BOOST_AUTO_TEST_CASE(testDurationAndConvexityWithNoValue) {
+    BOOST_TEST_MESSAGE("Testing duration and convexity for cash flows with no value...");
     Date settlement(15, January, 2024);
     Settings::instance().evaluationDate() = settlement;
     InterestRate yield(0.04, Actual365Fixed(), Compounded, Annual);
@@ -126,6 +128,7 @@ BOOST_AUTO_TEST_CASE(testDurationAndConvexityWithNoValue) {
 }
 
 BOOST_AUTO_TEST_CASE(testCashFlowNavigation) {
+    BOOST_TEST_MESSAGE("Testing cash-flow navigation...");
     Date today(15, January, 2024);
     Settings::instance().evaluationDate() = today;
     Settings::instance().includeTodaysCashFlows() = std::nullopt;
@@ -198,6 +201,7 @@ BOOST_AUTO_TEST_CASE(testCashFlowNavigation) {
 }
 
 BOOST_AUTO_TEST_CASE(testCouponInspectors) {
+    BOOST_TEST_MESSAGE("Testing coupon inspectors...");
     Date start(1, January, 2023), end(1, January, 2024), payment(3, January, 2024);
     Date settlement = start + 100;
     Settings::instance().evaluationDate() = settlement;
@@ -250,6 +254,7 @@ BOOST_AUTO_TEST_CASE(testCouponInspectors) {
 }
 
 BOOST_AUTO_TEST_CASE(testCouponRateAggregation) {
+    BOOST_TEST_MESSAGE("Testing coupon rate aggregation...");
     Date start(1, January, 2023), end(1, January, 2024), payment(3, January, 2024);
     auto first = ext::make_shared<FixedRateCoupon>(payment, 100.0, 0.03, Actual365Fixed(),
                                                   start, end);
@@ -286,6 +291,7 @@ BOOST_AUTO_TEST_CASE(testCouponRateAggregation) {
 }
 
 BOOST_AUTO_TEST_CASE(testPricingDefaultsAndOverloads) {
+    BOOST_TEST_MESSAGE("Testing cash-flow pricing defaults and overloads...");
     Date settlement(15, January, 2024);
     Settings::instance().evaluationDate() = settlement;
     Settings::instance().includeTodaysCashFlows() = std::nullopt;
@@ -361,6 +367,7 @@ BOOST_AUTO_TEST_CASE(testPricingDefaultsAndOverloads) {
 }
 
 BOOST_AUTO_TEST_CASE(testPricingEmptyLegsAndErrors) {
+    BOOST_TEST_MESSAGE("Testing empty-leg pricing and errors...");
     Date settlement(15, January, 2024);
     Settings::instance().evaluationDate() = settlement;
     InterestRate yield(0.04, Actual365Fixed(), Compounded, Semiannual);
