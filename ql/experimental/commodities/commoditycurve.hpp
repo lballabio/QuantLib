@@ -36,7 +36,9 @@
 namespace QuantLib {
 
     //! Commodity term structure
-    class CommodityCurve : public TermStructure, public InterpolatedNodes {
+    class CommodityCurve : public TermStructure,
+                           protected InterpolatedCurve<ForwardFlat>,
+                           public InterpolatedNodes {
         friend class CommodityIndex;
       public:
         // constructor
@@ -95,10 +97,6 @@ namespace QuantLib {
         UnitOfMeasure unitOfMeasure_;
         Currency currency_;
         mutable std::vector<Date> dates_;
-        mutable std::vector<Time> times_;
-        mutable std::vector<Real> data_;
-        mutable Interpolation interpolation_;
-        ForwardFlat interpolator_;
         ext::shared_ptr<CommodityCurve> basisOfCurve_;
         Real basisOfCurveUomConversionFactor_;
 

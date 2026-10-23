@@ -19,6 +19,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/experimental/commodities/commoditycurve.hpp>
 #include <cmath>
 #include <ql/termstructures/yield/compositezeroyieldstructure.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
@@ -675,6 +676,52 @@ BOOST_AUTO_TEST_CASE(testWeekendDepositAndIndexedFraForecast) {
     BOOST_CHECK_SMALL(std::fabs(depositWithFixing - depositDiscount), 1e-12);
     BOOST_CHECK_SMALL(std::fabs(fraWithFixing - fraDiscount), 1e-12);
     index->clearFixings();
+}
+
+BOOST_AUTO_TEST_CASE(testCommodityCurve) {
+    BOOST_TEST_MESSAGE("Testing commodity curve interpolation and copying...");
+
+    const Date referenceDate(22, October, 2026);
+    Settings::instance().evaluationDate() = referenceDate;
+    const std::vector<Date> dates = {referenceDate, referenceDate + 30, referenceDate + 60};
+    const std::vector<Real> prices = {100.0, 110.0, 90.0};
+    const Actual365Fixed dayCounter;
+    CommodityCurve curve("test", CommodityType(), Currency(), UnitOfMeasure(), NullCalendar(),
+                         dates, prices, dayCounter);
+    const InterpolatedNodes& nodes = curve;
+    BOOST_CHECK(nodes.dates() == dates);
+    BOOST_CHECK(nodes.data() == prices);
+    BOOST_CHECK(curve.prices() == prices);
+    BOOST_CHECK_EQUAL(curve.maxDate(), dates.back());
+    for (Size i = 0; i < dates.size(); ++i) {
+        BOOST_CHECK_EQUAL(nodes.times()[i], dayCounter.yearFraction(referenceDate, dates[i]));
+        BOOST_CHECK_EQUAL(curve.price(dates[i], {}, 0), prices[i]);
+    }
+    BOOST_CHECK_EQUAL(curve.price(referenceDate - 1, {}, 0), 100.0);
+    BOOST_CHECK_EQUAL(curve.price(referenceDate + 15, {}, 0), 100.0);
+    BOOST_CHECK_EQUAL(curve.price(referenceDate + 45, {}, 0), 110.0);
+    BOOST_CHECK_EQUAL(curve.price(referenceDate + 90, {}, 0), 90.0);
+
+    CommodityCurve copied(curve);
+    CommodityCurve assigned("assigned", CommodityType(), Currency(), UnitOfMeasure(),
+                            NullCalendar());
+    BOOST_CHECK(assigned.empty());
+    assigned = curve;
+
+    std::map<Date, Real> replacement = {{referenceDate, 200.0}, {referenceDate + 60, 210.0}};
+    curve.setPrices(replacement);
+    BOOST_CHECK_EQUAL(curve.price(referenceDate + 45, {}, 0), 200.0);
+    BOOST_CHECK_EQUAL(copied.price(referenceDate + 45, {}, 0), 110.0);
+    BOOST_CHECK_EQUAL(assigned.price(referenceDate + 45, {}, 0), 110.0);
+    BOOST_CHECK(copied.data() == prices);
+    BOOST_CHECK(assigned.data() == prices);
+
+    CommodityCurve initiallyEmpty("empty", CommodityType(), Currency(), UnitOfMeasure(),
+                                NullCalendar());
+    initiallyEmpty.setPrices(replacement);
+    BOOST_CHECK(!initiallyEmpty.empty());
+    BOOST_CHECK_EQUAL(initiallyEmpty.price(referenceDate + 45, {}, 0), 200.0);
+    BOOST_CHECK_EQUAL(initiallyEmpty.price(referenceDate + 90, {}, 0), 210.0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
