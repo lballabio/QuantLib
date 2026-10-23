@@ -1119,6 +1119,7 @@ BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet) {
 }
 
 BOOST_AUTO_TEST_CASE(testFlatPayoffExtrapolationUsesLastGridPoint) {
+    BOOST_TEST_MESSAGE("Testing flat payoff extrapolation from the last grid point...");
 
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
