@@ -34,6 +34,7 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 BOOST_AUTO_TEST_SUITE(InterestRateTests)
 
 BOOST_AUTO_TEST_CASE(testNullInterestRateInspectors) {
+    BOOST_TEST_MESSAGE("Testing null interest-rate inspectors...");
     InterestRate nullRate;
 
     BOOST_CHECK_EXCEPTION(nullRate.compounding(), Error,
@@ -42,6 +43,7 @@ BOOST_AUTO_TEST_CASE(testNullInterestRateInspectors) {
 }
 
 BOOST_AUTO_TEST_CASE(testNullInterestRateDateCalculations) {
+    BOOST_TEST_MESSAGE("Testing date calculations with a null interest rate...");
     InterestRate nullRate;
     Date start(1, January, 2024), end(1, January, 2025);
 
@@ -54,6 +56,7 @@ BOOST_AUTO_TEST_CASE(testNullInterestRateDateCalculations) {
 }
 
 BOOST_AUTO_TEST_CASE(testImpliedRateRejectsMixedCompoundingAtUnity) {
+    BOOST_TEST_MESSAGE("Testing implied rates with mixed compounding at unity...");
     for (const auto comp : {SimpleThenCompounded, CompoundedThenSimple}) {
         BOOST_CHECK_EXCEPTION(
             InterestRate::impliedRate(1.0, Actual365Fixed(), comp, Semiannual, 1.0), Error,
