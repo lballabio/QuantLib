@@ -23,6 +23,7 @@
 #include <ql/math/distributions/chisquaredistribution.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <boost/math/special_functions/gamma.hpp>
 
 namespace QuantLib {
 
@@ -38,32 +39,55 @@ namespace QuantLib {
         const Size itrmax = 1000000;
         const Real minLog = std::log(QL_MIN_POSITIVE_REAL);
         Real lam = 0.5*ncp_;
-
-        // For large ncp or x, the Poisson weight exp(-lam) and the first
-        // terms t of the series underflow to zero, and so would the whole
-        // sum.  Until they become representable we follow them through
-        // their logarithms and skip the corresponding (negligible) terms.
-        Real lu = -lam;
-        bool uSmall = lu < minLog;
-        Real u = uSmall ? Real(0.0) : std::exp(lu);
-        Real v = u;
         Real x2 = 0.5*x;
         Real f2 = 0.5*df_;
-        Real f_x_2n = df_ - x;
 
-        Real t = 0.0, lt;
+        // For large ncp or x, the Poisson weights u and the first terms t
+        // of the series underflow to zero, and so would the whole sum.
+        // We use their logarithms (which increase with n up to lam and
+        // x2-f2, respectively) to find the first representable ones and
+        // skip the corresponding (negligible) terms.
+        const auto logU = [&](Size n) {
+            return n*std::log(lam) - lam - boost::math::lgamma(n + 1.0);
+        };
+        const auto logT = [&](Size n) {
+            return (f2 + n)*std::log(x2) - x2 - boost::math::lgamma(f2 + n + 1.0);
+        };
+        const Size never = std::numeric_limits<Size>::max();
+        const auto firstT = [&](Size from) {
+            Real peak = std::min(std::floor(x2 - f2), Real(from + itrmax));
+            if (peak < from)
+                return logT(from) >= minLog ? from : never;
+            Size lo = from, hi = Size(peak);
+            if (logT(hi) < minLog)
+                return never;
+            while (lo < hi) {
+                Size mid = lo + (hi - lo)/2;
+                if (logT(mid) >= minLog)
+                    hi = mid;
+                else
+                    lo = mid + 1;
+            }
+            return lo;
+        };
+
+        bool uSmall = -lam < minLog;
+        Real u = uSmall ? Real(0.0) : std::exp(-lam);
+        Real v = u;
+
+        Real t = 0.0;
+        bool tSmall = false;
         if (f2*QL_EPSILON > 0.125 &&
             std::fabs(x2-f2) < std::sqrt(QL_EPSILON)*f2) {
             t = std::exp((1 - t) *
                          (2 - t/(f2+1)))/std::sqrt(2.0*M_PI*(f2 + 1.0));
-            lt = std::log(t);
         }
         else {
-            lt = f2*std::log(x2) - x2 - GammaFunction().logValue(f2 + 1);
-            if (lt >= minLog)
+            Real lt = f2*std::log(x2) - x2 - GammaFunction().logValue(f2 + 1);
+            tSmall = lt < minLog;
+            if (!tSmall)
                 t = std::exp(lt);
         }
-        bool tSmall = lt < minLog;
 
         if (tSmall && x > df_ + ncp_) {
             // Chernoff bound on the upper tail.  If it's negligible,
@@ -77,10 +101,34 @@ namespace QuantLib {
 
         Real ans = v*t;
 
-        bool flag = false;
         Size n = 1;
-        Real f_2n = df_ + 2.0;
-        f_x_2n += 2.0;
+        Size nT = tSmall ? firstT(n) : 0;
+        if (uSmall) {
+            // jump to the first representable Poisson weight
+            QL_REQUIRE(lam < QL_MAX_INTEGER,
+                       "non-centrality parameter too large");
+            Size lo = n, hi = Size(lam);
+            while (lo < hi) {
+                Size mid = lo + (hi - lo)/2;
+                if (logU(mid) >= minLog)
+                    hi = mid;
+                else
+                    lo = mid + 1;
+            }
+            n = lo;
+            u = v = std::exp(logU(n));
+            Real lt = logT(n);
+            tSmall = lt < minLog;
+            t = tSmall ? Real(0.0) : std::exp(lt);
+            nT = tSmall ? firstT(n + 1) : 0;
+            ans = v*t;
+            n++;
+        }
+        const Size nMax = n + itrmax;
+
+        bool flag = false;
+        Real f_2n = df_ + 2.0*n;
+        Real f_x_2n = df_ - x + 2.0*n;
 
         Real bound;
         for (;;) {
@@ -89,35 +137,25 @@ namespace QuantLib {
                 goto L10;
             }
             for (;;) {
-                if (uSmall) {
-                    lu += std::log(lam / n);
-                    if (lu >= minLog) {
-                        u = v = std::exp(lu);
-                        uSmall = false;
-                    }
-                } else {
-                    u *= lam / n;
-                    v += u;
-                }
+                u *= lam / n;
+                v += u;
                 if (tSmall) {
-                    lt += std::log(x / f_2n);
-                    if (lt >= minLog) {
-                        t = std::exp(lt);
+                    if (n >= nT) {
+                        t = std::exp(logT(n));
                         tSmall = false;
                     }
                 } else {
                     t *= x / f_2n;
                 }
-                if (!uSmall && !tSmall)
-                    ans += v*t;
+                ans += v*t;
                 n++;
                 f_2n += 2.0;
                 f_x_2n += 2.0;
-                if (!flag && n <= itrmax)
+                if (!flag && n <= nMax)
                     break;
             L10:
                 bound = t * x / f_x_2n;
-                if (bound <= errmax || n > itrmax)
+                if (bound <= errmax || n > nMax)
                     goto L_End;
             }
         }
