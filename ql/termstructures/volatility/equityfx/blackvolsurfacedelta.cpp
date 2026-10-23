@@ -39,11 +39,12 @@ namespace QuantLib {
         std::optional<DeltaVolQuote::DeltaType> atmDeltaType, SmileInterpolationMethod im,
         bool flatStrikeExtrapolation, BlackVolTimeExtrapolation::Type timeExtrapolationType, const Period& switchTenor,
         DeltaVolQuote::DeltaType longTermDeltaType, DeltaVolQuote::AtmType longTermAtmType,
-        std::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType)
+        std::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType, bool forceMonotoneVariance)
     : BlackVolatilityTermStructure(referenceDate, cal, Following, dayCounter), dates_(dates), times_(dates.size(), 0),
       putDeltas_(putDeltas), callDeltas_(callDeltas), hasAtm_(hasAtm), spot_(spot), domesticTS_(domesticTS),
       foreignTS_(foreignTS), deltaType_(deltaType), atmType_(atmType), atmDeltaType_(atmDeltaType ? *atmDeltaType : deltaType),
-      interpolationMethod_(im), flatStrikeExtrapolation_(flatStrikeExtrapolation), timeExtrapolationType_(timeExtrapolationType),
+      interpolationMethod_(im), flatStrikeExtrapolation_(flatStrikeExtrapolation),
+      forceMonotoneVariance_(forceMonotoneVariance), timeExtrapolationType_(timeExtrapolationType),
       switchTenor_(switchTenor), longTermDeltaType_(longTermDeltaType), longTermAtmType_(longTermAtmType),
       longTermAtmDeltaType_(longTermAtmDeltaType ? *longTermAtmDeltaType : longTermDeltaType) {
 
@@ -69,9 +70,7 @@ namespace QuantLib {
                                                             << blackVolMatrix.rows() << " but have " << dates.size()
                                                             << " dates");
 
-        // build interpolators for each delta
-        // TODO: template this so it can be changed
-        bool forceMonotoneVariance = false;
+        // build a BlackVarianceCurve interpolator for each delta slice
         for (Size i = 0; i < n; i++) {
             vector<Volatility> vols(dates.size());
             for (Size j = 0; j < dates.size(); j++) {
@@ -80,7 +79,7 @@ namespace QuantLib {
 
             // BlackVarianceCurve will make a local copy of vols and dates
             interpolators_.push_back(ext::make_shared<BlackVarianceCurve>(
-                referenceDate, dates, vols, dayCounter, forceMonotoneVariance,
+                referenceDate, dates, vols, dayCounter, forceMonotoneVariance_,
                 timeExtrapolationType_));
         }
 
@@ -208,7 +207,11 @@ namespace QuantLib {
     }
 
     Real BlackVolatilitySurfaceDelta::atmLevel(Time t) const {
-        return spot_->value() * foreignTS_->discount(t) / domesticTS_->discount(t); // TODO
+        // ATM level is the FX forward: F = S * B_f(t) / B_d(t)
+        // where S is the spot, B_f the foreign discount, B_d the domestic discount.
+        // This follows from interest-rate parity and is the standard ATM reference
+        // for FX vol surfaces regardless of delta convention (spot or forward delta).
+        return spot_->value() * foreignTS_->discount(t) / domesticTS_->discount(t);
     }
 
     Volatility BlackVolatilitySurfaceDelta::blackVolImpl(Time t, Real strike) const {
