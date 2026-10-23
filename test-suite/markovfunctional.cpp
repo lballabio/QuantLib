@@ -905,6 +905,7 @@ namespace {
 }
 
 BOOST_AUTO_TEST_CASE(testConflictingSmileSettings) {
+    BOOST_TEST_MESSAGE("Testing conflicting Markov functional smile settings...");
     using ModelSettings = MarkovFunctional::ModelSettings;
     auto factory = ext::make_shared<ValidationOnlySmileFactory>();
     int conflicts[] = {ModelSettings::KahaleSmile | ModelSettings::SabrSmile,
@@ -928,6 +929,7 @@ BOOST_AUTO_TEST_CASE(testConflictingSmileSettings) {
 }
 
 BOOST_AUTO_TEST_CASE(testSmileSettingsValidation) {
+    BOOST_TEST_MESSAGE("Testing Markov functional smile settings validation...");
     using ModelSettings = MarkovFunctional::ModelSettings;
     ModelSettings defaults;
     BOOST_CHECK_NO_THROW(defaults.validate());
@@ -962,6 +964,7 @@ BOOST_AUTO_TEST_CASE(testSmileSettingsValidation) {
 }
 
 BOOST_AUTO_TEST_CASE(testMinimumYGridPoints) {
+    BOOST_TEST_MESSAGE("Testing minimum Markov functional state-grid size...");
     for (Size points : {0, 1}) {
         auto settings = MarkovFunctional::ModelSettings().withYGridPoints(points);
         BOOST_CHECK_EXCEPTION(settings.validate(), Error,
@@ -972,6 +975,7 @@ BOOST_AUTO_TEST_CASE(testMinimumYGridPoints) {
 }
 
 BOOST_AUTO_TEST_CASE(testNullSwapIndex) {
+    BOOST_TEST_MESSAGE("Testing Markov functional construction with a null swap index...");
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
     std::vector<Date> expiries = {TARGET().advance(referenceDate, 1 * Years)};
@@ -994,6 +998,7 @@ BOOST_AUTO_TEST_CASE(testNullSwapIndex) {
 }
 
 BOOST_AUTO_TEST_CASE(testNullIborIndex) {
+    BOOST_TEST_MESSAGE("Testing Markov functional construction with a null Ibor index...");
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
     std::vector<Date> expiries = {TARGET().advance(referenceDate, 1 * Years)};
@@ -1233,6 +1238,7 @@ BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet) {
 }
 
 BOOST_AUTO_TEST_CASE(testTimeZeroNumeraireAfterDateChange) {
+    BOOST_TEST_MESSAGE("Testing the time-zero numeraire after evaluation-date changes...");
     Date referenceDate(14, November, 2012);
     for (bool useDiscountCurve : {false, true}) {
         BOOST_TEST_CONTEXT("useDiscountCurve=" << useDiscountCurve) {
@@ -1269,6 +1275,7 @@ BOOST_AUTO_TEST_CASE(testTimeZeroNumeraireAfterDateChange) {
 }
 
 BOOST_AUTO_TEST_CASE(testModelOutputsAfterRecalculation) {
+    BOOST_TEST_MESSAGE("Testing Markov functional model outputs after recalculation...");
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
     Date expiry = TARGET().advance(referenceDate, 1 * Years);
@@ -1298,6 +1305,7 @@ BOOST_AUTO_TEST_CASE(testModelOutputsAfterRecalculation) {
 }
 
 BOOST_AUTO_TEST_CASE(testModelOutputsAfterMarketUpdate) {
+    BOOST_TEST_MESSAGE("Testing Markov functional model outputs after market updates...");
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
     auto rateQuote = ext::make_shared<SimpleQuote>(0.03);
@@ -1347,6 +1355,7 @@ BOOST_AUTO_TEST_CASE(testModelOutputsAfterMarketUpdate) {
 }
 
 BOOST_AUTO_TEST_CASE(testModelOutputsTrace) {
+    BOOST_TEST_MESSAGE("Testing Markov functional model trace output...");
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
     Date expiry = TARGET().advance(referenceDate, 1 * Years);
@@ -1376,6 +1385,7 @@ BOOST_AUTO_TEST_CASE(testModelOutputsTrace) {
 }
 
 BOOST_AUTO_TEST_CASE(testSabrSmileCalibration) {
+    BOOST_TEST_MESSAGE("Testing Markov functional SABR smile calibration...");
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
     Date expiry = TARGET().advance(referenceDate, 1 * Years);
@@ -1408,6 +1418,7 @@ BOOST_AUTO_TEST_CASE(testSabrSmileCalibration) {
 }
 
 BOOST_AUTO_TEST_CASE(testShiftedSmileUpperRateBound) {
+    BOOST_TEST_MESSAGE("Testing the shifted-smile upper rate bound...");
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
     Date expiry = TARGET().advance(referenceDate, 1 * Years);
@@ -1478,6 +1489,7 @@ BOOST_AUTO_TEST_CASE(testShiftedSmileUpperRateBound) {
 }
 
 BOOST_AUTO_TEST_CASE(testPayoffExtrapolation) {
+    BOOST_TEST_MESSAGE("Testing Markov functional payoff extrapolation...");
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
     Date expiry = TARGET().advance(referenceDate, 1 * Years);
