@@ -3020,6 +3020,17 @@ BOOST_AUTO_TEST_CASE(testBotswanaCalendar) {
     Calendar calendar = Botswana();
     BOOST_CHECK(calendar.isHoliday(Date(1, May, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(2, May, 2024)));
+    BOOST_CHECK(calendar.isHoliday(Date(2, January, 2025)));
+    BOOST_CHECK(calendar.isBusinessDay(Date(3, January, 2025)));
+    BOOST_CHECK(calendar.isHoliday(Date(3, January, 2022))); // January 2nd on Sunday
+    BOOST_CHECK(calendar.isHoliday(Date(3, January, 2023))); // January 2nd on Monday
+    BOOST_CHECK(calendar.isHoliday(Date(22, July, 2025))); // Tuesday after Presidents' Day
+    BOOST_CHECK(calendar.isBusinessDay(Date(23, July, 2025)));
+    BOOST_CHECK(calendar.isHoliday(Date(2, October, 2018))); // October 1st on Monday
+    BOOST_CHECK(calendar.isHoliday(Date(2, October, 2023))); // October 1st on Sunday
+    BOOST_CHECK(calendar.isBusinessDay(Date(3, October, 2023)));
+    BOOST_CHECK(calendar.isHoliday(Date(27, December, 2021))); // Boxing Day on Sunday
+    BOOST_CHECK(calendar.isHoliday(Date(27, December, 2022))); // Boxing Day on Monday
 }
 
 BOOST_AUTO_TEST_CASE(testCzechRepublicCalendar) {
