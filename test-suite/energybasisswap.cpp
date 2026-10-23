@@ -126,6 +126,7 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 BOOST_FIXTURE_TEST_SUITE(EnergyBasisSwapTests, EnergyBasisSwapTest::EnergyBasisSwapTestFixture)
 
 BOOST_AUTO_TEST_CASE(testBasisFxConvertsIntoCommodityCurrency) {
+    BOOST_TEST_MESSAGE("Testing basis FX conversion into the commodity currency...");
     const Date periodDate(6, January, 2025);
     auto payIndex = makeIndex("basis-fx-pay", USDCurrency(), BarrelUnitOfMeasure(),
                               {periodDate, periodDate + 1}, {100.0, 100.0});
@@ -143,6 +144,7 @@ BOOST_AUTO_TEST_CASE(testBasisFxConvertsIntoCommodityCurrency) {
 }
 
 BOOST_AUTO_TEST_CASE(testBasisPriceConvertsFromMegabarrelsToBarrels) {
+    BOOST_TEST_MESSAGE("Testing basis-price conversion from megabarrels to barrels...");
     const Date periodDate(6, January, 2025);
     auto payIndex = makeIndex("basis-mb-pay", USDCurrency(), BarrelUnitOfMeasure(),
                               {periodDate, periodDate + 1}, {0.0, 0.0});
@@ -157,6 +159,7 @@ BOOST_AUTO_TEST_CASE(testBasisPriceConvertsFromMegabarrelsToBarrels) {
 }
 
 BOOST_AUTO_TEST_CASE(testBasisPriceConvertsFromBarrelsToMegabarrels) {
+    BOOST_TEST_MESSAGE("Testing basis-price conversion from barrels to megabarrels...");
     CommoditySettings::instance().unitOfMeasure() = MBUnitOfMeasure();
     const Date periodDate(6, January, 2025);
     auto payIndex = makeIndex("basis-bbl-pay", USDCurrency(), MBUnitOfMeasure(),
@@ -172,6 +175,7 @@ BOOST_AUTO_TEST_CASE(testBasisPriceConvertsFromBarrelsToMegabarrels) {
 }
 
 BOOST_AUTO_TEST_CASE(testUnsupportedBasisPriceUnitRaisesAnError) {
+    BOOST_TEST_MESSAGE("Testing rejection of unsupported basis-price units...");
     const Date periodDate(6, January, 2025);
     auto payIndex = makeIndex("unsupported-basis-pay", USDCurrency(), BarrelUnitOfMeasure(),
                               {periodDate, periodDate + 1}, {0.0, 0.0});
@@ -189,6 +193,7 @@ BOOST_AUTO_TEST_CASE(testUnsupportedBasisPriceUnitRaisesAnError) {
 }
 
 BOOST_AUTO_TEST_CASE(testEmptyPricingPeriodsAreRejected) {
+    BOOST_TEST_MESSAGE("Testing rejection of empty pricing periods...");
     const Date periodDate(6, January, 2025);
     auto payIndex = makeIndex("empty-periods-pay", USDCurrency(), BarrelUnitOfMeasure(),
                               {periodDate, periodDate + 1}, {100.0, 100.0});
@@ -199,6 +204,7 @@ BOOST_AUTO_TEST_CASE(testEmptyPricingPeriodsAreRejected) {
 }
 
 BOOST_AUTO_TEST_CASE(testQuantityIsConvertedFromPeriodUnitToBaseUnit) {
+    BOOST_TEST_MESSAGE("Testing quantity conversion from period units to base units...");
     CommoditySettings::instance().unitOfMeasure() = MBUnitOfMeasure();
     const Date periodDate(6, January, 2025);
     auto payIndex = makeIndex("quantity-pay", USDCurrency(), MBUnitOfMeasure(),
@@ -213,6 +219,7 @@ BOOST_AUTO_TEST_CASE(testQuantityIsConvertedFromPeriodUnitToBaseUnit) {
 }
 
 BOOST_AUTO_TEST_CASE(testQuantityConversionUsesSourceDirection) {
+    BOOST_TEST_MESSAGE("Testing source direction in quantity conversion...");
     const Date periodDate(6, January, 2025);
     auto payIndex = makeIndex("forward-quantity-pay", USDCurrency(), BarrelUnitOfMeasure(),
                               {periodDate, periodDate + 1}, {0.0, 0.0});
@@ -226,6 +233,7 @@ BOOST_AUTO_TEST_CASE(testQuantityConversionUsesSourceDirection) {
 }
 
 BOOST_AUTO_TEST_CASE(testPayIndexPriceConvertsFromMegabarrelsToBarrels) {
+    BOOST_TEST_MESSAGE("Testing pay-index price conversion from megabarrels to barrels...");
     const Date periodDate(6, January, 2025);
     auto payIndex = makeIndex("pay-price-mb", USDCurrency(), MBUnitOfMeasure(),
                               {periodDate, periodDate + 1}, {1.0, 1.0});
@@ -239,6 +247,7 @@ BOOST_AUTO_TEST_CASE(testPayIndexPriceConvertsFromMegabarrelsToBarrels) {
 }
 
 BOOST_AUTO_TEST_CASE(testReceiveIndexPriceConvertsFromMegabarrelsToBarrels) {
+    BOOST_TEST_MESSAGE("Testing receive-index price conversion from megabarrels to barrels...");
     const Date periodDate(6, January, 2025);
     auto payIndex = makeIndex("pay-price-bbl", USDCurrency(), BarrelUnitOfMeasure(),
                               {periodDate, periodDate + 1}, {0.0, 0.0});
@@ -252,6 +261,7 @@ BOOST_AUTO_TEST_CASE(testReceiveIndexPriceConvertsFromMegabarrelsToBarrels) {
 }
 
 BOOST_AUTO_TEST_CASE(testUnsupportedQuantityConversionRaisesAnError) {
+    BOOST_TEST_MESSAGE("Testing rejection of unsupported quantity conversions...");
     const Date periodDate(6, January, 2025);
     auto payIndex = makeIndex("unsupported-quantity-pay", USDCurrency(), BarrelUnitOfMeasure(),
                               {periodDate, periodDate + 1}, {0.0, 0.0});
@@ -267,6 +277,7 @@ BOOST_AUTO_TEST_CASE(testUnsupportedQuantityConversionRaisesAnError) {
 }
 
 BOOST_AUTO_TEST_CASE(testYieldCurveChangesInvalidateCachedResults) {
+    BOOST_TEST_MESSAGE("Testing cache invalidation after yield-curve changes...");
     const Date periodDate(6, January, 2025);
     const Date paymentDate(10, January, 2025);
     auto payIndex = makeIndex("curve-update-pay", USDCurrency(), BarrelUnitOfMeasure(),
@@ -300,6 +311,7 @@ BOOST_AUTO_TEST_CASE(testYieldCurveChangesInvalidateCachedResults) {
 }
 
 BOOST_AUTO_TEST_CASE(testDuplicatePaymentDatesAreRejected) {
+    BOOST_TEST_MESSAGE("Testing rejection of duplicate payment dates...");
     const Date firstDate(6, January, 2025);
     const Date secondDate(7, January, 2025);
     const Date paymentDate(10, January, 2025);
@@ -317,6 +329,7 @@ BOOST_AUTO_TEST_CASE(testDuplicatePaymentDatesAreRejected) {
 }
 
 BOOST_AUTO_TEST_CASE(testEachIndexUsesItsOwnLastQuoteDate) {
+    BOOST_TEST_MESSAGE("Testing that each index uses its own last quote date...");
     const Date firstDate(3, January, 2025);
     const Date secondDate(4, January, 2025);
     const Date paymentDate(10, January, 2025);
@@ -339,6 +352,7 @@ BOOST_AUTO_TEST_CASE(testEachIndexUsesItsOwnLastQuoteDate) {
 }
 
 BOOST_AUTO_TEST_CASE(testBasisCanBeAppliedToReceiveLeg) {
+    BOOST_TEST_MESSAGE("Testing application of basis to the receive leg...");
     const Date periodDate(6, January, 2025);
     auto payIndex = makeIndex("receive-basis-pay", USDCurrency(), BarrelUnitOfMeasure(),
                               {periodDate, periodDate + 1}, {100.0, 100.0});
@@ -355,6 +369,7 @@ BOOST_AUTO_TEST_CASE(testBasisCanBeAppliedToReceiveLeg) {
 }
 
 BOOST_AUTO_TEST_CASE(testMultiplePeriodsSecondaryCostsAndDailyPositions) {
+    BOOST_TEST_MESSAGE("Testing multiple periods, secondary costs, and daily positions...");
     const Date firstDate(6, January, 2025);
     const Date secondDate(7, January, 2025);
     const Date firstPaymentDate(10, January, 2025);
@@ -382,6 +397,7 @@ BOOST_AUTO_TEST_CASE(testMultiplePeriodsSecondaryCostsAndDailyPositions) {
 }
 
 BOOST_AUTO_TEST_CASE(testZeroQuotesAreReportedAsWarnings) {
+    BOOST_TEST_MESSAGE("Testing that zero quotes are reported as warnings...");
     const Date periodDate(6, January, 2025);
     auto payIndex = makeIndex("zero-quote-pay", USDCurrency(), BarrelUnitOfMeasure(),
                               {periodDate, periodDate + 1}, {0.0, 0.0});
@@ -397,6 +413,7 @@ BOOST_AUTO_TEST_CASE(testZeroQuotesAreReportedAsWarnings) {
 }
 
 BOOST_AUTO_TEST_CASE(testMissingCommodityQuotesRaiseAnError) {
+    BOOST_TEST_MESSAGE("Testing that missing commodity quotes raise an error...");
     const Date periodDate(6, January, 2025);
     auto emptyCurve =
         ext::make_shared<CommodityCurve>("missing-quotes", commodityType_, USDCurrency(),
@@ -416,6 +433,7 @@ BOOST_AUTO_TEST_CASE(testMissingCommodityQuotesRaiseAnError) {
 }
 
 BOOST_AUTO_TEST_CASE(testEmptyIndexWithoutForwardCurveRaisesAnError) {
+    BOOST_TEST_MESSAGE("Testing an empty index without a forward curve...");
     const Date periodDate(6, January, 2025);
     auto payIndex = ext::make_shared<CommodityIndex>(
         "empty-pay-no-forward", commodityType_, USDCurrency(), BarrelUnitOfMeasure(),
@@ -434,6 +452,7 @@ BOOST_AUTO_TEST_CASE(testEmptyIndexWithoutForwardCurveRaisesAnError) {
 }
 
 BOOST_AUTO_TEST_CASE(testForwardOnlyIndexesUseTheirCurves) {
+    BOOST_TEST_MESSAGE("Testing forward-only indexes using their curves...");
     const Date periodDate(6, January, 2025);
     auto payCurve = ext::make_shared<CommodityCurve>(
         "forward-only-pay", commodityType_, USDCurrency(), BarrelUnitOfMeasure(),
@@ -460,6 +479,7 @@ BOOST_AUTO_TEST_CASE(testForwardOnlyIndexesUseTheirCurves) {
 }
 
 BOOST_AUTO_TEST_CASE(testStaleFixingsWithoutForwardCurveRaiseAnError) {
+    BOOST_TEST_MESSAGE("Testing stale fixings without a forward curve...");
     const Date periodDate(6, January, 2025);
     auto payIndex = ext::make_shared<CommodityIndex>(
         "stale-pay-no-forward", commodityType_, USDCurrency(), BarrelUnitOfMeasure(),
@@ -478,6 +498,7 @@ BOOST_AUTO_TEST_CASE(testStaleFixingsWithoutForwardCurveRaiseAnError) {
 }
 
 BOOST_AUTO_TEST_CASE(testNearPaymentDatesSkipDiscounting) {
+    BOOST_TEST_MESSAGE("Testing that near-payment dates skip discounting...");
     const Date periodDate(3, January, 2025);
     const Date paymentDate(3, January, 2025);
     auto payIndex = makeIndex("near-payment-pay", USDCurrency(), BarrelUnitOfMeasure(),
