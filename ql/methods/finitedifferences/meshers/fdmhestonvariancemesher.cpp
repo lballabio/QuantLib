@@ -118,6 +118,12 @@ namespace QuantLib {
             // the check above can't rule out all such cases
             QL_REQUIRE(vGrid.back() >= process->v0(),
                        "variance grid doesn't contain v0");
+
+            // with a very narrow distribution, most points are beyond
+            // the 1-epsilon quantile and have the same probability
+            std::sort(pGrid.begin(), pGrid.end());
+            QL_REQUIRE(std::adjacent_find(pGrid.begin(), pGrid.end())
+                       == pGrid.end(), "degenerate variance grid");
         }
         catch (const Error&) {
             // use default mesh
