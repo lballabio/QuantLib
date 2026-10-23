@@ -19,6 +19,7 @@
 
 #include <ql/instruments/bonds/btp.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
+#include <ql/settings.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -106,17 +107,35 @@ namespace QuantLib {
                    ") and number of clean prices quotes (" <<
                    quotes_.size() << ")");
 
-        // require non-negative outstanding
+        // Validate inputs and filter out expired or zero-outstanding bonds.
+        Date today = Settings::instance().evaluationDate();
+        std::vector<ext::shared_ptr<BTP> > validBtps;
+        std::vector<Real> validOutstandings;
+        std::vector<Handle<Quote> > validQuotes;
+
         for (Size i=0; i<k; ++i) {
             QL_REQUIRE(outstandings[i]>=0,
                        "negative outstanding for " << io::ordinal(i) <<
                        " bond, maturity " << btps[i]->maturityDate());
-            // add check for prices ??
+            if (btps[i]->maturityDate() <= today) {
+                // skip expired bonds silently (maturity on or before today)
+                continue;
+            }
+            if (outstandings[i] == 0.0) {
+                // skip bonds with no outstanding amount
+                continue;
+            }
+            validBtps.push_back(btps[i]);
+            validOutstandings.push_back(outstandings[i]);
+            validQuotes.push_back(quotes_[i]);
         }
 
-        // TODO: filter out expired bonds, zero outstanding bond, etc
+        btps_        = validBtps;
+        outstandings_ = validOutstandings;
+        quotes_       = validQuotes;
 
-        QL_REQUIRE(!btps_.empty(), "invalid bonds only in RendistatoCalculator Basket");
+        QL_REQUIRE(!btps_.empty(), "no valid (non-expired, non-zero outstanding) bonds "
+                                   "in RendistatoCalculator Basket");
         n_ = btps_.size();
 
         outstanding_ = 0.0;
@@ -133,13 +152,14 @@ namespace QuantLib {
 
     RendistatoCalculator::RendistatoCalculator(ext::shared_ptr<RendistatoBasket> basket,
                                                ext::shared_ptr<Euribor> euriborIndex,
-                                               Handle<YieldTermStructure> discountCurve)
+                                               Handle<YieldTermStructure> discountCurve,
+                                               Size nSwaps)
     : basket_(std::move(basket)), euriborIndex_(std::move(euriborIndex)),
       discountCurve_(std::move(discountCurve)), yields_(basket_->size(), 0.05),
-      durations_(basket_->size()),
-      // TODO: generalize number of swaps and their lengths
+      durations_(basket_->size()), nSwaps_(nSwaps),
       swaps_(nSwaps_), swapLengths_(nSwaps_), swapBondDurations_(nSwaps_, Null<Time>()),
       swapBondYields_(nSwaps_, 0.05), swapRates_(nSwaps_, Null<Rate>()) {
+        QL_REQUIRE(nSwaps_ > 0, "nSwaps must be positive");
         registerWith(basket_);
         registerWith(euriborIndex_);
         registerWith(discountCurve_);
