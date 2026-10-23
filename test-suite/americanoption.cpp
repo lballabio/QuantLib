@@ -767,6 +767,109 @@ BOOST_AUTO_TEST_CASE(testJuNotBelowExerciseValue) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testFdAmericanNotBelowExerciseValue) {
+
+    BOOST_TEST_MESSAGE("Testing that finite-difference American prices stay "
+                       "above the exercise value...");
+
+    // The default grid can undershoot the payoff between nodes. Implied
+    // volatility prices an American with this engine, so that price has to
+    // be something a volatility can reproduce.
+
+    const Date today(15, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+
+    struct Case {
+        Option::Type type;
+        Real spot;
+        Real strike;
+        Rate r;
+        Rate q;
+        Volatility vol;
+        Integer days;
+    };
+    const Case cases[] = {
+        // reported: default 100x100 grid, short of intrinsic by about 2.6e-6
+        {Option::Call, 110.0, 100.0, 0.00, 0.02, 0.10, 90},
+        // widest miss in the sweep that found the report, about 7e-3
+        {Option::Call, 150.0, 100.0, 0.05, 0.10, 0.35, 1095},
+        {Option::Put, 70.0, 100.0, 0.10, 0.00, 0.20, 365},
+    };
+
+    for (const auto& c : cases) {
+        const auto quote = ext::make_shared<SimpleQuote>(c.spot);
+        const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(quote),
+            Handle<YieldTermStructure>(flatRate(today, c.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, c.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, c.vol, dc)));
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, c.strike);
+        const auto exercise =
+            ext::make_shared<AmericanExercise>(today, today + c.days);
+
+        VanillaOption option(payoff, exercise);
+        option.setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(process));
+
+        const Real intrinsic = (*payoff)(c.spot);
+        const Real calculated = option.NPV();
+        if (calculated < intrinsic) {
+            REPORT_FAILURE("value below exercise", payoff, exercise, c.spot, c.q, c.r,
+                           today, c.vol, intrinsic, calculated, intrinsic - calculated, 0.0);
+        }
+
+        const Volatility implied =
+            option.impliedVolatility(calculated, process, 1.0e-8, 200, 1.0e-4, 4.0);
+
+        const auto repricedProcess = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(quote),
+            Handle<YieldTermStructure>(flatRate(today, c.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, c.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, implied, dc)));
+        option.setPricingEngine(
+            ext::make_shared<FdBlackScholesVanillaEngine>(repricedProcess));
+        const Real repriced = option.NPV();
+        const Real error = std::fabs(repriced - calculated);
+        if (error > 1.0e-6) {
+            REPORT_FAILURE("implied-volatility round trip", payoff, exercise, c.spot, c.q,
+                           c.r, today, c.vol, calculated, repriced, error, 1.0e-6);
+        }
+    }
+
+    // A European on the same market is worth less than intrinsic. The floor
+    // must not be applied to it, and neither to an American that cannot be
+    // exercised yet.
+    const auto quote = ext::make_shared<SimpleQuote>(110.0);
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(quote),
+        Handle<YieldTermStructure>(flatRate(today, 0.02, dc)),
+        Handle<YieldTermStructure>(flatRate(today, 0.00, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, 0.10, dc)));
+    const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+    const Real intrinsic = (*payoff)(110.0);
+
+    const auto europeanExercise = ext::make_shared<EuropeanExercise>(today + 90);
+    VanillaOption european(payoff, europeanExercise);
+    european.setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(process));
+    const Real europeanValue = european.NPV();
+    if (!(europeanValue < intrinsic - 0.1)) {
+        REPORT_FAILURE("European value", payoff, europeanExercise, 110.0, 0.02, 0.00,
+                       today, 0.10, intrinsic - 0.1, europeanValue,
+                       europeanValue - (intrinsic - 0.1), 0.0);
+    }
+
+    const auto deferredExercise =
+        ext::make_shared<AmericanExercise>(today + 30, today + 90);
+    VanillaOption deferred(payoff, deferredExercise);
+    deferred.setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(process));
+    const Real deferredValue = deferred.NPV();
+    if (!(deferredValue < intrinsic - 0.05)) {
+        REPORT_FAILURE("deferred exercise value", payoff, deferredExercise, 110.0, 0.02,
+                       0.00, today, 0.10, intrinsic - 0.05, deferredValue,
+                       deferredValue - (intrinsic - 0.05), 0.0);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testJuNotBelowEuropeanValue) {
 
     BOOST_TEST_MESSAGE("Testing that the Ju approximation is never "

@@ -275,6 +275,7 @@ BOOST_AUTO_TEST_CASE(testExpiredSwapFairSpread) {
 }
 
 BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionAndCalibrationBasket) {
+    BOOST_TEST_MESSAGE("Testing Gaussian 1-d float-float swaption and calibration basket...");
     CommonVars vars;
     const auto model = ext::make_shared<Gsr>(
         vars.termStructure, std::vector<Date>(), std::vector<Real>{0.01}, 0.03, 60.0);
@@ -319,6 +320,7 @@ BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionAndCalibrationBasket) {
 }
 
 BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionCoverage) {
+    BOOST_TEST_MESSAGE("Testing Gaussian 1-d float-float swaption coverage...");
     CommonVars vars;
     const auto model = ext::make_shared<Gsr>(
         vars.termStructure, std::vector<Date>(), std::vector<Real>{0.01}, 0.03, 60.0);
@@ -461,6 +463,7 @@ BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionCoverage) {
 }
 
 BOOST_AUTO_TEST_CASE(testGaussian1dFloatFloatSwaptionCalibrationInitialGuessBoundaries) {
+    BOOST_TEST_MESSAGE("Testing Gaussian 1-d float-float swaption calibration initial-guess boundaries...");
     CommonVars vars;
     const auto model = ext::make_shared<Gsr>(
         vars.termStructure, std::vector<Date>(), std::vector<Real>{0.01}, 0.03, 60.0);

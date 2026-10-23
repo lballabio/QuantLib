@@ -19,6 +19,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/experimental/commodities/commoditycurve.hpp>
 #include <cmath>
 #include <ql/termstructures/yield/compositezeroyieldstructure.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
@@ -27,6 +28,8 @@
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
 #include <ql/termstructures/yield/forwardspreadedtermstructure.hpp>
 #include <ql/termstructures/yield/piecewiseforwardspreadedtermstructure.hpp>
+#include <ql/termstructures/yield/shiftedtermstructure.hpp>
+#include <ql/termstructures/yield/splicedtermstructure.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
@@ -623,6 +626,58 @@ BOOST_AUTO_TEST_CASE(testNullTimeToReference) {
                     << "    expected:   " << expected);
 }
 
+BOOST_AUTO_TEST_CASE(testShifted) {
+    BOOST_TEST_MESSAGE("Testing consistency of shifted term structure...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto flatRate = ext::make_shared<SimpleQuote>();
+    auto baseTermStructure = ext::make_shared<FlatForward>(
+        today, Handle<Quote>(flatRate), Actual360());
+    auto shift = 3*Years;
+    Date futureDate = today + shift;
+    Date testDate = futureDate + 5*Years;
+    auto shifted = ext::make_shared<ShiftedYieldTermStructure>(
+        Handle<YieldTermStructure>(baseTermStructure), futureDate);
+    for (Real rate : {0.01, 0.02, 0.03}) {
+        flatRate->setValue(rate);
+        BOOST_CHECK_CLOSE(
+            shifted->discount(testDate + shift), baseTermStructure->discount(testDate), 1e-10);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSpliced) {
+    BOOST_TEST_MESSAGE("Testing consistency of spliced term structure...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto rate1 = ext::make_shared<SimpleQuote>();
+    auto rate2 = ext::make_shared<SimpleQuote>();
+
+    auto curve1 = ext::make_shared<FlatForward>(today, Handle<Quote>(rate1), Actual360());
+    auto curve2 = ext::make_shared<FlatForward>(today + 1*Years, Handle<Quote>(rate2), Actual360());
+
+    Date switchDate = today + 2*Years;
+    auto spliced = ext::make_shared<SplicedYieldTermStructure>(
+        Handle<YieldTermStructure>(curve1), Handle<YieldTermStructure>(curve2), switchDate);
+
+    Real tolerance = 1e-10;
+    for (Real r1 : {0.01, 0.02, 0.03}) {
+        for (Real r2 : {0.01, 0.02, 0.03}) {
+            rate1->setValue(r1);
+            rate2->setValue(r2);
+            Date d = today + 1*Years;
+            BOOST_CHECK_CLOSE(spliced->discount(d), curve1->discount(d), tolerance);
+            Real adj = curve1->discount(switchDate) / curve2->discount(switchDate);
+            d = today + 3*Years;
+            BOOST_CHECK_CLOSE(spliced->discount(d), (adj * curve2->discount(d)), tolerance);
+            auto fwdrate = [&](Date d1, Date d2) {
+                return spliced->forwardRate(d1, d2, Actual360(), Continuous).rate();
+            };
+            BOOST_CHECK_SMALL(fwdrate(switchDate-1, switchDate) - r1, tolerance);
+            BOOST_CHECK_SMALL(fwdrate(switchDate, switchDate+1) - r2, tolerance);
+            BOOST_CHECK_CLOSE(spliced->discount(switchDate), curve1->discount(switchDate), tolerance);
+        }
+    }
+}
 
 BOOST_AUTO_TEST_CASE(testWeekendDepositAndIndexedFraForecast) {
     BOOST_TEST_MESSAGE("Testing weekend rate helpers without and with historical fixings...");
@@ -674,7 +729,52 @@ BOOST_AUTO_TEST_CASE(testWeekendDepositAndIndexedFraForecast) {
     const Real fraWithFixing = bootstrappedDiscount(fra);
     QL_CHECK_SMALL(std::fabs(depositWithFixing - depositDiscount), 1e-12);
     QL_CHECK_SMALL(std::fabs(fraWithFixing - fraDiscount), 1e-12);
-    index->clearFixings();
+}
+
+BOOST_AUTO_TEST_CASE(testCommodityCurve) {
+    BOOST_TEST_MESSAGE("Testing commodity curve interpolation and copying...");
+
+    const Date referenceDate(22, October, 2026);
+    Settings::instance().evaluationDate() = referenceDate;
+    const std::vector<Date> dates = {referenceDate, referenceDate + 30, referenceDate + 60};
+    const std::vector<Real> prices = {100.0, 110.0, 90.0};
+    const Actual365Fixed dayCounter;
+    CommodityCurve curve("test", CommodityType(), Currency(), UnitOfMeasure(), NullCalendar(),
+                         dates, prices, dayCounter);
+    const InterpolatedNodes& nodes = curve;
+    BOOST_CHECK(nodes.dates() == dates);
+    BOOST_CHECK(nodes.data() == prices);
+    BOOST_CHECK(curve.prices() == prices);
+    BOOST_CHECK_EQUAL(curve.maxDate(), dates.back());
+    for (Size i = 0; i < dates.size(); ++i) {
+        BOOST_CHECK_EQUAL(nodes.times()[i], dayCounter.yearFraction(referenceDate, dates[i]));
+        BOOST_CHECK_EQUAL(curve.price(dates[i], {}, 0), prices[i]);
+    }
+    BOOST_CHECK_EQUAL(curve.price(referenceDate - 1, {}, 0), 100.0);
+    BOOST_CHECK_EQUAL(curve.price(referenceDate + 15, {}, 0), 100.0);
+    BOOST_CHECK_EQUAL(curve.price(referenceDate + 45, {}, 0), 110.0);
+    BOOST_CHECK_EQUAL(curve.price(referenceDate + 90, {}, 0), 90.0);
+
+    CommodityCurve copied(curve);
+    CommodityCurve assigned("assigned", CommodityType(), Currency(), UnitOfMeasure(),
+                            NullCalendar());
+    BOOST_CHECK(assigned.empty());
+    assigned = curve;
+
+    std::map<Date, Real> replacement = {{referenceDate, 200.0}, {referenceDate + 60, 210.0}};
+    curve.setPrices(replacement);
+    BOOST_CHECK_EQUAL(curve.price(referenceDate + 45, {}, 0), 200.0);
+    BOOST_CHECK_EQUAL(copied.price(referenceDate + 45, {}, 0), 110.0);
+    BOOST_CHECK_EQUAL(assigned.price(referenceDate + 45, {}, 0), 110.0);
+    BOOST_CHECK(copied.data() == prices);
+    BOOST_CHECK(assigned.data() == prices);
+
+    CommodityCurve initiallyEmpty("empty", CommodityType(), Currency(), UnitOfMeasure(),
+                                NullCalendar());
+    initiallyEmpty.setPrices(replacement);
+    BOOST_CHECK(!initiallyEmpty.empty());
+    BOOST_CHECK_EQUAL(initiallyEmpty.price(referenceDate + 45, {}, 0), 200.0);
+    BOOST_CHECK_EQUAL(initiallyEmpty.price(referenceDate + 90, {}, 0), 210.0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -779,6 +779,7 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativePoisson) {
 }
 
 BOOST_AUTO_TEST_CASE(testPoissonInvalidParameters) {
+    BOOST_TEST_MESSAGE("Testing Poisson distribution with invalid parameters...");
     BOOST_CHECK_EXCEPTION(
         PoissonDistribution(-1.0), Error,
         ExpectedErrorMessage("mu must be non negative"));
@@ -917,6 +918,7 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativeStudent) {
 }
 
 BOOST_AUTO_TEST_CASE(testStudentDistribution) {
+    BOOST_TEST_MESSAGE("Testing Student distribution...");
     StudentDistribution cauchy(1);
     QL_CHECK_CLOSE(cauchy(0.0), 1.0 / M_PI, 1.0e-10);
     QL_CHECK_CLOSE(cauchy(1.0), 0.5 / M_PI, 1.0e-10);
@@ -1091,6 +1093,7 @@ BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudent) {
 }
 
 BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentInvalidParameters) {
+    BOOST_TEST_MESSAGE("Testing bivariate cumulative Student distribution with invalid parameters...");
     BOOST_CHECK_EXCEPTION(
         BivariateCumulativeStudentDistribution(0, 0.0), Error,
         ExpectedErrorMessage("degrees of freedom must be positive"));
@@ -1112,6 +1115,7 @@ BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentInvalidParameters) {
 }
 
 BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentBoundaryContinuity) {
+    BOOST_TEST_MESSAGE("Testing bivariate cumulative Student distribution at the correlation boundaries...");
     Natural n = 5;
     CumulativeStudentDistribution univariate(n);
     BivariateCumulativeStudentDistribution perfectlyPositive(n, 1.0);
@@ -1331,6 +1335,7 @@ BOOST_AUTO_TEST_CASE(testCumulativeNormalTail) {
 }
 
 BOOST_AUTO_TEST_CASE(testCumulativeChiSquareDistribution) {
+    BOOST_TEST_MESSAGE("Testing cumulative chi-square distribution...");
     CumulativeChiSquareDistribution chiSquare(2.0);
     BOOST_CHECK_EQUAL(chiSquare(-1.0), 0.0);
     BOOST_CHECK_EQUAL(chiSquare(0.0), 0.0);
@@ -1339,6 +1344,51 @@ BOOST_AUTO_TEST_CASE(testCumulativeChiSquareDistribution) {
     NonCentralCumulativeChiSquareDistribution nonCentral(4.0, 1.0);
     BOOST_CHECK_EQUAL(nonCentral(0.0), 0.0);
     BOOST_CHECK_EQUAL(nonCentral(-1.0), 0.0);
+}
+
+BOOST_AUTO_TEST_CASE(testNonCentralChiSquareLargeArguments) {
+    BOOST_TEST_MESSAGE("Testing the non-central cumulative chi-square distribution "
+                       "for large non-centrality and large arguments...");
+
+    // for ncp/2 or x/2 above about 708, exp(-ncp/2) or the first
+    // term of the series underflow; the distribution used to return
+    // 0 instead of the actual value (up to 1).
+    const Real dfs[] = {0.5, 1.0, 4.8, 20.0};
+    const Real ncps[] = {0.0, 1.0, 10.0, 1400.0, 1600.0, 5000.0, 20000.0};
+    const Real ks[] = {-8.0, -3.0, -1.0, 0.0, 1.0, 3.0, 8.0, 50.0};
+
+    const Real tol = 1e-10;
+    for (Real df : dfs) {
+        for (Real ncp : ncps) {
+            const NonCentralCumulativeChiSquareDistribution d(df, ncp);
+            const boost::math::non_central_chi_squared_distribution<Real> ref(df, ncp);
+
+            const Real mean = df + ncp;
+            const Real stdDev = std::sqrt(2.0*(df + 2.0*ncp));
+            std::vector<Real> xs = {1500.0, 2000.0, 1.0e4, 1.0e6, 1.0e12};
+            for (Real k : ks) {
+                if (mean + k*stdDev > 0.0)
+                    xs.push_back(mean + k*stdDev);
+            }
+
+            for (Real x : xs) {
+                const Real expected = boost::math::cdf(ref, x);
+                const Real calculated = d(x);
+                const Real diff = std::fabs(expected - calculated);
+
+                if (diff > tol) {
+                    BOOST_ERROR("Failed to reproduce non-central chi-square cdf"
+                                "\n    df        : " << df <<
+                                "\n    ncp       : " << ncp <<
+                                "\n    x         : " << x <<
+                                "\n    expected  : " << expected <<
+                                "\n    calculated: " << calculated <<
+                                "\n    diff      : " << diff <<
+                                "\n    tol       : " << tol);
+                }
+            }
+        }
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
