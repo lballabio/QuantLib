@@ -33,10 +33,10 @@ namespace QuantLib {
 
     // functions
 
+    // auto return type keeps expression-template types (e.g. AD) intact    
     template <class T>
-    inline T squared(T x) { return x * x; }
+    inline auto squared(const T& x) { return x * x; }
 
-    // auto return type keeps expression-template types (e.g. AD) intact
     template <class T>
     inline auto cubed(const T& x) { return x * x * x; }
 
