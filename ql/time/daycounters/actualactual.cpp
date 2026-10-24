@@ -73,7 +73,7 @@ namespace QuantLib {
                         schedule.businessDayConvention(),
                         schedule.endOfMonth());
 
-                newDates[schedule.size() - 1] = notionalLastCoupon;
+                newDates.back() = notionalLastCoupon;
 
                 if (notionalLastCoupon < schedule.endDate())
                 {
