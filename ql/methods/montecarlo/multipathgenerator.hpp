@@ -57,14 +57,16 @@ namespace QuantLib {
                            bool brownianBridge = false);
         const sample_type& next() const;
         const sample_type& antithetic() const;
+        void initCache() const { process_->resetCache(times_.size() - 1); }
+        void disableCache() const { process_->resetCache(0); }
       private:
         const sample_type& next(bool antithetic) const;
         bool brownianBridge_;
         ext::shared_ptr<StochasticProcess> process_;
+        TimeGrid times_;
         GSG generator_;
         mutable sample_type next_;
     };
-
 
     // template definitions
 
@@ -73,7 +75,7 @@ namespace QuantLib {
                                                 const TimeGrid& times,
                                                 GSG generator,
                                                 bool brownianBridge)
-    : brownianBridge_(brownianBridge), process_(process), generator_(std::move(generator)),
+        : brownianBridge_(brownianBridge), process_(process), times_(times), generator_(std::move(generator)),
       next_(MultiPath(process->size(), times), 1.0) {
 
         QL_REQUIRE(generator_.dimension() ==

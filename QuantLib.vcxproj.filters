@@ -2457,6 +2457,9 @@
     <ClInclude Include="ql\processes\stochasticprocessarray.hpp">
       <Filter>processes</Filter>
     </ClInclude>
+    <ClInclude Include="ql\processes\pathindependentcache.hpp">
+      <Filter>processes</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\all.hpp">
       <Filter>pricingengines</Filter>
     </ClInclude>

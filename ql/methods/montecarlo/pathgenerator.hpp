@@ -61,6 +61,8 @@ namespace QuantLib {
         const sample_type& antithetic() const;
         Size size() const { return dimension_; }
         const TimeGrid& timeGrid() const { return timeGrid_; }
+        void initCache() const { process_->resetCache(timeGrid_.size() - 1); }
+        void disableCache() const { process_->resetCache(0); }
         //@}
       private:
         const sample_type& next(bool antithetic) const;

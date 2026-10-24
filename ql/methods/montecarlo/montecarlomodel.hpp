@@ -90,7 +90,12 @@ namespace QuantLib {
     // inline definitions
     template <template <class> class MC, class RNG, class S>
     inline void MonteCarloModel<MC,RNG,S>::addSamples(Size samples) {
-        for(Size j = 1; j <= samples; j++) {
+        struct CacheEnabler {
+            CacheEnabler(MonteCarloModel<MC, RNG, S>* t) : t(t) { t->pathGenerator_->initCache(); }
+            ~CacheEnabler() { t->pathGenerator_->disableCache(); }
+            MonteCarloModel<MC, RNG, S>* t;
+        } enabler(this);
+        for (Size j = 1; j <= samples; j++) {
 
             const sample_type& path = pathGenerator_->next();
             result_type price = (*pathPricer_)(path.value);
