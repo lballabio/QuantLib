@@ -91,7 +91,9 @@ namespace QuantLib {
     template <template <class> class MC, class RNG, class S>
     inline void MonteCarloModel<MC,RNG,S>::addSamples(Size samples) {
         struct CacheEnabler {
-            CacheEnabler(MonteCarloModel<MC, RNG, S>* t) : t(t) { t->pathGenerator_->initCache(); }
+            explicit CacheEnabler(MonteCarloModel<MC, RNG, S>* t) : t(t) {
+                t->pathGenerator_->initCache();
+            }
             ~CacheEnabler() { t->pathGenerator_->disableCache(); }
             MonteCarloModel<MC, RNG, S>* t;
         } enabler(this);
