@@ -239,9 +239,9 @@ namespace QuantLib {
             if (considerProbabilities && probabilities_ != None &&
                 event1Time != Null<Real>()) {
                 probabilityPayoffs.reserve(npvp1.size());
-                for (Size m = 0; m < npvp1.size(); ++m) {
+                for (auto & m : npvp1) {
                     probabilityPayoffs.emplace_back(
-                        z.begin(), z.end(), npvp1[m].begin(),
+                        z.begin(), z.end(), m.begin(),
                         CubicInterpolation::Spline, true,
                         CubicInterpolation::Lagrange, 0.0,
                         CubicInterpolation::Lagrange, 0.0);
