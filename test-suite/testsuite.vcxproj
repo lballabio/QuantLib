@@ -776,6 +776,10 @@
     <ClCompile Include="ode.cpp" />
     <ClCompile Include="operators.cpp" />
     <ClCompile Include="optimizers.cpp" />
+    <ClCompile Include="optionletstripper.cpp" />
+    <ClCompile Include="overnightindexedcoupon.cpp" />
+    <ClCompile Include="overnightindexedfundingratehelper.cpp" />
+    <ClCompile Include="overnightindexedswap.cpp" />
     <ClCompile Include="pagodaoption.cpp" />
     <ClCompile Include="partialtimebarrieroption.cpp" />
     <ClCompile Include="pathgenerator.cpp" />
