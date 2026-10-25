@@ -308,8 +308,8 @@ namespace QuantLib {
 
     inline Real NormalDistribution::derivative(Real x) const {
         const Real density = (*this)(x);
-        return density == 0.0 ? 0.0 :
-            (density * (average_ - x)) / derNormalizationFactor_;
+        return density == 0.0 ? Real(0.0) :
+            Real((density * (average_ - x)) / derNormalizationFactor_);
     }
 
     inline CumulativeNormalDistribution::CumulativeNormalDistribution(

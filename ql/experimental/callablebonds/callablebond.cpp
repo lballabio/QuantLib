@@ -66,6 +66,8 @@ namespace QuantLib {
 
         QL_REQUIRE(callabilityDates.size() == callabilityPrices.size(),
                    "different number of callability dates and prices");
+        QL_REQUIRE(callabilityDates.size() == callabilityTypes.size(),
+                   "different number of callability dates and types");
         QL_REQUIRE(couponDates.size() == couponAmounts.size(),
                    "different number of coupon dates and amounts");
     }
@@ -439,8 +441,10 @@ namespace QuantLib {
 
         arguments->callabilityPrices.clear();
         arguments->callabilityDates.clear();
+        arguments->callabilityTypes.clear();
         arguments->callabilityPrices.reserve(putCallSchedule_.size());
         arguments->callabilityDates.reserve(putCallSchedule_.size());
+        arguments->callabilityTypes.reserve(putCallSchedule_.size());
 
         arguments->paymentDayCounter = paymentDayCounter_;
         arguments->frequency = frequency_;
@@ -449,6 +453,7 @@ namespace QuantLib {
         for (const auto& i : putCallSchedule_) {
             if (!i->hasOccurred(settlement, false)) {
                 arguments->callabilityDates.push_back(i->date());
+                arguments->callabilityTypes.push_back(i->type());
                 arguments->callabilityPrices.push_back(i->price().amount());
 
                 if (i->price().type() == Bond::Price::Clean) {

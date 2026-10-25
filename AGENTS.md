@@ -86,6 +86,12 @@ New headers should have:
 - Include guard `quantlib_<name>_hpp`
 - Self-contained includes
 
+### 3.6 Tests
+
+Any added test cases must have a `BOOST_TEST_MESSAGE("Testing X...")`
+at the beginning, formatted as in existing tests.  Mind the ellipsis
+at the end (three periods, not an single ellipsis character).
+
 ## 4. Build and Test — Quick Start
 
 ```bash
