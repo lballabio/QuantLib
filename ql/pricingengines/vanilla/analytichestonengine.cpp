@@ -414,16 +414,21 @@ namespace QuantLib {
             }   
           break;
           case AsymptoticChF:
-            phi_ = -(v0+term*kappa*theta)/sigma
-                * std::complex<Real>(std::sqrt(1-rho*rho), rho);
+            {
+              const Real s = std::sqrt(1 - rho*rho);
+              phi_ = -(v0+term*kappa*theta)/sigma * std::complex<Real>(s, rho);
 
-            psi_ = std::complex<Real>(
-                (kappa- 0.5*rho*sigma)*(v0 + term*kappa*theta)
-                + kappa*theta*std::log(4*(1-rho*rho)),
-                - ((0.5*rho*rho*sigma - kappa*rho)/std::sqrt(1-rho*rho)
-                        *(v0 + kappa*theta*term)
-                  - 2*kappa*theta*std::atan(rho/std::sqrt(1-rho*rho))))
-                          /(sigma*sigma);
+              const Real a = sigma * s;
+              const Real b = (0.5*sigma - rho*kappa)/s;
+              const std::complex<Real> l(0.5, -0.5*rho/s);
+              const std::complex<Real> B = (
+                   std::complex<Real>(0, b-a) - (rho*sigma*b - kappa*a)/(2.0*a*l)
+               )/(2.0*a*a*l);
+               
+               psi_ = kappa*theta/(sigma*sigma)
+                    *(term*std::complex<Real>(kappa, -b) - 2.0*std::log(l))
+                    + v0*B - std::complex<Real>(0, alpha_ + 1.0)*phi_;
+            }
             [[fallthrough]];
           case AngledContour:
             vAvg_ = (1-std::exp(-kappa*term))*(v0 - theta)

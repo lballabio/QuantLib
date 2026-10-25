@@ -3408,9 +3408,9 @@ BOOST_AUTO_TEST_CASE(testHestonBlackVolSurfaceAtmLevel) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testAsymptoticCVwithOptimalAlpha) {
+BOOST_AUTO_TEST_CASE(testAsymptoticCVwithDifferentAlpha) {
     BOOST_TEST_MESSAGE("Testing optimal asymptotic "
-        "control variate with optimal alpha...");
+        "control variate with different alphas...");
 
     SavedSettings backup;
 
@@ -3423,77 +3423,105 @@ BOOST_AUTO_TEST_CASE(testAsymptoticCVwithOptimalAlpha) {
 
     const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
-    const Real strike= 110.0;
     const Real v0    = 0.1;
-    const Real sigma = 1.0;
-    const std::vector<Real> rhos {-0.9, -0.5, -0.1, 0.8};
+    const Real sigma = 2.0;
+    const std::vector<Real> strikes = {50, 75, 100, 125, 200};
+    const std::vector<Real> rhos {-0.9, -0.5, 0.0, 0.9};
     const std::vector<Real> kappas {1.0, 0.5, 0.3};
     const std::vector<Real> thetas { 0.01, 0.3, 0.5 };
     
-    for (Real rho: rhos) {
-        for (Real kappa: kappas) {
-            for (Real theta: thetas) {
-    
-                const ext::shared_ptr<HestonModel> model =
-                    ext::make_shared<HestonModel>(
-                        ext::make_shared<HestonProcess>(
-                            riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho
-                        )
-                    );
-            
-                const Date maturityDate(5, July, 2027);
+    for (Real strike: strikes) {
+        for (Real rho: rhos) {
+            for (Real kappa: kappas) {
+                for (Real theta: thetas) {
+        
+                    const ext::shared_ptr<HestonModel> model =
+                        ext::make_shared<HestonModel>(
+                            ext::make_shared<HestonProcess>(
+                                riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho
+                            )
+                        );
                 
-                VanillaOption option(
-                    ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
-                    ext::make_shared<EuropeanExercise>(maturityDate)
-                );
-            
-                const ext::shared_ptr<AnalyticHestonEngine> engine = 
-                    ext::make_shared<AnalyticHestonEngine>(
-                        model,
-                        AnalyticHestonEngine::OptimalCV,
-                        FourierIntegration::expSinh(1e-10)
-                    );
+                    const Date maturityDate(5, July, 2027);
                     
-                option.setPricingEngine(engine);
-                const Real expected = option.NPV();
+                    VanillaOption option(
+                        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+                        ext::make_shared<EuropeanExercise>(maturityDate)
+                    );
                 
-                const AnalyticHestonEngine::OptimalAlpha optimalAlpha(
-                    dayCounter.yearFraction(settlementDate, maturityDate),
-                    engine.get()
-                );
-                const Real alphaMin = 0.9*optimalAlpha.alphaMin(strike);
-                const Real alphaMax = 0.9*optimalAlpha.alphaMax(strike);
-                const Real alphaOpt = optimalAlpha(strike);
-                const Concentrating1dMesher mesher(
-                    alphaMin, alphaMax, 10, std::make_pair(alphaOpt, 0.1)
-                );
-
-                for (Real alpha: mesher.locations()) {
-                    option.setPricingEngine(
+                    const ext::shared_ptr<AnalyticHestonEngine> engine = 
                         ext::make_shared<AnalyticHestonEngine>(
                             model,
-                            AnalyticHestonEngine::AsymptoticChF,
-                            FourierIntegration::expSinh(1e-10), 
-                            1e-25, alpha 
-                        )
-                    );
+                            AnalyticHestonEngine::AngledContour,
+                            FourierIntegration::expSinh(1e-12) 
+                        );
                         
-                    const Real calculated = option.NPV();
-                    const Real diff = std::abs(calculated - expected);
-                    const Real tol = 1e-10;
+                    option.setPricingEngine(engine);
+                    const Real expected = option.NPV();
                     
-                    if (diff > tol) {
-                        BOOST_ERROR("failed to reproduce Heston option values with "
-                                    "AsymptoticChF "
-                                << "\n  calculated: " << calculated
-                                << "\n  expected  : " << expected
-                                << "\n  difference: " << diff
-                                << "\n  tolerance : " << tol
-                                << "\n  alpha     : " << alpha
-                                << "\n  theta     : " << theta
-                                << "\n  kappa     : " << kappa
-                                << "\n  rho       : " << rho);
+                    const AnalyticHestonEngine::OptimalAlpha optimalAlpha(
+                        dayCounter.yearFraction(settlementDate, maturityDate),
+                        engine.get()
+                    );
+                    const Real alphaMin = 0.75*optimalAlpha.alphaMin(strike);
+                    const Real alphaMax = 0.75*optimalAlpha.alphaMax(strike);
+                    const Concentrating1dMesher mesher(
+                        alphaMin, alphaMax, 5, std::make_pair(-0.5, 0.1), true
+                    );
+    
+                    for (Real alpha: mesher.locations()) {
+                        const std::vector<std::pair<std::string, ext::shared_ptr<AnalyticHestonEngine> > > engines = {
+                            {
+                                "AngledContour", 
+                                ext::make_shared<AnalyticHestonEngine>(
+                                    model,
+                                    AnalyticHestonEngine::AngledContour,
+                                    FourierIntegration::expSinh(1e-8), 
+                                    1e-25, alpha 
+                                )
+                            },                            
+                            {
+                                "AngledContourNoCV",
+                                ext::make_shared<AnalyticHestonEngine>(
+                                    model,
+                                    AnalyticHestonEngine::AngledContourNoCV,
+                                    FourierIntegration::expSinh(1e-8), 
+                                    1e-25, alpha 
+                                )
+                            },
+                            {
+                                "AsymptoticChF",
+                                ext::make_shared<AnalyticHestonEngine>(
+                                    model,
+                                    AnalyticHestonEngine::AsymptoticChF,
+                                    FourierIntegration::expSinh(1e-12), 
+                                    1e-25, alpha 
+                                )
+                            }
+                        }; 
+
+                        for (const auto& engine: engines) {                            
+                            option.setPricingEngine(engine.second);
+                                                        
+                            const Real calculated = option.NPV();
+                            const Real diff = std::abs(calculated - expected);
+                            const Real tol = (engine.first != "AsymptoticChF")? 1e-6: 1e-10;
+                            
+                            if (diff > tol) {
+                                BOOST_ERROR("failed to reproduce Heston option values with "
+                                            "AsymptoticChF "
+                                        << "\n  calculated: " << calculated
+                                        << "\n  expected  : " << expected
+                                        << "\n  difference: " << diff
+                                        << "\n  tolerance : " << tol
+                                        << "\n  engine    : " << engine.first
+                                        << "\n  strike    : " << strike
+                                        << "\n  alpha     : " << alpha
+                                        << "\n  theta     : " << theta
+                                        << "\n  kappa     : " << kappa
+                                        << "\n  rho       : " << rho);
+                            }
+                        }
                     }
                 }
             }
