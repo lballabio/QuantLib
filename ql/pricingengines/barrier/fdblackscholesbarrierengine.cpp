@@ -207,6 +207,35 @@ namespace QuantLib {
         results_.gamma = solver->gammaAt(spot);
         results_.theta = solver->thetaAt(spot);
 
+        // As in FdBlackScholesVanillaEngine, the step condition enforces
+        // the exercise value on grid nodes only and the interpolant can
+        // undershoot it in between; floor the value when the holder can
+        // exercise on the reference date and the payoff is paid then.
+        // Greeks stay on the interpolant.
+        const Date settlementDate = process_->riskFreeRate()->referenceDate();
+        bool exercisable = false;
+        if (exerciseType == Exercise::American) {
+            exercisable = arguments_.exercise->date(0) <= settlementDate
+                          && settlementDate <= arguments_.exercise->lastDate();
+        } else if (exerciseType == Exercise::Bermudan) {
+            for (const Date& exerciseDate : arguments_.exercise->dates()) {
+                if (exerciseDate == settlementDate) {
+                    exercisable = true;
+                    break;
+                }
+            }
+        }
+        if (exercisable) {
+            const auto early = ext::dynamic_pointer_cast<EarlyExercise>(arguments_.exercise);
+            if (early != nullptr && early->payoffAtExpiry())
+                exercisable = false;
+        }
+        if (exercisable) {
+            const Real exerciseValue = (*payoff)(spot);
+            if (results_.value < exerciseValue)
+                results_.value = exerciseValue;
+        }
+
         // 6. Calculate vanilla option and rebate for in-barriers
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::UpIn) {

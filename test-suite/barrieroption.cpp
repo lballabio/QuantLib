@@ -1426,7 +1426,7 @@ BOOST_AUTO_TEST_CASE(testFdEarlyExerciseKnockOutBounds) {
              s < (down ? 160.0 : tc.barrier); s += 5.0) {
             spot->setValue(s);
             const Real calculated = option.NPV();
-            if (calculated < (*payoff)(s) - 1e-4) {
+            if (calculated < (*payoff)(s)) {
                 BOOST_ERROR("American knock-out price below exercise value:"
                             << "\n    barrier type: " << tc.barrierType
                             << "\n    option type:  " << tc.optionType
@@ -1454,7 +1454,7 @@ BOOST_AUTO_TEST_CASE(testFdEarlyExerciseKnockOutBounds) {
                              ext::make_shared<PlainVanillaPayoff>(Option::Call, 90.0),
                              americanExercise);
     jumpOption.setPricingEngine(barrierEngine);
-    BOOST_CHECK_CLOSE(jumpOption.NPV(), rebate, 1e-10);
+    QL_CHECK_CLOSE(jumpOption.NPV(), rebate, 1e-10);
     BOOST_CHECK_THROW(jumpOption.delta(), Error);
 
     // otherwise the value is continuous and matches the european one
@@ -1463,10 +1463,10 @@ BOOST_AUTO_TEST_CASE(testFdEarlyExerciseKnockOutBounds) {
     BarrierOption europeanPut(Barrier::DownOut, 100.0, rebate, putPayoff, europeanExercise);
     americanPut.setPricingEngine(barrierEngine);
     europeanPut.setPricingEngine(barrierEngine);
-    BOOST_CHECK_CLOSE(americanPut.NPV(), rebate, 1e-10);
-    BOOST_CHECK_SMALL(americanPut.delta() - europeanPut.delta(), 1e-6);
-    BOOST_CHECK_SMALL(americanPut.gamma() - europeanPut.gamma(), 1e-6);
-    BOOST_CHECK_SMALL(americanPut.theta() - europeanPut.theta(), 1e-6);
+    QL_CHECK_CLOSE(americanPut.NPV(), rebate, 1e-10);
+    QL_CHECK_SMALL(americanPut.delta() - europeanPut.delta(), 1e-6);
+    QL_CHECK_SMALL(americanPut.gamma() - europeanPut.gamma(), 1e-6);
+    QL_CHECK_SMALL(americanPut.theta() - europeanPut.theta(), 1e-6);
 }
 
 BOOST_AUTO_TEST_CASE(testFdAmericanDownOutCallWithoutDividends) {
