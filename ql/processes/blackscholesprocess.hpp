@@ -83,7 +83,6 @@ namespace QuantLib {
         Real expectation(Time t0, Real x0, Time dt) const override;
         Real stdDeviation(Time t0, Real x0, Time dt) const override;
         Real variance(Time t0, Real x0, Time dt) const override;
-        Real evolve(Time t0, Real x0, Time dt, Real dw) const override;
         void resetCache(const Size numberOfTimeSteps) const override;
         //@}
         Time time(const Date&) const override;

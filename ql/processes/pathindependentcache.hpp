@@ -48,16 +48,17 @@ namespace QuantLib {
                     times_.push_back(t);
                     dts_.push_back(dt);
                 }
+                if (data_.size() == timeSteps_)
+                    ready_ = true;
             }
-            if (data_.size() == timeSteps_)
-                ready_ = true;
         }
         const U& get(const Real t, const Real dt = 0.0) const {
-            if (t != times_[timeStep_]) {
+            // usually one or zero increments, so no need to search smarter
+            while (t != times_[timeStep_] && timeStep_ < times_.size()) {
                 ++timeStep_;
-                if (timeStep_ == timeSteps_)
-                    timeStep_ = 0;
             }
+            if (timeStep_ == timeSteps_)
+                timeStep_ = 0;
             QL_REQUIRE(t == times_[timeStep_] && dt == dts_[timeStep_],
                        "PathIndependentCache::get("
                            << t << "," << dt << ") at time step " << timeStep_

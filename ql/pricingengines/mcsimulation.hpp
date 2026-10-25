@@ -66,9 +66,11 @@ namespace QuantLib {
                        Size maxSamples) const;
       protected:
         McSimulation(bool antitheticVariate,
-                     bool controlVariate)
+                     bool controlVariate,
+                     bool cachedPathGeneration = false)
         : antitheticVariate_(antitheticVariate),
-          controlVariate_(controlVariate) {}
+          controlVariate_(controlVariate),
+          cachedPathGeneration_(cachedPathGeneration) {}
         virtual ext::shared_ptr<path_pricer_type> pathPricer() const = 0;
         virtual ext::shared_ptr<path_generator_type> pathGenerator()
                                                                    const = 0;
@@ -95,7 +97,7 @@ namespace QuantLib {
         }
         
         mutable ext::shared_ptr<MonteCarloModel<MC,RNG,S> > mcModel_;
-        bool antitheticVariate_, controlVariate_;
+        bool antitheticVariate_, controlVariate_, cachedPathGeneration_;
     };
 
 
@@ -180,16 +182,16 @@ namespace QuantLib {
             ext::shared_ptr<path_generator_type> controlPG = 
                 this->controlPathGenerator();
 
-            this->mcModel_ =
-                ext::make_shared<MonteCarloModel<MC,RNG,S>>(
-                           pathGenerator(), this->pathPricer(), stats_type(),
-                           this->antitheticVariate_, controlPP,
-                           controlVariateValue, controlPG);
+            this->mcModel_ = ext::make_shared<MonteCarloModel<MC, RNG, S>>(
+                pathGenerator(), this->pathPricer(), stats_type(), this->antitheticVariate_,
+                controlPP, controlVariateValue, controlPG, this->cachedPathGeneration_);
         } else {
-            this->mcModel_ =
-                ext::make_shared<MonteCarloModel<MC,RNG,S>>(
-                           pathGenerator(), this->pathPricer(), S(),
-                           this->antitheticVariate_);
+            this->mcModel_ = ext::make_shared<MonteCarloModel<MC, RNG, S>>(
+                pathGenerator(), this->pathPricer(), S(), this->antitheticVariate_,
+                ext::shared_ptr<typename MC<RNG>::path_pricer_type>(),
+                typename MonteCarloModel<MC, RNG, S>::result_type(),
+                ext::shared_ptr<typename MC<RNG>::path_generator_type>(),
+                this->cachedPathGeneration_);
         }
 
         if (requiredTolerance != Null<Real>()) {

@@ -115,23 +115,22 @@ namespace QuantLib {
                                                      Time dt) const {
         Real res;
         localVolatility(); // trigger update
-        if(isStrikeIndependent_ && !forceDiscretization_) {
+        if (isStrikeIndependent_ && !forceDiscretization_) {
             // exact value for curves
             if(!driftCache_.ready()) {
-                res = x0 *
-                      std::exp(
-                          dt *
+                Real mu = dt *
                           (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous, NoFrequency, true)
                                .rate() -
                            dividendYield_->forwardRate(t0, t0 + dt, Continuous, NoFrequency, true)
-                               .rate()));
-                driftCache_.add(res, t0, dt);
+                           .rate()) - 0.5 * variance(t0,x0,dt);
+                res = x0 * std::exp(mu);
+                driftCache_.add(mu,t0,dt);
             } else {
-                res = driftCache_.get(t0, dt);
+                res = x0 * std::exp(driftCache_.get(t0, dt));
             }
             return res;
         } else {
-            QL_FAIL("not implemented");
+            return discretization_->drift(*this, t0, x0, dt);
         }
     }
 
@@ -162,24 +161,6 @@ namespace QuantLib {
         } else {
             return discretization_->variance(*this,t0,x0,dt);
         }
-    }
-
-    Real GeneralizedBlackScholesProcess::evolve(Time t0, Real x0,
-                                                Time dt, Real dw) const {
-        localVolatility(); // trigger update
-        if (isStrikeIndependent_ && !forceDiscretization_) {
-            // exact value for curves
-            Real var = variance(t0, x0, dt);
-            Real drift = (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
-                                                     NoFrequency, true).rate() -
-                          dividendYield_->forwardRate(t0, t0 + dt, Continuous,
-                                                      NoFrequency, true).rate()) *
-                             dt -
-                         0.5 * var;
-            return apply(x0, std::sqrt(var) * dw + drift);
-        } else
-            return apply(x0, discretization_->drift(*this, t0, x0, dt) +
-                                 stdDeviation(t0, x0, dt) * dw);
     }
 
     Time GeneralizedBlackScholesProcess::time(const Date& d) const {
