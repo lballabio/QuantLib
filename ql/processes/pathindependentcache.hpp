@@ -53,6 +53,7 @@ namespace QuantLib {
             }
         }
         const U& get(const Real t, const Real dt = 0.0) const {
+            QL_REQUIRE(ready_, "PathIndependentCache::get(): cache not ready.");
             // usually one or zero increments, so no need to search smarter
             while (t != times_[timeStep_] && timeStep_ < times_.size()) {
                 ++timeStep_;
