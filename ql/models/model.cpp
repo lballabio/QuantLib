@@ -136,7 +136,7 @@ namespace QuantLib {
     }
 
     void CalibratedModel::setParams(const Array& params) {
-        auto p = params.begin();
+        const auto *p = params.begin();
         for (auto& argument : arguments_) {
             for (Size j = 0; j < argument.size(); ++j, ++p) {
                 QL_REQUIRE(p!=params.end(),"parameter array too small");
