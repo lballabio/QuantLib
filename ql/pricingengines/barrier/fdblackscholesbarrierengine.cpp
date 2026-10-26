@@ -102,9 +102,9 @@ namespace QuantLib {
         QL_REQUIRE(!triggered(spot), "barrier touched");
 
         // on the barrier the option is knocked out before it can be
-        // exercised, while just inside the holder would exercise: when
-        // the intrinsic value exceeds the rebate, the value jumps there
-        // and the greeks are undefined
+        // exercised; when the intrinsic value there exceeds the rebate,
+        // the holder would exercise just inside it instead, so the value
+        // jumps at the barrier and the greeks are undefined
         if (   exerciseType == Exercise::American
             && process_->time(arguments_.exercise->date(0)) <= 0.0
             && close_enough(spot, arguments_.barrier)

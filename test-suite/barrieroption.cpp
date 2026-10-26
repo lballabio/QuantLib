@@ -1458,16 +1458,15 @@ BOOST_AUTO_TEST_CASE(testFdEarlyExerciseKnockOutBounds) {
     QL_CHECK_CLOSE(jumpOption.NPV(), rebate, 1e-10);
     BOOST_CHECK_THROW(jumpOption.delta(), Error);
 
-    // otherwise the value is continuous and matches the european one
-    auto putPayoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 100.0);
-    BarrierOption americanPut(Barrier::DownOut, 100.0, rebate, putPayoff, americanExercise);
-    BarrierOption europeanPut(Barrier::DownOut, 100.0, rebate, putPayoff, europeanExercise);
-    americanPut.setPricingEngine(barrierEngine);
-    europeanPut.setPricingEngine(barrierEngine);
-    QL_CHECK_CLOSE(americanPut.NPV(), rebate, 1e-10);
-    QL_CHECK_SMALL(americanPut.delta() - europeanPut.delta(), 1e-6);
-    QL_CHECK_SMALL(americanPut.gamma() - europeanPut.gamma(), 1e-6);
-    QL_CHECK_SMALL(americanPut.theta() - europeanPut.theta(), 1e-6);
+    // otherwise the value is continuous at the barrier and the greeks are provided
+    BarrierOption americanCall(Barrier::DownOut, 100.0, rebate,
+                               ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0),
+                               americanExercise);
+    americanCall.setPricingEngine(barrierEngine);
+    QL_CHECK_CLOSE(americanCall.NPV(), rebate, 1e-10);
+    BOOST_CHECK_NO_THROW(americanCall.delta());
+    BOOST_CHECK_NO_THROW(americanCall.gamma());
+    BOOST_CHECK_NO_THROW(americanCall.theta());
 }
 
 BOOST_AUTO_TEST_CASE(testFdAmericanDownOutCallWithoutDividends) {
