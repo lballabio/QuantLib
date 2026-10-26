@@ -1418,7 +1418,7 @@ BOOST_AUTO_TEST_CASE(testYearFractionToDateForLinearDayCounter) {
             if (dc.name() == Thirty365().name() || dc.name() == Actual366(true).name()) {
                 BOOST_CHECK_EQUAL(d1.fractionOfDay(), calculated.fractionOfDay());
                 const Time db = std::abs(dc.yearFraction(d2, calculated));
-                BOOST_CHECK_SMALL(db, 10*QL_EPSILON);
+                QL_CHECK_SMALL(db, 10*QL_EPSILON);
             }
             else {
                 const boost::posix_time::time_duration td

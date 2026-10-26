@@ -224,6 +224,15 @@ namespace QuantLib {
                 results_.gamma = 0;
             }
 
+            // for short-dated, highly volatile options the correction can
+            // also take the price below the European one, which is a lower
+            // bound for the American option; fall back to it in that case
+            if (results_.value < black.value()) {
+                results_.value = black.value();
+                results_.delta = black.delta(spot);
+                results_.gamma = black.gamma(spot);
+            }
+
         } // end of "early exercise can be optimal"
     }
 

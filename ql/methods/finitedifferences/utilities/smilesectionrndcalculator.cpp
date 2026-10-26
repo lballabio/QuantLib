@@ -114,7 +114,7 @@ namespace QuantLib {
         // Finer than the tabulated map can resolve.
         const Real xTol = 1e-12;
 
-        const auto edge = [&](Real target) {
+        const auto edge = [&](Real target) -> Real {
             Real x = 0.0;
             Real step = firstStep;
             const Real direction = target > zAtm ? 1.0 : -1.0;
