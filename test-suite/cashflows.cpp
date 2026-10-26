@@ -1026,7 +1026,7 @@ BOOST_AUTO_TEST_CASE(testInterpolatedIborStubCoupon) {
     const Real weight = Real(coupon->accrualEndDate() - shortMaturity) /
                         Real(longMaturity - shortMaturity);
     const Rate expected = shortRate + (longRate - shortRate) * weight;
-    BOOST_CHECK_SMALL(coupon->indexFixing() - expected, 1.0e-14);
+    QL_CHECK_SMALL(coupon->indexFixing() - expected, 1.0e-14);
 
     StubIndexSelection closest{
         StubIndexSelection::ClosestIndex, {bkbm2m, bkbm3m}};
@@ -1036,7 +1036,7 @@ BOOST_AUTO_TEST_CASE(testInterpolatedIborStubCoupon) {
                          .withStubIndexSelection(closest);
     auto closestCoupon = ext::dynamic_pointer_cast<StubIborCoupon>(closestLeg.front());
     BOOST_REQUIRE(closestCoupon);
-    BOOST_CHECK_SMALL(closestCoupon->indexFixing() - longRate, 1.0e-14);
+    QL_CHECK_SMALL(closestCoupon->indexFixing() - longRate, 1.0e-14);
 
     // stub index conventions require indexed coupons...
     BOOST_CHECK_THROW(Leg parLeg = IborLeg(schedule, bkbm3m)
@@ -1093,7 +1093,7 @@ BOOST_AUTO_TEST_CASE(testIborStubInterpolationEndpointsAndRegularSchedule) {
                       .withStubIndexSelection(convention);
         auto coupon = ext::dynamic_pointer_cast<StubIborCoupon>(leg.front());
         BOOST_REQUIRE(coupon);
-        BOOST_CHECK_SMALL(coupon->indexFixing() - endpoint->fixing(coupon->fixingDate()),
+        QL_CHECK_SMALL(coupon->indexFixing() - endpoint->fixing(coupon->fixingDate()),
                           1.0e-14);
     }
 
@@ -1111,7 +1111,7 @@ BOOST_AUTO_TEST_CASE(testIborStubInterpolationEndpointsAndRegularSchedule) {
     auto defaultCoupon = ext::dynamic_pointer_cast<IborCoupon>(defaultLeg.front());
     auto configuredCoupon = ext::dynamic_pointer_cast<IborCoupon>(configuredLeg.front());
     BOOST_REQUIRE(defaultCoupon && configuredCoupon);
-    BOOST_CHECK_SMALL(defaultCoupon->rate() - configuredCoupon->rate(), 1.0e-14);
+    QL_CHECK_SMALL(defaultCoupon->rate() - configuredCoupon->rate(), 1.0e-14);
 }
 
 BOOST_AUTO_TEST_CASE(testFinalAndLongIborStubCoupons) {
@@ -1152,7 +1152,7 @@ BOOST_AUTO_TEST_CASE(testFinalAndLongIborStubCoupons) {
         bkbm1m->fixing(finalCoupon->fixingDate()) +
         (bkbm3m->fixing(finalCoupon->fixingDate()) -
          bkbm1m->fixing(finalCoupon->fixingDate())) * finalWeight;
-    BOOST_CHECK_SMALL(finalCoupon->indexFixing() - expectedFinal, 1.0e-14);
+    QL_CHECK_SMALL(finalCoupon->indexFixing() - expectedFinal, 1.0e-14);
 
     const Date longStart(29, May, 2026);
     const Date longEnd(30, October, 2026);
@@ -1175,7 +1175,7 @@ BOOST_AUTO_TEST_CASE(testFinalAndLongIborStubCoupons) {
         bkbm3m->fixing(longCoupon->fixingDate()) +
         (bkbm6m->fixing(longCoupon->fixingDate()) -
          bkbm3m->fixing(longCoupon->fixingDate())) * longWeight;
-    BOOST_CHECK_SMALL(longCoupon->indexFixing() - expectedLong, 1.0e-14);
+    QL_CHECK_SMALL(longCoupon->indexFixing() - expectedLong, 1.0e-14);
 }
 
 BOOST_AUTO_TEST_CASE(testIborStubCouponHistoricalFixingsAndRelinking) {
@@ -1217,7 +1217,7 @@ BOOST_AUTO_TEST_CASE(testIborStubCouponHistoricalFixingsAndRelinking) {
     const Date longMaturity = bkbm3m->maturityDate(start);
     const Real weight = Real(end - shortMaturity) / Real(longMaturity - shortMaturity);
     const Rate expected = 0.05 + (0.08 - 0.05) * weight;
-    BOOST_CHECK_SMALL(coupon->indexFixing() - expected, 1.0e-14);
+    QL_CHECK_SMALL(coupon->indexFixing() - expected, 1.0e-14);
 
     bkbm2m->clearFixings();
     bkbm3m->clearFixings();
@@ -1263,7 +1263,7 @@ BOOST_AUTO_TEST_CASE(testIborStubCouponHasFixedUsesSelectedIndices) {
     const Date shortMaturity = bkbm2m->maturityDate(start);
     const Date longMaturity = bkbm3m->maturityDate(start);
     const Real weight = Real(end - shortMaturity) / Real(longMaturity - shortMaturity);
-    BOOST_CHECK_SMALL(coupon->indexFixing() - (0.05 + (0.08 - 0.05) * weight), 1.0e-14);
+    QL_CHECK_SMALL(coupon->indexFixing() - (0.05 + (0.08 - 0.05) * weight), 1.0e-14);
 
     bkbm2m->clearFixings();
     bkbm3m->clearFixings();

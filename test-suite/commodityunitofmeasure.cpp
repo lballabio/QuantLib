@@ -31,6 +31,7 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 BOOST_AUTO_TEST_SUITE(CommodityUnitOfMeasureTests)
 
 BOOST_AUTO_TEST_CASE(testCommodityType) {
+    BOOST_TEST_MESSAGE("Testing commodity type...");
 
     CommodityType commodityType("Heating Oil", "HO");
 

@@ -75,6 +75,9 @@ namespace QuantLib {
             std::upper_bound(arguments_.leg1ResetDates.begin(),
                              arguments_.leg1ResetDates.end(), expiry - 1) -
             arguments_.leg1ResetDates.begin();
+        const Size remainingResetCount = arguments_.leg1ResetDates.size() - idx1;
+        QL_REQUIRE(remainingResetCount > 0,
+                   "no leg 1 reset dates remain at calibration expiry " << expiry);
 
         // very simple initial guess
         // check guess for nominal and weighted maturity !
@@ -83,8 +86,10 @@ namespace QuantLib {
         for (Size i = idx1; i < arguments_.leg1ResetDates.size(); i++) {
             nominalSum1 += arguments_.nominal1[i];
         }
-        Real nominalAvg1 = nominalSum1 /
-            (arguments_.leg1ResetDates.size() - idx1);
+        QL_REQUIRE(nominalSum1 != 0.0,
+                   "remaining leg 1 notionals sum to zero at calibration expiry "
+                       << expiry);
+        Real nominalAvg1 = nominalSum1 / remainingResetCount;
         Real weightedMaturity1 = 0.0;
         for (Size i = idx1; i < arguments_.leg1ResetDates.size(); i++) {
             weightedMaturity1 +=
@@ -134,7 +139,6 @@ namespace QuantLib {
 
         int idx = events.size() - 1;
 
-        FloatFloatSwap swap = *arguments_.swap;
         Option::Type type =
             arguments_.type == Swap::Payer ? Option::Call : Option::Put;
 
@@ -166,7 +170,7 @@ namespace QuantLib {
         }
         // end probability computation
 
-        Date event1 = Date(), event0;
+        Date event0;
         Time event1Time = Null<Real>(), event0Time;
 
         ext::shared_ptr<IborIndex> ibor1 =
@@ -220,29 +224,44 @@ namespace QuantLib {
 
             // todo add openmp support later on (as in gaussian1dswaptionengine)
 
+            CubicInterpolation payoff0(
+                z.begin(), z.end(), npv1.begin(),
+                CubicInterpolation::Spline, true,
+                CubicInterpolation::Lagrange, 0.0,
+                CubicInterpolation::Lagrange, 0.0);
+            CubicInterpolation payoff0a(
+                z.begin(), z.end(), npv1a.begin(),
+                CubicInterpolation::Spline, true,
+                CubicInterpolation::Lagrange, 0.0,
+                CubicInterpolation::Lagrange, 0.0);
+
+            std::vector<CubicInterpolation> probabilityPayoffs;
+            if (considerProbabilities && probabilities_ != None &&
+                event1Time != Null<Real>()) {
+                probabilityPayoffs.reserve(npvp1.size());
+                for (Size m = 0; m < npvp1.size(); ++m) {
+                    probabilityPayoffs.emplace_back(
+                        z.begin(), z.end(), npvp1[m].begin(),
+                        CubicInterpolation::Spline, true,
+                        CubicInterpolation::Lagrange, 0.0,
+                        CubicInterpolation::Lagrange, 0.0);
+                }
+            }
+
+            const Real rollbackZSpreadDf =
+                event1Time == Null<Real>() || oas_.empty()
+                    ? Real(1.0)
+                    : std::exp(-oas_->value() * (event1Time - event0Time));
+
             for (Size k = 0; k < (event0 > expiry ? npv0.size() : 1); k++) {
 
                 // roll back
 
                 Real price = 0.0, pricea = 0.0;
                 if (event1Time != Null<Real>()) {
-                    Real zSpreadDf = oas_.empty()
-                                         ? Real(1.0)
-                                         : std::exp(-oas_->value() *
-                                                    (event1Time - event0Time));
                     Array yg =
                         model_->yGrid(stddevs_, integrationPoints_, event1Time,
                                       event0Time, event0 > expiry ? z[k] : y);
-                    CubicInterpolation payoff0(
-                        z.begin(), z.end(), npv1.begin(),
-                        CubicInterpolation::Spline, true,
-                        CubicInterpolation::Lagrange, 0.0,
-                        CubicInterpolation::Lagrange, 0.0);
-                    CubicInterpolation payoff0a(
-                        z.begin(), z.end(), npv1a.begin(),
-                        CubicInterpolation::Spline, true,
-                        CubicInterpolation::Lagrange, 0.0,
-                        CubicInterpolation::Lagrange, 0.0);
                     for (Size i = 0; i < yg.size(); i++) {
                         p[i] = payoff0(yg[i], true);
                         pa[i] = payoff0a(yg[i], true);
@@ -263,13 +282,13 @@ namespace QuantLib {
                                      payoff1.bCoefficients()[i],
                                      payoff1.aCoefficients()[i], p[i], z[i],
                                      z[i], z[i + 1]) *
-                                 zSpreadDf;
+                                 rollbackZSpreadDf;
                         pricea += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                       0.0, payoff1a.cCoefficients()[i],
                                       payoff1a.bCoefficients()[i],
                                       payoff1a.aCoefficients()[i], pa[i], z[i],
                                       z[i], z[i + 1]) *
-                                  zSpreadDf;
+                                  rollbackZSpreadDf;
                     }
                     if (extrapolatePayoff_) {
                         if (flatPayoffExtrapolation_) {
@@ -277,20 +296,20 @@ namespace QuantLib {
                                 Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                     0.0, 0.0, 0.0, 0.0, p[z.size() - 2],
                                     z[z.size() - 2], z[z.size() - 1], 100.0) *
-                                zSpreadDf;
+                                rollbackZSpreadDf;
                             price += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                          0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0,
                                          z[0]) *
-                                     zSpreadDf;
+                                     rollbackZSpreadDf;
                             pricea +=
                                 Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                     0.0, 0.0, 0.0, 0.0, pa[z.size() - 2],
                                     z[z.size() - 2], z[z.size() - 1], 100.0) *
-                                zSpreadDf;
+                                rollbackZSpreadDf;
                             pricea += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                           0.0, 0.0, 0.0, 0.0, pa[0], z[0],
                                           -100.0, z[0]) *
-                                      zSpreadDf;
+                                      rollbackZSpreadDf;
                         } else {
                             if (type == Option::Call)
                                 price +=
@@ -301,7 +320,7 @@ namespace QuantLib {
                                         payoff1.aCoefficients()[z.size() - 2],
                                         p[z.size() - 2], z[z.size() - 2],
                                         z[z.size() - 1], 100.0) *
-                                    zSpreadDf;
+                                    rollbackZSpreadDf;
                             if (type == Option::Put)
                                 price +=
                                     Gaussian1dModel::gaussianShiftedPolynomialIntegral(
@@ -309,7 +328,7 @@ namespace QuantLib {
                                         payoff1.bCoefficients()[0],
                                         payoff1.aCoefficients()[0], p[0], z[0],
                                         -100.0, z[0]) *
-                                    zSpreadDf;
+                                    rollbackZSpreadDf;
                             if (type == Option::Call)
                                 pricea +=
                                     Gaussian1dModel::gaussianShiftedPolynomialIntegral(
@@ -319,7 +338,7 @@ namespace QuantLib {
                                         payoff1a.aCoefficients()[z.size() - 2],
                                         pa[z.size() - 2], z[z.size() - 2],
                                         z[z.size() - 1], 100.0) *
-                                    zSpreadDf;
+                                    rollbackZSpreadDf;
                             if (type == Option::Put)
                                 pricea +=
                                     Gaussian1dModel::gaussianShiftedPolynomialIntegral(
@@ -327,7 +346,7 @@ namespace QuantLib {
                                         payoff1a.bCoefficients()[0],
                                         payoff1a.aCoefficients()[0], pa[0],
                                         z[0], -100.0, z[0]) *
-                                    zSpreadDf;
+                                    rollbackZSpreadDf;
                         }
                     }
                 }
@@ -340,21 +359,11 @@ namespace QuantLib {
                     for (Size m = 0; m < npvp0.size(); m++) {
                         Real price = 0.0;
                         if (event1Time != Null<Real>()) {
-                            Real zSpreadDf =
-                                oas_.empty()
-                                    ? Real(1.0)
-                                    : std::exp(-oas_->value() *
-                                               (event1Time - event0Time));
                             Array yg = model_->yGrid(
                                 stddevs_, integrationPoints_, event1Time,
                                 event0Time, event0 > expiry ? z[k] : 0.0);
-                            CubicInterpolation payoff0(
-                                z.begin(), z.end(), npvp1[m].begin(),
-                                CubicInterpolation::Spline, true,
-                                CubicInterpolation::Lagrange, 0.0,
-                                CubicInterpolation::Lagrange, 0.0);
                             for (Size i = 0; i < yg.size(); i++) {
-                                p[i] = payoff0(yg[i], true);
+                                p[i] = probabilityPayoffs[m](yg[i], true);
                             }
                             CubicInterpolation payoff1(
                                 z.begin(), z.end(), p.begin(),
@@ -368,7 +377,7 @@ namespace QuantLib {
                                         payoff1.bCoefficients()[i],
                                         payoff1.aCoefficients()[i], p[i], z[i],
                                         z[i], z[i + 1]) *
-                                    zSpreadDf;
+                                    rollbackZSpreadDf;
                             }
                             if (extrapolatePayoff_) {
                                 if (flatPayoffExtrapolation_) {
@@ -378,12 +387,12 @@ namespace QuantLib {
                                                   p[z.size() - 2],
                                                   z[z.size() - 2],
                                                   z[z.size() - 1], 100.0) *
-                                        zSpreadDf;
+                                        rollbackZSpreadDf;
                                     price +=
                                         Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                                   0.0, 0.0, 0.0, 0.0, p[0],
                                                   z[0], -100.0, z[0]) *
-                                        zSpreadDf;
+                                        rollbackZSpreadDf;
                                 } else {
                                     if (type == Option::Call)
                                         price +=
@@ -398,7 +407,7 @@ namespace QuantLib {
                                                       p[z.size() - 2],
                                                       z[z.size() - 2],
                                                       z[z.size() - 1], 100.0) *
-                                            zSpreadDf;
+                                            rollbackZSpreadDf;
                                     if (type == Option::Put)
                                         price +=
                                             Gaussian1dModel::gaussianShiftedPolynomialIntegral(
@@ -411,7 +420,7 @@ namespace QuantLib {
                                                           .aCoefficients()[0],
                                                       p[0], z[0], -100.0,
                                                       z[0]) *
-                                            zSpreadDf;
+                                            rollbackZSpreadDf;
                                 }
                             }
                         }
@@ -664,7 +673,6 @@ namespace QuantLib {
             }
             // end probability computation
 
-            event1 = event0;
             event1Time = event0Time;
 
         } while (--idx >= -1);

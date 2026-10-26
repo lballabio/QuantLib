@@ -509,6 +509,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
 }
 
 BOOST_AUTO_TEST_CASE(testZeroTermStructureLazyBaseDate) {
+    BOOST_TEST_MESSAGE("Testing lazy base date of zero-inflation term structure...");
 
     // UKRPI conventions
     Calendar calendar = UnitedKingdom();
