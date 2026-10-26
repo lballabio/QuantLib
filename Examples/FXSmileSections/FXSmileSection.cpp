@@ -335,9 +335,10 @@ int main(int, char*[]) {
         // ------------------------------------------------------------------
         //  6. Cost smile section — flat dynamics with sticky delta
         //
-        //     As above but uses a scaled (proportional) smile dynamics where
-        //     the relative smile shape is preserved as spot moves.  Also
-        //     calibrates exactly.
+        //     As the flat-dynamics model, but the smile moves with the
+        //     forward (sticky delta).  The cost equation then involves the
+        //     smile's slope and is solved as an ODE; the three cost ratios
+        //     are fitted to the five quotes by least squares.
         // ------------------------------------------------------------------
 
         {

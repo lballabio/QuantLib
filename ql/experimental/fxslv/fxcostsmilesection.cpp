@@ -24,6 +24,7 @@
 #include <ql/math/array.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/optimization/endcriteria.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/problem.hpp>
@@ -548,272 +549,136 @@ namespace QuantLib {
                          dayCounter, weightedCalibrationFlag) {}
 
 
-    void FxCostSmileSectionStickyDelta::calibrate() const {
-        // Build the regressor matrix for the general-alpha cost equation.
-        //
-        // The cost equation at a quoted point with total vol w = sigma * sqrt(T) is:
-        //
-        //   Cgamma + 2*Ctheta*w^(1+alpha) - 2*Ceta*d+(w)*w^alpha + Comega*d+(w)*d-(w)*w^(2*alpha) =
-        //   0
-        //
-        // Columns: [Cgamma, Ctheta, Ceta, Comega]
-        // Regressors: [1, 2*w^(1+a), -2*d+*w^a, d+*d-*w^(2a)]   (times optional weight)
-        //
-        // Note: d+ is used for the vanna regressor in both the standard and premium-adjusted
-        // cases — this is consistent with the existing per-class behaviour preserved here.
+    ext::shared_ptr<const FxStickyDeltaSmileSolver>
+    FxCostSmileSectionStickyDelta::makeSolver(const std::vector<Real>& costs, Time tau) const {
+        // the range depends on the quotes only, so the smile does not depend
+        // on a previous calibration
+        const Real range = smileRange * referenceVol() * std::sqrt(tau);
+        return ext::make_shared<const FxStickyDeltaSmileSolver>(costs, premiumAdjust(), -range,
+                                                                range);
+    }
 
-        auto dp = [&](Real k, Real iw) { return std::log(forward() / k) / iw + iw / 2.; };
-        auto dm = [&](Real k, Real iw) { return std::log(forward() / k) / iw - iw / 2.; };
+    Array FxCostSmileSectionStickyDelta::initialParams() const {
+        // Linear fit of the cost equation at the quoted points, with the
+        // slopes beta = dw/dlnK taken from finite differences of the quoted
+        // smile.  With w = sigma sqrt(T) and d* = d+ (premium adjusted) or
+        // d- (otherwise) the cost equation reads
+        //
+        //   Cgamma (1 + 2 beta d- + beta^2 d+ d-) + 2 w Ctheta
+        //       - 2 (d* + beta d+ d-) Ceta + d+ d- Comega = 0
+        //
+        // Columns: [Cgamma, Ctheta, Ceta, Comega]   (times optional weight)
 
-        Real htau = std::sqrt(exerciseTime());
+        const Real htau = std::sqrt(exerciseTime());
 
-        // check all quotes are delta-vol quotes - cannot be calibrated otherwise
-        for (Size i = 0; i < targets_.size(); i++) {
-            // the closed form needs points on the smile (delta-vol quotes
-            // or smile strangles); broker strangles are not points
-            const auto point = targets_[i]->point(*this);
+        std::vector<std::pair<Rate, Real>> points;  // (strike, total vol)
+        for (const auto& target : targets_) {
+            const auto point = target->point(*this);
             QL_REQUIRE(point, "cost smile sections can only be calibrated to points on the "
                               "smile (delta-vol quotes or smile strangles), not to broker "
                               "strangles");
+            points.emplace_back(point->first, point->second * htau);
         }
+        QL_REQUIRE(points.size() >= 4,
+                   "at least four quotes needed for the sticky-delta cost model, "
+                       << points.size() << " given");
+        std::sort(points.begin(), points.end());
 
-        // sort the targets by strike
-        auto sortByStrike = [&](const ext::shared_ptr<FxSmileTarget>& L,
-                                const ext::shared_ptr<FxSmileTarget>& R) {
-            return L->point(*this)->first < R->point(*this)->first;
-        };
-        std::sort(targets_.begin(), targets_.end(), sortByStrike);
-
-        std::vector<std::optional<std::pair<Rate, Volatility>>> points;
-        for (Size i = 0; i < targets_.size(); i++) {
-            points.push_back(targets_[i]->point(*this));
-        }
-
-        std::vector<Real> slopes;
-        Real sd, su;
-        auto discreteSlope = [&](const std::optional<std::pair<Rate, Volatility>>& p1,
-                                 const std::optional<std::pair<Rate, Volatility>>& p2) {
-            return (p2->second - p1->second) * htau * (p2->first + p1->first) /
-                   (2 * (p2->first - p1->first));
-        };
-
-        // initialize slope estimates
-        slopes.push_back(discreteSlope(points[0], points[1]));
-        for (Size i = 1; i < targets_.size() - 1; i++) {
-            sd = discreteSlope(points[i - 1], points[i]);
-            su = discreteSlope(points[i], points[i + 1]);
-            slopes.push_back((sd + su) / 2.);
-        }
-        // final one
-        slopes.push_back(discreteSlope(points[targets_.size() - 2], points[targets_.size() - 1]));
-
-        // Precompute all per-point quantities that are constant across iterations.
-        // Only slopes[i] changes; everything else depends only on quotes and forward.
-        struct PointCache {
-            Real k, w, x;      // strike, total vol, log-moneyness
-            Real phi_p, phi_m; // d+, d-
-            Real phi_v;        // d+ (premium-adjusted) or d- (standard) for vanna regressor
-            Real wt;           // calibration weight
+        auto discreteSlope = [&](Size i, Size j) {
+            return (points[j].second - points[i].second) * (points[j].first + points[i].first) /
+                   (2.0 * (points[j].first - points[i].first));
         };
 
         CumulativeNormalDistribution f;
-        const Real pa = premiumAdjust() ? 1. : -1.;
+        const Size n = points.size();
+        std::vector<Real> ts;
+        for (Size i = 0; i < n; ++i) {
+            Real beta;
+            if (i == 0)
+                beta = discreteSlope(0, 1);
+            else if (i == n - 1)
+                beta = discreteSlope(n - 2, n - 1);
+            else
+                beta = (discreteSlope(i - 1, i) + discreteSlope(i, i + 1)) / 2.0;
+            const Real k = points[i].first, w = points[i].second;
+            const Real dp = std::log(fwd_ / k) / w + w / 2.0;
+            const Real dm = dp - w;
+            const Real dv = premiumAdjust() ? dp : dm;
+            const Real wt = weightedCalibration() ? f.derivative(dp) : 1.0;
 
-        // pre-compute value for iterative procedure below
-        std::vector<PointCache> cache;
-        cache.reserve(targets_.size());
-        for (Size i = 0; i < targets_.size(); i++) {
-            PointCache c;
-            c.k = points[i]->first;
-            c.w = points[i]->second * htau;
-            c.x = std::log(forward() / c.k);
-            c.phi_p = dp(c.k, c.w);
-            c.phi_m = dm(c.k, c.w);
-            c.phi_v = premiumAdjust() ? c.phi_p : c.phi_m;
-            c.wt = weightedCalibration() ? f.derivative(c.phi_p) : 1.0;
-            cache.push_back(c);
+            ts.push_back(wt * (1.0 + 2.0 * beta * dm + beta * beta * dp * dm));
+            ts.push_back(wt * 2.0 * w);
+            ts.push_back(-wt * 2.0 * (dv + beta * dp * dm));
+            ts.push_back(wt * dp * dm);
         }
 
-        // Ensure params_ is initialised so the convergence check on the first
-        // iteration does not read uninitialised memory.
-        if (params_.size() < 4)
-            params_.assign(4, 0.0);
+        Matrix A(n, 4, ts.begin(), ts.end());
+        SVD svd(A);
+        const Matrix V = svd.V();
 
-        std::vector<Real> ts, ss;
-        Real eps;
-        do {
-            eps = 0.0;
+        return Array({V(1, 3) / V(0, 3), V(2, 3) / V(0, 3), V(3, 3) / V(0, 3)});
+    }
 
-            ts.clear();
-            // cost-equation rows only (n x 4); slope condition constrains beta
-            // via the cubic update below — adding it here as extra rows over-
-            // determines the SVD (10 constraints on 3 free costs) and degrades
-            // the cost-equation fit relative to the base-class calibration
-            for (Size i = 0; i < targets_.size(); i++) {
-                const PointCache& c = cache[i];
-                const Real beta = slopes[i];
-                const Real r1 = c.wt * (1 + 2 * beta * c.phi_m + beta * beta * c.phi_p * c.phi_m);
-                const Real r2 = c.wt * 2.0 * c.w;
-                const Real r3 = -c.wt * 2.0 * (c.phi_v + beta * c.phi_p * c.phi_m);
-                const Real r4 = c.wt * c.phi_p * c.phi_m;
-                ts.push_back(r1);
-                ts.push_back(r2);
-                ts.push_back(r3);
-                ts.push_back(r4);
-            }
+    void FxCostSmileSectionStickyDelta::setParams(const Array& x) const {
+        QL_REQUIRE(x.size() == 3, "three cost ratios required, " << x.size() << " given");
+        std::vector<Real> costs = {1.0, x[0], x[1], x[2]};
+        // build the smile first, so that params_ and solver_ stay
+        // consistent if the costs give no smile
+        solver_ = makeSolver(costs, exerciseTime());
+        params_ = std::move(costs);
+    }
 
-            Matrix A(targets_.size(), 4, ts.begin(), ts.end());
-            SVD svd(A);
-            const Matrix V = svd.V();
-            const Array s = svd.singularValues();
-
-            eps += (params_[1] - V(1, 3) / V(0, 3)) * (params_[1] - V(1, 3) / V(0, 3));
-            eps += (params_[2] - V(2, 3) / V(0, 3)) * (params_[2] - V(2, 3) / V(0, 3));
-            eps += (params_[3] - V(3, 3) / V(0, 3)) * (params_[3] - V(3, 3) / V(0, 3));
-            //eps = s[3];
-
-            params_.clear();
-            params_.push_back(1.0);
-            params_.push_back(V(1, 3) / V(0, 3));
-            params_.push_back(V(2, 3) / V(0, 3));
-            params_.push_back(V(3, 3) / V(0, 3));
-
-            for (Size i = 0; i < targets_.size(); i++) {
-                const PointCache& c = cache[i];
-                
-                // form the cubic in slopes and solve
-                CubicPolynomial P(std::vector<Real>{
-                    2 * (c.x * params_[3] - c.w * params_[2]),
-                    c.w * c.w * (c.w * params_[3] + 3 * (pa * params_[2]  - 2 * params_[1])) -
-                        2 * c.x * params_[2],
-                    c.w * c.w * (3 * params_[0]  - 2 * params_[2] * c.w), 
-                    c.w * c.w * c.w * params_[0]});
-
-                P.roots(ss);
-
-                // the the closest root to the previous guess
-                Real target = slopes[i];
-                auto closest = std::min_element(ss.begin(), ss.end(), [target](double a, double b) {
-                    return std::abs(a - target) < std::abs(b - target);
-                });
-                eps += (slopes[i] - *closest) * (slopes[i] - *closest);
-                slopes[i] = *closest;
-            }
-            
-        } while (eps > 1.0e-12);
-
-        // set-up a quadratic for initializing slope
-        ts.clear();
-        for (Size i = 0; i < targets_.size(); i++) {
-            const PointCache& c = cache[i];
-            ts.push_back(c.x);
-            ts.push_back(1.);
+    void FxCostSmileSectionStickyDelta::calibrate() const {
+        // As FxSmileSection::calibrate(), except that trial costs giving no
+        // smile (no positive total vol at d- = 0) are penalised rather than
+        // ending the fit.
+        Array weights(targets_.size());
+        for (Size i = 0; i < targets_.size(); ++i) {
+            weights[i] = weightedCalibration() ? targets_[i]->weight(*this) : 1.0;
+            QL_REQUIRE(weights[i] > 0.0 && std::isfinite(weights[i]),
+                       "calibration target " << i << " has an invalid weight: " << weights[i]);
         }
 
-        Matrix A(targets_.size(), 2, ts.begin(), ts.end());
-        Matrix b(targets_.size(), 1, slopes.begin(), slopes.end());
-        Matrix v = inverse(transpose(A) * A) * transpose(A) * b;
-
-        params_.push_back(v[0][0]);
-        params_.push_back(v[1][0]);
-
-        // Refine cost parameters via Levenberg-Marquardt, minimising the
-        // weighted squared differences between model-implied and quoted vols.
-        // The SVD result above is the warm start.  Slope params (indices 4,5)
-        // are held fixed; only the 3 free costs are varied.
-        //
-        // Residual i = wt_i * ( volByStrikeImpl(k_i; costs) - sigma_quoted_i )
-
-        struct VolMismatch : public CostFunction {
-            const FxCostSmileSectionStickyDelta& sec_;
-            const std::vector<PointCache>& cache_;
-            std::vector<Real> params_;
-            Real fwd_, tau_;
-
-            VolMismatch(const FxCostSmileSectionStickyDelta& sec,
-                        const std::vector<PointCache>& cache,
-                        const std::vector<Real>& params,
-                        Real fwd, Real tau)
-                : sec_(sec), cache_(cache), params_(params), fwd_(fwd), tau_(tau) {}
-
-            Array values(const Array& x) const override {
-                std::vector<Real> p = {1.0, x[0], x[1], x[2], params_[4], params_[5]};
-                const Real htau = std::sqrt(tau_);
-                Array res(cache_.size());
-                for (Size i = 0; i < cache_.size(); i++) {
-                    const Real modelVol = sec_.volByStrikeImpl(cache_[i].k, fwd_, tau_, p);
-                    res[i] = cache_[i].wt * (modelVol - cache_[i].w / htau);
-                }
-                return res;
+        auto residuals = [&](const Array& x) -> Array {
+            Array r(targets_.size());
+            try {
+                setParams(x);
+                for (Size i = 0; i < targets_.size(); ++i)
+                    r[i] = weights[i] * targets_[i]->residual(*this);
+            } catch (Error&) {
+                std::fill(r.begin(), r.end(), 1.0);
             }
+            return r;
         };
 
-        VolMismatch costFn(*this, cache, params_, forward(), exerciseTime());
-        NoConstraint noConstraint;
-        Array x0 = {params_[1], params_[2], params_[3]};
-        Problem lmProblem(costFn, noConstraint, x0);
+        SimpleCostFunction<decltype(residuals)> costFunction(residuals);
+        NoConstraint constraint;
+        Problem problem(costFunction, constraint, initialParams());
+        LevenbergMarquardt lm;
+        EndCriteria endCriteria(1000, 100, 1.0e-12, 1.0e-12, 1.0e-12);
+        const EndCriteria::Type result = lm.minimize(problem, endCriteria);
+        QL_ENSURE(EndCriteria::succeeded(result) || result == EndCriteria::FunctionEpsilonTooSmall,
+                  "sticky-delta smile calibration did not converge: " << result);
 
-        LevenbergMarquardt lm(1.0e-8, 1.0e-8, 1.0e-8);
-        EndCriteria ec(1000, 100, 1.0e-8, 1.0e-8, 1.0e-8);
-        lm.minimize(lmProblem, ec);
-
-        const Array& xOpt = lmProblem.currentValue();
-        params_[1] = xOpt[0];
-        params_[2] = xOpt[1];
-        params_[3] = xOpt[2];
+        setParams(problem.currentValue());
     }
 
     Volatility FxCostSmileSectionStickyDelta::volByStrikeImpl(
         Real strike, Real fwd, Time tau, const std::vector<Real>& params) const {
-        Real x = std::log(fwd / strike);
-        Integer pa = premiumAdjust() ? 1 : -1;
+        const Real x = std::log(fwd / strike);
+        if (solver_ != nullptr && params == solver_->costs())
+            return solver_->totalVol(x) / std::sqrt(tau);
+        // costs other than the current ones: integrate their smile
+        return makeSolver(params, tau)->totalVol(x) / std::sqrt(tau);
+    }
 
-        Real beta = params[4] * x + params[5];
-        Real w = referenceVol() * std::sqrt(tau);
-        Real eps = 0.0;
-        do {
-            const Real q = params[0] * beta * beta - 2 * params[2] * beta + params[3];
-            QuarticPolynomial Q(std::vector<Real>{x * x * q, 2 * x * (beta * params[0] - params[2]), params[0],
-                                  2 * params[1] - pa * params[2] - beta * params[0], -q / 4.});
-            std::vector<Real> omega;
-            Q.roots(omega);
+    Real FxCostSmileSectionStickyDelta::slope(Rate strike) const {
+        calculate();
+        return solver_->slope(std::log(fwd_ / strike));
+    }
 
-            // the the closest root to the previous guess
-            auto nearest = std::min_element(omega.begin(), omega.end(), [w](double a, double b) {
-                return std::abs(a - w) < std::abs(b - w);
-            });
-            w = *nearest;
-
-            // now form the cubic in slopes and solve to update slope
-            CubicPolynomial P(std::vector<Real>{
-                2 * (x * params[3] - w * params[2]),
-                w * w * (w * params[3] + 3 * (pa * params[2]  - 2 * params[1])) - 2 * x * params[2],
-                w * w * (3 * params[0] - 2 * params[2] * w), w * w * w * params[0]});
-            std::vector<Real> ss;
-            P.roots(ss);
-
-            // the the closest root to the previous guess
-            auto closest = std::min_element(ss.begin(), ss.end(), [beta](double a, double b) {
-                return std::abs(a - beta) < std::abs(b - beta);
-            });
-            const Real prevBeta = beta;
-            beta = *closest;
-            eps = (beta - prevBeta) * (beta - prevBeta);
-        } while (eps > 1.0e-12);
-
-        // run one final root finding with the converged slope
-        const Real q = params[0] * beta * beta - 2 * params[2] * beta + params[3];
-        QuarticPolynomial Q(std::vector<Real>{x * x * q, 2 * x * (beta * params[0] - params[2]),
-                                              params[0], 2 * params[1] - pa * params[2] - beta * params[0], -q / 4.});
-        std::vector<Real> omega;
-        Q.roots(omega);
-
-        // the the closest root to the previous guess
-        auto nearest = std::min_element(omega.begin(), omega.end(), [w](double a, double b) {
-            return std::abs(a - w) < std::abs(b - w);
-        });
-        w = *nearest;
-
-        return w / std::sqrt(tau);
+    Real FxCostSmileSectionStickyDelta::volDerivative(Rate strike) const {
+        // sigma = w(x) / sqrt(T) with x = ln(F/K), so dsigma/dK = beta / (K sqrt(T))
+        return slope(strike) / (strike * std::sqrt(exerciseTime()));
     }
 }

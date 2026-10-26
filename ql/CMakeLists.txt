@@ -160,6 +160,7 @@ set(QL_SOURCES
     experimental/fxslv/fxsmilesection.cpp
     experimental/fxslv/fxsmilesectionbydelta.cpp
     experimental/fxslv/fxsmilesectionbystrike.cpp
+    experimental/fxslv/fxstickydeltasolver.cpp
     experimental/fxslv/fxvanillagreeks.cpp
     experimental/fxslv/hestoncalibrator.cpp
     experimental/fxslv/slvleveragecalibrator.cpp
@@ -1208,6 +1209,7 @@ set(QL_HEADERS
     experimental/fxslv/fxsmilesection.hpp
     experimental/fxslv/fxsmilesectionbydelta.hpp
     experimental/fxslv/fxsmilesectionbystrike.hpp
+    experimental/fxslv/fxstickydeltasolver.hpp
     experimental/fxslv/fxvanillagreeks.hpp
     experimental/fxslv/fxvariancesurface.hpp
     experimental/fxslv/hestoncalibrator.hpp

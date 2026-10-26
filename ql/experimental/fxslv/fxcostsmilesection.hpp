@@ -28,6 +28,7 @@
 #include <ql/math/polynomialmathfunction.hpp>
 #include <ql/math/quadratic.hpp>
 #include <ql/experimental/fxslv/fxsmilesectionbystrike.hpp>
+#include <ql/experimental/fxslv/fxstickydeltasolver.hpp>
 
 namespace QuantLib {
 
@@ -202,11 +203,22 @@ namespace QuantLib {
         //@}
     };
 
-    /*! FX cost smile section with alpha = 0 (flat / constant-vol dynamics).
+    /*! FX cost smile section with flat (alpha = 0) total-vol dynamics and a
+        sticky-delta smile.
 
-        The cost equation reduces to a quartic in total vol rho, which is solved
-        analytically (Ferrari's method).  Calibration is inherited from the base
-        class using alpha = 0.
+        The smile moves with the forward: the change in total vol at a fixed
+        strike is \f$ \Delta w = \Delta \tilde w - \beta \Delta F / F \f$
+        with \f$ \beta = \partial w / \partial \ln K \f$ the local slope of
+        the smile.  The cost equation then involves \f$ \beta \f$ and is an
+        ODE for the smile, which FxStickyDeltaSmileSolver integrates from the
+        strike where \f$ d_- = 0 \f$.
+
+        Calibration starts from a linear (SVD) fit of the cost equation with
+        slopes taken from finite differences of the quoted smile, then fits
+        the cost ratios \f$ (C_\theta, C_\eta, C_\omega) / C_\gamma \f$ so
+        that the ODE smile reprices the quotes, by Levenberg-Marquardt.  Like
+        the other cost models it needs quotes that are points on the smile
+        (delta-vol quotes or smile strangles).
     */
     class FxCostSmileSectionStickyDelta : public FxCostSmileSection {
       public:
@@ -234,12 +246,29 @@ namespace QuantLib {
                                       const DayCounter& dayCounter = DayCounter(),
                                       bool weightedCalibrationFlag = true);
 
+        //! Local slope \f$ \beta = \partial w / \partial \ln K \f$ of the total vol smile.
+        Real slope(Rate strike) const;
+        //! Exact derivative of the vol with respect to strike, \f$ \beta / (K \sqrt{\tau}) \f$.
+        Real volDerivative(Rate strike) const override;
+
+        //! Half-width of the integrated smile in log-moneyness, in reference total vols.
+        /*! Beyond it (about \f$ |d_\pm| > 8 \f$) the smile is extrapolated linearly. */
+        static constexpr Real smileRange = 8.0;
+
+      protected:
+        //! \name FxSmileSection interface
+        /*! The fit searches \f$ (C_\theta, C_\eta, C_\omega) / C_\gamma \f$. */
+        //@{
+        Array initialParams() const override;
+        void setParams(const Array& x) const override;
+        //@}
+
       private:
         //! \name FxSmileSection interface
         //@{
-        virtual void calibrate() const override;
+        void calibrate() const override;
         //@}
-        
+
         //! \name FxSmileSectionByStrike interface
         //@{
         Volatility volByStrikeImpl(Real strike,
@@ -247,6 +276,13 @@ namespace QuantLib {
                                    Time tau,
                                    const std::vector<Real>& params) const override;
         //@}
+
+        //! Smile for the given costs, integrated over smileRange.
+        ext::shared_ptr<const FxStickyDeltaSmileSolver>
+        makeSolver(const std::vector<Real>& costs, Time tau) const;
+
+        // smile of the current params_, rebuilt by setParams()
+        mutable ext::shared_ptr<const FxStickyDeltaSmileSolver> solver_;
     };
 } // namespace QuantLib
 

@@ -12,6 +12,7 @@
 #include <ql/experimental/fxslv/fxsmilesection.hpp>
 #include <ql/experimental/fxslv/fxsmilesectionbydelta.hpp>
 #include <ql/experimental/fxslv/fxsmilesectionbystrike.hpp>
+#include <ql/experimental/fxslv/fxstickydeltasolver.hpp>
 #include <ql/experimental/fxslv/fxvanillagreeks.hpp>
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/experimental/fxslv/hestoncalibrator.hpp>
