@@ -151,6 +151,68 @@ BOOST_AUTO_TEST_CASE(testAnalyticWriterExtensibleOptionEngine) {
                     << "\n    error:      " << error);
 }
 
+BOOST_AUTO_TEST_CASE(testHolderExtensibleOptionCriticalPrices) {
+    BOOST_TEST_MESSAGE(
+        "Testing holder-extensible options whose extension region is empty or unbounded...");
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+    Date exDate1 = today + 180;
+    Date exDate2 = today + 270;
+
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(100.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+    Handle<YieldTermStructure> dividendTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> riskFreeTS(flatRate(today, 0.08, dc));
+    Handle<BlackVolTermStructure> blackVolTS(flatVol(today, 0.25, dc));
+
+    const ext::shared_ptr<BlackScholesMertonProcess> process =
+        ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot), dividendTS,
+                                                    riskFreeTS, blackVolTS);
+    ext::shared_ptr<PricingEngine> engine =
+        ext::make_shared<AnalyticHolderExtensibleOptionEngine>(process);
+
+    struct Case {
+        Option::Type type;
+        Real spot, strike1, strike2, premium, dividendYield;
+        Real expected;
+    };
+
+    // expected values from numerical integration at the first expiry
+    Case cases[] = {
+        {Option::Put, 100.0, 100.0, 95.0, 1.0, 0.0, 5.20095543317},
+        {Option::Put, 100.0, 100.0, 105.0, 1.0, 0.0, 7.2042184187},
+        {Option::Put, 80.0, 100.0, 95.0, 1.0, 0.0, 17.3209767623},
+        {Option::Call, 100.0, 100.0, 120.0, 1.0, 0.0, 9.0411753344},
+        {Option::Call, 130.0, 100.0, 105.0, 1.0, 0.0, 34.3706760702},
+        {Option::Call, 100.0, 100.0, 100.0, 1.0, 0.03, 9.3728040611},
+        {Option::Call, 120.0, 100.0, 100.0, 1.0, 0.03, 24.0816774969},
+    };
+
+    Real tolerance = 1e-4;
+    for (const auto& c : cases) {
+        spot->setValue(c.spot);
+        qRate->setValue(c.dividendYield);
+        HolderExtensibleOption option(c.type, c.premium, exDate2, c.strike2,
+                                      ext::make_shared<PlainVanillaPayoff>(c.type, c.strike1),
+                                      ext::make_shared<EuropeanExercise>(exDate1));
+        option.setPricingEngine(engine);
+
+        Real calculated = option.NPV();
+        Real error = std::fabs(calculated - c.expected);
+        if (error > tolerance)
+            BOOST_ERROR("Failed to reproduce holder-extensible option value"
+                        << "\n    type:       " << c.type
+                        << "\n    spot:       " << c.spot
+                        << "\n    strikes:    " << c.strike1 << ", " << c.strike2
+                        << "\n    premium:    " << c.premium
+                        << "\n    dividend:   " << c.dividendYield
+                        << "\n    expected:   " << c.expected
+                        << "\n    calculated: " << calculated
+                        << "\n    error:      " << error);
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

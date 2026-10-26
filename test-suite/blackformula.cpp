@@ -502,7 +502,7 @@ BOOST_AUTO_TEST_CASE(testBachelierImpliedVolAtIntrinsic) {
         for (Real offset : {0.01, 0.03, 0.07}) {
             for (auto type : {Option::Call, Option::Put}) {
                 const Real strike =
-                    (type == Option::Call) ? forward - offset : forward + offset;
+                    (type == Option::Call) ? Real(forward - offset) : Real(forward + offset);
                 const Real price = bachelierBlackFormula(
                     type, strike, forward, vol * std::sqrt(tte));
 

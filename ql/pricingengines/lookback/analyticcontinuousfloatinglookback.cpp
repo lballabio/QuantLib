@@ -104,8 +104,8 @@ namespace QuantLib {
         // with no carry lambda vanishes and the ratio below is 0/0; its limit
         // is stdDev * (eta * n(d1) - d1 * N(-eta * d1))
         Real ratio = std::fabs(lambda) < 1.0e-7
-            ? stdDeviation() * (eta * f_.derivative(d1) - d1 * n4)
-            : (pow_s * n3 - dividendDiscount() * n4 / riskFreeDiscount()) / lambda;
+            ? Real(stdDeviation() * (eta * f_.derivative(d1) - d1 * n4))
+            : Real((pow_s * n3 - dividendDiscount() * n4 / riskFreeDiscount()) / lambda);
         return eta*((underlying() * dividendDiscount() * n1 -
                     minmax() * riskFreeDiscount() * n2) +
                     underlying() * riskFreeDiscount() * ratio);

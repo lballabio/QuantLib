@@ -135,8 +135,8 @@ BOOST_AUTO_TEST_CASE(testAnalyticComplexChooserEngine){
     Real putStrike = 48.0;
 
     Date choosingDate = today + 90;
-    Date callExerciseDate = choosingDate + 180;
-    Date putExerciseDate = choosingDate + 210;
+    Date callExerciseDate = today + 180;
+    Date putExerciseDate = today + 210;
     ext::shared_ptr<Exercise> callExercise =
         ext::make_shared<EuropeanExercise>(callExerciseDate);
     ext::shared_ptr<Exercise> putExercise =
@@ -155,6 +155,68 @@ BOOST_AUTO_TEST_CASE(testAnalyticComplexChooserEngine){
                     << "\n    expected:   " << expected
                     << "\n    calculated: " << calculated
                     << "\n    error:      " << error);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testComplexChooserWithEqualTermsMatchesSimpleChooser) {
+    BOOST_TEST_MESSAGE(
+        "Testing complex chooser with equal strikes and maturities against simple chooser...");
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
+
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
+        ext::make_shared<BlackScholesMertonProcess>(
+                                  Handle<Quote>(spot),
+                                  Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+                                  Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+                                  Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+
+    ext::shared_ptr<PricingEngine> complexEngine =
+        ext::make_shared<AnalyticComplexChooserEngine>(stochProcess);
+    ext::shared_ptr<PricingEngine> simpleEngine =
+        ext::make_shared<AnalyticSimpleChooserEngine>(stochProcess);
+
+    Real strike = 100.0;
+    Real tolerance = 1e-5;
+
+    for (Real s : {80.0, 100.0, 120.0}) {
+        for (Real q : {0.0, 0.03}) {
+            for (Real r : {0.01, 0.06}) {
+                for (Real v : {0.15, 0.40}) {
+                    for (Integer choosingDays : {30, 90}) {
+                        for (Integer exerciseDays : {91, 180, 365}) {
+                            spot->setValue(s);
+                            qRate->setValue(q);
+                            rRate->setValue(r);
+                            vol->setValue(v);
+
+                            Date choosingDate = today + choosingDays;
+                            ext::shared_ptr<Exercise> exercise =
+                                ext::make_shared<EuropeanExercise>(today + exerciseDays);
+
+                            ComplexChooserOption complexOption(choosingDate, strike, strike,
+                                                               exercise, exercise);
+                            complexOption.setPricingEngine(complexEngine);
+                            SimpleChooserOption simpleOption(choosingDate, strike, exercise);
+                            simpleOption.setPricingEngine(simpleEngine);
+
+                            Real calculated = complexOption.NPV();
+                            Real expected = simpleOption.NPV();
+                            if (std::fabs(calculated - expected) > tolerance) {
+                                REPORT_FAILURE("value", choosingDate, exercise, s, q, r,
+                                               today, v, expected, calculated, tolerance);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

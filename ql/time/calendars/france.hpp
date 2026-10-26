@@ -38,8 +38,8 @@ namespace QuantLib {
         <li>Easter Monday</li>
         <li>Labour Day, May 1st</li>
         <li>Armistice 1945, May 8th</li>
-        <li>Ascension, May 10th</li>
-        <li>Pentecôte, May 21st</li>
+        <li>Ascension Thursday</li>
+        <li>Whit Monday (Lundi de Pentecôte)</li>
         <li>Fête nationale, July 14th</li>
         <li>Assumption, August 15th</li>
         <li>All Saint's Day, November 1st</li>

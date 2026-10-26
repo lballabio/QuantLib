@@ -72,6 +72,19 @@ namespace QuantLib {
             engine.getArguments()->validate();
 
             PriceError f(engine, volQuote, targetValue);
+
+            // close(f, 0) is tolerance squared when the other argument is
+            // zero, about 1e-28, so a price that sits a few ulps above the
+            // target does not count as a root. An American at exercise is
+            // flat in volatility, and the finite-difference price at the
+            // lower vol is that flat value plus a rounding error. The lower
+            // vol is then a solution: no smaller price exists in the bracket.
+            const Real lowerError = f(minVol);
+            const Real scale = std::fabs(targetValue) > 1.0 ? std::fabs(targetValue) : 1.0;
+            const Real bound = 1.0e4 * QL_EPSILON * scale;
+            if (lowerError >= 0.0 && lowerError <= bound)
+                return minVol;
+
             Brent solver;
             solver.setMaxEvaluations(maxEvaluations);
             Volatility guess = (minVol+maxVol)/2.0;

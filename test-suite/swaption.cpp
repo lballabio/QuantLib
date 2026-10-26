@@ -113,8 +113,7 @@ struct CommonVars {
         return result;
     }
 
-    ext::shared_ptr<PricingEngine> makeEngine(
-                                              Volatility volatility,
+    ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility,
                                               BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
         Handle<Quote> h(ext::make_shared<SimpleQuote>(volatility));
         return ext::make_shared<BlackSwaptionEngine>(termStructure, h, Actual365Fixed(), 0.0, model);
@@ -136,8 +135,7 @@ struct CommonVars {
         floatingConvention = index->businessDayConvention();
         floatingTenor = index->tenor();
         calendar = index->fixingCalendar();
-        today = calendar.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today;
+        today = Settings::instance().evaluationDate();
         settlement = calendar.advance(today,settlementDays,Days);
         termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
     }
@@ -740,11 +738,10 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
 
             if (std::fabs(annuity_ratio_u360-npv_ratio_u360)>1e-10 ) {
                 BOOST_ERROR("\n"
-                            << "    The npv's ratio must be equal to "
-                            << " annuities ratio"
+                            << "    The npv's ratio must be equal to annuities ratio"
                             << "\n"
                                "    Swaption "
-                            << exercises[i].units() << "y x " << length.units() << "y"
+                            << exercise << " x " << length
                             << " (underlying swap fixed leg Unadjusted, 30/360)"
                             << "\n"
                             << "    Today           : " << vars.today << "\n"
@@ -762,11 +759,10 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
             }
             if (std::fabs(annuity_ratio_a365-npv_ratio_a365)>1e-10) {
                 BOOST_ERROR("\n"
-                            << "    The npv's ratio must be equal to "
-                            << " annuities ratio"
+                            << "    The npv's ratio must be equal to annuities ratio"
                             << "\n"
                                "    Swaption "
-                            << exercises[i].units() << "y x " << length.units() << "y"
+                            << exercise << " x " << length
                             << " (underlying swap fixed leg Modified Following, act/365"
                             << "\n"
                             << "    Today           : " << vars.today << "\n"
@@ -784,11 +780,10 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
                 }
             if (std::fabs(annuity_ratio_a360-npv_ratio_a360)>1e-10) {
                 BOOST_ERROR("\n"
-                            << "    The npv's ratio must be equal to "
-                            << " annuities ratio"
+                            << "    The npv's ratio must be equal to annuities ratio"
                             << "\n"
                                "    Swaption "
-                            << exercises[i].units() << "y x " << length.units() << "y"
+                            << exercise << " x " << length
                             << " (underlying swap fixed leg Unadjusted, 30/360)"
                             << "\n"
                             << "    Today           : " << vars.today << "\n"
@@ -806,11 +801,10 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
             }
             if (std::fabs(annuity_ratio_u365-npv_ratio_u365)>1e-10) {
                 BOOST_ERROR("\n"
-                            << "    The npv's ratio must be equal to "
-                            << " annuities ratio"
+                            << "    The npv's ratio must be equal to annuities ratio"
                             << "\n"
                                "    Swaption "
-                            << exercises[i].units() << "y x " << length.units() << "y"
+                            << exercise << " x " << length
                             << " (underlying swap fixed leg Unadjusted, act/365)"
                             << "\n"
                             << "    Today           : " << vars.today << "\n"
