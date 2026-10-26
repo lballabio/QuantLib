@@ -40,6 +40,7 @@
 #include <ql/experimental/volatility/svismilesection.hpp>
 #include <ql/termstructures/volatility/equityfx/piecewiseblackvariancesurface.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -2693,6 +2694,94 @@ BOOST_AUTO_TEST_CASE(testPearsonSpreadEngine) {
                    << "\n    BS2014    : " << bsExchange
                    << "\n    diff      : " << diff
                    << "\n    tolerance : " << 1e-6);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPearsonSpreadEngineNegativeStrikes) {
+    BOOST_TEST_MESSAGE("Testing Pearson spread engine with negative strikes...");
+
+    const Date today(25, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+    const Date maturity = today + 365;
+    const auto exercise = ext::make_shared<EuropeanExercise>(maturity);
+    const Handle<YieldTermStructure> r(flatRate(today, 0.05, dc));
+    const Real f1 = 100.0, f2 = 100.0;
+    const Volatility vol = 0.3;
+    const auto makeProcess = [&](Real forward) {
+        return ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(forward)), r,
+            Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+    };
+    const auto engine = ext::make_shared<PearsonSpreadEngine>(
+        makeProcess(f1), makeProcess(f2), 0.5);
+    const DiscountFactor df = r->discount(maturity);
+    const Real stdDev = vol * std::sqrt(dc.yearFraction(today, maturity));
+    // Allow for quadrature error and normal-tail truncation at eight standard deviations.
+    const Real tolerance = 1e-8;
+
+    for (Real strike : {-5.0, -20.0, -50.0, -80.0, -130.0}) {
+        BasketOption call(ext::make_shared<SpreadBasketPayoff>(
+                              ext::make_shared<PlainVanillaPayoff>(Option::Call, strike)),
+                          exercise);
+        BasketOption put(ext::make_shared<SpreadBasketPayoff>(
+                             ext::make_shared<PlainVanillaPayoff>(Option::Put, strike)),
+                         exercise);
+        call.setPricingEngine(engine);
+        put.setPricingEngine(engine);
+        const Real callNPV = call.NPV();
+        const Real putNPV = put.NPV();
+        const Real parityPut = callNPV - df * (f1 - f2 - strike);
+        BOOST_CHECK_MESSAGE(std::abs(putNPV - parityPut) <= tolerance,
+                            "put-call parity failed for strike " << strike
+                            << ": put " << putNPV << ", expected " << parityPut);
+
+        // (K + F2 - F1)^+ <= (F2 - |K|)^+ since F1 is positive and K is negative.
+        const Real upperBound = df * blackFormula(Option::Call, -strike, f2, stdDev);
+        BOOST_CHECK_MESSAGE(putNPV <= upperBound + tolerance,
+                            "put exceeds upper bound for strike " << strike
+                            << ": put " << putNPV << ", upper bound " << upperBound);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPearsonSpreadEngineVanillaLimit) {
+    BOOST_TEST_MESSAGE("Testing Pearson spread engine with a deterministic second underlying...");
+
+    const Date today(25, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+    const Date maturity = today + 365;
+    const auto exercise = ext::make_shared<EuropeanExercise>(maturity);
+    const Handle<YieldTermStructure> r(flatRate(today, 0.05, dc));
+    const Real f1 = 100.0, f2 = 100.0;
+    const Volatility vol = 0.3;
+    const auto makeProcess = [&](Real forward, Volatility volatility) {
+        return ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(forward)), r,
+            Handle<BlackVolTermStructure>(flatVol(today, volatility, dc)));
+    };
+    const auto engine = ext::make_shared<PearsonSpreadEngine>(
+        makeProcess(f1, vol), makeProcess(f2, 0.0), 0.5);
+    const DiscountFactor df = r->discount(maturity);
+    const Real stdDev = vol * std::sqrt(dc.yearFraction(today, maturity));
+    const Real tolerance = 1e-8;
+
+    // A deterministic F2 reduces the spread payoff to a vanilla payoff on F1.
+    for (Real strike : {-130.0, -100.0, -80.0, 5.0, 80.0}) {
+        for (Option::Type type : {Option::Call, Option::Put}) {
+            BasketOption option(ext::make_shared<SpreadBasketPayoff>(
+                                    ext::make_shared<PlainVanillaPayoff>(type, strike)),
+                                exercise);
+            option.setPricingEngine(engine);
+            const Real vanillaStrike = f2 + strike;
+            const Real expected = vanillaStrike > 0.0
+                ? df * blackFormula(type, vanillaStrike, f1, stdDev)
+                : (type == Option::Call ? df * (f1 - vanillaStrike) : 0.0);
+            const Real calculated = option.NPV();
+            BOOST_CHECK_MESSAGE(std::abs(calculated - expected) <= tolerance,
+                                "vanilla limit failed for " << type << " with strike " << strike
+                                << ": calculated " << calculated << ", expected " << expected);
+        }
     }
 }
 
