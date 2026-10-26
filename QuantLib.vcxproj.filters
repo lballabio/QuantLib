@@ -3339,6 +3339,9 @@
     <ClInclude Include="ql\experimental\fxslv\fxsmilesectionbystrike.hpp">
       <Filter>experimental\fxslv</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxstickydeltasolver.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\fxslv\fxvanillagreeks.hpp">
       <Filter>experimental\fxslv</Filter>
     </ClInclude>
@@ -7484,6 +7487,9 @@
       <Filter>experimental\fxslv</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\fxslv\fxsmilesectionbystrike.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxstickydeltasolver.cpp">
       <Filter>experimental\fxslv</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\fxslv\fxvanillagreeks.cpp">

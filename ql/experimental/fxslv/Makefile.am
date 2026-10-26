@@ -15,6 +15,7 @@ this_include_HEADERS = \
     fxsmilesection.hpp \
     fxsmilesectionbydelta.hpp \
     fxsmilesectionbystrike.hpp \
+    fxstickydeltasolver.hpp \
     fxvanillagreeks.hpp \
     fxvariancesurface.hpp \
     hestoncalibrator.hpp \
@@ -32,6 +33,7 @@ cpp_files = \
     fxsmilesection.cpp \
     fxsmilesectionbydelta.cpp \
     fxsmilesectionbystrike.cpp \
+    fxstickydeltasolver.cpp \
     fxvanillagreeks.cpp \
     hestoncalibrator.cpp \
     slvleveragecalibrator.cpp \

@@ -30,6 +30,7 @@
 #include <ql/experimental/fxslv/fxsmilesectionbystrike.hpp>
 #include <ql/experimental/fxslv/fxsmilesectionbydelta.hpp>
 #include <ql/experimental/fxslv/fxcostsmilesection.hpp>
+#include <ql/experimental/fxslv/fxstickydeltasolver.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/blackdeltacalculator.hpp>
@@ -326,6 +327,108 @@ BOOST_AUTO_TEST_CASE(testCostSmileSectionScaledDynamics) {
 
 
 // ---------------------------------------------------------------------------
+//  6b. Sticky-delta cost smile: the ODE solver and the smile section
+// ---------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(testStickyDeltaSmileSolver) {
+    BOOST_TEST_MESSAGE("Testing the sticky-delta cost smile ODE solver...");
+
+    const std::vector<Real> costs = {1.0, -15.3166, -0.06278, 0.28742};
+    const std::vector<Real> xs = {-0.08, -0.03, 0.0, 0.03, 0.08};
+
+    // reference values from an independent implementation (Python, RK4 node
+    // to node with a 1e-13 tolerance, Hermite interpolation)
+    const std::vector<Real> refStd = {0.040779300983, 0.032947238825, 0.032620876353,
+                                      0.035379624984, 0.045066283516};
+    const std::vector<Real> refPa = {0.040868871525, 0.033074416691, 0.032755032154,
+                                     0.035508341595, 0.045174432271};
+
+    for (bool pa : {false, true}) {
+        const FxStickyDeltaSmileSolver solver(costs, pa, -0.1, 0.1);
+        const std::vector<Real>& ref = pa ? refPa : refStd;
+
+        // the singular point d- = 0 is on the smile
+        const Real ws = solver.singularTotalVol();
+        BOOST_CHECK_CLOSE(ws, pa ? 1.0 / (2.0 * (costs[2] - costs[1])) : -1.0 / (2.0 * costs[1]),
+                          1.0e-12);
+        BOOST_CHECK_CLOSE(solver.singularLogMoneyness(), ws * ws / 2.0, 1.0e-12);
+        BOOST_CHECK_SMALL(solver.totalVol(solver.singularLogMoneyness()) - ws, 1.0e-15);
+        BOOST_CHECK(solver.minLogMoneyness() <= -0.1 && solver.maxLogMoneyness() >= 0.1);
+
+        for (Size i = 0; i < xs.size(); ++i)
+            BOOST_CHECK_SMALL(solver.totalVol(xs[i]) - ref[i], 1.0e-9);
+
+        for (Real x = -0.095; x < 0.1; x += 0.005) {
+            const Real w = solver.totalVol(x), beta = solver.slope(x);
+            // the slope is that of the smile...
+            const Real h = 1.0e-5;
+            const Real fd = -(solver.totalVol(x + h) - solver.totalVol(x - h)) / (2.0 * h);
+            BOOST_CHECK_MESSAGE(std::fabs(beta - fd) < 1.0e-6,
+                                "slope " << beta << " differs from the smile's " << fd
+                                         << " at x = " << x);
+            // ...and solves the cost equation there
+            const Real root = solver.quadraticRoot(x, w, beta);
+            BOOST_CHECK_MESSAGE(std::fabs(root - beta) < 1.0e-5,
+                                "slope " << beta << " does not solve the cost equation ("
+                                         << root << ") at x = " << x);
+        }
+    }
+
+    // with premium adjustment the smile is the unadjusted one with
+    // Ctheta replaced by Ctheta + Ceta
+    const FxStickyDeltaSmileSolver unadjusted(costs, false, -0.1, 0.1);
+    const FxStickyDeltaSmileSolver adjusted({costs[0], costs[1] + costs[2], costs[2], costs[3]},
+                                            true, -0.1, 0.1);
+    for (Real x : xs)
+        BOOST_CHECK_SMALL(adjusted.totalVol(x) - unadjusted.totalVol(x), 1.0e-12);
+
+    // only the cost ratios matter
+    const FxStickyDeltaSmileSolver scaled({2.0, 2.0 * costs[1], 2.0 * costs[2], 2.0 * costs[3]},
+                                          false, -0.1, 0.1);
+    for (Real x : xs)
+        BOOST_CHECK_SMALL(scaled.totalVol(x) - unadjusted.totalVol(x), 1.0e-12);
+
+    // costs without a positive total vol at d- = 0 give no smile
+    BOOST_CHECK_THROW(FxStickyDeltaSmileSolver({1.0, 0.5, -0.06, 0.29}, false, -0.1, 0.1), Error);
+    BOOST_CHECK_THROW(FxStickyDeltaSmileSolver({-1.0, -15.0, -0.06, 0.29}, false, -0.1, 0.1),
+                      Error);
+}
+
+BOOST_AUTO_TEST_CASE(testCostSmileSectionStickyDelta) {
+    BOOST_TEST_MESSAGE("Testing FX cost smile section (sticky delta) calibration...");
+
+    MarketData md;
+
+    for (auto deltaType : {DeltaVolQuote::PaSpot, DeltaVolQuote::Spot}) {
+        FxCostSmileSectionStickyDelta ss(md.expiryDate, md.spot, md.rrBfQuotes(), md.forDiscount,
+                                         md.domDiscount, deltaType, md.atmType,
+                                         Actual365Fixed(), md.settlement, Date(), true);
+
+        // 3 free cost ratios for 5 quotes, fitted by least squares
+        checkSmileSection(ss, 27.0e-4);
+        checkStrikeDeltaConsistency(ss, md, 1.0e-6);
+
+        // the slope used by the dynamics is the slope of the smile
+        const Time tau = ss.exerciseTime();
+        for (Real m : {0.8, 0.9, 1.0, 1.1, 1.2}) {
+            const Rate K = m * ss.forward();
+            const Real h = 1.0e-5;
+            const Real fd = (ss.volByStrike(K * std::exp(h)) - ss.volByStrike(K * std::exp(-h))) *
+                            std::sqrt(tau) / (2.0 * h);
+            BOOST_CHECK_MESSAGE(std::fabs(ss.slope(K) - fd) < 1.0e-6,
+                                "slope " << ss.slope(K) << " differs from the smile's " << fd
+                                         << " at K/F = " << m);
+            const Real dK = 1.0e-5 * K;
+            const Real fdK = (ss.volByStrike(K + dK) - ss.volByStrike(K - dK)) / (2.0 * dK);
+            BOOST_CHECK_MESSAGE(std::fabs(ss.volDerivative(K) - fdK) < 1.0e-6,
+                                "volDerivative " << ss.volDerivative(K) << " differs from "
+                                                 << fdK << " at K/F = " << m);
+        }
+    }
+}
+
+
+// ---------------------------------------------------------------------------
 //  7. DeltaVolQuote constructor path (all models)
 // ---------------------------------------------------------------------------
 
@@ -395,6 +498,7 @@ BOOST_AUTO_TEST_CASE(testCalibrationRoundTrip) {
     roundTrip("Quadratic", sectionFactory<FxQuadraticSmileSection>(md));
     roundTrip("CostFlatDynamics", sectionFactory<FxCostSmileSectionFlatDynamics>(md));
     roundTrip("CostScaledDynamics", sectionFactory<FxCostSmileSectionScaledDynamics>(md));
+    roundTrip("CostStickyDelta", sectionFactory<FxCostSmileSectionStickyDelta>(md));
 }
 
 

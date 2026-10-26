@@ -718,6 +718,7 @@
     <ClInclude Include="ql\experimental\fxslv\fxsmilesection.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxsmilesectionbydelta.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxsmilesectionbystrike.hpp" />
+    <ClInclude Include="ql\experimental\fxslv\fxstickydeltasolver.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxvanillagreeks.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxvariancesurface.hpp" />
     <ClInclude Include="ql\experimental\fxslv\hestoncalibrator.hpp" />
@@ -2137,6 +2138,7 @@
     <ClCompile Include="ql\experimental\fxslv\fxsmilesection.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxsmilesectionbydelta.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxsmilesectionbystrike.cpp" />
+    <ClCompile Include="ql\experimental\fxslv\fxstickydeltasolver.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxvanillagreeks.cpp" />
     <ClCompile Include="ql\experimental\fxslv\hestoncalibrator.cpp" />
     <ClCompile Include="ql\experimental\fxslv\slvleveragecalibrator.cpp" />
