@@ -216,8 +216,8 @@ namespace QuantLib {
         y_.clear();
         cumulativeY_.clear();
 
-        // FIXME (resolved): range derived from per-marginal tail quantiles.
-        // M is Student-t(nm), Z is Gaussian; use the wider of the two.
+        // Y-table range: Y = sqrt(c)*M + sqrt(1-c)*Z, so the bound is the
+        // sum of each marginal's tail quantile. M is Student-t(nm), Z is Gaussian.
         const Real cutoff = 1e-6;
         const Real qm = InverseCumulativeStudent(nm_)(1.0 - cutoff) * scaleM_;
         const Real qz = InverseCumulativeNormal()(1.0 - cutoff);
