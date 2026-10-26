@@ -174,7 +174,7 @@ BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
 
     Real cost1 = std::sqrt(curve1->fitResults().minimumCostValue());
     Real cost2 = std::sqrt(curve2->fitResults().minimumCostValue());
-    BOOST_CHECK_SMALL(cost1 - cost2, 1e-3);
+    QL_CHECK_SMALL(cost1 - cost2, 1e-3);
 
     // the resulting cost values are similar for both approaches
     // i.e. the fit has a similar quality, I get for example:

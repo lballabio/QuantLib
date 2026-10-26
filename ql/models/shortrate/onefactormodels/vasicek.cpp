@@ -27,7 +27,7 @@ namespace QuantLib {
 
         // (1 - exp(-x))/x, accurate for small x as well
         Real oneMinusExpOverX(Real x) {
-            return x == 0.0 ? 1.0 : -std::expm1(-x)/x;
+            return x == 0.0 ? Real(1.0) : Real(-std::expm1(-x)/x);
         }
 
         // The two functions

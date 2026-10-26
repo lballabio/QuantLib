@@ -148,14 +148,14 @@ BOOST_AUTO_TEST_CASE(testBinomialTheta) {
                 option.setPricingEngine(engine.second);
                 if (data.exercised) {
                     // Immediate exercise gives an affine, time-independent payoff.
-                    BOOST_CHECK_SMALL(option.NPV() - 15.0, 1.0e-10);
-                    BOOST_CHECK_SMALL(option.delta() - Real(data.type), 1.0e-10);
-                    BOOST_CHECK_SMALL(option.gamma(), 1.0e-10);
-                    BOOST_CHECK_SMALL(option.theta(), 1.0e-8);
+                    QL_CHECK_SMALL(option.NPV() - 15.0, 1.0e-10);
+                    QL_CHECK_SMALL(option.delta() - Real(data.type), 1.0e-10);
+                    QL_CHECK_SMALL(option.gamma(), 1.0e-10);
+                    QL_CHECK_SMALL(option.theta(), 1.0e-8);
                 } else {
                     BOOST_CHECK_GT(option.NPV(), (*payoff)(spot->value()));
                     // Allow for tree discretization and the one-day time bump.
-                    BOOST_CHECK_SMALL(option.theta() - expectedTheta, 0.05);
+                    QL_CHECK_SMALL(option.theta() - expectedTheta, 0.05);
                 }
             }
         }
@@ -195,10 +195,10 @@ BOOST_AUTO_TEST_CASE(testBinomialThetaNonFlatCurve) {
             american.setPricingEngine(engine);
             european.setPricingEngine(engine);
             BOOST_CHECK_GT(american.NPV(), (*payoff)(100.0));
-            BOOST_CHECK_SMALL(american.NPV() - european.NPV(), 1.0e-10);
-            BOOST_CHECK_SMALL(american.theta() - european.theta(), 1.0e-10);
+            QL_CHECK_SMALL(american.NPV() - european.NPV(), 1.0e-10);
+            QL_CHECK_SMALL(american.theta() - european.theta(), 1.0e-10);
             // Allow for discretization of the spatial Greeks by the tree.
-            BOOST_CHECK_SMALL(american.theta() - expectedTheta, 0.005);
+            QL_CHECK_SMALL(american.theta() - expectedTheta, 0.005);
         }
     }
 }
@@ -222,10 +222,10 @@ BOOST_AUTO_TEST_CASE(testBinomialThetaDeferredExercise) {
         ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(process, 2));
     // The coarse grid snaps the earliest exercise date to t=0 and returns intrinsic.
     // The actual earliest date still forbids exercise now, so retain PDE theta r*K.
-    BOOST_CHECK_SMALL(option.NPV() - 15.0, 1.0e-10);
-    BOOST_CHECK_SMALL(option.delta() + 1.0, 1.0e-10);
-    BOOST_CHECK_SMALL(option.gamma(), 1.0e-10);
-    BOOST_CHECK_SMALL(option.theta() - 0.05 * 115.0, 1.0e-8);
+    QL_CHECK_SMALL(option.NPV() - 15.0, 1.0e-10);
+    QL_CHECK_SMALL(option.delta() + 1.0, 1.0e-10);
+    QL_CHECK_SMALL(option.gamma(), 1.0e-10);
+    QL_CHECK_SMALL(option.theta() - 0.05 * 115.0, 1.0e-8);
 }
 
 BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValues) {
@@ -2969,11 +2969,11 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyNegativeRates) {
                               ext::make_shared<EuropeanExercise>(exDate));
     europeanPut.setPricingEngine(
         ext::make_shared<AnalyticEuropeanEngine>(stochProcess));
-    BOOST_CHECK_SMALL(option.NPV() - europeanPut.NPV(), 1.0e-6);
+    QL_CHECK_SMALL(option.NPV() - europeanPut.NPV(), 1.0e-6);
 
     option.setPricingEngine(
         ext::make_shared<JuQuadraticApproximationEngine>(stochProcess));
-    BOOST_CHECK_SMALL(option.NPV() - europeanPut.NPV(), 1.0e-6);
+    QL_CHECK_SMALL(option.NPV() - europeanPut.NPV(), 1.0e-6);
 
     // also verify with a call and positive dividends
     auto callPayoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 40.0);
