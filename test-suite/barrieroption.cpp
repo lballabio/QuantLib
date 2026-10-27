@@ -1394,8 +1394,8 @@ BOOST_AUTO_TEST_CASE(testFdEarlyExerciseKnockOutBounds) {
             // the QdFp engine gives an independent, highly accurate reference
             vanilla.setPricingEngine(qdFpEngine);
             const Real qdFpVanilla = vanilla.NPV();
-            if (std::fabs(american - americanVanilla) > 1e-3*american
-                || std::fabs(american - qdFpVanilla) > 5e-4*american) {
+            if (std::fabs(american - americanVanilla) > 1e-3*americanVanilla
+                || std::fabs(american - qdFpVanilla) > 5e-4*qdFpVanilla) {
                 BOOST_ERROR("Failed to reproduce American vanilla price with a far barrier:"
                             << "\n    barrier type:          " << tc.barrierType
                             << "\n    option type:           " << tc.optionType
@@ -1408,7 +1408,7 @@ BOOST_AUTO_TEST_CASE(testFdEarlyExerciseKnockOutBounds) {
             VanillaOption bermudanVanilla(payoff, bermudanExercise);
             bermudanVanilla.setPricingEngine(vanillaEngine);
             const Real expected = bermudanVanilla.NPV();
-            if (std::fabs(bermudan - expected) > 1e-3*bermudan) {
+            if (std::fabs(bermudan - expected) > 1e-3*expected) {
                 BOOST_ERROR("Failed to reproduce Bermudan vanilla price with a far barrier:"
                             << "\n    barrier type:      " << tc.barrierType
                             << "\n    option type:       " << tc.optionType
