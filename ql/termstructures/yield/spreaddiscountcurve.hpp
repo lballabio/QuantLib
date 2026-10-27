@@ -45,7 +45,6 @@ namespace QuantLib {
         const std::vector<Time>& times() const override;
         const std::vector<Date>& dates() const override;
         const std::vector<Real>& data() const override;
-        std::vector<std::pair<Date, Real>> nodes() const;
         //@}
       protected:
         InterpolatedSpreadDiscountCurve(
@@ -141,15 +140,6 @@ namespace QuantLib {
     inline const std::vector<Real>&
     InterpolatedSpreadDiscountCurve<T>::data() const {
         return this->data_;
-    }
-
-    template <class T>
-    inline std::vector<std::pair<Date, Real>>
-    InterpolatedSpreadDiscountCurve<T>::nodes() const {
-        std::vector<std::pair<Date, Real>> results(dates_.size());
-        for (Size i = 0, size = dates_.size(); i < size; ++i)
-            results[i] = {dates_[i], this->data_[i]};
-        return results;
     }
 
     template <class T>
