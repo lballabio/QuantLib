@@ -63,7 +63,6 @@ namespace QuantLib {
         const std::vector<Time>& times() const override;
         const std::vector<Real>& data() const override;
         const std::vector<Rate>& rates() const;
-        std::vector<std::pair<Date,Rate> > nodes() const;
         //@}
 
       protected:
@@ -172,15 +171,6 @@ namespace QuantLib {
     inline const std::vector<Real>&
     InterpolatedYoYInflationCurve<T>::data() const {
         return this->data_;
-    }
-
-    template <class T>
-    inline std::vector<std::pair<Date,Rate> >
-    InterpolatedYoYInflationCurve<T>::nodes() const {
-        std::vector<std::pair<Date,Rate> > results(dates_.size());
-        for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i],this->data_[i]);
-        return results;
     }
 
 }

@@ -200,8 +200,8 @@ namespace QuantLib {
         const bool infiniteBoundary = std::fabs(beta - 1.0) < 1e-8;
         const Real a = (bT + 2.0*std::sqrt(variance)) * B0;
         const Real I = infiniteBoundary
-            ? B0 + a
-            : B0 + (BInfinity - B0) * (1 - std::exp(ht));
+            ? Real(B0 + a)
+            : Real(B0 + (BInfinity - B0) * (1 - std::exp(ht)));
 
         const Real fwd = S * dD/rfD;
         const Real q = std::log(I/fwd)/std::sqrt(variance);
@@ -262,10 +262,10 @@ namespace QuantLib {
                     *(B0Dq*(BInfinity - B0) - B0*(BInfinityDq - B0Dq))
                         /squared(BInfinity - B0);
             const Real IDq = infiniteBoundary
-                ? B0Dq - tq*B0 + (bT + 2.0*std::sqrt(variance))*B0Dq
-                    - squared(a)*betaDq/(2*X)
-                : B0Dq + (BInfinityDq - B0Dq) * (1 - std::exp(ht))
-                    - (BInfinity - B0) * std::exp(ht)*htDq;
+                ? Real(B0Dq - tq*B0 + (bT + 2.0*std::sqrt(variance))*B0Dq
+                    - squared(a)*betaDq/(2*X))
+                : Real(B0Dq + (BInfinityDq - B0Dq) * (1 - std::exp(ht))
+                    - (BInfinity - B0) * std::exp(ht)*htDq);
 
             const Real phi_H_S_beta_I_I_rT_bT_v
                 = phi_H(S, beta, I, I, rT, bT, variance);
@@ -329,10 +329,10 @@ namespace QuantLib {
                     *(B0Dr*(BInfinity - B0) - B0*(BInfinityDr - B0Dr))
                         /squared(BInfinity - B0);
             const Real IDr = infiniteBoundary
-                ? B0Dr + tr*B0 + (bT + 2.0*std::sqrt(variance))*B0Dr
-                    - squared(a)*betaDr/(2*X)
-                : B0Dr + (BInfinityDr - B0Dr) * (1 - std::exp(ht))
-                    - (BInfinity - B0) * std::exp(ht)*htDr;
+                ? Real(B0Dr + tr*B0 + (bT + 2.0*std::sqrt(variance))*B0Dr
+                    - squared(a)*betaDr/(2*X))
+                : Real(B0Dr + (BInfinityDr - B0Dr) * (1 - std::exp(ht))
+                    - (BInfinity - B0) * std::exp(ht)*htDr);
 
             results.rho =
                 (IDr*std::pow(S/I, beta)
@@ -375,9 +375,9 @@ namespace QuantLib {
                     + (bT + 2*std::sqrt(variance))*B0/squared(BInfinity-B0)*BInfinityDv;
 
             const Real IDv = infiniteBoundary
-                ? varianceDv/std::sqrt(variance)*B0 - squared(a)*betaDv/(2*X)
-                : BInfinityDv*(1-std::exp(ht))
-                    - (BInfinity-B0)*std::exp(ht)*htDv;
+                ? Real(varianceDv/std::sqrt(variance)*B0 - squared(a)*betaDv/(2*X))
+                : Real(BInfinityDv*(1-std::exp(ht))
+                    - (BInfinity-B0)*std::exp(ht)*htDv);
 
             results.vega =
                 (IDv*std::pow(S/I, beta)
