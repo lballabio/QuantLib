@@ -50,7 +50,7 @@ namespace QuantLib {
         ws_ = cg / den;
         xs_ = ws_ * ws_ / 2.0;
 
-        // slope at the singular point: u = 1 + w* beta* solves the monic cubic
+        // slope at the singular point: u = 1 + w * beta solves the monic cubic
         // u^3 + p u^2 + q u - 1 = 0, negative at u = 0 so it has a positive root
         const Real p = -2.0 * ce / cg * ws_, q = cw / cg * ws_ * ws_;
         auto g = [p, q](Real u) { return ((u + p) * u + q) * u - 1.0; };
