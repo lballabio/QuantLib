@@ -76,7 +76,7 @@ namespace {
         BoundedLinearAlphaForm(Real offset, Real slope) : offset_(offset), slope_(slope) {}
 
         Real operator()(Integer index) const override {
-            return index == 0 ? 1.0 : offset_ + slope_ * alpha_;
+            return index == 0 ? Real(1.0) : Real(offset_ + slope_ * alpha_);
         }
 
         void setAlpha(Real alpha) override {
@@ -95,7 +95,7 @@ namespace {
 
                 Real operator()(Integer index) const override {
                         Real distance = alpha_ - center_;
-                        return index == 0 ? 1.0 : 0.2 + 4.0 * distance * distance;
+                        return index == 0 ? Real(1.0) : Real(0.2 + 4.0 * distance * distance);
                 }
 
                 void setAlpha(Real alpha) override { alpha_ = alpha; }
@@ -121,10 +121,10 @@ BOOST_AUTO_TEST_CASE(testAlphaFinderExactBisectionRoot) {
                 1.0, 1.0, 1.0 - 0.8, 1.0e-12, 1.0, 0.0, 100,
                 alpha, scale, lastScale, calibratedVols));
             BOOST_REQUIRE(success);
-            BOOST_CHECK_SMALL(alpha - 0.5, 1.0e-12);
-            BOOST_CHECK_SMALL(calibratedVols[0] - 0.8, 1.0e-12);
-            BOOST_CHECK_SMALL(calibratedVols[1] - 0.4, 1.0e-12);
-            BOOST_CHECK_SMALL(calibratedVols[2] - std::sqrt(2.2), 1.0e-12);
+            QL_CHECK_SMALL(alpha - 0.5, 1.0e-12);
+            QL_CHECK_SMALL(calibratedVols[0] - 0.8, 1.0e-12);
+            QL_CHECK_SMALL(calibratedVols[1] - 0.4, 1.0e-12);
+            QL_CHECK_SMALL(calibratedVols[2] - std::sqrt(2.2), 1.0e-12);
         }
     }
 }
@@ -145,7 +145,7 @@ BOOST_AUTO_TEST_CASE(testAlphaFinderBisectionStagnation) {
                 alpha, scale, lastScale, calibratedVols));
             BOOST_REQUIRE(success);
             Real expectedAlpha = increasing ? std::sqrt(3.0 / 7.0) : 1.0 - std::sqrt(3.0 / 7.0);
-            BOOST_CHECK_SMALL(alpha - expectedAlpha, 1.0e-12);
+            QL_CHECK_SMALL(alpha - expectedAlpha, 1.0e-12);
             Real targetVariance = (1.0 - calibratedVols[0]) * (1.0 - calibratedVols[0]) +
                                   calibratedVols[1] * calibratedVols[1];
             Real totalVariance = 0.0;
@@ -153,8 +153,8 @@ BOOST_AUTO_TEST_CASE(testAlphaFinderBisectionStagnation) {
                 BOOST_CHECK(std::isfinite(volatility));
                 totalVariance += volatility * volatility;
             }
-            BOOST_CHECK_SMALL(targetVariance - 0.3, 1.0e-12);
-            BOOST_CHECK_SMALL(totalVariance - 3.0, 1.0e-12);
+            QL_CHECK_SMALL(targetVariance - 0.3, 1.0e-12);
+            QL_CHECK_SMALL(totalVariance - 3.0, 1.0e-12);
         }
     }
 }
@@ -186,18 +186,18 @@ BOOST_AUTO_TEST_CASE(testAlphaFinderMaximumHomogeneity) {
                 alpha, scale, lastScale, calibratedVols));
             BOOST_CHECK_GE(alpha, test.minimum);
             BOOST_CHECK_LE(alpha, test.maximum);
-            BOOST_CHECK_SMALL(alpha + 1.0, 1.0e-6);
-            BOOST_CHECK_SMALL(scale - 1.0, 1.0e-6);
-            BOOST_CHECK_SMALL(lastScale - 1.0, 1.0e-6);
+            QL_CHECK_SMALL(alpha + 1.0, 1.0e-6);
+            QL_CHECK_SMALL(scale - 1.0, 1.0e-6);
+            QL_CHECK_SMALL(lastScale - 1.0, 1.0e-6);
             Real totalVariance = 0.0;
             for (Volatility volatility : calibratedVols) {
-                BOOST_CHECK_SMALL(volatility - 1.0, 1.0e-6);
+                QL_CHECK_SMALL(volatility - 1.0, 1.0e-6);
                 totalVariance += volatility * volatility;
             }
             Real targetVariance = (2.0 - calibratedVols[0]) * (2.0 - calibratedVols[0]) +
                                   (1.0 - calibratedVols[1]) * (1.0 - calibratedVols[1]);
-            BOOST_CHECK_SMALL(targetVariance - 1.0, 1.0e-10);
-            BOOST_CHECK_SMALL(totalVariance - 3.0, 1.0e-10);
+            QL_CHECK_SMALL(targetVariance - 1.0, 1.0e-10);
+            QL_CHECK_SMALL(totalVariance - 3.0, 1.0e-10);
         }
     }
 }
@@ -213,7 +213,7 @@ BOOST_AUTO_TEST_CASE(testAlphaFinderDownwardInteriorSearch) {
         1.0, 1.0, 0.3, 1.0e-10, 1.0, -1.0, 100,
         alpha, scale, lastScale, calibratedVols));
     Real expectedAlpha = -0.5 + 0.5 * std::sqrt(std::sqrt(3.0 / 7.0) - 0.2);
-    BOOST_CHECK_SMALL(alpha - expectedAlpha, 1.0e-8);
+    QL_CHECK_SMALL(alpha - expectedAlpha, 1.0e-8);
     Real totalVariance = 0.0;
     for (Volatility volatility : calibratedVols) {
         BOOST_CHECK(std::isfinite(volatility));
@@ -221,8 +221,8 @@ BOOST_AUTO_TEST_CASE(testAlphaFinderDownwardInteriorSearch) {
     }
     Real targetVariance = (1.0 - calibratedVols[0]) * (1.0 - calibratedVols[0]) +
                           calibratedVols[1] * calibratedVols[1];
-    BOOST_CHECK_SMALL(totalVariance - 3.0, 1.0e-8);
-    BOOST_CHECK_SMALL(targetVariance - 0.3, 1.0e-8);
+    QL_CHECK_SMALL(totalVariance - 3.0, 1.0e-8);
+    QL_CHECK_SMALL(targetVariance - 0.3, 1.0e-8);
 }
 
 BOOST_AUTO_TEST_CASE(testAlphaFinderInteriorSearch) {
@@ -256,7 +256,7 @@ BOOST_AUTO_TEST_CASE(testAlphaFinderInteriorSearch) {
             BOOST_CHECK_GE(alpha, test.center - halfWidth - 1.0e-8);
             BOOST_CHECK_LE(alpha, test.center + halfWidth + 1.0e-8);
             if (!test.maximizeHomogeneity)
-                BOOST_CHECK_SMALL(alpha - (test.center - halfWidth), 1.0e-8);
+                QL_CHECK_SMALL(alpha - (test.center - halfWidth), 1.0e-8);
             BOOST_CHECK(std::isfinite(scale));
             BOOST_CHECK(std::isfinite(lastScale));
             Real totalVariance = 0.0;
@@ -266,8 +266,8 @@ BOOST_AUTO_TEST_CASE(testAlphaFinderInteriorSearch) {
             }
             Real targetVariance = (1.0 - calibratedVols[0]) * (1.0 - calibratedVols[0]) +
                                   calibratedVols[1] * calibratedVols[1];
-            BOOST_CHECK_SMALL(totalVariance - 3.0, 1.0e-8);
-            BOOST_CHECK_SMALL(targetVariance - 0.3, 1.0e-8);
+            QL_CHECK_SMALL(totalVariance - 3.0, 1.0e-8);
+            QL_CHECK_SMALL(targetVariance - 0.3, 1.0e-8);
         }
     }
 }
