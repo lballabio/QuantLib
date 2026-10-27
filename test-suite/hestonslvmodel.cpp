@@ -2008,7 +2008,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloCalibrationTimeDependentLocalVol) {
         const Real expected = localVol->localVol(t, spot->value(), true) / std::sqrt(v0);
         for (Real strike : {80.0, 100.0, 120.0}) {
             const Real calculated = leverage->localVol(t, strike, true);
-            BOOST_CHECK_SMALL(calculated - expected, tolerance);
+            QL_CHECK_SMALL(calculated - expected, tolerance);
         }
     }
 }

@@ -18,6 +18,7 @@
 */
 
 #include "toplevelfixture.hpp"
+#include "utilities.hpp"
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/coupon.hpp>
 #include <ql/experimental/termstructures/overnightindexedfundingratehelper.hpp>
@@ -140,7 +141,7 @@ BOOST_AUTO_TEST_CASE(testLaggedCashFlowsAndDatedConstructor) {
                            100.0 * discountCurve->discount(expectedFinal) - overnightNpv) /
                           annuity;
 
-    BOOST_CHECK_SMALL(helper->impliedQuote() - expectedMargin, 1.0e-13);
+    QL_CHECK_SMALL(helper->impliedQuote() - expectedMargin, 1.0e-13);
 }
 
 BOOST_AUTO_TEST_CASE(testSameDayOvernightPillar) {
@@ -163,7 +164,7 @@ BOOST_AUTO_TEST_CASE(testSameDayOvernightPillar) {
 
     BOOST_CHECK_EQUAL(helper->pillarDate(), Date(16, July, 2026));
     curve->discount(helper->pillarDate());
-    BOOST_CHECK_SMALL(helper->impliedQuote() - margin, 1.0e-11);
+    QL_CHECK_SMALL(helper->impliedQuote() - margin, 1.0e-11);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

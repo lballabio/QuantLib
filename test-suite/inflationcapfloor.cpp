@@ -486,7 +486,7 @@ BOOST_AUTO_TEST_CASE(testTimeValueNearVolatilityBaseDate) {
         Time time = dc.yearFraction(volatility->baseDate(), observationDate);
         Real variance = volatility->totalVariance(fixingDate, strike, Period(0, Days));
         BOOST_REQUIRE(variance > 0.0);
-        BOOST_CHECK_SMALL(variance - vol * vol * time, 1.0e-14);
+        QL_CHECK_SMALL(variance - vol * vol * time, 1.0e-14);
         Real stdDev = std::sqrt(variance);
 
         std::vector<ext::shared_ptr<PricingEngine>> engines = {
