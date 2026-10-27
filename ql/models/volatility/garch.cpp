@@ -528,9 +528,10 @@ namespace QuantLib {
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         Garch11CostFunction cost(r2);
         auto problem = ext::make_shared<Problem>(cost, constraints, initGuess);
-        // TODO: check return value from minimize()
-        /* EndCriteria::Type ret = */
-        method.minimize(*problem, endCriteria);
+        EndCriteria::Type result = method.minimize(*problem, endCriteria);
+        QL_REQUIRE(EndCriteria::succeeded(result),
+                   "GARCH(1,1) calibration did not converge: optimizer "
+                   "stopped with end criterion " << result);
         const Array &optimum = problem->currentValue();
         alpha = optimum[1];
         beta = optimum[2];

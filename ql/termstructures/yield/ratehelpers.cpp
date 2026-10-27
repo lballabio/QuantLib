@@ -223,9 +223,10 @@ namespace QuantLib {
 
     Real DepositRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
-        // the forecast fixing flag is set to true because
-        // we do not want to take fixing into account
-        return iborIndex_->fixing(fixingDate_, true);
+        // The fixing date can precede the evaluation date when the latter
+        // is not a business day.  A rate helper must forecast the quote
+        // from the bootstrapped curve even if a historical fixing exists.
+        return iborIndex_->forecastFixing(fixingDate_);
     }
 
     ImpliedQuoteSensitivities DepositRateHelper::impliedQuoteSensitivitiesByCurve() const {
@@ -387,7 +388,9 @@ namespace QuantLib {
     Real FraRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         if (useIndexedCoupon_)
-            return iborIndex_->fixing(fixingDate_, true);
+            // The fixing can be historical on a non-business evaluation date.
+            // Always derive the quote from the curve being bootstrapped.
+            return iborIndex_->forecastFixing(fixingDate_);
         else
             return (termStructure_->discount(earliestDate_) /
                         termStructure_->discount(maturityDate_) -

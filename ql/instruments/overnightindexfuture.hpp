@@ -57,6 +57,8 @@ namespace QuantLib {
         Real rate() const;
         Real averagedRate() const;
         Real compoundedRate() const;
+        void checkForecastStart(const Date& d) const;
+        Rate forecastFixing(const Date& fixingDate, const Date& end) const;
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Date valueDate_, maturityDate_;
         Handle<Quote> convexityAdjustment_;

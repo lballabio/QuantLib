@@ -635,28 +635,28 @@ BOOST_AUTO_TEST_CASE(testJumps) {
     // a jump whose date is already in the past must be ignored
     {
         auto [y, c] = ratio({q}, {today - 30}, 1.0);
-        BOOST_CHECK_CLOSE(y, 1.0, tolerance);
-        BOOST_CHECK_CLOSE(c, y, tolerance);
+        QL_CHECK_CLOSE(y, 1.0, tolerance);
+        QL_CHECK_CLOSE(c, y, tolerance);
     }
     // a jump on the reference date must be ignored
     {
         auto [y, c] = ratio({q}, {today}, 1.0);
-        BOOST_CHECK_CLOSE(y, 1.0, tolerance);
-        BOOST_CHECK_CLOSE(c, y, tolerance);
+        QL_CHECK_CLOSE(y, 1.0, tolerance);
+        QL_CHECK_CLOSE(c, y, tolerance);
     }
     // unsorted jump dates: the jump before t applies, the one after does not
     {
         Handle<Quote> a(ext::make_shared<SimpleQuote>(0.90));
         Handle<Quote> b(ext::make_shared<SimpleQuote>(0.95));
         auto [y, c] = ratio({a, b}, {today + 5 * 365, today + 365}, 2.0);
-        BOOST_CHECK_CLOSE(y, 0.95, tolerance);
-        BOOST_CHECK_CLOSE(c, y, tolerance);
+        QL_CHECK_CLOSE(y, 0.95, tolerance);
+        QL_CHECK_CLOSE(c, y, tolerance);
     }
     // a jump inside the interval still applies
     {
         auto [y, c] = ratio({q}, {today + 180}, 1.0);
-        BOOST_CHECK_CLOSE(y, 0.99, tolerance);
-        BOOST_CHECK_CLOSE(c, y, tolerance);
+        QL_CHECK_CLOSE(y, 0.99, tolerance);
+        QL_CHECK_CLOSE(c, y, tolerance);
     }
 }
 
