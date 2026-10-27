@@ -1927,7 +1927,7 @@ BOOST_AUTO_TEST_CASE(testBinomialGreeksWithCoincidentNodes) {
     VanillaOption reference(payoff, exercise);
     reference.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(stochProcess));
 
-    BOOST_CHECK_CLOSE(option.NPV(), reference.NPV(), 1.0e-8);
+    QL_CHECK_CLOSE(option.NPV(), reference.NPV(), 1.0e-8);
 
     BOOST_CHECK_EXCEPTION(option.delta(), Error,
                           ExpectedErrorMessage("delta not provided"));
