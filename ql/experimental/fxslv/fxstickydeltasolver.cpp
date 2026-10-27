@@ -96,6 +96,19 @@ namespace QuantLib {
         beta_.insert(beta_.end(), br.begin(), br.end());
     }
 
+    bool FxStickyDeltaSmileSolver::hasCosts(const std::vector<Real>& costs) const {
+        if (costs.size() != costs_.size() || costs[0] <= 0.0)
+            return false;
+        // c_i / c_0 == costs_i / costs_0, cross-multiplied to avoid dividing
+        const Real tolerance = 1.0e-12;
+        for (Size i = 1; i < costs.size(); ++i) {
+            const Real lhs = costs[i] * costs_[0], rhs = costs_[i] * costs[0];
+            if (std::fabs(lhs - rhs) > tolerance * (std::fabs(lhs) + std::fabs(rhs)))
+                return false;
+        }
+        return true;
+    }
+
     void FxStickyDeltaSmileSolver::coefficients(Real x, Real w, Real& a, Real& b, Real& c) const {
         const Real cg = costs_[0], ct = costs_[1], ce = costs_[2], cw = costs_[3];
         const Real pa = premiumAdjust_ ? 1.0 : -1.0;

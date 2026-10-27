@@ -616,12 +616,12 @@ namespace QuantLib {
         SVD svd(A);
         const Matrix V = svd.V();
 
-        return Array({V(1, 3) / V(0, 3), V(2, 3) / V(0, 3), V(3, 3) / V(0, 3)});
+        return Array({1.0, V(1, 3) / V(0, 3), V(2, 3) / V(0, 3), V(3, 3) / V(0, 3)});
     }
 
-    void FxCostSmileSectionStickyDelta::setParams(const Array& x) const {
-        QL_REQUIRE(x.size() == 3, "three cost ratios required, " << x.size() << " given");
-        std::vector<Real> costs = {1.0, x[0], x[1], x[2]};
+    void FxCostSmileSectionStickyDelta::setParams(const Array& params) const {
+        QL_REQUIRE(params.size() == 4, "four costs required, " << params.size() << " given");
+        std::vector<Real> costs(params.begin(), params.end());
         // build the smile first, so that params_ and solver_ stay
         // consistent if the costs give no smile
         solver_ = makeSolver(costs, exerciseTime());
@@ -639,10 +639,14 @@ namespace QuantLib {
                        "calibration target " << i << " has an invalid weight: " << weights[i]);
         }
 
+        // only the cost ratios matter, so fix C_gamma = 1 and search over
+        // x = (C_theta, C_eta, C_omega) / C_gamma
+        auto costs = [](const Array& x) { return Array({1.0, x[0], x[1], x[2]}); };
+
         auto residuals = [&](const Array& x) -> Array {
             Array r(targets_.size());
             try {
-                setParams(x);
+                setParams(costs(x));
                 for (Size i = 0; i < targets_.size(); ++i)
                     r[i] = weights[i] * targets_[i]->residual(*this);
             } catch (Error&) {
@@ -653,20 +657,22 @@ namespace QuantLib {
 
         SimpleCostFunction<decltype(residuals)> costFunction(residuals);
         NoConstraint constraint;
-        Problem problem(costFunction, constraint, initialParams());
+        const Array guess = initialParams();
+        Problem problem(costFunction, constraint,
+                        Array({guess[1] / guess[0], guess[2] / guess[0], guess[3] / guess[0]}));
         LevenbergMarquardt lm;
         EndCriteria endCriteria(1000, 100, 1.0e-12, 1.0e-12, 1.0e-12);
         const EndCriteria::Type result = lm.minimize(problem, endCriteria);
         QL_ENSURE(EndCriteria::succeeded(result) || result == EndCriteria::FunctionEpsilonTooSmall,
                   "sticky-delta smile calibration did not converge: " << result);
 
-        setParams(problem.currentValue());
+        setParams(costs(problem.currentValue()));
     }
 
     Volatility FxCostSmileSectionStickyDelta::volByStrikeImpl(
         Real strike, Real fwd, Time tau, const std::vector<Real>& params) const {
         const Real x = std::log(fwd / strike);
-        if (solver_ != nullptr && params == solver_->costs())
+        if (solver_ != nullptr && solver_->hasCosts(params))
             return solver_->totalVol(x) / std::sqrt(tau);
         // costs other than the current ones: integrate their smile
         return makeSolver(params, tau)->totalVol(x) / std::sqrt(tau);

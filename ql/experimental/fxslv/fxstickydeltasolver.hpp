@@ -92,6 +92,12 @@ namespace QuantLib {
         Real slope(Real x) const;
 
         const std::vector<Real>& costs() const { return costs_; }
+        //! Whether \c costs give this smile, i.e. are a positive multiple of costs().
+        /*! Ratios are compared to a relative tolerance of \f$ 10^{-12} \f$:
+            rescaling the costs changes them by a few ulps, and costs closer
+            than that give smiles far closer than the integration accuracy.
+        */
+        bool hasCosts(const std::vector<Real>& costs) const;
         bool premiumAdjust() const { return premiumAdjust_; }
 
         //! \name Singular point (\f$ d_- = 0 \f$)
