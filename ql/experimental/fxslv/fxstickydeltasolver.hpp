@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    //! Smile calibration helper for the sticky-delta cost model
+    //! Smile calibration ODE solver for the sticky-delta cost model
     /*! With total vol \f$ w(x) \f$ at log-moneyness \f$ x = \ln(F/K) \f$
         and local slope \f$ \beta = \partial w / \partial \ln K = -w'(x) \f$,
         the sticky-delta cost equation multiplied by \f$ w^2 \f$ is a
@@ -66,8 +66,7 @@ namespace QuantLib {
         range the total vol is extrapolated linearly with the slope at the
         last node.
 
-        The solver is immutable: the smile is integrated in the constructor
-        of the smile section class.
+        The solver is immutable: the smile is integrated in the constructor.
     */
     class FxStickyDeltaSmileSolver {
       public:
