@@ -257,10 +257,14 @@ namespace QuantLib {
 
       protected:
         //! \name FxSmileSection interface
-        /*! The fit searches \f$ (C_\theta, C_\eta, C_\omega) / C_\gamma \f$. */
+        /*! The parameters are the four costs
+            \f$ [C_\gamma, C_\theta, C_\eta, C_\omega] \f$; since only their
+            ratios matter, the fit fixes \f$ C_\gamma = 1 \f$ and searches
+            \f$ (C_\theta, C_\eta, C_\omega) / C_\gamma \f$.
+        */
         //@{
         Array initialParams() const override;
-        void setParams(const Array& x) const override;
+        void setParams(const Array& params) const override;
         //@}
 
       private:

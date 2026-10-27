@@ -388,6 +388,14 @@ BOOST_AUTO_TEST_CASE(testStickyDeltaSmileSolver) {
     for (Real x : xs)
         BOOST_CHECK_SMALL(scaled.totalVol(x) - unadjusted.totalVol(x), 1.0e-12);
 
+    // and the solver recognises its costs at any positive scale, but not others
+    BOOST_CHECK(unadjusted.hasCosts(costs));
+    BOOST_CHECK(unadjusted.hasCosts(scaled.costs()));
+    BOOST_CHECK(unadjusted.hasCosts({0.37, 0.37 * costs[1], 0.37 * costs[2], 0.37 * costs[3]}));
+    BOOST_CHECK(!unadjusted.hasCosts({1.0, costs[1] * (1.0 + 1.0e-9), costs[2], costs[3]}));
+    BOOST_CHECK(!unadjusted.hasCosts({-1.0, -costs[1], -costs[2], -costs[3]}));
+    BOOST_CHECK(!unadjusted.hasCosts({1.0, costs[1], costs[2]}));
+
     // costs without a positive total vol at d- = 0 give no smile
     BOOST_CHECK_THROW(FxStickyDeltaSmileSolver({1.0, 0.5, -0.06, 0.29}, false, -0.1, 0.1), Error);
     BOOST_CHECK_THROW(FxStickyDeltaSmileSolver({-1.0, -15.0, -0.06, 0.29}, false, -0.1, 0.1),
