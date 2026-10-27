@@ -166,12 +166,16 @@ namespace QuantLib {
             optionsValue += option.NPV() * weight;
         }
 
+        DiscountFactor riskFreeDiscount =
+            process_->riskFreeRate()->discount(arguments_.maturityDate);
+        DiscountFactor dividendDiscount =
+            process_->dividendYield()->discount(arguments_.maturityDate);
+        Real forward = underlying() * dividendDiscount / riskFreeDiscount;
         Real f = optionWeights.front().first->strike();
-        return 2.0 * riskFreeRate() -
-            2.0/residualTime() *
-            (((underlying()/riskFreeDiscount() - f)/f) +
-             std::log(f/underlying())) +
-            optionsValue/riskFreeDiscount();
+        return 2.0/residualTime() *
+            (std::log(dividendDiscount/riskFreeDiscount) -
+             ((forward - f)/f + std::log(f/underlying()))) +
+            optionsValue/riskFreeDiscount;
     }
 
 
