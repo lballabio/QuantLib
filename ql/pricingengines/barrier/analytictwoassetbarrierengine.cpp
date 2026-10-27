@@ -185,12 +185,14 @@ namespace QuantLib {
 
     Real AnalyticTwoAssetBarrierEngine::call() const {
         CumulativeNormalDistribution nd;
-        return underlying1()*nd(d1())-strike()*std::exp(-riskFreeRate()*residualTime())*nd(d2());
+        return underlying1()*std::exp(-dividendYield1()*residualTime())*nd(d1())
+            - strike()*std::exp(-riskFreeRate()*residualTime())*nd(d2());
     }
 
     Real AnalyticTwoAssetBarrierEngine::put() const {
         CumulativeNormalDistribution nd;
-        return strike()*std::exp(-riskFreeRate()*residualTime())*nd(-d2())-underlying1()*nd(-d1());
+        return strike()*std::exp(-riskFreeRate()*residualTime())*nd(-d2())
+            - underlying1()*std::exp(-dividendYield1()*residualTime())*nd(-d1());
     }
 
     Real AnalyticTwoAssetBarrierEngine::A(Real eta, Real phi) const {

@@ -67,7 +67,8 @@ namespace QuantLib {
             } else if (hit) {
                 // a knock-out rebate is paid when the barrier is hit
                 Real logHS = std::log(barrier() / spot);
-                Time hitTime = (logHS == 0.0) ? 0.0 : logHS / (riskFreeRate() - dividendYield());
+                Time hitTime = (logHS == 0.0) ? Time(0.0)
+                                              : Time(logHS / (riskFreeRate() - dividendYield()));
                 results_.value = rebate() * std::exp(-riskFreeRate() * hitTime);
             } else {
                 results_.value = vanilla;

@@ -424,14 +424,14 @@ BOOST_AUTO_TEST_CASE(testShiftedLognormalDifferentShifts) {
             const Rate floor = spreadPricer->floorletRate(strike);
             BOOST_CHECK(std::isfinite(cap));
             BOOST_CHECK(std::isfinite(floor));
-            BOOST_CHECK_SMALL(std::abs(cap - floor - (swaplet - strike)),
+            QL_CHECK_SMALL(std::abs(cap - floor - (swaplet - strike)),
                               1e-12);
 
             if (shift1 == 0.0 && shift2 == 0.01) {
                 if (std::abs(strike + 0.002) < 1e-12)
-                    BOOST_CHECK_SMALL(std::abs(cap - 0.0080778180), 1e-8);
+                    QL_CHECK_SMALL(std::abs(cap - 0.0080778180), 1e-8);
                 if (std::abs(strike - 0.002) < 1e-12)
-                    BOOST_CHECK_SMALL(std::abs(cap - 0.0058457681), 1e-8);
+                    QL_CHECK_SMALL(std::abs(cap - 0.0058457681), 1e-8);
             }
         }
     }

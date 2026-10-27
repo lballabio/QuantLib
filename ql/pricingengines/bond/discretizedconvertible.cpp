@@ -130,7 +130,8 @@ namespace QuantLib {
         bool convertible = false;
         switch (arguments_.exercise->type()) {
           case Exercise::American:
-            if (time() <= stoppingTimes_[1] && time() >= stoppingTimes_[0])
+            if ((time() <= stoppingTimes_[1] || isOnTime(stoppingTimes_[1])) &&
+                (time() >= stoppingTimes_[0] || isOnTime(stoppingTimes_[0])))
                 convertible = true;
             break;
           case Exercise::European:
