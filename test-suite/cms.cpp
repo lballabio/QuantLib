@@ -500,12 +500,12 @@ BOOST_AUTO_TEST_CASE(testCmsMarketCalibration) {
         ext::make_shared<LevenbergMarquardt>(1e-8, 1e-8, 1e-8);
     ext::shared_ptr<OptimizationMethod> simplex = ext::make_shared<Simplex>(0.1);
 
-    BOOST_CHECK_CLOSE(CmsMarketCalibration::betaTransformDirect(
+    QL_CHECK_CLOSE(CmsMarketCalibration::betaTransformDirect(
                           CmsMarketCalibration::betaTransformInverse(0.5)),
                       0.5, 1e-12);
     BOOST_CHECK_EQUAL(CmsMarketCalibration::betaTransformDirect(20.0), 0.000001);
     BOOST_CHECK_EQUAL(CmsMarketCalibration::betaTransformDirect(-20.0), 0.000001);
-    BOOST_CHECK_CLOSE(CmsMarketCalibration::reversionTransformDirect(
+    QL_CHECK_CLOSE(CmsMarketCalibration::reversionTransformDirect(
                           CmsMarketCalibration::reversionTransformInverse(0.01)),
                       0.01, 1e-12);
 

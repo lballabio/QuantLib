@@ -20,7 +20,9 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/twoassetbarrieroption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/barrier/analytictwoassetbarrierengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -135,6 +137,75 @@ BOOST_AUTO_TEST_CASE(testHaugValues) {
                         << "\n    calculated: " << calculated
                         << "\n    tolerance:  " << tolerance
                         << "\n    error:      " << error);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testInOutParityWithDividends) {
+
+    BOOST_TEST_MESSAGE("Testing two-asset barrier in-out parity with dividends...");
+
+    DayCounter dc = Actual360();
+    Date today = Date(15, January, 2026);
+    Settings::instance().evaluationDate() = today;
+    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(today + 365));
+
+    ext::shared_ptr<SimpleQuote> s1(new SimpleQuote(100.0));
+    ext::shared_ptr<SimpleQuote> q1(new SimpleQuote);
+    ext::shared_ptr<SimpleQuote> s2(new SimpleQuote(100.0));
+    ext::shared_ptr<SimpleQuote> rho(new SimpleQuote);
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.05, dc);
+
+    auto process1 = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(s1), Handle<YieldTermStructure>(flatRate(today, q1, dc)),
+        Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(flatVol(today, 0.2, dc)));
+    auto process2 = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(s2), Handle<YieldTermStructure>(flatRate(today, 0.02, dc)),
+        Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(flatVol(today, 0.3, dc)));
+
+    auto engine = ext::make_shared<AnalyticTwoAssetBarrierEngine>(process1, process2,
+                                                                  Handle<Quote>(rho));
+    auto europeanEngine = ext::make_shared<AnalyticEuropeanEngine>(process1);
+
+    struct {
+        Barrier::Type in, out;
+        Real barrier;
+    } barriers[] = {{Barrier::DownIn, Barrier::DownOut, 90.0},
+                    {Barrier::UpIn, Barrier::UpOut, 110.0}};
+
+    for (auto& b : barriers) {
+        for (auto type : {Option::Call, Option::Put}) {
+            for (Real strike : {90.0, 110.0}) {
+                for (Rate q : {0.0, 0.04}) {
+                    for (Real correlation : {-0.5, 0.5}) {
+                        q1->setValue(q);
+                        rho->setValue(correlation);
+                        auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
+
+                        TwoAssetBarrierOption knockIn(b.in, b.barrier, payoff, exercise);
+                        knockIn.setPricingEngine(engine);
+                        TwoAssetBarrierOption knockOut(b.out, b.barrier, payoff, exercise);
+                        knockOut.setPricingEngine(engine);
+                        VanillaOption vanilla(payoff, exercise);
+                        vanilla.setPricingEngine(europeanEngine);
+
+                        Real calculated = knockIn.NPV() + knockOut.NPV();
+                        Real expected = vanilla.NPV();
+                        Real tolerance = 1.0e-10;
+                        if (std::fabs(calculated - expected) > tolerance) {
+                            BOOST_ERROR("in-out parity violated"
+                                        << "\n    barrier type: " << b.in << "/" << b.out
+                                        << "\n    option type:  " << type
+                                        << "\n    strike:       " << strike
+                                        << "\n    dividend:     " << q
+                                        << "\n    correlation:  " << correlation
+                                        << "\n    knock-in:     " << knockIn.NPV()
+                                        << "\n    knock-out:    " << knockOut.NPV()
+                                        << "\n    vanilla:      " << expected);
+                        }
+                    }
+                }
+            }
         }
     }
 }

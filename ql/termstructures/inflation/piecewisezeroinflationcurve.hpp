@@ -99,10 +99,9 @@ namespace QuantLib {
         //@
         //! \name Inspectors
         //@{
-        const std::vector<Time>& times() const;
-        const std::vector<Date>& dates() const;
-        const std::vector<Real>& data() const;
-        std::vector<std::pair<Date, Real> > nodes() const;
+        const std::vector<Time>& times() const override;
+        const std::vector<Date>& dates() const override;
+        const std::vector<Real>& data() const override;
         //@}
         //! \name Observer interface
         //@{
@@ -154,13 +153,6 @@ namespace QuantLib {
     const std::vector<Real>& PiecewiseZeroInflationCurve<I,B,T>::data() const {
         calculate();
         return base_curve::rates();
-    }
-
-    template <class I, template <class> class B, class T>
-    std::vector<std::pair<Date, Real> >
-    PiecewiseZeroInflationCurve<I,B,T>::nodes() const {
-        calculate();
-        return base_curve::nodes();
     }
 
     template <class I, template <class> class B, class T>

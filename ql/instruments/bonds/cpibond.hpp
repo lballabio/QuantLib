@@ -59,31 +59,21 @@ namespace QuantLib {
                 BusinessDayConvention exCouponConvention = Unadjusted,
                 bool exCouponEndOfMonth = false);
 
-        /*! \deprecated Use the overload without the growthOnly parameter.
-                        Deprecated in version 1.40.
-        */
-        [[deprecated("Use the overload without the growthOnly parameter")]]
-        CPIBond(Natural settlementDays,
-                Real faceAmount,
-                bool growthOnly,
-                Real baseCPI,
-                const Period& observationLag,
-                ext::shared_ptr<ZeroInflationIndex> cpiIndex,
-                CPI::InterpolationType observationInterpolation,
-                Schedule schedule,
-                const std::vector<Rate>& coupons,
-                const DayCounter& accrualDayCounter,
-                BusinessDayConvention paymentConvention = ModifiedFollowing,
-                const Date& issueDate = Date(),
-                const Calendar& paymentCalendar = Calendar(),
-                const Period& exCouponPeriod = Period(),
-                const Calendar& exCouponCalendar = Calendar(),
-                BusinessDayConvention exCouponConvention = Unadjusted,
-                bool exCouponEndOfMonth = false);
+        QL_DEPRECATED_DISABLE_WARNING
+        ~CPIBond() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
 
         Frequency frequency() const { return frequency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
-        bool growthOnly() const { return growthOnly_; }
+        /*! \deprecated Do not use; meaningless for a bond.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("Do not use; meaningless for a bond.")]]
+        bool growthOnly() const {
+            QL_DEPRECATED_DISABLE_WARNING
+            return growthOnly_;
+            QL_DEPRECATED_ENABLE_WARNING
+        }
         Real baseCPI() const { return baseCPI_; }
         Period observationLag() const { return observationLag_; }
         const ext::shared_ptr<ZeroInflationIndex>& cpiIndex() const { return cpiIndex_; }
@@ -92,6 +82,10 @@ namespace QuantLib {
       protected:
         Frequency frequency_;
         DayCounter dayCounter_;
+        /*! \deprecated Do not use; meaningless for a bond.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("Do not use; meaningless for a bond.")]]
         bool growthOnly_;
         Real baseCPI_;
         Period observationLag_;
