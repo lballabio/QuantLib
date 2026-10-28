@@ -28,6 +28,7 @@
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
 #include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
+#include <ql/experimental/fxslv/fxpnlexplain.hpp>
 #include <ql/experimental/fxslv/fxsmilesectionbystrike.hpp>
 #include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
@@ -1557,6 +1558,300 @@ BOOST_AUTO_TEST_CASE(testTradingTimeEdgeCasesAndValidation) {
     // default construction: reference date at the evaluation date, even on a weekend
     TradingTimeTermStructure byDefault;
     BOOST_CHECK_EQUAL(byDefault.referenceDate(), saturday);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  P&L explain: tenor expiries, event variance, roll and explain
+// ─────────────────────────────────────────────────────────────────────────────
+
+namespace {
+
+    struct ExplainMarket {
+        std::vector<Period> tenors = {1 * Weeks, 1 * Months, 3 * Months, 6 * Months, 1 * Years};
+        FxVolConventions conventions{{0.25, 0.10},
+                                     DeltaVolQuote::Fwd,
+                                     DeltaVolQuote::AtmDeltaNeutral,
+                                     FxRrBfQuotes::SmileStrangle,
+                                     FxSettleConvention(WeekendsOnly(), 2),
+                                     0.0};
+        Date today = Date(2, January, 2024);  // a Tuesday
+
+        static Handle<YieldTermStructure> curve(const Date& d, Rate r) {
+            return Handle<YieldTermStructure>(
+                ext::make_shared<FlatForward>(d, r, Actual365Fixed()));
+        }
+
+        FxVolMarket market(const Date& date, Real spot, Rate rFor, Rate rDom) const {
+            FxVolMarket m;
+            m.date = date;
+            m.spot = spot;
+            m.foreignCurve = curve(date, rFor);
+            m.domesticCurve = curve(date, rDom);
+            m.atms = {0.0800, 0.0820, 0.0850, 0.0900, 0.0930};
+            m.riskReversals = {{-0.010, -0.020}, {-0.012, -0.024}, {-0.014, -0.028},
+                               {-0.016, -0.031}, {-0.017, -0.033}};
+            m.butterflies = {{0.0035, 0.0075}, {0.0040, 0.0085}, {0.0045, 0.0095},
+                             {0.0050, 0.0105}, {0.0055, 0.0115}};
+            return m;
+        }
+        FxVolMarket market() const { return market(today, 1.0850, 0.04, 0.0525); }
+    };
+
+    using ExplainSection = FxSabrSmileSection;
+    using Explain = FxVanillaPnlExplain<ExplainSection>;
+
+    Real explainedSum(const FxPnlExplainResult& r) {
+        return r.theta + r.volRollAtm + r.volRollRiskReversal + r.volRollButterfly +
+               r.volRollOther + r.delta + r.gamma + r.spotSmileVega + r.spotSmileVanna +
+               r.vegaAtm + r.vegaRiskReversal + r.vegaButterfly + r.vannaAtm +
+               r.vannaRiskReversal + r.vannaButterfly + r.volga;
+    }
+
+    void printExplain(const std::string& name, const FxPnlExplainResult& r) {
+        BOOST_TEST_MESSAGE(name << ": total " << r.total << " theta " << r.theta << " roll ["
+                                << r.volRollAtm << ", " << r.volRollRiskReversal << ", "
+                                << r.volRollButterfly << ", " << r.volRollOther << "] delta "
+                                << r.delta << " gamma " << r.gamma << " spotSmile ["
+                                << r.spotSmileVega << ", " << r.spotSmileVanna << "] vega ["
+                                << r.vegaAtm << ", " << r.vegaRiskReversal << ", "
+                                << r.vegaButterfly << "] vanna [" << r.vannaAtm << ", "
+                                << r.vannaRiskReversal << ", " << r.vannaButterfly << "] volga "
+                                << r.volga << " residual " << r.residual << " vols ["
+                                << r.volToday << ", " << r.volRolled << ", " << r.volNext << "]");
+    }
+
+}
+
+BOOST_AUTO_TEST_CASE(testFxTenorExpiryDates) {
+    BOOST_TEST_MESSAGE("Testing FX tenor expiry and delivery dates...");
+
+    const FxSettleConvention settlement(WeekendsOnly(), 2);
+    const Date trade(2, January, 2024);  // Tuesday, spot Thursday 4 January
+
+    struct Case { Period tenor; Date expiry, delivery; };
+    const std::vector<Case> cases = {
+        {1 * Days, Date(3, January, 2024), Date(5, January, 2024)},
+        {1 * Weeks, Date(9, January, 2024), Date(11, January, 2024)},
+        // 4 February is a Sunday: delivery rolls to Monday 5 February
+        {1 * Months, Date(1, February, 2024), Date(5, February, 2024)},
+        {3 * Months, Date(2, April, 2024), Date(4, April, 2024)},
+        {6 * Months, Date(2, July, 2024), Date(4, July, 2024)},
+        {1 * Years, Date(2, January, 2025), Date(6, January, 2025)},
+    };
+    for (const auto& c : cases) {
+        BOOST_CHECK_EQUAL(fxExpiryDate(trade, c.tenor, settlement), c.expiry);
+        BOOST_CHECK_EQUAL(fxDeliveryDate(trade, c.tenor, settlement), c.delivery);
+        BOOST_CHECK_EQUAL(settlement.valueDate(fxExpiryDate(trade, c.tenor, settlement)),
+                          c.delivery);
+    }
+
+    // end of month: spot on Thursday 29 February, the last business day of
+    // the month, delivers on the last business day of March (Friday 29th)
+    const Date eom(27, February, 2024);
+    BOOST_CHECK_EQUAL(fxDeliveryDate(eom, 1 * Months, settlement), Date(29, March, 2024));
+    BOOST_CHECK_EQUAL(fxExpiryDate(eom, 1 * Months, settlement), Date(27, March, 2024));
+
+    BOOST_CHECK_THROW(fxExpiryDate(trade, 0 * Days, settlement), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testFxEventVarianceIsHeldConstant) {
+    BOOST_TEST_MESSAGE("Testing that FX vol events release their own variance...");
+
+    ExplainMarket data;
+    const Explain explain(data.tenors, data.conventions);
+    FxVolMarket m = data.market();
+    const Date event(17, January, 2024);  // a Wednesday inside the 1M pillar interval
+    const Real v = 2.0e-5;
+    m.events = {{event, 0.5, v}};
+
+    // ATM variance released over the event's day, less that of an ordinary
+    // business day in the same pillar interval, is the event's variance
+    auto eventJump = [&](const FxVolMarket& market) {
+        const auto s = explain.surface(market);
+        const Real withEvent = s->atmVar(event + 1) - s->atmVar(event);
+        const Real ordinary = s->atmVar(event) - s->atmVar(event - 1);
+        return withEvent - ordinary;
+    };
+    BOOST_CHECK_CLOSE(eventJump(m), v, 1.0e-8);
+
+    // bumping the ATMs moves the base vol but not the event's variance
+    FxVolMarket bumped = m;
+    for (auto& a : bumped.atms)
+        a += 0.01;
+    BOOST_CHECK_CLOSE(eventJump(bumped), v, 1.0e-8);
+
+    // the event only redistributes variance within the pillar interval: the
+    // pillars' (fitted) ATM vols are those of the surface without the event
+    FxVolMarket noEvent = m;
+    noEvent.events.clear();
+    const auto s = explain.surface(m), s0 = explain.surface(noEvent);
+    for (const auto& pillar : explain.pillars(m.date))
+        BOOST_CHECK_CLOSE(s->atmVol(pillar), s0->atmVol(pillar), 1.0e-12);
+    // before the event the ATM variance is lower than without it, after it the same
+    const Date oneMonth = explain.pillars(m.date)[1];
+    BOOST_CHECK_LT(s->atmVar(event), s0->atmVar(event));
+    BOOST_CHECK_CLOSE(s->atmVar(oneMonth), s0->atmVar(oneMonth), 1.0e-12);
+
+    // the event's variance cannot exceed the pillar's forward variance
+    FxVolMarket tooMuch = m;
+    tooMuch.events = {{event, 0.5, 1.0e-3}};
+    BOOST_CHECK_THROW(explain.surface(tooMuch), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testFxSurfaceRollHoldsEventlessVols) {
+    BOOST_TEST_MESSAGE("Testing that the FX surface roll holds eventless vols by tenor...");
+
+    ExplainMarket data;
+    data.conventions.holidayWeight = 0.2;
+    const Explain explain(data.tenors, data.conventions);
+    const Calendar cal = data.conventions.settlement.calendar();
+    const Actual365Fixed dc;
+
+    // quotes built from a flat eventless trading-time vol plus events; the
+    // first event is released over the weekend roll, the second is not
+    const Date friday(5, January, 2024), monday(8, January, 2024);
+    const std::vector<FxVolEvent> events = {{Date(5, January, 2024), 0.5, 1.5e-5},
+                                            {Date(10, January, 2024), 0.6, 2.0e-5}};
+    const Volatility s = 0.08;
+    auto quotesFor = [&](const Date& date, const std::vector<FxVolEvent>& evs) {
+        FxVolMarket m = data.market(date, 1.0850, 0.04, 0.0525);
+        const TradingTimeTermStructure base(date, cal, data.conventions.holidayWeight);
+        const std::vector<Date> pillars = explain.pillars(date);
+        for (Size i = 0; i < pillars.size(); ++i) {
+            const Real w = s * s * base.tradingTime(date, pillars[i]) +
+                           fxEventVariance(evs, date, pillars[i]);
+            m.atms[i] = std::sqrt(w / dc.yearFraction(date, pillars[i]));
+            // a smile flat in vol, so that every point rolls like the ATM
+            m.riskReversals[i] = {0.0, 0.0};
+            m.butterflies[i] = {0.0, 0.0};
+        }
+        m.events = evs;
+        return m;
+    };
+
+    // Thursday's market already contains Friday's event; roll it to Friday
+    // (event released at the end of Friday), then over the weekend
+    const FxVolMarket thursday = quotesFor(Date(4, January, 2024), events);
+    const FxVolMarket rolledToFriday = explain.rolled(thursday, friday);
+    const FxVolMarket expectedFriday = quotesFor(friday, events);
+    const FxVolMarket rolledToMonday = explain.rolled(expectedFriday, monday);
+    const FxVolMarket expectedMonday = quotesFor(monday, events);
+    for (Size i = 0; i < data.tenors.size(); ++i) {
+        BOOST_CHECK_CLOSE(rolledToFriday.atms[i], expectedFriday.atms[i], 1.0e-10);
+        BOOST_CHECK_CLOSE(rolledToMonday.atms[i], expectedMonday.atms[i], 1.0e-10);
+        BOOST_CHECK_SMALL(rolledToMonday.riskReversals[i][0], 1.0e-14);
+        BOOST_CHECK_SMALL(rolledToMonday.butterflies[i][1], 1.0e-14);
+    }
+
+    // the spot rolls along the forward, so the forward to each delivery is unchanged
+    const Date spot0 = data.conventions.settlement.valueDate(friday);
+    const Date spot1 = data.conventions.settlement.valueDate(monday);
+    const Real fwdToSpot1 = expectedFriday.spot *
+                            expectedFriday.foreignCurve->discount(spot1) /
+                            expectedFriday.foreignCurve->discount(spot0) /
+                            (expectedFriday.domesticCurve->discount(spot1) /
+                             expectedFriday.domesticCurve->discount(spot0));
+    BOOST_CHECK_CLOSE(rolledToMonday.spot, fwdToSpot1, 1.0e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testFxPnlExplain) {
+    BOOST_TEST_MESSAGE("Testing the FX vanilla P&L explain...");
+
+    ExplainMarket data;
+    const Explain explain(data.tenors, data.conventions);
+    FxVolMarket today = data.market();
+    today.events = {{Date(17, January, 2024), 0.5, 2.0e-5}};
+    const Date next(3, January, 2024);
+    const Date expiry = explain.pillars(today.date)[2] - 5;  // between the 1M and 3M pillars
+    const Real notional = 1.0e6;
+
+    const std::vector<Real> moneynesses = {0.97, 1.0, 1.03};
+    std::vector<FxPnlExplainResult> calls;
+    for (Option::Type type : {Option::Call, Option::Put}) {
+        for (Size k = 0; k < moneynesses.size(); ++k) {
+            const Real strike = moneynesses[k] * 1.0850;
+
+            // no market move: the next market is the rolled one, so only
+            // theta and the roll are left, up to the roll's own second order
+            const FxVolMarket rolled = explain.rolled(today, next);
+            const auto still = explain.explain(type, strike, expiry, notional, today, rolled);
+            printExplain("no move", still);
+            // the residual is the roll's second order, excluded from the volga by design
+            BOOST_CHECK_SMALL(still.residual, 0.01 * std::fabs(still.total));
+            BOOST_CHECK_SMALL(still.delta, 1.0e-12 * notional);
+            BOOST_CHECK_SMALL(still.vegaAtm + still.vegaRiskReversal + still.vegaButterfly,
+                              1.0e-12 * notional);
+            BOOST_CHECK_SMALL(still.spotSmileVega, 1.0e-12 * notional);
+            BOOST_CHECK_CLOSE(still.volNext, still.volRolled, 1.0e-10);
+            BOOST_CHECK_CLOSE(explainedSum(still) + still.residual, still.total, 1.0e-10);
+
+            // a market move: spot, rates, every quote and the event's variance
+            FxVolMarket moved = data.market(next, 1.0850 * 1.004, 0.0405, 0.0520);
+            for (Size i = 0; i < moved.atms.size(); ++i) {
+                moved.atms[i] = rolled.atms[i] + 0.0020;
+                for (Size j = 0; j < 2; ++j) {
+                    moved.riskReversals[i][j] = rolled.riskReversals[i][j] - 0.0010;
+                    moved.butterflies[i][j] = rolled.butterflies[i][j] + 0.0005;
+                }
+            }
+            moved.events = {{Date(17, January, 2024), 0.5, 2.5e-5}};
+            const auto r = explain.explain(type, strike, expiry, notional, today, moved);
+            printExplain("moved", r);
+            BOOST_CHECK_CLOSE(explainedSum(r) + r.residual, r.total, 1.0e-10);
+            BOOST_CHECK_CLOSE(r.forwardRolled, r.forwardToday, 1.0e-10);
+            // the expansion explains the move up to a small residual
+            BOOST_CHECK_SMALL(r.residual, 0.02 * std::fabs(r.total));
+            const Real sign = type == Option::Call ? 1.0 : -1.0;
+            BOOST_CHECK_GT(sign * r.delta * (r.forwardNext - r.forwardRolled), 0.0);
+
+            if (type == Option::Call) {
+                calls.push_back(r);
+            } else {
+                // vol terms depend on the strike and expiry only, not on the parity
+                const auto& c = calls[k];
+                BOOST_CHECK_CLOSE(r.vegaAtm, c.vegaAtm, 1.0e-10);
+                BOOST_CHECK_CLOSE(r.vegaRiskReversal, c.vegaRiskReversal, 1.0e-10);
+                BOOST_CHECK_CLOSE(r.volRollAtm, c.volRollAtm, 1.0e-10);
+                BOOST_CHECK_CLOSE(r.volga, c.volga, 1.0e-10);
+                BOOST_CHECK_CLOSE(r.gamma, c.gamma, 1.0e-10);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testFxPnlExplainEventReleasedOvernight) {
+    BOOST_TEST_MESSAGE("Testing that the FX P&L explain rolls off an event released overnight...");
+
+    ExplainMarket data;
+    const Explain explain(data.tenors, data.conventions);
+    const Date next(3, January, 2024);
+    const Date expiry = explain.pillars(data.today)[1] + 3;  // after the 1M pillar
+    const Real v = 2.0e-5;
+    const Actual365Fixed dc;
+
+    // the same quotes with and without an event released at the end of the next date
+    FxVolMarket withEvent = data.market(), without = data.market();
+    withEvent.events = {{next, 0.5, v}};
+
+    auto rolledVariances = [&](const FxVolMarket& today) {
+        const FxVolMarket rolled = explain.rolled(today, next);
+        const Real strike = 1.0850;
+        const auto r = explain.explain(Option::Call, strike, expiry, 1.0e6, today, rolled);
+        return std::make_pair(r.volToday * r.volToday * dc.yearFraction(data.today, expiry),
+                              r.volRolled * r.volRolled * dc.yearFraction(next, expiry));
+    };
+    const auto [w0, w1] = rolledVariances(withEvent);
+    const auto [u0, u1] = rolledVariances(without);
+    // with the event the same quotes leave less variance for each ordinary
+    // day, so the variance lost overnight is larger by the event's less the
+    // smaller loss of the ordinary day: v times the remaining eventless trading
+    // time over today's (up to the interpolation between the pillars)
+    const TradingTimeTermStructure base0(data.today, data.conventions.settlement.calendar(), 0.0);
+    const TradingTimeTermStructure base1(next, data.conventions.settlement.calendar(), 0.0);
+    const Real expected =
+        v * base1.tradingTime(next, expiry) / base0.tradingTime(data.today, expiry);
+    BOOST_CHECK_CLOSE((w0 - w1) - (u0 - u1), expected, 2.0);
+    BOOST_CHECK_LT((w0 - w1) - (u0 - u1), v);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

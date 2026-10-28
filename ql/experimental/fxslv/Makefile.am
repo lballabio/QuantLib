@@ -6,7 +6,9 @@ this_include_HEADERS = \
     all.hpp \
     fxcostsmilesection.hpp \
     fxdeltaconverter.hpp \
+    fxeventvariance.hpp \
     fxlocalvolsurface.hpp \
+    fxpnlexplain.hpp \
     fxrootbracketing.hpp \
     fxsettlementconvention.hpp \
     fxsettlementforeigncurve.hpp \
@@ -16,6 +18,7 @@ this_include_HEADERS = \
     fxsmilesectionbydelta.hpp \
     fxsmilesectionbystrike.hpp \
     fxstickydeltasolver.hpp \
+    fxtenorexpiry.hpp \
     fxvanillagreeks.hpp \
     fxvariancesurface.hpp \
     hestoncalibrator.hpp \
@@ -26,6 +29,7 @@ this_include_HEADERS = \
 cpp_files = \
     fxcostsmilesection.cpp \
     fxdeltaconverter.cpp \
+    fxeventvariance.cpp \
     fxlocalvolsurface.cpp \
     fxsettlementforeigncurve.cpp \
     fxslvpricingcontext.cpp \
@@ -34,6 +38,7 @@ cpp_files = \
     fxsmilesectionbydelta.cpp \
     fxsmilesectionbystrike.cpp \
     fxstickydeltasolver.cpp \
+    fxtenorexpiry.cpp \
     fxvanillagreeks.cpp \
     hestoncalibrator.cpp \
     slvleveragecalibrator.cpp \

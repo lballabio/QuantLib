@@ -153,6 +153,7 @@ set(QL_SOURCES
     experimental/fx/mtmcrosscurrencybasisswap.cpp
     experimental/fxslv/fxcostsmilesection.cpp
     experimental/fxslv/fxdeltaconverter.cpp
+    experimental/fxslv/fxeventvariance.cpp
     experimental/fxslv/fxlocalvolsurface.cpp
     experimental/fxslv/fxsettlementforeigncurve.cpp
     experimental/fxslv/fxslvpricingcontext.cpp
@@ -161,6 +162,7 @@ set(QL_SOURCES
     experimental/fxslv/fxsmilesectionbydelta.cpp
     experimental/fxslv/fxsmilesectionbystrike.cpp
     experimental/fxslv/fxstickydeltasolver.cpp
+    experimental/fxslv/fxtenorexpiry.cpp
     experimental/fxslv/fxvanillagreeks.cpp
     experimental/fxslv/hestoncalibrator.cpp
     experimental/fxslv/slvleveragecalibrator.cpp
@@ -1200,7 +1202,9 @@ set(QL_HEADERS
     experimental/fx/mtmcrosscurrencybasisswap.hpp
     experimental/fxslv/fxcostsmilesection.hpp
     experimental/fxslv/fxdeltaconverter.hpp
+    experimental/fxslv/fxeventvariance.hpp
     experimental/fxslv/fxlocalvolsurface.hpp
+    experimental/fxslv/fxpnlexplain.hpp
     experimental/fxslv/fxrootbracketing.hpp
     experimental/fxslv/fxsettlementconvention.hpp
     experimental/fxslv/fxsettlementforeigncurve.hpp
@@ -1210,6 +1214,7 @@ set(QL_HEADERS
     experimental/fxslv/fxsmilesectionbydelta.hpp
     experimental/fxslv/fxsmilesectionbystrike.hpp
     experimental/fxslv/fxstickydeltasolver.hpp
+    experimental/fxslv/fxtenorexpiry.hpp
     experimental/fxslv/fxvanillagreeks.hpp
     experimental/fxslv/fxvariancesurface.hpp
     experimental/fxslv/hestoncalibrator.hpp

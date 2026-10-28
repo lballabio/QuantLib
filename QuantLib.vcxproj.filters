@@ -3312,7 +3312,13 @@
     <ClInclude Include="ql\experimental\fxslv\fxdeltaconverter.hpp">
       <Filter>experimental\fxslv</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxeventvariance.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\fxslv\fxlocalvolsurface.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxpnlexplain.hpp">
       <Filter>experimental\fxslv</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\fxslv\fxrootbracketing.hpp">
@@ -3340,6 +3346,9 @@
       <Filter>experimental\fxslv</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\fxslv\fxstickydeltasolver.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxtenorexpiry.hpp">
       <Filter>experimental\fxslv</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\fxslv\fxvanillagreeks.hpp">
@@ -7468,6 +7477,9 @@
     <ClCompile Include="ql\experimental\fxslv\fxdeltaconverter.cpp">
       <Filter>experimental\fxslv</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxeventvariance.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\fxslv\fxlocalvolsurface.cpp">
       <Filter>experimental\fxslv</Filter>
     </ClCompile>
@@ -7490,6 +7502,9 @@
       <Filter>experimental\fxslv</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\fxslv\fxstickydeltasolver.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxtenorexpiry.cpp">
       <Filter>experimental\fxslv</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\fxslv\fxvanillagreeks.cpp">

@@ -3,7 +3,9 @@
 
 #include <ql/experimental/fxslv/fxcostsmilesection.hpp>
 #include <ql/experimental/fxslv/fxdeltaconverter.hpp>
+#include <ql/experimental/fxslv/fxeventvariance.hpp>
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
+#include <ql/experimental/fxslv/fxpnlexplain.hpp>
 #include <ql/experimental/fxslv/fxrootbracketing.hpp>
 #include <ql/experimental/fxslv/fxsettlementconvention.hpp>
 #include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
@@ -13,6 +15,7 @@
 #include <ql/experimental/fxslv/fxsmilesectionbydelta.hpp>
 #include <ql/experimental/fxslv/fxsmilesectionbystrike.hpp>
 #include <ql/experimental/fxslv/fxstickydeltasolver.hpp>
+#include <ql/experimental/fxslv/fxtenorexpiry.hpp>
 #include <ql/experimental/fxslv/fxvanillagreeks.hpp>
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/experimental/fxslv/hestoncalibrator.hpp>
