@@ -664,8 +664,8 @@ BOOST_AUTO_TEST_CASE(testPartialLookbackZeroCarryBoundaryLimits) {
             q->setValue(yield);
             // A single observation is a vanilla option.  Observing to expiry
             // with unit lambda is the full floating lookback contract.
-            BOOST_CHECK_SMALL(fixed.NPV() - vanilla.NPV(), 1.0e-8);
-            BOOST_CHECK_SMALL(partial.NPV() - full.NPV(), 1.0e-8);
+            QL_CHECK_SMALL(fixed.NPV() - vanilla.NPV(), 1.0e-8);
+            QL_CHECK_SMALL(partial.NPV() - full.NPV(), 1.0e-8);
         }
     }
 }
@@ -702,9 +702,9 @@ BOOST_AUTO_TEST_CASE(testPartialLookbackZeroCarryContinuity) {
 
             // Both prices use the existing nonsingular formula.
             // Individual differences are O(epsilon); their mean is O(epsilon^2).
-            BOOST_CHECK_SMALL(left - zero, 100.0 * epsilon + 1.0e-8);
-            BOOST_CHECK_SMALL(right - zero, 100.0 * epsilon + 1.0e-8);
-            BOOST_CHECK_SMALL(
+            QL_CHECK_SMALL(left - zero, 100.0 * epsilon + 1.0e-8);
+            QL_CHECK_SMALL(right - zero, 100.0 * epsilon + 1.0e-8);
+            QL_CHECK_SMALL(
                 0.5 * (left + right) - zero,
                 200.0 * epsilon * epsilon + 1.0e-8);
         }
@@ -714,7 +714,7 @@ BOOST_AUTO_TEST_CASE(testPartialLookbackZeroCarryContinuity) {
         for (Real sign : {-1.0, 1.0}) {
             const Real inside = valueAt(r + sign * 0.99 * carryCutoff);
             const Real outside = valueAt(r + sign * 1.01 * carryCutoff);
-            BOOST_CHECK_SMALL(outside - inside, 1.0e-6);
+            QL_CHECK_SMALL(outside - inside, 1.0e-6);
         }
 
         q->setValue(r);

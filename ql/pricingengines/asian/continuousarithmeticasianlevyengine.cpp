@@ -31,7 +31,7 @@ namespace QuantLib {
     namespace {
 
         Real exponentialIntegral(Real x) {
-            return x == 0.0 ? 1.0 : std::expm1(x) / x;
+            return x == 0.0 ? Real(1.0) : Real(std::expm1(x) / x);
         }
 
         // 2 int_0^1 int_0^t exp(x*(s+t))*expm1(w*s) ds dt.
