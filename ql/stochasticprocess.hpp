@@ -131,6 +131,7 @@ namespace QuantLib {
                             const Array& dx) const;
 
         virtual void resetCache(const Size numberOfTimeSteps) const {}
+        virtual void suspendCaching(const bool suspend) const {}
         //@}
 
         //! \name utilities

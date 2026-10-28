@@ -110,6 +110,11 @@ namespace QuantLib {
         diffusionCache_ = PathIndependentCache<Real>(numberOfTimeSteps);
     }
 
+    void GeneralizedBlackScholesProcess::suspendCaching(const bool suspend) const {
+        driftCache_.suspendCaching(suspend);
+        diffusionCache_.suspendCaching(suspend);
+    }
+
     Real GeneralizedBlackScholesProcess::expectation(Time t0,
                                                      Real x0,
                                                      Time dt) const {

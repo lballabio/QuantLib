@@ -84,6 +84,7 @@ namespace QuantLib {
         Real stdDeviation(Time t0, Real x0, Time dt) const override;
         Real variance(Time t0, Real x0, Time dt) const override;
         void resetCache(const Size numberOfTimeSteps) const override;
+        void suspendCaching(const bool suspend) const override;
         //@}
         Time time(const Date&) const override;
         //! \name Observer interface
