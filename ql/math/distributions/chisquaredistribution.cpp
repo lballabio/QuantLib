@@ -51,7 +51,7 @@ namespace QuantLib {
             return n*std::log(lam) - lam - boost::math::lgamma(n + 1.0);
         };
         const auto logT = [&](Size n) {
-            return (f2 + n)*std::log(x2) - x2 - boost::math::lgamma(f2 + n + 1.0);
+            return (f2 + n)*std::log(x2) - x2 - boost::math::lgamma(Real(f2 + n + 1.0));
         };
         const Size never = std::numeric_limits<Size>::max();
         const auto firstT = [&](Size from) {

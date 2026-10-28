@@ -190,6 +190,7 @@ Copyright (C) 2026 Junjie Guo
 Copyright (C) 2026 Kyrylo Protsenko
 Copyright (C) 2026 LW Osterbrink
 Copyright (C) 2026 Lawrenz Law
+Copyright (C) 2026 Mahimn Patel
 Copyright (C) 2026 Pratyush Patel
 Copyright (C) 2026 Richard Amaya
 Copyright (C) 2026 Sergio Araujo

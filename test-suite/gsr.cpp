@@ -1134,6 +1134,38 @@ BOOST_AUTO_TEST_CASE(testSofrSwaptionPaymentLag) {
     QL_CHECK_CLOSE(scaledSwaption->NPV(), 2.0 * payerValue, 1.0e-6);
 }
 
+BOOST_AUTO_TEST_CASE(testNonstandardCopyOfAmortisingOvernightSwap) {
+    Date today(25, June, 2026);
+    Settings::instance().evaluationDate() = today;
+    Handle<YieldTermStructure> curve(flatRate(today, 0.037123, Actual365Fixed()));
+    auto index = ext::make_shared<Sofr>(curve);
+    auto calendar = index->fixingCalendar();
+    Schedule schedule(Date(28, June, 2027), Date(28, June, 2030), 1 * Years,
+                      calendar, ModifiedFollowing, ModifiedFollowing,
+                      DateGeneration::Forward, false);
+
+    OvernightIndexedSwap original(Swap::Payer, std::vector<Real>{1000000, 800000},
+                                  schedule, 0.035, Actual360(), index, 0.001, 3,
+                                  Preceding, TARGET(), false, RateAveraging::Compound,
+                                  2, 2, true);
+    NonstandardSwap copy(original);
+    BOOST_CHECK_EQUAL(copy.paymentLag(), original.paymentLag());
+    BOOST_CHECK_EQUAL(copy.paymentConvention(), original.paymentConvention());
+    for (Size leg = 0; leg < 2; ++leg) {
+        const auto& source = original.leg(leg);
+        const auto& target = copy.leg(leg);
+        BOOST_REQUIRE_EQUAL(source.size(), target.size());
+        for (Size i = 0; i < source.size(); ++i) {
+            auto expected = ext::dynamic_pointer_cast<Coupon>(source[i]);
+            auto actual = ext::dynamic_pointer_cast<Coupon>(target[i]);
+            BOOST_REQUIRE(expected && actual);
+            BOOST_CHECK_EQUAL(actual->nominal(), expected->nominal());
+            BOOST_CHECK_EQUAL(actual->date(), expected->date());
+            QL_CHECK_SMALL(actual->amount() - expected->amount(), 1.0e-8);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
