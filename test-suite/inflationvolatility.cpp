@@ -290,8 +290,13 @@ BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToVol) {
     // N.B. the vol gets set in the stripper ... else no point!
 
     // cap stripper
-    ext::shared_ptr<YoYOptionletStripper> yoyOptionletStripper(
-                             new InterpolatedYoYOptionletStripper<Linear>() );
+    class InspectableStripper : public InterpolatedYoYOptionletStripper<Linear> {
+      public:
+        const std::vector<ext::shared_ptr<YoYOptionletVolatilitySurface>>& curves() const {
+            return volCurves_;
+        }
+    };
+    auto yoyOptionletStripper = ext::make_shared<InspectableStripper>();
 
     // now set up all the variables for the stripping
     Natural settlementDays = 0;
@@ -314,10 +319,27 @@ BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToVol) {
 
     // Actually is doesn't matter what the interpolation is because we only
     // intend to use the K values that correspond to quotes ... for model fitting.
-    ext::shared_ptr<KInterpolatedYoYOptionletVolatilitySurface<Linear> > yoySurf(new
-                    KInterpolatedYoYOptionletVolatilitySurface<Linear>(settlementDays,
-                cal, bdc, dc, lag, capFloorPrices, yoyPricerUD, yoyOptionletStripper,
-                                                              slope) );
+    auto yoySurf = ext::make_shared<KInterpolatedYoYOptionletVolatilitySurface<Linear>>(
+        settlementDays, cal, bdc, dc, lag, capFloorPrices, yoyPricerUD, yoyOptionletStripper,
+        slope);
+
+    // Bootstrapped curves must expose their calibrated nodes through the shared interface.
+    BOOST_REQUIRE(!yoyOptionletStripper->curves().empty());
+    for (const auto& curve : yoyOptionletStripper->curves()) {
+        auto interpolated = ext::dynamic_pointer_cast<InterpolatedNodes>(curve);
+        BOOST_REQUIRE(interpolated);
+        curve->update();
+        auto nodes = interpolated->nodes();
+        const auto& dates = interpolated->dates();
+        const auto& data = interpolated->data();
+        BOOST_REQUIRE_GT(nodes.size(), 1);
+        BOOST_REQUIRE_EQUAL(nodes.size(), dates.size());
+        BOOST_REQUIRE_EQUAL(nodes.size(), data.size());
+        for (Size i = 0; i < nodes.size(); ++i) {
+            BOOST_CHECK_EQUAL(nodes[i].first, dates[i]);
+            BOOST_CHECK_EQUAL(nodes[i].second, data[i]);
+        }
+    }
 
     // now use it for something ... like stating what the T=const lines look like
     const Real volATyear1[] = {

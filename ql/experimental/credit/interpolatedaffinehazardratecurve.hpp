@@ -22,6 +22,7 @@
 
 #include <ql/stochasticprocess.hpp>
 #include <ql/experimental/credit/onefactoraffinesurvival.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/termstructures/credit/probabilitytraits.hpp>
 #include <ql/termstructures/interpolatedcurve.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
@@ -60,7 +61,8 @@ namespace QuantLib {
     template <class Interpolator>
     class InterpolatedAffineHazardRateCurve
         : public OneFactorAffineSurvivalStructure,
-          protected InterpolatedCurve<Interpolator> {
+          protected InterpolatedCurve<Interpolator>,
+          public InterpolatedNodes {
       public:
         InterpolatedAffineHazardRateCurve(
             const std::vector<Date>& dates,
@@ -88,11 +90,10 @@ namespace QuantLib {
         //@}
         //! \name other inspectors
         //@{
-        const std::vector<Time>& times() const;
-        const std::vector<Date>& dates() const;
-        const std::vector<Real>& data() const;
+        const std::vector<Time>& times() const override;
+        const std::vector<Date>& dates() const override;
+        const std::vector<Real>& data() const override;
         const std::vector<Rate>& hazardRates() const;
-        std::vector<std::pair<Date, Real> > nodes() const;
         //@}
       protected:
         InterpolatedAffineHazardRateCurve(
@@ -265,15 +266,6 @@ namespace QuantLib {
         return this->data_;
     }
 
-    template <class T>
-    inline std::vector<std::pair<Date, Real> >
-    InterpolatedAffineHazardRateCurve<T>::nodes() const {
-        std::vector<std::pair<Date, Real> > results(dates_.size());
-        for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i], this->data_[i]);
-        return results;
-    }
-
     #ifndef __DOXYGEN__
 
     // template definitions
@@ -294,7 +286,7 @@ namespace QuantLib {
         Time t) const 
     {
         // the way x0 is defined:
-        Real initValHR = std::pow(model_->dynamics()->process()->x0(), 2);
+        Real initValHR = squared(model_->dynamics()->process()->x0());
 
         if (t == 0.0)
             return model_->discountBond(0., t, initValHR);
