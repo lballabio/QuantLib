@@ -154,12 +154,12 @@ namespace QuantLib {
 
         if (std::fabs(x) < 1.0e-7) {
             // Apply l'Hopital's rule to the combined numerator of the 1/x terms.
-            const auto derivative = [this](Real h, Real k, Real dh, Real dk, Real rho) {
+            const auto derivative = [this](Real h, Real k, Real dh, Real dk, Real rho) -> Real {
                 if (rho == 1.0)
-                    return h < k ? f_.derivative(h) * dh : f_.derivative(k) * dk;
+                    return h < k ? Real(f_.derivative(h) * dh) : Real(f_.derivative(k) * dk);
                 if (rho == -1.0)
-                    return h + k > 0.0 ? f_.derivative(h) * dh + f_.derivative(k) * dk
-                                       : 0.0;
+                    return h + k > 0.0 ? Real(f_.derivative(h) * dh + f_.derivative(k) * dk)
+                                       : Real(0.0);
                 const Real z = std::sqrt((1.0 - rho) * (1.0 + rho));
                 return f_.derivative(h) * f_((k - rho * h) / z) * dh +
                        f_.derivative(k) * f_((h - rho * k) / z) * dk;

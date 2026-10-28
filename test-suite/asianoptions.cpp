@@ -2136,8 +2136,8 @@ BOOST_AUTO_TEST_CASE(testLevyZeroVolatility) {
                     // Integrate the deterministic forward S(t)=100 exp((r-q)t),
                     // and combine it with the already observed running average.
                     const Real b = 0.05 - yield;
-                    const Real futureIntegral = b == 0.0 ? 100.0 :
-                        100.0 * std::expm1(b) / b;
+                    const Real futureIntegral = b == 0.0 ? Real(100.0) :
+                        Real(100.0 * std::expm1(b) / b);
                     const Real mean = (97.0 * elapsed / 360.0 + futureIntegral) /
                                       (1.0 + elapsed / 360.0);
                     const Real expected = std::exp(-0.05) * (*payoff)(mean);
@@ -2182,7 +2182,7 @@ BOOST_AUTO_TEST_CASE(testLevyLowVolatilityContinuity) {
                 ext::make_shared<EuropeanExercise>(today + 360));
             option.setPricingEngine(engine);
             vol->setValue(0.0);
-            BOOST_CHECK_SMALL(option.NPV(), 1.0e-12);
+            QL_CHECK_SMALL(option.NPV(), 1.0e-12);
             // At zero carry Var(A_future) ~ (100/T)^2 sigma^2/3.
             // An ATM call or put has value ~ discount * stddev / sqrt(2*pi).
             const Real slope = std::exp(-0.05) * 100.0 /
@@ -2190,15 +2190,15 @@ BOOST_AUTO_TEST_CASE(testLevyLowVolatilityContinuity) {
             Real previous = QL_MAX_REAL;
             for (Volatility sigma : {1.0e-3, 1.0e-4, 1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8}) {
                 vol->setValue(sigma);
-                const Real value = option.NPV();
+                const Real npv = option.NPV();
                 BOOST_TEST_CONTEXT("type=" << type << ", elapsed=" << elapsed
                                    << ", vol=" << sigma) {
-                    BOOST_CHECK(std::isfinite(value));
-                    BOOST_CHECK_GT(value, 0.0);
-                    BOOST_CHECK_LT(value, previous);
-                    BOOST_CHECK_SMALL(value / sigma - slope, 1.0e-5);
+                    BOOST_CHECK(std::isfinite(npv));
+                    BOOST_CHECK_GT(npv, 0.0);
+                    BOOST_CHECK_LT(npv, previous);
+                    QL_CHECK_SMALL(npv / sigma - slope, 1.0e-5);
                 }
-                previous = value;
+                previous = npv;
             }
         }
     }
@@ -2254,7 +2254,7 @@ BOOST_AUTO_TEST_CASE(testLevyVarianceReference) {
                            << ", carry=" << b << ", vol=" << sigma) {
             BOOST_CHECK(std::isfinite(calculated));
             // Allow for quadrature and pricing roundoff across platforms.
-            BOOST_CHECK_SMALL(calculated - expected, 2.0e-11);
+            QL_CHECK_SMALL(calculated - expected, 2.0e-11);
         }
     };
 
