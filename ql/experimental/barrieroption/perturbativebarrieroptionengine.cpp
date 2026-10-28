@@ -23,6 +23,8 @@
 #include <ql/errors.hpp>
 #include <ql/exercise.hpp>
 #include <ql/experimental/barrieroption/perturbativebarrieroptionengine.hpp>
+#include <ql/math/distributions/bivariatenormaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/types.hpp>
 #include <functional>
 #include <algorithm>
@@ -54,11 +56,14 @@ namespace QuantLib {
     constexpr double sqrtPi = 1.7724538509055160273;
     constexpr double sqrtTwoPi = sqrtTwo * sqrtPi;
 
-    // TODO: review these local distribution helpers against the existing
-    // QuantLib implementations before consolidating them.
-    Real ND2(Real a, Real b, Real rho);
-    // standard normal cumulative distribution function
-    Real PHID(Real Z);
+    // Standard normal CDF — delegates to QuantLib's CumulativeNormalDistribution.
+    inline Real PHID(Real z) { return CumulativeNormalDistribution()(z); }
+
+    // Bivariate normal CDF P(X<=a, Y<=b) with correlation rho —
+    // delegates to QuantLib's BivariateCumulativeNormalDistributionDr78.
+    inline Real ND2(Real a, Real b, Real rho) {
+        return BivariateCumulativeNormalDistributionDr78(rho)(a, b);
+    }
 
     // Functions used to compute the first order approximation
     Real ff(Real p,Real tt,Real a, Real b, Real gm);
@@ -320,83 +325,7 @@ namespace QuantLib {
     }
 
 
-    Real PHID(Real Z){
-        /*
-         *     Normal distribution probabilities accurate to 1D-15.
-         *     Z = number of standard deviations from the mean.
-         *
-         *     The software that computes the normal distribution
-         *     probabilities has been developed by M.C. Recchioni
-         *     based upon algorithm 5666 (Programmer Alan Miller)
-         *     for the error function, taken from:
-         *     Hart, J.F. et al, 'Computer Approximations', Wiley, 1968
-         *
-         */
-        Real P0, P1, P2, P3, P4, P5, P6;
-        Real Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7;
-        Real P, EXPNTL, CUTOFF, ZABS;
 
-        P0 = 220.2068679123761;
-        P1 = 221.2135961699311;
-        P2 = 112.0792914978709;
-        P3 = 33.91286607838300;
-        P4 = 6.373962203531650;
-        P5 = 0.7003830644436881;
-        P6 = 0.03526249659989109;
-
-        Q0 = 440.4137358247522;
-        Q1 = 793.8265125199484;
-        Q2 = 637.3336333788311;
-        Q3 = 296.5642487796737;
-        Q4 = 86.78073220294608;
-        Q5 = 16.064177579206950;
-        Q6 = 1.7556671631826420;
-        Q7 = 0.088388347648318440;
-        CUTOFF = 7.071067811865475;
-
-        ZABS = fabs(Z);
-        /*
-          |Z| > 37
-        */
-        if (ZABS > 37)
-            P = 0;
-        else
-        {
-            /*
-              |Z| <= 37
-            */
-            EXPNTL =exp(-ZABS*ZABS/2);
-            /*
-              |Z| < CUTOFF = 10/SQRT(2)
-            */
-            if ( ZABS < CUTOFF )
-                P = EXPNTL*((((((P6*ZABS + P5)*ZABS + P4)*ZABS + P3)*ZABS+ P2)*ZABS + P1)*ZABS + P0)/(((((((Q7*ZABS + Q6)*ZABS + Q5)*ZABS + Q4)*ZABS + Q3)*ZABS + Q2)*ZABS + Q1)*ZABS + Q0);
-            /*
-              |Z| >= CUTOFF.
-            */
-            else
-                P = EXPNTL/(ZABS + 1/(ZABS + 2/(ZABS + 3/(ZABS + 4/(ZABS + 0.65)))))/sqrtTwoPi;
-
-        }
-        if ( Z > 0 ) P = 1 - P;
-
-        return(P);
-    }
-
-
-    /*
-      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      !!                                                              !!
-      !! Functions needed to compute the  first order term  P_1       !!
-      !!                                                              !!
-      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    */
-
-    /*
-      !!
-      !! Function F(p,tt,a,b,gm)
-      !!
-    */
     Real ff(Real p,Real tt,Real a, Real b, Real gm) {
         Real phid;
         Real aa, caux;
@@ -1274,157 +1203,6 @@ namespace QuantLib {
 
 
     //***********************************************************
-    Real ND2(Real a, Real b, Real rho ){
-        /*
-         *     A function for computing bivariate normal probabilities.
-         *     This function is based on the method described by
-         *     Z. Drezner and G.O. Wesolowsky, (1989),
-         *     On the computation of the bivariate normal integral,
-         *     Journal of Statist. Comput. Simul. 35, pp. 101-107,
-         *     with major modifications for double precision, and for |R| close to 1.
-         *     The software given here has been developed by M.C. Recchioni based on previous
-         *     software developed by:
-         *     Alan Genz
-         *     Department of Mathematics
-         *     Washington State University
-         *     Pullman, WA 99164-3113
-         *     Email : alangenz@wsu.edu
-         *     The software developed by A. Genz is available free of charge in the website:
-         *     www.math.wsu.edu/faculty/genz/software/software.html
-         *
-         *
-         *      ND2 calculates the probability that X > DH and Y > DK.
-         *      Note: Prob( X < DH, Y < DK ) = ND2( -DH, -DK, R ).
-         *
-         * Parameters
-         *
-         *   DH  DOUBLE PRECISION, integration limit
-         *   DK  DOUBLE PRECISION, integration limit
-         *   R   DOUBLE PRECISION, correlation coefficient
-         */
-        Real result, DK, DH, R;
-        int I, IS, LG, NG;
-
-        static const Real XL[11][4] = {
-            { 0.0, 0.0, 0.0, 0.0 },
-            { 0.0, -0.9324695142031522, -0.9815606342467191, -0.9931285991850949 },
-            { 0.0, -0.6612093864662647, -0.9041172563704750, -0.9639719272779138 },
-            { 0.0, -0.2386191860831970, -0.7699026741943050, -0.9122344282513259 },
-            { 0.0, 0.0, -0.5873179542866171, -0.8391169718222188 },
-            { 0.0, 0.0, -0.3678314989981802, -0.7463319064601508 },
-            { 0.0, 0.0, -0.1252334085114692, -0.6360536807265150 },
-            { 0.0, 0.0, 0.0, -0.5108670019508271 },
-            { 0.0, 0.0, 0.0, -0.3737060887154196 },
-            { 0.0, 0.0, 0.0, -0.2277858511416451 },
-            { 0.0, 0.0, 0.0, -0.07652652113349733 }
-        };
-        static const Real WL[11][4] = {
-            { 0.0, 0.0, 0.0, 0.0 },
-            { 0.0, 0.1713244923791705, 0.0471753363865111, 0.01761400713915212 },
-            { 0.0, 0.3607615730481384, 0.1069393259953183, 0.04060142980038694 },
-            { 0.0, 0.4679139345726904, 0.1600783285433464, 0.06267204833410906 },
-            { 0.0, 0.0, 0.2031674267230659, 0.08327674157670475 },
-            { 0.0, 0.0, 0.2334925365383547, 0.1019301198172404 },
-            { 0.0, 0.0, 0.2491470458134029, 0.1181945319615184 },
-            { 0.0, 0.0, 0.0, 0.1316886384491766 },
-            { 0.0, 0.0, 0.0, 0.1420961093183821 },
-            { 0.0, 0.0, 0.0, 0.1491729864726037 },
-            { 0.0, 0.0, 0.0, 0.1527533871307259 }
-        };
-        Real AS, AA, BB, C, D, RS, XS, BVN;
-        Real SN, ASR, H, K, BS, HS, HK;
-
-        R=rho;
-        DH=a;
-        DK=b;
-
-        if( fabs(R) < 0.3 ) {
-            NG = 1;
-            LG = 3; }
-        else if ( fabs(R) < 0.75 ) {
-            NG = 2;
-            LG = 6;}
-        else{
-            NG = 3;
-            LG = 10;
-        }
-        H = DH;
-        K = DK;
-        HK = H*K;
-
-        BVN = 0.0 ;
-        if( fabs(R) < 0.925 ) {
-            if( fabs(R) > 0 ) {
-                HS = ( H*H + K*K )/2;
-                ASR = asin(R);
-                for (I = 1;I<= LG; I++){
-                    for( IS = -1; IS<= 1; IS=IS+2){
-                        SN = sin( ASR*(  IS*XL[I][NG] + 1 )/2 );
-                        BVN = BVN + WL[I][NG]*exp( ( SN*HK-HS )/( 1.0-SN*SN ) );
-
-                    }
-                }
-                BVN = BVN*ASR/( 2*twoPi );
-
-            }
-
-            BVN = BVN + PHID(-H)*PHID(-K);
-
-        }
-        else
-            {
-                if ( R < 0 ) {
-                    K = -K;
-                    HK = -HK;
-                }
-
-                if( fabs(R) <1 ) {
-                    AS = ( 1 - R )*( 1 + R );
-                    AA = std::sqrt(AS);
-
-                    BS = (H-K)*(H-K);
-                    C = ( 4 - HK )/8 ;
-                    D = ( 12 - HK )/16;
-                    ASR = -( BS/AS + HK )/2;
-                    if( ASR > -100 ) BVN = AA*exp(ASR)*( 1 - C*( BS - AS )*( 1 - D*BS/5 )/3 + C*D*AS*AS/5 );
-                    if( -HK<100 ){
-                        BB = std::sqrt(BS);
-                        BVN = BVN - exp( -HK/2 )*sqrtTwoPi*PHID(-BB/AA)*BB*( 1 - C*BS*( 1 - D*BS/5 )/3 );
-                    }
-                    AA = AA/2   ;
-                    for (I = 1; I<= LG;I++){
-                        for( IS = -1; IS<=1; IS=IS+2){
-                            XS =(AA*(IS*XL[I][NG]+1))*(AA*(IS*XL[I][NG]+1));
-                            RS = std::pow( (1 - XS),2 );
-                            ASR = -( BS/XS + HK )/2;
-                            if ( ASR > -100 ) {
-
-                                BVN = BVN + AA*WL[I][NG]*exp( ASR )*(exp( -HK*( 1 - RS )/( 2*( 1 + RS ) ) )/RS- ( 1 + C*XS*( 1 + D*XS ) ) );
-
-
-                            }
-                        }
-                    }
-                    BVN = -BVN/twoPi;
-                }
-                if ( R > 0 )  {
-
-                    BVN =  BVN + PHID( -max( H, K ) );
-
-                }
-                else
-                    {
-                        BVN = -BVN;
-                        if( K > H ) BVN = BVN + PHID(K) - PHID(H);
-                    }
-            }
-
-
-        result=BVN;
-
-        return(result);
-
-    }
 
         struct integr_adapter {
             ext::shared_ptr<YieldTermStructure> r;
