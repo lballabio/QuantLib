@@ -439,7 +439,7 @@ namespace QuantLib {
               const Real r = rho - sigma*freq_ / (v0 + kappa*theta*term);              
               tanPhi_ = std::tan(
                      (r*freq_ < 0.0)? M_PI/12*boost::math::sign(freq_) : 0.0
-                );
+              );
             }
             break;
           default:
@@ -462,17 +462,21 @@ namespace QuantLib {
 
             std::complex<Real> phiBS(0.0);
             if (cpxLog_ == AngledContour)
-                phiBS = std::exp(
+                phiBS = std::exp(-u*tanPhi_*freq_
                     -0.5*vAvg_*term_*(hPrime*hPrime +
                             std::complex<Real>(-hPrime.imag(), hPrime.real())));
             else if (cpxLog_ == AsymptoticChF)
-                phiBS = std::exp(u*std::complex<Real>(1, tanPhi_)*phi_ + psi_);
+                phiBS = std::exp(-u*tanPhi_*freq_ + u*std::complex<Real>(1, tanPhi_)*phi_ + psi_);
 
-            return std::exp(-u*tanPhi_*freq_)
-                    *(std::exp(std::complex<Real>(0.0, u*freq_))
-                      *std::complex<Real>(1, tanPhi_)
-                      *(phiBS - enginePtr_->chF(hPrime, term_))/(h_u*hPrime)
-                      ).real()*s_alpha_;
+            const std::complex<Real> v = enginePtr_->lnChF(hPrime, term_);            
+            const std::complex<Real> chf_v = 
+                (v.real() == -std::numeric_limits<Real>::infinity())
+                ? 0.0: std::exp(-u*tanPhi_*freq_ + v);
+                            
+            return (
+                std::exp(std::complex<Real>(0.0, u*freq_)) 
+                * std::complex<Real>(1, tanPhi_) * (phiBS - chf_v)/(h_u*hPrime)
+            ).real()*s_alpha_;
         }
         else if (cpxLog_ == AndersenPiterbarg || cpxLog_ == AndersenPiterbargOptCV) {
             const std::complex<Real> z(u, -alpha_);
