@@ -522,10 +522,9 @@ std::vector<Real> impliedStdDevs(const Real atm, const std::vector<Real> &strike
 
 
 BOOST_AUTO_TEST_CASE(testMfStateProcess) {
-
-    const Real tolerance = 1E-10;
     BOOST_TEST_MESSAGE("Testing Markov functional state process...");
 
+    const Real tolerance = 1E-10;
     Array times1(0), vols1(1, 1.0);
     MfStateProcess sp1(0.00, times1, vols1);
     Real var11 = sp1.variance(0.0, 0.0, 1.0);
@@ -891,6 +890,8 @@ BOOST_AUTO_TEST_CASE(testSmileSectionUtilsWShapedSmile) {
 }
 
 BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet) {
+    BOOST_TEST_MESSAGE(
+        "Testing Markov functional calibration to one instrument set...");
 
     const Real tol0 = 0.0001; //  1bp tolerance for model zero rates vs. market
                               // zero rates (note that model zero rates are
@@ -898,9 +899,6 @@ BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet) {
                               // the smile)
     const Real tol1 =
         0.0001; // 1bp tolerance for model call put premia vs. market premia
-
-    BOOST_TEST_MESSAGE(
-        "Testing Markov functional calibration to one instrument set...");
 
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
@@ -1196,14 +1194,13 @@ BOOST_AUTO_TEST_CASE(testFlatPayoffExtrapolationUsesLastGridPoint) {
 }
 
 BOOST_AUTO_TEST_CASE(testVanillaEngines) {
+    BOOST_TEST_MESSAGE("Testing Markov functional vanilla engines...");
 
     const Real tol1 = 0.0001; // 1bp tolerance for model engine call put premia
                               // vs. black premia
     // note that we use the real market conventions here (i.e. 2 fixing days),
     // different from the calibration approach where 0 fixing days must be used.
     // therefore higher errors compared to the calibration results are expected.
-
-    BOOST_TEST_MESSAGE("Testing Markov functional vanilla engines...");
 
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
@@ -1477,11 +1474,11 @@ BOOST_AUTO_TEST_CASE(testVanillaEngines) {
 }
 
 BOOST_AUTO_TEST_CASE(testCalibrationTwoInstrumentSets) {
+    BOOST_TEST_MESSAGE(
+        "Testing Markov functional calibration to two instrument sets...");
 
     const Real tol1 = 0.1; // 0.1 times vega tolerance for model vs. market in
                            // second instrument set
-    BOOST_TEST_MESSAGE(
-        "Testing Markov functional calibration to two instrument sets...");
 
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
@@ -1717,10 +1714,9 @@ BOOST_AUTO_TEST_CASE(testCalibrationTwoInstrumentSets) {
 }
 
 BOOST_AUTO_TEST_CASE(testBermudanSwaption) {
+    BOOST_TEST_MESSAGE("Testing Markov functional Bermudan swaption engine...");
 
     Real tol0 = 0.0001; // 1bp tolerance against cached values
-
-    BOOST_TEST_MESSAGE("Testing Markov functional Bermudan swaption engine...");
 
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;

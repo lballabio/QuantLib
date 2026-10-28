@@ -97,7 +97,6 @@ namespace QuantLib {
         int j = 0;
         for (auto i = volstepdates_.begin(); i != volstepdates_.end(); ++i, ++j) {
             volsteptimes_.push_back(termStructure()->timeFromReference(*i));
-            volsteptimesArray_[j] = volsteptimes_[j];
             if (j == 0)
                 QL_REQUIRE(volsteptimes_[0] > 0.0,
                            "volsteptimes must be positive (" << volsteptimes_[0]
@@ -109,7 +108,8 @@ namespace QuantLib {
                                << volsteptimes_[j] << "@" << j << ")");
         }
         if (stateProcess_)
-            ext::static_pointer_cast<MfStateProcess>(stateProcess_)->setTimes(volsteptimesArray_);
+            ext::static_pointer_cast<MfStateProcess>(stateProcess_)->setTimes(
+                Array(volsteptimes_.begin(), volsteptimes_.end()));
     }
 
     void MarkovFunctional::updateTimes2() const {
@@ -149,7 +149,7 @@ namespace QuantLib {
             normalIntegralX_[i] *= M_SQRT2;
         }
 
-        volsteptimesArray_ = Array(volstepdates_.size());
+
 
         updateTimes1();
 
@@ -212,7 +212,8 @@ namespace QuantLib {
         }
 
         stateProcess_ = ext::make_shared<MfStateProcess>(
-            reversion_(0.0), volsteptimesArray_, sigma_.params());
+            reversion_(0.0),
+            Array(volsteptimes_.begin(), volsteptimes_.end()), sigma_.params());
 
         y_ = yGrid(modelSettings_.yStdDevs_, modelSettings_.yGridPoints_);
 
