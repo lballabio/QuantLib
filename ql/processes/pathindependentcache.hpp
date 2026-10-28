@@ -33,10 +33,11 @@ namespace QuantLib {
       public:
         PathIndependentCache() = default;
         explicit PathIndependentCache(const Size timeSteps) : timeSteps_(timeSteps) {}
-        bool ready() const { return ready_; }
+        bool ready() const { return ready_ && !suspended_; }
+        void suspendCaching(const bool suspend) { suspended_ = suspend; }
         template <typename T>
         void add(T&& v, const Real t, const Real dt = 0.0) const {
-            if (timeSteps_ > 0) {
+            if (timeSteps_ > 0 && !suspended_) {
                 if (!times_.empty() && t == times_.back()) {
                     QL_REQUIRE(dt == dts_.back(), "PathIndependentCache::add("
                                                       << t << "," << dt
@@ -53,7 +54,7 @@ namespace QuantLib {
             }
         }
         const U& get(const Real t, const Real dt = 0.0) const {
-            QL_REQUIRE(ready_, "PathIndependentCache::get(): cache not ready.");
+            QL_REQUIRE(ready(), "PathIndependentCache::get(): cache not ready.");
             // usually one or zero increments, so no need to search smarter
             while (timeStep_ < times_.size() && t != times_[timeStep_]) {
                 ++timeStep_;
@@ -75,6 +76,7 @@ namespace QuantLib {
         mutable std::vector<Real> times_;
         mutable std::vector<Real> dts_;
         mutable bool ready_ = false;
+        mutable bool suspended_ = false;
     };
 
 }
