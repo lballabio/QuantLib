@@ -26,6 +26,7 @@
 
 #include <ql/processes/forwardmeasureprocess.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/processes/pathindependentcache.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
@@ -49,11 +50,14 @@ namespace QuantLib {
         Real a() const;
         Real sigma() const;
         Real alpha(Time t) const;
+        void resetCache(const Size numberOfTimeSteps) const override;
+        void suspendCaching(const bool suspend) const override;
         //@}
     protected:
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> process_;
         Handle<YieldTermStructure> h_;
         Real a_, sigma_;
+        mutable PathIndependentCache<Real> driftCache_, diffusionCache_;
     };
 
     //! %Forward Hull-White stochastic process
@@ -71,6 +75,8 @@ namespace QuantLib {
         Real expectation(Time t0, Real x0, Time dt) const override;
         Real stdDeviation(Time t0, Real x0, Time dt) const override;
         Real variance(Time t0, Real x0, Time dt) const override;
+        void resetCache(const Size numberOfTimeSteps) const override;
+        void suspendCaching(const bool suspend) const override;
         //@}
 
         Real a() const;
@@ -83,6 +89,7 @@ namespace QuantLib {
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> process_;
         Handle<YieldTermStructure> h_;
         Real a_, sigma_;
+        mutable PathIndependentCache<Real> driftCache_, diffusionCache_;
     };
 
 }
