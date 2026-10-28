@@ -80,7 +80,7 @@ namespace QuantLib {
             // lower vol is that flat value plus a rounding error. The lower
             // vol is then a solution: no smaller price exists in the bracket.
             const Real lowerError = f(minVol);
-            const Real scale = std::fabs(targetValue) > 1.0 ? std::fabs(targetValue) : 1.0;
+            const Real scale = std::fabs(targetValue) > 1.0 ? Real(std::fabs(targetValue)) : Real(1.0);
             const Real bound = 1.0e4 * QL_EPSILON * scale;
             if (lowerError >= 0.0 && lowerError <= bound)
                 return minVol;

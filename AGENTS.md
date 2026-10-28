@@ -77,7 +77,16 @@ Use the `ql/errors.hpp` macros, not raw `throw`/`assert`:
 - `QL_FAIL`
 - `QL_ASSERT`
 
-### 3.5 Header Pattern
+### 3.5 Conditional operator
+
+A conditional operator, `condition ? expression1 : expression2`, might
+fail to compile if operations on `Real` were redefined to return an
+expression-template type (as in some AAD-enabled extensions of the
+library, where `Real` itself is redefined), because `expression` and
+`expression2` might then have different types.  Instead, prefer
+`condition ? Real(expression1) : Real(expression2)`.
+
+### 3.6 Header Pattern
 
 New headers should have:
 
@@ -86,11 +95,17 @@ New headers should have:
 - Include guard `quantlib_<name>_hpp`
 - Self-contained includes
 
-### 3.6 Tests
+### 3.7 Tests
 
 Any added test cases must have a `BOOST_TEST_MESSAGE("Testing X...")`
 at the beginning, formatted as in existing tests.  Mind the ellipsis
 at the end (three periods, not an single ellipsis character).
+
+Prefer `QL_CHECK_CLOSE` to `BOOST_CHECK_CLOSE`; prefer
+`QL_CHECK_SMALL` to `BOOST_CHECK_SMALL`.  The latter might fail to
+compile if operations on `Real` were redefined to return an
+expression-template type; the former force a conversion to `Real` and
+succeed.
 
 ## 4. Build and Test — Quick Start
 
