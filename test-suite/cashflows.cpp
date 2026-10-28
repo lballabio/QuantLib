@@ -90,10 +90,10 @@ BOOST_AUTO_TEST_CASE(testSimpleDuration) {
                                  (firstTime + secondInterval) * 70.0 * secondDiscount) /
                                 (40.0 * firstDiscount + 70.0 * secondDiscount);
                 InterestRate yield(rate, dayCounter, compounding, Semiannual);
-                BOOST_CHECK_SMALL(CashFlows::duration(leg, yield, Duration::Simple, false) -
-                                      expected,
-                                  1.0e-12);
-                BOOST_CHECK_SMALL(
+                QL_CHECK_SMALL(CashFlows::duration(leg, yield, Duration::Simple, false) -
+                                   expected,
+                               1.0e-12);
+                QL_CHECK_SMALL(
                     CashFlows::duration(leg, rate, dayCounter, compounding, Semiannual,
                                         Duration::Simple, false, settlement, settlement) - expected,
                     1.0e-12);
@@ -223,10 +223,10 @@ BOOST_AUTO_TEST_CASE(testCouponInspectors) {
         BOOST_CHECK_EQUAL(CashFlows::referencePeriodEnd(leg, false, date), end);
         BOOST_CHECK_EQUAL(CashFlows::accrualPeriod(leg, false, date), 1.0);
         BOOST_CHECK_EQUAL(CashFlows::accrualDays(leg, false, date), 365);
-        BOOST_CHECK_SMALL(CashFlows::accruedPeriod(leg, false, date) - 100.0 / 365.0, 1.0e-12);
+        QL_CHECK_SMALL(CashFlows::accruedPeriod(leg, false, date) - 100.0 / 365.0, 1.0e-12);
         BOOST_CHECK_EQUAL(CashFlows::accruedDays(leg, false, date), 100);
-        BOOST_CHECK_SMALL(CashFlows::accruedAmount(leg, false, date) - 5.0 * 100.0 / 365.0,
-                          1.0e-12);
+        QL_CHECK_SMALL(CashFlows::accruedAmount(leg, false, date) - 5.0 * 100.0 / 365.0,
+                       1.0e-12);
     }
     BOOST_CHECK_EQUAL(CashFlows::nominal(leg, true, payment), 100.0);
     BOOST_CHECK_EQUAL(CashFlows::nominal(leg, false, payment), 200.0);
@@ -262,9 +262,9 @@ BOOST_AUTO_TEST_CASE(testCouponRateAggregation) {
                                                    start, end);
     Leg leg = {ext::make_shared<SimpleCashFlow>(10.0, payment), first, second,
                ext::make_shared<SimpleCashFlow>(100.0, payment)};
-    BOOST_CHECK_SMALL(CashFlows::nextCouponRate(leg, false, payment - 1) - 0.05, 1.0e-14);
-    BOOST_CHECK_SMALL(CashFlows::previousCouponRate(leg, false, payment) - 0.05, 1.0e-14);
-    BOOST_CHECK_SMALL(CashFlows::nextCouponRate(leg, true, payment) - 0.05, 1.0e-14);
+    QL_CHECK_SMALL(CashFlows::nextCouponRate(leg, false, payment - 1) - 0.05, 1.0e-14);
+    QL_CHECK_SMALL(CashFlows::previousCouponRate(leg, false, payment) - 0.05, 1.0e-14);
+    QL_CHECK_SMALL(CashFlows::nextCouponRate(leg, true, payment) - 0.05, 1.0e-14);
     BOOST_CHECK_EQUAL(CashFlows::previousCouponRate(leg, true, payment), 0.0);
     BOOST_CHECK_EQUAL(CashFlows::nextCouponRate(leg, false, payment), 0.0);
     BOOST_CHECK_EQUAL(CashFlows::previousCouponRate(Leg(), false, payment), 0.0);
@@ -308,62 +308,62 @@ BOOST_AUTO_TEST_CASE(testPricingDefaultsAndOverloads) {
         Settings::instance().includeReferenceDateEvents() = include;
         Real expectedNpv = 105.0 * discount + (include ? 3.0 : 0.0);
         Real expectedBps = 0.01 * discount;
-        BOOST_CHECK_SMALL(CashFlows::npv(leg, *curve) - expectedNpv, 1.0e-12);
-        BOOST_CHECK_SMALL(CashFlows::bps(leg, *curve) - expectedBps, 1.0e-12);
+        QL_CHECK_SMALL(CashFlows::npv(leg, *curve) - expectedNpv, 1.0e-12);
+        QL_CHECK_SMALL(CashFlows::bps(leg, *curve) - expectedBps, 1.0e-12);
         auto values = CashFlows::npvbps(leg, *curve);
-        BOOST_CHECK_SMALL(values.first - expectedNpv, 1.0e-12);
-        BOOST_CHECK_SMALL(values.second - expectedBps, 1.0e-12);
-        BOOST_CHECK_SMALL(CashFlows::npv(leg, yield) - expectedNpv, 1.0e-12);
-        BOOST_CHECK_SMALL(CashFlows::bps(leg, yield) - expectedBps, 1.0e-12);
-        BOOST_CHECK_SMALL(CashFlows::bps(leg, 0.04, dayCounter, Continuous, Annual) - expectedBps,
-                          1.0e-12);
-        BOOST_CHECK_SMALL(CashFlows::atmRate(leg, *curve) - 0.05, 1.0e-12);
+        QL_CHECK_SMALL(values.first - expectedNpv, 1.0e-12);
+        QL_CHECK_SMALL(values.second - expectedBps, 1.0e-12);
+        QL_CHECK_SMALL(CashFlows::npv(leg, yield) - expectedNpv, 1.0e-12);
+        QL_CHECK_SMALL(CashFlows::bps(leg, yield) - expectedBps, 1.0e-12);
+        QL_CHECK_SMALL(CashFlows::bps(leg, 0.04, dayCounter, Continuous, Annual) - expectedBps,
+                       1.0e-12);
+        QL_CHECK_SMALL(CashFlows::atmRate(leg, *curve) - 0.05, 1.0e-12);
 
         Date npvDate = settlement + 30;
         Real npvDiscount = std::exp(-0.04 * 30.0 / 365.0);
         auto forwardValues = CashFlows::npvbps(leg, *curve, include, settlement, npvDate);
-        BOOST_CHECK_SMALL(forwardValues.first - expectedNpv / npvDiscount, 1.0e-12);
-        BOOST_CHECK_SMALL(forwardValues.second - expectedBps / npvDiscount, 1.0e-12);
-        BOOST_CHECK_SMALL(CashFlows::npv(leg, *curve, include, settlement, npvDate) -
-                              expectedNpv / npvDiscount,
-                          1.0e-12);
-        BOOST_CHECK_SMALL(CashFlows::bps(leg, *curve, include, settlement, npvDate) -
-                              expectedBps / npvDiscount,
-                          1.0e-12);
+        QL_CHECK_SMALL(forwardValues.first - expectedNpv / npvDiscount, 1.0e-12);
+        QL_CHECK_SMALL(forwardValues.second - expectedBps / npvDiscount, 1.0e-12);
+        QL_CHECK_SMALL(CashFlows::npv(leg, *curve, include, settlement, npvDate) -
+                           expectedNpv / npvDiscount,
+                       1.0e-12);
+        QL_CHECK_SMALL(CashFlows::bps(leg, *curve, include, settlement, npvDate) -
+                           expectedBps / npvDiscount,
+                       1.0e-12);
         Real targetNpv = (106.0 * discount + (include ? 3.0 : 0.0)) / npvDiscount;
-        BOOST_CHECK_SMALL(CashFlows::atmRate(leg, *curve, include, settlement, npvDate,
-                                             targetNpv) - 0.06,
-                          1.0e-12);
+        QL_CHECK_SMALL(CashFlows::atmRate(leg, *curve, include, settlement, npvDate,
+                                          targetNpv) - 0.06,
+                       1.0e-12);
     }
 
     Leg future = {leg[2], leg[3]};
     Real expectedNpv = 105.0 * discount;
-    BOOST_CHECK_SMALL(CashFlows::duration(future, yield, Duration::Simple, false) - 1.0, 1.0e-12);
-    BOOST_CHECK_SMALL(CashFlows::duration(future, yield, Duration::Modified, false) - 1.0, 1.0e-12);
-    BOOST_CHECK_SMALL(CashFlows::convexity(future, yield, false) - 1.0, 1.0e-12);
-    BOOST_CHECK_SMALL(CashFlows::convexity(future, 0.04, dayCounter, Continuous, Annual, false) -
-                          1.0,
-                      1.0e-12);
+    QL_CHECK_SMALL(CashFlows::duration(future, yield, Duration::Simple, false) - 1.0, 1.0e-12);
+    QL_CHECK_SMALL(CashFlows::duration(future, yield, Duration::Modified, false) - 1.0, 1.0e-12);
+    QL_CHECK_SMALL(CashFlows::convexity(future, yield, false) - 1.0, 1.0e-12);
+    QL_CHECK_SMALL(CashFlows::convexity(future, 0.04, dayCounter, Continuous, Annual, false) -
+                       1.0,
+                   1.0e-12);
     Real expectedBpv = expectedNpv * (-0.0001 + 0.5 * 0.0001 * 0.0001);
-    BOOST_CHECK_SMALL(CashFlows::basisPointValue(future, yield, false) - expectedBpv, 1.0e-12);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(CashFlows::basisPointValue(future, yield, false) - expectedBpv, 1.0e-12);
+    QL_CHECK_SMALL(
         CashFlows::basisPointValue(future, 0.04, dayCounter, Continuous, Annual, false) - expectedBpv,
         1.0e-12);
     Real expectedYvbp = -0.01 / expectedNpv;
-    BOOST_CHECK_SMALL(CashFlows::yieldValueBasisPoint(future, yield, false) - expectedYvbp, 1.0e-12);
-    BOOST_CHECK_SMALL(CashFlows::yieldValueBasisPoint(future, 0.04, dayCounter, Continuous,
-                                                    Annual, false) - expectedYvbp,
-                      1.0e-12);
-    BOOST_CHECK_SMALL(CashFlows::yield(future, expectedNpv, dayCounter, Continuous, Annual, false) -
-                          0.04,
-                      1.0e-10);
+    QL_CHECK_SMALL(CashFlows::yieldValueBasisPoint(future, yield, false) - expectedYvbp, 1.0e-12);
+    QL_CHECK_SMALL(CashFlows::yieldValueBasisPoint(future, 0.04, dayCounter, Continuous,
+                                                 Annual, false) - expectedYvbp,
+                   1.0e-12);
+    QL_CHECK_SMALL(CashFlows::yield(future, expectedNpv, dayCounter, Continuous, Annual, false) -
+                       0.04,
+                   1.0e-10);
     Real expectedSpreadNpv = 105.0 * std::exp(-0.05);
-    BOOST_CHECK_SMALL(CashFlows::npv(future, curve, 0.01, Continuous, Annual, false) -
-                          expectedSpreadNpv,
-                      1.0e-12);
-    BOOST_CHECK_SMALL(CashFlows::zSpread(future, expectedSpreadNpv, curve, Continuous, Annual,
-                                        false) - 0.01,
-                      1.0e-10);
+    QL_CHECK_SMALL(CashFlows::npv(future, curve, 0.01, Continuous, Annual, false) -
+                       expectedSpreadNpv,
+                   1.0e-12);
+    QL_CHECK_SMALL(CashFlows::zSpread(future, expectedSpreadNpv, curve, Continuous, Annual,
+                                     false) - 0.01,
+                   1.0e-10);
 }
 
 BOOST_AUTO_TEST_CASE(testPricingEmptyLegsAndErrors) {
@@ -1094,7 +1094,7 @@ BOOST_AUTO_TEST_CASE(testIborStubInterpolationEndpointsAndRegularSchedule) {
         auto coupon = ext::dynamic_pointer_cast<StubIborCoupon>(leg.front());
         BOOST_REQUIRE(coupon);
         QL_CHECK_SMALL(coupon->indexFixing() - endpoint->fixing(coupon->fixingDate()),
-                          1.0e-14);
+                       1.0e-14);
     }
 
     const Date regularEnd = bkbm3m->maturityDate(start);
