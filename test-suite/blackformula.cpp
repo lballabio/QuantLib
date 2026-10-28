@@ -529,7 +529,7 @@ BOOST_AUTO_TEST_CASE(testBachelierImpliedVolJustAboveIntrinsic) {
     for (Real d = 7.0; d <= 7.6 + 1e-12; d += 0.05) {
         for (auto type : {Option::Call, Option::Put}) {
             const Real forward = 0.0;
-            const Real strike = (type == Option::Call) ? forward - d : forward + d;
+            const Real strike = (type == Option::Call) ? Real(forward - d) : Real(forward + d);
             const Real intrinsic = d;
             const Real price = bachelierBlackFormula(type, strike, forward, stdDev);
 
@@ -571,7 +571,7 @@ BOOST_AUTO_TEST_CASE(testBachelierImpliedVolJustAboveIntrinsicDiscounted) {
         for (Real d = 7.0; d <= 7.6 + 1e-12; d += 0.05) {
             for (auto type : {Option::Call, Option::Put}) {
                 const Real forward = 0.0;
-                const Real strike = (type == Option::Call) ? forward - d : forward + d;
+                const Real strike = (type == Option::Call) ? Real(forward - d) : Real(forward + d);
                 const Real price = bachelierBlackFormula(type, strike, forward, stdDev, discount);
 
                 Real impliedVol = -1.0;
