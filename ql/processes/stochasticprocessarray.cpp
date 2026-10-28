@@ -130,4 +130,16 @@ namespace QuantLib {
         return sqrtCorrelation_ * transpose(sqrtCorrelation_);
     }
 
+    void StochasticProcessArray::resetCache(const Size numberOfTimeSteps) const {
+        for (Size i=0; i<size(); ++i) {
+            processes_[i]->resetCache(numberOfTimeSteps);
+        }
+    }
+
+    void StochasticProcessArray::suspendCaching(const bool suspend) const {
+        for (Size i=0; i<size(); ++i) {
+            processes_[i]->suspendCaching(suspend);
+        }
+    }
+
 }
