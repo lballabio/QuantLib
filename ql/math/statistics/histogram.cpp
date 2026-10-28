@@ -127,6 +127,9 @@ namespace QuantLib {
                   bins_ = static_cast<Size>(std::ceil((max-min)/h));
                   break;
               }
+              case Pretty:
+                // bins_ is set as a hint; actual count determined after picking a nice step
+                break;
               case None:
                 QL_FAIL("a bin-partition algorithm is required");
               default:
@@ -136,34 +139,35 @@ namespace QuantLib {
         }
 
         if (breaks_.empty()) {
-            // Set breaks using R-style pretty() algorithm: choose a step size
-            // that is a "round" number (1, 2, or 5 times a power of 10) so that
-            // breakpoints land on human-readable values.
-            Real range = max - min;
-            Real rawStep = range / bins_;
-            // Find the power of 10 just below rawStep
-            Real magnitude = std::pow(10.0, std::floor(std::log10(rawStep)));
-            // Pick the smallest "nice" multiplier {1, 2, 5, 10} that gives a
-            // step >= rawStep (so the pretty grid covers the full range)
-            Real niceStep;
-            if      (rawStep <= 1.0 * magnitude) niceStep = 1.0 * magnitude;
-            else if (rawStep <= 2.0 * magnitude) niceStep = 2.0 * magnitude;
-            else if (rawStep <= 5.0 * magnitude) niceStep = 5.0 * magnitude;
-            else                                 niceStep = 10.0 * magnitude;
-            // Align grid start to a multiple of niceStep just below min
-            Real gridMin = std::floor(min / niceStep) * niceStep;
-            Real gridMax = std::ceil (max / niceStep) * niceStep;
-            // Collect interior breakpoints (exclude gridMin and gridMax
-            // themselves, which are the outer bin edges, not interior breaks)
-            breaks_.clear();
-            for (Real b = gridMin + niceStep;
-                 b < gridMax - 0.5 * niceStep;  // guard against fp overshoot
-                 b += niceStep) {
-                breaks_.push_back(b);
+            if (algorithm_ == Pretty) {
+                // R-style pretty() algorithm: choose a step size that is a
+                // round number (1, 2, or 5 times a power of 10) so that
+                // breakpoints land on human-readable values.  The bin count
+                // passed to the constructor is treated as a hint.
+                Real range = max - min;
+                Real rawStep = range / bins_;
+                Real magnitude = std::pow(10.0, std::floor(std::log10(rawStep)));
+                Real niceStep;
+                if      (rawStep <= 1.0 * magnitude) niceStep = 1.0 * magnitude;
+                else if (rawStep <= 2.0 * magnitude) niceStep = 2.0 * magnitude;
+                else if (rawStep <= 5.0 * magnitude) niceStep = 5.0 * magnitude;
+                else                                 niceStep = 10.0 * magnitude;
+                Real gridMin = std::floor(min / niceStep) * niceStep;
+                Real gridMax = std::ceil (max / niceStep) * niceStep;
+                breaks_.clear();
+                for (Real b = gridMin + niceStep;
+                     b < gridMax - 0.5 * niceStep;
+                     b += niceStep) {
+                    breaks_.push_back(b);
+                }
+                bins_ = breaks_.size() + 1;
+            } else {
+                // Default: uniform breaks over the data range
+                Real h = (max - min) / bins_;
+                breaks_.resize(bins_ - 1);
+                for (Size i = 0; i < breaks_.size(); ++i)
+                    breaks_[i] = min + (i + 1) * h;
             }
-            // bins_ is now determined by the pretty grid rather than the
-            // requested count (which was only a hint)
-            bins_ = breaks_.size() + 1;
         } else {
             // or ensure they're sorted if given
             std::sort(breaks_.begin(), breaks_.end());
