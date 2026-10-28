@@ -2470,6 +2470,19 @@ BOOST_AUTO_TEST_CASE(testHelperDatesFromNonBusinessEvaluationDate) {
                     "actual evaluation date:\n"
                     "    expected: " << expectedBmaStart << "\n"
                     "    obtained: " << bmaHelper->earliestDate());
+
+    Handle<Quote> fxSpot(ext::make_shared<SimpleQuote>(1.1));
+    Handle<Quote> fxPoints(ext::make_shared<SimpleQuote>(0.001));
+    auto fx = ext::make_shared<FxSwapRateHelper>(
+        fxPoints, fxSpot, 1 * Years, 2, calendar, Following, false, true,
+        Handle<YieldTermStructure>());
+    if (fx->earliestDate() != expectedSpot)
+        BOOST_ERROR("FX swap helper earliest date not calculated from the "
+                    "actual evaluation date:\n"
+                    "    expected: " << expectedSpot << "\n"
+                    "    obtained: " << fx->earliestDate());
+    BOOST_CHECK(expectedSpot !=
+                calendar.advance(calendar.adjust(today), 2 * Days));
 }
 
 BOOST_AUTO_TEST_CASE(testBmaHelperSwap) {

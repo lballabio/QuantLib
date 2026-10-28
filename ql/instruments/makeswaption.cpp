@@ -58,9 +58,8 @@ namespace QuantLib {
             ? swapIndex_->fixingCalendar()
             : exerciseCalendar_;
         Date refDate = Settings::instance().evaluationDate();
-        // if the evaluation date is not a business day
-        // then move to the next business day
-        refDate = calendar.adjust(refDate);
+        // the option tenor is counted from the actual evaluation date,
+        // even when it is not a business day (see issue #753)
         if (fixingDate_ == Date())
             fixingDate_ = calendar.advance(refDate, optionTenor_,
                                            optionConvention_);
