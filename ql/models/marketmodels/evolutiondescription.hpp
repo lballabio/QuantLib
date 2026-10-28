@@ -114,6 +114,22 @@ namespace QuantLib {
     */
     std::vector<Size> moneyMarketMeasure(const EvolutionDescription&);
 
+    /*! Compute merged relevance rates for a product whose evolution times were
+        built by merging those of an underlying and a rebate product via
+        mergeTimes().  For each merged step the relevant rate range is the union
+        of the underlying's and rebate's ranges at the corresponding source step
+        (tracked via the isPresent flags).  Steps where neither the underlying
+        nor the rebate is active fall back to [0, numberOfRates].
+
+        isPresent[0] flags underlying steps; isPresent[2] flags rebate steps.
+        undEvolution and rebEvolution are the original (pre-merge) evolutions.
+    */
+    std::vector<std::pair<Size,Size> >
+    mergedRelevanceRates(const EvolutionDescription& undEvolution,
+                         const EvolutionDescription& rebEvolution,
+                         const std::vector<std::valarray<bool> >& isPresent,
+                         Size numberOfRates);
+
 }
 
 #endif

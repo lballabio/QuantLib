@@ -64,8 +64,11 @@ namespace QuantLib {
                                     mergedEvolutionTimes,
                                     isPresent_);
 
-        // TODO: add relevant rates
-        evolution_ = EvolutionDescription(rateTimes1, mergedEvolutionTimes);
+        evolution_ = EvolutionDescription(rateTimes1, mergedEvolutionTimes,
+                                          mergedRelevanceRates(d1,
+                                              rebate_->evolution(),
+                                              isPresent_,
+                                              d1.numberOfRates()));
 
         cashFlowTimes_ = underlying_->possibleCashFlowTimes();
         rebateOffset_ = cashFlowTimes_.size();

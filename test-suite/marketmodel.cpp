@@ -25,6 +25,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/models/marketmodels/accountingengine.hpp>
+#include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
 #include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/models/marketmodels/callability/collectnodedata.hpp>
@@ -4655,6 +4656,58 @@ BOOST_AUTO_TEST_CASE(testCovariance) {
             }
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testMergedRelevanceRates) {
+    BOOST_TEST_MESSAGE("Testing mergedRelevanceRates utility...");
+
+    // Build two simple EvolutionDescriptions each with 2 steps over 4 rates
+    std::vector<Time> rateTimes = {1.0, 2.0, 3.0, 4.0, 5.0}; // 4 rates
+    std::vector<Time> undTimes  = {1.0, 2.0};
+    std::vector<Time> rebTimes  = {1.0, 3.0};
+
+    // underlying: step 0 uses rates [0,2), step 1 uses rates [1,3)
+    std::vector<std::pair<Size,Size>> undRel = {{0,2},{1,3}};
+    // rebate:     step 0 uses rates [2,4), step 1 uses rates [0,4)
+    std::vector<std::pair<Size,Size>> rebRel = {{2,4},{0,4}};
+
+    EvolutionDescription undEvol(rateTimes, undTimes, undRel);
+    EvolutionDescription rebEvol(rateTimes, rebTimes, rebRel);
+
+    // isPresent[0] = underlying active flags, isPresent[2] = rebate active flags
+    // Merged times = {1.0, 2.0, 3.0} (3 merged steps)
+    // step 0 (t=1): both und step 0 and reb step 0 active
+    // step 1 (t=2): und step 1 active, rebate not
+    // step 2 (t=3): rebate step 1 active, underlying not
+    std::vector<std::valarray<bool>> isPresent(4);
+    for (auto& v : isPresent) v.resize(3, false);
+    isPresent[0][0] = true; isPresent[0][1] = true;  // underlying at steps 0,1
+    isPresent[2][0] = true; isPresent[2][2] = true;  // rebate at steps 0,2
+
+    auto result = mergedRelevanceRates(undEvol, rebEvol, isPresent, 4);
+
+    BOOST_REQUIRE_EQUAL(result.size(), 3u);
+
+    // step 0: union of und[0,2) and reb[2,4) = [0,4)
+    BOOST_CHECK_EQUAL(result[0].first,  0u);
+    BOOST_CHECK_EQUAL(result[0].second, 4u);
+
+    // step 1: only und[1,3) active
+    BOOST_CHECK_EQUAL(result[1].first,  1u);
+    BOOST_CHECK_EQUAL(result[1].second, 3u);
+
+    // step 2: only reb[0,4) active
+    BOOST_CHECK_EQUAL(result[2].first,  0u);
+    BOOST_CHECK_EQUAL(result[2].second, 4u);
+
+    // Test fallback: step where neither underlying nor rebate is active
+    std::vector<std::valarray<bool>> noActive(4);
+    for (auto& v : noActive) v.resize(1, false);
+    // no flags set — should fall back to full range [0, numberOfRates]
+    auto fallback = mergedRelevanceRates(undEvol, rebEvol, noActive, 4);
+    BOOST_REQUIRE_EQUAL(fallback.size(), 1u);
+    BOOST_CHECK_EQUAL(fallback[0].first,  0u);
+    BOOST_CHECK_EQUAL(fallback[0].second, 4u);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
