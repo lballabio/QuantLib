@@ -21,7 +21,7 @@
 */
 
 #include <ql/experimental/lattices/extendedbinomialtree.hpp>
-#include <ql/math/distributions/binomialdistribution.hpp>
+#include <ql/methods/lattices/binomialtree.hpp>
 
 namespace QuantLib {
 

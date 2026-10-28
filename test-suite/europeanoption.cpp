@@ -1314,6 +1314,13 @@ BOOST_AUTO_TEST_CASE(testFarOutOfTheMoneyBinomialEngines) {
                            deepR[i], today, deepVol[i], deepExpected, deepCalculated,
                            deepError, deepTolerance);
     }
+
+    // Past the point where the up probability underflows, the step stays
+    // finite and puts the mass on the up move.
+    const LeisenReimerStep step = leisenReimerStep(1000.0, 1.0, 1.0, 5);
+    BOOST_CHECK_EQUAL(step.upProbability, 1.0);
+    BOOST_CHECK(std::isfinite(step.up) && step.up > 0.0);
+    BOOST_CHECK(std::isfinite(step.down) && step.down > 0.0);
 }
 
 BOOST_AUTO_TEST_CASE(testLargeDriftBinomialEngines) {
