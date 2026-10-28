@@ -521,11 +521,6 @@ BOOST_AUTO_TEST_CASE(testBachelierImpliedVolJustAboveIntrinsic) {
     BOOST_TEST_MESSAGE("Testing Bachelier implied volatility for deep in-the-money "
                        "prices just above intrinsic value...");
 
-    // Between about 7.1 and 7.7 standard deviations in the money the time
-    // value is only a few ulps of the price, but it is computed exactly and
-    // still determines the volatility to a few digits.  Such prices must not
-    // be mapped to a zero volatility; prices on or a few ulps below intrinsic
-    // must still return zero without throwing.
     const Real tte = 1.0;
     const Real vol = 1.0;
     const Real stdDev = vol * std::sqrt(tte);
@@ -541,7 +536,6 @@ BOOST_AUTO_TEST_CASE(testBachelierImpliedVolJustAboveIntrinsic) {
             if (price > intrinsic) {
                 const Real impliedVol =
                     bachelierBlackFormulaImpliedVol(type, strike, forward, tte, price);
-                // the identifiability bound is below 2% up to d = 7.6
                 if (std::fabs(impliedVol / vol - 1.0) > 0.02)
                     BOOST_ERROR("implied vol " << impliedVol << " for d = " << d
                                 << " differs from " << vol << " by more than 2%");
@@ -562,6 +556,34 @@ BOOST_AUTO_TEST_CASE(testBachelierImpliedVolJustAboveIntrinsic) {
     }
     if (inverted == 0)
         BOOST_ERROR("no deep in-the-money price above intrinsic was tested");
+}
+
+BOOST_AUTO_TEST_CASE(testBachelierImpliedVolJustAboveIntrinsicDiscounted) {
+
+    BOOST_TEST_MESSAGE("Testing Bachelier implied volatility just above intrinsic "
+                       "value with discounting...");
+
+    const Real tte = 1.0;
+    const Real vol = 1.0;
+    const Real stdDev = vol * std::sqrt(tte);
+
+    for (Real discount : {0.9, 0.95, 0.99}) {
+        for (Real d = 7.0; d <= 7.6 + 1e-12; d += 0.05) {
+            for (auto type : {Option::Call, Option::Put}) {
+                const Real forward = 0.0;
+                const Real strike = (type == Option::Call) ? forward - d : forward + d;
+                const Real price = bachelierBlackFormula(type, strike, forward, stdDev, discount);
+
+                Real impliedVol = -1.0;
+                BOOST_CHECK_NO_THROW(impliedVol = bachelierBlackFormulaImpliedVol(
+                                         type, strike, forward, tte, price, discount));
+                if (impliedVol != 0.0 && std::fabs(impliedVol / vol - 1.0) > 0.03)
+                    BOOST_ERROR("implied vol " << impliedVol << " for d = " << d
+                                << " and discount = " << discount << " differs from " << vol
+                                << " by more than 3%");
+            }
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testDeepInTheMoneyPricesNotBelowIntrinsic) {
