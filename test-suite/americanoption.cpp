@@ -409,8 +409,10 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandValues) {
         // ITM option with a very small volatility
       { Option::Call, 100, 110, 0.05, 0.05, 1.0, 0.0001, 10.0 },
       { Option::Put, 110, 100, 0.05, 0.05, 1.0, 0.0001, 10.0 },
-        // ATM option with a very large volatility
-      { Option::Put, 100, 110, 0.05, 0.05, 1.0, 10, 95.12289 }
+        // OTM option with a very large volatility; the published trigger
+        // gives the European value 95.12289 here. Reference values: QdFp
+        // high precision 99.20350, CRR with 4001 steps 99.20338
+      { Option::Put, 100, 110, 0.05, 0.05, 1.0, 10, 99.20350 }
     };
 
     Date today = Date::todaysDate();
