@@ -50,6 +50,17 @@ namespace QuantLib {
         std::vector<Real> adjustedCallabilityPrices_;
         void applyCallability(Size i);
         void addCoupon(Size i);
+
+        /* The grid node of each event only depends on the lattice, so it is
+           resolved on the first adjustment after the method changes instead
+           of being looked up again at every time step. NaN means "not yet
+           resolved". */
+        const Lattice* gridTimesMethod_ = nullptr;
+        std::vector<Time> gridTimes_;
+        std::vector<Time> couponGridTimes_;
+        std::vector<Time> callabilityGridTimes_;
+        void checkGridTimes();
+        bool isOnGridTime(Time t, std::vector<Time>& gridTimes, Size i);
     };
 
 }

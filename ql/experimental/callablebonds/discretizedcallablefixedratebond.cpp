@@ -19,6 +19,8 @@
 */
 
 #include <ql/experimental/callablebonds/discretizedcallablefixedratebond.hpp>
+#include <cmath>
+#include <limits>
 
 namespace QuantLib {
 
@@ -144,10 +146,11 @@ namespace QuantLib {
 
 
     void DiscretizedCallableFixedRateBond::preAdjustValuesImpl() {
+        checkGridTimes();
         for (Size i = 0; i < couponTimes_.size(); i++) {
             if (couponAdjustments_[i] == CouponAdjustment::pre) {
                 Time t = couponTimes_[i];
-                if (t >= 0.0 && isOnTime(t)) {
+                if (t >= 0.0 && isOnGridTime(t, couponGridTimes_, i)) {
                     addCoupon(i);
                 }
             }
@@ -156,21 +159,56 @@ namespace QuantLib {
 
 
     void DiscretizedCallableFixedRateBond::postAdjustValuesImpl() {
+        checkGridTimes();
         for (Size i = 0; i < callabilityTimes_.size(); i++) {
             Time t = callabilityTimes_[i];
-            if (t >= 0.0 && isOnTime(t)) {
+            if (t >= 0.0 && isOnGridTime(t, callabilityGridTimes_, i)) {
                 applyCallability(i);
             }
         }
         for (Size i = 0; i < couponTimes_.size(); i++) {
             if (couponAdjustments_[i] == CouponAdjustment::post) {
                 Time t = couponTimes_[i];
-                if (t >= 0.0 && isOnTime(t)) {
+                if (t >= 0.0 && isOnGridTime(t, couponGridTimes_, i)) {
                     /* Exercise and coupon date matches. */
                     addCoupon(i);
                 }
             }
         }
+    }
+
+
+    void DiscretizedCallableFixedRateBond::checkGridTimes() {
+        const Lattice* lattice = &(*method());
+        // Recompute also if the lattice is the same object but has been rebuilt
+        // on a different grid in the meantime: prices/thresholds are unaffected,
+        // but the node values are not.
+        const TimeGrid& grid = method()->timeGrid();
+        bool sameGrid = lattice == gridTimesMethod_ &&
+                        ((grid.empty() && gridTimes_.empty()) ||
+                         (!grid.empty() && !gridTimes_.empty() && grid[0] == gridTimes_.front() &&
+                          grid[grid.size() - 1] == gridTimes_.back() &&
+                          grid.size() == gridTimes_.size()));
+        if (lattice == gridTimesMethod_ && sameGrid &&
+            couponGridTimes_.size() == couponTimes_.size() &&
+            callabilityGridTimes_.size() == callabilityTimes_.size())
+            return;
+        gridTimes_.assign(grid.begin(), grid.end());
+        couponGridTimes_.assign(couponTimes_.size(), std::numeric_limits<Time>::quiet_NaN());
+        callabilityGridTimes_.assign(callabilityTimes_.size(), std::numeric_limits<Time>::quiet_NaN());
+        gridTimesMethod_ = lattice;
+    }
+
+
+    bool DiscretizedCallableFixedRateBond::isOnGridTime(Time t,
+                                                        std::vector<Time>& gridTimes,
+                                                        Size i) {
+        if (std::isnan(gridTimes[i])) {
+            // Same as isOnTime(), but the expensive lookup is done once per lattice.
+            const TimeGrid& grid = method()->timeGrid();
+            gridTimes[i] = grid[grid.index(t)];
+        }
+        return close_enough(gridTimes[i], time());
     }
 
 
