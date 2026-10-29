@@ -453,9 +453,9 @@ BOOST_AUTO_TEST_CASE(testDividendBetweenEvaluationAndSettlement) {
     bond.setPricingEngine(engineWithout);
     Real priceWithoutDividend = bond.NPV();
 
-    // The in-lag dividend must reduce the price: before the fix it was
-    // subtracted from s0 but never added back inside the tree (which is
-    // anchored at settlementDate), so its value silently vanished.
+    // The in-lag dividend must reduce the price: it is subtracted
+    // from s0 but never added back inside the tree (which is
+    // anchored at the settlementDate).
     if (priceWithDividend >= priceWithoutDividend) {
         BOOST_ERROR("in-lag dividend did not reduce the convertible bond price:"
                     << "\n    with dividend:    " << priceWithDividend
