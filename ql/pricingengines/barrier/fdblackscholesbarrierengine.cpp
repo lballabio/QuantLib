@@ -101,12 +101,25 @@ namespace QuantLib {
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
         QL_REQUIRE(!triggered(spot), "barrier touched");
 
+        const Date settlementDate = process_->riskFreeRate()->referenceDate();
+        bool exercisableToday = false;
+        if (exerciseType == Exercise::American) {
+            exercisableToday = arguments_.exercise->date(0) <= settlementDate
+                               && settlementDate <= arguments_.exercise->lastDate();
+        } else if (exerciseType == Exercise::Bermudan) {
+            for (const Date& exerciseDate : arguments_.exercise->dates()) {
+                if (exerciseDate == settlementDate) {
+                    exercisableToday = true;
+                    break;
+                }
+            }
+        }
+
         // on the barrier the option is knocked out before it can be
         // exercised; when the intrinsic value there exceeds the rebate,
         // the holder would exercise just inside it instead, so the value
         // jumps at the barrier and the greeks are undefined
-        if (   exerciseType == Exercise::American
-            && process_->time(arguments_.exercise->date(0)) <= 0.0
+        if (   exercisableToday
             && close_enough(spot, arguments_.barrier)
             && (*payoff)(arguments_.barrier) > arguments_.rebate) {
             results_.value = arguments_.rebate;
@@ -213,19 +226,7 @@ namespace QuantLib {
         // undershoot it in between; floor the value when the holder can
         // exercise on the reference date and the payoff is paid then.
         // Greeks stay on the interpolant.
-        const Date settlementDate = process_->riskFreeRate()->referenceDate();
-        bool exercisable = false;
-        if (exerciseType == Exercise::American) {
-            exercisable = arguments_.exercise->date(0) <= settlementDate
-                          && settlementDate <= arguments_.exercise->lastDate();
-        } else if (exerciseType == Exercise::Bermudan) {
-            for (const Date& exerciseDate : arguments_.exercise->dates()) {
-                if (exerciseDate == settlementDate) {
-                    exercisable = true;
-                    break;
-                }
-            }
-        }
+        bool exercisable = exercisableToday;
         if (exercisable) {
             const auto early = ext::dynamic_pointer_cast<EarlyExercise>(arguments_.exercise);
             if (early != nullptr && early->payoffAtExpiry())

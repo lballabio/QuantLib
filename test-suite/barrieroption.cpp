@@ -1458,6 +1458,24 @@ BOOST_AUTO_TEST_CASE(testFdEarlyExerciseKnockOutBounds) {
     QL_CHECK_CLOSE(jumpOption.NPV(), rebate, 1e-10);
     BOOST_CHECK_THROW(jumpOption.delta(), Error);
 
+    // the same holds for a Bermudan option exercisable today...
+    std::vector<Date> datesFromToday = exerciseDates;
+    datesFromToday.insert(datesFromToday.begin(), today);
+    BarrierOption bermudanJump(Barrier::DownOut, 100.0, rebate,
+                               ext::make_shared<PlainVanillaPayoff>(Option::Call, 90.0),
+                               ext::make_shared<BermudanExercise>(datesFromToday));
+    bermudanJump.setPricingEngine(barrierEngine);
+    QL_CHECK_CLOSE(bermudanJump.NPV(), rebate, 1e-10);
+    BOOST_CHECK_THROW(bermudanJump.delta(), Error);
+
+    // ...but not for one that isn't exercisable today
+    BarrierOption bermudanCall(Barrier::DownOut, 100.0, rebate,
+                               ext::make_shared<PlainVanillaPayoff>(Option::Call, 90.0),
+                               bermudanExercise);
+    bermudanCall.setPricingEngine(barrierEngine);
+    QL_CHECK_CLOSE(bermudanCall.NPV(), rebate, 1e-10);
+    BOOST_CHECK_NO_THROW(bermudanCall.delta());
+
     // otherwise the value is continuous at the barrier and the greeks are provided
     BarrierOption americanCall(Barrier::DownOut, 100.0, rebate,
                                ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0),
