@@ -1844,6 +1844,91 @@ BOOST_AUTO_TEST_CASE(testAllFixingsInThePast) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testTurnbullWakemanAllFixingsInThePast) {
+
+    BOOST_TEST_MESSAGE("Testing Turnbull-Wakeman Asian options with all fixings in the past...");
+
+    Date today = Settings::instance().evaluationDate();
+    DayCounter dc = Actual365Fixed();
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto qTS = flatRate(today, 0.01, dc);
+    auto rTS = flatRate(today, 0.03, dc);
+    auto volTS = flatVol(today, 0.25, dc);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
+        Handle<BlackVolTermStructure>(volTS));
+    auto engine = ext::make_shared<TurnbullWakemanAsianEngine>(process);
+
+    std::vector<Date> fixingDates;
+    for (Integer i = 12; i > 0; --i)
+        fixingDates.push_back(today - 30 * i);
+    std::vector<Real> pastFixings(12, 100.0);
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 14);
+
+    for (Option::Type type : {Option::Call, Option::Put}) {
+        for (Real strike : {95.0, 100.0, 105.0}) {
+            BOOST_TEST_CONTEXT("type: " << type << ", strike: " << strike) {
+                auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
+                DiscreteAveragingAsianOption option(Average::Arithmetic, fixingDates, payoff,
+                                                   exercise, pastFixings);
+                option.setPricingEngine(engine);
+
+                // The fixed average is 100; only discounting to the payment date remains.
+                Real expected = (*payoff)(100.0) * rTS->discount(exercise->lastDate());
+                BOOST_CHECK_SMALL(option.NPV() - expected, 1.0e-12);
+                BOOST_CHECK_EQUAL(option.delta(), 0.0);
+                BOOST_CHECK_EQUAL(option.gamma(), 0.0);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testTurnbullWakemanLastFixingToday) {
+
+    BOOST_TEST_MESSAGE("Testing Turnbull-Wakeman Asian options with the last fixing today...");
+
+    Date today = Settings::instance().evaluationDate();
+    DayCounter dc = Actual365Fixed();
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto qTS = flatRate(today, 0.01, dc);
+    auto rTS = flatRate(today, 0.03, dc);
+    auto volTS = flatVol(today, 0.25, dc);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
+        Handle<BlackVolTermStructure>(volTS));
+    auto engine = ext::make_shared<TurnbullWakemanAsianEngine>(process);
+
+    std::vector<Date> fixingDates;
+    for (Integer i = 5; i > 0; --i)
+        fixingDates.push_back(today - 30 * i);
+    fixingDates.push_back(today);
+    std::vector<Real> pastFixings(5, 100.0);
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 2);
+
+    for (Option::Type type : {Option::Call, Option::Put}) {
+        for (Real strike : {95.0, 105.0}) {
+            BOOST_TEST_CONTEXT("type: " << type << ", strike: " << strike) {
+                auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
+                DiscreteAveragingAsianOption option(Average::Arithmetic, fixingDates, payoff,
+                                                   exercise, pastFixings);
+                option.setPricingEngine(engine);
+
+                // Today's fixing equals spot, so the average is (5 * 100 + 100) / 6.
+                DiscountFactor discount = rTS->discount(exercise->lastDate());
+                Real expected = (*payoff)(100.0) * discount;
+                Real expectedDelta = expected > 0.0 ? int(type) * discount / 6.0 : 0.0;
+                BOOST_CHECK_SMALL(option.NPV() - expected, 1.0e-12);
+                BOOST_CHECK_SMALL(option.delta() - expectedDelta, 1.0e-12);
+                BOOST_CHECK_EQUAL(option.gamma(), 0.0);
+                BOOST_CHECK_EQUAL(option.result<Real>("sigma"), 0.0);
+                auto spotVols = option.result<std::vector<Real>>("spotVols");
+                BOOST_REQUIRE_EQUAL(spotVols.size(), 1);
+                BOOST_CHECK_SMALL(spotVols.front() - 0.25, 1.0e-12);
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testTurnbullWakemanAsianEngine) {
 
     BOOST_TEST_MESSAGE("Testing Turnbull-Wakeman engine for discrete-time arithmetic average-rate "
