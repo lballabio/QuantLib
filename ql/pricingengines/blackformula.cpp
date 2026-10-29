@@ -287,13 +287,23 @@ namespace QuantLib {
 
         const Real a = std::exp((1.0-M_2_PI)*y);
         const Real A = squared(a - 1.0/a);
-        const Real b = std::exp(M_2_PI*y);
-        const Real B = 4.0*(b + 1/b)
-            - 2*K/F*(a + 1.0/a)*(ey2 + 1 - R2);
+        const Real B =
+            2 * K / F * (a + 1.0 / a) * R2 - 8.0 * std::sinh(y) * std::sinh((1.0 - M_2_PI) * y);
         const Real C = std::max(0.0, (R2-squared(ey-1))*(squared(ey+1)-R2)/ey2);
 
-        const Real beta = 2*C/(B+std::sqrt(B*B+4*A*C));
-        const Real gamma = -M_PI_2*std::log(beta);
+        const Real D = std::sqrt(B * B + 4 * A * C);
+        const Real beta = 2 * C / (B + D);
+        Real gamma;
+        if (beta < 0.5) {
+            gamma = -M_PI_2 * std::log(beta);
+        } else {
+            // 1 - beta, computed without cancellation
+            const Real s = std::sinh(M_1_PI * y);
+            const Real E =
+                squared(K / F * R2 - 4.0 * std::sinh((1.0 - M_1_PI) * y) * s) + 16.0 * s * s;
+            const Real num = (B >= 2 * C) ? Real(B - 2 * C + D) : Real(4 * C * E / (D + 2 * C - B));
+            gamma = -M_PI_2 * std::log1p(-num / (B + D));
+        }
 
         const auto sqrtDiff = [](Real g, Real yy) {
             return std::isfinite(g) ? Real(std::sqrt(g + yy) - std::sqrt(g - yy))
