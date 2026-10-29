@@ -248,6 +248,9 @@ namespace QuantLib {
 
         //! Local slope \f$ \beta = \partial w / \partial \ln K \f$ of the total vol smile.
         Real slope(Rate strike) const;
+        //! Convexity \f$ \kappa \f$ of the smile dynamics (see FxStickyDeltaSmile::convexity()).
+        /*! Zero for these dynamics; see FxCostSmileSectionStickyDeltaConvex. */
+        Real convexity(Rate strike) const;
         //! Exact derivative of the vol with respect to strike, \f$ \beta / (K \sqrt{\tau}) \f$.
         Real volDerivative(Rate strike) const override;
 
@@ -267,6 +270,12 @@ namespace QuantLib {
         void setParams(const Array& params) const override;
         //@}
 
+        //! Smile for the given costs, solved over smileRange.
+        virtual ext::shared_ptr<const FxStickyDeltaSmile>
+        makeSolver(const std::vector<Real>& costs, Time tau) const;
+        //! Half-width in log-moneyness of the solved smile for an expiry time.
+        Real solvedRange(Time tau) const;
+
       private:
         //! \name FxSmileSection interface
         //@{
@@ -281,12 +290,48 @@ namespace QuantLib {
                                    const std::vector<Real>& params) const override;
         //@}
 
-        //! Smile for the given costs, integrated over smileRange.
-        ext::shared_ptr<const FxStickyDeltaSmileSolver>
-        makeSolver(const std::vector<Real>& costs, Time tau) const;
-
         // smile of the current params_, rebuilt by setParams()
-        mutable ext::shared_ptr<const FxStickyDeltaSmileSolver> solver_;
+        mutable ext::shared_ptr<const FxStickyDeltaSmile> solver_;
+    };
+
+    /*! FX cost smile section with flat (alpha = 0) total-vol dynamics, a
+        sticky-delta smile and the convexity of exact sticky moneyness.
+
+        As FxCostSmileSectionStickyDelta, except that the change in total
+        vol at a fixed strike gains \f$ \kappa (\Delta F/F)^2 \f$ with
+        \f$ \kappa = (\beta + w'')/2 \f$, given by the smile itself.  The
+        cost equation is then a second-order boundary value problem, solved
+        by FxStickyDeltaConvexSmileSolver; there is no extra parameter.
+    */
+    class FxCostSmileSectionStickyDeltaConvex : public FxCostSmileSectionStickyDelta {
+      public:
+        //! Date mode (see FxSmileSection).
+        FxCostSmileSectionStickyDeltaConvex(const Date& exerciseDate,
+                                            const Handle<Quote>& spot,
+                                            const ext::shared_ptr<FxSmileQuotes>& quotes,
+                                            const Handle<YieldTermStructure>& foreignDiscount,
+                                            const Handle<YieldTermStructure>& domesticDiscount,
+                                            DeltaVolQuote::DeltaType deltaType,
+                                            DeltaVolQuote::AtmType atmType,
+                                            const DayCounter& dayCounter,
+                                            const FxSettleConvention& settlement,
+                                            const Date& referenceDate = Date(),
+                                            bool weightedCalibrationFlag = true);
+
+        //! Time mode (see FxSmileSection).
+        FxCostSmileSectionStickyDeltaConvex(Time exerciseTime,
+                                            const Handle<Quote>& spot,
+                                            const ext::shared_ptr<FxSmileQuotes>& quotes,
+                                            const Handle<YieldTermStructure>& foreignDiscount,
+                                            const Handle<YieldTermStructure>& domesticDiscount,
+                                            DeltaVolQuote::DeltaType deltaType,
+                                            DeltaVolQuote::AtmType atmType,
+                                            const DayCounter& dayCounter = DayCounter(),
+                                            bool weightedCalibrationFlag = true);
+
+      protected:
+        ext::shared_ptr<const FxStickyDeltaSmile>
+        makeSolver(const std::vector<Real>& costs, Time tau) const override;
     };
 } // namespace QuantLib
 

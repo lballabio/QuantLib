@@ -436,6 +436,125 @@ BOOST_AUTO_TEST_CASE(testCostSmileSectionStickyDelta) {
 }
 
 
+BOOST_AUTO_TEST_CASE(testStickyDeltaConvexSmileSolver) {
+    BOOST_TEST_MESSAGE("Testing the sticky-delta cost smile with convexity...");
+
+    const std::vector<Real> costs = {1.0, -15.3166, -0.06278, 0.28742};
+    const std::vector<Real> xs = {-0.08, -0.03, 0.0, 0.03, 0.08};
+
+    // reference values from an independent implementation (Python, scipy's
+    // fourth-order collocation solve_bvp with a 1e-11 tolerance), on the
+    // singular point of the smile without convexity plus or minus 8 total vols
+    const std::vector<Real> refW[2] = {
+        {0.043161310158, 0.036456627963, 0.036126201696, 0.038485343052, 0.046943186387},
+        {0.043273312194, 0.036599102919, 0.036274554535, 0.038628792457, 0.047067508358}};
+    const std::vector<Real> refBeta[2] = {
+        {0.198903095, 0.058920443, -0.035843821, -0.118586654, -0.208535935},
+        {0.198249008, 0.058525044, -0.035843819, -0.118285792, -0.208165570}};
+    const std::vector<Real> refKappa[2] = {
+        {1.09523452, 1.64062894, 1.49098144, 1.16595743, 0.45951015},
+        {1.09805744, 1.63395387, 1.48480998, 1.16252430, 0.46156852}};
+
+    for (bool pa : {false, true}) {
+        const FxStickyDeltaSmileSolver flat(costs, pa, -0.1, 0.1);
+        const Real lo = flat.singularLogMoneyness() - 8.0 * flat.singularTotalVol();
+        const Real hi = flat.singularLogMoneyness() + 8.0 * flat.singularTotalVol();
+        const FxStickyDeltaConvexSmileSolver smile(costs, pa, lo, hi);
+        const Size k = pa ? 1 : 0;
+
+        Real worstW = 0.0, worstBeta = 0.0, worstKappa = 0.0;
+        for (Size i = 0; i < xs.size(); ++i) {
+            worstW = std::max(worstW, std::fabs(smile.totalVol(xs[i]) - refW[k][i]));
+            worstBeta = std::max(worstBeta, std::fabs(smile.slope(xs[i]) - refBeta[k][i]));
+            worstKappa = std::max(worstKappa, std::fabs(smile.convexity(xs[i]) - refKappa[k][i]));
+        }
+        // the reference is given to 12, 9 and 8 decimals
+        BOOST_CHECK_SMALL(worstW, 1.0e-10);
+        BOOST_CHECK_SMALL(worstBeta, 1.0e-7);
+        BOOST_CHECK_SMALL(worstKappa, 1.0e-6);
+
+        // the slope is that of the smile, and the convexity is (beta + w'')/2
+        Real worstSlope = 0.0, worstConvexity = 0.0;
+        for (Real x = -0.2; x < 0.2; x += 0.01) {
+            const Real h = 1.0e-4;
+            const Real wm = smile.totalVol(x - h), w0 = smile.totalVol(x),
+                       wp = smile.totalVol(x + h);
+            worstSlope = std::max(worstSlope, std::fabs(smile.slope(x) + (wp - wm) / (2.0 * h)));
+            const Real wpp = (wp - 2.0 * w0 + wm) / (h * h);
+            worstConvexity = std::max(
+                worstConvexity, std::fabs(smile.convexity(x) - 0.5 * (smile.slope(x) + wpp)));
+        }
+        // limited by the finite differences, notably the second one
+        BOOST_CHECK_SMALL(worstSlope, 1.0e-6);
+        BOOST_CHECK_SMALL(worstConvexity, 2.0e-4);
+    }
+
+    // with premium adjustment the smile is the unadjusted one with Ctheta
+    // replaced by Ctheta + Ceta, and only the cost ratios matter
+    const FxStickyDeltaConvexSmileSolver unadjusted(costs, false, -0.25, 0.25);
+    const FxStickyDeltaConvexSmileSolver adjusted(
+        {costs[0], costs[1] + costs[2], costs[2], costs[3]}, true, -0.25, 0.25);
+    const FxStickyDeltaConvexSmileSolver scaled(
+        {3.0, 3.0 * costs[1], 3.0 * costs[2], 3.0 * costs[3]}, false, -0.25, 0.25);
+    for (Real x : xs) {
+        BOOST_CHECK_SMALL(adjusted.totalVol(x) - unadjusted.totalVol(x), 1.0e-12);
+        BOOST_CHECK_SMALL(scaled.totalVol(x) - unadjusted.totalVol(x), 1.0e-12);
+    }
+    BOOST_CHECK(unadjusted.hasCosts(scaled.costs()));
+
+    // the end conditions only matter near the ends: their effect decays
+    // over a few total vols (about 0.03 here) away from them
+    const FxStickyDeltaConvexSmileSolver wider(costs, false, -0.4, 0.4);
+    for (Real x : xs)
+        BOOST_CHECK_SMALL(wider.totalVol(x) - unadjusted.totalVol(x), 1.0e-7);
+
+    // a tolerance below rounding still converges
+    const FxStickyDeltaConvexSmileSolver strict(costs, false, -0.25, 0.25, 401, 1.0e-17);
+    for (Real x : xs)
+        BOOST_CHECK_SMALL(strict.totalVol(x) - unadjusted.totalVol(x), 1.0e-12);
+
+    // costs without a positive total vol at d- = 0 give no smile
+    BOOST_CHECK_THROW(FxStickyDeltaConvexSmileSolver({1.0, 0.5, -0.06, 0.29}, false, -0.1, 0.1),
+                      Error);
+}
+
+BOOST_AUTO_TEST_CASE(testCostSmileSectionStickyDeltaConvex) {
+    BOOST_TEST_MESSAGE(
+        "Testing FX cost smile section (sticky delta with convexity) calibration...");
+
+    MarketData md;
+
+    for (auto deltaType : {DeltaVolQuote::PaSpot, DeltaVolQuote::Spot}) {
+        FxCostSmileSectionStickyDeltaConvex ss(md.expiryDate, md.spot, md.rrBfQuotes(),
+                                               md.forDiscount, md.domDiscount, deltaType,
+                                               md.atmType, Actual365Fixed(), md.settlement,
+                                               Date(), true);
+        FxCostSmileSectionStickyDelta flat(md.expiryDate, md.spot, md.rrBfQuotes(),
+                                           md.forDiscount, md.domDiscount, deltaType, md.atmType,
+                                           Actual365Fixed(), md.settlement, Date(), true);
+
+        // 3 free cost ratios for 5 quotes, fitted by least squares
+        checkSmileSection(ss, 25.0e-4);
+        checkStrikeDeltaConsistency(ss, md, 1.0e-6);
+
+        const Time tau = ss.exerciseTime();
+        for (Real m : {0.8, 0.9, 1.0, 1.1, 1.2}) {
+            const Rate K = m * ss.forward();
+            const Real h = 1.0e-5;
+            const Real fd = (ss.volByStrike(K * std::exp(h)) - ss.volByStrike(K * std::exp(-h))) *
+                            std::sqrt(tau) / (2.0 * h);
+            BOOST_CHECK_SMALL(ss.slope(K) - fd, 1.0e-6);
+            const Real dK = 1.0e-5 * K;
+            const Real fdK = (ss.volByStrike(K + dK) - ss.volByStrike(K - dK)) / (2.0 * dK);
+            BOOST_CHECK_SMALL(ss.volDerivative(K) - fdK, 1.0e-6);
+            // the convex dynamics have a convexity, the flat ones none
+            BOOST_CHECK_GT(std::fabs(ss.convexity(K)), 0.0);
+            BOOST_CHECK_EQUAL(flat.convexity(K), 0.0);
+        }
+    }
+}
+
+
 // ---------------------------------------------------------------------------
 //  7. DeltaVolQuote constructor path (all models)
 // ---------------------------------------------------------------------------
@@ -492,10 +611,11 @@ BOOST_AUTO_TEST_CASE(testCalibrationRoundTrip) {
     // Each model is calibrated to the market, quotes are read off its
     // smile, and a fresh section must fit them exactly and give back the
     // same smile.
-    auto roundTrip = [&](const std::string& name, const SectionFactory& make) {
+    auto roundTrip = [&](const std::string& name, const SectionFactory& make,
+                         Real tolerance = 1.0e-8) {
         auto original = make(md.rrBfQuotes());
         auto refitted = make(quotesFromSmile(*original));
-        BOOST_CHECK_MESSAGE(refitted->calibrationError() < 1.0e-8,
+        BOOST_CHECK_MESSAGE(refitted->calibrationError() < tolerance,
                             name << ": quotes from its own smile not refitted: error "
                                  << refitted->calibrationError());
         checkSameSmile(name, *original, *refitted, 1.0e-6);
@@ -507,6 +627,9 @@ BOOST_AUTO_TEST_CASE(testCalibrationRoundTrip) {
     roundTrip("CostFlatDynamics", sectionFactory<FxCostSmileSectionFlatDynamics>(md));
     roundTrip("CostScaledDynamics", sectionFactory<FxCostSmileSectionScaledDynamics>(md));
     roundTrip("CostStickyDelta", sectionFactory<FxCostSmileSectionStickyDelta>(md));
+    // the least-squares fit of the convex smile stops at about 1e-8 in vol
+    roundTrip("CostStickyDeltaConvex", sectionFactory<FxCostSmileSectionStickyDeltaConvex>(md),
+              3.0e-8);
 }
 
 
