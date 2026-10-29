@@ -440,7 +440,7 @@ BOOST_AUTO_TEST_CASE(testDividendsSpanningSettlementDate) {
 BOOST_AUTO_TEST_CASE(testDividendBetweenEvaluationAndSettlement) {
     BOOST_TEST_MESSAGE(
         "Testing that a dividend between evaluation and settlement date "
-        "is not silently dropped from the convertible bond price (issue #2701)...");
+        "is dropped from the convertible bond price...");
 
     // Evaluation date with a non-zero settlement lag so that a dividend
     // can fall strictly between the evaluation date and the settlement date.
@@ -461,8 +461,8 @@ BOOST_AUTO_TEST_CASE(testDividendBetweenEvaluationAndSettlement) {
     // Build a simple zero-coupon convertible bond.
     Date maturityDate = calendar.advance(today, 2, Years);
     Real redemption = 100.0;
-    Real conversionRatio = 1.0;
     Real spot = 50.0;
+    Real conversionRatio = 2.0;
 
     Handle<Quote> underlying(ext::make_shared<SimpleQuote>(spot));
     Handle<YieldTermStructure> dividendYield(
@@ -522,8 +522,7 @@ BOOST_AUTO_TEST_CASE(testDividendBetweenEvaluationAndSettlement) {
     if (actualDrop < 0.5 * expectedDrop) {
         BOOST_ERROR("in-lag dividend price drop is too small:"
                     << "\n    actual drop:   " << actualDrop
-                    << "\n    expected (~):  " << expectedDrop
-                    << "\n    the dividend value is likely still being silently dropped");
+                    << "\n    expected (~):  " << expectedDrop);
     }
 }
 
