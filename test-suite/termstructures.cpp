@@ -640,7 +640,7 @@ BOOST_AUTO_TEST_CASE(testShifted) {
         Handle<YieldTermStructure>(baseTermStructure), futureDate);
     for (Real rate : {0.01, 0.02, 0.03}) {
         flatRate->setValue(rate);
-        BOOST_CHECK_CLOSE(
+        QL_CHECK_CLOSE(
             shifted->discount(testDate + shift), baseTermStructure->discount(testDate), 1e-10);
     }
 }
@@ -665,16 +665,16 @@ BOOST_AUTO_TEST_CASE(testSpliced) {
             rate1->setValue(r1);
             rate2->setValue(r2);
             Date d = today + 1*Years;
-            BOOST_CHECK_CLOSE(spliced->discount(d), curve1->discount(d), tolerance);
+            QL_CHECK_CLOSE(spliced->discount(d), curve1->discount(d), tolerance);
             Real adj = curve1->discount(switchDate) / curve2->discount(switchDate);
             d = today + 3*Years;
-            BOOST_CHECK_CLOSE(spliced->discount(d), (adj * curve2->discount(d)), tolerance);
+            QL_CHECK_CLOSE(spliced->discount(d), (adj * curve2->discount(d)), tolerance);
             auto fwdrate = [&](Date d1, Date d2) {
                 return spliced->forwardRate(d1, d2, Actual360(), Continuous).rate();
             };
-            BOOST_CHECK_SMALL(fwdrate(switchDate-1, switchDate) - r1, tolerance);
-            BOOST_CHECK_SMALL(fwdrate(switchDate, switchDate+1) - r2, tolerance);
-            BOOST_CHECK_CLOSE(spliced->discount(switchDate), curve1->discount(switchDate), tolerance);
+            QL_CHECK_SMALL(fwdrate(switchDate-1, switchDate) - r1, tolerance);
+            QL_CHECK_SMALL(fwdrate(switchDate, switchDate+1) - r2, tolerance);
+            QL_CHECK_CLOSE(spliced->discount(switchDate), curve1->discount(switchDate), tolerance);
         }
     }
 }

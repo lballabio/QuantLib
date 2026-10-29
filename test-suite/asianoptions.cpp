@@ -28,6 +28,7 @@
 #include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
 #include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
 #include <ql/instruments/asianoption.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
@@ -49,6 +50,7 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <cmath>
 #include <map>
 
 using namespace QuantLib;
@@ -2180,6 +2182,176 @@ BOOST_AUTO_TEST_CASE(testLevyEngine) {
                 << "\n    reference date:  " << today << "\n    length:          " << l.length
                 << "\n    elapsed:         " << l.elapsed << "\n    expected value:  " << expected
                 << "\n    calculated:      " << calculated << "\n    error:           " << error);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testLevyZeroVolatility) {
+    BOOST_TEST_MESSAGE("Testing the deterministic limit of the Levy Asian engine...");
+
+    const Date today(20, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual360();
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
+    auto q = ext::make_shared<SimpleQuote>(0.05);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, q, dc)),
+        Handle<YieldTermStructure>(flatRate(today, 0.05, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+    auto average = ext::make_shared<SimpleQuote>(97.0);
+    auto engine = ext::make_shared<ContinuousArithmeticAsianLevyEngine>(
+        process, Handle<Quote>(average));
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 360);
+
+    const Volatility previousCutoff = std::sqrt(QL_EPSILON);
+    const Volatility sigmaValues[] = {
+        0.0, 1.0e-8, 0.99 * previousCutoff, previousCutoff, 1.01 * previousCutoff,
+        2.0 * previousCutoff, 1.0e-7
+    };
+    for (Integer elapsed : {0, 180}) {
+        for (auto type : {Option::Call, Option::Put}) {
+            for (Real strike : {30.0, 90.0, 100.0, 110.0}) {
+                auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
+                ContinuousAveragingAsianOption option(
+                    Average::Arithmetic, today - elapsed, payoff, exercise);
+                option.setPricingEngine(engine);
+                for (Rate yield : {0.05, 0.02, 0.08}) {
+                    q->setValue(yield);
+                    // Integrate the deterministic forward S(t)=100 exp((r-q)t),
+                    // and combine it with the already observed running average.
+                    const Real b = 0.05 - yield;
+                    const Real futureIntegral = b == 0.0 ? Real(100.0) :
+                        Real(100.0 * std::expm1(b) / b);
+                    const Real mean = (97.0 * elapsed / 360.0 + futureIntegral) /
+                                      (1.0 + elapsed / 360.0);
+                    const Real expected = std::exp(-0.05) * (*payoff)(mean);
+                    for (Volatility sigma : sigmaValues) {
+                        vol->setValue(sigma);
+                        const Real calculated = option.NPV();
+                        BOOST_CHECK(std::isfinite(calculated));
+                        // At the kink the true time value is O(sigma * spot).
+                        const Real tolerance = sigma == 0.0 ? 1.0e-12 : 1.0e-5;
+                        BOOST_CHECK_MESSAGE(std::fabs(calculated - expected) < tolerance,
+                                            "Levy " << type << ", elapsed=" << elapsed
+                                            << ", strike=" << strike << ", q=" << yield
+                                            << ", vol=" << sigma << ": calculated "
+                                            << calculated << ", expected " << expected);
+                    }
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testLevyLowVolatilityContinuity) {
+    BOOST_TEST_MESSAGE("Testing continuity of the Levy Asian engine at zero volatility...");
+
+    const Date today(20, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual360();
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(flatRate(today, 0.05, dc)),
+        Handle<YieldTermStructure>(flatRate(today, 0.05, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+    auto engine = ext::make_shared<ContinuousArithmeticAsianLevyEngine>(
+        process, Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)));
+
+    for (Integer elapsed : {0, 180}) {
+        for (auto type : {Option::Call, Option::Put}) {
+            ContinuousAveragingAsianOption option(
+                Average::Arithmetic, today - elapsed,
+                ext::make_shared<PlainVanillaPayoff>(type, 100.0),
+                ext::make_shared<EuropeanExercise>(today + 360));
+            option.setPricingEngine(engine);
+            vol->setValue(0.0);
+            QL_CHECK_SMALL(option.NPV(), 1.0e-12);
+            // At zero carry Var(A_future) ~ (100/T)^2 sigma^2/3.
+            // An ATM call or put has value ~ discount * stddev / sqrt(2*pi).
+            const Real slope = std::exp(-0.05) * 100.0 /
+                               ((1.0 + elapsed / 360.0) * std::sqrt(6.0 * M_PI));
+            Real previous = QL_MAX_REAL;
+            for (Volatility sigma : {1.0e-3, 1.0e-4, 1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8}) {
+                vol->setValue(sigma);
+                const Real npv = option.NPV();
+                BOOST_TEST_CONTEXT("type=" << type << ", elapsed=" << elapsed
+                                   << ", vol=" << sigma) {
+                    BOOST_CHECK(std::isfinite(npv));
+                    BOOST_CHECK_GT(npv, 0.0);
+                    BOOST_CHECK_LT(npv, previous);
+                    QL_CHECK_SMALL(npv / sigma - slope, 1.0e-5);
+                }
+                previous = npv;
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testLevyVarianceReference) {
+    BOOST_TEST_MESSAGE("Testing Levy prices against integrated covariance...");
+
+    const Date today(20, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual360();
+    auto q = ext::make_shared<SimpleQuote>(0.05);
+    auto vol = ext::make_shared<SimpleQuote>(1.0e-3);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(flatRate(today, q, dc)),
+        Handle<YieldTermStructure>(flatRate(today, 0.05, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+    auto engine = ext::make_shared<ContinuousArithmeticAsianLevyEngine>(
+        process, Handle<Quote>(ext::make_shared<SimpleQuote>(97.0)));
+    const GaussLegendreIntegration integrate(32);
+
+    const auto checkPrice = [&](Integer remaining, Integer elapsed, Real b, Volatility sigma) {
+        const Real tau = remaining / 360.0;
+        const Real T = tau + elapsed / 360.0;
+        const Real x = b * tau;
+        const Real w = sigma * sigma * tau;
+        const Real meanFactor = 100.0 * tau / T;
+        q->setValue(0.05 - b);
+        vol->setValue(sigma);
+        const Real mean = meanFactor / 2.0 * integrate([&](Real u) {
+            return std::exp(x * (u + 1.0) / 2.0);
+        });
+        const Real strike = (T - tau) / T * 97.0 + mean;
+        ContinuousAveragingAsianOption option(
+            Average::Arithmetic, today - elapsed,
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+            ext::make_shared<EuropeanExercise>(today + remaining));
+        option.setPricingEngine(engine);
+        // Integrate the covariance over the normalized triangle 0 <= s <= t <= 1.
+        const Real variance = 2.0 * meanFactor * meanFactor * integrate([&](Real u) {
+            const Real t = (u + 1.0) / 2.0;
+            return t / 4.0 * integrate([&](Real v) {
+                const Real s = t * (v + 1.0) / 2.0;
+                return std::exp(x * (s + t)) * std::expm1(w * s);
+            });
+        });
+        const Real logVariance = std::log1p(variance / (mean * mean));
+        const Real expected = blackFormula(
+            Option::Call, mean, mean, std::sqrt(logVariance), std::exp(-0.05 * tau));
+        const Real calculated = option.NPV();
+        BOOST_TEST_CONTEXT("remaining=" << remaining << ", elapsed=" << elapsed
+                           << ", carry=" << b << ", vol=" << sigma) {
+            BOOST_CHECK(std::isfinite(calculated));
+            // Allow for quadrature and pricing roundoff across platforms.
+            QL_CHECK_SMALL(calculated - expected, 2.0e-11);
+        }
+    };
+
+    for (Integer elapsed : {0, 180}) {
+        // Include near-zero carry, both signs, and the series scaling boundary.
+        for (Real b : {0.0, -1.0e-10, 1.0e-10, -0.03, 0.03, -1.0, 1.0}) {
+            for (Volatility sigma : {1.0e-8, 1.0e-3, std::sqrt(0.499), std::sqrt(0.501)})
+                checkPrice(360, elapsed, b, sigma);
+        }
+        for (Integer remaining : {1, 10800}) {
+            for (Real b : {-0.03, 0.0, 0.03})
+                checkPrice(remaining, elapsed, b, 1.0e-3);
         }
     }
 }
