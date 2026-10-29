@@ -67,6 +67,7 @@ namespace QuantLib {
 
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non-striked payoff given");
         const Time maturity = bsProcess_->time(arguments_.exercise->lastDate());
 
         // The short rate mesher
@@ -107,6 +108,7 @@ namespace QuantLib {
     void FdCIRVanillaEngine::calculate() const {
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non-striked payoff given");
 
         auto solver = ext::make_shared<FdmCIRSolver>(
                     Handle<CoxIngersollRossProcess>(cirProcess_),

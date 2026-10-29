@@ -162,7 +162,8 @@ struct CommonVars {
              Integer paymentLag = 0,
              RateAveraging::Type averagingMethod = RateAveraging::Compound,
              const std::optional<Integer>& roundingPrecision = std::nullopt) {
-        return MakeOIS(length, estrIndex, fixedRate, 0 * Days)
+        return MakeOIS(length, estrIndex)
+            .withFixedRate(fixedRate)
             .withEffectiveDate(effectiveDate == Date() ? settlement : effectiveDate)
             .withOvernightLegSpread(spread)
             .withNominal(nominal)
@@ -181,7 +182,8 @@ struct CommonVars {
                          Natural lockoutDays,
                          bool applyObservationShift,
                          bool telescopicValueDates) {
-        return MakeOIS(length, estrIndex, fixedRate, 0 * Days)
+        return MakeOIS(length, estrIndex)
+            .withFixedRate(fixedRate)
             .withEffectiveDate(settlement)
             .withNominal(nominal)
             .withPaymentLag(paymentLag)
@@ -984,7 +986,7 @@ BOOST_AUTO_TEST_CASE(testMakeOISDefaultSettlementDays) {
 
     // Test default settlement days
     for (const auto& [name, index] : indices) {
-        OvernightIndexedSwap swap = MakeOIS(6 * Months, index, 0.01);
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, index).withFixedRate(0.01);
         Date expected;
         if (name == "SONIA") {
             expected = today; // T+0 settlement for SONIA
@@ -1000,7 +1002,8 @@ BOOST_AUTO_TEST_CASE(testMakeOISDefaultSettlementDays) {
     for (const auto& [name, index] : indices) {
         // Override settlement days: 2 for CORRA, 1 for all others
         Natural settlementDaysOverride = (name == "CORRA") ? 2 : 1;
-        OvernightIndexedSwap swap = MakeOIS(6 * Months, index, 0.01)
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, index)
+                                        .withFixedRate(0.01)
                                         .withSettlementDays(settlementDaysOverride);
         Date expected = today + settlementDaysOverride * Days;
         BOOST_CHECK_EQUAL(swap.startDate(), expected);
@@ -1012,21 +1015,21 @@ BOOST_AUTO_TEST_CASE(testMakeOISDefaultSettlementDays) {
 
     // Test 0-day settlement index on weekend
     {
-        OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[0].second, 0.01); // SONIA
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[0].second).withFixedRate(0.01); // SONIA
         Date expected(12, May, 2025); // Monday
         BOOST_CHECK_EQUAL(swap.startDate(), expected);
     }
 
     // Test 1-day settlement index on weekend
     {
-        OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[1].second, 0.01); // CORRA
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[1].second).withFixedRate(0.01); // CORRA
         Date expected(12, May, 2025); // Monday: T+1 from the actual trade date
         BOOST_CHECK_EQUAL(swap.startDate(), expected);
     }
 
     // Test 2-day settlement index on weekend
     {
-        OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[2].second, 0.01); // EONIA
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[2].second).withFixedRate(0.01); // EONIA
         Date expected(13, May, 2025); // Tuesday: T+2 from the actual trade date
         BOOST_CHECK_EQUAL(swap.startDate(), expected);
     }
@@ -1129,7 +1132,8 @@ BOOST_AUTO_TEST_CASE(testSettlementDaysEffectiveDateConflict) {
     // settlementDays first, then effectiveDate
     BOOST_CHECK_EXCEPTION(
         ext::shared_ptr<OvernightIndexedSwap> swap =
-            MakeOIS(5 * Years, index, 0.03)
+        MakeOIS(5 * Years, index)
+                .withFixedRate(0.03)
                 .withSettlementDays(2)
                 .withEffectiveDate(effectiveDate),
         Error,
@@ -1138,7 +1142,8 @@ BOOST_AUTO_TEST_CASE(testSettlementDaysEffectiveDateConflict) {
     // effectiveDate first, then settlementDays
     BOOST_CHECK_EXCEPTION(
         ext::shared_ptr<OvernightIndexedSwap> swap =
-            MakeOIS(5 * Years, index, 0.03)
+        MakeOIS(5 * Years, index)
+                .withFixedRate(0.03)
                 .withEffectiveDate(effectiveDate)
                 .withSettlementDays(2),
         Error,
@@ -1146,19 +1151,22 @@ BOOST_AUTO_TEST_CASE(testSettlementDaysEffectiveDateConflict) {
 
     // withSettlementDays alone works
     ext::shared_ptr<OvernightIndexedSwap> swap1 =
-        MakeOIS(5 * Years, index, 0.03)
+        MakeOIS(5 * Years, index)
+            .withFixedRate(0.03)
             .withSettlementDays(2);
     BOOST_CHECK(swap1->startDate() != Date());
 
     // withEffectiveDate alone works
     ext::shared_ptr<OvernightIndexedSwap> swap2 =
-        MakeOIS(5 * Years, index, 0.03)
+        MakeOIS(5 * Years, index)
+            .withFixedRate(0.03)
             .withEffectiveDate(effectiveDate);
     BOOST_CHECK_EQUAL(swap2->startDate(), effectiveDate);
 
     // neither set (constructor defaults) works
     ext::shared_ptr<OvernightIndexedSwap> swap3 =
-        MakeOIS(5 * Years, index, 0.03);
+        MakeOIS(5 * Years, index)
+        .withFixedRate(0.03);
     BOOST_CHECK(swap3->startDate() != Date());
 }
 
@@ -1268,7 +1276,7 @@ BOOST_AUTO_TEST_CASE(testSpotDateFromNonBusinessEvaluationDate) {
     Date expectedStart = calendar.advance(today, 2 * Days);
 
     ext::shared_ptr<OvernightIndexedSwap> swap =
-        MakeOIS(1 * Years, index, 0.03).withSettlementDays(2);
+        MakeOIS(1 * Years, index).withFixedRate(0.03).withSettlementDays(2);
 
     if (swap->startDate() != expectedStart)
         BOOST_FAIL("OIS start date not calculated from the actual "
@@ -1295,7 +1303,8 @@ BOOST_AUTO_TEST_CASE(testSettlementCalendar) {
     Date expectedStart = settlementCalendar.advance(today, 2 * Days);
 
     ext::shared_ptr<OvernightIndexedSwap> swap =
-        MakeOIS(1 * Years, index, 0.03)
+        MakeOIS(1 * Years, index)
+            .withFixedRate(0.03)
             .withSettlementDays(2)
             .withSettlementCalendar(settlementCalendar);
 

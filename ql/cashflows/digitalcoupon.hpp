@@ -148,9 +148,9 @@ namespace QuantLib {
         //@{
         //!
         ext::shared_ptr<FloatingRateCoupon> underlying_;
-        //! strike rate for the the call option
+        //! strike rate for the call option
         Rate callStrike_;
-        //! strike rate for the the put option
+        //! strike rate for the put option
         Rate putStrike_;
         //! multiplicative factor of call payoff
         Real callCsi_ = 0.;

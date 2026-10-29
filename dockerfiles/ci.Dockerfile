@@ -13,6 +13,8 @@ ARG boost_version
 ARG boost_dir
 ENV boost_version ${boost_version}
 
+# The Boost source directory is temporary within this single image layer.
+# hadolint ignore=DL3003
 RUN wget https://archives.boost.io/release/${boost_version}/source/${boost_dir}.tar.gz \
     && tar xfz ${boost_dir}.tar.gz \
     && rm ${boost_dir}.tar.gz \

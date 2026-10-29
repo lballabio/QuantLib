@@ -55,6 +55,7 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
         Real convexityAdjustment() const;
+        ext::shared_ptr<OvernightIndexFuture> future() const { return future_; }
       private:
         ext::shared_ptr<OvernightIndexFuture> future_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;

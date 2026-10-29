@@ -117,6 +117,7 @@ namespace QuantLib {
         // 1.2 The equity mesher
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non-striked payoff given");
 
         ext::shared_ptr<Fdm1dMesher> equityMesher;
         if (strikes_.empty()) {

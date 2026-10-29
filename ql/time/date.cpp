@@ -51,13 +51,40 @@ using boost::posix_time::ptime;
 using boost::posix_time::time_duration;
 #endif
 
+namespace {
+
+    /* std::localtime returns a pointer into a shared static buffer, so it is
+       neither reentrant nor safe to call from more than one thread; MSVC also
+       flags it as deprecated.  Use the platform-specific reentrant variants
+       where they exist, letting Boost's own platform matrix decide: a few
+       platforms, MinGW among them, provide no localtime_r.  See
+       boost/date_time/compiler_config.hpp.
+    */
+    bool localTime(std::time_t t, std::tm& result) {
+#if defined(BOOST_MSVC)
+        // Microsoft's localtime_s is not the one from Annex K of the C
+        // standard: it takes the output buffer first and returns an error
+        // code instead of a pointer.
+        return localtime_s(&result, &t) == 0;
+#elif defined(BOOST_DATE_TIME_HAS_REENTRANT_STD_FUNCTIONS)
+        return localtime_r(&t, &result) != nullptr;
+#else
+        QL_DEPRECATED_DISABLE_WARNING
+        const std::tm* lt = std::localtime(&t);
+        QL_DEPRECATED_ENABLE_WARNING
+        if (lt == nullptr)
+            return false;
+        result = *lt;
+        return true;
+#endif
+    }
+
+}
+
 
 namespace QuantLib {
 #ifndef QL_HIGH_RESOLUTION_DATE
     // constructors
-    Date::Date()
-    : serialNumber_(Date::serial_type(0)) {}
-
     Date::Date(Date::serial_type serialNumber)
     : serialNumber_(serialNumber) {
         checkSerialNumber(serialNumber);
@@ -353,13 +380,6 @@ namespace QuantLib {
 #else
 
     namespace {
-        const boost::gregorian::date& serialNumberDateReference() {
-            static const boost::gregorian::date dateReference(
-                1899, boost::gregorian::Dec, 30);
-            return dateReference;
-        }
-
-
 #define compatibleEnums (   int(boost::date_time::Monday)   +1 == Monday    \
                          && int(boost::date_time::Tuesday)  +1 == Tuesday   \
                          && int(boost::date_time::Wednesday)+1 == Wednesday \
@@ -527,9 +547,6 @@ namespace QuantLib {
         }
     }
 
-
-    Date::Date()
-    : dateTime_(serialNumberDateReference()) {}
 
     Date::Date(const ptime& dateTime)
     : dateTime_(dateTime) {}
@@ -790,8 +807,12 @@ namespace QuantLib {
 
         if (std::time(&t) == std::time_t(-1)) // -1 means time() didn't work
             return {};
-        std::tm *lt = std::localtime(&t);
-        return {Day(lt->tm_mday), Month(lt->tm_mon + 1), Year(lt->tm_year + 1900)};
+
+        std::tm lt{};
+        if (!localTime(t, lt)) // the conversion failed
+            return {};
+
+        return {Day(lt.tm_mday), Month(lt.tm_mon + 1), Year(lt.tm_year + 1900)};
     }
 
     Date Date::nextWeekday(const Date& d, Weekday dayOfWeek) {

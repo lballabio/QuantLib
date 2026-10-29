@@ -570,6 +570,9 @@
     <ClInclude Include="ql\cashflows\simplecashflow.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\cashflows\stubiborcoupon.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
     <ClInclude Include="ql\cashflows\timebasket.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
@@ -2262,6 +2265,12 @@
     <ClInclude Include="ql\termstructures\yield\ratehelpers.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\shiftedtermstructure.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\splicedtermstructure.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\yield\spreadbootstraptraits.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
@@ -2994,6 +3003,9 @@
     <ClInclude Include="ql\time\calendars\nullcalendar.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\calendars\philippines.hpp">
+      <Filter>time\calendars</Filter>
+    </ClInclude>
     <ClInclude Include="ql\time\calendars\poland.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
@@ -3277,12 +3289,6 @@
       <Filter>experimental\coupons</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\fx\all.hpp">
-      <Filter>experimental\fx</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\fx\blackdeltacalculator.hpp">
-      <Filter>experimental\fx</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\fx\deltavolquote.hpp">
       <Filter>experimental\fx</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\fx\discountingmtmcrosscurrencybasisswapengine.hpp">
@@ -4476,6 +4482,9 @@
     <ClInclude Include="ql\experimental\termstructures\crosscurrencyratehelpers.hpp">
       <Filter>experimental\termstructures</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\overnightindexedfundingratehelper.hpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\fdblackscholesshoutengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
@@ -4722,6 +4731,9 @@
       <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflows\simplecashflow.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\cashflows\stubiborcoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflows\timebasket.cpp">
@@ -6353,6 +6365,9 @@
     <ClCompile Include="ql\time\calendars\norway.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
+    <ClCompile Include="ql\time\calendars\philippines.cpp">
+      <Filter>time\calendars</Filter>
+    </ClCompile>
     <ClCompile Include="ql\time\calendars\poland.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
@@ -7391,6 +7406,9 @@
       <Filter>experimental\termstructures</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\termstructures\crosscurrencyratehelpers.cpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\termstructures\overnightindexedfundingratehelper.cpp">
       <Filter>experimental\termstructures</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.cpp">

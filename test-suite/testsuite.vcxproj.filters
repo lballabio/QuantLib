@@ -110,6 +110,9 @@
     <ClCompile Include="convertiblebonds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="copulas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="covariance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -150,6 +153,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="everestoption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="extendedblackvariancesurface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="exchangerate.cpp">
@@ -318,6 +324,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="overnightindexedcoupon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="overnightindexedfundingratehelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="overnightindexedswap.cpp">

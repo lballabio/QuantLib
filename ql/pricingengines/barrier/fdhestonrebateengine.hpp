@@ -49,7 +49,7 @@ namespace QuantLib {
             Size vGrid = 50,
             Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                ext::shared_ptr<LocalVolTermStructure> leverageFct = {},
+            ext::shared_ptr<LocalVolTermStructure> leverageFct = {},
             Real mixingFactor = 1.0);
 
         explicit FdHestonRebateEngine(
@@ -60,7 +60,7 @@ namespace QuantLib {
             Size vGrid = 50,
             Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                ext::shared_ptr<LocalVolTermStructure> leverageFct = {},
+            ext::shared_ptr<LocalVolTermStructure> leverageFct = {},
             Real mixingFactor = 1.0);
 
         void calculate() const override;

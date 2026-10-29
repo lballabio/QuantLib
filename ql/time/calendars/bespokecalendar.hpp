@@ -56,7 +56,7 @@ namespace QuantLib {
                      name (or different bespoke calendars created with
                      no name) will compare as equal.
         */
-        BespokeCalendar(const std::string& name = "");
+        explicit BespokeCalendar(const std::string& name = "");
         //! marks the passed day as part of the weekend
         void addWeekend(Weekday);
     };

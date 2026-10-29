@@ -41,7 +41,7 @@ namespace QuantLib {
         /*! \note the term structure is only needed when the short-rate
                   model cannot provide one itself.
         */
-        Gaussian1dJamshidianSwaptionEngine(
+        explicit Gaussian1dJamshidianSwaptionEngine(
             const ext::shared_ptr<Gaussian1dModel> &model)
             : GenericModelEngine<Gaussian1dModel, Swaption::arguments,
                                  Swaption::results>(model) {}

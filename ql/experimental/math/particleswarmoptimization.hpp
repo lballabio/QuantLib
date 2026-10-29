@@ -177,7 +177,7 @@ namespace QuantLib {
     */
     class SimpleRandomInertia : public ParticleSwarmOptimization::Inertia {
       public:
-        SimpleRandomInertia(Real threshold = 0.5, unsigned long seed = SeedGenerator::instance().get())
+        explicit SimpleRandomInertia(Real threshold = 0.5, unsigned long seed = SeedGenerator::instance().get())
             : threshold_(threshold), rng_(seed) {
             QL_REQUIRE(threshold_ >= 0.0 && threshold_ < 1.0, "Threshold must be a Real in [0, 1)");
         }
@@ -204,7 +204,7 @@ namespace QuantLib {
     */
     class DecreasingInertia : public ParticleSwarmOptimization::Inertia {
       public:
-        DecreasingInertia(Real threshold = 0.5)
+        explicit DecreasingInertia(Real threshold = 0.5)
             : threshold_(threshold) {
             QL_REQUIRE(threshold_ >= 0.0 && threshold_ < 1.0, "Threshold must be a Real in [0, 1)");
         }
@@ -375,7 +375,7 @@ namespace QuantLib {
     */
     class KNeighbors : public ParticleSwarmOptimization::Topology {
       public:
-        KNeighbors(Size K = 1) :K_(K) {
+        explicit KNeighbors(Size K = 1) :K_(K) {
             QL_REQUIRE(K > 0, "Neighbors need to be larger than 0");
         }
         void setSize(Size M) override {

@@ -29,6 +29,11 @@
 namespace QuantLib {
 
     //! Interest rate coumpounding rule
+    /*! SimpleThenCompounded and CompoundedThenSimple express that the
+        compounding style depends on the position of the
+        cashflow. Therefore, they should not be used on their own when
+        the cashflow position is not available from the context of a
+        calculation. */
     enum Compounding { Simple = 0,          //!< \f$ 1+rt \f$
                        Compounded = 1,      //!< \f$ (1+r)^t \f$
                        Continuous = 2,      //!< \f$ e^{rt} \f$

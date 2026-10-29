@@ -759,6 +759,11 @@ namespace QuantLib {
 
         const ext::shared_ptr<SwaptionVolatilityDiscrete> atmVolStructure =
             ext::dynamic_pointer_cast<SwaptionVolatilityDiscrete>(*atmVol_);
+        QL_REQUIRE(atmVolStructure,
+                   "isAtmCalibrated requires an ATM volatility structure "
+                   "derived from SwaptionVolatilityDiscrete (e.g. "
+                   "SwaptionVolatilityMatrix), but the provided "
+                   "atmVolStructure is not");
 
         std::vector<Time> atmOptionTimes(atmVolStructure->optionTimes());
         std::vector<Time> optionTimes(volCubeAtmCalibrated_.optionTimes());
@@ -1062,6 +1067,8 @@ namespace QuantLib {
 
     template<class Model> void XabrSwaptionVolatilityCube<Model>::recalibration(const std::vector<Real> &beta,
                                          const Period& swapTenor) {
+
+        calculate();
 
         QL_REQUIRE(beta.size() == nOptionTenors_,
                    "beta size ("

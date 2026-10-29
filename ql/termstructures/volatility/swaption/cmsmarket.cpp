@@ -89,16 +89,13 @@ namespace QuantLib {
                 // never evaluate the spot swap, only its ibor floating leg
                 spotSwaps_[i][j] = MakeCms(swapLengths_[i],
                                            swapIndexes_[j],
-                                           iborIndex_, 0.0,
-                                           Period())
-                                   .operator ext::shared_ptr<Swap>();
+                                           iborIndex_);
                 fwdSwaps_[i][j]  = MakeCms(swapLengths_[i]-start,
                                            swapIndexes_[j],
-                                           iborIndex_, 0.0,
-                                           start)
+                                           iborIndex_)
+                                   .withForwardStart(start)
                                    .withCmsCouponPricer(pricers_[j])
-                                   .withDiscountingTermStructure(discTS_)
-                                   .operator ext::shared_ptr<Swap>();
+                                   .withDiscountingTermStructure(discTS_);
             }
         }
         // probably useless

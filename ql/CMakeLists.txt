@@ -31,6 +31,7 @@ set(QL_SOURCES
     cashflows/rangeaccrual.cpp
     cashflows/replication.cpp
     cashflows/simplecashflow.cpp
+    cashflows/stubiborcoupon.cpp
     cashflows/timebasket.cpp
     cashflows/yoyinflationcoupon.cpp
     cashflows/zeroinflationcashflow.cpp
@@ -185,6 +186,7 @@ set(QL_SOURCES
     experimental/swaptions/irregularswaption.cpp
     experimental/termstructures/basisswapratehelpers.cpp
     experimental/termstructures/crosscurrencyratehelpers.cpp
+    experimental/termstructures/overnightindexedfundingratehelper.cpp
     experimental/variancegamma/analyticvariancegammaengine.cpp
     experimental/variancegamma/fftengine.cpp
     experimental/variancegamma/fftvanillaengine.cpp
@@ -939,6 +941,7 @@ set(QL_SOURCES
     time/calendars/newzealand.cpp
     time/calendars/northmacedonia.cpp
     time/calendars/norway.cpp
+    time/calendars/philippines.cpp
     time/calendars/poland.cpp
     time/calendars/romania.cpp
     time/calendars/russia.cpp
@@ -1019,6 +1022,7 @@ set(QL_HEADERS
     cashflows/rateaveraging.hpp
     cashflows/replication.hpp
     cashflows/simplecashflow.hpp
+    cashflows/stubiborcoupon.hpp
     cashflows/timebasket.hpp
     cashflows/yoyinflationcoupon.hpp
     cashflows/zeroinflationcashflow.hpp
@@ -1175,8 +1179,6 @@ set(QL_HEADERS
     experimental/finitedifferences/glued1dmesher.hpp
     experimental/finitedifferences/vanillavppoption.hpp
     experimental/forward/analytichestonforwardeuropeanengine.hpp
-    experimental/fx/blackdeltacalculator.hpp
-    experimental/fx/deltavolquote.hpp
     experimental/fx/discountingmtmcrosscurrencybasisswapengine.hpp
     experimental/fx/fxresetcashflows.hpp
     experimental/fx/mtmcrosscurrencybasisswap.hpp
@@ -1238,6 +1240,7 @@ set(QL_HEADERS
     experimental/swaptions/irregularswaption.hpp
     experimental/termstructures/basisswapratehelpers.hpp
     experimental/termstructures/crosscurrencyratehelpers.hpp
+    experimental/termstructures/overnightindexedfundingratehelper.hpp
     experimental/variancegamma/analyticvariancegammaengine.hpp
     experimental/variancegamma/fftengine.hpp
     experimental/variancegamma/fftvanillaengine.hpp
@@ -2217,6 +2220,8 @@ set(QL_HEADERS
     termstructures/yield/piecewisezerospreadedtermstructure.hpp
     termstructures/yield/quantotermstructure.hpp
     termstructures/yield/ratehelpers.hpp
+    termstructures/yield/shiftedtermstructure.hpp
+    termstructures/yield/splicedtermstructure.hpp
     termstructures/yield/spreadbootstraptraits.hpp
     termstructures/yield/spreaddiscountcurve.hpp
     termstructures/yield/ultimateforwardtermstructure.hpp
@@ -2261,6 +2266,7 @@ set(QL_HEADERS
     time/calendars/northmacedonia.hpp
     time/calendars/norway.hpp
     time/calendars/nullcalendar.hpp
+    time/calendars/philippines.hpp
     time/calendars/poland.hpp
     time/calendars/romania.hpp
     time/calendars/russia.hpp

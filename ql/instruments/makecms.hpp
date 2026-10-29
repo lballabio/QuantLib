@@ -41,13 +41,25 @@ namespace QuantLib {
       public:
         MakeCms(const Period& swapTenor,
                 const ext::shared_ptr<SwapIndex>& swapIndex,
-                const ext::shared_ptr<IborIndex>& iborIndex,
-                Spread iborSpread = 0.0,
-                const Period& forwardStart = 0*Days);
+                const ext::shared_ptr<IborIndex>& iborIndex = {});
 
+        /*! \deprecated Use the other constructor plus withIborSpread and/or withForwardStart.
+                        Deprecated in version 1.44.
+        */
+        [[deprecated("Use the other constructor plus withIborSpread and/or withForwardStart.")]]
         MakeCms(const Period& swapTenor,
                 const ext::shared_ptr<SwapIndex>& swapIndex,
-                Spread iborSpread = 0.0,
+                const ext::shared_ptr<IborIndex>& iborIndex,
+                Spread iborSpread,
+                const Period& forwardStart = 0*Days);
+
+        /*! \deprecated Use the other constructor plus withIborSpread and/or withForwardStart.
+                        Deprecated in version 1.44.
+        */
+        [[deprecated("Use the other constructor plus withIborSpread and/or withForwardStart.")]]
+        MakeCms(const Period& swapTenor,
+                const ext::shared_ptr<SwapIndex>& swapIndex,
+                Spread iborSpread,
                 const Period& forwardStart = 0*Days);
 
         operator Swap() const;
@@ -55,6 +67,8 @@ namespace QuantLib {
 
         MakeCms& receiveCms(bool flag = true);
         MakeCms& withNominal(Real n);
+        MakeCms& withIborSpread(Rate s);
+        MakeCms& withForwardStart(const Period& f);
         MakeCms& withEffectiveDate(const Date&);
 
         MakeCms& withCmsLegTenor(const Period& t);
@@ -89,24 +103,24 @@ namespace QuantLib {
         Period swapTenor_;
         ext::shared_ptr<SwapIndex> swapIndex_;
         ext::shared_ptr<IborIndex> iborIndex_;
-        Spread iborSpread_;
-        bool useAtmSpread_;
-        Period forwardStart_;
+        Spread iborSpread_ = 0.0;
+        bool useAtmSpread_ = false;
+        Period forwardStart_ = 0 * Days;
 
-        Spread cmsSpread_;
-        Real cmsGearing_;
-        Rate cmsCap_, cmsFloor_;
+        Spread cmsSpread_ = 0.0;
+        Real cmsGearing_ = 1.0;
+        Rate cmsCap_ = Null<Rate>(), cmsFloor_ = Null<Rate>();
 
         Date effectiveDate_;
         Calendar cmsCalendar_, floatCalendar_;
 
-        bool payCms_;
-        Real nominal_;
-        Period cmsTenor_, floatTenor_;
-        BusinessDayConvention cmsConvention_, cmsTerminationDateConvention_;
+        bool payCms_ = true;
+        Real nominal_ = 1.0;
+        Period cmsTenor_ = 3 * Months, floatTenor_;
+        BusinessDayConvention cmsConvention_ = ModifiedFollowing, cmsTerminationDateConvention_ = ModifiedFollowing;
         BusinessDayConvention floatConvention_, floatTerminationDateConvention_;
-        DateGeneration::Rule cmsRule_, floatRule_;
-        bool cmsEndOfMonth_, floatEndOfMonth_;
+        DateGeneration::Rule cmsRule_ = DateGeneration::Backward, floatRule_ = DateGeneration::Backward;
+        bool cmsEndOfMonth_ = false, floatEndOfMonth_ = false;
         Date cmsFirstDate_, cmsNextToLastDate_;
         Date floatFirstDate_, floatNextToLastDate_;
         DayCounter cmsDayCount_, floatDayCount_;

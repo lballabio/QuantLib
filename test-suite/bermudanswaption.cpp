@@ -322,7 +322,8 @@ BOOST_AUTO_TEST_CASE(testTreeEngineTimeSnapping) {
 
     auto makeBermudanSwaption = [&index](Date callDate) {
         auto effectiveDate = Date(15, May, 2025);
-        ext::shared_ptr<VanillaSwap> swap = MakeVanillaSwap(Period(10, Years), index, 0.05)
+        ext::shared_ptr<VanillaSwap> swap = MakeVanillaSwap(Period(10, Years), index)
+                                                .withFixedRate(0.05)
                                                 .withEffectiveDate(effectiveDate)
                                                 .withNominal(10000.00)
                                                 .withType(Swap::Type::Payer);

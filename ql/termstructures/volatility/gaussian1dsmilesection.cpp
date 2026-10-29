@@ -58,7 +58,7 @@ namespace QuantLib {
 
         atm_ = model_->forwardRate(fixingDate_, Date(), 0.0, iborIndex_);
         CapFloor c =
-            MakeCapFloor(CapFloor::Cap, iborIndex_->tenor(), iborIndex_, Null<Real>(), 0 * Days)
+            MakeCapFloor(CapFloor::Cap, iborIndex_->tenor(), iborIndex_)
                 .withEffectiveDate(fixingDate_, false);
         annuity_ = iborIndex_->dayCounter().yearFraction(c.startDate(), c.maturityDate()) *
                    model_->zerobond(c.maturityDate());
@@ -86,7 +86,8 @@ Real Gaussian1dSmileSection::optionPrice(Rate strike, Option::Type type,
     } else {
         CapFloor c =
             MakeCapFloor(type == Option::Call ? CapFloor::Cap : CapFloor::Floor,
-                         iborIndex_->tenor(), iborIndex_, strike, 0 * Days)
+                         iborIndex_->tenor(), iborIndex_)
+                .withStrike(strike)
                 .withEffectiveDate(fixingDate_, false)
                 .withPricingEngine(engine_);
         Real tmp = c.NPV();

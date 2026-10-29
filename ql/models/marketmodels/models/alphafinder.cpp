@@ -40,8 +40,12 @@ namespace
         do {
             if (y < target) low = x;
             else if (y > target) high = x;
+            else return x;
 
+            const Real previous = x;
             x = 0.5*(low+high);
+            if (x == previous)
+                return x;
             y = (theObject.*Value)(x);
         } while ((std::fabs(high-low) > tolerance));
 
@@ -113,8 +117,7 @@ namespace
             if (x - low > high -x) // left interval is bigger
             {
                 Real tentativeNewMid = W*low+(1-W)*x;
-                Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
-                bool conditioner = (theObject.*Condition)(tentativeNewMidValue);
+                bool conditioner = (theObject.*Condition)(tentativeNewMid);
                 if (!conditioner) {
                     if  ((theObject.*Condition)(x))
                         return x;
@@ -125,6 +128,7 @@ namespace
                             return high;
                 }
 
+                Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
                 if (tentativeNewMidValue < midValue) // go left
                 {
                     high =x;
@@ -141,8 +145,7 @@ namespace
             else
             {
                 Real tentativeNewMid = W*x+(1-W)*high;
-                Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
-                bool conditioner = (theObject.*Condition)(tentativeNewMidValue);
+                bool conditioner = (theObject.*Condition)(tentativeNewMid);
                 if (!conditioner) {
                     if  ((theObject.*Condition)(x))
                         return x;
@@ -153,6 +156,7 @@ namespace
                             return high;
                 }
 
+                Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
                 if (tentativeNewMidValue < midValue) // go right
                 {
                     low =x;
@@ -333,7 +337,7 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
         Real valueAtTP = valueAtTurningPoint(alpha0);
 
         if (valueAtTP <= targetVariance) {
-            finalPart(alpha0,
+            return finalPart(alpha0,
                       stepindex,
                       ratetwohomogeneousvols,
                       quadraticPart_,
@@ -343,7 +347,6 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
                       a,
                       b,
                       ratetwovols);
-            return true;
         }
 
         // we now have to solve
@@ -354,7 +357,7 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
         Real bilimit = alpha0;
 
         if (bottomValue > targetVariance && topValue > targetVariance) {
-            // see if if ok at some intermediate point by stepping through
+            // see if ok at some intermediate point by stepping through
             Integer i=1;
             while ( i < steps && topValue> targetVariance) {
                 topAlpha = alpha0 + (alphaMax-alpha0)*(i+0.0)/(steps+0.0);
@@ -367,9 +370,9 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
         }
 
         if (bottomValue > targetVariance && topValue > targetVariance) {
-            // see if if ok at some intermediate point by stepping through
+            // see if ok at some intermediate point by stepping through
             Integer i=1;
-            while ( i < steps && topValue> targetVariance) {
+            while ( i < steps && bottomValue> targetVariance) {
                 bottomAlpha = alpha0 + (alphaMin-alpha0)*(i+0.0)/(steps+0.0);
                 bottomValue=valueAtTurningPoint(bottomAlpha);
                 ++i;
@@ -402,7 +405,7 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
                                          *this,
                                          &AlphaFinder::minusValueAtTurningPoint);
         }
-        finalPart(alpha,
+        return finalPart(alpha,
                   stepindex,
                   ratetwohomogeneousvols,
                   quadraticPart_,
@@ -412,7 +415,6 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
                   a,
                   b,
                   ratetwovols);
-        return true;
     }
 
     bool AlphaFinder::solveWithMaxHomogeneity(
@@ -547,7 +549,7 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
                                         &AlphaFinder::testIfSolutionExists,
                                         failed) ;
 
-        finalPart(alpha,
+        return finalPart(alpha,
                   stepindex,
                   ratetwohomogeneousvols,
                   computeQuadraticPart(alpha),
@@ -557,7 +559,5 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
                   a,
                   b,
                   ratetwovols);
-
-        return true;;
     }
 }

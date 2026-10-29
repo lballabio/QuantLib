@@ -26,6 +26,7 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -112,6 +113,10 @@ namespace QuantLib {
 
             results_.strikeSensitivity  = black.strikeSensitivity();
             results_.itmCashProbability = black.itmCashProbability();
+        } else if (variance < QL_EPSILON) {
+            // no time value: the critical-price calculation degenerates, and the
+            // American price is just the European one floored at intrinsic
+            results_.value = std::max(black.value(), (*payoff)(spot));
         } else {
             // early exercise can be optimal
             CumulativeNormalDistribution cumNormalDist;
@@ -205,10 +210,27 @@ namespace QuantLib {
                         + lambda * (lambda - 1) / (spot * spot * (1 - chi)))
                     * (phi * (Sk - payoff->strike()) - black_Sk)
                     * std::pow((spot/Sk), lambda);
+                // deep in the money the correction can land below the
+                // exercise value, which the holder can always take instead
+                Real exerciseValue = (*payoff)(spot);
+                if (results_.value < exerciseValue) {
+                    results_.value = exerciseValue;
+                    results_.delta = phi;
+                    results_.gamma = 0;
+                }
             } else {
                 results_.value = phi * (spot - payoff->strike());
                 results_.delta = phi;
                 results_.gamma = 0;
+            }
+
+            // for short-dated, highly volatile options the correction can
+            // also take the price below the European one, which is a lower
+            // bound for the American option; fall back to it in that case
+            if (results_.value < black.value()) {
+                results_.value = black.value();
+                results_.delta = black.delta(spot);
+                results_.gamma = black.gamma(spot);
             }
 
         } // end of "early exercise can be optimal"

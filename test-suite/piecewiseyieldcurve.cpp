@@ -381,7 +381,8 @@ void testCurveConsistency(CommonVars& vars,
     for (Size i=0; i<vars.swaps; i++) {
         Period tenor = swapData[i].n*swapData[i].units;
 
-        VanillaSwap swap = MakeVanillaSwap(tenor, euribor6m, 0.0)
+        VanillaSwap swap = MakeVanillaSwap(tenor, euribor6m)
+            .withFixedRate(0.0)
             .withEffectiveDate(vars.settlement)
             .withFixedLegDayCount(vars.fixedLegDayCounter)
             .withFixedLegTenor(Period(vars.fixedLegFrequency))
@@ -906,7 +907,8 @@ BOOST_AUTO_TEST_CASE(testLiborFixing) {
     for (Size i=0; i<vars.swaps; i++) {
         Period tenor = swapData[i].n*swapData[i].units;
 
-        VanillaSwap swap = MakeVanillaSwap(tenor, index, 0.0)
+        VanillaSwap swap = MakeVanillaSwap(tenor, index)
+            .withFixedRate(0.0)
             .withEffectiveDate(vars.settlement)
             .withFixedLegDayCount(vars.fixedLegDayCounter)
             .withFixedLegTenor(Period(vars.fixedLegFrequency))
@@ -939,7 +941,8 @@ BOOST_AUTO_TEST_CASE(testLiborFixing) {
     for (Size i=0; i<vars.swaps; i++) {
         Period tenor = swapData[i].n*swapData[i].units;
 
-        VanillaSwap swap = MakeVanillaSwap(tenor, index, 0.0)
+        VanillaSwap swap = MakeVanillaSwap(tenor, index)
+            .withFixedRate(0.0)
             .withEffectiveDate(vars.settlement)
             .withFixedLegDayCount(vars.fixedLegDayCounter)
             .withFixedLegTenor(Period(vars.fixedLegFrequency))
@@ -1007,7 +1010,8 @@ BOOST_AUTO_TEST_CASE(testJpyLibor) {
     for (Size i=0; i<vars.swaps; i++) {
         Period tenor = swapData[i].n*swapData[i].units;
 
-        VanillaSwap swap = MakeVanillaSwap(tenor, jpylibor6m, 0.0)
+        VanillaSwap swap = MakeVanillaSwap(tenor, jpylibor6m)
+            .withFixedRate(0.0)
             .withEffectiveDate(vars.settlement)
             .withFixedLegDayCount(vars.fixedLegDayCounter)
             .withFixedLegTenor(Period(vars.fixedLegFrequency))
@@ -1185,7 +1189,8 @@ BOOST_AUTO_TEST_CASE(testBadPreviousCurve, *precondition(usingAtParCoupons())) {
     for (auto& i : data) {
         Period tenor = i.n * i.units;
 
-        VanillaSwap swap = MakeVanillaSwap(tenor, index, 0.0)
+        VanillaSwap swap = MakeVanillaSwap(tenor, index)
+            .withFixedRate(0.0)
             .withFixedLegDayCount(Thirty360(Thirty360::BondBasis))
             .withFixedLegTenor(Period(1, Months))
             .withFixedLegConvention(Unadjusted);
@@ -1484,6 +1489,7 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapPenalty, *precondition(usingAtParCoupons
 }
 
 BOOST_AUTO_TEST_CASE(testGlobalBootstrapVariables) {
+    BOOST_TEST_MESSAGE("Testing global bootstrap variables...");
 
     // Use fixed evaluationDate to make the test stable. It works for any date,
     // but the tolerance varies and also depends on usingAtParCoupons().
@@ -1742,7 +1748,8 @@ BOOST_AUTO_TEST_CASE(testMultiCurveTwoPiecewiseYieldCurves) {
     }
 
     for (Size i = 2; i <= 10; ++i) {
-        VanillaSwap swap = MakeVanillaSwap(i * Years, euribor6m, q->value())
+        VanillaSwap swap = MakeVanillaSwap(i * Years, euribor6m)
+                               .withFixedRate(q->value())
                                .withSettlementDays(euribor6m->fixingDays())
                                .withFixedLegDayCount(Thirty360(Thirty360::BondBasis))
                                .withFixedLegTenor(1 * Years)
@@ -1800,7 +1807,8 @@ BOOST_AUTO_TEST_CASE(testMultiCurvePiecewiseYieldCurveAndSpreadedCurve) {
     // check instrument npvs
 
     for (Size i = 1; i <= 10; ++i) {
-        VanillaSwap swap = MakeVanillaSwap(i * Years, euribor3m, q->value())
+        VanillaSwap swap = MakeVanillaSwap(i * Years, euribor3m)
+                               .withFixedRate(q->value())
                                .withSettlementDays(euribor3m->fixingDays())
                                .withFixedLegDayCount(Thirty360(Thirty360::BondBasis))
                                .withFixedLegTenor(1 * Years)
@@ -1813,6 +1821,7 @@ BOOST_AUTO_TEST_CASE(testMultiCurvePiecewiseYieldCurveAndSpreadedCurve) {
 }
 
 BOOST_AUTO_TEST_CASE(testGlobalBootstrapInstrumentWeights) {
+    BOOST_TEST_MESSAGE("Testing global bootstrap instrument weights...");
 
     CommonVars vars(Date(23, Oct, 2025));
 
@@ -1897,7 +1906,8 @@ void testPiecewiseSpreadYieldCurveImpl() {
     const Real tolerance = 1.0e-9;
     euribor3m = ext::make_shared<Euribor3M>(curveHandle);
     for (const auto& datum : swapData) {
-        VanillaSwap swap = MakeVanillaSwap(datum.n * datum.units, euribor3m, 0.0)
+        VanillaSwap swap = MakeVanillaSwap(datum.n * datum.units, euribor3m)
+            .withFixedRate(0.0)
             .withEffectiveDate(vars.settlement)
             .withFixedLegDayCount(vars.fixedLegDayCounter)
             .withFixedLegTenor(Period(vars.fixedLegFrequency))
@@ -2311,7 +2321,8 @@ BOOST_AUTO_TEST_CASE(testDatedSwapHelpers) {
     euribor6m = ext::make_shared<Euribor6M>(h);
 
     for (auto [start, end, q] : swapData) {
-        VanillaSwap swap = MakeVanillaSwap(Period(), euribor6m, 0.0)
+        VanillaSwap swap = MakeVanillaSwap(Period(), euribor6m)
+            .withFixedRate(0.0)
             .withEffectiveDate(start)
             .withTerminationDate(end)
             .withFixedLegDayCount(fixedLegDayCounter)
@@ -2387,7 +2398,9 @@ BOOST_AUTO_TEST_CASE(testSwapRateHelperWithCouponPricer) {
     for (auto& d : swapData) {
         // built to match the helper's internal swap, priced with the same pricer
         ext::shared_ptr<VanillaSwap> swap =
-            MakeVanillaSwap(Period(d.n, d.units), index, d.rate, 0 * Days)
+            MakeVanillaSwap(Period(d.n, d.units), index)
+                .withFixedRate(d.rate)
+                .withForwardStart(0 * Days)
                 .withDiscountingTermStructure(curveHandle)
                 .withFixedLegDayCount(Thirty360(Thirty360::BondBasis))
                 .withFixedLegTenor(Period(Annual))
@@ -2457,6 +2470,31 @@ BOOST_AUTO_TEST_CASE(testHelperDatesFromNonBusinessEvaluationDate) {
                     "actual evaluation date:\n"
                     "    expected: " << expectedBmaStart << "\n"
                     "    obtained: " << bmaHelper->earliestDate());
+}
+
+BOOST_AUTO_TEST_CASE(testBmaHelperSwap) {
+
+    BOOST_TEST_MESSAGE("Testing the swap underlying a BMA swap-rate helper...");
+
+    Date today(15, January, 2024);
+    Settings::instance().evaluationDate() = today;
+
+    Calendar bmaCalendar = JointCalendar(BMAIndex().fixingCalendar(),
+                                         USDLibor(3 * Months).fixingCalendar());
+    auto bmaIndex = ext::make_shared<BMAIndex>();
+    auto helper = ext::make_shared<BMASwapRateHelper>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.75)),
+        5 * Years, 2, bmaCalendar, Period(Quarterly), Following, Actual360(),
+        bmaIndex, ext::make_shared<USDLibor>(3 * Months));
+
+    auto swap = helper->swap();
+    BOOST_REQUIRE(swap);
+    BOOST_CHECK_EQUAL(swap->startDate(), helper->earliestDate());
+    BOOST_CHECK_EQUAL(swap->bmaLeg().size(), 20U);
+
+    Settings::instance().evaluationDate() = bmaCalendar.advance(today, 1 * Months);
+    BOOST_CHECK(helper->swap() != swap);
+    BOOST_CHECK_EQUAL(helper->swap()->startDate(), helper->earliestDate());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

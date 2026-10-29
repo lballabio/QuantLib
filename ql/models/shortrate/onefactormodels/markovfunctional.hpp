@@ -159,13 +159,13 @@ namespace QuantLib {
                     addAdjustment(KahaleInterpolation);
                 }
 
-                QL_REQUIRE((adjustments_ & SabrSmile) == 0 ||
-                           (adjustments_ & KahaleSmile) == 0 ||
-                           (adjustments_ & CustomSmile) == 0
-                           ,
-                           "Only one of KahaleSmile, SabrSmile and CustomSmile"
+                const int smileTreatments = ((adjustments_ & KahaleSmile) != 0) +
+                                            ((adjustments_ & SabrSmile) != 0) +
+                                            ((adjustments_ & CustomSmile) != 0);
+                QL_REQUIRE(smileTreatments <= 1,
+                           "At most one of KahaleSmile, SabrSmile and CustomSmile "
                            "can be specified at the same time");
-                QL_REQUIRE(yGridPoints_ > 0, "At least one grid point ("
+                QL_REQUIRE(yGridPoints_ >= 2, "At least two grid points ("
                                                  << yGridPoints_
                                                  << ") for the state process "
                                                     "discretization must be "
@@ -509,8 +509,6 @@ namespace QuantLib {
 
         std::vector<Date> volstepdates_;
         mutable std::vector<Time> volsteptimes_;
-        mutable Array volsteptimesArray_; // FIXME this is redundant (just a copy of
-                                  // volsteptimes_)
         std::vector<Real> volatilities_;
 
         Date numeraireDate_;

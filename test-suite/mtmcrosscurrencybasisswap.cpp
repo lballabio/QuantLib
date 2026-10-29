@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE(testFairFxQuoteSpreadRepricesToZero) {
     // Base USD (constant notional), quote EUR (resettable leg).
     auto makeSwap = [&](Spread eurSpread) {
         auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
-            MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency,
+            MtMCrossCurrencyBasisSwap::PayFxBaseCurrency,
             usdNominal, USDCurrency(), sch, usdIndex, 0.0, 1.0, eurNominal, EURCurrency(), sch,
             eurIndex, eurSpread, 1.0, /*isFxBaseCurrencyLegResettable=*/false);
         swap->setPricingEngine(engine);
@@ -209,7 +209,7 @@ BOOST_AUTO_TEST_CASE(testRepricesToParOffHelperBootstrappedCurve) {
                                           .backwards();
 
                     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
-                        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, 1.0, EURCurrency(),
+                        MtMCrossCurrencyBasisSwap::PayFxBaseCurrency, 1.0, EURCurrency(),
                         eurSch, eurIndex, baseLegBasis, 1.0, 1.0, USDCurrency(), usdSch, usdIndex,
                         quoteLegBasis, 1.0, isFxBaseCurrencyLegResettable, fxResetFixingDays, cal);
                     swap->setPricingEngine(engine);
@@ -293,7 +293,7 @@ BOOST_AUTO_TEST_CASE(testFxResetObservationDatesAndProjection) {
     auto spotQuote = ext::make_shared<SimpleQuote>(spotFx);
     Handle<Quote> spotFxHandle(spotQuote);
     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
-        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, eurNominal, EURCurrency(), sch,
+        MtMCrossCurrencyBasisSwap::PayFxBaseCurrency, eurNominal, EURCurrency(), sch,
         eurIndex, 0.0, 1.0, eurNominal * spotFx, USDCurrency(), sch, usdIndex, 0.0, 1.0,
         /*isFxBaseCurrencyLegResettable=*/false, fxResetConvention.fixingDays(), fxResetConvention.fixingCalendar());
     BOOST_CHECK(!swap->fxResetFixingCalendar().empty());
@@ -491,7 +491,7 @@ BOOST_AUTO_TEST_CASE(testKnownFxResetBeforeAccrualStart) {
 
     Real eurNominal = 10000000.0;
     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
-        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, eurNominal, EURCurrency(), sch,
+        MtMCrossCurrencyBasisSwap::PayFxBaseCurrency, eurNominal, EURCurrency(), sch,
         eurIndex, 0.0, 1.0, eurNominal * 1.10, USDCurrency(), sch, usdIndex, 0.0, 1.0,
         /*isFxBaseCurrencyLegResettable=*/false, fxResetConvention.fixingDays(), fxResetConvention.fixingCalendar());
     swap->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
@@ -539,7 +539,7 @@ BOOST_AUTO_TEST_CASE(testResettableLegCashFlowsMatchLegResults) {
 
     // Base USD (constant notional), quote EUR (resettable leg).
     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
-        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
+        MtMCrossCurrencyBasisSwap::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
         usdIndex, 0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, 10.0e-4, 1.0,
         /*isFxBaseCurrencyLegResettable=*/false);
     BOOST_CHECK(swap->fxResetFixingCalendar().empty());
@@ -596,7 +596,7 @@ BOOST_AUTO_TEST_CASE(testSameDayResetUsesSpot) {
     Real usdNominal = 10000000.0;
     Rate spotFx = 1.10;
     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
-        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
+        MtMCrossCurrencyBasisSwap::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
         usdIndex, 0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, 0.0, 1.0,
         /*isFxBaseCurrencyLegResettable=*/false);
 
@@ -635,7 +635,7 @@ BOOST_AUTO_TEST_CASE(testFxSettlementAndNpvDateConsistency) {
 
     auto makeSwap = [&]() {
         return ext::make_shared<MtMCrossCurrencyBasisSwap>(
-            MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
+            MtMCrossCurrencyBasisSwap::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
             usdIndex, 0.0, 1.0, usdNominal / referenceSpot, EURCurrency(), sch, eurIndex,
             15.0e-4, 1.0, /*isFxBaseCurrencyLegResettable=*/false);
     };
@@ -695,7 +695,7 @@ BOOST_AUTO_TEST_CASE(testSeasonedResetPeriodNeedsExchangeRate) {
         USDCurrency(), usdCurve, EURCurrency(), eurCurve, makeQuoteHandle(spotFx));
 
     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
-        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency,
+        MtMCrossCurrencyBasisSwap::PayFxBaseCurrency,
         usdNominal, USDCurrency(), sch, usdIndex, 0.0, 1.0, eurNominal, EURCurrency(), sch,
         eurIndex, 0.0, 1.0, /*isFxBaseCurrencyLegResettable=*/true);
     swap->setPricingEngine(engine);
@@ -733,7 +733,7 @@ BOOST_AUTO_TEST_CASE(testSeasonedTriangulatedResetMatchesConstantNotional) {
     Rate realisedFx = 0.92;        // realised EUR per USD at the past reset (deliberately != 1/spotFx)
 
     auto mtm = ext::make_shared<MtMCrossCurrencyBasisSwap>(
-        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch, usdIndex,
+        MtMCrossCurrencyBasisSwap::PayFxBaseCurrency, usdNominal, USDCurrency(), sch, usdIndex,
         0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, eurBasis, 1.0,
         /*isFxBaseCurrencyLegResettable=*/false);
 
@@ -807,7 +807,7 @@ BOOST_AUTO_TEST_CASE(testSeasonedEurUsdMarketExchangeRate) {
     // base = EUR (constant), quote = USD (resettable); reset notional = EUR notional * USD per EUR.
     Real realizedUsdNotional = eurNotional * marketFx;
     auto mtm = ext::make_shared<MtMCrossCurrencyBasisSwap>(
-        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, eurNotional, EURCurrency(), sch,
+        MtMCrossCurrencyBasisSwap::PayFxBaseCurrency, eurNotional, EURCurrency(), sch,
         eurIndex, basis, 1.0, realizedUsdNotional, USDCurrency(), sch, usdIndex, 0.0, 1.0,
         /*isFxBaseCurrencyLegResettable=*/false);
 
@@ -872,7 +872,7 @@ BOOST_AUTO_TEST_CASE(testSeasonedUsdJpyMarketExchangeRate) {
     // base = USD (resettable), quote = JPY (constant); reset notional = JPY notional * USD per JPY.
     Real realizedUsdNotional = jpyNotional / marketFx;
     auto mtm = ext::make_shared<MtMCrossCurrencyBasisSwap>(
-        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, realizedUsdNotional, USDCurrency(), sch,
+        MtMCrossCurrencyBasisSwap::PayFxBaseCurrency, realizedUsdNotional, USDCurrency(), sch,
         usdIndex, 0.0, 1.0, jpyNotional, JPYCurrency(), sch, jpyIndex, basis, 1.0,
         /*isFxBaseCurrencyLegResettable=*/true);
 
@@ -949,7 +949,7 @@ BOOST_AUTO_TEST_CASE(testSeasonedOvernightLegsMatchConstantNotional) {
 
     auto spot = makeQuoteHandle(spotFx);
     auto mtm = ext::make_shared<MtMCrossCurrencyBasisSwap>(
-        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
+        MtMCrossCurrencyBasisSwap::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
         usdIndex, 0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, eurBasis, 1.0,
         /*isFxBaseCurrencyLegResettable=*/false);
     mtm->setPricingEngine(ext::make_shared<DiscountingMtMCrossCurrencyBasisSwapEngine>(
@@ -1009,7 +1009,7 @@ BOOST_AUTO_TEST_CASE(testResetExchangePaymentDates) {
     Real usdNominal = 10000000.0;
     Rate spotFx = 1.10;
     auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
-        MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
+        MtMCrossCurrencyBasisSwap::PayFxBaseCurrency, usdNominal, USDCurrency(), sch,
         usdIndex, 0.0, 1.0, usdNominal / spotFx, EURCurrency(), sch, eurIndex, 0.0, 1.0,
         /*isFxBaseCurrencyLegResettable=*/false, /*fxResetFixingDays=*/0, /*fxResetFixingCalendar=*/Calendar(),
         /*fxBasePaymentLag=*/2, /*fxQuotePaymentLag=*/2,

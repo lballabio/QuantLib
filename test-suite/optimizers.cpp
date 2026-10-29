@@ -24,6 +24,7 @@
 #include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/experimental/math/hybridsimulatedannealing.hpp>
 #include <ql/math/optimization/bfgs.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/constraint.hpp>
@@ -86,6 +87,66 @@ class OneDimensionalPolynomialDegreeN : public CostFunction {
     const Array coefficients_;
     const Size polynomialDegree_;
 };
+
+struct StationarySampler {
+    void operator()(Array& newPoint, const Array& currentPoint, const Array&) const {
+        newPoint = currentPoint;
+    }
+};
+
+struct ImprovingSampler {
+    void operator()(Array& newPoint, const Array& currentPoint, const Array&) const {
+        newPoint = currentPoint / 2.0;
+    }
+};
+
+struct RejectAllMoves {
+    bool operator()(Real, Real, const Array&) const { return false; }
+};
+
+struct AcceptAllMoves {
+    bool operator()(Real, Real, const Array&) const { return true; }
+};
+
+struct StagedCooling {
+    void operator()(Array& newTemperature, const Array&, const Array& steps) const {
+        std::fill(newTemperature.begin(), newTemperature.end(), 0.0);
+        if (steps[0] <= 2.0)
+            newTemperature[1] = 0.5;
+    }
+};
+
+struct ConstantTemperature {
+    void operator()(Array& newTemperature, const Array& currentTemperature, const Array&) const {
+        newTemperature = currentTemperature;
+    }
+};
+
+class MultidimensionalQuadratic : public CostFunction {
+  public:
+    Real value(const Array& x) const override { return DotProduct(x, x); }
+
+    Array values(const Array& x) const override { return Array(1, value(x)); }
+};
+
+template <class Sampler, class Probability, class Temperature>
+std::pair<EndCriteria::Type, Size> runHybridAnnealing(const Sampler& sampler,
+                                                      const Probability& probability,
+                                                      Temperature temperature,
+                                                      Size maxIterations,
+                                                      Size maxStationaryStateIterations) {
+    MultidimensionalQuadratic costFunction;
+    NoConstraint constraint;
+    Problem problem(costFunction, constraint, Array(2, 1.0));
+    EndCriteria endCriteria(maxIterations, maxStationaryStateIterations, 1e-8, 1e-8, 1e-8);
+
+    using Annealing = HybridSimulatedAnnealing<Sampler, Probability, Temperature>;
+    Annealing annealing(sampler, probability, std::move(temperature), ReannealingTrivial(), 1.0,
+                        0.5, 0, Annealing::NoResetScheme, 0, nullptr, Annealing::NoLocalOptimize);
+
+    const EndCriteria::Type result = annealing.minimize(problem, endCriteria);
+    return std::make_pair(result, problem.functionEvaluation());
+}
 
 
 // The goal of this cost function is simply to call another optimization inside
@@ -366,6 +427,36 @@ BOOST_AUTO_TEST_CASE(nestedOptimizationTest) {
     EndCriteria endCriteria(1000, 100, 1e-5, 1e-5, 1e-5);
     optimizationMethod.minimize(problem, endCriteria);
 
+}
+
+BOOST_AUTO_TEST_CASE(testHybridSimulatedAnnealingTemperatureTermination) {
+    BOOST_TEST_MESSAGE("Testing hybrid simulated annealing temperature termination...");
+
+    const auto result =
+        runHybridAnnealing(StationarySampler(), RejectAllMoves(), StagedCooling(), 100, 50);
+
+    BOOST_CHECK_EQUAL(result.first, EndCriteria::None);
+    BOOST_CHECK_EQUAL(result.second, 3);
+}
+
+BOOST_AUTO_TEST_CASE(testHybridSimulatedAnnealingIterationTermination) {
+    BOOST_TEST_MESSAGE("Testing hybrid simulated annealing iteration termination...");
+
+    const auto result =
+        runHybridAnnealing(ImprovingSampler(), AcceptAllMoves(), ConstantTemperature(), 3, 2);
+
+    BOOST_CHECK_EQUAL(result.first, EndCriteria::MaxIterations);
+    BOOST_CHECK_EQUAL(result.second, 4);
+}
+
+BOOST_AUTO_TEST_CASE(testHybridSimulatedAnnealingStationaryTermination) {
+    BOOST_TEST_MESSAGE("Testing hybrid simulated annealing stationary-point termination...");
+
+    const auto result =
+        runHybridAnnealing(StationarySampler(), RejectAllMoves(), ConstantTemperature(), 100, 2);
+
+    BOOST_CHECK_EQUAL(result.first, EndCriteria::StationaryPoint);
+    BOOST_CHECK_EQUAL(result.second, 3);
 }
 
 
@@ -1100,6 +1191,94 @@ BOOST_AUTO_TEST_CASE(testCMAES) {
                         << "\n    calculated: " << x
                         << "\n    expected:   " << expected
                         << "\n    x error:    " << xError);
+    }
+
+    // Ill-conditioned covariance: weights spanning twelve decades drive the
+    // factorization of C over roughly six orders of magnitude in scale.
+    {
+        const Size n = 6;
+        Array center(n, 0.0), weight(n);
+        for (Size i = 0; i < n; ++i)
+            weight[i] = std::pow(10.0, 12.0 * i / Real(n - 1));
+
+        WeightedQuadratic f(center, weight);
+        NoConstraint c;
+        Array x0(n, 1.0);
+        EndCriteria endCriteria(5000, 200, 1e-16, 1e-16, Null<Real>());
+        Problem problem(f, c, x0);
+        Cmaes optimizer(Cmaes::Configuration().withSigma(1.0).withSeed(11));
+
+        optimizer.minimize(problem, endCriteria);
+
+        if (problem.functionValue() > 1e-8)
+            BOOST_ERROR("CMA-ES condition-1e12 f = " << problem.functionValue()
+                        << " (expected < 1e-8)");
+    }
+
+    // Rank-deficient objective: the last coordinate carries zero weight, so C
+    // collapses in that direction. The search must stay usable and stop on a
+    // termination criterion rather than throwing or going non-finite.
+    {
+        const Size n = 5;
+        Array center(n, 0.0), weight(n, 1.0);
+        weight[n - 1] = 0.0;
+
+        WeightedQuadratic f(center, weight);
+        NoConstraint c;
+        Array x0(n, 1.0);
+        EndCriteria endCriteria(5000, 200, 1e-16, 1e-16, Null<Real>());
+        Problem problem(f, c, x0);
+        Cmaes optimizer(Cmaes::Configuration().withSigma(0.5).withSeed(13));
+
+        EndCriteria::Type ecType = optimizer.minimize(problem, endCriteria);
+
+        if (problem.functionValue() > 1e-8)
+            BOOST_ERROR("CMA-ES rank-deficient f = " << problem.functionValue()
+                        << " (expected < 1e-8)");
+        if (ecType == EndCriteria::None)
+            BOOST_ERROR("CMA-ES rank-deficient did not terminate on a criterion");
+    }
+
+    // Rotated ill-conditioned quadratic. Unlike the separable case above, the
+    // rotation correlates every coordinate, which reduces the smallest Cholesky
+    // pivot below its floor multiple times per run. Convergence must be unaffected.
+    {
+        const Size n = 4;
+        Matrix Q(n, n, 0.0);
+        for (Size i = 0; i < n; ++i)
+            Q[i][i] = 1.0;
+
+        // fixed Givens rotations; no RNG, so the test is reproducible
+        const Size p[4] = {0, 1, 2, 0};
+        const Size q[4] = {1, 2, 3, 3};
+        const Real angle[4] = {0.7, 1.1, 0.4, 0.9};
+        for (Size k = 0; k < 4; ++k) {
+            Matrix G(n, n, 0.0);
+            for (Size i = 0; i < n; ++i)
+                G[i][i] = 1.0;
+            G[p[k]][p[k]] = std::cos(angle[k]);
+            G[p[k]][q[k]] = -std::sin(angle[k]);
+            G[q[k]][p[k]] = std::sin(angle[k]);
+            G[q[k]][q[k]] = std::cos(angle[k]);
+            Q = G * Q;
+        }
+
+        Matrix D(n, n, 0.0);
+        for (Size i = 0; i < n; ++i)
+            D[i][i] = std::pow(1e12, Real(i) / Real(n - 1));
+
+        QuadraticForm f(transpose(Q) * D * Q);
+        NoConstraint c;
+        Array x0(n, 1.0);
+        EndCriteria endCriteria(3000, 500, 1e-18, 1e-18, Null<Real>());
+        Problem problem(f, c, x0);
+        Cmaes optimizer(Cmaes::Configuration().withSigma(0.5).withSeed(17));
+
+        optimizer.minimize(problem, endCriteria);
+
+        if (problem.functionValue() > 1e-8)
+            BOOST_ERROR("CMA-ES rotated ill-conditioned f = "
+                        << problem.functionValue() << " (expected < 1e-8)");
     }
 }
 

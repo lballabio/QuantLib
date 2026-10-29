@@ -32,7 +32,7 @@
 
 namespace QuantLib {
 
-    //! Ibor rate coupon with digital digital call/put option
+    //! Ibor rate coupon with digital call/put option
     class DigitalIborCoupon : public DigitalCoupon {
       public:
         DigitalIborCoupon(

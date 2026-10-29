@@ -118,8 +118,10 @@ Real ZabrModel::fdPrice(const Real strike) const {
 }
 
 std::vector<Real> ZabrModel::fdPrice(const std::vector<Real> &strikes) const {
-
-    // TODO check strikes to be increasing
+    QL_REQUIRE(!strikes.empty(), "ZabrModel::fdPrice(): empty strikes");
+    for (Size i = 0; i < strikes.size() - 1; ++i) {
+        QL_REQUIRE(strikes[i] < strikes[i + 1], "ZabrModel::fdPrice(): non-ascending strikes");
+    }
     // TODO put these parameters somewhere
     const Real start =
         std::min(0.00001, strikes.front() * 0.5); // lowest strike for grid
@@ -319,7 +321,7 @@ Real ZabrModel::x(const Real strike) const {
 }
 
 std::vector<Real> ZabrModel::x(const std::vector<Real> &strikes) const {
-
+    QL_REQUIRE(!strikes.empty(), "ZabrModel::x(): empty strikes.");
     QL_REQUIRE(strikes[0] > 0.0 || beta_ < 1.0,
                "strikes must be positive (" << strikes[0] << ") if beta = 1");
     for (auto i = strikes.begin() + 1; i != strikes.end(); ++i)
@@ -342,11 +344,11 @@ std::vector<Real> ZabrModel::x(const std::vector<Real> &strikes) const {
                 std::log((J + nu_ * y[m] - rho_) / (1.0 - rho_)) / nu_;
         }
     } else {
-        Size ynz = std::upper_bound(y.begin(), y.end(), 0.0) - y.begin();
+        int ynz = static_cast<int>(std::upper_bound(y.begin(), y.end(), 0.0) - y.begin());
         if (ynz > 0)
             if (close(y[ynz - 1], 0.0))
                 ynz--;
-        if (ynz == y.size())
+        if (ynz == static_cast<int>(y.size()))
             ynz--;
 
         for (int dir = 1; dir >= -1; dir -= 2) {

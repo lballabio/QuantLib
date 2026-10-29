@@ -1,24 +1,28 @@
 #!/usr/bin/python
-# coding=utf-8-unix
+# coding=utf-8
+
+"""Collect and format QuantLib copyright notices from standard input."""
 
 import re
 import sys
+from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 regex1 = re.compile(r"Copyright \(C\) ([0-9]{4}-[0-9]{4}) (.+)$")
 regex2 = re.compile(r"Copyright \(C\) (([0-9]{4})(, [0-9]{4})*) (.+)$")
 
-copyrights = {}
+copyrights: Dict[str, Set[int]] = {}
 errors = False
 
 for line in sys.stdin:
     m1 = regex1.search(line)
     m2 = regex2.search(line)
     if m1 is None and m2 is None:
-        sys.stderr.write("Could not parse '%s'\n" % line.strip())
+        sys.stderr.write(f"Could not parse '{line.strip()}'\n")
         errors = True
+        continue
     if m1:
         first, last = [int(y) for y in m1.groups()[0].split("-")]
-        years = range(first, last + 1)
+        years: Iterable[int] = range(first, last + 1)
         owner = m1.groups()[-1].strip()
     elif m2:
         years = [int(y) for y in m2.groups()[0].split(", ")]
@@ -29,30 +33,24 @@ for line in sys.stdin:
     copyrights[owner] = s
 
 if errors:
-    exit(1)
+    sys.exit(1)
 
-for owner in copyrights:
-    s = copyrights[owner]
-    l = [y for y in s]
-    l.sort()
-    copyrights[owner] = l
-
-copyrights = [
-    (years, owner)
+sorted_copyrights: List[Tuple[List[int], str]] = [
+    (sorted(years), owner)
     for owner, years in copyrights.items()
     # some false positives
-    if years[0] >= 2000 and "Monte Carlo Methods in Finance" not in owner
+    if min(years) >= 2000 and "Monte Carlo Methods in Finance" not in owner
 ]
-copyrights.sort()
+sorted_copyrights.sort()
 
-lines = []
-last_year = None
-for years, owner in copyrights:
+lines: List[str] = []
+last_year: Optional[int] = None
+for years, owner in sorted_copyrights:
     # use blank lines to separate years
     if last_year is not None and years[0] != last_year:
         lines.append("")
     last_year = years[0]
-    lines.append("Copyright (C) %s %s" % (", ".join([str(y) for y in years]), owner))
+    lines.append(f"Copyright (C) {', '.join(str(year) for year in years)} {owner}")
 
 print(
     """

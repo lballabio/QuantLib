@@ -50,6 +50,8 @@ namespace QuantLib {
 
         Real impliedQuote() const override;
         void setTermStructure(YieldTermStructure*) override;
+        // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
+        ext::shared_ptr<MultipleResetsSwap> swap() const { return swap_; }
         void accept(AcyclicVisitor&) override;
 
       protected:

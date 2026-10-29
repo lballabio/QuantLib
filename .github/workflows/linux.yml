@@ -55,6 +55,12 @@ jobs:
             cc: clang
             cxx: clang++
             tests: true
+          - name: "Clang 22"
+            shortname: clang22
+            tag: stonking
+            cc: clang
+            cxx: clang++
+            tests: true
           - name: "C++17 mode"
             shortname: c++17
             tag: rolling
@@ -152,7 +158,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - name: Cache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}
         restore-keys: |

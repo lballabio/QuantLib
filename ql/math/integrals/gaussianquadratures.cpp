@@ -27,6 +27,7 @@
 #include <ql/math/matrixutilities/tqreigendecomposition.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 
+#include <cmath>
 #include <map>
 
 namespace QuantLib {
@@ -56,7 +57,34 @@ namespace QuantLib {
 
         Real mu_0 = orthPoly.mu_0();
         for (i=0; i<n; ++i) {
-            w_[i] = mu_0*ev[0][i]*ev[0][i] / orthPoly.w(x_[i]);
+            // orthPoly.w(x_[i]) can underflow to zero for large orders (e.g. Gauss-Laguerre
+            // beyond n ~ 200) while the quotient itself stays representable; forming it in
+            // logarithms keeps every intermediate value in range in that case.
+            const Real wx = orthPoly.w(x_[i]);
+            if (wx > 0.0) {
+                w_[i] = mu_0*ev[0][i]*ev[0][i] / wx;
+            } else {
+                w_[i] = std::exp(std::log(mu_0)
+                                  + 2.0*std::log(std::fabs(ev[0][i]))
+                                  - orthPoly.logW(x_[i]));
+            }
+
+            if (!std::isfinite(w_[i])) {
+                // w(x) can come back subnormal rather than zero, in which
+                // case the division above overflows and the branch on wx
+                // does not catch it. Retry in logarithms.
+                if (ev[0][i] != 0.0)
+                    w_[i] = std::exp(std::log(mu_0)
+                                      + 2.0*std::log(std::fabs(ev[0][i]))
+                                      - orthPoly.logW(x_[i]));
+
+                // Once ev[0][i] has underflowed to zero the weight cannot
+                // be recovered. Such a node sits far enough into the tail
+                // that its contribution is negligible, so drop it rather
+                // than leave a NaN to poison the whole integral.
+                if (!std::isfinite(w_[i]))
+                    w_[i] = 0.0;
+            }
         }
     }
 

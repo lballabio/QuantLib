@@ -201,7 +201,8 @@ namespace QuantLib {
         // compute annuity transformed rate
         Rate transformedRate = (fairRates_[i] + lambda_) * annuities_[i] / stdAnnuity;
 
-        memberSwap_ = MakeVanillaSwap(dummySwapLength, iborIndex, transformedRate)
+        memberSwap_ = MakeVanillaSwap(dummySwapLength, iborIndex)
+                          .withFixedRate(transformedRate)
                           .withType(swap_->type())
                           .withEffectiveDate(swap_->startDate())
                           .withTerminationDate(expiries_[i])

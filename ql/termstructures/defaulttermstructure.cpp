@@ -85,14 +85,16 @@ namespace QuantLib {
 
         if (!jumps_.empty()) {
             Probability jumpEffect = 1.0;
-            for (Size i=0; i<nJumps_ && jumpTimes_[i]<t; ++i) {
-                QL_REQUIRE(jumps_[i]->isValid(),
-                           "invalid " << io::ordinal(i+1) << " jump quote");
-                DiscountFactor thisJump = jumps_[i]->value();
-                QL_REQUIRE(thisJump > 0.0 && thisJump <= 1.0,
-                           "invalid " << io::ordinal(i+1) << " jump value: " <<
-                           thisJump);
-                jumpEffect *= thisJump;
+            for (Size i=0; i<nJumps_; ++i) {
+                if (jumpTimes_[i]>0 && jumpTimes_[i]<t) {
+                    QL_REQUIRE(jumps_[i]->isValid(),
+                               "invalid " << io::ordinal(i+1) << " jump quote");
+                    DiscountFactor thisJump = jumps_[i]->value();
+                    QL_REQUIRE(thisJump > 0.0 && thisJump <= 1.0,
+                               "invalid " << io::ordinal(i+1) << " jump value: " <<
+                               thisJump);
+                    jumpEffect *= thisJump;
+                }
             }
             return jumpEffect * survivalProbabilityImpl(t);
         }

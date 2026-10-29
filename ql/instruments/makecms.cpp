@@ -32,49 +32,38 @@ namespace QuantLib {
 
     MakeCms::MakeCms(const Period& swapTenor,
                      const ext::shared_ptr<SwapIndex>& swapIndex,
+                     const ext::shared_ptr<IborIndex>& iborIndex)
+    : swapTenor_(swapTenor), swapIndex_(swapIndex),
+      iborIndex_(iborIndex != nullptr ? iborIndex : swapIndex->iborIndex()),
+      cmsCalendar_(swapIndex_->fixingCalendar()), floatCalendar_(iborIndex_->fixingCalendar()),
+      floatTenor_(iborIndex_->tenor()),
+      floatConvention_(iborIndex_->businessDayConvention()),
+      floatTerminationDateConvention_(iborIndex_->businessDayConvention()),
+      cmsDayCount_(Actual360()), floatDayCount_(iborIndex_->dayCounter()),
+      // arbitrary choice:
+      // engine_(new DiscountingSwapEngine(iborIndex->termStructure())),
+      engine_(new DiscountingSwapEngine(swapIndex_->forwardingTermStructure())) {}
+
+    
+    MakeCms::MakeCms(const Period& swapTenor,
+                     const ext::shared_ptr<SwapIndex>& swapIndex,
                      const ext::shared_ptr<IborIndex>& iborIndex,
                      Spread iborSpread,
                      const Period& forwardStart)
-    : swapTenor_(swapTenor), swapIndex_(swapIndex), iborIndex_(iborIndex), iborSpread_(iborSpread),
-      useAtmSpread_(false), forwardStart_(forwardStart),
-
-      cmsSpread_(0.0), cmsGearing_(1.0), cmsCap_(Null<Real>()), cmsFloor_(Null<Real>()),
-
-
-      cmsCalendar_(swapIndex->fixingCalendar()), floatCalendar_(iborIndex->fixingCalendar()),
-      payCms_(true), nominal_(1.0), cmsTenor_(3 * Months), floatTenor_(iborIndex->tenor()),
-      cmsConvention_(ModifiedFollowing), cmsTerminationDateConvention_(ModifiedFollowing),
-      floatConvention_(iborIndex->businessDayConvention()),
-      floatTerminationDateConvention_(iborIndex->businessDayConvention()),
-      cmsRule_(DateGeneration::Backward), floatRule_(DateGeneration::Backward),
-      cmsEndOfMonth_(false), floatEndOfMonth_(false),
-
-      cmsDayCount_(Actual360()), floatDayCount_(iborIndex->dayCounter()),
-      // arbitrary choice:
-      // engine_(new DiscountingSwapEngine(iborIndex->termStructure())),
-      engine_(new DiscountingSwapEngine(swapIndex->forwardingTermStructure())) {}
+    : MakeCms(swapTenor, swapIndex, iborIndex) {
+        withIborSpread(iborSpread);
+        withForwardStart(forwardStart);
+    }
 
 
     MakeCms::MakeCms(const Period& swapTenor,
                      const ext::shared_ptr<SwapIndex>& swapIndex,
                      Spread iborSpread,
                      const Period& forwardStart)
-    : swapTenor_(swapTenor), swapIndex_(swapIndex), iborIndex_(swapIndex->iborIndex()),
-      iborSpread_(iborSpread), useAtmSpread_(false), forwardStart_(forwardStart),
-
-      cmsSpread_(0.0), cmsGearing_(1.0), cmsCap_(Null<Real>()), cmsFloor_(Null<Real>()),
-
-
-      cmsCalendar_(swapIndex->fixingCalendar()), floatCalendar_(iborIndex_->fixingCalendar()),
-      payCms_(true), nominal_(1.0), cmsTenor_(3 * Months), floatTenor_(iborIndex_->tenor()),
-      cmsConvention_(ModifiedFollowing), cmsTerminationDateConvention_(ModifiedFollowing),
-      floatConvention_(iborIndex_->businessDayConvention()),
-      floatTerminationDateConvention_(iborIndex_->businessDayConvention()),
-      cmsRule_(DateGeneration::Backward), floatRule_(DateGeneration::Backward),
-      cmsEndOfMonth_(false), floatEndOfMonth_(false),
-
-      cmsDayCount_(Actual360()), floatDayCount_(iborIndex_->dayCounter()),
-      engine_(new DiscountingSwapEngine(swapIndex->forwardingTermStructure())) {}
+    : MakeCms(swapTenor, swapIndex) {
+        withIborSpread(iborSpread);
+        withForwardStart(forwardStart);
+    }
 
 
     MakeCms::operator Swap() const {
@@ -176,6 +165,16 @@ namespace QuantLib {
 
     MakeCms& MakeCms::withNominal(Real n) {
         nominal_ = n;
+        return *this;
+    }
+
+    MakeCms& MakeCms::withIborSpread(Rate s) {
+        iborSpread_ = s;
+        return *this;
+    }
+
+    MakeCms& MakeCms::withForwardStart(const Period& f) {
+        forwardStart_ = f;
         return *this;
     }
 

@@ -147,9 +147,10 @@ namespace QuantLib {
         Rate dummyRate = 0.05;
         for (Size i=0; i<nSwaps_; ++i) {
             swapLengths_[i] = static_cast<Real>(i+1);
-            swaps_[i] = MakeVanillaSwap(
-                swapLengths_[i]*Years, euriborIndex_, dummyRate, 1*Days)
-                                .withDiscountingTermStructure(discountCurve_);
+            swaps_[i] = MakeVanillaSwap(swapLengths_[i]*Years, euriborIndex_)
+                .withFixedRate(dummyRate)
+                .withForwardStart(1*Days)
+                .withDiscountingTermStructure(discountCurve_);
         }
     }
 

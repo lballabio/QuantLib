@@ -6,6 +6,7 @@
  Copyright (C) 2010, 2011 Ferdinando Ametrano
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/stubiborcoupon.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/optional.hpp>
@@ -274,6 +276,11 @@ namespace QuantLib {
         return *this;
     }
 
+    IborLeg& IborLeg::withStubIndexSelection(const StubIndexSelection& selection) {
+        stubIndexSelection_ = ext::make_shared<StubIndexSelection>(selection);
+        return *this;
+    }
+
     IborLeg::operator Leg() const {
 
         Leg leg = FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
@@ -282,6 +289,35 @@ namespace QuantLib {
                          caps_, floors_, inArrears_, zeroPayments_, paymentLag_, paymentCalendar_, 
 			             exCouponPeriod_, exCouponCalendar_, exCouponAdjustment_, exCouponEndOfMonth_,
 			             fixingConvention_);
+
+        if (stubIndexSelection_ && !stubIndexSelection_->empty()) {
+            QL_REQUIRE(caps_.empty() && floors_.empty(),
+                       "stub index conventions are not supported for capped/floored Ibor legs");
+            QL_REQUIRE(!inArrears_,
+                       "stub index conventions are not supported for in-arrears Ibor legs");
+            QL_REQUIRE(useIndexedCoupons_.value_or(
+                           !IborCoupon::Settings::instance().usingAtParCoupons()),
+                       "stub index conventions require indexed coupons");
+            QL_REQUIRE(schedule_.hasIsRegular(),
+                       "schedule does not provide regularity information for stub index selection");
+
+            for (Size i = 0; i < leg.size(); ++i) {
+                if (schedule_.isRegular(i + 1))
+                    continue;
+
+                // periods with null gearing are fixed-rate coupons; leave them alone
+                auto coupon = ext::dynamic_pointer_cast<IborCoupon>(leg[i]);
+                if (!coupon)
+                    continue;
+
+                leg[i] = ext::make_shared<StubIborCoupon>(
+                    coupon->date(), coupon->nominal(), coupon->accrualStartDate(),
+                    coupon->accrualEndDate(), coupon->fixingDays(), *stubIndexSelection_,
+                    coupon->gearing(), coupon->spread(), coupon->referencePeriodStart(),
+                    coupon->referencePeriodEnd(), coupon->dayCounter(), coupon->isInArrears(),
+                    coupon->exCouponDate(), coupon->fixingConvention());
+            }
+        }
 
         if (caps_.empty() && floors_.empty() && !inArrears_) {
             ext::shared_ptr<IborCouponPricer> pricer = ext::make_shared<BlackIborCouponPricer>(

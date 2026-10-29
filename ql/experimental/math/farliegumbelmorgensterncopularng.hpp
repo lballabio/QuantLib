@@ -26,7 +26,9 @@
 #define quantlib_farlie_gumbel_morgenstern_copula_rng_hpp
 
 #include <ql/methods/montecarlo/sample.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/errors.hpp>
+#include <cmath>
 #include <vector>
 
 namespace QuantLib {
@@ -48,7 +50,7 @@ namespace QuantLib {
     template <class RNG>
     FarlieGumbelMorgensternCopulaRng<RNG>::FarlieGumbelMorgensternCopulaRng(
                                                        const RNG& ug, Real th)
-    : uniformGenerator_(ug), theta_(th) {
+    : theta_(th), uniformGenerator_(ug) {
         QL_REQUIRE(th >= -1.0 && th <= 1.00,
                    "theta (" << th << ") must be in [-1,1]");
     }
@@ -60,8 +62,8 @@ namespace QuantLib {
         typename RNG::sample_type v2 = uniformGenerator_.next();
         Real u1 = v1.value;
         Real a = theta_*(2.0*u1-1.0);
-        Real b = pow(1.0-theta_*(2.0*u1-1.0),2.0)+4.0*theta_*v2.value*(2.0*u1-1.0);
-        Real u2 = (2.0*v2.value)/(sqrt(b)-a);
+        Real b = squared(1.0-theta_*(2.0*u1-1.0))+4.0*theta_*v2.value*(2.0*u1-1.0);
+        Real u2 = (2.0*v2.value)/(std::sqrt(b)+1.0-a);
         std::vector<Real> u;
         u.push_back(u1);
         u.push_back(u2);

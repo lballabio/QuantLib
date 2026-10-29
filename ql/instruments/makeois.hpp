@@ -41,8 +41,15 @@ namespace QuantLib {
     class MakeOIS {
       public:
         MakeOIS(const Period& swapTenor,
+                const ext::shared_ptr<OvernightIndex>& overnightIndex);
+
+        /*! \deprecated Use the other constructor plus withFixedRate and/or withForwardStart.
+                        Deprecated in version 1.44.
+        */
+        [[deprecated("Use the other constructor plus withFixedRate and/or withForwardStart.")]]
+        MakeOIS(const Period& swapTenor,
                 const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                Rate fixedRate = Null<Rate>(),
+                Rate fixedRate,
                 const Period& fwdStart = 0*Days);
 
         operator OvernightIndexedSwap() const;
@@ -51,6 +58,9 @@ namespace QuantLib {
         MakeOIS& receiveFixed(bool flag = true);
         MakeOIS& withType(Swap::Type type);
         MakeOIS& withNominal(Real n);
+        MakeOIS& withFixedRate(Rate k);
+
+        MakeOIS& withForwardStart(const Period& f);
 
         MakeOIS& withSettlementDays(Natural settlementDays);
         MakeOIS& withSettlementCalendar(const Calendar& cal);
@@ -102,8 +112,8 @@ namespace QuantLib {
       private:
         Period swapTenor_;
         ext::shared_ptr<OvernightIndex> overnightIndex_;
-        Rate fixedRate_;
-        Period forwardStart_;
+        Rate fixedRate_ = Null<Rate>();
+        Period forwardStart_ = 0*Days;
 
         Natural settlementDays_ = Null<Natural>();
         Date effectiveDate_, terminationDate_;

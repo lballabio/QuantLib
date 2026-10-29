@@ -160,9 +160,8 @@ int main(int, char* []) {
         riskySwaps.reserve(sizeof(tenorsSwapMkt)/sizeof(Size));
         for(Size i=0; i<sizeof(tenorsSwapMkt)/sizeof(Size); i++) 
             riskySwaps.push_back(MakeVanillaSwap(tenorsSwapMkt[i]*Years,
-                yieldIndxS,
-                ratesSwapmkt[i], 
-                0*Days)
+                                                 yieldIndxS)
+            .withFixedRate(ratesSwapmkt[i])
             .withSettlementDays(2)
             .withFixedLegDayCount(fixedLegDayCounter)
             .withFixedLegTenor(Period(fixedLegFrequency))

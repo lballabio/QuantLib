@@ -20,6 +20,7 @@
 
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/integrals/expsinhintegral.hpp>
+#include <ql/math/integrals/tanhsinhintegral.hpp>
 #include <ql/math/integrals/fourierintegration.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
@@ -183,6 +184,11 @@ namespace QuantLib {
             ExpSinh, ext::make_shared<ExpSinhIntegral>(relTolerance));
     }
 
+    FourierIntegration FourierIntegration::tanhSinh(Real relTolerance) {
+        return FourierIntegration(
+            TanhSinh, ext::make_shared<TanhSinhIntegral>(relTolerance));
+    }
+    
     Size FourierIntegration::numberOfEvaluations() const {
         if (integrator_ != nullptr) {
             return integrator_->numberOfEvaluations();
@@ -198,7 +204,8 @@ namespace QuantLib {
             || intAlgo_ == GaussKronrod
             || intAlgo_ == Simpson
             || intAlgo_ == Trapezoid
-            || intAlgo_ == ExpSinh;
+            || intAlgo_ == ExpSinh
+            || intAlgo_ == TanhSinh;
     }
 
     Real FourierIntegration::calculate(
@@ -223,6 +230,9 @@ namespace QuantLib {
                 [scaling, f](Real x) -> Real { return f(scaling*x);},
                 0.0, std::numeric_limits<Real>::max());
             break;
+          case TanhSinh:
+            retVal = (*integrator_)(f, 0.0, std::numeric_limits<Real>::max());
+            break;            
           case Simpson:
           case Trapezoid:
           case GaussLobatto:

@@ -28,16 +28,25 @@ namespace QuantLib {
 
     MakeCapFloor::MakeCapFloor(CapFloor::Type capFloorType,
                                const Period& tenor,
-                               const ext::shared_ptr<IborIndex>& iborIndex,
-                               Rate strike,
-                               const Period& forwardStart)
-    : capFloorType_(capFloorType), strike_(strike), firstCapletExcluded_(forwardStart == 0 * Days),
+                               const ext::shared_ptr<IborIndex>& iborIndex)
+    : capFloorType_(capFloorType),
       // setting the fixed leg tenor avoids that MakeVanillaSwap throws
       // because of an unknown fixed leg default tenor for a currency,
       // notice that only the floating leg of the swap is used anyway
-      makeVanillaSwap_(MakeVanillaSwap(tenor, iborIndex, 0.0, forwardStart)
+      makeVanillaSwap_(MakeVanillaSwap(tenor, iborIndex)
+                           .withFixedRate(0.0)
                            .withFixedLegTenor(1 * Years)
                            .withFixedLegDayCount(Actual365Fixed())) {}
+
+    MakeCapFloor::MakeCapFloor(CapFloor::Type capFloorType,
+                               const Period& tenor,
+                               const ext::shared_ptr<IborIndex>& iborIndex,
+                               Rate strike,
+                               const Period& forwardStart)
+    : MakeCapFloor(capFloorType, tenor, iborIndex) {
+        withStrike(strike);
+        withForwardStart(forwardStart);
+    }
 
     MakeCapFloor::operator CapFloor() const {
         ext::shared_ptr<CapFloor> capfloor = *this;
@@ -96,6 +105,17 @@ namespace QuantLib {
 
     MakeCapFloor& MakeCapFloor::withNominal(Real n) {
         makeVanillaSwap_.withNominal(n);
+        return *this;
+    }
+
+    MakeCapFloor& MakeCapFloor::withStrike(Rate k) {
+        strike_ = k;
+        return *this;
+    }
+
+    MakeCapFloor& MakeCapFloor::withForwardStart(const Period& f) {
+        makeVanillaSwap_.withForwardStart(f);
+        firstCapletExcluded_ = (f == 0 * Days);
         return *this;
     }
 

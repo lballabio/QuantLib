@@ -56,6 +56,7 @@ namespace QuantLib {
     : RateHelper(price) {
         ext::shared_ptr<OvernightIndex> index =
             ext::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
+        index->unregisterWith(termStructureHandle_);
         future_ = ext::make_shared<OvernightIndexFuture>(
             index, valueDate, maturityDate, convexityAdjustment, averagingMethod);
         registerWithObservables(future_);

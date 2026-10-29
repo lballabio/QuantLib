@@ -54,7 +54,7 @@ class MultiCurveBootstrap : public ext::enable_shared_from_this<MultiCurveBootst
   public:
     explicit MultiCurveBootstrap(Real accuracy);
     explicit MultiCurveBootstrap(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
-                        ext::shared_ptr<EndCriteria> endCriteria = nullptr);
+                                 ext::shared_ptr<EndCriteria> endCriteria = nullptr);
     void add(const MultiCurveBootstrapContributor* c);
     void addObserver(Observer* o);
     void runMultiCurveBootstrap();

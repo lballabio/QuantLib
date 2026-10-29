@@ -26,6 +26,7 @@
 #ifndef quantlib_crosscurrencyratehelpers_hpp
 #define quantlib_crosscurrencyratehelpers_hpp
 
+#include <ql/cashflows/stubiborcoupon.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/instruments/constnotionalcrosscurrencybasisswap.hpp>
 #include <ql/instruments/constnotionalcrosscurrencyfixedvsfloatingswap.hpp>
@@ -86,7 +87,9 @@ namespace QuantLib {
                                              Integer paymentLag = 0,
                                              std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
                                              std::optional<bool> useIndexedCoupons = std::nullopt,
-                                             bool paymentLagOnNotionalExchanges = false);
+                                             bool paymentLagOnNotionalExchanges = false,
+                                             StubIndexSelection baseStubIndexSelection = {},
+                                             StubIndexSelection quoteStubIndexSelection = {});
 
         void initializeDates() override;
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
@@ -99,6 +102,8 @@ namespace QuantLib {
         std::optional<Frequency> paymentFrequency_;
         std::optional<Frequency> quoteCcyPaymentFrequency_;
         std::optional<bool> useIndexedCoupons_;
+        StubIndexSelection baseStubIndexSelection_;
+        StubIndexSelection quoteStubIndexSelection_;
 
         Schedule baseCcySchedule_;
         Schedule quoteCcySchedule_;
@@ -150,6 +155,13 @@ namespace QuantLib {
                 the coupons: the final exchange settles together with the final
                 coupon and the initial exchange falls on the lagged settlement
                 date (default: false).
+            \param baseStubIndexSelection
+                index selection applied to irregular coupons of the base-currency
+                leg when it is an Ibor leg (see StubIndexSelection).  The candidate
+                indices must use exogenous forwarding curves; the default prices
+                broken periods off the leg's own index.
+            \param quoteStubIndexSelection
+                as baseStubIndexSelection, for the quote-currency leg.
             In both frequency parameters, \c NoFrequency is accepted as a synonym for
             an unset (null) value.
         */
@@ -169,7 +181,9 @@ namespace QuantLib {
             Integer paymentLag = 0,
             std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
             std::optional<bool> useIndexedCoupons = std::nullopt,
-            bool paymentLagOnNotionalExchanges = false);
+            bool paymentLagOnNotionalExchanges = false,
+            StubIndexSelection baseStubIndexSelection = {},
+            StubIndexSelection quoteStubIndexSelection = {});
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -222,6 +236,13 @@ namespace QuantLib {
                 \p calendar is used if this is empty.
             \param useIndexedCoupons
                 if provided, overrides the global IborCoupon setting for both legs.
+            \param baseStubIndexSelection
+                index selection applied to irregular coupons of the base-currency
+                leg when it is an Ibor leg (see StubIndexSelection).  The candidate
+                indices must use exogenous forwarding curves; the default prices
+                broken periods off the leg's own index.
+            \param quoteStubIndexSelection
+                as baseStubIndexSelection, for the quote-currency leg.
             In both frequency parameters, \c NoFrequency is accepted as a synonym for
             an unset (null) value.
         */
@@ -242,7 +263,9 @@ namespace QuantLib {
                                             std::optional<Frequency> quoteCurrencyPaymentFrequency = std::nullopt,
                                             Natural fxResetFixingDays = 0,
                                             Calendar fxResetFixingCalendar = Calendar(),
-                                            std::optional<bool> useIndexedCoupons = std::nullopt);
+                                            std::optional<bool> useIndexedCoupons = std::nullopt,
+                                            StubIndexSelection baseStubIndexSelection = {},
+                                            StubIndexSelection quoteStubIndexSelection = {});
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -296,6 +319,9 @@ namespace QuantLib {
     index tenor, which is only meaningful for an ibor index; an overnight index
     has no payment frequency of its own, so one must be given explicitly.
     \c NoFrequency is accepted as a synonym for an unset (null) value.
+
+    The floatStubIndexSelection parameter selects the indices used for irregular
+    coupons of the floating leg when it is an Ibor leg (see StubIndexSelection).
     */
     class ConstNotionalCrossCurrencySwapRateHelper : public CrossCurrencySwapRateHelperBase {
       public:
@@ -313,7 +339,8 @@ namespace QuantLib {
             bool collateralOnFixedLeg,
             Integer paymentLag = 0,
             std::optional<bool> useIndexedCoupons = std::nullopt,
-            std::optional<Frequency> floatPaymentFrequency = std::nullopt);
+            std::optional<Frequency> floatPaymentFrequency = std::nullopt,
+            StubIndexSelection floatStubIndexSelection = {});
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
@@ -333,6 +360,7 @@ namespace QuantLib {
         bool collateralOnFixedLeg_;
         std::optional<bool> useIndexedCoupons_;
         std::optional<Frequency> floatPaymentFrequency_;
+        StubIndexSelection floatStubIndexSelection_;
 
         ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> xccySwap_;
     };

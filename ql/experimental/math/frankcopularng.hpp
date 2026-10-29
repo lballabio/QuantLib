@@ -46,7 +46,7 @@ namespace QuantLib {
 
     template <class RNG>
     FrankCopulaRng<RNG>::FrankCopulaRng(const RNG& ug, Real th)
-    : uniformGenerator_(ug), theta_(th) {
+    : theta_(th), uniformGenerator_(ug) {
      QL_REQUIRE(th != 0.0,
                    "theta (" << th << ") must be different from 0");
     }

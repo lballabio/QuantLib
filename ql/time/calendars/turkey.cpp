@@ -188,7 +188,7 @@ namespace QuantLib {
 				|| (m == June && d >= 28 && d <= 30))
 				return false;
 		} else if (y == 2024) {
-		// Note: Holidays >= 2024 are not yet officially anounced by borsaistanbul.com
+		// Note: Holidays >= 2024 are not yet officially announced by borsaistanbul.com
 		// and need further validation
 			// Ramadan
 			if ((m == April && d >= 10 && d <= 12)

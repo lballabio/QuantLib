@@ -166,9 +166,8 @@ namespace QuantLib {
 	    - swapletStart.serialNumber(), Days);
       ext::shared_ptr<VanillaSwap> swaplet = MakeVanillaSwap(
         baseSwapsTenor,
-        swapIndex, 
-        baseSwapFairRate // strike
-        )
+        swapIndex)
+        .withFixedRate(baseSwapFairRate)
 	    .withType(arguments_.type)
 	    .withNominal(arguments_.nominal)
           ////////	    .withSettlementDays(2)
@@ -176,9 +175,8 @@ namespace QuantLib {
         .withTerminationDate(arguments_.fixedPayDates.back());
       ext::shared_ptr<VanillaSwap> revSwaplet = MakeVanillaSwap(
         baseSwapsTenor,
-        swapIndex, 
-        baseSwapFairRate // strike
-        )
+        swapIndex)
+        .withFixedRate(baseSwapFairRate)
 	    .withType(reversedType)
 	    .withNominal(arguments_.nominal)
           /////////	    .withSettlementDays(2)

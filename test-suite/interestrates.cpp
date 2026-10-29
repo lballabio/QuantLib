@@ -33,6 +33,37 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(InterestRateTests)
 
+BOOST_AUTO_TEST_CASE(testNullInterestRateInspectors) {
+    BOOST_TEST_MESSAGE("Testing null interest-rate inspectors...");
+    InterestRate nullRate;
+
+    BOOST_CHECK_EXCEPTION(nullRate.compounding(), Error,
+                          ExpectedErrorMessage("null interest rate"));
+    BOOST_CHECK_EQUAL(nullRate.frequency(), NoFrequency);
+}
+
+BOOST_AUTO_TEST_CASE(testNullInterestRateDateCalculations) {
+    BOOST_TEST_MESSAGE("Testing date calculations with a null interest rate...");
+    InterestRate nullRate;
+    Date start(1, January, 2024), end(1, January, 2025);
+
+    BOOST_CHECK_EXCEPTION(nullRate.discountFactor(start, end), Error,
+                          ExpectedErrorMessage("null interest rate"));
+    BOOST_CHECK_EXCEPTION(nullRate.compoundFactor(start, end), Error,
+                          ExpectedErrorMessage("null interest rate"));
+    BOOST_CHECK_EXCEPTION(nullRate.equivalentRate(Actual365Fixed(), Simple, Annual, start, end),
+                          Error, ExpectedErrorMessage("null interest rate"));
+}
+
+BOOST_AUTO_TEST_CASE(testImpliedRateRejectsMixedCompoundingAtUnity) {
+    BOOST_TEST_MESSAGE("Testing implied rates with mixed compounding at unity...");
+    for (const auto comp : {SimpleThenCompounded, CompoundedThenSimple}) {
+        BOOST_CHECK_EXCEPTION(
+            InterestRate::impliedRate(1.0, Actual365Fixed(), comp, Semiannual, 1.0), Error,
+            ExpectedErrorMessage("not supported"));
+    }
+}
+
 struct InterestRateData {
     Rate r;
     Compounding comp;
@@ -67,25 +98,6 @@ BOOST_AUTO_TEST_CASE(testConversions) {
         {0.0800,     Simple,           Annual,  1.0/6, Compounded,         Bimonthly, 0.0800, 4},
         {0.0900, Compounded,          Monthly, 1.0/12,     Simple,            Annual, 0.0900, 4},
         {0.1000,     Simple,           Annual, 1.0/12, Compounded,           Monthly, 0.1000, 4},
-
-        {0.0300, SimpleThenCompounded,       Semiannual,   0.25,               Simple,            Annual, 0.0300, 4},
-        {0.0300, SimpleThenCompounded,       Semiannual,   0.25,               Simple,        Semiannual, 0.0300, 4},
-        {0.0300, SimpleThenCompounded,       Semiannual,   0.25,               Simple,         Quarterly, 0.0300, 4},
-        {0.0300, SimpleThenCompounded,       Semiannual,   0.50,               Simple,            Annual, 0.0300, 4},
-        {0.0300, SimpleThenCompounded,       Semiannual,   0.50,               Simple,        Semiannual, 0.0300, 4},
-        {0.0300, SimpleThenCompounded,       Semiannual,   0.75,           Compounded,        Semiannual, 0.0300, 4},
-
-        {0.0400,               Simple,       Semiannual,   0.25, SimpleThenCompounded,         Quarterly, 0.0400, 4},
-        {0.0400,               Simple,       Semiannual,   0.25, SimpleThenCompounded,        Semiannual, 0.0400, 4},
-        {0.0400,               Simple,       Semiannual,   0.25, SimpleThenCompounded,            Annual, 0.0400, 4},
-
-        {0.0400,           Compounded,        Quarterly,   0.50, SimpleThenCompounded,         Quarterly, 0.0400, 4},
-        {0.0400,               Simple,       Semiannual,   0.50, SimpleThenCompounded,        Semiannual, 0.0400, 4},
-        {0.0400,               Simple,       Semiannual,   0.50, SimpleThenCompounded,            Annual, 0.0400, 4},
-
-        {0.0400,           Compounded,        Quarterly,   0.75, SimpleThenCompounded,         Quarterly, 0.0400, 4},
-        {0.0400,           Compounded,       Semiannual,   0.75, SimpleThenCompounded,        Semiannual, 0.0400, 4},
-        {0.0400,               Simple,       Semiannual,   0.75, SimpleThenCompounded,            Annual, 0.0400, 4}
     };
 
     Rounding roundingPrecision;
@@ -186,6 +198,18 @@ BOOST_AUTO_TEST_CASE(testConversions) {
                        << "\n  calculated equivalent rate: " << io::rate(r3)
                        << "\n    expected equivalent rate: " << io::rate(i.expected)
                        << "\n                       error: " << error);
+    }
+
+    // check that SimpleThenCompounded and CompoundedThenSimple don't work
+
+    ir = InterestRate(0.03, Actual360(), SimpleThenCompounded, Semiannual);
+    ir2 = InterestRate(0.03, Actual360(), CompoundedThenSimple, Semiannual);
+
+    for (const auto& i: {ir, ir2}) {
+        BOOST_CHECK_EXCEPTION(i.discountFactor(1.0), Error, ExpectedErrorMessage("not supported"));
+        BOOST_CHECK_EXCEPTION(i.discountFactorFirstDerivative(1.0), Error, ExpectedErrorMessage("not supported"));
+        BOOST_CHECK_EXCEPTION(i.discountFactorSecondDerivative(1.0), Error, ExpectedErrorMessage("not supported"));
+        BOOST_CHECK_EXCEPTION(i.equivalentRate(i.dayCounter(), Simple, Annual, d1, d2), Error, ExpectedErrorMessage("not supported"));
     }
 }
 

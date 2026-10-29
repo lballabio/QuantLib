@@ -27,11 +27,13 @@
 #include <ql/pricingengines/lookback/analyticcontinuouspartialfixedlookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuouspartialfloatinglookback.hpp>
 #include <ql/pricingengines/lookback/mclookbackengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <cmath>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -271,6 +273,92 @@ BOOST_AUTO_TEST_CASE(testAnalyticContinuousFixedLookback) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testAnalyticContinuousLookbackZeroCarry) {
+
+    BOOST_TEST_MESSAGE(
+           "Testing analytic continuous lookback options with zero carry...");
+
+    // with r equal to q the formulas are 0/0; the expected values are their
+    // limit, evaluated in 50-digit arithmetic
+
+    LookbackOptionData floatingValues[] = {
+        // type,             strike, minmax, s,     q,    r,    t,    v,    l, t1, result,             tol
+        {  Option::Call,     0,       90,    100.0, 0.05, 0.05, 1.00, 0.30, 0, 0,  21.817075601551579, 1.0e-8},
+        {  Option::Put,      0,      110,    100.0, 0.05, 0.05, 1.00, 0.30, 0, 0,  26.407720137984153, 1.0e-8},
+    };
+
+    LookbackOptionData fixedValues[] = {
+        // type,             strike, minmax, s,     q,    r,    t,    v,    l, t1, result,             tol
+        {  Option::Call,     95,     110,    100.0, 0.05, 0.05, 1.00, 0.30, 0, 0,  31.163867260487723, 1.0e-8},
+        {  Option::Call,     105,    100,    100.0, 0.05, 0.05, 1.00, 0.30, 0, 0,  20.604933499041011, 1.0e-8},
+        {  Option::Put,      105,     90,    100.0, 0.05, 0.05, 1.00, 0.30, 0, 0,  26.573222724055149, 1.0e-8},
+        {  Option::Put,      95,     100,    100.0, 0.05, 0.05, 1.00, 0.30, 0, 0,  16.226584162874658, 1.0e-8},
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+                        new BlackScholesMertonProcess(
+                                   Handle<Quote>(spot),
+                                   Handle<YieldTermStructure>(qTS),
+                                   Handle<YieldTermStructure>(rTS),
+                                   Handle<BlackVolTermStructure>(volTS)));
+
+    for (auto& value : floatingValues) {
+        ext::shared_ptr<Exercise> exercise(
+                          new EuropeanExercise(today + timeToDays(value.t)));
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
+
+        ext::shared_ptr<FloatingTypePayoff> payoff(new FloatingTypePayoff(value.type));
+        ContinuousFloatingLookbackOption option(value.minmax, payoff, exercise);
+        option.setPricingEngine(ext::shared_ptr<PricingEngine>(
+                  new AnalyticContinuousFloatingLookbackEngine(stochProcess)));
+
+        Real calculated = option.NPV();
+        Real error = std::fabs(calculated - value.result);
+        if (!(error <= value.tol)) {
+            REPORT_FAILURE_FLOATING("value", value.minmax, payoff, exercise, value.s, value.q,
+                                    value.r, today, value.v, value.result, calculated, error,
+                                    value.tol);
+        }
+    }
+
+    for (auto& value : fixedValues) {
+        ext::shared_ptr<Exercise> exercise(
+                          new EuropeanExercise(today + timeToDays(value.t)));
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
+
+        ext::shared_ptr<StrikedTypePayoff> payoff(
+                                 new PlainVanillaPayoff(value.type, value.strike));
+        ContinuousFixedLookbackOption option(value.minmax, payoff, exercise);
+        option.setPricingEngine(ext::shared_ptr<PricingEngine>(
+                  new AnalyticContinuousFixedLookbackEngine(stochProcess)));
+
+        Real calculated = option.NPV();
+        Real error = std::fabs(calculated - value.result);
+        if (!(error <= value.tol)) {
+            REPORT_FAILURE_FIXED("value", value.minmax, payoff, exercise, value.s, value.q,
+                                 value.r, today, value.v, value.result, calculated, error,
+                                 value.tol);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testAnalyticContinuousPartialFloatingLookback) {
 
     BOOST_TEST_MESSAGE(
@@ -480,6 +568,191 @@ BOOST_AUTO_TEST_CASE(testAnalyticContinuousPartialFixedLookback) {
         if (error > value.tol) {
             REPORT_FAILURE_FIXED("value", values[i].minmax, payoff, exercise, value.s, value.q,
                                  value.r, today, value.v, expected, calculated, error, value.tol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPartialLookbackZeroCarry) {
+    BOOST_TEST_MESSAGE("Testing partial lookbacks with zero carry...");
+
+    const Date today(20, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual360();
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto q = ext::make_shared<SimpleQuote>(0.02);
+    auto r = ext::make_shared<SimpleQuote>(0.05);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, q, dc)),
+        Handle<YieldTermStructure>(flatRate(today, r, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc)));
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 360);
+
+    for (auto type : {Option::Call, Option::Put}) {
+        ContinuousPartialFixedLookbackOption fixed(
+            today + 180, ext::make_shared<PlainVanillaPayoff>(type, 100.0), exercise);
+        ContinuousPartialFloatingLookbackOption floating(
+            100.0, 1.0, today + 180, ext::make_shared<FloatingTypePayoff>(type), exercise);
+        auto fixedEngine = ext::make_shared<AnalyticContinuousPartialFixedLookbackEngine>(process);
+        auto floatingEngine =
+            ext::make_shared<AnalyticContinuousPartialFloatingLookbackEngine>(process);
+        ext::shared_ptr<PricingEngine> fixedMc =
+            MakeMCLookbackEngine<ContinuousPartialFixedLookbackOption, PseudoRandom>(process)
+                .withSteps(1024).withSamples(4095).withAntitheticVariate().withSeed(42);
+        ext::shared_ptr<PricingEngine> floatingMc =
+            MakeMCLookbackEngine<ContinuousPartialFloatingLookbackOption, PseudoRandom>(process)
+                .withSteps(1024).withSamples(4095).withAntitheticVariate().withSeed(42);
+
+        // Discretely sampled extrema bias the MC reference downwards.  The 0.60
+        // tolerance allows for that bias and sampling error on a spot of 100.
+        for (Rate yield : {0.02, 0.05}) {
+            q->setValue(yield);
+            fixed.setPricingEngine(fixedMc);
+            const Real fixedReference = fixed.NPV();
+            fixed.setPricingEngine(fixedEngine);
+            const Real fixedValue = fixed.NPV();
+            BOOST_TEST_MESSAGE("partial fixed " << type << ", q=" << yield
+                               << ": analytic=" << fixedValue << ", MC=" << fixedReference);
+            BOOST_CHECK_MESSAGE(std::fabs(fixedValue - fixedReference) < 0.60,
+                                "partial fixed " << type << ", q=" << yield
+                                << ": calculated " << fixedValue
+                                << ", MC reference " << fixedReference);
+            floating.setPricingEngine(floatingMc);
+            const Real floatingReference = floating.NPV();
+            floating.setPricingEngine(floatingEngine);
+            const Real floatingValue = floating.NPV();
+            BOOST_TEST_MESSAGE("partial floating " << type << ", q=" << yield
+                               << ": analytic=" << floatingValue
+                               << ", MC=" << floatingReference);
+            BOOST_CHECK_MESSAGE(std::fabs(floatingValue - floatingReference) < 0.60,
+                                "partial floating " << type << ", q=" << yield
+                                << ": calculated " << floatingValue
+                                << ", MC reference " << floatingReference);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPartialLookbackZeroCarryBoundaryLimits) {
+    BOOST_TEST_MESSAGE("Testing partial-lookback zero-carry vanilla and full-floating identities...");
+
+    const Date today(20, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual360();
+    auto q = ext::make_shared<SimpleQuote>(0.05);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(flatRate(today, q, dc)),
+        Handle<YieldTermStructure>(flatRate(today, 0.05, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc)));
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 360);
+
+    for (auto type : {Option::Call, Option::Put}) {
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(type, 100.0);
+        ContinuousPartialFixedLookbackOption fixed(today + 360, payoff, exercise);
+        fixed.setPricingEngine(
+            ext::make_shared<AnalyticContinuousPartialFixedLookbackEngine>(process));
+        VanillaOption vanilla(payoff, exercise);
+        vanilla.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(process));
+        auto floatingPayoff = ext::make_shared<FloatingTypePayoff>(type);
+        const Real minmax = type == Option::Call ? 90.0 : 110.0;
+        ContinuousPartialFloatingLookbackOption partial(
+            minmax, 1.0, today + 360, floatingPayoff, exercise);
+        partial.setPricingEngine(
+            ext::make_shared<AnalyticContinuousPartialFloatingLookbackEngine>(process));
+        ContinuousFloatingLookbackOption full(minmax, floatingPayoff, exercise);
+        full.setPricingEngine(ext::make_shared<AnalyticContinuousFloatingLookbackEngine>(process));
+        for (Rate yield : {0.02, 0.05, 0.05 - 1.0e-12, 0.05 + 1.0e-12}) {
+            q->setValue(yield);
+            // A single observation is a vanilla option.  Observing to expiry
+            // with unit lambda is the full floating lookback contract.
+            QL_CHECK_SMALL(fixed.NPV() - vanilla.NPV(), 1.0e-8);
+            QL_CHECK_SMALL(partial.NPV() - full.NPV(), 1.0e-8);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPartialLookbackZeroCarryContinuity) {
+    BOOST_TEST_MESSAGE("Testing partial-lookback continuity at zero carry...");
+
+    const Date today(20, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual360();
+    const Rate r = 0.05;
+    const Volatility sigma = 0.20;
+
+    auto q = ext::make_shared<SimpleQuote>(r);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(flatRate(today, q, dc)),
+        Handle<YieldTermStructure>(flatRate(today, r, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, sigma, dc)));
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 360);
+
+    const auto checkContinuity = [&](Instrument& option) {
+        const auto valueAt = [&](Rate yield) {
+            q->setValue(yield);
+            const Real value = option.NPV();
+            BOOST_CHECK(std::isfinite(value));
+            return value;
+        };
+
+        const Real zero = valueAt(r);
+        for (Real epsilon : {1.0e-4, 1.0e-6}) {
+            const Real left = valueAt(r - epsilon);
+            const Real right = valueAt(r + epsilon);
+
+            // Both prices use the existing nonsingular formula.
+            // Individual differences are O(epsilon); their mean is O(epsilon^2).
+            QL_CHECK_SMALL(left - zero, 100.0 * epsilon + 1.0e-8);
+            QL_CHECK_SMALL(right - zero, 100.0 * epsilon + 1.0e-8);
+            QL_CHECK_SMALL(
+                0.5 * (left + right) - zero,
+                200.0 * epsilon * epsilon + 1.0e-8);
+        }
+
+        // Exercise both sides of the implementation's dimensionless cutoff.
+        const Rate carryCutoff = 0.5 * sigma * sigma * 1.0e-7;
+        for (Real sign : {-1.0, 1.0}) {
+            const Real inside = valueAt(r + sign * 0.99 * carryCutoff);
+            const Real outside = valueAt(r + sign * 1.01 * carryCutoff);
+            QL_CHECK_SMALL(outside - inside, 1.0e-6);
+        }
+
+        q->setValue(r);
+    };
+
+    for (auto type : {Option::Call, Option::Put}) {
+        for (Integer boundary : {90, 180, 270, 360}) {
+            for (Real strike : {90.0, 100.0, 110.0}) {
+                BOOST_TEST_CONTEXT("fixed " << type << ", boundary=" << boundary
+                                   << ", strike=" << strike) {
+                    ContinuousPartialFixedLookbackOption option(
+                        today + boundary,
+                        ext::make_shared<PlainVanillaPayoff>(type, strike),
+                        exercise);
+                    option.setPricingEngine(
+                        ext::make_shared<AnalyticContinuousPartialFixedLookbackEngine>(
+                            process));
+                    checkContinuity(option);
+                }
+            }
+
+            for (Real minmax : {100.0, type == Option::Call ? 90.0 : 110.0}) {
+                for (Real lambda : {1.0, type == Option::Call ? 1.1 : 0.9}) {
+                    BOOST_TEST_CONTEXT("floating " << type
+                                       << ", boundary=" << boundary
+                                       << ", minmax=" << minmax
+                                       << ", lambda=" << lambda) {
+                        ContinuousPartialFloatingLookbackOption option(
+                            minmax, lambda, today + boundary,
+                            ext::make_shared<FloatingTypePayoff>(type), exercise);
+                        option.setPricingEngine(
+                            ext::make_shared<
+                                AnalyticContinuousPartialFloatingLookbackEngine>(
+                                process));
+                        checkContinuity(option);
+                    }
+                }
+            }
         }
     }
 }

@@ -362,7 +362,8 @@ BOOST_AUTO_TEST_CASE(testCmsSwap) {
         // no gearing, spread
         cms[i] = MakeCms(Period(swapLengths[i], Years),
                          swapIndex,
-                         vars.iborIndex, spread);
+                         vars.iborIndex)
+            .withIborSpread(spread);
 
     for (Size j=0; j<vars.yieldCurveModels.size(); ++j) {
         vars.numericalPricers[j]->setSwaptionVolatility(vars.atmVol);

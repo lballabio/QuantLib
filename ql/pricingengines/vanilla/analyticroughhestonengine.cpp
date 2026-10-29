@@ -178,23 +178,48 @@ namespace QuantLib {
 
     void AnalyticRoughHestonEngine::update() {
         chFCache_.clear();
-        // The kernel nodes depend on the Hurst exponent
+        // The kernel nodes depend on the Hurst exponent.
         liftedGridCache_.clear();
+        // As does the fractional order of the Riemann-Liouville integral
+        rlWeightsOne_.reset();
+        rlWeightsFractional_.reset();
+
         GenericModelEngine<RoughHestonModel,
                            VanillaOption::arguments,
                            VanillaOption::results>::update();
+    }
+
+    const RiemannLiouvilleWeights& AnalyticRoughHestonEngine::unitWeights() const {
+        if (!rlWeightsOne_) {
+            rlWeightsOne_.emplace(1.0, timeSteps_);
+        }
+
+        return *rlWeightsOne_;
+    }
+
+    const RiemannLiouvilleWeights& AnalyticRoughHestonEngine::fractionalWeights(Real alpha) const {
+        // Identity check on a cache key, not a numerical comparison: alpha is
+        // rebuilt from the same expression every call, so a difference means
+        // the Hurst exponent moved.
+        if (!rlWeightsFractional_ || rlWeightsFractional_->alpha() != alpha) {
+            rlWeightsFractional_.emplace(alpha, timeSteps_);
+        }
+
+        return *rlWeightsFractional_;
     }
 
     std::complex<Real> AnalyticRoughHestonEngine::lnChF(
         const std::complex<Real>& z, Time t) const {
 
         switch (approximation_) {
-          case Approximation::Pade:
+          case AdamsPredictorCorrector:
+            return lnChFAdams(z, t);
+          case Pade:
             return lnChFPade(z, t);
-          case Approximation::Lifted:
+          case Lifted:
             return lnChFLifted(z, t);
           default:
-            return lnChFAdams(z, t);
+            QL_FAIL("unknown approximation: " << approximation_);
         }
     }
 
@@ -242,8 +267,8 @@ namespace QuantLib {
 
         const Real dt{t / timeSteps_};
 
-        return kappa * theta * riemannLiouvilleIntegral(h, 1.0, dt)
-            + v0 * riemannLiouvilleIntegral(h, 1.0 - a, dt);
+        return kappa * theta * unitWeights().integrate(h, dt) +
+               v0 * fractionalWeights(1.0 - a).integrate(h, dt);
     }
 
     std::complex<Real> AnalyticRoughHestonEngine::lnChFPade(
@@ -264,8 +289,8 @@ namespace QuantLib {
             h[j] = evaluatePade(c, sigma * std::pow(Real(j) * dt, a));
         }
 
-        return kappa * theta * riemannLiouvilleIntegral(h, 1.0, dt)
-            + v0 * riemannLiouvilleIntegral(h, 1.0 - a, dt);
+        return kappa * theta * unitWeights().integrate(h, dt) +
+               v0 * fractionalWeights(1.0 - a).integrate(h, dt);
     }
 
     // (3, 3) global rational approximation of Gatheral-Radoicic
@@ -327,7 +352,7 @@ namespace QuantLib {
         // gamma_2 below are ill-conditioned and the (3, 3) approximant is not
         // reliable here.
         QL_REQUIRE(std::abs(A) > 1e-8,
-                   "Padè approximation is singular at z = " << z
+                   "Pade approximation is singular at z = " << z
                    << "; use the Adams "
                    "predictor-corrector engine for this contour point");
 
@@ -360,7 +385,7 @@ namespace QuantLib {
             gamma0)};
 
         QL_REQUIRE(std::abs(det) > 1e-12,
-                   "Padè denominator system is ill-conditioned at z = " << z
+                   "Pade denominator system is ill-conditioned at z = " << z
                    << "; use the Adams predictor-corrector engine for this "
                    "contour point");
 
@@ -525,12 +550,14 @@ namespace QuantLib {
         QL_REQUIRE(t > 0.0, "maturity must be positive");
 
         switch (approximation_) {
-          case Approximation::Pade:
+          case AdamsPredictorCorrector:
+            return solveAdamsRiccati(z, t).back();
+          case Pade:
             return padeRiccati(z, t);
-          case Approximation::Lifted:
+          case Lifted:
             return solveLiftedRiccati(z, t).psi;
           default:
-            return solveAdamsRiccati(z, t).back();
+            QL_FAIL("unknown approximation: " << approximation_);
         }
     }
 

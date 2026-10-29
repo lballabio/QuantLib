@@ -38,16 +38,22 @@
 namespace QuantLib {
 
     MakeVanillaSwap::MakeVanillaSwap(const Period& swapTenor,
-                                     const ext::shared_ptr<IborIndex>& index,
-                                     Rate fixedRate,
-                                     const Period& forwardStart)
-    : swapTenor_(swapTenor), iborIndex_(index), fixedRate_(fixedRate), forwardStart_(forwardStart),
+                                     const ext::shared_ptr<IborIndex>& index)
+    : swapTenor_(swapTenor), iborIndex_(index),
       fixedCalendar_(index->fixingCalendar()), floatCalendar_(index->fixingCalendar()),
       floatTenor_(index->tenor()),
       floatConvention_(index->businessDayConvention()),
       floatTerminationDateConvention_(index->businessDayConvention()),
-
       floatDayCount_(index->dayCounter()) {}
+
+    MakeVanillaSwap::MakeVanillaSwap(const Period& swapTenor,
+                                     const ext::shared_ptr<IborIndex>& index,
+                                     Rate fixedRate,
+                                     const Period& forwardStart)
+    : MakeVanillaSwap(swapTenor, index) {
+        withFixedRate(fixedRate);
+        withForwardStart(forwardStart);
+    }
 
     MakeVanillaSwap::operator VanillaSwap() const {
         ext::shared_ptr<VanillaSwap> swap = *this;
@@ -214,6 +220,16 @@ namespace QuantLib {
 
     MakeVanillaSwap& MakeVanillaSwap::withNominal(Real n) {
         nominal_ = n;
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withFixedRate(Rate k) {
+        fixedRate_ = k;
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withForwardStart(const Period& f) {
+        forwardStart_ = f;
         return *this;
     }
 

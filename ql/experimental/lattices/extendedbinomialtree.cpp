@@ -69,9 +69,12 @@ namespace QuantLib {
     : ExtendedEqualProbabilitiesBinomialTree<ExtendedAdditiveEQPBinomialTree>(
                                                         process, end, steps) {
 
-          up_ = - 0.5 * this->driftStep(0.0) + 0.5 *
-            std::sqrt(4.0*process->variance(0.0, x0_, dt_)-
-                      3.0*this->driftStep(0.0)*this->driftStep(0.0));
+        Real radicand = 4.0*process->variance(0.0, x0_, dt_)-
+                        3.0*this->driftStep(0.0)*this->driftStep(0.0);
+        QL_REQUIRE(radicand >= 0.0,
+                   "drift per step too large for the additive EQP tree: "
+                   "more steps are needed");
+        up_ = - 0.5 * this->driftStep(0.0) + 0.5 * std::sqrt(radicand);
     }
 
     Real ExtendedAdditiveEQPBinomialTree::upStep(Time stepTime) const {
@@ -173,6 +176,7 @@ namespace QuantLib {
             std::sqrt(variance);
 
         pu_ = PeizerPrattMethod2Inversion(d2, oddSteps_);
+        QL_REQUIRE(pu_ > 0.0 && pu_ < 1.0, "invalid up probability: " << pu_);
         pd_ = 1.0 - pu_;
         Real pdash = PeizerPrattMethod2Inversion(d2+std::sqrt(variance),
                                                  oddSteps_);
@@ -247,6 +251,7 @@ namespace QuantLib {
             std::sqrt(variance);
 
         pu_ = computeUpProb((oddSteps_-1.0)/2.0,d2 );
+        QL_REQUIRE(pu_ > 0.0 && pu_ < 1.0, "invalid up probability: " << pu_);
         pd_ = 1.0 - pu_;
         Real pdash = computeUpProb((oddSteps_-1.0)/2.0,d2+std::sqrt(variance));
         up_ = ermqdt * pdash / pu_;

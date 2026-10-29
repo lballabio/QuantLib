@@ -52,7 +52,7 @@ namespace QuantLib {
             || ((d == 03 || ((d == 04 || d == 05) && w == Monday)) && m == June && y >= 2019)
             // H.M. King Maha Vajiralongkorn Phra Vajiraklaochaoyuhua’s Birthday
             || ((d == 28 || ((d == 29 || d == 30) && w == Monday)) && m == July && y >= 2017)
-            // 	​H.M. Queen Sirikit The Queen Mother’s Birthday / Mother’s Day
+            // H.M. Queen Sirikit The Queen Mother’s Birthday / Mother’s Day
             || ((d == 12 || ((d == 13 || d == 14) && w == Monday)) && m == August)
             // H.M. King Bhumibol Adulyadej The Great Memorial Day
             || ((d == 13 || ((d == 14 || d == 15) && w == Monday)) && m == October && y >= 2017)

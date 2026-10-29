@@ -27,10 +27,12 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/array.hpp>
 #include <ql/math/integrals/fourierintegration.hpp>
+#include <ql/math/ode/fractionaladams.hpp>
 #include <ql/models/equity/roughhestonmodel.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <complex>
 #include <map>
+#include <optional>
 #include <tuple>
 #include <vector>
 
@@ -93,7 +95,7 @@ namespace QuantLib {
         typedef FourierIntegration Integration;
 
         //! Route used to solve the fractional Riccati equation
-        enum class Approximation { AdamsPredictorCorrector, Pade, Lifted };
+        enum Approximation { AdamsPredictorCorrector, Pade, Lifted };
 
         /*! Constructor using Gauss-Laguerre integration. nFactors is the
             number of exponentials of the lifted kernel and is ignored by
@@ -103,8 +105,7 @@ namespace QuantLib {
             const ext::shared_ptr<RoughHestonModel>& model,
             Size integrationOrder = 128,
             Size timeSteps = 256,
-            Approximation approximation
-                = Approximation::AdamsPredictorCorrector,
+            Approximation approximation = AdamsPredictorCorrector,
             Size nFactors = 20);
 
         /*! Constructor giving full control over the Fourier integration
@@ -117,8 +118,7 @@ namespace QuantLib {
             Size timeSteps = 256,
             Real andersenPiterbargEpsilon = 1e-25,
             Real alpha = -0.5,
-            Approximation approximation
-                = Approximation::AdamsPredictorCorrector,
+            Approximation approximation = AdamsPredictorCorrector,
             Size nFactors = 20);
 
         void update() override;
@@ -206,6 +206,12 @@ namespace QuantLib {
             const ext::shared_ptr<PlainVanillaPayoff>& payoff,
             Time maturity, Real fwd) const;
 
+        //! Weights of the `alpha = 1` integral, built on first use
+        const RiemannLiouvilleWeights& unitWeights() const;
+
+        //! Weights of the `alpha = 1 - a` integral, rebuilt when `a` moves
+        const RiemannLiouvilleWeights& fractionalWeights(Real alpha) const;
+
         const Size timeSteps_;
         const Integration integration_;
         const Real andersenPiterbargEpsilon_, alpha_;
@@ -216,6 +222,14 @@ namespace QuantLib {
         mutable std::map<std::tuple<Real, Real, Time>, std::complex<Real>>
             chFCache_;
         mutable std::map<Time, LiftedGrid> liftedGridCache_;
+
+        /* 
+            Quadrature weights of the two Riemann-Liouville integrals the chF is
+            built from.  Both depend only on (alpha, timeSteps_); the fractional
+            one moves with the Hurst exponent, so both are dropped in `update()`.
+        */
+        mutable std::optional<RiemannLiouvilleWeights> rlWeightsOne_;
+        mutable std::optional<RiemannLiouvilleWeights> rlWeightsFractional_;
     };
 }
 

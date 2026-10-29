@@ -31,14 +31,20 @@
 namespace QuantLib {
 
     MakeOIS::MakeOIS(const Period& swapTenor,
-                     const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                     Rate fixedRate,
-                     const Period& forwardStart)
-    : swapTenor_(swapTenor), overnightIndex_(overnightIndex), fixedRate_(fixedRate),
-      forwardStart_(forwardStart),
+                     const ext::shared_ptr<OvernightIndex>& overnightIndex)
+    : swapTenor_(swapTenor), overnightIndex_(overnightIndex),
       fixedCalendar_(overnightIndex->fixingCalendar()),
       overnightCalendar_(overnightIndex->fixingCalendar()),
       fixedDayCount_(overnightIndex->dayCounter()) {}
+
+    MakeOIS::MakeOIS(const Period& swapTenor,
+                     const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                     Rate fixedRate,
+                     const Period& forwardStart)
+    : MakeOIS(swapTenor, overnightIndex) {
+        withFixedRate(fixedRate);
+        withForwardStart(forwardStart);
+    }
 
     MakeOIS::operator OvernightIndexedSwap() const {
         ext::shared_ptr<OvernightIndexedSwap> ois = *this;
@@ -200,6 +206,16 @@ namespace QuantLib {
 
     MakeOIS& MakeOIS::withNominal(Real n) {
         nominal_ = n;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withFixedRate(Rate k) {
+        fixedRate_ = k;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withForwardStart(const Period& f) {
+        forwardStart_ = f;
         return *this;
     }
 

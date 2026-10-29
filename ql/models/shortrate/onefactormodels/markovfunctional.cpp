@@ -46,8 +46,11 @@ namespace QuantLib {
       sigma_(arguments_[0]), volstepdates_(std::move(volstepdates)),
       volatilities_(std::move(volatilities)), swaptionVol_(swaptionVol),
       swaptionExpiries_(swaptionExpiries), swaptionTenors_(swaptionTenors),
-      swapIndexBase_(swapIndexBase), iborIndex_(swapIndexBase->iborIndex()) {
+      swapIndexBase_(swapIndexBase) {
 
+        QL_REQUIRE(swapIndexBase_, "null swap index");
+        iborIndex_ = swapIndexBase_->iborIndex();
+        QL_REQUIRE(iborIndex_, "null ibor index");
         QL_REQUIRE(swaptionExpiries.size() == swaptionTenors.size(),
                    "number of swaption expiries ("
                        << swaptionExpiries.size()
@@ -77,6 +80,7 @@ namespace QuantLib {
       volatilities_(std::move(volatilities)), capletVol_(capletVol),
       capletExpiries_(capletExpiries), iborIndex_(std::move(iborIndex)) {
 
+        QL_REQUIRE(iborIndex_, "null ibor index");
         QL_REQUIRE(!capletExpiries.empty(),
                    "need at least one caplet expiry to calibrate numeraire");
         QL_REQUIRE(!termStructure.empty(),
@@ -97,7 +101,6 @@ namespace QuantLib {
         int j = 0;
         for (auto i = volstepdates_.begin(); i != volstepdates_.end(); ++i, ++j) {
             volsteptimes_.push_back(termStructure()->timeFromReference(*i));
-            volsteptimesArray_[j] = volsteptimes_[j];
             if (j == 0)
                 QL_REQUIRE(volsteptimes_[0] > 0.0,
                            "volsteptimes must be positive (" << volsteptimes_[0]
@@ -109,7 +112,8 @@ namespace QuantLib {
                                << volsteptimes_[j] << "@" << j << ")");
         }
         if (stateProcess_)
-            ext::static_pointer_cast<MfStateProcess>(stateProcess_)->setTimes(volsteptimesArray_);
+            ext::static_pointer_cast<MfStateProcess>(stateProcess_)->setTimes(
+                Array(volsteptimes_.begin(), volsteptimes_.end()));
     }
 
     void MarkovFunctional::updateTimes2() const {
@@ -149,7 +153,7 @@ namespace QuantLib {
             normalIntegralX_[i] *= M_SQRT2;
         }
 
-        volsteptimesArray_ = Array(volstepdates_.size());
+
 
         updateTimes1();
 
@@ -169,7 +173,7 @@ namespace QuantLib {
         bool done;
         numeraireDate_ = Date::minDate();
         do {
-            Date numeraireKnown = numeraireDate_;
+            auto numeraireKnown = numeraireDate_;
             done = true;
             for (auto i = calibrationPoints_.rbegin(); i != calibrationPoints_.rend() && done;
                  ++i) {
@@ -212,7 +216,8 @@ namespace QuantLib {
         }
 
         stateProcess_ = ext::make_shared<MfStateProcess>(
-            reversion_(0.0), volsteptimesArray_, sigma_.params());
+            reversion_(0.0),
+            Array(volsteptimes_.begin(), volsteptimes_.end()), sigma_.params());
 
         y_ = yGrid(modelSettings_.yStdDevs_, modelSettings_.yGridPoints_);
 
@@ -248,9 +253,9 @@ namespace QuantLib {
         p.isCaplet_ = false;
         p.tenor_ = tenor;
 
-        ext::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIndexBase_, expiry, tenor);
+        auto underlying = underlyingSwap(swapIndexBase_, expiry, tenor);
 
-        Schedule sched = underlying->fixedSchedule();
+        auto sched = underlying->fixedSchedule();
         const Calendar& cal = sched.calendar();
         BusinessDayConvention bdc = underlying->paymentConvention();
 
@@ -274,8 +279,8 @@ namespace QuantLib {
         p.isCaplet_ = true;
         // p.expiry_ = expiry;
         p.tenor_ = iborIndex_->tenor();
-        Date valueDate = iborIndex_->valueDate(expiry);
-        Date endDate = iborIndex_->fixingCalendar().advance(
+        auto valueDate = iborIndex_->valueDate(expiry);
+        auto endDate = iborIndex_->fixingCalendar().advance(
             valueDate, iborIndex_->tenor(), iborIndex_->businessDayConvention(),
             iborIndex_->endOfMonth());
         // FIXME Here we should use a calculation date calendar ?
@@ -324,8 +329,8 @@ namespace QuantLib {
                     i->first, i->second.tenor_, true);
             }
 
-            i->second.rawSmileSection_ = ext::shared_ptr<SmileSection>(
-                new AtmSmileSection(smileSection, i->second.atm_));
+            i->second.rawSmileSection_ =
+                ext::make_shared<AtmSmileSection>(smileSection, i->second.atm_);
 
             int forcedLeftIndex = -1;
             int forcedRightIndex = QL_MAX_INTEGER;
@@ -379,16 +384,12 @@ namespace QuantLib {
 
                     // TODO should we fix beta to avoid numerical instabilities
                     // during calibration ?
-                    ext::shared_ptr<SabrInterpolatedSmileSection> sabrSection(
-                        new SabrInterpolatedSmileSection(
-                            i->first, i->second.atm_, k, false,
-                            i->second.rawSmileSection_->volatility(
-                                i->second.atm_),
-                            v, 0.03, 0.80, 0.50, 0.00, false, false, false,
-                            false, true, ext::shared_ptr<EndCriteria>(),
-                            ext::shared_ptr<OptimizationMethod>(),
-                            Actual365Fixed(),
-                                i->second.rawSmileSection_->shift()));
+                    auto sabrSection = ext::make_shared<SabrInterpolatedSmileSection>(
+                        i->first, i->second.atm_, k, false,
+                        i->second.rawSmileSection_->volatility(i->second.atm_), v,
+                        0.03, 0.80, 0.50, 0.00, false, false, false, false, true,
+                        ext::shared_ptr<EndCriteria>(), ext::shared_ptr<OptimizationMethod>(),
+                        Actual365Fixed(), i->second.rawSmileSection_->shift());
 
                     // we make the sabr section arbitrage free by superimposing
                     // a kahalesection
@@ -431,8 +432,7 @@ namespace QuantLib {
                         modelSettings_.digitalGap_);
                 i->second.maxRateDigital_ =
                     i->second.smileSection_->digitalOptionPrice(
-                        modelSettings_.upperRateBound_ -
-                            i->second.smileSection_->shift(),
+                        modelSettings_.upperRateBound_,
                         Option::Call, i->second.annuity_,
                         modelSettings_.digitalGap_);
             }
@@ -612,9 +612,8 @@ namespace QuantLib {
     const MarkovFunctional::ModelOutputs &
     MarkovFunctional::modelOutputs() const {
 
+        calculate();
         if (modelOutputs_.dirty_) {
-
-            calculate();
 
             // yield term structure
             modelOutputs_.marketZerorate_.clear();
@@ -631,6 +630,8 @@ namespace QuantLib {
             }
 
             // volatility surface
+            modelOutputs_.atm_.clear();
+            modelOutputs_.annuity_.clear();
             modelOutputs_.smileStrikes_.clear();
             modelOutputs_.marketCallPremium_.clear();
             modelOutputs_.marketPutPremium_.clear();
@@ -643,8 +644,8 @@ namespace QuantLib {
             for (auto& calibrationPoint : calibrationPoints_) {
                 modelOutputs_.atm_.push_back(calibrationPoint.second.atm_);
                 modelOutputs_.annuity_.push_back(calibrationPoint.second.annuity_);
-                ext::shared_ptr<SmileSection> sec = calibrationPoint.second.smileSection_;
-                ext::shared_ptr<SmileSection> rawSec = calibrationPoint.second.rawSmileSection_;
+                auto sec = calibrationPoint.second.smileSection_;
+                auto rawSec = calibrationPoint.second.rawSmileSection_;
                 SmileSectionUtils ssutils(*sec, modelSettings_.smileMoneynessCheckpoints_,
                                           calibrationPoint.second.atm_);
                 Real shift = sec->shift();
@@ -772,6 +773,7 @@ namespace QuantLib {
         const Time t, const Real y,
         const Handle<YieldTermStructure> &yts) const {
 
+        calculate();
         if (t == 0)
             return yts.empty()
                        ? this->termStructure()->discount(numeraireTime(), true)
@@ -945,8 +947,8 @@ namespace QuantLib {
         if (!iborIdx)
             iborIdx = iborIndex_;
 
-        Date valueDate = zeroFixingDays ? fixing : iborIdx->valueDate(fixing);
-        Date endDate = iborIdx->fixingCalendar().advance(
+        auto valueDate = zeroFixingDays ? fixing : iborIdx->valueDate(fixing);
+        auto endDate = iborIdx->fixingCalendar().advance(
             iborIdx->valueDate(fixing), iborIdx->tenor(),
             iborIdx->businessDayConvention(),
             iborIdx->endOfMonth()); // FIXME Here we should use the calculation
@@ -970,9 +972,9 @@ namespace QuantLib {
             swapIdx = swapIndexBase_;
         QL_REQUIRE(swapIdx, "No swap index given");
 
-        ext::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIdx, fixing, tenor);
+        auto underlying = underlyingSwap(swapIdx, fixing, tenor);
 
-        Schedule sched = underlying->fixedSchedule();
+        auto sched = underlying->fixedSchedule();
         Real annuity = swapAnnuityInternal(fixing, tenor, referenceDate, y,
                                       zeroFixingDays, swapIdx);
         Rate atm =
@@ -996,9 +998,9 @@ namespace QuantLib {
             swapIdx = swapIndexBase_;
         QL_REQUIRE(swapIdx, "No swap index given");
 
-        ext::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIdx, fixing, tenor);
+        auto underlying = underlyingSwap(swapIdx, fixing, tenor);
 
-        Schedule sched = underlying->fixedSchedule();
+        auto sched = underlying->fixedSchedule();
 
         Real annuity = 0.0;
         for (unsigned int j = 1; j < sched.size(); j++) {
@@ -1051,33 +1053,39 @@ namespace QuantLib {
                                   CubicInterpolation::Lagrange, 0.0,
                                   CubicInterpolation::Lagrange, 0.0);
 
+        const auto& linearCoefficients = payoff.aCoefficients();
+        const auto& quadraticCoefficients = payoff.bCoefficients();
+        const auto& cubicCoefficients = payoff.cCoefficients();
+        const Size lastNode = z.size() - 1;
+        const Size lastInterval = lastNode - 1;
+
         Real price = 0.0;
-        for (Size i = 0; i < z.size() - 1; i++) {
+        for (Size i = 0; i < lastNode; i++) {
             price += gaussianShiftedPolynomialIntegral(
-                0.0, payoff.cCoefficients()[i], payoff.bCoefficients()[i],
-                payoff.aCoefficients()[i], p[i], z[i], z[i], z[i + 1]);
+                0.0, cubicCoefficients[i], quadraticCoefficients[i],
+                linearCoefficients[i], p[i], z[i], z[i], z[i + 1]);
         }
         if ((modelSettings_.adjustments_ &
              ModelSettings::NoPayoffExtrapolation) == 0) {
             if ((modelSettings_.adjustments_ &
                  ModelSettings::ExtrapolatePayoffFlat) != 0) {
                 price += gaussianShiftedPolynomialIntegral(
-                    0.0, 0.0, 0.0, 0.0, p[z.size() - 2], z[z.size() - 2],
-                    z[z.size() - 1], 100.0);
+                    0.0, 0.0, 0.0, 0.0, p.back(), z.back(), z.back(), 100.0);
                 price += gaussianShiftedPolynomialIntegral(
                     0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0, z[0]);
             } else {
                 if (type == Option::Call)
                     price += gaussianShiftedPolynomialIntegral(
-                        0.0, payoff.cCoefficients()[z.size() - 2],
-                        payoff.bCoefficients()[z.size() - 2],
-                        payoff.aCoefficients()[z.size() - 2], p[z.size() - 2],
-                        z[z.size() - 2], z[z.size() - 1], 100.0);
+                        0.0, cubicCoefficients[lastInterval],
+                        quadraticCoefficients[lastInterval],
+                        linearCoefficients[lastInterval], p[lastInterval],
+                        z[lastInterval], z[lastNode], 100.0);
                 if (type == Option::Put)
                     price += gaussianShiftedPolynomialIntegral(
-                        0.0, payoff.cCoefficients()[0],
-                        payoff.bCoefficients()[0], payoff.aCoefficients()[0],
-                        p[0], z[0], -100.0, z[0]);
+                        0.0, cubicCoefficients.front(),
+                        quadraticCoefficients.front(),
+                        linearCoefficients.front(), p.front(), z.front(),
+                        -100.0, z.front());
             }
         }
 
@@ -1105,8 +1113,8 @@ namespace QuantLib {
         Array z = yGrid(modelSettings_.yStdDevs_, modelSettings_.yGridPoints_);
         Array p(yg.size());
 
-        Date valueDate = iborIdx->valueDate(expiry);
-        Date endDate = iborIdx->fixingCalendar().advance(
+        auto valueDate = iborIdx->valueDate(expiry);
+        auto endDate = iborIdx->fixingCalendar().advance(
             valueDate, iborIdx->tenor(), iborIdx->businessDayConvention(),
             iborIdx->endOfMonth()); // FIXME Here we should use the calculation
                                     // date calendar ?
@@ -1128,33 +1136,39 @@ namespace QuantLib {
                                   CubicInterpolation::Lagrange, 0.0,
                                   CubicInterpolation::Lagrange, 0.0);
 
+        const auto& linearCoefficients = payoff.aCoefficients();
+        const auto& quadraticCoefficients = payoff.bCoefficients();
+        const auto& cubicCoefficients = payoff.cCoefficients();
+        const Size lastNode = z.size() - 1;
+        const Size lastInterval = lastNode - 1;
+
         Real price = 0.0;
-        for (Size i = 0; i < z.size() - 1; i++) {
+        for (Size i = 0; i < lastNode; i++) {
             price += gaussianShiftedPolynomialIntegral(
-                0.0, payoff.cCoefficients()[i], payoff.bCoefficients()[i],
-                payoff.aCoefficients()[i], p[i], z[i], z[i], z[i + 1]);
+                0.0, cubicCoefficients[i], quadraticCoefficients[i],
+                linearCoefficients[i], p[i], z[i], z[i], z[i + 1]);
         }
         if ((modelSettings_.adjustments_ &
              ModelSettings::NoPayoffExtrapolation) == 0) {
             if ((modelSettings_.adjustments_ &
                  ModelSettings::ExtrapolatePayoffFlat) != 0) {
                 price += gaussianShiftedPolynomialIntegral(
-                    0.0, 0.0, 0.0, 0.0, p[z.size() - 2], z[z.size() - 2],
-                    z[z.size() - 1], 100.0);
+                    0.0, 0.0, 0.0, 0.0, p.back(), z.back(), z.back(), 100.0);
                 price += gaussianShiftedPolynomialIntegral(
                     0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0, z[0]);
             } else {
                 if (type == Option::Call)
                     price += gaussianShiftedPolynomialIntegral(
-                        0.0, payoff.cCoefficients()[z.size() - 2],
-                        payoff.bCoefficients()[z.size() - 2],
-                        payoff.aCoefficients()[z.size() - 2], p[z.size() - 2],
-                        z[z.size() - 2], z[z.size() - 1], 100.0);
+                        0.0, cubicCoefficients[lastInterval],
+                        quadraticCoefficients[lastInterval],
+                        linearCoefficients[lastInterval], p[lastInterval],
+                        z[lastInterval], z[lastNode], 100.0);
                 if (type == Option::Put)
                     price += gaussianShiftedPolynomialIntegral(
-                        0.0, payoff.cCoefficients()[0],
-                        payoff.bCoefficients()[0], payoff.aCoefficients()[0],
-                        p[0], z[0], -100.0, z[0]);
+                        0.0, cubicCoefficients.front(),
+                        quadraticCoefficients.front(),
+                        linearCoefficients.front(), p.front(), z.front(),
+                        -100.0, z.front());
             }
         }
 

@@ -129,7 +129,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCVarianceSwapEngine {
       public:
-        MakeMCVarianceSwapEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+        explicit MakeMCVarianceSwapEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
         // named parameters
         MakeMCVarianceSwapEngine& withSteps(Size steps);
         MakeMCVarianceSwapEngine& withStepsPerYear(Size steps);
@@ -140,6 +140,8 @@ namespace QuantLib {
         MakeMCVarianceSwapEngine& withSeed(BigNatural seed);
         MakeMCVarianceSwapEngine& withAntitheticVariate(bool b = true);
         // conversion to pricing engine
+        // Intentionally implicit to support passing the fluent builder as a pricing engine.
+        // NOLINTNEXTLINE(google-explicit-constructor)
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
@@ -152,7 +154,7 @@ namespace QuantLib {
 
     class VariancePathPricer : public PathPricer<Path> {
       public:
-        VariancePathPricer(ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        explicit VariancePathPricer(ext::shared_ptr<GeneralizedBlackScholesProcess> process)
         : process_(std::move(process)) {}
         Real operator()(const Path& path) const override;
 

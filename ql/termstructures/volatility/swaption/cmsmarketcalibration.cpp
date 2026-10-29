@@ -22,11 +22,18 @@
 #include <ql/termstructures/volatility/swaption/cmsmarketcalibration.hpp>
 #include <ql/termstructures/volatility/swaption/cmsmarket.hpp>
 #include <ql/termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/constraint.hpp>
 
 namespace {
     using namespace QuantLib;
+
+    // Parametric beta term structure: betaInf, beta0, and decay.
+    constexpr Size nParametricParameters = 3;
+    constexpr Size betaInfIndex = 0;
+    constexpr Size beta0Index = 1;
+    constexpr Size decayIndex = 2;
 
     class ObjectiveFunction : public CostFunction {
       public:
@@ -207,7 +214,7 @@ namespace {
             volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
         }
         Real meanReversion =
-            CmsMarketCalibration::reversionTransformDirect(x[nSwapLengths + nSwapTenors]);
+            CmsMarketCalibration::reversionTransformDirect(x[nSwapLengths * nSwapTenors]);
         cmsMarket_->reprice(volCube_, meanReversion);
     }
 
@@ -249,14 +256,14 @@ namespace {
         const std::vector<Period> &swapLengths = cmsMarket_->swapLengths();
         Size nSwapTenors = swapTenors.size();
         Size nSwapLengths = swapLengths.size();
-        QL_REQUIRE((3 * nSwapTenors) == x.size(),
-                   "bad calibration guess (3*nSwapTenors) != x.size()");
+        QL_REQUIRE((nParametricParameters * nSwapTenors) == x.size(),
+               "bad calibration guess (nParametricParameters*nSwapTenors) != x.size()");
         const ext::shared_ptr<SabrSwaptionVolatilityCube> volCubeBySabr =
             ext::dynamic_pointer_cast<SabrSwaptionVolatilityCube>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i) {
-            Real betaInf = CmsMarketCalibration::betaTransformDirect(x[0 + 3 * i]);
-            Real beta0 = CmsMarketCalibration::betaTransformDirect(x[1 + 3 * i]);
-            Real decay = x[2 + 3 * i] * x[2 + 3 * i];
+            Real betaInf = CmsMarketCalibration::betaTransformDirect(x[betaInfIndex + nParametricParameters * i]);
+            Real beta0 = CmsMarketCalibration::betaTransformDirect(x[beta0Index + nParametricParameters * i]);
+            Real decay = squared(x[decayIndex + nParametricParameters * i]);
             std::vector<Real> beta(nSwapLengths);
             for (Size j = 0; j < beta.size(); ++j) {
                 Real t = smileAndCms_->volCube_->timeFromReference(
@@ -281,14 +288,14 @@ namespace {
         const std::vector<Period> &swapLengths = cmsMarket_->swapLengths();
         Size nSwapTenors = swapTenors.size();
         Size nSwapLengths = swapLengths.size();
-        QL_REQUIRE((3 * nSwapTenors) == x.size(),
-                   "bad calibration guess (3*nSwapTenors) != x.size()");
+        QL_REQUIRE((nParametricParameters * nSwapTenors + 1) == x.size(),
+               "bad calibration guess (nParametricParameters*nSwapTenors)+1 != x.size()");
         const ext::shared_ptr<SabrSwaptionVolatilityCube> volCubeBySabr =
             ext::dynamic_pointer_cast<SabrSwaptionVolatilityCube>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i) {
-            Real betaInf = CmsMarketCalibration::betaTransformDirect(x[0 + 3 * i]);
-            Real beta0 = CmsMarketCalibration::betaTransformDirect(x[1 + 3 * i]);
-            Real decay = x[2 + 3 * i] * x[2 + 3 * i];
+            Real betaInf = CmsMarketCalibration::betaTransformDirect(x[betaInfIndex + nParametricParameters * i]);
+            Real beta0 = CmsMarketCalibration::betaTransformDirect(x[beta0Index + nParametricParameters * i]);
+            Real decay = squared(x[decayIndex + nParametricParameters * i]);
             std::vector<Real> beta(nSwapLengths);
             for (Size j = 0; j < beta.size(); ++j) {
                 Real t = smileAndCms_->volCube_->timeFromReference(
@@ -298,7 +305,7 @@ namespace {
             volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
         }
         Real meanReversion =
-            CmsMarketCalibration::reversionTransformDirect(x[3 * nSwapTenors]);
+            CmsMarketCalibration::reversionTransformDirect(x[nParametricParameters * nSwapTenors]);
         cmsMarket_->reprice(volCube_, meanReversion);
     }
 }
@@ -486,7 +493,6 @@ namespace QuantLib {
         const Real meanReversionGuess) {
 
         Size nSwapTenors = cmsMarket_->swapTenors().size();
-        Size nSwapLengths = cmsMarket_->swapLengths().size();
         QL_REQUIRE(isMeanReversionFixed || meanReversionGuess != Null<Real>(),
                    "if mean reversion is not fixed, a guess must be provided");
         QL_REQUIRE(nSwapTenors == guess.columns(),
@@ -494,20 +500,20 @@ namespace QuantLib {
                        << nSwapTenors
                        << ") must be equal to number of guess columns ("
                        << guess.columns() << ")");
-        QL_REQUIRE(3 == guess.rows(),
+        QL_REQUIRE(nParametricParameters == guess.rows(),
                    "number of parameters ("
-                       << 3 << ") must be equal to number of guess rows ("
+                       << nParametricParameters << ") must be equal to number of guess rows ("
                        << guess.rows() << ")");
 
         Matrix result;
-        Size nParams = nSwapTenors * 3;
+        Size nParams = nSwapTenors * nParametricParameters;
         if (isMeanReversionFixed) {
             NoConstraint constraint;
             Array betasGuess(nParams);
             for (Size i = 0; i < nSwapTenors; ++i) {
-                for (Size j = 0; j < nParams; ++j) {
-                    betasGuess[i * 3 + j] =
-                        (j == 0 || j == 1) ? betaTransformInverse(guess[j][i])
+                for (Size j = 0; j < nParametricParameters; ++j) {
+                    betasGuess[i * nParametricParameters + j] =
+                        (j == betaInfIndex || j == beta0Index) ? betaTransformInverse(guess[j][i])
                                            : std::sqrt(guess[j][i]);
                 }
             }
@@ -520,16 +526,16 @@ namespace QuantLib {
             Array tmp = problem.currentValue();
             error_ = costFunction.value(tmp);
             result = Matrix(
-                3, nSwapTenors + (meanReversionGuess != Null<Real>() ? 1 : 0));
+                nParametricParameters, nSwapTenors + (meanReversionGuess != Null<Real>() ? 1 : 0));
             for (Size i = 0; i < nSwapTenors; ++i) {
-                for (Size j = 0; j < 3; ++j) {
-                    result[j][i] = (j == 0 || j == 1)
-                                       ? betaTransformDirect(tmp[i * 3 + j])
-                                       : tmp[i * 3 + j] * tmp[i * 3 + j];
+                for (Size j = 0; j < nParametricParameters; ++j) {
+                    result[j][i] = (j == betaInfIndex || j == beta0Index)
+                                       ? betaTransformDirect(tmp[i * nParametricParameters + j])
+                                       : squared(tmp[i * nParametricParameters + j]);
                 }
             }
             if (meanReversionGuess != Null<Real>()) {
-                for (Size j = 0; j < nSwapLengths; ++j) {
+                for (Size j = 0; j < nParametricParameters; ++j) {
                     result[j][nSwapTenors] = meanReversionGuess;
                 }
             }
@@ -537,9 +543,10 @@ namespace QuantLib {
             NoConstraint constraint;
             Array betasReversionGuess(nParams + 1);
             for (Size i = 0; i < nSwapTenors; ++i) {
-                for (Size j = 0; j < nParams; ++j) {
-                    betasReversionGuess[i * nSwapLengths + j] =
-                        (j == 0 || j == 1) ? betaTransformInverse(guess[j][i])
+                for (Size j = 0; j < nParametricParameters; ++j) {
+                    betasReversionGuess[i * nParametricParameters + j] =
+                        (j == betaInfIndex || j == beta0Index)
+                            ? betaTransformInverse(guess[j][i])
                                            : std::sqrt(guess[j][i]);
                 }
             }
@@ -550,16 +557,16 @@ namespace QuantLib {
             endCriteria_ = method->minimize(problem, *endCriteria);
             Array tmp = problem.currentValue();
             error_ = costFunction.value(tmp);
-            result = Matrix(3, nSwapTenors + 1);
+            result = Matrix(nParametricParameters, nSwapTenors + 1);
             for (Size i = 0; i < nSwapTenors; ++i) {
-                for (Size j = 0; j < 3; ++j) {
+                for (Size j = 0; j < nParametricParameters; ++j) {
                     result[j][i] =
-                        (j == 0 || j == 1)
-                            ? betaTransformDirect(tmp[i * nSwapLengths + j])
-                            : tmp[i * 3 + j] * tmp[i * 3 + j];
+                        (j == betaInfIndex || j == beta0Index)
+                            ? betaTransformDirect(tmp[i * nParametricParameters + j])
+                                : squared(tmp[i * nParametricParameters + j]);
                 }
             }
-            for (Size j = 0; j < nSwapLengths; ++j) {
+            for (Size j = 0; j < nParametricParameters; ++j) {
                 result[j][nSwapTenors] = reversionTransformDirect(tmp[nParams]);
             }
         }

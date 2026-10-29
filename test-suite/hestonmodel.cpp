@@ -25,6 +25,8 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/integrals/expsinhintegral.hpp>
+#include <ql/math/integrals/tanhsinhintegral.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
@@ -825,7 +827,7 @@ BOOST_AUTO_TEST_CASE(testKahlJaeckelCase) {
         { HestonProcess::NonCentralChiSquareVariance, 10,
           "NonCentralChiSquareVariance" },
         { HestonProcess::QuadraticExponentialMartingale, 100,
-          "QuadraticExponentialMartingale" },
+          "QuadraticExponentialMartingale" }
     };
 
     const Real tolerance = 0.2;
@@ -860,21 +862,33 @@ BOOST_AUTO_TEST_CASE(testKahlJaeckelCase) {
         }
     }
 
-    option.setPricingEngine(
-        MakeMCEuropeanHestonEngine<LowDiscrepancy>(
-            ext::make_shared<HestonProcess>(
+    const HestonProcessDiscretizationDesc qmcDescriptions[] = {
+        { HestonProcess::BroadieKayaExactSchemeLaguerre, 1,
+          "BroadieKayaExactSchemeLaguerre" },
+        { HestonProcess::BroadieKayaExactSchemeTrapezoidal, 1,
+          "BroadieKayaExactSchemeTrapezoidal" },
+        { HestonProcess::BroadieKayaExactSchemeLobatto, 1,
+          "BroadieKayaExactSchemeLobatto" },
+    };
+    
+    for (const auto& description : qmcDescriptions) {
+        option.setPricingEngine(
+            MakeMCEuropeanHestonEngine<LowDiscrepancy>(
+                ext::make_shared<HestonProcess>(
                     riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho,
-                    HestonProcess::BroadieKayaExactSchemeLaguerre))
-        .withSteps(1)
-        .withSamples(1023));
+                    description.discretization))
+            .withSteps(description.nSteps)
+            .withSamples(1023)
+        );
 
-    Real calculated = option.NPV();
-    if (std::fabs(calculated - expected) > 0.5*tolerance) {
-        BOOST_ERROR("Failed to reproduce cached price with MC engine"
-                    << "\n    discretization: BroadieKayaExactSchemeLobatto"
-                    << "\n    calculated:     " << calculated
-                    << "\n    expected:       " << expected
-                    << "\n    tolerance:      " << tolerance);
+        Real calculated = option.NPV();
+        if (std::fabs(calculated - expected) > 0.5*tolerance) {
+            BOOST_ERROR("Failed to reproduce cached price with MC engine"
+                        << "\n    discretization: " << description.name
+                        << "\n    calculated:     " << calculated
+                        << "\n    expected:       " << expected
+                        << "\n    tolerance:      " << 0.5*tolerance);
+        }
     }
 
 
@@ -887,7 +901,7 @@ BOOST_AUTO_TEST_CASE(testKahlJaeckelCase) {
     option.setPricingEngine(
         ext::make_shared<FdHestonVanillaEngine>(hestonModel, 200, 401, 101));
 
-    calculated = option.NPV();
+    Real calculated = option.NPV();
     Real error = std::fabs(calculated - expected);
     if (error > 5.0e-2) {
         BOOST_FAIL("failed to reproduce cached price with FD engine"
@@ -1785,6 +1799,14 @@ BOOST_AUTO_TEST_CASE(testAllIntegrationMethods) {
         "exp-sinh integration with angled contour shift integral");
 #endif
 
+#ifdef QL_BOOST_HAS_TANH_SINH
+    // Angled contour shift integral with tanhSinh
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::tanhSinh(),
+        AnalyticHestonEngine::AngledContour,
+        true, expected, 1e-8, Null<Size>(),
+        "tanh-sinh integration with angled contour shift integral");
+#endif
 }
 
 BOOST_AUTO_TEST_CASE(testCosHestonCumulants) {

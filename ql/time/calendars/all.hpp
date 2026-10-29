@@ -34,6 +34,7 @@
 #include <ql/time/calendars/northmacedonia.hpp>
 #include <ql/time/calendars/norway.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/calendars/philippines.hpp>
 #include <ql/time/calendars/poland.hpp>
 #include <ql/time/calendars/romania.hpp>
 #include <ql/time/calendars/russia.hpp>

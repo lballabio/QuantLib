@@ -53,7 +53,7 @@ namespace QuantLib {
         typedef StatisticsType statistics_type;
         typedef std::vector<typename StatisticsType::value_type> value_type;
         // constructor
-        GenericSequenceStatistics(Size dimension = 0);
+        explicit GenericSequenceStatistics(Size dimension = 0);
         //! \name inspectors
         //@{
         Size size() const { return dimension_; }

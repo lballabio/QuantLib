@@ -128,7 +128,7 @@ namespace QuantLib {
 
     Real SwaptionHelper::blackPrice(Volatility sigma) const {
         calculate();
-        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(sigma)));
+        Handle<Quote> vol(ext::make_shared<SimpleQuote>(sigma));
         ext::shared_ptr<PricingEngine> engine;
         switch(volatilityType_) {
         case ShiftedLognormal:
@@ -151,8 +151,8 @@ namespace QuantLib {
 
     void SwaptionHelper::performCalculations() const {
 
-        Calendar calendar = index_->fixingCalendar();
-        Date exerciseDate = exerciseDate_;
+        auto calendar = index_->fixingCalendar();
+        auto exerciseDate = exerciseDate_;
         if (exerciseDate == Date())
             exerciseDate = calendar.advance(termStructure_->referenceDate(),
                                             maturity_,
@@ -166,7 +166,7 @@ namespace QuantLib {
                                          index_->businessDayConvention());
         }
 
-        Date endDate = endDate_;
+        auto endDate = endDate_;
         if (endDate == Date())
             endDate = calendar.advance(startDate, length_,
                                        index_->businessDayConvention());
@@ -182,7 +182,7 @@ namespace QuantLib {
         auto swapEngine = ext::make_shared<DiscountingSwapEngine>(termStructure_, false);
 
         Swap::Type type = Swap::Receiver;
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+        auto exercise = ext::make_shared<EuropeanExercise>(exerciseDate);
         auto temp = makeSwap(fixedSchedule, floatSchedule, 0.0, type);
         temp->setPricingEngine(swapEngine);
         Real forward = temp->fairRate();

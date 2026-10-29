@@ -83,8 +83,8 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
 
     ext::shared_ptr<UKRPI> ii;
 
-    RelinkableHandle<YieldTermStructure> yTS;
-    RelinkableHandle<ZeroInflationTermStructure> cpiTS;
+    Handle<YieldTermStructure> yTS;
+    Handle<ZeroInflationTermStructure> cpiTS;
 
     // setup
     CommonVars() {
@@ -96,7 +96,7 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
         Settings::instance().evaluationDate() = evaluationDate;
         dayCounter = ActualActual(ActualActual::ISDA);
 
-        ii = ext::make_shared<UKRPI>(cpiTS);
+        ii = ext::make_shared<UKRPI>();
 
         Schedule rpiSchedule =
             MakeSchedule()
@@ -115,7 +115,7 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
             ii->addFixing(rpiSchedule[i], fixData[i]);
         }
 
-        yTS.linkTo(ext::shared_ptr<YieldTermStructure>(
+        yTS = Handle<YieldTermStructure>(ext::shared_ptr<YieldTermStructure>(
                           new FlatForward(evaluationDate, 0.05, dayCounter)));
 
         // now build the zero inflation curve
@@ -147,14 +147,11 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
 
         Date baseDate = ii->lastFixingDate();
 
-        cpiTS.linkTo(ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
+        cpiTS = Handle<ZeroInflationTermStructure>(
+            ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
                          evaluationDate, baseDate, ii->frequency(), dayCounter, helpers));
-    }
 
-    // teardown
-    ~CommonVars() {
-        // break circular references and allow curves to be destroyed
-        cpiTS.reset();
+        ii = ext::make_shared<UKRPI>(cpiTS);
     }
 };
 

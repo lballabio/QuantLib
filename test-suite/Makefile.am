@@ -40,6 +40,7 @@ QL_TEST_SRCS = \
 	compiledboostversion.cpp \
 	compoundoption.cpp \
 	convertiblebonds.cpp \
+	copulas.cpp \
 	covariance.cpp \
 	creditdefaultswap.cpp \
 	constnotionalcrosscurrencybasisswap.cpp \
@@ -63,6 +64,7 @@ QL_TEST_SRCS = \
 	equitytotalreturnswap.cpp \
 	europeanoption.cpp \
 	everestoption.cpp \
+	extendedblackvariancesurface.cpp \
 	exchangerate.cpp \
 	extendedtrees.cpp \
 	extensibleoptions.cpp \
@@ -132,6 +134,7 @@ QL_TEST_SRCS = \
 	optimizers.cpp \
 	optionletstripper.cpp \
 	overnightindexedcoupon.cpp \
+	overnightindexedfundingratehelper.cpp \
 	overnightindexedswap.cpp \
 	pagodaoption.cpp \
 	partialtimebarrieroption.cpp \

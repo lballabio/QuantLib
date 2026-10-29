@@ -32,15 +32,22 @@
 
 namespace QuantLib {
 
-    //! helper class
+    //! vanilla-swap builder
     /*! This class provides a more comfortable way
-        to instantiate standard market swap.
+        to instantiate a standard market swap.
     */
     class MakeVanillaSwap {
       public:
         MakeVanillaSwap(const Period& swapTenor,
+                        const ext::shared_ptr<IborIndex>& iborIndex);
+
+        /*! \deprecated Use the other constructor plus withFixedRate and/or withForwardStart.
+                        Deprecated in version 1.44.
+        */
+        [[deprecated("Use the other constructor plus withFixedRate and/or withForwardStart.")]]
+        MakeVanillaSwap(const Period& swapTenor,
                         const ext::shared_ptr<IborIndex>& iborIndex,
-                        Rate fixedRate = Null<Rate>(),
+                        Rate fixedRate,
                         const Period& forwardStart = 0*Days);
 
         operator VanillaSwap() const;
@@ -49,7 +56,9 @@ namespace QuantLib {
         MakeVanillaSwap& receiveFixed(bool flag = true);
         MakeVanillaSwap& withType(Swap::Type type);
         MakeVanillaSwap& withNominal(Real n);
+        MakeVanillaSwap& withFixedRate(Rate k);
 
+        MakeVanillaSwap& withForwardStart(const Period& f);
         MakeVanillaSwap& withSettlementDays(Natural settlementDays);
         MakeVanillaSwap& withSettlementCalendar(const Calendar& cal);
         MakeVanillaSwap& withEffectiveDate(const Date&);
@@ -90,8 +99,9 @@ namespace QuantLib {
       private:
         Period swapTenor_;
         ext::shared_ptr<IborIndex> iborIndex_;
-        Rate fixedRate_;
-        Period forwardStart_;
+
+        Rate fixedRate_ = Null<Rate>();
+        Period forwardStart_ = 0*Days;
 
         Natural settlementDays_ = Null<Natural>();
         Date effectiveDate_, terminationDate_;

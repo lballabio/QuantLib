@@ -25,7 +25,9 @@
 #define quantlib_interest_rate_hpp
 
 #include <ql/compounding.hpp>
+#include <ql/errors.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/utilities/null.hpp>
 
 namespace QuantLib {
 
@@ -54,7 +56,10 @@ namespace QuantLib {
         //@{
         Rate rate() const { return r_; }
         const DayCounter& dayCounter() const { return dc_; }
-        Compounding compounding() const { return comp_; }
+        Compounding compounding() const {
+            QL_REQUIRE(r_ != Null<Rate>(), "null interest rate");
+            return comp_;
+        }
         Frequency frequency() const {
             return freqMakesSense_ ? Frequency(Integer(freq_)) : NoFrequency;
         }
@@ -78,6 +83,7 @@ namespace QuantLib {
             QL_REQUIRE(d2>=d1,
                        "d1 (" << d1 << ") "
                        "later than d2 (" << d2 << ")");
+            QL_REQUIRE(r_ != Null<Rate>(), "null interest rate");
             Time t = dc_.yearFraction(d1, d2, refStart, refEnd);
             return discountFactor(t);
         }
@@ -102,9 +108,16 @@ namespace QuantLib {
             QL_REQUIRE(d2>=d1,
                        "d1 (" << d1 << ") "
                        "later than d2 (" << d2 << ")");
+            QL_REQUIRE(r_ != Null<Rate>(), "null interest rate");
             Time t = dc_.yearFraction(d1, d2, refStart, refEnd);
             return compoundFactor(t);
         }
+
+        //! first derivative of discount factor
+        Real discountFactorFirstDerivative(Time t) const;
+
+        //! second derivative of discount factor
+        Real discountFactorSecondDerivative(Time t) const;
         //@}
 
         //! \name implied rate calculations
@@ -172,6 +185,7 @@ namespace QuantLib {
             QL_REQUIRE(d2>=d1,
                        "d1 (" << d1 << ") "
                        "later than d2 (" << d2 << ")");
+            QL_REQUIRE(r_ != Null<Rate>(), "null interest rate");
             Time t1 = dc_.yearFraction(d1, d2, refStart, refEnd);
             Time t2 = resultDC.yearFraction(d1, d2, refStart, refEnd);
             return impliedRate(compoundFactor(t1), resultDC, comp, freq, t2);

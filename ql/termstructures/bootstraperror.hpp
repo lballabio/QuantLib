@@ -26,54 +26,7 @@
 #ifndef quantlib_bootstrap_error_hpp
 #define quantlib_bootstrap_error_hpp
 
-#include <ql/shared_ptr.hpp>
-#include <ql/types.hpp>
-#include <utility>
-
-namespace QuantLib {
-
-    /*! \deprecated Use a lambda instead (see e.g. the IterativeBootstrap class).
-                    Deprecated in version 1.40.
-    */
-    template <class Curve>
-    class [[deprecated("Use a lambda instead (see e.g. the IterativeBootstrap class)")]] BootstrapError {
-        typedef typename Curve::traits_type Traits;
-      public:
-        BootstrapError(const Curve* curve,
-                       ext::shared_ptr<typename Traits::helper> instrument,
-                       Size segment);
-        Real operator()(Rate guess) const;
-        const ext::shared_ptr<typename Traits::helper>& helper() {
-            return helper_;
-        }
-      private:
-        const Curve* curve_;
-        const ext::shared_ptr<typename Traits::helper> helper_;
-        const Size segment_;
-    };
-
-
-    // template definitions
-
-    QL_DEPRECATED_DISABLE_WARNING
-
-    template <class Curve>
-    BootstrapError<Curve>::BootstrapError(const Curve* curve,
-                                          ext::shared_ptr<typename Traits::helper> helper,
-                                          Size segment)
-    : curve_(curve), helper_(std::move(helper)), segment_(segment) {}
-
-    #ifndef __DOXYGEN__
-    template <class Curve>
-    Real BootstrapError<Curve>::operator()(Real guess) const {
-        Traits::updateGuess(curve_->data_, guess, segment_);
-        curve_->interpolation_.update();
-        return helper_->quoteError();
-    }
-    #endif
-
-    QL_DEPRECATED_ENABLE_WARNING
-
-}
+// Deprecated in version 1.45
+#pragma message("Warning: this file will disappear in a future release; don't include it.")
 
 #endif
