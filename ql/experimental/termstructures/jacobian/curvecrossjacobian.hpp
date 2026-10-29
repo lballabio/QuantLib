@@ -72,6 +72,10 @@ namespace QuantLib {
                 read from the curve so that relinked handles are followed
             */
             virtual CurveDependencies valueDependencies() const = 0;
+            //! group wrappers whose sensitivities require numerical propagation
+            virtual std::set<CurveId> numericallyPropagatedCurves() const { return {}; }
+            //! Reject calibrations not described by the helper equations alone.
+            virtual void checkQuoteSensitivitySupport() const {}
         };
 
         //! type-erased view of a bootstrapped curve
@@ -83,6 +87,12 @@ namespace QuantLib {
 
             CurveDependencies valueDependencies() const {
                 return impl->valueDependencies();
+            }
+            std::set<CurveId> numericallyPropagatedCurves() const {
+                return impl->numericallyPropagatedCurves();
+            }
+            void checkQuoteSensitivitySupport() const {
+                impl->checkQuoteSensitivitySupport();
             }
             void ensure() const { impl->ensure(); }
             Size numNodes() const { return impl->numNodes(); }
@@ -195,6 +205,16 @@ namespace QuantLib {
 
                 //! a stand-alone curve has no value dependencies
                 CurveDependencies valueDependencies() const override { return {}; }
+
+                std::set<CurveId> numericallyPropagatedCurves() const override {
+                    if constexpr (hasJacobianGroup<typename Curve::bootstrap_type>)
+                        return curve_->bootstrap_.jacobianGroup().dependents;
+                    return {};
+                }
+
+                void checkQuoteSensitivitySupport() const override {
+                    checkBootstrapQuoteSensitivitySupport(curve_->bootstrap_);
+                }
 
               protected:
                 ext::shared_ptr<Curve> curve_;

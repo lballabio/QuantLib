@@ -195,9 +195,12 @@ namespace QuantLib {
                 *analyticEquations = result.analyticEquations;
             return std::move(result.matrix);
         }
-        //! Jacobian of curve nodes with respect to helper quotes
+        /*! Jacobian of curve nodes with respect to helper quotes.
+            Bootstraps with additional penalties or variables are not supported.
+        */
         Matrix inverseJacobian(
                 std::vector<bool>* analyticEquations = nullptr) const {
+            detail::checkBootstrapQuoteSensitivitySupport(bootstrap_);
             return detail::inverseBootstrapEquationJacobian(
                 jacobian(analyticEquations));
         }

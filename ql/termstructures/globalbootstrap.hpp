@@ -177,6 +177,12 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
                     bool analyticJacobian = false);
     void setup(Curve *ts);
     void calculate() const;
+    //! Check whether helper equations suffice to compute calibrated quote sensitivities.
+    void checkQuoteSensitivitySupport() const {
+        QL_REQUIRE(!additionalPenalties_ && !additionalVariables_,
+                   "quote sensitivities are unavailable for bootstraps with "
+                   "additional penalties or variables");
+    }
     //! joint curve group in MultiCurve registration order
     /*! Returns no members when this curve is not in a multi-curve group. */
     detail::CurveJacobianGroup jacobianGroup() const;

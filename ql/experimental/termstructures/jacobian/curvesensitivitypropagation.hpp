@@ -99,12 +99,14 @@ namespace QuantLib {
 
             CurveCrossJacobianContext context = baseContext;
             for (Size i = 0; i < n; ++i) {
+                curves[i].checkQuoteSensitivitySupport();
                 curves[i].ensure();
                 blocks.nodeOffset[i + 1] =
                     blocks.nodeOffset[i] + curves[i].numNodes();
                 blocks.quoteOffset[i + 1] =
                     blocks.quoteOffset[i] + curves[i].aliveHelpers().size();
                 context.addCurve(curves[i].id, curves[i].valueDependencies());
+                context.addNumericallyPropagatedCurves(curves[i].numericallyPropagatedCurves());
             }
 
             for (Size a = 0; a < n; ++a) {

@@ -156,6 +156,7 @@ namespace QuantLib {
             For a stand-alone curve, this is inverse(jacobian()). For a
             MultiCurve group, columns cover all members' quotes in
             registration order. Group feedback is included.
+            Bootstraps with additional penalties or variables are not supported.
         */
         Matrix inverseJacobian(std::vector<bool>* analyticEquations = nullptr) const;
         //@}
@@ -257,6 +258,7 @@ namespace QuantLib {
     template <class Traits, class Interpolator, template <class> class Bootstrap>
     Matrix PiecewiseYieldCurve<Traits, Interpolator, Bootstrap>::inverseJacobian(
                                        std::vector<bool>* analyticEquations) const {
+        detail::checkBootstrapQuoteSensitivitySupport(bootstrap_);
         calculate();
         if constexpr (detail::hasJacobianGroup<bootstrap_type>) {
             auto group = bootstrap_.jacobianGroup();

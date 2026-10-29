@@ -96,6 +96,7 @@ namespace QuantLib {
 
         /*! Block of the inverse Jacobian.
             Rows are the first curve's nodes and columns are the second curve's helper quotes.
+            Bootstraps with additional penalties or variables are not supported.
         */
         Matrix inverseJacobian(const YieldTermStructure& of,
                                const YieldTermStructure& withRespectTo,
@@ -113,6 +114,7 @@ namespace QuantLib {
 
         /*! PV01-like: sensitivities to market quotes (not scaled, i.e. not multiplied by 0.0001)
             Input keys must be registered and arrays must match node counts.
+            Bootstraps with additional penalties or variables are not supported.
         */
         std::map<const YieldTermStructure*, Array> marketQuoteSensitivities(
             const std::map<const YieldTermStructure*, Array>& nodeSensitivities,
@@ -214,8 +216,10 @@ namespace QuantLib {
         detail::CurveCrossJacobianContext jacobianContext() const {
             detail::CurveCrossJacobianContext result;
             result.assumeUnlistedCurvesIndependent();
-            for (const auto& node : nodes_)
+            for (const auto& node : nodes_) {
                 result.addCurve(node.id, node.valueDependencies());
+                result.addNumericallyPropagatedCurves(node.numericallyPropagatedCurves());
+            }
             return result;
         }
 

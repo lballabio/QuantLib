@@ -2811,6 +2811,62 @@ BOOST_AUTO_TEST_CASE(testNumericalJacobianRestoresHelperInstruments) {
     checkRestored();
 }
 
+BOOST_AUTO_TEST_CASE(testQuoteSensitivitiesWithBootstrapPenalties) {
+    BOOST_TEST_MESSAGE("Testing rejection of quote sensitivities for penalized bootstraps...");
+
+    Date today(15, January, 2025);
+    Settings::instance().evaluationDate() = today;
+    using Curve = PiecewiseYieldCurve<Discount, LogLinear, GlobalBootstrap>;
+    // Complete the curve type before constructing its bootstrap.
+    (void)sizeof(Curve);
+    for (bool jointBootstrap : {false, true}) {
+        RelinkableHandle<YieldTermStructure> internalCurve, internalOther;
+        auto multiCurve = ext::make_shared<MultiCurve>(1.0e-12);
+        auto quote = ext::make_shared<SimpleQuote>(0.05);
+        auto helper = ext::make_shared<DepositRateHelper>(
+            Handle<Quote>(quote), 1 * Years, 0, TARGET(), ModifiedFollowing, false, Actual360());
+        std::vector<ext::shared_ptr<RateHelper>> helpers{helper};
+        Real target = 1.0 / (1.0 + quote->value() *
+                            Actual360().yearFraction(today, helper->maturityDate()));
+        auto penalty = [target](const std::vector<Time>&, const std::vector<Real>& data) {
+            return Array{data[1] - target};
+        };
+        auto curve = ext::make_shared<Curve>(
+            today, helpers, Actual360(), LogLinear(),
+            GlobalBootstrap<Curve>({}, nullptr, penalty, 1.0e-12));
+
+        ext::shared_ptr<Curve> other;
+        CurveJacobianGraph graph;
+        graph.add(curve);
+        if (jointBootstrap) {
+            std::vector<ext::shared_ptr<RateHelper>> otherHelpers{
+                ext::make_shared<DepositRateHelper>(
+                    0.04, 1 * Years, 0, TARGET(), ModifiedFollowing, false, Actual360())};
+            other = ext::make_shared<Curve>(today, otherHelpers, Actual360());
+            multiCurve->addBootstrappedCurve(
+                internalCurve, ext::shared_ptr<YieldTermStructure>(curve));
+            multiCurve->addBootstrappedCurve(
+                internalOther, ext::shared_ptr<YieldTermStructure>(other));
+            graph.add(other);
+        }
+
+        // The partial helper/node Jacobian remains meaningful with the penalty present.
+        Matrix jacobian = curve->jacobian();
+        BOOST_REQUIRE_EQUAL(jacobian.rows(), 1);
+        BOOST_REQUIRE_EQUAL(jacobian.columns(), 1);
+        QL_CHECK_SMALL(graph.crossJacobian(*curve, *curve)[0][0] - jacobian[0][0], 1.0e-12);
+
+        ExpectedErrorMessage unsupported("additional penalties or variables");
+        BOOST_CHECK_EXCEPTION(curve->inverseJacobian(), Error, unsupported);
+        BOOST_CHECK_EXCEPTION(graph.inverseJacobian(*curve, *curve), Error, unsupported);
+        const std::map<const YieldTermStructure*, Array> risk{{curve.get(), Array{1.0}}};
+        BOOST_CHECK_EXCEPTION(graph.marketQuoteSensitivities(risk), Error, unsupported);
+        // Even an unpenalized member must not invert an incomplete group calibration.
+        if (other)
+            BOOST_CHECK_EXCEPTION(other->inverseJacobian(), Error, unsupported);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testJacobianWithSharedHelpers) {
 
     BOOST_TEST_MESSAGE("Testing that Jacobians of curves sharing rate "
@@ -3810,6 +3866,16 @@ BOOST_AUTO_TEST_CASE(testMultiCurveJacobianThroughDependentCurve) {
     BOOST_CHECK(std::none_of(analytic.begin(), analytic.end(),
                              [](bool flag) { return flag; }));
 
+    CurveJacobianGraph graph;
+    graph.add(curve);
+    Matrix graphInverse = graph.inverseJacobian(*curve, *curve, &analytic);
+    BOOST_CHECK(std::none_of(analytic.begin(), analytic.end(),
+                             [](bool flag) { return flag; }));
+    Matrix ownJacobian = curve->jacobian();
+    Matrix graphJacobian = graph.crossJacobian(*curve, *curve);
+    Array nodeRisk(S.rows(), 1.0);
+    auto marketRisk = graph.marketQuoteSensitivities({{curve.get(), nodeRisk}});
+
     Real h = 1.0e-6, tolerance = 1.0e-5;
     for (Size k = 0; k < quotes.size(); ++k) {
         Real q0 = quotes[k]->value();
@@ -3820,13 +3886,18 @@ BOOST_AUTO_TEST_CASE(testMultiCurveJacobianThroughDependentCurve) {
         quotes[k]->setValue(q0);
         curve->data();
 
+        Real expectedRisk = 0.0;
         for (Size j = 0; j + 1 < up.size(); ++j) {
             Real fd = (up[j + 1] - dn[j + 1])/(2.0 * h);
+            expectedRisk += fd;
+            QL_CHECK_SMALL(graphInverse[j][k] - fd, tolerance);
+            QL_CHECK_SMALL(graphJacobian[k][j] - ownJacobian[k][j], tolerance);
             if (std::fabs(fd - S[j][k]) > tolerance)
                 BOOST_ERROR("node " << j << " responds to quote " << k
                             << " through the dependent curve with " << fd
                             << ", but " << S[j][k] << " was predicted");
         }
+        QL_CHECK_SMALL(marketRisk.at(curve.get())[k] - expectedRisk, quotes.size() * tolerance);
     }
 }
 

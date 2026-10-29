@@ -50,6 +50,20 @@ namespace QuantLib {
         template <class Curve>
         struct BootstrapJacobianAccess;
 
+        template <class B, class = void>
+        constexpr bool hasQuoteSensitivitySupportCheck = false;
+
+        template <class B>
+        constexpr bool hasQuoteSensitivitySupportCheck<
+            B, std::void_t<decltype(std::declval<const B&>().checkQuoteSensitivitySupport())>> =
+                true;
+
+        template <class B>
+        void checkBootstrapQuoteSensitivitySupport(const B& bootstrap) {
+            if constexpr (hasQuoteSensitivitySupportCheck<B>)
+                bootstrap.checkQuoteSensitivitySupport();
+        }
+
         /*! Converts dated curve-value sensitivities into one Jacobian row.
             Returns false when analytical weights are unavailable.
         */
