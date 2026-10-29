@@ -68,7 +68,7 @@ Real ZabrModel::lognormalVolatility(const Real strike) const {
 }
 
 std::vector<Real> ZabrModel::lognormalVolatility(const std::vector<Real> &strikes) const {
-    std::vector<Real> x_ = x(strikes);
+    auto [x_, y_] = xAndY(strikes);
     std::vector<Real> result(strikes.size());
     std::transform(strikes.begin(), strikes.end(), x_.begin(), result.begin(),
                    [&](Real _k, Real _x) { return lognormalVolatilityHelper(_k, _x); });
@@ -87,18 +87,11 @@ Real ZabrModel::normalVolatility(const Real strike) const {
 }
 
 std::vector<Real> ZabrModel::normalVolatility(const std::vector<Real> &strikes) const {
-    std::vector<Real> x_ = x(strikes);
+    auto [x_, y_] = xAndY(strikes);
     std::vector<Real> result(strikes.size());
     std::transform(strikes.begin(), strikes.end(), x_.begin(), result.begin(),
                    [&](Real _k, Real _x) { return normalVolatilityHelper(_k, _x); });
     return result;
-}
-
-Real ZabrModel::localVolatilityHelper(const Real f, const Real x) const {
-    return alpha_ * std::pow(std::fabs(f), beta_) /
-           F(y(f), std::pow(alpha_, gamma_ - 1.0) *
-                       x); // TODO optimize this, y is comoputed together
-                           // with x already
 }
 
 Real ZabrModel::localVolatility(const Real f) const {
@@ -106,10 +99,14 @@ Real ZabrModel::localVolatility(const Real f) const {
 }
 
 std::vector<Real> ZabrModel::localVolatility(const std::vector<Real> &f) const {
-    std::vector<Real> x_ = x(f);
+    // xAndY() computes both x and the intermediate y values in a single ODE
+    // pass.  Using both here avoids calling y() a second time per strike,
+    // which was the original TODO optimize comment.
+    auto [x_, y_] = xAndY(f);
     std::vector<Real> result(f.size());
-    std::transform(f.begin(), f.end(), x_.begin(), result.begin(),
-                   [&](Real _f, Real _x) { return localVolatilityHelper(_f, _x); });
+    for (Size i = 0; i < f.size(); ++i)
+        result[i] = alpha_ * std::pow(std::fabs(f[i]), beta_) /
+                    F(y_[i], std::pow(alpha_, gamma_ - 1.0) * x_[i]);
     return result;
 }
 
@@ -328,25 +325,23 @@ std::vector<Real> ZabrModel::x(const std::vector<Real> &strikes) const {
         QL_REQUIRE(*i > *(i - 1), "strikes must be strictly ascending ("
                                       << *(i - 1) << "," << *i << ")");
 
-    AdaptiveRungeKutta<Real> rk(1.0E-8, 1.0E-5,
-                                0.0); // TODO move the parameters here as
-                                      // parameters with default values to
-                                      // the constructor
-    std::vector<Real> y(strikes.size()), result(strikes.size());
-    std::transform(strikes.rbegin(), strikes.rend(), y.begin(),
+    AdaptiveRungeKutta<Real> rk(1.0E-8, 1.0E-5, 0.0);
+    std::vector<Real> yVals(strikes.size()), xVals(strikes.size());
+    // y is computed in reverse-strike order (ascending y)
+    std::transform(strikes.rbegin(), strikes.rend(), yVals.begin(),
                    [&](Real _k) { return this->y(_k); });
 
     if (close(gamma_, 1.0)) {
-        for (Size m = 0; m < y.size(); m++) {
-            Real J = std::sqrt(1.0 + nu_ * nu_ * y[m] * y[m] -
-                               2.0 * rho_ * nu_ * y[m]);
-            result[y.size() - 1 - m] =
-                std::log((J + nu_ * y[m] - rho_) / (1.0 - rho_)) / nu_;
+        for (Size m = 0; m < yVals.size(); m++) {
+            Real J = std::sqrt(1.0 + nu_ * nu_ * yVals[m] * yVals[m] -
+                               2.0 * rho_ * nu_ * yVals[m]);
+            xVals[yVals.size() - 1 - m] =
+                std::log((J + nu_ * yVals[m] - rho_) / (1.0 - rho_)) / nu_;
         }
     } else {
         int ynz = static_cast<int>(std::upper_bound(y.begin(), y.end(), 0.0) - y.begin());
         if (ynz > 0)
-            if (close(y[ynz - 1], 0.0))
+            if (close(yVals[ynz - 1], 0.0))
                 ynz--;
         if (ynz == static_cast<int>(y.size()))
             ynz--;
@@ -354,17 +349,23 @@ std::vector<Real> ZabrModel::x(const std::vector<Real> &strikes) const {
         for (int dir = 1; dir >= -1; dir -= 2) {
             Real y0 = 0.0, u0 = 0.0;
             for (int m = ynz + (dir == -1 ? -1 : 0);
-                 dir == -1 ? m >= 0 : m < (int)y.size(); m += dir) {
+                 dir == -1 ? m >= 0 : m < (int)yVals.size(); m += dir) {
                 Real u = rk([&](Real _y, Real _u){ return F(_y, _u); },
-                            u0, y0, y[m]);
-                result[y.size() - 1 - m] = u * pow(alpha_, 1.0 - gamma_);
+                            u0, y0, yVals[m]);
+                xVals[yVals.size() - 1 - m] = u * pow(alpha_, 1.0 - gamma_);
                 u0 = u;
-                y0 = y[m];
+                y0 = yVals[m];
             }
         }
     }
 
-    return result;
+    // Reverse yVals so it aligns with strikes order (matches xVals)
+    std::reverse(yVals.begin(), yVals.end());
+    return {xVals, yVals};
+}
+
+std::vector<Real> ZabrModel::x(const std::vector<Real> &strikes) const {
+    return xAndY(strikes).first;
 }
 
 Real ZabrModel::y(const Real strike) const {
