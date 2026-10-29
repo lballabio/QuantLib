@@ -69,16 +69,12 @@ namespace QuantLib {
     ext::shared_ptr<Lattice>
     BlackKarasinski::tree(const TimeGrid& grid) const {
 
-        ext::shared_ptr<ShortRateDynamics> numericDynamics(
-                         new Dynamics(phi_, a(), sigma()));
-        ext::shared_ptr<TrinomialTree> trinomial(
-                         new TrinomialTree(numericDynamics->process(), grid));
-        ext::shared_ptr<ShortRateTree> numericTree(
-                         new ShortRateTree(trinomial, numericDynamics, grid));
+        auto numericDynamics = ext::make_shared<Dynamics>(phi_, a(), sigma());
+        auto trinomial = ext::make_shared<TrinomialTree>(numericDynamics->process(), grid);
+        auto numericTree = ext::make_shared<ShortRateTree>(trinomial, numericDynamics, grid);
 
-        typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        ext::shared_ptr<NumericalImpl> impl =
-            ext::dynamic_pointer_cast<NumericalImpl>(phi_.implementation());
+        using NumericalImpl = TermStructureFittingParameter::NumericalImpl;
+        auto impl = ext::dynamic_pointer_cast<NumericalImpl>(phi_.implementation());
         impl->reset();
         Real value = 1.0;
         Real vMin = -50.0;
@@ -100,10 +96,9 @@ namespace QuantLib {
         BlackKarasinski::dynamics() const {
         // Calibrate fitting parameter to term structure
         Size steps = 50;
-        ext::shared_ptr<Lattice> lattice = this->tree(
+        auto lattice = this->tree(
             TimeGrid(termStructure()->maxTime(), steps));
-        ext::shared_ptr<ShortRateDynamics> numericDynamics(
-            new Dynamics(phi_, a(), sigma()));
+        auto numericDynamics = ext::make_shared<Dynamics>(phi_, a(), sigma());
         return numericDynamics;
     }
 

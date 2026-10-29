@@ -63,6 +63,11 @@ namespace QuantLib {
                 (Su - payoff->strike());
             Si = payoff->strike() + (Su - payoff->strike()) *
                 (1.0 - std::exp(h));
+            // when the carry outweighs 2*sqrt(variance), h is positive and the
+            // seed can fall below the strike (even below zero), where the
+            // critical price of a call can't be; Su is above the strike
+            if (!(Si > payoff->strike()) || !std::isfinite(Si))
+                Si = Su;
             break;
           case Option::Put:
             qu = (-(n-1.0) - std::sqrt(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
@@ -71,8 +76,11 @@ namespace QuantLib {
                 (payoff->strike() - Su);
             Si = Su + (payoff->strike() - Su) * std::exp(h);
             // for a vanishing variance h diverges and the seed overflows; Su is
-            // its finite limit (the critical price tends to the strike)
-            if (!(Si > 0.0) || !std::isfinite(Si))
+            // its finite limit (the critical price tends to the strike). When
+            // the carry outweighs 2*sqrt(variance), h is positive and the seed
+            // can also end up above the strike, where the critical price of a
+            // put can't be; Su is between zero and the strike
+            if (!(Si > 0.0 && Si < payoff->strike()) || !std::isfinite(Si))
                 Si = Su;
             break;
           default:

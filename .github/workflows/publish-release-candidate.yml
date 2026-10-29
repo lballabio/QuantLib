@@ -35,8 +35,18 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
+        echo "This is a release candidate.  Please try it out and report any issues here on GitHub." >> tarballs/notes.txt
+        echo "" >> tarballs/notes.txt
+        echo "Downloads:" >> tarballs/notes.txt
+        echo "==========" >> tarballs/notes.txt
+        echo "" >> tarballs/notes.txt
+        echo "- [QuantLib-${VERSION_NUMBER}-rc.tar.gz](https://github.com/lballabio/QuantLib/releases/download/v${VERSION_NUMBER}-rc/QuantLib-${VERSION_NUMBER}-rc.tar.gz)" >> tarballs/notes.txt
+        echo "- [QuantLib-${VERSION_NUMBER}-rc.zip](https://github.com/lballabio/QuantLib/releases/download/v${VERSION_NUMBER}-rc/QuantLib-${VERSION_NUMBER}-rc.zip)" >> tarballs/notes.txt
+        echo "" >> tarballs/notes.txt
+
         gh release create ${{ github.ref_name }} \
             --title "${VERSION_NUMBER} release candidate" \
             --prerelease \
-            --notes "This is a release candidate.  Please try it out and report any issues here on GitHub." --generate-notes \
+            --notes-file tarballs/notes.txt \
+            --generate-notes \
             tarballs/*.tar.gz tarballs/*.zip

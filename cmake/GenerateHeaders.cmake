@@ -51,15 +51,11 @@ function(generate_dir_headers source_dir binary_dir)
     list(FILTER children_hpp EXCLUDE REGEX "pde.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "pdebsm.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "bsmoperator.hpp")
+    list(FILTER children_hpp EXCLUDE REGEX "bootstraperror.hpp")
 
     if (${source_dir} MATCHES "experimental" AND ${source_dir} MATCHES "exoticoptions")
         list(FILTER children_hpp EXCLUDE REGEX "kirkspreadoptionengine.hpp")
         list(FILTER children_hpp EXCLUDE REGEX "spreadoption.hpp")
-    endif ()
-
-    if (${source_dir} MATCHES "experimental" AND ${source_dir} MATCHES "fx")
-        list(FILTER children_hpp EXCLUDE REGEX "blackdeltacalculator.hpp")
-        list(FILTER children_hpp EXCLUDE REGEX "deltavolquote.hpp")
     endif ()
 
     if (${source_dir} MATCHES "experimental" AND ${source_dir} MATCHES "volatility")

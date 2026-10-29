@@ -296,6 +296,7 @@ class TestInterpNew {
 };
 
 BOOST_AUTO_TEST_CASE(testInterpolateWithoutUpdate) {
+    BOOST_TEST_MESSAGE("Testing interpolation without update...");
     std::vector<Real> x, y;
     x = xRange(-2.0, 2.0, 4);
     y = parabolic(x);
@@ -1053,6 +1054,28 @@ BOOST_AUTO_TEST_CASE(testFritschButland) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testKrugerZeroSlope) {
+
+    BOOST_TEST_MESSAGE("Testing Kruger interpolation next to zero slopes...");
+
+    // a flat segment, and a -0 slope next to a +0 one
+    const Real x[5] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+    const Real y[][5] = {{ 1.0, 1.0, 1.0, 2.0, 3.0 },
+                         { 0.0, -0.0, 0.0, 1.0, 2.0 }};
+
+    for (const auto& yi : y) {
+        Interpolation f = KrugerCubic(std::begin(x), std::end(x), std::begin(yi));
+        for (Size k=0; k<=40; ++k) {
+            Real xk = k*0.1;
+            if (std::isnan(f(xk)) || std::isnan(f.derivative(xk)))
+                BOOST_ERROR("NaN detected at x = " << xk);
+        }
+        if (f.derivative(1.0) != 0.0)
+            BOOST_ERROR("nonzero derivative " << f.derivative(1.0)
+                        << " at a zero slope");
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testAkimaWithFewPoints) {
 
     BOOST_TEST_MESSAGE("Testing Akima interpolation with few points...");
@@ -1075,6 +1098,49 @@ BOOST_AUTO_TEST_CASE(testAkimaWithFewPoints) {
     AkimaCubicInterpolation f(std::begin(x4), std::end(x4), std::begin(y4));
     for (Size i=0; i<4; ++i)
         QL_CHECK_CLOSE(f(x4[i]), y4[i], 1.0e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testNotAKnotWithFewPoints) {
+
+    BOOST_TEST_MESSAGE("Testing not-a-knot spline with few points...");
+
+    typedef CubicInterpolation CI;
+
+    // The not-a-knot conditions read dx_[1], S_[1] and dx_[n-3]; with two
+    // points dx_ and S_ have size one and these indices are out of bounds.
+    // Construction must fail cleanly rather than read past the end.
+    const Real x2[2] = { 1.0, 2.0 };
+    const Real y2[2] = { 1.0, 3.0 };
+    BOOST_CHECK_EXCEPTION(
+        CI(std::begin(x2), std::end(x2), std::begin(y2), CI::Spline, false,
+           CI::SecondDerivative, 0.0, CI::NotAKnot, Null<Real>()),
+        QuantLib::Error,
+        ExpectedErrorMessage(
+            "not-a-knot boundary condition requires at least 3 points"));
+
+    // With three points, not-a-knot at both ends gives a singular system.
+    const Real x3[3] = { 0.0, 1.0, 2.0 };
+    const Real y3[3] = { 1.0, 2.0, 0.5 };
+    BOOST_CHECK_EXCEPTION(
+        CI(std::begin(x3), std::end(x3), std::begin(y3), CI::Spline, false,
+           CI::NotAKnot, Null<Real>(), CI::NotAKnot, Null<Real>()),
+        QuantLib::Error,
+        ExpectedErrorMessage(
+            "not-a-knot boundary condition requires at least 4 points"));
+
+    // Three points are enough for not-a-knot at one end only...
+    CI f(std::begin(x3), std::end(x3), std::begin(y3), CI::Spline, false,
+         CI::NotAKnot, Null<Real>(), CI::SecondDerivative, 0.0);
+    for (Size i=0; i<3; ++i)
+        QL_CHECK_CLOSE(f(x3[i]), y3[i], 1.0e-12);
+
+    // ...and four for not-a-knot at both ends.
+    const Real x4[4] = { 0.0, 1.0, 2.0, 3.0 };
+    const Real y4[4] = { 1.0, 2.0, 0.5, 1.5 };
+    CI g(std::begin(x4), std::end(x4), std::begin(y4), CI::Spline, false,
+         CI::NotAKnot, Null<Real>(), CI::NotAKnot, Null<Real>());
+    for (Size i=0; i<4; ++i)
+        QL_CHECK_CLOSE(g(x4[i]), y4[i], 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testBackwardFlat) {
@@ -1311,6 +1377,7 @@ BOOST_AUTO_TEST_CASE(testForwardFlat) {
 }
 
 BOOST_AUTO_TEST_CASE(testMixedLinearCubicMatchDerivatives) {
+    BOOST_TEST_MESSAGE("Testing derivative matching of mixed linear-cubic interpolation...");
     Size n = 6;
     Size k = 2;
 

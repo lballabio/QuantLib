@@ -35,7 +35,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
         // Each point is 2 doubles = 16 bytes, so the fuzzer controls both
         // the number of points and their values.
         auto numPoints = fdp.ConsumeIntegralInRange<size_t>(3, 50);
-        auto interpType = fdp.ConsumeIntegralInRange<int>(0, 5);
+        auto interpType = fdp.ConsumeIntegralInRange<int>(0, 17);
 
         std::vector<Real> x(numPoints), y(numPoints);
 
@@ -54,8 +54,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
         for (size_t i = 0; i < numPoints; ++i)
             y[i] = fdp.ConsumeFloatingPointInRange<Real>(-1e6, 1e6);
 
-        // For log interpolation, y must be positive
-        if (interpType == 1) {
+        // For log interpolation (and log-cubic variants), y must be positive
+        if (interpType == 1 || interpType == 15 || interpType == 16 ||
+            interpType == 17) {
             for (size_t i = 0; i < numPoints; ++i)
                 y[i] = std::abs(y[i]) + 0.001;
         }
@@ -87,6 +88,54 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
             interp = ext::make_shared<LagrangeInterpolation>(
                 x.begin(), x.end(), y.begin());
             break;
+        case 6:
+            interp = ext::make_shared<MonotonicCubicNaturalSpline>(
+                x.begin(), x.end(), y.begin());
+            break;
+        case 7:
+            interp = ext::make_shared<CubicSplineOvershootingMinimization1>(
+                x.begin(), x.end(), y.begin());
+            break;
+        case 8:
+            interp = ext::make_shared<CubicSplineOvershootingMinimization2>(
+                x.begin(), x.end(), y.begin());
+            break;
+        case 9:
+            interp = ext::make_shared<AkimaCubicInterpolation>(
+                x.begin(), x.end(), y.begin());
+            break;
+        case 10:
+            interp = ext::make_shared<KrugerCubic>(
+                x.begin(), x.end(), y.begin());
+            break;
+        case 11:
+            interp = ext::make_shared<HarmonicCubic>(
+                x.begin(), x.end(), y.begin());
+            break;
+        case 12:
+            interp = ext::make_shared<FritschButlandCubic>(
+                x.begin(), x.end(), y.begin());
+            break;
+        case 13:
+            interp = ext::make_shared<Parabolic>(
+                x.begin(), x.end(), y.begin());
+            break;
+        case 14:
+            interp = ext::make_shared<MonotonicParabolic>(
+                x.begin(), x.end(), y.begin());
+            break;
+        case 15:
+            interp = ext::make_shared<LogCubicNaturalSpline>(
+                x.begin(), x.end(), y.begin());
+            break;
+        case 16:
+            interp = ext::make_shared<MonotonicLogCubicNaturalSpline>(
+                x.begin(), x.end(), y.begin());
+            break;
+        case 17:
+            interp = ext::make_shared<KrugerLogCubic>(
+                x.begin(), x.end(), y.begin());
+            break;
         }
 
         interp->enableExtrapolation();
@@ -97,8 +146,10 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
             Real xq = fdp.ConsumeFloatingPointInRange<Real>(
                 x.front() - 10.0, x.back() + 10.0);
             (void)(*interp)(xq);
-            // Exercise derivative computation where supported
-            if (interpType <= 2) {
+            // Exercise derivative computation where supported (all the
+            // cubic and log-cubic variants implement the full interface)
+            if (interpType <= 2 ||
+                (interpType >= 6 && interpType <= 17)) {
                 (void)interp->derivative(xq);
                 (void)interp->secondDerivative(xq);
             }

@@ -124,12 +124,12 @@ BOOST_AUTO_TEST_CASE(testCumulativeGammaDistribution) {
     CumulativeGammaDistribution exponential(1.0);
     BOOST_CHECK_EQUAL(exponential(-1.0), 0.0);
     BOOST_CHECK_EQUAL(exponential(0.0), 0.0);
-    BOOST_CHECK_CLOSE(exponential(0.5), 1.0 - std::exp(-0.5), 1.0e-5);
-    BOOST_CHECK_CLOSE(exponential(2.0), 1.0 - std::exp(-2.0), 1.0e-5);
+    QL_CHECK_CLOSE(exponential(0.5), 1.0 - std::exp(-0.5), 1.0e-5);
+    QL_CHECK_CLOSE(exponential(2.0), 1.0 - std::exp(-2.0), 1.0e-5);
 
     CumulativeGammaDistribution shapeTwo(2.0);
-    BOOST_CHECK_CLOSE(shapeTwo(1.0), 1.0 - 2.0 * std::exp(-1.0), 1.0e-5);
-    BOOST_CHECK_CLOSE(shapeTwo(4.0), 1.0 - 5.0 * std::exp(-4.0), 1.0e-5);
+    QL_CHECK_CLOSE(shapeTwo(1.0), 1.0 - 2.0 * std::exp(-1.0), 1.0e-5);
+    QL_CHECK_CLOSE(shapeTwo(4.0), 1.0 - 5.0 * std::exp(-4.0), 1.0e-5);
 
     BOOST_CHECK_EXCEPTION(
         CumulativeGammaDistribution(0.0), Error,

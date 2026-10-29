@@ -43,9 +43,9 @@ namespace QuantLib {
         std::vector<Rate> prevSample(nRates);
         std::vector<Rate> sampleDiff(nRates);
 
-        Calendar cal = indexes[0]->fixingCalendar();
+        auto cal = indexes[0]->fixingCalendar();
         // start with a valid business date
-        Date currentDate = cal.advance(startDate, 1*Days, Following);
+        auto currentDate = cal.advance(startDate, 1*Days, Following);
         bool isFirst = true;
         // Loop over the historical dataset
         for (; currentDate<=endDate;

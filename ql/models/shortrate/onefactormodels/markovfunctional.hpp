@@ -509,8 +509,6 @@ namespace QuantLib {
 
         std::vector<Date> volstepdates_;
         mutable std::vector<Time> volsteptimes_;
-        mutable Array volsteptimesArray_; // FIXME this is redundant (just a copy of
-                                  // volsteptimes_)
         std::vector<Real> volatilities_;
 
         Date numeraireDate_;
