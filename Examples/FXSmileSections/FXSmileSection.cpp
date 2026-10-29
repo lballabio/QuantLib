@@ -350,7 +350,24 @@ int main(int, char*[]) {
         }
 
         // ------------------------------------------------------------------
-        //  7. Quadratic smile section (delta-parameterised, 3 params)
+        //  7. Cost smile section — flat dynamics with convex sticky delta
+        //
+        //     As the flat-dynamics model, but the smile moves with the
+        //     forward (sticky delta).  The cost equation then involves the
+        //     smile's slope and is solved as an ODE; the three cost ratios
+        //     are fitted to the five quotes by least squares.
+        // ------------------------------------------------------------------
+
+        {
+            FxCostSmileSectionStickyDeltaConvex ss(expiryDate, spot, smileQuotes, forDiscount,
+                                                   domDiscount, deltaType, atmType, dc, settlement,
+                                                   Date(), true);
+            printRow("Cost model — convex sticky delta", ss, mkt_atm, mkt_rr25, mkt_bf25, mkt_rr10,
+                     mkt_bf10);
+        }
+
+        // ------------------------------------------------------------------
+        //  8. Quadratic smile section (delta-parameterised, 3 params)
         //
         //     Implied vol is a quadratic function of put delta:
         //       sigma(delta) = a*delta^2 + b*delta + c
