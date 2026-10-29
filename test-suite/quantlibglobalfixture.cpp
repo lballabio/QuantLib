@@ -25,6 +25,7 @@
 #include <ql/version.hpp>
 #include <iostream>
 #include <iomanip>
+#include <cstdlib>
 
 using namespace boost::unit_test;
 
@@ -122,6 +123,12 @@ QuantLibGlobalFixture::QuantLibGlobalFixture() {
 }
 
 QuantLibGlobalFixture::~QuantLibGlobalFixture(){
+    // SOURCE_DATE_EPOCH is set by dpkg-buildpackage / the reproducible-builds
+    // infrastructure. The elapsed time is not deterministic, so skip the
+    // report to keep the packaged test-suite log bit-for-bit reproducible.
+    if (std::getenv("SOURCE_DATE_EPOCH") != nullptr)
+        return;
+
     stop = std::chrono::steady_clock::now();
 
     double seconds = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() * 1e-3;
