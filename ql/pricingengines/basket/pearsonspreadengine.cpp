@@ -70,9 +70,12 @@ namespace QuantLib {
             const Real f2z = f2 * std::exp(-0.5 * variance2 + sigma2 * z);
             const Real effectiveStrike = f2z + strike;
 
-            if (effectiveStrike <= 0.0)
+            if (effectiveStrike <= 0.0) {
+                if (optionType == Option::Put)
+                    return 0.0;
                 return phi(z) * std::max(0.0, f1 * std::exp(rho_ * sigma1 * z
                            - 0.5 * rho_ * rho_ * variance1) - effectiveStrike);
+            }
 
             const Real f1Cond = f1 * std::exp(rho_ * sigma1 * z
                                               - 0.5 * rho_ * rho_ * variance1);
