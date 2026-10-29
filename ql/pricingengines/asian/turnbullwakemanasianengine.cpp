@@ -122,8 +122,8 @@ void TurnbullWakemanAsianEngine::calculate() const {
 
     // Calculate value
     Real tn = times.back();
-    Real stdDev = tn > 0.0 ? sqrt(log(EA2 / (EA * EA))) : 0.0;
-    Real sigma = tn > 0.0 ? stdDev / sqrt(tn) : 0.0;
+    Real stdDev = tn > 0.0 ? Real(sqrt(log(EA2 / (EA * EA)))) : Real(0.0);
+    Real sigma = tn > 0.0 ? Real(stdDev / sqrt(tn)) : Real(0.0);
 
     // Populate results
     BlackCalculator black(payoff->optionType(), effectiveStrike, EA, stdDev, discount);
