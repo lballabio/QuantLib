@@ -63,6 +63,28 @@ namespace QuantLib {
         std::vector<FxVolEvent> events;
     };
 
+    //! How the P&L of a move in the forward is split between delta, gamma and vega
+    /*! The total is the same for all three; only the breakdown changes.
+
+        - Black: Black delta and gamma at the option's vol; the vol change
+          from the smile moving with the forward (sticky delta) is reported
+          as spot-smile vega and vanna.  Model independent.
+        - StickyDelta: delta and gamma include the smile moving with the
+          forward, \f$ \Delta + \nu \sigma_F \f$ and
+          \f$ \Gamma + 2 \mbox{vanna}\, \sigma_F + \mbox{volga}\, \sigma_F^2 + \nu \sigma_{FF} \f$,
+          with \f$ \sigma_F, \sigma_{FF} \f$ the derivatives of the option's
+          vol in the forward with the quotes held in delta.  The surface
+          gives these, whatever the smile model, so this is model
+          independent too.
+        - Bartlett: as StickyDelta, but the ATM vols also move with the
+          forward as the smile model expects
+          (FxSmileSection::atmVolForwardSensitivity()), so the delta
+          includes the correlation of vol and spot that a delta-hedged
+          book is hedged for, and the vega terms explain only the
+          unexpected vol move.  Model dependent.
+    */
+    enum class FxPnlExplainType { Black, StickyDelta, Bartlett };
+
     //! Day-on-day P&L explain of an FX vanilla option, in domestic currency
     /*! The change in value from one date to the next is split by moving
         through the states
@@ -88,15 +110,21 @@ namespace QuantLib {
           part not explained by the three (the smile re-anchored to the
           next date at unchanged quotes, and the fit of the fixed-expiry
           smile) is reported separately;
-        - delta and gamma: \f$ \Delta\, dF \f$ and \f$ \frac{1}{2} \Gamma\, dF^2 \f$;
-        - spot smile: vega and vanna of the vol change from moving the
-          spot and curves with the quotes held in delta (sticky delta);
+        - delta and gamma: \f$ \Delta\, dF \f$ and \f$ \frac{1}{2} \Gamma\, dF^2 \f$,
+          with Black or smile-adjusted greeks (see FxPnlExplainType);
+        - spot smile (Black type only): vega and vanna of the vol change
+          from moving the spot and curves with the quotes held in delta;
+          for the other types this move is in the delta and gamma, and
+          for the Bartlett type the ATM vols of this step also move by
+          their expected change given the forward's;
         - vega and vanna for each of the ATM, risk-reversal and butterfly
           steps: \f$ \nu\, d\sigma_k \f$ and
           \f$ \partial^2 V / \partial F \partial \sigma \, dF\, d\sigma_k \f$;
         - volga: \f$ \frac{1}{2} \partial^2 V / \partial \sigma^2 \, d\sigma^2 \f$
-          with \f$ d\sigma \f$ the change from the rolled to the next
-          market, so that the roll is excluded;
+          with \f$ d\sigma \f$ the change from the rolled market (Black
+          type), or from the market after the spot step (the other types,
+          whose gamma includes the volga of that step), to the next market,
+          so that the roll is excluded;
         - residual: the rest of the change in value.
 
         Values are present values at the spot date of each valuation date.
@@ -105,6 +133,7 @@ namespace QuantLib {
         from different dates can be combined.
     */
     struct FxPnlExplainResult {
+        FxPnlExplainType type;
         Real total, theta;
         Real volRollAtm, volRollRiskReversal, volRollButterfly, volRollOther;
         Real delta, gamma;
@@ -131,7 +160,8 @@ namespace QuantLib {
                                    const Date& expiry,
                                    Real notional,
                                    const FxVolMarket& today,
-                                   const FxVolMarket& next) const;
+                                   const FxVolMarket& next,
+                                   FxPnlExplainType explainType = FxPnlExplainType::Bartlett) const;
 
         //! \name Building blocks
         //@{
@@ -437,7 +467,8 @@ namespace QuantLib {
                                                   const Date& expiry,
                                                   Real notional,
                                                   const FxVolMarket& today,
-                                                  const FxVolMarket& next) const {
+                                                  const FxVolMarket& next,
+                                                  FxPnlExplainType explainType) const {
         QL_REQUIRE(next.date > today.date, "the next market must follow today's");
         QL_REQUIRE(expiry > next.date, "the option must expire after the next date");
 
@@ -446,18 +477,43 @@ namespace QuantLib {
         const FxVolMarket mN = smileStrangles(next);
         const FxVolMarket mR = rolled(today, next.date);
 
-        FxVolMarket mS = mR;  // rolled quotes, next spot and curves
-        mS.spot = mN.spot;
-        mS.foreignCurve = mN.foreignCurve;
-        mS.domesticCurve = mN.domesticCurve;
+        // the ATM vols' expected move per dF/F, by pillar, from today's smiles
+        const auto s0 = surface(m0);
+        std::vector<Real> atmSensitivities(tenors_.size(), 0.0);
+        if (explainType == FxPnlExplainType::Bartlett)
+            for (Size i = 0; i < tenors_.size(); ++i)
+                atmSensitivities[i] =
+                    s0->pillarSmileSections()[i]->atmVolForwardSensitivity();
+        // a market with spot (and curves) moved, and the ATMs by their
+        // expected change given each pillar's forward move
+        auto movedSpot = [&](FxVolMarket m, Real spot, const Handle<YieldTermStructure>& fCurve,
+                             const Handle<YieldTermStructure>& dCurve) {
+            const FxVolMarket before = m;
+            m.spot = spot;
+            m.foreignCurve = fCurve;
+            m.domesticCurve = dCurve;
+            const std::vector<Date> dates = pillars(m.date);
+            for (Size i = 0; i < dates.size(); ++i) {
+                if (atmSensitivities[i] == 0.0)
+                    continue;
+                const auto [f1, d1] = discounts(before, dates[i]);
+                const auto [f2, d2] = discounts(m, dates[i]);
+                const Real r = (m.spot * f2 / d2) / (before.spot * f1 / d1) - 1.0;
+                m.atms[i] += atmSensitivities[i] * r;
+            }
+            return m;
+        };
+
+        // rolled quotes, next spot and curves (and expected ATM moves)
+        const FxVolMarket mS = movedSpot(mR, mN.spot, mN.foreignCurve, mN.domesticCurve);
         FxVolMarket mA = mS;  // next ATMs and events
         mA.atms = mN.atms;
         mA.events = mN.events;
         FxVolMarket mRR = mA;  // next risk reversals
         mRR.riskReversals = mN.riskReversals;
 
-        const auto s0 = surface(m0), sR = surface(mR), sS = surface(mS), sA = surface(mA),
-                   sRR = surface(mRR), sN = surface(mN);
+        const auto sR = surface(mR), sS = surface(mS), sA = surface(mA), sRR = surface(mRR),
+                   sN = surface(mN);
         auto vol = [&](const Surface<Section>& s) { return s.blackVol(expiry, strike, true); };
         const Volatility vol0 = vol(*s0), volR = vol(*sR), volS = vol(*sS), volA = vol(*sA),
                          volRR = vol(*sRR), volN = vol(*sN);
@@ -490,6 +546,22 @@ namespace QuantLib {
         const Real vanna = -scale * phi(d1) * d2 / vol0;
         const Real volga = vega * d1 * d2 / vol0;
 
+        // smile-adjusted delta and gamma: the option's vol along the moves
+        // of today's forward, by central differences in the forward
+        Real deltaAdjusted = delta, gammaAdjusted = gamma;
+        if (explainType != FxPnlExplainType::Black) {
+            const Real h = 1.0e-3;
+            auto volAtSpot = [&](Real spot) {
+                return vol(*surface(movedSpot(m0, spot, m0.foreignCurve, m0.domesticCurve)));
+            };
+            const Volatility up = volAtSpot(m0.spot * (1.0 + h));
+            const Volatility down = volAtSpot(m0.spot * (1.0 - h));
+            const Real volF = (up - down) / (2.0 * h * f0);
+            const Real volFF = (up - 2.0 * vol0 + down) / (h * f0 * h * f0);
+            deltaAdjusted = delta + vega * volF;
+            gammaAdjusted = gamma + 2.0 * vanna * volF + volga * volF * volF + vega * volFF;
+        }
+
         // split of the roll on the option's fixed-expiry smile, re-anchored
         // to the next date at the rolled spot
         Volatility atm0, atmR;
@@ -505,6 +577,7 @@ namespace QuantLib {
         const Real v0 = value(m0, vol0), vN = value(mN, volN);
 
         FxPnlExplainResult r{};
+        r.type = explainType;
         r.forwardToday = f0;
         r.forwardRolled = forward(mR);
         r.forwardNext = forward(mN);
@@ -519,17 +592,21 @@ namespace QuantLib {
         r.volRollButterfly = vega * (rollBf - rollRr);
         r.volRollOther = vega * (volR - vol0) - r.volRollAtm - r.volRollRiskReversal -
                          r.volRollButterfly;
-        r.delta = delta * dF;
-        r.gamma = 0.5 * gamma * dF * dF;
-        r.spotSmileVega = vega * (volS - volR);
-        r.spotSmileVanna = vanna * dF * (volS - volR);
+        r.delta = deltaAdjusted * dF;
+        r.gamma = 0.5 * gammaAdjusted * dF * dF;
+        if (explainType == FxPnlExplainType::Black) {
+            r.spotSmileVega = vega * (volS - volR);
+            r.spotSmileVanna = vanna * dF * (volS - volR);
+        }
         r.vegaAtm = vega * (volA - volS);
         r.vegaRiskReversal = vega * (volRR - volA);
         r.vegaButterfly = vega * (volN - volRR);
         r.vannaAtm = vanna * dF * (volA - volS);
         r.vannaRiskReversal = vanna * dF * (volRR - volA);
         r.vannaButterfly = vanna * dF * (volN - volRR);
-        r.volga = 0.5 * volga * (volN - volR) * (volN - volR);
+        // the smile-adjusted gamma contains the volga of the spot step
+        const Volatility volgaStart = explainType == FxPnlExplainType::Black ? volR : volS;
+        r.volga = 0.5 * volga * (volN - volgaStart) * (volN - volgaStart);
         r.residual = r.total - (r.theta + r.volRollAtm + r.volRollRiskReversal +
                                 r.volRollButterfly + r.volRollOther + r.delta + r.gamma +
                                 r.spotSmileVega + r.spotSmileVanna + r.vegaAtm +

@@ -127,8 +127,10 @@ namespace QuantLib {
         cubic Hermite interpolant of the node values and their exact
         slopes, so it is \f$ C^1 \f$.
 
-        If the quadratic has no real root the smile cannot be continued;
-        the side is then cut at the last node, and beyond the integrated
+        If the quadratic has no real root, the integration fails, or the
+        total variance slope \f$ |\partial w^2 / \partial x| = 2 w |\beta| \f$
+        exceeds Lee's moment bound of 2, the smile is not continued: the
+        side is then cut at the last node, and beyond the integrated
         range the total vol is extrapolated linearly with the slope at the
         last node.
 

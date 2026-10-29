@@ -232,7 +232,9 @@ namespace QuantLib {
             if (!std::isfinite(wn) || wn <= 0.0)
                 break;
             const Real bn = quadraticRoot(xn, wn, betaRef);
-            if (!std::isfinite(bn))
+            // beyond Lee's moment bound, |dw^2/dx| = 2 w |beta| <= 2, the wing is
+            // arbitrageable; typically the root followed is running away near d+ = 0
+            if (!std::isfinite(bn) || wn * std::fabs(bn) > 1.0)
                 break;
 
             x.push_back(xn);

@@ -518,6 +518,38 @@ BOOST_AUTO_TEST_CASE(testStickyDeltaConvexSmileSolver) {
                       Error);
 }
 
+BOOST_AUTO_TEST_CASE(testCostSmileSectionStickyDeltaConvexSteepSkew) {
+    BOOST_TEST_MESSAGE("Testing the convex sticky-delta smile on a steep USDJPY skew...");
+
+    // 3M USDJPY, premium-adjusted spot deltas and delta-neutral ATM, with
+    // smile strangles.  During the fit some trial costs make the first-order
+    // smile, the convex solver's initial guess, run away in the far wing:
+    // it must stop there (Lee's bound) rather than fail the calibration.
+    const Real spot = 163.79, T = 0.2520, dDom = 0.997915, dFor = 0.99030043;
+    const Date today(2, January, 2024);
+    Settings::instance().evaluationDate() = today;
+    auto curve = [&](DiscountFactor df) {
+        return Handle<YieldTermStructure>(
+            ext::make_shared<FlatForward>(today, -std::log(df) / T, Actual365Fixed()));
+    };
+    const auto quotes = ext::make_shared<FxRrBfQuotes>(
+        makeQuoteHandle(0.071502),
+        std::vector<Handle<Quote>>{makeQuoteHandle(-0.0099275), makeQuoteHandle(-0.017795)},
+        std::vector<Handle<Quote>>{makeQuoteHandle(0.003033), makeQuoteHandle(0.010705)},
+        std::vector<Real>{0.25, 0.10}, FxRrBfQuotes::SmileStrangle);
+
+    FxCostSmileSectionStickyDeltaConvex ss(T, makeQuoteHandle(spot), quotes, curve(dFor),
+                                           curve(dDom), DeltaVolQuote::PaSpot,
+                                           DeltaVolQuote::AtmDeltaNeutral, Actual365Fixed());
+    // the costs found by the independent Python implementation, to its 5 decimals
+    const std::vector<Real>& c = ss.costs();
+    BOOST_CHECK_CLOSE(c[1], -15.89236, 1.0e-3);
+    BOOST_CHECK_CLOSE(c[2], -0.16845, 5.0e-3);
+    BOOST_CHECK_CLOSE(c[3], 0.38631, 5.0e-3);
+    // 3 cost ratios for 5 quotes: a regression limit a little above the fit
+    BOOST_CHECK_LT(ss.calibrationError(), 6.0e-4);
+}
+
 BOOST_AUTO_TEST_CASE(testCostSmileSectionStickyDeltaConvex) {
     BOOST_TEST_MESSAGE(
         "Testing FX cost smile section (sticky delta with convexity) calibration...");
@@ -552,6 +584,46 @@ BOOST_AUTO_TEST_CASE(testCostSmileSectionStickyDeltaConvex) {
             BOOST_CHECK_EQUAL(flat.convexity(K), 0.0);
         }
     }
+}
+
+
+BOOST_AUTO_TEST_CASE(testAtmVolForwardSensitivity) {
+    BOOST_TEST_MESSAGE(
+        "Testing the ATM vol move expected from a forward move in FX smile models...");
+
+    MarketData md;
+
+    // cost models: the regression of the vol shock on the forward move
+    FxCostSmileSectionFlatDynamics flat(md.expiryDate, md.spot, md.rrBfQuotes(), md.forDiscount,
+                                        md.domDiscount, md.deltaType, md.atmType,
+                                        Actual365Fixed(), md.settlement, Date(), true);
+    FxCostSmileSectionScaledDynamics scaled(md.expiryDate, md.spot, md.rrBfQuotes(),
+                                            md.forDiscount, md.domDiscount, md.deltaType,
+                                            md.atmType, Actual365Fixed(), md.settlement, Date(),
+                                            true);
+    const Real sqrtTau = std::sqrt(flat.exerciseTime());
+    BOOST_CHECK_CLOSE(flat.atmVolForwardSensitivity(),
+                      flat.costs()[2] / flat.costs()[0] / sqrtTau, 1.0e-12);
+    BOOST_CHECK_CLOSE(scaled.atmVolForwardSensitivity(),
+                      scaled.costs()[2] / scaled.costs()[0] * scaled.atmVol(), 1.0e-12);
+
+    // SABR: alpha moves by rho nu per unit dF/F, and the ATM vol by that
+    // times its sensitivity to alpha; at the forward, for beta = 1 (Hagan),
+    // sigma = alpha [1 + (rho nu alpha / 4 + (2 - 3 rho^2) nu^2 / 24) T]
+    FxSabrSmileSection sabr(md.expiryDate, md.spot, md.rrBfQuotes(), md.forDiscount,
+                            md.domDiscount, md.deltaType, md.atmType, Actual365Fixed(),
+                            md.settlement);
+    const Real alpha = sabr.alpha(), nu = sabr.nu(), rho = sabr.rho(), T = sabr.exerciseTime();
+    const Real dVolDAlpha =
+        1.0 + (rho * nu * alpha / 2.0 + (2.0 - 3.0 * rho * rho) * nu * nu / 24.0) * T;
+    // the ATM strike is near, not at, the forward
+    BOOST_CHECK_CLOSE(sabr.atmVolForwardSensitivity(), rho * nu * dVolDAlpha, 0.5);
+
+    // models without dynamics expect no move
+    FxPolynomialSmileSection polynomial(md.expiryDate, md.spot, md.rrBfQuotes(), md.forDiscount,
+                                        md.domDiscount, md.deltaType, md.atmType,
+                                        Actual365Fixed(), md.settlement);
+    BOOST_CHECK_EQUAL(polynomial.atmVolForwardSensitivity(), 0.0);
 }
 
 

@@ -314,6 +314,14 @@ namespace QuantLib {
     }
 
 
+    Real FxCostSmileSection::atmVolForwardSensitivity() const {
+        calculate();
+        const Real sqrtTau = std::sqrt(exerciseTime());
+        const Real atmTotalVol = atmVol() * sqrtTau;
+        return params_[2] / params_[0] * std::pow(atmTotalVol, alpha_) / sqrtTau;
+    }
+
+
     // -----------------------------------------------------------------------
     //  fxCostSmileSection — Newton-Raphson vol by strike (general alpha)
     // -----------------------------------------------------------------------

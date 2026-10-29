@@ -219,6 +219,19 @@ namespace QuantLib {
         params_ = {std::exp(x[0]), std::exp(x[1]), std::tanh(x[2])};
     }
 
+    Real FxSabrSmileSection::atmVolForwardSensitivity() const {
+        calculate();
+        // ATM vol at the ATM strike, alpha bumped by rho nu per unit dF/F
+        const Real k = atmStrike(), tau = exerciseTime();
+        const Real dAlpha = 1.0e-5 * params_[0];
+        std::vector<Real> up = params_, down = params_;
+        up[0] += dAlpha;
+        down[0] -= dAlpha;
+        const Real dVolDAlpha = (volByStrikeImpl(k, fwd_, tau, up) -
+                                 volByStrikeImpl(k, fwd_, tau, down)) / (2.0 * dAlpha);
+        return params_[2] * params_[1] * dVolDAlpha;
+    }
+
     Volatility FxSabrSmileSection::volByStrikeImpl(Rate strike,
                                                    Real fwd,
                                                    Time tau,
