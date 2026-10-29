@@ -1189,8 +1189,8 @@ BOOST_AUTO_TEST_CASE(testFlatPayoffExtrapolationUsesLastGridPoint) {
         0.0, 0.0, 0.0, 0.0, p.front(), z.front(), -100.0, z.front());
     expectedPrice *= model->numeraire(0.0);
 
-    BOOST_CHECK_SMALL(outputs.modelCallPremium_.front().front() - expectedPrice,
-                      1e-12);
+    QL_CHECK_SMALL(outputs.modelCallPremium_.front().front() - expectedPrice,
+                   1e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testVanillaEngines) {
