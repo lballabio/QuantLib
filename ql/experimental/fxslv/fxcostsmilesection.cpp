@@ -549,11 +549,15 @@ namespace QuantLib {
                          dayCounter, weightedCalibrationFlag) {}
 
 
-    ext::shared_ptr<const FxStickyDeltaSmileSolver>
-    FxCostSmileSectionStickyDelta::makeSolver(const std::vector<Real>& costs, Time tau) const {
+    Real FxCostSmileSectionStickyDelta::solvedRange(Time tau) const {
         // the range depends on the quotes only, so the smile does not depend
         // on a previous calibration
-        const Real range = smileRange * referenceVol() * std::sqrt(tau);
+        return smileRange * referenceVol() * std::sqrt(tau);
+    }
+
+    ext::shared_ptr<const FxStickyDeltaSmile>
+    FxCostSmileSectionStickyDelta::makeSolver(const std::vector<Real>& costs, Time tau) const {
+        const Real range = solvedRange(tau);
         return ext::make_shared<const FxStickyDeltaSmileSolver>(costs, premiumAdjust(), -range,
                                                                 range);
     }
@@ -683,8 +687,55 @@ namespace QuantLib {
         return solver_->slope(std::log(fwd_ / strike));
     }
 
+    Real FxCostSmileSectionStickyDelta::convexity(Rate strike) const {
+        calculate();
+        return solver_->convexity(std::log(fwd_ / strike));
+    }
+
     Real FxCostSmileSectionStickyDelta::volDerivative(Rate strike) const {
         // sigma = w(x) / sqrt(T) with x = ln(F/K), so dsigma/dK = beta / (K sqrt(T))
         return slope(strike) / (strike * std::sqrt(exerciseTime()));
+    }
+
+
+    // -----------------------------------------------------------------------
+    //  FxCostSmileSectionStickyDeltaConvex
+    // -----------------------------------------------------------------------
+
+    FxCostSmileSectionStickyDeltaConvex::FxCostSmileSectionStickyDeltaConvex(
+        const Date& exerciseDate,
+        const Handle<Quote>& spot,
+        const ext::shared_ptr<FxSmileQuotes>& quotes,
+        const Handle<YieldTermStructure>& foreignDiscount,
+        const Handle<YieldTermStructure>& domesticDiscount,
+        DeltaVolQuote::DeltaType deltaType,
+        DeltaVolQuote::AtmType atmType,
+        const DayCounter& dayCounter,
+        const FxSettleConvention& settlement,
+        const Date& referenceDate,
+        bool weightedCalibrationFlag)
+    : FxCostSmileSectionStickyDelta(exerciseDate, spot, quotes, foreignDiscount, domesticDiscount,
+                                    deltaType, atmType, dayCounter, settlement, referenceDate,
+                                    weightedCalibrationFlag) {}
+
+    FxCostSmileSectionStickyDeltaConvex::FxCostSmileSectionStickyDeltaConvex(
+        Time exerciseTime,
+        const Handle<Quote>& spot,
+        const ext::shared_ptr<FxSmileQuotes>& quotes,
+        const Handle<YieldTermStructure>& foreignDiscount,
+        const Handle<YieldTermStructure>& domesticDiscount,
+        DeltaVolQuote::DeltaType deltaType,
+        DeltaVolQuote::AtmType atmType,
+        const DayCounter& dayCounter,
+        bool weightedCalibrationFlag)
+    : FxCostSmileSectionStickyDelta(exerciseTime, spot, quotes, foreignDiscount, domesticDiscount,
+                                    deltaType, atmType, dayCounter, weightedCalibrationFlag) {}
+
+    ext::shared_ptr<const FxStickyDeltaSmile>
+    FxCostSmileSectionStickyDeltaConvex::makeSolver(const std::vector<Real>& costs,
+                                                    Time tau) const {
+        const Real range = solvedRange(tau);
+        return ext::make_shared<const FxStickyDeltaConvexSmileSolver>(costs, premiumAdjust(),
+                                                                      -range, range);
     }
 }

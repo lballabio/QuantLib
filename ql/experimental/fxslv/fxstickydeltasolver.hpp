@@ -18,7 +18,7 @@
 */
 
 /*! \file fxstickydeltasolver.hpp
-    \brief ODE solution of the sticky-delta cost equation for the total vol smile.
+    \brief ODE solutions of the sticky-delta cost equation for the total vol smile.
 */
 
 #ifndef quantlib_fx_sticky_delta_solver_hpp
@@ -28,6 +28,72 @@
 #include <vector>
 
 namespace QuantLib {
+
+    //! Total vol smile of the sticky-delta cost model
+    /*! The smile is a function of log-moneyness \f$ x = \ln(F/K) \f$ held
+        at nodes, with the total vol \f$ w = \sigma \sqrt{\tau} \f$ and its
+        slope \f$ \beta = \partial w / \partial \ln K = -w'(x) \f$ at each.
+        Between nodes the total vol is the cubic Hermite interpolant of the
+        node values and slopes, so it is \f$ C^1 \f$; beyond the nodes it is
+        extrapolated linearly with the slope at the last node.  The costs
+        are \f$ [C_\gamma, C_\theta, C_\eta, C_\omega] \f$, of which only
+        the ratios matter.
+
+        Derived classes solve the cost equation for the nodes in their
+        constructors, so smiles are immutable.
+    */
+    class FxStickyDeltaSmile {
+      public:
+        virtual ~FxStickyDeltaSmile() = default;
+
+        //! Total vol \f$ w = \sigma \sqrt{\tau} \f$ at log-moneyness \f$ x = \ln(F/K) \f$.
+        Real totalVol(Real x) const;
+        //! Slope \f$ \beta = \partial w / \partial \ln K \f$ at log-moneyness \f$ x \f$.
+        Real slope(Real x) const;
+        //! Convexity \f$ \kappa \f$ of the smile dynamics at log-moneyness \f$ x \f$
+        /*! The change in total vol at a fixed strike is
+            \f$ dw = d\tilde w - \beta\, dF/F + \kappa\, (dF/F)^2 \f$.
+        */
+        virtual Real convexity(Real x) const = 0;
+
+        const std::vector<Real>& costs() const { return costs_; }
+        //! Whether \c costs give this smile, i.e. are a positive multiple of costs().
+        /*! Ratios are compared to a relative tolerance of \f$ 10^{-12} \f$:
+            rescaling the costs changes them by a few ulps, and costs closer
+            than that give smiles far closer than the solvers' accuracy.
+        */
+        bool hasCosts(const std::vector<Real>& costs) const;
+        bool premiumAdjust() const { return premiumAdjust_; }
+
+        //! \name Solved range
+        /*! Beyond it the smile is extrapolated linearly. */
+        //@{
+        Real minLogMoneyness() const { return x_.front(); }
+        Real maxLogMoneyness() const { return x_.back(); }
+        //@}
+
+        //! The cost equation without convexity
+        /*! \f[
+                F = C_\gamma (1 + 2 d_- \beta + \beta^2 d_+ d_-) + 2 w C_\theta
+                    - 2 C_\eta (d_* + \beta d_+ d_-) + d_+ d_- C_\omega
+            \f]
+            with \f$ d_\pm = x / w \pm w / 2 \f$ and \f$ d_* = d_+ \f$ with
+            premium adjustment, \f$ d_- \f$ otherwise.
+        */
+        Real costEquation(Real x, Real w, Real beta) const;
+
+      protected:
+        FxStickyDeltaSmile(std::vector<Real> costs, bool premiumAdjust);
+        //! Sets the nodes, ascending in \f$ x \f$.
+        void setNodes(std::vector<Real> x, std::vector<Real> w, std::vector<Real> beta);
+
+        std::vector<Real> costs_;
+        bool premiumAdjust_;
+
+      private:
+        std::vector<Real> x_, w_, beta_;
+    };
+
 
     //! Smile calibration ODE solver for the sticky-delta cost model
     /*! With total vol \f$ w(x) \f$ at log-moneyness \f$ x = \ln(F/K) \f$
@@ -67,8 +133,9 @@ namespace QuantLib {
         last node.
 
         The solver is immutable: the smile is integrated in the constructor.
+        Its dynamics have no convexity.
     */
-    class FxStickyDeltaSmileSolver {
+    class FxStickyDeltaSmileSolver : public FxStickyDeltaSmile {
       public:
         /*! \param costs          \f$ [C_\gamma, C_\theta, C_\eta, C_\omega] \f$;
                                   only their ratios matter.
@@ -85,32 +152,13 @@ namespace QuantLib {
                                  Real stepFraction = 0.1,
                                  Real accuracy = 1.0e-8);
 
-        //! Total vol \f$ w = \sigma \sqrt{\tau} \f$ at log-moneyness \f$ x = \ln(F/K) \f$.
-        Real totalVol(Real x) const;
-        //! Slope \f$ \beta = \partial w / \partial \ln K \f$ at log-moneyness \f$ x \f$.
-        Real slope(Real x) const;
-
-        const std::vector<Real>& costs() const { return costs_; }
-        //! Whether \c costs give this smile, i.e. are a positive multiple of costs().
-        /*! Ratios are compared to a relative tolerance of \f$ 10^{-12} \f$:
-            rescaling the costs changes them by a few ulps, and costs closer
-            than that give smiles far closer than the integration accuracy.
-        */
-        bool hasCosts(const std::vector<Real>& costs) const;
-        bool premiumAdjust() const { return premiumAdjust_; }
+        Real convexity(Real) const override { return 0.0; }
 
         //! \name Singular point (\f$ d_- = 0 \f$)
         //@{
         Real singularLogMoneyness() const { return xs_; }
         Real singularTotalVol() const { return ws_; }
         Real singularSlope() const { return bs_; }
-        //@}
-
-        //! \name Integrated range
-        /*! Shorter than requested on a side where the smile could not be continued. */
-        //@{
-        Real minLogMoneyness() const { return x_.front(); }
-        Real maxLogMoneyness() const { return x_.back(); }
         //@}
 
         //! Root of the quadratic in \f$ \beta \f$ at \f$ (x, w) \f$ closest to \c betaRef.
@@ -123,11 +171,71 @@ namespace QuantLib {
         void integrate(Integer side, Real xEnd,
                        std::vector<Real>& x, std::vector<Real>& w, std::vector<Real>& beta) const;
 
-        std::vector<Real> costs_;
-        bool premiumAdjust_;
         Real h_, accuracy_;
         Real xs_, ws_, bs_;
-        std::vector<Real> x_, w_, beta_;  // nodes, ascending in x
+    };
+
+
+    //! Sticky-delta cost smile with the convexity of exact sticky moneyness
+    /*! If the smile is a fixed function of \f$ x = \ln(F/K) \f$, the change
+        in total vol at a fixed strike is, with \f$ r = dF/F \f$ and
+        \f$ \ln(1 + r) = r - r^2/2 \f$,
+        \f[
+            dw = d\tilde w - \beta r + \kappa r^2, \qquad \kappa = \frac{\beta + w''}{2},
+        \f]
+        so the convexity is given by the smile itself.  It only adds
+        \f$ 2 w \kappa \f$ to the \f$ C_\gamma \f$ term of the cost
+        equation, which then involves \f$ w'' \f$:
+        \f[
+            w'' = -\frac{F(x, w, \beta)}{w C_\gamma} - \beta, \qquad \beta = -w',
+        \f]
+        with \f$ F \f$ the cost equation without convexity (see
+        costEquation()), and so \f$ \kappa = -F / (2 w C_\gamma) \f$.  There
+        is no singular point any more, but the coefficient of \f$ w'' \f$ is
+        small, of order \f$ w \f$, so the problem is singularly perturbed:
+        it has fast modes on a scale of order \f$ w \f$ that grow in one
+        direction and decay in the other.  Shooting from a point (or
+        iterating on \f$ \kappa \f$) is therefore unstable, and the smile is
+        found as a boundary value problem on \f$ [x_{min}, x_{max}] \f$ with
+        \f$ w'' = 0 \f$ at both ends, i.e. no convexity beyond the range.
+        The fast modes confine the effect of the end conditions to layers
+        of width of order \f$ w \f$ at the ends.
+
+        The equation is discretised on equally spaced nodes by central
+        differences and solved by Newton's method, whose Jacobian is
+        tridiagonal, starting from the smile without convexity
+        (FxStickyDeltaSmileSolver) on the same range.  The end conditions
+        use one-sided differences.  The solution is computed with \f$ n \f$
+        and \f$ 2n - 1 \f$ nodes and Richardson-extrapolated on the coarse
+        nodes, which makes it fourth-order accurate in the node spacing; the
+        slopes at the nodes are fourth-order differences of the result.
+    */
+    class FxStickyDeltaConvexSmileSolver : public FxStickyDeltaSmile {
+      public:
+        /*! \param costs          \f$ [C_\gamma, C_\theta, C_\eta, C_\omega] \f$;
+                                  only their ratios matter.
+            \param premiumAdjust  whether the costs refer to premium-adjusted deltas.
+            \param xMin, xMax     log-moneyness range of the boundary value problem.
+            \param nodes          number of coarse nodes, at least 5.
+            \param tolerance      Newton stops when no node moves by more than
+                                  this, relative to the largest total vol, or
+                                  when the steps stop shrinking at rounding
+                                  level (below \f$ 10^{-10} \f$ relative).
+        */
+        FxStickyDeltaConvexSmileSolver(std::vector<Real> costs,
+                                       bool premiumAdjust,
+                                       Real xMin,
+                                       Real xMax,
+                                       Size nodes = 401,
+                                       Real tolerance = 1.0e-13);
+
+        //! \f$ \kappa = -F / (2 w C_\gamma) \f$ within the range, \f$ \beta / 2 \f$ beyond it.
+        Real convexity(Real x) const override;
+
+      private:
+        // total vols at equally spaced nodes on [xMin, xMax] solving the
+        // discretised problem, from the given guess
+        std::vector<Real> solve(Real xMin, Real xMax, std::vector<Real> w, Real tolerance) const;
     };
 
 }
