@@ -24,8 +24,6 @@
 
 namespace QuantLib {
 
-    // TODO: add payer/receiver choice
-
     class MultiStepSwap : public MultiProductMultiStep {
       public:
         MultiStepSwap(const std::vector<Time>& rateTimes,
