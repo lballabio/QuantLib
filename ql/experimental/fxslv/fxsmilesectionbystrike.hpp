@@ -155,6 +155,13 @@ namespace QuantLib {
         Real nu() const { calculate(); return params_[1]; }
         Real rho() const { calculate(); return params_[2]; }
 
+        //! ATM vol move per \f$ dF/F \f$ from the correlation of \f$ \alpha \f$ and the forward
+        /*! With \f$ dF/F = \alpha\, dW_1 \f$ and \f$ d\alpha = \nu \alpha\, dW_2 \f$,
+            \f$ E[d\alpha \,|\, dF/F] = \rho \nu\, dF/F \f$: the ATM vol at the ATM
+            strike moves by \f$ \rho \nu\, \partial \sigma_{ATM} / \partial \alpha \f$.
+        */
+        Real atmVolForwardSensitivity() const override;
+
       private:
         //! \name FxSmileSectionByStrike interface
         //@{

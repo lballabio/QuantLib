@@ -1766,6 +1766,8 @@ BOOST_AUTO_TEST_CASE(testFxPnlExplain) {
     const Real notional = 1.0e6;
 
     const std::vector<Real> moneynesses = {0.97, 1.0, 1.03};
+    for (FxPnlExplainType explainType :
+         {FxPnlExplainType::Black, FxPnlExplainType::StickyDelta, FxPnlExplainType::Bartlett}) {
     std::vector<FxPnlExplainResult> calls;
     for (Option::Type type : {Option::Call, Option::Put}) {
         for (Size k = 0; k < moneynesses.size(); ++k) {
@@ -1774,7 +1776,8 @@ BOOST_AUTO_TEST_CASE(testFxPnlExplain) {
             // no market move: the next market is the rolled one, so only
             // theta and the roll are left, up to the roll's own second order
             const FxVolMarket rolled = explain.rolled(today, next);
-            const auto still = explain.explain(type, strike, expiry, notional, today, rolled);
+            const auto still =
+                explain.explain(type, strike, expiry, notional, today, rolled, explainType);
             printExplain("no move", still);
             // the residual is the roll's second order, excluded from the volga by design
             BOOST_CHECK_SMALL(still.residual, 0.01 * std::fabs(still.total));
@@ -1795,8 +1798,17 @@ BOOST_AUTO_TEST_CASE(testFxPnlExplain) {
                 }
             }
             moved.events = {{Date(17, January, 2024), 0.5, 2.5e-5}};
-            const auto r = explain.explain(type, strike, expiry, notional, today, moved);
+            const auto r =
+                explain.explain(type, strike, expiry, notional, today, moved, explainType);
             printExplain("moved", r);
+            // the breakdown depends on the type, the total does not
+            const auto black = explain.explain(type, strike, expiry, notional, today, moved,
+                                               FxPnlExplainType::Black);
+            BOOST_CHECK_CLOSE(r.total, black.total, 1.0e-10);
+            if (explainType != FxPnlExplainType::Black) {
+                BOOST_CHECK_EQUAL(r.spotSmileVega, 0.0);
+                BOOST_CHECK_EQUAL(r.spotSmileVanna, 0.0);
+            }
             BOOST_CHECK_CLOSE(explainedSum(r) + r.residual, r.total, 1.0e-10);
             BOOST_CHECK_CLOSE(r.forwardRolled, r.forwardToday, 1.0e-10);
             // the expansion explains the move up to a small residual
@@ -1816,6 +1828,45 @@ BOOST_AUTO_TEST_CASE(testFxPnlExplain) {
                 BOOST_CHECK_CLOSE(r.gamma, c.gamma, 1.0e-10);
             }
         }
+    }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testFxPnlExplainBartlettVega) {
+    BOOST_TEST_MESSAGE(
+        "Testing that the Bartlett P&L explain leaves only unexpected vol moves in vega...");
+
+    ExplainMarket data;
+    const Explain explain(data.tenors, data.conventions);
+    const FxVolMarket today = data.market();
+    const Date next(3, January, 2024);
+    const Date expiry = explain.pillars(today.date)[2] - 5;
+    const FxVolMarket rolled = explain.rolled(today, next);
+
+    // the next market's ATMs move exactly as today's smiles expect given
+    // each pillar's forward move; nothing else moves but the spot
+    const auto s0 = explain.surface(explain.smileStrangles(today));
+    FxVolMarket moved = rolled;
+    moved.spot = rolled.spot * 1.004;
+    for (Size i = 0; i < data.tenors.size(); ++i) {
+        const Real s = s0->pillarSmileSections()[i]->atmVolForwardSensitivity();
+        BOOST_CHECK(s != 0.0);
+        moved.atms[i] += s * 0.004;  // same curves, so every forward moves by the spot's 0.4%
+    }
+
+    for (Real moneyness : {0.97, 1.0, 1.03}) {
+        const Real strike = moneyness * 1.0850;
+        const auto bartlett = explain.explain(Option::Call, strike, expiry, 1.0e6, today, moved,
+                                              FxPnlExplainType::Bartlett);
+        const auto sticky = explain.explain(Option::Call, strike, expiry, 1.0e6, today, moved,
+                                            FxPnlExplainType::StickyDelta);
+        // the expected ATM move is in the Bartlett delta, not in its vega
+        // (zero up to rounding in the pillar forwards and the smile fits)
+        BOOST_CHECK_SMALL(bartlett.vegaAtm, 1.0e-8 * std::fabs(sticky.vegaAtm));
+        BOOST_CHECK_SMALL(bartlett.vannaAtm, 1.0e-8 * std::fabs(sticky.vegaAtm));
+        BOOST_CHECK_GT(std::fabs(sticky.vegaAtm), 1.0);
+        BOOST_CHECK_CLOSE(bartlett.total, sticky.total, 1.0e-10);
+        BOOST_CHECK_SMALL(bartlett.residual, 0.02 * std::fabs(bartlett.total));
     }
 }
 

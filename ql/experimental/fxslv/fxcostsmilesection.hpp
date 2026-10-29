@@ -98,6 +98,19 @@ namespace QuantLib {
 
         bool weightedCalibration() const { return weightedCalibrationFlag_; }
         Real alpha() const { return alpha_; }
+        //! Fitted costs \f$ [C_\gamma, C_\theta, C_\eta, C_\omega] \f$.
+        const std::vector<Real>& costs() const { calculate(); return params_; }
+
+        //! Regression of the total vol shock on the forward move
+        /*! With dynamics \f$ \Delta\rho = \rho^\alpha \Delta\tilde\rho \f$ the
+            costs give \f$ E[\Delta\tilde\rho \,|\, dF/F] = (C_\eta / C_\gamma)\, dF/F \f$,
+            so the ATM vol moves by
+            \f$ (C_\eta / C_\gamma)\, \rho_{ATM}^\alpha / \sqrt{\tau} \f$
+            per unit \f$ dF/F \f$.  With flat dynamics the move is parallel in
+            total vol, i.e. an ATM move with unchanged risk reversals and
+            butterflies.
+        */
+        Real atmVolForwardSensitivity() const override;
 
       private:
         //! \name FxSmileSection interface

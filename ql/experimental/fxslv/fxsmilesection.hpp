@@ -204,6 +204,15 @@ namespace QuantLib {
         */
         virtual Real volDerivative(Rate strike) const;
 
+        //! Expected change in the ATM vol per relative move \f$ dF/F \f$ in the forward
+        /*! The model's expectation of the ATM vol given a move in the
+            forward, beyond the move of the smile with the forward (sticky
+            delta): the correlation of vol and spot in the model's
+            dynamics, as in Bartlett's greeks.  Zero for models without
+            dynamics.
+        */
+        virtual Real atmVolForwardSensitivity() const { return 0.0; }
+
         //! \name Interpolation in probability space
         /*! Functions of the moneyness \f$ k = K/F \f$, used to
             interpolate smiles across expiries.  The inverse requires a

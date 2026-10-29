@@ -108,6 +108,10 @@ namespace QuantLib {
 
         // Introspection
         Handle<Quote> spot() const { return spot_; };
+        //! The calibrated smile sections at the pillars.
+        const std::vector<ext::shared_ptr<T>>& pillarSmileSections() const {
+            return smileSections_;
+        }
         const FxSettleConvention& settlement() const { return settlement_; }
         Handle<YieldTermStructure> domesticDiscountCurve() const { return domTs_; };
         Handle<YieldTermStructure> foreignDiscountCurve() const { return forTs_; };
