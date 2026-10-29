@@ -460,7 +460,6 @@ BOOST_AUTO_TEST_CASE(testDividendBetweenEvaluationAndSettlement) {
 
     // Build a simple zero-coupon convertible bond.
     Date maturityDate = calendar.advance(today, 2, Years);
-    Real faceAmount = 100.0;
     Real redemption = 100.0;
     Real conversionRatio = 1.0;
     Real spot = 50.0;
