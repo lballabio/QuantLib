@@ -68,7 +68,7 @@ Real ZabrModel::lognormalVolatility(const Real strike) const {
 }
 
 std::vector<Real> ZabrModel::lognormalVolatility(const std::vector<Real> &strikes) const {
-    std::vector<Real> x_ = x(strikes);
+    auto [x_, y_] = xAndY(strikes);
     std::vector<Real> result(strikes.size());
     std::transform(strikes.begin(), strikes.end(), x_.begin(), result.begin(),
                    [&](Real _k, Real _x) { return lognormalVolatilityHelper(_k, _x); });
@@ -87,16 +87,11 @@ Real ZabrModel::normalVolatility(const Real strike) const {
 }
 
 std::vector<Real> ZabrModel::normalVolatility(const std::vector<Real> &strikes) const {
-    std::vector<Real> x_ = x(strikes);
+    auto [x_, y_] = xAndY(strikes);
     std::vector<Real> result(strikes.size());
     std::transform(strikes.begin(), strikes.end(), x_.begin(), result.begin(),
                    [&](Real _k, Real _x) { return normalVolatilityHelper(_k, _x); });
     return result;
-}
-
-Real ZabrModel::localVolatilityHelper(const Real f, const Real x) const {
-    return alpha_ * std::pow(std::fabs(f), beta_) /
-           F(y(f), std::pow(alpha_, gamma_ - 1.0) * x);
 }
 
 Real ZabrModel::localVolatility(const Real f) const {

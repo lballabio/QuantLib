@@ -77,7 +77,6 @@ class ZabrModel {
 
     Real lognormalVolatilityHelper(Real strike, Real x) const;
     Real normalVolatilityHelper(Real strike, Real x) const;
-    Real localVolatilityHelper(Real f, Real x) const;
     // Returns x values and the intermediate y values computed during the ODE
     // integration, so callers can use both without a second pass over y().
     std::pair<std::vector<Real>, std::vector<Real>>
