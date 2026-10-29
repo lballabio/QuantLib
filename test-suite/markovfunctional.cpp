@@ -25,16 +25,18 @@
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
 #include <ql/models/shortrate/onefactormodels/markovfunctional.hpp>
-#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/gaussian1dcapfloorengine.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
 #include <ql/processes/mfstateprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
 #include <ql/termstructures/volatility/kahalesmilesection.hpp>
@@ -53,6 +55,8 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
+#include <cmath>
+#include <sstream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -889,6 +893,123 @@ BOOST_AUTO_TEST_CASE(testSmileSectionUtilsWShapedSmile) {
                     << idx.first << ", right index " << idx.second);
 }
 
+namespace {
+
+    class ValidationOnlySmileFactory : public MarkovFunctional::CustomSmileFactory {
+      public:
+        ext::shared_ptr<MarkovFunctional::CustomSmileSection>
+        smileSection(const ext::shared_ptr<SmileSection>&, Real) const override {
+            QL_FAIL("smile factory must not be called during settings validation");
+        }
+    };
+
+}
+
+BOOST_AUTO_TEST_CASE(testConflictingSmileSettings) {
+    BOOST_TEST_MESSAGE("Testing conflicting Markov functional smile settings...");
+    using ModelSettings = MarkovFunctional::ModelSettings;
+    auto factory = ext::make_shared<ValidationOnlySmileFactory>();
+    int conflicts[] = {ModelSettings::KahaleSmile | ModelSettings::SabrSmile,
+                       ModelSettings::KahaleSmile | ModelSettings::CustomSmile,
+                       ModelSettings::SabrSmile | ModelSettings::CustomSmile,
+                       ModelSettings::KahaleSmile | ModelSettings::SabrSmile |
+                           ModelSettings::CustomSmile,
+                       ModelSettings::KahaleInterpolation | ModelSettings::SabrSmile,
+                       ModelSettings::KahaleInterpolation | ModelSettings::CustomSmile};
+    for (int adjustments : conflicts) {
+        BOOST_TEST_CONTEXT("adjustments=" << adjustments) {
+            auto settings = ModelSettings()
+                                .withAdjustments(adjustments)
+                                .withCustomSmileFactory(factory);
+            BOOST_CHECK_EXCEPTION(
+                settings.validate(), Error,
+                ExpectedErrorMessage("At most one of KahaleSmile, SabrSmile and CustomSmile "
+                                     "can be specified at the same time"));
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSmileSettingsValidation) {
+    BOOST_TEST_MESSAGE("Testing Markov functional smile settings validation...");
+    using ModelSettings = MarkovFunctional::ModelSettings;
+    ModelSettings defaults;
+    BOOST_CHECK_NO_THROW(defaults.validate());
+
+    auto factory = ext::make_shared<ValidationOnlySmileFactory>();
+    int valid[] = {ModelSettings::AdjustNone,
+                   ModelSettings::KahaleSmile,
+                   ModelSettings::SabrSmile,
+                   ModelSettings::CustomSmile,
+                   ModelSettings::KahaleInterpolation,
+                   ModelSettings::KahaleSmile | ModelSettings::SmileDeleteArbitragePoints,
+                   ModelSettings::SabrSmile | ModelSettings::SmileExponentialExtrapolation,
+                   ModelSettings::AdjustDigitals | ModelSettings::AdjustYts |
+                       ModelSettings::ExtrapolatePayoffFlat | ModelSettings::NoPayoffExtrapolation};
+    for (int adjustments : valid) {
+        BOOST_TEST_CONTEXT("adjustments=" << adjustments) {
+            auto settings = ModelSettings()
+                                .withAdjustments(adjustments)
+                                .withCustomSmileFactory(factory);
+            BOOST_CHECK_NO_THROW(settings.validate());
+            if ((adjustments & ModelSettings::KahaleInterpolation) != 0)
+                BOOST_CHECK((settings.adjustments_ & ModelSettings::KahaleSmile) != 0);
+            if ((adjustments & ModelSettings::KahaleSmile) != 0 &&
+                (adjustments & ModelSettings::SmileDeleteArbitragePoints) != 0)
+                BOOST_CHECK((settings.adjustments_ & ModelSettings::KahaleInterpolation) != 0);
+        }
+    }
+
+    auto withoutFactory = ModelSettings().withAdjustments(ModelSettings::CustomSmile);
+    BOOST_CHECK_EXCEPTION(withoutFactory.validate(), Error,
+                          ExpectedErrorMessage("missing CustomSmile"));
+}
+
+BOOST_AUTO_TEST_CASE(testMinimumYGridPoints) {
+    BOOST_TEST_MESSAGE("Testing minimum Markov functional state-grid size...");
+    for (Size points : {0, 1}) {
+        auto settings = MarkovFunctional::ModelSettings().withYGridPoints(points);
+        BOOST_CHECK_EXCEPTION(settings.validate(), Error,
+                              ExpectedErrorMessage("At least two grid points"));
+    }
+    auto settings = MarkovFunctional::ModelSettings().withYGridPoints(2);
+    BOOST_CHECK_NO_THROW(settings.validate());
+}
+
+BOOST_AUTO_TEST_CASE(testNullSwapIndex) {
+    BOOST_TEST_MESSAGE("Testing Markov functional construction with a null swap index...");
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+    std::vector<Date> expiries = {TARGET().advance(referenceDate, 1 * Years)};
+    std::vector<Period> tenors = {1 * Years};
+    std::vector<Real> volatilities = {1.0};
+    BOOST_CHECK_EXCEPTION(
+        MarkovFunctional(flatYts(), 0.01, std::vector<Date>(), volatilities, flatSwaptionVts(),
+                         expiries, tenors, ext::shared_ptr<SwapIndex>()),
+        Error, ExpectedErrorMessage("null swap index"));
+
+    auto base = ext::make_shared<EuriborSwapIsdaFixA>(1 * Years);
+    auto withoutIbor = ext::make_shared<SwapIndex>(
+        "MissingIbor", base->tenor(), base->fixingDays(), base->currency(),
+        base->fixingCalendar(), base->fixedLegTenor(), base->fixedLegConvention(),
+        base->dayCounter(), ext::shared_ptr<IborIndex>());
+    BOOST_CHECK_EXCEPTION(
+        MarkovFunctional(flatYts(), 0.01, std::vector<Date>(), volatilities, flatSwaptionVts(),
+                         expiries, tenors, withoutIbor),
+        Error, ExpectedErrorMessage("null ibor index"));
+}
+
+BOOST_AUTO_TEST_CASE(testNullIborIndex) {
+    BOOST_TEST_MESSAGE("Testing Markov functional construction with a null Ibor index...");
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+    std::vector<Date> expiries = {TARGET().advance(referenceDate, 1 * Years)};
+    std::vector<Real> volatilities = {1.0};
+    BOOST_CHECK_EXCEPTION(
+        MarkovFunctional(flatYts(), 0.01, std::vector<Date>(), volatilities, flatOptionletVts(),
+                         expiries, ext::shared_ptr<IborIndex>()),
+        Error, ExpectedErrorMessage("null ibor index"));
+}
+
 BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet) {
     BOOST_TEST_MESSAGE(
         "Testing Markov functional calibration to one instrument set...");
@@ -1191,6 +1312,311 @@ BOOST_AUTO_TEST_CASE(testFlatPayoffExtrapolationUsesLastGridPoint) {
 
     QL_CHECK_SMALL(outputs.modelCallPremium_.front().front() - expectedPrice,
                    1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testTimeZeroNumeraireAfterDateChange) {
+    BOOST_TEST_MESSAGE("Testing the time-zero numeraire after evaluation-date changes...");
+    Date referenceDate(14, November, 2012);
+    for (bool useDiscountCurve : {false, true}) {
+        BOOST_TEST_CONTEXT("useDiscountCurve=" << useDiscountCurve) {
+            Settings::instance().evaluationDate() = referenceDate;
+            Handle<YieldTermStructure> curve = flatYts();
+            Handle<YieldTermStructure> discountCurve;
+            if (useDiscountCurve)
+                discountCurve = Handle<YieldTermStructure>(
+                    ext::make_shared<FlatForward>(0, TARGET(), 0.05, Actual365Fixed()));
+            Date expiry = TARGET().advance(referenceDate, 1 * Years);
+            auto model = ext::make_shared<MarkovFunctional>(
+                curve, 0.01, std::vector<Date>(), std::vector<Real>{1.0}, flatOptionletVts(),
+                std::vector<Date>{expiry}, ext::make_shared<Euribor>(6 * Months),
+                MarkovFunctional::ModelSettings()
+                    .withYGridPoints(8)
+                    .withGaussHermitePoints(8)
+                    .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone));
+            const Handle<YieldTermStructure>& expectedCurve =
+                useDiscountCurve ? discountCurve : curve;
+            Real initial = model->numeraire(0.0, 0.0, discountCurve);
+            BOOST_CHECK_SMALL(initial - expectedCurve->discount(model->numeraireDate(), true),
+                              1.0e-12);
+            for (Integer days : {1, 2}) {
+                BOOST_TEST_CONTEXT("days=" << days) {
+                    Settings::instance().evaluationDate() = referenceDate + days;
+                    Real actual = model->numeraire(0.0, 0.0, discountCurve);
+                    Real expected = expectedCurve->discount(model->numeraireDate(), true);
+                    BOOST_CHECK_SMALL(actual - expected, 1.0e-12);
+                    BOOST_CHECK_GT(actual, initial);
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testModelOutputsAfterRecalculation) {
+    BOOST_TEST_MESSAGE("Testing Markov functional model outputs after recalculation...");
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+    Date expiry = TARGET().advance(referenceDate, 1 * Years);
+    auto model = ext::make_shared<MarkovFunctional>(
+        flatYts(), 0.01, std::vector<Date>(), std::vector<Real>{1.0}, flatOptionletVts(),
+        std::vector<Date>{expiry}, ext::make_shared<Euribor>(6 * Months),
+        MarkovFunctional::ModelSettings()
+            .withYGridPoints(8)
+            .withGaussHermitePoints(8)
+            .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone));
+    const auto initial = model->modelOutputs();
+    BOOST_REQUIRE_EQUAL(initial.expiries_.size(), 1);
+    BOOST_REQUIRE_EQUAL(initial.atm_.size(), 1);
+    BOOST_REQUIRE_EQUAL(initial.annuity_.size(), 1);
+    for (Size iteration = 0; iteration < 2; ++iteration) {
+        BOOST_TEST_CONTEXT("recalculation=" << iteration + 1) {
+            model->recalculate();
+            const auto& outputs = model->modelOutputs();
+            BOOST_CHECK(!outputs.dirty_);
+            BOOST_CHECK_EQUAL(outputs.expiries_.size(), initial.expiries_.size());
+            BOOST_REQUIRE_EQUAL(outputs.atm_.size(), initial.atm_.size());
+            BOOST_REQUIRE_EQUAL(outputs.annuity_.size(), initial.annuity_.size());
+            BOOST_CHECK_SMALL(outputs.atm_.front() - initial.atm_.front(), 1.0e-12);
+            BOOST_CHECK_SMALL(outputs.annuity_.front() - initial.annuity_.front(), 1.0e-12);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testModelOutputsAfterMarketUpdate) {
+    BOOST_TEST_MESSAGE("Testing Markov functional model outputs after market updates...");
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+    auto rateQuote = ext::make_shared<SimpleQuote>(0.03);
+    Handle<YieldTermStructure> curve(ext::make_shared<FlatForward>(
+        referenceDate, Handle<Quote>(rateQuote), Actual365Fixed()));
+    Date expiry = TARGET().advance(referenceDate, 1 * Years);
+    auto index = ext::make_shared<Euribor>(6 * Months);
+    auto model = ext::make_shared<MarkovFunctional>(
+        curve, 0.01, std::vector<Date>(), std::vector<Real>{1.0}, flatOptionletVts(),
+        std::vector<Date>{expiry}, index,
+        MarkovFunctional::ModelSettings()
+            .withYGridPoints(8)
+            .withGaussHermitePoints(8)
+            .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone));
+    const auto initial = model->modelOutputs();
+    BOOST_REQUIRE_EQUAL(initial.marketZerorate_.size(), 1);
+    BOOST_CHECK_SMALL(initial.marketZerorate_.front() - 0.03, 1.0e-12);
+
+    for (Rate rate : {0.04, 0.02}) {
+        BOOST_TEST_CONTEXT("rate=" << rate) {
+            rateQuote->setValue(rate);
+            const auto outputs = model->modelOutputs();
+            BOOST_CHECK(!outputs.dirty_);
+            BOOST_REQUIRE_EQUAL(outputs.expiries_.size(), 1);
+            BOOST_REQUIRE_EQUAL(outputs.marketZerorate_.size(), 1);
+            BOOST_REQUIRE_EQUAL(outputs.atm_.size(), 1);
+            BOOST_REQUIRE_EQUAL(outputs.annuity_.size(), 1);
+            BOOST_CHECK_SMALL(outputs.marketZerorate_.front() - rate, 1.0e-12);
+            Real accrual = index->dayCounter().yearFraction(expiry, model->numeraireDate());
+            Real expectedAnnuity = accrual * curve->discount(model->numeraireDate());
+            Real expectedAtm = (curve->discount(expiry) -
+                                curve->discount(model->numeraireDate())) / expectedAnnuity;
+            BOOST_CHECK_SMALL(outputs.annuity_.front() - expectedAnnuity, 1.0e-12);
+            BOOST_CHECK_SMALL(outputs.atm_.front() - expectedAtm, 1.0e-12);
+
+            const auto& cached = model->modelOutputs();
+            BOOST_CHECK_EQUAL_COLLECTIONS(cached.marketZerorate_.begin(),
+                                          cached.marketZerorate_.end(),
+                                          outputs.marketZerorate_.begin(),
+                                          outputs.marketZerorate_.end());
+            BOOST_CHECK_EQUAL_COLLECTIONS(cached.atm_.begin(), cached.atm_.end(),
+                                          outputs.atm_.begin(), outputs.atm_.end());
+            BOOST_CHECK_EQUAL_COLLECTIONS(cached.annuity_.begin(), cached.annuity_.end(),
+                                          outputs.annuity_.begin(), outputs.annuity_.end());
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testModelOutputsTrace) {
+    BOOST_TEST_MESSAGE("Testing Markov functional model trace output...");
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+    Date expiry = TARGET().advance(referenceDate, 1 * Years);
+    auto model = ext::make_shared<MarkovFunctional>(
+        flatYts(), 0.01, std::vector<Date>(), std::vector<Real>{1.0}, flatOptionletVts(),
+        std::vector<Date>{expiry}, ext::make_shared<Euribor>(6 * Months),
+        MarkovFunctional::ModelSettings().withYGridPoints(32).withGaussHermitePoints(16));
+    const auto& outputs = model->modelOutputs();
+    BOOST_CHECK(!outputs.dirty_);
+    BOOST_REQUIRE_EQUAL(outputs.expiries_.size(), 1);
+    BOOST_CHECK_EQUAL(outputs.expiries_.front(), expiry);
+    BOOST_REQUIRE_EQUAL(outputs.atm_.size(), 1);
+    BOOST_REQUIRE_EQUAL(outputs.annuity_.size(), 1);
+    BOOST_REQUIRE_EQUAL(outputs.marketZerorate_.size(), 1);
+    BOOST_CHECK_SMALL(outputs.marketZerorate_.front() - 0.03, 1.0e-12);
+    BOOST_CHECK_GT(outputs.annuity_.front(), 0.0);
+
+    std::ostringstream trace;
+    trace << outputs;
+    BOOST_CHECK(trace.good());
+    BOOST_CHECK(trace.str().find("Markov functional model trace output") != std::string::npos);
+    BOOST_CHECK(trace.str().find("Model settings") != std::string::npos);
+    BOOST_CHECK(trace.str().find("Yield termstructure fit:") != std::string::npos);
+    BOOST_CHECK(trace.str().find("Volatility smile fit:") != std::string::npos);
+    BOOST_CHECK(trace.str().find("marketCallRaw") != std::string::npos);
+    BOOST_CHECK(trace.str().find("marketVega") != std::string::npos);
+}
+
+BOOST_AUTO_TEST_CASE(testSabrSmileCalibration) {
+    BOOST_TEST_MESSAGE("Testing Markov functional SABR smile calibration...");
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+    Date expiry = TARGET().advance(referenceDate, 1 * Years);
+    auto model = ext::make_shared<MarkovFunctional>(
+        flatYts(), 0.01, std::vector<Date>(), std::vector<Real>{1.0}, flatOptionletVts(),
+        std::vector<Date>{expiry}, ext::make_shared<Euribor>(6 * Months),
+        MarkovFunctional::ModelSettings()
+            .withYGridPoints(64)
+            .withGaussHermitePoints(32)
+            .withAdjustments(MarkovFunctional::ModelSettings::SabrSmile |
+                             MarkovFunctional::ModelSettings::SmileExponentialExtrapolation)
+            .withSmileMoneynessCheckpoints({0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 5.0}));
+    const auto& outputs = model->modelOutputs();
+    BOOST_REQUIRE_EQUAL(outputs.expiries_.size(), 1);
+    BOOST_REQUIRE(!outputs.smileStrikes_.front().empty());
+    BOOST_CHECK_SMALL(outputs.modelZerorate_.front() - outputs.marketZerorate_.front(), 1.0e-4);
+    for (Size strike = 0; strike < outputs.smileStrikes_.front().size(); ++strike) {
+        BOOST_TEST_CONTEXT("strike=" << outputs.smileStrikes_.front()[strike]) {
+            BOOST_CHECK(std::isfinite(outputs.modelCallPremium_.front()[strike]));
+            BOOST_CHECK(std::isfinite(outputs.modelPutPremium_.front()[strike]));
+            BOOST_CHECK_SMALL(outputs.modelCallPremium_.front()[strike] -
+                                  outputs.marketCallPremium_.front()[strike],
+                              1.0e-4);
+            BOOST_CHECK_SMALL(outputs.modelPutPremium_.front()[strike] -
+                                  outputs.marketPutPremium_.front()[strike],
+                              1.0e-4);
+        }
+    }
+    BOOST_CHECK_EQUAL(model->arbitrageIndices().size(), 1);
+}
+
+BOOST_AUTO_TEST_CASE(testShiftedSmileUpperRateBound) {
+    BOOST_TEST_MESSAGE("Testing the shifted-smile upper rate bound...");
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+    Date expiry = TARGET().advance(referenceDate, 1 * Years);
+    Handle<YieldTermStructure> curve(
+        ext::make_shared<FlatForward>(referenceDate, 0.03, Actual365Fixed()));
+    auto index = ext::make_shared<EuriborSwapIsdaFixA>(1 * Years);
+    Volatility volatility = 0.5;
+    for (Real shift : {0.0, 0.05}) {
+        for (Rate upperBound : {0.10, 2.0}) {
+            BOOST_TEST_CONTEXT("shift=" << shift << ", upperBound=" << upperBound) {
+                Handle<SwaptionVolatilityStructure> surface(
+                    ext::make_shared<ConstantSwaptionVolatility>(
+                        referenceDate, TARGET(), Following, volatility, Actual365Fixed(),
+                        ShiftedLognormal, shift));
+                BOOST_CHECK_EQUAL(surface->smileSection(expiry, 1 * Years, true)->shift(), shift);
+                auto model = ext::make_shared<MarkovFunctional>(
+                    curve, 0.01, std::vector<Date>(), std::vector<Real>{1.0}, surface,
+                    std::vector<Date>{expiry}, std::vector<Period>{1 * Years}, index,
+                    MarkovFunctional::ModelSettings()
+                        .withYGridPoints(64)
+                        .withYStdDevs(7.0)
+                        .withGaussHermitePoints(32)
+                        .withUpperRateBound(upperBound)
+                        .withDigitalGap(1.0e-7)
+                        .withMarketRateAccuracy(1.0e-10)
+                        .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone));
+                Date terminal = model->numeraireDate();
+                Real accrual = index->dayCounter().yearFraction(expiry, terminal);
+                Real forward = (curve->discount(expiry) / curve->discount(terminal) - 1.0) /
+                               accrual;
+                Real stdDev = volatility * std::sqrt(curve->timeFromReference(expiry));
+                for (Real state : {0.0, 1.09375, 3.0625}) {
+                    BOOST_TEST_CONTEXT("state=" << state) {
+                        Real uncappedRate = (forward + shift) *
+                                                std::exp(-0.5 * stdDev * stdDev + stdDev * state) -
+                                            shift;
+                        Real expectedRate = std::min(uncappedRate, upperBound);
+                        Real modelRate = (1.0 / model->zerobond(terminal, expiry, state) - 1.0) /
+                                         accrual;
+                        BOOST_CHECK(std::isfinite(modelRate));
+                        BOOST_CHECK_SMALL(modelRate - expectedRate, 1.0e-8);
+                    }
+                }
+
+                const auto& outputs = model->modelOutputs();
+                BOOST_REQUIRE_EQUAL(outputs.expiries_.size(), 1);
+                const auto& strikes = outputs.smileStrikes_.front();
+                BOOST_REQUIRE(!strikes.empty());
+                Size atmIndex = 0;
+                for (Size strike = 1; strike < strikes.size(); ++strike) {
+                    if (std::fabs(strikes[strike] - forward) <
+                        std::fabs(strikes[atmIndex] - forward))
+                        atmIndex = strike;
+                }
+                BOOST_CHECK_SMALL(strikes[atmIndex] - forward, 1.0e-12);
+                Real annuity = accrual * curve->discount(terminal);
+                Real uncappedCall = blackFormula(Option::Call, strikes[atmIndex], forward,
+                                                 stdDev, annuity, shift);
+                Real callAboveUpperBound = blackFormula(Option::Call, upperBound, forward,
+                                                        stdDev, annuity, shift);
+                Real expectedCappedCall = uncappedCall - callAboveUpperBound;
+                Real modelCall = outputs.modelCallPremium_.front()[atmIndex];
+                BOOST_CHECK(std::isfinite(modelCall));
+                BOOST_CHECK_SMALL(modelCall - expectedCappedCall, 1.0e-5);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPayoffExtrapolation) {
+    BOOST_TEST_MESSAGE("Testing Markov functional payoff extrapolation...");
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+    Date expiry = TARGET().advance(referenceDate, 1 * Years);
+    for (bool caplet : {false, true}) {
+        for (int extrapolation : {MarkovFunctional::ModelSettings::ExtrapolatePayoffFlat,
+                                  MarkovFunctional::ModelSettings::NoPayoffExtrapolation}) {
+            BOOST_TEST_CONTEXT("caplet=" << caplet << ", extrapolation=" << extrapolation) {
+                const int adjustments =
+                    MarkovFunctional::ModelSettings::KahaleSmile |
+                    MarkovFunctional::ModelSettings::SmileExponentialExtrapolation | extrapolation;
+                auto settings = MarkovFunctional::ModelSettings()
+                                    .withYGridPoints(64)
+                                    .withGaussHermitePoints(32)
+                                    .withAdjustments(adjustments)
+                                    .withSmileMoneynessCheckpoints(
+                                        {0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 5.0});
+                ext::shared_ptr<MarkovFunctional> model;
+                if (caplet) {
+                    model = ext::make_shared<MarkovFunctional>(
+                        flatYts(), 0.01, std::vector<Date>(), std::vector<Real>{1.0},
+                        flatOptionletVts(), std::vector<Date>{expiry},
+                        ext::make_shared<Euribor>(6 * Months), settings);
+                } else {
+                    model = ext::make_shared<MarkovFunctional>(
+                        flatYts(), 0.01, std::vector<Date>(), std::vector<Real>{1.0},
+                        flatSwaptionVts(), std::vector<Date>{expiry},
+                        std::vector<Period>{1 * Years},
+                        ext::make_shared<EuriborSwapIsdaFixA>(1 * Years), settings);
+                }
+                const auto& outputs = model->modelOutputs();
+                BOOST_REQUIRE_EQUAL(outputs.expiries_.size(), 1);
+                BOOST_REQUIRE(!outputs.smileStrikes_.front().empty());
+                BOOST_CHECK_SMALL(outputs.modelZerorate_.front() -
+                                      outputs.marketZerorate_.front(),
+                                  1.0e-4);
+                for (Size strike = 0; strike < outputs.smileStrikes_.front().size(); ++strike) {
+                    BOOST_TEST_CONTEXT("strike=" << outputs.smileStrikes_.front()[strike]) {
+                        BOOST_CHECK(std::isfinite(outputs.modelCallPremium_.front()[strike]));
+                        BOOST_CHECK(std::isfinite(outputs.modelPutPremium_.front()[strike]));
+                        BOOST_CHECK_SMALL(outputs.modelCallPremium_.front()[strike] -
+                                              outputs.marketCallPremium_.front()[strike],
+                                          1.0e-4);
+                        BOOST_CHECK_SMALL(outputs.modelPutPremium_.front()[strike] -
+                                              outputs.marketPutPremium_.front()[strike],
+                                          1.0e-4);
+                    }
+                }
+            }
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testVanillaEngines) {
