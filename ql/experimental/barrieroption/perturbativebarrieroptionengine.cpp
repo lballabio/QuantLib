@@ -1257,7 +1257,7 @@ namespace QuantLib {
           DT = RR*( RR - (RA-RB)*(RA-RB) - 2*RA*RB*( 1 - R ) );
           if( DT > 0 ) {
               BT = ( BC*RR + BA*( R*RB - RA ) + BB*( R*RA -RB ) )/std::sqrt(DT);
-              FT = std::sqrt(BA - R*BB)/RR + BB*BB;
+              FT = (BA - R*BB)*(BA - R*BB)/RR + BB*BB;
               if( NUC<1 ) {
                   if ( (BT > -10) && (FT <100) ) {
                       result = exp( -FT/2 );

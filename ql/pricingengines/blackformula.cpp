@@ -916,7 +916,7 @@ namespace QuantLib {
         // the subtraction above cancels, so compare the two operands directly:
         // close_enough against 0 degrades to an absolute tolerance of
         // (n*epsilon)^2, far below the rounding error of the difference itself
-        if (close_enough(bachelierPrice, intrinsicValue))
+        if (timeValue <= 0.0 && close_enough(bachelierPrice, intrinsicValue))
             return 0.0;
 
         QL_REQUIRE(timeValue > 0.0, "bachelierBlackFormulaImpliedVolExact(theta="

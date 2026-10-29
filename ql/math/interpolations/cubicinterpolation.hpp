@@ -643,7 +643,7 @@ namespace QuantLib {
                             case CubicInterpolation::Kruger:
                                 // intermediate points
                                 for (Size i=1; i<n_-1; ++i) {
-                                    if (S_[i-1]*S_[i]<0.0)
+                                    if (S_[i-1]*S_[i]<=0.0)
                                         // slope changes sign at point
                                         tmp_[i] = 0.0;
                                     else

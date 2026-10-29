@@ -1054,6 +1054,28 @@ BOOST_AUTO_TEST_CASE(testFritschButland) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testKrugerZeroSlope) {
+
+    BOOST_TEST_MESSAGE("Testing Kruger interpolation next to zero slopes...");
+
+    // a flat segment, and a -0 slope next to a +0 one
+    const Real x[5] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+    const Real y[][5] = {{ 1.0, 1.0, 1.0, 2.0, 3.0 },
+                         { 0.0, -0.0, 0.0, 1.0, 2.0 }};
+
+    for (const auto& yi : y) {
+        Interpolation f = KrugerCubic(std::begin(x), std::end(x), std::begin(yi));
+        for (Size k=0; k<=40; ++k) {
+            Real xk = k*0.1;
+            if (std::isnan(f(xk)) || std::isnan(f.derivative(xk)))
+                BOOST_ERROR("NaN detected at x = " << xk);
+        }
+        if (f.derivative(1.0) != 0.0)
+            BOOST_ERROR("nonzero derivative " << f.derivative(1.0)
+                        << " at a zero slope");
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testAkimaWithFewPoints) {
 
     BOOST_TEST_MESSAGE("Testing Akima interpolation with few points...");
