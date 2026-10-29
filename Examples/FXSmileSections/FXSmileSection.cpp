@@ -30,6 +30,8 @@
         - fxSviSmileSection           (SVI raw, 5 params: a, b, rho, m, sigma)
         - fxCostSmileSectionFlatDynamics   (cost model, flat smile dynamics)
         - fxCostSmileSectionScaledDynamics (cost model, scaled smile dynamics)
+        - FxCostSmileSectionStickyDelta    (cost model, flat dynamics, sticky delta)
+        - FxCostSmileSectionStickyDeltaConvex (as above, with sticky-moneyness convexity)
 
       Delta-parameterised:
         - quadraticSmileSection       (quadratic in put delta, 3 params)
@@ -352,10 +354,13 @@ int main(int, char*[]) {
         // ------------------------------------------------------------------
         //  7. Cost smile section — flat dynamics with convex sticky delta
         //
-        //     As the flat-dynamics model, but the smile moves with the
-        //     forward (sticky delta).  The cost equation then involves the
-        //     smile's slope and is solved as an ODE; the three cost ratios
-        //     are fitted to the five quotes by least squares.
+        //     As the sticky-delta model, but with the second-order term of
+        //     a smile fixed in log-moneyness: the vol at a fixed strike also
+        //     moves by kappa (dF/F)^2, with kappa = (beta + w'')/2 given by
+        //     the smile itself, so there is no extra parameter.  The cost
+        //     equation is then a second-order ODE, solved as a boundary
+        //     value problem; the three cost ratios are again fitted to the
+        //     five quotes by least squares.
         // ------------------------------------------------------------------
 
         {
