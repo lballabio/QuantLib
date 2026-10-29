@@ -1916,7 +1916,7 @@ BOOST_AUTO_TEST_CASE(testTurnbullWakemanLastFixingToday) {
                 // Today's fixing equals spot, so the average is (5 * 100 + 100) / 6.
                 DiscountFactor discount = rTS->discount(exercise->lastDate());
                 Real expected = (*payoff)(100.0) * discount;
-                Real expectedDelta = expected > 0.0 ? type * discount / 6.0 : 0.0;
+                Real expectedDelta = expected > 0.0 ? int(type) * discount / 6.0 : 0.0;
                 BOOST_CHECK_SMALL(option.NPV() - expected, 1.0e-12);
                 BOOST_CHECK_SMALL(option.delta() - expectedDelta, 1.0e-12);
                 BOOST_CHECK_EQUAL(option.gamma(), 0.0);
