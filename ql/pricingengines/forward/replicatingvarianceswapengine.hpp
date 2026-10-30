@@ -60,8 +60,21 @@ namespace QuantLib {
         Real computeLogPayoff(Real, Real) const;
         Real computeReplicatingPortfolio(
                                      const weights_type& optionWeights) const;
-        Rate riskFreeRate() const;
-        DiscountFactor riskFreeDiscount() const;
+        /*! \deprecated No longer used; retrieve explicitly from the curve if inheriting from this class.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("No longer used; retrieve explicitly from the curve if inheriting from this class.")]]
+        Rate riskFreeRate() const {
+            return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
+                                                      NoFrequency, true);
+        }
+        /*! \deprecated No longer used; retrieve explicitly from the curve if inheriting from this class.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("No longer used; retrieve explicitly from the curve if inheriting from this class.")]]
+        DiscountFactor riskFreeDiscount() const {
+            return process_->riskFreeRate()->discount(residualTime());
+        }
         Real underlying() const;
         Time residualTime() const;
       private:
@@ -166,12 +179,16 @@ namespace QuantLib {
             optionsValue += option.NPV() * weight;
         }
 
+        DiscountFactor riskFreeDiscount =
+            process_->riskFreeRate()->discount(arguments_.maturityDate);
+        DiscountFactor dividendDiscount =
+            process_->dividendYield()->discount(arguments_.maturityDate);
+        Real forward = underlying() * dividendDiscount / riskFreeDiscount;
         Real f = optionWeights.front().first->strike();
-        return 2.0 * riskFreeRate() -
-            2.0/residualTime() *
-            (((underlying()/riskFreeDiscount() - f)/f) +
-             std::log(f/underlying())) +
-            optionsValue/riskFreeDiscount();
+        return 2.0/residualTime() *
+            (std::log(dividendDiscount/riskFreeDiscount) -
+             ((forward - f)/f + std::log(f/underlying()))) +
+            optionsValue/riskFreeDiscount;
     }
 
 
@@ -210,18 +227,6 @@ namespace QuantLib {
 
     inline Time ReplicatingVarianceSwapEngine::residualTime() const {
         return process_->time(arguments_.maturityDate);
-    }
-
-
-    inline Rate ReplicatingVarianceSwapEngine::riskFreeRate() const {
-        return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
-                                                  NoFrequency, true);
-    }
-
-
-    inline
-    DiscountFactor ReplicatingVarianceSwapEngine::riskFreeDiscount() const {
-        return process_->riskFreeRate()->discount(residualTime());
     }
 
 }
