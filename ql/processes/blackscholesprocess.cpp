@@ -81,7 +81,9 @@ namespace QuantLib {
             res = riskFreeRate_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
                   dividendYield_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
                   0.5 * sigma * sigma;
-            driftCache_.add(res, t);
+            if (isStrikeIndependent_) {
+                driftCache_.add(res, t);
+            }
         } else {
             res = driftCache_.get(t);
         }
