@@ -184,9 +184,19 @@ BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveUnattainableAccuracy) {
     const Real tolerances[] = {1e-10, 1e-12, 1e-15};
     const Real upperBounds[] = {1.0, 10.0, 1.0};
 
+    // The order in which the two halves are refined, and roundoff, decide which
+    // accuracy safeguard is reached first.
+    const auto expectedAccuracyFailure = [](const Error& error) {
+        const std::string message(error.what());
+        if (message.find("cannot reach required accuracy:") != std::string::npos)
+            return true;
+        return ExpectedErrorMessage("maximum subdivision depth exceeded")(error);
+    };
+
     for (Size i = 0; i < 3; ++i) {
         const GaussKronrodAdaptive integrator(tolerances[i]);
-        BOOST_CHECK_THROW(integrator(functions[i], 0.0, upperBounds[i]), Error);
+        BOOST_CHECK_EXCEPTION(integrator(functions[i], 0.0, upperBounds[i]), Error,
+                              expectedAccuracyFailure);
         BOOST_CHECK_LE(integrator.numberOfEvaluations(), 10000);
     }
 }
@@ -228,11 +238,12 @@ BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveEvaluationBudget) {
 
     Size calls = 0;
     // Both halves need subdivision; one consumes the budget before the other starts.
-    BOOST_CHECK_THROW(integrator([&calls](Real x) {
-                          ++calls;
-                          return x == 0.25 || x == 0.5 || x == 0.75 ? 1.0 : 0.0;
-                      }, 0.0, 1.0),
-                      Error);
+    BOOST_CHECK_EXCEPTION(integrator([&calls](Real x) {
+                              ++calls;
+                              return x == 0.25 || x == 0.5 || x == 0.75 ? 1.0 : 0.0;
+                          }, 0.0, 1.0),
+                          Error,
+                          ExpectedErrorMessage("maximum number of function evaluations exceeded"));
     BOOST_CHECK_EQUAL(calls, 60);
     BOOST_CHECK_EQUAL(integrator.numberOfEvaluations(), calls);
 
