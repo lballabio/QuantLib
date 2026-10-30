@@ -107,6 +107,21 @@ compile if operations on `Real` were redefined to return an
 expression-template type; the former force a conversion to `Real` and
 succeed.
 
+Tests should be deterministic; therefore, **don't** leave the evaluation
+date free by setting it to `Date::todaysDate()` (either adjusted or not).
+The test suite already sets a fixed, global evaluation date; you can use
+`Date today = Settings::instance().evaluationDate();`
+to retrieve it and use it in your tests.  If you're modifying an existing
+test and you notice that it's using `Date::todaysDate()`, ask the user
+for approval and, if the user agrees, update the test.
+
+If you need to set a different, particular date in your test (for
+instance, because you're testing a regression) you can do so with
+`Settings::instance().evaluationDate() = test_date;`
+The top-level fixture used by all test cases already creates an instance
+of `SavedSettings` that will restore the previous evaluation date at the
+end of the test; you don't need to do it yourself in the test case.
+
 ## 4. Build and Test — Quick Start
 
 ```bash
