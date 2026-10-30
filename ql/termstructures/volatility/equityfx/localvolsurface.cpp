@@ -92,13 +92,13 @@ namespace QuantLib {
         strike = underlyingLevel;
         y = std::log(strike/forwardValue);
         dy = ((std::fabs(y) > 0.001) ? Real(y*0.0001) : 0.000001);
-        strikep=strike * std::exp(dy);
-        strikem=strike / std::exp(dy);
+        strikep=strike*std::exp(dy);
+        strikem=strike/std::exp(dy);
         w  = blackTS_->blackVariance(t, strike,  true);
         wp = blackTS_->blackVariance(t, strikep, true);
         wm = blackTS_->blackVariance(t, strikem, true);
-        dwdy = (wp - wm) / (2.0 * dy);
-        d2wdy2 = (wp - 2.0 * w + wm) / (dy * dy);
+        dwdy = (wp-wm)/(2.0*dy);
+        d2wdy2 = (wp-2.0*w+wm)/(dy*dy);
 
         // time derivative
         Real dt, wpt, wmt, dwdt;
@@ -106,43 +106,43 @@ namespace QuantLib {
             dt = 0.0001;
             DiscountFactor drpt = riskFreeTS_->discount(t+dt, true);
             DiscountFactor dqpt = dividendTS_->discount(t+dt, true);           
-            Real strikept = strike * dr * dqpt / (drpt * dq);
+            Real strikept = strike*dr*dqpt/(drpt*dq);
         
-            wpt = blackTS_->blackVariance(t + dt, strikept, true);
+            wpt = blackTS_->blackVariance(t+dt, strikept, true);
             QL_ENSURE(wpt>=w,
                       "decreasing variance at strike " << strike
                       << " between time " << t << " and time " << t+dt);
-            dwdt = (wpt - w) / dt;
+            dwdt = (wpt-w)/dt;
         } else {
-            dt = std::min<Time>(0.0001, t / 2.0);
-            DiscountFactor drpt = riskFreeTS_->discount(t + dt, true);
-            DiscountFactor drmt = riskFreeTS_->discount(t - dt, true);
-            DiscountFactor dqpt = dividendTS_->discount(t + dt, true);
-            DiscountFactor dqmt = dividendTS_->discount(t - dt, true);
+            dt = std::min<Time>(0.0001, t/2.0);
+            DiscountFactor drpt = riskFreeTS_->discount(t+dt, true);
+            DiscountFactor drmt = riskFreeTS_->discount(t-dt, true);
+            DiscountFactor dqpt = dividendTS_->discount(t+dt, true);
+            DiscountFactor dqmt = dividendTS_->discount(t-dt, true);
             
-            Real strikept = strike * dr * dqpt / (drpt * dq);
-            Real strikemt = strike * dr * dqmt / (drmt * dq);
+            Real strikept = strike*dr*dqpt/(drpt*dq);
+            Real strikemt = strike*dr*dqmt/(drmt*dq);
             
-            wpt = blackTS_->blackVariance(t + dt, strikept, true);
-            wmt = blackTS_->blackVariance(t - dt, strikemt, true);
+            wpt = blackTS_->blackVariance(t+dt, strikept, true);
+            wmt = blackTS_->blackVariance(t-dt, strikemt, true);
 
-            QL_ENSURE(wpt >= w,
+            QL_ENSURE(wpt>=w,
                       "decreasing variance at strike " << strike
                       << " between time " << t << " and time " << t+dt);
-            QL_ENSURE(w >= wmt,
+            QL_ENSURE(w>=wmt,
                       "decreasing variance at strike " << strike
                       << " between time " << t-dt << " and time " << t);
          
-            dwdt = (wpt - wmt) / (2.0 * dt);
+            dwdt = (wpt-wmt)/(2.0*dt);
         }
 
-        if (dwdy == 0.0 && d2wdy2 == 0.0) { // avoid /w where w might be 0.0
+        if (dwdy==0.0 && d2wdy2==0.0) { // avoid /w where w might be 0.0
             return std::sqrt(dwdt);
         } else {
-            Real den1 = 1.0 - y / w * dwdy;
-            Real den2 = 0.25 * (-0.25 - 1.0 / w + y * y / w / w) * dwdy * dwdy;
-            Real den3 = 0.5 * d2wdy2;
-            Real den = den1 + den2 + den3;
+            Real den1 = 1.0 - y/w*dwdy;
+            Real den2 = 0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy;
+            Real den3 = 0.5*d2wdy2;
+            Real den = den1+den2+den3;
             Real result = dwdt / den;
 
             QL_ENSURE(result>=0.0,
