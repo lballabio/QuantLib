@@ -661,6 +661,13 @@ BOOST_AUTO_TEST_CASE(testBinomialDistribution) {
     BOOST_CHECK_EXCEPTION(
         PeizerPrattMethod2Inversion(0.0, 4), Error,
         ExpectedErrorMessage("n must be an odd number"));
+
+    BOOST_CHECK_CLOSE(std::exp(PeizerPrattMethod2LogInversion(1.0, 5)), upper, 1.0e-12);
+    BOOST_CHECK_CLOSE(std::exp(PeizerPrattMethod2LogInversion(-1.0, 5)), lower, 1.0e-12);
+
+    // z this large underflows the probability. The log inversion stays finite.
+    BOOST_CHECK_EQUAL(PeizerPrattMethod2Inversion(1000.0, 5), 1.0);
+    BOOST_CHECK(std::isfinite(PeizerPrattMethod2LogInversion(-1000.0, 5)));
 }
 
 BOOST_AUTO_TEST_CASE(testPoisson) {

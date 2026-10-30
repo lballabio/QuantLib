@@ -1373,14 +1373,41 @@ BOOST_AUTO_TEST_CASE(testFarOutOfTheMoneyBinomialEngines) {
     BOOST_CHECK_EXCEPTION(option.NPV(), Error,
                           ExpectedErrorMessage("invalid up probability"));
 
-    // the other direction rounds the Leisen-Reimer up probability to one,
-    // leaving the tree without a down step
-    auto deepPayoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 20.0);
-    EuropeanOption deepOption(deepPayoff, exercise);
-    deepOption.setPricingEngine(
-        ext::make_shared<BinomialVanillaEngine<LeisenReimer> >(stochProcess, steps));
-    BOOST_CHECK_EXCEPTION(deepOption.NPV(), Error,
-                          ExpectedErrorMessage("invalid up probability"));
+    // pu rounds to 1 for a deep in-the-money call. The down move now comes
+    // from Peizer-Pratt at -d2, so these price instead of throwing.
+    const Real deepStrike[] = {20.0, 80.0, 50.0};
+    const Volatility deepVol[] = {0.15, 0.01, 0.01};
+    const Rate deepR[] = {0.03, 0.0, 0.0};
+    const Rate deepQ[] = {0.01, 0.0, 0.0};
+    for (Size i = 0; i < 3; ++i) {
+        auto deepProcess = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot),
+            Handle<YieldTermStructure>(flatRate(today, deepQ[i], dc)),
+            Handle<YieldTermStructure>(flatRate(today, deepR[i], dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, deepVol[i], dc)));
+        auto deepPayoff =
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, deepStrike[i]);
+        EuropeanOption deepOption(deepPayoff, exercise);
+        deepOption.setPricingEngine(
+            ext::make_shared<AnalyticEuropeanEngine>(deepProcess));
+        Real deepExpected = deepOption.NPV();
+        deepOption.setPricingEngine(
+            ext::make_shared<BinomialVanillaEngine<LeisenReimer> >(deepProcess, steps));
+        Real deepCalculated = deepOption.NPV();
+        Real deepError = std::fabs(deepCalculated - deepExpected);
+        Real deepTolerance = 1.0e-6;
+        if (deepError > deepTolerance)
+            REPORT_FAILURE("value", deepPayoff, exercise, spot->value(), deepQ[i],
+                           deepR[i], today, deepVol[i], deepExpected, deepCalculated,
+                           deepError, deepTolerance);
+    }
+
+    // Past the point where the up probability underflows, the step stays
+    // finite and puts the mass on the up move.
+    const LeisenReimerStep step = leisenReimerStep(1000.0, 1.0, 1.0, 5);
+    BOOST_CHECK_EQUAL(step.upProbability, 1.0);
+    BOOST_CHECK(std::isfinite(step.up) && step.up > 0.0);
+    BOOST_CHECK(std::isfinite(step.down) && step.down > 0.0);
 }
 
 BOOST_AUTO_TEST_CASE(testLargeDriftBinomialEngines) {
