@@ -32,6 +32,7 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <iomanip>
 #include <iostream>
 #include <string>
 
@@ -372,6 +373,109 @@ BOOST_AUTO_TEST_CASE(testStudent) {
                              << abs(diff) << "|" << hwDataDist[i].spread[3]);
     }
     //END
+}
+
+BOOST_AUTO_TEST_CASE(testProbAtLeastNEvents) {
+    BOOST_TEST_MESSAGE("Testing probability of at least n defaults "
+                       "against a direct enumeration...");
+
+    // probability of at least n defaults among independent names with
+    // default probabilities p, by enumeration of all configurations
+    auto atLeastNEvents = [](const std::vector<Real>& p, Size n) {
+        Real sum = 0.0;
+        for (Size config = 0; config < (Size(1) << p.size()); config++) {
+            Size defaults = 0;
+            Real prob = 1.0;
+            for (Size i = 0; i < p.size(); i++) {
+                if (((config >> i) & 1) != 0U) {
+                    defaults++;
+                    prob *= p[i];
+                } else {
+                    prob *= 1.0 - p[i];
+                }
+            }
+            if (defaults >= n)
+                sum += prob;
+        }
+        return sum;
+    };
+
+    Date asofDate(31, August, 2006);
+    Settings::instance().evaluationDate() = asofDate;
+    DayCounter dc = Actual365Fixed();
+    Date testDate = asofDate + 5*Years;
+
+    std::vector<Real> lambda = {0.01, 0.07, 0.02, 0.15, 0.04, 0.10, 0.005};
+    Size names = lambda.size();
+
+    std::vector<std::string> namesIds;
+    std::vector<Real> pUncond;
+    ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
+    for (Size i = 0; i < names; i++) {
+        namesIds.push_back(std::string("Name") + std::to_string(i));
+        Handle<DefaultProbabilityTermStructure> curve(
+            ext::make_shared<FlatHazardRate>(
+                asofDate,
+                Handle<Quote>(ext::make_shared<SimpleQuote>(lambda[i])), dc));
+        pUncond.push_back(curve->defaultProbability(testDate));
+        std::vector<Issuer::key_curve_pair> curves(1,
+            std::make_pair(NorthAmericaCorpDefaultKey(
+                EURCurrency(), SeniorSec, Period(), 1.), curve));
+        thePool->add(namesIds[i], Issuer(curves), NorthAmericaCorpDefaultKey(
+                EURCurrency(), SeniorSec, Period(), 1.));
+    }
+
+    ext::shared_ptr<Basket> basket = ext::make_shared<Basket>(
+        asofDate, namesIds, std::vector<Real>(names, 10.0), thePool, 0., 1.);
+
+    // uncorrelated names and heterogeneous factor loadings
+    std::vector<std::vector<std::vector<Real> > > factorWeights = {
+        std::vector<std::vector<Real> >(names, std::vector<Real>(1, 0.0)),
+        {{0.1}, {0.6}, {0.3}, {0.75}, {0.45}, {0.2}, {0.5}}
+    };
+
+    Real tolerance = 1.0e-12;
+    // the conditional probabilities go through an inverse cumulative
+    // normal accurate to about 1e-9 relative
+    Real independentTolerance = 1.0e-8;
+
+    for (Size k = 0; k < factorWeights.size(); k++) {
+        auto model = ext::make_shared<ConstantLossModel<GaussianCopulaPolicy> >(
+            factorWeights[k], std::vector<Real>(names, 0.4),
+            LatentModelIntegrationType::GaussianQuadrature,
+            GaussianCopulaPolicy::initTraits());
+        basket->setLossModel(model);
+
+        for (Size n = 0; n <= names + 1; n++) {
+            Real calculated = basket->probAtLeastNEvents(n, testDate);
+
+            Real expected = model->integratedExpectedValue(
+                [&](const std::vector<Real>& m) {
+                    std::vector<Real> pCond(names);
+                    for (Size i = 0; i < names; i++)
+                        pCond[i] =
+                            model->conditionalDefaultProbability(pUncond[i], i, m);
+                    return atLeastNEvents(pCond, n);
+                });
+            if (std::fabs(calculated - expected) > tolerance)
+                BOOST_ERROR("failed to reproduce probability of at least "
+                            << n << " defaults out of " << names
+                            << " (factor loadings set " << k << "):"
+                            << std::setprecision(16)
+                            << "\n    calculated: " << calculated
+                            << "\n    expected:   " << expected);
+
+            if (k == 0) {
+                Real independent = atLeastNEvents(pUncond, n);
+                if (std::fabs(calculated - independent) > independentTolerance)
+                    BOOST_ERROR("failed to reproduce probability of at least "
+                                << n << " independent defaults out of " << names << ":"
+                                << std::setprecision(16)
+                                << "\n    calculated: " << calculated
+                                << "\n    expected:   " << independent);
+            }
+        }
+    }
 }
 
 #endif
