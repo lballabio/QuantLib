@@ -26,20 +26,14 @@
 
 namespace QuantLib {
 
-    //! Longstaff-Schwarz Monte Carlo engine for early exercise options
-    /*! References:
-
-        Francis Longstaff, Eduardo Schwartz, 2001. Valuing American Options
-        by Simulation: A Simple Least-Squares Approach, The Review of
-        Financial Studies, Volume 14, No. 1, 113-147
-
-        \test the correctness of the returned value is tested by
-              reproducing results available in web/literature
+    /*! \deprecated Use MCLongstaffSchwartzEngine instead.
+                    Deprecated in version 1.45.
     */
     template <class GenericEngine, template <class> class MC,
               class RNG, class S = Statistics>
-    class MCLongstaffSchwartzPathEngine : public GenericEngine,
-                                      public McSimulation<MC,RNG,S> {
+    class [[deprecated("Use MCLongstaffSchwartzEngine instead")]] MCLongstaffSchwartzPathEngine
+           : public GenericEngine,
+           public McSimulation<MC,RNG,S> {
       public:
         typedef typename MC<RNG>::path_type path_type;
         typedef typename McSimulation<MC,RNG,S>::stats_type
@@ -64,8 +58,10 @@ namespace QuantLib {
         void calculate() const;
 
       protected:
+        QL_DEPRECATED_DISABLE_WARNING
         virtual ext::shared_ptr<LongstaffSchwartzMultiPathPricer>
                                                     lsmPathPricer() const = 0;
+        QL_DEPRECATED_ENABLE_WARNING
 
         TimeGrid timeGrid() const;
         ext::shared_ptr<path_pricer_type> pathPricer() const;
@@ -81,8 +77,12 @@ namespace QuantLib {
         const Size seed_;
         const Size nCalibrationSamples_;
 
+        QL_DEPRECATED_DISABLE_WARNING
         mutable ext::shared_ptr<LongstaffSchwartzMultiPathPricer> pathPricer_;
+        QL_DEPRECATED_ENABLE_WARNING
     };
+
+    QL_DEPRECATED_DISABLE_WARNING
 
     template <class GenericEngine, template <class> class MC, class RNG, class S>
     inline MCLongstaffSchwartzPathEngine<GenericEngine, MC, RNG, S>::MCLongstaffSchwartzPathEngine(
@@ -188,6 +188,9 @@ namespace QuantLib {
                    new path_generator_type(process_,
                                            grid, generator, brownianBridge_));
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
+
 }
 
 

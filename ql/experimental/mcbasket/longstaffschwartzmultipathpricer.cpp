@@ -24,6 +24,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     LongstaffSchwartzMultiPathPricer::PathInfo::PathInfo(Size numberOfTimes)
         : payments(numberOfTimes, 0.0),
           exercises(numberOfTimes, 0.0),
@@ -306,4 +308,7 @@ namespace QuantLib {
         // entering the calculation phase
         calibrationPhase_ = false;
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
+
 }
