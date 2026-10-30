@@ -60,8 +60,21 @@ namespace QuantLib {
         Real computeLogPayoff(Real, Real) const;
         Real computeReplicatingPortfolio(
                                      const weights_type& optionWeights) const;
-        Rate riskFreeRate() const;
-        DiscountFactor riskFreeDiscount() const;
+        /*! \deprecated No longer used; retrieve explicitly from the curve if inheriting from this class.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("No longer used; retrieve explicitly from the curve if inheriting from this class.")]]
+        Rate riskFreeRate() const {
+            return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
+                                                      NoFrequency, true);
+        }
+        /*! \deprecated No longer used; retrieve explicitly from the curve if inheriting from this class.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("No longer used; retrieve explicitly from the curve if inheriting from this class.")]]
+        DiscountFactor riskFreeDiscount() const {
+            return process_->riskFreeRate()->discount(residualTime());
+        }
         Real underlying() const;
         Time residualTime() const;
       private:
@@ -214,18 +227,6 @@ namespace QuantLib {
 
     inline Time ReplicatingVarianceSwapEngine::residualTime() const {
         return process_->time(arguments_.maturityDate);
-    }
-
-
-    inline Rate ReplicatingVarianceSwapEngine::riskFreeRate() const {
-        return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
-                                                  NoFrequency, true);
-    }
-
-
-    inline
-    DiscountFactor ReplicatingVarianceSwapEngine::riskFreeDiscount() const {
-        return process_->riskFreeRate()->discount(residualTime());
     }
 
 }
