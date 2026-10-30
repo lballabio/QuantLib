@@ -82,10 +82,13 @@ namespace QuantLib {
         virtual ext::shared_ptr<CalibratedModel> calibratedModel() const = 0;
 
         //! Per-pillar implied-vol errors (model vol minus market vol).
-        /*! Empty until calibrate() is called. */
+        /*! Empty until calibrate() is called.  NaN for a pillar whose model
+            price has no implied vol, so that a failure cannot pass for a
+            perfect fit.
+        */
         virtual std::vector<Real> calibrationErrors() const = 0;
 
-        //! Root-mean-square implied vol error across all pillars.
+        //! Root-mean-square implied vol error across all pillars; NaN if any pillar's is.
         Real rmse() const;
 
         //! Black volatility surface implied by the calibrated model.

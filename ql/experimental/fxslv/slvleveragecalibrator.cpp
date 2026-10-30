@@ -29,8 +29,10 @@ namespace QuantLib {
         Real mixingFactor,
         bool logging)
     : params_(params), mixingFactor_(mixingFactor), logging_(logging) {
-        QL_REQUIRE(mixingFactor_ >= 0.0 && mixingFactor_ <= 1.0,
-                   "HestonSLVLeverageCalibrator: mixingFactor must be in [0,1], got "
+        // the mixing factor scales the vol-of-vol; at 0 the variance is
+        // deterministic, which HestonSLVFDMModel's variance grid cannot handle
+        QL_REQUIRE(mixingFactor_ > 0.0 && mixingFactor_ <= 1.0,
+                   "HestonSLVLeverageCalibrator: mixingFactor must be in (0,1], got "
                    << mixingFactor_);
     }
 

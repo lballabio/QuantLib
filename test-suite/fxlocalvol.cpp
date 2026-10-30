@@ -633,15 +633,18 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
     }
 
     HestonParams hp;
-    hp.v0    = 0.0078 * 0.0078;
+    hp.v0    = 0.078 * 0.078;
     hp.kappa = 1.50;
-    hp.theta = 0.0100 * 0.0100;
-    hp.sigma = 0.40;
+    hp.theta = 0.100 * 0.100;
+    hp.sigma = 0.15;
     hp.rho   = -0.25;
 
     FxSLVPricingContext ctx(spot, usdTs, eurFwdTs, volHandle, localVolHandle, calendar);
 
-    HestonCalibrator hestonCal(hp);
+    // under the Feller condition: the SLV calibration fails with a fit
+    // violating it strongly, as the unconstrained one does
+    HestonCalibrator hestonCal(hp, EndCriteria(1000, 500, 1.0e-8, 1.0e-8, 1.0e-8),
+                               BlackCalibrationHelper::ImpliedVolError, {}, true);
 
     // Small FDM grid for test speed.
     auto fdmP = HestonSLVLeverageCalibrator::defaultParams();

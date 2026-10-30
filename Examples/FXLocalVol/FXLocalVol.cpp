@@ -480,7 +480,11 @@ int main(int, char*[]) {
 
         FxSLVPricingContext slvCtx(spot, usdTs, eurFwdTs, volHandle, localVolHandle, calendar);
 
-        HestonCalibrator hestonCal(hp);
+        // Enforce the Feller condition: the SLV leverage calibration fails, or
+        // goes far off, with a Heston fit violating it strongly, as the
+        // unconstrained fit to these quotes does.
+        HestonCalibrator hestonCal(hp, EndCriteria(1000, 500, 1.0e-8, 1.0e-8, 1.0e-8),
+                                   BlackCalibrationHelper::ImpliedVolError, {}, true);
 
         // Use a coarser FDM grid than production to keep the example fast.
         // For production use HestonSLVLeverageCalibrator::defaultParams().

@@ -123,8 +123,10 @@ namespace QuantLib {
         //@{
         /*!
             \param params       finite-difference solver parameters
-            \param mixingFactor blending parameter in [0,1]:
-                                0 = pure local vol, 1 = full SLV
+            \param mixingFactor blending parameter in (0,1] scaling the
+                                Heston vol-of-vol: 1 = full SLV, towards 0
+                                the local-vol limit, which itself (a
+                                deterministic variance) is not supported
             \param logging      store per-timestep density snapshots for diagnostics
 
             The Heston model is supplied either via \c setStochVolModel() (when used

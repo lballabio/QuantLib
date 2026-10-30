@@ -51,9 +51,16 @@ namespace QuantLib {
         \c AnalyticHestonEngine for pricing, and minimises the weighted
         sum of squared implied-vol errors using Levenberg-Marquardt.
 
-        The Feller constraint \f$ 2\kappa\theta > \sigma^2 \f$ is enforced
-        during optimisation to ensure the variance process does not reach
-        zero.
+        The Feller condition \f$ 2\kappa\theta > \sigma^2 \f$, which keeps
+        the variance away from zero, is not enforced by default: FX smiles
+        usually need more vol-of-vol than it allows, and the SLV
+        finite-difference model handles variances reaching zero.  It can be
+        enforced on request.
+
+        The optimiser cannot leave a starting point that violates the
+        constraints, as every trial around it is penalised alike, so such
+        a start is rejected, as is a fit that ends without moving or on the
+        iteration limit.
 
         After a successful call to \c calibrate(), the results are available
         via \c calibratedHestonModel(), \c calibrationErrors(), and
@@ -72,6 +79,7 @@ namespace QuantLib {
             \param fixParameters    mask for parameters to hold fixed during
                                     optimisation (length 5: theta, kappa, sigma,
                                     rho, v0; \c false = free, \c true = fixed)
+            \param fellerConstraint whether to enforce the Feller condition
         */
         explicit HestonCalibrator(
             HestonParams initialParams = HestonParams{},
@@ -79,7 +87,8 @@ namespace QuantLib {
                 EndCriteria(1000, 500, 1.0e-8, 1.0e-8, 1.0e-8),
             BlackCalibrationHelper::CalibrationErrorType errorType =
                 BlackCalibrationHelper::ImpliedVolError,
-            std::vector<bool> fixParameters = {});
+            std::vector<bool> fixParameters = {},
+            bool fellerConstraint = false);
         //@}
 
         //! \name StochVolCalibrator interface
@@ -107,6 +116,7 @@ namespace QuantLib {
         const EndCriteria endCriteria_;
         const BlackCalibrationHelper::CalibrationErrorType errorType_;
         const std::vector<bool> fixParameters_;
+        const bool fellerConstraint_;
 
         ext::shared_ptr<HestonModel> hestonModel_;
         std::vector<ext::shared_ptr<BlackCalibrationHelper>> helpers_;
