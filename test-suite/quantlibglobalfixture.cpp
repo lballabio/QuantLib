@@ -123,11 +123,15 @@ QuantLibGlobalFixture::QuantLibGlobalFixture() {
 }
 
 QuantLibGlobalFixture::~QuantLibGlobalFixture(){
+
+#if defined(__linux__)
     // SOURCE_DATE_EPOCH is set by dpkg-buildpackage / the reproducible-builds
     // infrastructure. The elapsed time is not deterministic, so skip the
     // report to keep the packaged test-suite log bit-for-bit reproducible.
+    // Conditioned on being on Linux to silence nags with other builds.
     if (std::getenv("SOURCE_DATE_EPOCH") != nullptr)
         return;
+#endif
 
     stop = std::chrono::steady_clock::now();
 
