@@ -27,6 +27,7 @@
 
 #include <ql/math/factorial.hpp>
 #include <ql/math/incompletegamma.hpp>
+#include <limits>
 
 namespace QuantLib {
 
@@ -123,6 +124,32 @@ namespace QuantLib {
         if (x == 0.0)
             return 0.0;
 
+        if (x <= std::exp(-lambda_))
+            return 0.0;
+
+        // Indices around lambda must fit both the counter and Factorial::ln.
+        QL_REQUIRE(lambda_ < Real((std::numeric_limits<BigNatural>::max)()) &&
+                       lambda_ < Real((std::numeric_limits<Natural>::max)()),
+                   "lambda (" << lambda_ << ") exceeds the supported index range");
+
+        if (x > 0.5) {
+            // Sum the survival probability from the right to avoid cancellation near one.
+            Real tail = 1.0-x;
+            BigNatural index = static_cast<BigNatural>(lambda_);
+            // Above the mode, a geometric series bounds the remaining probability.
+            while (calcSummand(index) / (1.0-lambda_/(index+1.0)) > tail*QL_EPSILON)
+                ++index;
+
+            Real sum = 0.0;
+            while (index > 0) {
+                sum += calcSummand(index);
+                if (sum > tail)
+                    return Real(index);
+                --index;
+            }
+            return 0.0;
+        }
+
         Real sum = 0.0;
         BigNatural index = 0;
         while (x > sum) {
@@ -134,8 +161,10 @@ namespace QuantLib {
     }
 
     inline Real InverseCumulativePoisson::calcSummand(BigNatural index) const {
-        return std::exp(-lambda_) * std::pow(lambda_, Integer(index)) /
-            Factorial::get(index);
+        QL_REQUIRE(index < (std::numeric_limits<BigNatural>::max)() &&
+                       index < (std::numeric_limits<Natural>::max)(),
+                   "Poisson index exceeds the supported range");
+        return std::exp(index*std::log(lambda_) - Factorial::ln(Natural(index)) - lambda_);
     }
 
 }
