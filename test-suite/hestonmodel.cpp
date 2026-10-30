@@ -3411,9 +3411,6 @@ BOOST_AUTO_TEST_CASE(testHestonBlackVolSurfaceAtmLevel) {
 BOOST_AUTO_TEST_CASE(testAsymptoticCVwithDifferentAlpha) {
     BOOST_TEST_MESSAGE("Testing optimal asymptotic "
         "control variate with different alphas...");
-
-    SavedSettings backup;
-
     const Date settlementDate(29, September, 2026);
     Settings::instance().evaluationDate() = settlementDate;
 
