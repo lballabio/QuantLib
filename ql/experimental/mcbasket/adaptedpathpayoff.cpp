@@ -21,6 +21,8 @@
 
 namespace QuantLib {
 
+  QL_DEPRECATED_DISABLE_WARNING
+
   /*
     Initializing maximumTimeRead_ to -1 would make more sense,
     but it is unsigned and 0 has exactly the same behaviour.
@@ -93,4 +95,7 @@ namespace QuantLib {
 
     operator()(data);
   }
+
+  QL_DEPRECATED_ENABLE_WARNING
+
 }

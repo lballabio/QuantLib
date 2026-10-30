@@ -22,6 +22,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     EuropeanPathMultiPathPricer::EuropeanPathMultiPathPricer(
         ext::shared_ptr<PathPayoff>& payoff,
         std::vector<Size> timePositions,
@@ -63,6 +65,8 @@ namespace QuantLib {
 
         return discountedPayoff;
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 
