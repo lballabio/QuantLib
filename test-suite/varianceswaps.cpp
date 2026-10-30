@@ -263,11 +263,6 @@ BOOST_AUTO_TEST_CASE(testReplicatingVarianceSwapWithDividends) {
 
             Real calculated = varianceSwap.variance();
             Real error = std::fabs(calculated - expected);
-            if (data.q == 0.0) {
-                BOOST_TEST_MESSAGE("    Zero-dividend control (r = " << data.r
-                                   << ", days = " << data.days << "): variance = " << calculated
-                                   << ", error = " << error);
-            }
             BOOST_TEST_CONTEXT("risk-free rate: " << data.r << ", dividend yield: " << data.q
                                << ", maturity: " << maturityDate
                                << ", dividend day counter: " << dividendDc) {
