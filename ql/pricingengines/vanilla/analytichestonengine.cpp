@@ -216,7 +216,8 @@ namespace QuantLib {
 
     AnalyticHestonEngine::OptimalAlpha::OptimalAlpha(
         const Time t,
-        const AnalyticHestonEngine* const enginePtr)
+        const AnalyticHestonEngine* const enginePtr,
+        Method method)
     : t_(t),
       fwd_(enginePtr->model_->process()->s0()->value()
               * enginePtr->model_->process()->dividendYield()->discount(t)
@@ -226,7 +227,8 @@ namespace QuantLib {
       sigma_(enginePtr->model_->sigma()),
       rho_(enginePtr->model_->rho()),
       eps_(std::pow(2, -int(0.5*std::numeric_limits<Real>::digits))),
-      enginePtr_(enginePtr)
+      enginePtr_(enginePtr),
+      method_(method)
       {
         km_ = k(0.0, -1);
         kp_ = k(0.0,  1);
@@ -304,21 +306,35 @@ namespace QuantLib {
     }
 
     Real AnalyticHestonEngine::OptimalAlpha::operator()(Real strike) const {
-        try {
-            const std::pair<Real, Real> minusOne = alphaSmallerMinusOne(strike);
-            const std::pair<Real, Real> greaterZero = alphaGreaterZero(strike);
+        switch (method_) {
+          case OptimalValue:
+            try {
+                const std::pair<Real, Real> minusOne = alphaSmallerMinusOne(strike);
+                const std::pair<Real, Real> greaterZero = alphaGreaterZero(strike);
 
-            if (minusOne.second < greaterZero.second) {
-                return minusOne.first;
+                if (minusOne.second < greaterZero.second) {
+                    return minusOne.first;
+                }
+                else {
+                    return greaterZero.first;
+                }
             }
-            else {
-                return greaterZero.first;
+            catch (const Error&) {
+                return -0.5;
             }
+            break;
+          case AvoidCancellation:
+            {
+                const Real omega = std::log(fwd_/strike);
+                if (omega >= 0.0)
+                    return alphaSmallerMinusOne(strike).first;
+                else
+                    return alphaGreaterZero(strike).first;
+            }
+            break;
+          default:
+            QL_FAIL("unknown calculation method");
         }
-        catch (const Error&) {
-            return -0.5;
-        }
-
     }
 
     Size AnalyticHestonEngine::OptimalAlpha::numberOfEvaluations() const {
@@ -391,20 +407,28 @@ namespace QuantLib {
                         /(kappa*term) + theta;
             break;
           case AndersenPiterbargOptCV:
-              vAvg_ = -8.0*std::log(enginePtr->chF(
-                         std::complex<Real>(0, alpha_), term).real())/term;
-            break;
+            {
+              const Real b = 1.0 + alpha_;
+              vAvg_ = -2.0*std::log(enginePtr->chF(
+                           std::complex<Real>(0, -b), term).real())/(term*(b - b*b));
+            }   
+          break;
           case AsymptoticChF:
-            phi_ = -(v0+term*kappa*theta)/sigma
-                * std::complex<Real>(std::sqrt(1-rho*rho), rho);
+            {
+              const Real s = std::sqrt(1 - rho*rho);
+              phi_ = -(v0+term*kappa*theta)/sigma * std::complex<Real>(s, rho);
 
-            psi_ = std::complex<Real>(
-                (kappa- 0.5*rho*sigma)*(v0 + term*kappa*theta)
-                + kappa*theta*std::log(4*(1-rho*rho)),
-                - ((0.5*rho*rho*sigma - kappa*rho)/std::sqrt(1-rho*rho)
-                        *(v0 + kappa*theta*term)
-                  - 2*kappa*theta*std::atan(rho/std::sqrt(1-rho*rho))))
-                          /(sigma*sigma);
+              const Real a = sigma * s;
+              const Real b = (0.5*sigma - rho*kappa)/s;
+              const std::complex<Real> l(0.5, -0.5*rho/s);
+              const std::complex<Real> B = (
+                   std::complex<Real>(0, b-a) - (rho*sigma*b - kappa*a)/(2.0*a*l)
+               )/(2.0*a*a*l);
+               
+               psi_ = kappa*theta/(sigma*sigma)
+                    *(term*std::complex<Real>(kappa, -b) - 2.0*std::log(l))
+                    + v0*B - std::complex<Real>(0, alpha_ + 1.0)*phi_;
+            }
             [[fallthrough]];
           case AngledContour:
             vAvg_ = (1-std::exp(-kappa*term))*(v0 - theta)
@@ -412,10 +436,10 @@ namespace QuantLib {
             [[fallthrough]];
           case AngledContourNoCV:
             {
-              const Real r = rho - sigma*freq_ / (v0 + kappa*theta*term);
+              const Real r = rho - sigma*freq_ / (v0 + kappa*theta*term);              
               tanPhi_ = std::tan(
                      (r*freq_ < 0.0)? M_PI/12*boost::math::sign(freq_) : 0.0
-                );
+              );
             }
             break;
           default:
@@ -438,17 +462,21 @@ namespace QuantLib {
 
             std::complex<Real> phiBS(0.0);
             if (cpxLog_ == AngledContour)
-                phiBS = std::exp(
+                phiBS = std::exp(-u*tanPhi_*freq_
                     -0.5*vAvg_*term_*(hPrime*hPrime +
                             std::complex<Real>(-hPrime.imag(), hPrime.real())));
             else if (cpxLog_ == AsymptoticChF)
-                phiBS = std::exp(u*std::complex<Real>(1, tanPhi_)*phi_ + psi_);
+                phiBS = std::exp(-u*tanPhi_*freq_ + u*std::complex<Real>(1, tanPhi_)*phi_ + psi_);
 
-            return std::exp(-u*tanPhi_*freq_)
-                    *(std::exp(std::complex<Real>(0.0, u*freq_))
-                      *std::complex<Real>(1, tanPhi_)
-                      *(phiBS - enginePtr_->chF(hPrime, term_))/(h_u*hPrime)
-                      ).real()*s_alpha_;
+            const std::complex<Real> v = enginePtr_->lnChF(hPrime, term_);            
+            const std::complex<Real> chf_v = 
+                (v.real() == -std::numeric_limits<Real>::infinity())
+                ? 0.0: std::exp(-u*tanPhi_*freq_ + v);
+                            
+            return (
+                std::exp(std::complex<Real>(0.0, u*freq_)) 
+                * std::complex<Real>(1, tanPhi_) * (phiBS - chf_v)/(h_u*hPrime)
+            ).real()*s_alpha_;
         }
         else if (cpxLog_ == AndersenPiterbarg || cpxLog_ == AndersenPiterbargOptCV) {
             const std::complex<Real> z(u, -alpha_);
@@ -474,15 +502,34 @@ namespace QuantLib {
                       .value();
         }
         else if (cpxLog_ == AsymptoticChF) {
-            QL_REQUIRE(alpha_ == -0.5, "alpha must be equal to -0.5");
-
+            using namespace ExponentialIntegral;
             const std::complex<Real> phiFreq(phi_.real(), phi_.imag() + freq_);
 
-            using namespace ExponentialIntegral;
-            return fwd_ - std::sqrt(strike_*fwd_)/M_PI*
-                (std::exp(psi_)*(
-                      -2.0*Ci(-0.5*phiFreq)*std::sin(0.5*phiFreq)
-                       +std::cos(0.5*phiFreq)*(M_PI+2.0*Si(0.5*phiFreq)))).real();
+            if (alpha_ == -0.5) {
+                return fwd_ - std::sqrt(strike_*fwd_)/M_PI*
+                    (std::exp(psi_)*
+                        (-2.0*Ci(-0.5*phiFreq)*std::sin(0.5*phiFreq)
+                           +std::cos(0.5*phiFreq)*(M_PI+2.0*Si(0.5*phiFreq)))                 
+                    ).real();                 
+            }
+            else {
+                //Re[Integrate[Exp[phi*u + psi]/((u - I*alpha)*(u - I*(alpha + 1))), {u, 0, Infinity}, 
+                //    Assumptions -> Re[phi] < 0 && alpha \[Element] Reals && alpha != 0 && alpha != -1]]
+
+                QL_REQUIRE(alpha_ != -1.0 && alpha_ != 0.0, "alpha != 1.0 && alpha != 0.0");
+
+                const std::complex<Real> i(0, 1);
+                return ((alpha_ <=  0.0)? fwd_ : 0.0) - ((alpha_ <= -1.0)? strike_ : 0.0)
+                         + fwd_*s_alpha_/M_PI* 
+                    0.5*(std::exp(psi_)*(std::exp(i*alpha_*phiFreq)*(i*M_PI - 2.0*Ci(-alpha_*phiFreq) 
+                    - 2.0*std::log(std::complex<Real>(alpha_)) - 2.0*std::log(-phiFreq)
+                    + 2.0*std::log(-alpha_*phiFreq) 
+                    + 2.0*i*Si(alpha_*phiFreq)) + std::exp(i*(1+alpha_)*phiFreq)*(
+                        -i*M_PI + 2.0*Ci(-(1+alpha_)*phiFreq) 
+                        + 2.0*std::log(std::complex<Real>(1.0+alpha_)) + 2.0*std::log(-phiFreq) 
+                        - 2.0*std::log(-(1+alpha_)*phiFreq) - 2.0*i*Si(phiFreq + alpha_*phiFreq)
+                    ))).imag();
+            }
         }
         else if (cpxLog_ == AngledContourNoCV) {
             return     ((alpha_ <=  0.0)? fwd_ : 0.0)
@@ -497,8 +544,12 @@ namespace QuantLib {
     std::complex<Real> AnalyticHestonEngine::chF(
         const std::complex<Real>& z, Time t) const {
         if (model_->sigma() > 1e-6 || model_->kappa() < 1e-8) {
-            return std::exp(lnChF(z, t));
-        }
+            const std::complex<Real> v = lnChF(z, t);
+            if (v.real() != -std::numeric_limits<Real>::infinity())
+                return std::exp(v);
+            else
+                return std::complex<Real>(0.0);
+            }            
         else {
             const Real kappa = model_->kappa();
             const Real sigma = model_->sigma();
