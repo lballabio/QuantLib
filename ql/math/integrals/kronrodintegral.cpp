@@ -387,7 +387,11 @@ namespace QuantLib {
                                     const std::function<Real (Real)>& f,
                                     Real a,
                                     Real b,
-                                    Real tolerance) const {
+                                    Real tolerance,
+                                    Size depth) const {
+
+            QL_REQUIRE(numberOfEvaluations() + 15 <= maxEvaluations(),
+                       "maximum number of function evaluations exceeded");
 
             Real halflength = (b - a) / 2;
             Real center = (a + b) / 2;
@@ -433,15 +437,23 @@ namespace QuantLib {
                            maxEvaluations(),
                            "maximum number of function evaluations "
                            "exceeded");
-                return integrateRecursively(f, a, center, tolerance/2)
-                    + integrateRecursively(f, center, b, tolerance/2);
+                QL_REQUIRE(a < center && center < b,
+                           "cannot reach required accuracy: "
+                           "interval subdivision no longer advances");
+                const Real halfTolerance = tolerance / 2;
+                QL_REQUIRE(halfTolerance > 0 && halfTolerance < tolerance,
+                           "cannot reach required accuracy: tolerance underflow");
+                // Bound stack use even when all midpoints and tolerances still advance.
+                QL_REQUIRE(depth < 256, "maximum subdivision depth exceeded");
+                return integrateRecursively(f, a, center, halfTolerance, depth + 1)
+                    + integrateRecursively(f, center, b, halfTolerance, depth + 1);
             }
         }
 
 
     GaussKronrodAdaptive::GaussKronrodAdaptive(Real absoluteAccuracy,
                                                Size maxEvaluations)
-    : Integrator(absoluteAccuracy, maxEvaluations) {
+    : Integrator(absoluteAccuracy, maxEvaluations == Null<Size>() ? 1000000 : maxEvaluations) {
         QL_REQUIRE(maxEvaluations >= 15,
                    "required maxEvaluations (" << maxEvaluations <<
                    ") not allowed. It must be >= 15");
