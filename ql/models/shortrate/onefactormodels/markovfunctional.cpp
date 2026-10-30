@@ -46,8 +46,11 @@ namespace QuantLib {
       sigma_(arguments_[0]), volstepdates_(std::move(volstepdates)),
       volatilities_(std::move(volatilities)), swaptionVol_(swaptionVol),
       swaptionExpiries_(swaptionExpiries), swaptionTenors_(swaptionTenors),
-      swapIndexBase_(swapIndexBase), iborIndex_(swapIndexBase->iborIndex()) {
+      swapIndexBase_(swapIndexBase) {
 
+        QL_REQUIRE(swapIndexBase_, "null swap index");
+        iborIndex_ = swapIndexBase_->iborIndex();
+        QL_REQUIRE(iborIndex_, "null ibor index");
         QL_REQUIRE(swaptionExpiries.size() == swaptionTenors.size(),
                    "number of swaption expiries ("
                        << swaptionExpiries.size()
@@ -77,6 +80,7 @@ namespace QuantLib {
       volatilities_(std::move(volatilities)), capletVol_(capletVol),
       capletExpiries_(capletExpiries), iborIndex_(std::move(iborIndex)) {
 
+        QL_REQUIRE(iborIndex_, "null ibor index");
         QL_REQUIRE(!capletExpiries.empty(),
                    "need at least one caplet expiry to calibrate numeraire");
         QL_REQUIRE(!termStructure.empty(),
@@ -428,8 +432,7 @@ namespace QuantLib {
                         modelSettings_.digitalGap_);
                 i->second.maxRateDigital_ =
                     i->second.smileSection_->digitalOptionPrice(
-                        modelSettings_.upperRateBound_ -
-                            i->second.smileSection_->shift(),
+                        modelSettings_.upperRateBound_,
                         Option::Call, i->second.annuity_,
                         modelSettings_.digitalGap_);
             }
@@ -609,9 +612,8 @@ namespace QuantLib {
     const MarkovFunctional::ModelOutputs &
     MarkovFunctional::modelOutputs() const {
 
+        calculate();
         if (modelOutputs_.dirty_) {
-
-            calculate();
 
             // yield term structure
             modelOutputs_.marketZerorate_.clear();
@@ -628,6 +630,8 @@ namespace QuantLib {
             }
 
             // volatility surface
+            modelOutputs_.atm_.clear();
+            modelOutputs_.annuity_.clear();
             modelOutputs_.smileStrikes_.clear();
             modelOutputs_.marketCallPremium_.clear();
             modelOutputs_.marketPutPremium_.clear();
@@ -769,6 +773,7 @@ namespace QuantLib {
         const Time t, const Real y,
         const Handle<YieldTermStructure> &yts) const {
 
+        calculate();
         if (t == 0)
             return yts.empty()
                        ? this->termStructure()->discount(numeraireTime(), true)
@@ -1048,33 +1053,39 @@ namespace QuantLib {
                                   CubicInterpolation::Lagrange, 0.0,
                                   CubicInterpolation::Lagrange, 0.0);
 
+        const auto& linearCoefficients = payoff.aCoefficients();
+        const auto& quadraticCoefficients = payoff.bCoefficients();
+        const auto& cubicCoefficients = payoff.cCoefficients();
+        const Size lastNode = z.size() - 1;
+        const Size lastInterval = lastNode - 1;
+
         Real price = 0.0;
-        for (Size i = 0; i < z.size() - 1; i++) {
+        for (Size i = 0; i < lastNode; i++) {
             price += gaussianShiftedPolynomialIntegral(
-                0.0, payoff.cCoefficients()[i], payoff.bCoefficients()[i],
-                payoff.aCoefficients()[i], p[i], z[i], z[i], z[i + 1]);
+                0.0, cubicCoefficients[i], quadraticCoefficients[i],
+                linearCoefficients[i], p[i], z[i], z[i], z[i + 1]);
         }
         if ((modelSettings_.adjustments_ &
              ModelSettings::NoPayoffExtrapolation) == 0) {
             if ((modelSettings_.adjustments_ &
                  ModelSettings::ExtrapolatePayoffFlat) != 0) {
                 price += gaussianShiftedPolynomialIntegral(
-                    0.0, 0.0, 0.0, 0.0, p[z.size() - 2], z[z.size() - 2],
-                    z[z.size() - 1], 100.0);
+                    0.0, 0.0, 0.0, 0.0, p.back(), z.back(), z.back(), 100.0);
                 price += gaussianShiftedPolynomialIntegral(
                     0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0, z[0]);
             } else {
                 if (type == Option::Call)
                     price += gaussianShiftedPolynomialIntegral(
-                        0.0, payoff.cCoefficients()[z.size() - 2],
-                        payoff.bCoefficients()[z.size() - 2],
-                        payoff.aCoefficients()[z.size() - 2], p[z.size() - 2],
-                        z[z.size() - 2], z[z.size() - 1], 100.0);
+                        0.0, cubicCoefficients[lastInterval],
+                        quadraticCoefficients[lastInterval],
+                        linearCoefficients[lastInterval], p[lastInterval],
+                        z[lastInterval], z[lastNode], 100.0);
                 if (type == Option::Put)
                     price += gaussianShiftedPolynomialIntegral(
-                        0.0, payoff.cCoefficients()[0],
-                        payoff.bCoefficients()[0], payoff.aCoefficients()[0],
-                        p[0], z[0], -100.0, z[0]);
+                        0.0, cubicCoefficients.front(),
+                        quadraticCoefficients.front(),
+                        linearCoefficients.front(), p.front(), z.front(),
+                        -100.0, z.front());
             }
         }
 
@@ -1125,33 +1136,39 @@ namespace QuantLib {
                                   CubicInterpolation::Lagrange, 0.0,
                                   CubicInterpolation::Lagrange, 0.0);
 
+        const auto& linearCoefficients = payoff.aCoefficients();
+        const auto& quadraticCoefficients = payoff.bCoefficients();
+        const auto& cubicCoefficients = payoff.cCoefficients();
+        const Size lastNode = z.size() - 1;
+        const Size lastInterval = lastNode - 1;
+
         Real price = 0.0;
-        for (Size i = 0; i < z.size() - 1; i++) {
+        for (Size i = 0; i < lastNode; i++) {
             price += gaussianShiftedPolynomialIntegral(
-                0.0, payoff.cCoefficients()[i], payoff.bCoefficients()[i],
-                payoff.aCoefficients()[i], p[i], z[i], z[i], z[i + 1]);
+                0.0, cubicCoefficients[i], quadraticCoefficients[i],
+                linearCoefficients[i], p[i], z[i], z[i], z[i + 1]);
         }
         if ((modelSettings_.adjustments_ &
              ModelSettings::NoPayoffExtrapolation) == 0) {
             if ((modelSettings_.adjustments_ &
                  ModelSettings::ExtrapolatePayoffFlat) != 0) {
                 price += gaussianShiftedPolynomialIntegral(
-                    0.0, 0.0, 0.0, 0.0, p[z.size() - 2], z[z.size() - 2],
-                    z[z.size() - 1], 100.0);
+                    0.0, 0.0, 0.0, 0.0, p.back(), z.back(), z.back(), 100.0);
                 price += gaussianShiftedPolynomialIntegral(
                     0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0, z[0]);
             } else {
                 if (type == Option::Call)
                     price += gaussianShiftedPolynomialIntegral(
-                        0.0, payoff.cCoefficients()[z.size() - 2],
-                        payoff.bCoefficients()[z.size() - 2],
-                        payoff.aCoefficients()[z.size() - 2], p[z.size() - 2],
-                        z[z.size() - 2], z[z.size() - 1], 100.0);
+                        0.0, cubicCoefficients[lastInterval],
+                        quadraticCoefficients[lastInterval],
+                        linearCoefficients[lastInterval], p[lastInterval],
+                        z[lastInterval], z[lastNode], 100.0);
                 if (type == Option::Put)
                     price += gaussianShiftedPolynomialIntegral(
-                        0.0, payoff.cCoefficients()[0],
-                        payoff.bCoefficients()[0], payoff.aCoefficients()[0],
-                        p[0], z[0], -100.0, z[0]);
+                        0.0, cubicCoefficients.front(),
+                        quadraticCoefficients.front(),
+                        linearCoefficients.front(), p.front(), z.front(),
+                        -100.0, z.front());
             }
         }
 

@@ -28,7 +28,7 @@ namespace QuantLib {
     // constructors
 
     InterestRate::InterestRate()
-    : r_(Null<Real>()) {}
+    : r_(Null<Real>()), comp_(Simple), freqMakesSense_(false), freq_(Real(NoFrequency)) {}
 
     InterestRate::InterestRate(Rate r, DayCounter dc, Compounding comp, Frequency freq)
     : r_(r), dc_(std::move(dc)), comp_(comp), freqMakesSense_(false) {
@@ -107,6 +107,8 @@ namespace QuantLib {
                                            Time t) {
 
         QL_REQUIRE(compound>0.0, "positive compound factor required");
+        if (comp == SimpleThenCompounded || comp == CompoundedThenSimple)
+            QL_FAIL(comp << " is not supported for direct calculations: use the CashFlow methods");
 
         Rate r = Null<Rate>();
         if (compound==1.0) {

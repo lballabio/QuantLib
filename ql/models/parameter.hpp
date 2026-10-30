@@ -27,6 +27,7 @@
 #include <ql/handle.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/qldefines.hpp>
+#include <algorithm>
 #include <utility>
 #include <vector>
 
@@ -150,6 +151,12 @@ namespace QuantLib {
             : times_(0), values_(0), termStructure_(std::move(termStructure)) {}
 
             void set(Time t, Real x) {
+                // value() binary-searches times_, so it needs them in
+                // ascending order; fall back to a linear scan once they are
+                // not (nothing in the current calibration code does that,
+                // but the class does not enforce it either).
+                if (!times_.empty() && t < times_.back())
+                    timesSorted_ = false;
                 times_.push_back(t);
                 values_.push_back(x);
             }
@@ -159,9 +166,11 @@ namespace QuantLib {
             void reset() {
                 times_.clear();
                 values_.clear();
+                timesSorted_ = true;
             }
             Real value(const Array&, Time t) const override {
-                auto result = std::find(times_.begin(), times_.end(), t);
+                auto result = timesSorted_ ? findIndexSorted(t)
+                                           : std::find(times_.begin(), times_.end(), t);
                 QL_REQUIRE(result!=times_.end(),
                            "fitting parameter not set!");
                 return values_[result - times_.begin()];
@@ -170,9 +179,20 @@ namespace QuantLib {
                 return termStructure_;
             }
           private:
+            // Equivalent to std::find() on sorted data: every element before
+            // the lower bound is strictly less than t, so if any element
+            // equals t then the lower bound is the first such element.
+            std::vector<Time>::const_iterator findIndexSorted(Time t) const {
+                auto lower = std::lower_bound(times_.begin(), times_.end(), t);
+                if (lower != times_.end() && *lower != t)
+                    return times_.end();
+                return lower;
+            }
+
             std::vector<Time> times_;
             std::vector<Real> values_;
             Handle<YieldTermStructure> termStructure_;
+            bool timesSorted_ = true;
         };
 
         TermStructureFittingParameter(

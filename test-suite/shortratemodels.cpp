@@ -26,6 +26,7 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/models/shortrate/onefactormodels/vasicek.hpp>
+#include <ql/models/shortrate/onefactormodels/coxingersollross.hpp>
 #include <ql/models/shortrate/onefactormodels/extendedcoxingersollross.hpp>
 #include <ql/models/shortrate/twofactormodels/g2.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
@@ -549,6 +550,50 @@ BOOST_AUTO_TEST_CASE(testExtendedCoxIngersollRossDiscountFactor) {
                     << std::scientific
                     << "\n  difference: " << diff
                     << "\n  tolerance : " << tol);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testCoxIngersollRossShortExpiryBondOptions) {
+    BOOST_TEST_MESSAGE("Testing short-expiry bond options for CIR model...");
+
+    // For short option expiries, the arguments of the non-central
+    // chi-square distribution in the closed formula become very
+    // large; it used to return 0, so that in-the-money calls were
+    // priced at 0 and puts at minus their intrinsic value.
+    const CoxIngersollRoss model(0.03, 0.04, 0.3, 0.1);
+    const Time bondMaturity = 1.0;
+
+    // reference values computed with the closed formula and a
+    // 40-digit evaluation of the non-central chi-square distribution
+    struct Case {
+        Time expiry;
+        Real strike;
+        Real call, put;
+    };
+    const Case cases[] = {
+        {1.0/52, 0.90, 0.0696854342991965, 0.0},
+        {1.0/365, 0.97, 6.19091004229057e-5, 8.16319849046085e-4}
+    };
+
+    const Real tolerance = 1e-12;
+    for (const auto& c : cases) {
+        const Real call = model.discountBondOption(Option::Call, c.strike,
+                                                   c.expiry, bondMaturity);
+        const Real put = model.discountBondOption(Option::Put, c.strike,
+                                                  c.expiry, bondMaturity);
+
+        if (std::fabs(call - c.call) > tolerance
+            || std::fabs(put - c.put) > tolerance) {
+            BOOST_ERROR("Failed to reproduce CIR bond option prices:"
+                        << "\n  expiry    : " << c.expiry
+                        << "\n  strike    : " << c.strike
+                        << std::scientific
+                        << "\n  call      : " << call
+                        << "\n  expected  : " << c.call
+                        << "\n  put       : " << put
+                        << "\n  expected  : " << c.put
+                        << "\n  tolerance : " << tolerance);
+        }
     }
 }
 

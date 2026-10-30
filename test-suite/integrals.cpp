@@ -173,6 +173,123 @@ BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptive) {
     testDegeneratedDomain(GaussKronrodAdaptive(tolerance, maxEvaluations));
 }
 
+BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveUnattainableAccuracy) {
+    BOOST_TEST_MESSAGE("Testing adaptive Gauss-Kronrod integration with unattainable accuracy...");
+
+    const std::function<Real(Real)> functions[] = {
+        [](Real x) { return 1e5 * std::exp(x); },
+        [](Real x) { return 100.0 * std::cos(x); },
+        [](Real x) { return std::exp(x); }
+    };
+    const Real tolerances[] = {1e-10, 1e-12, 1e-15};
+    const Real upperBounds[] = {1.0, 10.0, 1.0};
+
+    // The order in which the two halves are refined, and roundoff, decide which
+    // accuracy safeguard is reached first.
+    const auto expectedAccuracyFailure = [](const Error& error) {
+        const std::string message(error.what());
+        if (message.find("cannot reach required accuracy:") != std::string::npos)
+            return true;
+        return ExpectedErrorMessage("maximum subdivision depth exceeded")(error);
+    };
+
+    for (Size i = 0; i < 3; ++i) {
+        const GaussKronrodAdaptive integrator(tolerances[i]);
+        BOOST_CHECK_EXCEPTION(integrator(functions[i], 0.0, upperBounds[i]), Error,
+                              expectedAccuracyFailure);
+        BOOST_CHECK_LE(integrator.numberOfEvaluations(), 10000);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveAttainableAccuracy) {
+    BOOST_TEST_MESSAGE("Testing adaptive Gauss-Kronrod integration with attainable accuracy...");
+
+    const GaussKronrodAdaptive midpointIntegrator(1e-8, 100);
+    // An isolated nonzero point has zero integral and is not sampled after subdivision.
+    BOOST_CHECK_EQUAL(midpointIntegrator(
+                          [](Real x) { return x == 0.5 ? 1e8 : 0.0; }, 0.0, 1.0),
+                      0.0);
+    BOOST_CHECK_EQUAL(midpointIntegrator.numberOfEvaluations(), 45);
+
+    const GaussKronrodAdaptive exponentialIntegrator(1e-8);
+    const Real exponential = exponentialIntegrator(
+        [](Real x) { return 1e5 * std::exp(x); }, 0.0, 1.0);
+    BOOST_CHECK_SMALL(exponential - 1e5 * std::expm1(1.0), 1e-8);
+
+    const GaussKronrodAdaptive cosineIntegrator(1e-9);
+    const auto f = [](Real x) { return 100.0 * std::cos(x); };
+    const Real expected = 100.0 * std::sin(10.0);
+    BOOST_CHECK_SMALL(cosineIntegrator(f, 0.0, 10.0) - expected, 1e-9);
+    BOOST_CHECK_GT(cosineIntegrator.numberOfEvaluations(), 15);
+    BOOST_CHECK_SMALL(cosineIntegrator(f, 10.0, 0.0) + expected, 1e-9);
+
+    const GaussKronrodAdaptive limitedIntegrator(1e-9, 15);
+    BOOST_CHECK_EXCEPTION(limitedIntegrator(f, 0.0, 10.0), Error,
+                          ExpectedErrorMessage("maximum number of function evaluations exceeded"));
+    BOOST_CHECK_EQUAL(limitedIntegrator.numberOfEvaluations(), 15);
+}
+
+BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveEvaluationBudget) {
+    BOOST_TEST_MESSAGE("Testing adaptive Gauss-Kronrod evaluation budgets...");
+
+    GaussKronrodAdaptive integrator(1e-8);
+    BOOST_CHECK_EQUAL(integrator.maxEvaluations(), 1000000);
+    integrator.setMaxEvaluations(60);
+
+    Size calls = 0;
+    // Both halves need subdivision; one consumes the budget before the other starts.
+    BOOST_CHECK_EXCEPTION(integrator([&calls](Real x) {
+                              ++calls;
+                              return x == 0.25 || x == 0.5 || x == 0.75 ? 1.0 : 0.0;
+                          }, 0.0, 1.0),
+                          Error,
+                          ExpectedErrorMessage("maximum number of function evaluations exceeded"));
+    BOOST_CHECK_EQUAL(calls, 60);
+    BOOST_CHECK_EQUAL(integrator.numberOfEvaluations(), calls);
+
+    integrator.setMaxEvaluations(Null<Size>());
+    BOOST_CHECK_EQUAL(integrator.maxEvaluations(), Null<Size>());
+}
+
+BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveNoSubdivisionProgress) {
+    BOOST_TEST_MESSAGE(
+        "Testing adaptive Gauss-Kronrod integration without subdivision progress...");
+
+    const Real a = 1.0;
+    const Real b = std::nextafter(a, Real(2.0));
+    BOOST_REQUIRE_EQUAL((a + b) / 2, a);
+
+    const GaussKronrodAdaptive integrator(1e-6);
+    BOOST_CHECK_EQUAL(integrator([](Real) { return 0.0; }, a, b), 0.0);
+    BOOST_CHECK_SMALL(integrator([](Real) { return 1.0; }, a, b) - (b - a),
+                      50 * QL_EPSILON * (b - a));
+    BOOST_CHECK_EXCEPTION(integrator([a](Real x) { return x == a ? 1e16 : 0.0; }, a, b),
+                          Error, ExpectedErrorMessage("subdivision"));
+    BOOST_CHECK_EQUAL(integrator.numberOfEvaluations(), 15);
+}
+
+BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveLimits) {
+    BOOST_TEST_MESSAGE("Testing adaptive Gauss-Kronrod refinement and work limits...");
+
+    const GaussKronrodAdaptive depthLimitedIntegrator(1e-6);
+    // The integrand repeats on each halving of an interval starting at zero.
+    BOOST_CHECK_EXCEPTION(depthLimitedIntegrator(
+                              [](Real x) { return std::sin(2 * M_PI * std::log2(x)); }, 0.0, 1.0),
+                          Error, ExpectedErrorMessage("maximum subdivision depth exceeded"));
+
+    GaussKronrodAdaptive underflowIntegrator(1e-6);
+    underflowIntegrator.setAbsoluteAccuracy(std::numeric_limits<Real>::denorm_min());
+    BOOST_CHECK_EXCEPTION(underflowIntegrator([](Real x) { return std::exp(x); }, 0.0, 1.0),
+                          Error, ExpectedErrorMessage("tolerance underflow"));
+
+    const GaussKronrodAdaptive workLimitedIntegrator(1e-6);
+    BOOST_CHECK_EXCEPTION(
+        workLimitedIntegrator([](Real x) { return std::sin(1e6 * x); }, 0.0, 1.0),
+        Error, ExpectedErrorMessage("maximum number of function evaluations exceeded"));
+    BOOST_CHECK_LE(workLimitedIntegrator.numberOfEvaluations(),
+                   workLimitedIntegrator.maxEvaluations());
+}
+
 BOOST_AUTO_TEST_CASE(testGaussLobatto) {
     BOOST_TEST_MESSAGE("Testing adaptive Gauss-Lobatto integration...");
 

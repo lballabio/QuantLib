@@ -21,7 +21,7 @@
 */
 
 #include <ql/experimental/lattices/extendedbinomialtree.hpp>
-#include <ql/math/distributions/binomialdistribution.hpp>
+#include <ql/methods/lattices/binomialtree.hpp>
 
 namespace QuantLib {
 
@@ -175,13 +175,12 @@ namespace QuantLib {
         Real d2 = (std::log(x0_/strike) + this->driftStep(0.0)*oddSteps_ ) /
             std::sqrt(variance);
 
-        pu_ = PeizerPrattMethod2Inversion(d2, oddSteps_);
-        QL_REQUIRE(pu_ > 0.0 && pu_ < 1.0, "invalid up probability: " << pu_);
-        pd_ = 1.0 - pu_;
-        Real pdash = PeizerPrattMethod2Inversion(d2+std::sqrt(variance),
-                                                 oddSteps_);
-        up_ = ermqdt * pdash / pu_;
-        down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
+        const LeisenReimerStep step =
+            leisenReimerStep(d2, ermqdt, variance, oddSteps_);
+        pu_ = step.upProbability;
+        pd_ = step.downProbability;
+        up_ = step.up;
+        down_ = step.down;
     }
 
     Real ExtendedLeisenReimer::underlying(Size i, Size index) const {
@@ -191,14 +190,11 @@ namespace QuantLib {
         Real d2 = (std::log(x0_/strike_) + this->driftStep(stepTime)*oddSteps_ ) /
             std::sqrt(variance);
 
-        Real pu = PeizerPrattMethod2Inversion(d2, oddSteps_);
-        Real pdash = PeizerPrattMethod2Inversion(d2+std::sqrt(variance),
-            oddSteps_);
-        Real up = ermqdt * pdash / pu;
-        Real down = (ermqdt - pu * up) / (1.0 - pu);
+        const LeisenReimerStep step =
+            leisenReimerStep(d2, ermqdt, variance, oddSteps_);
 
-        return x0_ * std::pow(down, Real(BigInteger(i)-BigInteger(index)))
-            * std::pow(up, Real(index));
+        return x0_ * std::pow(step.down, Real(BigInteger(i)-BigInteger(index)))
+            * std::pow(step.up, Real(index));
     }
 
     Real ExtendedLeisenReimer::probability(Size i, Size, Size branch) const {
@@ -206,11 +202,10 @@ namespace QuantLib {
         Real variance = this->treeProcess_->variance(stepTime, x0_, end_);
         Real d2 = (std::log(x0_/strike_) + this->driftStep(stepTime)*oddSteps_ ) /
             std::sqrt(variance);
+        const LeisenReimerStep step =
+            leisenReimerStep(d2, 1.0, variance, oddSteps_);
 
-        Real pu = PeizerPrattMethod2Inversion(d2, oddSteps_);
-        Real pd = 1.0 - pu;
-
-        return (branch == 1 ? pu : pd);
+        return (branch == 1 ? step.upProbability : step.downProbability);
     }
 
 

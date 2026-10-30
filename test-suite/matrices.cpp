@@ -224,7 +224,7 @@ BOOST_AUTO_TEST_CASE(testPseudoSqrtSalvagingAlgorithms) {
         const SymmetricSchurDecomposition decomposition(covariance);
 
         for (Size i = 0; i < M2.rows(); ++i) {
-            BOOST_CHECK_SMALL(covariance[i][i] - M2[i][i], 1.0e-12);
+            QL_CHECK_SMALL(covariance[i][i] - M2[i][i], 1.0e-12);
             BOOST_CHECK_GE(decomposition.eigenvalues()[i], -1.0e-12);
         }
     }
@@ -233,9 +233,9 @@ BOOST_AUTO_TEST_CASE(testPseudoSqrtSalvagingAlgorithms) {
         pseudoSqrt(M1, SalvagingAlgorithm::Hypersphere);
     const Matrix positiveLowerDiagonal =
         pseudoSqrt(M1, SalvagingAlgorithm::LowerDiagonal);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         norm(positiveHypersphere * transpose(positiveHypersphere) - M1), 1.0e-12);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         norm(positiveLowerDiagonal * transpose(positiveLowerDiagonal) - M1),
         1.0e-12);
 }
@@ -265,14 +265,14 @@ BOOST_AUTO_TEST_CASE(testPseudoSqrtValidationAndPrincipalTolerance) {
     nearlyPositive[0][0] += 1.0e-14;
     nearlyPositive[1][1] += 1.0e-14;
     const Matrix principal = pseudoSqrt(nearlyPositive, SalvagingAlgorithm::Principal);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         norm(principal * transpose(principal) - nearlyPositive), 1.0e-12);
 
     Matrix almostSemidefinite(1, 1);
     almostSemidefinite[0][0] = -QL_EPSILON;
     const Matrix principalAlmostSemidefinite =
         pseudoSqrt(almostSemidefinite, SalvagingAlgorithm::Principal);
-    BOOST_CHECK_SMALL(principalAlmostSemidefinite[0][0], 1.0e-12);
+    QL_CHECK_SMALL(principalAlmostSemidefinite[0][0], 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testRankReducedPseudoSqrtBranches) {
@@ -293,7 +293,7 @@ BOOST_AUTO_TEST_CASE(testRankReducedPseudoSqrtBranches) {
     for (const Matrix& root : {fullRank, rankOne, halfSpectrum}) {
         const Matrix covariance = root * transpose(root);
         for (Size i = 0; i < M1.rows(); ++i)
-            BOOST_CHECK_SMALL(covariance[i][i] - M1[i][i], 1.0e-12);
+            QL_CHECK_SMALL(covariance[i][i] - M1[i][i], 1.0e-12);
     }
 
     const Matrix spectral = rankReducedSqrt(
@@ -333,7 +333,7 @@ BOOST_AUTO_TEST_CASE(testPseudoSqrtDegenerateInputs) {
         for (Size i = 0; i < root.rows(); ++i)
             for (Size j = 0; j < root.columns(); ++j)
                 BOOST_CHECK(std::isfinite(root[i][j]));
-        BOOST_CHECK_SMALL(norm(root * transpose(root)), 1.0e-12);
+        QL_CHECK_SMALL(norm(root * transpose(root)), 1.0e-12);
     }
 
     Matrix singular(2, 2);
@@ -344,7 +344,7 @@ BOOST_AUTO_TEST_CASE(testPseudoSqrtDegenerateInputs) {
         singular, 10, 1.0, SalvagingAlgorithm::None);
 
     for (const Matrix& root : {spectral, principal, rankReduced})
-        BOOST_CHECK_SMALL(norm(root * transpose(root) - singular), 1.0e-12);
+        QL_CHECK_SMALL(norm(root * transpose(root) - singular), 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testSVD) {
