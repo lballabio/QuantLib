@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2026 Google LLC and Ada Logics Ltd
+ Copyright (C) 2026 Ada Logics Ltd
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
