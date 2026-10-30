@@ -51,12 +51,13 @@ namespace QuantLib {
             Real value(Real x) const override {
 
                 Real res=0.0;
-
-                for( Size i=0; i< xSize_;++i){
-                    res+=alphaVec_[i]*kernelAbs(x,this->xBegin_[i]);
+                Real gamma=0.0;
+                for(Size i=0; i<xSize_; ++i){
+                    const Real kernelValue=kernelAbs(x,this->xBegin_[i]);
+                    res+=alphaVec_[i]*kernelValue;
+                    gamma+=kernelValue;
                 }
-
-                return res/gammaFunc(x);
+                return res/gamma;
             }
 
             Real primitive(Real) const override {
