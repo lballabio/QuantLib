@@ -24,6 +24,7 @@
 #ifndef quantlib_fx_event_variance_hpp
 #define quantlib_fx_event_variance_hpp
 
+#include <ql/experimental/fxslv/fxexpirycut.hpp>
 #include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
 #include <ql/time/calendar.hpp>
 #include <vector>
@@ -35,7 +36,9 @@ namespace QuantLib {
         move with the vol around it: bumping the ATM vols, or rolling the
         surface, keeps it constant.  The variance is in total-variance
         units (vol squared times years) and the time of day, a fraction of
-        the day in (0, 1), places the release within its date.
+        the day in (0, 1) on the New York clock (see FxExpiryCut), places
+        the release within its date: an option expiring on the event's
+        date sees the event only if it comes before the option's cut.
 
         Valuations are taken at the end of the day: an event is released
         by every valuation date on or after its date.
@@ -50,13 +53,16 @@ namespace QuantLib {
     std::vector<FxVolEvent> fxPendingEvents(const std::vector<FxVolEvent>& events,
                                             const Date& valuationDate);
 
-    //! ATM variance of the events released after the valuation date and before the expiry.
-    /*! An event on the expiry date comes after the expiry, as the
-        surface's trading time measures to the start of the expiry date.
-    */
+    //! Whether an event comes before the cut on the expiry date, i.e. the option sees it.
+    bool fxEventPrecedesExpiry(const FxVolEvent& event,
+                               const Date& expiry,
+                               const FxExpiryCut& cut);
+
+    //! ATM variance of the events released after the valuation date and before the expiry cut.
     Real fxEventVariance(const std::vector<FxVolEvent>& events,
                          const Date& valuationDate,
-                         const Date& expiry);
+                         const Date& expiry,
+                         const FxExpiryCut& cut);
 
     //! Trading time whose events release their variances on a surface with the given ATM pillars
     /*! The variance surface interpolates total variance linearly in
@@ -67,6 +73,7 @@ namespace QuantLib {
         \f[
             r_i = \frac{w_i - w_{i-1} - \sum_{e \in (i-1, i]} v_e}{\tau_i - \tau_{i-1}},
         \f]
+        where an event belongs to the first pillar whose cut it precedes.
         with \f$ w_i \f$ the ATM total variance of pillar \f$ i \f$ and
         \f$ \tau \f$ the trading time without events, and each weight is
         \f$ W_e = v_e / r_i \f$.  Events after the last pillar use its
@@ -75,12 +82,22 @@ namespace QuantLib {
 
         Only events pending at the end of the reference date are used.
         The holiday weight and calendar are those of the trading time.
+
+        The trading time measures an expiry to the start of its date, so
+        its events are placed on the clock of the cut, New York time less
+        the cut's time of day: an event at time of day \f$ s \f$ on
+        date \f$ D \f$ is released at \f$ D + s - c \f$ for a cut at
+        \f$ c \f$, and an expiry on \f$ D \f$ sees it exactly when it
+        precedes the cut.  An event at the cut itself is released just
+        after the start of its date.  The base trading time does not move:
+        days still run from midnight to midnight.
     */
     ext::shared_ptr<TradingTimeTermStructure>
     makeFxEventTradingTime(const Date& referenceDate,
                            const std::vector<Date>& pillars,
                            const std::vector<Volatility>& atmVols,
                            const std::vector<FxVolEvent>& events,
+                           const FxExpiryCut& cut,
                            const Calendar& calendar,
                            Real holidayWeight);
 

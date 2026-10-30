@@ -26,6 +26,7 @@
 
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/experimental/fxslv/fxexpirycut.hpp>
 #include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
 #include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
@@ -56,6 +57,10 @@ namespace QuantLib {
          * This needs to be derived from a subclass of BlackVolTermStructure to allow the usage
          * of the AnalyticEuropeanEngine and therefore we derive from BlackVarianceTermStructure
          * as the interpolation is done in variance space.
+         *
+         * The quotes refer to options expiring at the given cut, and the events of the trading
+         * time must be placed for it, as makeFxEventTradingTime() does when given the same cut:
+         * an option expiring on an event's date then sees the event only if it precedes the cut.
          */
 
     static_assert(std::is_base_of_v<FxSmileSection, T>,
@@ -76,6 +81,7 @@ namespace QuantLib {
                           DeltaVolQuote::AtmType atmType,
                           FxRrBfQuotes::FlyType flyType,
                           const FxSettleConvention& settlement,
+                          const FxExpiryCut& cut,
                           const Calendar& cal = WeekendsOnly(),
                           BusinessDayConvention bdc = Following,
                           bool forceMonotoneVariance = true,
@@ -113,6 +119,8 @@ namespace QuantLib {
             return smileSections_;
         }
         const FxSettleConvention& settlement() const { return settlement_; }
+        //! The cut the quotes, pillars and trading-time events refer to.
+        const FxExpiryCut& expiryCut() const { return cut_; }
         Handle<YieldTermStructure> domesticDiscountCurve() const { return domTs_; };
         Handle<YieldTermStructure> foreignDiscountCurve() const { return forTs_; };
 
@@ -149,6 +157,7 @@ namespace QuantLib {
 
         const Handle<Quote> spot_;
         const FxSettleConvention settlement_;
+        const FxExpiryCut cut_;
         const std::vector<Date> pillars_;
         const Handle<YieldTermStructure> forTs_;
         const Handle<YieldTermStructure> domTs_;
@@ -183,12 +192,13 @@ namespace QuantLib {
                                             DeltaVolQuote::AtmType atmType,
                                             FxRrBfQuotes::FlyType flyType,
                                             const FxSettleConvention& settlement,
+                                            const FxExpiryCut& cut,
                                             const Calendar& cal,
                                             BusinessDayConvention bdc,
                                             bool forceMonotoneVariance,
                                             Time nodeSpacing)
     : BlackVarianceTermStructure(referenceDate, cal, bdc, Actual365Fixed()), spot_(spot),
-      settlement_(settlement),
+      settlement_(settlement), cut_(cut),
       pillars_(pillars), forTs_(forTs), domTs_(domTs), timeTs_(timeTs), nodeSpacing_(nodeSpacing),
       maxDate_(pillars.back()) {
         QL_REQUIRE(pillars.size() == atms.size(), "mismatch between date vector and vol vector");
@@ -451,6 +461,7 @@ namespace QuantLib {
                                DeltaVolQuote::AtmType atmType,
                                FxRrBfQuotes::FlyType flyType,
                                const FxSettleConvention& settlement,
+                               const FxExpiryCut& cut,
                                const Calendar& cal = WeekendsOnly(),
                                BusinessDayConvention bdc = Following,
                                bool forceMonotoneVariance = true,
@@ -475,13 +486,14 @@ namespace QuantLib {
                                                       DeltaVolQuote::AtmType atmType,
                                                       FxRrBfQuotes::FlyType flyType,
                                                       const FxSettleConvention& settlement,
+                                                      const FxExpiryCut& cut,
                                                       const Calendar& cal,
                                                       BusinessDayConvention bdc,
                                                       bool forceMonotoneVariance,
                                                       Time nodeSpacing)
     : fxVarianceSurface<T>(referenceDate, spot, pillars, atms, rrs, bfs, deltas, forTs, domTs,
-                           timeTs, deltaType, atmType, flyType, settlement, cal, bdc, forceMonotoneVariance,
-                           nodeSpacing) {}
+                           timeTs, deltaType, atmType, flyType, settlement, cut, cal, bdc,
+                           forceMonotoneVariance, nodeSpacing) {}
 
 
     template <class T>
@@ -557,6 +569,7 @@ namespace QuantLib {
                              DeltaVolQuote::AtmType atmType,
                              FxRrBfQuotes::FlyType flyType,
                              const FxSettleConvention& settlement,
+                             const FxExpiryCut& cut,
                              const Calendar& cal = WeekendsOnly(),
                              BusinessDayConvention bdc = Following,
                              bool forceMonotoneVariance = true,
@@ -582,13 +595,14 @@ namespace QuantLib {
                                                   DeltaVolQuote::AtmType atmType,
                                                   FxRrBfQuotes::FlyType flyType,
                                                   const FxSettleConvention& settlement,
+                                                  const FxExpiryCut& cut,
                                                   const Calendar& cal,
                                                   BusinessDayConvention bdc,
                                                   bool forceMonotoneVariance,
                                                   Time nodeSpacing)
     : fxVarianceSurface<T>(referenceDate, spot, pillars, atms, rrs, bfs, deltas, forTs, domTs,
-                           timeTs, deltaType, atmType, flyType, settlement, cal, bdc, forceMonotoneVariance,
-                           nodeSpacing) {}
+                           timeTs, deltaType, atmType, flyType, settlement, cut, cal, bdc,
+                           forceMonotoneVariance, nodeSpacing) {}
 
 
     template <class T>

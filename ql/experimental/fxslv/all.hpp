@@ -4,6 +4,7 @@
 #include <ql/experimental/fxslv/fxcostsmilesection.hpp>
 #include <ql/experimental/fxslv/fxdeltaconverter.hpp>
 #include <ql/experimental/fxslv/fxeventvariance.hpp>
+#include <ql/experimental/fxslv/fxexpirycut.hpp>
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
 #include <ql/experimental/fxslv/fxpnlexplain.hpp>
 #include <ql/experimental/fxslv/fxrootbracketing.hpp>

@@ -710,6 +710,7 @@
     <ClInclude Include="ql\experimental\fxslv\fxcostsmilesection.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxdeltaconverter.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxeventvariance.hpp" />
+    <ClInclude Include="ql\experimental\fxslv\fxexpirycut.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxlocalvolsurface.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxpnlexplain.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxrootbracketing.hpp" />

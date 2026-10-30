@@ -162,7 +162,7 @@ namespace {
                 today, spot, pillars, atms, rrs, bfs, deltas,
                 eurTs, usdTs, timeTs,
                 deltaType, atmType, flyType,
-                FxSettleConvention(WeekendsOnly(), 2),
+                FxSettleConvention(WeekendsOnly(), 2), FxExpiryCut(10),
                 WeekendsOnly(), Following, true);
             surface->enableExtrapolation();
 
@@ -606,7 +606,7 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
         today, spot, pillars, atms, rrs, bfs, deltas,
         eurTs, usdTs, timeTs,
         DeltaVolQuote::Fwd, DeltaVolQuote::AtmFwd, FxRrBfQuotes::SmileStrangle,
-        FxSettleConvention(calendar, 2),
+        FxSettleConvention(calendar, 2), FxExpiryCut(10),
         calendar, Following, true);
     volSurface->enableExtrapolation();
     Handle<BlackVolTermStructure> volHandle(volSurface);
@@ -825,7 +825,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceInTradingTime) {
     BOOST_CHECK_THROW(fxVarianceSurfaceNCP<TestSmileSection>(
                           m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.eurTs,
                           m.usdTs, m.timeTs, m.deltaType, m.atmType, m.flyType,
-                          FxSettleConvention(WeekendsOnly(), 2), WeekendsOnly(), Following,
+                          FxSettleConvention(WeekendsOnly(), 2), FxExpiryCut(10), WeekendsOnly(), Following,
                           true, 0.0),
                       Error);
 }
@@ -842,7 +842,8 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceEventBetweenPillars) {
             eventDate, timeOfDay, makeQuoteHandle(size))}));
     fxVarianceSurfaceNCP<TestSmileSection> surface(
         m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.eurTs, m.usdTs, timeTs,
-        m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2));
+        m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2),
+        FxExpiryCut(10));
 
     // the jump adds trading time at the rate variance accrues around it
     const Time te = (eventDate - m.today + timeOfDay) / 365.0, eps = 1.0e-7;
@@ -873,7 +874,8 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceShortAndLongTenors) {
         }
         return fxVarianceSurfaceNCP<TestSmileSection>(
             m.today, m.spot, pillars, atms, rrs, bfs, m.deltas, m.eurTs, m.usdTs, m.timeTs,
-            m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2));
+            m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2),
+        FxExpiryCut(10));
     };
 
     // between O/N and 1W at 7%, the std dev at the nodes is below 0.01
@@ -898,7 +900,8 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceTradingTimeReference) {
     auto surfaceWith = [&](const Handle<TradingTimeTermStructure>& timeTs) {
         return fxVarianceSurfaceNCP<TestSmileSection>(
             m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.eurTs, m.usdTs, timeTs,
-            m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2));
+            m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2),
+        FxExpiryCut(10));
     };
     const Date d(15, May, 2024);
 
@@ -956,7 +959,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceSettlementForward) {
     BOOST_REQUIRE_EQUAL(eurFromSpot->referenceDate(), spotDate);
     fxVarianceSurfaceNCP<TestSmileSection> fromSpot(
         m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, eurFromSpot, usdFromSpot,
-        m.timeTs, m.deltaType, m.atmType, m.flyType, settlement);
+        m.timeTs, m.deltaType, m.atmType, m.flyType, settlement, FxExpiryCut(10));
     for (const Date& d : {Date(20, February, 2024), friday, Date(15, May, 2024)}) {
         BOOST_CHECK_CLOSE(fromSpot.fwd(d), m.surface->fwd(d), 1.0e-12);
         for (Real k : {0.95, 1.0, 1.05})
@@ -973,6 +976,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceNodeSpacing) {
         return fxVarianceSurfaceNCP<TestSmileSection>(
             m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.eurTs, m.usdTs,
             m.timeTs, m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2),
+            FxExpiryCut(10),
             WeekendsOnly(), Following, true, spacing);
     };
     BOOST_CHECK_NO_THROW(surfaceWith(2.0 / 365.0));
@@ -1573,6 +1577,7 @@ namespace {
                                      DeltaVolQuote::AtmDeltaNeutral,
                                      FxRrBfQuotes::SmileStrangle,
                                      FxSettleConvention(WeekendsOnly(), 2),
+                                     FxExpiryCut(10),
                                      0.0};
         Date today = Date(2, January, 2024);  // a Tuesday
 
@@ -1698,6 +1703,65 @@ BOOST_AUTO_TEST_CASE(testFxEventVarianceIsHeldConstant) {
     BOOST_CHECK_THROW(explain.surface(tooMuch), Error);
 }
 
+BOOST_AUTO_TEST_CASE(testFxEventsOnExpiryDateFollowTheCut) {
+    BOOST_TEST_MESSAGE("Testing that an expiry sees the events of its date before its cut...");
+
+    ExplainMarket data;
+    const Explain explain(data.tenors, data.conventions);
+    const FxExpiryCut& cut = data.conventions.cut;  // New York 10:00
+    const Date wednesday(17, January, 2024);
+    const Real morning = 8.5 / 24.0, afternoon = 14.0 / 24.0;
+
+    // the release before the cut counts for the day's expiry, the one at the
+    // cut and the one after it only for later expiries
+    const std::vector<FxVolEvent> events = {
+        {wednesday, morning, 1.0e-5},
+        {wednesday, 10.0 / 24.0, 2.0e-5},
+        {wednesday, afternoon, 4.0e-5}};
+    BOOST_CHECK_CLOSE(fxEventVariance(events, data.today, wednesday, cut), 1.0e-5, 1.0e-12);
+    BOOST_CHECK_CLOSE(fxEventVariance(events, data.today, wednesday + 1, cut), 7.0e-5, 1.0e-12);
+    // a Tokyo 15:00 cut is 01:00 in New York: the morning release comes after it
+    BOOST_CHECK_EQUAL(fxEventVariance(events, data.today, wednesday, FxExpiryCut(1)), 0.0);
+    // times of day computed differently are the same instant
+    BOOST_CHECK(!fxEventPrecedesExpiry({wednesday, 600.0 / 1440.0, 1.0}, wednesday, cut));
+    BOOST_CHECK(!fxEventPrecedesExpiry({wednesday, 10.0 / 24.0 - 1.0e-12, 1.0}, wednesday, cut));
+    BOOST_CHECK(fxEventPrecedesExpiry({wednesday - 1, afternoon, 1.0}, wednesday, cut));
+
+    // on the surface: ATM variance released by an expiry over the day
+    // before, less that of the ordinary business day before it
+    auto jump = [&](const std::vector<FxVolEvent>& evs, const Date& day) {
+        FxVolMarket m = data.market();
+        m.events = evs;
+        const auto s = explain.surface(m);
+        return (s->atmVar(day) - s->atmVar(day - 1)) - (s->atmVar(day - 1) - s->atmVar(day - 2));
+    };
+    const Real v = 2.0e-5;
+    // the Wednesday expiry sees the morning event...
+    BOOST_CHECK_CLOSE(jump({{wednesday, morning, v}}, wednesday), v, 1.0e-6);
+    // ...and the Thursday one the afternoon and the at-the-cut events
+    BOOST_CHECK_CLOSE(jump({{wednesday, afternoon, v}}, wednesday + 1), v, 1.0e-6);
+    BOOST_CHECK_CLOSE(jump({{wednesday, 10.0 / 24.0, v}}, wednesday + 1), v, 1.0e-6);
+    BOOST_CHECK_SMALL(jump({{wednesday, afternoon, v}}, wednesday), 1.0e-12);
+
+    // on a pillar date, the event belongs to the pillar's interval only if it
+    // precedes the cut: the 1W pillar is Tuesday 9 January
+    const Date oneWeek = explain.pillars(data.today)[0];
+    auto variance = [&](const std::vector<FxVolEvent>& evs, const Date& d) {
+        FxVolMarket m = data.market();
+        m.events = evs;
+        return explain.surface(m)->atmVar(d);
+    };
+    // before the cut: released by the pillar, so the ATM variance the day
+    // before is lower; after it: released in the next interval
+    BOOST_CHECK_LT(variance({{oneWeek, morning, v}}, oneWeek - 1),
+                   variance({}, oneWeek - 1) - 0.5 * v);
+    BOOST_CHECK_CLOSE(variance({{oneWeek, afternoon, v}}, oneWeek - 1),
+                      variance({}, oneWeek - 1), 1.0e-10);
+    BOOST_CHECK_GT(variance({{oneWeek, afternoon, v}}, oneWeek + 1) -
+                       variance({{oneWeek, afternoon, v}}, oneWeek),
+                   variance({}, oneWeek + 1) - variance({}, oneWeek) + 0.5 * v);
+}
+
 BOOST_AUTO_TEST_CASE(testFxSurfaceRollHoldsEventlessVols) {
     BOOST_TEST_MESSAGE("Testing that the FX surface roll holds eventless vols by tenor...");
 
@@ -1719,7 +1783,7 @@ BOOST_AUTO_TEST_CASE(testFxSurfaceRollHoldsEventlessVols) {
         const std::vector<Date> pillars = explain.pillars(date);
         for (Size i = 0; i < pillars.size(); ++i) {
             const Real w = s * s * base.tradingTime(date, pillars[i]) +
-                           fxEventVariance(evs, date, pillars[i]);
+                           fxEventVariance(evs, date, pillars[i], FxExpiryCut(10));
             m.atms[i] = std::sqrt(w / dc.yearFraction(date, pillars[i]));
             // a smile flat in vol, so that every point rolls like the ATM
             m.riskReversals[i] = {0.0, 0.0};

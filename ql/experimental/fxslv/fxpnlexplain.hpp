@@ -25,6 +25,7 @@
 #define quantlib_fx_pnl_explain_hpp
 
 #include <ql/experimental/fxslv/fxeventvariance.hpp>
+#include <ql/experimental/fxslv/fxexpirycut.hpp>
 #include <ql/experimental/fxslv/fxtenorexpiry.hpp>
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
@@ -45,6 +46,7 @@ namespace QuantLib {
         DeltaVolQuote::AtmType atmType;
         FxRrBfQuotes::FlyType flyType;  //!< of the butterflies given in the markets
         FxSettleConvention settlement;
+        FxExpiryCut cut;  //!< of the quoted tenors, and so of the surfaces built
         Real holidayWeight = 0.0;  //!< trading-time weight of non-business days
     };
 
@@ -352,8 +354,10 @@ namespace QuantLib {
             const Time t1 = dc.yearFraction(next, pillarsNext[i]);
             const Time tau0 = baseToday.tradingTime(today.date, pillarsToday[i]);
             const Time tau1 = baseNext.tradingTime(next, pillarsNext[i]);
-            const Real events0 = fxEventVariance(today.events, today.date, pillarsToday[i]);
-            const Real events1 = fxEventVariance(today.events, next, pillarsNext[i]);
+            const Real events0 =
+                fxEventVariance(today.events, today.date, pillarsToday[i], conventions_.cut);
+            const Real events1 =
+                fxEventVariance(today.events, next, pillarsNext[i], conventions_.cut);
 
             std::vector<Volatility> p = smilePoints(market, i);
             for (auto& v : p) {
@@ -401,7 +405,7 @@ namespace QuantLib {
             market.date, makeQuoteHandle(market.spot), dates, atms, rrs, bfs,
             conventions_.deltas, market.foreignCurve, market.domesticCurve, timeTs,
             conventions_.deltaType, conventions_.atmType, FxRrBfQuotes::SmileStrangle,
-            conventions_.settlement, cal, Following, true);
+            conventions_.settlement, conventions_.cut, cal, Following, true);
         result->enableExtrapolation();
         if (!fxPendingEvents(market.events, market.date).empty()) {
             // the events release their variance on the surface's ATM pillars,
@@ -409,7 +413,8 @@ namespace QuantLib {
             std::vector<Volatility> fitted;
             for (const auto& d : dates)
                 fitted.push_back(result->atmVol(d));
-            timeTs.linkTo(makeFxEventTradingTime(market.date, dates, fitted, market.events, cal,
+            timeTs.linkTo(makeFxEventTradingTime(market.date, dates, fitted, market.events,
+                                                 result->expiryCut(), cal,
                                                  conventions_.holidayWeight));
         }
         return result;

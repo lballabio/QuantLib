@@ -1203,6 +1203,7 @@ set(QL_HEADERS
     experimental/fxslv/fxcostsmilesection.hpp
     experimental/fxslv/fxdeltaconverter.hpp
     experimental/fxslv/fxeventvariance.hpp
+    experimental/fxslv/fxexpirycut.hpp
     experimental/fxslv/fxlocalvolsurface.hpp
     experimental/fxslv/fxpnlexplain.hpp
     experimental/fxslv/fxrootbracketing.hpp

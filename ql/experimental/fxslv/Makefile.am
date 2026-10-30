@@ -7,6 +7,7 @@ this_include_HEADERS = \
     fxcostsmilesection.hpp \
     fxdeltaconverter.hpp \
     fxeventvariance.hpp \
+    fxexpirycut.hpp \
     fxlocalvolsurface.hpp \
     fxpnlexplain.hpp \
     fxrootbracketing.hpp \

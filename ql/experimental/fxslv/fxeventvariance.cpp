@@ -21,8 +21,25 @@
 #include <ql/experimental/fxslv/fxeventvariance.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <utility>
 
 namespace QuantLib {
+
+    namespace {
+
+        // the event on the clock of the cut, New York time less the cut,
+        // as a date and a time of day in (0, 1)
+        std::pair<Date, Real> onCutClock(const FxVolEvent& e, const FxExpiryCut& cut) {
+            const Real s = e.timeOfDay - cut.timeOfDay();
+            if (s > FxExpiryCut::sameInstant)
+                return {e.date, s};
+            if (s < -FxExpiryCut::sameInstant)
+                return {e.date - 1, s + 1.0};
+            // at the cut: after the expiry on its date, so just after its start
+            return {e.date, FxExpiryCut::sameInstant};
+        }
+
+    }
 
     std::vector<FxVolEvent> fxPendingEvents(const std::vector<FxVolEvent>& events,
                                             const Date& valuationDate) {
@@ -37,12 +54,19 @@ namespace QuantLib {
         return pending;
     }
 
+    bool fxEventPrecedesExpiry(const FxVolEvent& event,
+                               const Date& expiry,
+                               const FxExpiryCut& cut) {
+        return cut.precedes(event.date, event.timeOfDay, expiry);
+    }
+
     Real fxEventVariance(const std::vector<FxVolEvent>& events,
                          const Date& valuationDate,
-                         const Date& expiry) {
+                         const Date& expiry,
+                         const FxExpiryCut& cut) {
         Real variance = 0.0;
         for (const auto& e : fxPendingEvents(events, valuationDate))
-            if (e.date < expiry)
+            if (fxEventPrecedesExpiry(e, expiry, cut))
                 variance += e.variance;
         return variance;
     }
@@ -52,6 +76,7 @@ namespace QuantLib {
                            const std::vector<Date>& pillars,
                            const std::vector<Volatility>& atmVols,
                            const std::vector<FxVolEvent>& events,
+                           const FxExpiryCut& cut,
                            const Calendar& calendar,
                            Real holidayWeight) {
         QL_REQUIRE(!pillars.empty(), "no pillars given");
@@ -78,7 +103,8 @@ namespace QuantLib {
             const Real w = atmVols[i] * atmVols[i] * dc.yearFraction(referenceDate, pillars[i]);
             Real eventVariance = 0.0;
             for (const auto& e : pending)
-                if (e.date >= datePrev && e.date < pillars[i])
+                if (!fxEventPrecedesExpiry(e, datePrev, cut) &&
+                    fxEventPrecedesExpiry(e, pillars[i], cut))
                     eventVariance += e.variance;
             const Time dtau = base.tradingTime(datePrev, pillars[i]);
             QL_REQUIRE(dtau > 0.0,
@@ -95,12 +121,13 @@ namespace QuantLib {
             if (e.variance == 0.0)
                 continue;
             Size i = 0;
-            while (i < n - 1 && e.date >= pillars[i])
+            while (i < n - 1 && !fxEventPrecedesExpiry(e, pillars[i], cut))
                 ++i;
             // weights are in trading days
             const Real weight = e.variance / rates[i] * 365.0;
+            const auto [date, timeOfDay] = onCutClock(e, cut);
             ttEvents.push_back(ext::make_shared<JumpTradingTimeEvent>(
-                e.date, e.timeOfDay, Handle<Quote>(ext::make_shared<SimpleQuote>(weight))));
+                date, timeOfDay, Handle<Quote>(ext::make_shared<SimpleQuote>(weight))));
         }
         return ext::make_shared<TradingTimeTermStructure>(referenceDate, calendar, holidayWeight,
                                                           std::move(ttEvents));

@@ -3315,6 +3315,9 @@
     <ClInclude Include="ql\experimental\fxslv\fxeventvariance.hpp">
       <Filter>experimental\fxslv</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxexpirycut.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\fxslv\fxlocalvolsurface.hpp">
       <Filter>experimental\fxslv</Filter>
     </ClInclude>

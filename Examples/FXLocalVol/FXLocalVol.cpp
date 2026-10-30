@@ -222,7 +222,7 @@ int main(int, char*[]) {
         // ──────────────────────────────────────────────────────────────────────
         auto fxVolSurface = ext::make_shared<fxVarianceSurfaceNCP<FxSabrSmileSection>>(today, spot, pillars, atms, rrs, bfs, deltas,
                                                                                        eurTs, usdTs, timeTs, deltaType, atmType, flyType,
-                                                                                       FxSettleConvention(calendar, 2),
+                                                                                       FxSettleConvention(calendar, 2), FxExpiryCut(10),
                                                                                        calendar, Following, true);
 
         fxVolSurface->enableExtrapolation();
