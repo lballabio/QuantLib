@@ -53,6 +53,12 @@ namespace QuantLib {
     */
     class EquityTotalReturnSwap : public Swap {
       public:
+        //! Equity return settlement frequency.
+        enum EquityPaymentMode {
+            AtMaturity, //!< Settle the return over the full schedule at maturity.
+            Periodic    //!< Settle each schedule period using a fixed notional.
+        };
+
         EquityTotalReturnSwap(Type type,
                               Real nominal,
                               Schedule schedule,
@@ -77,9 +83,36 @@ namespace QuantLib {
                               BusinessDayConvention paymentConvention = Unadjusted,
                               Natural paymentDelay = 0);
 
+        EquityTotalReturnSwap(Type type,
+                              Real nominal,
+                              Schedule schedule,
+                              ext::shared_ptr<EquityIndex> equityIndex,
+                              const ext::shared_ptr<IborIndex>& interestRateIndex,
+                              DayCounter dayCounter,
+                              Rate margin,
+                              EquityPaymentMode equityPaymentMode,
+                              Real gearing = 1.0,
+                              Calendar paymentCalendar = Calendar(),
+                              BusinessDayConvention paymentConvention = Unadjusted,
+                              Natural paymentDelay = 0);
+
+        EquityTotalReturnSwap(Type type,
+                              Real nominal,
+                              Schedule schedule,
+                              ext::shared_ptr<EquityIndex> equityIndex,
+                              const ext::shared_ptr<OvernightIndex>& interestRateIndex,
+                              DayCounter dayCounter,
+                              Rate margin,
+                              EquityPaymentMode equityPaymentMode,
+                              Real gearing = 1.0,
+                              Calendar paymentCalendar = Calendar(),
+                              BusinessDayConvention paymentConvention = Unadjusted,
+                              Natural paymentDelay = 0);
+
         //! \name Inspectors
         //@{
         Type type() const { return type_; }
+        EquityPaymentMode equityPaymentMode() const { return equityPaymentMode_; }
         Real nominal() const { return nominal_; }
         const ext::shared_ptr<EquityIndex>& equityIndex() const { return equityIndex_; } 
         const ext::shared_ptr<InterestRateIndex>& interestRateIndex() const { return interestRateIndex_; }
@@ -110,6 +143,7 @@ namespace QuantLib {
                               Schedule schedule,
                               DayCounter dayCounter,
                               Rate margin,
+                              EquityPaymentMode equityPaymentMode,
                               Real gearing = 1.0,
                               Calendar paymentCalendar = Calendar(),
                               BusinessDayConvention paymentConvention = Unadjusted,
@@ -118,6 +152,7 @@ namespace QuantLib {
         ext::shared_ptr<EquityIndex> equityIndex_;
         ext::shared_ptr<InterestRateIndex> interestRateIndex_;
         Type type_;
+        EquityPaymentMode equityPaymentMode_ = AtMaturity;
         Real nominal_;
         Schedule schedule_;
         DayCounter dayCounter_;

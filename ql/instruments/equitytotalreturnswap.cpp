@@ -27,25 +27,45 @@ Copyright (C) 2023 Marcin Rybacki
 namespace QuantLib {
 
     namespace {
-        ext::shared_ptr<CashFlow>
-        createEquityCashFlow(const Schedule& schedule,
-                             const ext::shared_ptr<EquityIndex>& equityIndex,
-                             Real nominal,
-                             const Calendar& paymentCalendar,
-                             BusinessDayConvention paymentConvention,
-                             Natural paymentDelay) {
-            Date startDate = schedule.startDate();
-            Date endDate = schedule.endDate();
+        Leg createEquityLeg(const Schedule& schedule,
+                            const ext::shared_ptr<EquityIndex>& equityIndex,
+                            Real nominal,
+                            EquityTotalReturnSwap::EquityPaymentMode equityPaymentMode,
+                            const Calendar& paymentCalendar,
+                            BusinessDayConvention paymentConvention,
+                            Natural paymentDelay) {
+            QL_REQUIRE(schedule.size() >= 2, "Schedule must contain at least two dates");
 
             Calendar cal = paymentCalendar;
             if (cal.empty()) {
                 QL_REQUIRE(!schedule.calendar().empty(), "Calendar in schedule cannot be empty");
                 cal = schedule.calendar();
             }
-            Date paymentDate =
-                cal.advance(endDate, paymentDelay, Days, paymentConvention, schedule.endOfMonth());
-            return ext::make_shared<EquityCashFlow>(nominal, equityIndex, startDate, endDate,
-                                                    paymentDate);
+
+            Leg leg;
+            const auto addCashFlow = [&](const Date& startDate, const Date& endDate) {
+                Date paymentDate = cal.advance(endDate, paymentDelay, Days, paymentConvention,
+                                               schedule.endOfMonth());
+                leg.push_back(ext::make_shared<EquityCashFlow>(
+                    nominal, equityIndex, startDate, endDate, paymentDate));
+            };
+
+            switch (equityPaymentMode) {
+                case EquityTotalReturnSwap::AtMaturity:
+                    addCashFlow(schedule.startDate(), schedule.endDate());
+                    break;
+                case EquityTotalReturnSwap::Periodic:
+                    leg.reserve(schedule.size() - 1);
+                    for (Size i = 1; i < schedule.size(); ++i) {
+                        QL_REQUIRE(schedule[i] > schedule[i - 1],
+                                   "Schedule dates must be strictly increasing");
+                        addCashFlow(schedule[i - 1], schedule[i]);
+                    }
+                    break;
+                default:
+                    QL_FAIL("unknown equity payment mode");
+            }
+            return leg;
         }
 
         template <typename IndexType, typename LegType>
@@ -77,20 +97,22 @@ namespace QuantLib {
         Schedule schedule,
         DayCounter dayCounter,
         Rate margin,
+        EquityPaymentMode equityPaymentMode,
         Real gearing,
         Calendar paymentCalendar,
         BusinessDayConvention paymentConvention,
         Natural paymentDelay)
     : Swap(2), equityIndex_(std::move(equityIndex)),
-      interestRateIndex_(std::move(interestRateIndex)), type_(type), nominal_(nominal),
+      interestRateIndex_(std::move(interestRateIndex)), type_(type),
+      equityPaymentMode_(equityPaymentMode), nominal_(nominal),
       schedule_(std::move(schedule)), dayCounter_(std::move(dayCounter)), margin_(margin),
       gearing_(gearing), paymentCalendar_(std::move(paymentCalendar)),
       paymentConvention_(paymentConvention), paymentDelay_(paymentDelay) {
 
         QL_REQUIRE(!(nominal_ < 0.0), "Nominal cannot be negative");
 
-        legs_[0].push_back(createEquityCashFlow(schedule_, equityIndex_, nominal_, paymentCalendar_,
-                                                paymentConvention_, paymentDelay_));
+        legs_[0] = createEquityLeg(schedule_, equityIndex_, nominal_, equityPaymentMode_,
+                                   paymentCalendar_, paymentConvention_, paymentDelay_);
         for (auto i = legs_[0].begin(); i < legs_[0].end(); ++i)
             registerWith(*i);
 
@@ -119,6 +141,22 @@ namespace QuantLib {
                                                  Calendar paymentCalendar,
                                                  BusinessDayConvention paymentConvention,
                                                  Natural paymentDelay)
+    : EquityTotalReturnSwap(type, nominal, std::move(schedule), std::move(equityIndex),
+                            interestRateIndex, std::move(dayCounter), margin, AtMaturity, gearing,
+                            std::move(paymentCalendar), paymentConvention, paymentDelay) {}
+
+    EquityTotalReturnSwap::EquityTotalReturnSwap(Type type,
+                                                 Real nominal,
+                                                 Schedule schedule,
+                                                 ext::shared_ptr<EquityIndex> equityIndex,
+                                                 const ext::shared_ptr<IborIndex>& interestRateIndex,
+                                                 DayCounter dayCounter,
+                                                 Rate margin,
+                                                 EquityPaymentMode equityPaymentMode,
+                                                 Real gearing,
+                                                 Calendar paymentCalendar,
+                                                 BusinessDayConvention paymentConvention,
+                                                 Natural paymentDelay)
     : EquityTotalReturnSwap(std::move(equityIndex),
                             interestRateIndex,
                             type,
@@ -126,6 +164,7 @@ namespace QuantLib {
                             std::move(schedule),
                             std::move(dayCounter),
                             margin,
+                            equityPaymentMode,
                             gearing,
                             std::move(paymentCalendar),
                             paymentConvention,
@@ -148,6 +187,22 @@ namespace QuantLib {
                                                  Calendar paymentCalendar,
                                                  BusinessDayConvention paymentConvention,
                                                  Natural paymentDelay)
+    : EquityTotalReturnSwap(type, nominal, std::move(schedule), std::move(equityIndex),
+                            interestRateIndex, std::move(dayCounter), margin, AtMaturity, gearing,
+                            std::move(paymentCalendar), paymentConvention, paymentDelay) {}
+
+    EquityTotalReturnSwap::EquityTotalReturnSwap(Type type,
+                                                 Real nominal,
+                                                 Schedule schedule,
+                                                 ext::shared_ptr<EquityIndex> equityIndex,
+                                                 const ext::shared_ptr<OvernightIndex>& interestRateIndex,
+                                                 DayCounter dayCounter,
+                                                 Rate margin,
+                                                 EquityPaymentMode equityPaymentMode,
+                                                 Real gearing,
+                                                 Calendar paymentCalendar,
+                                                 BusinessDayConvention paymentConvention,
+                                                 Natural paymentDelay)
     : EquityTotalReturnSwap(std::move(equityIndex),
                             interestRateIndex,
                             type,
@@ -155,6 +210,7 @@ namespace QuantLib {
                             std::move(schedule),
                             std::move(dayCounter),
                             margin,
+                            equityPaymentMode,
                             gearing,
                             std::move(paymentCalendar),
                             paymentConvention,

@@ -19,6 +19,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/equitytotalreturnswap.hpp>
+#include <ql/cashflows/equitycashflow.hpp>
 #include <ql/currencies/america.hpp>
 #include <ql/indexes/equityindex.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
@@ -94,6 +95,26 @@ struct CommonVars {
 
         spot = ext::make_shared<SimpleQuote>(8700.0);
         spotHandle.linkTo(spot);
+    }
+
+    ext::shared_ptr<EquityTotalReturnSwap> createTRSWithMode(
+        Swap::Type type, const Schedule& schedule, bool useOvernightIndex,
+        EquityTotalReturnSwap::EquityPaymentMode mode, Rate margin = 0.0,
+        Natural paymentDelay = 0, Calendar paymentCalendar = Calendar()) {
+        if (paymentCalendar.empty())
+            paymentCalendar = schedule.calendar();
+        ext::shared_ptr<EquityTotalReturnSwap> swap;
+        if (useOvernightIndex) {
+            swap = ext::make_shared<EquityTotalReturnSwap>(
+                type, 100000.0, schedule, equityIndex, sofr, dayCount, margin, mode,
+                1.0, paymentCalendar, Following, paymentDelay);
+        } else {
+            swap = ext::make_shared<EquityTotalReturnSwap>(
+                type, 100000.0, schedule, equityIndex, usdLibor, dayCount, margin, mode,
+                1.0, paymentCalendar, Following, paymentDelay);
+        }
+        swap->setPricingEngine(discountEngine);
+        return swap;
     }
 
     ext::shared_ptr<EquityTotalReturnSwap> createTRS(Swap::Type type,
@@ -211,6 +232,131 @@ void checkNPVCalculation(Swap::Type type,
                     << "    NPV from summing legs:    " << equityLegNPV + interestLegNPV << "\n");
 }
 
+
+BOOST_AUTO_TEST_CASE(testPeriodicEquityCashFlows) {
+    CommonVars vars;
+    const std::vector<Date> dates = {Date(5, January, 2023), Date(5, April, 2023),
+                                     Date(5, July, 2023), Date(5, October, 2023),
+                                     Date(5, January, 2024)};
+    const Schedule schedule(dates, vars.calendar, Unadjusted, Unadjusted,
+                            3 * Months, DateGeneration::Forward, false);
+    Settings::instance().evaluationDate() = Date(8, January, 2024);
+    const Real levels[] = {100.0, 110.0, 99.0, 118.8, 118.8};
+    const Real amounts[] = {10000.0, -10000.0, 20000.0, 0.0};
+    for (Size i = 0; i < dates.size(); ++i)
+        vars.equityIndex->addFixing(dates[i], levels[i], true);
+
+    for (bool overnight : {false, true}) {
+        auto swap = vars.createTRSWithMode(Swap::Receiver, schedule, overnight,
+                                           EquityTotalReturnSwap::Periodic);
+        BOOST_CHECK_EQUAL(swap->equityPaymentMode(), EquityTotalReturnSwap::Periodic);
+        BOOST_REQUIRE_EQUAL(swap->equityLeg().size(), 4);
+        BOOST_REQUIRE_EQUAL(swap->interestRateLeg().size(), 4);
+        for (Size i = 0; i < 4; ++i) {
+            auto flow = ext::dynamic_pointer_cast<EquityCashFlow>(swap->equityLeg()[i]);
+            BOOST_REQUIRE(flow);
+            BOOST_CHECK_EQUAL(flow->baseDate(), dates[i]);
+            BOOST_CHECK_EQUAL(flow->fixingDate(), dates[i + 1]);
+            BOOST_CHECK_EQUAL(flow->date(), dates[i + 1]);
+            BOOST_CHECK_EQUAL(flow->notional(), 100000.0);
+            BOOST_CHECK(flow->growthOnly());
+            BOOST_CHECK_SMALL(flow->amount() - amounts[i], 1.0e-8);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testEquityPaymentModesAndDates) {
+    CommonVars vars;
+    const Schedule schedule = MakeSchedule().from(Date(31, January, 2023))
+        .to(Date(31, January, 2024)).withTenor(3 * Months)
+        .withCalendar(vars.calendar).withConvention(Following).backwards();
+    const std::vector<Date> paymentDates = {Date(3, May, 2023), Date(2, August, 2023),
+                                           Date(2, November, 2023), Date(2, February, 2024)};
+    for (bool overnight : {false, true}) {
+        auto legacy = vars.createTRS(Swap::Receiver, schedule, overnight, 0.001,
+                                     100000.0, 1.0, 2);
+        auto maturity = vars.createTRSWithMode(Swap::Receiver, schedule, overnight,
+                                               EquityTotalReturnSwap::AtMaturity, 0.001, 2);
+        BOOST_CHECK_EQUAL(legacy->equityPaymentMode(), EquityTotalReturnSwap::AtMaturity);
+        BOOST_REQUIRE_EQUAL(legacy->equityLeg().size(), 1);
+        BOOST_REQUIRE_EQUAL(maturity->equityLeg().size(), 1);
+        BOOST_CHECK_EQUAL(maturity->equityLeg()[0]->date(), paymentDates.back());
+        BOOST_CHECK_SMALL(legacy->NPV() - maturity->NPV(), 1.0e-8);
+        BOOST_CHECK_SMALL(legacy->equityLeg()[0]->amount() -
+                          maturity->equityLeg()[0]->amount(), 1.0e-8);
+
+        {
+            const Calendar& cal = vars.calendar;
+            auto periodic = vars.createTRSWithMode(Swap::Receiver, schedule, overnight,
+                                                   EquityTotalReturnSwap::Periodic, 0.001, 2, cal);
+            BOOST_REQUIRE_EQUAL(periodic->equityLeg().size(), paymentDates.size());
+            for (Size i = 0; i < paymentDates.size(); ++i) {
+                BOOST_CHECK_EQUAL(periodic->equityLeg()[i]->date(), paymentDates[i]);
+                BOOST_CHECK_EQUAL(periodic->interestRateLeg()[i]->date(), paymentDates[i]);
+                BOOST_CHECK_SMALL(periodic->interestRateLeg()[i]->amount() -
+                                  legacy->interestRateLeg()[i]->amount(), 1.0e-8);
+            }
+        }
+        const Schedule singlePeriod(std::vector<Date>{schedule[0], schedule[1]}, vars.calendar,
+                                    Following, Following, 3 * Months, DateGeneration::Forward, false);
+        auto single = vars.createTRSWithMode(Swap::Receiver, singlePeriod, overnight,
+                                             EquityTotalReturnSwap::Periodic, 0.001, 2);
+        auto bullet = vars.createTRSWithMode(Swap::Receiver, singlePeriod, overnight,
+                                             EquityTotalReturnSwap::AtMaturity, 0.001, 2);
+        BOOST_REQUIRE_EQUAL(single->equityLeg().size(), 1);
+        BOOST_CHECK_SMALL(single->NPV() - bullet->NPV(), 1.0e-8);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPeriodicValuation) {
+    BOOST_TEST_MESSAGE("Testing periodic valuation...");
+    CommonVars vars;
+    const Schedule schedule = MakeSchedule().from(Date(31, January, 2023))
+        .to(Date(31, January, 2024)).withTenor(3 * Months)
+        .withCalendar(vars.calendar).withConvention(Following).backwards();
+
+    BOOST_TEST_MESSAGE("Evaluation date: "<< Settings::instance().evaluationDate());
+    BOOST_TEST_MESSAGE("Discount curve reference date:"<< vars.interestHandle->referenceDate());
+
+    //select overnight-index or term-index financing
+    for (bool overnight : {false, true}) {
+        for (Swap::Type type : {Swap::Receiver, Swap::Payer}) {
+
+            //Requests periodic equity settlements. Instead of accumulating the entire equity return
+            //into one payment at maturity, the implementation should create equity payments for each period.
+            auto swap = vars.createTRSWithMode(type, schedule, overnight,
+                                               EquityTotalReturnSwap::Periodic, 0.001, 2);
+            Real expectedEquityNPV = 0.0;
+            for (Size i = 1; i < schedule.size(); ++i) {
+                // Flat carry is r - q; calculate independently of cash-flow amount().
+                // The analytical model assumes a flat continuously compounded equity carry
+                //dt is expressed in fraction of years
+                Time dt = vars.dayCount.yearFraction(schedule[i - 1], schedule[i]);
+
+                //calculate the equity payment date. Here, the delay is two business days.
+                Date payment = vars.calendar.advance(schedule[i], 2, Days, Following);
+
+                //calculate the periodic equity return, discount the equity cash flow
+                expectedEquityNPV += 100000.0 * (std::exp((0.0375 - 0.005) * dt) - 1.0)
+                    * vars.interestHandle->discount(payment);
+            }
+            Real sign = type == Swap::Receiver ? 1.0 : -1.0;
+            BOOST_CHECK_SMALL(swap->equityLegNPV() - sign * expectedEquityNPV, 1.0e-8);
+
+            //The legNPV helper values the financing-leg cash flows that the swap implementation has already constructed.
+            BOOST_CHECK_SMALL(swap->interestRateLegNPV() +
+                              sign * legNPV(swap->interestRateLeg(), vars.interestHandle), 1.0e-8);
+
+            //SwapNPV - EquityLegNPV - InterestRateLegNPV = 0
+            BOOST_CHECK_SMALL(swap->NPV() - swap->equityLegNPV() -
+                              swap->interestRateLegNPV(), 1.0e-8);
+
+            auto par = vars.createTRSWithMode(type, schedule, overnight,
+                                              EquityTotalReturnSwap::Periodic, swap->fairMargin(), 2);
+            BOOST_CHECK_SMALL(par->NPV(), 1.0e-8);
+        }
+    }
+}
 
 BOOST_AUTO_TEST_CASE(testFairMargin) {
     BOOST_TEST_MESSAGE("Testing fair margin...");
