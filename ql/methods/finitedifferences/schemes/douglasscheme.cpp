@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -37,13 +37,13 @@ namespace QuantLib {
         Array y = a + dt_*map_->apply(a);
         bcSet_.applyAfterApplying(y);
 
-        for (Size i=0; i < map_->size(); ++i) {
-            Array rhs = y - theta_*dt_*map_->apply_direction(i, a);
+        for (auto i=0U; i < map_->size(); ++i) {
+            auto rhs = y - theta_*dt_*map_->apply_direction(i, a);
             y = map_->solve_splitting(i, rhs, -theta_*dt_);
         }
         bcSet_.applyAfterSolving(y);
 
-        a = y;
+        a = std::move(y);
     }
 
     void DouglasScheme::setStep(Time dt) {

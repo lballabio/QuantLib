@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -103,6 +103,28 @@ BOOST_AUTO_TEST_CASE(testInverse) {
                     << "    calculated: " << calculated << "\n"
                     << "    expected:   " << expected);
 
+}
+
+BOOST_AUTO_TEST_CASE(testTrivialOrder) {
+    BOOST_TEST_MESSAGE("Testing FFT of size 1 (order 0)...");
+    // min_order(1) is 0; constructing an FFT of order 0 used to write
+    // out of bounds in the constructor.  A size-1 transform reduces to
+    // a copy of the single input element.
+    BOOST_CHECK_EQUAL(FastFourierTransform::min_order(1), 0U);
+
+    typedef std::complex<Real> cx;
+    FastFourierTransform fft(0);
+    BOOST_CHECK_EQUAL(fft.output_size(), 1U);
+
+    cx a[] = { cx(2.5, -1.5) };
+    cx b[1];
+    fft.transform(a, a+1, b);
+    if (std::fabs(b[0].real() - a[0].real()) > 1.0e-12 ||
+        std::fabs(b[0].imag() - a[0].imag()) > 1.0e-12)
+        BOOST_ERROR("Size-1 FFT\n"
+                    << std::setprecision(16) << std::scientific
+                    << "    calculated: " << b[0] << "\n"
+                    << "    expected:   " << a[0]);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -21,6 +21,7 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
 #include <ql/experimental/callablebonds/callablebond.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <utility>
@@ -65,6 +66,8 @@ namespace QuantLib {
 
         QL_REQUIRE(callabilityDates.size() == callabilityPrices.size(),
                    "different number of callability dates and prices");
+        QL_REQUIRE(callabilityDates.size() == callabilityTypes.size(),
+                   "different number of callability dates and types");
         QL_REQUIRE(couponDates.size() == couponAmounts.size(),
                    "different number of coupon dates and amounts");
     }
@@ -359,11 +362,14 @@ namespace QuantLib {
                                  compounding,
                                  frequency);
 
-        if ( P == 0.0 )
+        Real accrued = accruedAmount();
+        Real dirtyP = P + accrued;
+
+        if ( dirtyP == 0.0 )
             return 0;
         else
             {
-                return (Pmm-Ppp)/(2*P*bump);
+                return (Pmm-Ppp)/(2*dirtyP*bump);
             }
     }
 
@@ -391,11 +397,14 @@ namespace QuantLib {
                                  compounding,
                                  frequency);
 
-        if ( P == 0.0 )
+        Real accrued = accruedAmount();
+        Real dirtyP = P + accrued;
+
+        if ( dirtyP == 0.0 )
             return 0;
         else
             {
-                return (Ppp + Pmm - 2*P) / ( std::pow(bump,2) * P);
+                return (Ppp + Pmm - 2*P) / ( squared(bump) * dirtyP);
             }
 
     }
@@ -432,8 +441,10 @@ namespace QuantLib {
 
         arguments->callabilityPrices.clear();
         arguments->callabilityDates.clear();
+        arguments->callabilityTypes.clear();
         arguments->callabilityPrices.reserve(putCallSchedule_.size());
         arguments->callabilityDates.reserve(putCallSchedule_.size());
+        arguments->callabilityTypes.reserve(putCallSchedule_.size());
 
         arguments->paymentDayCounter = paymentDayCounter_;
         arguments->frequency = frequency_;
@@ -442,41 +453,38 @@ namespace QuantLib {
         for (const auto& i : putCallSchedule_) {
             if (!i->hasOccurred(settlement, false)) {
                 arguments->callabilityDates.push_back(i->date());
+                arguments->callabilityTypes.push_back(i->type());
                 arguments->callabilityPrices.push_back(i->price().amount());
 
                 if (i->price().type() == Bond::Price::Clean) {
-                    /* calling accrued() forces accrued interest to be zero
-                       if future option date is also coupon date, so that dirty
-                       price = clean price. Use here because callability is
-                       always applied before coupon in the tree engine.
-                    */
-                    arguments->callabilityPrices.back() += this->accrued(i->date());
+                    /* Convert clean call price to dirty using accrued interest
+                       at the call date. We ignore ex-coupon conventions here
+                       because the call is an issuer action governed by the
+                       indenture: the holder receives the call price plus accrued
+                       from the last payment date. Using market (ex-coupon) accrued
+                       would create an inconsistency with the tree's continuation
+                       value, which includes future coupons filtered at the
+                       settlement date (see GitHub issue #2236). */
+                    Date callDate = i->date();
+                    Real callAccrued = 0.0;
+                    for (const auto& cf : cashflows_) {
+                        if (!cf->hasOccurred(callDate, false)) {
+                            auto coupon = coupon_cast(cf);
+                            if (coupon != nullptr) {
+                                Real acc = coupon->accruedAmount(callDate);
+                                if (coupon->tradingExCoupon(callDate))
+                                    acc = coupon->amount() + acc;
+                                callAccrued = acc / notional(callDate) * 100.0;
+                            }
+                            break;
+                        }
+                    }
+                    arguments->callabilityPrices.back() += callAccrued;
                 }
             }
         }
 
         arguments->spread = 0.0;
-    }
-
-
-    Real CallableBond::accrued(Date settlement) const {
-
-        if (settlement == Date()) settlement = settlementDate();
-
-        const bool IncludeToday = false;
-        for (const auto& cashflow : cashflows_) {
-            // the first coupon paying after d is the one we're after
-            if (!cashflow->hasOccurred(settlement, IncludeToday)) {
-                ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(cashflow);
-                if (coupon != nullptr)
-                    // !!!
-                    return coupon->accruedAmount(settlement) /
-                           notional(settlement) * 100.0;
-                else
-                    return 0.0;
-            }
-        }
-        return 0.0;
     }
 
 

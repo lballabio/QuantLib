@@ -10,14 +10,13 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
@@ -131,7 +130,7 @@ BOOST_AUTO_TEST_CASE(testInitialisation) {
 
         LiborForwardModelProcess process(60, index);
 
-        std::vector<Time> fixings = process.fixingTimes();
+        const std::vector<Time>& fixings = process.fixingTimes();
         for (Size i=1; i < fixings.size()-1; ++i) {
             Size ileft  = process.nextIndexReset(fixings[i]-0.000001);
             Size iright = process.nextIndexReset(fixings[i]+0.000001);
@@ -155,7 +154,7 @@ BOOST_AUTO_TEST_CASE(testLambdaBootstrapping) {
 
     ext::shared_ptr<LiborForwardModelProcess> process = makeProcess();
 
-    Matrix covar = process->covariance(0.0, Null<Array>(), 1.0);
+    Matrix covar = process->covariance(0.0, {}, 1.0);
 
     for (Size i=0; i<9; ++i) {
         const Real calculated = std::sqrt(covar[i+1][i+1]);
@@ -190,7 +189,7 @@ BOOST_AUTO_TEST_CASE(testLambdaBootstrapping) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testMonteCarloCapletPricing, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testMonteCarloCapletPricing) {
     BOOST_TEST_MESSAGE("Testing caplet LMM Monte-Carlo caplet pricing...");
 
     /* factor loadings are taken from Hull & White article

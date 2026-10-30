@@ -15,7 +15,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -61,10 +61,11 @@ namespace QuantLib {
     /*! \ingroup instruments
 
         \warning it's possible to pass an overnight-indexed swap to
-                 the constructor, but the only engine to fully support
-                 it is BlackSwaptionEngine; other engines will treat
-                 it as a vanilla swap.  This is at best a decent
-                 proxy, at worst simply wrong.  Use with caution.
+                 the constructor, but most engines will treat it as a
+                 vanilla swap, which is at best a decent proxy.
+                 Engines that fully support OIS underlyings are
+                 BlackSwaptionEngine, FdHullWhiteSwaptionEngine,
+                 and FdG2SwaptionEngine.
 
         \test
         - the correctness of the returned value is tested by checking
@@ -112,14 +113,6 @@ namespace QuantLib {
         Swap::Type type() const { return swap_->type(); }
         const ext::shared_ptr<FixedVsFloatingSwap>& underlying() const {
             return swap_;
-        }
-        /*! \deprecated Use the Swaption::underlying method instead.
-                        Deprecated in version 1.34.
-        */
-        [[deprecated("Use the Swaption::underlying method instead")]]
-        const ext::shared_ptr<VanillaSwap>& underlyingSwap() const {
-            QL_REQUIRE(vanilla_, "underlying is not a vanilla swap");
-            return vanilla_;
         }
         //@}
         //! implied volatility

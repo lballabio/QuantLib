@@ -11,14 +11,13 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
@@ -420,7 +419,7 @@ void checkCoterminalSwapsAndSwaptions(
 }
 
 
-BOOST_AUTO_TEST_CASE(testMultiStepCoterminalSwapsAndSwaptions, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testMultiStepCoterminalSwapsAndSwaptions) {
 
     BOOST_TEST_MESSAGE("Testing exact repricing of "
                        "multi-step coterminal swaps and swaptions "
@@ -472,7 +471,7 @@ BOOST_AUTO_TEST_CASE(testMultiStepCoterminalSwapsAndSwaptions, *precondition(if_
                 EvolverType evolvers[] = { Pc /*, Ipc */};
                 ext::shared_ptr<MarketModelEvolver> evolver;
                 Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
-                for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
+                for (Size i=0; i<std::size(evolvers)-stop; i++) {
                     for (Size n=0; n<1; n++) {
                         //MTBrownianGeneratorFactory generatorFactory(seed_);
                         SobolBrownianGeneratorFactory generatorFactory(

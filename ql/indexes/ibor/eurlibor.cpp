@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -63,17 +63,23 @@ namespace QuantLib {
                 2,
                 EURCurrency(),
                 // http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412 :
-                // JoinBusinessDays is the fixing calendar for
+                // JoinHolidays is the fixing calendar for
                 // all indexes but o/n
                 JointCalendar(UnitedKingdom(UnitedKingdom::Exchange),
                               TARGET(),
-                              JoinBusinessDays),
+                              JoinHolidays),
                 eurliborConvention(tenor), eurliborEOM(tenor),
                 Actual360(), h),
       target_(TARGET()) {
         QL_REQUIRE(this->tenor().units()!=Days,
                    "for daily tenors (" << this->tenor() <<
                    ") dedicated DailyTenor constructor must be used");
+    }
+
+    Date EURLibor::fixingDate(const Date& valueDate) const {
+        return fixingCalendar().adjust(
+            target_.advance(valueDate, -static_cast<Integer>(fixingDays_), Days),
+            Preceding);
     }
 
     Date EURLibor::valueDate(const Date& fixingDate) const {
@@ -92,6 +98,10 @@ namespace QuantLib {
         // In the case of EUR only, maturity dates will be based on days in
         // which the Target system is open.
         return target_.advance(valueDate, tenor_, convention_, endOfMonth());
+    }
+
+    ext::shared_ptr<IborIndex> EURLibor::clone(const Handle<YieldTermStructure>& h) const {
+        return ext::make_shared<EURLibor>(tenor(), h);
     }
 
     DailyTenorEURLibor::DailyTenorEURLibor(Natural settlementDays,

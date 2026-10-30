@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -77,7 +77,7 @@ struct CommonVars {
     Date paymentDate;
     Natural fixingDays;
     DayCounter rangeCouponDayCount;
-    ext::shared_ptr<Schedule> observationSchedule;
+    Schedule observationSchedule;
     // Observation Schedule conventions
     Frequency observationsFrequency;
     BusinessDayConvention observationsConvention;
@@ -558,11 +558,11 @@ struct CommonVars {
         // observations schedule
         observationsConvention = ModifiedFollowing;
         observationsFrequency = Daily;//Monthly;
-        observationSchedule = ext::make_shared<Schedule>(startDate,endDate,
-                                                         Period(observationsFrequency),
-                                                         calendar,observationsConvention,
-                                                         observationsConvention,
-                                                         DateGeneration::Forward, false);
+        observationSchedule = Schedule(startDate,endDate,
+                                       Period(observationsFrequency),
+                                       calendar,observationsConvention,
+                                       observationsConvention,
+                                       DateGeneration::Forward, false);
         // Range accrual pricers properties
         byCallSpread = std::vector<bool>({true, false});
 

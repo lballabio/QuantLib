@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -47,8 +47,8 @@ namespace QuantLib {
                                    const Real shift,
                                    Natural settlementDays,
                                    RateAveraging::Type averagingMethod)
-    : BlackCalibrationHelper(volatility, errorType, type, shift), exerciseDate_(Null<Date>()),
-      endDate_(Null<Date>()), maturity_(maturity), length_(length), fixedLegTenor_(fixedLegTenor),
+    : BlackCalibrationHelper(volatility, errorType, type, shift),
+      maturity_(maturity), length_(length), fixedLegTenor_(fixedLegTenor),
       index_(std::move(index)), termStructure_(std::move(termStructure)),
       fixedLegDayCounter_(std::move(fixedLegDayCounter)),
       floatingLegDayCounter_(std::move(floatingLegDayCounter)), strike_(strike), nominal_(nominal),
@@ -73,7 +73,7 @@ namespace QuantLib {
                                    Natural settlementDays,
                                    RateAveraging::Type averagingMethod)
     : BlackCalibrationHelper(volatility, errorType, type, shift), exerciseDate_(exerciseDate),
-      endDate_(Null<Date>()), maturity_(0 * Days), length_(length), fixedLegTenor_(fixedLegTenor),
+      maturity_(0 * Days), length_(length), fixedLegTenor_(fixedLegTenor),
       index_(std::move(index)), termStructure_(std::move(termStructure)),
       fixedLegDayCounter_(std::move(fixedLegDayCounter)),
       floatingLegDayCounter_(std::move(floatingLegDayCounter)), strike_(strike), nominal_(nominal),
@@ -128,7 +128,7 @@ namespace QuantLib {
 
     Real SwaptionHelper::blackPrice(Volatility sigma) const {
         calculate();
-        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(sigma)));
+        Handle<Quote> vol(ext::make_shared<SimpleQuote>(sigma));
         ext::shared_ptr<PricingEngine> engine;
         switch(volatilityType_) {
         case ShiftedLognormal:
@@ -151,9 +151,9 @@ namespace QuantLib {
 
     void SwaptionHelper::performCalculations() const {
 
-        Calendar calendar = index_->fixingCalendar();
-        Date exerciseDate = exerciseDate_;
-        if (exerciseDate == Null<Date>())
+        auto calendar = index_->fixingCalendar();
+        auto exerciseDate = exerciseDate_;
+        if (exerciseDate == Date())
             exerciseDate = calendar.advance(termStructure_->referenceDate(),
                                             maturity_,
                                             index_->businessDayConvention());
@@ -166,8 +166,8 @@ namespace QuantLib {
                                          index_->businessDayConvention());
         }
 
-        Date endDate = endDate_;
-        if (endDate == Null<Date>())
+        auto endDate = endDate_;
+        if (endDate == Date())
             endDate = calendar.advance(startDate, length_,
                                        index_->businessDayConvention());
         Schedule fixedSchedule(startDate, endDate, fixedLegTenor_, calendar,
@@ -182,7 +182,7 @@ namespace QuantLib {
         auto swapEngine = ext::make_shared<DiscountingSwapEngine>(termStructure_, false);
 
         Swap::Type type = Swap::Receiver;
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+        auto exercise = ext::make_shared<EuropeanExercise>(exerciseDate);
         auto temp = makeSwap(fixedSchedule, floatSchedule, 0.0, type);
         temp->setPricingEngine(swapEngine);
         Real forward = temp->fairRate();

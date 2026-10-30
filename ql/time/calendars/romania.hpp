@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -37,7 +37,10 @@ namespace QuantLib {
         <li>Sundays</li>
         <li>New Year's Day, January 1st</li>
         <li> Day after New Year's Day, January 2nd</li>
+        <li>Epiphany, January 6th (since 2024)</li>
+        <li>St John the Baptist, January 7th (since 2024)</li>
         <li>Unification Day, January 24th</li>
+        <li>Orthodox Good Friday (since 2018)</li>
         <li>Orthodox Easter (only Sunday and Monday)</li>
         <li>Labour Day, May 1st</li>
         <li>Pentecost with Monday (50th and 51st days after the 

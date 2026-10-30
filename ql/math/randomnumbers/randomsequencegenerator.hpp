@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -59,6 +59,8 @@ namespace QuantLib {
                      "dimensionality must be greater than 0");
         }
 
+        /*! if the given seed is 0, a random seed will be chosen
+            based on clock() */
         explicit RandomSequenceGenerator(Size dimensionality,
                                          BigNatural seed = 0)
         : dimensionality_(dimensionality), rng_(seed),

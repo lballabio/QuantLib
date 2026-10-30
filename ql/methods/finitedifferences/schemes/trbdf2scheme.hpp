@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -24,13 +24,13 @@
 #ifndef quantlib_tr_bdf2_scheme_hpp
 #define quantlib_tr_bdf2_scheme_hpp
 
-#include <ql/functional.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/matrixutilities/gmres.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
 #include <ql/methods/finitedifferences/operatortraits.hpp>
 #include <ql/methods/finitedifferences/schemes/boundaryconditionschemehelper.hpp>
+#include <functional>
 #include <utility>
 
 namespace QuantLib {
@@ -68,7 +68,7 @@ namespace QuantLib {
 
         const Real alpha_;
         const ext::shared_ptr<FdmLinearOpComposite> map_;
-        const ext::shared_ptr<TrapezoidalScheme>& trapezoidalScheme_;
+        const ext::shared_ptr<TrapezoidalScheme> trapezoidalScheme_;
         const BoundaryConditionSchemeHelper bcSet_;
         const Real relTol_;
         const SolverType solverType_;

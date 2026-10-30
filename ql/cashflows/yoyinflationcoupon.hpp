@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -33,20 +33,20 @@ namespace QuantLib {
 
     //! %Coupon paying a YoY-inflation type index
     class YoYInflationCoupon : public InflationCoupon {
-    public:
+      public:
         YoYInflationCoupon(const Date& paymentDate,
-                        Real nominal,
-                        const Date& startDate,
-                        const Date& endDate,
-                        Natural fixingDays,
-                        const ext::shared_ptr<YoYInflationIndex>& index,
-                        const Period& observationLag,
-                        const DayCounter& dayCounter,
-                        Real gearing = 1.0,
-                        Spread spread = 0.0,
-                        const Date& refPeriodStart = Date(),
-                        const Date& refPeriodEnd = Date()
-                        );
+                           Real nominal,
+                           const Date& startDate,
+                           const Date& endDate,
+                           Natural fixingDays,
+                           const ext::shared_ptr<YoYInflationIndex>& index,
+                           const Period& observationLag,
+                           CPI::InterpolationType interpolation,
+                           const DayCounter& dayCounter,
+                           Real gearing = 1.0,
+                           Spread spread = 0.0,
+                           const Date& refPeriodStart = Date(),
+                           const Date& refPeriodEnd = Date());
 
         //! \name Inspectors
         //@{
@@ -55,20 +55,23 @@ namespace QuantLib {
         //! spread paid over the fixing of the underlying index
         Spread spread() const { return spread_; }
 
+        Rate indexFixing() const override;
+
         Rate adjustedFixing() const;
 
         const ext::shared_ptr<YoYInflationIndex>& yoyIndex() const;
-
+        CPI::InterpolationType interpolation() const;
         //@}
+
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
 
-    private:
+      private:
         ext::shared_ptr<YoYInflationIndex> yoyIndex_;
-    protected:
-
+        CPI::InterpolationType interpolation_;
+      protected:
         Real gearing_;
         Spread spread_;
         bool checkPricerImpl(const ext::shared_ptr<InflationCouponPricer>&) const override;
@@ -79,6 +82,10 @@ namespace QuantLib {
         return yoyIndex_;
     }
 
+    inline CPI::InterpolationType YoYInflationCoupon::interpolation() const {
+        return interpolation_;
+    }
+
     inline Rate YoYInflationCoupon::adjustedFixing() const {
         return (rate()-spread())/gearing();
     }
@@ -87,13 +94,13 @@ namespace QuantLib {
 
 
     //! Helper class building a sequence of capped/floored yoy inflation coupons
-    //! payoff is: spread + gearing x index
     class yoyInflationLeg {
     public:
       yoyInflationLeg(Schedule schedule,
                       Calendar cal,
                       ext::shared_ptr<YoYInflationIndex> index,
-                      const Period& observationLag);
+                      const Period& observationLag,
+                      CPI::InterpolationType interpolation);
       yoyInflationLeg& withNotionals(Real notional);
       yoyInflationLeg& withNotionals(const std::vector<Real>& notionals);
       yoyInflationLeg& withPaymentDayCounter(const DayCounter&);
@@ -113,6 +120,7 @@ namespace QuantLib {
         Schedule schedule_;
         ext::shared_ptr<YoYInflationIndex> index_;
         Period observationLag_;
+        CPI::InterpolationType interpolation_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_ = ModifiedFollowing;

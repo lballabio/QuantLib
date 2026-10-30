@@ -8,7 +8,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
 
  This program is distributed in the hope that it will be useful, but
@@ -52,7 +52,8 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false,
-                  const Date& exCouponDate = Date());
+                  const Date& exCouponDate = Date(),
+                  BusinessDayConvention fixingConvention = Preceding);
         //! \name Inspectors
         //@{
         const ext::shared_ptr<SwapSpreadIndex>& swapSpreadIndex() const {
@@ -84,11 +85,13 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false,
-                  const Date& exCouponDate = Date())
+                  const Date& exCouponDate = Date(),
+                  BusinessDayConvention fixingConvention = Preceding)
         : CappedFlooredCoupon(ext::shared_ptr<FloatingRateCoupon>(new
             CmsSpreadCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
-                      dayCounter, isInArrears, exCouponDate)), cap, floor) {}
+                      dayCounter, isInArrears, exCouponDate,
+                      fixingConvention)), cap, floor) {}
 
         void accept(AcyclicVisitor& v) override {
             auto* v1 = dynamic_cast<Visitor<CappedFlooredCmsSpreadCoupon>*>(&v);
@@ -142,7 +145,7 @@ namespace QuantLib {
             registerWith(correlation_);
         }
 
-        Handle<Quote> correlation() const{
+        const Handle<Quote>& correlation() const{
             return correlation_;
         }
 

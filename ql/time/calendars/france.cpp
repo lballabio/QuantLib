@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -58,9 +58,9 @@ namespace QuantLib {
             // Victoire 1945
             || (d == 8 && m == May)
             // Ascension
-            || (d == 10 && m == May)
-            // Pentecote
-            || (d == 21 && m == May)
+            || (dd == em+38)
+            // Lundi de Pentecote
+            || (dd == em+49)
             // Fete nationale
             || (d == 14 && m == July)
             // Assomption

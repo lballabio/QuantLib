@@ -10,38 +10,33 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file optional.hpp
-    \brief Maps optional to either the boost or std implementation
-*/
-
 #ifndef quantlib_optional_hpp
 #define quantlib_optional_hpp
 
 #include <ql/qldefines.hpp>
-
-#if defined(QL_USE_STD_OPTIONAL)
 #include <optional>
-#else
-#include <boost/optional.hpp>
-#endif
 
 namespace QuantLib::ext {
 
-        #if defined(QL_USE_STD_OPTIONAL)
-        using std::optional;                    // NOLINT(misc-unused-using-decls)
-        inline constexpr const std::nullopt_t& nullopt = std::nullopt;
-        #else
-        using boost::optional;                  // NOLINT(misc-unused-using-decls)
-        inline constexpr const boost::none_t& nullopt = boost::none;
-        #endif
+    /*! \deprecated Use std::optional instead.
+                    Deprecated in version 1.44.
+    */
+    template <typename T>
+    using optional [[deprecated("Use std::optional instead")]] = std::optional<T>;  // NOLINT(misc-unused-using-decls)
 
-    }
+    /*! \deprecated Use std::nullopt instead.
+                    Deprecated in version 1.44.
+    */
+    [[deprecated("Use std::nullopt instead")]]
+    inline constexpr const std::nullopt_t& nullopt = std::nullopt;
+
+}
 
 #endif

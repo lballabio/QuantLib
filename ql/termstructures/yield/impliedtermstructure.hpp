@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -25,7 +25,8 @@
 #ifndef quantlib_implied_term_structure_hpp
 #define quantlib_implied_term_structure_hpp
 
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/yield/derivedtermstructure.hpp>
+#include <ql/utilities/null.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -45,21 +46,22 @@ namespace QuantLib {
         - observability against changes in the underlying term
           structure is checked.
     */
-    class ImpliedTermStructure : public YieldTermStructure {
+    class ImpliedTermStructure : public DerivedYieldTermStructure<> {
       public:
         ImpliedTermStructure(Handle<YieldTermStructure>, const Date& referenceDate);
+        ImpliedTermStructure(Handle<YieldTermStructure>, Natural settlementDays, const Calendar&);
+      protected:
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const override;
-        Calendar calendar() const override;
-        Natural settlementDays() const override;
-        Date maxDate() const override;
-
-      protected:
         DiscountFactor discountImpl(Time) const override;
         //@}
+        //! \name Observer interface
+        //@{
+        void update() override;
+        //@}
       private:
-        Handle<YieldTermStructure> originalCurve_;
+        mutable DiscountFactor refDf_ = Null<DiscountFactor>();
+        mutable Time refTime_ = Null<Time>();
     };
 
 
@@ -67,38 +69,29 @@ namespace QuantLib {
 
     inline ImpliedTermStructure::ImpliedTermStructure(Handle<YieldTermStructure> h,
                                                       const Date& referenceDate)
-    : YieldTermStructure(referenceDate), originalCurve_(std::move(h)) {
-        registerWith(originalCurve_);
-    }
+    : DerivedYieldTermStructure(std::move(h), referenceDate) {}
 
-    inline DayCounter ImpliedTermStructure::dayCounter() const {
-        return originalCurve_->dayCounter();
-    }
+    inline ImpliedTermStructure::ImpliedTermStructure(Handle<YieldTermStructure> h,
+                                                      Natural settlementDays,
+                                                      const Calendar& calendar)
+    : DerivedYieldTermStructure(std::move(h), settlementDays, calendar) {}
 
-    inline Calendar ImpliedTermStructure::calendar() const {
-        return originalCurve_->calendar();
-    }
-
-    inline Natural ImpliedTermStructure::settlementDays() const {
-        return originalCurve_->settlementDays();
-    }
-
-    inline Date ImpliedTermStructure::maxDate() const {
-        return originalCurve_->maxDate();
+    inline void ImpliedTermStructure::update() {
+        refDf_ = Null<DiscountFactor>();
+        refTime_ = Null<Time>();
+        DerivedYieldTermStructure::update();
     }
 
     inline DiscountFactor ImpliedTermStructure::discountImpl(Time t) const {
         /* t is relative to the current reference date
            and needs to be converted to the time relative
            to the reference date of the original curve */
-        Date ref = referenceDate();
-        Time originalTime = t + dayCounter().yearFraction(
-                                        originalCurve_->referenceDate(), ref);
-        /* discount at evaluation date cannot be cached
-           since the original curve could change between
-           invocations of this method */
-        return originalCurve_->discount(originalTime, true) /
-               originalCurve_->discount(ref, true);
+        if (refDf_ == Null<DiscountFactor>()) {
+            const Date ref = referenceDate();
+            refTime_ = dayCounter().yearFraction(originalCurve_->referenceDate(), ref);
+            refDf_ = originalCurve_->discount(ref, true);
+        }
+        return originalCurve_->discount(t + refTime_, true) / refDf_;
     }
 
 }

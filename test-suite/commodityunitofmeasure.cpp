@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -19,6 +19,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/experimental/commodities/commoditytype.hpp>
 #include <ql/experimental/commodities/unitofmeasureconversionmanager.hpp>
 #include <ql/experimental/commodities/petroleumunitsofmeasure.hpp>
 
@@ -28,6 +29,15 @@ using namespace boost::unit_test_framework;
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(CommodityUnitOfMeasureTests)
+
+BOOST_AUTO_TEST_CASE(testCommodityType) {
+    BOOST_TEST_MESSAGE("Testing commodity type...");
+
+    CommodityType commodityType("Heating Oil", "HO");
+
+    BOOST_CHECK_EQUAL(commodityType.name(), "Heating Oil");
+    BOOST_CHECK_EQUAL(commodityType.code(), "HO");
+}
 
 BOOST_AUTO_TEST_CASE(testDirect) {
 

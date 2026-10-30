@@ -6,12 +6,14 @@ this_include_HEADERS = \
     all.hpp \
     armijo.hpp \
     bfgs.hpp \
+    cmaes.hpp \
     conjugategradient.hpp \
     constraint.hpp \
     costfunction.hpp \
     differentialevolution.hpp \
     endcriteria.hpp \
     goldstein.hpp \
+    lbfgsb.hpp \
     leastsquare.hpp \
     levenbergmarquardt.hpp \
     linesearch.hpp \
@@ -30,11 +32,13 @@ this_include_HEADERS = \
 cpp_files = \
     armijo.cpp \
     bfgs.cpp \
+    cmaes.cpp \
     conjugategradient.cpp \
     constraint.cpp \
     differentialevolution.cpp \
     endcriteria.cpp \
     goldstein.cpp \
+    lbfgsb.cpp \
     leastsquare.cpp \
     levenbergmarquardt.cpp \
     linesearch.cpp \

@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -23,24 +23,16 @@
   based on fourier transformation
 */
 
-#include <ql/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
-#include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/integrals/exponentialintegrals.hpp>
-#include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/math/integrals/kronrodintegral.hpp>
-#include <ql/math/integrals/simpsonintegral.hpp>
-#include <ql/math/integrals/trapezoidintegral.hpp>
-#include <ql/math/integrals/expsinhintegral.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/expm1.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
-
 #include <boost/math/tools/minima.hpp>
 #include <boost/math/special_functions/sign.hpp>
-
+#include <functional>
 #include <cmath>
 #include <limits>
 #include <utility>
@@ -50,81 +42,6 @@
 #endif
 
 namespace QuantLib {
-
-    namespace {
-
-        class integrand1 {
-          private:
-            const Real c_inf_;
-            const std::function<Real(Real)> f_;
-          public:
-            integrand1(Real c_inf, std::function<Real(Real)> f) : c_inf_(c_inf), f_(std::move(f)) {}
-            Real operator()(Real x) const {
-                if ((1.0-x)*c_inf_ > QL_EPSILON)
-                    return f_(-std::log(0.5-0.5*x)/c_inf_)/((1.0-x)*c_inf_);
-                else
-                    return 0.0;
-            }
-        };
-
-        class integrand2 {
-          private:
-            const Real c_inf_;
-            const std::function<Real(Real)> f_;
-          public:
-            integrand2(Real c_inf, std::function<Real(Real)> f) : c_inf_(c_inf), f_(std::move(f)) {}
-            Real operator()(Real x) const {
-                if (x*c_inf_ > QL_EPSILON) {
-                    return f_(-std::log(x)/c_inf_)/(x*c_inf_);
-                } else {
-                    return 0.0;
-                }
-            }
-        };
-
-        class integrand3 {
-          private:
-            const integrand2 int_;
-          public:
-            integrand3(Real c_inf, const std::function<Real(Real)>& f)
-            : int_(c_inf, f) {}
-
-            Real operator()(Real x) const { return int_(1.0-x); }
-        };
-
-        class u_Max {
-          public:
-            u_Max(Real c_inf, Real epsilon) : c_inf_(c_inf), logEpsilon_(std::log(epsilon)) {}
-
-            Real operator()(Real u) const {
-                ++evaluations_;
-                return c_inf_*u + std::log(u) + logEpsilon_;
-            }
-
-            Size evaluations() const { return evaluations_; }
-
-          private:
-            const Real c_inf_, logEpsilon_;
-            mutable Size evaluations_ = 0;
-        };
-
-
-        class uHat_Max {
-          public:
-            uHat_Max(Real v0T2, Real epsilon) : v0T2_(v0T2), logEpsilon_(std::log(epsilon)) {}
-
-            Real operator()(Real u) const {
-                ++evaluations_;
-                return v0T2_*u*u + std::log(u) + logEpsilon_;
-            }
-
-            Size evaluations() const { return evaluations_; }
-
-          private:
-            const Real v0T2_, logEpsilon_;
-            mutable Size evaluations_ = 0;
-        };
-    }
 
     // helper class for integration
     class AnalyticHestonEngine::Fj_Helper {
@@ -299,7 +216,8 @@ namespace QuantLib {
 
     AnalyticHestonEngine::OptimalAlpha::OptimalAlpha(
         const Time t,
-        const AnalyticHestonEngine* const enginePtr)
+        const AnalyticHestonEngine* const enginePtr,
+        Method method)
     : t_(t),
       fwd_(enginePtr->model_->process()->s0()->value()
               * enginePtr->model_->process()->dividendYield()->discount(t)
@@ -309,7 +227,8 @@ namespace QuantLib {
       sigma_(enginePtr->model_->sigma()),
       rho_(enginePtr->model_->rho()),
       eps_(std::pow(2, -int(0.5*std::numeric_limits<Real>::digits))),
-      enginePtr_(enginePtr)
+      enginePtr_(enginePtr),
+      method_(method)
       {
         km_ = k(0.0, -1);
         kp_ = k(0.0,  1);
@@ -387,21 +306,35 @@ namespace QuantLib {
     }
 
     Real AnalyticHestonEngine::OptimalAlpha::operator()(Real strike) const {
-        try {
-            const std::pair<Real, Real> minusOne = alphaSmallerMinusOne(strike);
-            const std::pair<Real, Real> greaterZero = alphaGreaterZero(strike);
+        switch (method_) {
+          case OptimalValue:
+            try {
+                const std::pair<Real, Real> minusOne = alphaSmallerMinusOne(strike);
+                const std::pair<Real, Real> greaterZero = alphaGreaterZero(strike);
 
-            if (minusOne.second < greaterZero.second) {
-                return minusOne.first;
+                if (minusOne.second < greaterZero.second) {
+                    return minusOne.first;
+                }
+                else {
+                    return greaterZero.first;
+                }
             }
-            else {
-                return greaterZero.first;
+            catch (const Error&) {
+                return -0.5;
             }
+            break;
+          case AvoidCancellation:
+            {
+                const Real omega = std::log(fwd_/strike);
+                if (omega >= 0.0)
+                    return alphaSmallerMinusOne(strike).first;
+                else
+                    return alphaGreaterZero(strike).first;
+            }
+            break;
+          default:
+            QL_FAIL("unknown calculation method");
         }
-        catch (const Error&) {
-            return -0.5;
-        }
-
     }
 
     Size AnalyticHestonEngine::OptimalAlpha::numberOfEvaluations() const {
@@ -474,20 +407,28 @@ namespace QuantLib {
                         /(kappa*term) + theta;
             break;
           case AndersenPiterbargOptCV:
-              vAvg_ = -8.0*std::log(enginePtr->chF(
-                         std::complex<Real>(0, alpha_), term).real())/term;
-            break;
+            {
+              const Real b = 1.0 + alpha_;
+              vAvg_ = -2.0*std::log(enginePtr->chF(
+                           std::complex<Real>(0, -b), term).real())/(term*(b - b*b));
+            }   
+          break;
           case AsymptoticChF:
-            phi_ = -(v0+term*kappa*theta)/sigma
-                * std::complex<Real>(std::sqrt(1-rho*rho), rho);
+            {
+              const Real s = std::sqrt(1 - rho*rho);
+              phi_ = -(v0+term*kappa*theta)/sigma * std::complex<Real>(s, rho);
 
-            psi_ = std::complex<Real>(
-                (kappa- 0.5*rho*sigma)*(v0 + term*kappa*theta)
-                + kappa*theta*std::log(4*(1-rho*rho)),
-                - ((0.5*rho*rho*sigma - kappa*rho)/std::sqrt(1-rho*rho)
-                        *(v0 + kappa*theta*term)
-                  - 2*kappa*theta*std::atan(rho/std::sqrt(1-rho*rho))))
-                          /(sigma*sigma);
+              const Real a = sigma * s;
+              const Real b = (0.5*sigma - rho*kappa)/s;
+              const std::complex<Real> l(0.5, -0.5*rho/s);
+              const std::complex<Real> B = (
+                   std::complex<Real>(0, b-a) - (rho*sigma*b - kappa*a)/(2.0*a*l)
+               )/(2.0*a*a*l);
+               
+               psi_ = kappa*theta/(sigma*sigma)
+                    *(term*std::complex<Real>(kappa, -b) - 2.0*std::log(l))
+                    + v0*B - std::complex<Real>(0, alpha_ + 1.0)*phi_;
+            }
             [[fallthrough]];
           case AngledContour:
             vAvg_ = (1-std::exp(-kappa*term))*(v0 - theta)
@@ -495,10 +436,10 @@ namespace QuantLib {
             [[fallthrough]];
           case AngledContourNoCV:
             {
-              const Real r = rho - sigma*freq_ / (v0 + kappa*theta*term);
+              const Real r = rho - sigma*freq_ / (v0 + kappa*theta*term);              
               tanPhi_ = std::tan(
                      (r*freq_ < 0.0)? M_PI/12*boost::math::sign(freq_) : 0.0
-                );
+              );
             }
             break;
           default:
@@ -521,17 +462,21 @@ namespace QuantLib {
 
             std::complex<Real> phiBS(0.0);
             if (cpxLog_ == AngledContour)
-                phiBS = std::exp(
+                phiBS = std::exp(-u*tanPhi_*freq_
                     -0.5*vAvg_*term_*(hPrime*hPrime +
                             std::complex<Real>(-hPrime.imag(), hPrime.real())));
             else if (cpxLog_ == AsymptoticChF)
-                phiBS = std::exp(u*std::complex<Real>(1, tanPhi_)*phi_ + psi_);
+                phiBS = std::exp(-u*tanPhi_*freq_ + u*std::complex<Real>(1, tanPhi_)*phi_ + psi_);
 
-            return std::exp(-u*tanPhi_*freq_)
-                    *(std::exp(std::complex<Real>(0.0, u*freq_))
-                      *std::complex<Real>(1, tanPhi_)
-                      *(phiBS - enginePtr_->chF(hPrime, term_))/(h_u*hPrime)
-                      ).real()*s_alpha_;
+            const std::complex<Real> v = enginePtr_->lnChF(hPrime, term_);            
+            const std::complex<Real> chf_v = 
+                (v.real() == -std::numeric_limits<Real>::infinity())
+                ? 0.0: std::exp(-u*tanPhi_*freq_ + v);
+                            
+            return (
+                std::exp(std::complex<Real>(0.0, u*freq_)) 
+                * std::complex<Real>(1, tanPhi_) * (phiBS - chf_v)/(h_u*hPrime)
+            ).real()*s_alpha_;
         }
         else if (cpxLog_ == AndersenPiterbarg || cpxLog_ == AndersenPiterbargOptCV) {
             const std::complex<Real> z(u, -alpha_);
@@ -557,15 +502,34 @@ namespace QuantLib {
                       .value();
         }
         else if (cpxLog_ == AsymptoticChF) {
-            QL_REQUIRE(alpha_ == -0.5, "alpha must be equal to -0.5");
-
+            using namespace ExponentialIntegral;
             const std::complex<Real> phiFreq(phi_.real(), phi_.imag() + freq_);
 
-            using namespace ExponentialIntegral;
-            return fwd_ - std::sqrt(strike_*fwd_)/M_PI*
-                (std::exp(psi_)*(
-                      -2.0*Ci(-0.5*phiFreq)*std::sin(0.5*phiFreq)
-                       +std::cos(0.5*phiFreq)*(M_PI+2.0*Si(0.5*phiFreq)))).real();
+            if (alpha_ == -0.5) {
+                return fwd_ - std::sqrt(strike_*fwd_)/M_PI*
+                    (std::exp(psi_)*
+                        (-2.0*Ci(-0.5*phiFreq)*std::sin(0.5*phiFreq)
+                           +std::cos(0.5*phiFreq)*(M_PI+2.0*Si(0.5*phiFreq)))                 
+                    ).real();                 
+            }
+            else {
+                //Re[Integrate[Exp[phi*u + psi]/((u - I*alpha)*(u - I*(alpha + 1))), {u, 0, Infinity}, 
+                //    Assumptions -> Re[phi] < 0 && alpha \[Element] Reals && alpha != 0 && alpha != -1]]
+
+                QL_REQUIRE(alpha_ != -1.0 && alpha_ != 0.0, "alpha != 1.0 && alpha != 0.0");
+
+                const std::complex<Real> i(0, 1);
+                return ((alpha_ <=  0.0)? fwd_ : 0.0) - ((alpha_ <= -1.0)? strike_ : 0.0)
+                         + fwd_*s_alpha_/M_PI* 
+                    0.5*(std::exp(psi_)*(std::exp(i*alpha_*phiFreq)*(i*M_PI - 2.0*Ci(-alpha_*phiFreq) 
+                    - 2.0*std::log(std::complex<Real>(alpha_)) - 2.0*std::log(-phiFreq)
+                    + 2.0*std::log(-alpha_*phiFreq) 
+                    + 2.0*i*Si(alpha_*phiFreq)) + std::exp(i*(1+alpha_)*phiFreq)*(
+                        -i*M_PI + 2.0*Ci(-(1+alpha_)*phiFreq) 
+                        + 2.0*std::log(std::complex<Real>(1.0+alpha_)) + 2.0*std::log(-phiFreq) 
+                        - 2.0*std::log(-(1+alpha_)*phiFreq) - 2.0*i*Si(phiFreq + alpha_*phiFreq)
+                    ))).imag();
+            }
         }
         else if (cpxLog_ == AngledContourNoCV) {
             return     ((alpha_ <=  0.0)? fwd_ : 0.0)
@@ -580,8 +544,12 @@ namespace QuantLib {
     std::complex<Real> AnalyticHestonEngine::chF(
         const std::complex<Real>& z, Time t) const {
         if (model_->sigma() > 1e-6 || model_->kappa() < 1e-8) {
-            return std::exp(lnChF(z, t));
-        }
+            const std::complex<Real> v = lnChF(z, t);
+            if (v.real() != -std::numeric_limits<Real>::infinity())
+                return std::exp(v);
+            else
+                return std::complex<Real>(0.0);
+            }            
         else {
             const Real kappa = model_->kappa();
             const Real sigma = model_->sigma();
@@ -616,7 +584,7 @@ namespace QuantLib {
                     + kt*(zpi + rho2*(2 + kt)*z))) + kappa*theta*(zpi + e2kt
                 *(-5.0*zpi - 24*rho2*z+ 2*kt*(zpi + 4*rho2*z)) +
                 4*ekt*(zpi + 6*rho2*z + kt*(zpi + rho2*(4 + kt)*z)))))
-                /(16.*squared(squared(kappa)))*sigma2;
+                /(16.*quartic(kappa))*sigma2;
         }
     }
 
@@ -874,196 +842,6 @@ namespace QuantLib {
         const Date exerciseDate = arguments_.exercise->lastDate();
 
         results_.value = priceVanillaPayoff(payoff, exerciseDate);
-    }
-
-
-    AnalyticHestonEngine::Integration::Integration(Algorithm intAlgo,
-                                                   ext::shared_ptr<Integrator> integrator)
-    : intAlgo_(intAlgo), integrator_(std::move(integrator)) {}
-
-    AnalyticHestonEngine::Integration::Integration(
-        Algorithm intAlgo, ext::shared_ptr<GaussianQuadrature> gaussianQuadrature)
-    : intAlgo_(intAlgo), gaussianQuadrature_(std::move(gaussianQuadrature)) {}
-
-    AnalyticHestonEngine::Integration
-    AnalyticHestonEngine::Integration::gaussLobatto(
-       Real relTolerance, Real absTolerance, Size maxEvaluations, bool useConvergenceEstimate) {
-       return Integration(GaussLobatto,
-                           ext::shared_ptr<Integrator>(
-                               new GaussLobattoIntegral(maxEvaluations,
-                                                        absTolerance,
-                                                        relTolerance,
-                                                        useConvergenceEstimate)));
-    }
-
-    AnalyticHestonEngine::Integration
-    AnalyticHestonEngine::Integration::gaussKronrod(Real absTolerance,
-                                                   Size maxEvaluations) {
-        return Integration(GaussKronrod,
-                           ext::shared_ptr<Integrator>(
-                               new GaussKronrodAdaptive(absTolerance,
-                                                        maxEvaluations)));
-    }
-
-    AnalyticHestonEngine::Integration
-    AnalyticHestonEngine::Integration::simpson(Real absTolerance,
-                                               Size maxEvaluations) {
-        return Integration(Simpson,
-                           ext::shared_ptr<Integrator>(
-                               new SimpsonIntegral(absTolerance,
-                                                   maxEvaluations)));
-    }
-
-    AnalyticHestonEngine::Integration
-    AnalyticHestonEngine::Integration::trapezoid(Real absTolerance,
-                                        Size maxEvaluations) {
-        return Integration(Trapezoid,
-                           ext::shared_ptr<Integrator>(
-                              new TrapezoidIntegral<Default>(absTolerance,
-                                                             maxEvaluations)));
-    }
-
-    AnalyticHestonEngine::Integration
-    AnalyticHestonEngine::Integration::gaussLaguerre(Size intOrder) {
-        QL_REQUIRE(intOrder <= 192, "maximum integraton order (192) exceeded");
-        return Integration(GaussLaguerre,
-                           ext::shared_ptr<GaussianQuadrature>(
-                               new GaussLaguerreIntegration(intOrder)));
-    }
-
-    AnalyticHestonEngine::Integration
-    AnalyticHestonEngine::Integration::gaussLegendre(Size intOrder) {
-        return Integration(GaussLegendre,
-                           ext::shared_ptr<GaussianQuadrature>(
-                               new GaussLegendreIntegration(intOrder)));
-    }
-
-    AnalyticHestonEngine::Integration
-    AnalyticHestonEngine::Integration::gaussChebyshev(Size intOrder) {
-        return Integration(GaussChebyshev,
-                           ext::shared_ptr<GaussianQuadrature>(
-                               new GaussChebyshevIntegration(intOrder)));
-    }
-
-    AnalyticHestonEngine::Integration
-    AnalyticHestonEngine::Integration::gaussChebyshev2nd(Size intOrder) {
-        return Integration(GaussChebyshev2nd,
-                           ext::shared_ptr<GaussianQuadrature>(
-                               new GaussChebyshev2ndIntegration(intOrder)));
-    }
-
-    AnalyticHestonEngine::Integration
-    AnalyticHestonEngine::Integration::discreteSimpson(Size evaluations) {
-        return Integration(
-            DiscreteSimpson, ext::shared_ptr<Integrator>(
-                new DiscreteSimpsonIntegrator(evaluations)));
-    }
-
-    AnalyticHestonEngine::Integration
-    AnalyticHestonEngine::Integration::discreteTrapezoid(Size evaluations) {
-        return Integration(
-            DiscreteTrapezoid, ext::shared_ptr<Integrator>(
-                new DiscreteTrapezoidIntegrator(evaluations)));
-    }
-
-    AnalyticHestonEngine::Integration
-    AnalyticHestonEngine::Integration::expSinh(Real relTolerance) {
-        return Integration(
-            ExpSinh, ext::shared_ptr<Integrator>(
-                new ExpSinhIntegral(relTolerance)));
-    }
-
-    Size AnalyticHestonEngine::Integration::numberOfEvaluations() const {
-        if (integrator_ != nullptr) {
-            return integrator_->numberOfEvaluations();
-        } else if (gaussianQuadrature_ != nullptr) {
-            return gaussianQuadrature_->order();
-        } else {
-            QL_FAIL("neither Integrator nor GaussianQuadrature given");
-        }
-    }
-
-    bool AnalyticHestonEngine::Integration::isAdaptiveIntegration() const {
-        return intAlgo_ == GaussLobatto
-            || intAlgo_ == GaussKronrod
-            || intAlgo_ == Simpson
-            || intAlgo_ == Trapezoid
-            || intAlgo_ == ExpSinh;
-    }
-
-    Real AnalyticHestonEngine::Integration::calculate(
-        Real c_inf,
-        const std::function<Real(Real)>& f,
-        const std::function<Real()>& maxBound,
-        const Real scaling) const {
-
-        Real retVal;
-
-        switch(intAlgo_) {
-          case GaussLaguerre:
-            retVal = (*gaussianQuadrature_)(f);
-            break;
-          case GaussLegendre:
-          case GaussChebyshev:
-          case GaussChebyshev2nd:
-            retVal = (*gaussianQuadrature_)(integrand1(c_inf, f));
-            break;
-          case ExpSinh:
-            retVal = scaling*(*integrator_)(
-                [scaling, f](Real x) -> Real { return f(scaling*x);},
-                0.0, std::numeric_limits<Real>::max());
-            break;
-          case Simpson:
-          case Trapezoid:
-          case GaussLobatto:
-          case GaussKronrod:
-              if (maxBound && maxBound() != Null<Real>())
-                  retVal = (*integrator_)(f, 0.0, maxBound());
-              else
-                  retVal = (*integrator_)(integrand2(c_inf, f), 0.0, 1.0);
-              break;
-          case DiscreteTrapezoid:
-          case DiscreteSimpson:
-              if (maxBound && maxBound() != Null<Real>())
-                  retVal = (*integrator_)(f, 0.0, maxBound());
-              else
-                  retVal = (*integrator_)(integrand3(c_inf, f), 0.0, 1.0);
-              break;
-          default:
-            QL_FAIL("unknwon integration algorithm");
-        }
-
-        return retVal;
-     }
-
-    Real AnalyticHestonEngine::Integration::calculate(
-        Real c_inf,
-        const std::function<Real(Real)>& f,
-        Real maxBound) const {
-
-        return AnalyticHestonEngine::Integration::calculate(
-            c_inf, f, [=](){ return maxBound; });
-    }
-
-    Real AnalyticHestonEngine::Integration::andersenPiterbargIntegrationLimit(
-        Real c_inf, Real epsilon, Real v0, Real t) {
-
-        const Real uMaxGuess = -std::log(epsilon)/c_inf;
-        const Real uMaxStep = 0.1*uMaxGuess;
-
-        const Real uMax = Brent().solve(u_Max(c_inf, epsilon),
-            QL_EPSILON*uMaxGuess, uMaxGuess, uMaxStep);
-
-        try {
-            const Real uHatMaxGuess = std::sqrt(-std::log(epsilon)/(0.5*v0*t));
-            const Real uHatMax = Brent().solve(uHat_Max(0.5*v0*t, epsilon),
-                QL_EPSILON*uHatMaxGuess, uHatMaxGuess, 0.001*uHatMaxGuess);
-
-            return std::max(uMax, uHatMax);
-        }
-        catch (const Error&) {
-            return uMax;
-        }
     }
 
 

@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -20,6 +20,7 @@
 /*! \file qrplusamericanengine.cpp
 */
 
+#include <algorithm>
 #include <ql/exercise.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/math/functional.hpp>
@@ -192,6 +193,9 @@ namespace QuantLib {
             results_.value = calculatePutWithEdgeCases(K, S, q, r, vol, T);
         else
             QL_FAIL("unknown option type");
+
+        // the holder can always exercise, so the value is at least the payoff
+        results_.value = std::max(results_.value, (*payoff)(S));
     }
 
     Real detail::QdPutCallParityEngine::calculatePutWithEdgeCases(
@@ -218,7 +222,7 @@ namespace QuantLib {
                 = close_enough(r, q)? QL_MAX_REAL : Real(std::log(r*K/(q*S))/(r-q));
 
             if (extremT > 0.0 && extremT < T)
-                return std::max(npv0, std::max(npvT, intrinsic(extremT)));
+                return std::max({npv0, npvT, intrinsic(extremT)});
             else
                 return std::max(npv0, npvT);
         }

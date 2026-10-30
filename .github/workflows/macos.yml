@@ -1,21 +1,25 @@
 name: Mac OS build
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-12, macos-13, macos-14]
+        os: [macos-15, macos-26]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Setup
       env:
         HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       run: |
         brew install automake autoconf libtool boost ccache
     - name: Cache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: macos-ci-build-${{ matrix.os }}-${{ github.ref }}
         restore-keys: |

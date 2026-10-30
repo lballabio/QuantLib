@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -38,9 +38,10 @@ namespace QuantLib {
     template <class Interpolator>
     class InterpolatedHazardRateCurve
         : public HazardRateStructure,
-          protected InterpolatedCurve<Interpolator> {
+          protected InterpolatedCurve<Interpolator>,
+          public InterpolatedNodes {
       public:
-        InterpolatedHazardRateCurve(
+        explicit InterpolatedHazardRateCurve(
             const std::vector<Date>& dates,
             const std::vector<Rate>& hazardRates,
             const DayCounter& dayCounter,
@@ -65,11 +66,10 @@ namespace QuantLib {
         //@}
         //! \name other inspectors
         //@{
-        const std::vector<Time>& times() const;
-        const std::vector<Date>& dates() const;
-        const std::vector<Real>& data() const;
+        const std::vector<Time>& times() const override;
+        const std::vector<Date>& dates() const override;
+        const std::vector<Real>& data() const override;
         const std::vector<Rate>& hazardRates() const;
-        std::vector<std::pair<Date, Real> > nodes() const;
         //@}
       protected:
         InterpolatedHazardRateCurve(
@@ -130,15 +130,6 @@ namespace QuantLib {
     inline const std::vector<Rate>&
     InterpolatedHazardRateCurve<T>::hazardRates() const {
         return this->data_;
-    }
-
-    template <class T>
-    inline std::vector<std::pair<Date, Real> >
-    InterpolatedHazardRateCurve<T>::nodes() const {
-        std::vector<std::pair<Date, Real> > results(dates_.size());
-        for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i], this->data_[i]);
-        return results;
     }
 
     #ifndef __DOXYGEN__
@@ -260,7 +251,6 @@ namespace QuantLib {
 
         this->setupTimes(dates_, dates_[0], dayCounter());
         this->setupInterpolation();
-        this->interpolation_.update();
     }
 
 }

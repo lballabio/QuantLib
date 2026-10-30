@@ -1,0 +1,5 @@
+add_executable(AsianOption AsianOption.cpp)
+target_link_libraries(AsianOption ql_library ${QL_THREAD_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS AsianOption RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

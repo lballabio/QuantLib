@@ -11,17 +11,15 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
@@ -70,6 +68,7 @@
 #include <ql/pricingengines/forward/forwardengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+#include <ql/pricingengines/vanilla/analyticpdfhestonengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
@@ -432,7 +431,7 @@ void hestonFokkerPlanckFwdEquationTest(const FokkerPlanckFwdTestCase& testCase) 
             }
         }
 
-        avg/=LENGTH(strikes); // NOLINT(bugprone-integer-division)
+        avg/=std::size(strikes); // NOLINT(bugprone-integer-division)
 
         if (avg > testCase.avgEps) {
             BOOST_FAIL("failed to reproduce Heston SLV prices"
@@ -703,7 +702,7 @@ ext::shared_ptr<LocalVolTermStructure> getFixedLocalVolFromHeston(
                                                  ext::make_shared<Matrix>(nStrikes, timeGrid->size()-1));
     for (Size i=1; i < timeGrid->size(); ++i) {
         const Time t = timeGrid->at(i);
-        const ext::shared_ptr<std::vector<Real> > strikeSlice = strikes[i-1];
+        const ext::shared_ptr<std::vector<Real> >& strikeSlice = strikes[i-1];
 
         for (Size j=0; j < nStrikes; ++j) {
             const Real s = (*strikeSlice)[j];
@@ -1138,7 +1137,7 @@ BOOST_AUTO_TEST_CASE(testSquareRootFokkerPlanckFwdEquation) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testHestonFokkerPlanckFwdEquation, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testHestonFokkerPlanckFwdEquation) {
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
                        "for the Heston process...");
 
@@ -1194,7 +1193,7 @@ BOOST_AUTO_TEST_CASE(testHestonFokkerPlanckFwdEquation, *precondition(if_speed(S
     }
 }
 
-BOOST_AUTO_TEST_CASE(testHestonFokkerPlanckFwdEquationLogLVLeverage, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testHestonFokkerPlanckFwdEquationLogLVLeverage) {
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
                        "for the Heston process Log Transformation with leverage LV limiting case...");
 
@@ -1360,7 +1359,7 @@ BOOST_AUTO_TEST_CASE(testHestonFokkerPlanckFwdEquationLogLVLeverage, *preconditi
     }
 }
 
-BOOST_AUTO_TEST_CASE(testBlackScholesFokkerPlanckFwdEquationLocalVol, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testBlackScholesFokkerPlanckFwdEquationLocalVol) {
     BOOST_TEST_MESSAGE(
             "Testing Fokker-Planck forward equation for BS Local Vol process...");
 
@@ -1496,6 +1495,7 @@ BOOST_AUTO_TEST_CASE(testBlackScholesFokkerPlanckFwdEquationLocalVol, *precondit
 }
 
 //BOOST_AUTO_TEST_CASE(testFDMCalibration) {
+//    BOOST_TEST_MESSAGE("Testing stochastic local volatility calibration...");
 //    const HestonSLVFokkerPlanckFdmParams plainParams =
 //        { 201, 301, 1000, 25, 3.0, 0, 2,
 //          0.1, 1e-4, 10000,
@@ -1532,8 +1532,7 @@ BOOST_AUTO_TEST_CASE(testBlackScholesFokkerPlanckFwdEquationLocalVol, *precondit
 //    };
 //
 //
-//    for (Size i=0; i < LENGTH(testCases); ++i) {
-//        BOOST_TEST_MESSAGE("Testing stochastic local volatility calibration case " << i << " ...");
+//    for (Size i=0; i < std::size(testCases); ++i) {
 //        lsvCalibrationTest(testCases[i]);
 //    }
 //
@@ -1826,7 +1825,7 @@ BOOST_AUTO_TEST_CASE(testBarrierPricingViaHestonLocalVol) {
 //        -0.390616, -0.380888, -0.371156, -0.361425,
 //        -0.351699, -0.341995 };
 //
-//    for (Size i=0; i < LENGTH(eta); ++i) {
+//    for (Size i=0; i < std::size(eta); ++i) {
 //        const Handle<HestonModel> modHestonModel(
 //            ext::make_shared<HestonModel>(
 //                ext::make_shared<HestonProcess>(
@@ -1857,7 +1856,7 @@ BOOST_AUTO_TEST_CASE(testBarrierPricingViaHestonLocalVol) {
 //    }
 //}
 
-BOOST_AUTO_TEST_CASE(testMonteCarloVsFdmPricing, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testMonteCarloVsFdmPricing) {
     BOOST_TEST_MESSAGE(
         "Testing Monte-Carlo vs FDM Pricing for "
         "Heston SLV models...");
@@ -1962,7 +1961,59 @@ BOOST_AUTO_TEST_CASE(testMonteCarloVsFdmPricing, *precondition(if_speed(Fast))) 
     }
 }
 
-BOOST_AUTO_TEST_CASE(testMonteCarloCalibration, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testMonteCarloCalibrationTimeDependentLocalVol) {
+    BOOST_TEST_MESSAGE("Testing Monte-Carlo calibration with time-dependent local volatility...");
+
+    const Date todaysDate(5, Jan, 2016);
+    Settings::instance().evaluationDate() = todaysDate;
+    const DayCounter dc = ActualActual(ActualActual::ISDA);
+    const Date maturityDate = todaysDate + Period(1, Years);
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    const Handle<YieldTermStructure> rTS(flatRate(0.05, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(0.02, dc));
+
+    const std::vector<Time> times = {0.0, 0.5, 1.0};
+    const std::vector<Real> strikes = {50.0, 150.0};
+    const auto localVolMatrix = ext::make_shared<Matrix>(strikes.size(), times.size());
+    for (Size i = 0; i < strikes.size(); ++i)
+        for (Size j = 0; j < times.size(); ++j)
+            (*localVolMatrix)[i][j] = 0.2 + 0.2 * times[j];
+    const auto localVol = ext::make_shared<FixedLocalVolSurface>(
+        todaysDate, times, strikes, localVolMatrix, dc);
+
+    // Almost deterministic, stationary variance gives L(t, S) = sigma_LV(t) / sqrt(v0).
+    // A small positive vol-of-vol avoids the singular zero-vol-of-vol process limit.
+    const Real v0 = 0.04;
+    const auto hestonProcess = ext::make_shared<HestonProcess>(
+        rTS, qTS, spot, v0, 1.0, v0, 1e-6, 0.0);
+    const auto hestonModel = ext::make_shared<HestonModel>(hestonProcess);
+    const auto generator = ext::make_shared<MTBrownianGeneratorFactory>(1234UL);
+
+    // Include a mandatory date to cover unequal time steps as well.
+    const std::vector<Date> mandatoryDates = {todaysDate + 73};
+    const Time maturity = dc.yearFraction(todaysDate, maturityDate);
+    const std::vector<Time> gridTimes = {
+        dc.yearFraction(todaysDate, mandatoryDates.front()), maturity};
+    const Size timeStepsPerYear = 4;
+    const TimeGrid grid(gridTimes.begin(), gridTimes.end(),
+                        Size(maturity * timeStepsPerYear));
+    const ext::shared_ptr<LocalVolTermStructure> leverage =
+        HestonSLVMCModel(Handle<LocalVolTermStructure>(localVol), Handle<HestonModel>(hestonModel),
+                        generator, maturityDate, timeStepsPerYear, 16, 2048, mandatoryDates)
+            .leverageFunction();
+
+    // Allow for the small residual variance randomness; a one-step lag is much larger.
+    const Real tolerance = 1e-4;
+    for (Time t : grid) {
+        const Real expected = localVol->localVol(t, spot->value(), true) / std::sqrt(v0);
+        for (Real strike : {80.0, 100.0, 120.0}) {
+            const Real calculated = leverage->localVol(t, strike, true);
+            QL_CHECK_SMALL(calculated - expected, tolerance);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testMonteCarloCalibration) {
     BOOST_TEST_MESSAGE(
         "Testing Monte-Carlo Calibration...");
 
@@ -2175,7 +2226,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloCalibration, *precondition(if_speed(Fast))) {
 //    };
 //
 //    std::vector<std::vector<GeneralStatistics> >
-//        stats(2, std::vector<GeneralStatistics>(LENGTH(strikes)));
+//        stats(2, std::vector<GeneralStatistics>(std::size(strikes)));
 //
 //    for (Size i=0; i < 5*nSim; ++i) {
 //        for (Size k= 0; k < 2; ++k) {
@@ -2188,7 +2239,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloCalibration, *precondition(if_speed(Fast))) {
 //            const Real S_t2 = antiPath.value[0][resetIndex-1];
 //            const Real S_T2 = antiPath.value[0][tSteps-1];
 //
-//            for (Size j=0; j < LENGTH(strikes); ++j) {
+//            for (Size j=0; j < std::size(strikes); ++j) {
 //                const Real strike = strikes[j];
 //                if (strike < 1.0)
 //                    stats[k][j].add(0.5*(
@@ -2223,7 +2274,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloCalibration, *precondition(if_speed(Fast))) {
 //
 //    const DiscountFactor df = rTS->discount(grid.back());
 //
-//    for (Size j=0; j < LENGTH(strikes); ++j) {
+//    for (Size j=0; j < std::size(strikes); ++j) {
 //        for (Size k= 0; k < 2; ++k) {
 //            const Real strike = strikes[j];
 //            const Real npv = stats[k][j].mean() * df;
@@ -2256,7 +2307,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloCalibration, *precondition(if_speed(Fast))) {
 //    }
 //}
 
-BOOST_AUTO_TEST_CASE(testMoustacheGraph, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testMoustacheGraph) {
     BOOST_TEST_MESSAGE(
         "Testing double no touch pricing with SLV and mixing...");
 

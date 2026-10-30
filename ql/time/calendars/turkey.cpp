@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -188,7 +188,7 @@ namespace QuantLib {
 				|| (m == June && d >= 28 && d <= 30))
 				return false;
 		} else if (y == 2024) {
-		// Note: Holidays >= 2024 are not yet officially anounced by borsaistanbul.com
+		// Note: Holidays >= 2024 are not yet officially announced by borsaistanbul.com
 		// and need further validation
 			// Ramadan
 			if ((m == April && d >= 10 && d <= 12)

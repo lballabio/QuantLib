@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -30,7 +30,7 @@
 namespace QuantLib {
 
     //! Italian calendars
-    /*! Public holidays:
+    /*! Public holidays, also used for MOT (Mercato Obbligazionario Telematico):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -41,26 +41,18 @@ namespace QuantLib {
         <li>Labour Day, May 1st</li>
         <li>Republic Day, June 2nd (since 2000)</li>
         <li>Assumption, August 15th</li>
+        <li>Saint Francis of Assisi, October 4th (since 2026)</li>
         <li>All Saint's Day, November 1st</li>
         <li>Immaculate Conception Day, December 8th</li>
         <li>Christmas Day, December 25th</li>
         <li>St. Stephen's Day, December 26th</li>
+        <li>December 31st, 1999 only (not a public holiday; market
+            holiday to allow millennium-bug deployments)</li>
         </ul>
 
-        Holidays for the stock exchange (data from http://www.borsaitalia.it):
-        <ul>
-        <li>Saturdays</li>
-        <li>Sundays</li>
-        <li>New Year's Day, January 1st</li>
-        <li>Good Friday</li>
-        <li>Easter Monday</li>
-        <li>Labour Day, May 1st</li>
-        <li>Assumption, August 15th</li>
-        <li>Christmas' Eve, December 24th</li>
-        <li>Christmas, December 25th</li>
-        <li>St. Stephen, December 26th</li>
-        <li>New Year's Eve, December 31st</li>
-        </ul>
+        The stock exchange (data from https://www.borsaitaliana.it/) follows
+        the TARGET calendar instead.
+        The old Italy::Exchange was deprecated in version 1.44.
 
         \ingroup calendars
 
@@ -81,8 +73,9 @@ namespace QuantLib {
         };
       public:
         //! Italian calendars
-        enum Market { Settlement,     //!< generic settlement calendar
-                      Exchange        //!< Milan stock-exchange calendar
+        enum Market {
+            Settlement,     //!< public holidays
+            Exchange [[deprecated("Use the TARGET calendar instead.")]],    //!< old Milan stock-exchange calendar
         };
         Italy(Market market = Settlement);
     };

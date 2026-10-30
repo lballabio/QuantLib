@@ -15,7 +15,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -48,6 +48,12 @@ namespace QuantLib {
                  sorted by date, the redemption(s) being after any
                  cash flow at the same date. In particular, if there's
                  one single redemption, it must be the last cash flow,
+
+        \note Pricing methods (cleanPrice, dirtyPrice, settlementValue, etc.)
+              assume and return values as a percentage of par (per 100).
+              For bonds with a face value other than 100 (e.g., 25), the actual
+              cash price must be calculated by the user: `cash price = quote * face / 100`.
+              Yield and Z-spread methods also expect prices to be passed per 100.
 
         \ingroup instruments
 
@@ -194,20 +200,6 @@ namespace QuantLib {
         //! settlement value as a function of the clean price
         /*! The default bond settlement date is used for calculation. */
         Real settlementValue(Real cleanPrice) const;
-
-        /*! \deprecated Use the overload taking a Bond::Price argument instead.
-                        Deprecated in version 1.34.
-        */
-        [[deprecated("Use the overload taking a Bond::Price argument instead")]]
-        Rate yield(Real price,
-                   const DayCounter& dc,
-                   Compounding comp,
-                   Frequency freq,
-                   Date settlementDate = Date(),
-                   Real accuracy = 1.0e-8,
-                   Size maxEvaluations = 100,
-                   Real guess = 0.05,
-                   Bond::Price::Type priceType = Bond::Price::Clean) const;
 
         //! yield given a price and settlement date
         /*! The default bond settlement is used if no date is given. */

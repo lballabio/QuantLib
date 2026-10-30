@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2026 Paolo D'Elia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -11,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -26,6 +27,7 @@
 #define quantlib_black_variance_curve_hpp
 
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvoltimeextrapolation.hpp>
 #include <ql/math/interpolation.hpp>
 
 namespace QuantLib {
@@ -50,7 +52,8 @@ namespace QuantLib {
                            const std::vector<Date>& dates,
                            const std::vector<Volatility>& blackVolCurve,
                            DayCounter dayCounter,
-                           bool forceMonotoneVariance = true);
+                           bool forceMonotoneVariance = true,
+                           BlackVolTimeExtrapolation::Type timeExtrapolationType = BlackVolTimeExtrapolation::FlatVolatility);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const override { return dayCounter_; }
@@ -67,7 +70,6 @@ namespace QuantLib {
         void setInterpolation(const Interpolator& i = Interpolator()) {
             varianceCurve_ = i.interpolate(times_.begin(), times_.end(),
                                            variances_.begin());
-            varianceCurve_.update();
             notifyObservers();
         }
         //@}
@@ -84,6 +86,7 @@ namespace QuantLib {
         std::vector<Time> times_;
         std::vector<Real> variances_;
         Interpolation varianceCurve_;
+        BlackVolTimeExtrapolation::Type timeExtrapolationType_;
     };
 
 

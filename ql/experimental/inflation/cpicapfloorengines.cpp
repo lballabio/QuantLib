@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -54,7 +54,9 @@ namespace QuantLib {
 
 
         // what interpolation do we use? Index / flat / linear
+        QL_DEPRECATED_DISABLE_WARNING
         if (arguments_.observationInterpolation == CPI::AsIndex) {
+        QL_DEPRECATED_ENABLE_WARNING
             // same as index means we can just use the price surface
             // since this uses the index
             if (arguments_.type == Option::Call) {

@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -60,6 +60,7 @@ namespace QuantLib {
     class LeastSquareFunction : public CostFunction {
       public:
         //! Default constructor
+        // TODO: Review whether this constructor should remain implicit.
         LeastSquareFunction(LeastSquareProblem& lsp) : lsp_(lsp) {}
         //! Destructor
         ~LeastSquareFunction() override = default;
@@ -97,9 +98,9 @@ namespace QuantLib {
     class NonLinearLeastSquare {
       public:
         //! Default constructor
-        NonLinearLeastSquare(Constraint& c,
-                             Real accuracy = 1e-4,
-                             Size maxiter = 100);
+        explicit NonLinearLeastSquare(Constraint& c,
+                                      Real accuracy = 1e-4,
+                                      Size maxiter = 100);
         //! Default constructor
         NonLinearLeastSquare(Constraint& c,
                              Real accuracy,

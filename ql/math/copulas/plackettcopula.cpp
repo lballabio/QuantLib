@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -19,6 +19,7 @@
 */
 
 #include <ql/math/copulas/plackettcopula.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
@@ -38,7 +39,7 @@ namespace QuantLib {
         QL_REQUIRE(y >= 0.0 && y <=1.0 ,
                    "2nd argument (" << y << ") must be in [0,1]");
         using namespace std;
-        return ((1.0+(theta_-1.0)*(x+y))-sqrt(std::pow(1.0+(theta_-1.0)*(x+y),2.0)-4.0*x*y*theta_*(theta_-1.0)))/(2.0*(theta_-1.0));
+        return ((1.0+(theta_-1.0)*(x+y))-sqrt(squared(1.0+(theta_-1.0)*(x+y))-4.0*x*y*theta_*(theta_-1.0)))/(2.0*(theta_-1.0));
     }
 
 }

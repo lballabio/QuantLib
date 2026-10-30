@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -26,7 +26,10 @@
 #include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/cashflows/digitaliborcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
-#include <ql/cashflows/subperiodcoupon.hpp>
+#include <ql/cashflows/multipleresetscoupon.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/overnightindexedcouponpricer.hpp>
+#include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>        /* internal */
 #include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp> /* internal */
 #include <ql/pricingengines/blackformula.hpp>
@@ -42,7 +45,7 @@ namespace QuantLib {
 
     IborCouponPricer::IborCouponPricer(
             Handle<OptionletVolatilityStructure> v,
-            ext::optional<bool> useIndexedCoupon)
+            std::optional<bool> useIndexedCoupon)
         : capletVol_(std::move(v)),
           useIndexedCoupon_(useIndexedCoupon ?
                             *useIndexedCoupon :
@@ -249,11 +252,13 @@ namespace QuantLib {
                              public Visitor<CappedFlooredIborCoupon>,
                              public Visitor<CappedFlooredCmsCoupon>,
                              public Visitor<CappedFlooredCmsSpreadCoupon>,
+                             public Visitor<OvernightIndexedCoupon>,
+                             public Visitor<CappedFlooredOvernightIndexedCoupon>,
                              public Visitor<DigitalIborCoupon>,
                              public Visitor<DigitalCmsCoupon>,
                              public Visitor<DigitalCmsSpreadCoupon>,
                              public Visitor<RangeAccrualFloatersCoupon>,
-                             public Visitor<SubPeriodsCoupon> {
+                             public Visitor<MultipleResetsCoupon> {
           private:
             ext::shared_ptr<FloatingRateCouponPricer> pricer_;
           public:
@@ -266,6 +271,8 @@ namespace QuantLib {
             void visit(CappedFlooredCoupon& c) override;
             void visit(IborCoupon& c) override;
             void visit(CappedFlooredIborCoupon& c) override;
+            void visit(OvernightIndexedCoupon& c) override;
+            void visit(CappedFlooredOvernightIndexedCoupon& c) override;
             void visit(DigitalIborCoupon& c) override;
             void visit(CmsCoupon& c) override;
             void visit(CmsSpreadCoupon& c) override;
@@ -274,7 +281,7 @@ namespace QuantLib {
             void visit(DigitalCmsCoupon& c) override;
             void visit(DigitalCmsSpreadCoupon& c) override;
             void visit(RangeAccrualFloatersCoupon& c) override;
-            void visit(SubPeriodsCoupon& c) override;
+            void visit(MultipleResetsCoupon& c) override;
         };
 
         void PricerSetter::visit(CashFlow&) {
@@ -328,6 +335,42 @@ namespace QuantLib {
             QL_REQUIRE(iborCouponPricer,
                        "pricer not compatible with Ibor coupon");
             c.setPricer(iborCouponPricer);
+        }
+
+        void PricerSetter::visit(OvernightIndexedCoupon& c) {
+            if (c.averagingMethod() == RateAveraging::Compound) {
+                const ext::shared_ptr<CompoundingOvernightIndexedCouponPricer> overnightCouponPricer =
+                    ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(pricer_);
+                QL_REQUIRE(overnightCouponPricer,
+                       "pricer not compatible with overnight indexed coupon");
+                c.setPricer(overnightCouponPricer);
+            } else {
+                const ext::shared_ptr<ArithmeticAveragedOvernightIndexedCouponPricer> overnightCouponPricer =
+                    ext::dynamic_pointer_cast<ArithmeticAveragedOvernightIndexedCouponPricer>(pricer_);
+                QL_REQUIRE(overnightCouponPricer,
+                       "pricer not compatible with arithmetic averaged overnight indexed coupon");
+                c.setPricer(overnightCouponPricer);
+            }
+        }
+
+        void PricerSetter::visit(CappedFlooredOvernightIndexedCoupon& c) {
+            auto overnightCouponPricer = ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer_);
+            QL_REQUIRE(overnightCouponPricer, "pricer not compatible with capped-floored overnight indexed coupon");
+
+            if (c.averagingMethod() == RateAveraging::Compound) {
+                auto p = ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(overnightCouponPricer);
+                QL_REQUIRE(p,
+                       "pricer not compatible with capped-floored overnight indexed coupon");
+                c.setPricer(p);
+                c.underlying()->accept(*this);
+            } else {
+                auto p =
+                    ext::dynamic_pointer_cast<ArithmeticAveragedOvernightIndexedCouponPricer>(overnightCouponPricer);
+                QL_REQUIRE(p,
+                       "pricer not compatible with arithmetic averaged capped-floored overnight indexed coupon");
+                c.setPricer(p);
+                c.underlying()->accept(*this);
+            }
         }
 
         void PricerSetter::visit(CmsCoupon& c) {
@@ -386,12 +429,11 @@ namespace QuantLib {
             c.setPricer(rangeAccrualPricer);
         }
 
-        void PricerSetter::visit(SubPeriodsCoupon& c) {
-            const ext::shared_ptr<SubPeriodsPricer> subPeriodsPricer =
-                ext::dynamic_pointer_cast<SubPeriodsPricer>(pricer_);
-            QL_REQUIRE(subPeriodsPricer,
-                       "pricer not compatible with sub-period coupon");
-            c.setPricer(subPeriodsPricer);
+        void PricerSetter::visit(MultipleResetsCoupon& c) {
+            const ext::shared_ptr<MultipleResetsPricer> pricer =
+                ext::dynamic_pointer_cast<MultipleResetsPricer>(pricer_);
+            QL_REQUIRE(pricer, "pricer not compatible with multiple-resets coupon");
+            c.setPricer(pricer);
         }
 
         void setCouponPricersFirstMatching(const Leg& leg,

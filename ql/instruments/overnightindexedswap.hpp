@@ -5,6 +5,7 @@
  Copyright (C) 2009 Ferdinando Ametrano
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
+ Copyright (C) 2026 Sergio Araujo
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -13,7 +14,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -29,6 +30,7 @@
 
 #include <ql/cashflows/rateaveraging.hpp>
 #include <ql/instruments/fixedvsfloatingswap.hpp>
+#include <ql/optional.hpp>
 #include <ql/time/businessdayconvention.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
@@ -55,7 +57,8 @@ namespace QuantLib {
                              RateAveraging::Type averagingMethod = RateAveraging::Compound,
                              Natural lookbackDays = Null<Natural>(),
                              Natural lockoutDays = 0,
-                             bool applyObservationShift = false);
+                             bool applyObservationShift = false,
+                             const std::optional<Integer>& roundingPrecision = std::nullopt);
 
         OvernightIndexedSwap(Type type,
                              const std::vector<Real>& nominals,
@@ -71,7 +74,8 @@ namespace QuantLib {
                              RateAveraging::Type averagingMethod = RateAveraging::Compound,
                              Natural lookbackDays = Null<Natural>(),
                              Natural lockoutDays = 0,
-                             bool applyObservationShift = false);
+                             bool applyObservationShift = false,
+                             const std::optional<Integer>& roundingPrecision = std::nullopt);
 
         OvernightIndexedSwap(Type type,
                              Real nominal,
@@ -88,7 +92,8 @@ namespace QuantLib {
                              RateAveraging::Type averagingMethod = RateAveraging::Compound,
                              Natural lookbackDays = Null<Natural>(),
                              Natural lockoutDays = 0,
-                             bool applyObservationShift = false);
+                             bool applyObservationShift = false,
+                             const std::optional<Integer>& roundingPrecision = std::nullopt);
 
         OvernightIndexedSwap(Type type,
                              std::vector<Real> fixedNominals,
@@ -106,7 +111,8 @@ namespace QuantLib {
                              RateAveraging::Type averagingMethod = RateAveraging::Compound,
                              Natural lookbackDays = Null<Natural>(),
                              Natural lockoutDays = 0,
-                             bool applyObservationShift = false);
+                             bool applyObservationShift = false,
+                             const std::optional<Integer>& roundingPrecision = std::nullopt);
 
         //! \name Inspectors
         //@{
@@ -120,10 +126,15 @@ namespace QuantLib {
         const ext::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
         const Leg& overnightLeg() const { return floatingLeg(); }
 
+        Integer paymentLag() const { return paymentLag_; }
+        const Calendar& paymentCalendar() const { return paymentCalendar_; }
+        bool telescopicValueDates() const { return telescopicValueDates_; }
+
         RateAveraging::Type averagingMethod() const { return averagingMethod_; }
         Natural lookbackDays() const { return lookbackDays_; }
         Natural lockoutDays() const { return lockoutDays_; }
         bool applyObservationShift() const { return applyObservationShift_; }
+        std::optional<Integer> roundingPrecision() const { return roundingPrecision_; }
         //@}
 
         //! \name Results
@@ -135,10 +146,14 @@ namespace QuantLib {
         void setupFloatingArguments(arguments* args) const override;
 
         ext::shared_ptr<OvernightIndex> overnightIndex_;
+        Integer paymentLag_;
+        Calendar paymentCalendar_;
+        bool telescopicValueDates_;
         RateAveraging::Type averagingMethod_;
         Natural lookbackDays_;
         Natural lockoutDays_;
         bool applyObservationShift_;
+        std::optional<Integer> roundingPrecision_;
     };
 
 }

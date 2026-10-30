@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2004, 2007 StatPro Italia srl
+ Copyright (C) 2025 Kareem Fareed
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -11,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -34,22 +35,35 @@
 namespace QuantLib {
 
     //! Continuous-averaging Asian option
-    /*! \todo add running average
-
-        \ingroup instruments
-    */
+    /*! \ingroup instruments */
     class ContinuousAveragingAsianOption : public OneAssetOption {
       public:
         class arguments;
         class engine;
+        /*! This constructor is for unseasoned (fresh) options where
+            averaging has not yet started.
+        */
         ContinuousAveragingAsianOption(
                 Average::Type averageType,
                 const ext::shared_ptr<StrikedTypePayoff>& payoff,
                 const ext::shared_ptr<Exercise>& exercise);
+
+        /*! This constructor is for seasoned options where averaging
+            has already started. The start date is a contract term specifying
+            when averaging began. The current average (market data) should be
+            provided to the pricing engine.
+        */
+        ContinuousAveragingAsianOption(
+                Average::Type averageType,
+                Date startDate,
+                const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                const ext::shared_ptr<Exercise>& exercise);
+
         void setupArguments(PricingEngine::arguments*) const override;
 
       protected:
         Average::Type averageType_;
+        Date startDate_;
     };
 
     //! Discrete-averaging Asian option
@@ -115,9 +129,11 @@ namespace QuantLib {
     class ContinuousAveragingAsianOption::arguments
         : public OneAssetOption::arguments {
       public:
-        arguments() : averageType(Average::Type(-1)) {}
+        arguments() : averageType(Average::Type(-1))
+                      {}
         void validate() const override;
         Average::Type averageType;
+        Date startDate;
     };
 
     //! Discrete-averaging Asian %engine base class

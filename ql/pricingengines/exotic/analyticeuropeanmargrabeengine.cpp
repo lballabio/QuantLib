@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -98,10 +98,10 @@ namespace QuantLib {
         // Greeks
         results_.delta1 = riskFreeDiscount*(quantity1*forward1*Nd1)/s1;
         results_.delta2 = -riskFreeDiscount*(quantity2*forward2*Nd2)/s2;
-        results_.gamma1 = (riskFreeDiscount*(quantity1*forward1*nd1)/s1)/(quantity1*s1*stdDev);
-        results_.gamma2 = (-riskFreeDiscount*(quantity2*forward2*nd2)/s2)/(-quantity2*s2*stdDev);
+        results_.gamma1 = (riskFreeDiscount*(quantity1*forward1*nd1)/s1)/(s1*stdDev);
+        results_.gamma2 = (-riskFreeDiscount*(quantity2*forward2*nd2)/s2)/(-s2*stdDev);
         Real vega       = riskFreeDiscount*(quantity1*forward1*nd1)*sqt;
-        results_.theta  = -((stdDev*vega/sqt)/(2*t)-(q1*quantity1*s1*results_.delta1)-(q2*quantity2*s2*results_.delta2));
+        results_.theta  = -((stdDev*vega/sqt)/(2*t)-(q1*s1*results_.delta1)-(q2*s2*results_.delta2));
         results_.rho    = 0.0;
     }
 

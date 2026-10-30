@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -26,6 +26,9 @@
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/matrixutilities/tqreigendecomposition.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
+
+#include <cmath>
+#include <map>
 
 namespace QuantLib {
 
@@ -54,9 +57,80 @@ namespace QuantLib {
 
         Real mu_0 = orthPoly.mu_0();
         for (i=0; i<n; ++i) {
-            w_[i] = mu_0*ev[0][i]*ev[0][i] / orthPoly.w(x_[i]);
+            // orthPoly.w(x_[i]) can underflow to zero for large orders (e.g. Gauss-Laguerre
+            // beyond n ~ 200) while the quotient itself stays representable; forming it in
+            // logarithms keeps every intermediate value in range in that case.
+            const Real wx = orthPoly.w(x_[i]);
+            if (wx > 0.0) {
+                w_[i] = mu_0*ev[0][i]*ev[0][i] / wx;
+            } else {
+                w_[i] = std::exp(std::log(mu_0)
+                                  + 2.0*std::log(std::fabs(ev[0][i]))
+                                  - orthPoly.logW(x_[i]));
+            }
+
+            if (!std::isfinite(w_[i])) {
+                // w(x) can come back subnormal rather than zero, in which
+                // case the division above overflows and the branch on wx
+                // does not catch it. Retry in logarithms.
+                if (ev[0][i] != 0.0)
+                    w_[i] = std::exp(std::log(mu_0)
+                                      + 2.0*std::log(std::fabs(ev[0][i]))
+                                      - orthPoly.logW(x_[i]));
+
+                // Once ev[0][i] has underflowed to zero the weight cannot
+                // be recovered. Such a node sits far enough into the tail
+                // that its contribution is negligible, so drop it rather
+                // than leave a NaN to poison the whole integral.
+                if (!std::isfinite(w_[i]))
+                    w_[i] = 0.0;
+            }
         }
     }
+
+
+    MultiDimGaussianIntegration::MultiDimGaussianIntegration(
+        const std::vector<Size>& ns,
+        const std::function<ext::shared_ptr<GaussianQuadrature>(Size)>& genQuad)
+    : weights_(std::accumulate(ns.begin(), ns.end(), Size(1), std::multiplies<>()), 1.0),
+      x_(weights_.size(), Array(ns.size())) {
+
+        const Size m = ns.size();
+        const Size n = x_.size();
+
+        std::vector<Size> spacing(m);
+        spacing[0] = 1;
+        std::partial_sum(ns.begin(), ns.end()-1, spacing.begin()+1, std::multiplies<>());
+
+        std::map<Size, Array> n2weights, n2x;
+        for (auto order: ns) {
+            if (n2x.find(order) == n2x.end()) {
+                const ext::shared_ptr<GaussianQuadrature> quad = genQuad(order);
+                n2x[order] = quad->x();
+                n2weights[order] = quad->weights();
+            }
+        }
+
+        for (Size i=0; i < n; ++i) {
+            for (Size j=0; j < m; ++j) {
+                const Size order = ns[j];
+                const Size nx = (i / spacing[j]) % ns[j];
+                weights_[i] *= n2weights[order][nx];
+                x_[i][j] = n2x[order][nx];
+            }
+        }
+    }
+
+    Real MultiDimGaussianIntegration::operator()(
+        const std::function<Real(Array)>& f) const {
+        Real s = 0.0;
+        const Size n = x_.size();
+        for (Size i=0; i < n; ++i)
+            s += weights_[i]*f(x_[i]);
+
+        return s;
+    }
+
 
 
     namespace detail {

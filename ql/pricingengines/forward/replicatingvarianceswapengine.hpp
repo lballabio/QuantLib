@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -60,8 +60,21 @@ namespace QuantLib {
         Real computeLogPayoff(Real, Real) const;
         Real computeReplicatingPortfolio(
                                      const weights_type& optionWeights) const;
-        Rate riskFreeRate() const;
-        DiscountFactor riskFreeDiscount() const;
+        /*! \deprecated No longer used; retrieve explicitly from the curve if inheriting from this class.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("No longer used; retrieve explicitly from the curve if inheriting from this class.")]]
+        Rate riskFreeRate() const {
+            return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
+                                                      NoFrequency, true);
+        }
+        /*! \deprecated No longer used; retrieve explicitly from the curve if inheriting from this class.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("No longer used; retrieve explicitly from the curve if inheriting from this class.")]]
+        DiscountFactor riskFreeDiscount() const {
+            return process_->riskFreeRate()->discount(residualTime());
+        }
         Real underlying() const;
         Time residualTime() const;
       private:
@@ -132,8 +145,7 @@ namespace QuantLib {
             slope = std::fabs((computeLogPayoff(*(k+1), f) -
                                computeLogPayoff(*k, f))/
                               (*(k+1) - *k));
-            ext::shared_ptr<StrikedTypePayoff> payoff(
-                                            new PlainVanillaPayoff(type, *k));
+            auto payoff = ext::make_shared<PlainVanillaPayoff>(type, *k);
             if ( k == strikes.begin() )
                 optionWeights.emplace_back(payoff,slope);
             else
@@ -155,10 +167,8 @@ namespace QuantLib {
     Real ReplicatingVarianceSwapEngine::computeReplicatingPortfolio(
                                     const weights_type& optionWeights) const {
 
-        ext::shared_ptr<Exercise> exercise(
-                               new EuropeanExercise(arguments_.maturityDate));
-        ext::shared_ptr<PricingEngine> optionEngine(
-                                        new AnalyticEuropeanEngine(process_));
+        auto exercise = ext::make_shared<EuropeanExercise>(arguments_.maturityDate);
+        auto optionEngine = ext::make_shared<AnalyticEuropeanEngine>(process_);
         Real optionsValue = 0.0;
 
         for (auto i = optionWeights.begin(); i < optionWeights.end(); ++i) {
@@ -169,12 +179,16 @@ namespace QuantLib {
             optionsValue += option.NPV() * weight;
         }
 
+        DiscountFactor riskFreeDiscount =
+            process_->riskFreeRate()->discount(arguments_.maturityDate);
+        DiscountFactor dividendDiscount =
+            process_->dividendYield()->discount(arguments_.maturityDate);
+        Real forward = underlying() * dividendDiscount / riskFreeDiscount;
         Real f = optionWeights.front().first->strike();
-        return 2.0 * riskFreeRate() -
-            2.0/residualTime() *
-            (((underlying()/riskFreeDiscount() - f)/f) +
-             std::log(f/underlying())) +
-            optionsValue/riskFreeDiscount();
+        return 2.0/residualTime() *
+            (std::log(dividendDiscount/riskFreeDiscount) -
+             ((forward - f)/f + std::log(f/underlying()))) +
+            optionsValue/riskFreeDiscount;
     }
 
 
@@ -213,18 +227,6 @@ namespace QuantLib {
 
     inline Time ReplicatingVarianceSwapEngine::residualTime() const {
         return process_->time(arguments_.maturityDate);
-    }
-
-
-    inline Rate ReplicatingVarianceSwapEngine::riskFreeRate() const {
-        return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
-                                                  NoFrequency, true);
-    }
-
-
-    inline
-    DiscountFactor ReplicatingVarianceSwapEngine::riskFreeDiscount() const {
-        return process_->riskFreeRate()->discount(residualTime());
     }
 
 }

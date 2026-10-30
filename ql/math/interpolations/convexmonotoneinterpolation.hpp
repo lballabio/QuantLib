@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -59,8 +59,8 @@ namespace QuantLib {
                                     const I2& yBegin, Real quadraticity,
                                     Real monotonicity, bool forcePositive,
                                     bool flatFinalPeriod = false,
-                                    const helper_map& preExistingHelpers =
-                                                               helper_map()) {
+                                    const helper_map& preExistingHelpers = {},
+                                    bool update = true) {
             impl_ = ext::shared_ptr<Interpolation::Impl>(
                    new detail::ConvexMonotoneImpl<I1,I2>(xBegin,
                                                          xEnd,
@@ -70,18 +70,16 @@ namespace QuantLib {
                                                          forcePositive,
                                                          flatFinalPeriod,
                                                          preExistingHelpers));
-            impl_->update();
+            if (update)
+                impl_->update();
         }
 
-        ConvexMonotoneInterpolation(Interpolation& interp)
+        explicit ConvexMonotoneInterpolation(const Interpolation& interp)
         : Interpolation(interp) {}
 
         std::map<Real, ext::shared_ptr<detail::SectionHelper> >
         getExistingHelpers() {
-            ext::shared_ptr<detail::ConvexMonotoneImpl<I1,I2> > derived =
-                ext::dynamic_pointer_cast<detail::ConvexMonotoneImpl<I1,I2>,
-                                            Interpolation::Impl>(impl_);
-            return derived->getExistingHelpers();
+            return static_cast<detail::ConvexMonotoneImpl<I1,I2>&>(*impl_).getExistingHelpers();
         }
     };
 
@@ -101,12 +99,14 @@ namespace QuantLib {
 
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
-                                  const I2& yBegin) const {
+                                  const I2& yBegin, bool update = true) const {
             return ConvexMonotoneInterpolation<I1,I2>(xBegin, xEnd, yBegin,
                                                       quadraticity_,
                                                       monotonicity_,
                                                       forcePositive_,
-                                                      false);
+                                                      false,
+                                                      {},
+                                                      update);
         }
 
         template <class I1, class I2>

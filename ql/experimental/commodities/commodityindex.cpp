@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -23,7 +23,7 @@
 
 namespace QuantLib {
 
-    CommodityIndex::CommodityIndex(const std::string& indexName,
+    CommodityIndex::CommodityIndex(std::string  indexName,
                                    CommodityType commodityType,
                                    Currency currency,
                                    UnitOfMeasure unitOfMeasure,
@@ -32,15 +32,13 @@ namespace QuantLib {
                                    ext::shared_ptr<CommodityCurve> forwardCurve,
                                    ext::shared_ptr<ExchangeContracts> exchangeContracts,
                                    int nearbyOffset)
-    : name_(indexName), commodityType_(std::move(commodityType)),
+    : name_(std::move(indexName)), commodityType_(std::move(commodityType)),
       unitOfMeasure_(std::move(unitOfMeasure)), currency_(std::move(currency)),
       calendar_(std::move(calendar)), lotQuantity_(lotQuantity),
       forwardCurve_(std::move(forwardCurve)), exchangeContracts_(std::move(exchangeContracts)),
       nearbyOffset_(nearbyOffset) {
-        quotes_ = IndexManager::instance().getHistory(indexName);
-        IndexManager::instance().setHistory(indexName, quotes_);
         registerWith(Settings::instance().evaluationDate());
-        registerWith(IndexManager::instance().notifier(name()));
+        registerWith(notifier());
 
         if (forwardCurve_ != nullptr)
             // registerWith(forwardCurve_);

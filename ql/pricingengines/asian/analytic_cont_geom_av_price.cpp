@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -39,6 +39,14 @@ namespace QuantLib {
                    "not a geometric average option");
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
+
+        // Check if this is a seasoned option
+        if (arguments_.startDate != Date()) {
+            QL_FAIL("seasoned continuous geometric Asian options not yet supported - "
+                    "requires adjustment of forward price and variance based on "
+                    "accumulated geometric average. This feature needs mathematical "
+                    "review and implementation.");
+        }
 
         Date exercise = arguments_.exercise->lastDate();
 

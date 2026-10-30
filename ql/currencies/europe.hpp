@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -29,11 +29,6 @@
 #define quantlib_european_currencies_hpp
 
 #include <ql/currency.hpp>
-
-#if defined(QL_PATCH_MSVC)
-#pragma warning(push)
-#pragma warning(disable:4819)
-#endif
 
 namespace QuantLib {
 
@@ -189,6 +184,17 @@ namespace QuantLib {
     class LVLCurrency : public Currency {
       public:
         LVLCurrency();
+    };
+
+    //! Macedonian denar
+    /*! The ISO three-letter code is MKD; the numeric code is 807.
+        It is divided in 100 deni.
+
+        \ingroup currencies
+    */
+    class MKDCurrency : public Currency {
+      public:
+        MKDCurrency();
     };
 
     //! Norwegian krone
@@ -528,9 +534,5 @@ namespace QuantLib {
     };
 
 }
-
-#if defined(QL_PATCH_MSVC)
-#pragma warning(pop)
-#endif
 
 #endif

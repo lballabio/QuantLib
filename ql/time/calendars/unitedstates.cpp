@@ -7,6 +7,7 @@
  Copyright (C) 2017 Peter Caspers
  Copyright (C) 2017 Oleg Kulkov
  Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
+ Copyright (C) 2024 Dirk Eddelbuettel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,7 +16,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -219,8 +220,10 @@ namespace QuantLib {
             return false;
 
         // Special closings
-        if (// President Bush's Funeral
-            (y == 2018 && m == December && d == 5)
+        if (// President Carter's Funeral
+            (y == 2025 && m == January && d == 9)
+            // President Bush's Funeral
+            || (y == 2018 && m == December && d == 5)
             // Hurricane Sandy
             || (y == 2012 && m == October && (d == 29 || d == 30))
             // President Ford's funeral

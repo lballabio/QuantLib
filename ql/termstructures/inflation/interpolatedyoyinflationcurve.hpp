@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -29,7 +29,6 @@
 #include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/termstructures/interpolatedcurve.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/math/comparison.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -42,45 +41,28 @@ namespace QuantLib {
     template<class Interpolator>
     class InterpolatedYoYInflationCurve
         : public YoYInflationTermStructure,
-          protected InterpolatedCurve<Interpolator> {
+          protected InterpolatedCurve<Interpolator>,
+          public InterpolatedNodes {
       public:
         InterpolatedYoYInflationCurve(const Date& referenceDate,
                                       std::vector<Date> dates,
                                       const std::vector<Rate>& rates,
                                       Frequency frequency,
-                                      bool indexIsInterpolated,
                                       const DayCounter& dayCounter,
                                       const ext::shared_ptr<Seasonality>& seasonality = {},
                                       const Interpolator& interpolator = Interpolator());
 
-        /*! \deprecated Use the other overload and pass the base date directly
-                        as the first date in the vector instead of using a lag.
-                        Deprecated in version 1.34.
-        */
-        QL_DEPRECATED
-        InterpolatedYoYInflationCurve(const Date& referenceDate,
-                                      const Calendar& calendar,
-                                      const DayCounter& dayCounter,
-                                      const Period& lag,
-                                      Frequency frequency,
-                                      bool indexIsInterpolated,
-                                      std::vector<Date> dates,
-                                      const std::vector<Rate>& rates,
-                                      const Interpolator& interpolator = Interpolator());
-
         //! \name InflationTermStructure interface
         //@{
-        Date baseDate() const override;
         Date maxDate() const override;
         //@}
 
         //! \name Inspectors
         //@{
-        const std::vector<Date>& dates() const;
-        const std::vector<Time>& times() const;
-        const std::vector<Real>& data() const;
+        const std::vector<Date>& dates() const override;
+        const std::vector<Time>& times() const override;
+        const std::vector<Real>& data() const override;
         const std::vector<Rate>& rates() const;
-        std::vector<std::pair<Date,Rate> > nodes() const;
         //@}
 
       protected:
@@ -98,23 +80,8 @@ namespace QuantLib {
                                       Date baseDate,
                                       Rate baseYoYRate,
                                       Frequency frequency,
-                                      bool indexIsInterpolated,
                                       const DayCounter& dayCounter,
                                       const ext::shared_ptr<Seasonality>& seasonality = {},
-                                      const Interpolator& interpolator = Interpolator());
-
-        /*! \deprecated Use the other overload and pass the base date directly
-                        instead of using a lag.
-                        Deprecated in version 1.34.
-        */
-        QL_DEPRECATED
-        InterpolatedYoYInflationCurve(const Date& referenceDate,
-                                      const Calendar& calendar,
-                                      const DayCounter& dayCounter,
-                                      Rate baseYoYRate,
-                                      const Period& lag,
-                                      Frequency frequency,
-                                      bool indexIsInterpolated,
                                       const Interpolator& interpolator = Interpolator());
     };
 
@@ -130,12 +97,11 @@ namespace QuantLib {
         std::vector<Date> dates,
         const std::vector<Rate>& rates,
         Frequency frequency,
-        bool indexIsInterpolated,
         const DayCounter& dayCounter,
         const ext::shared_ptr<Seasonality>& seasonality,
         const Interpolator& interpolator)
-    : YoYInflationTermStructure(referenceDate, dates.at(0), rates[0], frequency,
-                                indexIsInterpolated, dayCounter, seasonality),
+    : YoYInflationTermStructure(referenceDate, dates.at(0), rates[0],
+                                frequency, dayCounter, seasonality),
       InterpolatedCurve<Interpolator>(std::vector<Time>(), rates, interpolator),
       dates_(std::move(dates)) {
 
@@ -154,7 +120,6 @@ namespace QuantLib {
 
         this->setupTimes(dates_, referenceDate, dayCounter);
         this->setupInterpolation();
-        this->interpolation_.update();
     }
 
     template <class Interpolator>
@@ -163,87 +128,18 @@ namespace QuantLib {
                                   Date baseDate,
                                   Rate baseYoYRate,
                                   Frequency frequency,
-                                  bool indexIsInterpolated,
                                   const DayCounter& dayCounter,
                                   const ext::shared_ptr<Seasonality>& seasonality,
                                   const Interpolator& interpolator)
-    : YoYInflationTermStructure(referenceDate, baseDate, baseYoYRate, frequency,
-                                indexIsInterpolated, dayCounter, seasonality),
+    : YoYInflationTermStructure(referenceDate, baseDate, baseYoYRate,
+                                frequency, dayCounter, seasonality),
       InterpolatedCurve<Interpolator>(interpolator) {}
 
-
-    QL_DEPRECATED_DISABLE_WARNING
-
-    template <class Interpolator>
-    InterpolatedYoYInflationCurve<Interpolator>::InterpolatedYoYInflationCurve(
-        const Date& referenceDate,
-        const Calendar& calendar,
-        const DayCounter& dayCounter,
-        const Period& lag,
-        Frequency frequency,
-        bool indexIsInterpolated,
-        std::vector<Date> dates,
-        const std::vector<Rate>& rates,
-        const Interpolator& interpolator)
-    : YoYInflationTermStructure(
-          referenceDate, calendar, dayCounter, rates[0], lag, frequency, indexIsInterpolated),
-      InterpolatedCurve<Interpolator>(std::vector<Time>(), rates, interpolator),
-      dates_(std::move(dates)) {
-
-        QL_REQUIRE(dates_.size()>1, "too few dates: " << dates_.size());
-
-        // check that the data starts from the beginning,
-        // i.e. referenceDate - lag, at least must be in the relevant
-        // period
-        std::pair<Date,Date> lim =
-            inflationPeriod(referenceDate - this->observationLag(), frequency);
-        QL_REQUIRE(lim.first <= dates_[0] && dates_[0] <= lim.second,
-                   "first data date is not in base period, date: " << dates_[0]
-                   << " not within [" << lim.first << "," << lim.second << "]");
-
-        QL_REQUIRE(this->data_.size() == dates_.size(),
-                   "indices/dates count mismatch: "
-                   << this->data_.size() << " vs " << dates_.size());
-
-        for (Size i = 1; i < dates_.size(); i++) {
-            // YoY inflation data may be positive or negative
-            // but must be greater than -1
-            QL_REQUIRE(this->data_[i] > -1.0,
-                       "year-on-year inflation data < -100 %");
-        }
-
-        this->setupTimes(dates_, referenceDate, dayCounter);
-        this->setupInterpolation();
-        this->interpolation_.update();
-    }
-
-    template <class Interpolator>
-    InterpolatedYoYInflationCurve<Interpolator>::
-    InterpolatedYoYInflationCurve(const Date& referenceDate,
-                                  const Calendar& calendar,
-                                  const DayCounter& dayCounter,
-                                  Rate baseYoYRate,
-                                  const Period& lag,
-                                  Frequency frequency,
-                                  bool indexIsInterpolated,
-                                  const Interpolator& interpolator)
-    : YoYInflationTermStructure(referenceDate, calendar, dayCounter, baseYoYRate,
-                                lag, frequency, indexIsInterpolated),
-      InterpolatedCurve<Interpolator>(interpolator) {}
-
-    QL_DEPRECATED_ENABLE_WARNING
-
-
-    template <class T>
-    Date InterpolatedYoYInflationCurve<T>::baseDate() const {
-        if (hasExplicitBaseDate())
-            return YoYInflationTermStructure::baseDate();
-        else
-            return dates_.front();
-    }
 
     template <class T>
     Date InterpolatedYoYInflationCurve<T>::maxDate() const {
+        if (this->maxDate_ != Date())
+            return this->maxDate_;
         return dates_.back();
     }
 
@@ -275,15 +171,6 @@ namespace QuantLib {
     inline const std::vector<Real>&
     InterpolatedYoYInflationCurve<T>::data() const {
         return this->data_;
-    }
-
-    template <class T>
-    inline std::vector<std::pair<Date,Rate> >
-    InterpolatedYoYInflationCurve<T>::nodes() const {
-        std::vector<std::pair<Date,Rate> > results(dates_.size());
-        for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i],this->data_[i]);
-        return results;
     }
 
 }

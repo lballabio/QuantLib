@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -34,10 +34,10 @@ namespace QuantLib {
     class AbcdFunction : public AbcdMathFunction {
 
       public:
-        AbcdFunction(Real a = -0.06,
-                     Real b =  0.17,
-                     Real c =  0.54,
-                     Real d =  0.17);
+        explicit AbcdFunction(Real a = -0.06,
+                              Real b =  0.17,
+                              Real c =  0.54,
+                              Real d =  0.17);
 
         //! maximum value of the volatility function
         Real maximumVolatility() const { return maximumValue(); }

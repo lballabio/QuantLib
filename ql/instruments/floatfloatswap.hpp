@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -65,8 +65,8 @@ namespace QuantLib {
             Real spread2 = 0.0,
             Real cappedRate2 = Null<Real>(),
             Real flooredRate2 = Null<Real>(),
-            const ext::optional<BusinessDayConvention>& paymentConvention1 = ext::nullopt,
-            const ext::optional<BusinessDayConvention>& paymentConvention2 = ext::nullopt);
+            const std::optional<BusinessDayConvention>& paymentConvention1 = std::nullopt,
+            const std::optional<BusinessDayConvention>& paymentConvention2 = std::nullopt);
 
         FloatFloatSwap(
             Swap::Type type,
@@ -88,8 +88,8 @@ namespace QuantLib {
             std::vector<Real> spread2 = std::vector<Real>(),
             std::vector<Real> cappedRate2 = std::vector<Real>(),
             std::vector<Real> flooredRate2 = std::vector<Real>(),
-            const ext::optional<BusinessDayConvention>& paymentConvention1 = ext::nullopt,
-            const ext::optional<BusinessDayConvention>& paymentConvention2 = ext::nullopt);
+            const std::optional<BusinessDayConvention>& paymentConvention1 = std::nullopt,
+            const std::optional<BusinessDayConvention>& paymentConvention2 = std::nullopt);
 
         //! \name Inspectors
         //@{
@@ -126,14 +126,16 @@ namespace QuantLib {
 
         //! \name Results
         //@{
+        Spread fairSpread1() const;
+        Spread fairSpread2() const;
         //@}
         // other
         void setupArguments(PricingEngine::arguments* args) const override;
         void fetchResults(const PricingEngine::results*) const override;
 
       private:
-        void init(ext::optional<BusinessDayConvention> paymentConvention1,
-                  ext::optional<BusinessDayConvention> paymentConvention2);
+        void init(std::optional<BusinessDayConvention> paymentConvention1,
+                  std::optional<BusinessDayConvention> paymentConvention2);
         void setupExpired() const override;
         Swap::Type type_;
         std::vector<Real> nominal1_, nominal2_;
@@ -146,6 +148,8 @@ namespace QuantLib {
         std::vector<bool> isRedemptionFlow1_, isRedemptionFlow2_;
         BusinessDayConvention paymentConvention1_, paymentConvention2_;
         const bool intermediateCapitalExchange_, finalCapitalExchange_;
+        // results
+        mutable Spread fairSpread1_, fairSpread2_;
     };
 
     //! %Arguments for float float swap calculation
@@ -175,6 +179,8 @@ namespace QuantLib {
     //! %Results from float float swap calculation
     class FloatFloatSwap::results : public Swap::results {
       public:
+        Spread fairSpread1;
+        Spread fairSpread2;
         void reset() override;
     };
 

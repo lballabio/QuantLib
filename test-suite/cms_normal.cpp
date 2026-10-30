@@ -14,7 +14,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -362,7 +362,8 @@ BOOST_AUTO_TEST_CASE(testCmsSwap) {
         // no gearing, spread
         cms[i] = MakeCms(Period(swapLengths[i], Years),
                          swapIndex,
-                         vars.iborIndex, spread);
+                         vars.iborIndex)
+            .withIborSpread(spread);
 
     for (Size j=0; j<vars.yieldCurveModels.size(); ++j) {
         vars.numericalPricers[j]->setSwaptionVolatility(vars.atmVol);

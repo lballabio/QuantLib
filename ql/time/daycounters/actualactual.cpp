@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -33,17 +33,6 @@ namespace QuantLib {
             // This will only work for day counts longer than 15 days.
             auto months = (Integer)std::lround(12 * Real(impl.dayCount(refStart, refEnd)) / 365.0);
             return (Integer)std::lround(12.0 / Real(months));
-        }
-
-        /* An ISMA day counter either needs a schedule or to have
-           been explicitly passed a reference period. This usage
-           leads to inaccurate year fractions.
-        */
-        template <class T>
-        Time yearFractionGuess(const T& impl,
-                               const Date& start, const Date& end) {
-            // asymptotically correct.
-            return Real(impl.dayCount(start, end)) / 365.0;
         }
 
         std::vector<Date> getListOfPeriodDatesIncludingQuasiPayments(
@@ -129,16 +118,16 @@ namespace QuantLib {
           case ISMA:
           case Bond:
             if (!schedule.empty())
-                return ext::shared_ptr<DayCounter::Impl>(new ISMA_Impl(std::move(schedule)));
+                return ext::make_shared<ISMA_Impl>(std::move(schedule));
             else
-                return ext::shared_ptr<DayCounter::Impl>(new Old_ISMA_Impl);
+                return ext::make_shared<Old_ISMA_Impl>();
           case ISDA:
           case Historical:
           case Actual365:
-            return ext::shared_ptr<DayCounter::Impl>(new ISDA_Impl);
+            return ext::make_shared<ISDA_Impl>();
           case AFB:
           case Euro:
-            return ext::shared_ptr<DayCounter::Impl>(new AFB_Impl);
+            return ext::make_shared<AFB_Impl>();
           default:
             QL_FAIL("unknown act/act convention");
         }

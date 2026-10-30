@@ -16,7 +16,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -30,6 +30,7 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <ql/shared_ptr.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -102,10 +103,10 @@ namespace QuantLib {
 
     bool Bond::isExpired() const {
         // this is the Instrument interface, so it doesn't use
-        // BondFunctions, and includeSettlementDateFlows is true
-        // (unless QL_TODAY_PAYMENTS will set it to false later on)
+        // BondFunctions.  We pass nullopt as includeSettlementDateFlows
+        // so that CashFlows::isExpired uses the default setting.
         return CashFlows::isExpired(cashflows_,
-                                    true,
+                                    std::nullopt,
                                     Settings::instance().evaluationDate());
     }
 
@@ -148,7 +149,7 @@ namespace QuantLib {
     }
 
     Date Bond::maturityDate() const {
-        if (maturityDate_!=Null<Date>())
+        if (maturityDate_ != Date())
             return maturityDate_;
         else
             return BondFunctions::maturityDate(*this);
@@ -235,18 +236,6 @@ namespace QuantLib {
             + accruedAmount(settlement);
     }
 
-    Rate Bond::yield(Real price,
-                     const DayCounter& dc,
-                     Compounding comp,
-                     Frequency freq,
-                     Date settlement,
-                     Real accuracy,
-                     Size maxEvaluations,
-                     Real guess,
-                     Bond::Price::Type priceType) const {
-        return yield({price, priceType}, dc, comp, freq, settlement, accuracy,
-                     maxEvaluations, guess);
-    }
     Rate Bond::yield(Bond::Price price,
                      const DayCounter& dc,
                      Compounding comp,
@@ -326,10 +315,10 @@ namespace QuantLib {
             Real amount = (R/100.0)*(notionals_[i-1]-notionals_[i]);
             ext::shared_ptr<CashFlow> payment;
             if (i < notionalSchedule_.size()-1)
-                payment.reset(new AmortizingPayment(amount,
-                                                    notionalSchedule_[i]));
+                payment = ext::make_shared<AmortizingPayment>(amount,
+                                                    notionalSchedule_[i]);
             else
-                payment.reset(new Redemption(amount, notionalSchedule_[i]));
+                payment = ext::make_shared<Redemption>(amount, notionalSchedule_[i]);
             cashflows_.push_back(payment);
             redemptions_.push_back(payment);
         }
@@ -378,7 +367,7 @@ namespace QuantLib {
         Date lastPaymentDate = Date();
         notionalSchedule_.emplace_back();
         for (auto& cashflow : cashflows_) {
-            ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(cashflow);
+            ext::shared_ptr<Coupon> coupon = coupon_cast(cashflow);
             if (!coupon)
                 continue;
 

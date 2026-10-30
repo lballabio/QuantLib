@@ -9,7 +9,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
 
  This program is distributed in the hope that it will be useful, but
@@ -68,8 +68,8 @@ namespace QuantLib {
         Period fixedLegTenor() const { return fixedLegTenor_; }
         BusinessDayConvention fixedLegConvention() const;
         ext::shared_ptr<IborIndex> iborIndex() const { return iborIndex_; }
-        Handle<YieldTermStructure> forwardingTermStructure() const;
-        Handle<YieldTermStructure> discountingTermStructure() const;
+        const Handle<YieldTermStructure>& forwardingTermStructure() const;
+        const Handle<YieldTermStructure>& discountingTermStructure() const;
         bool exogenousDiscount() const;
         /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.
@@ -122,6 +122,8 @@ namespace QuantLib {
         /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.
         */
+        // Intentionally hides the base method to return the concrete swap type.
+        // cppcheck-suppress duplInheritedMember
         ext::shared_ptr<OvernightIndexedSwap> underlyingSwap(
                                                 const Date& fixingDate) const;
         //@}

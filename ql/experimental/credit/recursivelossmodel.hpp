@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -398,7 +398,7 @@ namespace QuantLib {
     /*
     Bugs here???. The max min on the tranche looks 
     wrong. It is better to have a tranche function since that way we can avoid 
-    adding up losses over all the posible losses rather than just over the 
+    adding up losses over all the possible losses rather than just over the 
     tranche limits.
     */
     //! Portfolio loss conditional to the market factor value

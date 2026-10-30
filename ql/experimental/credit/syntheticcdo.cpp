@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -40,7 +40,7 @@ namespace QuantLib {
                                Rate runningRate,
                                const DayCounter& dayCounter,
                                BusinessDayConvention paymentConvention,
-                               ext::optional<Real> notional)
+                               std::optional<Real> notional)
     : basket_(basket), side_(side), upfrontRate_(upfrontRate), runningRate_(runningRate),
       leverageFactor_(notional ? *notional / basket->trancheNotional() : Real(1.)), // NOLINT(readability-implicit-bool-conversion)
       dayCounter_(dayCounter), paymentConvention_(paymentConvention) {

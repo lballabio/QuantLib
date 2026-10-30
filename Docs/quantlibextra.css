@@ -9,7 +9,7 @@
 {
     padding: 1em;
 }
-                   
+
 #projectnumber
 {
     font-family: "Lato", sans-serif;
@@ -21,11 +21,11 @@
 }
 
 body, table, div, p, dl {
-	font: 300 16px/22px Lato,sans-serif;
+    font: 300 16px/22px Lato,sans-serif;
 }
 
 p.reference, p.definition {
-	font: 300 16px/22px Lato,sans-serif;
+    font: 300 16px/22px Lato,sans-serif;
 }
 
 .title {

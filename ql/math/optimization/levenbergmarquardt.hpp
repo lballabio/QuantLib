@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -40,7 +40,7 @@ namespace QuantLib {
         of the problem is used instead. Note that
         the default implementation of the jacobian
         in CostFunction uses a central difference
-        (oder 2, but requiring more function
+        (order 2, but requiring more function
         evaluations) compared to the forward
         difference implemented here (order 1).
 
@@ -53,28 +53,18 @@ namespace QuantLib {
                            Real gtol = 1.0e-8,
                            bool useCostFunctionsJacobian = false);
         EndCriteria::Type minimize(Problem& P,
-                                   const EndCriteria& endCriteria //= EndCriteria()
-                                   ) override;
-        //      = EndCriteria(400, 1.0e-8, 1.0e-8)
-        virtual Integer getInfo() const;
-        void fcn(int m,
-                 int n,
-                 Real* x,
-                 Real* fvec,
-                 int* iflag);
-        void jacFcn(int m,
-                 int n,
-                 Real* x,
-                 Real* fjac,
-                 int* iflag);
+                                   const EndCriteria& endCriteria) override;
 
       private:
+        void fcn(int m, int n, Real* x, Real* fvec);
+        void jacFcn(int m, int n, Real* x, Real* fjac);
+
         Problem* currentProblem_;
         Array initCostValues_;
         Matrix initJacobian_;
-        mutable Integer info_ = 0;
+        mutable Integer info_ = 0; // remove together with getInfo
         const Real epsfcn_, xtol_, gtol_;
-        bool useCostFunctionsJacobian_;
+        const bool useCostFunctionsJacobian_;
     };
 
 }

@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -28,6 +28,7 @@
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include <ql/math/matrixutilities/gmres.hpp>
+#include <ql/math/matrixutilities/householder.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/qrdecomposition.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
@@ -207,6 +208,143 @@ BOOST_AUTO_TEST_CASE(testHighamSqrt) {
                    << "\nerror:     " << error
                    << "\ntolerance: " << tolerance);
     }
+}
+
+BOOST_AUTO_TEST_CASE(testPseudoSqrtSalvagingAlgorithms) {
+    BOOST_TEST_MESSAGE("Testing pseudo square root salvaging algorithms...");
+
+    setup();
+
+    const Matrix spectral = pseudoSqrt(M2, SalvagingAlgorithm::Spectral);
+    const Matrix hypersphere = pseudoSqrt(M2, SalvagingAlgorithm::Hypersphere);
+    const Matrix lowerDiagonal = pseudoSqrt(M2, SalvagingAlgorithm::LowerDiagonal);
+
+    for (const Matrix& root : {spectral, hypersphere, lowerDiagonal}) {
+        const Matrix covariance = root * transpose(root);
+        const SymmetricSchurDecomposition decomposition(covariance);
+
+        for (Size i = 0; i < M2.rows(); ++i) {
+            QL_CHECK_SMALL(covariance[i][i] - M2[i][i], 1.0e-12);
+            BOOST_CHECK_GE(decomposition.eigenvalues()[i], -1.0e-12);
+        }
+    }
+
+    const Matrix positiveHypersphere =
+        pseudoSqrt(M1, SalvagingAlgorithm::Hypersphere);
+    const Matrix positiveLowerDiagonal =
+        pseudoSqrt(M1, SalvagingAlgorithm::LowerDiagonal);
+    QL_CHECK_SMALL(
+        norm(positiveHypersphere * transpose(positiveHypersphere) - M1), 1.0e-12);
+    QL_CHECK_SMALL(
+        norm(positiveLowerDiagonal * transpose(positiveLowerDiagonal) - M1),
+        1.0e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testPseudoSqrtValidationAndPrincipalTolerance) {
+    BOOST_TEST_MESSAGE("Testing pseudo square root validation and tolerances...");
+
+    setup();
+
+    BOOST_CHECK_EXCEPTION(
+        pseudoSqrt(M2, SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("negative eigenvalue(s)"));
+    BOOST_CHECK_EXCEPTION(
+        pseudoSqrt(M2, SalvagingAlgorithm::Principal), Error,
+        ExpectedErrorMessage("negative eigenvalue(s)"));
+    BOOST_CHECK_EXCEPTION(
+        pseudoSqrt(Matrix(2, 3, 1.0), SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("non square matrix"));
+    BOOST_CHECK_EXCEPTION(
+        pseudoSqrt(Matrix(0, 0), SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("matrix must not be empty"));
+    BOOST_CHECK_EXCEPTION(
+        pseudoSqrt(M1, static_cast<SalvagingAlgorithm::Type>(99)), Error,
+        ExpectedErrorMessage("unknown salvaging algorithm"));
+
+    Matrix nearlyPositive = M1;
+    nearlyPositive[0][0] += 1.0e-14;
+    nearlyPositive[1][1] += 1.0e-14;
+    const Matrix principal = pseudoSqrt(nearlyPositive, SalvagingAlgorithm::Principal);
+    QL_CHECK_SMALL(
+        norm(principal * transpose(principal) - nearlyPositive), 1.0e-12);
+
+    Matrix almostSemidefinite(1, 1);
+    almostSemidefinite[0][0] = -QL_EPSILON;
+    const Matrix principalAlmostSemidefinite =
+        pseudoSqrt(almostSemidefinite, SalvagingAlgorithm::Principal);
+    QL_CHECK_SMALL(principalAlmostSemidefinite[0][0], 1.0e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testRankReducedPseudoSqrtBranches) {
+    BOOST_TEST_MESSAGE("Testing rank-reduced pseudo square root branches...");
+
+    setup();
+
+    const Matrix fullRank = rankReducedSqrt(
+        M1, 3, 1.0, SalvagingAlgorithm::None);
+    const Matrix rankOne = rankReducedSqrt(
+        M1, 1, 1.0, SalvagingAlgorithm::None);
+    const Matrix halfSpectrum = rankReducedSqrt(
+        M1, 3, 0.5, SalvagingAlgorithm::None);
+
+    BOOST_CHECK_EQUAL(fullRank.columns(), 3);
+    BOOST_CHECK_EQUAL(rankOne.columns(), 1);
+    BOOST_CHECK_LE(halfSpectrum.columns(), 3U);
+    for (const Matrix& root : {fullRank, rankOne, halfSpectrum}) {
+        const Matrix covariance = root * transpose(root);
+        for (Size i = 0; i < M1.rows(); ++i)
+            QL_CHECK_SMALL(covariance[i][i] - M1[i][i], 1.0e-12);
+    }
+
+    const Matrix spectral = rankReducedSqrt(
+        M2, 3, 1.0, SalvagingAlgorithm::Spectral);
+    const Matrix higham = rankReducedSqrt(
+        M5, 4, 1.0, SalvagingAlgorithm::Higham);
+    BOOST_CHECK_EQUAL(spectral.columns(), 3);
+    BOOST_CHECK_EQUAL(higham.columns(), 4);
+
+    BOOST_CHECK_EXCEPTION(
+        rankReducedSqrt(M1, 3, 0.0, SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("no eigenvalues retained"));
+    BOOST_CHECK_EXCEPTION(
+        rankReducedSqrt(M1, 3, 1.1, SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("percentage to be retained > 100%"));
+    BOOST_CHECK_EXCEPTION(
+        rankReducedSqrt(M1, 0, 1.0, SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("max rank required < 1"));
+    BOOST_CHECK_EXCEPTION(
+        rankReducedSqrt(Matrix(0, 0), 1, 1.0, SalvagingAlgorithm::None), Error,
+        ExpectedErrorMessage("matrix must not be empty"));
+    BOOST_CHECK_EXCEPTION(
+        rankReducedSqrt(M1, 3, 1.0, SalvagingAlgorithm::Hypersphere), Error,
+        ExpectedErrorMessage("unknown or invalid salvaging algorithm"));
+}
+
+BOOST_AUTO_TEST_CASE(testPseudoSqrtDegenerateInputs) {
+    BOOST_TEST_MESSAGE("Testing pseudo square root degenerate inputs...");
+
+    Matrix zero(3, 3, 0.0);
+    const Matrix zeroSpectral = pseudoSqrt(zero, SalvagingAlgorithm::Spectral);
+    const Matrix zeroPrincipal = pseudoSqrt(zero, SalvagingAlgorithm::Principal);
+    const Matrix zeroRankReduced = rankReducedSqrt(
+        zero, 10, 1.0, SalvagingAlgorithm::Spectral);
+
+    for (const Matrix& root : {zeroSpectral, zeroPrincipal, zeroRankReduced}) {
+        for (Size i = 0; i < root.rows(); ++i)
+            for (Size j = 0; j < root.columns(); ++j)
+                BOOST_CHECK(std::isfinite(root[i][j]));
+        QL_CHECK_SMALL(norm(root * transpose(root)), 1.0e-12);
+    }
+
+    Matrix singular(2, 2);
+    singular[0][0] = singular[0][1] = singular[1][0] = singular[1][1] = 1.0;
+    const Matrix spectral = pseudoSqrt(singular, SalvagingAlgorithm::Spectral);
+    const Matrix principal = pseudoSqrt(singular, SalvagingAlgorithm::Principal);
+    const Matrix rankReduced = rankReducedSqrt(
+        singular, 10, 1.0, SalvagingAlgorithm::None);
+
+    for (const Matrix& root : {spectral, principal, rankReduced})
+        QL_CHECK_SMALL(norm(root * transpose(root) - singular), 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testSVD) {
@@ -397,7 +535,7 @@ BOOST_AUTO_TEST_CASE(testDeterminant) {
     // expected results calculated with octave
     Real expected[] = { 0.044, -0.012, 5.0, 5.7621e-11, 1.0};
 
-    for (Size j=0; j<LENGTH(testMatrices); ++j) {
+    for (Size j=0; j<std::size(testMatrices); ++j) {
         const Real calculated = determinant(testMatrices[j]);
         if (std::fabs(expected[j] - calculated) > tol)
             BOOST_FAIL("determinant calculation failed "
@@ -775,14 +913,19 @@ BOOST_AUTO_TEST_CASE(testSparseMatrixMemory) {
 
 }
 
-#define QL_CHECK_CLOSE_MATRIX(actual, expected)                             \
+#define QL_CHECK_CLOSE_MATRIX_TOL(actual, expected, tol)                    \
     BOOST_REQUIRE(actual.rows() == expected.rows() &&                       \
                   actual.columns() == expected.columns());                  \
     for (auto i = 0u; i < actual.rows(); i++) {                             \
         for (auto j = 0u; j < actual.columns(); j++) {                      \
-            QL_CHECK_CLOSE(actual(i, j), expected(i, j), 100 * QL_EPSILON); \
+            QL_CHECK_CLOSE(actual(i, j), expected(i, j), tol);              \
         }                                                                   \
     }                                                                       \
+
+
+#define QL_CHECK_CLOSE_MATRIX(actual, expected)                             \
+        QL_CHECK_CLOSE_MATRIX_TOL(actual, expected, 100 * QL_EPSILON)       \
+
 
 BOOST_AUTO_TEST_CASE(testOperators) {
 
@@ -840,6 +983,159 @@ BOOST_AUTO_TEST_CASE(testOperators) {
 
     QL_CHECK_CLOSE_MATRIX(lvalue_real_quotient, scalar_quotient);
     QL_CHECK_CLOSE_MATRIX(rvalue_real_quotient, scalar_quotient);
+}
+
+namespace MatrixTests {
+    Matrix createTestCorrelationMatrix(Size n) {
+        Matrix rho(n, n);
+        for (Size i=0; i < n; ++i)
+            for (Size j=i; j < n; ++j)
+                rho[i][j] = rho[j][i] =
+                    std::exp(-0.1*std::abs(Real(i)-Real(j)) - ((i!=j) ? 0.02*(i+j): 0.0));
+
+        return rho;
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPrincipalMatrixSqrt) {
+    BOOST_TEST_MESSAGE("Testing principal matrix pseudo sqrt...");
+
+    std::vector<Size> dims = {1, 4, 10, 40};
+    for (Size n: dims) {
+        const Matrix rho = MatrixTests::createTestCorrelationMatrix(n);
+        const Matrix sqrtRho = pseudoSqrt(rho, SalvagingAlgorithm::Principal);
+
+        // matrix is symmetric
+        QL_CHECK_CLOSE_MATRIX_TOL(sqrtRho, transpose(sqrtRho), 1e3*QL_EPSILON);
+
+        // matrix is square root of original matrix
+        QL_CHECK_CLOSE_MATRIX_TOL((sqrtRho*sqrtRho), rho, 1e5*QL_EPSILON);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testCholeskySolverFor) {
+    BOOST_TEST_MESSAGE("Testing CholeskySolverFor...");
+
+    MersenneTwisterUniformRng rng(1234);
+
+    std::vector<Size> dims = {1, 4, 10, 25, 50};
+    for (Size n: dims) {
+
+        Array b(n);
+        for (Size i=0; i < n; ++i)
+            b[i] = rng.nextReal();
+
+        const Matrix rho = MatrixTests::createTestCorrelationMatrix(n);
+        const Array x = CholeskySolveFor(CholeskyDecomposition(rho), b);
+
+        const Array diff = Abs(rho*x - b);
+
+        QL_CHECK_SMALL(std::sqrt(DotProduct(diff, diff)), 20*std::sqrt(n)*QL_EPSILON);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testCholeskySolverForIncomplete) {
+    BOOST_TEST_MESSAGE("Testing CholeskySolverFor with incomplete matrix...");
+
+    const Size n = 4;
+
+    Matrix rho(n, n, 0.0);
+    rho[0][0] = rho[1][1] = Real(1);
+    rho[0][1] = rho[1][0] = 0.9;
+
+    const Matrix L = CholeskyDecomposition(rho, true);
+    QL_CHECK_CLOSE_MATRIX((L*transpose(L)), rho);
+}
+
+namespace {
+    void QL_CHECK_CLOSE_ARRAY_TOL(
+        const Array& actual, const Array& expected, Real tol) {
+        BOOST_REQUIRE(actual.size() == expected.size());
+        for (auto i = 0U; i < actual.size(); i++) {
+            QL_CHECK_SMALL(actual[i] - expected[i], tol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testHouseholderTransformation) {
+    BOOST_TEST_MESSAGE("Testing Householder Transformation...");
+
+    MersenneTwisterUniformRng rng(1234);
+
+    const auto I = [](Size i) -> Matrix {
+        Matrix id(i, i, 0.0);
+        for (Size j=0; j < i; ++j)
+            id[j][j] = 1.0;
+
+        return id;
+    };
+
+    for (Size i=1; i < 10; ++i) {
+        Array v(i), x(i);
+        for (Size j=0; j < i; ++j) {
+            v[j] = rng.nextReal()-0.5;
+            x[j] = rng.nextReal()-0.5;
+        }
+
+        const Array expected = (I(i)- 2.0*outerProduct(v, v))*x;
+        const Array calculated = HouseholderTransformation(v)(x);
+        QL_CHECK_CLOSE_ARRAY_TOL(calculated, expected, 1e4*QL_EPSILON);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testHouseholderReflection) {
+    BOOST_TEST_MESSAGE("Testing Householder Reflection...");
+
+    constexpr double tol = 1e4*QL_EPSILON;
+
+    const auto e = [](Size n, Size m=0) -> Array {
+        Array e(n, 0.0);
+        e[m] = 1.0;
+        return e;
+    };
+
+    for (Size i=0; i < 5; ++i) {
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(5))(e(5, i)), e(5), tol);
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(5))(M_PI*e(5, i)), M_PI*e(5), tol);
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(5))(
+                e(5, i) + e(5)),
+                ((i==0)? 2.0 : M_SQRT2)*e(5), tol);
+    }
+
+    // limits
+    for (Real x=10; x > 1e-50; x*=0.1) {
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(3))(
+                Array({10.0, x, 0})),
+                std::sqrt(10.0*10.0+x*x)*e(3), tol
+        );
+
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(3))(
+                Array({10.0, x, 1e-3})),
+                std::sqrt(10.0*10.0+x*x+1e-3*1e-3)*e(3), tol
+        );
+    }
+
+    MersenneTwisterUniformRng rng(1234);
+
+    for (Size i=0; i < 100; ++i) {
+        const Array v = Array({rng.nextReal(), rng.nextReal(), rng.nextReal()}) - 0.5;
+        const Matrix u = HouseholderTransformation(v / Norm2(v)).getMatrix();
+
+        const Array eu = u*e(3, i%3);
+        const Array a = Array({rng.nextReal(), rng.nextReal(), rng.nextReal()}) - 0.5;
+
+        const Matrix H = HouseholderTransformation(
+            HouseholderReflection(eu).reflectionVector(a)).getMatrix();
+
+        QL_CHECK_CLOSE_ARRAY_TOL(u*H*a, Norm2(a)*e(3, i%3), tol);
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

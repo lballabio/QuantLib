@@ -11,13 +11,14 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <algorithm>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsimplestoragecondition.hpp>
@@ -75,9 +76,11 @@ namespace QuantLib {
                 const Real buyPrice  = interpl(x, y+maxInject);
 
                 // bang-bang-wait strategy
-                Real currentValue = std::max(a[iter.index()],
-                    std::max(buyPrice - price*maxInject,
-                             sellPrice + price*maxWithDraw));
+                Real currentValue = std::max({
+                        a[iter.index()],
+                        Real(buyPrice - price*maxInject),
+                        Real(sellPrice + price*maxWithDraw)
+                    });
 
                 // check if intermediate grid points give a better value
                 auto yIter = std::upper_bound(y_.begin(), y_.end(), y - maxWithDraw);

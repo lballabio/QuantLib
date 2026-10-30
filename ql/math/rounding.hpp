@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -28,8 +28,12 @@
 
 namespace QuantLib {
 
-    //! basic rounding class
-    /*! \test the correctness of the returned values is tested by
+    /*! A basic rounding class that supports truncating up to 16 decimal places
+        (input precision range in [0,16]) and depends on a precision of rounding number.
+        Note that the class does not validate the input range; supplying an unsupported
+        rounding value may result in undefined behavior.
+
+        \test the correctness of the returned values is tested by
               checking them against known good results.
     */
     class Rounding {

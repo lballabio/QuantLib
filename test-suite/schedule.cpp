@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -82,6 +82,84 @@ BOOST_AUTO_TEST_CASE(testDailySchedule) {
     check_dates(s, expected);
 }
 
+
+BOOST_AUTO_TEST_CASE(testEomAdjustment) {
+    BOOST_TEST_MESSAGE("Testing end-of-month adjustment with different conventions...");
+
+    Date startDate = Date(29, February, 2024);
+    Date endDate = startDate + 1 * Years;
+
+    Schedule s1 =
+        MakeSchedule().from(startDate).to(endDate)
+                      .withCalendar(TARGET())
+                      .withFrequency(Monthly)
+                      .withConvention(Unadjusted)
+                      .endOfMonth();
+
+    check_dates(s1, {
+            {29, February, 2024},
+            {31, March, 2024},
+            {30, April, 2024},
+            {31, May, 2024},
+            {30, June, 2024},
+            {31, July, 2024},
+            {31, August, 2024},
+            {30, September, 2024},
+            {31, October, 2024},
+            {30, November, 2024},
+            {31, December, 2024},
+            {31, January, 2025},
+            {28, February, 2025},
+        });
+
+    Schedule s2 =
+        MakeSchedule().from(startDate).to(endDate)
+                      .withCalendar(TARGET())
+                      .withFrequency(Monthly)
+                      .withConvention(Following)
+                      .endOfMonth();
+
+    check_dates(s2, {
+            {29, February, 2024},
+            {2, April, 2024},
+            {30, April, 2024},
+            {31, May, 2024},
+            {1, July, 2024},
+            {31, July, 2024},
+            {2, September, 2024},
+            {30, September, 2024},
+            {31, October, 2024},
+            {2, December, 2024},
+            {31, December, 2024},
+            {31, January, 2025},
+            {28, February, 2025},
+        });
+
+    Schedule s3 =
+        MakeSchedule().from(startDate).to(endDate)
+                      .withCalendar(TARGET())
+                      .withFrequency(Monthly)
+                      .withConvention(ModifiedPreceding)
+                      .endOfMonth();
+
+    check_dates(s3, {
+            {29, February, 2024},
+            {28, March, 2024},
+            {30, April, 2024},
+            {31, May, 2024},
+            {28, June, 2024},
+            {31, July, 2024},
+            {30, August, 2024},
+            {30, September, 2024},
+            {31, October, 2024},
+            {29, November, 2024},
+            {31, December, 2024},
+            {31, January, 2025},
+            {28, February, 2025},
+        });
+}
+
+
 BOOST_AUTO_TEST_CASE(testEndDateWithEomAdjustment) {
     BOOST_TEST_MESSAGE(
         "Testing end date for schedule with end-of-month adjustment...");
@@ -91,8 +169,8 @@ BOOST_AUTO_TEST_CASE(testEndDateWithEomAdjustment) {
                       .to(Date(15,June,2012))
                       .withCalendar(Japan())
                       .withTenor(6*Months)
-                      .withConvention(Following)
-                      .withTerminationDateConvention(Following)
+                      .withConvention(ModifiedFollowing)
+                      .withTerminationDateConvention(ModifiedFollowing)
                       .forwards()
                       .endOfMonth();
 
@@ -222,7 +300,7 @@ BOOST_AUTO_TEST_CASE(testDoubleFirstDateWithEomAdjustment) {
                       .to(Date(31,August,1997))
                       .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
                       .withTenor(6*Months)
-                      .withConvention(Following)
+                      .withConvention(ModifiedFollowing)
                       .withTerminationDateConvention(Following)
                       .backwards()
                       .endOfMonth();
@@ -245,8 +323,8 @@ BOOST_AUTO_TEST_CASE(testFirstDateWithEomAdjustment) {
                             .withFirstDate(Date(28, February, 1997))
                             .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
                             .withTenor(6 * Months)
-                            .withConvention(Following)
-                            .withTerminationDateConvention(Following)
+                            .withConvention(ModifiedFollowing)
+                            .withTerminationDateConvention(ModifiedFollowing)
                             .forwards()
                             .endOfMonth();
 
@@ -269,8 +347,8 @@ BOOST_AUTO_TEST_CASE(testNextToLastWithEomAdjustment) {
                             .withNextToLastDate(Date(28, February, 1998))
                             .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
                             .withTenor(6 * Months)
-                            .withConvention(Following)
-                            .withTerminationDateConvention(Following)
+                            .withConvention(ModifiedFollowing)
+                            .withTerminationDateConvention(ModifiedFollowing)
                             .backwards()
                             .endOfMonth();
 
@@ -350,10 +428,9 @@ namespace CdsTests {
 }
 
 BOOST_AUTO_TEST_CASE(testCDS2015Convention) {
+    BOOST_TEST_MESSAGE("Testing CDS2015 semi-annual rolling convention...");
 
     using CdsTests::makeCdsSchedule;
-
-    BOOST_TEST_MESSAGE("Testing CDS2015 semi-annual rolling convention...");
 
     DateGeneration::Rule rule = DateGeneration::CDS2015;
     Period tenor(5, Years);
@@ -407,12 +484,12 @@ BOOST_AUTO_TEST_CASE(testCDS2015Convention) {
 }
 
 BOOST_AUTO_TEST_CASE(testCDS2015ConventionGrid) {
+    BOOST_TEST_MESSAGE("Testing CDS2015 convention against ISDA doc...");
 
     using CdsTests::InputData;
 
     // Testing against section 11 of ISDA doc FAQs Amending when Single Name CDS roll to new on-the-run contracts
     // December 20, 2015 Go-Live
-    BOOST_TEST_MESSAGE("Testing CDS2015 convention against ISDA doc...");
 
     // Test inputs and expected outputs
     // The map key is a pair with 1st element equal to trade date and 2nd element equal to CDS tenor.
@@ -492,12 +569,12 @@ BOOST_AUTO_TEST_CASE(testCDS2015ConventionGrid) {
 }
 
 BOOST_AUTO_TEST_CASE(testCDSConventionGrid) {
+    BOOST_TEST_MESSAGE("Testing CDS convention against ISDA doc...");
 
     using CdsTests::InputData;
 
     // Testing against section 11 of ISDA doc FAQs Amending when Single Name CDS roll to new on-the-run contracts
     // December 20, 2015 Go-Live. Amended the dates in the doc to the pre-2015 expected maturity dates.
-    BOOST_TEST_MESSAGE("Testing CDS convention against ISDA doc...");
 
     // Test inputs and expected outputs
     // The map key is a pair with 1st element equal to trade date and 2nd element equal to CDS tenor.
@@ -583,12 +660,12 @@ BOOST_AUTO_TEST_CASE(testCDSConventionGrid) {
 }
 
 BOOST_AUTO_TEST_CASE(testOldCDSConventionGrid) {
+    BOOST_TEST_MESSAGE("Testing old CDS convention...");
 
     using CdsTests::InputData;
 
     // Testing against section 11 of ISDA doc FAQs Amending when Single Name CDS roll to new on-the-run contracts
     // December 20, 2015 Go-Live. Amended the dates in the doc to the pre-2009 expected start and maturity dates.
-    BOOST_TEST_MESSAGE("Testing old CDS convention...");
 
     // Test inputs and expected outputs
     // The map key is a pair with 1st element equal to trade date and 2nd element equal to CDS tenor.
@@ -865,7 +942,7 @@ BOOST_AUTO_TEST_CASE(testCDS2015ZeroMonthsMatured) {
     };
 
     for (const Date& input: inputs) {
-        BOOST_CHECK_EQUAL(cdsMaturity(input, tenor, rule), Null<Date>());
+        BOOST_CHECK_EQUAL(cdsMaturity(input, tenor, rule), Date());
     }
 }
 
@@ -941,6 +1018,21 @@ BOOST_AUTO_TEST_CASE(testFourWeeksTenor) {
     } catch (Error& e) {
         BOOST_ERROR("A four-weeks tenor caused an exception: " << e.what());
     }
+}
+
+BOOST_AUTO_TEST_CASE(testOnceFrequency) {
+    BOOST_TEST_MESSAGE(
+        "Testing that Once frequency works...");
+
+    Schedule s =
+        MakeSchedule().from(Date(13,January,2016))
+                      .to(Date(13,January,2019))
+                      .withFrequency(Once)
+                      .forwards();
+
+    BOOST_CHECK(s.size() == 2);
+    BOOST_CHECK(s[0] == Date(13,January,2016));
+    BOOST_CHECK(s[1] == Date(13,January,2019));
 }
 
 BOOST_AUTO_TEST_CASE(testScheduleAlwaysHasAStartDate) {
@@ -1061,8 +1153,8 @@ BOOST_AUTO_TEST_CASE(testTruncation) {
         .to(Date(15, June, 2020))
         .withCalendar(Japan())
         .withTenor(6 * Months)
-        .withConvention(Following)
-        .withTerminationDateConvention(Following)
+        .withConvention(ModifiedFollowing)
+        .withTerminationDateConvention(ModifiedFollowing)
         .forwards()
         .endOfMonth();
 
@@ -1131,6 +1223,72 @@ BOOST_AUTO_TEST_CASE(testTruncation) {
     expected[4] = Date(15, June, 2020);
     check_dates(t, expected);
     BOOST_CHECK(t.isRegular().front() == true);
+}
+
+BOOST_AUTO_TEST_CASE(testBackwardRegularFirstPeriodWithFirstDate) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing that backward schedule marks regular first period correctly "
+        "when the first date is provided...");
+
+    // Reproduces issue #405: Backward generation with firstDate and
+    // endOfMonth incorrectly marked the first period as irregular even
+    // when effectiveDate + tenor == firstDate.
+
+    NullCalendar calendar;
+
+    // Regular first period: Sep 30 + 6M = Mar 31 (with endOfMonth)
+    Schedule backward(
+        Date(30, September, 2017),   // effectiveDate
+        Date(30, September, 2024),   // terminationDate
+        Period(Semiannual),
+        calendar, Unadjusted, Unadjusted,
+        DateGeneration::Backward, true,
+        Date(31, March, 2018));      // firstDate
+
+    // First period should be regular
+    BOOST_CHECK_MESSAGE(backward.isRegular(1),
+        "First period should be regular (effectiveDate + 6M == firstDate)");
+
+    // Forward generation should agree
+    Schedule forward(
+        Date(30, September, 2017),
+        Date(30, September, 2024),
+        Period(Semiannual),
+        calendar, Unadjusted, Unadjusted,
+        DateGeneration::Forward, true,
+        Date(31, March, 2018));
+
+    BOOST_CHECK_MESSAGE(forward.isRegular(1),
+        "Forward first period should also be regular");
+
+    // Genuinely irregular first period: effective date does NOT align
+    // with firstDate by one tenor
+    Schedule irregular(
+        Date(3, September, 2017),    // effectiveDate (not end-of-month)
+        Date(30, September, 2024),
+        Period(Semiannual),
+        calendar, Unadjusted, Unadjusted,
+        DateGeneration::Backward, true,
+        Date(31, March, 2018));
+
+    BOOST_CHECK_MESSAGE(!irregular.isRegular(1),
+        "First period should be irregular (effectiveDate + 6M != firstDate)");
+
+    // Forward nextToLastDate: off-grid nextToLastDate triggers
+    // the insertion path and should be marked irregular
+    Schedule forwardNTLIrreg(
+        Date(30, September, 2017),
+        Date(30, September, 2024),
+        Period(Semiannual),
+        calendar, Unadjusted, Unadjusted,
+        DateGeneration::Forward, true,
+        Date(),
+        Date(15, March, 2024));        // off-grid, not one tenor from neighbors
+
+    Size n = forwardNTLIrreg.size();
+    BOOST_CHECK_MESSAGE(!forwardNTLIrreg.isRegular(n - 2),
+        "Period ending at off-grid nextToLastDate should be irregular");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

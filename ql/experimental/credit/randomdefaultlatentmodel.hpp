@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -33,7 +33,7 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/statistics/histogram.hpp>
 #include <ql/math/statistics/riskstatistics.hpp>
-#include <ql/tuple.hpp>
+#include <tuple>
 #include <utility>
 
 /* Intended to replace
@@ -849,7 +849,7 @@ namespace QuantLib {
         // grant access to static polymorphism:
         /* While this works on g++, VC9 refuses to compile it.
         Not completely sure whos right; individually making friends of the
-        calling members or writting explicitly the derived class T parameters
+        calling members or writing explicitly the derived class T parameters
         throws the same errors.
         The access is then open to the member fucntions.
         Another solution is to use this http://accu.org/index.php/journals/296

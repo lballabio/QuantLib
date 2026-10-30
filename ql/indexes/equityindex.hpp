@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -69,16 +69,6 @@ namespace QuantLib {
                     Handle<YieldTermStructure> dividend = {},
                     Handle<Quote> spot = {});
 
-        /*! \deprecated Use the constructor taking a currency.
-                        Deprecated in version 1.36.
-        */
-        [[deprecated("Use the constructor taking a currency")]]
-        EquityIndex(std::string name,
-                    Calendar fixingCalendar,
-                    Handle<YieldTermStructure> interest = {},
-                    Handle<YieldTermStructure> dividend = {},
-                    Handle<Quote> spot = {});
-
         //! \name Index interface
         //@{
         std::string name() const override { return name_; }
@@ -91,11 +81,11 @@ namespace QuantLib {
         //! The index currency
         Currency currency() const { return currency_; }
         //! the rate curve used to forecast fixings
-        Handle<YieldTermStructure> equityInterestRateCurve() const { return interest_; }
+        const Handle<YieldTermStructure>& equityInterestRateCurve() const { return interest_; }
         //! the dividend curve used to forecast fixings
-        Handle<YieldTermStructure> equityDividendCurve() const { return dividend_; }
+        const Handle<YieldTermStructure>& equityDividendCurve() const { return dividend_; }
         //! index spot value
-        Handle<Quote> spot() const { return spot_; }
+        const Handle<Quote>& spot() const { return spot_; }
         //@}
         //! \name Fixing calculations
         //@{

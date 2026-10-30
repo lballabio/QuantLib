@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -36,6 +36,7 @@ namespace QuantLib {
         registerWith(futuresQuote_);
         registerWith(volatility_);
         registerWith(meanReversion_);
+        registerWith(Settings::instance().evaluationDate());
     }
 
     FuturesConvAdjustmentQuote::FuturesConvAdjustmentQuote(const ext::shared_ptr<IborIndex>& index,
@@ -43,26 +44,22 @@ namespace QuantLib {
                                                            Handle<Quote> futuresQuote,
                                                            Handle<Quote> volatility,
                                                            Handle<Quote> meanReversion)
-    : dc_(index->dayCounter()), futuresDate_(IMM::date(immCode)),
-      indexMaturityDate_(index->maturityDate(futuresDate_)), futuresQuote_(std::move(futuresQuote)),
-      volatility_(std::move(volatility)), meanReversion_(std::move(meanReversion)) {
-
-        registerWith(futuresQuote_);
-        registerWith(volatility_);
-        registerWith(meanReversion_);
-    }
+    : FuturesConvAdjustmentQuote(index, IMM::date(immCode), std::move(futuresQuote),
+                                 std::move(volatility), std::move(meanReversion)) {}
 
     Real FuturesConvAdjustmentQuote::value() const {
-
-        Date settlementDate = Settings::instance().evaluationDate();
-        Time startTime = dc_.yearFraction(settlementDate, futuresDate_);
-        Time indexMaturity = dc_.yearFraction(settlementDate,
-                                              indexMaturityDate_);
-        return HullWhite::convexityBias(futuresQuote_->value(),
-                                        startTime,
-                                        indexMaturity,
-                                        volatility_->value(),
-                                        meanReversion_->value());
+        if (rate_ == Null<Real>()) {
+            Date settlementDate = Settings::instance().evaluationDate();
+            Time startTime = dc_.yearFraction(settlementDate, futuresDate_);
+            Time indexMaturity = dc_.yearFraction(settlementDate,
+                                                  indexMaturityDate_);
+            rate_ = HullWhite::convexityBias(futuresQuote_->value(),
+                                             startTime,
+                                             indexMaturity,
+                                             volatility_->value(),
+                                             meanReversion_->value());
+        }
+        return rate_;
     }
 
     bool FuturesConvAdjustmentQuote::isValid() const {

@@ -8,7 +8,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -83,6 +83,8 @@ BOOST_AUTO_TEST_CASE(testConventions) {
         SingleCase(SouthAfrica(), Unadjusted, Date(3,February,2015), Period(1,Months), false, Date(3,March,2015)),
         SingleCase(SouthAfrica(), Unadjusted, Date(3,February,2015), Period(4,Days), false, Date(9,February,2015)),
         SingleCase(SouthAfrica(), Unadjusted, Date(31,January,2015), Period(1,Months), true, Date(28,February,2015)),
+        SingleCase(SouthAfrica(), Unadjusted, Date(30,January,2015), Period(1,Months), true, Date(28,February,2015)),
+        SingleCase(SouthAfrica(), Unadjusted, Date(27,February,2015), Period(1,Months), true, Date(27,March,2015)),
         SingleCase(SouthAfrica(), Unadjusted, Date(31,January,2015), Period(1,Months), false, Date(28,February,2015)),
 
         //HalfMonthModifiedFollowing

@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -154,9 +154,11 @@ namespace QuantLib {
     //    std::fill(model.begin(), model.end(), false);
 
         std::vector<std::valarray<bool> > modelTwo;
+        modelTwo.reserve(associatedVolStructure_->numberOfRates());
         for (Size i=0; i < associatedVolStructure_->numberOfRates(); ++i)
             modelTwo.push_back(model);
 
+        v.reserve(associatedVolStructure_->numberOfSteps());
         for (Size j=0; j < associatedVolStructure_->numberOfSteps(); ++j)
             v.push_back(modelTwo);
 
@@ -193,9 +195,11 @@ namespace QuantLib {
         //std::fill(model.begin(), model.end(), false);
 
         std::vector<std::valarray<bool> > modelTwo;
+        modelTwo.reserve(associatedVolStructure_->numberOfRates());
         for (Size i=0; i < associatedVolStructure_->numberOfRates(); ++i)
             modelTwo.push_back(model);
 
+        v.reserve(associatedVolStructure_->numberOfSteps());
         for (Size j=0; j < associatedVolStructure_->numberOfSteps(); ++j)
             v.push_back(modelTwo);
 

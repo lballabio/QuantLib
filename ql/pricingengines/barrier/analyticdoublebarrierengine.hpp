@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -20,7 +20,6 @@
 /*! \file analyticdoublebarrierengine.hpp
     \brief Analytic double barrier european option engines
 
-  ! Valid only if strike is in barrier range
 */
 
 #ifndef quantlib_analytic_double_barrier_engine_hpp
@@ -39,9 +38,18 @@ namespace QuantLib {
          Curved Boundaries" Mathematical Finance 2/1992").
          This code handles only flat barriers
 
-        \ingroup barrierengines
+         The series is truncated after \c series terms on each side
+         (the default is 5), and no warning is given when that is not
+         enough. On a narrow corridor with a large \f$ \sigma^2 T \f$
+         the truncation error can be visible; pass a higher number of
+         terms in that case. Conversely, at very low volatility the
+         weights of the higher-order terms can overflow, and the
+         returned price is then wrong (typically 0); reducing the
+         number of terms can avoid this in some cases.
+         DoubleBarrierOption::impliedVolatility builds the engine with
+         the default number of terms.
 
-        \note the formula holds only when strike is in the barrier range
+        \ingroup barrierengines
 
         \test the correctness of the returned value is tested by
               reproducing results available in literature.

@@ -10,7 +10,7 @@
   under the terms of the QuantLib license.  You should have received a
   copy of the license along with this program; if not, please email
   <quantlib-dev@lists.sf.net>. The license is also available online at
-  <http://quantlib.org/license.shtml>.
+  <https://www.quantlib.org/license.shtml>.
 
   This program is distributed in the hope that it will be useful, but WITHOUT
   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -22,9 +22,6 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/rounding.hpp>
-#include <ql/methods/finitedifferences/dminus.hpp>
-#include <ql/methods/finitedifferences/dplus.hpp>
-#include <ql/methods/finitedifferences/dplusdminus.hpp>
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -119,7 +116,10 @@ namespace QuantLib {
             }
 
             // Begin gamma construction
-            TridiagonalOperator gammaOp = DPlusDMinus(assetSteps_+1,h);
+            TridiagonalOperator gammaOp(assetSteps_+1);
+            gammaOp.setFirstRow(0.0,0.0);
+            gammaOp.setMidRows(1/(h*h),-2/(h*h),1/(h*h));
+            gammaOp.setLastRow(0.0,0.0);
 
             Array upperD = gammaOp.upperDiagonal();
             Array lowerD = gammaOp.lowerDiagonal();

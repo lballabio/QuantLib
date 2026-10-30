@@ -11,14 +11,13 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/barrieroption.hpp>
@@ -36,7 +35,6 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -197,7 +195,7 @@ BOOST_AUTO_TEST_CASE(testFdmHestonVarianceMesher) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testFdmHestonBarrierVsBlackScholes, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testFdmHestonBarrierVsBlackScholes) {
 
     BOOST_TEST_MESSAGE("Testing FDM with barrier option in Heston model...");
 
@@ -473,7 +471,7 @@ BOOST_AUTO_TEST_CASE(testFdmHestonIkonenToivanen) {
     Real expected[] = { 2.00000, 1.10763, 0.520038, 0.213681, 0.082046 };
     const Real tol = 0.001;
     
-    for (Size i=0; i < LENGTH(strikes); ++i) {
+    for (Size i=0; i < std::size(strikes); ++i) {
         Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(strikes[i])));
         ext::shared_ptr<HestonProcess> hestonProcess(
             new HestonProcess(rTS, qTS, s0, 0.0625, 5, 0.16, 0.9, 0.1));
@@ -612,7 +610,7 @@ BOOST_AUTO_TEST_CASE(testFdmHestonEuropeanWithDividends) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testFdmHestonConvergence, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testFdmHestonConvergence) {
 
     /* convergence tests based on 
        ADI finite difference schemes for option pricing in the

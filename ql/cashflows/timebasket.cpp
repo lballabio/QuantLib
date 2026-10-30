@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -47,7 +47,7 @@ namespace QuantLib {
         for (auto j : *this) {
             Date date = j.first;
             Real value = j.second;
-            Date pDate = Null<Date>(), nDate = Null<Date>();
+            Date pDate = Date(), nDate = Date();
 
             auto bi =
                 std::lower_bound(sbuckets.begin(), sbuckets.end(), date);
@@ -60,7 +60,7 @@ namespace QuantLib {
             if (bi != sbuckets.begin() && bi != sbuckets.end())
                 nDate = *(bi-1);
 
-            if (pDate == date || nDate == Null<Date>()) {
+            if (pDate == date || nDate == Date()) {
                 result[pDate] += value;
             } else {
                 Real pDays = Real(pDate-date);

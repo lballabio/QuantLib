@@ -8,10 +8,11 @@ this_include_HEADERS = \
     dataformatters.hpp \
     dataparsers.hpp \
     null.hpp \
-	null_deleter.hpp \
+    null_deleter.hpp \
     observablevalue.hpp \
     steppingiterator.hpp \
     tracing.hpp \
+    variants.hpp \
     vectors.hpp
 
 cpp_files = \

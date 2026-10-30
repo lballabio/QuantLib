@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -200,6 +200,7 @@ namespace QuantLib {
 
         std::vector<Real> calcBufferNotionals;
         const std::vector<Size>& alive = liveList(endDate);
+        calcBufferNotionals.reserve(alive.size());
         for(Size i=0; i<alive.size(); i++)
             calcBufferNotionals.push_back(
                 exposure(pool_->names()[i], endDate)
@@ -213,6 +214,7 @@ namespace QuantLib {
         vector<Real> prob;
         const std::vector<Size>& alive = liveList();
 
+        prob.reserve(alive.size());
         for(Size i=0; i<alive.size(); i++)
             prob.push_back(pool_->get(pool_->names()[i]).defaultProbability(
                 pool_->defaultKeys()[i])->defaultProbability(d, true));

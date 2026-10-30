@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -39,6 +39,7 @@ namespace QuantLib {
     */
     class PoissonDistribution {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         PoissonDistribution(Real mu);
         // function
         Real operator()(BigNatural k) const;
@@ -60,6 +61,7 @@ namespace QuantLib {
     */
     class CumulativePoissonDistribution {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         CumulativePoissonDistribution(Real mu) : mu_(mu) {}
         Real operator()(BigNatural k) const {
             return 1.0 - incompleteGammaFunction(k+1, mu_);
@@ -75,6 +77,7 @@ namespace QuantLib {
     */
     class InverseCumulativePoisson {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         InverseCumulativePoisson(Real lambda = 1.0);
         Real operator()(Real x) const;
       private:
@@ -117,6 +120,8 @@ namespace QuantLib {
 
         if (x == 1.0)
             return QL_MAX_REAL;
+        if (x == 0.0)
+            return 0.0;
 
         Real sum = 0.0;
         BigNatural index = 0;

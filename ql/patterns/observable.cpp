@@ -3,6 +3,7 @@
 /*
 Copyright (C) 2013 Chris Higgs
 Copyright (C) 2015 Klaus Spanderen
+Copyright (C) 2026 Kyrylo Protsenko
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -11,7 +12,7 @@ QuantLib is free software: you can redistribute it and/or modify it
 under the terms of the QuantLib license.  You should have received a
 copy of the license along with this program; if not, please email
 <quantlib-dev@lists.sf.net>. The license is also available online at
-<http://quantlib.org/license.shtml>.
+<https://www.quantlib.org/license.shtml>.
 
 This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -33,8 +34,12 @@ namespace QuantLib {
         if (!deferredObservers_.empty()) {
             bool successful = true;
             std::string errMsg;
+            runningDeferredUpdates_ = true;
 
-            for (auto* deferredObserver : deferredObservers_) {
+            for (const auto& [deferredObserver, isValid] : deferredObservers_) {
+                if (!isValid)
+                    continue;
+
                 try {
                     deferredObserver->update();
                 } catch (std::exception& e) {
@@ -46,10 +51,12 @@ namespace QuantLib {
             }
 
             deferredObservers_.clear();
+            runningDeferredUpdates_ = false;
 
             QL_ENSURE(successful,
                   "could not notify one or more observers: " << errMsg);
         }
+
     }
 
 
@@ -88,6 +95,7 @@ namespace QuantLib {
 #else
 
 #include <boost/signals2/signal_type.hpp>
+#include <map>
 
 namespace QuantLib {
 
@@ -100,13 +108,24 @@ namespace QuantLib {
                 boost::signals2::keywords::mutex_type<std::recursive_mutex> >
                 ::type signal_type;
 
-            void connect(const signal_type::slot_type& slot) {
-                sig_.connect(slot);
+            /* Keeping each connection under QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN 
+			   avoids searching all entries when an observer unregisters (common for coupons in rate helpers).
+			   This speeds up cleanup for observables materially. */
+            boost::signals2::connection connect(const signal_type::slot_type& slot) {
+                return sig_.connect(slot);
             }
 
-            template <class T>
-            void disconnect(const T& slot) {
-                sig_.disconnect(slot);
+            void store(const void* observer, const boost::signals2::connection& c) {
+                connections_[observer] = c;
+            }
+
+            boost::signals2::connection release(const void* observer) {
+                auto i = connections_.find(observer);
+                if (i == connections_.end())
+                    return {};
+                boost::signals2::connection c = i->second;
+                connections_.erase(i);
+                return c;
             }
 
             void operator()() const {
@@ -114,6 +133,7 @@ namespace QuantLib {
             }
           private:
             signal_type sig_;
+            std::map<const void*, boost::signals2::connection> connections_;
         };
 
         template <class T>
@@ -126,14 +146,6 @@ namespace QuantLib {
             void operator()() const {
                 proxy_->update();
             }
-
-            bool operator==(const ProxyUpdater<T>& other) const {
-                return proxy_ == other.proxy_;
-            }
-
-            bool operator!=(const ProxyUpdater<T>& other) const {
-                return proxy_ != other.proxy_;
-            }
         };
 
     }
@@ -141,22 +153,30 @@ namespace QuantLib {
     void Observable::registerObserver(const ext::shared_ptr<Observer::Proxy>& observerProxy) {
         {
             std::lock_guard<std::recursive_mutex> lock(mutex_);
-            observers_.insert(observerProxy);
+            // an observer registered twice is notified once, as in the
+            // single-threaded implementation
+            if (!observers_.insert(observerProxy).second)
+                return;
         }
 
         detail::Signal::signal_type::slot_type slot {detail::ProxyUpdater<Observer::Proxy>(observerProxy)};
         #if defined(QL_USE_STD_SHARED_PTR)
-        sig_->connect(slot.track_foreign(observerProxy));
+        boost::signals2::connection connection = sig_->connect(slot.track_foreign(observerProxy));
         #else
-        sig_->connect(slot.track(observerProxy));
+        boost::signals2::connection connection = sig_->connect(slot.track(observerProxy));
         #endif
+
+        std::lock_guard<std::recursive_mutex> lock(mutex_);
+        sig_->store(observerProxy.get(), connection);
     }
 
     void Observable::unregisterObserver(const ext::shared_ptr<Observer::Proxy>& observerProxy,
                                         bool disconnect) {
+        boost::signals2::connection connection;
         {
             std::lock_guard<std::recursive_mutex> lock(mutex_);
             observers_.erase(observerProxy);
+            connection = sig_->release(observerProxy.get());
         }
 
         if (ObservableSettings::instance().updatesDeferred()) {
@@ -165,8 +185,9 @@ namespace QuantLib {
                 ObservableSettings::instance().unregisterDeferredObserver(observerProxy);
         }
 
+        // without disconnect the slot expires with the tracked proxy
         if (disconnect) {
-            sig_->disconnect(detail::ProxyUpdater<Observer::Proxy>(observerProxy));
+            connection.disconnect();
         }
     }
 

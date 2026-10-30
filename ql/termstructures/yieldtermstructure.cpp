@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -163,7 +163,7 @@ namespace QuantLib {
             t2 = t1 + dt;
             compound = discount(t1, true)/discount(t2, true);
         } else {
-            QL_REQUIRE(t2>t1, "t2 (" << t2 << ") < t1 (" << t2 << ")");
+            QL_REQUIRE(t2>t1, "t1 (" << t1 << ") >= t2 (" << t2 << ")");
             compound = discount(t1, extrapolate)/discount(t2, extrapolate);
         }
         return InterestRate::impliedRate(compound,
@@ -173,25 +173,19 @@ namespace QuantLib {
 
     void YieldTermStructure::update() {
         TermStructure::update();
-        Date newReference = Date();
+        Date newReference;
         try {
             newReference = referenceDate();
-            if (newReference != latestReference_)
-                setJumps(newReference);
         } catch (Error&) {
-            if (newReference == Date()) {
-                // the curve couldn't calculate the reference
-                // date. Most of the times, this is because some
-                // underlying handle wasn't set, so we can just absorb
-                // the exception and continue; the jumps will be set
-                // correctly when a valid underlying is set.
-                return;
-            } else {
-                // something else happened during the call to
-                // setJumps(), so we let the exception bubble up.
-                throw;
-            }
+            // the curve couldn't calculate the reference
+            // date. Most of the times, this is because some
+            // underlying handle wasn't set, so we can just absorb
+            // the exception and continue; the jumps will be set
+            // correctly when a valid underlying is set.
+            return;
         }
+        if (newReference != latestReference_)
+            setJumps(newReference);
     }
 
 }

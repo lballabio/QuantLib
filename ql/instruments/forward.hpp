@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -72,9 +72,9 @@ namespace QuantLib {
         BusinessDayConvention businessDayConvention() const;
         const DayCounter& dayCounter() const;
         //! term structure relevant to the contract (e.g. repo curve)
-        Handle<YieldTermStructure> discountCurve() const;
+        const Handle<YieldTermStructure>& discountCurve() const;
         //! term structure that discounts the underlying's income cash flows
-        Handle<YieldTermStructure> incomeDiscountCurve() const;
+        const Handle<YieldTermStructure>& incomeDiscountCurve() const;
         //! returns whether the instrument is still tradable.
         bool isExpired() const override;
         //@}
@@ -177,11 +177,11 @@ namespace QuantLib {
         return dayCounter_;
     }
 
-    inline Handle<YieldTermStructure> Forward::discountCurve() const {
+    inline const Handle<YieldTermStructure>& Forward::discountCurve() const {
         return discountCurve_;
     }
 
-    inline Handle<YieldTermStructure> Forward::incomeDiscountCurve() const {
+    inline const Handle<YieldTermStructure>& Forward::incomeDiscountCurve() const {
         return incomeDiscountCurve_;
     }
 

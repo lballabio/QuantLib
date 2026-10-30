@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -82,7 +82,7 @@ namespace QuantLib {
 
       A bad fit to the initial yield term structure may be due to a non suitable
       input smile or accumulating numerical errors in very long term calibrations.
-      The former point is adressed by smile pretreatment options. The latter point
+      The former point is addressed by smile pretreatment options. The latter point
       may be tackled by higher values for the numerical parameters possibly
       together with NTL high precision computing.
 
@@ -159,13 +159,13 @@ namespace QuantLib {
                     addAdjustment(KahaleInterpolation);
                 }
 
-                QL_REQUIRE((adjustments_ & SabrSmile) == 0 ||
-                           (adjustments_ & KahaleSmile) == 0 ||
-                           (adjustments_ & CustomSmile) == 0
-                           ,
-                           "Only one of KahaleSmile, SabrSmile and CustomSmile"
+                const int smileTreatments = ((adjustments_ & KahaleSmile) != 0) +
+                                            ((adjustments_ & SabrSmile) != 0) +
+                                            ((adjustments_ & CustomSmile) != 0);
+                QL_REQUIRE(smileTreatments <= 1,
+                           "At most one of KahaleSmile, SabrSmile and CustomSmile "
                            "can be specified at the same time");
-                QL_REQUIRE(yGridPoints_ > 0, "At least one grid point ("
+                QL_REQUIRE(yGridPoints_ >= 2, "At least two grid points ("
                                                  << yGridPoints_
                                                  << ") for the state process "
                                                     "discretization must be "
@@ -262,12 +262,12 @@ namespace QuantLib {
             Period tenor_;
             std::vector<Date> paymentDates_;
             std::vector<Real> yearFractions_;
-            Real atm_;
-            Real annuity_;
+            Real atm_ = Null<Real>();
+            Real annuity_ = Null<Real>();
             ext::shared_ptr<SmileSection> smileSection_;
             ext::shared_ptr<SmileSection> rawSmileSection_;
-            Real minRateDigital_;
-            Real maxRateDigital_;
+            Real minRateDigital_ = Null<Real>();
+            Real maxRateDigital_ = Null<Real>();
         };
 
 // utility macro to write messages to the model outputs
@@ -378,11 +378,11 @@ namespace QuantLib {
         zerobondImpl(Time T, Time t, Real y, const Handle<YieldTermStructure>& yts) const override;
 
         void generateArguments() override {
-            // if calculate triggers performCalculations, updateNumeraireTabulations
-            // is called twice. If we can not check the lazy object status this seem
-            // hard to avoid though.
-            calculate();
-            updateNumeraireTabulation();
+            ext::static_pointer_cast<MfStateProcess>(stateProcess_)->setVols(sigma_.params());
+            if(isCalculated())
+                updateNumeraireTabulation();
+            else
+                calculate();
             notifyObservers();
         }
 
@@ -437,7 +437,7 @@ namespace QuantLib {
 
         Real forwardRateInternal(
             const Date& fixing,
-            const Date& referenceDate = Null<Date>(),
+            const Date& referenceDate = Date(),
             Real y = 0.0,
             bool zeroFixingDays = false,
             ext::shared_ptr<IborIndex> iborIdx = ext::shared_ptr<IborIndex>()) const;
@@ -445,7 +445,7 @@ namespace QuantLib {
         Real
         swapRateInternal(const Date& fixing,
                          const Period& tenor,
-                         const Date& referenceDate = Null<Date>(),
+                         const Date& referenceDate = Date(),
                          Real y = 0.0,
                          bool zeroFixingDays = false,
                          ext::shared_ptr<SwapIndex> swapIdx = ext::shared_ptr<SwapIndex>()) const;
@@ -453,7 +453,7 @@ namespace QuantLib {
         Real swapAnnuityInternal(
             const Date& fixing,
             const Period& tenor,
-            const Date& referenceDate = Null<Date>(),
+            const Date& referenceDate = Date(),
             Real y = 0.0,
             bool zeroFixingDays = false,
             ext::shared_ptr<SwapIndex> swapIdx = ext::shared_ptr<SwapIndex>()) const;
@@ -462,7 +462,7 @@ namespace QuantLib {
             const Option::Type& type,
             const Date& expiry,
             Rate strike,
-            const Date& referenceDate = Null<Date>(),
+            const Date& referenceDate = Date(),
             Real y = 0.0,
             bool zeroFixingDays = false,
             ext::shared_ptr<IborIndex> iborIdx = ext::shared_ptr<IborIndex>()) const;
@@ -472,7 +472,7 @@ namespace QuantLib {
             const Date& expiry,
             const Period& tenor,
             Rate strike,
-            const Date& referenceDate = Null<Date>(),
+            const Date& referenceDate = Date(),
             Real y = 0.0,
             bool zeroFixingDays = false,
             const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
@@ -509,8 +509,6 @@ namespace QuantLib {
 
         std::vector<Date> volstepdates_;
         mutable std::vector<Time> volsteptimes_;
-        mutable Array volsteptimesArray_; // FIXME this is redundant (just a copy of
-                                  // volsteptimes_)
         std::vector<Real> volatilities_;
 
         Date numeraireDate_;

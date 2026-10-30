@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -26,18 +26,12 @@
 
 namespace QuantLib {
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     // Australian dollar
     /* The ISO three-letter code is AUD; the numeric code is 36.
        It is divided into 100 cents.
     */
     AUDCurrency::AUDCurrency() {
-        static ext::shared_ptr<Data> audData(
-                                  new Data("Australian dollar", "AUD", 36,
-                                           "A$", "", 100,
-                                           Rounding(),
-                                           "%3% %1$.2f"));
+        static auto audData = ext::make_shared<Data>("Australian dollar", "AUD", 36, "A$", "", 100, Rounding());
         data_ = audData;
     }
 
@@ -46,14 +40,8 @@ namespace QuantLib {
        It is divided in 100 cents.
     */
     NZDCurrency::NZDCurrency() {
-        static ext::shared_ptr<Data> nzdData(
-                                new Data("New Zealand dollar", "NZD", 554,
-                                         "NZ$", "", 100,
-                                         Rounding(),
-                                         "%3% %1$.2f"));
+        static auto nzdData = ext::make_shared<Data>("New Zealand dollar", "NZD", 554, "NZ$", "", 100, Rounding());
         data_ = nzdData;
     }
-
-    QL_DEPRECATED_ENABLE_WARNING
 
 }

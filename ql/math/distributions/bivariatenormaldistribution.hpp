@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -58,6 +58,7 @@ namespace QuantLib {
     */
     class BivariateCumulativeNormalDistributionDr78 {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         BivariateCumulativeNormalDistributionDr78(Real rho);
         // function
         Real operator()(Real a, Real b) const;
@@ -67,7 +68,7 @@ namespace QuantLib {
     };
 
 
-    //! Cumulative bivariate normal distibution function (West 2004)
+    //! Cumulative bivariate normal distribution function (West 2004)
     /*! The implementation derives from the article "Better
         Approximations To Cumulative Normal Distibutions", Graeme
         West, Dec 2004 available at www.finmod.co.za. Also available
@@ -91,6 +92,7 @@ namespace QuantLib {
     */
     class BivariateCumulativeNormalDistributionWe04DP {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         BivariateCumulativeNormalDistributionWe04DP(Real rho);
         // function
         Real operator()(Real a, Real b) const;

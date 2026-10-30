@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -53,6 +53,21 @@ namespace QuantLib {
         CHECK_DOWNCAST(BermudanExercise, "Bermudan");
 
         QL_FAIL("unknown exercise type");
+    }
+
+    std::string barrierTypeToString(Barrier::Type type) {
+        switch(type){
+        case Barrier::DownIn:
+            return std::string("Down-and-in");
+        case Barrier::UpIn:
+            return std::string("Up-and-in");
+        case Barrier::DownOut:
+            return std::string("Down-and-out");
+        case Barrier::UpOut:
+            return std::string("Up-and-out");
+        default:
+            QL_FAIL("unknown exercise type");
+        }
     }
 
 

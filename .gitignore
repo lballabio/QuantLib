@@ -1,4 +1,5 @@
 # Compilation artifacts
+__pycache__/
 configure
 quantlib-config
 libtool
@@ -30,6 +31,7 @@ Examples/*/bin/
 Examples/*/build/
 Examples/*/*.trs
 build/
+install/
 lib/
 test-suite/bin/QuantLib-test-suite-*.manifest
 test-suite/build/
@@ -120,3 +122,8 @@ nbproject
 .dir-locals.el
 Build.props
 Directory.Build.props
+
+# clangd index cache and compilation database symlink
+# (generated via CMAKE_EXPORT_COMPILE_COMMANDS=ON)
+.cache/
+compile_commands.json

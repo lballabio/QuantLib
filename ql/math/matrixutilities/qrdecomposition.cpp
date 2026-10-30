@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -35,9 +35,9 @@ namespace QuantLib {
         const Size m = M.rows();
         const Size n = M.columns();
 
-        std::unique_ptr<int[]> lipvt(new int[n]);
-        std::unique_ptr<Real[]> rdiag(new Real[n]);
-        std::unique_ptr<Real[]> wa(new Real[n]);
+        auto lipvt = std::make_unique<int[]>(n);
+        auto rdiag = std::make_unique<Real[]>(n);
+        auto wa = std::make_unique<Real[]>(n);
 
         MINPACK::qrfac(m, n, mT.begin(), 0, (pivot)?1:0,
                        lipvt.get(), n, rdiag.get(), rdiag.get(), wa.get());
@@ -135,13 +135,13 @@ namespace QuantLib {
 
         std::vector<Size> lipvt = qrDecomposition(a, q, r, pivot);
 
-        std::unique_ptr<int[]> ipvt(new int[n]);
+        auto ipvt = std::make_unique<int[]>(n);
         std::copy(lipvt.begin(), lipvt.end(), ipvt.get());
 
         Matrix rT = transpose(r);
 
-        std::unique_ptr<Real[]> sdiag(new Real[n]);
-        std::unique_ptr<Real[]> wa(new Real[n]);
+        auto sdiag = std::make_unique<Real[]>(n);
+        auto wa = std::make_unique<Real[]>(n);
 
         Array ld(n, 0.0);
         if (!d.empty()) {

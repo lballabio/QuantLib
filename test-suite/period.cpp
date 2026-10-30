@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -19,7 +19,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include "ql/time/period.hpp"
+#include <ql/time/period.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -216,7 +216,7 @@ BOOST_AUTO_TEST_CASE(testNormalization) {
 
         for (Period p2 : test_values) {
             auto n2 = p2.normalized();
-            ext::optional<bool> comparison;
+            std::optional<bool> comparison;
             try {
                 comparison = (p1 == p2);
             } catch (Error&) {
@@ -241,6 +241,43 @@ BOOST_AUTO_TEST_CASE(testNormalization) {
         }
     }
 
+}
+
+BOOST_AUTO_TEST_CASE(testNegativePeriodComparison) {
+
+    BOOST_TEST_MESSAGE("Testing comparison of negative periods...");
+
+    Period test_values[] = {
+        1 * Days,    27 * Days,  28 * Days,  30 * Days,  31 * Days,
+        32 * Days,   365 * Days, 366 * Days, 367 * Days, 1 * Weeks,
+        4 * Weeks,   5 * Weeks,  52 * Weeks, 53 * Weeks, 1 * Months,
+        2 * Months,  12 * Months, 1 * Years, 2 * Years
+    };
+
+    // negating both periods must reverse their ordering, and must
+    // keep undecidable comparisons undecidable
+    for (Period p1 : test_values) {
+        for (Period p2 : test_values) {
+            std::optional<bool> positive, negative;
+            try {
+                positive = (p1 < p2);
+            } catch (Error&) {
+                ;
+            }
+            try {
+                negative = (-p2 < -p1);
+            } catch (Error&) {
+                ;
+            }
+
+            if (positive != negative) {
+                BOOST_ERROR("comparing " << p1 << " < " << p2 << " gives "
+                            << (positive ? (*positive ? "true" : "false") : "undecidable")
+                            << " but comparing " << -p2 << " < " << -p1 << " gives "
+                            << (negative ? (*negative ? "true" : "false") : "undecidable"));
+            }
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testFrequencyComputation) {

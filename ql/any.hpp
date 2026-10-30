@@ -10,38 +10,31 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file any.hpp
-    \brief Maps any to either the boost or std implementation
-*/
-
 #ifndef quantlib_any_hpp
 #define quantlib_any_hpp
 
 #include <ql/qldefines.hpp>
-
-#if defined(QL_USE_STD_ANY)
 #include <any>
-#else
-#include <boost/any.hpp>
-#endif
 
 namespace QuantLib::ext {
 
-        #if defined(QL_USE_STD_ANY)
-        using std::any;                   // NOLINT(misc-unused-using-decls)
-        using std::any_cast;              // NOLINT(misc-unused-using-decls)
-        #else
-        using boost::any;                 // NOLINT(misc-unused-using-decls)
-        using boost::any_cast;            // NOLINT(misc-unused-using-decls)
-        #endif
+    /*! \deprecated Use std::any instead.
+                    Deprecated in version 1.44.
+    */
+    using any [[deprecated("Use std::any instead")]] = std::any; // NOLINT(misc-unused-using-decls)
 
-    }
+    /*! \deprecated Use std::any_cast instead.
+                    Deprecated in version 1.44.
+    */
+    using std::any_cast;  // NOLINT(misc-unused-using-decls)
+
+}
 
 #endif

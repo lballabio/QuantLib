@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -31,7 +31,7 @@
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/math/latentmodel.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 #include <numeric>
 
 /* Intended to replace GaussianLHPCDOEngine in 
@@ -174,6 +174,7 @@ namespace QuantLib {
             const std::vector<Probability> probs = 
                 basket_->remainingProbabilities(d);
             std::vector<Real> recoveries;
+            recoveries.reserve(basket_->remainingSize());
             for(Size i=0; i<basket_->remainingSize(); i++)
                 recoveries.push_back(rrQuotes_[i]->value());
             std::vector<Real> notionals = basket_->remainingNotionals(d);

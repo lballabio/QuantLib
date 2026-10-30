@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -23,13 +23,13 @@
 
 namespace QuantLib {
 
-    GsrProcess::GsrProcess(const Array& times,
-                           const Array& vols,
-                           const Array& reversions,
+    GsrProcess::GsrProcess(Array times,
+                           Array vols,
+                           Array reversions,
                            const Real T,
                            const Date& referenceDate,
                            DayCounter dc)
-    : ForwardMeasureProcess1D(T), core_(times, vols, reversions, T), referenceDate_(referenceDate),
+    : ForwardMeasureProcess1D(T), core_(std::move(times), std::move(vols), std::move(reversions), T), referenceDate_(referenceDate),
       dc_(std::move(dc)) {
         flushCache();
     }
@@ -43,7 +43,7 @@ namespace QuantLib {
 
     Real GsrProcess::time(const Date &d) const {
         QL_REQUIRE(
-            referenceDate_ != Null<Date>() && dc_ != DayCounter(),
+            referenceDate_ != Date() && dc_ != DayCounter(),
             "time can not be computed without reference date and day counter");
         return dc_.yearFraction(referenceDate_, d);
     }

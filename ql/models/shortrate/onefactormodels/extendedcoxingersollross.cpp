@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -29,25 +29,23 @@ namespace QuantLib {
                               Real theta, Real k, Real sigma, Real x0,
                               bool withFellerConstraint)
     : CoxIngersollRoss(x0, theta, k, sigma, withFellerConstraint),
-      TermStructureConsistentModel(termStructure){
+      TermStructureConsistentModel(termStructure) {
         ExtendedCoxIngersollRoss::generateArguments();
+
+        registerWith(termStructure);
     }
 
     ext::shared_ptr<Lattice> ExtendedCoxIngersollRoss::tree(
                                                  const TimeGrid& grid) const {
         TermStructureFittingParameter phi(termStructure());
-        ext::shared_ptr<Dynamics> numericDynamics(
-                              new Dynamics(phi, theta(), k(), sigma(), x0()));
+        auto numericDynamics = ext::make_shared<Dynamics>(phi, theta(), k(), sigma(), x0());
 
-        ext::shared_ptr<TrinomialTree> trinomial(
-                   new TrinomialTree(numericDynamics->process(), grid, true));
+        auto trinomial = ext::make_shared<TrinomialTree>(numericDynamics->process(), grid, true);
 
-        typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        ext::shared_ptr<NumericalImpl> impl =
-            ext::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
+        using NumericalImpl = TermStructureFittingParameter::NumericalImpl;
+        auto impl = ext::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
 
-        return ext::shared_ptr<Lattice>(
-                   new ShortRateTree(trinomial, numericDynamics, impl, grid));
+        return ext::make_shared<ShortRateTree>(trinomial, numericDynamics, impl, grid);
     }
 
     Real ExtendedCoxIngersollRoss::A(Time t, Time s) const {

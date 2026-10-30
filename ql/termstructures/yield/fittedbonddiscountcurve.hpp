@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -31,6 +31,7 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/array.hpp>
 #include <ql/utilities/clone.hpp>
+#include <ql/math/optimization/constraint.hpp>
 
 namespace QuantLib {
 
@@ -95,6 +96,7 @@ namespace QuantLib {
                                 Array guess = Array(),
                                 Real simplexLambda = 1.0,
                                 Size maxStationaryStateIterations = 100);
+
         //! curve reference date fixed for life of curve
         FittedBondDiscountCurve(const Date& referenceDate,
                                 std::vector<ext::shared_ptr<BondHelper> > bonds,
@@ -105,6 +107,21 @@ namespace QuantLib {
                                 Array guess = Array(),
                                 Real simplexLambda = 1.0,
                                 Size maxStationaryStateIterations = 100);
+
+        //! don't fit, use precalculated parameters
+        FittedBondDiscountCurve(Natural settlementDays,
+                                const Calendar& calendar,
+                                const FittingMethod& fittingMethod,
+                                Array parameters,
+                                Date maxDate,
+                                const DayCounter& dayCounter);
+
+        //! don't fit, use precalculated parameters
+        FittedBondDiscountCurve(const Date& referenceDate,
+                                const FittingMethod& fittingMethod,
+                                Array parameters,
+                                Date maxDate,
+                                const DayCounter& dayCounter);
         //@}
 
         //! \name Inspectors
@@ -209,6 +226,8 @@ namespace QuantLib {
         Array l2() const;
         //! return optimization method being used
         ext::shared_ptr<OptimizationMethod> optimizationMethod() const;
+        //! return optimization contraint
+        const Constraint& constraint() const;
         //! open discountFunction to public
         DiscountFactor discount(const Array& x, Time t) const;
       protected:
@@ -219,7 +238,8 @@ namespace QuantLib {
                           ext::shared_ptr<OptimizationMethod>(),
                       Array l2 = Array(),
                       Real minCutoffTime = 0.0,
-                      Real maxCutoffTime = QL_MAX_REAL);
+                      Real maxCutoffTime = QL_MAX_REAL,
+                      Constraint constraint = NoConstraint());
         //! rerun every time instruments/referenceDate changes
         virtual void init();
         //! discount function called by FittedBondDiscountCurve
@@ -257,6 +277,8 @@ namespace QuantLib {
         EndCriteria::Type errorCode_ = EndCriteria::None;
         // optimization method to be used, if none provided use Simplex
         ext::shared_ptr<OptimizationMethod> optimizationMethod_;
+        // optimization constraint, if none provided use NoConstraint
+        Constraint constraint_;
         // flat extrapolation of instantaneous forward before / after cutoff
         Real minCutoffTime_, maxCutoffTime_;
     };
@@ -327,6 +349,10 @@ namespace QuantLib {
     inline ext::shared_ptr<OptimizationMethod> 
     FittedBondDiscountCurve::FittingMethod::optimizationMethod() const {
         return optimizationMethod_;
+    }
+
+    inline const Constraint& FittedBondDiscountCurve::FittingMethod::constraint() const {
+        return constraint_;
     }
 
     inline DiscountFactor FittedBondDiscountCurve::FittingMethod::discount(const Array& x, Time t) const {

@@ -10,7 +10,7 @@ QuantLib is free software: you can redistribute it and/or modify it
 under the terms of the QuantLib license.  You should have received a
 copy of the license along with this program; if not, please email
 <quantlib-dev@lists.sf.net>. The license is also available online at
-<http://quantlib.org/license.shtml>.
+<https://www.quantlib.org/license.shtml>.
 
 This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -19,6 +19,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <ql/experimental/variancegamma/variancegammamodel.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -40,10 +41,10 @@ namespace QuantLib {
     }
 
     void VarianceGammaModel::generateArguments() {
-        process_.reset(new VarianceGammaProcess(process_->s0(),
+        process_ = ext::make_shared<VarianceGammaProcess>(process_->s0(),
             process_->dividendYield(),
             process_->riskFreeRate(),
-            sigma(), nu(), theta()));
+            sigma(), nu(), theta());
     }
 
 }

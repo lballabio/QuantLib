@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -25,6 +25,7 @@
 #include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -56,10 +57,10 @@ namespace QuantLib {
             = fxVolTS_->blackForwardVol(t1, t2, exchRateATMlevel_);
 
         Array retVal(equityVol.size());
-        for (Size i=0; i < retVal.size(); ++i) {
-            retVal[i]
-                = rDomestic - rForeign + equityVol[i]*fxVol*equityFxCorrelation_;
-        }
+        std::transform(equityVol.begin(), equityVol.end(), retVal.begin(),
+                       [&](Volatility vol) {
+                           return rDomestic - rForeign + vol*fxVol*equityFxCorrelation_;
+                       });
         return retVal;
     }
 }

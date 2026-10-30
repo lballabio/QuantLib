@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/processes/extendedblackscholesprocess.hpp>
+#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
@@ -54,14 +55,12 @@ namespace QuantLib {
         switch (discretization_) {
           case Milstein:
             // Milstein scheme
-            return apply(x0, drift(t0, x0)*dt
-                           + 0.5*std::pow(diffusion(t0, x0),2)*(dw*dw-1)*dt
+              return apply(x0, drift(t0, x0)*dt
+                             + 0.5*squared(diffusion(t0, x0))*(dw*dw-1)*dt
                            + diffusion(t0,x0)*std::sqrt(dt)*dw);
-            break;
           case Euler:
             // Usual Euler scheme
             return apply(expectation(t0,x0,dt), stdDeviation(t0,x0,dt)*dw);
-            break;
           case PredictorCorrector:
             // Predictor-Corrector scheme with equal weighting
             predictor =
@@ -72,19 +71,18 @@ namespace QuantLib {
             rate0 =
                 riskFreeRate()->forwardRate(t0,t1,Continuous,NoFrequency,true).rate()
               - dividendYield()->forwardRate(t0,t1,Continuous,NoFrequency,true).rate()
-              - 0.5*std::pow(sigma0,2);
+              - 0.5*squared(sigma0);
             rate1 =
                 riskFreeRate()->forwardRate(t0+dt,t1+dt,Continuous,
                                             NoFrequency,true).rate()
               - dividendYield()->forwardRate(t0+dt,t1+dt,
                                              Continuous,NoFrequency,true).rate()
-              - 0.5*std::pow(sigma1,2);
+              - 0.5*squared(sigma1);
             driftterm = 0.5*rate1+0.5*rate0;
             diffusionterm = 0.5*(sigma1+sigma0);
             corrector =
                 apply(x0,driftterm*dt+diffusionterm*std::sqrt(dt)*dw);
             return corrector;
-            break;
           default:
             QL_FAIL("unknown discretization scheme");
         }

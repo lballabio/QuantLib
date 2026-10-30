@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -19,10 +19,20 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/currencies/asia.hpp>
 #include <ql/indexes/bmaindex.hpp>
+#include <ql/indexes/ibor/cdi.hpp>
+#include <ql/indexes/ibor/custom.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/ibor/shir.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/calendars/bespokecalendar.hpp>
+#include <ql/time/calendars/brazil.hpp>
+#include <ql/time/calendars/israel.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
@@ -96,39 +106,19 @@ BOOST_AUTO_TEST_CASE(testFixingHasHistoricalFixing) {
 
     name = euribor3M->name();
     testCase(name, fixingNotFound, euribor3M->hasHistoricalFixing(today));
-    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
-    name = boost::to_upper_copy(euribor3M->name());
-    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
-    name = boost::to_lower_copy(euribor3M->name());
-    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
 
     name = euribor6M->name();
     testCase(name, fixingFound, euribor6M->hasHistoricalFixing(today));
     testCase(name, fixingFound, euribor6M_a->hasHistoricalFixing(today));
-    testCase(name, fixingFound, IndexManager::instance().hasHistoricalFixing(name, today));
-    name = boost::to_upper_copy(euribor6M->name());
-    testCase(name, fixingFound, IndexManager::instance().hasHistoricalFixing(name, today));
-    name = boost::to_lower_copy(euribor6M->name());
-    testCase(name, fixingFound, IndexManager::instance().hasHistoricalFixing(name, today));
 
     IndexManager::instance().clearHistories();
 
     name = euribor3M->name();
     testCase(name, fixingNotFound, euribor3M->hasHistoricalFixing(today));
-    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
-    name = boost::to_upper_copy(euribor3M->name());
-    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
-    name = boost::to_lower_copy(euribor3M->name());
-    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
 
     name = euribor6M->name();
     testCase(name, fixingNotFound, euribor6M->hasHistoricalFixing(today));
     testCase(name, fixingNotFound, euribor6M_a->hasHistoricalFixing(today));
-    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
-    name = boost::to_upper_copy(euribor6M->name());
-    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
-    name = boost::to_lower_copy(euribor6M->name());
-    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
 }
 
 BOOST_AUTO_TEST_CASE(testTenorNormalization) {
@@ -159,6 +149,92 @@ BOOST_AUTO_TEST_CASE(testTenorNormalization) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testCustomIborIndex) {
+    BOOST_TEST_MESSAGE("Testing CustomIborIndex...");
+
+    auto fixCal = BespokeCalendar("Fixings");
+    fixCal.addHoliday(Date(8, January, 2025));
+
+    auto valCal = BespokeCalendar("Value");
+    valCal.addHoliday(Date(21, January, 2025));
+
+    auto matCal = BespokeCalendar("Maturity");
+    matCal.addHoliday(Date(7, January, 2025));
+    matCal.addHoliday(Date(15, January, 2025));
+    matCal.addHoliday(Date(23, April, 2025));
+    matCal.addHoliday(Date(30, April, 2025));
+
+    auto ibor = CustomIborIndex(
+        "Custom Ibor", 3*Months, 2, Currency(), fixCal, valCal, matCal, // NOLINT(cppcoreguidelines-slicing)
+        ModifiedFollowing, true, Actual360()
+    );
+    auto iborClone = ibor.clone(Handle<YieldTermStructure>());
+
+    for (IborIndex* index : {static_cast<IborIndex*>(&ibor), iborClone.get()}) {
+        auto* as_custom = dynamic_cast<CustomIborIndex*>(index);
+        BOOST_CHECK_EQUAL(index->fixingCalendar(), fixCal);
+        BOOST_CHECK_EQUAL(as_custom->valueCalendar(), valCal);
+        BOOST_CHECK_EQUAL(as_custom->maturityCalendar(), matCal);
+
+        BOOST_CHECK_EXCEPTION(
+            index->valueDate(Date(8, January, 2025)), Error,
+            ExpectedErrorMessage("Fixing date January 8th, 2025 is not valid"));
+
+        BOOST_CHECK_EQUAL(index->valueDate(Date(7, January, 2025)),
+                          Date(9, January, 2025));
+        BOOST_CHECK_EQUAL(index->valueDate(Date(13, January, 2025)),
+                          Date(16, January, 2025));
+        BOOST_CHECK_EQUAL(index->valueDate(Date(20, January, 2025)),
+                          Date(23, January, 2025));
+
+        BOOST_CHECK_EQUAL(index->fixingDate(Date(23, January, 2025)),
+                          Date(20, January, 2025));
+        BOOST_CHECK_EQUAL(index->fixingDate(Date(16, January, 2025)),
+                          Date(14, January, 2025));
+        BOOST_CHECK_EQUAL(index->fixingDate(Date(10, January, 2025)),
+                          Date(7, January, 2025));
+
+        BOOST_CHECK_EQUAL(index->maturityDate(Date(23, January, 2025)),
+                          Date(24, April, 2025));
+        BOOST_CHECK_EQUAL(index->maturityDate(Date(30, January, 2025)),
+                          Date(29, April, 2025));
+        BOOST_CHECK_EQUAL(index->maturityDate(Date(28, February, 2025)),
+                          Date(31, May, 2025));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testCdiIndex) {
+    BOOST_TEST_MESSAGE("Testing Brazil CDI forecastFixing...");
+    Date today = Settings::instance().evaluationDate();
+    auto flatRate = ext::make_shared<SimpleQuote>(0.05);
+    Handle<YieldTermStructure> ts(
+        ext::make_shared<FlatForward>(today, Handle<Quote>(flatRate), Business252()));
+
+
+    auto cdi = ext::make_shared<Cdi>(ts);
+    auto testFixingDate = Brazil(Brazil::Settlement).advance(today, Period(1, Months));
+    auto forecast = cdi->forecastFixing(testFixingDate);
+
+    DiscountFactor discountStart = ts->discount(testFixingDate);
+    DiscountFactor discountEnd = ts->discount(
+        Brazil(Brazil::Settlement).advance(testFixingDate, Period(1, Days)));
+    
+    auto approx = pow(discountStart / discountEnd, 252.0) - 1.0;
+    QL_ASSERT(std::fabs(0.05127 - forecast) < 1e-5, "discrepancy in fixing forecast computation\n");
+    QL_ASSERT(std::fabs(approx - forecast) < 1e-6, "discrepancy in fixing forecast computation with approximation\n");
+}
+
+BOOST_AUTO_TEST_CASE(testShirIndex) {
+    BOOST_TEST_MESSAGE("Testing Shir index...");
+
+    auto shir = ext::make_shared<Shir>();
+
+    BOOST_CHECK_EQUAL(shir->familyName(), "Shir");
+    BOOST_CHECK_EQUAL(shir->fixingDays(), 0);
+    BOOST_CHECK(shir->currency() == ILSCurrency());
+    BOOST_CHECK(shir->fixingCalendar() == Israel(Israel::SHIR));
+    BOOST_CHECK(shir->dayCounter() == Actual365Fixed());
+}
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

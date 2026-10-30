@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -35,19 +35,37 @@ namespace QuantLib {
       averagingMethod_(averagingMethod) {
         QL_REQUIRE(overnightIndex_, "null overnight index");
         registerWith(overnightIndex_);
+        registerWith(convexityAdjustment_);
+        registerWith(Settings::instance().evaluationDate());
+    }
+
+    void OvernightIndexFuture::checkForecastStart(const Date& d) const {
+        Handle<YieldTermStructure> forwardCurve = overnightIndex_->forwardingTermStructure();
+        QL_REQUIRE(!forwardCurve.empty(),
+                   "null term structure set to this instance of " << overnightIndex_->name());
+        // rates between the evaluation date and a later reference date can't be forecast
+        QL_REQUIRE(d >= forwardCurve->referenceDate(),
+                   "cannot forecast " << overnightIndex_->name() << " rates from " << d
+                   << ": the forwarding term structure starts on "
+                   << forwardCurve->referenceDate());
+    }
+
+    Rate OvernightIndexFuture::forecastFixing(const Date& fixingDate, const Date& end) const {
+        checkForecastStart(fixingDate);
+        return overnightIndex_->forwardingTermStructure()
+            ->forwardRate(fixingDate, end, overnightIndex_->dayCounter(), Simple)
+            .rate();
     }
 
     Real OvernightIndexFuture::averagedRate() const {
         Date today = Settings::instance().evaluationDate();
         Calendar calendar = overnightIndex_->fixingCalendar();
         DayCounter dayCounter = overnightIndex_->dayCounter();
-        Handle<YieldTermStructure> forwardCurve = overnightIndex_->forwardingTermStructure();
         Real avg = 0;
         Date d1 = valueDate_;
         // d1 could be a holiday
         Date fixingDate = calendar.adjust(d1, Preceding);
-        const TimeSeries<Real>& history = IndexManager::instance()
-            .getHistory(overnightIndex_->name());
+        const auto& history = overnightIndex_->timeSeries();
         Real fwd;
         while (d1 < maturityDate_) {
             Date d2 = calendar.advance(d1, 1, Days);
@@ -58,9 +76,9 @@ namespace QuantLib {
             } else if (fixingDate == today) {
                 fwd = history[fixingDate];
                 if (fwd == Null<Real>())
-                    fwd = forwardCurve->forwardRate(fixingDate, d2, dayCounter, Simple).rate();
+                    fwd = forecastFixing(fixingDate, d2);
             } else {
-                fwd = forwardCurve->forwardRate(fixingDate, d2, dayCounter, Simple).rate();
+                fwd = forecastFixing(fixingDate, d2);
             }
             // The rate is accrued starting from d1 even when the fixing date is earlier.
             // d2 might be beyond the maturity date if the latter is a holiday.
@@ -86,8 +104,7 @@ namespace QuantLib {
             forwardDiscountStart = today;
             // for valuations inside the reference period, index quotes
             // must have been populated in the history
-            const TimeSeries<Real>& history = IndexManager::instance()
-                .getHistory(overnightIndex_->name());
+            const auto& history = overnightIndex_->timeSeries();
             Date d1 = valueDate_;
             // d1 could be a holiday
             Date fixingDate = calendar.adjust(d1, Preceding);
@@ -107,12 +124,14 @@ namespace QuantLib {
                 Real r = history[today];
                 if (r != Null<Real>()) {
                     Date tomorrow = calendar.advance(today, 1, Days);
-                    prod *= 1 + r * dayCounter.yearFraction(today, tomorrow);
-                    forwardDiscountStart = tomorrow;
+                    Date accrualEnd = std::min(tomorrow, maturityDate_);
+                    prod *= 1 + r * dayCounter.yearFraction(today, accrualEnd);
+                    forwardDiscountStart = accrualEnd;
                 }
             }
         }
         // the telescopic part goes from the end of the last known fixing to the maturity
+        checkForecastStart(forwardDiscountStart);
         DiscountFactor forwardDiscount =
             forwardCurve->discount(maturityDate_) / forwardCurve->discount(forwardDiscountStart);
         prod /= forwardDiscount;
@@ -124,10 +143,8 @@ namespace QuantLib {
         switch (averagingMethod_) {
           case RateAveraging::Simple:
             return averagedRate();
-            break;
           case RateAveraging::Compound:
             return compoundedRate();
-            break;
           default:
               QL_FAIL("unknown compounding convention (" << Integer(averagingMethod_) << ")");
         }

@@ -10,13 +10,14 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <algorithm>
 #include <ql/stochasticprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
@@ -36,12 +37,18 @@ namespace QuantLib {
             const Real mp = (mandatoryPoint != Null<Real>()) ? mandatoryPoint
                                                              : process->x0();
 
-            const Real qMin = std::min(std::min(mp, process->x0()),
-                process->evolve(0, process->x0(), t, 
-                                InverseCumulativeNormal()(eps)));
-            const Real qMax = std::max(std::max(mp, process->x0()),
-                process->evolve(0, process->x0(), t,
-                                InverseCumulativeNormal()(1-eps)));
+            const Real qMin = std::min({
+                    mp,
+                    process->x0(),
+                    process->evolve(0, process->x0(), t, 
+                                    InverseCumulativeNormal()(eps))
+                });
+            const Real qMax = std::max({
+                    mp,
+                    process->x0(),
+                    process->evolve(0, process->x0(), t,
+                                    InverseCumulativeNormal()(1-eps))
+                });
             
             const Real dp = (1-2*eps)/(size-1);
             Real p = eps;

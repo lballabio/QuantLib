@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -47,12 +47,30 @@ namespace QuantLib {
             const std::vector<Date>&,
             Calendar calendar = NullCalendar(),
             BusinessDayConvention convention = Unadjusted,
-            const ext::optional<BusinessDayConvention>& terminationDateConvention = ext::nullopt,
-            const ext::optional<Period>& tenor = ext::nullopt,
-            const ext::optional<DateGeneration::Rule>& rule = ext::nullopt,
-            const ext::optional<bool>& endOfMonth = ext::nullopt,
+            const std::optional<BusinessDayConvention>& terminationDateConvention = std::nullopt,
+            const std::optional<Period>& tenor = std::nullopt,
+            const std::optional<DateGeneration::Rule>& rule = std::nullopt,
+            const std::optional<bool>& endOfMonth = std::nullopt,
             std::vector<bool> isRegular = std::vector<bool>(0));
-        /*! rule based constructor */
+        /*! Rule-based constructor.
+
+            With DateGeneration::Forward, regular dates are generated from
+            \p effectiveDate, or from \p firstDate if it is provided.
+            With DateGeneration::Backward, they are generated from
+            \p terminationDate, or from \p nextToLastDate if it is provided.
+
+            \note The optional stub dates are not merely inserted into an
+            otherwise unchanged schedule. They also select the regular-date
+            generation seed as described above. Even a date that coincides
+            with a regular coupon date can change the resulting schedule
+            when a month has fewer days than the original seed day.
+
+            For example, an unadjusted semiannual backward schedule from
+            August 30, 2025, to August 30, 2027, with \p endOfMonth set to
+            false, generates August 30, 2026, when \p nextToLastDate is
+            omitted. Providing February 28, 2027, as \p nextToLastDate
+            instead makes the seed day the 28th and generates August 28, 2026.
+        */
         Schedule(Date effectiveDate,
                  const Date& terminationDate,
                  const Period& tenor,
@@ -64,22 +82,24 @@ namespace QuantLib {
                  const Date& firstDate = Date(),
                  const Date& nextToLastDate = Date());
         Schedule() = default;
-        //! \name Date access
+        //! \name Element access
         //@{
         Size size() const { return dates_.size(); }
         const Date& operator[](Size i) const;
         const Date& at(Size i) const;
         const Date& date(Size i) const;
-        Date previousDate(const Date& refDate) const;
-        Date nextDate(const Date& refDate) const;
         const std::vector<Date>& dates() const { return dates_; }
-        bool hasIsRegular() const;
-        bool isRegular(Size i) const;
-        const std::vector<bool>& isRegular() const;
+        bool empty() const { return dates_.empty(); }
+        const Date& front() const;
+        const Date& back() const;
         //@}
         //! \name Other inspectors
         //@{
-        bool empty() const { return dates_.empty(); }
+        Date previousDate(const Date& refDate) const;
+        Date nextDate(const Date& refDate) const;
+        bool hasIsRegular() const;
+        bool isRegular(Size i) const;
+        const std::vector<bool>& isRegular() const;
         const Calendar& calendar() const;
         const Date& startDate() const;
         const Date& endDate() const;
@@ -107,12 +127,12 @@ namespace QuantLib {
         Schedule until(const Date& truncationDate) const;
         //@}
       private:
-        ext::optional<Period> tenor_;
+        std::optional<Period> tenor_;
         Calendar calendar_;
         BusinessDayConvention convention_;
-        ext::optional<BusinessDayConvention> terminationDateConvention_;
-        ext::optional<DateGeneration::Rule> rule_;
-        ext::optional<bool> endOfMonth_;
+        std::optional<BusinessDayConvention> terminationDateConvention_;
+        std::optional<DateGeneration::Rule> rule_;
+        std::optional<bool> endOfMonth_;
         Date firstDate_, nextToLastDate_;
         std::vector<Date> dates_;
         std::vector<bool> isRegular_;
@@ -142,9 +162,9 @@ namespace QuantLib {
       private:
         Calendar calendar_;
         Date effectiveDate_, terminationDate_;
-        ext::optional<Period> tenor_;
-        ext::optional<BusinessDayConvention> convention_;
-        ext::optional<BusinessDayConvention> terminationDateConvention_;
+        std::optional<Period> tenor_;
+        std::optional<BusinessDayConvention> convention_;
+        std::optional<BusinessDayConvention> terminationDateConvention_;
         DateGeneration::Rule rule_ = DateGeneration::Backward;
         bool endOfMonth_ = false;
         Date firstDate_, nextToLastDate_;
@@ -154,6 +174,9 @@ namespace QuantLib {
         given date generation \p rule if it is relevant.
     */
     Date previousTwentieth(const Date& d, DateGeneration::Rule rule);
+
+    //! returns true for (non-zero) tenor with unit Months or Years
+    bool allowsEndOfMonth(const Period& tenor);
 
     // inline definitions
 
@@ -173,15 +196,30 @@ namespace QuantLib {
         return dates_.at(i);
     }
 
+    inline const Date& Schedule::front() const {
+        QL_REQUIRE(!dates_.empty(), "no front date for empty schedule");
+        return dates_.front();
+    }
+
+    inline const Date& Schedule::back() const {
+        QL_REQUIRE(!dates_.empty(), "no back date for empty schedule");
+        return dates_.back();
+    }
+
     inline const Calendar& Schedule::calendar() const {
         return calendar_;
     }
 
     inline const Date& Schedule::startDate() const {
+        QL_REQUIRE(!dates_.empty(), "empty Schedule: no start date"); 
         return dates_.front();
     }
 
-    inline const Date &Schedule::endDate() const { return dates_.back(); }
+    inline const Date &Schedule::endDate() const {
+        // Checks to avoid segfault, issue #2302
+        QL_REQUIRE(!dates_.empty(), "empty Schedule: no end date"); 
+        return dates_.back(); 
+    }
 
     inline bool Schedule::hasTenor() const {
         return static_cast<bool>(tenor_);

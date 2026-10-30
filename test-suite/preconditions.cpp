@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -25,6 +25,8 @@ using namespace QuantLib;
 namespace utf = boost::unit_test;
 namespace tt = boost::test_tools;
 
+QL_DEPRECATED_DISABLE_WARNING
+
 if_speed::if_speed(SpeedLevel speed) : speed(speed) {}
 
 tt::assertion_result if_speed::operator()(utf::test_unit_id) {
@@ -32,6 +34,8 @@ tt::assertion_result if_speed::operator()(utf::test_unit_id) {
     level.message() << "precondition failed";
     return level;
 }
+
+QL_DEPRECATED_ENABLE_WARNING
 
 tt::assertion_result usingAtParCoupons::operator()(boost::unit_test::test_unit_id) {
     return tt::assertion_result(IborCoupon::Settings::instance().usingAtParCoupons());

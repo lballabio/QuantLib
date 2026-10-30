@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -117,11 +117,13 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false,
-                  const Date& exCouponDate = Date())
+                  const Date& exCouponDate = Date(),
+                  BusinessDayConvention fixingConvention = Preceding)
         : CappedFlooredCoupon(ext::shared_ptr<FloatingRateCoupon>(new
             IborCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                        index, gearing, spread, refPeriodStart, refPeriodEnd,
-                       dayCounter, isInArrears, exCouponDate)), cap, floor) {}
+                       dayCounter, isInArrears, exCouponDate,
+                       fixingConvention)), cap, floor) {}
 
         void accept(AcyclicVisitor& v) override {
             auto* v1 = dynamic_cast<Visitor<CappedFlooredIborCoupon>*>(&v);
@@ -149,11 +151,13 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false,
-                  const Date& exCouponDate = Date())
+                  const Date& exCouponDate = Date(),
+                  BusinessDayConvention fixingConvention = Preceding)
         : CappedFlooredCoupon(ext::shared_ptr<FloatingRateCoupon>(new
             CmsCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
-                      dayCounter, isInArrears, exCouponDate)), cap, floor) {}
+                      dayCounter, isInArrears, exCouponDate,
+                      fixingConvention)), cap, floor) {}
 
         void accept(AcyclicVisitor& v) override {
             auto* v1 = dynamic_cast<Visitor<CappedFlooredCmsCoupon>*>(&v);

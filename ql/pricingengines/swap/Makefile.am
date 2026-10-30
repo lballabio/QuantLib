@@ -5,12 +5,14 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     cvaswapengine.hpp \
+    discountingconstnotionalcrosscurrencyswapengine.hpp \
     discountingswapengine.hpp \
     discretizedswap.hpp \
     treeswapengine.hpp
 
 cpp_files = \
     cvaswapengine.cpp \
+    discountingconstnotionalcrosscurrencyswapengine.cpp \
     discountingswapengine.cpp \
     discretizedswap.cpp \
     treeswapengine.cpp

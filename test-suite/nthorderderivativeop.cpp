@@ -10,14 +10,13 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/comparison.hpp>
@@ -495,37 +494,6 @@ class AvgPayoffFct {
     const Real growthFactor_;
 };
 
-class MyInnerValueCalculator : public FdmInnerValueCalculator {
-  public:
-    MyInnerValueCalculator(ext::shared_ptr<Payoff> payoff,
-                           ext::shared_ptr<FdmMesher> mesher,
-                           ext::shared_ptr<YieldTermStructure> rTS,
-                           ext::shared_ptr<YieldTermStructure> qTS,
-                           Volatility vol,
-                           Size direction)
-    : payoff_(std::move(payoff)), mesher_(std::move(mesher)),
-      rTS_(std::move(rTS)), qTS_(std::move(qTS)), vol_(vol),
-      direction_(direction) {}
-
-    Real innerValue(const FdmLinearOpIterator& iter, Time t)  override {
-        const Real g = mesher_->location(iter, direction_);
-        const Real sT = std::exp(g - 0.5*vol_*vol_*t);
-
-        return (*payoff_)(sT);
-    }
-
-    Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
-        return innerValue(iter, t);
-    }
-
-  private:
-    const ext::shared_ptr<Payoff> payoff_;
-    const ext::shared_ptr<FdmMesher> mesher_;
-    const ext::shared_ptr<YieldTermStructure> rTS_, qTS_;
-    const Volatility vol_;
-    const Size direction_;
-};
-
 Array priceReport(const GridSetup& setup, const Array& strikes) {
 
     const Date today(2, May, 2018);
@@ -698,7 +666,7 @@ class FdmMispricingCostFunction : public CostFunction {
 };
 
 
-BOOST_AUTO_TEST_CASE(testHigherOrderHestonOptionPricing, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testHigherOrderHestonOptionPricing) {
     BOOST_TEST_MESSAGE("Testing Heston model option pricing convergence with "
             "higher order finite difference operators...");
 

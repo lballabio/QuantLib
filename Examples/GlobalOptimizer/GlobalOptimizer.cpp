@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -357,9 +357,9 @@ int main(int, char* []) {
         std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
         std::cout << "Hybrid Simulated Annealing Test" << std::endl;
         std::cout << "----------------------------------------------------------------" << std::endl;
-        testGaussianSA(3, 500, 200, 100.0, 0.1, GaussianSimulatedAnnealing::ResetToBestPoint, 150, GaussianSimulatedAnnealing::EveryNewPoint);
-        testGaussianSA(10, 500, 200, 100.0, 0.1, GaussianSimulatedAnnealing::ResetToBestPoint, 150, GaussianSimulatedAnnealing::EveryNewPoint);
-        testGaussianSA(30, 500, 200, 100.0, 0.1, GaussianSimulatedAnnealing::ResetToBestPoint, 150, GaussianSimulatedAnnealing::EveryNewPoint);
+        testGaussianSA(3, 500, 200, 1000.0, 0.1, GaussianSimulatedAnnealing::ResetToBestPoint, 150, GaussianSimulatedAnnealing::EveryNewPoint);
+        testGaussianSA(10, 500, 200, 1000.0, 0.001, GaussianSimulatedAnnealing::ResetToBestPoint, 1500, GaussianSimulatedAnnealing::EveryNewPoint);
+        testGaussianSA(30, 500, 200, 1000.0, 0.001, GaussianSimulatedAnnealing::ResetToBestPoint, 1500, GaussianSimulatedAnnealing::EveryNewPoint);
 
 
         std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;

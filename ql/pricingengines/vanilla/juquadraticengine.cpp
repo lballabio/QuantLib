@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -20,11 +20,13 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -68,8 +70,23 @@ namespace QuantLib {
         BlackCalculator black(payoff, forwardPrice,
                               std::sqrt(variance), riskFreeDiscount);
 
-        if (dividendDiscount>=1.0 && payoff->optionType()==Option::Call) {
-            // early exercise never optimal
+        // For a call, exercising yields S-K while holding is worth at least
+        // S*dividendDiscount - K*riskFreeDiscount, so early exercise is never
+        // optimal when dividendDiscount >= 1 and dividendDiscount >=
+        // riskFreeDiscount.  The mirror image holds for a put: exercising
+        // yields K-S and holding is worth at least K*riskFreeDiscount -
+        // S*dividendDiscount, so early exercise is never optimal when
+        // riskFreeDiscount >= 1 and riskFreeDiscount >= dividendDiscount.
+        // The put case also has to be caught here because the critical price
+        // is 0 when the risk-free rate is null, which would make hA vanish
+        // and break down the approximation below.
+        bool earlyExerciseNeverOptimal =
+            (dividendDiscount >= 1.0 && dividendDiscount >= riskFreeDiscount
+             && payoff->optionType() == Option::Call)
+            || (riskFreeDiscount >= 1.0 && riskFreeDiscount >= dividendDiscount
+                && payoff->optionType() == Option::Put);
+
+        if (earlyExerciseNeverOptimal) {
             results_.value        = black.value();
             results_.delta        = black.delta(spot);
             results_.deltaForward = black.deltaForward();
@@ -96,6 +113,10 @@ namespace QuantLib {
 
             results_.strikeSensitivity  = black.strikeSensitivity();
             results_.itmCashProbability = black.itmCashProbability();
+        } else if (variance < QL_EPSILON) {
+            // no time value: the critical-price calculation degenerates, and the
+            // American price is just the European one floored at intrinsic
+            results_.value = std::max(black.value(), (*payoff)(spot));
         } else {
             // early exercise can be optimal
             CumulativeNormalDistribution cumNormalDist;
@@ -123,10 +144,24 @@ namespace QuantLib {
                 default:
                   QL_FAIL("unknown option type");
             }
-            //it can throw: to be fixed
-            Real temp_root = std::sqrt ((beta-1)*(beta-1) + (4*alpha)/h);
+            // When the risk-free rate goes to 0, both alpha and h go to 0
+            // as well; their ratio, though, tends to the finite limit
+            // 2/variance (the same limit already used inside
+            // BaroneAdesiWhaleyApproximationEngine::criticalPrice above).
+            // The formulas below are therefore written in terms of
+            // alpha/h, alpha*lambda_prime and alpha*V_E_h so that no
+            // intermediate quantity diverges in that case.
+            Real alphaOverH = (!close(riskFreeDiscount, 1.0, 1000))
+                              ? Real(alpha/h)
+                              : Real(2.0/variance);
+
+            Real temp_root = std::sqrt ((beta-1)*(beta-1) + 4*alphaOverH);
             Real lambda = (-(beta-1) + phi * temp_root) / 2;
-            Real lambda_prime = - phi * alpha / (h*h * temp_root);
+            // lambda_prime = -phi*alpha/(h*h*temp_root) diverges when the
+            // risk-free rate goes to 0, but it only ever enters the formulas
+            // below multiplied by alpha, and that product doesn't.
+            Real alpha_lambda_prime =
+                - phi * alphaOverH * alphaOverH / temp_root;
 
             Real black_Sk = blackFormula(payoff->optionType(), payoff->strike(),
                                          forwardSk, std::sqrt(variance)) * riskFreeDiscount;
@@ -135,16 +170,20 @@ namespace QuantLib {
             Real d1_Sk = (std::log(forwardSk/payoff->strike()) + 0.5*variance)
                 /std::sqrt(variance);
             Real d2_Sk = d1_Sk - std::sqrt(variance);
-            Real part1 = forwardSk * normalDist(d1_Sk) /
-                                        (alpha * std::sqrt(variance));
-            Real part2 = - phi * forwardSk * cumNormalDist(phi * d1_Sk) *
-                      std::log(dividendDiscount) / std::log(riskFreeDiscount);
-            Real part3 = + phi * payoff->strike() * cumNormalDist(phi * d2_Sk);
-            Real V_E_h = part1 + part2 + part3;
+            // the three terms below are alpha times the corresponding
+            // terms of V_E_h; in part2, alpha/std::log(riskFreeDiscount)
+            // simplifies exactly to -2/variance.
+            Real part1 = forwardSk * normalDist(d1_Sk) / std::sqrt(variance);
+            Real part2 = 2.0 * phi * forwardSk * cumNormalDist(phi * d1_Sk) *
+                      std::log(dividendDiscount) / variance;
+            Real part3 = + phi * alpha * payoff->strike() *
+                                        cumNormalDist(phi * d2_Sk);
+            Real alpha_V_E_h = part1 + part2 + part3;
 
-            Real b = (1-h) * alpha * lambda_prime / (2*(2*lambda + beta - 1));
-            Real c = - ((1 - h) * alpha / (2 * lambda + beta - 1)) *
-                (V_E_h / (hA) + 1 / h + lambda_prime / (2*lambda + beta - 1));
+            Real b = (1-h) * alpha_lambda_prime / (2*(2*lambda + beta - 1));
+            Real c = - ((1 - h) / (2 * lambda + beta - 1)) *
+                (alpha_V_E_h / (hA) + alphaOverH +
+                 alpha_lambda_prime / (2*lambda + beta - 1));
             Real temp_spot_ratio = std::log(spot / Sk);
             Real chi = temp_spot_ratio * (b * temp_spot_ratio + c);
 
@@ -171,10 +210,27 @@ namespace QuantLib {
                         + lambda * (lambda - 1) / (spot * spot * (1 - chi)))
                     * (phi * (Sk - payoff->strike()) - black_Sk)
                     * std::pow((spot/Sk), lambda);
+                // deep in the money the correction can land below the
+                // exercise value, which the holder can always take instead
+                Real exerciseValue = (*payoff)(spot);
+                if (results_.value < exerciseValue) {
+                    results_.value = exerciseValue;
+                    results_.delta = phi;
+                    results_.gamma = 0;
+                }
             } else {
                 results_.value = phi * (spot - payoff->strike());
                 results_.delta = phi;
                 results_.gamma = 0;
+            }
+
+            // for short-dated, highly volatile options the correction can
+            // also take the price below the European one, which is a lower
+            // bound for the American option; fall back to it in that case
+            if (results_.value < black.value()) {
+                results_.value = black.value();
+                results_.delta = black.delta(spot);
+                results_.gamma = black.gamma(spot);
             }
 
         } // end of "early exercise can be optimal"

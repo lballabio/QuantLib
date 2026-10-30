@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -61,6 +61,9 @@ namespace QuantLib {
         const Real dx = 1.0 / (size - 1);
 
         if (cPoint != Null<Real>()) {
+            // The interpolation keeps iterators into these vectors until the
+            // loop below completes.
+            // cppcheck-suppress variableScope
             std::vector<Real> u, z;
             ext::shared_ptr<Interpolation> transform;
             const Real c1 = std::asinh((start - cPoint) / density);

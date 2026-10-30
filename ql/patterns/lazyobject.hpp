@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -42,6 +42,8 @@ namespace QuantLib {
         //@}
         /*! Returns true if the instrument is calculated */
         bool isCalculated() const;
+        /*! Set calculated status */
+        void setCalculated(bool c) const;
         /*! \name Calculations
             These methods do not modify the structure of the object
             and are therefore declared as <tt>const</tt>. Data members
@@ -126,7 +128,7 @@ namespace QuantLib {
         //@}
 
       protected:
-        mutable bool calculated_ = false, frozen_ = false, alwaysForward_;
+        mutable bool calculated_ = false, frozen_ = false, failed_ = false, alwaysForward_;
       private:
         bool updating_ = false;
         class UpdateChecker {  // NOLINT(cppcoreguidelines-special-member-functions)
@@ -201,12 +203,13 @@ namespace QuantLib {
         UpdateChecker checker(this);
 
         // forwards notifications only the first time
-        if (calculated_ || alwaysForward_) {
+        if (calculated_ || failed_ || alwaysForward_) {
             // set to false early
             // 1) to prevent infinite recursion
             // 2) otherways non-lazy observers would be served obsolete
             //    data because of calculated_ being still true
             calculated_ = false;
+            failed_ = false;
             // observers don't expect notifications from frozen objects
             if (!frozen_)
                 notifyObservers();
@@ -217,7 +220,7 @@ namespace QuantLib {
 
     inline void LazyObject::recalculate() {
         bool wasFrozen = frozen_;
-        calculated_ = frozen_ = false;
+        calculated_ = frozen_ = failed_ = false;
         try {
             calculate();
         } catch (...) {
@@ -256,8 +259,11 @@ namespace QuantLib {
                                   // case of bootstrapping
             try {
                 performCalculations();
+                failed_ = false;  // needed when calculate() is called
+                                  // directly after a prior failure
             } catch (...) {
                 calculated_ = false;
+                failed_ = true;
                 throw;
             }
         }
@@ -265,6 +271,10 @@ namespace QuantLib {
 
     inline bool LazyObject::isCalculated() const {
         return calculated_;
+    }
+
+    inline void LazyObject::setCalculated(const bool c) const {
+        calculated_ = c;
     }
 }
 

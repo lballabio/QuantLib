@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -10,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -18,6 +19,7 @@
 */
 
 #include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/payoff.hpp>
 
@@ -53,6 +55,16 @@ namespace QuantLib {
         const Schedule& fixedSchedule = swap->fixedSchedule();
         const Schedule& floatSchedule = swap->floatingSchedule();
 
+        Handle<YieldTermStructure> forwardingCurve =
+            swap->iborIndex()->forwardingTermStructure();
+
+        const Leg& floatingLeg = swap->floatingLeg();
+        std::vector<ext::shared_ptr<OvernightIndexedCoupon> >
+            overnightCoupons(floatingLeg.size());
+        for (Size l = 0; l < floatingLeg.size(); ++l)
+            overnightCoupons[l] =
+                ext::dynamic_pointer_cast<OvernightIndexedCoupon>(floatingLeg[l]);
+
         Array npv0(2 * integrationPoints_ + 1, 0.0),
             npv1(2 * integrationPoints_ + 1, 0.0);
         Array z = model_->yGrid(stddevs_, integrationPoints_);
@@ -68,9 +80,9 @@ namespace QuantLib {
                 npvp1.push_back(npvTmp1);
             }
         }
-        // end probabkility computation
+        // end probability computation
 
-        Date expiry1 = Null<Date>(), expiry0;
+        Date expiry1 = Date(), expiry0;
         Time expiry1Time = Null<Real>(), expiry0Time;
 
         do {
@@ -104,9 +116,12 @@ namespace QuantLib {
                               expiry0Time, 0.0);
             if (expiry0 > settlement) {
                 for (Size l = k1; l < arguments_.floatingCoupons.size(); l++) {
-                    model_->forwardRate(arguments_.floatingFixingDates[l],
-                                        expiry0, 0.0,
-                                        arguments_.swap->iborIndex());
+                    if (overnightCoupons[l] != nullptr)
+                        model_->compoundedRate(
+                            *overnightCoupons[l], expiry0, 0.0, forwardingCurve);
+                    else
+                        model_->forwardRate(arguments_.floatingFixingDates[l],
+                                            expiry0, 0.0, swap->iborIndex());
                     model_->zerobond(arguments_.floatingPayDates[l], expiry0,
                                      0.0, discountCurve_);
                 }
@@ -256,13 +271,18 @@ namespace QuantLib {
                     Real floatingLegNpv = 0.0;
                     for (Size l = k1; l < arguments_.floatingCoupons.size();
                          l++) {
+                        const Real floatingRate = overnightCoupons[l] != nullptr
+                            ? model_->compoundedRate(
+                                  *overnightCoupons[l], expiry0, z[k],
+                                  forwardingCurve)
+                            : model_->forwardRate(
+                                  arguments_.floatingFixingDates[l], expiry0,
+                                  z[k], swap->iborIndex());
                         floatingLegNpv +=
                             arguments_.nominal *
                             arguments_.floatingAccrualTimes[l] *
                             (arguments_.floatingSpreads[l] +
-                             model_->forwardRate(
-                                 arguments_.floatingFixingDates[l], expiry0,
-                                 z[k], arguments_.swap->iborIndex())) *
+                             floatingRate) *
                             model_->zerobond(arguments_.floatingPayDates[l],
                                              expiry0, z[k], discountCurve_);
                     }

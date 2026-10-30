@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -90,12 +90,14 @@ void example01() {
 
     Date settlementDate = calendar.advance(todaysDate, settlementDays, Days);
     vector<Date> maturities;
+    maturities.reserve(4);
     for (Size i = 0; i < 4; i++) {
         maturities.push_back(
             calendar.adjust(settlementDate + tenors[i], Following));
     }
 
     std::vector<ext::shared_ptr<DefaultProbabilityHelper>> instruments;
+    instruments.reserve(4);
     for (Size i = 0; i < 4; i++) {
         instruments.push_back(ext::make_shared<SpreadCdsHelper>(
                                 makeQuoteHandle(quoted_spreads[i]),

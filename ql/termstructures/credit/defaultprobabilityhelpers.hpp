@@ -14,7 +14,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -77,7 +77,7 @@ namespace QuantLib {
                                    CDS after the Big Bang, this is typically \c true.
             @param model  The pricing model to use for the helper.
         */
-        CdsHelper(const Handle<Quote>& quote,
+        CdsHelper(const std::variant<Rate, Handle<Quote>>& quote,
                   const Period& tenor,
                   Integer settlementDays,
                   Calendar calendar,
@@ -92,25 +92,9 @@ namespace QuantLib {
                   const Date& startDate = Date(),
                   DayCounter lastPeriodDayCounter = DayCounter(),
                   bool rebatesAccrual = true,
-                  CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+                  CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint,
+                  const Date& tradeDate = Date());
 
-        //! \copydoc CdsHelper::CdsHelper
-        CdsHelper(Rate quote,
-                  const Period& tenor,
-                  Integer settlementDays,
-                  Calendar calendar,
-                  Frequency frequency,
-                  BusinessDayConvention paymentConvention,
-                  DateGeneration::Rule rule,
-                  DayCounter dayCounter,
-                  Real recoveryRate,
-                  const Handle<YieldTermStructure>& discountCurve,
-                  bool settlesAccrual = true,
-                  bool paysAtDefaultTime = true,
-                  const Date& startDate = Date(),
-                  DayCounter lastPeriodDayCounter = DayCounter(),
-                  bool rebatesAccrual = true,
-                  CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
         void setTermStructure(DefaultProbabilityTermStructure*) override;
         // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
         ext::shared_ptr<CreditDefaultSwap> swap() const {
@@ -142,12 +126,13 @@ namespace QuantLib {
         //! protection effective date.
         Date protectionStart_;
         Date startDate_;
+        Date tradeDate_;
     };
 
     //! Spread-quoted CDS hazard rate bootstrap helper.
     class SpreadCdsHelper : public CdsHelper {
       public:
-        SpreadCdsHelper(const Handle<Quote>& runningSpread,
+        SpreadCdsHelper(const std::variant<Rate, Handle<Quote>>& runningSpread,
                         const Period& tenor,
                         Integer settlementDays,
                         const Calendar& calendar,
@@ -162,25 +147,9 @@ namespace QuantLib {
                         const Date& startDate = Date(),
                         const DayCounter& lastPeriodDayCounter = DayCounter(),
                         bool rebatesAccrual = true,
-                        CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+                        CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint,
+                        const Date& tradeDate = Date());
 
-        SpreadCdsHelper(
-            Rate runningSpread,
-            const Period& tenor,
-            Integer settlementDays, // ISDA: 1
-            const Calendar& calendar,
-            Frequency frequency,                     // ISDA: Quarterly
-            BusinessDayConvention paymentConvention, // ISDA:Following
-            DateGeneration::Rule rule,               // ISDA: CDS
-            const DayCounter& dayCounter,            // ISDA: Actual/360
-            Real recoveryRate,
-            const Handle<YieldTermStructure>& discountCurve,
-            bool settlesAccrual = true,
-            bool paysAtDefaultTime = true,
-            const Date& startDate = Date(),
-            const DayCounter& lastPeriodDayCounter = DayCounter(), // ISDA: Actual/360(inc)
-            bool rebatesAccrual = true,                            // ISDA: true
-            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
         Real impliedQuote() const override;
 
       private:
@@ -191,7 +160,7 @@ namespace QuantLib {
     class UpfrontCdsHelper : public CdsHelper {
       public:
         /*! \note the upfront must be quoted in fractional units. */
-        UpfrontCdsHelper(const Handle<Quote>& upfront,
+        UpfrontCdsHelper(const std::variant<Rate, Handle<Quote>>& upfront,
                          Rate runningSpread,
                          const Period& tenor,
                          Integer settlementDays,
@@ -208,27 +177,9 @@ namespace QuantLib {
                          const Date& startDate = Date(),
                          const DayCounter& lastPeriodDayCounter = DayCounter(),
                          bool rebatesAccrual = true,
-                         CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+                         CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint,
+                         const Date& tradeDate = Date());
 
-        /*! \note the upfront must be quoted in fractional units. */
-        UpfrontCdsHelper(Rate upfront,
-                         Rate runningSpread,
-                         const Period& tenor,
-                         Integer settlementDays,
-                         const Calendar& calendar,
-                         Frequency frequency,
-                         BusinessDayConvention paymentConvention,
-                         DateGeneration::Rule rule,
-                         const DayCounter& dayCounter,
-                         Real recoveryRate,
-                         const Handle<YieldTermStructure>& discountCurve,
-                         Natural upfrontSettlementDays = 3,
-                         bool settlesAccrual = true,
-                         bool paysAtDefaultTime = true,
-                         const Date& startDate = Date(),
-                         const DayCounter& lastPeriodDayCounter = DayCounter(),
-                         bool rebatesAccrual = true,
-                         CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
         Real impliedQuote() const override;
 
       private:

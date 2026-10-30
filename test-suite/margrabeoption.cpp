@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -154,10 +154,10 @@ BOOST_AUTO_TEST_CASE(testEuroExchangeTwoAssets) {
         {22.0, 20.0, 1, 1, 0.06, 0.04, 0.10, 0.50, 0.20, 0.20, 0.50, 2.231, 0.728, -0.689, 0.099, 0.120, -0.550, 0.0, 1.0e-3},
         {22.0, 20.0, 1, 1, 0.06, 0.04, 0.10, 0.50, 0.20, 0.25, 0.50, 2.374, 0.707, -0.659, 0.090, 0.109, -0.741, 0.0, 1.0e-3},
 
-        //Quantity tests from Excel calcuations
-        {22.0, 10.0, 1, 2, 0.06, 0.04, 0.10, 0.50, 0.20, 0.15, 0.50, 2.138, 0.746, -1.426, 0.106, 0.255, -0.987, 0.0, 1.0e-3},
-        {11.0, 20.0, 2, 1, 0.06, 0.04, 0.10, 0.50, 0.20, 0.20, 0.50, 2.231, 1.455, -0.689, 0.198, 0.120, 0.410, 0.0, 1.0e-3},
-        {11.0, 10.0, 2, 2, 0.06, 0.04, 0.10, 0.50, 0.20, 0.25, 0.50, 2.374, 1.413, -1.317, 0.181, 0.219, -0.336, 0.0, 1.0e-3}
+        //Quantity tests: the rows above with each spot divided by its quantity
+        {22.0, 10.0, 1, 2, 0.06, 0.04, 0.10, 0.50, 0.20, 0.15, 0.50, 2.138, 0.746, -1.426, 0.106, 0.511, -0.416, 0.0, 1.0e-3},
+        {11.0, 20.0, 2, 1, 0.06, 0.04, 0.10, 0.50, 0.20, 0.20, 0.50, 2.231, 1.455, -0.689, 0.397, 0.120, -0.550, 0.0, 1.0e-3},
+        {11.0, 10.0, 2, 2, 0.06, 0.04, 0.10, 0.50, 0.20, 0.25, 0.50, 2.374, 1.413, -1.317, 0.361, 0.437, -0.741, 0.0, 1.0e-3}
     };
 
     DayCounter dc = Actual360();
@@ -356,10 +356,10 @@ BOOST_AUTO_TEST_CASE(testGreeks) {
             // analytic engine
             margrabeOption.setPricingEngine(engine);
 
-            for (Size l = 0; l < LENGTH(underlyings1); l++) {
-                for (Size m=0; m<LENGTH(qRates1); m++) {
+            for (Size l = 0; l < std::size(underlyings1); l++) {
+                for (Size m=0; m < std::size(qRates1); m++) {
                     for (Real n : rRates) {
-                        for (Size p = 0; p < LENGTH(vols1); p++) {
+                        for (Size p = 0; p < std::size(vols1); p++) {
                             Real u1 = underlyings1[l], u2 = underlyings2[l], u;
                             Rate q1 = qRates1[m], q2 = qRates2[m], r = n;
                             Volatility v1 = vols1[p], v2 = vols2[p];

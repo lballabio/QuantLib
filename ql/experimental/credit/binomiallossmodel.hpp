@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -24,6 +24,7 @@
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/handle.hpp>
+#include <ql/math/functional.hpp>
 #include <algorithm>
 #include <numeric>
 #include <utility>
@@ -204,8 +205,8 @@ namespace QuantLib {
 
         variance = avgLgd <= QL_EPSILON ? Real(0.) : 
             variance / (bsktSize * bsktSize * avgLgd * avgLgd );
-        Real sumAves = -std::pow(ceilAveProb-m, 2) 
-            - (std::pow(floorAveProb-m, 2) - std::pow(ceilAveProb,2.)) 
+        Real sumAves = -squared(ceilAveProb-m)
+            - (squared(floorAveProb-m) - squared(ceilAveProb))
                 * (ceilAveProb-m);
         Real alpha = (variance * bsktSize + sumAves) 
             / (varianceBinom * bsktSize + sumAves);

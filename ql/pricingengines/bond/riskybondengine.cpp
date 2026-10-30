@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -53,7 +53,7 @@ namespace QuantLib {
                 if (d2 > settlementDate)
                     settlementValue += weightedCouponAmount * yieldTS()->discount(d2);
 
-                auto coupon = ext::dynamic_pointer_cast<Coupon>(cf);
+                auto coupon = coupon_cast(cf);
                 if (coupon != nullptr) {
                     Date defaultDate = d1 + (d2 - d1) / 2;
                     Real weightedRecovery = coupon->nominal() * recoveryRate() *

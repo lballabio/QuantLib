@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -57,20 +57,15 @@ namespace QuantLib {
         const Time maturity = dc.yearFraction(referenceDate,
                                               arguments_.exercise->lastDate());
 
-        const ext::shared_ptr<OrnsteinUhlenbeckProcess> process1(
-            new OrnsteinUhlenbeckProcess(model_->a(), model_->sigma()));
+        const auto process1 = ext::make_shared<OrnsteinUhlenbeckProcess>(model_->a(), model_->sigma());
 
-        const ext::shared_ptr<OrnsteinUhlenbeckProcess> process2(
-            new OrnsteinUhlenbeckProcess(model_->b(), model_->eta()));
+        const auto process2 = ext::make_shared<OrnsteinUhlenbeckProcess>(model_->b(), model_->eta());
 
-        const ext::shared_ptr<Fdm1dMesher> xMesher(
-            new FdmSimpleProcess1dMesher(xGrid_,process1,maturity,1,invEps_));
+        const auto xMesher = ext::make_shared<FdmSimpleProcess1dMesher>(xGrid_,process1,maturity,1,invEps_);
 
-        const ext::shared_ptr<Fdm1dMesher> yMesher(
-            new FdmSimpleProcess1dMesher(yGrid_,process2,maturity,1,invEps_));
+        const auto yMesher = ext::make_shared<FdmSimpleProcess1dMesher>(yGrid_,process2,maturity,1,invEps_);
 
-        const ext::shared_ptr<FdmMesher> mesher(
-            new FdmMesherComposite(xMesher, yMesher));
+        const auto mesher = ext::make_shared<FdmMesherComposite>(xMesher, yMesher);
 
         // 3. Inner Value Calculator
         const std::vector<Date>& exerciseDates = arguments_.exercise->dates();
@@ -92,14 +87,12 @@ namespace QuantLib {
         QL_REQUIRE(fwdTs->referenceDate() == disTs->referenceDate(),
                 "reference date of forward and discount curve must match");
 
-        const ext::shared_ptr<G2> fwdModel(
-            new G2(fwdTs, model_->a(), model_->sigma(),
-                   model_->b(), model_->eta(), model_->rho()));
+        const auto fwdModel = ext::make_shared<G2>(fwdTs, model_->a(), model_->sigma(),
+                   model_->b(), model_->eta(), model_->rho());
 
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-             new FdmAffineModelSwapInnerValue<G2>(
+        const auto calculator = ext::make_shared<FdmAffineModelSwapInnerValue<G2>>(
                  model_.currentLink(), fwdModel,
-                 arguments_.swap, t2d, mesher, 0));
+                 arguments_.swap, t2d, mesher, 0);
 
         // 4. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions =

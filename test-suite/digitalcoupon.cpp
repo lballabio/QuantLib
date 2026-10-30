@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(testAssetOrNothing) {
                 Date endDate = vars.calendar.advance(vars.settlement,(k+2)*Years);
                 Rate nullstrike = Null<Rate>();
                 Date paymentDate = endDate;
-                for (Size h=0; h<LENGTH(gearings); h++) {
+                for (Size h=0; h<std::size(gearings); h++) {
 
                     Real gearing = gearings[h];
                     Rate spread = spreads[h];

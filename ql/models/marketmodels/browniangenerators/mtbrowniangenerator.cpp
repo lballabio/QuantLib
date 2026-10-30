@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -43,8 +43,7 @@ namespace QuantLib {
     }
 
     Real MTBrownianGenerator::nextPath() {
-        typedef RandomSequenceGenerator<MersenneTwisterUniformRng>::sample_type
-            sample_type;
+        using sample_type = RandomSequenceGenerator<MersenneTwisterUniformRng>::sample_type;
 
         const sample_type& sample = generator_.nextSequence();
         lastStep_ = 0;
@@ -61,9 +60,7 @@ namespace QuantLib {
 
     ext::shared_ptr<BrownianGenerator>
     MTBrownianGeneratorFactory::create(Size factors, Size steps) const {
-        return ext::shared_ptr<BrownianGenerator>(
-                              new MTBrownianGenerator(factors, steps, seed_));
+        return ext::make_shared<MTBrownianGenerator>(factors, steps, seed_);
     }
 
 }
-

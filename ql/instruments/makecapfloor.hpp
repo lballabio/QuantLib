@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    //! helper class
+    //! cap/floor builder
     /*! This class provides a more comfortable way
         to instantiate standard market cap and floor.
     */
@@ -38,14 +38,24 @@ namespace QuantLib {
       public:
         MakeCapFloor(CapFloor::Type capFloorType,
                      const Period& capFloorTenor,
+                     const ext::shared_ptr<IborIndex>& iborIndex);
+
+        /*! \deprecated Use the other constructor plus withStrike and/or withForwardStart.
+                        Deprecated in version 1.44.
+        */
+        [[deprecated("Use the other constructor plus withStrike and/or withForwardStart.")]]
+        MakeCapFloor(CapFloor::Type capFloorType,
+                     const Period& capFloorTenor,
                      const ext::shared_ptr<IborIndex>& iborIndex,
-                     Rate strike = Null<Rate>(),
+                     Rate strike,
                      const Period& forwardStart = 0*Days);
 
         operator CapFloor() const;
         operator ext::shared_ptr<CapFloor>() const;
 
         MakeCapFloor& withNominal(Real n);
+        MakeCapFloor& withStrike(Rate k);
+        MakeCapFloor& withForwardStart(const Period& f);
         MakeCapFloor& withEffectiveDate(const Date& effectiveDate,
                                         bool firstCapletExcluded);
         MakeCapFloor& withTenor(const Period& t);
@@ -65,8 +75,8 @@ namespace QuantLib {
                               const ext::shared_ptr<PricingEngine>& engine);
       private:
         CapFloor::Type capFloorType_;
-        Rate strike_;
-        bool firstCapletExcluded_, asOptionlet_ = false;
+        Rate strike_ = Null<Rate>();
+        bool firstCapletExcluded_ = true, asOptionlet_ = false;
 
         MakeVanillaSwap makeVanillaSwap_;
 

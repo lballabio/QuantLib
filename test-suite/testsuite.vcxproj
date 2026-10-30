@@ -180,7 +180,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
@@ -240,7 +240,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
@@ -300,7 +300,7 @@
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -361,7 +361,7 @@
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -419,7 +419,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
@@ -477,7 +477,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
@@ -535,7 +535,7 @@
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -596,7 +596,7 @@
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -651,6 +651,7 @@
     <ClCompile Include="asianoptions.cpp" />
     <ClCompile Include="assetswap.cpp" />
     <ClCompile Include="autocovariances.cpp" />
+    <ClCompile Include="bacheliercalculator.cpp" />
     <ClCompile Include="barrieroption.cpp" />
     <ClCompile Include="basismodels.cpp" />
     <ClCompile Include="basisswapratehelpers.cpp" />
@@ -658,8 +659,10 @@
     <ClCompile Include="batesmodel.cpp" />
     <ClCompile Include="bermudanswaption.cpp" />
     <ClCompile Include="binaryoption.cpp" />
+    <ClCompile Include="blackcalculator.cpp" />
     <ClCompile Include="blackdeltacalculator.cpp" />
     <ClCompile Include="blackformula.cpp" />
+    <ClCompile Include="blackvolsurfacedelta.cpp" /> 
     <ClCompile Include="bondforward.cpp" />
     <ClCompile Include="bonds.cpp" />
     <ClCompile Include="brownianbridge.cpp" />
@@ -681,9 +684,13 @@
     <ClCompile Include="compiledboostversion.cpp" />
     <ClCompile Include="compoundoption.cpp" />
     <ClCompile Include="convertiblebonds.cpp" />
+    <ClCompile Include="copulas.cpp" />
     <ClCompile Include="covariance.cpp" />
     <ClCompile Include="creditdefaultswap.cpp" />
-    <ClCompile Include="creditriskplus.cpp" />
+    <ClCompile Include="constnotionalcrosscurrencybasisswap.cpp" />
+    <ClCompile Include="mtmcrosscurrencybasisswap.cpp" />
+    <ClCompile Include="constnotionalcrosscurrencyfixedvsfloatingswap.cpp" />
+    <ClCompile Include="constnotionalcrosscurrencyswap.cpp" />
     <ClCompile Include="crosscurrencyratehelpers.cpp" />
     <ClCompile Include="currency.cpp" />
     <ClCompile Include="curvestates.cpp" />
@@ -701,12 +708,14 @@
     <ClCompile Include="equitytotalreturnswap.cpp" />
     <ClCompile Include="europeanoption.cpp" />
     <ClCompile Include="everestoption.cpp" />
+    <ClCompile Include="extendedblackvariancesurface.cpp" />
     <ClCompile Include="exchangerate.cpp" />
     <ClCompile Include="extendedtrees.cpp" />
     <ClCompile Include="extensibleoptions.cpp" />
     <ClCompile Include="fdcev.cpp" />
     <ClCompile Include="fdsabr.cpp" />
     <ClCompile Include="fittedbonddiscountcurve.cpp" />
+    <ClCompile Include="floatfloatswap.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="fastfouriertransform.cpp" />
     <ClCompile Include="fdheston.cpp" />
@@ -714,6 +723,8 @@
     <ClCompile Include="fdmlinearop.cpp" />
     <ClCompile Include="forwardoption.cpp" />
     <ClCompile Include="forwardrateagreement.cpp" />
+    <ClCompile Include="fxforward.cpp" />
+    <ClCompile Include="g2process.cpp" />
     <ClCompile Include="garch.cpp" />
     <ClCompile Include="gaussianquadratures.cpp" />
     <ClCompile Include="gjrgarchmodel.cpp" />
@@ -733,6 +744,7 @@
     <ClCompile Include="instruments.cpp" />
     <ClCompile Include="integrals.cpp" />
     <ClCompile Include="interestrates.cpp" />
+    <ClCompile Include="interpolatedsmilesection.cpp" />
     <ClCompile Include="interpolations.cpp" />
     <ClCompile Include="jumpdiffusion.cpp" />
     <ClCompile Include="lazyobject.cpp" />
@@ -753,6 +765,8 @@
     <ClCompile Include="mclongstaffschwartzengine.cpp" />
     <ClCompile Include="mersennetwister.cpp" />
     <ClCompile Include="money.cpp" />
+    <ClCompile Include="multipleresetscoupons.cpp" />
+    <ClCompile Include="multipleresetsswap.cpp" />
     <ClCompile Include="noarbsabr.cpp" />
     <ClCompile Include="normalclvmodel.cpp" />
     <ClCompile Include="nthtodefault.cpp" />
@@ -764,11 +778,14 @@
     <ClCompile Include="optimizers.cpp" />
     <ClCompile Include="optionletstripper.cpp" />
     <ClCompile Include="overnightindexedcoupon.cpp" />
+    <ClCompile Include="overnightindexedfundingratehelper.cpp" />
     <ClCompile Include="overnightindexedswap.cpp" />
     <ClCompile Include="pagodaoption.cpp" />
     <ClCompile Include="partialtimebarrieroption.cpp" />
     <ClCompile Include="pathgenerator.cpp" />
     <ClCompile Include="period.cpp" />
+    <ClCompile Include="perpetualfutures.cpp" />
+    <ClCompile Include="piecewiseblackvariancesurface.cpp" />
     <ClCompile Include="piecewiseyieldcurve.cpp" />
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp" />
     <ClCompile Include="preconditions.cpp" />
@@ -780,17 +797,16 @@
     <ClCompile Include="riskneutraldensitycalculator.cpp" />
     <ClCompile Include="riskstats.cpp" />
     <ClCompile Include="rngtraits.cpp" />
+    <ClCompile Include="roughhestonmodel.cpp" />
     <ClCompile Include="rounding.cpp" />
-    <ClCompile Include="sampledcurve.cpp" />
     <ClCompile Include="schedule.cpp" />
     <ClCompile Include="settings.cpp" />
     <ClCompile Include="shortratemodels.cpp" />
     <ClCompile Include="sofrfutures.cpp" />
+    <ClCompile Include="softbarrieroption.cpp" />
     <ClCompile Include="solvers.cpp" />
-    <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
-    <ClCompile Include="subperiodcoupons.cpp" />
     <ClCompile Include="svivolatility.cpp" />
     <ClCompile Include="swap.cpp" />
     <ClCompile Include="swapforwardmappings.cpp" />
@@ -803,7 +819,7 @@
     <ClCompile Include="timeseries.cpp" />
     <ClCompile Include="tqreigendecomposition.cpp" />
     <ClCompile Include="tracing.cpp" />
-    <ClCompile Include="transformedgrid.cpp" />
+    <ClCompile Include="trinomialtree.cpp" />
     <ClCompile Include="twoassetbarrieroption.cpp" />
     <ClCompile Include="twoassetcorrelationoption.cpp" />
     <ClCompile Include="ultimateforwardtermstructure.cpp" />

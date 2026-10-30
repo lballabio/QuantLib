@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -98,13 +98,13 @@ namespace QuantLib {
         IsdaCdsEngine(Handle<DefaultProbabilityTermStructure> probability,
                       Real recoveryRate,
                       Handle<YieldTermStructure> discountCurve,
-                      const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
+                      const std::optional<bool>& includeSettlementDateFlows = std::nullopt,
                       NumericalFix numericalFix = Taylor,
                       AccrualBias accrualBias = HalfDayBias,
                       ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise);
 
-        Handle<YieldTermStructure> isdaRateCurve() const { return discountCurve_; }
-        Handle<DefaultProbabilityTermStructure> isdaCreditCurve() const { return probability_; }
+        const Handle<YieldTermStructure>& isdaRateCurve() const { return discountCurve_; }
+        const Handle<DefaultProbabilityTermStructure>& isdaCreditCurve() const { return probability_; }
 
         void calculate() const override;
 
@@ -112,7 +112,7 @@ namespace QuantLib {
         Handle<DefaultProbabilityTermStructure> probability_;
         const Real recoveryRate_;
         Handle<YieldTermStructure> discountCurve_;
-        const ext::optional<bool> includeSettlementDateFlows_;
+        const std::optional<bool> includeSettlementDateFlows_;
         const NumericalFix numericalFix_;
         const AccrualBias accrualBias_;
         const ForwardsInCouponPeriod forwardsInCouponPeriod_;

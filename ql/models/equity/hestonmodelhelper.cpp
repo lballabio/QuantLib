@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -69,10 +69,8 @@ namespace QuantLib {
                         s0_->value() * dividendYield_->discount(tau_)
                     ? Option::Call
                     : Option::Put;
-        ext::shared_ptr<StrikedTypePayoff> payoff(
-            new PlainVanillaPayoff(type_, strikePrice_));
-        ext::shared_ptr<Exercise> exercise =
-            ext::make_shared<EuropeanExercise>(exerciseDate_);
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(type_, strikePrice_);
+        auto exercise = ext::make_shared<EuropeanExercise>(exerciseDate_);
         option_ = ext::make_shared<VanillaOption>(payoff, exercise);
         BlackCalibrationHelper::performCalculations();
     }

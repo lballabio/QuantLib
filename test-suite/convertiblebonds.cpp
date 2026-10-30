@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -26,10 +26,12 @@
 #include <ql/instruments/bonds/floatingratebond.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/bond/binomialconvertibleengine.hpp>
+#include <ql/pricingengines/bond/discretizedconvertible.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -40,6 +42,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 
 using namespace QuantLib;
@@ -290,6 +293,56 @@ BOOST_AUTO_TEST_CASE(testBond) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testBinomialConversionAtMaturity) {
+
+    BOOST_TEST_MESSAGE("Testing binomial convertible-bond conversion at maturity...");
+
+    Date today(21, September, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    Date maturity = today + 91;
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    Rate r = 0.05;
+    Volatility sigma = 0.15;
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, 0.0, dc)),
+        Handle<YieldTermStructure>(flatRate(today, r, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, sigma, dc)));
+    Handle<Quote> creditSpread(ext::make_shared<SimpleQuote>(0.0));
+    Size timeSteps = 51;
+    auto engine = ext::make_shared<BinomialConvertibleEngine<CoxRossRubinstein>>(
+        process, timeSteps, creditSpread);
+    auto europeanExercise = ext::make_shared<EuropeanExercise>(maturity);
+    auto americanExercise = ext::make_shared<AmericanExercise>(maturity, maturity);
+    Schedule schedule = MakeSchedule().from(today).to(maturity).withFrequency(Once)
+                                      .withCalendar(NullCalendar()).withConvention(Unadjusted);
+    Real conversionRatio = 2.0;
+    Real redemption = 100.0;
+    CallabilitySchedule noCallability;
+    ConvertibleZeroCouponBond european(europeanExercise, conversionRatio, noCallability,
+                                       today, 0, dc, schedule, redemption);
+    ConvertibleZeroCouponBond american(americanExercise, conversionRatio, noCallability,
+                                       today, 0, dc, schedule, redemption);
+    european.setPricingEngine(engine);
+    american.setPricingEngine(engine);
+    Real europeanValue = european.NPV();
+    Real americanValue = american.NPV();
+
+    // Even the lowest terminal CRR stock node converts for more than redemption.
+    // Discounting that minimum payoff with the TF lattice's simple rate gives a lower bound.
+    Time dt = dc.yearFraction(today, maturity) / timeSteps;
+    Real minimumConversion = conversionRatio * spot->value()
+                           * std::exp(-(timeSteps * sigma * std::sqrt(dt)));
+    Real lowerBound = minimumConversion / std::pow(1.0 + r * dt, timeSteps);
+    BOOST_REQUIRE_GT(minimumConversion, redemption);
+    BOOST_CHECK_MESSAGE(americanValue >= lowerBound - 1.0e-10,
+                        "Terminal-only American convertible value " << americanValue
+                        << " is below discounted minimum conversion value " << lowerBound);
+    BOOST_CHECK_MESSAGE(std::fabs(americanValue - europeanValue) <= 1.0e-10,
+                        "Terminal-only American convertible value " << americanValue
+                        << " differs from European value " << europeanValue);
+}
+
 BOOST_AUTO_TEST_CASE(testOption) {
 
     /* a zero-coupon convertible bond with no credit spread is
@@ -347,6 +400,129 @@ BOOST_AUTO_TEST_CASE(testOption) {
                     << "\n    expected:   " << expected
                     << "\n    error:      " << error
                     << "\n    tolerance:      " << tolerance);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testDividendsSpanningSettlementDate) {
+    BOOST_TEST_MESSAGE(
+        "Testing convertible bond dividend values spanning the settlement date...");
+
+    Settings::instance().evaluationDate() = Date(15, January, 2024);
+    CommonVars vars;
+
+    ConvertibleBond::arguments args;
+    args.exercise = ext::make_shared<EuropeanExercise>(vars.maturityDate);
+    args.conversionRatio = vars.conversionRatio;
+    args.cashflows.push_back(
+        ext::make_shared<SimpleCashFlow>(vars.redemption, vars.maturityDate));
+    args.issueDate = vars.issueDate;
+    args.settlementDate =
+        vars.calendar.advance(vars.today, vars.settlementDays, Days);
+    args.settlementDays = vars.settlementDays;
+    args.redemption = vars.redemption;
+
+    const Date beforeSettlement = vars.calendar.advance(vars.today, 1, Days);
+    const Date afterSettlement = vars.calendar.advance(args.settlementDate, 1, Years);
+    const Real futureAmount = 10.0;
+    const DividendSchedule dividends = {
+        ext::make_shared<FixedDividend>(1.0, beforeSettlement),
+        ext::make_shared<FixedDividend>(futureAmount, afterSettlement)};
+
+    DiscretizedConvertible convertible(args, vars.process, dividends,
+                                       vars.creditSpread);
+
+    const Real expected =
+        futureAmount * vars.riskFreeRate->discount(afterSettlement);
+    BOOST_CHECK_EQUAL(convertible.dividendValues().size(), 1);
+    BOOST_CHECK_CLOSE(convertible.dividendValues()[0], expected, 1.0e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testDividendBetweenEvaluationAndSettlement) {
+    BOOST_TEST_MESSAGE(
+        "Testing that a dividend between evaluation and settlement date "
+        "is dropped from the convertible bond price...");
+
+    // Evaluation date with a non-zero settlement lag so that a dividend
+    // can fall strictly between the evaluation date and the settlement date.
+    Date today = Date(15, January, 2024);
+    Settings::instance().evaluationDate() = today;
+
+    Calendar calendar = TARGET();
+    DayCounter dayCounter = Actual360();
+    Natural settlementDays = 3;
+    Date settlementDate = calendar.advance(today, settlementDays, Days);
+
+    // A dividend strictly between the evaluation date and settlement date.
+    Date exDivDate = calendar.advance(today, 1, Days);
+    QL_REQUIRE(exDivDate > today && exDivDate < settlementDate,
+               "test setup: ex-div date must fall in the settlement lag");
+    Real dividendAmount = 2.0;
+
+    // Build a simple zero-coupon convertible bond.
+    Date maturityDate = calendar.advance(today, 2, Years);
+    Real redemption = 100.0;
+    Real spot = 50.0;
+    Real conversionRatio = 2.0;
+
+    Handle<Quote> underlying(ext::make_shared<SimpleQuote>(spot));
+    Handle<YieldTermStructure> dividendYield(
+        ext::make_shared<FlatForward>(today, 0.0, dayCounter));
+    Handle<YieldTermStructure> riskFreeRate(
+        ext::make_shared<FlatForward>(today, 0.05, dayCounter));
+    Handle<BlackVolTermStructure> volatility(
+        ext::make_shared<BlackConstantVol>(today, calendar, 0.20, dayCounter));
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        underlying, dividendYield, riskFreeRate, volatility);
+
+    Handle<Quote> creditSpread(ext::make_shared<SimpleQuote>(0.0));
+
+    Schedule schedule(maturityDate - 1*Years, maturityDate,
+                      Period(Annual), calendar,
+                      Unadjusted, Unadjusted,
+                      DateGeneration::Backward, false);
+
+    auto exercise = ext::make_shared<EuropeanExercise>(maturityDate);
+    ConvertibleZeroCouponBond bond(exercise, conversionRatio,
+                                    CallabilitySchedule(),
+                                    today, settlementDays,
+                                    dayCounter, schedule,
+                                    redemption);
+
+    DividendSchedule dividendsWith = {
+        ext::make_shared<FixedDividend>(dividendAmount, exDivDate)};
+    DividendSchedule dividendsEmpty;
+
+    auto engineWith = ext::make_shared<BinomialConvertibleEngine<CoxRossRubinstein> >(
+        process, 500, creditSpread, dividendsWith);
+    auto engineWithout = ext::make_shared<BinomialConvertibleEngine<CoxRossRubinstein> >(
+        process, 500, creditSpread, dividendsEmpty);
+
+    bond.setPricingEngine(engineWith);
+    Real priceWithDividend = bond.NPV();
+
+    bond.setPricingEngine(engineWithout);
+    Real priceWithoutDividend = bond.NPV();
+
+    // The in-lag dividend must reduce the price: it is subtracted
+    // from s0 but never added back inside the tree (which is
+    // anchored at the settlementDate).
+    if (priceWithDividend >= priceWithoutDividend) {
+        BOOST_ERROR("in-lag dividend did not reduce the convertible bond price:"
+                    << "\n    with dividend:    " << priceWithDividend
+                    << "\n    without dividend: " << priceWithoutDividend
+                    << "\n    expected: with < without (dividend value must not vanish)");
+    }
+
+    // The price drop should be economically meaningful: roughly the dividend
+    // amount rolled forward to the settlement date (zero rates here, so
+    // approximately the dividend amount itself).  We use a wide tolerance
+    // because the convertible's optionality dampens the spot sensitivity.
+    Real expectedDrop = dividendAmount * conversionRatio;
+    Real actualDrop = priceWithoutDividend - priceWithDividend;
+    if (actualDrop < 0.5 * expectedDrop) {
+        BOOST_ERROR("in-lag dividend price drop is too small:"
+                    << "\n    actual drop:   " << actualDrop
+                    << "\n    expected (~):  " << expectedDrop);
     }
 }
 

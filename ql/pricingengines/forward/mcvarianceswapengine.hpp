@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -112,9 +112,8 @@ namespace QuantLib {
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
 
-            return ext::shared_ptr<path_generator_type>(
-                         new path_generator_type(process_, grid, gen,
-                                                 brownianBridge_));
+            return ext::make_shared<path_generator_type>(process_, grid, gen,
+                                                 brownianBridge_);
         }
         // data members
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
@@ -130,7 +129,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCVarianceSwapEngine {
       public:
-        MakeMCVarianceSwapEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+        explicit MakeMCVarianceSwapEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
         // named parameters
         MakeMCVarianceSwapEngine& withSteps(Size steps);
         MakeMCVarianceSwapEngine& withStepsPerYear(Size steps);
@@ -141,6 +140,8 @@ namespace QuantLib {
         MakeMCVarianceSwapEngine& withSeed(BigNatural seed);
         MakeMCVarianceSwapEngine& withAntitheticVariate(bool b = true);
         // conversion to pricing engine
+        // Intentionally implicit to support passing the fluent builder as a pricing engine.
+        // NOLINTNEXTLINE(google-explicit-constructor)
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
@@ -153,7 +154,7 @@ namespace QuantLib {
 
     class VariancePathPricer : public PathPricer<Path> {
       public:
-        VariancePathPricer(ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        explicit VariancePathPricer(ext::shared_ptr<GeneralizedBlackScholesProcess> process)
         : process_(std::move(process)) {}
         Real operator()(const Path& path) const override;
 
@@ -215,9 +216,7 @@ namespace QuantLib {
         typename MCVarianceSwapEngine<RNG,S>::path_pricer_type>
     MCVarianceSwapEngine<RNG,S>::pathPricer() const {
 
-        return ext::shared_ptr<
-            typename MCVarianceSwapEngine<RNG,S>::path_pricer_type>(
-                                            new VariancePathPricer(process_));
+        return ext::make_shared<VariancePathPricer>(process_);
     }
 
 
@@ -297,15 +296,14 @@ namespace QuantLib {
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return ext::shared_ptr<PricingEngine>(
-                         new MCVarianceSwapEngine<RNG,S>(process_,
+        return ext::make_shared<MCVarianceSwapEngine<RNG,S>>(process_,
                                                          steps_,
                                                          stepsPerYear_,
                                                          brownianBridge_,
                                                          antithetic_,
                                                          samples_, tolerance_,
                                                          maxSamples_,
-                                                         seed_));
+                                                         seed_);
     }
 
 
@@ -329,7 +327,7 @@ namespace QuantLib {
 
 
     inline Real VariancePathPricer::operator()(const Path& path) const {
-        QL_REQUIRE(path.length() > 0, "the path cannot be empty");
+        QL_REQUIRE(!path.empty(), "the path cannot be empty");
         Time t0 = path.timeGrid().front();
         Time t = path.timeGrid().back();
         Time dt = path.timeGrid().dt(0);

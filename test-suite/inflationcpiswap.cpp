@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
  
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -18,6 +18,7 @@
  */
 
 #include "toplevelfixture.hpp"
+#include "utilities.hpp"
 #include <ql/types.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
@@ -58,17 +59,15 @@ std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
         const ext::shared_ptr<I> &ii, const Period &observationLag,
         const Calendar &calendar,
         const BusinessDayConvention &bdc,
-        const DayCounter &dc,
-        const Handle<YieldTermStructure>& discountCurve) {
+        const DayCounter &dc) {
 
     std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
     for (Size i=0; i<N; i++) {
         Date maturity = iiData[i].date;
-        Handle<Quote> quote(ext::shared_ptr<Quote>(
-                                new SimpleQuote(iiData[i].rate/100.0)));
-        ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(quote, observationLag, maturity,
-                                                                calendar, bdc, dc, ii,
-                                                                CPI::AsIndex, discountCurve));
+        Handle<Quote> quote(ext::make_shared<SimpleQuote>(iiData[i].rate/100.0));
+        auto anInstrument = ext::make_shared<U>(quote, observationLag, maturity,
+                                                calendar, bdc, dc, ii,
+                                                CPI::Flat);
         instruments.push_back(anInstrument);
     }
 
@@ -76,7 +75,7 @@ std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
 }
 
 
-struct CommonVars {
+struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
     // common data
     
     Size length;
@@ -99,9 +98,9 @@ struct CommonVars {
     ext::shared_ptr<UKRPI> ii;
     Size zciisDataLength;
 
-    RelinkableHandle<YieldTermStructure> nominalTS;
+    Handle<YieldTermStructure> nominalTS;
     ext::shared_ptr<ZeroInflationTermStructure> cpiTS;
-    RelinkableHandle<ZeroInflationTermStructure> hcpi;
+    Handle<ZeroInflationTermStructure> hcpi;
 
     // setup
     CommonVars()
@@ -139,7 +138,7 @@ struct CommonVars {
         };
 
         // link from cpi index to cpi TS
-        ii = ext::make_shared<UKRPI>(hcpi);
+        ii = ext::make_shared<UKRPI>();
         for (Size i=0; i<rpiSchedule.size();i++) {
             ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
         };
@@ -187,7 +186,7 @@ struct CommonVars {
         ext::shared_ptr<YieldTermStructure> nominal =
             ext::make_shared<InterpolatedZeroCurve<Linear>>(nomD,nomR,dcNominal);
 
-        nominalTS.linkTo(nominal);
+        nominalTS = Handle<YieldTermStructure>(nominal);
 
         // now build the zero inflation curve
         observationLag = Period(2,Months);
@@ -220,12 +219,11 @@ struct CommonVars {
         }
 
         // now build the helpers ...
-        std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpers =
+        auto helpers =
             makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
             ZeroInflationIndex>(zciisData, zciisDataLength, ii,
                                 observationLag,
-                                calendar, convention, dcZCIIS,
-                                Handle<YieldTermStructure>(nominalTS));
+                                calendar, convention, dcZCIIS);
 
         // we can use historical or first ZCIIS for this
         // we know historical is WAY off market-implied, so use market implied flat.
@@ -233,11 +231,12 @@ struct CommonVars {
         auto pCPIts =
             ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
                                     evaluationDate, baseDate, ii->frequency(), dcZCIIS, helpers);
-        pCPIts->recalculate();
+
         cpiTS = ext::dynamic_pointer_cast<ZeroInflationTermStructure>(pCPIts);
 
         // make sure that the index has the latest zero inflation term structure
-        hcpi.linkTo(pCPIts);
+        hcpi = Handle<ZeroInflationTermStructure>(pCPIts);
+        ii = ext::make_shared<UKRPI>(hcpi);
     }
 };
 
@@ -342,15 +341,12 @@ BOOST_AUTO_TEST_CASE(consistency) {
                "failed manual inf leg NPV calc vs pricing engine: " <<
                testInfLegNPV << " vs " << zisV.legNPV(0));
 
-    Real diff = fabs(1-zisV.NPV()/4191660.0);
-    
+    Real diff = fabs(1-zisV.NPV()/4191797.54);
+
     Real max_diff = usingAtParCoupons ? 1e-5 : 3e-5;
 
     QL_REQUIRE(diff<max_diff,
                "failed stored consistency value test, ratio = " << diff);
-
-    // remove circular refernce
-    common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
 BOOST_AUTO_TEST_CASE(zciisconsistency) {
@@ -359,17 +355,18 @@ BOOST_AUTO_TEST_CASE(zciisconsistency) {
     CommonVars common;
 
     Swap::Type ztype = Swap::Payer;
-    Real  nominal = 1000000.0;
+    Real nominal = 1000000.0;
     Date startDate(common.evaluationDate);
     Date endDate(25, November, 2059);
     Calendar cal = UnitedKingdom();
     BusinessDayConvention paymentConvention = ModifiedFollowing;
     DayCounter dummyDC, dc = ActualActual(ActualActual::ISDA);
     Period observationLag(2,Months);
+    CPI::InterpolationType interpolation = CPI::Flat;
 
     Rate quote = 0.03714;
     ZeroCouponInflationSwap zciis(ztype, nominal, startDate, endDate, cal, paymentConvention, dc,
-                                  quote, common.ii, observationLag, CPI::AsIndex);
+                                  quote, common.ii, observationLag, interpolation);
 
     // simple structure so simple pricing engine - most work done by index
     ext::shared_ptr<DiscountingSwapEngine>
@@ -387,15 +384,14 @@ BOOST_AUTO_TEST_CASE(zciisconsistency) {
     bool subtractInflationNominal = true;
     Real dummySpread=0.0, dummyFixedRate=0.0;
     Natural fixingDays = 0;
-    Date baseDate = startDate - observationLag;
-    Real baseCPI = common.ii->fixing(baseDate);
+    Real baseCPI = CPI::laggedFixing(common.ii, startDate, observationLag, interpolation);
 
     ext::shared_ptr<IborIndex> dummyFloatIndex;
 
     CPISwap cS(stype, floatNominal, subtractInflationNominal, dummySpread, dummyDC, schOneDate,
                paymentConvention, fixingDays, dummyFloatIndex,
                dummyFixedRate, baseCPI, dummyDC, schOneDate, paymentConvention, observationLag,
-               common.ii, CPI::AsIndex, inflationNominal);
+               common.ii, interpolation, inflationNominal);
 
     cS.setPricingEngine(dse);
     QL_REQUIRE(fabs(cS.NPV())<1e-3,"CPISwap as ZCIIS does not reprice to zero");
@@ -403,8 +399,6 @@ BOOST_AUTO_TEST_CASE(zciisconsistency) {
     for (Size i=0; i<2; i++) {
         QL_REQUIRE(fabs(cS.legNPV(i)-zciis.legNPV(i))<1e-3,"zciis leg does not equal CPISwap leg");
     }
-    // remove circular refernce
-    common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
 BOOST_AUTO_TEST_CASE(cpibondconsistency) {
@@ -412,11 +406,9 @@ BOOST_AUTO_TEST_CASE(cpibondconsistency) {
 
     CommonVars common;
 
-    // ZeroInflationSwap aka CPISwap
-
     Swap::Type type = Swap::Payer;
     Real nominal = 1000000.0;
-    bool subtractInflationNominal = true;
+    bool subtractInflationNominal = false;
     // float+spread leg
     Spread spread = 0.0;
     DayCounter floatDayCount = Actual365Fixed();
@@ -483,8 +475,7 @@ BOOST_AUTO_TEST_CASE(cpibondconsistency) {
     // now do the bond equivalent
     std::vector<Rate> fixedRates(1,fixedRate);
     Natural settlementDays = 1;// cannot be zero!
-    bool growthOnly = true;
-    CPIBond cpiB(settlementDays, nominal, growthOnly,
+    CPIBond cpiB(settlementDays, nominal,
                  baseCPI, contractObservationLag, fixedIndex,
                  observationInterpolation, fixedSchedule,
                  fixedRates, fixedDayCount, fixedPaymentConvention);
@@ -493,8 +484,93 @@ BOOST_AUTO_TEST_CASE(cpibondconsistency) {
     cpiB.setPricingEngine(dbe);
 
     QL_REQUIRE(fabs(cpiB.NPV() - zisV.legNPV(0))<1e-5,"cpi bond does not equal equivalent cpi swap leg");
-    // remove circular reference
-    common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+}
+
+BOOST_AUTO_TEST_CASE(testZeroBpsFairRateAndSpread) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing CPI swap fair rate/spread calculation with zero BPS...");
+
+    CommonVars common;
+
+    Swap::Type type = Swap::Payer;
+    Real nominal = 0.0;
+    Date startDate(common.evaluationDate);
+    Date endDate(25, November, 2059);
+    Calendar cal = UnitedKingdom();
+    BusinessDayConvention paymentConvention = ModifiedFollowing;
+    DayCounter dummyDC;
+    Period observationLag(2, Months);
+    CPI::InterpolationType interpolation = CPI::Flat;
+
+    std::vector<Date> oneDate = {endDate};
+    Schedule schOneDate(oneDate, cal, paymentConvention);
+
+    Real baseCPI = CPI::laggedFixing(common.ii, startDate, observationLag, interpolation);
+    ext::shared_ptr<IborIndex> dummyFloatIndex;
+
+    CPISwap swap(type, nominal, true, 0.0, dummyDC, schOneDate,
+                 paymentConvention, 0, dummyFloatIndex,
+                 0.1, baseCPI, dummyDC, schOneDate, paymentConvention,
+                 observationLag, common.ii, interpolation);
+
+    ext::shared_ptr<DiscountingSwapEngine> dse(
+        new DiscountingSwapEngine(common.nominalTS));
+    swap.setPricingEngine(dse);
+
+    BOOST_CHECK(!swap.isExpired());
+    BOOST_CHECK_EQUAL(swap.legBPS(0), 0.0);
+    BOOST_CHECK_EQUAL(swap.legBPS(1), 0.0);
+
+    BOOST_CHECK_EXCEPTION(
+        swap.fairRate(), Error,
+        ExpectedErrorMessage("result not available"));
+    BOOST_CHECK_EXCEPTION(
+        swap.fairSpread(), Error,
+        ExpectedErrorMessage("result not available"));
+}
+
+BOOST_AUTO_TEST_CASE(testExpiredSwapFairRateAndSpread) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing CPI swap fair rate/spread for expired swap...");
+
+    CommonVars common;
+
+    Swap::Type type = Swap::Payer;
+    Real nominal = 1000000.0;
+    Date startDate(common.evaluationDate);
+    Date endDate(25, November, 2059);
+    Calendar cal = UnitedKingdom();
+    BusinessDayConvention paymentConvention = ModifiedFollowing;
+    DayCounter dummyDC;
+    Period observationLag(2, Months);
+    CPI::InterpolationType interpolation = CPI::Flat;
+
+    std::vector<Date> oneDate = {endDate};
+    Schedule schOneDate(oneDate, cal, paymentConvention);
+
+    Real baseCPI = CPI::laggedFixing(common.ii, startDate, observationLag, interpolation);
+    ext::shared_ptr<IborIndex> dummyFloatIndex;
+
+    CPISwap swap(type, nominal, true, 0.0, dummyDC, schOneDate,
+                 paymentConvention, 0, dummyFloatIndex,
+                 0.1, baseCPI, dummyDC, schOneDate, paymentConvention,
+                 observationLag, common.ii, interpolation);
+
+    ext::shared_ptr<DiscountingSwapEngine> dse(
+        new DiscountingSwapEngine(common.nominalTS));
+    swap.setPricingEngine(dse);
+
+    Settings::instance().evaluationDate() = endDate + Period(1, Years);
+
+    BOOST_CHECK(swap.isExpired());
+    BOOST_CHECK_EXCEPTION(
+        swap.fairRate(), Error,
+        ExpectedErrorMessage("result not available"));
+    BOOST_CHECK_EXCEPTION(
+        swap.fairSpread(), Error,
+        ExpectedErrorMessage("result not available"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

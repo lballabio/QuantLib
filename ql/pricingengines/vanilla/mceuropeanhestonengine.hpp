@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -122,13 +122,11 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<P>(this->process_);
         QL_REQUIRE(process, "Heston like process required");
 
-        return ext::shared_ptr<
-            typename MCEuropeanHestonEngine<RNG,S,P>::path_pricer_type>(
-                   new EuropeanHestonPathPricer(
+        return ext::make_shared<EuropeanHestonPathPricer>(
                                         payoff->optionType(),
                                         payoff->strike(),
                                         process->riskFreeRate()->discount(
-                                                   this->timeGrid().back())));
+                                                   this->timeGrid().back()));
     }
 
 
@@ -204,14 +202,13 @@ namespace QuantLib {
     operator ext::shared_ptr<PricingEngine>() const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
-        return ext::shared_ptr<PricingEngine>(
-               new MCEuropeanHestonEngine<RNG,S,P>(process_,
+        return ext::make_shared<MCEuropeanHestonEngine<RNG,S,P>>(process_,
                                                    steps_,
                                                    stepsPerYear_,
                                                    antithetic_,
                                                    samples_, tolerance_,
                                                    maxSamples_,
-                                                   seed_));
+                                                   seed_);
     }
 
 

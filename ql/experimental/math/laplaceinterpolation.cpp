@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -121,7 +121,7 @@ for (auto const& m : map_)
         std::vector<Real> corner_h(dim.size());
         std::vector<Size> corner_neighbour_index(dim.size());
         for (auto const& pos : *layout_) {
-            auto coord = pos.coordinates();
+            const auto& coord = pos.coordinates();
             Real val =
                 y_(numberOfCoordinatesIncluded_ == x_.size() ? coord : fullCoordinates(coord));
             QL_REQUIRE(rowit != op.end1() && rowit.index1() == count,

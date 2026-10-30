@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -22,9 +22,24 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/barrier/analyticbinarybarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/mathconstants.hpp>
+#include <cmath>
 #include <utility>
 
 namespace QuantLib {
+
+    namespace {
+
+        // log N(x), with the asymptotic tail where N(x) underflows
+        Real logCumNormal(Real x) {
+            if (x > -30.0)
+                return std::log(CumulativeNormalDistribution()(x));
+            Real z2 = 1.0/(x*x);
+            return -0.5*x*x - std::log(-x) - 0.5*std::log(M_TWOPI)
+                + std::log1p(-z2*(1.0 - z2*(3.0 - 15.0*z2)));
+        }
+
+    }
 
     // calc helper object 
     class AnalyticBinaryBarrierEngine_helper
@@ -102,11 +117,10 @@ namespace QuantLib {
         if ((barrierType == Barrier::DownIn && spot <= barrier) ||
            (barrierType == Barrier::UpIn && spot >= barrier)) {
             // knocked in - is a digital european
-            ext::shared_ptr<Exercise> exercise(new EuropeanExercise(
-                                             arguments_.exercise->lastDate()));
+            auto exercise = ext::make_shared<EuropeanExercise>(
+                                             arguments_.exercise->lastDate());
 
-            ext::shared_ptr<PricingEngine> engine(
-                                       new AnalyticEuropeanEngine(process_));
+            auto engine = ext::make_shared<AnalyticEuropeanEngine>(process_);
 
             VanillaOption opt(payoff, exercise);
             opt.setPricingEngine(engine);
@@ -199,6 +213,14 @@ namespace QuantLib {
             cum_x2 = f(x2);
             cum_y1 = f(y1);
             cum_y2 = f(y2);
+
+            // at small variance (H/S)^(2 mu) can overflow where N(y) underflows;
+            // the product is finite, so it is taken in logs
+            if (!std::isfinite(H_S_2mu)) {
+                cum_y1 = std::exp(2.0*mu*log_H_S + logCumNormal(y1));
+                cum_y2 = std::exp(2.0*mu*log_H_S + logCumNormal(y2));
+                H_S_2mu = 1.0;
+            }
         } else {
             if (log_S_X>0)
                 cum_x1= 1.0;
@@ -321,4 +343,3 @@ namespace QuantLib {
 
 
 }
-

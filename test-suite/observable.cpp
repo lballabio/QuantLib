@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2015 Klaus Spanderen
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -10,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -20,14 +21,19 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/bootstraphelper.hpp>
+#include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionlet.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/calendars/target.hpp>
 #include <chrono>
 #include <thread>
 
@@ -178,6 +184,36 @@ BOOST_AUTO_TEST_CASE(testObservableSettings) {
    if (updateCounter.counter() != 3 || updateCounter2.counter() != 1) {
        BOOST_FAIL("update counter values are not correct");
    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testDuplicateRegistration) {
+    BOOST_TEST_MESSAGE("Testing duplicate observer registration...");
+
+    const ext::shared_ptr<Observable> observable = ext::make_shared<Observable>();
+    UpdateCounter firstObserver;
+    UpdateCounter secondObserver;
+
+    const auto firstRegistration = firstObserver.registerWith(observable);
+    const auto duplicateRegistration = firstObserver.registerWith(observable);
+    secondObserver.registerWith(observable);
+
+    BOOST_CHECK(firstRegistration.second);
+    BOOST_CHECK(!duplicateRegistration.second);
+
+    observable->notifyObservers();
+    BOOST_CHECK_EQUAL(firstObserver.counter(), 1);
+    BOOST_CHECK_EQUAL(secondObserver.counter(), 1);
+
+    BOOST_CHECK_EQUAL(firstObserver.unregisterWith(observable), 1);
+    observable->notifyObservers();
+    BOOST_CHECK_EQUAL(firstObserver.counter(), 1);
+    BOOST_CHECK_EQUAL(secondObserver.counter(), 2);
+
+    BOOST_CHECK(firstObserver.registerWith(observable).second);
+    observable->notifyObservers();
+    BOOST_CHECK_EQUAL(firstObserver.counter(), 2);
+    BOOST_CHECK_EQUAL(secondObserver.counter(), 3);
 }
 
 
@@ -393,6 +429,21 @@ BOOST_AUTO_TEST_CASE(testAddAndDeleteObserverDuringNotifyObservers) {
                 BOOST_FAIL("missed observer update detected");
             }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testDeferredObserverLifetime)
+{
+    BOOST_TEST_MESSAGE("Testing lifetime of deferred observers...");
+    Date today(24, Dec, 2025);
+    Settings::instance().evaluationDate() = today;
+    Handle<Quote> quote(ext::make_shared<SimpleQuote>(0.02));
+    auto zciHelper = ext::make_shared<ZeroCouponInflationSwapHelper>(
+        quote, 3 * Months, Date(29, Dec, 2026), TARGET(), ModifiedFollowing,
+        ActualActual(ActualActual::ISDA), ext::make_shared<EUHICPXT>(), CPI::Flat);
+
+    ObservableSettings::instance().disableUpdates(true);
+    Settings::instance().evaluationDate() = Date(29, Dec, 2025);
+    ObservableSettings::instance().enableUpdates();
 }
 
 BOOST_AUTO_TEST_SUITE_END()

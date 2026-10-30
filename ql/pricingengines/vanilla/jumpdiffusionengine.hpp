@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -41,9 +41,9 @@ namespace QuantLib {
     */
     class JumpDiffusionEngine : public VanillaOption::engine {
       public:
-        JumpDiffusionEngine(ext::shared_ptr<Merton76Process>,
-                            Real relativeAccuracy_ = 1e-4,
-                            Size maxIterations = 100);
+        explicit JumpDiffusionEngine(ext::shared_ptr<Merton76Process>,
+                                     Real relativeAccuracy_ = 1e-4,
+                                     Size maxIterations = 100);
         void calculate() const override;
 
       private:

@@ -12,6 +12,7 @@ this_include_HEADERS = \
 	convexmonotoneinterpolation.hpp \
 	cubicinterpolation.hpp \
 	extrapolation.hpp \
+	flatextrapolation.hpp \
 	flatextrapolation2d.hpp \
 	forwardflatinterpolation.hpp \
 	interpolation2d.hpp \
@@ -23,7 +24,8 @@ this_include_HEADERS = \
 	mixedinterpolation.hpp \
 	multicubicspline.hpp \
 	sabrinterpolation.hpp \
-	xabrinterpolation.hpp
+	xabrinterpolation.hpp \
+	zabrinterpolation.hpp
 
 cpp_files = \
 	chebyshevinterpolation.cpp

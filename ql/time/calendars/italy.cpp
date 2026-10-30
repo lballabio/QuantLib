@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -29,6 +29,7 @@ namespace QuantLib {
                                                    new Italy::SettlementImpl);
         static ext::shared_ptr<Calendar::Impl> exchangeImpl(
                                                    new Italy::ExchangeImpl);
+        QL_DEPRECATED_DISABLE_WARNING
         switch (market) {
           case Settlement:
             impl_ = settlementImpl;
@@ -39,6 +40,7 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown market");
         }
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
 
@@ -63,6 +65,8 @@ namespace QuantLib {
             || (d == 2 && m == June && y >= 2000)
             // Assumption
             || (d == 15 && m == August)
+            // Saint Francis of Assisi
+            || (d == 4 && m == October && y >= 2026)
             // All Saints' Day
             || (d == 1 && m == November)
             // Immaculate Conception

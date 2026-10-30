@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -20,6 +20,7 @@
 
 #include <ql/exercise.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuousfixedlookback.hpp>
+#include <cmath>
 #include <utility>
 
 namespace QuantLib {
@@ -123,9 +124,7 @@ namespace QuantLib {
         Real powss = std::pow(ss, -lambda);
         return eta*(underlying() * dividendDiscount() * N1 -
                     minmax() * riskFreeDiscount() * N2 -
-                    underlying() * riskFreeDiscount() *
-                    (powss * N3 - dividendDiscount()* N4/riskFreeDiscount())/
-            lambda);
+                    underlying() * riskFreeDiscount() * ratio(lambda, d1, N3, N4, powss, eta));
     }
 
     Real AnalyticContinuousFixedLookbackEngine::B(Real eta) const {
@@ -141,9 +140,16 @@ namespace QuantLib {
         Real powss = std::pow(ss, -lambda);
         return eta*(underlying() * dividendDiscount() * N1 -
                     strike() * riskFreeDiscount() * N2 -
-                    underlying() * riskFreeDiscount() *
-                    (powss * N3 - dividendDiscount()* N4/riskFreeDiscount())/
-            lambda);
+                    underlying() * riskFreeDiscount() * ratio(lambda, d1, N3, N4, powss, eta));
+    }
+
+    Real AnalyticContinuousFixedLookbackEngine::ratio(Real lambda, Real d1, Real N3, Real N4,
+                                                      Real powss, Real eta) const {
+        // with no carry lambda vanishes and the ratio is 0/0; its limit
+        // is -stdDev * (d1 * N(eta * d1) + eta * n(d1))
+        if (std::fabs(lambda) < 1.0e-7)
+            return -stdDeviation() * (d1 * N4 + eta * f_.derivative(d1));
+        return (powss * N3 - dividendDiscount() * N4 / riskFreeDiscount()) / lambda;
     }
 
     Real AnalyticContinuousFixedLookbackEngine::C(Real eta) const {

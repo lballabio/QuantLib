@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -36,8 +36,7 @@ namespace QuantLib {
         };
       public:
         VolatilityConstraint(Real k, Real theta)
-        : Constraint(ext::shared_ptr<Constraint::Impl>(
-                                 new VolatilityConstraint::Impl(k, theta))) {}
+        : Constraint(ext::make_shared<VolatilityConstraint::Impl>(k, theta)) {}
     };
 
     CoxIngersollRoss::CoxIngersollRoss(Rate r0, Real theta,
@@ -57,8 +56,7 @@ namespace QuantLib {
 
     ext::shared_ptr<OneFactorModel::ShortRateDynamics>
     CoxIngersollRoss::dynamics() const {
-        return ext::shared_ptr<ShortRateDynamics>(
-                                  new Dynamics(theta(), k() , sigma(), x0()));
+        return ext::make_shared<Dynamics>(theta(), k() , sigma(), x0());
     }
 
     Real CoxIngersollRoss::A(Time t, Time T) const {
@@ -124,11 +122,8 @@ namespace QuantLib {
 
     ext::shared_ptr<Lattice>
     CoxIngersollRoss::tree(const TimeGrid& grid) const {
-        ext::shared_ptr<TrinomialTree> trinomial(
-                        new TrinomialTree(dynamics()->process(), grid, true));
-        return ext::shared_ptr<Lattice>(
-                              new ShortRateTree(trinomial, dynamics(), grid));
+        auto trinomial = ext::make_shared<TrinomialTree>(dynamics()->process(), grid, true);
+        return ext::make_shared<ShortRateTree>(trinomial, dynamics(), grid);
     }
 
 }
-

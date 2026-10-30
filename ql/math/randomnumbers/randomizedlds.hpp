@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -60,10 +60,11 @@ namespace QuantLib {
       public:
         typedef Sample<std::vector<Real> > sample_type;
         RandomizedLDS(const LDS& ldsg, PRS prsg);
+        // TODO: Review whether this constructor should remain implicit.
         RandomizedLDS(const LDS& ldsg);
-        RandomizedLDS(Size dimensionality,
-                      BigNatural ldsSeed = 0,
-                      BigNatural prsSeed = 0);
+        explicit RandomizedLDS(Size dimensionality,
+                               BigNatural ldsSeed = 0,
+                               BigNatural prsSeed = 0);
         //! returns next sample using a given randomizing vector
         const sample_type& nextSequence() const;
         const sample_type& lastSequence() const {

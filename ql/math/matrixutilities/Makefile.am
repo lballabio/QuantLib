@@ -11,6 +11,7 @@ this_include_HEADERS = \
 	factorreduction.hpp \
 	getcovariance.hpp \
 	gmres.hpp \
+	householder.hpp \
 	pseudosqrt.hpp \
 	qrdecomposition.hpp \
 	sparseilupreconditioner.hpp \
@@ -28,6 +29,7 @@ cpp_files = \
 	factorreduction.cpp \
 	getcovariance.cpp \
 	gmres.cpp \
+	householder.cpp \
 	pseudosqrt.cpp \
 	qrdecomposition.cpp \
 	sparseilupreconditioner.cpp \

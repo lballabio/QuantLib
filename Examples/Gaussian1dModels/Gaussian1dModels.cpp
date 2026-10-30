@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -151,7 +151,7 @@ int main(int, char *[]) {
             << "\nWe assume a multicurve setup, for simplicity with flat yield "
                "\nterm structures. The discounting curve is an Eonia curve at"
                "\na level of " << oisLevel
-            << " and the forwarding curve is an Euribior 6m curve"
+            << " and the forwarding curve is an Euribor 6m curve"
             << "\nat a level of " << forward6mLevel << std::endl;
 
         Real volLevel = 0.20;

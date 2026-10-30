@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -154,11 +154,12 @@ namespace QuantLib {
         // 1. Mesher
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non-striked payoff given");
 
         const ext::shared_ptr<Fdm1dMesher> equityMesher =
             ext::make_shared<FdmBlackScholesMesher>(
                     xGrid_, process_, maturity, payoff->strike(), 
-                    Null<Real>(), Null<Real>(), 0.0001, 1.5, 
+                    Null<Real>(), Null<Real>(), 0.0001, 1.5,
                     std::pair<Real, Real>(payoff->strike(), 0.1),
                     dividendSchedule, quantoHelper_,
                     spotAdjustment);
@@ -167,14 +168,16 @@ namespace QuantLib {
             ext::make_shared<FdmMesherComposite>(equityMesher);
         
         // 2. Calculator
-        ext::shared_ptr<FdmInnerValueCalculator> calculator;
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator =
+            ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0);
+
+        ext::shared_ptr<FdmInnerValueCalculator> earlyExerciseCalculator;
         switch (cashDividendModel_) {
           case Spot:
-              calculator = ext::make_shared<FdmLogInnerValue>(
-                  payoff, mesher, 0);
+              earlyExerciseCalculator = calculator;
             break;
           case Escrowed:
-              calculator = ext::make_shared<FdmEscrowedLogInnerValueCalculator>(
+              earlyExerciseCalculator = ext::make_shared<FdmEscrowedLogInnerValueCalculator>(
                   escrowedDivAdj, payoff, mesher, 0);
             break;
           default:
@@ -184,7 +187,8 @@ namespace QuantLib {
         // 3. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions = 
             FdmStepConditionComposite::vanillaComposite(
-                dividendSchedule, arguments_.exercise, mesher, calculator,
+                dividendSchedule, arguments_.exercise, mesher,
+                earlyExerciseCalculator,
                 process_->riskFreeRate()->referenceDate(),
                 process_->riskFreeRate()->dayCounter());
 
@@ -192,8 +196,9 @@ namespace QuantLib {
         const FdmBoundaryConditionSet boundaries;
 
         // 5. Solver
-        FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
-                                     maturity, tGrid_, dampingSteps_ };
+        FdmSolverDesc solverDesc = {
+            mesher, boundaries, conditions, calculator, maturity, tGrid_, dampingSteps_
+        };
 
         const ext::shared_ptr<FdmBlackScholesSolver> solver(
             ext::make_shared<FdmBlackScholesSolver>(
@@ -208,6 +213,44 @@ namespace QuantLib {
         results_.delta = solver->deltaAt(spot);
         results_.gamma = solver->gammaAt(spot);
         results_.theta = solver->thetaAt(spot);
+
+        // The step condition enforces the exercise on grid nodes. The monotonic
+        // cubic interpolant can still undershoot the payoff between nodes, and
+        // VanillaOption::impliedVolatility prices Americans with this engine, so
+        // a value below the payoff cannot be inverted. Floor only when the
+        // holder can exercise on the reference date and the payoff is paid
+        // then. Greeks stay on the interpolant: resetting them would disagree
+        // with a bump wherever the undershoot is local.
+        const ext::shared_ptr<Exercise>& exercise = arguments_.exercise;
+        bool exercisable = false;
+        switch (exercise->type()) {
+          case Exercise::American:
+            exercisable = exercise->date(0) <= settlementDate
+                          && settlementDate <= exercise->lastDate();
+            break;
+          case Exercise::Bermudan:
+            for (const Date& exerciseDate : exercise->dates()) {
+                if (exerciseDate == settlementDate) {
+                    exercisable = true;
+                    break;
+                }
+            }
+            break;
+          case Exercise::European:
+            break;
+          default:
+            QL_FAIL("exercise type is not supported");
+        }
+        if (exercisable) {
+            const auto early = ext::dynamic_pointer_cast<EarlyExercise>(exercise);
+            if (early != nullptr && early->payoffAtExpiry())
+                exercisable = false;
+        }
+        if (exercisable) {
+            const Real exerciseValue = (*payoff)(process_->x0());
+            if (results_.value < exerciseValue)
+                results_.value = exerciseValue;
+        }
     }
 
     MakeFdBlackScholesVanillaEngine::MakeFdBlackScholesVanillaEngine(

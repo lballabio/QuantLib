@@ -12,14 +12,13 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/vanillaoption.hpp>
@@ -121,7 +120,7 @@ class MCAmericanMaxEngine
 };
 
 
-BOOST_AUTO_TEST_CASE(testAmericanOption, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testAmericanOption) {
     BOOST_TEST_MESSAGE("Testing Monte-Carlo pricing of American options...");
 
     // most of the example taken from the EquityOption.cpp
@@ -191,7 +190,7 @@ BOOST_AUTO_TEST_CASE(testAmericanOption, *precondition(if_speed(Fast))) {
                   .withAbsoluteTolerance(0.02)
                   .withSeed(42)
                   .withPolynomialOrder(3)
-                  .withBasisSystem(polynomialTypes[0*(i*3+j)%LENGTH(polynomialTypes)]);
+                  .withBasisSystem(polynomialTypes[0*(i*3+j)%std::size(polynomialTypes)]);
 
             americanOption.setPricingEngine(mcengine);
             const Real calculated = americanOption.NPV();

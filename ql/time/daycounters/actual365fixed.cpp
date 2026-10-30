@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -27,11 +27,11 @@ namespace QuantLib {
     Actual365Fixed::implementation(Actual365Fixed::Convention c) {
         switch (c) {
           case Standard:
-            return ext::shared_ptr<DayCounter::Impl>(new Impl);
+            return ext::make_shared<Impl>();
           case Canadian:
-            return ext::shared_ptr<DayCounter::Impl>(new CA_Impl);
+            return ext::make_shared<CA_Impl>();
           case NoLeap:
-            return ext::shared_ptr<DayCounter::Impl>(new NL_Impl);
+            return ext::make_shared<NL_Impl>();
           default:
             QL_FAIL("unknown Actual/365 (Fixed) convention");
         }
@@ -55,6 +55,9 @@ namespace QuantLib {
                    "invalid reference period for Act/365 Canadian; "
                    "must be longer than a month");
         auto frequency = Integer(12 / months);
+        QL_REQUIRE(frequency != 0,
+                   "invalid reference period for Act/365 Canadian; "
+                   "must not be longer than a year");
 
         if (dcs < Integer(365/frequency))
             return dcs/365.0;

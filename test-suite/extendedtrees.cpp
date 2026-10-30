@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -21,6 +21,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
@@ -312,6 +313,37 @@ BOOST_AUTO_TEST_CASE(testLRBinomialEngines) {
     relativeTol["gamma"] = 1.0e-4;
     relativeTol["theta"] = 0.03;
     testEngineConsistency(engine, steps, relativeTol);
+}
+
+BOOST_AUTO_TEST_CASE(testLeisenReimerDeepInTheMoney) {
+
+    BOOST_TEST_MESSAGE("Testing the extended Leisen-Reimer tree on a deep "
+                       "in-the-money call...");
+
+    // Same cancellation as the equal-time tree: pu rounds to 1.
+    const Date today(15, January, 2025);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+    const auto process = makeProcess(
+        ext::make_shared<SimpleQuote>(100.0),
+        flatRate(today, 0.0, dc),
+        flatRate(today, 0.0, dc),
+        flatVol(today, 0.01, dc));
+    const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 80.0);
+    const auto exercise = ext::make_shared<EuropeanExercise>(today + 1);
+
+    VanillaOption option(payoff, exercise);
+    option.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(process));
+    const Real expected = option.NPV();
+    option.setPricingEngine(
+        ext::make_shared<BinomialVanillaEngine<ExtendedLeisenReimer> >(process, 1001));
+    const Real calculated = option.NPV();
+    const Real error = std::fabs(calculated - expected);
+    const Real tolerance = 1.0e-6;
+    if (error > tolerance) {
+        REPORT_FAILURE("value", payoff, exercise, 100.0, 0.0, 0.0, today, 0.01,
+                       expected, calculated, error, tolerance);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testJOSHIBinomialEngines) {

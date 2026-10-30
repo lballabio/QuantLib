@@ -14,7 +14,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -84,8 +84,8 @@ namespace QuantLib {
             Real xtol = 1.0e-8;
             Real gtol = 1.0e-8;
             bool useCostFunctionsJacobian = false;
-            optMethod_ = ext::shared_ptr<OptimizationMethod>(new
-                LevenbergMarquardt(epsfcn, xtol, gtol, useCostFunctionsJacobian));
+            optMethod_ = ext::make_shared<LevenbergMarquardt>(
+                epsfcn, xtol, gtol, useCostFunctionsJacobian);
         }
         if (!endCriteria_) {
             Size maxIterations = 10000;
@@ -122,8 +122,7 @@ namespace QuantLib {
         } else {
 
             AbcdError costFunction(this);
-            transformation_ = ext::shared_ptr<ParametersTransformation>(new
-                AbcdParametersTransformation);
+            transformation_ = ext::make_shared<AbcdParametersTransformation>();
 
             Array guess(4);
             guess[0] = a_;

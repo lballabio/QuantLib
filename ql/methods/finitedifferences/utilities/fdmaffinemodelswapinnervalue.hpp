@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -25,6 +25,7 @@
 
 #include <ql/cashflows/coupon.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmaffinemodeltermstructure.hpp>
@@ -73,16 +74,42 @@ namespace QuantLib {
         ext::shared_ptr<FdmMesher> mesher,
         Size direction)
     : disModel_(std::move(disModel)), fwdModel_(std::move(fwdModel)), index_(swap->iborIndex()),
-      swap_(ext::make_shared<VanillaSwap>(swap->type(),
-                                          swap->nominal(),
-                                          swap->fixedSchedule(),
-                                          swap->fixedRate(),
-                                          swap->fixedDayCount(),
-                                          swap->floatingSchedule(),
-                                          swap->iborIndex()->clone(fwdTs_),
-                                          swap->spread(),
-                                          swap->floatingDayCount(),
-                                          swap->paymentConvention())),
+      swap_([&]() -> ext::shared_ptr<FixedVsFloatingSwap> {
+          auto ois = ext::dynamic_pointer_cast<OvernightIndexedSwap>(swap);
+          if (ois) {
+              auto clonedIndex = ext::dynamic_pointer_cast<OvernightIndex>(
+                  ois->overnightIndex()->clone(fwdTs_));
+              QL_REQUIRE(clonedIndex, "failed to clone OvernightIndex");
+              return ext::make_shared<OvernightIndexedSwap>(
+                  ois->type(),
+                  ois->nominal(),
+                  ois->fixedSchedule(),
+                  ois->fixedRate(),
+                  ois->fixedDayCount(),
+                  ois->overnightSchedule(),
+                  clonedIndex,
+                  ois->spread(),
+                  ois->paymentLag(),
+                  ois->paymentConvention(),
+                  ois->paymentCalendar(),
+                  ois->telescopicValueDates(),
+                  ois->averagingMethod(),
+                  ois->lookbackDays(),
+                  ois->lockoutDays(),
+                  ois->applyObservationShift());
+          }
+          return ext::make_shared<VanillaSwap>(
+              swap->type(),
+              swap->nominal(),
+              swap->fixedSchedule(),
+              swap->fixedRate(),
+              swap->fixedDayCount(),
+              swap->floatingSchedule(),
+              swap->iborIndex()->clone(fwdTs_),
+              swap->spread(),
+              swap->floatingDayCount(),
+              swap->paymentConvention());
+      }()),
       exerciseDates_(std::move(exerciseDates)), mesher_(std::move(mesher)), direction_(direction) {}
 
     template <class ModelType> inline
@@ -125,7 +152,7 @@ namespace QuantLib {
         for (Size j = 0; j < 2; j++) {
             for (const auto& i : swap_->leg(j)) {
                 npv +=
-                    ext::dynamic_pointer_cast<Coupon>(i)->accrualStartDate() >= iterExerciseDate ?
+                    coupon_cast(i)->accrualStartDate() >= iterExerciseDate ?
                         Real(i->amount() * disTs_->discount(i->date())) :
                         0.0;
             }

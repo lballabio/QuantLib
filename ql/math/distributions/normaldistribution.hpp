@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -35,6 +35,14 @@ namespace QuantLib {
     /*! Given x, it returns its probability in a Gaussian normal distribution.
         It provides the first derivative too.
 
+      For average \f$ \mu \f$ and standard deviation \f$ \sigma \f$, the
+      density is
+      \f[
+        f(x) = \frac{1}{\sigma\sqrt{2\pi}}
+             \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right).
+      \f]
+      The standard deviation must be strictly positive.
+
         \test the correctness of the returned value is tested by
               checking it against numerical calculations. Cross-checks
               are also performed against the
@@ -43,6 +51,7 @@ namespace QuantLib {
     */
     class NormalDistribution {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         NormalDistribution(Real average = 0.0,
                            Real sigma = 1.0);
         // function
@@ -57,9 +66,17 @@ namespace QuantLib {
 
 
     //! Cumulative normal distribution function
-    /*! Given x it provides an approximation to the
-        integral of the gaussian normal distribution:
-        formula here ...
+    /*! Given x, it provides an approximation to the cumulative probability
+      of a Gaussian normal distribution with average \f$ \mu \f$ and
+      standard deviation \f$ \sigma \f$:
+      \f[
+        F(x) = \frac{1}{\sigma\sqrt{2\pi}}
+             \int_{-\infty}^{x}
+             \exp\left(-\frac{(t-\mu)^2}{2\sigma^2}\right)dt.
+      \f]
+      The result is between zero and one, and derivative() returns the
+      corresponding normal density. The lower tail uses an asymptotic
+      expansion when the direct error-function calculation loses precision.
 
         For this implementation see M. Abramowitz and I. Stegun,
         Handbook of Mathematical Functions,
@@ -67,6 +84,7 @@ namespace QuantLib {
     */
     class CumulativeNormalDistribution {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         CumulativeNormalDistribution(Real average = 0.0,
                                      Real sigma   = 1.0);
         // function
@@ -80,12 +98,14 @@ namespace QuantLib {
 
 
     //! Inverse cumulative normal distribution function
-    /*! Given x between zero and one as
-      the integral value of a gaussian normal distribution
-      this class provides the value y such that
-      formula here ...
+    /*! Given a probability \f$ p \f$ between zero and one, this class
+      provides \f$ y = F^{-1}(p) \f$ such that
+      \f[
+          F(y) = p,
+      \f]
+      where \f$ F \f$ is the cumulative normal distribution.
 
-      It use Acklam's approximation:
+      It uses Acklam's approximation:
       by Peter J. Acklam, University of Oslo, Statistics Division.
       URL: http://home.online.no/~pjacklam/notes/invnorm/index.html
 
@@ -99,6 +119,7 @@ namespace QuantLib {
     */
     class InverseCumulativeNormal {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         InverseCumulativeNormal(Real average = 0.0,
                                 Real sigma   = 1.0);
         // function
@@ -181,8 +202,8 @@ namespace QuantLib {
         this class provides the value y such that
         formula here ...
 
-        It uses Beasly and Springer approximation, with an improved
-        approximation for the tails. See Boris Moro,
+        It uses the Beasley-Springer approximation in the central region,
+        with an improved Moro approximation for the tails. See Boris Moro,
         "The Full Monte", 1995, Risk Magazine.
 
         This class can also be used to generate a gaussian normal
@@ -197,6 +218,7 @@ namespace QuantLib {
     */
     class MoroInverseCumulativeNormal {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         MoroInverseCumulativeNormal(Real average = 0.0,
                                     Real sigma   = 1.0);
         // function
@@ -223,10 +245,12 @@ namespace QuantLib {
     };
 
     //! Maddock's Inverse cumulative normal distribution class
-    /*! Given x between zero and one as
-        the integral value of a gaussian normal distribution
-        this class provides the value y such that
-        formula here ...
+    /*! Given a probability \f$ p \f$ between zero and one, this class
+      provides \f$ y = F^{-1}(p) \f$ such that
+      \f[
+        F(y) = p,
+      \f]
+      where \f$ F \f$ is the cumulative normal distribution.
 
         From the boost documentation:
          These functions use a rational approximation devised by
@@ -237,6 +261,7 @@ namespace QuantLib {
     */
     class MaddockInverseCumulativeNormal {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         MaddockInverseCumulativeNormal(Real average = 0.0,
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;
@@ -248,6 +273,7 @@ namespace QuantLib {
     //! Maddock's cumulative normal distribution class
     class MaddockCumulativeNormal {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         MaddockCumulativeNormal(Real average = 0.0,
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;
@@ -281,7 +307,9 @@ namespace QuantLib {
     }
 
     inline Real NormalDistribution::derivative(Real x) const {
-        return ((*this)(x) * (average_ - x)) / derNormalizationFactor_;
+        const Real density = (*this)(x);
+        return density == 0.0 ? Real(0.0) :
+            Real((density * (average_ - x)) / derNormalizationFactor_);
     }
 
     inline CumulativeNormalDistribution::CumulativeNormalDistribution(

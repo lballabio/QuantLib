@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -46,6 +46,12 @@ namespace QuantLib {
 
         FastFourierTransform(std::size_t order)
         : cs_(order), sn_(order) {
+            // For order == 0 the transform is over a single element and
+            // reduces to a copy; no twiddle factors need to be computed.
+            // Skipping the setup avoids writing to cs_[size_t(-1)] /
+            // sn_[size_t(-1)] when the vectors are empty.
+            if (order == 0)
+                return;
             std::size_t m = static_cast<std::size_t>(1) << order;
             cs_[order - 1] = std::cos (2 * M_PI / m);
             sn_[order - 1] = std::sin (2 * M_PI / m);

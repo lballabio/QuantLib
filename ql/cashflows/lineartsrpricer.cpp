@@ -10,7 +10,7 @@
   under the terms of the QuantLib license.  You should have received a
   copy of the license along with this program; if not, please email
   <quantlib-dev@lists.sf.net>. The license is also available online at
-  <http://quantlib.org/license.shtml>.
+  <https://www.quantlib.org/license.shtml>.
 
 
   This program is distributed in the hope that it will be useful, but
@@ -184,7 +184,7 @@ namespace QuantLib {
 
             Real gx = 0.0, gy = 0.0;
             for (const auto& i : swapFixedLeg) {
-                ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
+                ext::shared_ptr<Coupon> c = coupon_cast(i);
                 Real yf = c->accrualPeriod();
                 Date d = c->date();
                 Real pv = yf * discountCurve_->discount(d);

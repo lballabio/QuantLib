@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2013, 2015 Peter Caspers
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -10,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -18,6 +19,7 @@
 */
 
 #include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/payoff.hpp>
 #include <cmath>
@@ -39,15 +41,40 @@ namespace QuantLib {
         Handle<YieldTermStructure> yts = iborIdx->forwardingTermStructure(); // might be empty, then
                                                                              // use model curve
 
-        Date valueDate = iborIdx->valueDate(fixing);
-        Date endDate = iborIdx->fixingCalendar().advance(
-            valueDate, iborIdx->tenor(), iborIdx->businessDayConvention(), iborIdx->endOfMonth());
-        // FIXME Here we should use the calculation date calendar ?
+        auto valueDate = iborIdx->valueDate(fixing);
+        auto endDate = iborIdx->maturityDate(valueDate);
         Real dcf = iborIdx->dayCounter().yearFraction(valueDate, endDate);
 
         return (zerobond(valueDate, referenceDate, y, yts) -
                 zerobond(endDate, referenceDate, y, yts)) /
                (dcf * zerobond(endDate, referenceDate, y, yts));
+}
+
+Real Gaussian1dModel::compoundedRate(
+    const OvernightIndexedCoupon& coupon,
+    const Date& referenceDate,
+    const Real y,
+    const Handle<YieldTermStructure>& yts) const {
+
+    calculate();
+
+    const bool observationShift =
+        coupon.applyObservationShift() && coupon.fixingDays() > 0;
+    const auto& rateDates =
+        observationShift ? coupon.valueDates() : coupon.interestDates();
+    const Date& rateStart = rateDates.front();
+    const Date& rateEnd = rateDates.back();
+    const Time rateAccrualTime =
+        coupon.index()->dayCounter().yearFraction(rateStart, rateEnd);
+    const Handle<YieldTermStructure>& projectionCurve =
+        yts.empty() ? termStructure() : yts;
+    const Real compounding =
+        rateStart < referenceDate
+            ? projectionCurve->discount(rateStart, true) /
+                  projectionCurve->discount(referenceDate, true)
+            : zerobond(rateStart, referenceDate, y, yts);
+    return (compounding / zerobond(rateEnd, referenceDate, y, yts) - 1.0) /
+           rateAccrualTime;
 }
 
 Real Gaussian1dModel::swapRate(const Date& fixing,
@@ -71,13 +98,11 @@ Real Gaussian1dModel::swapRate(const Date& fixing,
 
     Schedule sched, floatSched;
 
-    ext::shared_ptr<VanillaSwap> underlying =
-        underlyingSwap(swapIdx, fixing, tenor);
+    auto underlying = underlyingSwap(swapIdx, fixing, tenor);
 
     sched = underlying->fixedSchedule();
 
-    ext::shared_ptr<OvernightIndexedSwapIndex> oisIdx =
-        ext::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIdx);
+    auto oisIdx = ext::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIdx);
     if (oisIdx != nullptr) {
         floatSched = sched;
     } else {
@@ -124,10 +149,9 @@ Real Gaussian1dModel::swapAnnuity(const Date& fixing,
         swapIdx->discountingTermStructure(); // might be empty, then use
                                              // model curve
 
-    ext::shared_ptr<VanillaSwap> underlying =
-        underlyingSwap(swapIdx, fixing, tenor);
+    auto underlying = underlyingSwap(swapIdx, fixing, tenor);
 
-    Schedule sched = underlying->fixedSchedule();
+    auto sched = underlying->fixedSchedule();
 
     Real annuity = 0.0;
     for (unsigned int j = 1; j < sched.size(); j++) {
@@ -151,7 +175,7 @@ Real Gaussian1dModel::zerobondOption(
 
     Time fixingTime = termStructure()->timeFromReference(expiry);
     Time referenceTime =
-        referenceDate == Null<Date>()
+        referenceDate == Date()
             ? 0.0
             : termStructure()->timeFromReference(referenceDate);
 

@@ -6,15 +6,15 @@ on:
         description: 'Boost version'
         required: true
 env:
-  ROLLING: noble
+  ROLLING: resolute
 jobs:
   docker-images:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        tag: [lunar, mantic, noble, oracular]
+        tag: [plucky, questing, resolute, stonking]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Build CI images
       working-directory: dockerfiles
       run: |
@@ -28,7 +28,7 @@ jobs:
             docker tag ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }} ghcr.io/lballabio/quantlib-devenv:rolling
         fi
     - name: Login to GitHub Container Registry
-      uses: docker/login-action@v3
+      uses: docker/login-action@v4
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}

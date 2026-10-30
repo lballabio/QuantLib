@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -40,10 +40,11 @@ namespace QuantLib {
         for (auto const& dividend: dividendSchedule_) {
             const Time divTime = toTime_(dividend->date());
 
-            if (divTime >= t && t <= maturity_)
+            if (divTime >= t && divTime <= maturity_) {
                 divAdj -= dividend->amount()
                     * rTS_->discount(divTime) / rTS_->discount(t)
                     * qTS_->discount(t) / qTS_->discount(divTime);
+            }
         }
 
         return divAdj;

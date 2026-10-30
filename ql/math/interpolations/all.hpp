@@ -10,6 +10,7 @@
 #include <ql/math/interpolations/convexmonotoneinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/extrapolation.hpp>
+#include <ql/math/interpolations/flatextrapolation.hpp>
 #include <ql/math/interpolations/flatextrapolation2d.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>
@@ -22,4 +23,5 @@
 #include <ql/math/interpolations/multicubicspline.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/interpolations/xabrinterpolation.hpp>
+#include <ql/math/interpolations/zabrinterpolation.hpp>
 

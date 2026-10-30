@@ -3,6 +3,8 @@
 # 'tgz2zip Foo' converts Foo.tar.gz into Foo.zip converting Unix end-of-line
 # to DOS in the process.
 
+set -e
+
 TARBALL=$1
 BASENAME=${TARBALL%.tar.gz}
 
@@ -19,7 +21,7 @@ find ${BASENAME} -name '*.[hc]pp' -o -name '*.[hc]' \
      -o -name '*.cs' -o -name '*.java' -o -name '*.nsi' \
      -o -name '*.tpp' -o -name '*.Makefile' -o -name '*.README' \
      -o -name '*.configure' \
- | xargs todos -o -p
+ | xargs --exit todos -o -p
 zip -q -9 -r ${BASENAME}.zip ${BASENAME}
 rm -rf ${BASENAME}
 

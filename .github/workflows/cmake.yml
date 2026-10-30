@@ -1,17 +1,21 @@
 name: CMake build
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
 jobs:
   cmake-linux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Setup
       run: |
         sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
         sudo apt install -y libboost-dev ccache ninja-build
     - name: Cache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: cmake-linux-ci-build-${{ github.ref }}
         restore-keys: |
@@ -36,14 +40,14 @@ jobs:
   cmake-linux-with-options:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Setup
       run: |
         sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
         sudo apt install -y libboost-all-dev ccache ninja-build
     - name: Cache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: cmake-linux-ci-opts-${{ github.ref }}
         restore-keys: |
@@ -63,9 +67,9 @@ jobs:
   cmake-win:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Cache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: cmake-windows-ci-build-${{ github.ref }}
         restore-keys: |
@@ -75,9 +79,10 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.85.0/binaries/boost_1_85_0-msvc-14.3-64.exe"
-        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
+        $Url = "https://archives.boost.io/release/1.92.0/source/boost_1_92_0.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
+        Rename-Item -Path "C:\local\boost_1_92_0" -NewName "boost"
         $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
         Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
@@ -86,7 +91,6 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-        vsversion: 2022
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -105,9 +109,9 @@ jobs:
   cmake-win-dynamic-runtime:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Cache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: cmake-windows-ci-dyn-build-${{ github.ref }}
         restore-keys: |
@@ -117,9 +121,10 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.85.0/binaries/boost_1_85_0-msvc-14.3-64.exe"
-        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
+        $Url = "https://archives.boost.io/release/1.92.0/source/boost_1_92_0.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
+        Rename-Item -Path "C:\local\boost_1_92_0" -NewName "boost"
         $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
         Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
@@ -128,7 +133,6 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-        vsversion: 2022
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -147,9 +151,9 @@ jobs:
   cmake-win-with-options:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Cache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: cmake-windows-ci-opts-${{ github.ref }}
         restore-keys: |
@@ -159,9 +163,10 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.85.0/binaries/boost_1_85_0-msvc-14.3-64.exe"
-        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
+        $Url = "https://archives.boost.io/release/1.92.0/source/boost_1_92_0.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
+        Rename-Item -Path "C:\local\boost_1_92_0" -NewName "boost"
         $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
         Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
@@ -170,7 +175,6 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-        vsversion: 2022
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -187,14 +191,14 @@ jobs:
   cmake-macos:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Setup
       env:
         HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       run: |
         brew install boost ccache ninja
     - name: Cache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: cmake-macos-ci-${{ github.ref }}
         restore-keys: |

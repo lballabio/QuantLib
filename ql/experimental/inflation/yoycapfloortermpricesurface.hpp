@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -44,7 +44,7 @@ namespace QuantLib {
         YoYCapFloorTermPriceSurface(Natural fixingDays,
                                     const Period& yyLag,
                                     const ext::shared_ptr<YoYInflationIndex>& yii,
-                                    Rate baseRate,
+                                    CPI::InterpolationType interpolation,
                                     Handle<YieldTermStructure> nominal,
                                     const DayCounter& dc,
                                     const Calendar& cal,
@@ -153,7 +153,7 @@ namespace QuantLib {
                       Natural fixingDays,
                       const Period &yyLag,  // observation lag
                       const ext::shared_ptr<YoYInflationIndex>& yii,
-                      Rate baseRate,
+                      CPI::InterpolationType interpolation,
                       const Handle<YieldTermStructure> &nominal,
                       const DayCounter &dc,
                       const Calendar &cal,
@@ -194,8 +194,7 @@ namespace QuantLib {
             // work in terms of maturity-of-instruments
             // so ask for rate with observation lag
             Period p = (obsLag == Period(-1, Days)) ? observationLag() : obsLag;
-            // Third parameter = force linear interpolation of yoy
-            return yoy_->yoyRate(d, p, false, extrapolate);
+            return yoy_->yoyRate(d - p, extrapolate);
         }
         //@}
 
@@ -257,7 +256,7 @@ namespace QuantLib {
                                     Natural fixingDays,
                                     const Period &yyLag,
                                     const ext::shared_ptr<YoYInflationIndex>& yii,
-                                    Rate baseRate,
+                                    CPI::InterpolationType interpolation,
                                     const Handle<YieldTermStructure> &nominal,
                                     const DayCounter &dc,
                                     const Calendar &cal,
@@ -270,7 +269,7 @@ namespace QuantLib {
                                     const I2D &interpolator2d,
                                     const I1D &interpolator1d)
     : YoYCapFloorTermPriceSurface(fixingDays, yyLag, yii,
-                                  baseRate, nominal, dc, cal, bdc,
+                                  interpolation, nominal, dc, cal, bdc,
                                   cStrikes, fStrikes, cfMaturities,
                                   cPrice, fPrice),
       interpolator2d_(interpolator2d), interpolator1d_(interpolator1d) {
@@ -494,7 +493,7 @@ namespace QuantLib {
                 atmYoYSwapDateRates_.first.push_back(referenceDate()+cfMaturities_[i]);
                 atmYoYSwapTimeRates_.first.push_back(timeFromReference(referenceDate()+cfMaturities_[i]));
                 // atmYoYSwapRates_->second.push_back(interpol((*cfMaturities_)[i]));
-                // Heuristic: overwrite the the swap rate with a value that guarantees that the
+                // Heuristic: overwrite the swap rate with a value that guarantees that the
                 // intrinsic value of all options is lower than the price
                 Real newSwapRate = minSwapRateIntersection[i] + intrinsicValueAddOn;
                 if (newSwapRate > maxSwapRateIntersection[i])
@@ -532,18 +531,17 @@ namespace QuantLib {
             Date maturity = nominalTS_->referenceDate() + Period(i,Years);
             Handle<Quote> quote(ext::shared_ptr<Quote>(
                                new SimpleQuote( atmYoYSwapRate( maturity ) )));//!
-            ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> >
-            anInstrument(
-                new YearOnYearInflationSwapHelper(
+            auto anInstrument =
+                ext::make_shared<YearOnYearInflationSwapHelper>(
                                 quote, observationLag(), maturity,
                                 calendar(), bdc_, dayCounter(),
-                                yoyIndex(), nominalTS_));
+                                yoyIndex(),
+                                this->indexIsInterpolated() ? CPI::Linear: CPI::Flat,
+                                nominalTS_);
             YYhelpers.push_back (anInstrument);
         }
 
         Date baseDate =
-            yoyIndex()->interpolated() ?
-            nominalTS_->referenceDate() - observationLag() :
             inflationPeriod(nominalTS_->referenceDate() - observationLag(),
                             yoyIndex()->frequency()).first;
         // usually this base rate is known
@@ -555,8 +553,7 @@ namespace QuantLib {
         auto pYITS =
             ext::make_shared<PiecewiseYoYInflationCurve<Linear>>(
                       nominalTS_->referenceDate(), baseDate, baseYoYRate,
-                      yoyIndex()->frequency(), yoyIndex()->interpolated(),
-                      dayCounter(), YYhelpers);
+                      yoyIndex()->frequency(), dayCounter(), YYhelpers);
         pYITS->recalculate();
         yoy_ = pYITS;   // store
 

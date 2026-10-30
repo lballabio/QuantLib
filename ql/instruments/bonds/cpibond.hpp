@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -44,7 +44,6 @@ namespace QuantLib {
       public:
         CPIBond(Natural settlementDays,
                 Real faceAmount,
-                bool growthOnly,
                 Real baseCPI,
                 const Period& observationLag,
                 ext::shared_ptr<ZeroInflationIndex> cpiIndex,
@@ -60,9 +59,21 @@ namespace QuantLib {
                 BusinessDayConvention exCouponConvention = Unadjusted,
                 bool exCouponEndOfMonth = false);
 
+        QL_DEPRECATED_DISABLE_WARNING
+        ~CPIBond() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
+
         Frequency frequency() const { return frequency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
-        bool growthOnly() const { return growthOnly_; }
+        /*! \deprecated Do not use; meaningless for a bond.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("Do not use; meaningless for a bond.")]]
+        bool growthOnly() const {
+            QL_DEPRECATED_DISABLE_WARNING
+            return growthOnly_;
+            QL_DEPRECATED_ENABLE_WARNING
+        }
         Real baseCPI() const { return baseCPI_; }
         Period observationLag() const { return observationLag_; }
         const ext::shared_ptr<ZeroInflationIndex>& cpiIndex() const { return cpiIndex_; }
@@ -71,6 +82,10 @@ namespace QuantLib {
       protected:
         Frequency frequency_;
         DayCounter dayCounter_;
+        /*! \deprecated Do not use; meaningless for a bond.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("Do not use; meaningless for a bond.")]]
         bool growthOnly_;
         Real baseCPI_;
         Period observationLag_;

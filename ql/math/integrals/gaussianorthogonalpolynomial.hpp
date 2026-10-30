@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -55,6 +55,11 @@ namespace QuantLib {
         virtual Real beta(Size i)  const = 0;
         virtual Real w(Real x)     const = 0;
 
+        //! log(w(x)), kept finite past the range where w(x) itself underflows to zero.
+        /*! The default forwards to std::log(w(x)); override where w can underflow
+            while log(w) remains representable (e.g. Laguerre, Hermite). */
+        virtual Real logW(Real x) const;
+
         Real value(Size i, Real x) const;
         Real weightedValue(Size i, Real x) const;
     };
@@ -68,6 +73,7 @@ namespace QuantLib {
         Real alpha(Size i) const override;
         Real beta(Size i) const override;
         Real w(Real x) const override;
+        Real logW(Real x) const override;
 
       private:
         const Real s_;
@@ -82,6 +88,7 @@ namespace QuantLib {
         Real alpha(Size i) const override;
         Real beta(Size i) const override;
         Real w(Real x) const override;
+        Real logW(Real x) const override;
 
       private:
         const Real mu_;
@@ -133,6 +140,7 @@ namespace QuantLib {
         Real alpha(Size i) const override;
         Real beta(Size i) const override;
         Real w(Real x) const override;
+        Real logW(Real x) const override;
     };
 
 }

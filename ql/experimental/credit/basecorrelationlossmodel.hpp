@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -66,7 +66,7 @@ namespace QuantLib {
     Users should select their models according to this; choosing the copula or
     a random loss given default base model (or more exotic ones). \par
     Notice this is different to a bespoke base correlation loss (bespoke here 
-    refering to basket composition, not just attachment levels) ; where 
+    referring to basket composition, not just attachment levels) ; where 
     loss interpolation is on the expected loss value to match the two baskets. 
     Therefore the correlation surface should refer to the same basket intended
     to be priced. But this is left to the user and is not implemented in the 

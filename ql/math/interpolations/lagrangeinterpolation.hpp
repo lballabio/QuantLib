@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -34,21 +34,18 @@ namespace QuantLib {
     */
 
     namespace detail {
-        class UpdatedYInterpolation {
+        class UpdatedYInterpolation : public Interpolation::Impl {
           public:
-            virtual ~UpdatedYInterpolation() = default;
-            virtual Real value(const Array& yValues, Real x) const = 0;
+            virtual Real updatedValue(const Array& yValues, Real x) const = 0;
         };
 
         template <class I1, class I2>
-        class LagrangeInterpolationImpl
-            : public Interpolation::templateImpl<I1,I2>,
-              public UpdatedYInterpolation {
-
+        class LagrangeInterpolationImpl final
+            : public Interpolation::templateImpl<I1, I2, UpdatedYInterpolation> {
           public:
             LagrangeInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                       const I2& yBegin)
-            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
+            : Interpolation::templateImpl<I1, I2, UpdatedYInterpolation>(xBegin, xEnd, yBegin),
               n_(std::distance(xBegin, xEnd)),
               lambda_(n_) {
                 #if defined(QL_EXTRA_SAFETY_CHECKS)
@@ -108,11 +105,13 @@ namespace QuantLib {
                         "is not implemented");
             }
 
-            Real value(const Array& y, Real x) const override { return _value(y.begin(), x); }
+            Real updatedValue(const Array& y, Real x) const override {
+                return _value(y.begin(), x);
+            }
 
           private:
             template <class Iterator>
-            inline Real _value(const Iterator& yBegin, Real x) const {
+            Real _value(const Iterator& yBegin, Real x) const {
 
                 const Real eps = 10*QL_EPSILON*std::abs(x);
                 const auto iter = std::lower_bound(
@@ -151,8 +150,8 @@ namespace QuantLib {
 
         // interpolate with new set of y values for a new x value
         Real value(const Array& y, Real x) const {
-            return ext::dynamic_pointer_cast<detail::UpdatedYInterpolation>
-                (impl_)->value(y, x);
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
+            return static_cast<detail::UpdatedYInterpolation&>(*impl_).updatedValue(y, x);
         }
     };
 

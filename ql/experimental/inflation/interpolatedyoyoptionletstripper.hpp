@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -58,8 +58,7 @@ namespace QuantLib {
         //@}
 
       protected:
-        mutable std::vector<ext::shared_ptr<YoYOptionletVolatilitySurface> >
-        volCurves_;
+        mutable std::vector<ext::shared_ptr<YoYOptionletVolatilitySurface> > volCurves_;
 
         // used to set up the first point on each vol curve
         // using assumptions on unobserved vols at start
@@ -79,7 +78,7 @@ namespace QuantLib {
             Real slope_;
             Rate K_;
             Frequency frequency_;
-            bool indexIsInterpolated_;
+            bool indexIsInterpolated_ = false;
             std::vector<Time> tvec_;
             std::vector<Date> dvec_;
             mutable std::vector<Volatility> vvec_;
@@ -106,7 +105,7 @@ namespace QuantLib {
         ext::shared_ptr<YoYInflationCapFloorEngine> p,
         Real priceToMatch)
     : slope_(slope), K_(K), frequency_(anIndex->frequency()),
-      indexIsInterpolated_(anIndex->interpolated()), tvec_(std::vector<Time>(2)),
+       tvec_(std::vector<Time>(2)),
       dvec_(std::vector<Date>(2)), vvec_(std::vector<Volatility>(2)), priceToMatch_(priceToMatch),
       surf_(surf), p_(std::move(p)) {
 
@@ -114,7 +113,7 @@ namespace QuantLib {
         capfloor_ =
             MakeYoYInflationCapFloor(type, anIndex,
                                      (Size)std::floor(0.5+surf->timeFromReference(surf->minMaturity())),
-                                     surf->calendar(), lag)
+                                     surf->calendar(), lag, CPI::Flat)
             .withNominal(10000.0)
             .withStrike(K);
 
@@ -185,7 +184,7 @@ namespace QuantLib {
         RelinkableHandle<YoYInflationTermStructure> hYoY(
                                        YoYCapFloorTermPriceSurface_->YoYTS());
         ext::shared_ptr<YoYInflationIndex> anIndex(
-                                           new YYGenericCPI(frequency_, false,
+                                           new YYGenericCPI(frequency_,
                                                             false, lag_,
                                                             Currency(), hYoY));
 
@@ -238,7 +237,8 @@ namespace QuantLib {
                                                  lag_,
                                                  dc, cal,
                                                  fixingDays_,
-                                                 anIndex, K, nT, p_)));
+                                                 anIndex, CPI::Flat,
+                                                 K, nT, p_)));
 
                 ext::shared_ptr<ConstantYoYOptionletVolatility> yoyVolBLACK(
                           new ConstantYoYOptionletVolatility(found, settlementDays,

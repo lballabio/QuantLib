@@ -3,19 +3,20 @@ on:
   schedule:
     - cron: '0 0 * * 0'
   workflow_dispatch:
+  workflow_call:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-12, macos-13, macos-14]
+        os: [macos-15, macos-26]
         classes: [boost, std]
         include:
           - classes: std
-            configureflags: --enable-std-classes
+            configureflags: --enable-std-pointers --disable-std-any
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Setup
       env:
         HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1

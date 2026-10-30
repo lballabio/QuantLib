@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -408,7 +408,7 @@ namespace QuantLib {
         public:
             typedef Sample<std::vector<Real> > sample_type;
             explicit FactorSampler(const copulaType& copula, 
-                BigNatural seed = 0) 
+                                   BigNatural seed = 0)
             : sequenceGen_(copula.numFactors(), seed), // base case construction
               x_(std::vector<Real>(copula.numFactors()), 1.0),
               copula_(copula) { }
@@ -465,6 +465,7 @@ namespace QuantLib {
                     case LatentModelIntegrationType::Trapezoid:
                         {
                         std::vector<ext::shared_ptr<Integrator> > integrals;
+                        integrals.reserve(dimension);
                         for(Size i=0; i<dimension; i++)
                             integrals.push_back(
                             ext::make_shared<TrapezoidIntegral<Default> >(
@@ -511,7 +512,7 @@ namespace QuantLib {
         */
         explicit LatentModel(
             const std::vector<std::vector<Real> >& factorsWeights, 
-            const typename copulaType::initTraits& ini = 
+            const typename copulaType::initTraits& ini =
                 typename copulaType::initTraits());
         /*! Constructs a LM with an arbitrary number of latent variables 
           depending only on one random factor but contributing to each latent
@@ -522,8 +523,9 @@ namespace QuantLib {
               revised, possibly drop the static policy and create a policy 
               member in LatentModel)
         */
-        explicit LatentModel(const std::vector<Real>& factorsWeight,
-            const typename copulaType::initTraits& ini = 
+        explicit LatentModel(
+            const std::vector<Real>& factorsWeight,
+            const typename copulaType::initTraits& ini =
                 typename copulaType::initTraits());
         /*! Constructs a LM with an arbitrary number of latent variables 
           depending only on one random factor with the same weight for all
@@ -536,9 +538,11 @@ namespace QuantLib {
             possibly drop the static policy and create a policy member
             in LatentModel)
         */
-        explicit LatentModel(Real correlSqr,
-                             Size nVariables,
-                             const typename copulaType::initTraits& ini = typename copulaType::initTraits());
+        explicit LatentModel(
+            Real correlSqr,
+            Size nVariables,
+            const typename copulaType::initTraits& ini =
+                typename copulaType::initTraits());
         /*! Constructs a LM with an arbitrary number of latent variables 
           depending only on one random factor with the same weight for all
           latent variables. The weight is observed and this constructor is
@@ -551,9 +555,10 @@ namespace QuantLib {
             possibly drop the static policy and create a policy member
             in LatentModel)
         */
-        explicit LatentModel(const Handle<Quote>& singleFactorCorrel,
+        explicit LatentModel(
+            const Handle<Quote>& singleFactorCorrel,
             Size nVariables,
-            const typename copulaType::initTraits& ini = 
+            const typename copulaType::initTraits& ini =
                 typename copulaType::initTraits());
 
         //! Provides values of the factors \f$ a_{i,k} \f$ 

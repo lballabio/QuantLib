@@ -16,7 +16,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -32,7 +32,10 @@
 #include <ql/time/asx.hpp>
 #include <ql/utilities/dataparsers.hpp>
 
+#include <boost/date_time/gregorian/gregorian.hpp>
+
 #include <sstream>
+#include <type_traits>
 #include <unordered_set>
 
 using namespace QuantLib;
@@ -61,7 +64,7 @@ BOOST_AUTO_TEST_CASE(ecbIsECBcode) {
 BOOST_AUTO_TEST_CASE(ecbDates) {
     BOOST_TEST_MESSAGE("Testing ECB dates...");
 
-    const std::set<Date> knownDates = ECB::knownDates();
+    const std::set<Date>& knownDates = ECB::knownDates();
     BOOST_TEST(!knownDates.empty(),
                    "empty ECB date vector");
 
@@ -542,6 +545,50 @@ BOOST_AUTO_TEST_CASE(canHash) {
     if (set.count(start_date) == 0) {
         BOOST_FAIL("Expected to find date " << start_date << " in unordered_set\n");
     }
+}
+
+BOOST_AUTO_TEST_CASE(nullDate) {
+    BOOST_TEST_MESSAGE("Testing null date for working serial number and hash...");
+
+    Date null_date = Date();
+
+    static_assert(std::is_nothrow_default_constructible<Date>::value,
+                  "Date default construction must be noexcept");
+
+    BOOST_CHECK_EQUAL(null_date.serialNumber(), 0);
+#ifdef QL_HIGH_RESOLUTION_DATE
+    BOOST_CHECK(null_date.dateTime() ==
+                boost::posix_time::ptime(boost::gregorian::date(1899, 12, 30)));
+#endif
+
+    std::hash<Date> hasher;
+
+    BOOST_CHECK_NO_THROW(null_date.serialNumber());
+    BOOST_CHECK_NO_THROW(hasher(null_date));
+}
+
+BOOST_AUTO_TEST_CASE(todaysDate) {
+    BOOST_TEST_MESSAGE("Testing today's date...");
+
+    auto localDay = [] {
+        const boost::gregorian::date d = boost::gregorian::day_clock::local_day();
+        return Date(Day(d.day()), Month(static_cast<Integer>(d.month())), Year(d.year()));
+    };
+
+    Date today = Date::todaysDate();
+
+    BOOST_CHECK_MESSAGE(today != Date(), "Date::todaysDate() returned a null date");
+
+    // cross-check against an independent implementation
+    Date expected = localDay();
+    if (today != expected) {
+        // the two calls straddled midnight; it has passed now, so retry
+        today = Date::todaysDate();
+        expected = localDay();
+    }
+    BOOST_CHECK_MESSAGE(today == expected,
+                        "Date::todaysDate() returned " << today
+                        << ", expected " << expected);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

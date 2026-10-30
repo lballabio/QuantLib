@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -40,7 +40,14 @@
 #undef VERSION
 #endif
 
+#if BOOST_VERSION >= 108800
+#include <boost/process/v1/system.hpp>
+#include <boost/process/v1/args.hpp>
+namespace bp = boost::process::v1;
+#else
 #include <boost/process.hpp>
+namespace bp = boost::process;
+#endif
 #include <boost/algorithm/string.hpp>
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
@@ -56,14 +63,12 @@
 #include <fstream>
 #include <chrono>
 #include <string>
-#include <cstring>
 #include <thread>
 #include <limits>
 
 using boost::unit_test::test_results;
 using namespace boost::interprocess;
 using namespace boost::unit_test_framework;
-namespace bp = boost::process;
 
 
 namespace {
@@ -428,16 +433,19 @@ int main( int argc, char* argv[] )
             output_logstream(log_stream(), oldBuf, logBuf);
             log_stream().rdbuf(oldBuf);
 
-            RuntimeLog log;
-            log.testCaseName[sizeof(log.testCaseName)-1] = '\0';
+            // zero-initialized: the whole struct goes over the queue,
+            // padding and unused buffer tail included.
+            RuntimeLog log = {};
 
             message_queue lq(open_only, testRuntimeLogName);
             for (run_time_list_type::const_iterator iter = runTimeLogs.begin();
                 iter != runTimeLogs.end(); ++iter) {
                 log.time = iter->second;
 
-                std::strncpy(log.testCaseName, iter->first.c_str(),
-                    sizeof(log.testCaseName)-1);
+                const std::string& name = iter->first;
+                const std::string::size_type n =
+                    name.copy(log.testCaseName, sizeof(log.testCaseName)-1);
+                log.testCaseName[n] = '\0';
 
                 lq.send(&log, sizeof(RuntimeLog), 0);
             }

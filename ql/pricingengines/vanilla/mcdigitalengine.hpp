@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -88,7 +88,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCDigitalEngine {
       public:
-        MakeMCDigitalEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
+        explicit MakeMCDigitalEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         // named parameters
         MakeMCDigitalEngine& withSteps(Size steps);
         MakeMCDigitalEngine& withStepsPerYear(Size steps);
@@ -99,6 +99,8 @@ namespace QuantLib {
         MakeMCDigitalEngine& withSeed(BigNatural seed);
         MakeMCDigitalEngine& withAntitheticVariate(bool b = true);
         // conversion to pricing engine
+        // TODO: Review whether this conversion should remain implicit.
+        // NOLINTNEXTLINE(google-explicit-constructor)
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
@@ -176,13 +178,11 @@ namespace QuantLib {
         PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                             PseudoRandom::urng_type(76));
 
-        return ext::shared_ptr<
-                        typename MCDigitalEngine<RNG,S>::path_pricer_type>(
-          new DigitalPathPricer(payoff,
+        return ext::make_shared<DigitalPathPricer>(payoff,
                                 exercise,
                                 process->riskFreeRate(),
                                 process,
-                                sequenceGen));
+                                sequenceGen);
     }
 
 
@@ -263,15 +263,14 @@ namespace QuantLib {
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return ext::shared_ptr<PricingEngine>(new
-            MCDigitalEngine<RNG,S>(process_,
+        return ext::make_shared<MCDigitalEngine<RNG,S>>(process_,
                                    steps_,
                                    stepsPerYear_,
                                    brownianBridge_,
                                    antithetic_,
                                    samples_, tolerance_,
                                    maxSamples_,
-                                   seed_));
+                                   seed_);
     }
 
 }

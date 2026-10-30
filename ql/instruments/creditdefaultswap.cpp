@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -50,10 +50,10 @@ namespace QuantLib {
                                          const bool rebatesAccrual,
                                          const Date& tradeDate,
                                          Natural cashSettlementDays)
-    : side_(side), notional_(notional), upfront_(ext::nullopt), runningSpread_(spread),
+    : side_(side), notional_(notional), upfront_(std::nullopt), runningSpread_(spread),
       settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
       claim_(std::move(claim)),
-      protectionStart_(protectionStart == Null<Date>() ? schedule[0] : protectionStart),
+      protectionStart_(protectionStart == Date() ? schedule[0] : protectionStart),
       tradeDate_(tradeDate), cashSettlementDays_(cashSettlementDays) {
 
         init(schedule, convention, dayCounter, lastPeriodDayCounter, rebatesAccrual);
@@ -78,7 +78,7 @@ namespace QuantLib {
     : side_(side), notional_(notional), upfront_(upfront), runningSpread_(runningSpread),
       settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
       claim_(std::move(claim)),
-      protectionStart_(protectionStart == Null<Date>() ? schedule[0] : protectionStart),
+      protectionStart_(protectionStart == Date() ? schedule[0] : protectionStart),
       tradeDate_(tradeDate), cashSettlementDays_(cashSettlementDays) {
 
         init(schedule, convention, dayCounter, lastPeriodDayCounter, rebatesAccrual, upfrontDate);
@@ -187,7 +187,7 @@ namespace QuantLib {
         return runningSpread_;
     }
 
-    ext::optional<Rate> CreditDefaultSwap::upfront() const {
+    std::optional<Rate> CreditDefaultSwap::upfront() const {
         return upfront_;
     }
 
@@ -361,7 +361,7 @@ namespace QuantLib {
           case ISDA:
             engine = ext::make_shared<IsdaCdsEngine>(
                 probability, recoveryRate, discountCurve,
-                ext::nullopt,
+                std::nullopt,
                 IsdaCdsEngine::Taylor,
                 IsdaCdsEngine::HalfDayBias,
                 IsdaCdsEngine::Piecewise);
@@ -402,7 +402,7 @@ namespace QuantLib {
           case ISDA:
             engine = ext::make_shared<IsdaCdsEngine>(
                 probability, conventionalRecovery, discountCurve,
-                ext::nullopt,
+                std::nullopt,
                 IsdaCdsEngine::Taylor,
                 IsdaCdsEngine::HalfDayBias,
                 IsdaCdsEngine::Piecewise);
@@ -428,7 +428,7 @@ namespace QuantLib {
     }
 
     const Date& CreditDefaultSwap::protectionEndDate() const {
-        return ext::dynamic_pointer_cast<Coupon>(leg_.back())
+        return coupon_cast(leg_.back())
             ->accrualEndDate();
     }
 
@@ -460,10 +460,8 @@ namespace QuantLib {
         QL_REQUIRE(!leg.empty(), "coupons not set");
         QL_REQUIRE(upfrontPayment, "upfront payment not set");
         QL_REQUIRE(claim, "claim not set");
-        QL_REQUIRE(protectionStart != Null<Date>(),
-                   "protection start date not set");
-        QL_REQUIRE(maturity != Null<Date>(),
-                   "maturity date not set");
+        QL_REQUIRE(protectionStart != Date(), "protection start date not set");
+        QL_REQUIRE(maturity != Date(), "maturity date not set");
     }
 
     void CreditDefaultSwap::results::reset() {
@@ -494,7 +492,7 @@ namespace QuantLib {
         if (rule == DateGeneration::CDS2015 && (anchorDate == Date(20, Dec, anchorDate.year()) ||
             anchorDate == Date(20, Jun, anchorDate.year()))) {
             if (tenor.length() == 0) {
-                return Null<Date>();
+                return Date();
             } else {
                 anchorDate -= 3 * Months;
             }

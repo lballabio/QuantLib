@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -53,6 +53,7 @@ namespace QuantLib {
 
             // linear comb factors ajusted for the variance renormalization:
             std::vector<Real> normFactorWeights;
+            normFactorWeights.reserve(factorWeight.size());
             for (Size iFactor = 0; iFactor < factorWeight.size(); iFactor++)
                 normFactorWeights.push_back(factorWeight[iFactor] * varianceFactors_[iFactor]);
             // idiosincratic term, all Z factors are assumed identical.

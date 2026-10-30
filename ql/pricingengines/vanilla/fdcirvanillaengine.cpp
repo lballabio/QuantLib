@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -67,27 +67,24 @@ namespace QuantLib {
 
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non-striked payoff given");
         const Time maturity = bsProcess_->time(arguments_.exercise->lastDate());
 
         // The short rate mesher
-        const ext::shared_ptr<Fdm1dMesher> shortRateMesher(
-            new FdmSimpleProcess1dMesher(rGrid_, cirProcess_, maturity, tGrid_));
+        const auto shortRateMesher = ext::make_shared<FdmSimpleProcess1dMesher>(rGrid_, cirProcess_, maturity, tGrid_);
 
         // The equity mesher
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(
+        const auto equityMesher = ext::make_shared<FdmBlackScholesMesher>(
                 xGrid_, bsProcess_, maturity, payoff->strike(),
                 Null<Real>(), Null<Real>(), 0.0001, 1.5,
                 std::pair<Real, Real>(payoff->strike(), 0.1),
                 dividends_, quantoHelper_,
-                0.0));
+                0.0);
         
-        const ext::shared_ptr<FdmMesher> mesher(
-            new FdmMesherComposite(equityMesher, shortRateMesher));
+        const auto mesher = ext::make_shared<FdmMesherComposite>(equityMesher, shortRateMesher);
 
         // Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-                          new FdmLogInnerValue(arguments_.payoff, mesher, 0));
+        const auto calculator = ext::make_shared<FdmLogInnerValue>(arguments_.payoff, mesher, 0);
 
         // Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions = 
@@ -111,12 +108,13 @@ namespace QuantLib {
     void FdCIRVanillaEngine::calculate() const {
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non-striked payoff given");
 
-        ext::shared_ptr<FdmCIRSolver> solver(new FdmCIRSolver(
+        auto solver = ext::make_shared<FdmCIRSolver>(
                     Handle<CoxIngersollRossProcess>(cirProcess_),
                     Handle<GeneralizedBlackScholesProcess>(bsProcess_),
                     getSolverDesc(1.5), schemeDesc_,
-                    rho_, payoff->strike()));
+                    rho_, payoff->strike());
 
         const Real r0   = cirProcess_->x0();
         const Real spot = bsProcess_->x0();

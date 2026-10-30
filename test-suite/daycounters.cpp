@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -39,6 +39,7 @@
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/math/comparison.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/time/calendars/china.hpp>
 #include <ql/time/daycounters/yearfractiontodate.hpp>
 
@@ -764,23 +765,41 @@ BOOST_AUTO_TEST_CASE(testThirty365) {
 
     BOOST_TEST_MESSAGE("Testing 30/365 day counter...");
 
-    Date d1(17,June,2011), d2(30,December,2012);
+    struct {
+        Date startDate;
+        Date endDate;
+        BigInteger expected;
+    } testCases[] = {
+        {Date(17, June, 2011), Date(30, December, 2012), 553},
+        // month end to month end
+        {Date(31, March, 2025), Date(30, April, 2025), 30},
+        // month end to 6 month ends later
+        {Date(30, September, 2024), Date(31, March, 2025), 180},
+        // no accrual beyond the 30th
+        {Date(30, March, 2025), Date(31, March, 2025), 0}
+    };
+
     DayCounter dayCounter = Thirty365();
+    for (const auto& testCase : testCases) {
+        Date d1 = testCase.startDate;
+        Date d2 = testCase.endDate;
+        BigInteger expectedDays = testCase.expected;
 
-    BigInteger days = dayCounter.dayCount(d1,d2);
-    if (days != 553) {
-        BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
-                   << "    calculated: " << days << "\n"
-                   << "    expected:   " << 553);
-    }
+        BigInteger days = dayCounter.dayCount(d1, d2);
+        if (days != expectedDays) {
+            BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
+                       << "    calculated: " << days << "\n"
+                       << "    expected:   " << expectedDays);
+        }
 
-    Time t = dayCounter.yearFraction(d1,d2);
-    Time expected = 553/365.0;
-    if (std::fabs(t-expected) > 1.0e-12) {
-        BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
-                   << std::setprecision(12)
-                   << "    calculated: " << t << "\n"
-                   << "    expected:   " << expected);
+        Time t = dayCounter.yearFraction(d1, d2);
+        Time expectedTime = expectedDays / 365.0;
+        if (std::fabs(t - expectedTime) > 1.0e-12) {
+            BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
+                       << std::setprecision(12)
+                       << "    calculated: " << t << "\n"
+                       << "    expected:   " << expectedTime);
+        }
     }
 }
 
@@ -898,6 +917,60 @@ BOOST_AUTO_TEST_CASE(testThirty360_EurobondBasis) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testThirty360_USA) {
+
+    BOOST_TEST_MESSAGE("Testing 30/360 day counter (USA)...");
+
+    // See https://en.wikipedia.org/wiki/Day_count_convention#30/360_US
+
+    DayCounter dayCounter = Thirty360(Thirty360::USA);
+
+    Thirty360Case data[] = {
+        // Example 1: End dates do not involve the last day of February
+        {Date(20, August, 2006),    Date(20, February, 2007), 180},
+        {Date(20, February, 2007),  Date(20, August, 2007),   180},
+        {Date(20, August, 2007),    Date(20, February, 2008), 180},
+        {Date(20, February, 2008),  Date(20, August, 2008),   180},
+        {Date(20, August, 2008),    Date(20, February, 2009), 180},
+        {Date(20, February, 2009),  Date(20, August, 2009),   180},
+
+        // Example 2: End dates include some end-February dates
+        {Date(31, August, 2006),    Date(28, February, 2007), 178},
+        {Date(28, February, 2007),  Date(31, August, 2007),   180},
+        {Date(31, August, 2007),    Date(29, February, 2008), 179},
+        {Date(29, February, 2008),  Date(31, August, 2008),   180},
+        {Date(31, August, 2008),    Date(28, February, 2009), 178},
+        {Date(28, February, 2009),  Date(31, August, 2009),   180},
+
+        // Example 3: Miscellaneous calculations
+        {Date(31, January, 2006),   Date(28, February, 2006),  28},
+        {Date(30, January, 2006),   Date(28, February, 2006),  28},
+        {Date(28, February, 2006),  Date(3, March, 2006),       3},
+        {Date(14, February, 2006),  Date(28, February, 2006),  14},
+        {Date(30, September, 2006), Date(31, October, 2006),   30},
+        {Date(31, October, 2006),   Date(28, November, 2006),  28},
+        {Date(31, August, 2007),    Date(28, February, 2008), 178},
+        {Date(28, February, 2008),  Date(28, August, 2008),   180},
+        {Date(28, February, 2008),  Date(30, August, 2008),   182},
+        {Date(28, February, 2008),  Date(31, August, 2008),   183},
+        {Date(26, February, 2007),  Date(28, February, 2008), 362},
+        {Date(26, February, 2007),  Date(29, February, 2008), 363},
+        {Date(29, February, 2008),  Date(28, February, 2009), 360},
+        {Date(28, February, 2008),  Date(30, March, 2008),     32},
+        {Date(28, February, 2008),  Date(31, March, 2008),     33}
+    };
+
+    for (auto x : data) {
+        Date::serial_type calculated = dayCounter.dayCount(x.start, x.end);
+        if (calculated != x.expected) {
+                BOOST_ERROR("from " << x.start
+                            << " to " << x.end << ":\n"
+                            << "    calculated: " << calculated << "\n"
+                            << "    expected:   " << x.expected);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testThirty360_ISDA) {
 
     BOOST_TEST_MESSAGE("Testing 30/360 day counter (ISDA)...");
@@ -995,25 +1068,28 @@ BOOST_AUTO_TEST_CASE(testActual365_Canadian) {
 
     Actual365Fixed dayCounter(Actual365Fixed::Canadian);
 
-    try {
-        // no reference period
+    // no reference period
+    BOOST_CHECK_THROW(
         dayCounter.yearFraction(Date(10, September, 2018),
-                                Date(10, September, 2019));
-        BOOST_ERROR("Invalid call to yearFraction failed to throw");
-    } catch (Error&) {
-        ;  // expected
-    }
+                                Date(10, September, 2019)),
+        Error);
 
-    try {
-        // reference period shorter than a month
+    // reference period shorter than a month
+    BOOST_CHECK_THROW(
         dayCounter.yearFraction(Date(10, September, 2018),
                                 Date(12, September, 2018),
                                 Date(10, September, 2018),
-                                Date(15, September, 2018));
-        BOOST_ERROR("Invalid call to yearFraction failed to throw");
-    } catch (Error&) {
-        ;  // expected
-    }
+                                Date(15, September, 2018)),
+        Error);
+
+    // reference period longer than a year
+    BOOST_CHECK_THROW(
+        dayCounter.yearFraction(Date(8, January, 2025),
+                                Date(8, January, 2027),
+                                Date(8, January, 2025),
+                                Date(8, January, 2027)),
+        Error);
+
 }
 
 #ifdef QL_HIGH_RESOLUTION_DATE
@@ -1293,7 +1369,7 @@ BOOST_AUTO_TEST_CASE(testYearFraction2DateRounding) {
     BOOST_TEST_MESSAGE("Testing YearFractionToDate rounding to closer date...");
 
     const std::vector<DayCounter> dayCounters
-        = {Thirty360(Thirty360::USA), Actual360()};
+        = {Thirty360(Thirty360::USA), Actual360(true)};
     const Date d1(1, February, 2023), d2(17, February, 2124);
 
     for (const DayCounter& dc : dayCounters) {
@@ -1307,6 +1383,65 @@ BOOST_AUTO_TEST_CASE(testYearFraction2DateRounding) {
         }
     }
 }
+
+
+#ifdef QL_HIGH_RESOLUTION_DATE
+BOOST_AUTO_TEST_CASE(testYearFractionToDateForLinearDayCounter) {
+    BOOST_TEST_MESSAGE("Testing YearFractionToDate for linear day counter...");
+
+    const MersenneTwisterUniformRng rng(12345UL);
+
+    const std::vector<DayCounter> dcs = {
+        Actual365Fixed(), Actual366(), Actual364(), Actual36525(), Actual360(),
+        Thirty365()
+    };
+
+    const auto rngDate = [&rng]() -> Date {
+        const Integer year = 1901 + rng.nextInt32() % 298;
+        const Month month = static_cast<Month>(1 + rng.nextInt32() % 12);
+        const Day day = 1 + rng.nextInt32() % (Date::endOfMonth(Date(1, month, year)).dayOfMonth());
+        return Date(
+            day, month, year,
+            rng.nextInt32() % 24, rng.nextInt32() % 60, rng.nextInt32() % 60,
+            rng.nextInt32() % 1000, rng.nextInt32() % 1000
+        );
+    };
+
+    for (Size i=0; i < 1000; ++i)
+        for (const auto& dc: dcs) {
+            const Date d1 = rngDate();
+            const Date d2 = rngDate();
+
+            const Time t = dc.yearFraction(d1, d2);
+            const Date calculated = yearFractionToDate(dc, d1, t);
+
+            if (dc.name() == Thirty365().name() || dc.name() == Actual366(true).name()) {
+                BOOST_CHECK_EQUAL(d1.fractionOfDay(), calculated.fractionOfDay());
+                const Time db = std::abs(dc.yearFraction(d2, calculated));
+                QL_CHECK_SMALL(db, 10*QL_EPSILON);
+            }
+            else {
+                const boost::posix_time::time_duration td
+                    = d2.dateTime() - calculated.dateTime();
+                const long diff = long(std::abs(td.total_microseconds()));
+                // rounding errors: 1us plus 1us every 10 years
+                const long tol = long(1 + 0.1*std::abs(t));
+
+                if (diff > tol) {
+                    BOOST_FAIL("\nFailed to reproduce date for linear day counter:\n"
+                        << "\n first date     : " << io::iso_datetime(d1)
+                        << "\n second date    : " << io::iso_datetime(d2)
+                        << "\n calculated date: " << io::iso_datetime(calculated)
+                        << "\n diff (in us)   : " << diff
+                        << "\n tol (in us)    : " << tol
+                        << "\n day counter    : " << dc.name()
+                    );
+                }
+            }
+        }
+}
+
+#endif
 
 BOOST_AUTO_TEST_SUITE_END()
 

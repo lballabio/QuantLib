@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -663,9 +663,7 @@ BOOST_AUTO_TEST_CASE(testOptionLetsDelta) {
     ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
                                                             baseCurveHandle,
                                                             Handle<Quote>(spread),
-                                                            Continuous,
-                                                            Annual,
-                                                            Actual360()));                                               
+                                                            Continuous));
     vars.termStructure.linkTo(spreadCurve);
     Date startDate = vars.termStructure->referenceDate();
     Leg leg = vars.makeLeg(startDate,20);  
@@ -784,9 +782,7 @@ BOOST_AUTO_TEST_CASE(testBachelierOptionLetsDelta) {
     ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
                                                             baseCurveHandle,
                                                             Handle<Quote>(spread),
-                                                            Continuous,
-                                                            Annual,
-                                                            Actual360()));                                               
+                                                            Continuous));
     vars.termStructure.linkTo(spreadCurve);
     Date startDate = vars.termStructure->referenceDate();
     Leg leg = vars.makeLeg(startDate,20);  
@@ -887,6 +883,54 @@ BOOST_AUTO_TEST_CASE(testBachelierOptionLetsDelta) {
                 << "    resulting ratio: " << floorletFDDelta[n] / floorletAnalyticDelta[n]);    
     }
 
+}
+
+BOOST_AUTO_TEST_CASE(testOptionLetsDeltaAtZeroVolatility) {
+
+    BOOST_TEST_MESSAGE("Testing caplet/floorlet delta coefficients at zero volatility...");
+
+    CommonVars vars;
+
+    Date today = Settings::instance().evaluationDate();
+    Leg leg = vars.makeLeg(vars.settlement, 10);
+
+    // the forwards are close to 5%, so each optionlet is clearly in or out of the money
+    Rate strikes[] = {0.03, 0.07};
+    CapFloor::Type types[] = {CapFloor::Cap, CapFloor::Floor};
+    bool lognormal[] = {true, false};
+
+    for (bool isLogNormal : lognormal) {
+        for (CapFloor::Type type : types) {
+            for (Rate strike : strikes) {
+                auto capFloor = vars.makeCapFloor(type, leg, strike, 0.0, isLogNormal);
+                auto deltas = capFloor->result<std::vector<Real>>("optionletsDelta");
+                auto forwards = capFloor->result<std::vector<Real>>("optionletsAtmForward");
+
+                for (Size n = 0; n < leg.size(); ++n) {
+                    auto coupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(leg[n]);
+                    // optionlets already fixed have no delta
+                    Real expected = 0.0;
+                    if (coupon->fixingDate() > today) {
+                        if (type == CapFloor::Cap)
+                            expected = forwards[n] > strike ? 1.0 : 0.0;
+                        else
+                            expected = forwards[n] < strike ? -1.0 : 0.0;
+                    }
+                    if (std::fabs(deltas[n] - expected) > 1.0e-12)
+                        BOOST_ERROR(
+                            "wrong optionlet delta at zero volatility:\n"
+                            << "    engine:     " << (isLogNormal ? "Black" : "Bachelier") << "\n"
+                            << "    type:       " << typeToString(type) << "\n"
+                            << "    optionlet:  " << n << "\n"
+                            << std::setprecision(12)
+                            << "    strike:     " << io::rate(strike) << "\n"
+                            << "    forward:    " << io::rate(forwards[n]) << "\n"
+                            << "    calculated: " << deltas[n] << "\n"
+                            << "    expected:   " << expected);
+                }
+            }
+        }
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

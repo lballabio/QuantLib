@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -194,12 +194,12 @@ namespace QuantLib {
 
         if (fairRate_ == Null<Rate>()) {
             // calculate it from other results
-            if (legBPS_[0] != Null<Real>())
+            if (legBPS_[0] != Null<Real>() && legBPS_[0] != 0.0)
                 fairRate_ = fixedRate_ - NPV_/(legBPS_[0]/basisPoint);
         }
         if (fairSpread_ == Null<Spread>()) {
             // ditto
-            if (legBPS_[1] != Null<Real>())
+            if (legBPS_[1] != Null<Real>() && legBPS_[1] != 0.0)
                 fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
         }
 

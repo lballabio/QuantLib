@@ -10,9 +10,11 @@ this_include_HEADERS = \
     bibor.hpp \
     bkbm.hpp \
     cadlibor.hpp \
+    cdi.hpp \
     cdor.hpp \
     chflibor.hpp \
     corra.hpp \
+    custom.hpp \
     destr.hpp \
     dkklibor.hpp \
     eonia.hpp \
@@ -23,37 +25,48 @@ this_include_HEADERS = \
     gbplibor.hpp \
     jibar.hpp \
     jpylibor.hpp \
+    kofr.hpp \
     libor.hpp \
     mosprime.hpp \
+    nibor.hpp \
     nzdlibor.hpp \
     nzocr.hpp \
     pribor.hpp \
     robor.hpp \
+    saron.hpp \
     seklibor.hpp \
     shibor.hpp \
+    shir.hpp \
     sofr.hpp \
     sonia.hpp \
     swestr.hpp \
     tibor.hpp \
-    tona.hpp \
+    tonar.hpp \
     thbfix.hpp \
     trlibor.hpp \
     usdlibor.hpp \
     wibor.hpp \
+    zaronia.hpp \
     zibor.hpp
 
 cpp_files = \
     bibor.cpp \
+    cdi.cpp \
     corra.cpp \
+    custom.cpp \
     eonia.cpp \
     estr.cpp \
     euribor.cpp \
     eurlibor.cpp \
     fedfunds.cpp \
+    kofr.cpp \
     libor.cpp \
+    saron.cpp \
     shibor.cpp \
+    shir.cpp \
     sofr.cpp \
-    sonia.cpp
+    sonia.cpp \
+    zaronia.cpp
 
 
 if UNITY_BUILD

@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -120,6 +120,10 @@ namespace QuantLib {
             is to use the Gray code since this allows a faster sequence generation. The Burley2020SobolRsg relies on an
             underlying SobolRsg not using the Gray code on the other hand due to its specific way of constructing the
             integer sequence.
+
+            If the given seed is 0, a random seed will be chosen based on clock(). The seed
+            only affects the direction integers beyond those tabulated for the chosen
+            DirectionIntegers, so lower dimensionalities give the same sequence for any seed.
 
             \pre dimensionality must be <= PPMT_MAX_DIM
          */

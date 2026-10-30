@@ -14,8 +14,11 @@ QL_TEST_SRCS = \
 	basketoption.cpp \
 	batesmodel.cpp \
 	bermudanswaption.cpp \
+	bacheliercalculator.cpp \
+	blackcalculator.cpp \
 	blackdeltacalculator.cpp \
 	blackformula.cpp \
+	blackvolsurfacedelta.cpp \
 	bondforward.cpp \
 	bonds.cpp \
 	brownianbridge.cpp \
@@ -37,9 +40,13 @@ QL_TEST_SRCS = \
 	compiledboostversion.cpp \
 	compoundoption.cpp \
 	convertiblebonds.cpp \
+	copulas.cpp \
 	covariance.cpp \
 	creditdefaultswap.cpp \
-	creditriskplus.cpp \
+	constnotionalcrosscurrencybasisswap.cpp \
+	constnotionalcrosscurrencyfixedvsfloatingswap.cpp \
+	mtmcrosscurrencybasisswap.cpp \
+	constnotionalcrosscurrencyswap.cpp \
 	crosscurrencyratehelpers.cpp \
 	currency.cpp \
 	curvestates.cpp \
@@ -57,6 +64,7 @@ QL_TEST_SRCS = \
 	equitytotalreturnswap.cpp \
 	europeanoption.cpp \
 	everestoption.cpp \
+	extendedblackvariancesurface.cpp \
 	exchangerate.cpp \
 	extendedtrees.cpp \
 	extensibleoptions.cpp \
@@ -67,9 +75,12 @@ QL_TEST_SRCS = \
 	fdcev.cpp \
 	fdsabr.cpp \
 	fittedbonddiscountcurve.cpp \
+	floatfloatswap.cpp \
 	forwardoption.cpp \
 	forwardrateagreement.cpp \
 	functions.cpp \
+	fxforward.cpp \
+	g2process.cpp \
 	garch.cpp \
 	gaussianquadratures.cpp \
 	gjrgarchmodel.cpp \
@@ -89,6 +100,7 @@ QL_TEST_SRCS = \
 	instruments.cpp \
 	integrals.cpp \
 	interestrates.cpp \
+	interpolatedsmilesection.cpp \
 	interpolations.cpp \
 	jumpdiffusion.cpp \
 	lazyobject.cpp \
@@ -109,6 +121,8 @@ QL_TEST_SRCS = \
 	mclongstaffschwartzengine.cpp \
 	mersennetwister.cpp \
 	money.cpp \
+	multipleresetscoupons.cpp \
+	multipleresetsswap.cpp \
 	noarbsabr.cpp \
 	normalclvmodel.cpp \
 	nthorderderivativeop.cpp \
@@ -120,11 +134,14 @@ QL_TEST_SRCS = \
 	optimizers.cpp \
 	optionletstripper.cpp \
 	overnightindexedcoupon.cpp \
+	overnightindexedfundingratehelper.cpp \
 	overnightindexedswap.cpp \
 	pagodaoption.cpp \
 	partialtimebarrieroption.cpp \
 	pathgenerator.cpp \
 	period.cpp \
+	perpetualfutures.cpp \
+	piecewiseblackvariancesurface.cpp \
 	piecewiseyieldcurve.cpp \
 	piecewisezerospreadedtermstructure.cpp \
 	preconditions.cpp \
@@ -136,17 +153,16 @@ QL_TEST_SRCS = \
 	riskneutraldensitycalculator.cpp \
 	riskstats.cpp \
 	rngtraits.cpp \
+	roughhestonmodel.cpp \
 	rounding.cpp \
-	sampledcurve.cpp \
 	schedule.cpp \
 	settings.cpp \
 	shortratemodels.cpp \
 	sofrfutures.cpp \
+	softbarrieroption.cpp \
 	solvers.cpp \
-	spreadoption.cpp \
 	squarerootclvmodel.cpp \
 	stats.cpp \
-	subperiodcoupons.cpp \
 	svivolatility.cpp \
 	swap.cpp \
 	swapforwardmappings.cpp \
@@ -157,9 +173,9 @@ QL_TEST_SRCS = \
 	termstructures.cpp \
 	timegrid.cpp \
 	timeseries.cpp \
-	transformedgrid.cpp \
 	tqreigendecomposition.cpp \
 	tracing.cpp \
+	trinomialtree.cpp \
 	twoassetbarrieroption.cpp \
 	twoassetcorrelationoption.cpp \
 	ultimateforwardtermstructure.cpp \

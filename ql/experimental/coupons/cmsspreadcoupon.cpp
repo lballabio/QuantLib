@@ -8,7 +8,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
 
  This program is distributed in the hope that it will be useful, but
@@ -29,11 +29,12 @@ namespace QuantLib {
         const ext::shared_ptr<SwapSpreadIndex> &index, Real gearing,
         Spread spread, const Date &refPeriodStart,
         const Date &refPeriodEnd,
-        const DayCounter &dayCounter, bool isInArrears, const Date &exCouponDate)
+        const DayCounter &dayCounter, bool isInArrears, const Date &exCouponDate,
+        BusinessDayConvention fixingConvention)
         : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                              fixingDays, index, gearing, spread,
                              refPeriodStart, refPeriodEnd, dayCounter,
-                             isInArrears, exCouponDate),
+                             isInArrears, exCouponDate, fixingConvention),
           index_(index) {}
 
     void CmsSpreadCoupon::accept(AcyclicVisitor &v) {

@@ -15,7 +15,7 @@ QuantLib is free software: you can redistribute it and/or modify it
 under the terms of the QuantLib license.  You should have received a
 copy of the license along with this program; if not, please email
 <quantlib-dev@lists.sf.net>. The license is also available online at
-<http://quantlib.org/license.shtml>.
+<https://www.quantlib.org/license.shtml>.
 
 This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -34,6 +34,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
 #include <set>
+#include <map>
 
 #if !defined(QL_USE_STD_SHARED_PTR) && BOOST_VERSION < 107400
 
@@ -64,7 +65,7 @@ namespace QuantLib {
         friend class ObservableSettings;
       public:
         // constructors, assignment, destructor
-        Observable();
+        Observable() = default;
         Observable(const Observable&);
         Observable& operator=(const Observable&);
         // delete the move operations because the semantics are not yet clear
@@ -96,11 +97,12 @@ namespace QuantLib {
 
         bool updatesEnabled() const { return updatesEnabled_; }
         bool updatesDeferred() const { return updatesDeferred_; }
+        bool runningDeferredUpdates() const { return runningDeferredUpdates_; }
 
       private:
         ObservableSettings() = default;
 
-        typedef std::set<Observer*> set_type;
+        typedef std::map<Observer*, bool> set_type;
         typedef set_type::iterator iterator;
 
         void registerDeferredObservers(const Observable::set_type& observers);
@@ -109,6 +111,7 @@ namespace QuantLib {
         set_type deferredObservers_;
 
         bool updatesEnabled_ = true, updatesDeferred_ = false;
+        bool runningDeferredUpdates_ = false;
     };
 
     //! Object that gets notified when a given observable changes
@@ -158,16 +161,22 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Observable::Observable() = default;
-
     inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         if (updatesDeferred()) {
-            deferredObservers_.insert(observers.begin(), observers.end());
+            for (Observer* obs : observers)
+                deferredObservers_.emplace(obs, true);
         }
     }
 
     inline void ObservableSettings::unregisterDeferredObserver(Observer* o) {
-        deferredObservers_.erase(o);
+        if (updatesDeferred())
+            deferredObservers_.erase(o);
+        else
+        {
+            auto it = deferredObservers_.find(o);
+            if (it != deferredObservers_.end())
+                it->second = false;
+        }
     }
 
     inline Observable::Observable(const Observable&) {
@@ -197,7 +206,8 @@ namespace QuantLib {
     }
 
     inline Size Observable::unregisterObserver(Observer* o) {
-        if (ObservableSettings::instance().updatesDeferred())
+        if (ObservableSettings::instance().updatesDeferred() ||
+            ObservableSettings::instance().runningDeferredUpdates())
             ObservableSettings::instance().unregisterDeferredObserver(o);
 
         return observers_.erase(o);
@@ -493,7 +503,7 @@ namespace QuantLib {
     }
 
     inline Observer::Observer(const Observer& o) {
-        proxy_.reset(new Proxy(this));
+        proxy_ = std::make_unique<Proxy>(this);
 
         {
              std::lock_guard<std::recursive_mutex> lock(o.mutex_);
@@ -507,7 +517,7 @@ namespace QuantLib {
     inline Observer& Observer::operator=(const Observer& o) {
         std::lock_guard<std::recursive_mutex> lock(mutex_);
         if (!proxy_) {
-            proxy_.reset(new Proxy(this));
+            proxy_ = std::make_unique<Proxy>(this);
         }
 
         for (const auto& observable : observables_)
@@ -536,7 +546,7 @@ namespace QuantLib {
     Observer::registerWith(const ext::shared_ptr<Observable>& h) {
         std::lock_guard<std::recursive_mutex> lock(mutex_);
         if (!proxy_) {
-            proxy_.reset(new Proxy(this));
+            proxy_ = std::make_unique<Proxy>(this);
         }
 
         if (h) {

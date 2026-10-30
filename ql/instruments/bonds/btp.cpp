@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -147,9 +147,10 @@ namespace QuantLib {
         Rate dummyRate = 0.05;
         for (Size i=0; i<nSwaps_; ++i) {
             swapLengths_[i] = static_cast<Real>(i+1);
-            swaps_[i] = MakeVanillaSwap(
-                swapLengths_[i]*Years, euriborIndex_, dummyRate, 1*Days)
-                                .withDiscountingTermStructure(discountCurve_);
+            swaps_[i] = MakeVanillaSwap(swapLengths_[i]*Years, euriborIndex_)
+                .withFixedRate(dummyRate)
+                .withForwardStart(1*Days)
+                .withDiscountingTermStructure(discountCurve_);
         }
     }
 

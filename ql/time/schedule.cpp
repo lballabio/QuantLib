@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -47,21 +47,16 @@ namespace QuantLib {
             return result;
         }
 
-        bool allowsEndOfMonth(const Period& tenor) {
-            return (tenor.units() == Months || tenor.units() == Years)
-                && tenor >= 1*Months;
-        }
-
     }
 
 
     Schedule::Schedule(const std::vector<Date>& dates,
                        Calendar calendar,
                        BusinessDayConvention convention,
-                       const ext::optional<BusinessDayConvention>& terminationDateConvention,
-                       const ext::optional<Period>& tenor,
-                       const ext::optional<DateGeneration::Rule>& rule,
-                       const ext::optional<bool>& endOfMonth,
+                       const std::optional<BusinessDayConvention>& terminationDateConvention,
+                       const std::optional<Period>& tenor,
+                       const std::optional<DateGeneration::Rule>& rule,
+                       const std::optional<bool>& endOfMonth,
                        std::vector<bool> isRegular)
     : tenor_(tenor), calendar_(std::move(calendar)), convention_(convention),
       terminationDateConvention_(terminationDateConvention), rule_(rule), dates_(dates),
@@ -222,7 +217,10 @@ namespace QuantLib {
                         (calendar_.adjust(dates_.back(),convention)!=
                          calendar_.adjust(firstDate_,convention))) {
                         dates_.push_back(firstDate_);
-                        isRegular_.push_back(false);
+                        isRegular_.push_back(
+                            nullCalendar.advance(dates_[dates_.size()-2],
+                                -1*(*tenor_), convention, *endOfMonth_) ==
+                            firstDate_);
                     }
                     break;
                 } else {
@@ -240,7 +238,10 @@ namespace QuantLib {
             if (calendar_.adjust(dates_.back(),convention)!=
                 calendar_.adjust(effectiveDate,convention)) {
                 dates_.push_back(effectiveDate);
-                isRegular_.push_back(false);
+                isRegular_.push_back(
+                    nullCalendar.advance(dates_[dates_.size()-2],
+                        -1*(*tenor_), convention, *endOfMonth_) ==
+                    effectiveDate);
             }
 	    std::reverse(dates_.begin(), dates_.end());
 	    std::reverse(isRegular_.begin(), isRegular_.end());
@@ -256,7 +257,7 @@ namespace QuantLib {
             QL_REQUIRE(!*endOfMonth_,
                        "endOfMonth convention incompatible with " << *rule_ <<
                        " date generation rule");
-          // fall through
+            [[fallthrough]];
           case DateGeneration::Forward:
 
             if (*rule_ == DateGeneration::CDS || *rule_ == DateGeneration::CDS2015) {
@@ -313,7 +314,10 @@ namespace QuantLib {
                         (calendar_.adjust(dates_.back(),convention)!=
                          calendar_.adjust(nextToLastDate_,convention))) {
                         dates_.push_back(nextToLastDate_);
-                        isRegular_.push_back(false);
+                        isRegular_.push_back(
+                            nullCalendar.advance(dates_[dates_.size()-2],
+                                1*(*tenor_), convention, *endOfMonth_) ==
+                            nextToLastDate_);
                     }
                     break;
                 } else {
@@ -376,13 +380,8 @@ namespace QuantLib {
 
         if (*endOfMonth_ && calendar_.isEndOfMonth(seed)) {
             // adjust to end of month
-            if (convention == Unadjusted) {
-                for (Size i=1; i<dates_.size()-1; ++i)
-                    dates_[i] = Date::endOfMonth(dates_[i]);
-            } else {
-                for (Size i=1; i<dates_.size()-1; ++i)
-                    dates_[i] = calendar_.endOfMonth(dates_[i]);
-            }
+            for (Size i=1; i<dates_.size()-1; ++i)
+                dates_[i] = calendar_.adjust(Date::endOfMonth(dates_[i]), convention);
         } else {
             for (Size i=1; i<dates_.size()-1; ++i)
                 dates_[i] = calendar_.adjust(dates_[i], convention);
@@ -652,6 +651,10 @@ namespace QuantLib {
             }
         }
         return result;
+    }
+
+    bool allowsEndOfMonth(const Period& tenor) {
+        return (tenor.units() == Months || tenor.units() == Years) && tenor >= 1 * Months;
     }
 
 }

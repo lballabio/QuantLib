@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -22,7 +22,7 @@
     strategy and compares with the results of Derman & Kamal's (Goldman Sachs
     Equity Derivatives Research) Research Note: "When You Cannot Hedge
     Continuously: The Corrections to Black-Scholes"
-    http://www.ederman.com/emanuelderman/GSQSpapers/when_you_cannot_hedge.pdf
+    https://emanuelderman.com/wp-content/uploads/1998/12/risk-non_continuous_hedge.pdf
 
     Suppose an option hedger sells an European option and receives the
     Black-Scholes value as the options premium.
@@ -330,7 +330,7 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
                               payoff_.optionType(), payoff_.strike(),
                               r_, maturity_, sigma_);
 
-    // a statistics accumulator for the path-dependant Profit&Loss values
+    // a statistics accumulator for the path-dependent Profit&Loss values
     Statistics statisticsAccumulator;
 
     // The Monte Carlo model generates paths using myPathGenerator

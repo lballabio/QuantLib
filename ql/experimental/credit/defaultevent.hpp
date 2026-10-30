@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -64,9 +64,9 @@ namespace QuantLib {
             /*! When NoSeniority is passed all seniorities are assumed
                 to have settled to the recovery passed.
             */
-            DefaultSettlement(const Date& date = Date(),
-                              Seniority seniority = NoSeniority,
-                              Real recoveryRate = 0.4);
+            explicit DefaultSettlement(const Date& date = Date(),
+                                       Seniority seniority = NoSeniority,
+                                       Real recoveryRate = 0.4);
           public:
             Date date() const override;
             /*! Returns the recovery rate of a default event which has already
@@ -96,7 +96,7 @@ namespace QuantLib {
                      Currency curr,
                      Seniority bondsSen,
                      // Settlement information:
-                     const Date& settleDate = Null<Date>(),
+                     const Date& settleDate = Date(),
                      const std::map<Seniority, Real>& recoveryRates = rate_map());
         /*! Use NoSeniority to settle to all seniorities with that
             recovery. In that case the event is assumed to have
@@ -114,7 +114,7 @@ namespace QuantLib {
         bool isRestructuring() const { return eventType_.isRestructuring(); }
         bool isDefault() const { return !isRestructuring();}
         bool hasSettled() const {
-            return defSettlement_.date() != Null<Date>();
+            return defSettlement_.date() != Date();
         }
         const DefaultSettlement& settlement() const {
             return defSettlement_;
@@ -174,7 +174,7 @@ namespace QuantLib {
 
     /*! Two credit events are the same independently of their
         settlement member data. This has the side effect of
-        overwritting different settlements from the same credit event
+        overwriting different settlements from the same credit event
         when, say, inserting in a map. But on the other hand one given
         event can only have one settlement. This means we can not have
         two restructuring events on a bond on the same date.

@@ -11,31 +11,42 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/errors.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
 
 namespace QuantLib {
+
+    MakeCapFloor::MakeCapFloor(CapFloor::Type capFloorType,
+                               const Period& tenor,
+                               const ext::shared_ptr<IborIndex>& iborIndex)
+    : capFloorType_(capFloorType),
+      // setting the fixed leg tenor avoids that MakeVanillaSwap throws
+      // because of an unknown fixed leg default tenor for a currency,
+      // notice that only the floating leg of the swap is used anyway
+      makeVanillaSwap_(MakeVanillaSwap(tenor, iborIndex)
+                           .withFixedRate(0.0)
+                           .withFixedLegTenor(1 * Years)
+                           .withFixedLegDayCount(Actual365Fixed())) {}
 
     MakeCapFloor::MakeCapFloor(CapFloor::Type capFloorType,
                                const Period& tenor,
                                const ext::shared_ptr<IborIndex>& iborIndex,
                                Rate strike,
                                const Period& forwardStart)
-    : capFloorType_(capFloorType), strike_(strike), firstCapletExcluded_(forwardStart == 0 * Days),
-      // setting the fixed leg tenor avoids that MakeVanillaSwap throws
-      // because of an unknown fixed leg default tenor for a currency,
-      // notice that only the floating leg of the swap is used anyway
-      makeVanillaSwap_(MakeVanillaSwap(tenor, iborIndex, 0.0, forwardStart)
-                           .withFixedLegTenor(1 * Years)
-                           .withFixedLegDayCount(Actual365Fixed())) {}
+    : MakeCapFloor(capFloorType, tenor, iborIndex) {
+        withStrike(strike);
+        withForwardStart(forwardStart);
+    }
 
     MakeCapFloor::operator CapFloor() const {
         ext::shared_ptr<CapFloor> capfloor = *this;
@@ -61,11 +72,25 @@ namespace QuantLib {
 
             // temporary patch...
             // should be fixed for every CapFloor::Engine
-            ext::shared_ptr<BlackCapFloorEngine> temp = 
+            Handle<YieldTermStructure> discountCurve;
+
+            ext::shared_ptr<BlackCapFloorEngine> blackCapTemp = 
                 ext::dynamic_pointer_cast<BlackCapFloorEngine>(engine_);
-            QL_REQUIRE(temp,
-                       "cannot calculate ATM without a BlackCapFloorEngine");
-            Handle<YieldTermStructure> discountCurve = temp->termStructure();
+            ext::shared_ptr<BachelierCapFloorEngine> bachelierCapTemp = 
+                ext::dynamic_pointer_cast<BachelierCapFloorEngine>(engine_);
+            if (blackCapTemp)
+            {
+                discountCurve = blackCapTemp->termStructure();
+            }
+            else if(bachelierCapTemp)
+            {
+                discountCurve = bachelierCapTemp->termStructure();
+            }
+            else 
+            {
+                QL_FAIL("cannot calculate ATM without a BlackCapFloorEngine or BachelierCapFloorEngine");
+            }
+
             strikeVector[0] = CashFlows::atmRate(leg,
                                                  **discountCurve,
                                                  false,
@@ -80,6 +105,17 @@ namespace QuantLib {
 
     MakeCapFloor& MakeCapFloor::withNominal(Real n) {
         makeVanillaSwap_.withNominal(n);
+        return *this;
+    }
+
+    MakeCapFloor& MakeCapFloor::withStrike(Rate k) {
+        strike_ = k;
+        return *this;
+    }
+
+    MakeCapFloor& MakeCapFloor::withForwardStart(const Period& f) {
+        makeVanillaSwap_.withForwardStart(f);
+        firstCapletExcluded_ = (f == 0 * Days);
         return *this;
     }
 

@@ -4,6 +4,7 @@
  Copyright (C) 2006, 2007 Giorgio Facchinetti
  Copyright (C) 2014, 2015 Peter Caspers
  Copyright (C) 2023 Ignacio Anguita
+ Copyright (C) 2026 Aaditya Panikath
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -12,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -35,9 +36,12 @@
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/matrix.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 #include <ql/quote.hpp>
 #include <ql/termstructures/volatility/sabrsmilesection.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
+#include <string>
+#include <tuple>
 #include <utility>
 
 
@@ -48,19 +52,83 @@
     #define SWAPTIONVOLCUBE_TOL 100.0e-4
 #endif
 
-namespace QuantLib {    
+namespace QuantLib {
 
     class Interpolation2D;
     class EndCriteria;
     class OptimizationMethod;
 
+    //! Traits class for XABR model customization points
+    /*! This traits class provides default implementations for model
+        operations used by XabrSwaptionVolatilityCube. The defaults
+        assume a 4-parameter SABR-like model with the standard
+        SABRInterpolation constructor signature.
+
+        Custom models can specialize this template to override:
+        - \c nParams: number of model parameters (default: 4)
+        - \c createInterpolation: factory for smile interpolation
+        - \c extractGamma: extract gamma parameter (default: 0)
+        - \c createSmileSection: factory for smile sections
+
+        \note The primary template works for any model whose Interpolation
+              type accepts the same constructor signature as SABRInterpolation
+              (4 params, shift, volatilityType). Models with different
+              constructors (e.g., NoArbSabr, ZABR) should specialize this
+              traits class.
+
+    */
+    template <class Model>
+    struct XabrModelTraits {
+        static constexpr Size nParams = 4;
+
+        template <class I1, class I2>
+        static ext::shared_ptr<typename Model::Interpolation> createInterpolation(
+            const I1& xBegin, const I1& xEnd, const I2& yBegin,
+            Time t, const Real& forward,
+            const std::vector<Real>& params,
+            const std::vector<bool>& paramIsFixed,
+            bool vegaWeighted,
+            const ext::shared_ptr<EndCriteria>& endCriteria,
+            const ext::shared_ptr<OptimizationMethod>& optMethod,
+            Real errorAccept, bool useMaxError, Size maxGuesses,
+            Real shift, VolatilityType volatilityType) {
+            return ext::make_shared<typename Model::Interpolation>(
+                xBegin, xEnd, yBegin, t, forward,
+                params[0], params[1], params[2], params[3],
+                paramIsFixed[0], paramIsFixed[1], paramIsFixed[2], paramIsFixed[3],
+                vegaWeighted, endCriteria, optMethod,
+                errorAccept, useMaxError, maxGuesses, shift, volatilityType);
+        }
+
+        static Real extractGamma(
+            const ext::shared_ptr<typename Model::Interpolation>& /* interp */) {
+            return 0.0;
+        }
+
+        static ext::shared_ptr<typename Model::SmileSection> createSmileSection(
+            Time optionTime, Real forward,
+            const std::vector<Real>& params,
+            Real shift, VolatilityType volatilityType) {
+            return ext::make_shared<typename Model::SmileSection>(
+                optionTime, forward, params, shift, volatilityType);
+        }
+    };
+
     //! XABR Swaption Volatility Cube
     /*! This class implements the XABR Swaption Volatility Cube
-        which is a generic for different SABR, ZABR and 
+        which is a generic for different SABR, ZABR and
         different smile models that can be used to instantiate concrete cubes.
+
+        Model customization is handled through XabrModelTraits<Model>.
+        The Model type must define at minimum:
+        - \c Interpolation: the interpolation type
+        - \c SmileSection: the smile section type
+
+        \see XabrModelTraits for customization points
     */
     template<class Model>
     class XabrSwaptionVolatilityCube : public SwaptionVolatilityCube {
+        using Traits = XabrModelTraits<Model>;
         class Cube { // NOLINT(cppcoreguidelines-special-member-functions)
           public:
             Cube() = default;
@@ -114,6 +182,7 @@ namespace QuantLib {
             mutable std::vector< ext::shared_ptr<Interpolation2D> > interpolators_;
          };
       public:
+        using SwaptionVolatilityStructure::smileSection;
         XabrSwaptionVolatilityCube(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& optionTenors,
@@ -133,7 +202,8 @@ namespace QuantLib {
             bool useMaxError = false,
             Size maxGuesses = 50,
             bool backwardFlat = false,
-            Real cutoffStrike = 0.0001);
+            Real cutoffStrike = 0.0001,
+            bool singlePassCalibration = false);
         //! \name LazyObject interface
         //@{
         void performCalculations() const override;
@@ -172,10 +242,25 @@ namespace QuantLib {
                                     Time swapLength,
                                     const Cube& sabrParametersCube) const;
         Cube sabrCalibration(const Cube &marketVolCube) const;
-        void fillVolatilityCube() const;
+        Real calibratedAtmAlpha(Time optionTime,
+                                Rate forward,
+                                Volatility atmVol,
+                                std::vector<Real> parameters,
+                                Real shift) const;
+        std::pair<Real, Real> smileErrors(
+            Time optionTime,
+            Rate forward,
+            const std::vector<Real>& parameters,
+            Real shift,
+            const std::vector<Real>& strikes,
+            const std::vector<Real>& volatilities,
+            const std::vector<Real>& weights) const;
+        void fillVolatilityCube(bool marketSpreads = false) const;
         void createSparseSmiles() const;
-        std::vector<Real> spreadVolInterpolation(const Date& atmOptionDate,
-                                                 const Period& atmSwapTenor) const;
+        std::vector<Real> spreadVolInterpolation(
+            const Date& atmOptionDate,
+            const Period& atmSwapTenor,
+            bool marketSpreads) const;
       private:
         Size requiredNumberOfStrikes() const override { return 1; }
         mutable Cube marketVolCube_;
@@ -188,6 +273,7 @@ namespace QuantLib {
         mutable Cube parametersGuess_;
         std::vector<bool> isParameterFixed_;
         bool isAtmCalibrated_;
+        bool singlePassCalibration_;
         const ext::shared_ptr<EndCriteria> endCriteria_;
         Real maxErrorTolerance_;
         const ext::shared_ptr<OptimizationMethod> optMethod_;
@@ -239,7 +325,8 @@ namespace QuantLib {
         const bool useMaxError,
         const Size maxGuesses,
         const bool backwardFlat,
-        const Real cutoffStrike)
+        const Real cutoffStrike,
+        const bool singlePassCalibration)
     : SwaptionVolatilityCube(atmVolStructure,
                              optionTenors,
                              swapTenors,
@@ -250,6 +337,7 @@ namespace QuantLib {
                              vegaWeightedSmileFit),
       parametersGuessQuotes_(std::move(parametersGuess)),
       isParameterFixed_(std::move(isParameterFixed)), isAtmCalibrated_(isAtmCalibrated),
+      singlePassCalibration_(singlePassCalibration),
       endCriteria_(std::move(endCriteria)), optMethod_(std::move(optMethod)),
       useMaxError_(useMaxError), maxGuesses_(maxGuesses), backwardFlat_(backwardFlat),
       cutoffStrike_(cutoffStrike), volatilityType_(atmVolStructure->volatilityType()) {
@@ -273,24 +361,24 @@ namespace QuantLib {
 
     template<class Model> void XabrSwaptionVolatilityCube<Model>::registerWithParametersGuess()
     {
-        for (Size i=0; i<4; i++)
+        for (Size i=0; i<Traits::nParams; i++)
             for (Size j=0; j<nOptionTenors_; j++)
                 for (Size k=0; k<nSwapTenors_; k++)
-                    privateObserver_->registerWith(parametersGuessQuotes_[j+k*nOptionTenors_][i]);
+                    privateObserver_->registerWith(parametersGuessQuotes_[j*nSwapTenors_+k][i]);
     }
 
     template<class Model> void XabrSwaptionVolatilityCube<Model>::setParameterGuess() const {
 
         //! set parametersGuess_ by parametersGuessQuotes_
         parametersGuess_ = Cube(optionDates_, swapTenors_,
-                                optionTimes_, swapLengths_, 4,
+                                optionTimes_, swapLengths_, Traits::nParams,
                                 true, backwardFlat_);
         Size i;
-        for (i=0; i<4; i++)
+        for (i=0; i<Traits::nParams; i++)
             for (Size j=0; j<nOptionTenors_ ; j++)
                 for (Size k=0; k<nSwapTenors_; k++) {
                     parametersGuess_.setElement(i, j, k,
-                        parametersGuessQuotes_[j+k*nOptionTenors_][i]->value());
+                        parametersGuessQuotes_[j*nSwapTenors_+k][i]->value());
                 }
         parametersGuess_.updateInterpolators();
 
@@ -318,27 +406,83 @@ namespace QuantLib {
         }
         marketVolCube_.updateInterpolators();
 
-        sparseParameters_ = sabrCalibration(marketVolCube_);
-        //parametersGuess_ = sparseParameters_;
-        sparseParameters_.updateInterpolators();
-        //parametersGuess_.updateInterpolators();
         volCubeAtmCalibrated_= marketVolCube_;
 
-        if(isAtmCalibrated_){
-            fillVolatilityCube();
+        if (singlePassCalibration_) {
+            fillVolatilityCube(true);
             denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
             denseParameters_.updateInterpolators();
+            sparseParameters_ = denseParameters_;
+        } else {
+            sparseParameters_ = sabrCalibration(marketVolCube_);
+            sparseParameters_.updateInterpolators();
+            if (isAtmCalibrated_) {
+                fillVolatilityCube();
+                denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
+                denseParameters_.updateInterpolators();
+            }
         }
     }
 
     template<class Model> void XabrSwaptionVolatilityCube<Model>::updateAfterRecalibration() {
         volCubeAtmCalibrated_ = marketVolCube_;
-        if(isAtmCalibrated_){
+        if (singlePassCalibration_) {
+            fillVolatilityCube(true);
+            denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
+            denseParameters_.updateInterpolators();
+            sparseParameters_ = denseParameters_;
+        } else if (isAtmCalibrated_) {
             fillVolatilityCube();
             denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
             denseParameters_.updateInterpolators();
         }
         notifyObservers();
+    }
+
+    template <class Model>
+    Real XabrSwaptionVolatilityCube<Model>::calibratedAtmAlpha(
+        Time optionTime,
+        Rate forward,
+        Volatility atmVol,
+        std::vector<Real> parameters,
+        Real shift) const {
+
+        const auto atmError = [&](Real alpha) {
+            parameters[0] = alpha;
+            return Traits::createSmileSection(optionTime, forward, parameters,
+                                              shift, volatilityType_)
+                       ->volatility(forward) -
+                   atmVol;
+        };
+
+        Brent solver;
+        solver.setLowerBound(QL_EPSILON);
+        const Real guess = parameters[0];
+        const Real step = std::max(0.1 * guess, 1.0e-6);
+        return solver.solve(atmError, 1.0e-12, guess, step);
+    }
+
+    template <class Model>
+    std::pair<Real, Real> XabrSwaptionVolatilityCube<Model>::smileErrors(
+        Time optionTime,
+        Rate forward,
+        const std::vector<Real>& parameters,
+        Real shift,
+        const std::vector<Real>& strikes,
+        const std::vector<Real>& volatilities,
+        const std::vector<Real>& weights) const {
+
+        const auto smile = Traits::createSmileSection(
+            optionTime, forward, parameters, shift, volatilityType_);
+        Real squaredError = 0.0;
+        Real maxError = QL_MIN_REAL;
+        for (Size i = 0; i < strikes.size(); ++i) {
+            const Real error = smile->volatility(strikes[i]) - volatilities[i];
+            squaredError += error * error * weights[i];
+            maxError = std::max(maxError, std::fabs(error));
+        }
+        const Size n = strikes.size();
+        return { std::sqrt(n * squaredError / (n == 1 ? 1 : n - 1)), maxError };
     }
 
     template <class Model>
@@ -353,6 +497,7 @@ namespace QuantLib {
         Matrix betas(alphas);
         Matrix nus(alphas);
         Matrix rhos(alphas);
+        Matrix gammas(alphas);  // Zero-initialized; populated and used only for 5+ param models (ZABR).
         Matrix forwards(alphas);
         Matrix errors(alphas);
         Matrix maxErrors(alphas);
@@ -381,51 +526,71 @@ namespace QuantLib {
                     parametersGuess_(optionTimes[j], swapLengths[k]);
 
                 const ext::shared_ptr<typename Model::Interpolation> sabrInterpolation =
-                    ext::shared_ptr<typename Model::Interpolation>(new
-                                          (typename Model::Interpolation)(strikes.begin(), strikes.end(),
-                                          volatilities.begin(),
-                                          optionTimes[j], atmForward,
-                                          guess[0], guess[1],
-                                          guess[2], guess[3],
-                                          isParameterFixed_[0],
-                                          isParameterFixed_[1],
-                                          isParameterFixed_[2],
-                                          isParameterFixed_[3],
-                                          vegaWeightedSmileFit_,
-                                          endCriteria_,
-                                          optMethod_,
-                                          errorAccept_,
-                                          useMaxError_,
-                                          maxGuesses_,
-                                          shiftTmp,
-                                          volatilityType_));
+                    Traits::createInterpolation(strikes.begin(), strikes.end(),
+                                                volatilities.begin(),
+                                                optionTimes[j], atmForward,
+                                                guess,
+                                                isParameterFixed_,
+                                                vegaWeightedSmileFit_,
+                                                endCriteria_,
+                                                optMethod_,
+                                                errorAccept_,
+                                                useMaxError_,
+                                                maxGuesses_,
+                                                shiftTmp,
+                                                volatilityType_);
                 sabrInterpolation->update();
 
                 Real rmsError = sabrInterpolation->rmsError();
                 Real maxError = sabrInterpolation->maxError();
+                const Real calibrationRmsError = rmsError;
+                const Real calibrationMaxError = maxError;
                 alphas     [j][k] = sabrInterpolation->alpha();
                 betas      [j][k] = sabrInterpolation->beta();
                 nus        [j][k] = sabrInterpolation->nu();
                 rhos       [j][k] = sabrInterpolation->rho();
+                if constexpr (Traits::nParams >= 5)
+                    gammas[j][k] = Traits::extractGamma(sabrInterpolation);
+                if (singlePassCalibration_ && isAtmCalibrated_) {
+                    std::vector<Real> parameters = { alphas[j][k], betas[j][k],
+                                                     nus[j][k], rhos[j][k] };
+                    if constexpr (Traits::nParams >= 5)
+                        parameters.push_back(gammas[j][k]);
+                    const Volatility atmVol = atmVol_->volatility(
+                        optionDates[j], swapTenors[k], atmForward, true);
+                    alphas[j][k] = calibratedAtmAlpha(
+                        optionTimes[j], atmForward, atmVol, parameters, shiftTmp);
+                    parameters[0] = alphas[j][k];
+                    std::tie(rmsError, maxError) = smileErrors(
+                        optionTimes[j], atmForward, parameters, shiftTmp, strikes,
+                        volatilities, sabrInterpolation->interpolationWeights());
+                }
                 forwards   [j][k] = atmForward;
                 errors     [j][k] = rmsError;
                 maxErrors  [j][k] = maxError;
                 endCriteria[j][k] = sabrInterpolation->endCriteria();
+
+                // Build gamma diagnostic string only for models that have gamma (ZABR).
+                // if constexpr guarantees dead-branch elimination for 4-param models.
+                std::string gammaInfo;
+                if constexpr (Traits::nParams >= 5)
+                    gammaInfo = "\n   gamma = " + std::to_string(gammas[j][k]);
 
                 QL_ENSURE(endCriteria[j][k] != Integer(EndCriteria::MaxIterations),
                           "global swaptions calibration failed: "
                           "MaxIterations reached: " << "\n" <<
                           "option maturity = " << optionDates[j] << ", \n" <<
                           "swap tenor = " << swapTenors[k] << ", \n" <<
-                          "rms error = " << io::rate(errors[j][k])  << ", \n" <<
-                          "max error = " << io::rate(maxErrors[j][k]) << ", \n" <<
-                          "   alpha = " <<  alphas[j][k] << "n" <<
+                          "rms error = " << io::rate(calibrationRmsError)  << ", \n" <<
+                          "max error = " << io::rate(calibrationMaxError) << ", \n" <<
+                          "   alpha = " <<  alphas[j][k] << "\n" <<
                           "   beta = " <<  betas[j][k] << "\n" <<
                           "   nu = " <<  nus[j][k]   << "\n" <<
-                          "   rho = " <<  rhos[j][k]  << "\n"
+                          "   rho = " <<  rhos[j][k]  << gammaInfo << "\n"
                           );
 
-                QL_ENSURE((useMaxError_ ? maxError : rmsError) < maxErrorTolerance_,
+                QL_ENSURE((useMaxError_ ? calibrationMaxError : calibrationRmsError) <
+                              maxErrorTolerance_,
                           "global swaptions calibration failed: "
                           "error tolerance exceeded: "
                               << "\n"
@@ -433,25 +598,31 @@ namespace QuantLib {
                               << " tolerance " << maxErrorTolerance_ << ", \n"
                               << "option maturity = " << optionDates[j] << ", \n"
                               << "swap tenor = " << swapTenors[k] << ", \n"
-                              << "rms error = " << io::rate(errors[j][k]) << ", \n"
-                              << "max error = " << io::rate(maxErrors[j][k]) << ", \n"
-                              << "   alpha = " << alphas[j][k] << "n"
+                              << "rms error = " << io::rate(calibrationRmsError) << ", \n"
+                              << "max error = " << io::rate(calibrationMaxError) << ", \n"
+                              << "   alpha = " << alphas[j][k] << "\n"
                               << "   beta = " << betas[j][k] << "\n"
                               << "   nu = " << nus[j][k] << "\n"
-                              << "   rho = " << rhos[j][k] << "\n");
+                              << "   rho = " << rhos[j][k] << gammaInfo << "\n");
             }
         }
+        // Cube has Traits::nParams parameter layers + 4 metadata layers
+        // (forwards, errors, maxErrors, endCriteria)
         Cube sabrParametersCube(optionDates, swapTenors,
-                                optionTimes, swapLengths, 8,
+                                optionTimes, swapLengths, Traits::nParams + 4,
                                 true, backwardFlat_);
         sabrParametersCube.setLayer(0, alphas);
         sabrParametersCube.setLayer(1, betas);
         sabrParametersCube.setLayer(2, nus);
         sabrParametersCube.setLayer(3, rhos);
-        sabrParametersCube.setLayer(4, forwards);
-        sabrParametersCube.setLayer(5, errors);
-        sabrParametersCube.setLayer(6, maxErrors);
-        sabrParametersCube.setLayer(7, endCriteria);
+        // For models with 5+ params (e.g., ZABR), store gamma in layer 4
+        if constexpr (Traits::nParams >= 5)
+            sabrParametersCube.setLayer(4, gammas);
+        // Metadata layers start at Traits::nParams
+        sabrParametersCube.setLayer(Traits::nParams, forwards);
+        sabrParametersCube.setLayer(Traits::nParams + 1, errors);
+        sabrParametersCube.setLayer(Traits::nParams + 2, maxErrors);
+        sabrParametersCube.setLayer(Traits::nParams + 3, endCriteria);
 
         return sabrParametersCube;
 
@@ -471,7 +642,7 @@ namespace QuantLib {
                            swapTenor) - swapTenors.begin();
         QL_REQUIRE(k != swapTenors.size(), "swap tenor not found");
 
-        std::vector<Real> calibrationResult(8,0.);
+        std::vector<Real> calibrationResult(Traits::nParams + 4, 0.);
         const std::vector<Matrix>& tmpMarketVolCube = marketVolCube.points();
 
         std::vector<Real> strikes(strikeSpreads_.size());
@@ -493,62 +664,86 @@ namespace QuantLib {
             const std::vector<Real>& guess =
                 parametersGuess_(optionTimes[j], swapLengths[k]);
 
-                const ext::shared_ptr<typename Model::Interpolation> sabrInterpolation =
-                    ext::shared_ptr<typename Model::Interpolation>(new
-                                          (typename Model::Interpolation)(strikes.begin(), strikes.end(),
-                                      volatilities.begin(),
-                                      optionTimes[j], atmForward,
-                                      guess[0], guess[1],
-                                      guess[2], guess[3],
-                                      isParameterFixed_[0],
-                                      isParameterFixed_[1],
-                                      isParameterFixed_[2],
-                                      isParameterFixed_[3],
-                                      vegaWeightedSmileFit_,
-                                      endCriteria_,
-                                      optMethod_,
-                                      errorAccept_,
-                                      useMaxError_,
-                                      maxGuesses_,
-                                      shiftTmp));
+            const ext::shared_ptr<typename Model::Interpolation> sabrInterpolation =
+                Traits::createInterpolation(strikes.begin(), strikes.end(),
+                                            volatilities.begin(),
+                                            optionTimes[j], atmForward,
+                                            guess,
+                                            isParameterFixed_,
+                                            vegaWeightedSmileFit_,
+                                            endCriteria_,
+                                            optMethod_,
+                                            errorAccept_,
+                                            useMaxError_,
+                                            maxGuesses_,
+                                            shiftTmp,
+                                            volatilityType_);
 
             sabrInterpolation->update();
             Real interpolationError = sabrInterpolation->rmsError();
+            Real maxError = sabrInterpolation->maxError();
+            const Real calibrationError = interpolationError;
+            const Real calibrationMaxError = maxError;
             calibrationResult[0]=sabrInterpolation->alpha();
             calibrationResult[1]=sabrInterpolation->beta();
             calibrationResult[2]=sabrInterpolation->nu();
             calibrationResult[3]=sabrInterpolation->rho();
-            calibrationResult[4]=atmForward;
-            calibrationResult[5]=interpolationError;
-            calibrationResult[6]=sabrInterpolation->maxError();
-            calibrationResult[7]=sabrInterpolation->endCriteria();
+            if constexpr (Traits::nParams >= 5)
+                calibrationResult[4] = Traits::extractGamma(sabrInterpolation);
+            if (singlePassCalibration_ && isAtmCalibrated_) {
+                std::vector<Real> parameters(
+                    calibrationResult.begin(),
+                    calibrationResult.begin() + Traits::nParams);
+                const Volatility atmVol = atmVol_->volatility(
+                    optionDates[j], swapTenors[k], atmForward, true);
+                calibrationResult[0] = calibratedAtmAlpha(
+                    optionTimes[j], atmForward, atmVol, parameters, shiftTmp);
+                parameters[0] = calibrationResult[0];
+                std::tie(interpolationError, maxError) = smileErrors(
+                    optionTimes[j], atmForward, parameters, shiftTmp, strikes,
+                    volatilities, sabrInterpolation->interpolationWeights());
+            }
+            // Metadata stored after model parameters
+            calibrationResult[Traits::nParams]=atmForward;
+            calibrationResult[Traits::nParams + 1]=interpolationError;
+            calibrationResult[Traits::nParams + 2]=maxError;
+            calibrationResult[Traits::nParams + 3]=sabrInterpolation->endCriteria();
 
-            QL_ENSURE(calibrationResult[7] != Integer(EndCriteria::MaxIterations),
+            // Build gamma diagnostic string only for models that have gamma (ZABR).
+            // if constexpr guarantees dead-branch elimination for 4-param models.
+            std::string gammaInfo;
+            if constexpr (Traits::nParams >= 5)
+                gammaInfo = ", gamma " + std::to_string(calibrationResult[4]);
+
+            QL_ENSURE(calibrationResult[Traits::nParams + 3] != Integer(EndCriteria::MaxIterations),
                       "section calibration failed: "
                       "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
                       ": max iteration (" <<
                       endCriteria_->maxIterations() << ")" <<
-                          ", alpha " <<  calibrationResult[0]<<
-                          ", beta "  <<  calibrationResult[1] <<
-                          ", nu "    <<  calibrationResult[2]   <<
-                          ", rho "   <<  calibrationResult[3]  <<
-                          ", max error " << calibrationResult[6] <<
-                          ", error " <<  calibrationResult[5]
-                          );
-
-            QL_ENSURE((useMaxError_ ? calibrationResult[6] : calibrationResult[5]) < maxErrorTolerance_,
-                      "section calibration failed: "
-                      "option tenor " << optionDates[j] <<
-                      ", swap tenor " << swapTenors[k] <<
-                      (useMaxError_ ? ": max error " : ": error ") <<
-                      (useMaxError_ ? calibrationResult[6] : calibrationResult[5]) <<
                           ", alpha " <<  calibrationResult[0] <<
                           ", beta "  <<  calibrationResult[1] <<
                           ", nu "    <<  calibrationResult[2] <<
                           ", rho "   <<  calibrationResult[3] <<
-                      (useMaxError_ ? ": error" : ": max error ") <<
-                      (useMaxError_ ? calibrationResult[5] : calibrationResult[6])
+                          gammaInfo <<
+                          ", max error " << calibrationMaxError <<
+                          ", error " << calibrationError
+                          );
+
+            QL_ENSURE((useMaxError_ ? calibrationMaxError : calibrationError) <
+                          maxErrorTolerance_,
+                      "section calibration failed: "
+                      "option tenor " << optionDates[j] <<
+                      ", swap tenor " << swapTenors[k] <<
+                      (useMaxError_ ? ": max error " : ": error ") <<
+                      (useMaxError_ ? calibrationMaxError : calibrationError) <<
+                          ", alpha " <<  calibrationResult[0] <<
+                          ", beta "  <<  calibrationResult[1] <<
+                          ", nu "    <<  calibrationResult[2] <<
+                          ", rho "   <<  calibrationResult[3] <<
+                          gammaInfo <<
+                      (useMaxError_ ? ", error " : ", max error ") <<
+                      (useMaxError_ ? calibrationError : calibrationMaxError)
             );
 
             parametersCube.setPoint(optionDates[j], swapTenors[k],
@@ -559,10 +754,16 @@ namespace QuantLib {
 
     }
 
-    template<class Model> void XabrSwaptionVolatilityCube<Model>::fillVolatilityCube() const {
+    template<class Model>
+    void XabrSwaptionVolatilityCube<Model>::fillVolatilityCube(bool marketSpreads) const {
 
         const ext::shared_ptr<SwaptionVolatilityDiscrete> atmVolStructure =
             ext::dynamic_pointer_cast<SwaptionVolatilityDiscrete>(*atmVol_);
+        QL_REQUIRE(atmVolStructure,
+                   "isAtmCalibrated requires an ATM volatility structure "
+                   "derived from SwaptionVolatilityDiscrete (e.g. "
+                   "SwaptionVolatilityMatrix), but the provided "
+                   "atmVolStructure is not");
 
         std::vector<Time> atmOptionTimes(atmVolStructure->optionTimes());
         std::vector<Time> optionTimes(volCubeAtmCalibrated_.optionTimes());
@@ -596,7 +797,8 @@ namespace QuantLib {
         auto new_end_2 = std::unique(atmSwapTenors.begin(), atmSwapTenors.end());
         atmSwapTenors.erase(new_end_2, atmSwapTenors.end());
 
-        createSparseSmiles();
+        if (!marketSpreads)
+            createSparseSmiles();
 
         for (Size j=0; j<atmOptionTimes.size(); j++) {
 
@@ -614,9 +816,8 @@ namespace QuantLib {
                                                 atmSwapTenors[k]);
                     Volatility atmVol = atmVol_->volatility(
                         atmOptionDates[j], atmSwapTenors[k], atmForward);
-                    std::vector<Real> spreadVols =
-                        spreadVolInterpolation(atmOptionDates[j],
-                                               atmSwapTenors[k]);
+                    std::vector<Real> spreadVols = spreadVolInterpolation(
+                        atmOptionDates[j], atmSwapTenors[k], marketSpreads);
                     std::vector<Real> volAtmCalibrated;
                     volAtmCalibrated.reserve(nStrikes_);
                     for (Size i=0; i<nStrikes_; i++)
@@ -649,19 +850,22 @@ namespace QuantLib {
         }
     }
 
-
-    template<class Model> std::vector<Real> XabrSwaptionVolatilityCube<Model>::spreadVolInterpolation(
-        const Date& atmOptionDate, const Period& atmSwapTenor) const {
+    template<class Model>
+    std::vector<Real> XabrSwaptionVolatilityCube<Model>::spreadVolInterpolation(
+        const Date& atmOptionDate,
+        const Period& atmSwapTenor,
+        bool marketSpreads) const {
 
         Time atmOptionTime = timeFromReference(atmOptionDate);
         Time atmTimeLength = swapLength(atmSwapTenor);
 
         std::vector<Real> result;
-        const std::vector<Time>& optionTimes(sparseParameters_.optionTimes());
-        const std::vector<Time>& swapLengths(sparseParameters_.swapLengths());
+        const Cube& sourceCube = marketSpreads ? marketVolCube_ : sparseParameters_;
+        const std::vector<Time>& optionTimes(sourceCube.optionTimes());
+        const std::vector<Time>& swapLengths(sourceCube.swapLengths());
         const std::vector<Date>& optionDates =
-            sparseParameters_.optionDates();
-        const std::vector<Period>& swapTenors = sparseParameters_.swapTenors();
+            sourceCube.optionDates();
+        const std::vector<Period>& swapTenors = sourceCube.swapTenors();
 
         std::vector<Real>::const_iterator optionTimesPreviousNode,
                                           swapLengthsPreviousNode;
@@ -682,24 +886,33 @@ namespace QuantLib {
             swapLengthsPreviousIndex --;
 
         std::vector< std::vector<ext::shared_ptr<SmileSection> > > smiles;
-        std::vector<ext::shared_ptr<SmileSection> >  smilesOnPreviousExpiry;
-        std::vector<ext::shared_ptr<SmileSection> >  smilesOnNextExpiry;
+        if (marketSpreads) {
+            QL_REQUIRE(optionTimesPreviousIndex+1 < optionTimes.size(),
+                       "cannot interpolate market spreads at option time " <<
+                           atmOptionTime);
+            QL_REQUIRE(swapLengthsPreviousIndex+1 < swapLengths.size(),
+                       "cannot interpolate market spreads at swap length " <<
+                           atmTimeLength);
+        } else {
+            std::vector<ext::shared_ptr<SmileSection> > smilesOnPreviousExpiry;
+            std::vector<ext::shared_ptr<SmileSection> > smilesOnNextExpiry;
 
-        QL_REQUIRE(optionTimesPreviousIndex+1 < sparseSmiles_.size(),
-                   "optionTimesPreviousIndex+1 >= sparseSmiles_.size()");
-        QL_REQUIRE(swapLengthsPreviousIndex+1 < sparseSmiles_[0].size(),
-                   "swapLengthsPreviousIndex+1 >= sparseSmiles_[0].size()");
-        smilesOnPreviousExpiry.push_back(
-              sparseSmiles_[optionTimesPreviousIndex][swapLengthsPreviousIndex]);
-        smilesOnPreviousExpiry.push_back(
-              sparseSmiles_[optionTimesPreviousIndex][swapLengthsPreviousIndex+1]);
-        smilesOnNextExpiry.push_back(
-              sparseSmiles_[optionTimesPreviousIndex+1][swapLengthsPreviousIndex]);
-        smilesOnNextExpiry.push_back(
-              sparseSmiles_[optionTimesPreviousIndex+1][swapLengthsPreviousIndex+1]);
+            QL_REQUIRE(optionTimesPreviousIndex+1 < sparseSmiles_.size(),
+                       "optionTimesPreviousIndex+1 >= sparseSmiles_.size()");
+            QL_REQUIRE(swapLengthsPreviousIndex+1 < sparseSmiles_[0].size(),
+                       "swapLengthsPreviousIndex+1 >= sparseSmiles_[0].size()");
+            smilesOnPreviousExpiry.push_back(
+                sparseSmiles_[optionTimesPreviousIndex][swapLengthsPreviousIndex]);
+            smilesOnPreviousExpiry.push_back(
+                sparseSmiles_[optionTimesPreviousIndex][swapLengthsPreviousIndex+1]);
+            smilesOnNextExpiry.push_back(
+                sparseSmiles_[optionTimesPreviousIndex+1][swapLengthsPreviousIndex]);
+            smilesOnNextExpiry.push_back(
+                sparseSmiles_[optionTimesPreviousIndex+1][swapLengthsPreviousIndex+1]);
 
-        smiles.push_back(smilesOnPreviousExpiry);
-        smiles.push_back(smilesOnNextExpiry);
+            smiles.push_back(smilesOnPreviousExpiry);
+            smiles.push_back(smilesOnNextExpiry);
+        }
 
         std::vector<Real> optionsNodes(2);
         optionsNodes[0] = optionTimes[optionTimesPreviousIndex];
@@ -728,25 +941,27 @@ namespace QuantLib {
                 atmForwards[i][j] = atmStrike(optionsDateNodes[i],
                                               swapTenorNodes[j]);
                 atmShifts[i][j] = atmVol_->shift(optionsNodes[i], swapLengthsNodes[j]);
-                // atmVols[i][j] = smiles[i][j]->volatility(atmForwards[i][j]);
-                atmVols[i][j] = atmVol_->volatility(
-                    optionsDateNodes[i], swapTenorNodes[j], atmForwards[i][j]);
-                /* With the old implementation the interpolated spreads on ATM
-                   volatilities were null even if the spreads on ATM volatilities to be
-                   interpolated were non-zero. The new implementation removes
-                   this behaviour, but introduces a small ERROR in the cube:
-                   even if no spreads are applied on any cube ATM volatility corresponding
-                   to quoted smile sections (that is ATM volatilities in sparse cube), the
-                   cube ATM volatilities corresponding to not quoted smile sections (that
-                   is ATM volatilities in dense cube) are no more exactly the quoted values,
-                   but that ones PLUS the linear interpolation of the fit errors on the ATM
-                   volatilities in sparse cube whose spreads are used in the calculation.
-                   A similar imprecision is introduced to the volatilities in dense cube
-                   whith moneyness near to 1.
-                   (See below how spreadVols are calculated).
-                   The extent of this error depends on the quality of the fit: in case of
-                   good fits it is negligibile.
-                */
+                if (!marketSpreads) {
+                    // atmVols[i][j] = smiles[i][j]->volatility(atmForwards[i][j]);
+                    atmVols[i][j] = atmVol_->volatility(
+                        optionsDateNodes[i], swapTenorNodes[j], atmForwards[i][j]);
+                    /* With the old implementation the interpolated spreads on ATM
+                       volatilities were null even if the spreads on ATM volatilities to be
+                       interpolated were non-zero. The new implementation removes
+                       this behaviour, but introduces a small ERROR in the cube:
+                       even if no spreads are applied on any cube ATM volatility corresponding
+                       to quoted smile sections (that is ATM volatilities in sparse cube), the
+                       cube ATM volatilities corresponding to not quoted smile sections (that
+                       is ATM volatilities in dense cube) are no more exactly the quoted values,
+                       but that ones PLUS the linear interpolation of the fit errors on the ATM
+                       volatilities in sparse cube whose spreads are used in the calculation.
+                       A similar imprecision is introduced to the volatilities in dense cube
+                       whith moneyness near to 1.
+                       (See below how spreadVols are calculated).
+                       The extent of this error depends on the quality of the fit: in case of
+                       good fits it is negligibile.
+                    */
+                }
             }
         }
 
@@ -758,9 +973,32 @@ namespace QuantLib {
             Matrix spreadVols(2,2,0.);
             for (Size i=0; i<2; i++){
                 for (Size j=0; j<2; j++){
-                    strikes[i][j] = (atmForwards[i][j]+atmShifts[i][j])/moneyness - atmShifts[i][j];
-                    spreadVols[i][j] =
-                        smiles[i][j]->volatility(strikes[i][j]) - atmVols[i][j];
+                    if (volatilityType_ == VolatilityType::Normal)
+                        strikes[i][j] = atmForwards[i][j] + strike - atmForward;
+                    else
+                        strikes[i][j] =
+                            (atmForwards[i][j]+atmShifts[i][j])/moneyness - atmShifts[i][j];
+                    if (marketSpreads) {
+                        const Size section =
+                            (optionTimesPreviousIndex+i)*nSwapTenors_ +
+                            swapLengthsPreviousIndex+j;
+                        if (nStrikes_ == 1) {
+                            spreadVols[i][j] = volSpreads_[section][0]->value();
+                        } else {
+                            std::vector<Real> quotedSpreads(nStrikes_);
+                            for (Size n = 0; n < nStrikes_; ++n)
+                                quotedSpreads[n] = volSpreads_[section][n]->value();
+                            LinearInterpolation strikeInterpolation(
+                                strikeSpreads_.begin(), strikeSpreads_.end(),
+                                quotedSpreads.begin());
+                            strikeInterpolation.enableExtrapolation();
+                            spreadVols[i][j] = strikeInterpolation(
+                                strikes[i][j] - atmForwards[i][j]);
+                        }
+                    } else {
+                        spreadVols[i][j] =
+                            smiles[i][j]->volatility(strikes[i][j]) - atmVols[i][j];
+                    }
                 }
             }
            Cube localInterpolator(optionsDateNodes, swapTenorNodes,
@@ -778,17 +1016,22 @@ namespace QuantLib {
                                    const Cube& sabrParametersCube) const {
 
         calculate();
-        const std::vector<Real> sabrParameters =
+        const std::vector<Real> allParameters =
             sabrParametersCube(optionTime, swapLength);
-        Real shiftTmp = atmVol_->shift(optionTime,swapLength);
-        return ext::shared_ptr<SmileSection>(new (typename Model::SmileSection)(
-                          optionTime, sabrParameters[4], sabrParameters,shiftTmp, volatilityType_));
+        // Forward rate is stored at index Traits::nParams (after the model parameters)
+        Real forward = allParameters[Traits::nParams];
+        // Extract only the model parameters (first nParams elements) for SmileSection
+        std::vector<Real> modelParams(allParameters.begin(),
+                                       allParameters.begin() + Traits::nParams);
+        Real shiftTmp = atmVol_->shift(optionTime, swapLength);
+        return Traits::createSmileSection(
+            optionTime, forward, modelParams, shiftTmp, volatilityType_);
     }
 
     template<class Model> ext::shared_ptr<SmileSection>
     XabrSwaptionVolatilityCube<Model>::smileSectionImpl(Time optionTime,
                                        Time swapLength) const {
-        if (isAtmCalibrated_)
+        if (isAtmCalibrated_ || singlePassCalibration_)
             return smileSection(optionTime, swapLength, denseParameters_);
         else
             return smileSection(optionTime, swapLength, sparseParameters_);
@@ -825,6 +1068,8 @@ namespace QuantLib {
     template<class Model> void XabrSwaptionVolatilityCube<Model>::recalibration(const std::vector<Real> &beta,
                                          const Period& swapTenor) {
 
+        calculate();
+
         QL_REQUIRE(beta.size() == nOptionTenors_,
                    "beta size ("
                        << beta.size()
@@ -843,10 +1088,16 @@ namespace QuantLib {
         }
 
         parametersGuess_.updateInterpolators();
-        sabrCalibrationSection(marketVolCube_, sparseParameters_, swapTenor);
-
         volCubeAtmCalibrated_ = marketVolCube_;
-        if (isAtmCalibrated_) {
+        if (singlePassCalibration_) {
+            fillVolatilityCube(true);
+            sabrCalibrationSection(volCubeAtmCalibrated_, denseParameters_,
+                                   swapTenor);
+            sparseParameters_ = denseParameters_;
+        } else {
+            sabrCalibrationSection(marketVolCube_, sparseParameters_, swapTenor);
+        }
+        if (isAtmCalibrated_ && !singlePassCalibration_) {
             fillVolatilityCube();
             sabrCalibrationSection(volCubeAtmCalibrated_, denseParameters_,
                                    swapTenor);
@@ -866,6 +1117,7 @@ namespace QuantLib {
                        << swapLengths.size() << ")");
 
         std::vector<Time> betaTimes;
+        betaTimes.reserve(beta.size());
         for (Size i = 0; i < beta.size(); i++)
             betaTimes.push_back(
                 timeFromReference(optionDateFromTenor(swapLengths[i])));
@@ -918,6 +1170,13 @@ namespace QuantLib {
         for (Size k=0;k<nLayers_;k++) {
             ext::shared_ptr<Interpolation2D> interpolation;
             transposedPoints_.push_back(transpose(points[k]));
+            // k<=4 applies BackwardflatLinear to layers 0..4. This covers all
+            // model-parameter layers for both 4-param models (SABR: params 0-3)
+            // and 5-param models (ZABR: params 0-4). Side-effect: for 4-param
+            // models the forward-rate metadata layer (4) also gets BackwardflatLinear,
+            // while for 5-param models the forward-rate layer (5) gets Bilinear.
+            // To make this consistent across models the threshold would need to be
+            // Model::nParams, but Cube is a nested class that does not see Traits.
             if (k <= 4 && backwardFlat_)
                 interpolation =
                     ext::make_shared<BackwardflatLinearInterpolation>(
@@ -1107,6 +1366,7 @@ namespace QuantLib {
     template<class Model> std::vector<Real> XabrSwaptionVolatilityCube<Model>::Cube::operator()(
                             const Time optionTime, const Time swapLength) const {
         std::vector<Real> result;
+        result.reserve(nLayers_);
         for (Size k=0; k<nLayers_; ++k)
             result.push_back((*interpolators_[k])(optionTime, swapLength));
         return result;
@@ -1161,10 +1421,13 @@ namespace QuantLib {
     //                      SabrSwaptionVolatilityCube                      //
     //======================================================================//
 
-    //! Swaption Volatility Cube SABR 
+    //! Swaption Volatility Cube SABR Model
     /*! This struct defines the types used by SABR Volatility cubes
         for interpolation (SABRInterpolation) and for modeling the
         smile (SabrSmileSection).
+
+        Uses the default XabrModelTraits<> which provides 4-parameter
+        model support with shift and volatilityType.
     */
     struct SwaptionVolCubeSabrModel {
         typedef SABRInterpolation Interpolation;

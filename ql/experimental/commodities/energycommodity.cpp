@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -143,16 +143,16 @@ namespace QuantLib {
                 CommoditySettings::instance().currency();
             try {
                 for (auto & i : *secondaryCosts_) {
-                    if (ext::any_cast<CommodityUnitCost>(&i.second) != nullptr) {
+                    if (std::any_cast<CommodityUnitCost>(&i.second) != nullptr) {
                         Real value =
                             calculateUnitCost(
                                 commodityType,
-                                ext::any_cast<CommodityUnitCost>(i.second),
+                                std::any_cast<CommodityUnitCost>(i.second),
                                 evaluationDate) * totalQuantityValue;
                         secondaryCostAmounts_[i.first] =
                             Money(baseCurrency, value);
-                    } else if (ext::any_cast<Money>(&i.second) != nullptr) {
-                        const Money& amount = ext::any_cast<Money>(i.second);
+                    } else if (std::any_cast<Money>(&i.second) != nullptr) {
+                        const Money& amount = std::any_cast<Money>(i.second);
                         Real fxConversionFactor =
                             calculateFxConversionFactor(amount.currency(),
                                                         baseCurrency,

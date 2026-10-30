@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -27,11 +27,13 @@
 #ifndef ql_bootstrap_traits_hpp
 #define ql_bootstrap_traits_hpp
 
+#include <ql/math/array.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/interpolatedsimplezerocurve.hpp>
 #include <ql/termstructures/yield/forwardcurve.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -77,6 +79,21 @@ namespace QuantLib {
             return std::exp(-r * c->times()[i]);
         }
 
+        // guess for the whole curve and whether it needs to be transformed
+        template <class C>
+        static std::pair<Array, bool> globalGuess(const C* c, bool validData)
+        {
+            if (validData)
+                return {Array(c->data().begin() + 1, c->data().end()), true};
+
+            Array guess(c->times().begin() + 1, c->times().end());
+            guess *= -detail::avgRate;
+            // Discount::transformInverse() is log(), so we simply don't call exp() here
+            // and return false for needsTransform. This saves one pair of exp()/log()
+            // calls per pillar.
+            return {std::move(guess), false};
+        }
+
         // possible constraints based on previous values
         template <class C>
         static Real minValueAfter(Size i,
@@ -99,6 +116,18 @@ namespace QuantLib {
         {
             Time dt = c->times()[i] - c->times()[i-1];
             return c->data()[i-1] * std::exp(detail::maxRate * dt);
+        }
+
+        // transformation to add constraints to an unconstrained optimization
+        template <class C>
+        static Real transformDirect(Real x, Size i, const C* c)
+        {
+            return std::exp(x);
+        }
+        template <class C>
+        static Real transformInverse(Real x, Size i, const C* c)
+        {
+            return std::log(x);
         }
 
         // root-finding update
@@ -148,6 +177,16 @@ namespace QuantLib {
             Date d = c->dates()[i];
             return c->zeroRate(d, c->dayCounter(),
                                Continuous, Annual, true);
+        }
+
+        // guess for the whole curve and whether it needs to be transformed
+        template <class C>
+        static std::pair<Array, bool> globalGuess(const C* c, bool validData)
+        {
+            if (validData)
+                return {Array(c->data().begin() + 1, c->data().end()), true};
+
+            return {Array(c->times().size() - 1, detail::avgRate), true};
         }
 
         // possible constraints based on previous values
@@ -231,6 +270,16 @@ namespace QuantLib {
                                   Continuous, Annual, true);
         }
 
+        // guess for the whole curve and whether it needs to be transformed
+        template <class C>
+        static std::pair<Array, bool> globalGuess(const C* c, bool validData)
+        {
+            if (validData)
+                return {Array(c->data().begin() + 1, c->data().end()), true};
+
+            return {Array(c->times().size() - 1, detail::avgRate), true};
+        }
+
         // possible constraints based on previous values
         template <class C>
         static Real minValueAfter(Size,
@@ -311,6 +360,16 @@ namespace QuantLib {
                                Simple, Annual, true);
         }
 
+        // guess for the whole curve and whether it needs to be transformed
+        template <class C>
+        static std::pair<Array, bool> globalGuess(const C* c, bool validData)
+        {
+            if (validData)
+                return {Array(c->data().begin() + 1, c->data().end()), true};
+
+            return {Array(c->times().size() - 1, detail::avgRate), true};
+        }
+
         // possible constraints based on previous values
         template <class C>
         static Real minValueAfter(Size i,
@@ -327,8 +386,7 @@ namespace QuantLib {
                 // We choose as min a value very unlikely to be exceeded.
                 result = -detail::maxRate;
             }
-            Real t = c->timeFromReference(c->dates()[i]);
-            return std::max(result, -1.0 / t + 1E-8);
+            return std::max(result, -1.0 / c->times()[i] + 1E-8);
         }
         template <class C>
         static Real maxValueAfter(Size,
@@ -343,6 +401,18 @@ namespace QuantLib {
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
             return detail::maxRate;
+        }
+
+        // transformation to add constraints to an unconstrained optimization
+        template <class C>
+        static Real transformDirect(Real x, Size i, const C* c)
+        {
+            return std::exp(x) + (-1.0 / c->times()[i] + 1E-8);
+        }
+        template <class C>
+        static Real transformInverse(Real x, Size i, const C* c)
+        {
+            return std::log(x - (-1.0 / c->times()[i] + 1E-8));
         }
 
         // root-finding update

@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -19,7 +19,7 @@
 
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/cashflows/subperiodcoupon.hpp>
+#include <ql/cashflows/multipleresetscoupon.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/zerocouponswap.hpp>
 #include <utility>
@@ -27,18 +27,27 @@
 namespace QuantLib {
 
     namespace {       
+
         ext::shared_ptr<CashFlow>
         compoundedSubPeriodicCoupon(const Date& paymentDate,
                                     const Date& startDate,
                                     const Date& maturityDate,
                                     Real nominal,
                                     const ext::shared_ptr<IborIndex>& index) {
-            auto floatCpn = ext::make_shared<SubPeriodsCoupon>(
-                paymentDate, nominal, startDate, maturityDate, index->fixingDays(), index);
-            floatCpn->setPricer(
-                ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer));
+            Schedule schedule = MakeSchedule()
+                           .from(startDate)
+                           .to(maturityDate)
+                           .withTenor(index->tenor())
+                           .withCalendar(index->fixingCalendar())
+                           .withConvention(index->businessDayConvention())
+                           .backwards()
+                           .endOfMonth(index->endOfMonth());
+            auto floatCpn = ext::make_shared<MultipleResetsCoupon>(
+                paymentDate, nominal, schedule, index->fixingDays(), index);
+            floatCpn->setPricer(ext::make_shared<CompoundingMultipleResetsPricer>());
             return floatCpn;
         }
+
     }
 
     ZeroCouponSwap::ZeroCouponSwap(Type type,
@@ -98,7 +107,7 @@ namespace QuantLib {
                      paymentDelay) {
 
         legs_[0].push_back(
-            ext::shared_ptr<CashFlow>(new SimpleCashFlow(fixedPayment, paymentDate_)));
+            ext::make_shared<SimpleCashFlow>(fixedPayment, paymentDate_));
     }
 
     ZeroCouponSwap::ZeroCouponSwap(Type type,
@@ -121,8 +130,8 @@ namespace QuantLib {
                      paymentDelay) {
 
         InterestRate interest(fixedRate, fixedDayCounter, Compounded, Annual);
-        legs_[0].push_back(ext::shared_ptr<CashFlow>(
-            new FixedRateCoupon(paymentDate_, baseNominal_, interest, startDate, maturityDate)));
+        legs_[0].push_back(ext::make_shared<FixedRateCoupon>(
+            paymentDate_, baseNominal_, std::move(interest), startDate, maturityDate));
     }
 
     Real ZeroCouponSwap::fixedLegNPV() const {

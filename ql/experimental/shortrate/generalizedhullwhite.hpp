@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -127,10 +127,14 @@ namespace QuantLib {
         //! vector to pass to 'calibrate' to fit only volatility
         std::vector<bool> fixedReversion() const;
 
-      protected:
-        //Analytical calibration of HW
         Real a() const { return a_(0.0); }
         Real sigma() const { return sigma_(0.0); }
+
+        std::function<Real (Time)> speed() const { return speed_; }
+        std::function<Real (Time)> vol() const { return vol_; }
+
+      protected:
+        //Analytical calibration of HW
         void generateArguments() override;
         Real A(Time t, Time T) const override;
         Real B(Time t, Time T) const override;
@@ -148,9 +152,6 @@ namespace QuantLib {
         std::vector<Time> volperiods_;
         Interpolation speed_;
         Interpolation vol_;
-
-        std::function<Real (Time)> speed() const;
-        std::function<Real (Time)> vol() const;
 
         Parameter& a_;
         Parameter& sigma_;
@@ -337,7 +338,7 @@ namespace QuantLib {
 
     namespace detail {
         template <class I1, class I2>
-        class LinearFlatInterpolationImpl
+        class LinearFlatInterpolationImpl final
             : public Interpolation::templateImpl<I1,I2> {
           public:
             LinearFlatInterpolationImpl(const I1& xBegin, const I1& xEnd,

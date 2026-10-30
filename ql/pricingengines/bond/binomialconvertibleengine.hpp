@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -90,7 +90,12 @@ namespace QuantLib {
             maturityDate, divdc, Continuous, NoFrequency);
         Date referenceDate = process_->riskFreeRate()->referenceDate();
 
-        // subtract dividends
+        // Subtract every dividend that has not yet occurred as of the
+        // evaluation date. Note that a dividend falling strictly between the
+        // evaluation date and the settlement date is subtracted here but never
+        // added back: the tree prices the bond at the settlement date, where
+        // the underlying already reflects that dividend as already paid, so
+        // dropping it on the spot is the correct thing to do.
         Size i;
         for (i=0; i<dividends_.size(); i++) {
             if (dividends_[i]->date() >= referenceDate)
@@ -100,26 +105,32 @@ namespace QuantLib {
         QL_REQUIRE(s0 > 0.0,
             "negative value after subtracting dividends");
 
+        // Roll the spot forward from the evaluation date to the settlement
+        // date by dividing out the discount factor between the two. This is
+        // correct even in the absence of any dividends: the tree and
+        // DiscretizedConvertible anchor all dividend/coupon/callability times
+        // at arguments_.settlementDate (see issue #2701), so the spot the
+        // tree prices from must be the settlement-date forward price, not the
+        // evaluation-date spot.
+        s0 /= process_->riskFreeRate()->discount(arguments_.settlementDate);
+
         // binomial trees with constant coefficient
-        Handle<Quote> underlying(ext::shared_ptr<Quote>(new SimpleQuote(s0)));
-        Handle<YieldTermStructure> flatRiskFree(ext::shared_ptr<YieldTermStructure>(
-            new FlatForward(referenceDate, riskFreeRate, rfdc)));
+        Handle<Quote> underlying(ext::make_shared<SimpleQuote>(s0));
+        Handle<YieldTermStructure> flatRiskFree(ext::make_shared<FlatForward>(referenceDate, riskFreeRate, rfdc));
         Handle<YieldTermStructure> flatDividends(
-            ext::shared_ptr<YieldTermStructure>(new FlatForward(referenceDate, q, divdc)));
-        Handle<BlackVolTermStructure> flatVol(ext::shared_ptr<BlackVolTermStructure>(
-            new BlackConstantVol(referenceDate, volcal, v, voldc)));
+            ext::make_shared<FlatForward>(referenceDate, q, divdc));
+        Handle<BlackVolTermStructure> flatVol(ext::make_shared<BlackConstantVol>(referenceDate, volcal, v, voldc));
 
         Time maturity = rfdc.yearFraction(arguments_.settlementDate, maturityDate);
         Real strike = arguments_.redemption / arguments_.conversionRatio ;
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> bs(
-            new GeneralizedBlackScholesProcess(underlying, flatDividends, flatRiskFree, flatVol));
-        ext::shared_ptr<T> tree(new T(bs, maturity, timeSteps_, strike));
+        auto bs = ext::make_shared<GeneralizedBlackScholesProcess>(underlying, flatDividends, flatRiskFree, flatVol);
+        auto tree = ext::make_shared<T>(bs, maturity, timeSteps_, strike);
 
         Real creditSpread = creditSpread_->value();
 
-        ext::shared_ptr<Lattice> lattice(new TsiveriotisFernandesLattice<T>(
-            tree, riskFreeRate, maturity, timeSteps_, creditSpread, v, q));
+        auto lattice = ext::make_shared<TsiveriotisFernandesLattice<T>>(
+            tree, riskFreeRate, maturity, timeSteps_, creditSpread, v, q);
 
         DiscretizedConvertible convertible(arguments_, bs, dividends_, creditSpread_, TimeGrid(maturity, timeSteps_));
 

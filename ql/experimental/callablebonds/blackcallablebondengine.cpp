@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -155,6 +155,10 @@ namespace QuantLib {
         Time exerciseTime = volatility_->dayCounter().yearFraction(
                                                  volatility_->referenceDate(),
                                                  exerciseDate);
+
+        Real discount = discountCurve_->discount(exerciseDate);
+        Real discountToSettlement = discount / discountCurve_->discount(settle);
+
         Real embeddedOptionValue =
             blackFormula(type,
                          cashStrike,
@@ -162,11 +166,11 @@ namespace QuantLib {
                          priceVol*std::sqrt(exerciseTime));
 
         if (type == Option::Call) {
-            results_.value = npv - embeddedOptionValue;
-            results_.settlementValue = value - embeddedOptionValue;
+            results_.value = npv - embeddedOptionValue * discount;
+            results_.settlementValue = value - embeddedOptionValue * discountToSettlement;
         } else {
-            results_.value = npv + embeddedOptionValue;
-            results_.settlementValue = value + embeddedOptionValue;
+            results_.value = npv + embeddedOptionValue * discount;
+            results_.settlementValue = value + embeddedOptionValue * discountToSettlement;
         }
     }
 

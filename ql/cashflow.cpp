@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     bool CashFlow::hasOccurred(const Date& refDate,
-                               ext::optional<bool> includeRefDate) const {
+                               std::optional<bool> includeRefDate) const {
 
         // easy and quick handling of most cases
         if (refDate != Date()) {
@@ -40,10 +40,10 @@ namespace QuantLib {
             refDate == Settings::instance().evaluationDate()) {
             // today's date; we override the bool with the one
             // specified in the settings (if any)
-            ext::optional<bool> includeToday =
+            std::optional<bool> includeToday =
                 Settings::instance().includeTodaysCashFlows();
-            if (includeToday) // NOLINT(readability-implicit-bool-conversion)
-                includeRefDate = *includeToday;
+            if (includeToday.has_value())
+                includeRefDate = includeToday;
         }
         return Event::hasOccurred(refDate, includeRefDate);
     }

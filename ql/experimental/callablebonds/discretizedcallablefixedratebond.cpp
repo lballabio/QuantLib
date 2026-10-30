@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -97,6 +97,15 @@ namespace QuantLib {
             adjustedCallabilityPrices_[i] *= arguments_.faceAmount / 100.0;
             callabilityTimes_[i] = callabilityTime;
         }
+
+        // not snapped itself, but a snapped neighbour may have moved this coupon ahead
+        for (Size i = 0; i < callabilityTimes_.size(); ++i) {
+            for (Size j = 0; j < couponTimes_.size(); ++j) {
+                if (couponAdjustments_[j] == CouponAdjustment::pre &&
+                    args.callabilityDates[i] == args.couponDates[j])
+                    adjustedCallabilityPrices_[i] += args.couponAmounts[j];
+            }
+        }
     }
 
 
@@ -167,7 +176,7 @@ namespace QuantLib {
 
     void DiscretizedCallableFixedRateBond::applyCallability(Size i) {
         Size j;
-        switch (arguments_.putCallSchedule[i]->type()) {
+        switch (arguments_.callabilityTypes[i]) {
             case Callability::Call:
                 for (j = 0; j < values_.size(); j++) {
                     values_[j] = std::min(adjustedCallabilityPrices_[i], values_[j]);

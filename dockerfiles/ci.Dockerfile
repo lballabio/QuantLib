@@ -1,7 +1,8 @@
 ARG tag=latest
 FROM ubuntu:${tag}
-MAINTAINER Luigi Ballabio <luigi.ballabio@gmail.com>
-LABEL Description="Provide Docker images for QuantLib's CI builds on Linux"
+
+LABEL org.opencontainers.image.authors="Luigi Ballabio <luigi.ballabio@gmail.com>"
+LABEL description="An environment for QuantLib CI builds on Linux"
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential wget libbz2-dev autoconf automake libtool ccache cmake clang git \
@@ -12,7 +13,9 @@ ARG boost_version
 ARG boost_dir
 ENV boost_version ${boost_version}
 
-RUN wget https://boostorg.jfrog.io/artifactory/main/release/${boost_version}/source/${boost_dir}.tar.gz \
+# The Boost source directory is temporary within this single image layer.
+# hadolint ignore=DL3003
+RUN wget https://archives.boost.io/release/${boost_version}/source/${boost_dir}.tar.gz \
     && tar xfz ${boost_dir}.tar.gz \
     && rm ${boost_dir}.tar.gz \
     && cd ${boost_dir} \

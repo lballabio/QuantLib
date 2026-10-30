@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -78,8 +78,6 @@ namespace QuantLib {
     }
 
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     FixedRateBondHelper::FixedRateBondHelper(
                                     const Handle<Quote>& price,
                                     Natural settlementDays,
@@ -104,8 +102,6 @@ namespace QuantLib {
                                                  exCouponConvention, exCouponEndOfMonth),
                  priceType) {}
 
-    QL_DEPRECATED_ENABLE_WARNING
-
     void FixedRateBondHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<FixedRateBondHelper>*>(&v);
         if (v1 != nullptr)
@@ -115,13 +111,10 @@ namespace QuantLib {
     }
 
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     CPIBondHelper::CPIBondHelper(
                             const Handle<Quote>& price,
                             Natural settlementDays,
                             Real faceAmount,
-                            const bool growthOnly,
                             Real baseCPI,
                             const Period& observationLag,
                             const ext::shared_ptr<ZeroInflationIndex>& cpiIndex,
@@ -138,14 +131,12 @@ namespace QuantLib {
                             bool exCouponEndOfMonth,
                             const Bond::Price::Type priceType)
     : BondHelper(price,
-                 ext::make_shared<CPIBond>(settlementDays, faceAmount, growthOnly, baseCPI,
+                 ext::make_shared<CPIBond>(settlementDays, faceAmount, baseCPI,
                                            observationLag, cpiIndex, observationInterpolation,
                                            std::move(schedule), fixedRate, accrualDayCounter, paymentConvention,
                                            issueDate, paymentCalendar, exCouponPeriod, exCouponCalendar,
                                            exCouponConvention, exCouponEndOfMonth),
                  priceType) {}
-
-    QL_DEPRECATED_ENABLE_WARNING
 
     void CPIBondHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<CPIBondHelper>*>(&v);

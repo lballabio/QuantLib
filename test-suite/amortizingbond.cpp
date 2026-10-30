@@ -8,7 +8,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(testAmortizingFixedRateBond) {
 
     const Real tolerance = 1.0e-6;
 
-    for (Size i=0; i<LENGTH(rates); ++i) {
+    for (Size i=0; i<std::size(rates); ++i) {
 
         auto schedule = sinkingSchedule(refDate, Period(30, Years), freq, NullCalendar());
         auto notionals = sinkingNotionals(Period(30, Years), freq, rates[i], 100.0);
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(testAmortizingFixedRateBond) {
         AmortizingFixedRateBond myBond(0, notionals, schedule, {rates[i]},
                                        ActualActual(ActualActual::ISMA));
 
-        Leg cashflows = myBond.cashflows();
+        const Leg& cashflows = myBond.cashflows();
 
         for (Size k=0; k < cashflows.size() / 2; ++k) {
             Real coupon = cashflows[2*k]->amount();
@@ -196,7 +196,7 @@ BOOST_AUTO_TEST_CASE(testBrazilianAmortizingFixedRateBond) {
 
     const Real tolerance = 1.0e-6;
     Real error;
-    Leg cashflows = risf11.cashflows();
+    const Leg& cashflows = risf11.cashflows();
     for (Size k=0; k < cashflows.size() / 2; ++k) {
         error = std::fabs(expected_coupons[k] - cashflows[2*k]->amount());
         if(error > tolerance) {

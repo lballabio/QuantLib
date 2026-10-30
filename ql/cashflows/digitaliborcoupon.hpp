@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -32,7 +32,7 @@
 
 namespace QuantLib {
 
-    //! Ibor rate coupon with digital digital call/put option
+    //! Ibor rate coupon with digital call/put option
     class DigitalIborCoupon : public DigitalCoupon {
       public:
         DigitalIborCoupon(
@@ -83,11 +83,6 @@ namespace QuantLib {
         DigitalIborLeg& withPutPayoffs(Rate payoff);
         DigitalIborLeg& withPutPayoffs(const std::vector<Rate>& payoffs);
         DigitalIborLeg& withReplication(const ext::shared_ptr<DigitalReplication>&);
-        /*! \deprecated Use the overload that passes a replication instead.
-                        Deprecated in version 1.32.
-        */
-        [[deprecated("Use the overload that passes a replication instead")]]
-        DigitalIborLeg& withReplication();
         DigitalIborLeg& withNakedOption(bool nakedOption = true);
 
         operator Leg() const;

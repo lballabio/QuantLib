@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -19,6 +19,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/errors.hpp>
 #include <ql/settings.hpp>
 
 using namespace QuantLib;
@@ -27,6 +28,27 @@ using namespace boost::unit_test_framework;
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(SettingsTests)
+
+BOOST_AUTO_TEST_CASE(testEvaluationDateHandling) {
+    BOOST_TEST_MESSAGE("Testing evaluation-date handling...");
+
+    SavedSettings backup;
+    Settings::instance().resetEvaluationDate();
+
+#ifdef QL_REQUIRE_EXPLICIT_EVALUATION_DATE 
+    BOOST_CHECK_THROW(Date(Settings::instance().evaluationDate()), Error);
+#else
+    Date today = Date::todaysDate();
+    Date evaluationDate = Settings::instance().evaluationDate();
+    BOOST_CHECK(evaluationDate == today ||
+                evaluationDate == Date::todaysDate());
+#endif
+
+    Date explicitDate(18, July, 2026);
+    Settings::instance().evaluationDate() = explicitDate;
+
+    BOOST_CHECK_EQUAL(Date(Settings::instance().evaluationDate()), explicitDate);
+}
 
 BOOST_AUTO_TEST_CASE(testNotificationsOnDateChange) {
     BOOST_TEST_MESSAGE("Testing notifications on evaluation-date change...");

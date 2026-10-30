@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2013, 2015 Peter Caspers
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -10,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -53,6 +54,8 @@
 
 namespace QuantLib {
 
+class OvernightIndexedCoupon;
+
 /*! One factor interest rate model interface class
     The only methods that must be implemented by subclasses
     are the numeraire and zerobond methods for an input array
@@ -87,7 +90,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
                    const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
 
     Real zerobond(const Date& maturity,
-                  const Date& referenceDate = Null<Date>(),
+                  const Date& referenceDate = Date(),
                   Real y = 0.0,
                   const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
 
@@ -96,7 +99,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
                         const Date& valueDate,
                         const Date& maturity,
                         Rate strike,
-                        const Date& referenceDate = Null<Date>(),
+                        const Date& referenceDate = Date(),
                         Real y = 0.0,
                         const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>(),
                         Real yStdDevs = 7.0,
@@ -106,20 +109,26 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
 
     Real
     forwardRate(const Date& fixing,
-                const Date& referenceDate = Null<Date>(),
+                const Date& referenceDate = Date(),
                 Real y = 0.0,
                 const ext::shared_ptr<IborIndex>& iborIdx = ext::shared_ptr<IborIndex>()) const;
 
+    Real compoundedRate(
+        const OvernightIndexedCoupon& coupon,
+        const Date& referenceDate = Date(),
+        Real y = 0.0,
+        const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
+
     Real swapRate(const Date& fixing,
                   const Period& tenor,
-                  const Date& referenceDate = Null<Date>(),
+                  const Date& referenceDate = Date(),
                   Real y = 0.0,
                   const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
 
     Real
     swapAnnuity(const Date& fixing,
                 const Period& tenor,
-                const Date& referenceDate = Null<Date>(),
+                const Date& referenceDate = Date(),
                 Real y = 0.0,
                 const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
 
@@ -252,7 +261,7 @@ Gaussian1dModel::zerobond(const Date &maturity, const Date &referenceDate,
                           const Real y, const Handle<YieldTermStructure> &yts) const {
 
     return zerobond(termStructure()->timeFromReference(maturity),
-                    referenceDate != Null<Date>()
+                    referenceDate != Date()
                         ? termStructure()->timeFromReference(referenceDate)
                         : 0.0,
                     y, yts);

@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -67,9 +67,9 @@ namespace QuantLib {
                         Real recoveryRate,
                         Handle<YieldTermStructure> yieldTS);
         void calculate() const override;
-        Handle<DefaultProbabilityTermStructure> defaultTS() const;
+        const Handle<DefaultProbabilityTermStructure>& defaultTS() const;
         Real recoveryRate() const;
-        Handle<YieldTermStructure> yieldTS() const;
+        const Handle<YieldTermStructure>& yieldTS() const;
       private:
         Handle<DefaultProbabilityTermStructure> defaultTS_;
         Real recoveryRate_;
@@ -77,13 +77,13 @@ namespace QuantLib {
     };
 
 
-    inline Handle<DefaultProbabilityTermStructure> RiskyBondEngine::defaultTS() const {
+    inline const Handle<DefaultProbabilityTermStructure>& RiskyBondEngine::defaultTS() const {
         return defaultTS_;
     }
 
     inline Real RiskyBondEngine::recoveryRate() const { return recoveryRate_; }
 
-    inline Handle<YieldTermStructure> RiskyBondEngine::yieldTS() const { return yieldTS_; }
+    inline const Handle<YieldTermStructure>& RiskyBondEngine::yieldTS() const { return yieldTS_; }
 
 }
 

@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -37,9 +37,9 @@ namespace QuantLib {
       fixingDate_(fixingDate), swapIndex_(std::move(swapIndex)), model_(model),
       engine_(swaptionEngine) {
 
-        atm_ = model_->swapRate(fixingDate_, swapIndex_->tenor(), Null<Date>(), 0.0, swapIndex_);
+        atm_ = model_->swapRate(fixingDate_, swapIndex_->tenor(), Date(), 0.0, swapIndex_);
         annuity_ =
-            model_->swapAnnuity(fixingDate_, swapIndex_->tenor(), Null<Date>(), 0.0, swapIndex_);
+            model_->swapAnnuity(fixingDate_, swapIndex_->tenor(), Date(), 0.0, swapIndex_);
 
         if (engine_ == nullptr) {
             engine_ = ext::make_shared<Gaussian1dSwaptionEngine>(
@@ -56,9 +56,9 @@ namespace QuantLib {
     : SmileSection(fixingDate, dc, model->termStructure()->referenceDate()),
       fixingDate_(fixingDate), iborIndex_(std::move(iborIndex)), model_(model), engine_(capEngine) {
 
-        atm_ = model_->forwardRate(fixingDate_, Null<Date>(), 0.0, iborIndex_);
+        atm_ = model_->forwardRate(fixingDate_, Date(), 0.0, iborIndex_);
         CapFloor c =
-            MakeCapFloor(CapFloor::Cap, iborIndex_->tenor(), iborIndex_, Null<Real>(), 0 * Days)
+            MakeCapFloor(CapFloor::Cap, iborIndex_->tenor(), iborIndex_)
                 .withEffectiveDate(fixingDate_, false);
         annuity_ = iborIndex_->dayCounter().yearFraction(c.startDate(), c.maturityDate()) *
                    model_->zerobond(c.maturityDate());
@@ -86,7 +86,8 @@ Real Gaussian1dSmileSection::optionPrice(Rate strike, Option::Type type,
     } else {
         CapFloor c =
             MakeCapFloor(type == Option::Call ? CapFloor::Cap : CapFloor::Floor,
-                         iborIndex_->tenor(), iborIndex_, strike, 0 * Days)
+                         iborIndex_->tenor(), iborIndex_)
+                .withStrike(strike)
                 .withEffectiveDate(fixingDate_, false)
                 .withPricingEngine(engine_);
         Real tmp = c.NPV();

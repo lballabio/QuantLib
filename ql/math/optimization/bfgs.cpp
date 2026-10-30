@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -18,6 +18,7 @@
 */
 
 #include <ql/math/optimization/bfgs.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/linesearch.hpp>
 
@@ -51,8 +52,8 @@ namespace QuantLib {
         {
             fac += diffGradient[i] * lineSearch_->searchDirection()[i];
             fae += diffGradient[i] * diffGradientWithHessianApplied[i];
-            sumdg += std::pow(diffGradient[i], 2.);
-            sumxi += std::pow(lineSearch_->searchDirection()[i], 2.);
+            sumdg += squared(diffGradient[i]);
+            sumxi += squared(lineSearch_->searchDirection()[i]);
         }
 
         if (fac > std::sqrt(1e-8 * sumdg * sumxi))  // skip update if fac not sufficiently positive

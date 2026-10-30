@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -26,6 +26,7 @@
 
 #include <ql/math/factorial.hpp>
 #include <ql/math/beta.hpp>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -141,8 +142,28 @@ namespace QuantLib {
         Real result = (z/(n+1.0/3.0+0.1/(n+1.0)));
         result *= result;
         result = std::exp(-result*(n+1.0/6.0));
-        result = 0.5 + (z>0 ? 1 : -1) * std::sqrt((0.25 * (1.0-result)));
-        return result;
+        Real root = std::sqrt(1.0-result);
+        // 0.5*(1.0-root) rewritten to keep its digits as root nears 1
+        if (z > 0.0)
+            return 0.5*(1.0+root);
+        else
+            return 0.5*result/(1.0+root);
+    }
+
+    //! Log of PeizerPrattMethod2Inversion, finite when the probability underflows.
+    inline Real PeizerPrattMethod2LogInversion(Real z, BigNatural n) {
+
+        QL_REQUIRE(n%2==1,
+                   "n must be an odd number: " << n << " not allowed");
+
+        Real denom = n + 1.0/3.0 + 0.1/(n+1.0);
+        Real exponent = (z/denom)*(z/denom)*(n + 1.0/6.0);
+        Real result = std::exp(-exponent);
+        Real root = std::sqrt(1.0 - result);
+        if (z > 0.0)
+            return std::log(0.5*(1.0 + root));
+        // log(0.5*result/(1+root)), with result = exp(-exponent)
+        return -exponent + std::log(0.5) - std::log(1.0 + root);
     }
 
 }

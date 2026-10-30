@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -29,6 +29,11 @@
 namespace QuantLib {
 
     //! Interest rate coumpounding rule
+    /*! SimpleThenCompounded and CompoundedThenSimple express that the
+        compounding style depends on the position of the
+        cashflow. Therefore, they should not be used on their own when
+        the cashflow position is not available from the context of a
+        calculation. */
     enum Compounding { Simple = 0,          //!< \f$ 1+rt \f$
                        Compounded = 1,      //!< \f$ (1+r)^t \f$
                        Continuous = 2,      //!< \f$ e^{rt} \f$

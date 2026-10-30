@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -36,6 +36,7 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/ibor/estr.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
@@ -314,11 +315,104 @@ BOOST_AUTO_TEST_CASE(testConsistency) {
                    "\n  tolerance:    " << tolerance);
     }
 
+    // using overnight index
 
+    auto overnight = ext::make_shared<Estr>(vars.termStructure);
+    Schedule overnightSchedule(bond->settlementDate(),
+                               bond->maturityDate(),
+                               6 * Months,
+                               overnight->fixingCalendar(),
+                               overnight->businessDayConvention(),
+                               overnight->businessDayConvention(),
+                               DateGeneration::Backward,
+                               false);
 
+    parAssetSwap = AssetSwap(payFixedRate,
+                             bond, bondPrice,
+                             overnight, vars.spread,
+                             overnightSchedule,
+                             overnight->dayCounter(),
+                             isPar);
+
+    swapEngine = ext::make_shared<DiscountingSwapEngine>(
+                              vars.termStructure,
+                              true,
+                              bond->settlementDate(),
+                              Settings::instance().evaluationDate());
+
+    parAssetSwap.setPricingEngine(swapEngine);
+    fairCleanPrice = parAssetSwap.fairCleanPrice();
+    fairSpread = parAssetSwap.fairSpread();
+
+    assetSwap2 = AssetSwap(payFixedRate,
+                           bond, fairCleanPrice,
+                           overnight, vars.spread,
+                           overnightSchedule,
+                           overnight->dayCounter(),
+                           isPar);
+    assetSwap2.setPricingEngine(swapEngine);
+    if (std::fabs(assetSwap2.NPV())>tolerance) {
+        BOOST_FAIL("\npar asset swap fair clean price doesn't zero the NPV: " <<
+                   std::fixed << std::setprecision(4) <<
+                   "\n  clean price:      " << bondPrice <<
+                   "\n  fair clean price: " << fairCleanPrice <<
+                   "\n  NPV:              " << assetSwap2.NPV() <<
+                   "\n  tolerance:        " << tolerance);
+    }
+    if (std::fabs(assetSwap2.fairCleanPrice() - fairCleanPrice)>tolerance) {
+        BOOST_FAIL("\npar asset swap fair clean price doesn't equal input "
+                   "clean price at zero NPV: " <<
+                   std::fixed << std::setprecision(4) <<
+                   "\n  input clean price: " << fairCleanPrice <<
+                   "\n  fair clean price:  " << assetSwap2.fairCleanPrice() <<
+                   "\n  NPV:               " << assetSwap2.NPV() <<
+                   "\n  tolerance:         " << tolerance);
+    }
+    if (std::fabs(assetSwap2.fairSpread() - vars.spread)>tolerance) {
+        BOOST_FAIL("\npar asset swap fair spread doesn't equal input spread "
+                   "at zero NPV: " << std::fixed << std::setprecision(4) <<
+                   "\n  input spread: " << vars.spread <<
+                   "\n  fair spread:  " << assetSwap2.fairSpread() <<
+                   "\n  NPV:          " << assetSwap2.NPV() <<
+                   "\n  tolerance:    " << tolerance);
+    }
+
+    assetSwap3 = AssetSwap(payFixedRate,
+                           bond, bondPrice,
+                           overnight, fairSpread,
+                           overnightSchedule,
+                           overnight->dayCounter(),
+                           isPar);
+    assetSwap3.setPricingEngine(swapEngine);
+    if (std::fabs(assetSwap3.NPV())>tolerance) {
+        BOOST_FAIL("\npar asset swap fair spread doesn't zero the NPV: " <<
+                   std::fixed << std::setprecision(4) <<
+                   "\n  spread:      " << vars.spread <<
+                   "\n  fair spread: " << fairSpread <<
+                   "\n  NPV:         " << assetSwap3.NPV() <<
+                   "\n  tolerance:   " << tolerance);
+    }
+    if (std::fabs(assetSwap3.fairCleanPrice() - bondPrice)>tolerance) {
+        BOOST_FAIL("\npar asset swap fair clean price doesn't equal input "
+                   "clean price at zero NPV: " <<
+                   std::fixed << std::setprecision(4) <<
+                   "\n  input clean price: " << bondPrice <<
+                   "\n  fair clean price:  " << assetSwap3.fairCleanPrice() <<
+                   "\n  NPV:               " << assetSwap3.NPV() <<
+                   "\n  tolerance:         " << tolerance);
+    }
+    if (std::fabs(assetSwap3.fairSpread() - fairSpread)>tolerance) {
+        BOOST_FAIL("\npar asset swap fair spread doesn't equal input spread at"
+                   " zero NPV: " << std::fixed << std::setprecision(4) <<
+                   "\n  input spread: " << fairSpread <<
+                   "\n  fair spread:  " << assetSwap3.fairSpread() <<
+                   "\n  NPV:          " << assetSwap3.NPV() <<
+                   "\n  tolerance:    " << tolerance);
+    }
 
 
     // now market asset swap
+
     isPar = false;
     AssetSwap mktAssetSwap(payFixedRate,
                            bond, bondPrice,
@@ -493,6 +587,90 @@ BOOST_AUTO_TEST_CASE(testConsistency) {
                    "\n  tolerance:    " << tolerance);
     }
 
+    // using overnight index
+
+    mktAssetSwap = AssetSwap(payFixedRate,
+                             bond, bondPrice,
+                             overnight, vars.spread,
+                             overnightSchedule,
+                             overnight->dayCounter(),
+                             isPar);
+
+    swapEngine = ext::make_shared<DiscountingSwapEngine>(
+                              vars.termStructure,
+                              true,
+                              bond->settlementDate(),
+                              Settings::instance().evaluationDate());
+
+    mktAssetSwap.setPricingEngine(swapEngine);
+    fairCleanPrice = mktAssetSwap.fairCleanPrice();
+    fairSpread = mktAssetSwap.fairSpread();
+
+    assetSwap4 = AssetSwap(payFixedRate,
+                           bond, fairCleanPrice,
+                           overnight, vars.spread,
+                           overnightSchedule,
+                           overnight->dayCounter(),
+                           isPar);
+    assetSwap4.setPricingEngine(swapEngine);
+    if (std::fabs(assetSwap4.NPV())>tolerance) {
+        BOOST_FAIL("\nmarket asset swap fair clean price doesn't zero the NPV: " <<
+                   std::fixed << std::setprecision(4) <<
+                   "\n  clean price:      " << bondPrice <<
+                   "\n  fair clean price: " << fairCleanPrice <<
+                   "\n  NPV:              " << assetSwap4.NPV() <<
+                   "\n  tolerance:        " << tolerance);
+    }
+    if (std::fabs(assetSwap4.fairCleanPrice() - fairCleanPrice)>tolerance) {
+        BOOST_FAIL("\nmarket asset swap fair clean price doesn't equal input "
+                   "clean price at zero NPV: " <<
+                   std::fixed << std::setprecision(4) <<
+                   "\n  input clean price: " << fairCleanPrice <<
+                   "\n  fair clean price:  " << assetSwap4.fairCleanPrice() <<
+                   "\n  NPV:               " << assetSwap4.NPV() <<
+                   "\n  tolerance:         " << tolerance);
+    }
+    if (std::fabs(assetSwap4.fairSpread() - vars.spread)>tolerance) {
+        BOOST_FAIL("\nmarket asset swap fair spread doesn't equal input spread"
+                   " at zero NPV: " << std::fixed << std::setprecision(4) <<
+                   "\n  input spread: " << vars.spread <<
+                   "\n  fair spread:  " << assetSwap4.fairSpread() <<
+                   "\n  NPV:          " << assetSwap4.NPV() <<
+                   "\n  tolerance:    " << tolerance);
+    }
+
+    assetSwap5 = AssetSwap(payFixedRate,
+                           bond, bondPrice,
+                           overnight, fairSpread,
+                           overnightSchedule,
+                           overnight->dayCounter(),
+                           isPar);
+    assetSwap5.setPricingEngine(swapEngine);
+    if (std::fabs(assetSwap5.NPV())>tolerance) {
+        BOOST_FAIL("\nmarket asset swap fair spread doesn't zero the NPV: " <<
+                   std::fixed << std::setprecision(4) <<
+                   "\n  spread:      " << vars.spread <<
+                   "\n  fair spread: " << fairSpread <<
+                   "\n  NPV:         " << assetSwap5.NPV() <<
+                   "\n  tolerance:   " << tolerance);
+    }
+    if (std::fabs(assetSwap5.fairCleanPrice() - bondPrice)>tolerance) {
+        BOOST_FAIL("\nmarket asset swap fair clean price doesn't equal input "
+                   "clean price at zero NPV: " <<
+                   std::fixed << std::setprecision(4) <<
+                   "\n  input clean price: " << bondPrice <<
+                   "\n  fair clean price:  " << assetSwap5.fairCleanPrice() <<
+                   "\n  NPV:               " << assetSwap5.NPV() <<
+                   "\n  tolerance:         " << tolerance);
+    }
+    if (std::fabs(assetSwap5.fairSpread() - fairSpread)>tolerance) {
+        BOOST_FAIL("\nmarket asset swap fair spread doesn't equal input spread at zero NPV: " <<
+                   std::fixed << std::setprecision(4) <<
+                   "\n  input spread: " << fairSpread <<
+                   "\n  fair spread:  " << assetSwap5.fairSpread() <<
+                   "\n  NPV:          " << assetSwap5.NPV() <<
+                   "\n  tolerance:    " << tolerance);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testImpliedValue) {
@@ -1335,7 +1513,7 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // bond's frequency + coumpounding and daycounter of the YC...
     Real fixedBondCleanPrice1 = BondFunctions::cleanPrice(
          *fixedBond1, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          fixedBondSettlementDate1);
     Real tolerance = 1.0e-13;
     Real error1 = std::fabs(fixedBondImpliedValue1-fixedBondCleanPrice1);
@@ -1372,7 +1550,7 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real fixedBondCleanPrice2 = BondFunctions::cleanPrice(
          *fixedBond2, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          fixedBondSettlementDate2);
     Real error3 = std::fabs(fixedBondImpliedValue2-fixedBondCleanPrice2);
     if (error3>tolerance) {
@@ -1414,7 +1592,7 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice1 = BondFunctions::cleanPrice(
         *floatingBond1, *vars.termStructure, vars.spread,
-        Actual365Fixed(), vars.compounding, Semiannual,
+        vars.compounding, Semiannual,
         fixedBondSettlementDate1);
     Real error5 = std::fabs(floatingBondImpliedValue1-floatingBondCleanPrice1);
     if (error5>tolerance) {
@@ -1455,7 +1633,7 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice2 = BondFunctions::cleanPrice(
         *floatingBond2, *vars.termStructure,
-        vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
+        vars.spread, vars.compounding, Semiannual,
         fixedBondSettlementDate1);
     Real error7 = std::fabs(floatingBondImpliedValue2-floatingBondCleanPrice2);
     if (error7>tolerance) {
@@ -1496,7 +1674,7 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real cmsBondCleanPrice1 = BondFunctions::cleanPrice(
         *cmsBond1, *vars.termStructure, vars.spread,
-        Actual365Fixed(), vars.compounding, Annual,
+        vars.compounding, Annual,
         cmsBondSettlementDate1);
     Real error9 = std::fabs(cmsBondImpliedValue1-cmsBondCleanPrice1);
     if (error9>tolerance) {
@@ -1536,7 +1714,7 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real cmsBondCleanPrice2 = BondFunctions::cleanPrice(
          *cmsBond2, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          cmsBondSettlementDate2);
     Real error11 = std::fabs(cmsBondImpliedValue2-cmsBondCleanPrice2);
     if (error11>tolerance) {
@@ -1568,7 +1746,6 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
         BondFunctions::cleanPrice(*zeroCpnBond1,
                               *vars.termStructure,
                               vars.spread,
-                              Actual365Fixed(),
                               vars.compounding, Annual,
                               zeroCpnBondSettlementDate1);
     Real error13 = std::fabs(zeroCpnBondImpliedValue1-zeroCpnBondCleanPrice1);
@@ -1602,7 +1779,6 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
         BondFunctions::cleanPrice(*zeroCpnBond2,
                               *vars.termStructure,
                               vars.spread,
-                              Actual365Fixed(),
                               vars.compounding, Annual,
                               zeroCpnBondSettlementDate2);
     Real error15 = std::fabs(zeroCpnBondImpliedValue2-zeroCpnBondCleanPrice2);
@@ -2523,7 +2699,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real fixedBondCleanPrice1 = BondFunctions::cleanPrice(
          *fixedBond1, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          fixedBondSettlementDate1);
     Real tolerance = 1.0e-13;
     Real error1 = std::fabs(fixedBondImpliedValue1-fixedBondCleanPrice1);
@@ -2567,7 +2743,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
 
     Real fixedBondCleanPrice2 = BondFunctions::cleanPrice(
          *fixedBond2, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          fixedBondSettlementDate2);
     Real error3 = std::fabs(fixedBondImpliedValue2-fixedBondCleanPrice2);
     if (error3>tolerance) {
@@ -2614,7 +2790,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice1 = BondFunctions::cleanPrice(
         *floatingBond1, *vars.termStructure,
-        vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
+        vars.spread, vars.compounding, Semiannual,
         fixedBondSettlementDate1);
     Real error5 = std::fabs(floatingBondImpliedValue1-floatingBondCleanPrice1);
     if (error5>tolerance) {
@@ -2662,7 +2838,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice2 = BondFunctions::cleanPrice(
         *floatingBond2, *vars.termStructure,
-        vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
+        vars.spread, vars.compounding, Semiannual,
         fixedBondSettlementDate1);
     Real error7 = std::fabs(floatingBondImpliedValue2-floatingBondCleanPrice2);
     if (error7>tolerance) {
@@ -2710,7 +2886,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real cmsBondCleanPrice1 = BondFunctions::cleanPrice(
          *cmsBond1, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          cmsBondSettlementDate1);
     Real error9 = std::fabs(cmsBondImpliedValue1-cmsBondCleanPrice1);
     if (error9>tolerance) {
@@ -2756,7 +2932,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real cmsBondCleanPrice2 = BondFunctions::cleanPrice(
          *cmsBond2, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
+         vars.compounding, Annual,
          cmsBondSettlementDate2);
     Real error11 = std::fabs(cmsBondImpliedValue2-cmsBondCleanPrice2);
     if (error11>tolerance) {
@@ -2791,7 +2967,6 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
         BondFunctions::cleanPrice(*zeroCpnBond1,
                               *vars.termStructure,
                               vars.spread,
-                              Actual365Fixed(),
                               vars.compounding, Annual,
                               zeroCpnBondSettlementDate1);
     Real error13 = std::fabs(zeroCpnBondImpliedValue1-zeroCpnBondCleanPrice1);
@@ -2828,7 +3003,6 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
         BondFunctions::cleanPrice(*zeroCpnBond2,
                               *vars.termStructure,
                               vars.spread,
-                              Actual365Fixed(),
                               vars.compounding, Annual,
                               zeroCpnBondSettlementDate2);
     Real error15 = std::fabs(zeroCpnBondImpliedValue2-zeroCpnBondCleanPrice2);

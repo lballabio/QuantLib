@@ -16,7 +16,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -186,8 +186,8 @@ namespace QuantLib {
             Real displacement,
             CashAnnuityModel model)
         : discountCurve_(std::move(discountCurve)),
-          vol_(ext::shared_ptr<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(
-              0, NullCalendar(), Following, vol, dc, Spec().type, displacement))),
+          vol_(ext::make_shared<ConstantSwaptionVolatility>(
+              0, NullCalendar(), Following, vol, dc, Spec().type, displacement)),
           model_(model) {
             registerWith(discountCurve_);
         }
@@ -200,8 +200,8 @@ namespace QuantLib {
             Real displacement,
             CashAnnuityModel model)
         : discountCurve_(std::move(discountCurve)),
-          vol_(ext::shared_ptr<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(
-              0, NullCalendar(), Following, vol, dc, Spec().type, displacement))),
+          vol_(ext::make_shared<ConstantSwaptionVolatility>(
+              0, NullCalendar(), Following, vol, dc, Spec().type, displacement)),
           model_(model) {
             registerWith(discountCurve_);
             registerWith(vol_);

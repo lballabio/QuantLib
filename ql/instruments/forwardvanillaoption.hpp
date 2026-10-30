@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -36,8 +36,7 @@ namespace QuantLib {
     template <class ArgumentsType>
     class ForwardOptionArguments : public ArgumentsType {
       public:
-        ForwardOptionArguments() : moneyness(Null<Real>()),
-                                   resetDate(Null<Date>()) {}
+        ForwardOptionArguments() : moneyness(Null<Real>()) {}
         void validate() const override;
         Real moneyness;
         Date resetDate;
@@ -72,7 +71,7 @@ namespace QuantLib {
         QL_REQUIRE(moneyness != Null<Real>(), "null moneyness given");
         QL_REQUIRE(moneyness > 0.0, "negative or zero moneyness given");
 
-        QL_REQUIRE(resetDate != Null<Date>(), "null reset date given");
+        QL_REQUIRE(resetDate != Date(), "null reset date given");
         QL_REQUIRE(resetDate >= Settings::instance().evaluationDate(),
                    "reset date in the past");
         QL_REQUIRE(this->exercise->lastDate() > resetDate,

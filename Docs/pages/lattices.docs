@@ -9,7 +9,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -61,7 +61,7 @@
     is the index of the node which is the nearest to the expected future
     value, \f$ E_{i,j}=\mathbf{E}\left( y(t_{i+1})|y(t_{i})=y_{i,j}\right) \f$
     and \f$ V_{i,j}^{2}=\mathbf{Var}\{y(t_{i+1})|y(t_{i})=y_{i,j}\} \f$.
-    If we suppose that the variance is only dependant on time
+    If we suppose that the variance is only dependent on time
     \f$ V_{i,j}=V_{i} \f$ and set \f$ y_{i+1} \f$ to \f$ V_{i}\sqrt{3} \f$,
     we find that
     \f[

@@ -7,7 +7,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
@@ -152,14 +152,12 @@ namespace QuantLib {
                 this->process_);
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        return ext::shared_ptr<typename
-            MCForwardEuropeanBSEngine<RNG,S>::path_pricer_type>(
-                new ForwardEuropeanBSPathPricer(
+        return ext::make_shared<ForwardEuropeanBSPathPricer>(
                                         payoff->optionType(),
                                         this->arguments_.moneyness,
                                         resetIndex,
                                         process->riskFreeRate()->discount(
-                                                   timeGrid.back())));
+                                                   timeGrid.back()));
     }
 
 
@@ -241,15 +239,14 @@ namespace QuantLib {
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified - set EITHER steps OR stepsPerYear");
-        return ext::shared_ptr<PricingEngine>(new
-            MCForwardEuropeanBSEngine<RNG,S>(process_,
+        return ext::make_shared<MCForwardEuropeanBSEngine<RNG,S>>(process_,
                                              steps_,
                                              stepsPerYear_,
                                              brownianBridge_,
                                              antithetic_,
                                              samples_, tolerance_,
                                              maxSamples_,
-                                             seed_));
+                                             seed_);
     }
 
 }

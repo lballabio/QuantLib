@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
 
  This program is distributed in the hope that it will be useful, but
@@ -38,11 +38,13 @@ namespace QuantLib {
                          const Date& refPeriodEnd,
                          const DayCounter& dayCounter,
                          bool isInArrears,
-                         const Date& exCouponDate)
+                         const Date& exCouponDate,
+                         BusinessDayConvention fixingConvention)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, swapIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
-                         dayCounter, isInArrears, exCouponDate),
+                         dayCounter, isInArrears, exCouponDate,
+                         fixingConvention),
       swapIndex_(swapIndex) {}
 
     void CmsCoupon::accept(AcyclicVisitor& v) {
@@ -139,6 +141,11 @@ namespace QuantLib {
         return *this;
     }
 
+    CmsLeg& CmsLeg::withFixingConvention(BusinessDayConvention convention) {
+        fixingConvention_ = convention;
+        return *this;
+    }
+
     CmsLeg& CmsLeg::withExCouponPeriod(
                                 const Period& period,
                                 const Calendar& cal,
@@ -158,7 +165,8 @@ namespace QuantLib {
                          caps_, floors_, inArrears_, zeroPayments_,
                          0, Calendar(),
                          exCouponPeriod_, exCouponCalendar_,
-                         exCouponAdjustment_, exCouponEndOfMonth_);
+                         exCouponAdjustment_, exCouponEndOfMonth_,
+                         fixingConvention_);
    }
 
 }

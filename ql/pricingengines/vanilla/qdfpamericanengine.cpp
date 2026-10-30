@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -452,15 +452,16 @@ namespace QuantLib {
             return squared(std::log(fv/xmax));
         };
 
-        const ext::shared_ptr<DqFpEquation> eqn
-            = (fpEquation_ == FP_A
+        const auto eqn = (fpEquation_ == FP_A
                || (fpEquation_ == Auto && std::abs(r-q) < 0.001))?
-              ext::shared_ptr<DqFpEquation>(new DqFpEquation_A(
-                  K, r, q, vol, B,
-                  iterationScheme_->getFixedPointIntegrator()))
-            : ext::shared_ptr<DqFpEquation>(new DqFpEquation_B(
-                    K, r, q, vol, B,
-                    iterationScheme_->getFixedPointIntegrator()));
+              ext::static_pointer_cast<DqFpEquation>(
+                  ext::make_shared<DqFpEquation_A>(
+                      K, r, q, vol, B,
+                      iterationScheme_->getFixedPointIntegrator()))
+            : ext::static_pointer_cast<DqFpEquation>(
+                  ext::make_shared<DqFpEquation_B>(
+                      K, r, q, vol, B,
+                      iterationScheme_->getFixedPointIntegrator()));
 
         Array y(x.size());
         y[0] = 0.0;
@@ -516,7 +517,5 @@ namespace QuantLib {
     }
 
 }
-
-
 
 

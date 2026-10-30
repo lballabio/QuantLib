@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -31,7 +31,7 @@ namespace QuantLib {
     MidPointCdsEngine::MidPointCdsEngine(Handle<DefaultProbabilityTermStructure> probability,
                                          Real recoveryRate,
                                          Handle<YieldTermStructure> discountCurve,
-                                         const ext::optional<bool>& includeSettlementDateFlows)
+                                         const std::optional<bool>& includeSettlementDateFlows)
     : probability_(std::move(probability)), recoveryRate_(recoveryRate),
       discountCurve_(std::move(discountCurve)),
       includeSettlementDateFlows_(includeSettlementDateFlows) {

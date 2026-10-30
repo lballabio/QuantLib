@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -40,10 +40,9 @@ namespace QuantLib {
         std::vector<Parameter> & params();
         void setParams(const std::vector<Parameter> & arguments);
 
-        virtual Array volatility(Time t, const Array& x = Null<Array>()) const = 0;
-        virtual Volatility volatility(Size i, Time t, const Array& x = Null<Array>()) const;
-        virtual Real integratedVariance(Size i, Size j, Time u,
-                                        const Array& x = Null<Array>()) const;
+        virtual Array volatility(Time t, const Array& x = {}) const = 0;
+        virtual Volatility volatility(Size i, Time t, const Array& x = {}) const;
+        virtual Real integratedVariance(Size i, Size j, Time u, const Array& x = {}) const;
 
       protected:
         const Size size_;

@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -74,7 +74,7 @@ namespace QuantLib {
             }
 
             std::unique_ptr<MarketModelMultiProduct> clone() const override {
-                return std::unique_ptr<MarketModelMultiProduct>(new DecoratedHedge(*this));
+                return std::make_unique<DecoratedHedge>(*this);
             }
 
             void save() {
@@ -239,8 +239,7 @@ namespace QuantLib {
                     // reset() method brings them to the current point
                     // rather than the beginning of the path.
 
-                    ext::shared_ptr<MarketModelEvolver> currentEvolver =
-                        innerEvolvers_[exercise++];
+                    auto currentEvolver = innerEvolvers_[exercise++];
                     currentEvolver->setInitialState(evolver_->currentState());
 
                     callable.stopRecording();

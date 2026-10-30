@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -122,8 +122,6 @@ namespace QuantLib {
 
     Real cumOptVal = 0., 
         cumPutVal = 0.;
-    // Vanilla swap so 0 leg is floater
-
     auto nextFD = 
       arguments_.fixedPayDates.begin();
     Date swapletStart = priceDate;
@@ -168,9 +166,8 @@ namespace QuantLib {
 	    - swapletStart.serialNumber(), Days);
       ext::shared_ptr<VanillaSwap> swaplet = MakeVanillaSwap(
         baseSwapsTenor,
-        swapIndex, 
-        baseSwapFairRate // strike
-        )
+        swapIndex)
+        .withFixedRate(baseSwapFairRate)
 	    .withType(arguments_.type)
 	    .withNominal(arguments_.nominal)
           ////////	    .withSettlementDays(2)
@@ -178,9 +175,8 @@ namespace QuantLib {
         .withTerminationDate(arguments_.fixedPayDates.back());
       ext::shared_ptr<VanillaSwap> revSwaplet = MakeVanillaSwap(
         baseSwapsTenor,
-        swapIndex, 
-        baseSwapFairRate // strike
-        )
+        swapIndex)
+        .withFixedRate(baseSwapFairRate)
 	    .withType(reversedType)
 	    .withNominal(arguments_.nominal)
           /////////	    .withSettlementDays(2)

@@ -7,6 +7,7 @@
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2015 Peter Caspers
  Copyright (C) 2015 Michael von den Driesch
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,7 +16,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -52,7 +53,9 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& discount = {},
             VolatilityType type = ShiftedLognormal,
             Real displacement = 0.0,
-            bool dontThrow = false);
+            bool dontThrow = false,
+            std::optional<Period> optionletFrequency = std::nullopt,
+            Natural paymentLag = 0);
 
         const Matrix& capFloorPrices() const;
         const Matrix &capletVols() const;

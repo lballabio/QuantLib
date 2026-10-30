@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -91,8 +91,7 @@ namespace QuantLib {
         initializeOptionDatesAndTimes();
         // fill dummy handles to allow generic handle-based computations later
         for (Size i=0; i<nOptionTenors_; ++i)
-            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                SimpleQuote(vols_[i])));
+            volHandles_[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(vols_[i]));
         interpolate();
     }
 
@@ -116,8 +115,7 @@ namespace QuantLib {
         initializeOptionDatesAndTimes();
         // fill dummy handles to allow generic handle-based computations later
         for (Size i=0; i<nOptionTenors_; ++i)
-            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                SimpleQuote(vols_[i])));
+            volHandles_[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(vols_[i]));
         interpolate();
     }
 
@@ -150,7 +148,8 @@ namespace QuantLib {
                                     vols_.begin(),
                                     CubicInterpolation::Spline, false,
                                     CubicInterpolation::SecondDerivative, 0.0,
-                                    CubicInterpolation::SecondDerivative, 0.0);
+                                    CubicInterpolation::SecondDerivative, 0.0,
+                                    false);
     }
 
     void CapFloorTermVolCurve::update()

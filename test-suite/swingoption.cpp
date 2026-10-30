@@ -10,14 +10,13 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/finitedifferences/fdextoujumpvanillaengine.hpp>
@@ -123,12 +122,12 @@ BOOST_AUTO_TEST_CASE(testExtendedOrnsteinUhlenbeckProcess) {
             [ ](Real x) -> Real { return x + 1.0; },
             [ ](Real x) -> Real { return std::sin(x); }}; 
 
-    for (Size n=0; n < LENGTH(f); ++n) {
+    for (Size n=0; n < std::size(f); ++n) {
         ExtendedOrnsteinUhlenbeckProcess refProcess(
             speed, vol, 0.0, f[n], 
             ExtendedOrnsteinUhlenbeckProcess::GaussLobatto, 1e-6);
 
-        for (Size i=0; i < LENGTH(discr)-1; ++i) {
+        for (Size i=0; i < std::size(discr)-1; ++i) {
             ExtendedOrnsteinUhlenbeckProcess eouProcess(
                                       speed, vol, 0.0, f[n], discr[i]);
 
@@ -204,7 +203,7 @@ BOOST_AUTO_TEST_CASE(testFdmExponentialJump1dMesher) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testExtOUJumpVanillaEngine, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testExtOUJumpVanillaEngine) {
 
     BOOST_TEST_MESSAGE("Testing finite difference pricer for the Kluge model...");
 
@@ -339,7 +338,7 @@ BOOST_AUTO_TEST_CASE(testFdBSSwingOption) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testExtOUJumpSwingOption, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testExtOUJumpSwingOption) {
 
     BOOST_TEST_MESSAGE("Testing simple swing option pricing for Kluge model...");
 

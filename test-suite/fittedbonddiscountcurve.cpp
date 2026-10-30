@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -42,31 +42,37 @@ BOOST_AUTO_TEST_CASE(testEvaluation) {
     BOOST_TEST_MESSAGE("Testing that fitted bond curves work as evaluators...");
 
     Date today = Settings::instance().evaluationDate();
-    ext::shared_ptr<Bond> bond = ext::make_shared<ZeroCouponBond>(3, TARGET(), 100.0,
-                                                                  today + Period(10, Years));
-    Handle<Quote> q(ext::make_shared<SimpleQuote>(100.0));
-
-    std::vector<ext::shared_ptr<BondHelper> > helpers(1);
-    helpers[0] = ext::make_shared<BondHelper>(q, bond);
+    Date maxDate = today + Period(10, Years);
 
     ExponentialSplinesFitting fittingMethod;
 
-    Size maxIterations = 0;
-    Array guess(9);
-    guess[0] = -51293.44;
-    guess[1] = -212240.36;
-    guess[2] = 168668.51;
-    guess[3] = 88792.74;
-    guess[4] = 120712.13;
-    guess[5] = -34332.83;
-    guess[6] = -66479.66;
-    guess[7] = 13605.17;
-    guess[8] = 0.0;
+    Array parameters = {
+        -51293.44,
+        -212240.36,
+        168668.51,
+        88792.74,
+        120712.13,
+        -34332.83,
+        -66479.66,
+        13605.17,
+        0.0
+    };
 
-    FittedBondDiscountCurve curve(0, TARGET(), helpers, Actual365Fixed(),
-                                  fittingMethod, 1e-10, maxIterations, guess);
+    FittedBondDiscountCurve curve1(
+        today, fittingMethod, parameters, maxDate, Actual365Fixed());
 
-    BOOST_CHECK_NO_THROW(curve.discount(3.0));
+    FittedBondDiscountCurve curve2(
+        0, TARGET(), fittingMethod, parameters, maxDate, Actual365Fixed());
+
+    // they work...
+    BOOST_CHECK_NO_THROW(curve1.discount(3.0));
+    BOOST_CHECK_NO_THROW(curve2.discount(3.0));
+
+    // ...but not after the max date
+    BOOST_CHECK_EXCEPTION(curve1.discount(12.0), Error,
+                          ExpectedErrorMessage("past max curve time"));
+    BOOST_CHECK_EXCEPTION(curve2.discount(12.0), Error,
+                          ExpectedErrorMessage("past max curve time"));
 }
 
 BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
@@ -111,6 +117,7 @@ BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
 
     std::vector<ext::shared_ptr<BondHelper> > helpers;
 
+    helpers.reserve(bonds.size());
     for (Size i = 0; i < bonds.size(); ++i) {
         helpers.push_back(ext::make_shared<BondHelper>(
             Handle<Quote>(ext::make_shared<SimpleQuote>(quotes[i])), bonds[i]));
@@ -157,16 +164,22 @@ BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
         bond->setPricingEngine(engine2);
         modelPrices2.emplace_back(bond->cleanPrice(), Bond::Price::Clean);
     }
+
     BOOST_CHECK_EQUAL(curve1->fitResults().errorCode(), EndCriteria::MaxIterations);
-    BOOST_CHECK_EQUAL(curve2->fitResults().errorCode(), EndCriteria::MaxIterations);
+
+    // Unfortunately, the error code for curve2 depends on the
+    // floating-point flags used during compilation so we can't have a
+    // corresponding check. We can check that the costs for the two
+    // fits are similar, though:
+
+    Real cost1 = std::sqrt(curve1->fitResults().minimumCostValue());
+    Real cost2 = std::sqrt(curve2->fitResults().minimumCostValue());
+    QL_CHECK_SMALL(cost1 - cost2, 1e-3);
 
     // the resulting cost values are similar for both approaches
     // i.e. the fit has a similar quality, I get for example:
     // fitted curve cost1 = 0.0921232
     // fitted curve cost2 = 0.0919438
-
-    // Real cost1 = std::sqrt(curve1->fitResults().minimumCostValue());
-    // Real cost2 = std::sqrt(curve2->fitResults().minimumCostValue());
 
     // It turns out that the model yields are quite close for model1 and model2 while the curve
     // yields are hugely different: for model1 the yields are completely off (>> 100%) while for
@@ -270,6 +283,61 @@ BOOST_AUTO_TEST_CASE(testGuessSize) {
 
     BOOST_CHECK_EXCEPTION(curve.discount(3.0), Error,
                           ExpectedErrorMessage("wrong size for guess"));
+}
+
+
+
+
+BOOST_AUTO_TEST_CASE(testConstraint) {
+
+    BOOST_TEST_MESSAGE("Testing that fitted bond curves respect passed constraint...");
+
+    class FlatZero : public FittedBondDiscountCurve::FittingMethod {
+      public:
+        FlatZero(Constraint constraint = NoConstraint())
+        : FittedBondDiscountCurve::FittingMethod(true,        // constrainAtZero
+                                                 Array(),     // weights
+                                                 ext::shared_ptr<OptimizationMethod>(),
+                                                 Array(),     // l2
+                                                 0.0,         // minCutoffTime
+                                                 QL_MAX_REAL, //maxCutoffTime
+                                                 std::move(constraint)) {}
+
+        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override {
+            return std::make_unique<FlatZero>(*this);
+        }
+
+      private:
+        Size size() const override { return 1; }
+
+        DiscountFactor discountFunction(const Array& x, Time t) const override {
+            Real zeroRate = x[0];
+            DiscountFactor d = std::exp(-zeroRate * t);
+            return d;
+        }
+    };
+
+    Date today = Settings::instance().evaluationDate();
+    auto bond1 = ext::make_shared<ZeroCouponBond>(3, TARGET(), 100.0, today + Period(1, Years));
+    auto bond2 = ext::make_shared<ZeroCouponBond>(3, TARGET(), 100.0, today + Period(2, Years));
+
+    std::vector<ext::shared_ptr<BondHelper>> helpers(2);
+    helpers[0] = ext::make_shared<BondHelper>(makeQuoteHandle(101.0), bond1);
+    helpers[1] = ext::make_shared<BondHelper>(makeQuoteHandle(102.0), bond2);
+
+    Real accuracy = 1e-10;      // default value
+    Size maxIterations = 10000; // default value
+    Array guess = {0.01};       // something positive so that initial value is in feasible region
+
+    FlatZero unconstrainedMethod;
+    FittedBondDiscountCurve unconstrainedCurve(0, TARGET(), helpers, Actual365Fixed(), unconstrainedMethod,
+                                               accuracy, maxIterations, guess);
+    BOOST_CHECK_LT(unconstrainedCurve.fitResults().solution()[0], 0.0);
+
+    FlatZero positiveMethod{PositiveConstraint()};
+    FittedBondDiscountCurve positiveCurve(0, TARGET(), helpers, Actual365Fixed(), positiveMethod,
+                                          accuracy, maxIterations, guess);
+    BOOST_CHECK_GT(positiveCurve.fitResults().solution()[0], 0.0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

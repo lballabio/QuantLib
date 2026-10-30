@@ -10,15 +10,11 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
-*/
-
-/*! \file spreadoption.hpp
-    \brief Spread option on two assets
 */
 
 #ifndef quantlib_spread_option_hpp
@@ -27,23 +23,9 @@
 #include <ql/instruments/multiassetoption.hpp>
 #include <ql/instruments/payoffs.hpp>
 
-namespace QuantLib {
+/* Deprecated in version 1.42 */
 
-    //! Spread option on two assets
-    class SpreadOption : public MultiAssetOption {
-      public:
-        class engine;
-        SpreadOption(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
-                     const ext::shared_ptr<Exercise>& exercise)
-        : MultiAssetOption(payoff, exercise) {}
-    };
-
-    //! %Spread option %engine base class
-    class SpreadOption::engine
-        : public GenericEngine<SpreadOption::arguments,
-                               SpreadOption::results> {};
-
-}
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 
 #endif

@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -20,6 +20,7 @@
 
 #include <ql/exercise.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuouspartialfloatinglookback.hpp>
+#include <cmath>
 #include <utility>
 
 namespace QuantLib {
@@ -150,6 +151,45 @@ namespace QuantLib {
         }
 
         Real n8 = f_(-eta*f1);
+
+        if (std::fabs(x) < 1.0e-7) {
+            // Apply l'Hopital's rule to the combined numerator of the 1/x terms.
+            const auto derivative = [this](Real h, Real k, Real dh, Real dk, Real rho) -> Real {
+                if (rho == 1.0)
+                    return h < k ? Real(f_.derivative(h) * dh) : Real(f_.derivative(k) * dk);
+                if (rho == -1.0)
+                    return h + k > 0.0 ? Real(f_.derivative(h) * dh + f_.derivative(k) * dk)
+                                       : Real(0.0);
+                const Real z = std::sqrt((1.0 - rho) * (1.0 + rho));
+                return f_.derivative(h) * f_((k - rho * h) / z) * dh +
+                       f_.derivative(k) * f_((h - rho * k) / z) * dk;
+            };
+            const Real a = stdDeviation();
+            const Real u = vol * std::sqrt(lookbackPeriodEndTime());
+            const Real v = vol * std::sqrt(residualTime() - lookbackPeriodEndTime());
+            const Real dn3 = derivative(-eta * f1, eta * (-d1 - g1), eta * u / 2.0,
+                                       eta * a / 2.0, u / a);
+            Real dn4;
+            if (fullLookbackPeriod) {
+                dn4 = -eta * a / 2.0 * f_.derivative(d1 + g1);
+            } else {
+                const Real g2 = l1 / std::sqrt(residualTime() - lookbackPeriodEndTime());
+                dn4 = derivative(-eta * (d1 + g1), eta * (e1 + g2), -eta * a / 2.0,
+                                 eta * v / 2.0, -v / a);
+            }
+            Real ratio = -ls * n3 + dn3 - (a * a / 2.0 + std::log(lambda())) * n4 - dn4;
+            if (!fullLookbackPeriod) {
+                const Real g2 = l1 / std::sqrt(residualTime() - lookbackPeriodEndTime());
+                const Real dn7 = eta * v / 2.0 * f_.derivative(e2 - g2);
+                const Real dn8 = -eta * u / 2.0 * f_.derivative(f1);
+                ratio -= u * u / 2.0 * n7 * n8 + dn7 * n8 + n7 * dn8;
+            }
+            return eta * riskFreeDiscount() *
+                   (underlying() * n1 - lambda() * minmax() * n2 +
+                    underlying() * (lambda() * (ratio - n7 * n8) + n5) +
+                    lambda() * minmax() * n6);
+        }
+
         Real pow_s = std::pow(s, -x);
         Real pow_l = std::pow(lambda(), x);
 

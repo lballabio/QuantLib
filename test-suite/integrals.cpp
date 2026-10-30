@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -173,6 +173,123 @@ BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptive) {
     testDegeneratedDomain(GaussKronrodAdaptive(tolerance, maxEvaluations));
 }
 
+BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveUnattainableAccuracy) {
+    BOOST_TEST_MESSAGE("Testing adaptive Gauss-Kronrod integration with unattainable accuracy...");
+
+    const std::function<Real(Real)> functions[] = {
+        [](Real x) { return 1e5 * std::exp(x); },
+        [](Real x) { return 100.0 * std::cos(x); },
+        [](Real x) { return std::exp(x); }
+    };
+    const Real tolerances[] = {1e-10, 1e-12, 1e-15};
+    const Real upperBounds[] = {1.0, 10.0, 1.0};
+
+    // The order in which the two halves are refined, and roundoff, decide which
+    // accuracy safeguard is reached first.
+    const auto expectedAccuracyFailure = [](const Error& error) {
+        const std::string message(error.what());
+        if (message.find("cannot reach required accuracy:") != std::string::npos)
+            return true;
+        return ExpectedErrorMessage("maximum subdivision depth exceeded")(error);
+    };
+
+    for (Size i = 0; i < 3; ++i) {
+        const GaussKronrodAdaptive integrator(tolerances[i]);
+        BOOST_CHECK_EXCEPTION(integrator(functions[i], 0.0, upperBounds[i]), Error,
+                              expectedAccuracyFailure);
+        BOOST_CHECK_LE(integrator.numberOfEvaluations(), 10000);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveAttainableAccuracy) {
+    BOOST_TEST_MESSAGE("Testing adaptive Gauss-Kronrod integration with attainable accuracy...");
+
+    const GaussKronrodAdaptive midpointIntegrator(1e-8, 100);
+    // An isolated nonzero point has zero integral and is not sampled after subdivision.
+    BOOST_CHECK_EQUAL(midpointIntegrator(
+                          [](Real x) { return x == 0.5 ? 1e8 : 0.0; }, 0.0, 1.0),
+                      0.0);
+    BOOST_CHECK_EQUAL(midpointIntegrator.numberOfEvaluations(), 45);
+
+    const GaussKronrodAdaptive exponentialIntegrator(1e-8);
+    const Real exponential = exponentialIntegrator(
+        [](Real x) { return 1e5 * std::exp(x); }, 0.0, 1.0);
+    BOOST_CHECK_SMALL(exponential - 1e5 * std::expm1(1.0), 1e-8);
+
+    const GaussKronrodAdaptive cosineIntegrator(1e-9);
+    const auto f = [](Real x) { return 100.0 * std::cos(x); };
+    const Real expected = 100.0 * std::sin(10.0);
+    BOOST_CHECK_SMALL(cosineIntegrator(f, 0.0, 10.0) - expected, 1e-9);
+    BOOST_CHECK_GT(cosineIntegrator.numberOfEvaluations(), 15);
+    BOOST_CHECK_SMALL(cosineIntegrator(f, 10.0, 0.0) + expected, 1e-9);
+
+    const GaussKronrodAdaptive limitedIntegrator(1e-9, 15);
+    BOOST_CHECK_EXCEPTION(limitedIntegrator(f, 0.0, 10.0), Error,
+                          ExpectedErrorMessage("maximum number of function evaluations exceeded"));
+    BOOST_CHECK_EQUAL(limitedIntegrator.numberOfEvaluations(), 15);
+}
+
+BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveEvaluationBudget) {
+    BOOST_TEST_MESSAGE("Testing adaptive Gauss-Kronrod evaluation budgets...");
+
+    GaussKronrodAdaptive integrator(1e-8);
+    BOOST_CHECK_EQUAL(integrator.maxEvaluations(), 1000000);
+    integrator.setMaxEvaluations(60);
+
+    Size calls = 0;
+    // Both halves need subdivision; one consumes the budget before the other starts.
+    BOOST_CHECK_EXCEPTION(integrator([&calls](Real x) {
+                              ++calls;
+                              return x == 0.25 || x == 0.5 || x == 0.75 ? 1.0 : 0.0;
+                          }, 0.0, 1.0),
+                          Error,
+                          ExpectedErrorMessage("maximum number of function evaluations exceeded"));
+    BOOST_CHECK_EQUAL(calls, 60);
+    BOOST_CHECK_EQUAL(integrator.numberOfEvaluations(), calls);
+
+    integrator.setMaxEvaluations(Null<Size>());
+    BOOST_CHECK_EQUAL(integrator.maxEvaluations(), Null<Size>());
+}
+
+BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveNoSubdivisionProgress) {
+    BOOST_TEST_MESSAGE(
+        "Testing adaptive Gauss-Kronrod integration without subdivision progress...");
+
+    const Real a = 1.0;
+    const Real b = std::nextafter(a, Real(2.0));
+    BOOST_REQUIRE_EQUAL((a + b) / 2, a);
+
+    const GaussKronrodAdaptive integrator(1e-6);
+    BOOST_CHECK_EQUAL(integrator([](Real) { return 0.0; }, a, b), 0.0);
+    BOOST_CHECK_SMALL(integrator([](Real) { return 1.0; }, a, b) - (b - a),
+                      50 * QL_EPSILON * (b - a));
+    BOOST_CHECK_EXCEPTION(integrator([a](Real x) { return x == a ? 1e16 : 0.0; }, a, b),
+                          Error, ExpectedErrorMessage("subdivision"));
+    BOOST_CHECK_EQUAL(integrator.numberOfEvaluations(), 15);
+}
+
+BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveLimits) {
+    BOOST_TEST_MESSAGE("Testing adaptive Gauss-Kronrod refinement and work limits...");
+
+    const GaussKronrodAdaptive depthLimitedIntegrator(1e-6);
+    // The integrand repeats on each halving of an interval starting at zero.
+    BOOST_CHECK_EXCEPTION(depthLimitedIntegrator(
+                              [](Real x) { return std::sin(2 * M_PI * std::log2(x)); }, 0.0, 1.0),
+                          Error, ExpectedErrorMessage("maximum subdivision depth exceeded"));
+
+    GaussKronrodAdaptive underflowIntegrator(1e-6);
+    underflowIntegrator.setAbsoluteAccuracy(std::numeric_limits<Real>::denorm_min());
+    BOOST_CHECK_EXCEPTION(underflowIntegrator([](Real x) { return std::exp(x); }, 0.0, 1.0),
+                          Error, ExpectedErrorMessage("tolerance underflow"));
+
+    const GaussKronrodAdaptive workLimitedIntegrator(1e-6);
+    BOOST_CHECK_EXCEPTION(
+        workLimitedIntegrator([](Real x) { return std::sin(1e6 * x); }, 0.0, 1.0),
+        Error, ExpectedErrorMessage("maximum number of function evaluations exceeded"));
+    BOOST_CHECK_LE(workLimitedIntegrator.numberOfEvaluations(),
+                   workLimitedIntegrator.maxEvaluations());
+}
+
 BOOST_AUTO_TEST_CASE(testGaussLobatto) {
     BOOST_TEST_MESSAGE("Testing adaptive Gauss-Lobatto integration...");
 
@@ -280,7 +397,7 @@ BOOST_AUTO_TEST_CASE(testFolinIntegration) {
 
     const Real tol = 1e-12;
 
-    for (Size i=0; i < LENGTH(nr); ++i) {
+    for (Size i=0; i < std::size(nr); ++i) {
         const Size n = nr[i];
         const Real calculatedCosine
             = FilonIntegral(FilonIntegral::Cosine, t, n)(cosineF(),0,2*M_PI);
@@ -337,6 +454,23 @@ BOOST_AUTO_TEST_CASE(testDiscreteIntegrals) {
             << "discrete Trapezoid integration failed: "
             << "\n    calculated: " << calculatedTrapezoid
             << "\n    expected:   " << expectedTrapezoid);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testDiscreteIntegralsWithFewPoints) {
+    BOOST_TEST_MESSAGE("Testing discrete integrals on degenerate grids...");
+
+    // With fewer than two nodes there is no interval to integrate, but the
+    // unsigned loop bounds (n-1, n-2) used to wrap around to SIZE_MAX and
+    // read past the arrays (e.g. a single-point Simpson rule indexing x[2]).
+    for (Size n=0; n < 2; ++n) {
+        Array x(n), f(n);
+        for (Size i=0; i < n; ++i) {
+            x[i] = Real(i);
+            f[i] = 1.0;
+        }
+        BOOST_CHECK_EQUAL(DiscreteTrapezoidIntegral()(x, f), 0.0);
+        BOOST_CHECK_EQUAL(DiscreteSimpsonIntegral()(x, f), 0.0);
     }
 }
 
@@ -478,7 +612,8 @@ BOOST_AUTO_TEST_CASE(testExponentialIntegral) {
         {216.311896062465, -665.7395614066049, 6.68861022474796e+285, 6.86204916856497e+285, -6.86204916856497e+285, 6.68861022474796e+285, 4.35129688126332e+89, 1.25283433405018e+91, 9.10599247691995e-98, 1.3494793845188e-97},
         {691.381838416598, -109.50412552816101, -2.38570018769502e+44, -9.72638025849046e+43, 9.72638025849046e+43, -2.38570018769502e+44, -2.15172979114587e+297, -1.50043260461905e+297, -7.44435180959991e-304, 2.26013762375079e-304}
     };
-    const Real tol = 100*QL_EPSILON;
+
+    constexpr double tol = 100*QL_EPSILON;
 
     for (const auto& i : data) {
         const Real x = i[0];
@@ -586,7 +721,7 @@ BOOST_AUTO_TEST_CASE(testExponentialIntegralLimits) {
     const std::complex<Real> largeValuePosImag =
         Ei(std::complex<Real>(largeValue, std::numeric_limits<Real>::min()));
 
-    const Real tol = 1000*QL_EPSILON;
+    constexpr double tol = 1000*QL_EPSILON;
 
     QL_CHECK_CLOSE(largeValuePosImag.imag(), M_PI, tol);
 
@@ -610,7 +745,7 @@ BOOST_AUTO_TEST_CASE(testExponentialIntegralLimits) {
             ei_0 == std::complex<Real>(-std::numeric_limits<Real>::infinity()));
     }
 
-    const Real smallR = QL_EPSILON*QL_EPSILON;
+    constexpr double smallR = QL_EPSILON*QL_EPSILON;
     for (Integer x = -100; x < 100; ++x) {
         const Real phi = x/100.0 * M_PI;
         const std::complex<Real> z = std::polar(smallR, phi);

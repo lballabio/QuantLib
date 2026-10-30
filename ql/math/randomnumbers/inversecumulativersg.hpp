@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -83,10 +83,10 @@ namespace QuantLib {
     template <class USG, class IC>
     inline const typename InverseCumulativeRsg<USG, IC>::sample_type&
     InverseCumulativeRsg<USG, IC>::nextSequence() const {
-        typename USG::sample_type sample =
+        const auto& sample =
             uniformSequenceGenerator_.nextSequence();
         x_.weight = sample.weight;
-        for (Size i = 0; i < dimension_; i++) {
+        for (auto i = 0U; i < dimension_; i++) {
             x_.value[i] = ICD_(sample.value[i]);
         }
         return x_;

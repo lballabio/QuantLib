@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -22,6 +22,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/shared_ptr.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -418,9 +419,9 @@ BOOST_AUTO_TEST_CASE(testCashAtExpiryOrNothingAmericanValues) {
                                       Handle<BlackVolTermStructure>(volTS)));
         ext::shared_ptr<PricingEngine> engine;
         if (value.knockin)
-            engine.reset(new AnalyticDigitalAmericanEngine(stochProcess));
+            engine = ext::make_shared<AnalyticDigitalAmericanEngine>(stochProcess);
         else
-           engine.reset(new AnalyticDigitalAmericanKOEngine(stochProcess));
+           engine = ext::make_shared<AnalyticDigitalAmericanKOEngine>(stochProcess);
 
         VanillaOption opt(payoff, amExercise);
         opt.setPricingEngine(engine);
@@ -428,6 +429,65 @@ BOOST_AUTO_TEST_CASE(testCashAtExpiryOrNothingAmericanValues) {
         Real calculated = opt.NPV();
         Real error = std::fabs(calculated - value.result);
         if (error > value.tol) {
+            REPORT_FAILURE("value", payoff, amExercise, value.s, value.q, value.r, today, value.v,
+                           value.result, calculated, error, value.tol, value.knockin);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testCashAtExpiryOrNothingAmericanLowVolatility) {
+
+    BOOST_TEST_MESSAGE("Testing American cash-(at-expiry)-or-nothing "
+                       "digital option at low volatility...");
+
+    // expected values are the closed form evaluated in 50-digit arithmetic
+    DigitalOptionData values[] = {
+        //        type, strike,   spot,    q,     r,   t,   vol,              value,  tol
+        { Option::Call, 105.00, 100.00, 0.03,  0.08, 1.0, 0.001, 8.2035184454191468,  1e-8, true },
+        { Option::Put,   95.00, 100.00, 0.03, -0.02, 1.0, 0.001, 1.0176365525852901,  1e-8, true },
+        { Option::Call, 115.00, 100.00, 0.00,  0.03, 5.0, 0.003, 8.0820190229249992,  1e-8, true },
+        { Option::Put,   85.00, 100.00, 0.03,  0.00, 5.0, 0.003, 0.32750723018931787, 1e-8, true }
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        BlackScholesMertonProcess(Handle<Quote>(spot),
+                                  Handle<YieldTermStructure>(qTS),
+                                  Handle<YieldTermStructure>(rTS),
+                                  Handle<BlackVolTermStructure>(volTS)));
+    ext::shared_ptr<PricingEngine> engine(
+                             new AnalyticDigitalAmericanEngine(stochProcess));
+
+    for (auto& value : values) {
+
+        ext::shared_ptr<StrikedTypePayoff> payoff(
+            new CashOrNothingPayoff(value.type, value.strike, 10.0));
+        Date exDate = today + timeToDays(value.t);
+        ext::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
+                                                                    exDate,
+                                                                    true));
+
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
+
+        VanillaOption opt(payoff, amExercise);
+        opt.setPricingEngine(engine);
+
+        Real calculated = opt.NPV();
+        Real error = std::fabs(calculated - value.result);
+        if (!(error <= value.tol)) {
             REPORT_FAILURE("value", payoff, amExercise, value.s, value.q, value.r, today, value.v,
                            value.result, calculated, error, value.tol, value.knockin);
         }
@@ -490,9 +550,9 @@ BOOST_AUTO_TEST_CASE(testAssetAtExpiryOrNothingAmericanValues) {
                                       Handle<BlackVolTermStructure>(volTS)));
         ext::shared_ptr<PricingEngine> engine;
         if (value.knockin)
-            engine.reset(new AnalyticDigitalAmericanEngine(stochProcess));
+            engine = ext::make_shared<AnalyticDigitalAmericanEngine>(stochProcess);
         else
-           engine.reset(new AnalyticDigitalAmericanKOEngine(stochProcess));
+           engine = ext::make_shared<AnalyticDigitalAmericanKOEngine>(stochProcess);
 
         VanillaOption opt(payoff, amExercise);
         opt.setPricingEngine(engine);
@@ -560,7 +620,7 @@ BOOST_AUTO_TEST_CASE(testCashAtHitOrNothingAmericanGreeks) {
     ext::shared_ptr<PricingEngine> engines[] = { euroEngine, amEngine };
 
     bool knockin=true;
-    for (Size j=0; j<LENGTH(engines); j++) {
+    for (Size j=0; j<std::size(engines); j++) {
         for (auto& type : types) {
             for (Real strike : strikes) {
                 ext::shared_ptr<StrikedTypePayoff> payoff(
@@ -657,6 +717,93 @@ BOOST_AUTO_TEST_CASE(testCashAtHitOrNothingAmericanGreeks) {
                     }
                 }
             }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testCashAtHitOrNothingAmericanLowVolatility) {
+
+    BOOST_TEST_MESSAGE("Testing American cash-(at-hit)-or-nothing "
+                       "digital option at low volatility...");
+
+    // expected values are the closed form evaluated in 50-digit arithmetic
+    DigitalOptionData values[] = {
+        //        type,  strike,  spot,    q,     r,   t,    vol,            value,  tol
+        { Option::Call,  105.00, 100.00, 0.03,  0.08, 1.0, 0.01,    5.47651520145713, 1e-8, true },
+        { Option::Call,  105.00, 100.00, 0.03,  0.08, 1.0, 0.003,   6.18748832699530, 1e-8, true },
+        { Option::Call,  100.00*std::exp(0.03),
+                                 100.00, 0.00,  0.03, 1.0, 0.001,   4.91867026469375, 1e-8, true },
+        { Option::Put,    99.00, 100.00, 0.03, -0.02, 1.0, 0.0001, 10.0402822567873,  1e-8, true }
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+    Settings::instance().evaluationDate() = today;
+
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        BlackScholesMertonProcess(Handle<Quote>(spot),
+                                  Handle<YieldTermStructure>(qTS),
+                                  Handle<YieldTermStructure>(rTS),
+                                  Handle<BlackVolTermStructure>(volTS)));
+    ext::shared_ptr<PricingEngine> engine(
+                             new AnalyticDigitalAmericanEngine(stochProcess));
+
+    for (auto& value : values) {
+
+        ext::shared_ptr<StrikedTypePayoff> payoff(
+            new CashOrNothingPayoff(value.type, value.strike, 10.0));
+        Date exDate = today + timeToDays(value.t);
+        ext::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
+                                                                    exDate));
+
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
+
+        VanillaOption opt(payoff, amExercise);
+        opt.setPricingEngine(engine);
+
+        Real calculated = opt.NPV();
+        Real error = std::fabs(calculated - value.result);
+        if (!(error <= value.tol)) {
+            REPORT_FAILURE("value", payoff, amExercise, value.s, value.q, value.r, today, value.v,
+                           value.result, calculated, error, value.tol, value.knockin);
+        }
+
+        Real ds = 1.0e-4, dr = 1.0e-7;
+        spot->setValue(value.s + ds);
+        Real up = opt.NPV();
+        spot->setValue(value.s - ds);
+        Real down = opt.NPV();
+        spot->setValue(value.s);
+        Real expectedDelta = (up - down) / (2.0*ds);
+        rRate->setValue(value.r + dr);
+        up = opt.NPV();
+        rRate->setValue(value.r - dr);
+        down = opt.NPV();
+        rRate->setValue(value.r);
+        Real expectedRho = (up - down) / (2.0*dr);
+
+        Real delta = opt.delta();
+        error = std::fabs(delta - expectedDelta);
+        if (!(error <= 1.0e-4 * std::max(1.0, std::fabs(expectedDelta)))) {
+            REPORT_FAILURE("delta", payoff, amExercise, value.s, value.q, value.r, today, value.v,
+                           expectedDelta, delta, error, 1.0e-4, value.knockin);
+        }
+        Real rho = opt.rho();
+        error = std::fabs(rho - expectedRho);
+        if (!(error <= 1.0e-4 * std::max(1.0, std::fabs(expectedRho)))) {
+            REPORT_FAILURE("rho", payoff, amExercise, value.s, value.q, value.r, today, value.v,
+                           expectedRho, rho, error, 1.0e-4, value.knockin);
         }
     }
 }

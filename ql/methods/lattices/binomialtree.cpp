@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -20,7 +20,6 @@
 */
 
 #include <ql/methods/lattices/binomialtree.hpp>
-#include <ql/math/distributions/binomialdistribution.hpp>
 #include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
@@ -53,9 +52,12 @@ namespace QuantLib {
                         Time end, Size steps, Real)
     : EqualProbabilitiesBinomialTree<AdditiveEQPBinomialTree>(process,
                                                               end, steps) {
-        up_ = - 0.5 * driftPerStep_ + 0.5 *
-            std::sqrt(4.0*process->variance(0.0, x0_, dt_)-
-                      3.0*driftPerStep_*driftPerStep_);
+        Real radicand = 4.0*process->variance(0.0, x0_, dt_)-
+                        3.0*driftPerStep_*driftPerStep_;
+        QL_REQUIRE(radicand >= 0.0,
+                   "drift per step too large for the additive EQP tree: "
+                   "more steps are needed");
+        up_ = - 0.5 * driftPerStep_ + 0.5 * std::sqrt(radicand);
     }
 
 
@@ -108,12 +110,12 @@ namespace QuantLib {
         Real ermqdt = std::exp(driftPerStep_ + 0.5*variance/oddSteps);
         Real d2 = (std::log(x0_/strike) + driftPerStep_*oddSteps ) /
                                                           std::sqrt(variance);
-        pu_ = PeizerPrattMethod2Inversion(d2, oddSteps);
-        pd_ = 1.0 - pu_;
-        Real pdash = PeizerPrattMethod2Inversion(d2+std::sqrt(variance),
-                                                 oddSteps);
-        up_ = ermqdt * pdash / pu_;
-        down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
+        const LeisenReimerStep step =
+            leisenReimerStep(d2, ermqdt, variance, oddSteps);
+        pu_ = step.upProbability;
+        pd_ = step.downProbability;
+        up_ = step.up;
+        down_ = step.down;
     }
 
     Real Joshi4::computeUpProb(Real k, Real dj) const {
@@ -150,6 +152,7 @@ namespace QuantLib {
         Real d2 = (std::log(x0_/strike) + driftPerStep_*oddSteps ) /
                                                           std::sqrt(variance);
         pu_ = computeUpProb((oddSteps-1.0)/2.0,d2 );
+        QL_REQUIRE(pu_ > 0.0 && pu_ < 1.0, "invalid up probability: " << pu_);
         pd_ = 1.0 - pu_;
         Real pdash = computeUpProb((oddSteps-1.0)/2.0,d2+std::sqrt(variance));
         up_ = ermqdt * pdash / pu_;

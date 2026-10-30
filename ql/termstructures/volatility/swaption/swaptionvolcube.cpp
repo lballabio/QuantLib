@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -88,59 +88,10 @@ namespace QuantLib {
 
     Rate SwaptionVolatilityCube::atmStrike(const Date& optionD,
                                            const Period& swapTenor) const {
-
-        // FIXME use a familyName-based index factory
-        if (swapTenor > shortSwapIndexBase_->tenor()) {
-            if (swapIndexBase_->exogenousDiscount()) {
-                return SwapIndex(swapIndexBase_->familyName(),
-                                 swapTenor,
-                                 swapIndexBase_->fixingDays(),
-                                 swapIndexBase_->currency(),
-                                 swapIndexBase_->fixingCalendar(),
-                                 swapIndexBase_->fixedLegTenor(),
-                                 swapIndexBase_->fixedLegConvention(),
-                                 swapIndexBase_->dayCounter(),
-                                 swapIndexBase_->iborIndex(),
-                                 swapIndexBase_->discountingTermStructure())
-                    .fixing(optionD);
-            } else {
-                return SwapIndex(swapIndexBase_->familyName(),
-                                 swapTenor,
-                                 swapIndexBase_->fixingDays(),
-                                 swapIndexBase_->currency(),
-                                 swapIndexBase_->fixingCalendar(),
-                                 swapIndexBase_->fixedLegTenor(),
-                                 swapIndexBase_->fixedLegConvention(),
-                                 swapIndexBase_->dayCounter(),
-                                 swapIndexBase_->iborIndex())
-                    .fixing(optionD);
-            }
-        } else {
-            if (shortSwapIndexBase_->exogenousDiscount()) {
-                return SwapIndex(shortSwapIndexBase_->familyName(),
-                                 swapTenor,
-                                 shortSwapIndexBase_->fixingDays(),
-                                 shortSwapIndexBase_->currency(),
-                                 shortSwapIndexBase_->fixingCalendar(),
-                                 shortSwapIndexBase_->fixedLegTenor(),
-                                 shortSwapIndexBase_->fixedLegConvention(),
-                                 shortSwapIndexBase_->dayCounter(),
-                                 shortSwapIndexBase_->iborIndex(),
-                                 shortSwapIndexBase_->discountingTermStructure())
-                    .fixing(optionD);
-            } else {
-                return SwapIndex(shortSwapIndexBase_->familyName(),
-                                 swapTenor,
-                                 shortSwapIndexBase_->fixingDays(),
-                                 shortSwapIndexBase_->currency(),
-                                 shortSwapIndexBase_->fixingCalendar(),
-                                 shortSwapIndexBase_->fixedLegTenor(),
-                                 shortSwapIndexBase_->fixedLegConvention(),
-                                 shortSwapIndexBase_->dayCounter(),
-                                 shortSwapIndexBase_->iborIndex())
-                    .fixing(optionD);
-            }
-        }
+        auto base = (swapTenor > shortSwapIndexBase_->tenor())
+                        ? swapIndexBase_
+                        : shortSwapIndexBase_;
+        return base->clone(swapTenor)->fixing(optionD);
     }
 
 }

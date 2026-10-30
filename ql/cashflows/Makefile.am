@@ -5,6 +5,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     averagebmacoupon.hpp \
+    blackovernightindexedcouponpricer.hpp \
     capflooredcoupon.hpp \
     capflooredinflationcoupon.hpp \
     cashflows.hpp \
@@ -28,19 +29,21 @@ this_include_HEADERS = \
     inflationcoupon.hpp \
     inflationcouponpricer.hpp \
     lineartsrpricer.hpp \
+    multipleresetscoupon.hpp \
     overnightindexedcoupon.hpp \
     overnightindexedcouponpricer.hpp \
     rangeaccrual.hpp \
     rateaveraging.hpp \
     replication.hpp \
     simplecashflow.hpp \
-    subperiodcoupon.hpp \
+    stubiborcoupon.hpp \
     timebasket.hpp \
     yoyinflationcoupon.hpp \
     zeroinflationcashflow.hpp
 
 cpp_files = \
     averagebmacoupon.cpp \
+    blackovernightindexedcouponpricer.cpp \
     capflooredcoupon.cpp \
     capflooredinflationcoupon.cpp \
     cashflows.cpp \
@@ -64,12 +67,13 @@ cpp_files = \
     inflationcoupon.cpp \
     inflationcouponpricer.cpp \
     lineartsrpricer.cpp \
+    multipleresetscoupon.cpp \
     overnightindexedcoupon.cpp \
     overnightindexedcouponpricer.cpp \
     rangeaccrual.cpp \
     replication.cpp \
     simplecashflow.cpp \
-    subperiodcoupon.cpp \
+    stubiborcoupon.cpp \
     timebasket.cpp \
     yoyinflationcoupon.cpp \
     zeroinflationcashflow.cpp

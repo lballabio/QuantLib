@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -35,9 +35,8 @@
 namespace QuantLib {
 
     class IborIndex;
-    class RangeAccrualPricer;
 
-    class RangeAccrualFloatersCoupon: public FloatingRateCoupon {
+    class RangeAccrualFloatersCoupon : public FloatingRateCoupon {
 
       public:
         RangeAccrualFloatersCoupon(const Date& paymentDate,
@@ -51,7 +50,7 @@ namespace QuantLib {
                                    Rate spread,
                                    const Date& refPeriodStart,
                                    const Date& refPeriodEnd,
-                                   ext::shared_ptr<Schedule> observationsSchedule,
+                                   Schedule observationsSchedule,
                                    Real lowerTrigger,
                                    Real upperTrigger);
 
@@ -66,7 +65,7 @@ namespace QuantLib {
         const std::vector<Real>& observationTimes() const {
             return observationTimes_;
         }
-        ext::shared_ptr<Schedule> observationsSchedule() const { return observationsSchedule_; }
+        const Schedule& observationSchedule() const { return observationSchedule_; }
 
         Real priceWithoutOptionality(
                        const Handle<YieldTermStructure>& discountCurve) const;
@@ -79,7 +78,7 @@ namespace QuantLib {
         Real startTime_;                               // S
         Real endTime_;                                 // T
 
-        const ext::shared_ptr<Schedule> observationsSchedule_;
+        Schedule observationSchedule_;
         std::vector<Date> observationDates_;
         std::vector<Real> observationTimes_;
         Size observationsNo_;

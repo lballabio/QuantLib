@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -90,8 +90,10 @@ namespace QuantLib {
     }
 
 void Gsr::update() {
-    if (stateProcess_ != nullptr)
+    if (stateProcess_ != nullptr) {
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+        ext::static_pointer_cast<GsrProcess>(stateProcess_)->notifyObservers();
+    }
     LazyObject::update();
 }
 
@@ -100,7 +102,6 @@ void Gsr::updateTimes() const {
     int j = 0;
     for (auto i = volstepdates_.begin(); i != volstepdates_.end(); ++i, ++j) {
         volsteptimes_.push_back(termStructure()->timeFromReference(*i));
-        volsteptimesArray_[j] = volsteptimes_[j];
         if (j == 0)
             QL_REQUIRE(volsteptimes_[0] > 0.0, "volsteptimes must be positive ("
                                                    << volsteptimes_[0] << ")");
@@ -110,14 +111,18 @@ void Gsr::updateTimes() const {
                            << volsteptimes_[j - 1] << "@" << (j - 1) << ", "
                            << volsteptimes_[j] << "@" << j << ")");
     }
-    if (stateProcess_ != nullptr)
+    if (stateProcess_ != nullptr) {
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+        ext::static_pointer_cast<GsrProcess>(stateProcess_)->setTimes(
+            Array(volsteptimes_.begin(), volsteptimes_.end()));
+    }
 }
 
 void Gsr::updateVolatility() {
     for (Size i = 0; i < sigma_.size(); i++) {
         sigma_.setParam(i, volatilities_[i]->value());
     }
+    ext::static_pointer_cast<GsrProcess>(stateProcess_)->setVols(sigma_.params());
     update();
 }
 
@@ -125,12 +130,11 @@ void Gsr::updateReversion() {
     for (Size i = 0; i < reversion_.size(); i++) {
         reversion_.setParam(i, reversions_[i]->value());
     }
+    ext::static_pointer_cast<GsrProcess>(stateProcess_)->setReversions(reversion_.params());
     update();
 }
 
 void Gsr::initialize(Real T) {
-
-    volsteptimesArray_ = Array(volstepdates_.size());
 
     updateTimes();
 
@@ -153,19 +157,19 @@ void Gsr::initialize(Real T) {
         }
     }
 
-    // sigma_ =
-    // PiecewiseConstantParameter(volsteptimes_,PositiveConstraint());
     sigma_ = PiecewiseConstantParameter(volsteptimes_, NoConstraint());
     for (Size i = 0; i < sigma_.size(); i++) {
         sigma_.setParam(i, volatilities_[i]->value());
     }
 
     stateProcess_ = ext::make_shared<GsrProcess>(
-        volsteptimesArray_, sigma_.params(), reversion_.params(), T);
+        Array(volsteptimes_.begin(), volsteptimes_.end()), sigma_.params(), reversion_.params(), T);
 
     registerWith(termStructure());
 
-    registerWith(stateProcess_);
+    // registering with stateProcess_ is not necessary (the Gsr model
+    // itself manages it) and in fact would lead to an infinite
+    // notification loop
 
     volatilityObserver_ = ext::make_shared<VolatilityObserver>(this);
     reversionObserver_ = ext::make_shared<ReversionObserver>(this);
@@ -186,8 +190,7 @@ Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
         return yts.empty() ? this->termStructure()->discount(T, true)
                            : yts->discount(T, true);
 
-    ext::shared_ptr<GsrProcess> p =
-        ext::dynamic_pointer_cast<GsrProcess>(stateProcess_);
+    auto p = ext::static_pointer_cast<GsrProcess>(stateProcess_);
 
     Real x = y * stateProcess_->stdDeviation(0.0, 0.0, t) +
              stateProcess_->expectation(0.0, 0.0, t);
@@ -206,8 +209,7 @@ Real Gsr::numeraireImpl(const Time t, const Real y,
 
     calculate();
 
-    ext::shared_ptr<GsrProcess> p =
-        ext::dynamic_pointer_cast<GsrProcess>(stateProcess_);
+    auto p = ext::static_pointer_cast<GsrProcess>(stateProcess_);
 
     if (t == 0)
         return yts.empty()

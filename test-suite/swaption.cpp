@@ -15,20 +15,22 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/swaption.hpp>
+#include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/instruments/makeois.hpp>
+#include <ql/indexes/swap/euriborswap.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -111,8 +113,7 @@ struct CommonVars {
         return result;
     }
 
-    ext::shared_ptr<PricingEngine> makeEngine(
-                                              Volatility volatility,
+    ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility,
                                               BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
         Handle<Quote> h(ext::make_shared<SimpleQuote>(volatility));
         return ext::make_shared<BlackSwaptionEngine>(termStructure, h, Actual365Fixed(), 0.0, model);
@@ -134,8 +135,7 @@ struct CommonVars {
         floatingConvention = index->businessDayConvention();
         floatingTenor = index->tenor();
         calendar = index->fixingCalendar();
-        today = calendar.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today;
+        today = Settings::instance().evaluationDate();
         settlement = calendar.advance(today,settlementDays,Days);
         termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
     }
@@ -151,7 +151,8 @@ BOOST_AUTO_TEST_CASE(testBlackEngineCaching) {
     Date exerciseDate = vars.calendar.advance(vars.today, 1 * Years);
     Date startDate = vars.calendar.advance(exerciseDate, vars.settlementDays, Days);
 
-    ext::shared_ptr<VanillaSwap> swap = MakeVanillaSwap(1 * Years, vars.index, 0.03)
+    ext::shared_ptr<VanillaSwap> swap = MakeVanillaSwap(1 * Years, vars.index)
+                                            .withFixedRate(0.03)
                                             .withEffectiveDate(startDate)
                                             .withFixedLegTenor(1 * Years)
                                             .withFixedLegDayCount(vars.fixedDayCount)
@@ -187,7 +188,8 @@ BOOST_AUTO_TEST_CASE(testStrikeDependency) {
                 Volatility vol = 0.20;
                 for (Real strike : strikes) {
                     ext::shared_ptr<VanillaSwap> swap =
-                        MakeVanillaSwap(length, vars.index, strike)
+                        MakeVanillaSwap(length, vars.index)
+                            .withFixedRate(strike)
                             .withEffectiveDate(startDate)
                             .withFixedLegTenor(1 * Years)
                             .withFixedLegDayCount(vars.fixedDayCount)
@@ -279,7 +281,8 @@ BOOST_AUTO_TEST_CASE(testSpreadDependency) {
                 std::vector<Real> values_cash;
                 for (Real spread : spreads) {
                     ext::shared_ptr<VanillaSwap> swap =
-                        MakeVanillaSwap(length, vars.index, 0.06)
+                        MakeVanillaSwap(length, vars.index)
+                            .withFixedRate(0.06)
                             .withFixedLegTenor(1 * Years)
                             .withFixedLegDayCount(vars.fixedDayCount)
                             .withEffectiveDate(startDate)
@@ -362,7 +365,8 @@ BOOST_AUTO_TEST_CASE(testSpreadTreatment) {
                                           vars.settlementDays,Days);
                 for (Real spread : spreads) {
                     ext::shared_ptr<VanillaSwap> swap =
-                        MakeVanillaSwap(length, vars.index, 0.06)
+                        MakeVanillaSwap(length, vars.index)
+                            .withFixedRate(0.06)
                             .withFixedLegTenor(1 * Years)
                             .withFixedLegDayCount(vars.fixedDayCount)
                             .withEffectiveDate(startDate)
@@ -370,7 +374,8 @@ BOOST_AUTO_TEST_CASE(testSpreadTreatment) {
                             .withType(k);
                     Spread correction = spread * swap->floatingLegBPS() / swap->fixedLegBPS();
                     ext::shared_ptr<VanillaSwap> equivalentSwap =
-                        MakeVanillaSwap(length, vars.index, 0.06 + correction)
+                        MakeVanillaSwap(length, vars.index)
+                            .withFixedRate(0.06 + correction)
                             .withFixedLegTenor(1 * Years)
                             .withFixedLegDayCount(vars.fixedDayCount)
                             .withEffectiveDate(startDate)
@@ -422,7 +427,8 @@ BOOST_AUTO_TEST_CASE(testCachedValue) {
     Date startDate = vars.calendar.advance(exerciseDate,
                                            vars.settlementDays, Days);
     ext::shared_ptr<VanillaSwap> swap =
-        MakeVanillaSwap(10*Years, vars.index, 0.06)
+        MakeVanillaSwap(10*Years, vars.index)
+        .withFixedRate(0.06)
         .withEffectiveDate(startDate)
         .withFixedLegTenor(1*Years)
         .withFixedLegDayCount(vars.fixedDayCount);
@@ -439,7 +445,8 @@ BOOST_AUTO_TEST_CASE(testCachedValue) {
                     "\nexpected:   " << cachedNPV);
 
     ext::shared_ptr<OvernightIndexedSwap> oiswap =
-        MakeOIS(10*Years, vars.oisIndex, 0.06)
+        MakeOIS(10*Years, vars.oisIndex)
+        .withFixedRate(0.06)
         .withEffectiveDate(startDate)
         .withPaymentFrequency(Annual)
         .withFixedLegDayCount(vars.fixedDayCount);
@@ -474,9 +481,10 @@ BOOST_AUTO_TEST_CASE(testVega) {
                                            vars.settlementDays*Days);
         for (auto& length : lengths) {
             for (Real strike : strikes) {
-                for (Size h=0; h<LENGTH(type); h++) {
+                for (Size h=0; h<std::size(type); h++) {
                     ext::shared_ptr<VanillaSwap> swap =
-                        MakeVanillaSwap(length, vars.index, strike)
+                        MakeVanillaSwap(length, vars.index)
+                            .withFixedRate(strike)
                             .withEffectiveDate(startDate)
                             .withFixedLegTenor(1 * Years)
                             .withFixedLegDayCount(vars.fixedDayCount)
@@ -730,11 +738,10 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
 
             if (std::fabs(annuity_ratio_u360-npv_ratio_u360)>1e-10 ) {
                 BOOST_ERROR("\n"
-                            << "    The npv's ratio must be equal to "
-                            << " annuities ratio"
+                            << "    The npv's ratio must be equal to annuities ratio"
                             << "\n"
                                "    Swaption "
-                            << exercises[i].units() << "y x " << length.units() << "y"
+                            << exercise << " x " << length
                             << " (underlying swap fixed leg Unadjusted, 30/360)"
                             << "\n"
                             << "    Today           : " << vars.today << "\n"
@@ -752,11 +759,10 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
             }
             if (std::fabs(annuity_ratio_a365-npv_ratio_a365)>1e-10) {
                 BOOST_ERROR("\n"
-                            << "    The npv's ratio must be equal to "
-                            << " annuities ratio"
+                            << "    The npv's ratio must be equal to annuities ratio"
                             << "\n"
                                "    Swaption "
-                            << exercises[i].units() << "y x " << length.units() << "y"
+                            << exercise << " x " << length
                             << " (underlying swap fixed leg Modified Following, act/365"
                             << "\n"
                             << "    Today           : " << vars.today << "\n"
@@ -774,11 +780,10 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
                 }
             if (std::fabs(annuity_ratio_a360-npv_ratio_a360)>1e-10) {
                 BOOST_ERROR("\n"
-                            << "    The npv's ratio must be equal to "
-                            << " annuities ratio"
+                            << "    The npv's ratio must be equal to annuities ratio"
                             << "\n"
                                "    Swaption "
-                            << exercises[i].units() << "y x " << length.units() << "y"
+                            << exercise << " x " << length
                             << " (underlying swap fixed leg Unadjusted, 30/360)"
                             << "\n"
                             << "    Today           : " << vars.today << "\n"
@@ -796,11 +801,10 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
             }
             if (std::fabs(annuity_ratio_u365-npv_ratio_u365)>1e-10) {
                 BOOST_ERROR("\n"
-                            << "    The npv's ratio must be equal to "
-                            << " annuities ratio"
+                            << "    The npv's ratio must be equal to annuities ratio"
                             << "\n"
                                "    Swaption "
-                            << exercises[i].units() << "y x " << length.units() << "y"
+                            << exercise << " x " << length
                             << " (underlying swap fixed leg Unadjusted, act/365)"
                             << "\n"
                             << "    Today           : " << vars.today << "\n"
@@ -820,7 +824,7 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Faster))) {
+BOOST_AUTO_TEST_CASE(testImpliedVolatility) {
 
     BOOST_TEST_MESSAGE("Testing implied volatility for swaptions...");
 
@@ -845,13 +849,14 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Faster))) {
             for (Real& strike : strikes) {
                 for (auto& k : type) {
                     ext::shared_ptr<VanillaSwap> swap =
-                        MakeVanillaSwap(length, vars.index, strike)
+                        MakeVanillaSwap(length, vars.index)
+                            .withFixedRate(strike)
                             .withEffectiveDate(startDate)
                             .withFixedLegTenor(1 * Years)
                             .withFixedLegDayCount(vars.fixedDayCount)
                             .withFloatingLegSpread(0.0)
                             .withType(k);
-                    for (Size h=0; h<LENGTH(types); h++) {
+                    for (Size h=0; h<std::size(types); h++) {
                       for (auto priceType : priceTypes) {
                         for (Real vol : vols) {
                             ext::shared_ptr<Swaption> swaption =
@@ -918,7 +923,7 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Faster))) {
 }
 
 
-BOOST_AUTO_TEST_CASE(testImpliedVolatilityOis, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testImpliedVolatilityOis) {
 
     BOOST_TEST_MESSAGE("Testing implied volatility for overnight-indexed swaptions...");
 
@@ -943,12 +948,13 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatilityOis, *precondition(if_speed(Fast))) {
             for (Real& strike : strikes) {
                 for (auto& k : type) {
                     ext::shared_ptr<OvernightIndexedSwap> swap =
-                        MakeOIS(length, vars.oisIndex, strike)
+                        MakeOIS(length, vars.oisIndex)
+                            .withFixedRate(strike)
                             .withEffectiveDate(startDate)
                             .withPaymentFrequency(Annual)
                             .withFixedLegDayCount(vars.fixedDayCount)
                             .withType(k);
-                    for (Size h=0; h<LENGTH(types); h++) {
+                    for (Size h=0; h<std::size(types); h++) {
                       for (auto priceType : priceTypes) {
                         for (Real vol : vols) {
                             ext::shared_ptr<Swaption> swaption =
@@ -1061,7 +1067,7 @@ void checkSwaptionDelta(bool useBachelierVol)
         for (auto exercise : exercises) {
             for (auto& length : lengths) {
                 for (Real& strike : strikes) {
-                    for (Size h=0; h<LENGTH(type); h++) {
+                    for (Size h=0; h<std::size(type); h++) {
                         Volatility volatility = useBachelierVol ? vol / 100.0 : vol;
                         ext::shared_ptr<Engine> swaptionEngine = makeConstVolEngine<Engine>(
                             discountHandle, volatility);
@@ -1071,7 +1077,8 @@ void checkSwaptionDelta(bool useBachelierVol)
                         projectionQuoteHandle.linkTo(ext::make_shared<SimpleQuote>(projectionRate));
 
                         ext::shared_ptr<VanillaSwap> underlying =
-                            MakeVanillaSwap(length, idx, strike)
+                            MakeVanillaSwap(length, idx)
+                                .withFixedRate(strike)
                                 .withEffectiveDate(startDate)
                                 .withFixedLegTenor(1 * Years)
                                 .withFixedLegDayCount(Thirty360(Thirty360::BondBasis))
@@ -1141,6 +1148,75 @@ BOOST_AUTO_TEST_CASE(testSwaptionDeltaInBachelierModel) {
     BOOST_TEST_MESSAGE("Testing swaption delta in Bachelier model...");
 
     checkSwaptionDelta<BachelierSwaptionEngine>(true);
+}
+
+BOOST_AUTO_TEST_CASE(testMakeSwaptionWithExerciseCalendar) {
+
+    BOOST_TEST_MESSAGE("Testing MakeSwaption with exercise calendar override...");
+
+    // Use a specific date where TARGET and US Settlement diverge:
+    // 1Y advance from Oct 9, 2015 gives Oct 10, 2016 (TARGET)
+    // vs Oct 11, 2016 (US), because Oct 10 is Columbus Day.
+    Date today(9, October, 2015);
+    Settings::instance().evaluationDate() = today;
+    RelinkableHandle<YieldTermStructure> termStructure;
+    termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
+
+    auto swapIndex = ext::make_shared<EuriborSwapIsdaFixA>(5*Years, termStructure);
+    Calendar targetCalendar = swapIndex->fixingCalendar();
+    Calendar usCalendar = UnitedStates(UnitedStates::Settlement);
+
+    // Default uses swap index's fixing calendar (TARGET)
+    Swaption defaultSwaption =
+        MakeSwaption(swapIndex, 1*Years, 0.05);
+    Date defaultExercise = defaultSwaption.exercise()->dates().front();
+
+    Date expected = targetCalendar.advance(
+        targetCalendar.adjust(today), 1*Years, ModifiedFollowing);
+    BOOST_CHECK_EQUAL(defaultExercise, expected);
+
+    // With custom calendar, exercise date differs
+    Swaption customSwaption =
+        MakeSwaption(swapIndex, 1*Years, 0.05)
+            .withExerciseCalendar(usCalendar);
+    Date customExercise = customSwaption.exercise()->dates().front();
+
+    Date expectedCustom = usCalendar.advance(
+        usCalendar.adjust(today), 1*Years, ModifiedFollowing);
+    BOOST_CHECK_EQUAL(customExercise, expectedCustom);
+    BOOST_CHECK_NE(customExercise, defaultExercise);
+
+    // Explicit withExerciseDate takes precedence over calendar
+    Date explicitDate = targetCalendar.advance(today, 6*Months);
+    Date fixingDate = targetCalendar.advance(today, 1*Years);
+    Swaption explicitSwaption =
+        MakeSwaption(swapIndex, fixingDate, 0.05)
+            .withExerciseCalendar(usCalendar)
+            .withExerciseDate(explicitDate);
+    BOOST_CHECK_EQUAL(explicitSwaption.exercise()->dates().front(), explicitDate);
+}
+
+BOOST_AUTO_TEST_CASE(testMakeSwaptionFixingDateNominal) {
+
+    BOOST_TEST_MESSAGE("Testing MakeSwaption nominal with fixing-date-based constructor...");
+
+    Date today(9, October, 2015);
+    Settings::instance().evaluationDate() = today;
+    RelinkableHandle<YieldTermStructure> termStructure;
+    termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
+
+    auto swapIndex = ext::make_shared<EuriborSwapIsdaFixA>(5*Years, termStructure);
+    Date fixingDate = swapIndex->fixingCalendar().advance(today, 1*Years);
+
+    // The fixingDate-based constructor should default the nominal to 1.0,
+    // just like the optionTenor-based constructor does.
+    Swaption swaption = MakeSwaption(swapIndex, fixingDate, 0.05);
+    BOOST_CHECK_EQUAL(swaption.underlying()->nominal(), 1.0);
+
+    // withNominal should still override the default.
+    Swaption customNominalSwaption =
+        MakeSwaption(swapIndex, fixingDate, 0.05).withNominal(1234.0);
+    BOOST_CHECK_EQUAL(customNominalSwaption.underlying()->nominal(), 1234.0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

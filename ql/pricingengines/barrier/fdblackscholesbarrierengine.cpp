@@ -4,6 +4,7 @@
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008, 2009 Ralph Schreyer
  Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2026 Jogi Sidhu
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -12,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -21,15 +22,19 @@
 
 #include <ql/exercise.hpp>
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmbermudanstepcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmtimedepdirichletboundary.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesrebateengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
@@ -79,12 +84,47 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "non-striked type payoff given");
         QL_REQUIRE(payoff->strike() > 0.0, "strike must be positive");
 
-        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "only european style option are supported");
+        const Exercise::Type exerciseType = arguments_.exercise->type();
+        QL_REQUIRE(   exerciseType == Exercise::European
+                   || exerciseType == Exercise::American
+                   || exerciseType == Exercise::Bermudan,
+                   "exercise type is not supported");
+
+        // knock-in options are priced via in-out parity,
+        // which does not hold for early exercise
+        QL_REQUIRE(   exerciseType == Exercise::European
+                   || arguments_.barrierType == Barrier::DownOut
+                   || arguments_.barrierType == Barrier::UpOut,
+                   "only european style knock-in options are supported");
 
         const auto spot = process_->x0();
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
         QL_REQUIRE(!triggered(spot), "barrier touched");
+
+        const Date settlementDate = process_->riskFreeRate()->referenceDate();
+        bool exercisableToday = false;
+        if (exerciseType == Exercise::American) {
+            exercisableToday = arguments_.exercise->date(0) <= settlementDate
+                               && settlementDate <= arguments_.exercise->lastDate();
+        } else if (exerciseType == Exercise::Bermudan) {
+            for (const Date& exerciseDate : arguments_.exercise->dates()) {
+                if (exerciseDate == settlementDate) {
+                    exercisableToday = true;
+                    break;
+                }
+            }
+        }
+
+        // on the barrier the option is knocked out before it can be
+        // exercised; when the intrinsic value there exceeds the rebate,
+        // the holder would exercise just inside it instead, so the value
+        // jumps at the barrier and the greeks are undefined
+        if (   exercisableToday
+            && close_enough(spot, arguments_.barrier)
+            && (*payoff)(arguments_.barrier) > arguments_.rebate) {
+            results_.value = arguments_.rebate;
+            return;
+        }
 
         const Time maturity = process_->time(arguments_.exercise->lastDate());
 
@@ -99,29 +139,25 @@ namespace QuantLib {
             xMax = std::log(arguments_.barrier);
         }
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(
+        const auto equityMesher = ext::make_shared<FdmBlackScholesMesher>(
                 xGrid_, process_, maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
-                dividends_));
+                dividends_);
         
-        const ext::shared_ptr<FdmMesher> mesher (
-            ext::make_shared<FdmMesherComposite>(equityMesher));
+        const auto mesher = ext::make_shared<FdmMesherComposite>(equityMesher);
 
         // 2. Calculator
-        ext::shared_ptr<FdmInnerValueCalculator> calculator(
-            ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0));
+        auto calculator = ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0);
 
         // 3. Step conditions
         std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
 
         // 3.1 Step condition if discrete dividends
-        ext::shared_ptr<FdmDividendHandler> dividendCondition(
-            ext::make_shared<FdmDividendHandler>(dividends_, mesher,
+        auto dividendCondition = ext::make_shared<FdmDividendHandler>(dividends_, mesher,
                                    process_->riskFreeRate()->referenceDate(),
-                                   process_->riskFreeRate()->dayCounter(), 0));
+                                   process_->riskFreeRate()->dayCounter(), 0);
 
         if (!dividends_.empty()) {
             stepConditions.push_back(dividendCondition);
@@ -132,40 +168,75 @@ namespace QuantLib {
             stoppingTimes.push_back(dividendTimes);
         }
 
-        ext::shared_ptr<FdmStepConditionComposite> conditions(
-            ext::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions));
-
-        // 4. Boundary conditions
-        FdmBoundaryConditionSet boundaries;
-        if (   arguments_.barrierType == Barrier::DownIn
-            || arguments_.barrierType == Barrier::DownOut) {
-            boundaries.push_back(
-                ext::make_shared<FdmDirichletBoundary>(mesher, arguments_.rebate, 0,
-                                         FdmDirichletBoundary::Lower));
-
+        // 3.2 Step condition if early exercise (knock-out options only)
+        Time exerciseStart = Null<Time>();
+        if (exerciseType == Exercise::American) {
+            exerciseStart = process_->time(arguments_.exercise->date(0));
+            stepConditions.push_back(
+                ext::make_shared<FdmAmericanStepCondition>(mesher, calculator, exerciseStart));
+        } else if (exerciseType == Exercise::Bermudan) {
+            auto bermudanCondition = ext::make_shared<FdmBermudanStepCondition>(
+                arguments_.exercise->dates(),
+                process_->riskFreeRate()->referenceDate(),
+                process_->riskFreeRate()->dayCounter(),
+                mesher, calculator);
+            stepConditions.push_back(bermudanCondition);
+            stoppingTimes.push_back(bermudanCondition->exerciseTimes());
         }
 
-        if (   arguments_.barrierType == Barrier::UpIn
-            || arguments_.barrierType == Barrier::UpOut) {
+        auto conditions = ext::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions);
+
+        // 4. Boundary conditions
+        const auto side =
+            (   arguments_.barrierType == Barrier::DownIn
+             || arguments_.barrierType == Barrier::DownOut)
+            ? FdmDirichletBoundary::Lower : FdmDirichletBoundary::Upper;
+
+        FdmBoundaryConditionSet boundaries;
+        if (exerciseType == Exercise::American) {
+            // once exercisable, the holder exercises rather than being
+            // knocked out for less than the intrinsic value at the barrier
+            const Real rebate = arguments_.rebate;
+            const Real exerciseValue = std::max(rebate, (*payoff)(arguments_.barrier));
+            boundaries.push_back(ext::make_shared<FdmTimeDepDirichletBoundary>(
+                mesher,
+                [=](Real t) { return t >= exerciseStart ? exerciseValue : rebate; },
+                0, side));
+        } else {
             boundaries.push_back(
-                ext::make_shared<FdmDirichletBoundary>(mesher, arguments_.rebate, 0,
-                                         FdmDirichletBoundary::Upper));
+                ext::make_shared<FdmDirichletBoundary>(mesher, arguments_.rebate, 0, side));
         }
 
         // 5. Solver
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
                                      maturity, tGrid_, dampingSteps_ };
 
-        ext::shared_ptr<FdmBlackScholesSolver> solver(
-            ext::make_shared<FdmBlackScholesSolver>(
+        auto solver = ext::make_shared<FdmBlackScholesSolver>(
                                Handle<GeneralizedBlackScholesProcess>(process_),
                                payoff->strike(), solverDesc, schemeDesc_,
-                               localVol_, illegalLocalVolOverwrite_));
+                               localVol_, illegalLocalVolOverwrite_);
 
         results_.value = solver->valueAt(spot);
         results_.delta = solver->deltaAt(spot);
         results_.gamma = solver->gammaAt(spot);
         results_.theta = solver->thetaAt(spot);
+
+        // As in FdBlackScholesVanillaEngine, the step condition enforces
+        // the exercise value on grid nodes only and the interpolant can
+        // undershoot it in between; floor the value when the holder can
+        // exercise on the reference date and the payoff is paid then.
+        // Greeks stay on the interpolant.
+        bool exercisable = exercisableToday;
+        if (exercisable) {
+            const auto early = ext::dynamic_pointer_cast<EarlyExercise>(arguments_.exercise);
+            if (early != nullptr && early->payoffAtExpiry())
+                exercisable = false;
+        }
+        if (exercisable) {
+            const Real exerciseValue = (*payoff)(spot);
+            if (results_.value < exerciseValue)
+                results_.value = exerciseValue;
+        }
 
         // 6. Calculate vanilla option and rebate for in-barriers
         if (   arguments_.barrierType == Barrier::DownIn

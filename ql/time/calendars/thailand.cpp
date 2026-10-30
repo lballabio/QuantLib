@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -39,10 +39,10 @@ namespace QuantLib {
             || ((d == 1 || (d == 3 && w == Monday)) && m == January)
             // Chakri Memorial Day
             || ((d == 6 || ((d == 7 || d == 8) && w == Monday)) && m == April)
-            // Songkran Festival (was cancelled in 2020 due to the Covid-19 Pandamic)
+            // Songkran Festival (was cancelled in 2020 due to the Covid-19 Pandemic)
             || ((d == 13 || d == 14 || d == 15) && m == April && y != 2020)
             // Substitution Songkran Festival, usually not more than 5 days in total (was cancelled
-            // in 2020 due to the Covid-19 Pandamic)
+            // in 2020 due to the Covid-19 Pandemic)
             || (d == 16 && (w == Monday || w == Tuesday) && m == April && y != 2020)
             // Labor Day
             || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == May)
@@ -52,7 +52,7 @@ namespace QuantLib {
             || ((d == 03 || ((d == 04 || d == 05) && w == Monday)) && m == June && y >= 2019)
             // H.M. King Maha Vajiralongkorn Phra Vajiraklaochaoyuhua’s Birthday
             || ((d == 28 || ((d == 29 || d == 30) && w == Monday)) && m == July && y >= 2017)
-            // 	​H.M. Queen Sirikit The Queen Mother’s Birthday / Mother’s Day
+            // H.M. Queen Sirikit The Queen Mother’s Birthday / Mother’s Day
             || ((d == 12 || ((d == 13 || d == 14) && w == Monday)) && m == August)
             // H.M. King Bhumibol Adulyadej The Great Memorial Day
             || ((d == 13 || ((d == 14 || d == 15) && w == Monday)) && m == October && y >= 2017)
@@ -293,6 +293,15 @@ namespace QuantLib {
                             || (d == 22 && m == May)      // Wisakha Bucha Day
                             || (d == 22 && m == July)     // Substitution for Asarnha Bucha Day (Saturday 20th July 2024)
                             || (d == 23 && m == October)  // Chulalongkorn Day
+            ))
+            return false;
+
+        if ((y == 2025) && ((d == 12 && m == February)    // Substitution for Makha Bucha Day (Wednesday 12th February 2025)
+            || (d == 7 && m == April)     // Substitution for Chakri Memorial Day (Sunday 6th April 2025)
+            || (d == 5 && m == May)       // Substitution for Coronation Day (Sunday 4th May 2025)
+            || (d == 12 && m == May)      // Wisakha Bucha Day
+            || (d == 10 && m == July)     // Substitution for Asarnha Bucha Day (Tuesday 20th July 2025)
+            || (d == 23 && m == October)  // Chulalongkorn Day
             ))
             return false;
 

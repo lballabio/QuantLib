@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -20,6 +20,8 @@
 #include <ql/methods/finitedifferences/boundarycondition.hpp>
 
 namespace QuantLib {
+
+    QL_DEPRECATED_DISABLE_WARNING
 
     NeumannBC::NeumannBC(Real value, NeumannBC::Side side)
     : value_(value), side_(side) {}
@@ -116,5 +118,7 @@ namespace QuantLib {
     }
 
     void DirichletBC::applyAfterSolving(Array&) const {}
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }

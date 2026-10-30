@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -104,7 +104,6 @@ BOOST_AUTO_TEST_CASE(testDirectLookup) {
     BOOST_TEST_MESSAGE("Testing lookup of direct exchange rates...");
 
     ExchangeRateManager& rateManager = ExchangeRateManager::instance();
-    rateManager.clear();
 
     Currency EUR = EURCurrency(), USD = USDCurrency();
 
@@ -174,7 +173,6 @@ BOOST_AUTO_TEST_CASE(testTriangulatedLookup) {
     BOOST_TEST_MESSAGE("Testing lookup of triangulated exchange rates...");
 
     ExchangeRateManager& rateManager = ExchangeRateManager::instance();
-    rateManager.clear();
 
     Currency EUR = EURCurrency(), USD = USDCurrency(), ITL = ITLCurrency();
 
@@ -243,7 +241,6 @@ BOOST_AUTO_TEST_CASE(testSmartLookup) {
              CHF = CHFCurrency(), SEK = SEKCurrency(), JPY = JPYCurrency();
 
     ExchangeRateManager& rateManager = ExchangeRateManager::instance();
-    rateManager.clear();
 
     ExchangeRate eur_usd1 = ExchangeRate(EUR, USD, 1.1983);
     ExchangeRate eur_usd2 = ExchangeRate(USD, EUR, 1.0/1.2042);

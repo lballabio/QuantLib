@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2020 Lew Wei Hao
+ Copyright (C) 2026 Mahimn Patel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -10,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -71,11 +72,14 @@ namespace QuantLib {
         CumulativeNormalDistribution f;
 
         Real t = 0;
-        Real T = blackProcess_->riskFreeRate()->dayCounter().yearFraction(blackProcess_->riskFreeRate().currentLink()->referenceDate(),arguments_.exercise->lastDate());
+        Date maturity = arguments_.exercise->lastDate();
+        Real T = blackProcess_->riskFreeRate()->dayCounter().yearFraction(
+            blackProcess_->riskFreeRate().currentLink()->referenceDate(), maturity);
         Real kappa = vasicekProcess_->a();
-        Real S_t = blackProcess_->x0();
+        // spot net of the dividends paid until maturity
+        Real S_t = blackProcess_->x0() * blackProcess_->dividendYield()->discount(maturity);
         Real K = payoff->strike();
-        Real sigma_s = blackProcess_->blackVolatility()->blackVol(t, K);
+        Real sigma_s = blackProcess_->blackVolatility()->blackVol(maturity, K);
         Real sigma_r = vasicekProcess_->sigma();
         Real r_t = vasicekProcess_->r0();
 

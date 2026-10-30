@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -33,9 +33,10 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     CPIBond::CPIBond(Natural settlementDays,
                      Real faceAmount,
-                     bool growthOnly,
                      Real baseCPI,
                      const Period& observationLag,
                      ext::shared_ptr<ZeroInflationIndex> cpiIndex,
@@ -54,12 +55,11 @@ namespace QuantLib {
            paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar,
            issueDate),
       frequency_(schedule.tenor().frequency()), dayCounter_(accrualDayCounter),
-      growthOnly_(growthOnly), baseCPI_(baseCPI), observationLag_(observationLag),
+      growthOnly_(false), baseCPI_(baseCPI), observationLag_(observationLag),
       cpiIndex_(std::move(cpiIndex)), observationInterpolation_(observationInterpolation) {
 
         maturityDate_ = schedule.endDate();
 
-        // a CPIleg know about zero legs and inclusion of base inflation notional
         cashflows_ = CPILeg(std::move(schedule), cpiIndex_,
                             baseCPI_, observationLag_)
             .withNotionals(faceAmount)
@@ -85,4 +85,7 @@ namespace QuantLib {
             registerWith(*i);
         }
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
+
 }

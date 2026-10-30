@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -75,9 +75,8 @@ namespace QuantLib {
         RelinkableHandle<BlackVolTermStructure> volTS(
                                                 *process_->blackVolatility());
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-                 new GeneralizedBlackScholesProcess(stateVariable, dividendTS,
-                                                    riskFreeTS, volTS));
+        auto bsProcess = ext::make_shared<GeneralizedBlackScholesProcess>(stateVariable, dividendTS,
+                                                    riskFreeTS, volTS);
 
         AnalyticEuropeanEngine baseEngine(bsProcess);
 
@@ -111,10 +110,8 @@ namespace QuantLib {
             v = std::sqrt((variance + i*jumpSquareVol)/t);
             r = riskFreeRate - process_->jumpIntensity()->value()*k
                 + i*muPlusHalfSquareVol/t;
-            riskFreeTS.linkTo(ext::shared_ptr<YieldTermStructure>(new
-                FlatForward(rateRefDate, r, voldc)));
-            volTS.linkTo(ext::shared_ptr<BlackVolTermStructure>(new
-                BlackConstantVol(rateRefDate, volcal, v, voldc)));
+            riskFreeTS.linkTo(ext::make_shared<FlatForward>(rateRefDate, r, voldc));
+            volTS.linkTo(ext::make_shared<BlackConstantVol>(rateRefDate, volcal, v, voldc));
 
             baseArguments->validate();
             baseEngine.calculate();

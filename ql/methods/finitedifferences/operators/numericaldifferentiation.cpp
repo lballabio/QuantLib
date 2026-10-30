@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -69,7 +69,9 @@ namespace QuantLib {
             QL_REQUIRE(N > M, "number of points must be greater "
                                "than the order of the derivative");
 
+            QL_DEPRECATED_DISABLE_WARNING
             boost::multi_array<Real, 3>  d(boost::extents[M+1][N][N]);
+            QL_DEPRECATED_ENABLE_WARNING
             d[0][0][0] = 1.0;
             Real c1 = 1.0;
 

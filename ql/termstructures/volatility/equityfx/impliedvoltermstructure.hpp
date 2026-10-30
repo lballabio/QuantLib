@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -36,9 +36,9 @@ namespace QuantLib {
               in this structure as well.
 
         \warning It doesn't make financial sense to have an
-                 asset-dependant implied Vol Term Structure.  This
+                 asset-dependent implied Vol Term Structure.  This
                  class should be used with term structures that are
-                 time dependant only.
+                 time-dependent only.
     */
     class ImpliedVolTermStructure : public BlackVarianceTermStructure {
       public:

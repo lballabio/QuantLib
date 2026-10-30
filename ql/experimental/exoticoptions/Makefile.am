@@ -4,58 +4,24 @@ AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    analyticamericanmargrabeengine.hpp \
-    analyticcomplexchooserengine.hpp \
-    analyticcompoundoptionengine.hpp \
-    analyticeuropeanmargrabeengine.hpp \
-    analyticholderextensibleoptionengine.hpp \
-    analyticpartialtimebarrieroptionengine.hpp \
-    analyticpdfhestonengine.hpp \
-    analyticsimplechooserengine.hpp \
-    analytictwoassetbarrierengine.hpp \
-    analytictwoassetcorrelationengine.hpp \
-    analyticwriterextensibleoptionengine.hpp \
-    complexchooseroption.hpp \
-    compoundoption.hpp \
-    continuousarithmeticasianlevyengine.hpp \
     continuousarithmeticasianvecerengine.hpp \
     everestoption.hpp \
     himalayaoption.hpp \
-    holderextensibleoption.hpp \
     kirkspreadoptionengine.hpp \
-    margrabeoption.hpp \
     mceverestengine.hpp \
     mchimalayaengine.hpp \
     mcpagodaengine.hpp \
     pagodaoption.hpp \
-    partialtimebarrieroption.hpp \
-    simplechooseroption.hpp \
-    spreadoption.hpp \
-    twoassetbarrieroption.hpp \
-    twoassetcorrelationoption.hpp \
-    writerextensibleoption.hpp
+    spreadoption.hpp
 
 cpp_files = \
-    analyticholderextensibleoptionengine.cpp \
-    analyticpartialtimebarrieroptionengine.cpp \
-    analyticpdfhestonengine.cpp \
-    analytictwoassetbarrierengine.cpp \
-    analytictwoassetcorrelationengine.cpp \
-    analyticwriterextensibleoptionengine.cpp \
-    continuousarithmeticasianlevyengine.cpp \
     continuousarithmeticasianvecerengine.cpp \
     everestoption.cpp \
     himalayaoption.cpp \
-    holderextensibleoption.cpp \
-    kirkspreadoptionengine.cpp \
     mceverestengine.cpp \
     mchimalayaengine.cpp \
     mcpagodaengine.cpp \
-    pagodaoption.cpp \
-    partialtimebarrieroption.cpp \
-    twoassetbarrieroption.cpp \
-    twoassetcorrelationoption.cpp \
-    writerextensibleoption.cpp
+    pagodaoption.cpp
 
 if UNITY_BUILD
 
@@ -84,15 +50,9 @@ all.hpp: Makefile.am
 	echo "/* Add the files to be included into Makefile.am instead. */" >> ${srcdir}/$@
 	echo >> ${srcdir}/$@
 	for i in $(filter-out all.hpp \
-	                      margrabeoption.hpp \
-	                      analyticamericanmargrabeengine.hpp \
-	                      analyticeuropeanmargrabeengine.hpp \
-	                      compoundoption.hpp \
-	                      analyticcompoundoptionengine.hpp \
-	                      simplechooseroption.hpp \
-	                      analyticsimplechooserengine.hpp \
-	                      complexchooseroption.hpp \
-	                      analyticcomplexchooserengine.hpp, $(this_include_HEADERS)); do \
+	                      kirkspreadoptionengine.hpp \
+	                      spreadoption.hpp, \
+	                      $(this_include_HEADERS)); do \
 		echo "#include <${subdir}/$$i>" >> ${srcdir}/$@; \
 	done
 	echo >> ${srcdir}/$@

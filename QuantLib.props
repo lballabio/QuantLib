@@ -9,5 +9,13 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '16.0'">v142</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '17.0'">v143</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '18.0'">v145</PlatformToolset>
   </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <!-- The sources are UTF-8; tell the compiler so, rather than suppressing
+           C4819.  Matches /utf-8 in cmake/Platform.cmake. -->
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
 </Project>

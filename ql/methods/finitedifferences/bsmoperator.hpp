@@ -11,15 +11,11 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
-*/
-
-/*! \file bsmoperator.hpp
-    \brief differential operator for Black-Scholes-Merton equation
 */
 
 #ifndef quantlib_bsm_operator_hpp
@@ -28,18 +24,9 @@
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 
-namespace QuantLib {
+/* Deprecated in version 1.42 */
 
-    //! Black-Scholes-Merton differential operator
-    /*! \ingroup findiff */
-    class BSMOperator : public TridiagonalOperator {
-      public:
-        BSMOperator() = default;
-        BSMOperator(Size size, Real dx, Rate r, Rate q, Volatility sigma);
-        BSMOperator(const Array& grid, Rate r, Rate q, Volatility sigma);
-    };
-
-}
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 
 #endif

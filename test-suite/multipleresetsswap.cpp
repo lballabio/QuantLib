@@ -1,0 +1,267 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/*
+ Copyright (C) 2026 Zain Mughal
+ Copyright (C) 2026 Kyrylo Protsenko
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <https://www.quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+#include "toplevelfixture.hpp"
+#include "utilities.hpp"
+#include <ql/cashflows/multipleresetscoupon.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/instruments/makemultipleresetsswap.hpp>
+#include <ql/instruments/nonstandardswap.hpp>
+#include <ql/termstructures/yield/multipleresetsswaphelper.hpp>
+#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+
+using namespace QuantLib;
+using namespace boost::unit_test_framework;
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(MultipleResetsSwapTests)
+
+struct CommonVars {
+    Date today;
+    Calendar calendar;
+    DayCounter dayCount;
+    RelinkableHandle<YieldTermStructure> termStructure;
+    ext::shared_ptr<IborIndex> euribor3m;
+
+    // Flat 5% curve, 3M Euribor, 2 resets per semiannual coupon.
+    CommonVars() {
+        calendar = TARGET();
+        today = calendar.adjust(Date(15, January, 2024));
+        Settings::instance().evaluationDate() = today;
+        dayCount = Actual365Fixed();
+        termStructure.linkTo(flatRate(today, 0.05, dayCount));
+        euribor3m = ext::make_shared<Euribor3M>(termStructure);
+        euribor3m->addFixing(Date(11, January, 2024), 0.05);
+    }
+
+    ext::shared_ptr<MultipleResetsSwap>
+    makeSwap(Rate fixedRate, RateAveraging::Type method = RateAveraging::Compound) {
+        return MakeMultipleResetsSwap(2 * Years, euribor3m, 2)
+            .withFixedRate(fixedRate)
+            .withSettlementDays(0)
+            .withNominal(1.0e6)
+            .withAveragingMethod(method);
+    }
+};
+
+
+BOOST_AUTO_TEST_CASE(testFairRate) {
+    BOOST_TEST_MESSAGE("Testing fair rate of multiple-resets swap...");
+
+    CommonVars vars;
+
+    ext::shared_ptr<MultipleResetsSwap> swap = vars.makeSwap(0.06);
+
+    Rate fair = swap->fairRate();
+    BOOST_REQUIRE(fair != Null<Rate>());
+
+    // Rebuilding at the fair rate must give zero NPV.
+    ext::shared_ptr<MultipleResetsSwap> fairSwap = vars.makeSwap(fair);
+    QL_CHECK_SMALL(fairSwap->NPV(), 1.0e-8);
+
+    // Cross-check: fixed-leg NPV + floating-leg NPV equals total NPV.
+    Real npvCheck = swap->fixedLegNPV() + swap->floatingLegNPV();
+    QL_CHECK_SMALL(npvCheck - swap->NPV(), 1.0e-10);
+
+    // Omitting withFixedRate triggers auto-computation; NPV must be zero.
+    ext::shared_ptr<MultipleResetsSwap> autoFair =
+        MakeMultipleResetsSwap(2 * Years, vars.euribor3m, 2)
+            .withSettlementDays(0)
+            .withNominal(1.0e6);
+    QL_CHECK_SMALL(autoFair->NPV(), 1.0e-8);
+}
+
+
+BOOST_AUTO_TEST_CASE(testConsistencyWithLeg) {
+    BOOST_TEST_MESSAGE("Testing that multiple-resets swap NPV is consistent with legs NPV...");
+
+    CommonVars vars;
+
+    for (auto type : {Swap::Payer, Swap::Receiver}) {
+        ext::shared_ptr<MultipleResetsSwap> swap =
+            MakeMultipleResetsSwap(2 * Years, vars.euribor3m, 2)
+                .withFixedRate(0.05)
+                .withSettlementDays(0)
+                .withNominal(1.0e6)
+                .withType(type);
+
+        Real legSum = swap->fixedLegNPV() + swap->floatingLegNPV();
+        QL_CHECK_SMALL(legSum - swap->NPV(), 1.0e-10);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testAveragingVsCompounding) {
+    BOOST_TEST_MESSAGE("Testing averaging vs compounding in multiple-resets swaps...");
+
+    CommonVars vars;
+
+    Rate fixedRate = 0.05;
+    auto swapCompound = vars.makeSwap(fixedRate, RateAveraging::Compound);
+    auto swapAverage = vars.makeSwap(fixedRate, RateAveraging::Simple);
+
+    BOOST_CHECK(std::abs(swapCompound->fairRate() - swapAverage->fairRate()) > 1.0e-10);
+}
+
+
+BOOST_AUTO_TEST_CASE(testPaymentLagPreservedOnConversion) {
+    BOOST_TEST_MESSAGE("Testing payment lag preservation on conversion to a nonstandard swap...");
+
+    CommonVars vars;
+    auto baseSwap = vars.makeSwap(0.05);
+    Integer paymentLag = 3;
+    auto laggedSwap = ext::make_shared<MultipleResetsSwap>(
+        Swap::Payer, 1.0e6, baseSwap->fixedSchedule(), 0.05,
+        baseSwap->fixedDayCount(), baseSwap->fullResetSchedule(),
+        vars.euribor3m, baseSwap->resetsPerCoupon(), 0.0,
+        RateAveraging::Compound, std::nullopt, paymentLag, vars.calendar);
+
+    NonstandardSwap converted(*laggedSwap);
+    BOOST_CHECK_EQUAL(converted.paymentLag(), paymentLag);
+    BOOST_CHECK(converted.paymentCalendar() == vars.calendar);
+    BOOST_REQUIRE_EQUAL(converted.fixedLeg().size(), laggedSwap->fixedLeg().size());
+    BOOST_REQUIRE_EQUAL(converted.floatingLeg().size(),
+                        laggedSwap->floatingLeg().size());
+    for (Size i = 0; i < converted.fixedLeg().size(); ++i)
+        BOOST_CHECK_EQUAL(converted.fixedLeg()[i]->date(),
+                          laggedSwap->fixedLeg()[i]->date());
+    for (Size i = 0; i < converted.floatingLeg().size(); ++i)
+        BOOST_CHECK_EQUAL(converted.floatingLeg()[i]->date(),
+                          laggedSwap->floatingLeg()[i]->date());
+}
+
+
+BOOST_AUTO_TEST_CASE(testRateHelper) {
+    BOOST_TEST_MESSAGE("Testing bootstrapping using multiple-resets swap helpers...");
+
+    CommonVars vars;
+
+    // Build a flat curve from multiple-resets swap quotes at 1Y, 2Y, 3Y.
+    // A flat 5% input should bootstrap to a flat 5% output.
+    Rate inputRate = 0.05;
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    for (const auto& tenor : {1 * Years, 2 * Years, 3 * Years}) {
+        helpers.push_back(ext::make_shared<MultipleResetsSwapRateHelper>(
+            0, tenor, Handle<Quote>(ext::make_shared<SimpleQuote>(inputRate)), vars.euribor3m, 2));
+    }
+
+    auto curve = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(vars.today, helpers,
+                                                                            vars.dayCount);
+
+    RelinkableHandle<YieldTermStructure> bootstrapped;
+    bootstrapped.linkTo(curve);
+    auto indexOnCurve = ext::make_shared<Euribor3M>(bootstrapped);
+
+    const Real tolerance = 1.0e-6;
+    for (const auto& tenor : {1 * Years, 2 * Years, 3 * Years}) {
+        ext::shared_ptr<MultipleResetsSwap> check = MakeMultipleResetsSwap(tenor, indexOnCurve, 2)
+                                                        .withFixedRate(0.0)
+                                                        .withSettlementDays(0)
+                                                        .withNominal(1.0e6)
+                                                        .withDiscountingTermStructure(bootstrapped);
+        Rate implied = check->fairRate();
+        QL_CHECK_SMALL(implied - inputRate, tolerance);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testRateHelperSwap) {
+    BOOST_TEST_MESSAGE("Testing the swap underlying a multiple-resets swap helper...");
+
+    CommonVars vars;
+
+    auto helper = ext::make_shared<MultipleResetsSwapRateHelper>(
+        0, 2 * Years, Handle<Quote>(ext::make_shared<SimpleQuote>(0.05)), vars.euribor3m, 2);
+
+    auto swap = helper->swap();
+    BOOST_REQUIRE(swap);
+    BOOST_CHECK_EQUAL(swap->startDate(), helper->earliestDate());
+    BOOST_CHECK_EQUAL(swap->floatingLeg().size(), 4U);
+
+    Settings::instance().evaluationDate() = vars.calendar.advance(vars.today, 1 * Years);
+    BOOST_CHECK(helper->swap() != swap);
+    BOOST_CHECK_EQUAL(helper->swap()->startDate(), helper->earliestDate());
+}
+
+
+BOOST_AUTO_TEST_CASE(testMaturityOnHoliday) {
+    BOOST_TEST_MESSAGE("Testing multiple-resets swap schedules when the maturity is a holiday...");
+
+    CommonVars vars;
+
+    // Four years from January 15th, 2024 is Saturday, January 15th, 2028.
+    // The schedules must still start on the start date, without a stub.
+    ext::shared_ptr<MultipleResetsSwap> swap = MakeMultipleResetsSwap(4 * Years, vars.euribor3m, 2)
+                                                   .withFixedRate(0.05)
+                                                   .withSettlementDays(0);
+
+    BOOST_CHECK_EQUAL(swap->floatingLeg().size(), 8U);
+    BOOST_CHECK_EQUAL(swap->fixedLeg().size(), 8U);
+    BOOST_CHECK_EQUAL(swap->fixedSchedule().startDate(), vars.today);
+    BOOST_CHECK_EQUAL(swap->floatingSchedule().startDate(), vars.today);
+    BOOST_CHECK_EQUAL(swap->maturityDate(), Date(17, January, 2028));
+
+    // With one reset per coupon no error is raised, so a stub would go unnoticed
+    ext::shared_ptr<MultipleResetsSwap> single = MakeMultipleResetsSwap(4 * Years, vars.euribor3m, 1)
+                                                     .withFixedRate(0.05)
+                                                     .withSettlementDays(0);
+
+    BOOST_CHECK_EQUAL(single->floatingLeg().size(), 16U);
+    BOOST_CHECK_EQUAL(single->fixedLeg().size(), 16U);
+    BOOST_CHECK_EQUAL(single->fixedSchedule().startDate(), vars.today);
+    BOOST_CHECK_EQUAL(single->fixedSchedule().at(1), Date(15, April, 2024));
+}
+
+
+BOOST_AUTO_TEST_CASE(testRateHelperLastRelevantDate) {
+    BOOST_TEST_MESSAGE("Testing multiple-resets swap helper last relevant date...");
+
+    // The last reset starts on Monday, October 10th, 2016, since the 8th
+    // is a Saturday, so its fixing forecasts Euribor until January 10th, 2017;
+    // that is one day after the end of the swap.  The curve must reach that
+    // date, or the bootstrap fails since the helper's pillar is too early.
+    Date today(6, January, 2016);
+    Settings::instance().evaluationDate() = today;
+
+    auto euribor3m = ext::make_shared<Euribor3M>();
+    auto helper = ext::make_shared<MultipleResetsSwapRateHelper>(2, 1 * Years, 0.02, euribor3m, 2);
+
+    auto lastCoupon =
+        ext::dynamic_pointer_cast<MultipleResetsCoupon>(helper->swap()->floatingLeg().back());
+    BOOST_REQUIRE(lastCoupon);
+    Date lastFixingEndDate =
+        euribor3m->maturityDate(euribor3m->valueDate(lastCoupon->fixingDates().back()));
+    if (helper->latestRelevantDate() < lastFixingEndDate)
+        BOOST_ERROR("latest relevant date (" << helper->latestRelevantDate()
+                    << ") is earlier than the end of the last fixing period ("
+                    << lastFixingEndDate << ")");
+    BOOST_CHECK_EQUAL(helper->maturityDate(), helper->swap()->maturityDate());
+
+    PiecewiseYieldCurve<Discount, LogLinear> curve(
+        today, std::vector<ext::shared_ptr<RateHelper>>(1, helper), Actual365Fixed());
+    BOOST_CHECK_NO_THROW(curve.discount(1.0));
+}
+
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

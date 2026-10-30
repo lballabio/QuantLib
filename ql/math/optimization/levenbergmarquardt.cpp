@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Klaus Spanderen
  Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2026 Aaditya Panikath
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -11,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -21,7 +22,8 @@
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/lmdif.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/functional.hpp>
+#include <cmath>
+#include <functional>
 #include <memory>
 
 namespace QuantLib {
@@ -33,40 +35,38 @@ namespace QuantLib {
     : epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol),
       useCostFunctionsJacobian_(useCostFunctionsJacobian) {}
 
-    Integer LevenbergMarquardt::getInfo() const {
-        return info_;
-    }
-
     EndCriteria::Type LevenbergMarquardt::minimize(Problem& P,
                                                    const EndCriteria& endCriteria) {
-        EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
-        Array x_ = P.currentValue();
+        const Array& initX = P.currentValue();
         currentProblem_ = &P;
-        initCostValues_ = P.costFunction().values(x_);
+        initCostValues_ = P.costFunction().values(initX);
         int m = initCostValues_.size();
-        int n = x_.size();
-        if(useCostFunctionsJacobian_) {
+        int n = initX.size();
+        if (useCostFunctionsJacobian_) {
             initJacobian_ = Matrix(m,n);
-            P.costFunction().jacobian(initJacobian_, x_);
+            P.costFunction().jacobian(initJacobian_, initX);
         }
-        std::unique_ptr<Real[]> xx(new Real[n]);
-        std::copy(x_.begin(), x_.end(), xx.get());
-        std::unique_ptr<Real[]> fvec(new Real[m]);
-        std::unique_ptr<Real[]> diag(new Real[n]);
+        Array xx = initX;
+        auto fvec = std::make_unique<Real[]>(m);
+        auto diag = std::make_unique<Real[]>(n);
         int mode = 1;
-        Real factor = 1;
+        // magic number recommended by the documentation
+        Real factor = 100;
+        // lmdif() evaluates cost function n+1 times for each iteration (technically, 2n+1
+        // times if useCostFunctionsJacobian is true, but lmdif() doesn't account for that)
+        int maxfev = endCriteria.maxIterations() * (n + 1);
         int nprint = 0;
         int info = 0;
-        int nfev =0;
-        std::unique_ptr<Real[]> fjac(new Real[m*n]);
+        int nfev = 0;
+        auto fjac = std::make_unique<Real[]>(m*n);
         int ldfjac = m;
-        std::unique_ptr<int[]> ipvt(new int[n]);
-        std::unique_ptr<Real[]> qtf(new Real[n]);
-        std::unique_ptr<Real[]> wa1(new Real[n]);
-        std::unique_ptr<Real[]> wa2(new Real[n]);
-        std::unique_ptr<Real[]> wa3(new Real[n]);
-        std::unique_ptr<Real[]> wa4(new Real[m]);
+        auto ipvt = std::make_unique<int[]>(n);
+        auto qtf = std::make_unique<Real[]>(n);
+        auto wa1 = std::make_unique<Real[]>(n);
+        auto wa2 = std::make_unique<Real[]>(n);
+        auto wa3 = std::make_unique<Real[]>(n);
+        auto wa4 = std::make_unique<Real[]>(m);
         // requirements; check here to get more detailed error messages.
         QL_REQUIRE(n > 0, "no variables given");
         QL_REQUIRE(m >= n,
@@ -76,26 +76,25 @@ namespace QuantLib {
                    "negative f tolerance");
         QL_REQUIRE(xtol_ >= 0.0, "negative x tolerance");
         QL_REQUIRE(gtol_ >= 0.0, "negative g tolerance");
-        QL_REQUIRE(endCriteria.maxIterations() > 0,
-                   "null number of evaluations");
+        QL_REQUIRE(maxfev > 0, "null number of evaluations");
 
         // call lmdif to minimize the sum of the squares of m functions
         // in n variables by the Levenberg-Marquardt algorithm.
         MINPACK::LmdifCostFunction lmdifCostFunction =
-            [this](const auto m, const auto n, const auto x, const auto fvec, const auto iflag) {
-                this->fcn(m, n, x, fvec, iflag);
+            [this](const auto m, const auto n, const auto x, const auto fvec, [[maybe_unused]] const auto iflag) {
+                this->fcn(m, n, x, fvec);
             };
         MINPACK::LmdifCostFunction lmdifJacFunction =
             useCostFunctionsJacobian_
-                ? [this](const auto m, const auto n, const auto x, const auto fjac, const auto iflag) {
-                    this->jacFcn(m, n, x, fjac, iflag);
+                ? [this](const auto m, const auto n, const auto x, const auto fjac, [[maybe_unused]] const auto iflag) {
+                    this->jacFcn(m, n, x, fjac);
                 }
                 : MINPACK::LmdifCostFunction();
-        MINPACK::lmdif(m, n, xx.get(), fvec.get(),
+        MINPACK::lmdif(m, n, xx.begin(), fvec.get(),
                        endCriteria.functionEpsilon(),
                        xtol_,
                        gtol_,
-                       endCriteria.maxIterations(),
+                       maxfev,
                        epsfcn_,
                        diag.get(), mode, factor,
                        nprint, &info, &nfev, fjac.get(),
@@ -103,57 +102,92 @@ namespace QuantLib {
                        wa1.get(), wa2.get(), wa3.get(), wa4.get(),
                        lmdifCostFunction,
                        lmdifJacFunction);
+        // for the time being
         info_ = info;
         // check requirements & endCriteria evaluation
         QL_REQUIRE(info != 0, "MINPACK: improper input parameters");
-        //QL_REQUIRE(info != 6, "MINPACK: ftol is too small. no further "
-        //                               "reduction in the sum of squares "
-        //                               "is possible.");
-        if (info != 6) ecType = QuantLib::EndCriteria::StationaryFunctionValue;
-        //QL_REQUIRE(info != 5, "MINPACK: number of calls to fcn has "
-        //                               "reached or exceeded maxfev.");
-        endCriteria.checkMaxIterations(nfev, ecType);
         QL_REQUIRE(info != 7, "MINPACK: xtol is too small. no further "
                                        "improvement in the approximate "
                                        "solution x is possible.");
         QL_REQUIRE(info != 8, "MINPACK: gtol is too small. fvec is "
                                        "orthogonal to the columns of the "
                                        "jacobian to machine precision.");
+
+        EndCriteria::Type ecType = EndCriteria::None;
+        switch (info) {
+          case 1:
+          case 2:
+          case 3:
+          case 4:
+            // 2 and 3 should be StationaryPoint, 4 a new gradient-related value,
+            // but we keep StationaryFunctionValue for backwards compatibility.
+            ecType = EndCriteria::StationaryFunctionValue;
+            break;
+          case 5:
+            ecType = EndCriteria::MaxIterations;
+            break;
+          case 6:
+            ecType = EndCriteria::FunctionEpsilonTooSmall;
+            break;
+          default:
+            QL_FAIL("unknown MINPACK result: " << info);
+        }
         // set problem
-        std::copy(xx.get(), xx.get()+n, x_.begin());
-        P.setCurrentValue(x_);
-        P.setFunctionValue(P.costFunction().value(x_));
+        P.setCurrentValue(std::move(xx));
+        P.setFunctionValue(P.costFunction().value(P.currentValue()));
 
         return ecType;
     }
 
-    void LevenbergMarquardt::fcn(int, int n, Real* x, Real* fvec, int*) {
+    void LevenbergMarquardt::fcn(int, int n, Real* x, Real* fvec) {
         Array xt(n);
         std::copy(x, x+n, xt.begin());
-        // constraint handling needs some improvement in the future:
-        // starting point should not be close to a constraint violation
         if (currentProblem_->constraint().test(xt)) {
             const Array& tmp = currentProblem_->values(xt);
-            std::copy(tmp.begin(), tmp.end(), fvec);
-        } else {
-            std::copy(initCostValues_.begin(), initCostValues_.end(), fvec);
+            bool valid = true;
+            for (Real i : tmp) {
+                if (!std::isfinite(i)) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
+                std::copy(tmp.begin(), tmp.end(), fvec);
+                return;
+            }
         }
+        // Constraint violated or evaluation produced non-finite values:
+        // return a large, uniform penalty so the optimizer steers away.
+        // A fixed constant is used instead of the initial cost values because
+        // the latter can be very small (even zero) when the starting point is
+        // near-optimal, which would fail to deter the optimizer from exploring
+        // infeasible regions.
+        std::fill(fvec, fvec + initCostValues_.size(), 1.0e10);
     }
 
-    void LevenbergMarquardt::jacFcn(int m, int n, Real* x, Real* fjac, int*) {
+    void LevenbergMarquardt::jacFcn(int m, int n, Real* x, Real* fjac) {
         Array xt(n);
         std::copy(x, x+n, xt.begin());
-        // constraint handling needs some improvement in the future:
-        // starting point should not be close to a constraint violation
         if (currentProblem_->constraint().test(xt)) {
             Matrix tmp(m,n);
             currentProblem_->costFunction().jacobian(tmp, xt);
-            Matrix tmpT = transpose(tmp);
-            std::copy(tmpT.begin(), tmpT.end(), fjac);
-        } else {
-            Matrix tmpT = transpose(initJacobian_);
-            std::copy(tmpT.begin(), tmpT.end(), fjac);
+            bool valid = true;
+            for (Real & it : tmp) {
+                if (!std::isfinite(it)) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
+                Matrix tmpT = transpose(tmp);
+                std::copy(tmpT.begin(), tmpT.end(), fjac);
+                return;
+            }
         }
+        // Constraint violated or Jacobian produced non-finite values:
+        // return initial Jacobian so the optimizer doesn't diverge
+        Matrix tmpT = transpose(initJacobian_);
+        std::copy(tmpT.begin(), tmpT.end(), fjac);
     }
 
 }

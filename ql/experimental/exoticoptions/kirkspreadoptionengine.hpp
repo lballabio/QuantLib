@@ -10,15 +10,11 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
-*/
-
-/*! \file kirkspreadoptionengine.hpp
-    \brief Kirk approximation for European spread option on futures
 */
 
 #ifndef quantlib_kirk_spread_option_engine_hpp
@@ -27,22 +23,9 @@
 #include <ql/experimental/exoticoptions/spreadoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 
-namespace QuantLib {
+/* Deprecated in version 1.42 */
 
-    //! Kirk approximation for European spread option on futures
-    class KirkSpreadOptionEngine : public SpreadOption::engine {
-      public:
-        KirkSpreadOptionEngine(ext::shared_ptr<BlackProcess> process1,
-                               ext::shared_ptr<BlackProcess> process2,
-                               Handle<Quote> correlation);
-        void calculate() const override;
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
-      private:
-        ext::shared_ptr<BlackProcess> process1_;
-        ext::shared_ptr<BlackProcess> process2_;
-        Handle<Quote> rho_;
-    };
-
-}
 
 #endif

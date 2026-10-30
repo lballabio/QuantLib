@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -39,7 +39,7 @@ namespace QuantLib {
 
     namespace detail {
 
-        class AbcdCoeffHolder {
+        class AbcdCoeffHolder : public Interpolation::Impl {
           public:
             AbcdCoeffHolder(Real a,
                             Real b,
@@ -50,7 +50,6 @@ namespace QuantLib {
                             bool cIsFixed,
                             bool dIsFixed)
             : a_(a), b_(b), c_(c), d_(d),
-
               error_(Null<Real>()), maxError_(Null<Real>()) {
                 if (a_ != Null<Real>())
                     aIsFixed_ = aIsFixed;
@@ -67,7 +66,7 @@ namespace QuantLib {
 
                 AbcdMathFunction::validate(a, b, c, d);
             }
-            virtual ~AbcdCoeffHolder() = default;
+
             Real a_, b_, c_, d_;
             bool aIsFixed_ = false, bIsFixed_ = false, cIsFixed_ = false, dIsFixed_ = false;
             std::vector<Real> k_;
@@ -76,8 +75,8 @@ namespace QuantLib {
         };
 
         template <class I1, class I2>
-        class AbcdInterpolationImpl final : public Interpolation::templateImpl<I1,I2>,
-                                            public AbcdCoeffHolder {
+        class AbcdInterpolationImpl final
+            : public Interpolation::templateImpl<I1, I2, AbcdCoeffHolder> {
           public:
             AbcdInterpolationImpl(const I1& xBegin,
                                   const I1& xEnd,
@@ -93,8 +92,8 @@ namespace QuantLib {
                                   bool vegaWeighted,
                                   ext::shared_ptr<EndCriteria> endCriteria,
                                   ext::shared_ptr<OptimizationMethod> optMethod)
-            : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin),
-              AbcdCoeffHolder(a, b, c, d, aIsFixed, bIsFixed, cIsFixed, dIsFixed),
+            : Interpolation::templateImpl<I1, I2, AbcdCoeffHolder>(
+                xBegin, xEnd, yBegin, 2, a, b, c, d, aIsFixed, bIsFixed, cIsFixed, dIsFixed),
               endCriteria_(std::move(endCriteria)), optMethod_(std::move(optMethod)),
               vegaWeighted_(vegaWeighted) {}
 
@@ -108,21 +107,21 @@ namespace QuantLib {
                 }
                 abcdCalibrator_ = ext::shared_ptr<AbcdCalibration>(
                     new AbcdCalibration(times, blackVols,
-                                        a_, b_, c_, d_,
-                                        aIsFixed_, bIsFixed_,
-                                        cIsFixed_, dIsFixed_,
+                                        this->a_, this->b_, this->c_, this->d_,
+                                        this->aIsFixed_, this->bIsFixed_,
+                                        this->cIsFixed_, this->dIsFixed_,
                                         vegaWeighted_,
                                         endCriteria_,
                                         optMethod_));
                 abcdCalibrator_->compute();
-                a_ = abcdCalibrator_->a();
-                b_ = abcdCalibrator_->b();
-                c_ = abcdCalibrator_->c();
-                d_ = abcdCalibrator_->d();
-                k_ = abcdCalibrator_->k(times, blackVols);
-                error_ = abcdCalibrator_->error();
-                maxError_ = abcdCalibrator_->maxError();
-                abcdEndCriteria_ = abcdCalibrator_->endCriteria();
+                this->a_ = abcdCalibrator_->a();
+                this->b_ = abcdCalibrator_->b();
+                this->c_ = abcdCalibrator_->c();
+                this->d_ = abcdCalibrator_->d();
+                this->k_ = abcdCalibrator_->k(times, blackVols);
+                this->error_ = abcdCalibrator_->error();
+                this->maxError_ = abcdCalibrator_->maxError();
+                this->abcdEndCriteria_ = abcdCalibrator_->endCriteria();
             }
             Real value(Real x) const override {
                 QL_REQUIRE(x>=0.0, "time must be non negative: " <<
@@ -173,7 +172,8 @@ namespace QuantLib {
                           const ext::shared_ptr<EndCriteria>& endCriteria
                               = ext::shared_ptr<EndCriteria>(),
                           const ext::shared_ptr<OptimizationMethod>& optMethod
-                              = ext::shared_ptr<OptimizationMethod>()) {
+                              = ext::shared_ptr<OptimizationMethod>(),
+                          bool update = true) {
 
             impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::AbcdInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
@@ -183,7 +183,8 @@ namespace QuantLib {
                                                      vegaWeighted,
                                                      endCriteria,
                                                      optMethod));
-            impl_->update();
+            if (update)
+                impl_->update();
         }
         //! \name Inspectors
         //@{
@@ -202,7 +203,8 @@ namespace QuantLib {
         }
       private:
         const detail::AbcdCoeffHolder& coeffs() const {
-          return *dynamic_cast<detail::AbcdCoeffHolder*>(impl_.get());
+          // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
+          return *static_cast<detail::AbcdCoeffHolder*>(impl_.get());
         }
     };
 
@@ -226,15 +228,16 @@ namespace QuantLib {
           optMethod_(std::move(optMethod)) {}
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
-                                  const I2& yBegin) const {
+                                  const I2& yBegin, bool update = true) const {
             return AbcdInterpolation(xBegin, xEnd, yBegin,
                                      a_, b_, c_, d_,
                                      aIsFixed_, bIsFixed_,
                                      cIsFixed_, dIsFixed_,
                                      vegaWeighted_,
-                                     endCriteria_, optMethod_);
+                                     endCriteria_, optMethod_, update);
         }
         static const bool global = true;
+        static const Size requiredPoints = 2;
       private:
         Real a_, b_, c_, d_;
         bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;

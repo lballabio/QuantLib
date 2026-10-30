@@ -7,6 +7,7 @@ this_include_HEADERS = \
     bondhelpers.hpp \
     bootstraptraits.hpp \
     compositezeroyieldstructure.hpp \
+    derivedtermstructure.hpp \
     discountcurve.hpp \
     fittedbonddiscountcurve.hpp \
     flatforward.hpp \
@@ -15,13 +16,20 @@ this_include_HEADERS = \
     forwardstructure.hpp \
     impliedtermstructure.hpp \
     interpolatedsimplezerocurve.hpp \
+    multipleresetsswaphelper.hpp \
     nonlinearfittingmethods.hpp \
     oisratehelper.hpp \
     overnightindexfutureratehelper.hpp \
+    piecewisespreadyieldcurve.hpp \
     piecewiseyieldcurve.hpp \
+    piecewiseforwardspreadedtermstructure.hpp \
     piecewisezerospreadedtermstructure.hpp \
     quantotermstructure.hpp \
     ratehelpers.hpp \
+    shiftedtermstructure.hpp \
+    splicedtermstructure.hpp \
+    spreadbootstraptraits.hpp \
+    spreaddiscountcurve.hpp \
     ultimateforwardtermstructure.hpp \
     zerocurve.hpp \
     zerospreadedtermstructure.hpp \
@@ -32,6 +40,7 @@ cpp_files = \
     fittedbonddiscountcurve.cpp \
     flatforward.cpp \
     forwardstructure.cpp \
+    multipleresetsswaphelper.cpp \
     nonlinearfittingmethods.cpp \
     oisratehelper.cpp \
     overnightindexfutureratehelper.cpp \

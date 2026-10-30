@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -70,6 +70,7 @@ namespace QuantLib {
         std::unique_ptr<Size[]> i0_, i2_;
         std::unique_ptr<Size[]> reverseIndex_;
         std::unique_ptr<Real[]> lower_, diag_, upper_;
+        mutable Array temp_; // reusable workspace for solve_splitting
 
         ext::shared_ptr<FdmMesher> mesher_;
     };

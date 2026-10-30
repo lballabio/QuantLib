@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -24,6 +24,7 @@
 #ifndef quantlib_vanna_volga_interpolation_hpp
 #define quantlib_vanna_volga_interpolation_hpp
 
+#include <ql/math/functional.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
@@ -79,7 +80,7 @@ namespace QuantLib {
     namespace detail {
 
         template <class I1, class I2>
-        class VannaVolgaInterpolationImpl
+        class VannaVolgaInterpolationImpl final
             : public Interpolation::templateImpl<I1,I2> {
           public:
             VannaVolgaInterpolationImpl(const I1& xBegin, const I1& xEnd,
@@ -142,7 +143,7 @@ namespace QuantLib {
             Time T_;
 
             Real vega(Real k) const {
-                Real d1 = (std::log(fwd_/k) + 0.5 * std::pow(atmVol_, 2.0) * T_)/(atmVol_ * std::sqrt(T_));
+                Real d1 = (std::log(fwd_/k) + 0.5 * squared(atmVol_) * T_)/(atmVol_ * std::sqrt(T_));
                 NormalDistribution norm;
                 return spot_ * dDiscount_ * std::sqrt(T_) * norm(d1);
             }

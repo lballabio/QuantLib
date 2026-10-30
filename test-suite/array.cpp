@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -115,6 +115,20 @@ BOOST_AUTO_TEST_CASE(testConstruction) {
                         << calculated);
         }
     }
+
+    // recast initializer list to Real
+    Array a11{1, 2, 3, 4, 5};
+    if (a2.size() != size)
+        BOOST_ERROR("Array not of the required size"
+                    << "\n    required:  " << size
+                    << "\n    resulting: " << a2.size());
+    for (i=0; i<size; ++i) {
+        if (a11[i] != Real(i+1))
+            BOOST_ERROR(io::ordinal(i+1) << " element not with required value"
+                        << "\n    required:  " << Real(i+1)
+                        << "\n    resulting: " << a11[i]);
+    }
+
 }
 
 BOOST_AUTO_TEST_CASE(testArrayFunctions) {
@@ -314,8 +328,8 @@ BOOST_AUTO_TEST_CASE(testArrayOperators) {
     QL_CHECK_CLOSE_ARRAY(rvalue_lvalue_quotient, array_quotient);
     QL_CHECK_CLOSE_ARRAY(rvalue_rvalue_quotient, array_quotient);
 
-    const auto scalar_quotient_1 = Array{1.1 / 1.1, 2.2 / 1.1, 3.3 / 1.1};
-    const auto scalar_quotient_2 = Array{1.1 / 1.1, 1.1 / 2.2, 1.1 / 3.3};
+    const auto scalar_quotient_1 = Array{1.1 / 1.1, 2.2 / 1.1, 3.3 / 1.1}; // NOLINT(misc-redundant-expression)
+    const auto scalar_quotient_2 = Array{1.1 / 1.1, 1.1 / 2.2, 1.1 / 3.3}; // NOLINT(misc-redundant-expression)
     const auto lvalue_real_quotient = a / 1.1;
     const auto rvalue_real_quotient = get_array() / 1.1;
     const auto real_lvalue_quotient = 1.1 / a;

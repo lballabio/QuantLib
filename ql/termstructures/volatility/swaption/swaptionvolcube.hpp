@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -73,7 +73,7 @@ namespace QuantLib {
             Date optionDate = optionDateFromTenor(optionTenor);
             return atmStrike(optionDate, swapTenor);
         }
-		Handle<SwaptionVolatilityStructure> atmVol() const { return atmVol_; }
+        const Handle<SwaptionVolatilityStructure>& atmVol() const { return atmVol_; }
         const std::vector<Spread>& strikeSpreads() const { return strikeSpreads_; }
         const std::vector<std::vector<Handle<Quote> > >& volSpreads() const { return volSpreads_; }
         ext::shared_ptr<SwapIndex> swapIndexBase() const { return swapIndexBase_; }

@@ -8,7 +8,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -48,6 +48,14 @@ void TurnbullWakemanAsianEngine::calculate() const {
     Real effectiveStrike = payoff->strike() - accruedAverage;
     results_.additionalResults["strike"] = payoff->strike();
     results_.additionalResults["effective_strike"] = effectiveStrike;
+
+    if (futureFixings == 0) {
+        QL_REQUIRE(pastFixings > 0, "no fixings given");
+        results_.value = discount * (*payoff)(accruedAverage);
+        results_.delta = 0.0;
+        results_.gamma = 0.0;
+        return;
+    }
 
     // If the effective strike is negative, exercise resp. permanent OTM is guaranteed and the
     // valuation is made easy
@@ -93,7 +101,7 @@ void TurnbullWakemanAsianEngine::calculate() const {
 
         spotVars.push_back(
             process_->blackVolatility()->blackVariance(times.back(), effectiveStrike));
-        spotVolsVec.push_back(std::sqrt(spotVars.back() / times.back()));
+        spotVolsVec.push_back(process_->blackVolatility()->blackVol(times.back(), effectiveStrike));
 
         EA += forwards.back();
     }
@@ -114,13 +122,14 @@ void TurnbullWakemanAsianEngine::calculate() const {
 
     // Calculate value
     Real tn = times.back();
-    Real sigma = sqrt(log(EA2 / (EA * EA)) / tn);
+    Real stdDev = tn > 0.0 ? sqrt(log(EA2 / (EA * EA))) : 0.0;
+    Real sigma = tn > 0.0 ? stdDev / sqrt(tn) : 0.0;
 
     // Populate results
-    BlackCalculator black(payoff->optionType(), effectiveStrike, EA, sigma * sqrt(tn), discount);
+    BlackCalculator black(payoff->optionType(), effectiveStrike, EA, stdDev, discount);
 
     results_.value = black.value();
-    results_.delta = black.delta(spot);
+    results_.delta = stdDev > 0.0 ? black.delta(spot) : discount * black.alpha() * EA / spot;
     results_.gamma = black.gamma(spot);
 
     results_.additionalResults["forward"] = EA;

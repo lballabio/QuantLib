@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -18,6 +18,7 @@
 */
 
 #include <ql/math/distributions/bivariatestudenttdistribution.hpp>
+#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
@@ -41,7 +42,7 @@ namespace QuantLib {
         // function x(m,h,k) defined on top of page 155
         Real f_x(Real m, Real h, Real k, Real rho) {
             Real unCor = 1 - rho*rho;
-            Real sub = std::pow(h - rho * k, 2);
+            Real sub = squared(h - rho * k);
             Real denom = sub + unCor * (m + k*k);
             if (denom < epsilon)
                 return 0.0; // limit case for rho = +/-1.0
@@ -162,7 +163,11 @@ namespace QuantLib {
     BivariateCumulativeStudentDistribution::
     BivariateCumulativeStudentDistribution(Natural n,
                                            Real rho)
-    : n_(n), rho_(rho) {}
+    : n_(n), rho_(rho) {
+        QL_REQUIRE(n_ > 0, "degrees of freedom must be positive");
+        QL_REQUIRE(rho_ >= -1.0 && rho_ <= 1.0,
+                   "rho must be in [-1, 1] (" << rho_ << " not allowed)");
+    }
 
     Real BivariateCumulativeStudentDistribution::operator()(Real x,
                                                             Real y) const {

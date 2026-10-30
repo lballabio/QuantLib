@@ -12,13 +12,14 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <algorithm>
 #include <ql/math/comparison.hpp>
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
@@ -52,7 +53,7 @@ namespace QuantLib {
             Size size = matrix.rows();
             QL_REQUIRE(size == pseudo.rows(),
                        "matrix/pseudo mismatch: matrix rows are " << size <<
-                       " while pseudo rows are " << pseudo.columns());
+                       " while pseudo rows are " << pseudo.rows());
             Size pseudoCols = pseudo.columns();
 
             // row normalization
@@ -323,10 +324,12 @@ namespace QuantLib {
                 Y = projectToUnitDiagonalMatrix(X);
 
                 // convergence test
-                if (std::max(normInf(X-lastX)/normInf(X),
-                        std::max(normInf(Y-lastY)/normInf(Y),
-                                normInf(Y-X)/normInf(Y)))
-                        <= tolerance)
+                if (std::max({
+                            normInf(X-lastX)/normInf(X),
+                            normInf(Y-lastY)/normInf(Y),
+                            normInf(Y-X)/normInf(Y)
+                        })
+                    <= tolerance)
                 {
                     break;
                 }
@@ -354,6 +357,7 @@ namespace QuantLib {
                    "non square matrix: " << size << " rows, " <<
                    matrix.columns() << " columns");
         #endif
+        QL_REQUIRE(size > 0, "matrix must not be empty");
 
         // spectral (a.k.a Principal Component) analysis
         SymmetricSchurDecomposition jd(matrix);
@@ -416,6 +420,33 @@ namespace QuantLib {
               result = CholeskyDecomposition(result, true);
             }
             break;
+          case SalvagingAlgorithm::Principal: {
+              QL_REQUIRE(jd.eigenvalues().back()>=-10*QL_EPSILON,
+                         "negative eigenvalue(s) ("
+                         << std::scientific << jd.eigenvalues().back()
+                         << ")");
+
+              Array sqrtEigenvalues(size);
+              std::transform(
+                  jd.eigenvalues().begin(), jd.eigenvalues().end(),
+                  sqrtEigenvalues.begin(),
+                  [](Real lambda) -> Real {
+                      return std::sqrt(std::max<Real>(lambda, 0.0));
+                  }
+              );
+
+              for (Size i=0; i < size; ++i)
+                  std::transform(
+                       sqrtEigenvalues.begin(), sqrtEigenvalues.end(),
+                       jd.eigenvectors().row_begin(i),
+                       diagonal.column_begin(i),
+                       std::multiplies<>()
+                   );
+
+              result = jd.eigenvectors()*diagonal;
+              result = 0.5*(result + transpose(result));
+            }
+            break;
           default:
             QL_FAIL("unknown salvaging algorithm");
         }
@@ -437,6 +468,7 @@ namespace QuantLib {
                    "non square matrix: " << size << " rows, " <<
                    matrix.columns() << " columns");
         #endif
+        QL_REQUIRE(size > 0, "matrix must not be empty");
 
         QL_REQUIRE(componentRetainedPercentage>0.0,
                    "no eigenvalues retained");

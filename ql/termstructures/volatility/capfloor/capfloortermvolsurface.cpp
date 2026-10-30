@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -114,8 +114,8 @@ namespace QuantLib {
         for (Size i=0; i<nOptionTenors_; ++i) {
             volHandles_[i].resize(nStrikes_);
             for (Size j=0; j<nStrikes_; ++j)
-                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                    SimpleQuote(vols_[i][j])));
+                volHandles_[i][j] =
+                    Handle<Quote>(ext::make_shared<SimpleQuote>(vols_[i][j]));
         }
         interpolate();
     }
@@ -145,8 +145,8 @@ namespace QuantLib {
         for (Size i=0; i<nOptionTenors_; ++i) {
             volHandles_[i].resize(nStrikes_);
             for (Size j=0; j<nStrikes_; ++j)
-                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                    SimpleQuote(vols_[i][j])));
+                volHandles_[i][j] =
+                    Handle<Quote>(ext::make_shared<SimpleQuote>(vols_[i][j]));
         }
         interpolate();
     }

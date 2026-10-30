@@ -15,14 +15,13 @@ QuantLib is free software: you can redistribute it and/or modify it
 under the terms of the QuantLib license.  You should have received a
 copy of the license along with this program; if not, please email
 <quantlib-dev@lists.sf.net>. The license is also available online at
-<http://quantlib.org/license.shtml>.
+<https://www.quantlib.org/license.shtml>.
 
 This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/models/marketmodels/accountingengine.hpp>
@@ -240,7 +239,7 @@ void setup() {
     volatilities = std::vector<Volatility>(todaysForwards.size());
     blackVols = std::vector<Volatility>(todaysForwards.size());
     normalVols = std::vector<Volatility>(todaysForwards.size());
-    for (Size i=0; i<std::min(LENGTH(mktVols),todaysForwards.size()); i++) {
+    for (Size i=0; i<std::min(std::size(mktVols),todaysForwards.size()); i++) {
         volatilities[i] = todaysForwards[i]*mktVols[i]/
             (todaysForwards[i]+displacement);
         blackVols[i]= mktVols[i];
@@ -751,7 +750,7 @@ BOOST_AUTO_TEST_CASE(testOneStepForwardsAndOptionlets) {
                 EvolverType evolvers[] = {Pc, Balland, Ipc};
                 ext::shared_ptr<MarketModelEvolver> evolver;
                 Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
-                for (Size i = 0; i < LENGTH(evolvers) - stop; i++) {
+                for (Size i = 0; i < std::size(evolvers) - stop; i++) {
 
                     for (Size n = 0; n < 1; n++) {
                         MTBrownianGeneratorFactory generatorFactory(seed_);
@@ -835,7 +834,7 @@ BOOST_AUTO_TEST_CASE(testOneStepNormalForwardsAndOptionlets) {
                 EvolverType evolvers[] = {NormalPc};
                 ext::shared_ptr<MarketModelEvolver> evolver;
                 Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
-                for (Size i = 0; i < LENGTH(evolvers) - stop; i++) {
+                for (Size i = 0; i < std::size(evolvers) - stop; i++) {
 
                     for (Size n = 0; n < 1; n++) {
                         MTBrownianGeneratorFactory generatorFactory(seed_);
@@ -1034,7 +1033,7 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
                 Size stop =
                     isInTerminalMeasure(evolution, numeraires) ? 0 :
                     1;
-                for (Size i = 0; i < LENGTH(evolvers) - stop; i++) {
+                for (Size i = 0; i < std::size(evolvers) - stop; i++) {
 
                     for (Size n = 0; n < 1; n++) {
                         // MTBrownianGeneratorFactory
@@ -1210,7 +1209,7 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
     }
 }
 
-BOOST_AUTO_TEST_CASE(testAllMultiStepProducts, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testAllMultiStepProducts) {
     std::string testDescription = "all multi-step products ";
 
     setup();
@@ -1378,7 +1377,7 @@ BOOST_AUTO_TEST_CASE(testPeriodAdapter) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testCallableSwapNaif, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testCallableSwapNaif) {
 
     BOOST_TEST_MESSAGE("Pricing callable swap with naif exercise strategy in a LIBOR market model...");
 
@@ -1445,7 +1444,7 @@ BOOST_AUTO_TEST_CASE(testCallableSwapNaif, *precondition(if_speed(Slow))) {
                 EvolverType evolvers[] = {Pc, Balland, Ipc};
                 ext::shared_ptr<MarketModelEvolver> evolver;
                 Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
-                for (Size i = 0; i < LENGTH(evolvers) - stop; i++) {
+                for (Size i = 0; i < std::size(evolvers) - stop; i++) {
 
                     for (Size n = 0; n < 1; n++) {
                         // MTBrownianGeneratorFactory generatorFactory(seed_);
@@ -1531,7 +1530,7 @@ BOOST_AUTO_TEST_CASE(testCallableSwapNaif, *precondition(if_speed(Slow))) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testCallableSwapLS, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testCallableSwapLS) {
 
     BOOST_TEST_MESSAGE("Pricing callable swap with Longstaff-Schwartz exercise strategy in a LIBOR market model...");
 
@@ -1598,7 +1597,7 @@ BOOST_AUTO_TEST_CASE(testCallableSwapLS, *precondition(if_speed(Slow))) {
                 EvolverType evolvers[] = {Pc, Balland, Ipc};
                 ext::shared_ptr<MarketModelEvolver> evolver;
                 Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
-                for (Size i = 0; i < LENGTH(evolvers) - stop; i++) {
+                for (Size i = 0; i < std::size(evolvers) - stop; i++) {
 
                     for (Size n = 0; n < 1; n++) {
                         // MTBrownianGeneratorFactory generatorFactory(seed_);
@@ -1690,7 +1689,7 @@ BOOST_AUTO_TEST_CASE(testCallableSwapLS, *precondition(if_speed(Slow))) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE(CallableSwapAnderson, *precondition(if_speed(Slow)))
+BOOST_AUTO_TEST_SUITE(CallableSwapAnderson)
 
 template <MarketModelType mmtype, Size factors>
 struct slice {
@@ -1774,7 +1773,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testCallableSwapAnderson, T, slices) {
         ext::shared_ptr<MarketModelEvolver> evolver;
         Size stop =
             isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
-        for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
+        for (Size i=0; i<std::size(evolvers)-stop; i++) {
             for (Size n=0; n<1; n++) {
                 //MTBrownianGeneratorFactory generatorFactory(seed_);
                 SobolBrownianGeneratorFactory generatorFactory(
@@ -1874,7 +1873,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testCallableSwapAnderson, T, slices) {
 
 BOOST_AUTO_TEST_SUITE_END()
 
-BOOST_AUTO_TEST_CASE(testGreeks, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testGreeks) {
 
     BOOST_TEST_MESSAGE("Testing caplet greeks in a lognormal forward rate market model using partial proxy simulation...");
 
@@ -2322,7 +2321,7 @@ BOOST_AUTO_TEST_CASE(testPathwiseGreeks) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testPathwiseVegas) {
 
     BOOST_TEST_MESSAGE(
         "Testing pathwise vegas in a lognormal forward rate market model...");
@@ -2413,6 +2412,7 @@ BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
                 endIndex);
 
             std::vector<Matrix> pseudoRoots;
+            pseudoRoots.reserve(marketModel->numberOfSteps());
             for (Size k=0; k < marketModel->numberOfSteps(); ++k)
                 pseudoRoots.push_back( marketModel->pseudoRoot(k));
 
@@ -2513,6 +2513,7 @@ BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
                         endIndex, initialNumeraireValue);
 
                     std::vector<Matrix> pseudoRoots;
+                    pseudoRoots.reserve(marketModel->numberOfSteps());
                     for (Size k=0; k < marketModel->numberOfSteps(); ++k)
                         pseudoRoots.push_back( marketModel->pseudoRoot(k));
 
@@ -2659,6 +2660,7 @@ BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
                         endIndex,initialNumeraireValue);
 
                     std::vector<Matrix> pseudoRoots;
+                    pseudoRoots.reserve(marketModel->numberOfSteps());
                     for (Size k=0; k < marketModel->numberOfSteps(); ++k)
                         pseudoRoots.push_back( marketModel->pseudoRoot(k));
 
@@ -2732,7 +2734,7 @@ BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
 
     /////////////////////////////////////
 
-    for (Size j=0; j<LENGTH(marketModels); j++)
+    for (Size j=0; j<std::size(marketModels); j++)
     {
 
         Size testedFactors[] = { 
@@ -3702,8 +3704,8 @@ BOOST_AUTO_TEST_CASE(testPathwiseMarketVegas) {
                 << " and " << numberDiagonalFailures << " on the diagonal." );
 
 
-        } // end of  for (Size m=0; m<LENGTH(testedFactors); ++m)
-    }     // end of   for (Size j=0; j<LENGTH(marketModels); j++)
+        } // end of  for (Size m=0; m<std::size(testedFactors); ++m)
+    }     // end of   for (Size j=0; j<std::size(marketModels); j++)
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // test numerically differentiated swaptions against analytically done ones
     // we require equality on very path so we don't need many paths
@@ -3804,8 +3806,8 @@ BOOST_AUTO_TEST_CASE(testPathwiseMarketVegas) {
             }
 
 
-        } // end of  for (Size m=0; m<LENGTH(testedFactors); ++m)
-    }     // end of   for (Size j=0; j<LENGTH(marketModels); j++)
+        } // end of  for (Size m=0; m<std::size(testedFactors); ++m)
+    }     // end of   for (Size j=0; j<std::size(marketModels); j++)
 
     /////////////////////////////////////
 
@@ -3949,8 +3951,8 @@ BOOST_AUTO_TEST_CASE(testPathwiseMarketVegas) {
                            << " and " << numberDiagonalFailures << " on the diagonal." );
 
 
-        } // end of  for (Size m=0; m<LENGTH(testedFactors); ++m)
-    }     // end of   for (Size j=0; j<LENGTH(marketModels); j++)
+        } // end of  for (Size m=0; m<std::size(testedFactors); ++m)
+    }     // end of   for (Size j=0; j<std::size(marketModels); j++)
 
     /////////////////////////////////////
     /////////////////////////////////////
@@ -4112,8 +4114,8 @@ BOOST_AUTO_TEST_CASE(testPathwiseMarketVegas) {
                            << " and " << numberDiagonalFailures << " on the diagonal." );
 
 
-        } // end of  for (Size m=0; m<LENGTH(testedFactors); ++m)
-    }     // end of   for (Size j=0; j<LENGTH(marketModels); j++)
+        } // end of  for (Size m=0; m<std::size(testedFactors); ++m)
+    }     // end of   for (Size j=0; j<std::size(marketModels); j++)
 
     /////////////////////////////////////
 
@@ -4491,7 +4493,7 @@ BOOST_AUTO_TEST_CASE(testDriftCalculator) {
     const std::vector<Real>& rateTaus = evolution.rateTaus();
     std::vector<Size> numeraires = moneyMarketPlusMeasure(evolution,
         measureOffset_);
-    std::vector<Size> alive = evolution.firstAliveRate();
+    const std::vector<Size>& alive = evolution.firstAliveRate();
     Size numberOfSteps = evolutionTimes.size();
     std::vector<Real> drifts(numberOfSteps), driftsReduced(numberOfSteps);
     MarketModelType marketModels[] = {ExponentialCorrelationFlatVolatility,

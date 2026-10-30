@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -29,6 +29,9 @@
 #include <ql/pricingengines/inflation/inflationcapfloorengines.hpp>
 #include <ql/experimental/inflation/yoyoptionletstripper.hpp>
 #include <ql/experimental/inflation/kinterpolatedyoyoptionletvolatilitysurface.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/inflation/constantcpivolatility.hpp>
+#include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
 #include <ql/experimental/inflation/interpolatedyoyoptionletstripper.hpp>
 #include <ql/cashflows/capflooredinflationcoupon.hpp>
 #include <ql/indexes/inflation/euhicp.hpp>
@@ -70,8 +73,8 @@ void reset() {
     nominalEUR = Handle<YieldTermStructure>();
     nominalGBP = Handle<YieldTermStructure>();
     priceSurfEU.reset();
-    yoyEU.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
-    yoyUK.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
+    yoyEU.reset();
+    yoyUK.reset();
     yoyIndexUK.reset();
     yoyIndexEU.reset();
     cPriceEU.reset();
@@ -94,8 +97,8 @@ void setup() {
     Date eval = Date(Day(23), Month(11), Year(2007));
     Settings::instance().evaluationDate() = eval;
 
-    yoyIndexUK = ext::make_shared<YoYInflationIndex>(ext::make_shared<UKRPI>(), true, yoyUK);
-    yoyIndexEU = ext::make_shared<YoYInflationIndex>(ext::make_shared<EUHICP>(), true, yoyEU);
+    yoyIndexUK = ext::make_shared<YoYInflationIndex>(ext::make_shared<UKRPI>(), yoyUK);
+    yoyIndexEU = ext::make_shared<YoYInflationIndex>(ext::make_shared<EUHICP>(), yoyEU);
 
     // nominal yield curve (interpolated; times assume year parts have 365 days)
     Real timesEUR[] = {0.0109589, 0.0684932, 0.263014, 0.317808, 0.567123, 0.816438,
@@ -124,8 +127,8 @@ void setup() {
 
     std::vector <Real> r;
     std::vector <Date> d;
-    Size nTimesEUR = LENGTH(timesEUR);
-    Size nTimesGBP = LENGTH(timesGBP);
+    Size nTimesEUR = std::size(timesEUR);
+    Size nTimesGBP = std::size(timesGBP);
     for (Size i = 0; i < nTimesEUR; i++) {
         r.push_back(ratesEUR[i]);
         Size ys = (Size)floor(timesEUR[i]);
@@ -171,19 +174,22 @@ void setup() {
 
     d.clear();
     r.clear();
-    Date baseDate = TARGET().advance(eval, -2, Months, ModifiedFollowing);
-    for (Size i = 0; i < LENGTH(yoyEUrates); i++) {
-        Date dd = TARGET().advance(baseDate, i, Years, ModifiedFollowing);
+    // the base date is based on the last published index fixing
+    Date baseDate = inflationPeriod(eval - 1*Months, yoyIndexEU->frequency()).first;
+    d.push_back(baseDate);
+    r.push_back(yoyEUrates[0]);
+
+    // cap maturities are based on the observation lag
+    Date capStartDate = TARGET().advance(eval, -2, Months, ModifiedFollowing);
+    for (Size i = 1; i < std::size(yoyEUrates); i++) {
+        Date dd = TARGET().advance(capStartDate, i, Years, ModifiedFollowing);
         d.push_back(dd);
         r.push_back(yoyEUrates[i]);
     }
 
-    bool indexIsInterpolated = true;    // actually false for UKRPI but smooth surfaces are
-                                        // better for finding intersections etc
-
     auto pYTSEU =
         ext::make_shared<InterpolatedYoYInflationCurve<Linear>>(
-                    eval, d, r, Monthly, indexIsInterpolated, Actual365Fixed());
+                    eval, d, r, Monthly, Actual365Fixed());
     yoyEU.linkTo(pYTSEU);
 
     // price data
@@ -247,7 +253,6 @@ void setupPriceSurface() {
     Natural fixingDays = 0;
     Size lag = 3;// must be 3 because we use an interpolated index (EU)
     Period yyLag = Period(lag,Months);
-    Rate baseRate = 1; // not really used
     DayCounter dc = Actual365Fixed();
     TARGET cal;
     BusinessDayConvention bdc = ModifiedFollowing;
@@ -256,7 +261,7 @@ void setupPriceSurface() {
     ext::shared_ptr<InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic> >
         cfEUprices(new InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic>(
                                        fixingDays,
-                                       yyLag, yoyIndexEU, baseRate,
+                                       yyLag, yoyIndexEU, CPI::Linear,
                                        n, dc,
                                        cal,    bdc,
                                        cStrikesEU, fStrikesEU, cfMaturitiesEU,
@@ -285,8 +290,13 @@ BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToVol) {
     // N.B. the vol gets set in the stripper ... else no point!
 
     // cap stripper
-    ext::shared_ptr<YoYOptionletStripper> yoyOptionletStripper(
-                             new InterpolatedYoYOptionletStripper<Linear>() );
+    class InspectableStripper : public InterpolatedYoYOptionletStripper<Linear> {
+      public:
+        const std::vector<ext::shared_ptr<YoYOptionletVolatilitySurface>>& curves() const {
+            return volCurves_;
+        }
+    };
+    auto yoyOptionletStripper = ext::make_shared<InspectableStripper>();
 
     // now set up all the variables for the stripping
     Natural settlementDays = 0;
@@ -309,21 +319,38 @@ BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToVol) {
 
     // Actually is doesn't matter what the interpolation is because we only
     // intend to use the K values that correspond to quotes ... for model fitting.
-    ext::shared_ptr<KInterpolatedYoYOptionletVolatilitySurface<Linear> > yoySurf(new
-                    KInterpolatedYoYOptionletVolatilitySurface<Linear>(settlementDays,
-                cal, bdc, dc, lag, capFloorPrices, yoyPricerUD, yoyOptionletStripper,
-                                                              slope) );
+    auto yoySurf = ext::make_shared<KInterpolatedYoYOptionletVolatilitySurface<Linear>>(
+        settlementDays, cal, bdc, dc, lag, capFloorPrices, yoyPricerUD, yoyOptionletStripper,
+        slope);
+
+    // Bootstrapped curves must expose their calibrated nodes through the shared interface.
+    BOOST_REQUIRE(!yoyOptionletStripper->curves().empty());
+    for (const auto& curve : yoyOptionletStripper->curves()) {
+        auto interpolated = ext::dynamic_pointer_cast<InterpolatedNodes>(curve);
+        BOOST_REQUIRE(interpolated);
+        curve->update();
+        auto nodes = interpolated->nodes();
+        const auto& dates = interpolated->dates();
+        const auto& data = interpolated->data();
+        BOOST_REQUIRE_GT(nodes.size(), 1);
+        BOOST_REQUIRE_EQUAL(nodes.size(), dates.size());
+        BOOST_REQUIRE_EQUAL(nodes.size(), data.size());
+        for (Size i = 0; i < nodes.size(); ++i) {
+            BOOST_CHECK_EQUAL(nodes[i].first, dates[i]);
+            BOOST_CHECK_EQUAL(nodes[i].second, data[i]);
+        }
+    }
 
     // now use it for something ... like stating what the T=const lines look like
     const Real volATyear1[] = {
-          0.0128, 0.0093, 0.0083, 0.0073, 0.0064,
+          0.0129, 0.0094, 0.0083, 0.0073, 0.0064,
           0.0058, 0.0042, 0.0046, 0.0053, 0.0064,
           0.0098
     };
     const Real volATyear3[] = {
-          0.0079, 0.0058, 0.0051, 0.0045, 0.0039,
-          0.0035, 0.0026, 0.0028, 0.0033, 0.0039,
-          0.0060
+          0.0080, 0.0058, 0.0051, 0.0045, 0.0040,
+          0.0035, 0.0026, 0.0028, 0.0033, 0.0040,
+          0.0061
     };
 
     Date d = yoySurf->baseDate() + Period(1,Years);
@@ -365,7 +392,7 @@ BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToATM) {
                           0.0258498, 0.0262883, 0.0267915};
     const Real swaps[] = {0.024586, 0.0247575, 0.0249396, 0.0252596,
                           0.0258498, 0.0262883, 0.0267915};
-    const Real ayoy[] = {0.0247659, 0.0251437, 0.0255945, 0.0265234,
+    const Real ayoy[] = {0.0247659, 0.0251437, 0.0255945, 0.0265015,
                            0.0280457, 0.0285534, 0.0295884};
     Real eps = 2e-5;
     for(Size i = 0; i < yyATMt.first.size(); i++) {
@@ -386,6 +413,38 @@ BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToATM) {
                    <<" at "<<yyATMd.first[i]);
     }
     reset();
+}
+
+BOOST_AUTO_TEST_CASE(testConstantVolatilityQuoteIsObserved) {
+
+    BOOST_TEST_MESSAGE("Testing that constant inflation volatility surfaces observe their quote...");
+
+    auto quote = ext::make_shared<SimpleQuote>(0.01);
+    Handle<Quote> handle(quote);
+
+    auto cpi = ext::make_shared<ConstantCPIVolatility>(
+        handle, 0, TARGET(), Following, Actual365Fixed(),
+        Period(3, Months), Monthly, false);
+    auto yoy = ext::make_shared<ConstantYoYOptionletVolatility>(
+        handle, 0, TARGET(), Following, Actual365Fixed(),
+        Period(3, Months), Monthly, false);
+
+    Flag cpiFlag, yoyFlag;
+    cpiFlag.registerWith(cpi);
+    yoyFlag.registerWith(yoy);
+    cpiFlag.lower();
+    yoyFlag.lower();
+
+    quote->setValue(0.02);
+
+    BOOST_CHECK_MESSAGE(cpiFlag.isUp(),
+                        "ConstantCPIVolatility did not notify when its quote moved");
+    BOOST_CHECK_MESSAGE(yoyFlag.isUp(),
+                        "ConstantYoYOptionletVolatility did not notify when its quote moved");
+
+    // volatilityImpl reads the quote on every call, so these pass either way.
+    BOOST_CHECK_CLOSE(cpi->volatility(1.0, 0.02), 0.02, 1.0e-10);
+    BOOST_CHECK_CLOSE(yoy->volatility(1.0, 0.02), 0.02, 1.0e-10);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

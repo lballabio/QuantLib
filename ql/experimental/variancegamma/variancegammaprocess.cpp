@@ -10,7 +10,7 @@ QuantLib is free software: you can redistribute it and/or modify it
 under the terms of the QuantLib license.  You should have received a
 copy of the license along with this program; if not, please email
 <quantlib-dev@lists.sf.net>. The license is also available online at
-<http://quantlib.org/license.shtml>.
+<https://www.quantlib.org/license.shtml>.
 
 This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -31,7 +31,7 @@ namespace QuantLib {
                                                Real sigma,
                                                Real nu,
                                                Real theta)
-    : StochasticProcess1D(ext::shared_ptr<discretization>(new EulerDiscretization)),
+    : StochasticProcess1D(ext::make_shared<EulerDiscretization>()),
       s0_(std::move(s0)), dividendYield_(std::move(dividendYield)),
       riskFreeRate_(std::move(riskFreeRate)), sigma_(sigma), nu_(nu), theta_(theta) {
         registerWith(riskFreeRate_);

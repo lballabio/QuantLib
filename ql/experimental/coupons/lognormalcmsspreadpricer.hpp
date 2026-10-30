@@ -10,7 +10,7 @@
   under the terms of the QuantLib license.  You should have received a
   copy of the license along with this program; if not, please email
   <quantlib-dev@lists.sf.net>. The license is also available online at
-  <http://quantlib.org/license.shtml>.
+  <https://www.quantlib.org/license.shtml>.
 
 
   This program is distributed in the hope that it will be useful, but
@@ -65,7 +65,7 @@ namespace QuantLib {
             const Handle<Quote>& correlation,
             Handle<YieldTermStructure> couponDiscountCurve = Handle<YieldTermStructure>(),
             Size IntegrationPoints = 16,
-            const ext::optional<VolatilityType>& volatilityType = ext::nullopt,
+            const std::optional<VolatilityType>& volatilityType = std::nullopt,
             Real shift1 = Null<Real>(),
             Real shift2 = Null<Real>());
 

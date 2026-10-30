@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -36,7 +36,7 @@ namespace QuantLib {
         US convention: if the starting date is the 31st of a month or
         the last day of February, it becomes equal to the 30th of the
         same month.  If the ending date is the 31st of a month and the
-        starting date is the 30th or 31th of a month, the ending date
+        starting date is the 30th or 31st of a month, the ending date
         becomes equal to the 30th.  If the ending date is the last of
         February and the starting date is also the last of February,
         the ending date becomes equal to the 30th.
@@ -45,7 +45,7 @@ namespace QuantLib {
         Bond Basis convention: if the starting date is the 31st of a
         month, it becomes equal to the 30th of the same month.
         If the ending date is the 31st of a month and the starting
-        date is the 30th or 31th of a month, the ending date
+        date is the 30th or 31st of a month, the ending date
         also becomes equal to the 30th of the month.
         Also known as "US (ISMA)".
 

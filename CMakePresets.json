@@ -279,7 +279,7 @@
       "cacheVariables": {
         "BOOST_ROOT": "/usr",
         "CMAKE_UNITY_BUILD": "ON",
-        "QL_CLANG_TIDY": "clang-tidy-15",
+        "QL_CLANG_TIDY": "clang-tidy-20",
         "QL_CLANG_TIDY_OPTIONS": "-quiet;-fix",
         "QL_USE_CLANG_TIDY": "ON",
         "QL_USE_STD_CLASSES": "ON"
@@ -301,7 +301,7 @@
         "QL_THROW_IN_CYCLES": "ON",
         "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
-        "QL_USE_STD_CLASSES": "ON",
+        "QL_USE_STD_SHARED_PTR": "ON",
         "QL_COMPILE_WARNING_AS_ERROR": "ON"
       }
     },
@@ -319,7 +319,7 @@
         "QL_THROW_IN_CYCLES": "ON",
         "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
-        "QL_USE_STD_CLASSES": "ON",
+        "QL_USE_STD_SHARED_PTR": "ON",
         "QL_COMPILE_WARNING_AS_ERROR": "ON",
         "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
       }

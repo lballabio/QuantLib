@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -33,18 +33,6 @@ namespace QuantLib {
 
     EquityIndex::EquityIndex(std::string name,
                              Calendar fixingCalendar,
-                             Handle<YieldTermStructure> interest,
-                             Handle<YieldTermStructure> dividend,
-                             Handle<Quote> spot)
-    : EquityIndex(std::move(name),
-                  std::move(fixingCalendar),
-                  Currency(),
-                  std::move(interest),
-                  std::move(dividend),
-                  std::move(spot)) {}
-
-    EquityIndex::EquityIndex(std::string name,
-                             Calendar fixingCalendar,
                              Currency currency,
                              Handle<YieldTermStructure> interest,
                              Handle<YieldTermStructure> dividend,
@@ -57,7 +45,7 @@ namespace QuantLib {
         registerWith(dividend_);
         registerWith(spot_);
         registerWith(Settings::instance().evaluationDate());
-        registerWith(IndexManager::instance().notifier(EquityIndex::name()));
+        registerWith(notifier());
     }
 
     Real EquityIndex::fixing(const Date& fixingDate, bool forecastTodaysFixing) const {

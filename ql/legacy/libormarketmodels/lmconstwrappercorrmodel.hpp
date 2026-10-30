@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -30,6 +30,7 @@ namespace QuantLib {
 
     class LmConstWrapperCorrelationModel : public LmCorrelationModel {
       public:
+        // TODO: Review whether this constructor should remain implicit.
         LmConstWrapperCorrelationModel(
             const ext::shared_ptr<LmCorrelationModel> & corrModel)
         : LmCorrelationModel(corrModel->size(), 0),
@@ -38,13 +39,13 @@ namespace QuantLib {
 
         Size factors() const override { return corrModel_->factors(); }
 
-        Matrix correlation(Time t, const Array& x = Null<Array>()) const override {
+        Matrix correlation(Time t, const Array& x = {}) const override {
             return corrModel_->correlation(t, x);
         }
-        Matrix pseudoSqrt(Time t, const Array& x = Null<Array>()) const override {
+        Matrix pseudoSqrt(Time t, const Array& x = {}) const override {
             return corrModel_->pseudoSqrt(t, x);
         }
-        Real correlation(Size i, Size j, Time t, const Array& x = Null<Array>()) const override {
+        Real correlation(Size i, Size j, Time t, const Array& x = {}) const override {
             return corrModel_->correlation(i, j, t, x);
         }
         bool isTimeIndependent() const override { return corrModel_->isTimeIndependent(); }

@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -78480,7 +78480,7 @@ namespace QuantLib {
                        bool useGrayCode)
     : dimensionality_(dimensionality), sequence_(std::vector<Real>(dimensionality), 1.0),
       integerSequence_(dimensionality, 0),
-      directionIntegers_(dimensionality, std::vector<std::uint32_t>(32)),
+      directionIntegers_(32, std::vector<std::uint32_t>(dimensionality)),
       useGrayCode_(useGrayCode) {
 
         QL_REQUIRE(dimensionality>0,
@@ -78541,7 +78541,7 @@ namespace QuantLib {
         }
 
         // initializes 32 direction integers for each dimension
-        // and store them into directionIntegers_[dimensionality_][32]
+        // and store them into directionIntegers_[32][dimensionality_]
         //
         // In each dimension k with its associated primitive polynomial,
         // the first degree_[k] direction integers can be chosen freely
@@ -78551,7 +78551,7 @@ namespace QuantLib {
         // degenerate (no free direction integers) first dimension
         int j;
         for (j=0; j<32; j++)
-            directionIntegers_[0][j] = (1UL<<(32-j-1));
+            directionIntegers_[j][0] = (1UL<<(32-j-1));
 
 
         Size maxTabulated = 0;
@@ -78562,8 +78562,8 @@ namespace QuantLib {
                 maxTabulated=dimensionality_;
                 for (k=1; k<maxTabulated; k++) {
                     for (Size l=1; l<=degree[k]; l++) {
-                        directionIntegers_[k][l-1] = 1UL;
-                        directionIntegers_[k][l-1] <<= (32-l);
+                        directionIntegers_[l-1][k] = 1UL;
+                        directionIntegers_[l-1][k] <<= (32-l);
                     }
                 }
                 break;
@@ -78574,8 +78574,8 @@ namespace QuantLib {
                     j = 0;
                     // 0UL marks coefficients' end for a given dimension
                     while (initializers[k-1][j] != 0UL) {
-                        directionIntegers_[k][j] = initializers[k-1][j];
-                        directionIntegers_[k][j] <<= (32-j-1);
+                        directionIntegers_[j][k] = initializers[k-1][j];
+                        directionIntegers_[j][k] <<= (32-j-1);
                         j++;
                     }
                 }
@@ -78587,8 +78587,8 @@ namespace QuantLib {
                     j = 0;
                     // 0UL marks coefficients' end for a given dimension
                     while (SLinitializers[k-1][j] != 0UL) {
-                        directionIntegers_[k][j] = SLinitializers[k-1][j];
-                        directionIntegers_[k][j] <<= (32-j-1);
+                        directionIntegers_[j][k] = SLinitializers[k-1][j];
+                        directionIntegers_[j][k] <<= (32-j-1);
                         j++;
                     }
                 }
@@ -78600,8 +78600,8 @@ namespace QuantLib {
                     j = 0;
                     // 0UL marks coefficients' end for a given dimension
                     while (Linitializers[k-1][j] != 0UL) {
-                        directionIntegers_[k][j] = Linitializers[k-1][j];
-                        directionIntegers_[k][j] <<= (32-j-1);
+                        directionIntegers_[j][k] = Linitializers[k-1][j];
+                        directionIntegers_[j][k] <<= (32-j-1);
                         j++;
                     }
                 }
@@ -78613,8 +78613,8 @@ namespace QuantLib {
                     j = 0;
                     // 0UL marks coefficients' end for a given dimension
                     while (JoeKuoD5initializers[k-1][j] != 0UL) {
-                        directionIntegers_[k][j] = JoeKuoD5initializers[k-1][j];
-                        directionIntegers_[k][j] <<= (32-j-1);
+                        directionIntegers_[j][k] = JoeKuoD5initializers[k-1][j];
+                        directionIntegers_[j][k] <<= (32-j-1);
                         j++;
                     }
                 }
@@ -78626,8 +78626,8 @@ namespace QuantLib {
                     j = 0;
                     // 0UL marks coefficients' end for a given dimension
                     while (JoeKuoD6initializers[k-1][j] != 0UL) {
-                        directionIntegers_[k][j] = JoeKuoD6initializers[k-1][j];
-                        directionIntegers_[k][j] <<= (32-j-1);
+                        directionIntegers_[j][k] = JoeKuoD6initializers[k-1][j];
+                        directionIntegers_[j][k] <<= (32-j-1);
                         j++;
                     }
                 }
@@ -78639,8 +78639,8 @@ namespace QuantLib {
                     j = 0;
                     // 0UL marks coefficients' end for a given dimension
                     while (JoeKuoD7initializers[k-1][j] != 0UL) {
-                        directionIntegers_[k][j] = JoeKuoD7initializers[k-1][j];
-                        directionIntegers_[k][j] <<= (32-j-1);
+                        directionIntegers_[j][k] = JoeKuoD7initializers[k-1][j];
+                        directionIntegers_[j][k] <<= (32-j-1);
                         j++;
                     }
                 }
@@ -78655,8 +78655,8 @@ namespace QuantLib {
                     j = 0;
                     // 0UL marks coefficients' end for a given dimension
                     while (Kuoinitializers[k-1][j] != 0UL) {
-                        directionIntegers_[k][j] = Kuoinitializers[k-1][j];
-                        directionIntegers_[k][j] <<= (32-j-1);
+                        directionIntegers_[j][k] = Kuoinitializers[k-1][j];
+                        directionIntegers_[j][k] <<= (32-j-1);
                         j++;
                     }
                 }
@@ -78668,8 +78668,8 @@ namespace QuantLib {
                     j = 0;
                     // 0UL marks coefficients' end for a given dimension
                     while (Kuo2initializers[k-1][j] != 0UL) {
-                        directionIntegers_[k][j] = Kuo2initializers[k-1][j];
-                        directionIntegers_[k][j] <<= (32-j-1);
+                        directionIntegers_[j][k] = Kuo2initializers[k-1][j];
+                        directionIntegers_[j][k] <<= (32-j-1);
                         j++;
                     }
                 }
@@ -78682,8 +78682,8 @@ namespace QuantLib {
                     j = 0;
                     // 0UL marks coefficients' end for a given dimension
                     while (Kuo3initializers[k-1][j] != 0UL) {
-                        directionIntegers_[k][j] = Kuo3initializers[k-1][j];
-                        directionIntegers_[k][j] <<= (32-j-1);
+                        directionIntegers_[j][k] = Kuo3initializers[k-1][j];
+                        directionIntegers_[j][k] <<= (32-j-1);
                         j++;
                     }
                 }
@@ -78703,9 +78703,9 @@ namespace QuantLib {
                         Real u = uniformRng.next().value;
                         // the direction integer has at most the
                         // rightmost l bits non-zero
-                        directionIntegers_[k][l-1] =
+                        directionIntegers_[l-1][k] =
                             (std::uint32_t)(u*(1UL<<l));
-                    } while ((directionIntegers_[k][l - 1] & 1UL) == 0U);
+                    } while ((directionIntegers_[l - 1][k] & 1UL) == 0U);
                     // iterate until the direction integer is odd
                     // that is it has the rightmost bit set
 
@@ -78713,18 +78713,18 @@ namespace QuantLib {
                     // we are guaranteed that the l-th leftmost bit
                     // is set, and only the first l leftmost bit
                     // can be non-zero
-                    directionIntegers_[k][l-1] <<= (32-l);
+                    directionIntegers_[l-1][k] <<= (32-l);
                 }
             }
         }
 
-        // computation of directionIntegers_[k][l] for l>=degree_[k]
+        // computation of directionIntegers_[l][k] for l>=degree_[k]
         // by recurrence relation
         for (k=1; k<dimensionality_; k++) {
             unsigned int gk = degree[k];
             for (int l=gk; l<32; l++) {
                 // eq. 8.19 "Monte Carlo Methods in Finance" by P. J�ckel
-                std::uint32_t n = (directionIntegers_[k][l-gk]>>gk);
+                std::uint32_t n = (directionIntegers_[l-gk][k]>>gk);
                 // a[k][j] are the coefficients of the monomials in ppmt[k]
                 // The highest order coefficient a[k][0] is not actually
                 // used in the recurrence relation, and the lowest order
@@ -78737,12 +78737,12 @@ namespace QuantLib {
                     // XORed with a selection of (unshifted) direction
                     // integers controlled by which of the a[k][j] are set
                     if (((ppmt[k] >> (gk - j - 1)) & 1UL) != 0U)
-                        n ^= directionIntegers_[k][l-j];
+                        n ^= directionIntegers_[l-j][k];
                 }
-                // a[k][gk] is always set, so directionIntegers_[k][l-gk]
+                // a[k][gk] is always set, so directionIntegers_[l-gk][k]
                 // will always enter
-                n ^= directionIntegers_[k][l-gk];
-                directionIntegers_[k][l]=n;
+                n ^= directionIntegers_[l-gk][k];
+                directionIntegers_[l][k]=n;
             }
         }
 
@@ -78756,7 +78756,7 @@ namespace QuantLib {
                                           << ppmt[k]   << "\t";
                    for (j=0; j<10; j++) {
                        outStream << io::power_of_two(
-                           directionIntegers_[k][j]) << "\t";
+                           directionIntegers_[j][k]) << "\t";
                    }
                }
                outStream.close();
@@ -78767,7 +78767,7 @@ namespace QuantLib {
         // first draw, this is only needed if Gray code is used
         if (useGrayCode_) {
             for (k = 0; k < dimensionality_; k++) {
-                integerSequence_[k] = directionIntegers_[k][0];
+                integerSequence_[k] = directionIntegers_[0][k];
             }
         }
     }
@@ -78784,7 +78784,7 @@ namespace QuantLib {
                 integerSequence_[k] = 0;
                 for (Size index = 0; index < ops; index++) {
                     if ((G >> index & 1) != 0U)
-                        integerSequence_[k] ^= directionIntegers_[k][index];
+                        integerSequence_[k] ^= directionIntegers_[index][k];
                 }
             }
         } else {
@@ -78793,7 +78793,7 @@ namespace QuantLib {
             for (Size index = 0; index < 32; index++) {
                 if ((N & mask) != 0U) {
                     for (Size k = 0; k < dimensionality_; k++) {
-                        integerSequence_[k] ^= directionIntegers_[k][index];
+                        integerSequence_[k] ^= directionIntegers_[index][k];
                     }
                 }
                 mask = mask << 1;
@@ -78842,7 +78842,7 @@ namespace QuantLib {
             // XOR the appropriate direction number into each component of
             // the integer sequence to obtain a new Sobol integer for that
             // component
-            integerSequence_[k] ^= directionIntegers_[k][j];
+            integerSequence_[k] ^= directionIntegers_[j][k];
         }
         return integerSequence_;
     }

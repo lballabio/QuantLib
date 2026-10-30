@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -26,12 +26,12 @@
 #define quantlib_yyiis_hpp
 
 #include <ql/instruments/swap.hpp>
+#include <ql/indexes/inflationindex.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
-    class YoYInflationIndex;
 
     //! Year-on-year inflation-indexed swap
     /*! Quoted as a fixed rate \f$ K \f$.  At start:
@@ -58,10 +58,12 @@ namespace QuantLib {
             Schedule yoySchedule,
             ext::shared_ptr<YoYInflationIndex> yoyIndex,
             const Period& observationLag,
+            CPI::InterpolationType interpolation,
             Spread spread,
             DayCounter yoyDayCount,
             Calendar paymentCalendar, // inflation index does not have a calendar
             BusinessDayConvention paymentConvention = ModifiedFollowing);
+
         // results
         virtual Real fixedLegNPV() const;
         virtual Rate fairRate() const;
@@ -142,7 +144,7 @@ namespace QuantLib {
     };
 
     class YearOnYearInflationSwap::engine : public GenericEngine<YearOnYearInflationSwap::arguments,
-    YearOnYearInflationSwap::results> {};
+                                                                 YearOnYearInflationSwap::results> {};
 
 
     // inline definitions

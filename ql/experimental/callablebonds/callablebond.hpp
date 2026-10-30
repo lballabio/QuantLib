@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -146,15 +146,6 @@ namespace QuantLib {
         // helper class for option adjusted spread calculations
         class NPVSpreadHelper;
 
-      private:
-        /*  Used internally.
-            same as Bond::accruedAmount() but with enable early
-            payments true.  Forces accrued to be calculated in a
-            consistent way for future put/ call dates, which can be
-            problematic in lattice engines when option dates are also
-            coupon dates.
-        */
-        Real accrued(Date settlement) const;
     };
 
     class CallableBond::arguments : public Bond::arguments {
@@ -172,6 +163,7 @@ namespace QuantLib {
         //! bond full/dirty/cash prices
         std::vector<Real> callabilityPrices;
         std::vector<Date> callabilityDates;
+        std::vector<Callability::Type> callabilityTypes;
         //! Spread to apply to the valuation. This is a continuously
         //! componded rate added to the model. Currently only applied
         //! by the TreeCallableFixedRateBondEngine

@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -35,10 +35,12 @@ namespace QuantLib {
     class AbcdMathFunction {
 
       public:
-        AbcdMathFunction(Real a = 0.002,
-                         Real b = 0.001, 
-                         Real c = 0.16,
-                         Real d = 0.0005);
+        explicit AbcdMathFunction(
+            Real a = 0.002,
+            Real b = 0.001,
+            Real c = 0.16,
+            Real d = 0.0005);
+        // TODO: Review whether this constructor should remain implicit.
         AbcdMathFunction(std::vector<Real> abcd);
 
         //! function value at time t: \f[ f(t) \f]

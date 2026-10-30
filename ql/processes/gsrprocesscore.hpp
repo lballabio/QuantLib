@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -32,11 +32,15 @@
 #include <ql/math/comparison.hpp>
 #include <map>
 
-namespace QuantLib::detail {
+namespace QuantLib {
+
+class GsrProcess;
+
+namespace detail {
 
 class GsrProcessCore {
   public:
-    GsrProcessCore(const Array& times, const Array& vols, const Array& reversions, Real T = 60.0);
+    GsrProcessCore(Array times, Array vols, Array reversions, Real T = 60.0);
 
     // conditional expectation, x0 dependent part
     Real expectation_x0dep_part(Time w, Real xw, Time dt) const;
@@ -68,9 +72,15 @@ class GsrProcessCore {
     void flushCache() const;
 
   protected:
-    const Array &times_, &vols_, &reversions_;
+    Array times_, vols_, reversions_;
 
   private:
+    friend class QuantLib::GsrProcess;
+    void setTimes(Array times);
+    void setVols(Array vols);
+    void setReversions(Array reversions);
+    void setForwardMeasureTime(Real T);
+    void checkTimesVolsReversions() const;
     int lowerIndex(Time t) const;
     int upperIndex(Time t) const;
     Real time2(Size index) const;
@@ -97,6 +107,7 @@ inline Real GsrProcessCore::reversion(const Time t) const {
     return rev(lowerIndex(t));
 }
 
+} // namespace detail
 } // namespace QuantLib
 
 #endif

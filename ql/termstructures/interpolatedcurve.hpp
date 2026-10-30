@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -24,6 +24,7 @@
 #ifndef quantlib_interpolated_curve_hpp
 #define quantlib_interpolated_curve_hpp
 
+#include <ql/math/comparison.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/time/date.hpp>
 #include <ql/time/daycounter.hpp>
@@ -32,8 +33,33 @@
 
 namespace QuantLib {
 
+    //! Node inspectors shared by interpolated term structures
+    /*! Access to the interpolated nodes of termstructures
+    */
+    class InterpolatedNodes {
+      public:
+        virtual ~InterpolatedNodes() = default;
+        //! node dates, including the reference date
+        virtual const std::vector<Date>& dates() const = 0;
+        //! node times, including the reference time
+        virtual const std::vector<Time>& times() const = 0;
+        //! node values in the trait space of the curve
+        virtual const std::vector<Real>& data() const = 0;
+        //! pairs of (Date, Value) from dates() and data()
+        std::vector<std::pair<Date, Real>> nodes() const {
+            const auto& dates = this->dates();
+            const auto& data = this->data();
+            const Size size = dates.size();
+            std::vector<std::pair<Date, Real>> result;
+            result.reserve(size);
+            for (Size i = 0; i < size; ++i)
+                result.emplace_back(dates[i], data[i]);
+            return result;
+        }
+    };
+
     //! Helper class to build interpolated term structures
-    /*! Interpolated term structures can use proected or private
+    /*! Interpolated term structures can use protected or private
         inheritance from this class to obtain the relevant data
         members and implement correct copy behavior.
     */

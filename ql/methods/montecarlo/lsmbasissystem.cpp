@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -41,7 +41,7 @@ namespace QuantLib {
         class MonomialFct {
           public:
             explicit MonomialFct(Size order): order_(order) {}
-            inline Real operator()(const Real x) const {
+            Real operator()(const Real x) const {
                 Real ret = 1.0;
                 for(Size i=0; i<order_; ++i)
                     ret *= x;
@@ -58,7 +58,7 @@ namespace QuantLib {
             explicit MultiDimFct(VF_R b) : b_(std::move(b)) {
                 QL_REQUIRE(!b_.empty(), "zero size basis");
             }
-            inline Real operator()(const Array& a) const {
+            Real operator()(const Array& a) const {
                 #if defined(QL_EXTRA_SAFETY_CHECKS)
                 QL_REQUIRE(b_.size()==a.size(), "wrong argument size");
                 #endif
@@ -88,6 +88,8 @@ namespace QuantLib {
 
             // the set of unique tuples
             std::set<std::vector<Size> > tuples;
+            // Keep the temporary outside the loops so assignments can reuse its allocation.
+            // cppcheck-suppress variableScope
             std::vector<Size> x;
             for(Size i=0; i<dim; ++i) {
                 // increase i-th value in every tuple by 1

@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -26,8 +26,6 @@
 #ifndef quantlib_zero_curve_simple_hpp
 #define quantlib_zero_curve_simple_hpp
 
-#include <ql/math/comparison.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/termstructures/interpolatedcurve.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -38,7 +36,9 @@ namespace QuantLib {
 //! YieldTermStructure based on interpolation of zero rates
 /*! \ingroup yieldtermstructures */
 template <class Interpolator>
-class InterpolatedSimpleZeroCurve : public YieldTermStructure, protected InterpolatedCurve<Interpolator> {
+class InterpolatedSimpleZeroCurve : public YieldTermStructure,
+                                    protected InterpolatedCurve<Interpolator>,
+                                    public InterpolatedNodes {
   public:
     // constructor
     InterpolatedSimpleZeroCurve(const std::vector<Date> &dates, const std::vector<Rate> &yields,
@@ -57,11 +57,10 @@ class InterpolatedSimpleZeroCurve : public YieldTermStructure, protected Interpo
     //@}
     //! \name other inspectors
     //@{
-    const std::vector<Time> &times() const;
-    const std::vector<Date> &dates() const;
-    const std::vector<Real> &data() const;
+    const std::vector<Time> &times() const override;
+    const std::vector<Date> &dates() const override;
+    const std::vector<Real> &data() const override;
     const std::vector<Rate> &zeroRates() const;
-    std::vector<std::pair<Date, Real> > nodes() const;
     //@}
   protected:
     explicit InterpolatedSimpleZeroCurve(const DayCounter &,
@@ -100,13 +99,6 @@ template <class T> inline const std::vector<Real> &InterpolatedSimpleZeroCurve<T
 
 template <class T> inline const std::vector<Rate> &InterpolatedSimpleZeroCurve<T>::zeroRates() const {
     return this->data_;
-}
-
-template <class T> inline std::vector<std::pair<Date, Real> > InterpolatedSimpleZeroCurve<T>::nodes() const {
-    std::vector<std::pair<Date, Real> > results(dates_.size());
-    for (Size i = 0; i < dates_.size(); ++i)
-        results[i] = std::make_pair(dates_[i], this->data_[i]);
-    return results;
 }
 
 #ifndef __DOXYGEN__
@@ -188,7 +180,6 @@ template <class T> void InterpolatedSimpleZeroCurve<T>::initialize() {
 
     this->setupTimes(dates_, dates_[0], dayCounter());
     this->setupInterpolation();
-    this->interpolation_.update();
 }
 
 } // namespace QuantLib

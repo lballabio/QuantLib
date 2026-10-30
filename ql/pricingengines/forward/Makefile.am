@@ -3,7 +3,8 @@ AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
-	all.hpp \
+    all.hpp \
+    discountingfxforwardengine.hpp \
     forwardengine.hpp \
     forwardperformanceengine.hpp \
     mcvarianceswapengine.hpp \
@@ -13,6 +14,7 @@ this_include_HEADERS = \
     mcforwardeuropeanhestonengine.hpp
 
 cpp_files = \
+    discountingfxforwardengine.cpp \
     mcforwardeuropeanbsengine.cpp \
     mcforwardeuropeanhestonengine.cpp
 

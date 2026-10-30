@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -32,6 +32,7 @@ namespace QuantLib {
                                            Calendar paymentCalendar,
                                            Natural fixingDays,
                                            ext::shared_ptr<YoYInflationIndex> index,
+                                           CPI::InterpolationType interpolation,
                                            Rate strike,
                                            Size n,
                                            ext::shared_ptr<YoYInflationCapFloorEngine> pricer)
@@ -43,7 +44,7 @@ namespace QuantLib {
         // build the instrument to reprice (only need do this once)
         yoyCapFloor_ =
             MakeYoYInflationCapFloor(capFloorType_, index_,
-                                     n_, calendar_, lag_)
+                                     n_, calendar_, lag_, interpolation)
             .withNominal(notional)
             .withFixingDays(fixingDays_)
             .withPaymentDayCounter(yoyDayCounter_)

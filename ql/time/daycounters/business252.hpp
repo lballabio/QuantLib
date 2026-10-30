@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -48,7 +48,7 @@ namespace QuantLib {
         };
       public:
         Business252(const Calendar& c = Brazil())
-        : DayCounter(ext::shared_ptr<DayCounter::Impl>(new Business252::Impl(c))) {}
+        : DayCounter(ext::make_shared<Business252::Impl>(c)) {}
     };
 
 }

@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -38,7 +38,8 @@ namespace QuantLib {
     template <class Interpolator1D>
     class InterpolatedYoYOptionletVolatilityCurve
         : public YoYOptionletVolatilitySurface,
-          protected InterpolatedCurve<Interpolator1D> {
+          protected InterpolatedCurve<Interpolator1D>,
+          public InterpolatedNodes {
     public:
         //! \name Constructor
         //@{
@@ -78,10 +79,9 @@ namespace QuantLib {
 
         //! \name Bootstrap interface
         //@{
-        virtual const std::vector<Time>& times() const {return this->times_;}
-        virtual const std::vector<Date>& dates() const {return dates_;}
-        virtual const std::vector<Real>& data() const {return this->data_;}
-        virtual std::vector<std::pair<Date, Real> > nodes() const {return nodes_;}
+        const std::vector<Time>& times() const override {return this->times_;}
+        const std::vector<Date>& dates() const override {return dates_;}
+        const std::vector<Real>& data() const override {return this->data_;}
         //@}
 
     protected:
@@ -104,7 +104,6 @@ namespace QuantLib {
         // we do specify data representation here
         // because the bootstrapper needs this specifically
         mutable std::vector<Date> dates_;
-        std::vector<std::pair<Date, Real> > nodes_;
         //@}
 
         //! implements the actual volatility calculation in derived classes
@@ -141,8 +140,7 @@ namespace QuantLib {
 
         for (Size j = 0; j < d.size(); j++ ){
             this->times_.push_back( this->timeFromReference(dates_[j]) );
-            this->data_.push_back(v[j]),
-            nodes_.push_back( std::make_pair( dates_[j], this->data_[j]) );
+            this->data_.push_back(v[j]);
         }
 
         this->setupInterpolation();

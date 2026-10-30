@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -28,8 +28,8 @@
 #include <ql/time/date.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/errors.hpp>
-#include <ql/functional.hpp>
 #include <boost/iterator/transform_iterator.hpp>
+#include <functional>
 #include <iterator>
 #include <algorithm>
 #include <map>
@@ -145,8 +145,8 @@ namespace QuantLib {
         // The following typedef enables reverse iterators for
         // bidirectional_iterator_tag category.
         typedef std::conditional_t<
-                std::is_same<iterator_category, std::bidirectional_iterator_tag>::value ||
-                std::is_base_of<std::bidirectional_iterator_tag, iterator_category>::value,
+                std::is_same_v<iterator_category, std::bidirectional_iterator_tag> ||
+                std::is_base_of_v<std::bidirectional_iterator_tag, iterator_category>,
             std::bidirectional_iterator_tag, std::input_iterator_tag> enable_reverse;
 
         typedef typename

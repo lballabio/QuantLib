@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -28,7 +28,7 @@ namespace QuantLib {
     DiscretizedConvertible::DiscretizedConvertible(
         ConvertibleBond::arguments args,
         ext::shared_ptr<GeneralizedBlackScholesProcess> process,
-        DividendSchedule dividends,
+        const DividendSchedule& dividends,
         Handle<Quote> creditSpread,
         const TimeGrid& grid)
     : arguments_(std::move(args)), process_(std::move(process)),
@@ -43,14 +43,10 @@ namespace QuantLib {
 
         dividendValues_ = Array(dividends_.size(), 0.0);
 
-        Date settlementDate = process_->riskFreeRate()->referenceDate();
-        for (Size i=0; i<dividends.size(); i++) {
-            if (dividends[i]->date() >= settlementDate) {
-                dividendValues_[i] =
-                    dividends[i]->amount() *
-                    process_->riskFreeRate()->discount(
-                                             dividends[i]->date());
-            }
+        for (Size i=0; i<dividends_.size(); i++) {
+            dividendValues_[i] =
+                dividends_[i]->amount() *
+                process_->riskFreeRate()->discount(dividendDates_[i]);
         }
 
         DayCounter dayCounter = process_->riskFreeRate()->dayCounter();
@@ -134,7 +130,8 @@ namespace QuantLib {
         bool convertible = false;
         switch (arguments_.exercise->type()) {
           case Exercise::American:
-            if (time() <= stoppingTimes_[1] && time() >= stoppingTimes_[0])
+            if ((time() <= stoppingTimes_[1] || isOnTime(stoppingTimes_[1])) &&
+                (time() >= stoppingTimes_[0] || isOnTime(stoppingTimes_[0])))
                 convertible = true;
             break;
           case Exercise::European:

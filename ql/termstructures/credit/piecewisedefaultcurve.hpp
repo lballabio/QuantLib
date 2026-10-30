@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -177,10 +177,9 @@ namespace QuantLib {
         //@}
         //! \name base_curve interface
         //@{
-        const std::vector<Time>& times() const;
-        const std::vector<Date>& dates() const;
-        const std::vector<Real>& data() const;
-        std::vector<std::pair<Date, Real> > nodes() const;
+        const std::vector<Time>& times() const override;
+        const std::vector<Date>& dates() const override;
+        const std::vector<Real>& data() const override;
         //@}
         //! \name Observer interface
         //@{
@@ -204,7 +203,6 @@ namespace QuantLib {
         // it would increase the complexity---which is high enough
         // already.
         friend class Bootstrap<this_curve>;
-        friend class BootstrapError<this_curve>;
         Bootstrap<this_curve> bootstrap_;
     };
 
@@ -236,13 +234,6 @@ namespace QuantLib {
     PiecewiseDefaultCurve<C,I,B>::data() const {
         calculate();
         return this->data_;
-    }
-
-    template <class C, class I, template <class> class B>
-    inline std::vector<std::pair<Date, Real> >
-    PiecewiseDefaultCurve<C,I,B>::nodes() const {
-        calculate();
-        return base_curve::nodes();
     }
 
     template <class C, class I, template <class> class B>

@@ -12,19 +12,34 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/errors.hpp>
 #include <ql/settings.hpp>
 
 namespace QuantLib {
 
     Settings::DateProxy::DateProxy()
     : ObservableValue<Date>(Date()) {}
+
+    Settings::DateProxy::operator Date() const {
+        if (value() == Date()) {
+#ifdef QL_REQUIRE_EXPLICIT_EVALUATION_DATE
+            QL_FAIL("the evaluation date has not been set; with "
+                    "QL_REQUIRE_EXPLICIT_EVALUATION_DATE defined it must be set explicitly "
+                    "through Settings::instance().evaluationDate() before it is used");
+#else
+            return Date::todaysDate();
+#endif
+        } else {
+            return value();
+        }
+    }
 
     std::ostream& operator<<(std::ostream& out,
                              const Settings::DateProxy& p) {
@@ -47,14 +62,14 @@ namespace QuantLib {
     }
 
     SavedSettings::SavedSettings()
-    : evaluationDate_(Settings::instance().evaluationDate()),
+    : evaluationDate_(Settings::instance().evaluationDate().value()),
       includeReferenceDateEvents_(Settings::instance().includeReferenceDateEvents()),
       includeTodaysCashFlows_(Settings::instance().includeTodaysCashFlows()),
       enforcesTodaysHistoricFixings_(Settings::instance().enforcesTodaysHistoricFixings()) {}
 
     SavedSettings::~SavedSettings() {
         try {
-            if (Settings::instance().evaluationDate() != evaluationDate_)
+            if (Settings::instance().evaluationDate().value() != evaluationDate_)
                 Settings::instance().evaluationDate() = evaluationDate_;
             Settings::instance().includeReferenceDateEvents() =
                 includeReferenceDateEvents_;
