@@ -214,14 +214,14 @@ BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveAttainableAccuracy) {
     const GaussKronrodAdaptive exponentialIntegrator(1e-8);
     const Real exponential = exponentialIntegrator(
         [](Real x) { return 1e5 * std::exp(x); }, 0.0, 1.0);
-    BOOST_CHECK_SMALL(exponential - 1e5 * std::expm1(1.0), 1e-8);
+    QL_CHECK_SMALL(exponential - 1e5 * std::expm1(1.0), 1e-8);
 
     const GaussKronrodAdaptive cosineIntegrator(1e-9);
     const auto f = [](Real x) { return 100.0 * std::cos(x); };
     const Real expected = 100.0 * std::sin(10.0);
-    BOOST_CHECK_SMALL(cosineIntegrator(f, 0.0, 10.0) - expected, 1e-9);
+    QL_CHECK_SMALL(cosineIntegrator(f, 0.0, 10.0) - expected, 1e-9);
     BOOST_CHECK_GT(cosineIntegrator.numberOfEvaluations(), 15);
-    BOOST_CHECK_SMALL(cosineIntegrator(f, 10.0, 0.0) + expected, 1e-9);
+    QL_CHECK_SMALL(cosineIntegrator(f, 10.0, 0.0) + expected, 1e-9);
 
     const GaussKronrodAdaptive limitedIntegrator(1e-9, 15);
     BOOST_CHECK_EXCEPTION(limitedIntegrator(f, 0.0, 10.0), Error,
@@ -261,8 +261,8 @@ BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveNoSubdivisionProgress) {
 
     const GaussKronrodAdaptive integrator(1e-6);
     BOOST_CHECK_EQUAL(integrator([](Real) { return 0.0; }, a, b), 0.0);
-    BOOST_CHECK_SMALL(integrator([](Real) { return 1.0; }, a, b) - (b - a),
-                      50 * QL_EPSILON * (b - a));
+    QL_CHECK_SMALL(integrator([](Real) { return 1.0; }, a, b) - (b - a),
+                   50 * QL_EPSILON * (b - a));
     BOOST_CHECK_EXCEPTION(integrator([a](Real x) { return x == a ? 1e16 : 0.0; }, a, b),
                           Error, ExpectedErrorMessage("subdivision"));
     BOOST_CHECK_EQUAL(integrator.numberOfEvaluations(), 15);

@@ -2775,8 +2775,8 @@ BOOST_AUTO_TEST_CASE(testPearsonSpreadEngineVanillaLimit) {
             option.setPricingEngine(engine);
             const Real vanillaStrike = f2 + strike;
             const Real expected = vanillaStrike > 0.0
-                ? df * blackFormula(type, vanillaStrike, f1, stdDev)
-                : (type == Option::Call ? df * (f1 - vanillaStrike) : 0.0);
+                ? Real(df * blackFormula(type, vanillaStrike, f1, stdDev))
+                : (type == Option::Call ? Real(df * (f1 - vanillaStrike)) : Real(0.0));
             const Real calculated = option.NPV();
             BOOST_CHECK_MESSAGE(std::abs(calculated - expected) <= tolerance,
                                 "vanilla limit failed for " << type << " with strike " << strike
