@@ -36,6 +36,7 @@ set(QL_TEST_SOURCES
     cms_normal.cpp
     cmsspread.cpp
     commodityunitofmeasure.cpp
+    energybasisswap.cpp
     compiledboostversion.cpp
     compoundoption.cpp
     convertiblebonds.cpp
