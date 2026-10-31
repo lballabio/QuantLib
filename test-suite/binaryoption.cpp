@@ -125,7 +125,7 @@ BOOST_AUTO_TEST_CASE(testCashOrNothingHaugValues) {
     };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
@@ -206,7 +206,7 @@ BOOST_AUTO_TEST_CASE(testAssetOrNothingHaugValues) {
     };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
@@ -263,7 +263,7 @@ BOOST_AUTO_TEST_CASE(testCashOrNothingLowVolatility) {
     };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
