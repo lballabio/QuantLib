@@ -87,10 +87,15 @@ namespace QuantLib {
         QL_REQUIRE(isValidFixingDate(fixingDate),
                    "Fixing date " << fixingDate << " is not valid");
 
+        return valueDateFrom(fixingDate);
+    }
+
+    Date EURLibor::valueDateFrom(const Date& date) const {
+
         // http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412 :
         // In the case of EUR the Value Date shall be two TARGET
         // business days after the Fixing Date.
-        return target_.advance(fixingDate, fixingDays_, Days);
+        return target_.advance(date, fixingDays_, Days);
     }
 
     Date EURLibor::maturityDate(const Date& valueDate) const {
