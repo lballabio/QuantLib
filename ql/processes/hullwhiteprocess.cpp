@@ -36,30 +36,58 @@ namespace QuantLib {
     }
 
     Real HullWhiteProcess::drift(Time t, Real x) const {
-        Real alpha_drift = sigma_*sigma_/(2*a_)*(1-std::exp(-2*a_*t));
-        Real shift = 0.0001;
-        Real f = h_->forwardRate(t, t, Continuous, NoFrequency);
-        Real fup = h_->forwardRate(t+shift, t+shift, Continuous, NoFrequency);
-        Real f_prime = (fup-f)/shift;
-        alpha_drift += a_*f+f_prime;
+        Real alpha_drift;
+        if (!driftCache_.ready()) {
+            alpha_drift = sigma_ * sigma_ / (2 * a_) * (1 - std::exp(-2 * a_ * t));
+            Real shift = 0.0001;
+            Real f = h_->forwardRate(t, t, Continuous, NoFrequency);
+            Real fup = h_->forwardRate(t + shift, t + shift, Continuous, NoFrequency);
+            Real f_prime = (fup - f) / shift;
+            alpha_drift += a_ * f + f_prime;
+            driftCache_.add(alpha_drift, t);
+        } else {
+            alpha_drift = driftCache_.get(t);
+        }
         return process_->drift(t, x) + alpha_drift;
     }
 
     Real HullWhiteProcess::diffusion(Time t, Real x) const{
-        return process_->diffusion(t, x);
+        Real res;
+        if(!diffusionCache_.ready()) {
+            res = process_->diffusion(t, x);
+            diffusionCache_.add(res, t);
+        } else {
+            res = diffusionCache_.get(t);
+        }
+        return res;
     }
 
     Real HullWhiteProcess::expectation(Time t0, Real x0, Time dt) const {
+        Real res;
+        if(!driftCache_.ready()) {
+            res = alpha(t0 + dt) - alpha(t0)*std::exp(-a_*dt);
+            driftCache_.add(res, t0, dt);
+        } else {
+            res = driftCache_.get(t0, dt);
+        }
         return process_->expectation(t0, x0, dt)
-             + alpha(t0 + dt) - alpha(t0)*std::exp(-a_*dt);
+            + res;
     }
 
-    Real HullWhiteProcess::stdDeviation(Time t0, Real x0, Time dt) const{
-        return process_->stdDeviation(t0, x0, dt);
+    Real HullWhiteProcess::stdDeviation(Time t0, Real x0, Time dt) const {
+        Real res;
+        if (!diffusionCache_.ready()) {
+            res = process_->stdDeviation(t0, x0, dt);
+            diffusionCache_.add(res, t0, dt);
+        } else {
+            res = diffusionCache_.get(t0, dt);
+        }
+        return res;
     }
 
-    Real HullWhiteProcess::variance(Time t0, Real x0, Time dt) const{
-        return process_->variance(t0, x0, dt);
+    Real HullWhiteProcess::variance(Time t0, Real x0, Time dt) const {
+        Real s = stdDeviation(t0, x0, dt);
+        return s * s;
     }
 
     Real HullWhiteProcess::alpha(Time t) const {
@@ -79,6 +107,16 @@ namespace QuantLib {
         return sigma_;
     }
 
+    void HullWhiteProcess::resetCache(const Size numberOfTimeSteps) const {
+        driftCache_ = PathIndependentCache<Real>(numberOfTimeSteps);
+        diffusionCache_ = PathIndependentCache<Real>(numberOfTimeSteps);
+    }
+
+    void HullWhiteProcess::suspendCaching(const bool suspend) const {
+        driftCache_.suspendCaching(suspend);
+        diffusionCache_.suspendCaching(suspend);
+    }
+
     HullWhiteForwardProcess::HullWhiteForwardProcess(
                                           const Handle<YieldTermStructure>& h,
                                           Real a,
@@ -92,33 +130,57 @@ namespace QuantLib {
     }
 
     Real HullWhiteForwardProcess::drift(Time t, Real x) const {
-        Real alpha_drift = sigma_*sigma_/(2*a_)*(1-std::exp(-2*a_*t));
-        Real shift = 0.0001;
-        Real f = h_->forwardRate(t, t, Continuous, NoFrequency);
-        Real fup = h_->forwardRate(t+shift, t+shift, Continuous, NoFrequency);
-        Real f_prime = (fup-f)/shift;
-        alpha_drift += a_*f+f_prime;
-        return process_->drift(t, x) + alpha_drift - B(t, T_)*sigma_*sigma_;
+        Real alpha_drift;
+        if (!driftCache_.ready()) {
+            alpha_drift = sigma_ * sigma_ / (2 * a_) * (1 - std::exp(-2 * a_ * t));
+            Real shift = 0.0001;
+            Real f = h_->forwardRate(t, t, Continuous, NoFrequency);
+            Real fup = h_->forwardRate(t + shift, t + shift, Continuous, NoFrequency);
+            Real f_prime = (fup - f) / shift;
+            alpha_drift += a_ * f + f_prime - -B(t, T_) * sigma_ * sigma_;
+        } else {
+            alpha_drift = driftCache_.get(t);
+        }
+        return process_->drift(t, x) + alpha_drift;
     }
 
     Real HullWhiteForwardProcess::diffusion(Time t, Real x) const{
-        return process_->diffusion(t, x);
+        Real res;
+        if(!diffusionCache_.ready()) {
+            res = process_->diffusion(t, x);
+            diffusionCache_.add(res, t);
+        } else {
+            res = diffusionCache_.get(t);
+        }
+        return res;
     }
 
-    Real HullWhiteForwardProcess::expectation(Time t0, Real x0,
-                                              Time dt) const {
-        return process_->expectation(t0, x0, dt)
-             + alpha(t0 + dt) - alpha(t0)*std::exp(-a_*dt)
-             - M_T(t0, t0+dt, T_);
+    Real HullWhiteForwardProcess::expectation(Time t0, Real x0, Time dt) const {
+        Real res;
+        if (!driftCache_.ready()) {
+            res = alpha(t0 + dt) - alpha(t0) * std::exp(-a_ * dt) - M_T(t0, t0 + dt, T_);
+            driftCache_.add(res, t0, dt);
+        } else {
+            res = driftCache_.get(t0, dt);
+        }
+        return process_->expectation(t0, x0, dt) + res;
     }
 
     Real HullWhiteForwardProcess::stdDeviation(Time t0, Real x0,
                                                Time dt) const {
-        return process_->stdDeviation(t0, x0, dt);
+        Real res;
+        if (!diffusionCache_.ready()) {
+            res = process_->stdDeviation(t0, x0, dt);
+            diffusionCache_.add(res, t0, dt);
+        } else {
+            res = diffusionCache_.get(t0, dt);
+        }
+        return res;
     }
 
     Real HullWhiteForwardProcess::variance(Time t0, Real x0, Time dt) const{
-        return process_->variance(t0, x0, dt);
+        Real s = stdDeviation(t0, x0, dt);
+        return s * s;
     }
 
     Real HullWhiteForwardProcess::alpha(Time t) const {
@@ -157,6 +219,16 @@ namespace QuantLib {
 
     Real HullWhiteForwardProcess::sigma() const {
         return sigma_;
+    }
+    
+    void HullWhiteForwardProcess::resetCache(const Size numberOfTimeSteps) const {
+        driftCache_ = PathIndependentCache<Real>(numberOfTimeSteps);
+        diffusionCache_ = PathIndependentCache<Real>(numberOfTimeSteps);
+    }
+
+    void HullWhiteForwardProcess::suspendCaching(const bool suspend) const {
+        driftCache_.suspendCaching(suspend);
+        diffusionCache_.suspendCaching(suspend);
     }
 }
 

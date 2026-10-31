@@ -118,7 +118,7 @@ namespace QuantLib {
         Real requiredTolerance,
         Size maxSamples,
         BigNatural seed)
-    : McSimulation<MultiVariate, RNG, S>(antitheticVariate, controlVariate),
+        : McSimulation<MultiVariate, RNG, S>(antitheticVariate, controlVariate, true),
       process_(std::move(process)), timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance), brownianBridge_(brownianBridge), seed_(seed) {

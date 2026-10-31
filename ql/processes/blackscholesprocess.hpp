@@ -29,6 +29,7 @@
 
 #include <ql/stochasticprocess.hpp>
 #include <ql/processes/eulerdiscretization.hpp>
+#include <ql/processes/pathindependentcache.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
@@ -82,7 +83,8 @@ namespace QuantLib {
         Real expectation(Time t0, Real x0, Time dt) const override;
         Real stdDeviation(Time t0, Real x0, Time dt) const override;
         Real variance(Time t0, Real x0, Time dt) const override;
-        Real evolve(Time t0, Real x0, Time dt, Real dw) const override;
+        void resetCache(const Size numberOfTimeSteps) const override;
+        void suspendCaching(const bool suspend) const override;
         //@}
         Time time(const Date&) const override;
         //! \name Observer interface
@@ -106,6 +108,7 @@ namespace QuantLib {
         bool hasExternalLocalVol_;
         mutable RelinkableHandle<LocalVolTermStructure> localVolatility_;
         mutable bool updated_, isStrikeIndependent_;
+        mutable PathIndependentCache<Real> driftCache_, diffusionCache_;
     };
 
     //! Black-Scholes (1973) stochastic process

@@ -58,6 +58,7 @@ namespace QuantLib {
         std::vector<Real> u = sequenceGen_.nextSequence().value;
         Size i;
 
+        diffProcess_->suspendCaching(true);
         switch (barrierType_) {
           case Barrier::DownIn:
             isOptionActive = false;
@@ -138,6 +139,7 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown barrier type");
         }
+        diffProcess_->suspendCaching(false);
 
         if (isOptionActive) {
             return payoff_(asset_price) * discounts_.back();

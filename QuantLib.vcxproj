@@ -1677,6 +1677,7 @@
     <ClInclude Include="ql\processes\ornsteinuhlenbeckprocess.hpp" />
     <ClInclude Include="ql\processes\squarerootprocess.hpp" />
     <ClInclude Include="ql\processes\stochasticprocessarray.hpp" />
+    <ClInclude Include="ql\processes\pathindependentcache.hpp" />
     <ClInclude Include="ql\quotes\all.hpp" />
     <ClInclude Include="ql\quotes\compositequote.hpp" />
     <ClInclude Include="ql\quotes\deltavolquote.hpp" />

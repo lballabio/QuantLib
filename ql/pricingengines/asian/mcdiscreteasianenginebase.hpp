@@ -142,7 +142,7 @@ namespace QuantLib {
         Size timeSteps,
         Size timeStepsPerYear,
         bool includeExerciseDate)
-    : McSimulation<MC, RNG, S>(antitheticVariate, controlVariate), process_(std::move(process)),
+        : McSimulation<MC, RNG, S>(antitheticVariate, controlVariate, true), process_(std::move(process)),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples), timeSteps_(timeSteps),
       timeStepsPerYear_(timeStepsPerYear), requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed), includeExerciseDate_(includeExerciseDate) {

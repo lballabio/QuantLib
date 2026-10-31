@@ -2088,6 +2088,7 @@ set(QL_HEADERS
     processes/coxingersollrossprocess.hpp
     processes/squarerootprocess.hpp
     processes/stochasticprocessarray.hpp
+    processes/pathindependentcache.hpp
     quote.hpp
     quotes/compositequote.hpp
     quotes/deltavolquote.hpp
