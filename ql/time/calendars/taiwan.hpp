@@ -39,11 +39,15 @@ namespace QuantLib {
         <li>New Year's Day, January 1st</li>
         <li>Peace Memorial Day, February 28</li>
         <li>Labor Day, May 1st</li>
+        <li>Teachers' Day, September 28th (since 2025, possibly moved to Friday or Monday)</li>
         <li>Double Tenth National Day, October 10th</li>
+        <li>Taiwan Retrocession Day, October 25th (since 2025, possibly moved to Friday
+            or Monday)</li>
+        <li>Constitution Day, December 25th (since 2025, possibly moved to Friday or Monday)</li>
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2002-2024 only:)
+        (data available for 2002-2026 only:)
         <ul>
         <li>Chinese Lunar New Year</li>
         <li>Tomb Sweeping Day</li>

@@ -46,8 +46,17 @@ namespace QuantLib {
             || (d == 28 && m == February)
             // Labor Day
             || (d == 1 && m == May)
+            // Teachers' Day (since 2025, possibly moved to Friday or Monday)
+            || ((d == 28 || (d == 27 && w == Friday) || (d == 29 && w == Monday))
+                && m == September && y >= 2025)
             // Double Tenth
             || (d == 10 && m == October)
+            // Taiwan Retrocession Day (since 2025, possibly moved to Friday or Monday)
+            || ((d == 25 || (d == 24 && w == Friday) || (d == 26 && w == Monday))
+                && m == October && y >= 2025)
+            // Constitution Day (since 2025, possibly moved to Friday or Monday)
+            || ((d == 25 || (d == 24 && w == Friday) || (d == 26 && w == Monday))
+                && m == December && y >= 2025)
             )
             return false;
 
