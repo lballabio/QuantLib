@@ -785,6 +785,73 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativePoisson) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testInverseCumulativePoissonLargeMean) {
+    BOOST_TEST_MESSAGE("Testing inverse cumulative Poisson distribution "
+                       "at large means and tails...");
+
+    const struct {
+        Real lambda, probability;
+        BigNatural expected;
+    } cases[] = {
+        // Quantiles from mpmath using Q(k+1, lambda), at least 50 digits, and exact double inputs.
+        {100, 0.999999999, 166},
+        {130, 0.999, 167},
+        {150, 0.5, 150},
+        {150, std::nextafter(0.5, 1.0), 150},
+        {150, 0.9, 166},
+        {200, 0.5, 200},
+        {200, 0.9, 218},
+        {500, 0.5, 500},
+        {800, 0.5, 800},
+        {1000, 0.5, 1000},
+        {1000, 1.0e-10, 806},
+        {1000, std::nextafter(1.0, 0.0), 1270},
+        {100000, 0.5, 100000},
+        {20, std::nextafter(1.0, 0.0), 67},
+        {5, 0.3, 4}
+    };
+
+    for (const auto& data : cases) {
+        BOOST_TEST_CONTEXT("lambda = " << data.lambda << ", p = "
+                           << std::setprecision(17) << data.probability) {
+            Real calculated = InverseCumulativePoisson(data.lambda)(data.probability);
+            BOOST_CHECK_EQUAL(calculated, Real(data.expected));
+
+            // Larger means can exceed the CDF's iteration limit.
+            if (data.lambda >= 100 && data.lambda <= 150) {
+                CumulativePoissonDistribution cdf(data.lambda);
+                auto k = static_cast<BigNatural>(calculated);
+                Real cumulative = cdf(k);
+                Real previous = k > 0 ? Real(cdf(k-1)) : Real(0.0);
+                if (std::fabs(cumulative-data.probability) > 1.0e-12 ||
+                    std::fabs(previous-data.probability) > 1.0e-12) {
+                    BOOST_CHECK_GE(cumulative, data.probability);
+                    if (k > 0)
+                        BOOST_CHECK_LT(previous, data.probability);
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testInverseCumulativePoissonIndexRange) {
+    BOOST_TEST_MESSAGE("Testing inverse cumulative Poisson distribution "
+                       "beyond the supported index range...");
+
+    const Real naturalMax = Real((std::numeric_limits<Natural>::max)());
+    // Means whose indices cannot be represented are rejected instead of converted.
+    for (Real lambda : {std::numeric_limits<Real>::infinity(),
+                        std::ldexp(Real(1.0), std::numeric_limits<Natural>::digits),
+                        std::ldexp(Real(1.0), std::numeric_limits<BigNatural>::digits)}) {
+        InverseCumulativePoisson inverse(lambda);
+        BOOST_CHECK_EXCEPTION(inverse(0.9), Error,
+                              ExpectedErrorMessage("exceeds the supported index range"));
+    }
+    // The upper-tail scan starts at floor(lambda) and reaches the index limit at once.
+    BOOST_CHECK_EXCEPTION(InverseCumulativePoisson(naturalMax - 1.0)(0.9), Error,
+                          ExpectedErrorMessage("exceeds the supported"));
+}
+
 BOOST_AUTO_TEST_CASE(testPoissonInvalidParameters) {
     BOOST_TEST_MESSAGE("Testing Poisson distribution with invalid parameters...");
     BOOST_CHECK_EXCEPTION(
