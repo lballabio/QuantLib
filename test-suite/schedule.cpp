@@ -1147,6 +1147,42 @@ BOOST_AUTO_TEST_CASE(testNextToLastDateOnStart) {
     check_dates(schedule, expected);
 }
 
+BOOST_AUTO_TEST_CASE(testThirdWednesdayInclusiveWithStubDates) {
+    BOOST_TEST_MESSAGE(
+        "Testing ThirdWednesdayInclusive schedule with first and next-to-last dates...");
+
+    // Regression test for the ThirdWednesdayInclusive rule being reported as
+    // "unknown rule" by the firstDate/nextToLastDate validation switches in
+    // the Schedule constructor (the rule is handled by the generation switch
+    // but was missing from the two validation switches).
+
+    Date effectiveDate(15, January, 2025);
+    Date terminationDate(17, December, 2025);
+    Date thirdWednesday(19, March, 2025); // third Wednesday of March 2025
+
+    // with a first date
+    Schedule withFirstDate;
+    BOOST_CHECK_NO_THROW(
+        withFirstDate = Schedule(effectiveDate, terminationDate, Period(3, Months),
+                                 TARGET(), Following, Following,
+                                 DateGeneration::ThirdWednesdayInclusive, false,
+                                 thirdWednesday));
+    for (const auto& d : withFirstDate.dates())
+        BOOST_CHECK_MESSAGE(d == Date::nthWeekday(3, Wednesday, d.month(), d.year()),
+                            "date " << d << " is not a third Wednesday");
+
+    // with a next-to-last date
+    Schedule withNextToLast;
+    BOOST_CHECK_NO_THROW(
+        withNextToLast = Schedule(effectiveDate, terminationDate, Period(3, Months),
+                                  TARGET(), Following, Following,
+                                  DateGeneration::ThirdWednesdayInclusive, false,
+                                  Date(), thirdWednesday));
+    for (const auto& d : withNextToLast.dates())
+        BOOST_CHECK_MESSAGE(d == Date::nthWeekday(3, Wednesday, d.month(), d.year()),
+                            "date " << d << " is not a third Wednesday");
+}
+
 BOOST_AUTO_TEST_CASE(testTruncation) {
     BOOST_TEST_MESSAGE("Testing schedule truncation...");
     Schedule s = MakeSchedule().from(Date(30, September, 2009))
