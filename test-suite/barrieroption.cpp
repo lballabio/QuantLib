@@ -515,7 +515,7 @@ BOOST_AUTO_TEST_CASE(testHaugValues) {
 
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
@@ -683,7 +683,7 @@ BOOST_AUTO_TEST_CASE(testBabsiriValues) {
     Rate q = 0.02;
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     ext::shared_ptr<SimpleQuote> underlying =
         ext::make_shared<SimpleQuote>(underlyingPrice);
 
@@ -774,7 +774,7 @@ BOOST_AUTO_TEST_CASE(testBeagleholeValues) {
     Rate q = 0.00;
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     ext::shared_ptr<SimpleQuote> underlying =
         ext::make_shared<SimpleQuote>(underlyingPrice);
@@ -1966,7 +1966,7 @@ Real perturbativeBarrierOptionValue(Natural order, Size npoint = 1000,
     Rate q = 0.02;
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     ext::shared_ptr<SimpleQuote> underlying =
         ext::make_shared<SimpleQuote>(S);
