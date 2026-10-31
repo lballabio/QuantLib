@@ -277,6 +277,9 @@
     <Filter Include="experimental\fx">
       <UniqueIdentifier>{936a8947-d2c0-4bdd-95c5-8b52daf92cc4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\fxslv">
+      <UniqueIdentifier>{28de0b34-8dc2-41c2-bcbf-95b43a569d9f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="experimental\inflation">
       <UniqueIdentifier>{c046c970-45d0-4156-b587-ff2bc881bf04}</UniqueIdentifier>
     </Filter>
@@ -3299,6 +3302,75 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\fx\mtmcrosscurrencybasisswap.hpp">
       <Filter>experimental\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\all.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxcostsmilesection.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxdeltaconverter.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxeventvariance.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxexpirycut.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxlocalvolsurface.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxpnlexplain.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxrootbracketing.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxsettlementconvention.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxsettlementforeigncurve.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxslvpricingcontext.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxsmilequotes.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxsmilesection.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxsmilesectionbydelta.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxsmilesectionbystrike.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxstickydeltasolver.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxtenorexpiry.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxvanillagreeks.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxvariancesurface.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\hestoncalibrator.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\slvleveragecalibrator.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\stochvolcalibrator.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\tradingtimetermstructure.hpp">
+      <Filter>experimental\fxslv</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\all.hpp">
       <Filter>experimental\exoticoptions</Filter>
@@ -7401,6 +7473,54 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\fx\mtmcrosscurrencybasisswap.cpp">
       <Filter>experimental\fx</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxcostsmilesection.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxdeltaconverter.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxeventvariance.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxlocalvolsurface.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxsettlementforeigncurve.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxslvpricingcontext.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxsmilequotes.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxsmilesection.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxsmilesectionbydelta.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxsmilesectionbystrike.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxstickydeltasolver.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxtenorexpiry.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxvanillagreeks.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\hestoncalibrator.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\slvleveragecalibrator.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\tradingtimetermstructure.cpp">
+      <Filter>experimental\fxslv</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\termstructures\basisswapratehelpers.cpp">
       <Filter>experimental\termstructures</Filter>

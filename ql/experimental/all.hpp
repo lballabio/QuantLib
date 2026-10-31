@@ -14,6 +14,7 @@
 #include <ql/experimental/finitedifferences/all.hpp>
 #include <ql/experimental/forward/all.hpp>
 #include <ql/experimental/fx/all.hpp>
+#include <ql/experimental/fxslv/all.hpp>
 #include <ql/experimental/inflation/all.hpp>
 #include <ql/experimental/lattices/all.hpp>
 #include <ql/experimental/math/all.hpp>
