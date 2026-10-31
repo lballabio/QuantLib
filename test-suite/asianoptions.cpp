@@ -485,13 +485,197 @@ BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAverageStrike) {
     option.setPricingEngine(engine);
 
     Real calculated = option.NPV();
-    Real expected = 4.97109;
+    // Joint lognormal moments: E[ln G] = ln S + (r-q-sigma^2/2)*mean(t_i),
+    // Var[ln G] = sigma^2/N^2 * sum_ij min(t_i,t_j), Cov[ln S_T, ln G] = sigma^2*mean(t_i);
+    // the call is D_r(T)*(F_T*N(d1) - E[G]*N(d2)).
+    Real expected = 4.95620;
     Real tolerance = 1e-5;
     if (std::fabs(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
                        qRate->value(), rRate->value(), today,
                        vol->value(), expected, calculated, tolerance);
+    }
+}
+
+ext::shared_ptr<PricingEngine> geometricAverageStrikeEngine(
+    const Date& today, Rate r = 0.06, Rate q = 0.03, Volatility vol = 0.20,
+    const DayCounter& rdc = Actual360(), const DayCounter& qdc = Actual360(),
+    const DayCounter& vdc = Actual360()) {
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(flatRate(today, q, qdc)),
+        Handle<YieldTermStructure>(flatRate(today, r, rdc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, vdc)));
+    return ext::make_shared<AnalyticDiscreteGeometricAverageStrikeAsianEngine>(process);
+}
+
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAverageStrikeForwardStart) {
+    BOOST_TEST_MESSAGE("Testing geometric average-strike Asians with a delayed first fixing...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 360);
+    auto engine = geometricAverageStrikeEngine(today);
+    Real r = 0.06, q = 0.03, sigma = 0.20, t1 = 0.5, T = 1.0;
+    Real forward = std::exp((r-q)*(T-t1));
+    Real discount = std::exp(-r*(T-t1));
+    for (Option::Type type : {Option::Call, Option::Put}) {
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(type, 100.0);
+        DiscreteAveragingAsianOption option(Average::Geometric, 1.0, 0, {today + 180},
+                                          payoff, exercise);
+        option.setPricingEngine(engine);
+        Real expected = 100.0*std::exp(-q*t1)*
+            blackFormula(type, 1.0, forward, sigma*std::sqrt(T-t1), discount);
+        QL_CHECK_SMALL(option.NPV()-expected, 1e-12);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAverageStrikeAtMaturity) {
+    BOOST_TEST_MESSAGE("Testing geometric average-strike Asians with fixings at maturity...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto engine = geometricAverageStrikeEngine(today);
+    // 157 days gives year fractions whose rounding must not leave a spurious variance.
+    for (Integer days : {157, 360}) {
+        auto exercise = ext::make_shared<EuropeanExercise>(today + days);
+        for (Size n : {1, 3, 7}) {
+            for (Option::Type type : {Option::Call, Option::Put}) {
+                auto payoff = ext::make_shared<PlainVanillaPayoff>(type, 100.0);
+                DiscreteAveragingAsianOption option(Average::Geometric, 1.0, 0,
+                                                  std::vector<Date>(n, today + days), payoff,
+                                                  exercise);
+                option.setPricingEngine(engine);
+                Real calculated = option.NPV();
+                BOOST_CHECK(std::isfinite(calculated));
+                QL_CHECK_SMALL(calculated, 1e-12);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAverageStrikeDayCounters) {
+    BOOST_TEST_MESSAGE("Testing geometric average-strike Asian day-counter invariance...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 360);
+    std::vector<Date> fixingDates = {today + 36, today + 90, today + 180, today + 360};
+    DayCounter dc[] = {Actual360(), Actual365Fixed()};
+    Real scale[] = {1.0, 365.0/360.0};
+    for (Option::Type type : {Option::Call, Option::Put}) {
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(type, 100.0);
+        DiscreteAveragingAsianOption option(Average::Geometric, 1.0, 0, fixingDates,
+                                          payoff, exercise);
+        option.setPricingEngine(geometricAverageStrikeEngine(today));
+        Real expected = option.NPV();
+        // Also vary clocks separately: changing all three together can mask mixed clocks.
+        for (Size r = 0; r < 2; ++r) {
+            for (Size q = 0; q < 2; ++q) {
+                for (Size v = 0; v < 2; ++v) {
+                    BOOST_TEST_CONTEXT("r=" << dc[r] << ", q=" << dc[q] << ", vol=" << dc[v]) {
+                        option.setPricingEngine(geometricAverageStrikeEngine(
+                            today, 0.06*scale[r], 0.03*scale[q], 0.20*std::sqrt(scale[v]),
+                            dc[r], dc[q], dc[v]));
+                        QL_CHECK_CLOSE(option.NPV(), expected, 1e-8);
+                    }
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAverageStrikeFirstFixingToday) {
+    BOOST_TEST_MESSAGE("Testing geometric average-strike Asians with the first fixing today...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 360);
+    auto engine = geometricAverageStrikeEngine(today);
+    std::vector<Date> fixingDates = {today, today + 90, today + 180, today + 270, today + 360};
+    // The old formula for t_i = 0, 1/4, 1/2, 3/4, 1 has mean(t_i) = 1/2,
+    // Var[ln G] = 0.3*sigma^2 and Cov[ln S_T, ln G] = 0.5*sigma^2.
+    Real sigma2 = 0.20*0.20;
+    Real variance = 0.3*sigma2, covariance = 0.5*sigma2;
+    Real meanLog = std::log(100.0) + (0.06-0.03-0.5*sigma2)*0.5;
+    for (Option::Type type : {Option::Call, Option::Put}) {
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(type, 100.0);
+        DiscreteAveragingAsianOption option(Average::Geometric, 1.0, 0, fixingDates,
+                                          payoff, exercise);
+        option.setPricingEngine(engine);
+        Real expected = blackFormula(type, std::exp(meanLog+variance/2.0),
+                                    100.0*std::exp(0.06-0.03),
+                                    std::sqrt(variance+sigma2-2.0*covariance), std::exp(-0.06));
+        QL_CHECK_SMALL(option.NPV()-expected, 1e-12);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAverageStrikeZeroVolatility) {
+    BOOST_TEST_MESSAGE("Testing geometric average-strike Asians with zero volatility...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 360);
+    for (Rate r : {0.06, 0.03, -0.02}) {
+        for (Volatility vol : {0.0, 1e-14}) {
+            auto engine = geometricAverageStrikeEngine(today, r, 0.03, vol);
+            for (Option::Type type : {Option::Call, Option::Put}) {
+                auto payoff = ext::make_shared<PlainVanillaPayoff>(type, 100.0);
+                DiscreteAveragingAsianOption option(Average::Geometric, 1.0, 0,
+                                                  {today + 180, today + 360}, payoff, exercise);
+                option.setPricingEngine(engine);
+                // Deterministic G averages the forwards at t = 1/2 and t = 1.
+                Real forward = 100.0*std::exp(r-0.03);
+                Real average = 100.0*std::exp((r-0.03)*0.75);
+                Real expected = std::exp(-r)*std::max(Real(type*(forward-average)), Real(0.0));
+                QL_CHECK_SMALL(option.NPV()-expected, 1e-12);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAverageStrikeSmallVolatility) {
+    BOOST_TEST_MESSAGE("Testing geometric average-strike Asians with a tiny volatility...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 360);
+    Volatility vol = 1e-9;
+    auto engine = geometricAverageStrikeEngine(today, 0.03, 0.03, vol);
+    for (Option::Type type : {Option::Call, Option::Put}) {
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(type, 100.0);
+        DiscreteAveragingAsianOption option(Average::Geometric, 1.0, 0, {today}, payoff,
+                                          exercise);
+        option.setPricingEngine(engine);
+        // With the only fixing today G = S: an at-the-money option worth about 3.9e-8.
+        Real expected = blackFormula(type, 100.0, 100.0, vol, std::exp(-0.03));
+        QL_CHECK_CLOSE(option.NPV(), expected, 1e-2);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAverageStrikeNonFlatRates) {
+    BOOST_TEST_MESSAGE("Testing geometric average-strike Asians on a non-flat risk-free curve...");
+
+    Date today = Settings::instance().evaluationDate();
+    DayCounter dc = Actual360();
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 360);
+    // The zero rate to maturity is 6%, as on a flat curve, but the rate to the first fixing is 1%.
+    auto riskFree = ext::make_shared<ZeroCurve>(
+        std::vector<Date>({today, today + 180, today + 360}),
+        std::vector<Rate>({0.01, 0.01, 0.06}), dc);
+    auto dividends = flatRate(today, 0.03, dc);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(dividends), Handle<YieldTermStructure>(riskFree),
+        Handle<BlackVolTermStructure>(flatVol(today, 0.0, dc)));
+    auto engine = ext::make_shared<AnalyticDiscreteGeometricAverageStrikeAsianEngine>(process);
+    // With zero volatility G is the geometric mean of the forwards to the two fixings.
+    Real forward1 = 100.0*dividends->discount(today + 180)/riskFree->discount(today + 180);
+    Real forward2 = 100.0*dividends->discount(today + 360)/riskFree->discount(today + 360);
+    Real average = std::sqrt(forward1*forward2);
+    for (Option::Type type : {Option::Call, Option::Put}) {
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(type, 100.0);
+        DiscreteAveragingAsianOption option(Average::Geometric, 1.0, 0,
+                                          {today + 180, today + 360}, payoff, exercise);
+        option.setPricingEngine(engine);
+        Real expected = riskFree->discount(today + 360) *
+                        std::max(Real(type*(forward2-average)), Real(0.0));
+        QL_CHECK_SMALL(option.NPV()-expected, 1e-12);
     }
 }
 
