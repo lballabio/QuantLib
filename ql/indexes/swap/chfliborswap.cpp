@@ -59,3 +59,5 @@ namespace QuantLib {
                 discounting) {}
 
 }
+
+/* swap issue #2862 */
