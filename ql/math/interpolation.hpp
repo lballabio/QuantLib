@@ -4,6 +4,7 @@
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,6 +32,7 @@
 #include <ql/errors.hpp>
 #include <algorithm>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 namespace QuantLib {
@@ -69,6 +71,22 @@ namespace QuantLib {
             virtual Real primitive(Real) const = 0;
             virtual Real derivative(Real) const = 0;
             virtual Real secondDerivative(Real) const = 0;
+            //! sensitivities at x to the node values
+            /*! Returns pairs \f$ (j, \partial f(x) / \partial y_j) \f$
+                for the nodes affecting x. An empty vector means the
+                interpolation does not provide node sensitivities.
+            */
+            virtual std::vector<std::pair<Size, Real>> nodeWeights(Real) const {
+                return {};
+            }
+            //! sensitivities of the derivative at x to the node values
+            /*! Returns pairs \f$ (j, \partial f'(x) / \partial y_j) \f$
+                for the nodes affecting x. An empty vector means the
+                interpolation does not provide derivative sensitivities.
+            */
+            virtual std::vector<std::pair<Size, Real>> derivativeNodeWeights(Real) const {
+                return {};
+            }
         };
         //! basic template implementation
         template <class I1, class I2, class Base=Impl>
@@ -134,6 +152,29 @@ namespace QuantLib {
         Real secondDerivative(Real x, bool allowExtrapolation = false) const {
             checkRange(x,allowExtrapolation);
             return impl_->secondDerivative(x);
+        }
+        //! sensitivities at x to the node values
+        /*! Returns pairs \f$ (j, \partial f(x) / \partial y_j) \f$ for
+            the nodes affecting x. An empty vector means they are not
+            implemented. Outside the range, weights describe the
+            interpolant's extension, which might differ from a caller's
+            extrapolation.
+        */
+        std::vector<std::pair<Size, Real>> nodeWeights(
+            Real x, bool allowExtrapolation = false) const {
+            checkRange(x,allowExtrapolation);
+            return impl_->nodeWeights(x);
+        }
+        //! sensitivities of the derivative at x to the node values
+        /*! Returns pairs \f$ (j, \partial f'(x) / \partial y_j) \f$ for
+            the nodes affecting x. An empty vector means they are not
+            implemented. Outside the range, weights describe the
+            extrapolation.
+        */
+        std::vector<std::pair<Size, Real>> derivativeNodeWeights(
+            Real x, bool allowExtrapolation = false) const {
+            checkRange(x,allowExtrapolation);
+            return impl_->derivativeNodeWeights(x);
         }
         Real xMin() const {
             return impl_->xMin();

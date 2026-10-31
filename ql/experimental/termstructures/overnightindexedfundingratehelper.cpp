@@ -20,6 +20,7 @@
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/experimental/termstructures/overnightindexedfundingratehelper.hpp>
+#include <ql/experimental/termstructures/quotesensitivitycalculator.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>
@@ -166,6 +167,15 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         swap_->deepUpdate();
         return -(swap_->NPV() / swap_->legBPS(0)) * 1.0e-4;
+    }
+
+    ImpliedQuoteSensitivities
+    OvernightIndexedFundingRateHelper::impliedQuoteSensitivitiesByCurve() const {
+        if (termStructure_ == nullptr || discountRelinkableHandle_.empty())
+            return {};
+        // the engine includes settlement-date flows, so the decomposition must too
+        return detail::fairBasisSensitivities(swap_->leg(0), swap_->leg(1),
+                                              **discountRelinkableHandle_, true);
     }
 
     void OvernightIndexedFundingRateHelper::accept(AcyclicVisitor& v) {
