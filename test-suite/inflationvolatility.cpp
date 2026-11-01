@@ -332,7 +332,7 @@ BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToVol) {
         auto nodes = interpolated->nodes();
         const auto& dates = interpolated->dates();
         const auto& data = interpolated->data();
-        BOOST_REQUIRE_GT(nodes.size(), 1);
+        BOOST_REQUIRE_GT(nodes.size(), 1U);
         BOOST_REQUIRE_EQUAL(nodes.size(), dates.size());
         BOOST_REQUIRE_EQUAL(nodes.size(), data.size());
         for (Size i = 0; i < nodes.size(); ++i) {
