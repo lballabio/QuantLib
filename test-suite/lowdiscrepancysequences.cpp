@@ -172,6 +172,8 @@ namespace
 
 BOOST_AUTO_TEST_CASE(testRandomizedLattices){
 
+    BOOST_TEST_MESSAGE("Testing randomized lattice sequences...");
+
     testRandomizedLatticeRule(LatticeRule::A, "A");
     testRandomizedLatticeRule(LatticeRule::B, "B");
     testRandomizedLatticeRule(LatticeRule::C, "C");

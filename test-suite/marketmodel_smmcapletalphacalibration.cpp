@@ -578,10 +578,14 @@ void testAlphaCalibration(bool maximizeHomogeneity) {
 }
 
 BOOST_AUTO_TEST_CASE(testFunction) {
+    BOOST_TEST_MESSAGE("Testing LIBOR market-model alpha calibration...");
+
     testAlphaCalibration(false);
 }
 
 BOOST_AUTO_TEST_CASE(testMaximumHomogeneityCalibration) {
+    BOOST_TEST_MESSAGE("Testing maximum-homogeneity LIBOR market-model alpha calibration...");
+
     testAlphaCalibration(true);
 }
 

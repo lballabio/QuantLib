@@ -1210,6 +1210,8 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
 }
 
 BOOST_AUTO_TEST_CASE(testAllMultiStepProducts) {
+    BOOST_TEST_MESSAGE("Testing all multi-step products in the LIBOR market model...");
+
     std::string testDescription = "all multi-step products ";
 
     setup();
