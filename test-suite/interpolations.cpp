@@ -2458,6 +2458,12 @@ BOOST_AUTO_TEST_CASE(testLagrangeInterpolationAtSupportPoint) {
 
     const Real relTol = 5e-12;
 
+    QL_CHECK_CLOSE(interpl(x[0]), y[0], relTol);
+
+    Array updatedY = y;
+    updatedY[0] = 2.0;
+    QL_CHECK_CLOSE(interpl.value(updatedY, x[0]), updatedY[0], relTol);
+
     for (Size i=1; i < n-1; ++i) {
         for (Real z = x[i] - 100*QL_EPSILON;
             z < x[i] + 100*QL_EPSILON; z+=2*QL_EPSILON) {
