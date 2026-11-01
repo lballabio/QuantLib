@@ -19,7 +19,6 @@ this_include_HEADERS = \
     hestonslvprocess.hpp \
     hullwhiteprocess.hpp \
     hybridhestonhullwhiteprocess.hpp \
-    jointstochasticprocess.hpp \
     merton76process.hpp \
     mfstateprocess.hpp \
     ornsteinuhlenbeckprocess.hpp \
@@ -42,7 +41,6 @@ cpp_files = \
     hestonslvprocess.cpp \
     hullwhiteprocess.cpp \
     hybridhestonhullwhiteprocess.cpp \
-    jointstochasticprocess.cpp \
     merton76process.cpp \
     mfstateprocess.cpp \
     ornsteinuhlenbeckprocess.cpp \
