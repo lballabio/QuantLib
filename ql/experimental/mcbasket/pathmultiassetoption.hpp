@@ -31,8 +31,10 @@
 
 namespace QuantLib {
 
-    //! Base class for path-dependent options on multiple assets
-    class PathMultiAssetOption : public Instrument {
+    /*! \deprecated Use BasketOption instead.
+                    Deprecated in version 1.45.
+    */
+    class [[deprecated("Use BasketOption instead")]] PathMultiAssetOption : public Instrument {
       public:
         explicit PathMultiAssetOption(
                         const ext::shared_ptr<PricingEngine>& engine
@@ -48,14 +50,17 @@ namespace QuantLib {
 
         void setupArguments(PricingEngine::arguments*) const override;
 
+        QL_DEPRECATED_DISABLE_WARNING
         virtual ext::shared_ptr<PathPayoff> pathPayoff()  const = 0;
+        QL_DEPRECATED_ENABLE_WARNING
         virtual std::vector<Date>             fixingDates() const = 0;
 
       protected:
         void setupExpired() const override;
     };
 
-    //! %Arguments for multi-asset option calculation
+    QL_DEPRECATED_DISABLE_WARNING
+
     class PathMultiAssetOption::arguments
         : public virtual PricingEngine::arguments {
       public:
@@ -66,7 +71,6 @@ namespace QuantLib {
         std::vector<Date>                    fixingDates;
     };
 
-    //! %Results from multi-asset option calculation
     class PathMultiAssetOption::results : public Instrument::results {
       public:
         void reset() override { Instrument::results::reset(); }
@@ -75,6 +79,8 @@ namespace QuantLib {
     class PathMultiAssetOption::engine
         : public GenericEngine<PathMultiAssetOption::arguments,
                                PathMultiAssetOption::results> {};
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 
