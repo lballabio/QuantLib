@@ -21,8 +21,6 @@
 
 /*! \file incrementalstatistics.hpp
     \brief statistics tool based on incremental accumulation
-           in the meantime, this is just a wrapper to the boost
-           accumulator library, kept for backward compatibility
 */
 
 #ifndef quantlib_incremental_statistics_hpp
@@ -30,30 +28,19 @@
 
 #include <ql/utilities/null.hpp>
 #include <ql/errors.hpp>
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/stats.hpp>
-#include <boost/accumulators/statistics/count.hpp>
-#include <boost/accumulators/statistics/sum.hpp>
-#include <boost/accumulators/statistics/min.hpp>
-#include <boost/accumulators/statistics/max.hpp>
-#include <boost/accumulators/statistics/weighted_mean.hpp>
-#include <boost/accumulators/statistics/weighted_variance.hpp>
-#include <boost/accumulators/statistics/weighted_skewness.hpp>
-#include <boost/accumulators/statistics/weighted_kurtosis.hpp>
-#include <boost/accumulators/statistics/weighted_moment.hpp>
+#include <limits>
 
 namespace QuantLib {
 
     //! Statistics tool based on incremental accumulation
     /*! It can accumulate a set of data and return statistics (e.g: mean,
         variance, skewness, kurtosis, error estimation, etc.).
-        This class is a wrapper to the boost accumulator library.
     */
-
     class IncrementalStatistics {
       public:
         typedef Real value_type;
         IncrementalStatistics();
+
         //! \name Inspectors
         //@{
         //! number of samples collected
@@ -148,29 +135,23 @@ namespace QuantLib {
         //! resets the data to a null set
         void reset();
         //@}
-     private:
-       typedef boost::accumulators::accumulator_set<
-           Real,
-           boost::accumulators::stats<
-               boost::accumulators::tag::count, boost::accumulators::tag::min,
-               boost::accumulators::tag::max,
-               boost::accumulators::tag::weighted_mean,
-               boost::accumulators::tag::weighted_variance,
-               boost::accumulators::tag::weighted_skewness,
-               boost::accumulators::tag::weighted_kurtosis,
-               boost::accumulators::tag::sum_of_weights>,
-           Real> accumulator_set;
-        accumulator_set acc_;
-        typedef boost::accumulators::accumulator_set<
-            Real, boost::accumulators::stats<
-                      boost::accumulators::tag::count,
-                      boost::accumulators::tag::weighted_moment<2>,
-                      boost::accumulators::tag::sum_of_weights>,
-            Real> downside_accumulator_set;
-        downside_accumulator_set downsideAcc_;
+
+      private:
+        Size n_;
+        Real wSum_;
+        Real sum_;
+        Real weightedVar_;
+        Real sum2_;
+        Real sum3_;
+        Real sum4_;
+        Real min_;
+        Real max_;
+
+        Size nd_;
+        Real wSumd_;
+        Real sum2d_;
     };
 
 }
-
 
 #endif
