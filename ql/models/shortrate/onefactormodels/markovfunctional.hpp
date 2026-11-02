@@ -159,9 +159,9 @@ namespace QuantLib {
                     addAdjustment(KahaleInterpolation);
                 }
 
-                const int smileTreatments = ((adjustments_ & KahaleSmile) != 0) +
-                                            ((adjustments_ & SabrSmile) != 0) +
-                                            ((adjustments_ & CustomSmile) != 0);
+                const int smileTreatments = static_cast<int>((adjustments_ & KahaleSmile) != 0) +
+                                            static_cast<int>((adjustments_ & SabrSmile) != 0) +
+                                            static_cast<int>((adjustments_ & CustomSmile) != 0);
                 QL_REQUIRE(smileTreatments <= 1,
                            "At most one of KahaleSmile, SabrSmile and CustomSmile "
                            "can be specified at the same time");
