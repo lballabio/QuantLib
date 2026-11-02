@@ -22,6 +22,7 @@
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/methods/lattices/trinomialtree.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <cmath>
 
 using std::exp;
 using std::sqrt;
@@ -89,11 +90,11 @@ namespace QuantLib {
 
         Real _a = a();
         Real v;
-        if (_a < std::sqrt(QL_EPSILON)) {
+        if (_a < QL_EPSILON) {
             v = sigma()*B(maturity, bondMaturity)* std::sqrt(maturity);
         } else {
             v = sigma()*B(maturity, bondMaturity)*
-                std::sqrt(0.5*(1.0 - std::exp(-2.0*_a*maturity))/_a);
+                std::sqrt(-0.5*std::expm1(-2.0*_a*maturity)/_a);
         }
         Real f = termStructure()->discount(bondMaturity);
         Real k = termStructure()->discount(maturity)*strike;
@@ -107,19 +108,19 @@ namespace QuantLib {
 
         Real _a = a();
         Real v;
-        if (_a < std::sqrt(QL_EPSILON)) {
+        if (_a < QL_EPSILON) {
             v = sigma()*B(bondStart, bondMaturity)* std::sqrt(maturity);
         } else {
-            Real c = exp(-2.0*_a*(bondStart-maturity))
-                - exp(-2.0*_a*bondStart)
-                -2.0*(exp(-_a*(bondStart+bondMaturity-2.0*maturity))
-                      - exp(-_a*(bondStart+bondMaturity)))
-                + exp(-2.0*_a*(bondMaturity-maturity))
-                - exp(-2.0*_a*bondMaturity);
-            // The above should always be positive, but due to
-            // numerical errors it can be a very small negative number.
-            // We floor it at 0 to avoid NaNs.
-            v = sigma()/(_a*sqrt(2.0*_a)) * sqrt(std::max(c, 0.0));
+            // The variance of the forward-start option is
+            //     sigma^2/(2 a^3) * (exp(2 a T) - 1) * (exp(-a S) - exp(-a U))^2
+            // with T the option maturity and S, U the bond start and
+            // maturity.  Expanded into a sum of six exponentials (as it
+            // used to be here) it cancels catastrophically for small a;
+            // in the factored form it is the volatility of the spot-start
+            // option times exp(-a (S - T)), with no cancellation.
+            v = sigma()*std::exp(-_a*(bondStart-maturity))*
+                B(bondStart, bondMaturity)*
+                std::sqrt(-0.5*std::expm1(-2.0*_a*maturity)/_a);
         }
         Real f = termStructure()->discount(bondMaturity);
         Real k = termStructure()->discount(bondStart)*strike;
