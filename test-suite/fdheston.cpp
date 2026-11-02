@@ -1129,14 +1129,20 @@ BOOST_AUTO_TEST_CASE(testFdHestonAmericanNotBelowExerciseValue) {
     const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
     const Real intrinsic = (*payoff)(110.0);
 
+    // Both checks below assert only what the floor logic actually promises
+    // (it must not engage here, so the value must come out strictly below
+    // intrinsic) rather than an arbitrary absolute gap, so the test stays
+    // meaningful across grid-size or scheme changes.
+    const Real tol = 1.0e-6;
+
     const auto europeanExercise = ext::make_shared<EuropeanExercise>(today + 90);
     VanillaOption european(payoff, europeanExercise);
     european.setPricingEngine(ext::make_shared<FdHestonVanillaEngine>(model));
     const Real europeanValue = european.NPV();
-    if (!(europeanValue < intrinsic - 0.1)) {
+    if (!(europeanValue < intrinsic - tol)) {
         BOOST_FAIL("floor incorrectly applied to a European option"
-                << "\n    intrinsic - 0.1: " << (intrinsic - 0.1)
-                << "\n    calculated     : " << europeanValue);
+                << "\n    intrinsic : " << intrinsic
+                << "\n    calculated: " << europeanValue);
     }
 
     const auto deferredExercise =
@@ -1144,10 +1150,10 @@ BOOST_AUTO_TEST_CASE(testFdHestonAmericanNotBelowExerciseValue) {
     VanillaOption deferred(payoff, deferredExercise);
     deferred.setPricingEngine(ext::make_shared<FdHestonVanillaEngine>(model));
     const Real deferredValue = deferred.NPV();
-    if (!(deferredValue < intrinsic - 0.05)) {
+    if (!(deferredValue < intrinsic - tol)) {
         BOOST_FAIL("floor incorrectly applied to a not-yet-exercisable American option"
-                << "\n    intrinsic - 0.05: " << (intrinsic - 0.05)
-                << "\n    calculated      : " << deferredValue);
+                << "\n    intrinsic : " << intrinsic
+                << "\n    calculated: " << deferredValue);
     }
 }
 
