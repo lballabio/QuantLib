@@ -707,6 +707,63 @@ BOOST_AUTO_TEST_CASE(testImpliedStdDevLiRSAtIntrinsic) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testImpliedStdDevLiRSNearTheMoney) {
+    BOOST_TEST_MESSAGE("Testing Li-RS implied standard deviation near the money...");
+
+    const Real forward = 1.0;
+
+    for (Real displacement : {0.0, 0.5}) {
+        for (Real discount : {1.0, 0.95}) {
+            for (Real stdDev : {1e-4, 1e-5, 1e-6, 1e-7, 1e-8}) {
+                for (Real logMoneyness : {0.0, 1e-3 * stdDev, -1e-3 * stdDev}) {
+                    const Real strike =
+                        (forward + displacement) * std::exp(-logMoneyness) - displacement;
+                    for (auto type : {Option::Call, Option::Put}) {
+                        const Real price =
+                            blackFormula(type, strike, forward, stdDev, discount, displacement);
+
+                        const Real approx = blackFormulaImpliedStdDevApproximationRS(
+                            type, strike, forward, price, discount, displacement);
+                        if (!std::isfinite(approx) || approx < 0.0)
+                            BOOST_ERROR("RS approximation is not finite and non-negative"
+                                        << std::setprecision(16) << "\n    type:         " << type
+                                        << "\n    strike:       " << strike
+                                        << "\n    std dev:      " << stdDev
+                                        << "\n    discount:     " << discount
+                                        << "\n    displacement: " << displacement
+                                        << "\n    calculated:   " << approx);
+
+                        Real calculated;
+                        try {
+                            calculated = blackFormulaImpliedStdDevLiRS(
+                                type, strike, forward, price, discount, displacement, Null<Real>(),
+                                1.0, 1e-6 * stdDev, 100);
+                        } catch (const std::exception& e) {
+                            BOOST_ERROR("Li-RS threw near the money"
+                                        << std::setprecision(16) << "\n    type:         " << type
+                                        << "\n    strike:       " << strike
+                                        << "\n    std dev:      " << stdDev
+                                        << "\n    discount:     " << discount
+                                        << "\n    displacement: " << displacement
+                                        << "\n    error:        " << e.what());
+                            continue;
+                        }
+
+                        if (std::fabs(calculated - stdDev) > 1e-5 * stdDev)
+                            BOOST_ERROR("failed to reproduce Li-RS implied standard deviation"
+                                        << std::setprecision(16) << "\n    type:         " << type
+                                        << "\n    strike:       " << strike
+                                        << "\n    std dev:      " << stdDev
+                                        << "\n    discount:     " << discount
+                                        << "\n    displacement: " << displacement
+                                        << "\n    calculated:   " << calculated);
+                    }
+                }
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
