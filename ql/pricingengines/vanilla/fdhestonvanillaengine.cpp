@@ -169,12 +169,22 @@ namespace QuantLib {
        return solverDesc;
     }
 
+    namespace {
+        // false for European exercise, which has no payoffAtExpiry() of its own
+        bool payoffAtExpiryOf(const ext::shared_ptr<Exercise>& exercise) {
+            const auto early = ext::dynamic_pointer_cast<EarlyExercise>(exercise);
+            return early != nullptr && early->payoffAtExpiry();
+        }
+    }
+
     void FdHestonVanillaEngine::calculate() const {
 
         // cache lookup for precalculated results
         for (auto& cachedArgs2result : cachedArgs2results_) {
             if (cachedArgs2result.first.exercise->type() == arguments_.exercise->type() &&
-                cachedArgs2result.first.exercise->dates() == arguments_.exercise->dates()) {
+                cachedArgs2result.first.exercise->dates() == arguments_.exercise->dates() &&
+                payoffAtExpiryOf(cachedArgs2result.first.exercise) ==
+                    payoffAtExpiryOf(arguments_.exercise)) {
                 ext::shared_ptr<PlainVanillaPayoff> p1 =
                     ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                             arguments_.payoff);

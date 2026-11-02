@@ -1157,6 +1157,83 @@ BOOST_AUTO_TEST_CASE(testFdHestonAmericanNotBelowExerciseValue) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testFdHestonMultiStrikeCachePayoffAtExpiry) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing that FdHestonVanillaEngine's multiple-strikes cache "
+        "distinguishes options by payoffAtExpiry...");
+
+    // Two Americans, same type/strike/dates, differing only in
+    // payoffAtExpiry. Neither FdmStepConditionComposite nor the solver
+    // reads that flag -- it only controls whether this engine's own
+    // exercise-value floor applies -- so the cache lookup (type + dates)
+    // used to treat them as the same option and could serve a floored
+    // result where an unfloored one was requested, or vice versa,
+    // depending on which was priced first.
+
+    const Date today(15, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+
+    // the same confirmed-undershoot case used above
+    const Real spot = 145.0, strike = 100.0, vol = 0.25;
+    const Integer days = 1095;
+
+    const auto quote = ext::make_shared<SimpleQuote>(spot);
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.00, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.05, dc));
+    const Real v0 = vol * vol;
+    const auto hestonProcess = ext::make_shared<HestonProcess>(
+        rTS, qTS, Handle<Quote>(quote), v0, 1.0, v0, 1.0e-4, 0.0);
+    const auto model = ext::make_shared<HestonModel>(hestonProcess);
+
+    const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+    const Real intrinsic = (*payoff)(spot);
+    // payoffAtExpiry=false: the floor must engage (no early exercise premium
+    // exempts it); payoffAtExpiry=true: the floor must not engage, so the
+    // raw interpolated (undershooting) value is expected.
+    const auto flooredExercise =
+        ext::make_shared<AmericanExercise>(today, today + days, false);
+    const auto unflooredExercise =
+        ext::make_shared<AmericanExercise>(today, today + days, true);
+
+    for (bool flooredFirst : {true, false}) {
+        const auto engine = ext::make_shared<FdHestonVanillaEngine>(model);
+        // Cache the same strike the two options below are priced at, so the
+        // second NPV() call hits the cache lookup this test is targeting.
+        engine->enableMultipleStrikesCaching(std::vector<Real>{strike});
+
+        VanillaOption flooredOption(payoff, flooredExercise);
+        flooredOption.setPricingEngine(engine);
+        VanillaOption unflooredOption(payoff, unflooredExercise);
+        unflooredOption.setPricingEngine(engine);
+
+        Real flooredValue, unflooredValue;
+        if (flooredFirst) {
+            flooredValue = flooredOption.NPV();
+            unflooredValue = unflooredOption.NPV();
+        } else {
+            unflooredValue = unflooredOption.NPV();
+            flooredValue = flooredOption.NPV();
+        }
+
+        if (flooredValue < intrinsic) {
+            BOOST_FAIL("payoffAtExpiry=false result not floored "
+                       "(cache likely served the payoffAtExpiry=true value)"
+                    << "\n    floored first: " << flooredFirst
+                    << "\n    intrinsic    : " << intrinsic
+                    << "\n    calculated   : " << flooredValue);
+        }
+        if (unflooredValue >= intrinsic) {
+            BOOST_FAIL("payoffAtExpiry=true result incorrectly floored "
+                       "(cache likely served the payoffAtExpiry=false value)"
+                    << "\n    floored first: " << flooredFirst
+                    << "\n    intrinsic    : " << intrinsic
+                    << "\n    calculated   : " << unflooredValue);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
