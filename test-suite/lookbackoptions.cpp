@@ -610,8 +610,6 @@ BOOST_AUTO_TEST_CASE(testPartialLookbackZeroCarry) {
             const Real fixedReference = fixed.NPV();
             fixed.setPricingEngine(fixedEngine);
             const Real fixedValue = fixed.NPV();
-            BOOST_TEST_MESSAGE("partial fixed " << type << ", q=" << yield
-                               << ": analytic=" << fixedValue << ", MC=" << fixedReference);
             BOOST_CHECK_MESSAGE(std::fabs(fixedValue - fixedReference) < 0.60,
                                 "partial fixed " << type << ", q=" << yield
                                 << ": calculated " << fixedValue
@@ -620,9 +618,6 @@ BOOST_AUTO_TEST_CASE(testPartialLookbackZeroCarry) {
             const Real floatingReference = floating.NPV();
             floating.setPricingEngine(floatingEngine);
             const Real floatingValue = floating.NPV();
-            BOOST_TEST_MESSAGE("partial floating " << type << ", q=" << yield
-                               << ": analytic=" << floatingValue
-                               << ", MC=" << floatingReference);
             BOOST_CHECK_MESSAGE(std::fabs(floatingValue - floatingReference) < 0.60,
                                 "partial floating " << type << ", q=" << yield
                                 << ": calculated " << floatingValue
