@@ -26,6 +26,7 @@
 
 #include <ql/math/factorial.hpp>
 #include <ql/math/beta.hpp>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -147,6 +148,22 @@ namespace QuantLib {
             return 0.5*(1.0+root);
         else
             return 0.5*result/(1.0+root);
+    }
+
+    //! Log of PeizerPrattMethod2Inversion, finite when the probability underflows.
+    inline Real PeizerPrattMethod2LogInversion(Real z, BigNatural n) {
+
+        QL_REQUIRE(n%2==1,
+                   "n must be an odd number: " << n << " not allowed");
+
+        Real denom = n + 1.0/3.0 + 0.1/(n+1.0);
+        Real exponent = (z/denom)*(z/denom)*(n + 1.0/6.0);
+        Real result = std::exp(-exponent);
+        Real root = std::sqrt(1.0 - result);
+        if (z > 0.0)
+            return std::log(0.5*(1.0 + root));
+        // log(0.5*result/(1+root)), with result = exp(-exponent)
+        return -exponent + std::log(0.5) - std::log(1.0 + root);
     }
 
 }

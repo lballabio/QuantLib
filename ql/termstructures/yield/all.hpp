@@ -23,6 +23,8 @@
 #include <ql/termstructures/yield/piecewisezerospreadedtermstructure.hpp>
 #include <ql/termstructures/yield/quantotermstructure.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
+#include <ql/termstructures/yield/shiftedtermstructure.hpp>
+#include <ql/termstructures/yield/splicedtermstructure.hpp>
 #include <ql/termstructures/yield/spreadbootstraptraits.hpp>
 #include <ql/termstructures/yield/spreaddiscountcurve.hpp>
 #include <ql/termstructures/yield/ultimateforwardtermstructure.hpp>

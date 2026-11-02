@@ -98,10 +98,10 @@ namespace QuantLib {
         // Greeks
         results_.delta1 = riskFreeDiscount*(quantity1*forward1*Nd1)/s1;
         results_.delta2 = -riskFreeDiscount*(quantity2*forward2*Nd2)/s2;
-        results_.gamma1 = (riskFreeDiscount*(quantity1*forward1*nd1)/s1)/(quantity1*s1*stdDev);
-        results_.gamma2 = (-riskFreeDiscount*(quantity2*forward2*nd2)/s2)/(-quantity2*s2*stdDev);
+        results_.gamma1 = (riskFreeDiscount*(quantity1*forward1*nd1)/s1)/(s1*stdDev);
+        results_.gamma2 = (-riskFreeDiscount*(quantity2*forward2*nd2)/s2)/(-s2*stdDev);
         Real vega       = riskFreeDiscount*(quantity1*forward1*nd1)*sqt;
-        results_.theta  = -((stdDev*vega/sqt)/(2*t)-(q1*quantity1*s1*results_.delta1)-(q2*quantity2*s2*results_.delta2));
+        results_.theta  = -((stdDev*vega/sqt)/(2*t)-(q1*s1*results_.delta1)-(q2*s2*results_.delta2));
         results_.rho    = 0.0;
     }
 

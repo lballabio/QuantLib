@@ -267,14 +267,14 @@ namespace QuantLib {
               {
                 const Real h = 0.05;
 
-                Real si = ExponentialIntegral::Si(0.5*h*x);
+                Real si = ExponentialIntegral::Si(Real(0.5*h*x));
                 Real s = M_2_PI*si;
                 std::complex<Real> f;
                 Size j = 0;
                 do {
                     ++j;
                     const Real u = h*j;
-                    const Real si_n = ExponentialIntegral::Si(x*(u+0.5*h));
+                    const Real si_n = ExponentialIntegral::Si(Real(x*(u+0.5*h)));
 
                     f = Phi(process, u, nu_0, nu_t, dt);
                     s+= M_2_PI*f.real()*(si_n-si);

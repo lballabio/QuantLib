@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
+#include <ql/math/functional.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -99,7 +100,7 @@ namespace QuantLib {
         auto k_ = Real(k);
         auto n_ = Real(n);
         std::complex<Real> term1 = (2*rho_*kappa_ - sigma_)*((n_-k_+1)*s + n_*w)/(2*sigma_*n_);
-        std::complex<Real> term2 = (1-rho_*rho_)*pow(((n_-k_+1)*s + n_*w), 2)/(2*n_*n_);
+        std::complex<Real> term2 = (1-rho_*rho_)*squared((n_-k_+1)*s + n_*w)/(2*n_*n_);
 
         return term1 + term2;
     }
@@ -162,7 +163,7 @@ namespace QuantLib {
             }
 
             std::complex<Real> ratio = F_tilde(z_kp1,omega_kp1,dTauk)/F(z_kp1,omega_kp1,dTauk);
-            std::complex<Real> result = omega_k + kappa_/pow(sigma_,2) - 2.0*ratio/pow(sigma_,2);
+            std::complex<Real> result = omega_k + kappa_/squared(sigma_) - 2.0*ratio/squared(sigma_);
 
             // Store this value in our mutable lookup map
             omegaTildeLookupTable_[k] = result;
@@ -184,7 +185,7 @@ namespace QuantLib {
         Size n = t_n.size();
         std::complex<Real> aTerm = a(s, w, t, T, kStar, t_n);
         std::complex<Real> omegaTerm = v0_*omega_tilde(s, w, kStar, kStar, n, tauK);
-        Real term3 = kappa_*kappa_*theta_*(T-t)/pow(sigma_,2);
+        Real term3 = kappa_*kappa_*theta_*(T-t)/squared(sigma_);
 
         std::complex<Real> summation = 0.0;
         for (Size i=kStar+1; i<=n+1; i++) {
@@ -194,7 +195,7 @@ namespace QuantLib {
 
             summation += std::log(F(z_k, omega_tilde_k, dTau));
         }
-        std::complex<Real> term4 = 2*kappa_*theta_*summation/pow(sigma_,2);
+        std::complex<Real> term4 = 2*kappa_*theta_*summation/squared(sigma_);
 
         return std::exp(aTerm + omegaTerm + term3 - term4);
 }

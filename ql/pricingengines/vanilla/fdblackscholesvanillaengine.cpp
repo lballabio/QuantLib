@@ -213,6 +213,44 @@ namespace QuantLib {
         results_.delta = solver->deltaAt(spot);
         results_.gamma = solver->gammaAt(spot);
         results_.theta = solver->thetaAt(spot);
+
+        // The step condition enforces the exercise on grid nodes. The monotonic
+        // cubic interpolant can still undershoot the payoff between nodes, and
+        // VanillaOption::impliedVolatility prices Americans with this engine, so
+        // a value below the payoff cannot be inverted. Floor only when the
+        // holder can exercise on the reference date and the payoff is paid
+        // then. Greeks stay on the interpolant: resetting them would disagree
+        // with a bump wherever the undershoot is local.
+        const ext::shared_ptr<Exercise>& exercise = arguments_.exercise;
+        bool exercisable = false;
+        switch (exercise->type()) {
+          case Exercise::American:
+            exercisable = exercise->date(0) <= settlementDate
+                          && settlementDate <= exercise->lastDate();
+            break;
+          case Exercise::Bermudan:
+            for (const Date& exerciseDate : exercise->dates()) {
+                if (exerciseDate == settlementDate) {
+                    exercisable = true;
+                    break;
+                }
+            }
+            break;
+          case Exercise::European:
+            break;
+          default:
+            QL_FAIL("exercise type is not supported");
+        }
+        if (exercisable) {
+            const auto early = ext::dynamic_pointer_cast<EarlyExercise>(exercise);
+            if (early != nullptr && early->payoffAtExpiry())
+                exercisable = false;
+        }
+        if (exercisable) {
+            const Real exerciseValue = (*payoff)(process_->x0());
+            if (results_.value < exerciseValue)
+                results_.value = exerciseValue;
+        }
     }
 
     MakeFdBlackScholesVanillaEngine::MakeFdBlackScholesVanillaEngine(

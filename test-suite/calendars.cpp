@@ -447,6 +447,7 @@ BOOST_AUTO_TEST_CASE(testUSFederalReserveJuneteenth) {
 }
 
 BOOST_AUTO_TEST_CASE(testUSLiborImpactCalendar) {
+    BOOST_TEST_MESSAGE("Testing US calendar with Libor impact...");
     Calendar settlement = UnitedStates(UnitedStates::Settlement);
     Calendar liborImpact = UnitedStates(UnitedStates::LiborImpact);
     BOOST_CHECK_EQUAL(liborImpact.name(), "US with Libor impact");
@@ -456,6 +457,7 @@ BOOST_AUTO_TEST_CASE(testUSLiborImpactCalendar) {
 }
 
 BOOST_AUTO_TEST_CASE(testUSNercCalendar) {
+    BOOST_TEST_MESSAGE("Testing US NERC calendar...");
     Calendar settlement = UnitedStates(UnitedStates::Settlement);
     Calendar nerc = UnitedStates(UnitedStates::NERC);
     BOOST_CHECK_EQUAL(nerc.name(), "North American Energy Reliability Council");
@@ -590,6 +592,7 @@ BOOST_AUTO_TEST_CASE(testGermanyXetra) {
 }
 
 BOOST_AUTO_TEST_CASE(testGermanySettlementCalendar) {
+    BOOST_TEST_MESSAGE("Testing German settlement calendar...");
     Calendar settlement = Germany(Germany::Settlement);
     Calendar frankfurt = Germany(Germany::FrankfurtStockExchange);
     BOOST_CHECK_EQUAL(settlement.name(), "German settlement");
@@ -599,6 +602,7 @@ BOOST_AUTO_TEST_CASE(testGermanySettlementCalendar) {
 }
 
 BOOST_AUTO_TEST_CASE(testGermanyEuwaxCalendar) {
+    BOOST_TEST_MESSAGE("Testing Euwax calendar...");
     Calendar euwax = Germany(Germany::Euwax);
     Calendar xetra = Germany(Germany::Xetra);
     BOOST_CHECK_EQUAL(euwax.name(), "Euwax");
@@ -1778,6 +1782,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {1, May, 2025},
         {5, May, 2025},
         {6, May, 2025},
+        {3, June, 2025},
         {6, June, 2025},
         {15, August, 2025},
         {3, October, 2025},
@@ -2449,6 +2454,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {1, May, 2025},
         {5, May, 2025},
         {6, May, 2025},
+        {3, June, 2025},
         {6, June, 2025},
         {15, August, 2025},
         {3, October, 2025},
@@ -2889,6 +2895,7 @@ BOOST_AUTO_TEST_CASE(testHongKong) {
 }
 
 BOOST_AUTO_TEST_CASE(testArgentinaCalendar) {
+    BOOST_TEST_MESSAGE("Testing Argentina calendar...");
     Calendar calendar = Argentina();
     BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
     BOOST_CHECK(calendar.isHoliday(Date(28, March, 2024))); // Holy Thursday
@@ -2900,6 +2907,7 @@ BOOST_AUTO_TEST_CASE(testArgentinaCalendar) {
 }
 
 BOOST_AUTO_TEST_CASE(testIndonesiaCalendar) {
+    BOOST_TEST_MESSAGE("Testing Indonesia calendar...");
     Calendar calendar = Indonesia(Indonesia::IDX);
     BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
     BOOST_CHECK(calendar.isHoliday(Date(29, March, 2024))); // Good Friday
@@ -2926,6 +2934,7 @@ BOOST_AUTO_TEST_CASE(testIndonesiaCalendar) {
 }
 
 BOOST_AUTO_TEST_CASE(testTaiwanCalendar) {
+    BOOST_TEST_MESSAGE("Testing Taiwan calendar...");
     Calendar calendar = Taiwan(Taiwan::TSEC);
     BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
     BOOST_CHECK(calendar.isHoliday(Date(28, February, 2024)));
@@ -2951,6 +2960,7 @@ BOOST_AUTO_TEST_CASE(testTaiwanCalendar) {
 }
 
 BOOST_AUTO_TEST_CASE(testThailandCalendar) {
+    BOOST_TEST_MESSAGE("Testing Thailand calendar...");
     Calendar calendar = Thailand();
     BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
     BOOST_CHECK(calendar.isHoliday(Date(15, April, 2019))); // Songkran
@@ -2979,6 +2989,7 @@ BOOST_AUTO_TEST_CASE(testThailandCalendar) {
 }
 
 BOOST_AUTO_TEST_CASE(testTurkeyCalendar) {
+    BOOST_TEST_MESSAGE("Testing Turkey calendar...");
     Calendar calendar = Turkey();
     BOOST_CHECK_EQUAL(calendar.name(), "Turkey");
     BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
@@ -3005,42 +3016,49 @@ BOOST_AUTO_TEST_CASE(testTurkeyCalendar) {
 }
 
 BOOST_AUTO_TEST_CASE(testBotswanaCalendar) {
+    BOOST_TEST_MESSAGE("Testing Botswana calendar...");
     Calendar calendar = Botswana();
     BOOST_CHECK(calendar.isHoliday(Date(1, May, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(2, May, 2024)));
 }
 
 BOOST_AUTO_TEST_CASE(testCzechRepublicCalendar) {
+    BOOST_TEST_MESSAGE("Testing Czech Republic calendar...");
     Calendar calendar = CzechRepublic(CzechRepublic::PSE);
     BOOST_CHECK(calendar.isHoliday(Date(28, October, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(29, October, 2024)));
 }
 
 BOOST_AUTO_TEST_CASE(testFinlandCalendar) {
+    BOOST_TEST_MESSAGE("Testing Finland calendar...");
     Calendar calendar = Finland();
     BOOST_CHECK(calendar.isHoliday(Date(6, December, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(5, December, 2024)));
 }
 
 BOOST_AUTO_TEST_CASE(testHungaryCalendar) {
+    BOOST_TEST_MESSAGE("Testing Hungary calendar...");
     Calendar calendar = Hungary();
     BOOST_CHECK(calendar.isHoliday(Date(15, March, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(14, March, 2024)));
 }
 
 BOOST_AUTO_TEST_CASE(testIcelandCalendar) {
+    BOOST_TEST_MESSAGE("Testing Iceland calendar...");
     Calendar calendar = Iceland(Iceland::ICEX);
     BOOST_CHECK(calendar.isHoliday(Date(17, June, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(18, June, 2024)));
 }
 
 BOOST_AUTO_TEST_CASE(testNorwayCalendar) {
+    BOOST_TEST_MESSAGE("Testing Norway calendar...");
     Calendar calendar = Norway();
     BOOST_CHECK(calendar.isHoliday(Date(17, May, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(16, May, 2024)));
 }
 
 BOOST_AUTO_TEST_CASE(testPolandCalendars) {
+    BOOST_TEST_MESSAGE("Testing Poland calendars...");
     Calendar settlement = Poland(Poland::Settlement);
     Calendar exchange = Poland(Poland::WSE);
     Date holiday(6, January, 2025);
@@ -3051,30 +3069,35 @@ BOOST_AUTO_TEST_CASE(testPolandCalendars) {
 }
 
 BOOST_AUTO_TEST_CASE(testSlovakiaCalendar) {
+    BOOST_TEST_MESSAGE("Testing Slovakia calendar...");
     Calendar calendar = Slovakia(Slovakia::BSSE);
     BOOST_CHECK(calendar.isHoliday(Date(1, September, 2025)));
     BOOST_CHECK(calendar.isBusinessDay(Date(2, September, 2025)));
 }
 
 BOOST_AUTO_TEST_CASE(testSouthAfricaCalendar) {
+    BOOST_TEST_MESSAGE("Testing South Africa calendar...");
     Calendar calendar = SouthAfrica();
     BOOST_CHECK(calendar.isHoliday(Date(16, December, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(17, December, 2024)));
 }
 
 BOOST_AUTO_TEST_CASE(testSwedenCalendar) {
+    BOOST_TEST_MESSAGE("Testing Sweden calendar...");
     Calendar calendar = Sweden();
     BOOST_CHECK(calendar.isHoliday(Date(6, June, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(7, June, 2024)));
 }
 
 BOOST_AUTO_TEST_CASE(testUkraineCalendar) {
+    BOOST_TEST_MESSAGE("Testing Ukraine calendar...");
     Calendar calendar = Ukraine(Ukraine::USE);
     BOOST_CHECK(calendar.isHoliday(Date(14, October, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(15, October, 2024)));
 }
 
 BOOST_AUTO_TEST_CASE(testSingaporeCalendar) {
+    BOOST_TEST_MESSAGE("Testing Singapore calendar...");
     Calendar calendar = Singapore();
     BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
     BOOST_CHECK(calendar.isHoliday(Date(29, March, 2024))); // Good Friday
@@ -3085,6 +3108,7 @@ BOOST_AUTO_TEST_CASE(testSingaporeCalendar) {
 }
 
 BOOST_AUTO_TEST_CASE(testAustriaCalendars) {
+    BOOST_TEST_MESSAGE("Testing Austria calendars...");
     Calendar settlement = Austria(Austria::Settlement);
     Calendar exchange = Austria(Austria::Exchange);
     BOOST_CHECK(settlement.isHoliday(Date(1, January, 2024)));
@@ -3096,28 +3120,46 @@ BOOST_AUTO_TEST_CASE(testAustriaCalendars) {
 }
 
 BOOST_AUTO_TEST_CASE(testFranceCalendars) {
+    BOOST_TEST_MESSAGE("Testing France calendars...");
     Calendar settlement = France(France::Settlement);
     Calendar exchange = France(France::Exchange);
     BOOST_CHECK(settlement.isHoliday(Date(1, January, 2024)));
     BOOST_CHECK(settlement.isHoliday(Date(1, May, 2024)));
     BOOST_CHECK(settlement.isHoliday(Date(14, July, 2024)));
+    BOOST_CHECK(settlement.isHoliday(Date(9, May, 2024)));  // Ascension
+    BOOST_CHECK(settlement.isHoliday(Date(20, May, 2024))); // Whit Monday
+    BOOST_CHECK(settlement.isHoliday(Date(29, May, 2025))); // Ascension
+    BOOST_CHECK(settlement.isHoliday(Date(9, June, 2025))); // Whit Monday
+    BOOST_CHECK(settlement.isBusinessDay(Date(10, May, 2024)));
+    BOOST_CHECK(settlement.isBusinessDay(Date(21, May, 2024)));
     BOOST_CHECK(exchange.isHoliday(Date(29, March, 2024))); // Good Friday
     BOOST_CHECK(exchange.isHoliday(Date(24, December, 2024)));
     BOOST_CHECK(exchange.isBusinessDay(Date(2, January, 2024)));
 }
 
 BOOST_AUTO_TEST_CASE(testRomaniaCalendars) {
+    BOOST_TEST_MESSAGE("Testing Romania calendars...");
     Calendar publicCalendar = Romania(Romania::Public);
     Calendar exchange = Romania(Romania::BVB);
     BOOST_CHECK(publicCalendar.isHoliday(Date(1, January, 2024)));
     BOOST_CHECK(publicCalendar.isHoliday(Date(24, January, 2024)));
     BOOST_CHECK(publicCalendar.isHoliday(Date(1, May, 2024)));
     BOOST_CHECK(publicCalendar.isHoliday(Date(1, June, 2024)));
+    BOOST_CHECK(publicCalendar.isHoliday(Date(6, April, 2018))); // Good Friday
+    BOOST_CHECK(publicCalendar.isHoliday(Date(6, January, 2025))); // Epiphany
+    BOOST_CHECK(publicCalendar.isHoliday(Date(7, January, 2025))); // St John the Baptist
+    BOOST_CHECK(publicCalendar.isBusinessDay(Date(14, April, 2017)));
+    BOOST_CHECK(publicCalendar.isBusinessDay(Date(6, January, 2023)));
     BOOST_CHECK(exchange.isHoliday(Date(1, January, 2014)));
+    BOOST_CHECK(exchange.isHoliday(Date(18, April, 2025))); // Good Friday
+    BOOST_CHECK(exchange.isHoliday(Date(6, January, 2026)));
+    BOOST_CHECK(exchange.isHoliday(Date(7, January, 2026)));
+    BOOST_CHECK(exchange.isHoliday(Date(10, April, 2026))); // Good Friday
     BOOST_CHECK(exchange.isBusinessDay(Date(3, January, 2024)));
 }
 
 BOOST_AUTO_TEST_CASE(testAustraliaCalendars) {
+    BOOST_TEST_MESSAGE("Testing Australia calendars...");
     Calendar settlement = Australia(Australia::Settlement);
     Calendar exchange = Australia(Australia::ASX);
     BOOST_CHECK(settlement.isHoliday(Date(1, January, 2024)));
@@ -3129,6 +3171,7 @@ BOOST_AUTO_TEST_CASE(testAustraliaCalendars) {
 }
 
 BOOST_AUTO_TEST_CASE(testCanadaCalendars) {
+    BOOST_TEST_MESSAGE("Testing Canada calendars...");
     Calendar settlement = Canada(Canada::Settlement);
     Calendar exchange = Canada(Canada::TSX);
     BOOST_CHECK(settlement.isHoliday(Date(1, January, 2024)));
@@ -3140,6 +3183,7 @@ BOOST_AUTO_TEST_CASE(testCanadaCalendars) {
 }
 
 BOOST_AUTO_TEST_CASE(testChileCalendar) {
+    BOOST_TEST_MESSAGE("Testing Chile calendar...");
     Calendar calendar = Chile();
     BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
     BOOST_CHECK(calendar.isHoliday(Date(29, March, 2024))); // Good Friday
@@ -3150,6 +3194,7 @@ BOOST_AUTO_TEST_CASE(testChileCalendar) {
 }
 
 BOOST_AUTO_TEST_CASE(testSwitzerlandCalendar) {
+    BOOST_TEST_MESSAGE("Testing Switzerland calendar...");
     Calendar calendar = Switzerland();
     BOOST_CHECK(calendar.isHoliday(Date(1, January, 2024)));
     BOOST_CHECK(calendar.isHoliday(Date(2, January, 2024)));

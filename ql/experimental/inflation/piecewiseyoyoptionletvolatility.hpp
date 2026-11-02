@@ -157,7 +157,6 @@ namespace QuantLib {
         const std::vector<Time>& times() const override;
         const std::vector<Date>& dates() const override;
         const std::vector<Real>& data() const override;
-        std::vector<std::pair<Date, Real> > nodes() const override;
         //@}
         //! \name Observer interface
         //@{
@@ -208,13 +207,6 @@ namespace QuantLib {
     PiecewiseYoYOptionletVolatilityCurve<I,B,T>::data() const {
         calculate();
         return base_curve::data();
-    }
-
-    template <class I, template <class> class B, class T>
-    std::vector<std::pair<Date, Real> >
-    PiecewiseYoYOptionletVolatilityCurve<I,B,T>::nodes() const {
-        calculate();
-        return base_curve::nodes();
     }
 
     template <class I, template <class> class B, class T>

@@ -53,8 +53,8 @@ namespace QuantLib {
         registerWith(localVol_);
         registerWith(hestonModel_);
 
-        const DayCounter dc = hestonModel_->process()->riskFreeRate()->dayCounter();
-        const Date refDate = hestonModel_->process()->riskFreeRate()->referenceDate();
+        const auto dc = hestonModel_->process()->riskFreeRate()->dayCounter();
+        const auto refDate = hestonModel_->process()->riskFreeRate()->referenceDate();
 
         std::vector<Time> gridTimes;
         gridTimes.reserve(mandatoryDates.size()+1);
@@ -83,27 +83,24 @@ namespace QuantLib {
     }
 
     void HestonSLVMCModel::performCalculations() const {
-        const ext::shared_ptr<HestonProcess> hestonProcess
-            = hestonModel_->process();
-        const ext::shared_ptr<Quote> spot
-            = hestonProcess->s0().currentLink();
+        const auto hestonProcess = hestonModel_->process();
+        const auto spot = hestonProcess->s0().currentLink();
 
-        const Real v0            = hestonProcess->v0();
-        const DayCounter dc      = hestonProcess->riskFreeRate()->dayCounter();
-        const Date referenceDate = hestonProcess->riskFreeRate()->referenceDate();
+        const auto v0 = hestonProcess->v0();
+        const auto dc = hestonProcess->riskFreeRate()->dayCounter();
+        const auto referenceDate = hestonProcess->riskFreeRate()->referenceDate();
 
         const Volatility lv0
             = localVol_->localVol(0.0, spot->value())/std::sqrt(v0);
 
-        const ext::shared_ptr<Matrix> L(new Matrix(nBins_, timeGrid_->size()));
+        const auto L = ext::make_shared<Matrix>(nBins_, timeGrid_->size());
 
-        std::vector<ext::shared_ptr<std::vector<Real> > >
-            vStrikes(timeGrid_->size());
+        std::vector<ext::shared_ptr<std::vector<Real>>> vStrikes(timeGrid_->size());
         for (Size i=0; i < timeGrid_->size(); ++i) {
             const Integer u = nBins_/2;
             const Real dx = spot->value()*std::sqrt(QL_EPSILON);
 
-            vStrikes[i] = ext::make_shared<std::vector<Real> >(nBins_);
+            vStrikes[i] = ext::make_shared<std::vector<Real>>(nBins_);
 
             for (Integer j=0; j < Integer(nBins_); ++j)
                 vStrikes[i]->at(j) = spot->value() + (j - u)*dx;
@@ -116,24 +113,23 @@ namespace QuantLib {
             std::vector<Time>(timeGrid_->begin(), timeGrid_->end()),
             vStrikes, L, dc);
 
-        const ext::shared_ptr<HestonSLVProcess> slvProcess
-            = ext::make_shared<HestonSLVProcess>(hestonProcess, leverageFunction_, mixingFactor_);
+        const auto slvProcess =
+            ext::make_shared<HestonSLVProcess>(hestonProcess, leverageFunction_, mixingFactor_);
 
-        std::vector<std::pair<Real, Real> > pairs(
+        std::vector<std::pair<Real, Real>> pairs(
                 calibrationPaths_, std::make_pair(spot->value(), v0));
 
-        const Size k = calibrationPaths_ / nBins_;
-        const Size m = calibrationPaths_ % nBins_;
+        const auto k = calibrationPaths_ / nBins_;
+        const auto m = calibrationPaths_ % nBins_;
 
-        const Size timeSteps = timeGrid_->size()-1;
+        const auto timeSteps = timeGrid_->size()-1;
 
         QL_DEPRECATED_DISABLE_WARNING
-        typedef boost::multi_array<Real, 3> path_type;
+        using path_type = boost::multi_array<Real, 3>;
         path_type paths(boost::extents[calibrationPaths_][timeSteps][2]);
         QL_DEPRECATED_ENABLE_WARNING
 
-        const ext::shared_ptr<BrownianGenerator> brownianGenerator =
-            brownianGeneratorFactory_->create(2, timeSteps);
+        const auto brownianGenerator = brownianGeneratorFactory_->create(2, timeSteps);
 
         for (Size i=0; i < calibrationPaths_; ++i) {
             brownianGenerator->nextPath();
@@ -146,7 +142,8 @@ namespace QuantLib {
         }
 
         for (Size n=1; n < timeGrid_->size(); ++n) {
-            const Time t = timeGrid_->at(n-1);
+            const Time t0 = timeGrid_->at(n-1);
+            const Time t1 = timeGrid_->at(n);
             const Time dt = timeGrid_->dt(n-1);
 
             Array x0(2), dw(2);
@@ -158,7 +155,7 @@ namespace QuantLib {
                 dw[0] = paths[i][n-1][0];
                 dw[1] = paths[i][n-1][1];
 
-                x0 = slvProcess->evolve(t, x0, dt, dw);
+                x0 = slvProcess->evolve(t0, x0, dt, dw);
 
                 pairs[i].first = x0[0];
                 pairs[i].second = x0[1];
@@ -178,7 +175,8 @@ namespace QuantLib {
                 sum/=inc;
 
                 vStrikes[n]->at(i) = 0.5*(pairs[e-1].first + pairs[s].first);
-                (*L)[i][n] = std::sqrt(squared(localVol_->localVol(t, vStrikes[n]->at(i), true))/sum);
+                // The conditional variance and leverage slice are both at the end of the step.
+                (*L)[i][n] = std::sqrt(squared(localVol_->localVol(t1, vStrikes[n]->at(i), true))/sum);
 
                 s = e;
             }

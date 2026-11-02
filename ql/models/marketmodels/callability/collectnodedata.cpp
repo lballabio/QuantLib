@@ -31,7 +31,7 @@
 
 namespace QuantLib {
 
-    typedef MarketModelMultiProduct::CashFlow CashFlow;
+    using CashFlow = MarketModelMultiProduct::CashFlow;
 
     void collectNodeData(MarketModelEvolver& evolver,
                          MarketModelMultiProduct& product,

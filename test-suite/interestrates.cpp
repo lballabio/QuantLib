@@ -33,6 +33,37 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(InterestRateTests)
 
+BOOST_AUTO_TEST_CASE(testNullInterestRateInspectors) {
+    BOOST_TEST_MESSAGE("Testing null interest-rate inspectors...");
+    InterestRate nullRate;
+
+    BOOST_CHECK_EXCEPTION(nullRate.compounding(), Error,
+                          ExpectedErrorMessage("null interest rate"));
+    BOOST_CHECK_EQUAL(nullRate.frequency(), NoFrequency);
+}
+
+BOOST_AUTO_TEST_CASE(testNullInterestRateDateCalculations) {
+    BOOST_TEST_MESSAGE("Testing date calculations with a null interest rate...");
+    InterestRate nullRate;
+    Date start(1, January, 2024), end(1, January, 2025);
+
+    BOOST_CHECK_EXCEPTION(nullRate.discountFactor(start, end), Error,
+                          ExpectedErrorMessage("null interest rate"));
+    BOOST_CHECK_EXCEPTION(nullRate.compoundFactor(start, end), Error,
+                          ExpectedErrorMessage("null interest rate"));
+    BOOST_CHECK_EXCEPTION(nullRate.equivalentRate(Actual365Fixed(), Simple, Annual, start, end),
+                          Error, ExpectedErrorMessage("null interest rate"));
+}
+
+BOOST_AUTO_TEST_CASE(testImpliedRateRejectsMixedCompoundingAtUnity) {
+    BOOST_TEST_MESSAGE("Testing implied rates with mixed compounding at unity...");
+    for (const auto comp : {SimpleThenCompounded, CompoundedThenSimple}) {
+        BOOST_CHECK_EXCEPTION(
+            InterestRate::impliedRate(1.0, Actual365Fixed(), comp, Semiannual, 1.0), Error,
+            ExpectedErrorMessage("not supported"));
+    }
+}
+
 struct InterestRateData {
     Rate r;
     Compounding comp;

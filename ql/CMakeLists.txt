@@ -1179,8 +1179,6 @@ set(QL_HEADERS
     experimental/finitedifferences/glued1dmesher.hpp
     experimental/finitedifferences/vanillavppoption.hpp
     experimental/forward/analytichestonforwardeuropeanengine.hpp
-    experimental/fx/blackdeltacalculator.hpp
-    experimental/fx/deltavolquote.hpp
     experimental/fx/discountingmtmcrosscurrencybasisswapengine.hpp
     experimental/fx/fxresetcashflows.hpp
     experimental/fx/mtmcrosscurrencybasisswap.hpp
@@ -2222,6 +2220,8 @@ set(QL_HEADERS
     termstructures/yield/piecewisezerospreadedtermstructure.hpp
     termstructures/yield/quantotermstructure.hpp
     termstructures/yield/ratehelpers.hpp
+    termstructures/yield/shiftedtermstructure.hpp
+    termstructures/yield/splicedtermstructure.hpp
     termstructures/yield/spreadbootstraptraits.hpp
     termstructures/yield/spreaddiscountcurve.hpp
     termstructures/yield/ultimateforwardtermstructure.hpp

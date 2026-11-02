@@ -35,6 +35,10 @@ namespace QuantLib {
     //! Finite-differences Black/Scholes barrier-option engine
     /*! \ingroup barrierengines
 
+        American and Bermudan exercise are supported for knock-out
+        options only, since in-out parity does not hold with early
+        exercise.
+
         \test the correctness of the returned value is tested by
               reproducing results available in web/literature
               and comparison with Black pricing.

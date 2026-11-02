@@ -239,8 +239,7 @@ namespace QuantLib {
                     // reset() method brings them to the current point
                     // rather than the beginning of the path.
 
-                    ext::shared_ptr<MarketModelEvolver> currentEvolver =
-                        innerEvolvers_[exercise++];
+                    auto currentEvolver = innerEvolvers_[exercise++];
                     currentEvolver->setInitialState(evolver_->currentState());
 
                     callable.stopRecording();

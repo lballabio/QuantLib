@@ -28,6 +28,61 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        // (1 - exp(-x))/x
+        Real expDecayRatio(Real x) {
+            return -std::expm1(-x)/x;
+        }
+
+        // The integral of s^2 * f(u*s) * f(v*s) between 0 and 1, where f is expDecayRatio.
+        // Its closed form (1 - f(u) - f(v) + f(u+v))/(u*v) subtracts terms that are O(1)
+        // to get a result that is O(u*v) and then divides by u*v, so it loses all
+        // precision when u and v are small and is only used when that is not the case.
+        // G2::V combines this function at (a*t,a*t), (b*t,b*t) and (a*t,b*t).
+        Real varianceKernel(Real u, Real v) {
+            if (u < v)
+                std::swap(u, v);
+
+            if (u + v <= 2.0) {
+                // series sum_(k>=2) (-1)^k*P_k/(k+1)!, where P_k = ((u+v)^k - u^k - v^k)/(u*v),
+                // so that P_2 = 2 and P_(k+1) = (u+v)*P_k + u^(k-1) + v^(k-1)
+                const Real s = u + v;
+                Real P = 2.0, uPower = u, vPower = v, factorial = 6.0, sign = 1.0, sum = 0.0;
+                for (Size k = 2; k < 60; ++k) {
+                    const Real term = sign*P/factorial;
+                    sum += term;
+                    if (std::fabs(term) < 0.01*QL_EPSILON*std::fabs(sum))
+                        break;
+                    P = s*P + uPower + vPower;
+                    uPower *= u;
+                    vPower *= v;
+                    factorial *= k + 2;
+                    sign = -sign;
+                }
+                return sum;
+            }
+
+            if (v >= 0.5)
+                return (1.0 - expDecayRatio(u) - expDecayRatio(v) + expDecayRatio(u+v))/(u*v);
+
+            // v is small and u is not. Write 1 - f(v) as v*omega(v), where
+            // omega(v) = (v + expm1(-v))/v^2 = 1/2 - v/6 + v^2/24 - ..., and
+            // f(u) - f(u+v) = (u*exp(-u)*expm1(-v) - v*expm1(-u))/(u*(u+v))
+            Real omega = 0.0, term = 0.5;
+            for (Size k = 2; k < 40; ++k) {
+                omega += term;
+                term *= -v/(k + 1);
+                if (std::fabs(term) < 0.01*QL_EPSILON*std::fabs(omega))
+                    break;
+            }
+            const Real difference =
+                (u*std::exp(-u)*std::expm1(-v) - v*std::expm1(-u))/(u*(u+v));
+            return (v*omega - difference)/(u*v);
+        }
+
+    }
+
     G2::G2(const Handle<YieldTermStructure>& termStructure,
            Real a, Real sigma, Real b, Real eta, Real rho)
     : TwoFactorModel(5), TermStructureConsistentModel(termStructure),
@@ -46,8 +101,7 @@ namespace QuantLib {
     }
 
     ext::shared_ptr<TwoFactorModel::ShortRateDynamics> G2::dynamics() const {
-        return ext::shared_ptr<ShortRateDynamics>(new
-            Dynamics(phi_, a(), sigma(), b(), eta(), rho()));
+        return ext::make_shared<Dynamics>(phi_, a(), sigma(), b(), eta(), rho());
     }
 
     void G2::generateArguments() {
@@ -87,16 +141,14 @@ namespace QuantLib {
     }
 
     Real G2::V(Time t) const {
-        Real expat = std::exp(-a()*t);
-        Real expbt = std::exp(-b()*t);
-        Real cx = sigma()/a();
-        Real cy = eta()/b();
-        Real valuex = cx*cx*(t + (2.0*expat-0.5*expat*expat-1.5)/a());
-        Real valuey = cy*cy*(t + (2.0*expbt-0.5*expbt*expbt-1.5)/b());
-        Real value = 2.0*rho()*cx*cy* (t + (expat - 1.0)/a()
-                                         + (expbt - 1.0)/b()
-                                         - (expat*expbt-1.0)/(a()+b()));
-        return valuex + valuey + value;
+        // the variance of the integral of the two factors between 0 and t, that is, the
+        // integral of sigma^2*B(a,s)^2 + eta^2*B(b,s)^2 + 2*rho*sigma*eta*B(a,s)*B(b,s)
+        Real u = a()*t;
+        Real v = b()*t;
+        Real valuex = sigma()*sigma()*varianceKernel(u, u);
+        Real valuey = eta()*eta()*varianceKernel(v, v);
+        Real value = 2.0*rho()*sigma()*eta()*varianceKernel(u, v);
+        return t*t*t*(valuex + valuey + value);
     }
 
     Real G2::A(Time t, Time T) const {
@@ -105,7 +157,7 @@ namespace QuantLib {
     }
 
     Real G2::B(Real x, Time t) const {
-        return (1.0 - std::exp(-x*t))/x;
+        return -std::expm1(-x*t)/x;
     }
 
     class G2::SwaptionPricingFunction {
@@ -221,8 +273,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments.nominal != Null<Real>(),
                    "non-constant nominals are not supported yet");
 
-        Date settlement = termStructure()->referenceDate();
-        DayCounter dayCounter = termStructure()->dayCounter();
+        auto settlement = termStructure()->referenceDate();
+        auto dayCounter = termStructure()->dayCounter();
         Time start = dayCounter.yearFraction(settlement,
                                              arguments.floatingResetDates[0]);
         Real w = (arguments.type==Swap::Payer ? 1 : -1 );

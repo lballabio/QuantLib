@@ -51,33 +51,11 @@ namespace QuantLib {
                      const Calendar& exCouponCalendar,
                      const BusinessDayConvention exCouponConvention,
                      bool exCouponEndOfMonth)
-    : CPIBond(settlementDays, faceAmount, false, baseCPI, observationLag, std::move(cpiIndex),
-              observationInterpolation, std::move(schedule), fixedRate, accrualDayCounter,
-              paymentConvention, issueDate, paymentCalendar, exCouponPeriod,
-              exCouponCalendar, exCouponConvention, exCouponEndOfMonth) {}
-
-    CPIBond::CPIBond(Natural settlementDays,
-                     Real faceAmount,
-                     bool growthOnly,
-                     Real baseCPI,
-                     const Period& observationLag,
-                     ext::shared_ptr<ZeroInflationIndex> cpiIndex,
-                     CPI::InterpolationType observationInterpolation,
-                     Schedule schedule,
-                     const std::vector<Rate>& fixedRate,
-                     const DayCounter& accrualDayCounter,
-                     BusinessDayConvention paymentConvention,
-                     const Date& issueDate,
-                     const Calendar& paymentCalendar,
-                     const Period& exCouponPeriod,
-                     const Calendar& exCouponCalendar,
-                     const BusinessDayConvention exCouponConvention,
-                     bool exCouponEndOfMonth)
     : Bond(settlementDays,
            paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar,
            issueDate),
       frequency_(schedule.tenor().frequency()), dayCounter_(accrualDayCounter),
-      growthOnly_(growthOnly), baseCPI_(baseCPI), observationLag_(observationLag),
+      growthOnly_(false), baseCPI_(baseCPI), observationLag_(observationLag),
       cpiIndex_(std::move(cpiIndex)), observationInterpolation_(observationInterpolation) {
 
         maturityDate_ = schedule.endDate();

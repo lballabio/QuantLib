@@ -33,6 +33,31 @@
 
 namespace QuantLib {
 
+    //! Node inspectors shared by interpolated term structures
+    /*! Access to the interpolated nodes of termstructures
+    */
+    class InterpolatedNodes {
+      public:
+        virtual ~InterpolatedNodes() = default;
+        //! node dates, including the reference date
+        virtual const std::vector<Date>& dates() const = 0;
+        //! node times, including the reference time
+        virtual const std::vector<Time>& times() const = 0;
+        //! node values in the trait space of the curve
+        virtual const std::vector<Real>& data() const = 0;
+        //! pairs of (Date, Value) from dates() and data()
+        std::vector<std::pair<Date, Real>> nodes() const {
+            const auto& dates = this->dates();
+            const auto& data = this->data();
+            const Size size = dates.size();
+            std::vector<std::pair<Date, Real>> result;
+            result.reserve(size);
+            for (Size i = 0; i < size; ++i)
+                result.emplace_back(dates[i], data[i]);
+            return result;
+        }
+    };
+
     //! Helper class to build interpolated term structures
     /*! Interpolated term structures can use protected or private
         inheritance from this class to obtain the relevant data

@@ -58,7 +58,7 @@ namespace QuantLib {
                               const Calendar& paymentCalendar,
                               BusinessDayConvention paymentConvention,
                               Natural paymentDelay) {
-            return LegType(std::move(schedule), interestRateIndex)
+            return LegType(schedule, interestRateIndex)
                 .withNotionals(nominal)
                 .withPaymentDayCounter(dayCounter)
                 .withSpreads(margin)

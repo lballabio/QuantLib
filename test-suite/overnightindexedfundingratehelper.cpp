@@ -18,6 +18,7 @@
 */
 
 #include "toplevelfixture.hpp"
+#include "utilities.hpp"
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/coupon.hpp>
 #include <ql/experimental/termstructures/overnightindexedfundingratehelper.hpp>
@@ -51,6 +52,7 @@ namespace {
 }
 
 BOOST_AUTO_TEST_CASE(testUsdCofStyleBootstrap) {
+    BOOST_TEST_MESSAGE("Testing USD COF-style bootstrap...");
     Date today(30, September, 2025);
     Settings::instance().evaluationDate() = today;
 
@@ -96,6 +98,7 @@ BOOST_AUTO_TEST_CASE(testUsdCofStyleBootstrap) {
 }
 
 BOOST_AUTO_TEST_CASE(testLaggedCashFlowsAndDatedConstructor) {
+    BOOST_TEST_MESSAGE("Testing lagged cash flows and dated constructor...");
     Date today(30, September, 2025);
     Settings::instance().evaluationDate() = today;
 
@@ -138,10 +141,11 @@ BOOST_AUTO_TEST_CASE(testLaggedCashFlowsAndDatedConstructor) {
                            100.0 * discountCurve->discount(expectedFinal) - overnightNpv) /
                           annuity;
 
-    BOOST_CHECK_SMALL(helper->impliedQuote() - expectedMargin, 1.0e-13);
+    QL_CHECK_SMALL(helper->impliedQuote() - expectedMargin, 1.0e-13);
 }
 
 BOOST_AUTO_TEST_CASE(testSameDayOvernightPillar) {
+    BOOST_TEST_MESSAGE("Testing same-day overnight pillar...");
     Date today(15, July, 2026);
     Settings::instance().evaluationDate() = today;
     Settings::instance().includeReferenceDateEvents() = false;
@@ -160,7 +164,7 @@ BOOST_AUTO_TEST_CASE(testSameDayOvernightPillar) {
 
     BOOST_CHECK_EQUAL(helper->pillarDate(), Date(16, July, 2026));
     curve->discount(helper->pillarDate());
-    BOOST_CHECK_SMALL(helper->impliedQuote() - margin, 1.0e-11);
+    QL_CHECK_SMALL(helper->impliedQuote() - margin, 1.0e-11);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -52,7 +52,25 @@ namespace QuantLib {
             const std::optional<DateGeneration::Rule>& rule = std::nullopt,
             const std::optional<bool>& endOfMonth = std::nullopt,
             std::vector<bool> isRegular = std::vector<bool>(0));
-        /*! rule based constructor */
+        /*! Rule-based constructor.
+
+            With DateGeneration::Forward, regular dates are generated from
+            \p effectiveDate, or from \p firstDate if it is provided.
+            With DateGeneration::Backward, they are generated from
+            \p terminationDate, or from \p nextToLastDate if it is provided.
+
+            \note The optional stub dates are not merely inserted into an
+            otherwise unchanged schedule. They also select the regular-date
+            generation seed as described above. Even a date that coincides
+            with a regular coupon date can change the resulting schedule
+            when a month has fewer days than the original seed day.
+
+            For example, an unadjusted semiannual backward schedule from
+            August 30, 2025, to August 30, 2027, with \p endOfMonth set to
+            false, generates August 30, 2026, when \p nextToLastDate is
+            omitted. Providing February 28, 2027, as \p nextToLastDate
+            instead makes the seed day the 28th and generates August 28, 2026.
+        */
         Schedule(Date effectiveDate,
                  const Date& terminationDate,
                  const Period& tenor,

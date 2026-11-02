@@ -111,38 +111,10 @@ namespace QuantLib {
     }
 
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     CPIBondHelper::CPIBondHelper(
                             const Handle<Quote>& price,
                             Natural settlementDays,
                             Real faceAmount,
-                            Real baseCPI,
-                            const Period& observationLag,
-                            const ext::shared_ptr<ZeroInflationIndex>& cpiIndex,
-                            CPI::InterpolationType observationInterpolation,
-                            Schedule schedule,
-                            const std::vector<Rate>& fixedRate,
-                            const DayCounter& accrualDayCounter,
-                            BusinessDayConvention paymentConvention,
-                            const Date& issueDate,
-                            const Calendar& paymentCalendar,
-                            const Period& exCouponPeriod,
-                            const Calendar& exCouponCalendar,
-                            const BusinessDayConvention exCouponConvention,
-                            bool exCouponEndOfMonth,
-                            const Bond::Price::Type priceType)
-    : CPIBondHelper(price, settlementDays, faceAmount, false, baseCPI, observationLag,
-                    cpiIndex, observationInterpolation, std::move(schedule), fixedRate,
-                    accrualDayCounter, paymentConvention, issueDate, paymentCalendar,
-                    exCouponPeriod, exCouponCalendar, exCouponConvention, exCouponEndOfMonth,
-                    priceType) {}
-
-    CPIBondHelper::CPIBondHelper(
-                            const Handle<Quote>& price,
-                            Natural settlementDays,
-                            Real faceAmount,
-                            const bool growthOnly,
                             Real baseCPI,
                             const Period& observationLag,
                             const ext::shared_ptr<ZeroInflationIndex>& cpiIndex,
@@ -159,15 +131,12 @@ namespace QuantLib {
                             bool exCouponEndOfMonth,
                             const Bond::Price::Type priceType)
     : BondHelper(price,
-                 // make_shared and deprecation interfere; restore later
-                 ext::shared_ptr<Bond>(new CPIBond(settlementDays, faceAmount, growthOnly, baseCPI,
+                 ext::make_shared<CPIBond>(settlementDays, faceAmount, baseCPI,
                                            observationLag, cpiIndex, observationInterpolation,
                                            std::move(schedule), fixedRate, accrualDayCounter, paymentConvention,
                                            issueDate, paymentCalendar, exCouponPeriod, exCouponCalendar,
-                                           exCouponConvention, exCouponEndOfMonth)),
+                                           exCouponConvention, exCouponEndOfMonth),
                  priceType) {}
-
-    QL_DEPRECATED_ENABLE_WARNING
 
     void CPIBondHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<CPIBondHelper>*>(&v);

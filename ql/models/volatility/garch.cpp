@@ -46,8 +46,7 @@ namespace QuantLib {
             };
           public:
             Garch11Constraint(Real gammaLower, Real gammaUpper)
-            : Constraint(ext::shared_ptr<Constraint::Impl>(
-                      new Garch11Constraint::Impl(gammaLower, gammaUpper))) {}
+            : Constraint(ext::make_shared<Garch11Constraint::Impl>(gammaLower, gammaUpper)) {}
         };
 
 
@@ -219,8 +218,7 @@ namespace QuantLib {
             };
           public:
             FitAcfConstraint(Real gammaLower, Real gammaUpper)
-            : Constraint(ext::shared_ptr<Constraint::Impl>(
-                       new FitAcfConstraint::Impl(gammaLower, gammaUpper))) {}
+            : Constraint(ext::make_shared<FitAcfConstraint::Impl>(gammaLower, gammaUpper)) {}
         };
 
 
@@ -529,11 +527,11 @@ namespace QuantLib {
                const EndCriteria &endCriteria,
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         Garch11CostFunction cost(r2);
-        ext::shared_ptr<Problem> problem(
-                               new Problem(cost, constraints, initGuess));
-        // TODO: check return value from minimize()
-        /* EndCriteria::Type ret = */
-        method.minimize(*problem, endCriteria);
+        auto problem = ext::make_shared<Problem>(cost, constraints, initGuess);
+        EndCriteria::Type result = method.minimize(*problem, endCriteria);
+        QL_REQUIRE(EndCriteria::succeeded(result),
+                   "GARCH(1,1) calibration did not converge: optimizer "
+                   "stopped with end criterion " << result);
         const Array &optimum = problem->currentValue();
         alpha = optimum[1];
         beta = optimum[2];
@@ -556,4 +554,3 @@ namespace QuantLib {
     }
 
 }
-

@@ -95,6 +95,12 @@ namespace QuantLib {
             return;
         }
 
+        // Haug's formula covers down barriers for calls and up barriers for puts
+        bool isDown = (barrierType == Barrier::DownIn || barrierType == Barrier::DownOut);
+        QL_REQUIRE((optionType == Option::Call) == isDown,
+                   "soft-barrier formula not available for "
+                   << barrierType << " " << optionType << " options");
+
         // soft barrier pricing logic
         Real w = knockInValue(S, X, r, sigma, T, U, L, b, optionType,eta);
         results_.value = (barrierType == Barrier::DownIn || barrierType == Barrier::UpIn)

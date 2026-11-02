@@ -400,6 +400,18 @@ namespace QuantLib {
                                "Lagrange boundary condition requires at least "
                                "4 points (" << (xEnd-xBegin) << " are given)");
                 }
+                if (leftType_ == CubicInterpolation::NotAKnot
+                    || rightType_ == CubicInterpolation::NotAKnot) {
+                    // with three points, not-a-knot conditions at both ends
+                    // constrain the same knot and the system is singular
+                    Size required =
+                        (leftType_ == CubicInterpolation::NotAKnot
+                         && rightType_ == CubicInterpolation::NotAKnot) ? 4 : 3;
+                    QL_REQUIRE(Size(xEnd-xBegin) >= required,
+                               "not-a-knot boundary condition requires at least "
+                               << required << " points ("
+                               << (xEnd-xBegin) << " are given)");
+                }
                 if (da_ == CubicInterpolation::Akima) {
                     QL_REQUIRE((xEnd-xBegin) >= 4,
                                "Akima approximation requires at least "
@@ -631,7 +643,7 @@ namespace QuantLib {
                             case CubicInterpolation::Kruger:
                                 // intermediate points
                                 for (Size i=1; i<n_-1; ++i) {
-                                    if (S_[i-1]*S_[i]<0.0)
+                                    if (S_[i-1]*S_[i]<=0.0)
                                         // slope changes sign at point
                                         tmp_[i] = 0.0;
                                     else

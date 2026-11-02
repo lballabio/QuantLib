@@ -39,11 +39,28 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
+    void OvernightIndexFuture::checkForecastStart(const Date& d) const {
+        Handle<YieldTermStructure> forwardCurve = overnightIndex_->forwardingTermStructure();
+        QL_REQUIRE(!forwardCurve.empty(),
+                   "null term structure set to this instance of " << overnightIndex_->name());
+        // rates between the evaluation date and a later reference date can't be forecast
+        QL_REQUIRE(d >= forwardCurve->referenceDate(),
+                   "cannot forecast " << overnightIndex_->name() << " rates from " << d
+                   << ": the forwarding term structure starts on "
+                   << forwardCurve->referenceDate());
+    }
+
+    Rate OvernightIndexFuture::forecastFixing(const Date& fixingDate, const Date& end) const {
+        checkForecastStart(fixingDate);
+        return overnightIndex_->forwardingTermStructure()
+            ->forwardRate(fixingDate, end, overnightIndex_->dayCounter(), Simple)
+            .rate();
+    }
+
     Real OvernightIndexFuture::averagedRate() const {
         Date today = Settings::instance().evaluationDate();
         Calendar calendar = overnightIndex_->fixingCalendar();
         DayCounter dayCounter = overnightIndex_->dayCounter();
-        Handle<YieldTermStructure> forwardCurve = overnightIndex_->forwardingTermStructure();
         Real avg = 0;
         Date d1 = valueDate_;
         // d1 could be a holiday
@@ -59,9 +76,9 @@ namespace QuantLib {
             } else if (fixingDate == today) {
                 fwd = history[fixingDate];
                 if (fwd == Null<Real>())
-                    fwd = forwardCurve->forwardRate(fixingDate, d2, dayCounter, Simple).rate();
+                    fwd = forecastFixing(fixingDate, d2);
             } else {
-                fwd = forwardCurve->forwardRate(fixingDate, d2, dayCounter, Simple).rate();
+                fwd = forecastFixing(fixingDate, d2);
             }
             // The rate is accrued starting from d1 even when the fixing date is earlier.
             // d2 might be beyond the maturity date if the latter is a holiday.
@@ -114,6 +131,7 @@ namespace QuantLib {
             }
         }
         // the telescopic part goes from the end of the last known fixing to the maturity
+        checkForecastStart(forwardDiscountStart);
         DiscountFactor forwardDiscount =
             forwardCurve->discount(maturityDate_) / forwardCurve->discount(forwardDiscountStart);
         prod /= forwardDiscount;

@@ -428,10 +428,9 @@ namespace CdsTests {
 }
 
 BOOST_AUTO_TEST_CASE(testCDS2015Convention) {
+    BOOST_TEST_MESSAGE("Testing CDS2015 semi-annual rolling convention...");
 
     using CdsTests::makeCdsSchedule;
-
-    BOOST_TEST_MESSAGE("Testing CDS2015 semi-annual rolling convention...");
 
     DateGeneration::Rule rule = DateGeneration::CDS2015;
     Period tenor(5, Years);
@@ -485,12 +484,12 @@ BOOST_AUTO_TEST_CASE(testCDS2015Convention) {
 }
 
 BOOST_AUTO_TEST_CASE(testCDS2015ConventionGrid) {
+    BOOST_TEST_MESSAGE("Testing CDS2015 convention against ISDA doc...");
 
     using CdsTests::InputData;
 
     // Testing against section 11 of ISDA doc FAQs Amending when Single Name CDS roll to new on-the-run contracts
     // December 20, 2015 Go-Live
-    BOOST_TEST_MESSAGE("Testing CDS2015 convention against ISDA doc...");
 
     // Test inputs and expected outputs
     // The map key is a pair with 1st element equal to trade date and 2nd element equal to CDS tenor.
@@ -570,12 +569,12 @@ BOOST_AUTO_TEST_CASE(testCDS2015ConventionGrid) {
 }
 
 BOOST_AUTO_TEST_CASE(testCDSConventionGrid) {
+    BOOST_TEST_MESSAGE("Testing CDS convention against ISDA doc...");
 
     using CdsTests::InputData;
 
     // Testing against section 11 of ISDA doc FAQs Amending when Single Name CDS roll to new on-the-run contracts
     // December 20, 2015 Go-Live. Amended the dates in the doc to the pre-2015 expected maturity dates.
-    BOOST_TEST_MESSAGE("Testing CDS convention against ISDA doc...");
 
     // Test inputs and expected outputs
     // The map key is a pair with 1st element equal to trade date and 2nd element equal to CDS tenor.
@@ -661,12 +660,12 @@ BOOST_AUTO_TEST_CASE(testCDSConventionGrid) {
 }
 
 BOOST_AUTO_TEST_CASE(testOldCDSConventionGrid) {
+    BOOST_TEST_MESSAGE("Testing old CDS convention...");
 
     using CdsTests::InputData;
 
     // Testing against section 11 of ISDA doc FAQs Amending when Single Name CDS roll to new on-the-run contracts
     // December 20, 2015 Go-Live. Amended the dates in the doc to the pre-2009 expected start and maturity dates.
-    BOOST_TEST_MESSAGE("Testing old CDS convention...");
 
     // Test inputs and expected outputs
     // The map key is a pair with 1st element equal to trade date and 2nd element equal to CDS tenor.

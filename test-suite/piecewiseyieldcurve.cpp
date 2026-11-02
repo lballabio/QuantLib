@@ -1489,6 +1489,7 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapPenalty, *precondition(usingAtParCoupons
 }
 
 BOOST_AUTO_TEST_CASE(testGlobalBootstrapVariables) {
+    BOOST_TEST_MESSAGE("Testing global bootstrap variables...");
 
     // Use fixed evaluationDate to make the test stable. It works for any date,
     // but the tolerance varies and also depends on usingAtParCoupons().
@@ -1820,6 +1821,7 @@ BOOST_AUTO_TEST_CASE(testMultiCurvePiecewiseYieldCurveAndSpreadedCurve) {
 }
 
 BOOST_AUTO_TEST_CASE(testGlobalBootstrapInstrumentWeights) {
+    BOOST_TEST_MESSAGE("Testing global bootstrap instrument weights...");
 
     CommonVars vars(Date(23, Oct, 2025));
 

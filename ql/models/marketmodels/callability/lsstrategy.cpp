@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    typedef MarketModelMultiProduct::CashFlow CashFlow;
+    using CashFlow = MarketModelMultiProduct::CashFlow;
 
     LongstaffSchwartzExerciseStrategy::LongstaffSchwartzExerciseStrategy(
         Clone<MarketModelBasisSystem> basisSystem,

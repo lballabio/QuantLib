@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/processes/extendedblackscholesprocess.hpp>
+#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
@@ -54,8 +55,8 @@ namespace QuantLib {
         switch (discretization_) {
           case Milstein:
             // Milstein scheme
-            return apply(x0, drift(t0, x0)*dt
-                           + 0.5*std::pow(diffusion(t0, x0),2)*(dw*dw-1)*dt
+              return apply(x0, drift(t0, x0)*dt
+                             + 0.5*squared(diffusion(t0, x0))*(dw*dw-1)*dt
                            + diffusion(t0,x0)*std::sqrt(dt)*dw);
           case Euler:
             // Usual Euler scheme
@@ -70,13 +71,13 @@ namespace QuantLib {
             rate0 =
                 riskFreeRate()->forwardRate(t0,t1,Continuous,NoFrequency,true).rate()
               - dividendYield()->forwardRate(t0,t1,Continuous,NoFrequency,true).rate()
-              - 0.5*std::pow(sigma0,2);
+              - 0.5*squared(sigma0);
             rate1 =
                 riskFreeRate()->forwardRate(t0+dt,t1+dt,Continuous,
                                             NoFrequency,true).rate()
               - dividendYield()->forwardRate(t0+dt,t1+dt,
                                              Continuous,NoFrequency,true).rate()
-              - 0.5*std::pow(sigma1,2);
+              - 0.5*squared(sigma1);
             driftterm = 0.5*rate1+0.5*rate0;
             diffusionterm = 0.5*(sigma1+sigma0);
             corrector =

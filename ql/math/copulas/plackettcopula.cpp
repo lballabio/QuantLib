@@ -19,6 +19,7 @@
 */
 
 #include <ql/math/copulas/plackettcopula.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
@@ -38,7 +39,7 @@ namespace QuantLib {
         QL_REQUIRE(y >= 0.0 && y <=1.0 ,
                    "2nd argument (" << y << ") must be in [0,1]");
         using namespace std;
-        return ((1.0+(theta_-1.0)*(x+y))-sqrt(std::pow(1.0+(theta_-1.0)*(x+y),2.0)-4.0*x*y*theta_*(theta_-1.0)))/(2.0*(theta_-1.0));
+        return ((1.0+(theta_-1.0)*(x+y))-sqrt(squared(1.0+(theta_-1.0)*(x+y))-4.0*x*y*theta_*(theta_-1.0)))/(2.0*(theta_-1.0));
     }
 
 }

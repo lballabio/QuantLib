@@ -26,7 +26,8 @@ namespace QuantLib {
     template <class Interpolator>
     class InterpolatedSpreadDiscountCurve
         : public RelativeDerivedYieldTermStructure<>,
-          protected InterpolatedCurve<Interpolator> {
+          protected InterpolatedCurve<Interpolator>,
+          public InterpolatedNodes {
       public:
         InterpolatedSpreadDiscountCurve(
             Handle<YieldTermStructure> baseCurve,
@@ -41,10 +42,9 @@ namespace QuantLib {
         //! \name other inspectors
         //@{
         const Handle<YieldTermStructure>& baseCurve() const;
-        const std::vector<Time>& times() const;
-        const std::vector<Date>& dates() const;
-        const std::vector<Real>& data() const;
-        std::vector<std::pair<Date, Real>> nodes() const;
+        const std::vector<Time>& times() const override;
+        const std::vector<Date>& dates() const override;
+        const std::vector<Real>& data() const override;
         //@}
       protected:
         InterpolatedSpreadDiscountCurve(
@@ -140,15 +140,6 @@ namespace QuantLib {
     inline const std::vector<Real>&
     InterpolatedSpreadDiscountCurve<T>::data() const {
         return this->data_;
-    }
-
-    template <class T>
-    inline std::vector<std::pair<Date, Real>>
-    InterpolatedSpreadDiscountCurve<T>::nodes() const {
-        std::vector<std::pair<Date, Real>> results(dates_.size());
-        for (Size i = 0, size = dates_.size(); i < size; ++i)
-            results[i] = {dates_[i], this->data_[i]};
-        return results;
     }
 
     template <class T>

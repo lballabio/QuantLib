@@ -433,6 +433,7 @@ BOOST_AUTO_TEST_CASE(testAddAndDeleteObserverDuringNotifyObservers) {
 
 BOOST_AUTO_TEST_CASE(testDeferredObserverLifetime)
 {
+    BOOST_TEST_MESSAGE("Testing lifetime of deferred observers...");
     Date today(24, Dec, 2025);
     Settings::instance().evaluationDate() = today;
     Handle<Quote> quote(ext::make_shared<SimpleQuote>(0.02));
