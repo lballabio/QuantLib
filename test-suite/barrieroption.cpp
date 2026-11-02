@@ -1423,7 +1423,7 @@ BOOST_AUTO_TEST_CASE(testFdEarlyExerciseKnockOutBounds) {
         BarrierOption option(tc.barrierType, tc.barrier, tc.rebate, payoff, americanExercise);
         option.setPricingEngine(barrierEngine);
         const bool down = tc.barrierType == Barrier::DownOut;
-        for (Real s = down ? tc.barrier + 0.5 : 50.0;
+        for (Real s = down ? Real(tc.barrier + 0.5) : Real(50.0);
              s < (down ? 160.0 : tc.barrier); s += 5.0) {
             spot->setValue(s);
             const Real calculated = option.NPV();
@@ -1522,7 +1522,7 @@ BOOST_AUTO_TEST_CASE(testFdAmericanDownOutCallWithoutDividends) {
             american.setPricingEngine(engine);
             european.setPricingEngine(engine);
 
-            for (Real s : { barrier + 1.0, 100.0, 130.0, 180.0 }) {
+            for (Real s : std::vector<Real>{ barrier + 1.0, 100.0, 130.0, 180.0 }) {
                 spot->setValue(s);
                 const Real diff = american.NPV() - european.NPV();
                 if (std::fabs(diff) > tol) {
