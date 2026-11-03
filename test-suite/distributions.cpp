@@ -847,9 +847,20 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativePoissonIndexRange) {
         BOOST_CHECK_EXCEPTION(inverse(0.9), Error,
                               ExpectedErrorMessage("exceeds the supported index range"));
     }
-    // The upper-tail scan starts at floor(lambda) and reaches the index limit at once.
-    BOOST_CHECK_EXCEPTION(InverseCumulativePoisson(naturalMax - 1.0)(0.9), Error,
-                          ExpectedErrorMessage("exceeds the supported"));
+    const Real nearOne = 1.0 - QL_EPSILON/2.0;
+    // Below the limit, but the upper-tail scan would pass it before stopping.
+    for (Real lambda : {naturalMax - 1.0, naturalMax - 1.0e5}) {
+        InverseCumulativePoisson inverse(lambda);
+        BOOST_CHECK_EXCEPTION(inverse(nearOne), Error,
+                              ExpectedErrorMessage("exceeds the supported index range"));
+    }
+
+    // Higher-precision Real types need more than 13 standard deviations.
+    if (QL_EPSILON < std::numeric_limits<double>::epsilon()) {
+        InverseCumulativePoisson inverse(naturalMax - 13.0*std::sqrt(naturalMax));
+        BOOST_CHECK_EXCEPTION(inverse(nearOne), Error,
+                              ExpectedErrorMessage("exceeds the supported index range"));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testPoissonInvalidParameters) {

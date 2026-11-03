@@ -127,9 +127,13 @@ namespace QuantLib {
         if (x <= std::exp(-lambda_))
             return 0.0;
 
-        // Indices around lambda must fit both the counter and Factorial::ln.
-        QL_REQUIRE(lambda_ < Real((std::numeric_limits<BigNatural>::max)()) &&
-                       lambda_ < Real((std::numeric_limits<Natural>::max)()),
+        // Reserve headroom near the index limits for the precision-dependent
+        // tail tolerance, plus one extra standard deviation. The indices must
+        // fit both the counter and Factorial::ln.
+        const Real stdDevs = std::sqrt(-4.0*std::log(QL_EPSILON)) + 1.0;
+        const Real maxIndex = lambda_ + stdDevs*std::sqrt(lambda_) + 1.0;
+        QL_REQUIRE(maxIndex < Real((std::numeric_limits<BigNatural>::max)()) &&
+                       maxIndex < Real((std::numeric_limits<Natural>::max)()),
                    "lambda (" << lambda_ << ") exceeds the supported index range");
 
         if (x > 0.5) {
@@ -161,9 +165,6 @@ namespace QuantLib {
     }
 
     inline Real InverseCumulativePoisson::calcSummand(BigNatural index) const {
-        QL_REQUIRE(index < (std::numeric_limits<BigNatural>::max)() &&
-                       index < (std::numeric_limits<Natural>::max)(),
-                   "Poisson index exceeds the supported range");
         return std::exp(index*std::log(lambda_) - Factorial::ln(Natural(index)) - lambda_);
     }
 
