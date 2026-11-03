@@ -3101,7 +3101,12 @@ BOOST_AUTO_TEST_CASE(testChoiAsianZeroVolatility) {
         expectedAverage += spot->value() * qTS->discount(fd) / rTS->discount(fd) / m;
 
     for (Option::Type type : {Option::Call, Option::Put}) {
-        for (Real strike : {90.0, 110.0}) {
+        // strike == expectedAverage exactly hits the ATM kink of this
+        // deterministic average, where the delta must take BlackCalculator's
+        // half-delta convention rather than 0 (q != r here, so expectedAverage
+        // is not simply spot -- the exact kink strike must be derived, not
+        // guessed, or the ATM branch below is silently never exercised)
+        for (Real strike : {90.0, expectedAverage, 110.0}) {
             BOOST_TEST_CONTEXT("type: " << type << ", strike: " << strike) {
                 auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
                 DiscreteAveragingAsianOption option(Average::Arithmetic, 0.0, 0, fixingDates,
@@ -3115,16 +3120,71 @@ BOOST_AUTO_TEST_CASE(testChoiAsianZeroVolatility) {
                 BOOST_CHECK_SMALL(option.NPV() - expected, 1.0e-12);
                 // cross-engine consistency: Turnbull-Wakeman prices the same state
                 BOOST_CHECK_SMALL(twOption.NPV() - expected, 1.0e-12);
+                Real sensitivity = discount * expectedAverage / spot->value();
                 Real expectedDelta = 0.0;
-                if (type == Option::Call && expectedAverage > strike)
-                    expectedDelta = discount * expectedAverage / spot->value();
-                if (type == Option::Put && expectedAverage < strike)
-                    expectedDelta = -discount * expectedAverage / spot->value();
+                if (type == Option::Call) {
+                    expectedDelta = expectedAverage > strike ? sensitivity
+                        : (expectedAverage == strike ? 0.5 * sensitivity : 0.0);
+                } else {
+                    expectedDelta = expectedAverage < strike ? -sensitivity
+                        : (expectedAverage == strike ? -0.5 * sensitivity : 0.0);
+                }
                 BOOST_CHECK_SMALL(option.delta() - expectedDelta, 1.0e-12);
                 BOOST_CHECK_EQUAL(option.gamma(), 0.0);
             }
         }
     }
+
+    // call-minus-put delta at the ATM state must match the full spot
+    // sensitivity (put-call parity on the deterministic average: Call - Put
+    // = discount*(expectedAverage - strike) exactly, so the deltas must
+    // differ by discount*expectedAverage/spot), not 0: regression for the
+    // half-delta fix
+    {
+        auto callPayoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, expectedAverage);
+        auto putPayoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, expectedAverage);
+        DiscreteAveragingAsianOption callOption(Average::Arithmetic, 0.0, 0, fixingDates,
+                                                callPayoff, exercise);
+        callOption.setPricingEngine(engine);
+        DiscreteAveragingAsianOption putOption(Average::Arithmetic, 0.0, 0, fixingDates,
+                                               putPayoff, exercise);
+        putOption.setPricingEngine(engine);
+        Real parityDelta = discount * expectedAverage / spot->value();
+        BOOST_CHECK_SMALL(callOption.delta() - putOption.delta() - parityDelta, 1.0e-12);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testChoiAsianTodayFixingDelta) {
+
+    BOOST_TEST_MESSAGE("Testing Choi Asian option delta with a fixing today...");
+
+    // regression for a delta bug: a fixing exactly today is folded into
+    // accruedAverage via process_->x0(), but that contribution still moves
+    // 1-for-1 with spot (it IS today's spot), unlike a genuine historical
+    // fixing -- the guaranteed-exercise delta formula must include it
+    Date today = Settings::instance().evaluationDate();
+    DayCounter dc = Actual365Fixed();
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto qTS = flatRate(today, 0.0, dc);
+    auto rTS = flatRate(today, 0.0, dc);
+    auto volTS = flatVol(today, 0.2, dc);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
+        Handle<BlackVolTermStructure>(volTS));
+    auto engine = ext::make_shared<ChoiAsianEngine>(process);
+
+    // one fixing today, one in 30 days, no historical fixings: with zero
+    // rates every forward equals spot, so the average equals spot exactly
+    // and the whole option moves 1-for-1 with spot
+    std::vector<Date> fixingDates = {today, today + 30};
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 30);
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 40.0);
+    DiscreteAveragingAsianOption option(Average::Arithmetic, 0.0, 0, fixingDates,
+                                        payoff, exercise);
+    option.setPricingEngine(engine);
+
+    BOOST_CHECK_SMALL(option.NPV() - (spot->value() - 40.0), 1.0e-12);
+    BOOST_CHECK_SMALL(option.delta() - 1.0, 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testChoiAsianMixedZeroVariance) {
@@ -3172,10 +3232,17 @@ BOOST_AUTO_TEST_CASE(testChoiAsianMixedZeroVariance) {
                 twOption.setPricingEngine(twEngine);
 
                 Real residualStrike = strike - forward1 / m;
-                Real expected = blackFormula(type, std::max(residualStrike, 0.0),
+                Real expected = blackFormula(type, std::max<Real>(residualStrike, 0.0),
                                              forward2 / m, std::sqrt(variance2), discount);
-                if (residualStrike <= 0.0 && type == Option::Call)
+                if (residualStrike <= 0.0 && type == Option::Call) {
                     expected = discount * ((forward1 + forward2) / m - strike);
+                    // guaranteed-exercise delta regression: the deterministic
+                    // first fixing's forward is still spot-sensitive (zero
+                    // variance, not zero spot dependence) and must be
+                    // included, not dropped
+                    Real expectedDelta = discount * (forward1 + forward2) / m / spot->value();
+                    BOOST_CHECK_SMALL(option.delta() - expectedDelta, 1.0e-12);
+                }
                 BOOST_CHECK_SMALL(option.NPV() - expected, 1.0e-12);
                 // cross-engine sanity check: unlike the guaranteed-exercise
                 // states in testChoiAsianNegativeEffectiveStrike, this branch

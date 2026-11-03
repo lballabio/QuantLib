@@ -59,6 +59,11 @@ namespace QuantLib {
         const Date exerciseDate = arguments_.exercise->lastDate();
         const Handle<YieldTermStructure> rTS = process_->riskFreeRate();
 
+        // the portion of accruedAverage that still moves with spot: ordinary
+        // past fixings are fixed numbers, but a fixing pushed to "past"
+        // below because it falls exactly today is today's spot itself
+        Real spotSensitiveAccrued = 0.0;
+
         if (   futureFixings > 0
             && process_->time(fixingDates.front()) == Time(0)) {
             // push today fixing to past fixings
@@ -66,6 +71,7 @@ namespace QuantLib {
             futureFixings--;
             pastFixings++;
             runningAccumulator += process_->x0();
+            spotSensitiveAccrued = process_->x0() / Real(pastFixings + futureFixings);
         }
 
         if (futureFixings == 0) {
@@ -108,7 +114,8 @@ namespace QuantLib {
                 results_.value = rTS->discount(exerciseDate)
                     * (expectedAverage - payoff->strike());
                 results_.delta = rTS->discount(exerciseDate)
-                    * (expectedAverage - accruedAverage) / process_->x0();
+                    * (expectedAverage - accruedAverage + spotSensitiveAccrued)
+                    / process_->x0();
             } else if (payoff->optionType() == Option::Type::Put) {
                 results_.value = 0.0;
                 results_.delta = 0.0;
@@ -149,17 +156,16 @@ namespace QuantLib {
         if (variances.empty()) {
             // all remaining fixings are deterministic: closed form
             Real expectedAverage = accruedAverage + deterministicForward;
-            Real expectedForwards = expectedAverage - accruedAverage;
+            Real expectedForwards = expectedAverage - accruedAverage + spotSensitiveAccrued;
+            Real sensitivity = rTS->discount(exerciseDate) * expectedForwards / process_->x0();
             results_.value = rTS->discount(exerciseDate)
                 * (*payoff)(expectedAverage);
             if (payoff->optionType() == Option::Type::Call) {
-                results_.delta = expectedAverage > payoff->strike()
-                    ? rTS->discount(exerciseDate) * expectedForwards / process_->x0()
-                    : 0.0;
+                results_.delta = expectedAverage > payoff->strike() ? sensitivity
+                    : (expectedAverage == payoff->strike() ? 0.5 * sensitivity : 0.0);
             } else {
-                results_.delta = expectedAverage < payoff->strike()
-                    ? -rTS->discount(exerciseDate) * expectedForwards / process_->x0()
-                    : 0.0;
+                results_.delta = expectedAverage < payoff->strike() ? -sensitivity
+                    : (expectedAverage == payoff->strike() ? -0.5 * sensitivity : 0.0);
             }
             results_.gamma = 0.0;
             return;
@@ -180,7 +186,7 @@ namespace QuantLib {
                 results_.value = rTS->discount(exerciseDate)
                     * (expectedAverage - payoff->strike());
                 results_.delta = rTS->discount(exerciseDate)
-                    * (expectedAverage - accruedAverage - deterministicForward)
+                    * (expectedAverage - accruedAverage + spotSensitiveAccrued)
                     / process_->x0();
             } else if (payoff->optionType() == Option::Type::Put) {
                 results_.value = 0.0;
