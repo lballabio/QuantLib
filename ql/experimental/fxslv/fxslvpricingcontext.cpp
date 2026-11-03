@@ -73,6 +73,8 @@ namespace QuantLib {
         leverageCal.calibrate(localVol_, leverageEndDate, mandatoryDates);
 
         leverageFunction_ = leverageCal.leverageFunction();
+        // the leverage function holds only for the vol-of-vol it was calibrated with
+        mixingFactor_ = leverageCal.mixingFactor();
     }
 
     ext::shared_ptr<PricingEngine>
@@ -84,7 +86,8 @@ namespace QuantLib {
             hestonModel_,
             grid.tGrid, grid.xGrid, grid.vGrid, grid.dampingSteps,
             scheme,
-            leverageFunction_);
+            leverageFunction_,
+            mixingFactor_);
     }
 
     ext::shared_ptr<PricingEngine>
@@ -96,7 +99,8 @@ namespace QuantLib {
             hestonModel_,
             grid.tGrid, grid.xGrid, grid.vGrid, grid.dampingSteps,
             scheme,
-            leverageFunction_);
+            leverageFunction_,
+            mixingFactor_);
     }
 
     ext::shared_ptr<PricingEngine>
@@ -108,7 +112,8 @@ namespace QuantLib {
             hestonModel_,
             grid.tGrid, grid.xGrid, grid.vGrid, grid.dampingSteps,
             scheme,
-            leverageFunction_);
+            leverageFunction_,
+            mixingFactor_);
     }
 
     ext::shared_ptr<HestonModel> FxSLVPricingContext::hestonModel() const {

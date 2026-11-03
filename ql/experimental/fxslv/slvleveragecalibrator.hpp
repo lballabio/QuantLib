@@ -91,6 +91,12 @@ namespace QuantLib {
         //! Returns the calibrated leverage function \f$L(t,S)\f$.
         /*! Throws if calibrate() has not yet been called. */
         virtual ext::shared_ptr<LocalVolTermStructure> leverageFunction() const = 0;
+
+        //! Fraction of the stochastic model's vol-of-vol the leverage function is calibrated for
+        /*! Pricing engines must scale the vol-of-vol by the same factor, or
+            the leverage function does not reproduce the local-vol marginals.
+        */
+        virtual Real mixingFactor() const { return 1.0; }
     };
 
 
@@ -152,6 +158,7 @@ namespace QuantLib {
                        const std::vector<Date>& mandatoryDates = {}) override;
 
         ext::shared_ptr<LocalVolTermStructure> leverageFunction() const override;
+        Real mixingFactor() const override { return mixingFactor_; }
         //@}
 
         //! Convenience setter for standalone use (bypasses the CalibratedModel cast).

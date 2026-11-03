@@ -158,6 +158,9 @@ namespace QuantLib {
 
         //! RMSE of the Heston fit across all calibration pillars.
         Real hestonRmse() const;
+
+        //! Mixing factor of the leverage calibration, which the engines use too.
+        Real mixingFactor() const { return mixingFactor_; }
         //@}
 
         //! \name Market data accessors
@@ -181,6 +184,7 @@ namespace QuantLib {
         ext::shared_ptr<LocalVolTermStructure> leverageFunction_;
         std::vector<Real>                      hestonErrors_;
         Real                                   hestonRmse_ = 0.0;
+        Real                                   mixingFactor_ = 1.0;
     };
 
 }
