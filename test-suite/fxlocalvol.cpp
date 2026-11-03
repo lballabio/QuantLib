@@ -599,8 +599,11 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
     }
 
     const std::vector<Real> deltas = { 0.25, 0.10 };
+    // weekends carry a fifth of a business day's variance: with none, local vol
+    // vanishes over whole days, which the SLV leverage calibration cannot handle
+    const Real weekendWeight = 0.2;
     auto timeTs = Handle<TradingTimeTermStructure>(
-        ext::make_shared<TradingTimeTermStructure>(today, calendar, 0.0));
+        ext::make_shared<TradingTimeTermStructure>(today, calendar, weekendWeight));
 
     auto volSurface = ext::make_shared<fxVarianceSurfaceNCP<TestSmileSection>>(
         today, spot, pillars, atms, rrs, bfs, deltas,

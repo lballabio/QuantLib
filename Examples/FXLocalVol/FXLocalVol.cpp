@@ -148,7 +148,12 @@ int main(int, char*[]) {
         Handle<YieldTermStructure> eurTs(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0400, dc));
         Handle<YieldTermStructure> usdTs(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0525, dc));
 
-        Handle<TradingTimeTermStructure> timeTs(ext::make_shared<TradingTimeTermStructure>(today, WeekendsOnly(), 0.0));
+        // Weekends carry a fifth of a business day's variance, as in the market.
+        // With none, local vol vanishes over whole days, which the SLV leverage
+        // calibration below cannot handle.
+        const Real weekendWeight = 0.2;
+        Handle<TradingTimeTermStructure> timeTs(
+            ext::make_shared<TradingTimeTermStructure>(today, WeekendsOnly(), weekendWeight));
 
         DeltaVolQuote::DeltaType  deltaType = DeltaVolQuote::Fwd;
         DeltaVolQuote::AtmType    atmType   = DeltaVolQuote::AtmFwd;
@@ -431,9 +436,9 @@ int main(int, char*[]) {
         // ══════════════════════════════════════════════════════════════════════
 
         // ──────────────────────────────────────────────────────────────────────
-        //  7. The Dupire local vol surface: the process's, built in 3.  It is
-        //     zero where no variance accrues, e.g. over weekends in trading
-        //     time, and uses the fallback where it is not defined.
+        //  7. The Dupire local vol surface: the process's, built in 3.  In
+        //     trading time it is lower over weekends, zero where no variance
+        //     accrues, and uses the fallback where it is not defined.
         // ──────────────────────────────────────────────────────────────────────
         const Handle<LocalVolTermStructure> localVolHandle = process->localVolatility();
         const auto localVolSurface =

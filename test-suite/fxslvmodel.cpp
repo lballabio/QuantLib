@@ -194,9 +194,13 @@ namespace {
                 bfs.push_back({ Handle<Quote>(bf25SQ), Handle<Quote>(bf10SQ) });
             }
 
-            // Build the variance surface (trading-time interpolation).
+            // Build the variance surface (trading-time interpolation).  A
+            // weekend carries a fifth of a business day's variance, as in the
+            // market; with none, local vol vanishes over whole days, and the
+            // SLV leverage calibration diverges as its grid is refined.
+            const Real weekendWeight = 0.2;
             auto timeTs = Handle<TradingTimeTermStructure>(
-                ext::make_shared<TradingTimeTermStructure>(today, calendar, 0.0));
+                ext::make_shared<TradingTimeTermStructure>(today, calendar, weekendWeight));
 
             volSurface = ext::make_shared<fxVarianceSurfaceNCP<TestSmileSection>>(
                 today, spot, pillars, atms, rrs, bfs, deltas,
@@ -208,9 +212,8 @@ namespace {
             volSurfaceHandle = Handle<BlackVolTermStructure>(volSurface);
 
             // The local-vol process: the settlement forward, and a Dupire
-            // local vol that is zero where no variance accrues, e.g. over
-            // weekends in trading time, and fails on arbitrage rather than
-            // substituting a value.  Its foreign curve and local vol are
+            // local vol that is lower over weekends in trading time, and fails
+            // on arbitrage rather than substituting a value.  Its foreign curve and local vol are
             // passed on to the SLV calibration.
             localVolProcess = makeFxLocalVolProcess(spot, eurTs, usdTs,
                                                     FxSettleConvention(calendar, 2),
@@ -588,10 +591,11 @@ BOOST_AUTO_TEST_CASE(testSLVGreeks) {
 //  supported.
 //
 //  The tolerance is that of Test 3, and loose: on this grid the SLV prices of
-//  4M calls are within about 13% of local vol at the money but up to 30% off
-//  at 1.05 F, and a finer grid does not close the gap on this trading-time
-//  surface.  Tighten it, and add the wings, once the SLV calibration
-//  reprices local vol.
+//  4M calls are within about 15% of local vol at the money but up to 30% off
+//  at 1.05 F.  A finer grid does not close the gap, even in calendar time
+//  (with the default grid, 4% at the money and 14% at 1.05 F), so it is not
+//  that of the weekends.  Tighten it, and add the wings, once the SLV
+//  calibration reprices local vol.
 // ─────────────────────────────────────────────────────────────────────────────
 
 BOOST_AUTO_TEST_CASE(testMixingFactorRepricesLocalVol) {
