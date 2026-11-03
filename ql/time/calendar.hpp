@@ -139,8 +139,10 @@ namespace QuantLib {
         */
         Date adjust(const Date&,
                     BusinessDayConvention convention = Following) const;
-        /*! Advances the given date of the given number of business days and
-            returns the result.
+        /*! Advances the given date by the given number of units and returns
+            the result. `Days` and `BusinessDays` skip holidays;
+            `CalendarDays` counts every calendar day before applying the
+            requested convention.
             \note The input date is not modified.
         */
         Date advance(const Date&,

@@ -96,10 +96,13 @@ namespace QuantLib {
             else
                 return OtherFrequency;
           case Days:
+          case CalendarDays:
             if (length==1)
                 return Daily;
             else
                 return OtherFrequency;
+          case BusinessDays:
+            QL_FAIL("cannot determine frequency of business-day period without a calendar");
           default:
             QL_FAIL("unknown time unit (" << Integer(units_) << ")");
         }
@@ -117,11 +120,13 @@ namespace QuantLib {
                 }
                 break;
               case Days:
+              case CalendarDays:
                 if ((length_ % 7) == 0) {
                     length_ /= 7;
                     units_ = Weeks;
                 }
                 break;
+              case BusinessDays:
               case Weeks:
               case Years:
                 break;
@@ -150,6 +155,8 @@ namespace QuantLib {
                     break;
                   case Weeks:
                   case Days:
+                  case CalendarDays:
+                  case BusinessDays:
                     QL_REQUIRE(p.length()==0,
                                "impossible addition between " << *this <<
                                " and " << p);
@@ -166,6 +173,8 @@ namespace QuantLib {
                     break;
                   case Weeks:
                   case Days:
+                  case CalendarDays:
+                  case BusinessDays:
                     QL_REQUIRE(p.length()==0,
                                "impossible addition between " << *this <<
                                " and " << p);
@@ -181,8 +190,13 @@ namespace QuantLib {
                     units_ = Days;
                     length_ = length_*7 + p.length();
                     break;
+                  case CalendarDays:
+                    units_ = CalendarDays;
+                    length_ = length_*7 + p.length();
+                    break;
                   case Years:
                   case Months:
+                  case BusinessDays:
                     QL_REQUIRE(p.length()==0,
                                "impossible addition between " << *this <<
                                " and " << p);
@@ -197,8 +211,13 @@ namespace QuantLib {
                   case Weeks:
                     length_ += p.length()*7;
                     break;
+                  case CalendarDays:
+                    units_ = CalendarDays;
+                    length_ += p.length();
+                    break;
                   case Years:
                   case Months:
+                  case BusinessDays:
                     QL_REQUIRE(p.length()==0,
                                "impossible addition between " << *this <<
                                " and " << p);
@@ -206,6 +225,31 @@ namespace QuantLib {
                   default:
                     QL_FAIL("unknown time unit (" << Integer(p.units()) << ")");
                 }
+                break;
+
+              case CalendarDays:
+                switch (p.units()) {
+                  case Weeks:
+                    length_ += p.length()*7;
+                    break;
+                  case Days:
+                    length_ += p.length();
+                    break;
+                  case Years:
+                  case Months:
+                  case BusinessDays:
+                    QL_REQUIRE(p.length()==0,
+                               "impossible addition between " << *this <<
+                               " and " << p);
+                    break;
+                  default:
+                    QL_FAIL("unknown time unit (" << Integer(p.units()) << ")");
+                }
+                break;
+
+              case BusinessDays:
+                QL_REQUIRE(p.length()==0,
+                           "impossible addition between " << *this << " and " << p);
                 break;
 
               default:
@@ -262,7 +306,10 @@ namespace QuantLib {
         std::pair<Integer,Integer> daysMinMax(const Period& p) {
             switch (p.units()) {
               case Days:
+              case CalendarDays:
                 return std::make_pair(p.length(), p.length());
+              case BusinessDays:
+                QL_FAIL("cannot convert business days to calendar days without a calendar");
               case Weeks:
                 return std::make_pair(7*p.length(), 7*p.length());
               // for negative lengths, the longer month or year gives the minimum
@@ -284,7 +331,10 @@ namespace QuantLib {
 
         switch (p.units()) {
           case Days:
+          case CalendarDays:
             QL_FAIL("cannot convert Days into Years");
+          case BusinessDays:
+            QL_FAIL("cannot convert BusinessDays into Years");
           case Weeks:
             QL_FAIL("cannot convert Weeks into Years");
           case Months:
@@ -301,7 +351,10 @@ namespace QuantLib {
 
         switch (p.units()) {
           case Days:
+          case CalendarDays:
             QL_FAIL("cannot convert Days into Months");
+          case BusinessDays:
+            QL_FAIL("cannot convert BusinessDays into Months");
           case Weeks:
             QL_FAIL("cannot convert Weeks into Months");
           case Months:
@@ -318,7 +371,10 @@ namespace QuantLib {
 
         switch (p.units()) {
           case Days:
+          case CalendarDays:
               return p.length()/7.0;
+          case BusinessDays:
+            QL_FAIL("cannot convert BusinessDays into Weeks");
           case Weeks:
               return p.length();
           case Months:
@@ -335,7 +391,10 @@ namespace QuantLib {
 
         switch (p.units()) {
           case Days:
+          case CalendarDays:
               return p.length();
+          case BusinessDays:
+            QL_FAIL("cannot convert BusinessDays into Days without a calendar");
           case Weeks:
               return p.length()*7.0;
           case Months:
@@ -362,10 +421,13 @@ namespace QuantLib {
             return p1.length() < 12*p2.length();
         if (p1.units() == Years && p2.units() == Months)
             return 12*p1.length() < p2.length();
-        if (p1.units() == Days && p2.units() == Weeks)
+        if ((p1.units() == Days || p1.units() == CalendarDays) && p2.units() == Weeks)
             return p1.length() < 7*p2.length();
-        if (p1.units() == Weeks && p2.units() == Days)
+        if (p1.units() == Weeks && (p2.units() == Days || p2.units() == CalendarDays))
             return 7*p1.length() < p2.length();
+        if ((p1.units() == Days && p2.units() == CalendarDays) ||
+            (p1.units() == CalendarDays && p2.units() == Days))
+            return p1.length() < p2.length();
 
         // inexact comparisons (handled by converting to days and using limits)
         std::pair<Integer, Integer> p1lim = daysMinMax(p1);
@@ -378,7 +440,6 @@ namespace QuantLib {
         else
             QL_FAIL("undecidable comparison between " << p1 << " and " << p2);
     }
-
 
     Period operator+(const Period& p1, const Period& p2) {
         Period result = p1;
@@ -410,6 +471,10 @@ namespace QuantLib {
             switch (holder.p.units()) {
               case Days:
                 return out << n << (n == 1 ? " day" : " days");
+              case CalendarDays:
+                return out << n << (n == 1 ? " calendar day" : " calendar days");
+              case BusinessDays:
+                return out << n << (n == 1 ? " business day" : " business days");
               case Weeks:
                 return out << n << (n == 1 ? " week" : " weeks");
               case Months:
@@ -433,6 +498,10 @@ namespace QuantLib {
                 return out << n << "s";
               case Days:
                 return out << n << "D";
+              case CalendarDays:
+                return out << n << "CD";
+              case BusinessDays:
+                return out << n << "BD";
               case Weeks:
                 return out << n << "W";
               case Months:
