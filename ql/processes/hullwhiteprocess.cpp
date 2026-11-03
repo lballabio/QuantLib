@@ -138,6 +138,7 @@ namespace QuantLib {
             Real fup = h_->forwardRate(t + shift, t + shift, Continuous, NoFrequency);
             Real f_prime = (fup - f) / shift;
             alpha_drift += a_ * f + f_prime - -B(t, T_) * sigma_ * sigma_;
+            driftCache_.add(alpha_drift, t);
         } else {
             alpha_drift = driftCache_.get(t);
         }
