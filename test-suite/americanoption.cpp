@@ -282,7 +282,7 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValues) {
       { Option::Put,  100.00, 100.00, 0.00, 0.00, 0.50, 0.15,  4.2294 }
     };
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -415,7 +415,7 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandValues) {
       { Option::Put, 100, 110, 0.05, 0.05, 1.0, 10, 99.20350 }
     };
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -537,7 +537,7 @@ BOOST_AUTO_TEST_CASE(testJuValues) {
 
     BOOST_TEST_MESSAGE("Testing Ju approximation for American options...");
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -1151,7 +1151,7 @@ BOOST_AUTO_TEST_CASE(testFdValues) {
 
     BOOST_TEST_MESSAGE("Testing finite-difference and QR+ engine for American options...");
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -1237,8 +1237,7 @@ void testFdGreeks() {
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
-    Settings::instance().evaluationDate() = today;
+    Date today = Settings::instance().evaluationDate();
 
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -3088,7 +3087,7 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyNegativeRates) {
     // Issue #1291: BAW crashes with a cryptic error when rates are negative.
     // Verify that it now throws a clear error message instead.
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
 
     auto spot = ext::make_shared<SimpleQuote>(36.0);
