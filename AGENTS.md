@@ -90,20 +90,23 @@ correctly when `Real` is a simple type:
   `condition ? Real(expression1) : Real(expression2)`.
 - Iterating over an initialization list as in
   `for (auto x: { a, a+b, a*b }) { ... }`
-  might fail to compile, again because the elements might have different
-  types.  Instead, prefer
+  might fail to compile, again because the elements might have
+  different types.  Instead, prefer
   `for (auto x: std::vector<Real>{ a, a+b, a*b }) { ... }`
+- For the same reason, instead of `std::max(x, 0.0)` or
+  `std::max({ x, x+y, z })`, prefer `std::max<Real>(x, 0.0)`
+  and `std::max<Real>({ x, x+y, z })`. The same goes for `std::min`.
 
 ### 3.6 Support for recent C++ standards
 
 C++17 is a minimum requirement, not a hard constraint; the library
-should be compilable under later standards.  Therefore, we should
-avoid both features not available in C++17 and features deprecated
+must also be compilable under later standards.  Therefore, we should
+avoid both features not yet available in C++17 and features deprecated
 in later standards:
 
 - Implicitly converting an enumeration into an integer (for instance,
   using `Option::Put` as -1 and `Option::Call` as 1 in some formulas)
-  will raise a deprecation warnings and fail the build in C++20 and
+  will raise a deprecation warning and fail the build in C++20 and
   above.  Instead of `some_enum * x`, use `int(some_enum) * x`.
 
 ### 3.7 Header Pattern
