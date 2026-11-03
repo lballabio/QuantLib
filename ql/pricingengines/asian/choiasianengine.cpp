@@ -162,10 +162,10 @@ namespace QuantLib {
                 * (*payoff)(expectedAverage);
             if (payoff->optionType() == Option::Type::Call) {
                 results_.delta = expectedAverage > payoff->strike() ? sensitivity
-                    : (expectedAverage == payoff->strike() ? 0.5 * sensitivity : 0.0);
+                    : (expectedAverage == payoff->strike() ? Real(0.5 * sensitivity) : Real(0.0));
             } else {
-                results_.delta = expectedAverage < payoff->strike() ? -sensitivity
-                    : (expectedAverage == payoff->strike() ? -0.5 * sensitivity : 0.0);
+                results_.delta = expectedAverage < payoff->strike() ? Real(-sensitivity)
+                    : (expectedAverage == payoff->strike() ? Real(-0.5 * sensitivity) : Real(0.0));
             }
             results_.gamma = 0.0;
             return;
