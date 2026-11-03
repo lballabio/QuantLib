@@ -623,7 +623,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAverageStrikeZeroVolatility) {
                 // Deterministic G averages the forwards at t = 1/2 and t = 1.
                 Real forward = 100.0*std::exp(r-0.03);
                 Real average = 100.0*std::exp((r-0.03)*0.75);
-                Real expected = std::exp(-r)*std::max(Real(type*(forward-average)), Real(0.0));
+                Real expected = std::exp(-r)*std::max(Real(type)*(forward-average), Real(0.0));
                 QL_CHECK_SMALL(option.NPV()-expected, 1e-12);
             }
         }
@@ -674,7 +674,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAverageStrikeNonFlatRates) {
                                           {today + 180, today + 360}, payoff, exercise);
         option.setPricingEngine(engine);
         Real expected = riskFree->discount(today + 360) *
-                        std::max(Real(type*(forward2-average)), Real(0.0));
+                        std::max(Real(type)*(forward2-average), Real(0.0));
         QL_CHECK_SMALL(option.NPV()-expected, 1e-12);
     }
 }
