@@ -138,15 +138,15 @@ class XABRInterpolationImpl final : public Interpolation::templateImpl<I1, I2>,
     void update() override {
         this->updateModelInstance();
 
-        // the market volatilities must be positive; checked here rather than
-        // in the constructor because the underlying data can change before
-        // each recalibration
+        // the market volatilities must be non-negative; checked here rather
+        // than in the constructor because the underlying data can change
+        // before each recalibration
         {
             I1 x = this->xBegin_;
             I2 y = this->yBegin_;
             for (; x != this->xEnd_; ++x, ++y)
-                QL_REQUIRE(*y > 0.0, "non-positive volatility (" << *y
-                                     << ") given at strike " << *x);
+                QL_REQUIRE(*y >= 0.0, "negative volatility (" << *y
+                                      << ") given at strike " << *x);
         }
 
         // we must update weights if it is vegaWeighted

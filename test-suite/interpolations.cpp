@@ -1601,9 +1601,9 @@ struct SabrTestCase {
     Real rho;
 };
 
-BOOST_AUTO_TEST_CASE(testSabrNonPositiveVolatilities) {
+BOOST_AUTO_TEST_CASE(testSabrNegativeVolatilities) {
 
-    BOOST_TEST_MESSAGE("Testing that Sabr interpolation rejects non-positive volatilities...");
+    BOOST_TEST_MESSAGE("Testing that Sabr interpolation rejects negative volatilities...");
 
     const std::vector<Real> strikes = {0.03, 0.04, 0.05, 0.06};
     std::vector<Real> vols = {0.20, 0.18, 0.19, 0.185};
@@ -1613,10 +1613,11 @@ BOOST_AUTO_TEST_CASE(testSabrNonPositiveVolatilities) {
     BOOST_CHECK_NO_THROW(sabr.update());
 
     // the interpolation refers to the data, so changes are seen at recalibration
-    for (Real badVol : {-0.20, 0.0}) {
-        vols[0] = badVol;
-        BOOST_CHECK_THROW(sabr.update(), Error);
-    }
+    vols[0] = 0.0;
+    BOOST_CHECK_NO_THROW(sabr.update());
+
+    vols[0] = -0.20;
+    BOOST_CHECK_THROW(sabr.update(), Error);
 }
 
 BOOST_AUTO_TEST_CASE(testSabrGuess){
