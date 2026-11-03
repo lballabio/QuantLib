@@ -354,7 +354,11 @@ namespace QuantLib {
     GaussKronrodAdaptive::integrate(const std::function<Real (Real)>& f,
                                     Real a,
                                     Real b) const {
-        return integrateRecursively(f, a, b, absoluteAccuracy());
+        // the error estimate is the sum of those of the accepted intervals
+        Real error = 0.0;
+        const Real result = integrateRecursively(f, a, b, absoluteAccuracy(), error);
+        setAbsoluteError(error);
+        return result;
     }
 
     // weights for 7-point Gauss-Legendre integration
@@ -388,6 +392,7 @@ namespace QuantLib {
                                     Real a,
                                     Real b,
                                     Real tolerance,
+                                    Real& error,
                                     Size depth) const {
 
             QL_REQUIRE(numberOfEvaluations() + 15 <= maxEvaluations(),
@@ -431,6 +436,7 @@ namespace QuantLib {
             // if error is larger than tolerance then split the interval
             // in two and integrate recursively
             if (std::fabs(k15 - g7) < tolerance) {
+                error += std::fabs(k15 - g7);
                 return k15;
             } else {
                 QL_REQUIRE(numberOfEvaluations()+30 <=
@@ -445,8 +451,8 @@ namespace QuantLib {
                            "cannot reach required accuracy: tolerance underflow");
                 // Bound stack use even when all midpoints and tolerances still advance.
                 QL_REQUIRE(depth < 256, "maximum subdivision depth exceeded");
-                return integrateRecursively(f, a, center, halfTolerance, depth + 1)
-                    + integrateRecursively(f, center, b, halfTolerance, depth + 1);
+                return integrateRecursively(f, a, center, halfTolerance, error, depth + 1)
+                    + integrateRecursively(f, center, b, halfTolerance, error, depth + 1);
             }
         }
 

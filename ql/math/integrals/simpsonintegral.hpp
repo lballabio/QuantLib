@@ -55,9 +55,12 @@ namespace QuantLib {
                 N *= 2;
                 newAdjI = (4.0*newI-I)/3.0;
                 // good enough? Also, don't run away immediately
-                if (std::fabs(adjI-newAdjI) <= absoluteAccuracy() && i > 5)
+                const Real error = std::fabs(adjI-newAdjI);
+                if (error <= absoluteAccuracy() && i > 5) {
                     // ok, exit
+                    setAbsoluteError(error);
                     return newAdjI;
+                }
                 // oh well. Another step.
                 I = newI;
                 adjI = newAdjI;
