@@ -77,16 +77,36 @@ Use the `ql/errors.hpp` macros, not raw `throw`/`assert`:
 - `QL_FAIL`
 - `QL_ASSERT`
 
-### 3.5 Conditional operator
+### 3.5 Support for AAD-enabled types
 
-A conditional operator, `condition ? expression1 : expression2`, might
-fail to compile if operations on `Real` were redefined to return an
+In some projects, `Real` might be redefined to return an
 expression-template type (as in some AAD-enabled extensions of the
-library, where `Real` itself is redefined), because `expression` and
-`expression2` might then have different types.  Instead, prefer
-`condition ? Real(expression1) : Real(expression2)`.
+library).  This might cause errors in some expressions that compile
+correctly when `Real` is a simple type:
 
-### 3.6 Header Pattern
+- A conditional operator, `condition ? expression1 : expression2`,
+  might fail to compile because `expression` and `expression2` might
+  have different types.  Instead, prefer
+  `condition ? Real(expression1) : Real(expression2)`.
+- Iterating over an initialization list as in
+  `for (auto x: { a, a+b, a*b }) { ... }`
+  might fail to compile, again because the elements might have different
+  types.  Instead, prefer
+  `for (auto x: std::vector<Real>{ a, a+b, a*b }) { ... }`
+
+### 3.6 Support for recent C++ standards
+
+C++17 is a minimum requirement, not a hard constraint; the library
+should be compilable under later standards.  Therefore, we should
+avoid both features not available in C++17 and features deprecated
+in later standards:
+
+- Implicitly converting an enumeration into an integer (for instance,
+  using `Option::Put` as -1 and `Option::Call` as 1 in some formulas)
+  will raise a deprecation warnings and fail the build in C++20 and
+  above.  Instead of `some_enum * x`, use `int(some_enum) * x`.
+
+### 3.7 Header Pattern
 
 New headers should have:
 
@@ -95,7 +115,7 @@ New headers should have:
 - Include guard `quantlib_<name>_hpp`
 - Self-contained includes
 
-### 3.7 Tests
+### 3.8 Tests
 
 Any added test cases must have a `BOOST_TEST_MESSAGE("Testing X...")`
 at the beginning, formatted as in existing tests.  Mind the ellipsis
