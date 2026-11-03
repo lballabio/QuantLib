@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file stochasticprocess.hpp
-    \brief stochastic processes
+/*! \file pathindependentcache.hpp
+    \brief cache for path independent results during stochastic process simulation
 */
 
 #ifndef quantlib_pathindependent_cache_hpp
@@ -28,6 +28,15 @@
 
 namespace QuantLib {
 
+    /*! The cache is initialized with the number of time steps of a stochastic process simulation.
+     * The usage pattern is as follows: On the first path we calculate a drift or diffusion and add
+     * the path-independent part to the cache, providing the current simulation time t and (if
+     * applicable) the time interval dt to which the calculated result applies. It is allowed to add
+     * a value for the same t multiple times, but it must be ensured that the value is always the
+     * same (this is not checked). Once the values for the first path have been added for
+     * timeSteps different times, ready() will return true, allowing to retrieve values from the
+     * cache for the simulation of all subsequent paths. It is possible to suspend the caching to
+     * allow querying the stochastic process outside the path generation access pattern. */
     template <typename U>
     class PathIndependentCache {
       public:
