@@ -3087,6 +3087,7 @@ BOOST_AUTO_TEST_CASE(testChoiAsianZeroVolatility) {
         Handle<Quote>(spot), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
         Handle<BlackVolTermStructure>(volTS));
     auto engine = ext::make_shared<ChoiAsianEngine>(process);
+    auto twEngine = ext::make_shared<TurnbullWakemanAsianEngine>(process);
 
     std::vector<Date> fixingDates = {today + 30, today + 60};
     auto exercise = ext::make_shared<EuropeanExercise>(today + 60);
@@ -3106,9 +3107,14 @@ BOOST_AUTO_TEST_CASE(testChoiAsianZeroVolatility) {
                 DiscreteAveragingAsianOption option(Average::Arithmetic, 0.0, 0, fixingDates,
                                                     payoff, exercise);
                 option.setPricingEngine(engine);
+                DiscreteAveragingAsianOption twOption(Average::Arithmetic, 0.0, 0, fixingDates,
+                                                      payoff, exercise);
+                twOption.setPricingEngine(twEngine);
 
                 Real expected = (*payoff)(expectedAverage) * discount;
                 BOOST_CHECK_SMALL(option.NPV() - expected, 1.0e-12);
+                // cross-engine consistency: Turnbull-Wakeman prices the same state
+                BOOST_CHECK_SMALL(twOption.NPV() - expected, 1.0e-12);
                 Real expectedDelta = 0.0;
                 if (type == Option::Call && expectedAverage > strike)
                     expectedDelta = discount * expectedAverage / spot->value();
@@ -3139,6 +3145,7 @@ BOOST_AUTO_TEST_CASE(testChoiAsianMixedZeroVariance) {
         Handle<Quote>(spot), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
         Handle<BlackVolTermStructure>(volTS));
     auto engine = ext::make_shared<ChoiAsianEngine>(process);
+    auto twEngine = ext::make_shared<TurnbullWakemanAsianEngine>(process);
 
     std::vector<Date> fixingDates = {today + 30, today + 60};
     auto exercise = ext::make_shared<EuropeanExercise>(today + 60);
@@ -3160,6 +3167,9 @@ BOOST_AUTO_TEST_CASE(testChoiAsianMixedZeroVariance) {
                 DiscreteAveragingAsianOption option(Average::Arithmetic, 0.0, 0, fixingDates,
                                                     payoff, exercise);
                 option.setPricingEngine(engine);
+                DiscreteAveragingAsianOption twOption(Average::Arithmetic, 0.0, 0, fixingDates,
+                                                      payoff, exercise);
+                twOption.setPricingEngine(twEngine);
 
                 Real residualStrike = strike - forward1 / m;
                 Real expected = blackFormula(type, std::max(residualStrike, 0.0),
@@ -3167,6 +3177,65 @@ BOOST_AUTO_TEST_CASE(testChoiAsianMixedZeroVariance) {
                 if (residualStrike <= 0.0 && type == Option::Call)
                     expected = discount * ((forward1 + forward2) / m - strike);
                 BOOST_CHECK_SMALL(option.NPV() - expected, 1.0e-12);
+                // cross-engine sanity check: unlike the guaranteed-exercise
+                // states in testChoiAsianNegativeEffectiveStrike, this branch
+                // has genuine optionality on the single remaining stochastic
+                // fixing, so Turnbull-Wakeman's moment-matching approximation
+                // need not match Choi's exact Black formula to high precision
+                // -- only to within its own approximation error
+                BOOST_CHECK_SMALL(twOption.NPV() - expected, 0.05);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testChoiAsianMixedZeroVarianceMultipleStochastic) {
+
+    BOOST_TEST_MESSAGE("Testing Choi Asian options with a deterministic fixing "
+                       "among multiple stochastic ones...");
+
+    // Same degenerate state as testChoiAsianMixedZeroVariance, but with two
+    // stochastic fixings instead of one: that test's 1-deterministic/
+    // 1-stochastic combination exercises the single-Black-formula branch
+    // (variances.size() == 1); this one exercises the correlation-matrix/
+    // BasketOption branch with a deterministic fixing already dropped from
+    // the basket -- a different code path that could reintroduce the 0/0
+    // correlation the degenerate-state fix exists to avoid, or mis-index the
+    // dropped fixing against the surviving ones.
+
+    Date today = Settings::instance().evaluationDate();
+    DayCounter dc = Actual365Fixed();
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto qTS = flatRate(today, 0.01, dc);
+    auto rTS = flatRate(today, 0.03, dc);
+    // zero volatility at the first fixing date, positive and rising afterwards
+    auto volTS = ext::make_shared<BlackVarianceCurve>(
+        today, std::vector<Date>{today + 30, today + 60, today + 90},
+        std::vector<Volatility>{0.0, 0.20, 0.25}, dc);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
+        Handle<BlackVolTermStructure>(volTS));
+    auto engine = ext::make_shared<ChoiAsianEngine>(process);
+    auto twEngine = ext::make_shared<TurnbullWakemanAsianEngine>(process);
+
+    std::vector<Date> fixingDates = {today + 30, today + 60, today + 90};
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 90);
+
+    for (Option::Type type : {Option::Call, Option::Put}) {
+        for (Real strike : {45.0, 90.0, 110.0}) {
+            BOOST_TEST_CONTEXT("type: " << type << ", strike: " << strike) {
+                auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
+                DiscreteAveragingAsianOption option(Average::Arithmetic, 0.0, 0, fixingDates,
+                                                    payoff, exercise);
+                option.setPricingEngine(engine);
+                DiscreteAveragingAsianOption twOption(Average::Arithmetic, 0.0, 0, fixingDates,
+                                                      payoff, exercise);
+                twOption.setPricingEngine(twEngine);
+
+                // no closed form here (two correlated stochastic fixings);
+                // cross-engine sanity check against Turnbull-Wakeman's
+                // moment-matching approximation (same caveat as above)
+                BOOST_CHECK_SMALL(option.NPV() - twOption.NPV(), 0.05);
             }
         }
     }

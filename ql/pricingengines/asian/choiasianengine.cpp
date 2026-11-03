@@ -204,7 +204,8 @@ namespace QuantLib {
             for (Size i=0; i < rho.rows(); ++i)
                 for (Size j=i; j < rho.columns(); ++j)
                     rho[i][j] = rho[j][i] =
-                        variances[std::min(i,j)] / std::sqrt(variances[i]*variances[j]);
+                        variances[std::min(i,j)]
+                            / (std::sqrt(variances[i]) * std::sqrt(variances[j]));
 
             const Handle<YieldTermStructure> zeroTS(
                 ext::make_shared<FlatForward>(rTS->referenceDate(), 0.0, rTS->dayCounter())
