@@ -2628,10 +2628,16 @@ BOOST_AUTO_TEST_CASE(testQdEnginesRejectPayoffAtExpiry) {
           ext::shared_ptr<PricingEngine>(qdFpEngine)}) {
 
         plainOption.setPricingEngine(engine);
-        BOOST_CHECK_NO_THROW(plainOption.NPV());
+        const Real npv = plainOption.NPV();
+        // Guard against a vacuous pass: this leg shows that the rejection
+        // below targets the payoff-at-expiry convention only, not American
+        // exercise in general; unless the NPV is comfortably positive,
+        // passing it wouldn't demonstrate that.
+        BOOST_REQUIRE(npv > 1.0);
 
         payoffAtExpiryOption.setPricingEngine(engine);
-        BOOST_CHECK_THROW(payoffAtExpiryOption.NPV(), Error);
+        BOOST_CHECK_EXCEPTION(payoffAtExpiryOption.NPV(), Error,
+                              ExpectedErrorMessage("payoff at expiry not handled"));
     }
 }
 
