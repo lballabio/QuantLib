@@ -27,6 +27,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -210,6 +211,89 @@ BOOST_AUTO_TEST_CASE(testHolderExtensibleOptionCriticalPrices) {
                         << "\n    expected:   " << c.expected
                         << "\n    calculated: " << calculated
                         << "\n    error:      " << error);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testHolderExtensibleOptionNegativeDividendYield) {
+    BOOST_TEST_MESSAGE("Testing holder-extensible options with a negative dividend yield...");
+
+    DayCounter dc = Actual365Fixed();
+    Date today = Settings::instance().evaluationDate();
+
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
+
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+    auto engine = ext::make_shared<AnalyticHolderExtensibleOptionEngine>(process);
+
+    struct Case {
+        const char* description;
+        Option::Type type;
+        Real spot, strike1, strike2, premium, volatility, riskFreeRate, dividendYield;
+        Integer days1, days2;
+        Real expected;
+        const char* expectedError = nullptr;
+    };
+
+    /* Reference prices: discounted expectation at the first expiry of
+       max(exercise, extension - premium, 0), by numerical integration in
+       mpmath. With a negative yield, the extension value of a call minus its
+       exercise value is convex in the spot but does not decrease for large
+       spots. The cases below include no zero and two zeros. */
+    Case cases[] = {
+        // exercise never beats extension: no zero
+        {"no zero", Option::Call, 118.0, 119.08, 117.523, 2.30157, 0.0864588, 0.00138423,
+         -0.00971198, 185, 424, 3.513400085302},
+        {"no zero", Option::Call, 118.0, 117.852, 118.726, 1.59195, 0.179851, 0.00232909,
+         -0.0246219, 545, 870, 15.845257803666},
+        // two zeros, the first strike beyond the minimum: extension dominates exercise
+        {"two zeros, strike beyond the minimum", Option::Call, 100.0, 100.0, 100.0, 36.0, 0.2, 0.02,
+         -0.3, 182, 547, 25.363356673445},
+        // two zeros before and after an exercise region: an additional boundary is required
+        {"two zeros, strike before the minimum", Option::Call, 118.0, 119.08, 117.523, 2.30157,
+         0.0864588, 0.00138423, -0.005, 185, 424, 3.1862655186463,
+         "holder-extensible call with two roots is not supported"},
+        // the premium is below X1 - X2*exp(-r*(T2-t1)), so there is no zero
+        {"low premium", Option::Call, 100.0, 100.0, 95.0, 1.0, 0.25, 0.08, -0.02, 180, 270,
+         14.590398720627},
+        {"low premium, zero yield", Option::Call, 100.0, 100.0, 95.0, 1.0, 0.25, 0.08, 0.0, 180,
+         270, 13.49148769505},
+        {"put", Option::Put, 100.0, 100.0, 105.0, 1.0, 0.25, 0.08, -0.01, 180, 270,
+         6.8762827333313},
+        {"extension only at high spots", Option::Call, 100.0, 100.0, 100.0, 40.0,
+         0.2, 0.02, -0.3, 182, 547, 0.0,
+         "holder-extensible call extension only at high spots is not supported"},
+        // Saturated deltas must not produce infinite Newton steps.
+        {"zero call derivative", Option::Call, 100.0, 100.0, 100.0, 1.0, 100.0, 0.0, 0.0,
+         365, 730, 0.0, "critical price: zero or non-finite derivative"},
+        {"zero put derivative", Option::Put, 100.0, 100.0, 100.0, 1.0, 100.0, 0.0, 0.0,
+         365, 730, 0.0, "critical price: zero or non-finite derivative"},
+    };
+
+    Real tolerance = 1e-4;
+    for (const auto& c : cases) {
+        spot->setValue(c.spot);
+        qRate->setValue(c.dividendYield);
+        rRate->setValue(c.riskFreeRate);
+        vol->setValue(c.volatility);
+
+        HolderExtensibleOption option(c.type, c.premium, today + c.days2, c.strike2,
+                                      ext::make_shared<PlainVanillaPayoff>(c.type, c.strike1),
+                                      ext::make_shared<EuropeanExercise>(today + c.days1));
+        option.setPricingEngine(engine);
+
+        BOOST_TEST_CONTEXT(c.description << ", dividend yield " << c.dividendYield) {
+            if (c.expectedError)
+                BOOST_CHECK_EXCEPTION(option.NPV(), Error,
+                                      ExpectedErrorMessage(c.expectedError));
+            else
+                QL_CHECK_SMALL(option.NPV() - c.expected, tolerance);
+        }
     }
 }
 
