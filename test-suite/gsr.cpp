@@ -1233,6 +1233,44 @@ BOOST_AUTO_TEST_CASE(testCapFloorNonZeroSpreadConsistency) {
     // below would not actually be exercising the spread-adjustment logic.
     BOOST_REQUIRE(shiftedCapNpv > 1.0e-4);
     QL_CHECK_CLOSE(spreadCapNpv, shiftedCapNpv, 1.0e-10);
+
+    // The floor and collar follow different code paths in the engine's
+    // calculate() (a collar is priced as a cap minus a floor), and
+    // setupArguments() adjusts floorRates with the same (strike-spread)
+    // pre-scaling it applies to capRates -- so the same identity holds:
+    // a floor with spread s at strike K is a zero-spread floor at K-s,
+    // and a collar with spread s at strikes (Kc, Kf) is a zero-spread
+    // collar at (Kc-s, Kf-s).
+    Rate floorStrike = 0.03; // above the forward: the floor is in the money
+    CapFloor spreadFloor(CapFloor::Floor, spreadLeg,
+                         std::vector<Rate>(1, floorStrike));
+    CapFloor shiftedFloor(CapFloor::Floor, zeroSpreadLeg,
+                          std::vector<Rate>(1, floorStrike - spread));
+    spreadFloor.setPricingEngine(engine);
+    shiftedFloor.setPricingEngine(engine);
+    Real spreadFloorNpv = spreadFloor.NPV();
+    Real shiftedFloorNpv = shiftedFloor.NPV();
+    BOOST_CHECK(std::isfinite(spreadFloorNpv));
+    BOOST_REQUIRE(shiftedFloorNpv > 1.0e-4);
+    QL_CHECK_CLOSE(spreadFloorNpv, shiftedFloorNpv, 1.0e-10);
+
+    Rate collarCapStrike = 0.015, collarFloorStrike = 0.010;
+    CapFloor spreadCollar(CapFloor::Collar, spreadLeg,
+                          std::vector<Rate>(1, collarCapStrike),
+                          std::vector<Rate>(1, collarFloorStrike));
+    CapFloor shiftedCollar(CapFloor::Collar, zeroSpreadLeg,
+                           std::vector<Rate>(1, collarCapStrike - spread),
+                           std::vector<Rate>(1, collarFloorStrike - spread));
+    spreadCollar.setPricingEngine(engine);
+    shiftedCollar.setPricingEngine(engine);
+    Real spreadCollarNpv = spreadCollar.NPV();
+    Real shiftedCollarNpv = shiftedCollar.NPV();
+    BOOST_CHECK(std::isfinite(spreadCollarNpv));
+    // A collar nets a long caplet against a short floorlet, so it is the
+    // distance from zero (either sign) that keeps the comparison below
+    // from passing vacuously.
+    BOOST_REQUIRE(std::fabs(shiftedCollarNpv) > 1.0e-4);
+    QL_CHECK_CLOSE(spreadCollarNpv, shiftedCollarNpv, 1.0e-10);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
