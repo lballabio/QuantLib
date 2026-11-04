@@ -32,8 +32,10 @@
 
 namespace QuantLib {
 
-    //! Abstract base class for path-dependent option payoffs
-    class PathPayoff {
+    /*! \deprecated Obsolete. Don't use.
+                    Deprecated in version 1.45.
+    */
+    class [[deprecated("Obsolete. Don't use")]] PathPayoff {
       public:
         virtual ~PathPayoff() = default;
         //! \name Payoff interface
@@ -78,6 +80,7 @@ namespace QuantLib {
         //@}
     };
 
+    QL_DEPRECATED_DISABLE_WARNING
 
     // inline definitions
 
@@ -88,6 +91,9 @@ namespace QuantLib {
         else
             QL_FAIL("not a path-payoff visitor");
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
+
 }
 
 

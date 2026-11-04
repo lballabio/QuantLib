@@ -30,16 +30,16 @@
 
 namespace QuantLib {
 
-    //! least-square Monte Carlo engine
-    /*! \warning This method is intrinsically weak for out-of-the-money
-                 options.
+    QL_DEPRECATED_DISABLE_WARNING
 
-        \ingroup basketengines
+    /*! \deprecated Use MCAmericanBasketEngine instead.
+                    Deprecated in version 1.45.
     */
     template <class RNG = PseudoRandom>
-    class MCAmericanPathEngine
+    class [[deprecated("Use MCAmericanBasketEngine instead")]] MCAmericanPathEngine
         : public MCLongstaffSchwartzPathEngine<
-                            PathMultiAssetOption::engine,MultiVariate,RNG> {
+                            PathMultiAssetOption::engine,MultiVariate,RNG>
+    {
       public:
         MCAmericanPathEngine(const ext::shared_ptr<StochasticProcessArray>&,
                                Size timeSteps,
@@ -57,10 +57,11 @@ namespace QuantLib {
                                                       lsmPathPricer() const;
     };
 
-
-    //! Monte Carlo American basket-option engine factory
+    /*! \deprecated Use MakeMCAmericanBasketEngine instead.
+                    Deprecated in version 1.45.
+    */
     template <class RNG = PseudoRandom>
-    class MakeMCAmericanPathEngine {
+    class [[deprecated("Use MakeMCAmericanBasketEngine instead")]] MakeMCAmericanPathEngine {
       public:
         explicit MakeMCAmericanPathEngine(ext::shared_ptr<StochasticProcessArray>);
         // named parameters
@@ -267,6 +268,8 @@ namespace QuantLib {
                                         seed_,
                                         calibrationSamples_));
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 

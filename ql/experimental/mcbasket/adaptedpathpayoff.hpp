@@ -28,7 +28,12 @@
 
 namespace QuantLib {
 
-    class AdaptedPathPayoff : public PathPayoff {
+    QL_DEPRECATED_DISABLE_WARNING
+
+    /*! \deprecated Obsolete; don't use.
+                    Deprecated in version 1.45.
+    */
+    class [[deprecated("Obsolete; don't use")]] AdaptedPathPayoff : public PathPayoff {
     public:
 
         class ValuationData {
@@ -83,6 +88,9 @@ namespace QuantLib {
          */
         virtual void operator()(ValuationData & data) const = 0;
     };
+
+    QL_DEPRECATED_ENABLE_WARNING
+
 }
 
 #endif

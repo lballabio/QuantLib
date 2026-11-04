@@ -1601,6 +1601,25 @@ struct SabrTestCase {
     Real rho;
 };
 
+BOOST_AUTO_TEST_CASE(testSabrNegativeVolatilities) {
+
+    BOOST_TEST_MESSAGE("Testing that Sabr interpolation rejects negative volatilities...");
+
+    const std::vector<Real> strikes = {0.03, 0.04, 0.05, 0.06};
+    std::vector<Real> vols = {0.20, 0.18, 0.19, 0.185};
+    SABRInterpolation sabr(strikes.begin(), strikes.end(), vols.begin(),
+                           1.0, 0.04, 0.2, 1.0, 0.1, 0.0,
+                           false, false, false, false, true);
+    BOOST_CHECK_NO_THROW(sabr.update());
+
+    // the interpolation refers to the data, so changes are seen at recalibration
+    vols[0] = 0.0;
+    BOOST_CHECK_NO_THROW(sabr.update());
+
+    vols[0] = -0.20;
+    BOOST_CHECK_THROW(sabr.update(), Error);
+}
+
 BOOST_AUTO_TEST_CASE(testSabrGuess){
 
     BOOST_TEST_MESSAGE("Testing Sabr guess...");
@@ -2457,6 +2476,12 @@ BOOST_AUTO_TEST_CASE(testLagrangeInterpolationAtSupportPoint) {
     LagrangeInterpolation interpl(x.begin(), x.end(), y.begin());
 
     const Real relTol = 5e-12;
+
+    QL_CHECK_CLOSE(interpl(x[0]), y[0], relTol);
+
+    Array updatedY = y;
+    updatedY[0] = 2.0;
+    QL_CHECK_CLOSE(interpl.value(updatedY, x[0]), updatedY[0], relTol);
 
     for (Size i=1; i < n-1; ++i) {
         for (Real z = x[i] - 100*QL_EPSILON;

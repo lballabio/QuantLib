@@ -25,6 +25,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     PathMultiAssetOption::PathMultiAssetOption(
                             const ext::shared_ptr<PricingEngine>& engine) {
         if (engine != nullptr)
@@ -53,5 +55,8 @@ namespace QuantLib {
         QL_REQUIRE(payoff,                 "no payoff given");
         QL_REQUIRE(!fixingDates.empty(), "no dates given");
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
+
 }
 

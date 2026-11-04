@@ -116,7 +116,7 @@ namespace QuantLib {
                 const Real eps = 10*QL_EPSILON*std::abs(x);
                 const auto iter = std::lower_bound(
                     this->xBegin_, this->xEnd_, x - eps);
-                if (iter != this->xEnd_ && *iter - x < eps) {
+                if (iter != this->xEnd_ && close_enough(*iter, x, 10)) {
                     return yBegin[std::distance(this->xBegin_, iter)];
                 }
 

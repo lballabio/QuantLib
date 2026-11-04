@@ -282,7 +282,7 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValues) {
       { Option::Put,  100.00, 100.00, 0.00, 0.00, 0.50, 0.15,  4.2294 }
     };
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -409,11 +409,13 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandValues) {
         // ITM option with a very small volatility
       { Option::Call, 100, 110, 0.05, 0.05, 1.0, 0.0001, 10.0 },
       { Option::Put, 110, 100, 0.05, 0.05, 1.0, 0.0001, 10.0 },
-        // ATM option with a very large volatility
-      { Option::Put, 100, 110, 0.05, 0.05, 1.0, 10, 95.12289 }
+        // OTM option with a very large volatility; the published trigger
+        // gives the European value 95.12289 here. Reference values: QdFp
+        // high precision 99.20350, CRR with 4001 steps 99.20338
+      { Option::Put, 100, 110, 0.05, 0.05, 1.0, 10, 99.20350 }
     };
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -535,7 +537,7 @@ BOOST_AUTO_TEST_CASE(testJuValues) {
 
     BOOST_TEST_MESSAGE("Testing Ju approximation for American options...");
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -1076,11 +1078,80 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandAtUnitBeta) {
     BOOST_CHECK(std::isfinite(kink.NPV()));
 }
 
+BOOST_AUTO_TEST_CASE(testBjerksundStenslandNegativeCarryTrigger) {
+
+    BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland with negative carry near and past T*...");
+
+    // When the call-equivalent carry b is negative, the published flat trigger
+    // drops below the strike as T approaches T* = (2 sigma / |b|)^2, and the
+    // approximation collapses to the European value. Maximising the value
+    // over the trigger keeps it close to the American price on both sides.
+
+    const Date today = Date(15, October, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual365Fixed();
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+
+    struct Case {
+        Option::Type type;
+        Rate r;
+        Rate q;
+        Volatility v;
+        std::vector<Integer> days;
+    };
+    const Case cases[] = {
+        {Option::Put, 0.40, 0.05, 0.15, {120, 182, 220, 250, 268, 365}},
+        {Option::Call, 0.05, 0.40, 0.15, {120, 182, 220, 250, 268, 365}},
+        {Option::Put, 0.0768, 0.0075, 0.0231, {91, 120, 140, 155, 160, 182}},
+    };
+
+    // the worst relative error against QdFp is about 1.4e-3 here; with the
+    // published trigger the errors range from 1% to 97%
+    const Real tolerance = 2.0e-3;
+
+    for (const auto& c : cases) {
+        const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, c.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, c.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, c.v, dc)));
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, 100.0);
+        const auto bjerksundStensland =
+            ext::make_shared<BjerksundStenslandApproximationEngine>(process);
+        const auto qdFp = ext::make_shared<QdFpAmericanEngine>(
+            process, QdFpAmericanEngine::highPrecisionScheme());
+
+        Real previous = 0.0;
+        for (Integer d : c.days) {
+            const auto exercise = ext::make_shared<AmericanExercise>(today, today + d);
+            VanillaOption option(payoff, exercise);
+
+            option.setPricingEngine(qdFp);
+            const Real expected = option.NPV();
+            option.setPricingEngine(bjerksundStensland);
+            const Real calculated = option.NPV();
+
+            const Real error = std::fabs(calculated - expected) / expected;
+            if (error > tolerance) {
+                REPORT_FAILURE("value", payoff, exercise, spot->value(), c.q, c.r, today, c.v,
+                               expected, calculated, error, tolerance);
+            }
+            // the American price can't decrease with a longer maturity
+            if (calculated < previous) {
+                BOOST_ERROR("Bjerksund-Stensland value decreases with maturity:"
+                            << "\n    previous maturity: " << previous
+                            << "\n    maturity of " << d << " days: " << calculated);
+            }
+            previous = calculated;
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testFdValues) {
 
     BOOST_TEST_MESSAGE("Testing finite-difference and QR+ engine for American options...");
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -1166,8 +1237,7 @@ void testFdGreeks() {
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
-    Settings::instance().evaluationDate() = today;
+    Date today = Settings::instance().evaluationDate();
 
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -3017,7 +3087,7 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyNegativeRates) {
     // Issue #1291: BAW crashes with a cryptic error when rates are negative.
     // Verify that it now throws a clear error message instead.
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
 
     auto spot = ext::make_shared<SimpleQuote>(36.0);

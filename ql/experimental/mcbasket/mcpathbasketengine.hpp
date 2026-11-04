@@ -35,11 +35,15 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for path dependent basket options using
-    //  Monte Carlo simulation
+    QL_DEPRECATED_DISABLE_WARNING
+
+    /*! \deprecated Use MCEuropeanBasketEngine instead.
+                    Deprecated in version 1.45.
+    */
     template <class RNG = PseudoRandom, class S = Statistics>
-    class MCPathBasketEngine  : public PathMultiAssetOption::engine,
-                                public McSimulation<MultiVariate,RNG,S> {
+    class [[deprecated("Use MCEuropeanBasketEngine instead")]] MCPathBasketEngine
+        : public PathMultiAssetOption::engine,
+          public McSimulation<MultiVariate,RNG,S> {
       public:
         typedef typename McSimulation<MultiVariate,RNG,S>::path_generator_type
                                                           path_generator_type;
@@ -88,7 +92,38 @@ namespace QuantLib {
     };
 
 
-    class EuropeanPathMultiPathPricer : public PathPricer<MultiPath> {
+    /*! \deprecated Use MakeMCEuropeanBasketEngine instead.
+                    Deprecated in version 1.45.
+    */
+    template <class RNG = PseudoRandom, class S = Statistics>
+    class [[deprecated("Use MakeMCEuropeanBasketEngine instead")]] MakeMCPathBasketEngine {
+      public:
+        explicit MakeMCPathBasketEngine(ext::shared_ptr<StochasticProcessArray>);
+        // named parameters
+        MakeMCPathBasketEngine& withSteps(Size steps);
+        MakeMCPathBasketEngine& withStepsPerYear(Size steps);
+        MakeMCPathBasketEngine& withBrownianBridge(bool b = true);
+        MakeMCPathBasketEngine& withSamples(Size samples);
+        MakeMCPathBasketEngine& withAbsoluteTolerance(Real tolerance);
+        MakeMCPathBasketEngine& withMaxSamples(Size samples);
+        MakeMCPathBasketEngine& withSeed(BigNatural seed);
+        MakeMCPathBasketEngine& withAntitheticVariate(bool b = true);
+        MakeMCPathBasketEngine& withControlVariate(bool b = true);
+        // conversion to pricing engine
+        operator ext::shared_ptr<PricingEngine>() const;
+      private:
+        ext::shared_ptr<StochasticProcessArray> process_;
+        bool antithetic_ = false, controlVariate_ = false;
+        Size steps_, stepsPerYear_, samples_, maxSamples_;
+        Real tolerance_;
+        bool brownianBridge_ = false;
+        BigNatural seed_ = 0;
+    };
+
+    /*! \deprecated Obsolete.  Don't use.
+                    Deprecated in version 1.45.
+    */
+    class [[deprecated("Obsolete.  Don't use")]] EuropeanPathMultiPathPricer : public PathPricer<MultiPath> {
       public:
         EuropeanPathMultiPathPricer(ext::shared_ptr<PathPayoff>& payoff,
                                     std::vector<Size> timePositions,
@@ -218,32 +253,6 @@ namespace QuantLib {
     }
 
 
-    //! Monte Carlo Path Basket engine factory
-    template <class RNG = PseudoRandom, class S = Statistics>
-    class MakeMCPathBasketEngine {
-      public:
-        explicit MakeMCPathBasketEngine(ext::shared_ptr<StochasticProcessArray>);
-        // named parameters
-        MakeMCPathBasketEngine& withSteps(Size steps);
-        MakeMCPathBasketEngine& withStepsPerYear(Size steps);
-        MakeMCPathBasketEngine& withBrownianBridge(bool b = true);
-        MakeMCPathBasketEngine& withSamples(Size samples);
-        MakeMCPathBasketEngine& withAbsoluteTolerance(Real tolerance);
-        MakeMCPathBasketEngine& withMaxSamples(Size samples);
-        MakeMCPathBasketEngine& withSeed(BigNatural seed);
-        MakeMCPathBasketEngine& withAntitheticVariate(bool b = true);
-        MakeMCPathBasketEngine& withControlVariate(bool b = true);
-        // conversion to pricing engine
-        operator ext::shared_ptr<PricingEngine>() const;
-      private:
-        ext::shared_ptr<StochasticProcessArray> process_;
-        bool antithetic_ = false, controlVariate_ = false;
-        Size steps_, stepsPerYear_, samples_, maxSamples_;
-        Real tolerance_;
-        bool brownianBridge_ = false;
-        BigNatural seed_ = 0;
-    };
-
     template <class RNG, class S>
     inline MakeMCPathBasketEngine<RNG, S>::MakeMCPathBasketEngine(
         ext::shared_ptr<StochasticProcessArray> process)
@@ -336,6 +345,8 @@ namespace QuantLib {
                                       maxSamples_,
                                       seed_));
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 

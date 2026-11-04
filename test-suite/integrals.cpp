@@ -197,7 +197,7 @@ BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveUnattainableAccuracy) {
         const GaussKronrodAdaptive integrator(tolerances[i]);
         BOOST_CHECK_EXCEPTION(integrator(functions[i], 0.0, upperBounds[i]), Error,
                               expectedAccuracyFailure);
-        BOOST_CHECK_LE(integrator.numberOfEvaluations(), 10000);
+        BOOST_CHECK_LE(integrator.numberOfEvaluations(), 10000U);
     }
 }
 
@@ -209,31 +209,31 @@ BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveAttainableAccuracy) {
     BOOST_CHECK_EQUAL(midpointIntegrator(
                           [](Real x) { return x == 0.5 ? 1e8 : 0.0; }, 0.0, 1.0),
                       0.0);
-    BOOST_CHECK_EQUAL(midpointIntegrator.numberOfEvaluations(), 45);
+    BOOST_CHECK_EQUAL(midpointIntegrator.numberOfEvaluations(), 45U);
 
     const GaussKronrodAdaptive exponentialIntegrator(1e-8);
     const Real exponential = exponentialIntegrator(
         [](Real x) { return 1e5 * std::exp(x); }, 0.0, 1.0);
-    BOOST_CHECK_SMALL(exponential - 1e5 * std::expm1(1.0), 1e-8);
+    QL_CHECK_SMALL(exponential - 1e5 * std::expm1(1.0), 1e-8);
 
     const GaussKronrodAdaptive cosineIntegrator(1e-9);
     const auto f = [](Real x) { return 100.0 * std::cos(x); };
     const Real expected = 100.0 * std::sin(10.0);
-    BOOST_CHECK_SMALL(cosineIntegrator(f, 0.0, 10.0) - expected, 1e-9);
-    BOOST_CHECK_GT(cosineIntegrator.numberOfEvaluations(), 15);
-    BOOST_CHECK_SMALL(cosineIntegrator(f, 10.0, 0.0) + expected, 1e-9);
+    QL_CHECK_SMALL(cosineIntegrator(f, 0.0, 10.0) - expected, 1e-9);
+    BOOST_CHECK_GT(cosineIntegrator.numberOfEvaluations(), 15U);
+    QL_CHECK_SMALL(cosineIntegrator(f, 10.0, 0.0) + expected, 1e-9);
 
     const GaussKronrodAdaptive limitedIntegrator(1e-9, 15);
     BOOST_CHECK_EXCEPTION(limitedIntegrator(f, 0.0, 10.0), Error,
                           ExpectedErrorMessage("maximum number of function evaluations exceeded"));
-    BOOST_CHECK_EQUAL(limitedIntegrator.numberOfEvaluations(), 15);
+    BOOST_CHECK_EQUAL(limitedIntegrator.numberOfEvaluations(), 15U);
 }
 
 BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveEvaluationBudget) {
     BOOST_TEST_MESSAGE("Testing adaptive Gauss-Kronrod evaluation budgets...");
 
     GaussKronrodAdaptive integrator(1e-8);
-    BOOST_CHECK_EQUAL(integrator.maxEvaluations(), 1000000);
+    BOOST_CHECK_EQUAL(integrator.maxEvaluations(), 1000000U);
     integrator.setMaxEvaluations(60);
 
     Size calls = 0;
@@ -244,7 +244,7 @@ BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveEvaluationBudget) {
                           }, 0.0, 1.0),
                           Error,
                           ExpectedErrorMessage("maximum number of function evaluations exceeded"));
-    BOOST_CHECK_EQUAL(calls, 60);
+    BOOST_CHECK_EQUAL(calls, 60U);
     BOOST_CHECK_EQUAL(integrator.numberOfEvaluations(), calls);
 
     integrator.setMaxEvaluations(Null<Size>());
@@ -261,11 +261,11 @@ BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveNoSubdivisionProgress) {
 
     const GaussKronrodAdaptive integrator(1e-6);
     BOOST_CHECK_EQUAL(integrator([](Real) { return 0.0; }, a, b), 0.0);
-    BOOST_CHECK_SMALL(integrator([](Real) { return 1.0; }, a, b) - (b - a),
-                      50 * QL_EPSILON * (b - a));
+    QL_CHECK_SMALL(integrator([](Real) { return 1.0; }, a, b) - (b - a),
+                   50 * QL_EPSILON * (b - a));
     BOOST_CHECK_EXCEPTION(integrator([a](Real x) { return x == a ? 1e16 : 0.0; }, a, b),
                           Error, ExpectedErrorMessage("subdivision"));
-    BOOST_CHECK_EQUAL(integrator.numberOfEvaluations(), 15);
+    BOOST_CHECK_EQUAL(integrator.numberOfEvaluations(), 15U);
 }
 
 BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptiveLimits) {

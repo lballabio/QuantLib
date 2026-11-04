@@ -31,7 +31,14 @@
 namespace QuantLib {
 
     //! Bjerksund and Stensland pricing engine for American options (1993)
-    /*! \ingroup vanillaengines
+    /*! The 1993 paper gives a heuristic for the flat exercise trigger.
+        When the value still increases above it, this engine uses the
+        trigger that maximises the value instead, so results can differ
+        from the published ones; this happens mostly for negative carry
+        and long maturities, where the published trigger falls below
+        the strike and the approximation collapses to the European value.
+
+        \ingroup vanillaengines
 
         \test the correctness of the returned value is tested by
               reproducing results available in literature.

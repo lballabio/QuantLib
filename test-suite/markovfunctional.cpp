@@ -1336,14 +1336,14 @@ BOOST_AUTO_TEST_CASE(testTimeZeroNumeraireAfterDateChange) {
             const Handle<YieldTermStructure>& expectedCurve =
                 useDiscountCurve ? discountCurve : curve;
             Real initial = model->numeraire(0.0, 0.0, discountCurve);
-            BOOST_CHECK_SMALL(initial - expectedCurve->discount(model->numeraireDate(), true),
-                              1.0e-12);
+            QL_CHECK_SMALL(initial - expectedCurve->discount(model->numeraireDate(), true),
+                           1.0e-12);
             for (Integer days : {1, 2}) {
                 BOOST_TEST_CONTEXT("days=" << days) {
                     Settings::instance().evaluationDate() = referenceDate + days;
                     Real actual = model->numeraire(0.0, 0.0, discountCurve);
                     Real expected = expectedCurve->discount(model->numeraireDate(), true);
-                    BOOST_CHECK_SMALL(actual - expected, 1.0e-12);
+                    QL_CHECK_SMALL(actual - expected, 1.0e-12);
                     BOOST_CHECK_GT(actual, initial);
                 }
             }
@@ -1375,8 +1375,8 @@ BOOST_AUTO_TEST_CASE(testModelOutputsAfterRecalculation) {
             BOOST_CHECK_EQUAL(outputs.expiries_.size(), initial.expiries_.size());
             BOOST_REQUIRE_EQUAL(outputs.atm_.size(), initial.atm_.size());
             BOOST_REQUIRE_EQUAL(outputs.annuity_.size(), initial.annuity_.size());
-            BOOST_CHECK_SMALL(outputs.atm_.front() - initial.atm_.front(), 1.0e-12);
-            BOOST_CHECK_SMALL(outputs.annuity_.front() - initial.annuity_.front(), 1.0e-12);
+            QL_CHECK_SMALL(outputs.atm_.front() - initial.atm_.front(), 1.0e-12);
+            QL_CHECK_SMALL(outputs.annuity_.front() - initial.annuity_.front(), 1.0e-12);
         }
     }
 }
@@ -1399,7 +1399,7 @@ BOOST_AUTO_TEST_CASE(testModelOutputsAfterMarketUpdate) {
             .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone));
     const auto initial = model->modelOutputs();
     BOOST_REQUIRE_EQUAL(initial.marketZerorate_.size(), 1);
-    BOOST_CHECK_SMALL(initial.marketZerorate_.front() - 0.03, 1.0e-12);
+    QL_CHECK_SMALL(initial.marketZerorate_.front() - 0.03, 1.0e-12);
 
     for (Rate rate : {0.04, 0.02}) {
         BOOST_TEST_CONTEXT("rate=" << rate) {
@@ -1410,13 +1410,13 @@ BOOST_AUTO_TEST_CASE(testModelOutputsAfterMarketUpdate) {
             BOOST_REQUIRE_EQUAL(outputs.marketZerorate_.size(), 1);
             BOOST_REQUIRE_EQUAL(outputs.atm_.size(), 1);
             BOOST_REQUIRE_EQUAL(outputs.annuity_.size(), 1);
-            BOOST_CHECK_SMALL(outputs.marketZerorate_.front() - rate, 1.0e-12);
+            QL_CHECK_SMALL(outputs.marketZerorate_.front() - rate, 1.0e-12);
             Real accrual = index->dayCounter().yearFraction(expiry, model->numeraireDate());
             Real expectedAnnuity = accrual * curve->discount(model->numeraireDate());
             Real expectedAtm = (curve->discount(expiry) -
                                 curve->discount(model->numeraireDate())) / expectedAnnuity;
-            BOOST_CHECK_SMALL(outputs.annuity_.front() - expectedAnnuity, 1.0e-12);
-            BOOST_CHECK_SMALL(outputs.atm_.front() - expectedAtm, 1.0e-12);
+            QL_CHECK_SMALL(outputs.annuity_.front() - expectedAnnuity, 1.0e-12);
+            QL_CHECK_SMALL(outputs.atm_.front() - expectedAtm, 1.0e-12);
 
             const auto& cached = model->modelOutputs();
             BOOST_CHECK_EQUAL_COLLECTIONS(cached.marketZerorate_.begin(),
@@ -1447,7 +1447,7 @@ BOOST_AUTO_TEST_CASE(testModelOutputsTrace) {
     BOOST_REQUIRE_EQUAL(outputs.atm_.size(), 1);
     BOOST_REQUIRE_EQUAL(outputs.annuity_.size(), 1);
     BOOST_REQUIRE_EQUAL(outputs.marketZerorate_.size(), 1);
-    BOOST_CHECK_SMALL(outputs.marketZerorate_.front() - 0.03, 1.0e-12);
+    QL_CHECK_SMALL(outputs.marketZerorate_.front() - 0.03, 1.0e-12);
     BOOST_CHECK_GT(outputs.annuity_.front(), 0.0);
 
     std::ostringstream trace;
@@ -1478,17 +1478,17 @@ BOOST_AUTO_TEST_CASE(testSabrSmileCalibration) {
     const auto& outputs = model->modelOutputs();
     BOOST_REQUIRE_EQUAL(outputs.expiries_.size(), 1);
     BOOST_REQUIRE(!outputs.smileStrikes_.front().empty());
-    BOOST_CHECK_SMALL(outputs.modelZerorate_.front() - outputs.marketZerorate_.front(), 1.0e-4);
+    QL_CHECK_SMALL(outputs.modelZerorate_.front() - outputs.marketZerorate_.front(), 1.0e-4);
     for (Size strike = 0; strike < outputs.smileStrikes_.front().size(); ++strike) {
         BOOST_TEST_CONTEXT("strike=" << outputs.smileStrikes_.front()[strike]) {
             BOOST_CHECK(std::isfinite(outputs.modelCallPremium_.front()[strike]));
             BOOST_CHECK(std::isfinite(outputs.modelPutPremium_.front()[strike]));
-            BOOST_CHECK_SMALL(outputs.modelCallPremium_.front()[strike] -
-                                  outputs.marketCallPremium_.front()[strike],
-                              1.0e-4);
-            BOOST_CHECK_SMALL(outputs.modelPutPremium_.front()[strike] -
-                                  outputs.marketPutPremium_.front()[strike],
-                              1.0e-4);
+            QL_CHECK_SMALL(outputs.modelCallPremium_.front()[strike] -
+                               outputs.marketCallPremium_.front()[strike],
+                           1.0e-4);
+            QL_CHECK_SMALL(outputs.modelPutPremium_.front()[strike] -
+                               outputs.marketPutPremium_.front()[strike],
+                           1.0e-4);
         }
     }
     BOOST_CHECK_EQUAL(model->arbitrageIndices().size(), 1);
@@ -1536,7 +1536,7 @@ BOOST_AUTO_TEST_CASE(testShiftedSmileUpperRateBound) {
                         Real modelRate = (1.0 / model->zerobond(terminal, expiry, state) - 1.0) /
                                          accrual;
                         BOOST_CHECK(std::isfinite(modelRate));
-                        BOOST_CHECK_SMALL(modelRate - expectedRate, 1.0e-8);
+                        QL_CHECK_SMALL(modelRate - expectedRate, 1.0e-8);
                     }
                 }
 
@@ -1550,7 +1550,7 @@ BOOST_AUTO_TEST_CASE(testShiftedSmileUpperRateBound) {
                         std::fabs(strikes[atmIndex] - forward))
                         atmIndex = strike;
                 }
-                BOOST_CHECK_SMALL(strikes[atmIndex] - forward, 1.0e-12);
+                QL_CHECK_SMALL(strikes[atmIndex] - forward, 1.0e-12);
                 Real annuity = accrual * curve->discount(terminal);
                 Real uncappedCall = blackFormula(Option::Call, strikes[atmIndex], forward,
                                                  stdDev, annuity, shift);
@@ -1559,7 +1559,7 @@ BOOST_AUTO_TEST_CASE(testShiftedSmileUpperRateBound) {
                 Real expectedCappedCall = uncappedCall - callAboveUpperBound;
                 Real modelCall = outputs.modelCallPremium_.front()[atmIndex];
                 BOOST_CHECK(std::isfinite(modelCall));
-                BOOST_CHECK_SMALL(modelCall - expectedCappedCall, 1.0e-5);
+                QL_CHECK_SMALL(modelCall - expectedCappedCall, 1.0e-5);
             }
         }
     }
@@ -1599,19 +1599,19 @@ BOOST_AUTO_TEST_CASE(testPayoffExtrapolation) {
                 const auto& outputs = model->modelOutputs();
                 BOOST_REQUIRE_EQUAL(outputs.expiries_.size(), 1);
                 BOOST_REQUIRE(!outputs.smileStrikes_.front().empty());
-                BOOST_CHECK_SMALL(outputs.modelZerorate_.front() -
-                                      outputs.marketZerorate_.front(),
-                                  1.0e-4);
+                QL_CHECK_SMALL(outputs.modelZerorate_.front() -
+                                   outputs.marketZerorate_.front(),
+                               1.0e-4);
                 for (Size strike = 0; strike < outputs.smileStrikes_.front().size(); ++strike) {
                     BOOST_TEST_CONTEXT("strike=" << outputs.smileStrikes_.front()[strike]) {
                         BOOST_CHECK(std::isfinite(outputs.modelCallPremium_.front()[strike]));
                         BOOST_CHECK(std::isfinite(outputs.modelPutPremium_.front()[strike]));
-                        BOOST_CHECK_SMALL(outputs.modelCallPremium_.front()[strike] -
-                                              outputs.marketCallPremium_.front()[strike],
-                                          1.0e-4);
-                        BOOST_CHECK_SMALL(outputs.modelPutPremium_.front()[strike] -
-                                              outputs.marketPutPremium_.front()[strike],
-                                          1.0e-4);
+                        QL_CHECK_SMALL(outputs.modelCallPremium_.front()[strike] -
+                                           outputs.marketCallPremium_.front()[strike],
+                                       1.0e-4);
+                        QL_CHECK_SMALL(outputs.modelPutPremium_.front()[strike] -
+                                           outputs.marketPutPremium_.front()[strike],
+                                       1.0e-4);
                     }
                 }
             }
