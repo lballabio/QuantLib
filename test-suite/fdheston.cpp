@@ -1116,6 +1116,63 @@ BOOST_AUTO_TEST_CASE(testFdHestonAmericanNotBelowExerciseValue) {
         }
     }
 
+    // A Bermudan takes the same floor when one of its exercise dates
+    // equals the reference date (the engine looks for an exact match).
+    // Undershoot about 1.8e-3 at the default grid, same sweep as above.
+    {
+        const auto quote = ext::make_shared<SimpleQuote>(145.0);
+        const Handle<YieldTermStructure> rTS(flatRate(today, 0.00, dc));
+        const Handle<YieldTermStructure> qTS(flatRate(today, 0.05, dc));
+        const Real v0 = 0.25 * 0.25;
+        const auto hestonProcess = ext::make_shared<HestonProcess>(
+            rTS, qTS, Handle<Quote>(quote), v0, 1.0, v0, 1.0e-4, 0.0);
+        const auto model = ext::make_shared<HestonModel>(hestonProcess);
+
+        std::vector<Date> dates;
+        for (Integer t = 0; t <= 1095; t += 180)
+            dates.push_back(today + t);
+
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+        VanillaOption option(payoff, ext::make_shared<BermudanExercise>(dates));
+        option.setPricingEngine(ext::make_shared<FdHestonVanillaEngine>(model));
+
+        const Real intrinsic = (*payoff)(145.0);
+        const Real calculated = option.NPV();
+        if (calculated < intrinsic) {
+            BOOST_FAIL("Bermudan option value below exercise value"
+                    << "\n    intrinsic  : " << intrinsic
+                    << "\n    calculated : " << calculated
+                    << "\n    undershoot : " << (intrinsic - calculated));
+        }
+
+        // Every strike of the multiple-strikes cache takes the floor too.
+        // The 90-strike entry is stored with d = 100/90 != 1, so its value
+        // is read at a scaled solver point and rescaled back to the real
+        // spot; raw undershoots about 3.4e-3 (strike 100) and 5.7e-5
+        // (strike 90) at the default grid. The 90-strike NPV below is
+        // served from the cache populated by the 100-strike calculation.
+        const auto cacheEngine = ext::make_shared<FdHestonVanillaEngine>(model);
+        cacheEngine->enableMultipleStrikesCaching(std::vector<Real>{100.0, 90.0});
+
+        VanillaOption strike100(payoff,
+            ext::make_shared<AmericanExercise>(today, today + 1095));
+        strike100.setPricingEngine(cacheEngine);
+        const Real calculated100 = strike100.NPV();
+
+        const auto payoff90 = ext::make_shared<PlainVanillaPayoff>(Option::Call, 90.0);
+        VanillaOption strike90(payoff90,
+            ext::make_shared<AmericanExercise>(today, today + 1095));
+        strike90.setPricingEngine(cacheEngine);
+        const Real intrinsic90 = (*payoff90)(145.0);
+        const Real calculated90 = strike90.NPV();
+
+        if (calculated100 < intrinsic || calculated90 < intrinsic90) {
+            BOOST_FAIL("multiple-strikes cached value below exercise value"
+                    << "\n    intrinsic  : " << intrinsic << " / " << intrinsic90
+                    << "\n    calculated : " << calculated100 << " / " << calculated90);
+        }
+    }
+
     // A European on the same market is worth less than intrinsic. The floor
     // must not be applied to it, and neither to an American that cannot be
     // exercised yet.
@@ -1154,6 +1211,18 @@ BOOST_AUTO_TEST_CASE(testFdHestonAmericanNotBelowExerciseValue) {
         BOOST_FAIL("floor incorrectly applied to a not-yet-exercisable American option"
                 << "\n    intrinsic : " << intrinsic
                 << "\n    calculated: " << deferredValue);
+    }
+
+    const auto deferredBermudan = ext::make_shared<BermudanExercise>(
+        std::vector<Date>{today + 30, today + 60, today + 90});
+    VanillaOption bermudan(payoff, deferredBermudan);
+    bermudan.setPricingEngine(ext::make_shared<FdHestonVanillaEngine>(model));
+    const Real bermudanValue = bermudan.NPV();
+    if (!(bermudanValue < intrinsic - tol)) {
+        BOOST_FAIL("floor incorrectly applied to a Bermudan option whose "
+                   "exercise dates are all after the reference date"
+                << "\n    intrinsic : " << intrinsic
+                << "\n    calculated: " << bermudanValue);
     }
 }
 
