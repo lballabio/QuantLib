@@ -3290,7 +3290,7 @@ BOOST_AUTO_TEST_CASE(testChoiAsianZeroVolatility) {
         // half-delta convention rather than 0 (q != r here, so expectedAverage
         // is not simply spot -- the exact kink strike must be derived, not
         // guessed, or the ATM branch below is silently never exercised)
-        for (Real strike : {90.0, expectedAverage, 110.0}) {
+        for (Real strike : std::vector<Real>{90.0, expectedAverage, 110.0}) {
             BOOST_TEST_CONTEXT("type: " << type << ", strike: " << strike) {
                 auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
                 DiscreteAveragingAsianOption option(Average::Arithmetic, 0.0, 0, fixingDates,
@@ -3301,19 +3301,19 @@ BOOST_AUTO_TEST_CASE(testChoiAsianZeroVolatility) {
                 twOption.setPricingEngine(twEngine);
 
                 Real expected = (*payoff)(expectedAverage) * discount;
-                BOOST_CHECK_SMALL(option.NPV() - expected, 1.0e-12);
+                QL_CHECK_SMALL(option.NPV() - expected, 1.0e-12);
                 // cross-engine consistency: Turnbull-Wakeman prices the same state
-                BOOST_CHECK_SMALL(twOption.NPV() - expected, 1.0e-12);
+                QL_CHECK_SMALL(twOption.NPV() - expected, 1.0e-12);
                 Real sensitivity = discount * expectedAverage / spot->value();
                 Real expectedDelta = 0.0;
                 if (type == Option::Call) {
                     expectedDelta = expectedAverage > strike ? sensitivity
-                        : (expectedAverage == strike ? 0.5 * sensitivity : 0.0);
+                        : (expectedAverage == strike ? Real(0.5 * sensitivity) : Real(0.0));
                 } else {
-                    expectedDelta = expectedAverage < strike ? -sensitivity
-                        : (expectedAverage == strike ? -0.5 * sensitivity : 0.0);
+                    expectedDelta = expectedAverage < strike ? Real(-sensitivity)
+                        : (expectedAverage == strike ? Real(-0.5 * sensitivity) : Real(0.0));
                 }
-                BOOST_CHECK_SMALL(option.delta() - expectedDelta, 1.0e-12);
+                QL_CHECK_SMALL(option.delta() - expectedDelta, 1.0e-12);
                 BOOST_CHECK_EQUAL(option.gamma(), 0.0);
             }
         }
@@ -3334,7 +3334,7 @@ BOOST_AUTO_TEST_CASE(testChoiAsianZeroVolatility) {
                                                putPayoff, exercise);
         putOption.setPricingEngine(engine);
         Real parityDelta = discount * expectedAverage / spot->value();
-        BOOST_CHECK_SMALL(callOption.delta() - putOption.delta() - parityDelta, 1.0e-12);
+        QL_CHECK_SMALL(callOption.delta() - putOption.delta() - parityDelta, 1.0e-12);
     }
 }
 
@@ -3367,8 +3367,8 @@ BOOST_AUTO_TEST_CASE(testChoiAsianTodayFixingDelta) {
                                         payoff, exercise);
     option.setPricingEngine(engine);
 
-    BOOST_CHECK_SMALL(option.NPV() - (spot->value() - 40.0), 1.0e-12);
-    BOOST_CHECK_SMALL(option.delta() - 1.0, 1.0e-12);
+    QL_CHECK_SMALL(option.NPV() - (spot->value() - 40.0), 1.0e-12);
+    QL_CHECK_SMALL(option.delta() - 1.0, 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testChoiAsianMixedZeroVariance) {
@@ -3425,16 +3425,16 @@ BOOST_AUTO_TEST_CASE(testChoiAsianMixedZeroVariance) {
                     // variance, not zero spot dependence) and must be
                     // included, not dropped
                     Real expectedDelta = discount * (forward1 + forward2) / m / spot->value();
-                    BOOST_CHECK_SMALL(option.delta() - expectedDelta, 1.0e-12);
+                    QL_CHECK_SMALL(option.delta() - expectedDelta, 1.0e-12);
                 }
-                BOOST_CHECK_SMALL(option.NPV() - expected, 1.0e-12);
+                QL_CHECK_SMALL(option.NPV() - expected, 1.0e-12);
                 // cross-engine sanity check: unlike the guaranteed-exercise
                 // states in testChoiAsianNegativeEffectiveStrike, this branch
                 // has genuine optionality on the single remaining stochastic
                 // fixing, so Turnbull-Wakeman's moment-matching approximation
                 // need not match Choi's exact Black formula to high precision
                 // -- only to within its own approximation error
-                BOOST_CHECK_SMALL(twOption.NPV() - expected, 0.05);
+                QL_CHECK_SMALL(twOption.NPV() - expected, 0.05);
             }
         }
     }
@@ -3486,7 +3486,7 @@ BOOST_AUTO_TEST_CASE(testChoiAsianMixedZeroVarianceMultipleStochastic) {
                 // no closed form here (two correlated stochastic fixings);
                 // cross-engine sanity check against Turnbull-Wakeman's
                 // moment-matching approximation (same caveat as above)
-                BOOST_CHECK_SMALL(option.NPV() - twOption.NPV(), 0.05);
+                QL_CHECK_SMALL(option.NPV() - twOption.NPV(), 0.05);
             }
         }
     }
@@ -3530,13 +3530,13 @@ BOOST_AUTO_TEST_CASE(testChoiAsianNegativeEffectiveStrike) {
             twOption.setPricingEngine(twEngine);
 
             Real expected = (*payoff)(expectedAverage) * discount;
-            BOOST_CHECK_SMALL(option.NPV() - expected, 1.0e-12);
+            QL_CHECK_SMALL(option.NPV() - expected, 1.0e-12);
             // cross-engine consistency: Turnbull-Wakeman prices the same state
-            BOOST_CHECK_SMALL(twOption.NPV() - expected, 1.0e-12);
+            QL_CHECK_SMALL(twOption.NPV() - expected, 1.0e-12);
             Real expectedDelta = 0.0;
             if (type == Option::Call)
                 expectedDelta = discount * (expectedAverage - 200.0 / m) / spot->value();
-            BOOST_CHECK_SMALL(option.delta() - expectedDelta, 1.0e-12);
+            QL_CHECK_SMALL(option.delta() - expectedDelta, 1.0e-12);
             BOOST_CHECK_EQUAL(option.gamma(), 0.0);
         }
     }

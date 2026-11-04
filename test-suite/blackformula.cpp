@@ -715,7 +715,7 @@ BOOST_AUTO_TEST_CASE(testImpliedStdDevLiRSNearTheMoney) {
     for (Real displacement : {0.0, 0.5}) {
         for (Real discount : {1.0, 0.95}) {
             for (Real stdDev : {1e-4, 1e-5, 1e-6, 1e-7, 1e-8}) {
-                for (Real logMoneyness : {0.0, 1e-3 * stdDev, -1e-3 * stdDev}) {
+                for (Real logMoneyness : std::vector<Real>{0.0, 1e-3 * stdDev, -1e-3 * stdDev}) {
                     const Real strike =
                         (forward + displacement) * std::exp(-logMoneyness) - displacement;
                     for (auto type : {Option::Call, Option::Put}) {

@@ -840,7 +840,7 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativePoissonIndexRange) {
 
     const Real naturalMax = Real((std::numeric_limits<Natural>::max)());
     // Means whose indices cannot be represented are rejected instead of converted.
-    for (Real lambda : {std::numeric_limits<Real>::infinity(),
+    for (Real lambda : std::vector<Real>{std::numeric_limits<Real>::infinity(),
                         std::ldexp(Real(1.0), std::numeric_limits<Natural>::digits),
                         std::ldexp(Real(1.0), std::numeric_limits<BigNatural>::digits)}) {
         InverseCumulativePoisson inverse(lambda);
