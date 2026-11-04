@@ -335,17 +335,25 @@ BOOST_AUTO_TEST_CASE(testG2SwaptionEngineCashSettlement) {
     const ext::shared_ptr<PricingEngine> engine(
         ext::make_shared<G2SwaptionEngine>(g2Model, 6.0, 16));
 
-    // G2SwaptionEngine values a European swaption by replicating the exercise
-    // payoff from the underlying swap's own cashflows -- a Physical and a
+    // G2SwaptionEngine prices a European swaption analytically from the
+    // underlying swap's payment schedule (the fixed payment dates and the
+    // spread-corrected fixed rate). A Physical and a
     // Cash+CollateralizedCashPrice settled swaption on the same underlying
-    // swap have, by definition, the same payoff (the only difference is
-    // whether the swap is physically entered into or cash-settled after
-    // exercise), so the engine must accept and correctly price both.
+    // swap have, by definition, the same exercise payoff (the only
+    // difference is whether the swap is physically entered into or
+    // cash-settled after exercise), so the engine must accept and
+    // correctly price both.
     const ext::shared_ptr<Swaption> physical =
         ext::make_shared<Swaption>(swap, exercise, Settlement::Physical,
                                     Settlement::PhysicalOTC);
     physical->setPricingEngine(engine);
     const Real physicalNPV = physical->NPV();
+
+    // Guard against a vacuous pass: the physically settled swaption is the
+    // reference for the comparison below, so unless its NPV is comfortably
+    // positive the equality check would not be exercising the
+    // CollateralizedCashPrice acceptance at all.
+    BOOST_REQUIRE(physicalNPV > 1.0e-4);
 
     const ext::shared_ptr<Swaption> cashSettled =
         ext::make_shared<Swaption>(swap, exercise, Settlement::Cash,
