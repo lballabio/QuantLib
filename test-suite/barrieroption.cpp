@@ -1894,6 +1894,86 @@ BOOST_AUTO_TEST_CASE(testLowVolatility) {
     check(  95.0,  Option::Call,      99.0,   Barrier::DownIn,     4.0,   0.01,   0.04,        2.0);  // fwd = 97, call, ITM
 }
 
+BOOST_AUTO_TEST_CASE(testLowVolatilityLargeCarry) {
+    BOOST_TEST_MESSAGE("Testing analytic barrier engine with low volatility and large carry...");
+
+    // At low volatility and large carry, (H/S)^(2 mu) overflows while N(y)
+    // underflows, but their product is finite and not negligible (#2969).
+    // Expected values are the same closed-form formulas evaluated with
+    // 60-digit arithmetic.
+
+    DayCounter dc = Actual365Fixed();
+    Date today(15, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    Date maturity = today + 747;
+
+    Real spot = 40.809474692328266;
+    Real strike = 100.0;
+    Real barrier = 26.788905850262115;
+    Rate r = 0.04943364523655579;
+    Rate q = 0.27314598534530515;
+
+    auto vol = ext::make_shared<SimpleQuote>();
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(spot)),
+        Handle<YieldTermStructure>(flatRate(today, q, dc)),
+        Handle<YieldTermStructure>(flatRate(today, r, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+    auto engine = ext::make_shared<AnalyticBarrierEngine>(process);
+
+    struct Case {
+        Barrier::Type type;
+        Real rebate;
+        Volatility vol;
+        Real expected;
+    };
+    Case cases[] = {
+        {Barrier::DownOut, 0.0, 0.005, 7.6135719504503223e-6},
+        {Barrier::DownOut, 0.0, 0.010, 0.30397185187568111},
+        {Barrier::DownOut, 0.0, 0.012985838614515886, 1.4378677391320085},
+        {Barrier::DownOut, 0.0, 0.016, 3.2549740062727869},
+        {Barrier::DownOut, 0.0, 0.020, 5.9549948957634315},
+        {Barrier::DownIn,  0.0, 0.005, 67.044217762067952},
+        {Barrier::DownIn,  0.0, 0.010, 66.740253523764222},
+        {Barrier::DownIn,  0.0, 0.012985838614515886, 65.606357636507894},
+        {Barrier::DownIn,  0.0, 0.016, 63.789251369367116},
+        {Barrier::DownIn,  0.0, 0.020, 61.089230479876471},
+        {Barrier::DownOut, 2.0, 0.005, 1.8223841335261903},
+        {Barrier::DownOut, 2.0, 0.010, 2.1180735128774331},
+        {Barrier::DownOut, 2.0, 0.012985838614515886, 3.220988434074213},
+        {Barrier::DownOut, 2.0, 0.016, 4.9884026997480601},
+        {Barrier::DownOut, 2.0, 0.020, 7.6145160525959926},
+        {Barrier::DownIn,  2.0, 0.005, 67.044217970160664},
+        {Barrier::DownIn,  2.0, 0.010, 66.74857193361007},
+        {Barrier::DownIn,  2.0, 0.012985838614515886, 65.645743358757572},
+        {Barrier::DownIn,  2.0, 0.016, 63.878505578488262},
+        {Barrier::DownIn,  2.0, 0.020, 61.252770544422279},
+    };
+
+    // The prices are differences of terms of the order of the spot, so the
+    // error is relative to the price but at least absolute for small prices.
+    Real tolerance = 1.0e-10;
+    for (const auto& c : cases) {
+        vol->setValue(c.vol);
+        BarrierOption option(c.type, barrier, c.rebate,
+                             ext::make_shared<PlainVanillaPayoff>(Option::Put, strike),
+                             ext::make_shared<EuropeanExercise>(maturity));
+        option.setPricingEngine(engine);
+        Real value = option.NPV();
+        Real error = std::fabs(value - c.expected) / std::max(c.expected, Real(1.0));
+        if (std::isnan(value) || error > tolerance) {
+            BOOST_ERROR("Failed to reproduce expected barrier option value:"
+                        << "\n    barrier type:   " << c.type
+                        << "\n    rebate:         " << c.rebate
+                        << "\n    volatility:     " << io::volatility(c.vol)
+                        << "\n    expected:       " << std::setprecision(17) << c.expected
+                        << "\n    calculated:     " << value
+                        << "\n    error:          " << error
+                        << "\n    tolerance:      " << tolerance);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testZeroVolatility) {
     BOOST_TEST_MESSAGE("Testing barrier options with zero volatility...");
 
