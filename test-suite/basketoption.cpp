@@ -3076,13 +3076,16 @@ BOOST_AUTO_TEST_CASE(testFd2dBlackScholesVanillaEngineRejectsNonBasketPayoff) {
         ext::make_shared<Fd2dBlackScholesVanillaEngine>(p1, p2, 0.0, 20, 20, 10);
 
     // Sanity check: a genuine basket payoff, through the normal BasketOption
-    // path, still prices fine with the fix in place.
+    // path, still prices fine with the fix in place -- and non-trivially so
+    // (the ATM min-basket call prices around 3.3 on this coarse 20x20x10
+    // grid), otherwise this leg would not be exercising the engine at all.
     BasketOption basketOption(
         ext::make_shared<MinBasketPayoff>(
             ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0)),
         exercise);
     basketOption.setPricingEngine(engine);
-    BOOST_CHECK_NO_THROW(basketOption.NPV());
+    const Real basketNpv = basketOption.NPV();
+    BOOST_REQUIRE(basketNpv > 1.0);
 
     // Now drive the same engine instance directly, bypassing BasketOption's
     // constructor-level BasketPayoff requirement, with a plain (non-basket)
