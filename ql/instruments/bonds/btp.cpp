@@ -19,7 +19,6 @@
 
 #include <ql/instruments/bonds/btp.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
-#include <ql/settings.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -107,35 +106,14 @@ namespace QuantLib {
                    ") and number of clean prices quotes (" <<
                    quotes_.size() << ")");
 
-        // Validate inputs and filter out expired or zero-outstanding bonds.
-        Date today = Settings::instance().evaluationDate();
-        std::vector<ext::shared_ptr<BTP> > validBtps;
-        std::vector<Real> validOutstandings;
-        std::vector<Handle<Quote> > validQuotes;
-
         for (Size i=0; i<k; ++i) {
             QL_REQUIRE(outstandings[i]>=0,
                        "negative outstanding for " << io::ordinal(i) <<
                        " bond, maturity " << btps[i]->maturityDate());
-            if (btps[i]->maturityDate() <= today) {
-                // skip expired bonds silently (maturity on or before today)
-                continue;
-            }
-            if (outstandings[i] == 0.0) {
-                // skip bonds with no outstanding amount
-                continue;
-            }
-            validBtps.push_back(btps[i]);
-            validOutstandings.push_back(outstandings[i]);
-            validQuotes.push_back(quotes_[i]);
+            // add check for prices ??
         }
 
-        btps_        = validBtps;
-        outstandings_ = validOutstandings;
-        quotes_       = validQuotes;
-
-        QL_REQUIRE(!btps_.empty(), "no valid (non-expired, non-zero outstanding) bonds "
-                                   "in RendistatoCalculator Basket");
+        QL_REQUIRE(!btps_.empty(), "invalid bonds only in RendistatoCalculator Basket");
         n_ = btps_.size();
 
         outstanding_ = 0.0;
@@ -178,21 +156,38 @@ namespace QuantLib {
 
         const std::vector<ext::shared_ptr<BTP> >& btps = basket_->btps();
         const std::vector<Handle<Quote> >& quotes = basket_->cleanPriceQuotes();
-        Date bondSettlementDate = btps[0]->settlementDate();
-        for (Size i=0; i<basket_->size(); ++i) {
-            yields_[i] = BondFunctions::yield(
-                *btps[i], {quotes[i]->value(), Bond::Price::Clean},
+        const std::vector<Real>& outstandings = basket_->outstandings();
+
+        // Filter to tradable, non-zero-outstanding bonds at calculation time.
+        // This is done here rather than at construction so the basket remains
+        // valid across evaluation-date changes (a bond excluded today may
+        // become tradable again if the date is rolled back).
+        std::vector<Size> activeIdx;
+        for (Size i = 0; i < basket_->size(); ++i) {
+            if (btps[i]->isTradable() && outstandings[i] > 0.0)
+                activeIdx.push_back(i);
+        }
+        QL_REQUIRE(!activeIdx.empty(),
+                   "no tradable bonds with positive outstanding in basket");
+
+        Date bondSettlementDate = btps[activeIdx[0]]->settlementDate();
+        for (Size idx : activeIdx) {
+            yields_[idx] = BondFunctions::yield(
+                *btps[idx], {quotes[idx]->value(), Bond::Price::Clean},
                 ActualActual(ActualActual::ISMA), Compounded, Annual, bondSettlementDate,
                 // accuracy, maxIterations, guess
-                1.0e-10, 100, yields_[i]);
-            durations_[i] = BondFunctions::duration(
-                *btps[i], yields_[i],
+                1.0e-10, 100, yields_[idx]);
+            durations_[idx] = BondFunctions::duration(
+                *btps[idx], yields_[idx],
                 ActualActual(ActualActual::ISMA), Compounded, Annual,
                 Duration::Modified, bondSettlementDate);
         }
-        duration_ = std::inner_product(basket_->weights().begin(),
-                                       basket_->weights().end(),
-                                       durations_.begin(), Real(0.0));
+        Real totalOutstanding = 0.0;
+        for (Size idx : activeIdx)
+            totalOutstanding += outstandings[idx];
+        duration_ = 0.0;
+        for (Size idx : activeIdx)
+            duration_ += durations_[idx] * outstandings[idx] / totalOutstanding;
 
         Natural settlDays = 2;
         DayCounter fixedDayCount = swaps_[0]->fixedDayCount();
