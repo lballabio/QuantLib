@@ -155,13 +155,17 @@ namespace QuantLib {
     }
 
 
-    Real CPISwap::fixedLegNPV() const {//FIXME
+    Real CPISwap::fixedLegNPV() const {
+        // leg 0 is always the CPI (fixed) leg; legNPV_[0] already includes
+        // the payer sign set in the constructor (positive if paying CPI)
         calculate();
         QL_REQUIRE(legNPV_[0] != Null<Real>(), "result not available");
         return legNPV_[0];
     }
 
-    Real CPISwap::floatLegNPV() const {//FIXME
+    Real CPISwap::floatLegNPV() const {
+        // leg 1 is always the floating leg; legNPV_[1] already includes
+        // the payer sign set in the constructor (positive if paying float)
         calculate();
         QL_REQUIRE(legNPV_[1] != Null<Real>(), "result not available");
         return legNPV_[1];
