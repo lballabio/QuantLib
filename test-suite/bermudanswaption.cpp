@@ -364,6 +364,12 @@ BOOST_AUTO_TEST_CASE(testFdSwaptionEnginesCashSettlement) {
         physical->setPricingEngine(c.engine);
         const Real physicalNPV = physical->NPV();
 
+        // Guard against a vacuous pass: the physically settled swaption is
+        // the reference for the comparison below, so unless its NPV is
+        // comfortably positive the equality check would not be exercising
+        // the CollateralizedCashPrice acceptance at all.
+        BOOST_REQUIRE(physicalNPV > 1.0e-4);
+
         const ext::shared_ptr<Swaption> cashSettled =
             ext::make_shared<Swaption>(swap, exercise, Settlement::Cash,
                                         Settlement::CollateralizedCashPrice);
