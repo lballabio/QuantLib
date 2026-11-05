@@ -1263,7 +1263,13 @@ BOOST_AUTO_TEST_CASE(testFireflyAlgorithmOverflowingSpan) {
         20,
         ext::make_shared<ExponentialIntensity>(1.0, 0.2, 1.0),
         ext::make_shared<GaussianWalk>(1.0, 0.9, 1234),
-        20, 1.0, 0.5, 1234);
+        0, 1.0, 0.5, 1234); // Mde=0: all-random-walk population, so this
+                            // actually exercises the random-walk path
+                            // described above (the guard itself is
+                            // unconditional in startState(), so Mde's value
+                            // doesn't change whether it fires -- this is
+                            // purely so the test's parameters match its
+                            // documented intent)
     BOOST_CHECK_EXCEPTION(
         firefly.minimize(problem, endCriteria),
         Error,
