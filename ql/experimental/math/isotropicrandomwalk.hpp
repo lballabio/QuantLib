@@ -28,6 +28,7 @@
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/mathconstants.hpp>
 #include <cmath>
+#include <limits>
 #include <utility>
 
 namespace QuantLib {
@@ -106,12 +107,16 @@ namespace QuantLib {
             // This is rescaled by its own reciprocal below (weights by
             // dimension is the size of the bound divided by the largest
             // bound); a non-finite maxBound (bounds overflow to +inf) makes
-            // that 1/inf=0 then inf*0=NaN, and a zero maxBound (every
-            // dimension has zero width) makes it 1/0=inf then 0*inf=NaN
-            // either way -- so every subsequent draw from this walk is NaN.
-            // Reject both up front with a clear message instead of
-            // silently producing NaN draws.
-            QL_REQUIRE(std::isfinite(maxBound) && maxBound > 0.0,
+            // that 1/inf=0 then inf*0=NaN, and a maxBound too small to
+            // invert without itself overflowing (0 exactly, or a subnormal
+            // near it) makes the reciprocal +inf, giving the same
+            // inf*(zero-width dim)=NaN -- either way every subsequent draw
+            // from this walk is NaN. Reject both up front (the >= min()
+            // bound, not just > 0.0, also catches a positive-but-too-small
+            // maxBound whose reciprocal would itself overflow) with a clear
+            // message instead of silently producing NaN draws.
+            QL_REQUIRE(std::isfinite(maxBound) &&
+                       maxBound >= std::numeric_limits<Real>::min(),
                 "IsotropicRandomWalk needs a positive, finite largest "
                 "bound span to rescale its step, but got " << maxBound);
             //weights by dimension is the size of the bound

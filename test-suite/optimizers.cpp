@@ -1345,6 +1345,36 @@ BOOST_AUTO_TEST_CASE(testFireflyAlgorithmZeroWidthBounds) {
         ExpectedErrorMessage("positive, finite"));
 }
 
+BOOST_AUTO_TEST_CASE(testFireflyAlgorithmSubnormalSpan) {
+    BOOST_TEST_MESSAGE(
+        "Testing FireflyAlgorithm with a subnormal bound span...");
+
+    // Regression test: IsotropicRandomWalk::setDimension's guard originally
+    // required maxBound > 0.0, which admits a positive but subnormal
+    // maxBound (e.g. ~2e-310): finite and nonzero, so the guard passes, but
+    // its reciprocal 1.0/maxBound still overflows to +inf (DBL_MAX is only
+    // ~1.8e308), reproducing the identical silent-NaN-draw failure mode via
+    // a different arithmetic path than the already-fixed zero-width case.
+    // Tightened to maxBound >= numeric_limits<Real>::min() (the smallest
+    // positive normal double, whose reciprocal is itself finite) to also
+    // reject this case.
+    FirstDeJong sphere;
+    BoundaryConstraint subnormal(-1.0e-310, 1.0e-310);
+    Array initialValue(3, 0.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    Problem problem(sphere, subnormal, initialValue);
+    FireflyAlgorithm firefly(
+        20,
+        ext::make_shared<ExponentialIntensity>(1.0, 0.2, 1.0),
+        ext::make_shared<GaussianWalk>(1.0, 0.9, 1234),
+        0, 1.0, 0.5, 1234);
+    BOOST_CHECK_EXCEPTION(
+        firefly.minimize(problem, endCriteria),
+        Error,
+        ExpectedErrorMessage("positive, finite"));
+}
+
 BOOST_AUTO_TEST_CASE(testCMAES) {
     BOOST_TEST_MESSAGE("Testing CMA-ES optimizer...");
 
