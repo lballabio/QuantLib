@@ -1241,25 +1241,28 @@ BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianWingStrike) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianExtremeWingStrikeErrorMessage) {
+BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianNonBracketableErrorMessage) {
     BOOST_TEST_MESSAGE(
         "Testing Gaussian1dJamshidianSwaptionEngine's error message on an "
-        "unreachable wing strike...");
+        "a non-bracketable (negative-rate) state...");
 
-    // Regression test: the bracket-widening loop above doubles minStrike
-    // and maxStrike unconditionally every attempt. For a state extreme
-    // enough that the needed root lies far out on only ONE side, the
-    // OTHER (irrelevant) side can overflow to a non-finite function value
-    // first, since both sides are widened by the same amount regardless of
-    // which one actually needs it. fLower*fUpper compared against 0.0 is
-    // false whenever either operand is NaN, so without per-side tracking
-    // the loop would stop early believing a bracket was found, and
-    // Solver1D's own bracket check would then throw with a NaN/Inf-laden
-    // message (observed before this fix: "f[-8.38861e+06,8.38861e+06] ->
-    // [-nan,1.000000e+03]") instead of a genuine report against finite
-    // bounds. This state is extreme enough that bracketing is genuinely
-    // unreachable even with the fix (it still throws), but the message
-    // should report finite numbers, not NaN/Inf.
+    // Regression test: the fixed rate here (atmRate - 8%) is deeply
+    // negative (~-5% on this curve), so every fixed coupon is negative
+    // while the appended notional is positive -- rStarFinder has no
+    // genuine root for this state (it is not a valid Jamshidian
+    // decomposition input), and both ends of the bracket run toward
+    // overflow as the widening loop doubles them. Before this fix, the
+    // loop doubled minStrike/maxStrike unconditionally every attempt;
+    // at the final doubling (attempt 20) one side's function value
+    // overflowed to a non-finite value, and that non-finite value was
+    // still committed to the bracket handed to Solver1D, which then
+    // threw with a NaN/Inf-laden message (observed:
+    // "f[-8.38861e+06,8.38861e+06] -> [-nan,1.000000e+03]") instead of
+    // reporting finite numbers. The per-side isfinite tracking added by
+    // this fix stops committing a side once its own value goes
+    // non-finite, so the final thrown message -- this state is still
+    // genuinely unbracketable, so it still throws -- reports the last
+    // finite bounds/values on each side instead of NaN/Inf.
 
     Date today(15, September, 2016);
     Settings::instance().evaluationDate() = today;
@@ -1304,7 +1307,7 @@ BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianExtremeWingStrikeErrorMessage) {
     try {
         swaption->NPV();
         BOOST_ERROR("Gaussian1dJamshidianSwaptionEngine was expected to "
-                    "throw on this unreachable wing strike");
+                    "throw on this non-bracketable state");
     } catch (const Error& e) {
         const std::string what = e.what();
         if (what.find("nan") != std::string::npos ||
