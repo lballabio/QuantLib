@@ -63,28 +63,41 @@ namespace QuantLib {
                        "wrong lower bound size in differential evolution configuration");
             lowerBound_ = configuration().lowerBound;
         }
-        Real maxBound = std::numeric_limits<Real>::max();
-        for (Size i = 0; i < lowerBound_.size(); ++i) {
-            // Constraint::Impl's base-class default bounds (inherited by
-            // NoConstraint, and used as the one-sided default by e.g.
-            // PositiveConstraint's upper bound) are exactly
-            // +-numeric_limits<Real>::max(), used throughout this codebase
-            // as the "no bound provided" sentinel. That sentinel is itself
-            // a finite double, so neither isfinite(bound) nor
-            // isfinite(upper-lower) can detect it (max()-0.0 is also
-            // finite) -- the span only overflows to +inf in the symmetric
-            // +-max() case, which is why the original guard (upper-lower)
-            // missed the one-sided case. Reject the sentinel value
-            // directly on either bound instead.
-            QL_REQUIRE(lowerBound_[i] > -maxBound && upperBound_[i] < maxBound,
-                "DifferentialEvolution needs finite bounds to initialize its "
-                "population, but dimension " << i << " has no bound "
-                "(" << lowerBound_[i] << ", " << upperBound_[i] << ") -- "
-                "the problem's constraint (e.g. NoConstraint, or a one-sided "
-                "constraint like PositiveConstraint) does not provide one; "
-                "supply explicit, finite bounds via "
-                "DifferentialEvolution::Configuration::withLowerBound()/"
-                "withUpperBound()");
+        // Bounds are needed either to fill a random initial population, or
+        // (regardless of how the population was seeded) to clip/reflect
+        // values back into range every generation in crossover() when
+        // applyBounds is set (the default). Only when a population is
+        // explicitly supplied AND applyBounds is disabled are the bounds
+        // genuinely unused -- skip the check in exactly that combination,
+        // so withInitialPopulation()+withApplyBounds(false)+NoConstraint
+        // (previously valid: bounds were computed but never touched)
+        // keeps working.
+        if (!configuration().initialPopulation.empty() && !configuration().applyBounds) {
+            // bounds are not used anywhere in this configuration
+        } else {
+            Real maxBound = std::numeric_limits<Real>::max();
+            for (Size i = 0; i < lowerBound_.size(); ++i) {
+                // Constraint::Impl's base-class default bounds (inherited by
+                // NoConstraint, and used as the one-sided default by e.g.
+                // PositiveConstraint's upper bound) are exactly
+                // +-numeric_limits<Real>::max(), used throughout this codebase
+                // as the "no bound provided" sentinel. That sentinel is itself
+                // a finite double, so neither isfinite(bound) nor
+                // isfinite(upper-lower) can detect it (max()-0.0 is also
+                // finite) -- the span only overflows to +inf in the symmetric
+                // +-max() case, which is why the original guard (upper-lower)
+                // missed the one-sided case. Reject the sentinel value
+                // directly on either bound instead.
+                QL_REQUIRE(lowerBound_[i] > -maxBound && upperBound_[i] < maxBound,
+                    "DifferentialEvolution needs finite bounds to initialize "
+                    "its population, but dimension " << i << " has no bound "
+                    "(" << lowerBound_[i] << ", " << upperBound_[i] << ") -- "
+                    "the problem's constraint (e.g. NoConstraint, or a "
+                    "one-sided constraint like PositiveConstraint) does not "
+                    "provide one; supply explicit, finite bounds via "
+                    "DifferentialEvolution::Configuration::withLowerBound()/"
+                    "withUpperBound()");
+            }
         }
         currGenSizeWeights_ =
             Array(configuration().populationMembers, configuration().stepsizeWeight);

@@ -85,6 +85,18 @@ namespace QuantLib {
                 "provide one; use a bounded constraint instead");
         }
         Array bounds = uX_ - lX_;
+        // Unlike X's convex-combination init above, V's init below uses the
+        // raw span (ub-lb) directly, which can itself overflow even when
+        // both bounds individually passed the per-bound check above (e.g.
+        // lX_=-1e308, uX_=1e308: each is finite and far from the sentinel,
+        // but their difference exceeds DBL_MAX). Guard the span itself too.
+        for (Size j = 0; j < N_; ++j) {
+            QL_REQUIRE(std::isfinite(bounds[j]),
+                "ParticleSwarmOptimization needs a finite upper-minus-lower "
+                "bound to initialize its particles, but dimension " << j <<
+                " has bounds (" << lX_[j] << ", " << uX_[j] << ") whose "
+                "span overflows");
+        }
 
         //Random initialization is done by Sobol sequence
         SobolRsg sobol(N_ * 2);

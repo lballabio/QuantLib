@@ -1175,6 +1175,67 @@ BOOST_AUTO_TEST_CASE(testOptimizersWithUnboundedConstraint) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testDifferentialEvolutionSeededPopulationIgnoresBounds) {
+    BOOST_TEST_MESSAGE(
+        "Testing DifferentialEvolution with a seeded population and "
+        "disabled bounds under an unconstrained problem...");
+
+    // Regression test: the finite-bounds guard above was originally
+    // unconditional, even though bounds are only ever read (a) to fill a
+    // random initial population, or (b) in crossover()'s clip/reflect step
+    // when applyBounds is enabled. With an explicitly seeded population
+    // and bounds disabled via withBounds(false), neither path touches the
+    // bounds at all -- this combination worked under NoConstraint before
+    // the finite-bounds fix (the bounds were computed but never used), and
+    // the fix must not turn it into a spurious throw.
+    FirstDeJong sphere;
+    NoConstraint noConstraint;
+    Array initialValue(3, 1.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    Problem problem(sphere, noConstraint, initialValue);
+    std::vector<Array> seededPopulation(20, initialValue);
+    DifferentialEvolution::Configuration conf =
+        DifferentialEvolution::Configuration()
+        .withInitialPopulation(seededPopulation)
+        .withBounds(false)
+        .withSeed(1234);
+    DifferentialEvolution(conf).minimize(problem, endCriteria);
+    if (!std::isfinite(problem.functionValue()))
+        BOOST_ERROR("DifferentialEvolution produced a non-finite result "
+                    "with a seeded population and disabled bounds under "
+                    "NoConstraint");
+}
+
+BOOST_AUTO_TEST_CASE(testParticleSwarmOptimizationOverflowingSpan) {
+    BOOST_TEST_MESSAGE(
+        "Testing ParticleSwarmOptimization with a finite-but-overflowing "
+        "bound span...");
+
+    // Regression test: the per-bound sentinel check only rejects bounds
+    // equal to the +-numeric_limits<Real>::max() "no bound" sentinel. A
+    // constraint whose bounds are individually finite but far enough apart
+    // that their DIFFERENCE overflows (e.g. +-1e308, each comfortably
+    // below DBL_MAX ~1.798e308, but 1e308-(-1e308)=2e308 > DBL_MAX) passes
+    // that check, yet velocity initialization uses the raw span (ub-lb)
+    // directly and would get a non-finite value from it.
+    FirstDeJong sphere;
+    BoundaryConstraint extreme(-1.0e308, 1.0e308);
+    Array initialValue(3, 1.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    Problem problem(sphere, extreme, initialValue);
+    ParticleSwarmOptimization pso(
+        20,
+        ext::make_shared<GlobalTopology>(),
+        ext::make_shared<TrivialInertia>(),
+        Real(2.05), Real(2.05), 1234UL);
+    BOOST_CHECK_EXCEPTION(
+        pso.minimize(problem, endCriteria),
+        Error,
+        ExpectedErrorMessage("finite"));
+}
+
 BOOST_AUTO_TEST_CASE(testCMAES) {
     BOOST_TEST_MESSAGE("Testing CMA-ES optimizer...");
 
