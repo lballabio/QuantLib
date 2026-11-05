@@ -63,17 +63,23 @@ namespace QuantLib {
                        "wrong lower bound size in differential evolution configuration");
             lowerBound_ = configuration().lowerBound;
         }
-        // Bounds are needed either to fill a random initial population, or
-        // (regardless of how the population was seeded) to clip/reflect
-        // values back into range every generation in crossover() when
-        // applyBounds is set (the default). Only when a population is
-        // explicitly supplied AND applyBounds is disabled are the bounds
-        // genuinely unused -- skip the check in exactly that combination,
-        // so withInitialPopulation()+withApplyBounds(false)+NoConstraint
-        // (previously valid: bounds were computed but never touched)
-        // keeps working.
-        if (!configuration().initialPopulation.empty() && !configuration().applyBounds) {
-            // bounds are not used anywhere in this configuration
+        // fillInitialPopulation() is the only place these bounds are used to
+        // compute a new value from scratch (l*(1-r)+u*r); it never runs when
+        // a population is supplied explicitly. The only other reader is
+        // crossover()'s applyBounds clip, which only ever *compares* a
+        // population value against the bounds (never subtracts them) before
+        // conditionally reflecting it off a separate, already-finite mirror
+        // value -- so even a sentinel-sized bound there cannot overflow.
+        // Bounds are therefore genuinely only load-bearing (can overflow)
+        // when fillInitialPopulation will run, i.e. when no population was
+        // supplied -- skip the check whenever one was, regardless of
+        // applyBounds, so withInitialPopulation()+NoConstraint (previously
+        // valid: bounds were computed but never touched in a way that
+        // overflows) keeps working either way.
+        if (!configuration().initialPopulation.empty()) {
+            // bounds are only ever compared against, never subtracted, once
+            // a population is supplied -- cannot overflow regardless of
+            // applyBounds
         } else {
             Real maxBound = std::numeric_limits<Real>::max();
             for (Size i = 0; i < lowerBound_.size(); ++i) {

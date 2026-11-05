@@ -1207,6 +1207,42 @@ BOOST_AUTO_TEST_CASE(testDifferentialEvolutionSeededPopulationIgnoresBounds) {
                     "NoConstraint");
 }
 
+BOOST_AUTO_TEST_CASE(testDifferentialEvolutionSeededPopulationWithDefaultBounds) {
+    BOOST_TEST_MESSAGE(
+        "Testing DifferentialEvolution with a seeded population and "
+        "default (enabled) bounds under an unconstrained problem...");
+
+    // Regression test, sibling of
+    // testDifferentialEvolutionSeededPopulationIgnoresBounds: an earlier
+    // version of the finite-bounds guard only skipped the check for
+    // withInitialPopulation()+withBounds(false), still throwing for a
+    // seeded population with applyBounds left at its default (true). That
+    // was itself a spurious regression -- with a population supplied,
+    // fillInitialPopulation() (the only reader that computes a new value
+    // from the bounds, and the only one that can overflow) never runs;
+    // crossover()'s applyBounds clip only ever compares against the bounds
+    // before reflecting off an already-finite mirror value, so it cannot
+    // overflow even against NoConstraint's +-DBL_MAX sentinel. This
+    // combination worked before the whole fix series and must keep working
+    // with applyBounds left at its default.
+    FirstDeJong sphere;
+    NoConstraint noConstraint;
+    Array initialValue(3, 1.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    Problem problem(sphere, noConstraint, initialValue);
+    std::vector<Array> seededPopulation(20, initialValue);
+    DifferentialEvolution::Configuration conf =
+        DifferentialEvolution::Configuration()
+        .withInitialPopulation(seededPopulation)
+        .withSeed(1234);
+    DifferentialEvolution(conf).minimize(problem, endCriteria);
+    if (!std::isfinite(problem.functionValue()))
+        BOOST_ERROR("DifferentialEvolution produced a non-finite result "
+                    "with a seeded population and default bounds under "
+                    "NoConstraint");
+}
+
 BOOST_AUTO_TEST_CASE(testParticleSwarmOptimizationOverflowingSpan) {
     BOOST_TEST_MESSAGE(
         "Testing ParticleSwarmOptimization with a finite-but-overflowing "
