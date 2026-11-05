@@ -204,10 +204,18 @@ namespace QuantLib {
             Real F, alpha, beta, nu, rho, t;
 
             Real y(Real k) const {
+                // beta=1 is a removable 0/0 singularity: the exact limit is -log(F/k)
+                static const Real m = 10;
+                if (std::fabs(1.0-beta) <= QL_EPSILON * m)
+                    return -std::log(F/k);
                 return -1.0/(1.0-beta)*(std::pow(F,1-beta)-std::pow(k,1-beta));
             }
 
             Real Dint(Real k) const {
+                // nu=0 is a removable 0/0 singularity: the exact limit is -y(k)/alpha
+                static const Real m = 10;
+                if (std::fabs(nu) <= QL_EPSILON * m)
+                    return -y(k)/alpha;
                 return 1/nu*std::log( ( std::sqrt(1+2*rho*nu/alpha*y(k)
                     + squared(nu/alpha*y(k)) )
                     - rho - nu/alpha*y(k) ) / (1-rho) );

@@ -2372,6 +2372,64 @@ BOOST_AUTO_TEST_CASE(testFlochKennedySabrIsSmoothAroundATM) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testFlochKennedySabrRemovableSingularities) {
+    BOOST_TEST_MESSAGE(
+        "Testing that the Le Floc'h-Kennedy SABR formula handles "
+        "beta=1 and nu=0, both removable singularities...");
+
+    // sabrFlochKennedyVolatility() builds y(k) = -(F^(1-beta)-k^(1-beta))/(1-beta),
+    // which is 0/0 at beta=1 (the removable limit is -log(F/k)), and a separate
+    // distance Dint(k) = (1/nu)*log(...), which is 0/0 at nu=0 (the removable
+    // limit is -y(k)/alpha). validateSabrParameters() admits both beta=1 and
+    // nu=0 as valid SABR parameters, but the unguarded formula used to return
+    // NaN at exactly those two points. Confirm both now return a finite value,
+    // and that the value agrees with the one-sided limit taken from a nearby
+    // non-degenerate parameter (the formula is smooth through each point).
+
+    const Real f0 = 1.1;
+    const Real alpha = 0.35;
+    const Real rho = 0.25;
+    const Real strike = 1.05; // away from ATM, so the smile-interpolation
+                               // branch (not the ATM Taylor expansion) is hit
+    const Time t = 2.1;
+    const Real tol = 1e-5;
+
+    // beta -> 1
+    {
+        const Real nu = 1.1;
+        const Real vol = sabrFlochKennedyVolatility(strike, f0, t, alpha, 1.0, nu, rho);
+        if (!std::isfinite(vol))
+            BOOST_ERROR("\nsabrFlochKennedyVolatility returned a non-finite "
+                        "value at beta=1: " << vol);
+
+        const Real volNear =
+            sabrFlochKennedyVolatility(strike, f0, t, alpha, 1.0 - 1e-6, nu, rho);
+        const Real diff = std::fabs(vol - volNear);
+        if (diff > tol)
+            BOOST_ERROR("\nsabrFlochKennedyVolatility is discontinuous at beta=1 :"
+                        "\n    at beta=1:      " << vol <<
+                        "\n    at beta=1-1e-6: " << volNear <<
+                        "\n    diff:           " << diff);
+    }
+
+    // nu -> 0
+    {
+        const Real beta = 0.3;
+        const Real vol = sabrFlochKennedyVolatility(strike, f0, t, alpha, beta, 0.0, rho);
+        if (!std::isfinite(vol))
+            BOOST_ERROR("\nsabrFlochKennedyVolatility returned a non-finite "
+                        "value at nu=0: " << vol);
+
+        const Real volNear = sabrFlochKennedyVolatility(strike, f0, t, alpha, beta, 1e-6, rho);
+        const Real diff = std::fabs(vol - volNear);
+        if (diff > tol)
+            BOOST_ERROR("\nsabrFlochKennedyVolatility is discontinuous at nu=0 :"
+                        "\n    at nu=0:      " << vol <<
+                        "\n    at nu=1e-6:   " << volNear <<
+                        "\n    diff:         " << diff);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testLeFlochKennedySabrExample) {
     BOOST_TEST_MESSAGE("Testing Le Floc'h Kennedy SABR Example...");
 
