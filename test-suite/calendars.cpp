@@ -4815,13 +4815,40 @@ BOOST_AUTO_TEST_CASE(testIndia) {
     Calendar c = India();
     checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2026)), expectedHol);
 
+    // 2025, from NSE Clearing circular NCL/CMPT/65916 and the later
+    // addition of September 8th (NCL/CMPT/70039)
+    std::vector<Date> expectedHol2025 = {
+        Date(19, February, 2025),  // Chhatrapati Shivaji Maharaj Jayanti
+        Date(26, February, 2025),  // Mahashivratri
+        Date(14, March, 2025),     // Holi
+        Date(31, March, 2025),     // Ramzan Id
+        Date(1, April, 2025),      // Annual Bank Closing
+        Date(10, April, 2025),     // Mahavir Jayanti
+        Date(14, April, 2025),     // Ambedkar Jayanti
+        Date(18, April, 2025),     // Good Friday
+        Date(1, May, 2025),        // Maharashtra Day
+        Date(12, May, 2025),       // Buddha Pournima
+        Date(15, August, 2025),    // Independence Day
+        Date(27, August, 2025),    // Ganesh Chaturthi
+        Date(5, September, 2025),  // Id-E-Milad
+        Date(8, September, 2025),  // Id-E-Milad (moved)
+        Date(2, October, 2025),    // Gandhi Jayanti
+        Date(21, October, 2025),   // Diwali - Laxmi Pujan
+        Date(22, October, 2025),   // Diwali - Balipratipada
+        Date(5, November, 2025),   // Gurunank Jayanti
+        Date(25, December, 2025),  // Christmas
+    };
+    checkHolidays(c.holidayList(Date(1, January, 2025), Date(31, December, 2025)),
+                  expectedHol2025);
+
     const Date historical[] = {
         {21, January, 2005}, {11, January, 2006}, {1, January, 2007},
         {6, March, 2008}, {8, January, 2009}, {1, January, 2010},
         {2, March, 2011}, {20, February, 2012}, {27, March, 2013},
         {27, February, 2014}, {19, February, 2019}, {19, February, 2020},
         {19, February, 2021}, {1, March, 2022}, {7, March, 2023},
-        {22, January, 2024}, {19, February, 2025}
+        {22, January, 2024}, {18, September, 2024}, {20, November, 2024},
+        {19, February, 2025}
     };
     for (const Date& date : historical)
         BOOST_CHECK_MESSAGE(c.isHoliday(date), date);
