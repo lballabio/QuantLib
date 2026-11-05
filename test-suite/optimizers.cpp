@@ -1099,6 +1099,36 @@ BOOST_AUTO_TEST_CASE(testOptimizersWithUnboundedConstraint) {
             BOOST_ERROR("DifferentialEvolution produced a non-finite result "
                         "under a bounded constraint");
     }
+    {
+        // exercises PSO's own convex-combination position-interpolation
+        // formula, changed by this fix, with finite bounds -- not just
+        // the unbounded-rejection path above
+        Problem problem(sphere, bounded, initialValue);
+        ParticleSwarmOptimization pso(
+            20,
+            ext::make_shared<GlobalTopology>(),
+            ext::make_shared<TrivialInertia>(),
+            Real(2.05), Real(2.05), 1234UL);
+        pso.minimize(problem, endCriteria);
+        if (!std::isfinite(problem.functionValue()))
+            BOOST_ERROR("ParticleSwarmOptimization produced a non-finite "
+                        "result under a bounded constraint");
+    }
+    {
+        // exercises Firefly's own convex-combination position-interpolation
+        // formula, changed by this fix, with finite bounds -- not just
+        // the unbounded-rejection path above
+        Problem problem(sphere, bounded, initialValue);
+        FireflyAlgorithm firefly(
+            20,
+            ext::make_shared<ExponentialIntensity>(1.0, 0.2, 1.0),
+            ext::make_shared<GaussianWalk>(1.0, 0.9, 1234),
+            0, 1.0, 0.5, 1234);
+        firefly.minimize(problem, endCriteria);
+        if (!std::isfinite(problem.functionValue()))
+            BOOST_ERROR("FireflyAlgorithm produced a non-finite result "
+                        "under a bounded constraint");
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testCMAES) {
