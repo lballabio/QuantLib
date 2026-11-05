@@ -297,6 +297,85 @@ BOOST_AUTO_TEST_CASE(testConsistency) {
             << " (should be higher)");
 }
 
+BOOST_AUTO_TEST_CASE(testCallerSuppliedGridMustContainEventTimes) {
+
+    BOOST_TEST_MESSAGE("Testing caller-supplied time grids for callable bonds...");
+
+    Globals vars;
+
+    vars.termStructure.linkTo(vars.makeFlatCurve(0.03));
+    vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));
+
+    Schedule schedule =
+        MakeSchedule()
+        .from(vars.issueDate())
+        .to(vars.maturityDate())
+        .withCalendar(vars.calendar)
+        .withFrequency(Semiannual)
+        .withConvention(vars.rollingConvention)
+        .withRule(DateGeneration::Backward);
+
+    std::vector<Rate> coupons(1, 0.05);
+
+    CallabilitySchedule callabilities;
+    std::vector<Date> callDates;
+    // Calls on coupon dates every two years, so no exercise date is snapped
+    // to a nearby coupon by the bond's constructor.
+    for (Size i = 4; i + 1 < schedule.size(); i += 4) {
+        callDates.push_back(schedule[i]);
+        callabilities.push_back(ext::make_shared<Callability>(
+            Bond::Price(110.0, Bond::Price::Clean), Callability::Call, schedule[i]));
+    }
+
+    CallableFixedRateBond callable(3, 100.0, schedule,
+                                   coupons, Thirty360(Thirty360::BondBasis),
+                                   vars.rollingConvention,
+                                   100.0, vars.issueDate(),
+                                   callabilities);
+
+    Size timeSteps = 240;
+
+    callable.setPricingEngine(ext::make_shared<TreeCallableFixedRateBondEngine>(
+        *(vars.model), timeSteps, vars.termStructure));
+    Real expected = callable.cleanPrice();
+
+    // The same event times, supplied as a grid, must reproduce that price.
+    std::vector<Time> eventTimes(1, 0.0);
+    for (Size i = 1; i < schedule.size(); ++i) {
+        Time t = vars.dayCounter.yearFraction(vars.settlement, schedule[i]);
+        if (t >= 0.0)
+            eventTimes.push_back(t);
+    }
+    for (auto& callDate : callDates) {
+        Time t = vars.dayCounter.yearFraction(vars.settlement, callDate);
+        if (t >= 0.0)
+            eventTimes.push_back(t);
+    }
+    TimeGrid complete(eventTimes.begin(), eventTimes.end(), timeSteps);
+
+    callable.setPricingEngine(ext::make_shared<TreeCallableFixedRateBondEngine>(
+        *(vars.model), complete, vars.termStructure));
+    Real calculated = callable.cleanPrice();
+
+    if (std::fabs(calculated - expected) > 1.0e-8)
+        BOOST_ERROR("supplied complete grid changed the price:\n"
+                    << std::setprecision(12)
+                    << "    engine grid:   " << expected << "\n"
+                    << "    supplied grid: " << calculated);
+
+    // A supplied grid that omits the event times must be rejected, not
+    // silently priced without the coupons and calls it does not contain.
+    std::vector<Time> endpoints(1, 0.0);
+    endpoints.push_back(vars.dayCounter.yearFraction(vars.settlement, vars.maturityDate()));
+    TimeGrid incomplete(endpoints.begin(), endpoints.end(), timeSteps);
+
+    callable.setPricingEngine(ext::make_shared<TreeCallableFixedRateBondEngine>(
+        *(vars.model), incomplete, vars.termStructure));
+
+    BOOST_CHECK_THROW(callable.cleanPrice(), Error);
+}
+
+
 BOOST_AUTO_TEST_CASE(testObservability) {
 
     BOOST_TEST_MESSAGE("Testing observability of callable bonds...");
