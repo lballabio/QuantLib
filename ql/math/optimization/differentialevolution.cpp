@@ -62,6 +62,18 @@ namespace QuantLib {
                        "wrong lower bound size in differential evolution configuration");
             lowerBound_ = configuration().lowerBound;
         }
+        for (Size i = 0; i < lowerBound_.size(); ++i) {
+            // the bounds themselves (e.g. +-DBL_MAX, NoConstraint's default)
+            // are finite, but their span can still overflow
+            QL_REQUIRE(std::isfinite(upperBound_[i] - lowerBound_[i]),
+                "DifferentialEvolution needs finite bounds to initialize its "
+                "population, but dimension " << i << " has non-finite bounds "
+                "(" << lowerBound_[i] << ", " << upperBound_[i] << ") -- "
+                "the problem's constraint (e.g. NoConstraint) does not "
+                "provide one; supply explicit, finite bounds via "
+                "DifferentialEvolution::Configuration::withLowerBound()/"
+                "withUpperBound()");
+        }
         currGenSizeWeights_ =
             Array(configuration().populationMembers, configuration().stepsizeWeight);
         currGenCrossover_ = Array(configuration().populationMembers,
@@ -386,7 +398,13 @@ namespace QuantLib {
         for (Size j = 1; j < population.size(); ++j) {
             for (Size i = 0; i < p.currentValue().size(); ++i) {
                 Real l = lowerBound_[i], u = upperBound_[i];
-                population[j].values[i] = l + (u-l)*rng_.nextReal();
+                // interpolate as a convex combination rather than l+(u-l)*r:
+                // under an unconstrained dimension (NoConstraint's default
+                // bounds are +-DBL_MAX) u-l overflows to +inf, turning every
+                // random candidate into +inf (or, were the draw ever exactly
+                // 0, inf*0 = NaN)
+                Real r = rng_.nextReal();
+                population[j].values[i] = l*(1.0-r) + u*r;
             }
             population[j].cost = p.costFunction().value(population[j].values);
             if (!std::isfinite(population[j].cost))

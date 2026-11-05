@@ -24,7 +24,9 @@
 #include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/experimental/math/fireflyalgorithm.hpp>
 #include <ql/experimental/math/hybridsimulatedannealing.hpp>
+#include <ql/experimental/math/particleswarmoptimization.hpp>
 #include <ql/math/optimization/bfgs.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/constraint.hpp>
@@ -1026,6 +1028,76 @@ BOOST_AUTO_TEST_CASE(testDifferentialEvolution) {
                             << "\nexpected:   " << "less than 15");
             }
         }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testOptimizersWithUnboundedConstraint) {
+    BOOST_TEST_MESSAGE(
+        "Testing population-based optimizers under an unconstrained problem...");
+
+    // Regression test: NoConstraint's default bounds are +-DBL_MAX. Before
+    // this fix, DifferentialEvolution/ParticleSwarmOptimization/
+    // FireflyAlgorithm would silently sample their initial population from
+    // the full +-DBL_MAX range (overflowing to +inf in the naive
+    // l+(u-l)*random interpolation, or, even once that overflow is avoided,
+    // producing finite-but-astronomic values whose later use in the cost
+    // function or in crossover/mutation arithmetic overflows to inf/NaN
+    // anyway). There is no principled finite default span for a genuinely
+    // unconstrained dimension, so each optimizer must now reject non-finite
+    // bounds with a clear message rather than silently returning garbage.
+    FirstDeJong sphere;
+    NoConstraint noConstraint;
+    Array initialValue(3, 1.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    {
+        Problem problem(sphere, noConstraint, initialValue);
+        DifferentialEvolution::Configuration conf =
+            DifferentialEvolution::Configuration()
+            .withPopulationMembers(20)
+            .withSeed(1234);
+        BOOST_CHECK_EXCEPTION(
+            DifferentialEvolution(conf).minimize(problem, endCriteria),
+            Error,
+            ExpectedErrorMessage("finite bounds"));
+    }
+    {
+        Problem problem(sphere, noConstraint, initialValue);
+        ParticleSwarmOptimization pso(
+            20,
+            ext::make_shared<GlobalTopology>(),
+            ext::make_shared<TrivialInertia>(),
+            Real(2.05), Real(2.05), 1234UL);
+        BOOST_CHECK_EXCEPTION(
+            pso.minimize(problem, endCriteria),
+            Error,
+            ExpectedErrorMessage("finite bounds"));
+    }
+    {
+        Problem problem(sphere, noConstraint, initialValue);
+        FireflyAlgorithm firefly(
+            20,
+            ext::make_shared<ExponentialIntensity>(1.0, 0.2, 1.0),
+            ext::make_shared<GaussianWalk>(1.0, 0.9, 1234),
+            0, 1.0, 0.5, 1234);
+        BOOST_CHECK_EXCEPTION(
+            firefly.minimize(problem, endCriteria),
+            Error,
+            ExpectedErrorMessage("finite bounds"));
+    }
+
+    // with explicit, finite bounds the optimizers still work normally
+    BoundaryConstraint bounded(-10.0, 10.0);
+    {
+        Problem problem(sphere, bounded, initialValue);
+        DifferentialEvolution::Configuration conf =
+            DifferentialEvolution::Configuration()
+            .withPopulationMembers(20)
+            .withSeed(1234);
+        DifferentialEvolution(conf).minimize(problem, endCriteria);
+        if (!std::isfinite(problem.functionValue()))
+            BOOST_ERROR("DifferentialEvolution produced a non-finite result "
+                        "under a bounded constraint");
     }
 }
 

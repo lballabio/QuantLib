@@ -63,6 +63,16 @@ namespace QuantLib {
         gBF_ = Array(M_);
         uX_ = P.constraint().upperBound(P.currentValue());
         lX_ = P.constraint().lowerBound(P.currentValue());
+        for (Size j = 0; j < N_; ++j) {
+            // the bounds themselves (e.g. +-DBL_MAX, NoConstraint's default)
+            // are finite, but their span can still overflow
+            QL_REQUIRE(std::isfinite(uX_[j] - lX_[j]),
+                "ParticleSwarmOptimization needs finite bounds to "
+                "initialize its particles, but dimension " << j <<
+                " has non-finite bounds (" << lX_[j] << ", " << uX_[j] <<
+                ") -- the problem's constraint (e.g. NoConstraint) does "
+                "not provide one; use a bounded constraint instead");
+        }
         Array bounds = uX_ - lX_;
 
         //Random initialization is done by Sobol sequence
@@ -77,8 +87,10 @@ namespace QuantLib {
             Array& v = V_.back();
             gBX_.emplace_back(N_, 0.0);
             for (Size j = 0; j < N_; j++) {
-                //Assign X=lb+(ub-lb)*random
-                x[j] = lX_[j] + bounds[j] * sample[2 * j];
+                //Assign X as a convex combination of lb and ub (rather than
+                //lb+(ub-lb)*random, which overflows when lb/ub are +-DBL_MAX)
+                Real r = sample[2 * j];
+                x[j] = lX_[j]*(1.0-r) + uX_[j]*r;
                 //Assign V=(ub-lb)*2*random-(ub-lb) -> between (lb-ub) and (ub-lb)
                 v[j] = bounds[j] * (2.0*sample[2 * j + 1] - 1.0);
             }

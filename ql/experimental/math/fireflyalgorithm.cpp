@@ -47,7 +47,16 @@ namespace QuantLib {
         values_.reserve(M_);
         uX_ = P.constraint().upperBound(P.currentValue());
         lX_ = P.constraint().lowerBound(P.currentValue());
-        Array bounds = uX_ - lX_;
+        for (Size j = 0; j < N_; ++j) {
+            // the bounds themselves (e.g. +-DBL_MAX, NoConstraint's default)
+            // are finite, but their span can still overflow
+            QL_REQUIRE(std::isfinite(uX_[j] - lX_[j]),
+                "FireflyAlgorithm needs finite bounds to initialize its "
+                "population, but dimension " << j << " has non-finite "
+                "bounds (" << lX_[j] << ", " << uX_[j] << ") -- the "
+                "problem's constraint (e.g. NoConstraint) does not "
+                "provide one; use a bounded constraint instead");
+        }
 
         //Random initialization is done by Sobol sequence
         SobolRsg sobol(N_);
@@ -60,8 +69,11 @@ namespace QuantLib {
             xRW_.emplace_back(N_, 0.0);
             Array& x = x_.back();
             for (Size j = 0; j < N_; j++) {
-                //Assign X=lb+(ub-lb)*random
-                x[j] = lX_[j] + bounds[j] * sample[j];
+                //Assign X as a convex combination of lb and ub (rather than
+                //lb+(ub-lb)*random, which overflows when lb/ub are +-DBL_MAX,
+                //the default bounds for an unconstrained dimension)
+                Real r = sample[j];
+                x[j] = lX_[j]*(1.0-r) + uX_[j]*r;
             }
             //Evaluate point
             values_.emplace_back(P.value(x), i);
