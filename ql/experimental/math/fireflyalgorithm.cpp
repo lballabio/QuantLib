@@ -68,6 +68,22 @@ namespace QuantLib {
                 "like PositiveConstraint) does not provide one; use a "
                 "bounded constraint instead");
         }
+        // The random walk's init (DistributionRandomWalk::init ->
+        // IsotropicRandomWalk::setDimension(dim, lb, ub)) rescales its step
+        // by the raw span (ub-lb)/max(ub-lb); both bounds individually
+        // finite doesn't stop their difference from overflowing (e.g.
+        // +-1e308), which makes that ratio inf/inf = NaN. Every random-walk
+        // step is then NaN for the whole run, which the firefly loop's own
+        // isnan guard silently rejects every time -- the firefly
+        // subpopulation never moves, with no error raised. Guard the span
+        // itself too, as ParticleSwarmOptimization does for its velocity init.
+        for (Size j = 0; j < N_; ++j) {
+            QL_REQUIRE(std::isfinite(uX_[j] - lX_[j]),
+                "FireflyAlgorithm needs a finite upper-minus-lower bound to "
+                "initialize its random walk, but dimension " << j <<
+                " has bounds (" << lX_[j] << ", " << uX_[j] << ") whose "
+                "span overflows");
+        }
 
         //Random initialization is done by Sobol sequence
         SobolRsg sobol(N_);

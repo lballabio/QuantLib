@@ -1236,6 +1236,40 @@ BOOST_AUTO_TEST_CASE(testParticleSwarmOptimizationOverflowingSpan) {
         ExpectedErrorMessage("finite"));
 }
 
+BOOST_AUTO_TEST_CASE(testFireflyAlgorithmOverflowingSpan) {
+    BOOST_TEST_MESSAGE(
+        "Testing FireflyAlgorithm with a finite-but-overflowing "
+        "bound span...");
+
+    // Regression test, same shape as
+    // testParticleSwarmOptimizationOverflowingSpan: the per-bound sentinel
+    // check only rejects the +-numeric_limits<Real>::max() "no bound"
+    // sentinel, not a pair of individually-finite bounds whose difference
+    // itself overflows (e.g. +-1e308). FireflyAlgorithm's random walk
+    // (DistributionRandomWalk::init -> IsotropicRandomWalk::setDimension)
+    // rescales its step by the raw span (ub-lb)/max(ub-lb); when that span
+    // overflows to +inf, the ratio is inf/inf = NaN, so every walk step is
+    // NaN for the whole run. The firefly loop's own isnan guard silently
+    // rejects every such move, so the firefly subpopulation never moves and
+    // no error is ever raised -- exactly the silent-garbage failure mode
+    // this whole PR exists to reject.
+    FirstDeJong sphere;
+    BoundaryConstraint extreme(-1.0e308, 1.0e308);
+    Array initialValue(3, 1.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    Problem problem(sphere, extreme, initialValue);
+    FireflyAlgorithm firefly(
+        20,
+        ext::make_shared<ExponentialIntensity>(1.0, 0.2, 1.0),
+        ext::make_shared<GaussianWalk>(1.0, 0.9, 1234),
+        20, 1.0, 0.5, 1234);
+    BOOST_CHECK_EXCEPTION(
+        firefly.minimize(problem, endCriteria),
+        Error,
+        ExpectedErrorMessage("finite"));
+}
+
 BOOST_AUTO_TEST_CASE(testCMAES) {
     BOOST_TEST_MESSAGE("Testing CMA-ES optimizer...");
 
