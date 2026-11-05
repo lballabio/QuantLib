@@ -2845,27 +2845,55 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4COSAndPTDAndPDF) {
                 << "\n  tolerance : " << tolNPV);
     }
 
-    // --- AnalyticPTDHestonEngine, two segments with identical constant
-    //     parameters (exercises the cross-segment D/C recursion, not just
-    //     the single-segment reduction) ---
-    ConstantParameter thetaP(theta, PositiveConstraint());
-    ConstantParameter kappaP(kappa, PositiveConstraint());
-    ConstantParameter sigmaP(sigma, PositiveConstraint());
-    ConstantParameter rhoP(rho, BoundaryConstraint(-1.0, 1.0));
+    // --- AnalyticPTDHestonEngine, two segments with genuinely DIFFERENT
+    //     parameters (not just two copies of the same one): this exercises
+    //     the actual use case the Dprev generalization exists for -- a
+    //     segment boundary where kappa/theta/rho/sigma all change, carrying
+    //     a nonzero D across it -- not merely the cross-segment recursion
+    //     with a no-op parameter change. Both segments keep sigma tiny
+    //     enough to hit the small-sigma branch, but at different magnitudes,
+    //     so the branch is independently exercised (and independently
+    //     thresholded) per segment.
+    const Time t1 = 0.5*t;
+    const Real kappa1 = 1.25, theta1 = 0.01, rho1 = -0.9, sigma1 = 1e-9;
+    const Real kappa2 = 0.75, theta2 = 0.03, rho2 = -0.5, sigma2 = 5e-9;
 
+    std::vector<Time> pTimes(1, t1);
+    PiecewiseConstantParameter thetaP(pTimes, PositiveConstraint());
+    PiecewiseConstantParameter kappaP(pTimes, PositiveConstraint());
+    PiecewiseConstantParameter sigmaP(pTimes, PositiveConstraint());
+    PiecewiseConstantParameter rhoP(pTimes, BoundaryConstraint(-1.0, 1.0));
+    thetaP.setParam(0, theta1); thetaP.setParam(1, theta2);
+    kappaP.setParam(0, kappa1); kappaP.setParam(1, kappa2);
+    sigmaP.setParam(0, sigma1); sigmaP.setParam(1, sigma2);
+    rhoP.setParam(0, rho1);     rhoP.setParam(1, rho2);
+
+    const std::vector<Time> gridTimes = {t1, t};
     const ext::shared_ptr<PiecewiseTimeDependentHestonModel> ptdModel =
         ext::make_shared<PiecewiseTimeDependentHestonModel>(
-            rTS, rTS, spot, v0, thetaP, kappaP, sigmaP, rhoP, TimeGrid(t, 2));
+            rTS, rTS, spot, v0, thetaP, kappaP, sigmaP, rhoP,
+            TimeGrid(gridTimes.begin(), gridTimes.end()));
+
+    // deterministic variance path is continuous across the segment
+    // boundary: integrate it piecewise (same closed form as stdDev above,
+    // applied segment by segment, chaining the variance level v(t1)).
+    const Real vAtT1 = theta1 + (v0-theta1)*std::exp(-kappa1*t1);
+    const Real w1 = theta1*t1 + (v0-theta1)*(1-std::exp(-kappa1*t1))/kappa1;
+    const Real w2 = theta2*(t-t1)
+        + (vAtT1-theta2)*(1-std::exp(-kappa2*(t-t1)))/kappa2;
+    const Real expectedPtdNPV =
+        blackFormula(Option::Call, strike, 100.0, std::sqrt(w1+w2));
+    const Real tolPtdNPV = 50*sigma2;
 
     option.setPricingEngine(
         ext::make_shared<AnalyticPTDHestonEngine>(ptdModel, 192));
     const Real ptdGatheralNPV = option.NPV();
-    if (std::fabs(ptdGatheralNPV - expectedNPV) > tolNPV) {
+    if (std::fabs(ptdGatheralNPV - expectedPtdNPV) > tolPtdNPV) {
         BOOST_ERROR("failed to reproduce Black-Scholes price with "
                 "AnalyticPTDHestonEngine (Gatheral) for very small sigma"
-                << "\n  expected  : " << expectedNPV
+                << "\n  expected  : " << expectedPtdNPV
                 << "\n  calculated: " << ptdGatheralNPV
-                << "\n  tolerance : " << tolNPV);
+                << "\n  tolerance : " << tolPtdNPV);
     }
 
     option.setPricingEngine(
@@ -2874,13 +2902,13 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4COSAndPTDAndPDF) {
             AnalyticPTDHestonEngine::AndersenPiterbarg,
             AnalyticPTDHestonEngine::Integration::gaussLaguerre(192)));
     const Real ptdAndersenPiterbargNPV = option.NPV();
-    if (std::fabs(ptdAndersenPiterbargNPV - expectedNPV) > tolNPV) {
+    if (std::fabs(ptdAndersenPiterbargNPV - expectedPtdNPV) > tolPtdNPV) {
         BOOST_ERROR("failed to reproduce Black-Scholes price with "
                 "AnalyticPTDHestonEngine (Andersen-Piterbarg) for very "
                 "small sigma"
-                << "\n  expected  : " << expectedNPV
+                << "\n  expected  : " << expectedPtdNPV
                 << "\n  calculated: " << ptdAndersenPiterbargNPV
-                << "\n  tolerance : " << tolNPV);
+                << "\n  tolerance : " << tolPtdNPV);
     }
 
     // --- AnalyticPDFHestonEngine (HestonRNDCalculator); tightened from the
