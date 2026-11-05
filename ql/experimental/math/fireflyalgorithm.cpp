@@ -76,9 +76,14 @@ namespace QuantLib {
         // step is then NaN for the whole run, which the firefly loop's own
         // isnan guard silently rejects every time -- the firefly
         // subpopulation never moves, with no error raised. Guard the span
-        // itself too, as ParticleSwarmOptimization does for its velocity init.
+        // itself too, as ParticleSwarmOptimization does for its velocity
+        // init -- computed into its own Array first (rather than calling
+        // isfinite directly on the uX_[j]-lX_[j] subexpression) to match
+        // that precedent, since it's the only form QuantLib's isfinite
+        // overloads are already known to support consistently.
+        Array span = uX_ - lX_;
         for (Size j = 0; j < N_; ++j) {
-            QL_REQUIRE(std::isfinite(uX_[j] - lX_[j]),
+            QL_REQUIRE(std::isfinite(span[j]),
                 "FireflyAlgorithm needs a finite upper-minus-lower bound to "
                 "initialize its random walk, but dimension " << j <<
                 " has bounds (" << lX_[j] << ", " << uX_[j] << ") whose "
