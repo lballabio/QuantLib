@@ -1166,6 +1166,81 @@ BOOST_AUTO_TEST_CASE(testNonstandardCopyOfAmortisingOvernightSwap) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianWingStrike) {
+    BOOST_TEST_MESSAGE(
+        "Testing Gaussian1dJamshidianSwaptionEngine on a deep wing "
+        "strike...");
+
+    // Regression test: rStarFinder's solve bracket is hard-coded to
+    // [-8,8] in the standardized state. When the strike is far enough
+    // from the money (here, low vol + high mean reversion, 100bp OTM),
+    // the critical state can fall outside this fixed bracket even though
+    // the swaption is a perfectly valid, trivially deep in/out-of-the-
+    // money state that the sibling Gaussian1dSwaptionEngine (which
+    // integrates rather than root-finds) prices cleanly on the identical
+    // model.
+
+    Date today(15, September, 2016);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> yts(flatRate(today, 0.03, Actual365Fixed()));
+    auto index = ext::make_shared<Euribor6M>(yts);
+    Calendar calendar = index->fixingCalendar();
+    Date settlement = calendar.advance(today, 2, Days);
+
+    Date start = calendar.advance(settlement, 1, Years);
+    Date maturity = calendar.advance(start, 30, Years);
+    Schedule fixedSchedule(start, maturity, Period(Annual), calendar,
+                           Unadjusted, Unadjusted,
+                           DateGeneration::Forward, false);
+    Schedule floatSchedule(start, maturity, Period(Semiannual), calendar,
+                           ModifiedFollowing, ModifiedFollowing,
+                           DateGeneration::Forward, false);
+
+    ext::shared_ptr<VanillaSwap> probeSwap = ext::make_shared<VanillaSwap>(
+        Swap::Payer, 1000.0,
+        fixedSchedule, 0.0, index->dayCounter(),
+        floatSchedule, index, 0.0, index->dayCounter());
+    probeSwap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(yts));
+    const Rate atmRate = probeSwap->fairRate();
+
+    ext::shared_ptr<VanillaSwap> swap = ext::make_shared<VanillaSwap>(
+        Swap::Payer, 1000.0,
+        fixedSchedule, atmRate - 0.01, index->dayCounter(),
+        floatSchedule, index, 0.0, index->dayCounter());
+    swap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(yts));
+
+    ext::shared_ptr<Swaption> swaption = ext::make_shared<Swaption>(
+        swap, ext::make_shared<EuropeanExercise>(start));
+
+    const Real reversion = 0.5, vol = 0.01;
+    ext::shared_ptr<Gsr> model = ext::make_shared<Gsr>(
+        yts, std::vector<Date>(), std::vector<Real>(1, vol), reversion);
+
+    swaption->setPricingEngine(
+        ext::make_shared<Gaussian1dSwaptionEngine>(model, 64, 7.0));
+    const Real referenceNPV = swaption->NPV();
+
+    swaption->setPricingEngine(
+        ext::make_shared<Gaussian1dJamshidianSwaptionEngine>(model));
+
+    Real npv;
+    try {
+        npv = swaption->NPV();
+    } catch (const Error& e) {
+        BOOST_ERROR("Gaussian1dJamshidianSwaptionEngine threw on a valid "
+                    "deep wing-strike state: " << e.what());
+        return;
+    }
+
+    const Real tol = 1.0e-4 * std::max(std::fabs(referenceNPV), 1.0);
+    if (std::fabs(npv - referenceNPV) > tol) {
+        BOOST_ERROR("Gaussian1dJamshidianSwaptionEngine (" << npv
+                    << ") disagrees with Gaussian1dSwaptionEngine ("
+                    << referenceNPV << ") on the identical model");
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

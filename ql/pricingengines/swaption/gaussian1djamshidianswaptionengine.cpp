@@ -141,6 +141,21 @@ namespace QuantLib {
         Brent s1d;
         Rate minStrike = -8.0;
         Rate maxStrike = 8.0;
+        // When the strike is more than roughly 8 standardized-state standard
+        // deviations from the money, the critical state can fall outside
+        // this fixed bracket even though the swaption is a perfectly valid,
+        // trivially deep in- or out-of-the-money state (siblings such as
+        // Gaussian1dSwaptionEngine and JamshidianSwaptionEngine, which
+        // brackets the short rate at [-10,10], price these states cleanly).
+        // Widen adaptively rather than throwing "root not bracketed".
+        Real fLower = finder(minStrike), fUpper = finder(maxStrike);
+        for (Size attempt = 0;
+             fLower*fUpper >= 0.0 && attempt < 20; ++attempt) {
+            minStrike *= 2.0;
+            maxStrike *= 2.0;
+            fLower = finder(minStrike);
+            fUpper = finder(maxStrike);
+        }
         s1d.setMaxEvaluations(10000);
         s1d.setLowerBound(minStrike);
         s1d.setUpperBound(maxStrike);
