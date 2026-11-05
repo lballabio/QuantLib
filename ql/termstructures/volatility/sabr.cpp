@@ -206,7 +206,7 @@ namespace QuantLib {
             Real y(Real k) const {
                 // beta=1 is a removable 0/0 singularity: the exact limit is -log(F/k).
                 // Compare the squared distance against QL_EPSILON * m, as the existing
-                // small-z Taylor branch in unsafeSabrVolatility does below, since the
+                // small-z Taylor branch in unsafeSabrVolatility does above, since the
                 // naive formula already suffers catastrophic cancellation well before
                 // 1-beta underflows to exactly zero.
                 static const Real m = 10;
