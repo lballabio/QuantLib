@@ -66,20 +66,23 @@ namespace QuantLib {
         // fillInitialPopulation() is the only place these bounds are used to
         // compute a new value from scratch (l*(1-r)+u*r); it never runs when
         // a population is supplied explicitly. The only other reader is
-        // crossover()'s applyBounds clip, which only ever *compares* a
-        // population value against the bounds (never subtracts them) before
-        // conditionally reflecting it off a separate, already-finite mirror
-        // value -- so even a sentinel-sized bound there cannot overflow.
-        // Bounds are therefore genuinely only load-bearing (can overflow)
-        // when fillInitialPopulation will run, i.e. when no population was
-        // supplied -- skip the check whenever one was, regardless of
-        // applyBounds, so withInitialPopulation()+NoConstraint (previously
-        // valid: bounds were computed but never touched in a way that
+        // crossover()'s applyBounds clip, which reads the bounds only in a
+        // reflection step (bound + rng()*(mirror-bound)) that is entered
+        // solely when a population member is already > upperBound_ or
+        // < lowerBound_ -- against a sentinel-sized bound, that only
+        // happens once a member is already non-finite, a state no bounds
+        // check on a *finite* configuration can prevent anyway. So once a
+        // population is user-supplied, these bounds are genuinely
+        // load-bearing (can overflow a well-behaved run) only in
+        // fillInitialPopulation -- skip the check whenever one was
+        // supplied, regardless of applyBounds, so withInitialPopulation()+
+        // NoConstraint (previously valid: bounds were computed but never
+        // touched in a way that
         // overflows) keeps working either way.
         if (!configuration().initialPopulation.empty()) {
-            // bounds are only ever compared against, never subtracted, once
-            // a population is supplied -- cannot overflow regardless of
-            // applyBounds
+            // once a population is supplied, the only remaining reader
+            // (crossover()'s clip) can only overflow via a member that's
+            // already non-finite -- not something a bounds check prevents
         } else {
             Real maxBound = std::numeric_limits<Real>::max();
             for (Size i = 0; i < lowerBound_.size(); ++i) {

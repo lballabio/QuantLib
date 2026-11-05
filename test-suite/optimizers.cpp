@@ -1269,7 +1269,7 @@ BOOST_AUTO_TEST_CASE(testParticleSwarmOptimizationOverflowingSpan) {
     BOOST_CHECK_EXCEPTION(
         pso.minimize(problem, endCriteria),
         Error,
-        ExpectedErrorMessage("finite"));
+        ExpectedErrorMessage("span overflows"));
 }
 
 BOOST_AUTO_TEST_CASE(testFireflyAlgorithmOverflowingSpan) {
@@ -1309,7 +1309,40 @@ BOOST_AUTO_TEST_CASE(testFireflyAlgorithmOverflowingSpan) {
     BOOST_CHECK_EXCEPTION(
         firefly.minimize(problem, endCriteria),
         Error,
-        ExpectedErrorMessage("finite"));
+        ExpectedErrorMessage("span overflows"));
+}
+
+BOOST_AUTO_TEST_CASE(testFireflyAlgorithmZeroWidthBounds) {
+    BOOST_TEST_MESSAGE(
+        "Testing FireflyAlgorithm with zero-width bounds...");
+
+    // Regression test: the span-overflow guards in PSO/FireflyAlgorithm's
+    // own startState() only catch the span (ub-lb) overflowing to +inf.
+    // IsotropicRandomWalk::setDimension (which the random walk's init
+    // eventually calls) rescales its step by (ub-lb)/max(ub-lb) -- a
+    // DEGENERATE bounds configuration where every dimension has zero width
+    // makes max(ub-lb)=0, so that rescaling is 0/0=NaN for every dimension,
+    // which neither optimizer's own overflow guard catches (0 is perfectly
+    // finite). This produces the identical silent-NaN-swallow failure mode
+    // the span-overflow guards exist to reject. Fixed by a guard directly
+    // in IsotropicRandomWalk::setDimension (which both PSO's
+    // LevyFlightInertia and FireflyAlgorithm's random walk share), rejecting
+    // a largest bound span that isn't both finite and strictly positive.
+    FirstDeJong sphere;
+    BoundaryConstraint zeroWidth(1.0, 1.0);
+    Array initialValue(3, 1.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    Problem problem(sphere, zeroWidth, initialValue);
+    FireflyAlgorithm firefly(
+        20,
+        ext::make_shared<ExponentialIntensity>(1.0, 0.2, 1.0),
+        ext::make_shared<GaussianWalk>(1.0, 0.9, 1234),
+        0, 1.0, 0.5, 1234);
+    BOOST_CHECK_EXCEPTION(
+        firefly.minimize(problem, endCriteria),
+        Error,
+        ExpectedErrorMessage("positive, finite"));
 }
 
 BOOST_AUTO_TEST_CASE(testCMAES) {
