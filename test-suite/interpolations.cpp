@@ -2410,6 +2410,23 @@ BOOST_AUTO_TEST_CASE(testFlochKennedySabrRemovableSingularities) {
                         "\n    at beta=1:      " << vol <<
                         "\n    at beta=1-1e-6: " << volNear <<
                         "\n    diff:           " << diff);
+
+        // 1-beta=1e-12 is far outside double-precision underflow (so the
+        // naive, unguarded y(k) = -(F^(1-beta)-k^(1-beta))/(1-beta) would
+        // still evaluate, not divide by an exact zero) but well inside the
+        // range where it suffers catastrophic cancellation: evaluated
+        // directly, it is off by ~0.2% here. The guard must trigger on a
+        // squared comparison (matching the existing small-z Taylor branch
+        // in unsafeSabrVolatility above in this file) to catch this, not
+        // just on an exact, unguarded zero.
+        const Real volCliff =
+            sabrFlochKennedyVolatility(strike, f0, t, alpha, 1.0 - 1e-12, nu, rho);
+        const Real cliffDiff = std::fabs(vol - volCliff);
+        if (cliffDiff > tol)
+            BOOST_ERROR("\nsabrFlochKennedyVolatility loses precision near beta=1 :"
+                        "\n    at beta=1:       " << vol <<
+                        "\n    at beta=1-1e-12: " << volCliff <<
+                        "\n    diff:            " << cliffDiff);
     }
 
     // nu -> 0
@@ -2427,6 +2444,17 @@ BOOST_AUTO_TEST_CASE(testFlochKennedySabrRemovableSingularities) {
                         "\n    at nu=0:      " << vol <<
                         "\n    at nu=1e-6:   " << volNear <<
                         "\n    diff:         " << diff);
+
+        // see the analogous beta=1-1e-12 comment above: nu=1e-12 is far from
+        // an exact zero but still deep in Dint's catastrophic-cancellation
+        // band, so the guard must trigger on a squared comparison here too.
+        const Real volCliff = sabrFlochKennedyVolatility(strike, f0, t, alpha, beta, 1e-12, rho);
+        const Real cliffDiff = std::fabs(vol - volCliff);
+        if (cliffDiff > tol)
+            BOOST_ERROR("\nsabrFlochKennedyVolatility loses precision near nu=0 :"
+                        "\n    at nu=0:      " << vol <<
+                        "\n    at nu=1e-12:  " << volCliff <<
+                        "\n    diff:         " << cliffDiff);
     }
 }
 

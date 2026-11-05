@@ -204,17 +204,22 @@ namespace QuantLib {
             Real F, alpha, beta, nu, rho, t;
 
             Real y(Real k) const {
-                // beta=1 is a removable 0/0 singularity: the exact limit is -log(F/k)
+                // beta=1 is a removable 0/0 singularity: the exact limit is -log(F/k).
+                // Compare the squared distance against QL_EPSILON * m, as the existing
+                // small-z Taylor branch in unsafeSabrVolatility does below, since the
+                // naive formula already suffers catastrophic cancellation well before
+                // 1-beta underflows to exactly zero.
                 static const Real m = 10;
-                if (std::fabs(1.0-beta) <= QL_EPSILON * m)
+                if (std::fabs(squared(1.0-beta)) <= QL_EPSILON * m)
                     return -std::log(F/k);
                 return -1.0/(1.0-beta)*(std::pow(F,1-beta)-std::pow(k,1-beta));
             }
 
             Real Dint(Real k) const {
-                // nu=0 is a removable 0/0 singularity: the exact limit is -y(k)/alpha
+                // nu=0 is a removable 0/0 singularity: the exact limit is -y(k)/alpha.
+                // See the comment in y() above for why the comparison is squared.
                 static const Real m = 10;
-                if (std::fabs(nu) <= QL_EPSILON * m)
+                if (std::fabs(squared(nu)) <= QL_EPSILON * m)
                     return -y(k)/alpha;
                 return 1/nu*std::log( ( std::sqrt(1+2*rho*nu/alpha*y(k)
                     + squared(nu/alpha*y(k)) )
