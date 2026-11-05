@@ -36,10 +36,11 @@ namespace QuantLib {
                              Currency currency,
                              Handle<YieldTermStructure> interest,
                              Handle<YieldTermStructure> dividend,
-                             Handle<Quote> spot)
+                             Handle<Quote> spot,
+                             ReturnType returnType)
     : name_(std::move(name)), fixingCalendar_(std::move(fixingCalendar)),
       currency_(std::move(currency)), interest_(std::move(interest)),
-      dividend_(std::move(dividend)), spot_(std::move(spot)) {
+      dividend_(std::move(dividend)), spot_(std::move(spot)), returnType_(returnType) {
 
         registerWith(interest_);
         registerWith(dividend_);
@@ -72,7 +73,7 @@ namespace QuantLib {
     }
 
     Real EquityIndex::forecastFixing(const Date& fixingDate) const {
-        QL_REQUIRE(!interest_.empty(),
+        QL_REQUIRE(returnType_ == ExcessReturn || !interest_.empty(),
                    "null interest rate term structure set to this instance of " << name());
 
         Date today = Settings::instance().evaluationDate();
@@ -81,10 +82,25 @@ namespace QuantLib {
         Real spot = resolveSpot(spot_, pastFixing(lastFixingDate));
 
         Real forward;
-        if (!dividend_.empty()) {
-            forward = spot * dividend_->discount(fixingDate) / interest_->discount(fixingDate);
-        } else {
-            forward = spot / interest_->discount(fixingDate);
+        switch (returnType_) {
+            case Price:
+                if (!dividend_.empty()) {
+                    forward =
+                        spot * dividend_->discount(fixingDate) / interest_->discount(fixingDate);
+                } else {
+                    forward = spot / interest_->discount(fixingDate);
+                }
+                break;
+            case TotalReturn:
+                // dividends are reinvested in the index
+                forward = spot / interest_->discount(fixingDate);
+                break;
+            case ExcessReturn:
+                // funding is already deducted from the index level
+                forward = spot;
+                break;
+            default:
+                QL_FAIL("unknown equity index return type");
         }
         return forward;
     }
@@ -93,6 +109,6 @@ namespace QuantLib {
                                                     const Handle<YieldTermStructure>& dividend,
                                                     const Handle<Quote>& spot) const {
         return ext::make_shared<EquityIndex>(name(), fixingCalendar(), currency(), interest,
-                                             dividend, spot);
+                                             dividend, spot, returnType_);
     }
 }

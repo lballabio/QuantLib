@@ -38,7 +38,7 @@ namespace QuantLib {
         term structure, or just the interest rate term structure
         in which case one can provide a term structure of equity
         forwards implied from, e.g. option prices.
-        
+
         In case of the first method, the forward is calculated as:
         \f[
         I(t, T) = I(t, t) \frac{P_{D}(t, T)}{P_{R}(t, T)},
@@ -59,15 +59,51 @@ namespace QuantLib {
         To forecast future fixings, the user can either provide a
         handle to the current index spot. If spot handle is empty,
         today's fixing will be used, instead.
+
+        The formulas above apply to price indexes, which is the
+        default return type. The return type determines how the
+        index level is published, and therefore how its forward
+        is projected:
+        - \c Price: the index level excludes dividends, so the
+          forward is as described above. The interest rate curve
+          is required, the dividend curve is optional.
+        - \c TotalReturn: dividends are reinvested in the index,
+          so they are not deducted from the forward:
+          \f[
+          I(t, T) = I(t, t) \frac{1}{P_{R}(t, T)}.
+          \f]
+          The interest rate curve is required, the dividend curve
+          is ignored.
+        - \c ExcessReturn: the cost of funding is already deducted
+          from the index level, so the forward is the spot level:
+          \f[
+          I(t, T) = I(t, t).
+          \f]
+          Neither the interest rate nor the dividend curve is
+          required.
+
+        Past fixings do not depend on the return type.
+
+        \warning EquityQuantoCashFlowPricer applies the quanto
+                 adjustment through the dividend curve of the index,
+                 so it only supports price return indexes.
     */
     class EquityIndex : public Index {
       public:
+        //! Determines how the forward of the index is projected
+        enum ReturnType {
+            Price,       //!< dividends are not reinvested
+            TotalReturn, //!< dividends are reinvested in the index
+            ExcessReturn //!< dividends are reinvested and funding is deducted
+        };
+
         EquityIndex(std::string name,
                     Calendar fixingCalendar,
                     Currency currency,
                     Handle<YieldTermStructure> interest = {},
                     Handle<YieldTermStructure> dividend = {},
-                    Handle<Quote> spot = {});
+                    Handle<Quote> spot = {},
+                    ReturnType returnType = Price);
 
         //! \name Index interface
         //@{
@@ -86,6 +122,8 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& equityDividendCurve() const { return dividend_; }
         //! index spot value
         const Handle<Quote>& spot() const { return spot_; }
+        //! the return type used to forecast fixings
+        ReturnType returnType() const { return returnType_; }
         //@}
         //! \name Fixing calculations
         //@{
@@ -95,7 +133,7 @@ namespace QuantLib {
         //! \name Other methods
         //@{
         //! returns a copy of itself linked to different interest, dividend curves
-        //! or spot quote
+        //! or spot quote; the return type is preserved
         virtual ext::shared_ptr<EquityIndex> clone(const Handle<YieldTermStructure>& interest,
                                                    const Handle<YieldTermStructure>& dividend,
                                                    const Handle<Quote>& spot) const;
@@ -107,6 +145,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> interest_;
         Handle<YieldTermStructure> dividend_;
         Handle<Quote> spot_;
+        ReturnType returnType_;
     };
 
     inline bool EquityIndex::isValidFixingDate(const Date& d) const {
