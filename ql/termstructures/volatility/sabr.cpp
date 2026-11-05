@@ -230,8 +230,10 @@ namespace QuantLib {
                 //             (s ~ |w|), so the original s-rho-w sum has no cancellation;
                 //   w >= 1:   from (s-rho-w)(s+rho+w) = 1-rho^2, arg = (1+rho)/(s+rho+w),
                 //             and s+rho+w ~ 2*w has no cancellation either.
-                // All three agree exactly at w = +-1, and are finite and well-defined
-                // for any real w given rho strictly in (-1,1) (validateSabrParameters).
+                // All three agree exactly at w = +-1, and are accurate for any w and
+                // any rho strictly in (-1,1) -- the model's own domain, though this
+                // free function (unlike sabrVolatility) never calls
+                // validateSabrParameters() to enforce it.
                 const Real yk = y(k);
                 if (nu == 0.0)
                     return -yk/alpha;
