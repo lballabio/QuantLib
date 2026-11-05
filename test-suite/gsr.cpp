@@ -1243,17 +1243,21 @@ BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianWingStrike) {
 
 BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianNonBracketableErrorMessage) {
     BOOST_TEST_MESSAGE(
-        "Testing Gaussian1dJamshidianSwaptionEngine's error message on an "
-        "a non-bracketable (negative-rate) state...");
+        "Testing Gaussian1dJamshidianSwaptionEngine's error message on a "
+        "non-bracketable (negative-rate) state...");
 
     // Regression test: the fixed rate here (atmRate - 8%) is deeply
     // negative (~-5% on this curve), so every fixed coupon is negative
     // while the appended notional is positive -- rStarFinder has no
     // genuine root for this state (it is not a valid Jamshidian
-    // decomposition input), and both ends of the bracket run toward
-    // overflow as the widening loop doubles them. Before this fix, the
-    // loop doubled minStrike/maxStrike unconditionally every attempt;
-    // at the final doubling (attempt 20) one side's function value
+    // decomposition input; f(y) stays positive for every y, converging
+    // from above to the notional as y->+inf and diverging to +inf as
+    // y->-inf, confirmed by direct trace of the widening loop). Only the
+    // lower (very negative) end of the bracket runs toward overflow as
+    // the widening loop doubles it; the upper end stays finite,
+    // converging safely toward the notional. Before this fix, the loop
+    // doubled minStrike/maxStrike unconditionally every attempt; at the
+    // final doubling (attempt 20) the lower side's function value
     // overflowed to a non-finite value, and that non-finite value was
     // still committed to the bracket handed to Solver1D, which then
     // threw with a NaN/Inf-laden message (observed:
