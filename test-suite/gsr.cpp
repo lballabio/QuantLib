@@ -1241,6 +1241,81 @@ BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianWingStrike) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianExtremeWingStrikeErrorMessage) {
+    BOOST_TEST_MESSAGE(
+        "Testing Gaussian1dJamshidianSwaptionEngine's error message on an "
+        "unreachable wing strike...");
+
+    // Regression test: the bracket-widening loop above doubles minStrike
+    // and maxStrike unconditionally every attempt. For a state extreme
+    // enough that the needed root lies far out on only ONE side, the
+    // OTHER (irrelevant) side can overflow to a non-finite function value
+    // first, since both sides are widened by the same amount regardless of
+    // which one actually needs it. fLower*fUpper compared against 0.0 is
+    // false whenever either operand is NaN, so without per-side tracking
+    // the loop would stop early believing a bracket was found, and
+    // Solver1D's own bracket check would then throw with a NaN/Inf-laden
+    // message (observed before this fix: "f[-8.38861e+06,8.38861e+06] ->
+    // [-nan,1.000000e+03]") instead of a genuine report against finite
+    // bounds. This state is extreme enough that bracketing is genuinely
+    // unreachable even with the fix (it still throws), but the message
+    // should report finite numbers, not NaN/Inf.
+
+    Date today(15, September, 2016);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> yts(flatRate(today, 0.03, Actual365Fixed()));
+    auto index = ext::make_shared<Euribor6M>(yts);
+    Calendar calendar = index->fixingCalendar();
+    Date settlement = calendar.advance(today, 2, Days);
+
+    Date start = calendar.advance(settlement, 1, Years);
+    Date maturity = calendar.advance(start, 30, Years);
+    Schedule fixedSchedule(start, maturity, Period(Annual), calendar,
+                           Unadjusted, Unadjusted,
+                           DateGeneration::Forward, false);
+    Schedule floatSchedule(start, maturity, Period(Semiannual), calendar,
+                           ModifiedFollowing, ModifiedFollowing,
+                           DateGeneration::Forward, false);
+
+    ext::shared_ptr<VanillaSwap> probeSwap = ext::make_shared<VanillaSwap>(
+        Swap::Payer, 1000.0,
+        fixedSchedule, 0.0, index->dayCounter(),
+        floatSchedule, index, 0.0, index->dayCounter());
+    probeSwap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(yts));
+    const Rate atmRate = probeSwap->fairRate();
+
+    ext::shared_ptr<VanillaSwap> swap = ext::make_shared<VanillaSwap>(
+        Swap::Payer, 1000.0,
+        fixedSchedule, atmRate - 0.08, index->dayCounter(),
+        floatSchedule, index, 0.0, index->dayCounter());
+    swap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(yts));
+
+    ext::shared_ptr<Swaption> swaption = ext::make_shared<Swaption>(
+        swap, ext::make_shared<EuropeanExercise>(start));
+
+    const Real reversion = 2.0, vol = 0.0005;
+    ext::shared_ptr<Gsr> model = ext::make_shared<Gsr>(
+        yts, std::vector<Date>(), std::vector<Real>(1, vol), reversion);
+
+    swaption->setPricingEngine(
+        ext::make_shared<Gaussian1dJamshidianSwaptionEngine>(model));
+
+    try {
+        swaption->NPV();
+        BOOST_ERROR("Gaussian1dJamshidianSwaptionEngine was expected to "
+                    "throw on this unreachable wing strike");
+    } catch (const Error& e) {
+        const std::string what = e.what();
+        if (what.find("nan") != std::string::npos ||
+            what.find("inf") != std::string::npos) {
+            BOOST_ERROR("Gaussian1dJamshidianSwaptionEngine's error message "
+                        "contains a NaN/Inf value instead of finite "
+                        "bounds: " << e.what());
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

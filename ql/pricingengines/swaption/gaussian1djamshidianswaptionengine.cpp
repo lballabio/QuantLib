@@ -21,6 +21,7 @@
 
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/swaption/gaussian1djamshidianswaptionengine.hpp>
+#include <cmath>
 #include <utility>
 
 namespace QuantLib {
@@ -148,13 +149,41 @@ namespace QuantLib {
         // Gaussian1dSwaptionEngine and JamshidianSwaptionEngine, which
         // brackets the short rate at [-10,10], price these states cleanly).
         // Widen adaptively rather than throwing "root not bracketed".
+        // Widen each side independently and stop widening a side once it
+        // overflows to a non-finite value, rather than letting one side's
+        // overflow silently end the loop: fLower*fUpper compared against
+        // 0.0 is false whenever either operand is NaN, so without this
+        // guard a side that doesn't need much widening could still
+        // overflow (since both were doubled unconditionally), making the
+        // loop stop early believing a bracket was found when it was not --
+        // s1d.solve's own bracket check below would then throw with a
+        // NaN/Inf-laden message instead of a genuine "not bracketed"
+        // report against finite bounds.
         Real fLower = finder(minStrike), fUpper = finder(maxStrike);
+        bool lowerStuck = false, upperStuck = false;
         for (Size attempt = 0;
-             fLower*fUpper >= 0.0 && attempt < 20; ++attempt) {
-            minStrike *= 2.0;
-            maxStrike *= 2.0;
-            fLower = finder(minStrike);
-            fUpper = finder(maxStrike);
+             fLower*fUpper >= 0.0 && attempt < 20 && !(lowerStuck && upperStuck);
+             ++attempt) {
+            if (!lowerStuck) {
+                Rate candidate = minStrike*2.0;
+                Real newFLower = finder(candidate);
+                if (std::isfinite(newFLower)) {
+                    minStrike = candidate;
+                    fLower = newFLower;
+                } else {
+                    lowerStuck = true;
+                }
+            }
+            if (!upperStuck) {
+                Rate candidate = maxStrike*2.0;
+                Real newFUpper = finder(candidate);
+                if (std::isfinite(newFUpper)) {
+                    maxStrike = candidate;
+                    fUpper = newFUpper;
+                } else {
+                    upperStuck = true;
+                }
+            }
         }
         s1d.setMaxEvaluations(10000);
         s1d.setLowerBound(minStrike);
