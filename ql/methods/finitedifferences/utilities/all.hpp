@@ -20,6 +20,7 @@
 #include <ql/methods/finitedifferences/utilities/fdmtimedepdirichletboundary.hpp>
 #include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonsmallsigmaexpansion.hpp>
 #include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/riskneutraldensitycalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/smilesectionrndcalculator.hpp>
