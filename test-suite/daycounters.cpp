@@ -778,6 +778,35 @@ BOOST_AUTO_TEST_CASE(testBusiness252) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testBusiness252FullYears) {
+
+    BOOST_TEST_MESSAGE("Testing business/252 day counter over full years...");
+
+    // weekdays in the year minus weekday holidays in the Brazil settlement calendar
+    struct {
+        Year year;
+        Date::serial_type businessDays;
+    } testCases[] = {
+        {2022, 251}, // 260 - 9
+        {2023, 249}, // 260 - 11
+        {2024, 253}, // 262 - 9
+        {2025, 252}, // 261 - 9
+        {2026, 249}, // 261 - 12
+    };
+
+    Calendar calendar = Brazil(Brazil::Settlement);
+    DayCounter dayCounter = Business252(calendar);
+
+    for (const auto& testCase : testCases) {
+        Date start(1, January, testCase.year);
+        Date end(1, January, testCase.year + 1);
+
+        BOOST_CHECK_EQUAL(calendar.businessDaysBetween(start, end), testCase.businessDays);
+        BOOST_CHECK_EQUAL(dayCounter.dayCount(start, end), testCase.businessDays);
+        QL_CHECK_CLOSE(dayCounter.yearFraction(start, end), testCase.businessDays / 252.0, 1e-12);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testThirty365) {
 
     BOOST_TEST_MESSAGE("Testing 30/365 day counter...");
