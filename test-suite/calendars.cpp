@@ -2942,9 +2942,23 @@ BOOST_AUTO_TEST_CASE(testTaiwanCalendar) {
     BOOST_CHECK(calendar.isHoliday(Date(26, October, 2026)));
     BOOST_CHECK(calendar.isHoliday(Date(25, December, 2026)));
     BOOST_CHECK(calendar.isHoliday(Date(24, December, 2027))); // Constitution Day (adjusted)
+    BOOST_CHECK(calendar.isHoliday(Date(1, March, 2027))); // Peace Memorial Day (adjusted)
+    BOOST_CHECK(calendar.isHoliday(Date(30, April, 2027))); // Labor Day (adjusted)
+    BOOST_CHECK(calendar.isHoliday(Date(11, October, 2027))); // Double Tenth (adjusted)
+    BOOST_CHECK(calendar.isHoliday(Date(31, December, 2027))); // New Year's Day (adjusted)
     BOOST_CHECK(calendar.isBusinessDay(Date(2, January, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(25, December, 2024)));
     BOOST_CHECK(calendar.isBusinessDay(Date(24, December, 2021)));
+    BOOST_CHECK(calendar.isBusinessDay(Date(27, February, 2009))); // no adjustment before 2015
+    BOOST_CHECK(calendar.isBusinessDay(Date(1, March, 2032))); // February 28th is a Saturday
+    const Date adjusted[] = {
+        {27, February, 2015}, {9, October, 2015}, {29, February, 2016}, {2, May, 2016},
+        {2, January, 2017}, {9, October, 2020}, {1, March, 2021}, {30, April, 2021},
+        {11, October, 2021}, {31, December, 2021}, {2, May, 2022}, {2, January, 2023},
+        {27, February, 2026}, {9, October, 2026}
+    };
+    for (const Date& date : adjusted)
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
     const Date historical[] = {
         {4, June, 2003}, {21, January, 2004},
         {9, February, 2005}, {5, April, 2006}, {19, February, 2007},

@@ -36,11 +36,13 @@ namespace QuantLib {
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
-        <li>New Year's Day, January 1st</li>
-        <li>Peace Memorial Day, February 28</li>
-        <li>Labor Day, May 1st</li>
+        <li>New Year's Day, January 1st (possibly moved to Friday or Monday since 2015)</li>
+        <li>Peace Memorial Day, February 28 (possibly moved to Friday or Monday since
+            2015)</li>
+        <li>Labor Day, May 1st (possibly moved to Friday or Monday since 2015)</li>
         <li>Teachers' Day, September 28th (since 2025, possibly moved to Friday or Monday)</li>
-        <li>Double Tenth National Day, October 10th</li>
+        <li>Double Tenth National Day, October 10th (possibly moved to Friday or Monday
+            since 2015)</li>
         <li>Taiwan Retrocession Day, October 25th (since 2025, possibly moved to Friday
             or Monday)</li>
         <li>Constitution Day, December 25th (since 2025, possibly moved to Friday or Monday)</li>
