@@ -2476,6 +2476,31 @@ BOOST_AUTO_TEST_CASE(testFlochKennedySabrRemovableSingularities) {
                         "\n    expected:   " << alpha <<
                         "\n    diff:       " << diff);
     }
+
+    // Dint(k)'s internal distance w = nu/alpha*y(k) can be driven to an
+    // extreme magnitude by a low strike combined with a large nu/alpha
+    // ratio, well away from nu=0 itself. An earlier version of this fix's
+    // rewrite of Dint(k) (log1p(-2*w/(s+w+1))/nu, accurate for |w|<1) was
+    // itself cancellation-free only in that range: for very negative w,
+    // s+w+1 cancels catastrophically (s ~ |w|), regressing the original
+    // formula's own accuracy there and introducing a fresh NaN at the
+    // extreme. Confirm a case reproducing that regression is both finite
+    // and accurate against an independently computed reference value.
+    {
+        const Real extremeVol =
+            sabrFlochKennedyVolatility(1.0, 100.0, 0.01, 99e-10, 0.0, 1.0, 0.999999);
+        if (!std::isfinite(extremeVol))
+            BOOST_ERROR("\nsabrFlochKennedyVolatility returned a non-finite "
+                        "value for an extreme nu/alpha ratio: " << extremeVol);
+        const Real expected = 0.12268543102134034;
+        const Real diff = std::fabs(extremeVol - expected);
+        if (diff > 1e-12)
+            BOOST_ERROR("\nsabrFlochKennedyVolatility is inaccurate for an "
+                        "extreme nu/alpha ratio :"
+                        "\n    calculated: " << extremeVol <<
+                        "\n    expected:   " << expected <<
+                        "\n    diff:       " << diff);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testLeFlochKennedySabrExample) {
