@@ -224,8 +224,10 @@ namespace QuantLib {
                 // the same kind of cancellation as y(k) above as w -> 0. Three
                 // algebraically-equal rearrangements cover the full range of w without
                 // cancellation in any of them, each used only where it is safe:
-                //   |w| < 1:  arg-1 = -2*w/(s+w+1) (the (1-rho) factor cancels exactly),
-                //             s+w+1 >= 1, so std::log1p of that is accurate;
+                //   |w| < 1:  arg-1 = -2*w/(s+w+1) (the (1-rho) factor cancels exactly);
+                //             s+w+1 > 0 is a sum of non-negative terms here (s >= 0,
+                //             and w+1 > 0 since w > -1), so it has no cancellation and
+                //             std::log1p of the ratio is accurate;
                 //   w <= -1:  s and -w are both positive and comparable in size here
                 //             (s ~ |w|), so the original s-rho-w sum has no cancellation;
                 //   w >= 1:   from (s-rho-w)(s+rho+w) = 1-rho^2, arg = (1+rho)/(s+rho+w),
