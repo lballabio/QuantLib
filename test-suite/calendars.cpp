@@ -3031,6 +3031,8 @@ BOOST_AUTO_TEST_CASE(testBotswanaCalendar) {
     BOOST_CHECK(calendar.isBusinessDay(Date(3, October, 2023)));
     BOOST_CHECK(calendar.isHoliday(Date(27, December, 2021))); // Boxing Day on Sunday
     BOOST_CHECK(calendar.isHoliday(Date(27, December, 2022))); // Boxing Day on Monday
+    BOOST_CHECK(calendar.isHoliday(Date(15, May, 2026))); // in honour of former President Mogae
+    BOOST_CHECK(calendar.isBusinessDay(Date(15, May, 2025)));
 }
 
 BOOST_AUTO_TEST_CASE(testCzechRepublicCalendar) {

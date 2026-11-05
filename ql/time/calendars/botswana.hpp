@@ -54,6 +54,7 @@ namespace QuantLib {
     <li>Botswana Day, October 1st</li>
     <li>Christmas, December 25th </li>
     <li>Boxing Day, December 26th</li>
+    <li>Public holiday in honour of former President Festus Mogae, May 15th, 2026</li>
     </ul>
 
     \ingroup calendars

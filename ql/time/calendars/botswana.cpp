@@ -65,6 +65,8 @@ namespace QuantLib {
             // Boxing Day (possibly moved to Monday or Tuesday)
             || ((d == 26 || (d == 27 && (w == Monday || w == Tuesday)))
                 && m == December)
+            // Public holiday in honour of former President Festus Mogae, May 15th (only 2026)
+            || (d == 15 && m == May && y == 2026)
             )
             return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
