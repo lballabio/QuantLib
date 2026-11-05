@@ -1129,6 +1129,50 @@ BOOST_AUTO_TEST_CASE(testOptimizersWithUnboundedConstraint) {
             BOOST_ERROR("FireflyAlgorithm produced a non-finite result "
                         "under a bounded constraint");
     }
+
+    // Regression test: the original guard checked isfinite(upper-lower),
+    // which misses a ONE-SIDED unbounded constraint such as
+    // PositiveConstraint (lowerBound=0, upperBound=numeric_limits<Real>::
+    // max()) -- the span itself (max()-0 = max()) is finite, even though
+    // that bound is the library's own sentinel for "no bound provided"
+    // and leads to the same astronomic, effectively-garbage initial
+    // values the finite-span check exists to reject.
+    PositiveConstraint positive;
+    {
+        Problem problem(sphere, positive, initialValue);
+        DifferentialEvolution::Configuration conf =
+            DifferentialEvolution::Configuration()
+            .withPopulationMembers(20)
+            .withSeed(1234);
+        BOOST_CHECK_EXCEPTION(
+            DifferentialEvolution(conf).minimize(problem, endCriteria),
+            Error,
+            ExpectedErrorMessage("finite bounds"));
+    }
+    {
+        Problem problem(sphere, positive, initialValue);
+        ParticleSwarmOptimization pso(
+            20,
+            ext::make_shared<GlobalTopology>(),
+            ext::make_shared<TrivialInertia>(),
+            Real(2.05), Real(2.05), 1234UL);
+        BOOST_CHECK_EXCEPTION(
+            pso.minimize(problem, endCriteria),
+            Error,
+            ExpectedErrorMessage("finite bounds"));
+    }
+    {
+        Problem problem(sphere, positive, initialValue);
+        FireflyAlgorithm firefly(
+            20,
+            ext::make_shared<ExponentialIntensity>(1.0, 0.2, 1.0),
+            ext::make_shared<GaussianWalk>(1.0, 0.9, 1234),
+            0, 1.0, 0.5, 1234);
+        BOOST_CHECK_EXCEPTION(
+            firefly.minimize(problem, endCriteria),
+            Error,
+            ExpectedErrorMessage("finite bounds"));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testCMAES) {

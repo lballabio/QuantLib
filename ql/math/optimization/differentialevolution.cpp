@@ -21,6 +21,7 @@
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 namespace QuantLib {
 
@@ -62,15 +63,26 @@ namespace QuantLib {
                        "wrong lower bound size in differential evolution configuration");
             lowerBound_ = configuration().lowerBound;
         }
+        Real maxBound = std::numeric_limits<Real>::max();
         for (Size i = 0; i < lowerBound_.size(); ++i) {
-            // the bounds themselves (e.g. +-DBL_MAX, NoConstraint's default)
-            // are finite, but their span can still overflow
-            QL_REQUIRE(std::isfinite(upperBound_[i] - lowerBound_[i]),
+            // Constraint::Impl's base-class default bounds (inherited by
+            // NoConstraint, and used as the one-sided default by e.g.
+            // PositiveConstraint's upper bound) are exactly
+            // +-numeric_limits<Real>::max(), used throughout this codebase
+            // as the "no bound provided" sentinel. That sentinel is itself
+            // a finite double, so neither isfinite(bound) nor
+            // isfinite(upper-lower) can detect it (max()-0.0 is also
+            // finite) -- the span only overflows to +inf in the symmetric
+            // +-max() case, which is why the original guard (upper-lower)
+            // missed the one-sided case. Reject the sentinel value
+            // directly on either bound instead.
+            QL_REQUIRE(lowerBound_[i] > -maxBound && upperBound_[i] < maxBound,
                 "DifferentialEvolution needs finite bounds to initialize its "
-                "population, but dimension " << i << " has non-finite bounds "
+                "population, but dimension " << i << " has no bound "
                 "(" << lowerBound_[i] << ", " << upperBound_[i] << ") -- "
-                "the problem's constraint (e.g. NoConstraint) does not "
-                "provide one; supply explicit, finite bounds via "
+                "the problem's constraint (e.g. NoConstraint, or a one-sided "
+                "constraint like PositiveConstraint) does not provide one; "
+                "supply explicit, finite bounds via "
                 "DifferentialEvolution::Configuration::withLowerBound()/"
                 "withUpperBound()");
         }

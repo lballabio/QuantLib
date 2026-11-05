@@ -20,6 +20,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/experimental/math/particleswarmoptimization.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <cmath>
+#include <limits>
 #include <utility>
 
 using std::sqrt;
@@ -63,15 +64,25 @@ namespace QuantLib {
         gBF_ = Array(M_);
         uX_ = P.constraint().upperBound(P.currentValue());
         lX_ = P.constraint().lowerBound(P.currentValue());
+        const Real maxBound = std::numeric_limits<Real>::max();
         for (Size j = 0; j < N_; ++j) {
-            // the bounds themselves (e.g. +-DBL_MAX, NoConstraint's default)
-            // are finite, but their span can still overflow
-            QL_REQUIRE(std::isfinite(uX_[j] - lX_[j]),
+            // Constraint::Impl's base-class default bounds (inherited by
+            // NoConstraint, and used as the one-sided default by e.g.
+            // PositiveConstraint's upper bound) are exactly
+            // +-numeric_limits<Real>::max(), used throughout this codebase
+            // as the "no bound provided" sentinel. That sentinel is itself
+            // a finite double, so neither isfinite(bound) nor
+            // isfinite(upper-lower) can detect it (max()-0.0 is also
+            // finite) -- the span only overflows to +inf in the symmetric
+            // +-max() case. Reject the sentinel value directly on either
+            // bound instead.
+            QL_REQUIRE(lX_[j] > -maxBound && uX_[j] < maxBound,
                 "ParticleSwarmOptimization needs finite bounds to "
                 "initialize its particles, but dimension " << j <<
-                " has non-finite bounds (" << lX_[j] << ", " << uX_[j] <<
-                ") -- the problem's constraint (e.g. NoConstraint) does "
-                "not provide one; use a bounded constraint instead");
+                " has no bound (" << lX_[j] << ", " << uX_[j] <<
+                ") -- the problem's constraint (e.g. NoConstraint, or a "
+                "one-sided constraint like PositiveConstraint) does not "
+                "provide one; use a bounded constraint instead");
         }
         Array bounds = uX_ - lX_;
 
