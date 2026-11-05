@@ -71,6 +71,16 @@ namespace detail {
         characteristic function (the v0 term there is already a stable,
         algebraically different representation and does not need this
         branch).
+
+        The implementation is expressed purely in (bounded, in (0,1])
+        powers of exp(-kappa*tau), never forming exp(+kappa*tau) or
+        exp(+2*kappa*tau) as an intermediate quantity -- D and C are
+        themselves bounded as kappa*tau -> infinity (at fixed kappa, theta,
+        rho, z, Dprev), so this is not a change in what is computed, only in
+        how; forming the positive exponential directly, as a more naive
+        transcription of the Taylor coefficients would, instead overflows
+        for long-dated, fast-mean-reverting inputs (kappa*tau beyond
+        roughly 350 in double precision) well before the true value does.
     */
     void hestonSmallSigmaStep(
         Real kappa, Real theta, Real sigma, Real rho, Time tau,

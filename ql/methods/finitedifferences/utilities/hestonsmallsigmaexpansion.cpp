@@ -75,6 +75,39 @@ namespace detail {
 
        repl, (Dnew, Cinc) = sp.cse([sp.simplify(Dnew), sp.simplify(Cinc)],
                                     symbols=sp.numbered_symbols('t'))
+
+     The straightforward transcription above forms exp(+kappa*tau) and
+     exp(+2*kappa*tau) as intermediate quantities. D and C are themselves
+     bounded as kappa*tau -> infinity (every coefficient of an exponential
+     term cancels against it once collected -- see below), so that
+     transcription is needlessly fragile: it overflows for long-dated,
+     fast-mean-reverting inputs well before the true (finite, tiny) value
+     does. Substituting emkt = exp(-kappa*tau) (which is bounded in (0,1])
+     for the positive exponentials and collecting over a common
+     denominator confirms this and gives the actual code below:
+
+       emkt = sp.symbols('emkt', positive=True)  # = exp(-kappa*tau)
+       def to_emkt(expr):
+           expr = expr.subs(sp.exp(2*kappa*tau), 1/emkt**2)
+           expr = expr.subs(sp.exp(kappa*tau), 1/emkt)
+           return sp.together(expr)
+
+       Dnew, Cinc = to_emkt(Dnew), to_emkt(Cinc)
+
+       # confirms both denominators are powers of kappa alone (no emkt) and
+       # both numerators have only non-negative emkt powers -- i.e. D and C
+       # are bounded polynomials in emkt over kappa, with no exponential
+       # growth anywhere, so this rewrite changes nothing analytically
+       # (printed: "kappa**3" for both denominators, monomial powers
+       # [(2,), (1,), (0,)] for both numerators)
+       for name, expr in [('Dnew', Dnew), ('Cinc', Cinc)]:
+           num, den = sp.fraction(sp.together(expr))
+           print(name, "denominator:", den)
+           print(name, "numerator emkt powers:",
+                 sp.Poly(sp.expand(num), emkt).monoms())
+
+       repl, (Dnew, Cinc) = sp.cse([sp.simplify(Dnew), sp.simplify(Cinc)],
+                                    symbols=sp.numbered_symbols('t'))
        for sym, expr in repl:
            print(f"const std::complex<Real> {sym} = {sp.cxxcode(expr)};")
        print("D =", sp.cxxcode(Dnew))
@@ -82,10 +115,11 @@ namespace detail {
 
      (sympy's bare "I" for the imaginary unit was substituted with the
      local "i" constant below; a handful of the common subexpressions --
-     kappa^2, kappa^3, sigma^2, rho^2, tau^2, z+i, exp(kappa*tau),
-     exp(2*kappa*tau) -- were renamed to match AnalyticHestonEngine::chF's
-     own naming for the same quantities; the rest are left as the CSE
-     output, as with COSHestonEngine::c1..c4's own CForm-generated bodies.)
+     kappa^2, kappa^3, sigma^2, rho^2, tau^2, z+i, exp(-kappa*tau),
+     exp(-2*kappa*tau) -- were named to match AnalyticHestonEngine::chF's
+     own naming for the analogous (positive-exponent) quantities; the rest
+     are left as the CSE output, as with COSHestonEngine::c1..c4's own
+     CForm-generated bodies.)
     */
     void hestonSmallSigmaStep(
         Real kappa, Real theta, Real sigma, Real rho, Time tau,
@@ -93,82 +127,82 @@ namespace detail {
         std::complex<Real>& D, std::complex<Real>& C) {
 
         const std::complex<Real> i(0.0, 1.0);
+        const std::complex<Real> emkt = std::exp(-kappa*tau);
 
-        const std::complex<Real> kappa3 = kappa*kappa*kappa;
-        const std::complex<Real> kt = kappa*tau;
-        const std::complex<Real> ekt = std::exp(kt);
-        const std::complex<Real> t3 = Dprev*kappa3*ekt;
-        const std::complex<Real> kappa2 = kappa*kappa;
+        const std::complex<Real> kappa3 = std::pow(kappa, 3);
+        const std::complex<Real> invKappa3 = 1.0/kappa3;
+        const std::complex<Real> t2 = Dprev*emkt*kappa3;
+        const std::complex<Real> kappa2 = std::pow(kappa, 2);
         const std::complex<Real> zpi = z + i;
-        const std::complex<Real> t6 = zpi*z;
-        const std::complex<Real> t7 = kappa2*t6;
-        const std::complex<Real> t8 = 0.5*t7;
-        const std::complex<Real> kt2 = 2.0*kt;
-        const std::complex<Real> e2kt = std::exp(kt2);
-        const std::complex<Real> t11 = i*z;
-        const std::complex<Real> t12 = z*(t11 - 1.0);
+        const std::complex<Real> t5 = zpi*z;
+        const std::complex<Real> t6 = kappa2*t5;
+        const std::complex<Real> t7 = emkt*t5;
+        const std::complex<Real> t8 = kappa2*t7;
+        const std::complex<Real> t9 = i*z;
+        const std::complex<Real> t10 = t9 - 1.0;
+        const std::complex<Real> t11 = t10*z;
+        const std::complex<Real> t12 = emkt*t11;
         const std::complex<Real> t13 = i*Dprev;
         const std::complex<Real> t14 = 2.0*t13;
-        const std::complex<Real> t15 = t14*kappa2*tau;
-        const std::complex<Real> t16 = t12*ekt;
-        const std::complex<Real> t17 = kappa*ekt;
-        const std::complex<Real> t18 = rho*sigma*t17*z;
-        const std::complex<Real> sigma2 = sigma*sigma;
-        const std::complex<Real> t20 = 2.0*Dprev;
-        const std::complex<Real> t21 = kappa*t20;
-        const std::complex<Real> t22 = t21 + t6;
-        const std::complex<Real> rho2 = rho*rho;
-        const std::complex<Real> tau2 = tau*tau;
-        const std::complex<Real> t25 = z*z;
-        const std::complex<Real> t26 = 4.0*rho2;
-        const std::complex<Real> t27 = t26*z + zpi;
-        const std::complex<Real> t28 = e2kt*t25;
-        const std::complex<Real> t29 = ekt*(t21 - t27*z);
-        const std::complex<Real> t30 = Dprev*z;
-        const std::complex<Real> t31 = 2.0*t30;
-        const std::complex<Real> t32 = t25*z;
-        const std::complex<Real> t33 = t32*tau;
-        const std::complex<Real> t34 = rho2*t33;
-        const std::complex<Real> t35 = t25*tau;
-        const std::complex<Real> t36 = i*t35;
-        const std::complex<Real> t37 = tau*z;
-        const std::complex<Real> t38 = 2.0*t36;
-        const std::complex<Real> t39 = -t33 - t38;
-        const std::complex<Real> t40 = 2.0*z;
-        const std::complex<Real> pref = std::exp(-kt2)/kappa3;
-        const std::complex<Real> t42 = 8.0*e2kt;
-        const std::complex<Real> t43 = i*t37;
-        const std::complex<Real> t44 = t14 + t37;
-        const std::complex<Real> t45 = Dprev*Dprev;
+        const std::complex<Real> t15 = emkt*kappa2;
+        const std::complex<Real> t16 = t14*t15*tau;
+        const std::complex<Real> t17 = tau*z;
+        const std::complex<Real> t18 = emkt*kappa;
+        const std::complex<Real> t19 = kappa*rho*sigma*z;
+        const std::complex<Real> sigma2 = std::pow(sigma, 2);
+        const std::complex<Real> t21 = std::pow(z, 2);
+        const std::complex<Real> rho2 = std::pow(rho, 2);
+        const std::complex<Real> t23 = 4.0*rho2;
+        const std::complex<Real> t24 = t23*z + zpi;
+        const std::complex<Real> t25 = 2.0*Dprev;
+        const std::complex<Real> t26 = kappa*t25;
+        const std::complex<Real> t27 = t26 + t5;
+        const std::complex<Real> tau2 = std::pow(tau, 2);
+        const std::complex<Real> t29 = t2*tau2;
+        const std::complex<Real> emkt2 = std::pow(emkt, 2);
+        const std::complex<Real> t31 = t27*emkt2;
+        const std::complex<Real> t32 = -t24*z + t26;
+        const std::complex<Real> t33 = Dprev*z;
+        const std::complex<Real> t34 = 2.0*t33;
+        const std::complex<Real> t35 = std::pow(z, 3);
+        const std::complex<Real> t36 = t35*tau;
+        const std::complex<Real> t37 = rho2*t36;
+        const std::complex<Real> t38 = t21*tau;
+        const std::complex<Real> t39 = i*t38;
+        const std::complex<Real> t40 = 2.0*t39;
+        const std::complex<Real> t41 = -t36 - t40;
+        const std::complex<Real> t42 = 2.0*z;
+        const std::complex<Real> t43 = i*t17;
+        const std::complex<Real> t44 = t14 + t17;
+        const std::complex<Real> t45 = std::pow(Dprev, 2);
         const std::complex<Real> t46 = 4.0*kappa2;
         const std::complex<Real> t47 = t45*t46;
-        const std::complex<Real> t48 = 2.0*t11 + t25 - 1.0;
-        const std::complex<Real> t49 = rho2*t25;
-        const std::complex<Real> t50 = t11*rho2;
-        const std::complex<Real> t51 = 4.0*t25;
-        const std::complex<Real> t52 = Dprev*t26;
+        const std::complex<Real> t48 = t21 + 2.0*t9 - 1.0;
+        const std::complex<Real> t49 = t21*rho2;
+        const std::complex<Real> t50 = rho2*t9;
+        const std::complex<Real> t51 = 4.0*t21;
+        const std::complex<Real> t52 = Dprev*t23;
         const std::complex<Real> t53 = rho2*tau2;
 
-        D = pref*(-e2kt*t8 + 0.5*t18*(kt*t12 + t12 + t15 - t16)
-            - 0.125*sigma2*(2.0*Dprev*kappa*t22 + 4.0*Dprev*kappa3*ekt*rho2*tau2*t25
-                - t17*t40*(t13 - rho2*t38 + t26*t30 + t30 - 2.0*t34 + t37 + t39)
-                - ekt*t22*t6 + 2.0*ekt*kappa2*tau*z*(t14 + rho2*t36 + t31 + t34)
-                - t21*t29 + t22*zpi*z - t27*t28*zpi - t29*t6)
-            + ekt*t8 + t3);
+        D = invKappa3*(0.5*t19*(t10*t17*t18 - t11 + t12 + t16) + t2
+            + 0.125*sigma2*(emkt*t26*t32 - 2.0*t15*t17*(t14 + rho2*t39 + t34 + t37)
+                + t18*t42*(t13 + t17 - rho2*t40 + t23*t33 + t33 - 2.0*t37 + t41)
+                - t21*t23*t29 + t21*t24*zpi - t26*t31 + t27*t7 - t31*t5 + t32*t7)
+            - 0.5*t6 + 0.5*t8);
 
-        C = -0.0625*pref*theta*(kappa3*t42*(-t20 + t35 + t43)
-            + 8.0*t18*(kappa*(t14 + t36 - t37) + 2.0*t12 + t15 - 2.0*t16
-                - t17*(-t36 + t44))
-            - sigma2*(4.0*Dprev*kappa*t6
-                - kappa*e2kt*t40*(8.0*rho2*t30 - t26*t33 - t26*t36 + t31 + t39 + t44)
-                + e2kt*t47
-                + t17*t51*(t26*t35 + t26*t43 + t35 + 2.0*t43 + t52 - tau)
-                + ekt*t46*(t14*t37 + t20*t35 + i*t32*t53 + t35*t52 - 2.0*t45
-                    + t53*t25*t25)
-                + ekt*t51*(t48 + 6.0*t49 + 6.0*t50)
-                + 8.0*tau2*t3*t49 + t25*t48
-                - t28*(10.0*t11 + 5.0*t25 + 24.0*t49 + 24.0*t50 - 5.0) + t47)
-            + 8.0*ekt*t7 + 16.0*t3 - t42*t7);
+        C = -0.0625*invKappa3*theta*(8.0*kappa3*(-t25 + t38 + t43)
+            + 8.0*t19*(-kappa*(-t39 + t44) - 2.0*t11 + 2.0*t12 + t16
+                + t18*(t14 - t17 + t39))
+            + 16.0*t2
+            - sigma2*(4.0*Dprev*kappa*emkt2*t5
+                + emkt*t46*(t14*t17 + t25*t38 + i*t35*t53 + t38*t52 - 2.0*t45
+                    + t53*std::pow(z, 4))
+                + emkt*t51*(t48 + 6.0*t49 + 6.0*t50)
+                - kappa*t42*(8.0*rho2*t33 - t23*t36 - t23*t39 + t34 + t41 + t44)
+                + t18*t51*(t23*t38 + t23*t43 + t38 + 2.0*t43 + t52 - tau)
+                + t21*emkt2*t48 - t21*(5.0*t21 + 24.0*t49 + 24.0*t50 + 10.0*t9 - 5.0)
+                + 8.0*t29*t49 + emkt2*t47 + t47)
+            - 8.0*t6 + 8.0*t8);
     }
 
 }

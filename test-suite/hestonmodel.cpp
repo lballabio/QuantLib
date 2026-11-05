@@ -32,6 +32,7 @@
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
@@ -2923,6 +2924,126 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4COSAndPTDAndPDF) {
                 << "\n  expected  : " << expectedNPV
                 << "\n  calculated: " << pdfNPV
                 << "\n  tolerance : " << tolNPV);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSmallSigmaExpansionOverflowSafety) {
+    BOOST_TEST_MESSAGE("Testing the small-sigma expansion stays finite for "
+                       "long-dated, fast mean-reverting inputs...");
+
+    // A naive transcription of the small-sigma Taylor coefficients forms
+    // exp(+kappa*tau) (and its square) as an intermediate quantity. That
+    // intermediate overflows in double precision once kappa*tau exceeds
+    // roughly 350 -- reachable with an ordinary, if unusual, combination of
+    // a long-dated option and a fast-mean-reverting calibration -- well
+    // before the true (bounded, tiny) D/C coefficients do. This is a
+    // pre-existing limitation of AnalyticHestonEngine::chF's own small-sigma
+    // branch too (confirmed separately; out of scope here).
+    //
+    // This checks hestonSmallSigmaStep's call sites directly rather than
+    // routing everything through the full option-pricing engines:
+    // COSHestonEngine::chF is checked directly against the known
+    // deterministic-limit closed form, since COSHestonEngine::calculate()
+    // itself goes through *unrelated* cumulant-based truncation-range
+    // helpers (c2/c3/c4) that form exp(2*kappa*t)..exp(4*kappa*t) directly
+    // and already overflow in this regime regardless of sigma -- a
+    // separate, pre-existing, out-of-scope issue with
+    // COSHestonEngine::calculate() itself (confirmed separately).
+    // HestonRNDCalculator::pdf is not checked in this extreme regime at
+    // all: confirmed separately (by sweeping sigma down from 0.3, which
+    // never touches this PR's branch) that its own integration-domain
+    // scaling (c_inf_, which grows with kappa*theta*t) already gives an
+    // inaccurate result here for any sigma, including ordinary,
+    // non-small ones -- another pre-existing, sigma-independent,
+    // out-of-scope limitation. AnalyticPTDHestonEngine has no such
+    // confound, so it is checked end to end via full option pricing.
+
+    const Date settlementDate(20, March, 2020);
+    Settings::instance().evaluationDate() = settlementDate;
+    const Date maturityDate = settlementDate + Period(40, Years);
+
+    const DayCounter dc = Actual365Fixed();
+    const Time t = dc.yearFraction(settlementDate, maturityDate);
+    const Handle<YieldTermStructure> rTS(flatRate(0.0, dc));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100));
+
+    const Real theta = 0.07, v0 = 0.04, kappa = 10.0, sigma = 1e-7, rho = -0.4;
+    BOOST_REQUIRE(kappa*t > 350.0);  // actually exercises the overflow regime
+
+    const ext::shared_ptr<HestonProcess> hestonProcess =
+        ext::make_shared<HestonProcess>(rTS, rTS, spot, v0, kappa, theta, sigma, rho);
+    const ext::shared_ptr<HestonModel> hestonModel =
+        ext::make_shared<HestonModel>(hestonProcess);
+
+    const Real stdDev =
+        std::sqrt(((1-std::exp(-kappa*t))*(v0-theta)/(kappa*t) + theta)*t);
+
+    // --- COSHestonEngine::chF directly against the deterministic-limit chF ---
+    const std::complex<Real> z(0.55, 0.0);
+    const std::complex<Real> expectedChF =
+        std::exp(-0.5*stdDev*stdDev*(z*z + std::complex<Real>(0.0, 1.0)*z));
+    const std::complex<Real> calculatedChF =
+        COSHestonEngine(hestonModel).chF(z.real(), t);
+    const Real diffChF = std::abs(expectedChF - calculatedChF);
+    if (!std::isfinite(calculatedChF.real()) || !std::isfinite(calculatedChF.imag())
+            || diffChF > 1e-6) {
+        BOOST_ERROR("COSHestonEngine::chF failed for long-dated, fast "
+                "mean-reverting small-sigma inputs (kappa*t=" << kappa*t << ")"
+                << "\n  expected  : " << expectedChF
+                << "\n  calculated: " << calculatedChF
+                << "\n  diff      : " << diffChF);
+    }
+
+    // --- HestonRNDCalculator::pdf: only required to stay finite here (see
+    //     the comment above for why its accuracy isn't checked in this
+    //     extreme regime) ---
+    const Real x0 = std::log(spot->value());
+    const Real calculatedPdf = HestonRNDCalculator(hestonProcess, 1e-10).pdf(x0, t);
+    if (!std::isfinite(calculatedPdf)) {
+        BOOST_ERROR("HestonRNDCalculator::pdf returned a non-finite value for "
+                "long-dated, fast mean-reverting small-sigma inputs "
+                "(kappa*t=" << kappa*t << "): " << calculatedPdf);
+    }
+
+    const Real strike = 100.0;
+    const Real expectedNPV = blackFormula(Option::Call, strike, 100.0, stdDev);
+
+    VanillaOption option(
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+        ext::make_shared<EuropeanExercise>(maturityDate));
+
+    ConstantParameter thetaP(theta, PositiveConstraint());
+    ConstantParameter kappaP(kappa, PositiveConstraint());
+    ConstantParameter sigmaP(sigma, PositiveConstraint());
+    ConstantParameter rhoP(rho, BoundaryConstraint(-1.0, 1.0));
+    const ext::shared_ptr<PiecewiseTimeDependentHestonModel> ptdModel =
+        ext::make_shared<PiecewiseTimeDependentHestonModel>(
+            rTS, rTS, spot, v0, thetaP, kappaP, sigmaP, rhoP, TimeGrid(t, 1));
+
+    option.setPricingEngine(
+        ext::make_shared<AnalyticPTDHestonEngine>(ptdModel, 192));
+    const Real ptdGatheralNPV = option.NPV();
+    if (!std::isfinite(ptdGatheralNPV) || std::fabs(ptdGatheralNPV-expectedNPV) > 1e-2) {
+        BOOST_ERROR("AnalyticPTDHestonEngine (Gatheral) failed for "
+                "long-dated, fast mean-reverting small-sigma inputs "
+                "(kappa*t=" << kappa*t << ")"
+                << "\n  expected  : " << expectedNPV
+                << "\n  calculated: " << ptdGatheralNPV);
+    }
+
+    option.setPricingEngine(
+        ext::make_shared<AnalyticPTDHestonEngine>(
+            ptdModel,
+            AnalyticPTDHestonEngine::AndersenPiterbarg,
+            AnalyticPTDHestonEngine::Integration::gaussLaguerre(192)));
+    const Real ptdAndersenPiterbargNPV = option.NPV();
+    if (!std::isfinite(ptdAndersenPiterbargNPV)
+            || std::fabs(ptdAndersenPiterbargNPV-expectedNPV) > 1e-2) {
+        BOOST_ERROR("AnalyticPTDHestonEngine (Andersen-Piterbarg) failed for "
+                "long-dated, fast mean-reverting small-sigma inputs "
+                "(kappa*t=" << kappa*t << ")"
+                << "\n  expected  : " << expectedNPV
+                << "\n  calculated: " << ptdAndersenPiterbargNPV);
     }
 }
 
