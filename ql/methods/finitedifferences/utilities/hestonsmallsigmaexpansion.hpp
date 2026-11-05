@@ -81,6 +81,20 @@ namespace detail {
         transcription of the Taylor coefficients would, instead overflows
         for long-dated, fast-mean-reverting inputs (kappa*tau beyond
         roughly 350 in double precision) well before the true value does.
+
+        Known limitation (pre-existing, not introduced here): the exact
+        (non-small-sigma) formula at each of this function's call sites is
+        evaluated by direct subtraction/division rather than with the
+        Andersen-Lake cancellation-reduction technique that
+        AnalyticHestonEngine::lnChF's own exact branch already uses, so its
+        own accuracy for sigma a few orders of magnitude above the
+        sigma > 1e-6 threshold (not sigma -> 0, which is this function's
+        job) can be visibly worse than this expansion's near-machine-
+        precision accuracy just below the threshold. That mismatch predates
+        this expansion -- it is a property of the untouched exact formula at
+        each call site, not of hestonSmallSigmaStep -- and porting the
+        Andersen-Lake technique into those call sites is a separate,
+        independent improvement left for future work.
     */
     void hestonSmallSigmaStep(
         Real kappa, Real theta, Real sigma, Real rho, Time tau,
