@@ -30,6 +30,13 @@
 
 namespace QuantLib {
 
+    //! Discretized callable fixed-rate bond
+    /*! The adjustments compare each coupon and callability time with the
+        current time of the lattice directly, so the lattice time grid is
+        expected to contain every one of those times.  The engine checks
+        grids supplied by the caller; grids it builds itself from
+        mandatoryTimes() contain them by construction.
+    */
     class DiscretizedCallableFixedRateBond : public DiscretizedAsset {
       public:
         DiscretizedCallableFixedRateBond(const CallableBond::arguments&,

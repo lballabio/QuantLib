@@ -147,7 +147,7 @@ namespace QuantLib {
         for (Size i = 0; i < couponTimes_.size(); i++) {
             if (couponAdjustments_[i] == CouponAdjustment::pre) {
                 Time t = couponTimes_[i];
-                if (t >= 0.0 && isOnTime(t)) {
+                if (t >= 0.0 && close_enough(t, time())) {
                     addCoupon(i);
                 }
             }
@@ -158,14 +158,14 @@ namespace QuantLib {
     void DiscretizedCallableFixedRateBond::postAdjustValuesImpl() {
         for (Size i = 0; i < callabilityTimes_.size(); i++) {
             Time t = callabilityTimes_[i];
-            if (t >= 0.0 && isOnTime(t)) {
+            if (t >= 0.0 && close_enough(t, time())) {
                 applyCallability(i);
             }
         }
         for (Size i = 0; i < couponTimes_.size(); i++) {
             if (couponAdjustments_[i] == CouponAdjustment::post) {
                 Time t = couponTimes_[i];
-                if (t >= 0.0 && isOnTime(t)) {
+                if (t >= 0.0 && close_enough(t, time())) {
                     /* Exercise and coupon date matches. */
                     addCoupon(i);
                 }
