@@ -2381,18 +2381,29 @@ BOOST_AUTO_TEST_CASE(testFlochKennedySabrRemovableSingularities) {
     // which is 0/0 at beta=1 (the removable limit is -log(F/k)), and a separate
     // distance Dint(k) = (1/nu)*log(...), which is 0/0 at nu=0 (the removable
     // limit is -y(k)/alpha). validateSabrParameters() admits both beta=1 and
-    // nu=0 as valid SABR parameters, but the unguarded formula used to return
-    // NaN at exactly those two points. Confirm both now return a finite value,
-    // and that the value agrees with the one-sided limit taken from a nearby
-    // non-degenerate parameter (the formula is smooth through each point).
-
+    // nu=0 as valid SABR parameters, but the formula used to return NaN at
+    // exactly those two points.
+    //
+    // The strike below sits right at the +-0.25% ATM cutoff that operator()
+    // uses to switch between the smile-interpolation branch (y()/Dint(), what
+    // this test targets) and the separate ATM Taylor expansion: F/k = 1.0026,
+    // just past the 1.0025 cutoff. That is deliberate, not arbitrary -- the
+    // smile-interpolation branch divides by Dint(k)^2, which amplifies any
+    // error in y(k)/Dint(k) far more there than at a strike comfortably away
+    // from ATM, so it is the strike where an imprecise (rather than merely
+    // NaN-at-the-exact-point) fix would actually show up.
     const Real f0 = 1.1;
     const Real alpha = 0.35;
     const Real rho = 0.25;
-    const Real strike = 1.05; // away from ATM, so the smile-interpolation
-                               // branch (not the ATM Taylor expansion) is hit
+    const Real strike = f0 / 1.0026;
     const Time t = 2.1;
-    const Real tol = 1e-5;
+    const Real smoothTol = 1e-5;  // vs. a nearby, not-too-close parameter:
+                                   // allows for the formula's own genuine
+                                   // O(eps) variation over that distance
+    const Real tightTol = 1e-9;   // vs. a parameter 1e-12 from the
+                                   // singularity: the genuine variation there
+                                   // is far below this, so this bounds
+                                   // numerical noise only
 
     // beta -> 1
     {
@@ -2405,24 +2416,16 @@ BOOST_AUTO_TEST_CASE(testFlochKennedySabrRemovableSingularities) {
         const Real volNear =
             sabrFlochKennedyVolatility(strike, f0, t, alpha, 1.0 - 1e-6, nu, rho);
         const Real diff = std::fabs(vol - volNear);
-        if (diff > tol)
+        if (diff > smoothTol)
             BOOST_ERROR("\nsabrFlochKennedyVolatility is discontinuous at beta=1 :"
                         "\n    at beta=1:      " << vol <<
                         "\n    at beta=1-1e-6: " << volNear <<
                         "\n    diff:           " << diff);
 
-        // 1-beta=1e-12 is far outside double-precision underflow (so the
-        // naive, unguarded y(k) = -(F^(1-beta)-k^(1-beta))/(1-beta) would
-        // still evaluate, not divide by an exact zero) but well inside the
-        // range where it suffers catastrophic cancellation: evaluated
-        // directly, it is off by ~0.2% here. The guard must trigger on a
-        // squared comparison (matching the existing small-z Taylor branch
-        // in unsafeSabrVolatility above in this file) to catch this, not
-        // just on an exact, unguarded zero.
         const Real volCliff =
             sabrFlochKennedyVolatility(strike, f0, t, alpha, 1.0 - 1e-12, nu, rho);
         const Real cliffDiff = std::fabs(vol - volCliff);
-        if (cliffDiff > tol)
+        if (cliffDiff > tightTol)
             BOOST_ERROR("\nsabrFlochKennedyVolatility loses precision near beta=1 :"
                         "\n    at beta=1:       " << vol <<
                         "\n    at beta=1-1e-12: " << volCliff <<
@@ -2439,22 +2442,39 @@ BOOST_AUTO_TEST_CASE(testFlochKennedySabrRemovableSingularities) {
 
         const Real volNear = sabrFlochKennedyVolatility(strike, f0, t, alpha, beta, 1e-6, rho);
         const Real diff = std::fabs(vol - volNear);
-        if (diff > tol)
+        if (diff > smoothTol)
             BOOST_ERROR("\nsabrFlochKennedyVolatility is discontinuous at nu=0 :"
                         "\n    at nu=0:      " << vol <<
                         "\n    at nu=1e-6:   " << volNear <<
                         "\n    diff:         " << diff);
 
-        // see the analogous beta=1-1e-12 comment above: nu=1e-12 is far from
-        // an exact zero but still deep in Dint's catastrophic-cancellation
-        // band, so the guard must trigger on a squared comparison here too.
         const Real volCliff = sabrFlochKennedyVolatility(strike, f0, t, alpha, beta, 1e-12, rho);
         const Real cliffDiff = std::fabs(vol - volCliff);
-        if (cliffDiff > tol)
+        if (cliffDiff > tightTol)
             BOOST_ERROR("\nsabrFlochKennedyVolatility loses precision near nu=0 :"
                         "\n    at nu=0:      " << vol <<
                         "\n    at nu=1e-12:  " << volCliff <<
                         "\n    diff:         " << cliffDiff);
+    }
+
+    // At beta=1 and nu=0 together, the formula collapses to flat volatility
+    // alpha exactly, independently of strike or expiry: y(k) = -log(F/k), so
+    // Dint(k) = -y(k)/alpha = log(F/k)/alpha and omega0(k) =
+    // log(F/k)/Dint(k) = alpha; D(F) = alpha*F and D(k) = alpha*k (since
+    // nu=0 drops the other two terms under the square root), so
+    // F*k/(D(F)*D(k)) = 1/alpha^2 and the bracket subtracted from omega0(k),
+    // log(omega0(k)) + 0.5*log(F*k/(D(F)*D(k))) = log(alpha) - log(alpha),
+    // vanishes identically. A closed-form anchor independent of the guard
+    // or any nearby-parameter comparison.
+    for (Real k : {1.05, strike, 0.5, 2.0}) {
+        const Real vol = sabrFlochKennedyVolatility(k, f0, t, alpha, 1.0, 0.0, rho);
+        const Real diff = std::fabs(vol - alpha);
+        if (diff > 1e-12)
+            BOOST_ERROR("\nsabrFlochKennedyVolatility != alpha at beta=1, nu=0 :"
+                        "\n    strike:     " << k <<
+                        "\n    calculated: " << vol <<
+                        "\n    expected:   " << alpha <<
+                        "\n    diff:       " << diff);
     }
 }
 

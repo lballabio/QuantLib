@@ -204,26 +204,33 @@ namespace QuantLib {
             Real F, alpha, beta, nu, rho, t;
 
             Real y(Real k) const {
-                // beta=1 is a removable 0/0 singularity: the exact limit is -log(F/k).
-                // Compare the squared distance against QL_EPSILON * m, as the existing
-                // small-z Taylor branch in unsafeSabrVolatility does above, since the
-                // naive formula already suffers catastrophic cancellation well before
-                // 1-beta underflows to exactly zero.
-                static const Real m = 10;
-                if (std::fabs(squared(1.0-beta)) <= QL_EPSILON * m)
-                    return -std::log(F/k);
-                return -1.0/(1.0-beta)*(std::pow(F,1-beta)-std::pow(k,1-beta));
+                // F^e - k^e = k^e * expm1(e*log(F/k)), e = 1-beta, is cancellation-free
+                // for any e != 0 (unlike the direct difference of two powers below, whose
+                // relative error blows up as e -> 0 well before it underflows to exactly
+                // zero). beta=1 (e=0) is a genuine removable singularity, not just a
+                // numerically delicate point: the exact limit is -log(F/k).
+                const Real e = 1.0-beta;
+                const Real logFoverK = std::log(F/k);
+                if (e == 0.0)
+                    return -logFoverK;
+                return -std::pow(k,e)*std::expm1(e*logFoverK)/e;
             }
 
             Real Dint(Real k) const {
-                // nu=0 is a removable 0/0 singularity: the exact limit is -y(k)/alpha.
-                // See the comment in y() above for why the comparison is squared.
-                static const Real m = 10;
-                if (std::fabs(squared(nu)) <= QL_EPSILON * m)
-                    return -y(k)/alpha;
-                return 1/nu*std::log( ( std::sqrt(1+2*rho*nu/alpha*y(k)
-                    + squared(nu/alpha*y(k)) )
-                    - rho - nu/alpha*y(k) ) / (1-rho) );
+                // Dint(k) = log(arg)/nu, where
+                // arg = (sqrt(1+2*rho*w+w^2) - rho - w)/(1-rho), w = nu/alpha*y(k).
+                // arg == 1 at nu=0 (w=0), so log(arg)/nu is 0/0 there; the exact limit
+                // is -y(k)/alpha. Away from nu=0, computing log(arg) directly suffers
+                // the same kind of cancellation as y(k) above as w -> 0. Algebraically,
+                // arg - 1 simplifies to -2*w/(s+w+1) (the (1-rho) factor cancels exactly),
+                // which has no cancellation for any w, so std::log1p on that is accurate
+                // for any nu != 0, right down to the removable singularity at nu=0.
+                const Real yk = y(k);
+                if (nu == 0.0)
+                    return -yk/alpha;
+                const Real w = nu/alpha*yk;
+                const Real s = std::sqrt(1+2*rho*w+squared(w));
+                return std::log1p(-2*w/(s+w+1))/nu;
             }
 
             Real D(Real k) const {
