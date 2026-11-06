@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005, 2008 StatPro Italia srl
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -105,6 +106,22 @@ namespace QuantLib {
             }
             Real derivative(Real) const override { return 0.0; }
             Real secondDerivative(Real) const override { return 0.0; }
+            std::vector<std::pair<Size, Real>> nodeWeights(Real x) const override {
+                if (x <= this->xBegin_[0]
+                    || std::distance(this->xBegin_, this->xEnd_) == 1)
+                    return {{Size(0), 1.0}};
+
+                Size i = this->locate(x);
+                if (x == this->xBegin_[i])
+                    return {{i, 1.0}};
+                else
+                    return {{i+1, 1.0}};
+            }
+            std::vector<std::pair<Size, Real>> derivativeNodeWeights(Real) const override {
+                // A non-empty zero weight distinguishes an implemented zero
+                // derivative from unavailable node sensitivities.
+                return {{Size(0), 0.0}};
+            }
 
           private:
             std::vector<Real> primitive_;

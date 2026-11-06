@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2008 StatPro Italia srl
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -101,6 +102,17 @@ namespace QuantLib {
                 return s_[i];
             }
             Real secondDerivative(Real) const override { return 0.0; }
+            std::vector<std::pair<Size, Real>> nodeWeights(Real x) const override {
+                Size i = this->locate(x);
+                Real w = (x-this->xBegin_[i])/(this->xBegin_[i+1]-this->xBegin_[i]);
+                return {{i, 1.0-w}, {i+1, w}};
+            }
+            std::vector<std::pair<Size, Real>> derivativeNodeWeights(Real x) const override {
+                Size i = this->locate(x);
+                Real inverseDx =
+                    1.0/(this->xBegin_[i+1]-this->xBegin_[i]);
+                return {{i, -inverseDx}, {i+1, inverseDx}};
+            }
 
           private:
             std::vector<Real> primitiveConst_, s_;
