@@ -237,12 +237,18 @@ namespace QuantLib {
 
           case DoubleBarrier::KnockIn:
             if (spot <= barrier_lo || spot >= barrier_hi) {
-                // knocked in - pays
-                results_.value = payoff->cashPayoff();
+                // knocked in - the exercise is European, so the cash is
+                // paid at expiry
+                const Date exerciseDate = arguments_.exercise->lastDate();
+                const ext::shared_ptr<YieldTermStructure>& riskFreeRate =
+                    *(process_->riskFreeRate());
+                Time t = riskFreeRate->dayCounter().yearFraction(
+                    riskFreeRate->referenceDate(), exerciseDate);
+                results_.value = payoff->cashPayoff() * riskFreeRate->discount(exerciseDate);
                 results_.delta = 0;
                 results_.gamma = 0;
                 results_.vega = 0;
-                results_.rho = 0;
+                results_.rho = -t * results_.value;
                 return;
             }
             break;
