@@ -20,6 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmultistrikemesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
@@ -168,12 +169,22 @@ namespace QuantLib {
        return solverDesc;
     }
 
+    namespace {
+        // false for European exercise, which has no payoffAtExpiry() of its own
+        bool payoffAtExpiryOf(const ext::shared_ptr<Exercise>& exercise) {
+            const auto early = ext::dynamic_pointer_cast<EarlyExercise>(exercise);
+            return early != nullptr && early->payoffAtExpiry();
+        }
+    }
+
     void FdHestonVanillaEngine::calculate() const {
 
         // cache lookup for precalculated results
         for (auto& cachedArgs2result : cachedArgs2results_) {
             if (cachedArgs2result.first.exercise->type() == arguments_.exercise->type() &&
-                cachedArgs2result.first.exercise->dates() == arguments_.exercise->dates()) {
+                cachedArgs2result.first.exercise->dates() == arguments_.exercise->dates() &&
+                payoffAtExpiryOf(cachedArgs2result.first.exercise) ==
+                    payoffAtExpiryOf(arguments_.exercise)) {
                 ext::shared_ptr<PlainVanillaPayoff> p1 =
                     ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                             arguments_.payoff);
@@ -206,9 +217,49 @@ namespace QuantLib {
         results_.gamma = solver->gammaAt(spot, v0);
         results_.theta = solver->thetaAt(spot, v0);
 
-        cachedArgs2results_.resize(strikes_.size());
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+
+        // The step condition enforces the exercise on grid nodes. The monotonic
+        // cubic interpolant can still undershoot the payoff between nodes, and
+        // VanillaOption::impliedVolatility prices Americans with this engine, so
+        // a value below the payoff cannot be inverted. Floor only when the
+        // holder can exercise on the reference date and the payoff is paid
+        // then. Greeks stay on the interpolant: resetting them would disagree
+        // with a bump wherever the undershoot is local.
+        const ext::shared_ptr<Exercise>& exercise = arguments_.exercise;
+        const Date settlementDate = process->riskFreeRate()->referenceDate();
+        bool exercisable = false;
+        switch (exercise->type()) {
+          case Exercise::American:
+            exercisable = exercise->date(0) <= settlementDate
+                          && settlementDate <= exercise->lastDate();
+            break;
+          case Exercise::Bermudan:
+            for (const Date& exerciseDate : exercise->dates()) {
+                if (exerciseDate == settlementDate) {
+                    exercisable = true;
+                    break;
+                }
+            }
+            break;
+          case Exercise::European:
+            break;
+          default:
+            QL_FAIL("exercise type is not supported");
+        }
+        if (exercisable) {
+            const auto early = ext::dynamic_pointer_cast<EarlyExercise>(exercise);
+            if (early != nullptr && early->payoffAtExpiry())
+                exercisable = false;
+        }
+        if (exercisable) {
+            const Real exerciseValue = (*payoff)(spot);
+            if (results_.value < exerciseValue)
+                results_.value = exerciseValue;
+        }
+
+        cachedArgs2results_.resize(strikes_.size());
         for (Size i=0; i < strikes_.size(); ++i) {
             cachedArgs2results_[i].first.exercise = arguments_.exercise;
             cachedArgs2results_[i].first.payoff =
@@ -221,6 +272,16 @@ namespace QuantLib {
             results.delta = solver->deltaAt(spot*d, v0);
             results.gamma = solver->gammaAt(spot*d, v0)*d;
             results.theta = solver->thetaAt(spot*d, v0)/d;
+            if (exercisable) {
+                // results.value is already rescaled back to the real spot
+                // and strikes_[i] by the /d above, so the floor is the
+                // ordinary intrinsic value at the real spot, not the
+                // scaled solver query point.
+                const Real cachedExerciseValue =
+                    PlainVanillaPayoff(payoff->optionType(), strikes_[i])(spot);
+                if (results.value < cachedExerciseValue)
+                    results.value = cachedExerciseValue;
+            }
         }
     }
 
