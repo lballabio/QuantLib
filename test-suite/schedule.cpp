@@ -1035,6 +1035,27 @@ BOOST_AUTO_TEST_CASE(testOnceFrequency) {
     BOOST_CHECK(s[1] == Date(13,January,2019));
 }
 
+BOOST_AUTO_TEST_CASE(testZeroRuleWithEomAdjustment) {
+    BOOST_TEST_MESSAGE("Testing zero date-generation rule with end-of-month convention...");
+
+    const Date startDate(15, January, 2025);
+    const Date endDate(15, January, 2026);
+
+    BOOST_CHECK_EXCEPTION(Schedule(startDate, endDate, Period(3, Months), TARGET(),
+                                   Following, Following, DateGeneration::Zero, true),
+                          Error,
+                          ExpectedErrorMessage("endOfMonth convention incompatible with Zero"));
+
+    // a zero tenor doesn't allow the end-of-month convention, so the flag is ignored
+    Schedule zeroTenor(startDate, endDate, Period(0, Years), TARGET(),
+                       Following, Following, DateGeneration::Zero, true);
+    check_dates(zeroTenor, {startDate, endDate});
+
+    Schedule noEom(startDate, endDate, Period(3, Months), TARGET(),
+                   Following, Following, DateGeneration::Zero, false);
+    check_dates(noEom, {startDate, endDate});
+}
+
 BOOST_AUTO_TEST_CASE(testScheduleAlwaysHasAStartDate) {
     BOOST_TEST_MESSAGE("Testing that variations of MakeSchedule "
                        "always produce a schedule with a start date...");
