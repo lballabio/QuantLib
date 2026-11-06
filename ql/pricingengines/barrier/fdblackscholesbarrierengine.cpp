@@ -21,15 +21,18 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmbermudanstepcondition.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmpointvaluerecorder.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
@@ -38,9 +41,92 @@
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesrebateengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <algorithm>
+#include <iterator>
+#include <map>
 #include <utility>
+#include <vector>
 
 namespace QuantLib {
+
+    namespace {
+
+        std::vector<Real> spotsOn(const ext::shared_ptr<FdmMesher>& mesher) {
+            const Array& locations = mesher->locations(0);
+            std::vector<Real> spots(locations.size());
+            std::transform(locations.begin(), locations.end(), spots.begin(),
+                           [](Real x) { return std::exp(x); });
+            return spots;
+        }
+
+        /* Applied after the dividend handler on the mesher of the option
+           not yet knocked in, which ends at the barrier.
+
+           A down-and-in node that a dividend takes through the barrier is
+           knocked in by the drop, so it takes the active option's value at
+           its ex-dividend spot.
+
+           On the barrier itself the value jumps at ex-dividend times.  The
+           solve ending at such a time holds the barrier node at the active
+           option's value before the dividend.  This condition then sets it
+           to the active option's value after the dividend, which the next
+           step of the rollback starts from.
+
+           At maturity, the inactive option's payoff is the rebate on every
+           node, the barrier included.  This condition replaces it there with
+           the active option's payoff.
+        */
+        class FdmKnockInBarrierCondition : public StepCondition<Array> {
+          public:
+            FdmKnockInBarrierCondition(const ext::shared_ptr<FdmMesher>& mesher,
+                                       const ext::shared_ptr<FdmMesher>& activeMesher,
+                                       ext::shared_ptr<FdmPointValueRecorder> exDividendValues,
+                                       ext::shared_ptr<FdmPointValueRecorder> cumDividendValues,
+                                       std::map<Time, Real> dividends,
+                                       Real barrier,
+                                       bool down,
+                                       Time maturity,
+                                       Real terminalValue)
+            : spots_(spotsOn(mesher)), activeSpots_(spotsOn(activeMesher)),
+              exDividendValues_(std::move(exDividendValues)),
+              cumDividendValues_(std::move(cumDividendValues)),
+              dividends_(std::move(dividends)), barrier_(barrier), down_(down),
+              maturity_(maturity), terminalValue_(terminalValue) {}
+
+            void applyTo(Array& a, Time t) const override {
+                const auto dividend = dividends_.find(t);
+                const bool exDividend = dividend != dividends_.end();
+
+                if (exDividend && down_) {
+                    const Array& active = exDividendValues_->solutionAt(t);
+                    const LinearInterpolation interpolation(
+                        activeSpots_.begin(), activeSpots_.end(), active.begin());
+                    for (Size i = 0; i < spots_.size(); ++i) {
+                        const Real exSpot = spots_[i] - dividend->second;
+                        if (exSpot < barrier_)
+                            a[i] = interpolation(std::max(activeSpots_.front(), exSpot), true);
+                    }
+                }
+
+                const Size barrierNode = down_ ? 0 : a.size() - 1;
+                // the barrier node takes the active option's value after its dividend jump
+                if (exDividend)
+                    a[barrierNode] = cumDividendValues_->valueAt(t);
+                else if (t == maturity_)
+                    a[barrierNode] = terminalValue_;
+            }
+
+          private:
+            std::vector<Real> spots_, activeSpots_;
+            ext::shared_ptr<FdmPointValueRecorder> exDividendValues_, cumDividendValues_;
+            std::map<Time, Real> dividends_;
+            Real barrier_;
+            bool down_;
+            Time maturity_;
+            Real terminalValue_;
+        };
+
+    }
 
     FdBlackScholesBarrierEngine::FdBlackScholesBarrierEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process,
@@ -90,12 +176,8 @@ namespace QuantLib {
                    || exerciseType == Exercise::Bermudan,
                    "exercise type is not supported");
 
-        // knock-in options are priced via in-out parity,
-        // which does not hold for early exercise
-        QL_REQUIRE(   exerciseType == Exercise::European
-                   || arguments_.barrierType == Barrier::DownOut
-                   || arguments_.barrierType == Barrier::UpOut,
-                   "only european style knock-in options are supported");
+        const bool knockIn =    arguments_.barrierType == Barrier::DownIn
+                             || arguments_.barrierType == Barrier::UpIn;
 
         const auto spot = process_->x0();
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
@@ -115,14 +197,20 @@ namespace QuantLib {
             }
         }
 
-        // on the barrier the option is knocked out before it can be
+        // on the barrier a knock-out is knocked out before it can be
         // exercised; when the intrinsic value there exceeds the rebate,
         // the holder would exercise just inside it instead, so the value
         // jumps at the barrier and the greeks are undefined
-        if (   exercisableToday
+        if (   !knockIn && exercisableToday
             && close_enough(spot, arguments_.barrier)
             && (*payoff)(arguments_.barrier) > arguments_.rebate) {
             results_.value = arguments_.rebate;
+            return;
+        }
+
+        // in-out parity does not hold with early exercise
+        if (knockIn && exerciseType != Exercise::European) {
+            calculateEarlyExerciseKnockIn();
             return;
         }
 
@@ -275,5 +363,167 @@ namespace QuantLib {
             results_.gamma = vanillaOption.gamma() + rebateOption.gamma() - results_.gamma;
             results_.theta = vanillaOption.theta() + rebateOption.theta() - results_.theta;
         }
+    }
+
+    void FdBlackScholesBarrierEngine::calculateEarlyExerciseKnockIn() const {
+
+        // Two solves: the vanilla option the holder receives on knock-in
+        // (the active option), whose value on the barrier is recorded at
+        // each step, and the option not yet knocked in (the inactive one),
+        // which cannot be exercised and takes the recorded value as its
+        // boundary condition on the barrier.  A dividend can also knock in
+        // a down-and-in option: the nodes it takes through the barrier then
+        // get their value from the active solution.
+        const auto payoff = ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const Exercise::Type exerciseType = arguments_.exercise->type();
+        const Real spot = process_->x0();
+        const Time maturity = process_->time(arguments_.exercise->lastDate());
+        const Real logBarrier = std::log(arguments_.barrier);
+        const bool down = arguments_.barrierType == Barrier::DownIn;
+
+        const Date referenceDate = process_->riskFreeRate()->referenceDate();
+        const DayCounter dayCounter = process_->riskFreeRate()->dayCounter();
+
+        const Date maturityDate = arguments_.exercise->lastDate();
+        DividendSchedule dividendSchedule;
+        std::copy_if(dividends_.begin(), dividends_.end(), std::back_inserter(dividendSchedule),
+                     [&](const ext::shared_ptr<Dividend>& dividend) {
+                         return dividend->date() >= referenceDate
+                             && dividend->date() <= maturityDate;
+                     });
+
+        // 1. Active option: mesher as in FdBlackScholesVanillaEngine,
+        //    widened if needed to keep a margin around the barrier and
+        //    the lowest spot a dividend can take a down-and-in node to
+        const std::pair<Real, Real> cPoint(payoff->strike(), 0.1);
+        auto activeEquityMesher = ext::make_shared<FdmBlackScholesMesher>(
+                xGrid_, process_, maturity, payoff->strike(),
+                Null<Real>(), Null<Real>(), 0.0001, 1.5, cPoint, dividendSchedule);
+        const Real xMin = activeEquityMesher->locations().front();
+        const Real xMax = activeEquityMesher->locations().back();
+        const Real margin = 0.1*(xMax - xMin);
+        Real lowest = logBarrier;
+        if (down) {
+            for (const auto& dividend : dividendSchedule) {
+                if (dividend->amount() < arguments_.barrier)
+                    lowest = std::min<Real>(
+                        lowest, std::log(arguments_.barrier - dividend->amount()));
+            }
+        }
+        if (lowest < xMin + margin || logBarrier > xMax - margin) {
+            activeEquityMesher = ext::make_shared<FdmBlackScholesMesher>(
+                xGrid_, process_, maturity, payoff->strike(),
+                std::min(xMin, Real(lowest - margin)),
+                std::max(xMax, Real(logBarrier + margin)),
+                0.0001, 1.5, cPoint, dividendSchedule);
+        }
+        const auto activeMesher = ext::make_shared<FdmMesherComposite>(activeEquityMesher);
+        const auto activeCalculator = ext::make_shared<FdmLogInnerValue>(payoff, activeMesher, 0);
+
+        // both solves step through the same stopping times
+        std::list<std::vector<Time> > stoppingTimes;
+
+        ext::shared_ptr<FdmDividendHandler> dividendCondition;
+        std::map<Time, Real> dividendAmounts;
+        std::vector<Time> exDividendTimes;
+        if (!dividendSchedule.empty()) {
+            dividendCondition = ext::make_shared<FdmDividendHandler>(
+                dividendSchedule, activeMesher, referenceDate, dayCounter, 0);
+            exDividendTimes = dividendCondition->dividendTimes();
+            for (Size i = 0; i < exDividendTimes.size(); ++i)
+                dividendAmounts.emplace(exDividendTimes[i], dividendCondition->dividends()[i]);
+            stoppingTimes.push_back(exDividendTimes);
+        }
+
+        ext::shared_ptr<StepCondition<Array> > exerciseCondition;
+        if (exerciseType == Exercise::American) {
+            exerciseCondition = ext::make_shared<FdmAmericanStepCondition>(
+                activeMesher, activeCalculator, process_->time(arguments_.exercise->date(0)));
+        } else {
+            auto bermudanCondition = ext::make_shared<FdmBermudanStepCondition>(
+                arguments_.exercise->dates(), referenceDate, dayCounter,
+                activeMesher, activeCalculator);
+            exerciseCondition = bermudanCondition;
+            stoppingTimes.push_back(bermudanCondition->exerciseTimes());
+        }
+
+        // The active option's value on the barrier is recorded twice, each
+        // time after the exercise condition.  The ex-dividend value, before
+        // the rollback applies the jump, is the inactive option's boundary
+        // condition on the step ending there, and the whole solution is kept
+        // to value the nodes the dividend knocks in.  The cum-dividend value,
+        // after the jump, starts the next step.  Away from ex-dividend times
+        // the two are the same, so without dividends one recorder is enough.
+        const auto exDividendValues =
+            ext::make_shared<FdmPointValueRecorder>(activeMesher, logBarrier, exDividendTimes);
+        const auto cumDividendValues =
+            dividendCondition != nullptr
+                ? ext::make_shared<FdmPointValueRecorder>(activeMesher, logBarrier)
+                : exDividendValues;
+
+        std::list<ext::shared_ptr<StepCondition<Array> > > activeConditions;
+        activeConditions.push_back(exerciseCondition);
+        activeConditions.push_back(exDividendValues);
+        if (dividendCondition != nullptr) {
+            activeConditions.push_back(dividendCondition);
+            activeConditions.push_back(exerciseCondition);
+            activeConditions.push_back(cumDividendValues);
+        }
+
+        FdmSolverDesc activeSolverDesc = {
+            activeMesher, FdmBoundaryConditionSet(),
+            ext::make_shared<FdmStepConditionComposite>(stoppingTimes, activeConditions),
+            activeCalculator, maturity, tGrid_, dampingSteps_ };
+
+        const auto activeSolver = ext::make_shared<FdmBlackScholesSolver>(
+            Handle<GeneralizedBlackScholesProcess>(process_), payoff->strike(),
+            activeSolverDesc, schemeDesc_, localVol_, illegalLocalVolOverwrite_);
+        // rolls the active option back, recording its values on the barrier
+        activeSolver->valueAt(spot);
+
+        // 2. Inactive option: mesher bounded by the barrier, rebate paid
+        //    at expiry if the barrier is never touched, no exercise
+        const auto inactiveEquityMesher = ext::make_shared<FdmBlackScholesMesher>(
+                xGrid_, process_, maturity, payoff->strike(),
+                down ? logBarrier : Null<Real>(), down ? Null<Real>() : logBarrier,
+                0.0001, 1.5, std::make_pair(Null<Real>(), Null<Real>()), dividendSchedule);
+        const auto inactiveMesher = ext::make_shared<FdmMesherComposite>(inactiveEquityMesher);
+        const auto rebatePayoff =
+            ext::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, arguments_.rebate);
+        const auto inactiveCalculator =
+            ext::make_shared<FdmLogInnerValue>(rebatePayoff, inactiveMesher, 0);
+
+        std::list<ext::shared_ptr<StepCondition<Array> > > inactiveConditions;
+        if (!dividendSchedule.empty()) {
+            inactiveConditions.push_back(ext::make_shared<FdmDividendHandler>(
+                dividendSchedule, inactiveMesher, referenceDate, dayCounter, 0));
+        }
+        inactiveConditions.push_back(ext::make_shared<FdmKnockInBarrierCondition>(
+            inactiveMesher, activeMesher, exDividendValues, cumDividendValues,
+            dividendAmounts, arguments_.barrier, down, maturity, (*payoff)(arguments_.barrier)));
+
+        // stopping at maturity applies the condition above to the terminal values
+        std::list<std::vector<Time> > inactiveStoppingTimes = stoppingTimes;
+        inactiveStoppingTimes.emplace_back(1, maturity);
+
+        FdmBoundaryConditionSet boundaries;
+        boundaries.push_back(ext::make_shared<FdmTimeDepDirichletBoundary>(
+            inactiveMesher,
+            [exDividendValues](Real t) { return exDividendValues->valueAt(t); },
+            0, down ? FdmDirichletBoundary::Lower : FdmDirichletBoundary::Upper));
+
+        FdmSolverDesc inactiveSolverDesc = {
+            inactiveMesher, boundaries,
+            ext::make_shared<FdmStepConditionComposite>(inactiveStoppingTimes, inactiveConditions),
+            inactiveCalculator, maturity, tGrid_, dampingSteps_ };
+
+        const auto inactiveSolver = ext::make_shared<FdmBlackScholesSolver>(
+            Handle<GeneralizedBlackScholesProcess>(process_), payoff->strike(),
+            inactiveSolverDesc, schemeDesc_, localVol_, illegalLocalVolOverwrite_);
+
+        results_.value = inactiveSolver->valueAt(spot);
+        results_.delta = inactiveSolver->deltaAt(spot);
+        results_.gamma = inactiveSolver->gammaAt(spot);
+        results_.theta = inactiveSolver->thetaAt(spot);
     }
 }
