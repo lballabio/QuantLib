@@ -6,6 +6,7 @@
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
  Copyright (C) 2026 Sergio Araujo
+ Copyright (C) 2026 Thiago Rodrigues
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -152,7 +153,8 @@ namespace QuantLib {
                                       paymentCalendar_, telescopicValueDates_,
                                       averagingMethod_, lookbackDays_,
                                       lockoutDays_, applyObservationShift_,
-                                      roundingPrecision_);
+                                      roundingPrecision_, fixedCompounding_,
+                                      fixedCompoundingFrequency_);
             if (engine_ == nullptr) {
                 Handle<YieldTermStructure> disc =
                                     overnightIndex_->forwardingTermStructure();
@@ -179,7 +181,8 @@ namespace QuantLib {
                                  paymentCalendar_, telescopicValueDates_,
                                  averagingMethod_, lookbackDays_,
                                  lockoutDays_, applyObservationShift_,
-                                 roundingPrecision_));
+                                 roundingPrecision_, fixedCompounding_,
+                                 fixedCompoundingFrequency_));
 
         if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
@@ -314,6 +317,12 @@ namespace QuantLib {
 
     MakeOIS& MakeOIS::withFixedLegDayCount(const DayCounter& dc) {
         fixedDayCount_ = dc;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withFixedLegCompounding(Compounding compounding, Frequency frequency) {
+        fixedCompounding_ = compounding;
+        fixedCompoundingFrequency_ = frequency;
         return *this;
     }
 

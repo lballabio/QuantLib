@@ -5,6 +5,7 @@
  Copyright (C) 2014 Peter Caspers
  Copyright (C) 2026 Sergio Araujo
  Copyright (C) 2026 Kyrylo Protsenko
+ Copyright (C) 2026 Thiago Rodrigues
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -63,6 +64,9 @@
 #include <ql/indexes/ibor/swestr.hpp>
 #include <ql/indexes/ibor/kofr.hpp>
 #include <ql/indexes/ibor/mosprime.hpp>
+#include <ql/indexes/ibor/cdi.hpp>
+#include <ql/time/calendars/brazil.hpp>
+#include <ql/time/daycounters/business252.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -1317,6 +1321,282 @@ BOOST_AUTO_TEST_CASE(testSettlementCalendar) {
     // sanity check: the two calendars must actually diverge here
     BOOST_CHECK(expectedStart !=
                 index->fixingCalendar().advance(today, 2 * Days));
+}
+
+struct DiPreVars {
+    // DI x Pré setup: flat 12% curve, exponential on business days
+    Date today;
+    Calendar calendar = Brazil();
+    DayCounter dayCounter = Business252(Brazil());
+    Rate flatRate = 0.12;
+    Real nominal = 1000000.0;
+    RelinkableHandle<YieldTermStructure> curve;
+    ext::shared_ptr<OvernightIndex> index;
+    ext::shared_ptr<PricingEngine> engine;
+
+    DiPreVars() {
+        today = Date(5, January, 2026);
+        Settings::instance().evaluationDate() = today;
+        curve.linkTo(
+            ext::make_shared<FlatForward>(today, flatRate, dayCounter, Compounded, Annual));
+        index = ext::make_shared<Cdi>(curve);
+        engine = ext::make_shared<DiscountingSwapEngine>(curve);
+    }
+
+    Schedule makeSchedule(const Period& length, Frequency frequency) const {
+        DateGeneration::Rule rule =
+            frequency == Once ? DateGeneration::Zero : DateGeneration::Backward;
+        return Schedule(today, today + length, Period(frequency), calendar, Following, Following,
+                        rule, false);
+    }
+
+    ext::shared_ptr<OvernightIndexedSwap> makeSwap(const Period& length,
+                                                   Rate fixedRate,
+                                                   Frequency fixedFrequency,
+                                                   Frequency overnightFrequency,
+                                                   Compounding fixedCompounding) const {
+        auto swap = ext::make_shared<OvernightIndexedSwap>(
+            Swap::Payer, nominal, makeSchedule(length, fixedFrequency), fixedRate, dayCounter,
+            makeSchedule(length, overnightFrequency), index, 0.0, 0, Following, Calendar(), false,
+            RateAveraging::Compound, Null<Natural>(), 0, false, std::nullopt, fixedCompounding,
+            Annual);
+        swap->setPricingEngine(engine);
+        return swap;
+    }
+};
+
+BOOST_AUTO_TEST_CASE(testFixedLegCompoundingDefaults) {
+
+    BOOST_TEST_MESSAGE("Testing that OIS fixed coupons accrue simple interest by default...");
+
+    DiPreVars vars;
+
+    Rate fixedRate = 0.11;
+    Schedule schedule = vars.makeSchedule(5 * Years, Annual);
+
+    OvernightIndexedSwap swap(Swap::Payer, vars.nominal, schedule, fixedRate, vars.dayCounter,
+                              vars.index);
+    swap.setPricingEngine(vars.engine);
+
+    BOOST_CHECK(swap.fixedCompounding() == Simple);
+    BOOST_CHECK(swap.fixedCompoundingFrequency() == Annual);
+
+    // the fixed leg as built before the compounding parameters were added
+    Leg expected = FixedRateLeg(schedule)
+                       .withNotionals(vars.nominal)
+                       .withCouponRates(fixedRate, vars.dayCounter)
+                       .withPaymentAdjustment(Following)
+                       .withPaymentLag(0)
+                       .withPaymentCalendar(schedule.calendar());
+
+    const Leg& fixedLeg = swap.fixedLeg();
+    BOOST_REQUIRE_EQUAL(fixedLeg.size(), expected.size());
+    for (Size i = 0; i < fixedLeg.size(); ++i) {
+        BOOST_CHECK_EQUAL(fixedLeg[i]->date(), expected[i]->date());
+        BOOST_CHECK_EQUAL(fixedLeg[i]->amount(), expected[i]->amount());
+        auto coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[i]);
+        BOOST_CHECK(coupon->interestRate().compounding() == Simple);
+    }
+
+    // the fair rate is still the linear one
+    static const Spread basisPoint = 1.0e-4;
+    Rate linearFairRate = fixedRate - swap.NPV() / (swap.fixedLegBPS() / basisPoint);
+    BOOST_CHECK_EQUAL(swap.fairRate(), linearFairRate);
+}
+
+BOOST_AUTO_TEST_CASE(testDiPreZeroCouponFairRate) {
+
+    BOOST_TEST_MESSAGE("Testing fair rate of zero-coupon DI x Pre swaps...");
+
+    DiPreVars vars;
+
+    // simple interest on the fixed leg overstates the fair rate...
+    auto simpleSwap = vars.makeSwap(5 * Years, 0.10, Once, Once, Simple);
+    BOOST_CHECK(simpleSwap->fairRate() > vars.flatRate + 0.01);
+
+    // ...while exponential compounding on business days recovers the curve rate
+    Real tolerance = 1.0e-12;
+    for (Integer years : {1, 2, 5, 10}) {
+        Period length = years * Years;
+        auto swap = vars.makeSwap(length, 0.10, Once, Once, Compounded);
+        BOOST_REQUIRE_EQUAL(swap->fixedLeg().size(), 1U);
+        if (std::fabs(swap->fairRate() - vars.flatRate) > tolerance)
+            BOOST_ERROR("unexpected fair rate for zero-coupon DI x Pre swap:"
+                        << std::setprecision(12) << "\n    length:     " << length
+                        << "\n    fair rate:  " << swap->fairRate()
+                        << "\n    expected:   " << vars.flatRate);
+
+        auto atmSwap = vars.makeSwap(length, swap->fairRate(), Once, Once, Compounded);
+        // nominal is 1M; this is 1e-12 in relative terms
+        if (std::fabs(atmSwap->NPV()) > 1.0e-6)
+            BOOST_ERROR("non-zero NPV for DI x Pre swap at its fair rate:"
+                        << std::setprecision(12) << "\n    length:     " << length
+                        << "\n    fair rate:  " << swap->fairRate()
+                        << "\n    NPV:        " << atmSwap->NPV());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testDiPreMultiCouponFairRate) {
+
+    BOOST_TEST_MESSAGE("Testing fair rate of DI x Pre swaps with several fixed coupons...");
+
+    DiPreVars vars;
+
+    Period length = 5 * Years;
+
+    // with matching schedules, each fixed coupon offsets its floating counterpart at 12%
+    auto swap = vars.makeSwap(length, 0.10, Annual, Annual, Compounded);
+    BOOST_REQUIRE_EQUAL(swap->fixedLeg().size(), 5U);
+    if (std::fabs(swap->fairRate() - vars.flatRate) > 1.0e-10)
+        BOOST_ERROR("unexpected fair rate for DI x Pre swap with annual fixed coupons:"
+                    << std::setprecision(12) << "\n    fair rate:  " << swap->fairRate()
+                    << "\n    expected:   " << vars.flatRate);
+
+    // annual fixed coupons vs a zero-coupon floating leg: the fair rate
+    // is no longer the curve rate, but the swap must be at par there
+    for (Frequency overnightFrequency : {Annual, Once}) {
+        auto offSwap = vars.makeSwap(length, 0.10, Annual, overnightFrequency, Compounded);
+        auto atmSwap =
+            vars.makeSwap(length, offSwap->fairRate(), Annual, overnightFrequency, Compounded);
+        if (std::fabs(atmSwap->NPV()) > 1.0e-6)
+            BOOST_ERROR("non-zero NPV for DI x Pre swap at its fair rate:"
+                        << std::setprecision(12)
+                        << "\n    overnight frequency: " << overnightFrequency
+                        << "\n    fair rate:           " << offSwap->fairRate()
+                        << "\n    NPV:                 " << atmSwap->NPV());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testDiPreFixedCouponAmount) {
+
+    BOOST_TEST_MESSAGE("Testing fixed coupon amounts of DI x Pre swaps...");
+
+    DiPreVars vars;
+
+    Rate fixedRate = 0.1375;
+
+    // from 5 January 2026 to 5 February 2026 there are 23 Brazilian
+    // business days (no holidays, Carnival falls on February 16th-17th)
+    Schedule schedule(Date(5, January, 2026), Date(5, February, 2026), Period(Once), vars.calendar,
+                      Following, Following, DateGeneration::Zero, false);
+    BOOST_REQUIRE_EQUAL(vars.dayCounter.dayCount(schedule.startDate(), schedule.endDate()), 23);
+
+    OvernightIndexedSwap swap(Swap::Payer, vars.nominal, schedule, fixedRate, vars.dayCounter,
+                              vars.index, 0.0, 0, Following, Calendar(), false,
+                              RateAveraging::Compound, Null<Natural>(), 0, false, std::nullopt,
+                              Compounded, Annual);
+
+    BOOST_CHECK(swap.fixedCompounding() == Compounded);
+    BOOST_CHECK(swap.fixedCompoundingFrequency() == Annual);
+
+    BOOST_REQUIRE_EQUAL(swap.fixedLeg().size(), 1U);
+    Real expected = vars.nominal * (std::pow(1.0 + fixedRate, 23.0 / 252.0) - 1.0);
+    QL_CHECK_CLOSE(swap.fixedLeg()[0]->amount(), expected, 1.0e-12);
+
+    // longer swap, business days counted on the calendar
+    auto longSwap = vars.makeSwap(5 * Years, fixedRate, Once, Once, Compounded);
+    Schedule longSchedule = longSwap->fixedSchedule();
+    Date::serial_type n =
+        vars.calendar.businessDaysBetween(longSchedule.startDate(), longSchedule.endDate());
+    expected = vars.nominal * (std::pow(1.0 + fixedRate, Real(n) / 252.0) - 1.0);
+    QL_CHECK_CLOSE(longSwap->fixedLeg()[0]->amount(), expected, 1.0e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testMakeOisWithFixedLegCompounding) {
+
+    BOOST_TEST_MESSAGE("Testing MakeOIS with fixed-leg compounding...");
+
+    DiPreVars vars;
+
+    Rate fixedRate = 0.1375;
+
+    for (Frequency frequency : {Once, Annual}) {
+        ext::shared_ptr<OvernightIndexedSwap> swap =
+            MakeOIS(5 * Years, vars.index)
+                .withEffectiveDate(vars.today)
+                .withNominal(vars.nominal)
+                .withFixedRate(fixedRate)
+                .withPaymentFrequency(frequency)
+                .withFixedLegDayCount(vars.dayCounter)
+                .withFixedLegCompounding(Compounded, Annual)
+                .withDiscountingTermStructure(vars.curve);
+
+        BOOST_CHECK(swap->fixedCompounding() == Compounded);
+        BOOST_CHECK(swap->fixedCompoundingFrequency() == Annual);
+
+        OvernightIndexedSwap expected(swap->type(), vars.nominal, swap->fixedSchedule(), fixedRate,
+                                      vars.dayCounter, swap->overnightSchedule(), vars.index, 0.0,
+                                      0, Following, Calendar(), false, RateAveraging::Compound,
+                                      Null<Natural>(), 0, false, std::nullopt, Compounded, Annual);
+        expected.setPricingEngine(vars.engine);
+
+        BOOST_REQUIRE_EQUAL(swap->fixedLeg().size(), expected.fixedLeg().size());
+        for (Size i = 0; i < swap->fixedLeg().size(); ++i) {
+            BOOST_CHECK_EQUAL(swap->fixedLeg()[i]->date(), expected.fixedLeg()[i]->date());
+            BOOST_CHECK_EQUAL(swap->fixedLeg()[i]->amount(), expected.fixedLeg()[i]->amount());
+        }
+        QL_CHECK_CLOSE(swap->fairRate(), expected.fairRate(), 1.0e-12);
+
+        // without a fixed rate, MakeOIS uses the fair one
+        ext::shared_ptr<OvernightIndexedSwap> atmSwap =
+            MakeOIS(5 * Years, vars.index)
+                .withEffectiveDate(vars.today)
+                .withNominal(vars.nominal)
+                .withPaymentFrequency(frequency)
+                .withFixedLegDayCount(vars.dayCounter)
+                .withFixedLegCompounding(Compounded, Annual)
+                .withDiscountingTermStructure(vars.curve);
+
+        if (std::fabs(atmSwap->fixedRate() - vars.flatRate) > 1.0e-10)
+            BOOST_ERROR("unexpected fixed rate for ATM DI x Pre swap from MakeOIS:"
+                        << std::setprecision(12) << "\n    payment frequency: " << frequency
+                        << "\n    fixed rate:        " << atmSwap->fixedRate()
+                        << "\n    expected:          " << vars.flatRate);
+        if (std::fabs(atmSwap->NPV()) > 1.0e-6)
+            BOOST_ERROR("non-zero NPV for ATM DI x Pre swap from MakeOIS:"
+                        << std::setprecision(12) << "\n    payment frequency: " << frequency
+                        << "\n    NPV:               " << atmSwap->NPV());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBootstrapWithFixedLegCompounding) {
+
+    BOOST_TEST_MESSAGE("Testing OIS bootstrap over DI x Pre quotes...");
+
+    DiPreVars vars;
+
+    Rate quote = 0.12;
+    Integer lengths[] = {1, 2, 3, 5, 10};
+
+    for (Frequency frequency : {Once, Annual}) {
+        std::vector<ext::shared_ptr<RateHelper>> helpers;
+        for (Integer years : lengths) {
+            helpers.push_back(ext::make_shared<OISRateHelper>(
+                0, years * Years, makeQuoteHandle(quote), vars.index, Handle<YieldTermStructure>(),
+                false, 0, Following, frequency, Calendar(), 0 * Days, 0.0, Pillar::LastRelevantDate,
+                Date(), RateAveraging::Compound, std::nullopt, std::nullopt, Calendar(),
+                Null<Natural>(), 0, false, ext::shared_ptr<FloatingRateCouponPricer>(),
+                DateGeneration::Backward, Calendar(), ModifiedFollowing, vars.dayCounter,
+                Compounded, Annual));
+        }
+
+        PiecewiseYieldCurve<Discount, LogLinear> curve(vars.today, helpers, vars.dayCounter);
+
+        for (const auto& helper : helpers) {
+            Date pillar = helper->pillarDate();
+            Rate zeroRate = curve.zeroRate(pillar, vars.dayCounter, Compounded, Annual).rate();
+            if (std::fabs(zeroRate - quote) > 1.0e-10)
+                BOOST_ERROR("unexpected zero rate after DI x Pre bootstrap:"
+                            << std::setprecision(12) << "\n    payment frequency: " << frequency
+                            << "\n    pillar:            " << pillar << "\n    zero rate:         "
+                            << zeroRate << "\n    expected:          " << quote);
+            if (std::fabs(helper->quoteError()) > 1.0e-10)
+                BOOST_ERROR("unexpected quote error after DI x Pre bootstrap:"
+                            << std::setprecision(12) << "\n    payment frequency: " << frequency
+                            << "\n    pillar:            " << pillar
+                            << "\n    quote error:       " << helper->quoteError());
+        }
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -5,6 +5,7 @@
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
  Copyright (C) 2026 Sergio Araujo
+ Copyright (C) 2026 Thiago Rodrigues
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -92,6 +93,12 @@ namespace QuantLib {
         MakeOIS& withMaturityEndOfMonth(bool flag = true);
 
         MakeOIS& withFixedLegDayCount(const DayCounter& dc);
+        /*! Sets the compounding convention of the fixed rate; by default,
+            fixed coupons accrue simple interest.  For instance, DI x Pré
+            swaps on the Cdi index use Compounded and Annual together with
+            a Business252 fixed-leg day counter.
+        */
+        MakeOIS& withFixedLegCompounding(Compounding compounding, Frequency frequency = Annual);
 
         MakeOIS& withOvernightLegSpread(Spread sp);
 
@@ -140,6 +147,8 @@ namespace QuantLib {
 
         Spread overnightSpread_ = 0.0;
         DayCounter fixedDayCount_;
+        Compounding fixedCompounding_ = Simple;
+        Frequency fixedCompoundingFrequency_ = Annual;
 
         ext::shared_ptr<PricingEngine> engine_;
 
