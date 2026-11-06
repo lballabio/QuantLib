@@ -47,7 +47,7 @@ namespace QuantLib {
                 std::max(Real(0.0), variance1 + variance2 - 2*rho*stdDev1*stdDev2);
             Real stdDev = std::sqrt(variance);
 
-            if (stdDev < QL_EPSILON) {
+            if (variance < QL_EPSILON) {
                 // the ratio of the two assets is deterministic, so the
                 // minimum is the asset with the lower forward
                 return blackFormula(Option::Call, strike,
