@@ -25,8 +25,11 @@ namespace QuantLib {
 
     void Gaussian1dCapFloorEngine::calculate() const {
 
-        for (Real spread : arguments_.spreads)
-            QL_REQUIRE(spread == 0.0, "Non zero spreads (" << spread << ") are not allowed.");
+        // Non-zero spreads are already accounted for: CapFloor::setupArguments()
+        // pre-adjusts capRates/floorRates to (strike-spread)/gearing, so the
+        // max(forward-strike,0)*gearing computation below is correct for any
+        // spread, exactly as in the other cap/floor engines (analytic, Black,
+        // Bachelier), none of which restrict the spread either.
 
         Size optionlets = arguments_.startDates.size();
         std::vector<Real> values(optionlets, 0.0);
