@@ -7,6 +7,7 @@ this_include_HEADERS = \
 	fdmamericanstepcondition.hpp \
 	fdmarithmeticaveragecondition.hpp \
 	fdmbermudanstepcondition.hpp \
+	fdmpointvaluerecorder.hpp \
 	fdmsimplestoragecondition.hpp \
 	fdmsimpleswingcondition.hpp \
 	fdmsnapshotcondition.hpp \
@@ -16,6 +17,7 @@ cpp_files = \
 	fdmamericanstepcondition.cpp \
 	fdmarithmeticaveragecondition.cpp \
 	fdmbermudanstepcondition.cpp \
+	fdmpointvaluerecorder.cpp \
 	fdmsimplestoragecondition.cpp \
 	fdmsimpleswingcondition.cpp \
 	fdmsnapshotcondition.cpp \
