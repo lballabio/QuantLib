@@ -22,6 +22,7 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonsmallsigmaexpansion.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
@@ -87,17 +88,38 @@ namespace {
             }
 
             std::complex<Real> phi(Real p_x) const {
-                const Real sigma2 = p_.sigma*p_.sigma;
+                // the v0-term below (the "-p_.v0*.../( g+o*coth(...) )" piece)
+                // stays well behaved as sigma -> 0 (the denominator tends to
+                // the finite, nonzero kappa + kappa*coth(kappa*t/2)); only
+                // the kappa*theta/sigma^2 piece has the same removable
+                // singularity AnalyticHestonEngine::chF's small-sigma branch
+                // guards against, so only that piece needs the small-sigma
+                // expansion (hestonSmallSigmaStep's C, evaluated at z=-p_x,
+                // Dprev=0, which this segment's (g, o, gamma) exactly match).
                 const std::complex<Real> g = gamma(p_, p_x);
                 const std::complex<Real> o = omega(p_, p_x);
-                const std::complex<Real> gamma = (g-o)/(g+o);
+
+                std::complex<Real> kappaThetaTerm;
+                if (p_.sigma > 1e-6 || p_.kappa < 1e-8) {
+                    const Real sigma2 = p_.sigma*p_.sigma;
+                    const std::complex<Real> gm = (g-o)/(g+o);
+
+                    kappaThetaTerm = p_.kappa*p_.theta/sigma2*(
+                        (g-o)*t_ - 2.0*std::log((1.0-gm*std::exp(-o*t_))
+                                                            /(1.0-gm)));
+                } else {
+                    std::complex<Real> Dc, Cc;
+                    detail::hestonSmallSigmaStep(
+                        p_.kappa, p_.theta, p_.sigma, p_.rho, t_,
+                        std::complex<Real>(-p_x, 0.0),
+                        std::complex<Real>(0.0, 0.0), Dc, Cc);
+                    kappaThetaTerm = Cc;
+                }
 
                 return 2.0*std::exp(std::complex<Real>(0.0, p_x*x_)
                         - p_.v0*std::complex<Real>(p_x*p_x, -p_x)
                           /(g+o*(1.0+std::exp(-o*t_))/(1.0-std::exp(-o*t_)))
-                         +p_.kappa*p_.theta/sigma2*(
-                           (g-o)*t_ - 2.0*std::log((1.0-gamma*std::exp(-o*t_))
-                                                               /(1.0-gamma))));
+                         + kappaThetaTerm);
             }
 
             const HestonParams p_;
