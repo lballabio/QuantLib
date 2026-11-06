@@ -41,11 +41,26 @@ namespace QuantLib {
             Real stdDev1 = std::sqrt(variance1);
             Real stdDev2 = std::sqrt(variance2);
 
-            Real variance = variance1 + variance2 - 2*rho*stdDev1*stdDev2;
+            // with perfect correlation and equal volatilities, rounding can
+            // make the variance of the ratio slightly negative
+            Real variance =
+                std::max(Real(0.0), variance1 + variance2 - 2*rho*stdDev1*stdDev2);
             Real stdDev = std::sqrt(variance);
 
-            Real modRho1 = (rho * stdDev2 - stdDev1) / stdDev;
-            Real modRho2 = (rho * stdDev1 - stdDev2) / stdDev;
+            if (variance < QL_EPSILON) {
+                // the ratio of the two assets is deterministic, so the
+                // minimum is the asset with the lower forward
+                return blackFormula(Option::Call, strike,
+                                    std::min(forward1, forward2), stdDev1)
+                    * riskFreeDiscount;
+            }
+
+            // with perfect correlation, rounding can push the modified
+            // correlations slightly outside [-1, 1]
+            Real modRho1 = std::max(Real(-1.0), std::min(Real(1.0),
+                                    (rho * stdDev2 - stdDev1) / stdDev));
+            Real modRho2 = std::max(Real(-1.0), std::min(Real(1.0),
+                                    (rho * stdDev1 - stdDev2) / stdDev));
 
             Real D1 = (std::log(forward1/forward2) + 0.5*variance) / stdDev;
 
