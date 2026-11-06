@@ -80,7 +80,7 @@ namespace QuantLib {
             std::max(Real(0.0), variance1 + variance2 - 2*rho_*stdDev1*stdDev2);
         Real stdDev = std::sqrt(variance);
         Real Nd1, Nd2, nd1, nd2;
-        if (stdDev >= QL_EPSILON) {
+        if (variance >= QL_EPSILON) {
             Real d1 = (std::log((quantity1*forward1)/(quantity2*forward2))
                        + 0.5*variance) / stdDev;
             Real d2 = d1 - stdDev;
@@ -110,7 +110,7 @@ namespace QuantLib {
         // Greeks
         results_.delta1 = riskFreeDiscount*(quantity1*forward1*Nd1)/s1;
         results_.delta2 = -riskFreeDiscount*(quantity2*forward2*Nd2)/s2;
-        if (stdDev >= QL_EPSILON) {
+        if (variance >= QL_EPSILON) {
             results_.gamma1 = (riskFreeDiscount*(quantity1*forward1*nd1)/s1)/(s1*stdDev);
             results_.gamma2 = (-riskFreeDiscount*(quantity2*forward2*nd2)/s2)/(-s2*stdDev);
         } else {
