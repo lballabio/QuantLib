@@ -445,6 +445,54 @@ BOOST_AUTO_TEST_CASE(testGreeks) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testEuroExchangeDeterministicRatio) {
+
+    BOOST_TEST_MESSAGE("Testing European exchange option with deterministic asset ratio...");
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+    Date exDate = today + 180;
+
+    Handle<YieldTermStructure> qTS1(flatRate(today, 0.03, dc));
+    Handle<YieldTermStructure> qTS2(flatRate(today, 0.02, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, 0.05, dc));
+
+    auto makeProcess = [&](Real spot, const Handle<YieldTermStructure>& qTS, Volatility vol) {
+        return ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(spot)), qTS, rTS,
+            Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+    };
+
+    struct Case {
+        Real s1, s2;
+        Volatility v1, v2;
+        Real rho;
+    };
+    Case cases[] = {
+        // perfect correlation and equal volatilities: rounding used to
+        // make the variance of the ratio negative, giving a NaN price
+        {110.0, 100.0, 0.20, 0.20, 1.0},
+        // zero volatilities: the gammas used to be NaN
+        {110.0, 100.0, 0.0, 0.0, 0.5},
+        {90.0, 100.0, 0.0, 0.0, 0.5}
+    };
+
+    for (const auto& c : cases) {
+        MargrabeOption option(1, 1, ext::make_shared<EuropeanExercise>(exDate));
+        option.setPricingEngine(ext::make_shared<AnalyticEuropeanMargrabeEngine>(
+            makeProcess(c.s1, qTS1, c.v1), makeProcess(c.s2, qTS2, c.v2), c.rho));
+
+        // the ratio is deterministic, so the option is worth its
+        // discounted intrinsic value
+        Real expected = std::max(
+            c.s1*qTS1->discount(exDate) - c.s2*qTS2->discount(exDate), Real(0.0));
+
+        QL_CHECK_SMALL(option.NPV() - expected, 1.0e-10);
+        QL_CHECK_SMALL(option.gamma1(), 1.0e-10);
+        QL_CHECK_SMALL(option.gamma2(), 1.0e-10);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testAmericanExchangeTwoAssets) {
 
     BOOST_TEST_MESSAGE("Testing American one-asset-for-another option...");
