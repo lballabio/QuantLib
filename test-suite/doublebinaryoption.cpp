@@ -165,11 +165,12 @@ BOOST_AUTO_TEST_CASE(testHaugValues) {
         { DoubleBarrier::KOKI,       95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  5.0763, 1e-4 },
         { DoubleBarrier::KOKI,       95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  5.0275, 1e-4 },
 
-        // degenerate cases
+        // degenerate cases; a knocked-in option still pays at expiry,
+        // so its value is the discounted cash, 10*exp(-0.05*0.25)
         { DoubleBarrier::KnockOut,   95.00, 105.00, 10.00,  80.00, 0.02, 0.05, 0.25, 0.10,  0.0000, 1e-4 },
         { DoubleBarrier::KnockOut,   95.00, 105.00, 10.00, 110.00, 0.02, 0.05, 0.25, 0.10,  0.0000, 1e-4 },
-        { DoubleBarrier::KnockIn,    95.00, 105.00, 10.00,  80.00, 0.02, 0.05, 0.25, 0.10, 10.0000, 1e-4 },
-        { DoubleBarrier::KnockIn,    95.00, 105.00, 10.00, 110.00, 0.02, 0.05, 0.25, 0.10, 10.0000, 1e-4 },
+        { DoubleBarrier::KnockIn,    95.00, 105.00, 10.00,  80.00, 0.02, 0.05, 0.25, 0.10,  9.8758, 1e-4 },
+        { DoubleBarrier::KnockIn,    95.00, 105.00, 10.00, 110.00, 0.02, 0.05, 0.25, 0.10,  9.8758, 1e-4 },
         { DoubleBarrier::KIKO,       95.00, 105.00, 10.00,  80.00, 0.02, 0.05, 0.25, 0.10, 10.0000, 1e-4 },
         { DoubleBarrier::KIKO,       95.00, 105.00, 10.00, 110.00, 0.02, 0.05, 0.25, 0.10,  0.0000, 1e-4 },
         { DoubleBarrier::KOKI,       95.00, 105.00, 10.00,  80.00, 0.02, 0.05, 0.25, 0.10,  0.0000, 1e-4 },
@@ -244,6 +245,42 @@ BOOST_AUTO_TEST_CASE(testHaugValues) {
         }
     }
 } 
+
+BOOST_AUTO_TEST_CASE(testKnockedInValue) {
+
+    BOOST_TEST_MESSAGE("Testing knocked-in double barrier binary options...");
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+    Date exDate = today + 90;
+
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    Handle<YieldTermStructure> rTS(flatRate(today, 0.05, dc));
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, 0.02, dc)), rTS,
+        Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc)));
+
+    DoubleBarrierOption option(DoubleBarrier::KnockIn, 80.0, 120.0, 0.0,
+                               ext::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, 10.0),
+                               ext::make_shared<EuropeanExercise>(exDate));
+    option.setPricingEngine(ext::make_shared<AnalyticDoubleBarrierBinaryEngine>(process));
+
+    // the exercise is European, so a knocked-in option pays the cash at expiry
+    const Real expected = 10.0 * rTS->discount(exDate);
+    const Time t = dc.yearFraction(today, exDate);
+
+    for (Real s : {79.0, 80.0, 120.0, 121.0}) {
+        spot->setValue(s);
+        QL_CHECK_CLOSE(option.NPV(), expected, 1.0e-10);
+        QL_CHECK_CLOSE(option.rho(), -t * expected, 1.0e-10);
+    }
+
+    // the value must be continuous across the barriers
+    for (Real s : {80.0001, 119.9999}) {
+        spot->setValue(s);
+        QL_CHECK_SMALL(option.NPV() - expected, 1.0e-3);
+    }
+}
 
 BOOST_AUTO_TEST_CASE(testPdeDoubleBarrierWithAnalytical) {
     BOOST_TEST_MESSAGE("Testing cash-or-nothing double barrier options "
