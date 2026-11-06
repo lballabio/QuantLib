@@ -810,7 +810,6 @@ set(QL_SOURCES
     processes/hestonslvprocess.cpp
     processes/hullwhiteprocess.cpp
     processes/hybridhestonhullwhiteprocess.cpp
-    processes/jointstochasticprocess.cpp
     processes/merton76process.cpp
     processes/mfstateprocess.cpp
     processes/ornsteinuhlenbeckprocess.cpp
@@ -2081,7 +2080,6 @@ set(QL_HEADERS
     processes/hestonslvprocess.hpp
     processes/hullwhiteprocess.hpp
     processes/hybridhestonhullwhiteprocess.hpp
-    processes/jointstochasticprocess.hpp
     processes/merton76process.hpp
     processes/mfstateprocess.hpp
     processes/ornsteinuhlenbeckprocess.hpp

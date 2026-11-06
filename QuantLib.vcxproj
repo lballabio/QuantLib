@@ -1671,7 +1671,6 @@
     <ClInclude Include="ql\processes\hestonslvprocess.hpp" />
     <ClInclude Include="ql\processes\hullwhiteprocess.hpp" />
     <ClInclude Include="ql\processes\hybridhestonhullwhiteprocess.hpp" />
-    <ClInclude Include="ql\processes\jointstochasticprocess.hpp" />
     <ClInclude Include="ql\processes\merton76process.hpp" />
     <ClInclude Include="ql\processes\mfstateprocess.hpp" />
     <ClInclude Include="ql\processes\ornsteinuhlenbeckprocess.hpp" />
@@ -2764,7 +2763,6 @@
     <ClCompile Include="ql\processes\hestonslvprocess.cpp" />
     <ClCompile Include="ql\processes\hullwhiteprocess.cpp" />
     <ClCompile Include="ql\processes\hybridhestonhullwhiteprocess.cpp" />
-    <ClCompile Include="ql\processes\jointstochasticprocess.cpp" />
     <ClCompile Include="ql\processes\merton76process.cpp" />
     <ClCompile Include="ql\processes\mfstateprocess.cpp" />
     <ClCompile Include="ql\processes\ornsteinuhlenbeckprocess.cpp" />

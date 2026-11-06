@@ -16,7 +16,6 @@
 #include <ql/processes/hestonslvprocess.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
-#include <ql/processes/jointstochasticprocess.hpp>
 #include <ql/processes/merton76process.hpp>
 #include <ql/processes/mfstateprocess.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>

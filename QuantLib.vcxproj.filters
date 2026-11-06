@@ -2442,9 +2442,6 @@
     <ClInclude Include="ql\processes\hybridhestonhullwhiteprocess.hpp">
       <Filter>processes</Filter>
     </ClInclude>
-    <ClInclude Include="ql\processes\jointstochasticprocess.hpp">
-      <Filter>processes</Filter>
-    </ClInclude>
     <ClInclude Include="ql\processes\merton76process.hpp">
       <Filter>processes</Filter>
     </ClInclude>
@@ -5931,9 +5928,6 @@
       <Filter>processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\processes\hybridhestonhullwhiteprocess.cpp">
-      <Filter>processes</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\processes\jointstochasticprocess.cpp">
       <Filter>processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\processes\merton76process.cpp">
