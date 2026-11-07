@@ -32,7 +32,7 @@ namespace QuantLib {
     class CumulativeChiSquareDistribution {
       public:
         explicit CumulativeChiSquareDistribution(Real df) : df_(df) {}
-        Real operator()(Real x) const;
+                                                 Real operator()(Real x) const;
       private:
         Real df_;
     };
