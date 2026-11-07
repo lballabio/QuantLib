@@ -242,6 +242,73 @@ BOOST_AUTO_TEST_CASE(testJointCalendars) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testJapanEquinoxes) {
+    BOOST_TEST_MESSAGE("Testing Japanese equinox holidays across a non-leap century...");
+
+    const Calendar calendar = Japan();
+    const Date holidays[] = {
+        {20, March, 2099}, {23, September, 2099},
+        {20, March, 2100}, {23, September, 2100},
+        {21, March, 2101}, {23, September, 2101},
+        {20, March, 2104}, {23, September, 2104},
+        {20, March, 2199}, {23, September, 2199}
+    };
+    for (const Date& date : holidays)
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date << " should be a holiday");
+
+    const Date businessDays[] = {
+        {18, March, 2100}, {19, March, 2100},
+        {21, September, 2100}, {22, September, 2100},
+        {22, March, 2101},
+        {18, March, 2104}, {19, March, 2104}, {22, September, 2104}
+    };
+    for (const Date& date : businessDays)
+        BOOST_CHECK_MESSAGE(calendar.isBusinessDay(date), date << " should be a business day");
+}
+
+BOOST_AUTO_TEST_CASE(testJapanGoldenWeek) {
+    BOOST_TEST_MESSAGE("Testing historical Japanese Golden Week holidays...");
+
+    // Holiday-law amendments effective April 12, 1973, December 27, 1985,
+    // and January 1, 2007:
+    // https://www.shugiin.go.jp/internet/itdb_housei.nsf/html/houritsu/07119730412010.htm
+    // https://www.shugiin.go.jp/Internet/itdb_housei.nsf/html/houritsu/10319851227103.htm
+    // https://www.shugiin.go.jp/internet/itdb_housei.nsf/html/housei/16220050520043.htm
+    const Calendar calendar = Japan();
+    const Date holidays[] = {
+        {4, May, 1981},  // Monday substitute for Constitution Memorial Day
+        {4, May, 1986},  // Sunday before the first weekday holiday under the 1985 amendment
+        {4, May, 1987},  // Monday substitute, before the first additional weekday holiday
+        {4, May, 1988},  // First additional weekday holiday under the 1985 amendment
+        {4, May, 2006},  // Holiday between Constitution Memorial Day and Children's Day
+        {4, May, 2007},  // Greenery Day
+        {6, May, 1974},  // Monday substitute for Children's Day under the 1973 amendment
+        {6, May, 1985},  // Monday substitute before the 2007 amendment
+        {6, May, 2002},  // Monday substitute before the 2007 amendment
+        {6, May, 2008},  // Tuesday substitute for Greenery Day
+        {6, May, 2009},  // Wednesday substitute for Constitution Memorial Day
+        {6, May, 2013}   // Monday substitute after the 2007 amendment
+    };
+    for (const Date& date : holidays)
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date << " should be a holiday");
+
+    const Date businessDays[] = {
+        {4, May, 1970},  // Monday before substitute holidays were introduced
+        {4, May, 1982},  // Tuesday before the 1985 amendment
+        {4, May, 1983},  // Wednesday before the 1985 amendment
+        {4, May, 1984},  // Friday before the 1985 amendment
+        {6, May, 1968},  // Monday before substitute holidays were introduced
+        {6, May, 1986},  // Tuesday before the 2007 amendment
+        {6, May, 1987},  // Wednesday before the 2007 amendment
+        {6, May, 1997},  // Tuesday before the 2007 amendment
+        {6, May, 1998},  // Wednesday before the 2007 amendment
+        {6, May, 2003},  // Tuesday before the 2007 amendment
+        {6, May, 2010}   // Thursday after the 2007 amendment
+    };
+    for (const Date& date : businessDays)
+        BOOST_CHECK_MESSAGE(calendar.isBusinessDay(date), date << " should be a business day");
+}
+
 BOOST_AUTO_TEST_CASE(testUSSettlement) {
     BOOST_TEST_MESSAGE("Testing US settlement holiday list...");
 
