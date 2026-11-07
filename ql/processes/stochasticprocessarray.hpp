@@ -51,6 +51,8 @@ namespace QuantLib {
         Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
         Time time(const Date&) const override;
+        void resetCache(const Size numberOfTimeSteps) const override;
+        void suspendCaching(const bool suspend) const override;
         // inspectors
         const ext::shared_ptr<StochasticProcess1D>& process(Size i) const;
         Matrix correlation() const;

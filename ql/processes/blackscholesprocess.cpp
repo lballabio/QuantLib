@@ -72,36 +72,57 @@ namespace QuantLib {
     }
 
     Real GeneralizedBlackScholesProcess::drift(Time t, Real x) const {
-        Real sigma = diffusion(t,x);
+        Real res;
+        CACHE_START(driftCache_)
+        Real sigma = diffusion(t, x);
         // we could be more anticipatory if we know the right dt
         // for which the drift will be used
         Time t1 = t + 0.0001;
-        return riskFreeRate_->forwardRate(t,t1,Continuous,NoFrequency,true).rate()
-             - dividendYield_->forwardRate(t,t1,Continuous,NoFrequency,true).rate()
-             - 0.5 * sigma * sigma;
+        res = riskFreeRate_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
+              dividendYield_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
+              0.5 * sigma * sigma;
+        CACHE_END(isStrikeIndependent_, driftCache_, res, t, 0.0)
+        return res;
     }
 
     Real GeneralizedBlackScholesProcess::diffusion(Time t, Real x) const {
-        return localVolatility()->localVol(t, x, true);
+        Real diffusion;
+        CACHE_START(diffusionCache_)
+        diffusion = localVolatility()->localVol(t, x, true);
+        CACHE_END(isStrikeIndependent_, diffusionCache_, diffusion, t, 0.0)
+        return diffusion;
     }
 
     Real GeneralizedBlackScholesProcess::apply(Real x0, Real dx) const {
         return x0 * std::exp(dx);
     }
 
-    Real GeneralizedBlackScholesProcess::expectation(Time t0,
-                                                     Real x0,
-                                                     Time dt) const {
+    void GeneralizedBlackScholesProcess::resetCache(const Size numberOfTimeSteps) const {
+        driftCache_ = PathIndependentCache<Real>(numberOfTimeSteps);
+        diffusionCache_ = PathIndependentCache<Real>(numberOfTimeSteps);
+    }
+
+    void GeneralizedBlackScholesProcess::suspendCaching(const bool suspend) const {
+        driftCache_.suspendCaching(suspend);
+        diffusionCache_.suspendCaching(suspend);
+    }
+
+    Real GeneralizedBlackScholesProcess::expectation(Time t0, Real x0, Time dt) const {
         localVolatility(); // trigger update
-        if(isStrikeIndependent_ && !forceDiscretization_) {
+        if (isStrikeIndependent_ && !forceDiscretization_) {
             // exact value for curves
-            return x0 *
-                std::exp(dt * (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
-                                                          NoFrequency, true).rate() -
-                             dividendYield_->forwardRate(
-                                 t0, t0 + dt, Continuous, NoFrequency, true).rate()));
+            Real mu;
+            CACHE_START(driftCache_)
+            mu =
+                dt *
+                    (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous, NoFrequency, true).rate() -
+                     dividendYield_->forwardRate(t0, t0 + dt, Continuous, NoFrequency, true)
+                         .rate()) -
+                0.5 * variance(t0, x0, dt);
+            CACHE_END(true, driftCache_, mu, t0, dt)
+            return x0 * std::exp(mu);
         } else {
-            QL_FAIL("not implemented");
+            return discretization_->drift(*this, t0, x0, dt);
         }
     }
 
@@ -118,32 +139,17 @@ namespace QuantLib {
 
     Real GeneralizedBlackScholesProcess::variance(Time t0, Real x0, Time dt) const {
         localVolatility(); // trigger update
-        if(isStrikeIndependent_ && !forceDiscretization_) {
-            // exact value for curves
-            return blackVolatility_->blackVariance(t0 + dt, 0.01) -
-                   blackVolatility_->blackVariance(t0, 0.01);
-        }
-        else{
-            return discretization_->variance(*this,t0,x0,dt);
-        }
-    }
-
-    Real GeneralizedBlackScholesProcess::evolve(Time t0, Real x0,
-                                                Time dt, Real dw) const {
-        localVolatility(); // trigger update
         if (isStrikeIndependent_ && !forceDiscretization_) {
             // exact value for curves
-            Real var = variance(t0, x0, dt);
-            Real drift = (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
-                                                     NoFrequency, true).rate() -
-                          dividendYield_->forwardRate(t0, t0 + dt, Continuous,
-                                                      NoFrequency, true).rate()) *
-                             dt -
-                         0.5 * var;
-            return apply(x0, std::sqrt(var) * dw + drift);
-        } else
-            return apply(x0, discretization_->drift(*this, t0, x0, dt) +
-                                 stdDeviation(t0, x0, dt) * dw);
+            Real variance;
+            CACHE_START(diffusionCache_)
+            variance = blackVolatility_->blackVariance(t0 + dt, 0.01) -
+                       blackVolatility_->blackVariance(t0, 0.01);
+            CACHE_END(true, diffusionCache_, variance, t0, dt)
+            return variance;
+        } else {
+            return discretization_->variance(*this, t0, x0, dt);
+        }
     }
 
     Time GeneralizedBlackScholesProcess::time(const Date& d) const {
