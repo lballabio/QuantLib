@@ -1902,6 +1902,60 @@ BOOST_AUTO_TEST_CASE(testFdAmericanKnockInCallWithoutDividends) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testFdAmericanKnockInByDividend) {
+    BOOST_TEST_MESSAGE("Testing FD Black-Scholes engine with American down-and-in options "
+                       "knocked in by a dividend...");
+
+    DayCounter dc = Actual365Fixed();
+    Date today = Settings::instance().evaluationDate();
+    Date maturity = today + 365;
+
+    Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+    Handle<YieldTermStructure> qTS(flatRate(today, 0.02, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, 0.05, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, 0.25, dc));
+
+    auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(s0, qTS, rTS, volTS);
+
+    // the dividend paid today takes the spot from 100 to 85, through the
+    // barrier at 90, so the option is knocked in at once and is worth the
+    // american vanilla option; the rebate is not paid
+    const DividendSchedule dividends = DividendVector({ today }, { 15.0 });
+    auto barrierEngine =
+        ext::make_shared<FdBlackScholesBarrierEngine>(bsProcess, dividends, 200, 400);
+    auto vanillaEngine =
+        ext::make_shared<FdBlackScholesVanillaEngine>(bsProcess, dividends, 200, 400);
+
+    auto exercise = ext::make_shared<AmericanExercise>(today, maturity);
+
+    for (Option::Type optionType : { Option::Put, Option::Call }) {
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(optionType, 100.0);
+        VanillaOption vanilla(payoff, exercise);
+        vanilla.setPricingEngine(vanillaEngine);
+
+        for (Real rebate : { 0.0, 3.0 }) {
+            BarrierOption option(Barrier::DownIn, 90.0, rebate, payoff, exercise);
+            option.setPricingEngine(barrierEngine);
+
+            const Real calculated = option.NPV();
+            const Real expected = vanilla.NPV();
+            const Real calculatedDelta = option.delta();
+            const Real expectedDelta = vanilla.delta();
+            if (std::fabs(calculated - expected) > 1e-4*expected
+                || std::fabs(calculatedDelta - expectedDelta) > 1e-3) {
+                BOOST_ERROR("Failed to reproduce american vanilla price after knock-in "
+                            "by a dividend:"
+                            << "\n    option type:      " << optionType
+                            << "\n    rebate:           " << rebate
+                            << "\n    calculated:       " << calculated
+                            << "\n    expected:         " << expected
+                            << "\n    calculated delta: " << calculatedDelta
+                            << "\n    expected delta:   " << expectedDelta);
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testFdEarlyExerciseKnockInBounds) {
     BOOST_TEST_MESSAGE("Testing bounds on FD Black-Scholes early-exercise knock-in prices...");
 
