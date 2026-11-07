@@ -24,10 +24,14 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/ibor/eurlibor.hpp>
+#include <ql/indexes/ibor/usdlibor.hpp>
+#include <ql/indexes/ibor/custom.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
@@ -35,6 +39,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/currencies/america.hpp>
 #include <ql/currencies/asia.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/indexes/ibor/bbsw.hpp>
@@ -42,6 +47,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/calendars/taiwan.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
 
@@ -677,6 +683,72 @@ BOOST_AUTO_TEST_CASE(testSettlementCalendar) {
     // sanity check: the two calendars must actually diverge here
     BOOST_CHECK(expectedStart !=
                 index->fixingCalendar().advance(today, 2 * Days));
+}
+
+BOOST_AUTO_TEST_CASE(testIndexSpotDateFromNonBusinessEvaluationDate) {
+
+    BOOST_TEST_MESSAGE("Testing that an index-defined swap spot date is "
+                       "calculated from the actual evaluation date...");
+
+    // Saturday. The index path does not take an explicit settlement-day
+    // count, so it has to use the value-date convention without calling
+    // valueDate() on a holiday.
+    Date today(17, January, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    auto euribor = ext::make_shared<Euribor6M>();
+    Date expectedEuribor = euribor->valueDateFrom(today);
+    BOOST_CHECK(expectedEuribor !=
+                euribor->valueDate(euribor->fixingCalendar().adjust(today)));
+
+    ext::shared_ptr<VanillaSwap> euriborSwap =
+        MakeVanillaSwap(5 * Years, euribor).withFixedRate(0.03);
+    if (euriborSwap->startDate() != expectedEuribor)
+        BOOST_FAIL("Euribor swap spot date not calculated from the actual "
+                   "evaluation date:\n"
+                   "    expected: " << expectedEuribor << "\n"
+                   "    obtained: " << euriborSwap->startDate());
+
+    // 15 January 2026 is a London business day whose two-day spot falls on
+    // Martin Luther King Jr. Day, so the USD Libor joint calendar rolls it.
+    USDLibor usd(3 * Months);
+    Date business(15, January, 2026);
+    BOOST_CHECK(usd.isValidFixingDate(business));
+    Date londonSpot = usd.fixingCalendar().advance(business, usd.fixingDays(), Days);
+    Date jointSpot = usd.jointCalendar().adjust(londonSpot);
+    BOOST_CHECK(jointSpot != londonSpot);
+    BOOST_CHECK_EQUAL(usd.valueDate(business), jointSpot);
+    BOOST_CHECK_EQUAL(usd.valueDateFrom(business), jointSpot);
+
+    Date expectedUsd = usd.valueDateFrom(today);
+    BOOST_CHECK(expectedUsd != usd.valueDate(usd.fixingCalendar().adjust(today)));
+    ext::shared_ptr<VanillaSwap> usdSwap =
+        MakeVanillaSwap(5 * Years, ext::make_shared<USDLibor>(3 * Months))
+            .withFixedRate(0.03);
+    if (usdSwap->startDate() != expectedUsd)
+        BOOST_FAIL("USD Libor swap spot date not calculated from the actual "
+                   "evaluation date:\n"
+                   "    expected: " << expectedUsd << "\n"
+                   "    obtained: " << usdSwap->startDate());
+
+    EURLibor eurLibor(6 * Months);
+    BOOST_CHECK_EQUAL(eurLibor.valueDateFrom(today),
+                      TARGET().advance(today, eurLibor.fixingDays(), Days));
+    BOOST_CHECK(eurLibor.valueDateFrom(today) !=
+                eurLibor.valueDate(eurLibor.fixingCalendar().adjust(today)));
+
+    // A plain weekend, so the US holiday on the January date above does not
+    // hide the extra business day.
+    Date weekend(20, June, 2026);
+    Calendar uk = UnitedKingdom();
+    Calendar us = UnitedStates(UnitedStates::GovernmentBond);
+    CustomIborIndex custom("Custom", 3 * Months, 2, USDCurrency(), uk, us, us,
+                           ModifiedFollowing, false, Actual360());
+    Date customSpot = us.adjust(us.advance(weekend, 2, Days));
+    BOOST_CHECK_EQUAL(custom.valueDateFrom(weekend), customSpot);
+    BOOST_CHECK(custom.isValidFixingDate(uk.adjust(weekend)));
+    BOOST_CHECK(custom.valueDateFrom(weekend) !=
+                custom.valueDate(uk.adjust(weekend)));
 }
 
 BOOST_AUTO_TEST_CASE(testZeroBpsFairRateAndSpread) {

@@ -31,7 +31,12 @@ namespace QuantLib {
         QL_REQUIRE(isValidFixingDate(fixingDate),
                    "Fixing date " << fixingDate << " is not valid");
 
-        Date d = valueCalendar_.advance(fixingDate, fixingDays_, Days);
+        return valueDateFrom(fixingDate);
+    }
+
+    Date CustomIborIndex::valueDateFrom(const Date& date) const {
+
+        Date d = valueCalendar_.advance(date, fixingDays_, Days);
         return maturityCalendar_.adjust(d);
     }
 

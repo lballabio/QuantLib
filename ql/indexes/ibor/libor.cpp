@@ -88,6 +88,11 @@ namespace QuantLib {
         QL_REQUIRE(isValidFixingDate(fixingDate),
                    "Fixing date " << fixingDate << " is not valid");
 
+        return valueDateFrom(fixingDate);
+    }
+
+    Date Libor::valueDateFrom(const Date& date) const {
+
         // http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412 :
         // For all currencies other than EUR and GBP the period between
         // Fixing Date and Value Date will be two London business days
@@ -95,7 +100,7 @@ namespace QuantLib {
         // business day and a business day in the principal financial centre
         // of the currency concerned, the next following day which is a
         // business day in both centres shall be the Value Date.
-        Date d = fixingCalendar().advance(fixingDate, fixingDays_, Days);
+        Date d = fixingCalendar().advance(date, fixingDays_, Days);
         return jointCalendar_.adjust(d);
     }
 

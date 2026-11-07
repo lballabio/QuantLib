@@ -579,6 +579,26 @@ BOOST_AUTO_TEST_CASE(testCmsMarketCalibration) {
                       Error);
 }
 
+BOOST_AUTO_TEST_CASE(testCmsStartDateFromNonBusinessEvaluationDate) {
+
+    BOOST_TEST_MESSAGE("Testing that MakeCms counts fixing days from the "
+                       "actual evaluation date...");
+
+    // Saturday
+    Date today(20, June, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    auto ibor = ext::make_shared<Euribor6M>();
+    auto swapIndex = ext::make_shared<EuriborSwapIsdaFixA>(10 * Years);
+    Calendar calendar = ibor->fixingCalendar();
+    Date expected = calendar.advance(today, ibor->fixingDays() * Days);
+    Date rolled = calendar.advance(calendar.adjust(today), ibor->fixingDays() * Days);
+    BOOST_CHECK(expected != rolled);
+
+    ext::shared_ptr<Swap> cms = MakeCms(5 * Years, swapIndex, ibor);
+    BOOST_CHECK_EQUAL(cms->startDate(), expected);
+}
+
 BOOST_AUTO_TEST_CASE(testSabrCubeRecalibrationInitializesLazily) {
 
     BOOST_TEST_MESSAGE("Testing lazy SABR cube initialization before recalibration...");

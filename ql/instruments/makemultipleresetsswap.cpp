@@ -50,7 +50,9 @@ namespace QuantLib {
             Natural settlDays =
                 settlementDays_ != Null<Natural>() ? settlementDays_ : iborIndex_->fixingDays();
             Date refDate = Settings::instance().evaluationDate();
-            startDate = cal.advance(cal.adjust(refDate), settlDays * Days);
+            // settlement days are counted from the actual evaluation date,
+            // even when it is not a business day (see issue #753)
+            startDate = cal.advance(refDate, settlDays * Days);
             startDate = cal.advance(startDate, forwardStart_,
                                     forwardStart_.length() < 0 ? Preceding : Following);
         }
