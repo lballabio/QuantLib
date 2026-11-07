@@ -18,11 +18,52 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/instruments/payoffs.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <utility>
 
 namespace QuantLib {
+
+    namespace {
+
+        /* Value of the rebate, which is paid at the first hit of either
+           barrier for knock-outs and at expiry if neither barrier was hit
+           for knock-ins (the same convention as the lattice and Monte
+           Carlo engines). Both are double-barrier binary options.
+        */
+        Real rebateValue(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         const DoubleBarrierOption::arguments& arguments) {
+            auto engine = ext::make_shared<AnalyticDoubleBarrierBinaryEngine>(process);
+            auto cash = ext::make_shared<CashOrNothingPayoff>(Option::Call, 0.0,
+                                                              arguments.rebate);
+            const Date expiry = arguments.exercise->lastDate();
+
+            if (arguments.barrierType == DoubleBarrier::KnockOut) {
+                // paid when the lower barrier is hit before the upper one,
+                // plus paid when the upper barrier is hit before the lower one
+                auto atHit = ext::make_shared<AmericanExercise>(
+                    process->blackVolatility()->referenceDate(), expiry);
+                Real value = 0.0;
+                for (auto type : {DoubleBarrier::KIKO, DoubleBarrier::KOKI}) {
+                    DoubleBarrierOption touch(type, arguments.barrier_lo, arguments.barrier_hi,
+                                              0.0, cash, atHit);
+                    touch.setPricingEngine(engine);
+                    value += touch.NPV();
+                }
+                return value;
+            } else {
+                // paid at expiry if neither barrier is hit
+                DoubleBarrierOption noTouch(DoubleBarrier::KnockOut, arguments.barrier_lo,
+                                            arguments.barrier_hi, 0.0, cash,
+                                            ext::make_shared<EuropeanExercise>(expiry));
+                noTouch.setPricingEngine(engine);
+                return noTouch.NPV();
+            }
+        }
+
+    }
 
     AnalyticDoubleBarrierEngine::AnalyticDoubleBarrierEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process, int series)
@@ -93,6 +134,8 @@ namespace QuantLib {
              default:
                QL_FAIL("unknown type");
            }
+           if (arguments_.rebate != 0.0)
+               results_.value += rebateValue(process_, arguments_);
         }
     }
 
