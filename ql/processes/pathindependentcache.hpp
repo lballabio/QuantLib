@@ -28,6 +28,15 @@
 
 namespace QuantLib {
 
+#define CACHE_START(cache) if (!cache.ready()) {
+#define CACHE_END(active, cache, value, t, dt) \
+    if (active)                                \
+        cache.add(value, t, dt);               \
+    }                                          \
+    else {                                     \
+        value= cache.get(t);                   \
+    }
+
     /*! The cache is initialized with the number of time steps of a stochastic process simulation.
      * The usage pattern is as follows: On the first path we calculate a drift or diffusion and add
      * the path-independent part to the cache, providing the current simulation time t and (if

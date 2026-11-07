@@ -73,34 +73,24 @@ namespace QuantLib {
 
     Real GeneralizedBlackScholesProcess::drift(Time t, Real x) const {
         Real res;
-        if(!driftCache_.ready()) {
-            Real sigma = diffusion(t,x);
-            // we could be more anticipatory if we know the right dt
-            // for which the drift will be used
-            Time t1 = t + 0.0001;
-            res = riskFreeRate_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
-                  dividendYield_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
-                  0.5 * sigma * sigma;
-            if (isStrikeIndependent_) {
-                driftCache_.add(res, t);
-            }
-        } else {
-            res = driftCache_.get(t);
-        }
+        CACHE_START(driftCache_)
+        Real sigma = diffusion(t, x);
+        // we could be more anticipatory if we know the right dt
+        // for which the drift will be used
+        Time t1 = t + 0.0001;
+        res = riskFreeRate_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
+              dividendYield_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
+              0.5 * sigma * sigma;
+        CACHE_END(isStrikeIndependent_, driftCache_, res, t, 0.0)
         return res;
     }
 
     Real GeneralizedBlackScholesProcess::diffusion(Time t, Real x) const {
-        Real res;
-        if(!diffusionCache_.ready()) {
-            res = localVolatility()->localVol(t, x, true);
-            if (isStrikeIndependent_) {
-                diffusionCache_.add(res, t);
-            }
-        } else {
-            res = diffusionCache_.get(t);
-        }
-        return res;
+        Real diffusion;
+        CACHE_START(diffusionCache_)
+        diffusion = localVolatility()->localVol(t, x, true);
+        CACHE_END(isStrikeIndependent_, diffusionCache_, diffusion, t, 0.0)
+        return diffusion;
     }
 
     Real GeneralizedBlackScholesProcess::apply(Real x0, Real dx) const {
@@ -117,25 +107,20 @@ namespace QuantLib {
         diffusionCache_.suspendCaching(suspend);
     }
 
-    Real GeneralizedBlackScholesProcess::expectation(Time t0,
-                                                     Real x0,
-                                                     Time dt) const {
-        Real res;
+    Real GeneralizedBlackScholesProcess::expectation(Time t0, Real x0, Time dt) const {
         localVolatility(); // trigger update
         if (isStrikeIndependent_ && !forceDiscretization_) {
             // exact value for curves
-            if(!driftCache_.ready()) {
-                Real mu = dt *
-                          (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous, NoFrequency, true)
-                               .rate() -
-                           dividendYield_->forwardRate(t0, t0 + dt, Continuous, NoFrequency, true)
-                           .rate()) - 0.5 * variance(t0,x0,dt);
-                res = x0 * std::exp(mu);
-                driftCache_.add(mu,t0,dt);
-            } else {
-                res = x0 * std::exp(driftCache_.get(t0, dt));
-            }
-            return res;
+            Real mu;
+            CACHE_START(driftCache_)
+            mu =
+                dt *
+                    (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous, NoFrequency, true).rate() -
+                     dividendYield_->forwardRate(t0, t0 + dt, Continuous, NoFrequency, true)
+                         .rate()) -
+                0.5 * variance(t0, x0, dt);
+            CACHE_END(true, driftCache_, mu, t0, dt)
+            return x0 * std::exp(mu);
         } else {
             return discretization_->drift(*this, t0, x0, dt);
         }
@@ -154,19 +139,16 @@ namespace QuantLib {
 
     Real GeneralizedBlackScholesProcess::variance(Time t0, Real x0, Time dt) const {
         localVolatility(); // trigger update
-        if(isStrikeIndependent_ && !forceDiscretization_) {
+        if (isStrikeIndependent_ && !forceDiscretization_) {
             // exact value for curves
-            Real res;
-            if (!diffusionCache_.ready()) {
-                res = blackVolatility_->blackVariance(t0 + dt, 0.01) -
-                      blackVolatility_->blackVariance(t0, 0.01);
-                diffusionCache_.add(res, t0, dt);
-            } else {
-                res = diffusionCache_.get(t0, dt);
-            }
-            return res;
+            Real variance;
+            CACHE_START(diffusionCache_)
+            variance = blackVolatility_->blackVariance(t0 + dt, 0.01) -
+                       blackVolatility_->blackVariance(t0, 0.01);
+            CACHE_END(true, diffusionCache_, variance, t0, dt)
+            return variance;
         } else {
-            return discretization_->variance(*this,t0,x0,dt);
+            return discretization_->variance(*this, t0, x0, dt);
         }
     }
 
