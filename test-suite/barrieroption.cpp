@@ -1840,8 +1840,8 @@ BOOST_AUTO_TEST_CASE(testFdEarlyExerciseKnockInVsBinomial) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testFdAmericanDownInCallWithoutDividends) {
-    BOOST_TEST_MESSAGE("Testing FD Black-Scholes engine with American down-and-in calls "
+BOOST_AUTO_TEST_CASE(testFdAmericanKnockInCallWithoutDividends) {
+    BOOST_TEST_MESSAGE("Testing FD Black-Scholes engine with American knock-in calls "
                        "without dividends...");
 
     DayCounter dc = Actual365Fixed();
@@ -1865,33 +1865,38 @@ BOOST_AUTO_TEST_CASE(testFdAmericanDownInCallWithoutDividends) {
     // without dividends an american call is never exercised early,
     // whether knocked in or not, so the price is the european one
     struct {
+        Barrier::Type barrierType;
         Real barrier;
         Real spot;
     } testCases[] = {
-        {  90.0, 100.0 },
-        {  99.0, 100.0 },
-        { 120.0, 130.0 }
+        { Barrier::DownIn,  90.0, 100.0 },
+        { Barrier::DownIn,  99.0, 100.0 },
+        { Barrier::DownIn, 120.0, 130.0 },
+        { Barrier::UpIn,   110.0, 100.0 },
+        { Barrier::UpIn,   101.0, 100.0 },
+        { Barrier::UpIn,   130.0,  90.0 }
     };
 
     for (const auto& tc : testCases) {
         s0->setValue(tc.spot);
         for (Real rebate : { 0.0, 3.0 }) {
-            BarrierOption american(Barrier::DownIn, tc.barrier, rebate, payoff,
+            BarrierOption american(tc.barrierType, tc.barrier, rebate, payoff,
                                    americanExercise);
             american.setPricingEngine(fdEngine);
-            BarrierOption european(Barrier::DownIn, tc.barrier, rebate, payoff,
+            BarrierOption european(tc.barrierType, tc.barrier, rebate, payoff,
                                    europeanExercise);
             european.setPricingEngine(analyticEngine);
 
             const Real calculated = american.NPV();
             const Real expected = european.NPV();
             if (std::fabs(calculated - expected) > 1e-4*expected) {
-                BOOST_ERROR("Failed to reproduce European down-and-in call price:"
-                            << "\n    barrier:    " << tc.barrier
-                            << "\n    rebate:     " << rebate
-                            << "\n    spot:       " << tc.spot
-                            << "\n    calculated: " << calculated
-                            << "\n    expected:   " << expected);
+                BOOST_ERROR("Failed to reproduce European knock-in call price:"
+                            << "\n    barrier type: " << tc.barrierType
+                            << "\n    barrier:      " << tc.barrier
+                            << "\n    rebate:       " << rebate
+                            << "\n    spot:         " << tc.spot
+                            << "\n    calculated:   " << calculated
+                            << "\n    expected:     " << expected);
             }
         }
     }
