@@ -518,6 +518,61 @@ BOOST_AUTO_TEST_CASE(testLowVolatility) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testAnalyticRebate) {
+
+    BOOST_TEST_MESSAGE("Testing rebates in the analytic double-barrier engine...");
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+    Date exDate = today + 180;
+    const Real lo = 80.0, hi = 130.0, rebate = 3.0;
+
+    auto rRate = ext::make_shared<SimpleQuote>(0.05);
+    auto qRate = ext::make_shared<SimpleQuote>(0.02);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, 0.25, dc)));
+
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+    auto exercise = ext::make_shared<EuropeanExercise>(exDate);
+    auto analytic = ext::make_shared<AnalyticDoubleBarrierEngine>(process);
+
+    // rebate value: price with the rebate minus price without it
+    auto rebateValue = [&](DoubleBarrier::Type type,
+                           const ext::shared_ptr<PricingEngine>& engine) {
+        DoubleBarrierOption withRebate(type, lo, hi, rebate, payoff, exercise);
+        DoubleBarrierOption withoutRebate(type, lo, hi, 0.0, payoff, exercise);
+        withRebate.setPricingEngine(engine);
+        withoutRebate.setPricingEngine(engine);
+        return withRebate.NPV() - withoutRebate.NPV();
+    };
+
+    // the rebate used to be ignored; compare with the lattice engine, which
+    // pays it at the hit for knock-outs and at expiry for knock-ins
+    auto lattice = ext::make_shared<
+        BinomialDoubleBarrierEngine<CoxRossRubinstein, DiscretizedDoubleBarrierOption> >(
+        process, 1000);
+    for (auto type : {DoubleBarrier::KnockOut, DoubleBarrier::KnockIn}) {
+        Real calculated = rebateValue(type, analytic);
+        Real expected = rebateValue(type, lattice);
+        if (std::fabs(calculated - expected) > 0.01)
+            BOOST_ERROR("failed to reproduce rebate value with the lattice engine:"
+                        << "\n    barrier type: " << type
+                        << "\n    calculated:   " << calculated
+                        << "\n    expected:     " << expected);
+    }
+
+    // with zero rates, the knock-out rebate (paid if a barrier is hit) and
+    // the knock-in rebate (paid if no barrier is hit) add up to the rebate
+    rRate->setValue(0.0);
+    qRate->setValue(0.0);
+    Real total = rebateValue(DoubleBarrier::KnockOut, analytic) +
+                 rebateValue(DoubleBarrier::KnockIn, analytic);
+    QL_CHECK_SMALL(total - rebate, 1.0e-8);
+}
+
 BOOST_AUTO_TEST_CASE(testVannaVolgaDoubleBarrierValues) {
     BOOST_TEST_MESSAGE(
          "Testing double-barrier FX options against Vanna/Volga values...");
