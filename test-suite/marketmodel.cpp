@@ -995,12 +995,7 @@ BOOST_AUTO_TEST_CASE(testInverseFloater) {
 }
 
 void testMultiProductComposite(const MarketModelMultiProduct& product,
-                               const std::vector<SubProductExpectedValues>& subProductExpectedValues,
-                               const std::string& testDescription) {
-
-    BOOST_TEST_MESSAGE("Testing exact repricing of "
-                       << testDescription
-                       << "in a lognormal forward rate market model...");
+                               const std::vector<SubProductExpectedValues>& subProductExpectedValues) {
 
     setup();
 
@@ -1212,8 +1207,6 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
 BOOST_AUTO_TEST_CASE(testAllMultiStepProducts) {
     BOOST_TEST_MESSAGE("Testing all multi-step products in the LIBOR market model...");
 
-    std::string testDescription = "all multi-step products ";
-
     setup();
 
     MultiProductComposite product;
@@ -1223,8 +1216,7 @@ BOOST_AUTO_TEST_CASE(testAllMultiStepProducts) {
     addCoinitialSwaps(product, subProductExpectedValues);
     addCoterminalSwapsAndSwaptions(product, subProductExpectedValues);
     product.finalize();
-    testMultiProductComposite(product, subProductExpectedValues,
-        testDescription);
+    testMultiProductComposite(product, subProductExpectedValues);
 }
 
 BOOST_AUTO_TEST_CASE(testPeriodAdapter) {

@@ -450,10 +450,6 @@ enum EvolverType { Ipc, Pc , NormalPc};
 
 
 void testAlphaCalibration(bool maximizeHomogeneity) {
-
-    BOOST_TEST_MESSAGE("Testing alpha caplet calibration "
-                       "in a lognormal coterminal swap market model...");
-
     setup();
 
     Size numberOfRates = todaysForwards_.size();
