@@ -29,14 +29,17 @@
 namespace QuantLib {
 
 #define PATHINDEPENDENT_CACHE_START(T, name, cache) \
-    T name;                         \
+    T name;                                         \
+    auto& path_indep_cache_name = name;             \
+    auto& path_indep_cache_cache = cache;           \
     if (!cache.ready()) {
-#define PATHINDEPENDENT_CACHE_END(active, cache, value, t, dt) \
-    if (active)                                \
-        cache.add(value, t, dt);               \
-    }                                          \
-    else {                                     \
-        value= cache.get(t);                   \
+
+#define PATHINDEPENDENT_CACHE_END(active, t, dt)                  \
+    if (active)                                                   \
+        path_indep_cache_cache.add(path_indep_cache_name, t, dt); \
+    }                                                             \
+    else {                                                        \
+        path_indep_cache_name = path_indep_cache_cache.get(t);    \
     }
 
     /*! The cache is initialized with the number of time steps of a stochastic process simulation.

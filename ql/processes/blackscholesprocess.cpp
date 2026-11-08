@@ -80,14 +80,14 @@ namespace QuantLib {
         res = riskFreeRate_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
               dividendYield_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
               0.5 * sigma * sigma;
-        PATHINDEPENDENT_CACHE_END(isStrikeIndependent_, driftCache_, res, t, 0.0)
+        PATHINDEPENDENT_CACHE_END(isStrikeIndependent_, t, 0.0)
         return res;
     }
 
     Real GeneralizedBlackScholesProcess::diffusion(Time t, Real x) const {
         PATHINDEPENDENT_CACHE_START(Real, diffusion, diffusionCache_)
         diffusion = localVolatility()->localVol(t, x, true);
-        PATHINDEPENDENT_CACHE_END(isStrikeIndependent_, diffusionCache_, diffusion, t, 0.0)
+        PATHINDEPENDENT_CACHE_END(isStrikeIndependent_, t, 0.0)
         return diffusion;
     }
 
@@ -116,7 +116,7 @@ namespace QuantLib {
                      dividendYield_->forwardRate(t0, t0 + dt, Continuous, NoFrequency, true)
                          .rate()) -
                 0.5 * variance(t0, x0, dt);
-            PATHINDEPENDENT_CACHE_END(true, driftCache_, mu, t0, dt)
+            PATHINDEPENDENT_CACHE_END(true, t0, dt)
             return x0 * std::exp(mu);
         } else {
             return discretization_->drift(*this, t0, x0, dt);
@@ -141,7 +141,7 @@ namespace QuantLib {
             PATHINDEPENDENT_CACHE_START(Real, variance, diffusionCache_)
             variance = blackVolatility_->blackVariance(t0 + dt, 0.01) -
                        blackVolatility_->blackVariance(t0, 0.01);
-            PATHINDEPENDENT_CACHE_END(true, diffusionCache_, variance, t0, dt)
+            PATHINDEPENDENT_CACHE_END(true, t0, dt)
             return variance;
         } else {
             return discretization_->variance(*this, t0, x0, dt);
