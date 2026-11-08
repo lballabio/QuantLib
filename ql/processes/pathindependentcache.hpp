@@ -28,8 +28,10 @@
 
 namespace QuantLib {
 
-#define CACHE_START(cache) if (!cache.ready()) {
-#define CACHE_END(active, cache, value, t, dt) \
+#define PATHINDEPENDENT_CACHE_START(T, name, cache) \
+    T name;                         \
+    if (!cache.ready()) {
+#define PATHINDEPENDENT_CACHE_END(active, cache, value, t, dt) \
     if (active)                                \
         cache.add(value, t, dt);               \
     }                                          \
