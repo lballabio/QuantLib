@@ -139,7 +139,7 @@ namespace QuantLib {
         if (x > 0.5) {
             // Sum the survival probability from the right to avoid cancellation near one.
             Real tail = 1.0-x;
-            BigNatural index = static_cast<BigNatural>(lambda_);
+            auto index = static_cast<BigNatural>(lambda_);
             // Above the mode, a geometric series bounds the remaining probability.
             while (calcSummand(index) / (1.0-lambda_/(index+1.0)) > tail*QL_EPSILON)
                 ++index;

@@ -552,7 +552,7 @@ BOOST_AUTO_TEST_CASE(nullDate) {
 
     Date null_date = Date();
 
-    static_assert(std::is_nothrow_default_constructible<Date>::value,
+    static_assert(std::is_nothrow_default_constructible_v<Date>,
                   "Date default construction must be noexcept");
 
     BOOST_CHECK_EQUAL(null_date.serialNumber(), 0);
