@@ -19,14 +19,14 @@
 
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmpointvaluerecorder.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmpointhistorycondition.hpp>
 #include <algorithm>
 #include <iterator>
 #include <utility>
 
 namespace QuantLib {
 
-    FdmPointValueRecorder::FdmPointValueRecorder(
+    FdmPointHistoryCondition::FdmPointHistoryCondition(
         const ext::shared_ptr<FdmMesher>& mesher, Real x, std::vector<Time> solutionTimes)
     : x_(x), solutionTimes_(std::move(solutionTimes)) {
         QL_REQUIRE(mesher->layout()->dim().size() == 1,
@@ -39,7 +39,7 @@ namespace QuantLib {
                    << locations_.front() << ", " << locations_.back() << "]");
     }
 
-    void FdmPointValueRecorder::applyTo(Array& a, Time t) const {
+    void FdmPointHistoryCondition::applyTo(Array& a, Time t) const {
         QL_REQUIRE(a.size() == locations_.size(), "inconsistent array dimensions");
 
         // as in Fdm1DimSolver
@@ -51,7 +51,7 @@ namespace QuantLib {
             solutions_[t] = a;
     }
 
-    Real FdmPointValueRecorder::valueAt(Time t) const {
+    Real FdmPointHistoryCondition::valueAt(Time t) const {
         QL_REQUIRE(!values_.empty(), "no values recorded");
 
         const auto upper = values_.lower_bound(t);
@@ -65,7 +65,7 @@ namespace QuantLib {
         return (1.0 - w) * lower->second + w * upper->second;
     }
 
-    const Array& FdmPointValueRecorder::solutionAt(Time t) const {
+    const Array& FdmPointHistoryCondition::solutionAt(Time t) const {
         const auto solution = solutions_.find(t);
         QL_REQUIRE(solution != solutions_.end(), "no solution recorded at time " << t);
         return solution->second;

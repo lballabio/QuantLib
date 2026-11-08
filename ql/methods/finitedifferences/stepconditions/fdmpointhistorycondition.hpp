@@ -17,12 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmpointvaluerecorder.hpp
+/*! \file fdmpointhistorycondition.hpp
     \brief step condition recording the value at a point over time
 */
 
-#ifndef quantlib_fdm_point_value_recorder_hpp
-#define quantlib_fdm_point_value_recorder_hpp
+#ifndef quantlib_fdm_point_history_condition_hpp
+#define quantlib_fdm_point_history_condition_hpp
 
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/stepcondition.hpp>
@@ -46,15 +46,15 @@ namespace QuantLib {
         surface of a knock-in option through the barrier; that node then
         takes its value from the active surface at the ex-dividend time.
     */
-    class FdmPointValueRecorder : public StepCondition<Array> {
+    class FdmPointHistoryCondition : public StepCondition<Array> {
       public:
         /*! \c x is given in the coordinates of the mesher, e.g. log spot
             for a log-spot mesher.  The whole solution is also kept at the
             given \c solutionTimes.
         */
-        FdmPointValueRecorder(const ext::shared_ptr<FdmMesher>& mesher,
-                              Real x,
-                              std::vector<Time> solutionTimes = {});
+        FdmPointHistoryCondition(const ext::shared_ptr<FdmMesher>& mesher,
+                                 Real x,
+                                 std::vector<Time> solutionTimes = {});
 
         void applyTo(Array& a, Time t) const override;
 

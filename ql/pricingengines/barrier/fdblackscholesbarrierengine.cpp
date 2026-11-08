@@ -32,7 +32,7 @@
 #include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmbermudanstepcondition.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmpointvaluerecorder.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmpointhistorycondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
@@ -80,8 +80,8 @@ namespace QuantLib {
           public:
             FdmKnockInBarrierCondition(const ext::shared_ptr<FdmMesher>& mesher,
                                        const ext::shared_ptr<FdmMesher>& activeMesher,
-                                       ext::shared_ptr<FdmPointValueRecorder> exDividendValues,
-                                       ext::shared_ptr<FdmPointValueRecorder> cumDividendValues,
+                                       ext::shared_ptr<FdmPointHistoryCondition> exDividendValues,
+                                       ext::shared_ptr<FdmPointHistoryCondition> cumDividendValues,
                                        std::map<Time, Real> dividends,
                                        Real barrier,
                                        bool down,
@@ -118,7 +118,7 @@ namespace QuantLib {
 
           private:
             std::vector<Real> spots_, activeSpots_;
-            ext::shared_ptr<FdmPointValueRecorder> exDividendValues_, cumDividendValues_;
+            ext::shared_ptr<FdmPointHistoryCondition> exDividendValues_, cumDividendValues_;
             std::map<Time, Real> dividends_;
             Real barrier_;
             bool down_;
@@ -455,10 +455,10 @@ namespace QuantLib {
         // after the jump, starts the next step.  Away from ex-dividend times
         // the two are the same, so without dividends one recorder is enough.
         const auto exDividendValues =
-            ext::make_shared<FdmPointValueRecorder>(activeMesher, logBarrier, exDividendTimes);
+            ext::make_shared<FdmPointHistoryCondition>(activeMesher, logBarrier, exDividendTimes);
         const auto cumDividendValues =
             dividendCondition != nullptr
-                ? ext::make_shared<FdmPointValueRecorder>(activeMesher, logBarrier)
+                ? ext::make_shared<FdmPointHistoryCondition>(activeMesher, logBarrier)
                 : exDividendValues;
 
         std::list<ext::shared_ptr<StepCondition<Array> > > activeConditions;
