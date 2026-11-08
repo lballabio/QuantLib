@@ -21,6 +21,24 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        // Wellington Anniversary Day, Monday nearest to January 22nd
+        bool isWellingtonAnniversary(const Date& date) {
+            Day d = date.dayOfMonth();
+            return d >= 19 && d <= 25 && date.weekday() == Monday && date.month() == January;
+        }
+
+        // Auckland Anniversary Day, Monday nearest to January 29th
+        bool isAucklandAnniversary(const Date& date) {
+            Day d = date.dayOfMonth();
+            Month m = date.month();
+            return date.weekday() == Monday
+                && ((d >= 26 && m == January) || (d == 1 && m == February));
+        }
+
+    }
+
     bool NewZealand::CommonImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
@@ -81,35 +99,24 @@ namespace QuantLib {
     }
 
     bool NewZealand::WellingtonImpl::isBusinessDay(const Date& date) const {
-        if (!NewZealand::CommonImpl::isBusinessDay(date))
-            return false;
-        Weekday w = date.weekday();
-        Day d = date.dayOfMonth();
-        Month m = date.month();
-        // Anniversary Day, Monday nearest January 22nd
-        if ((d >= 19 && d <= 25) && w == Monday && m == January)
-            return false; // NOLINT(readability-simplify-boolean-expr)
-        return true;
+        return NewZealand::CommonImpl::isBusinessDay(date) && !isWellingtonAnniversary(date);
     }
 
     bool NewZealand::AucklandImpl::isBusinessDay(const Date& date) const {
-        if (!NewZealand::CommonImpl::isBusinessDay(date))
-            return false;
-        Weekday w = date.weekday();
-        Day d = date.dayOfMonth();
-        Month m = date.month();
-        // Anniversary Day, Monday nearest January 29nd
-        if ((d >= 26 && w == Monday && m == January)
-            || (d == 1 && w == Monday && m == February))
-            return false; // NOLINT(readability-simplify-boolean-expr)
-        return true;
+        return NewZealand::CommonImpl::isBusinessDay(date) && !isAucklandAnniversary(date);
     }
-        
+
+    bool NewZealand::NZFMAImpl::isBusinessDay(const Date& date) const {
+        return NewZealand::CommonImpl::isBusinessDay(date)
+            && (date.year() >= 2026
+                || !(isWellingtonAnniversary(date) || isAucklandAnniversary(date)));
+    }
 
     NewZealand::NewZealand(Market market) {
         // all calendar instances for a given market share the same implementation instance
         static auto wellingtonImpl = ext::make_shared<NewZealand::WellingtonImpl>();
         static auto aucklandImpl = ext::make_shared<NewZealand::AucklandImpl>();
+        static auto nzfmaImpl = ext::make_shared<NewZealand::NZFMAImpl>();
 
         switch (market) {
           case Wellington:
@@ -117,6 +124,9 @@ namespace QuantLib {
             break;
           case Auckland:
             impl_ = aucklandImpl;
+            break;
+          case NZFMA:
+            impl_ = nzfmaImpl;
             break;
           default:
             QL_FAIL("unknown market");

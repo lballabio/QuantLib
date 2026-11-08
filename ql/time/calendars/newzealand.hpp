@@ -34,7 +34,7 @@ namespace QuantLib {
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st (possibly moved to Monday or Tuesday)</li>
-        <li>Day after New Year's Day, January 2st (possibly moved to Monday or Tuesday)</li>
+        <li>Day after New Year's Day, January 2nd (possibly moved to Monday or Tuesday)</li>
         <li>Waitangi Day. February 6th (possibly moved to Monday since 2013)</li>
         <li>Good Friday</li>
         <li>Easter Monday</li>
@@ -53,9 +53,15 @@ namespace QuantLib {
 
         Additional holidays for Auckland:
         <ul>
-        <li>Anniversary Day, Monday nearest January 29nd</li>
+        <li>Anniversary Day, Monday nearest January 29th</li>
         </ul>
-        
+
+        Additional holidays for NZFMA (New Zealand Financial Markets
+        Association recommended non-business days):
+        <ul>
+        <li>Wellington and Auckland Anniversary Days, up to and including 2025</li>
+        </ul>
+
         \note The holiday rules for New Zealand were documented by
               David Gilbert for IDB (http://www.jrefinery.com/ibd/)
               The Matariki holiday calendar has been released by the NZ Government
@@ -79,9 +85,14 @@ namespace QuantLib {
             std::string name() const override { return "New Zealand (Auckland)"; }
             bool isBusinessDay(const Date&) const override;
         };
+        class NZFMAImpl final : public CommonImpl {
+          public:
+            std::string name() const override { return "New Zealand (NZFMA)"; }
+            bool isBusinessDay(const Date&) const override;
+        };
       public:
         //! NZ calendars
-        enum Market { Wellington, Auckland };
+        enum Market { Wellington, Auckland, NZFMA };
         explicit NewZealand(Market market = Wellington);
     };
 
