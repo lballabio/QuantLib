@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2009, 2012 Roland Lichters
  Copyright (C) 2009, 2012 Ferdinando Ametrano
+ Copyright (C) 2026 Thiago Rodrigues
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,6 +36,13 @@ namespace QuantLib {
     class FloatingRateCouponPricer;
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
+    /*! The optional \c fixedCompounding and \c fixedCompoundingFrequency
+        parameters set the compounding convention of the quoted fixed
+        rate (simple by default.)  For instance, Brazilian DI x Pré swaps
+        on the Cdi index quote an exponential rate on business days, which
+        corresponds to a Business252 fixed day counter with Compounded and
+        Annual; see OvernightIndexedSwap for details.
+    */
     class OISRateHelper : public RelativeDateRateHelper {
       public:
         OISRateHelper(
@@ -64,7 +72,9 @@ namespace QuantLib {
           DateGeneration::Rule rule = DateGeneration::Backward,
           Calendar overnightCalendar = Calendar(),
           BusinessDayConvention convention = ModifiedFollowing,
-          DayCounter fixedDayCount = DayCounter());
+          DayCounter fixedDayCount = DayCounter(),
+          Compounding fixedCompounding = Simple,
+          Frequency fixedCompoundingFrequency = Annual);
 
         OISRateHelper(
           const Date& startDate,
@@ -92,7 +102,9 @@ namespace QuantLib {
           DateGeneration::Rule rule = DateGeneration::Backward,
           Calendar overnightCalendar = Calendar(),
           BusinessDayConvention convention = ModifiedFollowing,
-          DayCounter fixedDayCount = DayCounter());
+          DayCounter fixedDayCount = DayCounter(),
+          Compounding fixedCompounding = Simple,
+          Frequency fixedCompoundingFrequency = Annual);
 
         //! \name RateHelper interface
         //@{
@@ -139,6 +151,8 @@ namespace QuantLib {
         Calendar overnightCalendar_;
         BusinessDayConvention convention_;
         DayCounter fixedDayCount_;
+        Compounding fixedCompounding_;
+        Frequency fixedCompoundingFrequency_;
         Natural lookbackDays_;
         Natural lockoutDays_;
         bool applyObservationShift_;

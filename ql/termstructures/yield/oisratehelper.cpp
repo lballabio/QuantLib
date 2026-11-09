@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2009, 2012 Roland Lichters
  Copyright (C) 2009, 2012 Ferdinando Ametrano
+ Copyright (C) 2026 Thiago Rodrigues
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -55,7 +56,9 @@ namespace QuantLib {
         DateGeneration::Rule rule,
         Calendar overnightCalendar,
         BusinessDayConvention convention,
-        DayCounter fixedDayCount)
+        DayCounter fixedDayCount,
+        Compounding fixedCompounding,
+        Frequency fixedCompoundingFrequency)
     : RelativeDateRateHelper(fixedRate), settlementDays_(settlementDays), tenor_(tenor),
       discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
       paymentLag_(paymentLag), paymentConvention_(paymentConvention),
@@ -64,8 +67,10 @@ namespace QuantLib {
       averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
       fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)),
       overnightCalendar_(std::move(overnightCalendar)), convention_(convention),
-      fixedDayCount_(std::move(fixedDayCount)), lookbackDays_(lookbackDays), lockoutDays_(lockoutDays),
-      applyObservationShift_(applyObservationShift), pricer_(std::move(pricer)), rule_(rule) {
+      fixedDayCount_(std::move(fixedDayCount)), fixedCompounding_(fixedCompounding),
+      fixedCompoundingFrequency_(fixedCompoundingFrequency), lookbackDays_(lookbackDays),
+      lockoutDays_(lockoutDays), applyObservationShift_(applyObservationShift),
+      pricer_(std::move(pricer)), rule_(rule) {
         initialize(overnightIndex, customPillarDate);
     }
 
@@ -94,7 +99,9 @@ namespace QuantLib {
         DateGeneration::Rule rule,
         Calendar overnightCalendar,
         BusinessDayConvention convention,
-        DayCounter fixedDayCount)
+        DayCounter fixedDayCount,
+        Compounding fixedCompounding,
+        Frequency fixedCompoundingFrequency)
     : RelativeDateRateHelper(fixedRate, false), startDate_(startDate), endDate_(endDate),
       discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
       paymentLag_(paymentLag), paymentConvention_(paymentConvention),
@@ -103,8 +110,10 @@ namespace QuantLib {
       averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
       fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)),
       overnightCalendar_(std::move(overnightCalendar)), convention_(convention),
-      fixedDayCount_(std::move(fixedDayCount)), lookbackDays_(lookbackDays), lockoutDays_(lockoutDays),
-      applyObservationShift_(applyObservationShift), pricer_(std::move(pricer)), rule_(rule) {
+      fixedDayCount_(std::move(fixedDayCount)), fixedCompounding_(fixedCompounding),
+      fixedCompoundingFrequency_(fixedCompoundingFrequency), lookbackDays_(lookbackDays),
+      lockoutDays_(lockoutDays), applyObservationShift_(applyObservationShift),
+      pricer_(std::move(pricer)), rule_(rule) {
         initialize(overnightIndex, customPillarDate);
     }
 
@@ -148,7 +157,8 @@ namespace QuantLib {
             .withRule(rule_)
             .withConvention(convention_)
             .withTerminationDateConvention(convention_)
-            .withObservationShift(applyObservationShift_);
+            .withObservationShift(applyObservationShift_)
+            .withFixedLegCompounding(fixedCompounding_, fixedCompoundingFrequency_);
         if (endOfMonth_) {
             tmp.withEndOfMonth(*endOfMonth_);
         }
@@ -234,6 +244,10 @@ namespace QuantLib {
         Spread spread = overnightSpread_.empty() ? 0.0 : overnightSpread_->value();
         Real spreadNPV = swap_->overnightLegBPS()/basisPoint*spread;
         Real totNPV = - (floatingLegNPV+spreadNPV);
+        if (fixedCompounding_ != Simple) {
+            // the fixed-leg NPV is not linear in the rate
+            return swap_->impliedFixedRate(totNPV);
+        }
         Real result = totNPV/(swap_->fixedLegBPS()/basisPoint);
         return result;
     }
