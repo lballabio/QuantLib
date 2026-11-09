@@ -3176,6 +3176,16 @@ BOOST_AUTO_TEST_CASE(testPolandCalendars) {
     BOOST_CHECK(exchange.isHoliday(holiday));
     BOOST_CHECK(settlement.isBusinessDay(Date(7, January, 2025)));
     BOOST_CHECK(exchange.isBusinessDay(Date(7, January, 2025)));
+
+    // Christmas Eve became a settlement holiday in 2025.
+    BOOST_CHECK(settlement.isBusinessDay(Date(24, December, 2024)));
+    BOOST_CHECK(exchange.isHoliday(Date(24, December, 2024)));
+    for (Year year : {2025, 2026}) {
+        BOOST_CHECK(settlement.isHoliday(Date(24, December, year)));
+        BOOST_CHECK(exchange.isHoliday(Date(24, December, year)));
+        BOOST_CHECK(settlement.isBusinessDay(Date(23, December, year)));
+        BOOST_CHECK(exchange.isBusinessDay(Date(23, December, year)));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testSlovakiaCalendar) {
