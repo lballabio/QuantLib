@@ -35,7 +35,7 @@ namespace QuantLib {
 
     }
 
-    bool NewZealand::CommonImpl::isCommonBusinessDay(Day d, Day dd, Month m, Year y,
+    bool NewZealand::CommonImpl::isCommonBusinessDay(Day d, Day dayOfYear, Month m, Year y,
                                                      Weekday w) const {
         Day em = easterMonday(y);
         if (isWeekend(w)
@@ -49,9 +49,9 @@ namespace QuantLib {
             || (d == 6 && m == February)
             || ((d == 7 || d == 8) && w == Monday && m == February && y > 2013)
             // Good Friday
-            || (dd == em-3)
+            || (dayOfYear == em-3)
             // Easter Monday
-            || (dd == em)
+            || (dayOfYear == em)
             // ANZAC Day. April 25th (possibly moved to Monday since 2013) 
             || (d == 25 && m == April)
             || ((d == 26 || d == 27) && w == Monday && m == April && y > 2013)

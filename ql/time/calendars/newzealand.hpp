@@ -73,7 +73,7 @@ namespace QuantLib {
       private:
         class CommonImpl : public Calendar::WesternImpl {
           protected:
-            bool isCommonBusinessDay(Day d, Day dd, Month m, Year y, Weekday w) const;
+            bool isCommonBusinessDay(Day d, Day dayOfYear, Month m, Year y, Weekday w) const;
         };
         class WellingtonImpl final : public CommonImpl {
           public:
