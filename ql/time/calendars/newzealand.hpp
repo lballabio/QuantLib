@@ -72,8 +72,8 @@ namespace QuantLib {
     class NewZealand : public Calendar {
       private:
         class CommonImpl : public Calendar::WesternImpl {
-          public:
-            bool isBusinessDay(const Date&) const override;
+          protected:
+            bool isCommonBusinessDay(Day d, Day dd, Month m, Year y, Weekday w) const;
         };
         class WellingtonImpl final : public CommonImpl {
           public:
