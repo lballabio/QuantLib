@@ -3764,8 +3764,9 @@ BOOST_AUTO_TEST_CASE(testNewZealand) {
 
     auto auckland = NewZealand(NewZealand::Auckland);
     auto wellington = NewZealand(NewZealand::Wellington);
+    auto nzfma = NewZealand(NewZealand::NZFMA);
 
-    for (const auto& calendar : {auckland, wellington}) {
+    for (const auto& calendar : {auckland, wellington, nzfma}) {
         // mid-week New Year's day
         BOOST_TEST(calendar.isHoliday({1, January, 2025}));
         BOOST_TEST(calendar.isHoliday({2, January, 2025}));
@@ -3836,6 +3837,16 @@ BOOST_AUTO_TEST_CASE(testNewZealand) {
     BOOST_TEST(wellington.isHoliday({25, January, 2027}));
     BOOST_TEST(auckland.isHoliday({1, February, 2027}));
     BOOST_TEST(wellington.isBusinessDay({1, February, 2027}));
+    // NZFMA observes both anniversary days through the end of 2025
+    BOOST_TEST(nzfma.isHoliday({22, January, 2024}));
+    BOOST_TEST(nzfma.isHoliday({29, January, 2024}));
+    BOOST_TEST(nzfma.isHoliday({20, January, 2025}));
+    BOOST_TEST(nzfma.isHoliday({27, January, 2025}));
+    // and neither from 2026 onward
+    BOOST_TEST(nzfma.isBusinessDay({19, January, 2026}));
+    BOOST_TEST(nzfma.isBusinessDay({26, January, 2026}));
+    BOOST_TEST(nzfma.isBusinessDay({25, January, 2027}));
+    BOOST_TEST(nzfma.isBusinessDay({1, February, 2027}));
 }
 
 
