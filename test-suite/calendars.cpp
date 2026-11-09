@@ -376,6 +376,13 @@ BOOST_AUTO_TEST_CASE(testUSGovernmentBondMarket) {
     Calendar c = UnitedStates(UnitedStates::GovernmentBond);
     BOOST_CHECK_EQUAL(c.name(), "US government bond market");
     checkHolidays(c.holidayList(Date(1, January, 2004), Date(31, December, 2004)), expectedHol);
+
+    expectedHol = {
+        {3, September, 2001},  // Labor Day
+        {12, September, 2001}, // Closure following the September 11 attacks
+    };
+    checkHolidays(c.holidayList(Date(1, September, 2001), Date(30, September, 2001)),
+                  expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testUSNewYorkStockExchange) {
