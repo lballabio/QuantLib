@@ -25,7 +25,9 @@ jobs:
         make check-examples
   sanitize-thread:
     runs-on: ubuntu-latest
-    container: ghcr.io/lballabio/quantlib-devenv:rolling
+    container:
+      image: ghcr.io/lballabio/quantlib-devenv:rolling
+      options: --security-opt seccomp=unconfined
     steps:
     - uses: actions/checkout@v7
     - name: Compiler version

@@ -42,6 +42,7 @@ namespace QuantLib {
         <li>Assumption of the Blessed Virgin Mary, August 15th</li>
         <li>All Saints Day, November 1st</li>
         <li>Independence Day, November 11th</li>
+        <li>Christmas Eve, December 24th (since 2025)</li>
         <li>Christmas, December 25th</li>
         <li>2nd Day of Christmas, December 26th</li>
         </ul>

@@ -1135,6 +1135,8 @@ BOOST_AUTO_TEST_CASE(testSofrSwaptionPaymentLag) {
 }
 
 BOOST_AUTO_TEST_CASE(testNonstandardCopyOfAmortisingOvernightSwap) {
+    BOOST_TEST_MESSAGE("Testing copying a nonstandard amortising overnight swap...");
+
     Date today(25, June, 2026);
     Settings::instance().evaluationDate() = today;
     Handle<YieldTermStructure> curve(flatRate(today, 0.037123, Actual365Fixed()));

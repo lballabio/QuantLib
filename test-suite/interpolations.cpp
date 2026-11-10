@@ -1607,8 +1607,9 @@ BOOST_AUTO_TEST_CASE(testSabrNegativeVolatilities) {
 
     const std::vector<Real> strikes = {0.03, 0.04, 0.05, 0.06};
     std::vector<Real> vols = {0.20, 0.18, 0.19, 0.185};
+    Real forward = 0.04;
     SABRInterpolation sabr(strikes.begin(), strikes.end(), vols.begin(),
-                           1.0, 0.04, 0.2, 1.0, 0.1, 0.0,
+                           1.0, forward, 0.2, 1.0, 0.1, 0.0,
                            false, false, false, false, true);
     BOOST_CHECK_NO_THROW(sabr.update());
 

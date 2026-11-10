@@ -43,7 +43,7 @@ namespace QuantLib {
         const Time exact_autumnal_equinox_time = 23.09;
         const Time diff_per_year = 0.242194;
         const Time moving_amount = (y-2000)*diff_per_year;
-        Integer number_of_leap_years = (y-2000)/4+(y-2000)/100-(y-2000)/400;
+        Integer number_of_leap_years = (y-2000)/4 - (y-2000)/100 + (y-2000)/400;
         Day ve =    // vernal equinox day
             Day(exact_vernal_equinox_time
                 + moving_amount - number_of_leap_years);
@@ -78,13 +78,16 @@ namespace QuantLib {
             || ((d == 29 || (d == 30 && w == Monday)) && m == April)
             // Constitution Memorial Day
             || (d == 3  && m == May)
-            // Holiday for a Nation
-            || (d == 4  && m == May)
+            // Holiday between two national holidays since 1986 (first weekday in 1988),
+            // Greenery Day since 2007, or a Monday substitute since 1973
+            || (d == 4 && m == May && (y >= 1986 || (w == Monday && y >= 1973)))
             // Children's Day
             || (d == 5  && m == May)
-            // any of the three above observed later if on Saturday or Sunday
+            // Substitute for a Sunday holiday: May 5th since 1973,
+            // or May 3rd/4th since 2007, skipping intervening national holidays
             || (d == 6 && m == May
-                && (w == Monday || w == Tuesday || w == Wednesday))
+                && ((w == Monday && y >= 1973)
+                    || ((w == Tuesday || w == Wednesday) && y >= 2007)))
             // Marine Day (3rd Monday in July),
             // was July 20th until 2003, not a holiday before 1996,
             // July 23rd in 2020 due to Olympics games

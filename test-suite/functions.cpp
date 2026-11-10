@@ -263,6 +263,38 @@ BOOST_AUTO_TEST_CASE(testModifiedBesselFunctions) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testModifiedBesselFunctionsNegativeIntegerOrder) {
+    BOOST_TEST_MESSAGE("Testing modified Bessel functions at negative integer order...");
+
+    // I_(-n) = I_n for integer n. The power series divides by Gamma(1+nu), which has a pole at
+    // these orders, and used to return zero. Reference values are calculated with mpmath 1.3.0 at
+    // 50 digits.
+    Real r[][3] = {{-1.0, 2.0, 1.5906368546373291},
+                   {-2.0, 2.0, 0.6889484476987382},
+                   {-3.0, 0.5, 0.0026451119689902859},
+                   {-5.0, 7.5, 48.241360395663654}};
+
+    for (auto& i : r) {
+        const Real nu = i[0];
+        const Real x = i[1];
+        const std::complex<Real> z(x, 0.5);
+        BOOST_TEST_CONTEXT("order " << nu << ", argument " << x) {
+            QL_CHECK_CLOSE_FRACTION(modifiedBesselFunction_i(nu, x), i[2], 1e-11);
+            QL_CHECK_CLOSE_FRACTION(modifiedBesselFunction_i_exponentiallyWeighted(nu, x),
+                                    i[2] * std::exp(-x), 1e-11);
+            // the complex functions agree with the order of opposite sign
+            const std::complex<Real> expected = modifiedBesselFunction_i(-nu, z);
+            QL_CHECK_SMALL(std::abs(modifiedBesselFunction_i(nu, z) - expected),
+                           1e-11 * std::abs(expected));
+            const std::complex<Real> expected_weighted =
+                modifiedBesselFunction_i_exponentiallyWeighted(-nu, z);
+            QL_CHECK_SMALL(
+                std::abs(modifiedBesselFunction_i_exponentiallyWeighted(nu, z) - expected_weighted),
+                1e-11 * std::abs(expected_weighted));
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testModifiedBesselFunctionsRegressionCases) {
     BOOST_TEST_MESSAGE(
         "Testing modified Bessel functions at integer order and large argument...");
