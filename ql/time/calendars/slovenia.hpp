@@ -36,13 +36,16 @@ namespace QuantLib {
         <li>Sundays</li>
         <li>New Year's Day, January 1st</li>
         <li>New Year's Holiday, January 2nd</li>
+        <li>Preseren Day, February 8th</li>
         <li>Good Friday</li>
         <li>Easter Monday</li>
+        <li>Day of Uprising Against Occupation, April 27th</li>
         <li>May Day, May 1st</li>
         <li>May Day Holiday, May 2nd</li>
         <li>Statehood Day, June 25th  </li>
         <li>Assumption of Mary, August 15th</li>
         <li>Reformation Day, October 31st</li>
+        <li>Remembrance Day, November 1st</li>
         <li>Christmas Eve, December 24th</li>
         <li>Christmas, December 25th</li>
         <li>St. Stephen, December 26th</li>

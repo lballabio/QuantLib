@@ -38,10 +38,14 @@ namespace QuantLib {
             || (d == 1 && m == January)
             // New Year's Holiday
             || (d == 2 && m == January)
+            // Preseren Day, the Slovenian Cultural Holiday
+            || (d == 8 && m == February)
             // Good Friday
             || (dd == em - 3)
             // Easter Monday
             || (dd == em)
+            // Day of Uprising Against Occupation
+            || (d == 27 && m == April)
             // May Day
             || (d == 1 && m == May)
             // May Day Holiday
@@ -50,8 +54,12 @@ namespace QuantLib {
             || (d == 25 && m == June)
             // Assumption of Mary
             || (d == 15 && m == August)
+            // Public holiday after the floods
+            || (d == 14 && m == August && y == 2023)
             // Reformation Day  
             || (d == 31 && m == October)
+            // Remembrance Day
+            || (d == 1 && m == November)
             // Christmas Eve
             || (d == 24 && m == December)
             // Christmas

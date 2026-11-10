@@ -4640,10 +4640,55 @@ BOOST_AUTO_TEST_CASE(testSlovenia) {
     BOOST_TEST_MESSAGE("Testing Slovenia holiday list...");
 
     std::vector<Date> expectedHol = {
+        {2, January, 2023},
+        {8, February, 2023},
+        {7, April, 2023},
+        {10, April, 2023},
+        {27, April, 2023},
+        {1, May, 2023},
+        {2, May, 2023},
+        {14, August, 2023},
+        {15, August, 2023},
+        {31, October, 2023},
+        {1, November, 2023},
+        {25, December, 2023},
+        {26, December, 2023},
+
+        {1, January, 2024},
+        {2, January, 2024},
+        {8, February, 2024},
+        {29, March, 2024},
+        {1, April, 2024},
+        {1, May, 2024},
+        {2, May, 2024},
+        {25, June, 2024},
+        {15, August, 2024},
+        {31, October, 2024},
+        {1, November, 2024},
+        {24, December, 2024},
+        {25, December, 2024},
+        {26, December, 2024},
+        {31, December, 2024},
+
+        {1, January, 2025},
+        {2, January, 2025},
+        {18, April, 2025},
+        {21, April, 2025},
+        {1, May, 2025},
+        {2, May, 2025},
+        {25, June, 2025},
+        {15, August, 2025},
+        {31, October, 2025},
+        {24, December, 2025},
+        {25, December, 2025},
+        {26, December, 2025},
+        {31, December, 2025},
+
         {1, January, 2026},
         {2, January, 2026},
         {3, April, 2026},
         {6, April, 2026},
+        {27, April, 2026},
         {1, May, 2026},
         {25, June, 2026},
         {24, December, 2026},
@@ -4651,15 +4696,18 @@ BOOST_AUTO_TEST_CASE(testSlovenia) {
         {31, December, 2026},
 
         {1, January, 2027},
+        {8, February, 2027},
         {26, March, 2027},
         {29, March, 2027},
+        {27, April, 2027},
         {25, June, 2027},
+        {1, November, 2027},
         {24, December, 2027},
         {31, December, 2027},
     };
 
     Calendar c = Slovenia();
-    checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
+    checkHolidays(c.holidayList(Date(1, January, 2023), Date(31, December, 2027)), expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testCroatia) {
