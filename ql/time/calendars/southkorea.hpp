@@ -39,10 +39,12 @@ namespace QuantLib {
         <li>New Year's Day, January 1st</li>
         <li>Independence Day, March 1st</li>
         <li>Arbour Day, April 5th (until 2005)</li>
-        <li>Labour Day, May 1st</li>
+        <li>Labour Day, May 1st (substitute holiday on the following Monday
+            if on a weekend, from 2026)</li>
         <li>Children's Day, May 5th</li>
         <li>Memorial Day, June 6th</li>
-        <li>Constitution Day, July 17th (until 2007)</li>
+        <li>Constitution Day, July 17th (until 2007 and again from 2026,
+            with a substitute holiday on the following Monday if on a weekend)</li>
         <li>Liberation Day, August 15th</li>
         <li>National Fondation Day, October 3th</li>
         <li>Hangeul Day, October 9th (from 2013)</li>
