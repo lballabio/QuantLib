@@ -29,6 +29,7 @@
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
+#include <ql/pricingengines/vanilla/integralengine.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -471,6 +472,99 @@ BOOST_AUTO_TEST_CASE(testGreeksInitialization) {
       }
       QL_REQUIRE(vega == Null<Real>(), "Forward vega invalid");
    }
+}
+
+namespace {
+
+    enum class MissingGreek { Vega, Rho, DividendRho };
+
+    // analytic engine that does not provide one of vega, rho and dividend rho
+    template <MissingGreek Greek>
+    class AnalyticEuropeanEngineWithout : public AnalyticEuropeanEngine {
+      public:
+        explicit AnalyticEuropeanEngineWithout(
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
+        : AnalyticEuropeanEngine(process) {}
+
+        void calculate() const override {
+            AnalyticEuropeanEngine::calculate();
+            if constexpr (Greek == MissingGreek::Vega)
+                results_.vega = Null<Real>();
+            else if constexpr (Greek == MissingGreek::Rho)
+                results_.rho = Null<Real>();
+            else
+                results_.dividendRho = Null<Real>();
+        }
+    };
+
+    template <MissingGreek Greek>
+    using PerformanceEngineWithout =
+        ForwardPerformanceVanillaEngine<AnalyticEuropeanEngineWithout<Greek>>;
+
+}
+
+BOOST_AUTO_TEST_CASE(testPerformanceGreeksNotProvided) {
+    BOOST_TEST_MESSAGE("Testing forward performance option greeks not provided "
+                       "by the underlying engine...");
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(flatRate(today, 0.04, dc)),
+        Handle<YieldTermStructure>(flatRate(today, 0.01, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, 0.11, dc)));
+
+    ForwardVanillaOption option(0.9, today + 6 * Months,
+                                ext::make_shared<PlainVanillaPayoff>(Option::Call, 0.0),
+                                ext::make_shared<EuropeanExercise>(today + 1 * Years));
+
+    // an engine that provides all greeks sets the reference values
+    option.setPricingEngine(
+        ext::make_shared<ForwardPerformanceVanillaEngine<AnalyticEuropeanEngine>>(process));
+    Real npv = option.NPV();
+    Real vega = option.vega();
+    Real rho = option.rho();
+    Real dividendRho = option.dividendRho();
+
+    // the greeks that the underlying engine provides are scaled as usual,
+    // those that it doesn't provide remain not provided
+    auto check = [&](const ext::shared_ptr<PricingEngine>& engine, bool hasVega, bool hasRho,
+                     bool hasDividendRho) {
+        option.setPricingEngine(engine);
+        QL_CHECK_SMALL(option.NPV() - npv, 1.0e-6);
+        if (hasVega)
+            QL_CHECK_SMALL(option.vega() - vega, 1.0e-12);
+        else
+            BOOST_CHECK_EXCEPTION(option.vega(), Error, ExpectedErrorMessage("vega not provided"));
+        if (hasRho)
+            QL_CHECK_SMALL(option.rho() - rho, 1.0e-12);
+        else
+            BOOST_CHECK_EXCEPTION(option.rho(), Error, ExpectedErrorMessage("rho not provided"));
+        if (hasDividendRho)
+            QL_CHECK_SMALL(option.dividendRho() - dividendRho, 1.0e-12);
+        else
+            BOOST_CHECK_EXCEPTION(option.dividendRho(), Error,
+                                  ExpectedErrorMessage("dividend rho not provided"));
+    };
+
+    BOOST_TEST_CONTEXT("underlying engine without vega") {
+        check(ext::make_shared<PerformanceEngineWithout<MissingGreek::Vega>>(process), false, true,
+              true);
+    }
+    BOOST_TEST_CONTEXT("underlying engine without rho") {
+        check(ext::make_shared<PerformanceEngineWithout<MissingGreek::Rho>>(process), true, false,
+              true);
+    }
+    BOOST_TEST_CONTEXT("underlying engine without dividend rho") {
+        check(ext::make_shared<PerformanceEngineWithout<MissingGreek::DividendRho>>(process), true,
+              true, false);
+    }
+    BOOST_TEST_CONTEXT("underlying engine that only calculates the value") {
+        check(ext::make_shared<ForwardPerformanceVanillaEngine<IntegralEngine>>(process), false,
+              false, false);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testMCPrices) {

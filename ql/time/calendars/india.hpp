@@ -64,7 +64,6 @@ namespace QuantLib {
         <li>Guru Nanak Jayanti</li>
         </ul>
 
-        Note: The holidays Ramzan Id, Bakri Id and Id-E-Milad rely on estimates for 2024-2025.
         \ingroup calendars
     */
     class India : public Calendar {
