@@ -3134,6 +3134,8 @@ BOOST_AUTO_TEST_CASE(testThailandCalendar) {
     BOOST_CHECK(calendar.isHoliday(Date(3, June, 2024)));
     BOOST_CHECK(calendar.isHoliday(Date(29, July, 2024))); // substitution
     BOOST_CHECK(calendar.isHoliday(Date(14, October, 2024))); // substitution
+    BOOST_CHECK(calendar.isHoliday(Date(2, June, 2025))); // additional special holiday
+    BOOST_CHECK(calendar.isHoliday(Date(11, August, 2025))); // additional special holiday
     BOOST_CHECK(calendar.isBusinessDay(Date(2, January, 2024)));
     const Date historical[] = {
         {5, May, 2001},
@@ -3151,6 +3153,55 @@ BOOST_AUTO_TEST_CASE(testThailandCalendar) {
     };
     for (const Date& date : historical)
         BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
+}
+
+BOOST_AUTO_TEST_CASE(testThailandHolidays2026And2027) {
+    BOOST_TEST_MESSAGE("Testing Thailand holiday lists for 2026 and 2027...");
+
+    // Bank of Thailand notifications No. 31/2568 and 26/2569 (2026) and No. 37/2569 (2027)
+    std::vector<Date> expectedHol = {
+        {1, January, 2026},
+        {2, January, 2026},
+        {3, March, 2026},
+        {6, April, 2026},
+        {13, April, 2026},
+        {14, April, 2026},
+        {15, April, 2026},
+        {1, May, 2026},
+        {4, May, 2026},
+        {1, June, 2026},
+        {3, June, 2026},
+        {28, July, 2026},
+        {29, July, 2026},
+        {12, August, 2026},
+        {13, October, 2026},
+        {16, October, 2026}, // Bangkok only
+        {23, October, 2026},
+        {7, December, 2026},
+        {10, December, 2026},
+        {31, December, 2026},
+        {1, January, 2027},
+        {22, February, 2027},
+        {6, April, 2027},
+        {13, April, 2027},
+        {14, April, 2027},
+        {15, April, 2027},
+        {3, May, 2027},
+        {4, May, 2027},
+        {20, May, 2027},
+        {3, June, 2027},
+        {19, July, 2027},
+        {28, July, 2027},
+        {12, August, 2027},
+        {13, October, 2027},
+        {25, October, 2027},
+        {6, December, 2027},
+        {10, December, 2027},
+        {31, December, 2027}
+    };
+
+    Calendar c = Thailand();
+    checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testTurkeyCalendar) {
