@@ -4438,34 +4438,77 @@ BOOST_AUTO_TEST_CASE(testMalta) {
 
     BOOST_TEST_MESSAGE("Testing Malta holiday list...");
 
+    Calendar c = Malta();
+
+    BOOST_CHECK(c.isWeekend(Saturday));
+    BOOST_CHECK(c.isWeekend(Sunday));
+    BOOST_CHECK(!c.isWeekend(Friday));
+
+    // 2024 to 2026 as in the MSE trading calendars; 2027 from the rules
     std::vector<Date> expectedHol = {
+        {1, January, 2024},
+        {2, January, 2024},
+        {19, March, 2024},
+        {29, March, 2024},
+        {1, April, 2024},
+        {1, May, 2024},
+        {7, June, 2024},
+        {15, August, 2024},
+        {13, December, 2024},
+        {24, December, 2024},
+        {25, December, 2024},
+        {26, December, 2024},
+        {31, December, 2024},
+
+        {1, January, 2025},
+        {2, January, 2025},
+        {10, February, 2025},
+        {19, March, 2025},
+        {31, March, 2025},
+        {18, April, 2025},
+        {21, April, 2025},
+        {1, May, 2025},
+        {15, August, 2025},
+        {8, September, 2025},
+        {8, December, 2025},
+        {24, December, 2025},
+        {25, December, 2025},
+        {26, December, 2025},
+        {31, December, 2025},
+
         {1, January, 2026},
+        {2, January, 2026},
         {10, February, 2026},
         {19, March, 2026},
         {31, March, 2026},
+        {3, April, 2026},
         {6, April, 2026},
+        {1, May, 2026},
         {29, June, 2026},
         {8, September, 2026},
         {21, September, 2026},
         {8, December, 2026},
-        {13, December, 2026},
         {24, December, 2026},
+        {25, December, 2026},
         {31, December, 2026},
 
+        {1, January, 2027},
         {10, February, 2027},
+        {19, March, 2027},
+        {26, March, 2027},
         {29, March, 2027},
         {31, March, 2027},
+        {7, June, 2027},
         {29, June, 2027},
-        {15, August, 2027},
         {8, September, 2027},
         {21, September, 2027},
         {8, December, 2027},
         {13, December, 2027},
-        {26, December, 2027},
+        {24, December, 2027},
+        {31, December, 2027},
     };
 
-    Calendar c = Malta();
-    checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
+    checkHolidays(c.holidayList(Date(1, January, 2024), Date(31, December, 2027)), expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testMontenegro) {

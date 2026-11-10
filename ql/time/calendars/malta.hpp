@@ -36,12 +36,14 @@ namespace QuantLib {
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st</li>
+        <li>January 2nd (exchange holiday)</li>
         <li>St. Paul's Shipwreck, February 10th</li>
         <li>St. Joseph's Day, March 19th</li>
         <li>Freedom Day, March 31st</li>
-        <li>Good Friday (Orthodox calendar, variable date)</li>
+        <li>Good Friday (variable date)</li>
         <li>Easter Monday (variable date)</li>
         <li>Labour Day, May 1st</li>
+        <li>Sette Giugno, June 7th</li>
         <li>Feast of Saints Peter and Paul (Imnarja), June 29th</li>
         <li>Assumption of Mary, August 15th</li>
         <li>Feast of Our Lady of Victories (Nativity of Mary), September 8th</li>
