@@ -2373,6 +2373,35 @@ BOOST_AUTO_TEST_CASE(testFlochKennedySabrIsSmoothAroundATM) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testFlochKennedySabrParameterLimits) {
+    BOOST_TEST_MESSAGE("Testing Floch-Kennedy SABR parameter limits...");
+
+    // High-precision evaluations of the formula, using y = log(k/F) at
+    // beta = 1 and Dint = -y/alpha at nu = 0.
+    struct TestCase {
+        Real strike, beta, nu, expected;
+    };
+    const TestCase cases[] = {
+        {0.02, 0.5, 0.0, 0.19142802597802061},
+        {0.02, 1.0, 0.4, 0.07226403756765738},
+        {0.02, 1.0 - 1e-12, 0.4, 0.07226403756777167},
+        {0.0301, 0.5, 1e-8, 0.17311501481346904},
+    };
+    for (const auto& c : cases) {
+        const Real calculated =
+            sabrFlochKennedyVolatility(c.strike, 0.03, 1.0, 0.03, c.beta, c.nu, -0.2);
+        QL_CHECK_SMALL(calculated - c.expected, 1e-10);
+    }
+
+    // With beta = 1 and nu = 0 the model has constant volatility alpha,
+    // both inside and outside the near-ATM Taylor branch.
+    for (Real strike : {0.02, 0.02999, 0.03, 0.03001, 0.04}) {
+        const Real calculated =
+            sabrFlochKennedyVolatility(strike, 0.03, 1.0, 0.03, 1.0, 0.0, -0.2);
+        QL_CHECK_SMALL(calculated - 0.03, 1e-12);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testLeFlochKennedySabrExample) {
     BOOST_TEST_MESSAGE("Testing Le Floc'h Kennedy SABR Example...");
 
