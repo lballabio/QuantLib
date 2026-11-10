@@ -23,6 +23,7 @@
 #include <ql/currencies/europe.hpp>
 #include <ql/currencies/america.hpp>
 #include <ql/currencies/asia.hpp>
+#include <ql/currencies/crypto.hpp>
 #include <ql/currencies/exchangeratemanager.hpp>
 
 using namespace QuantLib;
@@ -372,6 +373,87 @@ BOOST_AUTO_TEST_CASE(testSmartLookup) {
         BOOST_FAIL("Wrong result: \n"
                    << "    expected:   " << expected << "\n"
                    << "    calculated: " << calculated);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testCurrenciesWithSameNumericCode) {
+
+    BOOST_TEST_MESSAGE("Testing lookup of currencies sharing a numeric code...");
+
+    ExchangeRateManager& rateManager = ExchangeRateManager::instance();
+
+    // CNH has no ISO numeric code of its own and uses the one of CNY
+    Currency USD = USDCurrency(), CNY = CNYCurrency(), CNH = CNHCurrency();
+
+    ExchangeRate usd_cny = ExchangeRate(USD, CNY, 7.1012);
+    ExchangeRate usd_cnh = ExchangeRate(USD, CNH, 7.1236);
+    rateManager.add(usd_cny);
+    rateManager.add(usd_cnh);
+
+    Money::Settings::instance().conversionType() = Money::NoConversion;
+
+    Date today = Settings::instance().evaluationDate();
+    Money m = 100000.0 * USD;
+
+    Money calculated = rateManager.lookup(USD, CNY, today).exchange(m);
+    Money expected(m.value()*usd_cny.rate(), CNY);
+
+    if (calculated.currency() != CNY || !close(calculated,expected)) {
+        BOOST_ERROR("Wrong result: \n"
+                    << "    expected:   " << expected << "\n"
+                    << "    calculated: " << calculated);
+    }
+
+    calculated = rateManager.lookup(USD, CNH, today).exchange(m);
+    expected = Money(m.value()*usd_cnh.rate(), CNH);
+
+    if (calculated.currency() != CNH || !close(calculated,expected)) {
+        BOOST_ERROR("Wrong result: \n"
+                    << "    expected:   " << expected << "\n"
+                    << "    calculated: " << calculated);
+    }
+
+    // a CNY rate must not be returned for CNH
+    rateManager.clear();
+    rateManager.add(usd_cny);
+    BOOST_CHECK_THROW(rateManager.lookup(USD, CNH, today), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testCryptoCurrencyLookup) {
+
+    BOOST_TEST_MESSAGE("Testing lookup of derived exchange rates for cryptocurrencies...");
+
+    ExchangeRateManager& rateManager = ExchangeRateManager::instance();
+
+    Currency EUR = EURCurrency(), USD = USDCurrency(), BTC = BTCCurrency();
+
+    ExchangeRate btc_usd = ExchangeRate(BTC, USD, 89250.0);
+    ExchangeRate eur_usd = ExchangeRate(EUR, USD, 1.1547);
+    rateManager.add(btc_usd);
+    rateManager.add(eur_usd);
+
+    Money::Settings::instance().conversionType() = Money::NoConversion;
+
+    Date today = Settings::instance().evaluationDate();
+    Money m1 = 100000.0 * EUR;
+    Money m2 = 2.0 * BTC;
+
+    Money calculated = rateManager.lookup(EUR, BTC, today).exchange(m1);
+    Money expected(m1.value()*eur_usd.rate()/btc_usd.rate(), BTC);
+
+    if (!close(calculated,expected)) {
+        BOOST_ERROR("Wrong result: \n"
+                    << "    expected:   " << expected << "\n"
+                    << "    calculated: " << calculated);
+    }
+
+    calculated = rateManager.lookup(BTC, EUR, today).exchange(m2);
+    expected = Money(m2.value()*btc_usd.rate()/eur_usd.rate(), EUR);
+
+    if (!close(calculated,expected)) {
+        BOOST_ERROR("Wrong result: \n"
+                    << "    expected:   " << expected << "\n"
+                    << "    calculated: " << calculated);
     }
 }
 

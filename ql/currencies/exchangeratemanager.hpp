@@ -30,6 +30,7 @@
 #include <ql/time/date.hpp>
 #include <list>
 #include <map>
+#include <string>
 #include <utility>
 
 namespace QuantLib {
@@ -78,10 +79,10 @@ namespace QuantLib {
             Date startDate, endDate;
         };
       private:
-        typedef BigInteger Key;
+        typedef std::pair<std::string, std::string> Key;
         mutable std::map<Key, std::list<Entry> > data_;
         Key hash(const Currency&, const Currency&) const;
-        bool hashes(Key, const Currency&) const;
+        bool hashes(const Key&, const Currency&) const;
         void addKnownRates();
         ExchangeRate directLookup(const Currency& source,
                                   const Currency& target,
@@ -89,8 +90,8 @@ namespace QuantLib {
         ExchangeRate smartLookup(const Currency& source,
                                  const Currency& target,
                                  const Date& date,
-                                 std::list<Integer> forbiddenCodes
-                                        = std::list<Integer>()) const;
+                                 std::list<std::string> forbiddenCodes
+                                        = std::list<std::string>()) const;
         const ExchangeRate* fetch(const Currency& source,
                                   const Currency& target,
                                   const Date& date) const;
