@@ -37,17 +37,20 @@ namespace QuantLib {
         <li>New Year, January 2nd</li>
         <li>Serbian Orthodox Christmas, January 7th</li>
         <li>Serbian Statehood Day, February 15 & 16th</li>
-        <li>Good Friday</li>
-        <li>Easter Monday</li>
-        <li>Labour Day, May 1st</li>
+        <li>Orthodox Good Friday</li>
+        <li>Orthodox Easter Monday</li>
+        <li>Labour Day, May 1st and 2nd</li>
         <li>Armistice Day in World War I, Novemeber 11th</li>
+        <li>the first working day after one of the days of New Year,
+            Statehood Day, Labour Day or Armistice Day falling on a
+            Sunday</li>
         <li>Trading system maintenance, statistics and data migration, December 31st</li>
         </ul>
         \ingroup calendars
     */
     class Serbia : public Calendar {
     private:
-        class BseImpl final : public Calendar::WesternImpl {
+        class BseImpl final : public Calendar::OrthodoxImpl {
         public:
             std::string name() const override { return "Belgrade stock exchange"; }
             bool isBusinessDay(const Date&) const override;
