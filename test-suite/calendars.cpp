@@ -3704,10 +3704,30 @@ BOOST_AUTO_TEST_CASE(testChinaSSE) {
         {5, Oct, 2026},
         {6, Oct, 2026},
         {7, Oct, 2026},
+
+        // China Shanghai Securities Exchange holiday list in the year 2027
+        {1, Jan, 2027},
+        {5, Feb, 2027},
+        {8, Feb, 2027},
+        {9, Feb, 2027},
+        {10, Feb, 2027},
+        {11, Feb, 2027},
+        {12, Feb, 2027},
+        {5, April, 2027},
+        {3, May, 2027},
+        {4, May, 2027},
+        {5, May, 2027},
+        {9, Jun, 2027},
+        {15, Sep, 2027},
+        {1, Oct, 2027},
+        {4, Oct, 2027},
+        {5, Oct, 2027},
+        {6, Oct, 2027},
+        {7, Oct, 2027},
     };
 
     Calendar c = China(China::SSE);
-    checkHolidays(c.holidayList(Date(1, January, 2014), Date(31, December, 2026)), expectedHol);
+    checkHolidays(c.holidayList(Date(1, January, 2014), Date(31, December, 2027)), expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testChinaIB) {
@@ -3820,11 +3840,18 @@ BOOST_AUTO_TEST_CASE(testChinaIB) {
         {9, May, 2026},
         {20, Sep, 2026},
         {10, Oct, 2026},
+
+        // China Inter Bank working weekends list in the year 2027
+        {31, Jan, 2027},
+        {14, Feb, 2027},
+        {8, May, 2027},
+        {26, Sep, 2027},
+        {9, Oct, 2027},
     };
 
     Calendar c = China(China::IB);
     Date start(1, Jan, 2014);
-    Date end(31, Dec, 2026);
+    Date end(31, Dec, 2027);
 
     Size k = 0;
 

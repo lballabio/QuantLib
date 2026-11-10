@@ -99,6 +99,7 @@ namespace QuantLib {
             || (y == 2024 && (d == 9 || (d >= 12 && d <= 16)) && m == February)
             || (y == 2025 && ((d >= 28 && d <= 31 && m == January) || (d >= 3 && d <= 4 && m == February)))
             || (y == 2026 && ((d >= 16 && d <= 20) || d == 23) && m == February)
+            || (y == 2027 && (d == 5 || (d >= 8 && d <= 12)) && m == February)
             // Ching Ming Festival
             || (y <= 2008 && d == 4 && m == April)
             || (y == 2009 && d == 6 && m == April)
@@ -119,6 +120,7 @@ namespace QuantLib {
             || (y == 2024 && d >= 4 && d <= 5 && m == April)
             || (y == 2025 && d == 4 && m == April)
             || (y == 2026 && d == 6 && m == April)
+            || (y == 2027 && d == 5 && m == April)
             // Labor Day
             || (y <= 2007 && d >= 1 && d <= 7 && m == May)
             || (y == 2008 && d >= 1 && d <= 2 && m == May)
@@ -142,6 +144,7 @@ namespace QuantLib {
             || (y == 2024 && d >= 1 && d <= 3 && m == May)
             || (y == 2025 && (d == 1 || d == 2 || d == 5) && m == May)
             || (y == 2026 && (d == 1 || d == 4 || d == 5) && m == May)
+            || (y == 2027 && d >= 3 && d <= 5 && m == May)
             // Tuen Ng Festival
             || (y <= 2008 && d == 9 && m == June)
             || (y == 2009 && (d == 28 || d == 29) && m == May)
@@ -162,6 +165,7 @@ namespace QuantLib {
             || (y == 2024 && d == 10 && m == June)
             || (y == 2025 && d == 2 && m == June)
             || (y == 2026 && d == 19 && m == June)
+            || (y == 2027 && d == 9 && m == June)
             // Mid-Autumn Festival
             || (y <= 2008 && d == 15 && m == September)
             || (y == 2010 && d >= 22 && d <= 24 && m == September)
@@ -178,6 +182,7 @@ namespace QuantLib {
             || (y == 2023 && d == 29 && m == September)
             || (y == 2024 && d >= 16 && d <= 17 && m == September)
             || (y == 2026 && d == 25 && m == September)
+            || (y == 2027 && d == 15 && m == September)
             // National Day
             || (y <= 2007 && d >= 1 && d <= 7 && m == October) 
             || (y == 2008 && ((d >= 29 && m == September) ||
@@ -201,6 +206,7 @@ namespace QuantLib {
             || (y == 2024 && ((d >= 1 && d <= 4) || d == 7) && m == October)
             || (y == 2025 && ((d >= 1 && d <= 3) || (d >= 6 && d <= 8)) && m == October)
             || (y == 2026 && ((d >= 1 && d <= 2) || (d >= 5 && d <= 7)) && m == October)
+            || (y == 2027 && (d == 1 || (d >= 4 && d <= 7)) && m == October)
             // 70th anniversary of the victory of anti-Japaneses war
             || (y == 2015 && d >= 3 && d <= 4 && m == September)
             )
@@ -379,7 +385,13 @@ namespace QuantLib {
             Date(28, Feb, 2026),
             Date(9, May, 2026),
             Date(20, Sep, 2026),
-            Date(10, Oct, 2026)
+            Date(10, Oct, 2026),
+            // 2027
+            Date(31, Jan, 2027),
+            Date(14, Feb, 2027),
+            Date(8, May, 2027),
+            Date(26, Sep, 2027),
+            Date(9, Oct, 2027)
         };
 
         // If it is already a SSE business day, it must be a IB business day
