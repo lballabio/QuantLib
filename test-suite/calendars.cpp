@@ -4667,6 +4667,36 @@ BOOST_AUTO_TEST_CASE(testCroatia) {
     BOOST_TEST_MESSAGE("Testing Croatia holiday list...");
 
     std::vector<Date> expectedHol = {
+        {1, January, 2024},
+        {29, March, 2024},
+        {1, April, 2024},
+        {17, April, 2024},
+        {1, May, 2024},
+        {30, May, 2024},
+        {5, August, 2024},
+        {15, August, 2024},
+        {1, November, 2024},
+        {18, November, 2024},
+        {24, December, 2024},
+        {25, December, 2024},
+        {26, December, 2024},
+        {31, December, 2024},
+
+        {1, January, 2025},
+        {6, January, 2025},
+        {18, April, 2025},
+        {21, April, 2025},
+        {1, May, 2025},
+        {30, May, 2025},
+        {19, June, 2025},
+        {5, August, 2025},
+        {15, August, 2025},
+        {18, November, 2025},
+        {24, December, 2025},
+        {25, December, 2025},
+        {26, December, 2025},
+        {31, December, 2025},
+
         {1, January, 2026},
         {6, January, 2026},
         {3, April, 2026},
@@ -4687,13 +4717,14 @@ BOOST_AUTO_TEST_CASE(testCroatia) {
         {27, May, 2027},
         {22, June, 2027},
         {5, August, 2027},
+        {1, November, 2027},
         {18, November, 2027},
         {24, December, 2027},
         {31, December, 2027},
     };
 
     Calendar c = Croatia();
-    checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
+    checkHolidays(c.holidayList(Date(1, January, 2024), Date(31, December, 2027)), expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testMalaysia) {

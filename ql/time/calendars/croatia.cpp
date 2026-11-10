@@ -55,6 +55,8 @@ namespace QuantLib {
             || (d == 5 && m == August)
             // Assumption of Mary   
             || (d == 15 && m == August)
+            // All Saints' Day
+            || (d == 1 && m == November)
             // Remembrance Day for the Victims of the Vukovar and ï¿½kabrnja War Memorials
             || (d == 18 && m == November)
             // Christmas Eve
@@ -64,7 +66,9 @@ namespace QuantLib {
             // St. Stephen
             || (d == 26 && m == December)
             // New Year's Eve
-            || (d == 31 && m == December))
+            || (d == 31 && m == December)
+            // Parliamentary election
+            || (d == 17 && m == April && y == 2024))
             return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
