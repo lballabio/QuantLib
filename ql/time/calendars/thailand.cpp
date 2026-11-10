@@ -300,7 +300,9 @@ namespace QuantLib {
             || (d == 7 && m == April)     // Substitution for Chakri Memorial Day (Sunday 6th April 2025)
             || (d == 5 && m == May)       // Substitution for Coronation Day (Sunday 4th May 2025)
             || (d == 12 && m == May)      // Wisakha Bucha Day
+            || (d == 2 && m == June)      // Additional special holiday
             || (d == 10 && m == July)     // Substitution for Asarnha Bucha Day (Tuesday 20th July 2025)
+            || (d == 11 && m == August)   // Additional special holiday
             || (d == 23 && m == October)  // Chulalongkorn Day
             ))
             return false;

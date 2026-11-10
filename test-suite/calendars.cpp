@@ -3066,6 +3066,8 @@ BOOST_AUTO_TEST_CASE(testThailandCalendar) {
     BOOST_CHECK(calendar.isHoliday(Date(3, June, 2024)));
     BOOST_CHECK(calendar.isHoliday(Date(29, July, 2024))); // substitution
     BOOST_CHECK(calendar.isHoliday(Date(14, October, 2024))); // substitution
+    BOOST_CHECK(calendar.isHoliday(Date(2, June, 2025))); // additional special holiday
+    BOOST_CHECK(calendar.isHoliday(Date(11, August, 2025))); // additional special holiday
     BOOST_CHECK(calendar.isBusinessDay(Date(2, January, 2024)));
     const Date historical[] = {
         {5, May, 2001},
