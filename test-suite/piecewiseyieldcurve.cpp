@@ -1392,6 +1392,8 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrap, *precondition(usingAtParCoupons())) {
 
 BOOST_AUTO_TEST_CASE(testGlobalBootstrapPenalty, *precondition(usingAtParCoupons())) {
 
+    BOOST_TEST_MESSAGE("Testing global bootstrap penalty...");
+
     Settings::instance().evaluationDate() = Date(26, Sep, 2019);
 
     // market rates
@@ -1551,6 +1553,8 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapVariables) {
 }
 
 BOOST_AUTO_TEST_CASE(testGlobalBootstrapInitialGuessFn, *precondition(usingAtParCoupons())) {
+
+    BOOST_TEST_MESSAGE("Testing global bootstrap initial guess function...");
 
     CommonVars vars(Date(25, Sep, 2019));
 
