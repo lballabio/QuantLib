@@ -340,6 +340,56 @@ BOOST_AUTO_TEST_CASE(testConstraint) {
     BOOST_CHECK_GT(positiveCurve.fitResults().solution()[0], 0.0);
 }
 
+BOOST_AUTO_TEST_CASE(testExponentialSplinesFixedKappa) {
+    BOOST_TEST_MESSAGE("Testing exponential splines fitting with fixed kappa...");
+
+    Date today = Settings::instance().evaluationDate();
+    Date maxDate = today + Period(30, Years);
+    Actual365Fixed dayCounter;
+    Real t = 1.0;
+    Real kappa = 0.1;
+
+    // Expected discount factor:
+    // d(1.0) = 0.2 * exp(-0.1 * 1.0) + 0.3 * exp(-0.2 * 1.0) + 0.5 * exp(-0.3 * 1.0)
+    Real expected = 0.2 * std::exp(-kappa * 1.0 * t) +
+                    0.3 * std::exp(-kappa * 2.0 * t) +
+                    0.5 * std::exp(-kappa * 3.0 * t);
+
+    // 1. Unconstrained: 3 coefficients, fixed kappa
+    ExponentialSplinesFitting unconstrainedFixed(false, 3, kappa);
+    Array unconstrainedCoeffs = {0.2, 0.3, 0.5};
+    FittedBondDiscountCurve curveUnconstrainedFixed(today, unconstrainedFixed, unconstrainedCoeffs, maxDate, dayCounter);
+    BOOST_CHECK_CLOSE(curveUnconstrainedFixed.discount(t), expected, 1e-10);
+
+    // Free kappa with same parameters
+    ExponentialSplinesFitting unconstrainedFree(false, 3);
+    Array unconstrainedParamsFree = {0.2, 0.3, 0.5, kappa};
+    FittedBondDiscountCurve curveUnconstrainedFree(today, unconstrainedFree, unconstrainedParamsFree, maxDate, dayCounter);
+    BOOST_CHECK_CLOSE(curveUnconstrainedFree.discount(t), expected, 1e-10);
+
+    // Verify last coefficient affects the discount factor (not ignored)
+    Array unconstrainedBumped = {0.2, 0.3, 0.6};
+    FittedBondDiscountCurve curveUnconstrainedBumped(today, unconstrainedFixed, unconstrainedBumped, maxDate, dayCounter);
+    BOOST_CHECK(curveUnconstrainedBumped.discount(t) != curveUnconstrainedFixed.discount(t));
+
+    // 2. Constrained at zero: first coefficient is 1 - (0.3 + 0.5) = 0.2
+    ExponentialSplinesFitting constrainedFixed(true, 3, kappa);
+    Array constrainedCoeffs = {0.3, 0.5};
+    FittedBondDiscountCurve curveConstrainedFixed(today, constrainedFixed, constrainedCoeffs, maxDate, dayCounter);
+    BOOST_CHECK_CLOSE(curveConstrainedFixed.discount(t), expected, 1e-10);
+
+    // Free kappa with same parameters
+    ExponentialSplinesFitting constrainedFree(true, 3);
+    Array constrainedParamsFree = {0.3, 0.5, kappa};
+    FittedBondDiscountCurve curveConstrainedFree(today, constrainedFree, constrainedParamsFree, maxDate, dayCounter);
+    BOOST_CHECK_CLOSE(curveConstrainedFree.discount(t), expected, 1e-10);
+
+    // Verify last coefficient affects the discount factor (not ignored)
+    Array constrainedBumped = {0.3, 0.6};
+    FittedBondDiscountCurve curveConstrainedBumped(today, constrainedFixed, constrainedBumped, maxDate, dayCounter);
+    BOOST_CHECK(curveConstrainedBumped.discount(t) != curveConstrainedFixed.discount(t));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
