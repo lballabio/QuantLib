@@ -174,7 +174,8 @@ namespace QuantLib {
             const auto projGrowthFactor = [&](Size i) {
                 return growthFactor(index->fixing(fixingDates[i]), i);
             };
-            if (coupon_->canApplyTelescopicFormula()) {
+            if (coupon_->canApplyTelescopicFormula() &&
+                (!compoundSpreadDaily || couponSpread == 0.0)) {
                 // handle partial accrual of first fixing if the first interestDate lands on a fixing holiday
                 const Size telescopicStartIdx =
                     i == 0 && !applyObservationShift && (valueDates.front() < interestDates.front()) ? 1 : i;

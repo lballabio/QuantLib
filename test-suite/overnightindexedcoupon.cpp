@@ -25,6 +25,7 @@
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
 #include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
+#include <ql/currencies/america.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/settings.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
@@ -37,6 +38,7 @@
 #include <ql/indexes/ibor/estr.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <iomanip>
+#include <string>
 #include <ql/math/rounding.hpp>
 
 using namespace QuantLib;
@@ -1019,6 +1021,101 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithGearingsAndSpreads) {
         }
     }
 }
+
+BOOST_AUTO_TEST_CASE(testDailyCompoundedSpreadForecast) {
+    BOOST_TEST_MESSAGE("Testing daily compounded spreads against independent overnight "
+                       "products...");
+
+    const Date start(1, October, 2026), end(20, November, 2026);
+    const WeekendsOnly calendar;
+    const Actual360 dc;
+    const Real nominal = 10000.0;
+    auto curve = ext::make_shared<DiscountCurve>(
+        std::vector<Date>{Date(1, September, 2026), start, Date(15, October, 2026),
+                          Date(5, November, 2026), end, Date(1, December, 2027)},
+        std::vector<DiscountFactor>{1.0, 0.9975, 0.9960, 0.9945, 0.9935, 0.9620}, dc);
+    const Handle<YieldTermStructure> handle(curve);
+
+    // Enumerate contractual business-day periods, independently of coupon dates.
+    std::vector<Date> dates(1, start);
+    while (dates.back() < end)
+        dates.push_back(calendar.advance(dates.back(), 1, Days));
+    const Size n = dates.size() - 1;
+
+    for (const Date& today : std::vector<Date>{Date(1, September, 2026),
+                                             Date(21, October, 2026),
+                                             Date(1, December, 2026)}) {
+        Settings::instance().evaluationDate() = today;
+        for (Natural lookback : {0, 2}) {
+            const bool shift = lookback != 0;
+            auto index = ext::make_shared<OvernightIndex>(
+                "DailySpreadProduct" + std::to_string(today.serialNumber()) +
+                    "_" + std::to_string(lookback),
+                0, USDCurrency(), calendar, dc, handle);
+            std::vector<Date> observed;
+            for (const Date& d : dates)
+                observed.push_back(calendar.advance(d, -Integer(lookback), Days));
+            std::vector<Rate> rates(n);
+            for (Size i = 0; i < n; ++i) {
+                if (observed[i] <= today) {
+                    rates[i] = 0.021 + 0.00007 * Real(i);
+                    index->addFixing(observed[i], rates[i]);
+                } else {
+                    const Date next = calendar.advance(observed[i], 1, Days);
+                    rates[i] = (curve->discount(observed[i]) / curve->discount(next) - 1.0) /
+                               dc.yearFraction(observed[i], next);
+                }
+            }
+            const auto& accrualDates = shift ? observed : dates;
+            for (Natural lockout : {0, 3}) {
+                for (Spread spread : std::vector<Spread>{0.005, -0.005}) {
+                    long double product = 1.0L, indexProduct = 1.0L;
+                    for (Size i = 0; i < n; ++i) {
+                        const Size fixing = i >= n - lockout ? n - lockout - 1 : i;
+                        const Time weight = dc.yearFraction(accrualDates[i], accrualDates[i + 1]);
+                        product *= 1.0L +
+                            (static_cast<long double>(rates[fixing]) + spread) * weight;
+                        indexProduct *= 1.0L + static_cast<long double>(rates[fixing]) * weight;
+                    }
+                    const Time tau = dc.yearFraction(accrualDates.front(), accrualDates.back());
+                    const Rate expected = Real((product - 1.0L) / tau);
+                    const Rate expectedIndex = Real((indexProduct - 1.0L) / tau);
+                    for (bool telescopic : {false, true}) {
+                        OvernightIndexedCoupon coupon(end, nominal, start, end, index, 1.0, spread,
+                            Date(), Date(), dc, telescopic, RateAveraging::Compound,
+                            lookback, lockout, shift, true);
+                        QL_CHECK_SMALL(coupon.rate() - expected, 2e-11);
+                        QL_CHECK_SMALL(coupon.effectiveIndexFixing() - expectedIndex, 2e-11);
+                        QL_CHECK_SMALL(coupon.effectiveSpread() - (expected - expectedIndex),
+                                       2e-11);
+                        QL_CHECK_SMALL(
+                            coupon.amount() - nominal * dc.yearFraction(start, end) * expected,
+                                       2e-7);
+
+                        // Unshifted partial periods include only elapsed calendar days,
+                        // including a cutoff within a Friday-to-Monday deposit.
+                        if (!shift) {
+                            for (const Date& cutoff : std::vector<Date>{Date(6, October, 2026),
+                                                                       Date(18, October, 2026)}) {
+                                long double partial = 1.0L;
+                                for (Size i = 0; i < n && dates[i] < cutoff; ++i) {
+                                    const Size fixing = i >= n - lockout ? n - lockout - 1 : i;
+                                    const Time weight = dc.yearFraction(dates[i],
+                                        std::min(dates[i + 1], cutoff));
+                                    partial *= 1.0L +
+                                        (static_cast<long double>(rates[fixing]) + spread) * weight;
+                                }
+                                QL_CHECK_SMALL(coupon.accruedAmount(cutoff) -
+                                                   nominal * Real(partial - 1.0L), 2e-7);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testOvernightLegNPV) {
     BOOST_TEST_MESSAGE("Testing overnight leg NPV...");
 
