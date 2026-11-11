@@ -29,6 +29,10 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/analyticcapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/mchullwhiteengine.hpp>
+#include <ql/pricingengines/capfloor/treecapfloorengine.hpp>
+#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/correlations/expcorrelations.hpp>
@@ -39,6 +43,9 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 using namespace QuantLib;
@@ -392,6 +399,95 @@ BOOST_AUTO_TEST_CASE(testParity) {
             }
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testNegativeGearing) {
+
+    BOOST_TEST_MESSAGE("Testing caps and floors on coupons with negative gearing...");
+
+    CommonVars vars;
+    // the short-rate engines need the curve to start at the evaluation date
+    vars.termStructure.linkTo(flatRate(Settings::instance().evaluationDate(), 0.05,
+                                       Actual365Fixed()));
+
+    // with gearing g < 0 and spread s, a cap at K on the coupon g*L + s
+    // pays |g|*max(k - L, 0) with k = (K - s)/g, i.e. it is |g| floors on
+    // the index struck at k; a floor on the coupon is |g| caps on the index.
+    const Real gearing = -2.0, spread = 0.12, capRate = 0.06, floorRate = 0.02;
+    Leg plainLeg = vars.makeLeg(vars.settlement, 5);
+    Leg inverseLeg = IborLeg(Schedule(vars.settlement,
+                                      vars.calendar.advance(vars.settlement, 5 * Years,
+                                                            vars.convention),
+                                      Period(vars.frequency), vars.calendar, vars.convention,
+                                      vars.convention, DateGeneration::Forward, false),
+                             vars.index)
+                         .withNotionals(vars.nominals)
+                         .withPaymentDayCounter(vars.index->dayCounter())
+                         .withPaymentAdjustment(vars.convention)
+                         .withFixingDays(vars.fixingDays)
+                         .withGearings(gearing)
+                         .withSpreads(spread);
+
+    auto hullWhite = ext::make_shared<HullWhite>(vars.termStructure, 0.05, 0.01);
+    std::vector<std::pair<std::string, ext::shared_ptr<PricingEngine> > > engines = {
+        {"Black", vars.makeEngine(0.20)},
+        {"Bachelier", vars.makeBachelierEngine(0.01)},
+        {"analytic Hull-White", ext::make_shared<AnalyticCapFloorEngine>(hullWhite)},
+        {"tree Hull-White", ext::make_shared<TreeCapFloorEngine>(hullWhite, 100)},
+        {"Monte Carlo Hull-White",
+         MakeMCHullWhiteCapFloorEngine<PseudoRandom>(hullWhite)
+             .withSamples(1000)
+             .withSeed(42)}
+    };
+
+    for (const auto& engine : engines) {
+        Cap cap(inverseLeg, {capRate});
+        Floor floor(inverseLeg, {floorRate});
+        Floor equivalentFloor(plainLeg, {(capRate - spread) / gearing});
+        Cap equivalentCap(plainLeg, {(floorRate - spread) / gearing});
+        for (CapFloor* option : {(CapFloor*)&cap, (CapFloor*)&floor,
+                                 (CapFloor*)&equivalentFloor, (CapFloor*)&equivalentCap})
+            option->setPricingEngine(engine.second);
+
+        Real calculated = cap.NPV(), expected = -gearing * equivalentFloor.NPV();
+        if (std::fabs(calculated - expected) > 1.0e-10)
+            BOOST_ERROR("cap on negatively-geared coupons not priced as floor ("
+                        << engine.first << " engine):"
+                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected);
+
+        calculated = floor.NPV();
+        expected = -gearing * equivalentCap.NPV();
+        if (std::fabs(calculated - expected) > 1.0e-10)
+            BOOST_ERROR("floor on negatively-geared coupons not priced as cap ("
+                        << engine.first << " engine):"
+                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected);
+    }
+
+    // the Black value must also agree with the embedded caps of capped coupons
+    Schedule schedule(vars.settlement,
+                      vars.calendar.advance(vars.settlement, 5 * Years, vars.convention),
+                      Period(vars.frequency), vars.calendar, vars.convention, vars.convention,
+                      DateGeneration::Forward, false);
+    Leg cappedLeg = IborLeg(schedule, vars.index)
+                        .withNotionals(vars.nominals)
+                        .withPaymentDayCounter(vars.index->dayCounter())
+                        .withPaymentAdjustment(vars.convention)
+                        .withFixingDays(vars.fixingDays)
+                        .withGearings(gearing)
+                        .withSpreads(spread)
+                        .withCaps(capRate);
+    auto pricer = ext::make_shared<BlackIborCouponPricer>(Handle<OptionletVolatilityStructure>(
+        ext::make_shared<ConstantOptionletVolatility>(0, NullCalendar(), Following, 0.20,
+                                                      Actual365Fixed())));
+    setCouponPricer(inverseLeg, pricer);
+    setCouponPricer(cappedLeg, pricer);
+    Real replicated = CashFlows::npv(inverseLeg, **vars.termStructure, false) -
+                      CashFlows::npv(cappedLeg, **vars.termStructure, false);
+    Cap cap(inverseLeg, {capRate});
+    cap.setPricingEngine(vars.makeEngine(0.20));
+    QL_CHECK_SMALL(cap.NPV() - replicated, 1.0e-10);
 }
 
 BOOST_AUTO_TEST_CASE(testATMRate) {
