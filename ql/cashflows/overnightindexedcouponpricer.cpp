@@ -140,7 +140,7 @@ namespace QuantLib {
         }
 
         // today is a border case
-        if (i < n && fixingDates[i] == today) {
+        while (i < n && fixingDates[i] == today) {
             // might have been fixed
             try {
                 Rate fixing = pastFixings[fixingDates[i]];
@@ -150,10 +150,10 @@ namespace QuantLib {
                     compoundFactor *= gfSpread;
                     ++i;
                 } else {
-                    ; // fall through and forecast
+                    break; // fall through and forecast
                 }
             } catch (Error&) {
-                ; // fall through and forecast
+                break; // fall through and forecast
             }
         }
 
