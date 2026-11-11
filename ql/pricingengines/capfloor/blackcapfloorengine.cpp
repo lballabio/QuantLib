@@ -93,8 +93,13 @@ namespace QuantLib {
             if (paymentDate > settlement) {
                 DiscountFactor d = discountCurve_->discount(paymentDate);
                 discountFactors[i] = d;
+                // with a negative gearing, a cap on the coupon is a floor
+                // on the index and vice versa
+                Real gearing = arguments_.gearings[i];
+                Option::Type capletType = gearing >= 0.0 ? Option::Call : Option::Put;
+                Option::Type floorletType = gearing >= 0.0 ? Option::Put : Option::Call;
                 Real accrualFactor = arguments_.nominals[i] *
-                                   arguments_.gearings[i] *
+                                   std::fabs(gearing) *
                                    arguments_.accrualTimes[i];
                 Real discountedAccrual = d * accrualFactor;
                 Rate forward = arguments_.forwards[i];
@@ -112,11 +117,12 @@ namespace QuantLib {
                         vegas[i] = blackFormulaStdDevDerivative(strike,
                             forward, stdDevs[i], discountedAccrual, displacement_) 
                             * sqrtTime;
-                        deltas[i] = blackFormulaAssetItmProbability(Option::Call,
+                        deltas[i] = Integer(capletType) *
+                            blackFormulaAssetItmProbability(capletType,
                             strike, forward, stdDevs[i], displacement_);
                     }
                     // include caplets with past fixing date
-                    values[i] = blackFormula(Option::Call,
+                    values[i] = blackFormula(capletType,
                         strike, forward, stdDevs[i], discountedAccrual, 
                         displacement_);
                 }
@@ -130,11 +136,11 @@ namespace QuantLib {
                         floorletVega = blackFormulaStdDevDerivative(strike,
                             forward, stdDevs[i], discountedAccrual, displacement_) 
                             * sqrtTime;
-                        floorletDelta = Integer(Option::Put) * blackFormulaAssetItmProbability(
-                                                        Option::Put, strike, forward, 
+                        floorletDelta = Integer(floorletType) *
+                            blackFormulaAssetItmProbability(floorletType, strike, forward,
                                                         stdDevs[i], displacement_);
                     }
-                    Real floorlet = blackFormula(Option::Put,
+                    Real floorlet = blackFormula(floorletType,
                         strike, forward, stdDevs[i], discountedAccrual, displacement_);
                     if (type == CapFloor::Floor) {
                         values[i] = floorlet;
