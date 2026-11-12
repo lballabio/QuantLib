@@ -1431,6 +1431,33 @@ BOOST_AUTO_TEST_CASE(testCumulativeChiSquareDistribution) {
     BOOST_CHECK_EQUAL(nonCentral(-1.0), 0.0);
 }
 
+BOOST_AUTO_TEST_CASE(testCumulativeChiSquareDistributionLargeDegreesOfFreedom) {
+    BOOST_TEST_MESSAGE("Testing cumulative chi-square distribution "
+                       "for large degrees of freedom...");
+
+    // degrees of freedom, x and the cumulative distribution, calculated with mpmath 1.3.0
+    // at 60 digits
+    const Real data[][3] = {// moderate degrees of freedom
+                            {4.0, 3.0, 0.44217459962892543},
+                            {100.0, 100.0, 0.51880831547204328},
+                            // large degrees of freedom, around and below x = df
+                            {794.0, 794.0, 0.50667420590589164},
+                            {1000.0, 960.0, 0.1862819731903246},
+                            {1000.0, 1000.0, 0.50594714617076036},
+                            {2000.0, 2000.0, 0.50420524418021551},
+                            {10000.0, 10000.0, 0.50188063403381736}};
+
+    for (const auto& row : data) {
+        BOOST_TEST_CONTEXT("degrees of freedom " << row[0] << ", x " << row[1]) {
+            CumulativeChiSquareDistribution chiSquare(row[0]);
+            Real calculated = Null<Real>();
+            BOOST_CHECK_NO_THROW(calculated = chiSquare(row[1]));
+            if (calculated != Null<Real>())
+                QL_CHECK_CLOSE_FRACTION(calculated, row[2], 1.0e-12);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testNonCentralChiSquareLargeArguments) {
     BOOST_TEST_MESSAGE("Testing the non-central cumulative chi-square distribution "
                        "for large non-centrality and large arguments...");

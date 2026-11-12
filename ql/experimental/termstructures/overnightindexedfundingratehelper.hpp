@@ -73,6 +73,7 @@ namespace QuantLib {
                                           Date customPillarDate = Date());
 
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         void setTermStructure(YieldTermStructure*) override;
         void accept(AcyclicVisitor&) override;
 

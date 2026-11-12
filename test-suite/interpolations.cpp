@@ -7,6 +7,7 @@
  Copyright (C) 2009 Dimitri Reiswich
  Copyright (C) 2014 Peter Caspers
  Copyright (C) 2018 Klaus Spanderen
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -3095,6 +3096,20 @@ BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
     }
 
     f.enableExtrapolation();
+
+    // Node sensitivities follow the clamped interpolation value.
+    // Use a linear underlying, which provides node sensitivities.
+    auto linear = ext::make_shared<LinearInterpolation>(
+        std::begin(x), std::end(x), std::begin(y));
+    linear->enableExtrapolation();
+    FlatExtrapolator fl(linear);
+    fl.enableExtrapolation();
+    BOOST_CHECK(fl.nodeSensitivities(-1.0) == linear->nodeSensitivities(x[0]));
+    BOOST_CHECK(fl.nodeSensitivities(5.0) == linear->nodeSensitivities(x[N-1]));
+    auto flatSlopeSensitivities = fl.derivativeNodeSensitivities(5.0);
+    BOOST_REQUIRE(!flatSlopeSensitivities.empty());
+    for (const auto& [i, w] : flatSlopeSensitivities)
+        BOOST_CHECK_SMALL(w, tolerance);
 
     // in-range: must match underlying cubic at knots
     for (Size i = 0; i < N; ++i) {
