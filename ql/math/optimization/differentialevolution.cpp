@@ -21,6 +21,7 @@
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 namespace QuantLib {
 
@@ -61,6 +62,51 @@ namespace QuantLib {
             QL_REQUIRE(configuration().lowerBound.size() == p.currentValue().size(),
                        "wrong lower bound size in differential evolution configuration");
             lowerBound_ = configuration().lowerBound;
+        }
+        // fillInitialPopulation() is the only place these bounds are used to
+        // compute a new value from scratch (l*(1-r)+u*r); it never runs when
+        // a population is supplied explicitly. The only other reader is
+        // crossover()'s applyBounds clip, which reads the bounds only in a
+        // reflection step (bound + rng()*(mirror-bound)) that is entered
+        // solely when a population member is already > upperBound_ or
+        // < lowerBound_ -- against a sentinel-sized bound, that only
+        // happens once a member is already non-finite, a state no bounds
+        // check on a *finite* configuration can prevent anyway. So once a
+        // population is user-supplied, these bounds are genuinely
+        // load-bearing (can overflow a well-behaved run) only in
+        // fillInitialPopulation -- skip the check whenever one was
+        // supplied, regardless of applyBounds, so withInitialPopulation()+
+        // NoConstraint (previously valid: bounds were computed but never
+        // touched in a way that
+        // overflows) keeps working either way.
+        if (!configuration().initialPopulation.empty()) {
+            // once a population is supplied, the only remaining reader
+            // (crossover()'s clip) can only overflow via a member that's
+            // already non-finite -- not something a bounds check prevents
+        } else {
+            Real maxBound = std::numeric_limits<Real>::max();
+            for (Size i = 0; i < lowerBound_.size(); ++i) {
+                // Constraint::Impl's base-class default bounds (inherited by
+                // NoConstraint, and used as the one-sided default by e.g.
+                // PositiveConstraint's upper bound) are exactly
+                // +-numeric_limits<Real>::max(), used throughout this codebase
+                // as the "no bound provided" sentinel. That sentinel is itself
+                // a finite double, so neither isfinite(bound) nor
+                // isfinite(upper-lower) can detect it (max()-0.0 is also
+                // finite) -- the span only overflows to +inf in the symmetric
+                // +-max() case, which is why the original guard (upper-lower)
+                // missed the one-sided case. Reject the sentinel value
+                // directly on either bound instead.
+                QL_REQUIRE(lowerBound_[i] > -maxBound && upperBound_[i] < maxBound,
+                    "DifferentialEvolution needs finite bounds to initialize "
+                    "its population, but dimension " << i << " has no bound "
+                    "(" << lowerBound_[i] << ", " << upperBound_[i] << ") -- "
+                    "the problem's constraint (e.g. NoConstraint, or a "
+                    "one-sided constraint like PositiveConstraint) does not "
+                    "provide one; supply explicit, finite bounds via "
+                    "DifferentialEvolution::Configuration::withLowerBound()/"
+                    "withUpperBound()");
+            }
         }
         currGenSizeWeights_ =
             Array(configuration().populationMembers, configuration().stepsizeWeight);
@@ -386,7 +432,13 @@ namespace QuantLib {
         for (Size j = 1; j < population.size(); ++j) {
             for (Size i = 0; i < p.currentValue().size(); ++i) {
                 Real l = lowerBound_[i], u = upperBound_[i];
-                population[j].values[i] = l + (u-l)*rng_.nextReal();
+                // interpolate as a convex combination rather than l+(u-l)*r:
+                // under an unconstrained dimension (NoConstraint's default
+                // bounds are +-DBL_MAX) u-l overflows to +inf, turning every
+                // random candidate into +inf (or, were the draw ever exactly
+                // 0, inf*0 = NaN)
+                Real r = rng_.nextReal();
+                population[j].values[i] = l*(1.0-r) + u*r;
             }
             population[j].cost = p.costFunction().value(population[j].values);
             if (!std::isfinite(population[j].cost))

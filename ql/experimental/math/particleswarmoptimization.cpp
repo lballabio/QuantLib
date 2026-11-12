@@ -20,6 +20,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/experimental/math/particleswarmoptimization.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <cmath>
+#include <limits>
 #include <utility>
 
 using std::sqrt;
@@ -63,7 +64,39 @@ namespace QuantLib {
         gBF_ = Array(M_);
         uX_ = P.constraint().upperBound(P.currentValue());
         lX_ = P.constraint().lowerBound(P.currentValue());
+        const Real maxBound = std::numeric_limits<Real>::max();
+        for (Size j = 0; j < N_; ++j) {
+            // Constraint::Impl's base-class default bounds (inherited by
+            // NoConstraint, and used as the one-sided default by e.g.
+            // PositiveConstraint's upper bound) are exactly
+            // +-numeric_limits<Real>::max(), used throughout this codebase
+            // as the "no bound provided" sentinel. That sentinel is itself
+            // a finite double, so neither isfinite(bound) nor
+            // isfinite(upper-lower) can detect it (max()-0.0 is also
+            // finite) -- the span only overflows to +inf in the symmetric
+            // +-max() case. Reject the sentinel value directly on either
+            // bound instead.
+            QL_REQUIRE(lX_[j] > -maxBound && uX_[j] < maxBound,
+                "ParticleSwarmOptimization needs finite bounds to "
+                "initialize its particles, but dimension " << j <<
+                " has no bound (" << lX_[j] << ", " << uX_[j] <<
+                ") -- the problem's constraint (e.g. NoConstraint, or a "
+                "one-sided constraint like PositiveConstraint) does not "
+                "provide one; use a bounded constraint instead");
+        }
         Array bounds = uX_ - lX_;
+        // Unlike X's convex-combination init above, V's init below uses the
+        // raw span (ub-lb) directly, which can itself overflow even when
+        // both bounds individually passed the per-bound check above (e.g.
+        // lX_=-1e308, uX_=1e308: each is finite and far from the sentinel,
+        // but their difference exceeds DBL_MAX). Guard the span itself too.
+        for (Size j = 0; j < N_; ++j) {
+            QL_REQUIRE(std::isfinite(bounds[j]),
+                "ParticleSwarmOptimization needs a finite upper-minus-lower "
+                "bound to initialize its particles, but dimension " << j <<
+                " has bounds (" << lX_[j] << ", " << uX_[j] << ") whose "
+                "span overflows");
+        }
 
         //Random initialization is done by Sobol sequence
         SobolRsg sobol(N_ * 2);
@@ -77,8 +110,10 @@ namespace QuantLib {
             Array& v = V_.back();
             gBX_.emplace_back(N_, 0.0);
             for (Size j = 0; j < N_; j++) {
-                //Assign X=lb+(ub-lb)*random
-                x[j] = lX_[j] + bounds[j] * sample[2 * j];
+                //Assign X as a convex combination of lb and ub (rather than
+                //lb+(ub-lb)*random, which overflows when lb/ub are +-DBL_MAX)
+                Real r = sample[2 * j];
+                x[j] = lX_[j]*(1.0-r) + uX_[j]*r;
                 //Assign V=(ub-lb)*2*random-(ub-lb) -> between (lb-ub) and (ub-lb)
                 v[j] = bounds[j] * (2.0*sample[2 * j + 1] - 1.0);
             }
