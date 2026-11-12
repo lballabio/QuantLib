@@ -34,21 +34,21 @@ namespace QuantLib {
         Fj_Helper(
             const Handle<PiecewiseTimeDependentHestonModel>& model,
             Time term, Real strike, Size j);
-    
+
         Real operator()(Real phi) const;
-        
+
       private:
-        const Size j_;    
+        const Size j_;
         const Time term_;
         const Real v0_, x_, sx_;
-        
+
         std::vector<Rate> r_, q_;
         const ext::shared_ptr<YieldTermStructure> qTS_;
         const Handle<PiecewiseTimeDependentHestonModel> model_;
-        
+
         const TimeGrid timeGrid_;
     };
-        
+
     AnalyticPTDHestonEngine::Fj_Helper::Fj_Helper(
         const Handle<PiecewiseTimeDependentHestonModel>& model,
         Time term, Real strike, Size j)
@@ -62,7 +62,7 @@ namespace QuantLib {
       q_(model->timeGrid().size()-1),
       model_(model),
       timeGrid_(model->timeGrid()){
-        
+
         for (Size i=0; i <timeGrid_.size()-1; ++i) {
             const Time begin = std::min(term_, timeGrid_[i]);
             const Time end   = std::min(term_, timeGrid_[i+1]);
@@ -72,13 +72,13 @@ namespace QuantLib {
                     ->forwardRate(begin, end, Continuous, NoFrequency).rate();
         }
     }
-        
+
     Real AnalyticPTDHestonEngine::Fj_Helper::operator()(Real phi) const {
 
-        // avoid numeric overflow for phi->0. 
+        // avoid numeric overflow for phi->0.
         // todo: use l'Hospital's rule use to get lim_{phi->0}
         phi = std::max(Real(std::numeric_limits<float>::epsilon()), phi);
-        
+
         std::complex<Real> D = 0.0;
         std::complex<Real> C = 0.0;
 
@@ -88,7 +88,7 @@ namespace QuantLib {
                 const Time end = std::min(term_, timeGrid_[i]);
                 const Time tau = end-begin;
                 const Time t   = 0.5*(end+begin);
-                
+
                 const Real rho = model_->rho(t);
                 const Real sigma = model_->sigma(t);
                 const Real kappa = model_->kappa(t);
@@ -102,21 +102,21 @@ namespace QuantLib {
                 const std::complex<Real> d  = std::sqrt(t1*t1 - sigma2*phi
                                  *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
                 const std::complex<Real> g = (t1-d)/(t1+d);
-                const std::complex<Real> gt 
+                const std::complex<Real> gt
                                        = (t1-d - D*sigma2)/(t1+d - D*sigma2);
-                
+
                 D = (t1+d)/sigma2*(g-gt*std::exp(-d*tau))
                     /(1.0-gt*std::exp(-d*tau));
-                
-                const std::complex<Real> lng 
+
+                const std::complex<Real> lng
                     = std::log((1.0 - gt*std::exp(-d*tau))/(1.0 - gt));
-                
+
                 C =(kappa*theta)/sigma2*((t1-d)*tau-2.0*lng)
                     + std::complex<Real>(0.0, phi*(r_[i-1]-q_[i-1])*tau) + C;
             }
         }
         return std::exp(v0_*D+C+std::complex<Real>(0.0, phi*(x_ - sx_))).imag()
-                /phi; 
+                /phi;
     }
 
     class AnalyticPTDHestonEngine::AP_Helper {
@@ -220,7 +220,7 @@ namespace QuantLib {
           Integration::gaussLaguerre(integrationOrder))),
       andersenPiterbargEpsilon_(Null<Real>()) {
     }
-                         
+
     AnalyticPTDHestonEngine::AnalyticPTDHestonEngine(
         const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
         Real relTolerance, Size maxEvaluations)
@@ -258,16 +258,29 @@ namespace QuantLib {
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
-        
+
         const Real v0 = model_->v0();
         const Real spotPrice = model_->s0();
         QL_REQUIRE(spotPrice > 0.0, "negative or null underlying given");
-        
+
         const Real strike = payoff->strike();
-        const Real term 
+        const Real term
             = model_->riskFreeRate()->dayCounter().yearFraction(
-                                     model_->riskFreeRate()->referenceDate(), 
+                                     model_->riskFreeRate()->referenceDate(),
                                      arguments_.exercise->lastDate());
+
+        // Zero time to maturity: the option's value degenerates to its
+        // (undiscounted) payoff. The piecewise-terminal-distribution
+        // machinery below is not defined there - its characteristic
+        // function's time argument is zero, and the expansion integrals
+        // return arbitrary values (e.g. 5.33 or 5.00 for an option whose
+        // intrinsic is 10, depending on the integration scheme) instead
+        // of the limit. This mirrors blackFormula's own zero-stdDev
+        // convention of returning the deterministic limit.
+        if (term == 0.0) {
+            results_.value = (*payoff)(spotPrice);
+            return;
+        }
 
         QL_REQUIRE(term < model_->timeGrid().back() ||
                        close_enough(term, model_->timeGrid().back()),
@@ -404,7 +417,7 @@ namespace QuantLib {
               QL_FAIL("unknown complex log formula");
           }
     }
- 
+
     Size AnalyticPTDHestonEngine::numberOfEvaluations() const {
         return evaluations_;
     }
