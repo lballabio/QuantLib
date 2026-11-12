@@ -2648,6 +2648,69 @@ BOOST_AUTO_TEST_CASE(testQdNegativeDividendYield) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testQdEnginesRejectPayoffAtExpiry) {
+    BOOST_TEST_MESSAGE(
+        "Testing that QdPlusAmericanEngine and QdFpAmericanEngine "
+        "reject an exercise with payoffAtExpiry...");
+
+    // detail::QdPutCallParityEngine::calculate() -- shared by both
+    // QdPlusAmericanEngine and QdFpAmericanEngine -- used to check only
+    // that the exercise type is American, without ever inspecting the
+    // AmericanExercise::payoffAtExpiry() flag. Every other closed-form
+    // American engine (BaroneAdesiWhaleyApproximationEngine,
+    // BjerksundStenslandApproximationEngine, JuQuadraticApproximationEngine)
+    // explicitly rejects this flag, since their analytic formulas assume
+    // the standard immediate-early-exercise convention, not the
+    // payoff-deferred-to-expiry one. Without the same guard, QD+/QD-FP
+    // would silently price such an option as if it were a standard
+    // American option, with no warning that the result is wrong for the
+    // exercise convention actually requested.
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(5, December, 2022);
+    Settings::instance().evaluationDate() = today;
+    const Date maturityDate = today + Period(18, Months);
+
+    const Real K = 90;
+    const auto spot = ext::make_shared<SimpleQuote>(100);
+    const auto qRate = ext::make_shared<SimpleQuote>(0.02);
+    const auto rRate = ext::make_shared<SimpleQuote>(0.03);
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot),
+        Handle<YieldTermStructure>(flatRate(qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(0.3, dc))
+    );
+
+    VanillaOption plainOption(
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, K),
+        ext::make_shared<AmericanExercise>(today, maturityDate));
+    VanillaOption payoffAtExpiryOption(
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, K),
+        ext::make_shared<AmericanExercise>(today, maturityDate, true));
+
+    const auto qdPlusEngine = ext::make_shared<QdPlusAmericanEngine>(process);
+    const auto qdFpEngine = ext::make_shared<QdFpAmericanEngine>(process);
+
+    for (const auto& engine :
+         {ext::shared_ptr<PricingEngine>(qdPlusEngine),
+          ext::shared_ptr<PricingEngine>(qdFpEngine)}) {
+
+        plainOption.setPricingEngine(engine);
+        const Real npv = plainOption.NPV();
+        // Guard against a vacuous pass: this leg shows that the rejection
+        // below targets the payoff-at-expiry convention only, not American
+        // exercise in general; unless the NPV is comfortably positive,
+        // passing it wouldn't demonstrate that.
+        BOOST_REQUIRE(npv > 1.0);
+
+        payoffAtExpiryOption.setPricingEngine(engine);
+        BOOST_CHECK_EXCEPTION(payoffAtExpiryOption.NPV(), Error,
+                              ExpectedErrorMessage("payoff at expiry not handled"));
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testBjerksundStenslandEuropeanGreeks) {
     BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland greeks when early exercise is not optimal...");
 
