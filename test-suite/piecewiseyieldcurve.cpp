@@ -1990,16 +1990,16 @@ void testPiecewiseSpreadYieldCurveImpl() {
                                          extrapolatedRow));
     BOOST_REQUIRE_EQUAL(extrapolatedRow.size(), curve->data().size() - 1);
     for (Size j = 1; j < curve->data().size(); ++j) {
-        Real value = spreadNode.nodeValue(j);
-        Real h = 1.0e-7 * std::max(std::abs(value), 0.01);
-        spreadNode.setNodeValue(j, value + h);
+        Real x = spreadNode.nodeValue(j);
+        Real h = 1.0e-7 * std::max(std::abs(x), 0.01);
+        spreadNode.setNodeValue(j, x + h);
         DiscountFactor up = curve->discount(sensitivityDate, true);
-        spreadNode.setNodeValue(j, value - h);
+        spreadNode.setNodeValue(j, x - h);
         DiscountFactor down = curve->discount(sensitivityDate, true);
-        spreadNode.setNodeValue(j, value);
+        spreadNode.setNodeValue(j, x);
         Real numerical = (up - down) / (2.0 * h);
         Real tolerance = 2.0e-6 * std::max(1.0, std::abs(numerical));
-        BOOST_CHECK_SMALL(extrapolatedRow[j - 1] - numerical, tolerance);
+        QL_CHECK_SMALL(extrapolatedRow[j - 1] - numerical, tolerance);
     }
 
     // Check that we reprice the swaps.
@@ -3096,8 +3096,8 @@ BOOST_AUTO_TEST_CASE(testCrossCurveJacobian) {
     BOOST_REQUIRE_EQUAL(partialInverse.columns(), strictInverse.columns());
     for (Size i = 0; i < partialInverse.rows(); ++i)
         for (Size j = 0; j < partialInverse.columns(); ++j)
-            BOOST_CHECK_SMALL(partialInverse[i][j] - strictInverse[i][j],
-                              1.0e-10);
+            QL_CHECK_SMALL(partialInverse[i][j] - strictInverse[i][j],
+                           1.0e-10);
 
     // projection-helper sensitivity to discount nodes
     std::vector<bool> analytic;
@@ -3188,10 +3188,10 @@ BOOST_AUTO_TEST_CASE(testCurveSensitivityPropagation) {
     rhs[1][1] = 12.0;
     Matrix solution = detail::checkedQrSolve(
         diagonal, rhs, "test Jacobian");
-    BOOST_CHECK_SMALL(solution[0][0] - 1.0, 1.0e-12);
-    BOOST_CHECK_SMALL(solution[0][1] - 2.0, 1.0e-12);
-    BOOST_CHECK_SMALL(solution[1][0] - 2.0, 1.0e-12);
-    BOOST_CHECK_SMALL(solution[1][1] - 3.0, 1.0e-12);
+    QL_CHECK_SMALL(solution[0][0] - 1.0, 1.0e-12);
+    QL_CHECK_SMALL(solution[0][1] - 2.0, 1.0e-12);
+    QL_CHECK_SMALL(solution[1][0] - 2.0, 1.0e-12);
+    QL_CHECK_SMALL(solution[1][1] - 3.0, 1.0e-12);
 
     // An unrelated singular component is not factored when extracting a
     // block from another component.
@@ -3205,7 +3205,7 @@ BOOST_AUTO_TEST_CASE(testCurveSensitivityPropagation) {
         detail::inverseCurveJacobianBlock(disconnected, 0, 0);
     BOOST_REQUIRE_EQUAL(selected.rows(), 1);
     BOOST_REQUIRE_EQUAL(selected.columns(), 1);
-    BOOST_CHECK_SMALL(selected[0][0] - 0.5, 1.0e-12);
+    QL_CHECK_SMALL(selected[0][0] - 0.5, 1.0e-12);
 
     // A cyclic dependency component is solved as one system.
     detail::CurveJacobianBlocks cycle;
@@ -3220,8 +3220,8 @@ BOOST_AUTO_TEST_CASE(testCurveSensitivityPropagation) {
         Matrix(1, 1, 2.0), Matrix(1, 1, 3.0)};
     std::vector<Matrix> propagated =
         detail::propagateCurveNodeSensitivities(cycle, cycleSensitivities);
-    BOOST_CHECK_SMALL(propagated[0][0][0] - 3.0, 1.0e-12);
-    BOOST_CHECK_SMALL(propagated[1][0][0] - 2.0, 1.0e-12);
+    QL_CHECK_SMALL(propagated[0][0][0] - 3.0, 1.0e-12);
+    QL_CHECK_SMALL(propagated[1][0][0] - 2.0, 1.0e-12);
 
     // Inverse-Jacobian blocks agree with a direct inversion for a coupled
     // component.
@@ -3238,7 +3238,7 @@ BOOST_AUTO_TEST_CASE(testCurveSensitivityPropagation) {
     for (Size a = 0; a < 2; ++a)
         for (Size b = 0; b < 2; ++b) {
             Matrix block = detail::inverseCurveJacobianBlock(coupled, a, b);
-            BOOST_CHECK_SMALL(block[0][0] - fullInverse[a][b], 1.0e-12);
+            QL_CHECK_SMALL(block[0][0] - fullInverse[a][b], 1.0e-12);
         }
 
     // ESTR discount curve
@@ -3637,7 +3637,7 @@ struct CoDependentPair {
     }
 
     (void)sizeof(CoDependentCurveType);
-    constexpr Real accuracy = 1e-11;
+    constexpr double accuracy = 1e-11;
     p->curve3m = ext::make_shared<CoDependentCurveType>(
         today, helpers3m, Actual360(), LogLinear(),
         GlobalBootstrap<CoDependentCurveType>(accuracy));
