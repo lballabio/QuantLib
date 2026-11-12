@@ -166,6 +166,37 @@ BOOST_AUTO_TEST_CASE(testJacobi) {
     testSingleJacobi(GaussGegenbauerIntegration(50,0.55));
 }
 
+BOOST_AUTO_TEST_CASE(testJacobiRemovableSingularities) {
+    BOOST_TEST_MESSAGE("Testing Gauss-Jacobi recurrence near removable singularities...");
+
+    // Reference values computed with 40-digit arithmetic from the closed forms
+    // a_0 = (beta-alpha)/(alpha+beta+2) and
+    // b_1 = 4(1+alpha)(1+beta)/((2+alpha+beta)^2 (3+alpha+beta)).
+    const Real tol = 1.0e-10; // percentage
+
+    // alpha+beta = -1 makes the general b_1 formula 0/0; this used to throw
+    const GaussJacobiPolynomial p1(-0.9999999998999999, -1.0e-10);
+    QL_CHECK_CLOSE(p1.beta(1), 2.0000023857267904134e-10, tol);
+    BOOST_CHECK_NO_THROW(GaussJacobiIntegration(10, -0.9999999998999999, -1.0e-10));
+
+    // ...and near it, the general formula silently lost accuracy
+    const GaussJacobiPolynomial p2(-0.3, -0.6999999999999);
+    QL_CHECK_CLOSE(p2.beta(1), 0.42000000000003498257, tol);
+
+    // alpha+beta = 0 makes the general a_0 formula 0/0
+    const GaussJacobiPolynomial p3(0.3, -0.30000000000000004);
+    QL_CHECK_CLOSE(p3.alpha(0), -0.30000000000000002498, tol);
+
+    const GaussJacobiPolynomial p4(0.3, -0.2999999999999);
+    QL_CHECK_CLOSE(p4.alpha(0), -0.29999999999993500477, tol);
+
+    // a_0 is also the first moment of the weight, which the quadrature
+    // should reproduce exactly
+    const GaussJacobiIntegration I(10, 0.3, -0.30000000000000004);
+    const Real firstMoment = I([&](Real x) { return x * p3.w(x); });
+    QL_CHECK_CLOSE(firstMoment, p3.mu_0() * -0.30000000000000002498, 1.0e-8);
+}
+
 BOOST_AUTO_TEST_CASE(testLaguerre) {
      BOOST_TEST_MESSAGE("Testing Gauss-Laguerre integration...");
 

@@ -28,6 +28,44 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        // power * N(y), where power = exp(logPower).  At low volatility and
+        // large carry, power can overflow while N(y) underflows even though
+        // their product is finite and not negligible (#2969); in that case
+        // the product is formed in log space.
+        Real powerTimesCumulativeNormal(const CumulativeNormalDistribution& f,
+                                        Real power, Real logPower, Real y) {
+            Real n = f(y);
+            if (n >= QL_MIN_POSITIVE_REAL && std::isfinite(power))
+                return power * n;
+
+            Real logN;
+            if (n >= QL_MIN_POSITIVE_REAL) {
+                logN = std::log(n);
+            } else {
+                // log of the asymptotic expansion that CumulativeNormalDistribution
+                // uses for very negative y, (26.2.12) in Abramowitz and Stegun,
+                // with the log of the Gaussian density taken in closed form.
+                Real sum = 1.0, ysqr = y*y, i = 1.0, g = 1.0, x, z,
+                     a = QL_MAX_REAL, lasta;
+                do {
+                    lasta = a;
+                    x = (4.0*i-3.0)/ysqr;
+                    z = x*((4.0*i-1)/ysqr);
+                    a = g*(x-z);
+                    sum -= a;
+                    g *= z;
+                    ++i;
+                    a = std::fabs(a);
+                } while (lasta>a && a>=std::fabs(sum*QL_EPSILON));
+                logN = -0.5*ysqr - 0.5*std::log(2.0*M_PI) - std::log(-y) + std::log(sum);
+            }
+            return std::exp(logPower + logN);
+        }
+
+    }
+
     AnalyticBarrierEngine::AnalyticBarrierEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
@@ -224,42 +262,42 @@ namespace QuantLib {
 
     Real AnalyticBarrierEngine::C(Real eta, Real phi) const {
         Real HS = barrier()/underlying();
+        Real logHS = std::log(HS);
         Real powHS0 = std::pow(HS, 2 * mu());
         Real powHS1 = powHS0 * HS * HS;
         Real y1 = std::log(barrier()*HS/strike())/stdDeviation() + muSigma();
-        Real N1 = f_(eta*y1);
-        Real N2 = f_(eta*(y1-stdDeviation()));
-        // when N1 or N2 are zero, the corresponding powHS might
-        // be infinity, resulting in a NaN for their products.  The limit should be 0.
-        return phi*(underlying() * dividendDiscount() * (N1 == 0.0 ? Real(0.0) : Real(powHS1 * N1))
-                      - strike() * riskFreeDiscount() * (N2 == 0.0 ? Real(0.0) : Real(powHS0 * N2)));
+        Real term1 = powerTimesCumulativeNormal(f_, powHS1, (2 * mu() + 2) * logHS, eta*y1);
+        Real term2 = powerTimesCumulativeNormal(f_, powHS0, 2 * mu() * logHS,
+                                                eta*(y1-stdDeviation()));
+        return phi*(underlying() * dividendDiscount() * term1
+                      - strike() * riskFreeDiscount() * term2);
     }
 
     Real AnalyticBarrierEngine::D(Real eta, Real phi) const {
         Real HS = barrier()/underlying();
+        Real logHS = std::log(HS);
         Real powHS0 = std::pow(HS, 2 * mu());
         Real powHS1 = powHS0 * HS * HS;
         Real y2 = std::log(barrier()/underlying())/stdDeviation() + muSigma();
-        Real N1 = f_(eta*y2);
-        Real N2 = f_(eta*(y2-stdDeviation()));
-        // when N1 or N2 are zero, the corresponding powHS might
-        // be infinity, resulting in a NaN for their products.  The limit should be 0.
-        return phi*(underlying() * dividendDiscount() * (N1 == 0.0 ? Real(0.0) : Real(powHS1 * N1))
-                      - strike() * riskFreeDiscount() * (N2 == 0.0 ? Real(0.0) : Real(powHS0 * N2)));
+        Real term1 = powerTimesCumulativeNormal(f_, powHS1, (2 * mu() + 2) * logHS, eta*y2);
+        Real term2 = powerTimesCumulativeNormal(f_, powHS0, 2 * mu() * logHS,
+                                                eta*(y2-stdDeviation()));
+        return phi*(underlying() * dividendDiscount() * term1
+                      - strike() * riskFreeDiscount() * term2);
     }
 
     Real AnalyticBarrierEngine::E(Real eta) const {
         if (rebate() > 0) {
-            Real powHS0 = std::pow(barrier()/underlying(), 2 * mu());
+            Real HS = barrier()/underlying();
+            Real powHS0 = std::pow(HS, 2 * mu());
             Real x2 =
                 std::log(underlying()/barrier())/stdDeviation() + muSigma();
             Real y2 =
                 std::log(barrier()/underlying())/stdDeviation() + muSigma();
             Real N1 = f_(eta*(x2 - stdDeviation()));
-            Real N2 = f_(eta*(y2 - stdDeviation()));
-            // when N2 is zero, powHS0 might be infinity, resulting in
-            // a NaN for their product.  The limit should be 0.
-            return rebate() * riskFreeDiscount() * (N1 - (N2 == 0.0 ? Real(0.0) : Real(powHS0 * N2)));
+            Real term2 = powerTimesCumulativeNormal(f_, powHS0, 2 * mu() * std::log(HS),
+                                                    eta*(y2 - stdDeviation()));
+            return rebate() * riskFreeDiscount() * (N1 - term2);
         } else {
             return 0.0;
         }
@@ -278,11 +316,12 @@ namespace QuantLib {
             Real z = std::log(barrier()/underlying())/sigmaSqrtT
                 + lambda * sigmaSqrtT;
 
-            Real N1 = f_(eta * z);
-            Real N2 = f_(eta * (z - 2.0 * lambda * sigmaSqrtT));
-            // when N1 or N2 are zero, the corresponding powHS might
-            // be infinity, resulting in a NaN for their product.  The limit should be 0.
-            return rebate() * ((N1 == 0.0 ? Real(0.0) : Real(powHSplus * N1)) + (N2 == 0.0 ? Real(0.0) : Real(powHSminus * N2)));
+            Real logHS = std::log(HS);
+            Real term1 = powerTimesCumulativeNormal(f_, powHSplus, (m + lambda) * logHS,
+                                                    eta * z);
+            Real term2 = powerTimesCumulativeNormal(f_, powHSminus, (m - lambda) * logHS,
+                                                    eta * (z - 2.0 * lambda * sigmaSqrtT));
+            return rebate() * (term1 + term2);
         } else {
             return 0.0;
         }

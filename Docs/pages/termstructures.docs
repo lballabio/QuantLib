@@ -30,6 +30,10 @@
     classes are provided which already implement part of the required
     methods, thus allowing the programmer to define only the
     non-redundant part.
+
+    \section bootstrap_jacobians Jacobians of bootstrapped yield curves
+
+    \copydetails quotesensitivitycalculator.hpp
 */
 
 /*! \defgroup defaultprobabilitytermstructures Default-probability term structures */

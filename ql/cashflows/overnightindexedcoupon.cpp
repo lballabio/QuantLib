@@ -258,9 +258,9 @@ const std::optional<Integer>& roundingPrecision)
         auto p = ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(pricer());
         
         if (averagingMethod_ == RateAveraging::Simple)
-            QL_FAIL("Average OIS Coupon does not have an effectiveIndexFixing"); // FIXME: better error message
+            QL_FAIL("effectiveIndexFixing() is not defined for an OvernightIndexedCoupon when RateAveraging::Simple is used");
 
-        QL_REQUIRE(p, "OvernightIndexedCoupon::effectiveSpread(): expected OvernightIndexedCouponPricer");
+        QL_REQUIRE(p, "OvernightIndexedCoupon::effectiveIndexFixing(): expected OvernightIndexedCouponPricer");
         p->initialize(*this);
         return p->effectiveIndexFixing();
     }

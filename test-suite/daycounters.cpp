@@ -641,6 +641,23 @@ BOOST_AUTO_TEST_CASE(testActualActualWithSchedule) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testActualActualWithLongFirstAndShortLastCoupon) {
+    BOOST_TEST_MESSAGE("Testing actual/actual (ISMA) with long first and short last coupons...");
+
+    const Schedule schedule(
+        {Date(6, December, 2024), Date(15, June, 2025),
+         Date(15, December, 2025), Date(15, June, 2026),
+         Date(15, October, 2026)},
+        NullCalendar(), Unadjusted, Unadjusted, Period(6, Months),
+        DateGeneration::Backward, false, {false, true, true, false});
+    const ActualActual dayCounter(ActualActual::ISMA, schedule);
+
+    BOOST_CHECK_CLOSE(dayCounter.yearFraction(Date(15, December, 2025),
+                                             Date(15, June, 2026)), 0.5, 1.0e-10);
+    BOOST_CHECK_CLOSE(dayCounter.yearFraction(Date(15, June, 2026),
+                                             Date(15, October, 2026)), 1.0 / 3.0, 1.0e-10);
+}
+
 BOOST_AUTO_TEST_CASE(testSimple) {
 
     BOOST_TEST_MESSAGE("Testing simple day counter...");

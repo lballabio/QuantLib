@@ -63,6 +63,8 @@ namespace QuantLib {
             || (d == 1  && m == November)
             // Independence Day
             || (d ==11  && m == November)
+            // Christmas Eve (since 2025)
+            || (d == 24 && m == December && y >= 2025)
             // Christmas
             || (d == 25 && m == December)
             // 2nd Day of Christmas

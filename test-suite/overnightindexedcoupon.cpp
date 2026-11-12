@@ -1898,7 +1898,7 @@ BOOST_AUTO_TEST_CASE(testInterestCalculatedAccrualDateFixingHolidayAccruals) {
 }
 
 BOOST_AUTO_TEST_CASE(testErrorWhenCurveNullOrTooNarrow) {
-    BOOST_TEST_MESSAGE("Test that the expected error is raised when the curve cannot value the coupon...");
+    BOOST_TEST_MESSAGE("Testing that the expected error is raised when the curve cannot value the coupon...");
 
     CommonVars vars(Date(26, March, 2026));
     auto coupon = vars.makeCoupon(Date(31, March, 2026), Date(31, March, 2027), 0, 0, false,
@@ -1925,7 +1925,7 @@ BOOST_AUTO_TEST_CASE(testErrorWhenCurveNullOrTooNarrow) {
 }
 
 BOOST_AUTO_TEST_CASE(testExCouponAccruedAmountAroundAccrualEndDate) {
-    BOOST_TEST_MESSAGE("Test ex-coupon accrued amount around the accrual end date...");
+    BOOST_TEST_MESSAGE("Testing ex-coupon accrued amount around the accrual end date...");
     CommonVars vars(Date(26, March, 2026));
     vars.forecastCurve.linkTo(flatRate(0.04, Actual360()));
     const auto exCpnDate = Date(27, March, 2027);
@@ -1940,7 +1940,7 @@ BOOST_AUTO_TEST_CASE(testExCouponAccruedAmountAroundAccrualEndDate) {
 }
 
 BOOST_AUTO_TEST_CASE(testAccruedAmountExCouponDateAfterAccrualEndDate) {
-    BOOST_TEST_MESSAGE("Test ex-coupon accrued amount when ex-coupon date is after the accrual end date...");
+    BOOST_TEST_MESSAGE("Testing ex-coupon accrued amount when ex-coupon date is after the accrual end date...");
     CommonVars vars(Date(26, March, 2026));
     vars.forecastCurve.linkTo(flatRate(0.04, Actual360()));
     // set exCouponDate after accrualEndDate and before paymentDate
@@ -1954,7 +1954,7 @@ BOOST_AUTO_TEST_CASE(testAccruedAmountExCouponDateAfterAccrualEndDate) {
 }
 
 BOOST_AUTO_TEST_CASE(testAccruedAmountInAdvance) {
-    BOOST_TEST_MESSAGE("Test rate and accrued amount for in-advance compounding SOFR swaps...");
+    BOOST_TEST_MESSAGE("Testing rate and accrued amount for in-advance compounding SOFR swaps...");
     CommonVars vars(Date(21, April, 2026));
     vars.forecastCurve.linkTo(flatRate(0.04, Actual360()));
     auto couponAdvance = vars.makeCoupon(Date(23, April, 2027), Date(23, April, 2028), 0, 0, false, true,
@@ -1996,7 +1996,7 @@ BOOST_AUTO_TEST_CASE(testAccruedAmountInAdvance) {
 }
 
 BOOST_AUTO_TEST_CASE(testRateComputationStartDateFixingHoliday) {
-    BOOST_TEST_MESSAGE("Test forward accrued amount when the rate-computation start date lands on a fixing holiday...");
+    BOOST_TEST_MESSAGE("Testing forward accrued amount when the rate-computation start date lands on a fixing holiday...");
     CommonVars vars(Date(16, April, 2025));
     vars.forecastCurve.linkTo(flatRate(0.04, Actual360()));
     auto coupon = vars.makeCoupon(Date(21, April, 2025), Date(21, April, 2026), 0, 0, false, true,
