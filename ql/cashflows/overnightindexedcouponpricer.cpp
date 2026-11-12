@@ -127,10 +127,22 @@ namespace QuantLib {
 
         Real compoundFactor = 1.0, compoundFactorWithoutSpread = 1.0;
 
+        auto pastFixingIt = (i < n && fixingDates[i] < today)
+                                ? pastFixings.lower_bound(fixingDates[i])
+                                : pastFixings.cend();
+        const auto pastFixingsEnd = pastFixings.cend();
+
         // already fixed part
         while (i < n && fixingDates[i] < today) {
             // rate must have been fixed
-            Rate fixing = pastFixings[fixingDates[i]];
+            while (pastFixingIt != pastFixingsEnd &&
+                   pastFixingIt->first < fixingDates[i]) {
+                ++pastFixingIt;
+            }
+            Rate fixing = (pastFixingIt != pastFixingsEnd &&
+                           pastFixingIt->first == fixingDates[i])
+                              ? pastFixingIt->second
+                              : Null<Real>();
             QL_REQUIRE(fixing != Null<Real>(),
                        "Missing " << index->name() << " fixing for " << fixingDates[i]);
             const auto [gf, gfSpread] = growthFactor(fixing, i);
@@ -247,9 +259,21 @@ namespace QuantLib {
 
         // already fixed part
         Date today = Settings::instance().evaluationDate();
+        auto pastFixingIt = (i < n && fixingDates[i] < today)
+                                ? pastFixings.lower_bound(fixingDates[i])
+                                : pastFixings.cend();
+        const auto pastFixingsEnd = pastFixings.cend();
+
         while (i < n && fixingDates[i] < today) {
             // rate must have been fixed
-            Rate pastFixing = pastFixings[fixingDates[i]];
+            while (pastFixingIt != pastFixingsEnd &&
+                   pastFixingIt->first < fixingDates[i]) {
+                ++pastFixingIt;
+            }
+            Rate pastFixing = (pastFixingIt != pastFixingsEnd &&
+                               pastFixingIt->first == fixingDates[i])
+                                  ? pastFixingIt->second
+                                  : Null<Real>();
             QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " << index->name() << " fixing for " << fixingDates[i]);
             Time span = (date >= interestDates[i + 1] ?

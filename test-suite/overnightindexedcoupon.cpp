@@ -353,6 +353,87 @@ BOOST_AUTO_TEST_CASE(testPastCouponRate) {
     CHECK_OIS_COUPON_RESULT("coupon amount", pastCoupon->amount(), expectedAmount, 1e-8);
 }
 
+
+BOOST_AUTO_TEST_CASE(testPastSimpleAveragedCouponRate) {
+    BOOST_TEST_MESSAGE(
+        "Testing historical arithmetic-averaged overnight coupon rate...");
+
+    CommonVars vars;
+
+    auto coupon = vars.makeCoupon(
+        Date(18, October, 2021),
+        Date(18, November, 2021),
+        Null<Natural>(), 0, false, false, RateAveraging::Simple);
+
+    coupon->setPricer(
+        ext::make_shared<ArithmeticAveragedOvernightIndexedCouponPricer>());
+
+    const auto& fixingDates = coupon->fixingDates();
+    const auto& dt = coupon->dt();
+    const auto& pastFixings = vars.sofr->timeSeries();
+
+    BOOST_REQUIRE_EQUAL(fixingDates.size(), dt.size());
+
+    Real accumulatedRate = 0.0;
+    for (Size i = 0; i < fixingDates.size(); ++i) {
+        const Rate fixing = pastFixings[fixingDates[i]];
+        BOOST_REQUIRE(fixing != Null<Real>());
+        accumulatedRate += fixing * dt[i];
+    }
+
+    const Rate expectedRate = accumulatedRate / coupon->accrualPeriod();
+
+    CHECK_OIS_COUPON_RESULT(
+        "historical arithmetic-averaged coupon rate",
+        coupon->rate(), expectedRate, 1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testMissingHistoricalFixing) {
+    BOOST_TEST_MESSAGE(
+        "Testing missing historical fixing in overnight coupon pricers...");
+
+    CommonVars vars;
+
+    const auto& pastFixings = vars.sofr->timeSeries();
+    const Calendar calendar = vars.sofr->fixingCalendar();
+
+    // Find an unused historical business day without changing shared history.
+    Date missingFixingDate(1, January, 2020);
+
+    while (missingFixingDate < vars.today &&
+           (!calendar.isBusinessDay(missingFixingDate) ||
+            pastFixings[missingFixingDate] != Null<Real>())) {
+        missingFixingDate = calendar.advance(missingFixingDate, 1, Days);
+    }
+
+    BOOST_REQUIRE(missingFixingDate < vars.today);
+
+    // Move the accrual start forward by fixingDays so that its first
+    // fixing date is the missing historical date.
+    const Date startDate = calendar.advance(
+        missingFixingDate, vars.sofr->fixingDays(), Days);
+    const Date endDate = calendar.advance(startDate, 1, Days);
+
+    auto compoundedCoupon = vars.makeCoupon(startDate, endDate);
+    auto simpleCoupon = vars.makeCoupon(
+        startDate, endDate, Null<Natural>(), 0,
+        false, false, RateAveraging::Simple);
+
+    simpleCoupon->setPricer(
+        ext::make_shared<ArithmeticAveragedOvernightIndexedCouponPricer>());
+
+    BOOST_REQUIRE(!compoundedCoupon->fixingDates().empty());
+    BOOST_REQUIRE(!simpleCoupon->fixingDates().empty());
+
+    BOOST_REQUIRE_EQUAL(
+        compoundedCoupon->fixingDates().front(), missingFixingDate);
+    BOOST_REQUIRE_EQUAL(
+        simpleCoupon->fixingDates().front(), missingFixingDate);
+
+    BOOST_CHECK_THROW(compoundedCoupon->rate(), Error);
+    BOOST_CHECK_THROW(simpleCoupon->rate(), Error);
+}
+
 BOOST_AUTO_TEST_CASE(testPastSpreadedCouponRate) {
     BOOST_TEST_MESSAGE("Testing rate for past overnight-indexed coupon with compounded spread...");
 
