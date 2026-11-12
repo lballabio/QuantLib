@@ -287,7 +287,7 @@ namespace QuantLib {
         }
         std::transform(hitsByDate.begin(), hitsByDate.end(),
                        hitsByDate.begin(),
-                       [this](Real x){ return x/nSims_; });
+                       [this](Real x) -> Real { return x/nSims_; });
         return hitsByDate;
         // \todo Provide confidence interval
     }

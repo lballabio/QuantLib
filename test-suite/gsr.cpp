@@ -55,6 +55,8 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
+#include <ql/instruments/capfloor.hpp>
+#include <ql/pricingengines/capfloor/gaussian1dcapfloorengine.hpp>
 
 using namespace QuantLib;
 using boost::unit_test_framework::test_suite;
@@ -1323,6 +1325,112 @@ BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianNonBracketableErrorMessage) {
                         "bounds: " << e.what());
         }
     }
+
+}
+
+BOOST_AUTO_TEST_CASE(testCapFloorNonZeroSpreadConsistency) {
+    BOOST_TEST_MESSAGE("Testing Gaussian1dCapFloorEngine with a non-zero "
+                        "floating-leg spread...");
+
+    // Gaussian1dCapFloorEngine used to QL_REQUIRE every spread to be exactly
+    // zero, even though CapFloor::setupArguments() already pre-adjusts
+    // capRates/floorRates to (strike-spread)/gearing before the engine ever
+    // sees them -- exactly the same pre-adjustment the other cap/floor
+    // engines (analytic, Black, Bachelier) rely on without any such
+    // restriction. A cap with gearing 1 and spread s, strike K, is therefore
+    // mathematically identical to a zero-spread cap with strike K-s: both
+    // reduce to max(forward - (K-s), 0) once the adjustment is applied. This
+    // test prices both and checks they agree -- it would have thrown on the
+    // old, overly strict check before even reaching the comparison.
+
+    Date referenceDate(14, November, 2012);
+    Settings::instance().evaluationDate() = referenceDate;
+
+    Handle<YieldTermStructure> yts(
+        flatRate(referenceDate, 0.02, Actual365Fixed()));
+    auto index = ext::make_shared<Euribor>(6 * Months, yts);
+
+    Schedule schedule(referenceDate + 2 * Days, referenceDate + 5 * Years,
+                       6 * Months, index->fixingCalendar(), ModifiedFollowing,
+                       ModifiedFollowing, DateGeneration::Forward, false);
+
+    // Strike well below the 2% flat forward (comfortably in the money) and a
+    // small mean reversion (so the model's forward distribution has real
+    // dispersion) are both required: with an out-of-the-money strike or a
+    // large mean reversion, both legs' NPVs collapse to (near) zero and the
+    // equality check below would pass trivially even if the spread
+    // adjustment were silently ignored.
+    Spread spread = 0.0010;
+    Rate strike = 0.01;
+
+    Leg spreadLeg = IborLeg(schedule, index)
+                        .withNotionals(1.0)
+                        .withSpreads(spread)
+                        .withPaymentDayCounter(index->dayCounter());
+    CapFloor spreadCap(CapFloor::Cap, spreadLeg,
+                        std::vector<Rate>(1, strike));
+
+    Leg zeroSpreadLeg = IborLeg(schedule, index)
+                            .withNotionals(1.0)
+                            .withPaymentDayCounter(index->dayCounter());
+    CapFloor shiftedCap(CapFloor::Cap, zeroSpreadLeg,
+                         std::vector<Rate>(1, strike - spread));
+
+    std::vector<Date> stepDates;
+    std::vector<Real> vols(1, 0.01);
+    auto gsr = ext::make_shared<Gsr>(yts, stepDates, vols, 0.01);
+    auto engine = ext::make_shared<Gaussian1dCapFloorEngine>(gsr, 64, 7.0);
+
+    spreadCap.setPricingEngine(engine);
+    shiftedCap.setPricingEngine(engine);
+
+    Real spreadCapNpv = spreadCap.NPV(); // must not throw
+    Real shiftedCapNpv = shiftedCap.NPV();
+
+    BOOST_CHECK(std::isfinite(spreadCapNpv));
+    // Guard against a vacuous pass: both engines priced the (in-the-money)
+    // reference cap. Unless this is comfortably positive, the comparison
+    // below would not actually be exercising the spread-adjustment logic.
+    BOOST_REQUIRE(shiftedCapNpv > 1.0e-4);
+    QL_CHECK_CLOSE(spreadCapNpv, shiftedCapNpv, 1.0e-10);
+
+    // The floor and collar follow different code paths in the engine's
+    // calculate() (a collar is priced as a cap minus a floor), and
+    // setupArguments() adjusts floorRates with the same (strike-spread)
+    // pre-scaling it applies to capRates -- so the same identity holds:
+    // a floor with spread s at strike K is a zero-spread floor at K-s,
+    // and a collar with spread s at strikes (Kc, Kf) is a zero-spread
+    // collar at (Kc-s, Kf-s).
+    Rate floorStrike = 0.03; // above the forward: the floor is in the money
+    CapFloor spreadFloor(CapFloor::Floor, spreadLeg,
+                         std::vector<Rate>(1, floorStrike));
+    CapFloor shiftedFloor(CapFloor::Floor, zeroSpreadLeg,
+                          std::vector<Rate>(1, floorStrike - spread));
+    spreadFloor.setPricingEngine(engine);
+    shiftedFloor.setPricingEngine(engine);
+    Real spreadFloorNpv = spreadFloor.NPV();
+    Real shiftedFloorNpv = shiftedFloor.NPV();
+    BOOST_CHECK(std::isfinite(spreadFloorNpv));
+    BOOST_REQUIRE(shiftedFloorNpv > 1.0e-4);
+    QL_CHECK_CLOSE(spreadFloorNpv, shiftedFloorNpv, 1.0e-10);
+
+    Rate collarCapStrike = 0.015, collarFloorStrike = 0.010;
+    CapFloor spreadCollar(CapFloor::Collar, spreadLeg,
+                          std::vector<Rate>(1, collarCapStrike),
+                          std::vector<Rate>(1, collarFloorStrike));
+    CapFloor shiftedCollar(CapFloor::Collar, zeroSpreadLeg,
+                           std::vector<Rate>(1, collarCapStrike - spread),
+                           std::vector<Rate>(1, collarFloorStrike - spread));
+    spreadCollar.setPricingEngine(engine);
+    shiftedCollar.setPricingEngine(engine);
+    Real spreadCollarNpv = spreadCollar.NPV();
+    Real shiftedCollarNpv = shiftedCollar.NPV();
+    BOOST_CHECK(std::isfinite(spreadCollarNpv));
+    // A collar nets a long caplet against a short floorlet, so it is the
+    // distance from zero (either sign) that keeps the comparison below
+    // from passing vacuously.
+    BOOST_REQUIRE(std::fabs(shiftedCollarNpv) > 1.0e-4);
+    QL_CHECK_CLOSE(spreadCollarNpv, shiftedCollarNpv, 1.0e-10);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

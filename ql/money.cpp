@@ -90,7 +90,7 @@ namespace QuantLib {
     Decimal operator/(const Money& m1, const Money& m2) {
         return apply<Decimal>(
                     m1, m2,
-                    [](const Real x, const Real y) { return x / y; });
+                    [](const Real x, const Real y) -> Real { return x / y; });
     }
 
     bool operator==(const Money& m1, const Money& m2) {

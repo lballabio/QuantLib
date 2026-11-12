@@ -1240,7 +1240,7 @@ namespace QuantLib {
                                                 Handle<Quote>(zSpreadQuote),
                                                 compounding,
                                                 frequency);
-        auto objFunction = [&](Rate zSpread) {
+        auto objFunction = [&](Rate zSpread) -> Real {
             zSpreadQuote->setValue(zSpread);
             Real NPV = CashFlows::npv(leg, spreadedCurve,
                                       includeSettlementDateFlows,
