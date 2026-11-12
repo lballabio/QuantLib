@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2002, 2003, 2008, 2009 Ferdinando Ametrano
  Copyright (C) 2004, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +30,7 @@
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/mixedinterpolation.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -395,6 +397,46 @@ namespace QuantLib {
             Real secondDerivative(Real x) const override {
                 return derivative(x)*interpolation_.derivative(x, true) +
                             value(x)*interpolation_.secondDerivative(x, true);
+            }
+            std::vector<std::pair<Size, Real>> nodeSensitivities(Real x) const override {
+                // f(x) = exp(g(x)) with g interpolating log(y)
+                // df/dy_j = f(x) * dg/d(log y_j) / y_j
+                auto sensitivities = interpolation_.nodeSensitivities(x, true);
+                if (sensitivities.empty())
+                    return sensitivities;
+                Real v = value(x);
+                for (auto& w : sensitivities)
+                    w.second *= v/this->yBegin_[w.first];
+                return sensitivities;
+            }
+            std::vector<std::pair<Size, Real>> derivativeNodeSensitivities(Real x) const override {
+                // f = exp(g), with g interpolating log(y), hence
+                // d(f')/d(y_j) = f/y_j * (g' w_j + w'_j).
+                auto valueSensitivities = interpolation_.nodeSensitivities(x, true);
+                auto slopeSensitivities =
+                    interpolation_.derivativeNodeSensitivities(x, true);
+                if (valueSensitivities.empty() || slopeSensitivities.empty())
+                    return {};
+
+                std::vector<std::pair<Size, Real>> sensitivities;
+                sensitivities.reserve(valueSensitivities.size() + slopeSensitivities.size());
+                Real slope = interpolation_.derivative(x, true);
+                for (const auto& [j, w] : valueSensitivities)
+                    sensitivities.emplace_back(j, slope*w);
+                for (const auto& [j, w] : slopeSensitivities) {
+                    auto found = std::find_if(
+                        sensitivities.begin(), sensitivities.end(),
+                        [j = j](const auto& entry) { return entry.first == j; });
+                    if (found == sensitivities.end())
+                        sensitivities.emplace_back(j, w);
+                    else
+                        found->second += w;
+                }
+
+                Real v = value(x);
+                for (auto& [j, w] : sensitivities)
+                    w *= v/this->yBegin_[j];
+                return sensitivities;
             }
 
           private:
