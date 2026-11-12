@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2018 Roy Zywina
  Copyright (C) 2019, 2020 Eisuke Tani
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,6 +20,7 @@
 */
 
 #include <ql/termstructures/yield/overnightindexfutureratehelper.hpp>
+#include <ql/experimental/termstructures/quotesensitivitycalculator.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/utilities/null_deleter.hpp>
 namespace QuantLib {
@@ -89,6 +91,76 @@ namespace QuantLib {
     Real OvernightIndexFutureRateHelper::impliedQuote() const {
         future_->recalculate();
         return future_->NPV();
+    }
+
+    ImpliedQuoteSensitivities OvernightIndexFutureRateHelper::impliedQuoteSensitivitiesByCurve() const {
+        if (termStructure_ == nullptr)
+            return {};
+
+        const auto& index = future_->overnightIndex();
+        const Calendar& calendar = index->fixingCalendar();
+        const DayCounter& dc = index->dayCounter();
+        Date valueDate = future_->valueDate();
+        Date maturityDate = future_->maturityDate();
+        Date today = Settings::instance().evaluationDate();
+        Time tauRef = dc.yearFraction(valueDate, maturityDate);
+
+        ImpliedQuoteSensitivities result;
+        auto& own = result.sensitivities[termStructure_];
+        switch (future_->averagingMethod()) {
+          case RateAveraging::Compound: {
+            // compoundedRate() telescopes to P(start)/P(maturity)
+            Date start = valueDate;
+            if (today > valueDate) {
+                start = calendar.adjust(today);
+                if (start < maturityDate && index->hasHistoricalFixing(start))
+                    start = std::min(calendar.advance(start, 1, Days), maturityDate);
+            }
+            if (start >= maturityDate) {
+                // fully fixed
+                own.emplace_back(maturityDate, 0.0);
+                break;
+            }
+
+            // NPV = 100*(1-adj-rate), rate = (prod-1)/tauRef
+            // prod = C_past * P(start)/P(maturity)
+            Real rate = 1.0 - impliedQuote()/100.0 - future_->convexityAdjustment();
+            Real prod = rate*tauRef + 1.0;
+            Real pastCompounding = prod*termStructure_->discount(maturityDate)
+                                   /termStructure_->discount(start);
+            detail::addSimpleForwardSensitivities(result, *termStructure_,
+                                                  start, maturityDate, tauRef,
+                                                  -100.0*pastCompounding);
+            break;
+          }
+          case RateAveraging::Simple: {
+            // averagedRate() uses one simple forward per future fixing
+            Date d1 = valueDate;
+            Date fixingDate = calendar.adjust(d1, Preceding);
+            while (d1 < maturityDate) {
+                Date d2 = calendar.advance(d1, 1, Days);
+                bool forecast = fixingDate > today ||
+                    (fixingDate == today && !index->hasHistoricalFixing(fixingDate));
+                if (forecast) {
+                    // the fixing enters the average with weight w/tauRef
+                    Time w = dc.yearFraction(d1, std::min(d2, maturityDate));
+                    Time tauFixing = dc.yearFraction(fixingDate, d2);
+                    detail::addSimpleForwardSensitivities(result, *termStructure_,
+                                                          fixingDate, d2, tauFixing,
+                                                          -100.0*w/tauRef);
+                }
+                fixingDate = d1 = d2;
+            }
+            if (own.empty())
+                // fully fixed
+                own.emplace_back(maturityDate, 0.0);
+            break;
+          }
+          default:
+            return {};
+        }
+        result.available = true;
+        return result;
     }
 
     void OvernightIndexFutureRateHelper::setTermStructure(YieldTermStructure* t) {

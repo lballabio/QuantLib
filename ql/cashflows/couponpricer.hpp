@@ -124,6 +124,7 @@ namespace QuantLib {
             }
             registerWith(correlation_);
         };
+        TimingAdjustment timingAdjustment() const { return timingAdjustment_; }
         void initialize(const FloatingRateCoupon& coupon) override;
         Real swapletPrice() const override;
         Rate swapletRate() const override;

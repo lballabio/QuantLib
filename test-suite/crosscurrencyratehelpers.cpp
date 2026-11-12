@@ -40,6 +40,7 @@
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
@@ -56,6 +57,54 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 BOOST_AUTO_TEST_SUITE(CrossCurrencyRateHelpersTests)
 
 namespace {
+
+    /*! Checks each curve's reported (date, dQ/dP) entries against a finite
+        difference under a parallel tilt P(t) -> P(t) exp(-eps t) of that
+        curve. Every curve the helper reports must be given an installer.
+    */
+    void checkSensitivitiesAgainstTilt(
+        const ext::shared_ptr<RateHelper>& helper,
+        const std::vector<std::pair<
+            ext::shared_ptr<YieldTermStructure>,
+            std::function<void(const ext::shared_ptr<YieldTermStructure>&)>>>&
+            installers,
+        bool requireAllCurves = true) {
+        ImpliedQuoteSensitivities s = helper->impliedQuoteSensitivitiesByCurve();
+        BOOST_REQUIRE(s.available);
+        for (const auto& [curve, entries] : s.sensitivities) {
+            bool covered = false;
+            for (const auto& [c, install] : installers)
+                covered = covered ||
+                    static_cast<const TermStructure*>(c.get()) == curve;
+            BOOST_CHECK_MESSAGE(covered || !requireAllCurves,
+                                "a reported curve has no tilt check");
+        }
+        for (const auto& [curve, install] : installers) {
+            Real predicted = 0.0;
+            auto bucket = s.sensitivities.find(curve.get());
+            if (bucket != s.sensitivities.end())
+                for (const auto& [date, dQdP] : bucket->second)
+                    predicted += dQdP * (-curve->timeFromReference(date)) *
+                                 curve->discount(date, true);
+            auto spread = ext::make_shared<SimpleQuote>(0.0);
+            auto tilted = ext::make_shared<ZeroSpreadedTermStructure>(
+                Handle<YieldTermStructure>(curve), Handle<Quote>(spread));
+            tilted->enableExtrapolation();
+            install(tilted);
+            const Real h = 1.0e-7;
+            spread->setValue(+h);
+            Real up = helper->impliedQuote();
+            spread->setValue(-h);
+            Real down = helper->impliedQuote();
+            install(curve);
+            Real numerical = (up - down) / (2.0 * h);
+            BOOST_CHECK_MESSAGE(
+                std::fabs(predicted - numerical) <=
+                    1.0e-5 * std::max(1.0, std::fabs(numerical)),
+                "predicted tilt sensitivity " << predicted <<
+                " does not match the bumped " << numerical);
+        }
+    }
 
     struct IborCouponSettingsRestorer { // NOLINT(cppcoreguidelines-special-member-functions)
         bool initiallyUsingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
@@ -459,6 +508,49 @@ BOOST_AUTO_TEST_CASE(testIndexedCouponOverrides) {
     checkCrossCurrencyHelperCouponModes(std::nullopt, true);
 }
 
+BOOST_AUTO_TEST_CASE(testConstNotionalAnalyticQuoteSensitivities) {
+    BOOST_TEST_MESSAGE(
+        "Testing analytical constant-notional cross-currency quote sensitivities...");
+
+    CommonVars vars;
+    auto bootstrappedCurve = flatRate(vars.curveSettlementDt, 0.01, vars.dayCount);
+
+    for (bool collateralInBaseCurrency : {false, true}) {
+        Handle<YieldTermStructure> collateralCurve =
+            collateralInBaseCurrency ? vars.baseCcyIdxHandle : vars.quoteCcyIdxHandle;
+        for (bool basisOnBaseCurrencyLeg : {false, true}) {
+            auto helper =
+                ext::make_shared<ConstNotionalCrossCurrencyBasisSwapRateHelper>(
+                    makeQuoteHandle(-20.0 * vars.basisPoint), 2 * Years,
+                    vars.instrumentSettlementDays, vars.calendar,
+                    vars.businessConvention, vars.endOfMonth, vars.baseCcyIdx,
+                    vars.quoteCcyIdx, collateralCurve,
+                    collateralInBaseCurrency, basisOnBaseCurrencyLeg);
+            helper->setTermStructure(bootstrappedCurve.get());
+
+            ImpliedQuoteSensitivities sensitivities =
+                helper->impliedQuoteSensitivitiesByCurve();
+            BOOST_REQUIRE(sensitivities.available);
+            BOOST_CHECK(sensitivities.incomplete.empty());
+
+            checkSensitivitiesAgainstTilt(
+                helper,
+                {{bootstrappedCurve,
+                  [&](const ext::shared_ptr<YieldTermStructure>& ts) {
+                      helper->setTermStructure(ts.get());
+                  }},
+                 {*vars.baseCcyIdxHandle,
+                  [&](const ext::shared_ptr<YieldTermStructure>& ts) {
+                      vars.baseCcyIdxHandle.linkTo(ts);
+                  }},
+                 {*vars.quoteCcyIdxHandle,
+                  [&](const ext::shared_ptr<YieldTermStructure>& ts) {
+                      vars.quoteCcyIdxHandle.linkTo(ts);
+                  }}});
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testConstNotionalBasisSwapsWithCollateralInQuoteAndBasisInBaseCcy) {
     BOOST_TEST_MESSAGE("Testing constant notional basis swaps with collateral in quote ccy and "
                        "basis in base ccy...");
@@ -717,9 +809,9 @@ BOOST_AUTO_TEST_CASE(testMtMHelperMatchesStandaloneWithAsymmetricFxHolidays) {
         legCalendar.advance(start, -static_cast<Integer>(fxResetFixingDays), Days),
         Date(4, July, 2024));
 
-    Handle<YieldTermStructure> eurForecast(
+    RelinkableHandle<YieldTermStructure> eurForecast(
         ext::make_shared<FlatForward>(today, 0.015, Actual365Fixed()));
-    Handle<YieldTermStructure> usdCurve(
+    RelinkableHandle<YieldTermStructure> usdCurve(
         ext::make_shared<FlatForward>(today, 0.030, Actual365Fixed()));
     auto eurIndex = ext::make_shared<Euribor3M>(eurForecast);
     auto usdIndex = ext::make_shared<USDLibor>(3 * Months, usdCurve);
@@ -744,6 +836,30 @@ BOOST_AUTO_TEST_CASE(testMtMHelperMatchesStandaloneWithAsymmetricFxHolidays) {
     eurDiscount->enableExtrapolation();
     eurDiscount->discount(helper->maturityDate());
     Handle<YieldTermStructure> eurDiscountHandle(eurDiscount);
+
+    ImpliedQuoteSensitivities sensitivities =
+        helper->impliedQuoteSensitivitiesByCurve();
+    BOOST_REQUIRE(sensitivities.available);
+    BOOST_CHECK(sensitivities.incomplete.empty());
+
+    // hold the bootstrapped curve fixed while the other curves move, so
+    // the finite differences are partial derivatives.  The USD curve is
+    // not tilted: relinking it while the bootstrapped curve is frozen
+    // aborts inside the pricing (to be investigated separately), and
+    // unfrozen the bootstrap would absorb the tilt.
+    eurDiscount->freeze();
+    checkSensitivitiesAgainstTilt(
+        helper,
+        {{eurDiscount,
+          [&](const ext::shared_ptr<YieldTermStructure>& ts) {
+              helper->setTermStructure(ts.get());
+          }},
+         {*eurForecast,
+          [&](const ext::shared_ptr<YieldTermStructure>& ts) {
+              eurForecast.linkTo(ts);
+          }}},
+        /*requireAllCurves=*/false);
+    eurDiscount->unfreeze();
 
     auto helperSwap = helper->swap();
     auto standalone = ext::make_shared<MtMCrossCurrencyBasisSwap>(

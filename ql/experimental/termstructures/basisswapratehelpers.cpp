@@ -18,6 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/experimental/termstructures/quotesensitivitycalculator.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/experimental/termstructures/basisswapratehelpers.hpp>
@@ -141,6 +142,14 @@ namespace QuantLib {
     Real IborIborBasisSwapRateHelper::impliedQuote() const {
         swap_->deepUpdate();
         return - (swap_->NPV() / swap_->legBPS(0)) * 1.0e-4;
+    }
+
+    ImpliedQuoteSensitivities IborIborBasisSwapRateHelper::impliedQuoteSensitivitiesByCurve() const {
+        if (termStructure_ == nullptr || discountHandle_.empty())
+            return {};
+        // the bootstrapped curve forecasts one leg only
+        return detail::fairBasisSensitivities(
+            swap_->leg(0), swap_->leg(1), **discountHandle_);
     }
 
     void IborIborBasisSwapRateHelper::accept(AcyclicVisitor& v) {
@@ -293,6 +302,17 @@ namespace QuantLib {
         return - (swap_->NPV() / swap_->legBPS(leg)) * 1.0e-4;
     }
 
+    ImpliedQuoteSensitivities OvernightIborBasisSwapRateHelper::impliedQuoteSensitivitiesByCurve() const {
+        if (termStructure_ == nullptr || discountRelinkableHandle_.empty())
+            return {};
+        // the margin is solved on the leg whose annuity impliedQuote() uses
+        if (basisOnIborLeg_)
+            return detail::fairBasisSensitivities(
+                swap_->leg(1), swap_->leg(0), **discountRelinkableHandle_);
+        return detail::fairBasisSensitivities(
+            swap_->leg(0), swap_->leg(1), **discountRelinkableHandle_);
+    }
+
     void OvernightIborBasisSwapRateHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<OvernightIborBasisSwapRateHelper>*>(&v);
         if (v1 != nullptr)
@@ -422,6 +442,13 @@ namespace QuantLib {
     Real OvernightOvernightBasisSwapRateHelper::impliedQuote() const {
         swap_->deepUpdate();
         return -(swap_->NPV() / swap_->legBPS(0)) * 1.0e-4;
+    }
+
+    ImpliedQuoteSensitivities OvernightOvernightBasisSwapRateHelper::impliedQuoteSensitivitiesByCurve() const {
+        if (termStructure_ == nullptr || discountRelinkableHandle_.empty())
+            return {};
+        return detail::fairBasisSensitivities(
+            swap_->leg(0), swap_->leg(1), **discountRelinkableHandle_);
     }
 
     void OvernightOvernightBasisSwapRateHelper::accept(AcyclicVisitor& v) {
