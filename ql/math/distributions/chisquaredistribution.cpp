@@ -47,10 +47,10 @@ namespace QuantLib {
         // We use their logarithms (which increase with n up to lam and
         // x2-f2, respectively) to find the first representable ones and
         // skip the corresponding (negligible) terms.
-        const auto logU = [&](Size n) {
+        const auto logU = [&](Size n) -> Real {
             return n*std::log(lam) - lam - boost::math::lgamma(n + 1.0);
         };
-        const auto logT = [&](Size n) {
+        const auto logT = [&](Size n) -> Real {
             return (f2 + n)*std::log(x2) - x2 - boost::math::lgamma(Real(f2 + n + 1.0));
         };
         const Size never = std::numeric_limits<Size>::max();
@@ -202,7 +202,7 @@ namespace QuantLib {
         // use a Brent solver for the rest
         Brent solver;
         solver.setMaxEvaluations(evaluations);
-        return solver.solve([&](Real y) { return nonCentralDist_(y) - x; },
+        return solver.solve([&](Real y) -> Real { return nonCentralDist_(y) - x; },
                             accuracy_, 0.75*upper, 
                             (evaluations == maxEvaluations_)? 0.0: Real(0.5*upper),
                             upper);

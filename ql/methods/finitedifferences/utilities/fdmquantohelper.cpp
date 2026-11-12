@@ -58,7 +58,7 @@ namespace QuantLib {
 
         Array retVal(equityVol.size());
         std::transform(equityVol.begin(), equityVol.end(), retVal.begin(),
-                       [&](Volatility vol) {
+                       [&](Volatility vol) -> Real {
                            return rDomestic - rForeign + vol*fxVol*equityFxCorrelation_;
                        });
         return retVal;

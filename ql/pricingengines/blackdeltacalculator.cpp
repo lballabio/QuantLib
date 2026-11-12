@@ -126,7 +126,7 @@ namespace QuantLib {
               // run into the area on the left of the maximum.  The
               // put delta doesn't have this property and can be
               // solved without any problems, but also numerically.
-              auto f = [&](Real strike) {
+              auto f = [&](Real strike) -> Real {
                 return deltaFromStrike(strike) - delta;
               };
 
@@ -152,7 +152,7 @@ namespace QuantLib {
                   // find out the left limit which is the strike
                   // corresponding to the value where premium adjusted
                   // deltas have their maximum
-                  auto g = [&](Real strike) {
+                  auto g = [&](Real strike) -> Real {
                     return cumD2(strike) * stdDev_ - nD2(strike);
                   };
 
