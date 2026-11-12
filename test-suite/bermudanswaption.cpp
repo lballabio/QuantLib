@@ -34,6 +34,7 @@
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/swaption/fdg2swaptionengine.hpp>
 #include <ql/pricingengines/swaption/fdhullwhiteswaptionengine.hpp>
+#include <ql/pricingengines/swaption/g2swaptionengine.hpp>
 #include <ql/pricingengines/swaption/treeswaptionengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
@@ -311,6 +312,72 @@ BOOST_AUTO_TEST_CASE(testCachedG2Values) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testG2SwaptionEngineCashSettlement) {
+    BOOST_TEST_MESSAGE(
+        "Testing G2SwaptionEngine with cash-settled (CollateralizedCashPrice) swaptions...");
+
+    CommonVars vars;
+
+    vars.today = Date(15, September, 2016);
+    Settings::instance().evaluationDate() = vars.today;
+    vars.settlement = Date(19, September, 2016);
+
+    vars.termStructure.linkTo(flatRate(vars.settlement, 0.04875825, Actual365Fixed()));
+
+    const Rate atmRate = vars.makeSwap(0.0)->fairRate();
+    const ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(atmRate);
+    const ext::shared_ptr<Exercise> exercise =
+        ext::make_shared<EuropeanExercise>(swap->fixedSchedule().startDate());
+    const Real a = 0.1, sigma = 0.01, b = 0.2, eta = 0.013, rho = -0.5;
+    const ext::shared_ptr<G2> g2Model(
+        ext::make_shared<G2>(vars.termStructure, a, sigma, b, eta, rho));
+    const ext::shared_ptr<PricingEngine> engine(
+        ext::make_shared<G2SwaptionEngine>(g2Model, 6.0, 16));
+
+    // G2SwaptionEngine prices a European swaption analytically from the
+    // underlying swap's payment schedule (the fixed payment dates and the
+    // spread-corrected fixed rate). A Physical and a
+    // Cash+CollateralizedCashPrice settled swaption on the same underlying
+    // swap have, by definition, the same exercise payoff (the only
+    // difference is whether the swap is physically entered into or
+    // cash-settled after exercise), so the engine must accept and
+    // correctly price both.
+    const ext::shared_ptr<Swaption> physical =
+        ext::make_shared<Swaption>(swap, exercise, Settlement::Physical,
+                                    Settlement::PhysicalOTC);
+    physical->setPricingEngine(engine);
+    const Real physicalNPV = physical->NPV();
+
+    // Guard against a vacuous pass: the physically settled swaption is the
+    // reference for the comparison below, so unless its NPV is comfortably
+    // positive the equality check would not be exercising the
+    // CollateralizedCashPrice acceptance at all.
+    BOOST_REQUIRE(physicalNPV > 1.0e-4);
+
+    const ext::shared_ptr<Swaption> cashSettled =
+        ext::make_shared<Swaption>(swap, exercise, Settlement::Cash,
+                                    Settlement::CollateralizedCashPrice);
+    cashSettled->setPricingEngine(engine);
+    const Real cashSettledNPV = cashSettled->NPV();
+
+    if (std::fabs(cashSettledNPV - physicalNPV) > 1.0e-10) {
+        BOOST_ERROR(
+            "G2SwaptionEngine should price a Cash+CollateralizedCashPrice "
+            "swaption identically to the same swaption settled Physically:\n"
+            << "physical NPV:      " << physicalNPV << "\n"
+            << "cash-settled NPV:  " << cashSettledNPV);
+    }
+
+    // the one settlement convention the engine genuinely cannot price
+    // (it has no annuity-based cash-settlement formula) must still be
+    // rejected.
+    const ext::shared_ptr<Swaption> parYieldCurveSettled =
+        ext::make_shared<Swaption>(swap, exercise, Settlement::Cash,
+                                    Settlement::ParYieldCurve);
+    parYieldCurveSettled->setPricingEngine(engine);
+    BOOST_CHECK_THROW(parYieldCurveSettled->NPV(), Error);
+}
+
 BOOST_AUTO_TEST_CASE(testFdSwaptionEnginesCashSettlement) {
     BOOST_TEST_MESSAGE(
         "Testing finite-difference swaption engines with cash-settled "
@@ -392,6 +459,7 @@ BOOST_AUTO_TEST_CASE(testFdSwaptionEnginesCashSettlement) {
         BOOST_CHECK_THROW(parYieldCurveSettled->NPV(), Error);
     }
 }
+
 
 BOOST_AUTO_TEST_CASE(testTreeEngineTimeSnapping) {
     BOOST_TEST_MESSAGE("Testing snap of exercise dates for discretized swaption...");
