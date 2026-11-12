@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/termstructures/quotesensitivitycalculator.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
@@ -27,12 +28,22 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/settings.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <typeinfo>
 
 namespace QuantLib {
 
     namespace detail {
 
         namespace {
+
+            bool hasUnadjustedIborFixing(const IborCoupon& coupon) {
+                const auto* pricer =
+                    dynamic_cast<const BlackIborCouponPricer*>(coupon.pricer().get());
+                // Derived pricers can override adjustedFixing() even for in-advance coupons.
+                return !coupon.isInArrears() && pricer &&
+                       typeid(*pricer) == typeid(BlackIborCouponPricer) &&
+                       pricer->timingAdjustment() == BlackIborCouponPricer::Black76;
+            }
 
             const YieldTermStructure* couponForecastCurve(const ext::shared_ptr<CashFlow>& cf) {
                 auto floating = ext::dynamic_pointer_cast<FloatingRateCoupon>(cf);
@@ -54,13 +65,6 @@ namespace QuantLib {
                                   Real scale) {
                 for (const auto& e : entries)
                     result.sensitivities[e.curve].emplace_back(e.date, scale*e.derivative);
-            }
-
-            /* Rate helpers unregister their index from the curve handle to
-               avoid notification loops so we do refreshes
-            */
-            void refreshCachedResults(const ext::shared_ptr<CashFlow>& cf) {
-                cf->deepUpdate();
             }
 
         }
@@ -101,12 +105,11 @@ namespace QuantLib {
 
             // This should come before the IborCoupon case below
             if (auto stub = ext::dynamic_pointer_cast<StubIborCoupon>(cf)) {
-                if (stub->isInArrears())
+                if (!hasUnadjustedIborFixing(*stub))
                     return a;
                 a.supported = true;
                 a.ntau = stub->nominal()*stub->accrualPeriod();
-                Real gearing = stub->gearing();
-                a.amount = a.ntau*(gearing*stub->indexFixing() + stub->spread());
+                a.amount = stub->amount();
                 if (!stub->hasFixed()) {
                     auto weighted = ext::dynamic_pointer_cast<
                         StubIborCoupon::WeightedIndex>(stub->iborIndex());
@@ -132,7 +135,7 @@ namespace QuantLib {
                         Time tau = index->dayCounter().yearFraction(v, e);
                         DiscountFactor Pv = curve->discount(v);
                         DiscountFactor Pe = curve->discount(e);
-                        Real k = gearing*a.ntau*weight/tau;
+                        Real k = stub->gearing()*a.ntau*weight/tau;
                         a.amountSensitivities.push_back(
                             {key(&**curve), v, k/Pe});
                         a.amountSensitivities.push_back(
@@ -143,12 +146,11 @@ namespace QuantLib {
             }
 
             if (auto ibor = ext::dynamic_pointer_cast<IborCoupon>(cf)) {
-                if (ibor->isInArrears())
+                if (!hasUnadjustedIborFixing(*ibor))
                     return a;
                 a.supported = true;
                 a.ntau = ibor->nominal()*ibor->accrualPeriod();
-                Real gearing = ibor->gearing();
-                a.amount = a.ntau*(gearing*ibor->indexFixing() + ibor->spread());
+                a.amount = ibor->amount();
                 if (!ibor->hasFixed()) {
                     // f = (P(v)/P(e)-1)/tau on the index's forecast curve
                     const Handle<YieldTermStructure>& curve =
@@ -161,7 +163,7 @@ namespace QuantLib {
                     Time tau = ibor->spanningTime();
                     DiscountFactor Pv = curve->discount(v);
                     DiscountFactor Pe = curve->discount(e);
-                    Real k = gearing*a.ntau/tau;
+                    Real k = ibor->gearing()*a.ntau/tau;
                     a.amountSensitivities.push_back(
                         {key(a.forecastCurve), v, k/Pe});
                     a.amountSensitivities.push_back(
@@ -257,7 +259,9 @@ namespace QuantLib {
         bool decomposeCouponWithFallback(const ext::shared_ptr<CashFlow>& cf,
                                        CouponContribution& a,
                                        ImpliedQuoteSensitivities& result) {
-            refreshCachedResults(cf);
+            // Rate helpers suppress curve notifications to avoid cycles. Refresh the
+            // coupon before reading an amount cached during a previous bootstrap step.
+            cf->deepUpdate();
             a = decomposeCoupon(cf, true);
             if (a.supported)
                 return true;
@@ -326,7 +330,7 @@ namespace QuantLib {
                         d.ntau = a.ntau;
                         d.amountSensitivities = std::move(a.amountSensitivities);
                     } else {
-                        refreshCachedResults(cf);
+                        cf->deepUpdate();
                         d.amount = cf->amount();
                     }
                 }

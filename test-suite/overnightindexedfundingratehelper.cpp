@@ -34,7 +34,6 @@
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/utilities/null_deleter.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -57,7 +56,8 @@ namespace {
     // check that the helper provides complete analytical sensitivities and
     // that the own-curve bucket matches a finite-difference tilt of the curve
     void checkAnalyticQuoteSensitivities(
-        const std::vector<ext::shared_ptr<RateHelper>>& helpers) {
+        const std::vector<ext::shared_ptr<RateHelper>>& helpers,
+        const ext::shared_ptr<YieldTermStructure>& curve) {
         for (Size i = 0; i < helpers.size(); ++i) {
             ImpliedQuoteSensitivities sensitivities =
                 helpers[i]->impliedQuoteSensitivitiesByCurve();
@@ -70,18 +70,16 @@ namespace {
             // replace the curve C the helper is seated on by C*exp(-eps*t);
             // the reported sensitivities predict the derivative at eps=0 as
             // sum of dQ/dP(d) * (-t(d)) * P(d)
-            YieldTermStructure* own = helpers[i]->termStructure();
-            BOOST_REQUIRE(own != nullptr);
+            BOOST_REQUIRE(helpers[i]->isLinkedTo(*curve));
             Real predicted = 0.0;
-            auto bucket = sensitivities.sensitivities.find(own);
+            auto bucket = sensitivities.sensitivities.find(curve.get());
             if (bucket != sensitivities.sensitivities.end())
                 for (const auto& [date, dQdP] : bucket->second)
-                    predicted += dQdP * (-own->timeFromReference(date)) * own->discount(date, true);
+                    predicted += dQdP * (-curve->timeFromReference(date)) *
+                                 curve->discount(date, true);
             auto spread = ext::make_shared<SimpleQuote>(0.0);
             auto tilted = ext::make_shared<ZeroSpreadedTermStructure>(
-                Handle<YieldTermStructure>(
-                    ext::shared_ptr<YieldTermStructure>(own, null_deleter())),
-                Handle<Quote>(spread));
+                Handle<YieldTermStructure>(curve), Handle<Quote>(spread));
             tilted->enableExtrapolation();
             helpers[i]->setTermStructure(tilted.get());
             Real h = 1.0e-7;
@@ -90,7 +88,7 @@ namespace {
             spread->setValue(-h);
             Real down = helpers[i]->impliedQuote();
             spread->setValue(0.0);
-            helpers[i]->setTermStructure(own);
+            helpers[i]->setTermStructure(curve.get());
             Real numerical = (up - down) / (2.0 * h);
             BOOST_CHECK_MESSAGE(std::fabs(predicted - numerical) <
                                     1.0e-5 * std::max(1.0, std::fabs(numerical)),
@@ -133,7 +131,7 @@ BOOST_AUTO_TEST_CASE(testUsdCofStyleBootstrap) {
     auto curve = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(today, helpers,
                                                                             Actual365Fixed());
     curve->discount(helpers.back()->pillarDate());
-    checkAnalyticQuoteSensitivities(helpers);
+    checkAnalyticQuoteSensitivities(helpers, curve);
 
     // in the cross-curve graph the exogenous projection curve is treated as
     // independent, so every bootstrap-equation row must be analytical
@@ -228,7 +226,7 @@ BOOST_AUTO_TEST_CASE(testSameDayOvernightPillar) {
     BOOST_CHECK_EQUAL(helper->pillarDate(), Date(16, July, 2026));
     curve->discount(helper->pillarDate());
     QL_CHECK_SMALL(helper->impliedQuote() - margin, 1.0e-11);
-    checkAnalyticQuoteSensitivities(helpers);
+    checkAnalyticQuoteSensitivities(helpers, curve);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

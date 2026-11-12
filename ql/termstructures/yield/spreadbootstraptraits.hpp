@@ -45,19 +45,19 @@ namespace QuantLib::detail {
         }
 
         template <class C>
-        static std::vector<std::pair<Size, Real>> extrapolationNodeWeights(
+        static std::vector<std::pair<Size, Real>> extrapolationNodeSensitivities(
             Time t, const C* c,
                                  const Interpolation& interpolation) {
-            // The inherited weights scale with the full discount
+            // The inherited sensitivities scale with the full discount
             // B(t)*S(t), but the curve nodes only drive the spread
             // factor S(t). discountFactorDerivative() supplies B(t),
             // so divide the base discount back out.
-            auto weights =
-                Discount::extrapolationNodeWeights(t, c, interpolation);
+            auto sensitivities =
+                Discount::extrapolationNodeSensitivities(t, c, interpolation);
             DiscountFactor baseDiscount = c->baseCurve()->discount(t, true);
-            for (auto& [j, w] : weights)
+            for (auto& [j, w] : sensitivities)
                 w /= baseDiscount;
-            return weights;
+            return sensitivities;
         }
     };
 

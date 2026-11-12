@@ -148,7 +148,7 @@ namespace QuantLib {
             return 1.0;
         }
         template <class C>
-        static std::vector<std::pair<Size, Real>> extrapolationNodeWeights(
+        static std::vector<std::pair<Size, Real>> extrapolationNodeSensitivities(
             Time t, const C* c,
                                  const Interpolation& interpolation) {
             // InterpolatedDiscountCurve extrapolates with the instantaneous
@@ -157,21 +157,21 @@ namespace QuantLib {
             Time tMax = c->times().back();
             DiscountFactor dMax = c->data().back();
             Real slope = interpolation.derivative(tMax, true);
-            auto valueWeights = interpolation.nodeWeights(tMax, true);
-            auto slopeWeights =
-                interpolation.derivativeNodeWeights(tMax, true);
-            if (valueWeights.empty() || slopeWeights.empty())
+            auto valueSensitivities = interpolation.nodeSensitivities(tMax, true);
+            auto slopeSensitivities =
+                interpolation.derivativeNodeSensitivities(tMax, true);
+            if (valueSensitivities.empty() || slopeSensitivities.empty())
                 return {};
 
             std::vector<std::pair<Size, Real>> result;
-            result.reserve(valueWeights.size() + slopeWeights.size());
+            result.reserve(valueSensitivities.size() + slopeSensitivities.size());
             DiscountFactor d = c->discount(t, true);
             Time dt = t-tMax;
-            for (const auto& [j, w] : valueWeights) {
+            for (const auto& [j, w] : valueSensitivities) {
                 Real coefficient = d*w*(1.0/dMax-dt*slope/(dMax*dMax));
                 result.emplace_back(j, coefficient);
             }
-            for (const auto& [j, w] : slopeWeights) {
+            for (const auto& [j, w] : slopeSensitivities) {
                 Real coefficient = d*dt*w/dMax;
                 auto found = std::find_if(
                     result.begin(), result.end(),
@@ -284,33 +284,37 @@ namespace QuantLib {
             return -t * c->discount(t, true);
         }
         template <class C>
-        static std::vector<std::pair<Size, Real>> extrapolationNodeWeights(
+        static std::vector<std::pair<Size, Real>> extrapolationNodeSensitivities(
             Time t, const C* c,
                                  const Interpolation& interpolation) {
             Time tMax = c->times().back();
-            auto valueWeights = interpolation.nodeWeights(tMax, true);
-            auto slopeWeights =
-                interpolation.derivativeNodeWeights(tMax, true);
-            if (valueWeights.empty() || slopeWeights.empty())
+            auto valueSensitivities = interpolation.nodeSensitivities(tMax, true);
+            auto slopeSensitivities =
+                interpolation.derivativeNodeSensitivities(tMax, true);
+            if (valueSensitivities.empty() || slopeSensitivities.empty())
                 return {};
 
             Real slopeScale = tMax*(t-tMax)/t;
-            for (const auto& [j, w] : slopeWeights) {
+            for (const auto& [j, w] : slopeSensitivities) {
                 auto found = std::find_if(
-                    valueWeights.begin(), valueWeights.end(),
+                    valueSensitivities.begin(), valueSensitivities.end(),
                     [j = j](const auto& entry) { return entry.first == j; });
-                if (found == valueWeights.end())
-                    valueWeights.emplace_back(j, slopeScale*w);
+                if (found == valueSensitivities.end())
+                    valueSensitivities.emplace_back(j, slopeScale*w);
                 else
                     found->second += slopeScale*w;
             }
-            return valueWeights;
+            return valueSensitivities;
         }
         static constexpr bool firstDataPointTracksSecond = true;
     };
 
 
     //! Forward-curve traits
+    /*! Discount factors depend on the integral of the interpolated forwards.
+        Forward curves use numerical Jacobian rows until interpolations provide
+        node sensitivities for their primitive.
+    */
     struct ForwardRate {
         // interpolated curve type
         template <class Interpolator>
@@ -512,27 +516,27 @@ namespace QuantLib {
             return -t * d * d;
         }
         template <class C>
-        static std::vector<std::pair<Size, Real>> extrapolationNodeWeights(
+        static std::vector<std::pair<Size, Real>> extrapolationNodeSensitivities(
             Time t, const C* c,
                                  const Interpolation& interpolation) {
             Time tMax = c->times().back();
-            auto valueWeights = interpolation.nodeWeights(tMax, true);
-            auto slopeWeights =
-                interpolation.derivativeNodeWeights(tMax, true);
-            if (valueWeights.empty() || slopeWeights.empty())
+            auto valueSensitivities = interpolation.nodeSensitivities(tMax, true);
+            auto slopeSensitivities =
+                interpolation.derivativeNodeSensitivities(tMax, true);
+            if (valueSensitivities.empty() || slopeSensitivities.empty())
                 return {};
 
             Real slopeScale = tMax*(t-tMax)/t;
-            for (const auto& [j, w] : slopeWeights) {
+            for (const auto& [j, w] : slopeSensitivities) {
                 auto found = std::find_if(
-                    valueWeights.begin(), valueWeights.end(),
+                    valueSensitivities.begin(), valueSensitivities.end(),
                     [j = j](const auto& entry) { return entry.first == j; });
-                if (found == valueWeights.end())
-                    valueWeights.emplace_back(j, slopeScale*w);
+                if (found == valueSensitivities.end())
+                    valueSensitivities.emplace_back(j, slopeScale*w);
                 else
                     found->second += slopeScale*w;
             }
-            return valueWeights;
+            return valueSensitivities;
         }
         static constexpr bool firstDataPointTracksSecond = true;
     };

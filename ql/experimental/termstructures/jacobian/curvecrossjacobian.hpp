@@ -59,7 +59,7 @@ namespace QuantLib {
                 aliveHelpers() const = 0;
             /*! Converts dated curve-value sensitivities into one Jacobian
                 row over the free nodes. Returns false when analytical
-                weights are unavailable.
+                node derivatives are unavailable.
             */
             virtual bool analyticEquationRow(
                 const std::vector<std::pair<Date, Real>>& dateSensitivities,
@@ -160,26 +160,15 @@ namespace QuantLib {
                 std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure>>>
                 aliveHelpers() const override {
                     curve_->calculate();
-                    Date firstDate = Traits::initialDate(curve_.get());
-                    std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure>>> alive;
-                    for (const auto& helper : curve_->instruments_)
-                        if (helper->pillarDate() > firstDate) {
-                            QL_REQUIRE(helper->termStructure() == curve_.get(),
-                                       "the helper with pillar date " <<
-                                       helper->pillarDate() << " is seated to "
-                                       "a different curve; a rate helper "
-                                       "cannot be shared between "
-                                       "bootstrapped curves");
-                            alive.push_back(helper);
-                        }
-                    return alive;
+                    return collectAliveHelpers<Traits, BootstrapHelper<YieldTermStructure>>(
+                        curve_.get(), curve_->instruments_);
                 }
 
                 bool analyticEquationRow(
                         const std::vector<std::pair<Date, Real>>& dateSensitivities,
                         std::vector<Real>& row) const override {
                     curve_->calculate();
-                    // analytical weights do not include jumps
+                    // analytical node derivatives do not include jumps
                     if (!curve_->jumpDates().empty())
                         return false;
                     std::vector<std::pair<Time, Real>> sensitivities;

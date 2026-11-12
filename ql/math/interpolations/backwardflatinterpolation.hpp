@@ -106,7 +106,7 @@ namespace QuantLib {
             }
             Real derivative(Real) const override { return 0.0; }
             Real secondDerivative(Real) const override { return 0.0; }
-            std::vector<std::pair<Size, Real>> nodeWeights(Real x) const override {
+            std::vector<std::pair<Size, Real>> nodeSensitivities(Real x) const override {
                 if (x <= this->xBegin_[0]
                     || std::distance(this->xBegin_, this->xEnd_) == 1)
                     return {{Size(0), 1.0}};
@@ -117,7 +117,7 @@ namespace QuantLib {
                 else
                     return {{i+1, 1.0}};
             }
-            std::vector<std::pair<Size, Real>> derivativeNodeWeights(Real) const override {
+            std::vector<std::pair<Size, Real>> derivativeNodeSensitivities(Real) const override {
                 // A non-empty zero weight distinguishes an implemented zero
                 // derivative from unavailable node sensitivities.
                 return {{Size(0), 0.0}};

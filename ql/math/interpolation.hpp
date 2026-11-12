@@ -76,7 +76,7 @@ namespace QuantLib {
                 for the nodes affecting x. An empty vector means the
                 interpolation does not provide node sensitivities.
             */
-            virtual std::vector<std::pair<Size, Real>> nodeWeights(Real) const {
+            virtual std::vector<std::pair<Size, Real>> nodeSensitivities(Real) const {
                 return {};
             }
             //! sensitivities of the derivative at x to the node values
@@ -84,7 +84,7 @@ namespace QuantLib {
                 for the nodes affecting x. An empty vector means the
                 interpolation does not provide derivative sensitivities.
             */
-            virtual std::vector<std::pair<Size, Real>> derivativeNodeWeights(Real) const {
+            virtual std::vector<std::pair<Size, Real>> derivativeNodeSensitivities(Real) const {
                 return {};
             }
         };
@@ -156,25 +156,25 @@ namespace QuantLib {
         //! sensitivities at x to the node values
         /*! Returns pairs \f$ (j, \partial f(x) / \partial y_j) \f$ for
             the nodes affecting x. An empty vector means they are not
-            implemented. Outside the range, weights describe the
+            implemented. Outside the range, sensitivities describe the
             interpolant's extension, which might differ from a caller's
             extrapolation.
         */
-        std::vector<std::pair<Size, Real>> nodeWeights(
+        std::vector<std::pair<Size, Real>> nodeSensitivities(
             Real x, bool allowExtrapolation = false) const {
             checkRange(x,allowExtrapolation);
-            return impl_->nodeWeights(x);
+            return impl_->nodeSensitivities(x);
         }
         //! sensitivities of the derivative at x to the node values
         /*! Returns pairs \f$ (j, \partial f'(x) / \partial y_j) \f$ for
             the nodes affecting x. An empty vector means they are not
-            implemented. Outside the range, weights describe the
+            implemented. Outside the range, sensitivities describe the
             extrapolation.
         */
-        std::vector<std::pair<Size, Real>> derivativeNodeWeights(
+        std::vector<std::pair<Size, Real>> derivativeNodeSensitivities(
             Real x, bool allowExtrapolation = false) const {
             checkRange(x,allowExtrapolation);
-            return impl_->derivativeNodeWeights(x);
+            return impl_->derivativeNodeSensitivities(x);
         }
         Real xMin() const {
             return impl_->xMin();

@@ -20,8 +20,50 @@
 /*! \file quotesensitivitycalculator.hpp
     \brief building blocks for analytical implied-quote sensitivities
 
-    Each block differentiates one level of the instrument's structure
-    (quote, leg, flow, coupon) and the contributions compose outward.
+    The curve Jacobian is a matrix of first derivatives of implied quotes per change in the nodes, 
+    with rows for helpers and columns for nodes. The curve Jacobian is built from each helper's sensitivities to
+    its discount factors. Once we have that, we need to convert the sensitivities from discount factors to actual curve nodes
+    and that is done by the curve itself, as its knows how its nodes affect its discount factors (interpolation scheme).
+
+    The helper's discount factor sensitivities are analytical implemented inside each helper. 
+    If a helper does not implement analytical derivatives, there is a numerical fallback. In some cases (global bootstrap),
+    this fallback reduces the benefit of the Jacobian for performance but in others (risk propagation), this does not reduce
+    the benefit much.
+
+    The cross-curve Jacobian is also available where we compute sensitivities of one curve's quotes
+    wrt another curve's nodes. This is arguably the most useful part of the development.
+
+    The vast majority of helpers have analytical derivatives as part of this change.
+
+    Benefits:
+
+    \par Faster bootstrapping
+    With \c analyticJacobian enabled, the global and multi-curve bootstraps can
+    supply the optimiser with the analytical Jacobian. The biggest benefit is
+    for the global multi-curve bootstrap with co-dependent curves.
+    Local (iterative) node-by-node bootstraps are unaffected.
+
+    \par Market-quote (PV01 or DV01) risk
+    The inverse Jacobian tells us how calibrated nodes move when a market quote
+    changes. This is where cross-curve Jacobians are very useful.
+    It allows the user to "propagate" the risk, i.e. compute the risk of a trade
+    wrt the curves it directly uses (without the full curve dependency graph) and then
+    propagate the risk from the trade-facing curves down to all dependent curves.
+    This has material benefits for risk calculation even when the Jacobians 
+    are numerical (with analytical Jacobians increasing the benefits further).
+    
+    Here is how to use it. The caller supplies the trade's sensitivities to the nodes 
+    of the curves used directly in pricing.
+    
+    For a stand-alone curve, multiply this row vector by
+    QuantLib::PiecewiseYieldCurve::inverseJacobian() to obtain the PV sensitivity
+    to each market quote.
+
+    For dependent curves (full graph), register them in a QuantLib::CurveJacobianGraph and pass
+    the direct PV sensitivities to QuantLib::CurveJacobianGraph::marketQuoteSensitivities().
+    
+    Note that the calculation is done for mathematical sensitivities. To convert them to PV01 (DV01),
+    multiply the sensitivities by 0.0001.
 */
 
 #ifndef quantlib_quote_sensitivity_calculator_hpp

@@ -398,45 +398,45 @@ namespace QuantLib {
                 return derivative(x)*interpolation_.derivative(x, true) +
                             value(x)*interpolation_.secondDerivative(x, true);
             }
-            std::vector<std::pair<Size, Real>> nodeWeights(Real x) const override {
+            std::vector<std::pair<Size, Real>> nodeSensitivities(Real x) const override {
                 // f(x) = exp(g(x)) with g interpolating log(y)
                 // df/dy_j = f(x) * dg/d(log y_j) / y_j
-                auto weights = interpolation_.nodeWeights(x, true);
-                if (weights.empty())
-                    return weights;
+                auto sensitivities = interpolation_.nodeSensitivities(x, true);
+                if (sensitivities.empty())
+                    return sensitivities;
                 Real v = value(x);
-                for (auto& w : weights)
+                for (auto& w : sensitivities)
                     w.second *= v/this->yBegin_[w.first];
-                return weights;
+                return sensitivities;
             }
-            std::vector<std::pair<Size, Real>> derivativeNodeWeights(Real x) const override {
+            std::vector<std::pair<Size, Real>> derivativeNodeSensitivities(Real x) const override {
                 // f = exp(g), with g interpolating log(y), hence
                 // d(f')/d(y_j) = f/y_j * (g' w_j + w'_j).
-                auto valueWeights = interpolation_.nodeWeights(x, true);
-                auto slopeWeights =
-                    interpolation_.derivativeNodeWeights(x, true);
-                if (valueWeights.empty() || slopeWeights.empty())
+                auto valueSensitivities = interpolation_.nodeSensitivities(x, true);
+                auto slopeSensitivities =
+                    interpolation_.derivativeNodeSensitivities(x, true);
+                if (valueSensitivities.empty() || slopeSensitivities.empty())
                     return {};
 
-                std::vector<std::pair<Size, Real>> weights;
-                weights.reserve(valueWeights.size() + slopeWeights.size());
+                std::vector<std::pair<Size, Real>> sensitivities;
+                sensitivities.reserve(valueSensitivities.size() + slopeSensitivities.size());
                 Real slope = interpolation_.derivative(x, true);
-                for (const auto& [j, w] : valueWeights)
-                    weights.emplace_back(j, slope*w);
-                for (const auto& [j, w] : slopeWeights) {
+                for (const auto& [j, w] : valueSensitivities)
+                    sensitivities.emplace_back(j, slope*w);
+                for (const auto& [j, w] : slopeSensitivities) {
                     auto found = std::find_if(
-                        weights.begin(), weights.end(),
+                        sensitivities.begin(), sensitivities.end(),
                         [j = j](const auto& entry) { return entry.first == j; });
-                    if (found == weights.end())
-                        weights.emplace_back(j, w);
+                    if (found == sensitivities.end())
+                        sensitivities.emplace_back(j, w);
                     else
                         found->second += w;
                 }
 
                 Real v = value(x);
-                for (auto& [j, w] : weights)
+                for (auto& [j, w] : sensitivities)
                     w *= v/this->yBegin_[j];
-                return weights;
+                return sensitivities;
             }
 
           private:

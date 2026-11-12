@@ -108,13 +108,10 @@ namespace QuantLib {
                 return {};
             ImpliedQuoteSensitivities s = impliedQuoteSensitivitiesByCurve();
             const auto* own = static_cast<const TermStructure*>(termStructure_);
-            if (!s.available || s.incomplete.count(own) != 0)
+            if (!s.available || !s.incomplete.empty())
                 return {};
             for (const auto& [curve, entries] : s.sensitivities)
                 if (curve != own && !entries.empty())
-                    return {};
-            for (const auto* curve : s.incomplete)
-                if (curve != own)
                     return {};
             auto i = s.sensitivities.find(own);
             if (i == s.sensitivities.end())
@@ -137,8 +134,8 @@ namespace QuantLib {
         */
         virtual void setTermStructure(TS*);
 
-        //! the term structure the helper is currently based on
-        TS* termStructure() const { return termStructure_; }
+        //! whether the helper is currently linked to this term structure
+        bool isLinkedTo(const TS& curve) const { return termStructure_ == &curve; }
 
         //! earliest relevant date
         /*! The earliest date at which data are needed by the

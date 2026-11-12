@@ -3050,17 +3050,17 @@ BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
     f.enableExtrapolation();
 
     // Node sensitivities follow the clamped interpolation value.
-    // Use a linear underlying, which provides node weights.
+    // Use a linear underlying, which provides node sensitivities.
     auto linear = ext::make_shared<LinearInterpolation>(
         std::begin(x), std::end(x), std::begin(y));
     linear->enableExtrapolation();
     FlatExtrapolator fl(linear);
     fl.enableExtrapolation();
-    BOOST_CHECK(fl.nodeWeights(-1.0) == linear->nodeWeights(x[0]));
-    BOOST_CHECK(fl.nodeWeights(5.0) == linear->nodeWeights(x[N-1]));
-    auto flatSlopeWeights = fl.derivativeNodeWeights(5.0);
-    BOOST_REQUIRE(!flatSlopeWeights.empty());
-    for (const auto& [i, w] : flatSlopeWeights)
+    BOOST_CHECK(fl.nodeSensitivities(-1.0) == linear->nodeSensitivities(x[0]));
+    BOOST_CHECK(fl.nodeSensitivities(5.0) == linear->nodeSensitivities(x[N-1]));
+    auto flatSlopeSensitivities = fl.derivativeNodeSensitivities(5.0);
+    BOOST_REQUIRE(!flatSlopeSensitivities.empty());
+    for (const auto& [i, w] : flatSlopeSensitivities)
         BOOST_CHECK_SMALL(w, tolerance);
 
     // in-range: must match underlying cubic at knots

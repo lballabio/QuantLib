@@ -102,12 +102,12 @@ namespace QuantLib {
                 return s_[i];
             }
             Real secondDerivative(Real) const override { return 0.0; }
-            std::vector<std::pair<Size, Real>> nodeWeights(Real x) const override {
+            std::vector<std::pair<Size, Real>> nodeSensitivities(Real x) const override {
                 Size i = this->locate(x);
                 Real w = (x-this->xBegin_[i])/(this->xBegin_[i+1]-this->xBegin_[i]);
                 return {{i, 1.0-w}, {i+1, w}};
             }
-            std::vector<std::pair<Size, Real>> derivativeNodeWeights(Real x) const override {
+            std::vector<std::pair<Size, Real>> derivativeNodeSensitivities(Real x) const override {
                 Size i = this->locate(x);
                 Real inverseDx =
                     1.0/(this->xBegin_[i+1]-this->xBegin_[i]);

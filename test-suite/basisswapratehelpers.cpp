@@ -20,7 +20,10 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/couponpricer.hpp>
+#include <ql/experimental/coupons/quantocouponpricer.hpp>
 #include <ql/experimental/termstructures/basisswapratehelpers.hpp>
+#include <ql/experimental/termstructures/jacobian/curvejacobiangraph.hpp>
 #include <ql/currencies/oceania.hpp>
 #include <ql/indexes/ibor/bkbm.hpp>
 #include <ql/indexes/ibor/fedfunds.hpp>
@@ -30,11 +33,12 @@
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/instruments/swap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/time/calendars/newzealand.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
-#include <ql/utilities/null_deleter.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -51,6 +55,7 @@ struct BasisSwapQuote {
 
 void checkAnalyticQuoteSensitivities(
         const std::vector<ext::shared_ptr<RateHelper>>& helpers,
+        const ext::shared_ptr<YieldTermStructure>& curve,
         const char* helperType,
         bool expectComplete = true) {
     for (Size i = 0; i < helpers.size(); ++i) {
@@ -70,19 +75,16 @@ void checkAnalyticQuoteSensitivities(
             // tilt: replace the curve C the helper is seated on by
             // C*exp(-eps*t), whose derivative at eps=0 the reported
             // sensitivities predict as sum of dQ/dP(d) * (-t(d)) * P(d)
-            YieldTermStructure* own = helpers[i]->termStructure();
-            BOOST_REQUIRE(own != nullptr);
+            BOOST_REQUIRE(helpers[i]->isLinkedTo(*curve));
             Real predicted = 0.0;
-            auto bucket = sensitivities.sensitivities.find(own);
+            auto bucket = sensitivities.sensitivities.find(curve.get());
             if (bucket != sensitivities.sensitivities.end())
                 for (const auto& [date, dQdP] : bucket->second)
-                    predicted += dQdP * (-own->timeFromReference(date)) *
-                                 own->discount(date, true);
+                    predicted += dQdP * (-curve->timeFromReference(date)) *
+                                 curve->discount(date, true);
             auto spread = ext::make_shared<SimpleQuote>(0.0);
             auto tilted = ext::make_shared<ZeroSpreadedTermStructure>(
-                Handle<YieldTermStructure>(
-                    ext::shared_ptr<YieldTermStructure>(own, null_deleter())),
-                Handle<Quote>(spread));
+                Handle<YieldTermStructure>(curve), Handle<Quote>(spread));
             tilted->enableExtrapolation();
             helpers[i]->setTermStructure(tilted.get());
             Real h = 1.0e-7;
@@ -91,7 +93,7 @@ void checkAnalyticQuoteSensitivities(
             spread->setValue(-h);
             Real down = helpers[i]->impliedQuote();
             spread->setValue(0.0);
-            helpers[i]->setTermStructure(own);
+            helpers[i]->setTermStructure(curve.get());
             Real numerical = (up - down) / (2.0 * h);
             BOOST_CHECK_MESSAGE(
                 std::fabs(predicted - numerical) <
@@ -152,7 +154,7 @@ void testIborIborBootstrap(bool bootstrapBaseCurve, Integer paymentLag = 0) {
     auto bootstrappedCurve = ext::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>
         (0, calendar, helpers, Actual365Fixed());
     bootstrappedCurve->discount(helpers.back()->pillarDate());
-    checkAnalyticQuoteSensitivities(helpers, "ibor-ibor basis swap");
+    checkAnalyticQuoteSensitivities(helpers, bootstrappedCurve, "ibor-ibor basis swap");
 
     Date today = Settings::instance().evaluationDate();
     Date spot = calendar.advance(today, settlementDays, Days);
@@ -386,7 +388,7 @@ void testOvernightOvernightBootstrap(bool externalDiscountCurve,
     bool expectComplete = baseAveragingMethod == RateAveraging::Compound &&
                           otherAveragingMethod == RateAveraging::Compound;
     checkAnalyticQuoteSensitivities(
-        helpers, "overnight-overnight basis swap", expectComplete);
+        helpers, bootstrappedCurve, "overnight-overnight basis swap", expectComplete);
 
     if (bootstrapBaseCurve) {
         baseIndex = ext::make_shared<FedFunds>(bootstrappedCurveHandle);
@@ -723,7 +725,7 @@ BOOST_AUTO_TEST_CASE(testOvernightIborStubIndexBootstrap) {
     for (const auto& h : helpers)
         QL_CHECK_SMALL(h->impliedQuote() - h->quote()->value(), 1e-10);
 
-    checkAnalyticQuoteSensitivities(helpers, "overnight-ibor basis swap with stub");
+    checkAnalyticQuoteSensitivities(helpers, curve, "overnight-ibor basis swap with stub");
 
     // the selection is rejected when the ibor forecast curve is the one being bootstrapped
     auto overnightWithCurve = ext::make_shared<OvernightIndex>(
@@ -735,6 +737,93 @@ BOOST_AUTO_TEST_CASE(testOvernightIborStubIndexBootstrap) {
             std::nullopt, true, DateGeneration::Backward, RateAveraging::Compound,
             false, false, stubIndexSelection),
         Error);
+}
+
+BOOST_AUTO_TEST_CASE(testAdjustedIborCouponSensitivities) {
+    BOOST_TEST_MESSAGE("Testing basis helper sensitivities with adjusted Ibor coupon fixings...");
+
+    const Date today(6, January, 2025);
+    Settings::instance().evaluationDate() = today;
+    const NewZealand calendar;
+    const Actual365Fixed dc;
+    using Curve = PiecewiseYieldCurve<Discount, LogLinear>;
+    auto rate = ext::make_shared<SimpleQuote>(0.04);
+    auto deposit = ext::make_shared<DepositRateHelper>(
+        Handle<Quote>(rate), 1 * Years, 0, calendar, ModifiedFollowing, false, dc);
+    auto forecast = ext::make_shared<Curve>(
+        today, std::vector<ext::shared_ptr<RateHelper>>{deposit}, dc);
+    auto shortIndex = ext::make_shared<Bkbm1M>(
+        Handle<YieldTermStructure>(flatRate(today, 0.02, dc)));
+    auto longIndex = ext::make_shared<Bkbm3M>(Handle<YieldTermStructure>(forecast));
+    auto overnight = ext::make_shared<OvernightIndex>("Nzionia", 0, NZDCurrency(), calendar, dc);
+    auto helper = ext::make_shared<OvernightIborBasisSwapRateHelper>(
+        makeQuoteHandle(0.0012), 8 * Months, 2, calendar, ModifiedFollowing, false,
+        overnight, longIndex, Handle<YieldTermStructure>(), true, 2, std::nullopt, true,
+        DateGeneration::Backward, RateAveraging::Compound, false, false,
+        StubIndexSelection{StubIndexSelection::Interpolated, {shortIndex, longIndex}});
+    auto basis = ext::make_shared<Curve>(
+        today, std::vector<ext::shared_ptr<RateHelper>>{helper}, dc);
+    basis->discount(helper->pillarDate());
+    const Leg& leg = helper->swap()->leg(1);
+    auto stub = ext::dynamic_pointer_cast<StubIborCoupon>(leg.front());
+    auto regular = ext::dynamic_pointer_cast<IborCoupon>(leg.back());
+    BOOST_REQUIRE(stub && regular);
+    BOOST_REQUIRE(stub->fixingDate() > today);
+    BOOST_REQUIRE(regular->date() > regular->fixingMaturityDate());
+
+    CurveJacobianGraph graph;
+    graph.add(basis);
+    graph.add(forecast);
+    // Hold the basis nodes fixed while independently repricing at bumped deposit quotes.
+    basis->freeze();
+    auto checkRow = [&](bool expectAnalytic) {
+        std::vector<bool> analytic;
+        Matrix jacobian = graph.crossJacobian(*basis, *forecast, &analytic);
+        BOOST_REQUIRE_EQUAL(analytic.size(), 1);
+        BOOST_CHECK_EQUAL(analytic.front(), expectAnalytic);
+        const Rate baseRate = rate->value();
+        const Real bump = 1.0e-5;
+        rate->setValue(baseRate + bump);
+        Real up = helper->impliedQuote();
+        DiscountFactor upNode = forecast->discount(deposit->pillarDate());
+        rate->setValue(baseRate - bump);
+        Real down = helper->impliedQuote();
+        DiscountFactor downNode = forecast->discount(deposit->pillarDate());
+        rate->setValue(baseRate);
+        // Compare dQ/dP for the only free forecast node, allowing for bump truncation.
+        QL_CHECK_CLOSE_FRACTION(jacobian[0][0], (up - down) / (upNode - downNode), 1.0e-7);
+    };
+    checkRow(true);
+
+    Handle<OptionletVolatilityStructure> vol(
+        ext::make_shared<ConstantOptionletVolatility>(today, calendar, Following, 0.30, dc));
+    // Zero elapsed variance at the stub fixing keeps the bivariate stub priceable
+    // without a single forwarding curve. The later regular fixing has a timing adjustment.
+    Handle<OptionletVolatilityStructure> timingVol(ext::make_shared<ConstantOptionletVolatility>(
+        stub->fixingDate(), calendar, Following, 0.30, dc));
+    auto bivariate = ext::make_shared<BlackIborCouponPricer>(
+        timingVol, BlackIborCouponPricer::BivariateLognormal);
+    auto quanto = ext::make_shared<BlackIborQuantoCouponPricer>(
+        Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc)), makeQuoteHandle(0.5), vol);
+    const auto plainRegular = regular->pricer();
+    const auto plainStub = stub->pricer();
+    auto checkAdjustedPricer = [&](const ext::shared_ptr<IborCouponPricer>& pricer) {
+        regular->setPricer(pricer);
+        BOOST_CHECK_GT(std::fabs(regular->adjustedFixing() - regular->indexFixing()), 1.0e-10);
+        auto s = helper->impliedQuoteSensitivitiesByCurve();
+        BOOST_REQUIRE(s.available);
+        BOOST_CHECK_EQUAL(s.incomplete.count(forecast.get()), 1);
+        checkRow(false);
+        regular->setPricer(plainRegular);
+
+        stub->setPricer(pricer);
+        BOOST_CHECK(!helper->impliedQuoteSensitivitiesByCurve().available);
+        checkRow(false);
+        stub->setPricer(plainStub);
+    };
+    checkAdjustedPricer(bivariate);
+    checkAdjustedPricer(quanto);
+    basis->unfreeze();
 }
 
 BOOST_AUTO_TEST_CASE(testIborIborStubIndexBootstrap) {
@@ -790,7 +879,7 @@ BOOST_AUTO_TEST_CASE(testIborIborStubIndexBootstrap) {
     for (const auto& h : helpers)
         QL_CHECK_SMALL(h->impliedQuote() - h->quote()->value(), 1e-10);
 
-    checkAnalyticQuoteSensitivities(helpers, "ibor-ibor basis swap with stub");
+    checkAnalyticQuoteSensitivities(helpers, curve, "ibor-ibor basis swap with stub");
 
     // the selection is rejected on the leg whose curve is being bootstrapped
     BOOST_CHECK_THROW(
@@ -1120,8 +1209,8 @@ BOOST_AUTO_TEST_CASE(testOvernightIborMarginOnIborLegJacobian) {
         // discount and forecast buckets the curve cannot prove
         // independent of itself
         checkAnalyticQuoteSensitivities(
-            helpers, basisOnIborLeg ? "margin-on-ibor-leg basis swap"
-                                    : "margin-on-overnight-leg basis swap");
+            helpers, curve, basisOnIborLeg ? "margin-on-ibor-leg basis swap"
+                                           : "margin-on-overnight-leg basis swap");
 
         Matrix J = curve->jacobian();
         BOOST_REQUIRE_EQUAL(J.rows(), quotes.size());

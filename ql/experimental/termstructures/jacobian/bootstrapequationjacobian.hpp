@@ -65,7 +65,7 @@ namespace QuantLib {
         }
 
         /*! Converts dated curve-value sensitivities into one Jacobian row.
-            Returns false when analytical weights are unavailable.
+            Returns false when analytical node derivatives are unavailable.
         */
         template <class Traits, class Curve>
         bool analyticBootstrapEquationRow(const Curve* curve,
@@ -82,24 +82,24 @@ namespace QuantLib {
                 row.resize(times.size() - 1);
                 std::fill(row.begin(), row.end(), 0.0);
                 for (const auto& [t, dQdP] : sensitivities) {
-                    std::vector<std::pair<Size, Real>> weights;
+                    std::vector<std::pair<Size, Real>> valueSensitivities;
                     if (t <= tMax) {
-                        weights = interpolation.nodeWeights(t, true);
+                        valueSensitivities = interpolation.nodeSensitivities(t, true);
                     } else {
                         // The curve tail can differ from the interpolation tail.
-                        weights = Traits::extrapolationNodeWeights(
+                        valueSensitivities = Traits::extrapolationNodeSensitivities(
                             t, curve, interpolation);
                     }
-                    if (weights.empty())
+                    if (valueSensitivities.empty())
                         return false;
                     Real discountDerivative =
                         Traits::discountFactorDerivative(t, curve);
-                    for (const auto& [j, w] : weights) {
+                    for (const auto& [j, derivative] : valueSensitivities) {
                         if (j > 0)
-                            row[j-1] += dQdP * discountDerivative * w;
+                            row[j-1] += dQdP * discountDerivative * derivative;
                         else if (firstTied)
                             // data[0] tracks data[1]
-                            row[0] += dQdP * discountDerivative * w;
+                            row[0] += dQdP * discountDerivative * derivative;
                         // otherwise data[0] is fixed
                     }
                 }
@@ -113,6 +113,26 @@ namespace QuantLib {
             std::vector<bool> analyticEquations;
         };
 
+        //! Collects alive helpers in curve order and checks that each is linked to the curve.
+        template <class Traits, class ResultHelper = typename Traits::helper, class Curve>
+        std::vector<ext::shared_ptr<ResultHelper>> collectAliveHelpers(
+                const Curve* curve,
+                const std::vector<ext::shared_ptr<typename Traits::helper>>& instruments) {
+            const Date firstDate = Traits::initialDate(curve);
+            std::vector<ext::shared_ptr<ResultHelper>> alive;
+            for (const auto& helper : instruments) {
+                const Date pillarDate = helper->pillarDate();
+                if (pillarDate <= firstDate)
+                    continue;
+                QL_REQUIRE(helper->isLinkedTo(*curve),
+                           "the helper with pillar date " << pillarDate << " is seated to a "
+                           "different curve; a rate helper cannot be shared between "
+                           "bootstrapped curves");
+                alive.push_back(helper);
+            }
+            return alive;
+        }
+
         //! Jacobian of the bootstrap equations with respect to curve nodes
         template <class Traits, class Curve>
         BootstrapJacobian bootstrapEquationJacobian(
@@ -124,26 +144,14 @@ namespace QuantLib {
                  bool curveHasJumps,
                  bool numericalFallback = true) {
 
-            // alive helpers in curve order
-            Date firstDate = Traits::initialDate(curve);
-            std::vector<ext::shared_ptr<typename Traits::helper>> alive;
-            for (const auto& helper : instruments)
-                if (helper->pillarDate() > firstDate) {
-                    QL_REQUIRE(helper->termStructure() == curve,
-                               "the helper with pillar date " <<
-                               helper->pillarDate() << " is seated to a "
-                               "different curve; a rate helper cannot be "
-                               "shared between bootstrapped curves");
-                    alive.push_back(helper);
-                }
-
+            const auto alive = collectAliveHelpers<Traits>(curve, instruments);
             Size rows = alive.size();
             Size cols = times.size() - 1;
             Matrix J(rows, cols, 0.0);
             std::vector<bool> analytic(rows, false);
 
             if constexpr (supportsAnalyticJacobian<Traits>) {
-                // analytical weights do not include jumps
+                // analytical node derivatives do not include jumps
                 if (!curveHasJumps) {
                     std::vector<Real> row(cols);
                     for (Size i = 0; i < rows; ++i) {

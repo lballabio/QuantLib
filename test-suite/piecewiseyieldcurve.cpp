@@ -68,7 +68,6 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/utilities/null_deleter.hpp>
 #include <iomanip>
 #include <map>
 #include <optional>
@@ -358,6 +357,7 @@ struct CommonVars {
 
 void checkAnalyticQuoteSensitivities(
         const std::vector<ext::shared_ptr<RateHelper>>& helpers,
+        const ext::shared_ptr<YieldTermStructure>& curve,
         const char* helperType) {
     for (Size i = 0; i < helpers.size(); ++i) {
         ImpliedQuoteSensitivities sensitivities =
@@ -375,19 +375,16 @@ void checkAnalyticQuoteSensitivities(
         // replace the curve C the helper is seated on by C*exp(-eps*t),
         // whose derivative at eps=0 the reported sensitivities predict as
         // sum over dates of dQ/dP(d) * (-t(d)) * P(d)
-        YieldTermStructure* own = helpers[i]->termStructure();
-        BOOST_REQUIRE(own != nullptr);
+        BOOST_REQUIRE(helpers[i]->isLinkedTo(*curve));
         Real predicted = 0.0;
-        auto bucket = sensitivities.sensitivities.find(own);
+        auto bucket = sensitivities.sensitivities.find(curve.get());
         if (bucket != sensitivities.sensitivities.end())
             for (const auto& [date, dQdP] : bucket->second)
-                predicted += dQdP * (-own->timeFromReference(date)) *
-                             own->discount(date, true);
+                predicted += dQdP * (-curve->timeFromReference(date)) *
+                             curve->discount(date, true);
         auto spread = ext::make_shared<SimpleQuote>(0.0);
         auto tilted = ext::make_shared<ZeroSpreadedTermStructure>(
-            Handle<YieldTermStructure>(
-                ext::shared_ptr<YieldTermStructure>(own, null_deleter())),
-            Handle<Quote>(spread));
+            Handle<YieldTermStructure>(curve), Handle<Quote>(spread));
         tilted->enableExtrapolation();
         helpers[i]->setTermStructure(tilted.get());
         Real h = 1.0e-7;
@@ -396,7 +393,7 @@ void checkAnalyticQuoteSensitivities(
         spread->setValue(-h);
         Real down = helpers[i]->impliedQuote();
         spread->setValue(0.0);
-        helpers[i]->setTermStructure(own);
+        helpers[i]->setTermStructure(curve.get());
         Real numerical = (up - down) / (2.0 * h);
         BOOST_CHECK_MESSAGE(
             std::fabs(predicted - numerical) <
@@ -2197,8 +2194,8 @@ BOOST_AUTO_TEST_CASE(testIterativeBootstrapRetries) {
     for (const auto date : arsYts->dates()) {
         QL_CHECK_CLOSE(arsYts->discount(date), datedArsYts->discount(date), 1e-6);
     }
-    checkAnalyticQuoteSensitivities(instruments, "tenor-based FX swap");
-    checkAnalyticQuoteSensitivities(datedInstruments, "dated FX swap");
+    checkAnalyticQuoteSensitivities(instruments, arsYts, "tenor-based FX swap");
+    checkAnalyticQuoteSensitivities(datedInstruments, datedArsYts, "dated FX swap");
 }
 
 BOOST_AUTO_TEST_CASE(testCustomFuturesHelpers) {
@@ -2273,7 +2270,7 @@ BOOST_AUTO_TEST_CASE(testCustomFuturesHelpers) {
                     << "\n expected rate:  " << io::rate(expected));
     }
 
-    checkAnalyticQuoteSensitivities(helpers, "futures");
+    checkAnalyticQuoteSensitivities(helpers, curve, "futures");
 }
 
 
@@ -2383,7 +2380,7 @@ BOOST_AUTO_TEST_CASE(testFraForDates) {
         }
     }
 
-    checkAnalyticQuoteSensitivities(helpers, "FRA");
+    checkAnalyticQuoteSensitivities(helpers, curve, "FRA");
 }
 
 BOOST_AUTO_TEST_CASE(testDatedSwapHelpers) {
@@ -2492,7 +2489,7 @@ BOOST_AUTO_TEST_CASE(testSwapHelperSensitivitiesOnSettlementDate) {
             BOOST_TEST_CONTEXT("includeReferenceDateEvents=" << includeReferenceDateEvents
                                << ", includeTodaysCashFlows="
                                << (includeToday ? (*includeToday ? "true" : "false") : "unset")) {
-                checkAnalyticQuoteSensitivities(helpers, "settlement-date swap/OIS");
+                checkAnalyticQuoteSensitivities(helpers, curve, "settlement-date swap/OIS");
             }
         }
     }
@@ -2901,10 +2898,10 @@ BOOST_AUTO_TEST_CASE(testJacobianWithSharedHelpers) {
     CurveJacobianGraph graph;
     graph.add(curveB);
     graph.add(curveA);
-    std::map<const YieldTermStructure*, Array> nodeSensitivities;
-    nodeSensitivities[curveB.get()] =
+    std::map<const YieldTermStructure*, Array> tradeSensitivities;
+    tradeSensitivities[curveB.get()] =
         Array(curveB->data().size() - 1, 1.0);
-    BOOST_CHECK_THROW(graph.marketQuoteSensitivities(nodeSensitivities), Error);
+    BOOST_CHECK_THROW(graph.marketQuoteSensitivities(tradeSensitivities), Error);
 
     // once the curve recalculates it is seated again and works
     quotes[0]->setValue(0.0211);
@@ -3003,7 +3000,7 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapWithJacobianOptimizer) {
                         << dataFwdNumerical[j] << " vs " << dataFwdFallback[j]);
 
     // same fallback when the traits support analytical rows but the
-    // interpolation provides no node weights
+    // interpolation provides no node sensitivities
     typedef PiecewiseYieldCurve<Discount, LogCubic, GlobalBootstrap> GBCubicCurve;
     (void)sizeof(GBCubicCurve);
     LogCubic splineLogCubic(CubicInterpolation::Spline, false,
@@ -3286,12 +3283,12 @@ BOOST_AUTO_TEST_CASE(testCurveSensitivityPropagation) {
     Array projRisk(projCurve->data().size() - 1);
     for (Size j = 0; j < projRisk.size(); ++j)
         projRisk[j] = -250.0 * (j + 2);
-    std::map<const YieldTermStructure*, Array> nodeSensitivities;
-    nodeSensitivities[oisCurve.get()] = oisRisk;
-    nodeSensitivities[projCurve.get()] = projRisk;
+    std::map<const YieldTermStructure*, Array> tradeSensitivities;
+    tradeSensitivities[oisCurve.get()] = oisRisk;
+    tradeSensitivities[projCurve.get()] = projRisk;
 
     std::vector<bool> analytic;
-    auto market = graph.marketQuoteSensitivities(nodeSensitivities, &analytic);
+    auto market = graph.marketQuoteSensitivities(tradeSensitivities, &analytic);
 
     if (!std::all_of(analytic.begin(), analytic.end(),
                      [](bool flag) { return flag; }))
@@ -3324,7 +3321,7 @@ BOOST_AUTO_TEST_CASE(testCurveSensitivityPropagation) {
             Real fd = 0.0;
             for (Size c = 0; c < curves.size(); ++c) {
                 const Array& risk =
-                    nodeSensitivities.at(curves[c].curve.get());
+                    tradeSensitivities.at(curves[c].curve.get());
                 for (Size j = 0; j + 1 < up[c].size(); ++j)
                     fd += risk[j] * (up[c][j + 1] - dn[c][j + 1]) / (2.0 * h);
             }
@@ -3447,7 +3444,7 @@ void checkAnalyticDiscountExtrapolation(const Interpolator& interpolator,
     bool analytic = detail::analyticBootstrapEquationRow<Discount>(
         &curve, {{t, 1.0}}, times, interpolation, row);
     BOOST_REQUIRE_MESSAGE(analytic,
-                          name << " did not provide extrapolated node weights");
+                          name << " did not provide extrapolated node sensitivities");
     BOOST_REQUIRE_EQUAL(row.size(), discounts.size()-1);
 
     const Real h = 1.0e-7;
@@ -3467,7 +3464,7 @@ void checkAnalyticDiscountExtrapolation(const Interpolator& interpolator,
             (up.discount(t)-down.discount(t))/(2.0*h);
         BOOST_CHECK_MESSAGE(
             std::fabs(finiteDifference-row[j-1]) < tolerance,
-            name << " extrapolated node " << j << " has analytic weight "
+            name << " extrapolated node " << j << " has analytic sensitivity "
                  << row[j-1] << " but finite difference " << finiteDifference);
     }
 }
@@ -3493,7 +3490,7 @@ void checkAnalyticZeroExtrapolation(const Interpolator& interpolator,
     bool analytic = detail::analyticBootstrapEquationRow<Traits>(
         &curve, {{t, 1.0}}, times, interpolation, row);
     BOOST_REQUIRE_MESSAGE(analytic,
-                          name << " did not provide extrapolated node weights");
+                          name << " did not provide extrapolated node sensitivities");
     BOOST_REQUIRE_EQUAL(row.size(), rates.size()-1);
 
     const Real h = 1.0e-7;
@@ -3519,12 +3516,12 @@ void checkAnalyticZeroExtrapolation(const Interpolator& interpolator,
             (up.discount(t)-down.discount(t))/(2.0*h);
         BOOST_CHECK_MESSAGE(
             std::fabs(finiteDifference-row[j-1]) < tolerance,
-            name << " extrapolated node " << j << " has analytic weight "
+            name << " extrapolated node " << j << " has analytic sensitivity "
                  << row[j-1] << " but finite difference " << finiteDifference);
     }
 }
 
-BOOST_AUTO_TEST_CASE(testAnalyticYieldCurveExtrapolationWeights) {
+BOOST_AUTO_TEST_CASE(testAnalyticYieldCurveExtrapolationSensitivities) {
 
     BOOST_TEST_MESSAGE("Testing analytic flat-forward yield-curve "
                        "extrapolation for supported interpolators...");
@@ -3768,12 +3765,12 @@ BOOST_AUTO_TEST_CASE(testCoDependentCurveSensitivityPropagation) {
     for (Size j = 0; j < risk6m.size(); ++j)
         risk6m[j] = -75.0 * (j + 3);
     Array riskOis(oisCurve->data().size() - 1, 0.0);
-    std::map<const YieldTermStructure*, Array> nodeSensitivities;
-    nodeSensitivities[oisCurve.get()] = riskOis;
-    nodeSensitivities[curve3m.get()] = risk3m;
-    nodeSensitivities[curve6m.get()] = risk6m;
+    std::map<const YieldTermStructure*, Array> tradeSensitivities;
+    tradeSensitivities[oisCurve.get()] = riskOis;
+    tradeSensitivities[curve3m.get()] = risk3m;
+    tradeSensitivities[curve6m.get()] = risk6m;
 
-    auto market = graph.marketQuoteSensitivities(nodeSensitivities);
+    auto market = graph.marketQuoteSensitivities(tradeSensitivities);
 
     struct NamedCurve {
         std::string name;
@@ -3803,7 +3800,7 @@ BOOST_AUTO_TEST_CASE(testCoDependentCurveSensitivityPropagation) {
             Real fd = 0.0;
             for (Size c = 0; c < curves.size(); ++c) {
                 const Array& risk =
-                    nodeSensitivities.at(curves[c].curve.get());
+                    tradeSensitivities.at(curves[c].curve.get());
                 for (Size j = 0; j + 1 < up[c].size(); ++j)
                     fd += risk[j] * (up[c][j + 1] - dn[c][j + 1]) / (2.0 * h);
             }

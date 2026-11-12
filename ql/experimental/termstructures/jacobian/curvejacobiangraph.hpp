@@ -113,11 +113,12 @@ namespace QuantLib {
         }
 
         /*! PV01-like: sensitivities to market quotes (not scaled, i.e. not multiplied by 0.0001)
-            Input keys must be registered and arrays must match node counts.
+            Each input array gives the trade's PV derivatives with respect to the free nodes
+            of a registered curve.
             Bootstraps with additional penalties or variables are not supported.
         */
         std::map<const YieldTermStructure*, Array> marketQuoteSensitivities(
-            const std::map<const YieldTermStructure*, Array>& nodeSensitivities,
+            const std::map<const YieldTermStructure*, Array>& tradeSensitivities,
             std::vector<bool>* analyticEquations = nullptr) const {
             requireComplete();
             detail::CurveCrossJacobianContext context = jacobianContext();
@@ -128,7 +129,7 @@ namespace QuantLib {
             direct.reserve(nodes_.size());
             for (Size i = 0; i < nodes_.size(); ++i)
                 direct.emplace_back(blocks.numNodes(i), 1, 0.0);
-            for (const auto& [curve, sensitivities] : nodeSensitivities) {
+            for (const auto& [curve, sensitivities] : tradeSensitivities) {
                 Size a = index(*curve);
                 QL_REQUIRE(sensitivities.size() == blocks.numNodes(a),
                            "node sensitivity size (" << sensitivities.size() <<

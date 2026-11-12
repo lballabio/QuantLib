@@ -86,15 +86,15 @@ namespace QuantLib {
                     return 0.0;
                 return decoratedInterp_->secondDerivative(x, true);
             }
-            std::vector<std::pair<Size, Real>> nodeWeights(Real x) const override {
-                return decoratedInterp_->nodeWeights(bind(x), true);
+            std::vector<std::pair<Size, Real>> nodeSensitivities(Real x) const override {
+                return decoratedInterp_->nodeSensitivities(bind(x), true);
             }
-            std::vector<std::pair<Size, Real>> derivativeNodeWeights(Real x) const override {
+            std::vector<std::pair<Size, Real>> derivativeNodeSensitivities(Real x) const override {
                 if (x < xMin() || x > xMax())
                     // A non-empty zero weight distinguishes an implemented
                     // zero derivative from unavailable node sensitivities.
                     return {{Size(0), 0.0}};
-                return decoratedInterp_->derivativeNodeWeights(x, true);
+                return decoratedInterp_->derivativeNodeSensitivities(x, true);
             }
 
           private:
