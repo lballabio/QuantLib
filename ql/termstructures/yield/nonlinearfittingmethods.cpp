@@ -279,6 +279,9 @@ namespace QuantLib {
       knotTimes_(knotTimes) {
         knotTimes_.push_back(0.0);
         std::sort(knotTimes_.begin(), knotTimes_.end());
+        QL_REQUIRE(knotTimes_.front() >= 0.0,
+                   "NaturalCubicFitting: negative knot time (" << knotTimes_.front()
+                   << ") not allowed");
 
         auto last = std::unique(knotTimes_.begin(), knotTimes_.end(),
                                 [](Time a, Time b){ return std::fabs(a - b) <= 1e-14; });
