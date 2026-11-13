@@ -431,7 +431,7 @@ BOOST_AUTO_TEST_CASE(testNaturalCubicFittingKnots) {
 
     BOOST_TEST_MESSAGE("Testing knot validation in natural cubic fitting method...");
 
-    BOOST_CHECK_EXCEPTION(NaturalCubicFitting(std::vector<Time>()), Error,
+    BOOST_CHECK_EXCEPTION(NaturalCubicFitting(std::vector<Time>{}), Error,
                           ExpectedErrorMessage("at least two knot times required"));
 
     // t = 0 is added anyway, so this still gives a single knot
