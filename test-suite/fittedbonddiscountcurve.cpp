@@ -362,7 +362,7 @@ BOOST_AUTO_TEST_CASE(testExponentialSplinesFixedKappa) {
     BOOST_CHECK_CLOSE(curveUnconstrainedFixed.discount(t), expected, 1e-10);
 
     // Free kappa with same parameters
-    ExponentialSplinesFitting unconstrainedFree(false, 3);
+    ExponentialSplinesFitting unconstrainedFree(false, 3, Null<Real>());
     Array unconstrainedParamsFree = {0.2, 0.3, 0.5, kappa};
     FittedBondDiscountCurve curveUnconstrainedFree(today, unconstrainedFree, unconstrainedParamsFree, maxDate, dayCounter);
     BOOST_CHECK_CLOSE(curveUnconstrainedFree.discount(t), expected, 1e-10);
@@ -379,7 +379,7 @@ BOOST_AUTO_TEST_CASE(testExponentialSplinesFixedKappa) {
     BOOST_CHECK_CLOSE(curveConstrainedFixed.discount(t), expected, 1e-10);
 
     // Free kappa with same parameters
-    ExponentialSplinesFitting constrainedFree(true, 3);
+    ExponentialSplinesFitting constrainedFree(true, 3, Null<Real>());
     Array constrainedParamsFree = {0.3, 0.5, kappa};
     FittedBondDiscountCurve curveConstrainedFree(today, constrainedFree, constrainedParamsFree, maxDate, dayCounter);
     BOOST_CHECK_CLOSE(curveConstrainedFree.discount(t), expected, 1e-10);
