@@ -25,6 +25,7 @@
 #include <ql/pricingengines/basket/stulzengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -57,10 +58,8 @@ namespace QuantLib {
 
             // with perfect correlation, rounding can push the modified
             // correlations slightly outside [-1, 1]
-            Real modRho1 = std::max(Real(-1.0), std::min(Real(1.0),
-                                    (rho * stdDev2 - stdDev1) / stdDev));
-            Real modRho2 = std::max(Real(-1.0), std::min(Real(1.0),
-                                    (rho * stdDev1 - stdDev2) / stdDev));
+            Real modRho1 = std::clamp((rho * stdDev2 - stdDev1) / stdDev, Real(-1.0), Real(1.0));
+            Real modRho2 = std::clamp((rho * stdDev1 - stdDev2) / stdDev, Real(-1.0), Real(1.0));
 
             Real D1 = (std::log(forward1/forward2) + 0.5*variance) / stdDev;
 
