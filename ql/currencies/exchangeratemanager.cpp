@@ -88,13 +88,16 @@ namespace QuantLib {
 
     ExchangeRateManager::Key ExchangeRateManager::hash(
                                const Currency& c1, const Currency& c2) const {
-        return Key(std::min(c1.numericCode(),c2.numericCode()))*1000
-             + Key(std::max(c1.numericCode(),c2.numericCode()));
+        // numeric codes are not unique (e.g., CNY and CNH) and can be
+        // larger than 999 (e.g., BTC), so we use the currency codes
+        const std::string& code1 = c1.code();
+        const std::string& code2 = c2.code();
+        return code1 < code2 ? Key(code1, code2) : Key(code2, code1);
     }
 
-    bool ExchangeRateManager::hashes(ExchangeRateManager::Key k,
+    bool ExchangeRateManager::hashes(const ExchangeRateManager::Key& k,
                                      const Currency& c) const {
-        return c.numericCode() == k % 1000 || c.numericCode() == k/1000;
+        return c.code() == k.first || c.code() == k.second;
     }
 
     void ExchangeRateManager::addKnownRates() {
@@ -149,14 +152,14 @@ namespace QuantLib {
                                          const Currency& source,
                                          const Currency& target,
                                          const Date& date,
-                                         std::list<Integer> forbidden) const {
+                                         std::list<std::string> forbidden) const {
         // direct exchange rates are preferred.
         if (const ExchangeRate* direct = fetch(source,target,date))
             return *direct;
 
         // if none is found, turn to smart lookup. The source currency
         // is forbidden to subsequent lookups in order to avoid cycles.
-        forbidden.push_back(source.numericCode());
+        forbidden.push_back(source.code());
         std::map<Key, std::list<Entry> >::const_iterator i;
         for (i = data_.begin(); i != data_.end(); ++i) {
             // we look for exchange-rate data which involve our source
@@ -168,7 +171,7 @@ namespace QuantLib {
                     source == e.rate.source() ?
                         e.rate.target() : e.rate.source();
                 if (std::find(forbidden.begin(),forbidden.end(),
-                              other.numericCode()) == forbidden.end()) {
+                              other.code()) == forbidden.end()) {
                     // ...and which carries information for the requested date.
                     if (const ExchangeRate* head = fetch(source,other,date)) {
                         // if we can get to the target from here...
