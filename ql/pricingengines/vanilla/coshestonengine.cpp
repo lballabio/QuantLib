@@ -19,6 +19,7 @@
 */
 
 #include <ql/math/functional.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonsmallsigmaexpansion.hpp>
 #include <ql/pricingengines/vanilla/coshestonengine.hpp>
 
 namespace QuantLib {
@@ -131,21 +132,34 @@ namespace QuantLib {
 
     std::complex<Real> COSHestonEngine::chF(Real u, Real t)
     const {
-        const Real sigma2 = sigma_*sigma_;
+        // as sigma -> 0 the v0/sigma^2 and kappa*theta/sigma^2 prefactors
+        // below multiply differences that themselves vanish like O(sigma^2),
+        // so naive evaluation loses precision catastrophically (mirrors
+        // AnalyticHestonEngine::chF's small-sigma branch, which this reuses
+        // via the shared single-segment, zero-boundary expansion).
+        if (sigma_ > 1e-6 || kappa_ < 1e-8) {
+            const Real sigma2 = sigma_*sigma_;
 
-        const std::complex<Real> D = std::sqrt(
-            squared(std::complex<Real>(kappa_, -rho_*sigma_*u))
-            + std::complex<Real>(u*u, u)*sigma2);
+            const std::complex<Real> D = std::sqrt(
+                squared(std::complex<Real>(kappa_, -rho_*sigma_*u))
+                + std::complex<Real>(u*u, u)*sigma2);
 
-        const std::complex<Real> g(kappa_, -rho_*sigma_*u);
+            const std::complex<Real> g(kappa_, -rho_*sigma_*u);
 
-        const std::complex<Real> G = (g-D)/(g+D);
+            const std::complex<Real> G = (g-D)/(g+D);
 
-        return std::exp(
-              v0_/(sigma2)*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
-             *(g-D) + kappa_*theta_/sigma2*((g-D)*t
-                -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G)))
-            );
+            return std::exp(
+                  v0_/(sigma2)*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
+                 *(g-D) + kappa_*theta_/sigma2*((g-D)*t
+                    -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G)))
+                );
+        } else {
+            std::complex<Real> Dc, Cc;
+            detail::hestonSmallSigmaStep(
+                kappa_, theta_, sigma_, rho_, t,
+                std::complex<Real>(u, 0.0), std::complex<Real>(0.0, 0.0), Dc, Cc);
+            return std::exp(v0_*Dc + Cc);
+        }
    }
 
    /*
