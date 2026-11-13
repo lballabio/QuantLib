@@ -40,6 +40,7 @@
 #include <ql/currencies/america.hpp>
 #include <ql/currencies/europe.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/optional.hpp>
 #include <map>
@@ -957,6 +958,64 @@ BOOST_AUTO_TEST_CASE(testIsdaCalculatorReconcileSingleWithIssueDateInThePast) {
     QL_CHECK_CLOSE(npv, markitValue, tolerance);
 
     QL_CHECK_CLOSE(calculated_accrual, expected_accrual, tolerance);
+}
+
+BOOST_AUTO_TEST_CASE(testForwardStartingProtection) {
+
+    BOOST_TEST_MESSAGE("Testing credit-default swaps with forward-starting protection...");
+
+    Date today(30, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    Calendar calendar = WeekendsOnly();
+
+    Date maturity = cdsMaturity(today, 5 * Years, DateGeneration::CDS2015);
+    Schedule schedule(today, maturity, 3 * Months, calendar, Following, Unadjusted,
+                      DateGeneration::CDS2015, false);
+
+    const Real hazardRate = 0.02, riskFreeRate = 0.03, recoveryRate = 0.4, notional = 10000.0;
+    Handle<DefaultProbabilityTermStructure> probability(
+        ext::make_shared<FlatHazardRate>(today, hazardRate, dc));
+    Handle<YieldTermStructure> discountCurve(
+        ext::make_shared<FlatForward>(today, riskFreeRate, dc));
+
+    for (Period forwardStart : {1 * Years, 2 * Years}) {
+        // protection starts after several coupon periods
+        Date protectionStart = today + forwardStart;
+        CreditDefaultSwap cds(Protection::Buyer, notional, 0.01, schedule, Following,
+                              Actual360(), true, true, protectionStart);
+
+        // with flat curves and default payment at default time, the
+        // protection leg has a closed form
+        Time t1 = dc.yearFraction(today, protectionStart);
+        Time t2 = dc.yearFraction(today, schedule.dates().back());
+        Real expectedDefaultLeg =
+            (1.0 - recoveryRate) * notional * hazardRate / (hazardRate + riskFreeRate) *
+            (std::exp(-(hazardRate + riskFreeRate) * t1) -
+             std::exp(-(hazardRate + riskFreeRate) * t2));
+
+        cds.setPricingEngine(
+            ext::make_shared<IsdaCdsEngine>(probability, recoveryRate, discountCurve));
+        Real isdaCouponLeg = std::fabs(cds.couponLegNPV());
+        Real isdaFairSpread = cds.fairSpread();
+
+        std::vector<std::pair<std::string, ext::shared_ptr<PricingEngine> > > engines = {
+            {"mid-point",
+             ext::make_shared<MidPointCdsEngine>(probability, recoveryRate, discountCurve)},
+            {"integral", ext::make_shared<IntegralCdsEngine>(1 * Days, probability,
+                                                             recoveryRate, discountCurve)}};
+
+        for (const auto& engine : engines) {
+            BOOST_TEST_CONTEXT(engine.first << " engine, protection start " << protectionStart) {
+                cds.setPricingEngine(engine.second);
+                // the protection leg starts at the protection start...
+                QL_CHECK_CLOSE(std::fabs(cds.defaultLegNPV()), expectedDefaultLeg, 0.01);
+                // ...and coupons paid before it are not included, as in the ISDA engine
+                QL_CHECK_CLOSE(std::fabs(cds.couponLegNPV()), isdaCouponLeg, 0.05);
+                QL_CHECK_CLOSE(cds.fairSpread(), isdaFairSpread, 0.2);
+            }
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testDefaultConventions) {
