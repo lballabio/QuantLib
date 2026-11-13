@@ -71,16 +71,14 @@ namespace QuantLib {
             startDate = effectiveDate_;
         else {
             Date refDate = Settings::instance().evaluationDate();
-            // use index valueDate interface wherever possible to estimate spot date.
+            // use the index value-date convention wherever possible.
             // Unless we pass an explicit settlementDays_ which does not match the index-defined number of fixing days.
             Date spotDate;
             if (settlementDays_ == Null<Natural>()) {
-                // the spot date is defined by the index, so the reference
-                // date must be adjusted on the index fixing calendar (not the
-                // float/payment calendar) to keep the pre-adjust consistent
-                // with valueDate's own fixing-calendar advance.
-                refDate = iborIndex_->fixingCalendar().adjust(refDate);
-                spotDate = iborIndex_->valueDate(refDate);
+                // Count the index fixing days from the actual evaluation
+                // date. valueDate() rejects a holiday, and adjusting first
+                // would add one business day (see issue #753).
+                spotDate = iborIndex_->valueDateFrom(refDate);
             } else {
                 // settlement days are counted from the actual evaluation
                 // date, even when it is not a business day (see issue #753)
