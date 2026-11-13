@@ -504,6 +504,44 @@ BOOST_AUTO_TEST_CASE(testTRSNPV) {
                         -0.005, 1.0, 2);
 }
 
+BOOST_AUTO_TEST_CASE(testExcessReturnIndexEquityLeg) {
+    BOOST_TEST_MESSAGE("Testing equity leg of TRS on excess return index...");
+
+    CommonVars vars;
+
+    const Real tolerance = 1.0e-10;
+
+    // forward-starting 1Y swap, so that both index fixings are projected
+    Date start(31, January, 2023);
+    Date end(31, January, 2024);
+
+    auto projectedReturn = [&](EquityIndex::ReturnType returnType) {
+        vars.equityIndex = ext::make_shared<EquityIndex>("eqIndex", vars.calendar, USDCurrency(),
+                                                         vars.interestHandle, vars.dividendHandle,
+                                                         vars.spotHandle, returnType);
+        auto trs = vars.createTRS(Swap::Receiver, start, end, true);
+        return trs->equityLeg()[0]->amount() / trs->nominal();
+    };
+
+    Real excessReturn = projectedReturn(EquityIndex::ExcessReturn);
+
+    if (std::fabs(excessReturn) > tolerance)
+        BOOST_ERROR("projected equity return on excess return index should be zero\n"
+                    << "    actual return:    " << excessReturn << "\n"
+                    << "    expected return:    0.0\n");
+
+    Real priceReturn = projectedReturn(EquityIndex::Price);
+    Real expectedPriceReturn =
+        (vars.dividendHandle->discount(end) / vars.interestHandle->discount(end)) /
+            (vars.dividendHandle->discount(start) / vars.interestHandle->discount(start)) -
+        1.0;
+
+    if (std::fabs(priceReturn - expectedPriceReturn) > tolerance)
+        BOOST_ERROR("unable to replicate projected equity return on price index\n"
+                    << "    actual return:    " << priceReturn << "\n"
+                    << "    expected return:    " << expectedPriceReturn << "\n");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
