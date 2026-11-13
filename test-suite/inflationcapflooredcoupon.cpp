@@ -21,6 +21,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/capflooredinflationcoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/inflationcouponpricer.hpp>
@@ -40,12 +41,16 @@
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <algorithm>
+#include <vector>
 
 
 using namespace QuantLib;
@@ -673,6 +678,68 @@ BOOST_AUTO_TEST_CASE(testDecomposition) {
                     "  Floating Leg NPV - Collar NPV: " << npvVanilla - gearing_n*npvCollar
                     << "\n" <<
                     "  Diff: " << error );
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSharedPricer) {
+    BOOST_TEST_MESSAGE("Testing inflation capped/floored coupons with a shared pricer...");
+
+    Settings::instance().evaluationDate() = Date(1, January, 2027);
+    auto index = ext::make_shared<YYUKRPI>();
+    index->addFixing(Date(1, November, 2024), 0.05);
+    index->addFixing(Date(1, November, 2025), 0.02);
+
+    Handle<YoYOptionletVolatilitySurface> volatility(
+        ext::make_shared<ConstantYoYOptionletVolatility>(
+            0.01, 0, NullCalendar(), Unadjusted, Actual365Fixed(),
+            Period(2, Months), Monthly, false));
+
+    for (bool wrapped : {false, true}) {
+        for (Real gearing : std::vector<Real>{-1.0, 1.0}) {
+            for (Size type = 0; type < 4; ++type) {
+                const Spread spread = 0.001;
+                const Rate cap = (type & 1) != 0 ?
+                    (gearing > 0.0 ? Real(0.03) : Real(-0.025)) : Null<Rate>();
+                const Rate floor = (type & 2) != 0 ?
+                    (gearing > 0.0 ? Real(0.025) : Real(-0.03)) : Null<Rate>();
+
+                auto pricer = ext::make_shared<BlackYoYInflationCouponPricer>(
+                    volatility, Handle<YieldTermStructure>());
+                auto makeCoupon = [&](Year year) {
+                    const Date start(1, January, year - 1), end(1, January, year);
+                    ext::shared_ptr<CappedFlooredYoYInflationCoupon> coupon;
+                    if (wrapped) {
+                        auto underlying = ext::make_shared<YoYInflationCoupon>(
+                            end, 100.0, start, end, 0, index, Period(2, Months),
+                            CPI::Flat, Actual365Fixed(), gearing, spread);
+                        coupon = ext::make_shared<CappedFlooredYoYInflationCoupon>(
+                            underlying, cap, floor);
+                    } else {
+                        coupon = ext::make_shared<CappedFlooredYoYInflationCoupon>(
+                            end, 100.0, start, end, 0, index, Period(2, Months),
+                            CPI::Flat, Actual365Fixed(), gearing, spread, cap, floor);
+                    }
+                    coupon->setPricer(pricer);
+                    return coupon;
+                };
+
+                std::vector<ext::shared_ptr<CappedFlooredYoYInflationCoupon>> coupons = {
+                    makeCoupon(2025), makeCoupon(2026)};
+                const std::vector<Real> fixings = {0.05, 0.02};
+                for (Size i : {0, 1, 0, 1, 1, 0}) {
+                    Real expected = gearing * fixings[i] + spread;
+                    if (cap != Null<Rate>())
+                        expected = std::min<Real>(expected, cap);
+                    if (floor != Null<Rate>())
+                        expected = std::max<Real>(expected, floor);
+
+                    BOOST_TEST_CONTEXT("wrapped=" << wrapped << ", gearing=" << gearing
+                                       << ", type=" << type << ", coupon=" << i) {
+                        QL_CHECK_SMALL(coupons[i]->rate() - expected, 1.0e-13);
+                    }
+                }
+            }
+        }
     }
 }
 
