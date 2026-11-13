@@ -78,12 +78,15 @@ namespace QuantLib {
                 // This also means that we do not need the coupon to have
                 // a pricing engine to return the swaplet rate and then
                 // the adjusted fixing in the instrument.
-                forwards[i] = yoyTS->yoyRate(arguments_.fixingDates[i]);
+                // If the fixing is already known, the optionlet is worth
+                // its intrinsic value on the actual fixing.
+                Date fixingDate = arguments_.fixingDates[i];
+                bool isFixed = !index()->needsForecast(fixingDate);
+                forwards[i] = isFixed ? index()->fixing(fixingDate) : yoyTS->yoyRate(fixingDate);
                 Rate forward = forwards[i];
 
-                Date fixingDate = arguments_.fixingDates[i];
                 Time sqrtTime = 0.0;
-                if (fixingDate > volatility_->baseDate()){
+                if (!isFixed && fixingDate > volatility_->baseDate()){
                     sqrtTime = std::sqrt(
                         volatility_->timeFromBase(fixingDate, Period(0, Days)));
                 }

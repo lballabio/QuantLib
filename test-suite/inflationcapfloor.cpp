@@ -533,6 +533,61 @@ BOOST_AUTO_TEST_CASE(testTimeValueNearVolatilityBaseDate) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testKnownFixing) {
+
+    BOOST_TEST_MESSAGE("Testing yoy inflation optionlets whose fixing is already known...");
+
+    Date today(15, January, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    Period observationLag(3, Months);
+    Handle<YieldTermStructure> discountCurve(ext::make_shared<FlatForward>(today, 0.03, dc));
+
+    // the curve forecasts 2.5%, but the fixing was published at 2.1%
+    Handle<YoYInflationTermStructure> yoyCurve(ext::make_shared<YoYInflationCurve>(
+        today, std::vector<Date>{Date(1, October, 2025), Date(1, October, 2035)},
+        std::vector<Rate>(2, 0.025), Monthly, dc));
+    auto index = ext::make_shared<YYEUHICP>(yoyCurve);
+    for (Date d(1, January, 2025); d <= Date(1, December, 2025); d += Period(1, Months))
+        index->addFixing(d, 0.021);
+
+    // the coupon fixes in November 2025 and pays in February 2026
+    auto coupon = ext::make_shared<YoYInflationCoupon>(
+        Date(16, February, 2026), 1000000.0, Date(16, February, 2025),
+        Date(16, February, 2026), 0, index, observationLag, CPI::Flat, dc);
+    BOOST_REQUIRE(coupon->fixingDate() < today);
+    BOOST_REQUIRE(!index->needsForecast(coupon->fixingDate()));
+    Leg leg{coupon};
+    Real discount = coupon->nominal() * coupon->accrualPeriod() *
+                    discountCurve->discount(coupon->date());
+
+    Handle<YoYOptionletVolatilitySurface> volatility(
+        ext::make_shared<ConstantYoYOptionletVolatility>(
+            0.40, 0, NullCalendar(), Unadjusted, dc, observationLag, Monthly, false));
+    std::vector<ext::shared_ptr<PricingEngine>> engines = {
+        ext::make_shared<YoYInflationBlackCapFloorEngine>(index, volatility, discountCurve),
+        ext::make_shared<YoYInflationUnitDisplacedBlackCapFloorEngine>(
+            index, volatility, discountCurve),
+        ext::make_shared<YoYInflationBachelierCapFloorEngine>(index, volatility, discountCurve)};
+    const char* engineNames[] = {"Black", "unit-displaced Black", "Bachelier"};
+
+    for (Size which = 0; which < engines.size(); ++which) {
+        for (auto type : {YoYInflationCapFloor::Cap, YoYInflationCapFloor::Floor}) {
+            for (Rate strike : {0.018, 0.022}) {
+                BOOST_TEST_CONTEXT(engineNames[which] << ", " << type << ", strike " << strike) {
+                    YoYInflationCapFloor option(type, leg, std::vector<Rate>(1, strike));
+                    option.setPricingEngine(engines[which]);
+                    Real intrinsic = discount * std::max(type == YoYInflationCapFloor::Cap ?
+                                                             0.021 - strike :
+                                                             strike - 0.021,
+                                                         0.0);
+                    QL_CHECK_SMALL(option.NPV() - intrinsic, 1.0e-8);
+                }
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testVolatilityQuoteObservability) {
 
     BOOST_TEST_MESSAGE("Testing yoy inflation cap repricing when its volatility quote moves...");
