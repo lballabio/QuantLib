@@ -276,7 +276,120 @@ BOOST_AUTO_TEST_CASE(testNewtonSafe) {
 
 BOOST_AUTO_TEST_CASE(testFiniteDifferenceNewtonSafe) {
     BOOST_TEST_MESSAGE("Testing finite-difference Newton-safe solver...");
-    test_solver(FiniteDifferenceNewtonSafe(), "FiniteDifferenceNewtonSafe", Null<Real>());
+    test_solver(FiniteDifferenceNewtonSafe(), "FiniteDifferenceNewtonSafe", 1.0e-6);
+}
+
+BOOST_AUTO_TEST_CASE(testFiniteDifferenceNewtonSafeSmallStep) {
+    BOOST_TEST_MESSAGE("Testing finite-difference Newton-safe convergence after a small step...");
+
+    auto f = [](Real x) -> Real { return 20.0*x*x*x*x*x - 0.01; };
+    Real accuracy = 0.001;
+    Real expected = std::pow(0.01/20.0, 1.0/5.0);
+    Real root = FiniteDifferenceNewtonSafe().solve(f, accuracy, 0.35, -1.75, 5.25);
+    QL_CHECK_SMALL(root - expected, accuracy);
+}
+
+BOOST_AUTO_TEST_CASE(testFiniteDifferenceNewtonSafeResidualReduction) {
+    BOOST_TEST_MESSAGE("Testing finite-difference Newton-safe convergence "
+                       "after residual reduction...");
+
+    Real expected = 0.05;
+    auto f = [=](Real x) -> Real {
+        return 1000.0*(x*x*x - expected*expected*expected) + (x - expected)
+            + 0.6*(std::tanh(10000.0*x) - std::tanh(10000.0*expected));
+    };
+    Real accuracy = 0.001;
+    Real root = FiniteDifferenceNewtonSafe().solve(f, accuracy, 0.0, -1.0, 5.0);
+    QL_CHECK_SMALL(root - expected, accuracy);
+}
+
+BOOST_AUTO_TEST_CASE(testFiniteDifferenceNewtonSafeEvaluationLimit) {
+    BOOST_TEST_MESSAGE("Testing finite-difference Newton-safe function evaluation limits...");
+
+    for (Size budget = 2; budget <= 6; ++budget) {
+        BOOST_TEST_CONTEXT("evaluation limit " << budget) {
+            Size calls = 0;
+            auto f = [&](Real x) -> Real {
+                ++calls;
+                return 20.0*x*x*x*x*x - 0.01;
+            };
+            FiniteDifferenceNewtonSafe solver;
+            solver.setMaxEvaluations(budget);
+            BOOST_CHECK_EXCEPTION(solver.solve(f, 0.001, 0.35, -1.75, 5.25), Error,
+                                  ExpectedErrorMessage("maximum number of function evaluations"));
+            BOOST_CHECK_EQUAL(calls, budget);
+        }
+    }
+
+    // A zero initial slope forces bisection and the extra endpoint evaluation.
+    const Real scale = 8*QL_EPSILON;
+    Size calls = 0;
+    auto f = [&](Real x) -> Real {
+        ++calls;
+        Real t = (x-1.0)/scale;
+        return (t+1.0)*(t+1.0)-4.0;
+    };
+    FiniteDifferenceNewtonSafe solver;
+    solver.setMaxEvaluations(4);
+    BOOST_CHECK_EXCEPTION(solver.solve(f, QL_EPSILON, 1.0, 1.0-2*scale, 1.0+4*scale),
+                          Error, ExpectedErrorMessage("maximum number of function evaluations"));
+    BOOST_CHECK_EQUAL(calls, Size(4));
+}
+
+BOOST_AUTO_TEST_CASE(testFiniteDifferenceNewtonSafeConvergenceAtLimit) {
+    BOOST_TEST_MESSAGE("Testing finite-difference Newton-safe convergence "
+                       "at the evaluation limit...");
+
+    struct Case {
+        Real accuracy, guess, xMin, xMax;
+        Size budget;
+    };
+    const Case cases[] = {
+        {0.01,   0.9999, 0.999, 1.001, 3}, // an already narrow bracket
+        {1.0e-8, 1.0,    0.0,   2.0,   3}, // an exact initial root
+        {0.1,    1.1,    0.0,   2.0,   5}  // a successful probe on the last call
+    };
+    for (const auto& c : cases) {
+        BOOST_TEST_CONTEXT("accuracy " << c.accuracy << ", evaluation limit " << c.budget) {
+            Size calls = 0;
+            Real last = Null<Real>();
+            auto f = [&](Real x) -> Real {
+                ++calls;
+                last = x;
+                return x*x-1.0;
+            };
+            FiniteDifferenceNewtonSafe solver;
+            solver.setMaxEvaluations(c.budget);
+            Real root = solver.solve(f, c.accuracy, c.guess, c.xMin, c.xMax);
+            QL_CHECK_SMALL(root-1.0, c.accuracy);
+            QL_CHECK_SMALL(root-last, 2*QL_EPSILON);
+            BOOST_CHECK_EQUAL(calls, c.budget);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testFiniteDifferenceNewtonSafeRoundedProbe) {
+    BOOST_TEST_MESSAGE("Testing finite-difference Newton-safe convergence with rounded probes...");
+
+    const Real shift = 1.0/QL_EPSILON;
+    const Real accuracy = 0.6;
+    const ExpectedErrorMessage exhausted("maximum number of function evaluations");
+    for (Real expected : std::vector<Real>{0.2, 0.8}) {
+        BOOST_TEST_CONTEXT("root offset " << expected) {
+            auto f = [=](Real x) -> Real {
+                Real t = x-shift;
+                return t*t*t-expected*expected*expected;
+            };
+            try {
+                Real root = FiniteDifferenceNewtonSafe().solve(
+                    f, accuracy, shift, shift-2.0, shift+4.0);
+                // Compare offsets so rounding the expected root cannot hide the error.
+                QL_CHECK_SMALL((root-shift)-expected, accuracy);
+            } catch (const Error& e) {
+                BOOST_CHECK(exhausted(e));
+            }
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testRidder) {
