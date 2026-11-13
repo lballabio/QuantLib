@@ -4080,6 +4080,9 @@
     <ClInclude Include="ql\methods\finitedifferences\stepconditions\fdmbermudanstepcondition.hpp">
       <Filter>methods\finitedifferences\stepconditions</Filter>
     </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\stepconditions\fdmpointhistorycondition.hpp">
+      <Filter>methods\finitedifferences\stepconditions</Filter>
+    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\stepconditions\fdmsimplestoragecondition.hpp">
       <Filter>methods\finitedifferences\stepconditions</Filter>
     </ClInclude>
@@ -7100,6 +7103,9 @@
       <Filter>methods\finitedifferences\stepconditions</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\stepconditions\fdmbermudanstepcondition.cpp">
+      <Filter>methods\finitedifferences\stepconditions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\stepconditions\fdmpointhistorycondition.cpp">
       <Filter>methods\finitedifferences\stepconditions</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\stepconditions\fdmsimplestoragecondition.cpp">
