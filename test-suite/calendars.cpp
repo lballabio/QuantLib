@@ -4571,13 +4571,38 @@ BOOST_AUTO_TEST_CASE(testSerbia) {
 
     BOOST_TEST_MESSAGE("Testing Serbia holiday list...");
 
+    // 2024 to 2026 as in the BELEX trading calendars (without BELEX's one-off
+    // closures); 2027 from the rules
     std::vector<Date> expectedHol = {
+        {1, January, 2024},
+        {2, January, 2024},
+        {15, February, 2024},
+        {16, February, 2024},
+        {1, May, 2024},
+        {2, May, 2024},
+        {3, May, 2024},
+        {6, May, 2024},
+        {11, November, 2024},
+        {31, December, 2024},
+
+        {1, January, 2025},
+        {2, January, 2025},
+        {7, January, 2025},
+        {17, February, 2025},
+        {18, April, 2025},
+        {21, April, 2025},
+        {1, May, 2025},
+        {2, May, 2025},
+        {11, November, 2025},
+        {31, December, 2025},
+
         {1, January, 2026},
         {2, January, 2026},
         {7, January, 2026},
         {16, February, 2026},
-        {3, April, 2026},
-        {6, April, 2026},
+        {17, February, 2026},
+        {10, April, 2026},
+        {13, April, 2026},
         {1, May, 2026},
         {11, November, 2026},
         {31, December, 2026},
@@ -4586,14 +4611,23 @@ BOOST_AUTO_TEST_CASE(testSerbia) {
         {7, January, 2027},
         {15, February, 2027},
         {16, February, 2027},
-        {26, March, 2027},
-        {29, March, 2027},
+        {30, April, 2027},
+        {3, May, 2027},
+        {4, May, 2027},
         {11, November, 2027},
         {31, December, 2027},
     };
 
     Calendar c = Serbia();
-    checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
+    checkHolidays(c.holidayList(Date(1, January, 2024), Date(31, December, 2027)), expectedHol);
+
+    // holidays on a Sunday moved to the first following working day
+    BOOST_CHECK(c.isHoliday(Date(3, May, 2016)));
+    BOOST_CHECK(c.isHoliday(Date(3, January, 2017)));
+    BOOST_CHECK(c.isHoliday(Date(12, November, 2018)));
+    BOOST_CHECK(c.isHoliday(Date(3, January, 2022)));
+    BOOST_CHECK(c.isHoliday(Date(3, May, 2022)));
+    BOOST_CHECK(c.isHoliday(Date(3, January, 2023)));
 }
 
 BOOST_AUTO_TEST_CASE(testSaudiArabiaFoundingDayAndEidHolidays) {
