@@ -72,23 +72,24 @@ namespace QuantLib {
     }
 
     Real GeneralizedBlackScholesProcess::drift(Time t, Real x) const {
-        PATHINDEPENDENT_CACHE_START(Real, res, driftCache_)
-        Real sigma = diffusion(t, x);
-        // we could be more anticipatory if we know the right dt
-        // for which the drift will be used
-        Time t1 = t + 0.0001;
-        res = riskFreeRate_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
-              dividendYield_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
-              0.5 * sigma * sigma;
-        PATHINDEPENDENT_CACHE_END(isStrikeIndependent_, t, 0.0)
-        return res;
+        return driftCache_.getOrCompute(
+            t, 0.0,
+            [&] {
+                Real sigma = diffusion(t, x);
+                // we could be more anticipatory if we know the right dt
+                // for which the drift will be used
+                Time t1 = t + 0.0001;
+                return riskFreeRate_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
+                       dividendYield_->forwardRate(t, t1, Continuous, NoFrequency, true).rate() -
+                       0.5 * sigma * sigma;
+            },
+            [&] { return isStrikeIndependent_; });
     }
 
     Real GeneralizedBlackScholesProcess::diffusion(Time t, Real x) const {
-        PATHINDEPENDENT_CACHE_START(Real, diffusion, diffusionCache_)
-        diffusion = localVolatility()->localVol(t, x, true);
-        PATHINDEPENDENT_CACHE_END(isStrikeIndependent_, t, 0.0)
-        return diffusion;
+        return diffusionCache_.getOrCompute(
+            t, 0.0, [&] { return localVolatility()->localVol(t, x, true); },
+            [&] { return isStrikeIndependent_; });
     }
 
     Real GeneralizedBlackScholesProcess::apply(Real x0, Real dx) const {
@@ -109,14 +110,13 @@ namespace QuantLib {
         localVolatility(); // trigger update
         if (isStrikeIndependent_ && !forceDiscretization_) {
             // exact value for curves
-            PATHINDEPENDENT_CACHE_START(Real, mu, driftCache_)
-            mu =
-                dt *
-                    (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous, NoFrequency, true).rate() -
-                     dividendYield_->forwardRate(t0, t0 + dt, Continuous, NoFrequency, true)
-                         .rate()) -
-                0.5 * variance(t0, x0, dt);
-            PATHINDEPENDENT_CACHE_END(true, t0, dt)
+            Real mu = driftCache_.getOrCompute(t0, dt, [&] {
+                return dt * (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous, NoFrequency, true)
+                                 .rate() -
+                             dividendYield_->forwardRate(t0, t0 + dt, Continuous, NoFrequency, true)
+                                 .rate()) -
+                       0.5 * variance(t0, x0, dt);
+            });
             return x0 * std::exp(mu);
         } else {
             return discretization_->drift(*this, t0, x0, dt);
@@ -128,8 +128,7 @@ namespace QuantLib {
         if(isStrikeIndependent_ && !forceDiscretization_) {
             // exact value for curves
             return std::sqrt(variance(t0,x0,dt));
-        }
-        else{
+        } else {
             return discretization_->diffusion(*this,t0,x0,dt);
         }
     }
@@ -138,11 +137,10 @@ namespace QuantLib {
         localVolatility(); // trigger update
         if (isStrikeIndependent_ && !forceDiscretization_) {
             // exact value for curves
-            PATHINDEPENDENT_CACHE_START(Real, variance, diffusionCache_)
-            variance = blackVolatility_->blackVariance(t0 + dt, 0.01) -
+            return diffusionCache_.getOrCompute(t0, dt, [&] {
+                return blackVolatility_->blackVariance(t0 + dt, 0.01) -
                        blackVolatility_->blackVariance(t0, 0.01);
-            PATHINDEPENDENT_CACHE_END(true, t0, dt)
-            return variance;
+            });
         } else {
             return discretization_->variance(*this, t0, x0, dt);
         }
@@ -155,6 +153,8 @@ namespace QuantLib {
 
     void GeneralizedBlackScholesProcess::update() {
         updated_ = false;
+        driftCache_.clear();
+        diffusionCache_.clear();
         StochasticProcess1D::update();
     }
 
@@ -273,5 +273,4 @@ namespace QuantLib {
                           bool forceDiscretization)
     : GeneralizedBlackScholesProcess(x0,foreignRiskFreeTS,domesticRiskFreeTS,
                                      blackVolTS,d,forceDiscretization) {}
-
-}
+    }

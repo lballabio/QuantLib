@@ -28,20 +28,6 @@
 
 namespace QuantLib {
 
-#define PATHINDEPENDENT_CACHE_START(T, name, cache) \
-    T name;                                         \
-    auto& path_indep_cache_name = name;             \
-    auto& path_indep_cache_cache = cache;           \
-    if (!cache.ready()) {
-
-#define PATHINDEPENDENT_CACHE_END(active, t, dt)                  \
-    if (active)                                                   \
-        path_indep_cache_cache.add(path_indep_cache_name, t, dt); \
-    }                                                             \
-    else {                                                        \
-        path_indep_cache_name = path_indep_cache_cache.get(t);    \
-    }
-
     /*! The cache is initialized with the number of time steps of a stochastic process simulation.
      * The usage pattern is as follows: On the first path we calculate a drift or diffusion and add
      * the path-independent part to the cache, providing the current simulation time t and (if
@@ -50,7 +36,8 @@ namespace QuantLib {
      * same (this is not checked). Once the values for the first path have been added for
      * timeSteps different times, ready() will return true, allowing to retrieve values from the
      * cache for the simulation of all subsequent paths. It is possible to suspend the caching to
-     * allow querying the stochastic process outside the path generation access pattern. */
+     * allow querying the stochastic process outside the path generation access pattern.
+     * clear() invalidates values while preserving the number of steps and suspension state. */
     template <typename U>
     class PathIndependentCache {
       public:
@@ -58,6 +45,31 @@ namespace QuantLib {
         explicit PathIndependentCache(const Size timeSteps) : timeSteps_(timeSteps) {}
         bool ready() const { return ready_ && !suspended_; }
         void suspendCaching(const bool suspend) { suspended_ = suspend; }
+        void clear() const {
+            timeStep_ = 0;
+            data_.clear();
+            times_.clear();
+            dts_.clear();
+            ready_ = false;
+        }
+        template <typename F>
+        U getOrCompute(const Real t, F&& compute) const {
+            return getOrCompute(t, 0.0, std::forward<F>(compute));
+        }
+        template <typename F>
+        U getOrCompute(const Real t, const Real dt, F&& compute) const {
+            return getOrCompute(t, dt, std::forward<F>(compute), [] { return true; });
+        }
+        template <typename F, typename P>
+        U getOrCompute(const Real t, const Real dt, F&& compute, P&& shouldCache) const {
+            if(ready())
+                return get(t,dt);
+            U value = std::forward<F>(compute)();
+            if(std::forward<P>(shouldCache)()) {
+                add(value,t,dt);
+            }
+            return value;
+        }
         template <typename T>
         void add(T&& v, const Real t, const Real dt = 0.0) const {
             if (timeSteps_ > 0 && !suspended_) {
