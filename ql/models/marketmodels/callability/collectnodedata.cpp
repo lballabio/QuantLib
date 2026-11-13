@@ -46,11 +46,24 @@ namespace QuantLib {
         QL_REQUIRE(product.numberOfProducts() == 1,
                    "a single product is required");
 
-        // TODO: check that all objects have compatible evolutions
-        // (same rate times; evolution times for product, basis
-        // system, rebate and control must be subsets of the passed
-        // evolution times; rebate, control and basis system must have
-        // the same exercise---not evolution---times)
+        // Check that all objects have compatible evolutions:
+        // 1. rate times must be identical across all objects
+        const std::vector<Time>& rt = product.evolution().rateTimes();
+        QL_REQUIRE(rebate.evolution().rateTimes() == rt,
+                   "rebate rate times do not match product rate times");
+        QL_REQUIRE(control.evolution().rateTimes() == rt,
+                   "control rate times do not match product rate times");
+        QL_REQUIRE(dataProvider.evolution().rateTimes() == rt,
+                   "dataProvider rate times do not match product rate times");
+        // 2. evolution times for product, rebate, control and basis system
+        //    must be subsets of the passed evolution times
+        // (checked below via isInSubset flags in the evolution loop)
+        // 3. rebate, control and basis system must share the same
+        //    exercise (not evolution) times
+        const std::vector<Time>& rebateEvTimes = rebate.evolution().evolutionTimes();
+        const std::vector<Time>& controlEvTimes = control.evolution().evolutionTimes();
+        QL_REQUIRE(rebateEvTimes == controlEvTimes,
+                   "rebate and control must have the same exercise times");
 
         std::vector<Size> numberCashFlowsThisStep(1);
         std::vector<std::vector<CashFlow> > cashFlowsGenerated(1);
