@@ -20,6 +20,9 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/period.hpp>
+#include <ql/utilities/dataparsers.hpp>
+
+#include <sstream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -301,6 +304,40 @@ BOOST_AUTO_TEST_CASE(testFrequencyComputation) {
     BOOST_TEST(Period(2, Weeks).frequency() == Biweekly);
     BOOST_TEST(Period(1, Weeks).frequency() == Weekly);
     BOOST_TEST(Period(1, Days).frequency() == Daily);
+}
+
+BOOST_AUTO_TEST_CASE(testExplicitDayUnits) {
+    BOOST_TEST_MESSAGE("Testing explicit calendar-day and business-day periods...");
+
+    const Period sevenCalendarDays(7, CalendarDays);
+    const Period sevenBusinessDays(7, BusinessDays);
+
+    BOOST_TEST(sevenCalendarDays.normalized() == Period(1, Weeks));
+    BOOST_TEST(sevenBusinessDays.normalized().length() == 7);
+    BOOST_TEST(sevenBusinessDays.normalized().units() == BusinessDays);
+
+    BOOST_TEST(sevenCalendarDays == Period(1, Weeks));
+    BOOST_TEST(sevenBusinessDays != Period(1, Weeks));
+    BOOST_CHECK_THROW(sevenBusinessDays < Period(1, Weeks), QuantLib::Error);
+
+    BOOST_TEST(Period(1, CalendarDays).frequency() == Daily);
+    BOOST_CHECK_THROW(Period(1, BusinessDays).frequency(), QuantLib::Error);
+    BOOST_TEST(days(Period(3, CalendarDays)) == 3.0);
+    BOOST_CHECK_THROW(days(Period(3, BusinessDays)), QuantLib::Error);
+    BOOST_CHECK_THROW(weeks(sevenBusinessDays), QuantLib::Error);
+
+    std::ostringstream shortCalendarDays, shortBusinessDays;
+    shortCalendarDays << io::short_period(Period(2, CalendarDays));
+    shortBusinessDays << io::short_period(Period(3, BusinessDays));
+    BOOST_TEST(shortCalendarDays.str() == "2CD");
+    BOOST_TEST(shortBusinessDays.str() == "3BD");
+
+    BOOST_TEST(PeriodParser::parse("2CD") == Period(2, CalendarDays));
+    BOOST_TEST(PeriodParser::parse("3bd") == Period(3, BusinessDays));
+    BOOST_TEST(PeriodParser::parse("1W2CD") == Period(9, CalendarDays));
+    BOOST_CHECK_THROW(PeriodParser::parse("1CBD"), QuantLib::Error);
+    BOOST_CHECK_THROW(PeriodParser::parse("1BCD"), QuantLib::Error);
+    BOOST_CHECK_THROW(PeriodParser::parse("x1D"), QuantLib::Error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
