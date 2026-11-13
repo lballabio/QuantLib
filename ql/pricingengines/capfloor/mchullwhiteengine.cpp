@@ -94,11 +94,14 @@ namespace QuantLib::detail {
                     Rate strike = isCap?
                         args_.capRates[i] :
                         args_.floorRates[i];
+                    // with a negative gearing, a cap on the coupon is a
+                    // floor on the index and vice versa
+                    Real sign = args_.gearings[i] >= 0.0 ? 1.0 : -1.0;
                     Real payoff = isCap?
-                        std::max(currentLibor - strike, 0.0) :
-                    std::max(strike - currentLibor, 0.0);
+                        std::max(sign * (currentLibor - strike), 0.0) :
+                    std::max(sign * (strike - currentLibor), 0.0);
 
-                    npv += payoff * tau * args_.gearings[i] *
+                    npv += payoff * tau * std::fabs(args_.gearings[i]) *
                            args_.nominals[i] * accrualFactor;
                 }
             }
