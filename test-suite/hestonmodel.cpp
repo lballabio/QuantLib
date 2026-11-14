@@ -3528,6 +3528,77 @@ BOOST_AUTO_TEST_CASE(testAsymptoticCVwithDifferentAlpha) {
 
 
 
+BOOST_AUTO_TEST_CASE(testPiecewiseTimeDependentZeroMaturity) {
+    BOOST_TEST_MESSAGE("Testing piecewise time dependent Heston engine "
+                       "at zero time to maturity...");
+
+    const Date settlementDate(5, July, 2017);
+    Settings::instance().evaluationDate() = settlementDate;
+    const DayCounter dayCounter = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(flatRate(0.01, dayCounter));
+    const Handle<YieldTermStructure> qTS(flatRate(0.02, dayCounter));
+    const Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+
+    const Real v0 = 0.1;
+    ConstantParameter theta(0.09, PositiveConstraint());
+    ConstantParameter kappa(3.16, PositiveConstraint());
+    ConstantParameter sigma(4.40, PositiveConstraint());
+    ConstantParameter rho(-0.8, BoundaryConstraint(-1.0, 1.0));
+
+    ext::shared_ptr<PiecewiseTimeDependentHestonModel> model =
+        ext::make_shared<PiecewiseTimeDependentHestonModel>(
+            rTS, qTS, s0, v0, theta, kappa, sigma, rho, TimeGrid(20.0, 2));
+
+    // expiry on the reference date: with includeReferenceDateEvents the
+    // instrument is not expired, the engine runs, and its time argument
+    // is zero - where the PTD expansion is not defined. The value must
+    // degenerate to the undiscounted payoff.
+    Settings::instance().includeReferenceDateEvents() = true;
+    struct RestoreIncludeRefEvents {
+        ~RestoreIncludeRefEvents() {
+            Settings::instance().includeReferenceDateEvents() = false;
+        }
+    } restoreIncludeRefEvents;
+
+    const Real strike = 90.0;
+    ext::shared_ptr<StrikedTypePayoff> payoff(
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike));
+    ext::shared_ptr<Exercise> exercise(
+        ext::make_shared<EuropeanExercise>(settlementDate));
+    VanillaOption option(payoff, exercise);
+
+    const Real expected = 10.0; // spot 100, strike 90: undiscounted payoff
+
+    option.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        new AnalyticPTDHestonEngine(
+            model,
+            AnalyticPTDHestonEngine::Gatheral,
+            AnalyticPTDHestonEngine::Integration::gaussLaguerre(5))));
+    const Real laguerre = option.NPV();
+    if (std::fabs(laguerre - expected) > 1e-12) {
+        BOOST_ERROR("failed to return the payoff at zero maturity "
+                    "(Gatheral/gaussLaguerre)"
+                    << "\n    calculated: " << laguerre
+                    << "\n    expected:   " << expected);
+    }
+
+    option.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        new AnalyticPTDHestonEngine(
+            model,
+            AnalyticPTDHestonEngine::AndersenPiterbarg,
+            AnalyticPTDHestonEngine::Integration::gaussLobatto(
+                1e-12, Null<Real>(), 100000))));
+    const Real lobatto = option.NPV();
+    if (std::fabs(lobatto - expected) > 1e-12) {
+        BOOST_ERROR("failed to return the payoff at zero maturity "
+                    "(AndersenPiterbarg/gaussLobatto)"
+                    << "\n    calculated: " << lobatto
+                    << "\n    expected:   " << expected);
+    }
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(HestonModelExperimentalTest)
