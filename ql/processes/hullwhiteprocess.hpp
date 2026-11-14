@@ -52,6 +52,7 @@ namespace QuantLib {
         Real alpha(Time t) const;
         void resetCache(const Size numberOfTimeSteps) const override;
         void suspendCaching(const bool suspend) const override;
+        void update() override;
         //@}
     protected:
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> process_;
@@ -77,6 +78,8 @@ namespace QuantLib {
         Real variance(Time t0, Real x0, Time dt) const override;
         void resetCache(const Size numberOfTimeSteps) const override;
         void suspendCaching(const bool suspend) const override;
+        void update() override;
+        void setForwardMeasureTime(Time t) override;
         //@}
 
         Real a() const;
