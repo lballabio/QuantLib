@@ -206,6 +206,76 @@ BOOST_AUTO_TEST_CASE(testCompoundedRateWithHolidayMaturity) {
     QL_CHECK_SMALL(future.NPV() - expectedPrice, 1.0e-12);
 }
 
+BOOST_AUTO_TEST_CASE(testCompoundedRateOnValueDate) {
+    BOOST_TEST_MESSAGE("Testing compounded SOFR futures on their value date...");
+
+    const Date valueDates[] = {Date(18, June, 2024), Date(21, June, 2024),
+                              Date(20, March, 2024)};
+    const Rate fixings[] = {-0.01, 0.0, 0.09};
+    const DayCounter dc = Actual360();
+
+    for (const Date& today : valueDates) {
+        Settings::instance().evaluationDate() = today;
+        Handle<YieldTermStructure> curve(
+            ext::make_shared<FlatForward>(today, 0.04, dc));
+        auto sofr = ext::make_shared<Sofr>(curve);
+        const Date nextBusinessDay = sofr->fixingCalendar().advance(today, 1, Days);
+        const Date quarterlyMaturity = today == Date(20, March, 2024) ?
+            Date(19, June, 2024) : today + Period(3, Months);
+        const Date maturities[] = {today + 1, nextBusinessDay, quarterlyMaturity};
+        for (const Date& maturity : maturities) {
+            OvernightIndexFuture future(sofr, today, maturity);
+            const Time accrual = dc.yearFraction(today, maturity);
+            const Real forecastPrice = 100.0 * (1.0 - (1.0 / curve->discount(maturity) - 1.0)
+                                                        / accrual);
+            // Without today's fixing the whole period is forecast as before.
+            QL_CHECK_SMALL(future.NPV() - forecastPrice, 1.0e-10);
+            for (Rate fixing : fixings) {
+                // Reusing the future also checks invalidation after adding or replacing a fixing.
+                sofr->addFixing(today, fixing, true);
+                const Date fixingEnd = std::min(nextBusinessDay, maturity);
+                const Real compoundFactor =
+                    (1.0 + fixing * dc.yearFraction(today, fixingEnd)) *
+                    curve->discount(fixingEnd) / curve->discount(maturity);
+                const Real expectedPrice = 100.0 * (1.0 - (compoundFactor - 1.0) / accrual);
+                QL_CHECK_SMALL(future.NPV() - expectedPrice, 1.0e-10);
+            }
+            sofr->clearFixings();
+            QL_CHECK_SMALL(future.NPV() - forecastPrice, 1.0e-10);
+        }
+        // A stored fixing dated after the evaluation date must still be forecast.
+        sofr->addFixing(nextBusinessDay, 0.09);
+        OvernightIndexFuture forwardStarting(sofr, nextBusinessDay, quarterlyMaturity);
+        const Real forwardFactor =
+            curve->discount(nextBusinessDay) / curve->discount(quarterlyMaturity);
+        const Real forwardPrice = 100.0 *
+            (1.0 - (forwardFactor - 1.0) / dc.yearFraction(nextBusinessDay, quarterlyMaturity));
+        QL_CHECK_SMALL(forwardStarting.NPV() - forwardPrice, 1.0e-10);
+        sofr->clearFixings();
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testValueDateFixingBeforeForwardCurve) {
+    BOOST_TEST_MESSAGE("Testing a SOFR value-date fixing before the forwarding curve starts...");
+
+    const Date today(18, June, 2024), curveStart(20, June, 2024), maturity(18, September, 2024);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual360();
+    Handle<YieldTermStructure> curve(
+        ext::make_shared<FlatForward>(curveStart, 0.04, dc));
+    auto sofr = ext::make_shared<Sofr>(curve);
+    OvernightIndexFuture future(sofr, today, maturity);
+
+    BOOST_CHECK_EXCEPTION(future.NPV(), Error,
+                          ExpectedErrorMessage("the forwarding term structure starts on"));
+    sofr->addFixing(today, 0.09);
+    const Real compoundFactor =
+        (1.0 + 0.09 * dc.yearFraction(today, curveStart)) / curve->discount(maturity);
+    const Real expectedPrice =
+        100.0 * (1.0 - (compoundFactor - 1.0) / dc.yearFraction(today, maturity));
+    QL_CHECK_SMALL(future.NPV() - expectedPrice, 1.0e-10);
+}
+
 BOOST_AUTO_TEST_CASE(testPillarDates) {
     BOOST_TEST_MESSAGE("Testing pillar date support in SOFR futures helpers...");
 
