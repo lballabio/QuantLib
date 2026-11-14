@@ -95,6 +95,7 @@ namespace QuantLib {
                                     Real a,
                                     Real b,
                                     Real tolerance,
+                                    Real& error,
                                     Size depth = 0) const;
       };
 }
