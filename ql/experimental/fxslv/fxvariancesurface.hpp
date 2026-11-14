@@ -29,7 +29,7 @@
 #include <ql/experimental/fxslv/conventions/fxexpirycut.hpp>
 #include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
 #include <ql/experimental/fxslv/fxtradingtimevariancesurface.hpp>
-#include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimetermstructure.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/math/interpolation.hpp>

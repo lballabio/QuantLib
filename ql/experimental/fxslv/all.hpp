@@ -2,8 +2,6 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/fxslv/fxeventvariance.hpp>
-#include <ql/experimental/fxslv/tradingtimeyieldtermstructure.hpp>
-#include <ql/experimental/fxslv/tradingtimedaycounter.hpp>
 #include <ql/experimental/fxslv/fxtradingtimevariancesurface.hpp>
 #include <ql/experimental/fxslv/fxtradingtimemarket.hpp>
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
@@ -14,7 +12,7 @@
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/experimental/fxslv/slvleveragecalibrator.hpp>
 #include <ql/experimental/fxslv/stochvolcalibrator.hpp>
-#include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
 
 #include <ql/experimental/fxslv/smilesections/all.hpp>
 #include <ql/experimental/fxslv/conventions/all.hpp>
+#include <ql/experimental/fxslv/tradingtime/all.hpp>

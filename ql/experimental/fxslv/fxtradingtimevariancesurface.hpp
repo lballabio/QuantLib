@@ -24,7 +24,7 @@
 #ifndef quantlib_fx_trading_time_variance_surface_hpp
 #define quantlib_fx_trading_time_variance_surface_hpp
 
-#include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimetermstructure.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 

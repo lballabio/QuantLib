@@ -708,12 +708,13 @@
     <ClInclude Include="ql\experimental\fx\mtmcrosscurrencybasisswap.hpp" />
     <ClInclude Include="ql\experimental\fxslv\all.hpp" />
     <ClInclude Include="ql\experimental\fxslv\conventions\all.hpp" />
+    <ClInclude Include="ql\experimental\fxslv\tradingtime\all.hpp" />
     <ClInclude Include="ql\experimental\fxslv\smilesections\all.hpp" />
     <ClInclude Include="ql\experimental\fxslv\smilesections\fxcostsmilesection.hpp" />
     <ClInclude Include="ql\experimental\fxslv\smilesections\fxdeltaconverter.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxeventvariance.hpp" />
-    <ClInclude Include="ql\experimental\fxslv\tradingtimeyieldtermstructure.hpp" />
-    <ClInclude Include="ql\experimental\fxslv\tradingtimedaycounter.hpp" />
+    <ClInclude Include="ql\experimental\fxslv\tradingtime\tradingtimeyieldtermstructure.hpp" />
+    <ClInclude Include="ql\experimental\fxslv\tradingtime\tradingtimedaycounter.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxtradingtimevariancesurface.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxtradingtimemarket.hpp" />
     <ClInclude Include="ql\experimental\fxslv\conventions\fxexpirycut.hpp" />
@@ -733,7 +734,7 @@
     <ClInclude Include="ql\experimental\fxslv\fxvariancesurface.hpp" />
     <ClInclude Include="ql\experimental\fxslv\slvleveragecalibrator.hpp" />
     <ClInclude Include="ql\experimental\fxslv\stochvolcalibrator.hpp" />
-    <ClInclude Include="ql\experimental\fxslv\tradingtimetermstructure.hpp" />
+    <ClInclude Include="ql\experimental\fxslv\tradingtime\tradingtimetermstructure.hpp" />
     <ClInclude Include="ql\experimental\inflation\all.hpp" />
     <ClInclude Include="ql\experimental\inflation\cpicapfloorengines.hpp" />
     <ClInclude Include="ql\experimental\inflation\cpicapfloortermpricesurface.hpp" />
@@ -2141,8 +2142,8 @@
     <ClCompile Include="ql\experimental\fxslv\smilesections\fxcostsmilesection.cpp" />
     <ClCompile Include="ql\experimental\fxslv\smilesections\fxdeltaconverter.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxeventvariance.cpp" />
-    <ClCompile Include="ql\experimental\fxslv\tradingtimeyieldtermstructure.cpp" />
-    <ClCompile Include="ql\experimental\fxslv\tradingtimedaycounter.cpp" />
+    <ClCompile Include="ql\experimental\fxslv\tradingtime\tradingtimeyieldtermstructure.cpp" />
+    <ClCompile Include="ql\experimental\fxslv\tradingtime\tradingtimedaycounter.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxtradingtimevariancesurface.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxtradingtimemarket.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxlocalvolsurface.cpp" />
@@ -2157,7 +2158,7 @@
     <ClCompile Include="ql\experimental\fxslv\fxvanillagreeks.cpp" />
     <ClCompile Include="ql\experimental\fxslv\slvleveragecalibrator.cpp" />
     <ClCompile Include="ql\experimental\fxslv\stochvolcalibrator.cpp" />
-    <ClCompile Include="ql\experimental\fxslv\tradingtimetermstructure.cpp" />
+    <ClCompile Include="ql\experimental\fxslv\tradingtime\tradingtimetermstructure.cpp" />
     <ClCompile Include="ql\experimental\inflation\cpicapfloorengines.cpp" />
     <ClCompile Include="ql\experimental\inflation\cpicapfloortermpricesurface.cpp" />
     <ClCompile Include="ql\experimental\inflation\yoycapfloortermpricesurface.cpp" />

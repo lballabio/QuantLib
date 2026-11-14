@@ -18,7 +18,7 @@
 */
 
 #include <ql/errors.hpp>
-#include <ql/experimental/fxslv/tradingtimedaycounter.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimedaycounter.hpp>
 #include <utility>
 
 namespace QuantLib {

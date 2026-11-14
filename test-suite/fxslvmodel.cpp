@@ -45,7 +45,7 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/settings.hpp>
-#include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimetermstructure.hpp>
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>

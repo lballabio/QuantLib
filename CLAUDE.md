@@ -5,7 +5,9 @@
 This fork adds FX smile-section, local-vol and stochastic-local-vol
 (SLV) functionality. All of it lives under `ql/experimental/fxslv/`:
 market conventions (settlement, expiry cut, tenor dates) in its
-`conventions/` subdirectory, smile sections in `smilesections/`, with tests in
+`conventions/` subdirectory, smile sections in `smilesections/`, the
+trading-time clock (its term structure, day counter and yield-curve
+wrapper) in `tradingtime/`, with tests in
 `test-suite/fxlocalvol.cpp`, `fxslvmodel.cpp` and `fxsmilesections.cpp`,
 and examples in `Examples/FXLocalVol` and `Examples/FXSmileSections`.
 

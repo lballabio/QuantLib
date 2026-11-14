@@ -24,7 +24,7 @@
 #ifndef quantlib_trading_time_day_counter_hpp
 #define quantlib_trading_time_day_counter_hpp
 
-#include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimetermstructure.hpp>
 #include <ql/handle.hpp>
 #include <ql/time/daycounter.hpp>
 

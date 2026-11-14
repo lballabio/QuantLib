@@ -25,7 +25,7 @@
 #define quantlib_fx_event_variance_hpp
 
 #include <ql/experimental/fxslv/conventions/fxexpirycut.hpp>
-#include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimetermstructure.hpp>
 #include <ql/time/calendar.hpp>
 #include <vector>
 
