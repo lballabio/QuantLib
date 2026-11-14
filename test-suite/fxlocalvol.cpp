@@ -33,11 +33,11 @@
 #include <ql/experimental/fxslv/smilesections/fxsmilesectionbystrike.hpp>
 #include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
-#include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimetermstructure.hpp>
 #include <ql/experimental/fxslv/fxtradingtimemarket.hpp>
 #include <ql/experimental/fxslv/fxtradingtimevariancesurface.hpp>
-#include <ql/experimental/fxslv/tradingtimedaycounter.hpp>
-#include <ql/experimental/fxslv/tradingtimeyieldtermstructure.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimedaycounter.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/experimental/fxslv/fxvanillagreeks.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>

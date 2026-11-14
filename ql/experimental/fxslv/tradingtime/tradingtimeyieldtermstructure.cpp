@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/fxslv/tradingtimedaycounter.hpp>
-#include <ql/experimental/fxslv/tradingtimeyieldtermstructure.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimedaycounter.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.hpp>
 #include <cmath>
 #include <utility>
 

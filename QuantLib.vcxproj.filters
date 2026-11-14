@@ -286,6 +286,9 @@
     <Filter Include="experimental\fxslv\smilesections">
       <UniqueIdentifier>{9fb05f42-30db-4a54-86c0-b5803055aa0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\fxslv\tradingtime">
+      <UniqueIdentifier>{7aba1c17-54c7-4956-8bf2-2ee9c69f86dc}</UniqueIdentifier>
+    </Filter>
     <Filter Include="experimental\inflation">
       <UniqueIdentifier>{c046c970-45d0-4156-b587-ff2bc881bf04}</UniqueIdentifier>
     </Filter>
@@ -3315,6 +3318,9 @@
     <ClInclude Include="ql\experimental\fxslv\conventions\all.hpp">
       <Filter>experimental\fxslv\conventions</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\tradingtime\all.hpp">
+      <Filter>experimental\fxslv\tradingtime</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\fxslv\smilesections\all.hpp">
       <Filter>experimental\fxslv\smilesections</Filter>
     </ClInclude>
@@ -3327,11 +3333,11 @@
     <ClInclude Include="ql\experimental\fxslv\fxeventvariance.hpp">
       <Filter>experimental\fxslv</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\fxslv\tradingtimeyieldtermstructure.hpp">
-      <Filter>experimental\fxslv</Filter>
+    <ClInclude Include="ql\experimental\fxslv\tradingtime\tradingtimeyieldtermstructure.hpp">
+      <Filter>experimental\fxslv\tradingtime</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\fxslv\tradingtimedaycounter.hpp">
-      <Filter>experimental\fxslv</Filter>
+    <ClInclude Include="ql\experimental\fxslv\tradingtime\tradingtimedaycounter.hpp">
+      <Filter>experimental\fxslv\tradingtime</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\fxslv\fxtradingtimevariancesurface.hpp">
       <Filter>experimental\fxslv</Filter>
@@ -3390,8 +3396,8 @@
     <ClInclude Include="ql\experimental\fxslv\stochvolcalibrator.hpp">
       <Filter>experimental\fxslv</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\fxslv\tradingtimetermstructure.hpp">
-      <Filter>experimental\fxslv</Filter>
+    <ClInclude Include="ql\experimental\fxslv\tradingtime\tradingtimetermstructure.hpp">
+      <Filter>experimental\fxslv\tradingtime</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\all.hpp">
       <Filter>experimental\exoticoptions</Filter>
@@ -7504,11 +7510,11 @@
     <ClCompile Include="ql\experimental\fxslv\fxeventvariance.cpp">
       <Filter>experimental\fxslv</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\fxslv\tradingtimeyieldtermstructure.cpp">
-      <Filter>experimental\fxslv</Filter>
+    <ClCompile Include="ql\experimental\fxslv\tradingtime\tradingtimeyieldtermstructure.cpp">
+      <Filter>experimental\fxslv\tradingtime</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\fxslv\tradingtimedaycounter.cpp">
-      <Filter>experimental\fxslv</Filter>
+    <ClCompile Include="ql\experimental\fxslv\tradingtime\tradingtimedaycounter.cpp">
+      <Filter>experimental\fxslv\tradingtime</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\fxslv\fxtradingtimevariancesurface.cpp">
       <Filter>experimental\fxslv</Filter>
@@ -7552,8 +7558,8 @@
     <ClCompile Include="ql\experimental\fxslv\stochvolcalibrator.cpp">
       <Filter>experimental\fxslv</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\fxslv\tradingtimetermstructure.cpp">
-      <Filter>experimental\fxslv</Filter>
+    <ClCompile Include="ql\experimental\fxslv\tradingtime\tradingtimetermstructure.cpp">
+      <Filter>experimental\fxslv\tradingtime</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\termstructures\basisswapratehelpers.cpp">
       <Filter>experimental\termstructures</Filter>

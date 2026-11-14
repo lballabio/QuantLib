@@ -20,7 +20,7 @@
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
 #include <ql/experimental/fxslv/fxtradingtimemarket.hpp>
 #include <ql/experimental/fxslv/fxtradingtimevariancesurface.hpp>
-#include <ql/experimental/fxslv/tradingtimeyieldtermstructure.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.hpp>
 #include <utility>
 
 namespace QuantLib {

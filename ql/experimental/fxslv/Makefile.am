@@ -1,5 +1,5 @@
 
-SUBDIRS = conventions smilesections
+SUBDIRS = conventions smilesections tradingtime
 
 AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
@@ -7,8 +7,6 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     fxeventvariance.hpp \
-    tradingtimeyieldtermstructure.hpp \
-    tradingtimedaycounter.hpp \
     fxtradingtimevariancesurface.hpp \
     fxtradingtimemarket.hpp \
     fxlocalvolsurface.hpp \
@@ -18,13 +16,10 @@ this_include_HEADERS = \
     fxvanillagreeks.hpp \
     fxvariancesurface.hpp \
     slvleveragecalibrator.hpp \
-    stochvolcalibrator.hpp \
-    tradingtimetermstructure.hpp
+    stochvolcalibrator.hpp
 
 cpp_files = \
     fxeventvariance.cpp \
-    tradingtimeyieldtermstructure.cpp \
-    tradingtimedaycounter.cpp \
     fxtradingtimevariancesurface.cpp \
     fxtradingtimemarket.cpp \
     fxlocalvolsurface.cpp \
@@ -32,8 +27,7 @@ cpp_files = \
     fxslvpricingcontext.cpp \
     fxvanillagreeks.cpp \
     slvleveragecalibrator.cpp \
-    stochvolcalibrator.cpp \
-    tradingtimetermstructure.cpp
+    stochvolcalibrator.cpp
 
 if UNITY_BUILD
 
@@ -57,7 +51,8 @@ endif
 
 libFxSlv_la_LIBADD = \
     conventions/libFxSlvConventions.la \
-    smilesections/libFxSlvSmileSections.la
+    smilesections/libFxSlvSmileSections.la \
+    tradingtime/libFxSlvTradingTime.la
 
 noinst_LTLIBRARIES = libFxSlv.la
 

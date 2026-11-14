@@ -25,7 +25,7 @@
 #define quantlib_fx_trading_time_market_hpp
 
 #include <ql/experimental/fxslv/conventions/fxsettlementconvention.hpp>
-#include <ql/experimental/fxslv/tradingtimedaycounter.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimedaycounter.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 

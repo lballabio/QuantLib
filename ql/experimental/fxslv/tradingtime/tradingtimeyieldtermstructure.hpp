@@ -24,7 +24,7 @@
 #ifndef quantlib_trading_time_yield_term_structure_hpp
 #define quantlib_trading_time_yield_term_structure_hpp
 
-#include <ql/experimental/fxslv/tradingtimetermstructure.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimetermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {

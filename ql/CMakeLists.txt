@@ -154,8 +154,8 @@ set(QL_SOURCES
     experimental/fxslv/smilesections/fxcostsmilesection.cpp
     experimental/fxslv/smilesections/fxdeltaconverter.cpp
     experimental/fxslv/fxeventvariance.cpp
-    experimental/fxslv/tradingtimeyieldtermstructure.cpp
-    experimental/fxslv/tradingtimedaycounter.cpp
+    experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.cpp
+    experimental/fxslv/tradingtime/tradingtimedaycounter.cpp
     experimental/fxslv/fxtradingtimevariancesurface.cpp
     experimental/fxslv/fxtradingtimemarket.cpp
     experimental/fxslv/fxlocalvolsurface.cpp
@@ -170,7 +170,7 @@ set(QL_SOURCES
     experimental/fxslv/fxvanillagreeks.cpp
     experimental/fxslv/slvleveragecalibrator.cpp
     experimental/fxslv/stochvolcalibrator.cpp
-    experimental/fxslv/tradingtimetermstructure.cpp
+    experimental/fxslv/tradingtime/tradingtimetermstructure.cpp
     experimental/inflation/cpicapfloorengines.cpp
     experimental/inflation/cpicapfloortermpricesurface.cpp
     experimental/inflation/yoycapfloortermpricesurface.cpp
@@ -1207,8 +1207,8 @@ set(QL_HEADERS
     experimental/fxslv/smilesections/fxcostsmilesection.hpp
     experimental/fxslv/smilesections/fxdeltaconverter.hpp
     experimental/fxslv/fxeventvariance.hpp
-    experimental/fxslv/tradingtimeyieldtermstructure.hpp
-    experimental/fxslv/tradingtimedaycounter.hpp
+    experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.hpp
+    experimental/fxslv/tradingtime/tradingtimedaycounter.hpp
     experimental/fxslv/fxtradingtimevariancesurface.hpp
     experimental/fxslv/fxtradingtimemarket.hpp
     experimental/fxslv/conventions/fxexpirycut.hpp
@@ -1228,7 +1228,7 @@ set(QL_HEADERS
     experimental/fxslv/fxvariancesurface.hpp
     experimental/fxslv/slvleveragecalibrator.hpp
     experimental/fxslv/stochvolcalibrator.hpp
-    experimental/fxslv/tradingtimetermstructure.hpp
+    experimental/fxslv/tradingtime/tradingtimetermstructure.hpp
     experimental/inflation/cpicapfloorengines.hpp
     experimental/inflation/cpicapfloortermpricesurface.hpp
     experimental/inflation/genericindexes.hpp
@@ -2399,6 +2399,7 @@ set(QL_GENERATED_HEADERS
     ${PROJECT_BINARY_DIR}/ql/experimental/fxslv/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/fxslv/conventions/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/fxslv/smilesections/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/fxslv/tradingtime/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/inflation/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/lattices/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/math/all.hpp

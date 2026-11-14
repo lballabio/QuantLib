@@ -18,7 +18,7 @@
 */
 
 #include <ql/experimental/fxslv/fxtradingtimevariancesurface.hpp>
-#include <ql/experimental/fxslv/tradingtimedaycounter.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimedaycounter.hpp>
 #include <utility>
 
 namespace QuantLib {
