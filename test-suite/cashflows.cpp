@@ -31,7 +31,10 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -40,6 +43,7 @@
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/optional.hpp>
 #include <ql/settings.hpp>
+#include <cmath>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -47,6 +51,354 @@ using namespace boost::unit_test_framework;
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(CashFlowTests)
+
+BOOST_AUTO_TEST_CASE(testSimpleDuration) {
+    BOOST_TEST_MESSAGE("Testing cash-flow duration with multiple compounding conventions...");
+    Date settlement(15, January, 2024);
+    Settings::instance().evaluationDate() = settlement;
+    DayCounter dayCounter = Actual365Fixed();
+    Leg leg = {ext::make_shared<SimpleCashFlow>(40.0, settlement + 180),
+               ext::make_shared<SimpleCashFlow>(70.0, settlement + 480)};
+    Time firstTime = 180.0 / 365.0, secondInterval = 300.0 / 365.0;
+
+    for (Rate rate : {-0.02, 0.0, 0.05}) {
+        for (Compounding compounding : {Simple, Compounded, Continuous,
+                                       SimpleThenCompounded, CompoundedThenSimple}) {
+            BOOST_TEST_CONTEXT("rate=" << rate << ", compounding=" << compounding) {
+                Real firstDiscount, secondDiscount;
+                Real firstSimple = 1.0 / (1.0 + rate * firstTime);
+                Real secondSimple = 1.0 / (1.0 + rate * secondInterval);
+                Real firstCompounded = std::pow(1.0 + rate / 2.0, -2.0 * firstTime);
+                Real secondCompounded = std::pow(1.0 + rate / 2.0, -2.0 * secondInterval);
+                if (compounding == Continuous) {
+                    firstDiscount = std::exp(-rate * firstTime);
+                    secondDiscount = std::exp(-rate * (firstTime + secondInterval));
+                } else if (compounding == Simple) {
+                    firstDiscount = firstSimple;
+                    secondDiscount = firstSimple * secondSimple;
+                } else if (compounding == SimpleThenCompounded) {
+                    firstDiscount = firstSimple;
+                    secondDiscount = firstSimple * secondCompounded;
+                } else if (compounding == CompoundedThenSimple) {
+                    firstDiscount = firstCompounded;
+                    secondDiscount = firstCompounded * secondSimple;
+                } else {
+                    firstDiscount = firstCompounded;
+                    secondDiscount = firstCompounded * secondCompounded;
+                }
+                Real expected = (firstTime * 40.0 * firstDiscount +
+                                 (firstTime + secondInterval) * 70.0 * secondDiscount) /
+                                (40.0 * firstDiscount + 70.0 * secondDiscount);
+                InterestRate yield(rate, dayCounter, compounding, Semiannual);
+                QL_CHECK_SMALL(CashFlows::duration(leg, yield, Duration::Simple, false) -
+                                   expected,
+                               1.0e-12);
+                QL_CHECK_SMALL(
+                    CashFlows::duration(leg, rate, dayCounter, compounding, Semiannual,
+                                        Duration::Simple, false, settlement, settlement) - expected,
+                    1.0e-12);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testDurationAndConvexityWithNoValue) {
+    BOOST_TEST_MESSAGE("Testing duration and convexity for cash flows with no value...");
+    Date settlement(15, January, 2024);
+    Settings::instance().evaluationDate() = settlement;
+    InterestRate yield(0.04, Actual365Fixed(), Compounded, Annual);
+    Leg expired = {ext::make_shared<SimpleCashFlow>(100.0, settlement - 1)};
+    Leg zero = {ext::make_shared<SimpleCashFlow>(0.0, settlement + 365)};
+    Leg cancelling = {ext::make_shared<SimpleCashFlow>(100.0, settlement + 365),
+                      ext::make_shared<SimpleCashFlow>(-100.0, settlement + 365)};
+    for (const Leg& leg : {Leg(), expired, zero}) {
+        for (Duration::Type type : {Duration::Simple, Duration::Modified, Duration::Macaulay}) {
+            BOOST_CHECK_EQUAL(CashFlows::duration(leg, yield, type, false), 0.0);
+        }
+        BOOST_CHECK_EQUAL(CashFlows::convexity(leg, yield, false), 0.0);
+        BOOST_CHECK_EQUAL(CashFlows::basisPointValue(leg, yield, false), 0.0);
+    }
+    InterestRate zeroYield(0.0, Actual365Fixed(), Compounded, Annual);
+    BOOST_CHECK_EQUAL(CashFlows::npv(cancelling, zeroYield, false), 0.0);
+    for (Duration::Type type : {Duration::Simple, Duration::Modified, Duration::Macaulay}) {
+        BOOST_CHECK_EQUAL(CashFlows::duration(cancelling, zeroYield, type, false), 0.0);
+    }
+    BOOST_CHECK_EQUAL(CashFlows::convexity(cancelling, zeroYield, false), 0.0);
+    BOOST_CHECK_EQUAL(CashFlows::basisPointValue(cancelling, zeroYield, false), 0.0);
+}
+
+BOOST_AUTO_TEST_CASE(testCashFlowNavigation) {
+    BOOST_TEST_MESSAGE("Testing cash-flow navigation...");
+    Date today(15, January, 2024);
+    Settings::instance().evaluationDate() = today;
+    Settings::instance().includeTodaysCashFlows() = std::nullopt;
+    Leg leg = {ext::make_shared<SimpleCashFlow>(10.0, today - 10),
+               ext::make_shared<SimpleCashFlow>(20.0, today),
+               ext::make_shared<SimpleCashFlow>(30.0, today),
+               ext::make_shared<SimpleCashFlow>(40.0, today + 10),
+               ext::make_shared<SimpleCashFlow>(50.0, today + 10)};
+    struct TestCase {
+        Date settlement;
+        bool include;
+        Date previous, next;
+        Real previousAmount, nextAmount;
+    };
+    TestCase cases[] = {
+        {today - 11, false, Date(), today - 10, 0.0, 10.0},
+        {today - 10, true, Date(), today - 10, 0.0, 10.0},
+        {today - 10, false, today - 10, today, 10.0, 50.0},
+        {today, true, today - 10, today, 10.0, 50.0},
+        {today, false, today, today + 10, 50.0, 90.0},
+        {today + 1, true, today, today + 10, 50.0, 90.0},
+        {today + 10, true, today, today + 10, 50.0, 90.0},
+        {today + 10, false, today + 10, Date(), 90.0, 0.0},
+        {today + 11, true, today + 10, Date(), 90.0, 0.0}
+    };
+    for (const auto& test : cases) {
+        BOOST_TEST_CONTEXT("settlement=" << test.settlement << ", include=" << test.include) {
+            auto previous = CashFlows::previousCashFlow(leg, test.include, test.settlement);
+            auto next = CashFlows::nextCashFlow(leg, test.include, test.settlement);
+            if (test.previous == Date()) {
+                BOOST_CHECK(previous == leg.rend());
+            } else {
+                BOOST_REQUIRE(previous != leg.rend());
+                BOOST_CHECK_EQUAL((*previous)->date(), test.previous);
+            }
+            if (test.next == Date()) {
+                BOOST_CHECK(next == leg.end());
+            } else {
+                BOOST_REQUIRE(next != leg.end());
+                BOOST_CHECK_EQUAL((*next)->date(), test.next);
+            }
+            BOOST_CHECK_EQUAL(CashFlows::previousCashFlowDate(leg, test.include, test.settlement),
+                              test.previous);
+            BOOST_CHECK_EQUAL(CashFlows::nextCashFlowDate(leg, test.include, test.settlement),
+                              test.next);
+            BOOST_CHECK_EQUAL(CashFlows::previousCashFlowAmount(leg, test.include, test.settlement),
+                              test.previousAmount);
+            BOOST_CHECK_EQUAL(CashFlows::nextCashFlowAmount(leg, test.include, test.settlement),
+                              test.nextAmount);
+            BOOST_CHECK_EQUAL(CashFlows::isExpired(leg, test.include, test.settlement),
+                              test.next == Date());
+        }
+    }
+    for (bool include : {false, true}) {
+        Settings::instance().includeReferenceDateEvents() = include;
+        BOOST_CHECK_EQUAL(CashFlows::previousCashFlowDate(leg), include ? today - 10 : today);
+        BOOST_CHECK_EQUAL(CashFlows::nextCashFlowDate(leg), include ? today : today + 10);
+        BOOST_CHECK_EQUAL(CashFlows::previousCashFlowAmount(leg), include ? 10.0 : 50.0);
+        BOOST_CHECK_EQUAL(CashFlows::nextCashFlowAmount(leg), include ? 50.0 : 90.0);
+        BOOST_CHECK(!CashFlows::isExpired(leg));
+        Leg empty;
+        BOOST_CHECK(CashFlows::previousCashFlow(empty, include) == empty.rend());
+        BOOST_CHECK(CashFlows::nextCashFlow(empty, include) == empty.end());
+        BOOST_CHECK_EQUAL(CashFlows::previousCashFlowDate(empty, include), Date());
+        BOOST_CHECK_EQUAL(CashFlows::nextCashFlowDate(empty, include), Date());
+        BOOST_CHECK_EQUAL(CashFlows::previousCashFlowAmount(empty, include), 0.0);
+        BOOST_CHECK_EQUAL(CashFlows::nextCashFlowAmount(empty, include), 0.0);
+        BOOST_CHECK(CashFlows::isExpired(empty, include));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testCouponInspectors) {
+    BOOST_TEST_MESSAGE("Testing coupon inspectors...");
+    Date start(1, January, 2023), end(1, January, 2024), payment(3, January, 2024);
+    Date settlement = start + 100;
+    Settings::instance().evaluationDate() = settlement;
+    DayCounter dayCounter = Actual365Fixed();
+    auto coupon = ext::make_shared<FixedRateCoupon>(payment, 100.0, 0.05, dayCounter,
+                                                   start, end, start, end);
+    Leg leg = {ext::make_shared<SimpleCashFlow>(7.0, settlement - 1),
+               ext::make_shared<SimpleCashFlow>(10.0, payment), coupon,
+               ext::make_shared<SimpleCashFlow>(100.0, payment),
+               ext::make_shared<FixedRateCoupon>(payment + 365, 200.0, 0.06, dayCounter,
+                                                 end, end + 365)};
+    BOOST_CHECK_EQUAL(CashFlows::startDate(leg), start);
+    BOOST_CHECK_EQUAL(CashFlows::maturityDate(leg), end + 365);
+    for (Date date : {Date(), settlement}) {
+        BOOST_CHECK_EQUAL(CashFlows::nominal(leg, false, date), 100.0);
+        BOOST_CHECK_EQUAL(CashFlows::accrualStartDate(leg, false, date), start);
+        BOOST_CHECK_EQUAL(CashFlows::accrualEndDate(leg, false, date), end);
+        BOOST_CHECK_EQUAL(CashFlows::referencePeriodStart(leg, false, date), start);
+        BOOST_CHECK_EQUAL(CashFlows::referencePeriodEnd(leg, false, date), end);
+        BOOST_CHECK_EQUAL(CashFlows::accrualPeriod(leg, false, date), 1.0);
+        BOOST_CHECK_EQUAL(CashFlows::accrualDays(leg, false, date), 365);
+        QL_CHECK_SMALL(CashFlows::accruedPeriod(leg, false, date) - 100.0 / 365.0, 1.0e-12);
+        BOOST_CHECK_EQUAL(CashFlows::accruedDays(leg, false, date), 100);
+        QL_CHECK_SMALL(CashFlows::accruedAmount(leg, false, date) - 5.0 * 100.0 / 365.0,
+                       1.0e-12);
+    }
+    BOOST_CHECK_EQUAL(CashFlows::nominal(leg, true, payment), 100.0);
+    BOOST_CHECK_EQUAL(CashFlows::nominal(leg, false, payment), 200.0);
+    BOOST_CHECK_EQUAL(CashFlows::accrualStartDate(leg, false, payment), end);
+    BOOST_CHECK_EQUAL(CashFlows::referencePeriodEnd(leg, false, payment), end + 365);
+
+    Leg redemption = {ext::make_shared<SimpleCashFlow>(100.0, payment)};
+    Leg redemptionThenCoupon = {ext::make_shared<SimpleCashFlow>(100.0, settlement + 1), coupon};
+    Leg expired = {ext::make_shared<FixedRateCoupon>(settlement - 1, 100.0, 0.05, dayCounter,
+                                                    start - 365, start)};
+    for (const Leg& noCoupon : {Leg(), redemption, redemptionThenCoupon, expired}) {
+        BOOST_CHECK_EQUAL(CashFlows::nominal(noCoupon, false), 0.0);
+        BOOST_CHECK_EQUAL(CashFlows::accrualStartDate(noCoupon, false), Date());
+        BOOST_CHECK_EQUAL(CashFlows::accrualEndDate(noCoupon, false), Date());
+        BOOST_CHECK_EQUAL(CashFlows::referencePeriodStart(noCoupon, false), Date());
+        BOOST_CHECK_EQUAL(CashFlows::referencePeriodEnd(noCoupon, false), Date());
+        BOOST_CHECK_EQUAL(CashFlows::accrualPeriod(noCoupon, false), 0.0);
+        BOOST_CHECK_EQUAL(CashFlows::accrualDays(noCoupon, false), 0);
+        BOOST_CHECK_EQUAL(CashFlows::accruedPeriod(noCoupon, false), 0.0);
+        BOOST_CHECK_EQUAL(CashFlows::accruedDays(noCoupon, false), 0);
+        BOOST_CHECK_EQUAL(CashFlows::accruedAmount(noCoupon, false), 0.0);
+    }
+    BOOST_CHECK_EXCEPTION(CashFlows::startDate(Leg()), Error, ExpectedErrorMessage("empty leg"));
+    BOOST_CHECK_EXCEPTION(CashFlows::maturityDate(Leg()), Error, ExpectedErrorMessage("empty leg"));
+}
+
+BOOST_AUTO_TEST_CASE(testCouponRateAggregation) {
+    BOOST_TEST_MESSAGE("Testing coupon rate aggregation...");
+    Date start(1, January, 2023), end(1, January, 2024), payment(3, January, 2024);
+    auto first = ext::make_shared<FixedRateCoupon>(payment, 100.0, 0.03, Actual365Fixed(),
+                                                  start, end);
+    auto second = ext::make_shared<FixedRateCoupon>(payment, 100.0, 0.02, Actual365Fixed(),
+                                                   start, end);
+    Leg leg = {ext::make_shared<SimpleCashFlow>(10.0, payment), first, second,
+               ext::make_shared<SimpleCashFlow>(100.0, payment)};
+    QL_CHECK_SMALL(CashFlows::nextCouponRate(leg, false, payment - 1) - 0.05, 1.0e-14);
+    QL_CHECK_SMALL(CashFlows::previousCouponRate(leg, false, payment) - 0.05, 1.0e-14);
+    QL_CHECK_SMALL(CashFlows::nextCouponRate(leg, true, payment) - 0.05, 1.0e-14);
+    BOOST_CHECK_EQUAL(CashFlows::previousCouponRate(leg, true, payment), 0.0);
+    BOOST_CHECK_EQUAL(CashFlows::nextCouponRate(leg, false, payment), 0.0);
+    BOOST_CHECK_EQUAL(CashFlows::previousCouponRate(Leg(), false, payment), 0.0);
+    BOOST_CHECK_EQUAL(CashFlows::nextCouponRate(Leg(), false, payment), 0.0);
+
+    std::vector<ext::shared_ptr<FixedRateCoupon>> incompatible = {
+        ext::make_shared<FixedRateCoupon>(payment, 200.0, 0.02, Actual365Fixed(), start, end),
+        ext::make_shared<FixedRateCoupon>(payment, 100.0, 0.02, Actual365Fixed(), start + 1, end),
+        ext::make_shared<FixedRateCoupon>(payment, 100.0, 0.02,
+                                         ActualActual(ActualActual::ISDA), start, end)};
+    BOOST_CHECK_EQUAL(incompatible.back()->accrualPeriod(), first->accrualPeriod());
+    for (const auto& coupon : incompatible) {
+        Leg invalid = {first, coupon};
+        BOOST_CHECK_EXCEPTION(CashFlows::nextCouponRate(invalid, false, payment - 1), Error,
+                              ExpectedErrorMessage("cannot aggregate two different coupons"));
+        BOOST_CHECK_EXCEPTION(CashFlows::previousCouponRate(invalid, false, payment), Error,
+                              ExpectedErrorMessage("cannot aggregate two different coupons"));
+    }
+    Leg redemption = {ext::make_shared<SimpleCashFlow>(100.0, payment)};
+    BOOST_CHECK_EXCEPTION(CashFlows::nextCouponRate(redemption, false, payment - 1), Error,
+                          ExpectedErrorMessage("no coupon paid at cashflow date"));
+    BOOST_CHECK_EXCEPTION(CashFlows::previousCouponRate(redemption, false, payment), Error,
+                          ExpectedErrorMessage("no coupon paid at cashflow date"));
+}
+
+BOOST_AUTO_TEST_CASE(testPricingDefaultsAndOverloads) {
+    BOOST_TEST_MESSAGE("Testing cash-flow pricing defaults and overloads...");
+    Date settlement(15, January, 2024);
+    Settings::instance().evaluationDate() = settlement;
+    Settings::instance().includeTodaysCashFlows() = std::nullopt;
+    DayCounter dayCounter = Actual365Fixed();
+    InterestRate yield(0.04, dayCounter, Continuous, Annual);
+    auto curve = ext::make_shared<FlatForward>(settlement, 0.04, dayCounter, Continuous);
+    Leg leg = {ext::make_shared<SimpleCashFlow>(20.0, settlement - 1),
+               ext::make_shared<SimpleCashFlow>(3.0, settlement),
+               ext::make_shared<FixedRateCoupon>(settlement + 365, 100.0, 0.05, dayCounter,
+                                                 settlement, settlement + 365),
+               ext::make_shared<SimpleCashFlow>(100.0, settlement + 365)};
+    Real discount = std::exp(-0.04);
+    for (bool include : {false, true}) {
+        Settings::instance().includeReferenceDateEvents() = include;
+        Real expectedNpv = 105.0 * discount + (include ? 3.0 : 0.0);
+        Real expectedBps = 0.01 * discount;
+        QL_CHECK_SMALL(CashFlows::npv(leg, *curve) - expectedNpv, 1.0e-12);
+        QL_CHECK_SMALL(CashFlows::bps(leg, *curve) - expectedBps, 1.0e-12);
+        auto values = CashFlows::npvbps(leg, *curve);
+        QL_CHECK_SMALL(values.first - expectedNpv, 1.0e-12);
+        QL_CHECK_SMALL(values.second - expectedBps, 1.0e-12);
+        QL_CHECK_SMALL(CashFlows::npv(leg, yield) - expectedNpv, 1.0e-12);
+        QL_CHECK_SMALL(CashFlows::bps(leg, yield) - expectedBps, 1.0e-12);
+        QL_CHECK_SMALL(CashFlows::bps(leg, 0.04, dayCounter, Continuous, Annual) - expectedBps,
+                       1.0e-12);
+        QL_CHECK_SMALL(CashFlows::atmRate(leg, *curve) - 0.05, 1.0e-12);
+
+        Date npvDate = settlement + 30;
+        Real npvDiscount = std::exp(-0.04 * 30.0 / 365.0);
+        auto forwardValues = CashFlows::npvbps(leg, *curve, include, settlement, npvDate);
+        QL_CHECK_SMALL(forwardValues.first - expectedNpv / npvDiscount, 1.0e-12);
+        QL_CHECK_SMALL(forwardValues.second - expectedBps / npvDiscount, 1.0e-12);
+        QL_CHECK_SMALL(CashFlows::npv(leg, *curve, include, settlement, npvDate) -
+                           expectedNpv / npvDiscount,
+                       1.0e-12);
+        QL_CHECK_SMALL(CashFlows::bps(leg, *curve, include, settlement, npvDate) -
+                           expectedBps / npvDiscount,
+                       1.0e-12);
+        Real targetNpv = (106.0 * discount + (include ? 3.0 : 0.0)) / npvDiscount;
+        QL_CHECK_SMALL(CashFlows::atmRate(leg, *curve, include, settlement, npvDate,
+                                          targetNpv) - 0.06,
+                       1.0e-12);
+    }
+
+    Leg future = {leg[2], leg[3]};
+    Real expectedNpv = 105.0 * discount;
+    QL_CHECK_SMALL(CashFlows::duration(future, yield, Duration::Simple, false) - 1.0, 1.0e-12);
+    QL_CHECK_SMALL(CashFlows::duration(future, yield, Duration::Modified, false) - 1.0, 1.0e-12);
+    QL_CHECK_SMALL(CashFlows::convexity(future, yield, false) - 1.0, 1.0e-12);
+    QL_CHECK_SMALL(CashFlows::convexity(future, 0.04, dayCounter, Continuous, Annual, false) -
+                       1.0,
+                   1.0e-12);
+    Real expectedBpv = expectedNpv * (-0.0001 + 0.5 * 0.0001 * 0.0001);
+    QL_CHECK_SMALL(CashFlows::basisPointValue(future, yield, false) - expectedBpv, 1.0e-12);
+    QL_CHECK_SMALL(
+        CashFlows::basisPointValue(future, 0.04, dayCounter, Continuous, Annual, false) - expectedBpv,
+        1.0e-12);
+    Real expectedYvbp = -0.01 / expectedNpv;
+    QL_CHECK_SMALL(CashFlows::yieldValueBasisPoint(future, yield, false) - expectedYvbp, 1.0e-12);
+    QL_CHECK_SMALL(CashFlows::yieldValueBasisPoint(future, 0.04, dayCounter, Continuous,
+                                                 Annual, false) - expectedYvbp,
+                   1.0e-12);
+    QL_CHECK_SMALL(CashFlows::yield(future, expectedNpv, dayCounter, Continuous, Annual, false) -
+                       0.04,
+                   1.0e-10);
+    Real expectedSpreadNpv = 105.0 * std::exp(-0.05);
+    QL_CHECK_SMALL(CashFlows::npv(future, curve, 0.01, Continuous, Annual, false) -
+                       expectedSpreadNpv,
+                   1.0e-12);
+    QL_CHECK_SMALL(CashFlows::zSpread(future, expectedSpreadNpv, curve, Continuous, Annual,
+                                     false) - 0.01,
+                   1.0e-10);
+}
+
+BOOST_AUTO_TEST_CASE(testPricingEmptyLegsAndErrors) {
+    BOOST_TEST_MESSAGE("Testing empty-leg pricing and errors...");
+    Date settlement(15, January, 2024);
+    Settings::instance().evaluationDate() = settlement;
+    InterestRate yield(0.04, Actual365Fixed(), Compounded, Semiannual);
+    auto curve = ext::make_shared<FlatForward>(settlement, 0.04, Actual365Fixed());
+    Leg empty;
+    BOOST_CHECK_EQUAL(CashFlows::npv(empty, *curve, false), 0.0);
+    BOOST_CHECK_EQUAL(CashFlows::bps(empty, *curve, false), 0.0);
+    auto values = CashFlows::npvbps(empty, *curve, false);
+    BOOST_CHECK_EQUAL(values.first, 0.0);
+    BOOST_CHECK_EQUAL(values.second, 0.0);
+    BOOST_CHECK_EQUAL(CashFlows::atmRate(empty, *curve, false), 0.0);
+    BOOST_CHECK_EQUAL(CashFlows::npv(empty, yield, false), 0.0);
+    BOOST_CHECK_EQUAL(CashFlows::bps(empty, yield, false), 0.0);
+    BOOST_CHECK_EQUAL(CashFlows::yieldValueBasisPoint(empty, yield, false), 0.0);
+    BOOST_CHECK_EQUAL(CashFlows::npv(empty, curve, 0.01, Continuous, Annual, false), 0.0);
+
+    Leg redemption = {ext::make_shared<SimpleCashFlow>(100.0, settlement + 365)};
+    BOOST_CHECK_EQUAL(CashFlows::atmRate(redemption, *curve, false), 0.0);
+    BOOST_CHECK_EXCEPTION(CashFlows::atmRate(redemption, *curve, false, settlement, settlement,
+                                             101.0),
+                          Error, ExpectedErrorMessage("null bps"));
+    BOOST_CHECK_EXCEPTION(
+        CashFlows::duration(redemption, yield, static_cast<Duration::Type>(3), false),
+        Error, ExpectedErrorMessage("unknown duration type"));
+    InterestRate continuous(0.04, Actual365Fixed(), Continuous, Annual);
+    BOOST_CHECK_EXCEPTION(CashFlows::duration(redemption, continuous, Duration::Macaulay, false),
+                          Error, ExpectedErrorMessage("compounded rate required"));
+    BOOST_CHECK_EXCEPTION(CashFlows::yield(redemption, -100.0, Actual365Fixed(), Compounded,
+                                           Annual, false),
+                          Error, ExpectedErrorMessage("due to their sign"));
+}
 
 BOOST_AUTO_TEST_CASE(testSettings) {
 
@@ -674,7 +1026,7 @@ BOOST_AUTO_TEST_CASE(testInterpolatedIborStubCoupon) {
     const Real weight = Real(coupon->accrualEndDate() - shortMaturity) /
                         Real(longMaturity - shortMaturity);
     const Rate expected = shortRate + (longRate - shortRate) * weight;
-    BOOST_CHECK_SMALL(coupon->indexFixing() - expected, 1.0e-14);
+    QL_CHECK_SMALL(coupon->indexFixing() - expected, 1.0e-14);
 
     StubIndexSelection closest{
         StubIndexSelection::ClosestIndex, {bkbm2m, bkbm3m}};
@@ -684,7 +1036,7 @@ BOOST_AUTO_TEST_CASE(testInterpolatedIborStubCoupon) {
                          .withStubIndexSelection(closest);
     auto closestCoupon = ext::dynamic_pointer_cast<StubIborCoupon>(closestLeg.front());
     BOOST_REQUIRE(closestCoupon);
-    BOOST_CHECK_SMALL(closestCoupon->indexFixing() - longRate, 1.0e-14);
+    QL_CHECK_SMALL(closestCoupon->indexFixing() - longRate, 1.0e-14);
 
     // stub index conventions require indexed coupons...
     BOOST_CHECK_THROW(Leg parLeg = IborLeg(schedule, bkbm3m)
@@ -741,8 +1093,8 @@ BOOST_AUTO_TEST_CASE(testIborStubInterpolationEndpointsAndRegularSchedule) {
                       .withStubIndexSelection(convention);
         auto coupon = ext::dynamic_pointer_cast<StubIborCoupon>(leg.front());
         BOOST_REQUIRE(coupon);
-        BOOST_CHECK_SMALL(coupon->indexFixing() - endpoint->fixing(coupon->fixingDate()),
-                          1.0e-14);
+        QL_CHECK_SMALL(coupon->indexFixing() - endpoint->fixing(coupon->fixingDate()),
+                       1.0e-14);
     }
 
     const Date regularEnd = bkbm3m->maturityDate(start);
@@ -759,7 +1111,7 @@ BOOST_AUTO_TEST_CASE(testIborStubInterpolationEndpointsAndRegularSchedule) {
     auto defaultCoupon = ext::dynamic_pointer_cast<IborCoupon>(defaultLeg.front());
     auto configuredCoupon = ext::dynamic_pointer_cast<IborCoupon>(configuredLeg.front());
     BOOST_REQUIRE(defaultCoupon && configuredCoupon);
-    BOOST_CHECK_SMALL(defaultCoupon->rate() - configuredCoupon->rate(), 1.0e-14);
+    QL_CHECK_SMALL(defaultCoupon->rate() - configuredCoupon->rate(), 1.0e-14);
 }
 
 BOOST_AUTO_TEST_CASE(testFinalAndLongIborStubCoupons) {
@@ -800,7 +1152,7 @@ BOOST_AUTO_TEST_CASE(testFinalAndLongIborStubCoupons) {
         bkbm1m->fixing(finalCoupon->fixingDate()) +
         (bkbm3m->fixing(finalCoupon->fixingDate()) -
          bkbm1m->fixing(finalCoupon->fixingDate())) * finalWeight;
-    BOOST_CHECK_SMALL(finalCoupon->indexFixing() - expectedFinal, 1.0e-14);
+    QL_CHECK_SMALL(finalCoupon->indexFixing() - expectedFinal, 1.0e-14);
 
     const Date longStart(29, May, 2026);
     const Date longEnd(30, October, 2026);
@@ -823,7 +1175,7 @@ BOOST_AUTO_TEST_CASE(testFinalAndLongIborStubCoupons) {
         bkbm3m->fixing(longCoupon->fixingDate()) +
         (bkbm6m->fixing(longCoupon->fixingDate()) -
          bkbm3m->fixing(longCoupon->fixingDate())) * longWeight;
-    BOOST_CHECK_SMALL(longCoupon->indexFixing() - expectedLong, 1.0e-14);
+    QL_CHECK_SMALL(longCoupon->indexFixing() - expectedLong, 1.0e-14);
 }
 
 BOOST_AUTO_TEST_CASE(testIborStubCouponHistoricalFixingsAndRelinking) {
@@ -865,7 +1217,7 @@ BOOST_AUTO_TEST_CASE(testIborStubCouponHistoricalFixingsAndRelinking) {
     const Date longMaturity = bkbm3m->maturityDate(start);
     const Real weight = Real(end - shortMaturity) / Real(longMaturity - shortMaturity);
     const Rate expected = 0.05 + (0.08 - 0.05) * weight;
-    BOOST_CHECK_SMALL(coupon->indexFixing() - expected, 1.0e-14);
+    QL_CHECK_SMALL(coupon->indexFixing() - expected, 1.0e-14);
 
     bkbm2m->clearFixings();
     bkbm3m->clearFixings();
@@ -911,7 +1263,7 @@ BOOST_AUTO_TEST_CASE(testIborStubCouponHasFixedUsesSelectedIndices) {
     const Date shortMaturity = bkbm2m->maturityDate(start);
     const Date longMaturity = bkbm3m->maturityDate(start);
     const Real weight = Real(end - shortMaturity) / Real(longMaturity - shortMaturity);
-    BOOST_CHECK_SMALL(coupon->indexFixing() - (0.05 + (0.08 - 0.05) * weight), 1.0e-14);
+    QL_CHECK_SMALL(coupon->indexFixing() - (0.05 + (0.08 - 0.05) * weight), 1.0e-14);
 
     bkbm2m->clearFixings();
     bkbm3m->clearFixings();

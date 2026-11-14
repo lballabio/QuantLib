@@ -18,6 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/pricingengines/exotic/analyticcomplexchooserengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <utility>
@@ -42,32 +43,32 @@ namespace QuantLib {
         Real Xc = arguments_.strikeCall;
         Real Xp = arguments_.strikePut;
         Time T = choosingTime();
-        Time Tc = callMaturity() - T;
-        Time Tp = putMaturity() - T;
+        Time Tc = callMaturity();
+        Time Tp = putMaturity();
 
         Real i = criticalValue();
 
         b = riskFreeRate(T) - dividendYield(T);
         v = volatility(T);
-        Real d1 = (log(S / i) + (b + pow(v, 2) / 2)*T) / (v*sqrt(T));
+        Real d1 = (log(S / i) + (b + squared(v) / 2)*T) / (v*sqrt(T));
         Real d2 = d1 - v*sqrt(T);
 
-        b = riskFreeRate(T + Tc) - dividendYield(T + Tc);
+        b = riskFreeRate(Tc) - dividendYield(Tc);
         v = volatility(Tc);
-        Real y1 = (log(S / Xc) + (b + pow(v, 2) / 2)*Tc) / (v*sqrt(Tc));
+        Real y1 = (log(S / Xc) + (b + squared(v) / 2)*Tc) / (v*sqrt(Tc));
 
-        b = riskFreeRate(T + Tp) - dividendYield(T + Tp);
+        b = riskFreeRate(Tp) - dividendYield(Tp);
         v = volatility(Tp);
-        Real y2 = (log(S / Xp) + (b + pow(v, 2) / 2)*Tp) / (v*sqrt(Tp));
+        Real y2 = (log(S / Xp) + (b + squared(v) / 2)*Tp) / (v*sqrt(Tp));
 
         Real rho1 = sqrt(T / Tc);
         Real rho2 = sqrt(T / Tp);
-        b = riskFreeRate(T + Tc) - dividendYield(T + Tc);
-        Real r = riskFreeRate(T + Tc);
+        b = riskFreeRate(Tc) - dividendYield(Tc);
+        Real r = riskFreeRate(Tc);
         Real ComplexChooser = S * exp((b - r)*Tc) *  BivariateCumulativeNormalDistributionDr78(rho1)(d1, y1)
             - Xc * exp(-r*Tc)*BivariateCumulativeNormalDistributionDr78(rho1)(d2, y1 - v * sqrt(Tc)) ;
-        b = riskFreeRate(T + Tp) - dividendYield(T + Tp);
-        r = riskFreeRate(T + Tp);
+        b = riskFreeRate(Tp) - dividendYield(Tp);
+        r = riskFreeRate(Tp);
         ComplexChooser -= S * exp((b - r)*Tp) * BivariateCumulativeNormalDistributionDr78(rho2)(-d1, -y2);
         ComplexChooser += Xp * exp(-r*Tp) * BivariateCumulativeNormalDistributionDr78(rho2)(-d2, -y2 + v * sqrt(Tp));
 
@@ -85,7 +86,7 @@ namespace QuantLib {
         ext::shared_ptr<PlainVanillaPayoff > vanillaPayoff;
         if (optionType == Option::Call){
             //TC-T
-            Time t=callMaturity()-2*T;
+            Time t=callMaturity()-T;
             vanillaPayoff = ext::make_shared<PlainVanillaPayoff>(
                                           Option::Call, strike(Option::Call));
             //QuantLib requires sigma * sqrt(t) rather than just sigma/volatility
@@ -93,7 +94,7 @@ namespace QuantLib {
             growth = dividendDiscount(t);
             discount = riskFreeDiscount(t);
         } else{
-            Time t=putMaturity()-2*T;
+            Time t=putMaturity()-T;
             vanillaPayoff = ext::make_shared<PlainVanillaPayoff>(
                                             Option::Put, strike(Option::Put));
             vol = volatility(t) * std::sqrt(t);

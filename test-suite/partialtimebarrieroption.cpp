@@ -20,11 +20,16 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/partialtimebarrieroption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/barrier/analyticpartialtimebarrieroptionengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
+#include <ql/termstructures/yield/forwardcurve.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -145,6 +150,57 @@ BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testAnalyticEngineNearZeroD2) {
+    BOOST_TEST_MESSAGE("Testing finiteness of partial-time barrier prices with d2 near zero...");
+
+    Date today(1, January, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    const Integer pillars[] = {91, 182, 365, 730, 1095};
+    const Rate rates[] = {0.01, 0.03, 0.05, 0.02, 0.04};
+    const Volatility instantVols[] = {0.30, 0.22, 0.20, 0.25, 0.20};
+    std::vector<Date> dates = {today}, volDates;
+    std::vector<Rate> forwards = {rates[0]};
+    std::vector<Rate> yields = {rates[0] - 0.5 * instantVols[0] * instantVols[0]};
+    std::vector<Volatility> blackVols;
+    Real variance = 0.0;
+    Time previous = 0.0;
+    for (Size i = 0; i < std::size(pillars); ++i) {
+        Date date = today + pillars[i];
+        Time t = dc.yearFraction(today, date);
+        variance += instantVols[i] * instantVols[i] * (t - previous);
+        previous = t;
+        dates.push_back(date);
+        volDates.push_back(date);
+        forwards.push_back(rates[i]);
+        // Carry equals half the variance rate, so d2 cancels to near zero.
+        yields.push_back(rates[i] - 0.5 * instantVols[i] * instantVols[i]);
+        blackVols.push_back(std::sqrt(variance / t));
+    }
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(ext::make_shared<ForwardCurve>(dates, yields, dc)),
+        Handle<YieldTermStructure>(ext::make_shared<ForwardCurve>(dates, forwards, dc)),
+        Handle<BlackVolTermStructure>(
+            ext::make_shared<BlackVarianceCurve>(today, volDates, blackVols, dc, false)));
+    auto engine = ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process);
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 548);
+    PartialTimeBarrierOption startOut(Barrier::DownOut, PartialBarrier::Start, 85.0, 0.0,
+                                      today + 274, payoff, exercise);
+    PartialTimeBarrierOption startIn(Barrier::DownIn, PartialBarrier::Start, 85.0, 0.0,
+                                     today + 274, payoff, exercise);
+    PartialTimeBarrierOption endOut(Barrier::DownOut, PartialBarrier::EndB1, 85.0, 0.0,
+                                    today + 274, payoff, exercise);
+    startOut.setPricingEngine(engine);
+    startIn.setPricingEngine(engine);
+    endOut.setPricingEngine(engine);
+    Real outPrice = startOut.NPV(), inPrice = startIn.NPV(), endPrice = endOut.NPV();
+    BOOST_CHECK(std::isfinite(outPrice));
+    BOOST_CHECK(std::isfinite(inPrice));
+    BOOST_CHECK(std::isfinite(endPrice));
+}
+
 BOOST_AUTO_TEST_CASE(testAnalyticEnginePutOption) {
     BOOST_TEST_MESSAGE(
         "Testing analytic engine for partial-time put barrier option...");
@@ -224,6 +280,63 @@ BOOST_AUTO_TEST_CASE(testAnalyticEnginePutOption) {
             REPORT_FAILURE("value", Barrier::UpOut, barrier, rebate, payoff,
                             exercise, i.underlying, 0.0, 0.1, today, 0.25,
                             expected, calculated, error, tolerance);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testInOutParity) {
+    BOOST_TEST_MESSAGE("Testing in-out parity for partial-time barrier options...");
+
+    Date today(1, January, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 182);
+    Date coverEventDate = today + 91;
+    Real spotPrice = 100.0;
+    auto spot = ext::make_shared<SimpleQuote>(spotPrice);
+    Handle<Quote> underlying(spot);
+    Handle<YieldTermStructure> dividendTS(flatRate(today, 0.04, dc));
+    Handle<YieldTermStructure> riskFreeTS(flatRate(today, 0.08, dc));
+    Handle<BlackVolTermStructure> blackVolTS(flatVol(today, 0.25, dc));
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        underlying, dividendTS, riskFreeTS, blackVolTS);
+    auto barrierEngine = ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process);
+    auto vanillaEngine = ext::make_shared<AnalyticEuropeanEngine>(process);
+
+    struct BarrierPair {
+        Barrier::Type knockIn;
+        Barrier::Type knockOut;
+        Real barrier;
+    };
+    BarrierPair cases[] = {
+        {Barrier::DownIn, Barrier::DownOut, 85.0},
+        {Barrier::UpIn, Barrier::UpOut, 115.0}
+    };
+
+    for (auto type : {Option::Put, Option::Call}) {
+        for (Real strike : {80.0, 100.0, 130.0}) {
+            auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
+            VanillaOption vanilla(payoff, exercise);
+            vanilla.setPricingEngine(vanillaEngine);
+            Real vanillaValue = vanilla.NPV();
+
+            for (const auto& c : cases) {
+                PartialTimeBarrierOption knockIn(c.knockIn, PartialBarrier::Start,
+                                                c.barrier, 0.0, coverEventDate, payoff, exercise);
+                PartialTimeBarrierOption knockOut(c.knockOut, PartialBarrier::Start,
+                                                 c.barrier, 0.0, coverEventDate, payoff, exercise);
+                knockIn.setPricingEngine(barrierEngine);
+                knockOut.setPricingEngine(barrierEngine);
+
+                Real expected = vanillaValue - knockOut.NPV();
+                Real calculated = knockIn.NPV();
+                Real error = std::fabs(calculated - expected);
+                Real tolerance = 1e-10;
+                if (error > tolerance)
+                    REPORT_FAILURE("value", c.knockIn, c.barrier, 0.0, payoff,
+                                   exercise, spotPrice, 0.04, 0.08, today, 0.25,
+                                   expected, calculated, error, tolerance);
+            }
+        }
     }
 }
 

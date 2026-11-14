@@ -37,7 +37,8 @@ namespace QuantLib {
     /*! \ingroup yieldtermstructures */
     template <class Interpolator>
     class InterpolatedForwardCurve : public ZeroYieldStructure,
-                                     protected InterpolatedCurve<Interpolator> {
+                                     protected InterpolatedCurve<Interpolator>,
+                                     public InterpolatedNodes {
       public:
         // constructor
         InterpolatedForwardCurve(
@@ -65,11 +66,10 @@ namespace QuantLib {
         //@}
         //! \name other inspectors
         //@{
-        const std::vector<Time>& times() const;
-        const std::vector<Date>& dates() const;
-        const std::vector<Real>& data() const;
+        const std::vector<Time>& times() const override;
+        const std::vector<Date>& dates() const override;
+        const std::vector<Real>& data() const override;
         const std::vector<Rate>& forwards() const;
-        std::vector<std::pair<Date, Real> > nodes() const;
         //@}
 
       protected:
@@ -136,15 +136,6 @@ namespace QuantLib {
     inline const std::vector<Rate>&
     InterpolatedForwardCurve<T>::forwards() const {
         return this->data_;
-    }
-
-    template <class T>
-    inline std::vector<std::pair<Date, Real> >
-    InterpolatedForwardCurve<T>::nodes() const {
-        std::vector<std::pair<Date, Real> > results(dates_.size());
-        for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i], this->data_[i]);
-        return results;
     }
 
     #ifndef __DOXYGEN__

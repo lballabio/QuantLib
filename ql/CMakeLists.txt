@@ -186,6 +186,7 @@ set(QL_SOURCES
     experimental/swaptions/irregularswaption.cpp
     experimental/termstructures/basisswapratehelpers.cpp
     experimental/termstructures/crosscurrencyratehelpers.cpp
+    experimental/termstructures/quotesensitivitycalculator.cpp
     experimental/termstructures/overnightindexedfundingratehelper.cpp
     experimental/variancegamma/analyticvariancegammaengine.cpp
     experimental/variancegamma/fftengine.cpp
@@ -499,6 +500,7 @@ set(QL_SOURCES
     methods/finitedifferences/stepconditions/fdmamericanstepcondition.cpp
     methods/finitedifferences/stepconditions/fdmarithmeticaveragecondition.cpp
     methods/finitedifferences/stepconditions/fdmbermudanstepcondition.cpp
+    methods/finitedifferences/stepconditions/fdmpointhistorycondition.cpp
     methods/finitedifferences/stepconditions/fdmsimplestoragecondition.cpp
     methods/finitedifferences/stepconditions/fdmsimpleswingcondition.cpp
     methods/finitedifferences/stepconditions/fdmsnapshotcondition.cpp
@@ -1240,6 +1242,12 @@ set(QL_HEADERS
     experimental/swaptions/irregularswaption.hpp
     experimental/termstructures/basisswapratehelpers.hpp
     experimental/termstructures/crosscurrencyratehelpers.hpp
+    experimental/termstructures/jacobian/bootstrapequationjacobian.hpp
+    experimental/termstructures/jacobian/curvechainrulecalculator.hpp
+    experimental/termstructures/jacobian/curvecrossjacobian.hpp
+    experimental/termstructures/jacobian/curvejacobiangraph.hpp
+    experimental/termstructures/jacobian/curvesensitivitypropagation.hpp
+    experimental/termstructures/quotesensitivitycalculator.hpp
     experimental/termstructures/overnightindexedfundingratehelper.hpp
     experimental/variancegamma/analyticvariancegammaengine.hpp
     experimental/variancegamma/fftengine.hpp
@@ -1704,6 +1712,7 @@ set(QL_HEADERS
     methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp
     methods/finitedifferences/stepconditions/fdmarithmeticaveragecondition.hpp
     methods/finitedifferences/stepconditions/fdmbermudanstepcondition.hpp
+    methods/finitedifferences/stepconditions/fdmpointhistorycondition.hpp
     methods/finitedifferences/stepconditions/fdmsimplestoragecondition.hpp
     methods/finitedifferences/stepconditions/fdmsimpleswingcondition.hpp
     methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp
@@ -2220,6 +2229,8 @@ set(QL_HEADERS
     termstructures/yield/piecewisezerospreadedtermstructure.hpp
     termstructures/yield/quantotermstructure.hpp
     termstructures/yield/ratehelpers.hpp
+    termstructures/yield/shiftedtermstructure.hpp
+    termstructures/yield/splicedtermstructure.hpp
     termstructures/yield/spreadbootstraptraits.hpp
     termstructures/yield/spreaddiscountcurve.hpp
     termstructures/yield/ultimateforwardtermstructure.hpp
@@ -2359,6 +2370,7 @@ set(QL_GENERATED_HEADERS
     ${PROJECT_BINARY_DIR}/ql/experimental/shortrate/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/swaptions/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/termstructures/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/termstructures/jacobian/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/variancegamma/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/varianceoption/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/volatility/all.hpp

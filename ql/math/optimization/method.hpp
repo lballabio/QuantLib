@@ -4,6 +4,7 @@
  Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
  Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,6 +37,14 @@ namespace QuantLib {
     class OptimizationMethod {
       public:
         virtual ~OptimizationMethod() = default;
+
+        /*! Whether this method consumes CostFunction::jacobian().
+
+            Optimizers that return false may still use derivatives obtained
+            through another interface, but they cannot be used when a caller
+            explicitly requires the cost-function Jacobian to be consumed.
+        */
+        virtual bool usesCostFunctionJacobian() const { return false; }
 
         //! minimize the optimization problem P
         virtual EndCriteria::Type minimize(Problem& P,

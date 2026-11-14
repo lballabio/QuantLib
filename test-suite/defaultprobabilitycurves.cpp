@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2008, 2009 StatPro Italia srl
  Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -530,6 +531,83 @@ BOOST_AUTO_TEST_CASE(testIterativeBootstrapRetries) {
     BOOST_CHECK_NO_THROW(dpts->survivalProbability(testDate));
 }
 
+BOOST_AUTO_TEST_CASE(testJacobian) {
+
+    BOOST_TEST_MESSAGE("Testing Jacobian of bootstrapped default curve...");
+
+    Calendar calendar = TARGET();
+    Date today = Settings::instance().evaluationDate();
+
+    std::vector<Rate> spreads = {0.005, 0.006, 0.007, 0.009};
+    std::vector<Integer> n = {1, 2, 3, 5};
+
+    RelinkableHandle<YieldTermStructure> discountCurve;
+    discountCurve.linkTo(ext::make_shared<FlatForward>(today, 0.06, Actual360()));
+
+    std::vector<ext::shared_ptr<SimpleQuote>> quotes;
+    std::vector<ext::shared_ptr<DefaultProbabilityHelper>> helpers;
+    for (Size i = 0; i < n.size(); i++) {
+        auto q = ext::make_shared<SimpleQuote>(spreads[i]);
+        quotes.push_back(q);
+        helpers.push_back(ext::make_shared<SpreadCdsHelper>(
+            Handle<Quote>(q), Period(n[i], Years), 1, calendar, Quarterly,
+            Following, DateGeneration::TwentiethIMM,
+            Thirty360(Thirty360::BondBasis), 0.4, discountCurve));
+    }
+
+    auto curve = ext::make_shared<PiecewiseDefaultCurve<SurvivalProbability, LogLinear>>(
+        today, helpers, Thirty360(Thirty360::BondBasis));
+
+    std::vector<bool> analytic;
+    Matrix J = curve->jacobian(&analytic);
+    BOOST_REQUIRE(J.rows() == helpers.size());
+    BOOST_REQUIRE(J.columns() == curve->times().size() - 1);
+
+    // no credit helper provides analytical sensitivities yet
+    for (Size i = 0; i < J.rows(); ++i)
+        if (analytic[i])
+            BOOST_ERROR("row " << i << " was unexpectedly computed analytically");
+
+    // Bootstrap consistency requires J * dNodes/dQuotes = I
+    Size rows = J.rows(), cols = J.columns();
+    Matrix M(cols, rows);
+    for (Size k = 0; k < rows; ++k) {
+        Real q0 = quotes[k]->value();
+        Real h = 1.0e-6;
+        quotes[k]->setValue(q0 + h);
+        std::vector<Real> up = curve->data();
+        quotes[k]->setValue(q0 - h);
+        std::vector<Real> dn = curve->data();
+        quotes[k]->setValue(q0);
+        for (Size j = 0; j < cols; ++j)
+            M[j][k] = (up[j + 1] - dn[j + 1]) / (2.0 * h);
+    }
+
+    Real tolerance = 1.0e-5;
+    Matrix P = J * M;
+    for (Size i = 0; i < rows; ++i) {
+        for (Size k = 0; k < rows; ++k) {
+            Real expected = (i == k) ? 1.0 : 0.0;
+            if (std::fabs(P[i][k] - expected) > tolerance)
+                BOOST_ERROR("product of Jacobian and node/quote sensitivities "
+                            "is not the identity at ("
+                            << i << "," << k << "): " << P[i][k]
+                            << " (expected " << expected << ")");
+        }
+    }
+
+    // compare the inverse with bumped node sensitivities
+    Matrix invJ = curve->inverseJacobian();
+    for (Size j = 0; j < cols; ++j) {
+        for (Size k = 0; k < rows; ++k) {
+            if (std::fabs(invJ[j][k] - M[j][k]) > 10*tolerance)
+                BOOST_ERROR("inverse Jacobian does not match node/quote "
+                            "sensitivities at (" << j << "," << k << "): "
+                            << invJ[j][k] << " vs " << M[j][k]);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testJumps) {
 
     BOOST_TEST_MESSAGE("Testing that credit-curve jumps behave like yield-curve jumps...");
@@ -557,28 +635,28 @@ BOOST_AUTO_TEST_CASE(testJumps) {
     // a jump whose date is already in the past must be ignored
     {
         auto [y, c] = ratio({q}, {today - 30}, 1.0);
-        BOOST_CHECK_CLOSE(y, 1.0, tolerance);
-        BOOST_CHECK_CLOSE(c, y, tolerance);
+        QL_CHECK_CLOSE(y, 1.0, tolerance);
+        QL_CHECK_CLOSE(c, y, tolerance);
     }
     // a jump on the reference date must be ignored
     {
         auto [y, c] = ratio({q}, {today}, 1.0);
-        BOOST_CHECK_CLOSE(y, 1.0, tolerance);
-        BOOST_CHECK_CLOSE(c, y, tolerance);
+        QL_CHECK_CLOSE(y, 1.0, tolerance);
+        QL_CHECK_CLOSE(c, y, tolerance);
     }
     // unsorted jump dates: the jump before t applies, the one after does not
     {
         Handle<Quote> a(ext::make_shared<SimpleQuote>(0.90));
         Handle<Quote> b(ext::make_shared<SimpleQuote>(0.95));
         auto [y, c] = ratio({a, b}, {today + 5 * 365, today + 365}, 2.0);
-        BOOST_CHECK_CLOSE(y, 0.95, tolerance);
-        BOOST_CHECK_CLOSE(c, y, tolerance);
+        QL_CHECK_CLOSE(y, 0.95, tolerance);
+        QL_CHECK_CLOSE(c, y, tolerance);
     }
     // a jump inside the interval still applies
     {
         auto [y, c] = ratio({q}, {today + 180}, 1.0);
-        BOOST_CHECK_CLOSE(y, 0.99, tolerance);
-        BOOST_CHECK_CLOSE(c, y, tolerance);
+        QL_CHECK_CLOSE(y, 0.99, tolerance);
+        QL_CHECK_CLOSE(c, y, tolerance);
     }
 }
 

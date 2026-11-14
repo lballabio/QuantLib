@@ -30,26 +30,21 @@
 
 namespace QuantLib {
 
-    //! Longstaff-Schwarz path pricer for early exercise options
-    /*! References:
-
-        Francis Longstaff, Eduardo Schwartz, 2001. Valuing American Options
-        by Simulation: A Simple Least-Squares Approach, The Review of
-        Financial Studies, Volume 14, No. 1, 113-147
-
-        \ingroup mcarlo
-
-        \test the correctness of the returned value is tested by
-              reproducing results available in web/literature
+    /*! \deprecated Use LongstaffSchwartzPathPricer instead.
+                    Deprecated in version 1.45.
     */
-    class LongstaffSchwartzMultiPathPricer : public PathPricer<MultiPath> {
+    class [[deprecated("Use LongstaffSchwartzPathPricer instead")]] LongstaffSchwartzMultiPathPricer : public PathPricer<MultiPath> {
       public:
+        QL_DEPRECATED_DISABLE_WARNING
+
         LongstaffSchwartzMultiPathPricer(const ext::shared_ptr<PathPayoff>& payoff,
                                          const std::vector<Size>& timePositions,
                                          std::vector<Handle<YieldTermStructure> > forwardTermStructure,
                                          Array discounts,
                                          Size polynomialOrder,
                                          LsmBasisSystem::PolynomialType polynomialType);
+
+        QL_DEPRECATED_ENABLE_WARNING
 
         Real operator()(const MultiPath& multiPath) const override;
         virtual void calibrate();
@@ -69,7 +64,9 @@ namespace QuantLib {
 
         bool calibrationPhase_ = true;
 
+        QL_DEPRECATED_DISABLE_WARNING
         const ext::shared_ptr<PathPayoff> payoff_;
+        QL_DEPRECATED_ENABLE_WARNING
 
         std::unique_ptr<Array[]> coeff_;
         std::unique_ptr<Real[]> lowerBounds_;

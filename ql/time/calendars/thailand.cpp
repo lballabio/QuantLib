@@ -300,8 +300,24 @@ namespace QuantLib {
             || (d == 7 && m == April)     // Substitution for Chakri Memorial Day (Sunday 6th April 2025)
             || (d == 5 && m == May)       // Substitution for Coronation Day (Sunday 4th May 2025)
             || (d == 12 && m == May)      // Wisakha Bucha Day
+            || (d == 2 && m == June)      // Additional special holiday
             || (d == 10 && m == July)     // Substitution for Asarnha Bucha Day (Tuesday 20th July 2025)
+            || (d == 11 && m == August)   // Additional special holiday
             || (d == 23 && m == October)  // Chulalongkorn Day
+            ))
+            return false;
+
+        if ((y == 2026) && ((d == 2 && m == January)      // Additional special holiday
+            || (d == 3 && m == March)     // Makha Bucha Day
+            || (d == 1 && m == June)      // Substitution for Wisakha Bucha Day (Sunday 31st May 2026)
+            || (d == 29 && m == July)     // Asarnha Bucha Day
+            || (d == 16 && m == October)  // Additional special holiday in Bangkok (IMF and World Bank meetings)
+            ))
+            return false;
+
+        if ((y == 2027) && ((d == 22 && m == February)    // Substitution for Makha Bucha Day (Sunday 21st February 2027)
+            || (d == 20 && m == May)      // Wisakha Bucha Day
+            || (d == 19 && m == July)     // Substitution for Asarnha Bucha Day (Sunday 18th July 2027)
             ))
             return false;
 

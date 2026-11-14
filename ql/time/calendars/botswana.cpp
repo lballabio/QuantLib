@@ -35,8 +35,8 @@ namespace QuantLib {
         Year y = date.year();
         Day em = easterMonday(y);
         if (isWeekend(w)
-            // New Year's Day (possibly moved to Monday or Tuesday)
-            || ((d == 1 || (d == 2 && w == Monday) || (d == 3 && w == Tuesday)) 
+            // New Year's Day and January 2nd (possibly moved to Monday or Tuesday)
+            || ((d == 1 || d == 2 || (d == 3 && (w == Monday || w == Tuesday)))
                 && m == January)
             // Good Friday
             || (dd == em - 3)
@@ -52,17 +52,21 @@ namespace QuantLib {
                 && m == July)
             // Presidents' Day (third Monday of July)
             || ((d >= 15 && d <= 21) && w == Monday && m == July)
+            // Tuesday following Presidents' Day
+            || ((d >= 16 && d <= 22) && w == Tuesday && m == July)
             // Independence Day, September 30th (possibly moved to Monday)
             || ((d == 30 && m == September) || 
                 (d == 1  && w == Monday && m == October))
             // Botswana Day, October 1st (possibly moved to Monday or Tuesday)
-            || ((d == 1 || (d == 2 && w == Monday) || (d == 3 && w == Tuesday)) 
+            || ((d == 1 || (d == 2 && (w == Monday || w == Tuesday)))
                 && m == October)
             // Christmas
             || (d == 25 && m == December)
-            // Boxing Day (possibly moved to Monday)
-            || ((d == 26 || (d == 27 && w == Monday))
+            // Boxing Day (possibly moved to Monday or Tuesday)
+            || ((d == 26 || (d == 27 && (w == Monday || w == Tuesday)))
                 && m == December)
+            // Public holiday in honour of former President Festus Mogae, May 15th (only 2026)
+            || (d == 15 && m == May && y == 2026)
             )
             return false; // NOLINT(readability-simplify-boolean-expr)
         return true;

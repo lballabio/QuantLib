@@ -24,6 +24,7 @@
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/handle.hpp>
+#include <ql/math/functional.hpp>
 #include <algorithm>
 #include <numeric>
 #include <utility>
@@ -204,8 +205,8 @@ namespace QuantLib {
 
         variance = avgLgd <= QL_EPSILON ? Real(0.) : 
             variance / (bsktSize * bsktSize * avgLgd * avgLgd );
-        Real sumAves = -std::pow(ceilAveProb-m, 2) 
-            - (std::pow(floorAveProb-m, 2) - std::pow(ceilAveProb,2.)) 
+        Real sumAves = -squared(ceilAveProb-m)
+            - (squared(floorAveProb-m) - squared(ceilAveProb))
                 * (ceilAveProb-m);
         Real alpha = (variance * bsktSize + sumAves) 
             / (varianceBinom * bsktSize + sumAves);

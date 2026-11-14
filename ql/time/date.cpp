@@ -85,9 +85,6 @@ namespace {
 namespace QuantLib {
 #ifndef QL_HIGH_RESOLUTION_DATE
     // constructors
-    Date::Date()
-    : serialNumber_(Date::serial_type(0)) {}
-
     Date::Date(Date::serial_type serialNumber)
     : serialNumber_(serialNumber) {
         checkSerialNumber(serialNumber);
@@ -383,13 +380,6 @@ namespace QuantLib {
 #else
 
     namespace {
-        const boost::gregorian::date& serialNumberDateReference() {
-            static const boost::gregorian::date dateReference(
-                1899, boost::gregorian::Dec, 30);
-            return dateReference;
-        }
-
-
 #define compatibleEnums (   int(boost::date_time::Monday)   +1 == Monday    \
                          && int(boost::date_time::Tuesday)  +1 == Tuesday   \
                          && int(boost::date_time::Wednesday)+1 == Wednesday \
@@ -557,9 +547,6 @@ namespace QuantLib {
         }
     }
 
-
-    Date::Date()
-    : dateTime_(serialNumberDateReference()) {}
 
     Date::Date(const ptime& dateTime)
     : dateTime_(dateTime) {}

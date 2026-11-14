@@ -173,7 +173,7 @@ namespace QuantLib {
             caps_[j]->setPricingEngine(makeCapFloorPricingEngine(
                 iborIndex_->forwardingTermStructure(), spreadedVolatility));
 
-            auto f = [&](Volatility s) {
+            auto f = [&](Volatility s) -> Real {
                 if (s != spreadQuote->value())
                     spreadQuote->setValue(s);
                 return caps_[j]->NPV() - atmCapFloorPrices_[j];

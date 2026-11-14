@@ -124,12 +124,12 @@ BOOST_AUTO_TEST_CASE(testCumulativeGammaDistribution) {
     CumulativeGammaDistribution exponential(1.0);
     BOOST_CHECK_EQUAL(exponential(-1.0), 0.0);
     BOOST_CHECK_EQUAL(exponential(0.0), 0.0);
-    BOOST_CHECK_CLOSE(exponential(0.5), 1.0 - std::exp(-0.5), 1.0e-5);
-    BOOST_CHECK_CLOSE(exponential(2.0), 1.0 - std::exp(-2.0), 1.0e-5);
+    QL_CHECK_CLOSE(exponential(0.5), 1.0 - std::exp(-0.5), 1.0e-5);
+    QL_CHECK_CLOSE(exponential(2.0), 1.0 - std::exp(-2.0), 1.0e-5);
 
     CumulativeGammaDistribution shapeTwo(2.0);
-    BOOST_CHECK_CLOSE(shapeTwo(1.0), 1.0 - 2.0 * std::exp(-1.0), 1.0e-5);
-    BOOST_CHECK_CLOSE(shapeTwo(4.0), 1.0 - 5.0 * std::exp(-4.0), 1.0e-5);
+    QL_CHECK_CLOSE(shapeTwo(1.0), 1.0 - 2.0 * std::exp(-1.0), 1.0e-5);
+    QL_CHECK_CLOSE(shapeTwo(4.0), 1.0 - 5.0 * std::exp(-4.0), 1.0e-5);
 
     BOOST_CHECK_EXCEPTION(
         CumulativeGammaDistribution(0.0), Error,
@@ -140,6 +140,46 @@ BOOST_AUTO_TEST_CASE(testCumulativeGammaDistribution) {
     BOOST_CHECK_EXCEPTION(
         GammaFunction().logValue(0.0), Error,
         ExpectedErrorMessage("positive argument required"));
+}
+
+BOOST_AUTO_TEST_CASE(testCumulativeGammaDistributionLargeShapes) {
+    BOOST_TEST_MESSAGE("Testing cumulative gamma distribution for large shapes...");
+
+    // shape a, x and the regularized incomplete gamma function P(a, x), calculated with
+    // mpmath 1.3.0 at 60 digits
+    const Real data[][3] = {// moderate shapes
+                            {2.0, 2.0, 0.59399415029016192},
+                            {10.0, 9.0, 0.41259175566805859},
+                            {100.0, 100.0, 0.51329879827914866},
+                            {200.0, 200.0, 0.50940341800723633},
+                            // large shapes, around and on both sides of x = a
+                            {500.0, 480.0, 0.1862819731903246},
+                            {500.0, 500.0, 0.50594714617076036},
+                            {500.0, 505.0, 0.59396684905226404},
+                            {500.0, 520.0, 0.8153088509012564},
+                            {1000.0, 1000.0, 0.50420524418021551},
+                            {10000.0, 10000.0, 0.5013298083399552},
+                            {1000000.0, 1000000.0, 0.50013298076087259},
+                            {1000000.0, 1002000.0, 0.97719590410123014},
+                            // lower tails
+                            {50.0, 25.0, 6.953305247616099e-6},
+                            {200.0, 100.0, 9.3431500729883903e-19},
+                            {1000.0, 500.0, 3.2982727970670996e-86},
+                            // upper tails, where the previous implementation was accurate as well
+                            {100.0, 150.0, 0.99999407545966452},
+                            {200.0, 300.0, 0.99999999966288967},
+                            {2000.0, 2200.0, 0.99999283007491176},
+                            {10000.0, 10500.0, 0.99999957241275449}};
+
+    for (const auto& row : data) {
+        BOOST_TEST_CONTEXT("shape " << row[0] << ", x " << row[1]) {
+            CumulativeGammaDistribution cumulative(row[0]);
+            Real calculated = Null<Real>();
+            BOOST_CHECK_NO_THROW(calculated = cumulative(row[1]));
+            if (calculated != Null<Real>())
+                QL_CHECK_CLOSE_FRACTION(calculated, row[2], 1.0e-12);
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testModifiedBesselFunctions) {
@@ -259,6 +299,38 @@ BOOST_AUTO_TEST_CASE(testModifiedBesselFunctions) {
                        << "\n diff      : " << calculated_k-expected_k
                        << "\n calculated: " << calculated_k
                        << "\n expected  : " << expected_k);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testModifiedBesselFunctionsNegativeIntegerOrder) {
+    BOOST_TEST_MESSAGE("Testing modified Bessel functions at negative integer order...");
+
+    // I_(-n) = I_n for integer n. The power series divides by Gamma(1+nu), which has a pole at
+    // these orders, and used to return zero. Reference values are calculated with mpmath 1.3.0 at
+    // 50 digits.
+    Real r[][3] = {{-1.0, 2.0, 1.5906368546373291},
+                   {-2.0, 2.0, 0.6889484476987382},
+                   {-3.0, 0.5, 0.0026451119689902859},
+                   {-5.0, 7.5, 48.241360395663654}};
+
+    for (auto& i : r) {
+        const Real nu = i[0];
+        const Real x = i[1];
+        const std::complex<Real> z(x, 0.5);
+        BOOST_TEST_CONTEXT("order " << nu << ", argument " << x) {
+            QL_CHECK_CLOSE_FRACTION(modifiedBesselFunction_i(nu, x), i[2], 1e-11);
+            QL_CHECK_CLOSE_FRACTION(modifiedBesselFunction_i_exponentiallyWeighted(nu, x),
+                                    i[2] * std::exp(-x), 1e-11);
+            // the complex functions agree with the order of opposite sign
+            const std::complex<Real> expected = modifiedBesselFunction_i(-nu, z);
+            QL_CHECK_SMALL(std::abs(modifiedBesselFunction_i(nu, z) - expected),
+                           1e-11 * std::abs(expected));
+            const std::complex<Real> expected_weighted =
+                modifiedBesselFunction_i_exponentiallyWeighted(-nu, z);
+            QL_CHECK_SMALL(
+                std::abs(modifiedBesselFunction_i_exponentiallyWeighted(nu, z) - expected_weighted),
+                1e-11 * std::abs(expected_weighted));
         }
     }
 }

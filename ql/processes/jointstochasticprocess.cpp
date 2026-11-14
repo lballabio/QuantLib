@@ -26,6 +26,8 @@
 #include <ql/processes/jointstochasticprocess.hpp>
 #include <utility>
 
+QL_DEPRECATED_DISABLE_WARNING
+
 namespace QuantLib {
 
     JointStochasticProcess::JointStochasticProcess(
@@ -308,3 +310,5 @@ namespace QuantLib {
         this->StochasticProcess::update();
     }
 }
+
+QL_DEPRECATED_ENABLE_WARNING

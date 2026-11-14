@@ -28,6 +28,7 @@
 #include <ql/indexes/swapindex.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/solvers1d/newton.hpp>
 #include <ql/pricingengines/blackformula.hpp>
@@ -709,7 +710,7 @@ namespace QuantLib {
             b.push_back(temp);
             c *= temp;
             sum += accrual * temp;
-            sumOfSquare += std::pow(accrual * temp, 2.0);
+            sumOfSquare += squared(accrual * temp);
         }
         c += 1.;
         c = 1./c;
@@ -717,7 +718,7 @@ namespace QuantLib {
 
         return (-delta_*accruals_[0]*std::pow(b[0],delta_+1.)*c+ std::pow(b[0],delta_)*derC)*
                (-delta_*accruals_[0]*b[0]*x + 1. + x*(1.-c)*sum)+
-                std::pow(b[0],delta_)*c*(delta_*std::pow(accruals_[0]*b[0],2.)*x - delta_* accruals_[0]*b[0] -
+                std::pow(b[0],delta_)*c*(delta_*squared(accruals_[0]*b[0])*x - delta_* accruals_[0]*b[0] -
                 x*derC*sum + (1.-c)*sum - x*(1.-c)*sumOfSquare);
         //Real dx = 1.0e-8;
         //return (firstDerivative(x+dx)-firstDerivative(x-dx))/(2.0*dx);
@@ -818,7 +819,7 @@ namespace QuantLib {
                 swapPaymentDiscounts_[i]*std::exp(-shapedSwapPaymentTimes_[i]*x);
         }
 
-        const Real denominator = std::pow(denOfRfunztion, 4);
+        const Real denominator = quartic(denOfRfunztion);
 
         Real numOfDerR = 0;
         numOfDerR += shapedSwapPaymentTimes_.back()* swapPaymentDiscounts_.back()*

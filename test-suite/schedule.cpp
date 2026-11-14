@@ -388,6 +388,54 @@ BOOST_AUTO_TEST_CASE(testEffectiveDateWithEomAdjustment) {
     check_dates(s, expected);
 }
 
+BOOST_AUTO_TEST_CASE(testStubDatesWithEomAdjustment) {
+    BOOST_TEST_MESSAGE(
+        "Testing that explicit stub dates are not moved to the end of the month...");
+
+    Schedule forward =
+        MakeSchedule().from(Date(31,January,2026))
+                      .to(Date(15,December,2027))
+                      .withNextToLastDate(Date(15,November,2027))
+                      .withCalendar(NullCalendar())
+                      .withTenor(6*Months)
+                      .withConvention(Unadjusted)
+                      .forwards()
+                      .endOfMonth();
+
+    check_dates(forward, {Date(31,January,2026), Date(31,July,2026),
+                          Date(31,January,2027), Date(31,July,2027),
+                          Date(15,November,2027), Date(15,December,2027)});
+
+    Schedule backward =
+        MakeSchedule().from(Date(15,January,2026))
+                      .to(Date(31,December,2027))
+                      .withFirstDate(Date(15,February,2026))
+                      .withCalendar(NullCalendar())
+                      .withTenor(6*Months)
+                      .withConvention(Unadjusted)
+                      .backwards()
+                      .endOfMonth();
+
+    check_dates(backward, {Date(15,January,2026), Date(15,February,2026),
+                           Date(30,June,2026), Date(31,December,2026),
+                           Date(30,June,2027), Date(31,December,2027)});
+
+    // February 27th, 2026 is the last business day of the month; moving it
+    // to the 28th and rolling it forward would give March 2nd instead.
+    Schedule adjusted =
+        MakeSchedule().from(Date(15,January,2026))
+                      .to(Date(31,August,2026))
+                      .withFirstDate(Date(27,February,2026))
+                      .withCalendar(TARGET())
+                      .withTenor(6*Months)
+                      .withConvention(Following)
+                      .forwards()
+                      .endOfMonth();
+
+    check_dates(adjusted, {Date(15,January,2026), Date(27,February,2026),
+                           Date(31,August,2026)});
+}
+
 namespace CdsTests {
 
     Schedule makeCdsSchedule(const Date& from, const Date& to, DateGeneration::Rule rule) {
@@ -428,10 +476,9 @@ namespace CdsTests {
 }
 
 BOOST_AUTO_TEST_CASE(testCDS2015Convention) {
+    BOOST_TEST_MESSAGE("Testing CDS2015 semi-annual rolling convention...");
 
     using CdsTests::makeCdsSchedule;
-
-    BOOST_TEST_MESSAGE("Testing CDS2015 semi-annual rolling convention...");
 
     DateGeneration::Rule rule = DateGeneration::CDS2015;
     Period tenor(5, Years);
@@ -485,12 +532,12 @@ BOOST_AUTO_TEST_CASE(testCDS2015Convention) {
 }
 
 BOOST_AUTO_TEST_CASE(testCDS2015ConventionGrid) {
+    BOOST_TEST_MESSAGE("Testing CDS2015 convention against ISDA doc...");
 
     using CdsTests::InputData;
 
     // Testing against section 11 of ISDA doc FAQs Amending when Single Name CDS roll to new on-the-run contracts
     // December 20, 2015 Go-Live
-    BOOST_TEST_MESSAGE("Testing CDS2015 convention against ISDA doc...");
 
     // Test inputs and expected outputs
     // The map key is a pair with 1st element equal to trade date and 2nd element equal to CDS tenor.
@@ -570,12 +617,12 @@ BOOST_AUTO_TEST_CASE(testCDS2015ConventionGrid) {
 }
 
 BOOST_AUTO_TEST_CASE(testCDSConventionGrid) {
+    BOOST_TEST_MESSAGE("Testing CDS convention against ISDA doc...");
 
     using CdsTests::InputData;
 
     // Testing against section 11 of ISDA doc FAQs Amending when Single Name CDS roll to new on-the-run contracts
     // December 20, 2015 Go-Live. Amended the dates in the doc to the pre-2015 expected maturity dates.
-    BOOST_TEST_MESSAGE("Testing CDS convention against ISDA doc...");
 
     // Test inputs and expected outputs
     // The map key is a pair with 1st element equal to trade date and 2nd element equal to CDS tenor.
@@ -661,12 +708,12 @@ BOOST_AUTO_TEST_CASE(testCDSConventionGrid) {
 }
 
 BOOST_AUTO_TEST_CASE(testOldCDSConventionGrid) {
+    BOOST_TEST_MESSAGE("Testing old CDS convention...");
 
     using CdsTests::InputData;
 
     // Testing against section 11 of ISDA doc FAQs Amending when Single Name CDS roll to new on-the-run contracts
     // December 20, 2015 Go-Live. Amended the dates in the doc to the pre-2009 expected start and maturity dates.
-    BOOST_TEST_MESSAGE("Testing old CDS convention...");
 
     // Test inputs and expected outputs
     // The map key is a pair with 1st element equal to trade date and 2nd element equal to CDS tenor.
@@ -1146,6 +1193,42 @@ BOOST_AUTO_TEST_CASE(testNextToLastDateOnStart) {
         .backwards();
 
     check_dates(schedule, expected);
+}
+
+BOOST_AUTO_TEST_CASE(testThirdWednesdayInclusiveWithStubDates) {
+    BOOST_TEST_MESSAGE(
+        "Testing ThirdWednesdayInclusive schedule with first and next-to-last dates...");
+
+    // Regression test for the ThirdWednesdayInclusive rule being reported as
+    // "unknown rule" by the firstDate/nextToLastDate validation switches in
+    // the Schedule constructor (the rule is handled by the generation switch
+    // but was missing from the two validation switches).
+
+    Date effectiveDate(15, January, 2025);
+    Date terminationDate(17, December, 2025);
+    Date thirdWednesday(19, March, 2025); // third Wednesday of March 2025
+
+    // with a first date
+    Schedule withFirstDate;
+    BOOST_CHECK_NO_THROW(
+        withFirstDate = Schedule(effectiveDate, terminationDate, Period(3, Months),
+                                 TARGET(), Following, Following,
+                                 DateGeneration::ThirdWednesdayInclusive, false,
+                                 thirdWednesday));
+    for (const auto& d : withFirstDate.dates())
+        BOOST_CHECK_MESSAGE(d == Date::nthWeekday(3, Wednesday, d.month(), d.year()),
+                            "date " << d << " is not a third Wednesday");
+
+    // with a next-to-last date
+    Schedule withNextToLast;
+    BOOST_CHECK_NO_THROW(
+        withNextToLast = Schedule(effectiveDate, terminationDate, Period(3, Months),
+                                  TARGET(), Following, Following,
+                                  DateGeneration::ThirdWednesdayInclusive, false,
+                                  Date(), thirdWednesday));
+    for (const auto& d : withNextToLast.dates())
+        BOOST_CHECK_MESSAGE(d == Date::nthWeekday(3, Wednesday, d.month(), d.year()),
+                            "date " << d << " is not a third Wednesday");
 }
 
 BOOST_AUTO_TEST_CASE(testTruncation) {

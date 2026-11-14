@@ -77,7 +77,42 @@ Use the `ql/errors.hpp` macros, not raw `throw`/`assert`:
 - `QL_FAIL`
 - `QL_ASSERT`
 
-### 3.5 Header Pattern
+### 3.5 Support for AAD-enabled types
+
+In some projects, `Real` might be redefined to return an
+expression-template type (as in some AAD-enabled extensions of the
+library).  This might cause errors in some expressions that compile
+correctly when `Real` is a simple type:
+
+- A conditional operator, `condition ? expression1 : expression2`,
+  might fail to compile because `expression` and `expression2` might
+  have different types.  Instead, prefer
+  `condition ? Real(expression1) : Real(expression2)`.
+- Iterating over an initialization list as in
+  `for (auto x: { a, a+b, a*b }) { ... }`
+  might fail to compile, again because the elements might have
+  different types.  Instead, prefer
+  `for (auto x: std::vector<Real>{ a, a+b, a*b }) { ... }`
+- For the same reason, instead of `std::max(x, 0.0)` or
+  `std::max({ x, x+y, z })`, prefer `std::max<Real>(x, 0.0)`
+  and `std::max<Real>({ x, x+y, z })`. The same goes for `std::min`.
+- Lambdas returning expressions should explicitly define their return
+  type as Real using a trailing `-> Real`; this avoids returning an
+  expression template that might refer to a dead temporary or argument. 
+
+### 3.6 Support for recent C++ standards
+
+C++17 is a minimum requirement, not a hard constraint; the library
+must also be compilable under later standards.  Therefore, we should
+avoid both features not yet available in C++17 and features deprecated
+in later standards:
+
+- Implicitly converting an enumeration into an integer (for instance,
+  using `Option::Put` as -1 and `Option::Call` as 1 in some formulas)
+  will raise a deprecation warning and fail the build in C++20 and
+  above.  Instead of `some_enum * x`, use `int(some_enum) * x`.
+
+### 3.7 Header Pattern
 
 New headers should have:
 
@@ -85,6 +120,33 @@ New headers should have:
 - Doxygen `\file` and brief
 - Include guard `quantlib_<name>_hpp`
 - Self-contained includes
+
+### 3.8 Tests
+
+Any added test cases must have a `BOOST_TEST_MESSAGE("Testing X...")`
+at the beginning, formatted as in existing tests.  Mind the ellipsis
+at the end (three periods, not an single ellipsis character).
+
+Prefer `QL_CHECK_CLOSE` to `BOOST_CHECK_CLOSE`; prefer
+`QL_CHECK_SMALL` to `BOOST_CHECK_SMALL`.  The latter might fail to
+compile if operations on `Real` were redefined to return an
+expression-template type; the former force a conversion to `Real` and
+succeed.
+
+Tests should be deterministic; therefore, **don't** leave the evaluation
+date free by setting it to `Date::todaysDate()` (either adjusted or not).
+The test suite already sets a fixed, global evaluation date; you can use
+`Date today = Settings::instance().evaluationDate();`
+to retrieve it and use it in your tests.  If you're modifying an existing
+test and you notice that it's using `Date::todaysDate()`, ask the user
+for approval and, if the user agrees, update the test.
+
+If you need to set a different, particular date in your test (for
+instance, because you're testing a regression) you can do so with
+`Settings::instance().evaluationDate() = test_date;`
+The top-level fixture used by all test cases already creates an instance
+of `SavedSettings` that will restore the previous evaluation date at the
+end of the test; you don't need to do it yourself in the test case.
 
 ## 4. Build and Test — Quick Start
 

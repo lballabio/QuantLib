@@ -149,7 +149,6 @@ namespace QuantLib {
     }
 
     FourierIntegration FourierIntegration::gaussLaguerre(Size intOrder) {
-        QL_REQUIRE(intOrder <= 192, "maximum integraton order (192) exceeded");
         return FourierIntegration(GaussLaguerre,
                            ext::make_shared<GaussLaguerreIntegration>(intOrder));
     }

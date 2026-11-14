@@ -40,6 +40,7 @@
 #include <ql/experimental/volatility/svismilesection.hpp>
 #include <ql/termstructures/volatility/equityfx/piecewiseblackvariancesurface.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -2696,6 +2697,94 @@ BOOST_AUTO_TEST_CASE(testPearsonSpreadEngine) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testPearsonSpreadEngineNegativeStrikes) {
+    BOOST_TEST_MESSAGE("Testing Pearson spread engine with negative strikes...");
+
+    const Date today(25, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+    const Date maturity = today + 365;
+    const auto exercise = ext::make_shared<EuropeanExercise>(maturity);
+    const Handle<YieldTermStructure> r(flatRate(today, 0.05, dc));
+    const Real f1 = 100.0, f2 = 100.0;
+    const Volatility vol = 0.3;
+    const auto makeProcess = [&](Real forward) {
+        return ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(forward)), r,
+            Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+    };
+    const auto engine = ext::make_shared<PearsonSpreadEngine>(
+        makeProcess(f1), makeProcess(f2), 0.5);
+    const DiscountFactor df = r->discount(maturity);
+    const Real stdDev = vol * std::sqrt(dc.yearFraction(today, maturity));
+    // Allow for quadrature error and normal-tail truncation at eight standard deviations.
+    const Real tolerance = 1e-8;
+
+    for (Real strike : {-5.0, -20.0, -50.0, -80.0, -130.0}) {
+        BasketOption call(ext::make_shared<SpreadBasketPayoff>(
+                              ext::make_shared<PlainVanillaPayoff>(Option::Call, strike)),
+                          exercise);
+        BasketOption put(ext::make_shared<SpreadBasketPayoff>(
+                             ext::make_shared<PlainVanillaPayoff>(Option::Put, strike)),
+                         exercise);
+        call.setPricingEngine(engine);
+        put.setPricingEngine(engine);
+        const Real callNPV = call.NPV();
+        const Real putNPV = put.NPV();
+        const Real parityPut = callNPV - df * (f1 - f2 - strike);
+        BOOST_CHECK_MESSAGE(std::abs(putNPV - parityPut) <= tolerance,
+                            "put-call parity failed for strike " << strike
+                            << ": put " << putNPV << ", expected " << parityPut);
+
+        // (K + F2 - F1)^+ <= (F2 - |K|)^+ since F1 is positive and K is negative.
+        const Real upperBound = df * blackFormula(Option::Call, -strike, f2, stdDev);
+        BOOST_CHECK_MESSAGE(putNPV <= upperBound + tolerance,
+                            "put exceeds upper bound for strike " << strike
+                            << ": put " << putNPV << ", upper bound " << upperBound);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPearsonSpreadEngineVanillaLimit) {
+    BOOST_TEST_MESSAGE("Testing Pearson spread engine with a deterministic second underlying...");
+
+    const Date today(25, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+    const Date maturity = today + 365;
+    const auto exercise = ext::make_shared<EuropeanExercise>(maturity);
+    const Handle<YieldTermStructure> r(flatRate(today, 0.05, dc));
+    const Real f1 = 100.0, f2 = 100.0;
+    const Volatility vol = 0.3;
+    const auto makeProcess = [&](Real forward, Volatility volatility) {
+        return ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(forward)), r,
+            Handle<BlackVolTermStructure>(flatVol(today, volatility, dc)));
+    };
+    const auto engine = ext::make_shared<PearsonSpreadEngine>(
+        makeProcess(f1, vol), makeProcess(f2, 0.0), 0.5);
+    const DiscountFactor df = r->discount(maturity);
+    const Real stdDev = vol * std::sqrt(dc.yearFraction(today, maturity));
+    const Real tolerance = 1e-8;
+
+    // A deterministic F2 reduces the spread payoff to a vanilla payoff on F1.
+    for (Real strike : {-130.0, -100.0, -80.0, 5.0, 80.0}) {
+        for (Option::Type type : {Option::Call, Option::Put}) {
+            BasketOption option(ext::make_shared<SpreadBasketPayoff>(
+                                    ext::make_shared<PlainVanillaPayoff>(type, strike)),
+                                exercise);
+            option.setPricingEngine(engine);
+            const Real vanillaStrike = f2 + strike;
+            const Real expected = vanillaStrike > 0.0
+                ? Real(df * blackFormula(type, vanillaStrike, f1, stdDev))
+                : (type == Option::Call ? Real(df * (f1 - vanillaStrike)) : Real(0.0));
+            const Real calculated = option.NPV();
+            BOOST_CHECK_MESSAGE(std::abs(calculated - expected) <= tolerance,
+                                "vanilla limit failed for " << type << " with strike " << strike
+                                << ": calculated " << calculated << ", expected " << expected);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testGaussianCopulaSpreadEngineFlatVol) {
     BOOST_TEST_MESSAGE("Testing Gaussian Copula spread engine "
                        "with flat volatility...");
@@ -2942,6 +3031,72 @@ BOOST_AUTO_TEST_CASE(testGaussianCopulaSpreadEngineParityAcrossVols) {
                        << "\n    tolerance     : " << parityRelTol);
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testFd2dBlackScholesVanillaEngineRejectsNonBasketPayoff) {
+    BOOST_TEST_MESSAGE(
+        "Testing Fd2dBlackScholesVanillaEngine's guard against a "
+        "non-basket payoff...");
+
+    // Fd2dBlackScholesVanillaEngine::calculate() dynamic_pointer_casts
+    // arguments_.payoff to BasketPayoff but, unlike its sibling
+    // FdNdimBlackScholesVanillaEngine (which QL_REQUIREs the cast to
+    // succeed), used to have no check at all: a null cast would silently
+    // flow into FdmLogBasketInnerValue::innerValue()'s unconditional
+    // (*payoff_)(x) dereference. That is a null-pointer dereference
+    // (undefined behavior), not a catchable exception, so it cannot safely
+    // be exercised pre-fix in an automated test -- this test instead
+    // demonstrates the fixed engine's behavior: driving it directly through
+    // its own PricingEngine::getArguments()/calculate() interface (the same
+    // entry point BasketOption itself uses, but without BasketOption's
+    // constructor-level type safety) with a non-basket payoff throws a
+    // clean QuantLib::Error instead.
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+
+    auto spot1 = ext::make_shared<SimpleQuote>(100.0);
+    auto spot2 = ext::make_shared<SimpleQuote>(100.0);
+    ext::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, 0.0, dc);
+    ext::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, 0.0, dc);
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.05, dc);
+    ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, 0.2, dc);
+    ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, 0.2, dc);
+
+    auto p1 = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot1), Handle<YieldTermStructure>(qTS1),
+        Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(volTS1));
+    auto p2 = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot2), Handle<YieldTermStructure>(qTS2),
+        Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(volTS2));
+
+    auto exercise = ext::make_shared<EuropeanExercise>(today + Period(1, Years));
+
+    ext::shared_ptr<PricingEngine> engine =
+        ext::make_shared<Fd2dBlackScholesVanillaEngine>(p1, p2, 0.0, 20, 20, 10);
+
+    // Sanity check: a genuine basket payoff, through the normal BasketOption
+    // path, still prices fine with the fix in place -- and non-trivially so
+    // (the ATM min-basket call prices around 3.3 on this coarse 20x20x10
+    // grid), otherwise this leg would not be exercising the engine at all.
+    BasketOption basketOption(
+        ext::make_shared<MinBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0)),
+        exercise);
+    basketOption.setPricingEngine(engine);
+    const Real basketNpv = basketOption.NPV();
+    BOOST_REQUIRE(basketNpv > 1.0);
+
+    // Now drive the same engine instance directly, bypassing BasketOption's
+    // constructor-level BasketPayoff requirement, with a plain (non-basket)
+    // payoff -- exactly the misuse the sibling N-dim engine's own guard
+    // exists to catch.
+    auto* arguments = dynamic_cast<Option::arguments*>(engine->getArguments());
+    BOOST_REQUIRE(arguments != nullptr);
+    arguments->payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+    arguments->exercise = exercise;
+
+    BOOST_CHECK_THROW(engine->calculate(), Error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

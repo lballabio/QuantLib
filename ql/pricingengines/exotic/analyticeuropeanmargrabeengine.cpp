@@ -18,6 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/pricingengines/exotic/analyticeuropeanmargrabeengine.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
@@ -73,18 +74,29 @@ namespace QuantLib {
 
         Real stdDev1 = std::sqrt(variance1);
         Real stdDev2 = std::sqrt(variance2);
-        Real variance = variance1 + variance2 - 2*rho_*stdDev1*stdDev2;
+        // with perfect correlation and equal volatilities, rounding can make
+        // the variance of the ratio slightly negative
+        Real variance =
+            std::max(Real(0.0), variance1 + variance2 - 2*rho_*stdDev1*stdDev2);
         Real stdDev = std::sqrt(variance);
-        Real d1 = (std::log((quantity1*forward1)/(quantity2*forward2))
-                   + 0.5*variance) / stdDev;
-        Real d2 = d1 - stdDev;
         Real Nd1, Nd2, nd1, nd2;
-        CumulativeNormalDistribution cum;
-        NormalDistribution norm;
-        Nd1 = cum(d1);
-        Nd2 = cum(d2);
-        nd1 = norm(d1);
-        nd2 = norm(d2);
+        if (variance >= QL_EPSILON) {
+            Real d1 = (std::log((quantity1*forward1)/(quantity2*forward2))
+                       + 0.5*variance) / stdDev;
+            Real d2 = d1 - stdDev;
+            CumulativeNormalDistribution cum;
+            NormalDistribution norm;
+            Nd1 = cum(d1);
+            Nd2 = cum(d2);
+            nd1 = norm(d1);
+            nd2 = norm(d2);
+        } else {
+            // the ratio of the two assets is deterministic, so the option
+            // is worth its discounted intrinsic value
+            Real f1 = quantity1*forward1, f2 = quantity2*forward2;
+            Nd1 = Nd2 = close(f1, f2) ? 0.5 : (f1 > f2 ? 1.0 : 0.0);
+            nd1 = nd2 = 0.0;
+        }
         DayCounter rfdc  = process1_->riskFreeRate()->dayCounter();
         Time t = rfdc.yearFraction(process1_->riskFreeRate()->referenceDate(),
                                   arguments_.exercise->lastDate());
@@ -98,10 +110,14 @@ namespace QuantLib {
         // Greeks
         results_.delta1 = riskFreeDiscount*(quantity1*forward1*Nd1)/s1;
         results_.delta2 = -riskFreeDiscount*(quantity2*forward2*Nd2)/s2;
-        results_.gamma1 = (riskFreeDiscount*(quantity1*forward1*nd1)/s1)/(quantity1*s1*stdDev);
-        results_.gamma2 = (-riskFreeDiscount*(quantity2*forward2*nd2)/s2)/(-quantity2*s2*stdDev);
+        if (variance >= QL_EPSILON) {
+            results_.gamma1 = (riskFreeDiscount*(quantity1*forward1*nd1)/s1)/(s1*stdDev);
+            results_.gamma2 = (-riskFreeDiscount*(quantity2*forward2*nd2)/s2)/(-s2*stdDev);
+        } else {
+            results_.gamma1 = results_.gamma2 = 0.0;
+        }
         Real vega       = riskFreeDiscount*(quantity1*forward1*nd1)*sqt;
-        results_.theta  = -((stdDev*vega/sqt)/(2*t)-(q1*quantity1*s1*results_.delta1)-(q2*quantity2*s2*results_.delta2));
+        results_.theta  = -((stdDev*vega/sqt)/(2*t)-(q1*s1*results_.delta1)-(q2*s2*results_.delta2));
         results_.rho    = 0.0;
     }
 

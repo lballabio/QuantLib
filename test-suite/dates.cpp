@@ -35,6 +35,7 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 
 #include <sstream>
+#include <type_traits>
 #include <unordered_set>
 
 using namespace QuantLib;
@@ -99,6 +100,35 @@ BOOST_AUTO_TEST_CASE(ecbDates) {
     ECB::addDate(knownDate);
     BOOST_TEST(ECB::isECBdate(knownDate),
                    "unable to add an ECB date");
+}
+
+BOOST_AUTO_TEST_CASE(ecbDatesFrom2025) {
+    BOOST_TEST_MESSAGE("Testing ECB dates from 2025 onwards...");
+
+    // starts of the reserve maintenance periods in the ECB indicative calendars
+    const std::vector<Date> expected = {
+        Date(5, February, 2025),  Date(12, March, 2025),     Date(23, April, 2025),
+        Date(11, June, 2025),     Date(30, July, 2025),      Date(17, September, 2025),
+        Date(5, November, 2025),  Date(23, December, 2025),
+        Date(11, February, 2026), Date(25, March, 2026),     Date(6, May, 2026),
+        Date(17, June, 2026),     Date(29, July, 2026),      Date(16, September, 2026),
+        Date(4, November, 2026),  Date(23, December, 2026),
+        Date(10, February, 2027), Date(24, March, 2027),     Date(6, May, 2027),
+        Date(16, June, 2027),     Date(28, July, 2027),      Date(15, September, 2027),
+        Date(3, November, 2027),  Date(22, December, 2027),
+        Date(9, February, 2028),  Date(29, March, 2028),     Date(10, May, 2028),
+        Date(14, June, 2028),     Date(26, July, 2028),      Date(13, September, 2028),
+        Date(18, October, 2028),  Date(13, December, 2028)
+    };
+
+    Date previousEcbDate(18, December, 2024);
+    for (const Date& expectedDate : expected) {
+        const Date nextEcbDate = ECB::nextDate(previousEcbDate);
+        BOOST_CHECK_MESSAGE(nextEcbDate == expectedDate,
+                            "next ECB date following " << previousEcbDate << " is "
+                            << nextEcbDate << " instead of " << expectedDate);
+        previousEcbDate = expectedDate;
+    }
 }
 
 BOOST_AUTO_TEST_CASE(ecbGetDateFromCode) {
@@ -550,6 +580,15 @@ BOOST_AUTO_TEST_CASE(nullDate) {
     BOOST_TEST_MESSAGE("Testing null date for working serial number and hash...");
 
     Date null_date = Date();
+
+    static_assert(std::is_nothrow_default_constructible<Date>::value,
+                  "Date default construction must be noexcept");
+
+    BOOST_CHECK_EQUAL(null_date.serialNumber(), 0);
+#ifdef QL_HIGH_RESOLUTION_DATE
+    BOOST_CHECK(null_date.dateTime() ==
+                boost::posix_time::ptime(boost::gregorian::date(1899, 12, 30)));
+#endif
 
     std::hash<Date> hasher;
 

@@ -154,10 +154,10 @@ BOOST_AUTO_TEST_CASE(testEuroExchangeTwoAssets) {
         {22.0, 20.0, 1, 1, 0.06, 0.04, 0.10, 0.50, 0.20, 0.20, 0.50, 2.231, 0.728, -0.689, 0.099, 0.120, -0.550, 0.0, 1.0e-3},
         {22.0, 20.0, 1, 1, 0.06, 0.04, 0.10, 0.50, 0.20, 0.25, 0.50, 2.374, 0.707, -0.659, 0.090, 0.109, -0.741, 0.0, 1.0e-3},
 
-        //Quantity tests from Excel calcuations
-        {22.0, 10.0, 1, 2, 0.06, 0.04, 0.10, 0.50, 0.20, 0.15, 0.50, 2.138, 0.746, -1.426, 0.106, 0.255, -0.987, 0.0, 1.0e-3},
-        {11.0, 20.0, 2, 1, 0.06, 0.04, 0.10, 0.50, 0.20, 0.20, 0.50, 2.231, 1.455, -0.689, 0.198, 0.120, 0.410, 0.0, 1.0e-3},
-        {11.0, 10.0, 2, 2, 0.06, 0.04, 0.10, 0.50, 0.20, 0.25, 0.50, 2.374, 1.413, -1.317, 0.181, 0.219, -0.336, 0.0, 1.0e-3}
+        //Quantity tests: the rows above with each spot divided by its quantity
+        {22.0, 10.0, 1, 2, 0.06, 0.04, 0.10, 0.50, 0.20, 0.15, 0.50, 2.138, 0.746, -1.426, 0.106, 0.511, -0.416, 0.0, 1.0e-3},
+        {11.0, 20.0, 2, 1, 0.06, 0.04, 0.10, 0.50, 0.20, 0.20, 0.50, 2.231, 1.455, -0.689, 0.397, 0.120, -0.550, 0.0, 1.0e-3},
+        {11.0, 10.0, 2, 2, 0.06, 0.04, 0.10, 0.50, 0.20, 0.25, 0.50, 2.374, 1.413, -1.317, 0.361, 0.437, -0.741, 0.0, 1.0e-3}
     };
 
     DayCounter dc = Actual360();
@@ -445,6 +445,54 @@ BOOST_AUTO_TEST_CASE(testGreeks) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testEuroExchangeDeterministicRatio) {
+
+    BOOST_TEST_MESSAGE("Testing European exchange option with deterministic asset ratio...");
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+    Date exDate = today + 180;
+
+    Handle<YieldTermStructure> qTS1(flatRate(today, 0.03, dc));
+    Handle<YieldTermStructure> qTS2(flatRate(today, 0.02, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, 0.05, dc));
+
+    auto makeProcess = [&](Real spot, const Handle<YieldTermStructure>& qTS, Volatility vol) {
+        return ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(spot)), qTS, rTS,
+            Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+    };
+
+    struct Case {
+        Real s1, s2;
+        Volatility v1, v2;
+        Real rho;
+    };
+    Case cases[] = {
+        // perfect correlation and equal volatilities: rounding used to
+        // make the variance of the ratio negative, giving a NaN price
+        {110.0, 100.0, 0.20, 0.20, 1.0},
+        // zero volatilities: the gammas used to be NaN
+        {110.0, 100.0, 0.0, 0.0, 0.5},
+        {90.0, 100.0, 0.0, 0.0, 0.5}
+    };
+
+    for (const auto& c : cases) {
+        MargrabeOption option(1, 1, ext::make_shared<EuropeanExercise>(exDate));
+        option.setPricingEngine(ext::make_shared<AnalyticEuropeanMargrabeEngine>(
+            makeProcess(c.s1, qTS1, c.v1), makeProcess(c.s2, qTS2, c.v2), c.rho));
+
+        // the ratio is deterministic, so the option is worth its
+        // discounted intrinsic value
+        Real expected = std::max(
+            c.s1*qTS1->discount(exDate) - c.s2*qTS2->discount(exDate), Real(0.0));
+
+        QL_CHECK_SMALL(option.NPV() - expected, 1.0e-10);
+        QL_CHECK_SMALL(option.gamma1(), 1.0e-10);
+        QL_CHECK_SMALL(option.gamma2(), 1.0e-10);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testAmericanExchangeTwoAssets) {
 
     BOOST_TEST_MESSAGE("Testing American one-asset-for-another option...");
@@ -462,8 +510,11 @@ BOOST_AUTO_TEST_CASE(testAmericanExchangeTwoAssets) {
         {22.0, 20.0, 1, 1, 0.06, 0.04, 0.10, 0.10, 0.20, 0.20, 0.00, 2.1032, 1.0e-3},
         {22.0, 20.0, 1, 1, 0.06, 0.04, 0.10, 0.10, 0.20, 0.25, 0.00, 2.1618, 1.0e-3},
 
-        {22.0, 20.0, 1, 1, 0.06, 0.04, 0.10, 0.10, 0.20, 0.15, 0.50, 2.0001, 1.0e-3},
-        {22.0, 20.0, 1, 1, 0.06, 0.04, 0.10, 0.10, 0.20, 0.20, 0.50, 2.0110, 1.0e-3},
+        // Haug gives 2.0001 and 2.0110 for the next two, which use the
+        // published Bjerksund-Stensland trigger. The best trigger moves them
+        // towards the QdFp values of the equivalent call, 2.0042 and 2.0147.
+        {22.0, 20.0, 1, 1, 0.06, 0.04, 0.10, 0.10, 0.20, 0.15, 0.50, 2.0027, 1.0e-3},
+        {22.0, 20.0, 1, 1, 0.06, 0.04, 0.10, 0.10, 0.20, 0.20, 0.50, 2.0124, 1.0e-3},
         {22.0, 20.0, 1, 1, 0.06, 0.04, 0.10, 0.10, 0.20, 0.25, 0.50, 2.0359, 1.0e-3},
 
         {22.0, 20.0, 1, 1, 0.06, 0.04, 0.10, 0.50, 0.20, 0.15, -0.50, 2.8051, 1.0e-3},

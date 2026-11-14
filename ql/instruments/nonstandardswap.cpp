@@ -38,10 +38,8 @@ namespace QuantLib {
 
     NonstandardSwap::NonstandardSwap(const FixedVsFloatingSwap &fromVanilla)
         : Swap(2), type_(fromVanilla.type()),
-          fixedNominal_(std::vector<Real>(fromVanilla.fixedLeg().size(),
-                                          fromVanilla.nominal())),
-          floatingNominal_(std::vector<Real>(fromVanilla.floatingLeg().size(),
-                                             fromVanilla.nominal())),
+          fixedNominal_(fromVanilla.fixedNominals()),
+          floatingNominal_(fromVanilla.floatingNominals()),
           fixedSchedule_(fromVanilla.fixedSchedule()),
           fixedRate_(std::vector<Real>(fromVanilla.fixedLeg().size(),
                                        fromVanilla.fixedRate())),
@@ -56,6 +54,10 @@ namespace QuantLib {
           paymentLag_(fromVanilla.paymentLag()),
           paymentCalendar_(fromVanilla.paymentCalendar()),
           intermediateCapitalExchange_(false), finalCapitalExchange_(false) {
+
+        // Standard legs repeat the last notional when the input vector is shorter.
+        fixedNominal_.resize(fromVanilla.fixedLeg().size(), fixedNominal_.back());
+        floatingNominal_.resize(fromVanilla.floatingLeg().size(), floatingNominal_.back());
 
         if (const auto* ois = dynamic_cast<const OvernightIndexedSwap*>(&fromVanilla)) {
             telescopicValueDates_ = ois->telescopicValueDates();

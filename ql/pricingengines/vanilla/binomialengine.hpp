@@ -29,6 +29,7 @@
 
 #include <ql/methods/lattices/binomialtree.hpp>
 #include <ql/methods/lattices/bsmlattice.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/vanilla/discretizedvanillaoption.hpp>
 #include <ql/pricingengines/greeks.hpp>
@@ -168,12 +169,20 @@ namespace QuantLib {
         results_.value = p0;
         results_.delta = delta;
         results_.gamma = gamma;
-        results_.theta = (delta == Null<Real>() || gamma == Null<Real>())
-                             ? Null<Real>()
-                             : blackScholesTheta(process_,
-                                                 results_.value,
-                                                 results_.delta,
-                                                 results_.gamma);
+        if (delta == Null<Real>() || gamma == Null<Real>()) {
+            results_.theta = Null<Real>();
+        } else if (arguments_.exercise->type() == Exercise::American &&
+                   arguments_.exercise->date(0) <= referenceDate &&
+                   close_enough(p0, (*payoff)(s0))) {
+            // Allow for roundoff when identifying exercise at the root.
+            // The intrinsic value is time-independent; the PDE does not hold here.
+            results_.theta = 0.0;
+        } else {
+            results_.theta = blackScholesTheta(process_,
+                                              results_.value,
+                                              results_.delta,
+                                              results_.gamma);
+        }
     }
 
 }

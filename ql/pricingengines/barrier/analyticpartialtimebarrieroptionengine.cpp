@@ -18,6 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/pricingengines/barrier/analyticpartialtimebarrieroptionengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -60,7 +61,7 @@ namespace QuantLib {
           case Barrier::DownIn:
             switch (barrierRange) {
               case PartialBarrier::Start:
-                return CIA(1, barrier, strike, r, q);
+                return CIA(1, barrier, strike, r, q, payoff, process);
               case PartialBarrier::EndB1:
               case PartialBarrier::EndB2:
                 QL_FAIL("Down-and-in partial-time end barrier is not implemented");
@@ -85,7 +86,7 @@ namespace QuantLib {
             case Barrier::UpIn:
               switch (barrierRange) {
                 case PartialBarrier::Start:
-                  return CIA(-1, barrier, strike, r, q);
+                  return CIA(-1, barrier, strike, r, q, payoff, process);
                 case PartialBarrier::EndB1:
                 case PartialBarrier::EndB2:
                   QL_FAIL("Up-and-in partial-time end barrier is not implemented");
@@ -224,17 +225,17 @@ namespace QuantLib {
 
     // eta = -1: Up-and-In Call
     // eta =  1: Down-and-In Call
-    Real AnalyticPartialTimeBarrierOptionEngine::CIA(Integer eta, Real barrier, Real strike, Rate r, Rate q) const {
+    Real AnalyticPartialTimeBarrierOptionEngine::CIA(
+        Integer eta, Real barrier, Real strike, Rate r, Rate q,
+        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process) const {
         ext::shared_ptr<EuropeanExercise> exercise =
             ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
-
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
 
         VanillaOption europeanOption(payoff, exercise);
 
         europeanOption.setPricingEngine(
-                        ext::make_shared<AnalyticEuropeanEngine>(process_));
+                        ext::make_shared<AnalyticEuropeanEngine>(process));
 
         return europeanOption.NPV() - CA(eta, barrier, strike, r, q);
     }
@@ -284,7 +285,7 @@ namespace QuantLib {
         Real T = residualTime();
         Real sigma = volatility(T, strike);
         return (std::log(S / strike) + 2 * std::log(barrier / S) + 
-              (b + (std::pow(sigma, 2) / 2))*T) / (sigma*std::sqrt(T));
+              (b + (squared(sigma) / 2))*T) / (sigma*std::sqrt(T));
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::f2(Real barrier, Real strike, Rate b) const {

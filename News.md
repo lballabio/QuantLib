@@ -1,5 +1,17 @@
+Changes for QuantLib 1.45
+=========================
+
+The following feature is deprecated and will be removed in a future release
+(probably release 1.50):
+
+- The `JointStochasticProcess` class; for Heston-Hull-White models, see
+  `HybridHestonHullWhiteProcess`; otherwise, implement a purpose-built
+  `StochasticProcess`.
+
 Changes for QuantLib 1.44
 =========================
+
+Equity total return swaps now support periodic equity payments at a frequency independent of the funding leg; the default remains settlement at maturity.
 
 As announced, it is no longer possible to choose the Boost implementation of `any` and `optional`. Only the `std` implementation can be used.
 
@@ -27,4 +39,3 @@ Full list of pull requests
 --------------------------
 
 All the pull requests merged in this release are listed on its release page at <https://github.com/lballabio/QuantLib/releases/tag/v1.44>.  The same page also provides the full list of commits since the previous release.
-

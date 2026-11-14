@@ -168,6 +168,12 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American option");
 
+        const auto ex =
+            ext::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        QL_REQUIRE(ex, "non-American exercise given");
+        QL_REQUIRE(!ex->payoffAtExpiry(),
+                   "payoff at expiry not handled");
+
         const auto payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
@@ -354,7 +360,7 @@ namespace QuantLib {
 
         return ext::make_shared<ChebyshevInterpolation>(
             interpolationPoints_,
-            [&, this](Real z) {
+            [&, this](Real z) -> Real {
                 const Real x_sq = 0.25*T*squared(1+z);
                 return squared(std::log(
                     this->putExerciseBoundaryAtTau(S, K, r, q, vol, T, x_sq)

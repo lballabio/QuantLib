@@ -65,7 +65,9 @@ namespace QuantLib {
         Real CoB2(Barrier::Type barrierType, Real barrier, Real strike, Rate r, Rate q) const;
         Real CoB1(Real barrier, Real strike, Rate r, Rate q) const;
         Real CA(Integer n, Real barrier, Real strike, Rate r, Rate q) const;
-        Real CIA(Integer n, Real barrier, Real strike, Rate r, Rate q) const;
+        Real CIA(Integer n, Real barrier, Real strike, Rate r, Rate q,
+                 const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+                 const ext::shared_ptr<GeneralizedBlackScholesProcess>& process) const;
         Real g1(Real barrier, Real strike, Rate b)const;
         Real g2(Real barrier, Real strike, Rate b)const;
         Real g3(Real barrier, Real strike, Rate b)const;

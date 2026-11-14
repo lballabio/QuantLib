@@ -129,7 +129,7 @@ namespace QuantLib {
         //! \name constructors
         //@{
         //! Default constructor returning a null date.
-        Date();
+        Date() noexcept;
         //! Constructor taking a serial number as given by Applix or Excel.
         explicit Date(Date::serial_type serialNumber);
         //! More traditional constructor.
@@ -252,6 +252,17 @@ namespace QuantLib {
         static void checkSerialNumber(Date::serial_type serialNumber);
 
 #ifdef QL_HIGH_RESOLUTION_DATE
+        static const boost::gregorian::date& serialNumberDateReference() noexcept {
+            // Boost 1.74 fixed constexpr construction of dates.
+#if BOOST_VERSION >= 107400
+            static constexpr
+#else
+            static const
+#endif
+                boost::gregorian::date dateReference(1899, boost::gregorian::Dec, 30);
+            return dateReference;
+        }
+
         boost::posix_time::ptime dateTime_;
 #else
         Date::serial_type serialNumber_;
@@ -388,6 +399,9 @@ namespace QuantLib {
     }
 
 #ifndef QL_HIGH_RESOLUTION_DATE
+    inline Date::Date() noexcept
+    : serialNumber_(Date::serial_type(0)) {}
+
     inline Weekday Date::weekday() const {
         Integer w = serialNumber_ % 7;
         return Weekday(w == 0 ? 7 : w);
@@ -462,6 +476,9 @@ namespace QuantLib {
     inline bool operator>=(const Date& d1, const Date& d2) {
         return (d1.serialNumber() >= d2.serialNumber());
     }
+#else
+    inline Date::Date() noexcept
+    : dateTime_(serialNumberDateReference()) {}
 #endif
 }
 

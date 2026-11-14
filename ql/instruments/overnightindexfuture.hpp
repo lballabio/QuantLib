@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2018 Roy Zywina
  Copyright (C) 2019 Eisuke Tani
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,11 +51,14 @@ namespace QuantLib {
         const ext::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
         Date valueDate() const { return valueDate_; }
         Date maturityDate() const { return maturityDate_; }
+        RateAveraging::Type averagingMethod() const { return averagingMethod_; }
       private:
         void performCalculations() const override;
         Real rate() const;
         Real averagedRate() const;
         Real compoundedRate() const;
+        void checkForecastStart(const Date& d) const;
+        Rate forecastFixing(const Date& fixingDate, const Date& end) const;
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Date valueDate_, maturityDate_;
         Handle<Quote> convexityAdjustment_;

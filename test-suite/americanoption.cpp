@@ -32,6 +32,7 @@
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
+#include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesshoutengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
@@ -39,7 +40,9 @@
 #include <ql/pricingengines/vanilla/qdplusamericanengine.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
@@ -81,6 +84,149 @@ struct AmericanOptionData {
     Volatility v;  // volatility
     Real result;   // expected result
 };
+
+BOOST_AUTO_TEST_CASE(testBinomialTheta) {
+
+    BOOST_TEST_MESSAGE("Testing binomial theta for American options...");
+
+    Date today(21, September, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    Date maturity = today + 91;
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto exercise = ext::make_shared<AmericanExercise>(today, maturity);
+
+    struct TestCase {
+        Option::Type type;
+        Real strike;
+        Rate q, r;
+        bool exercised;
+    };
+    TestCase cases[] = {
+        {Option::Put, 115.0, 0.00,  0.05, true},
+        {Option::Put, 100.0, 0.00,  0.05, false},
+        {Option::Call, 85.0, 0.10,  0.01, true},
+        {Option::Call, 85.0, 0.00, -0.05, true}
+    };
+    for (const auto& data : cases) {
+        auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, data.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, data.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, 0.15, dc)));
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(data.type, data.strike);
+        VanillaOption option(payoff, exercise);
+        Size steps = data.exercised ? 201 : 1001;
+        std::pair<std::string, ext::shared_ptr<PricingEngine>> engines[] = {
+            {"CRR", ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(process, steps)},
+            {"JR", ext::make_shared<BinomialVanillaEngine<JarrowRudd>>(process, steps)},
+            {"EQP", ext::make_shared<BinomialVanillaEngine<AdditiveEQPBinomialTree>>(
+                        process, steps)},
+            {"Trigeorgis", ext::make_shared<BinomialVanillaEngine<Trigeorgis>>(process, steps)},
+            {"Tian", ext::make_shared<BinomialVanillaEngine<Tian>>(process, steps)},
+            {"LR", ext::make_shared<BinomialVanillaEngine<LeisenReimer>>(process, steps)},
+            {"Joshi", ext::make_shared<BinomialVanillaEngine<Joshi4>>(process, steps)}
+        };
+
+        Real expectedTheta = 0.0;
+        if (!data.exercised) {
+            // At fixed spot, shortening maturity is equivalent to advancing time
+            // in this flat market. Use an independent finite-difference engine.
+            VanillaOption shorter(payoff,
+                                  ext::make_shared<AmericanExercise>(today, maturity - 1));
+            VanillaOption longer(payoff,
+                                 ext::make_shared<AmericanExercise>(today, maturity + 1));
+            auto fdEngine = ext::make_shared<FdBlackScholesVanillaEngine>(process, 400, 400);
+            shorter.setPricingEngine(fdEngine);
+            longer.setPricingEngine(fdEngine);
+            expectedTheta = (shorter.NPV() - longer.NPV()) /
+                            dc.yearFraction(maturity - 1, maturity + 1);
+        }
+
+        for (const auto& engine : engines) {
+            BOOST_TEST_CONTEXT(engine.first << " tree, " << data.type << ", strike "
+                               << data.strike << ", r " << data.r << ", q " << data.q) {
+                option.setPricingEngine(engine.second);
+                if (data.exercised) {
+                    // Immediate exercise gives an affine, time-independent payoff.
+                    QL_CHECK_SMALL(option.NPV() - 15.0, 1.0e-10);
+                    QL_CHECK_SMALL(option.delta() - Real(data.type), 1.0e-10);
+                    QL_CHECK_SMALL(option.gamma(), 1.0e-10);
+                    QL_CHECK_SMALL(option.theta(), 1.0e-8);
+                } else {
+                    BOOST_CHECK_GT(option.NPV(), (*payoff)(spot->value()));
+                    // Allow for tree discretization and the one-day time bump.
+                    QL_CHECK_SMALL(option.theta() - expectedTheta, 0.05);
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBinomialThetaNonFlatCurve) {
+
+    BOOST_TEST_MESSAGE("Testing binomial American theta with a non-flat curve...");
+
+    Date today(21, September, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    Date maturity = today + 365;
+    // The initial rate is 1%, the one-year zero rate is 5%. Non-decreasing,
+    // positive zero rates give positive forwards, so this call never exercises early.
+    auto riskFree = ext::make_shared<ZeroCurve>(
+        std::vector<Date>{today, today + 1, maturity},
+        std::vector<Rate>{0.01, 0.01, 0.05}, dc);
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(flatRate(today, 0.0, dc)),
+        Handle<YieldTermStructure>(riskFree),
+        Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc)));
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+    VanillaOption american(payoff, ext::make_shared<AmericanExercise>(today, maturity));
+    VanillaOption european(payoff, ext::make_shared<EuropeanExercise>(maturity));
+    european.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(process));
+    // Use closed-form European value and spatial derivatives in the PDE at t=0.
+    // AnalyticEuropeanEngine::theta itself uses the maturity zero rate.
+    Real expectedTheta = 0.01 * (european.NPV() - 100.0 * european.delta())
+                         - 0.5 * 0.20 * 0.20 * 100.0 * 100.0 * european.gamma();
+    for (Size steps : {1001, 4001}) {
+        BOOST_TEST_CONTEXT("CRR tree, " << steps << " steps") {
+            auto engine = ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(
+                process, steps);
+            american.setPricingEngine(engine);
+            european.setPricingEngine(engine);
+            BOOST_CHECK_GT(american.NPV(), (*payoff)(100.0));
+            QL_CHECK_SMALL(american.NPV() - european.NPV(), 1.0e-10);
+            QL_CHECK_SMALL(american.theta() - european.theta(), 1.0e-10);
+            // Allow for discretization of the spatial Greeks by the tree.
+            QL_CHECK_SMALL(american.theta() - expectedTheta, 0.005);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBinomialThetaDeferredExercise) {
+
+    BOOST_TEST_MESSAGE("Testing binomial theta with deferred American exercise...");
+
+    Date today(21, September, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(flatRate(today, 0.0, dc)),
+        Handle<YieldTermStructure>(flatRate(today, 0.05, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, 0.15, dc)));
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 115.0);
+    VanillaOption option(payoff,
+                         ext::make_shared<AmericanExercise>(today + 1, today + 91));
+    option.setPricingEngine(
+        ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(process, 2));
+    // The coarse grid snaps the earliest exercise date to t=0 and returns intrinsic.
+    // The actual earliest date still forbids exercise now, so retain PDE theta r*K.
+    QL_CHECK_SMALL(option.NPV() - 15.0, 1.0e-10);
+    QL_CHECK_SMALL(option.delta() + 1.0, 1.0e-10);
+    QL_CHECK_SMALL(option.gamma(), 1.0e-10);
+    QL_CHECK_SMALL(option.theta() - 0.05 * 115.0, 1.0e-8);
+}
 
 BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValues) {
 
@@ -136,7 +282,7 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValues) {
       { Option::Put,  100.00, 100.00, 0.00, 0.00, 0.50, 0.15,  4.2294 }
     };
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -263,11 +409,13 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandValues) {
         // ITM option with a very small volatility
       { Option::Call, 100, 110, 0.05, 0.05, 1.0, 0.0001, 10.0 },
       { Option::Put, 110, 100, 0.05, 0.05, 1.0, 0.0001, 10.0 },
-        // ATM option with a very large volatility
-      { Option::Put, 100, 110, 0.05, 0.05, 1.0, 10, 95.12289 }
+        // OTM option with a very large volatility; the published trigger
+        // gives the European value 95.12289 here. Reference values: QdFp
+        // high precision 99.20350, CRR with 4001 steps 99.20338
+      { Option::Put, 100, 110, 0.05, 0.05, 1.0, 10, 99.20350 }
     };
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -389,7 +537,7 @@ BOOST_AUTO_TEST_CASE(testJuValues) {
 
     BOOST_TEST_MESSAGE("Testing Ju approximation for American options...");
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -499,8 +647,8 @@ BOOST_AUTO_TEST_CASE(testJuValuesAtZeroRate) {
 
 BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuAtLowVolatility) {
 
-    BOOST_TEST_MESSAGE("Testing Barone-Adesi-Whaley and Ju approximations "
-                       "at very low volatility...");
+    BOOST_TEST_MESSAGE("Testing Barone-Adesi-Whaley, Ju and Bjerksund-Stensland "
+                       "approximations at very low volatility...");
 
     // Both engines used to throw an uncaught error for an American put once
     // sigma*sqrt(T) dropped below roughly 7e-4, for ordinary positive rates;
@@ -549,7 +697,9 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuAtLowVolatility) {
                      {ext::shared_ptr<PricingEngine>(
                           new BaroneAdesiWhaleyApproximationEngine(process)),
                       ext::shared_ptr<PricingEngine>(
-                          new JuQuadraticApproximationEngine(process))}) {
+                          new JuQuadraticApproximationEngine(process)),
+                      ext::shared_ptr<PricingEngine>(
+                          new BjerksundStenslandApproximationEngine(process))}) {
 
                     VanillaOption option(payoff, exercise);
                     option.setPricingEngine(engine);
@@ -562,6 +712,82 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuAtLowVolatility) {
                                        calculated, calculated - floor, band);
                     }
                 }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyAndJuWithCarryAboveVolatility) {
+
+    BOOST_TEST_MESSAGE("Testing Barone-Adesi-Whaley and Ju approximations "
+                       "when the carry outweighs the volatility...");
+
+    // When |b|T exceeds 2*sigma*sqrt(T), with the sign that makes early
+    // exercise worth considering, the seed of the critical-price iteration
+    // used to land on the wrong side of the strike: negative for calls, or
+    // far above the strike for puts. The engines then threw instead of
+    // returning a price; see <https://github.com/lballabio/QuantLib/issues/2905>.
+
+    const Date today = Date(15, October, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual365Fixed();
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+
+    struct Case {
+        Option::Type type;
+        Real strike;
+        Rate r;
+        Rate q;
+        Volatility v;
+        Integer years;
+    };
+    const Case cases[] = {
+        {Option::Call, 100.0, 0.0257, 0.0571, 0.0166, 3},
+        {Option::Call, 100.0, 0.0257, 0.0571, 0.0100, 3},
+        {Option::Put, 100.0, 0.0647, 0.0234, 0.0089, 3},
+        {Option::Put, 120.0, 0.1077, 0.0329, 0.0149, 10},
+    };
+
+    // The approximations are not exact. The relative tolerances are the
+    // accuracy each engine already reaches just above the threshold, where
+    // the seed was valid: about 5% for Barone-Adesi-Whaley and 0.5% for Ju
+    // for the first call at sigma = 1.8% and 2%.
+    const Real bawTolerance = 5.0e-2;
+    const Real juTolerance = 1.0e-2;
+
+    for (const auto& c : cases) {
+        const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, c.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, c.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, c.v, dc)));
+
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, c.strike);
+        const auto exercise = ext::make_shared<AmericanExercise>(today, today + c.years * Years);
+
+        VanillaOption reference(payoff, exercise);
+        reference.setPricingEngine(ext::make_shared<QdFpAmericanEngine>(
+            process, QdFpAmericanEngine::highPrecisionScheme()));
+        const Real expected = reference.NPV();
+
+        const std::pair<ext::shared_ptr<PricingEngine>, Real> engines[] = {
+            {ext::make_shared<BaroneAdesiWhaleyApproximationEngine>(process), bawTolerance},
+            {ext::make_shared<JuQuadraticApproximationEngine>(process), juTolerance},
+        };
+        for (const auto& [engine, tolerance] : engines) {
+
+            VanillaOption option(payoff, exercise);
+            option.setPricingEngine(engine);
+
+            Real calculated = Null<Real>();
+            BOOST_CHECK_NO_THROW(calculated = option.NPV());
+            if (calculated == Null<Real>())
+                continue;
+
+            const Real error = std::fabs(calculated - expected);
+            if (!(error <= tolerance * expected)) {
+                REPORT_FAILURE("value", payoff, exercise, spot->value(), c.q, c.r, today, c.v,
+                               expected, calculated, error, tolerance * expected);
             }
         }
     }
@@ -615,6 +841,165 @@ BOOST_AUTO_TEST_CASE(testJuNotBelowExerciseValue) {
             REPORT_FAILURE("value below exercise", payoff, exercise, spot->value(),
                            c.q, c.r, today, c.v, intrinsic, calculated,
                            intrinsic - calculated, 0.0);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testFdAmericanNotBelowExerciseValue) {
+
+    BOOST_TEST_MESSAGE("Testing that finite-difference American prices stay "
+                       "above the exercise value...");
+
+    // The default grid can undershoot the payoff between nodes. Implied
+    // volatility prices an American with this engine, so that price has to
+    // be something a volatility can reproduce.
+
+    const Date today(15, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+
+    struct Case {
+        Option::Type type;
+        Real spot;
+        Real strike;
+        Rate r;
+        Rate q;
+        Volatility vol;
+        Integer days;
+    };
+    const Case cases[] = {
+        // reported: default 100x100 grid, short of intrinsic by about 2.6e-6
+        {Option::Call, 110.0, 100.0, 0.00, 0.02, 0.10, 90},
+        // widest miss in the sweep that found the report, about 7e-3
+        {Option::Call, 150.0, 100.0, 0.05, 0.10, 0.35, 1095},
+        {Option::Put, 70.0, 100.0, 0.10, 0.00, 0.20, 365},
+    };
+
+    for (const auto& c : cases) {
+        const auto quote = ext::make_shared<SimpleQuote>(c.spot);
+        const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(quote),
+            Handle<YieldTermStructure>(flatRate(today, c.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, c.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, c.vol, dc)));
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, c.strike);
+        const auto exercise =
+            ext::make_shared<AmericanExercise>(today, today + c.days);
+
+        VanillaOption option(payoff, exercise);
+        option.setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(process));
+
+        const Real intrinsic = (*payoff)(c.spot);
+        const Real calculated = option.NPV();
+        if (calculated < intrinsic) {
+            REPORT_FAILURE("value below exercise", payoff, exercise, c.spot, c.q, c.r,
+                           today, c.vol, intrinsic, calculated, intrinsic - calculated, 0.0);
+        }
+
+        const Volatility implied =
+            option.impliedVolatility(calculated, process, 1.0e-8, 200, 1.0e-4, 4.0);
+
+        const auto repricedProcess = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(quote),
+            Handle<YieldTermStructure>(flatRate(today, c.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, c.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, implied, dc)));
+        option.setPricingEngine(
+            ext::make_shared<FdBlackScholesVanillaEngine>(repricedProcess));
+        const Real repriced = option.NPV();
+        const Real error = std::fabs(repriced - calculated);
+        if (error > 1.0e-6) {
+            REPORT_FAILURE("implied-volatility round trip", payoff, exercise, c.spot, c.q,
+                           c.r, today, c.vol, calculated, repriced, error, 1.0e-6);
+        }
+    }
+
+    // A European on the same market is worth less than intrinsic. The floor
+    // must not be applied to it, and neither to an American that cannot be
+    // exercised yet.
+    const auto quote = ext::make_shared<SimpleQuote>(110.0);
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(quote),
+        Handle<YieldTermStructure>(flatRate(today, 0.02, dc)),
+        Handle<YieldTermStructure>(flatRate(today, 0.00, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, 0.10, dc)));
+    const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+    const Real intrinsic = (*payoff)(110.0);
+
+    const auto europeanExercise = ext::make_shared<EuropeanExercise>(today + 90);
+    VanillaOption european(payoff, europeanExercise);
+    european.setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(process));
+    const Real europeanValue = european.NPV();
+    if (!(europeanValue < intrinsic - 0.1)) {
+        REPORT_FAILURE("European value", payoff, europeanExercise, 110.0, 0.02, 0.00,
+                       today, 0.10, intrinsic - 0.1, europeanValue,
+                       europeanValue - (intrinsic - 0.1), 0.0);
+    }
+
+    const auto deferredExercise =
+        ext::make_shared<AmericanExercise>(today + 30, today + 90);
+    VanillaOption deferred(payoff, deferredExercise);
+    deferred.setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(process));
+    const Real deferredValue = deferred.NPV();
+    if (!(deferredValue < intrinsic - 0.05)) {
+        REPORT_FAILURE("deferred exercise value", payoff, deferredExercise, 110.0, 0.02,
+                       0.00, today, 0.10, intrinsic - 0.05, deferredValue,
+                       deferredValue - (intrinsic - 0.05), 0.0);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testJuNotBelowEuropeanValue) {
+
+    BOOST_TEST_MESSAGE("Testing that the Ju approximation is never "
+                       "worth less than the European option...");
+
+    // For short-dated, highly volatile options the Ju-Zhong correction term
+    // can turn negative and take the price below the European one; see
+    // <https://github.com/lballabio/QuantLib/issues/2904>. This happens both
+    // when the price was floored at an exercise value lower than the European
+    // price and, at the money, when the exercise floor doesn't apply at all.
+
+    const Date today = Date(15, October, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual365Fixed();
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+
+    struct Case {
+        Option::Type type;
+        Real strike;
+        Rate r;
+        Rate q;
+        Volatility v;
+        Integer days;
+    };
+    const Case cases[] = {
+        {Option::Put, 110.0, 0.02, 0.00, 0.80, 3},
+        {Option::Put, 100.0, 0.05, 0.03, 1.20, 1},
+        {Option::Call, 90.0, 0.01, 0.03, 1.20, 3},
+    };
+
+    for (const auto& c : cases) {
+        const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, c.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, c.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, c.v, dc)));
+
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, c.strike);
+        const Date exDate = today + c.days * Days;
+        const auto exercise = ext::make_shared<AmericanExercise>(today, exDate);
+
+        VanillaOption european(payoff, ext::make_shared<EuropeanExercise>(exDate));
+        european.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(process));
+
+        VanillaOption option(payoff, exercise);
+        option.setPricingEngine(ext::make_shared<JuQuadraticApproximationEngine>(process));
+
+        const Real expected = european.NPV();
+        const Real calculated = option.NPV();
+        if (calculated < expected) {
+            REPORT_FAILURE("value below European", payoff, exercise, spot->value(), c.q, c.r, today,
+                           c.v, expected, calculated, expected - calculated, 0.0);
         }
     }
 }
@@ -693,11 +1078,80 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandAtUnitBeta) {
     BOOST_CHECK(std::isfinite(kink.NPV()));
 }
 
+BOOST_AUTO_TEST_CASE(testBjerksundStenslandNegativeCarryTrigger) {
+
+    BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland with negative carry near and past T*...");
+
+    // When the call-equivalent carry b is negative, the published flat trigger
+    // drops below the strike as T approaches T* = (2 sigma / |b|)^2, and the
+    // approximation collapses to the European value. Maximising the value
+    // over the trigger keeps it close to the American price on both sides.
+
+    const Date today = Date(15, October, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual365Fixed();
+    const auto spot = ext::make_shared<SimpleQuote>(100.0);
+
+    struct Case {
+        Option::Type type;
+        Rate r;
+        Rate q;
+        Volatility v;
+        std::vector<Integer> days;
+    };
+    const Case cases[] = {
+        {Option::Put, 0.40, 0.05, 0.15, {120, 182, 220, 250, 268, 365}},
+        {Option::Call, 0.05, 0.40, 0.15, {120, 182, 220, 250, 268, 365}},
+        {Option::Put, 0.0768, 0.0075, 0.0231, {91, 120, 140, 155, 160, 182}},
+    };
+
+    // the worst relative error against QdFp is about 1.4e-3 here; with the
+    // published trigger the errors range from 1% to 97%
+    const Real tolerance = 2.0e-3;
+
+    for (const auto& c : cases) {
+        const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot), Handle<YieldTermStructure>(flatRate(today, c.q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, c.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, c.v, dc)));
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, 100.0);
+        const auto bjerksundStensland =
+            ext::make_shared<BjerksundStenslandApproximationEngine>(process);
+        const auto qdFp = ext::make_shared<QdFpAmericanEngine>(
+            process, QdFpAmericanEngine::highPrecisionScheme());
+
+        Real previous = 0.0;
+        for (Integer d : c.days) {
+            const auto exercise = ext::make_shared<AmericanExercise>(today, today + d);
+            VanillaOption option(payoff, exercise);
+
+            option.setPricingEngine(qdFp);
+            const Real expected = option.NPV();
+            option.setPricingEngine(bjerksundStensland);
+            const Real calculated = option.NPV();
+
+            const Real error = std::fabs(calculated - expected) / expected;
+            if (error > tolerance) {
+                REPORT_FAILURE("value", payoff, exercise, spot->value(), c.q, c.r, today, c.v,
+                               expected, calculated, error, tolerance);
+            }
+            // the American price can't decrease with a longer maturity
+            if (calculated < previous) {
+                BOOST_ERROR("Bjerksund-Stensland value decreases with maturity:"
+                            << "\n    previous maturity: " << previous
+                            << "\n    maturity of " << d << " days: " << calculated);
+            }
+            previous = calculated;
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testFdValues) {
 
     BOOST_TEST_MESSAGE("Testing finite-difference and QR+ engine for American options...");
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -783,8 +1237,7 @@ void testFdGreeks() {
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
-    Settings::instance().evaluationDate() = today;
+    Date today = Settings::instance().evaluationDate();
 
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -2195,6 +2648,69 @@ BOOST_AUTO_TEST_CASE(testQdNegativeDividendYield) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testQdEnginesRejectPayoffAtExpiry) {
+    BOOST_TEST_MESSAGE(
+        "Testing that QdPlusAmericanEngine and QdFpAmericanEngine "
+        "reject an exercise with payoffAtExpiry...");
+
+    // detail::QdPutCallParityEngine::calculate() -- shared by both
+    // QdPlusAmericanEngine and QdFpAmericanEngine -- used to check only
+    // that the exercise type is American, without ever inspecting the
+    // AmericanExercise::payoffAtExpiry() flag. Every other closed-form
+    // American engine (BaroneAdesiWhaleyApproximationEngine,
+    // BjerksundStenslandApproximationEngine, JuQuadraticApproximationEngine)
+    // explicitly rejects this flag, since their analytic formulas assume
+    // the standard immediate-early-exercise convention, not the
+    // payoff-deferred-to-expiry one. Without the same guard, QD+/QD-FP
+    // would silently price such an option as if it were a standard
+    // American option, with no warning that the result is wrong for the
+    // exercise convention actually requested.
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(5, December, 2022);
+    Settings::instance().evaluationDate() = today;
+    const Date maturityDate = today + Period(18, Months);
+
+    const Real K = 90;
+    const auto spot = ext::make_shared<SimpleQuote>(100);
+    const auto qRate = ext::make_shared<SimpleQuote>(0.02);
+    const auto rRate = ext::make_shared<SimpleQuote>(0.03);
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot),
+        Handle<YieldTermStructure>(flatRate(qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(0.3, dc))
+    );
+
+    VanillaOption plainOption(
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, K),
+        ext::make_shared<AmericanExercise>(today, maturityDate));
+    VanillaOption payoffAtExpiryOption(
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, K),
+        ext::make_shared<AmericanExercise>(today, maturityDate, true));
+
+    const auto qdPlusEngine = ext::make_shared<QdPlusAmericanEngine>(process);
+    const auto qdFpEngine = ext::make_shared<QdFpAmericanEngine>(process);
+
+    for (const auto& engine :
+         {ext::shared_ptr<PricingEngine>(qdPlusEngine),
+          ext::shared_ptr<PricingEngine>(qdFpEngine)}) {
+
+        plainOption.setPricingEngine(engine);
+        const Real npv = plainOption.NPV();
+        // Guard against a vacuous pass: this leg shows that the rejection
+        // below targets the payoff-at-expiry convention only, not American
+        // exercise in general; unless the NPV is comfortably positive,
+        // passing it wouldn't demonstrate that.
+        BOOST_REQUIRE(npv > 1.0);
+
+        payoffAtExpiryOption.setPricingEngine(engine);
+        BOOST_CHECK_EXCEPTION(payoffAtExpiryOption.NPV(), Error,
+                              ExpectedErrorMessage("payoff at expiry not handled"));
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testBjerksundStenslandEuropeanGreeks) {
     BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland greeks when early exercise is not optimal...");
 
@@ -2634,7 +3150,7 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyNegativeRates) {
     // Issue #1291: BAW crashes with a cryptic error when rates are negative.
     // Verify that it now throws a clear error message instead.
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
 
     auto spot = ext::make_shared<SimpleQuote>(36.0);
@@ -2662,11 +3178,11 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyNegativeRates) {
                               ext::make_shared<EuropeanExercise>(exDate));
     europeanPut.setPricingEngine(
         ext::make_shared<AnalyticEuropeanEngine>(stochProcess));
-    BOOST_CHECK_SMALL(option.NPV() - europeanPut.NPV(), 1.0e-6);
+    QL_CHECK_SMALL(option.NPV() - europeanPut.NPV(), 1.0e-6);
 
     option.setPricingEngine(
         ext::make_shared<JuQuadraticApproximationEngine>(stochProcess));
-    BOOST_CHECK_SMALL(option.NPV() - europeanPut.NPV(), 1.0e-6);
+    QL_CHECK_SMALL(option.NPV() - europeanPut.NPV(), 1.0e-6);
 
     // also verify with a call and positive dividends
     auto callPayoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 40.0);

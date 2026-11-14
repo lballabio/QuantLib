@@ -28,9 +28,12 @@ namespace QuantLib {
     MonteCarloCatBondEngine::MonteCarloCatBondEngine(
         ext::shared_ptr<CatRisk> catRisk,
         Handle<YieldTermStructure> discountCurve,
-        const std::optional<bool>& includeSettlementDateFlows)
+        const std::optional<bool>& includeSettlementDateFlows,
+        Size maxPaths)
     : catRisk_(std::move(catRisk)), discountCurve_(std::move(discountCurve)),
-      includeSettlementDateFlows_(includeSettlementDateFlows) {
+      includeSettlementDateFlows_(includeSettlementDateFlows),
+      maxPaths_(maxPaths) {
+        QL_REQUIRE(maxPaths_ > 0, "maxPaths must be positive");
         registerWith(discountCurve_);
     }
 
@@ -74,8 +77,7 @@ namespace QuantLib {
 
     Real MonteCarloCatBondEngine::npv(bool includeSettlementDateFlows, Date settlementDate, Date npvDate, Real& lossProbability, Real &exhaustionProbability, Real& expectedLoss) const
     {
-        const size_t MAX_PATHS = 10000; //TODO
-        lossProbability =  0.0;
+        lossProbability = 0.0;
         exhaustionProbability = 0.0;
         expectedLoss = 0.0;
         if (arguments_.cashflows.empty())
@@ -94,25 +96,25 @@ namespace QuantLib {
         std::vector<std::pair<Date, Real> > eventsPath;
         NotionalPath notionalPath;
         Real riskFreeNPV = pathNpv(includeSettlementDateFlows, settlementDate, notionalPath);
-        size_t pathCount=0;
-        while(catSimulation->nextPath(eventsPath) && pathCount<MAX_PATHS)
-        {
+        Size pathCount = 0;
+        while (catSimulation->nextPath(eventsPath) && pathCount < maxPaths_) {
             arguments_.notionalRisk->updatePath(eventsPath, notionalPath);
-            if(notionalPath.loss()>0) { //optimization, most paths will not include any loss
+            if (notionalPath.loss() > 0) { // optimization: most paths will not include any loss
                 totalNPV += pathNpv(includeSettlementDateFlows, settlementDate, notionalPath);
-                lossProbability+=1;
-                if (notionalPath.loss()==1) 
-                    exhaustionProbability+=1;
-                expectedLoss+=notionalPath.loss();
+                lossProbability += 1;
+                if (notionalPath.loss() == 1)
+                    exhaustionProbability += 1;
+                expectedLoss += notionalPath.loss();
             } else {
                 totalNPV += riskFreeNPV;
             }
             pathCount++;
         }
-        lossProbability/=pathCount;
-        exhaustionProbability/=pathCount;
-        expectedLoss/=pathCount;
-        return totalNPV/(pathCount*discountCurve_->discount(npvDate));
+        QL_REQUIRE(pathCount > 0, "no Monte Carlo paths were generated");
+        lossProbability /= pathCount;
+        exhaustionProbability /= pathCount;
+        expectedLoss /= pathCount;
+        return totalNPV / (pathCount * discountCurve_->discount(npvDate));
     }
 
     Real MonteCarloCatBondEngine::pathNpv(bool includeSettlementDateFlows, 

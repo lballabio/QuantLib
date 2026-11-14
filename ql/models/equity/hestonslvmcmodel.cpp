@@ -142,8 +142,9 @@ namespace QuantLib {
         }
 
         for (Size n=1; n < timeGrid_->size(); ++n) {
-            const auto t = timeGrid_->at(n-1);
-            const auto dt = timeGrid_->dt(n-1);
+            const Time t0 = timeGrid_->at(n-1);
+            const Time t1 = timeGrid_->at(n);
+            const Time dt = timeGrid_->dt(n-1);
 
             Array x0(2), dw(2);
 
@@ -154,7 +155,7 @@ namespace QuantLib {
                 dw[0] = paths[i][n-1][0];
                 dw[1] = paths[i][n-1][1];
 
-                x0 = slvProcess->evolve(t, x0, dt, dw);
+                x0 = slvProcess->evolve(t0, x0, dt, dw);
 
                 pairs[i].first = x0[0];
                 pairs[i].second = x0[1];
@@ -174,7 +175,8 @@ namespace QuantLib {
                 sum/=inc;
 
                 vStrikes[n]->at(i) = 0.5*(pairs[e-1].first + pairs[s].first);
-                (*L)[i][n] = std::sqrt(squared(localVol_->localVol(t, vStrikes[n]->at(i), true))/sum);
+                // The conditional variance and leverage slice are both at the end of the step.
+                (*L)[i][n] = std::sqrt(squared(localVol_->localVol(t1, vStrikes[n]->at(i), true))/sum);
 
                 s = e;
             }

@@ -21,6 +21,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/quotes/simplequote.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/instruments/varianceswap.hpp>
@@ -212,6 +213,62 @@ BOOST_AUTO_TEST_CASE(testReplicatingVarianceSwap) {
             REPORT_FAILURE("value", values[i].type, value.varStrike, value.nominal, value.s,
                            value.q, value.r, today, exDate, value.v, expected, calculated, error,
                            value.tol);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testReplicatingVarianceSwapWithDividends) {
+
+    BOOST_TEST_MESSAGE("Testing variance swap replication with dividend yields...");
+
+    Date today(25, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    Volatility vol = 0.20;
+    // With constant volatility, fair variance is sigma^2 independently of carry.
+    Real expected = vol * vol;
+    // The zero-dividend controls have about 1e-6 absolute error on this strike grid.
+    Real tolerance = 2.0e-6;
+    Real dk = 0.25;
+    std::vector<Real> callStrikes, putStrikes;
+    for (Real k = 1.0; k <= 100.0; k += dk)
+        putStrikes.push_back(k);
+    for (Real k = 100.0; k <= 600.0; k += dk)
+        callStrikes.push_back(k);
+
+    struct {
+        Rate r, q;
+        Integer days;
+    } values[] = {
+        {0.08, 0.00, 365},
+        {0.00, 0.00, 365},
+        {0.10, 0.00, 730},
+        {0.08, 0.05, 365},
+        {0.03, 0.05, 365},
+        {0.00, 0.05, 365},
+        {0.10, 0.08, 730}
+    };
+
+    for (const DayCounter& dividendDc : {DayCounter(Actual365Fixed()), DayCounter(Actual360())}) {
+        for (const auto& data : values) {
+            Date maturityDate = today + data.days;
+            auto process = ext::make_shared<BlackScholesMertonProcess>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+                Handle<YieldTermStructure>(flatRate(today, data.q, dividendDc)),
+                Handle<YieldTermStructure>(flatRate(today, data.r, dc)),
+                Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+            auto engine = ext::make_shared<ReplicatingVarianceSwapEngine>(
+                process, dk, callStrikes, putStrikes);
+            VarianceSwap varianceSwap(Position::Long, expected, 1.0, today, maturityDate);
+            varianceSwap.setPricingEngine(engine);
+
+            Real calculated = varianceSwap.variance();
+            Real error = std::fabs(calculated - expected);
+            BOOST_TEST_CONTEXT("risk-free rate: " << data.r << ", dividend yield: " << data.q
+                               << ", maturity: " << maturityDate
+                               << ", dividend day counter: " << dividendDc) {
+                QL_CHECK_SMALL(error, tolerance);
+            }
+        }
     }
 }
 

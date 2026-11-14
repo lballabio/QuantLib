@@ -170,8 +170,6 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
                                      // adjusters and reverisons in
                                      // case of piecewise reversions
     mutable std::vector<Time> volsteptimes_;
-    mutable Array volsteptimesArray_; // FIXME this is redundant (just a copy of
-                                      // volsteptimes_)
 
     struct VolatilityObserver : public Observer {
         explicit VolatilityObserver(Gsr *p) : p_(p) {}

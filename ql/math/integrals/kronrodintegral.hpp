@@ -84,6 +84,7 @@ namespace QuantLib {
     */
     class GaussKronrodAdaptive : public Integrator {
       public:
+        //! A null evaluation limit at construction uses a safeguard of 1000000 evaluations.
         explicit GaussKronrodAdaptive(Real tolerance,
                                       Size maxFunctionEvaluations = Null<Size>());
       protected:
@@ -93,7 +94,8 @@ namespace QuantLib {
           Real integrateRecursively(const std::function<Real (Real)>& f,
                                     Real a,
                                     Real b,
-                                    Real tolerance) const;
+                                    Real tolerance,
+                                    Size depth = 0) const;
       };
 }
 

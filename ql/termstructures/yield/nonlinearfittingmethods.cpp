@@ -79,16 +79,17 @@ namespace QuantLib {
         //Use the interal fixedKappa_ member if non-zero, otherwise take kappa from the passed x[] array
         Real kappa = (fixedKappa_ != Null<Real>()) ? fixedKappa_: x[N-1];
         Real coeff = 0;
+        Size n = (fixedKappa_ != Null<Real>()) ? N : N - 1;
 
         if (!constrainAtZero_) {
-            for (Size i = 0; i < N - 1; ++i) {
+            for (Size i = 0; i < n; ++i) {
                 d += x[i] * std::exp(-kappa * (i + 1) * t);
             }
         } else {
             //  notation:
             //  d(t) = coeff* exp(-kappa*1*t) + x[0]* exp(-kappa*2*t) +
             //  x[1]* exp(-kappa*3*t) + ..+ x[7]* exp(-kappa*9*t)
-            for (Size i = 0; i < N - 1; i++) {
+            for (Size i = 0; i < n; i++) {
                 d += x[i] * std::exp(-kappa * (i + 2) * t);
                 coeff += x[i];
             }
@@ -278,6 +279,9 @@ namespace QuantLib {
       knotTimes_(knotTimes) {
         knotTimes_.push_back(0.0);
         std::sort(knotTimes_.begin(), knotTimes_.end());
+        QL_REQUIRE(knotTimes_.front() >= 0.0,
+                   "NaturalCubicFitting: negative knot time (" << knotTimes_.front()
+                   << ") not allowed");
 
         auto last = std::unique(knotTimes_.begin(), knotTimes_.end(),
                                 [](Time a, Time b){ return std::fabs(a - b) <= 1e-14; });

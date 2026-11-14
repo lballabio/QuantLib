@@ -66,13 +66,15 @@ namespace QuantLib {
             || (d == 5 && m == April && y <= 2005)
             // Labour Day
             || (d == 1 && m == May)
+            || (w == Monday && (d ==  2 || d ==  3) && m == May && y >= 2026)
             // Children's Day
             || (d == 5 && m == May)
             || (w == Monday && (d ==  6 || d ==  7) && m == May && y > 2013)
             // Memorial Day
             || (d == 6 && m == June)
             // Constitution Day
-            || (d == 17 && m == July && y <= 2007)
+            || (d == 17 && m == July && (y <= 2007 || y >= 2026))
+            || (w == Monday && (d == 18 || d == 19) && m == July && y >= 2026)
             // Liberation Day
             || (d == 15 && m == August)
             || (w == Monday && (d == 16 || d == 17) && m == August && y > 2020)
@@ -152,6 +154,8 @@ namespace QuantLib {
             || (d ==  9 && m == March    && y == 2022) // Presidency
             || (d ==  1 && m == June     && y == 2022) // Local election
             || (d == 10 && m == April    && y == 2024) // National Assembly
+            || (d ==  3 && m == June     && y == 2025) // Presidency
+            || (d ==  3 && m == June     && y == 2026) // Local election
             // Buddha's birthday
             || (d == 26 && m == May   && y == 2004)
             || (d == 15 && m == May   && y == 2005)
@@ -189,6 +193,7 @@ namespace QuantLib {
             || (d == 22 && m == May   && y == 2037)
             || (d == 11 && m == May   && y == 2038)
             || (d ==  2 && m == May   && y == 2039) // Substitute holiday
+            || (d ==  3 && m == May   && y == 2039) // Substitute holiday
             || (d == 18 && m == May   && y == 2040)
             || (d ==  7 && m == May   && y == 2041)
             || (d == 26 && m == May   && y == 2042)

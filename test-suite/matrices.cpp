@@ -224,7 +224,7 @@ BOOST_AUTO_TEST_CASE(testPseudoSqrtSalvagingAlgorithms) {
         const SymmetricSchurDecomposition decomposition(covariance);
 
         for (Size i = 0; i < M2.rows(); ++i) {
-            BOOST_CHECK_SMALL(covariance[i][i] - M2[i][i], 1.0e-12);
+            QL_CHECK_SMALL(covariance[i][i] - M2[i][i], 1.0e-12);
             BOOST_CHECK_GE(decomposition.eigenvalues()[i], -1.0e-12);
         }
     }
@@ -233,9 +233,9 @@ BOOST_AUTO_TEST_CASE(testPseudoSqrtSalvagingAlgorithms) {
         pseudoSqrt(M1, SalvagingAlgorithm::Hypersphere);
     const Matrix positiveLowerDiagonal =
         pseudoSqrt(M1, SalvagingAlgorithm::LowerDiagonal);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         norm(positiveHypersphere * transpose(positiveHypersphere) - M1), 1.0e-12);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         norm(positiveLowerDiagonal * transpose(positiveLowerDiagonal) - M1),
         1.0e-12);
 }
@@ -265,14 +265,14 @@ BOOST_AUTO_TEST_CASE(testPseudoSqrtValidationAndPrincipalTolerance) {
     nearlyPositive[0][0] += 1.0e-14;
     nearlyPositive[1][1] += 1.0e-14;
     const Matrix principal = pseudoSqrt(nearlyPositive, SalvagingAlgorithm::Principal);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         norm(principal * transpose(principal) - nearlyPositive), 1.0e-12);
 
     Matrix almostSemidefinite(1, 1);
     almostSemidefinite[0][0] = -QL_EPSILON;
     const Matrix principalAlmostSemidefinite =
         pseudoSqrt(almostSemidefinite, SalvagingAlgorithm::Principal);
-    BOOST_CHECK_SMALL(principalAlmostSemidefinite[0][0], 1.0e-12);
+    QL_CHECK_SMALL(principalAlmostSemidefinite[0][0], 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testRankReducedPseudoSqrtBranches) {
@@ -289,11 +289,11 @@ BOOST_AUTO_TEST_CASE(testRankReducedPseudoSqrtBranches) {
 
     BOOST_CHECK_EQUAL(fullRank.columns(), 3);
     BOOST_CHECK_EQUAL(rankOne.columns(), 1);
-    BOOST_CHECK_LE(halfSpectrum.columns(), 3);
+    BOOST_CHECK_LE(halfSpectrum.columns(), 3U);
     for (const Matrix& root : {fullRank, rankOne, halfSpectrum}) {
         const Matrix covariance = root * transpose(root);
         for (Size i = 0; i < M1.rows(); ++i)
-            BOOST_CHECK_SMALL(covariance[i][i] - M1[i][i], 1.0e-12);
+            QL_CHECK_SMALL(covariance[i][i] - M1[i][i], 1.0e-12);
     }
 
     const Matrix spectral = rankReducedSqrt(
@@ -333,7 +333,7 @@ BOOST_AUTO_TEST_CASE(testPseudoSqrtDegenerateInputs) {
         for (Size i = 0; i < root.rows(); ++i)
             for (Size j = 0; j < root.columns(); ++j)
                 BOOST_CHECK(std::isfinite(root[i][j]));
-        BOOST_CHECK_SMALL(norm(root * transpose(root)), 1.0e-12);
+        QL_CHECK_SMALL(norm(root * transpose(root)), 1.0e-12);
     }
 
     Matrix singular(2, 2);
@@ -344,7 +344,7 @@ BOOST_AUTO_TEST_CASE(testPseudoSqrtDegenerateInputs) {
         singular, 10, 1.0, SalvagingAlgorithm::None);
 
     for (const Matrix& root : {spectral, principal, rankReduced})
-        BOOST_CHECK_SMALL(norm(root * transpose(root) - singular), 1.0e-12);
+        QL_CHECK_SMALL(norm(root * transpose(root) - singular), 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testSVD) {
@@ -818,6 +818,70 @@ BOOST_AUTO_TEST_CASE(testIterativeSolvers) {
                 << "\n  rel error     : " << norm2(M1*w-b)/norm2(b)
                 << "\n  rel tolerance : " << relTol);
     }
+}
+
+BOOST_AUTO_TEST_CASE(testGmresExactBreakdown) {
+    BOOST_TEST_MESSAGE("Testing GMRES exact Krylov breakdown...");
+
+    const Real tolerance = 1.0e-12;
+    const GMRES::MatrixMult identity = [](const Array& x) { return x; };
+    const GMRES::MatrixMult twiceIdentity = [](const Array& x) { return 2.0 * x; };
+    const GMRES::MatrixMult halfIdentity = [](const Array& x) { return 0.5 * x; };
+    const Array b(1, 2.0);
+
+    const GMRES solver(identity, 2, tolerance);
+    const GMRESResult first = solver.solve(b);
+    BOOST_REQUIRE_EQUAL(first.x.size(), 1);
+    QL_CHECK_SMALL(first.x[0] - 2.0, tolerance);
+    QL_CHECK_SMALL(first.errors.back(), tolerance);
+    QL_CHECK_SMALL(norm2(identity(first.x) - b), tolerance);
+
+    const GMRES preconditioned(twiceIdentity, 2, tolerance, halfIdentity);
+    const GMRESResult restarted = preconditioned.solveWithRestart(2, b);
+    BOOST_REQUIRE_EQUAL(restarted.x.size(), 1);
+    QL_CHECK_SMALL(restarted.x[0] - 1.0, tolerance);
+    QL_CHECK_SMALL(restarted.errors.back(), tolerance);
+    QL_CHECK_SMALL(norm2(twiceIdentity(restarted.x) - b), tolerance);
+}
+
+BOOST_AUTO_TEST_CASE(testGmresLaterExactBreakdown) {
+    BOOST_TEST_MESSAGE("Testing GMRES exact breakdown after multiple iterations...");
+
+    const Real tolerance = 1.0e-12;
+    const GMRES::MatrixMult swap = [](const Array& x) {
+        return Array{x[1], x[0]};
+    };
+    const Array b{1.0, 0.0};
+    const GMRESResult result = GMRES(swap, 3, tolerance).solve(b);
+    BOOST_REQUIRE_EQUAL(result.x.size(), 2);
+    QL_CHECK_SMALL(result.x[0], tolerance);
+    QL_CHECK_SMALL(result.x[1] - 1.0, tolerance);
+    QL_CHECK_SMALL(result.errors.back(), tolerance);
+    QL_CHECK_SMALL(norm2(swap(result.x) - b), tolerance);
+}
+
+BOOST_AUTO_TEST_CASE(testGmresSingularBreakdown) {
+    BOOST_TEST_MESSAGE("Testing GMRES singular Krylov breakdown...");
+
+    const GMRES::MatrixMult zero = [](const Array& x) { return Array(x.size(), 0.0); };
+    const GMRES solver(zero, 2, 1.0e-12);
+    BOOST_CHECK_EXCEPTION(solver.solve(Array(1, 1.0)), Error,
+                          ExpectedErrorMessage("GMRES breakdown: singular Krylov system"));
+    BOOST_CHECK_EXCEPTION(solver.solveWithRestart(2, Array(1, 1.0)), Error,
+                          ExpectedErrorMessage("GMRES breakdown: singular Krylov system"));
+}
+
+BOOST_AUTO_TEST_CASE(testGmresNearBreakdownDoesNotConverge) {
+    BOOST_TEST_MESSAGE("Testing GMRES near-breakdown without convergence...");
+
+    const GMRES::MatrixMult scaledSwap = [](const Array& x) {
+        return Array{1.0e-40 * x[1], 1.0e-40 * x[0]};
+    };
+    const GMRES solver(scaledSwap, 3, 1.0e-12);
+    const Array b{1.0, 0.0};
+    BOOST_CHECK_EXCEPTION(solver.solve(b), Error, ExpectedErrorMessage("could not converge"));
+    BOOST_CHECK_EXCEPTION(solver.solveWithRestart(2, b), Error,
+                          ExpectedErrorMessage("could not converge"));
 }
 
 BOOST_AUTO_TEST_CASE(testInitializers) {
