@@ -515,7 +515,7 @@ namespace QuantLib {
 
     const std::list<HestonSLVFDMModel::LogEntry>& HestonSLVFDMModel::logEntries()
     const {
-        performCalculations();
+        calculate();
         return logEntries_;
     }
 }
