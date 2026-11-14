@@ -1029,14 +1029,21 @@ BOOST_AUTO_TEST_CASE(testOvernightLegNPV) {
     
     Handle<YieldTermStructure> discountCurve(flatRate(0.0015, Actual360()));
     
-    // Calculate NPV
-    Real expectedNpv = 34883.949669756257;
+    // Reference from independent daily SOFR deposit products with the three-day
+    // lockout anchored immediately before the frozen tail, then payment discounting.
+    const Real expectedNpv = 34638.786842594876;
     Real npv = 0.0;
     for (const auto& cf : leg) {
         npv += cf->amount() * discountCurve->discount(cf->date());
     }
     
-    CHECK_OIS_COUPON_RESULT("OvernightLeg NPV", npv, expectedNpv, 1e-8);
+    Leg denseLeg = vars.makeLeg(Null<Natural>(), 3, false, false, RateAveraging::Compound);
+    Real denseNpv = 0.0;
+    for (const auto& cf : denseLeg)
+        denseNpv += cf->amount() * discountCurve->discount(cf->date());
+
+    QL_CHECK_SMALL(npv - expectedNpv, 1e-8);
+    QL_CHECK_SMALL(denseNpv - expectedNpv, 1e-8);
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightLegWithCapsAndFloors) {
