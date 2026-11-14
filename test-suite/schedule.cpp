@@ -1375,6 +1375,38 @@ BOOST_AUTO_TEST_CASE(testBackwardRegularFirstPeriodWithFirstDate) {
         "Period ending at off-grid nextToLastDate should be irregular");
 }
 
+BOOST_AUTO_TEST_CASE(testZeroRuleWithEndOfMonth) {
+    BOOST_TEST_MESSAGE("Testing Zero date generation rule with endOfMonth...");
+
+    Date effectiveDate(15, January, 2025);
+    Date terminationDate(15, January, 2026);
+    Period tenor(3, Months);
+    Calendar calendar = TARGET();
+
+    // MakeSchedule with rule Zero and endOfMonth=true should throw an Error
+    // with an incompatibility message instead of crashing with 'year outside valid range'
+    BOOST_CHECK_EXCEPTION(
+        MakeSchedule()
+            .from(effectiveDate)
+            .to(terminationDate)
+            .withTenor(tenor)
+            .withCalendar(calendar)
+            .withRule(DateGeneration::Zero)
+            .endOfMonth(true)
+            .operator Schedule(),
+        Error,
+        ExpectedErrorMessage("endOfMonth convention incompatible with Zero date generation rule")
+    );
+
+    // Schedule constructor directly
+    BOOST_CHECK_EXCEPTION(
+        Schedule(effectiveDate, terminationDate, tenor, calendar,
+                 Following, Following, DateGeneration::Zero, true),
+        Error,
+        ExpectedErrorMessage("endOfMonth convention incompatible with Zero date generation rule")
+    );
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
