@@ -1632,6 +1632,85 @@ BOOST_AUTO_TEST_CASE(testLocalVolsvSLVPropDensity) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testFdmModelWithMandatoryDates) {
+    BOOST_TEST_MESSAGE("Testing HestonSLVFDMModel with mandatory dates...");
+
+    const Date todaysDate(5, Oct, 2015);
+    const Date finalDate = todaysDate + Period(1, Years);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const Real s0 = 100;
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
+    const Rate r = 0.01;
+    const Rate q = 0.02;
+
+    const Calendar calendar = TARGET();
+    const DayCounter dayCounter = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(flatRate(todaysDate, r, dayCounter));
+    const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dayCounter));
+
+    const Handle<BlackVolTermStructure> vTS = Handle<BlackVolTermStructure>(
+        std::get<2>(createSmoothImpliedVol(dayCounter, calendar)));
+
+    const Real kappa =  2.0;
+    const Real theta =  0.074;
+    const Real rho   = -0.51;
+    const Real sigma =  0.8;
+    const Real v0    =  0.1974;
+
+    const ext::shared_ptr<HestonProcess> hestonProcess(
+        ext::make_shared<HestonProcess>(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+
+    const Handle<HestonModel> hestonModel(
+        ext::make_shared<HestonModel>(hestonProcess));
+
+    const Handle<LocalVolTermStructure> localVol(
+        ext::make_shared<NoExceptLocalVolSurface>(vTS, rTS, qTS, spot, 0.3));
+    localVol->enableExtrapolation(true);
+
+    const Size vGrid = 151;
+    const Size xGrid = 51;
+
+    const HestonSLVFokkerPlanckFdmParams fdmParams = {
+        xGrid, vGrid, 500, 50, 100.0, 5, 2,
+        0.1, 1e-4, 10000,
+        1e-5, 1e-5, 0.0000025,
+        1.0, 0.1, 0.9, 1e-5,
+        FdmHestonGreensFct::ZeroCorrelation,
+        FdmSquareRootFwdOp::Log,
+        FdmSchemeDesc::ModifiedCraigSneyd()
+    };
+
+    // end date duplicates the last grid node; the other two are
+    // mid-grid and deliberately out of order
+    const std::vector<Date> mandatoryDates = {
+        finalDate,
+        todaysDate + Period(6, Months),
+        todaysDate + Period(3, Months)
+    };
+
+    const HestonSLVFDMModel slvModel(
+        localVol, hestonModel, finalDate, fdmParams, false, mandatoryDates);
+
+    ext::shared_ptr<LocalVolTermStructure> leverage;
+    BOOST_REQUIRE_NO_THROW(leverage = slvModel.leverageFunction());
+
+    leverage->enableExtrapolation(true);
+
+    for (Time t : {0.1, 0.25, 0.5, 0.75}) {
+        for (Real k : {0.8*s0, s0, 1.2*s0}) {
+            const Real l = leverage->localVol(t, k);
+            if (!std::isfinite(l) || l <= 0.0) {
+                BOOST_ERROR("invalid leverage value "
+                            << "\n  t : " << t
+                            << "\n  k : " << k
+                            << "\n  L : " << l);
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testBarrierPricingViaHestonLocalVol) {
     BOOST_TEST_MESSAGE("Testing calibration via vanilla options...");
 
