@@ -35,6 +35,7 @@
 #include <map>
 #include <vector>
 #include <type_traits>
+#include <utility>
 
 namespace QuantLib {
 
@@ -165,6 +166,15 @@ namespace QuantLib {
         }
         const_reverse_iterator rbegin() const { return crbegin(); }
         const_reverse_iterator rend() const { return crend(); }
+
+        //! returns an iterator to the first entry with date not earlier than \p d
+        template <class C = Container,
+                  std::enable_if_t<std::is_same_v<C, Container>, int> = 0>
+        auto lower_bound(const Date& d) const
+            -> decltype(std::declval<const C&>().lower_bound(
+                std::declval<const Date&>())) {
+            return std::as_const(values_).lower_bound(d);
+        }
         //@}
 
       private:

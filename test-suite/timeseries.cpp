@@ -24,9 +24,26 @@
 #include <ql/prices.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <boost/unordered_map.hpp>
+#include <type_traits>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+
+namespace {
+
+    template <class Series, class = void>
+    struct has_lower_bound : std::false_type {};
+
+    template <class Series>
+    struct has_lower_bound<
+        Series,
+        std::void_t<decltype(
+            std::declval<const Series&>().lower_bound(
+                std::declval<const Date&>()))>> : std::true_type {};
+
+}
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
@@ -187,6 +204,63 @@ BOOST_AUTO_TEST_CASE(testUtilities) {
         const std::vector<Real> expected{prices[2], prices[0], prices[1]};
         BOOST_TEST(ts.values() == expected);
     }
+}
+
+
+BOOST_AUTO_TEST_CASE(testLowerBound) {
+    BOOST_TEST_MESSAGE("Testing TimeSeries lower_bound lookup...");
+
+    using OrderedSeries = TimeSeries<Real>;
+    using UnorderedSeries =
+        TimeSeries<int, boost::unordered_map<Date, int>>;
+
+    static_assert(has_lower_bound<OrderedSeries>::value,
+                  "Ordered TimeSeries must provide lower_bound");
+
+    static_assert(!has_lower_bound<UnorderedSeries>::value,
+                  "Unordered TimeSeries must not provide lower_bound");
+
+    static_assert(
+        std::is_same_v<
+            decltype(std::declval<const OrderedSeries&>().lower_bound(
+                std::declval<const Date&>())),
+            OrderedSeries::const_iterator>,
+        "lower_bound must return a const_iterator");
+
+    const TimeSeries<Real> emptySeries;
+    BOOST_CHECK(emptySeries.lower_bound(Date(25, March, 2005)) ==
+                emptySeries.cend());
+
+    const std::vector<Date> dates = {
+        Date(25, March, 2005),
+        Date(29, March, 2005),
+        Date(15, April, 2005)
+    };
+    const std::vector<Real> prices = {25.0, 23.0, 20.0};
+
+    const TimeSeries<Real> ts(
+        dates.begin(), dates.end(), prices.begin());
+
+    // Before the first entry
+    auto it = ts.lower_bound(Date(20, March, 2005));
+    BOOST_REQUIRE(it != ts.cend());
+    BOOST_CHECK_EQUAL(it->first, Date(25, March, 2005));
+    BOOST_CHECK_EQUAL(it->second, 25.0);
+
+    // Exact match
+    it = ts.lower_bound(Date(29, March, 2005));
+    BOOST_REQUIRE(it != ts.cend());
+    BOOST_CHECK_EQUAL(it->first, Date(29, March, 2005));
+    BOOST_CHECK_EQUAL(it->second, 23.0);
+
+    // Between two entries
+    it = ts.lower_bound(Date(27, March, 2005));
+    BOOST_REQUIRE(it != ts.cend());
+    BOOST_CHECK_EQUAL(it->first, Date(29, March, 2005));
+
+    // After the final entry
+    it = ts.lower_bound(Date(16, April, 2005));
+    BOOST_CHECK(it == ts.cend());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
