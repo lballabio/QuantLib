@@ -99,13 +99,13 @@ namespace QuantLib {
         return (smilePrice - marketPrice) / marketVega;
     }
 
-
     Real FxBrokerStrangleTarget::weight(const FxSmileSection& section) const {
         const Real w = (atmVol_ + brokerFly_) * std::sqrt(section.exerciseTime());
         const Real fwd = section.forward();
         const auto [callStrike, putStrike] = brokerStrikes(section, delta_, w);
         return 0.5 * (vegaWeight(fwd, callStrike, w) + vegaWeight(fwd, putStrike, w));
     }
+
 
     void FxSmileQuotes::fit(const FxSmileSection& section, FxSmileTargets targets) {
         section.fitToTargets(std::move(targets));

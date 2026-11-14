@@ -42,9 +42,9 @@ namespace QuantLib {
         Derived classes solve the cost equation for the nodes in their
         constructors, so smiles are immutable.
     */
-    class FxStickyDeltaSmile {
+    class FxStickyDeltaSolver {
       public:
-        virtual ~FxStickyDeltaSmile() = default;
+        virtual ~FxStickyDeltaSolver() = default;
 
         //! Total vol \f$ w = \sigma \sqrt{\tau} \f$ at log-moneyness \f$ x = \ln(F/K) \f$.
         Real totalVol(Real x) const;
@@ -83,7 +83,7 @@ namespace QuantLib {
         Real costEquation(Real x, Real w, Real beta) const;
 
       protected:
-        FxStickyDeltaSmile(std::vector<Real> costs, bool premiumAdjust);
+        FxStickyDeltaSolver(std::vector<Real> costs, bool premiumAdjust);
         //! Sets the nodes, ascending in \f$ x \f$.
         void setNodes(std::vector<Real> x, std::vector<Real> w, std::vector<Real> beta);
 
@@ -137,7 +137,7 @@ namespace QuantLib {
         The solver is immutable: the smile is integrated in the constructor.
         Its dynamics have no convexity.
     */
-    class FxStickyDeltaSmileSolver : public FxStickyDeltaSmile {
+    class FxStickyDeltaSmileSolver : public FxStickyDeltaSolver {
       public:
         /*! \param costs          \f$ [C_\gamma, C_\theta, C_\eta, C_\omega] \f$;
                                   only their ratios matter.
@@ -212,7 +212,7 @@ namespace QuantLib {
         nodes, which makes it fourth-order accurate in the node spacing; the
         slopes at the nodes are fourth-order differences of the result.
     */
-    class FxStickyDeltaConvexSmileSolver : public FxStickyDeltaSmile {
+    class FxStickyDeltaConvexSmileSolver : public FxStickyDeltaSolver {
       public:
         /*! \param costs          \f$ [C_\gamma, C_\theta, C_\eta, C_\omega] \f$;
                                   only their ratios matter.

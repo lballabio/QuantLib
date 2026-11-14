@@ -284,7 +284,7 @@ namespace QuantLib {
         //@}
 
         //! Smile for the given costs, solved over smileRange.
-        virtual ext::shared_ptr<const FxStickyDeltaSmile>
+        virtual ext::shared_ptr<const FxStickyDeltaSolver>
         makeSolver(const std::vector<Real>& costs, Time tau) const;
         //! Half-width in log-moneyness of the solved smile for an expiry time.
         Real solvedRange(Time tau) const;
@@ -304,7 +304,7 @@ namespace QuantLib {
         //@}
 
         // smile of the current params_, rebuilt by setParams()
-        mutable ext::shared_ptr<const FxStickyDeltaSmile> solver_;
+        mutable ext::shared_ptr<const FxStickyDeltaSolver> solver_;
     };
 
     /*! FX cost smile section with flat (alpha = 0) total-vol dynamics, a
@@ -343,7 +343,7 @@ namespace QuantLib {
                                             bool weightedCalibrationFlag = true);
 
       protected:
-        ext::shared_ptr<const FxStickyDeltaSmile>
+        ext::shared_ptr<const FxStickyDeltaSolver>
         makeSolver(const std::vector<Real>& costs, Time tau) const override;
     };
 } // namespace QuantLib

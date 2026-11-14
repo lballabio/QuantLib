@@ -30,13 +30,13 @@
 
 namespace QuantLib {
 
-    FxStickyDeltaSmile::FxStickyDeltaSmile(std::vector<Real> costs, bool premiumAdjust)
+    FxStickyDeltaSolver::FxStickyDeltaSolver(std::vector<Real> costs, bool premiumAdjust)
     : costs_(std::move(costs)), premiumAdjust_(premiumAdjust) {
         QL_REQUIRE(costs_.size() == 4, "four costs required, " << costs_.size() << " given");
         QL_REQUIRE(costs_[0] > 0.0, "gamma cost must be positive, got " << costs_[0]);
     }
 
-    void FxStickyDeltaSmile::setNodes(std::vector<Real> x,
+    void FxStickyDeltaSolver::setNodes(std::vector<Real> x,
                                       std::vector<Real> w,
                                       std::vector<Real> beta) {
         QL_REQUIRE(!x.empty() && x.size() == w.size() && x.size() == beta.size(),
@@ -46,7 +46,7 @@ namespace QuantLib {
         beta_ = std::move(beta);
     }
 
-    bool FxStickyDeltaSmile::hasCosts(const std::vector<Real>& costs) const {
+    bool FxStickyDeltaSolver::hasCosts(const std::vector<Real>& costs) const {
         if (costs.size() != costs_.size() || costs[0] <= 0.0)
             return false;
         // c_i / c_0 == costs_i / costs_0, cross-multiplied to avoid dividing
@@ -59,15 +59,15 @@ namespace QuantLib {
         return true;
     }
 
-    Real FxStickyDeltaSmile::costEquation(Real x, Real w, Real beta) const {
-        const Real cg = costs_[0], ct = costs_[1], ce = costs_[2], cw = costs_[3];
+    Real FxStickyDeltaSolver::costEquation(Real x, Real w, Real beta) const {
+        const Real cg = costs_[0], ct = costs_[1], cv = costs_[2], cw = costs_[3];
         const Real dp = x / w + w / 2.0, dm = dp - w;
         const Real ds = premiumAdjust_ ? dp : dm;
         return cg * (1.0 + 2.0 * dm * beta + beta * beta * dp * dm) + 2.0 * w * ct -
-               2.0 * ce * (ds + beta * dp * dm) + dp * dm * cw;
+               2.0 * cv * (ds + beta * dp * dm) + dp * dm * cw;
     }
 
-    Real FxStickyDeltaSmile::totalVol(Real x) const {
+    Real FxStickyDeltaSolver::totalVol(Real x) const {
         if (x <= x_.front() || x >= x_.back()) {
             // linear extrapolation beyond the solved range
             const Size i = x <= x_.front() ? 0 : x_.size() - 1;
@@ -84,7 +84,7 @@ namespace QuantLib {
                (-2.0 * t3 + 3.0 * t2) * w_[i + 1] - (t3 - t2) * dx * beta_[i + 1];
     }
 
-    Real FxStickyDeltaSmile::slope(Real x) const {
+    Real FxStickyDeltaSolver::slope(Real x) const {
         if (x <= x_.front())
             return beta_.front();
         if (x >= x_.back())
@@ -106,23 +106,23 @@ namespace QuantLib {
                                                        Real xMax,
                                                        Real stepFraction,
                                                        Real accuracy)
-    : FxStickyDeltaSmile(std::move(costs), premiumAdjust), accuracy_(accuracy) {
+    : FxStickyDeltaSolver(std::move(costs), premiumAdjust), accuracy_(accuracy) {
         QL_REQUIRE(stepFraction > 0.0, "step fraction must be positive, got " << stepFraction);
         QL_REQUIRE(accuracy > 0.0, "accuracy must be positive, got " << accuracy);
         QL_REQUIRE(xMin <= xMax, "empty log-moneyness range [" << xMin << ", " << xMax << "]");
 
-        const Real cg = costs_[0], ct = costs_[1], ce = costs_[2], cw = costs_[3];
+        const Real cg = costs_[0], ct = costs_[1], cv = costs_[2], cw = costs_[3];
 
         // singular point: the cost equation at d- = 0 no longer depends on beta
-        const Real den = premiumAdjust_ ? 2.0 * (ce - ct) : -2.0 * ct;
-        QL_REQUIRE(den > 0.0, "costs [" << cg << ", " << ct << ", " << ce << ", " << cw
+        const Real den = premiumAdjust_ ? 2.0 * (cv - ct) : -2.0 * ct;
+        QL_REQUIRE(den > 0.0, "costs [" << cg << ", " << ct << ", " << cv << ", " << cw
                                          << "] give no positive total vol at d- = 0");
         ws_ = cg / den;
         xs_ = ws_ * ws_ / 2.0;
 
         // slope at the singular point: u = 1 + w_s * beta_s solves the monic cubic
         // u^3 + p u^2 + q u - 1 = 0, negative at u = 0 so it has a positive root
-        const Real p = -2.0 * ce / cg * ws_, q = cw / cg * ws_ * ws_;
+        const Real p = -2.0 * cv / cg * ws_, q = cw / cg * ws_ * ws_;
         auto g = [p, q](Real u) { return ((u + p) * u + q) * u - 1.0; };
 
         // bracket the positive roots between the turning points and a root bound
@@ -246,13 +246,14 @@ namespace QuantLib {
         }
     }
 
+
     FxStickyDeltaConvexSmileSolver::FxStickyDeltaConvexSmileSolver(std::vector<Real> costs,
                                                                    bool premiumAdjust,
                                                                    Real xMin,
                                                                    Real xMax,
                                                                    Size nodes,
                                                                    Real tolerance)
-    : FxStickyDeltaSmile(std::move(costs), premiumAdjust) {
+    : FxStickyDeltaSolver(std::move(costs), premiumAdjust) {
         QL_REQUIRE(xMin < xMax, "empty log-moneyness range [" << xMin << ", " << xMax << "]");
         QL_REQUIRE(nodes >= 5, "at least 5 nodes required, " << nodes << " given");
         QL_REQUIRE(tolerance > 0.0, "tolerance must be positive, got " << tolerance);

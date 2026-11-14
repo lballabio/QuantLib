@@ -563,11 +563,11 @@ namespace QuantLib {
         return smileRange * referenceVol() * std::sqrt(tau);
     }
 
-    ext::shared_ptr<const FxStickyDeltaSmile>
+    ext::shared_ptr<const FxStickyDeltaSolver>
     FxCostSmileSectionStickyDelta::makeSolver(const std::vector<Real>& costs, Time tau) const {
         const Real range = solvedRange(tau);
-        return ext::make_shared<const FxStickyDeltaSmileSolver>(costs, premiumAdjust(), -range,
-                                                                range);
+        return ext::make_shared<const FxStickyDeltaSmileSolver>(costs, premiumAdjust(), 
+                                                                -range, range);
     }
 
     Array FxCostSmileSectionStickyDelta::initialParams() const {
@@ -739,7 +739,7 @@ namespace QuantLib {
     : FxCostSmileSectionStickyDelta(exerciseTime, spot, quotes, foreignDiscount, domesticDiscount,
                                     deltaType, atmType, dayCounter, weightedCalibrationFlag) {}
 
-    ext::shared_ptr<const FxStickyDeltaSmile>
+    ext::shared_ptr<const FxStickyDeltaSolver>
     FxCostSmileSectionStickyDeltaConvex::makeSolver(const std::vector<Real>& costs,
                                                     Time tau) const {
         const Real range = solvedRange(tau);
