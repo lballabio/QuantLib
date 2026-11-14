@@ -13,6 +13,8 @@ Changes for QuantLib 1.44
 
 Equity total return swaps now support periodic equity payments at a frequency independent of the funding leg; the default remains settlement at maturity.
 
+Equity total return swaps with periodic equity payments can now reset the notional of each period to the index level at its start, on both the equity and the funding leg; the default remains a fixed notional.
+
 As announced, it is no longer possible to choose the Boost implementation of `any` and `optional`. Only the `std` implementation can be used.
 
 Features deprecated in release 1.39 were removed in this release; see <https://github.com/lballabio/QuantLib/pull/2659> for a full list.

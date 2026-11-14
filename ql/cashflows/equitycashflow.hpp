@@ -65,6 +65,61 @@ namespace QuantLib {
             IndexedCashFlow::accept(v);
     }
 
+    //! Equity cash flow whose notional is reset to the index level
+    /*! The notional of the cash flow tracks a fixed number of index
+        units: given an initial notional \f$ N \f$ set on the initial
+        date \f$ T_0 \f$, the notional for the period between the
+        base date \f$ T_{i-1} \f$ and the fixing date \f$ T_i \f$ is
+        \f[
+        N_i = N \frac{I(T_{i-1})}{I(T_0)},
+        \f]
+        so that the amount is
+        \f[
+        N_i \left[ \frac{I(T_i)}{I(T_{i-1})} - 1 \right]
+        = \frac{N}{I(T_0)} \left[ I(T_i) - I(T_{i-1}) \right].
+        \f]
+
+        \warning the notional is always calculated from the fixings
+                 of the index as given.  If a pricer is set, e.g.,
+                 a quanto pricer, its adjustment applies to the
+                 return over the period but not to the notional.
+    */
+    class EquityNotionalResetCashFlow : public EquityCashFlow {
+      public:
+        EquityNotionalResetCashFlow(Real initialNotional,
+                                    ext::shared_ptr<EquityIndex> index,
+                                    const Date& initialDate,
+                                    const Date& baseDate,
+                                    const Date& fixingDate,
+                                    const Date& paymentDate);
+        //! \name IndexedCashFlow interface
+        //@{
+        //! the notional reset on the base date
+        Real notional() const override;
+        //@}
+        //! \name Inspectors
+        //@{
+        //! the notional on the initial date
+        Real initialNotional() const { return IndexedCashFlow::notional(); }
+        //! the date on which the initial notional was set
+        const Date& initialDate() const { return initialDate_; }
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&) override;
+        //@}
+      private:
+        Date initialDate_;
+    };
+
+    inline void EquityNotionalResetCashFlow::accept(AcyclicVisitor& v) {
+        auto* v1 = dynamic_cast<Visitor<EquityNotionalResetCashFlow>*>(&v);
+        if (v1 != nullptr)
+            v1->visit(*this);
+        else
+            EquityCashFlow::accept(v);
+    }
+
     void setCouponPricer(const Leg& leg, const ext::shared_ptr<EquityCashFlowPricer>&);
 
     class EquityCashFlowPricer : public virtual Observer, public virtual Observable {
