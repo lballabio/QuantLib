@@ -76,6 +76,11 @@ namespace QuantLib {
             if (arguments_.leg[i]->hasOccurred(settlementDate,
                                                includeSettlementDateFlows_))
                 continue;
+            // coupons paid before the protection starts are not part
+            // of the contract (as in the ISDA engine)
+            if (arguments_.leg[i]->hasOccurred(arguments_.protectionStart,
+                                               includeSettlementDateFlows_))
+                continue;
 
             ext::shared_ptr<FixedRateCoupon> coupon =
                 ext::dynamic_pointer_cast<FixedRateCoupon>(arguments_.leg[i]);
@@ -84,9 +89,13 @@ namespace QuantLib {
             // of both legs as a positive quantity. We'll give them
             // the right sign at the end.
 
+            // The protection can start before the first accrual period
+            // (pre-Big Bang) or after the start of the first period
+            // still included, possibly not the first in the schedule.
             Date paymentDate = coupon->date(),
-                 startDate = (i == 0 ? arguments_.protectionStart :
-                                       coupon->accrualStartDate()),
+                 startDate = i == 0 ? arguments_.protectionStart :
+                                      std::max(coupon->accrualStartDate(),
+                                               arguments_.protectionStart),
                  endDate = coupon->accrualEndDate();
             Date effectiveStartDate =
                 (startDate <= today && today <= endDate) ? today : startDate;
@@ -98,6 +107,10 @@ namespace QuantLib {
             // survival.
             results_.couponLegNPV +=
                 S * couponAmount * discountCurve_->discount(paymentDate);
+
+            // no protection if the period ends before the protection starts
+            if (effectiveStartDate >= endDate)
+                continue;
 
             // On the other side, we add the payment (and possibly the
             // accrual) in case of default.

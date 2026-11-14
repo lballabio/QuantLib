@@ -73,6 +73,11 @@ namespace QuantLib {
             if (arguments_.leg[i]->hasOccurred(settlementDate,
                                                includeSettlementDateFlows_))
                 continue;
+            // coupons paid before the protection starts are not part
+            // of the contract (as in the ISDA engine)
+            if (arguments_.leg[i]->hasOccurred(arguments_.protectionStart,
+                                               includeSettlementDateFlows_))
+                continue;
 
             ext::shared_ptr<FixedRateCoupon> coupon =
                 ext::dynamic_pointer_cast<FixedRateCoupon>(arguments_.leg[i]);
@@ -81,21 +86,24 @@ namespace QuantLib {
             // of both legs as a positive quantity. We'll give them
             // the right sign at the end.
 
+            // The protection can start before the first accrual period
+            // (pre-Big Bang) or after the start of the first period
+            // still included, possibly not the first in the schedule.
             Date paymentDate = coupon->date(),
-                 startDate = coupon->accrualStartDate(),
+                 startDate = i == 0 ? arguments_.protectionStart :
+                                      std::max(coupon->accrualStartDate(),
+                                               arguments_.protectionStart),
                  endDate = coupon->accrualEndDate();
-            // this is the only point where it might not coincide
-            if (i==0)
-                startDate = arguments_.protectionStart;
             Date effectiveStartDate =
                 (startDate <= today && today <= endDate) ? today : startDate;
             Date defaultDate = // mid-point
                 effectiveStartDate + (endDate-effectiveStartDate)/2;
 
             Probability S = probability_->survivalProbability(paymentDate);
-            Probability P = probability_->defaultProbability(
-                                                effectiveStartDate,
-                                                endDate);
+            // no protection if the period ends before the protection starts
+            Probability P = effectiveStartDate < endDate ?
+                probability_->defaultProbability(effectiveStartDate, endDate) :
+                0.0;
 
             // on one side, we add the fixed rate payments in case of
             // survival...
