@@ -272,10 +272,12 @@ namespace QuantLib {
         QL_REQUIRE(maturity >= 0.0, "maturity (" << maturity << ") must be non-negative");
         if (close(maturity, 0.0)) return 0.0;
         
-        // Theta = -dV/dt = -(r*V - r*S*Delta + 0.5*σ²*Gamma)
+        // Theta = -dV/dt = -(r*V - (r-q)*S*Delta + 0.5*σ²*Gamma_F)
+        // σ is the normal volatility of the forward, so the diffusion term
+        // takes the forward gamma, not the spot one
 
         return -(std::log(discount_) * value() + std::log(forward_ / spot) * spot * delta(spot) +
-                 0.5 * variance_ * gamma(spot)) / maturity;
+                 0.5 * variance_ * gammaForward()) / maturity;
     }
 
     Real BachelierCalculator::vega(Time maturity) const {
@@ -353,8 +355,8 @@ namespace QuantLib {
         }
         // d_ is (F-K)/stdDev_
         // n_d_ is n(d)
-        // Vanna = -d * n(d) / stdDev_ * sqrt(T)
-        return -d_ * n_d_ * std::sqrt(maturity) / stdDev_;
+        // Vanna = dVega/dF = -d / stdDev_ * Vega
+        return -d_ / stdDev_ * vega(maturity);
     }
 
     // Sensitivity of Vega to volatility (Volga)
