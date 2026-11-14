@@ -36,59 +36,37 @@
 
 namespace QuantLib {
 
-    //! Risk metrics for a single FX vanilla option position.
-    /*!
-        All monetary values are in domestic currency, scaled by \c notional.
-
-        Reported units (using EUR/USD as example, notional in EUR):
-        \li \c npv        — USD (present value)
-        \li \c spotDelta  — USD per 1% spot move
-        \li \c fwdDelta   — forward-USD per 1% forward move (= spotDelta / B_d)
-        \li \c spotGamma  — USD (spot-delta change per 1% spot move)
-        \li \c fwdGamma   — forward-USD (fwd-delta change per 1% fwd move)
-        \li \c theta      — USD over the roll of the market to its next date
-                              (see FxVanillaBumpRisk::setRoll()); null without one
-        \li \c vega       — USD per 1% (100 bp) parallel ATM vol move
-        \li \c rega       — USD per 0.1% 1M-equivalent RR move
-        \li \c sega       — USD per 0.01% 1M-equivalent BF move
-        \li \c vanna      — USD (spot-delta change per 1% ATM vol move)
-        \li \c navva      — USD (vega change per 1% spot move; equals \c vanna)
-        \li \c volga      — USD (vega change per 1% ATM vol move)
-        \li \c premiumAdjusted — delta, gamma and vanna for a premium paid
-                              in EUR (see FxPremiumAdjustedGreeks)
-
-        \note \c vanna and \c navva are identical numbers — they are both
-        equal to \f$ \partial^2 V/(\partial S\,\partial\sigma) \f$ expressed
-        in the same percent-scaled units.  The labels differ only in which
-        first-order sensitivity is thought of as "changing": vanna is the
-        vol-sensitivity of the delta; navva is the spot-sensitivity of the vega.
-    */
     //! Premium-adjusted delta-type greeks of an FX vanilla position.
     /*!
-        For pairs whose premium is paid in the foreign (base) currency, e.g.
-        USD/JPY with the premium in USD, the hedge in foreign currency is
-        the delta less the premium, \f$ \Delta - V/S \f$: the premium
-        received in foreign currency is itself a spot exposure.  Here are
-        the greeks of that delta, in the units and scalings of
-        FxVanillaGreeks:
-        \li \c spotDelta \f$ = (\partial V/\partial S - V/S)\,0.01\,S \f$,
-              i.e. the spot delta less 1% of the value;
-        \li \c fwdDelta  \f$ = \f$ \c spotDelta / \f$ B_d \f$;
-        \li \c spotGamma: the change of the premium-adjusted delta per 1%
-              spot move, \f$ \partial^2 V/\partial S^2 - (\partial V/\partial S)/S
-              + V/S^2 \f$ scaled by \f$ (0.01\,S)^2 \f$;
-        \li \c fwdGamma  \f$ = \f$ \c spotGamma / \f$ B_d \f$;
-        \li \c vanna: the change of the premium-adjusted delta per 1% vol
-              move, i.e. vanna less 1% of vega.
+        When the premium is paid in the foreign (base) currency, e.g. USD/JPY
+        with the premium in USD, or EUR/USD with the premium in EUR, the
+        value that matters is the value in that currency, \f$ W = V/S \f$, and
+        the delta is the base-currency amount that hedges it:
+        \f$ S\,\partial W/\partial S = \partial V/\partial S - V/S \f$, the
+        plain delta less the premium, which is itself a spot exposure.  In
+        the units of FxVanillaGreeks:
+        \li \c spotDelta \f$ = N(\partial V/\partial S - V/S) \f$,
+              i.e. FxVanillaGreeks::spotDelta \f$ - \f$ \c npv / \f$ S \f$;
+        \li \c fwdDelta  \f$ = \f$ \c spotDelta / \f$ B_f \f$, the same
+              hedge in forwards to the option's delivery, which is
+              \f$ N F\,\partial(V_F/F)/\partial F \f$ on the forward value
+              \f$ V_F = V/B_d \f$; (K/F) N(d2) for a unit call under Black;
+        \li \c spotGamma: the change of \c spotDelta per 1% spot move,
+              \f$ N(\partial^2 V/\partial S^2 - (\partial V/\partial S)/S
+              + V/S^2)\,0.01\,S \f$;
+        \li \c fwdGamma  \f$ = \f$ \c spotGamma / \f$ B_f \f$, the change
+              of \c fwdDelta per 1% forward move;
+        \li \c vanna: the change of \c spotDelta per 1% vol move, i.e.
+              FxVanillaGreeks::vanna \f$ - \f$ \c vega / \f$ S \f$.
 
         Unlike the plain ones, these greeks do not satisfy simple put-call
         parity: since \f$ C - P = S B_f - K B_d \f$, the call's
-        premium-adjusted delta exceeds the put's by \f$ K B_d/S \f$, and its
-        gamma falls short of the put's by \f$ K B_d/S^2 \f$.  A call's
-        premium-adjusted gamma is negative deep in the money.
+        premium-adjusted spot delta exceeds the put's by \f$ N K B_d/S \f$,
+        and its gamma falls short of the put's by \f$ 0.01\,N K B_d/S \f$.
+        A call's premium-adjusted gamma is negative deep in the money.
 
-        Values, vega and the other greeks are unchanged by the premium
-        currency and are those of FxVanillaGreeks, in domestic currency.
+        Values, vega and the other greeks do not depend on the premium
+        currency, and are those of FxVanillaGreeks.
     */
     struct FxPremiumAdjustedGreeks {
         Real spotDelta;
@@ -98,6 +76,48 @@ namespace QuantLib {
         Real vanna;
     };
 
+    //! Risk metrics for a single FX vanilla option position.
+    /*!
+        Values are in domestic currency and deltas are amounts of foreign
+        (base) currency, all for the position's \c notional \f$ N \f$ in
+        foreign currency.  Deltas are exposures: a positive delta is long
+        foreign currency, hedged by selling that amount.
+
+        Units, with EUR/USD as example (notional in EUR, premium in USD):
+        \li \c npv        — USD, present value
+        \li \c spotDelta  — EUR, \f$ N\,\partial V/\partial S \f$: the amount
+                              of EUR, bought or sold spot, that hedges the
+                              position
+        \li \c fwdDelta   — EUR, the same hedge in forwards to the option's
+                              delivery, \f$ N\,\partial V_F/\partial F \f$ on
+                              the forward value \f$ V_F = V/B_d \f$, i.e.
+                              \c spotDelta / \f$ B_f \f$; N(d1) per unit of
+                              call notional under Black
+        \li \c spotGamma  — EUR, the change of \c spotDelta per 1% spot move
+        \li \c fwdGamma   — EUR, the change of \c fwdDelta per 1% forward
+                              move (= \c spotGamma / \f$ B_f \f$)
+        \li \c theta      — USD over the roll of the market to its next date
+                              (see FxVanillaBumpRisk::setRoll()); null without one
+        \li \c vega       — USD per 1% (100 bp) parallel ATM vol move
+        \li \c rega       — USD per 0.1% 1M-equivalent RR move
+        \li \c sega       — USD per 0.01% 1M-equivalent BF move
+        \li \c vanna      — EUR, the change of \c spotDelta per 1% ATM vol move
+        \li \c navva      — USD, the change of \c vega per 1% spot move
+        \li \c volga      — USD, the change of \c vega per 1% ATM vol move
+        \li \c premiumAdjusted — delta, gamma and vanna for a premium paid
+                              in EUR (see FxPremiumAdjustedGreeks)
+
+        Here \f$ B_d \f$ and \f$ B_f \f$ are the domestic and settlement
+        foreign discount factors to the expiry, with the forward
+        \f$ F = S B_f/B_d \f$.
+
+        \note \c vanna and \c navva are the same mixed derivative
+        \f$ \partial^2 V/(\partial S\,\partial\sigma) \f$ in different units:
+        vanna is the vol sensitivity of the delta, in EUR; navva the spot
+        sensitivity of the vega, in USD per 1% spot move.  So
+        \f$ \text{navva} = 0.01\,S \times \text{vanna} \f$: about a hundredth
+        of it for EUR/USD, 1.5 times it for USD/JPY at 150.
+    */
     struct FxVanillaGreeks {
         Real npv;
         Real spotDelta;
@@ -168,7 +188,8 @@ namespace QuantLib {
 
         <b>Scaling conventions:</b>
         Greeks are reported per the standard FX desk conventions:
-        - Spot/fwd delta/gamma are per 1% move in the respective rate.
+        - Deltas are hedge amounts in foreign currency; gammas are their
+          changes per 1% move in the respective rate (see FxVanillaGreeks).
         - Vega, vanna, volga are per 1% (100 bp) absolute vol move.  They take
           central differences over a parallel bump of the ATM quotes, by
           default 1%: volga is a second difference, and with local vol smaller

@@ -114,16 +114,16 @@ static void printGreeks(const std::string& label, const FxVanillaGreeks& g) {
                   << "\n";
     };
     row("NPV (USD)",                              g.npv,       2);
-    row("Spot delta  (USD per 1% spot)",          g.spotDelta, 2);
-    row("Fwd delta   (USD per 1% fwd)",           g.fwdDelta,  2);
-    row("Spot gamma  (USD per 1% spot move)",     g.spotGamma, 2);
-    row("Fwd gamma   (USD per 1% fwd move)",      g.fwdGamma,  2);
+    row("Spot delta  (EUR, spot hedge)",          g.spotDelta, 2);
+    row("Fwd delta   (EUR, forward hedge)",       g.fwdDelta,  2);
+    row("Spot gamma  (EUR per 1% spot move)",     g.spotGamma, 2);
+    row("Fwd gamma   (EUR per 1% fwd move)",      g.fwdGamma,  2);
     row("Theta       (USD, roll to next day)",    g.theta,     2);
     row("Vega        (USD per 1% vol)",           g.vega,      2);
     row("Rega        (USD per 0.1% 1M RR)",       g.rega,      2);
     row("Sega        (USD per 0.01% 1M BF)",      g.sega,      2);
-    row("Vanna       (USD per 1%S x 1%vol)",      g.vanna,     2);
-    row("Navva       (USD per 1%vol x 1%S) =Vanna",g.navva,   2);
+    row("Vanna       (EUR delta per 1% vol)",     g.vanna,     2);
+    row("Navva       (USD vega per 1% spot)",     g.navva,     2);
     row("Volga       (USD per 1%vol x 1%vol)",    g.volga,     2);
     std::cout << "  " << std::string(w0 + w1, '-') << "\n";
 }
@@ -432,11 +432,11 @@ int main(int, char*[]) {
                       << std::setw(wdv) << std::right << std::setprecision(prec)
                       << (a - b) << "\n";
         };
-        diffRow("Spot delta (USD per 1% spot)",  lvGreeks.spotDelta, flvGreeks.spotDelta);
-        diffRow("Fwd delta  (USD per 1% fwd)",   lvGreeks.fwdDelta,  flvGreeks.fwdDelta);
-        diffRow("Spot gamma (USD per 1% spot)",  lvGreeks.spotGamma, flvGreeks.spotGamma);
+        diffRow("Spot delta (EUR)",              lvGreeks.spotDelta, flvGreeks.spotDelta);
+        diffRow("Fwd delta  (EUR)",              lvGreeks.fwdDelta,  flvGreeks.fwdDelta);
+        diffRow("Spot gamma (EUR per 1% spot)",  lvGreeks.spotGamma, flvGreeks.spotGamma);
         diffRow("Vega       (USD per 1% vol)",   lvGreeks.vega,      flvGreeks.vega);
-        diffRow("Vanna      (USD per 1%S x 1%vol)", lvGreeks.vanna,  flvGreeks.vanna);
+        diffRow("Vanna      (EUR per 1% vol)",   lvGreeks.vanna,     flvGreeks.vanna);
         diffRow("Volga      (USD per 1%vol x 1%vol)", lvGreeks.volga, flvGreeks.volga);
         std::cout << "  " << std::string(wd + wdv, '-') << "\n\n"
                   << "  Non-zero spot delta difference = skew adjustment to delta.\n"
@@ -636,8 +636,8 @@ int main(int, char*[]) {
         //     under local vol (Dupire FD) and SLV, then compute Greeks.
         //
         //  Greeks are computed by bump-and-reval on the SLV engine:
-        //    Spot delta : (NPV(S+dS) - NPV(S-dS)) / (2 dS)      scaled to per 1% S
-        //    Spot gamma : (NPV(S+dS) - 2 NPV + NPV(S-dS)) / dS² scaled to per 1% S
+        //    Spot delta : (NPV(S+dS) - NPV(S-dS)) / (2 dS)      in EUR
+        //    Spot gamma : (NPV(S+dS) - 2 NPV + NPV(S-dS)) / dS² per 1% S, in EUR
         //    Vega       : (NPV(σ+dσ) - NPV(σ-dσ)) / (2 dσ)      parallel ATM bump
         //
         //  Theta in an SLV model requires re-solving the leverage PDE at a
@@ -686,10 +686,10 @@ int main(int, char*[]) {
         const Real slvDn = call4M->NPV() * notional;
         spotSQ->setValue(S0);
 
-        // Scale to "per 1% spot move"
+        // delta as an amount of EUR, gamma its change per 1% spot move
         const Real pctS      = 0.01 * S0;
-        const Real slvDelta  = (slvUp - slvDn)  / (2.0 * dS) * pctS;
-        const Real slvGamma  = (slvUp - 2.0 * slvNpv4M + slvDn) / (dS * dS) * pctS * pctS;
+        const Real slvDelta  = (slvUp - slvDn)  / (2.0 * dS);
+        const Real slvGamma  = (slvUp - 2.0 * slvNpv4M + slvDn) / (dS * dS) * pctS;
 
         // ── Vega: parallel bump of all ATM vol quotes ─────────────────────────
         const Real dVol = 0.001;  // 10 bp absolute
@@ -735,8 +735,8 @@ int main(int, char*[]) {
 
         std::cout << "\n  SLV Greeks  (notional = EUR 1,000,000):\n"
                   << "  " << std::string(wl + wv, '-') << "\n";
-        row("Spot delta  (USD per 1% spot move)", slvDelta);
-        row("Spot gamma  (USD per (1% spot)²)",   slvGamma);
+        row("Spot delta  (EUR, spot hedge)",      slvDelta);
+        row("Spot gamma  (EUR per 1% spot move)", slvGamma);
         row("Vega        (USD per 1% vol move)",  slvVega);
         row("Theta       (USD, roll, LV proxy)",  lvTheta4M);
         std::cout << "  " << std::string(wl + wv, '-') << "\n";

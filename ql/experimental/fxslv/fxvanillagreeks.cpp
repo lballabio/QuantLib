@@ -242,7 +242,8 @@ namespace QuantLib {
         // ── Discount factors and forward for delta/gamma scaling ──────────────
         const Date expiry = option_->exercise()->lastDate();
         const Time T_exp  = process_->time(expiry);
-        const Real Bd     = process_->riskFreeRate()->discount(T_exp);
+        // the settlement foreign discount, for the forward hedge
+        const Real Bf     = process_->dividendYield()->discount(T_exp);
 
         // one grid, today's, for every bump of the market
         const auto mesher = makeMesher(process_);
@@ -329,13 +330,16 @@ namespace QuantLib {
         };
 
         // ── Scaling helpers ───────────────────────────────────────────────────
-        // spotDelta = dV/dS * 0.01*S      (PV per 1% spot)
-        // fwdDelta  = d(V/Bd)/dF * 0.01*F = spotDelta / Bd   (fwd-PV per 1% fwd)
-        // spotGamma = d²V/dS² * (0.01*S)² (spot-delta change per 1% spot)
-        // fwdGamma  = spotGamma / Bd
-        // vega      = dV/dσ * 0.01        (PV per 1% vol)
-        // vanna     = d²V/(dS dσ) * 0.01*S * 0.01  (spot-delta change per 1% vol)
-        // volga     = d²V/dσ² * 0.01²    (vega change per 1% vol)
+        // V is in domestic currency for the notional, so dV/dS is an amount
+        // of foreign currency: the spot hedge.
+        // spotDelta = dV/dS                          (foreign ccy)
+        // fwdDelta  = d(V/Bd)/dF = spotDelta / Bf    (foreign ccy, in forwards)
+        // spotGamma = d²V/dS² * 0.01*S               (spotDelta change per 1% spot)
+        // fwdGamma  = spotGamma / Bf                 (fwdDelta change per 1% fwd)
+        // vega      = dV/dσ * 0.01                   (domestic per 1% vol)
+        // vanna     = d²V/(dS dσ) * 0.01             (spotDelta change per 1% vol)
+        // navva     = d²V/(dS dσ) * 0.01 * 0.01*S    (vega change per 1% spot)
+        // volga     = d²V/dσ² * 0.01²                (vega change per 1% vol)
         const Real pct1S = 0.01 * S;
 
         auto scaleResults = [&](Real V0, Real Vup, Real Vdn,
@@ -350,26 +354,26 @@ namespace QuantLib {
 
             FxVanillaGreeks r;
             r.npv       = V0;
-            r.spotDelta = spotDelta_raw * pct1S;
-            r.fwdDelta  = r.spotDelta / Bd;
-            r.spotGamma = spotGamma_raw * pct1S * pct1S;
-            r.fwdGamma  = r.spotGamma / Bd;
+            r.spotDelta = spotDelta_raw;
+            r.fwdDelta  = r.spotDelta / Bf;
+            r.spotGamma = spotGamma_raw * pct1S;
+            r.fwdGamma  = r.spotGamma / Bf;
             r.theta     = theta_raw;
             r.vega      = vega_raw * 0.01;
-            r.vanna     = vanna_raw * pct1S * 0.01;
-            r.navva     = r.vanna;   // same by symmetry of mixed partials
+            r.vanna     = vanna_raw * 0.01;
+            r.navva     = r.vanna * pct1S;   // the same mixed partial
             r.volga     = volga_raw * 0.01 * 0.01;
             r.rega      = rega;
             r.sega      = sega;
 
-            // the hedge less the premium, received in foreign currency:
-            // delta - V/S, and its derivatives in spot and vol
+            // the hedge of the value in foreign currency, V/S: delta - V/S,
+            // and its derivatives in spot and vol
             FxPremiumAdjustedGreeks& pa = r.premiumAdjusted;
-            pa.spotDelta = r.spotDelta - 0.01 * V0;
-            pa.fwdDelta  = pa.spotDelta / Bd;
-            pa.spotGamma = r.spotGamma - 0.01 * r.spotDelta + 1.0e-4 * V0;
-            pa.fwdGamma  = pa.spotGamma / Bd;
-            pa.vanna     = r.vanna - 0.01 * r.vega;
+            pa.spotDelta = r.spotDelta - V0 / S;
+            pa.fwdDelta  = pa.spotDelta / Bf;
+            pa.spotGamma = r.spotGamma - 0.01 * r.spotDelta + 0.01 * V0 / S;
+            pa.fwdGamma  = pa.spotGamma / Bf;
+            pa.vanna     = r.vanna - r.vega / S;
             return r;
         };
 

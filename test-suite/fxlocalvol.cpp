@@ -330,7 +330,7 @@ BOOST_AUTO_TEST_CASE(testFixedLocalVolConsistency) {
 //  Test 3: Greek signs
 //    Call:  spotDelta > 0, spotGamma > 0, theta < 0, volga > 0, vega > 0
 //    Put:   spotDelta < 0, spotGamma > 0, theta < 0, volga > 0, vega > 0
-//    navva == vanna (by construction)
+//    navva = 0.01 S vanna (by construction)
 // ─────────────────────────────────────────────────────────────────────────────
 
 BOOST_AUTO_TEST_CASE(testGreekSigns) {
@@ -365,9 +365,9 @@ BOOST_AUTO_TEST_CASE(testGreekSigns) {
         BOOST_CHECK_MESSAGE(std::fabs(g.volga) < 1.0e-3 * g.vega,
                             "call volga at the money should be about 0: " << g.volga);
 
-        // navva == vanna (identity, not approximate)
-        BOOST_CHECK_MESSAGE(g.navva == g.vanna,
-            "navva must equal vanna: navva=" << g.navva << " vanna=" << g.vanna);
+        // navva is vanna in other units: the change of vega (USD) per 1% spot
+        // move against that of delta (EUR) per 1% vol move
+        BOOST_CHECK_CLOSE(g.navva, 0.01 * mkt.spot->value() * g.vanna, 1.0e-10);
     }
 
     // ── Put Greeks ───────────────────────────────────────────────────────────
@@ -505,8 +505,8 @@ BOOST_AUTO_TEST_CASE(testPutCallParity) {
 // ─────────────────────────────────────────────────────────────────────────────
 //  Test 5: Delta and gamma consistency
 //
-//  Taylor approximation: ΔV ≈ spotDelta × pctMove + 0.5 × spotGamma × pctMove²
-//  where pctMove = ds / (0.01 × S)  (spot move expressed in units of 1%)
+//  Taylor approximation: ΔV ≈ spotDelta × ds + 0.5 × spotGamma / (0.01 S) × ds²
+//  spotDelta being dV/dS and spotGamma its change per 1% spot move
 // ─────────────────────────────────────────────────────────────────────────────
 
 BOOST_AUTO_TEST_CASE(testDeltaGammaConsistency) {
@@ -534,9 +534,8 @@ BOOST_AUTO_TEST_CASE(testDeltaGammaConsistency) {
 
     Real actualPnL = Vshifted - V0;
 
-    // spotDelta is in USD per 1% spot; convert ds to units of 1% spot.
-    Real pctMove     = ds / (0.01 * S0);
-    Real predictedPnL = g.spotDelta * pctMove + 0.5 * g.spotGamma * pctMove * pctMove;
+    // spotDelta is dV/dS, an amount of EUR; spotGamma its change per 1% spot
+    Real predictedPnL = g.spotDelta * ds + 0.5 * g.spotGamma / (0.01 * S0) * ds * ds;
 
     // Allow 5% relative error in the second-order Taylor approximation
     Real relErr = std::fabs(actualPnL - predictedPnL) / std::fabs(actualPnL);
@@ -639,15 +638,15 @@ BOOST_AUTO_TEST_CASE(testStickyDeltaVsLocalVolDelta) {
     const Real h = 0.001;
     const Real skew = (mkt.surface->blackVol(mkt.expiry3M, strike + h) -
                        mkt.surface->blackVol(mkt.expiry3M, strike - h)) / (2.0 * h);
-    const Real expectedGap = 2.0 * (sdG.vega / 0.01) * std::fabs(skew) * 0.01 * mkt.spot->value();
-    // the rule is first order: here the gap is 1273 against its 1050
+    const Real expectedGap = 2.0 * (sdG.vega / 0.01) * std::fabs(skew);
+    // the rule is first order: here the gap is EUR 120,607 against its 96,799
     BOOST_CHECK_CLOSE(sdG.spotDelta - lvG.spotDelta, expectedGap, 30.0);
 
     // sticky strike, implied vols at fixed strikes not moving, is the Black
     // delta at the option's vol, whether priced with local vol or not, and
-    // lies between: sticky delta is above it by vega times the skew (539
-    // against 525 here), local vol below it by about as much, its rule being
-    // the cruder (769 against 525)
+    // lies between: sticky delta is above it by vega times the skew (EUR
+    // 49,694 against 48,400 here), local vol below it by about as much, its
+    // rule being the cruder (70,913 against 48,400)
     const FxVanillaGreeks ssG = riskCalc.calculate(true, FxVanillaBumpRisk::StickyType::Strike);
     const FxVanillaGreeks ssBlack =
         riskCalc.calculate(false, FxVanillaBumpRisk::StickyType::Strike);
@@ -655,11 +654,9 @@ BOOST_AUTO_TEST_CASE(testStickyDeltaVsLocalVolDelta) {
     BOOST_CHECK_LT(lvG.spotDelta, ssG.spotDelta);
     BOOST_CHECK_CLOSE(sdG.spotDelta - ssG.spotDelta, expectedGap / 2.0, 10.0);
 
-    // navva == vanna in both modes.
-    BOOST_CHECK_MESSAGE(sdG.navva == sdG.vanna,
-        "sticky-delta: navva must equal vanna");
-    BOOST_CHECK_MESSAGE(lvG.navva == lvG.vanna,
-        "local vol: navva must equal vanna");
+    // navva = 0.01 S vanna in both modes
+    BOOST_CHECK_CLOSE(sdG.navva, 0.01 * mkt.spot->value() * sdG.vanna, 1.0e-10);
+    BOOST_CHECK_CLOSE(lvG.navva, 0.01 * mkt.spot->value() * lvG.vanna, 1.0e-10);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -670,15 +667,19 @@ BOOST_AUTO_TEST_CASE(testPremiumAdjustedBlackGreeks) {
     BOOST_TEST_MESSAGE("Testing FX premium-adjusted greeks against Black...");
 
     // USD/JPY, the premium in USD: with sticky strike, the greeks are
-    // Black's at the option's vol, and the premium-adjusted delta of a
-    // call (put) is B_d (K/S) N(d2) (-B_d (K/S) N(-d2)), Reiswich and
-    // Wystup (2010); its gamma is B_d K/S^2 [n(d2)/(sigma sqrt(T)) - w N(w d2)]
+    // Black's at the option's vol.  Per unit of notional, a call's (put's)
+    // spot delta is B_f N(d1) (-B_f N(-d1)) and its forward delta N(d1)
+    // (-N(-d1)); its premium-adjusted spot delta is B_d (K/S) N(d2)
+    // (-B_d (K/S) N(-d2)) and forward delta (K/F) N(d2) (-(K/F) N(-d2)),
+    // Reiswich and Wystup (2010), whose change per 1% spot move is
+    // 0.01 B_d (K/S) [n(d2)/(sigma sqrt(T)) - w N(w d2)]
     FxMarket mkt(FxMarketQuotes::usdjpy());
     const Real notional = 1.0e6;   // USD
     const Real S = mkt.spot->value();
     const auto& process = mkt.tradingTimeProcess;
     const Real Bd = process->riskFreeRate()->discount(mkt.expiry3M);
-    const Real F = S * process->dividendYield()->discount(mkt.expiry3M) / Bd;
+    const Real Bf = process->dividendYield()->discount(mkt.expiry3M);
+    const Real F = S * Bf / Bd;
     const CumulativeNormalDistribution N;
     const NormalDistribution n;
 
@@ -699,18 +700,24 @@ BOOST_AUTO_TEST_CASE(testPremiumAdjustedBlackGreeks) {
         const Real K = c.strike;
         const Real w = (c.type == Option::Call) ? 1.0 : -1.0;
         const Real stdDev = std::sqrt(process->blackVolatility()->blackVariance(mkt.expiry3M, K));
-        const Real d2 = std::log(F / K) / stdDev - 0.5 * stdDev;
-        const Real delta = 0.01 * notional * w * Bd * K * N(w * d2);
-        const Real gamma = 1.0e-4 * notional * Bd * K * (n(d2) / stdDev - w * N(w * d2));
+        const Real d1 = std::log(F / K) / stdDev + 0.5 * stdDev;
+        const Real d2 = d1 - stdDev;
+        const Real delta = notional * w * Bd * (K / S) * N(w * d2);
+        const Real gamma =
+            0.01 * notional * Bd * (K / S) * (n(d2) / stdDev - w * N(w * d2));
 
         BOOST_TEST_INFO("type " << c.type << ", strike " << K);
+        // plain deltas: amounts of USD, spot and forward
+        BOOST_CHECK_CLOSE(g.spotDelta, notional * w * Bf * N(w * d1), 0.01);
+        BOOST_CHECK_CLOSE(g.fwdDelta, notional * w * N(w * d1), 0.01);
+        // premium-adjusted
         BOOST_CHECK_CLOSE(pa.spotDelta, delta, 0.01);
-        BOOST_CHECK_CLOSE(pa.fwdDelta, delta / Bd, 0.01);
+        BOOST_CHECK_CLOSE(pa.fwdDelta, notional * w * (K / F) * N(w * d2), 0.01);
         BOOST_CHECK_CLOSE(pa.spotGamma, gamma, 0.1);
-        BOOST_CHECK_CLOSE(pa.fwdGamma, gamma / Bd, 0.1);
-        // the adjustment: 1% of the value off the delta, 1% of vega off vanna
-        BOOST_CHECK_CLOSE(pa.spotDelta, g.spotDelta - 0.01 * g.npv, 1.0e-10);
-        BOOST_CHECK_CLOSE(pa.vanna, g.vanna - 0.01 * g.vega, 1.0e-10);
+        BOOST_CHECK_CLOSE(pa.fwdGamma, gamma / Bf, 0.1);
+        // the adjustment: the value in USD off the delta, vega / S off vanna
+        BOOST_CHECK_CLOSE(pa.spotDelta, g.spotDelta - g.npv / S, 1.0e-10);
+        BOOST_CHECK_CLOSE(pa.vanna, g.vanna - g.vega / S, 1.0e-10);
         // the premium makes the delta smaller in the size of a call, larger
         // in that of a put
         BOOST_CHECK_LT(pa.spotDelta, g.spotDelta);
@@ -751,25 +758,28 @@ BOOST_AUTO_TEST_CASE(testPremiumAdjustedParityWithLocalVol) {
     const FxVanillaGreeks callBlack = callCalc.calculate(false);
     BOOST_CHECK_CLOSE(call.npv, callBlack.npv, 1.0);
 
-    // plain greeks: the call's delta exceeds the put's by B_f, in the units
-    // of the deltas 0.01 S B_f, and their gammas are equal.  On the
+    // plain greeks: the call's delta exceeds the put's by B_f per unit of
+    // notional, and their gammas are equal.  On the
     // finite-difference grid the delta gap is off by 0.23% at 50 points,
     // converging with the grid (0.067%, 0.026%, 0.016% at 100, 200, 400;
     // 1e-14 with Black), the same on EUR/USD; the gammas differ by 0.08%
     // (see testPutCallParity)
     const Real S = mkt.spot->value();
     const Real Bf = process->dividendYield()->discount(mkt.expiry3M);
-    BOOST_CHECK_CLOSE(call.spotDelta - put.spotDelta, 0.01 * notional * S * Bf, 0.3);
+    BOOST_CHECK_CLOSE(call.spotDelta - put.spotDelta, notional * Bf, 0.3);
+    BOOST_CHECK_CLOSE(call.fwdDelta - put.fwdDelta, notional, 0.3);
     BOOST_CHECK_SMALL(call.spotGamma - put.spotGamma, 1.0e-3 * call.spotGamma);
 
-    // premium-adjusted: the call's delta exceeds the put's by K B_d / S, and
-    // its gamma falls short by K B_d / S^2, in the units of the greeks; the
-    // same grid errors (here 0.23% on the deltas, 0.5% on the gammas)
+    // premium-adjusted: the call's delta exceeds the put's by K B_d / S (in
+    // forwards, K / F), and its gamma, per 1% spot move, falls short by
+    // 0.01 K B_d / S; the same grid errors (here 0.23% on the deltas, 0.5%
+    // on the gammas)
     const FxPremiumAdjustedGreeks& cpa = call.premiumAdjusted;
     const FxPremiumAdjustedGreeks& ppa = put.premiumAdjusted;
-    BOOST_CHECK_CLOSE(cpa.spotDelta - ppa.spotDelta, 0.01 * notional * K * Bd, 0.3);
-    BOOST_CHECK_CLOSE(cpa.fwdDelta - ppa.fwdDelta, 0.01 * notional * K, 0.3);
-    BOOST_CHECK_CLOSE(cpa.spotGamma - ppa.spotGamma, -1.0e-4 * notional * K * Bd, 1.0);
+    const Real F = S * Bf / Bd;
+    BOOST_CHECK_CLOSE(cpa.spotDelta - ppa.spotDelta, notional * K * Bd / S, 0.3);
+    BOOST_CHECK_CLOSE(cpa.fwdDelta - ppa.fwdDelta, notional * K / F, 0.3);
+    BOOST_CHECK_CLOSE(cpa.spotGamma - ppa.spotGamma, -0.01 * notional * K * Bd / S, 1.0);
     // vanna: C - P does not depend on vol.  The grid's parity error depends
     // on vol, and leaves call and put vanna 0.8% apart here (0.4% to 0.6% on
     // EUR/USD), on any grid
