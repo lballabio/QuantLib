@@ -846,6 +846,9 @@
     <ClInclude Include="ql\instruments\constnotionalcrosscurrencyswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\di1future.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\dividendschedule.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -2215,6 +2218,9 @@
       <Filter>termstructures\yield</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\yield\derivedtermstructure.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\di1futureratehelper.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\yield\discountcurve.hpp">
@@ -5846,6 +5852,9 @@
     <ClCompile Include="ql\termstructures\yield\bondhelpers.cpp">
       <Filter>termstructures\yield</Filter>
     </ClCompile>
+    <ClCompile Include="ql\termstructures\yield\di1futureratehelper.cpp">
+      <Filter>termstructures\yield</Filter>
+    </ClCompile>
     <ClCompile Include="ql\termstructures\yield\fittedbonddiscountcurve.cpp">
       <Filter>termstructures\yield</Filter>
     </ClCompile>
@@ -7494,6 +7503,9 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\barrier\analyticdoublebarrierengine.cpp">
       <Filter>pricingengines\barrier</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\di1future.cpp">
+      <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\doublebarrieroption.cpp">
       <Filter>instruments</Filter>

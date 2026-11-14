@@ -275,6 +275,7 @@ set(QL_SOURCES
     instruments/crosscurrencyswap.cpp
     instruments/constnotionalcrosscurrencybasisswap.cpp
     instruments/constnotionalcrosscurrencyfixedvsfloatingswap.cpp
+    instruments/di1future.cpp
     instruments/doublebarrieroption.cpp
     instruments/doublebarriertype.cpp
     instruments/equitytotalreturnswap.cpp
@@ -898,6 +899,7 @@ set(QL_SOURCES
     termstructures/volatility/swaption/swaptionvolstructure.cpp
     termstructures/voltermstructure.cpp
     termstructures/yield/bondhelpers.cpp
+    termstructures/yield/di1futureratehelper.cpp
     termstructures/yield/fittedbonddiscountcurve.cpp
     termstructures/yield/flatforward.cpp
     termstructures/yield/forwardstructure.cpp
@@ -1382,6 +1384,7 @@ set(QL_HEADERS
     instruments/constnotionalcrosscurrencybasisswap.hpp
     instruments/constnotionalcrosscurrencyfixedvsfloatingswap.hpp
     instruments/constnotionalcrosscurrencyswap.hpp
+    instruments/di1future.hpp
     instruments/dividendschedule.hpp
     instruments/doublebarrieroption.hpp
     instruments/doublebarriertype.hpp
@@ -2212,6 +2215,7 @@ set(QL_HEADERS
     termstructures/yield/bootstraptraits.hpp
     termstructures/yield/compositezeroyieldstructure.hpp
     termstructures/yield/derivedtermstructure.hpp
+    termstructures/yield/di1futureratehelper.hpp
     termstructures/yield/discountcurve.hpp
     termstructures/yield/fittedbonddiscountcurve.hpp
     termstructures/yield/flatforward.hpp

@@ -697,6 +697,7 @@
     <ClCompile Include="dates.cpp" />
     <ClCompile Include="daycounters.cpp" />
     <ClCompile Include="defaultprobabilitycurves.cpp" />
+    <ClCompile Include="di1futures.cpp" />
     <ClCompile Include="digitalcoupon.cpp" />
     <ClCompile Include="digitaloption.cpp" />
     <ClCompile Include="distributions.cpp" />
