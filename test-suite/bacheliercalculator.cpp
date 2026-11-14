@@ -122,7 +122,7 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorGreeks) {
     Real refDeltaFwd = 0.38122899060122245;
     Real refGamma = 0.019124047842706517;
     Real refGammaFwd = 0.018366735548135338;
-    Real refTheta = -4.3159316452046594;
+    Real refTheta = -4.1644691862904235;
     Real refVega = 0.36733471096270676;
     Real refRho = 32.682349793874224;
     Real refElasticity = 7.0071783554334042;
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorGreeks) {
     Real refDividendRho = -38.122899060122243;
     Real refStrikeSensitivity = -0.38122899060122245;
     Real refStrikeGamma = 0.018366735548135338;
-    Real refVanna = 0.0048333514600356151;
+    Real refVanna = 0.0045916838870338345;
     Real refVolga = 0.0011479209717584586;
 
     BachelierCalculator calc(Option::Call, strike, forward, stdDev, discount);
@@ -396,6 +396,47 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorNumericalDerivatives) {
     if (std::fabs(volga - volgaFD) > tolerance) {
         BOOST_ERROR("BachelierCalculator call volga error: analytical="
                     << volga << " finite-diff=" << volgaFD << " error=" << (volga - volgaFD));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBachelierCalculatorThetaAndVannaWithCarry) {
+    BOOST_TEST_MESSAGE("Testing BachelierCalculator theta and vanna with non-zero carry...");
+
+    Real spot = 98.0, strike = 105.0, r = 0.04, q = 0.01, sigma = 20.0, maturity = 1.5;
+    Real h = 1e-4;
+    Real tolerance = 1e-6;
+
+    for (auto type : {Option::Call, Option::Put}) {
+        auto calculatorAt = [&](Time t) {
+            return BachelierCalculator(type, strike, spot * std::exp((r - q) * t),
+                                       sigma * std::sqrt(t), std::exp(-r * t));
+        };
+        BachelierCalculator calc = calculatorAt(maturity);
+
+        // theta is the change in value as the maturity shortens, with the
+        // forward, the discount and the standard deviation all following it
+        Real theta = calc.theta(spot, maturity);
+        Real thetaFD = -(calculatorAt(maturity + h).value() - calculatorAt(maturity - h).value())
+                       / (2.0 * h);
+        if (std::fabs(theta - thetaFD) > tolerance) {
+            BOOST_ERROR("BachelierCalculator " << type << " theta error:"
+                        << "\n    analytical:  " << theta
+                        << "\n    finite diff: " << thetaFD);
+        }
+
+        // vanna is the change in vega as the forward moves
+        Real forward = spot * std::exp((r - q) * maturity);
+        Real stdDev = sigma * std::sqrt(maturity);
+        Real discount = std::exp(-r * maturity);
+        BachelierCalculator up(type, strike, forward + h, stdDev, discount);
+        BachelierCalculator down(type, strike, forward - h, stdDev, discount);
+        Real vanna = calc.vanna(maturity);
+        Real vannaFD = (up.vega(maturity) - down.vega(maturity)) / (2.0 * h);
+        if (std::fabs(vanna - vannaFD) > tolerance) {
+            BOOST_ERROR("BachelierCalculator " << type << " vanna error:"
+                        << "\n    analytical:  " << vanna
+                        << "\n    finite diff: " << vannaFD);
+        }
     }
 }
 
