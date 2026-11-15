@@ -44,7 +44,12 @@ namespace QuantLib {
         // - tMaxStepsPerYear 365: daily steps at short end for accuracy
         // - tMinStepsPerYear 25: coarser at long end for efficiency
         // - tStepNumberDecay 3.0: smooth ramp from daily to monthly steps
-        // - nRannacherTimeSteps 2: damp Dirac delta initial condition
+        // - nRannacherTimeSteps 0: no implicit Euler steps at the start.  They
+        //   would damp a Dirac initial density, but the density starts as a
+        //   Gaussian Green's function, already smooth; and their iterative
+        //   solver (BiCGStab) fails to converge on fine grids, e.g. 201 x 201
+        //   with rho -0.6, where without them the calibration converges, to
+        //   the same leverage, several times faster
         // - predictionCorrectionSteps 2: standard predictor-corrector
         // - x0Density 0.1: probability mass assigned to the initial log-spot cell
         // - localVolEpsProb 1e-4: density floor below which local vol is not evaluated
@@ -54,11 +59,16 @@ namespace QuantLib {
         // - v0Density 1.0: initial variance density concentration
         // - vLowerBoundDensity / vUpperBoundDensity: mesher boundary densities
         // - leverageFctPropEps 1e-6: density threshold below which L = 1 (avoids 0/0)
+        // - Power transformation of the variance density: with the Log one,
+        //   SLV calibrated on an 11-pillar EURUSD surface misses the vanillas
+        //   by 0.3% at the money and 1% at 105% (vol of vol 0.15, trading
+        //   time); with Power, which also suits densities piling up at zero
+        //   variance when the Feller condition fails, by under 0.1%
         return {
             201, 201,           // xGrid, vGrid
             365, 25,            // tMaxStepsPerYear, tMinStepsPerYear
             3.0,                // tStepNumberDecay
-            2,                  // nRannacherTimeSteps
+            0,                  // nRannacherTimeSteps
             2,                  // predictionCorrectionSteps
             0.1,                // x0Density
             1.0e-4,             // localVolEpsProb
@@ -71,7 +81,7 @@ namespace QuantLib {
             0.9,                // vUpperBoundDensity
             1.0e-6,             // leverageFctPropEps
             FdmHestonGreensFct::Gaussian,
-            FdmSquareRootFwdOp::Log,
+            FdmSquareRootFwdOp::Power,
             FdmSchemeDesc::ModifiedCraigSneyd()
         };
     }
