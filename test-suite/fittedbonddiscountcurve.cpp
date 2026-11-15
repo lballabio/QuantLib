@@ -393,6 +393,53 @@ BOOST_AUTO_TEST_CASE(testExponentialSplinesFixedKappa) {
     BOOST_CHECK(curveConstrainedBumped.discount(t) != curveConstrainedFixed.discount(t));
 }
 
+BOOST_AUTO_TEST_CASE(testUnconstrainedFitIsRejected) {
+
+    BOOST_TEST_MESSAGE("Testing that fitted bond curves require a constraint at zero to fit...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto bond1 = ext::make_shared<ZeroCouponBond>(0, TARGET(), 100.0, today + Period(1, Years));
+    auto bond2 = ext::make_shared<ZeroCouponBond>(0, TARGET(), 100.0, today + Period(2, Years));
+    auto bond3 = ext::make_shared<ZeroCouponBond>(0, TARGET(), 100.0, today + Period(5, Years));
+    auto bond4 = ext::make_shared<ZeroCouponBond>(0, TARGET(), 100.0, today + Period(10, Years));
+
+    std::vector<ext::shared_ptr<BondHelper> > helpers(4);
+    helpers[0] = ext::make_shared<BondHelper>(makeQuoteHandle(99.0), bond1);
+    helpers[1] = ext::make_shared<BondHelper>(makeQuoteHandle(98.0), bond2);
+    helpers[2] = ext::make_shared<BondHelper>(makeQuoteHandle(95.0), bond3);
+    helpers[3] = ext::make_shared<BondHelper>(makeQuoteHandle(90.0), bond4);
+
+    bool constrainAtZero = false;
+    std::vector<Time> knots = {-30.0, -20.0, 0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 40.0, 50.0};
+    std::vector<ext::shared_ptr<FittedBondDiscountCurve::FittingMethod>> methods = {
+        ext::make_shared<SimplePolynomialFitting>(3, constrainAtZero),
+        ext::make_shared<ExponentialSplinesFitting>(constrainAtZero),
+        ext::make_shared<CubicBSplinesFitting>(knots, constrainAtZero)
+    };
+
+    for (const auto& method : methods) {
+        // without a guess, the fit used to start from a null discount
+        // function and return it unchanged, with a NaN cost...
+        FittedBondDiscountCurve curve(today, helpers, Actual365Fixed(), *method);
+        BOOST_CHECK_EXCEPTION(curve.discount(3.0), Error,
+                              ExpectedErrorMessage("must be constrained at zero"));
+
+        // ...and with a guess, it used to converge to a curve with an
+        // arbitrary level, e.g., a discount factor of 3.5 at t = 0.
+        Array guess(method->size(), 1.0);
+        FittedBondDiscountCurve curveWithGuess(today, helpers, Actual365Fixed(), *method,
+                                               1.0e-10, 10000, guess);
+        BOOST_CHECK_EXCEPTION(curveWithGuess.discount(3.0), Error,
+                              ExpectedErrorMessage("must be constrained at zero"));
+    }
+
+    // curves built from given parameters are still allowed
+    Array parameters = {1.0, -0.03, 0.0, 0.0};
+    FittedBondDiscountCurve evaluator(today, SimplePolynomialFitting(3, constrainAtZero),
+                                      parameters, today + Period(10, Years), Actual365Fixed());
+    QL_CHECK_CLOSE(evaluator.discount(2.0), 0.94, 1.0e-10);
+}
+
 BOOST_AUTO_TEST_CASE(testNaturalCubicFittingEvaluation) {
 
     BOOST_TEST_MESSAGE("Testing natural cubic fitting method as evaluator...");

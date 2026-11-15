@@ -179,6 +179,12 @@ namespace QuantLib {
         weights, which will be used as weights to each bond. If not given
         or empty, then the bonds will be weighted by inverse duration
 
+        If constrainAtZero is false, the discount function is not
+        forced to be 1 at t = 0.  This can be used when evaluating a
+        curve from given parameters, but not when fitting: bond prices
+        only depend on ratios of discount factors and can't determine
+        the level of the function, so a fit requires the constraint.
+
         An optional Array may be provided as an L2 regularizor in this case
         a L2 (gaussian) penalty is applied to each parameter starting from the 
         initial guess. This is the same as giving a Gaussian prior on the parameters
