@@ -677,9 +677,10 @@ BOOST_AUTO_TEST_CASE(testSlvInTradingTimeRepricesVanillas) {
                                {false, false, true, false, false});
     auto fdmParams = HestonSLVLeverageCalibrator::defaultParams();
     fdmParams.xGrid = 101;  // the variance grid matters more, see defaultParams()
-    // the time steps matter, and not monotonically: with these, the error
-    // is 0.3% to 0.4%, with the defaults (25 steps a year, decay 3) 1.5% at
-    // 105%, with daily steps throughout under 0.1% (but 30 times slower)
+    // the time steps matter, and not monotonically: without the pillars as
+    // time steps, the error is 0.3% to 0.4% with these, 1.5% at 105% with
+    // the defaults (25 steps a year, decay 3), and under 0.1% with daily
+    // steps throughout (but 30 times slower)
     fdmParams.tMinStepsPerYear = 12;
     fdmParams.tStepNumberDecay = 2.0;
     HestonSLVLeverageCalibrator leverageCal(fdmParams);
@@ -688,12 +689,13 @@ BOOST_AUTO_TEST_CASE(testSlvInTradingTimeRepricesVanillas) {
                                 localVolProcess->dividendYield(),
                                 Handle<BlackVolTermStructure>(market.volSurface()),
                                 localVolProcess->localVolatility(), settlement);
-    context.calibrate(hestonCal, leverageCal, pillars, market.pillars().back());
+    // the pillars as dates of the calibration's time steps: local vol jumps there
+    context.calibrate(hestonCal, leverageCal, pillars, market.pillars().back(), market.pillars());
 
-    // a 4M expiry, between the pillars: SLV reprices the market's vanillas
-    // (to 0.26%, 0.28% and 0.40% here, the same on a 201 x 201 grid; in
-    // calendar time the same calibration misses by 1.4%, 5.7% and 18%, and
-    // more as its grid is refined)
+    // a 4M expiry, between the pillars: SLV reprices the market's vanillas,
+    // to 0.001%, 0.07% and 0.09% here (0.26%, 0.28% and 0.40% without the
+    // pillars as time steps); in calendar time the same calibration misses
+    // by 1.4%, 5.7% and 18%, and more as its grid is refined
     const Date expiry = fxExpiryDate(today, 4 * Months, settlement);
     const Real fwd = market.forward(expiry);
     for (Real m : {0.95, 1.00, 1.05}) {
@@ -703,7 +705,7 @@ BOOST_AUTO_TEST_CASE(testSlvInTradingTimeRepricesVanillas) {
         const Real black = option.NPV();
         option.setPricingEngine(context.vanillaEngine(FdmGridConfig{100, 100, 50, 0}));
         BOOST_TEST_INFO("strike " << m << " F");
-        BOOST_CHECK_CLOSE(option.NPV(), black, 0.6);
+        BOOST_CHECK_CLOSE(option.NPV(), black, 0.25);
     }
 }
 

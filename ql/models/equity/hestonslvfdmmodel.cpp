@@ -331,6 +331,10 @@ namespace QuantLib {
 
         const ext::shared_ptr<TimeGrid> timeGrid(
             new TimeGrid(times.begin(), times.end()));
+        // the grid's times, sorted and without duplicates, unlike the
+        // mandatory times appended above: the leverage function is built
+        // on them, one strike vector per grid time
+        times.assign(timeGrid->begin(), timeGrid->end());
 
         // build 1d meshers
         const LocalVolRNDCalculator localVolRND(

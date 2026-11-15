@@ -1632,6 +1632,51 @@ BOOST_AUTO_TEST_CASE(testLocalVolsvSLVPropDensity) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testLeverageCalibrationWithMandatoryDates) {
+    BOOST_TEST_MESSAGE("Testing SLV leverage calibration with mandatory dates...");
+
+    const Date todaysDate(5, Oct, 2015);
+    const Date finalDate = todaysDate + Period(1, Years);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    const DayCounter dayCounter = Actual365Fixed();
+    const Handle<YieldTermStructure> rTS(flatRate(todaysDate, 0.01, dayCounter));
+    const Handle<YieldTermStructure> qTS(flatRate(todaysDate, 0.02, dayCounter));
+    const Handle<LocalVolTermStructure> localVol(
+        ext::make_shared<LocalConstantVol>(todaysDate, 0.2, dayCounter));
+
+    const Handle<HestonModel> hestonModel(ext::make_shared<HestonModel>(
+        ext::make_shared<HestonProcess>(rTS, qTS, spot, 0.04, 1.0, 0.04, 0.2, -0.5)));
+
+    const HestonSLVFokkerPlanckFdmParams fdmParams = {
+        51, 51, 100, 25, 3.0, 2, 2,
+        0.1, 1e-4, 10000,
+        1e-8, 1e-8, 0.0,
+        1.0, 0.1, 0.9, 1e-5,
+        FdmHestonGreensFct::Gaussian,
+        FdmSquareRootFwdOp::Log,
+        FdmSchemeDesc::ModifiedCraigSneyd()
+    };
+
+    // dates off the regular time steps, the last one the final date: their
+    // times are added to the steps, unsorted, and the final one twice
+    const std::vector<Date> mandatoryDates = {
+        todaysDate + 200, todaysDate + 45, finalDate};
+    const HestonSLVFDMModel slvModel(
+        localVol, hestonModel, finalDate, fdmParams, false, mandatoryDates);
+
+    ext::shared_ptr<LocalVolTermStructure> leverage;
+    BOOST_REQUIRE_NO_THROW(leverage = slvModel.leverageFunction());
+
+    // with the local vol and the Heston vol both 20%, the leverage is about one
+    for (const Date& d : mandatoryDates) {
+        const Real l = leverage->localVol(dayCounter.yearFraction(todaysDate, d), 100.0, true);
+        BOOST_CHECK_MESSAGE(l > 0.8 && l < 1.25,
+                            "leverage " << l << " at " << d << " far from one");
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testBarrierPricingViaHestonLocalVol) {
     BOOST_TEST_MESSAGE("Testing calibration via vanilla options...");
 
