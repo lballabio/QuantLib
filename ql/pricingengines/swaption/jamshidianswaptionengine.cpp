@@ -20,6 +20,7 @@
 
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
+#include <algorithm>
 #include <cmath>
 
 namespace QuantLib {
@@ -118,17 +119,29 @@ namespace QuantLib {
             dayCounter = termStructure_->dayCounter();
         }
 
-        std::vector<Real> amounts(arguments_.fixedCoupons);
+        // only the coupons starting on or after the exercise date are
+        // part of the underlying swap entered at exercise
+        const Date& exerciseDate = arguments_.exercise->date(0);
+        Size startIndex = std::upper_bound(arguments_.fixedResetDates.begin(),
+                                           arguments_.fixedResetDates.end(),
+                                           exerciseDate - 1) -
+                          arguments_.fixedResetDates.begin();
+        QL_REQUIRE(startIndex < arguments_.fixedResetDates.size(),
+                   "no fixed coupon starts on or after the exercise date ("
+                   << exerciseDate << ")");
+
+        std::vector<Real> amounts(arguments_.fixedCoupons.begin() + startIndex,
+                                  arguments_.fixedCoupons.end());
         amounts.back() += arguments_.nominal;
 
-        Real maturity = dayCounter.yearFraction(referenceDate,
-                                                arguments_.exercise->date(0));
+        Real maturity = dayCounter.yearFraction(referenceDate, exerciseDate);
 
-        std::vector<Time> fixedPayTimes(arguments_.fixedPayDates.size());
-        Time valueTime = dayCounter.yearFraction(referenceDate,arguments_.fixedResetDates[0]);
+        std::vector<Time> fixedPayTimes(amounts.size());
+        Time valueTime =
+            dayCounter.yearFraction(referenceDate, arguments_.fixedResetDates[startIndex]);
         for (Size i=0; i<fixedPayTimes.size(); i++)
             fixedPayTimes[i] = dayCounter.yearFraction(referenceDate,
-                                                       arguments_.fixedPayDates[i]);
+                                                       arguments_.fixedPayDates[startIndex + i]);
 
         rStarFinder finder(*model_, arguments_.nominal, maturity, valueTime,
                            fixedPayTimes, amounts);
@@ -141,13 +154,11 @@ namespace QuantLib {
         Rate rStar = s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
 
         Option::Type w = arguments_.type==Swap::Payer ? Option::Put : Option::Call;
-        Size size = arguments_.fixedCoupons.size();
+        Size size = amounts.size();
 
         Real value = 0.0;
         for (Size i=0; i<size; i++) {
-            Real fixedPayTime =
-                dayCounter.yearFraction(referenceDate,
-                                        arguments_.fixedPayDates[i]);
+            Real fixedPayTime = fixedPayTimes[i];
             Real strike = finder.discountBondRatio(i, rStar);
             // Looks like the swaption decomposed into individual options adjusted for maturity. Each individual option is valued by Hull-White (or other one-factor model).
             Real dboValue = model_->discountBondOption(
