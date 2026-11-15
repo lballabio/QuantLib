@@ -1,0 +1,5 @@
+add_executable(FXLocalVol FXLocalVol.cpp)
+target_link_libraries(FXLocalVol ql_library ${QL_THREAD_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS FXLocalVol RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

@@ -80,6 +80,9 @@ QL_TEST_SRCS = \
 	forwardrateagreement.cpp \
 	functions.cpp \
 	fxforward.cpp \
+	fxlocalvol.cpp \
+	fxslvmodel.cpp \
+	fxsmilesections.cpp \
 	g2process.cpp \
 	garch.cpp \
 	gaussianquadratures.cpp \

@@ -1,0 +1,5 @@
+add_executable(FXSmileSection FXSmileSection.cpp)
+target_link_libraries(FXSmileSection ql_library ${QL_THREAD_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS FXSmileSection RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

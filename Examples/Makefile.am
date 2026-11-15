@@ -14,6 +14,8 @@ EXAMPLES = \
     EquityOption/EquityOption \
     FittedBondCurve/FittedBondCurve \
     FRA/FRA \
+    FXLocalVol/FXLocalVol \
+    FXSmileSections/FXSmileSection \
     Gaussian1dModels/Gaussian1dModels \
     GlobalOptimizer/GlobalOptimizer \
     LatentModel/LatentModel \
@@ -79,6 +81,12 @@ EquityOption_EquityOption_LDADD = $(LDADDS)
 
 FRA_FRA_SOURCES = FRA/FRA.cpp
 FRA_FRA_LDADD = $(LDADDS)
+
+FXLocalVol_FXLocalVol_SOURCES = FXLocalVol/FXLocalVol.cpp
+FXLocalVol_FXLocalVol_LDADD = $(LDADDS)
+
+FXSmileSections_FXSmileSection_SOURCES = FXSmileSections/FXSmileSection.cpp
+FXSmileSections_FXSmileSection_LDADD = $(LDADDS)
 
 FittedBondCurve_FittedBondCurve_SOURCES = FittedBondCurve/FittedBondCurve.cpp
 FittedBondCurve_FittedBondCurve_LDADD = $(LDADDS)

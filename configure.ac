@@ -433,6 +433,10 @@ AC_CONFIG_FILES([
     ql/experimental/finitedifferences/Makefile
     ql/experimental/forward/Makefile
     ql/experimental/fx/Makefile
+    ql/experimental/fxslv/Makefile
+    ql/experimental/fxslv/conventions/Makefile
+    ql/experimental/fxslv/tradingtime/Makefile
+    ql/experimental/fxslv/smilesections/Makefile
     ql/experimental/inflation/Makefile
     ql/experimental/lattices/Makefile
     ql/experimental/math/Makefile

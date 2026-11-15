@@ -1,0 +1,729 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*!
+ Copyright (C) 2025 Raghav Subbarao
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <https://www.quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \file FXLocalVol.cpp
+    \brief FX local vol and stochastic local vol (SLV) risk engine example.
+
+    Demonstrates the full workflow for risk-managing an FX vanilla options book:
+
+    PART A — Local Volatility
+    1.  Market data: EURUSD pillar quotes (ATM, 25d/10d RR, 25d/10d BF)
+        for eleven tenors: O/N, 1W, 2W, 1M, 2M, 3M, 6M, 9M, 1Y, 18M, 2Y.
+    2.  Build the pair's market (FxPairMarket): its SABR variance surface,
+        calibrated to the quotes, and its trading-time clock.
+    3.  The local-vol process on that clock (FxPairMarket::localVolProcess()).
+    4.  Price a 3M EUR call (pillar tenor) under BS-FD and local-vol Dupire FD.
+    5.  Full FX Greeks via FxVanillaBumpRisk (sticky-delta convention),
+        theta being the roll of the market to the next business day.
+    6.  Sticky-delta, sticky-strike and local-vol (frozen local vol) deltas.
+    7.  FixedLocalVolSurface spot-check against Dupire.
+
+    PART B — Stochastic Local Volatility (SLV)
+    8.  Calibrate a Heston stochastic vol model to the surface
+        (5 key tenors x 3 strikes via HestonCalibrator).
+    9.  Calibrate the SLV leverage function L(t,S) via the
+        Fokker-Planck PDE (HestonSLVLeverageCalibrator).
+    10. Price a 4M EUR call — a *non-pillar* tenor between 3M and 6M —
+        under both local vol and SLV, and compute spot delta and gamma by
+        bump-and-reval on the SLV engine.
+*/
+
+#include <ql/qldefines.hpp>
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
+#    include <ql/auto_link.hpp>
+#endif
+
+// FX vol surface
+#include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
+#include <ql/experimental/fxslv/conventions/fxsettlementconvention.hpp>
+#include <ql/experimental/fxslv/conventions/fxtenorexpiry.hpp>
+#include <ql/experimental/fxslv/fxpnlexplain.hpp>
+#include <ql/experimental/fxslv/fxpairmarket.hpp>
+#include <ql/experimental/fxslv/fxvariancesurface.hpp>
+#include <ql/experimental/fxslv/smilesections/fxsmilesectionbystrike.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimetermstructure.hpp>
+
+// SLV calibration framework
+#include <ql/experimental/fxslv/fxslvpricingcontext.hpp>
+#include <ql/experimental/fxslv/stochvolcalibrator.hpp>
+#include <ql/experimental/fxslv/slvleveragecalibrator.hpp>
+
+// Process and pricing
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/experimental/fxslv/fxvanillagreeks.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+
+// Instruments
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/exercise.hpp>
+#include <ql/instruments/payoffs.hpp>
+
+// Market data primitives
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/quotes/deltavolquote.hpp>
+
+// Time
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/calendars/weekendsonly.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/settings.hpp>
+
+#include <cmath>
+#include <iomanip>
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace QuantLib;
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Helpers
+// ─────────────────────────────────────────────────────────────────────────────
+
+static void printSeparator(int width = 72) {
+    std::cout << std::string(width, '=') << "\n";
+}
+
+static void printGreeks(const std::string& label, const FxVanillaGreeks& g) {
+    const int w0 = 40;
+    const int w1 = 14;
+    std::cout << "\n  " << label << "\n"
+              << "  " << std::string(w0 + w1, '-') << "\n"
+              << std::fixed;
+    auto row = [&](const std::string& name, Real val, int prec = 2) {
+        std::cout << "  " << std::setw(w0) << std::left << name
+                  << std::setw(w1) << std::right << std::setprecision(prec) << val
+                  << "\n";
+    };
+    row("NPV (USD)",                              g.npv,       2);
+    row("Spot delta  (EUR, spot hedge)",          g.spotDelta, 2);
+    row("Fwd delta   (EUR, forward hedge)",       g.fwdDelta,  2);
+    row("Spot gamma  (EUR per 1% spot move)",     g.spotGamma, 2);
+    row("Fwd gamma   (EUR per 1% fwd move)",      g.fwdGamma,  2);
+    row("Theta       (USD, roll to next day)",    g.theta,     2);
+    row("Vega        (USD per 1% vol)",           g.vega,      2);
+    row("Rega        (USD per 0.1% 1M RR)",       g.rega,      2);
+    row("Sega        (USD per 0.01% 1M BF)",      g.sega,      2);
+    row("Vanna       (EUR delta per 1% vol)",     g.vanna,     2);
+    row("Navva       (USD vega per 1% spot)",     g.navva,     2);
+    row("Volga       (USD per 1%vol x 1%vol)",    g.volga,     2);
+    std::cout << "  " << std::string(w0 + w1, '-') << "\n";
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  main
+// ─────────────────────────────────────────────────────────────────────────────
+
+int main(int, char*[]) {
+
+    try {
+
+        printSeparator();
+        std::cout << "  FX Local Vol Risk Engine — EURUSD Example\n";
+        printSeparator();
+
+        // ──────────────────────────────────────────────────────────────────────
+        //  1. Market data
+        // ──────────────────────────────────────────────────────────────────────
+        Date today(2, January, 2024);
+        Settings::instance().evaluationDate() = today;
+        DayCounter dc = Actual365Fixed();
+
+        const Real spotRate = 1.0850;
+
+        Handle<YieldTermStructure> eurTs(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0400, dc));
+        Handle<YieldTermStructure> usdTs(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0525, dc));
+
+        // Weekends carry a fifth of a business day's variance, as in the market.
+        // With none, local vol vanishes over whole days, which the SLV leverage
+        // calibration below cannot handle.
+        const Real weekendWeight = 0.2;
+
+        DeltaVolQuote::DeltaType  deltaType = DeltaVolQuote::Fwd;
+        DeltaVolQuote::AtmType    atmType   = DeltaVolQuote::AtmFwd;
+        FxRrBfQuotes::FlyType   flyType   = FxRrBfQuotes::SmileStrangle;
+
+        // Eleven pillar tenors: O/N through 2Y, at their FX expiries from the
+        // reference date (see fxExpiryDate()).
+        const Calendar calendar = WeekendsOnly();
+        const FxSettleConvention settlement(calendar, 2);
+        const std::vector<Period> tenors = {1*Days, 1*Weeks, 2*Weeks,
+                                            1*Months, 2*Months, 3*Months,
+                                            6*Months, 9*Months, 1*Years,
+                                            18*Months, 2*Years};
+        const std::vector<std::string> tenorLabels = {"O/N","1W","2W","1M","2M","3M","6M","9M","1Y","18M","2Y"};
+
+
+        // Market quotes — indicative EURUSD levels as of Jan 2024.
+        // ATM vol rises from 6.2% at O/N to 10.0% at 2Y.
+        // Negative RR = EUR put skew (standard EURUSD convention).
+        // Positive BF = convexity (smile is not flat in strike space).
+        struct PillarVols { Real atm, rr25, bf25, rr10, bf10; };
+        const std::vector<PillarVols> mkt = {// ATM     RR25    BF25    RR10    BF10
+                                             { 0.0620, -0.0020, 0.0002, -0.0040, 0.0005 }, // O/N
+                                             { 0.0680, -0.0030, 0.0003, -0.0060, 0.0007 }, // 1W
+                                             { 0.0720, -0.0050, 0.0004, -0.0100, 0.0010 }, // 2W
+                                             { 0.0780, -0.0120, 0.0040, -0.0250, 0.0090 }, // 1M
+                                             { 0.0810, -0.0130, 0.0042, -0.0265, 0.0092 }, // 2M
+                                             { 0.0850, -0.0140, 0.0045, -0.0280, 0.0095 }, // 3M
+                                             { 0.0900, -0.0160, 0.0050, -0.0310, 0.0105 }, // 6M
+                                             { 0.0920, -0.0170, 0.0052, -0.0330, 0.0110 }, // 9M
+                                             { 0.0950, -0.0180, 0.0055, -0.0350, 0.0115 }, // 1Y
+                                             { 0.0970, -0.0190, 0.0058, -0.0370, 0.0120 }, // 18M
+                                             { 0.1000, -0.0200, 0.0060, -0.0390, 0.0125 }, // 2Y
+                                            };
+
+        std::vector<Real> deltas = { 0.25, 0.10 };
+
+        FxVolQuotes quotes;
+        quotes.tenors = tenors;
+        quotes.deltas = deltas;
+        for (const auto& v : mkt) {
+            quotes.atms.push_back(v.atm);
+            quotes.riskReversals.push_back({v.rr25, v.rr10});
+            quotes.butterflies.push_back({v.bf25, v.bf10});
+        }
+
+        // ──────────────────────────────────────────────────────────────────────
+        //  2. The pair's market: its conventions, its quotes, and the choices
+        //     its surface is built with (SABR smiles, interpolated in
+        //     normalised call price on the trading-time clock).  In an
+        //     application, a market bundling several pairs would build it,
+        //     with curves bootstrapped consistently (see bootstrapFxCurve()).
+        // ──────────────────────────────────────────────────────────────────────
+        const FxPairConventions conventions("EUR", "USD", settlement, FxExpiryCut(10), deltaType,
+                                            atmType, flyType);
+        const FxPairMarket market(today, conventions, spotRate, eurTs, usdTs, quotes, {},
+                                  FxVolSurfaceConfig(FxSmileModel::Sabr, FxVolInterpolation::Ncp,
+                                                     weekendWeight));
+        // the surface's time axis is trading time; the SLV of part B, still
+        // calibrated in calendar time, uses it seen in calendar time
+        const ext::shared_ptr<BlackVolTermStructure> calendarVolSurface =
+            market.calendarTimeVolSurface();
+        const std::vector<Date>& pillars = market.pillars();
+        const Handle<Quote> spot = market.spotQuote();
+
+        // ──────────────────────────────────────────────────────────────────────
+        //  3. Build the local-vol process.  It takes its forward from the
+        //     spot date to the delivery date of each expiry, as the surface
+        //     does, and its local vol by Dupire from the surface, on the
+        //     surface's trading-time clock: there local vol is smooth over
+        //     weekends and events, which in calendar time it is not.  The
+        //     short-dated wings of this surface have calendar arbitrage, so
+        //     local vol is not defined everywhere: opt in to a fallback
+        //     there, and report how often it is used, rather than fail.
+        //
+        //     The SLV of part B still runs in calendar time, on the same
+        //     surface in calendar time.
+        // ──────────────────────────────────────────────────────────────────────
+        const Volatility localVolFallback = 0.01;
+        auto process = market.localVolProcess(localVolFallback);
+        auto calendarProcess =
+            makeFxLocalVolProcess(spot, eurTs, usdTs, settlement,
+                                  Handle<BlackVolTermStructure>(calendarVolSurface),
+                                  localVolFallback);
+        // the foreign curve consistent with the process's forward
+        const Handle<YieldTermStructure> eurFwdTs = calendarProcess->dividendYield();
+
+        // ──────────────────────────────────────────────────────────────────────
+        //  4. Define the option: 3M EUR call at ATM forward
+        // ──────────────────────────────────────────────────────────────────────
+        Date expiryDate = pillars[5]; // 3M pillar (index 5 in the 11-pillar set)
+        Time T          = dc.yearFraction(today, expiryDate);
+        Real Bd         = usdTs->discount(T);
+        Real Bf         = eurFwdTs->discount(T);
+        Real fwd        = spot->value() * Bf / Bd;
+        Real strike     = fwd; // ATM forward
+
+        auto payoff   = ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+        auto exercise = ext::make_shared<EuropeanExercise>(expiryDate);
+        auto option   = ext::make_shared<VanillaOption>(payoff, exercise);
+        Real iv = market.marketVol(expiryDate, strike);
+
+        // ──────────────────────────────────────────────────────────────────────
+        //  Print market data summary
+        // ──────────────────────────────────────────────────────────────────────
+
+        std::cout << std::fixed << std::setprecision(4);
+        std::cout << iv << "\n";
+        std::cout << "\n  Market data:\n"
+                  << "    Reference date  : " << today << "\n"
+                  << "    Spot (EURUSD)   : " << spot->value() << "\n"
+                  << "    EUR rate (for)  : 4.00%\n"
+                  << "    USD rate (dom)  : 5.25%\n"
+                  << "    Delta type      : Forward (Fwd)\n"
+                  << "    ATM type        : Delta-neutral forward (AtmFwd)\n"
+                  << "    Fly type        : Smile strangle\n\n";
+
+        const int wp = 7;
+        std::cout << "  Pillar quotes:\n";
+        std::cout << "  " << std::setw(8) << "Tenor"
+                  << std::setw(wp) << "ATM%"
+                  << std::setw(wp) << "25RR%"
+                  << std::setw(wp) << "25BF%"
+                  << std::setw(wp) << "10RR%"
+                  << std::setw(wp) << "10BF%"
+                  << "\n"
+                  << "  " << std::string(8 + 5 * wp, '-') << "\n";
+
+        for (Size i = 0; i < pillars.size(); ++i) {
+            std::cout << "  " << std::setw(8) << tenorLabels[i]
+                      << std::setw(wp) << std::setprecision(2) << mkt[i].atm  * 100
+                      << std::setw(wp) << mkt[i].rr25 * 100
+                      << std::setw(wp) << mkt[i].bf25 * 100
+                      << std::setw(wp) << mkt[i].rr10 * 100
+                      << std::setw(wp) << mkt[i].bf10 * 100
+                      << "\n";
+        }
+
+        const Real notional = 1.0e6; // EUR 1,000,000
+        std::cout << "\n  Option: 3M EURUSD EUR call / USD put\n"
+                  << "    Expiry    : " << expiryDate << "\n"
+                  << "    Strike    : " << std::setprecision(4) << strike
+                  << " (3M ATM forward)\n"
+                  << "    3M fwd    : " << fwd << "\n"
+                  << "    Notional  : EUR "
+                  << std::fixed << std::setprecision(0) << notional << "\n";
+
+        // ──────────────────────────────────────────────────────────────────────
+        //  5. Compute Greeks
+        // ──────────────────────────────────────────────────────────────────────
+        FxVanillaBumpRisk riskCalc(option, market,
+                                   notional,
+                                   0.001, /*spotBump=*/
+                                   0.01,  /*volBump=*/ // 1%: see FxVanillaBumpRisk on volga
+                                   0.001, /*rrBump=*/
+                                   0.001, /*bfBump=*/
+                                   100, /*tGrid=*/
+                                   100 /*xGrid=*/
+                                   );
+        // the same fallback as the process's local vol, see 3.
+        riskCalc.setLocalVolFallback(localVolFallback);
+
+        FxVanillaGreeks lvGreeks = riskCalc.calculate(/*localVol=*/true);
+        std::cout << "  Local vol fallback (" << localVolFallback * 100.0 << "%) used at "
+                  << riskCalc.localVolFallbacks() << " points\n";
+        FxVanillaGreeks bsGreeks = riskCalc.calculate(/*localVol=*/false);
+
+        // ──────────────────────────────────────────────────────────────────────
+        //  Print pricing comparison
+        // ──────────────────────────────────────────────────────────────────────
+        printSeparator();
+        std::cout << "  Pricing comparison  (notional = EUR 1,000,000)\n";
+        printSeparator();
+
+        const int wa = 30;
+        const int wb = 14;
+        std::cout << "\n  " << std::setw(wa) << std::left << "Engine"
+                  << std::setw(wb) << std::right << "NPV (USD)"
+                  << "\n"
+                  << "  " << std::string(wa + wb, '-') << "\n"
+                  << "  " << std::setw(wa) << std::left << "Black-Scholes FD"
+                  << std::setw(wb) << std::right << std::fixed
+                  << std::setprecision(2) << bsGreeks.npv
+                  << "\n"
+                  << "  " << std::setw(wa) << std::left << "Local vol Dupire FD"
+                  << std::setw(wb) << std::right << lvGreeks.npv
+                  << "\n"
+                  << "  " << std::setw(wa) << std::left << "Difference"
+                  << std::setw(wb) << std::right << (lvGreeks.npv - bsGreeks.npv)
+                  << "\n";
+
+        // ──────────────────────────────────────────────────────────────────────
+        //  Print Greeks
+        // ──────────────────────────────────────────────────────────────────────
+        printSeparator();
+        std::cout << "  Greeks  (notional = EUR 1,000,000)\n";
+        printSeparator();
+
+        printGreeks("Black-Scholes FD (sticky-delta)", bsGreeks);
+        printGreeks("Local vol Dupire FD (sticky-delta)", lvGreeks);
+
+        std::cout << "\n  Notes on rega/sega time-scaling:\n"
+                  << "    Rega: 1M tenor bumped by rrBump=0.1%; other tenors by\n"
+                  << "          rrBump * sqrt(T_1M / T_pillar). E.g.:\n"
+                  << "          3M: 0.1% * sqrt(1/3) = 0.058%\n"
+                  << "          1Y: 0.1% * sqrt(1/12) = 0.029%\n"
+                  << "    Sega: same scaling with bfBump=0.1%, reported for 0.01%.\n\n";
+
+        // ──────────────────────────────────────────────────────────────────────
+        //  Sticky-delta vs local-vol comparison: local vol frozen in (t, K)
+        //  gives the local-vol model's own delta, under which implied vols at
+        //  a fixed strike move with spot by about the skew, the opposite of
+        //  sticky delta; with a put skew the call's delta is the lower.
+        // ──────────────────────────────────────────────────────────────────────
+        printSeparator();
+        std::cout << "  Sticky-delta, sticky-strike and frozen local vol deltas\n";
+        printSeparator();
+
+        FxVanillaGreeks flvGreeks = riskCalc.calculate(/*localVol=*/true,
+                                                       FxVanillaBumpRisk::StickyType::LocalVol);
+
+        // sticky strike: implied vols at fixed strikes held, so Black at the
+        // option's vol; it lies between the two
+        FxVanillaGreeks ssGreeks = riskCalc.calculate(/*localVol=*/true,
+                                                      FxVanillaBumpRisk::StickyType::Strike);
+
+        printGreeks("Local vol Dupire FD (sticky-delta)", lvGreeks);
+        printGreeks("Sticky-strike (Black at the option's vol)", ssGreeks);
+        printGreeks("Local vol Dupire FD (local vol frozen)", flvGreeks);
+
+        const int wd = 44, wdv = 12;
+        std::cout << "\n  Difference (sticky-delta minus frozen local vol):\n"
+                  << "  " << std::string(wd + wdv, '-') << "\n"
+                  << std::fixed;
+        auto diffRow = [&](const std::string& name, Real a, Real b, int prec = 2) {
+            std::cout << "  " << std::setw(wd) << std::left << name
+                      << std::setw(wdv) << std::right << std::setprecision(prec)
+                      << (a - b) << "\n";
+        };
+        diffRow("Spot delta (EUR)",              lvGreeks.spotDelta, flvGreeks.spotDelta);
+        diffRow("Fwd delta  (EUR)",              lvGreeks.fwdDelta,  flvGreeks.fwdDelta);
+        diffRow("Spot gamma (EUR per 1% spot)",  lvGreeks.spotGamma, flvGreeks.spotGamma);
+        diffRow("Vega       (USD per 1% vol)",   lvGreeks.vega,      flvGreeks.vega);
+        diffRow("Vanna      (EUR per 1% vol)",   lvGreeks.vanna,     flvGreeks.vanna);
+        diffRow("Volga      (USD per 1%vol x 1%vol)", lvGreeks.volga, flvGreeks.volga);
+        std::cout << "  " << std::string(wd + wdv, '-') << "\n\n"
+                  << "  Non-zero spot delta difference = skew adjustment to delta.\n"
+                  << "  With EUR put skew (negative RR), implied vol falls with the\n"
+                  << "  strike: under sticky delta a fixed-strike vol rises with spot,\n"
+                  << "  under local vol it falls, so the sticky-delta delta is higher,\n"
+                  << "  by about twice vega times the skew.\n\n";
+
+        // ──────────────────────────────────────────────────────────────────────
+        //  6. Local vol surface: Dupire vs FixedLocalVolSurface comparison
+        // ──────────────────────────────────────────────────────────────────────
+        printSeparator();
+        std::cout << "  Local vol surface comparison\n";
+        printSeparator();
+
+        std::vector<Time> lvTimes = { 1.0/12, 3.0/12, 6.0/12, 12.0/12 };
+
+        std::vector<Real> lvStrikes;
+        for (int i = -3; i <= 3; ++i)
+            lvStrikes.push_back(fwd * std::exp(0.05 * i));
+
+        riskCalc.printLocalVolComparison(lvTimes, lvStrikes);
+
+        std::cout << "  D = on-the-fly Dupire local vol\n"
+                  << "  F = pre-sampled FixedLocalVolSurface\n"
+                  << "  Values in percent (%)\n\n";
+
+        auto fixedLV = riskCalc.buildFixedLocalVolSurface(lvTimes, lvStrikes);
+        std::cout << "  FixedLocalVolSurface built with "
+                  << lvTimes.size() << " time steps x "
+                  << lvStrikes.size() << " strikes.\n"
+                  << "  Sample local vol at (T=0.25, K=" << std::fixed
+                  << std::setprecision(4) << strike << "): "
+                  << std::setprecision(2)
+                  << fixedLV->localVol(0.25, strike, true) * 100.0 << "%\n\n";
+
+        // ══════════════════════════════════════════════════════════════════════
+        //  PART B — Stochastic Local Volatility
+        // ══════════════════════════════════════════════════════════════════════
+
+        // ──────────────────────────────────────────────────────────────────────
+        //  7. The Dupire local vol surface in calendar time, built in 3, for
+        //     the SLV calibration.  It is lower over weekends, and uses the
+        //     fallback where it is not defined.
+        // ──────────────────────────────────────────────────────────────────────
+        const Handle<LocalVolTermStructure> localVolHandle = calendarProcess->localVolatility();
+        const auto localVolSurface =
+            ext::dynamic_pointer_cast<FxLocalVolSurface>(localVolHandle.currentLink());
+
+        // ──────────────────────────────────────────────────────────────────────
+        //  8. Calibrate the Heston stochastic vol model
+        //
+        //  Use five key tenors (1M, 3M, 6M, 1Y, 2Y) with three strikes each:
+        //    K = 0.95F  (OTM put),  K = F  (ATM),  K = 1.05F  (OTM call)
+        //  The surface is queried at these absolute strikes to build the
+        //  HestonModelHelper instruments.
+        // ──────────────────────────────────────────────────────────────────────
+        printSeparator();
+        std::cout << "  PART B — Stochastic Local Volatility (SLV)\n";
+        printSeparator();
+
+        const std::vector<Period> calibTenors = {1*Months, 3*Months, 6*Months, 1*Years, 2*Years};
+
+        std::vector<StochVolCalibrator::Pillar> hestonPillars;
+        for (const auto& tenor : calibTenors) {
+            // around the settlement forward of the tenor's FX expiry
+            const Real fwdC = market.forward(fxExpiryDate(today, tenor, settlement));
+            for (Real m : { 0.95, 1.00, 1.05 })
+                hestonPillars.push_back({ tenor, m * fwdC });
+        }
+
+        // Initial Heston parameter guess consistent with observed EURUSD vols.
+        HestonParams hp;
+        hp.v0    = 0.078 * 0.078;   // ≈ (7.8% 1M ATM vol)²
+        hp.kappa = 1.50;
+        hp.theta = 0.10 * 0.10;     // ≈ (10% long-run vol)²
+        hp.sigma = 0.15;
+        hp.rho   = -0.25;
+
+        std::cout << "\n  Calibrating Heston model to "
+                  << hestonPillars.size() << " instruments "
+                  << "(" << calibTenors.size() << " tenors x 3 strikes)...\n";
+
+        // Build the SLV pricing context — this object owns all calibrated state
+        // and is the factory for pricing engines.
+        Handle<BlackVolTermStructure> volHandle(calendarVolSurface);
+        // the SLV engine's own spot, moved below for its delta: the
+        // calibrated leverage function and Heston model stay as they are
+        auto slvSpotQuote = ext::make_shared<SimpleQuote>(spotRate);
+        const Handle<Quote> slvSpot(slvSpotQuote);
+
+        FxSLVPricingContext slvCtx(slvSpot, usdTs, eurFwdTs, volHandle, localVolHandle,
+                                   settlement);
+
+        // Enforce the Feller condition: the SLV leverage calibration fails, or
+        // goes far off, with a Heston fit violating it strongly, as the
+        // unconstrained fit to these quotes does.
+        HestonCalibrator hestonCal(hp, EndCriteria(1000, 500, 1.0e-8, 1.0e-8, 1.0e-8),
+                                   BlackCalibrationHelper::ImpliedVolError, {}, true);
+
+        // Use a coarser FDM grid than production to keep the example fast.
+        // For production use HestonSLVLeverageCalibrator::defaultParams().
+        auto fdmParams = HestonSLVLeverageCalibrator::defaultParams();
+        fdmParams.xGrid            = 51;
+        fdmParams.vGrid            = 21;
+        fdmParams.tMaxStepsPerYear = 52;
+        fdmParams.tMinStepsPerYear = 12;
+        fdmParams.tStepNumberDecay = 2.0;
+
+        HestonSLVLeverageCalibrator levCal(fdmParams);
+
+        const Date slvEndDate = pillars.back();  // the 2Y expiry, where local vol ends
+        slvCtx.calibrate(hestonCal, levCal, hestonPillars, slvEndDate);
+
+        // ── Print Heston calibration results ────────────────────────────────
+        const auto heston = slvCtx.hestonModel();
+
+        std::cout << "\n  Calibrated Heston parameters:\n"
+                  << std::fixed << std::setprecision(6)
+                  << "    kappa (mean reversion speed) : " << heston->kappa() << "\n"
+                  << "    theta (long-run variance)    : " << heston->theta()
+                  << "  (" << std::setprecision(2)
+                  << std::sqrt(heston->theta()) * 100.0 << "% long-run vol)\n"
+                  << std::setprecision(6)
+                  << "    sigma (vol-of-vol)           : " << heston->sigma() << "\n"
+                  << "    rho   (spot-var correlation) : " << heston->rho()   << "\n"
+                  << "    v0    (initial variance)     : " << heston->v0()
+                  << "  (" << std::setprecision(2)
+                  << std::sqrt(heston->v0()) * 100.0 << "% initial vol)\n";
+
+        const Real fellerRatio = 2.0 * heston->kappa() * heston->theta() / (heston->sigma() * heston->sigma());
+        std::cout << std::setprecision(4)
+                  << "    Feller ratio 2kθ/σ²          : " << fellerRatio
+                  << (fellerRatio > 1.0 ? "  (satisfied)\n" : "  (VIOLATED)\n");
+
+        std::cout << "\n  Per-pillar implied-vol errors (model - market):\n";
+        const auto& errors = slvCtx.hestonCalibrationErrors();
+        Size errIdx = 0;
+        for (const auto& tenor : calibTenors) {
+            std::cout << "    " << std::setw(4) << std::left;
+            // print tenor label
+            if      (tenor == 1*Months) std::cout << "1M";
+            else if (tenor == 3*Months) std::cout << "3M";
+            else if (tenor == 6*Months) std::cout << "6M";
+            else if (tenor == 1*Years)  std::cout << "1Y";
+            else                        std::cout << "2Y";
+            std::cout << " :";
+            for (int k = 0; k < 3; ++k, ++errIdx) {
+                if (errIdx < errors.size())
+                    std::cout << std::setw(8) << std::right << std::fixed
+                              << std::setprecision(2)
+                              << errors[errIdx] * 100.0 << "%";
+            }
+            std::cout << "\n";
+        }
+        std::cout << "\n  RMSE: " << std::setprecision(2)
+                  << slvCtx.hestonRmse() * 100.0 << " vol pts\n";
+
+        // ──────────────────────────────────────────────────────────────────────
+        //  9. Calibrate the SLV leverage function
+        //
+        //  The leverage function L(t,S) is solved from the Fokker-Planck PDE
+        //  for the joint density p(t,S,v) of the Heston SLV process:
+        //
+        //     L(t,S)² = σ_local(t,S)² / E[v_t | S_t = S]
+        //
+        //  The result is stored as a FixedLocalVolSurface on the FDM grid.
+        //  Calibration happens inside slvCtx.calibrate() above.
+        // ──────────────────────────────────────────────────────────────────────
+        std::cout << "\n  Leverage function calibrated on ["
+                  << today << ", " << slvEndDate << "].\n";
+
+        const auto leverageFct = slvCtx.leverageFunction();
+
+        // Spot-check: print L(t, F) at a few maturities.
+        std::cout << "\n  L(t, spot) at ATM forward (mixing factor = 1.0):\n";
+        std::cout << "  " << std::string(36, '-') << "\n"
+                  << "  " << std::setw(10) << "Tenor"
+                  << std::setw(14) << "L(t, F)"
+                  << "\n"
+                  << "  " << std::string(36, '-') << "\n";
+        for (const auto& tenor : { 1*Months, 3*Months, 6*Months, 1*Years, 2*Years }) {
+            const Date   expiryL = fxExpiryDate(today, tenor, settlement);
+            const Time   TL      = dc.yearFraction(today, expiryL);
+            const Real   fwdL    = market.forward(expiryL);
+            const Real   L       = leverageFct->localVol(TL, fwdL, true);
+            std::string  lbl;
+            if      (tenor == 1*Months) lbl = "1M";
+            else if (tenor == 3*Months) lbl = "3M";
+            else if (tenor == 6*Months) lbl = "6M";
+            else if (tenor == 1*Years)  lbl = "1Y";
+            else                        lbl = "2Y";
+            std::cout << "  " << std::setw(10) << lbl
+                      << std::setw(14) << std::setprecision(4) << L
+                      << "\n";
+        }
+        std::cout << "  " << std::string(36, '-') << "\n"
+                  << "  (L ≈ 1 means Heston matches local vol exactly at that point)\n";
+
+        // ──────────────────────────────────────────────────────────────────────
+        // 10. Price a 4M EUR call — non-pillar tenor between 3M and 6M —
+        //     under local vol (Dupire FD) and SLV, then compute Greeks.
+        //
+        //  Greeks are computed by bump-and-reval on the SLV engine:
+        //    Spot delta : (NPV(S+dS) - NPV(S-dS)) / (2 dS)      in EUR
+        //    Spot gamma : (NPV(S+dS) - 2 NPV + NPV(S-dS)) / dS² per 1% S, in EUR
+        //    Vega       : (NPV(σ+dσ) - NPV(σ-dσ)) / (2 dσ)      parallel ATM bump
+        //
+        //  Theta in an SLV model requires re-solving the leverage PDE at a
+        //  shifted evaluation date, which is expensive.  For intraday risk
+        //  management it is common to use the local-vol theta as a proxy.
+        // ──────────────────────────────────────────────────────────────────────
+        printSeparator();
+        std::cout << "  4M EUR call  —  non-pillar tenor (between 3M and 6M pillars)\n";
+        printSeparator();
+
+        const Date   expiry4M = fxExpiryDate(today, 4*Months, settlement);
+        const Real   fwd4M    = market.forward(expiry4M);
+
+        auto payoff4M   = ext::make_shared<PlainVanillaPayoff>(Option::Call, fwd4M);
+        auto exercise4M = ext::make_shared<EuropeanExercise>(expiry4M);
+        auto call4M     = ext::make_shared<VanillaOption>(payoff4M, exercise4M);
+
+        std::cout << "\n    Expiry   : " << expiry4M << "\n"
+                  << "    Strike   : " << std::setprecision(4) << fwd4M
+                  << " (ATM forward)\n"
+                  << "    4M fwd   : " << fwd4M << "\n"
+                  << "    Notional : EUR "
+                  << std::fixed << std::setprecision(0) << notional << "\n";
+
+        // ── Local vol baseline price ─────────────────────────────────────────
+        auto call4M_lv = ext::make_shared<VanillaOption>(payoff4M, exercise4M);
+        call4M_lv->setPricingEngine(MakeFdBlackScholesVanillaEngine(process)
+                                        .withTGrid(100)
+                                        .withXGrid(100)
+                                        .withLocalVol(true));
+        const Real lvNpv4M = call4M_lv->NPV() * notional;
+
+        // ── SLV price ────────────────────────────────────────────────────────
+        const FdmGridConfig grid{ /*tGrid=*/100, /*xGrid=*/100,
+                                  /*vGrid=*/50, /*dampingSteps=*/0 };
+        call4M->setPricingEngine(slvCtx.vanillaEngine(grid));
+        const Real slvNpv4M = call4M->NPV() * notional;
+
+        // ── Spot bump parameters ─────────────────────────────────────────────
+        const Real S0  = slvSpotQuote->value();
+        const Real dS  = S0 * 0.001;   // 0.1% absolute spot bump
+
+        slvSpotQuote->setValue(S0 + dS);
+        const Real slvUp = call4M->NPV() * notional;
+        slvSpotQuote->setValue(S0 - dS);
+        const Real slvDn = call4M->NPV() * notional;
+        slvSpotQuote->setValue(S0);
+
+        // delta as an amount of EUR, gamma its change per 1% spot move
+        const Real pctS      = 0.01 * S0;
+        const Real slvDelta  = (slvUp - slvDn)  / (2.0 * dS);
+        const Real slvGamma  = (slvUp - 2.0 * slvNpv4M + slvDn) / (dS * dS) * pctS;
+
+        // ── Vega ─────────────────────────────────────────────────────────────
+        // An SLV vega needs the Heston and leverage calibrations redone on
+        // the bumped market (FxPairMarket::withQuotes()): the calibrated
+        // model does not see the surface, so bumping the quotes under it
+        // would give none.  Too slow for an interactive example.
+
+        // ── Local vol theta (proxy) ───────────────────────────────────────────
+        // The roll of the market to the next business day, priced with local
+        // vol; re-calibrating the full SLV model just for theta is
+        // impractical in an interactive example.
+        const Date nextDay = calendar.advance(today, 1, Days);
+        Settings::instance().evaluationDate() = nextDay;
+        const FxPairMarket rolled = market.rolled(nextDay);
+        auto call4M_rolled = ext::make_shared<VanillaOption>(payoff4M, exercise4M);
+        call4M_rolled->setPricingEngine(
+            MakeFdBlackScholesVanillaEngine(rolled.localVolProcess(localVolFallback))
+                                            .withTGrid(100)
+                                            .withXGrid(100)
+                                            .withLocalVol(true));
+        const Real lvNpvRolled = call4M_rolled->NPV() * notional;
+        Settings::instance().evaluationDate() = today;
+        const Real lvTheta4M = lvNpvRolled - lvNpv4M;  // USD over the roll
+
+        // ── Print results ─────────────────────────────────────────────────────
+        const int wl = 44, wv = 14;
+        std::cout << "\n  Pricing:\n"
+                  << "  " << std::string(wl + wv, '-') << "\n";
+        auto row = [&](const std::string& label, Real val, int prec = 2) {
+            std::cout << "  " << std::setw(wl) << std::left << label
+                      << std::setw(wv) << std::right << std::fixed
+                      << std::setprecision(prec) << val << "\n";
+        };
+        row("Local vol Dupire FD NPV (USD)", lvNpv4M);
+        row("SLV (Heston + leverage) NPV (USD)", slvNpv4M);
+        row("Difference  SLV - LV  (USD)", slvNpv4M - lvNpv4M);
+        const Real relDiff = std::fabs(slvNpv4M - lvNpv4M)
+                             / std::max(lvNpv4M, 1.0) * 100.0;
+        row("Relative difference (%)", relDiff);
+        std::cout << "  " << std::string(wl + wv, '-') << "\n";
+
+        std::cout << "\n  SLV Greeks  (notional = EUR 1,000,000):\n"
+                  << "  " << std::string(wl + wv, '-') << "\n";
+        row("Spot delta  (EUR, spot hedge)",      slvDelta);
+        row("Spot gamma  (EUR per 1% spot move)", slvGamma);
+        row("Theta       (USD, roll, LV proxy)",  lvTheta4M);
+        std::cout << "  " << std::string(wl + wv, '-') << "\n";
+
+        std::cout << "\n  Note: Theta shown is the local-vol proxy.  Computing\n"
+                  << "  SLV theta exactly requires re-calibrating the leverage\n"
+                  << "  function at the shifted date — typically done overnight.\n\n";
+
+        std::cout << "  Calendar-time local vol fallback used at " << localVolSurface->fallbacks()
+                  << " points in the SLV calibration and pricing above.\n\n";
+
+        printSeparator();
+        std::cout << "  Done.\n";
+        printSeparator();
+
+        return 0;
+
+    } catch (std::exception& e) {
+        std::cerr << "\nError: " << e.what() << "\n";
+        return 1;
+    } catch (...) {
+        std::cerr << "\nUnknown error\n";
+        return 1;
+    }
+}

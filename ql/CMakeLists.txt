@@ -151,6 +151,31 @@ set(QL_SOURCES
     experimental/fx/discountingmtmcrosscurrencybasisswapengine.cpp
     experimental/fx/fxresetcashflows.cpp
     experimental/fx/mtmcrosscurrencybasisswap.cpp
+    experimental/fxslv/smilesections/fxcostsmilesection.cpp
+    experimental/fxslv/smilesections/fxdeltaconverter.cpp
+    experimental/fxslv/fxeventvariance.cpp
+    experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.cpp
+    experimental/fxslv/tradingtime/tradingtimedaycounter.cpp
+    experimental/fxslv/fxcalendartimevolsurface.cpp
+    experimental/fxslv/fxforwardcurve.cpp
+    experimental/fxslv/fxpairmarket.cpp
+    experimental/fxslv/fxpnlexplain.cpp
+    experimental/fxslv/fxvolsurfacebuilder.cpp
+    experimental/fxslv/fxlocalvolsurface.cpp
+    experimental/fxslv/fxsettlementforeigncurve.cpp
+    experimental/fxslv/fxslvpricingcontext.cpp
+    experimental/fxslv/smilesections/fxsmilequotes.cpp
+    experimental/fxslv/smilesections/fxsmilesection.cpp
+    experimental/fxslv/smilesections/fxsmilesectionbydelta.cpp
+    experimental/fxslv/smilesections/fxsmilesectionbystrike.cpp
+    experimental/fxslv/smilesections/fxsmilesectionfactory.cpp
+    experimental/fxslv/smilesections/fxstickydeltasolver.cpp
+    experimental/fxslv/conventions/fxtenorexpiry.cpp
+    experimental/fxslv/fxvanillagreeks.cpp
+    experimental/fxslv/fxvariancesurface.cpp
+    experimental/fxslv/slvleveragecalibrator.cpp
+    experimental/fxslv/stochvolcalibrator.cpp
+    experimental/fxslv/tradingtime/tradingtimetermstructure.cpp
     experimental/inflation/cpicapfloorengines.cpp
     experimental/inflation/cpicapfloortermpricesurface.cpp
     experimental/inflation/yoycapfloortermpricesurface.cpp
@@ -1184,6 +1209,35 @@ set(QL_HEADERS
     experimental/fx/discountingmtmcrosscurrencybasisswapengine.hpp
     experimental/fx/fxresetcashflows.hpp
     experimental/fx/mtmcrosscurrencybasisswap.hpp
+    experimental/fxslv/smilesections/fxcostsmilesection.hpp
+    experimental/fxslv/smilesections/fxdeltaconverter.hpp
+    experimental/fxslv/fxeventvariance.hpp
+    experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.hpp
+    experimental/fxslv/tradingtime/tradingtimedaycounter.hpp
+    experimental/fxslv/fxcalendartimevolsurface.hpp
+    experimental/fxslv/fxforwardcurve.hpp
+    experimental/fxslv/fxpairmarket.hpp
+    experimental/fxslv/fxvolsurfacebuilder.hpp
+    experimental/fxslv/conventions/fxexpirycut.hpp
+    experimental/fxslv/conventions/fxpairconventions.hpp
+    experimental/fxslv/fxlocalvolsurface.hpp
+    experimental/fxslv/fxpnlexplain.hpp
+    experimental/fxslv/smilesections/fxrootbracketing.hpp
+    experimental/fxslv/conventions/fxsettlementconvention.hpp
+    experimental/fxslv/fxsettlementforeigncurve.hpp
+    experimental/fxslv/fxslvpricingcontext.hpp
+    experimental/fxslv/smilesections/fxsmilequotes.hpp
+    experimental/fxslv/smilesections/fxsmilesection.hpp
+    experimental/fxslv/smilesections/fxsmilesectionbydelta.hpp
+    experimental/fxslv/smilesections/fxsmilesectionbystrike.hpp
+    experimental/fxslv/smilesections/fxsmilesectionfactory.hpp
+    experimental/fxslv/smilesections/fxstickydeltasolver.hpp
+    experimental/fxslv/conventions/fxtenorexpiry.hpp
+    experimental/fxslv/fxvanillagreeks.hpp
+    experimental/fxslv/fxvariancesurface.hpp
+    experimental/fxslv/slvleveragecalibrator.hpp
+    experimental/fxslv/stochvolcalibrator.hpp
+    experimental/fxslv/tradingtime/tradingtimetermstructure.hpp
     experimental/inflation/cpicapfloorengines.hpp
     experimental/inflation/cpicapfloortermpricesurface.hpp
     experimental/inflation/genericindexes.hpp
@@ -2360,6 +2414,10 @@ set(QL_GENERATED_HEADERS
     ${PROJECT_BINARY_DIR}/ql/experimental/finitedifferences/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/forward/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/fx/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/fxslv/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/fxslv/conventions/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/fxslv/smilesections/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/fxslv/tradingtime/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/inflation/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/lattices/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/math/all.hpp
