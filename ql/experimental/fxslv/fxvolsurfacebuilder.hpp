@@ -26,7 +26,8 @@
 
 #include <ql/experimental/fxslv/conventions/fxpairconventions.hpp>
 #include <ql/experimental/fxslv/fxeventvariance.hpp>
-#include <ql/experimental/fxslv/smilesections/fxsmilesection.hpp>
+#include <ql/experimental/fxslv/fxvariancesurface.hpp>
+#include <ql/experimental/fxslv/smilesections/fxsmilesectionfactory.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/period.hpp>
@@ -35,13 +36,10 @@
 
 namespace QuantLib {
 
-    //! The smile model of the sections a surface is built from
-    enum class FxSmileModel { Sabr, Svi, Polynomial, Quadratic };
-
     //! How a surface interpolates between its pillars
     enum class FxVolInterpolation {
-        Ncp,   //!< linear in normalised call price (fxVarianceSurfaceNCP)
-        Clark  //!< linear in variance (fxVarianceSurfaceClark)
+        Ncp,   //!< linear in normalised call price (FxVarianceSurfaceNCP)
+        Clark  //!< flat forward variance at fixed deltas (FxVarianceSurfaceClark)
     };
 
     //! How a vol surface is built from its quotes: modelling choices, not conventions
@@ -92,10 +90,10 @@ namespace QuantLib {
         on the surface's ATM pillars, i.e. the fitted smiles' ATMs, which
         need not reprice the quotes exactly.
 
-        The surface returned implements FxVolSurface.  Its reference date
-        is the as-of date, fixed: it does not move with the evaluation date.
+        Its reference date is the as-of date, fixed: it does not move
+        with the evaluation date.
     */
-    ext::shared_ptr<BlackVolTermStructure>
+    ext::shared_ptr<FxVarianceSurface>
     makeFxVolSurface(const Date& asOf,
                      const FxPairConventions& conventions,
                      const Handle<Quote>& spot,
@@ -104,24 +102,6 @@ namespace QuantLib {
                      const Handle<YieldTermStructure>& domesticCurve,
                      const std::vector<FxVolEvent>& events,
                      const FxVolSurfaceConfig& config);
-
-    //! A smile section of the given model at an expiry, from its quotes
-    /*! The risk reversals and butterflies are by delta, in the order of
-        the deltas given; the butterflies are of the conventions' fly
-        type.  The section's reference date is the as-of date.
-    */
-    ext::shared_ptr<FxSmileSection>
-    makeFxSmileSection(const Date& asOf,
-                       const FxPairConventions& conventions,
-                       const Date& expiry,
-                       const Handle<Quote>& spot,
-                       const std::vector<Real>& deltas,
-                       Volatility atm,
-                       const std::vector<Volatility>& riskReversals,
-                       const std::vector<Volatility>& butterflies,
-                       const Handle<YieldTermStructure>& foreignCurve,
-                       const Handle<YieldTermStructure>& domesticCurve,
-                       FxSmileModel model);
 
 }
 

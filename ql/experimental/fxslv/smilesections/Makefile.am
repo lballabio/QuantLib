@@ -12,6 +12,7 @@ this_include_HEADERS = \
     fxsmilesection.hpp \
     fxsmilesectionbydelta.hpp \
     fxsmilesectionbystrike.hpp \
+    fxsmilesectionfactory.hpp \
     fxstickydeltasolver.hpp
 
 cpp_files = \
@@ -21,6 +22,7 @@ cpp_files = \
     fxsmilesection.cpp \
     fxsmilesectionbydelta.cpp \
     fxsmilesectionbystrike.cpp \
+    fxsmilesectionfactory.cpp \
     fxstickydeltasolver.cpp
 
 if UNITY_BUILD

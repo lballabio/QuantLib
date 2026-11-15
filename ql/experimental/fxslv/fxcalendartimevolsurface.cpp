@@ -24,30 +24,28 @@
 
 namespace QuantLib {
 
-    namespace {
-
-        Handle<TradingTimeTermStructure>
-        clockOf(const ext::shared_ptr<BlackVolTermStructure>& surface) {
-            QL_REQUIRE(surface, "no variance surface given");
-            const auto* fx = dynamic_cast<const FxVolSurface*>(surface.get());
-            QL_REQUIRE(fx, "the variance surface is not an FX variance surface");
-            return fx->tradingTimeStructure();
-        }
-
-    }
-
-    FxCalendarTimeVolSurface::FxCalendarTimeVolSurface(
-        ext::shared_ptr<BlackVolTermStructure> surface)
+    FxCalendarTimeVolSurface::FxCalendarTimeVolSurface(ext::shared_ptr<FxVarianceSurface> surface)
     : BlackVarianceTermStructure(surface ? surface->businessDayConvention() : Following,
                                  Actual365Fixed()),
-      surface_(std::move(surface)), clock_(clockOf(surface_)) {
+      surface_(std::move(surface)) {
+        QL_REQUIRE(surface_, "no variance surface given");
         registerWith(surface_);
         enableExtrapolation(surface_->allowsExtrapolation());
     }
 
+    const Date& FxCalendarTimeVolSurface::referenceDate() const {
+        return surface_->referenceDate();
+    }
+    Calendar FxCalendarTimeVolSurface::calendar() const { return surface_->calendar(); }
+    Natural FxCalendarTimeVolSurface::settlementDays() const { return surface_->settlementDays(); }
+    Date FxCalendarTimeVolSurface::maxDate() const { return surface_->maxDate(); }
+    Real FxCalendarTimeVolSurface::minStrike() const { return surface_->minStrike(); }
+    Real FxCalendarTimeVolSurface::maxStrike() const { return surface_->maxStrike(); }
+
     Real FxCalendarTimeVolSurface::blackVarianceImpl(Time t, Real strike) const {
         // the trading time of the instant, on the surface's own axis
-        return surface_->blackVariance(clock_->tradingTime(t), strike, true);
+        return surface_->blackVariance(surface_->tradingTimeStructure()->tradingTime(t), strike,
+                                       true);
     }
 
 }

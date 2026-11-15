@@ -84,6 +84,7 @@ namespace {
     // a convenient approximation but fail in practice, notably in the wings
     // that Dupire and SLV depend on, so these tests use SABR (SVI also works).
     using TestSmileSection = FxSabrSmileSection;
+    const FxSmileModel testSmileModel = FxSmileModel::Sabr;  // the same, for surfaces
 
     struct SLVMarket {
         Date today;
@@ -114,7 +115,7 @@ namespace {
         DeltaVolQuote::AtmType   atmType;
         FxRrBfQuotes::FlyType  flyType;
 
-        ext::shared_ptr<fxVarianceSurfaceNCP<TestSmileSection>> volSurface;
+        ext::shared_ptr<FxVarianceSurfaceNCP> volSurface;
         Handle<BlackVolTermStructure> volSurfaceHandle;
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> localVolProcess;
@@ -201,7 +202,7 @@ namespace {
             auto timeTs = Handle<TradingTimeTermStructure>(
                 ext::make_shared<TradingTimeTermStructure>(today, calendar, weekendWeight));
 
-            volSurface = ext::make_shared<fxVarianceSurfaceNCP<TestSmileSection>>(
+            volSurface = ext::make_shared<FxVarianceSurfaceNCP>(testSmileModel,
                 today, spot, pillars, atms, rrs, bfs, deltas,
                 eurTs, usdTs, timeTs,
                 deltaType, atmType, flyType,

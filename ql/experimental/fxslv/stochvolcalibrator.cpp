@@ -103,7 +103,7 @@ namespace QuantLib {
             // per year of calendar time, as the helper takes it, whatever
             // the surface's axis
             const auto* fxSurface =
-                dynamic_cast<const FxVolSurface*>(volSurface.currentLink().get());
+                dynamic_cast<const FxVarianceSurface*>(volSurface.currentLink().get());
             const Volatility marketVol = fxSurface ? fxSurface->marketVol(expiryDate, p.strike)
                                                    : volSurface->blackVol(expiryDate, p.strike, true);
 

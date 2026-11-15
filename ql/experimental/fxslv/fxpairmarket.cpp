@@ -66,23 +66,35 @@ namespace QuantLib {
         return spot() * dfor / ddom;
     }
 
-    const ext::shared_ptr<BlackVolTermStructure>& FxPairMarket::volSurface() const {
-        if (!built_->surface) {
+    const ext::shared_ptr<FxVarianceSurface>& FxPairMarket::volSurface() const {
+        if (!built_->surface)
             built_->surface = makeFxVolSurface(asOf(), conventions(), spotQuote(), quotes(),
                                                foreignCurve(), domesticCurve(), events(), config());
-            built_->fxSurface = dynamic_cast<const FxVolSurface*>(built_->surface.get());
-            QL_ENSURE(built_->fxSurface, "the surface built is not an FX vol surface");
-        }
         return built_->surface;
     }
 
-    const FxVolSurface& FxPairMarket::fxVolSurface() const {
-        volSurface();
-        return *built_->fxSurface;
+    Volatility FxPairMarket::marketVol(const Date& expiry, Real strike) const {
+        return volSurface()->marketVol(expiry, strike);
     }
 
-    Volatility FxPairMarket::marketVol(const Date& expiry, Real strike) const {
-        return fxVolSurface().marketVol(expiry, strike);
+    ext::shared_ptr<FxSmileSection>
+    FxPairMarket::section(const FxPairConventions& conventions,
+                          const Date& expiry,
+                          Volatility atm,
+                          const std::vector<Volatility>& riskReversals,
+                          const std::vector<Volatility>& butterflies) const {
+        auto handles = [](const std::vector<Volatility>& values) {
+            std::vector<Handle<Quote>> result;
+            for (Volatility v : values)
+                result.push_back(makeQuoteHandle(v));
+            return result;
+        };
+        const auto smileQuotes = ext::make_shared<FxRrBfQuotes>(
+            makeQuoteHandle(atm), handles(riskReversals), handles(butterflies), quotes().deltas,
+            conventions.flyType());
+        return makeFxSmileSection(config().model, expiry, spotQuote(), smileQuotes, foreignCurve(),
+                                  domesticCurve(), conventions.deltaType(), conventions.atmType(),
+                                  conventions.settlement(), asOf());
     }
 
     ext::shared_ptr<BlackVolTermStructure> FxPairMarket::calendarTimeVolSurface() const {
@@ -93,11 +105,8 @@ namespace QuantLib {
 
     ext::shared_ptr<FxSmileSection>
     FxPairMarket::smileSection(const Date& expiry, const FxExpiryQuotes& quotes) const {
-        return makeFxSmileSection(asOf(), conventions().withFlyType(FxRrBfQuotes::SmileStrangle),
-                                  expiry, spotQuote(), this->quotes().deltas, quotes.atm,
-                                  quotes.riskReversals,
-                                  quotes.butterflies, foreignCurve(), domesticCurve(),
-                                  config().model);
+        return section(conventions().withFlyType(FxRrBfQuotes::SmileStrangle), expiry, quotes.atm,
+                       quotes.riskReversals, quotes.butterflies);
     }
 
     FxExpiryQuotes FxPairMarket::expiryQuotes(const Date& expiry) const {
@@ -143,7 +152,7 @@ namespace QuantLib {
     void FxPairMarket::buildTradingTime() const {
         if (built_->tradingTimeBuilt)
             return;
-        const auto& clock = fxVolSurface().tradingTimeStructure();
+        const auto& clock = volSurface()->tradingTimeStructure();
         built_->ttDomestic = Handle<YieldTermStructure>(
             ext::make_shared<TradingTimeYieldTermStructure>(domesticCurve(), clock));
         built_->ttForeign = Handle<YieldTermStructure>(
@@ -152,7 +161,7 @@ namespace QuantLib {
     }
 
     const Handle<TradingTimeTermStructure>& FxPairMarket::tradingTime() const {
-        return fxVolSurface().tradingTimeStructure();
+        return volSurface()->tradingTimeStructure();
     }
 
     DayCounter FxPairMarket::tradingTimeDayCounter() const {
@@ -226,14 +235,12 @@ namespace QuantLib {
         }
         // broker strangles are not points on the smile: read the points off
         // the pillar's calibrated smile
-        const auto section = makeFxSmileSection(
-            asOf(), conventions(), pillars()[pillar], spotQuote(), deltas, atm,
-            quotes().riskReversals[pillar], quotes().butterflies[pillar], foreignCurve(),
-            domesticCurve(), config().model);
-        points.front() = section->atmVol();
+        const auto smile = section(conventions(), pillars()[pillar], atm,
+                                   quotes().riskReversals[pillar], quotes().butterflies[pillar]);
+        points.front() = smile->atmVol();
         for (Real d : deltas) {
-            points.push_back(section->volByDelta(d, Option::Call));
-            points.push_back(section->volByDelta(-d, Option::Put));
+            points.push_back(smile->volByDelta(d, Option::Call));
+            points.push_back(smile->volByDelta(-d, Option::Put));
         }
         return points;
     }
