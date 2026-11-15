@@ -731,6 +731,7 @@
     <ClInclude Include="ql\experimental\fxslv\smilesections\fxsmilesection.hpp" />
     <ClInclude Include="ql\experimental\fxslv\smilesections\fxsmilesectionbydelta.hpp" />
     <ClInclude Include="ql\experimental\fxslv\smilesections\fxsmilesectionbystrike.hpp" />
+    <ClInclude Include="ql\experimental\fxslv\smilesections\fxsmilesectionfactory.hpp" />
     <ClInclude Include="ql\experimental\fxslv\smilesections\fxstickydeltasolver.hpp" />
     <ClInclude Include="ql\experimental\fxslv\conventions\fxtenorexpiry.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxvanillagreeks.hpp" />
@@ -2159,9 +2160,11 @@
     <ClCompile Include="ql\experimental\fxslv\smilesections\fxsmilesection.cpp" />
     <ClCompile Include="ql\experimental\fxslv\smilesections\fxsmilesectionbydelta.cpp" />
     <ClCompile Include="ql\experimental\fxslv\smilesections\fxsmilesectionbystrike.cpp" />
+    <ClCompile Include="ql\experimental\fxslv\smilesections\fxsmilesectionfactory.cpp" />
     <ClCompile Include="ql\experimental\fxslv\smilesections\fxstickydeltasolver.cpp" />
     <ClCompile Include="ql\experimental\fxslv\conventions\fxtenorexpiry.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxvanillagreeks.cpp" />
+    <ClCompile Include="ql\experimental\fxslv\fxvariancesurface.cpp" />
     <ClCompile Include="ql\experimental\fxslv\slvleveragecalibrator.cpp" />
     <ClCompile Include="ql\experimental\fxslv\stochvolcalibrator.cpp" />
     <ClCompile Include="ql\experimental\fxslv\tradingtime\tradingtimetermstructure.cpp" />

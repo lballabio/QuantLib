@@ -112,10 +112,8 @@ namespace QuantLib {
 
         //! \name Vols
         //@{
-        //! The vol surface, on the trading-time axis (see fxVarianceSurface).
-        const ext::shared_ptr<BlackVolTermStructure>& volSurface() const;
-        //! The same surface, through its FX interface.
-        const FxVolSurface& fxVolSurface() const;
+        //! The vol surface, on the trading-time axis (see FxVarianceSurface).
+        const ext::shared_ptr<FxVarianceSurface>& volSurface() const;
         //! The implied vol of an expiry and strike, per year of calendar time, as quoted.
         Volatility marketVol(const Date& expiry, Real strike) const;
         //! The surface on the calendar-time axis, for models calibrated in calendar time
@@ -201,8 +199,7 @@ namespace QuantLib {
         };
         // what is built from the data, on first use
         struct Built {
-            ext::shared_ptr<BlackVolTermStructure> surface;
-            const FxVolSurface* fxSurface = nullptr;
+            ext::shared_ptr<FxVarianceSurface> surface;
             bool tradingTimeBuilt = false;
             Handle<YieldTermStructure> ttDomestic, ttForeign;
         };
@@ -210,6 +207,12 @@ namespace QuantLib {
         void buildTradingTime() const;
         // ATM and the call and put at each delta of a pillar's smile
         std::vector<Volatility> smilePoints(Size pillar) const;
+        // a smile section of the market's model and conventions at an expiry
+        ext::shared_ptr<FxSmileSection> section(const FxPairConventions& conventions,
+                                                const Date& expiry,
+                                                Volatility atm,
+                                                const std::vector<Volatility>& riskReversals,
+                                                const std::vector<Volatility>& butterflies) const;
         // smile-strangle quotes from the smile points of each pillar
         FxVolQuotes quotesFromPoints(const std::vector<std::vector<Volatility>>& points) const;
 

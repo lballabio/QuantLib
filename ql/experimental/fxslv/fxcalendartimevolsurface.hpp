@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    class FxVolSurface;
+    class FxVarianceSurface;
 
     //! An FX variance surface seen on the calendar-time axis
     /*! The total variance at every date and strike is that of the given
@@ -46,27 +46,24 @@ namespace QuantLib {
     */
     class FxCalendarTimeVolSurface : public BlackVarianceTermStructure {
       public:
-        /*! \param surface an FX variance surface (an FxVolSurface, e.g. one
-                           built by makeFxVolSurface()).
-        */
-        explicit FxCalendarTimeVolSurface(ext::shared_ptr<BlackVolTermStructure> surface);
+        explicit FxCalendarTimeVolSurface(ext::shared_ptr<FxVarianceSurface> surface);
 
         //! \name TermStructure interface
         //@{
-        const Date& referenceDate() const override { return surface_->referenceDate(); }
-        Calendar calendar() const override { return surface_->calendar(); }
-        Natural settlementDays() const override { return surface_->settlementDays(); }
-        Date maxDate() const override { return surface_->maxDate(); }
+        const Date& referenceDate() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
+        Date maxDate() const override;
         //@}
 
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const override { return surface_->minStrike(); }
-        Real maxStrike() const override { return surface_->maxStrike(); }
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
 
         //! The surface on its own, trading-time, axis.
-        const ext::shared_ptr<BlackVolTermStructure>& tradingTimeSurface() const {
+        const ext::shared_ptr<FxVarianceSurface>& tradingTimeSurface() const {
             return surface_;
         }
 
@@ -74,8 +71,7 @@ namespace QuantLib {
         Real blackVarianceImpl(Time t, Real strike) const override;
 
       private:
-        ext::shared_ptr<BlackVolTermStructure> surface_;
-        Handle<TradingTimeTermStructure> clock_;
+        ext::shared_ptr<FxVarianceSurface> surface_;
     };
 
 }

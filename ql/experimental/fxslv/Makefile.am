@@ -31,6 +31,7 @@ cpp_files = \
     fxsettlementforeigncurve.cpp \
     fxslvpricingcontext.cpp \
     fxvanillagreeks.cpp \
+    fxvariancesurface.cpp \
     slvleveragecalibrator.cpp \
     stochvolcalibrator.cpp
 

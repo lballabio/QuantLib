@@ -82,6 +82,7 @@ namespace {
     // a convenient approximation but fail in practice, notably in the wings
     // that Dupire and SLV depend on, so these tests use SABR (SVI also works).
     using TestSmileSection = FxSabrSmileSection;
+    const FxSmileModel testSmileModel = FxSmileModel::Sabr;  // the same, for surfaces
 
     // The quotes of a test market: 3M and 6M pillars, 25 and 10 delta
     struct FxMarketQuotes {
@@ -139,7 +140,7 @@ namespace {
         Real holidayWeight;
         std::string foreignCcy, domesticCcy;
 
-        ext::shared_ptr<fxVarianceSurfaceNCP<TestSmileSection>> surface;
+        ext::shared_ptr<FxVarianceSurfaceNCP> surface;
         // the local-vol process in calendar time, from makeFxLocalVolProcess
         ext::shared_ptr<GeneralizedBlackScholesProcess> process;
         // the local-vol process on the trading-time clock, for pricing
@@ -204,7 +205,7 @@ namespace {
                 bfs.push_back({ Handle<Quote>(bf25SQ), Handle<Quote>(bf10SQ) });
             }
 
-            surface = ext::make_shared<fxVarianceSurfaceNCP<TestSmileSection>>(
+            surface = ext::make_shared<FxVarianceSurfaceNCP>(testSmileModel,
                 today, spot, pillars, atms, rrs, bfs, deltas,
                 foreignTs, domesticTs, timeTs,
                 deltaType, atmType, flyType,
@@ -851,7 +852,7 @@ BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
     auto timeTs = Handle<TradingTimeTermStructure>(
         ext::make_shared<TradingTimeTermStructure>(today, calendar, weekendWeight));
 
-    auto volSurface = ext::make_shared<fxVarianceSurfaceNCP<TestSmileSection>>(
+    auto volSurface = ext::make_shared<FxVarianceSurfaceNCP>(testSmileModel,
         today, spot, pillars, atms, rrs, bfs, deltas,
         foreignTs, domesticTs, timeTs,
         DeltaVolQuote::Fwd, DeltaVolQuote::AtmFwd, FxRrBfQuotes::SmileStrangle,
@@ -1073,7 +1074,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceInTradingTime) {
         }
     }
 
-    BOOST_CHECK_THROW(fxVarianceSurfaceNCP<TestSmileSection>(
+    BOOST_CHECK_THROW(FxVarianceSurfaceNCP(testSmileModel,
                           m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.foreignTs,
                           m.domesticTs, m.timeTs, m.deltaType, m.atmType, m.flyType,
                           FxSettleConvention(WeekendsOnly(), 2), FxExpiryCut(10), WeekendsOnly(), Following,
@@ -1091,7 +1092,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceEventBetweenPillars) {
         m.today, WeekendsOnly(), 0.2,
         std::vector<ext::shared_ptr<TradingTimeEvent>>{ext::make_shared<JumpTradingTimeEvent>(
             eventDate, timeOfDay, makeQuoteHandle(size))}));
-    auto surface = ext::make_shared<fxVarianceSurfaceNCP<TestSmileSection>>(
+    auto surface = ext::make_shared<FxVarianceSurfaceNCP>(testSmileModel,
         m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.foreignTs, m.domesticTs, timeTs,
         m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2),
         FxExpiryCut(10));
@@ -1127,7 +1128,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceShortAndLongTenors) {
             rrs.push_back({q(rr25), q(1.8 * rr25)});
             bfs.push_back({q(bf25), q(3.2 * bf25)});
         }
-        return fxVarianceSurfaceNCP<TestSmileSection>(
+        return FxVarianceSurfaceNCP(testSmileModel,
             m.today, m.spot, pillars, atms, rrs, bfs, m.deltas, m.foreignTs, m.domesticTs, m.timeTs,
             m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2),
         FxExpiryCut(10));
@@ -1153,7 +1154,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceTradingTimeReference) {
 
     FxMarket m;
     auto surfaceWith = [&](const Handle<TradingTimeTermStructure>& timeTs) {
-        return fxVarianceSurfaceNCP<TestSmileSection>(
+        return FxVarianceSurfaceNCP(testSmileModel,
             m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.foreignTs, m.domesticTs, timeTs,
             m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2),
         FxExpiryCut(10));
@@ -1212,7 +1213,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceSettlementForward) {
     const Handle<YieldTermStructure> usdFromSpot(
         ext::make_shared<FlatForward>(2, WeekendsOnly(), 0.2525, m.dc));
     BOOST_REQUIRE_EQUAL(eurFromSpot->referenceDate(), spotDate);
-    fxVarianceSurfaceNCP<TestSmileSection> fromSpot(
+    FxVarianceSurfaceNCP fromSpot(testSmileModel,
         m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, eurFromSpot, usdFromSpot,
         m.timeTs, m.deltaType, m.atmType, m.flyType, settlement, FxExpiryCut(10));
     for (const Date& d : {Date(20, February, 2024), friday, Date(15, May, 2024)}) {
@@ -1228,7 +1229,7 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceNodeSpacing) {
 
     FxMarket m;
     auto surfaceWith = [&](Time spacing) {
-        return fxVarianceSurfaceNCP<TestSmileSection>(
+        return FxVarianceSurfaceNCP(testSmileModel,
             m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.foreignTs, m.domesticTs,
             m.timeTs, m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2),
             FxExpiryCut(10),
@@ -2059,7 +2060,7 @@ BOOST_AUTO_TEST_CASE(testFxEventVarianceIsHeldConstant) {
     // ATM variance released over the event's day, less that of an ordinary
     // business day in the same pillar interval, is the event's variance
     auto eventJump = [&](const FxPairMarket& market) {
-        const FxVolSurface& s = market.fxVolSurface();
+        const FxVarianceSurface& s = *market.volSurface();
         const Real withEvent = s.atmVar(event + 1) - s.atmVar(event);
         const Real ordinary = s.atmVar(event) - s.atmVar(event - 1);
         return withEvent - ordinary;
@@ -2075,8 +2076,8 @@ BOOST_AUTO_TEST_CASE(testFxEventVarianceIsHeldConstant) {
     // the event only redistributes variance within the pillar interval: the
     // pillars' (fitted) ATM vols are those of the surface without the event
     const FxPairMarket noEvent = m.withEvents({});
-    const FxVolSurface& s = m.fxVolSurface();
-    const FxVolSurface& s0 = noEvent.fxVolSurface();
+    const FxVarianceSurface& s = *m.volSurface();
+    const FxVarianceSurface& s0 = *noEvent.volSurface();
     for (const auto& pillar : m.pillars())
         BOOST_CHECK_CLOSE(s.atmVol(pillar), s0.atmVol(pillar), 1.0e-12);
     // before the event the ATM variance is lower than without it, after it the same
@@ -2115,7 +2116,7 @@ BOOST_AUTO_TEST_CASE(testFxEventsOnExpiryDateFollowTheCut) {
     // before, less that of the ordinary business day before it
     auto jump = [&](const std::vector<FxVolEvent>& evs, const Date& day) {
         const FxPairMarket m = data.market().withEvents(evs);
-        const FxVolSurface& s = m.fxVolSurface();
+        const FxVarianceSurface& s = *m.volSurface();
         return (s.atmVar(day) - s.atmVar(day - 1)) - (s.atmVar(day - 1) - s.atmVar(day - 2));
     };
     const Real v = 2.0e-5;
@@ -2131,7 +2132,7 @@ BOOST_AUTO_TEST_CASE(testFxEventsOnExpiryDateFollowTheCut) {
     const Date oneWeek = fxExpiryDates(data.today, data.tenors, data.conventions.settlement())[0];
     auto variance = [&](const std::vector<FxVolEvent>& evs, const Date& d) {
         const FxPairMarket m = data.market().withEvents(evs);
-        return m.fxVolSurface().atmVar(d);
+        return m.volSurface()->atmVar(d);
     };
     // before the cut: released by the pillar, so the ATM variance the day
     // before is lower; after it: released in the next interval
@@ -2293,7 +2294,7 @@ BOOST_AUTO_TEST_CASE(testFxPnlExplainBartlettVega) {
     FxVolQuotes q = rolled.quotes();
     for (Size i = 0; i < data.tenors.size(); ++i) {
         const Real s =
-            todayStrangles.fxVolSurface().pillarSmileSection(i)->atmVolForwardSensitivity();
+            todayStrangles.volSurface()->pillarSmileSection(i)->atmVolForwardSensitivity();
         BOOST_CHECK(s != 0.0);
         q.atms[i] += s * 0.004;  // same curves, so every forward moves by the spot's 0.4%
     }
@@ -2497,7 +2498,7 @@ BOOST_AUTO_TEST_CASE(testFxPairMarketForwardsAgree) {
     const auto black = market.blackProcess();
     for (const Date& expiry : {Date(9, January, 2024), mkt.expiry3M, Date(5, May, 2024)}) {
         const Real fwd = market.forward(expiry);
-        BOOST_CHECK_CLOSE(market.fxVolSurface().fwd(expiry), fwd, 1.0e-12);
+        BOOST_CHECK_CLOSE(market.volSurface()->fwd(expiry), fwd, 1.0e-12);
         const Real processForward = market.spot() * black->dividendYield()->discount(expiry) /
                                     black->riskFreeRate()->discount(expiry);
         BOOST_CHECK_CLOSE(processForward, fwd, 1.0e-10);
@@ -2553,7 +2554,7 @@ BOOST_AUTO_TEST_CASE(testFxPairMarketModelChoice) {
                                sabr.domesticCurve(), sabr.quotes(), {},
                                FxVolSurfaceConfig(FxSmileModel::Svi, interpolation, 0.2));
         for (Size i = 0; i < svi.pillars().size(); ++i) {
-            const auto section = svi.fxVolSurface().pillarSmileSection(i);
+            const auto section = svi.volSurface()->pillarSmileSection(i);
             BOOST_CHECK(ext::dynamic_pointer_cast<FxSviSmileSection>(section));
             const FxExpiryQuotes q = svi.expiryQuotes(svi.pillars()[i]);
             BOOST_CHECK_SMALL(q.atm - section->atmVol(), 1.0e-10);
@@ -2567,6 +2568,22 @@ BOOST_AUTO_TEST_CASE(testFxPairMarketModelChoice) {
             }
         }
     }
+    // every model builds a surface, whose market vols at a pillar are its
+    // pillar smile's
+    for (FxSmileModel model :
+         {FxSmileModel::Sabr, FxSmileModel::Svi, FxSmileModel::Polynomial, FxSmileModel::Quadratic,
+          FxSmileModel::CostFlatDynamics, FxSmileModel::CostScaledDynamics,
+          FxSmileModel::CostStickyDelta, FxSmileModel::CostStickyDeltaConvex}) {
+        const FxPairMarket m(sabr.asOf(), sabr.conventions(), sabr.spot(), sabr.foreignCurve(),
+                             sabr.domesticCurve(), sabr.quotes(), {}, FxVolSurfaceConfig(model));
+        BOOST_TEST_INFO(model);
+        BOOST_CHECK(m.volSurface()->smileModel() == model);
+        const Date& pillar = m.pillars()[0];
+        const Real K = 1.02 * m.forward(pillar);
+        BOOST_CHECK_CLOSE(m.marketVol(pillar, K),
+                          m.volSurface()->pillarSmileSection(0)->volByStrike(K), 1.0e-8);
+    }
+
     // the models differ off the quotes
     const FxPairMarket polynomial(sabr.asOf(), sabr.conventions(), sabr.spot(),
                                   sabr.foreignCurve(), sabr.domesticCurve(), sabr.quotes(), {},
@@ -2603,7 +2620,7 @@ BOOST_AUTO_TEST_CASE(testFxVolSurfaceTimeAxes) {
     FxMarket mkt;
     const FxPairMarket market = mkt.pairMarket();
     const auto& surface = market.volSurface();
-    const FxVolSurface& fx = market.fxVolSurface();
+    const FxVarianceSurface& fx = *market.volSurface();
     const auto calendar = market.calendarTimeVolSurface();
 
     // the surface's axis is trading time, the view's calendar time
@@ -2652,10 +2669,6 @@ BOOST_AUTO_TEST_CASE(testFxVolSurfaceTimeAxes) {
     BOOST_CHECK_NO_THROW(makeFxLocalVolProcess(market.spotQuote(), market.foreignCurve(),
                                                market.domesticCurve(), settlement,
                                                Handle<BlackVolTermStructure>(calendar)));
-    // and the calendar view needs an FX variance surface
-    BOOST_CHECK_THROW(FxCalendarTimeVolSurface(ext::make_shared<BlackConstantVol>(
-                          mkt.today, NullCalendar(), 0.1, Actual365Fixed())),
-                      Error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

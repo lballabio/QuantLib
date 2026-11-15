@@ -23,6 +23,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/experimental/fxslv/smilesections/fxsmilesectionfactory.hpp>
 #include <ql/experimental/fxslv/smilesections/fxdeltaconverter.hpp>
 #include <ql/experimental/fxslv/conventions/fxsettlementconvention.hpp>
 #include <ql/experimental/fxslv/smilesections/fxsmilequotes.hpp>
@@ -1670,6 +1671,42 @@ BOOST_AUTO_TEST_CASE(testProbabilitySpaceFunctions) {
     BOOST_CHECK_THROW(ss.moneynessFromProbability(1.0), Error);
     BOOST_CHECK_THROW(ss.exerciseProbability(0.0), Error);
     BOOST_CHECK_THROW(ss.normedCallPrice(-1.0), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testSmileSectionFactory) {
+    BOOST_TEST_MESSAGE("Testing FX smile sections built by model at run time...");
+
+    MarketData md;
+    // each model gives the class it names, with the smile of that class
+    // built directly
+    auto check = [&](FxSmileModel model, const SectionFactory& direct, auto* tag) {
+        using Section = std::remove_pointer_t<decltype(tag)>;
+        const auto section =
+            makeFxSmileSection(model, md.expiryDate, md.spot, md.rrBfQuotes(), md.forDiscount,
+                               md.domDiscount, md.deltaType, md.atmType, md.settlement);
+        std::ostringstream name;
+        name << model;
+        BOOST_CHECK_MESSAGE(ext::dynamic_pointer_cast<Section>(section),
+                            name.str() << ": wrong class built");
+        checkSameSmile(name.str(), *section, *direct(md.rrBfQuotes()), 1.0e-12);
+    };
+    check(FxSmileModel::Sabr, sectionFactory<FxSabrSmileSection>(md),
+          static_cast<FxSabrSmileSection*>(nullptr));
+    check(FxSmileModel::Svi, sectionFactory<FxSviSmileSection>(md),
+          static_cast<FxSviSmileSection*>(nullptr));
+    check(FxSmileModel::Polynomial, sectionFactory<FxPolynomialSmileSection>(md),
+          static_cast<FxPolynomialSmileSection*>(nullptr));
+    check(FxSmileModel::Quadratic, sectionFactory<FxQuadraticSmileSection>(md),
+          static_cast<FxQuadraticSmileSection*>(nullptr));
+    check(FxSmileModel::CostFlatDynamics, sectionFactory<FxCostSmileSectionFlatDynamics>(md),
+          static_cast<FxCostSmileSectionFlatDynamics*>(nullptr));
+    check(FxSmileModel::CostScaledDynamics, sectionFactory<FxCostSmileSectionScaledDynamics>(md),
+          static_cast<FxCostSmileSectionScaledDynamics*>(nullptr));
+    check(FxSmileModel::CostStickyDelta, sectionFactory<FxCostSmileSectionStickyDelta>(md),
+          static_cast<FxCostSmileSectionStickyDelta*>(nullptr));
+    check(FxSmileModel::CostStickyDeltaConvex,
+          sectionFactory<FxCostSmileSectionStickyDeltaConvex>(md),
+          static_cast<FxCostSmileSectionStickyDeltaConvex*>(nullptr));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

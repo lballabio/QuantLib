@@ -8,5 +8,6 @@
 #include <ql/experimental/fxslv/smilesections/fxsmilesection.hpp>
 #include <ql/experimental/fxslv/smilesections/fxsmilesectionbydelta.hpp>
 #include <ql/experimental/fxslv/smilesections/fxsmilesectionbystrike.hpp>
+#include <ql/experimental/fxslv/smilesections/fxsmilesectionfactory.hpp>
 #include <ql/experimental/fxslv/smilesections/fxstickydeltasolver.hpp>
 

@@ -52,7 +52,7 @@ namespace QuantLib {
         if (explainType == FxPnlExplainType::Bartlett)
             for (Size i = 0; i < nPillars; ++i)
                 atmSensitivities[i] =
-                    m0.fxVolSurface().pillarSmileSection(i)->atmVolForwardSensitivity();
+                    m0.volSurface()->pillarSmileSection(i)->atmVolForwardSensitivity();
         // a market with spot (and curves) moved, and the ATMs by their
         // expected change given each pillar's forward move
         auto movedSpot = [&](const FxPairMarket& before, Real spot,

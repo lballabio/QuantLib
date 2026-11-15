@@ -15,7 +15,11 @@ The analytics take an `FxPairMarket` (one pair's conventions, spot,
 curves, vol quotes and events, immutable, with the surface built from
 them on first use) and an `FxPairConventions` (how a pair settles and
 is quoted; the tenors and deltas quoted are market data, in
-`FxVolQuotes`).  The vol surface's time axis is trading time: its
+`FxVolQuotes`).  Smile models are chosen at run time (`FxSmileModel`):
+`makeFxSmileSection` in `smilesections/fxsmilesectionfactory` is the one
+place mapping a model to its class, and `FxVarianceSurface` holds its
+smiles as `FxSmileSection`, so add a new model there, not as a template
+parameter.  The vol surface's time axis is trading time: its
 `blackVol` is per year of trading time and needs curves on the same axis,
 `marketVol` gives quote-convention vols, and `FxCalendarTimeVolSurface`
 the calendar axis for SLV until it runs in trading time.  They are meant

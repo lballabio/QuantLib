@@ -168,9 +168,11 @@ set(QL_SOURCES
     experimental/fxslv/smilesections/fxsmilesection.cpp
     experimental/fxslv/smilesections/fxsmilesectionbydelta.cpp
     experimental/fxslv/smilesections/fxsmilesectionbystrike.cpp
+    experimental/fxslv/smilesections/fxsmilesectionfactory.cpp
     experimental/fxslv/smilesections/fxstickydeltasolver.cpp
     experimental/fxslv/conventions/fxtenorexpiry.cpp
     experimental/fxslv/fxvanillagreeks.cpp
+    experimental/fxslv/fxvariancesurface.cpp
     experimental/fxslv/slvleveragecalibrator.cpp
     experimental/fxslv/stochvolcalibrator.cpp
     experimental/fxslv/tradingtime/tradingtimetermstructure.cpp
@@ -1228,6 +1230,7 @@ set(QL_HEADERS
     experimental/fxslv/smilesections/fxsmilesection.hpp
     experimental/fxslv/smilesections/fxsmilesectionbydelta.hpp
     experimental/fxslv/smilesections/fxsmilesectionbystrike.hpp
+    experimental/fxslv/smilesections/fxsmilesectionfactory.hpp
     experimental/fxslv/smilesections/fxstickydeltasolver.hpp
     experimental/fxslv/conventions/fxtenorexpiry.hpp
     experimental/fxslv/fxvanillagreeks.hpp

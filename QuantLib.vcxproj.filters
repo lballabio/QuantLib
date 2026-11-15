@@ -3387,6 +3387,9 @@
     <ClInclude Include="ql\experimental\fxslv\smilesections\fxsmilesectionbystrike.hpp">
       <Filter>experimental\fxslv\smilesections</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\smilesections\fxsmilesectionfactory.hpp">
+      <Filter>experimental\fxslv\smilesections</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\fxslv\smilesections\fxstickydeltasolver.hpp">
       <Filter>experimental\fxslv\smilesections</Filter>
     </ClInclude>
@@ -7561,6 +7564,9 @@
     <ClCompile Include="ql\experimental\fxslv\smilesections\fxsmilesectionbystrike.cpp">
       <Filter>experimental\fxslv\smilesections</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\smilesections\fxsmilesectionfactory.cpp">
+      <Filter>experimental\fxslv\smilesections</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\fxslv\smilesections\fxstickydeltasolver.cpp">
       <Filter>experimental\fxslv\smilesections</Filter>
     </ClCompile>
@@ -7568,6 +7574,9 @@
       <Filter>experimental\fxslv\conventions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\fxslv\fxvanillagreeks.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxvariancesurface.cpp">
       <Filter>experimental\fxslv</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\fxslv\slvleveragecalibrator.cpp">
