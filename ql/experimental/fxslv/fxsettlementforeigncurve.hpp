@@ -26,6 +26,7 @@
 
 #include <ql/experimental/fxslv/conventions/fxsettlementconvention.hpp>
 #include <ql/termstructures/yield/derivedtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -35,6 +36,19 @@ namespace QuantLib {
         Date dayContaining(const TermStructure& ts, Time t);
 
     }
+
+    //! Foreign and domestic discount factors from spot to the delivery of an expiry
+    /*! From the spot date of the trade date to the delivery date of the
+        expiry, both per the settlement convention: the FX settlement
+        forward of the expiry is \f$ S\,D_f/D_d \f$.  Every forward of an FX
+        pair in this library comes from here.
+    */
+    std::pair<DiscountFactor, DiscountFactor>
+    fxSettlementDiscounts(const FxSettleConvention& settlement,
+                          const Date& tradeDate,
+                          const Date& expiry,
+                          const YieldTermStructure& foreignCurve,
+                          const YieldTermStructure& domesticCurve);
 
     //! Foreign curve giving a Black-Scholes process the FX settlement forward
     /*! In theory, A Black-Scholes process uses the same time to \f$ t \f$ for

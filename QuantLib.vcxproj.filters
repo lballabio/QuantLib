@@ -3342,10 +3342,19 @@
     <ClInclude Include="ql\experimental\fxslv\fxtradingtimevariancesurface.hpp">
       <Filter>experimental\fxslv</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\fxslv\fxtradingtimemarket.hpp">
+    <ClInclude Include="ql\experimental\fxslv\fxforwardcurve.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxpairmarket.hpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\fxvolsurfacebuilder.hpp">
       <Filter>experimental\fxslv</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\fxslv\conventions\fxexpirycut.hpp">
+      <Filter>experimental\fxslv\conventions</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\fxslv\conventions\fxpairconventions.hpp">
       <Filter>experimental\fxslv\conventions</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\fxslv\fxlocalvolsurface.hpp">
@@ -7519,7 +7528,16 @@
     <ClCompile Include="ql\experimental\fxslv\fxtradingtimevariancesurface.cpp">
       <Filter>experimental\fxslv</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\fxslv\fxtradingtimemarket.cpp">
+    <ClCompile Include="ql\experimental\fxslv\fxforwardcurve.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxpairmarket.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxpnlexplain.cpp">
+      <Filter>experimental\fxslv</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\fxslv\fxvolsurfacebuilder.cpp">
       <Filter>experimental\fxslv</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\fxslv\fxlocalvolsurface.cpp">

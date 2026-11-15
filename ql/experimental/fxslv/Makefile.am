@@ -8,7 +8,9 @@ this_include_HEADERS = \
     all.hpp \
     fxeventvariance.hpp \
     fxtradingtimevariancesurface.hpp \
-    fxtradingtimemarket.hpp \
+    fxforwardcurve.hpp \
+    fxpairmarket.hpp \
+    fxvolsurfacebuilder.hpp \
     fxlocalvolsurface.hpp \
     fxpnlexplain.hpp \
     fxsettlementforeigncurve.hpp \
@@ -21,7 +23,10 @@ this_include_HEADERS = \
 cpp_files = \
     fxeventvariance.cpp \
     fxtradingtimevariancesurface.cpp \
-    fxtradingtimemarket.cpp \
+    fxforwardcurve.cpp \
+    fxpairmarket.cpp \
+    fxpnlexplain.cpp \
+    fxvolsurfacebuilder.cpp \
     fxlocalvolsurface.cpp \
     fxsettlementforeigncurve.cpp \
     fxslvpricingcontext.cpp \

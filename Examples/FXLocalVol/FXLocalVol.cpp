@@ -25,9 +25,9 @@
     PART A — Local Volatility
     1.  Market data: EURUSD pillar quotes (ATM, 25d/10d RR, 25d/10d BF)
         for eleven tenors: O/N, 1W, 2W, 1M, 2M, 3M, 6M, 9M, 1Y, 18M, 2Y.
-    2.  Calibrate fxVarianceSurfaceNCP<quadraticSmileSection>.
-    3.  Wrap in a GeneralizedBlackScholesProcess on the trading-time clock
-        of the surface (FxTradingTimeMarket).
+    2.  Build the pair's market (FxPairMarket): its SABR variance surface,
+        calibrated to the quotes, and its trading-time clock.
+    3.  The local-vol process on that clock (FxPairMarket::localVolProcess()).
     4.  Price a 3M EUR call (pillar tenor) under BS-FD and local-vol Dupire FD.
     5.  Full FX Greeks via FxVanillaBumpRisk (sticky-delta convention),
         theta being the roll of the market to the next business day.
@@ -40,8 +40,8 @@
     9.  Calibrate the SLV leverage function L(t,S) via the
         Fokker-Planck PDE (HestonSLVLeverageCalibrator).
     10. Price a 4M EUR call — a *non-pillar* tenor between 3M and 6M —
-        under both local vol and SLV, and compute spot delta, vega, and
-        gamma by bump-and-reval on the SLV engine.
+        under both local vol and SLV, and compute spot delta and gamma by
+        bump-and-reval on the SLV engine.
 */
 
 #include <ql/qldefines.hpp>
@@ -54,7 +54,7 @@
 #include <ql/experimental/fxslv/conventions/fxsettlementconvention.hpp>
 #include <ql/experimental/fxslv/conventions/fxtenorexpiry.hpp>
 #include <ql/experimental/fxslv/fxpnlexplain.hpp>
-#include <ql/experimental/fxslv/fxtradingtimemarket.hpp>
+#include <ql/experimental/fxslv/fxpairmarket.hpp>
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/experimental/fxslv/smilesections/fxsmilesectionbystrike.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimetermstructure.hpp>
@@ -147,8 +147,7 @@ int main(int, char*[]) {
         Settings::instance().evaluationDate() = today;
         DayCounter dc = Actual365Fixed();
 
-        auto spotSQ = ext::make_shared<SimpleQuote>(1.0850);
-        Handle<Quote> spot(spotSQ);
+        const Real spotRate = 1.0850;
 
         Handle<YieldTermStructure> eurTs(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0400, dc));
         Handle<YieldTermStructure> usdTs(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0525, dc));
@@ -157,8 +156,6 @@ int main(int, char*[]) {
         // With none, local vol vanishes over whole days, which the SLV leverage
         // calibration below cannot handle.
         const Real weekendWeight = 0.2;
-        Handle<TradingTimeTermStructure> timeTs(
-            ext::make_shared<TradingTimeTermStructure>(today, WeekendsOnly(), weekendWeight));
 
         DeltaVolQuote::DeltaType  deltaType = DeltaVolQuote::Fwd;
         DeltaVolQuote::AtmType    atmType   = DeltaVolQuote::AtmFwd;
@@ -174,7 +171,6 @@ int main(int, char*[]) {
                                             18*Months, 2*Years};
         const std::vector<std::string> tenorLabels = {"O/N","1W","2W","1M","2M","3M","6M","9M","1Y","18M","2Y"};
 
-        const std::vector<Date> pillars = fxExpiryDates(today, tenors, settlement);
 
         // Market quotes — indicative EURUSD levels as of Jan 2024.
         // ATM vol rises from 6.2% at O/N to 10.0% at 2Y.
@@ -197,44 +193,28 @@ int main(int, char*[]) {
 
         std::vector<Real> deltas = { 0.25, 0.10 };
 
-        // Build all quote handles
-        std::vector<Handle<Quote>> atms;
-        std::vector<std::vector<Handle<Quote>>> rrs(pillars.size()), bfs(pillars.size());
-
-        // Per-pillar ATM, RR and BF SimpleQuotes for bumping rega/sega
-        std::vector<ext::shared_ptr<SimpleQuote>> atmBumps;
-        std::vector<std::vector<ext::shared_ptr<SimpleQuote>>> rrBumps(pillars.size());
-        std::vector<std::vector<ext::shared_ptr<SimpleQuote>>> bfBumps(pillars.size());
-        std::vector<Time> rrPillarTimes(pillars.size()), bfPillarTimes(pillars.size());
-
-        for (Size i = 0; i < pillars.size(); ++i) {
-            auto atmBump  = ext::make_shared<SimpleQuote>(mkt[i].atm);
-            auto rr25Bump = ext::make_shared<SimpleQuote>(mkt[i].rr25);
-            auto rr10Bump = ext::make_shared<SimpleQuote>(mkt[i].rr10);
-            auto bf25Bump = ext::make_shared<SimpleQuote>(mkt[i].bf25);
-            auto bf10Bump = ext::make_shared<SimpleQuote>(mkt[i].bf10);
-
-            atmBumps.push_back(atmBump);
-            rrBumps[i] = {rr25Bump, rr10Bump};
-            bfBumps[i] = {bf25Bump, bf10Bump};
-
-            const Time T = dc.yearFraction(today, pillars[i]);
-            rrPillarTimes[i] = bfPillarTimes[i] = T;
-
-            atms.push_back(Handle<Quote>(atmBump));
-            rrs[i] = {Handle<Quote>(rr25Bump), Handle<Quote>(rr10Bump)};
-            bfs[i] = {Handle<Quote>(bf25Bump), Handle<Quote>(bf10Bump)};
+        FxVolQuotes quotes;
+        for (const auto& v : mkt) {
+            quotes.atms.push_back(v.atm);
+            quotes.riskReversals.push_back({v.rr25, v.rr10});
+            quotes.butterflies.push_back({v.bf25, v.bf10});
         }
 
         // ──────────────────────────────────────────────────────────────────────
-        //  2. Calibrate the FX variance surface
+        //  2. The pair's market: its conventions, its quotes, and the choices
+        //     its surface is built with (SABR smiles, interpolated in
+        //     normalised call price on the trading-time clock).  In an
+        //     application, a market bundling several pairs would build it,
+        //     with curves bootstrapped consistently (see bootstrapFxCurve()).
         // ──────────────────────────────────────────────────────────────────────
-        auto fxVolSurface = ext::make_shared<fxVarianceSurfaceNCP<FxSabrSmileSection>>(today, spot, pillars, atms, rrs, bfs, deltas,
-                                                                                       eurTs, usdTs, timeTs, deltaType, atmType, flyType,
-                                                                                       settlement, FxExpiryCut(10),
-                                                                                       calendar, Following, true);
-
-        fxVolSurface->enableExtrapolation();
+        const FxPairConventions conventions("EUR", "USD", settlement, FxExpiryCut(10), tenors,
+                                            deltas, deltaType, atmType, flyType);
+        const FxPairMarket market(today, conventions, spotRate, eurTs, usdTs, quotes, {},
+                                  FxVolSurfaceConfig(FxSmileModel::Sabr, FxVolInterpolation::Ncp,
+                                                     weekendWeight));
+        const ext::shared_ptr<BlackVolTermStructure> fxVolSurface = market.volSurface();
+        const std::vector<Date>& pillars = market.pillars();
+        const Handle<Quote> spot = market.spotQuote();
 
         // ──────────────────────────────────────────────────────────────────────
         //  3. Build the local-vol process.  It takes its forward from the
@@ -247,35 +227,15 @@ int main(int, char*[]) {
         //     there, and report how often it is used, rather than fail.
         //
         //     The SLV of part B still runs in calendar time, on the same
-        //     process in calendar time.
+        //     surface in calendar time.
         // ──────────────────────────────────────────────────────────────────────
         const Volatility localVolFallback = 0.01;
-        const FxTradingTimeMarket tradingTimeMarket(spot, eurTs, usdTs, settlement, fxVolSurface,
-                                                    localVolFallback);
-        auto process = tradingTimeMarket.localVolProcess();
+        auto process = market.localVolProcess(localVolFallback);
         auto calendarProcess = makeFxLocalVolProcess(spot, eurTs, usdTs, settlement,
                                                      Handle<BlackVolTermStructure>(fxVolSurface),
                                                      localVolFallback);
         // the foreign curve consistent with the process's forward
         const Handle<YieldTermStructure> eurFwdTs = calendarProcess->dividendYield();
-
-        // The same market as the P&L explain takes it, for the roll of the
-        // market to the next business day, which gives theta
-        FxVolMarket volMarket;
-        volMarket.date = today;
-        volMarket.spot = spotSQ->value();
-        volMarket.foreignCurve = eurTs;
-        volMarket.domesticCurve = usdTs;
-        for (const auto& v : mkt) {
-            volMarket.atms.push_back(v.atm);
-            volMarket.riskReversals.push_back({v.rr25, v.rr10});
-            volMarket.butterflies.push_back({v.bf25, v.bf10});
-        }
-        const FxVanillaPnlExplain<FxSabrSmileSection> explain(
-            tenors, FxVolConventions{deltas, deltaType, atmType, flyType, settlement,
-                                     FxExpiryCut(10), weekendWeight});
-        const auto roll = ext::make_shared<FxPnlExplainRoll<FxSabrSmileSection>>(
-            explain, volMarket, calendar.advance(today, 1, Days), localVolFallback);
 
         // ──────────────────────────────────────────────────────────────────────
         //  4. Define the option: 3M EUR call at ATM forward
@@ -340,9 +300,7 @@ int main(int, char*[]) {
         // ──────────────────────────────────────────────────────────────────────
         //  5. Compute Greeks
         // ──────────────────────────────────────────────────────────────────────
-        FxVanillaBumpRisk riskCalc(option, process, spotSQ, atmBumps,
-                                   rrBumps, rrPillarTimes,
-                                   bfBumps, bfPillarTimes,
+        FxVanillaBumpRisk riskCalc(option, market,
                                    notional,
                                    0.001, /*spotBump=*/
                                    0.01,  /*volBump=*/ // 1%: see FxVanillaBumpRisk on volga
@@ -353,7 +311,6 @@ int main(int, char*[]) {
                                    );
         // the same fallback as the process's local vol, see 3.
         riskCalc.setLocalVolFallback(localVolFallback);
-        riskCalc.setRoll(roll);
 
         FxVanillaGreeks lvGreeks = riskCalc.calculate(/*localVol=*/true);
         std::cout << "  Local vol fallback (" << localVolFallback * 100.0 << "%) used at "
@@ -503,7 +460,7 @@ int main(int, char*[]) {
         std::vector<StochVolCalibrator::Pillar> hestonPillars;
         for (const auto& tenor : calibTenors) {
             // around the settlement forward of the tenor's FX expiry
-            const Real fwdC = fxVolSurface->fwd(fxExpiryDate(today, tenor, settlement));
+            const Real fwdC = market.forward(fxExpiryDate(today, tenor, settlement));
             for (Real m : { 0.95, 1.00, 1.05 })
                 hestonPillars.push_back({ tenor, m * fwdC });
         }
@@ -523,8 +480,13 @@ int main(int, char*[]) {
         // Build the SLV pricing context — this object owns all calibrated state
         // and is the factory for pricing engines.
         Handle<BlackVolTermStructure> volHandle(fxVolSurface);
+        // the SLV engine's own spot, moved below for its delta: the
+        // calibrated leverage function and Heston model stay as they are
+        auto slvSpotQuote = ext::make_shared<SimpleQuote>(spotRate);
+        const Handle<Quote> slvSpot(slvSpotQuote);
 
-        FxSLVPricingContext slvCtx(spot, usdTs, eurFwdTs, volHandle, localVolHandle, settlement);
+        FxSLVPricingContext slvCtx(slvSpot, usdTs, eurFwdTs, volHandle, localVolHandle,
+                                   settlement);
 
         // Enforce the Feller condition: the SLV leverage calibration fails, or
         // goes far off, with a Heston fit violating it strongly, as the
@@ -616,7 +578,7 @@ int main(int, char*[]) {
         for (const auto& tenor : { 1*Months, 3*Months, 6*Months, 1*Years, 2*Years }) {
             const Date   expiryL = fxExpiryDate(today, tenor, settlement);
             const Time   TL      = dc.yearFraction(today, expiryL);
-            const Real   fwdL    = fxVolSurface->fwd(expiryL);
+            const Real   fwdL    = market.forward(expiryL);
             const Real   L       = leverageFct->localVol(TL, fwdL, true);
             std::string  lbl;
             if      (tenor == 1*Months) lbl = "1M";
@@ -649,7 +611,7 @@ int main(int, char*[]) {
         printSeparator();
 
         const Date   expiry4M = fxExpiryDate(today, 4*Months, settlement);
-        const Real   fwd4M    = fxVolSurface->fwd(expiry4M);
+        const Real   fwd4M    = market.forward(expiry4M);
 
         auto payoff4M   = ext::make_shared<PlainVanillaPayoff>(Option::Call, fwd4M);
         auto exercise4M = ext::make_shared<EuropeanExercise>(expiry4M);
@@ -677,38 +639,36 @@ int main(int, char*[]) {
         const Real slvNpv4M = call4M->NPV() * notional;
 
         // ── Spot bump parameters ─────────────────────────────────────────────
-        const Real S0  = spotSQ->value();
+        const Real S0  = slvSpotQuote->value();
         const Real dS  = S0 * 0.001;   // 0.1% absolute spot bump
 
-        spotSQ->setValue(S0 + dS);
+        slvSpotQuote->setValue(S0 + dS);
         const Real slvUp = call4M->NPV() * notional;
-        spotSQ->setValue(S0 - dS);
+        slvSpotQuote->setValue(S0 - dS);
         const Real slvDn = call4M->NPV() * notional;
-        spotSQ->setValue(S0);
+        slvSpotQuote->setValue(S0);
 
         // delta as an amount of EUR, gamma its change per 1% spot move
         const Real pctS      = 0.01 * S0;
         const Real slvDelta  = (slvUp - slvDn)  / (2.0 * dS);
         const Real slvGamma  = (slvUp - 2.0 * slvNpv4M + slvDn) / (dS * dS) * pctS;
 
-        // ── Vega: parallel bump of all ATM vol quotes ─────────────────────────
-        const Real dVol = 0.001;  // 10 bp absolute
-        for (auto& sq : atmBumps) sq->setValue(sq->value() + dVol);
-        const Real slvVolUp = call4M->NPV() * notional;
-        for (auto& sq : atmBumps) sq->setValue(sq->value() - 2.0 * dVol);
-        const Real slvVolDn = call4M->NPV() * notional;
-        for (auto& sq : atmBumps) sq->setValue(sq->value() + dVol);  // restore
-
-        // Scale to "per 1% (100bp) vol move"
-        const Real slvVega = (slvVolUp - slvVolDn) / (2.0 * dVol) * 0.01;
+        // ── Vega ─────────────────────────────────────────────────────────────
+        // An SLV vega needs the Heston and leverage calibrations redone on
+        // the bumped market (FxPairMarket::withQuotes()): the calibrated
+        // model does not see the surface, so bumping the quotes under it
+        // would give none.  Too slow for an interactive example.
 
         // ── Local vol theta (proxy) ───────────────────────────────────────────
         // The roll of the market to the next business day, priced with local
         // vol; re-calibrating the full SLV model just for theta is
         // impractical in an interactive example.
-        Settings::instance().evaluationDate() = roll->nextDate();
+        const Date nextDay = calendar.advance(today, 1, Days);
+        Settings::instance().evaluationDate() = nextDay;
+        const FxPairMarket rolled = market.rolled(nextDay);
         auto call4M_rolled = ext::make_shared<VanillaOption>(payoff4M, exercise4M);
-        call4M_rolled->setPricingEngine(MakeFdBlackScholesVanillaEngine(roll->rolledProcess())
+        call4M_rolled->setPricingEngine(
+            MakeFdBlackScholesVanillaEngine(rolled.localVolProcess(localVolFallback))
                                             .withTGrid(100)
                                             .withXGrid(100)
                                             .withLocalVol(true));
@@ -737,7 +697,6 @@ int main(int, char*[]) {
                   << "  " << std::string(wl + wv, '-') << "\n";
         row("Spot delta  (EUR, spot hedge)",      slvDelta);
         row("Spot gamma  (EUR per 1% spot move)", slvGamma);
-        row("Vega        (USD per 1% vol move)",  slvVega);
         row("Theta       (USD, roll, LV proxy)",  lvTheta4M);
         std::cout << "  " << std::string(wl + wv, '-') << "\n";
 

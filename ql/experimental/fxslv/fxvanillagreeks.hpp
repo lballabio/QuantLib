@@ -27,8 +27,8 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
+#include <ql/experimental/fxslv/fxpairmarket.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <iostream>
 #include <utility>
@@ -96,8 +96,8 @@ namespace QuantLib {
         \li \c spotGamma  — EUR, the change of \c spotDelta per 1% spot move
         \li \c fwdGamma   — EUR, the change of \c fwdDelta per 1% forward
                               move (= \c spotGamma / \f$ B_f \f$)
-        \li \c theta      — USD over the roll of the market to its next date
-                              (see FxVanillaBumpRisk::setRoll()); null without one
+        \li \c theta      — USD over the roll of the market to its next business
+                              day (see FxPairMarket::rolled())
         \li \c vega       — USD per 1% (100 bp) parallel ATM vol move
         \li \c rega       — USD per 0.1% 1M-equivalent RR move
         \li \c sega       — USD per 0.01% 1M-equivalent BF move
@@ -135,28 +135,16 @@ namespace QuantLib {
         FxPremiumAdjustedGreeks premiumAdjusted;
     };
 
-    //! A market rolled to a later date, for the theta of the roll
-    /*! The rolled market is that of the next date, with the vols held as
-        the roll prescribes, e.g. eventless vols held per tenor (see
-        FxVanillaPnlExplain::rolled() and FxPnlExplainRoll).
-    */
-    class FxVolMarketRoll {
-      public:
-        virtual ~FxVolMarketRoll() = default;
-        //! The date the market rolls to.
-        virtual Date nextDate() const = 0;
-        //! The process on the rolled market
-        /*! It is called with the evaluation date set to nextDate(), on
-            which its curves and surface are built.
-        */
-        virtual ext::shared_ptr<GeneralizedBlackScholesProcess> rolledProcess() const = 0;
-    };
-
     //! FX vanilla option risk calculator via bump-and-reval.
     /*!
-        Prices a \c VanillaOption driven by a \c GeneralizedBlackScholesProcess
-        backed by an FX variance surface (\c fxVarianceSurface) and computes all
-        standard FX option risk metrics using symmetric finite differences.
+        Prices a \c VanillaOption on an FX pair's market (FxPairMarket) and
+        computes all standard FX option risk metrics using symmetric finite
+        differences.  Each bump is a new market, built from the bumped
+        quotes (FxPairMarket::withSpot(), FxPairMarket::withQuotes()), so
+        that nothing is mutated: the market given, and anything else built
+        from it, is left as it was.  Pricing is on the market's
+        trading-time clock (FxPairMarket::blackProcess(),
+        FxPairMarket::localVolProcess()).
 
         Two pricing modes are supported (selected at call time):
         - <b>Analytical Black-Scholes</b> (\c localVol=false): the implied vol is
@@ -200,11 +188,10 @@ namespace QuantLib {
           so the 1M pillar moves by \c rrBump (default 10 bp) and longer tenors
           move by a smaller amount proportional to \f$ 1/\sqrt{T} \f$.
         - Sega bumps each BF pillar similarly with \c bfBump (default 10 bp at 1M).
-        - Theta is the P&L of the roll of the market to its next date, the
-          option repriced on the rolled market; there is none without a roll
-          (see setRoll()).  Holding today's surface fixed while the date moves
-          is not defined: the surface is anchored to today's date, and on the
-          trading-time clock its curves must agree with it.
+        - Theta is the P&L of the roll of the market to the next business
+          day of its calendar, the option repriced on the rolled market
+          (FxPairMarket::rolled()).  Holding today's surface fixed while the
+          date moves is not defined: the surface is anchored to today's date.
 
         \ingroup vanillaengines
     */
@@ -225,23 +212,8 @@ namespace QuantLib {
         };
 
         /*! \param option            Vanilla option to price.
-            \param process           GBS process (spot, domestic/foreign curves,
-                                     FX variance surface).  For its forward to
-                                     agree with the surface's, its foreign
-                                     curve should be an FxSettlementForeignCurve.
-                                     Local vol is taken from an FxLocalVolSurface
-                                     on its surface; where it fails, pricing fails.
-            \param spotQuote         \c SimpleQuote underlying the spot handle —
-                                     bumped for delta/gamma/vanna.
-            \param atmVolQuotes      All pillar ATM \c SimpleQuote objects — bumped
-                                     in parallel for vega, vanna and volga.
-            \param rrPillarQuotes    Per-tenor RR \c SimpleQuote vectors, e.g.
-                                     {{rr25_1M, rr10_1M}, {rr25_3M, rr10_3M}, ...}.
-                                     May be empty (rega will be zero).
-            \param rrPillarTimes     Year-fraction time for each RR pillar (one
-                                     entry per outer vector of \p rrPillarQuotes).
-            \param bfPillarQuotes    Per-tenor BF \c SimpleQuote vectors.
-            \param bfPillarTimes     Year-fraction time for each BF pillar.
+            \param market            the pair's market; its as-of date must be
+                                     the evaluation date when calculating.
             \param notional          Option notional in foreign currency.
             \param spotBump          Relative spot bump for delta/gamma (e.g. 0.001).
             \param volBump           Absolute ATM vol bump for vega/vanna/volga
@@ -257,41 +229,27 @@ namespace QuantLib {
             \param lvStrikeSpread    Half-width of local vol strike grid in units of
                                      \f$ \sigma_{ATM}\sqrt{T} \f$.
         */
-        FxVanillaBumpRisk(
-            ext::shared_ptr<VanillaOption> option,
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process,
-            ext::shared_ptr<SimpleQuote> spotQuote,
-            std::vector<ext::shared_ptr<SimpleQuote>> atmVolQuotes,
-            std::vector<std::vector<ext::shared_ptr<SimpleQuote>>> rrPillarQuotes = {},
-            std::vector<Time> rrPillarTimes = {},
-            std::vector<std::vector<ext::shared_ptr<SimpleQuote>>> bfPillarQuotes = {},
-            std::vector<Time> bfPillarTimes = {},
-            Real notional = 1.0e6,
-            Real spotBump = 0.001,
-            Real volBump = 0.01,
-            Real rrBump = 0.001,
-            Real bfBump = 0.001,
-            Size tGrid = 100,
-            Size xGrid = 100,
-            Size lvTimePts = 25,
-            Size lvStrikePts = 50,
-            Real lvStrikeSpread = 3.5);
+        FxVanillaBumpRisk(ext::shared_ptr<VanillaOption> option,
+                          FxPairMarket market,
+                          Real notional = 1.0e6,
+                          Real spotBump = 0.001,
+                          Real volBump = 0.01,
+                          Real rrBump = 0.001,
+                          Real bfBump = 0.001,
+                          Size tGrid = 100,
+                          Size xGrid = 100,
+                          Size lvTimePts = 25,
+                          Size lvStrikePts = 50,
+                          Real lvStrikeSpread = 3.5);
 
         //! Use the given volatility where Dupire local vol is not defined.
         /*! By default there is none, and pricing fails there; the number
-            of substitutions is reported by localVolFallbacks().
+            of substitutions in the base market's local vol is reported by
+            localVolFallbacks().
         */
         void setLocalVolFallback(Volatility fallbackVol);
-        //! Number of times the local vol fallback was used.
+        //! Number of times the base market's local vol used the fallback.
         Size localVolFallbacks() const { return localVol_->fallbacks(); }
-
-        //! The roll of the market giving theta
-        /*! Its rolled process should be built as the one given here is, e.g.
-            both on the trading-time clock (FxTradingTimeMarket); with local
-            vol, theta takes the rolled process's Dupire local vol, with the
-            same fallback.
-        */
-        void setRoll(ext::shared_ptr<const FxVolMarketRoll> roll) { roll_ = std::move(roll); }
 
         //! Compute all Greeks via bump-and-reval.
         FxVanillaGreeks calculate(bool localVol = true,
@@ -307,48 +265,39 @@ namespace QuantLib {
                                      const std::vector<Real>& strikes,
                                      std::ostream& out = std::cout) const;
 
+        const FxPairMarket& market() const { return market_; }
+
       private:
         // the finite-difference grid for the option in the given market
         ext::shared_ptr<FdmMesher>
         makeMesher(const ext::shared_ptr<GeneralizedBlackScholesProcess>& proc) const;
-        // finite-difference engines on the given grid
-        ext::shared_ptr<PricingEngine>
-        makeEngineFor(const ext::shared_ptr<GeneralizedBlackScholesProcess>& proc,
-                      bool localVol,
-                      const ext::shared_ptr<FdmMesher>& mesher) const;
-        ext::shared_ptr<PricingEngine> makeEngine(bool localVol,
-                                                  const ext::shared_ptr<FdmMesher>& mesher) const;
-        // Dupire local vol of the process's surface, allowing periods without variance
-        void buildLocalVol(Volatility fallbackVol);
-        ext::shared_ptr<PricingEngine> makeAnalyticEngine() const;
-
-        std::pair<std::vector<Time>, std::vector<Real>> buildLvGrid() const;
-
-        ext::shared_ptr<GeneralizedBlackScholesProcess>
-        makeStickyProcess(const std::vector<Time>& times,
-                          const std::vector<Real>& strikes) const;
-
-        // P&L of the roll of the market, from today's value; null without a roll
+        // value of the position in a market, with Black or local vol on the given grid
+        Real value(const FxPairMarket& market,
+                   bool localVol,
+                   const ext::shared_ptr<FdmMesher>& mesher) const;
+        // value of the position with the given process (local vol frozen or Black)
+        Real value(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                   bool localVol,
+                   const ext::shared_ptr<FdmMesher>& mesher) const;
+        // P&L of the roll of the market to its next business day, from today's value
         Real rollTheta(bool localVol, Real todaysValue) const;
 
+        std::pair<std::vector<Time>, std::vector<Real>> buildLvGrid() const;
+        ext::shared_ptr<FixedLocalVolSurface>
+        frozenLocalVol(const FxPairMarket& market,
+                       const std::vector<Time>& times,
+                       const std::vector<Real>& strikes) const;
+
         ext::shared_ptr<VanillaOption> option_;
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        ext::shared_ptr<SimpleQuote> spotQuote_;
-        std::vector<ext::shared_ptr<SimpleQuote>> atmVolQuotes_;
-        std::vector<std::vector<ext::shared_ptr<SimpleQuote>>> rrPillarQuotes_;
-        std::vector<Time> rrPillarTimes_;
-        std::vector<std::vector<ext::shared_ptr<SimpleQuote>>> bfPillarQuotes_;
-        std::vector<Time> bfPillarTimes_;
+        FxPairMarket market_;
         Real notional_;
         Real spotBump_, volBump_, rrBump_, bfBump_;
         Size tGrid_, xGrid_;
         Size lvTimePts_, lvStrikePts_;
         Real lvStrikeSpread_;
-        // the local vol, and the process with it given explicitly
-        ext::shared_ptr<FxLocalVolSurface> localVol_;
-        ext::shared_ptr<GeneralizedBlackScholesProcess> localVolProcess_;
         Volatility localVolFallback_ = Null<Volatility>();
-        ext::shared_ptr<const FxVolMarketRoll> roll_;
+        // the base market's local vol, for the fallback count and sampling
+        ext::shared_ptr<FxLocalVolSurface> localVol_;
     };
 
 }

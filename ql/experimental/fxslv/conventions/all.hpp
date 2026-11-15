@@ -2,6 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/fxslv/conventions/fxexpirycut.hpp>
+#include <ql/experimental/fxslv/conventions/fxpairconventions.hpp>
 #include <ql/experimental/fxslv/conventions/fxsettlementconvention.hpp>
 #include <ql/experimental/fxslv/conventions/fxtenorexpiry.hpp>
 

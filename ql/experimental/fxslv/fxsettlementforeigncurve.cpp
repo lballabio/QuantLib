@@ -41,6 +41,19 @@ namespace QuantLib {
 
     }
 
+    std::pair<DiscountFactor, DiscountFactor>
+    fxSettlementDiscounts(const FxSettleConvention& settlement,
+                          const Date& tradeDate,
+                          const Date& expiry,
+                          const YieldTermStructure& foreignCurve,
+                          const YieldTermStructure& domesticCurve) {
+        const Date spotDate = settlement.valueDate(tradeDate);
+        const Date deliveryDate = settlement.valueDate(expiry);
+        return {foreignCurve.discount(deliveryDate, true) / foreignCurve.discount(spotDate, true),
+                domesticCurve.discount(deliveryDate, true) /
+                    domesticCurve.discount(spotDate, true)};
+    }
+
     FxSettlementForeignCurve::FxSettlementForeignCurve(Handle<YieldTermStructure> foreignCurve,
                                                        Handle<YieldTermStructure> domesticCurve,
                                                        FxSettleConvention settlement)
@@ -50,13 +63,10 @@ namespace QuantLib {
     }
 
     Real FxSettlementForeignCurve::forwardOverSpot(Time t) const {
-        const Date spotDate = settlement_.valueDate(referenceDate());
-        const Date deliveryDate = settlement_.valueDate(detail::dayContaining(*this, t));
-        Real domesticDiscountFactor = (originalCurve_->discount(deliveryDate, true) /
-                                       originalCurve_->discount(spotDate, true));
-        Real foreignDiscountFactor = (foreignCurve_->discount(deliveryDate, true) / 
-                                       foreignCurve_->discount(spotDate, true));
-        return foreignDiscountFactor / domesticDiscountFactor;
+        const auto [dfor, ddom] =
+            fxSettlementDiscounts(settlement_, referenceDate(), detail::dayContaining(*this, t),
+                                  **foreignCurve_, **originalCurve_);
+        return dfor / ddom;
     }
 
     DiscountFactor FxSettlementForeignCurve::discountImpl(Time t) const {
