@@ -139,12 +139,15 @@ namespace QuantLib {
             ++i;
         }
 
-        // today is a border case
+        // Validate required history before the optional today-fixing calculation.
         if (i < n && fixingDates[i] == today) {
             QL_REQUIRE(!Settings::instance().enforcesTodaysHistoricFixings() ||
                            pastFixings[fixingDates[i]] != Null<Real>(),
                        "Missing " << index->name() << " fixing for " << fixingDates[i]);
+        }
 
+        // today is a border case
+        if (i < n && fixingDates[i] == today) {
             // might have been fixed
             try {
                 Rate fixing = pastFixings[fixingDates[i]];
@@ -337,3 +340,4 @@ namespace QuantLib {
                 (1.0 - exp(-2.0 * mrs_ * (te - ts))) / (2.0 * mrs_));
     }
 }
+
