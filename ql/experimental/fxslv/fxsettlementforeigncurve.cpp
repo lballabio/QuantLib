@@ -25,18 +25,23 @@ namespace QuantLib {
 
     namespace detail {
 
-        Date dayContaining(const TermStructure& ts, Time t) {
+        Date dayContaining(const Date& referenceDate, const DayCounter& dayCounter, Time t) {
             // guess from an Actual/365 count, then step to the last day
             // starting at or before t, whatever the day counter
-            const Date referenceDay(ts.referenceDate().serialNumber());
+            const Date referenceDay(referenceDate.serialNumber());
             const Real eps = 1.0e-12;
+            auto time = [&](const Date& d) { return dayCounter.yearFraction(referenceDate, d); };
             Date d = referenceDay +
                      static_cast<Date::serial_type>(std::floor(std::max(t, 0.0) * 365.0));
-            while (d > referenceDay && ts.timeFromReference(d) > t + eps)
+            while (d > referenceDay && time(d) > t + eps)
                 --d;
-            while (ts.timeFromReference(d + 1) <= t + eps)
+            while (time(d + 1) <= t + eps)
                 ++d;
             return d;
+        }
+
+        Date dayContaining(const TermStructure& ts, Time t) {
+            return dayContaining(ts.referenceDate(), ts.dayCounter(), t);
         }
 
     }

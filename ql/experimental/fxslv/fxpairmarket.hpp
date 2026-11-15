@@ -36,7 +36,7 @@ namespace QuantLib {
 
     //! ATM, risk-reversal and butterfly vols of a smile at one expiry
     /*! The butterflies are smile strangles; risk reversals and butterflies
-        are by delta, in the order of the pair's deltas.
+        are by delta, in the order of the market's quoted deltas.
     */
     struct FxExpiryQuotes {
         Volatility atm;
@@ -73,7 +73,7 @@ namespace QuantLib {
             \param foreignCurve  discount curve of the foreign currency.
             \param domesticCurve discount curve of the domestic currency,
                                  on the same collateral as the foreign one.
-            \param quotes        vol quotes, by the conventions' vol tenors.
+            \param quotes        vol quotes, with the tenors and deltas quoted.
             \param events        events with their variances, if any.
             \param config        how the vol surface is built.
         */
@@ -98,7 +98,7 @@ namespace QuantLib {
         const FxVolQuotes& quotes() const { return data_->quotes; }
         const std::vector<FxVolEvent>& events() const { return data_->events; }
         const FxVolSurfaceConfig& config() const { return data_->config; }
-        //! The expiries of the vol tenors.
+        //! The expiries of the quoted vol tenors.
         const std::vector<Date>& pillars() const { return data_->pillars; }
         //@}
 
@@ -112,12 +112,16 @@ namespace QuantLib {
 
         //! \name Vols
         //@{
-        //! The vol surface, with calendar-time implied vols.
+        //! The vol surface, on the trading-time axis (see fxVarianceSurface).
         const ext::shared_ptr<BlackVolTermStructure>& volSurface() const;
         //! The same surface, through its FX interface.
         const FxVolSurface& fxVolSurface() const;
-        //! The implied vol of an expiry and strike.
-        Volatility vol(const Date& expiry, Real strike) const;
+        //! The implied vol of an expiry and strike, per year of calendar time, as quoted.
+        Volatility marketVol(const Date& expiry, Real strike) const;
+        //! The surface on the calendar-time axis, for models calibrated in calendar time
+        /*! \todo Remove once stochastic local vol runs in trading time.
+        */
+        ext::shared_ptr<BlackVolTermStructure> calendarTimeVolSurface() const;
         //! A smile section of the market's model at an expiry, with smile-strangle quotes.
         ext::shared_ptr<FxSmileSection> smileSection(const Date& expiry,
                                                      const FxExpiryQuotes& quotes) const;
@@ -133,12 +137,11 @@ namespace QuantLib {
         /*! Local vol, and the variance and leverage of stochastic local
             vol, follow the variance surface: in calendar time they drop
             over weekends and holidays and spike at events.  On the
-            trading-time clock of the surface the same market is smooth:
-            curves with the same discount factor at every date and the
-            surface with the same total variance, whose times are trading
-            times.  Prices are those of the calendar-time market for
-            vanillas.  Model parameters calibrated on it are per year of
-            trading time.
+            trading-time clock of the surface, its own axis, the same
+            market is smooth: the curves here have the same discount
+            factor at every date as the given ones, with trading times.
+            Prices are those of the calendar-time market for vanillas.
+            Model parameters calibrated on it are per year of trading time.
         */
         //@{
         //! The trading-time clock of the surface.
@@ -147,7 +150,6 @@ namespace QuantLib {
         DayCounter tradingTimeDayCounter() const;
         const Handle<YieldTermStructure>& tradingTimeDomesticCurve() const;
         const Handle<YieldTermStructure>& tradingTimeForeignCurve() const;
-        const Handle<BlackVolTermStructure>& tradingTimeVolSurface() const;
         //! A Black process, with the settlement forward, for analytic pricing.
         ext::shared_ptr<GeneralizedBlackScholesProcess> blackProcess() const;
         //! A local-vol process with the settlement forward and Dupire local vol
@@ -203,7 +205,6 @@ namespace QuantLib {
             const FxVolSurface* fxSurface = nullptr;
             bool tradingTimeBuilt = false;
             Handle<YieldTermStructure> ttDomestic, ttForeign;
-            Handle<BlackVolTermStructure> ttSurface;
         };
         FxPairMarket(Data data);
         void buildTradingTime() const;

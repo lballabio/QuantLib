@@ -138,6 +138,14 @@ namespace QuantLib {
                           const FxSettleConvention& settlement,
                           const Handle<BlackVolTermStructure>& volSurface,
                           Volatility localVolFallback) {
+        // the process takes its times from the domestic curve and reads the
+        // surface at them: both must be on one time axis, e.g. trading time
+        // for a surface built by makeFxVolSurface() (see FxPairMarket), or
+        // calendar time with an FxCalendarTimeVolSurface
+        QL_REQUIRE(volSurface->dayCounter() == domesticCurve->dayCounter(),
+                   "the vol surface (" << volSurface->dayCounter().name()
+                                       << ") and the curves (" << domesticCurve->dayCounter().name()
+                                       << ") are not on the same time axis");
         // create the adjusted settlement curve
         const Handle<YieldTermStructure> settlementForeignCurve(
             ext::make_shared<FxSettlementForeignCurve>(foreignCurve, domesticCurve, settlement));

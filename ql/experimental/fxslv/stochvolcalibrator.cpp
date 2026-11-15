@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/fxslv/conventions/fxtenorexpiry.hpp>
+#include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/experimental/fxslv/stochvolcalibrator.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
@@ -99,8 +100,12 @@ namespace QuantLib {
             // The market vol at the pillar's FX expiry, which the helper
             // takes as a tenor on a calendar: in days, on one without holidays
             const Date expiryDate = fxExpiryDate(refDate, p.expiry, settlement);
-            const Volatility marketVol =
-                volSurface->blackVol(expiryDate, p.strike, true);
+            // per year of calendar time, as the helper takes it, whatever
+            // the surface's axis
+            const auto* fxSurface =
+                dynamic_cast<const FxVolSurface*>(volSurface.currentLink().get());
+            const Volatility marketVol = fxSurface ? fxSurface->marketVol(expiryDate, p.strike)
+                                                   : volSurface->blackVol(expiryDate, p.strike, true);
 
             auto volQuote = ext::make_shared<SimpleQuote>(marketVol);
 

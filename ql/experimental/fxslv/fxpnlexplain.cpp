@@ -35,9 +35,9 @@ namespace QuantLib {
         QL_REQUIRE(today.conventions().name() == next.conventions().name(),
                    "the markets are of different pairs: " << today.conventions().name()
                                                           << " and " << next.conventions().name());
-        QL_REQUIRE(today.conventions().volTenors() == next.conventions().volTenors() &&
-                       today.conventions().deltas() == next.conventions().deltas(),
-                   "the markets must have the same vol tenors and deltas");
+        QL_REQUIRE(today.quotes().tenors == next.quotes().tenors &&
+                       today.quotes().deltas == next.quotes().deltas,
+                   "the markets must quote the same vol tenors and deltas");
         QL_REQUIRE(next.asOf() > today.asOf(), "the next market must follow today's");
         QL_REQUIRE(expiry > next.asOf(), "the option must expire after the next date");
 
@@ -82,7 +82,7 @@ namespace QuantLib {
         quotesRR.riskReversals = mN.quotes().riskReversals;
         const FxPairMarket mRR = mA.withQuotes(quotesRR);
 
-        auto vol = [&](const FxPairMarket& m) { return m.vol(expiry, strike); };
+        auto vol = [&](const FxPairMarket& m) { return m.marketVol(expiry, strike); };
         const Volatility vol0 = vol(m0), volR = vol(mR), volS = vol(mS), volA = vol(mA),
                          volRR = vol(mRR), volN = vol(mN);
 

@@ -17,10 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/experimental/fxslv/conventions/fxtenorexpiry.hpp>
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
 #include <ql/experimental/fxslv/fxpairmarket.hpp>
 #include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
-#include <ql/experimental/fxslv/fxtradingtimevariancesurface.hpp>
+#include <ql/experimental/fxslv/fxcalendartimevolsurface.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimedaycounter.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.hpp>
 #include <ql/pricingengines/blackdeltacalculator.hpp>
@@ -49,7 +50,8 @@ namespace QuantLib {
         QL_REQUIRE(data.spot->value() > 0.0, name << ": non-positive spot " << data.spot->value());
         QL_REQUIRE(!data.foreignCurve.empty() && !data.domesticCurve.empty(),
                    name << ": both curves must be given");
-        data.pillars = data.conventions.volPillars(data.asOf);
+        checkFxVolQuotes(data.quotes, name);
+        data.pillars = fxExpiryDates(data.asOf, data.quotes.tenors, data.conventions.settlement());
         data_ = ext::make_shared<const Data>(std::move(data));
     }
 
@@ -79,14 +81,21 @@ namespace QuantLib {
         return *built_->fxSurface;
     }
 
-    Volatility FxPairMarket::vol(const Date& expiry, Real strike) const {
-        return volSurface()->blackVol(expiry, strike, true);
+    Volatility FxPairMarket::marketVol(const Date& expiry, Real strike) const {
+        return fxVolSurface().marketVol(expiry, strike);
+    }
+
+    ext::shared_ptr<BlackVolTermStructure> FxPairMarket::calendarTimeVolSurface() const {
+        auto surface = ext::make_shared<FxCalendarTimeVolSurface>(volSurface());
+        surface->enableExtrapolation();
+        return surface;
     }
 
     ext::shared_ptr<FxSmileSection>
     FxPairMarket::smileSection(const Date& expiry, const FxExpiryQuotes& quotes) const {
         return makeFxSmileSection(asOf(), conventions().withFlyType(FxRrBfQuotes::SmileStrangle),
-                                  expiry, spotQuote(), quotes.atm, quotes.riskReversals,
+                                  expiry, spotQuote(), this->quotes().deltas, quotes.atm,
+                                  quotes.riskReversals,
                                   quotes.butterflies, foreignCurve(), domesticCurve(),
                                   config().model);
     }
@@ -96,7 +105,8 @@ namespace QuantLib {
         const Time t = Actual365Fixed().yearFraction(asOf(), expiry);
         const Real fwd = spot() * dfor / ddom;
         const auto& surface = volSurface();
-        auto stdDev = [&](Real k) { return surface->blackVol(expiry, k, true) * std::sqrt(t); };
+        // total variance: the same on any time axis
+        auto stdDev = [&](Real k) { return std::sqrt(surface->blackVariance(expiry, k, true)); };
         auto calculator = [&](Option::Type type, Real k) {
             return BlackDeltaCalculator(type, conventions().deltaType(), spot(), ddom, dfor,
                                         stdDev(k));
@@ -118,7 +128,7 @@ namespace QuantLib {
         const Real kAtm = solve(
             [&](Real k) { return calculator(Option::Call, k).atmStrike(conventions().atmType()); });
         result.atm = stdDev(kAtm) / std::sqrt(t);
-        for (Real d : conventions().deltas()) {
+        for (Real d : quotes().deltas) {
             const Real kc =
                 solve([&](Real k) { return calculator(Option::Call, k).strikeFromDelta(d); });
             const Real kp =
@@ -138,8 +148,6 @@ namespace QuantLib {
             ext::make_shared<TradingTimeYieldTermStructure>(domesticCurve(), clock));
         built_->ttForeign = Handle<YieldTermStructure>(
             ext::make_shared<TradingTimeYieldTermStructure>(foreignCurve(), clock));
-        built_->ttSurface = Handle<BlackVolTermStructure>(
-            ext::make_shared<FxTradingTimeVarianceSurface>(volSurface()));
         built_->tradingTimeBuilt = true;
     }
 
@@ -161,24 +169,20 @@ namespace QuantLib {
         return built_->ttForeign;
     }
 
-    const Handle<BlackVolTermStructure>& FxPairMarket::tradingTimeVolSurface() const {
-        buildTradingTime();
-        return built_->ttSurface;
-    }
-
     ext::shared_ptr<GeneralizedBlackScholesProcess> FxPairMarket::blackProcess() const {
         const Handle<YieldTermStructure> settlementForeign(
             ext::make_shared<FxSettlementForeignCurve>(
                 tradingTimeForeignCurve(), tradingTimeDomesticCurve(), conventions().settlement()));
         return ext::make_shared<GeneralizedBlackScholesProcess>(
-            spotQuote(), settlementForeign, tradingTimeDomesticCurve(), tradingTimeVolSurface());
+            spotQuote(), settlementForeign, tradingTimeDomesticCurve(),
+            Handle<BlackVolTermStructure>(volSurface()));
     }
 
     ext::shared_ptr<GeneralizedBlackScholesProcess>
     FxPairMarket::localVolProcess(Volatility fallback) const {
         return makeFxLocalVolProcess(spotQuote(), tradingTimeForeignCurve(),
                                      tradingTimeDomesticCurve(), conventions().settlement(),
-                                     tradingTimeVolSurface(), fallback);
+                                     Handle<BlackVolTermStructure>(volSurface()), fallback);
     }
 
     FxPairMarket FxPairMarket::withSpot(Real spot) const {
@@ -208,7 +212,7 @@ namespace QuantLib {
     }
 
     std::vector<Volatility> FxPairMarket::smilePoints(Size pillar) const {
-        const std::vector<Real>& deltas = conventions().deltas();
+        const std::vector<Real>& deltas = quotes().deltas;
         const Volatility atm = quotes().atms[pillar];
         std::vector<Volatility> points = {atm};
         if (conventions().flyType() == FxRrBfQuotes::SmileStrangle) {
@@ -223,7 +227,7 @@ namespace QuantLib {
         // broker strangles are not points on the smile: read the points off
         // the pillar's calibrated smile
         const auto section = makeFxSmileSection(
-            asOf(), conventions(), pillars()[pillar], spotQuote(), atm,
+            asOf(), conventions(), pillars()[pillar], spotQuote(), deltas, atm,
             quotes().riskReversals[pillar], quotes().butterflies[pillar], foreignCurve(),
             domesticCurve(), config().model);
         points.front() = section->atmVol();
@@ -236,8 +240,10 @@ namespace QuantLib {
 
     FxVolQuotes
     FxPairMarket::quotesFromPoints(const std::vector<std::vector<Volatility>>& points) const {
-        const Size nd = conventions().deltas().size();
+        const Size nd = quotes().deltas.size();
         FxVolQuotes result;
+        result.tenors = quotes().tenors;
+        result.deltas = quotes().deltas;
         result.atms.resize(points.size());
         result.riskReversals.assign(points.size(), std::vector<Volatility>(nd));
         result.butterflies.assign(points.size(), std::vector<Volatility>(nd));
@@ -269,7 +275,8 @@ namespace QuantLib {
         const FxPairMarket market = smileStrangles();
         const FxPairConventions& conv = market.conventions();
         const std::vector<Date>& pillarsToday = market.pillars();
-        const std::vector<Date> pillarsNext = conv.volPillars(next);
+        const std::vector<Date> pillarsNext =
+            fxExpiryDates(next, market.quotes().tenors, conv.settlement());
         const Calendar& cal = conv.settlement().calendar();
         const TradingTimeTermStructure baseToday(asOf(), cal, config().holidayWeight);
         const TradingTimeTermStructure baseNext(next, cal, config().holidayWeight);

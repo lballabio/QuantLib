@@ -156,7 +156,7 @@ set(QL_SOURCES
     experimental/fxslv/fxeventvariance.cpp
     experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.cpp
     experimental/fxslv/tradingtime/tradingtimedaycounter.cpp
-    experimental/fxslv/fxtradingtimevariancesurface.cpp
+    experimental/fxslv/fxcalendartimevolsurface.cpp
     experimental/fxslv/fxforwardcurve.cpp
     experimental/fxslv/fxpairmarket.cpp
     experimental/fxslv/fxpnlexplain.cpp
@@ -1212,7 +1212,7 @@ set(QL_HEADERS
     experimental/fxslv/fxeventvariance.hpp
     experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.hpp
     experimental/fxslv/tradingtime/tradingtimedaycounter.hpp
-    experimental/fxslv/fxtradingtimevariancesurface.hpp
+    experimental/fxslv/fxcalendartimevolsurface.hpp
     experimental/fxslv/fxforwardcurve.hpp
     experimental/fxslv/fxpairmarket.hpp
     experimental/fxslv/fxvolsurfacebuilder.hpp
