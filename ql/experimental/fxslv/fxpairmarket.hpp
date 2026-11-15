@@ -56,14 +56,15 @@ namespace QuantLib {
         (withSpot(), withCurves(), withQuotes(), withEvents(), rolled()),
         so that nothing built from this one goes stale.  It is meant to be
         built by an application's market (e.g. one that bundles several
-        pairs and bootstraps their curves consistently, see
-        bootstrapFxCurve()), and passed to the analytics: surfaces, the
-        P&L explain and the greeks.
+        pairs and bootstraps their curves consistently, on one
+        collateral), and passed to the analytics: surfaces, the P&L
+        explain and the greeks.
 
         What is built is built once, on first use, and shared by copies.
         Dates are fixed: the surface's reference date is the as-of date,
         whatever the evaluation date.  The curves are given; they should
-        be fixed-date too.
+        be fixed-date too, with the as-of date as their reference date,
+        as the trading-time clock starts there.
     */
     class FxPairMarket {
       public:

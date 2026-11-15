@@ -34,7 +34,6 @@
 #include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimetermstructure.hpp>
-#include <ql/experimental/fxslv/fxforwardcurve.hpp>
 #include <ql/experimental/fxslv/fxpairmarket.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimedaycounter.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.hpp>
@@ -2288,7 +2287,7 @@ BOOST_AUTO_TEST_CASE(testFxPnlExplainEventReleasedOvernight) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  FX pair conventions, curves and markets
+//  FX pair conventions and markets
 // ─────────────────────────────────────────────────────────────────────────────
 
 namespace {
@@ -2297,38 +2296,6 @@ namespace {
         return FxPairConventions(foreign, domestic, FxSettleConvention(WeekendsOnly(), 2),
                                  FxExpiryCut(10), DeltaVolQuote::Fwd, DeltaVolQuote::AtmFwd,
                                  FxRrBfQuotes::SmileStrangle);
-    }
-
-    // the tenors of the forward points
-    const std::vector<Period> forwardTenors = {1 * Months, 3 * Months, 6 * Months, 1 * Years};
-
-    // forward points of a pair with flat continuous rates
-    std::vector<Real> forwardPoints(const FxPairConventions& conventions,
-                                    const Date& asOf,
-                                    Real spot,
-                                    Rate rForeign,
-                                    Rate rDomestic) {
-        const Date spotDate = conventions.settlement().valueDate(asOf);
-        std::vector<Real> points;
-        for (const Period& tenor : forwardTenors) {
-            const Date delivery =
-                conventions.settlement().calendar().advance(spotDate, tenor, Following);
-            const Time t = Actual365Fixed().yearFraction(spotDate, delivery);
-            points.push_back(spot * (std::exp((rDomestic - rForeign) * t) - 1.0));
-        }
-        return points;
-    }
-
-    // forward to a delivery date, from the spot date of the as-of date
-    Real forwardTo(const Date& asOf,
-                   const FxPairConventions& conventions,
-                   Real spot,
-                   const YieldTermStructure& foreign,
-                   const YieldTermStructure& domestic,
-                   const Date& delivery) {
-        const Date spotDate = conventions.settlement().valueDate(asOf);
-        return spot * (foreign.discount(delivery) / foreign.discount(spotDate)) /
-               (domestic.discount(delivery) / domestic.discount(spotDate));
     }
 
 }
@@ -2361,69 +2328,6 @@ BOOST_AUTO_TEST_CASE(testFxPairConventions) {
     BOOST_CHECK_THROW(withQuotes({3 * Months, 6 * Months}, {}), Error);
     BOOST_CHECK_THROW(withQuotes({3 * Months, 6 * Months}, {0.25, 0.5}), Error);
     BOOST_CHECK_THROW(withQuotes({3 * Months, 6 * Months}, {0.25}), Error);
-}
-
-BOOST_AUTO_TEST_CASE(testFxCurvesFromForwardPoints) {
-    BOOST_TEST_MESSAGE("Testing FX curves bootstrapped from forward points...");
-
-    const Date asOf(2, January, 2024);
-    Settings::instance().evaluationDate() = asOf;
-    const Handle<YieldTermStructure> usd(
-        ext::make_shared<FlatForward>(asOf, 0.0525, Actual365Fixed()));
-
-    // EUR/USD, collateral the domestic currency, and USD/JPY, collateral the
-    // foreign one: both curves reprice their pair's forward points
-    struct Case { std::string foreign, domestic; Real spot; Rate rForeign, rDomestic; };
-    std::map<std::string, Handle<YieldTermStructure>> curves = {{"USD", usd}};
-    std::map<std::string, Real> spots;
-    for (const Case& c : {Case{"EUR", "USD", 1.0850, 0.04, 0.0525},
-                          Case{"USD", "JPY", 150.0, 0.0525, 0.001}}) {
-        const FxPairConventions conventions = pairConventions(c.foreign, c.domestic);
-        const std::vector<Real> points =
-            forwardPoints(conventions, asOf, c.spot, c.rForeign, c.rDomestic);
-        const std::string other = c.foreign == "USD" ? c.domestic : c.foreign;
-        const Handle<YieldTermStructure> curve(
-            bootstrapFxCurve(asOf, conventions, c.spot, forwardTenors, points, "USD", usd));
-        curves[other] = curve;
-        spots[conventions.name()] = c.spot;
-
-        const Date spotDate = conventions.settlement().valueDate(asOf);
-        for (Size i = 0; i < points.size(); ++i) {
-            const Date delivery = conventions.settlement().calendar().advance(
-                spotDate, forwardTenors[i], Following);
-            const Real fwd = forwardTo(asOf, conventions, c.spot, **curves[c.foreign],
-                                       **curves[c.domestic], delivery);
-            BOOST_TEST_INFO(conventions.name() << " " << forwardTenors[i]);
-            BOOST_CHECK_CLOSE(fwd, c.spot + points[i], 1.0e-10);
-        }
-    }
-
-    // on one collateral, forwards are consistent by construction: EUR/JPY
-    // is EUR/USD times USD/JPY at every delivery
-    const FxPairConventions eurjpy = pairConventions("EUR", "JPY");
-    const Real eurjpySpot = spots["EURUSD"] * spots["USDJPY"];
-    for (const Date& delivery : {Date(15, March, 2024), Date(3, October, 2024)}) {
-        const Real cross =
-            forwardTo(asOf, eurjpy, eurjpySpot, **curves["EUR"], **curves["JPY"], delivery);
-        const Real legs = forwardTo(asOf, eurjpy, spots["EURUSD"], **curves["EUR"],
-                                    **curves["USD"], delivery) *
-                          forwardTo(asOf, eurjpy, spots["USDJPY"], **curves["USD"],
-                                    **curves["JPY"], delivery);
-        BOOST_CHECK_CLOSE(cross, legs, 1.0e-12);
-    }
-
-    // the collateral must be one of the pair's currencies, the points one
-    // per tenor, and the evaluation date the as-of date
-    const FxPairConventions eurusd = pairConventions("EUR", "USD");
-    const std::vector<Real> points = forwardPoints(eurusd, asOf, 1.0850, 0.04, 0.0525);
-    BOOST_CHECK_THROW(
-        bootstrapFxCurve(asOf, eurusd, 1.0850, forwardTenors, points, "GBP", usd), Error);
-    BOOST_CHECK_THROW(bootstrapFxCurve(asOf, eurusd, 1.0850, forwardTenors,
-                                       {points[0], points[1]}, "USD", usd),
-                      Error);
-    Settings::instance().evaluationDate() = asOf + 1;
-    BOOST_CHECK_THROW(
-        bootstrapFxCurve(asOf, eurusd, 1.0850, forwardTenors, points, "USD", usd), Error);
 }
 
 BOOST_AUTO_TEST_CASE(testFxPairMarketForwardsAgree) {

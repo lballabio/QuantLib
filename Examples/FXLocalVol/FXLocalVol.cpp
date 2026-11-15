@@ -206,7 +206,7 @@ int main(int, char*[]) {
         //     its surface is built with (SABR smiles, interpolated in
         //     normalised call price on the trading-time clock).  In an
         //     application, a market bundling several pairs would build it,
-        //     with curves bootstrapped consistently (see bootstrapFxCurve()).
+        //     with curves bootstrapped consistently on one collateral.
         // ──────────────────────────────────────────────────────────────────────
         const FxPairConventions conventions("EUR", "USD", settlement, FxExpiryCut(10), deltaType,
                                             atmType, flyType);

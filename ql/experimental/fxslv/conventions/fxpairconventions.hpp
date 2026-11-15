@@ -39,7 +39,7 @@ namespace QuantLib {
         delta, ATM and butterfly conventions of the vol quotes.
 
         Which tenors and deltas are quoted is market data, decided at run
-        time, not a convention: see FxVolQuotes and bootstrapFxCurve().
+        time, not a convention: see FxVolQuotes.
         Modelling choices, such as the smile model or the trading-time
         weight of holidays, are not conventions either: see
         FxVolSurfaceConfig.

@@ -2,7 +2,6 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/fxslv/fxeventvariance.hpp>
-#include <ql/experimental/fxslv/fxforwardcurve.hpp>
 #include <ql/experimental/fxslv/fxpairmarket.hpp>
 #include <ql/experimental/fxslv/fxvolsurfacebuilder.hpp>
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
