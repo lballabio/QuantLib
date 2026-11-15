@@ -34,7 +34,8 @@
 #include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimetermstructure.hpp>
-#include <ql/experimental/fxslv/fxtradingtimemarket.hpp>
+#include <ql/experimental/fxslv/fxforwardcurve.hpp>
+#include <ql/experimental/fxslv/fxpairmarket.hpp>
 #include <ql/experimental/fxslv/fxtradingtimevariancesurface.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimedaycounter.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.hpp>
@@ -59,6 +60,7 @@
 #include <ql/settings.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
+#include <map>
 #include <sstream>
 #include <cmath>
 
@@ -83,6 +85,7 @@ namespace {
     // The quotes of a test market: 3M and 6M pillars, 25 and 10 delta
     struct FxMarketQuotes {
         struct Vol { Real atm, rr25, bf25, rr10, bf10; };
+        std::string foreign, domestic;
         Real spot, foreignRate, domesticRate;
         DeltaVolQuote::DeltaType deltaType;
         DeltaVolQuote::AtmType atmType;
@@ -90,14 +93,14 @@ namespace {
 
         // EUR/USD: forward deltas, no premium adjustment
         static FxMarketQuotes eurusd() {
-            return {1.0850, 0.04, 0.0525, DeltaVolQuote::Fwd, DeltaVolQuote::AtmFwd,
+            return {"EUR", "USD", 1.0850, 0.04, 0.0525, DeltaVolQuote::Fwd, DeltaVolQuote::AtmFwd,
                     {{0.0850, -0.014, 0.0045, -0.0280, 0.0095},     // 3M
                      {0.0900, -0.016, 0.0050, -0.0310, 0.0105}}};   // 6M
         }
         // USD/JPY: premium in USD, the foreign currency, so premium-adjusted
         // spot deltas and a delta-neutral ATM, as quoted up to 1Y
         static FxMarketQuotes usdjpy() {
-            return {150.0, 0.0525, 0.001, DeltaVolQuote::PaSpot,
+            return {"USD", "JPY", 150.0, 0.0525, 0.001, DeltaVolQuote::PaSpot,
                     DeltaVolQuote::AtmDeltaNeutral,
                     {{0.1000, -0.015, 0.0035, -0.0280, 0.0120},     // 3M
                      {0.1050, -0.018, 0.0040, -0.0330, 0.0135}}};   // 6M
@@ -133,6 +136,7 @@ namespace {
 
         FxSettleConvention settlement{WeekendsOnly(), 2};
         Real holidayWeight;
+        std::string foreignCcy, domesticCcy;
 
         ext::shared_ptr<fxVarianceSurfaceNCP<TestSmileSection>> surface;
         // the local-vol process in calendar time, from makeFxLocalVolProcess
@@ -147,7 +151,7 @@ namespace {
         explicit FxMarket(const FxMarketQuotes& quotes,
                           Real holidayWeight = 0.2,
                           std::vector<ext::shared_ptr<TradingTimeEvent>> events = {})
-        : holidayWeight(holidayWeight) {
+        : holidayWeight(holidayWeight), foreignCcy(quotes.foreign), domesticCcy(quotes.domestic) {
             today    = Date(2, January, 2024);
             expiry3M = Date(2, April,   2024);
             expiry6M = Date(2, July,    2024);
@@ -209,33 +213,29 @@ namespace {
 
             process = makeFxLocalVolProcess(spot, foreignTs, domesticTs, settlement,
                                             Handle<BlackVolTermStructure>(surface));
-            tradingTimeProcess =
-                FxTradingTimeMarket(spot, foreignTs, domesticTs, settlement, surface).localVolProcess();
+            tradingTimeProcess = pairMarket().localVolProcess();
         }
 
-        // The quotes, for the P&L explain; the pillars are the 3M and 6M expiries
-        FxVolMarket volMarket() const {
-            FxVolMarket market;
-            market.date = today;
-            market.spot = spot->value();
-            market.foreignCurve = foreignTs;
-            market.domesticCurve = domesticTs;
+        // The pair's conventions: the vol tenors' expiries are the 3M and 6M pillars
+        FxPairConventions pairConventions() const {
+            return FxPairConventions(foreignCcy, domesticCcy, settlement, FxExpiryCut(10),
+                                     {3 * Months, 6 * Months}, deltas, deltaType, atmType,
+                                     flyType);
+        }
+
+        // The pair's market, from the quotes' current values (without the
+        // trading-time events the surface may have been given)
+        FxPairMarket pairMarket() const {
+            FxVolQuotes quotes;
             for (Size i = 0; i < pillars.size(); ++i) {
-                market.atms.push_back(atms[i]->value());
-                market.riskReversals.push_back({rrs[i][0]->value(), rrs[i][1]->value()});
-                market.butterflies.push_back({bfs[i][0]->value(), bfs[i][1]->value()});
+                quotes.atms.push_back(atms[i]->value());
+                quotes.riskReversals.push_back({rrs[i][0]->value(), rrs[i][1]->value()});
+                quotes.butterflies.push_back({bfs[i][0]->value(), bfs[i][1]->value()});
             }
-            return market;
-        }
-
-        // The roll of the market to the next business day, for theta
-        ext::shared_ptr<FxVolMarketRoll> roll() const {
-            const FxVanillaPnlExplain<TestSmileSection> explain(
-                {3 * Months, 6 * Months},
-                FxVolConventions{deltas, deltaType, atmType, flyType, settlement, FxExpiryCut(10),
-                                 holidayWeight});
-            return ext::make_shared<FxPnlExplainRoll<TestSmileSection>>(
-                explain, volMarket(), settlement.calendar().advance(today, 1, Days));
+            return FxPairMarket(today, pairConventions(), spot->value(), foreignTs, domesticTs,
+                                quotes, {},
+                                FxVolSurfaceConfig(FxSmileModel::Sabr, FxVolInterpolation::Ncp,
+                                                   holidayWeight));
         }
 
         // Build a 3M EUR call at ATM forward
@@ -299,7 +299,7 @@ BOOST_AUTO_TEST_CASE(testFixedLocalVolConsistency) {
     FxMarket mkt;
     auto option = mkt.makeAtmCall();
 
-    FxVanillaBumpRisk riskCalc(option, mkt.tradingTimeProcess, mkt.spotSQ, mkt.atmSQs);
+    FxVanillaBumpRisk riskCalc(option, mkt.pairMarket());
 
     std::vector<Time> times   = { 1.0/12, 3.0/12, 6.0/12 };
     std::vector<Real> strikes = { 0.95, 1.00, 1.05, 1.10 };
@@ -341,16 +341,13 @@ BOOST_AUTO_TEST_CASE(testGreekSigns) {
     // ── Call Greeks ──────────────────────────────────────────────────────────
     {
         auto option = mkt.makeAtmCall();
-        FxVanillaBumpRisk riskCalc(option, mkt.tradingTimeProcess, mkt.spotSQ, mkt.atmSQs,
-                                   mkt.rrPillarSQs, mkt.rrPillarTimes,
-                                   mkt.bfPillarSQs, mkt.bfPillarTimes,
+        FxVanillaBumpRisk riskCalc(option, mkt.pairMarket(),
                                    /*notional=*/1.0e6,
                                    /*spotBump=*/0.001,
                                    /*volBump=*/0.01,
                                    /*rrBump=*/0.001,
                                    /*bfBump=*/0.001,
                                    /*tGrid=*/50, /*xGrid=*/50);
-        riskCalc.setRoll(mkt.roll());  // theta is that of the roll to the next day
 
         FxVanillaGreeks g = riskCalc.calculate(/*localVol=*/true);
 
@@ -373,16 +370,13 @@ BOOST_AUTO_TEST_CASE(testGreekSigns) {
     // ── Put Greeks ───────────────────────────────────────────────────────────
     {
         auto option = mkt.makeAtmPut();
-        FxVanillaBumpRisk riskCalc(option, mkt.tradingTimeProcess, mkt.spotSQ, mkt.atmSQs,
-                                   mkt.rrPillarSQs, mkt.rrPillarTimes,
-                                   mkt.bfPillarSQs, mkt.bfPillarTimes,
+        FxVanillaBumpRisk riskCalc(option, mkt.pairMarket(),
                                    /*notional=*/1.0e6,
                                    /*spotBump=*/0.001,
                                    /*volBump=*/0.01,
                                    /*rrBump=*/0.001,
                                    /*bfBump=*/0.001,
                                    /*tGrid=*/50, /*xGrid=*/50);
-        riskCalc.setRoll(mkt.roll());  // theta is that of the roll to the next day
 
         FxVanillaGreeks g = riskCalc.calculate(/*localVol=*/true);
 
@@ -405,8 +399,8 @@ BOOST_AUTO_TEST_CASE(testGreekSigns) {
         auto option = ext::make_shared<VanillaOption>(
             ext::make_shared<PlainVanillaPayoff>(type, strike),
             ext::make_shared<EuropeanExercise>(mkt.expiry3M));
-        FxVanillaBumpRisk riskCalc(option, mkt.tradingTimeProcess, mkt.spotSQ, mkt.atmSQs, {}, {},
-                                   {}, {}, 1.0e6, 0.001, 0.01, 0.001, 0.001, 50, 50);
+        FxVanillaBumpRisk riskCalc(option, mkt.pairMarket(), 1.0e6, 0.001, 0.01, 0.001, 0.001,
+                                   50, 50);
         for (bool localVol : {false, true}) {
             const FxVanillaGreeks g = riskCalc.calculate(localVol);
             BOOST_CHECK_MESSAGE(g.volga > 0.0, (localVol ? "local-vol " : "Black ")
@@ -423,26 +417,15 @@ BOOST_AUTO_TEST_CASE(testThetaIsTheRollOfTheMarket) {
     FxMarket mkt;
     auto option = mkt.makeAtmCall();
     const Real notional = 1.0e6;
-    FxVanillaBumpRisk riskCalc(option, mkt.tradingTimeProcess, mkt.spotSQ, mkt.atmSQs, {}, {}, {},
-                               {}, notional);
-    // without a roll, there is no theta: holding today's surface fixed while
-    // the date moves is not defined
-    BOOST_CHECK(riskCalc.calculate(/*localVol=*/false).theta == Null<Real>());
-
-    // with one, the Black theta is the P&L the explain reports from today's
-    // market to the rolled one, i.e. with no market move
-    const FxVanillaPnlExplain<TestSmileSection> explain(
-        {3 * Months, 6 * Months},
-        FxVolConventions{mkt.deltas, mkt.deltaType, mkt.atmType, mkt.flyType, mkt.settlement,
-                         FxExpiryCut(10), mkt.holidayWeight});
+    FxVanillaBumpRisk riskCalc(option, mkt.pairMarket(), notional);
+    // the Black theta is the P&L the explain reports from today's market to
+    // the rolled one, i.e. with no market move
     const Date next = mkt.settlement.calendar().advance(mkt.today, 1, Days);
-    const auto roll =
-        ext::make_shared<FxPnlExplainRoll<TestSmileSection>>(explain, mkt.volMarket(), next);
-    riskCalc.setRoll(roll);
     const Real theta = riskCalc.calculate(/*localVol=*/false).theta;
     const auto strike = ext::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff())->strike();
-    const FxPnlExplainResult r = explain.explain(Option::Call, strike, mkt.expiry3M, notional,
-                                                 mkt.volMarket(), roll->rolled());
+    const FxPairMarket today = riskCalc.market();
+    const FxPnlExplainResult r = fxVanillaPnlExplain(Option::Call, strike, mkt.expiry3M, notional,
+                                                     today, today.rolled(next));
     BOOST_CHECK_LT(theta, 0.0);
     BOOST_CHECK_CLOSE(theta, r.total, 1.0e-4);
     // ...which the explain splits into the theta at today's vol and the vol roll
@@ -465,13 +448,9 @@ BOOST_AUTO_TEST_CASE(testPutCallParity) {
     auto callOption = mkt.makeAtmCall();
     auto putOption  = mkt.makeAtmPut();
 
-    FxVanillaBumpRisk callCalc(callOption, mkt.tradingTimeProcess, mkt.spotSQ, mkt.atmSQs,
-                                mkt.rrPillarSQs, mkt.rrPillarTimes,
-                                mkt.bfPillarSQs, mkt.bfPillarTimes,
+    FxVanillaBumpRisk callCalc(callOption, mkt.pairMarket(),
                                 notional, 0.001, 0.001, 0.001, 0.001, 50, 50);
-    FxVanillaBumpRisk putCalc(putOption, mkt.tradingTimeProcess, mkt.spotSQ, mkt.atmSQs,
-                               mkt.rrPillarSQs, mkt.rrPillarTimes,
-                               mkt.bfPillarSQs, mkt.bfPillarTimes,
+    FxVanillaBumpRisk putCalc(putOption, mkt.pairMarket(),
                                notional, 0.001, 0.001, 0.001, 0.001, 50, 50);
 
     FxVanillaGreeks callG = callCalc.calculate(true);
@@ -517,9 +496,7 @@ BOOST_AUTO_TEST_CASE(testDeltaGammaConsistency) {
 
     const Real notional = 1.0;  // unit notional for this test
 
-    FxVanillaBumpRisk riskCalc(option, mkt.tradingTimeProcess, mkt.spotSQ, mkt.atmSQs,
-                                mkt.rrPillarSQs, mkt.rrPillarTimes,
-                                mkt.bfPillarSQs, mkt.bfPillarTimes,
+    FxVanillaBumpRisk riskCalc(option, mkt.pairMarket(),
                                 notional, 0.001, 0.001, 0.001, 0.001, 50, 50);
     FxVanillaGreeks g = riskCalc.calculate(true);
 
@@ -527,10 +504,10 @@ BOOST_AUTO_TEST_CASE(testDeltaGammaConsistency) {
     Real ds  = 0.0005; // 5 pips absolute
     Real V0  = g.npv;
 
-    mkt.spotSQ->setValue(S0 + ds);
-    FxVanillaGreeks gShifted = riskCalc.calculate(true);
-    Real Vshifted = gShifted.npv;
-    mkt.spotSQ->setValue(S0);
+    // the market at the shifted spot, its smile re-anchored there
+    FxVanillaBumpRisk shiftedCalc(option, mkt.pairMarket().withSpot(S0 + ds), notional, 0.001,
+                                  0.001, 0.001, 0.001, 50, 50);
+    Real Vshifted = shiftedCalc.calculate(true).npv;
 
     Real actualPnL = Vshifted - V0;
 
@@ -556,9 +533,7 @@ BOOST_AUTO_TEST_CASE(testBsVsLocalVolPricing) {
     auto option = mkt.makeAtmCall();
     const Real notional = 1.0e6;
 
-    FxVanillaBumpRisk riskCalc(option, mkt.tradingTimeProcess, mkt.spotSQ, mkt.atmSQs,
-                                mkt.rrPillarSQs, mkt.rrPillarTimes,
-                                mkt.bfPillarSQs, mkt.bfPillarTimes,
+    FxVanillaBumpRisk riskCalc(option, mkt.pairMarket(),
                                 notional, 0.001, 0.001, 0.001, 0.001, 100, 100);
 
     FxVanillaGreeks bsG = riskCalc.calculate(false);
@@ -585,9 +560,7 @@ BOOST_AUTO_TEST_CASE(testStickyDeltaVsLocalVolDelta) {
     auto option = mkt.makeAtmCall();
     const Real notional = 1.0e6;
 
-    FxVanillaBumpRisk riskCalc(option, mkt.tradingTimeProcess, mkt.spotSQ, mkt.atmSQs,
-                                mkt.rrPillarSQs, mkt.rrPillarTimes,
-                                mkt.bfPillarSQs, mkt.bfPillarTimes,
+    FxVanillaBumpRisk riskCalc(option, mkt.pairMarket(),
                                 notional,
                                 /*spotBump=*/0.001,
                                 /*volBump=*/0.001,
@@ -691,7 +664,7 @@ BOOST_AUTO_TEST_CASE(testPremiumAdjustedBlackGreeks) {
         auto option = ext::make_shared<VanillaOption>(
             ext::make_shared<PlainVanillaPayoff>(c.type, c.strike),
             ext::make_shared<EuropeanExercise>(mkt.expiry3M));
-        FxVanillaBumpRisk riskCalc(option, process, mkt.spotSQ, mkt.atmSQs, {}, {}, {}, {},
+        FxVanillaBumpRisk riskCalc(option, mkt.pairMarket(),
                                    notional);
         const FxVanillaGreeks g =
             riskCalc.calculate(false, FxVanillaBumpRisk::StickyType::Strike);
@@ -745,11 +718,9 @@ BOOST_AUTO_TEST_CASE(testPremiumAdjustedParityWithLocalVol) {
     auto putOption = mkt.makeAtmPut();
     const Real K = ext::dynamic_pointer_cast<StrikedTypePayoff>(callOption->payoff())->strike();
 
-    FxVanillaBumpRisk callCalc(callOption, process, mkt.spotSQ, mkt.atmSQs, mkt.rrPillarSQs,
-                               mkt.rrPillarTimes, mkt.bfPillarSQs, mkt.bfPillarTimes, notional,
+    FxVanillaBumpRisk callCalc(callOption, mkt.pairMarket(), notional,
                                0.001, 0.01, 0.001, 0.001, 50, 50);
-    FxVanillaBumpRisk putCalc(putOption, process, mkt.spotSQ, mkt.atmSQs, mkt.rrPillarSQs,
-                              mkt.rrPillarTimes, mkt.bfPillarSQs, mkt.bfPillarTimes, notional,
+    FxVanillaBumpRisk putCalc(putOption, mkt.pairMarket(), notional,
                               0.001, 0.01, 0.001, 0.001, 50, 50);
     const FxVanillaGreeks call = callCalc.calculate(true);
     const FxVanillaGreeks put = putCalc.calculate(true);
@@ -1450,7 +1421,7 @@ BOOST_AUTO_TEST_CASE(testFxVanillaBumpRiskLocalVolDefined) {
     BOOST_TEST_MESSAGE("Testing that the bump-risk local vol needs no substitute values...");
 
     FxMarket m;
-    FxVanillaBumpRisk riskCalc(m.makeAtmCall(), m.tradingTimeProcess, m.spotSQ, m.atmSQs);
+    FxVanillaBumpRisk riskCalc(m.makeAtmCall(), m.pairMarket());
     std::vector<Time> times;
     std::vector<Real> strikes;
     for (Size i = 1; i <= 20; ++i)
@@ -1864,13 +1835,16 @@ namespace {
 
     struct ExplainMarket {
         std::vector<Period> tenors = {1 * Weeks, 1 * Months, 3 * Months, 6 * Months, 1 * Years};
-        FxVolConventions conventions{{0.25, 0.10},
-                                     DeltaVolQuote::Fwd,
-                                     DeltaVolQuote::AtmDeltaNeutral,
-                                     FxRrBfQuotes::SmileStrangle,
-                                     FxSettleConvention(WeekendsOnly(), 2),
-                                     FxExpiryCut(10),
-                                     0.2};
+        FxPairConventions conventions{"EUR",
+                                      "USD",
+                                      FxSettleConvention(WeekendsOnly(), 2),
+                                      FxExpiryCut(10),
+                                      tenors,
+                                      {0.25, 0.10},
+                                      DeltaVolQuote::Fwd,
+                                      DeltaVolQuote::AtmDeltaNeutral,
+                                      FxRrBfQuotes::SmileStrangle};
+        FxVolSurfaceConfig config{FxSmileModel::Sabr, FxVolInterpolation::Ncp, 0.2};
         Date today = Date(2, January, 2024);  // a Tuesday
 
         static Handle<YieldTermStructure> curve(const Date& d, Rate r) {
@@ -1878,24 +1852,20 @@ namespace {
                 ext::make_shared<FlatForward>(d, r, Actual365Fixed()));
         }
 
-        FxVolMarket market(const Date& date, Real spot, Rate rFor, Rate rDom) const {
-            FxVolMarket m;
-            m.date = date;
-            m.spot = spot;
-            m.foreignCurve = curve(date, rFor);
-            m.domesticCurve = curve(date, rDom);
-            m.atms = {0.0800, 0.0820, 0.0850, 0.0900, 0.0930};
-            m.riskReversals = {{-0.010, -0.020}, {-0.012, -0.024}, {-0.014, -0.028},
-                               {-0.016, -0.031}, {-0.017, -0.033}};
-            m.butterflies = {{0.0035, 0.0075}, {0.0040, 0.0085}, {0.0045, 0.0095},
-                             {0.0050, 0.0105}, {0.0055, 0.0115}};
-            return m;
+        static FxVolQuotes quotes() {
+            return FxVolQuotes({0.0800, 0.0820, 0.0850, 0.0900, 0.0930},
+                               {{-0.010, -0.020}, {-0.012, -0.024}, {-0.014, -0.028},
+                                {-0.016, -0.031}, {-0.017, -0.033}},
+                               {{0.0035, 0.0075}, {0.0040, 0.0085}, {0.0045, 0.0095},
+                                {0.0050, 0.0105}, {0.0055, 0.0115}});
         }
-        FxVolMarket market() const { return market(today, 1.0850, 0.04, 0.0525); }
-    };
 
-    using ExplainSection = FxSabrSmileSection;
-    using Explain = FxVanillaPnlExplain<ExplainSection>;
+        FxPairMarket market(const Date& date, Real spot, Rate rFor, Rate rDom) const {
+            return FxPairMarket(date, conventions, spot, curve(date, rFor), curve(date, rDom),
+                                quotes(), {}, config);
+        }
+        FxPairMarket market() const { return market(today, 1.0850, 0.04, 0.0525); }
+    };
 
     Real explainedSum(const FxPnlExplainResult& r) {
         return r.theta + r.volRollAtm + r.volRollRiskReversal + r.volRollButterfly +
@@ -1982,24 +1952,24 @@ BOOST_AUTO_TEST_CASE(testTradingTimeDayCounterAndCurve) {
     BOOST_CHECK_THROW(TradingTimeYieldTermStructure(m.domesticTs, later), Error);
 }
 
-BOOST_AUTO_TEST_CASE(testFxTradingTimeMarketPreservesPrices) {
-    BOOST_TEST_MESSAGE("Testing that the trading-time market prices as the calendar-time one...");
+BOOST_AUTO_TEST_CASE(testFxPairMarketTradingTimePreservesPrices) {
+    BOOST_TEST_MESSAGE("Testing that a pair market on the trading-time clock prices as in "
+                       "calendar time...");
 
     // with an event, released in the middle of a trading day
-    const std::vector<ext::shared_ptr<TradingTimeEvent>> events = {
-        ext::make_shared<JumpTradingTimeEvent>(Date(31, January, 2024), 0.8,
-                                               makeQuoteHandle(1.5))};
-    FxMarket m(0.2, events);
-    const FxSettleConvention settlement(WeekendsOnly(), 2);
-    const FxTradingTimeMarket tm(m.spot, m.foreignTs, m.domesticTs, settlement, m.surface);
-    auto calendarProcess = makeFxLocalVolProcess(m.spot, m.foreignTs, m.domesticTs, settlement,
-                                                 Handle<BlackVolTermStructure>(m.surface));
-    auto tradingProcess = ext::make_shared<GeneralizedBlackScholesProcess>(
-        tm.spot(), tm.settlementForeignCurve(), tm.domesticCurve(), tm.volSurface());
+    FxMarket m(0.2);
+    const FxPairMarket market =
+        m.pairMarket().withEvents({{Date(31, January, 2024), 0.8, 1.5e-5}});
+    auto calendarProcess =
+        makeFxLocalVolProcess(market.spotQuote(), market.foreignCurve(), market.domesticCurve(),
+                              market.conventions().settlement(),
+                              Handle<BlackVolTermStructure>(market.volSurface()));
+    const auto tradingProcess = market.blackProcess();
+    const auto localVolProcess = market.localVolProcess();
 
     for (const Date& expiry : {Date(9, January, 2024), Date(1, February, 2024), m.expiry3M,
                                Date(2, May, 2024)}) {
-        const Real fwd = m.surface->fwd(expiry);
+        const Real fwd = market.forward(expiry);
         for (Real moneyness : {0.95, 1.0, 1.05}) {
             VanillaOption option(
                 ext::make_shared<PlainVanillaPayoff>(Option::Call, moneyness * fwd),
@@ -2011,7 +1981,7 @@ BOOST_AUTO_TEST_CASE(testFxTradingTimeMarketPreservesPrices) {
             BOOST_CHECK_CLOSE(option.NPV(), calendarPrice, 1.0e-8);
             // ...and local vol in trading time reprices them
             option.setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(
-                tm.localVolProcess(), 200, 200, 0, FdmSchemeDesc::Douglas(), true));
+                localVolProcess, 200, 200, 0, FdmSchemeDesc::Douglas(), true));
             // to 0.5%, or a millionth of the forward far out of the money
             const Real tolerance = std::max(0.005 * calendarPrice, 1.0e-6 * fwd);
             if (std::fabs(option.NPV() - calendarPrice) > tolerance)
@@ -2022,13 +1992,14 @@ BOOST_AUTO_TEST_CASE(testFxTradingTimeMarketPreservesPrices) {
     }
 
     // local vol in trading time does not drop over a weekend, as in calendar time
-    const Real s = m.spot->value();
+    const Real s = market.spot();
     const Date friday(5, January, 2024), sunday(7, January, 2024);
     const Real calendarRatio =
         calendarProcess->localVolatility()->localVol(sunday, s, true) /
         calendarProcess->localVolatility()->localVol(friday, s, true);
-    const Real tradingRatio = tm.localVol()->localVol(sunday, s, true) /
-                              tm.localVol()->localVol(friday, s, true);
+    const auto& tradingLocalVol = localVolProcess->localVolatility();
+    const Real tradingRatio =
+        tradingLocalVol->localVol(sunday, s, true) / tradingLocalVol->localVol(friday, s, true);
     BOOST_CHECK_LT(calendarRatio, 0.6);
     BOOST_CHECK_SMALL(tradingRatio - 1.0, 0.2);
 }
@@ -2069,52 +2040,47 @@ BOOST_AUTO_TEST_CASE(testFxEventVarianceIsHeldConstant) {
     BOOST_TEST_MESSAGE("Testing that FX vol events release their own variance...");
 
     ExplainMarket data;
-    const Explain explain(data.tenors, data.conventions);
-    FxVolMarket m = data.market();
     const Date event(17, January, 2024);  // a Wednesday inside the 1M pillar interval
     const Real v = 2.0e-5;
-    m.events = {{event, 0.5, v}};
+    const FxPairMarket m = data.market().withEvents({{event, 0.5, v}});
 
     // ATM variance released over the event's day, less that of an ordinary
     // business day in the same pillar interval, is the event's variance
-    auto eventJump = [&](const FxVolMarket& market) {
-        const auto s = explain.surface(market);
-        const Real withEvent = s->atmVar(event + 1) - s->atmVar(event);
-        const Real ordinary = s->atmVar(event) - s->atmVar(event - 1);
+    auto eventJump = [&](const FxPairMarket& market) {
+        const FxVolSurface& s = market.fxVolSurface();
+        const Real withEvent = s.atmVar(event + 1) - s.atmVar(event);
+        const Real ordinary = s.atmVar(event) - s.atmVar(event - 1);
         return withEvent - ordinary;
     };
     BOOST_CHECK_CLOSE(eventJump(m), v, 1.0e-8);
 
     // bumping the ATMs moves the base vol but not the event's variance
-    FxVolMarket bumped = m;
+    FxVolQuotes bumped = m.quotes();
     for (auto& a : bumped.atms)
         a += 0.01;
-    BOOST_CHECK_CLOSE(eventJump(bumped), v, 1.0e-8);
+    BOOST_CHECK_CLOSE(eventJump(m.withQuotes(bumped)), v, 1.0e-8);
 
     // the event only redistributes variance within the pillar interval: the
     // pillars' (fitted) ATM vols are those of the surface without the event
-    FxVolMarket noEvent = m;
-    noEvent.events.clear();
-    const auto s = explain.surface(m), s0 = explain.surface(noEvent);
-    for (const auto& pillar : explain.pillars(m.date))
-        BOOST_CHECK_CLOSE(s->atmVol(pillar), s0->atmVol(pillar), 1.0e-12);
+    const FxPairMarket noEvent = m.withEvents({});
+    const FxVolSurface& s = m.fxVolSurface();
+    const FxVolSurface& s0 = noEvent.fxVolSurface();
+    for (const auto& pillar : m.pillars())
+        BOOST_CHECK_CLOSE(s.atmVol(pillar), s0.atmVol(pillar), 1.0e-12);
     // before the event the ATM variance is lower than without it, after it the same
-    const Date oneMonth = explain.pillars(m.date)[1];
-    BOOST_CHECK_LT(s->atmVar(event), s0->atmVar(event));
-    BOOST_CHECK_CLOSE(s->atmVar(oneMonth), s0->atmVar(oneMonth), 1.0e-12);
+    const Date oneMonth = m.pillars()[1];
+    BOOST_CHECK_LT(s.atmVar(event), s0.atmVar(event));
+    BOOST_CHECK_CLOSE(s.atmVar(oneMonth), s0.atmVar(oneMonth), 1.0e-12);
 
     // the event's variance cannot exceed the pillar's forward variance
-    FxVolMarket tooMuch = m;
-    tooMuch.events = {{event, 0.5, 1.0e-3}};
-    BOOST_CHECK_THROW(explain.surface(tooMuch), Error);
+    BOOST_CHECK_THROW(m.withEvents({{event, 0.5, 1.0e-3}}).volSurface(), Error);
 }
 
 BOOST_AUTO_TEST_CASE(testFxEventsOnExpiryDateFollowTheCut) {
     BOOST_TEST_MESSAGE("Testing that an expiry sees the events of its date before its cut...");
 
     ExplainMarket data;
-    const Explain explain(data.tenors, data.conventions);
-    const FxExpiryCut& cut = data.conventions.cut;  // New York 10:00
+    const FxExpiryCut& cut = data.conventions.cut();  // New York 10:00
     const Date wednesday(17, January, 2024);
     const Real morning = 8.5 / 24.0, afternoon = 14.0 / 24.0;
 
@@ -2136,10 +2102,9 @@ BOOST_AUTO_TEST_CASE(testFxEventsOnExpiryDateFollowTheCut) {
     // on the surface: ATM variance released by an expiry over the day
     // before, less that of the ordinary business day before it
     auto jump = [&](const std::vector<FxVolEvent>& evs, const Date& day) {
-        FxVolMarket m = data.market();
-        m.events = evs;
-        const auto s = explain.surface(m);
-        return (s->atmVar(day) - s->atmVar(day - 1)) - (s->atmVar(day - 1) - s->atmVar(day - 2));
+        const FxPairMarket m = data.market().withEvents(evs);
+        const FxVolSurface& s = m.fxVolSurface();
+        return (s.atmVar(day) - s.atmVar(day - 1)) - (s.atmVar(day - 1) - s.atmVar(day - 2));
     };
     const Real v = 2.0e-5;
     // the Wednesday expiry sees the morning event...
@@ -2151,11 +2116,10 @@ BOOST_AUTO_TEST_CASE(testFxEventsOnExpiryDateFollowTheCut) {
 
     // on a pillar date, the event belongs to the pillar's interval only if it
     // precedes the cut: the 1W pillar is Tuesday 9 January
-    const Date oneWeek = explain.pillars(data.today)[0];
+    const Date oneWeek = data.conventions.volPillars(data.today)[0];
     auto variance = [&](const std::vector<FxVolEvent>& evs, const Date& d) {
-        FxVolMarket m = data.market();
-        m.events = evs;
-        return explain.surface(m)->atmVar(d);
+        const FxPairMarket m = data.market().withEvents(evs);
+        return m.fxVolSurface().atmVar(d);
     };
     // before the cut: released by the pillar, so the ATM variance the day
     // before is lower; after it: released in the next interval
@@ -2172,9 +2136,7 @@ BOOST_AUTO_TEST_CASE(testFxSurfaceRollHoldsEventlessVols) {
     BOOST_TEST_MESSAGE("Testing that the FX surface roll holds eventless vols by tenor...");
 
     ExplainMarket data;
-    data.conventions.holidayWeight = 0.2;
-    const Explain explain(data.tenors, data.conventions);
-    const Calendar cal = data.conventions.settlement.calendar();
+    const Calendar cal = data.conventions.settlement().calendar();
     const Actual365Fixed dc;
 
     // quotes built from a flat eventless trading-time vol plus events; the
@@ -2183,56 +2145,55 @@ BOOST_AUTO_TEST_CASE(testFxSurfaceRollHoldsEventlessVols) {
     const std::vector<FxVolEvent> events = {{Date(5, January, 2024), 0.5, 1.5e-5},
                                             {Date(10, January, 2024), 0.6, 2.0e-5}};
     const Volatility s = 0.08;
-    auto quotesFor = [&](const Date& date, const std::vector<FxVolEvent>& evs) {
-        FxVolMarket m = data.market(date, 1.0850, 0.04, 0.0525);
-        const TradingTimeTermStructure base(date, cal, data.conventions.holidayWeight);
-        const std::vector<Date> pillars = explain.pillars(date);
+    auto marketFor = [&](const Date& date, const std::vector<FxVolEvent>& evs) {
+        FxVolQuotes q = ExplainMarket::quotes();
+        const TradingTimeTermStructure base(date, cal, data.config.holidayWeight);
+        const std::vector<Date> pillars = data.conventions.volPillars(date);
         for (Size i = 0; i < pillars.size(); ++i) {
             const Real w = s * s * base.tradingTime(date, pillars[i]) +
                            fxEventVariance(evs, date, pillars[i], FxExpiryCut(10));
-            m.atms[i] = std::sqrt(w / dc.yearFraction(date, pillars[i]));
+            q.atms[i] = std::sqrt(w / dc.yearFraction(date, pillars[i]));
             // a smile flat in vol, so that every point rolls like the ATM
-            m.riskReversals[i] = {0.0, 0.0};
-            m.butterflies[i] = {0.0, 0.0};
+            q.riskReversals[i] = {0.0, 0.0};
+            q.butterflies[i] = {0.0, 0.0};
         }
-        m.events = evs;
-        return m;
+        return data.market(date, 1.0850, 0.04, 0.0525).withQuotes(q).withEvents(evs);
     };
 
     // Thursday's market already contains Friday's event; roll it to Friday
     // (event released at the end of Friday), then over the weekend
-    const FxVolMarket thursday = quotesFor(Date(4, January, 2024), events);
-    const FxVolMarket rolledToFriday = explain.rolled(thursday, friday);
-    const FxVolMarket expectedFriday = quotesFor(friday, events);
-    const FxVolMarket rolledToMonday = explain.rolled(expectedFriday, monday);
-    const FxVolMarket expectedMonday = quotesFor(monday, events);
+    const FxPairMarket thursday = marketFor(Date(4, January, 2024), events);
+    const FxPairMarket rolledToFriday = thursday.rolled(friday);
+    const FxPairMarket expectedFriday = marketFor(friday, events);
+    const FxPairMarket rolledToMonday = expectedFriday.rolled(monday);
+    const FxPairMarket expectedMonday = marketFor(monday, events);
     for (Size i = 0; i < data.tenors.size(); ++i) {
-        BOOST_CHECK_CLOSE(rolledToFriday.atms[i], expectedFriday.atms[i], 1.0e-10);
-        BOOST_CHECK_CLOSE(rolledToMonday.atms[i], expectedMonday.atms[i], 1.0e-10);
-        BOOST_CHECK_SMALL(rolledToMonday.riskReversals[i][0], 1.0e-14);
-        BOOST_CHECK_SMALL(rolledToMonday.butterflies[i][1], 1.0e-14);
+        BOOST_CHECK_CLOSE(rolledToFriday.quotes().atms[i], expectedFriday.quotes().atms[i],
+                          1.0e-10);
+        BOOST_CHECK_CLOSE(rolledToMonday.quotes().atms[i], expectedMonday.quotes().atms[i],
+                          1.0e-10);
+        BOOST_CHECK_SMALL(rolledToMonday.quotes().riskReversals[i][0], 1.0e-14);
+        BOOST_CHECK_SMALL(rolledToMonday.quotes().butterflies[i][1], 1.0e-14);
     }
 
     // the spot rolls along the forward, so the forward to each delivery is unchanged
-    const Date spot0 = data.conventions.settlement.valueDate(friday);
-    const Date spot1 = data.conventions.settlement.valueDate(monday);
-    const Real fwdToSpot1 = expectedFriday.spot *
-                            expectedFriday.foreignCurve->discount(spot1) /
-                            expectedFriday.foreignCurve->discount(spot0) /
-                            (expectedFriday.domesticCurve->discount(spot1) /
-                             expectedFriday.domesticCurve->discount(spot0));
-    BOOST_CHECK_CLOSE(rolledToMonday.spot, fwdToSpot1, 1.0e-12);
+    const Date spot0 = data.conventions.settlement().valueDate(friday);
+    const Date spot1 = data.conventions.settlement().valueDate(monday);
+    const Real fwdToSpot1 = expectedFriday.spot() *
+                            expectedFriday.foreignCurve()->discount(spot1) /
+                            expectedFriday.foreignCurve()->discount(spot0) /
+                            (expectedFriday.domesticCurve()->discount(spot1) /
+                             expectedFriday.domesticCurve()->discount(spot0));
+    BOOST_CHECK_CLOSE(rolledToMonday.spot(), fwdToSpot1, 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testFxPnlExplain) {
     BOOST_TEST_MESSAGE("Testing the FX vanilla P&L explain...");
 
     ExplainMarket data;
-    const Explain explain(data.tenors, data.conventions);
-    FxVolMarket today = data.market();
-    today.events = {{Date(17, January, 2024), 0.5, 2.0e-5}};
+    const FxPairMarket today = data.market().withEvents({{Date(17, January, 2024), 0.5, 2.0e-5}});
     const Date next(3, January, 2024);
-    const Date expiry = explain.pillars(today.date)[2] - 5;  // between the 1M and 3M pillars
+    const Date expiry = today.pillars()[2] - 5;  // between the 1M and 3M pillars
     const Real notional = 1.0e6;
 
     const std::vector<Real> moneynesses = {0.97, 1.0, 1.03};
@@ -2245,9 +2206,9 @@ BOOST_AUTO_TEST_CASE(testFxPnlExplain) {
 
             // no market move: the next market is the rolled one, so only
             // theta and the roll are left, up to the roll's own second order
-            const FxVolMarket rolled = explain.rolled(today, next);
+            const FxPairMarket rolled = today.rolled(next);
             const auto still =
-                explain.explain(type, strike, expiry, notional, today, rolled, explainType);
+                fxVanillaPnlExplain(type, strike, expiry, notional, today, rolled, explainType);
             printExplain("no move", still);
             // the residual is the roll's second order, excluded from the volga by design
             BOOST_CHECK_SMALL(still.residual, 0.01 * std::fabs(still.total));
@@ -2259,21 +2220,23 @@ BOOST_AUTO_TEST_CASE(testFxPnlExplain) {
             BOOST_CHECK_CLOSE(explainedSum(still) + still.residual, still.total, 1.0e-10);
 
             // a market move: spot, rates, every quote and the event's variance
-            FxVolMarket moved = data.market(next, 1.0850 * 1.004, 0.0405, 0.0520);
-            for (Size i = 0; i < moved.atms.size(); ++i) {
-                moved.atms[i] = rolled.atms[i] + 0.0020;
+            FxVolQuotes q = rolled.quotes();
+            for (Size i = 0; i < q.atms.size(); ++i) {
+                q.atms[i] += 0.0020;
                 for (Size j = 0; j < 2; ++j) {
-                    moved.riskReversals[i][j] = rolled.riskReversals[i][j] - 0.0010;
-                    moved.butterflies[i][j] = rolled.butterflies[i][j] + 0.0005;
+                    q.riskReversals[i][j] -= 0.0010;
+                    q.butterflies[i][j] += 0.0005;
                 }
             }
-            moved.events = {{Date(17, January, 2024), 0.5, 2.5e-5}};
+            const FxPairMarket moved = data.market(next, 1.0850 * 1.004, 0.0405, 0.0520)
+                                           .withQuotes(q)
+                                           .withEvents({{Date(17, January, 2024), 0.5, 2.5e-5}});
             const auto r =
-                explain.explain(type, strike, expiry, notional, today, moved, explainType);
+                fxVanillaPnlExplain(type, strike, expiry, notional, today, moved, explainType);
             printExplain("moved", r);
             // the breakdown depends on the type, the total does not
-            const auto black = explain.explain(type, strike, expiry, notional, today, moved,
-                                               FxPnlExplainType::Black);
+            const auto black = fxVanillaPnlExplain(type, strike, expiry, notional, today, moved,
+                                                   FxPnlExplainType::Black);
             BOOST_CHECK_CLOSE(r.total, black.total, 1.0e-10);
             if (explainType != FxPnlExplainType::Black) {
                 BOOST_CHECK_EQUAL(r.spotSmileVega, 0.0);
@@ -2307,29 +2270,29 @@ BOOST_AUTO_TEST_CASE(testFxPnlExplainBartlettVega) {
         "Testing that the Bartlett P&L explain leaves only unexpected vol moves in vega...");
 
     ExplainMarket data;
-    const Explain explain(data.tenors, data.conventions);
-    const FxVolMarket today = data.market();
+    const FxPairMarket today = data.market();
     const Date next(3, January, 2024);
-    const Date expiry = explain.pillars(today.date)[2] - 5;
-    const FxVolMarket rolled = explain.rolled(today, next);
+    const Date expiry = today.pillars()[2] - 5;
+    const FxPairMarket rolled = today.rolled(next);
 
     // the next market's ATMs move exactly as today's smiles expect given
     // each pillar's forward move; nothing else moves but the spot
-    const auto s0 = explain.surface(explain.smileStrangles(today));
-    FxVolMarket moved = rolled;
-    moved.spot = rolled.spot * 1.004;
+    const FxPairMarket todayStrangles = today.smileStrangles();
+    FxVolQuotes q = rolled.quotes();
     for (Size i = 0; i < data.tenors.size(); ++i) {
-        const Real s = s0->pillarSmileSections()[i]->atmVolForwardSensitivity();
+        const Real s =
+            todayStrangles.fxVolSurface().pillarSmileSection(i)->atmVolForwardSensitivity();
         BOOST_CHECK(s != 0.0);
-        moved.atms[i] += s * 0.004;  // same curves, so every forward moves by the spot's 0.4%
+        q.atms[i] += s * 0.004;  // same curves, so every forward moves by the spot's 0.4%
     }
+    const FxPairMarket moved = rolled.withSpot(rolled.spot() * 1.004).withQuotes(q);
 
     for (Real moneyness : {0.97, 1.0, 1.03}) {
         const Real strike = moneyness * 1.0850;
-        const auto bartlett = explain.explain(Option::Call, strike, expiry, 1.0e6, today, moved,
-                                              FxPnlExplainType::Bartlett);
-        const auto sticky = explain.explain(Option::Call, strike, expiry, 1.0e6, today, moved,
-                                            FxPnlExplainType::StickyDelta);
+        const auto bartlett = fxVanillaPnlExplain(Option::Call, strike, expiry, 1.0e6, today,
+                                                  moved, FxPnlExplainType::Bartlett);
+        const auto sticky = fxVanillaPnlExplain(Option::Call, strike, expiry, 1.0e6, today,
+                                                moved, FxPnlExplainType::StickyDelta);
         // the expected ATM move is in the Bartlett delta, not in its vega
         // (zero up to rounding in the pillar forwards and the smile fits)
         BOOST_CHECK_SMALL(bartlett.vegaAtm, 1.0e-8 * std::fabs(sticky.vegaAtm));
@@ -2344,20 +2307,18 @@ BOOST_AUTO_TEST_CASE(testFxPnlExplainEventReleasedOvernight) {
     BOOST_TEST_MESSAGE("Testing that the FX P&L explain rolls off an event released overnight...");
 
     ExplainMarket data;
-    const Explain explain(data.tenors, data.conventions);
     const Date next(3, January, 2024);
-    const Date expiry = explain.pillars(data.today)[1] + 3;  // after the 1M pillar
+    const Date expiry = data.conventions.volPillars(data.today)[1] + 3;  // after the 1M pillar
     const Real v = 2.0e-5;
     const Actual365Fixed dc;
 
     // the same quotes with and without an event released at the end of the next date
-    FxVolMarket withEvent = data.market(), without = data.market();
-    withEvent.events = {{next, 0.5, v}};
+    const FxPairMarket without = data.market(), withEvent = without.withEvents({{next, 0.5, v}});
 
-    auto rolledVariances = [&](const FxVolMarket& today) {
-        const FxVolMarket rolled = explain.rolled(today, next);
+    auto rolledVariances = [&](const FxPairMarket& today) {
+        const FxPairMarket rolled = today.rolled(next);
         const Real strike = 1.0850;
-        const auto r = explain.explain(Option::Call, strike, expiry, 1.0e6, today, rolled);
+        const auto r = fxVanillaPnlExplain(Option::Call, strike, expiry, 1.0e6, today, rolled);
         return std::make_pair(r.volToday * r.volToday * dc.yearFraction(data.today, expiry),
                               r.volRolled * r.volRolled * dc.yearFraction(next, expiry));
     };
@@ -2367,13 +2328,253 @@ BOOST_AUTO_TEST_CASE(testFxPnlExplainEventReleasedOvernight) {
     // day, so the variance lost overnight is larger by the event's less the
     // smaller loss of the ordinary day: v times the remaining eventless trading
     // time over today's (up to the interpolation between the pillars)
-    const Calendar& cal = data.conventions.settlement.calendar();
-    const Real weight = data.conventions.holidayWeight;
+    const Calendar& cal = data.conventions.settlement().calendar();
+    const Real weight = data.config.holidayWeight;
     const TradingTimeTermStructure base0(data.today, cal, weight), base1(next, cal, weight);
     const Real expected =
         v * base1.tradingTime(next, expiry) / base0.tradingTime(data.today, expiry);
     BOOST_CHECK_CLOSE((w0 - w1) - (u0 - u1), expected, 2.0);
     BOOST_CHECK_LT((w0 - w1) - (u0 - u1), v);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  FX pair conventions, curves and markets
+// ─────────────────────────────────────────────────────────────────────────────
+
+namespace {
+
+    FxPairConventions pairConventions(const std::string& foreign, const std::string& domestic) {
+        return FxPairConventions(foreign, domestic, FxSettleConvention(WeekendsOnly(), 2),
+                                 FxExpiryCut(10), {3 * Months, 6 * Months}, {0.25, 0.10},
+                                 DeltaVolQuote::Fwd, DeltaVolQuote::AtmFwd,
+                                 FxRrBfQuotes::SmileStrangle,
+                                 {1 * Months, 3 * Months, 6 * Months, 1 * Years});
+    }
+
+    // forward points of a pair with flat continuous rates
+    std::vector<Real> forwardPoints(const FxPairConventions& conventions,
+                                    const Date& asOf,
+                                    Real spot,
+                                    Rate rForeign,
+                                    Rate rDomestic) {
+        const Date spotDate = conventions.settlement().valueDate(asOf);
+        std::vector<Real> points;
+        for (const Period& tenor : conventions.forwardTenors()) {
+            const Date delivery =
+                conventions.settlement().calendar().advance(spotDate, tenor, Following);
+            const Time t = Actual365Fixed().yearFraction(spotDate, delivery);
+            points.push_back(spot * (std::exp((rDomestic - rForeign) * t) - 1.0));
+        }
+        return points;
+    }
+
+    // forward to a delivery date, from the spot date of the as-of date
+    Real forwardTo(const Date& asOf,
+                   const FxPairConventions& conventions,
+                   Real spot,
+                   const YieldTermStructure& foreign,
+                   const YieldTermStructure& domestic,
+                   const Date& delivery) {
+        const Date spotDate = conventions.settlement().valueDate(asOf);
+        return spot * (foreign.discount(delivery) / foreign.discount(spotDate)) /
+               (domestic.discount(delivery) / domestic.discount(spotDate));
+    }
+
+}
+
+BOOST_AUTO_TEST_CASE(testFxPairConventions) {
+    BOOST_TEST_MESSAGE("Testing FX pair conventions...");
+
+    const FxPairConventions eurusd = pairConventions("EUR", "USD");
+    BOOST_CHECK_EQUAL(eurusd.name(), "EURUSD");
+    const Date asOf(2, January, 2024);
+    const std::vector<Date> pillars = eurusd.volPillars(asOf);
+    BOOST_REQUIRE_EQUAL(pillars.size(), Size(2));
+    BOOST_CHECK_EQUAL(pillars[0], Date(2, April, 2024));
+    BOOST_CHECK_EQUAL(pillars[1], Date(2, July, 2024));
+    BOOST_CHECK(eurusd.withFlyType(FxRrBfQuotes::MarketStrangle).flyType() ==
+                FxRrBfQuotes::MarketStrangle);
+
+    const FxSettleConvention settlement(WeekendsOnly(), 2);
+    auto make = [&](const std::string& f, const std::string& d, std::vector<Period> tenors,
+                    std::vector<Real> deltas) {
+        return FxPairConventions(f, d, settlement, FxExpiryCut(10), std::move(tenors),
+                                 std::move(deltas), DeltaVolQuote::Fwd, DeltaVolQuote::AtmFwd,
+                                 FxRrBfQuotes::SmileStrangle);
+    };
+    BOOST_CHECK_THROW(make("EUR", "EUR", {3 * Months}, {0.25}), Error);
+    BOOST_CHECK_THROW(make("", "USD", {3 * Months}, {0.25}), Error);
+    BOOST_CHECK_THROW(make("EUR", "USD", {}, {0.25}), Error);
+    BOOST_CHECK_THROW(make("EUR", "USD", {3 * Months}, {}), Error);
+    BOOST_CHECK_THROW(make("EUR", "USD", {3 * Months}, {0.5}), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testFxCurvesFromForwardPoints) {
+    BOOST_TEST_MESSAGE("Testing FX curves bootstrapped from forward points...");
+
+    const Date asOf(2, January, 2024);
+    Settings::instance().evaluationDate() = asOf;
+    const Handle<YieldTermStructure> usd(
+        ext::make_shared<FlatForward>(asOf, 0.0525, Actual365Fixed()));
+
+    // EUR/USD, collateral the domestic currency, and USD/JPY, collateral the
+    // foreign one: both curves reprice their pair's forward points
+    struct Case { std::string foreign, domestic; Real spot; Rate rForeign, rDomestic; };
+    std::map<std::string, Handle<YieldTermStructure>> curves = {{"USD", usd}};
+    std::map<std::string, Real> spots;
+    for (const Case& c : {Case{"EUR", "USD", 1.0850, 0.04, 0.0525},
+                          Case{"USD", "JPY", 150.0, 0.0525, 0.001}}) {
+        const FxPairConventions conventions = pairConventions(c.foreign, c.domestic);
+        const std::vector<Real> points =
+            forwardPoints(conventions, asOf, c.spot, c.rForeign, c.rDomestic);
+        const std::string other = c.foreign == "USD" ? c.domestic : c.foreign;
+        const Handle<YieldTermStructure> curve(
+            bootstrapFxCurve(asOf, conventions, c.spot, points, "USD", usd));
+        curves[other] = curve;
+        spots[conventions.name()] = c.spot;
+
+        const Date spotDate = conventions.settlement().valueDate(asOf);
+        for (Size i = 0; i < points.size(); ++i) {
+            const Date delivery = conventions.settlement().calendar().advance(
+                spotDate, conventions.forwardTenors()[i], Following);
+            const Real fwd = forwardTo(asOf, conventions, c.spot, **curves[c.foreign],
+                                       **curves[c.domestic], delivery);
+            BOOST_TEST_INFO(conventions.name() << " " << conventions.forwardTenors()[i]);
+            BOOST_CHECK_CLOSE(fwd, c.spot + points[i], 1.0e-10);
+        }
+    }
+
+    // on one collateral, forwards are consistent by construction: EUR/JPY
+    // is EUR/USD times USD/JPY at every delivery
+    const FxPairConventions eurjpy = pairConventions("EUR", "JPY");
+    const Real eurjpySpot = spots["EURUSD"] * spots["USDJPY"];
+    for (const Date& delivery : {Date(15, March, 2024), Date(3, October, 2024)}) {
+        const Real cross =
+            forwardTo(asOf, eurjpy, eurjpySpot, **curves["EUR"], **curves["JPY"], delivery);
+        const Real legs = forwardTo(asOf, eurjpy, spots["EURUSD"], **curves["EUR"],
+                                    **curves["USD"], delivery) *
+                          forwardTo(asOf, eurjpy, spots["USDJPY"], **curves["USD"],
+                                    **curves["JPY"], delivery);
+        BOOST_CHECK_CLOSE(cross, legs, 1.0e-12);
+    }
+
+    // the collateral must be one of the pair's currencies, the points one
+    // per tenor, and the evaluation date the as-of date
+    const FxPairConventions eurusd = pairConventions("EUR", "USD");
+    const std::vector<Real> points = forwardPoints(eurusd, asOf, 1.0850, 0.04, 0.0525);
+    BOOST_CHECK_THROW(bootstrapFxCurve(asOf, eurusd, 1.0850, points, "GBP", usd), Error);
+    BOOST_CHECK_THROW(
+        bootstrapFxCurve(asOf, eurusd, 1.0850, {points[0], points[1]}, "USD", usd), Error);
+    Settings::instance().evaluationDate() = asOf + 1;
+    BOOST_CHECK_THROW(bootstrapFxCurve(asOf, eurusd, 1.0850, points, "USD", usd), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testFxPairMarketForwardsAgree) {
+    BOOST_TEST_MESSAGE("Testing that an FX pair market's surface and processes share its "
+                       "forward...");
+
+    FxMarket mkt;
+    const FxPairMarket market = mkt.pairMarket();
+    const auto black = market.blackProcess();
+    for (const Date& expiry : {Date(9, January, 2024), mkt.expiry3M, Date(5, May, 2024)}) {
+        const Real fwd = market.forward(expiry);
+        BOOST_CHECK_CLOSE(market.fxVolSurface().fwd(expiry), fwd, 1.0e-12);
+        const Real processForward = market.spot() * black->dividendYield()->discount(expiry) /
+                                    black->riskFreeRate()->discount(expiry);
+        BOOST_CHECK_CLOSE(processForward, fwd, 1.0e-10);
+        // the same surface and forward as the test market's own surface
+        BOOST_CHECK_CLOSE(mkt.surface->fwd(expiry), fwd, 1.0e-12);
+        BOOST_CHECK_CLOSE(market.vol(expiry, 1.05 * fwd),
+                          mkt.surface->blackVol(expiry, 1.05 * fwd, true), 1.0e-10);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testFxPairMarketIsImmutable) {
+    BOOST_TEST_MESSAGE("Testing that an FX pair market does not change...");
+
+    FxMarket mkt;
+    const FxPairMarket market = mkt.pairMarket();
+    const Real K = 1.10;
+    const Volatility vol = market.vol(mkt.expiry3M, K);
+
+    // other markets leave this one as it was...
+    const FxPairMarket moved = market.withSpot(1.10);
+    FxVolQuotes bumped = market.quotes();
+    bumped.atms[0] += 0.01;
+    const FxPairMarket higher = market.withQuotes(bumped);
+    BOOST_CHECK(std::fabs(moved.vol(mkt.expiry3M, K) - vol) > 1.0e-6);
+    BOOST_CHECK_GT(higher.vol(mkt.expiry3M, K), vol + 0.005);
+    BOOST_CHECK_EQUAL(market.spot(), mkt.spot->value());
+    BOOST_CHECK_EQUAL(market.vol(mkt.expiry3M, K), vol);
+
+    // ...and so do the greeks, which bump copies
+    FxVanillaBumpRisk riskCalc(mkt.makeAtmCall(), market, 1.0e6, 0.001, 0.01, 0.001, 0.001, 50,
+                               50);
+    riskCalc.calculate(true);
+    BOOST_CHECK_EQUAL(market.vol(mkt.expiry3M, K), vol);
+
+    // its dates are fixed: a later evaluation date does not move its surface,
+    // but the greeks need the evaluation date to be the market's
+    Settings::instance().evaluationDate() = mkt.today + 1;
+    BOOST_CHECK_EQUAL(market.vol(mkt.expiry3M, K), vol);
+    BOOST_CHECK_THROW(riskCalc.calculate(false), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testFxPairMarketModelChoice) {
+    BOOST_TEST_MESSAGE("Testing FX pair markets with smile models chosen at run time...");
+
+    FxMarket mkt;
+    const FxPairMarket sabr = mkt.pairMarket();
+    // the model is the one chosen, whatever the interpolation; at a pillar,
+    // the quotes read off the surface are those of the pillar's smile (which
+    // misses the market's: even SVI's five parameters do not fit this put
+    // skew exactly, its wings being bounded)
+    for (FxVolInterpolation interpolation : {FxVolInterpolation::Ncp, FxVolInterpolation::Clark}) {
+        const FxPairMarket svi(sabr.asOf(), sabr.conventions(), sabr.spot(), sabr.foreignCurve(),
+                               sabr.domesticCurve(), sabr.quotes(), {},
+                               FxVolSurfaceConfig(FxSmileModel::Svi, interpolation, 0.2));
+        for (Size i = 0; i < svi.pillars().size(); ++i) {
+            const auto section = svi.fxVolSurface().pillarSmileSection(i);
+            BOOST_CHECK(ext::dynamic_pointer_cast<FxSviSmileSection>(section));
+            const FxExpiryQuotes q = svi.expiryQuotes(svi.pillars()[i]);
+            BOOST_CHECK_SMALL(q.atm - section->atmVol(), 1.0e-10);
+            for (Size j = 0; j < 2; ++j) {
+                const Real d = svi.conventions().deltas()[j];
+                const Volatility call = section->volByDelta(d, Option::Call);
+                const Volatility put = section->volByDelta(-d, Option::Put);
+                BOOST_CHECK_SMALL(q.riskReversals[j] - (call - put), 1.0e-10);
+                BOOST_CHECK_SMALL(q.butterflies[j] - ((call + put) / 2.0 - section->atmVol()),
+                                  1.0e-10);
+            }
+        }
+    }
+    // the models differ off the quotes
+    const FxPairMarket polynomial(sabr.asOf(), sabr.conventions(), sabr.spot(),
+                                  sabr.foreignCurve(), sabr.domesticCurve(), sabr.quotes(), {},
+                                  FxVolSurfaceConfig(FxSmileModel::Polynomial));
+    const Real farStrike = 0.9 * sabr.forward(mkt.expiry3M);
+    BOOST_CHECK(std::fabs(polynomial.vol(mkt.expiry3M, farStrike) -
+                          sabr.vol(mkt.expiry3M, farStrike)) > 1.0e-5);
+
+    // the quotes must match the conventions' tenors and deltas
+    FxVolQuotes missing = sabr.quotes();
+    missing.atms.pop_back();
+    BOOST_CHECK_THROW(sabr.withQuotes(missing).volSurface(), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testFxPairMarketRoll) {
+    BOOST_TEST_MESSAGE("Testing the roll of an FX pair market...");
+
+    FxMarket mkt;
+    const FxPairMarket market = mkt.pairMarket();
+    const Date next(3, January, 2024);
+    const FxPairMarket rolled = market.rolled(next);
+    BOOST_CHECK_EQUAL(rolled.asOf(), next);
+    BOOST_CHECK_EQUAL(rolled.pillars()[0], mkt.pairConventions().volPillars(next)[0]);
+    // the spot rolls along the forward: every forward to a delivery is unchanged
+    for (const Date& expiry : {mkt.expiry3M, Date(5, May, 2024)})
+        BOOST_CHECK_CLOSE(rolled.forward(expiry), market.forward(expiry), 1.0e-12);
+    BOOST_CHECK_THROW(market.rolled(market.asOf()), Error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

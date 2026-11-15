@@ -3,7 +3,9 @@
 
 #include <ql/experimental/fxslv/fxeventvariance.hpp>
 #include <ql/experimental/fxslv/fxtradingtimevariancesurface.hpp>
-#include <ql/experimental/fxslv/fxtradingtimemarket.hpp>
+#include <ql/experimental/fxslv/fxforwardcurve.hpp>
+#include <ql/experimental/fxslv/fxpairmarket.hpp>
+#include <ql/experimental/fxslv/fxvolsurfacebuilder.hpp>
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
 #include <ql/experimental/fxslv/fxpnlexplain.hpp>
 #include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>

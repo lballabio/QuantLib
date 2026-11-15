@@ -11,6 +11,14 @@ wrapper) in `tradingtime/`, with tests in
 `test-suite/fxlocalvol.cpp`, `fxslvmodel.cpp` and `fxsmilesections.cpp`,
 and examples in `Examples/FXLocalVol` and `Examples/FXSmileSections`.
 
+The analytics take an `FxPairMarket` (one pair's conventions, spot,
+curves, vol quotes and events, immutable, with the surface built from
+them on first use) and an `FxPairConventions` (everything about how a
+pair settles and is quoted).  They are meant to be exposed through SWIG
+to a Python layer, which owns the data loading, the conventions registry
+and a market bundling several pairs, and builds the `FxPairMarket`s;
+keep their public interfaces free of templates for that reason.
+
 When adding a file to the fork, keep it under `ql/experimental/fxslv/`
 and register it in `ql/CMakeLists.txt`, the `Makefile.am` and `all.hpp`
 of its directory, `QuantLib.vcxproj` and `QuantLib.vcxproj.filters`

@@ -42,8 +42,29 @@
 
 namespace QuantLib {
 
+    //! What an FX variance surface offers beyond a Black vol term structure
+    /*! Implemented by fxVarianceSurface, so that code using the surface
+        need not depend on the smile model it is built with, which is
+        chosen at run time (see makeFxVolSurface()).
+    */
+    class FxVolSurface : public FxTradingTimeVariance {
+      public:
+        //! The pillar expiries.
+        virtual const std::vector<Date>& pillarDates() const = 0;
+        //! The calibrated smile section at a pillar.
+        virtual ext::shared_ptr<FxSmileSection> pillarSmileSection(Size pillar) const = 0;
+        //! The ATM total variance of an expiry.
+        virtual Real atmVar(Date expiry) const = 0;
+        //! The ATM vol of an expiry.
+        virtual Real atmVol(Date expiry) const = 0;
+        //! The settlement forward of an expiry.
+        virtual Real fwd(const Date& expiry) const = 0;
+        //! The cut the quotes, pillars and trading-time events refer to.
+        virtual const FxExpiryCut& expiryCut() const = 0;
+    };
+
     template<class T>
-    class fxVarianceSurface : public BlackVarianceTermStructure, public FxTradingTimeVariance {
+    class fxVarianceSurface : public BlackVarianceTermStructure, public FxVolSurface {
         /*
          * Implementation of a variance term structure for FXO trading. The aim is linearly
          * interpolate variance in trading time/market time as opposed to real time! This
@@ -96,14 +117,14 @@ namespace QuantLib {
         virtual Rate maxStrike() const override { return QL_MAX_REAL; };
         virtual Date maxDate() const override { return maxDate_; };
 
-        Real atmVar(Date d) const;  // atm variance
-        Real atmVol(Date d) const;  // atm vol
+        Real atmVar(Date d) const override;  // atm variance
+        Real atmVol(Date d) const override;  // atm vol
 
         //! Forward for an option expiring on the given date.
         /*! It runs from the spot date of the reference date to the
             delivery date of the expiry, as in the smile sections.
         */
-        Real fwd(const Date& expiry) const;
+        Real fwd(const Date& expiry) const override;
         //! Forward for an option expiring at a time from the reference date.
         /*! It is the forward of the expiry day containing the time, since
             every option expiring that day delivers on the same date; it
@@ -118,9 +139,14 @@ namespace QuantLib {
         const std::vector<ext::shared_ptr<T>>& pillarSmileSections() const {
             return smileSections_;
         }
+        const std::vector<Date>& pillarDates() const override { return pillars_; }
+        ext::shared_ptr<FxSmileSection> pillarSmileSection(Size pillar) const override {
+            QL_REQUIRE(pillar < smileSections_.size(), "no pillar " << pillar);
+            return smileSections_[pillar];
+        }
         const FxSettleConvention& settlement() const { return settlement_; }
         //! The cut the quotes, pillars and trading-time events refer to.
-        const FxExpiryCut& expiryCut() const { return cut_; }
+        const FxExpiryCut& expiryCut() const override { return cut_; }
 
         //! \name FxTradingTimeVariance interface
         //@{
@@ -372,10 +398,7 @@ namespace QuantLib {
     template <class T>
     std::pair<DiscountFactor, DiscountFactor>
     fxVarianceSurface<T>::settlementDiscounts(const Date& expiry) const {
-        const Date spotDate = settlement_.valueDate(referenceDate());
-        const Date deliveryDate = settlement_.valueDate(expiry);
-        return {forTs_->discount(deliveryDate) / forTs_->discount(spotDate),
-                domTs_->discount(deliveryDate) / domTs_->discount(spotDate)};
+        return fxSettlementDiscounts(settlement_, referenceDate(), expiry, **forTs_, **domTs_);
     }
 
     template <class T>

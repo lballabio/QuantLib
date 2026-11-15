@@ -6,6 +6,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     fxexpirycut.hpp \
+    fxpairconventions.hpp \
     fxsettlementconvention.hpp \
     fxtenorexpiry.hpp
 

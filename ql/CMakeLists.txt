@@ -157,7 +157,10 @@ set(QL_SOURCES
     experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.cpp
     experimental/fxslv/tradingtime/tradingtimedaycounter.cpp
     experimental/fxslv/fxtradingtimevariancesurface.cpp
-    experimental/fxslv/fxtradingtimemarket.cpp
+    experimental/fxslv/fxforwardcurve.cpp
+    experimental/fxslv/fxpairmarket.cpp
+    experimental/fxslv/fxpnlexplain.cpp
+    experimental/fxslv/fxvolsurfacebuilder.cpp
     experimental/fxslv/fxlocalvolsurface.cpp
     experimental/fxslv/fxsettlementforeigncurve.cpp
     experimental/fxslv/fxslvpricingcontext.cpp
@@ -1210,8 +1213,11 @@ set(QL_HEADERS
     experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.hpp
     experimental/fxslv/tradingtime/tradingtimedaycounter.hpp
     experimental/fxslv/fxtradingtimevariancesurface.hpp
-    experimental/fxslv/fxtradingtimemarket.hpp
+    experimental/fxslv/fxforwardcurve.hpp
+    experimental/fxslv/fxpairmarket.hpp
+    experimental/fxslv/fxvolsurfacebuilder.hpp
     experimental/fxslv/conventions/fxexpirycut.hpp
+    experimental/fxslv/conventions/fxpairconventions.hpp
     experimental/fxslv/fxlocalvolsurface.hpp
     experimental/fxslv/fxpnlexplain.hpp
     experimental/fxslv/smilesections/fxrootbracketing.hpp

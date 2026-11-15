@@ -31,6 +31,7 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/settings.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <cmath>
 #include <iomanip>
 #include <sstream>
@@ -88,57 +89,34 @@ namespace QuantLib {
     }
 
     FxVanillaBumpRisk::FxVanillaBumpRisk(ext::shared_ptr<VanillaOption> option,
-                                         ext::shared_ptr<GeneralizedBlackScholesProcess> process,
-                                         ext::shared_ptr<SimpleQuote> spotQuote,
-                                         std::vector<ext::shared_ptr<SimpleQuote>> atmVolQuotes,
-                                         std::vector<std::vector<ext::shared_ptr<SimpleQuote>>> rrPillarQuotes,
-                                         std::vector<Time> rrPillarTimes,
-                                         std::vector<std::vector<ext::shared_ptr<SimpleQuote>>> bfPillarQuotes,
-                                         std::vector<Time> bfPillarTimes,
-                                         Real notional, Real spotBump, Real volBump,
-                                         Real rrBump, Real bfBump, Size tGrid,
-                                         Size xGrid, Size lvTimePts, Size lvStrikePts, Real lvStrikeSpread)
-    : option_(std::move(option)), process_(std::move(process)),
-      spotQuote_(std::move(spotQuote)), atmVolQuotes_(std::move(atmVolQuotes)),
-      rrPillarQuotes_(std::move(rrPillarQuotes)), rrPillarTimes_(std::move(rrPillarTimes)),
-      bfPillarQuotes_(std::move(bfPillarQuotes)), bfPillarTimes_(std::move(bfPillarTimes)),
-      notional_(notional), spotBump_(spotBump), volBump_(volBump),
-      rrBump_(rrBump), bfBump_(bfBump), tGrid_(tGrid), xGrid_(xGrid),
-      lvTimePts_(lvTimePts), lvStrikePts_(lvStrikePts), lvStrikeSpread_(lvStrikeSpread) 
-    {
+                                         FxPairMarket market,
+                                         Real notional,
+                                         Real spotBump,
+                                         Real volBump,
+                                         Real rrBump,
+                                         Real bfBump,
+                                         Size tGrid,
+                                         Size xGrid,
+                                         Size lvTimePts,
+                                         Size lvStrikePts,
+                                         Real lvStrikeSpread)
+    : option_(std::move(option)), market_(std::move(market)), notional_(notional),
+      spotBump_(spotBump), volBump_(volBump), rrBump_(rrBump), bfBump_(bfBump), tGrid_(tGrid),
+      xGrid_(xGrid), lvTimePts_(lvTimePts), lvStrikePts_(lvStrikePts),
+      lvStrikeSpread_(lvStrikeSpread) {
         QL_REQUIRE(option_ != nullptr, "null option");
-        QL_REQUIRE(process_ != nullptr, "null process");
-        QL_REQUIRE(spotQuote_ != nullptr, "null spot quote");
-        QL_REQUIRE(!atmVolQuotes_.empty(), "at least one ATM vol quote required");
-        QL_REQUIRE(rrPillarQuotes_.size() == rrPillarTimes_.size(),
-                   "rrPillarQuotes and rrPillarTimes must have the same size");
-        QL_REQUIRE(bfPillarQuotes_.size() == bfPillarTimes_.size(),
-                   "bfPillarQuotes and bfPillarTimes must have the same size");
-        for (Time t : rrPillarTimes_)
-            QL_REQUIRE(t > 0.0, "rrPillarTimes must be positive");
-        for (Time t : bfPillarTimes_)
-            QL_REQUIRE(t > 0.0, "bfPillarTimes must be positive");
+        QL_REQUIRE(spotBump_ > 0.0 && volBump_ > 0.0, "spot and vol bumps must be positive");
         QL_REQUIRE(lvTimePts_ >= 2, "lvTimePts must be at least 2");
         QL_REQUIRE(lvStrikePts_ >= 2, "lvStrikePts must be at least 2");
         QL_REQUIRE(lvStrikeSpread_ > 0.0, "lvStrikeSpread must be positive");
-
-        buildLocalVol(Null<Volatility>());
+        setLocalVolFallback(Null<Volatility>());
     }
 
     void FxVanillaBumpRisk::setLocalVolFallback(Volatility fallbackVol) {
-        buildLocalVol(fallbackVol);
-    }
-
-    void FxVanillaBumpRisk::buildLocalVol(Volatility fallbackVol) {
         localVolFallback_ = fallbackVol;
-        localVol_ = ext::make_shared<FxLocalVolSurface>(
-            process_->blackVolatility(), process_->riskFreeRate(), process_->dividendYield(),
-            process_->stateVariable(), 1.0e-7, 0.0, fallbackVol);
-        localVol_->enableExtrapolation();
-        // the engines take the local vol from the process; give it ours
-        localVolProcess_ = ext::make_shared<GeneralizedBlackScholesProcess>(
-            process_->stateVariable(), process_->dividendYield(), process_->riskFreeRate(),
-            process_->blackVolatility(), Handle<LocalVolTermStructure>(localVol_));
+        localVol_ = ext::dynamic_pointer_cast<FxLocalVolSurface>(
+            market_.localVolProcess(fallbackVol)->localVolatility().currentLink());
+        QL_ENSURE(localVol_, "the market's local vol is not an FxLocalVolSurface");
     }
 
     ext::shared_ptr<FdmMesher> FxVanillaBumpRisk::makeMesher(
@@ -152,66 +130,55 @@ namespace QuantLib {
             std::pair<Real, Real>(payoff->strike(), 0.1)));
     }
 
-    ext::shared_ptr<PricingEngine>
-    FxVanillaBumpRisk::makeEngineFor(const ext::shared_ptr<GeneralizedBlackScholesProcess>& proc,
-                                     bool localVol,
-                                     const ext::shared_ptr<FdmMesher>& mesher) const {
-        return ext::make_shared<FixedMeshFdBlackScholesEngine>(proc, mesher, tGrid_, localVol);
+    Real FxVanillaBumpRisk::value(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                                  bool localVol,
+                                  const ext::shared_ptr<FdmMesher>& mesher) const {
+        if (localVol)
+            option_->setPricingEngine(
+                ext::make_shared<FixedMeshFdBlackScholesEngine>(process, mesher, tGrid_, true));
+        else
+            option_->setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(process));
+        return option_->NPV() * notional_;
     }
 
-    ext::shared_ptr<PricingEngine>
-    FxVanillaBumpRisk::makeEngine(bool localVol, const ext::shared_ptr<FdmMesher>& mesher) const {
-        return makeEngineFor(localVol ? localVolProcess_ : process_, localVol, mesher);
-    }
-
-
-    ext::shared_ptr<PricingEngine> FxVanillaBumpRisk::makeAnalyticEngine() const {
-        return ext::make_shared<AnalyticEuropeanEngine>(process_);
+    Real FxVanillaBumpRisk::value(const FxPairMarket& market,
+                                  bool localVol,
+                                  const ext::shared_ptr<FdmMesher>& mesher) const {
+        return value(localVol ? market.localVolProcess(localVolFallback_) : market.blackProcess(),
+                     localVol, mesher);
     }
 
     Real FxVanillaBumpRisk::rollTheta(bool localVol, Real todaysValue) const {
-        if (!roll_)
-            return Null<Real>();
+        const Date next = market_.conventions().settlement().calendar().advance(
+            market_.asOf(), 1, Days);
         // the rolled market is built, and priced, on its own date
         struct EvaluationDateRestorer {
             Date date = Settings::instance().evaluationDate();
             ~EvaluationDateRestorer() { Settings::instance().evaluationDate() = date; }
         } restorer;
-        Settings::instance().evaluationDate() = roll_->nextDate();
-        const auto rolled = roll_->rolledProcess();
-        QL_REQUIRE(rolled, "null rolled process");
-        if (!localVol) {
-            option_->setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(rolled));
-        } else {
-            auto lv = ext::make_shared<FxLocalVolSurface>(
-                rolled->blackVolatility(), rolled->riskFreeRate(), rolled->dividendYield(),
-                rolled->stateVariable(), 1.0e-7, 0.0, localVolFallback_);
-            lv->enableExtrapolation();
-            const auto rolledLocalVol = ext::make_shared<GeneralizedBlackScholesProcess>(
-                rolled->stateVariable(), rolled->dividendYield(), rolled->riskFreeRate(),
-                rolled->blackVolatility(), Handle<LocalVolTermStructure>(lv));
-            // a market of its own, on a grid of its own
-            option_->setPricingEngine(
-                makeEngineFor(rolledLocalVol, true, makeMesher(rolledLocalVol)));
-        }
-        return option_->NPV() * notional_ - todaysValue;
+        Settings::instance().evaluationDate() = next;
+        const FxPairMarket rolled = market_.rolled(next);
+        // a market of its own, on a grid of its own
+        const auto mesher = localVol ? makeMesher(rolled.blackProcess()) : nullptr;
+        return value(rolled, localVol, mesher) - todaysValue;
     }
 
     std::pair<std::vector<Time>, std::vector<Real>> FxVanillaBumpRisk::buildLvGrid() const {
         const Date expiry = option_->exercise()->lastDate();
-        const Time T = process_->time(expiry);
+        const Time T = market_.blackProcess()->time(expiry);
         QL_REQUIRE(T > 0.0, "option has expired; cannot build local vol grid");
 
+        const std::vector<Volatility>& atms = market_.quotes().atms;
         Real avgAtm = 0.0;
-        for (const auto& q : atmVolQuotes_)
-            avgAtm += q->value();
-        avgAtm /= static_cast<Real>(atmVolQuotes_.size());
+        for (Volatility v : atms)
+            avgAtm += v;
+        avgAtm /= static_cast<Real>(atms.size());
 
         std::vector<Time> times(lvTimePts_);
         for (Size i = 0; i < lvTimePts_; ++i)
             times[i] = T * (i + 1.0) / static_cast<Real>(lvTimePts_);
 
-        const Real S = spotQuote_->value();
+        const Real S = market_.spot();
         const Real halfWidth = lvStrikeSpread_ * avgAtm * std::sqrt(T);
         std::vector<Real> strikes(lvStrikePts_);
         for (Size j = 0; j < lvStrikePts_; ++j) {
@@ -222,110 +189,67 @@ namespace QuantLib {
         return {times, strikes};
     }
 
-    ext::shared_ptr<GeneralizedBlackScholesProcess> FxVanillaBumpRisk::makeStickyProcess(const std::vector<Time>& times,
-                                                                                         const std::vector<Real>& strikes) const 
-    {
-        auto fixedLV = buildFixedLocalVolSurface(times, strikes);
-        fixedLV->enableExtrapolation();
-        return ext::make_shared<GeneralizedBlackScholesProcess>(Handle<Quote>(spotQuote_),
-                                                                process_->dividendYield(),
-                                                                process_->riskFreeRate(),
-                                                                process_->blackVolatility(),
-                                                                Handle<LocalVolTermStructure>(fixedLV));
+    ext::shared_ptr<FixedLocalVolSurface>
+    FxVanillaBumpRisk::frozenLocalVol(const FxPairMarket& market,
+                                      const std::vector<Time>& times,
+                                      const std::vector<Real>& strikes) const {
+        const auto lv = market.localVolProcess(localVolFallback_)->localVolatility();
+        auto lvMatrix = ext::make_shared<Matrix>(strikes.size(), times.size());
+        for (Size ti = 0; ti < times.size(); ++ti)
+            for (Size si = 0; si < strikes.size(); ++si)
+                (*lvMatrix)[si][ti] = lv->localVol(times[ti], strikes[si], true);
+        auto result = ext::make_shared<FixedLocalVolSurface>(
+            market.tradingTimeVolSurface()->referenceDate(), times, strikes, lvMatrix,
+            market.tradingTimeDayCounter());
+        result->enableExtrapolation();
+        return result;
     }
 
     FxVanillaGreeks FxVanillaBumpRisk::calculate(bool localVol, StickyType sticky) const {
-        const Real S  = spotQuote_->value();
+        QL_REQUIRE(Settings::instance().evaluationDate() == market_.asOf(),
+                   "the evaluation date (" << Settings::instance().evaluationDate()
+                                           << ") must be the market's date (" << market_.asOf()
+                                           << ")");
+        const Real S  = market_.spot();
         const Real ds = S * spotBump_;
         const Real dv = volBump_;
 
-        // ── Discount factors and forward for delta/gamma scaling ──────────────
+        // ── Settlement foreign discount factor, for the forward delta ─────────
         const Date expiry = option_->exercise()->lastDate();
-        const Time T_exp  = process_->time(expiry);
-        // the settlement foreign discount, for the forward hedge
-        const Real Bf     = process_->dividendYield()->discount(T_exp);
+        const Real Bf     = market_.blackProcess()->dividendYield()->discount(expiry);
 
         // one grid, today's, for every bump of the market
-        const auto mesher = makeMesher(process_);
+        const auto mesher = makeMesher(market_.blackProcess());
 
-        // ── Capture base values for all bumped quotes ─────────────────────────
-        std::vector<Real> sigmas(atmVolQuotes_.size());
-        for (Size i = 0; i < atmVolQuotes_.size(); ++i)
-            sigmas[i] = atmVolQuotes_[i]->value();
-
-        std::vector<std::vector<Real>> rrBase(rrPillarQuotes_.size());
-        for (Size i = 0; i < rrPillarQuotes_.size(); ++i) {
-            rrBase[i].resize(rrPillarQuotes_[i].size());
-            for (Size j = 0; j < rrPillarQuotes_[i].size(); ++j)
-                rrBase[i][j] = rrPillarQuotes_[i][j]->value();
-        }
-
-        std::vector<std::vector<Real>> bfBase(bfPillarQuotes_.size());
-        for (Size i = 0; i < bfPillarQuotes_.size(); ++i) {
-            bfBase[i].resize(bfPillarQuotes_[i].size());
-            for (Size j = 0; j < bfPillarQuotes_[i].size(); ++j)
-                bfBase[i][j] = bfPillarQuotes_[i][j]->value();
-        }
-
-        // ── Helper lambdas ────────────────────────────────────────────────────
-        auto shiftAtms = [&](Real delta) {
-            for (Size i = 0; i < atmVolQuotes_.size(); ++i)
-                atmVolQuotes_[i]->setValue(sigmas[i] + delta);
+        // ── Bumped markets ────────────────────────────────────────────────────
+        auto shiftAtms = [](const FxPairMarket& m, Real shift) {
+            FxVolQuotes q = m.quotes();
+            for (auto& atm : q.atms)
+                atm += shift;
+            return m.withQuotes(q);
         };
-        auto restoreAtms = [&]() {
-            for (Size i = 0; i < atmVolQuotes_.size(); ++i)
-                atmVolQuotes_[i]->setValue(sigmas[i]);
-        };
-
-        // Each RR pillar is bumped by rrBump_ * sqrt(T_1M / T_pillar).
-        // This normalises so the 1M pillar moves by rrBump_ and longer
-        // tenors move by progressively smaller amounts (∝ 1/sqrt(T)).
-        auto shiftRRs = [&](Real sign) {
-            for (Size i = 0; i < rrPillarQuotes_.size(); ++i) {
-                const Real scaledBump = sign * rrBump_ * std::sqrt(T_1M / rrPillarTimes_[i]);
-                for (Size j = 0; j < rrPillarQuotes_[i].size(); ++j)
-                    rrPillarQuotes_[i][j]->setValue(rrBase[i][j] + scaledBump);
+        // Each RR (BF) pillar is bumped by rrBump_ (bfBump_) * sqrt(T_1M / T_pillar):
+        // the 1M pillar moves by the bump and longer tenors by less (∝ 1/sqrt(T)).
+        auto shiftSmile = [&](bool riskReversals, Real sign) {
+            FxVolQuotes q = market_.quotes();
+            const Actual365Fixed dc;
+            for (Size i = 0; i < market_.pillars().size(); ++i) {
+                const Time t = dc.yearFraction(market_.asOf(), market_.pillars()[i]);
+                const Real bump =
+                    sign * (riskReversals ? rrBump_ : bfBump_) * std::sqrt(T_1M / t);
+                for (auto& v : riskReversals ? q.riskReversals[i] : q.butterflies[i])
+                    v += bump;
             }
+            return market_.withQuotes(q);
         };
-        auto restoreRRs = [&]() {
-            for (Size i = 0; i < rrPillarQuotes_.size(); ++i)
-                for (Size j = 0; j < rrPillarQuotes_[i].size(); ++j)
-                    rrPillarQuotes_[i][j]->setValue(rrBase[i][j]);
-        };
-
-        auto shiftBFs = [&](Real sign) {
-            for (Size i = 0; i < bfPillarQuotes_.size(); ++i) {
-                const Real scaledBump = sign * bfBump_ * std::sqrt(T_1M / bfPillarTimes_[i]);
-                for (Size j = 0; j < bfPillarQuotes_[i].size(); ++j)
-                    bfPillarQuotes_[i][j]->setValue(bfBase[i][j] + scaledBump);
-            }
-        };
-        auto restoreBFs = [&]() {
-            for (Size i = 0; i < bfPillarQuotes_.size(); ++i)
-                for (Size j = 0; j < bfPillarQuotes_[i].size(); ++j)
-                    bfPillarQuotes_[i][j]->setValue(bfBase[i][j]);
-        };
-
-        // Compute rega and sega using the current engine (assumed non-frozen).
-        // Returns {rega, sega}.  If no RR/BF quotes are provided, returns {0,0}.
-        auto computeRegaSega = [&]() -> std::pair<Real, Real> {
-            Real rega = 0.0, sega = 0.0;
-            if (!rrPillarQuotes_.empty()) {
-                shiftRRs(+1.0);
-                const Real V_rrp = option_->NPV() * notional_;
-                shiftRRs(-1.0);
-                const Real V_rrm = option_->NPV() * notional_;
-                restoreRRs();
-                rega = (V_rrp - V_rrm) / 2.0;
-            }
-            if (!bfPillarQuotes_.empty()) {
-                shiftBFs(+1.0);
-                const Real V_bfp = option_->NPV() * notional_;
-                shiftBFs(-1.0);
-                const Real V_bfm = option_->NPV() * notional_;
-                restoreBFs();
-                sega = (V_bfp - V_bfm) / 2.0;
-            }
+        // rega and sega: the surface as it stands, whatever the sticky rule
+        auto regaSega = [&](bool lv) -> std::pair<Real, Real> {
+            const Real rega = (value(shiftSmile(true, +1.0), lv, mesher) -
+                               value(shiftSmile(true, -1.0), lv, mesher)) /
+                              2.0;
+            const Real sega = (value(shiftSmile(false, +1.0), lv, mesher) -
+                               value(shiftSmile(false, -1.0), lv, mesher)) /
+                              2.0;
             return {rega, sega};
         };
 
@@ -379,170 +303,85 @@ namespace QuantLib {
 
         if (sticky == StickyType::Strike) {
             // ── Sticky-strike path ────────────────────────────────────────────
-            // Black at the option's implied vol, read from the surface as it
-            // stands and held as spot moves.
+            // Black at the option's implied vol, read from a market's surface
+            // and held as spot moves.
             const auto payoff = ext::dynamic_pointer_cast<StrikedTypePayoff>(option_->payoff());
             QL_REQUIRE(payoff, "non-striked payoff given");
-            auto engineAtTheVolNow = [&]() {
+            auto atTheVolOf = [&](const FxPairMarket& m, Real spot) {
                 const Volatility vol =
-                    process_->blackVolatility()->blackVol(expiry, payoff->strike(), true);
-                const auto frozen = ext::make_shared<GeneralizedBlackScholesProcess>(
-                    Handle<Quote>(spotQuote_), process_->dividendYield(), process_->riskFreeRate(),
+                    m.tradingTimeVolSurface()->blackVol(expiry, payoff->strike(), true);
+                const auto black = m.blackProcess();
+                return ext::make_shared<GeneralizedBlackScholesProcess>(
+                    makeQuoteHandle(spot), black->dividendYield(), black->riskFreeRate(),
                     Handle<BlackVolTermStructure>(ext::make_shared<BlackConstantVol>(
-                        process_->blackVolatility()->referenceDate(), NullCalendar(), vol,
-                        process_->blackVolatility()->dayCounter())));
-                return ext::make_shared<AnalyticEuropeanEngine>(frozen);
+                        m.asOf(), NullCalendar(), vol, m.tradingTimeDayCounter())));
             };
-            auto valueAtSpot = [&](Real spot) {
-                spotQuote_->setValue(spot);
-                const Real v = option_->NPV() * notional_;
-                spotQuote_->setValue(S);
-                return v;
-            };
-
-            option_->setPricingEngine(engineAtTheVolNow());
-            const Real V0 = option_->NPV() * notional_;
-            const Real Vup = valueAtSpot(S + ds), Vdn = valueAtSpot(S - ds);
-
-            shiftAtms(+dv);
-            option_->setPricingEngine(engineAtTheVolNow());
-            const Real Vvp = option_->NPV() * notional_;
-            const Real Vpp = valueAtSpot(S + ds), Vmp = valueAtSpot(S - ds);
-            shiftAtms(-dv);
-            option_->setPricingEngine(engineAtTheVolNow());
-            const Real Vvm = option_->NPV() * notional_;
-            const Real Vpm = valueAtSpot(S + ds), Vmm = valueAtSpot(S - ds);
-            restoreAtms();
+            const FxPairMarket up = shiftAtms(market_, +dv), down = shiftAtms(market_, -dv);
+            const Real V0 = value(atTheVolOf(market_, S), false, mesher);
+            const Real Vup = value(atTheVolOf(market_, S + ds), false, mesher);
+            const Real Vdn = value(atTheVolOf(market_, S - ds), false, mesher);
+            const Real Vvp = value(atTheVolOf(up, S), false, mesher);
+            const Real Vvm = value(atTheVolOf(down, S), false, mesher);
+            const Real Vpp = value(atTheVolOf(up, S + ds), false, mesher);
+            const Real Vmp = value(atTheVolOf(up, S - ds), false, mesher);
+            const Real Vpm = value(atTheVolOf(down, S + ds), false, mesher);
+            const Real Vmm = value(atTheVolOf(down, S - ds), false, mesher);
 
             // at today's spot, the surface as it stands: the sticky rule does
             // not matter for theta and for the risk reversal and butterfly bumps
-            option_->setPricingEngine(makeAnalyticEngine());
-            const Real theta_raw = rollTheta(false, V0);
-            option_->setPricingEngine(makeAnalyticEngine());
-            auto [rega, sega] = computeRegaSega();
-
-            option_->setPricingEngine(engineAtTheVolNow());
+            const Real theta_raw = rollTheta(false, value(market_, false, mesher));
+            auto [rega, sega] = regaSega(false);
             return scaleResults(V0, Vup, Vdn, Vvp, Vvm, Vpp, Vpm, Vmp, Vmm,
                                 theta_raw, rega, sega);
         }
 
         if (!localVol || sticky == StickyType::Delta) {
-            // ── BS analytic path (localVol=false) or sticky-delta local vol ──
-            // localVol=false: analytical Black-Scholes, using the implied vol
-            // interpolated from the FX variance surface at the option's (T, K).
-            // localVol=true + sticky-delta: FD engine with Dupire local vol.
-            const auto engine = localVol ? makeEngine(true, mesher) : makeAnalyticEngine();
-            option_->setPricingEngine(engine);
-
-            const Real V0  = option_->NPV() * notional_;
-
-            spotQuote_->setValue(S + ds);
-            const Real Vup = option_->NPV() * notional_;
-            spotQuote_->setValue(S - ds);
-            const Real Vdn = option_->NPV() * notional_;
-            spotQuote_->setValue(S);
-
-            shiftAtms(+dv);
-            const Real Vvp = option_->NPV() * notional_;
-            shiftAtms(-dv);
-            const Real Vvm = option_->NPV() * notional_;
-            restoreAtms();
-
+            // ── Black, or sticky-delta local vol ─────────────────────────────
+            // Each bump is a market rebuilt from the bumped quotes: the smile
+            // re-anchors in delta at the bumped spot, and the local vol is
+            // that of the bumped surface.
+            auto V = [&](const FxPairMarket& m) { return value(m, localVol, mesher); };
+            const FxPairMarket spotUp = market_.withSpot(S + ds);
+            const FxPairMarket spotDown = market_.withSpot(S - ds);
+            const Real V0  = V(market_);
+            const Real Vup = V(spotUp), Vdn = V(spotDown);
+            const Real Vvp = V(shiftAtms(market_, +dv)), Vvm = V(shiftAtms(market_, -dv));
+            const Real Vpp = V(shiftAtms(spotUp, +dv)), Vpm = V(shiftAtms(spotUp, -dv));
+            const Real Vmp = V(shiftAtms(spotDown, +dv)), Vmm = V(shiftAtms(spotDown, -dv));
             const Real theta_raw = rollTheta(localVol, V0);
-            option_->setPricingEngine(engine);
-
-            spotQuote_->setValue(S + ds);
-            shiftAtms(+dv);
-            const Real Vpp = option_->NPV() * notional_;
-            shiftAtms(-dv);
-            const Real Vpm = option_->NPV() * notional_;
-            restoreAtms();
-
-            spotQuote_->setValue(S - ds);
-            shiftAtms(+dv);
-            const Real Vmp = option_->NPV() * notional_;
-            shiftAtms(-dv);
-            const Real Vmm = option_->NPV() * notional_;
-            restoreAtms();
-
-            spotQuote_->setValue(S);
-
-            auto [rega, sega] = computeRegaSega();
-
-            return scaleResults(V0, Vup, Vdn, Vvp, Vvm, Vpp, Vpm, Vmp, Vmm,
-                                theta_raw, rega, sega);
-
-        } 
-        else 
-        {
-            // ── Frozen local-vol path (localVol=true only) ────────────────────
-            //
-            // Build three frozen local vol surfaces at base, vol+dv, vol-dv.
-            auto [times, strikes] = buildLvGrid();
-
-            auto stickyBase = makeStickyProcess(times, strikes);
-
-            shiftAtms(+dv);
-            auto stickyVp = makeStickyProcess(times, strikes);
-
-            shiftAtms(-dv);
-            auto stickyVm = makeStickyProcess(times, strikes);
-
-            restoreAtms();
-
-            auto engBase = makeEngineFor(stickyBase, true, mesher);
-            auto engVp   = makeEngineFor(stickyVp,   true, mesher);
-            auto engVm   = makeEngineFor(stickyVm,   true, mesher);
-
-            // Base NPV and spot delta/gamma (frozen local vol, spot bumped).
-            option_->setPricingEngine(engBase);
-            const Real V0  = option_->NPV() * notional_;
-
-            spotQuote_->setValue(S + ds);
-            const Real Vup = option_->NPV() * notional_;
-            spotQuote_->setValue(S - ds);
-            const Real Vdn = option_->NPV() * notional_;
-            spotQuote_->setValue(S);
-
-            // Theta, from the roll of the market: local vol is not frozen
-            // over it, the surface being rolled, so it is measured from
-            // today's value with the same, unfrozen, local vol.
-            option_->setPricingEngine(makeEngine(true, mesher));
-            const Real theta_raw = rollTheta(true, option_->NPV() * notional_);
-
-            // Vega and volga using vol-bumped frozen surfaces.
-            option_->setPricingEngine(engVp);
-            const Real Vvp = option_->NPV() * notional_;
-
-            option_->setPricingEngine(engVm);
-            const Real Vvm = option_->NPV() * notional_;
-
-            // Vanna: 4-point cross with frozen vol-bumped surfaces.
-            spotQuote_->setValue(S + ds);
-            option_->setPricingEngine(engVp);
-            const Real Vpp = option_->NPV() * notional_;
-            option_->setPricingEngine(engVm);
-            const Real Vpm = option_->NPV() * notional_;
-
-            spotQuote_->setValue(S - ds);
-            option_->setPricingEngine(engVp);
-            const Real Vmp = option_->NPV() * notional_;
-            option_->setPricingEngine(engVm);
-            const Real Vmm = option_->NPV() * notional_;
-
-            spotQuote_->setValue(S);
-
-            // Rega/sega: use non-frozen Dupire engine (sticky-delta dynamics
-            // for vol-surface input sensitivities, per user requirement).
-            option_->setPricingEngine(makeEngine(true, mesher));
-            auto [rega, sega] = computeRegaSega();
-
-            // Leave option with the base frozen engine.
-            option_->setPricingEngine(engBase);
-
+            auto [rega, sega] = regaSega(localVol);
             return scaleResults(V0, Vup, Vdn, Vvp, Vvm, Vpp, Vpm, Vmp, Vmm,
                                 theta_raw, rega, sega);
         }
+
+        // ── Frozen local-vol path (localVol=true only) ────────────────────────
+        // Local vols frozen in (t, K) at today's spot, for the base, vol+dv
+        // and vol-dv markets; spot moves under them.
+        auto [times, strikes] = buildLvGrid();
+        const auto lvBase = frozenLocalVol(market_, times, strikes);
+        const auto lvUp = frozenLocalVol(shiftAtms(market_, +dv), times, strikes);
+        const auto lvDown = frozenLocalVol(shiftAtms(market_, -dv), times, strikes);
+        const auto black = market_.blackProcess();
+        auto frozen = [&](const ext::shared_ptr<FixedLocalVolSurface>& lv, Real spot) {
+            return ext::make_shared<GeneralizedBlackScholesProcess>(
+                makeQuoteHandle(spot), black->dividendYield(), black->riskFreeRate(),
+                black->blackVolatility(), Handle<LocalVolTermStructure>(lv));
+        };
+        const Real V0  = value(frozen(lvBase, S), true, mesher);
+        const Real Vup = value(frozen(lvBase, S + ds), true, mesher);
+        const Real Vdn = value(frozen(lvBase, S - ds), true, mesher);
+        const Real Vvp = value(frozen(lvUp, S), true, mesher);
+        const Real Vvm = value(frozen(lvDown, S), true, mesher);
+        const Real Vpp = value(frozen(lvUp, S + ds), true, mesher);
+        const Real Vpm = value(frozen(lvDown, S + ds), true, mesher);
+        const Real Vmp = value(frozen(lvUp, S - ds), true, mesher);
+        const Real Vmm = value(frozen(lvDown, S - ds), true, mesher);
+        // theta and rega/sega: local vol not frozen, as the market rolls or
+        // its smile moves
+        const Real theta_raw = rollTheta(true, value(market_, true, mesher));
+        auto [rega, sega] = regaSega(true);
+        return scaleResults(V0, Vup, Vdn, Vvp, Vvm, Vpp, Vpm, Vmp, Vmm,
+                            theta_raw, rega, sega);
     }
 
     ext::shared_ptr<FixedLocalVolSurface>
@@ -557,9 +396,9 @@ namespace QuantLib {
             for (Size si = 0; si < strikes.size(); ++si)
                 (*lvMatrix)[si][ti] = localVol_->localVol(times[ti], strikes[si], true);
 
-        return ext::make_shared<FixedLocalVolSurface>(process_->blackVolatility()->referenceDate(),
-                                                      times, strikes, lvMatrix,
-                                                      process_->blackVolatility()->dayCounter());
+        return ext::make_shared<FixedLocalVolSurface>(
+            market_.tradingTimeVolSurface()->referenceDate(), times, strikes, lvMatrix,
+            market_.tradingTimeDayCounter());
     }
 
     void FxVanillaBumpRisk::printLocalVolComparison(const std::vector<Time>& times,
