@@ -65,8 +65,7 @@ namespace QuantLib {
         whatever the axis; blackVol() is per year of trading time,
         marketVol() per year of calendar time, as quoted.  Processes on
         the surface need curves on the same axis
-        (TradingTimeYieldTermStructure); FxCalendarTimeVolSurface gives
-        the calendar axis.
+        (TradingTimeYieldTermStructure), as FxPairMarket builds them.
     */
     class FxVarianceSurface : public BlackVarianceTermStructure {
 

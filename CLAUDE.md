@@ -21,8 +21,9 @@ place mapping a model to its class, and `FxVarianceSurface` holds its
 smiles as `FxSmileSection`, so add a new model there, not as a template
 parameter.  The vol surface's time axis is trading time: its
 `blackVol` is per year of trading time and needs curves on the same axis,
-`marketVol` gives quote-convention vols, and `FxCalendarTimeVolSurface`
-the calendar axis for SLV until it runs in trading time.  They are meant
+`marketVol` gives quote-convention vols; local vol and SLV
+(`FxSLVPricingContext`, which takes the `FxPairMarket`) run on the same
+axis.  They are meant
 to be exposed through SWIG
 to a Python layer, which owns the data loading, the conventions registry
 and a market bundling several pairs, and builds the `FxPairMarket`s;

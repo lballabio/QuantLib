@@ -21,26 +21,20 @@
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdhestondoublebarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <ql/processes/hestonprocess.hpp>
+#include <algorithm>
 #include <utility>
 #include <cmath>
 
 namespace QuantLib {
 
-    FxSLVPricingContext::FxSLVPricingContext(Handle<Quote>                 spot,
-                                             Handle<YieldTermStructure>    domesticTS,
-                                             Handle<YieldTermStructure>    foreignTS,
-                                             Handle<BlackVolTermStructure> volSurface,
-                                             Handle<LocalVolTermStructure> localVol,
-                                             FxSettleConvention            settlement)
-    : spot_(std::move(spot)), domesticTS_(std::move(domesticTS)),
-      foreignTS_(std::move(foreignTS)), volSurface_(std::move(volSurface)),
-      localVol_(std::move(localVol)), settlement_(std::move(settlement)) {
-
-        QL_REQUIRE(!spot_.empty(),       "FxSLVPricingContext: spot handle is empty");
-        QL_REQUIRE(!domesticTS_.empty(), "FxSLVPricingContext: domesticTS handle is empty");
-        QL_REQUIRE(!foreignTS_.empty(),  "FxSLVPricingContext: foreignTS handle is empty");
-        QL_REQUIRE(!volSurface_.empty(), "FxSLVPricingContext: volSurface handle is empty");
-        QL_REQUIRE(!localVol_.empty(),   "FxSLVPricingContext: localVol handle is empty");
+    FxSLVPricingContext::FxSLVPricingContext(FxPairMarket market, Volatility localVolFallback)
+    : market_(std::move(market)) {
+        // the trading-time curves, with the settlement forward, and local vol
+        const auto process = market_.localVolProcess(localVolFallback);
+        domesticTS_ = process->riskFreeRate();
+        foreignTS_ = process->dividendYield();
+        localVol_ = process->localVolatility();
     }
 
     void FxSLVPricingContext::calibrate(
@@ -48,33 +42,45 @@ namespace QuantLib {
         SLVLeverageCalibrator& leverageCal,
         const std::vector<StochVolCalibrator::Pillar>& pillars,
         const Date& leverageEndDate,
-        const std::vector<Date>& mandatoryDates) {
-
+        std::vector<Date> mandatoryDates) {
         QL_REQUIRE(!pillars.empty(),
                    "FxSLVPricingContext::calibrate: pillar list must not be empty");
 
-        // Step 1 — Calibrate the stochastic volatility model (e.g. Heston).
-        hestonCal.calibrate(spot_, domesticTS_, foreignTS_,
-                            volSurface_, settlement_, pillars);
-
-        hestonModel_   = ext::dynamic_pointer_cast<HestonModel>(
-                             hestonCal.calibratedModel());
+        hestonCal.calibrate(market_.spotQuote(), domesticTS_, foreignTS_,
+                            Handle<BlackVolTermStructure>(market_.volSurface()),
+                            market_.conventions().settlement(), pillars);
+        hestonModel_ = ext::dynamic_pointer_cast<HestonModel>(hestonCal.calibratedModel());
         QL_REQUIRE(hestonModel_,
                    "FxSLVPricingContext: StochVolCalibrator did not return a HestonModel; "
                    "ensure a HestonCalibrator (or subclass) is used with the "
                    "HestonSLVLeverageCalibrator");
+        hestonErrors_ = hestonCal.calibrationErrors();
+        hestonRmse_ = hestonCal.rmse();
 
-        hestonErrors_  = hestonCal.calibrationErrors();
-        hestonRmse_    = hestonCal.rmse();
+        // local vol jumps at the pillars: time steps on them
+        for (const Date& d : market_.pillars())
+            if (d > market_.asOf() && d <= leverageEndDate)
+                mandatoryDates.push_back(d);
+        std::sort(mandatoryDates.begin(), mandatoryDates.end());
+        mandatoryDates.erase(std::unique(mandatoryDates.begin(), mandatoryDates.end()),
+                             mandatoryDates.end());
 
-        // Step 2 — Inject the calibrated model into the leverage calibrator, then
-        // solve the Fokker-Planck PDE for L(t,S).
         leverageCal.setStochVolModel(hestonModel_);
         leverageCal.calibrate(localVol_, leverageEndDate, mandatoryDates);
-
         leverageFunction_ = leverageCal.leverageFunction();
-        // the leverage function holds only for the vol-of-vol it was calibrated with
         mixingFactor_ = leverageCal.mixingFactor();
+    }
+
+    FxSLVPricingContext FxSLVPricingContext::withSpot(Real spot) const {
+        QL_REQUIRE(hestonModel_, "FxSLVPricingContext: calibrate() has not been called");
+        FxSLVPricingContext result = *this;
+        result.market_ = market_.withSpot(spot);
+        // the same parameters on the moved spot
+        result.hestonModel_ = ext::make_shared<HestonModel>(ext::make_shared<HestonProcess>(
+            domesticTS_, foreignTS_, result.market_.spotQuote(), hestonModel_->v0(),
+            hestonModel_->kappa(), hestonModel_->theta(), hestonModel_->sigma(),
+            hestonModel_->rho()));
+        return result;
     }
 
     ext::shared_ptr<PricingEngine>

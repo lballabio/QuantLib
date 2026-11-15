@@ -140,8 +140,7 @@ namespace QuantLib {
                           Volatility localVolFallback) {
         // the process takes its times from the domestic curve and reads the
         // surface at them: both must be on one time axis, e.g. trading time
-        // for an FxVarianceSurface (see FxPairMarket), or
-        // calendar time with an FxCalendarTimeVolSurface
+        // for an FxVarianceSurface (see FxPairMarket)
         QL_REQUIRE(volSurface->dayCounter() == domesticCurve->dayCounter(),
                    "the vol surface (" << volSurface->dayCounter().name()
                                        << ") and the curves (" << domesticCurve->dayCounter().name()

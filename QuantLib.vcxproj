@@ -715,7 +715,6 @@
     <ClInclude Include="ql\experimental\fxslv\fxeventvariance.hpp" />
     <ClInclude Include="ql\experimental\fxslv\tradingtime\tradingtimeyieldtermstructure.hpp" />
     <ClInclude Include="ql\experimental\fxslv\tradingtime\tradingtimedaycounter.hpp" />
-    <ClInclude Include="ql\experimental\fxslv\fxcalendartimevolsurface.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxforwardcurve.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxpairmarket.hpp" />
     <ClInclude Include="ql\experimental\fxslv\fxvolsurfacebuilder.hpp" />
@@ -2148,7 +2147,6 @@
     <ClCompile Include="ql\experimental\fxslv\fxeventvariance.cpp" />
     <ClCompile Include="ql\experimental\fxslv\tradingtime\tradingtimeyieldtermstructure.cpp" />
     <ClCompile Include="ql\experimental\fxslv\tradingtime\tradingtimedaycounter.cpp" />
-    <ClCompile Include="ql\experimental\fxslv\fxcalendartimevolsurface.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxforwardcurve.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxpairmarket.cpp" />
     <ClCompile Include="ql\experimental\fxslv\fxpnlexplain.cpp" />

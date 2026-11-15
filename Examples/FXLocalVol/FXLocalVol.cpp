@@ -76,7 +76,6 @@
 #include <ql/instruments/payoffs.hpp>
 
 // Market data primitives
-#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/quotes/deltavolquote.hpp>
 
@@ -214,10 +213,6 @@ int main(int, char*[]) {
         const FxPairMarket market(today, conventions, spotRate, eurTs, usdTs, quotes, {},
                                   FxVolSurfaceConfig(FxSmileModel::Sabr, FxVolInterpolation::Ncp,
                                                      weekendWeight));
-        // the surface's time axis is trading time; the SLV of part B, still
-        // calibrated in calendar time, uses it seen in calendar time
-        const ext::shared_ptr<BlackVolTermStructure> calendarVolSurface =
-            market.calendarTimeVolSurface();
         const std::vector<Date>& pillars = market.pillars();
         const Handle<Quote> spot = market.spotQuote();
 
@@ -230,27 +225,16 @@ int main(int, char*[]) {
         //     short-dated wings of this surface have calendar arbitrage, so
         //     local vol is not defined everywhere: opt in to a fallback
         //     there, and report how often it is used, rather than fail.
-        //
-        //     The SLV of part B still runs in calendar time, on the same
-        //     surface in calendar time.
+        //     The SLV of part B runs on the same clock and local vol.
         // ──────────────────────────────────────────────────────────────────────
         const Volatility localVolFallback = 0.01;
         auto process = market.localVolProcess(localVolFallback);
-        auto calendarProcess =
-            makeFxLocalVolProcess(spot, eurTs, usdTs, settlement,
-                                  Handle<BlackVolTermStructure>(calendarVolSurface),
-                                  localVolFallback);
-        // the foreign curve consistent with the process's forward
-        const Handle<YieldTermStructure> eurFwdTs = calendarProcess->dividendYield();
 
         // ──────────────────────────────────────────────────────────────────────
         //  4. Define the option: 3M EUR call at ATM forward
         // ──────────────────────────────────────────────────────────────────────
         Date expiryDate = pillars[5]; // 3M pillar (index 5 in the 11-pillar set)
-        Time T          = dc.yearFraction(today, expiryDate);
-        Real Bd         = usdTs->discount(T);
-        Real Bf         = eurFwdTs->discount(T);
-        Real fwd        = spot->value() * Bf / Bd;
+        Real fwd        = market.forward(expiryDate);  // the settlement forward
         Real strike     = fwd; // ATM forward
 
         auto payoff   = ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
@@ -441,13 +425,11 @@ int main(int, char*[]) {
         // ══════════════════════════════════════════════════════════════════════
 
         // ──────────────────────────────────────────────────────────────────────
-        //  7. The Dupire local vol surface in calendar time, built in 3, for
-        //     the SLV calibration.  It is lower over weekends, and uses the
-        //     fallback where it is not defined.
+        //  7. The SLV calibration, on the market's trading-time clock: the
+        //     Dupire local vol of 3, its curves, and the surface for the
+        //     Heston fit.  The context builds them from the market, with the
+        //     same local-vol fallback.
         // ──────────────────────────────────────────────────────────────────────
-        const Handle<LocalVolTermStructure> localVolHandle = calendarProcess->localVolatility();
-        const auto localVolSurface =
-            ext::dynamic_pointer_cast<FxLocalVolSurface>(localVolHandle.currentLink());
 
         // ──────────────────────────────────────────────────────────────────────
         //  8. Calibrate the Heston stochastic vol model
@@ -485,33 +467,29 @@ int main(int, char*[]) {
 
         // Build the SLV pricing context — this object owns all calibrated state
         // and is the factory for pricing engines.
-        Handle<BlackVolTermStructure> volHandle(calendarVolSurface);
-        // the SLV engine's own spot, moved below for its delta: the
-        // calibrated leverage function and Heston model stay as they are
-        auto slvSpotQuote = ext::make_shared<SimpleQuote>(spotRate);
-        const Handle<Quote> slvSpot(slvSpotQuote);
+        FxSLVPricingContext slvCtx(market, localVolFallback);
 
-        FxSLVPricingContext slvCtx(slvSpot, usdTs, eurFwdTs, volHandle, localVolHandle,
-                                   settlement);
-
-        // Enforce the Feller condition: the SLV leverage calibration fails, or
-        // goes far off, with a Heston fit violating it strongly, as the
-        // unconstrained fit to these quotes does.
+        // Hold the vol of vol at its start: the free fit to these quotes
+        // finds about 0.34, where the leverage calibration falls short and
+        // SLV misprices the vanillas by a few percent; at 0.15 it reprices
+        // them to within 0.1% on the grid below.
         HestonCalibrator hestonCal(hp, EndCriteria(1000, 500, 1.0e-8, 1.0e-8, 1.0e-8),
-                                   BlackCalibrationHelper::ImpliedVolError, {}, true);
+                                   BlackCalibrationHelper::ImpliedVolError,
+                                   {false, false, true, false, false}, false);
 
-        // Use a coarser FDM grid than production to keep the example fast.
-        // For production use HestonSLVLeverageCalibrator::defaultParams().
+        // The default grid, with fewer spot points and more time steps in
+        // the short end: a coarse variance grid (21 points) leaves SLV about
+        // 4% off local vol below.
         auto fdmParams = HestonSLVLeverageCalibrator::defaultParams();
-        fdmParams.xGrid            = 51;
-        fdmParams.vGrid            = 21;
-        fdmParams.tMaxStepsPerYear = 52;
+        fdmParams.xGrid            = 101;
         fdmParams.tMinStepsPerYear = 12;
         fdmParams.tStepNumberDecay = 2.0;
 
         HestonSLVLeverageCalibrator levCal(fdmParams);
 
-        const Date slvEndDate = pillars.back();  // the 2Y expiry, where local vol ends
+        // the 2Y expiry, where local vol ends; the pillars, where local vol
+        // jumps, are dates of the calibration's time grid
+        const Date slvEndDate = pillars.back();
         slvCtx.calibrate(hestonCal, levCal, hestonPillars, slvEndDate);
 
         // ── Print Heston calibration results ────────────────────────────────
@@ -583,7 +561,7 @@ int main(int, char*[]) {
                   << "  " << std::string(36, '-') << "\n";
         for (const auto& tenor : { 1*Months, 3*Months, 6*Months, 1*Years, 2*Years }) {
             const Date   expiryL = fxExpiryDate(today, tenor, settlement);
-            const Time   TL      = dc.yearFraction(today, expiryL);
+            const Time   TL      = process->time(expiryL);  // in trading time
             const Real   fwdL    = market.forward(expiryL);
             const Real   L       = leverageFct->localVol(TL, fwdL, true);
             std::string  lbl;
@@ -644,15 +622,16 @@ int main(int, char*[]) {
         call4M->setPricingEngine(slvCtx.vanillaEngine(grid));
         const Real slvNpv4M = call4M->NPV() * notional;
 
-        // ── Spot bump parameters ─────────────────────────────────────────────
-        const Real S0  = slvSpotQuote->value();
+        // ── Spot bump: the calibrated model on a moved spot ──────────────────
+        const Real S0  = market.spot();
         const Real dS  = S0 * 0.001;   // 0.1% absolute spot bump
-
-        slvSpotQuote->setValue(S0 + dS);
-        const Real slvUp = call4M->NPV() * notional;
-        slvSpotQuote->setValue(S0 - dS);
-        const Real slvDn = call4M->NPV() * notional;
-        slvSpotQuote->setValue(S0);
+        auto slvAt = [&](Real s) {
+            VanillaOption bumped(payoff4M, exercise4M);
+            bumped.setPricingEngine(slvCtx.withSpot(s).vanillaEngine(grid));
+            return bumped.NPV() * notional;
+        };
+        const Real slvUp = slvAt(S0 + dS);
+        const Real slvDn = slvAt(S0 - dS);
 
         // delta as an amount of EUR, gamma its change per 1% spot move
         const Real pctS      = 0.01 * S0;
@@ -710,8 +689,11 @@ int main(int, char*[]) {
                   << "  SLV theta exactly requires re-calibrating the leverage\n"
                   << "  function at the shifted date — typically done overnight.\n\n";
 
-        std::cout << "  Calendar-time local vol fallback used at " << localVolSurface->fallbacks()
-                  << " points in the SLV calibration and pricing above.\n\n";
+        const auto localVolSurface =
+            ext::dynamic_pointer_cast<FxLocalVolSurface>(slvCtx.localVol().currentLink());
+        if (localVolSurface)
+            std::cout << "  Local vol fallback used at " << localVolSurface->fallbacks()
+                      << " points in the SLV calibration and pricing above.\n\n";
 
         printSeparator();
         std::cout << "  Done.\n";

@@ -24,16 +24,14 @@
 #ifndef quantlib_fx_slv_pricing_context_hpp
 #define quantlib_fx_slv_pricing_context_hpp
 
+#include <ql/experimental/fxslv/fxpairmarket.hpp>
 #include <ql/experimental/fxslv/stochvolcalibrator.hpp>
 #include <ql/experimental/fxslv/slvleveragecalibrator.hpp>
-#include <ql/handle.hpp>
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/pricingengine.hpp>
-#include <ql/quote.hpp>
 #include <ql/shared_ptr.hpp>
-#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/date.hpp>
@@ -50,82 +48,66 @@ namespace QuantLib {
         Size dampingSteps = 0;   //!< Rannacher smoothing steps at maturity
     };
 
-    //! Orchestrator for calibrating and pricing under an FX Stochastic Local Vol model.
-    /*!
-        \c FxSLVPricingContext bundles together all the market data, calibrated
-        models, and leverage function needed to price and risk-manage a book of
-        FX vanilla and barrier options under a Stochastic Local Volatility (SLV)
-        model.
+    //! Calibration and pricing of an FX pair under stochastic local vol
+    /*! Calibrates a Heston model, then the leverage function, on an FX
+        pair's market and gives pricing engines for vanilla and barrier
+        options under the calibrated SLV model.
 
-        Typical usage:
+        Everything runs on the market's trading-time clock: the Heston
+        model on its trading-time curves (with the settlement forward), and
+        the leverage function against the Dupire local vol of its surface,
+        whose time axis is trading time.  In calendar time local vol drops
+        over weekends and spikes at events, day by day, and the leverage
+        calibration does not converge to it.  Heston parameters are
+        therefore per year of trading time.  The surface's pillars, where
+        local vol jumps, are dates of the leverage calibration's time steps.
+
         \code
-        // 1. Assemble market data.
-        FxSLVPricingContext ctx(spot, domesticTS, foreignTS, volSurface,
-                                localVolSurface, settlement);
-
-        // 2. Define calibration pillars (expiry, absolute strike).
-        std::vector<StochVolCalibrator::Pillar> pillars = {
-            {3*Months, 1.08}, {6*Months, 1.10}, {1*Years, 1.12}, ...
-        };
-
-        // 3. Calibrate the Heston model, then the leverage function.
-        HestonCalibrator hestonCal;
-        HestonSLVLeverageCalibrator lvCal(Handle<HestonModel>(...));
-        ctx.calibrate(hestonCal, lvCal, pillars, lastExpiry);
-
-        // 4. Price instruments.
-        myVanilla.setPricingEngine(ctx.vanillaEngine());
-        myBarrier.setPricingEngine(ctx.barrierEngine());
+        FxSLVPricingContext context(market);
+        HestonCalibrator hestonCal(...);
+        HestonSLVLeverageCalibrator leverageCal(...);
+        context.calibrate(hestonCal, leverageCal, pillars, lastExpiry);
+        vanilla.setPricingEngine(context.vanillaEngine());
         \endcode
 
         \ingroup experimental
     */
     class FxSLVPricingContext {
       public:
-        //! \name Construction
-        //@{
-        /*!
-            \param spot          FX spot rate quote (units: domestic per foreign)
-            \param domesticTS    domestic risk-free yield term structure
-            \param foreignTS     foreign risk-free (or dividend) yield term structure
-            \param volSurface    market Black implied volatility surface
-            \param localVol      Dupire local volatility surface derived from
-                                 \p volSurface (supplied externally so the user
-                                 can choose their own interpolation scheme)
-            \param settlement    settlement convention, giving the expiries of
-                                 the calibration tenors
+        /*! \param market           the pair's market.
+            \param localVolFallback volatility to use where Dupire local vol
+                                    is not defined; none by default, so that
+                                    the calibration fails there.
         */
-        FxSLVPricingContext(Handle<Quote>                    spot,
-                            Handle<YieldTermStructure>       domesticTS,
-                            Handle<YieldTermStructure>       foreignTS,
-                            Handle<BlackVolTermStructure>    volSurface,
-                            Handle<LocalVolTermStructure>    localVol,
-                            FxSettleConvention               settlement);
-        //@}
+        explicit FxSLVPricingContext(FxPairMarket market,
+                                     Volatility localVolFallback = Null<Volatility>());
 
         //! \name Calibration
         //@{
-        /*!
-            Runs the two-step calibration:
-              1. Heston stochastic vol calibration via \p hestonCal
-              2. Leverage function calibration via \p leverageCal
+        /*! Calibrates the Heston model to the pillars, then the leverage
+            function up to the end date; then the context gives engines.
 
-            After this call the context is ready to produce pricing engines.
-
-            \param hestonCal     stochastic vol calibrator (Heston or a subclass)
-            \param leverageCal   SLV leverage function calibrator
-            \param pillars       (expiry, strike) calibration instruments
-            \param leverageEndDate end date for the leverage function PDE grid;
-                                 typically the maturity of the longest instrument
-                                 in the book
-            \param mandatoryDates additional time grid dates for the leverage PDE
+            \param hestonCal       stochastic vol calibrator.
+            \param leverageCal     leverage function calibrator.
+            \param pillars         (tenor, strike) calibration instruments.
+            \param leverageEndDate end of the leverage calibration, typically
+                                   the last expiry of the book, at most the
+                                   surface's last pillar.
+            \param mandatoryDates  further dates for the leverage calibration's
+                                   time steps, besides the surface's pillars.
         */
-        void calibrate(StochVolCalibrator&              hestonCal,
-                       SLVLeverageCalibrator&           leverageCal,
+        void calibrate(StochVolCalibrator& hestonCal,
+                       SLVLeverageCalibrator& leverageCal,
                        const std::vector<StochVolCalibrator::Pillar>& pillars,
-                       const Date&                      leverageEndDate,
-                       const std::vector<Date>&         mandatoryDates = {});
+                       const Date& leverageEndDate,
+                       std::vector<Date> mandatoryDates = {});
         //@}
+
+        //! The same calibration with the spot moved
+        /*! The Heston parameters and the leverage function are held, as for
+            a delta of the calibrated model.
+        */
+        FxSLVPricingContext withSpot(Real spot) const;
 
         //! \name Pricing engine factories
         //@{
@@ -133,52 +115,37 @@ namespace QuantLib {
         ext::shared_ptr<PricingEngine> vanillaEngine(
             const FdmGridConfig& grid    = FdmGridConfig{},
             const FdmSchemeDesc& scheme  = FdmSchemeDesc::Hundsdorfer()) const;
-
         //! Finite-difference Heston SLV engine for single-barrier options.
         ext::shared_ptr<PricingEngine> barrierEngine(
             const FdmGridConfig& grid    = FdmGridConfig{},
             const FdmSchemeDesc& scheme  = FdmSchemeDesc::Hundsdorfer()) const;
-
         //! Finite-difference Heston SLV engine for double-barrier options.
         ext::shared_ptr<PricingEngine> doubleBarrierEngine(
             const FdmGridConfig& grid    = FdmGridConfig{},
             const FdmSchemeDesc& scheme  = FdmSchemeDesc::Hundsdorfer()) const;
         //@}
 
-        //! \name Model accessors
+        //! \name Inspectors
         //@{
-        //! The calibrated Heston model.  Throws if calibrate() not yet called.
+        const FxPairMarket& market() const { return market_; }
+        //! The calibrated Heston model, per year of trading time.
         ext::shared_ptr<HestonModel> hestonModel() const;
-
-        //! The calibrated leverage function L(t,S).  Throws if calibrate() not yet called.
+        //! The calibrated leverage function L(t, S), t in trading time.
         ext::shared_ptr<LocalVolTermStructure> leverageFunction() const;
-
         //! Per-pillar implied-vol calibration errors from the Heston fit.
         std::vector<Real> hestonCalibrationErrors() const;
-
         //! RMSE of the Heston fit across all calibration pillars.
         Real hestonRmse() const;
-
         //! Mixing factor of the leverage calibration, which the engines use too.
         Real mixingFactor() const { return mixingFactor_; }
-        //@}
-
-        //! \name Market data accessors
-        //@{
-        const Handle<Quote>&                 spot()       const { return spot_; }
-        const Handle<YieldTermStructure>&    domesticTS() const { return domesticTS_; }
-        const Handle<YieldTermStructure>&    foreignTS()  const { return foreignTS_; }
-        const Handle<BlackVolTermStructure>& volSurface() const { return volSurface_; }
-        const Handle<LocalVolTermStructure>& localVol()   const { return localVol_; }
+        //! The Dupire local vol the leverage is calibrated against, in trading time.
+        const Handle<LocalVolTermStructure>& localVol() const { return localVol_; }
         //@}
 
       private:
-        Handle<Quote>                 spot_;
-        Handle<YieldTermStructure>    domesticTS_;
-        Handle<YieldTermStructure>    foreignTS_;
-        Handle<BlackVolTermStructure> volSurface_;
+        FxPairMarket market_;
+        Handle<YieldTermStructure> domesticTS_, foreignTS_;
         Handle<LocalVolTermStructure> localVol_;
-        FxSettleConvention            settlement_;
 
         ext::shared_ptr<HestonModel>          hestonModel_;
         ext::shared_ptr<LocalVolTermStructure> leverageFunction_;

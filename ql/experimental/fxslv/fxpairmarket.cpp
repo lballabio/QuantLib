@@ -21,7 +21,6 @@
 #include <ql/experimental/fxslv/fxlocalvolsurface.hpp>
 #include <ql/experimental/fxslv/fxpairmarket.hpp>
 #include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
-#include <ql/experimental/fxslv/fxcalendartimevolsurface.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimedaycounter.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.hpp>
 #include <ql/pricingengines/blackdeltacalculator.hpp>
@@ -95,12 +94,6 @@ namespace QuantLib {
         return makeFxSmileSection(config().model, expiry, spotQuote(), smileQuotes, foreignCurve(),
                                   domesticCurve(), conventions.deltaType(), conventions.atmType(),
                                   conventions.settlement(), asOf());
-    }
-
-    ext::shared_ptr<BlackVolTermStructure> FxPairMarket::calendarTimeVolSurface() const {
-        auto surface = ext::make_shared<FxCalendarTimeVolSurface>(volSurface());
-        surface->enableExtrapolation();
-        return surface;
     }
 
     ext::shared_ptr<FxSmileSection>

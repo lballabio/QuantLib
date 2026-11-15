@@ -35,7 +35,6 @@
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimetermstructure.hpp>
 #include <ql/experimental/fxslv/fxforwardcurve.hpp>
-#include <ql/experimental/fxslv/fxcalendartimevolsurface.hpp>
 #include <ql/experimental/fxslv/fxpairmarket.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimedaycounter.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimeyieldtermstructure.hpp>
@@ -47,6 +46,7 @@
 #include <ql/exercise.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/quotes/deltavolquote.hpp>
@@ -141,9 +141,10 @@ namespace {
         std::string foreignCcy, domesticCcy;
 
         ext::shared_ptr<FxVarianceSurfaceNCP> surface;
-        // the local-vol process in calendar time, from makeFxLocalVolProcess
+        // the local-vol process on the surface, from makeFxLocalVolProcess
+        // with the curves on the surface's trading-time clock
         ext::shared_ptr<GeneralizedBlackScholesProcess> process;
-        // the local-vol process on the trading-time clock, for pricing
+        // the local-vol process of the pair's market, for pricing
         ext::shared_ptr<GeneralizedBlackScholesProcess> tradingTimeProcess;
 
         explicit FxMarket(Real holidayWeight = 0.2,
@@ -213,10 +214,13 @@ namespace {
                 WeekendsOnly(), Following, true);
             surface->enableExtrapolation();
 
-            // in calendar time, on the surface seen in calendar time
             process = makeFxLocalVolProcess(
-                spot, foreignTs, domesticTs, settlement,
-                Handle<BlackVolTermStructure>(ext::make_shared<FxCalendarTimeVolSurface>(surface)));
+                spot,
+                Handle<YieldTermStructure>(
+                    ext::make_shared<TradingTimeYieldTermStructure>(foreignTs, timeTs)),
+                Handle<YieldTermStructure>(
+                    ext::make_shared<TradingTimeYieldTermStructure>(domesticTs, timeTs)),
+                settlement, Handle<BlackVolTermStructure>(surface));
             tradingTimeProcess = pairMarket().localVolProcess();
         }
 
@@ -766,203 +770,129 @@ BOOST_AUTO_TEST_CASE(testPremiumAdjustedParityWithLocalVol) {
 // ─────────────────────────────────────────────────────────────────────────────
 //  Test 8: Full 11-pillar SLV calibration and risk on a non-pillar tenor
 //
-//  Builds an 11-pillar EURUSD surface (o/n through 2y), calibrates a Heston
-//  stochastic vol model, calibrates the SLV leverage function, then prices and
-//  risks a 4M ATM-forward call.  4M falls strictly between the 3M and 6M
-//  surface pillars — exercising the interpolation in both the surface and the
-//  leverage function.
+//  Builds an 11-pillar EURUSD market (o/n through 2y), calibrates a Heston
+//  stochastic vol model and the SLV leverage function on its trading-time
+//  clock, then prices and risks a 4M ATM-forward call, between the 3M and 6M
+//  pillars.
 //
 //  Checks:
-//    - Heston RMSE < 1.5 vol pts  (model fits the smile reasonably)
-//    - SLV NPV > 0 and delta ∈ (0, 1)
-//    - SLV price within 20% of the local-vol Dupire price
-//    - FxVanillaBumpRisk Greeks are sensible under the SLV engine
+//    - Heston RMSE < 1.5 vol pts
+//    - SLV NPV > 0, delta (the calibration held) in (0, 1)
+//    - vega (recalibrated on the bumped market) > 0, close to Black's
+//    - SLV price close to the local-vol and Black prices
 // ─────────────────────────────────────────────────────────────────────────────
 
 BOOST_AUTO_TEST_CASE(testSLVCalibrationAndRisk) {
     BOOST_TEST_MESSAGE(
         "Testing FX local vol + SLV: full 11-pillar calibration and 4M risk...");
 
-    // ── Market data ──────────────────────────────────────────────────────────
     const Date today = Date(2, January, 2024);
     Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+    const Handle<YieldTermStructure> usd(ext::make_shared<FlatForward>(today, 0.0525, dc));
+    const Handle<YieldTermStructure> eur(ext::make_shared<FlatForward>(today, 0.0400, dc));
+    const FxSettleConvention settlement(WeekendsOnly(), 2);
+    const FxPairConventions conventions("EUR", "USD", settlement, FxExpiryCut(10),
+                                        DeltaVolQuote::Fwd, DeltaVolQuote::AtmFwd,
+                                        FxRrBfQuotes::SmileStrangle);
+    // ATM vol rising from 6.2% at o/n to 10.0% at 2y, EUR put skew, convex smile
+    const FxVolQuotes quotes(
+        {1 * Days, 1 * Weeks, 2 * Weeks, 1 * Months, 2 * Months, 3 * Months, 6 * Months,
+         9 * Months, 1 * Years, 18 * Months, 2 * Years},
+        {0.25, 0.10},
+        {0.0620, 0.0680, 0.0720, 0.0780, 0.0810, 0.0850, 0.0900, 0.0920, 0.0950, 0.0970, 0.1000},
+        {{-0.0020, -0.0040}, {-0.0030, -0.0060}, {-0.0050, -0.0100}, {-0.0120, -0.0250},
+         {-0.0130, -0.0265}, {-0.0140, -0.0280}, {-0.0160, -0.0310}, {-0.0170, -0.0330},
+         {-0.0180, -0.0350}, {-0.0190, -0.0370}, {-0.0200, -0.0390}},
+        {{0.0002, 0.0005}, {0.0003, 0.0007}, {0.0004, 0.0010}, {0.0040, 0.0090},
+         {0.0042, 0.0092}, {0.0045, 0.0095}, {0.0050, 0.0105}, {0.0052, 0.0110},
+         {0.0055, 0.0115}, {0.0058, 0.0120}, {0.0060, 0.0125}});
+    const FxPairMarket market(today, conventions, 1.0850, eur, usd, quotes);
 
-    const DayCounter dc       = Actual365Fixed();
-    const Calendar   calendar = WeekendsOnly();
-
-    const Handle<YieldTermStructure> domesticTs(
-        ext::make_shared<FlatForward>(0, NullCalendar(), 0.0525, dc));  // domestic
-    const Handle<YieldTermStructure> foreignTs(
-        ext::make_shared<FlatForward>(0, NullCalendar(), 0.0400, dc));  // foreign
-
-    auto spotSQ = ext::make_shared<SimpleQuote>(1.0850);
-    Handle<Quote> spot(spotSQ);
-
-    // ── 11-pillar vol surface quotes (o/n through 2y) ────────────────────────
-    // ATM vol rises from 6.2% at o/n to 10.0% at 2y.
-    // 25d risk-reversal is negative (EUR put skew, typical EURUSD).
-    // 25d butterfly is small positive (vol smile convexity).
-    struct PillarQuotes { Real atm, rr25, bf25, rr10, bf10; };
-    const std::vector<PillarQuotes> mktVols = {
-        // tenor    ATM     RR25    BF25    RR10    BF10
-        {/*O/N */ 0.0620, -0.0020, 0.0002, -0.0040, 0.0005 },
-        {/*1W  */ 0.0680, -0.0030, 0.0003, -0.0060, 0.0007 },
-        {/*2W  */ 0.0720, -0.0050, 0.0004, -0.0100, 0.0010 },
-        {/*1M  */ 0.0780, -0.0120, 0.0040, -0.0250, 0.0090 },
-        {/*2M  */ 0.0810, -0.0130, 0.0042, -0.0265, 0.0092 },
-        {/*3M  */ 0.0850, -0.0140, 0.0045, -0.0280, 0.0095 },
-        {/*6M  */ 0.0900, -0.0160, 0.0050, -0.0310, 0.0105 },
-        {/*9M  */ 0.0920, -0.0170, 0.0052, -0.0330, 0.0110 },
-        {/*1Y  */ 0.0950, -0.0180, 0.0055, -0.0350, 0.0115 },
-        {/*18M */ 0.0970, -0.0190, 0.0058, -0.0370, 0.0120 },
-        {/*2Y  */ 0.1000, -0.0200, 0.0060, -0.0390, 0.0125 },
-    };
-
-    const std::vector<Period> tenors = {
-        1*Days,  1*Weeks,  2*Weeks,
-        1*Months, 2*Months, 3*Months, 6*Months,
-        9*Months, 1*Years,  18*Months, 2*Years
-    };
-
-    const FxSettleConvention settlement(calendar, 2);
-    const std::vector<Date> pillars = fxExpiryDates(today, tenors, settlement);
-    std::vector<Handle<Quote>>              atms;
-    std::vector<std::vector<Handle<Quote>>> rrs, bfs;
-    std::vector<ext::shared_ptr<SimpleQuote>> atmSQs;
-    std::vector<std::vector<ext::shared_ptr<SimpleQuote>>> rrSQs, bfSQs;
-
-    for (Size i = 0; i < tenors.size(); ++i) {
-        auto a   = ext::make_shared<SimpleQuote>(mktVols[i].atm);
-        auto r25 = ext::make_shared<SimpleQuote>(mktVols[i].rr25);
-        auto r10 = ext::make_shared<SimpleQuote>(mktVols[i].rr10);
-        auto b25 = ext::make_shared<SimpleQuote>(mktVols[i].bf25);
-        auto b10 = ext::make_shared<SimpleQuote>(mktVols[i].bf10);
-        atmSQs.push_back(a);
-        rrSQs.push_back({ r25, r10 });
-        bfSQs.push_back({ b25, b10 });
-        atms.push_back(Handle<Quote>(a));
-        rrs.push_back({ Handle<Quote>(r25), Handle<Quote>(r10) });
-        bfs.push_back({ Handle<Quote>(b25), Handle<Quote>(b10) });
-    }
-
-    const std::vector<Real> deltas = { 0.25, 0.10 };
-    // weekends carry a fifth of a business day's variance: with none, local vol
-    // vanishes over whole days, which the SLV leverage calibration cannot handle
-    const Real weekendWeight = 0.2;
-    auto timeTs = Handle<TradingTimeTermStructure>(
-        ext::make_shared<TradingTimeTermStructure>(today, calendar, weekendWeight));
-
-    auto volSurface = ext::make_shared<FxVarianceSurfaceNCP>(testSmileModel,
-        today, spot, pillars, atms, rrs, bfs, deltas,
-        foreignTs, domesticTs, timeTs,
-        DeltaVolQuote::Fwd, DeltaVolQuote::AtmFwd, FxRrBfQuotes::SmileStrangle,
-        settlement, FxExpiryCut(10),
-        calendar, Following, true);
-    volSurface->enableExtrapolation();
-    // SLV is calibrated in calendar time: the surface seen in calendar time
-    Handle<BlackVolTermStructure> volHandle(ext::make_shared<FxCalendarTimeVolSurface>(volSurface));
-
-    // ── Local-vol process: settlement forward and Dupire local vol ──────────
-    const auto process = makeFxLocalVolProcess(spot, foreignTs, domesticTs, settlement, volHandle);
-    const Handle<YieldTermStructure> eurFwdTs = process->dividendYield();
-    const Handle<LocalVolTermStructure> localVolHandle = process->localVolatility();
-
-    // ── SLV calibration ──────────────────────────────────────────────────────
-    // Use 5 tenors × 3 strikes for Heston calibration, around the settlement
-    // forwards of their FX expiries.
-    const std::vector<Period> calibTenors = {
-        1*Months, 3*Months, 6*Months, 1*Years, 2*Years
-    };
+    // Heston on 5 tenors x 3 strikes around their settlement forwards, under
+    // the Feller condition: the fit finds a vol of vol of 0.34 (kappa 3.7)
     std::vector<StochVolCalibrator::Pillar> hestonPillars;
-    for (const auto& tenor : calibTenors) {
-        const Real fwd = volSurface->fwd(fxExpiryDate(today, tenor, settlement));
-        for (Real m : { 0.95, 1.00, 1.05 })
-            hestonPillars.push_back({ tenor, m * fwd });
+    for (const Period& tenor : {1 * Months, 3 * Months, 6 * Months, 1 * Years, 2 * Years}) {
+        const Real fwd = market.forward(fxExpiryDate(today, tenor, settlement));
+        for (Real m : {0.95, 1.00, 1.05})
+            hestonPillars.push_back({tenor, m * fwd});
     }
-
     HestonParams hp;
-    hp.v0    = 0.078 * 0.078;
+    hp.v0 = 0.078 * 0.078;
     hp.kappa = 1.50;
     hp.theta = 0.100 * 0.100;
     hp.sigma = 0.15;
-    hp.rho   = -0.25;
-
-    FxSLVPricingContext ctx(spot, domesticTs, eurFwdTs, volHandle, localVolHandle, settlement);
-
-    // under the Feller condition: the SLV calibration fails with a fit
-    // violating it strongly, as the unconstrained one does
-    HestonCalibrator hestonCal(hp, EndCriteria(1000, 500, 1.0e-8, 1.0e-8, 1.0e-8),
-                               BlackCalibrationHelper::ImpliedVolError, {}, true);
-
-    // Small FDM grid for test speed.
+    hp.rho = -0.25;
     auto fdmP = HestonSLVLeverageCalibrator::defaultParams();
-    fdmP.xGrid            = 51;
-    fdmP.vGrid            = 21;
-    fdmP.tMaxStepsPerYear = 52;
+    fdmP.xGrid = 101;
     fdmP.tMinStepsPerYear = 12;
     fdmP.tStepNumberDecay = 2.0;
-
-    HestonSLVLeverageCalibrator levCal(fdmP);
-
-    const Date endDate = pillars.back();  // the 2Y expiry, where local vol ends
-    ctx.calibrate(hestonCal, levCal, hestonPillars, endDate);
-
-    // Heston fit quality check.
+    auto calibrated = [&](const FxPairMarket& m) {
+        FxSLVPricingContext context(m);
+        HestonCalibrator hestonCal(hp, EndCriteria(1000, 500, 1.0e-8, 1.0e-8, 1.0e-8),
+                                   BlackCalibrationHelper::ImpliedVolError, {}, true);
+        HestonSLVLeverageCalibrator levCal(fdmP);
+        context.calibrate(hestonCal, levCal, hestonPillars, m.pillars().back());
+        return context;
+    };
+    const FxSLVPricingContext ctx = calibrated(market);
     BOOST_CHECK_MESSAGE(ctx.hestonRmse() < 0.015,
-        "Heston RMSE too large: " << ctx.hestonRmse() * 100.0 << " vol pts");
+                        "Heston RMSE too large: " << ctx.hestonRmse() * 100.0 << " vol pts");
 
-    // ── Price a 4M ATM-forward call ──────────────────────────────────────────
-    // 4M is strictly between the 3M (surface pillar) and 6M (surface pillar).
-    const Date expiry4M = fxExpiryDate(today, 4*Months, settlement);
-    const Real fwd4M = volSurface->fwd(expiry4M);
+    // ── a 4M ATM-forward call ───────────────────────────────────────────────
+    const Date expiry4M = fxExpiryDate(today, 4 * Months, settlement);
+    const Real fwd4M = market.forward(expiry4M);
+    VanillaOption call4M(ext::make_shared<PlainVanillaPayoff>(Option::Call, fwd4M),
+                         ext::make_shared<EuropeanExercise>(expiry4M));
+    const FdmGridConfig grid{100, 100, 50, 0};
+    auto slvValue = [&](const FxSLVPricingContext& c) {
+        call4M.setPricingEngine(c.vanillaEngine(grid));
+        return call4M.NPV();
+    };
+    const Real slvNpv = slvValue(ctx);
+    BOOST_CHECK_MESSAGE(slvNpv > 0.0, "SLV 4M call NPV must be positive: " << slvNpv);
 
-    auto payoff4M   = ext::make_shared<PlainVanillaPayoff>(Option::Call, fwd4M);
-    auto exercise4M = ext::make_shared<EuropeanExercise>(expiry4M);
-    auto call4M     = ext::make_shared<VanillaOption>(payoff4M, exercise4M);
-
-    call4M->setPricingEngine(ctx.vanillaEngine(FdmGridConfig{ 100, 100, 50, 0 }));
-
-    const Real slvNpv = call4M->NPV();
-    BOOST_CHECK_MESSAGE(slvNpv > 0.0,
-        "SLV 4M call NPV must be positive: " << slvNpv);
-
-    // ── Delta via finite difference ──────────────────────────────────────────
-    const Real S0 = spotSQ->value();
-    const Real ds = 0.0010;
-    spotSQ->setValue(S0 + ds);
-    const Real callUp = call4M->NPV();
-    spotSQ->setValue(S0 - ds);
-    const Real callDn = call4M->NPV();
-    spotSQ->setValue(S0);
-
-    const Real slvDelta = (callUp - callDn) / (2.0 * ds);
+    // delta: the calibration held as the spot moves
+    const Real S0 = market.spot(), ds = 0.0010;
+    const Real slvDelta =
+        (slvValue(ctx.withSpot(S0 + ds)) - slvValue(ctx.withSpot(S0 - ds))) / (2.0 * ds);
     BOOST_CHECK_MESSAGE(slvDelta > 0.0 && slvDelta < 1.0,
-        "SLV 4M call delta must be in (0, 1): " << slvDelta);
+                        "SLV 4M call delta must be in (0, 1): " << slvDelta);
 
-    // ── Vega via finite difference ───────────────────────────────────────────
-    // Bump all ATM vol quotes in parallel (parallel shift of ATM curve).
+    // vega: the model recalibrated on markets with every ATM quote bumped,
+    // as the market moves; close to Black's on the market's own surface
     const Real dv = 0.001;
-    for (auto& sq : atmSQs) sq->setValue(sq->value() + dv);
-    const Real callVolUp = call4M->NPV();
-    for (auto& sq : atmSQs) sq->setValue(sq->value() - 2.0 * dv);
-    const Real callVolDn = call4M->NPV();
-    for (auto& sq : atmSQs) sq->setValue(sq->value() + dv);  // restore
+    auto bumped = [&](Real shift) {
+        FxVolQuotes q = market.quotes();
+        for (auto& atm : q.atms)
+            atm += shift;
+        return market.withQuotes(q);
+    };
+    const FxPairMarket up = bumped(dv), down = bumped(-dv);
+    const Real slvVega = (slvValue(calibrated(up)) - slvValue(calibrated(down))) / (2.0 * dv);
+    call4M.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(up.blackProcess()));
+    const Real blackUp = call4M.NPV();
+    call4M.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(down.blackProcess()));
+    const Real blackVega = (blackUp - call4M.NPV()) / (2.0 * dv);
+    BOOST_CHECK_MESSAGE(slvVega > 0.0, "SLV 4M call vega must be positive: " << slvVega);
+    // SLV reprices vanillas, so their vegas should agree; at this vol of vol
+    // the leverage calibration falls short (11% here, 24% on a 51 x 51
+    // grid): tighten once high vols of vol are calibrated
+    BOOST_CHECK_CLOSE(slvVega, blackVega, 15.0);
 
-    const Real slvVega = (callVolUp - callVolDn) / (2.0 * dv);
-    BOOST_CHECK_MESSAGE(slvVega > 0.0,
-        "SLV 4M call vega must be positive: " << slvVega);
-
-    // ── SLV vs local-vol Dupire price comparison ─────────────────────────────
-    auto call4M_lv = ext::make_shared<VanillaOption>(payoff4M, exercise4M);
-    call4M_lv->setPricingEngine(
-        ext::make_shared<FdBlackScholesVanillaEngine>(process, 100, 100, 0,
-                                                      FdmSchemeDesc::Douglas(), true));
-    const Real lvNpv = call4M_lv->NPV();
-
-    const Real relDiff = std::fabs(slvNpv - lvNpv) / lvNpv;
-    BOOST_CHECK_MESSAGE(relDiff < 0.20,
-        "SLV and local-vol 4M NPVs differ by " << relDiff * 100.0
-        << "% (SLV=" << slvNpv << " LV=" << lvNpv << ")");
+    // ── SLV against local vol and Black ──────────────────────────────────────
+    call4M.setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(
+        market.localVolProcess(), 100, 100, 0, FdmSchemeDesc::Douglas(), true));
+    const Real lvNpv = call4M.NPV();
+    call4M.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(market.blackProcess()));
+    const Real blackNpv = call4M.NPV();
+    BOOST_TEST_MESSAGE("4M call: SLV " << slvNpv << ", local vol " << lvNpv << ", Black "
+                                       << blackNpv << "; vega SLV " << slvVega << ", Black "
+                                       << blackVega);
+    // 2.6% here at this vol of vol, against under 0.1% at 0.15 (see
+    // FxSLVModelTests' testSlvInTradingTimeRepricesVanillas)
+    BOOST_CHECK_CLOSE(slvNpv, lvNpv, 3.0);
+    BOOST_CHECK_CLOSE(slvNpv, blackNpv, 3.0);
 }
 
 BOOST_AUTO_TEST_CASE(testVarianceSurfaceFollowsQuotes) {
@@ -1096,14 +1026,12 @@ BOOST_AUTO_TEST_CASE(testVarianceSurfaceEventBetweenPillars) {
         m.today, m.spot, m.pillars, m.atms, m.rrs, m.bfs, m.deltas, m.foreignTs, m.domesticTs, timeTs,
         m.deltaType, m.atmType, m.flyType, FxSettleConvention(WeekendsOnly(), 2),
         FxExpiryCut(10));
-    // in calendar time, where the event takes no time
-    const FxCalendarTimeVolSurface calendar(surface);
-
     // the jump adds trading time at the rate variance accrues around it; all
-    // the times below are on the event's day, with the same forward
+    // the times below are on the event's day, with the same forward, and in
+    // calendar time, where the event takes no time
     const Time te = (eventDate - m.today + timeOfDay) / 365.0, eps = 1.0e-7;
     const Real fwd = surface->fwd(eventDate);
-    auto w = [&](Time t) { return calendar.blackVariance(t, fwd); };
+    auto w = [&](Time t) { return surface->blackVariance(timeTs->tradingTime(t), fwd, true); };
     const Real jump = w(te + eps) - w(te - eps);
     const Time t0 = te - 0.5 / 365.0;  // earlier on the same day
     const Real rate = (w(te - eps) - w(t0)) / (timeTs->tradingTime(te - eps) - timeTs->tradingTime(t0));
@@ -1264,29 +1192,31 @@ BOOST_AUTO_TEST_CASE(testMakeFxLocalVolProcess) {
     const auto localVol =
         ext::dynamic_pointer_cast<FxLocalVolSurface>(m.process->localVolatility().currentLink());
     BOOST_REQUIRE(localVol);
-    BOOST_CHECK(m.process->riskFreeRate().currentLink() == m.domesticTs.currentLink());
-    // the surface, seen in calendar time as the curves are
-    const auto calendar = ext::dynamic_pointer_cast<FxCalendarTimeVolSurface>(
-        m.process->blackVolatility().currentLink());
-    BOOST_REQUIRE(calendar);
-    BOOST_CHECK(calendar->tradingTimeSurface() == m.surface);
+    // the domestic curve, on the surface's clock
+    for (const Date& d : {Date(3, February, 2024), m.expiry6M})
+        BOOST_CHECK_CLOSE(m.process->riskFreeRate()->discount(d), m.domesticTs->discount(d),
+                          1.0e-12);
+    BOOST_CHECK(m.process->blackVolatility().currentLink() == m.surface);
 
-    // one forward for the process and the surface, and local vol lower over a weekend
+    // a time within a day on the process's trading-time clock
+    auto timeOn = [&](const Date& d, Real fraction) {
+        return m.process->time(d) + fraction * (m.process->time(d + 1) - m.process->time(d));
+    };
+    // one forward for the process and the surface
     for (const Date& d : {Date(12, April, 2024), Date(13, April, 2024), m.expiry6M}) {
-        const Time t = m.process->time(d) + 0.4 / 365.0;  // within the day
+        const Time t = timeOn(d, 0.4);
         BOOST_CHECK_CLOSE(m.spot->value() * m.process->dividendYield()->discount(t) /
                               m.process->riskFreeRate()->discount(t),
                           m.surface->fwd(d), 1.0e-12);
     }
-    // where variance accrues at a fifth of the rate, local vol is about sqrt(0.2) of
-    // that of the business days around it
+    // and local vol, in trading time, about that of the business days
+    // around a weekend, although variance accrues there at a fifth of the rate
     auto localVolOn = [&](const Date& d) {
-        return m.process->localVolatility()->localVol(m.process->time(d) + 0.5 / 365.0, 1.085,
-                                                      true);
+        return m.process->localVolatility()->localVol(timeOn(d, 0.5), 1.085, true);
     };
     const Real weekend = localVolOn(Date(3, February, 2024));
     const Real around = std::sqrt(localVolOn(Date(2, February, 2024)) * localVolOn(Date(5, February, 2024)));
-    BOOST_CHECK_CLOSE(weekend / around, std::sqrt(0.2), 0.1);
+    BOOST_CHECK_CLOSE(weekend / around, 1.0, 5.0);
 
     // without a fallback, undefined local vol fails; with one, it is counted
     const Date today(2, January, 2024);
@@ -1319,9 +1249,10 @@ BOOST_AUTO_TEST_CASE(testFxSettlementForeignCurve) {
     BOOST_CHECK_CLOSE(processForward(0.0), m.spot->value(), 1.0e-12);
     for (const Date& d : {Date(4, January, 2024), Date(12, April, 2024), Date(13, April, 2024),
                           Date(15, April, 2024), m.expiry3M, Date(2, January, 2025)}) {
-        const Time t = m.process->time(d);  // in calendar time, as the process
+        const Time t = m.process->time(d);  // in trading time, as the process
+        const Time day = m.process->time(d + 1) - t;
         for (Real hours : {0.0, 9.0, 23.0}) {
-            const Time th = t + hours / 24.0 / 365.0;  // within the day
+            const Time th = t + hours / 24.0 * day;  // within the day
             BOOST_CHECK_CLOSE(processForward(th), m.surface->fwd(d), 1.0e-12);
         }
         BOOST_CHECK_CLOSE(processForward(t), m.surface->fwd(d), 1.0e-12);
@@ -1341,54 +1272,61 @@ BOOST_AUTO_TEST_CASE(testFxSettlementForeignCurve) {
 }
 
 BOOST_AUTO_TEST_CASE(testFxLocalVolSurfaceOverWeekends) {
-    BOOST_TEST_MESSAGE("Testing Dupire local vol where trading time slows over weekends...");
+    BOOST_TEST_MESSAGE("Testing Dupire local vol in trading time over weekends...");
 
     FxMarket m;
     FxLocalVolSurface lv(m.process->blackVolatility(), m.process->riskFreeRate(),
                          m.process->dividendYield(), m.process->stateVariable());
     lv.enableExtrapolation();
 
-    // defined and positive everywhere, and lower over weekends, where
-    // variance accrues at a fifth of the rate
+    // defined and positive four times a day for three months, and at the
+    // money about the same over weekends, where variance accrues at a fifth
+    // of the rate, as on business days
     Size weekend = 0, weekday = 0;
-    Real weekendMax = 0.0, weekdayMin = QL_MAX_REAL;
+    Real weekendMin = QL_MAX_REAL, weekdayMin = QL_MAX_REAL;
     for (Real strike : {1.03, 1.06, 1.085, 1.11, 1.14}) {
-        for (Size i = 1; i < 365; ++i) {
-            const Time t = (i + 0.5) / 4.0 / 365.0;
-            const Date d = m.today + Integer(std::floor(t * 365.0));
-            Volatility vol = Null<Volatility>();
-            BOOST_REQUIRE_NO_THROW(vol = lv.localVol(t, strike, true));
-            BOOST_CHECK(vol > 0.0);
-            if (d.weekday() == Saturday || d.weekday() == Sunday) {
-                if (strike == 1.085)
-                    weekendMax = std::max(weekendMax, vol);
-                ++weekend;
-            } else {
-                if (strike == 1.085)
-                    weekdayMin = std::min(weekdayMin, vol);
-                ++weekday;
+        for (Size i = 0; i < 90; ++i) {
+            const Date d = m.today + Integer(i);
+            const Time t0 = m.process->time(d), t1 = m.process->time(d + 1);
+            for (Real fraction : {0.125, 0.375, 0.625, 0.875}) {
+                Volatility vol = Null<Volatility>();
+                BOOST_REQUIRE_NO_THROW(vol = lv.localVol(t0 + fraction * (t1 - t0), strike, true));
+                BOOST_CHECK(vol > 0.0);
+                if (d.weekday() == Saturday || d.weekday() == Sunday) {
+                    if (strike == 1.085)
+                        weekendMin = std::min(weekendMin, vol);
+                    ++weekend;
+                } else {
+                    if (strike == 1.085)
+                        weekdayMin = std::min(weekdayMin, vol);
+                    ++weekday;
+                }
             }
         }
     }
     BOOST_CHECK(weekend > 0 && weekday > 0);
-    BOOST_CHECK_LT(weekendMax, weekdayMin);
+    // in calendar time, weekend local vol would be about sqrt(0.2) of that
+    // of business days; here the lowest is within 5% of theirs
+    BOOST_CHECK_GT(weekendMin, 0.95 * weekdayMin);
 
     // QuantLib's Dupire on the same inputs agrees
     LocalVolSurface upstream(m.process->blackVolatility(), m.process->riskFreeRate(),
                              m.process->dividendYield(), m.process->stateVariable());
     upstream.enableExtrapolation();
     for (Real strike : {1.06, 1.085, 1.11}) {
-        const Time t = m.process->time(Date(14, February, 2024)) + 0.3 / 365.0;
+        const Time t = m.process->time(Date(14, February, 2024)) + 0.3 / 365.0;  // that day
         BOOST_CHECK_CLOSE(lv.localVol(t, strike, true), upstream.localVol(t, strike, true), 1.0e-10);
     }
 
-    // a floor, where given, applies over weekends too, where local vol is
-    // about 0.042 at the money
+    // a floor, where given, applies over weekends too
+    const Time saturday = 0.5 * (m.process->time(Date(3, February, 2024)) +
+                                 m.process->time(Date(4, February, 2024)));
+    const Volatility floor = 1.5 * lv.localVol(saturday, 1.085, true);
     FxLocalVolSurface floored(m.process->blackVolatility(), m.process->riskFreeRate(),
-                              m.process->dividendYield(), m.process->stateVariable(), 1.0e-7, 0.05);
+                              m.process->dividendYield(), m.process->stateVariable(), 1.0e-7,
+                              floor);
     floored.enableExtrapolation();
-    const Time saturday = m.process->time(Date(3, February, 2024)) + 0.5 / 365.0;
-    BOOST_CHECK_EQUAL(floored.localVol(saturday, 1.085, true), 0.05);
+    BOOST_CHECK_EQUAL(floored.localVol(saturday, 1.085, true), floor);
 }
 
 BOOST_AUTO_TEST_CASE(testFxLocalVolSurfaceArbitrage) {
@@ -1973,10 +1911,6 @@ BOOST_AUTO_TEST_CASE(testFxPairMarketTradingTimePreservesPrices) {
     FxMarket m(0.2);
     const FxPairMarket market =
         m.pairMarket().withEvents({{Date(31, January, 2024), 0.8, 1.5e-5}});
-    auto calendarProcess =
-        makeFxLocalVolProcess(market.spotQuote(), market.foreignCurve(), market.domesticCurve(),
-                              market.conventions().settlement(),
-                              Handle<BlackVolTermStructure>(market.calendarTimeVolSurface()));
     const auto tradingProcess = market.blackProcess();
     const auto localVolProcess = market.localVolProcess();
 
@@ -1987,9 +1921,15 @@ BOOST_AUTO_TEST_CASE(testFxPairMarketTradingTimePreservesPrices) {
             VanillaOption option(
                 ext::make_shared<PlainVanillaPayoff>(Option::Call, moneyness * fwd),
                 ext::make_shared<EuropeanExercise>(expiry));
-            // a change of clock leaves Black prices unchanged...
-            option.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(calendarProcess));
-            const Real calendarPrice = option.NPV();
+            // a change of clock leaves Black prices unchanged: those at the
+            // quote-convention vols, per year of calendar time...
+            // (on the settlement forward, discounted from the expiry, as
+            // the engine does)
+            const Real calendarPrice = blackFormula(
+                Option::Call, moneyness * fwd, fwd,
+                market.marketVol(expiry, moneyness * fwd) *
+                    std::sqrt(Actual365Fixed().yearFraction(market.asOf(), expiry)),
+                market.domesticCurve()->discount(expiry));
             option.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(tradingProcess));
             BOOST_CHECK_CLOSE(option.NPV(), calendarPrice, 1.0e-8);
             // ...and local vol in trading time reprices them
@@ -2004,16 +1944,13 @@ BOOST_AUTO_TEST_CASE(testFxPairMarketTradingTimePreservesPrices) {
         }
     }
 
-    // local vol in trading time does not drop over a weekend, as in calendar time
+    // local vol in trading time does not drop over a weekend, as it would
+    // in calendar time
     const Real s = market.spot();
     const Date friday(5, January, 2024), sunday(7, January, 2024);
-    const Real calendarRatio =
-        calendarProcess->localVolatility()->localVol(sunday, s, true) /
-        calendarProcess->localVolatility()->localVol(friday, s, true);
     const auto& tradingLocalVol = localVolProcess->localVolatility();
     const Real tradingRatio =
         tradingLocalVol->localVol(sunday, s, true) / tradingLocalVol->localVol(friday, s, true);
-    BOOST_CHECK_LT(calendarRatio, 0.6);
     BOOST_CHECK_SMALL(tradingRatio - 1.0, 0.2);
 }
 
@@ -2621,11 +2558,9 @@ BOOST_AUTO_TEST_CASE(testFxVolSurfaceTimeAxes) {
     const FxPairMarket market = mkt.pairMarket();
     const auto& surface = market.volSurface();
     const FxVarianceSurface& fx = *market.volSurface();
-    const auto calendar = market.calendarTimeVolSurface();
 
-    // the surface's axis is trading time, the view's calendar time
+    // the surface's axis is trading time
     BOOST_CHECK_EQUAL(surface->dayCounter().name(), "Trading time");
-    BOOST_CHECK_EQUAL(calendar->dayCounter().name(), Actual365Fixed().name());
 
     const Actual365Fixed dc;
     for (const Date& d : {Date(9, January, 2024), Date(13, January, 2024), mkt.expiry3M,
@@ -2635,14 +2570,11 @@ BOOST_AUTO_TEST_CASE(testFxVolSurfaceTimeAxes) {
         const Time tau = surface->timeFromReference(d);
         for (Real m : {0.95, 1.0, 1.05}) {
             const Real K = m * fwd;
-            // total variance at a date is the same on both axes...
-            BOOST_CHECK_CLOSE(calendar->blackVariance(d, K), surface->blackVariance(d, K),
-                              1.0e-10);
-            // ...the vols differ by the clocks: blackVol is per year of
-            // trading time, marketVol per year of calendar time, as quoted
+            // total variance at a date is the same on both axes, the vols
+            // differ by the clocks: blackVol is per year of trading time,
+            // marketVol per year of calendar time, as quoted
             BOOST_CHECK_CLOSE(fx.marketVol(d, K) * std::sqrt(t),
                               surface->blackVol(d, K) * std::sqrt(tau), 1.0e-10);
-            BOOST_CHECK_CLOSE(calendar->blackVol(d, K), fx.marketVol(d, K), 1.0e-10);
         }
     }
 
@@ -2666,9 +2598,6 @@ BOOST_AUTO_TEST_CASE(testFxVolSurfaceTimeAxes) {
     BOOST_CHECK_NO_THROW(makeFxLocalVolProcess(
         market.spotQuote(), market.tradingTimeForeignCurve(), market.tradingTimeDomesticCurve(),
         settlement, Handle<BlackVolTermStructure>(surface)));
-    BOOST_CHECK_NO_THROW(makeFxLocalVolProcess(market.spotQuote(), market.foreignCurve(),
-                                               market.domesticCurve(), settlement,
-                                               Handle<BlackVolTermStructure>(calendar)));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -116,10 +116,6 @@ namespace QuantLib {
         const ext::shared_ptr<FxVarianceSurface>& volSurface() const;
         //! The implied vol of an expiry and strike, per year of calendar time, as quoted.
         Volatility marketVol(const Date& expiry, Real strike) const;
-        //! The surface on the calendar-time axis, for models calibrated in calendar time
-        /*! \todo Remove once stochastic local vol runs in trading time.
-        */
-        ext::shared_ptr<BlackVolTermStructure> calendarTimeVolSurface() const;
         //! A smile section of the market's model at an expiry, with smile-strangle quotes.
         ext::shared_ptr<FxSmileSection> smileSection(const Date& expiry,
                                                      const FxExpiryQuotes& quotes) const;
