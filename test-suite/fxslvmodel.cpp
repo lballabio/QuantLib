@@ -34,6 +34,7 @@
 #include <ql/experimental/fxslv/fxcalendartimevolsurface.hpp>
 #include <ql/experimental/fxslv/conventions/fxsettlementconvention.hpp>
 #include <ql/experimental/fxslv/conventions/fxtenorexpiry.hpp>
+#include <ql/experimental/fxslv/fxpairmarket.hpp>
 #include <ql/experimental/fxslv/fxslvpricingcontext.hpp>
 #include <ql/experimental/fxslv/slvleveragecalibrator.hpp>
 #include <ql/experimental/fxslv/stochvolcalibrator.hpp>
@@ -41,6 +42,8 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/optimization/endcriteria.hpp>
 #include <ql/models/calibrationhelper.hpp>
+#include <ql/exercise.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
@@ -266,7 +269,6 @@ namespace {
             p.tMaxStepsPerYear  = 52;
             p.tMinStepsPerYear  = 12;
             p.tStepNumberDecay  = 2.0;
-            p.nRannacherTimeSteps = 2;
             return p;
         }
 
@@ -626,6 +628,82 @@ BOOST_AUTO_TEST_CASE(testMixingFactorRepricesLocalVol) {
                 << moneyness << " and mixing factor " << mixingFactor << ": SLV=" << slvPrice
                 << " LV=" << lvPrice << " relDiff=" << relDiff * 100.0 << "%");
         }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSlvInTradingTimeRepricesVanillas) {
+    BOOST_TEST_MESSAGE("Testing that SLV calibrated in trading time reprices vanillas...");
+
+    // an 11-pillar EUR/USD market; SLV calibrated on its trading-time clock,
+    // its surface and curves, Heston included
+    const Date today(2, January, 2024);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+    const Handle<YieldTermStructure> usd(ext::make_shared<FlatForward>(today, 0.0525, dc));
+    const Handle<YieldTermStructure> eur(ext::make_shared<FlatForward>(today, 0.0400, dc));
+    const FxSettleConvention settlement(WeekendsOnly(), 2);
+    const FxPairConventions conventions("EUR", "USD", settlement, FxExpiryCut(10),
+                                        DeltaVolQuote::Fwd, DeltaVolQuote::AtmFwd,
+                                        FxRrBfQuotes::SmileStrangle);
+    const FxVolQuotes quotes(
+        {1 * Days, 1 * Weeks, 2 * Weeks, 1 * Months, 2 * Months, 3 * Months, 6 * Months,
+         9 * Months, 1 * Years, 18 * Months, 2 * Years},
+        {0.25, 0.10},
+        {0.0620, 0.0680, 0.0720, 0.0780, 0.0810, 0.0850, 0.0900, 0.0920, 0.0950, 0.0970, 0.1000},
+        {{-0.0020, -0.0040}, {-0.0030, -0.0060}, {-0.0050, -0.0100}, {-0.0120, -0.0250},
+         {-0.0130, -0.0265}, {-0.0140, -0.0280}, {-0.0160, -0.0310}, {-0.0170, -0.0330},
+         {-0.0180, -0.0350}, {-0.0190, -0.0370}, {-0.0200, -0.0390}},
+        {{0.0002, 0.0005}, {0.0003, 0.0007}, {0.0004, 0.0010}, {0.0040, 0.0090},
+         {0.0042, 0.0092}, {0.0045, 0.0095}, {0.0050, 0.0105}, {0.0052, 0.0110},
+         {0.0055, 0.0115}, {0.0058, 0.0120}, {0.0060, 0.0125}});
+    const FxPairMarket market(today, conventions, 1.0850, eur, usd, quotes);
+    const auto localVolProcess = market.localVolProcess();
+
+    std::vector<StochVolCalibrator::Pillar> pillars;
+    for (const Period& tenor : {1 * Months, 3 * Months, 6 * Months, 1 * Years, 2 * Years}) {
+        const Real fwd = market.forward(fxExpiryDate(today, tenor, settlement));
+        for (Real m : {0.95, 1.00, 1.05})
+            pillars.push_back({tenor, m * fwd});
+    }
+    // vol of vol held at 0.15: higher ones are not reliably calibrated yet
+    HestonParams hp;
+    hp.v0 = 0.078 * 0.078;
+    hp.kappa = 1.50;
+    hp.theta = 0.100 * 0.100;
+    hp.sigma = 0.15;
+    hp.rho = -0.25;
+    HestonCalibrator hestonCal(hp, EndCriteria(1000, 500, 1.0e-8, 1.0e-8, 1.0e-8),
+                               BlackCalibrationHelper::ImpliedVolError,
+                               {false, false, true, false, false});
+    auto fdmParams = HestonSLVLeverageCalibrator::defaultParams();
+    fdmParams.xGrid = 101;  // the variance grid matters more, see defaultParams()
+    // the time steps matter, and not monotonically: with these, the error
+    // is 0.3% to 0.4%, with the defaults (25 steps a year, decay 3) 1.5% at
+    // 105%, with daily steps throughout under 0.1% (but 30 times slower)
+    fdmParams.tMinStepsPerYear = 12;
+    fdmParams.tStepNumberDecay = 2.0;
+    HestonSLVLeverageCalibrator leverageCal(fdmParams);
+
+    FxSLVPricingContext context(market.spotQuote(), localVolProcess->riskFreeRate(),
+                                localVolProcess->dividendYield(),
+                                Handle<BlackVolTermStructure>(market.volSurface()),
+                                localVolProcess->localVolatility(), settlement);
+    context.calibrate(hestonCal, leverageCal, pillars, market.pillars().back());
+
+    // a 4M expiry, between the pillars: SLV reprices the market's vanillas
+    // (to 0.26%, 0.28% and 0.40% here, the same on a 201 x 201 grid; in
+    // calendar time the same calibration misses by 1.4%, 5.7% and 18%, and
+    // more as its grid is refined)
+    const Date expiry = fxExpiryDate(today, 4 * Months, settlement);
+    const Real fwd = market.forward(expiry);
+    for (Real m : {0.95, 1.00, 1.05}) {
+        VanillaOption option(ext::make_shared<PlainVanillaPayoff>(Option::Call, m * fwd),
+                             ext::make_shared<EuropeanExercise>(expiry));
+        option.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(market.blackProcess()));
+        const Real black = option.NPV();
+        option.setPricingEngine(context.vanillaEngine(FdmGridConfig{100, 100, 50, 0}));
+        BOOST_TEST_INFO("strike " << m << " F");
+        BOOST_CHECK_CLOSE(option.NPV(), black, 0.6);
     }
 }
 
