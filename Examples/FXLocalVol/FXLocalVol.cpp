@@ -194,6 +194,8 @@ int main(int, char*[]) {
         std::vector<Real> deltas = { 0.25, 0.10 };
 
         FxVolQuotes quotes;
+        quotes.tenors = tenors;
+        quotes.deltas = deltas;
         for (const auto& v : mkt) {
             quotes.atms.push_back(v.atm);
             quotes.riskReversals.push_back({v.rr25, v.rr10});
@@ -207,12 +209,15 @@ int main(int, char*[]) {
         //     application, a market bundling several pairs would build it,
         //     with curves bootstrapped consistently (see bootstrapFxCurve()).
         // ──────────────────────────────────────────────────────────────────────
-        const FxPairConventions conventions("EUR", "USD", settlement, FxExpiryCut(10), tenors,
-                                            deltas, deltaType, atmType, flyType);
+        const FxPairConventions conventions("EUR", "USD", settlement, FxExpiryCut(10), deltaType,
+                                            atmType, flyType);
         const FxPairMarket market(today, conventions, spotRate, eurTs, usdTs, quotes, {},
                                   FxVolSurfaceConfig(FxSmileModel::Sabr, FxVolInterpolation::Ncp,
                                                      weekendWeight));
-        const ext::shared_ptr<BlackVolTermStructure> fxVolSurface = market.volSurface();
+        // the surface's time axis is trading time; the SLV of part B, still
+        // calibrated in calendar time, uses it seen in calendar time
+        const ext::shared_ptr<BlackVolTermStructure> calendarVolSurface =
+            market.calendarTimeVolSurface();
         const std::vector<Date>& pillars = market.pillars();
         const Handle<Quote> spot = market.spotQuote();
 
@@ -231,9 +236,10 @@ int main(int, char*[]) {
         // ──────────────────────────────────────────────────────────────────────
         const Volatility localVolFallback = 0.01;
         auto process = market.localVolProcess(localVolFallback);
-        auto calendarProcess = makeFxLocalVolProcess(spot, eurTs, usdTs, settlement,
-                                                     Handle<BlackVolTermStructure>(fxVolSurface),
-                                                     localVolFallback);
+        auto calendarProcess =
+            makeFxLocalVolProcess(spot, eurTs, usdTs, settlement,
+                                  Handle<BlackVolTermStructure>(calendarVolSurface),
+                                  localVolFallback);
         // the foreign curve consistent with the process's forward
         const Handle<YieldTermStructure> eurFwdTs = calendarProcess->dividendYield();
 
@@ -250,7 +256,7 @@ int main(int, char*[]) {
         auto payoff   = ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
         auto exercise = ext::make_shared<EuropeanExercise>(expiryDate);
         auto option   = ext::make_shared<VanillaOption>(payoff, exercise);
-        Real iv = fxVolSurface->blackVol(T, strike);
+        Real iv = market.marketVol(expiryDate, strike);
 
         // ──────────────────────────────────────────────────────────────────────
         //  Print market data summary
@@ -479,7 +485,7 @@ int main(int, char*[]) {
 
         // Build the SLV pricing context — this object owns all calibrated state
         // and is the factory for pricing engines.
-        Handle<BlackVolTermStructure> volHandle(fxVolSurface);
+        Handle<BlackVolTermStructure> volHandle(calendarVolSurface);
         // the SLV engine's own spot, moved below for its delta: the
         // calibrated leverage function and Heston model stay as they are
         auto slvSpotQuote = ext::make_shared<SimpleQuote>(spotRate);

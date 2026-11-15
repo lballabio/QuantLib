@@ -117,8 +117,8 @@ namespace QuantLib {
     };
 
     //! Day-on-day P&L explain of an FX vanilla option from today's market to the next
-    /*! The two markets are of the same pair, with the same vol tenors and
-        deltas; their surfaces, and those of the intermediate states, are
+    /*! The two markets are of the same pair, quoting the same vol tenors
+        and deltas; their surfaces, and those of the intermediate states, are
         built with today's market's choices (FxPairMarket::config()).
     */
     FxPnlExplainResult

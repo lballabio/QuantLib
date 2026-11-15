@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/experimental/fxslv/conventions/fxtenorexpiry.hpp>
 #include <ql/experimental/fxslv/fxvariancesurface.hpp>
 #include <ql/experimental/fxslv/fxvolsurfacebuilder.hpp>
 #include <ql/experimental/fxslv/smilesections/fxsmilesectionbydelta.hpp>
@@ -26,6 +27,22 @@
 
 namespace QuantLib {
 
+    void checkFxVolQuotes(const FxVolQuotes& quotes, const std::string& pair) {
+        const Size nt = quotes.tenors.size(), nd = quotes.deltas.size();
+        QL_REQUIRE(nt > 0, pair << ": no vol tenors quoted");
+        QL_REQUIRE(nd > 0, pair << ": no risk-reversal deltas quoted");
+        for (Real d : quotes.deltas)
+            QL_REQUIRE(d > 0.0 && d < 0.5, pair << ": delta " << d << " not in (0, 0.5)");
+        QL_REQUIRE(quotes.atms.size() == nt && quotes.riskReversals.size() == nt &&
+                       quotes.butterflies.size() == nt,
+                   pair << ": quotes needed for each of the " << nt << " vol tenors");
+        for (Size i = 0; i < nt; ++i)
+            QL_REQUIRE(quotes.riskReversals[i].size() == nd && quotes.butterflies[i].size() == nd,
+                       pair << ": tenor " << quotes.tenors[i]
+                            << " needs a risk reversal and a butterfly for each of the " << nd
+                            << " deltas");
+    }
+
     namespace {
 
         std::vector<Handle<Quote>> quoteHandles(const std::vector<Volatility>& values) {
@@ -34,21 +51,6 @@ namespace QuantLib {
             for (Volatility v : values)
                 handles.push_back(makeQuoteHandle(v));
             return handles;
-        }
-
-        void checkQuotes(const FxPairConventions& conventions, const FxVolQuotes& quotes) {
-            const Size nt = conventions.volTenors().size(), nd = conventions.deltas().size();
-            QL_REQUIRE(quotes.atms.size() == nt && quotes.riskReversals.size() == nt &&
-                           quotes.butterflies.size() == nt,
-                       conventions.name() << ": quotes needed for each of the " << nt
-                                          << " vol tenors");
-            for (Size i = 0; i < nt; ++i)
-                QL_REQUIRE(quotes.riskReversals[i].size() == nd &&
-                               quotes.butterflies[i].size() == nd,
-                           conventions.name()
-                               << ": tenor " << conventions.volTenors()[i]
-                               << " needs a risk reversal and a butterfly for each of the " << nd
-                               << " deltas");
         }
 
         template <class Section, template <class> class Surface>
@@ -61,7 +63,8 @@ namespace QuantLib {
               const Handle<YieldTermStructure>& domesticCurve,
               const std::vector<FxVolEvent>& events,
               Real holidayWeight) {
-            const std::vector<Date> pillars = conventions.volPillars(asOf);
+            const std::vector<Date> pillars =
+                fxExpiryDates(asOf, quotes.tenors, conventions.settlement());
             std::vector<std::vector<Handle<Quote>>> rrs, bfs;
             for (Size i = 0; i < pillars.size(); ++i) {
                 rrs.push_back(quoteHandles(quotes.riskReversals[i]));
@@ -71,7 +74,7 @@ namespace QuantLib {
             RelinkableHandle<TradingTimeTermStructure> clock(
                 ext::make_shared<TradingTimeTermStructure>(asOf, calendar, holidayWeight));
             auto surface = ext::make_shared<Surface<Section>>(
-                asOf, spot, pillars, quoteHandles(quotes.atms), rrs, bfs, conventions.deltas(),
+                asOf, spot, pillars, quoteHandles(quotes.atms), rrs, bfs, quotes.deltas,
                 foreignCurve, domesticCurve, clock, conventions.deltaType(), conventions.atmType(),
                 conventions.flyType(), conventions.settlement(), conventions.cut(), calendar,
                 Following, true);
@@ -146,7 +149,7 @@ namespace QuantLib {
                      const Handle<YieldTermStructure>& domesticCurve,
                      const std::vector<FxVolEvent>& events,
                      const FxVolSurfaceConfig& config) {
-        checkQuotes(conventions, quotes);
+        checkFxVolQuotes(quotes, conventions.name());
         switch (config.interpolation) {
           case FxVolInterpolation::Ncp:
             return buildWithModel<fxVarianceSurfaceNCP>(config.model, asOf, conventions, spot,
@@ -165,6 +168,7 @@ namespace QuantLib {
                        const FxPairConventions& conventions,
                        const Date& expiry,
                        const Handle<Quote>& spot,
+                       const std::vector<Real>& deltas,
                        Volatility atm,
                        const std::vector<Volatility>& riskReversals,
                        const std::vector<Volatility>& butterflies,
@@ -173,7 +177,7 @@ namespace QuantLib {
                        FxSmileModel model) {
         const auto quotes = ext::make_shared<FxRrBfQuotes>(
             makeQuoteHandle(atm), quoteHandles(riskReversals), quoteHandles(butterflies),
-            conventions.deltas(), conventions.flyType());
+            deltas, conventions.flyType());
         switch (model) {
           case FxSmileModel::Sabr:
             return section<FxSabrSmileSection>(asOf, conventions, expiry, spot, quotes,

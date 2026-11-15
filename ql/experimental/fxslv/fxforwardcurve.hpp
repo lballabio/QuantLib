@@ -49,9 +49,10 @@ namespace QuantLib {
         spot date it is flat, as no overnight or tom-next points are given.
 
         \param asOf               the as-of date, which must be the evaluation date.
-        \param conventions        the pair's conventions, with its forward tenors.
+        \param conventions        the pair's conventions.
         \param spot               the pair's spot rate.
-        \param forwardPoints      the forward points of each forward tenor.
+        \param tenors             the tenors of the forward points, increasing.
+        \param forwardPoints      the forward points of each tenor.
         \param collateralCurrency one of the pair's currencies.
         \param collateralCurve    the curve of the collateral currency.
         \return the curve of the pair's other currency, collateralised in
@@ -61,6 +62,7 @@ namespace QuantLib {
     bootstrapFxCurve(const Date& asOf,
                      const FxPairConventions& conventions,
                      Real spot,
+                     const std::vector<Period>& tenors,
                      const std::vector<Real>& forwardPoints,
                      const std::string& collateralCurrency,
                      const Handle<YieldTermStructure>& collateralCurve);

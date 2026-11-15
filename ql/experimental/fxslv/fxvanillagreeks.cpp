@@ -199,7 +199,7 @@ namespace QuantLib {
             for (Size si = 0; si < strikes.size(); ++si)
                 (*lvMatrix)[si][ti] = lv->localVol(times[ti], strikes[si], true);
         auto result = ext::make_shared<FixedLocalVolSurface>(
-            market.tradingTimeVolSurface()->referenceDate(), times, strikes, lvMatrix,
+            market.asOf(), times, strikes, lvMatrix,
             market.tradingTimeDayCounter());
         result->enableExtrapolation();
         return result;
@@ -309,7 +309,7 @@ namespace QuantLib {
             QL_REQUIRE(payoff, "non-striked payoff given");
             auto atTheVolOf = [&](const FxPairMarket& m, Real spot) {
                 const Volatility vol =
-                    m.tradingTimeVolSurface()->blackVol(expiry, payoff->strike(), true);
+                    m.volSurface()->blackVol(expiry, payoff->strike(), true);
                 const auto black = m.blackProcess();
                 return ext::make_shared<GeneralizedBlackScholesProcess>(
                     makeQuoteHandle(spot), black->dividendYield(), black->riskFreeRate(),
@@ -397,7 +397,7 @@ namespace QuantLib {
                 (*lvMatrix)[si][ti] = localVol_->localVol(times[ti], strikes[si], true);
 
         return ext::make_shared<FixedLocalVolSurface>(
-            market_.tradingTimeVolSurface()->referenceDate(), times, strikes, lvMatrix,
+            market_.asOf(), times, strikes, lvMatrix,
             market_.tradingTimeDayCounter());
     }
 

@@ -28,7 +28,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/experimental/fxslv/conventions/fxexpirycut.hpp>
 #include <ql/experimental/fxslv/fxsettlementforeigncurve.hpp>
-#include <ql/experimental/fxslv/fxtradingtimevariancesurface.hpp>
+#include <ql/experimental/fxslv/tradingtime/tradingtimedaycounter.hpp>
 #include <ql/experimental/fxslv/tradingtime/tradingtimetermstructure.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -47,15 +47,23 @@ namespace QuantLib {
         need not depend on the smile model it is built with, which is
         chosen at run time (see makeFxVolSurface()).
     */
-    class FxVolSurface : public FxTradingTimeVariance {
+    class FxVolSurface {
       public:
+        virtual ~FxVolSurface() = default;
+        //! The implied vol of an expiry and strike in the market's convention
+        /*! Per year of calendar time (Actual/365 Fixed), as vols are
+            quoted, unlike blackVol(), which is per year of trading time.
+        */
+        virtual Volatility marketVol(const Date& expiry, Real strike) const = 0;
+        //! The trading-time clock: the surface's time axis.
+        virtual const Handle<TradingTimeTermStructure>& tradingTimeStructure() const = 0;
         //! The pillar expiries.
         virtual const std::vector<Date>& pillarDates() const = 0;
         //! The calibrated smile section at a pillar.
         virtual ext::shared_ptr<FxSmileSection> pillarSmileSection(Size pillar) const = 0;
         //! The ATM total variance of an expiry.
         virtual Real atmVar(Date expiry) const = 0;
-        //! The ATM vol of an expiry.
+        //! The ATM vol of an expiry, in the market's convention (see marketVol()).
         virtual Real atmVol(Date expiry) const = 0;
         //! The settlement forward of an expiry.
         virtual Real fwd(const Date& expiry) const = 0;
@@ -82,6 +90,13 @@ namespace QuantLib {
          * The quotes refer to options expiring at the given cut, and the events of the trading
          * time must be placed for it, as makeFxEventTradingTime() does when given the same cut:
          * an option expiring on an event's date then sees the event only if it precedes the cut.
+         *
+         * The surface's time axis is trading time: its day counter is a TradingTimeDayCounter on
+         * its clock, so that blackVariance(t, K) takes a trading time and Dupire local vol on it
+         * is smooth over weekends and events.  Total variance at a date is the same whatever
+         * the axis; blackVol() is per year of trading time, marketVol() per year of calendar
+         * time, as quoted.  Processes on the surface need curves on the same axis
+         * (TradingTimeYieldTermStructure); FxCalendarTimeVolSurface gives the calendar axis.
          */
 
     static_assert(std::is_base_of_v<FxSmileSection, T>,
@@ -125,7 +140,7 @@ namespace QuantLib {
             delivery date of the expiry, as in the smile sections.
         */
         Real fwd(const Date& expiry) const override;
-        //! Forward for an option expiring at a time from the reference date.
+        //! Forward for an option expiring at a trading time from the reference date.
         /*! It is the forward of the expiry day containing the time, since
             every option expiring that day delivers on the same date; it
             steps at midnight.  An FxSettlementForeignCurve gives a
@@ -148,13 +163,10 @@ namespace QuantLib {
         //! The cut the quotes, pillars and trading-time events refer to.
         const FxExpiryCut& expiryCut() const override { return cut_; }
 
-        //! \name FxTradingTimeVariance interface
-        //@{
-        Real blackVarianceInTradingTime(Time tradingTime, Real strike) const override;
+        Volatility marketVol(const Date& expiry, Real strike) const override;
         const Handle<TradingTimeTermStructure>& tradingTimeStructure() const override {
             return timeTs_;
         }
-        //@}
         Handle<YieldTermStructure> domesticDiscountCurve() const { return domTs_; };
         Handle<YieldTermStructure> foreignDiscountCurve() const { return forTs_; };
 
@@ -172,7 +184,14 @@ namespace QuantLib {
         Bracket bracket(Time t) const;
         // expiry date and time of a point of the grid
         Date nodeDate(long index) const;
-        Time nodeTime(long index) const { return timeFromReference(nodeDate(index)); }
+        Time nodeTime(long index) const { return calendarTime(nodeDate(index)); }
+        // calendar time (Actual/365 Fixed) of a date from the reference date, on
+        // which the nodes, the pillars and the smile sections are placed
+        Time calendarTime(const Date& d) const {
+            return Actual365Fixed().yearFraction(referenceDate(), d);
+        }
+        // forward of the expiry day containing a calendar time
+        Real calendarFwd(Time t) const;
         Real nodeForward(Integer pillar, long index) const;
         void registerWithMarketData();
         // recomputes the pillar times, if stale
@@ -233,7 +252,8 @@ namespace QuantLib {
                                             BusinessDayConvention bdc,
                                             bool forceMonotoneVariance,
                                             Time nodeSpacing)
-    : BlackVarianceTermStructure(referenceDate, cal, bdc, Actual365Fixed()), spot_(spot),
+    : BlackVarianceTermStructure(referenceDate, cal, bdc, TradingTimeDayCounter(timeTs)),
+      spot_(spot),
       settlement_(settlement), cut_(cut),
       pillars_(pillars), forTs_(forTs), domTs_(domTs), timeTs_(timeTs), nodeSpacing_(nodeSpacing),
       maxDate_(pillars.back()) {
@@ -318,20 +338,24 @@ namespace QuantLib {
 
     template <class T>
     Real fxVarianceSurface<T>::atmVol(Date d) const {
-        return std::sqrt(atmVar(d) / timeFromReference(d));
+        return std::sqrt(atmVar(d) / calendarTime(d));
     }
 
     template <class T>
-    Real fxVarianceSurface<T>::blackVarianceImpl(Time t, Real strike) const {
-        return varianceAt(t, tradingTime(t), strike);
-    }
-
-    template <class T>
-    Real fxVarianceSurface<T>::blackVarianceInTradingTime(Time tau, Real strike) const {
-        // the calendar time finds the nodes; within an event, which takes no
-        // calendar time, the variance still grows linearly in trading time
+    Real fxVarianceSurface<T>::blackVarianceImpl(Time tau, Real strike) const {
+        // the time is a trading time; the calendar time finds the nodes, and
+        // within an event, which takes no calendar time, the variance still
+        // grows linearly in trading time
         tradingTime(0.0);  // checks the reference dates
         return varianceAt(timeTs_->calendarTime(tau), tau, strike);
+    }
+
+    template <class T>
+    Volatility fxVarianceSurface<T>::marketVol(const Date& expiry, Real strike) const {
+        const Time t = calendarTime(expiry);
+        QL_REQUIRE(t > 0.0, "expiry " << expiry << " not after the reference date "
+                                      << referenceDate());
+        return std::sqrt(blackVariance(expiry, strike, true) / t);
     }
 
     template <class T>
@@ -348,10 +372,10 @@ namespace QuantLib {
         const Bracket b = bracket(t);
         const Real fa = nodeForward(b.pa, b.index);
         const Time tauA = tradingTime(b.ta), tauB = tradingTime(b.tb);
-        if (tauB <= tauA)
-            return nodeVariance(b.pa, b.index, strike * fa / fwd(t));  // no trading time between
+        if (tauB <= tauA)  // no trading time between the nodes
+            return nodeVariance(b.pa, b.index, strike * fa / calendarFwd(t));
         const Real fb = nodeForward(b.pb, b.index + 1);
-        const Real moneyness = strike / fwd(t);
+        const Real moneyness = strike / calendarFwd(t);
         const Real wa = nodeVariance(b.pa, b.index, moneyness * fa);
         const Real wb = nodeVariance(b.pb, b.index + 1, moneyness * fb);
         const Real lambda = (tau - tauA) / (tauB - tauA);
@@ -410,6 +434,11 @@ namespace QuantLib {
     template <class T>
     Real fxVarianceSurface<T>::fwd(Time t) const {
         return fwd(detail::dayContaining(*this, t));
+    }
+
+    template <class T>
+    Real fxVarianceSurface<T>::calendarFwd(Time t) const {
+        return fwd(detail::dayContaining(referenceDate(), Actual365Fixed(), t));
     }
 
     template <class T>
@@ -483,7 +512,7 @@ namespace QuantLib {
         }
         pillarTimes_.resize(pillars_.size());
         for (Size j = 0; j < pillars_.size(); ++j)
-            pillarTimes_[j] = timeFromReference(pillars_[j]);
+            pillarTimes_[j] = calendarTime(pillars_[j]);
         tradingTimesStale_ = false;
     }
 
@@ -590,7 +619,7 @@ namespace QuantLib {
                                              this->foreignDiscountCurve(),
                                              this->domesticDiscountCurve(),
                                              ssInit.deltaType(), ssInit.atmType(),
-                                             this->dayCounter(), this->settlement(),
+                                             Actual365Fixed(), this->settlement(),
                                              this->referenceDate()));
     }
     //@}
@@ -686,7 +715,7 @@ namespace QuantLib {
                                                  this->foreignDiscountCurve(),
                                                  this->domesticDiscountCurve(),
                                                  ssInit.deltaType(), ssInit.atmType(),
-                                                 this->dayCounter(), this->settlement(),
+                                                 Actual365Fixed(), this->settlement(),
                                              this->referenceDate()));
         }
 
@@ -754,7 +783,7 @@ namespace QuantLib {
                                              this->foreignDiscountCurve(),
                                              this->domesticDiscountCurve(),
                                              ssInit.deltaType(), ssInit.atmType(),
-                                             this->dayCounter(), this->settlement(),
+                                             Actual365Fixed(), this->settlement(),
                                              this->referenceDate()));
     }
     //@}

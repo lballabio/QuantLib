@@ -29,6 +29,8 @@
 #include <ql/experimental/fxslv/smilesections/fxsmilesection.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/time/period.hpp>
+#include <string>
 #include <vector>
 
 namespace QuantLib {
@@ -57,25 +59,35 @@ namespace QuantLib {
         Real holidayWeight;
     };
 
-    //! The vol quotes of a pair, by tenor
-    /*! In the order of the conventions' vol tenors, and the risk reversals
-        and butterflies by delta in the order of the conventions' deltas;
-        the butterflies are of the conventions' fly type.
+    //! The vol quotes of a pair: ATM, risk reversals and butterflies, by tenor
+    /*! The tenors and deltas quoted are market data, given with the
+        quotes: an ATM quote for each tenor, and for each tenor a risk
+        reversal and a butterfly for each delta, in the order of the
+        deltas; the butterflies are of the pair conventions' fly type.
     */
     struct FxVolQuotes {
         FxVolQuotes() = default;
-        FxVolQuotes(std::vector<Volatility> atms,
+        FxVolQuotes(std::vector<Period> tenors,
+                    std::vector<Real> deltas,
+                    std::vector<Volatility> atms,
                     std::vector<std::vector<Volatility>> riskReversals,
                     std::vector<std::vector<Volatility>> butterflies)
-        : atms(std::move(atms)), riskReversals(std::move(riskReversals)),
-          butterflies(std::move(butterflies)) {}
+        : tenors(std::move(tenors)), deltas(std::move(deltas)), atms(std::move(atms)),
+          riskReversals(std::move(riskReversals)), butterflies(std::move(butterflies)) {}
+        //! The quoted tenors, increasing.
+        std::vector<Period> tenors;
+        //! The deltas of the risk reversals and butterflies, e.g. {0.25, 0.10}.
+        std::vector<Real> deltas;
         std::vector<Volatility> atms;
         std::vector<std::vector<Volatility>> riskReversals, butterflies;
     };
 
+    //! Checks that the quotes are complete and consistent: one of each per tenor and delta.
+    void checkFxVolQuotes(const FxVolQuotes& quotes, const std::string& pair);
+
     //! The variance surface of a pair from its quotes
-    /*! The pillars are the expiries of the conventions' vol tenors on
-        the as-of date, on the trading-time clock of the convention's
+    /*! The pillars are the expiries of the quoted tenors on the as-of
+        date, on the trading-time clock of the convention's
         calendar.  With pending events, the clock releases their variance
         on the surface's ATM pillars, i.e. the fitted smiles' ATMs, which
         need not reprice the quotes exactly.
@@ -94,14 +106,16 @@ namespace QuantLib {
                      const FxVolSurfaceConfig& config);
 
     //! A smile section of the given model at an expiry, from its quotes
-    /*! The butterflies are of the conventions' fly type.  The section's
-        reference date is the as-of date.
+    /*! The risk reversals and butterflies are by delta, in the order of
+        the deltas given; the butterflies are of the conventions' fly
+        type.  The section's reference date is the as-of date.
     */
     ext::shared_ptr<FxSmileSection>
     makeFxSmileSection(const Date& asOf,
                        const FxPairConventions& conventions,
                        const Date& expiry,
                        const Handle<Quote>& spot,
+                       const std::vector<Real>& deltas,
                        Volatility atm,
                        const std::vector<Volatility>& riskReversals,
                        const std::vector<Volatility>& butterflies,

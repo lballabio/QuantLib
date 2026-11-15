@@ -31,6 +31,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 
+#include <ql/experimental/fxslv/fxcalendartimevolsurface.hpp>
 #include <ql/experimental/fxslv/conventions/fxsettlementconvention.hpp>
 #include <ql/experimental/fxslv/conventions/fxtenorexpiry.hpp>
 #include <ql/experimental/fxslv/fxslvpricingcontext.hpp>
@@ -207,7 +208,9 @@ namespace {
                 settlement, FxExpiryCut(10),
                 calendar, Following, true);
             volSurface->enableExtrapolation();
-            volSurfaceHandle = Handle<BlackVolTermStructure>(volSurface);
+            // SLV is calibrated in calendar time: the surface seen in calendar time
+            volSurfaceHandle = Handle<BlackVolTermStructure>(
+                ext::make_shared<FxCalendarTimeVolSurface>(volSurface));
 
             // The local-vol process: the settlement forward, and a Dupire
             // local vol that is lower over weekends in trading time, and fails

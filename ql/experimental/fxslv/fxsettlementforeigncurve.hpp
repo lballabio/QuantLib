@@ -34,6 +34,8 @@ namespace QuantLib {
 
         //! The date containing the instant t away from term structure's ref date.
         Date dayContaining(const TermStructure& ts, Time t);
+        //! The date containing the instant t away from a reference date, by a day counter.
+        Date dayContaining(const Date& referenceDate, const DayCounter& dayCounter, Time t);
 
     }
 

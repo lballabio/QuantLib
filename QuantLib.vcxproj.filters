@@ -3339,7 +3339,7 @@
     <ClInclude Include="ql\experimental\fxslv\tradingtime\tradingtimedaycounter.hpp">
       <Filter>experimental\fxslv\tradingtime</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\fxslv\fxtradingtimevariancesurface.hpp">
+    <ClInclude Include="ql\experimental\fxslv\fxcalendartimevolsurface.hpp">
       <Filter>experimental\fxslv</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\fxslv\fxforwardcurve.hpp">
@@ -7525,7 +7525,7 @@
     <ClCompile Include="ql\experimental\fxslv\tradingtime\tradingtimedaycounter.cpp">
       <Filter>experimental\fxslv\tradingtime</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\fxslv\fxtradingtimevariancesurface.cpp">
+    <ClCompile Include="ql\experimental\fxslv\fxcalendartimevolsurface.cpp">
       <Filter>experimental\fxslv</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\fxslv\fxforwardcurve.cpp">

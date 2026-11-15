@@ -31,15 +31,15 @@ namespace QuantLib {
     bootstrapFxCurve(const Date& asOf,
                      const FxPairConventions& conventions,
                      Real spot,
+                     const std::vector<Period>& tenors,
                      const std::vector<Real>& forwardPoints,
                      const std::string& collateralCurrency,
                      const Handle<YieldTermStructure>& collateralCurve) {
-        const std::vector<Period>& tenors = conventions.forwardTenors();
         QL_REQUIRE(!tenors.empty(), conventions.name() << ": no forward tenors to bootstrap from");
         QL_REQUIRE(forwardPoints.size() == tenors.size(),
                    conventions.name() << ": " << forwardPoints.size()
                                       << " forward points given for " << tenors.size()
-                                      << " forward tenors");
+                                      << " tenors");
         QL_REQUIRE(collateralCurrency == conventions.foreignCurrency() ||
                        collateralCurrency == conventions.domesticCurrency(),
                    "collateral currency " << collateralCurrency << " is not a currency of "

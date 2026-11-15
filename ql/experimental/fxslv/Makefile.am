@@ -7,7 +7,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     fxeventvariance.hpp \
-    fxtradingtimevariancesurface.hpp \
+    fxcalendartimevolsurface.hpp \
     fxforwardcurve.hpp \
     fxpairmarket.hpp \
     fxvolsurfacebuilder.hpp \
@@ -22,7 +22,7 @@ this_include_HEADERS = \
 
 cpp_files = \
     fxeventvariance.cpp \
-    fxtradingtimevariancesurface.cpp \
+    fxcalendartimevolsurface.cpp \
     fxforwardcurve.cpp \
     fxpairmarket.cpp \
     fxpnlexplain.cpp \

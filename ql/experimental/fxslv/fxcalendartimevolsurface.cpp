@@ -17,36 +17,37 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/fxslv/fxtradingtimevariancesurface.hpp>
-#include <ql/experimental/fxslv/tradingtime/tradingtimedaycounter.hpp>
+#include <ql/experimental/fxslv/fxcalendartimevolsurface.hpp>
+#include <ql/experimental/fxslv/fxvariancesurface.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <utility>
 
 namespace QuantLib {
 
     namespace {
 
-        ext::shared_ptr<FxTradingTimeVariance>
-        tradingTimeVariance(const ext::shared_ptr<BlackVolTermStructure>& surface) {
+        Handle<TradingTimeTermStructure>
+        clockOf(const ext::shared_ptr<BlackVolTermStructure>& surface) {
             QL_REQUIRE(surface, "no variance surface given");
-            auto variance = ext::dynamic_pointer_cast<FxTradingTimeVariance>(surface);
-            QL_REQUIRE(variance, "the variance surface is not interpolated in trading time");
-            return variance;
+            const auto* fx = dynamic_cast<const FxVolSurface*>(surface.get());
+            QL_REQUIRE(fx, "the variance surface is not an FX variance surface");
+            return fx->tradingTimeStructure();
         }
 
     }
 
-    FxTradingTimeVarianceSurface::FxTradingTimeVarianceSurface(
+    FxCalendarTimeVolSurface::FxCalendarTimeVolSurface(
         ext::shared_ptr<BlackVolTermStructure> surface)
     : BlackVarianceTermStructure(surface ? surface->businessDayConvention() : Following,
-                                 TradingTimeDayCounter(
-                                     tradingTimeVariance(surface)->tradingTimeStructure())),
-      surface_(std::move(surface)), variance_(tradingTimeVariance(surface_)) {
+                                 Actual365Fixed()),
+      surface_(std::move(surface)), clock_(clockOf(surface_)) {
         registerWith(surface_);
         enableExtrapolation(surface_->allowsExtrapolation());
     }
 
-    Real FxTradingTimeVarianceSurface::blackVarianceImpl(Time tau, Real strike) const {
-        return variance_->blackVarianceInTradingTime(tau, strike);
+    Real FxCalendarTimeVolSurface::blackVarianceImpl(Time t, Real strike) const {
+        // the trading time of the instant, on the surface's own axis
+        return surface_->blackVariance(clock_->tradingTime(t), strike, true);
     }
 
 }
