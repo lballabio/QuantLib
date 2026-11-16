@@ -1550,6 +1550,55 @@ BOOST_AUTO_TEST_CASE(testCpiYoYRatioLinearInterpolation) {
     QL_CHECK_CLOSE(calculated, expected, 1e-8);
 }
 
+BOOST_AUTO_TEST_CASE(testZeroRateLaggedForceLinearInterpolationFraction) {
+    BOOST_TEST_MESSAGE(
+        "Testing that the lagged forceLinear zeroRate interpolates within the "
+        "lagged date's inflation period...");
+
+    Date today(12, November, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    std::vector<Date> dates;
+    std::vector<Rate> rates;
+    for (Size i = 0; i <= 24; ++i) {
+        dates.push_back(today + i*Months);
+        rates.push_back(0.010 + 0.001 * static_cast<Real>(i));
+    }
+    Handle<ZeroInflationTermStructure> curve(
+        ext::make_shared<ZeroInflationCurve>(today, dates, rates, Monthly, Actual360()));
+
+    Period lag(91, Days);
+    Date d = today + 120*Days;
+    Date lagged = d - lag;
+
+    // the monthly inflation period containing the lagged date, plus the one-day
+    // extension the forceLinear branch adds to dd.second
+    Date ddFirst(1, lagged.month(), lagged.year());
+    Date ddSecondIncl = Date::endOfMonth(Date(1, lagged.month(), lagged.year())) + 1*Days;
+    Real dp = Real(ddSecondIncl - ddFirst);
+
+    // the values the forceLinear branch interpolates between, read through the
+    // non-deprecated overload (zeroRateImpl at the same dates)
+    Real z1 = curve->zeroRate(ddFirst, true);
+    Real z2 = curve->zeroRate(ddSecondIncl, true);
+
+    // the offset must measure the lagged date's position inside its own period
+    Real fractionTrue = Real(lagged - ddFirst) / dp;
+    Real expected = z1 + (z2 - z1) * fractionTrue;
+
+    // regression: the offset was computed from the un-lagged date, leaving the
+    // fraction far outside [0,1) and extrapolating past z2
+    Real fractionCode = Real(d - ddFirst) / dp;
+    BOOST_CHECK_LE(fractionTrue, 1.0);
+    BOOST_CHECK_GT(fractionCode, 1.0);
+
+    QL_DEPRECATED_DISABLE_WARNING
+    Real calculated = curve->zeroRate(d, lag, true, true);
+    QL_DEPRECATED_ENABLE_WARNING
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-10);
+}
+
 
 BOOST_AUTO_TEST_CASE(testNotifications) {
     BOOST_TEST_MESSAGE("Testing notifications from zero-inflation cash flow...");

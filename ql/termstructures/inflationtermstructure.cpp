@@ -147,7 +147,7 @@ namespace QuantLib {
             std::pair<Date,Date> dd = inflationPeriod(d-useLag, frequency());
             dd.second = dd.second + Period(1,Days);
             Real dp = dd.second - dd.first;
-            Real dt = d - dd.first;
+            Real dt = (d - useLag) - dd.first;
             // if we are interpolating we only check the exact point
             // this prevents falling off the end at curve maturity
             InflationTermStructure::checkRange(d, extrapolate);
