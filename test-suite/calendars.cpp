@@ -3026,7 +3026,7 @@ BOOST_AUTO_TEST_CASE(testHongKong) {
         {23, January, 2004}, {26, May, 2004}, {9, February, 2005},
         {5, May, 2006}, {17, February, 2007}, {12, May, 2008},
         {4, April, 2009}, {21, May, 2010}, {3, February, 2011},
-        {10, May, 2012}, {17, May, 2013}, {31, January, 2014},
+        {23, January, 2012}, {17, May, 2013}, {31, January, 2014},
         {19, February, 2015}, {8, February, 2016}, {3, May, 2017},
         {16, February, 2018}, {5, February, 2019}, {30, April, 2020},
         {12, February, 2021}, {1, February, 2022}, {5, April, 2023},
@@ -3034,6 +3034,36 @@ BOOST_AUTO_TEST_CASE(testHongKong) {
     };
     for (const Date& date : historical)
         BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
+
+    // Buddha's birthday was on Saturday, April 28th, 2012
+    BOOST_CHECK(calendar.isBusinessDay(Date(10, May, 2012)));
+
+    // holidays moved to the next day not already a holiday
+    const Date substitutes[] = {
+        {2, October, 2012}, {13, May, 2019}, {6, April, 2021}
+    };
+    for (const Date& date : substitutes)
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
+
+    // December 27th is a holiday when Christmas falls on a weekend
+    const Date afterChristmas[] = {
+        {27, December, 2004}, {27, December, 2005}, {27, December, 2010},
+        {27, December, 2011}, {27, December, 2016}, {27, December, 2021},
+        {27, December, 2022}, {27, December, 2027}
+    };
+    for (const Date& date : afterChristmas)
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
+    BOOST_CHECK(calendar.isBusinessDay(Date(28, December, 2026))); // Christmas on Friday
+
+    const std::vector<Date> expected2027 = {
+        {1, January, 2027},  {8, February, 2027}, {9, February, 2027},
+        {26, March, 2027},   {29, March, 2027},   {5, April, 2027},
+        {13, May, 2027},     {9, June, 2027},     {1, July, 2027},
+        {16, September, 2027}, {1, October, 2027}, {8, October, 2027},
+        {27, December, 2027}
+    };
+    checkHolidays(calendar.holidayList(Date(1, January, 2027),
+                                       Date(31, December, 2027)), expected2027);
 }
 
 BOOST_AUTO_TEST_CASE(testArgentinaCalendar) {
