@@ -727,6 +727,7 @@
     <ClCompile Include="fxlocalvol.cpp" />
     <ClCompile Include="fxslvmodel.cpp" />
     <ClCompile Include="fxsmilesections.cpp" />
+    <ClCompile Include="fxtestmarkets.cpp" />
     <ClCompile Include="g2process.cpp" />
     <ClCompile Include="garch.cpp" />
     <ClCompile Include="gaussianquadratures.cpp" />
@@ -841,6 +842,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fxtestmarkets.hpp" />
     <ClInclude Include="paralleltestrunner.hpp" />
     <ClInclude Include="preconditions.hpp" />
     <ClInclude Include="quantlibglobalfixture.hpp" />

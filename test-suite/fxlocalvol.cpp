@@ -21,6 +21,7 @@
     \brief Tests for the FX local vol surface and FxVanillaBumpRisk Greek calculator.
 */
 
+#include "fxtestmarkets.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 
@@ -46,6 +47,7 @@
 #include <ql/instruments/payoffs.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <ql/instruments/makeois.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/quotes/deltavolquote.hpp>
@@ -2502,6 +2504,108 @@ BOOST_AUTO_TEST_CASE(testFxVolSurfaceTimeAxes) {
     BOOST_CHECK_NO_THROW(makeFxLocalVolProcess(
         market.spotQuote(), market.tradingTimeForeignCurve(), market.tradingTimeDomesticCurve(),
         settlement, Handle<BlackVolTermStructure>(surface)));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Markets from real quotes (fxtestmarkets.hpp)
+// ─────────────────────────────────────────────────────────────────────────────
+
+BOOST_AUTO_TEST_CASE(testFxTestMarketCurvesRepriceTheirQuotes) {
+    BOOST_TEST_MESSAGE("Testing that the real-quote test markets' curves reprice their quotes...");
+
+    for (const FxTestMarket& t : {eurusdJan2024(), usdzarMar2020()}) {
+        const FxPairMarket& m = t.market;
+        Settings::instance().evaluationDate() = m.asOf();
+        const std::string name = m.conventions().name();
+        const FxSettleConvention& settlement = m.conventions().settlement();
+        const Calendar& calendar = settlement.calendar();
+        const YieldTermStructure& foreign = **m.foreignCurve();
+        const YieldTermStructure& domestic = **m.domesticCurve();
+        BOOST_CHECK_EQUAL(foreign.referenceDate(), m.asOf());
+        BOOST_CHECK_EQUAL(domestic.referenceDate(), m.asOf());
+
+        // the outright between two dates, from the curves
+        auto outright = [&](Real start, const Date& from, const Date& to) {
+            return start * (foreign.discount(to) / foreign.discount(from)) /
+                   (domestic.discount(to) / domestic.discount(from));
+        };
+        const Date today = m.asOf(), tomorrow = calendar.advance(today, 1, Days);
+        const Date spotDate = settlement.valueDate(today);
+        const FxForwardQuotes& q = t.forwards;
+        const Real tol = 1.0e-10 * q.spot;
+        BOOST_TEST_INFO(name);
+        BOOST_CHECK_SMALL(outright(q.spot - q.tn, tomorrow, spotDate) - q.spot, tol);
+        BOOST_CHECK_SMALL(outright(q.spot - q.tn - q.on, today, tomorrow) - (q.spot - q.tn), tol);
+        BOOST_CHECK_SMALL(
+            outright(q.spot, spotDate, calendar.advance(spotDate, 1, Days)) - q.spot - q.sn, tol);
+        for (Size i = 0; i < q.tenors.size(); ++i) {
+            const Date delivery =
+                calendar.advance(spotDate, q.tenors[i], ModifiedFollowing, true);
+            BOOST_TEST_INFO(name << " " << q.tenors[i]);
+            BOOST_CHECK_SMALL(outright(q.spot, spotDate, delivery) - q.spot - q.points[i], tol);
+        }
+
+        // the USD curve reprices its OIS
+        const Handle<YieldTermStructure>& usd =
+            m.conventions().foreignCurrency() == "USD" ? m.foreignCurve() : m.domesticCurve();
+        const auto index = ext::dynamic_pointer_cast<OvernightIndex>(t.ois.index->clone(usd));
+        for (Size i = 0; i < t.ois.tenors.size(); ++i) {
+            const ext::shared_ptr<OvernightIndexedSwap> swap =
+                MakeOIS(t.ois.tenors[i], index)
+                    .withFixedRate(t.ois.rates[i])
+                    .withSettlementDays(2)
+                    .withPaymentLag(2)
+                    .withTelescopicValueDates(true)
+                    .withPaymentAdjustment(ModifiedFollowing)
+                    .withDiscountingTermStructure(usd);
+            BOOST_TEST_INFO(name << " OIS " << t.ois.tenors[i]);
+            BOOST_CHECK_SMALL(swap->fairRate() - t.ois.rates[i], 1.0e-10);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testFxTestMarketSurfacesFitTheirQuotes) {
+    BOOST_TEST_MESSAGE("Testing the real-quote test markets' vol surfaces against their quotes...");
+
+    // EUR/USD with SABR, to 7.6bp at worst (the 1M 10D risk reversal);
+    // USD/ZAR with SVI, which fits its call skew exactly, where SABR misses
+    // the 10D risk reversals by up to 51bp
+    struct Case {
+        FxTestMarket (*make)(const FxVolSurfaceConfig&);
+        FxSmileModel model;
+        Real tolerance;
+    };
+    for (const Case& c : {Case{eurusdJan2024, FxSmileModel::Sabr, 10.0e-4},
+                          Case{usdzarMar2020, FxSmileModel::Svi, 1.0e-8}}) {
+        const FxPairMarket m = c.make(FxVolSurfaceConfig(c.model)).market;
+        Settings::instance().evaluationDate() = m.asOf();
+        const FxVolQuotes& quotes = m.quotes();
+        for (Size i = 0; i < m.pillars().size(); ++i) {
+            const FxExpiryQuotes q = m.expiryQuotes(m.pillars()[i]);
+            BOOST_TEST_INFO(m.conventions().name() << " " << quotes.tenors[i]);
+            BOOST_CHECK_SMALL(q.atm - quotes.atms[i], c.tolerance);
+            for (Size j = 0; j < quotes.deltas.size(); ++j) {
+                BOOST_CHECK_SMALL(q.riskReversals[j] - quotes.riskReversals[i][j], c.tolerance);
+                BOOST_CHECK_SMALL(q.butterflies[j] - quotes.butterflies[i][j], c.tolerance);
+            }
+        }
+
+        // local vol defined everywhere within 2.5 standard deviations to 2Y
+        const auto process = m.localVolProcess();
+        const auto& localVol = process->localVolatility();
+        for (Integer day = 1; day < 730; day += 7) {
+            const Date d = m.asOf() + day;
+            const Real fwd = m.forward(d);
+            const Real stdDev = m.marketVol(d, fwd) * std::sqrt(day / 365.0);
+            for (Real z : {-2.5, -1.0, 0.0, 1.0, 2.5}) {
+                Volatility vol = Null<Volatility>();
+                BOOST_TEST_INFO(m.conventions().name() << " " << d << " z " << z);
+                BOOST_CHECK_NO_THROW(vol = localVol->localVol(process->time(d) + 1.0e-4,
+                                                              fwd * std::exp(z * stdDev), true));
+                BOOST_CHECK(vol > 0.0);
+            }
+        }
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

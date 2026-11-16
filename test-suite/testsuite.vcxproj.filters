@@ -588,12 +588,18 @@
     <ClCompile Include="fxsmilesections.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fxtestmarkets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="paralleltestrunner.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="preconditions.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fxtestmarkets.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="quantlibglobalfixture.hpp">

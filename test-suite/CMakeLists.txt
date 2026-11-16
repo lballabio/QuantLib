@@ -82,6 +82,7 @@ set(QL_TEST_SOURCES
     fxlocalvol.cpp
     fxslvmodel.cpp
     fxsmilesections.cpp
+    fxtestmarkets.cpp
     g2process.cpp
     garch.cpp
     gaussianquadratures.cpp
@@ -194,6 +195,7 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
+    fxtestmarkets.hpp
     paralleltestrunner.hpp
     preconditions.hpp
     quantlibglobalfixture.hpp

@@ -83,6 +83,7 @@ QL_TEST_SRCS = \
 	fxlocalvol.cpp \
 	fxslvmodel.cpp \
 	fxsmilesections.cpp \
+	fxtestmarkets.cpp \
 	g2process.cpp \
 	garch.cpp \
 	gaussianquadratures.cpp \
@@ -195,6 +196,7 @@ QL_TEST_SRCS = \
 
 
 QL_TEST_HDRS = \
+	fxtestmarkets.hpp \
     preconditions.hpp \
 	quantlibglobalfixture.hpp \
 	swaptionvolstructuresutilities.hpp \
