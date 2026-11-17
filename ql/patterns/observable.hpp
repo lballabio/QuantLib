@@ -35,6 +35,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/types.hpp>
 #include <set>
 #include <map>
+#include <utility>
 
 #if !defined(QL_USE_STD_SHARED_PTR) && BOOST_VERSION < 107400
 
@@ -130,7 +131,7 @@ namespace QuantLib {
 
         // observer interface
         std::pair<iterator, bool>
-        registerWith(const ext::shared_ptr<Observable>&);
+        registerWith(ext::shared_ptr<Observable>);
 
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
@@ -235,10 +236,10 @@ namespace QuantLib {
     }
 
     inline std::pair<Observer::iterator, bool>
-    Observer::registerWith(const ext::shared_ptr<Observable>& h) {
+    Observer::registerWith(ext::shared_ptr<Observable> h) {
         if (h != nullptr) {
             h->registerObserver(this);
-            return observables_.insert(h);
+            return observables_.insert(std::move(h));
         }
         return std::make_pair(observables_.end(), false);
     }
@@ -302,7 +303,7 @@ namespace QuantLib {
         virtual ~Observer();
         // observer interface
         std::pair<iterator, bool>
-        registerWith(const ext::shared_ptr<Observable>&);
+        registerWith(ext::shared_ptr<Observable>);
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
             itself.
@@ -543,7 +544,7 @@ namespace QuantLib {
     }
 
     inline std::pair<Observer::iterator, bool>
-    Observer::registerWith(const ext::shared_ptr<Observable>& h) {
+    Observer::registerWith(ext::shared_ptr<Observable> h) {
         std::lock_guard<std::recursive_mutex> lock(mutex_);
         if (!proxy_) {
             proxy_ = std::make_unique<Proxy>(this);
@@ -551,7 +552,7 @@ namespace QuantLib {
 
         if (h) {
             h->registerObserver(proxy_);
-            return observables_.insert(h);
+            return observables_.insert(std::move(h));
         }
         return std::make_pair(observables_.end(), false);
     }
