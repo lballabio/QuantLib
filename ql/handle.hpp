@@ -26,6 +26,7 @@
 #define quantlib_handle_hpp
 
 #include <ql/patterns/observable.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -75,14 +76,15 @@ namespace QuantLib {
                      destroyed before the pointed object does.
         */
         //@{
-        Handle()
-        : Handle(ext::shared_ptr<T>()) {}
+        //! Creates an empty handle. Since it cannot be relinked, it needs no Link.
+        //! All default-constructed Handles compare equal.
+        Handle() noexcept = default;
         explicit Handle(const ext::shared_ptr<T>& p,
                         bool registerAsObserver = true)
-        : link_(new Link(p, registerAsObserver)) {}
+        : link_(ext::make_shared<Link>(p, registerAsObserver)) {}
         explicit Handle(ext::shared_ptr<T>&& p,
                         bool registerAsObserver = true)
-        : link_(new Link(std::move(p), registerAsObserver)) {}
+        : link_(ext::make_shared<Link>(std::move(p), registerAsObserver)) {}
         //@}
         //! dereferencing
         const ext::shared_ptr<T>& currentLink() const;
@@ -116,14 +118,10 @@ namespace QuantLib {
     template <class T>
     class RelinkableHandle : public Handle<T> {
       public:
+        using Handle<T>::Handle;
+        //! Unlike Handle(), this must allocate a Link so it can be relinked.
         RelinkableHandle()
         : RelinkableHandle(ext::shared_ptr<T>()) {}
-        explicit RelinkableHandle(
-                       const ext::shared_ptr<T>& p,
-                       bool registerAsObserver = true);
-        explicit RelinkableHandle(
-                       ext::shared_ptr<T>&& p,
-                       bool registerAsObserver = true);
         void linkTo(const ext::shared_ptr<T>& h,
                     bool registerAsObserver = true);
         void linkTo(ext::shared_ptr<T>&& h,
@@ -134,14 +132,19 @@ namespace QuantLib {
 
     // inline definitions
 
+    // Constructors don't use linkTo() since there can be no observers to notify yet.
     template <class T>
-    inline Handle<T>::Link::Link(const ext::shared_ptr<T>& h, bool registerAsObserver) {
-        linkTo(h, registerAsObserver);
+    inline Handle<T>::Link::Link(const ext::shared_ptr<T>& h, bool registerAsObserver)
+    : h_(h), isObserver_(registerAsObserver) {
+        if (h_ && isObserver_)
+            registerWith(h_);
     }
 
     template <class T>
-    inline Handle<T>::Link::Link(ext::shared_ptr<T>&& h, bool registerAsObserver) {
-        linkTo(std::move(h), registerAsObserver);
+    inline Handle<T>::Link::Link(ext::shared_ptr<T>&& h, bool registerAsObserver)
+    : h_(std::move(h)), isObserver_(registerAsObserver) {
+        if (h_ && isObserver_)
+            registerWith(h_);
     }
 
     template <class T>
@@ -179,40 +182,32 @@ namespace QuantLib {
 
     template <class T>
     inline bool Handle<T>::empty() const {
-        return link_->empty();
+        return !link_ || link_->empty();
     }
 
     template <class T>
     inline Handle<T>::operator ext::shared_ptr<Observable>() const {
+        // Registration with a default-constructed handle is a no-op.
         return link_;
     }
-
-
-    template <class T>
-    inline RelinkableHandle<T>::RelinkableHandle(const ext::shared_ptr<T>& p,
-                                                 bool registerAsObserver)
-    : Handle<T>(p,registerAsObserver) {}
-
-    template <class T>
-    inline RelinkableHandle<T>::RelinkableHandle(ext::shared_ptr<T>&& p,
-                                                 bool registerAsObserver)
-    : Handle<T>(std::move(p), registerAsObserver) {}
 
     template <class T>
     inline void RelinkableHandle<T>::linkTo(const ext::shared_ptr<T>& h,
                                             bool registerAsObserver) {
+        QL_REQUIRE(this->link_, "attempting to link a moved-out Handle");
         this->link_->linkTo(h, registerAsObserver);
     }
 
     template <class T>
     inline void RelinkableHandle<T>::linkTo(ext::shared_ptr<T>&& h,
                                             bool registerAsObserver) {
+        QL_REQUIRE(this->link_, "attempting to link a moved-out Handle");
         this->link_->linkTo(std::move(h), registerAsObserver);
     }
 
     template <class T>
     inline void RelinkableHandle<T>::reset() {
-        this->link_->linkTo(nullptr, true);
+        linkTo(ext::shared_ptr<T>(), true);
     }
 
 }
