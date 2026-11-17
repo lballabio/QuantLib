@@ -59,6 +59,45 @@ namespace QuantLib {
         const ext::shared_ptr<Gaussian1dModel> &model_;
     };
 
+    std::pair<Rate, Rate>
+    Gaussian1dJamshidianSwaptionEngine::bracketRStar(
+        const rStarFinder& finder, Rate minStrike, Rate maxStrike) {
+        // A deep in- or out-of-the-money swaption can have its critical
+        // state outside the default [-8, 8] bracket even though the state
+        // is perfectly valid (Gaussian1dSwaptionEngine and
+        // JamshidianSwaptionEngine price it cleanly). Widen the sides
+        // independently until the root is bracketed; a side stops widening
+        // once it overflows, since fLower*fUpper >= 0.0 is false on NaN and
+        // would otherwise report a bracket that is not there.
+        Real fLower = finder(minStrike), fUpper = finder(maxStrike);
+        bool lowerStuck = false, upperStuck = false;
+        for (Size attempt = 0;
+             fLower*fUpper >= 0.0 && attempt < 20 && !(lowerStuck && upperStuck);
+             ++attempt) {
+            if (!lowerStuck) {
+                Rate candidate = minStrike*2.0;
+                Real newFLower = finder(candidate);
+                if (std::isfinite(newFLower)) {
+                    minStrike = candidate;
+                    fLower = newFLower;
+                } else {
+                    lowerStuck = true;
+                }
+            }
+            if (!upperStuck) {
+                Rate candidate = maxStrike*2.0;
+                Real newFUpper = finder(candidate);
+                if (std::isfinite(newFUpper)) {
+                    maxStrike = candidate;
+                    fUpper = newFUpper;
+                } else {
+                    upperStuck = true;
+                }
+            }
+        }
+        return {minStrike, maxStrike};
+    }
+
     void Gaussian1dJamshidianSwaptionEngine::calculate() const {
 
         QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
@@ -140,51 +179,9 @@ namespace QuantLib {
                            arguments_.fixedResetDates[startIndex],
                            payDates, amounts, startIndex);
         Brent s1d;
-        Rate minStrike = -8.0;
-        Rate maxStrike = 8.0;
-        // When the strike is more than roughly 8 standardized-state standard
-        // deviations from the money, the critical state can fall outside
-        // this fixed bracket even though the swaption is a perfectly valid,
-        // trivially deep in- or out-of-the-money state (siblings such as
-        // Gaussian1dSwaptionEngine and JamshidianSwaptionEngine, which
-        // brackets the short rate at [-10,10], price these states cleanly).
-        // Widen adaptively rather than throwing "root not bracketed".
-        // Widen each side independently and stop widening a side once it
-        // overflows to a non-finite value, rather than letting one side's
-        // overflow silently end the loop: fLower*fUpper compared against
-        // 0.0 is false whenever either operand is NaN, so without this
-        // guard a side that doesn't need much widening could still
-        // overflow (since both were doubled unconditionally), making the
-        // loop stop early believing a bracket was found when it was not --
-        // s1d.solve's own bracket check below would then throw with a
-        // NaN/Inf-laden message instead of a genuine "not bracketed"
-        // report against finite bounds.
-        Real fLower = finder(minStrike), fUpper = finder(maxStrike);
-        bool lowerStuck = false, upperStuck = false;
-        for (Size attempt = 0;
-             fLower*fUpper >= 0.0 && attempt < 20 && !(lowerStuck && upperStuck);
-             ++attempt) {
-            if (!lowerStuck) {
-                Rate candidate = minStrike*2.0;
-                Real newFLower = finder(candidate);
-                if (std::isfinite(newFLower)) {
-                    minStrike = candidate;
-                    fLower = newFLower;
-                } else {
-                    lowerStuck = true;
-                }
-            }
-            if (!upperStuck) {
-                Rate candidate = maxStrike*2.0;
-                Real newFUpper = finder(candidate);
-                if (std::isfinite(newFUpper)) {
-                    maxStrike = candidate;
-                    fUpper = newFUpper;
-                } else {
-                    upperStuck = true;
-                }
-            }
-        }
+        // widen the default bracket if the critical state falls outside it
+        const auto [minStrike, maxStrike] =
+            bracketRStar(finder, -8.0, 8.0);
         s1d.setMaxEvaluations(10000);
         s1d.setLowerBound(minStrike);
         s1d.setUpperBound(maxStrike);
