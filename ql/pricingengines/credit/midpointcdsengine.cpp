@@ -90,10 +90,7 @@ namespace QuantLib {
             // (post-Big-Bang) contracts. A coupon entirely before
             // protection starts accrues no premium and bears no default
             // risk; a coupon straddling protectionStart has its
-            // effective start clipped to it. Using i==0 unconditionally
-            // assumed protectionStart always falls in the very first
-            // coupon, which is wrong for a forward-starting contract and
-            // can push startDate past endDate.
+            // effective start clipped to it.
             if (endDate <= arguments_.protectionStart)
                 continue;
             if (startDate < arguments_.protectionStart)

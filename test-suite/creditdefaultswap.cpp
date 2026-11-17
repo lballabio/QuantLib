@@ -1082,20 +1082,14 @@ BOOST_AUTO_TEST_CASE(testForwardStartProtection) {
         "Testing MidPoint/Integral CDS engines with a forward protection "
         "start...");
 
-    // Regression test: MidPointCdsEngine and IntegralCdsEngine both
-    // special-cased "startDate = protectionStart" for the coupon at index
-    // 0 specifically ("if (i==0)"), implicitly assuming protectionStart
-    // always falls within the very first coupon's period. The constructor
-    // explicitly allows protectionStart after schedule[0] for CDS/CDS2015
-    // -rule (post-Big-Bang) contracts, and the rebate logic in
-    // CreditDefaultSwap::init() already handles this correctly with a
-    // proper search loop -- the two pricing engines did not. When
-    // protectionStart falls past coupon 0's own accrual end, coupon 0's
-    // startDate was pushed past its own endDate, corrupting the
-    // mid-point/integration for that coupon (and, since it is still
-    // included rather than skipped, effectively including a coupon for a
-    // period before protection has actually started). IsdaCdsEngine does
-    // not have this bug and serves as the reference.
+    // Regression test: verify MidPointCdsEngine and IntegralCdsEngine on
+    // a contract whose protection starts after several of the schedule's
+    // own coupons have already accrued -- a state the constructor
+    // explicitly allows for CDS/CDS2015-rule (post-Big-Bang) contracts.
+    // The expected behavior is that a coupon entirely before protection
+    // start accrues no premium and bears no default risk, and a coupon
+    // straddling protectionStart has its effective start clipped to it.
+    // IsdaCdsEngine serves as the reference implementation.
 
     Date today(6, March, 2026);
     Settings::instance().evaluationDate() = today;
