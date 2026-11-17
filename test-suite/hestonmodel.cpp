@@ -3555,11 +3555,6 @@ BOOST_AUTO_TEST_CASE(testPiecewiseTimeDependentZeroMaturity) {
     // is zero - where the PTD expansion is not defined. The value must
     // degenerate to the undiscounted payoff.
     Settings::instance().includeReferenceDateEvents() = true;
-    struct RestoreIncludeRefEvents {
-        ~RestoreIncludeRefEvents() {
-            Settings::instance().includeReferenceDateEvents() = false;
-        }
-    } restoreIncludeRefEvents;
 
     const Real strike = 90.0;
     ext::shared_ptr<StrikedTypePayoff> payoff(
