@@ -754,6 +754,55 @@ BOOST_AUTO_TEST_CASE(testInterpolatedZeroTermStructure) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testLaggedZeroRateLinearInterpolation) {
+    BOOST_TEST_MESSAGE("Testing linear interpolation on the lagged zeroRate overload...");
+
+    Date today = Date(15, January, 2020);
+    Settings::instance().evaluationDate() = today;
+
+    Date baseDate = Date(1, October, 2019);
+
+    std::vector<Date> dates = {
+        baseDate,
+        today + 6 * Months,
+        today + 1 * Years,
+        today + 2 * Years,
+        today + 5 * Years,
+        today + 10 * Years
+    };
+    std::vector<Rate> rates = { 0.02, 0.021, 0.022, 0.024, 0.026, 0.028 };
+
+    auto curve = ext::make_shared<InterpolatedZeroInflationCurve<Linear>>(
+        today, dates, rates, Monthly, Actual360());
+
+    Period observationLag = Period(91, Days);
+    Date d = today + 3 * Months;
+
+    QL_DEPRECATED_DISABLE_WARNING
+    Rate interpolated = curve->zeroRate(d, observationLag, true);
+    QL_DEPRECATED_ENABLE_WARNING
+
+    // manual within-period interpolation on the period containing the lagged date
+    std::pair<Date, Date> period = inflationPeriod(d - observationLag, curve->frequency());
+    period.second = period.second + Period(1, Days);
+    Real dp = period.second - period.first;
+    Real dt = (d - observationLag) - period.first;
+    Time t1 = curve->timeFromReference(period.first);
+    Time t2 = curve->timeFromReference(period.second);
+    Rate z1 = curve->zeroRate(t1);
+    Rate z2 = curve->zeroRate(t2);
+    Rate expected = z1 + (z2 - z1) * (dt / dp);
+
+    Real tolerance = 1e-12;
+    BOOST_CHECK_MESSAGE(std::fabs(interpolated - expected) < tolerance,
+                        "lagged zeroRate with forceLinearInterpolation does not "
+                        "interpolate within the period containing the lagged date"
+                        << "\n    date:          " << d
+                        << "\n    lag:           " << observationLag
+                        << "\n    interpolated:  " << interpolated
+                        << "\n    expected:      " << expected);
+}
+
 //===========================================================================================
 // year on year tests, index, termstructure, and swaps
 //===========================================================================================
