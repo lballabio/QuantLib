@@ -93,6 +93,8 @@ namespace QuantLib {
         if (!index_) {
             QL_FAIL("Equity index required.");
         }
+        QL_REQUIRE(index_->returnType() == EquityIndex::Price,
+                   "Quanto pricer only supports price return equity indexes.");
         baseDate_ = cashFlow.baseDate();
         fixingDate_ = cashFlow.fixingDate();
         QL_REQUIRE(fixingDate_ >= baseDate_, "Fixing date cannot fall before base date.");

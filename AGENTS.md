@@ -98,6 +98,9 @@ correctly when `Real` is a simple type:
   and `std::max<Real>({ x, x+y, z })`. The same goes for `std::min`.
 - When redefined, `Real` might not support `constexpr`. Therefore,
   prefer `constexpr double` to `constexpr Real`.
+- Lambdas returning expressions should explicitly define their return
+  type as Real using a trailing `-> Real`; this avoids returning an
+  expression template that might refer to a dead temporary or argument. 
 
 ### 3.6 Support for recent C++ standards
 

@@ -86,6 +86,7 @@ namespace QuantLib {
         z[0] = g;
 
         std::list<Real> errors(1, g/bn);
+        Size k = 0;
 
         for (Size j=0; j < maxIter_ && errors.back() >= relTol_; ++j) {
             h.emplace_back(maxIter_, 0.0);
@@ -97,11 +98,10 @@ namespace QuantLib {
             }
 
             h[j+1][j] = Norm2(w);
+            const bool breakdown = h[j+1][j] < QL_EPSILON*QL_EPSILON;
 
-            if (h[j+1][j] < QL_EPSILON*QL_EPSILON)
-                break;
-
-            v.push_back(w / h[j+1][j]);
+            if (!breakdown)
+                v.push_back(w / h[j+1][j]);
 
             for (Size i=0; i < j; ++i) {
                 const Real h0 = c[i]*h[i][j] + s[i]*h[i+1][j];
@@ -112,6 +112,7 @@ namespace QuantLib {
             }
 
             const Real nu = std::sqrt(squared(h[j][j]) + squared(h[j+1][j]));
+            QL_REQUIRE(nu != 0.0, "GMRES breakdown: singular Krylov system");
 
             c[j] = h[j][j]/nu;
             s[j] = h[j+1][j]/nu;
@@ -121,18 +122,17 @@ namespace QuantLib {
 
             z[j+1] = -s[j]*z[j];
             z[j] = c[j] * z[j];
-
             errors.push_back(std::fabs(z[j+1]/bn));
+            ++k;
+            if (breakdown)
+                break;
         }
 
-        const Size k = v.size()-1;
-
         Array y(k, 0.0);
-        y[k-1]=z[k-1]/h[k-1][k-1];
-
-        for (Integer i=k-2; i >= 0; --i) {
-            y[i] = (z[i] - std::inner_product(
-                 h[i].begin()+i+1, h[i].begin()+k, y.begin()+i+1, Real(0.0)))/h[i][i];
+        for (Size i=k; i>0; --i) {
+            const Size row = i-1;
+            y[row] = (z[row] - std::inner_product(
+                h[row].begin()+i, h[row].begin()+k, y.begin()+i, Real(0.0)))/h[row][row];
         }
 
         Array xm = std::inner_product(

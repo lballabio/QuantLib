@@ -55,7 +55,7 @@ jobs:
           echo "CMAKE_CXX_COMPILER_LAUNCHER=${{ ( (runner.os == 'Windows') && 'sccache' ) || 'ccache' }}"   >> $GITHUB_ENV
 
       - name: Setup CCache
-        uses: hendrikmuhs/ccache-action@v1.2.24
+        uses: hendrikmuhs/ccache-action@v1.2.25
         with:
           key: cmake-latest-${{ inputs.os }}-${{ inputs.cxx }}-${{ inputs.cxx-standard }}
           restore-keys: |

@@ -500,6 +500,7 @@ set(QL_SOURCES
     methods/finitedifferences/stepconditions/fdmamericanstepcondition.cpp
     methods/finitedifferences/stepconditions/fdmarithmeticaveragecondition.cpp
     methods/finitedifferences/stepconditions/fdmbermudanstepcondition.cpp
+    methods/finitedifferences/stepconditions/fdmpointhistorycondition.cpp
     methods/finitedifferences/stepconditions/fdmsimplestoragecondition.cpp
     methods/finitedifferences/stepconditions/fdmsimpleswingcondition.cpp
     methods/finitedifferences/stepconditions/fdmsnapshotcondition.cpp
@@ -1711,6 +1712,7 @@ set(QL_HEADERS
     methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp
     methods/finitedifferences/stepconditions/fdmarithmeticaveragecondition.hpp
     methods/finitedifferences/stepconditions/fdmbermudanstepcondition.hpp
+    methods/finitedifferences/stepconditions/fdmpointhistorycondition.hpp
     methods/finitedifferences/stepconditions/fdmsimplestoragecondition.hpp
     methods/finitedifferences/stepconditions/fdmsimpleswingcondition.hpp
     methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp
