@@ -345,14 +345,13 @@ BOOST_AUTO_TEST_CASE(testNelsonSiegelSvenssonKappaZeroLimit) {
     BOOST_TEST_MESSAGE(
         "Testing Nelson-Siegel and Svensson fitting at the kappa=0 limit...");
 
-    // Regression test: the (1-exp(-kappa*t))/(kappa*t) term's removable
-    // singularity at kappa=0 was guarded as (1-exp(-kappa*t))/
-    // ((kappa+eps)*(t+eps)), which evaluates to 0 at kappa=0 exactly (since
-    // the numerator is also exactly 0 there) instead of its true limit, 1 --
-    // the same species as #2599 (Vasicek A(t,T) at a->0). The correct
-    // Nelson-Siegel zero rate at kappa=0 is c0+c1 (the guarded code gives
-    // c0-c2); Svensson's second guarded term correctly reduces to 0 at
-    // kappa1=0 (the guarded code gives -c3).
+    // Regression test: the (1-exp(-kappa*t))/(kappa*t) term has a
+    // removable singularity at kappa=0, whose limit is 1. A naive
+    // evaluation of the term returns 0 there (numerator and denominator
+    // both vanish), which would make the Nelson-Siegel zero rate at
+    // kappa=0 come out as c0-c2 instead of the correct c0+c1; the same
+    // applies to Svensson's second such term, which must reduce to 0 at
+    // kappa1=0 (a naive evaluation gives -c3).
 
     Real t = 5.0;
     Real tolerance = 1e-10;
@@ -381,8 +380,8 @@ BOOST_AUTO_TEST_CASE(testNelsonSiegelSvenssonKappaZeroLimit) {
     }
     {
         SvenssonFitting method;
-        // c0, c1, c2, c3, kappa, kappa1; kappa=0 exercises the first guarded
-        // term, kappa1=0 the second
+        // c0, c1, c2, c3, kappa, kappa1; kappa=0 exercises the first
+        // (1-exp(-kappa*t))/(kappa*t) term, kappa1=0 the second
         Array x = {0.03, 0.02, 0.01, 0.005, 0.0, 0.0};
         DiscountFactor d = method.discount(x, t);
         Real zeroRate = -std::log(d) / t;

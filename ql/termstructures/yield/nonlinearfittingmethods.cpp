@@ -29,7 +29,8 @@ namespace QuantLib {
     namespace {
 
         // (1 - exp(-x))/x, accurate (and correctly 1, not 0) as x -> 0;
-        // same technique as Vasicek::oneMinusExpOverX
+        // the same technique is used by the file-local helper in
+        // ql/models/shortrate/onefactormodels/vasicek.cpp
         Real oneMinusExpOverX(Real x) {
             return x == 0.0 ? Real(1.0) : Real(-std::expm1(-x)/x);
         }
