@@ -170,8 +170,6 @@ namespace QuantLib {
             }
         }
 
-        // Value dates can differ from the accrual dates used for dt. Check the effect on
-        // the forward approximation and on normalization when a lockout is used.
         // forward part, approximation by pricing a cap / floor in the middle of the future period
         const std::vector<Date>& dates = coupon_->valueDates();
         if (i < n) {
@@ -415,8 +413,6 @@ namespace QuantLib {
             }
         }
 
-        // Value dates can differ from the accrual dates used for dt. With fixing days,
-        // normalization by the value-date span can mis-scale even fully fixed coupons.
         // forward part, approximation by pricing a cap / floor in the middle of the future period
         const std::vector<Date>& dates = coupon_->valueDates();
         if (i < n) {
