@@ -1035,16 +1035,15 @@ BOOST_AUTO_TEST_CASE(testOptimizersWithUnboundedConstraint) {
     BOOST_TEST_MESSAGE(
         "Testing population-based optimizers under an unconstrained problem...");
 
-    // Regression test: NoConstraint's default bounds are +-DBL_MAX. Before
-    // this fix, DifferentialEvolution/ParticleSwarmOptimization/
-    // FireflyAlgorithm would silently sample their initial population from
-    // the full +-DBL_MAX range (overflowing to +inf in the naive
-    // l+(u-l)*random interpolation, or, even once that overflow is avoided,
-    // producing finite-but-astronomic values whose later use in the cost
-    // function or in crossover/mutation arithmetic overflows to inf/NaN
-    // anyway). There is no principled finite default span for a genuinely
-    // unconstrained dimension, so each optimizer must now reject non-finite
-    // bounds with a clear message rather than silently returning garbage.
+    // Regression test: NoConstraint's default bounds are +-DBL_MAX, which
+    // the optimizers must reject: sampling an initial population from the
+    // full +-DBL_MAX range overflows to +inf in the naive l+(u-l)*random
+    // interpolation, or, even once that overflow is avoided, produces
+    // finite-but-astronomic values whose later use in the cost function or
+    // in crossover/mutation arithmetic overflows to inf/NaN anyway. There
+    // is no principled finite default span for a genuinely unconstrained
+    // dimension, so each optimizer rejects non-finite bounds with a clear
+    // message rather than silently returning garbage.
     FirstDeJong sphere;
     NoConstraint noConstraint;
     Array initialValue(3, 1.0);
@@ -1101,8 +1100,8 @@ BOOST_AUTO_TEST_CASE(testOptimizersWithUnboundedConstraint) {
     }
     {
         // exercises PSO's own convex-combination position-interpolation
-        // formula, changed by this fix, with finite bounds -- not just
-        // the unbounded-rejection path above
+        // formula with finite bounds -- not just the unbounded-rejection
+        // path above
         Problem problem(sphere, bounded, initialValue);
         ParticleSwarmOptimization pso(
             20,
@@ -1116,8 +1115,8 @@ BOOST_AUTO_TEST_CASE(testOptimizersWithUnboundedConstraint) {
     }
     {
         // exercises Firefly's own convex-combination position-interpolation
-        // formula, changed by this fix, with finite bounds -- not just
-        // the unbounded-rejection path above
+        // formula with finite bounds -- not just the unbounded-rejection
+        // path above
         Problem problem(sphere, bounded, initialValue);
         FireflyAlgorithm firefly(
             20,
@@ -1130,13 +1129,14 @@ BOOST_AUTO_TEST_CASE(testOptimizersWithUnboundedConstraint) {
                         "under a bounded constraint");
     }
 
-    // Regression test: the original guard checked isfinite(upper-lower),
-    // which misses a ONE-SIDED unbounded constraint such as
-    // PositiveConstraint (lowerBound=0, upperBound=numeric_limits<Real>::
+    // Regression test: a span-based finite check such as
+    // isfinite(upper-lower) misses a ONE-SIDED unbounded constraint such
+    // as PositiveConstraint (lowerBound=0, upperBound=numeric_limits<Real>::
     // max()) -- the span itself (max()-0 = max()) is finite, even though
     // that bound is the library's own sentinel for "no bound provided"
     // and leads to the same astronomic, effectively-garbage initial
-    // values the finite-span check exists to reject.
+    // values the finite-span check exists to reject. The check must
+    // therefore test each bound, not the span.
     PositiveConstraint positive;
     {
         Problem problem(sphere, positive, initialValue);
@@ -1180,14 +1180,13 @@ BOOST_AUTO_TEST_CASE(testDifferentialEvolutionSeededPopulationIgnoresBounds) {
         "Testing DifferentialEvolution with a seeded population and "
         "disabled bounds under an unconstrained problem...");
 
-    // Regression test: the finite-bounds guard above was originally
-    // unconditional, even though bounds are only ever read (a) to fill a
-    // random initial population, or (b) in crossover()'s clip/reflect step
-    // when applyBounds is enabled. With an explicitly seeded population
-    // and bounds disabled via withBounds(false), neither path touches the
-    // bounds at all -- this combination worked under NoConstraint before
-    // the finite-bounds fix (the bounds were computed but never used), and
-    // the fix must not turn it into a spurious throw.
+    // Regression test: the finite-bounds guard must stay scoped to the
+    // paths that can actually overflow. Bounds are only ever read (a) to
+    // fill a random initial population, or (b) in crossover()'s
+    // clip/reflect step when applyBounds is enabled. With an explicitly
+    // seeded population and bounds disabled via withBounds(false), neither
+    // path touches the bounds at all, so the run must succeed under
+    // NoConstraint rather than throw.
     FirstDeJong sphere;
     NoConstraint noConstraint;
     Array initialValue(3, 1.0);
@@ -1213,18 +1212,16 @@ BOOST_AUTO_TEST_CASE(testDifferentialEvolutionSeededPopulationWithDefaultBounds)
         "default (enabled) bounds under an unconstrained problem...");
 
     // Regression test, sibling of
-    // testDifferentialEvolutionSeededPopulationIgnoresBounds: an earlier
-    // version of the finite-bounds guard only skipped the check for
-    // withInitialPopulation()+withBounds(false), still throwing for a
-    // seeded population with applyBounds left at its default (true). That
-    // was itself a spurious regression -- with a population supplied,
-    // fillInitialPopulation() (the only reader that computes a new value
-    // from the bounds, and the only one that can overflow) never runs;
-    // crossover()'s applyBounds clip only ever compares against the bounds
-    // before reflecting off an already-finite mirror value, so it cannot
-    // overflow even against NoConstraint's +-DBL_MAX sentinel. This
-    // combination worked before the whole fix series and must keep working
-    // with applyBounds left at its default.
+    // testDifferentialEvolutionSeededPopulationIgnoresBounds: the
+    // finite-bounds guard must not fire for a seeded population with
+    // applyBounds left at its default (true) either. With a population
+    // supplied, fillInitialPopulation() (the only reader that computes a
+    // new value from the bounds, and the only one that can overflow) never
+    // runs; crossover()'s applyBounds clip only ever compares against the
+    // bounds before reflecting off a finite mirror value, so it cannot
+    // overflow even against NoConstraint's +-DBL_MAX sentinel. Seeding a
+    // population therefore removes the only overflow path, and the run
+    // must succeed with applyBounds left at its default.
     FirstDeJong sphere;
     NoConstraint noConstraint;
     Array initialValue(3, 1.0);
@@ -1288,7 +1285,7 @@ BOOST_AUTO_TEST_CASE(testFireflyAlgorithmOverflowingSpan) {
     // NaN for the whole run. The firefly loop's own isnan guard silently
     // rejects every such move, so the firefly subpopulation never moves and
     // no error is ever raised -- exactly the silent-garbage failure mode
-    // this whole PR exists to reject.
+    // the overflow guards exist to reject.
     FirstDeJong sphere;
     BoundaryConstraint extreme(-1.0e308, 1.0e308);
     Array initialValue(3, 1.0);
@@ -1324,8 +1321,8 @@ BOOST_AUTO_TEST_CASE(testFireflyAlgorithmZeroWidthBounds) {
     // makes max(ub-lb)=0, so that rescaling is 0/0=NaN for every dimension,
     // which neither optimizer's own overflow guard catches (0 is perfectly
     // finite). This produces the identical silent-NaN-swallow failure mode
-    // the span-overflow guards exist to reject. Fixed by a guard directly
-    // in IsotropicRandomWalk::setDimension (which both PSO's
+    // the span-overflow guards exist to reject. The check for it lives
+    // directly in IsotropicRandomWalk::setDimension (which both PSO's
     // LevyFlightInertia and FireflyAlgorithm's random walk share), rejecting
     // a largest bound span that isn't both finite and strictly positive.
     FirstDeJong sphere;
@@ -1349,15 +1346,14 @@ BOOST_AUTO_TEST_CASE(testFireflyAlgorithmSubnormalSpan) {
     BOOST_TEST_MESSAGE(
         "Testing FireflyAlgorithm with a subnormal bound span...");
 
-    // Regression test: IsotropicRandomWalk::setDimension's guard originally
-    // required maxBound > 0.0, which admits a positive but subnormal
-    // maxBound (e.g. ~2e-310): finite and nonzero, so the guard passes, but
-    // its reciprocal 1.0/maxBound still overflows to +inf (DBL_MAX is only
-    // ~1.8e308), reproducing the identical silent-NaN-draw failure mode via
-    // a different arithmetic path than the already-fixed zero-width case.
-    // Tightened to maxBound >= numeric_limits<Real>::min() (the smallest
-    // positive normal double, whose reciprocal is itself finite) to also
-    // reject this case.
+    // Regression test: a maxBound > 0.0 requirement admits a positive but
+    // subnormal maxBound (e.g. ~2e-310): finite and nonzero, so such a
+    // check passes, but the walk's reciprocal 1.0/maxBound still overflows
+    // to +inf (DBL_MAX is only ~1.8e308), giving the same silent-NaN-draw
+    // failure mode as the zero-width case via a different arithmetic path.
+    // The guard must therefore require maxBound >=
+    // numeric_limits<Real>::min() (the smallest positive normal double,
+    // whose reciprocal is itself finite), which rejects both cases.
     FirstDeJong sphere;
     BoundaryConstraint subnormal(-1.0e-310, 1.0e-310);
     Array initialValue(3, 0.0);

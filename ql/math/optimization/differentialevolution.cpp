@@ -76,9 +76,8 @@ namespace QuantLib {
         // load-bearing (can overflow a well-behaved run) only in
         // fillInitialPopulation -- skip the check whenever one was
         // supplied, regardless of applyBounds, so withInitialPopulation()+
-        // NoConstraint (previously valid: bounds were computed but never
-        // touched in a way that
-        // overflows) keeps working either way.
+        // NoConstraint keeps working either way (its bounds are computed
+        // but never used in arithmetic that can overflow).
         if (!configuration().initialPopulation.empty()) {
             // once a population is supplied, the only remaining reader
             // (crossover()'s clip) can only overflow via a member that's
@@ -94,9 +93,9 @@ namespace QuantLib {
                 // a finite double, so neither isfinite(bound) nor
                 // isfinite(upper-lower) can detect it (max()-0.0 is also
                 // finite) -- the span only overflows to +inf in the symmetric
-                // +-max() case, which is why the original guard (upper-lower)
-                // missed the one-sided case. Reject the sentinel value
-                // directly on either bound instead.
+                // +-max() case, so a span-based check cannot catch the
+                // one-sided sentinel. Reject the sentinel value directly on
+                // either bound instead.
                 QL_REQUIRE(lowerBound_[i] > -maxBound && upperBound_[i] < maxBound,
                     "DifferentialEvolution needs finite bounds to initialize "
                     "its population, but dimension " << i << " has no bound "
