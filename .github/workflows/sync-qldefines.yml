@@ -14,6 +14,7 @@ jobs:
         sed -i -e 's|^#if   defined(HAVE_CONFIG_H).*$|#if   defined(QL_HAVE_CONFIG_H) // Dynamically created by cmake|g' ql/qldefines.hpp.cfg
         sed -i -e 's|^/\* install-hook \*/.*$|#cmakedefine QL_HAVE_CONFIG_H|g' ql/qldefines.hpp.cfg
     - uses: peter-evans/create-pull-request@v8
+      if: vars.MACHINE_ACCOUNT != ''
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib
