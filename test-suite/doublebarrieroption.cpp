@@ -571,6 +571,77 @@ BOOST_AUTO_TEST_CASE(testAnalyticRebate) {
     Real total = rebateValue(DoubleBarrier::KnockOut, analytic) +
                  rebateValue(DoubleBarrier::KnockIn, analytic);
     QL_CHECK_SMALL(total - rebate, 1.0e-8);
+
+    // with a smile, the rebate must use the same volatility as the option,
+    // i.e., the one at the option strike; the price must then be the same
+    // as with a flat volatility equal to that one
+    rRate->setValue(0.05);
+    qRate->setValue(0.02);
+    std::vector<Date> dates = {exDate, exDate + 180};
+    std::vector<Real> strikes = {80.0, 100.0, 120.0};
+    Matrix vols(3, 2);
+    vols[0][0] = 0.30; vols[1][0] = 0.25; vols[2][0] = 0.22;
+    vols[0][1] = 0.29; vols[1][1] = 0.24; vols[2][1] = 0.21;
+    auto smile = ext::make_shared<BlackVarianceSurface>(today, NullCalendar(), dates, strikes,
+                                                        vols, dc);
+    auto smileProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+        Handle<BlackVolTermStructure>(smile));
+    auto flatProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+        Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, smile->blackVol(exDate, 100.0), dc)));
+    for (auto type : {DoubleBarrier::KnockOut, DoubleBarrier::KnockIn}) {
+        DoubleBarrierOption option(type, lo, hi, rebate, payoff, exercise);
+        option.setPricingEngine(ext::make_shared<AnalyticDoubleBarrierEngine>(smileProcess));
+        Real calculated = option.NPV();
+        option.setPricingEngine(ext::make_shared<AnalyticDoubleBarrierEngine>(flatProcess));
+        Real expected = option.NPV();
+        if (std::fabs(calculated - expected) > 1.0e-10)
+            BOOST_ERROR("failed to use the volatility at the option strike for the rebate:"
+                        << "\n    barrier type: " << type
+                        << "\n    calculated:   " << calculated
+                        << "\n    expected:     " << expected);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testVannaVolgaRejectsRebate) {
+
+    BOOST_TEST_MESSAGE("Testing that the vanna-volga double-barrier engine rejects rebates...");
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+    const Time t = 2.0;
+    Date exDate = today + timeToDays(t, 365);
+
+    auto spot = ext::make_shared<SimpleQuote>(1.30265);
+    Handle<YieldTermStructure> qTS(flatRate(today, 0.0009418, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, 0.0039788, dc));
+    Handle<DeltaVolQuote> volAtm(ext::make_shared<DeltaVolQuote>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.09525)), DeltaVolQuote::Fwd, t,
+        DeltaVolQuote::AtmDeltaNeutral));
+    Handle<DeltaVolQuote> vol25Put(ext::make_shared<DeltaVolQuote>(
+        -0.25, Handle<Quote>(ext::make_shared<SimpleQuote>(0.10891)), t, DeltaVolQuote::Fwd));
+    Handle<DeltaVolQuote> vol25Call(ext::make_shared<DeltaVolQuote>(
+        0.25, Handle<Quote>(ext::make_shared<SimpleQuote>(0.09197)), t, DeltaVolQuote::Fwd));
+
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 1.32238);
+    auto exercise = ext::make_shared<EuropeanExercise>(exDate);
+    auto engine = ext::make_shared<VannaVolgaDoubleBarrierEngine<AnalyticDoubleBarrierEngine> >(
+        volAtm, vol25Put, vol25Call, Handle<Quote>(spot), rTS, qTS);
+
+    for (auto type : {DoubleBarrier::KnockOut, DoubleBarrier::KnockIn}) {
+        DoubleBarrierOption withRebate(type, 1.0, 1.6, 0.01, payoff, exercise);
+        withRebate.setPricingEngine(engine);
+        BOOST_CHECK_THROW(withRebate.NPV(), Error);
+
+        DoubleBarrierOption withoutRebate(type, 1.0, 1.6, 0.0, payoff, exercise);
+        withoutRebate.setPricingEngine(engine);
+        BOOST_CHECK_NO_THROW(withoutRebate.NPV());
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testVannaVolgaDoubleBarrierValues) {

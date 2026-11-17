@@ -35,8 +35,12 @@ namespace QuantLib {
         */
         Real rebateValue(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                          const DoubleBarrierOption::arguments& arguments) {
+            auto payoff = ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments.payoff);
+            QL_REQUIRE(payoff, "non-striked payoff given");
             auto engine = ext::make_shared<AnalyticDoubleBarrierBinaryEngine>(process);
-            auto cash = ext::make_shared<CashOrNothingPayoff>(Option::Call, 0.0,
+            // the binary engines only use the strike to pick the volatility;
+            // use the option strike so that it's consistent with the option
+            auto cash = ext::make_shared<CashOrNothingPayoff>(Option::Call, payoff->strike(),
                                                               arguments.rebate);
             const Date expiry = arguments.exercise->lastDate();
 
