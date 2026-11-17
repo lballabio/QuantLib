@@ -278,6 +278,7 @@ namespace QuantLib {
         // of the limit. This mirrors blackFormula's own zero-stdDev
         // convention of returning the deterministic limit.
         if (term == 0.0) {
+            evaluations_ = 0;
             results_.value = (*payoff)(spotPrice);
             return;
         }
