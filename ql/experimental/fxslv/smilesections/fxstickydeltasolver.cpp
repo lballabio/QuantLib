@@ -67,13 +67,18 @@ namespace QuantLib {
                2.0 * cv * (ds + beta * dp * dm) + dp * dm * cw;
     }
 
+    Real FxStickyDeltaSolver::tailVarianceSlope(Size i) const {
+        return std::max(-2.0, std::min(2.0, -2.0 * w_[i] * beta_[i]));
+    }
+
     Real FxStickyDeltaSolver::totalVol(Real x) const {
         if (x <= x_.front() || x >= x_.back()) {
-            // linear extrapolation beyond the solved range
+            // beyond the solved range the total variance is linear in x
             const Size i = x <= x_.front() ? 0 : x_.size() - 1;
-            const Real w = w_[i] - beta_[i] * (x - x_[i]);
-            QL_REQUIRE(w > 0.0, "extrapolated total vol is not positive at log-moneyness " << x);
-            return w;
+            const Real variance = w_[i] * w_[i] + tailVarianceSlope(i) * (x - x_[i]);
+            QL_REQUIRE(variance > 0.0,
+                       "extrapolated total variance is not positive at log-moneyness " << x);
+            return std::sqrt(variance);
         }
 
         // cubic Hermite interpolation with dw/dx = -beta at the nodes
@@ -85,10 +90,11 @@ namespace QuantLib {
     }
 
     Real FxStickyDeltaSolver::slope(Real x) const {
-        if (x <= x_.front())
-            return beta_.front();
-        if (x >= x_.back())
-            return beta_.back();
+        if (x <= x_.front() || x >= x_.back()) {
+            // dw/dx = (dw^2/dx) / (2 w) on the linear total variance
+            const Size i = x <= x_.front() ? 0 : x_.size() - 1;
+            return -tailVarianceSlope(i) / (2.0 * totalVol(x));
+        }
 
         const Size i = std::upper_bound(x_.begin(), x_.end(), x) - x_.begin() - 1;
         const Real dx = x_[i + 1] - x_[i], t = (x - x_[i]) / dx;
@@ -384,9 +390,10 @@ namespace QuantLib {
 
     Real FxStickyDeltaConvexSmileSolver::convexity(Real x) const {
         const Real beta = slope(x);
-        if (x < minLogMoneyness() || x > maxLogMoneyness())
-            return beta / 2.0;  // w'' = 0 beyond the range
         const Real w = totalVol(x);
+        if (x < minLogMoneyness() || x > maxLogMoneyness())
+            // kappa = (beta + w'') / 2, with w'' = -beta^2 / w on the linear total variance
+            return (beta - beta * beta / w) / 2.0;
         return -costEquation(x, w, beta) / (2.0 * w * costs_[0]);
     }
 

@@ -268,7 +268,7 @@ namespace QuantLib {
         Real volDerivative(Rate strike) const override;
 
         //! Half-width of the integrated smile in log-moneyness, in reference total vols.
-        /*! Beyond it (about \f$ |d_\pm| > 8 \f$) the smile is extrapolated linearly. */
+        /*! Beyond it (about \f$ |d_\pm| > 8 \f$) the total variance is extrapolated linearly. */
         static constexpr Real smileRange = 8.0;
 
       protected:

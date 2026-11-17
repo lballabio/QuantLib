@@ -519,6 +519,52 @@ BOOST_AUTO_TEST_CASE(testStickyDeltaConvexSmileSolver) {
                       Error);
 }
 
+BOOST_AUTO_TEST_CASE(testStickyDeltaTailsAreLinearInVariance) {
+    BOOST_TEST_MESSAGE("Testing that sticky-delta smiles continue linearly in total variance...");
+
+    // beyond the solved range the total variance w^2 is linear in x, with
+    // the slope -2 w beta of the end node (within Lee's bound of 2), so the
+    // smile is C1 there and its wings grow as SVI's do, not quadratically
+    const std::vector<Real> costs = {1.0, -15.3166, -0.06278, 0.28742};
+    for (bool pa : {false, true}) {
+        const FxStickyDeltaSmileSolver flat(costs, pa, -0.1, 0.1);
+        const Real lo = flat.singularLogMoneyness() - 8.0 * flat.singularTotalVol();
+        const Real hi = flat.singularLogMoneyness() + 8.0 * flat.singularTotalVol();
+        const FxStickyDeltaConvexSmileSolver convex(costs, pa, lo, hi);
+        for (const FxStickyDeltaSolver* smile :
+             std::vector<const FxStickyDeltaSolver*>{&flat, &convex}) {
+            auto v = [&](Real x) { return smile->totalVol(x) * smile->totalVol(x); };
+            auto dv = [&](Real x) { return (v(x + 1.0e-5) - v(x - 1.0e-5)) / 2.0e-5; };
+            for (Size e = 0; e < 2; ++e) {
+                const Real x0 = e == 0 ? smile->minLogMoneyness() : smile->maxLogMoneyness();
+                const Real out = e == 0 ? -1.0 : 1.0;
+                BOOST_TEST_INFO("premium adjusted " << pa << ", end " << x0);
+
+                // continuous in value and slope at the end node: the one-sided
+                // derivatives agree, and with the slope there
+                const Real h = 1.0e-6, w0 = smile->totalVol(x0);
+                const Real outside = (smile->totalVol(x0 + out * h) - w0) / (out * h);
+                const Real inside = (w0 - smile->totalVol(x0 - out * h)) / (out * h);
+                BOOST_CHECK_SMALL(outside - inside, 1.0e-4);
+                BOOST_CHECK_SMALL(smile->slope(x0) + outside, 1.0e-4);
+
+                // beyond it the total variance is linear, with one slope within
+                // Lee's bound, and beta = -dw/dx is the extrapolated smile's
+                const Real tail = dv(x0 + out * 0.01);
+                BOOST_CHECK_LE(std::fabs(tail), 2.0 + 1.0e-8);
+                for (Real d : {0.01, 0.1, 0.5}) {
+                    const Real x = x0 + out * d, step = out * 0.05;
+                    BOOST_CHECK_SMALL(v(x) - 2.0 * v(x + step) + v(x + 2.0 * step), 1.0e-12);
+                    BOOST_CHECK_SMALL(dv(x) - tail, 1.0e-8);
+                    const Real dw =
+                        (smile->totalVol(x + 1.0e-6) - smile->totalVol(x - 1.0e-6)) / 2.0e-6;
+                    BOOST_CHECK_SMALL(smile->slope(x) + dw, 1.0e-6);
+                }
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testCostSmileSectionStickyDeltaConvexSteepSkew) {
     BOOST_TEST_MESSAGE("Testing the convex sticky-delta smile on a steep USDJPY skew...");
 

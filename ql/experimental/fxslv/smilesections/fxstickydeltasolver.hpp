@@ -34,8 +34,12 @@ namespace QuantLib {
         at nodes, with the total vol \f$ w = \sigma \sqrt{\tau} \f$ and its
         slope \f$ \beta = \partial w / \partial \ln K = -w'(x) \f$ at each.
         Between nodes the total vol is the cubic Hermite interpolant of the
-        node values and slopes, so it is \f$ C^1 \f$; beyond the nodes it is
-        extrapolated linearly with the slope at the last node.  The costs
+        node values and slopes, so it is \f$ C^1 \f$.  Beyond the nodes the
+        total variance \f$ w^2 \f$ is extrapolated linearly in \f$ x \f$, as
+        in SVI's wings, with the slope \f$ \partial w^2 / \partial x = -2 w
+        \beta \f$ at the last node capped at Lee's moment bound of 2 in
+        absolute value, so that the smile stays \f$ C^1 \f$ (unless capped)
+        and its wings grow no faster than Lee allows.  The costs
         are \f$ [C_\gamma, C_\theta, C_\eta, C_\omega] \f$, of which only
         the ratios matter.
 
@@ -66,11 +70,14 @@ namespace QuantLib {
         bool premiumAdjust() const { return premiumAdjust_; }
 
         //! \name Solved range
-        /*! Beyond it the smile is extrapolated linearly. */
+        /*! Beyond it the total variance is extrapolated linearly. */
         //@{
         Real minLogMoneyness() const { return x_.front(); }
         Real maxLogMoneyness() const { return x_.back(); }
         //@}
+        //! Slope \f$ \partial w^2 / \partial x \f$ of the total variance beyond the end node \c i
+        /*! \f$ -2 w \beta \f$ at the node, capped at \f$ \pm 2 \f$ (Lee's moment bound). */
+        Real tailVarianceSlope(Size i) const;
 
         //! The cost equation without convexity
         /*! \f[
@@ -131,8 +138,8 @@ namespace QuantLib {
         total variance slope \f$ |\partial w^2 / \partial x| = 2 w |\beta| \f$
         exceeds Lee's moment bound of 2, the smile is not continued: the
         side is then cut at the last node, and beyond the integrated
-        range the total vol is extrapolated linearly with the slope at the
-        last node.
+        range the total variance is extrapolated linearly (see
+        FxStickyDeltaSolver).
 
         The solver is immutable: the smile is integrated in the constructor.
         Its dynamics have no convexity.
@@ -199,8 +206,9 @@ namespace QuantLib {
         direction and decay in the other.  Shooting from a point (or
         iterating on \f$ \kappa \f$) is therefore unstable, and the smile is
         found as a boundary value problem on \f$ [x_{min}, x_{max}] \f$ with
-        \f$ w'' = 0 \f$ at both ends, i.e. no convexity beyond the range.
-        The fast modes confine the effect of the end conditions to layers
+        \f$ w'' = 0 \f$ at both ends.  Beyond the range the total variance is
+        extrapolated linearly (see FxStickyDeltaSolver), so the smile is
+        \f$ C^1 \f$ there but not \f$ C^2 \f$.  The fast modes confine the effect of the end conditions to layers
         of width of order \f$ w \f$ at the ends.
 
         The equation is discretised on equally spaced nodes by central
@@ -231,7 +239,8 @@ namespace QuantLib {
                                        Size nodes = 401,
                                        Real tolerance = 1.0e-13);
 
-        //! \f$ \kappa = -F / (2 w C_\gamma) \f$ within the range, \f$ \beta / 2 \f$ beyond it.
+        //! \f$ \kappa = -F / (2 w C_\gamma) \f$ within the range, \f$ (\beta + w'') / 2 \f$ beyond it
+        /*! with \f$ w'' = -\beta^2 / w \f$, that of the linear total variance. */
         Real convexity(Real x) const override;
 
       private:
