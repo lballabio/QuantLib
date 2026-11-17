@@ -1699,7 +1699,7 @@ BOOST_AUTO_TEST_CASE(testFdmModelWithMandatoryDates) {
     leverage->enableExtrapolation(true);
 
     for (Time t : {0.1, 0.25, 0.5, 0.75}) {
-        for (Real k : {0.8*s0, s0, 1.2*s0}) {
+        for (Real k : {Real(0.8*s0), s0, Real(1.2*s0)}) {
             const Real l = leverage->localVol(t, k);
             if (!std::isfinite(l) || l <= 0.0) {
                 BOOST_ERROR("invalid leverage value "

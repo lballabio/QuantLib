@@ -1163,7 +1163,7 @@ BOOST_AUTO_TEST_CASE(testBlackONPricersDailyCapFloorWithZeroVolatility) {
             Time tau = underlying->fixingDays() == 0 ? underlying->accrualPeriod() : yearFraction;
             return dailyRate * yearFraction / tau;
         };
-        Rate uncapped = curveRate(c.compoundSpreadDaily ? 0.04 + spread : 0.04);
+        Rate uncapped = curveRate(c.compoundSpreadDaily ? Rate(0.04 + spread) : Rate(0.04));
         Rate base = underlying->rate();
 
         // the cap level on the daily rate is at 3% and the floor level at 5%
@@ -1308,8 +1308,8 @@ BOOST_AUTO_TEST_CASE(testBlackONPricersPartiallyFixedDailyCapFloorValues) {
                 Real fixedRaw = averaging == RateAveraging::Compound ? 1.0 : 0.0;
                 Real fixedBounded = fixedRaw;
                 for (Size i = 0; i < fixedCount; ++i) {
-                    Rate bounded = type == Option::Call ? std::min(fixings[i], strike)
-                                                       : std::max(fixings[i], strike);
+                    Rate bounded = type == Option::Call ? Rate(std::min(fixings[i], strike))
+                                                       : Rate(std::max(fixings[i], strike));
                     if (averaging == RateAveraging::Compound) {
                         fixedRaw *= 1.0 + fixings[i] * spans[i];
                         fixedBounded *= 1.0 + bounded * spans[i];
@@ -1318,8 +1318,8 @@ BOOST_AUTO_TEST_CASE(testBlackONPricersPartiallyFixedDailyCapFloorValues) {
                         fixedBounded += bounded * spans[i];
                     }
                 }
-                Rate boundedForward = type == Option::Call ? std::min(forward, strike)
-                                                          : std::max(forward, strike);
+                Rate boundedForward = type == Option::Call ? Rate(std::min(forward, strike))
+                                                          : Rate(std::max(forward, strike));
                 Real correction;
                 if (averaging == RateAveraging::Compound) {
                     correction = fixedBounded * std::pow(1.0 + boundedForward / 360.0, futureDays) -
@@ -1374,8 +1374,8 @@ BOOST_AUTO_TEST_CASE(testBlackONPricerFixedLockoutAndObservationShift) {
         for (auto type : {Option::Call, Option::Put}) {
             Real factor = 1.0;
             for (Size i = 0; i < rates.size(); ++i) {
-                Rate bounded = type == Option::Call ? std::min(rates[i], 0.04)
-                                                   : std::max(rates[i], 0.04);
+                Rate bounded = type == Option::Call ? Rate(std::min(rates[i], 0.04))
+                                                   : Rate(std::max(rates[i], 0.04));
                 factor *= 1.0 + bounded * spans[i];
             }
             Time tau = (shift ? 6.0 : 4.0) / 360.0;
@@ -1435,7 +1435,7 @@ BOOST_AUTO_TEST_CASE(testBlackONPricersDailyCapFloorExactValues) {
                     volCase.type == ShiftedLognormal ?
                         blackFormula(optionType, strike, average, stdDev) :
                         bachelierBlackFormula(optionType, strike, average, stdDev);
-                Rate shifted = optionType == Option::Call ? average - optionValue : average + optionValue;
+                Rate shifted = optionType == Option::Call ? Rate(average - optionValue) : Rate(average + optionValue);
                 Rate expected = base + couponRate(shifted) - couponRate(average);
 
                 auto capped = ext::make_shared<CappedFlooredOvernightIndexedCoupon>(
@@ -1487,7 +1487,7 @@ BOOST_AUTO_TEST_CASE(testBlackONPricersDailyCapFloorOnFullyFixedCoupon) {
                 if (c.compoundSpreadDaily)
                     fixing += spread;
                 // the level applies to the daily fixing including the spread, if there is one
-                fixing = optionType == Option::Call ? std::min(fixing, level) : std::max(fixing, level);
+                fixing = optionType == Option::Call ? Rate(std::min(fixing, level)) : Rate(std::max(fixing, level));
                 compoundFactor *= 1.0 + fixing * dt[i];
                 accumulated += fixing * dt[i];
             }
@@ -1843,12 +1843,14 @@ BOOST_AUTO_TEST_CASE(testDailyCompoundedSpreadForecast) {
                     long double product = 1.0L, indexProduct = 1.0L;
                     for (Size i = 0; i < n; ++i) {
                         const Size fixing = i >= n - lockout ? n - lockout - 1 : i;
-                        const Time weight = dc.yearFraction(accrualDates[i], accrualDates[i + 1]);
+                        const long double weight =
+                            value(dc.yearFraction(accrualDates[i], accrualDates[i + 1]));
                         product *= 1.0L +
-                            (static_cast<long double>(rates[fixing]) + spread) * weight;
-                        indexProduct *= 1.0L + static_cast<long double>(rates[fixing]) * weight;
+                            (static_cast<long double>(value(rates[fixing])) + value(spread)) * weight;
+                        indexProduct *= 1.0L + static_cast<long double>(value(rates[fixing])) * weight;
                     }
-                    const Time tau = dc.yearFraction(accrualDates.front(), accrualDates.back());
+                    const long double tau =
+                        value(dc.yearFraction(accrualDates.front(), accrualDates.back()));
                     const Rate expected = Real((product - 1.0L) / tau);
                     const Rate expectedIndex = Real((indexProduct - 1.0L) / tau);
                     for (bool telescopic : {false, true}) {
@@ -1871,10 +1873,10 @@ BOOST_AUTO_TEST_CASE(testDailyCompoundedSpreadForecast) {
                                 long double partial = 1.0L;
                                 for (Size i = 0; i < n && dates[i] < cutoff; ++i) {
                                     const Size fixing = i >= n - lockout ? n - lockout - 1 : i;
-                                    const Time weight = dc.yearFraction(dates[i],
-                                        std::min(dates[i + 1], cutoff));
+                                    const long double weight = value(dc.yearFraction(dates[i],
+                                        std::min(dates[i + 1], cutoff)));
                                     partial *= 1.0L +
-                                        (static_cast<long double>(rates[fixing]) + spread) * weight;
+                                        (static_cast<long double>(value(rates[fixing])) + value(spread)) * weight;
                                 }
                                 QL_CHECK_SMALL(coupon.accruedAmount(cutoff) -
                                                    nominal * Real(partial - 1.0L), 2e-7);
