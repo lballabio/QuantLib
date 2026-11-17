@@ -103,6 +103,11 @@ const std::optional<Integer>& roundingPrecision)
         QL_REQUIRE(canApplyTelescopicFormula() || !telescopicValueDates,
                    "Telescopic formula cannot be applied for a coupon with lookback.");
 
+        // A discount-factor ratio omits a daily compounded spread.
+        // Keep every overnight period for the exact product in the pricer.
+        if (averagingMethod_ == RateAveraging::Compound && compoundSpreadDaily_ && spread != 0.0)
+            telescopicValueDates = false;
+
         const auto& fixingCal = overnightIndex->fixingCalendar();
         if (telescopicValueDates) {
             // build optimised value dates schedule: front stub goes from rateCalcStartDate
