@@ -674,6 +674,45 @@ BOOST_AUTO_TEST_CASE(testErrorWhenNotionalResetIsNotSupported) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testNotionalResetFundingCurveUpdate) {
+    BOOST_TEST_MESSAGE("Testing notional reset after funding curve changes...");
+    CommonVars vars;
+    const Schedule schedule = MakeSchedule().from(Date(31, January, 2023))
+        .to(Date(31, January, 2024)).withTenor(3 * Months)
+        .withCalendar(vars.calendar).withConvention(Following).backwards();
+
+    // The funding index is forecast on a different curve than the discount curve,
+    // so that the swap is only notified of its changes through the funding coupons.
+    RelinkableHandle<YieldTermStructure> forecastHandle(flatRate(0.04, vars.dayCount));
+    // declared as base classes to select the right constructor of the swap
+    ext::shared_ptr<IborIndex> libor = ext::make_shared<USDLibor>(3 * Months, forecastHandle);
+    ext::shared_ptr<OvernightIndex> sofr = ext::make_shared<Sofr>(forecastHandle);
+
+    auto makeSwap = [&](bool overnight) {
+        ext::shared_ptr<EquityTotalReturnSwap> swap;
+        if (overnight)
+            swap = ext::make_shared<EquityTotalReturnSwap>(
+                Swap::Receiver, 100000.0, schedule, vars.equityIndex, sofr, vars.dayCount, 0.0,
+                1.0, vars.calendar, Following, 0, Quarterly, true);
+        else
+            swap = ext::make_shared<EquityTotalReturnSwap>(
+                Swap::Receiver, 100000.0, schedule, vars.equityIndex, libor, vars.dayCount, 0.0,
+                1.0, vars.calendar, Following, 0, Quarterly, true);
+        swap->setPricingEngine(vars.discountEngine);
+        return swap;
+    };
+
+    for (bool overnight : {false, true}) {
+        auto swap = makeSwap(overnight);
+        const Real interestNPV = swap->interestRateLegNPV();
+        forecastHandle.linkTo(flatRate(0.05, vars.dayCount));
+        BOOST_CHECK(std::fabs(swap->interestRateLegNPV() - interestNPV) > 1.0);
+        QL_CHECK_SMALL(swap->interestRateLegNPV() - makeSwap(overnight)->interestRateLegNPV(),
+                       1.0e-8);
+        forecastHandle.linkTo(flatRate(0.04, vars.dayCount));
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testFairMargin) {
     BOOST_TEST_MESSAGE("Testing fair margin...");
 

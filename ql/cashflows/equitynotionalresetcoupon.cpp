@@ -49,6 +49,8 @@ namespace QuantLib {
         QL_REQUIRE(initialDate_ <= resetDate_,
                    "initial date (" << initialDate_ << ") cannot be later than reset date ("
                                     << resetDate_ << ")");
+        // the amount is not cached, so notifications can always be forwarded
+        alwaysForwardNotifications();
         registerWith(underlying_);
         registerWith(equityIndex_);
     }
