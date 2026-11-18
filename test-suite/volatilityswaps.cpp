@@ -291,51 +291,55 @@ BOOST_AUTO_TEST_CASE(testInvalidInputs) {
         swap.setPricingEngine(vars.engine());
         return swap.NPV();
     };
+    // arguments with the given fields set; the others keep their null defaults
+    auto arguments = [&](Real strike, Real notional, const Date& start, const Date& maturity) {
+        VolatilitySwap::arguments args;
+        args.position = Position::Long;
+        args.strike = strike;
+        args.notional = notional;
+        args.startDate = start;
+        args.maturityDate = maturity;
+        return args;
+    };
 
-    BOOST_CHECK_THROW(priced(-0.1, 1.0, vars.start, vars.maturity), Error);
-    BOOST_CHECK_THROW(priced(0.2, 0.0, vars.start, vars.maturity), Error);
-    BOOST_CHECK_THROW(priced(0.2, -1.0, vars.start, vars.maturity), Error);
-    BOOST_CHECK_THROW(priced(0.2, 1.0, Date(), vars.maturity), Error);
-    BOOST_CHECK_THROW(priced(0.2, 1.0, vars.maturity, vars.start), Error);
-    BOOST_CHECK_THROW(priced(0.2, 1.0, vars.start, vars.start), Error);
-    // a null maturity date is rejected when the arguments are validated
-    VolatilitySwap::arguments nullMaturity;
-    nullMaturity.position = Position::Long;
-    nullMaturity.strike = 0.2;
-    nullMaturity.notional = 1.0;
-    nullMaturity.startDate = vars.start;
-    BOOST_CHECK_EXCEPTION(nullMaturity.validate(), Error,
-                          ExpectedErrorMessage("null maturity date given"));
-    VolatilitySwap::arguments nullStart;
-    nullStart.position = Position::Long;
-    nullStart.strike = 0.2;
-    nullStart.notional = 1.0;
-    nullStart.maturityDate = vars.maturity;
-    BOOST_CHECK_EXCEPTION(nullStart.validate(), Error,
-                          ExpectedErrorMessage("null start date given"));
-    // unset strike or notional are rejected when the arguments are validated
-    VolatilitySwap::arguments noStrike;
-    noStrike.position = Position::Long;
-    noStrike.notional = 1.0;
-    noStrike.startDate = vars.start;
-    noStrike.maturityDate = vars.maturity;
-    BOOST_CHECK_THROW(noStrike.validate(), Error);
-    VolatilitySwap::arguments noNotional;
-    noNotional.position = Position::Long;
-    noNotional.strike = 0.2;
-    noNotional.startDate = vars.start;
-    noNotional.maturityDate = vars.maturity;
-    BOOST_CHECK_THROW(noNotional.validate(), Error);
+    BOOST_CHECK_EXCEPTION(priced(-0.1, 1.0, vars.start, vars.maturity), Error,
+                          ExpectedErrorMessage("negative strike given"));
+    BOOST_CHECK_EXCEPTION(priced(0.2, 0.0, vars.start, vars.maturity), Error,
+                          ExpectedErrorMessage("negative or null notional given"));
+    BOOST_CHECK_EXCEPTION(priced(0.2, -1.0, vars.start, vars.maturity), Error,
+                          ExpectedErrorMessage("negative or null notional given"));
+    BOOST_CHECK_EXCEPTION(priced(0.2, 1.0, vars.maturity, vars.start), Error,
+                          ExpectedErrorMessage("must be after start date"));
+    BOOST_CHECK_EXCEPTION(priced(0.2, 1.0, vars.start, vars.start), Error,
+                          ExpectedErrorMessage("must be after start date"));
+
+    // unset fields are rejected when the arguments are validated
+    BOOST_CHECK_EXCEPTION(
+        arguments(0.2, 1.0, vars.start, Date()).validate(), Error,
+        ExpectedErrorMessage("null maturity date given"));
+    BOOST_CHECK_EXCEPTION(
+        arguments(0.2, 1.0, Date(), vars.maturity).validate(), Error,
+        ExpectedErrorMessage("null start date given"));
+    BOOST_CHECK_EXCEPTION(
+        arguments(Null<Real>(), 1.0, vars.start, vars.maturity).validate(), Error,
+        ExpectedErrorMessage("no strike given"));
+    BOOST_CHECK_EXCEPTION(
+        arguments(0.2, Null<Real>(), vars.start, vars.maturity).validate(), Error,
+        ExpectedErrorMessage("no notional given"));
+
     // seasoned swap
-    BOOST_CHECK_THROW(priced(0.2, 1.0, vars.today - 1 * Days, vars.maturity), Error);
+    BOOST_CHECK_EXCEPTION(priced(0.2, 1.0, vars.today - 1 * Days, vars.maturity), Error,
+                          ExpectedErrorMessage("seasoned volatility swaps are not supported"));
     // a swap that starts today is not seasoned
     BOOST_CHECK_NO_THROW(priced(0.2, 1.0, vars.today, vars.maturity));
 
     vars.variance->setValue(0.0);
-    BOOST_CHECK_THROW(priced(0.2, 1.0, vars.start, vars.maturity), Error);
+    BOOST_CHECK_EXCEPTION(priced(0.2, 1.0, vars.start, vars.maturity), Error,
+                          ExpectedErrorMessage("negative or null fair variance strike"));
     vars.variance->setValue(0.04);
     vars.logVol->setValue(-0.1);
-    BOOST_CHECK_THROW(priced(0.2, 1.0, vars.start, vars.maturity), Error);
+    BOOST_CHECK_EXCEPTION(priced(0.2, 1.0, vars.start, vars.maturity), Error,
+                          ExpectedErrorMessage("negative variance log-volatility"));
     vars.logVol->setValue(0.5);
 
     VolatilitySwap noCurve(Position::Long, 0.2, 1.0, vars.start, vars.maturity);

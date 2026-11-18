@@ -48,7 +48,7 @@ namespace QuantLib {
         \f]
         To first order in \f$ s^2 \f$ this is the approximation
         \f$ \sqrt{K} - \mathrm{Var}(V) / (8 K^{3/2}) \f$ of
-        Brockhaus and Long (2000), since
+        Brockhaus and Long (Risk, January 2000), since
         \f$ \mathrm{Var}(V) = K^2 (e^{s^2} - 1) \f$.
         The factor \f$ e^{-s^2/8} \f$ is the convexity adjustment of the
         volatility swap with respect to the square root of the variance
