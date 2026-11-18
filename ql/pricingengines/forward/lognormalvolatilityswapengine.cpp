@@ -18,6 +18,7 @@
 */
 
 #include <ql/pricingengines/forward/lognormalvolatilityswapengine.hpp>
+#include <cmath>
 #include <utility>
 
 namespace QuantLib {
@@ -35,9 +36,6 @@ namespace QuantLib {
     }
 
     void LognormalVolatilitySwapEngine::calculate() const {
-        QL_REQUIRE(!discountCurve_.empty(), "empty discount curve handle");
-        QL_REQUIRE(!fairVarianceStrike_.empty(), "empty fair variance strike handle");
-        QL_REQUIRE(!varianceLogVolatility_.empty(), "empty variance log-volatility handle");
         QL_REQUIRE(arguments_.startDate >= discountCurve_->referenceDate(),
                    "seasoned volatility swaps are not supported: start date ("
                    << arguments_.startDate << ") precedes the reference date ("

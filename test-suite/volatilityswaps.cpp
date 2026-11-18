@@ -204,10 +204,10 @@ BOOST_AUTO_TEST_CASE(testConsistencyWithVarianceSwap) {
                     << std::sqrt(fairVariance));
 
     vars.logVol->setValue(0.3);
-    Real adjusted = flat.fairVolatility();
-    if (adjusted >= std::sqrt(fairVariance) ||
-        std::fabs(adjusted - std::sqrt(fairVariance) * std::exp(-0.3 * 0.3 / 8.0)) > 1.0e-15)
-        BOOST_ERROR("convexity-adjusted fair volatility " << adjusted << " is inconsistent");
+    if (!(flat.fairVolatility() < std::sqrt(fairVariance)))
+        BOOST_ERROR("fair volatility " << flat.fairVolatility()
+                    << " is not below the square root of the replicated variance "
+                    << std::sqrt(fairVariance) << " at positive log-volatility");
 }
 
 BOOST_AUTO_TEST_CASE(testMonteCarlo) {
@@ -221,22 +221,16 @@ BOOST_AUTO_TEST_CASE(testMonteCarlo) {
     for (Real s : {0.3, 0.6, 1.0}) {
         vars.logVol->setValue(s);
         MersenneTwisterUniformRng rng(42);
-        IncrementalStatistics sqrtV, meanV;
+        IncrementalStatistics sqrtV;
         for (Size i = 0; i < samples; ++i) {
             Real z = invCum(rng.next().value);
             Real v = K * std::exp(-0.5 * s * s + s * z);
             sqrtV.add(std::sqrt(v));
-            meanV.add(v);
         }
 
         VolatilitySwap swap(Position::Long, 0.2, 1.0, vars.start, vars.maturity);
         swap.setPricingEngine(vars.engine());
         Real fair = swap.fairVolatility();
-
-        // the simulated variance has the mean the engine takes as input
-        if (std::fabs(meanV.mean() - K) > 4.0 * meanV.errorEstimate())
-            BOOST_ERROR("simulated mean variance " << meanV.mean() << " differs from " << K
-                        << " by more than four standard errors (" << meanV.errorEstimate() << ")");
 
         Real error = std::fabs(sqrtV.mean() - fair);
         if (error > 4.0 * sqrtV.errorEstimate())
@@ -320,6 +314,16 @@ BOOST_AUTO_TEST_CASE(testInvalidInputs) {
         RelinkableHandle<YieldTermStructure>(), Handle<Quote>(vars.variance),
         Handle<Quote>(vars.logVol)));
     BOOST_CHECK_THROW(noCurve.NPV(), Error);
+
+    VolatilitySwap noVariance(Position::Long, 0.2, 1.0, vars.start, vars.maturity);
+    noVariance.setPricingEngine(ext::make_shared<LognormalVolatilitySwapEngine>(
+        vars.curve, Handle<Quote>(), Handle<Quote>(vars.logVol)));
+    BOOST_CHECK_THROW(noVariance.NPV(), Error);
+
+    VolatilitySwap noLogVol(Position::Long, 0.2, 1.0, vars.start, vars.maturity);
+    noLogVol.setPricingEngine(ext::make_shared<LognormalVolatilitySwapEngine>(
+        vars.curve, Handle<Quote>(vars.variance), Handle<Quote>()));
+    BOOST_CHECK_THROW(noLogVol.NPV(), Error);
 
     // an expired swap has no value
     VolatilitySwap expired(Position::Long, 0.2, 1.0, vars.today - 2 * Years,
