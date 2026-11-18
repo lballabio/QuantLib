@@ -71,9 +71,6 @@ namespace detail {
        Dnew = sp.series(Dnew, sigma, 0, 3).removeO()
        Cinc = sp.series(Cinc, sigma, 0, 3).removeO()
 
-       repl, (Dnew, Cinc) = sp.cse([sp.simplify(Dnew), sp.simplify(Cinc)],
-                                    symbols=sp.numbered_symbols('t'))
-
      The exponentials exp(+kappa*tau) and exp(+2*kappa*tau) are replaced by
      1/emkt and 1/emkt^2 with emkt = exp(-kappa*tau) in (0,1], and the result
      is collected over a common denominator (a power of kappa alone, with

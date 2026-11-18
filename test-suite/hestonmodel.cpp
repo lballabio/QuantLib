@@ -2845,15 +2845,11 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4COSAndPTDAndPDF) {
                 << "\n  tolerance : " << tolNPV);
     }
 
-    // --- AnalyticPTDHestonEngine, two segments with genuinely DIFFERENT
-    //     parameters (not just two copies of the same one): this exercises
-    //     the actual use case the Dprev generalization exists for -- a
-    //     segment boundary where kappa/theta/rho/sigma all change, carrying
-    //     a nonzero D across it -- not merely the cross-segment recursion
-    //     with a no-op parameter change. Both segments keep sigma tiny
-    //     enough to hit the small-sigma branch, but at different magnitudes,
-    //     so the branch is independently exercised (and independently
-    //     thresholded) per segment.
+    // --- AnalyticPTDHestonEngine, two segments with different
+    //     kappa/theta/rho/sigma, so that a nonzero D is carried across a
+    //     boundary where the parameters change. Both sigmas are below the
+    //     1e-6 threshold, at different magnitudes, so each segment takes the
+    //     small-sigma branch on its own.
     const Time t1 = 0.5*t;
     const Real kappa1 = 1.25, theta1 = 0.01, rho1 = -0.9, sigma1 = 1e-9;
     const Real kappa2 = 0.75, theta2 = 0.03, rho2 = -0.5, sigma2 = 5e-9;
