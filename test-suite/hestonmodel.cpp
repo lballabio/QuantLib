@@ -2847,8 +2847,8 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4COSAndPTDAndPDF) {
 
     // --- AnalyticPTDHestonEngine, two segments with different
     //     kappa/theta/rho/sigma, so that a nonzero D is carried across a
-    //     boundary where the parameters change. Both sigmas are below the
-    //     1e-6 threshold, at different magnitudes, so each segment takes the
+    //     boundary where the parameters change. Both sigmas (1e-9 and
+    //     5e-9) are below the 1e-6 threshold, so each segment takes the
     //     small-sigma branch on its own.
     const Time t1 = 0.5*t;
     const Real kappa1 = 1.25, theta1 = 0.01, rho1 = -0.9, sigma1 = 1e-9;
@@ -2928,9 +2928,10 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaStepAgainstClosedForm) {
 
     // At sigma = 1e-2 the closed form is still numerically stable (its
     // cancellation error is of order eps/sigma^2 ~ 1e-12), while the
-    // expansion's truncation error is O(sigma^3), with a small coefficient. The sigma^2 terms are of
-    // order 1e-5 to 1e-4, so agreement to 1e-7 pins their coefficients,
-    // including those multiplying a nonzero complex Dprev.
+    // expansion's truncation error is O(sigma^3), with a small coefficient.
+    // The sigma^2 terms are of order 1e-5 to 1e-4, so agreement to 1e-7
+    // pins their coefficients, including those multiplying a nonzero
+    // complex Dprev.
     const Real kappa = 1.3, theta = 0.04, sigma = 1e-2, rho = -0.6;
     const Time tau = 1.7;
     const std::complex<Real> i(0.0, 1.0);
