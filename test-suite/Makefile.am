@@ -184,6 +184,7 @@ QL_TEST_SRCS = \
 	varianceoption.cpp \
 	varianceswaps.cpp \
 	volatilitymodels.cpp \
+	volatilityswaps.cpp \
 	vpp.cpp \
 	xoshiro256starstar.cpp \
 	zabr.cpp \

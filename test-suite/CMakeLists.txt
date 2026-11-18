@@ -183,6 +183,7 @@ set(QL_TEST_SOURCES
     varianceoption.cpp
     varianceswaps.cpp
     volatilitymodels.cpp
+    volatilityswaps.cpp
     vpp.cpp
     xoshiro256starstar.cpp
     zabr.cpp

@@ -828,6 +828,7 @@
     <ClCompile Include="varianceoption.cpp" />
     <ClCompile Include="varianceswaps.cpp" />
     <ClCompile Include="volatilitymodels.cpp" />
+    <ClCompile Include="volatilityswaps.cpp" />
     <ClCompile Include="vpp.cpp" />
     <ClCompile Include="xoshiro256starstar.cpp" />
     <ClCompile Include="zabr.cpp" />
