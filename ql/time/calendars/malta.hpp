@@ -68,7 +68,6 @@ namespace QuantLib {
         class MseImpl final : public Calendar::WesternImpl {
         public:
             std::string name() const override { return "Malta Stock Exchange"; }
-            bool isWeekend(Weekday) const override;
             bool isBusinessDay(const Date&) const override;
         };
 

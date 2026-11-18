@@ -27,10 +27,6 @@ namespace QuantLib {
         impl_ = impl;
     }
 
-    bool Malta::MseImpl::isWeekend(Weekday w) const {
-        return w == Saturday || w == Sunday;
-    }
-
     bool Malta::MseImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
