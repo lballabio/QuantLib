@@ -154,10 +154,9 @@ namespace QuantLib {
                     -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G)))
                 );
         } else {
-            std::complex<Real> Dc, Cc;
-            detail::hestonSmallSigmaStep(
+            const auto [Dc, Cc] = detail::hestonSmallSigmaStep(
                 kappa_, theta_, sigma_, rho_, t,
-                std::complex<Real>(u, 0.0), std::complex<Real>(0.0, 0.0), Dc, Cc);
+                std::complex<Real>(u, 0.0), std::complex<Real>(0.0, 0.0));
             return std::exp(v0_*Dc + Cc);
         }
    }

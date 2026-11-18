@@ -26,6 +26,7 @@
 
 #include <ql/types.hpp>
 #include <complex>
+#include <utility>
 
 namespace QuantLib {
 
@@ -44,8 +45,8 @@ namespace detail {
         evaluation loses precision catastrophically (and can fail outright)
         as sigma becomes very small.
 
-        hestonSmallSigmaStep() returns the O(sigma^2) Taylor expansion of
-        (D, C) in sigma instead, which has no such cancellation and stays
+        hestonSmallSigmaStep() returns the pair (D, C) given by the O(sigma^2)
+        Taylor expansion in sigma instead, which has no such cancellation and stays
         accurate (and defined) all the way down to sigma == 0.
 
         Dprev == 0 is the single-segment case: it reproduces (to machine
@@ -81,25 +82,10 @@ namespace detail {
         transcription of the Taylor coefficients would, instead overflows
         for long-dated, fast-mean-reverting inputs (kappa*tau beyond
         roughly 350 in double precision) well before the true value does.
-
-        Known limitation (pre-existing, not introduced here): the exact
-        (non-small-sigma) formula at each of this function's call sites is
-        evaluated by direct subtraction/division rather than with the
-        Andersen-Lake cancellation-reduction technique that
-        AnalyticHestonEngine::lnChF's own exact branch already uses, so its
-        own accuracy for sigma a few orders of magnitude above the
-        sigma > 1e-6 threshold (not sigma -> 0, which is this function's
-        job) can be visibly worse than this expansion's near-machine-
-        precision accuracy just below the threshold. That mismatch predates
-        this expansion -- it is a property of the untouched exact formula at
-        each call site, not of hestonSmallSigmaStep -- and porting the
-        Andersen-Lake technique into those call sites is a separate,
-        independent improvement left for future work.
     */
-    void hestonSmallSigmaStep(
+    std::pair<std::complex<Real>, std::complex<Real>> hestonSmallSigmaStep(
         Real kappa, Real theta, Real sigma, Real rho, Time tau,
-        const std::complex<Real>& z, const std::complex<Real>& Dprev,
-        std::complex<Real>& D, std::complex<Real>& C);
+        const std::complex<Real>& z, const std::complex<Real>& Dprev);
 
 }
 

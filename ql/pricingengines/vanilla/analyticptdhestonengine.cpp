@@ -122,9 +122,8 @@ namespace QuantLib {
                         + std::complex<Real>(0.0, phi*(r_[i-1]-q_[i-1])*tau) + C;
                 } else {
                     const std::complex<Real> z(phi, (j_== 1)? -1.0 : 0.0);
-                    std::complex<Real> Dnew, Cinc;
-                    detail::hestonSmallSigmaStep(
-                        kappa, theta, sigma, rho, tau, z, D, Dnew, Cinc);
+                    const auto [Dnew, Cinc] = detail::hestonSmallSigmaStep(
+                        kappa, theta, sigma, rho, tau, z, D);
 
                     D = Dnew;
                     C = Cinc + std::complex<Real>(0.0, phi*(r_[i-1]-q_[i-1])*tau) + C;
@@ -221,9 +220,8 @@ namespace QuantLib {
                 D = (k+d)/sigma2 * (g - gt*std::exp(-d*tau))
                         /(1.0 - gt*std::exp(-d*tau));
             } else {
-                std::complex<Real> Dnew, Cinc;
-                detail::hestonSmallSigmaStep(
-                    kappa, theta, sigma, rho, tau, z, D, Dnew, Cinc);
+                const auto [Dnew, Cinc] = detail::hestonSmallSigmaStep(
+                    kappa, theta, sigma, rho, tau, z, D);
                 C += Cinc;
                 D = Dnew;
             }

@@ -121,10 +121,9 @@ namespace detail {
      are left as the CSE output, as with COSHestonEngine::c1..c4's own
      CForm-generated bodies.)
     */
-    void hestonSmallSigmaStep(
+    std::pair<std::complex<Real>, std::complex<Real>> hestonSmallSigmaStep(
         Real kappa, Real theta, Real sigma, Real rho, Time tau,
-        const std::complex<Real>& z, const std::complex<Real>& Dprev,
-        std::complex<Real>& D, std::complex<Real>& C) {
+        const std::complex<Real>& z, const std::complex<Real>& Dprev) {
 
         const std::complex<Real> i(0.0, 1.0);
         const std::complex<Real> emkt = std::exp(-kappa*tau);
@@ -184,13 +183,13 @@ namespace detail {
         const std::complex<Real> t52 = Dprev*t23;
         const std::complex<Real> t53 = rho2*tau2;
 
-        D = invKappa3*(0.5*t19*(t10*t17*t18 - t11 + t12 + t16) + t2
+        const std::complex<Real> D = invKappa3*(0.5*t19*(t10*t17*t18 - t11 + t12 + t16) + t2
             + 0.125*sigma2*(emkt*t26*t32 - 2.0*t15*t17*(t14 + rho2*t39 + t34 + t37)
                 + t18*t42*(t13 + t17 - rho2*t40 + t23*t33 + t33 - 2.0*t37 + t41)
                 - t21*t23*t29 + t21*t24*zpi - t26*t31 + t27*t7 - t31*t5 + t32*t7)
             - 0.5*t6 + 0.5*t8);
 
-        C = -0.0625*invKappa3*theta*(8.0*kappa3*(-t25 + t38 + t43)
+        const std::complex<Real> C = -0.0625*invKappa3*theta*(8.0*kappa3*(-t25 + t38 + t43)
             + 8.0*t19*(-kappa*(-t39 + t44) - 2.0*t11 + 2.0*t12 + t16
                 + t18*(t14 - t17 + t39))
             + 16.0*t2
@@ -203,6 +202,8 @@ namespace detail {
                 + t21*emkt2*t48 - t21*(5.0*t21 + 24.0*t49 + 24.0*t50 + 10.0*t9 - 5.0)
                 + 8.0*t29*t49 + emkt2*t47 + t47)
             - 8.0*t6 + 8.0*t8);
+
+        return {D, C};
     }
 
 }

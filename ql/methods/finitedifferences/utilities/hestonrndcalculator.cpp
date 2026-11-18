@@ -108,12 +108,10 @@ namespace {
                         (g-o)*t_ - 2.0*std::log((1.0-gm*std::exp(-o*t_))
                                                             /(1.0-gm)));
                 } else {
-                    std::complex<Real> Dc, Cc;
-                    detail::hestonSmallSigmaStep(
+                    kappaThetaTerm = detail::hestonSmallSigmaStep(
                         p_.kappa, p_.theta, p_.sigma, p_.rho, t_,
                         std::complex<Real>(-p_x, 0.0),
-                        std::complex<Real>(0.0, 0.0), Dc, Cc);
-                    kappaThetaTerm = Cc;
+                        std::complex<Real>(0.0, 0.0)).second;
                 }
 
                 return 2.0*std::exp(std::complex<Real>(0.0, p_x*x_)
