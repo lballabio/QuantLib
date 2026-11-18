@@ -1396,6 +1396,75 @@ BOOST_AUTO_TEST_CASE(testBackwardRegularFirstPeriodWithFirstDate) {
         "Period ending at off-grid nextToLastDate should be irregular");
 }
 
+BOOST_AUTO_TEST_CASE(testClampedStubDateKeepsCycleDayOfMonth) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing that a month-end-clamped first or next-to-last date does "
+        "not reset the schedule's cycle day-of-month...");
+
+    // Reproduces issue #2937: a bond paying on the 30th semi-annually has
+    // its February date clamped to the 28th or 29th.  Passing that clamped
+    // date as nextToLastDate (or firstDate) must not re-anchor the cycle
+    // to the 28th.
+
+    NullCalendar calendar;
+
+    Schedule backward(
+        Date(30, August, 2025),      // effectiveDate
+        Date(30, August, 2028),      // terminationDate
+        Period(Semiannual),
+        calendar, Unadjusted, Unadjusted,
+        DateGeneration::Backward, false,
+        Date(),
+        Date(28, February, 2028));   // nextToLastDate
+
+    check_dates(backward, {
+        Date(30, August, 2025),
+        Date(28, February, 2026),
+        Date(30, August, 2026),
+        Date(28, February, 2027),
+        Date(30, August, 2027),
+        Date(28, February, 2028),
+        Date(30, August, 2028)});
+
+    Schedule forward(
+        Date(30, August, 2025),      // effectiveDate
+        Date(30, August, 2028),      // terminationDate
+        Period(Semiannual),
+        calendar, Unadjusted, Unadjusted,
+        DateGeneration::Forward, false,
+        Date(28, February, 2026),    // firstDate
+        Date());
+
+    check_dates(forward, {
+        Date(30, August, 2025),
+        Date(28, February, 2026),
+        Date(30, August, 2026),
+        Date(28, February, 2027),
+        Date(30, August, 2027),
+        Date(29, February, 2028),
+        Date(30, August, 2028)});
+
+    // A genuinely irregular stub is still irregular and still re-anchors.
+    Schedule irregular(
+        Date(30, August, 2025),
+        Date(30, August, 2028),
+        Period(Semiannual),
+        calendar, Unadjusted, Unadjusted,
+        DateGeneration::Backward, false,
+        Date(),
+        Date(15, February, 2028));
+
+    check_dates(irregular, {
+        Date(30, August, 2025),
+        Date(15, February, 2026),
+        Date(15, August, 2026),
+        Date(15, February, 2027),
+        Date(15, August, 2027),
+        Date(15, February, 2028),
+        Date(30, August, 2028)});
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

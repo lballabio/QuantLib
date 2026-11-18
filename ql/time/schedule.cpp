@@ -206,8 +206,25 @@ namespace QuantLib {
                 dates_.push_back(nextToLastDate_);
                 Date temp = nullCalendar.advance(seed,
                     -periods*(*tenor_), convention, *endOfMonth_);
-                isRegular_.push_back(temp == nextToLastDate_);
-                seed = nextToLastDate_;
+                // Month-end clamping can shift the regular date by a day
+                // or two (e.g. August 30th steps back to February 28th or
+                // 29th); a supplied date in the same clamped month is still
+                // on the regular cycle.
+                bool onRegularCycle =
+                    (temp == nextToLastDate_) ||
+                    (temp.year() == nextToLastDate_.year() &&
+                     temp.month() == nextToLastDate_.month() &&
+                     temp.dayOfMonth() >= 28 &&
+                     nextToLastDate_.dayOfMonth() >= 28);
+                isRegular_.push_back(onRegularCycle);
+                if (onRegularCycle) {
+                    // The next-to-last date stands in for the regular date
+                    // at this step; keep the anchor so earlier dates stay on
+                    // the cycle of the termination date (e.g. the 30th).
+                    ++periods;
+                } else {
+                    seed = nextToLastDate_;
+                }
             }
 
             exitDate = effectiveDate;
@@ -282,11 +299,23 @@ namespace QuantLib {
                 dates_.push_back(firstDate_);
                 Date temp = nullCalendar.advance(seed, periods*(*tenor_),
                                                  convention, *endOfMonth_);
-                if (temp!=firstDate_)
-                    isRegular_.push_back(false);
-                else
-                    isRegular_.push_back(true);
-                seed = firstDate_;
+                // Month-end clamping can shift the regular date by a day
+                // or two; a supplied date in the same clamped month is
+                // still on the regular cycle (see the Backward case).
+                bool onRegularCycle =
+                    (temp == firstDate_) ||
+                    (temp.year() == firstDate_.year() &&
+                     temp.month() == firstDate_.month() &&
+                     temp.dayOfMonth() >= 28 &&
+                     firstDate_.dayOfMonth() >= 28);
+                isRegular_.push_back(onRegularCycle);
+                if (onRegularCycle) {
+                    // keep the anchor so later dates stay on the cycle of
+                    // the effective date
+                    ++periods;
+                } else {
+                    seed = firstDate_;
+                }
             } else if (*rule_ == DateGeneration::Twentieth ||
                        *rule_ == DateGeneration::TwentiethIMM ||
                        *rule_ == DateGeneration::OldCDS ||
