@@ -28,6 +28,7 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/quote.hpp>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -105,7 +106,10 @@ namespace QuantLib {
     }
   
     inline void FlatForward::performCalculations() const {
-        rate_ = InterestRate(forward_->value(), dayCounter(),
+        const Real forward = forward_->value();
+        QL_REQUIRE(std::isfinite(forward),
+                   "non-finite forward rate in flat forward curve");
+        rate_ = InterestRate(forward, dayCounter(),
                              compounding_, frequency_);
     }
 

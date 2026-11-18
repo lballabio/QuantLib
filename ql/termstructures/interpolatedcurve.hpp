@@ -28,6 +28,7 @@
 #include <ql/math/interpolation.hpp>
 #include <ql/time/date.hpp>
 #include <ql/time/daycounter.hpp>
+#include <cmath>
 #include <utility>
 #include <vector>
 
@@ -74,7 +75,12 @@ namespace QuantLib {
         InterpolatedCurve(std::vector<Time> times,
                           std::vector<Real> data,
                           const Interpolator& i = Interpolator())
-        : times_(std::move(times)), data_(std::move(data)), interpolator_(i) {}
+        : times_(std::move(times)), data_(std::move(data)), interpolator_(i) {
+            for (const Real d : data_) {
+                QL_REQUIRE(std::isfinite(d),
+                           "non-finite node value in interpolated curve");
+            }
+        }
 
         InterpolatedCurve(std::vector<Time> times,
                           const Interpolator& i = Interpolator())

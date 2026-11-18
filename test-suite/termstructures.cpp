@@ -21,7 +21,10 @@
 #include "utilities.hpp"
 #include <ql/experimental/commodities/commoditycurve.hpp>
 #include <cmath>
+#include <limits>
 #include <ql/termstructures/yield/compositezeroyieldstructure.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
@@ -624,6 +627,33 @@ BOOST_AUTO_TEST_CASE(testNullTimeToReference) {
                     << std::fixed << std::setprecision(10)
                     << "    calculated: " << calculated << "\n"
                     << "    expected:   " << expected);
+}
+
+BOOST_AUTO_TEST_CASE(testNonFiniteRates) {
+    BOOST_TEST_MESSAGE("Testing rejection of non-finite rates in term structures...");
+
+    Date today(30, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    Actual365Fixed dayCount;
+    const Real nan = std::numeric_limits<Real>::quiet_NaN();
+
+    // a NaN flat rate must not reach a discount factor silently
+    FlatForward flatRate(today, nan, dayCount);
+    BOOST_CHECK_THROW(flatRate.discount(1.0), Error);
+
+    FlatForward flatQuote(today, Handle<Quote>(ext::make_shared<SimpleQuote>(nan)), dayCount);
+    BOOST_CHECK_THROW(flatQuote.discount(1.0), Error);
+
+    // an empty quote can still be set later
+    auto quote = ext::make_shared<SimpleQuote>();
+    FlatForward deferred(today, Handle<Quote>(quote), dayCount);
+    quote->setValue(0.04);
+    BOOST_CHECK_NO_THROW(deferred.discount(1.0));
+
+    // a NaN zero-rate node must be rejected at construction
+    std::vector<Date> dates = {today, today + 365, today + 730, today + 1095};
+    std::vector<Rate> rates = {0.10, nan, 0.11, 0.115};
+    BOOST_CHECK_THROW(ZeroCurve curve(dates, rates, dayCount), Error);
 }
 
 BOOST_AUTO_TEST_CASE(testShifted) {
