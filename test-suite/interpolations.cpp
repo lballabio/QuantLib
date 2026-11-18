@@ -7,6 +7,7 @@
  Copyright (C) 2009 Dimitri Reiswich
  Copyright (C) 2014 Peter Caspers
  Copyright (C) 2018 Klaus Spanderen
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -1607,8 +1608,9 @@ BOOST_AUTO_TEST_CASE(testSabrNegativeVolatilities) {
 
     const std::vector<Real> strikes = {0.03, 0.04, 0.05, 0.06};
     std::vector<Real> vols = {0.20, 0.18, 0.19, 0.185};
+    Real forward = 0.04;
     SABRInterpolation sabr(strikes.begin(), strikes.end(), vols.begin(),
-                           1.0, 0.04, 0.2, 1.0, 0.1, 0.0,
+                           1.0, forward, 0.2, 1.0, 0.1, 0.0,
                            false, false, false, false, true);
     BOOST_CHECK_NO_THROW(sabr.update());
 
@@ -2372,6 +2374,35 @@ BOOST_AUTO_TEST_CASE(testFlochKennedySabrIsSmoothAroundATM) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testFlochKennedySabrParameterLimits) {
+    BOOST_TEST_MESSAGE("Testing Floch-Kennedy SABR parameter limits...");
+
+    // High-precision evaluations of the formula, using y = log(k/F) at
+    // beta = 1 and Dint = -y/alpha at nu = 0.
+    struct TestCase {
+        Real strike, beta, nu, expected;
+    };
+    const TestCase cases[] = {
+        {0.02, 0.5, 0.0, 0.19142802597802061},
+        {0.02, 1.0, 0.4, 0.07226403756765738},
+        {0.02, 1.0 - 1e-12, 0.4, 0.07226403756777167},
+        {0.0301, 0.5, 1e-8, 0.17311501481346904},
+    };
+    for (const auto& c : cases) {
+        const Real calculated =
+            sabrFlochKennedyVolatility(c.strike, 0.03, 1.0, 0.03, c.beta, c.nu, -0.2);
+        QL_CHECK_SMALL(calculated - c.expected, 1e-10);
+    }
+
+    // With beta = 1 and nu = 0 the model has constant volatility alpha,
+    // both inside and outside the near-ATM Taylor branch.
+    for (Real strike : {0.02, 0.02999, 0.03, 0.03001, 0.04}) {
+        const Real calculated =
+            sabrFlochKennedyVolatility(strike, 0.03, 1.0, 0.03, 1.0, 0.0, -0.2);
+        QL_CHECK_SMALL(calculated - 0.03, 1e-12);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testLeFlochKennedySabrExample) {
     BOOST_TEST_MESSAGE("Testing Le Floc'h Kennedy SABR Example...");
 
@@ -3094,6 +3125,20 @@ BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
     }
 
     f.enableExtrapolation();
+
+    // Node sensitivities follow the clamped interpolation value.
+    // Use a linear underlying, which provides node sensitivities.
+    auto linear = ext::make_shared<LinearInterpolation>(
+        std::begin(x), std::end(x), std::begin(y));
+    linear->enableExtrapolation();
+    FlatExtrapolator fl(linear);
+    fl.enableExtrapolation();
+    BOOST_CHECK(fl.nodeSensitivities(-1.0) == linear->nodeSensitivities(x[0]));
+    BOOST_CHECK(fl.nodeSensitivities(5.0) == linear->nodeSensitivities(x[N-1]));
+    auto flatSlopeSensitivities = fl.derivativeNodeSensitivities(5.0);
+    BOOST_REQUIRE(!flatSlopeSensitivities.empty());
+    for (const auto& [i, w] : flatSlopeSensitivities)
+        BOOST_CHECK_SMALL(w, tolerance);
 
     // in-range: must match underlying cubic at knots
     for (Size i = 0; i < N; ++i) {

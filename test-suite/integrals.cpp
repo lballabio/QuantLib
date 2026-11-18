@@ -505,6 +505,127 @@ BOOST_AUTO_TEST_CASE(testPiecewiseIntegral) {
     pw_check(*piecewise, 9.0, 10.0, 6.0);
 }
 
+BOOST_AUTO_TEST_CASE(testIntegratorInitialState) {
+    BOOST_TEST_MESSAGE("Testing the initial state of integrators...");
+
+    const SegmentIntegral integrator(10);
+    BOOST_CHECK(integrator.absoluteError() == Null<Real>());
+    BOOST_CHECK_EQUAL(integrator.numberOfEvaluations(), 0U);
+}
+
+BOOST_AUTO_TEST_CASE(testIntegratorErrorEstimate) {
+    BOOST_TEST_MESSAGE("Testing the error estimate of integrators...");
+
+    const auto f = [](Real x) { return std::exp(-x * x); };
+    // sqrt(pi)/2 erf(1), mpmath
+    const Real expected = 0.74682413281242702540;
+    const Real accuracy = 1.0e-8;
+
+    // Check the reported estimate and the integral against a known value.
+    const auto checkEstimate = [&](const std::string& name, const Integrator& integrator) {
+        BOOST_TEST_CONTEXT(name) {
+            const Real calculated = integrator(f, 0.0, 1.0);
+            const Real error = integrator.absoluteError();
+            const Real required = integrator.absoluteAccuracy();
+            BOOST_CHECK_MESSAGE(error > 0.0 && error <= required,
+                                "error estimate: " << error << ", required accuracy: " << required);
+            QL_CHECK_SMALL(calculated - expected, required);
+        }
+    };
+
+    // for the trapezoid and Simpson integrators, the maximum is a number of iterations
+    checkEstimate("trapezoid", TrapezoidIntegral<Default>(accuracy, 30));
+    // this policy converges slowly: it takes 43 million evaluations for 1e-8
+    checkEstimate("mid-point trapezoid", TrapezoidIntegral<MidPoint>(tolerance, 30));
+    checkEstimate("Simpson", SimpsonIntegral(accuracy, 30));
+    checkEstimate("adaptive Gauss-Kronrod", GaussKronrodAdaptive(accuracy));
+    checkEstimate("non-adaptive Gauss-Kronrod", GaussKronrodNonAdaptive(accuracy, 100, accuracy));
+
+    // These integrators publish no estimate. Their existing success comparison
+    // accepts Null<Real>() when the configured accuracy is also Null<Real>().
+    const auto checkNoEstimate = [&](const std::string& name, const Integrator& integrator) {
+        BOOST_TEST_CONTEXT(name) {
+            integrator(f, 0.0, 1.0);
+            BOOST_CHECK(integrator.absoluteError() == Null<Real>());
+            BOOST_CHECK_EQUAL(integrator.integrationSuccess(),
+                              integrator.absoluteAccuracy() == Null<Real>());
+        }
+    };
+
+    checkNoEstimate("Gauss-Lobatto", GaussLobattoIntegral(1000, accuracy));
+    checkNoEstimate("segment", SegmentIntegral(100));
+    checkNoEstimate("Gauss-Legendre", GaussLegendreIntegrator(16));
+    checkNoEstimate("discrete trapezoid", DiscreteTrapezoidIntegrator(1000));
+    checkNoEstimate("discrete Simpson", DiscreteSimpsonIntegrator(1001));
+    checkNoEstimate("Filon", FilonIntegral(FilonIntegral::Cosine, 1.0, 16));
+    checkNoEstimate("piecewise", PiecewiseIntegral(ext::make_shared<SegmentIntegral>(100),
+                                                   std::vector<Real>{0.5}));
+}
+
+BOOST_AUTO_TEST_CASE(testIntegratorStateBetweenIntegrations) {
+    BOOST_TEST_MESSAGE("Testing the state of integrators between integrations...");
+
+    const auto f = [](Real x) { return std::exp(-x * x); };
+    const Real accuracy = 1.0e-8;
+
+    // This integrator already reported an error before the state-reset fix.
+    const GaussKronrodNonAdaptive nonAdaptive(accuracy, 100, accuracy);
+    nonAdaptive(f, 0.0, 1.0);
+    BOOST_CHECK(nonAdaptive.absoluteError() > 0.0);
+    BOOST_CHECK(nonAdaptive.integrationSuccess());
+    BOOST_CHECK_EQUAL(nonAdaptive(f, 0.5, 0.5), 0.0);
+    BOOST_CHECK_EQUAL(nonAdaptive.absoluteError(), 0.0);
+    BOOST_CHECK_EQUAL(nonAdaptive.numberOfEvaluations(), 0U);
+    BOOST_CHECK(nonAdaptive.integrationSuccess());
+
+    // the exact error of an empty interval does not survive into the next integration
+    const SegmentIntegral segment(100);
+    segment(f, 0.5, 0.5);
+    BOOST_CHECK_EQUAL(segment.absoluteError(), 0.0);
+    segment(f, 0.0, 1.0);
+    BOOST_CHECK(segment.absoluteError() == Null<Real>());
+
+    // reversing the limits changes the sign of the integral, not its error estimate
+    const SimpsonIntegral simpson(accuracy, 30);
+    const Real forward = simpson(f, 0.0, 1.0);
+    const Real forwardError = simpson.absoluteError();
+    BOOST_CHECK(forwardError > 0.0);
+    BOOST_CHECK_EQUAL(simpson(f, 1.0, 0.0), -forward);
+    BOOST_CHECK_EQUAL(simpson.absoluteError(), forwardError);
+
+    // a failed integration does not report the estimate of the previous one; for the trapezoid
+    // and Simpson integrators, the limit set by maxEvaluations() is on iterations
+    SimpsonIntegral limitedSimpson(accuracy, 30);
+    limitedSimpson(f, 0.0, 1.0);
+    BOOST_CHECK(limitedSimpson.absoluteError() > 0.0);
+    limitedSimpson.setMaxEvaluations(3);
+    BOOST_CHECK_EXCEPTION(limitedSimpson(f, 0.0, 1.0), Error,
+                          ExpectedErrorMessage("max number of iterations reached"));
+    BOOST_CHECK(limitedSimpson.absoluteError() == Null<Real>());
+    BOOST_CHECK(!limitedSimpson.integrationSuccess());
+
+    const auto g = [](Real x) { return 100.0 * std::cos(x); };
+    GaussKronrodAdaptive adaptive(1.0e-9);
+    adaptive(g, 0.0, 10.0);
+    const Real estimatedError = adaptive.absoluteError();
+    BOOST_CHECK(adaptive.numberOfEvaluations() > 15);
+    BOOST_CHECK(estimatedError > 0.0 && estimatedError <= adaptive.absoluteAccuracy());
+    BOOST_CHECK(adaptive.integrationSuccess());
+
+    // The root subdivides: its estimate must include both halves.
+    GaussKronrodAdaptive half(0.5 * adaptive.absoluteAccuracy());
+    half(g, 0.0, 5.0);
+    const Real leftError = half.absoluteError();
+    half(g, 5.0, 10.0);
+    QL_CHECK_CLOSE_FRACTION(estimatedError, leftError + half.absoluteError(), 1.0e-10);
+
+    adaptive.setMaxEvaluations(15);
+    BOOST_CHECK_EXCEPTION(adaptive(g, 0.0, 10.0), Error,
+                          ExpectedErrorMessage("maximum number of function evaluations exceeded"));
+    BOOST_CHECK(adaptive.absoluteError() == Null<Real>());
+    BOOST_CHECK(!adaptive.integrationSuccess());
+}
+
 BOOST_AUTO_TEST_CASE(testExponentialIntegral) {
     BOOST_TEST_MESSAGE("Testing exponential integrals...");
 

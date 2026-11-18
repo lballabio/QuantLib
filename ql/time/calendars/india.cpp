@@ -442,12 +442,17 @@ namespace QuantLib {
                 || (d == 17 && m == June)
                 // Moharram
                 || (d == 17 && m == July)
-                // Eid-E-Milad (estimated Sunday 15th or Monday 16th)
+                // Id-E-Milad (the public holiday was later moved to the
+                // 18th, but the 16th remained a settlement holiday)
                 || (d == 16 && m == September)
+                // Id-E-Milad (moved)
+                || (d == 18 && m == September)
                 // Diwali-Laxmi Pujan
                 || (d == 1 && m == November)
                 // Gurunank Jayanti
-                || (d == 15 && m == November))
+                || (d == 15 && m == November)
+                // Maharashtra Assembly Elections
+                || (d == 20 && m == November))
                 return false;
         }
 
@@ -458,14 +463,23 @@ namespace QuantLib {
                 || (d == 26 && m == February)
                 // Holi
                 || (d == 14 && m == March)
-                // Ramzan Id (estimated Sunday 30th or Monday 31st)
+                // Ramzan Id
                 || (d == 31 && m == March)
+                // Annual Bank Closing
+                || (d == 1 && m == April)
                 // Mahavir Jayanti
                 || (d == 10 && m == April)
                 // Buddha Pournima
                 || (d == 12 && m == May)
-                // Id-E-Milad (estimated Thursday 4th or Friday 5th)
+                // Ganesh Chaturthi
+                || (d == 27 && m == August)
+                // Id-E-Milad
                 || (d == 5 && m == September)
+                // Id-E-Milad (public holiday moved, declared a trading and
+                // settlement holiday in addition to the 5th)
+                || (d == 8 && m == September)
+                // Diwali - Laxmi Pujan
+                || (d == 21 && m == October)
                 // Diwali - Balipratipada
                 || (d == 22 && m == October)
                 // Gurunank Jayanti

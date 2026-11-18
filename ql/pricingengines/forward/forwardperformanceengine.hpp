@@ -84,10 +84,13 @@ namespace QuantLib {
         this->results_.theta = this->process_->riskFreeRate()->
             zeroRate(this->arguments_.resetDate, rfdc, Continuous, NoFrequency)
             * this->results_.value;
-        this->results_.vega = discR * this->originalResults_->vega;
-        this->results_.rho = - resetTime * this->results_.value +
-            discR * this->originalResults_->rho;
-        this->results_.dividendRho = discR * this->originalResults_->dividendRho;
+        if (this->originalResults_->vega != Null<Real>())
+            this->results_.vega = discR * this->originalResults_->vega;
+        if (this->originalResults_->rho != Null<Real>())
+            this->results_.rho =
+                -resetTime * this->results_.value + discR * this->originalResults_->rho;
+        if (this->originalResults_->dividendRho != Null<Real>())
+            this->results_.dividendRho = discR * this->originalResults_->dividendRho;
     }
 
 }

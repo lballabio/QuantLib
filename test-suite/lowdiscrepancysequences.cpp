@@ -121,9 +121,6 @@ namespace
         Size N = 1024;
         Size numberBatches = 32;
 
-        BOOST_TEST_MESSAGE("Testing randomized lattice sequences (" << nameString
-                           << ") up to dimension " << maxDim << "...");
-
         std::vector<Real> z;
 
         LatticeRule::getRule(name, z, N);
@@ -171,6 +168,8 @@ namespace
 }
 
 BOOST_AUTO_TEST_CASE(testRandomizedLattices){
+
+    BOOST_TEST_MESSAGE("Testing randomized lattice sequences...");
 
     testRandomizedLatticeRule(LatticeRule::A, "A");
     testRandomizedLatticeRule(LatticeRule::B, "B");

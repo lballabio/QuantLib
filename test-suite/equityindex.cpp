@@ -278,6 +278,154 @@ BOOST_AUTO_TEST_CASE(testNoErrorIfTodayIsNotBusinessDay) {
     BOOST_REQUIRE_NO_THROW(vars.equityIndex->fixing(forecastedDate));
 }
 
+BOOST_AUTO_TEST_CASE(testDefaultReturnType) {
+    BOOST_TEST_MESSAGE("Testing that equity index defaults to price return type...");
+
+    CommonVars vars;
+    const Real tolerance = 1.0e-8;
+
+    if (vars.equityIndex->returnType() != EquityIndex::Price)
+        BOOST_ERROR("default equity index return type should be Price\n"
+                    << "    actual return type:    " << vars.equityIndex->returnType() << "\n");
+
+    auto priceIndex =
+        ext::make_shared<EquityIndex>("eqIndex", vars.calendar, EURCurrency(), vars.interestHandle,
+                                      vars.dividendHandle, vars.spotHandle, EquityIndex::Price);
+
+    Date forecastedDate(20, May, 2030);
+
+    Real forecast = vars.equityIndex->fixing(forecastedDate);
+    Real priceForecast = priceIndex->fixing(forecastedDate);
+    Real expectedForecast = vars.spotHandle->value() *
+                            vars.dividendHandle->discount(forecastedDate) /
+                            vars.interestHandle->discount(forecastedDate);
+
+    if ((std::fabs(forecast - expectedForecast) > tolerance) ||
+        (std::fabs(priceForecast - expectedForecast) > tolerance))
+        BOOST_ERROR("could not replicate default index forecast\n"
+                    << "    default forecast:    " << forecast << "\n"
+                    << "    price forecast:    " << priceForecast << "\n"
+                    << "    expected forecast:    " << expectedForecast << "\n");
+}
+
+BOOST_AUTO_TEST_CASE(testTotalReturnFixingForecast) {
+    BOOST_TEST_MESSAGE("Testing total return index fixing forecast...");
+
+    CommonVars vars;
+    const Real tolerance = 1.0e-8;
+
+    auto totalReturnIndex = ext::make_shared<EquityIndex>(
+        "eqIndex", vars.calendar, EURCurrency(), vars.interestHandle, vars.dividendHandle,
+        vars.spotHandle, EquityIndex::TotalReturn);
+    auto totalReturnIndexExDiv =
+        totalReturnIndex->clone(vars.interestHandle, Handle<YieldTermStructure>(), vars.spotHandle);
+
+    Date forecastedDate(20, May, 2030);
+
+    Real forecast = totalReturnIndex->fixing(forecastedDate);
+    Real forecastExDiv = totalReturnIndexExDiv->fixing(forecastedDate);
+    Real expectedForecast =
+        vars.spotHandle->value() / vars.interestHandle->discount(forecastedDate);
+
+    if ((std::fabs(forecast - expectedForecast) > tolerance) ||
+        (std::fabs(forecastExDiv - expectedForecast) > tolerance))
+        BOOST_ERROR("could not replicate total return index forecast\n"
+                    << "    actual forecast:    " << forecast << "\n"
+                    << "    actual forecast without dividend:    " << forecastExDiv << "\n"
+                    << "    expected forecast:    " << expectedForecast << "\n");
+
+    auto totalReturnIndexExInterest =
+        totalReturnIndex->clone(Handle<YieldTermStructure>(), vars.dividendHandle, vars.spotHandle);
+
+    BOOST_CHECK_EXCEPTION(
+        totalReturnIndexExInterest->fixing(forecastedDate), Error,
+        ExpectedErrorMessage("null interest rate term structure set to this instance of eqIndex"));
+}
+
+BOOST_AUTO_TEST_CASE(testExcessReturnFixingForecast) {
+    BOOST_TEST_MESSAGE("Testing excess return index fixing forecast...");
+
+    CommonVars vars;
+    const Real tolerance = 1.0e-8;
+
+    auto excessReturnIndex = ext::make_shared<EquityIndex>(
+        "eqIndex", vars.calendar, EURCurrency(), vars.interestHandle, vars.dividendHandle,
+        vars.spotHandle, EquityIndex::ExcessReturn);
+    auto excessReturnIndexExCurves = excessReturnIndex->clone(
+        Handle<YieldTermStructure>(), Handle<YieldTermStructure>(), vars.spotHandle);
+
+    const Real expectedForecast = vars.spotHandle->value();
+
+    std::vector<Date> forecastedDates = {
+        vars.calendar.advance(vars.today, 1 * Days), vars.calendar.advance(vars.today, 6 * Months),
+        vars.calendar.advance(vars.today, 1 * Years), Date(20, May, 2030)};
+
+    for (const auto& d : forecastedDates) {
+        Real forecast = excessReturnIndex->fixing(d);
+        Real forecastExCurves = excessReturnIndexExCurves->fixing(d);
+
+        if ((std::fabs(forecast - expectedForecast) > tolerance) ||
+            (std::fabs(forecastExCurves - expectedForecast) > tolerance))
+            BOOST_ERROR("excess return index forecast should be equal to spot\n"
+                        << "    forecast date:    " << d << "\n"
+                        << "    actual forecast:    " << forecast << "\n"
+                        << "    actual forecast without curves:    " << forecastExCurves << "\n"
+                        << "    expected forecast:    " << expectedForecast << "\n");
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testCloneKeepsReturnType) {
+    BOOST_TEST_MESSAGE("Testing that cloning an equity index keeps its return type...");
+
+    CommonVars vars;
+
+    for (auto returnType :
+         {EquityIndex::Price, EquityIndex::TotalReturn, EquityIndex::ExcessReturn}) {
+        auto equityIndex = ext::make_shared<EquityIndex>("eqIndex", vars.calendar, EURCurrency(),
+                                                         vars.interestHandle, vars.dividendHandle,
+                                                         vars.spotHandle, returnType);
+        auto clonedIndex =
+            equityIndex->clone(vars.interestHandle, Handle<YieldTermStructure>(), Handle<Quote>());
+
+        if (clonedIndex->returnType() != returnType)
+            BOOST_ERROR("cloned equity index should keep its return type\n"
+                        << "    actual return type:    " << clonedIndex->returnType() << "\n"
+                        << "    expected return type:    " << returnType << "\n");
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPastFixingsIndependentOfReturnType) {
+    BOOST_TEST_MESSAGE("Testing that past fixings do not depend on the return type...");
+
+    CommonVars vars;
+    const Real tolerance = 1.0e-8;
+
+    const Date pastDate(25, January, 2023);
+    const Real pastFixing = 8650.0;
+    vars.equityIndex->addFixing(pastDate, pastFixing);
+
+    const Real todaysFixing = 8690.0;
+
+    for (auto returnType :
+         {EquityIndex::Price, EquityIndex::TotalReturn, EquityIndex::ExcessReturn}) {
+        auto equityIndex = ext::make_shared<EquityIndex>("eqIndex", vars.calendar, EURCurrency(),
+                                                         vars.interestHandle, vars.dividendHandle,
+                                                         vars.spotHandle, returnType);
+
+        Real actualPastFixing = equityIndex->fixing(pastDate);
+        Real actualTodaysFixing = equityIndex->fixing(vars.today);
+
+        if ((std::fabs(actualPastFixing - pastFixing) > tolerance) ||
+            (std::fabs(actualTodaysFixing - todaysFixing) > tolerance))
+            BOOST_ERROR("past fixings should not depend on the return type\n"
+                        << "    return type:    " << returnType << "\n"
+                        << "    actual past fixing:    " << actualPastFixing << "\n"
+                        << "    expected past fixing:    " << pastFixing << "\n"
+                        << "    actual today's fixing:    " << actualTodaysFixing << "\n"
+                        << "    expected today's fixing:    " << todaysFixing << "\n");
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

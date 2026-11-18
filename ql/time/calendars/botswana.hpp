@@ -43,16 +43,18 @@ namespace QuantLib {
     <li>Saturdays</li>
     <li>Sundays</li>
     <li>New Year's Day, January 1st</li>
+    <li>January 2nd</li>
     <li>Good Friday</li>
     <li>Easter Monday</li>
     <li>Labour Day, May 1st</li>
     <li>Ascension</li>
     <li>Sir Seretse Khama Day, July 1st</li>
-    <li>Presidents' Day</li>
+    <li>Presidents' Day, third Monday of July, and the following Tuesday</li>
     <li>Independence Day, September 30th</li>
     <li>Botswana Day, October 1st</li>
     <li>Christmas, December 25th </li>
     <li>Boxing Day, December 26th</li>
+    <li>Public holiday in honour of former President Festus Mogae, May 15th, 2026</li>
     </ul>
 
     \ingroup calendars

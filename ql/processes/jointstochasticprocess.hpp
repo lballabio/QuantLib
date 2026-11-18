@@ -31,7 +31,13 @@
 
 namespace QuantLib {
 
-    class JointStochasticProcess : public StochasticProcess {
+    /*! \deprecated For Heston-Hull-White models, see HybridHestonHullWhiteProcess;
+                    otherwise, implement a purpose-built StochasticProcess.
+                  Deprecated in version 1.45.
+    */
+    class [[deprecated("For Heston-Hull-White models, see HybridHestonHullWhiteProcess; "
+                       "otherwise, implement a purpose-built StochasticProcess")]]
+        JointStochasticProcess : public StochasticProcess {
       public:
         JointStochasticProcess(std::vector<ext::shared_ptr<StochasticProcess> > l,
                                Size factors = Null<Size>());
@@ -86,8 +92,8 @@ namespace QuantLib {
                 : t0_(t0), dt_(dt) {}
 
             bool operator<(const CachingKey& key) const {
-                return   t0_ < key.t0_ 
-                    || ( t0_ == key.t0_ && dt_ < key.dt_); 
+                return   t0_ < key.t0_
+                    || ( t0_ == key.t0_ && dt_ < key.dt_);
             }
             Time t0_;
             Time dt_;

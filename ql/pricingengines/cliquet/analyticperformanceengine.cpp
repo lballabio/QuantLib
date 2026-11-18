@@ -63,6 +63,15 @@ namespace QuantLib {
         results_.rho = results_.dividendRho = 0.0;
         results_.vega = 0.0;
 
+        // Hold spot, calendar-date forward rates and forward variances fixed as the curve
+        // reference dates advance. Each period then depends on the reference date through
+        // its risk-free discount factor. Use the reference-date forward rate, estimated by
+        // forwardRate(d, d) over the first 1e-4 years of the curve's day counter.
+        Date referenceDate = process_->riskFreeRate()->referenceDate();
+        Rate r = process_->riskFreeRate()->forwardRate(referenceDate, referenceDate,
+                                                       process_->riskFreeRate()->dayCounter(),
+                                                       Continuous, NoFrequency);
+
         for (Size i = 1; i < resetDates.size(); i++) {
 
             DiscountFactor discount =
@@ -88,9 +97,7 @@ namespace QuantLib {
             results_.value += discount * moneyness->strike() * black.value();
             results_.delta += 0.0;
             results_.gamma += 0.0;
-            results_.theta += process_->riskFreeRate()->forwardRate(
-                resetDates[i-1], resetDates[i], rfdc, Continuous, NoFrequency) *
-                discount * moneyness->strike() * black.value();
+            results_.theta += r * discount * moneyness->strike() * black.value();
 
             Time dt = rfdc.yearFraction(resetDates[i-1],resetDates[i]);
             Time t = rfdc.yearFraction(

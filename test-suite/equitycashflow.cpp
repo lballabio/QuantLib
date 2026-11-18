@@ -277,6 +277,21 @@ BOOST_AUTO_TEST_CASE(testErrorWhenInconsistentMarketDataReferenceDate) {
             "reference date.");
 }
 
+BOOST_AUTO_TEST_CASE(testErrorWhenIndexIsNotPriceReturn) {
+    BOOST_TEST_MESSAGE("Testing error when quanto pricer is used with non-price return index...");
+
+    CommonVars vars;
+
+    for (auto returnType : {EquityIndex::TotalReturn, EquityIndex::ExcessReturn}) {
+        auto equityIndex = ext::make_shared<EquityIndex>(
+            "eqIndex", vars.calendar, EURCurrency(), vars.localCcyInterestHandle,
+            vars.dividendHandle, vars.spotHandle, returnType);
+        auto cf = vars.createEquityQuantoCashFlow(equityIndex);
+
+        checkRaisedError(cf, "Quanto pricer only supports price return equity indexes.");
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Klaus Spanderen
  Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,6 +53,9 @@ namespace QuantLib {
                            Real xtol = 1.0e-8,
                            Real gtol = 1.0e-8,
                            bool useCostFunctionsJacobian = false);
+        bool usesCostFunctionJacobian() const override {
+            return useCostFunctionsJacobian_;
+        }
         EndCriteria::Type minimize(Problem& P,
                                    const EndCriteria& endCriteria) override;
 

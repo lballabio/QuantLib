@@ -1050,6 +1050,259 @@ BOOST_AUTO_TEST_CASE(testAmericanCallPutParity) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testFdHestonAmericanNotBelowExerciseValue) {
+
+    BOOST_TEST_MESSAGE("Testing that FdHestonVanillaEngine American prices "
+                       "stay above the exercise value...");
+
+    // Same undershoot as FdBlackScholesVanillaEngine: the step condition
+    // enforces the exercise constraint on grid nodes, but the monotonic
+    // cubic interpolant used to read off the price at the spot (which
+    // generally falls between nodes) can still dip below the payoff there.
+    // VanillaOption::impliedVolatility prices Americans with this engine,
+    // so a value below the payoff cannot be inverted either.
+
+    const Date today(15, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+
+    struct Case {
+        Option::Type type;
+        Real spot;
+        Real strike;
+        Rate r;
+        Rate q;
+        Volatility vol;
+        Integer days;
+    };
+    const Case cases[] = {
+        // found by a parameter sweep at this engine's own default grid
+        // (tGrid=100, xGrid=100, vGrid=50); undershoot about 7.3e-3
+        {Option::Call, 145.0, 100.0, 0.00, 0.05, 0.25, 1095},
+        {Option::Call, 110.0, 100.0, 0.00, 0.05, 0.10, 365},
+    };
+
+    for (const auto& c : cases) {
+        const auto quote = ext::make_shared<SimpleQuote>(c.spot);
+        const Handle<YieldTermStructure> rTS(flatRate(today, c.r, dc));
+        const Handle<YieldTermStructure> qTS(flatRate(today, c.q, dc));
+        // near-zero vol-of-vol, theta == v0: a Heston process that stays
+        // close to a flat Black-Scholes volatility of c.vol throughout,
+        // isolating the finite-difference interpolation behavior rather
+        // than any genuine stochastic-volatility effect.
+        const Real v0 = c.vol * c.vol;
+        const auto hestonProcess = ext::make_shared<HestonProcess>(
+            rTS, qTS, Handle<Quote>(quote), v0, 1.0, v0, 1.0e-4, 0.0);
+        const auto model = ext::make_shared<HestonModel>(hestonProcess);
+
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(c.type, c.strike);
+        const auto exercise =
+            ext::make_shared<AmericanExercise>(today, today + c.days);
+
+        VanillaOption option(payoff, exercise);
+        option.setPricingEngine(ext::make_shared<FdHestonVanillaEngine>(model));
+
+        const Real intrinsic = (*payoff)(c.spot);
+        const Real calculated = option.NPV();
+
+        if (calculated < intrinsic) {
+            BOOST_FAIL("American option value below exercise value"
+                    << "\n    option type: " << c.type
+                    << "\n    spot       : " << c.spot
+                    << "\n    strike     : " << c.strike
+                    << "\n    intrinsic  : " << intrinsic
+                    << "\n    calculated : " << calculated
+                    << "\n    undershoot : " << (intrinsic - calculated));
+        }
+    }
+
+    // A Bermudan takes the same floor when one of its exercise dates
+    // equals the reference date (the engine looks for an exact match).
+    // Undershoot about 1.8e-3 at the default grid, same sweep as above.
+    {
+        const auto quote = ext::make_shared<SimpleQuote>(145.0);
+        const Handle<YieldTermStructure> rTS(flatRate(today, 0.00, dc));
+        const Handle<YieldTermStructure> qTS(flatRate(today, 0.05, dc));
+        const Real v0 = 0.25 * 0.25;
+        const auto hestonProcess = ext::make_shared<HestonProcess>(
+            rTS, qTS, Handle<Quote>(quote), v0, 1.0, v0, 1.0e-4, 0.0);
+        const auto model = ext::make_shared<HestonModel>(hestonProcess);
+
+        std::vector<Date> dates;
+        for (Integer t = 0; t <= 1095; t += 180)
+            dates.push_back(today + t);
+
+        const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+        VanillaOption option(payoff, ext::make_shared<BermudanExercise>(dates));
+        option.setPricingEngine(ext::make_shared<FdHestonVanillaEngine>(model));
+
+        const Real intrinsic = (*payoff)(145.0);
+        const Real calculated = option.NPV();
+        if (calculated < intrinsic) {
+            BOOST_FAIL("Bermudan option value below exercise value"
+                    << "\n    intrinsic  : " << intrinsic
+                    << "\n    calculated : " << calculated
+                    << "\n    undershoot : " << (intrinsic - calculated));
+        }
+
+        // Every strike of the multiple-strikes cache takes the floor too.
+        // The 90-strike entry is stored with d = 100/90 != 1, so its value
+        // is read at a scaled solver point and rescaled back to the real
+        // spot; raw undershoots about 3.4e-3 (strike 100) and 5.7e-5
+        // (strike 90) at the default grid. The 90-strike NPV below is
+        // served from the cache populated by the 100-strike calculation.
+        const auto cacheEngine = ext::make_shared<FdHestonVanillaEngine>(model);
+        cacheEngine->enableMultipleStrikesCaching(std::vector<Real>{100.0, 90.0});
+
+        VanillaOption strike100(payoff,
+            ext::make_shared<AmericanExercise>(today, today + 1095));
+        strike100.setPricingEngine(cacheEngine);
+        const Real calculated100 = strike100.NPV();
+
+        const auto payoff90 = ext::make_shared<PlainVanillaPayoff>(Option::Call, 90.0);
+        VanillaOption strike90(payoff90,
+            ext::make_shared<AmericanExercise>(today, today + 1095));
+        strike90.setPricingEngine(cacheEngine);
+        const Real intrinsic90 = (*payoff90)(145.0);
+        const Real calculated90 = strike90.NPV();
+
+        if (calculated100 < intrinsic || calculated90 < intrinsic90) {
+            BOOST_FAIL("multiple-strikes cached value below exercise value"
+                    << "\n    intrinsic  : " << intrinsic << " / " << intrinsic90
+                    << "\n    calculated : " << calculated100 << " / " << calculated90);
+        }
+    }
+
+    // A European on the same market is worth less than intrinsic. The floor
+    // must not be applied to it, and neither to an American that cannot be
+    // exercised yet.
+    const auto quote = ext::make_shared<SimpleQuote>(110.0);
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.00, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.02, dc));
+    const Real v0 = 0.10 * 0.10;
+    const auto hestonProcess = ext::make_shared<HestonProcess>(
+        rTS, qTS, Handle<Quote>(quote), v0, 1.0, v0, 1.0e-4, 0.0);
+    const auto model = ext::make_shared<HestonModel>(hestonProcess);
+    const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+    const Real intrinsic = (*payoff)(110.0);
+
+    // Both checks below assert only what the floor logic actually promises
+    // (it must not engage here, so the value must come out strictly below
+    // intrinsic) rather than an arbitrary absolute gap, so the test stays
+    // meaningful across grid-size or scheme changes.
+    const Real tol = 1.0e-6;
+
+    const auto europeanExercise = ext::make_shared<EuropeanExercise>(today + 90);
+    VanillaOption european(payoff, europeanExercise);
+    european.setPricingEngine(ext::make_shared<FdHestonVanillaEngine>(model));
+    const Real europeanValue = european.NPV();
+    if (!(europeanValue < intrinsic - tol)) {
+        BOOST_FAIL("floor incorrectly applied to a European option"
+                << "\n    intrinsic : " << intrinsic
+                << "\n    calculated: " << europeanValue);
+    }
+
+    const auto deferredExercise =
+        ext::make_shared<AmericanExercise>(today + 30, today + 90);
+    VanillaOption deferred(payoff, deferredExercise);
+    deferred.setPricingEngine(ext::make_shared<FdHestonVanillaEngine>(model));
+    const Real deferredValue = deferred.NPV();
+    if (!(deferredValue < intrinsic - tol)) {
+        BOOST_FAIL("floor incorrectly applied to a not-yet-exercisable American option"
+                << "\n    intrinsic : " << intrinsic
+                << "\n    calculated: " << deferredValue);
+    }
+
+    const auto deferredBermudan = ext::make_shared<BermudanExercise>(
+        std::vector<Date>{today + 30, today + 60, today + 90});
+    VanillaOption bermudan(payoff, deferredBermudan);
+    bermudan.setPricingEngine(ext::make_shared<FdHestonVanillaEngine>(model));
+    const Real bermudanValue = bermudan.NPV();
+    if (!(bermudanValue < intrinsic - tol)) {
+        BOOST_FAIL("floor incorrectly applied to a Bermudan option whose "
+                   "exercise dates are all after the reference date"
+                << "\n    intrinsic : " << intrinsic
+                << "\n    calculated: " << bermudanValue);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testFdHestonMultiStrikeCachePayoffAtExpiry) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing that FdHestonVanillaEngine's multiple-strikes cache "
+        "distinguishes options by payoffAtExpiry...");
+
+    // Two Americans, same type/strike/dates, differing only in
+    // payoffAtExpiry. Neither FdmStepConditionComposite nor the solver
+    // reads that flag -- it only controls whether this engine's own
+    // exercise-value floor applies -- so the cache lookup (type + dates)
+    // used to treat them as the same option and could serve a floored
+    // result where an unfloored one was requested, or vice versa,
+    // depending on which was priced first.
+
+    const Date today(15, October, 2026);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual365Fixed();
+
+    // the same confirmed-undershoot case used above
+    const Real spot = 145.0, strike = 100.0, vol = 0.25;
+    const Integer days = 1095;
+
+    const auto quote = ext::make_shared<SimpleQuote>(spot);
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.00, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.05, dc));
+    const Real v0 = vol * vol;
+    const auto hestonProcess = ext::make_shared<HestonProcess>(
+        rTS, qTS, Handle<Quote>(quote), v0, 1.0, v0, 1.0e-4, 0.0);
+    const auto model = ext::make_shared<HestonModel>(hestonProcess);
+
+    const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+    const Real intrinsic = (*payoff)(spot);
+    // payoffAtExpiry=false: the floor must engage (no early exercise premium
+    // exempts it); payoffAtExpiry=true: the floor must not engage, so the
+    // raw interpolated (undershooting) value is expected.
+    const auto flooredExercise =
+        ext::make_shared<AmericanExercise>(today, today + days, false);
+    const auto unflooredExercise =
+        ext::make_shared<AmericanExercise>(today, today + days, true);
+
+    for (bool flooredFirst : {true, false}) {
+        const auto engine = ext::make_shared<FdHestonVanillaEngine>(model);
+        // Cache the same strike the two options below are priced at, so the
+        // second NPV() call hits the cache lookup this test is targeting.
+        engine->enableMultipleStrikesCaching(std::vector<Real>{strike});
+
+        VanillaOption flooredOption(payoff, flooredExercise);
+        flooredOption.setPricingEngine(engine);
+        VanillaOption unflooredOption(payoff, unflooredExercise);
+        unflooredOption.setPricingEngine(engine);
+
+        Real flooredValue, unflooredValue;
+        if (flooredFirst) {
+            flooredValue = flooredOption.NPV();
+            unflooredValue = unflooredOption.NPV();
+        } else {
+            unflooredValue = unflooredOption.NPV();
+            flooredValue = flooredOption.NPV();
+        }
+
+        if (flooredValue < intrinsic) {
+            BOOST_FAIL("payoffAtExpiry=false result not floored "
+                       "(cache likely served the payoffAtExpiry=true value)"
+                    << "\n    floored first: " << flooredFirst
+                    << "\n    intrinsic    : " << intrinsic
+                    << "\n    calculated   : " << flooredValue);
+        }
+        if (unflooredValue >= intrinsic) {
+            BOOST_FAIL("payoffAtExpiry=true result incorrectly floored "
+                       "(cache likely served the payoffAtExpiry=false value)"
+                    << "\n    floored first: " << flooredFirst
+                    << "\n    intrinsic    : " << intrinsic
+                    << "\n    calculated   : " << unflooredValue);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
