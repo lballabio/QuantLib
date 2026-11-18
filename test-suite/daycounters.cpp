@@ -1109,6 +1109,30 @@ BOOST_AUTO_TEST_CASE(testActual365_Canadian) {
 
 }
 
+BOOST_AUTO_TEST_CASE(testActual365CanadianReversedDates) {
+    BOOST_TEST_MESSAGE("Testing Actual/365 (Canadian) with reversed accrual dates...");
+
+    const Actual365Fixed dayCounter(Actual365Fixed::Canadian);
+    struct TestData {
+        Date start, end;
+        Time expected;
+    };
+    const TestData cases[] = {{Date(1, January, 2024), Date(1, July, 2024), 0.5},
+                              {Date(1, July, 2024), Date(1, January, 2025), 0.5},
+                              {Date(1, January, 2024), Date(1, January, 2025), 1.0},
+                              {Date(1, July, 2024), Date(1, October, 2024), 0.25}};
+    for (const auto& c : cases) {
+        QL_CHECK_SMALL(dayCounter.yearFraction(c.start, c.end, c.start, c.end) - c.expected, 1e-14);
+        QL_CHECK_SMALL(dayCounter.yearFraction(c.end, c.start, c.start, c.end) + c.expected, 1e-14);
+    }
+    const Date refStart(1, January, 2024), refEnd(1, July, 2024);
+    const Date start(1, February, 2024), end(1, March, 2024);
+    QL_CHECK_SMALL(dayCounter.yearFraction(start, end, refStart, refEnd) - 29.0 / 365.0, 1e-14);
+    QL_CHECK_SMALL(dayCounter.yearFraction(end, start, refStart, refEnd) + 29.0 / 365.0, 1e-14);
+    QL_CHECK_SMALL(dayCounter.yearFraction(start, start), 1e-14);
+    BOOST_CHECK_THROW(dayCounter.yearFraction(end, start), Error);
+}
+
 #ifdef QL_HIGH_RESOLUTION_DATE
 BOOST_AUTO_TEST_CASE(testIntraday) {
 

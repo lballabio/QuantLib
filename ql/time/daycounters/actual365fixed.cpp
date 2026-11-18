@@ -43,6 +43,8 @@ namespace QuantLib {
                                                const Date& refPeriodEnd) const {
         if (d1 == d2)
             return 0.0;
+        if (d1 > d2)
+            return -yearFraction(d2, d1, refPeriodStart, refPeriodEnd);
 
         // We need the period to calculate the frequency
         QL_REQUIRE(refPeriodStart != Date(), "invalid refPeriodStart");
