@@ -2983,8 +2983,8 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansionOverflowSafety) {
 
     // A transcription of the small-sigma Taylor coefficients that forms
     // exp(+kappa*tau) as an intermediate overflows in double precision once
-    // kappa*tau exceeds roughly 350, well before the bounded D/C
-    // coefficients do. COSHestonEngine::chF is checked directly against the
+    // kappa*tau exceeds roughly 350, well before the D (bounded) and C
+    // (linear in tau) coefficients themselves do. COSHestonEngine::chF is checked directly against the
     // deterministic-limit closed form (COSHestonEngine::calculate() is not
     // used, since its truncation-range helpers form exp(2*kappa*t)..
     // exp(4*kappa*t) directly); AnalyticPTDHestonEngine is checked end to
