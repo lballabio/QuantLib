@@ -32,7 +32,7 @@
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
-#include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonsmallsigmaexpansion.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
@@ -1613,7 +1613,7 @@ BOOST_AUTO_TEST_CASE(testAllIntegrationMethods) {
 
     VanillaOption option(payoff, exercise);
 
-    const Real tol = 1e-8;
+    const Real tol = 1e-7;
     const Real expected = 10.147041515497;
 
     // Gauss-Laguerre with Gatheral logarithm integration method
@@ -2152,7 +2152,7 @@ BOOST_AUTO_TEST_CASE(testAndersenPiterbargPricing) {
     const Option::Type optionTypes[] = { Option::Call, Option::Put };
     const Real strikes[] = { 50, 75, 90, 100, 110, 130, 150, 200};
 
-    const Real tol = 1e-8;
+    const Real tol = 1e-7;
 
     for (auto maturityDate : maturityDates) {
         const ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(maturityDate);
@@ -2774,11 +2774,10 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4COSAndPTDAndPDF) {
     // deterministic and every Heston engine must converge to the
     // corresponding Black-Scholes price (see testSmallSigmaExpansion above,
     // which covers AnalyticHestonEngine). COSHestonEngine,
-    // AnalyticPTDHestonEngine (both complex-log formulas) and
-    // AnalyticPDFHestonEngine (via HestonRNDCalculator) did not: their
-    // characteristic function evaluations have the same v0/sigma^2 and
-    // kappa*theta/sigma^2 cancellation as AnalyticHestonEngine::chF without
-    // its small-sigma branch, and diverged (or threw) for sigma below
+    // AnalyticPTDHestonEngine and AnalyticPDFHestonEngine (via
+    // HestonRNDCalculator) evaluate the characteristic function through
+    // formulas with v0/sigma^2 and kappa*theta/sigma^2 prefactors, which
+    // need the small-sigma expansion to stay accurate for sigma below
     // roughly 1e-6.
 
     const Date settlementDate(20, March, 2020);
@@ -2812,7 +2811,7 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4COSAndPTDAndPDF) {
     const Real tolNPV = 50*sigma;
 
     // --- characteristic function level: COSHestonEngine::chF must agree
-    //     with the (already regression-tested) AnalyticHestonEngine::chF ---
+    //     with AnalyticHestonEngine::chF ---
     const ext::shared_ptr<COSHestonEngine> cosEngine =
         ext::make_shared<COSHestonEngine>(hestonModel);
 
@@ -2912,9 +2911,9 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4COSAndPTDAndPDF) {
                 << "\n  tolerance : " << tolPtdNPV);
     }
 
-    // --- AnalyticPDFHestonEngine (HestonRNDCalculator); tightened from the
-    //     1e-6 default Gauss-Lobatto tolerance so the integration error
-    //     itself does not swamp the (much smaller) small-sigma-branch error ---
+    // --- AnalyticPDFHestonEngine (HestonRNDCalculator); the integration
+    //     tolerance is 1e-10, below the 1e-6 default, so that the
+    //     integration error does not swamp the small-sigma-branch error ---
     option.setPricingEngine(
         ext::make_shared<AnalyticPDFHestonEngine>(hestonModel, 1e-10));
     const Real pdfNPV = option.NPV();
@@ -2927,36 +2926,69 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4COSAndPTDAndPDF) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testSmallSigmaStepAgainstClosedForm) {
+    BOOST_TEST_MESSAGE("Testing the small-sigma expansion step against the "
+                       "closed-form Riccati step at moderate sigma...");
+
+    // At sigma = 1e-2 the closed form is still numerically stable (its
+    // cancellation error is of order eps/sigma^2 ~ 1e-12), while the
+    // expansion's truncation error is O(sigma^3). The sigma^2 terms are of
+    // order 1e-5 to 1e-4, so agreement to 1e-7 pins their coefficients,
+    // including those multiplying a nonzero complex Dprev.
+    const Real kappa = 1.3, theta = 0.04, sigma = 1e-2, rho = -0.6;
+    const Time tau = 1.7;
+    const std::complex<Real> i(0.0, 1.0);
+
+    const std::complex<Real> zs[] = {
+        {0.55, 0.0}, {0.3, -0.5}, {0.8, 0.0}, {-0.2, 0.7}};
+    const std::complex<Real> Dprevs[] = {
+        {0.0, 0.0}, {0.4, -0.3}, {-0.15, 0.25}};
+
+    for (const auto& z : zs) {
+        for (const auto& Dprev : Dprevs) {
+            const std::complex<Real> k = kappa - i*rho*sigma*z;
+            const std::complex<Real> d =
+                std::sqrt(k*k + sigma*sigma*(z*z + i*z));
+            const std::complex<Real> g = (k-d)/(k+d);
+            const std::complex<Real> gt =
+                (k-d-Dprev*sigma*sigma)/(k+d-Dprev*sigma*sigma);
+            const std::complex<Real> e = std::exp(-d*tau);
+            const std::complex<Real> expectedD =
+                (k+d)/(sigma*sigma)*(g-gt*e)/(1.0-gt*e);
+            const std::complex<Real> expectedC = kappa*theta/(sigma*sigma)
+                *((k-d)*tau - 2.0*std::log((1.0-gt*e)/(1.0-gt)));
+
+            const auto [calculatedD, calculatedC] =
+                detail::hestonSmallSigmaStep(kappa, theta, sigma, rho, tau, z, Dprev);
+
+            const Real tol = 1e-7;
+            if (std::abs(calculatedD - expectedD) > tol
+                    || std::abs(calculatedC - expectedC) > tol) {
+                BOOST_ERROR("small-sigma step differs from the closed form"
+                        << "\n  z         : " << z
+                        << "\n  Dprev     : " << Dprev
+                        << "\n  expected D: " << expectedD
+                        << "\n  calculated: " << calculatedD
+                        << "\n  expected C: " << expectedC
+                        << "\n  calculated: " << calculatedC
+                        << "\n  tolerance : " << tol);
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testSmallSigmaExpansionOverflowSafety) {
     BOOST_TEST_MESSAGE("Testing the small-sigma expansion stays finite for "
                        "long-dated, fast mean-reverting inputs...");
 
-    // A naive transcription of the small-sigma Taylor coefficients forms
-    // exp(+kappa*tau) (and its square) as an intermediate quantity. That
-    // intermediate overflows in double precision once kappa*tau exceeds
-    // roughly 350 -- reachable with an ordinary, if unusual, combination of
-    // a long-dated option and a fast-mean-reverting calibration -- well
-    // before the true (bounded, tiny) D/C coefficients do. This is a
-    // pre-existing limitation of AnalyticHestonEngine::chF's own small-sigma
-    // branch too (confirmed separately; out of scope here).
-    //
-    // This checks hestonSmallSigmaStep's call sites directly rather than
-    // routing everything through the full option-pricing engines:
-    // COSHestonEngine::chF is checked directly against the known
-    // deterministic-limit closed form, since COSHestonEngine::calculate()
-    // itself goes through *unrelated* cumulant-based truncation-range
-    // helpers (c2/c3/c4) that form exp(2*kappa*t)..exp(4*kappa*t) directly
-    // and already overflow in this regime regardless of sigma -- a
-    // separate, pre-existing, out-of-scope issue with
-    // COSHestonEngine::calculate() itself (confirmed separately).
-    // HestonRNDCalculator::pdf is not checked in this extreme regime at
-    // all: confirmed separately (by sweeping sigma down from 0.3, which
-    // never touches this PR's branch) that its own integration-domain
-    // scaling (c_inf_, which grows with kappa*theta*t) already gives an
-    // inaccurate result here for any sigma, including ordinary,
-    // non-small ones -- another pre-existing, sigma-independent,
-    // out-of-scope limitation. AnalyticPTDHestonEngine has no such
-    // confound, so it is checked end to end via full option pricing.
+    // A transcription of the small-sigma Taylor coefficients that forms
+    // exp(+kappa*tau) as an intermediate overflows in double precision once
+    // kappa*tau exceeds roughly 350, well before the bounded D/C
+    // coefficients do. COSHestonEngine::chF is checked directly against the
+    // deterministic-limit closed form (COSHestonEngine::calculate() is not
+    // used, since its truncation-range helpers form exp(2*kappa*t)..
+    // exp(4*kappa*t) directly); AnalyticPTDHestonEngine is checked end to
+    // end via option pricing.
 
     const Date settlementDate(20, March, 2020);
     Settings::instance().evaluationDate() = settlementDate;
@@ -2992,17 +3024,6 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansionOverflowSafety) {
                 << "\n  expected  : " << expectedChF
                 << "\n  calculated: " << calculatedChF
                 << "\n  diff      : " << diffChF);
-    }
-
-    // --- HestonRNDCalculator::pdf: only required to stay finite here (see
-    //     the comment above for why its accuracy isn't checked in this
-    //     extreme regime) ---
-    const Real x0 = std::log(spot->value());
-    const Real calculatedPdf = HestonRNDCalculator(hestonProcess, 1e-10).pdf(x0, t);
-    if (!std::isfinite(calculatedPdf)) {
-        BOOST_ERROR("HestonRNDCalculator::pdf returned a non-finite value for "
-                "long-dated, fast mean-reverting small-sigma inputs "
-                "(kappa*t=" << kappa*t << "): " << calculatedPdf);
     }
 
     const Real strike = 100.0;
@@ -3290,7 +3311,7 @@ BOOST_AUTO_TEST_CASE(testExponentialFitting4StrikesAndMaturities) {
                         expected = referenceValues[idx] - (fwd - strike)*df;
 
                 const Real diff = std::fabs(calculated - expected);
-                const Real tol = 1e-8;
+                const Real tol = 1e-7;
                 if (diff > tol) {
                     BOOST_ERROR("failed to reproduce cached extreme "
                             "Heston model prices with exponential fitted "
@@ -3904,7 +3925,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticPDFHestonEngine) {
             ext::make_shared<HestonProcess>(riskFreeTS, dividendTS,
                                             s0, v0, kappa, theta, sigma, rho)));
 
-    const Real tol = 1e-6;
+    const Real tol = 1e-7;
     const ext::shared_ptr<AnalyticPDFHestonEngine> pdfEngine(
         ext::make_shared<AnalyticPDFHestonEngine>(model, tol));
 

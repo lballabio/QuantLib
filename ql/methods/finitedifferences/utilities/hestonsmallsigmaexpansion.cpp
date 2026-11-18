@@ -36,9 +36,7 @@ namespace detail {
        Cinc = kappa*theta/sigma^2 * ((k-d)*tau - 2*log((1-gt*exp(-d*tau))/(1-gt)))
 
      around sigma=0, generic in the terminal value Dprev (see the header
-     comment). Dprev=0 reproduces AnalyticHestonEngine::chF's existing
-     small-sigma branch to machine precision (cross-checked numerically;
-     see the PR description for the validation methodology).
+     comment).
 
      Python/sympy program used to derive and print the C++ below:
 
@@ -76,15 +74,10 @@ namespace detail {
        repl, (Dnew, Cinc) = sp.cse([sp.simplify(Dnew), sp.simplify(Cinc)],
                                     symbols=sp.numbered_symbols('t'))
 
-     The straightforward transcription above forms exp(+kappa*tau) and
-     exp(+2*kappa*tau) as intermediate quantities. D and C are themselves
-     bounded as kappa*tau -> infinity (every coefficient of an exponential
-     term cancels against it once collected -- see below), so that
-     transcription is needlessly fragile: it overflows for long-dated,
-     fast-mean-reverting inputs well before the true (finite, tiny) value
-     does. Substituting emkt = exp(-kappa*tau) (which is bounded in (0,1])
-     for the positive exponentials and collecting over a common
-     denominator confirms this and gives the actual code below:
+     The exponentials exp(+kappa*tau) and exp(+2*kappa*tau) are replaced by
+     1/emkt and 1/emkt^2 with emkt = exp(-kappa*tau) in (0,1], and the result
+     is collected over a common denominator (a power of kappa alone, with
+     numerators polynomial in emkt), so no positive exponential appears:
 
        emkt = sp.symbols('emkt', positive=True)  # = exp(-kappa*tau)
        def to_emkt(expr):
@@ -94,12 +87,8 @@ namespace detail {
 
        Dnew, Cinc = to_emkt(Dnew), to_emkt(Cinc)
 
-       # confirms both denominators are powers of kappa alone (no emkt) and
-       # both numerators have only non-negative emkt powers -- i.e. D and C
-       # are bounded polynomials in emkt over kappa, with no exponential
-       # growth anywhere, so this rewrite changes nothing analytically
-       # (printed: "kappa**3" for both denominators, monomial powers
-       # [(2,), (1,), (0,)] for both numerators)
+       # both denominators are kappa**3; both numerators have emkt powers
+       # 2, 1, 0 only
        for name, expr in [('Dnew', Dnew), ('Cinc', Cinc)]:
            num, den = sp.fraction(sp.together(expr))
            print(name, "denominator:", den)
@@ -113,13 +102,8 @@ namespace detail {
        print("D =", sp.cxxcode(Dnew))
        print("C =", sp.cxxcode(Cinc))
 
-     (sympy's bare "I" for the imaginary unit was substituted with the
-     local "i" constant below; a handful of the common subexpressions --
-     kappa^2, kappa^3, sigma^2, rho^2, tau^2, z+i, exp(-kappa*tau),
-     exp(-2*kappa*tau) -- were named to match AnalyticHestonEngine::chF's
-     own naming for the analogous (positive-exponent) quantities; the rest
-     are left as the CSE output, as with COSHestonEngine::c1..c4's own
-     CForm-generated bodies.)
+     (sympy's "I" is written as the local constant "i" below; a few common
+     subexpressions carry descriptive names, the rest keep the CSE names.)
     */
     std::pair<std::complex<Real>, std::complex<Real>> hestonSmallSigmaStep(
         Real kappa, Real theta, Real sigma, Real rho, Time tau,
@@ -128,10 +112,10 @@ namespace detail {
         const std::complex<Real> i(0.0, 1.0);
         const std::complex<Real> emkt = std::exp(-kappa*tau);
 
-        const std::complex<Real> kappa3 = std::pow(kappa, 3);
+        const std::complex<Real> kappa3 = kappa*kappa*kappa;
         const std::complex<Real> invKappa3 = 1.0/kappa3;
         const std::complex<Real> t2 = Dprev*emkt*kappa3;
-        const std::complex<Real> kappa2 = std::pow(kappa, 2);
+        const std::complex<Real> kappa2 = kappa*kappa;
         const std::complex<Real> zpi = z + i;
         const std::complex<Real> t5 = zpi*z;
         const std::complex<Real> t6 = kappa2*t5;
@@ -148,22 +132,22 @@ namespace detail {
         const std::complex<Real> t17 = tau*z;
         const std::complex<Real> t18 = emkt*kappa;
         const std::complex<Real> t19 = kappa*rho*sigma*z;
-        const std::complex<Real> sigma2 = std::pow(sigma, 2);
-        const std::complex<Real> t21 = std::pow(z, 2);
-        const std::complex<Real> rho2 = std::pow(rho, 2);
+        const std::complex<Real> sigma2 = sigma*sigma;
+        const std::complex<Real> t21 = z*z;
+        const std::complex<Real> rho2 = rho*rho;
         const std::complex<Real> t23 = 4.0*rho2;
         const std::complex<Real> t24 = t23*z + zpi;
         const std::complex<Real> t25 = 2.0*Dprev;
         const std::complex<Real> t26 = kappa*t25;
         const std::complex<Real> t27 = t26 + t5;
-        const std::complex<Real> tau2 = std::pow(tau, 2);
+        const std::complex<Real> tau2 = tau*tau;
         const std::complex<Real> t29 = t2*tau2;
-        const std::complex<Real> emkt2 = std::pow(emkt, 2);
+        const std::complex<Real> emkt2 = emkt*emkt;
         const std::complex<Real> t31 = t27*emkt2;
         const std::complex<Real> t32 = -t24*z + t26;
         const std::complex<Real> t33 = Dprev*z;
         const std::complex<Real> t34 = 2.0*t33;
-        const std::complex<Real> t35 = std::pow(z, 3);
+        const std::complex<Real> t35 = z*z*z;
         const std::complex<Real> t36 = t35*tau;
         const std::complex<Real> t37 = rho2*t36;
         const std::complex<Real> t38 = t21*tau;
@@ -173,7 +157,7 @@ namespace detail {
         const std::complex<Real> t42 = 2.0*z;
         const std::complex<Real> t43 = i*t17;
         const std::complex<Real> t44 = t14 + t17;
-        const std::complex<Real> t45 = std::pow(Dprev, 2);
+        const std::complex<Real> t45 = Dprev*Dprev;
         const std::complex<Real> t46 = 4.0*kappa2;
         const std::complex<Real> t47 = t45*t46;
         const std::complex<Real> t48 = t21 + 2.0*t9 - 1.0;
@@ -195,7 +179,7 @@ namespace detail {
             + 16.0*t2
             - sigma2*(4.0*Dprev*kappa*emkt2*t5
                 + emkt*t46*(t14*t17 + t25*t38 + i*t35*t53 + t38*t52 - 2.0*t45
-                    + t53*std::pow(z, 4))
+                    + t53*z*z*z*z)
                 + emkt*t51*(t48 + 6.0*t49 + 6.0*t50)
                 - kappa*t42*(8.0*rho2*t33 - t23*t36 - t23*t39 + t34 + t41 + t44)
                 + t18*t51*(t23*t38 + t23*t43 + t38 + 2.0*t43 + t52 - tau)

@@ -46,42 +46,39 @@ namespace detail {
         as sigma becomes very small.
 
         hestonSmallSigmaStep() returns the pair (D, C) given by the O(sigma^2)
-        Taylor expansion in sigma instead, which has no such cancellation and stays
-        accurate (and defined) all the way down to sigma == 0.
+        Taylor expansion in sigma instead, which has no such cancellation.
+        It is used when sigma is small (and kappa is not); at sigma == 0 with
+        kappa == 0 the expansion itself divides by kappa^3, so callers keep
+        the closed-form branch for tiny kappa.
 
-        Dprev == 0 is the single-segment case: it reproduces (to machine
-        precision) AnalyticHestonEngine::chF's existing small-sigma branch,
-        which this expansion generalizes to an arbitrary complex terminal
-        value Dprev. That generalization is what lets a piecewise-constant
-        (multi-segment) Heston model apply the same small-sigma treatment
-        per segment, carrying the running D coefficient from later segments
-        into earlier ones exactly as AnalyticPTDHestonEngine::lnChF and
-        AnalyticPTDHestonEngine::Fj_Helper already do for the full-precision
-        formula.
+        Dprev == 0 is the single-segment case, which matches
+        AnalyticHestonEngine::chF's small-sigma branch to machine precision.
+        A nonzero complex Dprev lets a piecewise-constant (multi-segment)
+        Heston model apply the same treatment per segment, carrying the
+        running D coefficient from later segments into earlier ones as
+        AnalyticPTDHestonEngine::lnChF and
+        AnalyticPTDHestonEngine::Fj_Helper do for the full formula.
 
-        The expansion was derived by symbolic (computer-algebra) Taylor
-        series expansion of the exact Riccati step in sigma around sigma=0,
-        and cross-checked both against high-precision (multi-digit)
-        numerical evaluation of the exact formula and against
-        AnalyticHestonEngine::chF's existing branch (Dprev=0 case); see the
-        regression tests in hestonmodel.cpp for small-vol-of-vol
-        convergence to the corresponding Black-Scholes price.
+        The expansion is the symbolic Taylor series in sigma around sigma=0
+        of the exact Riccati step; see the regression tests in
+        hestonmodel.cpp.
 
         Used by COSHestonEngine::chF, AnalyticPTDHestonEngine::lnChF,
         AnalyticPTDHestonEngine::Fj_Helper, and HestonRNDCalculator's
-        characteristic function (the v0 term there is already a stable,
-        algebraically different representation and does not need this
-        branch).
+        characteristic function (whose v0 term uses a stable, algebraically
+        different representation and does not need this branch).
 
-        The implementation is expressed purely in (bounded, in (0,1])
-        powers of exp(-kappa*tau), never forming exp(+kappa*tau) or
-        exp(+2*kappa*tau) as an intermediate quantity -- D and C are
-        themselves bounded as kappa*tau -> infinity (at fixed kappa, theta,
-        rho, z, Dprev), so this is not a change in what is computed, only in
-        how; forming the positive exponential directly, as a more naive
-        transcription of the Taylor coefficients would, instead overflows
-        for long-dated, fast-mean-reverting inputs (kappa*tau beyond
-        roughly 350 in double precision) well before the true value does.
+        The implementation uses only powers of exp(-kappa*tau), which lie in
+        (0,1], and never forms exp(+kappa*tau) or exp(+2*kappa*tau): D and C
+        stay bounded as kappa*tau -> infinity, whereas the positive
+        exponentials overflow for kappa*tau beyond roughly 350 in double
+        precision.
+
+        \param kappa, theta, sigma, rho  Heston parameters of the segment
+        \param tau    length of the segment
+        \param z      argument of the characteristic function
+        \param Dprev  value of D at the end of the segment
+        \return the pair (D, C)
     */
     std::pair<std::complex<Real>, std::complex<Real>> hestonSmallSigmaStep(
         Real kappa, Real theta, Real sigma, Real rho, Time tau,

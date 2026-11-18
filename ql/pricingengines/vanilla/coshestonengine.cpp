@@ -134,9 +134,8 @@ namespace QuantLib {
     const {
         // as sigma -> 0 the v0/sigma^2 and kappa*theta/sigma^2 prefactors
         // below multiply differences that themselves vanish like O(sigma^2),
-        // so naive evaluation loses precision catastrophically (mirrors
-        // AnalyticHestonEngine::chF's small-sigma branch, which this reuses
-        // via the shared single-segment, zero-boundary expansion).
+        // so naive evaluation loses precision catastrophically; the
+        // single-segment, zero-boundary expansion avoids this.
         if (sigma_ > 1e-6 || kappa_ < 1e-8) {
             const Real sigma2 = sigma_*sigma_;
 
