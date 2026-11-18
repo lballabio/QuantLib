@@ -69,10 +69,10 @@ namespace detail {
         different representation and does not need this branch).
 
         The implementation uses only powers of exp(-kappa*tau), which lie in
-        (0,1], and never forms exp(+kappa*tau) or exp(+2*kappa*tau): D and C
-        stay bounded as kappa*tau -> infinity, whereas the positive
-        exponentials overflow for kappa*tau beyond roughly 350 in double
-        precision.
+        (0,1], and never forms exp(+kappa*tau) or exp(+2*kappa*tau): D stays
+        bounded and C grows at most linearly in tau as kappa*tau -> infinity,
+        whereas the positive exponentials overflow for kappa*tau beyond
+        roughly 350 in double precision.
 
         \param kappa, theta, sigma, rho  Heston parameters of the segment
         \param tau    length of the segment
