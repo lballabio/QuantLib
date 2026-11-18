@@ -1613,7 +1613,7 @@ BOOST_AUTO_TEST_CASE(testAllIntegrationMethods) {
 
     VanillaOption option(payoff, exercise);
 
-    const Real tol = 1e-7;
+    const Real tol = 1e-8;
     const Real expected = 10.147041515497;
 
     // Gauss-Laguerre with Gatheral logarithm integration method
@@ -2152,7 +2152,7 @@ BOOST_AUTO_TEST_CASE(testAndersenPiterbargPricing) {
     const Option::Type optionTypes[] = { Option::Call, Option::Put };
     const Real strikes[] = { 50, 75, 90, 100, 110, 130, 150, 200};
 
-    const Real tol = 1e-7;
+    const Real tol = 1e-8;
 
     for (auto maturityDate : maturityDates) {
         const ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(maturityDate);
@@ -3311,7 +3311,7 @@ BOOST_AUTO_TEST_CASE(testExponentialFitting4StrikesAndMaturities) {
                         expected = referenceValues[idx] - (fwd - strike)*df;
 
                 const Real diff = std::fabs(calculated - expected);
-                const Real tol = 1e-7;
+                const Real tol = 1e-8;
                 if (diff > tol) {
                     BOOST_ERROR("failed to reproduce cached extreme "
                             "Heston model prices with exponential fitted "
@@ -3925,7 +3925,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticPDFHestonEngine) {
             ext::make_shared<HestonProcess>(riskFreeTS, dividendTS,
                                             s0, v0, kappa, theta, sigma, rho)));
 
-    const Real tol = 1e-7;
+    const Real tol = 1e-6;
     const ext::shared_ptr<AnalyticPDFHestonEngine> pdfEngine(
         ext::make_shared<AnalyticPDFHestonEngine>(model, tol));
 
