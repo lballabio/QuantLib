@@ -2929,10 +2929,10 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaStepAgainstClosedForm) {
     // At sigma = 1e-2 the closed form is still numerically stable (its
     // cancellation error is of order eps/sigma^2 ~ 1e-12), while the
     // expansion's truncation error is O(sigma^3), with a small coefficient.
-    // The sigma^2 terms are of order 1e-5 to 1e-4, so agreement to 1e-7
-    // pins their coefficients, including those multiplying a nonzero
-    // complex Dprev.
-    const Real kappa = 1.3, theta = 0.04, sigma = 1e-2, rho = -0.6;
+    // The sigma^2 terms of D and C (theta = 1 puts C on the scale of D) are
+    // of order 1e-7 to 1e-5, so agreement to 1e-7 pins their coefficients,
+    // including those multiplying a nonzero complex Dprev.
+    const Real kappa = 1.3, theta = 1.0, sigma = 1e-2, rho = -0.6;
     const Time tau = 1.7;
     const std::complex<Real> i(0.0, 1.0);
 
