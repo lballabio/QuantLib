@@ -53,6 +53,7 @@ namespace QuantLib {
         // 1. Payoff
         const ext::shared_ptr<BasketPayoff> payoff =
             ext::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "basket payoff expected");
 
         // 2. Mesher
         const Time maturity = p1_->time(arguments_.exercise->lastDate());

@@ -18,45 +18,14 @@
 */
 
 #include <ql/math/distributions/gammadistribution.hpp>
+#include <boost/math/special_functions/gamma.hpp>
 
 namespace QuantLib {
 
     Real CumulativeGammaDistribution::operator()(Real x) const {
         if (x <= 0.0) return 0.0;
 
-        Real gln = GammaFunction().logValue(a_);
-
-        if (x<(a_+1.0)) {
-            Real ap = a_;
-            Real del = 1.0/a_;
-            Real sum = del;
-            for (Size n=1; n<=100; n++) {
-                ap += 1.0;
-                del *= x/ap;
-                sum += del;
-                if (std::fabs(del) < std::fabs(sum)*3.0e-7)
-                    return sum*std::exp(-x + a_*std::log(x) - gln);
-            }
-        } else {
-            Real b = x + 1.0 - a_;
-            Real c = QL_MAX_REAL;
-            Real d = 1.0/b;
-            Real h = d;
-            for (Size n=1; n<=100; n++) {
-                Real an = -1.0*n*(n-a_);
-                b += 2.0;
-                d = an*d + b;
-                if (std::fabs(d) < QL_EPSILON) d = QL_EPSILON;
-                c = b + an/c;
-                if (std::fabs(c) < QL_EPSILON) c = QL_EPSILON;
-                d = 1.0/d;
-                Real del = d*c;
-                h *= del;
-                if (std::fabs(del - 1.0)<QL_EPSILON)
-                    return 1.0-h*std::exp(-x + a_*std::log(x) - gln);
-            }
-        }
-        QL_FAIL("too few iterations");
+        return boost::math::gamma_p(a_, x);
     }
 
     const Real GammaFunction::c1_ = 76.18009172947146;

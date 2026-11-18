@@ -48,6 +48,11 @@ namespace QuantLib {
 
         template <class T, template <class> class W>
         T modifiedBesselFunction_i_impl(Real nu, const T& x) {
+            // I_(-n) = I_n at integer order. The series below divides by
+            // Gamma(1+nu), which has a pole there, and would return zero.
+            if (nu < 0.0 && nu == std::floor(nu))
+                nu = -nu;
+
             if (std::abs(x) < 13.0) {
                 const T alpha = std::pow(0.5*x, nu)
                                /GammaFunction().value(1.0+nu);

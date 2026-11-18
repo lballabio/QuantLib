@@ -46,6 +46,9 @@ namespace QuantLib {
     }
 
     void FdG2SwaptionEngine::calculate() const {
+        QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
+                   "cash settled (ParYieldCurve) swaptions not priced with "
+                   "FdG2SwaptionEngine");
         QL_REQUIRE(!model_.empty(), "no model specified");
 
         // 1. Term structure

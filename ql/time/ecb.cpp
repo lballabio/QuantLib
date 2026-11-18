@@ -72,7 +72,7 @@ namespace QuantLib {
 
         //clang-format off
         // Start of maintenance period
-        // source: https://web.archive.org/web/20230610050642/https://www.ecb.europa.eu/press/calendars/reserve/html/index.en.html
+        // source: https://www.ecb.europa.eu/press/calendars/reserve/html/index.en.html
         std::set<Date> ecbKnownDateSet = {
             // 2005
             Date(38371), Date(38391), Date(38420), Date(38455), Date(38483), Date(38511),
@@ -152,7 +152,23 @@ namespace QuantLib {
 
             // 2024
             Date(45322), Date(45364), Date(45399), Date(45455), Date(45497), Date(45553),
-            Date(45588), Date(45644)
+            Date(45588), Date(45644),
+
+            // 2025
+            Date(45693), Date(45728), Date(45770), Date(45819), Date(45868), Date(45917),
+            Date(45966), Date(46014),
+
+            // 2026
+            Date(46064), Date(46106), Date(46148), Date(46190), Date(46232), Date(46281),
+            Date(46330), Date(46379),
+
+            // 2027
+            Date(46428), Date(46470), Date(46513), Date(46554), Date(46596), Date(46645),
+            Date(46694), Date(46743),
+
+            // 2028
+            Date(46792), Date(46841), Date(46883), Date(46918), Date(46960), Date(47009),
+            Date(47044), Date(47100)
         };
         //clang-format on
     }

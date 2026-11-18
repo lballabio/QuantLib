@@ -18,9 +18,11 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/math/distributions/bivariatenormaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/pricingengines/exotic/analyticholderextensibleoptionengine.hpp>
-#include <ql/math/distributions/bivariatenormaldistribution.hpp>
+#include <cmath>
 #include <utility>
 
 using std::pow;
@@ -29,6 +31,23 @@ using std::exp;
 using std::sqrt;
 
 namespace QuantLib {
+
+    namespace {
+
+        // maximum number of Newton-Raphson steps to find a critical price
+        const Size maxIterations = 100;
+
+        Real nextCriticalPrice(Real spot, Real value, Real derivative) {
+            QL_REQUIRE(std::isfinite(value), "critical price: non-finite residual");
+            QL_REQUIRE(std::isfinite(derivative) && derivative != 0.0,
+                       "critical price: zero or non-finite derivative");
+            Real next = spot - value / derivative;
+            QL_REQUIRE(std::isfinite(next) && next > 0.0,
+                       "critical price: non-positive or non-finite iterate");
+            return next;
+        }
+
+    }
 
     AnalyticHolderExtensibleOptionEngine::AnalyticHolderExtensibleOptionEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process)
@@ -68,8 +87,11 @@ namespace QuantLib {
         Real result = 0;
         constexpr double minusInf = -std::numeric_limits<double>::infinity();
 
-        // extension never pays if it is not worth the premium at X1
+        // Check whether the standard extension region is empty.
         if (bsCalculator(X1, payoff->optionType()).value() <= A) {
+            QL_REQUIRE(payoff->optionType() != Option::Call ||
+                           dividendDiscount(T2 - t1) <= 1.0,
+                       "holder-extensible call extension only at high spots is not supported");
             results_.value = BlackScholesCalculator(payoff, S, growth, vol*sqrt(t1), discount).value();
             return;
         }
@@ -119,8 +141,11 @@ namespace QuantLib {
             Real epsilon = 0.001;
 
             //Newton-Raphson process
-            while (std::fabs(yi) > epsilon){
-                Sv = Sv - yi / di;
+            Size iterations = 0;
+            while (std::fabs(yi) > epsilon || !std::isfinite(yi)) {
+                QL_REQUIRE(++iterations <= maxIterations,
+                           "lower critical price: max iterations exceeded");
+                Sv = nextCriticalPrice(Sv, yi, di);
 
                 bs = bsCalculator(Sv, Option::Call);
                 ci = bs.value();
@@ -143,10 +168,30 @@ namespace QuantLib {
         Real r=riskFreeRate();
 
         Real val=X1-X2*std::exp(-r*(T2-t1));
+        DiscountFactor growth = dividendDiscount(T2 - t1);
         // with dividends, exercise beats extension at a high enough spot
-        if(A< val && dividendDiscount(T2-t1) >= 1.0){
+        if (A < val && growth >= 1.0) {
             return std::numeric_limits<Real>::infinity();
         } else {
+            if (growth > 1.0) {
+                /* With a negative dividend yield, the function solved for below, c(S) - A - S + X1,
+                   is convex but its slope tends to growth - 1 > 0, so it can have no zero. Its
+                   minimum is where the call delta, growth*N(d1), equals 1; since c(S) is then
+                   S - X2*D_r*N(d2), the minimum is X1 - A - X2*D_r*N(d2). If it is not negative,
+                   or if X1 (where the function is positive) lies to the right of the minimum and
+                   thus of any zero, exercise never beats extension. */
+                Real stdDev = volatility() * std::sqrt(T2 - t1);
+                DiscountFactor discount = riskFreeDiscount(T2 - t1);
+                Real d1 = InverseCumulativeNormal()(1.0 / growth);
+                Real Smin = X2 * std::exp(d1 * stdDev - 0.5 * stdDev * stdDev) * discount / growth;
+                Real minimum = X1 - A - X2 * discount * CumulativeNormalDistribution()(d1 - stdDev);
+                if (minimum >= 0.0 || X1 >= Smin)
+                    return std::numeric_limits<Real>::infinity();
+
+                // The second extension region needs an additional critical price.
+                QL_FAIL("holder-extensible call with two roots is not supported");
+            }
+
             BlackScholesCalculator bs = bsCalculator(Sv, Option::Call);
             Real ci = bs.value();
             Real dc = bs.delta();
@@ -157,8 +202,11 @@ namespace QuantLib {
             Real epsilon = 0.001;
 
             //Newton-Raphson process
-            while (std::fabs(yi) > epsilon){
-                Sv = Sv - yi / di;
+            Size iterations = 0;
+            while (std::fabs(yi) > epsilon || !std::isfinite(yi)) {
+                QL_REQUIRE(++iterations <= maxIterations,
+                           "upper critical price: max iterations exceeded");
+                Sv = nextCriticalPrice(Sv, yi, di);
 
                 bs = bsCalculator(Sv, Option::Call);
                 ci = bs.value();
@@ -195,8 +243,11 @@ namespace QuantLib {
         Real epsilon = 0.001;
 
         //Newton-Raphson prosess
-        while (std::fabs(yi) > epsilon){
-            Sv = Sv - yi / di;
+        Size iterations = 0;
+        while (std::fabs(yi) > epsilon || !std::isfinite(yi)) {
+            QL_REQUIRE(++iterations <= maxIterations,
+                       "lower critical price: max iterations exceeded");
+            Sv = nextCriticalPrice(Sv, yi, di);
 
             bs = bsCalculator(Sv, Option::Put);
             pi = bs.value();
@@ -225,8 +276,11 @@ namespace QuantLib {
             Real epsilon = 0.001;
 
             //Newton-Raphson prosess
-            while (std::fabs(yi) > epsilon){
-                Sv = Sv - yi / di;
+            Size iterations = 0;
+            while (std::fabs(yi) > epsilon || !std::isfinite(yi)) {
+                QL_REQUIRE(++iterations <= maxIterations,
+                           "upper critical price: max iterations exceeded");
+                Sv = nextCriticalPrice(Sv, yi, di);
 
                 bs = bsCalculator(Sv, Option::Put);
                 pi = bs.value();

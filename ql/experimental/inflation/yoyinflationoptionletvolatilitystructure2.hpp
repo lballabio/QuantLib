@@ -72,8 +72,7 @@ namespace QuantLib {
         //! the maximum strike for which the term structure can return vols
         Real maxStrike() const override { return maxStrike_; }
         Date maxDate() const override {
-            //FIXME approx
-            return optionDateFromTenor(Period((int)ceil(this->interpolation_.xMax()),Years));
+            return dates_.back();
         }
         //@}
 

@@ -26,7 +26,10 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/forwardcurve.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/period.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
@@ -260,6 +263,101 @@ BOOST_AUTO_TEST_CASE(testGreeks) {
 BOOST_AUTO_TEST_CASE(testPerformanceGreeks) {
     BOOST_TEST_MESSAGE("Testing performance option greeks...");
     testOptionGreeks<AnalyticPerformanceEngine>();
+}
+
+// A forward curve that follows the given forward rates between the given dates, whatever its
+// reference date: the rates are fixed in calendar time and the first one applies from the
+// reference date to the first node.
+ext::shared_ptr<YieldTermStructure> calendarForwardCurve(const Date& referenceDate,
+                                                         const std::vector<Date>& nodes,
+                                                         const std::vector<Rate>& forwards,
+                                                         const DayCounter& dc) {
+    std::vector<Date> dates(1, referenceDate);
+    dates.insert(dates.end(), nodes.begin(), nodes.end());
+    std::vector<Rate> rates(1, forwards.front());
+    rates.insert(rates.end(), forwards.begin(), forwards.end());
+    return ext::make_shared<ForwardCurve>(dates, rates, dc);
+}
+
+// Theta against the finite-difference derivative of the engine's own price when the evaluation
+// date, and with it the reference date of the curves, moves by one day on each side.
+template <class T>
+void testThetaOnForwardCurves(const std::vector<Rate>& qForwards,
+                              const std::vector<Rate>& rForwards,
+                              const DayCounter& divdc,
+                              const DayCounter& rfdc) {
+
+    Date today = Settings::instance().evaluationDate();
+    std::vector<Date> nodes = {today + 30, today + 120, today + 240, today + 400};
+    std::vector<Date> reset = {today + 90, today + 180, today + 270};
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 360);
+
+    auto makeEngine = [&](const Date& referenceDate) {
+        Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+        Handle<YieldTermStructure> qTS(
+            calendarForwardCurve(referenceDate, nodes, qForwards, divdc));
+        Handle<YieldTermStructure> rTS(calendarForwardCurve(referenceDate, nodes, rForwards, rfdc));
+        Handle<BlackVolTermStructure> volTS(
+            ext::make_shared<BlackConstantVol>(referenceDate, NullCalendar(), 0.25, rfdc));
+        return ext::make_shared<T>(
+            ext::make_shared<BlackScholesMertonProcess>(spot, qTS, rTS, volTS));
+    };
+
+    Option::Type types[] = {Option::Call, Option::Put};
+    for (auto& type : types) {
+        BOOST_TEST_CONTEXT(type << " option") {
+            auto payoff = ext::make_shared<PercentageStrikePayoff>(type, 1.05);
+            CliquetOption option(payoff, exercise, reset);
+
+            option.setPricingEngine(makeEngine(today));
+            Real calculated = option.theta();
+
+            Settings::instance().evaluationDate() = today - 1;
+            option.setPricingEngine(makeEngine(today - 1));
+            Real value_m = option.NPV();
+            Settings::instance().evaluationDate() = today + 1;
+            option.setPricingEngine(makeEngine(today + 1));
+            Real value_p = option.NPV();
+            Settings::instance().evaluationDate() = today;
+
+            Real expected = (value_p - value_m) / rfdc.yearFraction(today - 1, today + 1);
+            QL_CHECK_CLOSE_FRACTION(calculated, expected, 1.0e-7);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testThetaOnNonFlatCurves) {
+    BOOST_TEST_MESSAGE("Testing cliquet and performance option theta on non-flat curves...");
+
+    // forward rates up to 30, 120, 240 and 400 days after the evaluation date; the first reset
+    // date is 90 days after it
+    const std::vector<Rate> flatQ(4, 0.02), flatR(4, 0.05);
+    const std::vector<Rate> varyingQ = {0.01, 0.04, 0.015, 0.06};
+    const std::vector<Rate> varyingR = {0.02, 0.05, 0.08, 0.03};
+
+    // theta is in years of the risk-free curve's day counter, also when the dividend curve
+    // has another one
+    const DayCounter divdc = Actual365Fixed();
+    const DayCounter rfdcs[] = {Actual365Fixed(), Actual360()};
+
+    auto checkTheta = [&](const char* curves, const std::vector<Rate>& q,
+                          const std::vector<Rate>& r) {
+        for (const DayCounter& rfdc : rfdcs) {
+            BOOST_TEST_CONTEXT(curves << ", risk-free day counter " << rfdc.name()) {
+                BOOST_TEST_CONTEXT("AnalyticCliquetEngine") {
+                    testThetaOnForwardCurves<AnalyticCliquetEngine>(q, r, divdc, rfdc);
+                }
+                BOOST_TEST_CONTEXT("AnalyticPerformanceEngine") {
+                    testThetaOnForwardCurves<AnalyticPerformanceEngine>(q, r, divdc, rfdc);
+                }
+            }
+        }
+    };
+
+    // theta on flat curves does not change
+    checkTheta("flat curves", flatQ, flatR);
+    // the rates before the first reset date differ from those after it
+    checkTheta("non-flat curves", varyingQ, varyingR);
 }
 
 BOOST_AUTO_TEST_CASE(testMcPerformance) {

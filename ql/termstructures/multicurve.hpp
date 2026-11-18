@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2025 Eugene Toder
  Copyright (C) 2025 Peter Caspers
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -83,9 +84,14 @@ namespace QuantLib {
 #endif
     {
       public:
-        explicit MultiCurve(Real accuracy);
+        /*! analyticJacobian enables the stacked analytical Jacobian.
+            All member curves must support it, and a supplied optimizer must
+            consume CostFunction::jacobian().
+        */
+        explicit MultiCurve(Real accuracy, bool analyticJacobian = false);
         explicit MultiCurve(const ext::shared_ptr<OptimizationMethod>& optimizer = nullptr,
-                            const ext::shared_ptr<EndCriteria>& endCriteria = nullptr);
+                            const ext::shared_ptr<EndCriteria>& endCriteria = nullptr,
+                            bool analyticJacobian = false);
 
         Handle<YieldTermStructure>
         addBootstrappedCurve(RelinkableHandle<YieldTermStructure>& internalHandle,

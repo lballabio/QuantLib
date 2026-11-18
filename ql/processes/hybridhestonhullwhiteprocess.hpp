@@ -27,7 +27,6 @@
 
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
-#include <ql/processes/jointstochasticprocess.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 
 namespace QuantLib {

@@ -16,6 +16,7 @@ jobs:
         sed -i -e 's/ext::optional\b/std::optional/g' **/*.[hc]pp
         sed -i -e 's/ext::nullopt\b/std::nullopt/g' **/*.[hc]pp
     - uses: peter-evans/create-pull-request@v8
+      if: vars.MACHINE_ACCOUNT != ''
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib
