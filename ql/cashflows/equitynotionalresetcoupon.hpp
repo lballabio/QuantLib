@@ -29,6 +29,7 @@
 namespace QuantLib {
 
     class EquityIndex;
+    class EquityNotionalResetCashFlow;
 
     //! Floating-rate coupon whose notional is reset to an equity index level
     /*! This coupon wraps an underlying floating-rate coupon and
@@ -44,7 +45,12 @@ namespace QuantLib {
         underlying coupon.
 
         It can be used for the funding leg of equity total return
-        swaps with notional reset.
+        swaps with notional reset.  In that case, the coupon can be
+        linked to the equity cash flow of the same period, so that it
+        accrues on the notional of that cash flow; the index levels
+        are then those returned by EquityCashFlow::indexLevel() and
+        include the adjustment of any pricer set on the cash flow,
+        e.g., a quanto pricer.
 
         \note When the reset date is in the future, the index level is
               forecast independently of the rate; that is, the
@@ -59,6 +65,13 @@ namespace QuantLib {
                                   ext::shared_ptr<EquityIndex> equityIndex,
                                   const Date& initialDate,
                                   const Date& resetDate);
+        /*! the nominal follows that of the given equity cash flow;
+            the initial date and the reset date are those of the cash
+            flow.
+        */
+        EquityNotionalResetCoupon(
+            const ext::shared_ptr<FloatingRateCoupon>& underlying,
+            const ext::shared_ptr<EquityNotionalResetCashFlow>& equityCashFlow);
         //! \name Coupon interface
         //@{
         //! the nominal reset on the reset date
@@ -80,6 +93,10 @@ namespace QuantLib {
         //@{
         const ext::shared_ptr<FloatingRateCoupon>& underlying() const { return underlying_; }
         const ext::shared_ptr<EquityIndex>& equityIndex() const { return equityIndex_; }
+        //! the equity cash flow whose notional is followed, if any
+        const ext::shared_ptr<EquityNotionalResetCashFlow>& equityCashFlow() const {
+            return equityCashFlow_;
+        }
         //! the nominal on the initial date
         Real initialNominal() const { return underlying_->nominal(); }
         //! the date on which the initial nominal was set
@@ -104,6 +121,7 @@ namespace QuantLib {
 
         ext::shared_ptr<FloatingRateCoupon> underlying_;
         ext::shared_ptr<EquityIndex> equityIndex_;
+        ext::shared_ptr<EquityNotionalResetCashFlow> equityCashFlow_;
         Date initialDate_, resetDate_;
     };
 

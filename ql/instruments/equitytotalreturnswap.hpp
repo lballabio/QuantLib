@@ -24,6 +24,7 @@
 #ifndef quantlib_equitytotalreturnswap_hpp
 #define quantlib_equitytotalreturnswap_hpp
 
+#include <ql/instruments/dividendschedule.hpp>
 #include <ql/instruments/swap.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/calendar.hpp>
@@ -90,10 +91,32 @@ namespace QuantLib {
               no convexity adjustment is made for the correlation between
               the equity index and the rate.
 
-        \warning With notional reset, the reset notionals are calculated from
-                 the fixings of the equity index as given. An equity cash-flow
-                 pricer set on the equity leg, e.g., a quanto pricer, adjusts
-                 the return over each period but not its notional.
+        Optionally, the swap can have a third leg paying the dividends of
+        the index on the index units held over each equity period. Each
+        dividend whose ex-dividend date falls in the equity period
+        \f$ (T_{i-1}, T_i] \f$ pays
+        \f[
+        D_i = f \, D \, \frac{N_i}{I(T_{i-1})},
+        \f]
+        where \f$ D \f$ is the dividend in index points, \f$ f \f$ is the
+        dividend factor (e.g., the share passed on after withholding taxes)
+        and \f$ N_i \f$ is the notional of the period, i.e., \f$ N \f$
+        without notional reset. The dividend is paid together with the
+        equity cash flow of the period; with equity payment frequency Once,
+        that is at maturity. The dividend leg has the same sign as the
+        equity leg and is only available for price return indexes, since
+        total return and excess return indexes already reinvest the
+        dividends. Ex-dividend dates must fall between the start date
+        (excluded) and the maturity (included).
+
+        To price an equity index denominated in a different currency than
+        the swap (quanto swap), set an equity cash-flow pricer such as
+        EquityQuantoCashFlowPricer on the equity leg using setCouponPricer().
+        Its adjustment applies to the return of each period as well as to
+        the index levels driving the reset notionals and the number of index
+        units on which dividends are paid; therefore, the funding coupons
+        with notional reset and the dividend cash flows are adjusted
+        consistently. The quanto pricer only supports price return indexes.
 
         Swap type (payer or receiver) refers to the equity leg.
     */
@@ -108,6 +131,11 @@ namespace QuantLib {
             reset to the index level at the start of the period. Requires
             an equity payment frequency giving the same periods as the
             funding schedule.
+            \param dividends Dividends of the index, in index points, paid
+            on a separate dividend leg. Requires a price return index. If
+            empty, the swap has no dividend leg.
+            \param dividendFactor Share of each dividend passed on to the
+            receiver of the equity leg.
         */
         EquityTotalReturnSwap(Type type,
                               Real nominal,
@@ -121,7 +149,9 @@ namespace QuantLib {
                               BusinessDayConvention paymentConvention = Unadjusted,
                               Natural paymentDelay = 0,
                               Frequency equityPaymentFrequency = Once,
-                              bool notionalReset = false);
+                              bool notionalReset = false,
+                              DividendSchedule dividends = {},
+                              Real dividendFactor = 1.0);
 
         /*! Construct a swap with overnight funding.
             \param equityPaymentFrequency Frequency of equity settlements,
@@ -132,6 +162,11 @@ namespace QuantLib {
             reset to the index level at the start of the period. Requires
             an equity payment frequency giving the same periods as the
             funding schedule.
+            \param dividends Dividends of the index, in index points, paid
+            on a separate dividend leg. Requires a price return index. If
+            empty, the swap has no dividend leg.
+            \param dividendFactor Share of each dividend passed on to the
+            receiver of the equity leg.
         */
         EquityTotalReturnSwap(Type type,
                               Real nominal,
@@ -145,7 +180,9 @@ namespace QuantLib {
                               BusinessDayConvention paymentConvention = Unadjusted,
                               Natural paymentDelay = 0,
                               Frequency equityPaymentFrequency = Once,
-                              bool notionalReset = false);
+                              bool notionalReset = false,
+                              DividendSchedule dividends = {},
+                              Real dividendFactor = 1.0);
 
         //! \name Inspectors
         //@{
@@ -165,15 +202,25 @@ namespace QuantLib {
         const Calendar& paymentCalendar() const { return paymentCalendar_; }
         BusinessDayConvention paymentConvention() const { return paymentConvention_; }
         Natural paymentDelay() const { return paymentDelay_; }
+        //! Dividends paid on the dividend leg, if any.
+        const DividendSchedule& dividends() const { return dividends_; }
+        //! Share of each dividend passed on to the receiver of the equity leg.
+        Real dividendFactor() const { return dividendFactor_; }
 
         const Leg& equityLeg() const;
         const Leg& interestRateLeg() const;
+        //! Whether the swap has a dividend leg, i.e., whether dividends were given.
+        bool hasDividendLeg() const { return legs_.size() > 2; }
+        //! The dividend leg; empty if no dividends were given.
+        const Leg& dividendLeg() const;
         //@}
 
         //! \name Results
         //@{
         Real equityLegNPV() const;
         Real interestRateLegNPV() const;
+        //! The NPV of the dividend leg; zero if the swap has no dividend leg.
+        Real dividendLegNPV() const;
         Real fairMargin() const;
         //@}
 
@@ -190,7 +237,9 @@ namespace QuantLib {
                               BusinessDayConvention paymentConvention = Unadjusted,
                               Natural paymentDelay = 0,
                               Frequency equityPaymentFrequency = Once,
-                              bool notionalReset = false);
+                              bool notionalReset = false,
+                              DividendSchedule dividends = {},
+                              Real dividendFactor = 1.0);
 
         ext::shared_ptr<EquityIndex> equityIndex_;
         ext::shared_ptr<InterestRateIndex> interestRateIndex_;
@@ -205,6 +254,8 @@ namespace QuantLib {
         Natural paymentDelay_;
         Frequency equityPaymentFrequency_;
         bool notionalReset_;
+        DividendSchedule dividends_;
+        Real dividendFactor_;
     };
 }
 

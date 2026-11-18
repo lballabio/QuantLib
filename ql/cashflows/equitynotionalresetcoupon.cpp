@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/equitycashflow.hpp>
 #include <ql/cashflows/equitynotionalresetcoupon.hpp>
 #include <ql/indexes/equityindex.hpp>
 #include <ql/patterns/visitor.hpp>
@@ -49,11 +50,29 @@ namespace QuantLib {
         QL_REQUIRE(initialDate_ <= resetDate_,
                    "initial date (" << initialDate_ << ") cannot be later than reset date ("
                                     << resetDate_ << ")");
+        // the amount is not cached, so notifications can always be forwarded
+        alwaysForwardNotifications();
         registerWith(underlying_);
         registerWith(equityIndex_);
     }
 
+    EquityNotionalResetCoupon::EquityNotionalResetCoupon(
+        const ext::shared_ptr<FloatingRateCoupon>& underlying,
+        const ext::shared_ptr<EquityNotionalResetCashFlow>& equityCashFlow)
+    : EquityNotionalResetCoupon(
+          underlying,
+          equityCashFlow ? ext::dynamic_pointer_cast<EquityIndex>(equityCashFlow->index())
+                         : ext::shared_ptr<EquityIndex>(),
+          equityCashFlow ? equityCashFlow->initialDate() : Date(),
+          equityCashFlow ? equityCashFlow->baseDate() : Date()) {
+        QL_REQUIRE(equityCashFlow, "no equity cash flow provided");
+        equityCashFlow_ = equityCashFlow;
+        registerWith(equityCashFlow_);
+    }
+
     Real EquityNotionalResetCoupon::nominalScale() const {
+        if (equityCashFlow_)
+            return equityCashFlow_->notional() / equityCashFlow_->initialNotional();
         return equityIndex_->fixing(resetDate_) / equityIndex_->fixing(initialDate_);
     }
 

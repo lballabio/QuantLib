@@ -19,6 +19,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/equitytotalreturnswap.hpp>
+#include <ql/cashflows/dividend.hpp>
 #include <ql/cashflows/equitycashflow.hpp>
 #include <ql/cashflows/equitynotionalresetcoupon.hpp>
 #include <ql/currencies/america.hpp>
@@ -114,6 +115,28 @@ struct CommonVars {
             swap = ext::make_shared<EquityTotalReturnSwap>(
                 type, 100000.0, schedule, equityIndex, usdLibor, dayCount, margin,
                 1.0, paymentCalendar, Following, paymentDelay, frequency, notionalReset);
+        }
+        swap->setPricingEngine(discountEngine);
+        return swap;
+    }
+
+    ext::shared_ptr<EquityTotalReturnSwap> createTRSWithDividends(
+        Swap::Type type, const Schedule& schedule, bool useOvernightIndex,
+        Frequency frequency, bool notionalReset, const DividendSchedule& dividends,
+        Real dividendFactor, Rate margin = 0.0, Natural paymentDelay = 0,
+        const ext::shared_ptr<EquityIndex>& index = {}) {
+        const auto& eqIndex = index ? index : equityIndex;
+        ext::shared_ptr<EquityTotalReturnSwap> swap;
+        if (useOvernightIndex) {
+            swap = ext::make_shared<EquityTotalReturnSwap>(
+                type, 100000.0, schedule, eqIndex, sofr, dayCount, margin, 1.0,
+                schedule.calendar(), Following, paymentDelay, frequency, notionalReset,
+                dividends, dividendFactor);
+        } else {
+            swap = ext::make_shared<EquityTotalReturnSwap>(
+                type, 100000.0, schedule, eqIndex, usdLibor, dayCount, margin, 1.0,
+                schedule.calendar(), Following, paymentDelay, frequency, notionalReset,
+                dividends, dividendFactor);
         }
         swap->setPricingEngine(discountEngine);
         return swap;
@@ -671,6 +694,349 @@ BOOST_AUTO_TEST_CASE(testErrorWhenNotionalResetIsNotSupported) {
         // Without reset, the same frequencies are still allowed.
         BOOST_CHECK_NO_THROW(
             vars.createTRSWithFrequency(Swap::Receiver, schedule, overnight, Semiannual));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testDividendCashFlows) {
+    BOOST_TEST_MESSAGE("Testing dividend cash flows...");
+    CommonVars vars;
+    const std::vector<Date> dates = {Date(5, January, 2023), Date(5, April, 2023),
+                                     Date(5, July, 2023), Date(5, October, 2023),
+                                     Date(5, January, 2024)};
+    const Schedule schedule(dates, vars.calendar, Unadjusted, Unadjusted,
+                            3 * Months, DateGeneration::Forward, false);
+    // Put every equity fixing in the past so amounts depend only on the supplied levels.
+    Settings::instance().evaluationDate() = Date(8, January, 2024);
+
+    const Real nominal = 100000.0;
+    const Real levels[] = {100.0, 110.0, 99.0, 118.8, 118.8};
+    for (Size i = 0; i < dates.size(); ++i)
+        vars.equityIndex->addFixing(dates[i], levels[i], true);
+
+    // Given out of order on purpose; the dividend going ex on 5 July belongs to the
+    // period ending on that date, since the index level at its end is ex-dividend.
+    const Real factor = 0.85;
+    const DividendSchedule dividends = {
+        ext::make_shared<FixedDividend>(1.5, Date(20, November, 2023)),
+        ext::make_shared<FixedDividend>(2.0, Date(15, February, 2023)),
+        ext::make_shared<FixedDividend>(1.0, Date(5, July, 2023))};
+    const std::vector<Date> exDates = {Date(15, February, 2023), Date(5, July, 2023),
+                                       Date(20, November, 2023)};
+    const std::vector<Real> amounts = {2.0, 1.0, 1.5};
+    const std::vector<Size> periods = {0, 1, 3};
+
+    for (bool overnight : {false, true}) {
+        auto plain = vars.createTRSWithFrequency(Swap::Receiver, schedule, overnight, Quarterly);
+        BOOST_CHECK(!plain->hasDividendLeg());
+        BOOST_CHECK(plain->dividendLeg().empty());
+        BOOST_CHECK_EQUAL(plain->legs().size(), 2);
+        QL_CHECK_SMALL(plain->dividendLegNPV(), 1.0e-12);
+
+        for (bool reset : {false, true}) {
+            auto swap = vars.createTRSWithDividends(Swap::Receiver, schedule, overnight,
+                                                    Quarterly, reset, dividends, factor);
+            BOOST_CHECK(swap->hasDividendLeg());
+            BOOST_CHECK_EQUAL(swap->legs().size(), 3);
+            BOOST_CHECK_EQUAL(swap->dividends().size(), dividends.size());
+            BOOST_CHECK_EQUAL(swap->dividendFactor(), factor);
+            BOOST_REQUIRE_EQUAL(swap->dividendLeg().size(), exDates.size());
+
+            for (Size j = 0; j < exDates.size(); ++j) {
+                auto flow =
+                    ext::dynamic_pointer_cast<EquityDividendCashFlow>(swap->dividendLeg()[j]);
+                BOOST_REQUIRE(flow);
+                const auto& period = swap->equityLeg()[periods[j]];
+                BOOST_CHECK_EQUAL(flow->exDividendDate(), exDates[j]);
+                BOOST_CHECK(flow->equityCashFlow() == period);
+                BOOST_CHECK_EQUAL(flow->date(), period->date());
+                BOOST_CHECK_EQUAL(flow->dividendFactor(), factor);
+                // The dividend is paid on the index units held over the period: the
+                // notional divided by the level at its start, i.e., N / I(T_0) with reset.
+                const Real units =
+                    reset ? Real(nominal / levels[0]) : Real(nominal / levels[periods[j]]);
+                QL_CHECK_SMALL(flow->amount() - factor * amounts[j] * units, 1.0e-8);
+            }
+        }
+
+        // With a single equity payment, all dividends are paid at maturity on the
+        // units bought at the start.
+        auto bullet = vars.createTRSWithDividends(Swap::Receiver, schedule, overnight, Once,
+                                                  false, dividends, factor);
+        BOOST_REQUIRE_EQUAL(bullet->dividendLeg().size(), exDates.size());
+        for (Size j = 0; j < exDates.size(); ++j) {
+            const auto& flow = bullet->dividendLeg()[j];
+            BOOST_CHECK_EQUAL(flow->date(), bullet->equityLeg()[0]->date());
+            QL_CHECK_SMALL(flow->amount() - factor * amounts[j] * nominal / levels[0], 1.0e-8);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testDividendLegValuation) {
+    BOOST_TEST_MESSAGE("Testing valuation with dividend leg...");
+    CommonVars vars;
+    const Schedule schedule = MakeSchedule().from(Date(31, January, 2023))
+        .to(Date(31, January, 2024)).withTenor(3 * Months)
+        .withCalendar(vars.calendar).withConvention(Following).backwards();
+    const Real nominal = 100000.0;
+    const Rate margin = 0.001;
+    const Real factor = 0.85;
+    const DividendSchedule dividends = {
+        ext::make_shared<FixedDividend>(50.0, Date(15, March, 2023)),
+        ext::make_shared<FixedDividend>(60.0, Date(15, June, 2023)),
+        ext::make_shared<FixedDividend>(55.0, Date(15, September, 2023)),
+        ext::make_shared<FixedDividend>(65.0, Date(15, December, 2023))};
+
+    for (bool overnight : {false, true}) {
+        for (bool reset : {false, true}) {
+            for (Swap::Type type : {Swap::Receiver, Swap::Payer}) {
+                auto swap = vars.createTRSWithDividends(type, schedule, overnight, Quarterly,
+                                                        reset, dividends, factor, margin, 2);
+                BOOST_REQUIRE_EQUAL(swap->dividendLeg().size(), dividends.size());
+
+                auto expectedNPV = [&]() -> Real {
+                    Real npv = 0.0;
+                    for (Size j = 0; j < dividends.size(); ++j) {
+                        // one dividend per period in this setup
+                        auto period = ext::dynamic_pointer_cast<EquityCashFlow>(
+                            swap->equityLeg()[j]);
+                        BOOST_REQUIRE(period);
+                        const Real units =
+                            reset ? Real(nominal / vars.equityIndex->fixing(schedule[0]))
+                                  : Real(nominal / vars.equityIndex->fixing(schedule[j]));
+                        const Real amount = factor * dividends[j]->amount() * units;
+                        QL_CHECK_SMALL(swap->dividendLeg()[j]->amount() - amount, 1.0e-8);
+                        BOOST_CHECK_EQUAL(swap->dividendLeg()[j]->date(), period->date());
+                        npv += amount * vars.interestHandle->discount(period->date());
+                    }
+                    // The dividend leg has the sign of the equity leg.
+                    return type == Swap::Receiver ? npv : Real(-npv);
+                };
+
+                QL_CHECK_SMALL(swap->dividendLegNPV() - expectedNPV(), 1.0e-8);
+                QL_CHECK_SMALL(swap->NPV() - swap->equityLegNPV() - swap->interestRateLegNPV() -
+                                   swap->dividendLegNPV(),
+                               1.0e-8);
+
+                // The fair margin takes the dividends into account.
+                auto par = vars.createTRSWithDividends(type, schedule, overnight, Quarterly,
+                                                       reset, dividends, factor,
+                                                       swap->fairMargin(), 2);
+                QL_CHECK_SMALL(par->NPV(), 1.0e-8);
+
+                // The number of units, hence the dividend leg, depends on the forecast
+                // of the index.
+                const Real dividendNPV = swap->dividendLegNPV();
+                auto spotQuote = ext::dynamic_pointer_cast<SimpleQuote>(vars.spot);
+                spotQuote->setValue(9100.0);
+                BOOST_CHECK(std::fabs(swap->dividendLegNPV() - dividendNPV) > 1.0);
+                QL_CHECK_SMALL(swap->dividendLegNPV() - expectedNPV(), 1.0e-8);
+                spotQuote->setValue(8700.0);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testErrorWhenDividendLegIsNotSupported) {
+    BOOST_TEST_MESSAGE("Testing errors with dividend leg...");
+    CommonVars vars;
+    const Schedule schedule = MakeSchedule().from(Date(31, January, 2023))
+        .to(Date(31, January, 2024)).withTenor(3 * Months)
+        .withCalendar(vars.calendar).withConvention(Following).backwards();
+    const DividendSchedule dividends = {
+        ext::make_shared<FixedDividend>(50.0, Date(15, March, 2023))};
+
+    for (bool overnight : {false, true}) {
+        // Total and excess return indexes already reinvest the dividends.
+        for (auto returnType : {EquityIndex::TotalReturn, EquityIndex::ExcessReturn}) {
+            auto index = ext::make_shared<EquityIndex>(
+                "returnIndex", vars.calendar, USDCurrency(), vars.interestHandle,
+                vars.dividendHandle, vars.spotHandle, returnType);
+            BOOST_CHECK_EXCEPTION(
+                vars.createTRSWithDividends(Swap::Receiver, schedule, overnight, Quarterly,
+                                            false, dividends, 1.0, 0.0, 0, index),
+                Error,
+                ExpectedErrorMessage("Dividend leg requires a price return equity index"));
+            // Without dividends, such indexes are still allowed.
+            BOOST_CHECK_NO_THROW(vars.createTRSWithDividends(
+                Swap::Receiver, schedule, overnight, Quarterly, false, {}, 1.0, 0.0, 0, index));
+        }
+
+        // Ex-dividend dates must fall within the swap, the start date excluded.
+        for (const Date& exDate : std::vector<Date>{Date(15, January, 2023),
+                                                    Date(31, January, 2023),
+                                                    Date(15, February, 2024)}) {
+            const DividendSchedule outside = {ext::make_shared<FixedDividend>(50.0, exDate)};
+            for (Frequency frequency : {Once, Quarterly}) {
+                BOOST_CHECK_EXCEPTION(
+                    vars.createTRSWithDividends(Swap::Receiver, schedule, overnight, frequency,
+                                                false, outside, 1.0),
+                    Error, ExpectedErrorMessage("outside the equity periods"));
+            }
+        }
+
+        BOOST_CHECK_EXCEPTION(vars.createTRSWithDividends(Swap::Receiver, schedule, overnight,
+                                                          Quarterly, false, dividends, -0.1),
+                              Error,
+                              ExpectedErrorMessage("Dividend factor cannot be negative"));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testQuantoPeriodicSwap) {
+    BOOST_TEST_MESSAGE("Testing quanto pricer on periodic equity total return swaps...");
+    CommonVars vars;
+    const Schedule schedule = MakeSchedule().from(Date(31, January, 2023))
+        .to(Date(31, January, 2024)).withTenor(3 * Months)
+        .withCalendar(vars.calendar).withConvention(Following).backwards();
+    const Real nominal = 100000.0;
+    const Real factor = 0.85;
+    const DividendSchedule dividends = {
+        ext::make_shared<FixedDividend>(50.0, Date(15, March, 2023)),
+        ext::make_shared<FixedDividend>(60.0, Date(15, June, 2023)),
+        ext::make_shared<FixedDividend>(55.0, Date(15, September, 2023)),
+        ext::make_shared<FixedDividend>(65.0, Date(15, December, 2023))};
+
+    // The equity index is quoted in a different currency than the swap.
+    RelinkableHandle<YieldTermStructure> quantoCurrencyHandle(flatRate(0.001, vars.dayCount));
+    RelinkableHandle<BlackVolTermStructure> equityVolHandle(flatVol(0.4, vars.dayCount));
+    RelinkableHandle<BlackVolTermStructure> fxVolHandle(flatVol(0.2, vars.dayCount));
+    auto correlation = ext::make_shared<SimpleQuote>(0.4);
+    RelinkableHandle<Quote> correlationHandle(correlation);
+    auto pricer = ext::make_shared<EquityQuantoCashFlowPricer>(
+        quantoCurrencyHandle, equityVolHandle, fxVolHandle, correlationHandle);
+
+    for (bool overnight : {false, true}) {
+        for (bool reset : {false, true}) {
+            auto plain = vars.createTRSWithDividends(Swap::Receiver, schedule, overnight,
+                                                     Quarterly, reset, dividends, factor);
+            auto quanto = vars.createTRSWithDividends(Swap::Receiver, schedule, overnight,
+                                                      Quarterly, reset, dividends, factor);
+            // Compute the NPV first, so that setting the pricer must notify the swap.
+            const Real plainNPV = quanto->NPV();
+            setCouponPricer(quanto->equityLeg(), pricer);
+            const Size n = quanto->equityLeg().size();
+            BOOST_REQUIRE_EQUAL(n, schedule.size() - 1);
+
+            Real expectedEquityNPV = 0.0, expectedDividendNPV = 0.0;
+            for (Size i = 0; i < n; ++i) {
+                auto flow = ext::dynamic_pointer_cast<EquityCashFlow>(quanto->equityLeg()[i]);
+                auto plainFlow =
+                    ext::dynamic_pointer_cast<EquityCashFlow>(plain->equityLeg()[i]);
+                BOOST_REQUIRE(flow);
+                BOOST_REQUIRE(plainFlow);
+                BOOST_CHECK(flow->pricer() == pricer);
+
+                // Each period gets the adjustment of a quanto cash flow priced in isolation...
+                auto isolated = ext::make_shared<EquityCashFlow>(
+                    nominal, vars.equityIndex, flow->baseDate(), flow->fixingDate(),
+                    flow->date());
+                isolated->setPricer(pricer);
+                const Real quantoReturn = isolated->amount() / nominal;
+                BOOST_CHECK(std::fabs(flow->amount() - plainFlow->amount()) > 1.0);
+
+                // ...applied to the notional of the period which, with notional reset,
+                // follows the quanto-adjusted index levels.
+                const Real expectedNotional =
+                    reset ? Real(nominal * pricer->indexLevel(vars.equityIndex, schedule[i]) /
+                                 pricer->indexLevel(vars.equityIndex, schedule[0]))
+                          : nominal;
+                QL_CHECK_SMALL(flow->notional() - expectedNotional, 1.0e-8);
+                QL_CHECK_SMALL(flow->amount() - expectedNotional * quantoReturn, 1.0e-8);
+                const DiscountFactor discount = vars.interestHandle->discount(flow->date());
+                expectedEquityNPV += flow->amount() * discount;
+
+                if (reset) {
+                    // The funding coupon accrues on the same notional...
+                    auto coupon = ext::dynamic_pointer_cast<EquityNotionalResetCoupon>(
+                        quanto->interestRateLeg()[i]);
+                    auto plainCoupon = ext::dynamic_pointer_cast<EquityNotionalResetCoupon>(
+                        plain->interestRateLeg()[i]);
+                    BOOST_REQUIRE(coupon);
+                    BOOST_REQUIRE(plainCoupon);
+                    BOOST_CHECK(coupon->equityCashFlow() == flow);
+                    QL_CHECK_SMALL(coupon->nominal() - expectedNotional, 1.0e-8);
+                    QL_CHECK_SMALL(coupon->amount() -
+                                       plainCoupon->amount() * expectedNotional /
+                                           plainCoupon->nominal(),
+                                   1.0e-8);
+                    // ...which differs from the unadjusted one after the first period.
+                    if (i > 0)
+                        BOOST_CHECK(std::fabs(coupon->nominal() - plainCoupon->nominal()) > 1.0);
+                }
+
+                // The dividends are paid on the quanto-adjusted number of index units.
+                const auto& dividend = quanto->dividendLeg()[i];
+                const Real units =
+                    expectedNotional / pricer->indexLevel(vars.equityIndex, schedule[i]);
+                QL_CHECK_SMALL(dividend->amount() - factor * dividends[i]->amount() * units,
+                               1.0e-8);
+                expectedDividendNPV += dividend->amount() * discount;
+            }
+
+            QL_CHECK_SMALL(quanto->equityLegNPV() - expectedEquityNPV, 1.0e-8);
+            QL_CHECK_SMALL(quanto->dividendLegNPV() - expectedDividendNPV, 1.0e-8);
+            BOOST_CHECK(std::fabs(quanto->NPV() - plainNPV) > 1.0);
+
+            // The fair margin zeroes the NPV of the quanto swap.
+            auto par = vars.createTRSWithDividends(Swap::Receiver, schedule, overnight,
+                                                   Quarterly, reset, dividends, factor,
+                                                   quanto->fairMargin());
+            setCouponPricer(par->equityLeg(), pricer);
+            QL_CHECK_SMALL(par->NPV(), 1.0e-8);
+
+            // All legs depending on the index react to changes in the quanto inputs.
+            const Real equityNPV = quanto->equityLegNPV();
+            const Real interestNPV = quanto->interestRateLegNPV();
+            const Real dividendNPV = quanto->dividendLegNPV();
+            correlation->setValue(0.1);
+            BOOST_CHECK(std::fabs(quanto->equityLegNPV() - equityNPV) > 1.0);
+            BOOST_CHECK(std::fabs(quanto->dividendLegNPV() - dividendNPV) > 1.0e-2);
+            if (reset)
+                BOOST_CHECK(std::fabs(quanto->interestRateLegNPV() - interestNPV) > 1.0e-2);
+            auto fresh = vars.createTRSWithDividends(Swap::Receiver, schedule, overnight,
+                                                     Quarterly, reset, dividends, factor);
+            setCouponPricer(fresh->equityLeg(), pricer);
+            QL_CHECK_SMALL(quanto->NPV() - fresh->NPV(), 1.0e-8);
+            correlation->setValue(0.4);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testNotionalResetFundingCurveUpdate) {
+    BOOST_TEST_MESSAGE("Testing notional reset after funding curve changes...");
+    CommonVars vars;
+    const Schedule schedule = MakeSchedule().from(Date(31, January, 2023))
+        .to(Date(31, January, 2024)).withTenor(3 * Months)
+        .withCalendar(vars.calendar).withConvention(Following).backwards();
+
+    // The funding index is forecast on a different curve than the discount curve,
+    // so that the swap is only notified of its changes through the funding coupons.
+    RelinkableHandle<YieldTermStructure> forecastHandle(flatRate(0.04, vars.dayCount));
+    // declared as base classes to select the right constructor of the swap
+    ext::shared_ptr<IborIndex> libor = ext::make_shared<USDLibor>(3 * Months, forecastHandle);
+    ext::shared_ptr<OvernightIndex> sofr = ext::make_shared<Sofr>(forecastHandle);
+
+    auto makeSwap = [&](bool overnight) {
+        ext::shared_ptr<EquityTotalReturnSwap> swap;
+        if (overnight)
+            swap = ext::make_shared<EquityTotalReturnSwap>(
+                Swap::Receiver, 100000.0, schedule, vars.equityIndex, sofr, vars.dayCount, 0.0,
+                1.0, vars.calendar, Following, 0, Quarterly, true);
+        else
+            swap = ext::make_shared<EquityTotalReturnSwap>(
+                Swap::Receiver, 100000.0, schedule, vars.equityIndex, libor, vars.dayCount, 0.0,
+                1.0, vars.calendar, Following, 0, Quarterly, true);
+        swap->setPricingEngine(vars.discountEngine);
+        return swap;
+    };
+
+    for (bool overnight : {false, true}) {
+        auto swap = makeSwap(overnight);
+        const Real interestNPV = swap->interestRateLegNPV();
+        forecastHandle.linkTo(flatRate(0.05, vars.dayCount));
+        BOOST_CHECK(std::fabs(swap->interestRateLegNPV() - interestNPV) > 1.0);
+        QL_CHECK_SMALL(swap->interestRateLegNPV() - makeSwap(overnight)->interestRateLegNPV(),
+                       1.0e-8);
+        forecastHandle.linkTo(flatRate(0.04, vars.dayCount));
     }
 }
 
