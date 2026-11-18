@@ -1525,6 +1525,226 @@ BOOST_AUTO_TEST_CASE(testBrazil) {
     BOOST_CHECK(exchange.isHoliday(christmasEve));
 }
 
+BOOST_AUTO_TEST_CASE(testBrazilSettlementRecentYears) {
+    BOOST_TEST_MESSAGE("Testing Brazil settlement holiday list for 2022-2026...");
+
+    std::vector<Date> expectedHol = {
+        // 2022
+        // {1, January, 2022}, // New Year's Day, Saturday
+        {28, February, 2022}, // Carnival Monday
+        {1, March, 2022},     // Carnival Tuesday
+        {15, April, 2022},    // Good Friday
+        {21, April, 2022},    // Tiradentes
+        // {1, May, 2022}, // Labour Day, Sunday
+        {16, June, 2022},     // Corpus Christi
+        {7, September, 2022}, // Independence Day
+        {12, October, 2022},  // Nossa Sra. Aparecida
+        {2, November, 2022},  // All Souls' Day
+        {15, November, 2022}, // Republic Day
+        // {25, December, 2022}, // Christmas, Sunday
+
+        // 2023
+        // {1, January, 2023}, // New Year's Day, Sunday
+        {20, February, 2023}, // Carnival Monday
+        {21, February, 2023}, // Carnival Tuesday
+        {7, April, 2023},     // Good Friday
+        {21, April, 2023},    // Tiradentes
+        {1, May, 2023},       // Labour Day
+        {8, June, 2023},      // Corpus Christi
+        {7, September, 2023}, // Independence Day
+        {12, October, 2023},  // Nossa Sra. Aparecida
+        {2, November, 2023},  // All Souls' Day
+        {15, November, 2023}, // Republic Day
+        // November 20th, 2023 is not a national holiday yet
+        {25, December, 2023}, // Christmas
+
+        // 2024
+        {1, January, 2024},   // New Year's Day
+        {12, February, 2024}, // Carnival Monday
+        {13, February, 2024}, // Carnival Tuesday
+        {29, March, 2024},    // Good Friday
+        // {21, April, 2024}, // Tiradentes, Sunday
+        {1, May, 2024},  // Labour Day
+        {30, May, 2024}, // Corpus Christi
+        // {7, September, 2024}, // Independence Day, Saturday
+        // {12, October, 2024}, // Nossa Sra. Aparecida, Saturday
+        // {2, November, 2024}, // All Souls' Day, Saturday
+        {15, November, 2024}, // Republic Day
+        {20, November, 2024}, // Black Awareness Day
+        {25, December, 2024}, // Christmas
+
+        // 2025
+        {1, January, 2025}, // New Year's Day
+        {3, March, 2025},   // Carnival Monday
+        {4, March, 2025},   // Carnival Tuesday
+        {18, April, 2025},  // Good Friday
+        {21, April, 2025},  // Tiradentes
+        {1, May, 2025},     // Labour Day
+        {19, June, 2025},   // Corpus Christi
+        // {7, September, 2025}, // Independence Day, Sunday
+        // {12, October, 2025}, // Nossa Sra. Aparecida, Sunday
+        // {2, November, 2025}, // All Souls' Day, Sunday
+        // {15, November, 2025}, // Republic Day, Saturday
+        {20, November, 2025}, // Black Awareness Day
+        {25, December, 2025}, // Christmas
+
+        // 2026
+        {1, January, 2026},   // New Year's Day
+        {16, February, 2026}, // Carnival Monday
+        {17, February, 2026}, // Carnival Tuesday
+        {3, April, 2026},     // Good Friday
+        {21, April, 2026},    // Tiradentes
+        {1, May, 2026},       // Labour Day
+        {4, June, 2026},      // Corpus Christi
+        {7, September, 2026}, // Independence Day
+        {12, October, 2026},  // Nossa Sra. Aparecida
+        {2, November, 2026},  // All Souls' Day
+        // {15, November, 2026}, // Republic Day, Sunday
+        {20, November, 2026}, // Black Awareness Day
+        {25, December, 2026}, // Christmas
+    };
+
+    Calendar c = Brazil(Brazil::Settlement);
+    checkHolidays(c.holidayList(Date(1, January, 2022), Date(31, December, 2026)), expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testBrazilExchangeRecentYears) {
+    BOOST_TEST_MESSAGE("Testing Brazil exchange (B3) holiday list for 2022-2026...");
+
+    std::vector<Date> expectedHol = {
+        // 2022
+        // {1, January, 2022}, // New Year's Day, Saturday
+        {28, February, 2022}, // Carnival Monday
+        {1, March, 2022},     // Carnival Tuesday
+        {15, April, 2022},    // Good Friday
+        {21, April, 2022},    // Tiradentes
+        // {1, May, 2022}, // Labour Day, Sunday
+        {16, June, 2022},     // Corpus Christi
+        {7, September, 2022}, // Independence Day
+        {12, October, 2022},  // Nossa Sra. Aparecida
+        {2, November, 2022},  // All Souls' Day
+        {15, November, 2022}, // Republic Day
+        // {24, December, 2022}, // Christmas Eve, Saturday
+        // {25, December, 2022}, // Christmas, Sunday
+        {30, December, 2022}, // last business day of the year
+
+        // 2023
+        // {1, January, 2023}, // New Year's Day, Sunday
+        {20, February, 2023}, // Carnival Monday
+        {21, February, 2023}, // Carnival Tuesday
+        {7, April, 2023},     // Good Friday
+        {21, April, 2023},    // Tiradentes
+        {1, May, 2023},       // Labour Day
+        {8, June, 2023},      // Corpus Christi
+        {7, September, 2023}, // Independence Day
+        {12, October, 2023},  // Nossa Sra. Aparecida
+        {2, November, 2023},  // All Souls' Day
+        {15, November, 2023}, // Republic Day
+        // November 20th, 2023 is a trading day
+        // {24, December, 2023}, // Christmas Eve, Sunday
+        {25, December, 2023}, // Christmas
+        {29, December, 2023}, // last business day of the year
+
+        // 2024
+        {1, January, 2024},   // New Year's Day
+        {12, February, 2024}, // Carnival Monday
+        {13, February, 2024}, // Carnival Tuesday
+        {29, March, 2024},    // Good Friday
+        // {21, April, 2024}, // Tiradentes, Sunday
+        {1, May, 2024},  // Labour Day
+        {30, May, 2024}, // Corpus Christi
+        // {7, September, 2024}, // Independence Day, Saturday
+        // {12, October, 2024}, // Nossa Sra. Aparecida, Saturday
+        // {2, November, 2024}, // All Souls' Day, Saturday
+        {15, November, 2024}, // Republic Day
+        {20, November, 2024}, // Black Consciousness Day
+        {24, December, 2024}, // Christmas Eve
+        {25, December, 2024}, // Christmas
+        {31, December, 2024}, // last business day of the year
+
+        // 2025
+        {1, January, 2025}, // New Year's Day
+        {3, March, 2025},   // Carnival Monday
+        {4, March, 2025},   // Carnival Tuesday
+        {18, April, 2025},  // Good Friday
+        {21, April, 2025},  // Tiradentes
+        {1, May, 2025},     // Labour Day
+        {19, June, 2025},   // Corpus Christi
+        // {7, September, 2025}, // Independence Day, Sunday
+        // {12, October, 2025}, // Nossa Sra. Aparecida, Sunday
+        // {2, November, 2025}, // All Souls' Day, Sunday
+        // {15, November, 2025}, // Republic Day, Saturday
+        {20, November, 2025}, // Black Consciousness Day
+        {24, December, 2025}, // Christmas Eve
+        {25, December, 2025}, // Christmas
+        {31, December, 2025}, // last business day of the year
+
+        // 2026
+        {1, January, 2026},   // New Year's Day
+        {16, February, 2026}, // Carnival Monday
+        {17, February, 2026}, // Carnival Tuesday
+        {3, April, 2026},     // Good Friday
+        {21, April, 2026},    // Tiradentes
+        {1, May, 2026},       // Labour Day
+        {4, June, 2026},      // Corpus Christi
+        {7, September, 2026}, // Independence Day
+        {12, October, 2026},  // Nossa Sra. Aparecida
+        {2, November, 2026},  // All Souls' Day
+        // {15, November, 2026}, // Republic Day, Sunday
+        {20, November, 2026}, // Black Consciousness Day
+        {24, December, 2026}, // Christmas Eve
+        {25, December, 2026}, // Christmas
+        {31, December, 2026}, // last business day of the year
+    };
+
+    Calendar c = Brazil(Brazil::Exchange);
+    checkHolidays(c.holidayList(Date(1, January, 2022), Date(31, December, 2026)), expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testBrazilHolidayRuleChanges) {
+    BOOST_TEST_MESSAGE("Testing changes in Brazil holiday rules...");
+
+    Calendar settlement = Brazil(Brazil::Settlement);
+    Calendar exchange = Brazil(Brazil::Exchange);
+
+    // Sao Paulo City Day and Revolution Day are exchange holidays up to 2021 only
+    BOOST_CHECK(exchange.isHoliday(Date(25, January, 2021)));     // Monday
+    BOOST_CHECK(exchange.isHoliday(Date(9, July, 2021)));         // Friday
+    BOOST_CHECK(exchange.isBusinessDay(Date(25, January, 2022))); // Tuesday
+    BOOST_CHECK(exchange.isBusinessDay(Date(25, January, 2023))); // Wednesday
+    BOOST_CHECK(exchange.isBusinessDay(Date(9, July, 2024)));     // Tuesday
+    BOOST_CHECK(exchange.isBusinessDay(Date(9, July, 2025)));     // Wednesday
+    // ...and never settlement holidays
+    BOOST_CHECK(settlement.isBusinessDay(Date(25, January, 2021)));
+    BOOST_CHECK(settlement.isBusinessDay(Date(9, July, 2021)));
+
+    // Black Awareness Day is a national holiday since 2024
+    BOOST_CHECK(settlement.isBusinessDay(Date(20, November, 2023))); // Monday
+    BOOST_CHECK(settlement.isHoliday(Date(20, November, 2024)));     // Wednesday
+    BOOST_CHECK(settlement.isHoliday(Date(20, November, 2025)));     // Thursday
+
+    // Black Consciousness Day was not an exchange holiday in 2022 and 2023
+    BOOST_CHECK(exchange.isBusinessDay(Date(20, November, 2023))); // Monday
+    BOOST_CHECK(exchange.isHoliday(Date(20, November, 2024)));     // Wednesday
+
+    // Christmas Eve and the last business day of the year are exchange holidays only
+    BOOST_CHECK(exchange.isHoliday(Date(24, December, 2025))); // Wednesday
+    BOOST_CHECK(exchange.isHoliday(Date(31, December, 2025))); // Wednesday
+    BOOST_CHECK(settlement.isBusinessDay(Date(24, December, 2025)));
+    BOOST_CHECK(settlement.isBusinessDay(Date(31, December, 2025)));
+    BOOST_CHECK(exchange.isBusinessDay(Date(30, December, 2025))); // Tuesday
+
+    // December 31st, 2022 is a Saturday: the exchange closes on Friday 30th
+    BOOST_CHECK(exchange.isBusinessDay(Date(29, December, 2022))); // Thursday
+    BOOST_CHECK(exchange.isHoliday(Date(30, December, 2022)));     // Friday
+    BOOST_CHECK(settlement.isBusinessDay(Date(30, December, 2022)));
+
+    // December 31st, 2023 is a Sunday: the exchange closes on Friday 29th
+    BOOST_CHECK(exchange.isBusinessDay(Date(28, December, 2023))); // Thursday
+    BOOST_CHECK(exchange.isHoliday(Date(29, December, 2023)));     // Friday
+    BOOST_CHECK(settlement.isBusinessDay(Date(29, December, 2023)));
+}
+
 BOOST_AUTO_TEST_CASE(testDenmark) {
     BOOST_TEST_MESSAGE("Testing Denmark holiday list...");
 
