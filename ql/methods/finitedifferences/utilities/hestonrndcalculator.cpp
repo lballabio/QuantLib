@@ -94,8 +94,8 @@ namespace {
                 // the kappa*theta/sigma^2 piece has the same removable
                 // singularity AnalyticHestonEngine::chF's small-sigma branch
                 // guards against, so only that piece needs the small-sigma
-                // expansion (hestonSmallSigmaStep's C, evaluated at z=-p_x,
-                // Dprev=0, which this segment's (g, o, gamma) exactly match).
+                // expansion (hestonSmallSigmaStep's C, evaluated at z=-p_x
+                // with Dprev=0, matches this calculator's g and o).
                 const std::complex<Real> g = gamma(p_, p_x);
                 const std::complex<Real> o = omega(p_, p_x);
 
