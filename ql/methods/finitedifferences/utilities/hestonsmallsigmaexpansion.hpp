@@ -38,9 +38,9 @@ namespace detail {
             chF(z, tau) = exp(v0*D + C)
 
         over a time interval of length tau, with terminal/boundary value
-        Dprev for D, develop a removable singularity: every closed-form
-        expression for D and C carries explicit v0/sigma^2 and
-        kappa*theta/sigma^2 prefactors multiplying differences that
+        Dprev for D, develop a removable singularity: the usual closed-form
+        expressions for D and C carry 1/sigma^2 and kappa*theta/sigma^2
+        prefactors multiplying differences that
         themselves vanish like O(sigma^2), so naive floating point
         evaluation loses precision catastrophically (and can fail outright)
         as sigma becomes very small.
@@ -52,7 +52,7 @@ namespace detail {
         the closed-form branch for tiny kappa.
 
         Dprev == 0 is the single-segment case, which matches
-        AnalyticHestonEngine::chF's small-sigma branch to machine precision.
+        AnalyticHestonEngine::chF's small-sigma branch to machine precision for sigma <= 1e-6.
         A nonzero complex Dprev lets a piecewise-constant (multi-segment)
         Heston model apply the same treatment per segment, carrying the
         running D coefficient from later segments into earlier ones as
@@ -71,8 +71,8 @@ namespace detail {
         The implementation uses only powers of exp(-kappa*tau), which lie in
         (0,1], and never forms exp(+kappa*tau) or exp(+2*kappa*tau): D stays
         bounded and C grows at most linearly in tau as kappa*tau -> infinity,
-        whereas the positive exponentials overflow for kappa*tau beyond
-        roughly 350 in double precision.
+        whereas exp(+2*kappa*tau) overflows for kappa*tau beyond roughly 350
+        in double precision.
 
         \param kappa, theta, sigma, rho  Heston parameters of the segment
         \param tau    length of the segment

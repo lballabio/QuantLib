@@ -36,7 +36,9 @@ namespace detail {
        Cinc = kappa*theta/sigma^2 * ((k-d)*tau - 2*log((1-gt*exp(-d*tau))/(1-gt)))
 
      around sigma=0, generic in the terminal value Dprev (see the header
-     comment).
+     comment). The C++ below is a hand-tidied, algebraically equivalent
+     rendering of the recipe's output (names and grouping of the common
+     subexpressions differ).
 
      Python/sympy program used to derive and print the C++ below:
 
@@ -84,8 +86,8 @@ namespace detail {
 
        Dnew, Cinc = to_emkt(Dnew), to_emkt(Cinc)
 
-       # both denominators are kappa**3; both numerators have emkt powers
-       # 2, 1, 0 only
+       # both denominators are constant multiples of kappa**3 (8 and 16);
+       # both numerators have emkt powers 2, 1, 0 only
        for name, expr in [('Dnew', Dnew), ('Cinc', Cinc)]:
            num, den = sp.fraction(sp.together(expr))
            print(name, "denominator:", den)

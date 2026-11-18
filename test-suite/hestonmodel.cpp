@@ -2928,7 +2928,7 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaStepAgainstClosedForm) {
 
     // At sigma = 1e-2 the closed form is still numerically stable (its
     // cancellation error is of order eps/sigma^2 ~ 1e-12), while the
-    // expansion's truncation error is O(sigma^3). The sigma^2 terms are of
+    // expansion's truncation error is O(sigma^3), with a small coefficient. The sigma^2 terms are of
     // order 1e-5 to 1e-4, so agreement to 1e-7 pins their coefficients,
     // including those multiplying a nonzero complex Dprev.
     const Real kappa = 1.3, theta = 0.04, sigma = 1e-2, rho = -0.6;
@@ -2978,11 +2978,12 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansionOverflowSafety) {
                        "long-dated, fast mean-reverting inputs...");
 
     // A transcription of the small-sigma Taylor coefficients that forms
-    // exp(+kappa*tau) as an intermediate overflows in double precision once
-    // kappa*tau exceeds roughly 350, well before the D (bounded) and C
-    // (linear in tau) coefficients themselves do. COSHestonEngine::chF is checked directly against the
+    // exp(+2*kappa*tau) as an intermediate overflows in double precision
+    // once kappa*tau exceeds roughly 350, well before the D (bounded) and
+    // C (linear in tau) coefficients themselves do.
+    // COSHestonEngine::chF is checked directly against the
     // deterministic-limit closed form (COSHestonEngine::calculate() is not
-    // used, since its truncation-range helpers form exp(2*kappa*t)..
+    // used, since its truncation-range helpers form exp(kappa*t) up to
     // exp(4*kappa*t) directly); AnalyticPTDHestonEngine is checked end to
     // end via option pricing.
 
