@@ -142,9 +142,11 @@ BOOST_AUTO_TEST_CASE(testConvexityAdjustment) {
     for (Real s : {0.05, 0.1, 0.25, 0.5, 1.0, 2.0}) {
         vars.logVol->setValue(s);
         Real fair = swap.fairVolatility();
-        if (!(fair < previous) || !(fair > 0.0))
+        Real expected = sqrtK * std::exp(-s * s / 8.0);
+        if (!(fair < previous) || std::fabs(fair - expected) > 1.0e-15)
             BOOST_ERROR("fair volatility " << fair << " at log-volatility " << s
-                        << " is not strictly between 0 and the previous value " << previous);
+                        << " is not below the previous value " << previous
+                        << " or differs from the expected " << expected);
         previous = fair;
     }
 
@@ -204,10 +206,10 @@ BOOST_AUTO_TEST_CASE(testConsistencyWithVarianceSwap) {
                     << std::sqrt(fairVariance));
 
     vars.logVol->setValue(0.3);
-    if (!(flat.fairVolatility() < std::sqrt(fairVariance)))
-        BOOST_ERROR("fair volatility " << flat.fairVolatility()
-                    << " is not below the square root of the replicated variance "
-                    << std::sqrt(fairVariance) << " at positive log-volatility");
+    Real expected = std::sqrt(fairVariance) * std::exp(-0.3 * 0.3 / 8.0);
+    if (std::fabs(flat.fairVolatility() - expected) > 1.0e-15)
+        BOOST_ERROR("fair volatility " << flat.fairVolatility() << " differs from the expected "
+                    << expected << " at log-volatility 0.3");
 }
 
 BOOST_AUTO_TEST_CASE(testMonteCarlo) {
