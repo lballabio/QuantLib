@@ -127,6 +127,9 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.putCallSchedule.size() == 1,
                    "Must have exactly one call/put date to use Black Engine");
 
+        QL_REQUIRE(arguments_.putCallSchedule[0]->noticeDate() ==
+                       arguments_.putCallSchedule[0]->date(),
+                   "Black callable-bond engine does not support advance notice");
         Date settle = arguments_.settlementDate;
         Date exerciseDate = arguments_.callabilityDates[0];
         QL_REQUIRE(exerciseDate >= settle,

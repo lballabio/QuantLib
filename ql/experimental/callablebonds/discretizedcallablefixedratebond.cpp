@@ -19,6 +19,7 @@
 */
 
 #include <ql/experimental/callablebonds/discretizedcallablefixedratebond.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -51,13 +52,21 @@ namespace QuantLib {
             couponTimes_[i] = dayCounter.yearFraction(referenceDate, args.couponDates[i]);
         }
 
+        // With advance notice the actual order of decisions and intervening
+        // payments matters. Keep the exact dates, including any immediate
+        // rights in the same schedule. Preserve legacy snapping otherwise.
+        const bool hasNotice = !args.callabilityNoticeDates.empty() &&
+                               args.callabilityNoticeDates != args.callabilityDates;
         callabilityTimes_.resize(args.callabilityDates.size());
+        callabilityPaymentTimes_.resize(args.callabilityDates.size());
         for (Size i = 0; i < callabilityTimes_.size(); ++i) {
             const Date callabilityDate = args.callabilityDates[i];
-            Time callabilityTime = dayCounter.yearFraction(referenceDate, args.callabilityDates[i]);
+            const Date noticeDate = hasNotice ? args.callabilityNoticeDates[i] : callabilityDate;
+            Time callabilityTime = dayCounter.yearFraction(referenceDate, noticeDate);
+            callabilityPaymentTimes_[i] = dayCounter.yearFraction(referenceDate, callabilityDate);
 
             // To avoid mispricing, we snap exercise dates to the closest coupon date.
-            for (Size j = 0; j < couponTimes_.size(); j++) {
+            for (Size j = 0; !hasNotice && j < couponTimes_.size(); j++) {
                 const Time couponTime = couponTimes_[j];
                 const Date couponDate = args.couponDates[j];
 
@@ -96,6 +105,22 @@ namespace QuantLib {
 
             adjustedCallabilityPrices_[i] *= arguments_.faceAmount / 100.0;
             callabilityTimes_[i] = callabilityTime;
+            if (noticeDate == callabilityDate)
+                callabilityPaymentTimes_[i] = callabilityTime;
+        }
+
+        if (hasNotice) {
+            // Distinct dates can share a lattice time (e.g., under 30/360).
+            // Within that time roll events back in contractual date order.
+            // On the same date retain schedule order for decisions, then add coupons.
+            for (Size i = 0; i < callabilityTimes_.size(); ++i)
+                noticeScheduleEvents_.push_back(
+                    {args.callabilityNoticeDates[i], callabilityTimes_[i], i, false});
+            for (Size i = 0; i < couponTimes_.size(); ++i)
+                noticeScheduleEvents_.push_back({args.couponDates[i], couponTimes_[i], i, true});
+            std::stable_sort(noticeScheduleEvents_.begin(), noticeScheduleEvents_.end(),
+                             [](const DatedEvent& a, const DatedEvent& b) { return a.date > b.date; });
+            return;
         }
 
         // not snapped itself, but a snapped neighbour may have moved this coupon ahead
@@ -136,6 +161,8 @@ namespace QuantLib {
             t = callabilityTimes_[i];
             if (t >= 0.0) {
                 times.push_back(t);
+                if (callabilityPaymentTimes_[i] != t)
+                    times.push_back(callabilityPaymentTimes_[i]);
             }
         }
 
@@ -156,6 +183,17 @@ namespace QuantLib {
 
 
     void DiscretizedCallableFixedRateBond::postAdjustValuesImpl() {
+        if (!noticeScheduleEvents_.empty()) {
+            for (const auto& event : noticeScheduleEvents_) {
+                if (event.time >= 0.0 && isOnTime(event.time)) {
+                    if (event.isCoupon)
+                        addCoupon(event.index);
+                    else
+                        applyCallability(event.index);
+                }
+            }
+            return;
+        }
         for (Size i = 0; i < callabilityTimes_.size(); i++) {
             Time t = callabilityTimes_[i];
             if (t >= 0.0 && isOnTime(t)) {
@@ -175,16 +213,41 @@ namespace QuantLib {
 
 
     void DiscretizedCallableFixedRateBond::applyCallability(Size i) {
-        Size j;
+        // The alternative to continuation is the conditional value, at
+        // notice, of the committed strike and coupons through payment. Roll
+        // these promised cash flows on the same (possibly spreaded) lattice:
+        // the strike is not payable at notice and discount factors are random.
+        Array exerciseValues;
+        if (!arguments_.callabilityNoticeDates.empty() &&
+            arguments_.callabilityNoticeDates[i] < arguments_.callabilityDates[i]) {
+            DiscretizedDiscountBond payoff;
+            payoff.initialize(method(), callabilityPaymentTimes_[i]);
+            payoff.values() *= adjustedCallabilityPrices_[i];
+            for (Size j = couponTimes_.size(); j > 0; --j) {
+                const Date couponDate = arguments_.couponDates[j - 1];
+                if (arguments_.callabilityNoticeDates[i] < couponDate &&
+                    couponDate <= arguments_.callabilityDates[i]) {
+                    payoff.rollback(couponTimes_[j - 1]);
+                    payoff.values() += arguments_.couponAmounts[j - 1];
+                }
+            }
+            // A coupon on the decision date is added to both alternatives
+            // by postAdjustValuesImpl, after the call/put comparison.
+            payoff.rollback(time());
+            exerciseValues = payoff.values();
+        }
+        auto exercisePrice = [&](Size j) -> Real {
+            return exerciseValues.empty() ? adjustedCallabilityPrices_[i] : exerciseValues[j];
+        };
         switch (arguments_.callabilityTypes[i]) {
             case Callability::Call:
-                for (j = 0; j < values_.size(); j++) {
-                    values_[j] = std::min(adjustedCallabilityPrices_[i], values_[j]);
+                for (Size j = 0; j < values_.size(); ++j) {
+                    values_[j] = std::min(exercisePrice(j), values_[j]);
                 }
                 break;
             case Callability::Put:
-                for (j = 0; j < values_.size(); j++) {
-                    values_[j] = std::max(values_[j], adjustedCallabilityPrices_[i]);
+                for (Size j = 0; j < values_.size(); ++j) {
+                    values_[j] = std::max(exercisePrice(j), values_[j]);
                 }
                 break;
             default:

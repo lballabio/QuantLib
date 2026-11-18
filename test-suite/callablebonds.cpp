@@ -35,6 +35,7 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/shared_ptr.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -1248,6 +1249,191 @@ BOOST_AUTO_TEST_CASE(testEffectiveDurationAndConvexity) {
 
     // Verify that the result differs significantly from the clean-price-denominator calculation
     BOOST_CHECK(std::abs(effDur - incorrectEffDur) > 0.01);
+}
+
+BOOST_AUTO_TEST_CASE(testNoticeAgainstForwardBondOption) {
+    BOOST_TEST_MESSAGE("Testing call and put notice against forward bond options...");
+
+    Date today(10, January, 2024);
+    Settings::instance().evaluationDate() = today;
+    Date notice = today + 1*Years, payment = today + 2*Years, maturity = today + 5*Years;
+    Actual365Fixed dc;
+    Handle<YieldTermStructure> curve(ext::make_shared<FlatForward>(today, 0.035, dc));
+    auto model = ext::make_shared<HullWhite>(curve, 0.08, 0.025);
+    auto engine = ext::make_shared<TreeCallableZeroCouponBondEngine>(model, 360);
+    Real face = 250.0;
+    // Near the forward-money strike, so the call is not exercised at every node.
+    Real strike = 100.0 * curve->discount(maturity) / curve->discount(payment);
+    for (auto type : {Callability::Call, Callability::Put}) {
+        auto right = ext::make_shared<Callability>(Bond::Price(strike, Bond::Price::Dirty),
+                                                   type, payment, notice);
+        CallableZeroCouponBond bond(0, face, NullCalendar(), maturity, dc, Unadjusted,
+                                    100.0, today, {right});
+        bond.setPricingEngine(engine);
+        Option::Type option = type == Callability::Call ? Option::Call : Option::Put;
+        Real premium = model->discountBondOption(option, strike / 100.0,
+                                                  curve->timeFromReference(notice),
+                                                  curve->timeFromReference(payment),
+                                                  curve->timeFromReference(maturity));
+        Real expected = face * (curve->discount(maturity) +
+                                (type == Callability::Call ? -premium : premium));
+        QL_CHECK_SMALL(bond.NPV() - expected, 0.015);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testNoticeCouponEntitlement) {
+    BOOST_TEST_MESSAGE("Testing accrued interest and coupons during a call notice period...");
+
+    Date today(10, January, 2024);
+    Settings::instance().evaluationDate() = today;
+    Date maturity = today + 3*Years;
+    Schedule schedule(today, maturity, 6*Months, NullCalendar(), Unadjusted, Unadjusted,
+                      DateGeneration::Forward, false);
+    Actual365Fixed dc;
+    Handle<YieldTermStructure> curve(ext::make_shared<FlatForward>(today, 0.04, dc));
+    auto model = ext::make_shared<HullWhite>(curve, 0.1, 0.005);
+    auto engine = ext::make_shared<TreeCallableFixedRateBondEngine>(model, 90);
+    Real face = 250.0, strike = 2.0; // deep in the money at every relevant node
+    Date notice = schedule[1];  // a coupon paid on the decision date
+    for (Date payment : {schedule[3] - 20, schedule[3]}) {
+        for (auto priceType : {Bond::Price::Clean, Bond::Price::Dirty}) {
+            auto right = ext::make_shared<Callability>(Bond::Price(strike, priceType),
+                                                       Callability::Call, payment, notice);
+            CallableFixedRateBond bond(0, face, schedule, {0.06}, dc, Unadjusted,
+                                       100.0, today, {right});
+            bond.setPricingEngine(engine);
+            auto promised = [&](Spread spread) -> Real {
+                auto discount = [&](Date d) -> Real {
+                    return curve->discount(d) * std::exp(-spread * curve->timeFromReference(d));
+                };
+                Real dirtyStrike = strike;
+                if (priceType == Bond::Price::Clean)
+                    dirtyStrike += bond.accruedAmount(payment);
+                Real result = face / 100.0 * dirtyStrike * discount(payment);
+                for (const auto& cf : bond.cashflows()) {
+                    if (cf->date() > today && cf->date() <= payment)
+                        result += cf->amount() * discount(cf->date());
+                }
+                return result;
+            };
+            QL_CHECK_SMALL(bond.NPV() - promised(0.0), 1.0e-8);
+            Spread spread = 0.012;
+            QL_CHECK_SMALL(bond.cleanPriceOAS(spread, curve, dc, Continuous, NoFrequency)
+                               - promised(spread) * 100.0 / face, 1.0e-8);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testNoticeAndCouponAtSameLatticeTime) {
+    BOOST_TEST_MESSAGE("Testing distinct notice and coupon dates with the same 30/360 time...");
+
+    Date today(30, July, 2024), notice(30, January, 2025), coupon(31, January, 2025);
+    Settings::instance().evaluationDate() = today;
+    Date maturity(31, July, 2025);
+    Schedule schedule(today, maturity, 6*Months, NullCalendar(), Unadjusted, Unadjusted,
+                      DateGeneration::Backward, false);
+    Thirty360 dc(Thirty360::BondBasis);
+    Handle<YieldTermStructure> curve(ext::make_shared<FlatForward>(today, 0.04, dc));
+    BOOST_REQUIRE_EQUAL(curve->timeFromReference(notice), curve->timeFromReference(coupon));
+    auto model = ext::make_shared<HullWhite>(curve, 0.1, 0.005);
+    auto engine = ext::make_shared<TreeCallableFixedRateBondEngine>(model, 64);
+    for (Date payment : {coupon, coupon + 20}) {
+        auto call = ext::make_shared<Callability>(Bond::Price(20.0, Bond::Price::Dirty),
+                                                  Callability::Call, payment, notice);
+        CallableFixedRateBond bond(0, 100.0, schedule, {0.06}, dc, Unadjusted,
+                                   100.0, today, {call});
+        bond.setPricingEngine(engine);
+        Real expected = 20.0 * curve->discount(payment);
+        for (const auto& cf : bond.cashflows())
+            if (cf->date() > today && cf->date() <= payment)
+                expected += cf->amount() * curve->discount(cf->date());
+        QL_CHECK_SMALL(bond.NPV() - expected, 1.0e-8);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testNoticePaymentInExCouponPeriod) {
+    BOOST_TEST_MESSAGE("Testing clean call payments in the ex-coupon period after notice...");
+
+    Date today(10, January, 2024);
+    Settings::instance().evaluationDate() = today;
+    Date maturity = today + 2*Years;
+    Schedule schedule(today, maturity, 6*Months, NullCalendar(), Unadjusted, Unadjusted,
+                      DateGeneration::Forward, false);
+    Actual365Fixed dc;
+    Handle<YieldTermStructure> curve(ext::make_shared<FlatForward>(today, 0.04, dc));
+    auto model = ext::make_shared<HullWhite>(curve, 0.1, 0.005);
+    Date notice = schedule[1] - 25, payment = schedule[1] - 2;
+    auto call = ext::make_shared<Callability>(Bond::Price(20.0, Bond::Price::Clean),
+                                              Callability::Call, payment, notice);
+    CallableFixedRateBond bond(0, 100.0, schedule, {0.06}, dc, Unadjusted, 100.0, today,
+                               {call}, 5*Days, NullCalendar(), Unadjusted);
+    bond.setPricingEngine(ext::make_shared<TreeCallableFixedRateBondEngine>(model, 64));
+    // Issuer pays ordinary accrued through payment, not the negative amount
+    // quoted on an ex-coupon market trade. No later coupon is received.
+    Real accrued = 100.0 * 0.06 * dc.yearFraction(today, payment);
+    QL_CHECK_SMALL(bond.NPV() - (20.0 + accrued) * curve->discount(payment), 1.0e-8);
+}
+
+BOOST_AUTO_TEST_CASE(testNoticeWithNeighboringImmediateExercise) {
+    BOOST_TEST_MESSAGE("Testing the order of immediate exercise and a neighboring notice...");
+
+    Date today(10, January, 2024);
+    Settings::instance().evaluationDate() = today;
+    Date maturity = today + 3*Years;
+    Schedule schedule(today, maturity, 6*Months, NullCalendar(), Unadjusted, Unadjusted,
+                      DateGeneration::Forward, false);
+    Actual365Fixed dc;
+    Handle<YieldTermStructure> curve(ext::make_shared<FlatForward>(today, 0.04, dc));
+    auto model = ext::make_shared<HullWhite>(curve, 0.1, 0.005);
+    Date coupon = schedule[1];
+    // Snapping this immediate call to the coupon would reverse the decision order.
+    auto call = ext::make_shared<Callability>(Bond::Price(75.0, Bond::Price::Dirty),
+                                              Callability::Call, coupon - 3);
+    auto put = ext::make_shared<Callability>(Bond::Price(150.0, Bond::Price::Dirty),
+                                             Callability::Put, coupon + 20, coupon - 1);
+    CallableFixedRateBond bond(0, 100.0, schedule, {0.06}, dc, Unadjusted,
+                               100.0, today, {call, put});
+    bond.setPricingEngine(ext::make_shared<TreeCallableFixedRateBondEngine>(model, 100));
+    QL_CHECK_SMALL(bond.NPV() - 75.0 * curve->discount(call->date()), 1.0e-8);
+}
+
+BOOST_AUTO_TEST_CASE(testNoticeDatesAndCompatibility) {
+    BOOST_TEST_MESSAGE("Testing callable-bond notice dates and immediate exercise compatibility...");
+
+    Date today(10, January, 2024);
+    Settings::instance().evaluationDate() = today;
+    Date payment = today + 1*Years, maturity = today + 2*Years;
+    Bond::Price price(97.0, Bond::Price::Clean);
+    auto immediate = ext::make_shared<Callability>(price, Callability::Call, payment);
+    auto explicitImmediate = ext::make_shared<Callability>(price, Callability::Call, payment,
+                                                           payment);
+    BOOST_CHECK_EQUAL(immediate->noticeDate(), payment);
+    BOOST_CHECK_THROW(Callability(price, Callability::Call, payment, payment + 1), Error);
+    Actual365Fixed dc;
+    Handle<YieldTermStructure> curve(ext::make_shared<FlatForward>(today, 0.04, dc));
+    auto model = ext::make_shared<HullWhite>(curve);
+    auto engine = ext::make_shared<TreeCallableZeroCouponBondEngine>(model, 80);
+    auto bond = [&](const ext::shared_ptr<Callability>& right) {
+        return CallableZeroCouponBond(0, 100.0, NullCalendar(), maturity, dc,
+                                      Unadjusted, 100.0, today - 1*Years, {right});
+    };
+    auto x = bond(immediate), y = bond(explicitImmediate);
+    x.setPricingEngine(engine);
+    y.setPricingEngine(engine);
+    QL_CHECK_SMALL(x.NPV() - y.NPV(), 1.0e-12);
+    auto pending = bond(ext::make_shared<Callability>(price, Callability::Call,
+                                                      payment, today - 1));
+    pending.setPricingEngine(engine);
+    BOOST_CHECK_THROW(pending.NPV(), Error);
+    // A decision at the reference/settlement date is still a real comparison.
+    auto decideNow = bond(ext::make_shared<Callability>(price, Callability::Call,
+                                                        payment, today));
+    decideNow.setPricingEngine(engine);
+    QL_CHECK_SMALL(decideNow.NPV() - std::min(100.0 * curve->discount(maturity),
+                                               97.0 * curve->discount(payment)), 1.0e-8);
+    auto quote = Handle<Quote>(ext::make_shared<SimpleQuote>(0.2));
+    decideNow.setPricingEngine(ext::make_shared<BlackCallableFixedRateBondEngine>(quote, curve));
+    BOOST_CHECK_THROW(decideNow.NPV(), Error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
