@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/event.hpp>
 #include <ql/instruments/volatilityswap.hpp>
+#include <ql/event.hpp>
 
 namespace QuantLib {
 
@@ -28,7 +28,7 @@ namespace QuantLib {
                                    const Date& startDate,
                                    const Date& maturityDate)
     : position_(position), strike_(strike), notional_(notional),
-      startDate_(startDate), maturityDate_(maturityDate) {}
+      startDate_(startDate), maturityDate_(maturityDate), fairVolatility_(Null<Real>()) {}
 
     Real VolatilitySwap::fairVolatility() const {
         calculate();

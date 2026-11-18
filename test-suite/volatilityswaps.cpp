@@ -33,6 +33,7 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <cmath>
+#include <vector>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -91,6 +92,10 @@ BOOST_AUTO_TEST_CASE(testClosedForm) {
             for (Real k : strikes) {
                 VolatilitySwap lng(Position::Long, k, notional, vars.start, vars.maturity);
                 VolatilitySwap sht(Position::Short, k, notional, vars.start, vars.maturity);
+                if (lng.position() != Position::Long || sht.position() != Position::Short ||
+                    lng.strike() != k || lng.notional() != notional ||
+                    lng.startDate() != vars.start || lng.maturityDate() != vars.maturity)
+                    BOOST_ERROR("volatility swap inspectors return the wrong data");
                 lng.setPricingEngine(vars.engine());
                 sht.setPricingEngine(vars.engine());
 
@@ -299,7 +304,15 @@ BOOST_AUTO_TEST_CASE(testInvalidInputs) {
     nullMaturity.strike = 0.2;
     nullMaturity.notional = 1.0;
     nullMaturity.startDate = vars.start;
-    BOOST_CHECK_THROW(nullMaturity.validate(), Error);
+    BOOST_CHECK_EXCEPTION(nullMaturity.validate(), Error,
+                          ExpectedErrorMessage("null maturity date given"));
+    VolatilitySwap::arguments nullStart;
+    nullStart.position = Position::Long;
+    nullStart.strike = 0.2;
+    nullStart.notional = 1.0;
+    nullStart.maturityDate = vars.maturity;
+    BOOST_CHECK_EXCEPTION(nullStart.validate(), Error,
+                          ExpectedErrorMessage("null start date given"));
     // unset strike or notional are rejected when the arguments are validated
     VolatilitySwap::arguments noStrike;
     noStrike.position = Position::Long;
@@ -347,6 +360,23 @@ BOOST_AUTO_TEST_CASE(testInvalidInputs) {
     expired.setPricingEngine(vars.engine());
     if (!expired.isExpired() || expired.NPV() != 0.0)
         BOOST_ERROR("expired volatility swap should be worth zero");
+    BOOST_CHECK_THROW(expired.fairVolatility(), Error);
+
+    // the swap expires on its maturity date, not on its start date
+    VolatilitySwap maturesTomorrow(Position::Long, 0.2, 1.0, vars.today - 1 * Years,
+                                   vars.today + 1 * Days);
+    if (maturesTomorrow.isExpired())
+        BOOST_ERROR("expiry is not determined by the maturity date");
+
+    // a priced swap that reaches its maturity date loses its results
+    VolatilitySwap ageing(Position::Long, 0.2, 1.0, vars.start, vars.maturity);
+    ageing.setPricingEngine(vars.engine());
+    if (ageing.fairVolatility() == Null<Real>() || ageing.NPV() == 0.0)
+        BOOST_ERROR("unexpired volatility swap has no results");
+    Settings::instance().evaluationDate() = vars.maturity + 1 * Days;
+    if (!ageing.isExpired() || ageing.NPV() != 0.0)
+        BOOST_ERROR("volatility swap past maturity should be worth zero");
+    BOOST_CHECK_THROW(ageing.fairVolatility(), Error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

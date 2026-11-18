@@ -59,6 +59,8 @@ namespace QuantLib {
         the log-volatility \f$ s \f$ must be supplied by the user (for
         instance, calibrated to variance-swap or variance-option
         quotes) and refers to the whole life of the swap.
+        The discount factor to the maturity date is deterministic, i.e.,
+        the realized variance is treated as independent of rates.
 
         The swap value is
         \f[
