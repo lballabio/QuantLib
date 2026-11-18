@@ -28,10 +28,12 @@
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/gaussian1dcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/analyticcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/mchullwhiteengine.hpp>
 #include <ql/pricingengines/capfloor/treecapfloorengine.hpp>
+#include <ql/models/shortrate/onefactormodels/gsr.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
@@ -429,6 +431,8 @@ BOOST_AUTO_TEST_CASE(testNegativeGearing) {
                          .withSpreads(spread);
 
     auto hullWhite = ext::make_shared<HullWhite>(vars.termStructure, 0.05, 0.01);
+    auto gsr = ext::make_shared<Gsr>(vars.termStructure, std::vector<Date>(),
+                                     std::vector<Real>(1, 0.01), 0.05);
     std::vector<std::pair<std::string, ext::shared_ptr<PricingEngine> > > engines = {
         {"Black", vars.makeEngine(0.20)},
         {"Bachelier", vars.makeBachelierEngine(0.01)},
@@ -437,7 +441,10 @@ BOOST_AUTO_TEST_CASE(testNegativeGearing) {
         {"Monte Carlo Hull-White",
          MakeMCHullWhiteCapFloorEngine<PseudoRandom>(hullWhite)
              .withSamples(1000)
-             .withSeed(42)}
+             .withSeed(42)},
+        {"Gaussian1d", ext::make_shared<Gaussian1dCapFloorEngine>(gsr, 64, 7.0, true, false)},
+        {"Gaussian1d, flat payoff extrapolation",
+         ext::make_shared<Gaussian1dCapFloorEngine>(gsr, 64, 7.0, true, true)}
     };
 
     for (const auto& engine : engines) {
