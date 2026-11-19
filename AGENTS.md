@@ -96,6 +96,11 @@ correctly when `Real` is a simple type:
 - For the same reason, instead of `std::max(x, 0.0)` or
   `std::max({ x, x+y, z })`, prefer `std::max<Real>(x, 0.0)`
   and `std::max<Real>({ x, x+y, z })`. The same goes for `std::min`.
+- When redefined, `Real` might not support `constexpr`. Therefore,
+  prefer `constexpr double` to `constexpr Real`.
+- Lambdas returning expressions should explicitly define their return
+  type as Real using a trailing `-> Real`; this avoids returning an
+  expression template that might refer to a dead temporary or argument. 
 
 ### 3.6 Support for recent C++ standards
 
@@ -128,7 +133,9 @@ Prefer `QL_CHECK_CLOSE` to `BOOST_CHECK_CLOSE`; prefer
 `QL_CHECK_SMALL` to `BOOST_CHECK_SMALL`.  The latter might fail to
 compile if operations on `Real` were redefined to return an
 expression-template type; the former force a conversion to `Real` and
-succeed.
+succeed.  Note that `QL_CHECK_CLOSE` and `QL_CHECK_SMALL` use a function
+called `value`; therefore, when using those macros we should not define
+test variables called `value` because they would shadow the function.
 
 Tests should be deterministic; therefore, **don't** leave the evaluation
 date free by setting it to `Date::todaysDate()` (either adjusted or not).

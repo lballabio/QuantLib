@@ -388,6 +388,54 @@ BOOST_AUTO_TEST_CASE(testEffectiveDateWithEomAdjustment) {
     check_dates(s, expected);
 }
 
+BOOST_AUTO_TEST_CASE(testStubDatesWithEomAdjustment) {
+    BOOST_TEST_MESSAGE(
+        "Testing that explicit stub dates are not moved to the end of the month...");
+
+    Schedule forward =
+        MakeSchedule().from(Date(31,January,2026))
+                      .to(Date(15,December,2027))
+                      .withNextToLastDate(Date(15,November,2027))
+                      .withCalendar(NullCalendar())
+                      .withTenor(6*Months)
+                      .withConvention(Unadjusted)
+                      .forwards()
+                      .endOfMonth();
+
+    check_dates(forward, {Date(31,January,2026), Date(31,July,2026),
+                          Date(31,January,2027), Date(31,July,2027),
+                          Date(15,November,2027), Date(15,December,2027)});
+
+    Schedule backward =
+        MakeSchedule().from(Date(15,January,2026))
+                      .to(Date(31,December,2027))
+                      .withFirstDate(Date(15,February,2026))
+                      .withCalendar(NullCalendar())
+                      .withTenor(6*Months)
+                      .withConvention(Unadjusted)
+                      .backwards()
+                      .endOfMonth();
+
+    check_dates(backward, {Date(15,January,2026), Date(15,February,2026),
+                           Date(30,June,2026), Date(31,December,2026),
+                           Date(30,June,2027), Date(31,December,2027)});
+
+    // February 27th, 2026 is the last business day of the month; moving it
+    // to the 28th and rolling it forward would give March 2nd instead.
+    Schedule adjusted =
+        MakeSchedule().from(Date(15,January,2026))
+                      .to(Date(31,August,2026))
+                      .withFirstDate(Date(27,February,2026))
+                      .withCalendar(TARGET())
+                      .withTenor(6*Months)
+                      .withConvention(Following)
+                      .forwards()
+                      .endOfMonth();
+
+    check_dates(adjusted, {Date(15,January,2026), Date(27,February,2026),
+                           Date(31,August,2026)});
+}
+
 namespace CdsTests {
 
     Schedule makeCdsSchedule(const Date& from, const Date& to, DateGeneration::Rule rule) {
@@ -1033,6 +1081,27 @@ BOOST_AUTO_TEST_CASE(testOnceFrequency) {
     BOOST_CHECK(s.size() == 2);
     BOOST_CHECK(s[0] == Date(13,January,2016));
     BOOST_CHECK(s[1] == Date(13,January,2019));
+}
+
+BOOST_AUTO_TEST_CASE(testZeroRuleWithEomAdjustment) {
+    BOOST_TEST_MESSAGE("Testing zero date-generation rule with end-of-month convention...");
+
+    const Date startDate(15, January, 2025);
+    const Date endDate(15, January, 2026);
+
+    BOOST_CHECK_EXCEPTION(Schedule(startDate, endDate, Period(3, Months), TARGET(),
+                                   Following, Following, DateGeneration::Zero, true),
+                          Error,
+                          ExpectedErrorMessage("endOfMonth convention incompatible with Zero"));
+
+    // a zero tenor doesn't allow the end-of-month convention, so the flag is ignored
+    Schedule zeroTenor(startDate, endDate, Period(0, Years), TARGET(),
+                       Following, Following, DateGeneration::Zero, true);
+    check_dates(zeroTenor, {startDate, endDate});
+
+    Schedule noEom(startDate, endDate, Period(3, Months), TARGET(),
+                   Following, Following, DateGeneration::Zero, false);
+    check_dates(noEom, {startDate, endDate});
 }
 
 BOOST_AUTO_TEST_CASE(testScheduleAlwaysHasAStartDate) {

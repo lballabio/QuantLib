@@ -204,13 +204,19 @@ namespace QuantLib {
             Real F, alpha, beta, nu, rho, t;
 
             Real y(Real k) const {
-                return -1.0/(1.0-beta)*(std::pow(F,1-beta)-std::pow(k,1-beta));
+                const Real logMoneyness = std::log(k/F);
+                if (beta == 1.0)
+                    return logMoneyness;
+                return std::pow(F, 1-beta) * std::expm1((1-beta)*logMoneyness) / (1-beta);
             }
 
             Real Dint(Real k) const {
-                return 1/nu*std::log( ( std::sqrt(1+2*rho*nu/alpha*y(k)
-                    + squared(nu/alpha*y(k)) )
-                    - rho - nu/alpha*y(k) ) / (1-rho) );
+                const Real yk = y(k);
+                if (nu == 0.0)
+                    return -yk/alpha;
+                const Real z = nu/alpha*yk;
+                // Rationalize the logarithm's argument to retain precision as nu -> 0.
+                return std::log1p(-2*z / (std::sqrt(1+2*rho*z+z*z)+1+z)) / nu;
             }
 
             Real D(Real k) const {

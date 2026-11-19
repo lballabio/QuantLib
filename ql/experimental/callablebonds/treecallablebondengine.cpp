@@ -60,6 +60,13 @@ namespace QuantLib {
 
         if (lattice_ != nullptr) {
             lattice = lattice_;
+            // The bond compares each event time with the current grid time
+            // directly, so a caller-supplied grid has to contain every event
+            // time.  TimeGrid::index throws if one is missing, so each event
+            // time needs to be checked once per valuation, not at every step.
+            const TimeGrid& grid = lattice->timeGrid();
+            for (Time t : callableBond.mandatoryTimes())
+                grid.index(t);
         } else {
             std::vector<Time> times = callableBond.mandatoryTimes();
             TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);

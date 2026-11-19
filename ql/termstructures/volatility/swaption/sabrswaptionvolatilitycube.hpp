@@ -447,7 +447,7 @@ namespace QuantLib {
         std::vector<Real> parameters,
         Real shift) const {
 
-        const auto atmError = [&](Real alpha) {
+        const auto atmError = [&](Real alpha) -> Real {
             parameters[0] = alpha;
             return Traits::createSmileSection(optionTime, forward, parameters,
                                               shift, volatilityType_)

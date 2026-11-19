@@ -46,6 +46,9 @@ namespace QuantLib {
     }
 
     void FdHullWhiteSwaptionEngine::calculate() const {
+        QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
+                   "cash settled (ParYieldCurve) swaptions not priced with "
+                   "FdHullWhiteSwaptionEngine");
         QL_REQUIRE(!model_.empty(), "no model specified");
 
         // 1. Term structure

@@ -103,6 +103,11 @@ const std::optional<Integer>& roundingPrecision)
         QL_REQUIRE(canApplyTelescopicFormula() || !telescopicValueDates,
                    "Telescopic formula cannot be applied for a coupon with lookback.");
 
+        // A discount-factor ratio omits a daily compounded spread.
+        // Keep every overnight period for the exact product in the pricer.
+        if (averagingMethod_ == RateAveraging::Compound && compoundSpreadDaily_ && spread != 0.0)
+            telescopicValueDates = false;
+
         const auto& fixingCal = overnightIndex->fixingCalendar();
         if (telescopicValueDates) {
             // build optimised value dates schedule: front stub goes from rateCalcStartDate
@@ -120,8 +125,12 @@ const std::optional<Integer>& roundingPrecision)
             // if lockout days are defined, we need to ensure that
             // the lockout period is covered by the value dates
             tmpEndDate = fixingCal.adjust(rateCalcEndDate, Following);
-            const Date tmpLockoutDate = fixingCal.advance(rateCalcEndDate,
+            Date tmpLockoutDate = fixingCal.advance(rateCalcEndDate,
                 -std::max<Integer>(lockoutDays_, 1), Days);
+            // Retain the observation immediately before the lockout period.
+            // The last lockoutDays_ fixings repeat this anchor fixing.
+            if (lockoutDays_ != 0)
+                tmpLockoutDate = fixingCal.advance(tmpLockoutDate, -1, Days);
             Date nextValueDate = tmpLockoutDate > valueDates_.back()
                                  ? tmpLockoutDate
                                  : fixingCal.advance(valueDates_.back(), 1, Days);

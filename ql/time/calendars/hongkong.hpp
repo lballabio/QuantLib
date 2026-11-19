@@ -42,10 +42,11 @@ namespace QuantLib {
         <li>National Day, October 1st (possibly moved to Monday)</li>
         <li>Christmas, December 25th</li>
         <li>Boxing Day, December 26th</li>
+        <li>December 27th, if Christmas falls on a Saturday or Sunday</li>
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2015 only:)
+        (data available for 2004-2027 only:)
         <ul>
         <li>Lunar New Year</li>
         <li>Chinese New Year</li>

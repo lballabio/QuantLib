@@ -436,6 +436,63 @@ BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testStulzPerfectCorrelation) {
+
+    BOOST_TEST_MESSAGE("Testing Stulz engine with perfectly correlated assets...");
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+    Date exDate = today + 180;
+
+    Handle<YieldTermStructure> qTS(flatRate(today, 0.0, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, 0.05, dc));
+
+    auto makeProcess = [&](Real spot, Volatility vol) {
+        return ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(spot)), qTS, rTS,
+            Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+    };
+
+    // with rho = 1 both assets are driven by the same Brownian motion, so
+    // the reference values are one-dimensional integrals over it; with
+    // equal volatilities they reduce to the Black formula on the asset with
+    // the lower (min) or higher (max) forward
+    struct Case {
+        BasketType type;
+        Real strike;
+        Volatility v1, v2;
+        Real expected;
+    };
+    Case cases[] = {
+        {MinBasket, 90.0, 0.20, 0.30, 10.9157252899},
+        {MaxBasket, 90.0, 0.20, 0.30, 14.4412466108},
+        {MinBasket, 90.0, 0.25, 0.15, 8.49438710828},
+        {MaxBasket, 90.0, 0.25, 0.15, 14.4442527691},
+        {MinBasket, 90.0, 0.20, 0.20, 9.54585254755},
+        {MaxBasket, 90.0, 0.20, 0.20, 13.4985174826},
+        {MinBasket, 0.0, 0.20, 0.20, 95.0},
+        {MaxBasket, 0.0, 0.20, 0.20, 100.0}
+    };
+
+    for (const auto& c : cases) {
+        BasketOption option(basketTypeToPayoff(c.type,
+                                ext::make_shared<PlainVanillaPayoff>(Option::Call, c.strike)),
+                            ext::make_shared<EuropeanExercise>(exDate));
+        option.setPricingEngine(ext::make_shared<StulzEngine>(
+            makeProcess(100.0, c.v1), makeProcess(95.0, c.v2), 1.0));
+
+        Real calculated = option.NPV();
+        if (std::fabs(calculated - c.expected) > 1.0e-8)
+            BOOST_ERROR("failed to reproduce perfectly correlated "
+                        << (c.type == MinBasket ? "min" : "max")
+                        << " basket call value:"
+                        << "\n    strike:       " << c.strike
+                        << "\n    volatilities: " << c.v1 << ", " << c.v2
+                        << "\n    expected:     " << c.expected
+                        << "\n    calculated:   " << calculated);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testBarraquandThreeValues) {
 
     BOOST_TEST_MESSAGE("Testing three-asset basket options "
@@ -3031,6 +3088,72 @@ BOOST_AUTO_TEST_CASE(testGaussianCopulaSpreadEngineParityAcrossVols) {
                        << "\n    tolerance     : " << parityRelTol);
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testFd2dBlackScholesVanillaEngineRejectsNonBasketPayoff) {
+    BOOST_TEST_MESSAGE(
+        "Testing Fd2dBlackScholesVanillaEngine's guard against a "
+        "non-basket payoff...");
+
+    // Fd2dBlackScholesVanillaEngine::calculate() dynamic_pointer_casts
+    // arguments_.payoff to BasketPayoff but, unlike its sibling
+    // FdNdimBlackScholesVanillaEngine (which QL_REQUIREs the cast to
+    // succeed), used to have no check at all: a null cast would silently
+    // flow into FdmLogBasketInnerValue::innerValue()'s unconditional
+    // (*payoff_)(x) dereference. That is a null-pointer dereference
+    // (undefined behavior), not a catchable exception, so it cannot safely
+    // be exercised pre-fix in an automated test -- this test instead
+    // demonstrates the fixed engine's behavior: driving it directly through
+    // its own PricingEngine::getArguments()/calculate() interface (the same
+    // entry point BasketOption itself uses, but without BasketOption's
+    // constructor-level type safety) with a non-basket payoff throws a
+    // clean QuantLib::Error instead.
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+
+    auto spot1 = ext::make_shared<SimpleQuote>(100.0);
+    auto spot2 = ext::make_shared<SimpleQuote>(100.0);
+    ext::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, 0.0, dc);
+    ext::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, 0.0, dc);
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.05, dc);
+    ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, 0.2, dc);
+    ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, 0.2, dc);
+
+    auto p1 = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot1), Handle<YieldTermStructure>(qTS1),
+        Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(volTS1));
+    auto p2 = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot2), Handle<YieldTermStructure>(qTS2),
+        Handle<YieldTermStructure>(rTS), Handle<BlackVolTermStructure>(volTS2));
+
+    auto exercise = ext::make_shared<EuropeanExercise>(today + Period(1, Years));
+
+    ext::shared_ptr<PricingEngine> engine =
+        ext::make_shared<Fd2dBlackScholesVanillaEngine>(p1, p2, 0.0, 20, 20, 10);
+
+    // Sanity check: a genuine basket payoff, through the normal BasketOption
+    // path, still prices fine with the fix in place -- and non-trivially so
+    // (the ATM min-basket call prices around 3.3 on this coarse 20x20x10
+    // grid), otherwise this leg would not be exercising the engine at all.
+    BasketOption basketOption(
+        ext::make_shared<MinBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0)),
+        exercise);
+    basketOption.setPricingEngine(engine);
+    const Real basketNpv = basketOption.NPV();
+    BOOST_REQUIRE(basketNpv > 1.0);
+
+    // Now drive the same engine instance directly, bypassing BasketOption's
+    // constructor-level BasketPayoff requirement, with a plain (non-basket)
+    // payoff -- exactly the misuse the sibling N-dim engine's own guard
+    // exists to catch.
+    auto* arguments = dynamic_cast<Option::arguments*>(engine->getArguments());
+    BOOST_REQUIRE(arguments != nullptr);
+    arguments->payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
+    arguments->exercise = exercise;
+
+    BOOST_CHECK_THROW(engine->calculate(), Error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
