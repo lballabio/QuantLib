@@ -43,20 +43,24 @@ namespace QuantLib {
             // Serbian Statehood Day    
             || (d == 15 && m == February)
             || (d == 16 && m == February)
-            // Serbian Statehood Day (observed) 
-            // Serbia's Statehood Day (Sretenje) is officially observed on February 15 and February 16. 
-            // However, since these dates fall on a Saturday and Sunday, the government designates Monday, 
-            // February 17, as an additional non-working day. This practice ensures that citizens receive a weekday off 
-            // when public holidays coincide with weekends.
-            || ((d == 17 && m == February) && isWeekend(Date(15, February, y).weekday()) && isWeekend(Date(16, February, y).weekday()))
-            // Good Friday
+            // Orthodox Good Friday
             || (dd == em - 3 && y >= 2016)
-            // Easter Monday
+            // Orthodox Easter Monday
             || (dd == em)
             // Labour Day
             || (d == 1 && m == May)
+            || (d == 2 && m == May)
             // Armistice Day in World War I
             || (d == 11 && m == November)
+            // When one of the days of New Year, Statehood Day, Labour Day or
+            // Armistice Day falls on a Sunday, the first following working
+            // day is a holiday (this does not apply to Christmas and Easter)
+            || (d == 3 && m == January && (w == Monday || w == Tuesday))
+            || (d == 17 && m == February && (w == Monday || w == Tuesday))
+            || (d == 3 && m == May && (w == Monday || w == Tuesday))
+            // May 2nd on Easter Sunday: May 3rd is Easter Monday, so the moved holiday is May 4th
+            || (d == 4 && m == May && dd == em + 1)
+            || (d == 12 && m == November && w == Monday)
             // Trading system maintenance, statistics and data migration
             || (d == 31 && m == December))
             return false; // NOLINT(readability-simplify-boolean-expr)
