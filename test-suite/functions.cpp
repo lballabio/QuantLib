@@ -142,6 +142,46 @@ BOOST_AUTO_TEST_CASE(testCumulativeGammaDistribution) {
         ExpectedErrorMessage("positive argument required"));
 }
 
+BOOST_AUTO_TEST_CASE(testCumulativeGammaDistributionLargeShapes) {
+    BOOST_TEST_MESSAGE("Testing cumulative gamma distribution for large shapes...");
+
+    // shape a, x and the regularized incomplete gamma function P(a, x), calculated with
+    // mpmath 1.3.0 at 60 digits
+    const Real data[][3] = {// moderate shapes
+                            {2.0, 2.0, 0.59399415029016192},
+                            {10.0, 9.0, 0.41259175566805859},
+                            {100.0, 100.0, 0.51329879827914866},
+                            {200.0, 200.0, 0.50940341800723633},
+                            // large shapes, around and on both sides of x = a
+                            {500.0, 480.0, 0.1862819731903246},
+                            {500.0, 500.0, 0.50594714617076036},
+                            {500.0, 505.0, 0.59396684905226404},
+                            {500.0, 520.0, 0.8153088509012564},
+                            {1000.0, 1000.0, 0.50420524418021551},
+                            {10000.0, 10000.0, 0.5013298083399552},
+                            {1000000.0, 1000000.0, 0.50013298076087259},
+                            {1000000.0, 1002000.0, 0.97719590410123014},
+                            // lower tails
+                            {50.0, 25.0, 6.953305247616099e-6},
+                            {200.0, 100.0, 9.3431500729883903e-19},
+                            {1000.0, 500.0, 3.2982727970670996e-86},
+                            // upper tails, where the previous implementation was accurate as well
+                            {100.0, 150.0, 0.99999407545966452},
+                            {200.0, 300.0, 0.99999999966288967},
+                            {2000.0, 2200.0, 0.99999283007491176},
+                            {10000.0, 10500.0, 0.99999957241275449}};
+
+    for (const auto& row : data) {
+        BOOST_TEST_CONTEXT("shape " << row[0] << ", x " << row[1]) {
+            CumulativeGammaDistribution cumulative(row[0]);
+            Real calculated = Null<Real>();
+            BOOST_CHECK_NO_THROW(calculated = cumulative(row[1]));
+            if (calculated != Null<Real>())
+                QL_CHECK_CLOSE_FRACTION(calculated, row[2], 1.0e-12);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testModifiedBesselFunctions) {
     BOOST_TEST_MESSAGE("Testing modified Bessel function of first and second kind...");
 

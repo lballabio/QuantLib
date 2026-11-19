@@ -200,8 +200,10 @@ namespace QuantLib {
     /*! Fits a discount function using natural cubic spline interpolation
         where the parameters are nodal discount values d(t_i).
         The natural boundary condition (second derivative = 0 at ends)
-        is used. If constrainAtZero is true, d(0) is fixed to 1.0 and
-        the parameter vector x contains the remaining nodal values.
+        is used.  A knot at t = 0 is always added and d(0) is fixed to 1.0;
+        the parameter vector x contains the nodal values at the remaining
+        knots, whose times can't be negative.  The discount function is
+        flat after the last knot.
     */
     class NaturalCubicFitting : public FittedBondDiscountCurve::FittingMethod {
       public:

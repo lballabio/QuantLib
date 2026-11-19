@@ -48,8 +48,9 @@ namespace QuantLib {
         : GenericModelEngine<G2, Swaption::arguments, Swaption::results>(model),
           range_(range), intervals_(intervals) {}
         void calculate() const override {
-            QL_REQUIRE(arguments_.settlementType == Settlement::Physical,
-                       "cash-settled swaptions not priced with G2 engine");
+            QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
+                       "cash settled (ParYieldCurve) swaptions not priced with "
+                       "G2SwaptionEngine");
             QL_REQUIRE(!model_.empty(), "no model specified");
 
             // adjust the fixed rate of the swap for the spread on the

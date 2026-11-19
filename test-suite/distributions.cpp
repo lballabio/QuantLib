@@ -1021,6 +1021,48 @@ BOOST_AUTO_TEST_CASE(testStudentDistribution) {
                           ExpectedErrorMessage("invalid parameter for t-distribution"));
 }
 
+BOOST_AUTO_TEST_CASE(testStudentDistributionLargeDegreesOfFreedom) {
+    BOOST_TEST_MESSAGE("Testing Student distribution for large degrees of freedom...");
+
+    // Reference values from the documented density formula, using mpmath at 60 digits.
+    struct Datum {
+        Integer n;
+        Real x;
+        Real expected;
+    };
+    const Datum data[] = {
+        // controls below the old overflow threshold
+        {1, 1.5, 0.097941503441166367},
+        {5, 4.0, 0.0051237270519179142},
+        {100, 0.0, 0.39794618693589379},
+        {341, 0.0, 0.39864990833038344},
+        // denominator overflow, gamma overflow, and larger degrees of freedom
+        {341, 4.0, 0.000156792585295754},
+        {342, 0.0, 0.39865076290462004},
+        {343, 0.0, 0.39865161249775366},
+        {400, 4.0, 0.00015326892192819562},
+        {1000, 0.0, 0.39884255731385815},
+        {1000, 1.5, 0.12950334867626564},
+        {1000, 40.0, 8.0656771237521826e-209},
+        {5000, 0.0, 0.39892233378621511},
+        {100000, 0.0, 0.3989412830469784},
+        {1000000, 1.5, 0.12951758149982351},
+    };
+
+    for (const auto& datum : data) {
+        // Subtracting large log-gamma values loses accuracy as n grows.
+        const Real tolerance = datum.n <= 5000 ? Real(1.0e-10) : Real(1.0e-7);
+        const StudentDistribution density(datum.n);
+        BOOST_TEST_CONTEXT("degrees of freedom: " << datum.n << ", x: " << datum.x) {
+            QL_CHECK_CLOSE_FRACTION(density(datum.x), datum.expected, tolerance);
+        }
+    }
+
+    // At the default Integer maximum, n + 1 must be evaluated in Real.
+    const StudentDistribution largest(2147483647);
+    QL_CHECK_CLOSE_FRACTION(largest(0.0), 0.39894228035498969, 1.0e-4);
+}
+
 BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudent) {
     BOOST_TEST_MESSAGE(
         "Testing bivariate cumulative Student t distribution...");
@@ -1429,6 +1471,33 @@ BOOST_AUTO_TEST_CASE(testCumulativeChiSquareDistribution) {
     NonCentralCumulativeChiSquareDistribution nonCentral(4.0, 1.0);
     BOOST_CHECK_EQUAL(nonCentral(0.0), 0.0);
     BOOST_CHECK_EQUAL(nonCentral(-1.0), 0.0);
+}
+
+BOOST_AUTO_TEST_CASE(testCumulativeChiSquareDistributionLargeDegreesOfFreedom) {
+    BOOST_TEST_MESSAGE("Testing cumulative chi-square distribution "
+                       "for large degrees of freedom...");
+
+    // degrees of freedom, x and the cumulative distribution, calculated with mpmath 1.3.0
+    // at 60 digits
+    const Real data[][3] = {// moderate degrees of freedom
+                            {4.0, 3.0, 0.44217459962892543},
+                            {100.0, 100.0, 0.51880831547204328},
+                            // large degrees of freedom, around and below x = df
+                            {794.0, 794.0, 0.50667420590589164},
+                            {1000.0, 960.0, 0.1862819731903246},
+                            {1000.0, 1000.0, 0.50594714617076036},
+                            {2000.0, 2000.0, 0.50420524418021551},
+                            {10000.0, 10000.0, 0.50188063403381736}};
+
+    for (const auto& row : data) {
+        BOOST_TEST_CONTEXT("degrees of freedom " << row[0] << ", x " << row[1]) {
+            CumulativeChiSquareDistribution chiSquare(row[0]);
+            Real calculated = Null<Real>();
+            BOOST_CHECK_NO_THROW(calculated = chiSquare(row[1]));
+            if (calculated != Null<Real>())
+                QL_CHECK_CLOSE_FRACTION(calculated, row[2], 1.0e-12);
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testNonCentralChiSquareLargeArguments) {
