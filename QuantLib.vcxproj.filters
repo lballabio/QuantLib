@@ -4611,6 +4611,9 @@
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmwienerop.hpp">
       <Filter>methods\finitedifferences\operators</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\basket\bachelierspreadengine.hpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\basket\bjerksundstenslandspreadengine.hpp">
       <Filter>pricingengines\basket</Filter>
     </ClInclude>
@@ -7530,6 +7533,9 @@
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmwienerop.cpp">
       <Filter>methods\finitedifferences\operators</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\basket\bachelierspreadengine.cpp">
+      <Filter>pricingengines\basket</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\basket\bjerksundstenslandspreadengine.cpp">
       <Filter>pricingengines\basket</Filter>
