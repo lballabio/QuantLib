@@ -102,8 +102,8 @@ class Probe {
         result_ = x;
         return previous_ + offset_ - x*x;
     }
-    Real derivative(Real x) const { return 2.0*x; }
-    Real secondDerivative(Real x) const { return 2.0; }
+    Real derivative(Real x) const { return -2.0*x; }
+    Real secondDerivative(Real x) const { return -2.0; }
   private:
     Real& result_;
     Real previous_;
