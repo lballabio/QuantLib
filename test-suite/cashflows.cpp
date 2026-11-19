@@ -32,10 +32,12 @@
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/calendars/brazil.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/daycounters/business252.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/bkbm.hpp>
@@ -44,6 +46,7 @@
 #include <ql/optional.hpp>
 #include <ql/settings.hpp>
 #include <cmath>
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -398,6 +401,106 @@ BOOST_AUTO_TEST_CASE(testPricingEmptyLegsAndErrors) {
     BOOST_CHECK_EXCEPTION(CashFlows::yield(redemption, -100.0, Actual365Fixed(), Compounded,
                                            Annual, false),
                           Error, ExpectedErrorMessage("due to their sign"));
+}
+
+BOOST_AUTO_TEST_CASE(testImpliedFixedRateWithSimpleCoupons) {
+    BOOST_TEST_MESSAGE("Testing implied fixed rate of a leg with simple coupons...");
+    Date today = Settings::instance().evaluationDate();
+    Calendar calendar = TARGET();
+    auto curve = ext::make_shared<FlatForward>(today, 0.03, Actual365Fixed());
+    Schedule schedule = MakeSchedule()
+                            .from(calendar.advance(today, 2, Days))
+                            .to(calendar.advance(today, 5 * Years))
+                            .withFrequency(Semiannual)
+                            .withCalendar(calendar);
+    Leg leg = FixedRateLeg(schedule).withNotionals(100.0).withCouponRates(0.05, Actual360());
+    leg.push_back(ext::make_shared<SimpleCashFlow>(100.0, schedule.endDate()));
+
+    Date npvDate = today + 30;
+    for (bool include : {false, true}) {
+        // with no target, the leg's own NPV is used
+        QL_CHECK_SMALL(CashFlows::impliedFixedRate(leg, *curve, include, today, npvDate) -
+                           CashFlows::atmRate(leg, *curve, include, today, npvDate),
+                       1.0e-12);
+        for (Real targetNpv : {90.0, 100.0, 110.0}) {
+            QL_CHECK_SMALL(
+                CashFlows::impliedFixedRate(leg, *curve, include, today, npvDate, targetNpv) -
+                    CashFlows::atmRate(leg, *curve, include, today, npvDate, targetNpv),
+                1.0e-12);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testImpliedFixedRateWithCompoundedCoupons) {
+    BOOST_TEST_MESSAGE("Testing implied fixed rate of a leg with compounded coupons...");
+    Date today = Settings::instance().evaluationDate();
+    Calendar calendar = Brazil();
+    DayCounter dayCounter = Business252(calendar);
+    Rate legRate = 0.12;
+    Real nominal = 100.0;
+    auto curve = ext::make_shared<FlatForward>(today, 0.11, dayCounter, Compounded, Annual);
+    // semiannual coupons with an annually compounded rate, so that
+    // compounding makes a visible difference
+    Schedule schedule = MakeSchedule()
+                            .from(calendar.advance(today, 1, Days))
+                            .to(calendar.advance(today, 3 * Years))
+                            .withFrequency(Semiannual)
+                            .withCalendar(calendar);
+    auto makeLeg = [&](Rate rate) {
+        Leg leg = FixedRateLeg(schedule)
+                      .withNotionals(nominal)
+                      .withCouponRates(rate, dayCounter, Compounded, Annual);
+        leg.push_back(ext::make_shared<SimpleCashFlow>(nominal, schedule.endDate()));
+        return leg;
+    };
+    Leg leg = makeLeg(legRate);
+    BOOST_REQUIRE_EQUAL(leg.size(), 7U);
+
+    Date npvDate = calendar.advance(today, 1, Days);
+    for (bool include : {false, true}) {
+        // round trip: with no target, the leg's own rate is recovered
+        Rate rate = CashFlows::impliedFixedRate(leg, *curve, include, today, npvDate);
+        QL_CHECK_SMALL(rate - legRate, 1.0e-10);
+
+        Real legNpv = CashFlows::npv(leg, *curve, include, today, npvDate);
+        for (Real targetNpv : std::vector<Real>{legNpv - 5.0, legNpv + 5.0}) {
+            // a tighter accuracy than the default, so that the NPV is
+            // reproduced to 1e-10 for a nominal of 100
+            rate = CashFlows::impliedFixedRate(leg, *curve, include, today, npvDate, targetNpv,
+                                               1.0e-14);
+            Real npv = CashFlows::npv(makeLeg(rate), *curve, include, today, npvDate);
+            if (std::fabs(npv - targetNpv) > 1.0e-10)
+                BOOST_ERROR("failed to reproduce target NPV with implied fixed rate:"
+                            << std::setprecision(12) << "\n    implied rate: " << rate
+                            << "\n    target NPV:   " << targetNpv
+                            << "\n    NPV:          " << npv);
+
+            // the linear approximation is visibly off
+            Rate atmRate = CashFlows::atmRate(leg, *curve, include, today, npvDate, targetNpv);
+            if (std::fabs(atmRate - rate) < 1.0e-3)
+                BOOST_ERROR("implied fixed rate unexpectedly close to the ATM rate:"
+                            << std::setprecision(12) << "\n    implied rate: " << rate
+                            << "\n    ATM rate:     " << atmRate);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testImpliedFixedRateRequiresFixedCoupons) {
+    BOOST_TEST_MESSAGE("Testing that implied fixed rate requires fixed-rate coupons...");
+    Date today = Settings::instance().evaluationDate();
+    Calendar calendar = TARGET();
+    Handle<YieldTermStructure> curve(ext::make_shared<FlatForward>(today, 0.03, Actual365Fixed()));
+    Schedule schedule = MakeSchedule()
+                            .from(calendar.advance(today, 2, Days))
+                            .to(calendar.advance(today, 2 * Years))
+                            .withFrequency(Semiannual)
+                            .withCalendar(calendar);
+    Leg leg = FixedRateLeg(schedule).withNotionals(100.0).withCouponRates(0.05, Actual360());
+    Leg floatingLeg = IborLeg(schedule, ext::make_shared<Euribor6M>(curve)).withNotionals(100.0);
+    leg.push_back(floatingLeg.back());
+
+    BOOST_CHECK_EXCEPTION(CashFlows::impliedFixedRate(leg, **curve), Error,
+                          ExpectedErrorMessage("fixed-rate coupons required"));
 }
 
 BOOST_AUTO_TEST_CASE(testSettings) {

@@ -22,13 +22,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
-#include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/settings.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <cmath>
 #include <utility>
 
 namespace QuantLib {
@@ -309,52 +309,21 @@ namespace QuantLib {
                    "of a fixed leg with several compounded coupons");
         const Handle<YieldTermStructure>& discountCurve = engine->discountCurve();
         QL_REQUIRE(!discountCurve.empty(), "discounting term structure handle is empty");
-        QL_REQUIRE(npvDateDiscount_ != Null<DiscountFactor>(), "npv-date discount not available");
+        QL_REQUIRE(valuationDate_ != Date(), "valuation date not available");
 
-        // discounted nominals of the coupons not yet paid, as in CashFlows::npvbps
-        Date refDate = discountCurve->referenceDate();
-        std::vector<ext::shared_ptr<FixedRateCoupon>> coupons;
-        std::vector<Real> discountedNominals;
-        Real bps = 0.0;
-        for (const auto& cf : leg) {
-            if (!cf->hasOccurred(refDate) && !cf->tradingExCoupon(refDate)) {
-                auto coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(cf);
-                Real discountedNominal =
-                    coupon->nominal() * discountCurve->discount(coupon->date()) / npvDateDiscount_;
-                coupons.push_back(coupon);
-                discountedNominals.push_back(discountedNominal);
-                bps += discountedNominal * coupon->accrualPeriod();
-            }
-        }
-        bps *= payer_[0] * basisPoint;
-        // make sure that we're using the same cash flows as the engine
-        QL_REQUIRE(std::fabs(bps - legBPS_[0]) <= 1.0e-10 * std::fabs(legBPS_[0]),
-                   "fixed-leg BPS (" << bps << ") inconsistent with the engine result ("
-                                     << legBPS_[0] << ")");
+        // use the same cash flows and NPV date as the engine
+        bool includeSettlementDateFlows =
+            engine->includeSettlementDateFlows() ? // NOLINT(readability-implicit-bool-conversion)
+                *engine->includeSettlementDateFlows() :
+                Settings::instance().includeReferenceDateEvents();
+        Date settlementDate = engine->settlementDate() == Date() ?
+                                  discountCurve->referenceDate() :
+                                  engine->settlementDate();
 
-        auto error = [&](Rate k) {
-            Real npv = 0.0;
-            for (Size i = 0; i < coupons.size(); ++i) {
-                const InterestRate& r = coupons[i]->interestRate();
-                InterestRate rate(k, r.dayCounter(), r.compounding(), r.frequency());
-                Real compound = rate.compoundFactor(
-                    coupons[i]->accrualStartDate(), coupons[i]->accrualEndDate(),
-                    coupons[i]->referencePeriodStart(), coupons[i]->referencePeriodEnd());
-                npv += discountedNominals[i] * (compound - 1.0);
-            }
-            return payer_[0] * npv - fixedLegNPV;
-        };
-
-        Brent solver;
-        solver.setMaxEvaluations(100);
-        Rate guess = linearRate;
-        if (fixedCompounding_ != Continuous) {
-            // (1 + K/f) must stay positive
-            Real lowerBound = -Real(int(fixedCompoundingFrequency_));
-            solver.setLowerBound(lowerBound);
-            guess = std::max<Real>(guess, 0.5 * lowerBound);
-        }
-        return solver.solve(error, 1.0e-12, guess, 0.001);
+        // the CashFlows function works with the NPV of the leg, without the payer sign
+        return CashFlows::impliedFixedRate(leg, **discountCurve, includeSettlementDateFlows,
+                                           settlementDate, valuationDate_,
+                                           payer_[0] * fixedLegNPV, 1.0e-12, 100);
     }
 
 }

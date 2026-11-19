@@ -61,7 +61,7 @@ namespace QuantLib {
         \warning When the fixed compounding is not Simple, the fixed-leg
                  NPV is not linear in the fixed rate.  The fair rate is
                  then obtained in closed form for a single fixed coupon
-                 and by a one-dimensional root search otherwise; the
+                 and by CashFlows::impliedFixedRate otherwise; the
                  latter requires a DiscountingSwapEngine (with other
                  engines, fairRate() reports that the result is not
                  available.)  The value of
