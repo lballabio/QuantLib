@@ -46,7 +46,7 @@ namespace {
 
     struct CommonVars {
         DayCounter dc = Actual365Fixed();
-        Date today = Date(15, November, 2026);
+        Date today = Settings::instance().evaluationDate();
         Date start = today + 1 * Months;
         Date maturity = today + 13 * Months;
         Rate rate = 0.03;
@@ -55,7 +55,6 @@ namespace {
         RelinkableHandle<YieldTermStructure> curve;
 
         CommonVars() {
-            Settings::instance().evaluationDate() = today;
             curve.linkTo(flatRate(today, rate, dc));
         }
 
@@ -144,7 +143,7 @@ BOOST_AUTO_TEST_CASE(testConvexityAdjustment) {
 
     // the fair strike is strictly below it and decreases with the log-volatility
     Real previous = sqrtK;
-    for (Real s : {0.05, 0.1, 0.25, 0.5, 1.0, 2.0}) {
+    for (Real s : std::vector<Real>{0.05, 0.1, 0.25, 0.5, 1.0, 2.0}) {
         vars.logVol->setValue(s);
         Real fair = swap.fairVolatility();
         Real expected = sqrtK * std::exp(-s * s / 8.0);
@@ -157,7 +156,7 @@ BOOST_AUTO_TEST_CASE(testConvexityAdjustment) {
 
     // for small log-volatility the strike agrees with the first-order approximation
     // sqrt(K) - Var(V)/(8 K^(3/2)), Var(V) = K^2 (exp(s^2) - 1), up to O(s^4)
-    for (Real s : {0.05, 0.1, 0.2, 0.4}) {
+    for (Real s : std::vector<Real>{0.05, 0.1, 0.2, 0.4}) {
         vars.logVol->setValue(s);
         Real approximation = sqrtK * (1.0 - (std::exp(s * s) - 1.0) / 8.0);
         Real difference = swap.fairVolatility() - approximation;
@@ -225,7 +224,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarlo) {
     Size samples = 400000;
     InverseCumulativeNormal invCum;
 
-    for (Real s : {0.3, 0.6, 1.0}) {
+    for (Real s : std::vector<Real>{0.3, 0.6, 1.0}) {
         vars.logVol->setValue(s);
         MersenneTwisterUniformRng rng(42);
         IncrementalStatistics sqrtV;
@@ -286,7 +285,7 @@ BOOST_AUTO_TEST_CASE(testInvalidInputs) {
 
     CommonVars vars;
 
-    auto priced = [&](Real strike, Real notional, const Date& start, const Date& maturity) {
+    auto priced = [&](Real strike, Real notional, const Date& start, const Date& maturity) -> Real {
         VolatilitySwap swap(Position::Long, strike, notional, start, maturity);
         swap.setPricingEngine(vars.engine());
         return swap.NPV();
