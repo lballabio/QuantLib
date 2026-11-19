@@ -20,9 +20,7 @@
 #include <ql/math/copulas/claytoncopula.hpp>
 #include <ql/errors.hpp>
 #include <algorithm>
-
-using std::max;
-using std::pow;
+#include <cmath>
 
 namespace QuantLib {
 
@@ -40,8 +38,16 @@ namespace QuantLib {
                    "1st argument (" << x << ") must be in [0,1]");
         QL_REQUIRE(y >= 0.0 && y <=1.0 ,
                    "2nd argument (" << y << ") must be in [0,1]");
-        using namespace std;
-        return max( pow( pow(x,-theta_)+pow(y,-theta_)-1.0  , -1.0/theta_) , 0.0);
+        if (x == 0.0 || y == 0.0)
+            return 0.0;
+        if (x == 1.0)
+            return y;
+        if (y == 1.0)
+            return x;
+
+        using std::pow;
+        const Real base = pow(x, -theta_) + pow(y, -theta_) - 1.0;
+        return pow(std::max(base, Real(0.0)), -1.0 / theta_);
     }
 
 }
