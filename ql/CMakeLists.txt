@@ -326,6 +326,7 @@ set(QL_SOURCES
     instruments/vanillaswap.cpp
     instruments/vanillaswingoption.cpp
     instruments/varianceswap.cpp
+    instruments/volatilityswap.cpp
     instruments/writerextensibleoption.cpp
     instruments/yearonyearinflationswap.cpp
     instruments/zerocouponinflationswap.cpp
@@ -734,6 +735,7 @@ set(QL_SOURCES
     pricingengines/exotic/analytictwoassetcorrelationengine.cpp
     pricingengines/exotic/analyticwriterextensibleoptionengine.cpp
     pricingengines/forward/discountingfxforwardengine.cpp
+    pricingengines/forward/lognormalvolatilityswapengine.cpp
     pricingengines/forward/mcforwardeuropeanbsengine.cpp
     pricingengines/forward/mcforwardeuropeanhestonengine.cpp
     pricingengines/futures/discountingperpetualfuturesengine.cpp
@@ -1435,6 +1437,7 @@ set(QL_HEADERS
     instruments/vanillaswap.hpp
     instruments/vanillaswingoption.hpp
     instruments/varianceswap.hpp
+    instruments/volatilityswap.hpp
     instruments/writerextensibleoption.hpp
     instruments/yearonyearinflationswap.hpp
     instruments/zerocouponinflationswap.hpp
@@ -1998,6 +2001,7 @@ set(QL_HEADERS
     pricingengines/forward/discountingfxforwardengine.hpp
     pricingengines/forward/forwardengine.hpp
     pricingengines/forward/forwardperformanceengine.hpp
+    pricingengines/forward/lognormalvolatilityswapengine.hpp
     pricingengines/forward/mcforwardeuropeanbsengine.hpp
     pricingengines/forward/mcforwardeuropeanhestonengine.hpp
     pricingengines/forward/mcforwardvanillaengine.hpp

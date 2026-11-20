@@ -969,6 +969,9 @@
     <ClInclude Include="ql\instruments\varianceswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\volatilityswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\writerextensibleoption.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -2596,6 +2599,9 @@
       <Filter>pricingengines\forward</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\forward\forwardperformanceengine.hpp">
+      <Filter>pricingengines\forward</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\forward\lognormalvolatilityswapengine.hpp">
       <Filter>pricingengines\forward</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\forward\mcforwardeuropeanbsengine.hpp">
@@ -5039,6 +5045,9 @@
     <ClCompile Include="ql\instruments\varianceswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\volatilityswap.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
     <ClCompile Include="ql\instruments\writerextensibleoption.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
@@ -6239,6 +6248,9 @@
     <ClCompile Include="ql\pricingengines\forward\discountingfxforwardengine.cpp">
       <Filter>pricingengines\forward</Filter>
     </ClCompile>	
+    <ClCompile Include="ql\pricingengines\forward\lognormalvolatilityswapengine.cpp">
+      <Filter>pricingengines\forward</Filter>
+    </ClCompile>
     <ClCompile Include="ql\pricingengines\inflation\inflationcapfloorengines.cpp">
       <Filter>pricingengines\inflation</Filter>
     </ClCompile>

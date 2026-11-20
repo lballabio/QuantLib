@@ -77,6 +77,7 @@
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/vanillaswingoption.hpp>
 #include <ql/instruments/varianceswap.hpp>
+#include <ql/instruments/volatilityswap.hpp>
 #include <ql/instruments/writerextensibleoption.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>

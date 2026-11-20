@@ -461,6 +461,9 @@
     <ClCompile Include="volatilitymodels.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="volatilityswaps.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="inflationcpibond.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

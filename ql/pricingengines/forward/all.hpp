@@ -4,6 +4,7 @@
 #include <ql/pricingengines/forward/discountingfxforwardengine.hpp>
 #include <ql/pricingengines/forward/forwardengine.hpp>
 #include <ql/pricingengines/forward/forwardperformanceengine.hpp>
+#include <ql/pricingengines/forward/lognormalvolatilityswapengine.hpp>
 #include <ql/pricingengines/forward/mcvarianceswapengine.hpp>
 #include <ql/pricingengines/forward/replicatingvarianceswapengine.hpp>
 #include <ql/pricingengines/forward/mcforwardvanillaengine.hpp>
