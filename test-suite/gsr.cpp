@@ -1170,6 +1170,129 @@ BOOST_AUTO_TEST_CASE(testNonstandardCopyOfAmortisingOvernightSwap) {
     }
 }
 
+namespace {
+
+    // 30y swap starting in one year, annual fixed leg against 6M Euribor
+    ext::shared_ptr<VanillaSwap> makeJamshidianTestSwap(
+            Swap::Type type, Rate fixedRate,
+            const Handle<YieldTermStructure>& yts, Date& start) {
+        auto index = ext::make_shared<Euribor6M>(yts);
+        Calendar calendar = index->fixingCalendar();
+        Date settlement = calendar.advance(
+            Settings::instance().evaluationDate(), 2, Days);
+        start = calendar.advance(settlement, 1, Years);
+        Date maturity = calendar.advance(start, 30, Years);
+        Schedule fixedSchedule(start, maturity, Period(Annual), calendar,
+                               Unadjusted, Unadjusted,
+                               DateGeneration::Forward, false);
+        Schedule floatSchedule(start, maturity, Period(Semiannual), calendar,
+                               ModifiedFollowing, ModifiedFollowing,
+                               DateGeneration::Forward, false);
+        auto swap = ext::make_shared<VanillaSwap>(
+            type, 1000.0,
+            fixedSchedule, fixedRate, index->dayCounter(),
+            floatSchedule, index, 0.0, index->dayCounter());
+        swap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(yts));
+        return swap;
+    }
+
+}
+
+BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianWingStrike) {
+    BOOST_TEST_MESSAGE(
+        "Testing Gaussian1dJamshidianSwaptionEngine on deep "
+        "in-the-money strikes...");
+
+    // The critical state depends on the strike, not on the option type.
+    // A strike far below the par rate puts it under the default bracket
+    // [-8, 8], a strike far above puts it over. A payer struck below par
+    // and a receiver struck above par are both in the money, so the prices
+    // are far from zero. Gaussian1dSwaptionEngine integrates instead of
+    // searching for a root, so it works as the reference.
+
+    Date today(15, September, 2016);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> yts(flatRate(today, 0.03, Actual365Fixed()));
+    Date start;
+    const Rate parRate =
+        makeJamshidianTestSwap(Swap::Payer, 0.0, yts, start)->fairRate();
+
+    // the last two cases (low volatility, high mean reversion) need many
+    // more widening steps than the others
+    struct Case { Swap::Type type; Rate shift; Real reversion, vol; };
+    const Case cases[] = {
+        { Swap::Payer,   -0.01, 0.5, 0.01 },
+        { Swap::Receiver, 0.01, 0.5, 0.01 },
+        { Swap::Payer,   -0.04, 0.5, 0.01 },
+        { Swap::Receiver, 0.04, 0.5, 0.01 },
+        { Swap::Payer,   -0.04, 2.0, 0.0005 },
+        { Swap::Receiver, 0.04, 2.0, 0.0005 }
+    };
+
+    for (const auto& c : cases) {
+        auto model = ext::make_shared<Gsr>(
+            yts, std::vector<Date>(), std::vector<Real>(1, c.vol),
+            c.reversion);
+        auto swaption = ext::make_shared<Swaption>(
+            makeJamshidianTestSwap(c.type, parRate + c.shift, yts, start),
+            ext::make_shared<EuropeanExercise>(start));
+
+        swaption->setPricingEngine(
+            ext::make_shared<Gaussian1dSwaptionEngine>(model, 64, 7.0));
+        const Real expected = swaption->NPV();
+
+        swaption->setPricingEngine(
+            ext::make_shared<Gaussian1dJamshidianSwaptionEngine>(model));
+        try {
+            const Real calculated = swaption->NPV();
+            QL_CHECK_CLOSE(calculated, expected, 1.0e-2);
+        } catch (const Error& e) {
+            BOOST_ERROR("Gaussian1dJamshidianSwaptionEngine failed for a "
+                        << (c.type == Swap::Payer ? "payer" : "receiver")
+                        << " struck " << std::lround(c.shift*1.0e4)
+                        << "bp from par: " << e.what());
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianNoCriticalState) {
+    BOOST_TEST_MESSAGE(
+        "Testing Gaussian1dJamshidianSwaptionEngine when there is no "
+        "critical state...");
+
+    // At par - 8% the fixed rate is about -5%. Every coupon is negative, so
+    // the function solved for the critical state has no root. The engine
+    // must throw and say so, with finite bounds and values in the message.
+    // The bracket widening runs into overflow on the way, so this also
+    // checks that no NaN or Inf reaches the message.
+
+    Date today(15, September, 2016);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> yts(flatRate(today, 0.03, Actual365Fixed()));
+    Date start;
+    const Rate parRate =
+        makeJamshidianTestSwap(Swap::Payer, 0.0, yts, start)->fairRate();
+
+    auto swaption = ext::make_shared<Swaption>(
+        makeJamshidianTestSwap(Swap::Payer, parRate - 0.08, yts, start),
+        ext::make_shared<EuropeanExercise>(start));
+    auto model = ext::make_shared<Gsr>(
+        yts, std::vector<Date>(), std::vector<Real>(1, 0.0005), 2.0);
+    swaption->setPricingEngine(
+        ext::make_shared<Gaussian1dJamshidianSwaptionEngine>(model));
+
+    BOOST_CHECK_EXCEPTION(
+        swaption->NPV(), Error,
+        [](const Error& e) {
+            const std::string what = e.what();
+            return what.find("no critical state") != std::string::npos &&
+                   what.find("nan") == std::string::npos &&
+                   what.find("inf") == std::string::npos;
+        });
+}
+
 BOOST_AUTO_TEST_CASE(testCapFloorNonZeroSpreadConsistency) {
     BOOST_TEST_MESSAGE("Testing Gaussian1dCapFloorEngine with a non-zero "
                         "floating-leg spread...");

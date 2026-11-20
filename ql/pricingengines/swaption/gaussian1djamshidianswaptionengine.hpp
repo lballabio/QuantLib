@@ -28,6 +28,7 @@
 #include <ql/instruments/swaption.hpp>
 #include <ql/models/shortrate/onefactormodels/gsr.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -49,6 +50,8 @@ namespace QuantLib {
 
       private:
         class rStarFinder;
+        static std::pair<Rate, Rate>
+        bracketRStar(const rStarFinder& finder, Rate minStrike, Rate maxStrike);
     };
 }
 

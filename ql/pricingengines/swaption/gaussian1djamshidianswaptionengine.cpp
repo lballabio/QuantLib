@@ -21,6 +21,7 @@
 
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/swaption/gaussian1djamshidianswaptionengine.hpp>
+#include <cmath>
 #include <utility>
 
 namespace QuantLib {
@@ -57,6 +58,49 @@ namespace QuantLib {
         const std::vector<Real> &amounts_;
         const ext::shared_ptr<Gaussian1dModel> &model_;
     };
+
+    std::pair<Rate, Rate>
+    Gaussian1dJamshidianSwaptionEngine::bracketRStar(
+        const rStarFinder& finder, Rate minStrike, Rate maxStrike) {
+        // A deep in- or out-of-the-money swaption can have its critical
+        // state outside the default [-8, 8] bracket even though the state
+        // is perfectly valid (Gaussian1dSwaptionEngine and
+        // JamshidianSwaptionEngine price it cleanly). Widen the sides
+        // independently until the root is bracketed; a side stops widening
+        // once it overflows, since fLower*fUpper >= 0.0 is false on NaN and
+        // would otherwise report a bracket that is not there.
+        Real fLower = finder(minStrike), fUpper = finder(maxStrike);
+        bool lowerStuck = false, upperStuck = false;
+        for (Size attempt = 0;
+             fLower*fUpper >= 0.0 && attempt < 20 && !(lowerStuck && upperStuck);
+             ++attempt) {
+            if (!lowerStuck) {
+                Rate candidate = minStrike*2.0;
+                Real newFLower = finder(candidate);
+                if (std::isfinite(newFLower)) {
+                    minStrike = candidate;
+                    fLower = newFLower;
+                } else {
+                    lowerStuck = true;
+                }
+            }
+            if (!upperStuck) {
+                Rate candidate = maxStrike*2.0;
+                Real newFUpper = finder(candidate);
+                if (std::isfinite(newFUpper)) {
+                    maxStrike = candidate;
+                    fUpper = newFUpper;
+                } else {
+                    upperStuck = true;
+                }
+            }
+        }
+        QL_REQUIRE(fLower*fUpper <= 0.0,
+                   "no critical state found in [" << minStrike << ","
+                   << maxStrike << "]: the function has the same sign at "
+                   "both ends (" << fLower << ", " << fUpper << ")");
+        return {minStrike, maxStrike};
+    }
 
     void Gaussian1dJamshidianSwaptionEngine::calculate() const {
 
@@ -139,8 +183,9 @@ namespace QuantLib {
                            arguments_.fixedResetDates[startIndex],
                            payDates, amounts, startIndex);
         Brent s1d;
-        Rate minStrike = -8.0;
-        Rate maxStrike = 8.0;
+        // widen the default bracket if the critical state falls outside it
+        const auto [minStrike, maxStrike] =
+            bracketRStar(finder, -8.0, 8.0);
         s1d.setMaxEvaluations(10000);
         s1d.setLowerBound(minStrike);
         s1d.setUpperBound(maxStrike);
