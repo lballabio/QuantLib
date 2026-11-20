@@ -121,7 +121,8 @@ namespace QuantLib {
       public:
         RendistatoCalculator(ext::shared_ptr<RendistatoBasket> basket,
                              ext::shared_ptr<Euribor> euriborIndex,
-                             Handle<YieldTermStructure> discountCurve);
+                             Handle<YieldTermStructure> discountCurve,
+                             Size nSwaps = 15);
         //! \name Calculations
         //@{
         Rate yield() const;
@@ -159,7 +160,7 @@ namespace QuantLib {
         mutable Time duration_;
         mutable Size equivalentSwapIndex_;
 
-        Size nSwaps_ = 15;
+        Size nSwaps_;
         mutable std::vector<ext::shared_ptr<VanillaSwap> > swaps_;
         std::vector<Time> swapLengths_;
         mutable std::vector<Time> swapBondDurations_;
