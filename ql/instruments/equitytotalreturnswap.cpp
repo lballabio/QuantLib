@@ -18,6 +18,7 @@ Copyright (C) 2023 Marcin Rybacki
 */
 
 #include <ql/cashflows/equitycashflow.hpp>
+#include <ql/cashflows/equitynotionalresetcoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/indexes/equityindex.hpp>
@@ -31,10 +32,13 @@ namespace QuantLib {
                             const ext::shared_ptr<EquityIndex>& equityIndex,
                             Real nominal,
                             Frequency equityPaymentFrequency,
+                            bool notionalReset,
                             const Calendar& paymentCalendar,
                             BusinessDayConvention paymentConvention,
                             Natural paymentDelay) {
             QL_REQUIRE(schedule.size() >= 2, "Schedule must contain at least two dates");
+            QL_REQUIRE(!notionalReset || equityPaymentFrequency != Once,
+                       "Notional reset requires periodic equity payments");
 
             Calendar cal = paymentCalendar;
             if (cal.empty()) {
@@ -47,8 +51,13 @@ namespace QuantLib {
             const auto addCashFlow = [&](const Date& startDate, const Date& endDate) {
                 Date paymentDate = cal.advance(endDate, paymentDelay, Days, paymentConvention,
                                                endOfMonth);
-                leg.push_back(ext::make_shared<EquityCashFlow>(
-                    nominal, equityIndex, startDate, endDate, paymentDate));
+                if (notionalReset)
+                    leg.push_back(ext::make_shared<EquityNotionalResetCashFlow>(
+                        nominal, equityIndex, schedule.startDate(), startDate, endDate,
+                        paymentDate));
+                else
+                    leg.push_back(ext::make_shared<EquityCashFlow>(
+                        nominal, equityIndex, startDate, endDate, paymentDate));
             };
 
             if (equityPaymentFrequency == Once) {
@@ -69,6 +78,22 @@ namespace QuantLib {
                 const Schedule equitySchedule(
                     schedule.startDate(), schedule.endDate(), tenor, schedule.calendar(),
                     schedule.businessDayConvention(), terminationConvention, rule, endOfMonth);
+                if (notionalReset) {
+                    // the notional of each funding period is reset to the index
+                    // level at the start of the corresponding equity period
+                    QL_REQUIRE(equitySchedule.size() == schedule.size(),
+                               "Notional reset requires equity periods matching the "
+                               "funding periods; the equity payment frequency ("
+                                   << equityPaymentFrequency << ") gives "
+                                   << equitySchedule.size() - 1 << " equity periods against "
+                                   << schedule.size() - 1 << " funding periods");
+                    for (Size i = 0; i < schedule.size(); ++i)
+                        QL_REQUIRE(equitySchedule[i] == schedule[i],
+                                   "Notional reset requires equity periods matching the "
+                                   "funding periods; equity date "
+                                       << equitySchedule[i] << " differs from funding date "
+                                       << schedule[i]);
+                }
                 leg.reserve(equitySchedule.size() - 1);
                 for (Size i = 1; i < equitySchedule.size(); ++i) {
                     QL_REQUIRE(equitySchedule[i] > equitySchedule[i - 1],
@@ -82,14 +107,16 @@ namespace QuantLib {
         template <typename IndexType, typename LegType>
         Leg createInterestLeg(const Schedule& schedule,
                               const ext::shared_ptr<IndexType>& interestRateIndex,
+                              const ext::shared_ptr<EquityIndex>& equityIndex,
                               Real nominal,
+                              bool notionalReset,
                               const DayCounter& dayCounter,
                               Rate margin,
                               Real gearing,
                               const Calendar& paymentCalendar,
                               BusinessDayConvention paymentConvention,
                               Natural paymentDelay) {
-            return LegType(schedule, interestRateIndex)
+            Leg leg = LegType(schedule, interestRateIndex)
                 .withNotionals(nominal)
                 .withPaymentDayCounter(dayCounter)
                 .withSpreads(margin)
@@ -97,6 +124,15 @@ namespace QuantLib {
                 .withPaymentCalendar(paymentCalendar)
                 .withPaymentAdjustment(paymentConvention)
                 .withPaymentLag(paymentDelay);
+            if (notionalReset) {
+                for (auto& cf : leg) {
+                    auto coupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(cf);
+                    QL_REQUIRE(coupon, "unexpected non-coupon cash flow on the funding leg");
+                    cf = ext::make_shared<EquityNotionalResetCoupon>(
+                        coupon, equityIndex, schedule.startDate(), coupon->accrualStartDate());
+                }
+            }
+            return leg;
         }
     }
 
@@ -112,18 +148,20 @@ namespace QuantLib {
         Calendar paymentCalendar,
         BusinessDayConvention paymentConvention,
         Natural paymentDelay,
-        Frequency equityPaymentFrequency)
+        Frequency equityPaymentFrequency,
+        bool notionalReset)
     : Swap(2), equityIndex_(std::move(equityIndex)),
       interestRateIndex_(std::move(interestRateIndex)), type_(type), nominal_(nominal),
       schedule_(std::move(schedule)), dayCounter_(std::move(dayCounter)), margin_(margin),
       gearing_(gearing), paymentCalendar_(std::move(paymentCalendar)),
       paymentConvention_(paymentConvention), paymentDelay_(paymentDelay),
-      equityPaymentFrequency_(equityPaymentFrequency) {
+      equityPaymentFrequency_(equityPaymentFrequency), notionalReset_(notionalReset) {
 
         QL_REQUIRE(!(nominal_ < 0.0), "Nominal cannot be negative");
 
         legs_[0] = createEquityLeg(schedule_, equityIndex_, nominal_, equityPaymentFrequency_,
-                                  paymentCalendar_, paymentConvention_, paymentDelay_);
+                                  notionalReset_, paymentCalendar_, paymentConvention_,
+                                  paymentDelay_);
         for (auto i = legs_[0].begin(); i < legs_[0].end(); ++i)
             registerWith(*i);
 
@@ -152,7 +190,8 @@ namespace QuantLib {
                                                  Calendar paymentCalendar,
                                                  BusinessDayConvention paymentConvention,
                                                  Natural paymentDelay,
-                                                 Frequency equityPaymentFrequency)
+                                                 Frequency equityPaymentFrequency,
+                                                 bool notionalReset)
     : EquityTotalReturnSwap(std::move(equityIndex),
                             interestRateIndex,
                             type,
@@ -164,10 +203,11 @@ namespace QuantLib {
                             std::move(paymentCalendar),
                             paymentConvention,
                             paymentDelay,
-                            equityPaymentFrequency) {
+                            equityPaymentFrequency,
+                            notionalReset) {
         legs_[1] = createInterestLeg<IborIndex, IborLeg>(
-            schedule_, interestRateIndex, nominal_, dayCounter_, margin_, gearing_,
-            paymentCalendar_, paymentConvention_, paymentDelay_);
+            schedule_, interestRateIndex, equityIndex_, nominal_, notionalReset_, dayCounter_,
+            margin_, gearing_, paymentCalendar_, paymentConvention_, paymentDelay_);
         for (auto i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
     }
@@ -183,7 +223,8 @@ namespace QuantLib {
                                                  Calendar paymentCalendar,
                                                  BusinessDayConvention paymentConvention,
                                                  Natural paymentDelay,
-                                                 Frequency equityPaymentFrequency)
+                                                 Frequency equityPaymentFrequency,
+                                                 bool notionalReset)
     : EquityTotalReturnSwap(std::move(equityIndex),
                             interestRateIndex,
                             type,
@@ -195,10 +236,11 @@ namespace QuantLib {
                             std::move(paymentCalendar),
                             paymentConvention,
                             paymentDelay,
-                            equityPaymentFrequency) {
+                            equityPaymentFrequency,
+                            notionalReset) {
         legs_[1] = createInterestLeg<OvernightIndex, OvernightLeg>(
-            schedule_, interestRateIndex, nominal_, dayCounter_, margin_, gearing_,
-            paymentCalendar_, paymentConvention_, paymentDelay_);
+            schedule_, interestRateIndex, equityIndex_, nominal_, notionalReset_, dayCounter_,
+            margin_, gearing_, paymentCalendar_, paymentConvention_, paymentDelay_);
         for (auto i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
     }

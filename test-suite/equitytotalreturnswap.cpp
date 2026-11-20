@@ -20,6 +20,7 @@
 #include "utilities.hpp"
 #include <ql/instruments/equitytotalreturnswap.hpp>
 #include <ql/cashflows/equitycashflow.hpp>
+#include <ql/cashflows/equitynotionalresetcoupon.hpp>
 #include <ql/currencies/america.hpp>
 #include <ql/indexes/equityindex.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
@@ -100,18 +101,19 @@ struct CommonVars {
     ext::shared_ptr<EquityTotalReturnSwap> createTRSWithFrequency(
         Swap::Type type, const Schedule& schedule, bool useOvernightIndex,
         Frequency frequency, Rate margin = 0.0,
-        Natural paymentDelay = 0, Calendar paymentCalendar = Calendar()) {
+        Natural paymentDelay = 0, Calendar paymentCalendar = Calendar(),
+        bool notionalReset = false) {
         if (paymentCalendar.empty())
             paymentCalendar = schedule.calendar();
         ext::shared_ptr<EquityTotalReturnSwap> swap;
         if (useOvernightIndex) {
             swap = ext::make_shared<EquityTotalReturnSwap>(
                 type, 100000.0, schedule, equityIndex, sofr, dayCount, margin,
-                1.0, paymentCalendar, Following, paymentDelay, frequency);
+                1.0, paymentCalendar, Following, paymentDelay, frequency, notionalReset);
         } else {
             swap = ext::make_shared<EquityTotalReturnSwap>(
                 type, 100000.0, schedule, equityIndex, usdLibor, dayCount, margin,
-                1.0, paymentCalendar, Following, paymentDelay, frequency);
+                1.0, paymentCalendar, Following, paymentDelay, frequency, notionalReset);
         }
         swap->setPricingEngine(discountEngine);
         return swap;
@@ -413,6 +415,301 @@ BOOST_AUTO_TEST_CASE(testPeriodicValuation) {
                 QL_CHECK_SMALL(par->NPV(), 1.0e-8);
             }
         }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testNotionalResetCashFlows) {
+    BOOST_TEST_MESSAGE("Testing equity cash flows with notional reset...");
+    CommonVars vars;
+    const std::vector<Date> dates = {Date(5, January, 2023), Date(5, April, 2023),
+                                     Date(5, July, 2023), Date(5, October, 2023),
+                                     Date(5, January, 2024)};
+    const Schedule schedule(dates, vars.calendar, Unadjusted, Unadjusted,
+                            3 * Months, DateGeneration::Forward, false);
+    // Put every equity fixing in the past so amounts depend only on the supplied levels.
+    Settings::instance().evaluationDate() = Date(8, January, 2024);
+
+    const Real nominal = 100000.0;
+    const Real levels[] = {100.0, 110.0, 99.0, 118.8, 118.8};
+    for (Size i = 0; i < dates.size(); ++i)
+        vars.equityIndex->addFixing(dates[i], levels[i], true);
+
+    // Without reset, each period pays the return on the same notional; with reset,
+    // the notional follows the index, i.e., a fixed number of index units is held.
+    const std::vector<Real> fixedAmounts = {10000.0, -10000.0, 20000.0, 0.0};
+    const std::vector<Real> resetAmounts = {10000.0, -11000.0, 19800.0, 0.0};
+    const std::vector<Real> resetNotionals = {100000.0, 110000.0, 99000.0, 118800.0};
+
+    for (bool overnight : {false, true}) {
+        auto fixed = vars.createTRSWithFrequency(Swap::Receiver, schedule, overnight, Quarterly);
+        auto reset = vars.createTRSWithFrequency(Swap::Receiver, schedule, overnight, Quarterly,
+                                                 0.0, 0, Calendar(), true);
+        BOOST_CHECK(!fixed->notionalReset());
+        BOOST_CHECK(reset->notionalReset());
+        BOOST_CHECK_EQUAL(reset->nominal(), nominal);
+        BOOST_REQUIRE_EQUAL(fixed->equityLeg().size(), 4);
+        BOOST_REQUIRE_EQUAL(reset->equityLeg().size(), 4);
+        BOOST_REQUIRE_EQUAL(reset->interestRateLeg().size(), 4);
+
+        Real total = 0.0;
+        for (Size i = 0; i < 4; ++i) {
+            QL_CHECK_SMALL(fixed->equityLeg()[i]->amount() - fixedAmounts[i], 1.0e-8);
+            BOOST_CHECK(!ext::dynamic_pointer_cast<EquityNotionalResetCashFlow>(
+                fixed->equityLeg()[i]));
+            BOOST_CHECK(!ext::dynamic_pointer_cast<EquityNotionalResetCoupon>(
+                fixed->interestRateLeg()[i]));
+
+            auto flow =
+                ext::dynamic_pointer_cast<EquityNotionalResetCashFlow>(reset->equityLeg()[i]);
+            BOOST_REQUIRE(flow);
+            BOOST_CHECK_EQUAL(flow->initialDate(), dates[0]);
+            BOOST_CHECK_EQUAL(flow->baseDate(), dates[i]);
+            BOOST_CHECK_EQUAL(flow->fixingDate(), dates[i + 1]);
+            BOOST_CHECK_EQUAL(flow->date(), dates[i + 1]);
+            BOOST_CHECK(flow->growthOnly());
+            BOOST_CHECK_EQUAL(flow->initialNotional(), nominal);
+            QL_CHECK_SMALL(flow->notional() - resetNotionals[i], 1.0e-8);
+            QL_CHECK_SMALL(flow->amount() - resetAmounts[i], 1.0e-8);
+            total += flow->amount();
+
+            // The funding coupon accrues on the same notional as the equity cash flow.
+            auto coupon =
+                ext::dynamic_pointer_cast<EquityNotionalResetCoupon>(reset->interestRateLeg()[i]);
+            BOOST_REQUIRE(coupon);
+            BOOST_CHECK_EQUAL(coupon->initialDate(), dates[0]);
+            BOOST_CHECK_EQUAL(coupon->resetDate(), dates[i]);
+            BOOST_CHECK_EQUAL(coupon->accrualStartDate(), dates[i]);
+            BOOST_CHECK_EQUAL(coupon->accrualEndDate(), dates[i + 1]);
+            BOOST_CHECK_EQUAL(coupon->initialNominal(), nominal);
+            BOOST_CHECK_EQUAL(coupon->underlying()->nominal(), nominal);
+            QL_CHECK_SMALL(coupon->nominal() - resetNotionals[i], 1.0e-8);
+        }
+        // The payments add up to the return of buying and holding the index.
+        QL_CHECK_SMALL(total - nominal * (levels[4] / levels[0] - 1.0), 1.0e-8);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testNotionalResetValuation) {
+    BOOST_TEST_MESSAGE("Testing valuation with notional reset...");
+    CommonVars vars;
+    const Schedule schedule = MakeSchedule().from(Date(31, January, 2023))
+        .to(Date(31, January, 2024)).withTenor(3 * Months)
+        .withCalendar(vars.calendar).withConvention(Following).backwards();
+    // All period boundaries follow the evaluation date, so that all levels are forecast.
+    const std::vector<Date> dates = {
+        Date(31, January, 2023), Date(1, May, 2023), Date(31, July, 2023),
+        Date(31, October, 2023), Date(31, January, 2024)};
+    const Real nominal = 100000.0;
+    const Rate margin = 0.001;
+
+    for (bool overnight : {false, true}) {
+        for (Swap::Type type : {Swap::Receiver, Swap::Payer}) {
+            auto fixed = vars.createTRSWithFrequency(type, schedule, overnight, Quarterly,
+                                                     margin, 2);
+            auto reset = vars.createTRSWithFrequency(type, schedule, overnight, Quarterly,
+                                                     margin, 2, Calendar(), true);
+            BOOST_REQUIRE_EQUAL(reset->equityLeg().size(), dates.size() - 1);
+            BOOST_REQUIRE_EQUAL(reset->interestRateLeg().size(), dates.size() - 1);
+
+            Real expectedEquityNPV = 0.0, expectedInterestNPV = 0.0;
+            for (Size i = 1; i < dates.size(); ++i) {
+                // With flat continuously compounded carry r - q, the index forecast
+                // relative to the start date is known analytically.
+                const Real growthToStart = std::exp(
+                    (0.0375 - 0.005) * vars.dayCount.yearFraction(dates[0], dates[i - 1]));
+                const Real growthToEnd = std::exp(
+                    (0.0375 - 0.005) * vars.dayCount.yearFraction(dates[0], dates[i]));
+                const Date payment = vars.calendar.advance(dates[i], 2, Days, Following);
+                const DiscountFactor discount = vars.interestHandle->discount(payment);
+
+                const auto& flow = reset->equityLeg()[i - 1];
+                BOOST_CHECK_EQUAL(flow->date(), payment);
+                const Real expectedAmount = nominal * (growthToEnd - growthToStart);
+                QL_CHECK_SMALL(flow->amount() - expectedAmount, 1.0e-8);
+                expectedEquityNPV += expectedAmount * discount;
+
+                // The forecast funding coupon is the product of the forecast notional
+                // and the forecast rate; the latter is the one of the fixed-notional swap.
+                auto coupon = ext::dynamic_pointer_cast<Coupon>(reset->interestRateLeg()[i - 1]);
+                auto fixedCoupon =
+                    ext::dynamic_pointer_cast<Coupon>(fixed->interestRateLeg()[i - 1]);
+                BOOST_REQUIRE(coupon);
+                BOOST_REQUIRE(fixedCoupon);
+                BOOST_CHECK_EQUAL(coupon->date(), payment);
+                QL_CHECK_SMALL(coupon->nominal() - nominal * growthToStart, 1.0e-8);
+                QL_CHECK_CLOSE(coupon->rate(), fixedCoupon->rate(), 1.0e-10);
+                QL_CHECK_SMALL(coupon->amount() - fixedCoupon->amount() * growthToStart,
+                               1.0e-8);
+                expectedInterestNPV += fixedCoupon->amount() * growthToStart * discount;
+            }
+
+            // Receiver/payer refers to equity; the funding leg carries the opposite sign.
+            const Real sign = type == Swap::Receiver ? Real(1.0) : Real(-1.0);
+            QL_CHECK_SMALL(reset->equityLegNPV() - sign * expectedEquityNPV, 1.0e-8);
+            QL_CHECK_SMALL(reset->interestRateLegNPV() + sign * expectedInterestNPV, 1.0e-8);
+            QL_CHECK_SMALL(reset->NPV() - reset->equityLegNPV() - reset->interestRateLegNPV(),
+                           1.0e-8);
+
+            // The fair margin accrues on the reset notionals.
+            auto par = vars.createTRSWithFrequency(type, schedule, overnight, Quarterly,
+                                                   reset->fairMargin(), 2, Calendar(), true);
+            QL_CHECK_SMALL(par->NPV(), 1.0e-8);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSeasonedNotionalReset) {
+    BOOST_TEST_MESSAGE("Testing seasoned swap with notional reset...");
+    CommonVars vars;
+    // The swap started before the evaluation date: the initial index level is a
+    // past fixing, while the levels at the following resets are forecast.
+    const Schedule schedule = MakeSchedule().from(Date(5, January, 2023))
+        .to(Date(5, January, 2024)).withTenor(3 * Months)
+        .withCalendar(vars.calendar).withConvention(Following).backwards();
+    const Real nominal = 100000.0;
+    const Real initialLevel = 9010.0;
+
+    for (bool overnight : {false, true}) {
+        for (Swap::Type type : {Swap::Receiver, Swap::Payer}) {
+            auto bullet = vars.createTRSWithFrequency(type, schedule, overnight, Once);
+            auto fixed = vars.createTRSWithFrequency(type, schedule, overnight, Quarterly);
+            auto reset = vars.createTRSWithFrequency(type, schedule, overnight, Quarterly,
+                                                     0.0, 0, Calendar(), true);
+            const Size n = schedule.size() - 1;
+            BOOST_REQUIRE_EQUAL(reset->equityLeg().size(), n);
+            BOOST_REQUIRE_EQUAL(reset->interestRateLeg().size(), n);
+
+            auto check = [&]() {
+                Real total = 0.0, expectedEquityNPV = 0.0, expectedInterestNPV = 0.0;
+                for (Size i = 1; i <= n; ++i) {
+                    const Real startLevel = vars.equityIndex->fixing(schedule[i - 1]);
+                    const Real endLevel = vars.equityIndex->fixing(schedule[i]);
+                    const Real notional = nominal * startLevel / initialLevel;
+                    const DiscountFactor discount = vars.interestHandle->discount(schedule[i]);
+
+                    auto flow = ext::dynamic_pointer_cast<EquityCashFlow>(
+                        reset->equityLeg()[i - 1]);
+                    BOOST_REQUIRE(flow);
+                    QL_CHECK_SMALL(flow->notional() - notional, 1.0e-8);
+                    QL_CHECK_SMALL(flow->amount() -
+                                   nominal * (endLevel - startLevel) / initialLevel, 1.0e-8);
+                    total += flow->amount();
+                    expectedEquityNPV += flow->amount() * discount;
+
+                    auto coupon =
+                        ext::dynamic_pointer_cast<Coupon>(reset->interestRateLeg()[i - 1]);
+                    auto fixedCoupon =
+                        ext::dynamic_pointer_cast<Coupon>(fixed->interestRateLeg()[i - 1]);
+                    BOOST_REQUIRE(coupon);
+                    BOOST_REQUIRE(fixedCoupon);
+                    QL_CHECK_SMALL(coupon->nominal() - notional, 1.0e-8);
+                    QL_CHECK_SMALL(coupon->amount() -
+                                   fixedCoupon->amount() * startLevel / initialLevel, 1.0e-8);
+                    expectedInterestNPV += coupon->amount() * discount;
+                }
+                // The first period started in the past and keeps the initial notional.
+                auto first = ext::dynamic_pointer_cast<Coupon>(reset->interestRateLeg()[0]);
+                QL_CHECK_SMALL(first->nominal() - nominal, 1.0e-8);
+                // The payments add up to the single payment of the swap settled at maturity.
+                QL_CHECK_SMALL(total - bullet->equityLeg()[0]->amount(), 1.0e-8);
+
+                const Real sign = type == Swap::Receiver ? Real(1.0) : Real(-1.0);
+                QL_CHECK_SMALL(reset->equityLegNPV() - sign * expectedEquityNPV, 1.0e-8);
+                QL_CHECK_SMALL(reset->interestRateLegNPV() + sign * expectedInterestNPV,
+                               1.0e-8);
+            };
+            check();
+
+            auto par = vars.createTRSWithFrequency(type, schedule, overnight, Quarterly,
+                                                   reset->fairMargin(), 0, Calendar(), true);
+            QL_CHECK_SMALL(par->NPV(), 1.0e-8);
+
+            // Both legs must react to changes in the inputs of the equity forecast.
+            const Real equityNPV = reset->equityLegNPV();
+            const Real interestNPV = reset->interestRateLegNPV();
+            auto spotQuote = ext::dynamic_pointer_cast<SimpleQuote>(vars.spot);
+            spotQuote->setValue(9100.0);
+            BOOST_CHECK(std::fabs(reset->equityLegNPV() - equityNPV) > 1.0);
+            BOOST_CHECK(std::fabs(reset->interestRateLegNPV() - interestNPV) > 1.0);
+            check();
+
+            const Real bumpedEquityNPV = reset->equityLegNPV();
+            const Real bumpedInterestNPV = reset->interestRateLegNPV();
+            vars.dividendHandle.linkTo(flatRate(0.02, vars.dayCount));
+            BOOST_CHECK(std::fabs(reset->equityLegNPV() - bumpedEquityNPV) > 1.0);
+            BOOST_CHECK(std::fabs(reset->interestRateLegNPV() - bumpedInterestNPV) > 1.0e-2);
+            check();
+
+            spotQuote->setValue(8700.0);
+            vars.dividendHandle.linkTo(flatRate(0.005, vars.dayCount));
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testErrorWhenNotionalResetIsNotSupported) {
+    BOOST_TEST_MESSAGE("Testing error when notional reset is not supported...");
+    CommonVars vars;
+    const Schedule schedule = MakeSchedule().from(Date(31, January, 2023))
+        .to(Date(31, January, 2024)).withTenor(3 * Months)
+        .withCalendar(vars.calendar).withConvention(Following).backwards();
+
+    for (bool overnight : {false, true}) {
+        // The notional cannot be reset if the equity return is settled once at maturity...
+        BOOST_CHECK_EXCEPTION(
+            vars.createTRSWithFrequency(Swap::Receiver, schedule, overnight, Once, 0.0, 0,
+                                        Calendar(), true),
+            Error, ExpectedErrorMessage("Notional reset requires periodic equity payments"));
+        // ...or if the equity periods differ from the funding periods.
+        for (Frequency frequency : {Semiannual, Monthly}) {
+            BOOST_CHECK_EXCEPTION(
+                vars.createTRSWithFrequency(Swap::Receiver, schedule, overnight, frequency, 0.0,
+                                            0, Calendar(), true),
+                Error,
+                ExpectedErrorMessage(
+                    "Notional reset requires equity periods matching the funding periods"));
+        }
+        // Without reset, the same frequencies are still allowed.
+        BOOST_CHECK_NO_THROW(
+            vars.createTRSWithFrequency(Swap::Receiver, schedule, overnight, Semiannual));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testNotionalResetFundingCurveUpdate) {
+    BOOST_TEST_MESSAGE("Testing notional reset after funding curve changes...");
+    CommonVars vars;
+    const Schedule schedule = MakeSchedule().from(Date(31, January, 2023))
+        .to(Date(31, January, 2024)).withTenor(3 * Months)
+        .withCalendar(vars.calendar).withConvention(Following).backwards();
+
+    // The funding index is forecast on a different curve than the discount curve,
+    // so that the swap is only notified of its changes through the funding coupons.
+    RelinkableHandle<YieldTermStructure> forecastHandle(flatRate(0.04, vars.dayCount));
+    // declared as base classes to select the right constructor of the swap
+    ext::shared_ptr<IborIndex> libor = ext::make_shared<USDLibor>(3 * Months, forecastHandle);
+    ext::shared_ptr<OvernightIndex> sofr = ext::make_shared<Sofr>(forecastHandle);
+
+    auto makeSwap = [&](bool overnight) {
+        ext::shared_ptr<EquityTotalReturnSwap> swap;
+        if (overnight)
+            swap = ext::make_shared<EquityTotalReturnSwap>(
+                Swap::Receiver, 100000.0, schedule, vars.equityIndex, sofr, vars.dayCount, 0.0,
+                1.0, vars.calendar, Following, 0, Quarterly, true);
+        else
+            swap = ext::make_shared<EquityTotalReturnSwap>(
+                Swap::Receiver, 100000.0, schedule, vars.equityIndex, libor, vars.dayCount, 0.0,
+                1.0, vars.calendar, Following, 0, Quarterly, true);
+        swap->setPricingEngine(vars.discountEngine);
+        return swap;
+    };
+
+    for (bool overnight : {false, true}) {
+        auto swap = makeSwap(overnight);
+        const Real interestNPV = swap->interestRateLegNPV();
+        forecastHandle.linkTo(flatRate(0.05, vars.dayCount));
+        BOOST_CHECK(std::fabs(swap->interestRateLegNPV() - interestNPV) > 1.0);
+        QL_CHECK_SMALL(swap->interestRateLegNPV() - makeSwap(overnight)->interestRateLegNPV(),
+                       1.0e-8);
+        forecastHandle.linkTo(flatRate(0.04, vars.dayCount));
     }
 }
 

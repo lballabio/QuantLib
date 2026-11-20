@@ -69,6 +69,32 @@ namespace QuantLib {
         Stub dates are generated from these endpoints rather than copied from
         the funding schedule. Payment adjustment and delay apply to both legs.
 
+        With notional reset, the notional of each period tracks a fixed number
+        of index units instead of staying constant:
+        \f[
+        N_i = N \frac{I(T_{i-1})}{I(T_{0})},
+        \f]
+        so that the equity cash flow for the period is
+        \f[
+        C_i = N_i \left[ \frac{I(T_i)}{I(T_{i-1})} - 1 \right]
+            = \frac{N}{I(T_{0})} \left[ I(T_i) - I(T_{i-1}) \right]
+        \f]
+        and the funding coupon for the same period accrues on \f$ N_i \f$.
+        The equity cash flows add up to the return of a buy-and-hold position
+        between the start date and maturity. Notional reset requires periodic
+        equity payments whose periods match those of the funding schedule.
+
+        \note With notional reset, the funding coupons whose notional is not
+              yet fixed are forecast as the product of the forecast notional
+              and the forecast rate. This is exact for deterministic rates;
+              no convexity adjustment is made for the correlation between
+              the equity index and the rate.
+
+        \warning With notional reset, the reset notionals are calculated from
+                 the fixings of the equity index as given. An equity cash-flow
+                 pricer set on the equity leg, e.g., a quanto pricer, adjusts
+                 the return over each period but not its notional.
+
         Swap type (payer or receiver) refers to the equity leg.
     */
     class EquityTotalReturnSwap : public Swap {
@@ -78,6 +104,10 @@ namespace QuantLib {
             independent of the funding schedule. Defaults to Once, which pays
             the full equity return at maturity. NoFrequency, OtherFrequency
             and invalid frequency values are not supported.
+            \param notionalReset If true, the notional of each period is
+            reset to the index level at the start of the period. Requires
+            an equity payment frequency giving the same periods as the
+            funding schedule.
         */
         EquityTotalReturnSwap(Type type,
                               Real nominal,
@@ -90,13 +120,18 @@ namespace QuantLib {
                               Calendar paymentCalendar = Calendar(),
                               BusinessDayConvention paymentConvention = Unadjusted,
                               Natural paymentDelay = 0,
-                              Frequency equityPaymentFrequency = Once);
+                              Frequency equityPaymentFrequency = Once,
+                              bool notionalReset = false);
 
         /*! Construct a swap with overnight funding.
             \param equityPaymentFrequency Frequency of equity settlements,
             independent of the funding schedule. Defaults to Once, which pays
             the full equity return at maturity. NoFrequency, OtherFrequency
             and invalid frequency values are not supported.
+            \param notionalReset If true, the notional of each period is
+            reset to the index level at the start of the period. Requires
+            an equity payment frequency giving the same periods as the
+            funding schedule.
         */
         EquityTotalReturnSwap(Type type,
                               Real nominal,
@@ -109,13 +144,17 @@ namespace QuantLib {
                               Calendar paymentCalendar = Calendar(),
                               BusinessDayConvention paymentConvention = Unadjusted,
                               Natural paymentDelay = 0,
-                              Frequency equityPaymentFrequency = Once);
+                              Frequency equityPaymentFrequency = Once,
+                              bool notionalReset = false);
 
         //! \name Inspectors
         //@{
         Type type() const { return type_; }
         //! Frequency of equity settlements; Once denotes payment at maturity.
         Frequency equityPaymentFrequency() const { return equityPaymentFrequency_; }
+        //! Whether the notional is reset to the index level at the start of each period.
+        bool notionalReset() const { return notionalReset_; }
+        //! The notional at the start date; with notional reset, the one of the first period.
         Real nominal() const { return nominal_; }
         const ext::shared_ptr<EquityIndex>& equityIndex() const { return equityIndex_; } 
         const ext::shared_ptr<InterestRateIndex>& interestRateIndex() const { return interestRateIndex_; }
@@ -150,7 +189,8 @@ namespace QuantLib {
                               Calendar paymentCalendar = Calendar(),
                               BusinessDayConvention paymentConvention = Unadjusted,
                               Natural paymentDelay = 0,
-                              Frequency equityPaymentFrequency = Once);
+                              Frequency equityPaymentFrequency = Once,
+                              bool notionalReset = false);
 
         ext::shared_ptr<EquityIndex> equityIndex_;
         ext::shared_ptr<InterestRateIndex> interestRateIndex_;
@@ -164,6 +204,7 @@ namespace QuantLib {
         BusinessDayConvention paymentConvention_;
         Natural paymentDelay_;
         Frequency equityPaymentFrequency_;
+        bool notionalReset_;
     };
 }
 

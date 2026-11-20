@@ -22,6 +22,7 @@ this_include_HEADERS = \
     dividend.hpp \
     duration.hpp \
     equitycashflow.hpp \
+    equitynotionalresetcoupon.hpp \
     fixedratecoupon.hpp \
     floatingratecoupon.hpp \
     iborcoupon.hpp \
@@ -60,6 +61,7 @@ cpp_files = \
     dividend.cpp \
     duration.cpp \
     equitycashflow.cpp \
+    equitynotionalresetcoupon.cpp \
     fixedratecoupon.cpp \
     floatingratecoupon.cpp \
     iborcoupon.cpp \

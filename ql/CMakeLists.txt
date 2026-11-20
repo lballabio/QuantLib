@@ -18,6 +18,7 @@ set(QL_SOURCES
     cashflows/dividend.cpp
     cashflows/duration.cpp
     cashflows/equitycashflow.cpp
+    cashflows/equitynotionalresetcoupon.cpp
     cashflows/fixedratecoupon.cpp
     cashflows/floatingratecoupon.cpp
     cashflows/iborcoupon.cpp
@@ -1010,6 +1011,7 @@ set(QL_HEADERS
     cashflows/dividend.hpp
     cashflows/duration.hpp
     cashflows/equitycashflow.hpp
+    cashflows/equitynotionalresetcoupon.hpp
     cashflows/fixedratecoupon.hpp
     cashflows/floatingratecoupon.hpp
     cashflows/iborcoupon.hpp
