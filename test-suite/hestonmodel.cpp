@@ -3594,6 +3594,58 @@ BOOST_AUTO_TEST_CASE(testPiecewiseTimeDependentZeroMaturity) {
 }
 
 
+BOOST_AUTO_TEST_CASE(testAnalyticEngineReusesChFAcrossStrikes) {
+    BOOST_TEST_MESSAGE("Testing analytic Heston engine reuse of the "
+                       "characteristic function across strikes...");
+
+    const Date today = Settings::instance().evaluationDate();
+    const DayCounter dc = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(flatRate(0.03, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(0.01, dc));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const auto model = ext::make_shared<HestonModel>(
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 1.5, 0.05, 0.6, -0.7));
+    const auto engine = ext::make_shared<AnalyticHestonEngine>(model);
+
+    std::vector<ext::shared_ptr<VanillaOption>> options;
+    for (Integer months : {1, 6, 24})
+        for (Integer strike = 70; strike <= 130; strike += 10)
+            options.push_back(ext::make_shared<VanillaOption>(
+                ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+                ext::make_shared<EuropeanExercise>(today + Period(months, Months))));
+
+    const auto check = [&](const std::string& when) {
+        for (const auto& option : options) {
+            option->setPricingEngine(engine);
+            const Real shared = option->NPV();
+            option->setPricingEngine(ext::make_shared<AnalyticHestonEngine>(model));
+            const Real fresh = option->NPV();
+            if (shared != fresh)
+                BOOST_ERROR("shared and fresh engines disagree " << when
+                            << "\n    shared: " << std::setprecision(17) << shared
+                            << "\n    fresh:  " << fresh);
+        }
+    };
+
+    check("before the parameter change");
+    options[3]->setPricingEngine(engine);
+    const Real before = options[3]->NPV();
+
+    Array params = model->params();
+    params[2] = 0.9; // sigma
+    model->setParams(params);
+
+    check("after the parameter change");
+    options[3]->setPricingEngine(engine);
+    const Real after = options[3]->NPV();
+    if (std::fabs(after - before) < 1e-4)
+        BOOST_ERROR("price did not move with sigma"
+                    << "\n    before: " << before << "\n    after:  " << after);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(HestonModelExperimentalTest)

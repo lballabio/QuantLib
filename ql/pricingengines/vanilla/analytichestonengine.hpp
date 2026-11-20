@@ -34,6 +34,8 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <functional>
 #include <complex>
+#include <mutex>
+#include <vector>
 
 namespace QuantLib {
 
@@ -190,10 +192,29 @@ namespace QuantLib {
            Time maturity, Real fwd) const;
 
 
+        // lnChF on the Gauss-Laguerre nodes depends on the maturity and the
+        // contour angle, not on the strike, so the strikes of one maturity
+        // share it. Entries are immutable once stored; the mutex guards the list,
+        // which is emptied whenever the model parameters differ from its own.
+        struct LnChFCache {
+            Array params;
+            Time term;
+            Real tanPhi;
+            std::vector<std::complex<Real>> z, lnChF;
+        };
+        ext::shared_ptr<const LnChFCache> findLnChF(
+            const Array& params, Time term, Real tanPhi) const;
+        void storeLnChF(const ext::shared_ptr<const LnChFCache>& entry) const;
+
+        mutable std::mutex cacheMutex_;
+        mutable Array cacheParams_;
+        mutable std::vector<ext::shared_ptr<const LnChFCache>> lnChFCache_;
+
         mutable Size evaluations_;
         const ComplexLogFormula cpxLog_;
         const ext::shared_ptr<Integration> integration_;
         const Real andersenPiterbargEpsilon_, alpha_;
+        const bool cacheLnChF_;
     };
 
 
@@ -215,6 +236,12 @@ namespace QuantLib {
         const Real alpha_, s_alpha_;
         Real vAvg_, tanPhi_;
         std::complex<Real> phi_, psi_;
+
+        friend class AnalyticHestonEngine;
+        std::complex<Real> lnChFAt(const std::complex<Real>& z) const;
+        const LnChFCache* cached_ = nullptr;
+        LnChFCache* record_ = nullptr;
+        mutable Size node_ = 0;
     };
 
 
