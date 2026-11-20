@@ -60,8 +60,7 @@ namespace QuantLib {
       public:
         typedef Sample<std::vector<Real> > sample_type;
         RandomizedLDS(const LDS& ldsg, PRS prsg);
-        // TODO: Review whether this constructor should remain implicit.
-        RandomizedLDS(const LDS& ldsg);
+        explicit RandomizedLDS(const LDS& ldsg);
         explicit RandomizedLDS(Size dimensionality,
                                BigNatural ldsSeed = 0,
                                BigNatural prsSeed = 0);
