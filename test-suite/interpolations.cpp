@@ -3138,7 +3138,7 @@ BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
     auto flatSlopeSensitivities = fl.derivativeNodeSensitivities(5.0);
     BOOST_REQUIRE(!flatSlopeSensitivities.empty());
     for (const auto& [i, w] : flatSlopeSensitivities)
-        BOOST_CHECK_SMALL(w, tolerance);
+        QL_CHECK_SMALL(w, tolerance);
 
     // in-range: must match underlying cubic at knots
     for (Size i = 0; i < N; ++i) {

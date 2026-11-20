@@ -144,7 +144,9 @@ namespace QuantLib {
         QL_REQUIRE(a>=0.0,
             "negative a (" << a << ") not allowed");
 
-        auto temp = [a](Real x) { return a < QL_EPSILON ? x : (1.0-std::exp(-a*x)) / a; };
+        auto temp = [a](Real x) -> Real {
+            return a < QL_EPSILON ? Real(x) : Real((1.0 - std::exp(-a * x)) / a);
+        };
 
         Time deltaT = (T-t);
         Real tempDeltaT = temp(deltaT);
@@ -162,7 +164,7 @@ namespace QuantLib {
         Real z = halfSigmaSquare * (lambda + phi);
 
         Rate futureRate = (100.0-futuresPrice)/100.0;
-        return deltaT < QL_EPSILON ? z : (1.0-std::exp(-z*tempDeltaT)) * (futureRate + 1.0/deltaT);
+        return deltaT < QL_EPSILON ? Real(z) : Real((1.0-std::exp(-z*tempDeltaT)) * (futureRate + 1.0/deltaT));
     }
 
 }

@@ -24,7 +24,9 @@
 #include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/experimental/math/fireflyalgorithm.hpp>
 #include <ql/experimental/math/hybridsimulatedannealing.hpp>
+#include <ql/experimental/math/particleswarmoptimization.hpp>
 #include <ql/math/optimization/bfgs.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/constraint.hpp>
@@ -1027,6 +1029,346 @@ BOOST_AUTO_TEST_CASE(testDifferentialEvolution) {
             }
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testOptimizersWithUnboundedConstraint) {
+    BOOST_TEST_MESSAGE(
+        "Testing population-based optimizers under an unconstrained problem...");
+
+    // Regression test: NoConstraint's default bounds are +-DBL_MAX, which
+    // the optimizers must reject: sampling an initial population from the
+    // full +-DBL_MAX range overflows to +inf in the naive l+(u-l)*random
+    // interpolation, or, even once that overflow is avoided, produces
+    // finite-but-astronomic values whose later use in the cost function or
+    // in crossover/mutation arithmetic overflows to inf/NaN anyway. There
+    // is no principled finite default span for a genuinely unconstrained
+    // dimension, so each optimizer rejects non-finite bounds with a clear
+    // message rather than silently returning garbage.
+    FirstDeJong sphere;
+    NoConstraint noConstraint;
+    Array initialValue(3, 1.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    {
+        Problem problem(sphere, noConstraint, initialValue);
+        DifferentialEvolution::Configuration conf =
+            DifferentialEvolution::Configuration()
+            .withPopulationMembers(20)
+            .withSeed(1234);
+        BOOST_CHECK_EXCEPTION(
+            DifferentialEvolution(conf).minimize(problem, endCriteria),
+            Error,
+            ExpectedErrorMessage("finite bounds"));
+    }
+    {
+        Problem problem(sphere, noConstraint, initialValue);
+        ParticleSwarmOptimization pso(
+            20,
+            ext::make_shared<GlobalTopology>(),
+            ext::make_shared<TrivialInertia>(),
+            Real(2.05), Real(2.05), 1234UL);
+        BOOST_CHECK_EXCEPTION(
+            pso.minimize(problem, endCriteria),
+            Error,
+            ExpectedErrorMessage("finite bounds"));
+    }
+    {
+        Problem problem(sphere, noConstraint, initialValue);
+        FireflyAlgorithm firefly(
+            20,
+            ext::make_shared<ExponentialIntensity>(1.0, 0.2, 1.0),
+            ext::make_shared<GaussianWalk>(1.0, 0.9, 1234),
+            0, 1.0, 0.5, 1234);
+        BOOST_CHECK_EXCEPTION(
+            firefly.minimize(problem, endCriteria),
+            Error,
+            ExpectedErrorMessage("finite bounds"));
+    }
+
+    // with explicit, finite bounds the optimizers still work normally
+    BoundaryConstraint bounded(-10.0, 10.0);
+    {
+        Problem problem(sphere, bounded, initialValue);
+        DifferentialEvolution::Configuration conf =
+            DifferentialEvolution::Configuration()
+            .withPopulationMembers(20)
+            .withSeed(1234);
+        DifferentialEvolution(conf).minimize(problem, endCriteria);
+        if (!std::isfinite(problem.functionValue()))
+            BOOST_ERROR("DifferentialEvolution produced a non-finite result "
+                        "under a bounded constraint");
+    }
+    {
+        // exercises PSO's own convex-combination position-interpolation
+        // formula with finite bounds -- not just the unbounded-rejection
+        // path above
+        Problem problem(sphere, bounded, initialValue);
+        ParticleSwarmOptimization pso(
+            20,
+            ext::make_shared<GlobalTopology>(),
+            ext::make_shared<TrivialInertia>(),
+            Real(2.05), Real(2.05), 1234UL);
+        pso.minimize(problem, endCriteria);
+        if (!std::isfinite(problem.functionValue()))
+            BOOST_ERROR("ParticleSwarmOptimization produced a non-finite "
+                        "result under a bounded constraint");
+    }
+    {
+        // exercises Firefly's own convex-combination position-interpolation
+        // formula with finite bounds -- not just the unbounded-rejection
+        // path above
+        Problem problem(sphere, bounded, initialValue);
+        FireflyAlgorithm firefly(
+            20,
+            ext::make_shared<ExponentialIntensity>(1.0, 0.2, 1.0),
+            ext::make_shared<GaussianWalk>(1.0, 0.9, 1234),
+            0, 1.0, 0.5, 1234);
+        firefly.minimize(problem, endCriteria);
+        if (!std::isfinite(problem.functionValue()))
+            BOOST_ERROR("FireflyAlgorithm produced a non-finite result "
+                        "under a bounded constraint");
+    }
+
+    // Regression test: a span-based finite check such as
+    // isfinite(upper-lower) misses a ONE-SIDED unbounded constraint such
+    // as PositiveConstraint (lowerBound=0, upperBound=numeric_limits<Real>::
+    // max()) -- the span itself (max()-0 = max()) is finite, even though
+    // that bound is the library's own sentinel for "no bound provided"
+    // and leads to the same astronomic, effectively-garbage initial
+    // values the finite-span check exists to reject. The check must
+    // therefore test each bound, not the span.
+    PositiveConstraint positive;
+    {
+        Problem problem(sphere, positive, initialValue);
+        DifferentialEvolution::Configuration conf =
+            DifferentialEvolution::Configuration()
+            .withPopulationMembers(20)
+            .withSeed(1234);
+        BOOST_CHECK_EXCEPTION(
+            DifferentialEvolution(conf).minimize(problem, endCriteria),
+            Error,
+            ExpectedErrorMessage("finite bounds"));
+    }
+    {
+        Problem problem(sphere, positive, initialValue);
+        ParticleSwarmOptimization pso(
+            20,
+            ext::make_shared<GlobalTopology>(),
+            ext::make_shared<TrivialInertia>(),
+            Real(2.05), Real(2.05), 1234UL);
+        BOOST_CHECK_EXCEPTION(
+            pso.minimize(problem, endCriteria),
+            Error,
+            ExpectedErrorMessage("finite bounds"));
+    }
+    {
+        Problem problem(sphere, positive, initialValue);
+        FireflyAlgorithm firefly(
+            20,
+            ext::make_shared<ExponentialIntensity>(1.0, 0.2, 1.0),
+            ext::make_shared<GaussianWalk>(1.0, 0.9, 1234),
+            0, 1.0, 0.5, 1234);
+        BOOST_CHECK_EXCEPTION(
+            firefly.minimize(problem, endCriteria),
+            Error,
+            ExpectedErrorMessage("finite bounds"));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testDifferentialEvolutionSeededPopulationIgnoresBounds) {
+    BOOST_TEST_MESSAGE(
+        "Testing DifferentialEvolution with a seeded population and "
+        "disabled bounds under an unconstrained problem...");
+
+    // Regression test: the finite-bounds guard must stay scoped to the
+    // paths that can actually overflow. Bounds are only ever read (a) to
+    // fill a random initial population, or (b) in crossover()'s
+    // clip/reflect step when applyBounds is enabled. With an explicitly
+    // seeded population and bounds disabled via withBounds(false), neither
+    // path touches the bounds at all, so the run must succeed under
+    // NoConstraint rather than throw.
+    FirstDeJong sphere;
+    NoConstraint noConstraint;
+    Array initialValue(3, 1.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    Problem problem(sphere, noConstraint, initialValue);
+    std::vector<Array> seededPopulation(20, initialValue);
+    DifferentialEvolution::Configuration conf =
+        DifferentialEvolution::Configuration()
+        .withInitialPopulation(seededPopulation)
+        .withBounds(false)
+        .withSeed(1234);
+    DifferentialEvolution(conf).minimize(problem, endCriteria);
+    if (!std::isfinite(problem.functionValue()))
+        BOOST_ERROR("DifferentialEvolution produced a non-finite result "
+                    "with a seeded population and disabled bounds under "
+                    "NoConstraint");
+}
+
+BOOST_AUTO_TEST_CASE(testDifferentialEvolutionSeededPopulationWithDefaultBounds) {
+    BOOST_TEST_MESSAGE(
+        "Testing DifferentialEvolution with a seeded population and "
+        "default (enabled) bounds under an unconstrained problem...");
+
+    // Regression test, sibling of
+    // testDifferentialEvolutionSeededPopulationIgnoresBounds: the
+    // finite-bounds guard must not fire for a seeded population with
+    // applyBounds left at its default (true) either. With a population
+    // supplied, fillInitialPopulation() (the only reader that computes a
+    // new value from the bounds, and the only one that can overflow) never
+    // runs; crossover()'s applyBounds clip only ever compares against the
+    // bounds before reflecting off a finite mirror value, so it cannot
+    // overflow even against NoConstraint's +-DBL_MAX sentinel. Seeding a
+    // population therefore removes the only overflow path, and the run
+    // must succeed with applyBounds left at its default.
+    FirstDeJong sphere;
+    NoConstraint noConstraint;
+    Array initialValue(3, 1.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    Problem problem(sphere, noConstraint, initialValue);
+    std::vector<Array> seededPopulation(20, initialValue);
+    DifferentialEvolution::Configuration conf =
+        DifferentialEvolution::Configuration()
+        .withInitialPopulation(seededPopulation)
+        .withSeed(1234);
+    DifferentialEvolution(conf).minimize(problem, endCriteria);
+    if (!std::isfinite(problem.functionValue()))
+        BOOST_ERROR("DifferentialEvolution produced a non-finite result "
+                    "with a seeded population and default bounds under "
+                    "NoConstraint");
+}
+
+BOOST_AUTO_TEST_CASE(testParticleSwarmOptimizationOverflowingSpan) {
+    BOOST_TEST_MESSAGE(
+        "Testing ParticleSwarmOptimization with a finite-but-overflowing "
+        "bound span...");
+
+    // Regression test: the per-bound sentinel check only rejects bounds
+    // equal to the +-numeric_limits<Real>::max() "no bound" sentinel. A
+    // constraint whose bounds are individually finite but far enough apart
+    // that their DIFFERENCE overflows (e.g. +-1e308, each comfortably
+    // below DBL_MAX ~1.798e308, but 1e308-(-1e308)=2e308 > DBL_MAX) passes
+    // that check, yet velocity initialization uses the raw span (ub-lb)
+    // directly and would get a non-finite value from it.
+    FirstDeJong sphere;
+    BoundaryConstraint extreme(-1.0e308, 1.0e308);
+    Array initialValue(3, 1.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    Problem problem(sphere, extreme, initialValue);
+    ParticleSwarmOptimization pso(
+        20,
+        ext::make_shared<GlobalTopology>(),
+        ext::make_shared<TrivialInertia>(),
+        Real(2.05), Real(2.05), 1234UL);
+    BOOST_CHECK_EXCEPTION(
+        pso.minimize(problem, endCriteria),
+        Error,
+        ExpectedErrorMessage("span overflows"));
+}
+
+BOOST_AUTO_TEST_CASE(testFireflyAlgorithmOverflowingSpan) {
+    BOOST_TEST_MESSAGE(
+        "Testing FireflyAlgorithm with a finite-but-overflowing "
+        "bound span...");
+
+    // Regression test, same shape as
+    // testParticleSwarmOptimizationOverflowingSpan: the per-bound sentinel
+    // check only rejects the +-numeric_limits<Real>::max() "no bound"
+    // sentinel, not a pair of individually-finite bounds whose difference
+    // itself overflows (e.g. +-1e308). FireflyAlgorithm's random walk
+    // (DistributionRandomWalk::init -> IsotropicRandomWalk::setDimension)
+    // rescales its step by the raw span (ub-lb)/max(ub-lb); when that span
+    // overflows to +inf, the ratio is inf/inf = NaN, so every walk step is
+    // NaN for the whole run. The firefly loop's own isnan guard silently
+    // rejects every such move, so the firefly subpopulation never moves and
+    // no error is ever raised -- exactly the silent-garbage failure mode
+    // the overflow guards exist to reject.
+    FirstDeJong sphere;
+    BoundaryConstraint extreme(-1.0e308, 1.0e308);
+    Array initialValue(3, 1.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    Problem problem(sphere, extreme, initialValue);
+    FireflyAlgorithm firefly(
+        20,
+        ext::make_shared<ExponentialIntensity>(1.0, 0.2, 1.0),
+        ext::make_shared<GaussianWalk>(1.0, 0.9, 1234),
+        0, 1.0, 0.5, 1234); // Mde=0: all-random-walk population, so this
+                            // actually exercises the random-walk path
+                            // described above (the guard itself is
+                            // unconditional in startState(), so Mde's value
+                            // doesn't change whether it fires -- this is
+                            // purely so the test's parameters match its
+                            // documented intent)
+    BOOST_CHECK_EXCEPTION(
+        firefly.minimize(problem, endCriteria),
+        Error,
+        ExpectedErrorMessage("span overflows"));
+}
+
+BOOST_AUTO_TEST_CASE(testFireflyAlgorithmZeroWidthBounds) {
+    BOOST_TEST_MESSAGE(
+        "Testing FireflyAlgorithm with zero-width bounds...");
+
+    // Regression test: the span-overflow guards in PSO/FireflyAlgorithm's
+    // own startState() only catch the span (ub-lb) overflowing to +inf.
+    // IsotropicRandomWalk::setDimension (which the random walk's init
+    // eventually calls) rescales its step by (ub-lb)/max(ub-lb) -- a
+    // DEGENERATE bounds configuration where every dimension has zero width
+    // makes max(ub-lb)=0, so that rescaling is 0/0=NaN for every dimension,
+    // which neither optimizer's own overflow guard catches (0 is perfectly
+    // finite). This produces the identical silent-NaN-swallow failure mode
+    // the span-overflow guards exist to reject. The check for it lives
+    // directly in IsotropicRandomWalk::setDimension (which both PSO's
+    // LevyFlightInertia and FireflyAlgorithm's random walk share), rejecting
+    // a largest bound span that isn't both finite and strictly positive.
+    FirstDeJong sphere;
+    BoundaryConstraint zeroWidth(1.0, 1.0);
+    Array initialValue(3, 1.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    Problem problem(sphere, zeroWidth, initialValue);
+    FireflyAlgorithm firefly(
+        20,
+        ext::make_shared<ExponentialIntensity>(1.0, 0.2, 1.0),
+        ext::make_shared<GaussianWalk>(1.0, 0.9, 1234),
+        0, 1.0, 0.5, 1234);
+    BOOST_CHECK_EXCEPTION(
+        firefly.minimize(problem, endCriteria),
+        Error,
+        ExpectedErrorMessage("positive, finite"));
+}
+
+BOOST_AUTO_TEST_CASE(testFireflyAlgorithmSubnormalSpan) {
+    BOOST_TEST_MESSAGE(
+        "Testing FireflyAlgorithm with a subnormal bound span...");
+
+    // Regression test: a maxBound > 0.0 requirement admits a positive but
+    // subnormal maxBound (e.g. ~2e-310): finite and nonzero, so such a
+    // check passes, but the walk's reciprocal 1.0/maxBound still overflows
+    // to +inf (DBL_MAX is only ~1.8e308), giving the same silent-NaN-draw
+    // failure mode as the zero-width case via a different arithmetic path.
+    // The guard must therefore require maxBound >=
+    // numeric_limits<Real>::min() (the smallest positive normal double,
+    // whose reciprocal is itself finite), which rejects both cases.
+    FirstDeJong sphere;
+    BoundaryConstraint subnormal(-1.0e-310, 1.0e-310);
+    Array initialValue(3, 0.0);
+    EndCriteria endCriteria(50, 5, 1e-8, 1e-8, Null<Real>());
+
+    Problem problem(sphere, subnormal, initialValue);
+    FireflyAlgorithm firefly(
+        20,
+        ext::make_shared<ExponentialIntensity>(1.0, 0.2, 1.0),
+        ext::make_shared<GaussianWalk>(1.0, 0.9, 1234),
+        0, 1.0, 0.5, 1234);
+    BOOST_CHECK_EXCEPTION(
+        firefly.minimize(problem, endCriteria),
+        Error,
+        ExpectedErrorMessage("positive, finite"));
 }
 
 BOOST_AUTO_TEST_CASE(testCMAES) {

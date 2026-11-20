@@ -105,7 +105,7 @@ namespace QuantLib {
 
             const Real x = InverseCumulativeNormal()(1-q);
 
-            auto cdfApprox = [&](Real _c){ return sankaranApprox(_c, t, x); };
+            auto cdfApprox = [&](Real _c) -> Real { return sankaranApprox(_c, t, x); };
 
             const Real y0 = X(f0_)/t;
 

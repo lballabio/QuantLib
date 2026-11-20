@@ -443,8 +443,8 @@ BOOST_AUTO_TEST_CASE(testConstantVolatilityQuoteIsObserved) {
                         "ConstantYoYOptionletVolatility did not notify when its quote moved");
 
     // volatilityImpl reads the quote on every call, so these pass either way.
-    BOOST_CHECK_CLOSE(cpi->volatility(1.0, 0.02), 0.02, 1.0e-10);
-    BOOST_CHECK_CLOSE(yoy->volatility(1.0, 0.02), 0.02, 1.0e-10);
+    QL_CHECK_CLOSE(cpi->volatility(1.0, 0.02), 0.02, 1.0e-10);
+    QL_CHECK_CLOSE(yoy->volatility(1.0, 0.02), 0.02, 1.0e-10);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

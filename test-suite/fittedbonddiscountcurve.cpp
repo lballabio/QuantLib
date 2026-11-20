@@ -416,13 +416,13 @@ BOOST_AUTO_TEST_CASE(testExponentialSplinesFixedKappa) {
     ExponentialSplinesFitting unconstrainedFixed(false, 3, kappa);
     Array unconstrainedCoeffs = {0.2, 0.3, 0.5};
     FittedBondDiscountCurve curveUnconstrainedFixed(today, unconstrainedFixed, unconstrainedCoeffs, maxDate, dayCounter);
-    BOOST_CHECK_CLOSE(curveUnconstrainedFixed.discount(t), expected, 1e-10);
+    QL_CHECK_CLOSE(curveUnconstrainedFixed.discount(t), expected, 1e-10);
 
     // Free kappa with same parameters
     ExponentialSplinesFitting unconstrainedFree(false, 3, Null<Real>());
     Array unconstrainedParamsFree = {0.2, 0.3, 0.5, kappa};
     FittedBondDiscountCurve curveUnconstrainedFree(today, unconstrainedFree, unconstrainedParamsFree, maxDate, dayCounter);
-    BOOST_CHECK_CLOSE(curveUnconstrainedFree.discount(t), expected, 1e-10);
+    QL_CHECK_CLOSE(curveUnconstrainedFree.discount(t), expected, 1e-10);
 
     // Verify last coefficient affects the discount factor (not ignored)
     Array unconstrainedBumped = {0.2, 0.3, 0.6};
@@ -433,13 +433,13 @@ BOOST_AUTO_TEST_CASE(testExponentialSplinesFixedKappa) {
     ExponentialSplinesFitting constrainedFixed(true, 3, kappa);
     Array constrainedCoeffs = {0.3, 0.5};
     FittedBondDiscountCurve curveConstrainedFixed(today, constrainedFixed, constrainedCoeffs, maxDate, dayCounter);
-    BOOST_CHECK_CLOSE(curveConstrainedFixed.discount(t), expected, 1e-10);
+    QL_CHECK_CLOSE(curveConstrainedFixed.discount(t), expected, 1e-10);
 
     // Free kappa with same parameters
     ExponentialSplinesFitting constrainedFree(true, 3, Null<Real>());
     Array constrainedParamsFree = {0.3, 0.5, kappa};
     FittedBondDiscountCurve curveConstrainedFree(today, constrainedFree, constrainedParamsFree, maxDate, dayCounter);
-    BOOST_CHECK_CLOSE(curveConstrainedFree.discount(t), expected, 1e-10);
+    QL_CHECK_CLOSE(curveConstrainedFree.discount(t), expected, 1e-10);
 
     // Verify last coefficient affects the discount factor (not ignored)
     Array constrainedBumped = {0.3, 0.6};

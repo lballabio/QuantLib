@@ -29,6 +29,7 @@
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/settings.hpp>
+#include <ql/currencies/america.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -379,6 +380,78 @@ struct CommonVarsONLeg {
                     << "\n    calculated: " << std::setprecision(12) << calculated \
                     << "\n    error:      " << std::setprecision(12) << std::fabs((calculated)-(expected))); \
     }
+
+BOOST_AUTO_TEST_CASE(testStoredTodaysLockoutFixingWithoutCurve) {
+    BOOST_TEST_MESSAGE("Testing stored today's lockout fixing without a forecasting curve...");
+
+    const Date start(9, November, 2026), today(10, November, 2026), end(13, November, 2026);
+    Settings::instance().evaluationDate() = today;
+    const auto index = ext::make_shared<OvernightIndex>(
+        "StoredTodayLockout", 0, USDCurrency(), WeekendsOnly(), Actual360());
+    index->addFixing(start, 0.02);
+    index->addFixing(today, 0.03);
+    BOOST_REQUIRE(index->forwardingTermStructure().empty());
+
+    for (bool telescopic : {false, true}) {
+        for (bool enforce : {false, true}) {
+            Settings::instance().enforcesTodaysHistoricFixings() = enforce;
+            for (int spreadMode : {0, 1, 2}) {
+                const bool dailySpread = spreadMode == 2;
+                const Spread spread = spreadMode == 0 ? 0.0 : 0.0017;
+                const Real gearing = spreadMode == 1 ? 1.25 : 1.0;
+                OvernightIndexedCoupon coupon(
+                    end, 10000.0, start, end, index, gearing, spread, Date(), Date(),
+                    Actual360(), telescopic, RateAveraging::Compound, 0, 2, false, dailySpread);
+                const std::vector<Date> expectedDates{start, today, today, today};
+                BOOST_REQUIRE(coupon.fixingDates() == expectedDates);
+                BOOST_TEST_CONTEXT("telescopic=" << telescopic << ", enforce=" << enforce
+                                   << ", spreadMode=" << spreadMode) {
+                    // Explicit independent daily product: one 2% day, then three 3% days.
+                    const auto expected = [&](Size days, bool includeSpread) {
+                        const Real s = includeSpread && dailySpread ? spread : Real(0.0);
+                        Real factor = 1.0 + (0.02 + s) / 360.0;
+                        for (Size i = 1; i < days; ++i)
+                            factor *= 1.0 + (0.03 + s) / 360.0;
+                        const Rate rate = (factor - 1.0) / (days / 360.0);
+                        return includeSpread && !dailySpread
+                                   ? Real(gearing * rate + spread) : rate;
+                    };
+                    const Rate fullRate = expected(4, true), indexRate = expected(4, false);
+                    QL_CHECK_SMALL(coupon.rate() - fullRate, 1.0e-12);
+                    // Check the cached result as well as the initial calculation.
+                    QL_CHECK_SMALL(coupon.rate() - fullRate, 1.0e-12);
+                    QL_CHECK_SMALL(coupon.amount() - 10000.0 * 4.0 / 360.0 * fullRate, 1.0e-8);
+                    QL_CHECK_SMALL(coupon.effectiveIndexFixing() - indexRate, 1.0e-12);
+                    QL_CHECK_SMALL(coupon.effectiveSpread() -
+                                       (dailySpread ? Real(fullRate - indexRate) : spread),
+                                   1.0e-12);
+                    QL_CHECK_SMALL(coupon.accruedAmount(Date(12, November, 2026)) -
+                                       10000.0 * 3.0 / 360.0 * expected(3, true), 1.0e-8);
+                    coupon.recalculate();
+                    QL_CHECK_SMALL(coupon.rate() - fullRate, 1.0e-12);
+                }
+            }
+        }
+    }
+    // Future observations still require a curve, even if a future fixing was stored.
+    index->addFixing(Date(11, November, 2026), 0.04);
+    for (bool enforce : {false, true}) {
+        Settings::instance().enforcesTodaysHistoricFixings() = enforce;
+        const OvernightIndexedCoupon future(
+            end, 10000.0, start, end, index, 1.0, 0.0, Date(), Date(),
+            Actual360(), false, RateAveraging::Compound, 0, 1);
+        BOOST_CHECK_THROW(future.rate(), Error);
+    }
+    index->clearFixings();
+    index->addFixing(start, 0.02);
+    for (bool enforce : {false, true}) {
+        Settings::instance().enforcesTodaysHistoricFixings() = enforce;
+        const OvernightIndexedCoupon missingToday(
+            end, 10000.0, start, end, index, 1.0, 0.0, Date(), Date(),
+            Actual360(), false, RateAveraging::Compound, 0, 2);
+        BOOST_CHECK_THROW(missingToday.rate(), Error);
+    }
+}
 
 BOOST_AUTO_TEST_CASE(testPastCouponRate) {
     BOOST_TEST_MESSAGE("Testing rate for past overnight-indexed coupon...");
@@ -2919,6 +2992,84 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWeekendStub) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testRequiredTodaysFixing) {
+    BOOST_TEST_MESSAGE("Testing required today's fixing before overnight coupon projection...");
+
+    const Date today(10, November, 2026);
+    Settings::instance().evaluationDate() = today;
+    const Calendar calendar = WeekendsOnly();
+    const auto curve = ext::make_shared<FlatForward>(today, 0.025, Actual360());
+    const auto index = ext::make_shared<OvernightIndex>(
+        "RequiredToday", 0, USDCurrency(), calendar, Actual360(),
+        Handle<YieldTermStructure>(curve));
+
+    for (Natural lookback : {0, 2}) {
+        for (bool shift : {false, true}) {
+            // Unshifted lookback cannot use compressed value dates.
+            for (bool telescopic : {false, true}) {
+                if (telescopic && lookback != 0 && !shift)
+                    continue;
+                for (int historyState : {0, 1, 2}) {
+                    index->clearFixings();
+                    if (historyState != 0)
+                        index->addFixing(
+                            today, historyState == 1 ? Real(Null<Real>()) : Real(0.11));
+                    for (bool enforce : {false, true}) {
+                        Settings::instance().enforcesTodaysHistoricFixings() = enforce;
+                        const Date start = calendar.advance(today, lookback, Days);
+                        const Date end = calendar.advance(start, 25, Days);
+                        const OvernightIndexedCoupon coupon(
+                            end, 10000.0, start, end, index, 1.0, 0.0, Date(), Date(),
+                            Actual360(), telescopic, RateAveraging::Compound, lookback, 0, shift);
+                        BOOST_REQUIRE_EQUAL(coupon.fixingDates().front(), today);
+                        BOOST_TEST_CONTEXT("lookback=" << lookback << ", shift=" << shift
+                                           << ", telescopic=" << telescopic
+                                           << ", historyState=" << historyState
+                                           << ", enforce=" << enforce) {
+                            if (enforce && historyState != 2) {
+                                BOOST_CHECK_THROW(coupon.rate(), Error);
+                            } else {
+                                // Independent business-day enumeration and deposit products:
+                                // no coupon schedule or index/pricer forecasting is used.
+                                Real factor = 1.0;
+                                for (Integer i = 0; i < 25; ++i) {
+                                    const Date observation = calendar.advance(today, i, Days);
+                                    const Date nextObservation =
+                                        calendar.advance(today, i + 1, Days);
+                                    const Time depositSpan =
+                                        Actual360().yearFraction(observation, nextObservation);
+                                    const Rate forecast = (curve->discount(observation) /
+                                        curve->discount(nextObservation) - 1.0) / depositSpan;
+                                    const Rate fixing =
+                                        i == 0 && historyState == 2 ? Real(0.11) : forecast;
+                                    const Date accrual = calendar.advance(start, i, Days);
+                                    const Date nextAccrual = calendar.advance(start, i + 1, Days);
+                                    const Time span = shift ? depositSpan :
+                                        Actual360().yearFraction(accrual, nextAccrual);
+                                    factor *= 1.0 + fixing * span;
+                                }
+                                const Date rateStart = shift ? today : start;
+                                const Date rateEnd = calendar.advance(rateStart, 25, Days);
+                                const Time tau = Actual360().yearFraction(rateStart, rateEnd);
+                                QL_CHECK_SMALL(coupon.rate() - (factor - 1.0) / tau, 1.0e-11);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // A coupon whose first observation is tomorrow does not require today's fixing.
+    index->clearFixings();
+    Settings::instance().enforcesTodaysHistoricFixings() = true;
+    const Date tomorrow = calendar.advance(today, 1, Days);
+    const Date end = calendar.advance(tomorrow, 10, Days);
+    const OvernightIndexedCoupon future(end, 10000.0, tomorrow, end, index);
+    BOOST_CHECK_NO_THROW(future.rate());
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
+
