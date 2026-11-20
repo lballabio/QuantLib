@@ -434,7 +434,7 @@ BOOST_AUTO_TEST_CASE(testDividendsSpanningSettlementDate) {
     const Real expected =
         futureAmount * vars.riskFreeRate->discount(afterSettlement);
     BOOST_CHECK_EQUAL(convertible.dividendValues().size(), 1);
-    BOOST_CHECK_CLOSE(convertible.dividendValues()[0], expected, 1.0e-12);
+    QL_CHECK_CLOSE(convertible.dividendValues()[0], expected, 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testDividendBetweenEvaluationAndSettlement) {

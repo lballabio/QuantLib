@@ -61,6 +61,8 @@ namespace QuantLib {
             || (d == 25 && m == December)
             // Boxing Day
             || (d == 26 && m == December)
+            // December 27th, when Christmas falls on a weekend
+            || (d == 27 && (w == Monday || w == Tuesday) && m == December)
             )
             return false;
 
@@ -186,9 +188,7 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 13 && m == September)
                 // Chung Yeung festival
-                || (d == 5 && m == October)
-                // Second day after Christmas
-                || (d == 27 && m == December))
+                || (d == 5 && m == October))
             return false;
         }
 
@@ -197,10 +197,8 @@ namespace QuantLib {
                 (d >= 23 && d <= 25 && m == January)
                 // Ching Ming Festival
                 || (d == 4 && m == April)
-                // Buddha's birthday
-                || (d == 10 && m == May)
-                // Mid-autumn festival
-                || (d == 1 && m == October)
+                // Mid-autumn festival (moved, since the day following it is National Day)
+                || (d == 2 && m == October)
                 // Chung Yeung festival
                 || (d == 23 && m == October))
             return false;
@@ -265,9 +263,7 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 16 && m == September)
                 // Chung Yeung festival
-                || (d == 10 && m == October)
-                // Second day after Christmas
-                || (d == 27 && m == December))
+                || (d == 10 && m == October))
                 return false;
         }
 
@@ -306,6 +302,8 @@ namespace QuantLib {
                ((d >= 5 && d <= 7) && m == February)
                // Ching Ming Festival
                || (d == 5 && m == April)
+               // Buddha's birthday
+               || (d == 13 && m == May)
                // Tuen Ng festival
                || (d == 7 && m == June)
                // Chung Yeung festival
@@ -336,6 +334,8 @@ namespace QuantLib {
                 ((d == 12 || d == 15) && m == February)
                 // Ching Ming Festival
                 || (d == 5 && m == April)
+                // The day following Easter Monday
+                || (d == 6 && m == April)
                 // Buddha's birthday
                 || (d == 19 && m == May)
                 // Tuen Ng festival
@@ -425,6 +425,23 @@ namespace QuantLib {
                 || (d == 19 && m == June)
                 // Chung Yeung festival
                 || (d == 19 && m == October))
+                return false;
+        }
+
+        // data from https://www.gov.hk/en/about/abouthk/holiday/2027.htm
+        if (y == 2027) {
+            if (// Lunar New Year
+                ((d == 8 || d == 9) && m == February)
+                // Ching Ming Festival
+                || (d == 5 && m == April)
+                // Buddha's birthday
+                || (d == 13 && m == May)
+                // Tuen Ng festival
+                || (d == 9 && m == June)
+                // Mid-autumn festival
+                || (d == 16 && m == September)
+                // Chung Yeung festival
+                || (d == 8 && m == October))
                 return false;
         }
 

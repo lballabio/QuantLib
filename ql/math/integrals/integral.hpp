@@ -49,16 +49,26 @@ namespace QuantLib {
         Size maxEvaluations() const;
         //@}
 
+        //! current absolute error estimate
+        /*! Returns Null<Real>() until an estimate is set, or zero for an empty interval.
+            operator() resets the estimate before each call to integrate().
+        */
         Real absoluteError() const ;
 
         Size numberOfEvaluations() const;
 
+        //! whether the recorded evaluations and error satisfy the configured limits
+        /*! The base implementation compares numberOfEvaluations() with maxEvaluations()
+            and absoluteError() with absoluteAccuracy(), both using <=. It does not
+            special-case Null<Real>() or record whether an integration completed.
+        */
         virtual bool integrationSuccess() const;
 
       protected:
         virtual Real integrate(const std::function<Real (Real)>& f,
                                Real a,
                                Real b) const = 0;
+        //! Set the estimate from integrate(); operator() resets it before each call.
         void setAbsoluteError(Real error) const;
         void setNumberOfEvaluations(Size evaluations) const;
         void increaseNumberOfEvaluations(Size increase) const;

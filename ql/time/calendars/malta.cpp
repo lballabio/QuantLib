@@ -27,10 +27,6 @@ namespace QuantLib {
         impl_ = impl;
     }
 
-    bool Malta::MseImpl::isWeekend(Weekday w) const {
-        return w == Friday || w == Saturday;
-    }
-
     bool Malta::MseImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
@@ -43,6 +39,8 @@ namespace QuantLib {
         if (isWeekend(w)
             // New Year's Day
             || (d == 1 && m == January)
+            // January 2nd (exchange holiday)
+            || (d == 2 && m == January)
             // St. Paul's Shipwreck
             || (d == 10 && m == February)
             // St. Joseph's Day
@@ -55,6 +53,8 @@ namespace QuantLib {
             || (date.dayOfYear() == em)
             // Labour Day
             || (d == 1 && m == May)
+            // Sette Giugno
+            || (d == 7 && m == June)
             // Imnarja (Feast of Saints Peter & Paul)
             || (d == 29 && m == June)
             // Assumption of Mary

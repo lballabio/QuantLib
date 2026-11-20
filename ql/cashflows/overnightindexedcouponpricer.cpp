@@ -127,10 +127,22 @@ namespace QuantLib {
 
         Real compoundFactor = 1.0, compoundFactorWithoutSpread = 1.0;
 
+        auto pastFixingIt = (i < n && fixingDates[i] < today)
+                                ? pastFixings.lower_bound(fixingDates[i])
+                                : pastFixings.cend();
+        const auto pastFixingsEnd = pastFixings.cend();
+
         // already fixed part
         while (i < n && fixingDates[i] < today) {
             // rate must have been fixed
-            Rate fixing = pastFixings[fixingDates[i]];
+            while (pastFixingIt != pastFixingsEnd &&
+                   pastFixingIt->first < fixingDates[i]) {
+                ++pastFixingIt;
+            }
+            Rate fixing = (pastFixingIt != pastFixingsEnd &&
+                           pastFixingIt->first == fixingDates[i])
+                              ? pastFixingIt->second
+                              : Null<Real>();
             QL_REQUIRE(fixing != Null<Real>(),
                        "Missing " << index->name() << " fixing for " << fixingDates[i]);
             const auto [gf, gfSpread] = growthFactor(fixing, i);
@@ -139,8 +151,15 @@ namespace QuantLib {
             ++i;
         }
 
-        // today is a border case
+        // Validate required history before the optional today-fixing calculation.
         if (i < n && fixingDates[i] == today) {
+            QL_REQUIRE(!Settings::instance().enforcesTodaysHistoricFixings() ||
+                           pastFixings[fixingDates[i]] != Null<Real>(),
+                       "Missing " << index->name() << " fixing for " << fixingDates[i]);
+        }
+
+        // today is a border case
+        while (i < n && fixingDates[i] == today) {
             // might have been fixed
             try {
                 Rate fixing = pastFixings[fixingDates[i]];
@@ -150,10 +169,10 @@ namespace QuantLib {
                     compoundFactor *= gfSpread;
                     ++i;
                 } else {
-                    ; // fall through and forecast
+                    break; // fall through and forecast
                 }
             } catch (Error&) {
-                ; // fall through and forecast
+                break; // fall through and forecast
             }
         }
 
@@ -174,7 +193,8 @@ namespace QuantLib {
             const auto projGrowthFactor = [&](Size i) {
                 return growthFactor(index->fixing(fixingDates[i]), i);
             };
-            if (coupon_->canApplyTelescopicFormula()) {
+            if (coupon_->canApplyTelescopicFormula() &&
+                (!compoundSpreadDaily || couponSpread == 0.0)) {
                 // handle partial accrual of first fixing if the first interestDate lands on a fixing holiday
                 const Size telescopicStartIdx =
                     i == 0 && !applyObservationShift && (valueDates.front() < interestDates.front()) ? 1 : i;
@@ -247,9 +267,21 @@ namespace QuantLib {
 
         // already fixed part
         Date today = Settings::instance().evaluationDate();
+        auto pastFixingIt = (i < n && fixingDates[i] < today)
+                                ? pastFixings.lower_bound(fixingDates[i])
+                                : pastFixings.cend();
+        const auto pastFixingsEnd = pastFixings.cend();
+
         while (i < n && fixingDates[i] < today) {
             // rate must have been fixed
-            Rate pastFixing = pastFixings[fixingDates[i]];
+            while (pastFixingIt != pastFixingsEnd &&
+                   pastFixingIt->first < fixingDates[i]) {
+                ++pastFixingIt;
+            }
+            Rate pastFixing = (pastFixingIt != pastFixingsEnd &&
+                               pastFixingIt->first == fixingDates[i])
+                                  ? pastFixingIt->second
+                                  : Null<Real>();
             QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " << index->name() << " fixing for " << fixingDates[i]);
             Time span = (date >= interestDates[i + 1] ?
@@ -333,3 +365,4 @@ namespace QuantLib {
                 (1.0 - exp(-2.0 * mrs_ * (te - ts))) / (2.0 * mrs_));
     }
 }
+
