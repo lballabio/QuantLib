@@ -37,6 +37,7 @@ QL_TEST_SRCS = \
 	cms_normal.cpp \
 	cmsspread.cpp \
 	commodityunitofmeasure.cpp \
+	energybasisswap.cpp \
 	compiledboostversion.cpp \
 	compoundoption.cpp \
 	convertiblebonds.cpp \
