@@ -79,9 +79,8 @@ namespace QuantLib {
         else {
             Natural fixingDays = iborIndex_->fixingDays();
             Date refDate = Settings::instance().evaluationDate();
-            // if the evaluation date is not a business day
-            // then move to the next business day
-            refDate = floatCalendar_.adjust(refDate);
+            // fixing days are counted from the actual evaluation date,
+            // even when it is not a business day (see issue #753)
             Date spotDate = floatCalendar_.advance(refDate,
                                                    fixingDays*Days);
             startDate = spotDate+forwardStart_;

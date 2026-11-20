@@ -68,6 +68,12 @@ namespace QuantLib {
         */
         virtual Date fixingDate(const Date& valueDate) const;
         virtual Date valueDate(const Date& fixingDate) const;
+        /*! Calendar arithmetic of \c valueDate, without requiring a business day.
+            Settlement days are counted from \p date itself, so a holiday is not
+            rolled forward before the advance. \c valueDate() checks that its
+            argument is a fixing date and then calls this.
+        */
+        virtual Date valueDateFrom(const Date& date) const;
         virtual Date maturityDate(const Date& valueDate) const = 0;
         //@}
         //! \name Fixing calculations
@@ -110,7 +116,11 @@ namespace QuantLib {
     inline Date InterestRateIndex::valueDate(const Date& fixingDate) const {
         QL_REQUIRE(isValidFixingDate(fixingDate),
                    fixingDate << " is not a valid fixing date");
-        return fixingCalendar().advance(fixingDate, fixingDays_, Days);
+        return valueDateFrom(fixingDate);
+    }
+
+    inline Date InterestRateIndex::valueDateFrom(const Date& date) const {
+        return fixingCalendar().advance(date, fixingDays_, Days);
     }
 }
 

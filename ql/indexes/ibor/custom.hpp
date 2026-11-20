@@ -42,6 +42,7 @@ namespace QuantLib {
         //@{
         Date fixingDate(const Date& valueDate) const override;
         Date valueDate(const Date& fixingDate) const override;
+        Date valueDateFrom(const Date& date) const override;
         Date maturityDate(const Date& valueDate) const override;
         // @}
         //! \name IborIndex interface

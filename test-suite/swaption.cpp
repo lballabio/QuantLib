@@ -1196,6 +1196,27 @@ BOOST_AUTO_TEST_CASE(testMakeSwaptionWithExerciseCalendar) {
     BOOST_CHECK_EQUAL(explicitSwaption.exercise()->dates().front(), explicitDate);
 }
 
+BOOST_AUTO_TEST_CASE(testMakeSwaptionFromNonBusinessEvaluationDate) {
+
+    BOOST_TEST_MESSAGE("Testing that MakeSwaption counts the option tenor "
+                       "from the actual evaluation date...");
+
+    // Saturday
+    Date today(20, June, 2026);
+    Settings::instance().evaluationDate() = today;
+    RelinkableHandle<YieldTermStructure> termStructure;
+    termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
+
+    auto swapIndex = ext::make_shared<EuriborSwapIsdaFixA>(5 * Years, termStructure);
+    Calendar calendar = swapIndex->fixingCalendar();
+    Date expected = calendar.advance(today, 1 * Years, ModifiedFollowing);
+    Date rolled = calendar.advance(calendar.adjust(today), 1 * Years, ModifiedFollowing);
+    BOOST_CHECK(expected != rolled);
+
+    Swaption swaption = MakeSwaption(swapIndex, 1 * Years, 0.05);
+    BOOST_CHECK_EQUAL(swaption.exercise()->dates().front(), expected);
+}
+
 BOOST_AUTO_TEST_CASE(testMakeSwaptionFixingDateNominal) {
 
     BOOST_TEST_MESSAGE("Testing MakeSwaption nominal with fixing-date-based constructor...");
