@@ -51,8 +51,8 @@ namespace detail {
         kappa == 0 the expansion itself divides by kappa^3, so callers keep
         the closed-form branch for tiny kappa.
 
-        Dprev == 0 is the single-segment case, which matches
-        AnalyticHestonEngine::chF's small-sigma branch to machine precision for sigma <= 1e-6.
+        Dprev == 0 is the single-segment case, used by
+        AnalyticHestonEngine::chF and COSHestonEngine::chF.
         A nonzero complex Dprev lets a piecewise-constant (multi-segment)
         Heston model apply the same treatment per segment, carrying the
         running D coefficient from later segments into earlier ones as
@@ -63,7 +63,8 @@ namespace detail {
         of the exact Riccati step; see the regression tests in
         hestonmodel.cpp.
 
-        Used by COSHestonEngine::chF, AnalyticPTDHestonEngine::lnChF,
+        Used by AnalyticHestonEngine::chF, COSHestonEngine::chF,
+        AnalyticPTDHestonEngine::lnChF,
         AnalyticPTDHestonEngine::Fj_Helper, and HestonRNDCalculator's
         characteristic function (whose v0 term uses a stable, algebraically
         different representation and does not need this branch).

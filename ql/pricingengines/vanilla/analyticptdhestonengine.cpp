@@ -97,9 +97,8 @@ namespace QuantLib {
 
                 // the classic Heston P1/P2 (Gatheral) formula below is this
                 // segment's Riccati step evaluated at z=phi (j=2) resp.
-                // z=phi-i (j=1); as sigma -> 0 it suffers the same removable
-                // singularity as AnalyticHestonEngine::chF's small-sigma
-                // branch guards against (see hestonSmallSigmaStep).
+                // z=phi-i (j=1); as sigma -> 0 its 1/sigma^2 prefactors
+                // multiply vanishing differences (see hestonSmallSigmaStep).
                 if (sigma > 1e-6 || kappa < 1e-8) {
                     const Real sigma2 = sigma*sigma;
                     const Real t0 = kappa - ((j_== 1)? Real(rho*sigma) : 0);
@@ -196,11 +195,10 @@ namespace QuantLib {
             const Real theta = model_->theta(t);
             const Real rho   = model_->rho(t);
 
-            // as sigma -> 0 this segment's Riccati step has the same
-            // removable singularity that AnalyticHestonEngine::chF's
-            // small-sigma branch guards against; hestonSmallSigmaStep
-            // generalizes that branch to this segment's (possibly nonzero)
-            // terminal value D carried in from later segments.
+            // as sigma -> 0 this segment's Riccati step has a removable
+            // singularity; hestonSmallSigmaStep handles it for this segment's
+            // (possibly nonzero) terminal value D carried in from later
+            // segments.
             if (sigma > 1e-6 || kappa < 1e-8) {
                 const Real sigma2 = sigma*sigma;
 

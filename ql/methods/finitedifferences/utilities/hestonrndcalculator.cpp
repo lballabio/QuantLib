@@ -91,9 +91,8 @@ namespace {
                 // the v0-term below (the "-p_.v0*.../( g+o*coth(...) )" piece)
                 // stays well behaved as sigma -> 0 (the denominator tends to
                 // the finite, nonzero kappa + kappa*coth(kappa*t/2)); only
-                // the kappa*theta/sigma^2 piece has the same removable
-                // singularity AnalyticHestonEngine::chF's small-sigma branch
-                // guards against, so only that piece needs the small-sigma
+                // the kappa*theta/sigma^2 piece has a removable singularity,
+                // so only that piece needs the small-sigma
                 // expansion (hestonSmallSigmaStep's C, evaluated at z=-p_x
                 // with Dprev=0, matches this calculator's g and o).
                 const std::complex<Real> g = gamma(p_, p_x);

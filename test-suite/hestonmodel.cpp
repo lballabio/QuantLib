@@ -2810,16 +2810,19 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4COSAndPTDAndPDF) {
     const Real expectedNPV = blackFormula(Option::Call, strike, 100.0, stdDev);
     const Real tolNPV = 50*sigma;
 
-    // --- characteristic function level: COSHestonEngine::chF must agree
-    //     with AnalyticHestonEngine::chF ---
+    // --- characteristic function level: COSHestonEngine::chF and
+    //     AnalyticHestonEngine::chF must agree with the deterministic-limit
+    //     closed form ---
     const ext::shared_ptr<COSHestonEngine> cosEngine =
         ext::make_shared<COSHestonEngine>(hestonModel);
 
     const std::complex<Real> z(0.55, 0.0);
-    const std::complex<Real> expectedChF = analyticEngine->chF(z, t);
+    const std::complex<Real> expectedChF =
+        std::exp(-0.5*stdDev*stdDev*(z*z + std::complex<Real>(0.0, 1.0)*z));
     const std::complex<Real> calculatedCosChF = cosEngine->chF(z.real(), t);
+    const std::complex<Real> calculatedAnalyticChF = analyticEngine->chF(z, t);
 
-    const Real tolChF = 1e-12;
+    const Real tolChF = 50*sigma;
     const Real diffCosChF = std::abs(expectedChF - calculatedCosChF);
     if (diffCosChF > tolChF) {
         BOOST_ERROR("failed to reproduce COS characteristic function "
@@ -2827,6 +2830,15 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4COSAndPTDAndPDF) {
                 << "\n  expected  : " << expectedChF
                 << "\n  calculated: " << calculatedCosChF
                 << "\n  diff      : " << diffCosChF
+                << "\n  tolerance : " << tolChF);
+    }
+    const Real diffAnalyticChF = std::abs(expectedChF - calculatedAnalyticChF);
+    if (diffAnalyticChF > tolChF) {
+        BOOST_ERROR("failed to reproduce AnalyticHestonEngine characteristic "
+                "function value for small sigma"
+                << "\n  expected  : " << expectedChF
+                << "\n  calculated: " << calculatedAnalyticChF
+                << "\n  diff      : " << diffAnalyticChF
                 << "\n  tolerance : " << tolChF);
     }
 
