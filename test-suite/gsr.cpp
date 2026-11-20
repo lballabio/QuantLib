@@ -1263,9 +1263,9 @@ BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianNoCriticalState) {
 
     // At par - 8% the fixed rate is about -5%. Every coupon is negative, so
     // the function solved for the critical state has no root. The engine
-    // must throw, and the message must show finite bounds and values. The
-    // bracket widening runs into overflow on the way, so this checks that
-    // no NaN or Inf reaches the message.
+    // must throw and say so, with finite bounds and values in the message.
+    // The bracket widening runs into overflow on the way, so this also
+    // checks that no NaN or Inf reaches the message.
 
     Date today(15, September, 2016);
     Settings::instance().evaluationDate() = today;
@@ -1287,7 +1287,7 @@ BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianNoCriticalState) {
         swaption->NPV(), Error,
         [](const Error& e) {
             const std::string what = e.what();
-            return what.find("not bracketed") != std::string::npos &&
+            return what.find("no critical state") != std::string::npos &&
                    what.find("nan") == std::string::npos &&
                    what.find("inf") == std::string::npos;
         });

@@ -95,6 +95,10 @@ namespace QuantLib {
                 }
             }
         }
+        QL_REQUIRE(fLower*fUpper <= 0.0,
+                   "no critical state found in [" << minStrike << ","
+                   << maxStrike << "]: the function has the same sign at "
+                   "both ends (" << fLower << ", " << fUpper << ")");
         return {minStrike, maxStrike};
     }
 
