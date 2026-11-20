@@ -1838,21 +1838,19 @@ BOOST_AUTO_TEST_CASE(testDailyCompoundedSpreadForecast) {
                 }
             }
             const auto& accrualDates = shift ? observed : dates;
+            auto ld = [](Real x) { return static_cast<long double>(value(x)); };
             for (Natural lockout : {0, 3}) {
                 for (Spread spread : std::vector<Spread>{0.005, -0.005}) {
                     long double product = 1.0L, indexProduct = 1.0L;
                     for (Size i = 0; i < n; ++i) {
                         const Size fixing = i >= n - lockout ? n - lockout - 1 : i;
-                        const long double weight =
-                            value(dc.yearFraction(accrualDates[i], accrualDates[i + 1]));
-                        product *= 1.0L +
-                            (static_cast<long double>(value(rates[fixing])) + value(spread)) * weight;
-                        indexProduct *= 1.0L + static_cast<long double>(value(rates[fixing])) * weight;
+                        const Time weight = dc.yearFraction(accrualDates[i], accrualDates[i + 1]);
+                        product *= 1.0L + (ld(rates[fixing]) + ld(spread)) * ld(weight);
+                        indexProduct *= 1.0L + ld(rates[fixing]) * ld(weight);
                     }
-                    const long double tau =
-                        value(dc.yearFraction(accrualDates.front(), accrualDates.back()));
-                    const Rate expected = Real((product - 1.0L) / tau);
-                    const Rate expectedIndex = Real((indexProduct - 1.0L) / tau);
+                    const Time tau = dc.yearFraction(accrualDates.front(), accrualDates.back());
+                    const Rate expected = Real((product - 1.0L) / ld(tau));
+                    const Rate expectedIndex = Real((indexProduct - 1.0L) / ld(tau));
                     for (bool telescopic : {false, true}) {
                         OvernightIndexedCoupon coupon(end, nominal, start, end, index, 1.0, spread,
                             Date(), Date(), dc, telescopic, RateAveraging::Compound,
@@ -1873,10 +1871,9 @@ BOOST_AUTO_TEST_CASE(testDailyCompoundedSpreadForecast) {
                                 long double partial = 1.0L;
                                 for (Size i = 0; i < n && dates[i] < cutoff; ++i) {
                                     const Size fixing = i >= n - lockout ? n - lockout - 1 : i;
-                                    const long double weight = value(dc.yearFraction(dates[i],
-                                        std::min(dates[i + 1], cutoff)));
-                                    partial *= 1.0L +
-                                        (static_cast<long double>(value(rates[fixing])) + value(spread)) * weight;
+                                    const Time weight = dc.yearFraction(dates[i],
+                                        std::min(dates[i + 1], cutoff));
+                                    partial *= 1.0L + (ld(rates[fixing]) + ld(spread)) * ld(weight);
                                 }
                                 QL_CHECK_SMALL(coupon.accruedAmount(cutoff) -
                                                    nominal * Real(partial - 1.0L), 2e-7);
