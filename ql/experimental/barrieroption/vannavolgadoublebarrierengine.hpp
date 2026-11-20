@@ -98,6 +98,10 @@ namespace QuantLib {
                  QL_REQUIRE(arguments_.barrierType == DoubleBarrier::KnockIn ||
                                 arguments_.barrierType == DoubleBarrier::KnockOut,
                             "Only same type barrier supported");
+                 // the smile adjustment and the in-out parity used below
+                 // don't account for rebates yet
+                 QL_REQUIRE(arguments_.rebate == 0.0,
+                            "rebates not supported by the vanna-volga double-barrier engine");
 
                  Handle<Quote> x0Quote( // used for shift
                      ext::make_shared<SimpleQuote>(spotFX_->value()));
