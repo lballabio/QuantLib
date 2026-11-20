@@ -1170,162 +1170,127 @@ BOOST_AUTO_TEST_CASE(testNonstandardCopyOfAmortisingOvernightSwap) {
     }
 }
 
+namespace {
+
+    // 30y swap starting in one year, annual fixed leg against 6M Euribor
+    ext::shared_ptr<VanillaSwap> makeJamshidianTestSwap(
+            Swap::Type type, Rate fixedRate,
+            const Handle<YieldTermStructure>& yts, Date& start) {
+        auto index = ext::make_shared<Euribor6M>(yts);
+        Calendar calendar = index->fixingCalendar();
+        Date settlement = calendar.advance(
+            Settings::instance().evaluationDate(), 2, Days);
+        start = calendar.advance(settlement, 1, Years);
+        Date maturity = calendar.advance(start, 30, Years);
+        Schedule fixedSchedule(start, maturity, Period(Annual), calendar,
+                               Unadjusted, Unadjusted,
+                               DateGeneration::Forward, false);
+        Schedule floatSchedule(start, maturity, Period(Semiannual), calendar,
+                               ModifiedFollowing, ModifiedFollowing,
+                               DateGeneration::Forward, false);
+        auto swap = ext::make_shared<VanillaSwap>(
+            type, 1000.0,
+            fixedSchedule, fixedRate, index->dayCounter(),
+            floatSchedule, index, 0.0, index->dayCounter());
+        swap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(yts));
+        return swap;
+    }
+
+}
+
 BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianWingStrike) {
     BOOST_TEST_MESSAGE(
-        "Testing Gaussian1dJamshidianSwaptionEngine on a deep wing "
-        "strike...");
+        "Testing Gaussian1dJamshidianSwaptionEngine on deep "
+        "in-the-money strikes...");
 
-    // Regression test: rStarFinder's solve bracket is hard-coded to
-    // [-8,8] in the standardized state. When the strike is far enough
-    // from the money (here, low vol + high mean reversion, 100bp OTM),
-    // the critical state can fall outside this fixed bracket even though
-    // the swaption is a perfectly valid, trivially deep in/out-of-the-
-    // money state that the sibling Gaussian1dSwaptionEngine (which
-    // integrates rather than root-finds) prices cleanly on the identical
-    // model.
+    // The critical state depends on the strike, not on the option type.
+    // A strike far below the par rate puts it under the default bracket
+    // [-8, 8], a strike far above puts it over. A payer struck below par
+    // and a receiver struck above par are both in the money, so the prices
+    // are far from zero. Gaussian1dSwaptionEngine integrates instead of
+    // searching for a root, so it works as the reference.
 
     Date today(15, September, 2016);
     Settings::instance().evaluationDate() = today;
 
     Handle<YieldTermStructure> yts(flatRate(today, 0.03, Actual365Fixed()));
-    auto index = ext::make_shared<Euribor6M>(yts);
-    Calendar calendar = index->fixingCalendar();
-    Date settlement = calendar.advance(today, 2, Days);
+    Date start;
+    const Rate parRate =
+        makeJamshidianTestSwap(Swap::Payer, 0.0, yts, start)->fairRate();
 
-    Date start = calendar.advance(settlement, 1, Years);
-    Date maturity = calendar.advance(start, 30, Years);
-    Schedule fixedSchedule(start, maturity, Period(Annual), calendar,
-                           Unadjusted, Unadjusted,
-                           DateGeneration::Forward, false);
-    Schedule floatSchedule(start, maturity, Period(Semiannual), calendar,
-                           ModifiedFollowing, ModifiedFollowing,
-                           DateGeneration::Forward, false);
+    // the last two cases (low volatility, high mean reversion) need many
+    // more widening steps than the others
+    struct Case { Swap::Type type; Rate shift; Real reversion, vol; };
+    const Case cases[] = {
+        { Swap::Payer,   -0.01, 0.5, 0.01 },
+        { Swap::Receiver, 0.01, 0.5, 0.01 },
+        { Swap::Payer,   -0.04, 0.5, 0.01 },
+        { Swap::Receiver, 0.04, 0.5, 0.01 },
+        { Swap::Payer,   -0.04, 2.0, 0.0005 },
+        { Swap::Receiver, 0.04, 2.0, 0.0005 }
+    };
 
-    ext::shared_ptr<VanillaSwap> probeSwap = ext::make_shared<VanillaSwap>(
-        Swap::Payer, 1000.0,
-        fixedSchedule, 0.0, index->dayCounter(),
-        floatSchedule, index, 0.0, index->dayCounter());
-    probeSwap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(yts));
-    const Rate atmRate = probeSwap->fairRate();
+    for (const auto& c : cases) {
+        auto model = ext::make_shared<Gsr>(
+            yts, std::vector<Date>(), std::vector<Real>(1, c.vol),
+            c.reversion);
+        auto swaption = ext::make_shared<Swaption>(
+            makeJamshidianTestSwap(c.type, parRate + c.shift, yts, start),
+            ext::make_shared<EuropeanExercise>(start));
 
-    ext::shared_ptr<VanillaSwap> swap = ext::make_shared<VanillaSwap>(
-        Swap::Payer, 1000.0,
-        fixedSchedule, atmRate - 0.01, index->dayCounter(),
-        floatSchedule, index, 0.0, index->dayCounter());
-    swap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(yts));
+        swaption->setPricingEngine(
+            ext::make_shared<Gaussian1dSwaptionEngine>(model, 64, 7.0));
+        const Real expected = swaption->NPV();
 
-    ext::shared_ptr<Swaption> swaption = ext::make_shared<Swaption>(
-        swap, ext::make_shared<EuropeanExercise>(start));
-
-    const Real reversion = 0.5, vol = 0.01;
-    ext::shared_ptr<Gsr> model = ext::make_shared<Gsr>(
-        yts, std::vector<Date>(), std::vector<Real>(1, vol), reversion);
-
-    swaption->setPricingEngine(
-        ext::make_shared<Gaussian1dSwaptionEngine>(model, 64, 7.0));
-    const Real referenceNPV = swaption->NPV();
-
-    swaption->setPricingEngine(
-        ext::make_shared<Gaussian1dJamshidianSwaptionEngine>(model));
-
-    Real npv;
-    try {
-        npv = swaption->NPV();
-    } catch (const Error& e) {
-        BOOST_ERROR("Gaussian1dJamshidianSwaptionEngine threw on a valid "
-                    "deep wing-strike state: " << e.what());
-        return;
-    }
-
-    const Real tol = 1.0e-4 * std::max(std::fabs(referenceNPV), 1.0);
-    if (std::fabs(npv - referenceNPV) > tol) {
-        BOOST_ERROR("Gaussian1dJamshidianSwaptionEngine (" << npv
-                    << ") disagrees with Gaussian1dSwaptionEngine ("
-                    << referenceNPV << ") on the identical model");
+        swaption->setPricingEngine(
+            ext::make_shared<Gaussian1dJamshidianSwaptionEngine>(model));
+        try {
+            const Real calculated = swaption->NPV();
+            QL_CHECK_CLOSE(calculated, expected, 1.0e-2);
+        } catch (const Error& e) {
+            BOOST_ERROR("Gaussian1dJamshidianSwaptionEngine failed for a "
+                        << (c.type == Swap::Payer ? "payer" : "receiver")
+                        << " struck " << std::lround(c.shift*1.0e4)
+                        << "bp from par: " << e.what());
+        }
     }
 }
 
-BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianNonBracketableErrorMessage) {
+BOOST_AUTO_TEST_CASE(testGaussian1dJamshidianNoCriticalState) {
     BOOST_TEST_MESSAGE(
-        "Testing Gaussian1dJamshidianSwaptionEngine's error message on a "
-        "non-bracketable (negative-rate) state...");
+        "Testing Gaussian1dJamshidianSwaptionEngine when there is no "
+        "critical state...");
 
-    // Regression test: the fixed rate here (atmRate - 8%) is deeply
-    // negative (~-5% on this curve), so every fixed coupon is negative
-    // while the appended notional is positive -- rStarFinder has no
-    // genuine root for this state (it is not a valid Jamshidian
-    // decomposition input; f(y) stays positive for every y, converging
-    // from above to the notional as y->+inf and diverging to +inf as
-    // y->-inf, confirmed by direct trace of the widening loop). Only the
-    // lower (very negative) end of the bracket runs toward overflow as
-    // the widening loop doubles it; the upper end stays finite,
-    // converging safely toward the notional. Before this fix, the loop
-    // doubled minStrike/maxStrike unconditionally every attempt; at the
-    // final doubling (attempt 20) the lower side's function value
-    // overflowed to a non-finite value, and that non-finite value was
-    // still committed to the bracket handed to Solver1D, which then
-    // threw with a NaN/Inf-laden message (observed:
-    // "f[-8.38861e+06,8.38861e+06] -> [-nan,1.000000e+03]") instead of
-    // reporting finite numbers. The per-side isfinite tracking added by
-    // this fix stops committing a side once its own value goes
-    // non-finite, so the final thrown message -- this state is still
-    // genuinely unbracketable, so it still throws -- reports the last
-    // finite bounds/values on each side instead of NaN/Inf.
+    // At par - 8% the fixed rate is about -5%. Every coupon is negative, so
+    // the function solved for the critical state has no root. The engine
+    // must throw, and the message must show finite bounds and values. The
+    // bracket widening runs into overflow on the way, so this checks that
+    // no NaN or Inf reaches the message.
 
     Date today(15, September, 2016);
     Settings::instance().evaluationDate() = today;
 
     Handle<YieldTermStructure> yts(flatRate(today, 0.03, Actual365Fixed()));
-    auto index = ext::make_shared<Euribor6M>(yts);
-    Calendar calendar = index->fixingCalendar();
-    Date settlement = calendar.advance(today, 2, Days);
+    Date start;
+    const Rate parRate =
+        makeJamshidianTestSwap(Swap::Payer, 0.0, yts, start)->fairRate();
 
-    Date start = calendar.advance(settlement, 1, Years);
-    Date maturity = calendar.advance(start, 30, Years);
-    Schedule fixedSchedule(start, maturity, Period(Annual), calendar,
-                           Unadjusted, Unadjusted,
-                           DateGeneration::Forward, false);
-    Schedule floatSchedule(start, maturity, Period(Semiannual), calendar,
-                           ModifiedFollowing, ModifiedFollowing,
-                           DateGeneration::Forward, false);
-
-    ext::shared_ptr<VanillaSwap> probeSwap = ext::make_shared<VanillaSwap>(
-        Swap::Payer, 1000.0,
-        fixedSchedule, 0.0, index->dayCounter(),
-        floatSchedule, index, 0.0, index->dayCounter());
-    probeSwap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(yts));
-    const Rate atmRate = probeSwap->fairRate();
-
-    ext::shared_ptr<VanillaSwap> swap = ext::make_shared<VanillaSwap>(
-        Swap::Payer, 1000.0,
-        fixedSchedule, atmRate - 0.08, index->dayCounter(),
-        floatSchedule, index, 0.0, index->dayCounter());
-    swap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(yts));
-
-    ext::shared_ptr<Swaption> swaption = ext::make_shared<Swaption>(
-        swap, ext::make_shared<EuropeanExercise>(start));
-
-    const Real reversion = 2.0, vol = 0.0005;
-    ext::shared_ptr<Gsr> model = ext::make_shared<Gsr>(
-        yts, std::vector<Date>(), std::vector<Real>(1, vol), reversion);
-
+    auto swaption = ext::make_shared<Swaption>(
+        makeJamshidianTestSwap(Swap::Payer, parRate - 0.08, yts, start),
+        ext::make_shared<EuropeanExercise>(start));
+    auto model = ext::make_shared<Gsr>(
+        yts, std::vector<Date>(), std::vector<Real>(1, 0.0005), 2.0);
     swaption->setPricingEngine(
         ext::make_shared<Gaussian1dJamshidianSwaptionEngine>(model));
 
-    try {
-        swaption->NPV();
-        BOOST_ERROR("Gaussian1dJamshidianSwaptionEngine was expected to "
-                    "throw on this non-bracketable state");
-    } catch (const Error& e) {
-        const std::string what = e.what();
-        if (what.find("nan") != std::string::npos ||
-            what.find("inf") != std::string::npos) {
-            BOOST_ERROR("Gaussian1dJamshidianSwaptionEngine's error message "
-                        "contains a NaN/Inf value instead of finite "
-                        "bounds: " << e.what());
-        }
-    }
-
+    BOOST_CHECK_EXCEPTION(
+        swaption->NPV(), Error,
+        [](const Error& e) {
+            const std::string what = e.what();
+            return what.find("not bracketed") != std::string::npos &&
+                   what.find("nan") == std::string::npos &&
+                   what.find("inf") == std::string::npos;
+        });
 }
 
 BOOST_AUTO_TEST_CASE(testCapFloorNonZeroSpreadConsistency) {
