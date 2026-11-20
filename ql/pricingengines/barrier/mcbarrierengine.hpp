@@ -193,10 +193,11 @@ namespace QuantLib {
         Size maxSamples,
         bool isBiased,
         BigNatural seed)
-    : McSimulation<SingleVariate, RNG, S>(antitheticVariate, false), process_(std::move(process)),
-      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), requiredSamples_(requiredSamples),
-      maxSamples_(maxSamples), requiredTolerance_(requiredTolerance), isBiased_(isBiased),
-      brownianBridge_(brownianBridge), seed_(seed) {
+    : McSimulation<SingleVariate, RNG, S>(antitheticVariate, false, true),
+      process_(std::move(process)), timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
+      requiredSamples_(requiredSamples), maxSamples_(maxSamples),
+      requiredTolerance_(requiredTolerance), isBiased_(isBiased), brownianBridge_(brownianBridge),
+      seed_(seed) {
         QL_REQUIRE(timeSteps != Null<Size>() ||
                    timeStepsPerYear != Null<Size>(),
                    "no time steps provided");
