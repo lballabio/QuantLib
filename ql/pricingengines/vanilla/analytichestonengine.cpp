@@ -28,6 +28,7 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/expm1.hpp>
 #include <ql/math/functional.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonsmallsigmaexpansion.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <boost/math/tools/minima.hpp>
@@ -551,40 +552,10 @@ namespace QuantLib {
                 return std::complex<Real>(0.0);
             }            
         else {
-            const Real kappa = model_->kappa();
-            const Real sigma = model_->sigma();
-            const Real theta = model_->theta();
-            const Real rho   = model_->rho();
-            const Real v0    = model_->v0();
-
-            const Real sigma2 = sigma*sigma;
-
-            const Real kt = kappa*t;
-            const Real ekt = std::exp(kt);
-            const Real e2kt = std::exp(2*kt);
-            const Real rho2 = rho*rho;
-            const std::complex<Real> zpi = z + std::complex<Real>(0.0, 1.0);
-
-            return std::exp(-(((theta - v0 + ekt*((-1 + kt)*theta + v0))
-                    *z*zpi)/ekt)/(2.*kappa))
-
-                + (std::exp(-(kt) - ((theta - v0 + ekt
-                    *((-1 + kt)*theta + v0))*z*zpi)
-                /(2.*ekt*kappa))*rho*(2*theta + kt*theta -
-                    v0 - kt*v0 + ekt*((-2 + kt)*theta + v0))
-                *(1.0 - std::complex<Real>(-z.imag(),z.real()))*z*z)
-                    /(2.*kappa*kappa)*sigma
-
-                   + (std::exp(-2*kt - ((theta - v0 + ekt
-                *((-1 + kt)*theta + v0))*z*zpi)/(2.*ekt*kappa))*z*z*zpi
-                *(-2*rho2*squared(2*theta + kt*theta - v0 -
-                    kt*v0 + ekt*((-2 + kt)*theta + v0))
-                  *z*z*zpi + 2*kappa*v0*(-zpi
-                    + e2kt*(zpi + 4*rho2*z) - 2*ekt*(2*rho2*z
-                    + kt*(zpi + rho2*(2 + kt)*z))) + kappa*theta*(zpi + e2kt
-                *(-5.0*zpi - 24*rho2*z+ 2*kt*(zpi + 4*rho2*z)) +
-                4*ekt*(zpi + 6*rho2*z + kt*(zpi + rho2*(4 + kt)*z)))))
-                /(16.*quartic(kappa))*sigma2;
+            const auto [D, C] = detail::hestonSmallSigmaStep(
+                model_->kappa(), model_->theta(), model_->sigma(), model_->rho(), t,
+                z, std::complex<Real>(0.0, 0.0));
+            return std::exp(model_->v0()*D + C);
         }
     }
 
