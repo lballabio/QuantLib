@@ -3087,6 +3087,24 @@ BOOST_AUTO_TEST_CASE(testRequiredTodaysFixing) {
     BOOST_CHECK_NO_THROW(future.rate());
 }
 
+BOOST_AUTO_TEST_CASE(testObservationShiftWithNullLookbackDays) {
+    BOOST_TEST_MESSAGE(
+        "Testing that null lookback days with observation shift is the same as zero lookback days...");
+
+    CommonVars vars(Date(26, March, 2026));
+    vars.forecastCurve.linkTo(flatRate(0.04, Actual360()));
+
+    // ends on a Saturday, so interest dates and value dates differ
+    const Date start(31, March, 2026), end(31, October, 2026);
+    auto nullCpn = vars.makeCoupon(start, end, Null<Natural>(), 0, true);
+    auto zeroCpn = vars.makeCoupon(start, end, 0, 0, true);
+
+    CHECK_OIS_COUPON_RESULT("rate", nullCpn->rate(), zeroCpn->rate(), 1e-12);
+    CHECK_OIS_COUPON_RESULT("amount", nullCpn->amount(), zeroCpn->amount(), 1e-8);
+    for (Date d : {Date(15, June, 2026), end})
+        CHECK_OIS_COUPON_RESULT("accrued amount", nullCpn->accruedAmount(d),
+                                zeroCpn->accruedAmount(d), 1e-8);
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 
