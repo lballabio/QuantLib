@@ -22,6 +22,7 @@
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/yearfractiontodate.hpp>
+#include <algorithm>
 #include <utility>
 
 
@@ -43,9 +44,11 @@ namespace QuantLib {
         QL_REQUIRE(dates[0]>=referenceDate,
                    "cannot have dates[0] < referenceDate");
 
-        times_ = std::vector<Time>(dates.size());
-        for (Size j=0; j<times_.size(); j++)
-            times_[j] = timeFromReference(dates[j]);
+        times_.resize(dates.size());
+        std::transform(dates.begin(), dates.end(), times_.begin(),
+                       [this](const Date& date) -> Time {
+                           return timeFromReference(date);
+                       });
 
         checkSurface();
         setInterpolation<Linear>();
@@ -132,38 +135,24 @@ namespace QuantLib {
         const Size idx = std::distance(times_.begin(),
             std::lower_bound(times_.begin(), times_.end(), t));
 
-        if (close_enough(t, times_[idx])) {
-            if (strikes_[idx]->front() < strikes_[idx]->back())
-                return localVolInterpol_[idx](strike, true);
-            else
-                return (*localVolMatrix_)[localVolMatrix_->rows()/2][idx];
-        }
-        else {
-            Real earlierStrike = strike, laterStrike = strike;
-            if (lowerExtrapolation_ == ConstantExtrapolation) {
-                if (strike < strikes_[idx-1]->front())
-                    earlierStrike = strikes_[idx-1]->front();
-                if (strike < strikes_[idx]->front())
-                    laterStrike = strikes_[idx]->front();
-            }
+        const auto localVolAt = [this, strike](Size i) -> Real {
+            if (strikes_[i]->front() == strikes_[i]->back())
+                return (*localVolMatrix_)[localVolMatrix_->rows()/2][i];
 
-            if (upperExtrapolation_ == ConstantExtrapolation) {
-                if (strike > strikes_[idx-1]->back())
-                    earlierStrike = strikes_[idx-1]->back();
-                if (strike > strikes_[idx]->back())
-                    laterStrike = strikes_[idx]->back();
-            }
+            Real k = strike;
+            if (lowerExtrapolation_ == ConstantExtrapolation)
+                k = std::max<Real>(k, strikes_[i]->front());
+            if (upperExtrapolation_ == ConstantExtrapolation)
+                k = std::min<Real>(k, strikes_[i]->back());
+            return localVolInterpol_[i](k, true);
+        };
 
-            const Real earlyVol =
-                (strikes_[idx-1]->front() < strikes_[idx-1]->back())
-                ? localVolInterpol_[idx-1](earlierStrike, true)
-                : (*localVolMatrix_)[localVolMatrix_->rows()/2][idx-1];
-            const Real laterVol = localVolInterpol_[idx](laterStrike, true);
+        if (close_enough(t, times_[idx]))
+            return localVolAt(idx);
 
-            return earlyVol
-                    + (laterVol-earlyVol)/(times_[idx]-times_[idx-1])
-                      *(t-times_[idx-1]);
-        }
+        const Real earlyVol = localVolAt(idx-1);
+        const Real laterVol = localVolAt(idx);
+        return earlyVol + (laterVol-earlyVol)/(times_[idx]-times_[idx-1])*(t-times_[idx-1]);
     }
 
 }

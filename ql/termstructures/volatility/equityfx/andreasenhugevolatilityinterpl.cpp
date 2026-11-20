@@ -239,12 +239,12 @@ namespace QuantLib {
             const Date expiry = exercise->lastDate();
             expiries.insert(expiry);
 
-            const ext::shared_ptr<PlainVanillaPayoff> payoff =
+            const auto payoff =
                 ext::dynamic_pointer_cast<PlainVanillaPayoff>(i.first->payoff());
 
             QL_REQUIRE(payoff, "plain vanilla payoff required");
 
-            const Real strike = payoff->strike();
+            const auto strike = payoff->strike();
             strikes.insert(strike);
 
             calibrationSet_.emplace_back(ext::make_shared<VanillaOption>(payoff, exercise), i.second);
@@ -362,6 +362,7 @@ namespace QuantLib {
         gridInFwd_ = Exp(gridPoints_)*spot_->value();
 
         localVolCache_.clear();
+        priceCache_.clear();
         calibrationResults_.clear();
 
         avgError_ = 0.0;
@@ -508,6 +509,8 @@ namespace QuantLib {
     Real AndreasenHugeVolatilityInterpl::optionPrice(
         Time t, Real strike, Option::Type optionType) const {
 
+        calculate();
+
         auto f = priceCache_.find(t);
 
         const DiscountFactor df = rTS_->discount(t);
@@ -525,9 +528,6 @@ namespace QuantLib {
 
             return price*df*fwd;
         }
-
-        calculate();
-
 
         ext::shared_ptr<Array> prices(
             ext::make_shared<Array>(gridPoints_));
@@ -572,10 +572,7 @@ namespace QuantLib {
 
         const Array cAtJ = costFunction->solveFor(dt, sig, previousNPVs);
 
-        const Array dCdT =
-            costFunction->solveFor(dt, sig,
-                    costFunction->apply(
-                        costFunction->solveFor(dt, sig, previousNPVs)));
+        const Array dCdT = costFunction->solveFor(dt, sig, costFunction->apply(cAtJ));
 
         const Array d2CdK2 = costFunction->d2CdK2(cAtJ);
 
@@ -590,15 +587,14 @@ namespace QuantLib {
 
     Volatility AndreasenHugeVolatilityInterpl::localVol(Time t, Real strike)
     const {
+        calculate();
+
         auto f = localVolCache_.find(t);
 
         if (f != localVolCache_.end())
             return getCacheValue(strike, f);
 
-        calculate();
-
-        ext::shared_ptr<Array> localVol(
-            ext::make_shared<Array>(gridPoints_.size()));
+        auto localVol = ext::make_shared<Array>(gridPoints_.size());
 
         switch (calibrationType_) {
           case CallPut: {
