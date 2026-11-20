@@ -151,8 +151,15 @@ namespace QuantLib {
             ++i;
         }
 
-        // today is a border case
+        // Validate required history before the optional today-fixing calculation.
         if (i < n && fixingDates[i] == today) {
+            QL_REQUIRE(!Settings::instance().enforcesTodaysHistoricFixings() ||
+                           pastFixings[fixingDates[i]] != Null<Real>(),
+                       "Missing " << index->name() << " fixing for " << fixingDates[i]);
+        }
+
+        // today is a border case
+        while (i < n && fixingDates[i] == today) {
             // might have been fixed
             try {
                 Rate fixing = pastFixings[fixingDates[i]];
@@ -162,10 +169,10 @@ namespace QuantLib {
                     compoundFactor *= gfSpread;
                     ++i;
                 } else {
-                    ; // fall through and forecast
+                    break; // fall through and forecast
                 }
             } catch (Error&) {
-                ; // fall through and forecast
+                break; // fall through and forecast
             }
         }
 
@@ -186,7 +193,8 @@ namespace QuantLib {
             const auto projGrowthFactor = [&](Size i) {
                 return growthFactor(index->fixing(fixingDates[i]), i);
             };
-            if (coupon_->canApplyTelescopicFormula()) {
+            if (coupon_->canApplyTelescopicFormula() &&
+                (!compoundSpreadDaily || couponSpread == 0.0)) {
                 // handle partial accrual of first fixing if the first interestDate lands on a fixing holiday
                 const Size telescopicStartIdx =
                     i == 0 && !applyObservationShift && (valueDates.front() < interestDates.front()) ? 1 : i;
@@ -357,3 +365,4 @@ namespace QuantLib {
                 (1.0 - exp(-2.0 * mrs_ * (te - ts))) / (2.0 * mrs_));
     }
 }
+

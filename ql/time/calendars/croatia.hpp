@@ -43,6 +43,7 @@ namespace QuantLib {
         <li>Anti-Fascist Struggle Day, June 22nd</li>
         <li>Victory and Homeland Thanksgiving Day and the Day of Croatian Defenders August 5th</li>
         <li>Assumption of Mary, August 15th</li>
+        <li>All Saints' Day, November 1st</li>
         <li>Remembrance Day for the Victims of the Vukovar and Skabrnja War Memorials, November 18th</li>
         <li>Christmas Eve, December 24th</li>
         <li>Christmas, December 25th</li>
