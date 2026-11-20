@@ -124,7 +124,7 @@ namespace QuantLib {
         // into a plateau at large triggers.
         Real optimalFlatTrigger(
             Real S, Real X, Real lower, Real upper, Real beta, Real rT, Real bT, Real v) {
-            const auto value = [&](Real logI) {
+            const auto value = [&](Real logI) -> Real {
                 return flatTriggerValue(S, X, std::exp(logI), beta, rT, bT, v);
             };
             const Real g = (std::sqrt(5.0) - 1.0) / 2.0;
@@ -480,7 +480,7 @@ namespace QuantLib {
                 // the value is stationary in I, so the trigger drops out of
                 // the first-order greeks. The optimal trigger still moves with
                 // the spot, though, which adds -V_SI^2/V_II to the gamma.
-                const auto value = [&](Real s, Real i) {
+                const auto value = [&](Real s, Real i) -> Real {
                     return flatTriggerValue(s, X, i, beta, rT, bT, variance);
                 };
                 const Real h = 1.0e-4 * S, k = 1.0e-4 * I;

@@ -305,7 +305,7 @@ namespace QuantLib {
             gamma = -M_PI_2 * std::log1p(-num / (B + D));
         }
 
-        const auto sqrtDiff = [](Real g, Real yy) {
+        const auto sqrtDiff = [](Real g, Real yy) -> Real {
             return std::isfinite(g) ? Real(std::sqrt(g + yy) - std::sqrt(g - yy))
                                     : Real(0.0);
         };
@@ -313,7 +313,7 @@ namespace QuantLib {
         if (y >= 0.0) {
             const Real M0 = K*df*(
                 (type == Option::Call) ? Real(ey*Af(std::sqrt(2*y)) - 0.5)
-                                       : 0.5-ey*Af(-std::sqrt(2*y)));
+                                       : Real(0.5-ey*Af(-std::sqrt(2*y))));
 
             if (marketValue <= M0)
                 return sqrtDiff(gamma, y);
@@ -323,7 +323,7 @@ namespace QuantLib {
         else {
             const Real M0 = K*df*(
                 (type == Option::Call) ? Real(0.5*ey - Af(-std::sqrt(-2*y)))
-                                       : Af(std::sqrt(-2*y)) - 0.5*ey);
+                                       : Real(Af(std::sqrt(-2*y)) - 0.5*ey));
 
             if (marketValue <= M0)
                 return sqrtDiff(gamma, -y);
