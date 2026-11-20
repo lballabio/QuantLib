@@ -1323,8 +1323,8 @@ BOOST_AUTO_TEST_CASE(testEffectiveDurationAndConvexity) {
     Real cleanP0 = P0 - accrued;
     Real incorrectEffDur = (P_down - P_up) / (2.0 * cleanP0 * shift);
 
-    BOOST_CHECK_CLOSE(effDur, expectedEffDur, 1e-4);
-    BOOST_CHECK_CLOSE(effConv, expectedEffConv, 1e-4);
+    QL_CHECK_CLOSE(effDur, expectedEffDur, 1e-4);
+    QL_CHECK_CLOSE(effConv, expectedEffConv, 1e-4);
 
     // Verify that the result differs significantly from the clean-price-denominator calculation
     BOOST_CHECK(std::abs(effDur - incorrectEffDur) > 0.01);
