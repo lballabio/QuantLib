@@ -2776,9 +2776,9 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4COSAndPTDAndPDF) {
     // which covers AnalyticHestonEngine). COSHestonEngine,
     // AnalyticPTDHestonEngine and AnalyticPDFHestonEngine (via
     // HestonRNDCalculator) evaluate the characteristic function through
-    // formulas with v0/sigma^2 and kappa*theta/sigma^2 prefactors, which
-    // need the small-sigma expansion to stay accurate for sigma below
-    // roughly 1e-6.
+    // formulas with kappa*theta/sigma^2 prefactors (and v0/sigma^2 ones,
+    // except in HestonRNDCalculator), which need the small-sigma expansion
+    // to stay accurate for sigma below roughly 1e-6.
 
     const Date settlementDate(20, March, 2020);
     Settings::instance().evaluationDate() = settlementDate;
@@ -3068,7 +3068,9 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansionOverflowSafety) {
         const Real analyticNPV = option.NPV();
         if (!std::isfinite(analyticNPV)
                 || std::fabs(analyticNPV-expectedNPV) > 1e-2) {
-            BOOST_ERROR("AnalyticHestonEngine (control variate " << formula
+            BOOST_ERROR("AnalyticHestonEngine ("
+                    << (formula == AnalyticHestonEngine::AndersenPiterbarg ?
+                        "AndersenPiterbarg" : "AndersenPiterbargOptCV")
                     << ") failed for long-dated, fast mean-reverting "
                     "small-sigma inputs (kappa*t=" << kappa*t << ")"
                     << "\n  expected  : " << expectedNPV
