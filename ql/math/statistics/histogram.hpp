@@ -37,7 +37,7 @@ namespace QuantLib {
     */
     class Histogram {
       public:
-        enum Algorithm { None, Sturges, FD, Scott };
+        enum Algorithm { None, Sturges, FD, Scott, Pretty };
 
         //! \name constructors
         //@{
