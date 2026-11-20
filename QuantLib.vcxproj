@@ -917,6 +917,7 @@
     <ClInclude Include="ql\instruments\constnotionalcrosscurrencybasisswap.hpp" />
     <ClInclude Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.hpp" />
     <ClInclude Include="ql\instruments\constnotionalcrosscurrencyswap.hpp" />
+    <ClInclude Include="ql\instruments\di1future.hpp" />
     <ClInclude Include="ql\instruments\dividendschedule.hpp" />
     <ClInclude Include="ql\instruments\doublebarrieroption.hpp" />
     <ClInclude Include="ql\instruments\doublebarriertype.hpp" />
@@ -1805,6 +1806,7 @@
     <ClInclude Include="ql\termstructures\yield\bootstraptraits.hpp" />
     <ClInclude Include="ql\termstructures\yield\compositezeroyieldstructure.hpp" />
     <ClInclude Include="ql\termstructures\yield\derivedtermstructure.hpp" />
+    <ClInclude Include="ql\termstructures\yield\di1futureratehelper.hpp" />
     <ClInclude Include="ql\termstructures\yield\discountcurve.hpp" />
     <ClInclude Include="ql\termstructures\yield\fittedbonddiscountcurve.hpp" />
     <ClInclude Include="ql\termstructures\yield\flatforward.hpp" />
@@ -2240,6 +2242,7 @@
     <ClCompile Include="ql\instruments\crosscurrencyswap.cpp" />
     <ClCompile Include="ql\instruments\constnotionalcrosscurrencybasisswap.cpp" />
     <ClCompile Include="ql\instruments\constnotionalcrosscurrencyfixedvsfloatingswap.cpp" />
+    <ClCompile Include="ql\instruments\di1future.cpp" />
     <ClCompile Include="ql\instruments\doublebarrieroption.cpp" />
     <ClCompile Include="ql\instruments\doublebarriertype.cpp" />
     <ClCompile Include="ql\instruments\equitytotalreturnswap.cpp" />
@@ -2854,6 +2857,7 @@
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolstructure.cpp" />
     <ClCompile Include="ql\termstructures\voltermstructure.cpp" />
     <ClCompile Include="ql\termstructures\yield\bondhelpers.cpp" />
+    <ClCompile Include="ql\termstructures\yield\di1futureratehelper.cpp" />
     <ClCompile Include="ql\termstructures\yield\fittedbonddiscountcurve.cpp" />
     <ClCompile Include="ql\termstructures\yield\flatforward.cpp" />
     <ClCompile Include="ql\termstructures\yield\forwardstructure.cpp" />

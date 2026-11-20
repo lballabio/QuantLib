@@ -52,6 +52,7 @@ set(QL_TEST_SOURCES
     dates.cpp
     daycounters.cpp
     defaultprobabilitycurves.cpp
+    di1futures.cpp
     digitalcoupon.cpp
     digitaloption.cpp
     distributions.cpp
