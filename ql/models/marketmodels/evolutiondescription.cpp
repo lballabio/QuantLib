@@ -187,4 +187,33 @@ namespace QuantLib {
         return moneyMarketPlusMeasure(evol, 0);
     }
 
+    std::vector<std::pair<Size,Size> >
+    mergedRelevanceRates(const EvolutionDescription& undEvolution,
+                         const EvolutionDescription& rebEvolution,
+                         const std::vector<std::valarray<bool> >& isPresent,
+                         Size numberOfRates) {
+        const auto& undRates = undEvolution.relevanceRates();
+        const auto& rebRates = rebEvolution.relevanceRates();
+        Size nMergedSteps = isPresent[0].size();
+        std::vector<std::pair<Size,Size> > result(nMergedSteps);
+        Size undStep = 0, rebStep = 0;
+        for (Size i = 0; i < nMergedSteps; ++i) {
+            Size lo = numberOfRates, hi = 0;
+            if (isPresent[0][i]) {
+                lo = std::min(lo, undRates[undStep].first);
+                hi = std::max(hi, undRates[undStep].second);
+                ++undStep;
+            }
+            if (isPresent[2][i]) {
+                lo = std::min(lo, rebRates[rebStep].first);
+                hi = std::max(hi, rebRates[rebStep].second);
+                ++rebStep;
+            }
+            // pure exercise/strategy step: fall back to full range
+            if (lo > hi) { lo = 0; hi = numberOfRates; }
+            result[i] = std::make_pair(lo, hi);
+        }
+        return result;
+    }
+
 }
