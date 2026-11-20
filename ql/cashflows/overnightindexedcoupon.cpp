@@ -183,7 +183,7 @@ const std::optional<Integer>& roundingPrecision)
         // accrual (compounding) periods
         dt_.resize(n_);
         const DayCounter& dc = overnightIndex->dayCounter();
-        const auto& accrualDates = (applyObservationShift_ && lookbackDays > 0) ? valueDates_ : interestDates_;
+        const auto& accrualDates = (applyObservationShift_ && fixingDays_ > 0) ? valueDates_ : interestDates_;
         for (Size i = 0; i < n_; ++i)
             dt_[i] = dc.yearFraction(accrualDates[i], accrualDates[i + 1]);
 
