@@ -188,6 +188,9 @@ namespace QuantLib {
         switch (*rule_) {
 
           case DateGeneration::Zero:
+            QL_REQUIRE(!*endOfMonth_,
+                       "endOfMonth convention incompatible with " << *rule_ <<
+                       " date generation rule");
             tenor_ = 0*Years;
             dates_.push_back(effectiveDate);
             dates_.push_back(terminationDate);

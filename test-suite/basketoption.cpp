@@ -436,6 +436,63 @@ BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testStulzPerfectCorrelation) {
+
+    BOOST_TEST_MESSAGE("Testing Stulz engine with perfectly correlated assets...");
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+    Date exDate = today + 180;
+
+    Handle<YieldTermStructure> qTS(flatRate(today, 0.0, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, 0.05, dc));
+
+    auto makeProcess = [&](Real spot, Volatility vol) {
+        return ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(spot)), qTS, rTS,
+            Handle<BlackVolTermStructure>(flatVol(today, vol, dc)));
+    };
+
+    // with rho = 1 both assets are driven by the same Brownian motion, so
+    // the reference values are one-dimensional integrals over it; with
+    // equal volatilities they reduce to the Black formula on the asset with
+    // the lower (min) or higher (max) forward
+    struct Case {
+        BasketType type;
+        Real strike;
+        Volatility v1, v2;
+        Real expected;
+    };
+    Case cases[] = {
+        {MinBasket, 90.0, 0.20, 0.30, 10.9157252899},
+        {MaxBasket, 90.0, 0.20, 0.30, 14.4412466108},
+        {MinBasket, 90.0, 0.25, 0.15, 8.49438710828},
+        {MaxBasket, 90.0, 0.25, 0.15, 14.4442527691},
+        {MinBasket, 90.0, 0.20, 0.20, 9.54585254755},
+        {MaxBasket, 90.0, 0.20, 0.20, 13.4985174826},
+        {MinBasket, 0.0, 0.20, 0.20, 95.0},
+        {MaxBasket, 0.0, 0.20, 0.20, 100.0}
+    };
+
+    for (const auto& c : cases) {
+        BasketOption option(basketTypeToPayoff(c.type,
+                                ext::make_shared<PlainVanillaPayoff>(Option::Call, c.strike)),
+                            ext::make_shared<EuropeanExercise>(exDate));
+        option.setPricingEngine(ext::make_shared<StulzEngine>(
+            makeProcess(100.0, c.v1), makeProcess(95.0, c.v2), 1.0));
+
+        Real calculated = option.NPV();
+        if (std::fabs(calculated - c.expected) > 1.0e-8)
+            BOOST_ERROR("failed to reproduce perfectly correlated "
+                        << (c.type == MinBasket ? "min" : "max")
+                        << " basket call value:"
+                        << "\n    strike:       " << c.strike
+                        << "\n    volatilities: " << c.v1 << ", " << c.v2
+                        << "\n    expected:     " << c.expected
+                        << "\n    calculated:   " << calculated);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testBarraquandThreeValues) {
 
     BOOST_TEST_MESSAGE("Testing three-asset basket options "
