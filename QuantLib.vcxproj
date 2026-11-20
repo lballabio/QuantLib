@@ -1292,6 +1292,7 @@
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmtimedepdirichletboundary.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\gbsmrndcalculator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\hestonrndcalculator.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\utilities\hestonsmallsigmaexpansion.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\localvolrndcalculator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\riskneutraldensitycalculator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\smilesectionrndcalculator.hpp" />
@@ -2488,6 +2489,7 @@
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmtimedepdirichletboundary.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\gbsmrndcalculator.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\hestonrndcalculator.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\utilities\hestonsmallsigmaexpansion.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\localvolrndcalculator.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\riskneutraldensitycalculator.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\smilesectionrndcalculator.cpp" />

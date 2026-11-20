@@ -32,6 +32,7 @@
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonsmallsigmaexpansion.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
@@ -2761,6 +2762,354 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion) {
                 << "\n  calclated : " << calculatedNPV
                 << "\n  diff      : " << diffNPV
                 << "\n  tolerance : " << tolNPV);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4COSAndPTDAndPDF) {
+    BOOST_TEST_MESSAGE("Testing small sigma expansion of the characteristic "
+                       "function for the COS, piecewise time dependent and "
+                       "PDF Heston engines...");
+
+    // As the vol-of-vol sigma -> 0 the Heston model's variance path becomes
+    // deterministic and every Heston engine must converge to the
+    // corresponding Black-Scholes price (see testSmallSigmaExpansion above,
+    // which covers AnalyticHestonEngine). COSHestonEngine,
+    // AnalyticPTDHestonEngine and AnalyticPDFHestonEngine (via
+    // HestonRNDCalculator) evaluate the characteristic function through
+    // formulas with kappa*theta/sigma^2 prefactors (and v0/sigma^2 ones,
+    // except in HestonRNDCalculator), which need the small-sigma expansion
+    // to stay accurate for sigma below roughly 1e-6.
+
+    const Date settlementDate(20, March, 2020);
+    Settings::instance().evaluationDate() = settlementDate;
+    const Date maturityDate = settlementDate + Period(2, Years);
+
+    const DayCounter dc = Actual365Fixed();
+    const Time t = dc.yearFraction(settlementDate, maturityDate);
+    const Handle<YieldTermStructure> rTS(flatRate(0.0, dc));
+
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100));
+
+    const Real theta = 0.1 * 0.1;
+    const Real v0 = theta + 0.02;
+    const Real kappa = 1.25;
+    const Real sigma = 1e-9;
+    const Real rho = -0.9;
+
+    const ext::shared_ptr<HestonModel> hestonModel =
+        ext::make_shared<HestonModel>(
+            ext::make_shared<HestonProcess>(
+                rTS, rTS, spot, v0, kappa, theta, sigma, rho));
+
+    const ext::shared_ptr<AnalyticHestonEngine> analyticEngine =
+        ext::make_shared<AnalyticHestonEngine>(hestonModel);
+
+    const Real strike = 120.0;
+    const Real stdDev =
+        std::sqrt(((1-std::exp(-kappa*t))*(v0-theta)/(kappa*t) + theta)*t);
+    const Real expectedNPV = blackFormula(Option::Call, strike, 100.0, stdDev);
+    const Real tolNPV = 50*sigma;
+
+    // --- characteristic function level: COSHestonEngine::chF and
+    //     AnalyticHestonEngine::chF must agree with the deterministic-limit
+    //     closed form ---
+    const ext::shared_ptr<COSHestonEngine> cosEngine =
+        ext::make_shared<COSHestonEngine>(hestonModel);
+
+    const std::complex<Real> z(0.55, 0.0);
+    const std::complex<Real> expectedChF =
+        std::exp(-0.5*stdDev*stdDev*(z*z + std::complex<Real>(0.0, 1.0)*z));
+    const std::complex<Real> calculatedCosChF = cosEngine->chF(z.real(), t);
+    const std::complex<Real> calculatedAnalyticChF = analyticEngine->chF(z, t);
+
+    const Real tolChF = 50*sigma;
+    const Real diffCosChF = std::abs(expectedChF - calculatedCosChF);
+    if (diffCosChF > tolChF) {
+        BOOST_ERROR("failed to reproduce COS characteristic function "
+                "value for small sigma"
+                << "\n  expected  : " << expectedChF
+                << "\n  calculated: " << calculatedCosChF
+                << "\n  diff      : " << diffCosChF
+                << "\n  tolerance : " << tolChF);
+    }
+    const Real diffAnalyticChF = std::abs(expectedChF - calculatedAnalyticChF);
+    if (diffAnalyticChF > tolChF) {
+        BOOST_ERROR("failed to reproduce AnalyticHestonEngine characteristic "
+                "function value for small sigma"
+                << "\n  expected  : " << expectedChF
+                << "\n  calculated: " << calculatedAnalyticChF
+                << "\n  diff      : " << diffAnalyticChF
+                << "\n  tolerance : " << tolChF);
+    }
+
+    VanillaOption option(
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+        ext::make_shared<EuropeanExercise>(maturityDate));
+
+    // --- COSHestonEngine price ---
+    option.setPricingEngine(cosEngine);
+    const Real cosNPV = option.NPV();
+    if (std::fabs(cosNPV - expectedNPV) > tolNPV) {
+        BOOST_ERROR("failed to reproduce Black-Scholes price with "
+                "COSHestonEngine for very small sigma"
+                << "\n  expected  : " << expectedNPV
+                << "\n  calculated: " << cosNPV
+                << "\n  tolerance : " << tolNPV);
+    }
+
+    // --- AnalyticPTDHestonEngine, two segments with different
+    //     kappa/theta/rho/sigma, so that a nonzero D is carried across a
+    //     boundary where the parameters change. Both sigmas (1e-9 and
+    //     5e-9) are below the 1e-6 threshold, so each segment takes the
+    //     small-sigma branch on its own.
+    const Time t1 = 0.5*t;
+    const Real kappa1 = 1.25, theta1 = 0.01, rho1 = -0.9, sigma1 = 1e-9;
+    const Real kappa2 = 0.75, theta2 = 0.03, rho2 = -0.5, sigma2 = 5e-9;
+
+    std::vector<Time> pTimes(1, t1);
+    PiecewiseConstantParameter thetaP(pTimes, PositiveConstraint());
+    PiecewiseConstantParameter kappaP(pTimes, PositiveConstraint());
+    PiecewiseConstantParameter sigmaP(pTimes, PositiveConstraint());
+    PiecewiseConstantParameter rhoP(pTimes, BoundaryConstraint(-1.0, 1.0));
+    thetaP.setParam(0, theta1); thetaP.setParam(1, theta2);
+    kappaP.setParam(0, kappa1); kappaP.setParam(1, kappa2);
+    sigmaP.setParam(0, sigma1); sigmaP.setParam(1, sigma2);
+    rhoP.setParam(0, rho1);     rhoP.setParam(1, rho2);
+
+    const std::vector<Time> gridTimes = {t1, t};
+    const ext::shared_ptr<PiecewiseTimeDependentHestonModel> ptdModel =
+        ext::make_shared<PiecewiseTimeDependentHestonModel>(
+            rTS, rTS, spot, v0, thetaP, kappaP, sigmaP, rhoP,
+            TimeGrid(gridTimes.begin(), gridTimes.end()));
+
+    // deterministic variance path is continuous across the segment
+    // boundary: integrate it piecewise (same closed form as stdDev above,
+    // applied segment by segment, chaining the variance level v(t1)).
+    const Real vAtT1 = theta1 + (v0-theta1)*std::exp(-kappa1*t1);
+    const Real w1 = theta1*t1 + (v0-theta1)*(1-std::exp(-kappa1*t1))/kappa1;
+    const Real w2 = theta2*(t-t1)
+        + (vAtT1-theta2)*(1-std::exp(-kappa2*(t-t1)))/kappa2;
+    const Real expectedPtdNPV =
+        blackFormula(Option::Call, strike, 100.0, std::sqrt(w1+w2));
+    const Real tolPtdNPV = 50*sigma2;
+
+    option.setPricingEngine(
+        ext::make_shared<AnalyticPTDHestonEngine>(ptdModel, 192));
+    const Real ptdGatheralNPV = option.NPV();
+    if (std::fabs(ptdGatheralNPV - expectedPtdNPV) > tolPtdNPV) {
+        BOOST_ERROR("failed to reproduce Black-Scholes price with "
+                "AnalyticPTDHestonEngine (Gatheral) for very small sigma"
+                << "\n  expected  : " << expectedPtdNPV
+                << "\n  calculated: " << ptdGatheralNPV
+                << "\n  tolerance : " << tolPtdNPV);
+    }
+
+    option.setPricingEngine(
+        ext::make_shared<AnalyticPTDHestonEngine>(
+            ptdModel,
+            AnalyticPTDHestonEngine::AndersenPiterbarg,
+            AnalyticPTDHestonEngine::Integration::gaussLaguerre(192)));
+    const Real ptdAndersenPiterbargNPV = option.NPV();
+    if (std::fabs(ptdAndersenPiterbargNPV - expectedPtdNPV) > tolPtdNPV) {
+        BOOST_ERROR("failed to reproduce Black-Scholes price with "
+                "AnalyticPTDHestonEngine (Andersen-Piterbarg) for very "
+                "small sigma"
+                << "\n  expected  : " << expectedPtdNPV
+                << "\n  calculated: " << ptdAndersenPiterbargNPV
+                << "\n  tolerance : " << tolPtdNPV);
+    }
+
+    // --- AnalyticPDFHestonEngine (HestonRNDCalculator); the integration
+    //     tolerance is 1e-10, below the 1e-6 default, so that the
+    //     integration error does not swamp the small-sigma-branch error ---
+    option.setPricingEngine(
+        ext::make_shared<AnalyticPDFHestonEngine>(hestonModel, 1e-10));
+    const Real pdfNPV = option.NPV();
+    if (std::fabs(pdfNPV - expectedNPV) > tolNPV) {
+        BOOST_ERROR("failed to reproduce Black-Scholes price with "
+                "AnalyticPDFHestonEngine for very small sigma"
+                << "\n  expected  : " << expectedNPV
+                << "\n  calculated: " << pdfNPV
+                << "\n  tolerance : " << tolNPV);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSmallSigmaStepAgainstClosedForm) {
+    BOOST_TEST_MESSAGE("Testing the small-sigma expansion step against the "
+                       "closed-form Riccati step at moderate sigma...");
+
+    // At sigma = 1e-2 the closed form is still numerically stable (its
+    // cancellation error is of order eps/sigma^2 ~ 1e-12), while the
+    // expansion's truncation error is O(sigma^3), with a small coefficient.
+    // The sigma^2 terms of D and C (theta = 1 puts C on the scale of D) are
+    // of order 1e-7 to 1e-5, so agreement to 1e-7 pins their coefficients,
+    // including those multiplying a nonzero complex Dprev.
+    const Real kappa = 1.3, theta = 1.0, sigma = 1e-2, rho = -0.6;
+    const Time tau = 1.7;
+    const std::complex<Real> i(0.0, 1.0);
+
+    const std::complex<Real> zs[] = {
+        {0.55, 0.0}, {0.3, -0.5}, {0.8, 0.0}, {-0.2, 0.7}};
+    const std::complex<Real> Dprevs[] = {
+        {0.0, 0.0}, {0.4, -0.3}, {-0.15, 0.25}};
+
+    for (const auto& z : zs) {
+        for (const auto& Dprev : Dprevs) {
+            const std::complex<Real> k = kappa - i*rho*sigma*z;
+            const std::complex<Real> d =
+                std::sqrt(k*k + sigma*sigma*(z*z + i*z));
+            const std::complex<Real> g = (k-d)/(k+d);
+            const std::complex<Real> gt =
+                (k-d-Dprev*sigma*sigma)/(k+d-Dprev*sigma*sigma);
+            const std::complex<Real> e = std::exp(-d*tau);
+            const std::complex<Real> expectedD =
+                (k+d)/(sigma*sigma)*(g-gt*e)/(1.0-gt*e);
+            const std::complex<Real> expectedC = kappa*theta/(sigma*sigma)
+                *((k-d)*tau - 2.0*std::log((1.0-gt*e)/(1.0-gt)));
+
+            const auto [calculatedD, calculatedC] =
+                detail::hestonSmallSigmaStep(kappa, theta, sigma, rho, tau, z, Dprev);
+
+            const Real tol = 1e-7;
+            if (std::abs(calculatedD - expectedD) > tol
+                    || std::abs(calculatedC - expectedC) > tol) {
+                BOOST_ERROR("small-sigma step differs from the closed form"
+                        << "\n  z         : " << z
+                        << "\n  Dprev     : " << Dprev
+                        << "\n  expected D: " << expectedD
+                        << "\n  calculated: " << calculatedD
+                        << "\n  expected C: " << expectedC
+                        << "\n  calculated: " << calculatedC
+                        << "\n  tolerance : " << tol);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSmallSigmaExpansionOverflowSafety) {
+    BOOST_TEST_MESSAGE("Testing the small-sigma expansion stays finite for "
+                       "long-dated, fast mean-reverting inputs...");
+
+    // A transcription of the small-sigma Taylor coefficients that forms
+    // exp(+2*kappa*tau) as an intermediate overflows in double precision
+    // once kappa*tau exceeds roughly 350, well before the D (bounded) and
+    // C (linear in tau) coefficients themselves do.
+    // COSHestonEngine::chF and AnalyticHestonEngine::chF are checked
+    // directly against the deterministic-limit closed form
+    // (COSHestonEngine::calculate() is not used, since its truncation-range
+    // helpers form exp(kappa*t) up to exp(4*kappa*t) directly);
+    // AnalyticPTDHestonEngine and AnalyticHestonEngine with the
+    // Andersen-Piterbarg control variates (which evaluate chF) are checked
+    // end to end via option pricing.
+
+    const Date settlementDate(20, March, 2020);
+    Settings::instance().evaluationDate() = settlementDate;
+    const Date maturityDate = settlementDate + Period(40, Years);
+
+    const DayCounter dc = Actual365Fixed();
+    const Time t = dc.yearFraction(settlementDate, maturityDate);
+    const Handle<YieldTermStructure> rTS(flatRate(0.0, dc));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100));
+
+    const Real theta = 0.07, v0 = 0.04, kappa = 10.0, sigma = 1e-7, rho = -0.4;
+    BOOST_REQUIRE(kappa*t > 350.0);  // actually exercises the overflow regime
+
+    const ext::shared_ptr<HestonProcess> hestonProcess =
+        ext::make_shared<HestonProcess>(rTS, rTS, spot, v0, kappa, theta, sigma, rho);
+    const ext::shared_ptr<HestonModel> hestonModel =
+        ext::make_shared<HestonModel>(hestonProcess);
+
+    const Real stdDev =
+        std::sqrt(((1-std::exp(-kappa*t))*(v0-theta)/(kappa*t) + theta)*t);
+
+    // --- COSHestonEngine::chF directly against the deterministic-limit chF ---
+    const std::complex<Real> z(0.55, 0.0);
+    const std::complex<Real> expectedChF =
+        std::exp(-0.5*stdDev*stdDev*(z*z + std::complex<Real>(0.0, 1.0)*z));
+    const std::complex<Real> calculatedChF =
+        COSHestonEngine(hestonModel).chF(z.real(), t);
+    const Real diffChF = std::abs(expectedChF - calculatedChF);
+    if (!std::isfinite(calculatedChF.real()) || !std::isfinite(calculatedChF.imag())
+            || diffChF > 1e-6) {
+        BOOST_ERROR("COSHestonEngine::chF failed for long-dated, fast "
+                "mean-reverting small-sigma inputs (kappa*t=" << kappa*t << ")"
+                << "\n  expected  : " << expectedChF
+                << "\n  calculated: " << calculatedChF
+                << "\n  diff      : " << diffChF);
+    }
+
+    // --- AnalyticHestonEngine::chF against the same closed form ---
+    const std::complex<Real> calculatedAnalyticChF =
+        AnalyticHestonEngine(hestonModel).chF(z, t);
+    const Real diffAnalyticChF = std::abs(expectedChF - calculatedAnalyticChF);
+    if (!std::isfinite(calculatedAnalyticChF.real())
+            || !std::isfinite(calculatedAnalyticChF.imag())
+            || diffAnalyticChF > 1e-6) {
+        BOOST_ERROR("AnalyticHestonEngine::chF failed for long-dated, fast "
+                "mean-reverting small-sigma inputs (kappa*t=" << kappa*t << ")"
+                << "\n  expected  : " << expectedChF
+                << "\n  calculated: " << calculatedAnalyticChF
+                << "\n  diff      : " << diffAnalyticChF);
+    }
+
+    const Real strike = 100.0;
+    const Real expectedNPV = blackFormula(Option::Call, strike, 100.0, stdDev);
+
+    VanillaOption option(
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+        ext::make_shared<EuropeanExercise>(maturityDate));
+
+    // --- AnalyticHestonEngine with the control variates that evaluate chF ---
+    for (const auto formula : {AnalyticHestonEngine::AndersenPiterbarg,
+                               AnalyticHestonEngine::AndersenPiterbargOptCV}) {
+        option.setPricingEngine(ext::make_shared<AnalyticHestonEngine>(
+            hestonModel, formula,
+            AnalyticHestonEngine::Integration::gaussLaguerre(192)));
+        const Real analyticNPV = option.NPV();
+        if (!std::isfinite(analyticNPV)
+                || std::fabs(analyticNPV-expectedNPV) > 1e-2) {
+            BOOST_ERROR("AnalyticHestonEngine ("
+                    << (formula == AnalyticHestonEngine::AndersenPiterbarg ?
+                        "AndersenPiterbarg" : "AndersenPiterbargOptCV")
+                    << ") failed for long-dated, fast mean-reverting "
+                    "small-sigma inputs (kappa*t=" << kappa*t << ")"
+                    << "\n  expected  : " << expectedNPV
+                    << "\n  calculated: " << analyticNPV);
+        }
+    }
+
+    ConstantParameter thetaP(theta, PositiveConstraint());
+    ConstantParameter kappaP(kappa, PositiveConstraint());
+    ConstantParameter sigmaP(sigma, PositiveConstraint());
+    ConstantParameter rhoP(rho, BoundaryConstraint(-1.0, 1.0));
+    const ext::shared_ptr<PiecewiseTimeDependentHestonModel> ptdModel =
+        ext::make_shared<PiecewiseTimeDependentHestonModel>(
+            rTS, rTS, spot, v0, thetaP, kappaP, sigmaP, rhoP, TimeGrid(t, 1));
+
+    option.setPricingEngine(
+        ext::make_shared<AnalyticPTDHestonEngine>(ptdModel, 192));
+    const Real ptdGatheralNPV = option.NPV();
+    if (!std::isfinite(ptdGatheralNPV) || std::fabs(ptdGatheralNPV-expectedNPV) > 1e-2) {
+        BOOST_ERROR("AnalyticPTDHestonEngine (Gatheral) failed for "
+                "long-dated, fast mean-reverting small-sigma inputs "
+                "(kappa*t=" << kappa*t << ")"
+                << "\n  expected  : " << expectedNPV
+                << "\n  calculated: " << ptdGatheralNPV);
+    }
+
+    option.setPricingEngine(
+        ext::make_shared<AnalyticPTDHestonEngine>(
+            ptdModel,
+            AnalyticPTDHestonEngine::AndersenPiterbarg,
+            AnalyticPTDHestonEngine::Integration::gaussLaguerre(192)));
+    const Real ptdAndersenPiterbargNPV = option.NPV();
+    if (!std::isfinite(ptdAndersenPiterbargNPV)
+            || std::fabs(ptdAndersenPiterbargNPV-expectedNPV) > 1e-2) {
+        BOOST_ERROR("AnalyticPTDHestonEngine (Andersen-Piterbarg) failed for "
+                "long-dated, fast mean-reverting small-sigma inputs "
+                "(kappa*t=" << kappa*t << ")"
+                << "\n  expected  : " << expectedNPV
+                << "\n  calculated: " << ptdAndersenPiterbargNPV);
     }
 }
 
