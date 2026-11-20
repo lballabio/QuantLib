@@ -120,6 +120,29 @@ BOOST_AUTO_TEST_CASE(testFarlieGumbelMorgensternCopulaRng) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testClaytonCopulaNegativeTheta) {
+    BOOST_TEST_MESSAGE("Testing Clayton copula support for negative parameters...");
+
+    // For theta = -1/2 the support boundary is sqrt(u) + sqrt(v) = 1.
+    const ClaytonCopula half(-0.5);
+    BOOST_CHECK_EQUAL(half(0.0625, 0.0625), 0.0);
+    BOOST_CHECK_EQUAL(half(0.25, 0.25), 0.0);
+    QL_CHECK_SMALL(half(0.5625, 0.5625) - 0.25, 1e-14);
+
+    // A fractional outer exponent must not be evaluated on a negative base.
+    const ClaytonCopula fractional(-0.8);
+    BOOST_CHECK_EQUAL(fractional(0.125, 0.125), 0.0);
+    BOOST_CHECK_EQUAL(fractional(0.0, 0.5), 0.0);
+    BOOST_CHECK_EQUAL(fractional(0.5, 0.0), 0.0);
+    BOOST_CHECK_EQUAL(fractional(1.0, 0.5), 0.5);
+    BOOST_CHECK_EQUAL(fractional(0.5, 1.0), 0.5);
+
+    // At theta = -1, recover the lower Frechet-Hoeffding bound.
+    const ClaytonCopula lower(-1.0);
+    BOOST_CHECK_EQUAL(lower(0.25, 0.5), 0.0);
+    BOOST_CHECK_EQUAL(lower(0.75, 0.5), 0.25);
+}
+
 BOOST_AUTO_TEST_CASE(testClaytonCopulaRng) {
     BOOST_TEST_MESSAGE("Testing Clayton copula random-number generator...");
 
