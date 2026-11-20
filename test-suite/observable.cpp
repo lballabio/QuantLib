@@ -20,6 +20,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/handle.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
@@ -36,6 +37,7 @@
 #include <ql/time/calendars/target.hpp>
 #include <chrono>
 #include <thread>
+#include <utility>
 
 #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 #include <atomic>
@@ -51,16 +53,6 @@ using namespace boost::unit_test_framework;
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(ObservableTests)
-
-class UpdateCounter : public Observer {
-  public:
-    UpdateCounter() = default;
-    void update() override { ++counter_; }
-    Size counter() const { return counter_; }
-
-  private:
-    Size counter_ = 0;
-};
 
 class RestoreUpdates { // NOLINT(cppcoreguidelines-special-member-functions)
   public:

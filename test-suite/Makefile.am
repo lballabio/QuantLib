@@ -85,6 +85,7 @@ QL_TEST_SRCS = \
 	gaussianquadratures.cpp \
 	gjrgarchmodel.cpp \
 	gsr.cpp \
+	handles.cpp \
 	hestonmodel.cpp \
 	hestonslvmodel.cpp \
 	himalayaoption.cpp \
