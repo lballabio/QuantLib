@@ -170,6 +170,8 @@ namespace QuantLib {
         args->callabilityTriggers.reserve(n);
         for (Size i = 0; i < n; i++) {
             if (!callability_[i]->hasOccurred(settlement, false)) {
+                QL_REQUIRE(callability_[i]->noticeDate() == callability_[i]->date(),
+                           "convertible bonds do not support advance notice");
                 args->callabilityTypes.push_back(callability_[i]->type());
                 args->callabilityDates.push_back(callability_[i]->date());
                 args->callabilityPrices.push_back(callability_[i]->price().amount());

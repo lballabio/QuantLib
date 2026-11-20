@@ -53,8 +53,15 @@ namespace QuantLib {
         Time redemptionTime_;
         std::vector<Time> couponTimes_;
         std::vector<CouponAdjustment> couponAdjustments_;
-        std::vector<Time> callabilityTimes_;
+        std::vector<Time> callabilityTimes_, callabilityPaymentTimes_;
         std::vector<Real> adjustedCallabilityPrices_;
+        struct DatedEvent {
+            Date date;
+            Time time;
+            Size index;
+            bool isCoupon;
+        };
+        std::vector<DatedEvent> noticeScheduleEvents_;
         void applyCallability(Size i);
         void addCoupon(Size i);
     };

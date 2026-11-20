@@ -30,7 +30,14 @@
 namespace QuantLib {
 
     //! Numerical lattice engine for callable fixed rate bonds
-    /*! \ingroup bondengines */
+    /*! When a call or put requires advance notice, the exercise value on
+        the notice date includes the discounted strike and coupons payable
+        through the effective date. In schedules containing such rights,
+        exercise dates are not snapped to neighboring coupons; custom time
+        grids must include both the notice and payment dates.
+
+        \ingroup bondengines
+    */
     class TreeCallableFixedRateBondEngine
         : public LatticeShortRateModelEngine<CallableBond::arguments,
                                              CallableBond::results> {
