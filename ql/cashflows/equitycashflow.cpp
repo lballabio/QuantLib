@@ -68,13 +68,82 @@ namespace QuantLib {
     }
 
     Real EquityCashFlow::amount() const {
-        if (!pricer_)
-            return IndexedCashFlow::amount();
-        pricer_->initialize(*this);
-        return notional() * pricer_->price();
+        calculate();
+        return amount_;
     }
 
-	EquityQuantoCashFlowPricer::EquityQuantoCashFlowPricer(
+    void EquityCashFlow::performCalculations() const {
+        if (!pricer_) {
+            IndexedCashFlow::performCalculations();
+            return;
+        }
+        pricer_->initialize(*this);
+        amount_ = notional() * pricer_->price();
+    }
+
+    Real EquityCashFlow::indexLevel(const Date& d) const {
+        auto equityIndex = ext::dynamic_pointer_cast<EquityIndex>(index());
+        QL_REQUIRE(equityIndex, "equity index required");
+        if (pricer_)
+            return pricer_->indexLevel(equityIndex, d);
+        return equityIndex->fixing(d);
+    }
+
+    Real EquityCashFlow::indexUnits() const {
+        return notional() / indexLevel(baseDate());
+    }
+
+    EquityNotionalResetCashFlow::EquityNotionalResetCashFlow(Real initialNotional,
+                                                             ext::shared_ptr<EquityIndex> index,
+                                                             const Date& initialDate,
+                                                             const Date& baseDate,
+                                                             const Date& fixingDate,
+                                                             const Date& paymentDate)
+    : EquityCashFlow(initialNotional, std::move(index), baseDate, fixingDate, paymentDate),
+      initialDate_(initialDate) {
+        QL_REQUIRE(initialDate_ <= baseDate,
+                   "initial date (" << initialDate_ << ") cannot be later than base date ("
+                                    << baseDate << ")");
+    }
+
+    Real EquityNotionalResetCashFlow::notional() const {
+        return initialNotional() * indexLevel(baseDate()) / indexLevel(initialDate_);
+    }
+
+    EquityDividendCashFlow::EquityDividendCashFlow(ext::shared_ptr<Dividend> dividend,
+                                                   ext::shared_ptr<EquityCashFlow> equityCashFlow,
+                                                   Real dividendFactor,
+                                                   const Date& paymentDate)
+    : dividend_(std::move(dividend)), equityCashFlow_(std::move(equityCashFlow)),
+      dividendFactor_(dividendFactor), paymentDate_(paymentDate) {
+        QL_REQUIRE(dividend_, "no dividend provided");
+        QL_REQUIRE(equityCashFlow_, "no equity cash flow provided");
+        QL_REQUIRE(dividendFactor_ >= 0.0,
+                   "dividend factor (" << dividendFactor_ << ") cannot be negative");
+        const Date exDate = dividend_->date();
+        QL_REQUIRE(exDate > equityCashFlow_->baseDate() &&
+                       exDate <= equityCashFlow_->fixingDate(),
+                   "ex-dividend date (" << exDate << ") outside the equity period ("
+                                        << equityCashFlow_->baseDate() << ", "
+                                        << equityCashFlow_->fixingDate() << "]");
+        // the amount is not cached, so notifications can always be forwarded
+        alwaysForwardNotifications();
+        registerWith(dividend_);
+        registerWith(equityCashFlow_);
+        registerWith(equityCashFlow_->index());
+    }
+
+    Real EquityDividendCashFlow::amount() const {
+        return dividendFactor_ * dividend_->amount() * equityCashFlow_->indexUnits();
+    }
+
+    Real EquityCashFlowPricer::indexLevel(const ext::shared_ptr<EquityIndex>& index,
+                                          const Date& d) const {
+        QL_REQUIRE(index, "equity index required");
+        return index->fixing(d);
+    }
+
+    EquityQuantoCashFlowPricer::EquityQuantoCashFlowPricer(
         Handle<YieldTermStructure> quantoCurrencyTermStructure,
         Handle<BlackVolTermStructure> equityVolatility,
         Handle<BlackVolTermStructure> fxVolatility,
@@ -99,7 +168,11 @@ namespace QuantLib {
         fixingDate_ = cashFlow.fixingDate();
         QL_REQUIRE(fixingDate_ >= baseDate_, "Fixing date cannot fall before base date.");
         growthOnlyPayoff_ = cashFlow.growthOnly();
-        
+
+        checkInputs();
+    }
+
+    void EquityQuantoCashFlowPricer::checkInputs() const {
         QL_REQUIRE(!quantoCurrencyTermStructure_.empty(),
                    "Quanto currency term structure handle cannot be empty.");
         QL_REQUIRE(!equityVolatility_.empty(),
@@ -115,23 +188,38 @@ namespace QuantLib {
                    "reference date.");
     }
 
-    Real EquityQuantoCashFlowPricer::price() const {
-        Real strike = index_->fixing(fixingDate_);
+    ext::shared_ptr<EquityIndex>
+    EquityQuantoCashFlowPricer::quantoIndex(const ext::shared_ptr<EquityIndex>& index,
+                                            Real strike) const {
         Handle<YieldTermStructure> dividendHandle =
-            configureDividendHandle(index_->equityDividendCurve());
+            configureDividendHandle(index->equityDividendCurve());
 
         Handle<YieldTermStructure> quantoTermStructure(ext::make_shared<QuantoTermStructure>(
             dividendHandle, quantoCurrencyTermStructure_,
-            index_->equityInterestRateCurve(), equityVolatility_, strike, fxVolatility_, 1.0,
+            index->equityInterestRateCurve(), equityVolatility_, strike, fxVolatility_, 1.0,
             correlation_->value()));
-        ext::shared_ptr<EquityIndex> quantoIndex =
-            index_->clone(quantoCurrencyTermStructure_, quantoTermStructure, index_->spot());
+        return index->clone(quantoCurrencyTermStructure_, quantoTermStructure, index->spot());
+    }
 
-        Real I0 = quantoIndex->fixing(baseDate_);
-        Real I1 = quantoIndex->fixing(fixingDate_);
+    Real EquityQuantoCashFlowPricer::price() const {
+        Real strike = index_->fixing(fixingDate_);
+        ext::shared_ptr<EquityIndex> adjustedIndex = quantoIndex(index_, strike);
+
+        Real I0 = adjustedIndex->fixing(baseDate_);
+        Real I1 = adjustedIndex->fixing(fixingDate_);
 
         if (growthOnlyPayoff_)
             return I1 / I0 - 1.0;
         return I1 / I0;
+    }
+
+    Real EquityQuantoCashFlowPricer::indexLevel(const ext::shared_ptr<EquityIndex>& index,
+                                                const Date& d) const {
+        QL_REQUIRE(index, "Equity index required.");
+        QL_REQUIRE(index->returnType() == EquityIndex::Price,
+                   "Quanto pricer only supports price return equity indexes.");
+        checkInputs();
+        Real strike = index->fixing(d);
+        return quantoIndex(index, strike)->fixing(d);
     }
 }

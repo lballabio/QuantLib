@@ -8,10 +8,14 @@ The following feature is deprecated and will be removed in a future release
   `HybridHestonHullWhiteProcess`; otherwise, implement a purpose-built
   `StochasticProcess`.
 
+Equity total return swaps on price return indexes can now have an optional dividend leg, paying given dividends (scaled by a dividend factor) on the index units held over the equity period in which they go ex.  Quanto pricers set on the equity leg now also adjust the reset notionals of both legs and the index units on which dividends are paid.  Also, equity cash flows with a pricer and funding coupons with notional reset now forward notifications correctly, so that the swap is recalculated when the pricer or funding curve change.
+
 Changes for QuantLib 1.44
 =========================
 
 Equity total return swaps now support periodic equity payments at a frequency independent of the funding leg; the default remains settlement at maturity.
+
+Equity total return swaps with periodic equity payments can now reset the notional of each period to the index level at its start, on both the equity and the funding leg; the default remains a fixed notional.
 
 As announced, it is no longer possible to choose the Boost implementation of `any` and `optional`. Only the `std` implementation can be used.
 
