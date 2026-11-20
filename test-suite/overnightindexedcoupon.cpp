@@ -2816,6 +2816,25 @@ BOOST_AUTO_TEST_CASE(testInterestCalculatedAccrualDateFixingHolidayAccruals) {
                 {Date(31, Mar, 2027), 0.0},
             }
         },
+        // coupon ends on a fixing holiday with obs-shift and unset lookback days
+        {Date(18, October, 2024), Date(18, April, 2025), Null<Natural>(), true, 0, DayCounter(), Date(), Date(),
+            {
+                {Date(18, October, 2024), 0.0},
+                {Date(19, October, 2024), 1344.444444444},
+                {Date(20, October, 2024), 2688.88888888},
+                {Date(21, October, 2024), 4033.33333333},
+                {Date(22, October, 2024), 5372.76224074},
+                {Date(2, March, 2025), 169984.93805796764},
+                {Date(3, March, 2025), 171224.80883054345},
+                {Date(17, April, 2025), 226499.35892772756},
+                {Date(18, April, 2025), 227726.5388507987},
+                {Date(19, April, 2025), 227726.5388507987},
+                {Date(20, April, 2025), 227726.5388507987},
+                {Date(21, April, 2025), 227726.5388507987},
+                {Date(22, April, 2025), 227726.5388507987},
+                {Date(23, April, 2025), 0.0},               
+            }
+        },
     };
     const auto makeCoupon = [&](const TestCase& tc, bool telescopicValueDates) {
         const auto& dc = tc.dayCounter.empty() ? vars.sofr->dayCounter() : tc.dayCounter;
