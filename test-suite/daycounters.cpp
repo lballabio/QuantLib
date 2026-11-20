@@ -449,6 +449,17 @@ BOOST_AUTO_TEST_CASE(testActualActualWithSemiannualSchedule) {
         }
         periodEndDate = calendar.advance(periodEndDate, 1, Days);
     }
+}.  
+
+BOOST_AUTO_TEST_CASE(testActualActualIsdaAtEndOfDateRange) {
+    BOOST_TEST_MESSAGE("Testing actual/actual (ISDA) at the end of the date range...");
+
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
+    Date d1(1, June, 2199), d2(1, December, 2199);   // 2199 is not a leap year
+
+    Time calculated = 0.0;
+    BOOST_CHECK_NO_THROW(calculated = dayCounter.yearFraction(d1, d2));
+    QL_CHECK_SMALL(calculated - Real(d2 - d1) / 365.0, 1.0e-14);
 }
 
 BOOST_AUTO_TEST_CASE(testActualActualWithAnnualSchedule){
