@@ -31,6 +31,9 @@
 #include <ql/models/shortrate/twofactormodels/g2.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
+#include <ql/pricingengines/swaption/treeswaptionengine.hpp>
+#include <ql/instruments/makevanillaswap.hpp>
+#include <ql/instruments/swaption.hpp>
 #include <ql/pricingengines/swap/treeswapengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -45,6 +48,7 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <algorithm>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -328,6 +332,54 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhite2) {
                     << "sigma = " << xMinCalculated[1]-xMinExpected[1] << ", "
                     << "f(a) = " << yMinCalculated - yMinExpected << ",\n"
                     << "end criteria = " << ecType );
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testJamshidianExerciseAfterSwapStart) {
+    BOOST_TEST_MESSAGE("Testing Jamshidian engine with exercise after the start "
+                       "of the underlying swap...");
+
+    Date today = Settings::instance().evaluationDate();
+    Handle<YieldTermStructure> termStructure(flatRate(today, 0.03, Actual365Fixed()));
+    auto index = ext::make_shared<Euribor6M>(termStructure);
+    auto model = ext::make_shared<HullWhite>(termStructure, 0.05, 0.01);
+    auto jamshidian = ext::make_shared<JamshidianSwaptionEngine>(model);
+    auto tree = ext::make_shared<TreeSwaptionEngine>(model, 400);
+
+    // a 1y x 5y swap; the swaptions below exercise into what is left of it
+    ext::shared_ptr<VanillaSwap> swap = MakeVanillaSwap(5 * Years, index, 0.03, 1 * Years);
+    const Leg& fixedLeg = swap->fixedLeg();
+
+    for (Size k : {1, 3}) {
+        Date start = ext::dynamic_pointer_cast<Coupon>(fixedLeg[k])->accrualStartDate();
+        Date exerciseDate = start - 2;
+
+        Swaption swaption(swap, ext::make_shared<EuropeanExercise>(exerciseDate));
+
+        // the remaining swap, built as a swap of its own from the tails
+        // of the original schedules so that its coupons are the same
+        const std::vector<Date>& fixedDates = swap->fixedSchedule().dates();
+        const std::vector<Date>& floatingDates = swap->floatingSchedule().dates();
+        auto remainingSwap = ext::make_shared<VanillaSwap>(
+            Swap::Payer, swap->nominal(),
+            Schedule(std::vector<Date>(fixedDates.begin() + k, fixedDates.end())), 0.03,
+            swap->fixedDayCount(),
+            Schedule(std::vector<Date>(
+                std::find(floatingDates.begin(), floatingDates.end(), start),
+                floatingDates.end())),
+            index, 0.0, swap->floatingDayCount());
+        Swaption expected(remainingSwap, ext::make_shared<EuropeanExercise>(exerciseDate));
+
+        swaption.setPricingEngine(jamshidian);
+        expected.setPricingEngine(jamshidian);
+        Real calculated = swaption.NPV();
+        BOOST_TEST_CONTEXT("exercise on " << exerciseDate) {
+            QL_CHECK_CLOSE(calculated, expected.NPV(), 1.0e-8);
+
+            // independent check against the tree engine
+            swaption.setPricingEngine(tree);
+            QL_CHECK_CLOSE(calculated, swaption.NPV(), 1.0);
+        }
     }
 }
 
