@@ -100,7 +100,8 @@ namespace QuantLib {
                                     const Period& switchTenor = 0 * Days,
                                     DeltaVolQuote::DeltaType longTermDeltaType = DeltaVolQuote::DeltaType::Fwd,
                                     DeltaVolQuote::AtmType longTermAtmType = DeltaVolQuote::AtmType::AtmDeltaNeutral,
-                                    std::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType = std::nullopt);
+                                    std::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType = std::nullopt,
+                                    bool forceMonotoneVariance = false);
         //@}
 
         //! \name TermStructure interface
@@ -186,6 +187,7 @@ namespace QuantLib {
 
         SmileInterpolationMethod interpolationMethod_;
         bool flatStrikeExtrapolation_;
+        bool forceMonotoneVariance_;
         BlackVolTimeExtrapolation::Type timeExtrapolationType_;
 
         Period switchTenor_;
