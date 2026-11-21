@@ -38,6 +38,32 @@ namespace QuantLib {
     }
 
     ExponentialSplinesFitting::ExponentialSplinesFitting(
+        const Array& weights,
+        const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
+        const Array& l2,
+        const Real minCutoffTime,
+        const Real maxCutoffTime,
+        const Size numCoeffs,
+        const Real fixedKappa,
+        Constraint constraint)
+    : FittedBondDiscountCurve::FittingMethod(true, weights, optimizationMethod, l2,
+                                             minCutoffTime, maxCutoffTime, std::move(constraint)),
+      numCoeffs_(numCoeffs), fixedKappa_(fixedKappa) {
+        QL_REQUIRE(ExponentialSplinesFitting::size() > 0, "At least 1 unconstrained coefficient required");
+    }
+
+    ExponentialSplinesFitting::ExponentialSplinesFitting(
+        const Size numCoeffs,
+        const Real fixedKappa,
+        const Array& weights,
+        Constraint constraint)
+    : ExponentialSplinesFitting(weights, {}, Array(),
+                                0.0, QL_MAX_REAL,
+                                numCoeffs, fixedKappa, std::move(constraint)) {}
+
+    QL_DEPRECATED_DISABLE_WARNING
+
+    ExponentialSplinesFitting::ExponentialSplinesFitting(
         bool constrainAtZero,
         const Array& weights,
         const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
@@ -72,6 +98,8 @@ namespace QuantLib {
     : ExponentialSplinesFitting(constrainAtZero, weights, {}, Array(),
                                 0.0, QL_MAX_REAL,
                                 numCoeffs, fixedKappa, std::move(constraint)) {}
+
+    QL_DEPRECATED_ENABLE_WARNING
 
     std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
     ExponentialSplinesFitting::clone() const {
@@ -192,6 +220,33 @@ namespace QuantLib {
 
     CubicBSplinesFitting::CubicBSplinesFitting(
         const std::vector<Time>& knots,
+        const Array& weights,
+        const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
+        const Array& l2,
+        const Real minCutoffTime,
+        const Real maxCutoffTime,
+        Constraint constraint)
+    : FittedBondDiscountCurve::FittingMethod(true, weights, optimizationMethod, l2,
+                                             minCutoffTime, maxCutoffTime, std::move(constraint)),
+      splines_(3, knots.size() - 5, knots) {
+
+        QL_REQUIRE(knots.size() >= 8,
+                   "At least 8 knots are required" );
+        Size basisFunctions = knots.size() - 4;
+        size_ = basisFunctions-1;
+
+        // Note: A small but nonzero N_th basis function at t=0 may
+        // lead to an ill conditioned problem
+        N_ = 1;
+
+        QL_REQUIRE(std::abs(splines_(N_, 0.0)) > QL_EPSILON,
+                   "N_th cubic B-spline must be nonzero at t=0");
+    }
+
+    QL_DEPRECATED_DISABLE_WARNING
+
+    CubicBSplinesFitting::CubicBSplinesFitting(
+        const std::vector<Time>& knots,
         bool constrainAtZero,
         const Array& weights,
         const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
@@ -232,6 +287,8 @@ namespace QuantLib {
         Constraint constraint)
     : CubicBSplinesFitting(knots, constrainAtZero, weights, {}, l2,
                            minCutoffTime, maxCutoffTime, std::move(constraint)) {}
+
+    QL_DEPRECATED_ENABLE_WARNING
 
     Real CubicBSplinesFitting::basisFunction(Integer i, Time t) const {
         return splines_(i,t);
@@ -352,6 +409,20 @@ namespace QuantLib {
 
     SimplePolynomialFitting::SimplePolynomialFitting(
         Natural degree,
+        const Array& weights,
+        const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
+        const Array& l2,
+        const Real minCutoffTime,
+        const Real maxCutoffTime,
+        Constraint constraint)
+    : FittedBondDiscountCurve::FittingMethod(true, weights, optimizationMethod, l2,
+                                             minCutoffTime, maxCutoffTime, std::move(constraint)),
+      size_(degree) {}
+
+    QL_DEPRECATED_DISABLE_WARNING
+
+    SimplePolynomialFitting::SimplePolynomialFitting(
+        Natural degree,
         bool constrainAtZero,
         const Array& weights,
         const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
@@ -373,6 +444,8 @@ namespace QuantLib {
         Constraint constraint)
     : SimplePolynomialFitting(degree, constrainAtZero, weights, {}, l2,
                               minCutoffTime, maxCutoffTime, std::move(constraint)) {}
+
+    QL_DEPRECATED_ENABLE_WARNING
 
     std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
     SimplePolynomialFitting::clone() const {
