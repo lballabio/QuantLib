@@ -1990,16 +1990,16 @@ void testPiecewiseSpreadYieldCurveImpl() {
                                          extrapolatedRow));
     BOOST_REQUIRE_EQUAL(extrapolatedRow.size(), curve->data().size() - 1);
     for (Size j = 1; j < curve->data().size(); ++j) {
-        Real value = spreadNode.nodeValue(j);
-        Real h = 1.0e-7 * std::max(std::abs(value), 0.01);
-        spreadNode.setNodeValue(j, value + h);
+        Real x = spreadNode.nodeValue(j);
+        Real h = 1.0e-7 * std::max(std::abs(x), 0.01);
+        spreadNode.setNodeValue(j, x + h);
         DiscountFactor up = curve->discount(sensitivityDate, true);
-        spreadNode.setNodeValue(j, value - h);
+        spreadNode.setNodeValue(j, x - h);
         DiscountFactor down = curve->discount(sensitivityDate, true);
-        spreadNode.setNodeValue(j, value);
+        spreadNode.setNodeValue(j, x);
         Real numerical = (up - down) / (2.0 * h);
         Real tolerance = 2.0e-6 * std::max(1.0, std::abs(numerical));
-        BOOST_CHECK_SMALL(extrapolatedRow[j - 1] - numerical, tolerance);
+        QL_CHECK_SMALL(extrapolatedRow[j - 1] - numerical, tolerance);
     }
 
     // Check that we reprice the swaps.
@@ -3096,8 +3096,8 @@ BOOST_AUTO_TEST_CASE(testCrossCurveJacobian) {
     BOOST_REQUIRE_EQUAL(partialInverse.columns(), strictInverse.columns());
     for (Size i = 0; i < partialInverse.rows(); ++i)
         for (Size j = 0; j < partialInverse.columns(); ++j)
-            BOOST_CHECK_SMALL(partialInverse[i][j] - strictInverse[i][j],
-                              1.0e-10);
+            QL_CHECK_SMALL(partialInverse[i][j] - strictInverse[i][j],
+                           1.0e-10);
 
     // projection-helper sensitivity to discount nodes
     std::vector<bool> analytic;
@@ -3188,10 +3188,10 @@ BOOST_AUTO_TEST_CASE(testCurveSensitivityPropagation) {
     rhs[1][1] = 12.0;
     Matrix solution = detail::checkedQrSolve(
         diagonal, rhs, "test Jacobian");
-    BOOST_CHECK_SMALL(solution[0][0] - 1.0, 1.0e-12);
-    BOOST_CHECK_SMALL(solution[0][1] - 2.0, 1.0e-12);
-    BOOST_CHECK_SMALL(solution[1][0] - 2.0, 1.0e-12);
-    BOOST_CHECK_SMALL(solution[1][1] - 3.0, 1.0e-12);
+    QL_CHECK_SMALL(solution[0][0] - 1.0, 1.0e-12);
+    QL_CHECK_SMALL(solution[0][1] - 2.0, 1.0e-12);
+    QL_CHECK_SMALL(solution[1][0] - 2.0, 1.0e-12);
+    QL_CHECK_SMALL(solution[1][1] - 3.0, 1.0e-12);
 
     // An unrelated singular component is not factored when extracting a
     // block from another component.
@@ -3205,7 +3205,7 @@ BOOST_AUTO_TEST_CASE(testCurveSensitivityPropagation) {
         detail::inverseCurveJacobianBlock(disconnected, 0, 0);
     BOOST_REQUIRE_EQUAL(selected.rows(), 1);
     BOOST_REQUIRE_EQUAL(selected.columns(), 1);
-    BOOST_CHECK_SMALL(selected[0][0] - 0.5, 1.0e-12);
+    QL_CHECK_SMALL(selected[0][0] - 0.5, 1.0e-12);
 
     // A cyclic dependency component is solved as one system.
     detail::CurveJacobianBlocks cycle;
@@ -3220,8 +3220,8 @@ BOOST_AUTO_TEST_CASE(testCurveSensitivityPropagation) {
         Matrix(1, 1, 2.0), Matrix(1, 1, 3.0)};
     std::vector<Matrix> propagated =
         detail::propagateCurveNodeSensitivities(cycle, cycleSensitivities);
-    BOOST_CHECK_SMALL(propagated[0][0][0] - 3.0, 1.0e-12);
-    BOOST_CHECK_SMALL(propagated[1][0][0] - 2.0, 1.0e-12);
+    QL_CHECK_SMALL(propagated[0][0][0] - 3.0, 1.0e-12);
+    QL_CHECK_SMALL(propagated[1][0][0] - 2.0, 1.0e-12);
 
     // Inverse-Jacobian blocks agree with a direct inversion for a coupled
     // component.
@@ -3238,7 +3238,7 @@ BOOST_AUTO_TEST_CASE(testCurveSensitivityPropagation) {
     for (Size a = 0; a < 2; ++a)
         for (Size b = 0; b < 2; ++b) {
             Matrix block = detail::inverseCurveJacobianBlock(coupled, a, b);
-            BOOST_CHECK_SMALL(block[0][0] - fullInverse[a][b], 1.0e-12);
+            QL_CHECK_SMALL(block[0][0] - fullInverse[a][b], 1.0e-12);
         }
 
     // ESTR discount curve
@@ -3637,7 +3637,7 @@ struct CoDependentPair {
     }
 
     (void)sizeof(CoDependentCurveType);
-    constexpr Real accuracy = 1e-11;
+    constexpr double accuracy = 1e-11;
     p->curve3m = ext::make_shared<CoDependentCurveType>(
         today, helpers3m, Actual360(), LogLinear(),
         GlobalBootstrap<CoDependentCurveType>(accuracy));
@@ -4171,6 +4171,73 @@ BOOST_AUTO_TEST_CASE(testBmaHelperSwap) {
     Settings::instance().evaluationDate() = bmaCalendar.advance(today, 1 * Months);
     BOOST_CHECK(helper->swap() != swap);
     BOOST_CHECK_EQUAL(helper->swap()->startDate(), helper->earliestDate());
+}
+
+BOOST_AUTO_TEST_CASE(testSwapRateHelperDateGenerationRule) {
+    BOOST_TEST_MESSAGE("Testing SwapRateHelper date-generation rule...");
+
+    Date today = Settings::instance().evaluationDate();
+    Calendar calendar = TARGET();
+    auto index = ext::make_shared<Euribor3M>();
+
+    // an IMM swap: from an IMM date to the IMM date five years later
+    Date startDate = IMM::nextDate(today);
+    Date endDate = IMM::nextDate(startDate + 5 * Years - 1 * Weeks);
+    BOOST_REQUIRE(IMM::isIMMdate(startDate) && IMM::isIMMdate(endDate));
+
+    auto checkSchedule = [&](const Schedule& schedule, const Period& tenor,
+                             DateGeneration::Rule rule, const std::string& leg) {
+        BOOST_TEST_CONTEXT(leg << " leg") {
+            BOOST_CHECK(schedule.rule() == rule);
+            Schedule expected(startDate, endDate, tenor, calendar, ModifiedFollowing,
+                              ModifiedFollowing, rule, false);
+            BOOST_REQUIRE_EQUAL(schedule.size(), expected.size());
+            for (Size i = 0; i < schedule.size(); ++i) {
+                BOOST_CHECK_EQUAL(schedule[i], expected[i]);
+                if (rule == DateGeneration::ThirdWednesday)
+                    BOOST_CHECK_MESSAGE(IMM::isIMMdate(schedule[i], false),
+                                        schedule[i] << " is not an IMM date");
+            }
+        }
+    };
+
+    // the default rule is unchanged...
+    auto defaultHelper = ext::make_shared<SwapRateHelper>(
+        0.02, startDate, endDate, calendar, Annual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), index);
+    checkSchedule(defaultHelper->swap()->fixedSchedule(), 1 * Years,
+                  DateGeneration::Backward, "default fixed");
+    checkSchedule(defaultHelper->swap()->floatingSchedule(), 3 * Months,
+                  DateGeneration::Backward, "default floating");
+
+    // ...and with the IMM rule all the swap dates are IMM dates
+    auto immHelper = ext::make_shared<SwapRateHelper>(
+        0.02, startDate, endDate, calendar, Annual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), index, Handle<Quote>(),
+        Handle<YieldTermStructure>(), Pillar::LastRelevantDate, Date(),
+        false, std::nullopt, std::nullopt,
+        ext::shared_ptr<FloatingRateCouponPricer>(),
+        DateGeneration::ThirdWednesday);
+    checkSchedule(immHelper->swap()->fixedSchedule(), 1 * Years,
+                  DateGeneration::ThirdWednesday, "IMM fixed");
+    checkSchedule(immHelper->swap()->floatingSchedule(), 3 * Months,
+                  DateGeneration::ThirdWednesday, "IMM floating");
+
+    // the rule is also passed on by the tenor-based constructor
+    auto tenorHelper = ext::make_shared<SwapRateHelper>(
+        0.02, 5 * Years, calendar, Annual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), index, Handle<Quote>(), 0 * Days,
+        Handle<YieldTermStructure>(), Null<Natural>(),
+        Pillar::LastRelevantDate, Date(), false, std::nullopt, std::nullopt,
+        ext::shared_ptr<FloatingRateCouponPricer>(),
+        DateGeneration::ThirdWednesday);
+    for (const auto& schedule : {tenorHelper->swap()->fixedSchedule(),
+                                 tenorHelper->swap()->floatingSchedule()}) {
+        BOOST_CHECK(schedule.rule() == DateGeneration::ThirdWednesday);
+        for (Size i = 1; i < schedule.size() - 1; ++i)
+            BOOST_CHECK_MESSAGE(IMM::isIMMdate(schedule[i], false),
+                                schedule[i] << " is not an IMM date");
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

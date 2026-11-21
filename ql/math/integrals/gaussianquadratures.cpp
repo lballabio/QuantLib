@@ -149,7 +149,7 @@ namespace QuantLib {
             const Real c2 = 0.5*(a+b);
 
             return c1*integration_->operator()(
-                [c1, c2, f](Real x) { return f(c1*x+c2);});
+                [c1, c2, f](Real x) -> Real { return f(c1*x+c2);});
         }
 
         template class GaussianQuadratureIntegrator<GaussLegendreIntegration>;

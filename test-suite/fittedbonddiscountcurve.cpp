@@ -343,6 +343,60 @@ BOOST_AUTO_TEST_CASE(testConstraint) {
     BOOST_CHECK_GT(positiveCurve.fitResults().solution()[0], 0.0);
 }
 
+BOOST_AUTO_TEST_CASE(testNelsonSiegelSvenssonKappaZeroLimit) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing Nelson-Siegel and Svensson fitting at the kappa=0 limit...");
+
+    // Regression test: the (1-exp(-kappa*t))/(kappa*t) term has a
+    // removable singularity at kappa=0, whose limit is 1. A naive
+    // evaluation of the term returns 0 there (numerator and denominator
+    // both vanish), which would make the Nelson-Siegel zero rate at
+    // kappa=0 come out as c0-c2 instead of the correct c0+c1; the same
+    // applies to Svensson's second such term, which must reduce to 0 at
+    // kappa1=0 (a naive evaluation gives -c3).
+
+    Real t = 5.0;
+    Real tolerance = 1e-10;
+
+    {
+        NelsonSiegelFitting method;
+        Array x = {0.03, 0.02, 0.01, 0.0};  // c0, c1, c2, kappa=0
+        DiscountFactor d = method.discount(x, t);
+        Real zeroRate = -std::log(d) / t;
+        Real expectedZeroRate = x[0] + x[1];  // c0+c1, not c0-c2
+        if (std::fabs(zeroRate - expectedZeroRate) > tolerance) {
+            BOOST_ERROR("NelsonSiegelFitting zero rate at kappa=0 should be "
+                        << expectedZeroRate << " (c0+c1), got " << zeroRate);
+        }
+
+        // continuity: the kappa=0 value should be the limit of the
+        // formula's own values at small positive kappa
+        Array xSmallKappa = {0.03, 0.02, 0.01, 1e-8};
+        DiscountFactor dSmallKappa = method.discount(xSmallKappa, t);
+        Real zeroRateSmallKappa = -std::log(dSmallKappa) / t;
+        if (std::fabs(zeroRateSmallKappa - expectedZeroRate) > 1e-6) {
+            BOOST_ERROR("NelsonSiegelFitting zero rate is not continuous as "
+                        "kappa->0: kappa=0 gives " << expectedZeroRate
+                        << ", kappa=1e-8 gives " << zeroRateSmallKappa);
+        }
+    }
+    {
+        SvenssonFitting method;
+        // c0, c1, c2, c3, kappa, kappa1; kappa=0 exercises the first
+        // (1-exp(-kappa*t))/(kappa*t) term, kappa1=0 the second
+        Array x = {0.03, 0.02, 0.01, 0.005, 0.0, 0.0};
+        DiscountFactor d = method.discount(x, t);
+        Real zeroRate = -std::log(d) / t;
+        Real expectedZeroRate = x[0] + x[1];  // c0+c1 (c3's term -> 0, not -c3)
+        if (std::fabs(zeroRate - expectedZeroRate) > tolerance) {
+            BOOST_ERROR("SvenssonFitting zero rate at kappa=kappa1=0 should "
+                        "be " << expectedZeroRate << " (c0+c1), got "
+                        << zeroRate);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testExponentialSplinesFixedKappa) {
     BOOST_TEST_MESSAGE("Testing exponential splines fitting with fixed kappa...");
 
@@ -362,13 +416,13 @@ BOOST_AUTO_TEST_CASE(testExponentialSplinesFixedKappa) {
     ExponentialSplinesFitting unconstrainedFixed(false, 3, kappa);
     Array unconstrainedCoeffs = {0.2, 0.3, 0.5};
     FittedBondDiscountCurve curveUnconstrainedFixed(today, unconstrainedFixed, unconstrainedCoeffs, maxDate, dayCounter);
-    BOOST_CHECK_CLOSE(curveUnconstrainedFixed.discount(t), expected, 1e-10);
+    QL_CHECK_CLOSE(curveUnconstrainedFixed.discount(t), expected, 1e-10);
 
     // Free kappa with same parameters
     ExponentialSplinesFitting unconstrainedFree(false, 3, Null<Real>());
     Array unconstrainedParamsFree = {0.2, 0.3, 0.5, kappa};
     FittedBondDiscountCurve curveUnconstrainedFree(today, unconstrainedFree, unconstrainedParamsFree, maxDate, dayCounter);
-    BOOST_CHECK_CLOSE(curveUnconstrainedFree.discount(t), expected, 1e-10);
+    QL_CHECK_CLOSE(curveUnconstrainedFree.discount(t), expected, 1e-10);
 
     // Verify last coefficient affects the discount factor (not ignored)
     Array unconstrainedBumped = {0.2, 0.3, 0.6};
@@ -379,13 +433,13 @@ BOOST_AUTO_TEST_CASE(testExponentialSplinesFixedKappa) {
     ExponentialSplinesFitting constrainedFixed(true, 3, kappa);
     Array constrainedCoeffs = {0.3, 0.5};
     FittedBondDiscountCurve curveConstrainedFixed(today, constrainedFixed, constrainedCoeffs, maxDate, dayCounter);
-    BOOST_CHECK_CLOSE(curveConstrainedFixed.discount(t), expected, 1e-10);
+    QL_CHECK_CLOSE(curveConstrainedFixed.discount(t), expected, 1e-10);
 
     // Free kappa with same parameters
     ExponentialSplinesFitting constrainedFree(true, 3, Null<Real>());
     Array constrainedParamsFree = {0.3, 0.5, kappa};
     FittedBondDiscountCurve curveConstrainedFree(today, constrainedFree, constrainedParamsFree, maxDate, dayCounter);
-    BOOST_CHECK_CLOSE(curveConstrainedFree.discount(t), expected, 1e-10);
+    QL_CHECK_CLOSE(curveConstrainedFree.discount(t), expected, 1e-10);
 
     // Verify last coefficient affects the discount factor (not ignored)
     Array constrainedBumped = {0.3, 0.6};

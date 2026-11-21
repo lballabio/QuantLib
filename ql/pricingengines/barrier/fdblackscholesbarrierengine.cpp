@@ -55,7 +55,7 @@ namespace QuantLib {
             const Array& locations = mesher->locations(0);
             std::vector<Real> spots(locations.size());
             std::transform(locations.begin(), locations.end(), spots.begin(),
-                           [](Real x) { return std::exp(x); });
+                           [](Real x) -> Real { return std::exp(x); });
             return spots;
         }
 
@@ -285,10 +285,10 @@ namespace QuantLib {
             // once exercisable, the holder exercises rather than being
             // knocked out for less than the intrinsic value at the barrier
             const Real rebate = arguments_.rebate;
-            const Real exerciseValue = std::max(rebate, (*payoff)(arguments_.barrier));
+            const Real exerciseValue = std::max<Real>(rebate, (*payoff)(arguments_.barrier));
             boundaries.push_back(ext::make_shared<FdmTimeDepDirichletBoundary>(
                 mesher,
-                [=](Real t) { return t >= exerciseStart ? exerciseValue : rebate; },
+                [=](Real t) -> Real { return t >= exerciseStart ? Real(exerciseValue) : Real(rebate); },
                 0, side));
         } else {
             boundaries.push_back(
@@ -509,7 +509,7 @@ namespace QuantLib {
         FdmBoundaryConditionSet boundaries;
         boundaries.push_back(ext::make_shared<FdmTimeDepDirichletBoundary>(
             inactiveMesher,
-            [exDividendValues](Real t) { return exDividendValues->valueAt(t); },
+            [exDividendValues](Real t) -> Real { return exDividendValues->valueAt(t); },
             0, down ? FdmDirichletBoundary::Lower : FdmDirichletBoundary::Upper));
 
         FdmSolverDesc inactiveSolverDesc = {
