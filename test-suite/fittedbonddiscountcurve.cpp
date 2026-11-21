@@ -413,13 +413,17 @@ BOOST_AUTO_TEST_CASE(testExponentialSplinesFixedKappa) {
                     0.5 * std::exp(-kappa * 3.0 * t);
 
     // 1. Unconstrained: 3 coefficients, fixed kappa
+    QL_DEPRECATED_DISABLE_WARNING
     ExponentialSplinesFitting unconstrainedFixed(false, 3, kappa);
+    QL_DEPRECATED_ENABLE_WARNING
     Array unconstrainedCoeffs = {0.2, 0.3, 0.5};
     FittedBondDiscountCurve curveUnconstrainedFixed(today, unconstrainedFixed, unconstrainedCoeffs, maxDate, dayCounter);
     QL_CHECK_CLOSE(curveUnconstrainedFixed.discount(t), expected, 1e-10);
 
     // Free kappa with same parameters
+    QL_DEPRECATED_DISABLE_WARNING
     ExponentialSplinesFitting unconstrainedFree(false, 3, Null<Real>());
+    QL_DEPRECATED_ENABLE_WARNING
     Array unconstrainedParamsFree = {0.2, 0.3, 0.5, kappa};
     FittedBondDiscountCurve curveUnconstrainedFree(today, unconstrainedFree, unconstrainedParamsFree, maxDate, dayCounter);
     QL_CHECK_CLOSE(curveUnconstrainedFree.discount(t), expected, 1e-10);
@@ -430,13 +434,13 @@ BOOST_AUTO_TEST_CASE(testExponentialSplinesFixedKappa) {
     BOOST_CHECK(curveUnconstrainedBumped.discount(t) != curveUnconstrainedFixed.discount(t));
 
     // 2. Constrained at zero: first coefficient is 1 - (0.3 + 0.5) = 0.2
-    ExponentialSplinesFitting constrainedFixed(true, 3, kappa);
+    ExponentialSplinesFitting constrainedFixed(3, kappa);
     Array constrainedCoeffs = {0.3, 0.5};
     FittedBondDiscountCurve curveConstrainedFixed(today, constrainedFixed, constrainedCoeffs, maxDate, dayCounter);
     QL_CHECK_CLOSE(curveConstrainedFixed.discount(t), expected, 1e-10);
 
     // Free kappa with same parameters
-    ExponentialSplinesFitting constrainedFree(true, 3, Null<Real>());
+    ExponentialSplinesFitting constrainedFree(3, Null<Real>());
     Array constrainedParamsFree = {0.3, 0.5, kappa};
     FittedBondDiscountCurve curveConstrainedFree(today, constrainedFree, constrainedParamsFree, maxDate, dayCounter);
     QL_CHECK_CLOSE(curveConstrainedFree.discount(t), expected, 1e-10);
@@ -447,51 +451,50 @@ BOOST_AUTO_TEST_CASE(testExponentialSplinesFixedKappa) {
     BOOST_CHECK(curveConstrainedBumped.discount(t) != curveConstrainedFixed.discount(t));
 }
 
-BOOST_AUTO_TEST_CASE(testUnconstrainedFitIsRejected) {
+BOOST_AUTO_TEST_CASE(testFittingMethodsConstrainedAtZero) {
 
-    BOOST_TEST_MESSAGE("Testing that fitted bond curves require a constraint at zero to fit...");
+    BOOST_TEST_MESSAGE("Testing that fitting methods constrain the discount function at zero...");
 
-    Date today = Settings::instance().evaluationDate();
-    auto bond1 = ext::make_shared<ZeroCouponBond>(0, TARGET(), 100.0, today + Period(1, Years));
-    auto bond2 = ext::make_shared<ZeroCouponBond>(0, TARGET(), 100.0, today + Period(2, Years));
-    auto bond3 = ext::make_shared<ZeroCouponBond>(0, TARGET(), 100.0, today + Period(5, Years));
-    auto bond4 = ext::make_shared<ZeroCouponBond>(0, TARGET(), 100.0, today + Period(10, Years));
+    typedef FittedBondDiscountCurve::FittingMethod FittingMethod;
 
-    std::vector<ext::shared_ptr<BondHelper> > helpers(4);
-    helpers[0] = ext::make_shared<BondHelper>(makeQuoteHandle(99.0), bond1);
-    helpers[1] = ext::make_shared<BondHelper>(makeQuoteHandle(98.0), bond2);
-    helpers[2] = ext::make_shared<BondHelper>(makeQuoteHandle(95.0), bond3);
-    helpers[3] = ext::make_shared<BondHelper>(makeQuoteHandle(90.0), bond4);
-
-    bool constrainAtZero = false;
+    Real kappa = 0.02;
     std::vector<Time> knots = {-30.0, -20.0, 0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 40.0, 50.0};
-    std::vector<ext::shared_ptr<FittedBondDiscountCurve::FittingMethod>> methods = {
-        ext::make_shared<SimplePolynomialFitting>(3, constrainAtZero),
-        ext::make_shared<ExponentialSplinesFitting>(constrainAtZero),
-        ext::make_shared<CubicBSplinesFitting>(knots, constrainAtZero)
+
+    std::vector<ext::shared_ptr<FittingMethod>> methods = {
+        ext::make_shared<SimplePolynomialFitting>(3),
+        ext::make_shared<ExponentialSplinesFitting>(),
+        ext::make_shared<ExponentialSplinesFitting>(7, kappa),
+        ext::make_shared<CubicBSplinesFitting>(knots)
     };
 
-    for (const auto& method : methods) {
-        // without a guess, the fit used to start from a null discount
-        // function and return it unchanged, with a NaN cost...
-        FittedBondDiscountCurve curve(today, helpers, Actual365Fixed(), *method);
-        BOOST_CHECK_EXCEPTION(curve.discount(3.0), Error,
-                              ExpectedErrorMessage("must be constrained at zero"));
+    // the deprecated constructors, when passed constrainAtZero = true
+    QL_DEPRECATED_DISABLE_WARNING
+    SimplePolynomialFitting deprecatedPolynomial(3, true);
+    ExponentialSplinesFitting deprecatedExponentialSplines(true);
+    ExponentialSplinesFitting deprecatedFixedKappa(true, 7, kappa);
+    CubicBSplinesFitting deprecatedBSplines(knots, true);
+    QL_DEPRECATED_ENABLE_WARNING
 
-        // ...and with a guess, it used to converge to a curve with an
-        // arbitrary level, e.g., a discount factor of 3.5 at t = 0.
-        Array guess(method->size(), 1.0);
-        FittedBondDiscountCurve curveWithGuess(today, helpers, Actual365Fixed(), *method,
-                                               1.0e-10, 10000, guess);
-        BOOST_CHECK_EXCEPTION(curveWithGuess.discount(3.0), Error,
-                              ExpectedErrorMessage("must be constrained at zero"));
+    std::vector<const FittingMethod*> deprecated = {
+        &deprecatedPolynomial, &deprecatedExponentialSplines,
+        &deprecatedFixedKappa, &deprecatedBSplines
+    };
+
+    std::vector<Size> expectedSizes = {3, 9, 6, 6};
+
+    for (Size i = 0; i < methods.size(); ++i) {
+        BOOST_CHECK(methods[i]->constrainAtZero());
+        BOOST_CHECK_EQUAL(methods[i]->size(), expectedSizes[i]);
+        BOOST_CHECK_EQUAL(deprecated[i]->size(), expectedSizes[i]);
+
+        // any set of parameters gives a discount factor of 1 at t = 0
+        Array x(expectedSizes[i], 0.05, 0.01);
+        QL_CHECK_CLOSE(methods[i]->discount(x, 0.0), 1.0, 1.0e-10);
+
+        for (Time t : {0.5, 5.0, 20.0}) {
+            BOOST_CHECK_EQUAL(methods[i]->discount(x, t), deprecated[i]->discount(x, t));
+        }
     }
-
-    // curves built from given parameters are still allowed
-    Array parameters = {1.0, -0.03, 0.0, 0.0};
-    FittedBondDiscountCurve evaluator(today, SimplePolynomialFitting(3, constrainAtZero),
-                                      parameters, today + Period(10, Years), Actual365Fixed());
-    QL_CHECK_CLOSE(evaluator.discount(2.0), 0.94, 1.0e-10);
 }
 
 BOOST_AUTO_TEST_CASE(testNaturalCubicFittingEvaluation) {

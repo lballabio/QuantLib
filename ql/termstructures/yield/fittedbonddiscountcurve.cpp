@@ -259,13 +259,6 @@ namespace QuantLib {
             return;
         }
 
-        // Bond prices only depend on ratios of discount factors, so a
-        // fit can't determine the level of an unconstrained discount
-        // function: any multiple of it reprices the bonds equally well.
-        QL_REQUIRE(constrainAtZero_,
-                   "the discount function must be constrained at zero when fitting; "
-                   "bond prices don't determine its level");
-
         FittingCost& costFunction = *costFunction_;
 
         // start with the guess solution, if it exists

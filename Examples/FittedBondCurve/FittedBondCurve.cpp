@@ -157,7 +157,6 @@ int main(int, char* []) {
         }
 
 
-        bool constrainAtZero = true;
         Real tolerance = 1.0e-10;
         Size max = 5000;
 
@@ -166,7 +165,7 @@ int main(int, char* []) {
                                                           instrumentsB,
                                                           dc);
 
-        ExponentialSplinesFitting exponentialSplines(constrainAtZero);
+        ExponentialSplinesFitting exponentialSplines;
 
         auto ts1 = ext::make_shared<FittedBondDiscountCurve>(curveSettlementDays,
                                               calendar,
@@ -179,7 +178,7 @@ int main(int, char* []) {
         printOutput("(a) exponential splines", ts1);
 
 
-        SimplePolynomialFitting simplePolynomial(3, constrainAtZero);
+        SimplePolynomialFitting simplePolynomial(3);
 
         auto ts2 = ext::make_shared<FittedBondDiscountCurve>(curveSettlementDays,
                                                 calendar,
@@ -216,7 +215,7 @@ int main(int, char* []) {
             knotVector.push_back(knot);
         }
 
-        CubicBSplinesFitting cubicBSplines(knotVector, constrainAtZero);
+        CubicBSplinesFitting cubicBSplines(knotVector);
 
         auto ts4 = ext::make_shared<FittedBondDiscountCurve>(curveSettlementDays,
                                                    calendar,
@@ -258,7 +257,7 @@ int main(int, char* []) {
         printOutput("(f) Nelson-Siegel spread", ts6);
 
         //Fixed kappa, and 7 coefficients
-        ExponentialSplinesFitting exponentialSplinesFixed(constrainAtZero,7,0.02);
+        ExponentialSplinesFitting exponentialSplinesFixed(7,0.02);
 
         auto ts7 = ext::make_shared<FittedBondDiscountCurve>(curveSettlementDays,
                                                     calendar, 
