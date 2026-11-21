@@ -2573,6 +2573,11 @@ BOOST_AUTO_TEST_CASE(testSwapRateHelperWithCouponPricer) {
                         << std::setprecision(12) << "\n    tenor:     " << Period(d.n, d.units)
                         << "\n    NPV:       " << npv << "\n    tolerance: " << tolerance);
     }
+
+    // the pricer keeps the last index it priced with, which links back to the
+    // curve through the handle; unlink it, or the curve and its helpers leak
+    // and keep reacting to evaluation-date changes in later tests
+    curveHandle.linkTo(ext::shared_ptr<YieldTermStructure>());
 }
 
 BOOST_AUTO_TEST_CASE(testHelperDatesFromNonBusinessEvaluationDate) {
