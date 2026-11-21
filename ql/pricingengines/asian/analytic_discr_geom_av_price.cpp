@@ -70,12 +70,22 @@ namespace QuantLib {
         DayCounter divdc = process_->dividendYield()->dayCounter();
         DayCounter voldc = process_->blackVolatility()->dayCounter();
         std::vector<Time> fixingTimes;
+        // each future fixing drifts with its own forward, ln(D_q(t_i)/D_r(t_i));
+        // the fixing times on the rate and dividend clocks give rho and dividend rho
+        Real driftSum = 0.0;
+        Time rfTimeSum = 0.0, divTimeSum = 0.0;
+        Date divReferenceDate = process_->dividendYield()->referenceDate();
         Size i;
         for (i=0; i<arguments_.fixingDates.size(); i++) {
             if (arguments_.fixingDates[i]>=referenceDate) {
                 Time t = voldc.yearFraction(referenceDate,
                     arguments_.fixingDates[i]);
                 fixingTimes.push_back(t);
+                driftSum += std::log(
+                    process_->dividendYield()->discount(arguments_.fixingDates[i]) /
+                    process_->riskFreeRate()->discount(arguments_.fixingDates[i]));
+                rfTimeSum += rfdc.yearFraction(referenceDate, arguments_.fixingDates[i]);
+                divTimeSum += divdc.yearFraction(divReferenceDate, arguments_.fixingDates[i]);
             }
         }
 
@@ -100,19 +110,12 @@ namespace QuantLib {
         Real sigG = vola * dsigG_dsig;
         Real dmuG_dsig = -(vola * timeSum)/N;
 
-        Date exDate = arguments_.exercise->lastDate();
-        Rate dividendRate = process_->dividendYield()->
-            zeroRate(exDate, divdc, Continuous, NoFrequency);
-        Rate riskFreeRate = process_->riskFreeRate()->
-            zeroRate(exDate, rfdc, Continuous, NoFrequency);
-        Rate nu = riskFreeRate - dividendRate - 0.5*vola*vola;
-
         Real s = process_->stateVariable()->value();
         QL_REQUIRE(s > 0.0, "positive underlying value required");
 
         Size M = (pastFixings == 0 ? 1 : pastFixings);
         Real muG = pastWeight * runningLog/M +
-            futureWeight * std::log(s) + nu*timeSum/N;
+            futureWeight * std::log(s) + (driftSum - 0.5*vola*vola*timeSum)/N;
         Real forwardPrice = std::exp(muG + variance / 2.0);
 
         DiscountFactor riskFreeDiscount = process_->riskFreeRate()->discount(
@@ -147,14 +150,13 @@ namespace QuantLib {
 
         Time tRho = rfdc.yearFraction(process_->riskFreeRate()->referenceDate(),
                                       arguments_.exercise->lastDate());
-        results_.rho = black.rho(tRho)*timeSum/(N*tRho)
-                      - (tRho-timeSum/N)*results_.value;
+        results_.rho = black.rho(tRho)*rfTimeSum/(N*tRho)
+                      - (tRho-rfTimeSum/N)*results_.value;
 
-        Time tDiv = divdc.yearFraction(
-                           process_->dividendYield()->referenceDate(),
-                           arguments_.exercise->lastDate());
+        Time tDiv = divdc.yearFraction(divReferenceDate,
+                                       arguments_.exercise->lastDate());
 
-        results_.dividendRho = black.dividendRho(tDiv)*timeSum/(N*tDiv);
+        results_.dividendRho = black.dividendRho(tDiv)*divTimeSum/(N*tDiv);
 
         results_.strikeSensitivity = black.strikeSensitivity();
 
