@@ -52,6 +52,8 @@ namespace QuantLib {
               payment) associated with the underlying bond falling
               between the settlementDate and the deliveryDate. (Note
               the two different discount curves used in b. and c.)
+              The income is expressed per 100 of the bond's spot notional,
+              in the same units as its dirty spot price.
 
         \todo Add preconditions and tests
 
@@ -100,7 +102,7 @@ namespace QuantLib {
         //! (dirty) forward bond price minus accrued on bond at delivery
         Real cleanForwardPrice() const;
 
-        //!  NPV of bond coupons discounted using incomeDiscountCurve
+        //!  NPV of income per 100 of the bond's spot notional
         /*! Here only coupons between max(evaluation date,settlement
             date) and maturity date of bond forward contract are
             considered income.
