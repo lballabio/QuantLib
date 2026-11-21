@@ -130,6 +130,36 @@ BOOST_AUTO_TEST_CASE(testClaytonCopulaRng) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testFrankCopulaStrongDependence) {
+    BOOST_TEST_MESSAGE("Testing Frank copula at strong finite dependence...");
+
+    const FrankCopula moderate(40.0);
+    QL_CHECK_SMALL(moderate(0.95, 0.95) - 0.9344229684900084, 1e-14);
+
+    const FrankCopula positive(1000.0), negative(-1000.0);
+    QL_CHECK_SMALL(positive(0.5, 0.5) - 0.49930685281944005, 1e-14);
+    QL_CHECK_SMALL(negative(0.5, 0.5) - 0.0006931471805599453, 1e-14);
+    QL_CHECK_SMALL(negative(0.75, 0.75) - 0.5, 1e-14);
+    QL_CHECK_SMALL(negative(0.25, 0.5) / 2.6691902155412764e-112 - 1.0, 1e-12);
+    QL_CHECK_SMALL(positive(1e-300, 0.25) / 1e-300 - 1.0, 1e-12);
+
+    for (const Real theta : {-1000.0, -50.0, 50.0, 1000.0}) {
+        const FrankCopula copula(theta);
+        for (const Real x : {0.0, 0.25, 0.5, 0.75, 1.0}) {
+            BOOST_CHECK_EQUAL(copula(x, 1.0), x);
+            BOOST_CHECK_EQUAL(copula(1.0, x), x);
+            BOOST_CHECK_EQUAL(copula(x, 0.0), 0.0);
+            BOOST_CHECK_EQUAL(copula(0.0, x), 0.0);
+            if (x > 0.0)
+                for (const Real y : {0.25, 0.5, 0.75, 1.0}) {
+                    const Real cell = copula(x, y) - copula(x - 0.25, y)
+                                    - copula(x, y - 0.25) + copula(x - 0.25, y - 0.25);
+                    BOOST_CHECK_GE(cell, -1e-14);
+                }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testFrankCopulaRng) {
     BOOST_TEST_MESSAGE("Testing Frank copula random-number generator...");
 

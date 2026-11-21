@@ -19,6 +19,7 @@
 
 #include <ql/math/copulas/frankcopula.hpp>
 #include <ql/errors.hpp>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -34,8 +35,60 @@ namespace QuantLib {
                    "1st argument (" << x << ") must be in [0,1]");
         QL_REQUIRE(y >= 0.0 && y <=1.0 ,
                    "2nd argument (" << y << ") must be in [0,1]");
-        using namespace std;
-        return -1.0/theta_  *  log(1 + (exp(-theta_*x) -1) * (exp(-theta_*y) -1) / (exp(-theta_)- 1)   );
+        if (x == 0.0 || y == 0.0)
+            return 0.0;
+        if (x == 1.0)
+            return y;
+        if (y == 1.0)
+            return x;
+
+        using std::exp;
+        using std::log;
+        using std::expm1;
+        using std::log1p;
+
+        if (theta_ > 1.0) {
+            const Real a = x < y ? x : y;
+            const Real b = x < y ? y : x;
+            const Real u = -theta_ * a, v = -theta_ * b, t = -theta_;
+            const Real ax = -expm1(u), bx = -expm1(v), total = -expm1(t);
+            const Real p = ax * bx / total;
+            if (p < 0.5) {
+                const Real arg = -p;
+                return -log1p(arg) / theta_;
+            }
+            // Factor exp(-theta*a) out of
+            // exp(-theta*a) - exp(-theta) + exp(-theta*b)*(1-exp(-theta*a)).
+            const Real rem = -theta_ * (1.0 - a);
+            const Real sep = -theta_ * (b - a);
+            const Real bracket = -expm1(rem) + exp(sep) * ax;
+            const Real logTotal = log(total);
+            return a + (logTotal - log(bracket)) / theta_;
+        }
+        if (theta_ < -1.0) {
+            const Real a = x < y ? x : y;
+            const Real b = x < y ? y : x;
+            const Real k = -theta_;
+            const Real tx = -k * a, ty = -k * b, tk = -k;
+            const Real ax = -expm1(tx), bx = -expm1(ty), total = -expm1(tk);
+            const Real logAx = log(ax), logBx = log(bx), logTotal = log(total);
+            // Compute a+b-1 before multiplying by k. Near a+b=1 the two
+            // differences are exact in binary floating point.
+            const Real sumMinusOne = b >= 0.5
+                ? Real(a - (1.0 - b)) : Real((a - 0.5) + (b - 0.5));
+            const Real z = k * sumMinusOne + logAx + logBx - logTotal;
+            if (z > 0.0) {
+                const Real arg = -z, correction = exp(arg);
+                return (z + log1p(correction)) / k;
+            }
+            const Real correction = exp(z);
+            return log1p(correction) / k;
+        }
+
+        // Preserve the existing weak-dependence interior calculation.
+        const Real tx = -theta_ * x, ty = -theta_ * y, t = -theta_;
+        const Real base = 1.0 + (exp(tx) - 1.0) * (exp(ty) - 1.0) / (exp(t) - 1.0);
+        return -1.0 / theta_ * log(base);
     }
 
 }
