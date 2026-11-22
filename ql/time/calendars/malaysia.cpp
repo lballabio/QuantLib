@@ -255,7 +255,7 @@ namespace QuantLib {
 
     Malaysia::Malaysia(Market) {
         // all calendar instances share the same implementation instance
-        static ext::shared_ptr<Calendar::Impl> impl(new Malaysia::KlseImpl);
+        static auto impl = ext::make_shared<Malaysia::KlseImpl>();
         impl_ = impl;
     }
 

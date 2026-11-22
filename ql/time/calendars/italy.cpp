@@ -25,10 +25,8 @@ namespace QuantLib {
     Italy::Italy(Italy::Market market) {
         // all calendar instances on the same market share the same
         // implementation instance
-        static ext::shared_ptr<Calendar::Impl> settlementImpl(
-                                                   new Italy::SettlementImpl);
-        static ext::shared_ptr<Calendar::Impl> exchangeImpl(
-                                                   new Italy::ExchangeImpl);
+        static auto settlementImpl = ext::make_shared<Italy::SettlementImpl>();
+        static auto exchangeImpl = ext::make_shared<Italy::ExchangeImpl>();
         QL_DEPRECATED_DISABLE_WARNING
         switch (market) {
           case Settlement:
