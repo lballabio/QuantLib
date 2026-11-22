@@ -19,6 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/errors.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
@@ -33,11 +34,16 @@ namespace QuantLib {
         const Date& referenceDate,
         const DayCounter& dayCounter,
         Size equityDirection,
-        Real valueBelowGrid)
+        Real lowerBarrier,
+        Real valueBelowBarrier)
     : x_(mesher->layout()->dim()[equityDirection]),
       mesher_(mesher),
       equityDirection_(equityDirection),
-      valueBelowGrid_(valueBelowGrid) {
+      lowerBarrier_(lowerBarrier),
+      valueBelowBarrier_(valueBelowBarrier) {
+
+        QL_REQUIRE((lowerBarrier == Null<Real>()) == (valueBelowBarrier == Null<Real>()),
+                   "lower barrier and value below it must be given together");
 
         dividends_.reserve(schedule.size());
         dividendDates_.reserve(schedule.size());
@@ -77,8 +83,10 @@ namespace QuantLib {
 
             const auto exDividendValue =
                 [&](const LinearInterpolation& interp, Real exDividendSpot) -> Real {
-                    if (valueBelowGrid_ != Null<Real>() && exDividendSpot < x_[0])
-                        return valueBelowGrid_;
+                    // compare with the barrier itself: x_[0] = exp(log(H))
+                    // can differ from H by rounding
+                    if (lowerBarrier_ != Null<Real>() && exDividendSpot <= lowerBarrier_)
+                        return valueBelowBarrier_;
                     return interp(std::max<Real>(x_[0], exDividendSpot), true);
                 };
 

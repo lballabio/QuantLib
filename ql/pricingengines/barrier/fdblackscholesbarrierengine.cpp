@@ -255,6 +255,7 @@ namespace QuantLib {
         auto dividendCondition = ext::make_shared<FdmDividendHandler>(dividends_, mesher,
                                    process_->riskFreeRate()->referenceDate(),
                                    process_->riskFreeRate()->dayCounter(), 0,
+                                   downBarrier ? Real(arguments_.barrier) : Real(Null<Real>()),
                                    downBarrier ? Real(arguments_.rebate) : Real(Null<Real>()));
 
         if (!dividends_.empty()) {
