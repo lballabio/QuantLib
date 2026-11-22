@@ -32,6 +32,7 @@
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
@@ -2762,6 +2763,139 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion) {
                 << "\n  diff      : " << diffNPV
                 << "\n  tolerance : " << tolNPV);
     }
+}
+
+BOOST_AUTO_TEST_CASE(testSmallSigmaCosAndDensity) {
+    BOOST_TEST_MESSAGE("Testing COS Heston prices and density around small vol-of-vol...");
+
+    const Date today = Settings::instance().evaluationDate();
+    const DayCounter dc = Actual365Fixed();
+    const Handle<YieldTermStructure> rates(flatRate(today, 0.0, dc));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    const Time t = 2.0;
+    VanillaOption option(ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0),
+                         ext::make_shared<EuropeanExercise>(today + 730));
+
+    // References from high-precision Riccati ODE solutions and Fourier inversion.
+    const struct {
+        Real sigma, call, pdf, cdf;
+        std::complex<Real> chf;
+    } cases[] = {
+        {1.01e-6, 11.7350854089696712, 1.2144810069630235, 0.3220063005772161,
+         {0.6697995347512808, -0.0880686607591204}},
+        {0.99e-6, 11.7350854247887737, 1.2144810239416628, 0.3220063027211627,
+         {0.6697995356152690, -0.0880686652271698}},
+        {0.04, 11.6970094316265272, 1.1815342738487595, 0.3175335818395190,
+         {0.6684708988083860, -0.0790281381754291}}
+    };
+
+    for (const auto& row : cases) {
+        BOOST_TEST_CONTEXT("sigma = " << row.sigma) {
+            const auto process = ext::make_shared<HestonProcess>(
+                rates, rates, spot, 0.04, 1.7, 0.045, row.sigma, -0.65);
+            const auto model = ext::make_shared<HestonModel>(process);
+            const auto cos = ext::make_shared<COSHestonEngine>(model);
+            const auto analytic = ext::make_shared<AnalyticHestonEngine>(
+                model, AnalyticHestonEngine::AndersenPiterbarg,
+                AnalyticHestonEngine::Integration::gaussLaguerre(128));
+
+            QL_CHECK_SMALL(std::abs(analytic->chF(3.0, t) - row.chf), 1e-12);
+            QL_CHECK_SMALL(std::abs(cos->chF(3.0, t) - row.chf), 1e-12);
+
+            option.setPricingEngine(analytic);
+            QL_CHECK_SMALL(option.NPV() - row.call, 1e-8);
+            option.setPricingEngine(cos);
+            QL_CHECK_SMALL(option.NPV() - row.call, 1e-8);
+
+            const HestonRNDCalculator density(process, 1e-8);
+            const Real x = std::log(spot->value()) - 0.18;
+            // The density integral truncates its transformed lower tail at QL_EPSILON.
+            BOOST_CHECK_NO_THROW({ QL_CHECK_SMALL(density.pdf(x, t) - row.pdf, 2e-7); });
+            BOOST_CHECK_NO_THROW({ QL_CHECK_SMALL(density.cdf(x, t) - row.cdf, 1e-8); });
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSmallSigmaPiecewiseTimeDependent) {
+    BOOST_TEST_MESSAGE("Testing small vol-of-vol in piecewise Heston characteristic functions...");
+
+    const Date today = Settings::instance().evaluationDate();
+    const DayCounter dc = Actual365Fixed();
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.03, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.01, dc));
+    const Time t = 2.0;
+    const DiscountFactor discount = rTS->discount(t);
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0 * discount / qTS->discount(t)));
+    VanillaOption option(ext::make_shared<PlainVanillaPayoff>(Option::Call, 110.0),
+                         ext::make_shared<EuropeanExercise>(today + 730));
+
+    const std::vector<Time> breaks = {0.35, 0.9, 1.7};
+    const std::vector<Time> times = {0.35, 0.9, 1.7, 2.5};
+    const TimeGrid grid(times.begin(), times.end());
+    PiecewiseConstantParameter kappa(breaks, PositiveConstraint());
+    PiecewiseConstantParameter theta(breaks, PositiveConstraint());
+    PiecewiseConstantParameter rho(breaks, BoundaryConstraint(-1.0, 1.0));
+    const Real kappas[] = {1.3, 2.2, 0.85, 1.6};
+    const Real thetas[] = {0.035, 0.053, 0.025, 0.062};
+    const Real rhos[] = {-0.65, 0.20, -0.35, 0.55};
+    const Real sigmaFactors[] = {1.0, 1.11, 1.33, 1.23};
+    for (Size i = 0; i < std::size(kappas); ++i) {
+        kappa.setParam(i, kappas[i]);
+        theta.setParam(i, thetas[i]);
+        rho.setParam(i, rhos[i]);
+    }
+
+    // The references include the partial final time segment and use a forward of 100.
+    const struct {
+        Real sigmaScale, undiscountedCall;
+        std::complex<Real> chf;
+    } cases[] = {
+        {1.01e-6, 7.7679398680091249, {0.6768436515410276, 8.281073659699655e-8}},
+        {0.99e-6, 7.7679398872209405, {0.6768436512677145, 8.117092019765175e-8}},
+        {0.04, 7.7197472008084309, {0.6777991199394377, 0.0032551458850862}}
+    };
+
+    using Engine = AnalyticPTDHestonEngine;
+    for (const auto& row : cases) {
+        BOOST_TEST_CONTEXT("sigma scale = " << row.sigmaScale) {
+            PiecewiseConstantParameter sigma(breaks, PositiveConstraint());
+            for (Size i = 0; i < std::size(sigmaFactors); ++i)
+                sigma.setParam(i, row.sigmaScale * sigmaFactors[i]);
+
+            const auto model = ext::make_shared<PiecewiseTimeDependentHestonModel>(
+                rTS, qTS, spot, 0.04, theta, kappa, sigma, rho, grid);
+            const auto gatheral = ext::make_shared<Engine>(model, 128);
+            const auto andersenPiterbarg = ext::make_shared<Engine>(
+                model, Engine::AndersenPiterbarg, Engine::Integration::gaussLaguerre(128));
+            const std::complex<Real> z(3.0, -0.5);
+            QL_CHECK_SMALL(std::abs(andersenPiterbarg->chF(z, t) - row.chf), 1e-12);
+
+            const Real expected = discount * row.undiscountedCall;
+            option.setPricingEngine(gatheral);
+            QL_CHECK_SMALL(option.NPV() - expected, 1e-8);
+            option.setPricingEngine(andersenPiterbarg);
+            QL_CHECK_SMALL(option.NPV() - expected, 1e-8);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPiecewiseTimeDependentChFNearFirstMoment) {
+    BOOST_TEST_MESSAGE("Testing piecewise Heston characteristic function near the first moment...");
+
+    const Date today = Settings::instance().evaluationDate();
+    const Handle<YieldTermStructure> rates(flatRate(today, 0.0, Actual365Fixed()));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    const Time t = 60.0;
+    const auto model = ext::make_shared<PiecewiseTimeDependentHestonModel>(
+        rates, rates, spot, 0.04, ConstantParameter(0.04, PositiveConstraint()),
+        ConstantParameter(0.1, PositiveConstraint()), ConstantParameter(0.8, PositiveConstraint()),
+        ConstantParameter(0.9, BoundaryConstraint(-1.0, 1.0)), TimeGrid(t, 1));
+    const AnalyticPTDHestonEngine engine(model);
+
+    // With rho*sigma > kappa, the exact step must retain the small exponential.
+    const std::complex<Real> expected(-0.02220143835036830, 0.04079379488105058);
+    QL_CHECK_SMALL(std::abs(engine.lnChF({1e-16, -1.0}, t) - expected), 2e-12);
+    QL_CHECK_SMALL(std::abs(engine.lnChF({0.0, -1.0}, t)), 2e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion4ExpFitting) {

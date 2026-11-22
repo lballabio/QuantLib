@@ -1974,6 +1974,9 @@
     <ClInclude Include="ql\models\equity\hestonmodelhelper.hpp">
       <Filter>models\equity</Filter>
     </ClInclude>
+    <ClInclude Include="ql\models\equity\hestonriccati.hpp">
+      <Filter>models\equity</Filter>
+    </ClInclude>
     <ClInclude Include="ql\models\equity\piecewisetimedependenthestonmodel.hpp">
       <Filter>models\equity</Filter>
     </ClInclude>

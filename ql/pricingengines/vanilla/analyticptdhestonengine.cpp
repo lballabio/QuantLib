@@ -21,10 +21,11 @@
     \brief analytic piecewise time dependent Heston-model engine
 */
 
-#include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
-#include <ql/pricingengines/vanilla/analyticptdhestonengine.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/models/equity/hestonriccati.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/pricingengines/vanilla/analyticptdhestonengine.hpp>
 
 namespace QuantLib {
 
@@ -81,6 +82,7 @@ namespace QuantLib {
 
         std::complex<Real> D = 0.0;
         std::complex<Real> C = 0.0;
+        const std::complex<Real> z(phi, j_ == 1 ? -1.0 : 0.0);
 
         for (Size i=timeGrid_.size()-1; i > 0; --i) {
             const Time begin = timeGrid_[i-1];
@@ -94,25 +96,10 @@ namespace QuantLib {
                 const Real kappa = model_->kappa(t);
                 const Real theta = model_->theta(t);
 
-                const Real sigma2 = sigma*sigma;
-                const Real t0 = kappa - ((j_== 1)? Real(rho*sigma) : 0);
-                const Real rpsig = rho*sigma*phi;
-
-                const std::complex<Real> t1 = t0+std::complex<Real>(0, -rpsig);
-                const std::complex<Real> d  = std::sqrt(t1*t1 - sigma2*phi
-                                 *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
-                const std::complex<Real> g = (t1-d)/(t1+d);
-                const std::complex<Real> gt
-                                       = (t1-d - D*sigma2)/(t1+d - D*sigma2);
-
-                D = (t1+d)/sigma2*(g-gt*std::exp(-d*tau))
-                    /(1.0-gt*std::exp(-d*tau));
-
-                const std::complex<Real> lng
-                    = std::log((1.0 - gt*std::exp(-d*tau))/(1.0 - gt));
-
-                C =(kappa*theta)/sigma2*((t1-d)*tau-2.0*lng)
-                    + std::complex<Real>(0.0, phi*(r_[i-1]-q_[i-1])*tau) + C;
+                const auto [nextD, stepC] =
+                    detail::hestonRiccatiStep(z, tau, kappa, theta, sigma, rho, D);
+                D = nextD;
+                C += stepC + std::complex<Real>(0.0, phi*(r_[i-1]-q_[i-1])*tau);
             }
         }
         return std::exp(v0_*D+C+std::complex<Real>(0.0, phi*(x_ - sx_))).imag()
@@ -181,23 +168,10 @@ namespace QuantLib {
             const Real theta = model_->theta(t);
             const Real rho   = model_->rho(t);
 
-            const Real sigma2 = sigma*sigma;
-
-            const std::complex<Real> k
-                = kappa + rho*sigma*std::complex<Real>(z.imag(), -z.real());
-
-            const std::complex<Real> d = std::sqrt(
-                k*k + (z*z + std::complex<Real>(-z.imag(), z.real()))*sigma2);
-
-            const std::complex<Real> g = (k-d)/(k+d);
-
-            const std::complex<Real> gt = (k-d-D*sigma2)/(k+d-D*sigma2);
-
-            C += kappa*theta/sigma2*( (k-d)*tau
-                   - 2.0*std::log((1.0-gt*std::exp(-d*tau))/(1.0-gt)));
-
-            D = (k+d)/sigma2 * (g - gt*std::exp(-d*tau))
-                    /(1.0 - gt*std::exp(-d*tau));
+            const auto [nextD, stepC] =
+                detail::hestonRiccatiStep(z, tau, kappa, theta, sigma, rho, D);
+            D = nextD;
+            C += stepC;
         }
 
         return D*v0 + C;

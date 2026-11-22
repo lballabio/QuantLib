@@ -19,6 +19,7 @@
 */
 
 #include <ql/math/functional.hpp>
+#include <ql/models/equity/hestonriccati.hpp>
 #include <ql/pricingengines/vanilla/coshestonengine.hpp>
 
 namespace QuantLib {
@@ -131,21 +132,8 @@ namespace QuantLib {
 
     std::complex<Real> COSHestonEngine::chF(Real u, Real t)
     const {
-        const Real sigma2 = sigma_*sigma_;
-
-        const std::complex<Real> D = std::sqrt(
-            squared(std::complex<Real>(kappa_, -rho_*sigma_*u))
-            + std::complex<Real>(u*u, u)*sigma2);
-
-        const std::complex<Real> g(kappa_, -rho_*sigma_*u);
-
-        const std::complex<Real> G = (g-D)/(g+D);
-
-        return std::exp(
-              v0_/(sigma2)*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
-             *(g-D) + kappa_*theta_/sigma2*((g-D)*t
-                -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G)))
-            );
+        const auto [D, C] = detail::hestonRiccatiStep(u, t, kappa_, theta_, sigma_, rho_);
+        return std::exp(v0_*D+C);
    }
 
    /*
