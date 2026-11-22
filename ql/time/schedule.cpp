@@ -206,21 +206,16 @@ namespace QuantLib {
                 dates_.push_back(nextToLastDate_);
                 Date temp = nullCalendar.advance(seed,
                     -periods*(*tenor_), convention, *endOfMonth_);
-                // Month-end clamping can shift the regular date by a day
-                // or two (e.g. August 30th steps back to February 28th or
-                // 29th); a supplied date in the same clamped month is still
-                // on the regular cycle.
-                bool onRegularCycle =
-                    (temp == nextToLastDate_) ||
-                    (temp.year() == nextToLastDate_.year() &&
-                     temp.month() == nextToLastDate_.month() &&
-                     temp.dayOfMonth() >= 28 &&
-                     nextToLastDate_.dayOfMonth() >= 28);
-                isRegular_.push_back(onRegularCycle);
-                if (onRegularCycle) {
-                    // The next-to-last date stands in for the regular date
-                    // at this step; keep the anchor so earlier dates stay on
-                    // the cycle of the termination date (e.g. the 30th).
+                isRegular_.push_back(temp == nextToLastDate_);
+                if (temp == nextToLastDate_) {
+                    // The supplied date is exactly the regular date at this
+                    // step (possibly a month-end clamped one, e.g. a 30th
+                    // cycle stepping back to February 28th or 29th).  Keep
+                    // the anchor instead of re-seeding from the clamped
+                    // date, so earlier dates stay on the cycle of the
+                    // termination date (e.g. the 30th).  A supplied date
+                    // that differs from the computed one is a genuine stub
+                    // and re-anchors the cycle as before.
                     ++periods;
                 } else {
                     seed = nextToLastDate_;
@@ -299,19 +294,12 @@ namespace QuantLib {
                 dates_.push_back(firstDate_);
                 Date temp = nullCalendar.advance(seed, periods*(*tenor_),
                                                  convention, *endOfMonth_);
-                // Month-end clamping can shift the regular date by a day
-                // or two; a supplied date in the same clamped month is
-                // still on the regular cycle (see the Backward case).
-                bool onRegularCycle =
-                    (temp == firstDate_) ||
-                    (temp.year() == firstDate_.year() &&
-                     temp.month() == firstDate_.month() &&
-                     temp.dayOfMonth() >= 28 &&
-                     firstDate_.dayOfMonth() >= 28);
-                isRegular_.push_back(onRegularCycle);
-                if (onRegularCycle) {
-                    // keep the anchor so later dates stay on the cycle of
-                    // the effective date
+                isRegular_.push_back(temp == firstDate_);
+                if (temp == firstDate_) {
+                    // Same as the Backward case: keep the anchor when the
+                    // supplied date is exactly the regular (possibly
+                    // clamped) date at this step; a differing date is a
+                    // genuine stub and re-anchors the cycle as before.
                     ++periods;
                 } else {
                     seed = firstDate_;

@@ -1402,10 +1402,12 @@ BOOST_AUTO_TEST_CASE(testClampedStubDateKeepsCycleDayOfMonth) {
         "Testing that a month-end-clamped first or next-to-last date does "
         "not reset the schedule's cycle day-of-month...");
 
-    // Reproduces issue #2937: a bond paying on the 30th semi-annually has
-    // its February date clamped to the 28th or 29th.  Passing that clamped
+    // Issue #2937: a bond paying on the 30th semi-annually has its
+    // February date clamped to the 28th or 29th.  Passing that clamped
     // date as nextToLastDate (or firstDate) must not re-anchor the cycle
-    // to the 28th.
+    // to the 28th.  The clamped date supplied must be exactly the date
+    // the cycle produces; a date merely in the same month is a genuine
+    // stub and keeps the documented re-anchoring behavior.
 
     NullCalendar calendar;
 
@@ -1416,7 +1418,7 @@ BOOST_AUTO_TEST_CASE(testClampedStubDateKeepsCycleDayOfMonth) {
         calendar, Unadjusted, Unadjusted,
         DateGeneration::Backward, false,
         Date(),
-        Date(28, February, 2028));   // nextToLastDate
+        Date(29, February, 2028));   // nextToLastDate (2028 is a leap year)
 
     check_dates(backward, {
         Date(30, August, 2025),
@@ -1424,7 +1426,7 @@ BOOST_AUTO_TEST_CASE(testClampedStubDateKeepsCycleDayOfMonth) {
         Date(30, August, 2026),
         Date(28, February, 2027),
         Date(30, August, 2027),
-        Date(28, February, 2028),
+        Date(29, February, 2028),
         Date(30, August, 2028)});
 
     Schedule forward(
@@ -1443,6 +1445,48 @@ BOOST_AUTO_TEST_CASE(testClampedStubDateKeepsCycleDayOfMonth) {
         Date(28, February, 2027),
         Date(30, August, 2027),
         Date(29, February, 2028),
+        Date(30, August, 2028)});
+
+    // A supplied date that is not the computed cycle date is a genuine
+    // stub, even within a month where clamping would be plausible:
+    // January has 31 days, so a 30th cycle needs no clamping and
+    // January 28th re-anchors the cycle to the 28th, as documented.
+    Schedule januaryStub(
+        Date(30, July, 2023),
+        Date(30, July, 2025),
+        Period(Semiannual),
+        calendar, Unadjusted, Unadjusted,
+        DateGeneration::Backward, false,
+        Date(),
+        Date(28, January, 2025));
+
+    check_dates(januaryStub, {
+        Date(30, July, 2023),
+        Date(28, January, 2024),
+        Date(28, July, 2024),
+        Date(28, January, 2025),
+        Date(30, July, 2025)});
+
+    BOOST_CHECK(!januaryStub.isRegular(1));
+
+    // The same holds for a February 28th supplied in a leap year, where
+    // the clamped cycle date is February 29th.
+    Schedule offCycleFebruary(
+        Date(30, August, 2025),
+        Date(30, August, 2028),
+        Period(Semiannual),
+        calendar, Unadjusted, Unadjusted,
+        DateGeneration::Backward, false,
+        Date(),
+        Date(28, February, 2028));
+
+    check_dates(offCycleFebruary, {
+        Date(30, August, 2025),
+        Date(28, February, 2026),
+        Date(28, August, 2026),
+        Date(28, February, 2027),
+        Date(28, August, 2027),
+        Date(28, February, 2028),
         Date(30, August, 2028)});
 
     // A genuinely irregular stub is still irregular and still re-anchors.
