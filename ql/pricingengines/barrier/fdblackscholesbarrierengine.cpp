@@ -242,10 +242,20 @@ namespace QuantLib {
         std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
 
-        // 3.1 Step condition if discrete dividends
+        // 3.1 Step condition if discrete dividends.  A dividend that takes
+        //     the spot through a down barrier knocks the option out, so the
+        //     nodes it takes there get the rebate.  Once American exercise
+        //     has started, the barrier node can hold more than that: the
+        //     intrinsic value at the barrier, which the holder can only
+        //     collect on a continuous path to it.  The exercise condition
+        //     below is applied after this one, so the holder can still
+        //     exercise cum-dividend.
+        const bool downBarrier =    arguments_.barrierType == Barrier::DownIn
+                                 || arguments_.barrierType == Barrier::DownOut;
         auto dividendCondition = ext::make_shared<FdmDividendHandler>(dividends_, mesher,
                                    process_->riskFreeRate()->referenceDate(),
-                                   process_->riskFreeRate()->dayCounter(), 0);
+                                   process_->riskFreeRate()->dayCounter(), 0,
+                                   downBarrier ? Real(arguments_.rebate) : Real(Null<Real>()));
 
         if (!dividends_.empty()) {
             stepConditions.push_back(dividendCondition);

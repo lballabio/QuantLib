@@ -29,18 +29,30 @@
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/methods/finitedifferences/stepcondition.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
+#include <ql/utilities/null.hpp>
 
 namespace QuantLib {
     
     class DayCounter;
     
+    //! dividend jump condition in one equity direction
+    /*! At each dividend time, a node at spot \f$ S \f$ takes the value at
+        \f$ S - D \f$.  By default an ex-dividend spot below the grid takes
+        the value on its lower boundary.  When the lower boundary is a
+        knock-out barrier, a dividend that takes the spot below it knocks the
+        option out; passing \c valueBelowGrid, usually the rebate, assigns
+        that value instead.  This matters when the boundary holds a different
+        value, e.g. an early-exercise value that can only be collected on a
+        continuous path to the barrier.
+    */
     class FdmDividendHandler : public StepCondition<Array> {
       public:
         FdmDividendHandler(const DividendSchedule& schedule,
                            const ext::shared_ptr<FdmMesher>& mesher,
                            const Date& referenceDate,
                            const DayCounter& dayCounter,
-                           Size equityDirection);
+                           Size equityDirection,
+                           Real valueBelowGrid = Null<Real>());
 
         void applyTo(Array& a, Time t) const override;
 
@@ -56,6 +68,7 @@ namespace QuantLib {
         std::vector<Real> dividends_;
         const ext::shared_ptr<FdmMesher> mesher_;
         const Size equityDirection_;
+        const Real valueBelowGrid_;
     };
 }
 #endif

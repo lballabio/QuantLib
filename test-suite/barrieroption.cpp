@@ -1628,6 +1628,66 @@ BOOST_AUTO_TEST_CASE(testFdAmericanKnockOutWithDividends) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testFdAmericanKnockOutWithDividendThroughBarrier) {
+    BOOST_TEST_MESSAGE("Testing FD Black-Scholes engine with American knock-out options "
+                       "and dividends jumping through the barrier...");
+
+    /* A dividend that takes the spot through a down barrier knocks the
+       option out.  The path jumps over the barrier, so the holder cannot
+       exercise just inside it as on a continuous path; the only choice is
+       to exercise before the dividend, at the cum-dividend spot. */
+
+    DayCounter dc = Actual365Fixed();
+    Date today = Settings::instance().evaluationDate();
+    Date maturity = today + 182;
+
+    Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+    Handle<YieldTermStructure> qTS(flatRate(today, 0.0, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, 0.05, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, 0.30, dc));
+
+    auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(s0, qTS, rTS, volTS);
+
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 100.0);
+    auto americanExercise = ext::make_shared<AmericanExercise>(today, maturity);
+
+    // A dividend of 30 in a week knocks the option out on almost every
+    // path, so it is worth an American put expiring on the dividend date.
+    const Date dividendDate = today + 7;
+    auto engine = ext::make_shared<FdBlackScholesBarrierEngine>(
+        bsProcess, DividendVector({ dividendDate }, { 30.0 }), 200, 400);
+    BarrierOption option(Barrier::DownOut, 90.0, 0.0, payoff, americanExercise);
+    option.setPricingEngine(engine);
+    VanillaOption vanilla(payoff, ext::make_shared<AmericanExercise>(today, dividendDate));
+    vanilla.setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(bsProcess, 200, 400));
+
+    const Real calculated = option.NPV();
+    const Real expected = vanilla.NPV();
+    if (std::fabs(calculated - expected) > 1e-3*expected) {
+        BOOST_ERROR("Failed to price American knock-out option knocked out by a dividend:"
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected);
+    }
+
+    // With a rebate, the holder can wait to be knocked out, almost surely,
+    // and receive it at the dividend date, but cannot get more than the
+    // American put expiring then plus the rebate.
+    const Real rebate = 3.0;
+    BarrierOption rebateOption(Barrier::DownOut, 90.0, rebate, payoff, americanExercise);
+    rebateOption.setPricingEngine(engine);
+
+    const Real rebateValue = rebateOption.NPV();
+    const Real lowerBound = rebate*rTS->discount(dividendDate);
+    const Real upperBound = expected + rebate;
+    if (rebateValue < lowerBound - 1e-6 || rebateValue > upperBound + 1e-6) {
+        BOOST_ERROR("Failed to price American knock-out option with rebate knocked out "
+                    "by a dividend within bounds:"
+                    << "\n    calculated:  " << rebateValue
+                    << "\n    lower bound: " << lowerBound
+                    << "\n    upper bound: " << upperBound);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testFdAmericanKnockOutWithDeferredExercise) {
     BOOST_TEST_MESSAGE("Testing FD Black-Scholes engine with American knock-out options "
                        "and deferred exercise...");

@@ -32,10 +32,12 @@ namespace QuantLib {
         const ext::shared_ptr<FdmMesher>& mesher,
         const Date& referenceDate,
         const DayCounter& dayCounter,
-        Size equityDirection)
+        Size equityDirection,
+        Real valueBelowGrid)
     : x_(mesher->layout()->dim()[equityDirection]),
       mesher_(mesher),
-      equityDirection_(equityDirection) {
+      equityDirection_(equityDirection),
+      valueBelowGrid_(valueBelowGrid) {
 
         dividends_.reserve(schedule.size());
         dividendDates_.reserve(schedule.size());
@@ -73,10 +75,17 @@ namespace QuantLib {
         if (iter != dividendTimes_.end()) {
             const Real dividend = dividends_[iter - dividendTimes_.begin()];
 
+            const auto exDividendValue =
+                [&](const LinearInterpolation& interp, Real exDividendSpot) -> Real {
+                    if (valueBelowGrid_ != Null<Real>() && exDividendSpot < x_[0])
+                        return valueBelowGrid_;
+                    return interp(std::max<Real>(x_[0], exDividendSpot), true);
+                };
+
             if (mesher_->layout()->dim().size() == 1) {
                 LinearInterpolation interp(x_.begin(), x_.end(), aCopy.begin());
                 for (Size k=0; k<x_.size(); ++k) {
-                    a[k] = interp(std::max(x_[0], x_[k]-dividend), true);
+                    a[k] = exDividendValue(interp, x_[k]-dividend);
                 }
             }
             else {
@@ -95,8 +104,7 @@ namespace QuantLib {
                                                        tmp.begin());
                             for (Size k=0; k<x_.size(); ++k) {
                                 Size index = j*ySpacing + k*xSpacing;
-                                a[index] = interp(
-                                        std::max(x_[0], x_[k]-dividend), true);
+                                a[index] = exDividendValue(interp, x_[k]-dividend);
                             }
                         }
                     }
