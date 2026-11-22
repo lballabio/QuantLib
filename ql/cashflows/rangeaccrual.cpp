@@ -72,6 +72,8 @@ namespace QuantLib {
                    "incompatible start date");
         QL_REQUIRE(observationSchedule_.endDate()==endDate,
                    "incompatible end date");
+        // below we remove start and end dates from the observation schedule
+        QL_REQUIRE(observationSchedule_.size() >= 3, "at least one observation date required");
 
         observationDates_ = observationSchedule_.dates();
         observationDates_.pop_back();                       //remove end date
