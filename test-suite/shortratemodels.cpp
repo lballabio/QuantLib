@@ -649,8 +649,8 @@ BOOST_AUTO_TEST_CASE(testCoxIngersollRossDiscountFactorForSmallSigma) {
 
     QL_CHECK_CLOSE_FRACTION(calculated, expected, 1.0e-10);
 
-    // ordinary sigma and tiny k, against the closed form evaluated in
-    // high-precision arithmetic
+    // an ordinary case and a tiny-k case, against the closed form
+    // evaluated in high-precision arithmetic
     const CoxIngersollRoss ordinary(r0, theta, k, 0.1, false);
     QL_CHECK_CLOSE_FRACTION(ordinary.discountBond(0.0, maturity, r0),
                             0.33951619180583830077, 1.0e-12);
