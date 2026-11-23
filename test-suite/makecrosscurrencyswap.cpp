@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2026 dakshbtc
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -25,7 +27,6 @@
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/instruments/makeconstnotionalcrosscurrencybasisswap.hpp>
 #include <ql/instruments/makeconstnotionalcrosscurrencyfixedvsfloatingswap.hpp>
-#include <ql/instruments/makeconstnotionalcrosscurrencyswap.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/pricingengines/swap/discountingconstnotionalcrosscurrencyswapengine.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -79,7 +80,8 @@ BOOST_AUTO_TEST_CASE(testConstNotionalBasisSwapBuilder) {
     CommonVars vars;
 
     ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> swap =
-        MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex, 10000000.0)
+        MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex)
+            .withPayNominal(10000000.0)
             .withFxSpot(vars.spotFX)
             .withPayDiscountCurve(vars.eurCurve)
             .withRecDiscountCurve(vars.usdCurve);
@@ -95,7 +97,8 @@ BOOST_AUTO_TEST_CASE(testConstNotionalBasisSwapBuilder) {
 
     // Rebuilding the swap at the fair pay spread should reprice it to par.
     ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> parSwap =
-        MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex, 10000000.0)
+        MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex)
+            .withPayNominal(10000000.0)
             .withFxSpot(vars.spotFX)
             .withPaySpread(fairPaySpread)
             .withPayDiscountCurve(vars.eurCurve)
@@ -114,8 +117,8 @@ BOOST_AUTO_TEST_CASE(testConstNotionalFixedVsFloatingBuilder) {
 
     // Fixed rate left unspecified: the builder should solve for the fair rate.
     ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> swap =
-        MakeConstNotionalCrossCurrencyFixedVsFloatingSwap(5 * Years, EURCurrency(), vars.usdIndex,
-                                                           Null<Rate>(), 10000000.0)
+        MakeConstNotionalCrossCurrencyFixedVsFloatingSwap(5 * Years, EURCurrency(), vars.usdIndex)
+            .withFloatNominal(10000000.0)
             .withFxSpot(vars.spotFX)
             .withFixedDiscountCurve(vars.eurCurve)
             .withFloatDiscountCurve(vars.usdCurve);
@@ -128,8 +131,9 @@ BOOST_AUTO_TEST_CASE(testConstNotionalFixedVsFloatingBuilder) {
 
     // Explicit fixed rate: fairRate()/fairSpread() should still be available.
     ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> offMarketSwap =
-        MakeConstNotionalCrossCurrencyFixedVsFloatingSwap(5 * Years, EURCurrency(), vars.usdIndex,
-                                                           0.02, 10000000.0)
+        MakeConstNotionalCrossCurrencyFixedVsFloatingSwap(5 * Years, EURCurrency(), vars.usdIndex)
+            .withFixedRate(0.02)
+            .withFloatNominal(10000000.0)
             .withFxSpot(vars.spotFX)
             .withFixedDiscountCurve(vars.eurCurve)
             .withFloatDiscountCurve(vars.usdCurve);
@@ -138,37 +142,15 @@ BOOST_AUTO_TEST_CASE(testConstNotionalFixedVsFloatingBuilder) {
     BOOST_CHECK(offMarketSwap->fairSpread() != Null<Spread>());
 }
 
-BOOST_AUTO_TEST_CASE(testConstNotionalCrossCurrencySwapGenericBuilder) {
-    BOOST_TEST_MESSAGE("Testing MakeConstNotionalCrossCurrencySwap generic builder...");
-
-    CommonVars vars;
-
-    Date start = TARGET().advance(vars.today, 2 * Days);
-    Schedule schedule(start, start + 2 * Years, 3 * Months, TARGET(), ModifiedFollowing,
-                      ModifiedFollowing, DateGeneration::Backward, false);
-
-    Leg payLeg = IborLeg(schedule, vars.eurIndex).withNotionals(1000000.0);
-    Leg recLeg = IborLeg(schedule, vars.usdIndex).withNotionals(1100000.0);
-
-    ext::shared_ptr<ConstNotionalCrossCurrencySwap> swap =
-        MakeConstNotionalCrossCurrencySwap(payLeg, EURCurrency(), recLeg, USDCurrency())
-            .withFxSpot(vars.spotFX)
-            .withPayDiscountCurve(vars.eurCurve)
-            .withRecDiscountCurve(vars.usdCurve);
-
-    BOOST_CHECK_NO_THROW(swap->NPV());
-    BOOST_CHECK_EQUAL(swap->legCurrency(0), EURCurrency());
-    BOOST_CHECK_EQUAL(swap->legCurrency(1), USDCurrency());
-}
-
 BOOST_AUTO_TEST_CASE(testMtMBasisSwapBuilder) {
     BOOST_TEST_MESSAGE("Testing MakeMtMCrossCurrencyBasisSwap builder...");
 
     CommonVars vars;
 
     ext::shared_ptr<MtMCrossCurrencyBasisSwap> swap =
-        MakeMtMCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex,
-                                      /*isFxBaseCurrencyLegResettable=*/true, 10000000.0)
+        MakeMtMCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex)
+            .withFxBaseCurrencyLegResettable(true)
+            .withFxBaseNominal(10000000.0)
             .withFxSpot(vars.spotFX)
             .withFxBaseDiscountCurve(vars.eurCurve)
             .withFxQuoteDiscountCurve(vars.usdCurve);
@@ -179,7 +161,8 @@ BOOST_AUTO_TEST_CASE(testMtMBasisSwapBuilder) {
     BOOST_CHECK(fairFxQuoteSpread != Null<Spread>());
 
     ext::shared_ptr<MtMCrossCurrencyBasisSwap> parSwap =
-        MakeMtMCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex, true, 10000000.0)
+        MakeMtMCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex)
+            .withFxBaseNominal(10000000.0)
             .withFxSpot(vars.spotFX)
             .withFxBaseSpread(fairFxBaseSpread)
             .withFxBaseDiscountCurve(vars.eurCurve)
@@ -197,7 +180,8 @@ BOOST_AUTO_TEST_CASE(testAutoAttachedEngineMatchesManualEngine) {
     const Real nominal = 10000000.0;
 
     ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> autoSwap =
-        MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex, nominal)
+        MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex)
+            .withPayNominal(nominal)
             .withPaySpread(0.0025)
             .withFxSpot(vars.spotFX)
             .withPayDiscountCurve(vars.eurCurve)
@@ -205,7 +189,8 @@ BOOST_AUTO_TEST_CASE(testAutoAttachedEngineMatchesManualEngine) {
 
     // same trade, with the engine wired up by hand
     ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> manualSwap =
-        MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex, nominal)
+        MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex)
+            .withPayNominal(nominal)
             .withPaySpread(0.0025)
             .withFxSpot(vars.spotFX);
     manualSwap->setPricingEngine(ext::make_shared<DiscountingConstNotionalCrossCurrencySwapEngine>(
@@ -235,7 +220,8 @@ BOOST_AUTO_TEST_CASE(testNotionalDerivationFromFxSpot) {
 
     // spot is quoted as receive currency per pay currency
     ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> basisSwap =
-        MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex, nominal)
+        MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex)
+            .withPayNominal(nominal)
             .withFxSpot(vars.spotFX)
             .withPayDiscountCurve(vars.eurCurve)
             .withRecDiscountCurve(vars.usdCurve);
@@ -244,8 +230,9 @@ BOOST_AUTO_TEST_CASE(testNotionalDerivationFromFxSpot) {
     // spot is quoted as floating currency per fixed currency, so the fixed
     // notional is the floating one divided by the spot
     ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> fixedVsFloating =
-        MakeConstNotionalCrossCurrencyFixedVsFloatingSwap(5 * Years, EURCurrency(), vars.usdIndex,
-                                                          0.02, nominal)
+        MakeConstNotionalCrossCurrencyFixedVsFloatingSwap(5 * Years, EURCurrency(), vars.usdIndex)
+            .withFixedRate(0.02)
+            .withFloatNominal(nominal)
             .withFxSpot(vars.spotFX)
             .withFixedDiscountCurve(vars.eurCurve)
             .withFloatDiscountCurve(vars.usdCurve);
@@ -253,20 +240,37 @@ BOOST_AUTO_TEST_CASE(testNotionalDerivationFromFxSpot) {
 
     // spot is quoted as fx-quote currency per fx-base currency
     ext::shared_ptr<MtMCrossCurrencyBasisSwap> mtmSwap =
-        MakeMtMCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex, true, nominal)
+        MakeMtMCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex)
+            .withFxBaseNominal(nominal)
             .withFxSpot(vars.spotFX)
             .withFxBaseDiscountCurve(vars.eurCurve)
             .withFxQuoteDiscountCurve(vars.usdCurve);
     BOOST_CHECK_CLOSE(mtmSwap->fxQuoteNominal(), nominal * spot, 1.0e-8);
 
-    // an explicitly given notional is never overridden
-    ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> explicitNotional =
-        MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex, nominal)
-            .withFxSpot(vars.spotFX)
-            .withRecNominal(12000000.0)
-            .withPayDiscountCurve(vars.eurCurve)
-            .withRecDiscountCurve(vars.usdCurve);
-    BOOST_CHECK_CLOSE(explicitNotional->recNominal(), 12000000.0, 1.0e-8);
+    // the spot and an explicit counter-notional cannot both be supplied
+    BOOST_CHECK_THROW(
+        ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> swap =
+            MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex)
+                .withPayNominal(nominal)
+                .withFxSpot(vars.spotFX)
+                .withRecNominal(12000000.0),
+        Error);
+    BOOST_CHECK_THROW(
+        ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> swap =
+            MakeConstNotionalCrossCurrencyFixedVsFloatingSwap(5 * Years, EURCurrency(),
+                                                              vars.usdIndex)
+                .withFixedRate(0.02)
+                .withFloatNominal(nominal)
+                .withFxSpot(vars.spotFX)
+                .withFixedNominal(nominal / spot),
+        Error);
+    BOOST_CHECK_THROW(
+        ext::shared_ptr<MtMCrossCurrencyBasisSwap> swap =
+            MakeMtMCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex)
+                .withFxBaseNominal(nominal)
+                .withFxSpot(vars.spotFX)
+                .withFxQuoteNominal(nominal * spot),
+        Error);
 }
 
 BOOST_AUTO_TEST_CASE(testMissingFxSpotIsRejected) {
@@ -280,48 +284,58 @@ BOOST_AUTO_TEST_CASE(testMissingFxSpotIsRejected) {
     // swap, so an exception is expected instead.
     BOOST_CHECK_THROW(ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> swap =
                           MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex,
-                                                                   vars.usdIndex, nominal)
+                                                                   vars.usdIndex)
+                              .withPayNominal(nominal)
                               .withPayDiscountCurve(vars.eurCurve)
                               .withRecDiscountCurve(vars.usdCurve),
                       Error);
 
     BOOST_CHECK_THROW(ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> swap =
                           MakeConstNotionalCrossCurrencyFixedVsFloatingSwap(
-                              5 * Years, EURCurrency(), vars.usdIndex, 0.02, nominal)
+                              5 * Years, EURCurrency(), vars.usdIndex)
+                              .withFixedRate(0.02)
+                              .withFloatNominal(nominal)
                               .withFixedDiscountCurve(vars.eurCurve)
                               .withFloatDiscountCurve(vars.usdCurve),
                       Error);
 
     BOOST_CHECK_THROW(ext::shared_ptr<MtMCrossCurrencyBasisSwap> swap =
-                          MakeMtMCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex,
-                                                        true, nominal)
+                          MakeMtMCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex)
+                              .withFxBaseNominal(nominal)
                               .withFxBaseDiscountCurve(vars.eurCurve)
                               .withFxQuoteDiscountCurve(vars.usdCurve),
                       Error);
 
-    Date start = TARGET().advance(vars.today, 2 * Days);
-    Schedule schedule = MakeSchedule().from(start).to(start + 2 * Years).withTenor(3 * Months);
-    Leg payLeg = IborLeg(schedule, vars.eurIndex).withNotionals(nominal);
-    Leg recLeg = IborLeg(schedule, vars.usdIndex).withNotionals(nominal * 1.10);
-    BOOST_CHECK_THROW(ext::shared_ptr<ConstNotionalCrossCurrencySwap> swap =
-                          MakeConstNotionalCrossCurrencySwap(payLeg, EURCurrency(), recLeg,
-                                                              USDCurrency())
-                              .withPayDiscountCurve(vars.eurCurve)
-                              .withRecDiscountCurve(vars.usdCurve),
-                      Error);
-
-    // Legs in the same currency, on the other hand, need no FX spot at all.
-    ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> singleCurrency =
-        MakeConstNotionalCrossCurrencyBasisSwap(2 * Years, vars.eurIndex, vars.eurIndex, nominal)
-            .withRecSpread(0.0010)
-            .withPayDiscountCurve(vars.eurCurve)
-            .withRecDiscountCurve(vars.eurCurve);
-    BOOST_CHECK_NO_THROW(singleCurrency->NPV());
+    // Both legs in one currency are not a cross-currency swap.
+    BOOST_CHECK_THROW(
+        ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> swap =
+            MakeConstNotionalCrossCurrencyBasisSwap(2 * Years, vars.eurIndex, vars.eurIndex)
+                .withPayNominal(nominal)
+                .withRecSpread(0.0010)
+                .withPayDiscountCurve(vars.eurCurve)
+                .withRecDiscountCurve(vars.eurCurve),
+        Error);
+    BOOST_CHECK_THROW(
+        ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> swap =
+            MakeConstNotionalCrossCurrencyFixedVsFloatingSwap(2 * Years, EURCurrency(),
+                                                              vars.eurIndex)
+                .withFloatNominal(nominal)
+                .withFixedDiscountCurve(vars.eurCurve)
+                .withFloatDiscountCurve(vars.eurCurve),
+        Error);
+    BOOST_CHECK_THROW(
+        ext::shared_ptr<MtMCrossCurrencyBasisSwap> swap =
+            MakeMtMCrossCurrencyBasisSwap(2 * Years, vars.eurIndex, vars.eurIndex)
+                .withFxBaseNominal(nominal)
+                .withFxBaseDiscountCurve(vars.eurCurve)
+                .withFxQuoteDiscountCurve(vars.eurCurve),
+        Error);
 
     // An explicitly supplied notional and engine also make the spot redundant.
     BOOST_CHECK_NO_THROW(ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> swap =
                              MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex,
-                                                                      vars.usdIndex, nominal)
+                                                                      vars.usdIndex)
+                                 .withPayNominal(nominal)
                                  .withRecNominal(nominal * 1.10)
                                  .withPricingEngine(
                                      ext::make_shared<
@@ -340,21 +354,24 @@ BOOST_AUTO_TEST_CASE(testIncompleteDiscountCurvesAreRejected) {
     // would otherwise only surface as a null-engine error at pricing time.
     BOOST_CHECK_THROW(ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> swap =
                           MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex,
-                                                                   vars.usdIndex, nominal)
+                                                                   vars.usdIndex)
+                              .withPayNominal(nominal)
                               .withFxSpot(vars.spotFX)
                               .withPayDiscountCurve(vars.eurCurve),
                       Error);
 
     BOOST_CHECK_THROW(ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap> swap =
                           MakeConstNotionalCrossCurrencyFixedVsFloatingSwap(
-                              5 * Years, EURCurrency(), vars.usdIndex, 0.02, nominal)
+                              5 * Years, EURCurrency(), vars.usdIndex)
+                              .withFixedRate(0.02)
+                              .withFloatNominal(nominal)
                               .withFxSpot(vars.spotFX)
                               .withFloatDiscountCurve(vars.usdCurve),
                       Error);
 
     BOOST_CHECK_THROW(ext::shared_ptr<MtMCrossCurrencyBasisSwap> swap =
-                          MakeMtMCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex,
-                                                        true, nominal)
+                          MakeMtMCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex)
+                              .withFxBaseNominal(nominal)
                               .withFxSpot(vars.spotFX)
                               .withFxBaseDiscountCurve(vars.eurCurve),
                       Error);
@@ -362,7 +379,8 @@ BOOST_AUTO_TEST_CASE(testIncompleteDiscountCurvesAreRejected) {
     // Giving no curve at all remains legitimate: the user may want to attach
     // an engine to the instrument afterwards.
     ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> engineLess =
-        MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex, nominal)
+        MakeConstNotionalCrossCurrencyBasisSwap(5 * Years, vars.eurIndex, vars.usdIndex)
+            .withPayNominal(nominal)
             .withFxSpot(vars.spotFX);
     engineLess->setPricingEngine(ext::make_shared<DiscountingConstNotionalCrossCurrencySwapEngine>(
         USDCurrency(), vars.usdCurve, EURCurrency(), vars.eurCurve, vars.spotFX));
@@ -381,11 +399,13 @@ BOOST_AUTO_TEST_CASE(testDefaultPaymentConventions) {
     Date monthEnd(30, Sep, 2023);
 
     ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap> swap =
-        MakeConstNotionalCrossCurrencyBasisSwap(1 * Years, vars.eurIndex, vars.eurIndex, nominal)
+        MakeConstNotionalCrossCurrencyBasisSwap(1 * Years, vars.eurIndex, vars.usdIndex)
+            .withPayNominal(nominal)
             .withEffectiveDate(Date(30, Jun, 2023))
             .withEndOfMonth()
+            .withFxSpot(vars.spotFX)
             .withPayDiscountCurve(vars.eurCurve)
-            .withRecDiscountCurve(vars.eurCurve);
+            .withRecDiscountCurve(vars.usdCurve);
 
     ext::shared_ptr<VanillaSwap> vanillaSwap = MakeVanillaSwap(1 * Years, vars.eurIndex, 0.03)
                                                    .withEffectiveDate(Date(30, Jun, 2023))

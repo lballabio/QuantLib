@@ -294,7 +294,6 @@ set(QL_SOURCES
     instruments/makecms.cpp
     instruments/makeconstnotionalcrosscurrencybasisswap.cpp
     instruments/makeconstnotionalcrosscurrencyfixedvsfloatingswap.cpp
-    instruments/makeconstnotionalcrosscurrencyswap.cpp
     instruments/makemultipleresetsswap.cpp
     instruments/makeois.cpp
     instruments/makeswaption.cpp
@@ -1398,7 +1397,6 @@ set(QL_HEADERS
     instruments/makecms.hpp
     instruments/makeconstnotionalcrosscurrencybasisswap.hpp
     instruments/makeconstnotionalcrosscurrencyfixedvsfloatingswap.hpp
-    instruments/makeconstnotionalcrosscurrencyswap.hpp
     instruments/makemultipleresetsswap.hpp
     instruments/makeois.hpp
     instruments/makeswaption.hpp

@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2026 dakshbtc
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -37,28 +39,31 @@ namespace QuantLib {
 
         The FX-base leg is priced/quoted in the currency of \c fxBaseIndex and
         the FX-quote leg in the currency of \c fxQuoteIndex, following the
-        naming convention of \c MtMCrossCurrencyBasisSwap. The FX spot rate
-        is expressed as units of the fx-quote currency per unit of the
-        fx-base currency, and is used both to derive the fx-quote notional
-        from the fx-base notional (unless explicitly overridden) and to build
-        the pricing engine. It is required whenever the two legs are in
-        different currencies, unless both the fx-quote notional and the
-        pricing engine are given explicitly.
+        naming convention of \c MtMCrossCurrencyBasisSwap. The two legs must
+        be in different currencies. The FX spot rate is expressed as units of
+        the fx-quote currency per unit of the fx-base currency. Pass either
+        that spot, which derives the fx-quote notional and builds the pricing
+        engine, or an explicit fx-quote notional together with
+        \c withPricingEngine, not both.
 
         Payment dates default to the business-day convention of the
-        corresponding index, as in \c MakeVanillaSwap.
+        corresponding index, as in \c MakeVanillaSwap. The FX-base leg is
+        the resettable leg unless \c withFxBaseCurrencyLegResettable(false)
+        is used. The FX-base notional defaults to 1 and the swap starts on
+        spot; override either with \c withFxBaseNominal or
+        \c withForwardStart.
     */
     class MakeMtMCrossCurrencyBasisSwap {
       public:
         MakeMtMCrossCurrencyBasisSwap(const Period& swapTenor,
                                       ext::shared_ptr<IborIndex> fxBaseIndex,
-                                      ext::shared_ptr<IborIndex> fxQuoteIndex,
-                                      bool isFxBaseCurrencyLegResettable,
-                                      Real fxBaseNominal = 1.0,
-                                      const Period& forwardStart = 0 * Days);
+                                      ext::shared_ptr<IborIndex> fxQuoteIndex);
 
         operator MtMCrossCurrencyBasisSwap() const;
         operator ext::shared_ptr<MtMCrossCurrencyBasisSwap>() const;
+
+        //! if false, the FX-quote leg is the resettable leg instead
+        MakeMtMCrossCurrencyBasisSwap& withFxBaseCurrencyLegResettable(bool flag = true);
 
         MakeMtMCrossCurrencyBasisSwap& payFxBaseCurrency(bool flag = true);
         MakeMtMCrossCurrencyBasisSwap& receiveFxBaseCurrency(bool flag = true);
@@ -67,9 +72,8 @@ namespace QuantLib {
         MakeMtMCrossCurrencyBasisSwap& withFxBaseNominal(Real n);
         MakeMtMCrossCurrencyBasisSwap& withFxQuoteNominal(Real n);
         /*! units of the fx-quote currency for one unit of the fx-base
-            currency; used to derive the fx-quote notional if
-            \c withFxQuoteNominal was not called, and to build the pricing
-            engine. */
+            currency. Derives the fx-quote notional and builds the pricing
+            engine. Mutually exclusive with \c withFxQuoteNominal. */
         MakeMtMCrossCurrencyBasisSwap& withFxSpot(const Handle<Quote>& spotFX);
 
         MakeMtMCrossCurrencyBasisSwap& withFxBaseCurrency(const Currency& ccy);
@@ -77,6 +81,7 @@ namespace QuantLib {
 
         MakeMtMCrossCurrencyBasisSwap& withSettlementDays(Natural settlementDays);
         MakeMtMCrossCurrencyBasisSwap& withEffectiveDate(const Date& effectiveDate);
+        MakeMtMCrossCurrencyBasisSwap& withForwardStart(const Period& forwardStart);
         MakeMtMCrossCurrencyBasisSwap& withTerminationDate(const Date& terminationDate);
         MakeMtMCrossCurrencyBasisSwap& withCalendar(const Calendar& cal);
         MakeMtMCrossCurrencyBasisSwap& withFxBaseCalendar(const Calendar& cal);
@@ -129,8 +134,8 @@ namespace QuantLib {
       private:
         Period swapTenor_;
         ext::shared_ptr<IborIndex> fxBaseIndex_, fxQuoteIndex_;
-        bool isFxBaseCurrencyLegResettable_;
-        Real fxBaseNominal_;
+        bool isFxBaseCurrencyLegResettable_ = true;
+        Real fxBaseNominal_ = 1.0;
         Period forwardStart_;
 
         MtMCrossCurrencyBasisSwap::Type type_ = MtMCrossCurrencyBasisSwap::Type::PayFxBaseCurrency;

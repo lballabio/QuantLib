@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2026 dakshbtc
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -28,13 +30,9 @@ namespace QuantLib {
     MakeConstNotionalCrossCurrencyFixedVsFloatingSwap::
     MakeConstNotionalCrossCurrencyFixedVsFloatingSwap(const Period& swapTenor,
                                                        Currency fixedCurrency,
-                                                       ext::shared_ptr<IborIndex> floatIndex,
-                                                       Rate fixedRate,
-                                                       Real floatNominal,
-                                                       const Period& forwardStart)
+                                                       ext::shared_ptr<IborIndex> floatIndex)
     : swapTenor_(swapTenor), fixedCurrency_(std::move(fixedCurrency)),
-      floatIndex_(std::move(floatIndex)), fixedRate_(fixedRate), floatNominal_(floatNominal),
-      forwardStart_(forwardStart) {}
+      floatIndex_(std::move(floatIndex)) {}
 
     MakeConstNotionalCrossCurrencyFixedVsFloatingSwap::
     operator ConstNotionalCrossCurrencyFixedVsFloatingSwap() const {
@@ -50,6 +48,12 @@ namespace QuantLib {
                    "use one or the other");
 
         Currency floatCcy = floatCurrency_ != Currency() ? floatCurrency_ : floatIndex_->currency();
+        QL_REQUIRE(fixedCurrency_ != floatCcy,
+                   "both legs are in " << fixedCurrency_.code()
+                       << "; a cross-currency swap requires two different currencies");
+        QL_REQUIRE(fixedNominal_ == Null<Real>() || fxSpot_.empty(),
+                   "both a fixed notional and an FX spot were given; "
+                   "use withFixedNominal() or withFxSpot(), not both");
 
         Calendar sharedCalendar = calendar_.empty() ? floatIndex_->fixingCalendar() : calendar_;
 
@@ -111,11 +115,9 @@ namespace QuantLib {
                        "the FX spot quote must be positive; got " << fxSpot_->value());
             fixedNominal = floatNominal_ / fxSpot_->value();
         } else {
-            QL_REQUIRE(fixedCurrency_ == floatCcy,
-                       "an FX spot quote is required to derive the " << fixedCurrency_.code()
-                           << " fixed notional from the " << floatCcy.code()
-                           << " floating notional; use withFxSpot() or withFixedNominal()");
-            fixedNominal = floatNominal_;
+            QL_FAIL("an FX spot quote is required to derive the " << fixedCurrency_.code()
+                    << " fixed notional from the " << floatCcy.code()
+                    << " floating notional; use withFxSpot() or withFixedNominal()");
         }
 
         ext::shared_ptr<PricingEngine> engineToUse = engine_;
@@ -128,7 +130,7 @@ namespace QuantLib {
                                                              fixedCurrency_.code())
                            << " one was given; use withFixedDiscountCurve() and "
                               "withFloatDiscountCurve()");
-            QL_REQUIRE(!fxSpot_.empty() || fixedCurrency_ == floatCcy,
+            QL_REQUIRE(!fxSpot_.empty(),
                        "an FX spot quote is required to build the pricing engine for a "
                            << fixedCurrency_.code() << "/" << floatCcy.code()
                            << " swap; use withFxSpot() or supply a custom engine with "
@@ -186,6 +188,12 @@ namespace QuantLib {
     }
 
     MakeConstNotionalCrossCurrencyFixedVsFloatingSwap&
+    MakeConstNotionalCrossCurrencyFixedVsFloatingSwap::withFixedRate(Rate fixedRate) {
+        fixedRate_ = fixedRate;
+        return *this;
+    }
+
+    MakeConstNotionalCrossCurrencyFixedVsFloatingSwap&
     MakeConstNotionalCrossCurrencyFixedVsFloatingSwap::withFixedNominal(Real n) {
         fixedNominal_ = n;
         return *this;
@@ -206,6 +214,13 @@ namespace QuantLib {
     MakeConstNotionalCrossCurrencyFixedVsFloatingSwap&
     MakeConstNotionalCrossCurrencyFixedVsFloatingSwap::withFloatCurrency(const Currency& ccy) {
         floatCurrency_ = ccy;
+        return *this;
+    }
+
+    MakeConstNotionalCrossCurrencyFixedVsFloatingSwap&
+    MakeConstNotionalCrossCurrencyFixedVsFloatingSwap::withForwardStart(
+        const Period& forwardStart) {
+        forwardStart_ = forwardStart;
         return *this;
     }
 

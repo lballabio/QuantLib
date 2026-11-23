@@ -51,7 +51,6 @@ this_include_HEADERS = \
     makecms.hpp \
     makeconstnotionalcrosscurrencybasisswap.hpp \
     makeconstnotionalcrosscurrencyfixedvsfloatingswap.hpp \
-    makeconstnotionalcrosscurrencyswap.hpp \
     makemultipleresetsswap.hpp \
     makeois.hpp \
     makeswaption.hpp \
@@ -133,7 +132,6 @@ cpp_files = \
     makecms.cpp \
     makeconstnotionalcrosscurrencybasisswap.cpp \
     makeconstnotionalcrosscurrencyfixedvsfloatingswap.cpp \
-    makeconstnotionalcrosscurrencyswap.cpp \
     makemultipleresetsswap.cpp \
     makeois.cpp \
     makeswaption.cpp \

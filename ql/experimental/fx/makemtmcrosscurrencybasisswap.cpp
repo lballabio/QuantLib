@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2026 dakshbtc
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -42,14 +44,9 @@ namespace QuantLib {
     MakeMtMCrossCurrencyBasisSwap::MakeMtMCrossCurrencyBasisSwap(
         const Period& swapTenor,
         ext::shared_ptr<IborIndex> fxBaseIndex,
-        ext::shared_ptr<IborIndex> fxQuoteIndex,
-        bool isFxBaseCurrencyLegResettable,
-        Real fxBaseNominal,
-        const Period& forwardStart)
+        ext::shared_ptr<IborIndex> fxQuoteIndex)
     : swapTenor_(swapTenor), fxBaseIndex_(std::move(fxBaseIndex)),
       fxQuoteIndex_(std::move(fxQuoteIndex)),
-      isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
-      fxBaseNominal_(fxBaseNominal), forwardStart_(forwardStart),
       fxBasePaymentConvention_(fxBaseIndex_->businessDayConvention()),
       fxQuotePaymentConvention_(fxQuoteIndex_->businessDayConvention()) {}
 
@@ -68,6 +65,12 @@ namespace QuantLib {
             fxBaseCurrency_ != Currency() ? fxBaseCurrency_ : fxBaseIndex_->currency();
         Currency fxQuoteCcy =
             fxQuoteCurrency_ != Currency() ? fxQuoteCurrency_ : fxQuoteIndex_->currency();
+        QL_REQUIRE(fxBaseCcy != fxQuoteCcy,
+                   "both legs are in " << fxBaseCcy.code()
+                       << "; a cross-currency swap requires two different currencies");
+        QL_REQUIRE(fxQuoteNominal_ == Null<Real>() || fxSpot_.empty(),
+                   "both an FX-quote notional and an FX spot were given; "
+                   "use withFxQuoteNominal() or withFxSpot(), not both");
 
         Calendar jointCalendar = calendar_.empty() ?
                                      JointCalendar(fxBaseIndex_->fixingCalendar(),
@@ -127,11 +130,9 @@ namespace QuantLib {
                        "the FX spot quote must be positive; got " << fxSpot_->value());
             fxQuoteNominal = fxBaseNominal_ * fxSpot_->value();
         } else {
-            QL_REQUIRE(fxBaseCcy == fxQuoteCcy,
-                       "an FX spot quote is required to derive the " << fxQuoteCcy.code()
-                           << " notional from the " << fxBaseCcy.code()
-                           << " notional; use withFxSpot() or withFxQuoteNominal()");
-            fxQuoteNominal = fxBaseNominal_;
+            QL_FAIL("an FX spot quote is required to derive the " << fxQuoteCcy.code()
+                    << " notional from the " << fxBaseCcy.code()
+                    << " notional; use withFxSpot() or withFxQuoteNominal()");
         }
 
         auto swap = ext::make_shared<MtMCrossCurrencyBasisSwap>(
@@ -155,7 +156,7 @@ namespace QuantLib {
                                                               fxBaseCcy.code())
                            << " one was given; use withFxBaseDiscountCurve() and "
                               "withFxQuoteDiscountCurve()");
-            QL_REQUIRE(!fxSpot_.empty() || fxBaseCcy == fxQuoteCcy,
+            QL_REQUIRE(!fxSpot_.empty(),
                        "an FX spot quote is required to build the pricing engine for a "
                            << fxBaseCcy.code() << "/" << fxQuoteCcy.code()
                            << " swap; use withFxSpot() or supply a custom engine with "
@@ -167,6 +168,12 @@ namespace QuantLib {
         }
 
         return swap;
+    }
+
+    MakeMtMCrossCurrencyBasisSwap&
+    MakeMtMCrossCurrencyBasisSwap::withFxBaseCurrencyLegResettable(bool flag) {
+        isFxBaseCurrencyLegResettable_ = flag;
+        return *this;
     }
 
     MakeMtMCrossCurrencyBasisSwap& MakeMtMCrossCurrencyBasisSwap::payFxBaseCurrency(bool flag) {
@@ -219,6 +226,12 @@ namespace QuantLib {
     MakeMtMCrossCurrencyBasisSwap&
     MakeMtMCrossCurrencyBasisSwap::withSettlementDays(Natural settlementDays) {
         settlementDays_ = settlementDays;
+        return *this;
+    }
+
+    MakeMtMCrossCurrencyBasisSwap&
+    MakeMtMCrossCurrencyBasisSwap::withForwardStart(const Period& forwardStart) {
+        forwardStart_ = forwardStart;
         return *this;
     }
 

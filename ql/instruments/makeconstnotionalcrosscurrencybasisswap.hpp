@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2026 dakshbtc
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -38,33 +40,32 @@ namespace QuantLib {
 
         The pay leg is priced/quoted in the currency of \c payIndex and the
         receive leg in the currency of \c recIndex, following the naming
-        convention of \c ConstNotionalCrossCurrencyBasisSwap. The FX spot
-        rate is expressed as units of the receive currency per unit of the
-        pay currency, and is used both to derive the receive notional from
-        the pay notional (unless explicitly overridden) and to build the
-        pricing engine. It is required whenever the two legs are in
-        different currencies, unless both the receive notional and the
-        pricing engine are given explicitly.
+        convention of \c ConstNotionalCrossCurrencyBasisSwap. The two legs
+        must be in different currencies. The FX spot rate is expressed as
+        units of the receive currency per unit of the pay currency. Pass
+        either that spot, which derives the receive notional and builds the
+        pricing engine, or an explicit receive notional together with
+        \c withPricingEngine, not both.
 
         Payment dates default to the business-day convention of the
-        corresponding index, as in \c MakeVanillaSwap.
+        corresponding index, as in \c MakeVanillaSwap. The pay notional
+        defaults to 1 and the swap starts on spot; override either with
+        \c withPayNominal or \c withForwardStart.
     */
     class MakeConstNotionalCrossCurrencyBasisSwap {
       public:
         MakeConstNotionalCrossCurrencyBasisSwap(const Period& swapTenor,
                                                  ext::shared_ptr<IborIndex> payIndex,
-                                                 ext::shared_ptr<IborIndex> recIndex,
-                                                 Real payNominal = 1.0,
-                                                 const Period& forwardStart = 0 * Days);
+                                                 ext::shared_ptr<IborIndex> recIndex);
 
         operator ConstNotionalCrossCurrencyBasisSwap() const;
         operator ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap>() const;
 
         MakeConstNotionalCrossCurrencyBasisSwap& withPayNominal(Real n);
         MakeConstNotionalCrossCurrencyBasisSwap& withRecNominal(Real n);
-        /*! units of the receive currency for one unit of the pay currency;
-            used to derive the receive notional if \c withRecNominal was not
-            called, and to build the pricing engine. */
+        /*! units of the receive currency for one unit of the pay currency.
+            Derives the receive notional and builds the pricing engine.
+            Mutually exclusive with \c withRecNominal. */
         MakeConstNotionalCrossCurrencyBasisSwap& withFxSpot(const Handle<Quote>& spotFX);
 
         MakeConstNotionalCrossCurrencyBasisSwap& withPayCurrency(const Currency& ccy);
@@ -72,6 +73,7 @@ namespace QuantLib {
 
         MakeConstNotionalCrossCurrencyBasisSwap& withSettlementDays(Natural settlementDays);
         MakeConstNotionalCrossCurrencyBasisSwap& withEffectiveDate(const Date& effectiveDate);
+        MakeConstNotionalCrossCurrencyBasisSwap& withForwardStart(const Period& forwardStart);
         MakeConstNotionalCrossCurrencyBasisSwap& withTerminationDate(const Date& terminationDate);
         MakeConstNotionalCrossCurrencyBasisSwap& withCalendar(const Calendar& cal);
         MakeConstNotionalCrossCurrencyBasisSwap& withPayCalendar(const Calendar& cal);
@@ -124,7 +126,7 @@ namespace QuantLib {
       private:
         Period swapTenor_;
         ext::shared_ptr<IborIndex> payIndex_, recIndex_;
-        Real payNominal_;
+        Real payNominal_ = 1.0;
         Period forwardStart_;
 
         Real recNominal_ = Null<Real>();

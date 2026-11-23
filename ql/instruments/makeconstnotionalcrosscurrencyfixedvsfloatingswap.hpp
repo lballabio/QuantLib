@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2026 dakshbtc
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -40,24 +42,24 @@ namespace QuantLib {
         If the fixed rate is left unspecified (the default, \c Null<Rate>()),
         it is solved for as the fair rate of the swap once a pricing engine
         (or a pair of discount curves and an FX spot) has been supplied,
-        mirroring the at-market convenience of \c MakeVanillaSwap.
+        mirroring the at-market convenience of \c MakeVanillaSwap. Set an
+        explicit coupon with \c withFixedRate. The floating notional defaults
+        to 1 and the swap starts on spot; override either with
+        \c withFloatNominal or \c withForwardStart.
 
-        The FX spot rate is expressed as units of the floating currency per
-        unit of the fixed currency, so that the fixed notional is the
-        floating one divided by the spot (unless explicitly overridden); it
-        is also used to build the pricing engine. It is required whenever
-        the two legs are in different currencies, unless both the fixed
-        notional and the pricing engine are given explicitly.
+        The fixed and floating legs must be in different currencies. The FX
+        spot rate is expressed as units of the floating currency per unit of
+        the fixed currency, so that the fixed notional is the floating one
+        divided by the spot. Pass either that spot, which derives the fixed
+        notional and builds the pricing engine, or an explicit fixed notional
+        together with \c withPricingEngine, not both.
     */
     class MakeConstNotionalCrossCurrencyFixedVsFloatingSwap {
       public:
         MakeConstNotionalCrossCurrencyFixedVsFloatingSwap(
             const Period& swapTenor,
             Currency fixedCurrency,
-            ext::shared_ptr<IborIndex> floatIndex,
-            Rate fixedRate = Null<Rate>(),
-            Real floatNominal = 1.0,
-            const Period& forwardStart = 0 * Days);
+            ext::shared_ptr<IborIndex> floatIndex);
 
         operator ConstNotionalCrossCurrencyFixedVsFloatingSwap() const;
         operator ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap>() const;
@@ -66,18 +68,21 @@ namespace QuantLib {
         MakeConstNotionalCrossCurrencyFixedVsFloatingSwap& receiveFixed(bool flag = true);
         MakeConstNotionalCrossCurrencyFixedVsFloatingSwap& withType(Swap::Type type);
 
+        MakeConstNotionalCrossCurrencyFixedVsFloatingSwap& withFixedRate(Rate fixedRate);
         MakeConstNotionalCrossCurrencyFixedVsFloatingSwap& withFixedNominal(Real n);
         MakeConstNotionalCrossCurrencyFixedVsFloatingSwap& withFloatNominal(Real n);
         /*! units of the floating currency for one unit of the fixed
-            currency; the floating notional is divided by it to derive the
-            fixed notional if \c withFixedNominal was not called, and it is
-            also used to build the pricing engine. */
+            currency. The floating notional is divided by it to derive the
+            fixed notional, and it builds the pricing engine. Mutually
+            exclusive with \c withFixedNominal. */
         MakeConstNotionalCrossCurrencyFixedVsFloatingSwap& withFxSpot(const Handle<Quote>& spotFX);
 
         MakeConstNotionalCrossCurrencyFixedVsFloatingSwap& withFloatCurrency(const Currency& ccy);
 
         MakeConstNotionalCrossCurrencyFixedVsFloatingSwap&
         withSettlementDays(Natural settlementDays);
+        MakeConstNotionalCrossCurrencyFixedVsFloatingSwap&
+        withForwardStart(const Period& forwardStart);
         MakeConstNotionalCrossCurrencyFixedVsFloatingSwap&
         withEffectiveDate(const Date& effectiveDate);
         MakeConstNotionalCrossCurrencyFixedVsFloatingSwap&
@@ -136,8 +141,8 @@ namespace QuantLib {
         Period swapTenor_;
         Currency fixedCurrency_;
         ext::shared_ptr<IborIndex> floatIndex_;
-        Rate fixedRate_;
-        Real floatNominal_;
+        Rate fixedRate_ = Null<Rate>();
+        Real floatNominal_ = 1.0;
         Period forwardStart_;
 
         Swap::Type type_ = Swap::Payer;

@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2026 dakshbtc
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -42,11 +44,8 @@ namespace QuantLib {
     MakeConstNotionalCrossCurrencyBasisSwap::MakeConstNotionalCrossCurrencyBasisSwap(
         const Period& swapTenor,
         ext::shared_ptr<IborIndex> payIndex,
-        ext::shared_ptr<IborIndex> recIndex,
-        Real payNominal,
-        const Period& forwardStart)
+        ext::shared_ptr<IborIndex> recIndex)
     : swapTenor_(swapTenor), payIndex_(std::move(payIndex)), recIndex_(std::move(recIndex)),
-      payNominal_(payNominal), forwardStart_(forwardStart),
       payConvention_(payIndex_->businessDayConvention()),
       recConvention_(recIndex_->businessDayConvention()) {}
 
@@ -64,6 +63,12 @@ namespace QuantLib {
 
         Currency payCcy = payCurrency_ != Currency() ? payCurrency_ : payIndex_->currency();
         Currency recCcy = recCurrency_ != Currency() ? recCurrency_ : recIndex_->currency();
+        QL_REQUIRE(payCcy != recCcy,
+                   "both legs are in " << payCcy.code()
+                       << "; a cross-currency swap requires two different currencies");
+        QL_REQUIRE(recNominal_ == Null<Real>() || fxSpot_.empty(),
+                   "both a receive notional and an FX spot were given; "
+                   "use withRecNominal() or withFxSpot(), not both");
 
         Calendar jointCalendar = calendar_.empty() ?
                                      JointCalendar(payIndex_->fixingCalendar(),
@@ -122,11 +127,9 @@ namespace QuantLib {
                        "the FX spot quote must be positive; got " << fxSpot_->value());
             recNominal = payNominal_ * fxSpot_->value();
         } else {
-            QL_REQUIRE(payCcy == recCcy,
-                       "an FX spot quote is required to derive the " << recCcy.code()
-                           << " receive notional from the " << payCcy.code()
-                           << " pay notional; use withFxSpot() or withRecNominal()");
-            recNominal = payNominal_;
+            QL_FAIL("an FX spot quote is required to derive the " << recCcy.code()
+                    << " receive notional from the " << payCcy.code()
+                    << " pay notional; use withFxSpot() or withRecNominal()");
         }
 
         auto swap = ext::make_shared<ConstNotionalCrossCurrencyBasisSwap>(
@@ -146,7 +149,7 @@ namespace QuantLib {
                            << (payDiscountCurve_.empty() ? recCcy.code() : payCcy.code())
                            << " one was given; use withPayDiscountCurve() and "
                               "withRecDiscountCurve()");
-            QL_REQUIRE(!fxSpot_.empty() || payCcy == recCcy,
+            QL_REQUIRE(!fxSpot_.empty(),
                        "an FX spot quote is required to build the pricing engine for a "
                            << payCcy.code() << "/" << recCcy.code()
                            << " swap; use withFxSpot() or supply a custom engine with "
@@ -193,6 +196,12 @@ namespace QuantLib {
     MakeConstNotionalCrossCurrencyBasisSwap&
     MakeConstNotionalCrossCurrencyBasisSwap::withSettlementDays(Natural settlementDays) {
         settlementDays_ = settlementDays;
+        return *this;
+    }
+
+    MakeConstNotionalCrossCurrencyBasisSwap&
+    MakeConstNotionalCrossCurrencyBasisSwap::withForwardStart(const Period& forwardStart) {
+        forwardStart_ = forwardStart;
         return *this;
     }
 

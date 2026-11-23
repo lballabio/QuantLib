@@ -46,7 +46,6 @@
 #include <ql/instruments/makecms.hpp>
 #include <ql/instruments/makeconstnotionalcrosscurrencybasisswap.hpp>
 #include <ql/instruments/makeconstnotionalcrosscurrencyfixedvsfloatingswap.hpp>
-#include <ql/instruments/makeconstnotionalcrosscurrencyswap.hpp>
 #include <ql/instruments/makemultipleresetsswap.hpp>
 #include <ql/instruments/makeois.hpp>
 #include <ql/instruments/makeswaption.hpp>
