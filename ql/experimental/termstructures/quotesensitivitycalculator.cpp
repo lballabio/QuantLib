@@ -40,7 +40,7 @@ namespace QuantLib {
                 const auto* pricer =
                     dynamic_cast<const BlackIborCouponPricer*>(coupon.pricer().get());
                 // Derived pricers can override adjustedFixing() even for in-advance coupons.
-                return !coupon.isInArrears() && pricer &&
+                return !coupon.isInArrears() && (pricer != nullptr) &&
                        typeid(*pricer) == typeid(BlackIborCouponPricer) &&
                        pricer->timingAdjustment() == BlackIborCouponPricer::Black76;
             }

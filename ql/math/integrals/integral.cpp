@@ -26,7 +26,7 @@ namespace QuantLib {
     Integrator::Integrator(Real absoluteAccuracy,
                           Size maxEvaluations)
     : absoluteAccuracy_(absoluteAccuracy), absoluteError_(Null<Real>()),
-      maxEvaluations_(maxEvaluations), evaluations_(0) {
+      maxEvaluations_(maxEvaluations) {
         QL_REQUIRE(absoluteAccuracy > QL_EPSILON,
                    std::scientific << "required tolerance (" <<
                    absoluteAccuracy << ") not allowed. It must be > " <<

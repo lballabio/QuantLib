@@ -265,8 +265,8 @@ namespace QuantLib {
             }
             // setNodeValue() sends no notification, so evaluate the helpers at the restored nodes 
 			// (otherwise we may end up with last-bumped instruments)
-            for (Size k = 0; k < rows.size(); ++k)
-                value(rows[k]);
+            for (unsigned long row : rows)
+                value(row);
         }
 
         //! implied-quote sensitivities of a curve's alive helpers, in row order

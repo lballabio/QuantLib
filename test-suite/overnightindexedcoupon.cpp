@@ -29,7 +29,6 @@
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/settings.hpp>
-#include <ql/currencies/america.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -200,7 +199,7 @@ struct BlackONPricerVars {
                                                            Spread spread = 0.0,
                                                            bool compoundSpreadDaily = false,
                                                            Natural lockoutDays = 0,
-                                                           ext::shared_ptr<OvernightIndex> index = nullptr) {
+                                                           const ext::shared_ptr<OvernightIndex>& index = nullptr) {
         auto coupon = ext::make_shared<OvernightIndexedCoupon>(
             end, notional, start, end, index ? index : sofr, gearing, spread, Date(), Date(), dc, false, averaging,
             Null<Natural>(), lockoutDays, false, compoundSpreadDaily);
@@ -1897,7 +1896,8 @@ BOOST_AUTO_TEST_CASE(testDailyCompoundedSpreadForecast) {
                     "_" + std::to_string(lookback),
                 0, USDCurrency(), calendar, dc, handle);
             std::vector<Date> observed;
-            for (const Date& d : dates)
+            observed.reserve(dates.size());
+for (const Date& d : dates)
                 observed.push_back(calendar.advance(d, -Integer(lookback), Days));
             std::vector<Rate> rates(n);
             for (Size i = 0; i < n; ++i) {
