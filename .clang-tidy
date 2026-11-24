@@ -77,6 +77,7 @@ Checks: >
           -readability-function-cognitive-complexity,
           -readability-identifier-length,
           -readability-inconsistent-declaration-parameter-name,
+          -readability-inconsistent-ifelse-braces,
           -readability-isolate-declaration,
           -readability-magic-numbers,
           -readability-make-member-function-const,
@@ -84,9 +85,11 @@ Checks: >
           -readability-named-parameter,
           -readability-redundant-casting,
           -readability-redundant-declaration,
+          -readability-redundant-parentheses,
           -readability-simplify-boolean-expr,
           -readability-suspicious-call-argument,
           -readability-use-anyofallof,
+          -readability-use-concise-preprocessor-directives,
           -readability-use-std-min-max,
 HeaderFilterRegex: '.*'
 FormatStyle: none
