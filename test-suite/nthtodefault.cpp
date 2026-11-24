@@ -28,6 +28,7 @@
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/pricingengines/credit/integralcdsengine.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -149,7 +150,7 @@ BOOST_AUTO_TEST_CASE(testGauss) {
         probabilities.emplace_back(ptr);
     }
 
-    ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> simpleQuote  = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> correlationHandle (simpleQuote);
 
     ext::shared_ptr<DefaultLossModel> copula( new
@@ -287,7 +288,7 @@ BOOST_AUTO_TEST_CASE(testStudent) {
         probabilities.emplace_back(ptr);
     }
 
-    ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> simpleQuote  = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> correlationHandle (simpleQuote);
 
     TCopulaPolicy::initTraits iniT;

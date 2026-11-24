@@ -449,7 +449,7 @@ namespace QuantLib {
     }
 
     CreditDefaultSwap::arguments::arguments()
-    : side(Protection::Side(-1)), notional(Null<Real>()),
+    :  notional(Null<Real>()),
       spread(Null<Rate>()) {}
 
     void CreditDefaultSwap::arguments::validate() const {

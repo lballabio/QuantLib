@@ -24,6 +24,7 @@
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -659,7 +660,7 @@ BOOST_AUTO_TEST_CASE(testOptionLetsDelta) {
 
     // Define spreaded curve with eps as spread used for FD sensitivities
     Real eps = 1.0e-6;
-    ext::shared_ptr<SimpleQuote> spread(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spread = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
                                                             baseCurveHandle,
                                                             Handle<Quote>(spread),
@@ -778,7 +779,7 @@ BOOST_AUTO_TEST_CASE(testBachelierOptionLetsDelta) {
 
     // Define spreaded curve with eps as spread used for FD sensitivities
     Real eps = 1.0e-6;
-    ext::shared_ptr<SimpleQuote> spread(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spread = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
                                                             baseCurveHandle,
                                                             Handle<Quote>(spread),

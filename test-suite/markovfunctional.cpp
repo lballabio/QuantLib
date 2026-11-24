@@ -37,6 +37,7 @@
 #include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
 #include <ql/processes/mfstateprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
 #include <ql/termstructures/volatility/kahalesmilesection.hpp>
@@ -328,8 +329,8 @@ Handle<SwaptionVolatilityStructure> md0SwaptionVts() {
         parameterGuess.push_back(parameterGuessTmp);
     }
 
-    ext::shared_ptr<EndCriteria> ec(
-            new EndCriteria(50000, 250, 1E-6, 1E-6, 1E-6));
+    ext::shared_ptr<EndCriteria> ec = ext::make_shared<EndCriteria>(
+            50000, 250, 1E-6, 1E-6, 1E-6);
 
     ext::shared_ptr<SwapIndex> swapIndex(new EuriborSwapIsdaFixA(
             30 * Years, Handle<YieldTermStructure>(md0Yts())));
@@ -670,8 +671,8 @@ BOOST_AUTO_TEST_CASE(testKahaleSmileSection) {
 
     // test arbitrage free smile reproduction
 
-    ext::shared_ptr<KahaleSmileSection> ksec11(
-        new KahaleSmileSection(sec1, atm, false, false, false, money));
+    ext::shared_ptr<KahaleSmileSection> ksec11 = ext::make_shared<KahaleSmileSection>(
+        sec1, atm, false, false, false, money);
 
     if (std::fabs(ksec11->leftCoreStrike() - 0.01) > tol)
         BOOST_ERROR("smile11 left af strike is " << ksec11->leftCoreStrike()
@@ -694,8 +695,8 @@ BOOST_AUTO_TEST_CASE(testKahaleSmileSection) {
 
     // test interpolation
 
-    ext::shared_ptr<KahaleSmileSection> ksec12(
-        new KahaleSmileSection(sec1, atm, true, false, false, money));
+    ext::shared_ptr<KahaleSmileSection> ksec12 = ext::make_shared<KahaleSmileSection>(
+        sec1, atm, true, false, false, money);
 
     // sanity check for left point extrapolation may mark 0.01 as bad as well as
     // good depending
@@ -739,8 +740,8 @@ BOOST_AUTO_TEST_CASE(testKahaleSmileSection) {
 
     // test exponential extrapolation
 
-    ext::shared_ptr<KahaleSmileSection> ksec13(
-        new KahaleSmileSection(sec1, atm, false, true, false, money));
+    ext::shared_ptr<KahaleSmileSection> ksec13 = ext::make_shared<KahaleSmileSection>(
+        sec1, atm, false, true, false, money);
 
     k = strikes.back();
     Real dig0 = ksec13->digitalOptionPrice(k - 0.0010);
@@ -761,10 +762,10 @@ BOOST_AUTO_TEST_CASE(testKahaleSmileSection) {
     ext::shared_ptr<SmileSection> sec2(
         new InterpolatedSmileSection<Linear>(t, strikes, stdDevs1, atm));
 
-    ext::shared_ptr<KahaleSmileSection> ksec21(
-        new KahaleSmileSection(sec2, atm, false, false, false, money));
-    ext::shared_ptr<KahaleSmileSection> ksec22(
-        new KahaleSmileSection(sec2, atm, true, false, true, money));
+    ext::shared_ptr<KahaleSmileSection> ksec21 = ext::make_shared<KahaleSmileSection>(
+        sec2, atm, false, false, false, money);
+    ext::shared_ptr<KahaleSmileSection> ksec22 = ext::make_shared<KahaleSmileSection>(
+        sec2, atm, true, false, true, money);
 
     if (std::fabs(ksec21->leftCoreStrike() - 0.02) > tol)
         BOOST_ERROR("smile21 left af strike is " << ksec21->leftCoreStrike()
@@ -805,10 +806,10 @@ BOOST_AUTO_TEST_CASE(testKahaleSmileSection) {
     ext::shared_ptr<SmileSection> sec3(
         new InterpolatedSmileSection<Linear>(t, strikes, stdDevs2, atm));
 
-    ext::shared_ptr<KahaleSmileSection> ksec31(
-        new KahaleSmileSection(sec3, atm, false, false, false, money));
-    ext::shared_ptr<KahaleSmileSection> ksec32(
-        new KahaleSmileSection(sec3, atm, true, false, true, money));
+    ext::shared_ptr<KahaleSmileSection> ksec31 = ext::make_shared<KahaleSmileSection>(
+        sec3, atm, false, false, false, money);
+    ext::shared_ptr<KahaleSmileSection> ksec32 = ext::make_shared<KahaleSmileSection>(
+        sec3, atm, true, false, true, money);
 
     if (std::fabs(ksec31->leftCoreStrike() - 0.01) > tol)
         BOOST_ERROR("smile31 left af strike is " << ksec31->leftCoreStrike()
@@ -1669,8 +1670,8 @@ BOOST_AUTO_TEST_CASE(testVanillaEngines) {
 
     ext::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine1(
         new Gaussian1dSwaptionEngine(mf1, 64, 7.0));
-    ext::shared_ptr<BlackSwaptionEngine> blackSwaptionEngine1(
-        new BlackSwaptionEngine(flatYts_, flatSwaptionVts_));
+    ext::shared_ptr<BlackSwaptionEngine> blackSwaptionEngine1 = ext::make_shared<BlackSwaptionEngine>(
+        flatYts_, flatSwaptionVts_);
 
     for (Size i = 0; i < outputs1.expiries_.size(); i++) {
         for (Size j = 0; j < outputs1.smileStrikes_[0].size(); j++) {
@@ -1783,8 +1784,8 @@ BOOST_AUTO_TEST_CASE(testVanillaEngines) {
 
     ext::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine3(
         new Gaussian1dSwaptionEngine(mf3, 64, 7.0));
-    ext::shared_ptr<BlackSwaptionEngine> blackSwaptionEngine3(
-        new BlackSwaptionEngine(md0Yts_, md0SwaptionVts_));
+    ext::shared_ptr<BlackSwaptionEngine> blackSwaptionEngine3 = ext::make_shared<BlackSwaptionEngine>(
+        md0Yts_, md0SwaptionVts_);
 
     MarkovFunctional::ModelOutputs outputs3 = mf3->modelOutputs();
     // BOOST_TEST_MESSAGE(outputs3);

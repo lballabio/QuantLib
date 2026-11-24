@@ -20,6 +20,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/shared_ptr.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/instruments/europeanoption.hpp>
@@ -130,10 +131,10 @@ BOOST_AUTO_TEST_CASE(testVarianceGamma) {
     Date today = Date::todaysDate();
 
     for (Size i=0; i<std::size(processes); i++) {
-        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(processes[i].s));
-        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(processes[i].q));
+        ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(processes[i].s);
+        ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(processes[i].q);
         ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-        ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(processes[i].r));
+        ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(processes[i].r);
         ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
         ext::shared_ptr<VarianceGammaProcess> stochProcess(
@@ -149,8 +150,8 @@ BOOST_AUTO_TEST_CASE(testVarianceGamma) {
             new VarianceGammaEngine(stochProcess));
 
         // FFT engine
-        ext::shared_ptr<FFTVarianceGammaEngine> fftEngine(
-            new FFTVarianceGammaEngine(stochProcess));
+        ext::shared_ptr<FFTVarianceGammaEngine> fftEngine = ext::make_shared<FFTVarianceGammaEngine>(
+            stochProcess);
 
         // which requires a list of options
         std::vector<ext::shared_ptr<Instrument> > optionList;
@@ -166,7 +167,7 @@ BOOST_AUTO_TEST_CASE(testVarianceGamma) {
             payoffs.push_back(payoff);
 
             // Test analytic engine
-            ext::shared_ptr<EuropeanOption> option(new EuropeanOption(payoff, exercise));
+            ext::shared_ptr<EuropeanOption> option = ext::make_shared<EuropeanOption>(payoff, exercise);
             option->setPricingEngine(analyticEngine);
 
             Real calculated = option->NPV();

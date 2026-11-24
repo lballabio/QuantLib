@@ -38,6 +38,7 @@
 #include <ql/pricingengines/basket/denglizhoubasketengine.hpp>
 #include <ql/pricingengines/basket/gaussiancopulaspreadengine.hpp>
 #include <ql/experimental/volatility/svismilesection.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/equityfx/piecewiseblackvariancesurface.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
@@ -317,20 +318,20 @@ BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1 = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot2 = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, qRate1, dc);
-    ext::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, qRate2, dc);
 
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
-    ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
 
     const Real mcRelativeErrorTolerance = 0.01;
@@ -338,8 +339,8 @@ BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
 
     for (auto& value : values) {
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff(
-            new PlainVanillaPayoff(value.type, value.strike));
+        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::make_shared<PlainVanillaPayoff>(
+            value.type, value.strike);
 
         Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -389,8 +390,8 @@ BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
             correlationMatrix[j][j] = 1.0;
         }
 
-        ext::shared_ptr<StochasticProcessArray> process(
-                         new StochasticProcessArray(procs,correlationMatrix));
+        ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(
+                         procs,correlationMatrix);
 
         ext::shared_ptr<PricingEngine> mcEngine =
             MakeMCEuropeanBasketEngine<PseudoRandom, Statistics>(process)
@@ -582,27 +583,27 @@ BOOST_AUTO_TEST_CASE(testBarraquandThreeValues) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> spot3(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1 = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot2 = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot3 = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
 
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
-    ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
-    ext::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol3 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS3 = flatVol(today, vol3, dc);
 
     for (auto& value : values) {
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff(
-            new PlainVanillaPayoff(value.type, value.strike));
+        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::make_shared<PlainVanillaPayoff>(
+            value.type, value.strike);
 
         Date exDate = today + Integer(value.t) * 30;
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -643,8 +644,8 @@ BOOST_AUTO_TEST_CASE(testBarraquandThreeValues) {
             correlation[j][j] = 1.0;
         }
 
-        ext::shared_ptr<StochasticProcessArray> process(
-                               new StochasticProcessArray(procs,correlation));
+        ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(
+                               procs,correlation);
 
         // use a 3D sobol sequence...
         // Think long and hard before moving to more than 1 timestep....
@@ -715,21 +716,21 @@ BOOST_AUTO_TEST_CASE(testTavellaValues) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> spot3(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1 = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot2 = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot3 = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.1));
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.1);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
 
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.05);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
-    ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
-    ext::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol3 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS3 = flatVol(today, vol3, dc);
 
     Real mcRelativeErrorTolerance = 0.01;
@@ -738,8 +739,7 @@ BOOST_AUTO_TEST_CASE(testTavellaValues) {
     BigNatural seed = 0;
 
 
-    ext::shared_ptr<PlainVanillaPayoff> payoff(new
-        PlainVanillaPayoff(values[0].type, values[0].strike));
+    ext::shared_ptr<PlainVanillaPayoff> payoff = ext::make_shared<PlainVanillaPayoff>(values[0].type, values[0].strike);
 
     Date exDate = today + timeToDays(values[0].t);
     ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
@@ -784,8 +784,8 @@ BOOST_AUTO_TEST_CASE(testTavellaValues) {
     correlation[2][1] = 0.3;
     correlation[1][2] = 0.3;
 
-    ext::shared_ptr<StochasticProcessArray> process(
-                               new StochasticProcessArray(procs,correlation));
+    ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(
+                               procs,correlation);
     ext::shared_ptr<PricingEngine> mcLSMCEngine =
         MakeMCAmericanBasketEngine<>(process)
         .withSteps(timeSteps)
@@ -833,15 +833,15 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testOneDAmericanValues, T, slices) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1 = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
 
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.05);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
 
     Size requiredSamples = 10000;
@@ -858,8 +858,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testOneDAmericanValues, T, slices) {
 
     Matrix correlation(1, 1, 1.0);
 
-    ext::shared_ptr<StochasticProcessArray> process(
-        new StochasticProcessArray(procs, correlation));
+    ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(
+        procs, correlation);
 
     ext::shared_ptr<PricingEngine> mcLSMCEngine =
         MakeMCAmericanBasketEngine<>(process)
@@ -870,8 +870,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testOneDAmericanValues, T, slices) {
             .withSeed(seed);
 
     for (Size i = from; i < to; i++) {
-        ext::shared_ptr<PlainVanillaPayoff> payoff(
-            new PlainVanillaPayoff(oneDataValues[i].type, oneDataValues[i].strike));
+        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::make_shared<PlainVanillaPayoff>(
+            oneDataValues[i].type, oneDataValues[i].strike);
 
         Date exDate = today + timeToDays(oneDataValues[i].t);
         ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
@@ -920,15 +920,15 @@ BOOST_AUTO_TEST_CASE(testOddSamples) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1 = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
 
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.05);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
 
 
@@ -945,8 +945,8 @@ BOOST_AUTO_TEST_CASE(testOddSamples) {
 
     Matrix correlation(1, 1, 1.0);
 
-    ext::shared_ptr<StochasticProcessArray> process(
-                               new StochasticProcessArray(procs,correlation));
+    ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(
+                               procs,correlation);
 
     ext::shared_ptr<PricingEngine> mcLSMCEngine =
         MakeMCAmericanBasketEngine<>(process)
@@ -957,8 +957,8 @@ BOOST_AUTO_TEST_CASE(testOddSamples) {
         .withSeed(seed);
 
     for (auto& value : values) {
-        ext::shared_ptr<PlainVanillaPayoff> payoff(
-            new PlainVanillaPayoff(value.type, value.strike));
+        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::make_shared<PlainVanillaPayoff>(
+            value.type, value.strike);
 
         Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,

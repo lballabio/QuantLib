@@ -312,7 +312,7 @@ namespace QuantLib {
         : public virtual PricingEngine::arguments {
       public:
         arguments();
-        Protection::Side side;
+        Protection::Side side = Protection::Side(-1);
         Real notional;
         std::optional<Rate> upfront;
         Rate spread;

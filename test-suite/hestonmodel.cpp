@@ -51,6 +51,7 @@
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
@@ -1990,8 +1991,8 @@ BOOST_AUTO_TEST_CASE(testCosHestonEngineTruncation) {
 
     ext::shared_ptr<HestonProcess> hestonProcess(
             new HestonProcess(riskFreeTS, dividendTS, underlyingH, .007, .8, .007, .1, -.2));
-    ext::shared_ptr<HestonModel> hestonModel(
-            new HestonModel(hestonProcess));
+    ext::shared_ptr<HestonModel> hestonModel = ext::make_shared<HestonModel>(
+            hestonProcess);
     
     europeanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
                 new COSHestonEngine(hestonModel)));

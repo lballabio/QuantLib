@@ -28,6 +28,7 @@
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionlet.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
@@ -125,7 +126,7 @@ Handle<OptionletVolatilityStructure> getOptionletTS() {
     ext::shared_ptr<StrippedOptionletBase> tmp1(
             new StrippedOptionlet(2, TARGET(), Following, index, dates, capletStrikes,
                                   capletVolQuotes, Actual365Fixed(), Normal, 0.0));
-    ext::shared_ptr<StrippedOptionletAdapter> tmp2(new StrippedOptionletAdapter(tmp1));
+    ext::shared_ptr<StrippedOptionletAdapter> tmp2 = ext::make_shared<StrippedOptionletAdapter>(tmp1);
     return RelinkableHandle<OptionletVolatilityStructure>(tmp2);
 }
 

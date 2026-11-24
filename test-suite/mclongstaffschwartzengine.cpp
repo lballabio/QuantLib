@@ -27,6 +27,7 @@
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
@@ -108,8 +109,8 @@ class MCAmericanMaxEngine
                                                     processArray->process(0));
         QL_REQUIRE(process, "generalized Black-Scholes proces required");
 
-        ext::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer(
-                          new AmericanMaxPathPricer(this->arguments_.payoff));
+        ext::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer = ext::make_shared<AmericanMaxPathPricer>(
+                          this->arguments_.payoff);
 
         return ext::make_shared<LongstaffSchwartzPathPricer<MultiPath> > (
                 
@@ -277,8 +278,8 @@ BOOST_AUTO_TEST_CASE(testAmericanMaxOption) {
         corr[i][i] = 1.0;
     }
 
-    ext::shared_ptr<StochasticProcessArray> process(
-        new StochasticProcessArray(v, corr));
+    ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(
+        v, corr);
     VanillaOption americanMaxOption(payoff, americanExercise);
 
     ext::shared_ptr<PricingEngine> mcengine(
