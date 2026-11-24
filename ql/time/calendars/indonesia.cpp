@@ -583,6 +583,37 @@ namespace QuantLib {
                 return false;
         }
 
+        if (y == 2027) {
+            if (// Isra' Mi'raj of the prophet Muhammad SAW
+                (d == 5 && m == January)
+                // National leave
+                || (d == 5 && m == February)
+                // Saka New Year
+                || (d == 8 && m == March)
+                // National leave
+                || (d == 9 && m == March)
+                // Ied ul-Fitr
+                || (d == 10 && m == March)
+                || (d == 11 && m == March)
+                // National leave
+                || (d == 12 && m == March)
+                || (d == 15 && m == March)
+                || (d == 25 && m == March)
+                // Eid ul-Adha
+                || (d == 17 && m == May)
+                // National leave
+                || (d == 18 && m == May)
+                || (d == 19 && m == May)
+                // Birth of Buddha
+                || (d == 20 && m == May)
+                // National leave
+                || (d == 24 && m == December)
+                // Trading Holiday
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
         return true;
     }
 
