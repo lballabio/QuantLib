@@ -103,7 +103,7 @@ namespace QuantLib {
 
 
     BarrierOption::arguments::arguments()
-    : barrierType(Barrier::Type(-1)), barrier(Null<Real>()),
+    :  barrier(Null<Real>()),
       rebate(Null<Real>()) {}
 
     void BarrierOption::arguments::validate() const {

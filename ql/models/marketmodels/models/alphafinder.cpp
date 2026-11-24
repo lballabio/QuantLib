@@ -496,8 +496,9 @@ Real AlphaFinder::computeLinearPart(Real alpha) {
                      tolerance,
                      *this,
                      &AlphaFinder::testIfSolutionExists);
-            } else
+            } else {
                 alpha2= alphaMax;
+}
             }
         else {
             // ok let's see if we can find a value of alpha that works

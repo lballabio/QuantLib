@@ -81,7 +81,7 @@ namespace QuantLib {
     }
 
     SoftBarrierOption::arguments::arguments()
-    : barrierType(Barrier::Type(-1)),
+    : 
       barrier_lo(Null<Real>()), barrier_hi(Null<Real>()) {}
 
 }

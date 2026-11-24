@@ -110,7 +110,8 @@ namespace QuantLib {
             {
                 path.emplace_back(eventDate, generateBeta());
             }
-            else break;
+            else { break;
+}
             eventFraction = exponential_(rng_);
         }
         return true;

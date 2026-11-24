@@ -187,8 +187,9 @@ namespace QuantLib {
                         currentVector[t] = orthoNormalizedVectors_[j][t]*sizeMultiplier;
 
                }
-               else
+               else {
                    validVectors_[j] = false;
+}
 
 
             } // end of  if (validVectors_[j])

@@ -159,16 +159,16 @@ namespace QuantLib {
 
     void TabulatedGaussLegendre::order(Size order) {
         switch(order) {
-          case(6):
+          case 6:
             order_=order; x_=x6; w_=w6; n_=n6;
             break;
-          case(7):
+          case 7:
             order_=order; x_=x7; w_=w7; n_=n7;
             break;
-          case(12):
+          case 12:
             order_=order; x_=x12; w_=w12; n_=n12;
             break;
-          case(20):
+          case 20:
             order_=order; x_=x20; w_=w20; n_=n20;
             break;
           default:

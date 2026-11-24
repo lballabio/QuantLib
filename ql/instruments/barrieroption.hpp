@@ -82,7 +82,7 @@ namespace QuantLib {
     class BarrierOption::arguments : public OneAssetOption::arguments {
       public:
         arguments();
-        Barrier::Type barrierType;
+        Barrier::Type barrierType = Barrier::Type(-1);
         Real barrier;
         Real rebate;
         void validate() const override;

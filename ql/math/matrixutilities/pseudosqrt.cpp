@@ -33,7 +33,7 @@ namespace QuantLib {
 
     namespace {
 
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         void checkSymmetry(const Matrix& matrix) {
             Size size = matrix.rows();
             QL_REQUIRE(size == matrix.columns(),
@@ -350,7 +350,7 @@ namespace QuantLib {
     Matrix pseudoSqrt(const Matrix& matrix, SalvagingAlgorithm::Type sa) {
         Size size = matrix.rows();
 
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         checkSymmetry(matrix);
         #else
         QL_REQUIRE(size == matrix.columns(),
@@ -461,7 +461,7 @@ namespace QuantLib {
                            SalvagingAlgorithm::Type sa) {
         Size size = matrix.rows();
 
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         checkSymmetry(matrix);
         #else
         QL_REQUIRE(size == matrix.columns(),

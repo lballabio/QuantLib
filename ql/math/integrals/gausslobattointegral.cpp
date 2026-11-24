@@ -104,9 +104,9 @@ namespace QuantLib {
                 r = 1.0;
         }
 
-        if (relAccuracy_ != Null<Real>())
+        if (relAccuracy_ != Null<Real>()) {
             return std::min(absoluteAccuracy(), acc*relTol)/(r*QL_EPSILON);
-        else {
+        } else {
             return absoluteAccuracy()/(r*QL_EPSILON);
         }
     }

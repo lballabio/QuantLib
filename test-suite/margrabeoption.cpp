@@ -19,6 +19,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/shared_ptr.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/margrabeoption.hpp>
 #include <ql/pricingengines/exotic/analyticamericanmargrabeengine.hpp>
@@ -163,20 +164,20 @@ BOOST_AUTO_TEST_CASE(testEuroExchangeTwoAssets) {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1 = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot2 = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, qRate1, dc);
-    ext::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, qRate2, dc);
 
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
-    ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
 
     for (auto& value : values) {
@@ -310,20 +311,20 @@ BOOST_AUTO_TEST_CASE(testGreeks) {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1 = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot2 = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS1 = flatRate(qRate1, dc);
-    ext::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS2 = flatRate(qRate2, dc);
 
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(rRate, dc);
 
-    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(vol1, dc);
-    ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(vol2, dc);
 
     for (Real residualTime : residualTimes) {
@@ -532,20 +533,20 @@ BOOST_AUTO_TEST_CASE(testAmericanExchangeTwoAssets) {
 
     Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
-    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1 = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot2 = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, qRate1, dc);
-    ext::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, qRate2, dc);
 
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol1 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
-    ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol2 = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
 
     for (auto& value : values) {

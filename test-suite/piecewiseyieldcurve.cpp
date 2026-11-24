@@ -3139,9 +3139,11 @@ BOOST_AUTO_TEST_CASE(testCrossCurveJacobian) {
             Real q0 = quote->value();
             quote->setValue(q0 + h);
             std::vector<std::vector<Real>> up;
+            up.reserve(curves.size());
             for (auto& x : curves) up.push_back(x.curve->data());
             quote->setValue(q0 - h);
             std::vector<std::vector<Real>> dn;
+            dn.reserve(curves.size());
             for (auto& x : curves) dn.push_back(x.curve->data());
             quote->setValue(q0);
             for (auto& x : curves) x.curve->data();
@@ -3315,9 +3317,11 @@ BOOST_AUTO_TEST_CASE(testCurveSensitivityPropagation) {
             Real q0 = quote->value();
             quote->setValue(q0 + h);
             std::vector<std::vector<Real>> up;
+            up.reserve(curves.size());
             for (auto& x : curves) up.push_back(x.curve->data());
             quote->setValue(q0 - h);
             std::vector<std::vector<Real>> dn;
+            dn.reserve(curves.size());
             for (auto& x : curves) dn.push_back(x.curve->data());
             quote->setValue(q0);
             for (auto& x : curves) x.curve->data();
@@ -3794,9 +3798,11 @@ BOOST_AUTO_TEST_CASE(testCoDependentCurveSensitivityPropagation) {
             Real q0 = quote->value();
             quote->setValue(q0 + h);
             std::vector<std::vector<Real>> up;
+            up.reserve(curves.size());
             for (auto& x : curves) up.push_back(x.data());
             quote->setValue(q0 - h);
             std::vector<std::vector<Real>> dn;
+            dn.reserve(curves.size());
             for (auto& x : curves) dn.push_back(x.data());
             quote->setValue(q0);
             for (auto& x : curves) x.data();
@@ -4075,6 +4081,7 @@ BOOST_AUTO_TEST_CASE(testCurveJacobianGraphAfterBaseCurveRelink) {
 
     auto makeSwapHelpers = [&](const std::vector<Datum>& data) {
         std::vector<ext::shared_ptr<RateHelper>> helpers;
+        helpers.reserve(data.size());
         for (const auto& datum : data)
             helpers.push_back(ext::make_shared<SwapRateHelper>(
                 datum.rate / 100.0, datum.n * datum.units, vars.calendar,

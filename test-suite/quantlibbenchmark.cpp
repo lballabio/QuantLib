@@ -588,7 +588,7 @@ int main(int argc, char* argv[] )  // NOLINT(bugprone-exception-escape)
     bool clientMode = false;
 
     // Default number of worker processes to use
-#if defined(QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER)
+#ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
     unsigned nProc = std::thread::hardware_concurrency();
 #else
     unsigned nProc = 1;
@@ -745,7 +745,7 @@ int main(int argc, char* argv[] )  // NOLINT(bugprone-exception-escape)
         }
         else {
 
-#if defined(QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER)
+#ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 
             using namespace boost::interprocess;
 

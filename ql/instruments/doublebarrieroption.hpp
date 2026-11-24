@@ -70,7 +70,7 @@ namespace QuantLib {
     class DoubleBarrierOption::arguments : public OneAssetOption::arguments {
       public:
         arguments();
-        DoubleBarrier::Type barrierType;
+        DoubleBarrier::Type barrierType = DoubleBarrier::Type(-1);
         Real barrier_lo;
         Real barrier_hi;
         Real rebate;
