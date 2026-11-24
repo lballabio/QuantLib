@@ -59,7 +59,7 @@ namespace QuantLib {
                 QL_REQUIRE(!b_.empty(), "zero size basis");
             }
             Real operator()(const Array& a) const {
-                #if defined(QL_EXTRA_SAFETY_CHECKS)
+                #ifdef QL_EXTRA_SAFETY_CHECKS
                 QL_REQUIRE(b_.size()==a.size(), "wrong argument size");
                 #endif
                 Real ret = b_[0](a[0]);

@@ -18,6 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/zabr.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 #include <ql/errors.hpp>
@@ -295,8 +296,8 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
     // Boundary conditions
     FdmBoundaryConditionSet boundaries;
 
-    ext::shared_ptr<FdmZabrOp> map(
-        new FdmZabrOp(mesher, beta_, nu_, rho_, gamma_));
+    ext::shared_ptr<FdmZabrOp> map = ext::make_shared<FdmZabrOp>(
+        mesher, beta_, nu_, rho_, gamma_);
     FdmBackwardSolver solver(map, boundaries,
                              ext::shared_ptr<FdmStepConditionComposite>(),
                              FdmSchemeDesc::/*CraigSneyd()*/ Hundsdorfer());

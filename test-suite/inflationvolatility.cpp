@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp>
 #include <ql/cashflows/inflationcoupon.hpp>
@@ -226,8 +227,8 @@ void setup() {
         fStrikesEU.push_back(i);
     for (auto& i : capMaturitiesEU)
         cfMaturitiesEU.push_back(i);
-    ext::shared_ptr<Matrix> tcPriceEU(new Matrix(ncStrikesEU, ncfMaturitiesEU));
-    ext::shared_ptr<Matrix> tfPriceEU(new Matrix(nfStrikesEU, ncfMaturitiesEU));
+    ext::shared_ptr<Matrix> tcPriceEU = ext::make_shared<Matrix>(ncStrikesEU, ncfMaturitiesEU);
+    ext::shared_ptr<Matrix> tfPriceEU = ext::make_shared<Matrix>(nfStrikesEU, ncfMaturitiesEU);
     for(Size i = 0; i < ncStrikesEU; i++) {
         for(Size j = 0; j < ncfMaturitiesEU; j++) {
             (*tcPriceEU)[i][j] = capPricesEU[i][j];
@@ -286,7 +287,7 @@ BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToVol) {
     ext::shared_ptr<YoYOptionletVolatilitySurface> pVS;
     Handle<YoYOptionletVolatilitySurface> hVS(pVS, false); // pVS does NOT own whatever it points to later, hence the handle does not either
     ext::shared_ptr<YoYInflationUnitDisplacedBlackCapFloorEngine>
-        yoyPricerUD(new YoYInflationUnitDisplacedBlackCapFloorEngine(yoyIndexEU,hVS,nominalEUR)); //hVS
+        yoyPricerUD = ext::make_shared<YoYInflationUnitDisplacedBlackCapFloorEngine>(yoyIndexEU,hVS,nominalEUR); //hVS
     // N.B. the vol gets set in the stripper ... else no point!
 
     // cap stripper

@@ -175,14 +175,14 @@ namespace QuantLib {
             return ext::make_shared<FlatSmileSection>(t, stdDevs.front() / sqrtT, dayCounter());
         } else {
             // we have at least two strikes
-            if (interpolationMethod_ == SmileInterpolationMethod::Linear)
+            if (interpolationMethod_ == SmileInterpolationMethod::Linear) {
                 return ext::make_shared<InterpolatedSmileSection<Linear>>(t, strikes, stdDevs, atmLevel, Linear(), dayCounter(), 
                                                                           VolatilityType::ShiftedLognormal, 0.0, flatStrikeExtrapolation_);
-            else if (interpolationMethod_ == SmileInterpolationMethod::NaturalCubic)
+            } else if (interpolationMethod_ == SmileInterpolationMethod::NaturalCubic) {
                 return ext::make_shared<InterpolatedSmileSection<Cubic>>(t, strikes, stdDevs, atmLevel, Cubic(CubicInterpolation::Kruger), 
                                                                          dayCounter(), VolatilityType::ShiftedLognormal, 0.0, 
                                                                          flatStrikeExtrapolation_);
-            else if (interpolationMethod_ == SmileInterpolationMethod::FinancialCubic)
+            } else if (interpolationMethod_ == SmileInterpolationMethod::FinancialCubic) {
                 return ext::make_shared<InterpolatedSmileSection<Cubic>>(t, 
                         strikes, 
                         stdDevs, 
@@ -193,11 +193,11 @@ namespace QuantLib {
                         VolatilityType::ShiftedLognormal, 
                         0.0, 
                         flatStrikeExtrapolation_);
-            else if (interpolationMethod_ == SmileInterpolationMethod::CubicSpline)
+            } else if (interpolationMethod_ == SmileInterpolationMethod::CubicSpline) {
                 return ext::make_shared<InterpolatedSmileSection<Cubic>>(t, strikes, stdDevs, atmLevel, Cubic(CubicInterpolation::Spline),
                                                                          dayCounter(), VolatilityType::ShiftedLognormal, 0.0, 
                                                                          flatStrikeExtrapolation_);
-            else {
+            } else {
                 QL_FAIL("Invalid method " << (int)interpolationMethod_);
             }
         }

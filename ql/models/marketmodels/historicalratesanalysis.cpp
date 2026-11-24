@@ -70,8 +70,9 @@ namespace QuantLib {
                 // add observation
                 statistics.add(sampleDiff.begin(), sampleDiff.end());
             }
-            else
+            else {
                 isFirst = false;
+}
 
             // Store last calculated forward rates
             std::swap(prevSample, sample);

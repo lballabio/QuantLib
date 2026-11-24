@@ -110,9 +110,9 @@ namespace QuantLib {
         // poor, see for example Hui "One-touch double barrier binary option value")
         QL_REQUIRE(std::fabs(term) < requiredConvergence, "serie did not converge sufficiently fast");
 
-        if (barrierType == DoubleBarrier::KnockOut)
+        if (barrierType == DoubleBarrier::KnockOut) {
            return std::max(tot, 0.0); // KO
-        else {
+        } else {
            Rate discount = process_->riskFreeRate()->discount(
                                              arguments_.exercise->lastDate());
            QL_REQUIRE(discount>0.0,

@@ -36,6 +36,7 @@
 #include <ql/pricingengines/swaption/fdhullwhiteswaptionengine.hpp>
 #include <ql/pricingengines/swaption/g2swaptionengine.hpp>
 #include <ql/pricingengines/swaption/treeswaptionengine.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>
@@ -137,8 +138,8 @@ BOOST_AUTO_TEST_CASE(testCachedValues) {
     ext::shared_ptr<VanillaSwap> otmSwap = vars.makeSwap(1.2*atmRate);
 
     Real a = 0.048696, sigma = 0.0058904;
-    ext::shared_ptr<HullWhite> model(new HullWhite(vars.termStructure,
-                                                     a, sigma));
+    ext::shared_ptr<HullWhite> model = ext::make_shared<HullWhite>(vars.termStructure,
+                                                     a, sigma);
     std::vector<Date> exerciseDates;
     const Leg& leg = atmSwap->fixedLeg();
     for (const auto& i : leg) {

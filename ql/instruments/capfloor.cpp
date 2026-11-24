@@ -159,8 +159,9 @@ namespace QuantLib {
             floorRates_.reserve(floatingLeg_.size());
             while (floorRates_.size() < floatingLeg_.size())
                 floorRates_.push_back(floorRates_.back());
-        } else
+        } else {
             QL_FAIL("only Cap/Floor types allowed in this constructor");
+}
 
         Leg::const_iterator i;
         for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)

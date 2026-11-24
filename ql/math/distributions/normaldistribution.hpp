@@ -162,7 +162,7 @@ namespace QuantLib {
            inlined.
         */
         static Real tail_value(Real x);
-        #if defined(QL_PATCH_SOLARIS)
+        #ifdef QL_PATCH_SOLARIS
         CumulativeNormalDistribution f_;
         #else
         static const CumulativeNormalDistribution f_;

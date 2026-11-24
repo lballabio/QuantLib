@@ -26,6 +26,7 @@
 #include <ql/instruments/bonds/zerocouponbond.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
@@ -34,7 +35,6 @@
 #include <ql/time/schedule.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
-#include <ql/shared_ptr.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -383,7 +383,7 @@ BOOST_AUTO_TEST_CASE(testObservability) {
 
     Globals vars;
 
-    ext::shared_ptr<SimpleQuote> observable(new SimpleQuote(0.03));
+    ext::shared_ptr<SimpleQuote> observable = ext::make_shared<SimpleQuote>(0.03);
     Handle<Quote> h(observable);
     vars.termStructure.linkTo(vars.makeFlatCurve(h));
     vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));

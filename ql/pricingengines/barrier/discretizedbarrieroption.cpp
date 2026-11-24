@@ -90,16 +90,18 @@ namespace QuantLib {
                         optvalues[j] = std::max(vanilla_.values()[j],
                                       (*arguments_.payoff)(grid[j]));
                      }
-                     else
+                     else {
                          optvalues[j] = vanilla_.values()[j]; 
+}
                   }
-                  else if (endTime)
+                  else if (endTime) {
                       optvalues[j] = arguments_.rebate;
+}
                   break;
               case Barrier::DownOut:
-                  if (grid[j] <= arguments_.barrier)
+                  if (grid[j] <= arguments_.barrier) {
                       optvalues[j] = arguments_.rebate; // knocked out
-                  else if (stoppingTime) {
+                  } else if (stoppingTime) {
                       optvalues[j] = std::max(optvalues[j],
                                      (*arguments_.payoff)(grid[j]));
                   }
@@ -111,11 +113,13 @@ namespace QuantLib {
                          optvalues[j] = std::max(vanilla_.values()[j],
                                       (*arguments_.payoff)(grid[j]));
                      }
-                     else
+                     else {
                          optvalues[j] = vanilla_.values()[j]; 
+}
                   }
-                  else if (endTime)
+                  else if (endTime) {
                       optvalues[j] = arguments_.rebate;
+}
                   break;
               case Barrier::UpOut:
                   if (grid[j] >= arguments_.barrier)

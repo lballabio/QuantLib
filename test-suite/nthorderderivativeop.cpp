@@ -589,8 +589,9 @@ Array priceReport(const GridSetup& setup, const Array& strikes) {
 
                 rhs[idx] = GaussLobattoIntegral(1000, 1e-12)(f, gMin, gMax)/(gMax - gMin);
             }
-            else
+            else {
                 rhs[idx] = (*payoff)(sT[idx]);
+}
         }
 
         const ext::shared_ptr<FdmHestonNthOrderOp> heatEqn =

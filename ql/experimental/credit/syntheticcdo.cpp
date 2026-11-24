@@ -24,6 +24,7 @@
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/event.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/experimental/credit/gaussianlhplossmodel.hpp>
 #include <ql/experimental/credit/midpointcdoengine.hpp>
@@ -231,7 +232,7 @@ namespace QuantLib {
         Real targetNPV,
         Real accuracy) const
     {
-        ext::shared_ptr<SimpleQuote> correl(new SimpleQuote(0.0));
+        ext::shared_ptr<SimpleQuote> correl = ext::make_shared<SimpleQuote>(0.0);
 
         ext::shared_ptr<GaussianLHPLossModel> lhp(new
             GaussianLHPLossModel(Handle<Quote>(correl), recoveries));

@@ -37,6 +37,7 @@
 #include <ql/indexes/indexmanager.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -116,7 +117,7 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhite) {
     Settings::instance().evaluationDate() = today;
     Handle<YieldTermStructure> termStructure(flatRate(settlement,0.04875825,
                                                       Actual365Fixed()));
-    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure));
+    ext::shared_ptr<HullWhite> model = ext::make_shared<HullWhite>(termStructure);
     CalibrationData data[] = {{ 1, 5, 0.1148 },
                               { 2, 4, 0.1108 },
                               { 3, 3, 0.1070 },
@@ -188,7 +189,7 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhiteFixedReversion) {
     Settings::instance().evaluationDate() = today;
     Handle<YieldTermStructure> termStructure(flatRate(settlement,0.04875825,
                                                       Actual365Fixed()));
-    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure,0.05,0.01));
+    ext::shared_ptr<HullWhite> model = ext::make_shared<HullWhite>(termStructure,0.05,0.01);
     CalibrationData data[] = {{ 1, 5, 0.1148 },
                               { 2, 4, 0.1108 },
                               { 3, 3, 0.1070 },
@@ -263,7 +264,7 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhite2) {
     Settings::instance().evaluationDate() = today;
     Handle<YieldTermStructure> termStructure(flatRate(settlement,0.04875825,
                                                       Actual365Fixed()));
-    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure));
+    ext::shared_ptr<HullWhite> model = ext::make_shared<HullWhite>(termStructure);
     CalibrationData data[] = {{ 1, 5, 0.1148 },
                               { 2, 4, 0.1108 },
                               { 3, 3, 0.1070 },
@@ -376,7 +377,7 @@ BOOST_AUTO_TEST_CASE(testSwaps) {
        ext::shared_ptr<YieldTermStructure>(
            new DiscountCurve(dates, discounts, Actual365Fixed())));
 
-    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure));
+    ext::shared_ptr<HullWhite> model = ext::make_shared<HullWhite>(termStructure);
 
     Integer start[] = { -3, 0, 3 };
     Integer length[] = { 2, 5, 10 };

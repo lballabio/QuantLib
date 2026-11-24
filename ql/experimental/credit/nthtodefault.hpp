@@ -135,13 +135,13 @@ namespace QuantLib {
 
     class NthToDefault::arguments : public virtual PricingEngine::arguments {
     public:
-        arguments() : side(Protection::Side(-1)),
+        arguments() : 
                       premiumRate(Null<Real>()),
                       upfrontRate(Null<Real>()) {}
         void validate() const override;
 
         ext::shared_ptr<Basket> basket;
-        Protection::Side side;
+        Protection::Side side = Protection::Side(-1);
         Leg premiumLeg;
 
         Size ntdOrder;

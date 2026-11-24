@@ -39,7 +39,7 @@ namespace QuantLib {
         auto rdiag = std::make_unique<Real[]>(n);
         auto wa = std::make_unique<Real[]>(n);
 
-        MINPACK::qrfac(m, n, mT.begin(), 0, (pivot)?1:0,
+        MINPACK::qrfac(m, n, mT.begin(), 0, pivot?1:0,
                        lipvt.get(), n, rdiag.get(), rdiag.get(), wa.get());
         if (r.columns() != n || r.rows() !=n)
             r = Matrix(n, n);

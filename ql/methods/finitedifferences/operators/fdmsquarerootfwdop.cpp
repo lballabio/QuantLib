@@ -125,8 +125,9 @@ namespace QuantLib {
         else if (transform == Log) {
             return f0Log();
         }
-        else
+        else {
             QL_FAIL("unknown transform");
+}
     }
 
     Real FdmSquareRootFwdOp::upperBoundaryFactor(TransformationType transform) const {
@@ -139,8 +140,9 @@ namespace QuantLib {
         else if (transform == Log) {
             return f1Log();
         }
-        else
+        else {
             QL_FAIL("unknown transform");
+}
     }
 
     Real FdmSquareRootFwdOp::f0Plain() const {

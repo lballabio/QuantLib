@@ -30,6 +30,7 @@
 #include <ql/experimental/inflation/yoyoptionletstripper.hpp>
 #include <ql/instruments/makeyoyinflationcapfloor.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/shared_ptr.hpp>
 #include <utility>
 
 
@@ -240,13 +241,13 @@ namespace QuantLib {
                                                  anIndex, CPI::Flat,
                                                  K, nT, p_)));
 
-                ext::shared_ptr<ConstantYoYOptionletVolatility> yoyVolBLACK(
-                          new ConstantYoYOptionletVolatility(found, settlementDays,
+                ext::shared_ptr<ConstantYoYOptionletVolatility> yoyVolBLACK = ext::make_shared<ConstantYoYOptionletVolatility>(
+                          found, settlementDays,
                                                              cal, bdc, dc,
                                                              lag_, frequency_,
                                                              false,
                                                              // -100% to +300%
-                                                             -1.0,3.0));
+                                                             -1.0,3.0);
 
                 helpers[j]->setTermStructure(
                        // gets underlying pointer & removes const

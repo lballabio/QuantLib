@@ -360,8 +360,9 @@ namespace QuantLib {
                         : timeGrid->back(),
                     vGrid, v0, params_));
             }
-            else
+            else {
                 vMesher.push_back(vMesher.back());
+}
         }
 
         // start probability distribution
