@@ -35,7 +35,6 @@
 #include <ql/time/schedule.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
-#include <ql/shared_ptr.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
