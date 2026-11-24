@@ -24,6 +24,7 @@
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/greeks.hpp>
+#include <algorithm>
 #include <numeric>
 #include <utility>
 
@@ -70,22 +71,29 @@ namespace QuantLib {
         DayCounter divdc = process_->dividendYield()->dayCounter();
         DayCounter voldc = process_->blackVolatility()->dayCounter();
         std::vector<Time> fixingTimes;
-        // each future fixing drifts with its own forward, ln(D_q(t_i)/D_r(t_i));
-        // the fixing times on the rate and dividend clocks give rho and dividend rho
+        // each future fixing drifts with its own forward from the spot date t_0,
+        // ln(D_q(t_0,t_i)/D_r(t_0,t_i)); the times on the rate and dividend clocks
+        // give rho and dividend rho.  A dividend curve that starts after the spot
+        // date says nothing about the gap, so no dividends are assumed before it.
         Real driftSum = 0.0;
         Time rfTimeSum = 0.0, divTimeSum = 0.0;
         Date divReferenceDate = process_->dividendYield()->referenceDate();
+        Date divStart = std::max(referenceDate, divReferenceDate);
+        DiscountFactor divStartDiscount = process_->dividendYield()->discount(divStart);
+        Time divStartTime = divdc.yearFraction(divReferenceDate, divStart);
         Size i;
         for (i=0; i<arguments_.fixingDates.size(); i++) {
             if (arguments_.fixingDates[i]>=referenceDate) {
                 Time t = voldc.yearFraction(referenceDate,
                     arguments_.fixingDates[i]);
                 fixingTimes.push_back(t);
+                const Date& fixingDate = arguments_.fixingDates[i];
+                Date divDate = std::max(fixingDate, divStart);
                 driftSum += std::log(
-                    process_->dividendYield()->discount(arguments_.fixingDates[i]) /
-                    process_->riskFreeRate()->discount(arguments_.fixingDates[i]));
-                rfTimeSum += rfdc.yearFraction(referenceDate, arguments_.fixingDates[i]);
-                divTimeSum += divdc.yearFraction(divReferenceDate, arguments_.fixingDates[i]);
+                    process_->dividendYield()->discount(divDate) / divStartDiscount /
+                    process_->riskFreeRate()->discount(fixingDate));
+                rfTimeSum += rfdc.yearFraction(referenceDate, fixingDate);
+                divTimeSum += divdc.yearFraction(divReferenceDate, divDate) - divStartTime;
             }
         }
 
