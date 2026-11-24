@@ -46,6 +46,7 @@ namespace QuantLib {
         Real log_strike = std::log(payoff_->strike());
 
         Size i;
+        diffProcess_->suspendCaching(true);
         switch (payoff_->optionType()) {
           case Option::Call:
             for (i=0; i<n-1; i++) {
@@ -104,6 +105,7 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown option type");
         }
+        diffProcess_->suspendCaching(false);
 
         return 0.0;
     }

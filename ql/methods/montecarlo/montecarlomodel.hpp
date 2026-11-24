@@ -67,11 +67,12 @@ namespace QuantLib {
             ext::shared_ptr<path_pricer_type> cvPathPricer = ext::shared_ptr<path_pricer_type>(),
             result_type cvOptionValue = result_type(),
             ext::shared_ptr<path_generator_type> cvPathGenerator =
-                ext::shared_ptr<path_generator_type>())
+                ext::shared_ptr<path_generator_type>(),
+            bool cachedPathGeneration = false)
         : pathGenerator_(std::move(pathGenerator)), pathPricer_(std::move(pathPricer)),
           sampleAccumulator_(std::move(sampleAccumulator)), isAntitheticVariate_(antitheticVariate),
           cvPathPricer_(std::move(cvPathPricer)), cvOptionValue_(cvOptionValue),
-          cvPathGenerator_(std::move(cvPathGenerator)) {
+          cvPathGenerator_(std::move(cvPathGenerator)), cachedPathGeneration_(cachedPathGeneration) {
             isControlVariate_ = static_cast<bool>(cvPathPricer_);
         }
         void addSamples(Size samples);
@@ -85,12 +86,24 @@ namespace QuantLib {
         result_type cvOptionValue_;
         bool isControlVariate_;
         ext::shared_ptr<path_generator_type> cvPathGenerator_;
+        bool cachedPathGeneration_;
     };
 
     // inline definitions
     template <template <class> class MC, class RNG, class S>
     inline void MonteCarloModel<MC,RNG,S>::addSamples(Size samples) {
-        for(Size j = 1; j <= samples; j++) {
+        struct CacheEnabler {
+            explicit CacheEnabler(MonteCarloModel<MC, RNG, S>* t) : t(t) {
+                if (t->cachedPathGeneration_)
+                    t->pathGenerator_->initCache();
+            }
+            ~CacheEnabler() {
+                if (t->cachedPathGeneration_)
+                    t->pathGenerator_->disableCache();
+            }
+            MonteCarloModel<MC, RNG, S>* t;
+        } enabler(this);
+        for (Size j = 1; j <= samples; j++) {
 
             const sample_type& path = pathGenerator_->next();
             result_type price = (*pathPricer_)(path.value);
