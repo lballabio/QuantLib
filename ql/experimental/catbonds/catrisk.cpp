@@ -77,7 +77,8 @@ namespace QuantLib {
         return ext::make_shared<EventSetSimulation>(events_, eventsStart_, eventsEnd_, start, end);
     }
 
-    BetaRiskSimulation::BetaRiskSimulation(Date start, Date end, Real maxLoss, Real lambda, Real alpha, Real beta) 
+    // NOLINTNEXTLINE(bugprone-random-generator-seed)
+    BetaRiskSimulation::BetaRiskSimulation(Date start, Date end, Real maxLoss, Real lambda, Real alpha, Real beta)
               : CatSimulation(start, end), 
                 maxLoss_(maxLoss), 
                 exponential_(lambda),

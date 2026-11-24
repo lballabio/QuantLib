@@ -856,7 +856,7 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativePoissonIndexRange) {
     }
 
     // Higher-precision Real types need more than 13 standard deviations.
-    if (QL_EPSILON < std::numeric_limits<double>::epsilon()) {
+    if (QL_EPSILON < std::numeric_limits<double>::epsilon()) {  // NOLINT(misc-redundant-expression)
         InverseCumulativePoisson inverse(naturalMax - 13.0*std::sqrt(naturalMax));
         BOOST_CHECK_EXCEPTION(inverse(nearOne), Error,
                               ExpectedErrorMessage("exceeds the supported index range"));
