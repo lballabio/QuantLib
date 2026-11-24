@@ -84,7 +84,9 @@
 #include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/uzbekistan.hpp>
+#include <algorithm>
 #include <fstream>
+#include <iterator>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -3372,6 +3374,24 @@ BOOST_AUTO_TEST_CASE(testTaiwanCalendar) {
     };
     for (const Date& date : historical)
         BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
+
+    // all the weekday holidays of 2027
+    const Date holidays2027[] = {
+        {1, January, 2027}, {2, February, 2027}, {3, February, 2027},
+        {4, February, 2027}, {5, February, 2027}, {8, February, 2027},
+        {9, February, 2027}, {10, February, 2027}, {1, March, 2027},
+        {5, April, 2027}, {6, April, 2027}, {30, April, 2027},
+        {9, June, 2027}, {15, September, 2027}, {28, September, 2027},
+        {11, October, 2027}, {25, October, 2027}, {24, December, 2027},
+        {31, December, 2027}
+    };
+    for (Date d(1, January, 2027); d <= Date(31, December, 2027); ++d) {
+        if (d.weekday() == Saturday || d.weekday() == Sunday)
+            continue;
+        bool expected = std::find(std::begin(holidays2027), std::end(holidays2027), d)
+                        != std::end(holidays2027);
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(d) == expected, d);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testThailandCalendar) {
