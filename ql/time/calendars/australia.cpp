@@ -57,12 +57,21 @@ namespace QuantLib {
             || (dd == em)
             // ANZAC Day, April 25th
             || (d == 25 && m == April)
+            // Sunday substitution under the former Banks and Bank Holidays Act
+            || (d == 26 && m == April && w == Monday && y <= 2010)
+            // Easter Monday was moved to Tuesday in 2011 to avoid ANZAC Day
+            || (d == 26 && m == April && y == 2011)
+            // Additional ANZAC Day holidays declared for 2026 and 2027 only
+            || (d == 27 && m == April && y == 2026)
+            || (d == 26 && m == April && y == 2027)
             // Queen's Birthday, second Monday in June
             || ((d > 7 && d <= 14) && w == Monday && m == June)
             // Bank Holiday, first Monday in August
             || (d <= 7 && w == Monday && m == August)
             // Labour Day, first Monday in October
             || (d <= 7 && w == Monday && m == October)
+            // APEC public holiday in Sydney, September 7 (only 2007)
+            || (d == 7 && m == September && y == 2007)
             // Christmas, December 25th (possibly Monday or Tuesday)
             || ((d == 25 || (d == 27 && (w == Monday || w == Tuesday)))
                 && m == December)
