@@ -884,6 +884,28 @@ BOOST_AUTO_TEST_CASE(testGmresNearBreakdownDoesNotConverge) {
                           ExpectedErrorMessage("could not converge"));
 }
 
+BOOST_AUTO_TEST_CASE(testBiCGstabConvergenceOnLastIteration) {
+    BOOST_TEST_MESSAGE("Testing BiCGstab convergence on last permitted iteration...");
+
+    Matrix A(3, 3);
+    A[0][0] =  1.0; A[0][1] = -2.0; A[0][2] = -3.0;
+    A[1][0] = -2.0; A[1][1] =  2.0; A[1][2] = -2.0;
+    A[2][0] = -1.0; A[2][1] = -3.0; A[2][2] = -2.0;
+
+    const Array b = {1.0, 1.0, 2.0};
+    constexpr Real relTol = 1.0e-12;
+
+    // This system converges exactly on the 2nd iteration.
+    // When maxIter == 2, convergence is achieved on the last permitted iteration.
+    const BiCGStabResult res = BiCGstab(MatrixMult(A), 2, relTol).solve(b);
+    QL_CHECK_SMALL(res.error, relTol);
+    QL_CHECK_SMALL(norm2(A * res.x - b) / norm2(b), relTol);
+
+    // When maxIter == 1, the budget is insufficient and it must throw.
+    BOOST_CHECK_EXCEPTION(BiCGstab(MatrixMult(A), 1, relTol).solve(b),
+                          Error, ExpectedErrorMessage("max number of iterations exceeded"));
+}
+
 BOOST_AUTO_TEST_CASE(testInitializers) {
     BOOST_TEST_MESSAGE("Testing matrix initializers...");
 

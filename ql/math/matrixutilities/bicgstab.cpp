@@ -84,8 +84,8 @@ namespace QuantLib {
            rhoTld = rho;
         }
 
-        QL_REQUIRE(i < maxIter_, "max number of iterations exceeded");
-        QL_REQUIRE(error < relTol_, "could not converge");
+        QL_REQUIRE(error < relTol_,
+                   (i >= maxIter_ ? "max number of iterations exceeded" : "could not converge"));
 
         BiCGStabResult result = { i, error, x};
         return result;
