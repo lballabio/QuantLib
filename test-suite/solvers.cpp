@@ -289,6 +289,49 @@ BOOST_AUTO_TEST_CASE(testSecant) {
     test_solver(Secant(), "Secant", 1.0e-6);
 }
 
+BOOST_AUTO_TEST_CASE(testSecantDoesNotStopFarFromRoot) {
+    BOOST_TEST_MESSAGE("Testing that the secant solver does not stop far from the root...");
+
+    // example from issue #3013
+    auto f = [](Real x) -> Real { return 20.0*std::pow(x, 5) - 0.01; };
+    Real expected = std::pow(0.01/20.0, 0.2);
+
+    // On [-0.1, 1.2] every step shorter than the accuracy, and every probe,
+    // stays on the left of the root, while the steps that cross the root
+    // are long, so the solver can never certify the result.  It used to
+    // return about -0.0997 after three evaluations; now it must fail.
+    BOOST_CHECK_EXCEPTION(Secant().solve(f, 1.0e-3, 0.5, -0.1, 1.2), Error,
+                          ExpectedErrorMessage("maximum number of function evaluations"));
+
+    // On [-0.3, 1.8] the iterates end up on both sides of the root, and
+    // the returned value must be within the required accuracy.
+    for (Real accuracy : {1.0e-4, 1.0e-6, 1.0e-8}) {
+        BOOST_TEST_CONTEXT("accuracy " << accuracy) {
+            Real root = Secant().solve(f, accuracy, 0.75, -0.3, 1.8);
+            QL_CHECK_SMALL(root - expected, accuracy);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testSecantEvaluationLimit) {
+    BOOST_TEST_MESSAGE("Testing secant function evaluation limits...");
+
+    for (Size budget = 2; budget <= 6; ++budget) {
+        BOOST_TEST_CONTEXT("evaluation limit " << budget) {
+            Size calls = 0;
+            auto f = [&](Real x) -> Real {
+                ++calls;
+                return 20.0*x*x*x*x*x - 0.01;
+            };
+            Secant solver;
+            solver.setMaxEvaluations(budget);
+            BOOST_CHECK_EXCEPTION(solver.solve(f, 0.001, 0.5, -0.1, 1.2), Error,
+                                  ExpectedErrorMessage("maximum number of function evaluations"));
+            BOOST_CHECK_EQUAL(calls, budget);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testHalley) {
     BOOST_TEST_MESSAGE("Testing Halley solver...");
     test_solver(Halley(), "Halley", 1.0e-6);

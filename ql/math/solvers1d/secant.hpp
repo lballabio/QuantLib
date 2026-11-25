@@ -29,7 +29,16 @@
 namespace QuantLib {
 
     //! %Secant 1-D solver
-    /*! \test the correctness of the returned values is tested by
+    /*! The solver returns only with a certificate: either f is zero at
+        the returned point, or the root is bracketed within the required
+        accuracy by the returned point and an evaluated point of opposite
+        sign.  A step shorter than the accuracy that does not provide
+        such a bracket triggers a probe towards the root; if the
+        certificate cannot be obtained, the solver fails through the
+        evaluation limit.  The last function evaluation is always made at
+        the returned point.
+
+        \test the correctness of the returned values is tested by
               checking them against known good results.
 
         \ingroup solvers
@@ -61,15 +70,68 @@ namespace QuantLib {
                 xl = xMin_;
                 fl = fxMin_;
             }
-            while (evaluationNumber_<=maxEvaluations_) {
+            // the last evaluated point where f has the opposite sign
+            // of f(root_); the bounds bracket the root, so xl qualifies
+            Real xo = xl;
+
+            while (evaluationNumber_ < maxEvaluations_) {
+                // equal values give no slope (the step would be infinite
+                // or NaN); fail through the evaluation-limit diagnostic
+                if (froot == fl)
+                    break;
                 dx = (xl-root_)*froot/(froot-fl);
                 xl = root_;
                 fl = froot;
                 root_ += dx;
                 froot = f(root_);
                 ++evaluationNumber_;
-                if (std::fabs(dx) < xAccuracy || (close(froot, 0.0)))
+                if (froot == 0.0)
                     return root_;
+                if ((fl < 0.0) != (froot < 0.0))
+                    xo = xl;
+                // the root lies between xo and root_
+                if (std::fabs(xo-root_) < xAccuracy)
+                    return root_;
+
+                if (std::fabs(dx) < xAccuracy) {
+                    // A small step alone does not establish convergence.
+                    // Probe towards xo to certify a bracket within accuracy.
+                    if (evaluationNumber_ >= maxEvaluations_)
+                        break;
+                    Real probeStep = 0.5*xAccuracy;
+                    if (xo < root_)
+                        probeStep = -probeStep;
+                    Real probe = root_ + probeStep;
+                    if (probe == root_)
+                        probe = root_ + 2.0*probeStep;
+                    // rounding must not make the certified interval too wide
+                    if (probe == root_ || std::fabs(probe-root_) > xAccuracy)
+                        break;
+                    Real fprobe = f(probe);
+                    ++evaluationNumber_;
+                    if (fprobe == 0.0) {
+                        root_ = probe;
+                        return root_;
+                    }
+                    if ((froot < 0.0) != (fprobe < 0.0)) {
+                        // both ends are certified; prefer the smaller
+                        // residual, re-evaluating root_ so that the last
+                        // call is made at the returned point
+                        if (std::fabs(froot) < std::fabs(fprobe)
+                            && evaluationNumber_ < maxEvaluations_) {
+                            f(root_);
+                            ++evaluationNumber_;
+                            return root_;
+                        }
+                        root_ = probe;
+                        return root_;
+                    }
+                    // the probe becomes the next iterate
+                    xl = root_;
+                    fl = froot;
+                    root_ = probe;
+                    froot = fprobe;
+                }
             }
             QL_FAIL("maximum number of function evaluations ("
                     << maxEvaluations_ << ") exceeded");
