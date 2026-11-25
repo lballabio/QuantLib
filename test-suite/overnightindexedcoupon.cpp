@@ -33,6 +33,7 @@
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
@@ -3066,6 +3067,130 @@ BOOST_AUTO_TEST_CASE(testRequiredTodaysFixing) {
     const Date end = calendar.advance(tomorrow, 10, Days);
     const OvernightIndexedCoupon future(end, 10000.0, tomorrow, end, index);
     BOOST_CHECK_NO_THROW(future.rate());
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightLegStubReferencePeriods) {
+    BOOST_TEST_MESSAGE("Testing reference periods for irregular stubs in overnight legs...");
+
+    const Date today(2, January, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    const Calendar calendar = TARGET();
+    const DayCounter isma = ActualActual(ActualActual::ISMA);
+    const auto curve = Handle<YieldTermStructure>(
+        ext::make_shared<FlatForward>(today, 0.05, Actual360()));
+    const auto sofr = ext::make_shared<Sofr>(curve);
+
+    // Front stub ending 31 Aug 2026 with 6M tenor gives unadjusted refStart = 28 Feb 2026 (Saturday).
+    // Schedule uses ModifiedFollowing (27 Feb 2026), whereas paymentAdjustment uses Following (2 Mar 2026)
+    // or Unadjusted (28 Feb 2026).
+    const Schedule frontStubSchedule = MakeSchedule()
+                                           .from(Date(15, July, 2026))
+                                           .to(Date(28, February, 2027))
+                                           .withFirstDate(Date(31, August, 2026))
+                                           .withTenor(6 * Months)
+                                           .withCalendar(calendar)
+                                           .withConvention(ModifiedFollowing)
+                                           .withTerminationDateConvention(ModifiedFollowing)
+                                           .backwards();
+
+    const Leg legFollowing = OvernightLeg(frontStubSchedule, sofr)
+                                 .withNotionals(1000000.0)
+                                 .withPaymentDayCounter(isma)
+                                 .withPaymentAdjustment(Following);
+    const Leg legModFollowing = OvernightLeg(frontStubSchedule, sofr)
+                                    .withNotionals(1000000.0)
+                                    .withPaymentDayCounter(isma)
+                                    .withPaymentAdjustment(ModifiedFollowing);
+    const Leg legFixedBranch = OvernightLeg(frontStubSchedule, sofr)
+                                   .withNotionals(1000000.0)
+                                   .withGearings(0.0)
+                                   .withSpreads(0.05)
+                                   .withPaymentDayCounter(isma)
+                                   .withPaymentAdjustment(Following);
+
+    const auto frontFollowing = coupon_cast(legFollowing.front());
+    const auto frontModFollowing = coupon_cast(legModFollowing.front());
+    const auto frontFixedBranch = coupon_cast(legFixedBranch.front());
+    BOOST_REQUIRE(frontFollowing != nullptr);
+    BOOST_REQUIRE(frontModFollowing != nullptr);
+    BOOST_REQUIRE(frontFixedBranch != nullptr);
+
+    BOOST_CHECK_EQUAL(frontFollowing->referencePeriodStart(), Date(27, February, 2026));
+    BOOST_CHECK_EQUAL(frontFollowing->referencePeriodEnd(), Date(31, August, 2026));
+    BOOST_CHECK_EQUAL(frontFixedBranch->referencePeriodStart(), Date(27, February, 2026));
+    BOOST_CHECK_EQUAL(frontFixedBranch->referencePeriodEnd(), Date(31, August, 2026));
+    QL_CHECK_CLOSE(frontFollowing->accrualPeriod(), frontModFollowing->accrualPeriod(), 1e-12);
+    QL_CHECK_CLOSE(frontFollowing->amount(), frontModFollowing->amount(), 1e-12);
+
+    // Back stub starting 31 Aug 2026 with 6M tenor gives unadjusted refEnd = 28 Feb 2027 (Sunday).
+    const Schedule backStubSchedule = MakeSchedule()
+                                          .from(Date(27, February, 2026))
+                                          .to(Date(15, January, 2027))
+                                          .withNextToLastDate(Date(31, August, 2026))
+                                          .withTenor(6 * Months)
+                                          .withCalendar(calendar)
+                                          .withConvention(ModifiedFollowing)
+                                          .withTerminationDateConvention(ModifiedFollowing)
+                                          .forwards();
+
+    const Leg backFollowing = OvernightLeg(backStubSchedule, sofr)
+                                  .withNotionals(1000000.0)
+                                  .withPaymentDayCounter(isma)
+                                  .withPaymentAdjustment(Following);
+    const Leg backModFollowing = OvernightLeg(backStubSchedule, sofr)
+                                     .withNotionals(1000000.0)
+                                     .withPaymentDayCounter(isma)
+                                     .withPaymentAdjustment(ModifiedFollowing);
+
+    const auto backCpnFollowing = coupon_cast(backFollowing.back());
+    const auto backCpnModFollowing = coupon_cast(backModFollowing.back());
+    BOOST_REQUIRE(backCpnFollowing != nullptr);
+    BOOST_REQUIRE(backCpnModFollowing != nullptr);
+
+    BOOST_CHECK_EQUAL(backCpnFollowing->referencePeriodStart(), Date(31, August, 2026));
+    BOOST_CHECK_EQUAL(backCpnFollowing->referencePeriodEnd(), Date(26, February, 2027));
+    QL_CHECK_CLOSE(backCpnFollowing->accrualPeriod(), backCpnModFollowing->accrualPeriod(), 1e-12);
+    QL_CHECK_CLOSE(backCpnFollowing->amount(), backCpnModFollowing->amount(), 1e-12);
+
+    // Payment adjustment still governs payment date when payment date falls on a holiday.
+    const Schedule unadjustedStubSchedule = MakeSchedule()
+                                                .from(Date(15, July, 2026))
+                                                .to(Date(30, August, 2027))
+                                                .withFirstDate(Date(30, August, 2026))
+                                                .withTenor(6 * Months)
+                                                .withCalendar(calendar)
+                                                .withConvention(Unadjusted)
+                                                .withTerminationDateConvention(Unadjusted)
+                                                .backwards();
+
+    const Leg unadjScheduleLeg = OvernightLeg(unadjustedStubSchedule, sofr)
+                                     .withNotionals(1000000.0)
+                                     .withPaymentDayCounter(isma)
+                                     .withPaymentAdjustment(Following);
+    const auto unadjFirst = coupon_cast(unadjScheduleLeg.front());
+    BOOST_REQUIRE(unadjFirst != nullptr);
+    BOOST_CHECK_EQUAL(unadjFirst->date(), Date(31, August, 2026));
+    BOOST_CHECK_EQUAL(unadjFirst->referencePeriodStart(), Date(28, February, 2026));
+
+    // Partial schedule with isRegular metadata and no tenor should fall back to [start, end].
+    const Schedule partialSchedule(frontStubSchedule.dates(), calendar, ModifiedFollowing,
+                                   ModifiedFollowing, std::nullopt, std::nullopt, std::nullopt,
+                                   frontStubSchedule.isRegular());
+    Leg partialLeg;
+    BOOST_CHECK_NO_THROW(
+        partialLeg = OvernightLeg(partialSchedule, sofr)
+                         .withNotionals(1000000.0)
+                         .withPaymentDayCounter(isma));
+    BOOST_REQUIRE_EQUAL(partialLeg.size(), frontStubSchedule.size() - 1);
+    const auto partialFirst = coupon_cast(partialLeg.front());
+    const auto partialLast = coupon_cast(partialLeg.back());
+    BOOST_REQUIRE(partialFirst != nullptr);
+    BOOST_REQUIRE(partialLast != nullptr);
+    BOOST_CHECK_EQUAL(partialFirst->referencePeriodStart(), partialFirst->accrualStartDate());
+    BOOST_CHECK_EQUAL(partialFirst->referencePeriodEnd(), partialFirst->accrualEndDate());
+    BOOST_CHECK_EQUAL(partialLast->referencePeriodStart(), partialLast->accrualStartDate());
+    BOOST_CHECK_EQUAL(partialLast->referencePeriodEnd(), partialLast->accrualEndDate());
 }
 
 

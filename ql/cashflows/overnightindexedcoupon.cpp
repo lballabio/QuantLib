@@ -621,12 +621,16 @@ const std::optional<Integer>& roundingPrecision)
             }
             
             // determine refStart and refEnd
-            if (i == 0 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1))
-                refStart = calendar.adjust(end - schedule_.tenor(),
-                                           paymentAdjustment_);
-            if (i == n-1 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1))
-                refEnd = calendar.adjust(start + schedule_.tenor(),
-                                         paymentAdjustment_);
+            if (i == 0 && schedule_.hasIsRegular() && schedule_.hasTenor() &&
+                !schedule_.isRegular(i + 1)) {
+                BusinessDayConvention bdc = schedule_.businessDayConvention();
+                refStart = calendar.adjust(end - schedule_.tenor(), bdc);
+            }
+            if (i == n - 1 && schedule_.hasIsRegular() && schedule_.hasTenor() &&
+                !schedule_.isRegular(i + 1)) {
+                BusinessDayConvention bdc = schedule_.businessDayConvention();
+                refEnd = calendar.adjust(start + schedule_.tenor(), bdc);
+            }
 
             // Determine the rate computation start and end date as
             // - the coupon start and end date, if in arrears, and
