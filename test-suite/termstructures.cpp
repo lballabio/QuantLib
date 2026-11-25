@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 #include <ql/experimental/commodities/commoditycurve.hpp>
 #include <cmath>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yield/compositezeroyieldstructure.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -244,7 +245,7 @@ BOOST_AUTO_TEST_CASE(testFSpreadedObs) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
+    ext::shared_ptr<SimpleQuote> me = ext::make_shared<SimpleQuote>(0.01);
     Handle<Quote> mh(me);
     RelinkableHandle<YieldTermStructure> h; //(vars.dummyTermStructure);
     ext::shared_ptr<YieldTermStructure> spreaded(
@@ -292,7 +293,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadedObs) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
+    ext::shared_ptr<SimpleQuote> me = ext::make_shared<SimpleQuote>(0.01);
     Handle<Quote> mh(me);
     RelinkableHandle<YieldTermStructure> h(vars.dummyTermStructure);
 

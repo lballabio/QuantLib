@@ -64,7 +64,7 @@ namespace QuantLib {
         const Handle<YieldTermStructure> rTS = process->riskFreeRate();
 
         const Handle<YieldTermStructure> qTS =
-            (fdmQuantoHelper) != nullptr ?
+            fdmQuantoHelper != nullptr ?
                 Handle<YieldTermStructure>(ext::make_shared<QuantoTermStructure>(
                     process->dividendYield(), process->riskFreeRate(),
                     Handle<YieldTermStructure>(fdmQuantoHelper->fTS_), process->blackVolatility(),

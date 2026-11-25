@@ -87,8 +87,8 @@ namespace QuantLib {
         : public OneAssetOption::arguments {
       public:
         arguments();
-        Barrier::Type barrierType;
-        PartialBarrier::Range barrierRange;
+        Barrier::Type barrierType = Barrier::Type(-1);
+        PartialBarrier::Range barrierRange = PartialBarrier::Range(-1);
         Real barrier;
         Real rebate;
         Date coverEventDate;

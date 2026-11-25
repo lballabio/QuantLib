@@ -29,9 +29,9 @@ namespace QuantLib {
                              Integer offsetDays,
                              const Calendar& calendar) {
         auto i = paymentTerms_.find(name);
-        if (i != paymentTerms_.end())
+        if (i != paymentTerms_.end()) {
             data_ = i->second;
-        else {
+        } else {
             data_ = ext::make_shared<PaymentTerm::Data>(
                                  name, eventType,
                                                        offsetDays, calendar);

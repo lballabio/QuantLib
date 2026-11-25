@@ -49,6 +49,7 @@
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <deque>
@@ -269,10 +270,10 @@ BOOST_AUTO_TEST_CASE(testGemanRoncoroniProcess) {
     const Real theta3 = 0.10;
     const Real psi    = 1.9;
 
-    ext::shared_ptr<GemanRoncoroniProcess> grProcess(
-                new GemanRoncoroniProcess(x0, alpha, beta, gamma, delta,
+    ext::shared_ptr<GemanRoncoroniProcess> grProcess = ext::make_shared<GemanRoncoroniProcess>(
+                x0, alpha, beta, gamma, delta,
                                           eps, zeta, d, k, tau, sig2, a, b,
-                                          theta1, theta2, theta3, psi));
+                                          theta1, theta2, theta3, psi);
 
 
     const Real speed     = 5.0;
@@ -368,8 +369,8 @@ BOOST_AUTO_TEST_CASE(testSimpleExtOUStorageEngine) {
     while (exerciseDates.back() < maturityDate) {
         exerciseDates.push_back(exerciseDates.back()+Period(1, Days));
     }
-    ext::shared_ptr<BermudanExercise> bermudanExercise(
-                                        new BermudanExercise(exerciseDates));
+    ext::shared_ptr<BermudanExercise> bermudanExercise = ext::make_shared<BermudanExercise>(
+                                        exerciseDates);
 
     const Real x0 = 3.0;
     const Real speed = 1.0;

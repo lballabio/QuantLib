@@ -40,6 +40,7 @@
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/optionlet/capletvariancecurve.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -143,8 +144,8 @@ BOOST_AUTO_TEST_CASE(testSimpleCovarianceModels) {
     ext::shared_ptr<LiborForwardModelProcess> process(
                              new LiborForwardModelProcess(size, makeIndex()));
 
-    ext::shared_ptr<LiborForwardModel> liborModel(
-                        new LiborForwardModel(process, volaModel, corrModel));
+    ext::shared_ptr<LiborForwardModel> liborModel = ext::make_shared<LiborForwardModel>(
+                        process, volaModel, corrModel);
 
     for (Real t=0; t<4.6; t+=0.31) {
         recon = covarProxy->covariance(t)
@@ -261,8 +262,8 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
     ext::shared_ptr<LmCorrelationModel> corrModel(
                      new LmLinearExponentialCorrelationModel(size, 0.5, 0.8));
 
-    ext::shared_ptr<LiborForwardModel> model(
-                        new LiborForwardModel(process, volaModel, corrModel));
+    ext::shared_ptr<LiborForwardModel> model = ext::make_shared<LiborForwardModel>(
+                        process, volaModel, corrModel);
 
     Size swapVolIndex = 0;
     DayCounter dayCounter=index->forwardingTermStructure()->dayCounter();
@@ -377,7 +378,7 @@ BOOST_AUTO_TEST_CASE(testSwaptionPricing) {
     MultiPathGenerator<rsg_type> generator(process, grid, rsg, false);
 
     ext::shared_ptr<LiborForwardModel>
-        liborModel(new LiborForwardModel(process, volaModel, corrModel));
+        liborModel = ext::make_shared<LiborForwardModel>(process, volaModel, corrModel);
 
     Calendar calendar = index->fixingCalendar();
     DayCounter dayCounter = index->forwardingTermStructure()->dayCounter();

@@ -85,8 +85,8 @@ namespace QuantLib {
     class PerpetualFutures::arguments : public PricingEngine::arguments {
       public:
         arguments();
-        PerpetualFutures::PayoffType payoffType;
-        PerpetualFutures::FundingType fundingType;
+        PerpetualFutures::PayoffType payoffType = PerpetualFutures::PayoffType(-1);
+        PerpetualFutures::FundingType fundingType = PerpetualFutures::FundingType(-1);
         Period fundingFrequency;
         Calendar cal;
         DayCounter dc;

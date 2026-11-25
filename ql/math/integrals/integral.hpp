@@ -76,7 +76,7 @@ namespace QuantLib {
         Real absoluteAccuracy_;
         mutable Real absoluteError_;
         Size maxEvaluations_;
-        mutable Size evaluations_;
+        mutable Size evaluations_ = 0;
     };
 
 }

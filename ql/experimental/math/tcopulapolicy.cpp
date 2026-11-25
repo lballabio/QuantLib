@@ -66,7 +66,7 @@ namespace QuantLib {
     std::vector<Real> TCopulaPolicy::allFactorCumulInverter(
         const std::vector<Real>& probs) const 
     {
-    #if defined(QL_EXTRA_SAFETY_CHECKS)
+    #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(probs.size()-latentVarsCumul_.size() 
             == distributions_.size()-1, 
             "Incompatible sample and latent model sizes");

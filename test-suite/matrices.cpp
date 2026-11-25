@@ -160,8 +160,9 @@ BOOST_AUTO_TEST_CASE(testEigenvectors) {
             // check decreasing ordering
             if (eigenValues[i] >= minHolder) {
                 BOOST_FAIL("Eigenvalues not ordered: " << eigenValues);
-            } else
+            } else {
                 minHolder = eigenValues[i];
+}
         }
 
         // check normalization

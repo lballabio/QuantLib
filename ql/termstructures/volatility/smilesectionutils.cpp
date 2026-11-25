@@ -71,8 +71,9 @@ namespace QuantLib {
                                           defaultMoneyNormal + 27)
                       : std::vector<Real>(defaultMoney, defaultMoney + 21);
         }
-        else
+        else {
             tmp = std::vector<Real>(moneynessGrid);
+}
 
         Real shift = section.shift();
 

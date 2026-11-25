@@ -203,7 +203,7 @@ namespace QuantLib {
         const ext::shared_ptr<FdmWienerOp> op =
             ext::make_shared<FdmWienerOp>(
                 mesher,
-                (isEuropean)? ext::shared_ptr<YieldTermStructure>() : rTS,
+                isEuropean? ext::shared_ptr<YieldTermStructure>() : rTS,
                 l);
 
         switch(processes_.size()) {

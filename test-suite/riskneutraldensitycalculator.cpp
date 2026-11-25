@@ -39,6 +39,7 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/atmsmilesection.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
@@ -308,7 +309,7 @@ BOOST_AUTO_TEST_CASE(testLocalVolatilityRND) {
     const ext::shared_ptr<YieldTermStructure> qTS(
         flatRate(todaysDate, q, dayCounter));
 
-    const ext::shared_ptr<TimeGrid> timeGrid(new TimeGrid(1.0, 101));
+    const ext::shared_ptr<TimeGrid> timeGrid = ext::make_shared<TimeGrid>(1.0, 101);
 
     const ext::shared_ptr<LocalVolRNDCalculator> constVolCalc(
         new LocalVolRNDCalculator(
@@ -408,8 +409,8 @@ BOOST_AUTO_TEST_CASE(testLocalVolatilityRND) {
     const std::vector<Time> adaptiveGrid
         = adaptiveTimeGrid(400, 50, 5.0, 3.0);
 
-    const ext::shared_ptr<TimeGrid> dumasTimeGrid(
-        new TimeGrid(adaptiveGrid.begin(), adaptiveGrid.end()));
+    const ext::shared_ptr<TimeGrid> dumasTimeGrid = ext::make_shared<TimeGrid>(
+        adaptiveGrid.begin(), adaptiveGrid.end());
 
     const ext::shared_ptr<LocalVolRNDCalculator> dumasVolCalc(
         new LocalVolRNDCalculator(
@@ -595,7 +596,7 @@ BOOST_AUTO_TEST_CASE(testBlackScholesWithSkew) {
             AnalyticHestonEngine::AndersenPiterbarg,
             AnalyticHestonEngine::Integration::discreteTrapezoid(128)));
 
-    const ext::shared_ptr<TimeGrid> timeGrid(new TimeGrid(maturity, 51));
+    const ext::shared_ptr<TimeGrid> timeGrid = ext::make_shared<TimeGrid>(maturity, 51);
 
     const ext::shared_ptr<LocalVolTermStructure> localVol(
         ext::make_shared<NoExceptLocalVolSurface>(

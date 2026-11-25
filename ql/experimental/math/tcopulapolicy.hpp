@@ -85,7 +85,7 @@ namespace QuantLib {
             The iVariable parameter is the index of the requested variable.
         */
         Probability cumulativeY(Real val, Size iVariable) const {
-    #if defined(QL_EXTRA_SAFETY_CHECKS)
+    #ifdef QL_EXTRA_SAFETY_CHECKS
             QL_REQUIRE(iVariable < latentVarsCumul_.size(), 
                 "Latent variable index out of bounds.");
     #endif
@@ -102,7 +102,7 @@ namespace QuantLib {
           depending on those values.
         */
         Probability density(const std::vector<Real>& m) const {
-    #if defined(QL_EXTRA_SAFETY_CHECKS)
+    #ifdef QL_EXTRA_SAFETY_CHECKS
             QL_REQUIRE(m.size() == distributions_.size()-1, 
                 "Incompatible sample and latent model sizes");
     #endif
@@ -118,7 +118,7 @@ namespace QuantLib {
           of the factors' distributions.
         */
         Real inverseCumulativeY(Probability p, Size iVariable) const {
-    #if defined(QL_EXTRA_SAFETY_CHECKS)
+    #ifdef QL_EXTRA_SAFETY_CHECKS
             QL_REQUIRE(iVariable < latentVarsCumul_.size(), 
                 "Latent variable index out of bounds.");
     #endif
@@ -136,7 +136,7 @@ namespace QuantLib {
           systemic factor iFactor.
         */
         Real inverseCumulativeDensity(Probability p, Size iFactor) const {
-    #if defined(QL_EXTRA_SAFETY_CHECKS)
+    #ifdef QL_EXTRA_SAFETY_CHECKS
             QL_REQUIRE(iFactor < distributions_.size()-1, 
                 "Random factor variable index out of bounds.");
     #endif

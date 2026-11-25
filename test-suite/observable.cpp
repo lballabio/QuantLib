@@ -26,6 +26,7 @@
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
@@ -130,7 +131,7 @@ BOOST_AUTO_TEST_CASE(testObservableSettings) {
 
     BOOST_TEST_MESSAGE("Testing observable settings...");
 
-    const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(100.0));
+    const ext::shared_ptr<SimpleQuote> quote = ext::make_shared<SimpleQuote>(100.0);
     UpdateCounter updateCounter;
 
     updateCounter.registerWith(quote);

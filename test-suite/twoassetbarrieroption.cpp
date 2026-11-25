@@ -23,6 +23,7 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/barrier/analytictwoassetbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -150,9 +151,9 @@ BOOST_AUTO_TEST_CASE(testInOutParityWithDividends) {
     Settings::instance().evaluationDate() = today;
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(today + 365));
 
-    ext::shared_ptr<SimpleQuote> s1(new SimpleQuote(100.0));
+    ext::shared_ptr<SimpleQuote> s1 = ext::make_shared<SimpleQuote>(100.0);
     ext::shared_ptr<SimpleQuote> q1(new SimpleQuote);
-    ext::shared_ptr<SimpleQuote> s2(new SimpleQuote(100.0));
+    ext::shared_ptr<SimpleQuote> s2 = ext::make_shared<SimpleQuote>(100.0);
     ext::shared_ptr<SimpleQuote> rho(new SimpleQuote);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.05, dc);
 

@@ -19,6 +19,7 @@
 */
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
@@ -117,15 +118,15 @@ BOOST_AUTO_TEST_CASE(testHandlesUpdatePropagates) {
     std::vector<Rate> strikes{80.0, 90.0, 100.0};
 
     // create SimpleQuote instances
-    ext::shared_ptr<SimpleQuote> q0(new SimpleQuote(0.20 * sqrtT));
-    ext::shared_ptr<SimpleQuote> q1(new SimpleQuote(0.15 * sqrtT));
-    ext::shared_ptr<SimpleQuote> q2(new SimpleQuote(0.18 * sqrtT));
+    ext::shared_ptr<SimpleQuote> q0 = ext::make_shared<SimpleQuote>(0.20 * sqrtT);
+    ext::shared_ptr<SimpleQuote> q1 = ext::make_shared<SimpleQuote>(0.15 * sqrtT);
+    ext::shared_ptr<SimpleQuote> q2 = ext::make_shared<SimpleQuote>(0.18 * sqrtT);
     std::vector<Handle<Quote>> stdDevHandles;
     stdDevHandles.emplace_back(q0);
     stdDevHandles.emplace_back(q1);
     stdDevHandles.emplace_back(q2);
 
-    ext::shared_ptr<SimpleQuote> atm(new SimpleQuote(95.0));
+    ext::shared_ptr<SimpleQuote> atm = ext::make_shared<SimpleQuote>(95.0);
     Handle<Quote> atmHandle(atm);
 
     auto section = ext::make_shared<InterpolatedSmileSection<Linear>>(
@@ -157,15 +158,15 @@ BOOST_AUTO_TEST_CASE(testFlatStrikeExtrapolation) {
     std::vector<Rate> strikes{90.0, 100.0, 110.0};
 
     // create SimpleQuote instances
-    ext::shared_ptr<SimpleQuote> q0(new SimpleQuote(0.20 * sqrtT));
-    ext::shared_ptr<SimpleQuote> q1(new SimpleQuote(0.15 * sqrtT));
-    ext::shared_ptr<SimpleQuote> q2(new SimpleQuote(0.18 * sqrtT));
+    ext::shared_ptr<SimpleQuote> q0 = ext::make_shared<SimpleQuote>(0.20 * sqrtT);
+    ext::shared_ptr<SimpleQuote> q1 = ext::make_shared<SimpleQuote>(0.15 * sqrtT);
+    ext::shared_ptr<SimpleQuote> q2 = ext::make_shared<SimpleQuote>(0.18 * sqrtT);
     std::vector<Handle<Quote>> stdDevHandles;
     stdDevHandles.emplace_back(q0);
     stdDevHandles.emplace_back(q1);
     stdDevHandles.emplace_back(q2);
 
-    ext::shared_ptr<SimpleQuote> atm(new SimpleQuote(95.0));
+    ext::shared_ptr<SimpleQuote> atm = ext::make_shared<SimpleQuote>(95.0);
     Handle<Quote> atmHandle(atm);
 
     auto section = ext::make_shared<InterpolatedSmileSection<Linear>>(
