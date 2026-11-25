@@ -203,6 +203,9 @@
     <ClCompile Include="gsr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="handles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="hestonmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
