@@ -118,7 +118,7 @@ namespace QuantLib {
     template <class T>
     class RelinkableHandle : public Handle<T> {
       public:
-        using Handle<T>::Handle;
+        using Handle<T>::Handle;  // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         //! Unlike Handle(), this must allocate a Link so it can be relinked.
         RelinkableHandle()
         : RelinkableHandle(ext::shared_ptr<T>()) {}

@@ -30,7 +30,7 @@ namespace {
 
     void checkEmptyHandle(const Handle<Quote>& handle, bool hasLink) {
         BOOST_CHECK(handle.empty());
-        Handle<Quote> copy = handle;
+        Handle<Quote> copy = handle;  // NOLINT(performance-unnecessary-copy-initialization)
         BOOST_CHECK(copy.empty());
         BOOST_CHECK(handle == copy);
         BOOST_CHECK(!(handle != copy));
