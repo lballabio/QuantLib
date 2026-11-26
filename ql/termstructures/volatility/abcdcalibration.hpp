@@ -93,8 +93,8 @@ namespace QuantLib {
             bool cIsFixed = false,
             bool dIsFixed = false,
             bool vegaWeighted = false,
-            ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-            ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>());
+            ext::shared_ptr<EndCriteria> endCriteria = {},
+            ext::shared_ptr<OptimizationMethod> method = {});
         //! adjustment factors needed to match Black vols
         std::vector<Real> k(const std::vector<Real>& t,
                             const std::vector<Real>& blackVols) const;

@@ -87,8 +87,8 @@ namespace QuantLib {
             const Calendar& calendar,
             BusinessDayConvention businessDayConvention,
             const ext::shared_ptr<Bond>& bond,
-            const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>(),
-            const Handle<YieldTermStructure>& incomeDiscountCurve = Handle<YieldTermStructure>());
+            const Handle<YieldTermStructure>& discountCurve = {},
+            const Handle<YieldTermStructure>& incomeDiscountCurve = {});
         //@}
 
         //! \name Calculations

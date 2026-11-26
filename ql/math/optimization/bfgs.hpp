@@ -39,7 +39,7 @@ namespace QuantLib {
     class BFGS: public LineSearchBasedMethod {
       public:
         explicit BFGS(const ext::shared_ptr<LineSearch>& lineSearch =
-                                              ext::shared_ptr<LineSearch>())
+                                              {})
         : LineSearchBasedMethod(lineSearch) {}
       private:
         //! \name LineSearchBasedMethod interface

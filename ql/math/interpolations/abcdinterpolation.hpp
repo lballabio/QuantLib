@@ -170,9 +170,9 @@ namespace QuantLib {
                           bool dIsFixed = false,
                           bool vegaWeighted = false,
                           const ext::shared_ptr<EndCriteria>& endCriteria
-                              = ext::shared_ptr<EndCriteria>(),
+                              = {},
                           const ext::shared_ptr<OptimizationMethod>& optMethod
-                              = ext::shared_ptr<OptimizationMethod>(),
+                              = {},
                           bool update = true) {
 
             impl_ = ext::shared_ptr<Interpolation::Impl>(new
@@ -221,8 +221,8 @@ namespace QuantLib {
              bool cIsFixed,
              bool dIsFixed,
              bool vegaWeighted = false,
-             ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-             ext::shared_ptr<OptimizationMethod> optMethod = ext::shared_ptr<OptimizationMethod>())
+             ext::shared_ptr<EndCriteria> endCriteria = {},
+             ext::shared_ptr<OptimizationMethod> optMethod = {})
         : a_(a), b_(b), c_(c), d_(d), aIsFixed_(aIsFixed), bIsFixed_(bIsFixed), cIsFixed_(cIsFixed),
           dIsFixed_(dIsFixed), vegaWeighted_(vegaWeighted), endCriteria_(std::move(endCriteria)),
           optMethod_(std::move(optMethod)) {}

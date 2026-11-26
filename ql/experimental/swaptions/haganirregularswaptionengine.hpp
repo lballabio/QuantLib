@@ -52,7 +52,7 @@ namespace QuantLib {
         //@{
       explicit HaganIrregularSwaptionEngine(
           Handle<SwaptionVolatilityStructure>,
-          Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>());
+          Handle<YieldTermStructure> termStructure = {});
       //@}
       void calculate() const override;
 

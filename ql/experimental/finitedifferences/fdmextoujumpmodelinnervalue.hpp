@@ -39,7 +39,7 @@ namespace QuantLib {
 
         FdmExtOUJumpModelInnerValue(ext::shared_ptr<Payoff> payoff,
                                     ext::shared_ptr<FdmMesher> mesher,
-                                    ext::shared_ptr<Shape> shape = ext::shared_ptr<Shape>())
+                                    ext::shared_ptr<Shape> shape = {})
         : payoff_(std::move(payoff)), mesher_(std::move(mesher)), shape_(std::move(shape)) {}
 
         Real innerValue(const FdmLinearOpIterator& iter, Time t) override {

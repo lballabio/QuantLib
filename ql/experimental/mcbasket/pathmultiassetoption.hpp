@@ -38,7 +38,7 @@ namespace QuantLib {
       public:
         explicit PathMultiAssetOption(
                         const ext::shared_ptr<PricingEngine>& engine
-                                        = ext::shared_ptr<PricingEngine>());
+                                        = {});
 
         //! \name Instrument interface
         //@{

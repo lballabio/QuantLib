@@ -43,7 +43,7 @@ namespace QuantLib {
             ext::shared_ptr<OvernightIndex> overnightIndex,
             const Date& valueDate,
             const Date& maturityDate,
-            Handle<Quote> convexityAdjustment = Handle<Quote>(),
+            Handle<Quote> convexityAdjustment = {},
             RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         Real convexityAdjustment() const;

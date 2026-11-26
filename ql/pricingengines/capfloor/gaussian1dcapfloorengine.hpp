@@ -45,7 +45,7 @@ namespace QuantLib {
             const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
-            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>())
+            Handle<YieldTermStructure> discountCurve = {})
         : GenericModelEngine<Gaussian1dModel, CapFloor::arguments, CapFloor::results>(model),
           integrationPoints_(integrationPoints), stddevs_(stddevs),
           extrapolatePayoff_(extrapolatePayoff), flatPayoffExtrapolation_(flatPayoffExtrapolation),

@@ -57,8 +57,8 @@ namespace QuantLib {
             bool isNuFixed = false,
             bool isRhoFixed = false,
             bool vegaWeighted = true,
-            ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-            ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+            ext::shared_ptr<EndCriteria> endCriteria = {},
+            ext::shared_ptr<OptimizationMethod> method = {},
             const DayCounter& dc = Actual365Fixed(),
             Real shift = 0.0);
         //! no quotes
@@ -78,8 +78,8 @@ namespace QuantLib {
             bool isNuFixed = false,
             bool isRhoFixed = false,
             bool vegaWeighted = true,
-            ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-            ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+            ext::shared_ptr<EndCriteria> endCriteria = {},
+            ext::shared_ptr<OptimizationMethod> method = {},
             const DayCounter& dc = Actual365Fixed(),
             Real shift = 0.0);
         //@}

@@ -72,9 +72,9 @@ namespace QuantLib {
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
             const Handle<Quote> &oas =
-                Handle<Quote>(), // continuously compounded w.r.t. yts daycounter
+                {}, // continuously compounded w.r.t. yts daycounter
             const Handle<YieldTermStructure> &discountCurve =
-                Handle<YieldTermStructure>(),
+                {},
             const bool includeTodaysExercise = false,
             const Probabilities probabilities = None)
             : BasketGeneratingEngine(model, oas, discountCurve),
@@ -100,9 +100,9 @@ namespace QuantLib {
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
             const Handle<Quote> &oas =
-                Handle<Quote>(), // continuously compounded w.r.t. yts daycounter
+                {}, // continuously compounded w.r.t. yts daycounter
             const Handle<YieldTermStructure> &discountCurve =
-                Handle<YieldTermStructure>(),
+                {},
             const bool includeTodaysExercise = false,
             const Probabilities probabilities = None)
             : BasketGeneratingEngine(model, oas, discountCurve),

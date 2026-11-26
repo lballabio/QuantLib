@@ -38,10 +38,10 @@ namespace QuantLib {
     */
     class CPICouponPricer : public InflationCouponPricer {
       public:
-        explicit CPICouponPricer(Handle<YieldTermStructure> nominalTermStructure = Handle<YieldTermStructure>());
+        explicit CPICouponPricer(Handle<YieldTermStructure> nominalTermStructure = {});
 
         explicit CPICouponPricer(Handle<CPIVolatilitySurface> capletVol,
-                                 Handle<YieldTermStructure> nominalTermStructure = Handle<YieldTermStructure>());
+                                 Handle<YieldTermStructure> nominalTermStructure = {});
 
         virtual Handle<CPIVolatilitySurface> capletVolatility() const{
             return capletVol_;

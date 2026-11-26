@@ -51,7 +51,7 @@ namespace QuantLib {
         */
         explicit JamshidianSwaptionEngine(
             const ext::shared_ptr<OneFactorAffineModel>& model,
-            Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>())
+            Handle<YieldTermStructure> termStructure = {})
         : GenericModelEngine<OneFactorAffineModel, Swaption::arguments, Swaption::results>(model),
           termStructure_(std::move(termStructure)) {
             registerWith(termStructure_);

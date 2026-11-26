@@ -47,7 +47,7 @@ namespace QuantLib {
     class ConjugateGradient: public LineSearchBasedMethod {
       public:
         ConjugateGradient(const ext::shared_ptr<LineSearch>& lineSearch =
-                                            ext::shared_ptr<LineSearch>())
+                                            {})
         : LineSearchBasedMethod(lineSearch) {}
       private:
         //! \name LineSearchBasedMethod interface

@@ -54,14 +54,14 @@ namespace QuantLib {
       public:
 
         explicit OvernightIndexedCouponPricer(
-          Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
+          Handle<OptionletVolatilityStructure> v = {},
           bool effectiveVolatilityInput = false);
 
         void initialize(const FloatingRateCoupon& coupon) override;
 
         void setCapletVolatility(
                             const Handle<OptionletVolatilityStructure>& v =
-                                    Handle<OptionletVolatilityStructure>()) {
+                                    {}) {
             unregisterWith(capletVol_);
             capletVol_ = v;
             registerWith(capletVol_);
@@ -104,7 +104,7 @@ namespace QuantLib {
     class CompoundingOvernightIndexedCouponPricer : public OvernightIndexedCouponPricer {
       public:
         explicit CompoundingOvernightIndexedCouponPricer(
-          Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
+          Handle<OptionletVolatilityStructure> v = {},
           bool effectiveVolatilityInput = false);
         //! \name FloatingRateCoupon interface
         //@{
@@ -141,7 +141,7 @@ namespace QuantLib {
             Real meanReversion = 0.03,
             Real volatility = 0.00, // NO convexity adjustment by default
             bool byApprox = false, // TRUE to use Katsumi Takada approximation
-            Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
+            Handle<OptionletVolatilityStructure> v = {},
             const bool effectiveVolatilityInput = false)
         : OvernightIndexedCouponPricer(std::move(v), effectiveVolatilityInput),
          byApprox_(byApprox), mrs_(meanReversion), vol_(volatility) {}

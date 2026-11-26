@@ -68,7 +68,7 @@ namespace QuantLib {
           const Handle<DefaultProbabilityTermStructure>& ctptyDTS,
           Real ctptyRecoveryRate,
           const Handle<DefaultProbabilityTermStructure>& invstDTS =
-              Handle<DefaultProbabilityTermStructure>(),
+              {},
           Real invstRecoveryRate = 0.999);
       /*! Creates an engine with a black volatility model for the 
         exposure.
@@ -86,7 +86,7 @@ namespace QuantLib {
                                 const Handle<DefaultProbabilityTermStructure>& ctptyDTS,
                                 Real ctptyRecoveryRate,
                                 const Handle<DefaultProbabilityTermStructure>& invstDTS =
-                                    Handle<DefaultProbabilityTermStructure>(),
+                                    {},
                                 Real invstRecoveryRate = 0.999);
       /*! Creates an engine with a black volatility model for the 
         exposure. The volatility is given as a quote.
@@ -105,7 +105,7 @@ namespace QuantLib {
           const Handle<DefaultProbabilityTermStructure>& ctptyDTS,
           Real ctptyRecoveryRate,
           const Handle<DefaultProbabilityTermStructure>& invstDTS =
-              Handle<DefaultProbabilityTermStructure>(),
+              {},
           Real invstRecoveryRate = 0.999);
       //@}
       void calculate() const override;

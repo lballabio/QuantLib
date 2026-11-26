@@ -39,7 +39,7 @@ namespace QuantLib {
     class GenericModelEngine
         : public GenericEngine<ArgumentsType, ResultsType> {
       public:
-        explicit GenericModelEngine(Handle<ModelType> model = Handle<ModelType>())
+        explicit GenericModelEngine(Handle<ModelType> model = {})
         : model_(std::move(model)) {
             this->registerWith(model_);
         }
