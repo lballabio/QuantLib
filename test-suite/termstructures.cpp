@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 #include <ql/experimental/commodities/commoditycurve.hpp>
 #include <cmath>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yield/compositezeroyieldstructure.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -244,7 +245,7 @@ BOOST_AUTO_TEST_CASE(testFSpreadedObs) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
+    auto me = ext::make_shared<SimpleQuote>(0.01);
     Handle<Quote> mh(me);
     RelinkableHandle<YieldTermStructure> h; //(vars.dummyTermStructure);
     ext::shared_ptr<YieldTermStructure> spreaded(
@@ -292,7 +293,7 @@ BOOST_AUTO_TEST_CASE(testZSpreadedObs) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
+    auto me = ext::make_shared<SimpleQuote>(0.01);
     Handle<Quote> mh(me);
     RelinkableHandle<YieldTermStructure> h(vars.dummyTermStructure);
 
@@ -338,8 +339,8 @@ BOOST_AUTO_TEST_CASE(testLinearInterpolationSpreadedForwardRate) {
     auto dc = vars.termStructure->dayCounter();
     Date today = Settings::instance().evaluationDate();
     Date settlement = calendar.advance(today, vars.settlementDays, Days);
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.03);
     std::vector<Handle<Quote>> spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
     // Define the dates where spreads are specified
@@ -390,8 +391,8 @@ BOOST_AUTO_TEST_CASE(testForwardFlatInterpolationSpreadedForwardRate) {
     Date today = Settings::instance().evaluationDate();
 
     // Define the forward rate spreads
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.03);
     std::vector<Handle<Quote>> spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
     // Define the spread dates
@@ -433,9 +434,9 @@ BOOST_AUTO_TEST_CASE(testBackwardFlatInterpolationSpreadedForwardRate) {
     Date today = Settings::instance().evaluationDate();
 
     // Define the forward rate spreads
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
-    ext::shared_ptr<SimpleQuote> spread3 = ext::make_shared<SimpleQuote>(0.04);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.03);
+    auto spread3 = ext::make_shared<SimpleQuote>(0.04);
     std::vector<Handle<Quote>> spreads = {
         Handle<Quote>(spread1), Handle<Quote>(spread2), Handle<Quote>(spread3)
     };
@@ -479,9 +480,9 @@ BOOST_AUTO_TEST_CASE(testBackwardFlatInterpolationZeroRate) {
     Date referenceDate = vars.termStructure->referenceDate();
 
     // Define the zero rate spreads
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
-    ext::shared_ptr<SimpleQuote> spread3 = ext::make_shared<SimpleQuote>(0.04);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.03);
+    auto spread3 = ext::make_shared<SimpleQuote>(0.04);
     std::vector<Handle<Quote>> spreads = {
         Handle<Quote>(spread1), Handle<Quote>(spread2), Handle<Quote>(spread3)
     };

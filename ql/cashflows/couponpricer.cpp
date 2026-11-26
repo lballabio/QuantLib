@@ -65,9 +65,9 @@ namespace QuantLib {
         if (useIndexedCoupon_) {
             coupon.fixingEndDate_ = coupon.fixingMaturityDate_;
         } else {
-            if (coupon.isInArrears_)
+            if (coupon.isInArrears_) {
                 coupon.fixingEndDate_ = coupon.fixingMaturityDate_;
-            else { // par coupon approximation
+            } else { // par coupon approximation
                 Date nextFixingDate = coupon.iborIndex()->fixingCalendar().advance(
                     coupon.accrualEndDate(), -static_cast<Integer>(coupon.fixingDays_), Days);
                 coupon.fixingEndDate_ = coupon.iborIndex()->fixingCalendar().advance(

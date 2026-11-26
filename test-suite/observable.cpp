@@ -20,11 +20,13 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/handle.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
@@ -36,6 +38,7 @@
 #include <ql/time/calendars/target.hpp>
 #include <chrono>
 #include <thread>
+#include <utility>
 
 #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 #include <atomic>
@@ -51,16 +54,6 @@ using namespace boost::unit_test_framework;
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(ObservableTests)
-
-class UpdateCounter : public Observer {
-  public:
-    UpdateCounter() = default;
-    void update() override { ++counter_; }
-    Size counter() const { return counter_; }
-
-  private:
-    Size counter_ = 0;
-};
 
 class RestoreUpdates { // NOLINT(cppcoreguidelines-special-member-functions)
   public:
@@ -138,7 +131,7 @@ BOOST_AUTO_TEST_CASE(testObservableSettings) {
 
     BOOST_TEST_MESSAGE("Testing observable settings...");
 
-    const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(100.0));
+    const auto quote = ext::make_shared<SimpleQuote>(100.0);
     UpdateCounter updateCounter;
 
     updateCounter.registerWith(quote);
@@ -190,7 +183,7 @@ BOOST_AUTO_TEST_CASE(testObservableSettings) {
 BOOST_AUTO_TEST_CASE(testDuplicateRegistration) {
     BOOST_TEST_MESSAGE("Testing duplicate observer registration...");
 
-    const ext::shared_ptr<Observable> observable = ext::make_shared<Observable>();
+    const auto observable = ext::make_shared<Observable>();
     UpdateCounter firstObserver;
     UpdateCounter secondObserver;
 
@@ -313,7 +306,7 @@ BOOST_AUTO_TEST_CASE(testDeepUpdate) {
     Handle<YieldTermStructure> yts(
         ext::make_shared<FlatForward>(0, NullCalendar(), 0.02, Actual365Fixed()));
     ext::shared_ptr<IborIndex> ibor = ext::make_shared<Euribor>(3 * Months, yts);
-    ext::shared_ptr<SimpleQuote> q = ext::make_shared<SimpleQuote>(0.20);
+    auto q = ext::make_shared<SimpleQuote>(0.20);
     std::vector<Real> strikes = {0.01, 0.02};
     std::vector<Date> dates = {refDate + 90, refDate + 180};
     std::vector<std::vector<Handle<Quote> > > quotes = {
@@ -321,7 +314,7 @@ BOOST_AUTO_TEST_CASE(testDeepUpdate) {
         {Handle<Quote>(q), Handle<Quote>(q)}
     };
 
-    ext::shared_ptr<StrippedOptionletAdapter> vol =
+    auto vol =
         ext::make_shared<StrippedOptionletAdapter>(ext::make_shared<StrippedOptionlet>(
             0, NullCalendar(), Unadjusted, ibor, dates, strikes, quotes, Actual365Fixed()));
 
@@ -350,14 +343,14 @@ class DummyObserver : public Observer {
 BOOST_AUTO_TEST_CASE(testEmptyObserverList) {
 	BOOST_TEST_MESSAGE("Testing unregisterWith call on empty observer...");
 
-    const ext::shared_ptr<DummyObserver> dummyObserver=ext::make_shared<DummyObserver>();
+    const auto dummyObserver=ext::make_shared<DummyObserver>();
     dummyObserver->unregisterWith(ext::make_shared<SimpleQuote>(10.0));
 }
 
 BOOST_AUTO_TEST_CASE(testAddAndDeleteObserverDuringNotifyObservers) {
     BOOST_TEST_MESSAGE("Testing addition and deletion of observers during notifyObserver...");
 
-    const ext::shared_ptr<MersenneTwisterUniformRng> rng
+    const auto rng
         = ext::make_shared<MersenneTwisterUniformRng>();
 
     const Size nrInitialObserver = 20;
@@ -410,7 +403,7 @@ BOOST_AUTO_TEST_CASE(testAddAndDeleteObserverDuringNotifyObservers) {
     };
 
     for (Size t=0; t < testRuns; ++t) {
-        const ext::shared_ptr<TestSetup> setup = ext::make_shared<TestSetup>(rng);
+        const auto setup = ext::make_shared<TestSetup>(rng);
 
         for (Size i=0; i < nrInitialObserver; ++i) {
             const ext::shared_ptr<Observer> obs = 

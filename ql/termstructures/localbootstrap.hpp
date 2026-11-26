@@ -133,11 +133,11 @@ namespace QuantLib {
             ts_->instruments_[i]->setTermStructure(const_cast<Curve*>(ts_));
         }
         // set initial guess only if the current curve cannot be used as guess
-        if (validCurve_)
+        if (validCurve_) {
             QL_ENSURE(ts_->data_.size() == nInsts+1,
                       "dimension mismatch: expected " << nInsts+1 <<
                       ", actual " << ts_->data_.size());
-        else {
+        } else {
             ts_->data_ = std::vector<Rate>(nInsts+1);
             ts_->data_[0] = Traits::initialValue(ts_);
         }

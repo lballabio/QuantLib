@@ -218,12 +218,12 @@ BOOST_AUTO_TEST_CASE(testParity) {
 
     DayCounter dc = Actual360();
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(100.0);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.01, dc);
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, 0.20, dc);
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto rTS = flatRate(today, 0.01, dc);
+    auto volTS = flatVol(today, 0.20, dc);
     RelinkableHandle<BlackVolTermStructure> volHandle(volTS);
 
-    ext::shared_ptr<BlackScholesProcess> stochProcess =
+    auto stochProcess =
         ext::make_shared<BlackScholesProcess>(
                                       Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(rTS),
@@ -321,12 +321,12 @@ BOOST_AUTO_TEST_CASE(testPutCallSymmetry) {
     Real rebate = 0.0;
     Real spotPrice = 100;
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>();
-    ext::shared_ptr<SimpleQuote> qRateCall = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> rRateCall = ext::make_shared<SimpleQuote>(r);
-    ext::shared_ptr<SimpleQuote> rRatePut = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> qRatePut = ext::make_shared<SimpleQuote>(r);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
+    auto spot = ext::make_shared<SimpleQuote>();
+    auto qRateCall = ext::make_shared<SimpleQuote>(0.0);
+    auto rRateCall = ext::make_shared<SimpleQuote>(r);
+    auto rRatePut = ext::make_shared<SimpleQuote>(0.0);
+    auto qRatePut = ext::make_shared<SimpleQuote>(r);
+    auto vol = ext::make_shared<SimpleQuote>(0.25);
 
     Handle<Quote> underlying(spot);
     Handle<YieldTermStructure> dividendTSCall(flatRate(today, qRateCall, dc));
@@ -335,12 +335,12 @@ BOOST_AUTO_TEST_CASE(testPutCallSymmetry) {
     Handle<YieldTermStructure> riskFreeTSPut(flatRate(today, rRatePut, dc));
     Handle<BlackVolTermStructure> blackVolTS(flatVol(today, vol, dc));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> processCall =
+    const auto processCall =
         ext::make_shared<BlackScholesMertonProcess>(underlying,
                                                       dividendTSCall,
                                                       riskFreeTSCall,
                                                       blackVolTS);
-    const ext::shared_ptr<BlackScholesMertonProcess> processPut =
+    const auto processPut =
         ext::make_shared<BlackScholesMertonProcess>(underlying,
                                                       dividendTSPut,
                                                       riskFreeTSPut,
@@ -517,13 +517,13 @@ BOOST_AUTO_TEST_CASE(testHaugValues) {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto qTS = flatRate(today, qRate, dc);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rTS = flatRate(today, rRate, dc);
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
+    auto volTS = flatVol(today, vol, dc);
 
     auto runTest = [&](const NewBarrierOptionData& value, const bool useZeroSpot, const bool useTriggeredBarrier) {
         Date exDate = today + timeToDays(value.t);
@@ -536,7 +536,7 @@ BOOST_AUTO_TEST_CASE(testHaugValues) {
         ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::make_shared<PlainVanillaPayoff>(value.type, value.strike);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
+        auto stochProcess =
             ext::make_shared<BlackScholesMertonProcess>(
                                       Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
@@ -684,18 +684,18 @@ BOOST_AUTO_TEST_CASE(testBabsiriValues) {
 
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
-    ext::shared_ptr<SimpleQuote> underlying =
+    auto underlying =
         ext::make_shared<SimpleQuote>(underlyingPrice);
 
-    ext::shared_ptr<SimpleQuote> qH_SME = ext::make_shared<SimpleQuote>(q);
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qH_SME, dc);
+    auto qH_SME = ext::make_shared<SimpleQuote>(q);
+    auto qTS = flatRate(today, qH_SME, dc);
 
-    ext::shared_ptr<SimpleQuote> rH_SME = ext::make_shared<SimpleQuote>(r);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rH_SME, dc);
+    auto rH_SME = ext::make_shared<SimpleQuote>(r);
+    auto rTS = flatRate(today, rH_SME, dc);
 
-    ext::shared_ptr<SimpleQuote> volatility =
+    auto volatility =
         ext::make_shared<SimpleQuote>(0.10);
-    ext::shared_ptr<BlackVolTermStructure> volTS =
+    auto volTS =
         flatVol(today, volatility, dc);
 
     Date exDate = today+360;
@@ -708,7 +708,7 @@ BOOST_AUTO_TEST_CASE(testBabsiriValues) {
         ext::shared_ptr<StrikedTypePayoff> callPayoff =
             ext::make_shared<PlainVanillaPayoff>(Option::Call, value.strike);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
+        auto stochProcess =
             ext::make_shared<BlackScholesMertonProcess>(
                                       Handle<Quote>(underlying),
                                       Handle<YieldTermStructure>(qTS),
@@ -776,18 +776,18 @@ BOOST_AUTO_TEST_CASE(testBeagleholeValues) {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> underlying =
+    auto underlying =
         ext::make_shared<SimpleQuote>(underlyingPrice);
 
-    ext::shared_ptr<SimpleQuote> qH_SME = ext::make_shared<SimpleQuote>(q);
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qH_SME, dc);
+    auto qH_SME = ext::make_shared<SimpleQuote>(q);
+    auto qTS = flatRate(today, qH_SME, dc);
 
-    ext::shared_ptr<SimpleQuote> rH_SME = ext::make_shared<SimpleQuote>(r);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rH_SME, dc);
+    auto rH_SME = ext::make_shared<SimpleQuote>(r);
+    auto rTS = flatRate(today, rH_SME, dc);
 
-    ext::shared_ptr<SimpleQuote> volatility =
+    auto volatility =
         ext::make_shared<SimpleQuote>(0.10);
-    ext::shared_ptr<BlackVolTermStructure> volTS =
+    auto volTS =
         flatVol(today, volatility, dc);
 
 
@@ -801,7 +801,7 @@ BOOST_AUTO_TEST_CASE(testBeagleholeValues) {
         ext::shared_ptr<StrikedTypePayoff> callPayoff =
             ext::make_shared<PlainVanillaPayoff>(Option::Call, value.strike);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
+        auto stochProcess =
             ext::make_shared<BlackScholesMertonProcess>(
                                       Handle<Quote>(underlying),
                                       Handle<YieldTermStructure>(qTS),
@@ -900,7 +900,7 @@ BOOST_AUTO_TEST_CASE(testLocalVolAndHestonComparison) {
             blackVolMatrix[i][j-1] = v[i*(dates.size()-1)+j-1];
         }
 
-    const ext::shared_ptr<BlackVarianceSurface> volTS =
+    const auto volTS =
         ext::make_shared<BlackVarianceSurface>(
                                  settlementDate, calendar,
                                  std::vector<Date>(dates.begin()+1,dates.end()),
@@ -918,11 +918,11 @@ BOOST_AUTO_TEST_CASE(testLocalVolAndHestonComparison) {
     const Real sigma=1.1619;
     const Real rho  =-0.511493;
 
-    ext::shared_ptr<HestonProcess> hestonProcess =
+    auto hestonProcess =
         ext::make_shared<HestonProcess>(rTS, qTS, s0, v0,
                                           kappa, theta, sigma, rho);
 
-    ext::shared_ptr<HestonModel> hestonModel =
+    auto hestonModel =
         ext::make_shared<HestonModel>(hestonProcess);
 
     ext::shared_ptr<PricingEngine> fdHestonEngine =
@@ -2435,10 +2435,10 @@ Real perturbativeBarrierOptionValue(Natural order, Size npoint = 1000,
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> underlying =
+    auto underlying =
         ext::make_shared<SimpleQuote>(S);
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, q, dc);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, r, dc);
+    auto qTS = flatRate(today, q, dc);
+    auto rTS = flatRate(today, r, dc);
 
     std::vector<Date> dates(2);
     std::vector<Volatility> vols(2);
@@ -2449,7 +2449,7 @@ Real perturbativeBarrierOptionValue(Natural order, Size npoint = 1000,
     ext::shared_ptr<BlackVolTermStructure> volTS =
         ext::make_shared<BlackVarianceCurve>(today, dates, vols, dc);
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
+    auto stochProcess =
         ext::make_shared<BlackScholesMertonProcess>(
             Handle<Quote>(underlying),
             Handle<YieldTermStructure>(qTS),
@@ -2655,14 +2655,14 @@ BOOST_AUTO_TEST_CASE(testVannaVolgaSimpleBarrierValues) {
     Date today(5, March, 2013);
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol25Put = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> volAtm = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> vol25Call = ext::make_shared<SimpleQuote>(0.0);
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto qTS = flatRate(today, qRate, dc);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rTS = flatRate(today, rRate, dc);
+    auto vol25Put = ext::make_shared<SimpleQuote>(0.0);
+    auto volAtm = ext::make_shared<SimpleQuote>(0.0);
+    auto vol25Call = ext::make_shared<SimpleQuote>(0.0);
 
     for (auto& value : values) {
 

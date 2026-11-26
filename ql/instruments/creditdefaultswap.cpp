@@ -149,9 +149,9 @@ namespace QuantLib {
                     } else if (refDate == cf->date()) {
                         // This coupon pays at the reference date.
                         // If it's not the last coupon, the accrual is 0 so do nothing.
-                        if (i < leg_.size() - 1)
+                        if (i < leg_.size() - 1) {
                             rebateAmount = 0.0;
-                        else {
+                        } else {
                             // On last coupon
                             ext::shared_ptr<FixedRateCoupon> frc = ext::dynamic_pointer_cast<FixedRateCoupon>(cf);
                             rebateAmount = frc->amount();
@@ -345,7 +345,7 @@ namespace QuantLib {
                                Real accuracy,
                                PricingModel model) const {
 
-        ext::shared_ptr<SimpleQuote> flatRate = ext::make_shared<SimpleQuote>(0.0);
+        auto flatRate = ext::make_shared<SimpleQuote>(0.0);
 
         Handle<DefaultProbabilityTermStructure> probability =
             Handle<DefaultProbabilityTermStructure>(
@@ -386,7 +386,7 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               PricingModel model) const {
 
-        ext::shared_ptr<SimpleQuote> flatRate = ext::make_shared<SimpleQuote>(0.0);
+        auto flatRate = ext::make_shared<SimpleQuote>(0.0);
 
         Handle<DefaultProbabilityTermStructure> probability =
             Handle<DefaultProbabilityTermStructure>(
@@ -449,7 +449,7 @@ namespace QuantLib {
     }
 
     CreditDefaultSwap::arguments::arguments()
-    : side(Protection::Side(-1)), notional(Null<Real>()),
+    :  notional(Null<Real>()),
       spread(Null<Rate>()) {}
 
     void CreditDefaultSwap::arguments::validate() const {

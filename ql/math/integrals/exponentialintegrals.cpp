@@ -75,9 +75,9 @@ namespace QuantLib {
 
     namespace ExponentialIntegral {
         Real Si(Real x) {
-            if (x < 0)
+            if (x < 0) {
                 return -Si(Real(-x));
-            else if (x <= 4.0) {
+            } else if (x <= 4.0) {
                 const Real x2 = x*x;
 
                 return x*

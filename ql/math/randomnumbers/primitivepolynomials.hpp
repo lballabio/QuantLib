@@ -242,7 +242,7 @@
 #endif
 
 /* Microsoft Visual C++ 6.0 */
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
     /* disable useless warning C4049
        compiler limit : terminating line number emission
        No line number support is available for file with more

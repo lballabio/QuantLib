@@ -114,7 +114,7 @@ namespace QuantLib {
             QL_FAIL("not an IMM month (and it should have been)");
         }
 
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_ENSURE(isIMMcode(IMMcode.str(), false),
                   "the result " << IMMcode.str() <<
                   " is an invalid IMM code");

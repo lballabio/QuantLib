@@ -26,7 +26,7 @@
 
 #include <ql/qldefines.hpp>
 
-#if defined(QL_USE_STD_SHARED_PTR)
+#ifdef QL_USE_STD_SHARED_PTR
 #include <memory>
 #else
 #include <boost/shared_ptr.hpp>
@@ -36,7 +36,7 @@
 
 namespace QuantLib::ext {
 
-        #if defined(QL_USE_STD_SHARED_PTR)
+        #ifdef QL_USE_STD_SHARED_PTR
         using std::shared_ptr;                   // NOLINT(misc-unused-using-decls)
         using std::weak_ptr;                     // NOLINT(misc-unused-using-decls)
         using std::make_shared;                  // NOLINT(misc-unused-using-decls)

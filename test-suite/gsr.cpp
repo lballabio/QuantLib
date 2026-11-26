@@ -30,6 +30,7 @@
 #include <ql/pricingengines/swaption/gaussian1djamshidianswaptionengine.hpp>
 #include <ql/pricingengines/swaption/gaussian1dnonstandardswaptionengine.hpp>
 #include <ql/indexes/swap/euriborswap.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
@@ -460,8 +461,8 @@ BOOST_AUTO_TEST_CASE(testGsrProcess) {
         ext::shared_ptr<StochasticProcess1D> gsrProcess2 =
             model2->stateProcess();
 
-        ext::shared_ptr<HullWhiteForwardProcess> hwProcess(
-            new HullWhiteForwardProcess(yts0, reversion, modelvol));
+        auto hwProcess = ext::make_shared<HullWhiteForwardProcess>(
+            yts0, reversion, modelvol);
         hwProcess->setForwardMeasureTime(T);
 
         Real w, t, xw, hwVal, gsrVal, gsr2Val;
@@ -559,7 +560,7 @@ BOOST_AUTO_TEST_CASE(testGsrModel) {
         new Gsr(yts, stepDates, vols, reversions, 50.0));
     ext::shared_ptr<Gsr> model2(
         new Gsr(yts, stepDates1, vols1, reversions1, 50.0));
-    ext::shared_ptr<HullWhite> hw(new HullWhite(yts, reversion, modelvol));
+    auto hw = ext::make_shared<HullWhite>(yts, reversion, modelvol);
 
     // test zerobond prices against existing HullWhite model
     // technically we test two representations of the same constant reversion
@@ -622,8 +623,8 @@ BOOST_AUTO_TEST_CASE(testGsrModel) {
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(expiry));
     ext::shared_ptr<Swaption> stdswaption(
         new Swaption(underlyingFixed, exercise));
-    ext::shared_ptr<NonstandardSwaption> nonstdswaption(
-        new NonstandardSwaption(*stdswaption));
+    auto nonstdswaption = ext::make_shared<NonstandardSwaption>(
+        *stdswaption);
 
     stdswaption->setPricingEngine(ext::shared_ptr<PricingEngine>(
         new JamshidianSwaptionEngine(hw, yts)));

@@ -142,7 +142,7 @@ namespace QuantLib {
                     .withIndexedCoupons(useIndexedCoupons_)
                     );
         }
-        ext::shared_ptr<Swaption> swaption = ext::make_shared<Swaption>(
+        auto swaption = ext::make_shared<Swaption>(
             underlyingSwap_, exercise_, delivery_, settlementMethod_);
         swaption->setPricingEngine(engine_);
         return swaption;

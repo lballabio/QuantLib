@@ -114,6 +114,16 @@ namespace QuantLib {
     //    return std::fabs(x1 - x2) < tolerance;
     //};
 
+    class UpdateCounter : public Observer {
+      public:
+        UpdateCounter() = default;
+        void update() override { ++counter_; }
+        Size counter() const { return counter_; }
+
+      private:
+        Size counter_ = 0;
+    };
+
     class Flag : public QuantLib::Observer {
       private:
         bool up_ = false;

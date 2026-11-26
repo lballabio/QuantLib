@@ -577,10 +577,10 @@ BOOST_AUTO_TEST_CASE(testKnownFixing) {
                 BOOST_TEST_CONTEXT(engineNames[which] << ", " << type << ", strike " << strike) {
                     YoYInflationCapFloor option(type, leg, std::vector<Rate>(1, strike));
                     option.setPricingEngine(engines[which]);
-                    Real intrinsic = discount * std::max(type == YoYInflationCapFloor::Cap ?
-                                                             0.021 - strike :
-                                                             strike - 0.021,
-                                                         0.0);
+                    Real intrinsic = discount * std::max<Real>(type == YoYInflationCapFloor::Cap ?
+                                                                   Real(0.021 - strike) :
+                                                                   Real(strike - 0.021),
+                                                               0.0);
                     QL_CHECK_SMALL(option.NPV() - intrinsic, 1.0e-8);
                 }
             }

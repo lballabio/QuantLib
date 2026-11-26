@@ -28,6 +28,7 @@
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/pricingengines/credit/integralcdsengine.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -149,7 +150,7 @@ BOOST_AUTO_TEST_CASE(testGauss) {
         probabilities.emplace_back(ptr);
     }
 
-    ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
+    auto simpleQuote  = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> correlationHandle (simpleQuote);
 
     ext::shared_ptr<DefaultLossModel> copula( new
@@ -191,7 +192,7 @@ BOOST_AUTO_TEST_CASE(testGauss) {
         issuers.emplace_back(curves);
     }
 
-    ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
+    auto thePool = ext::make_shared<Pool>();
     for(Size i=0; i<names; i++)
         thePool->add(namesIds[i], issuers[i], NorthAmericaCorpDefaultKey(
                 EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
@@ -287,7 +288,7 @@ BOOST_AUTO_TEST_CASE(testStudent) {
         probabilities.emplace_back(ptr);
     }
 
-    ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
+    auto simpleQuote  = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> correlationHandle (simpleQuote);
 
     TCopulaPolicy::initTraits iniT;
@@ -313,7 +314,7 @@ BOOST_AUTO_TEST_CASE(testStudent) {
         issuers.emplace_back(curves);
     }
 
-    ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
+    auto thePool = ext::make_shared<Pool>();
     for(Size i=0; i<names; i++)
         thePool->add(namesIds[i], issuers[i], NorthAmericaCorpDefaultKey(
                 EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
@@ -410,7 +411,7 @@ BOOST_AUTO_TEST_CASE(testProbAtLeastNEvents) {
 
     std::vector<std::string> namesIds;
     std::vector<Real> pUncond;
-    ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
+    auto thePool = ext::make_shared<Pool>();
     for (Size i = 0; i < names; i++) {
         namesIds.push_back(std::string("Name") + std::to_string(i));
         Handle<DefaultProbabilityTermStructure> curve(
@@ -425,7 +426,7 @@ BOOST_AUTO_TEST_CASE(testProbAtLeastNEvents) {
                 EURCurrency(), SeniorSec, Period(), 1.));
     }
 
-    ext::shared_ptr<Basket> basket = ext::make_shared<Basket>(
+    auto basket = ext::make_shared<Basket>(
         asofDate, namesIds, std::vector<Real>(names, 10.0), thePool, 0., 1.);
 
     // uncorrelated names and heterogeneous factor loadings

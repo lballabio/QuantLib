@@ -59,7 +59,7 @@ namespace QuantLib {
 /* Disable warning C4127 (conditional expression is constant) when
    wrapping macros with the do { ... } while(false) construct on MSVC
 */
-#if defined(BOOST_MSVC)
+#ifdef BOOST_MSVC
     #define QL_MULTILINE_FAILURE_END \
         __pragma(warning(push)) \
         __pragma(warning(disable:4127)) \
@@ -75,7 +75,7 @@ namespace QuantLib {
 /* Disable warning C4127 (conditional expression is constant) when
    wrapping macros with the do { ... } while(false) construct on MSVC
 */
-#if defined(BOOST_MSVC)
+#ifdef BOOST_MSVC
     #define QL_MULTILINE_ASSERTION_END \
         __pragma(warning(push)) \
         __pragma(warning(disable:4127)) \

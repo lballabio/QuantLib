@@ -89,7 +89,7 @@ namespace QuantLib {
 
 
     DoubleBarrierOption::arguments::arguments()
-    : barrierType(DoubleBarrier::Type(-1)), barrier_lo(Null<Real>()),
+    :  barrier_lo(Null<Real>()),
       barrier_hi(Null<Real>()), rebate(Null<Real>()) {}
 
     void DoubleBarrierOption::arguments::validate() const {

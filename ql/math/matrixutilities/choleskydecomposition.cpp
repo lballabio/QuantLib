@@ -29,7 +29,7 @@ namespace QuantLib {
 
         QL_REQUIRE(size == S.columns(),
                    "input matrix is not a square matrix");
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         for (i=0; i<S.rows(); i++)
             for (j=0; j<i; j++)
                 QL_REQUIRE(S[i][j] == S[j][i],

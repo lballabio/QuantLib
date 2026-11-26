@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/kahalesmilesection.hpp>
 
 using std::sqrt;
@@ -86,9 +87,9 @@ namespace QuantLib {
                 Real sec = (c_[leftIndex_ + 1] - c_[leftIndex_]) /
                            (k_[leftIndex_ + 1] - k_[leftIndex_]);
                 Real c1p;
-                if (interpolate_)
+                if (interpolate_) {
                     c1p = (secl + sec) / 2;
-                else {
+                } else {
                     c1p = -source_->digitalOptionPrice(k1 - source_->shift() + gap_ / 2.0, Option::Call, 1.0, gap_);
                     QL_REQUIRE(secl < c1p && c1p <= 0.0, "dummy");
                     // can not extrapolate so throw exception which is caught
@@ -99,8 +100,8 @@ namespace QuantLib {
                                      QL_KAHALE_SMAX); // numerical parameters
                                                       // hardcoded here
                 sh1(s);
-                ext::shared_ptr<cFunction> cFct1(
-                    new cFunction(sh1.f_, s, 0.0, sh1.b_));
+                auto cFct1 = ext::make_shared<cFunction>(
+                    sh1.f_, s, 0.0, sh1.b_);
                 cFunctions_[0] = cFct1;
                 // sanity check - in rare cases we can get digitials
                 // which are not monotonic or greater than 1.0
@@ -166,8 +167,8 @@ namespace QuantLib {
                 }
                 if (valid) {
                     ah(a);
-                    ext::shared_ptr<cFunction> cFct(
-                        new cFunction(ah.f_, ah.s_, a, ah.b_));
+                    auto cFct = ext::make_shared<cFunction>(
+                        ah.f_, ah.s_, a, ah.b_);
                     cFunctions_[leftIndex_ > 0 ? i - leftIndex_ + 1 : 0] = cFct;
                     cp0 = cp1;
                 }
@@ -182,10 +183,10 @@ namespace QuantLib {
                 Real k0 = k_[rightIndex_];
                 Real c0 = c_[rightIndex_];
                 Real cp0;
-                if (interpolate_)
+                if (interpolate_) {
                     cp0 = 0.5 * (c_[rightIndex_] - c_[rightIndex_ - 1]) /
                           (k_[rightIndex_] - k_[rightIndex_ - 1]);
-                else {
+                } else {
                     cp0 = -source_->digitalOptionPrice(
                         k0 - shift() - gap_ / 2.0, Option::Call, 1.0, gap_);
                 }

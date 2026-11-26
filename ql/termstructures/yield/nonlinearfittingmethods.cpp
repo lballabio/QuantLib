@@ -21,9 +21,21 @@
 
 #include <ql/math/bernsteinpolynomial.hpp>
 #include <ql/termstructures/yield/nonlinearfittingmethods.hpp>
+#include <cmath>
 #include <utility>
 
 namespace QuantLib {
+
+    namespace {
+
+        // (1 - exp(-x))/x, accurate (and correctly 1, not 0) as x -> 0;
+        // the same technique is used by the file-local helper in
+        // ql/models/shortrate/onefactormodels/vasicek.cpp
+        Real oneMinusExpOverX(Real x) {
+            return x == 0.0 ? Real(1.0) : Real(-std::expm1(-x)/x);
+        }
+
+    }
 
     ExponentialSplinesFitting::ExponentialSplinesFitting(
         bool constrainAtZero,
@@ -132,10 +144,8 @@ namespace QuantLib {
     DiscountFactor NelsonSiegelFitting::discountFunction(const Array& x,
                                                          Time t) const {
         Real kappa = x[size()-1];
-        Real zeroRate = x[0] + (x[1] + x[2])*
-                        (1.0 - std::exp(-kappa*t))/
-                        ((kappa+QL_EPSILON)*(t+QL_EPSILON)) -
-                        (x[2])*std::exp(-kappa*t);
+        Real zeroRate = x[0] + (x[1] + x[2])*oneMinusExpOverX(kappa*t)
+                        - x[2]*std::exp(-kappa*t);
         DiscountFactor d = std::exp(-zeroRate * t) ;
         return d;
     }
@@ -172,11 +182,9 @@ namespace QuantLib {
         Real kappa = x[size()-2];
         Real kappa_1 = x[size()-1];
 
-        Real zeroRate = x[0] + (x[1] + x[2])*
-                        (1.0 - std::exp(-kappa*t))/
-                        ((kappa+QL_EPSILON)*(t+QL_EPSILON)) -
-                        (x[2])*std::exp(-kappa*t) +
-                        x[3]* (((1.0 - std::exp(-kappa_1*t))/((kappa_1+QL_EPSILON)*(t+QL_EPSILON)))- std::exp(-kappa_1*t));
+        Real zeroRate = x[0] + (x[1] + x[2])*oneMinusExpOverX(kappa*t)
+                        - x[2]*std::exp(-kappa*t)
+                        + x[3]*(oneMinusExpOverX(kappa_1*t) - std::exp(-kappa_1*t));
         DiscountFactor d = std::exp(-zeroRate * t) ;
         return d;
     }

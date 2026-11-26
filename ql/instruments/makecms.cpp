@@ -74,9 +74,9 @@ namespace QuantLib {
     MakeCms::operator ext::shared_ptr<Swap>() const {
 
         Date startDate;
-        if (effectiveDate_ != Date())
+        if (effectiveDate_ != Date()) {
             startDate = effectiveDate_;
-        else {
+        } else {
             Natural fixingDays = iborIndex_->fixingDays();
             Date refDate = Settings::instance().evaluationDate();
             // if the evaluation date is not a business day

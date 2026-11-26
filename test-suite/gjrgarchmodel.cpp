@@ -28,6 +28,7 @@
 #include <ql/pricingengines/vanilla/mceuropeangjrgarchengine.hpp>
 #include <ql/processes/gjrgarchprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
@@ -266,7 +267,7 @@ BOOST_AUTO_TEST_CASE(testDAXCalibration) {
     ext::shared_ptr<GJRGARCHProcess> process(new GJRGARCHProcess(
                              riskFreeTS, dividendTS, s0, v0,
                              omega, alpha, beta, gamma, lambda, daysPerYear));
-    ext::shared_ptr<GJRGARCHModel> model(new GJRGARCHModel(process));
+    auto model = ext::make_shared<GJRGARCHModel>(process);
 
     ext::shared_ptr<PricingEngine> engine(
         new AnalyticGJRGARCHEngine(ext::shared_ptr<GJRGARCHModel>(model)));

@@ -44,7 +44,7 @@ namespace QuantLib {
     }
 
     TwoAssetBarrierOption::arguments::arguments()
-    : barrierType(Barrier::Type(-1)), barrier(Null<Real>()) {}
+    :  barrier(Null<Real>()) {}
 
     void TwoAssetBarrierOption::arguments::validate() const {
         Option::arguments::validate();

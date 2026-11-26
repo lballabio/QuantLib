@@ -20,6 +20,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/shared_ptr.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/instruments/europeanoption.hpp>
@@ -130,11 +131,11 @@ BOOST_AUTO_TEST_CASE(testVarianceGamma) {
     Date today = Date::todaysDate();
 
     for (Size i=0; i<std::size(processes); i++) {
-        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(processes[i].s));
-        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(processes[i].q));
-        ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-        ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(processes[i].r));
-        ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+        auto spot = ext::make_shared<SimpleQuote>(processes[i].s);
+        auto qRate = ext::make_shared<SimpleQuote>(processes[i].q);
+        auto qTS = flatRate(today, qRate, dc);
+        auto rRate = ext::make_shared<SimpleQuote>(processes[i].r);
+        auto rTS = flatRate(today, rRate, dc);
 
         ext::shared_ptr<VarianceGammaProcess> stochProcess(
             new VarianceGammaProcess(Handle<Quote>(spot),
@@ -149,8 +150,8 @@ BOOST_AUTO_TEST_CASE(testVarianceGamma) {
             new VarianceGammaEngine(stochProcess));
 
         // FFT engine
-        ext::shared_ptr<FFTVarianceGammaEngine> fftEngine(
-            new FFTVarianceGammaEngine(stochProcess));
+        auto fftEngine = ext::make_shared<FFTVarianceGammaEngine>(
+            stochProcess);
 
         // which requires a list of options
         std::vector<ext::shared_ptr<Instrument> > optionList;
@@ -166,7 +167,7 @@ BOOST_AUTO_TEST_CASE(testVarianceGamma) {
             payoffs.push_back(payoff);
 
             // Test analytic engine
-            ext::shared_ptr<EuropeanOption> option(new EuropeanOption(payoff, exercise));
+            auto option = ext::make_shared<EuropeanOption>(payoff, exercise);
             option->setPricingEngine(analyticEngine);
 
             Real calculated = option->NPV();
@@ -235,7 +236,7 @@ BOOST_AUTO_TEST_CASE(testSingularityAtZero) {
     Handle<YieldTermStructure> disc(
              ext::make_shared<FlatForward>(valuation,0.05,discountCounter));
     Handle<Quote> S0(ext::make_shared<SimpleQuote>(stock));
-    ext::shared_ptr<QuantLib::VarianceGammaProcess> process =
+    auto process =
         ext::make_shared<VarianceGammaProcess>(S0, dividend, disc,
                                                  sigma, kappa, mu);
 

@@ -611,7 +611,7 @@ int main(int argc, char *argv[]) {
     try {
         Size example = 0;
         if (argc == 2)
-            example = std::atoi(argv[1]);
+            example = std::atoi(argv[1]);  // NOLINT(bugprone-unchecked-string-to-number-conversion)
 
         if (example == 0 || example == 1) {
             std::cout << "***** Running example #1 *****" << std::endl;

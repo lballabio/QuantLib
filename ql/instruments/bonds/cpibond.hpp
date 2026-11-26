@@ -86,7 +86,7 @@ namespace QuantLib {
                         Deprecated in version 1.45.
         */
         [[deprecated("Do not use; meaningless for a bond.")]]
-        bool growthOnly_;
+        bool growthOnly_ = false;
         Real baseCPI_;
         Period observationLag_;
         ext::shared_ptr<ZeroInflationIndex> cpiIndex_;

@@ -207,12 +207,12 @@ namespace QuantLib {
     inline void BaseCorrelationLossModel<GaussianBinomialLossModel, 
         BilinearInterpolation>::setupModels() const 
     {
-        ext::shared_ptr<GaussianConstantLossLM> lmA = 
+        auto lmA = 
             ext::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationAttach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
-        ext::shared_ptr<GaussianConstantLossLM> lmD = 
+        auto lmD = 
             ext::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationDetach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
@@ -231,12 +231,12 @@ namespace QuantLib {
     inline void BaseCorrelationLossModel<TBinomialLossModel, 
         BilinearInterpolation>::setupModels() const 
     {
-        ext::shared_ptr<TConstantLossLM> lmA = 
+        auto lmA = 
             ext::make_shared<TConstantLossLM>(
                 Handle<Quote>(localCorrelationAttach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
-        ext::shared_ptr<TConstantLossLM> lmD = 
+        auto lmD = 
             ext::make_shared<TConstantLossLM>(
                 Handle<Quote>(localCorrelationDetach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
@@ -258,12 +258,12 @@ namespace QuantLib {
     inline void BaseCorrelationLossModel<IHGaussPoolLossModel, 
         BilinearInterpolation>::setupModels() const 
     {
-        ext::shared_ptr<GaussianConstantLossLM> lmA = 
+        auto lmA = 
             ext::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationAttach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
-        ext::shared_ptr<GaussianConstantLossLM> lmD = 
+        auto lmD = 
             ext::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationDetach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 

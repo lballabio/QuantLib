@@ -27,7 +27,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/qldefines.hpp>
 #include <ql/math/array.hpp>
 
-#if defined(QL_PATCH_MSVC)
+#ifdef QL_PATCH_MSVC
 #pragma warning(push)
 #pragma warning(disable:4180)
 #pragma warning(disable:4127)
@@ -39,7 +39,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 
-#if defined(QL_PATCH_MSVC)
+#ifdef QL_PATCH_MSVC
 #pragma warning(pop)
 #endif
 

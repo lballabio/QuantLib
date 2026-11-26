@@ -215,11 +215,12 @@ namespace QuantLib {
                         Z2,
                         Z3);
                 }
-                else
+                else {
                     optimizer.findByProjection(
                     Z1,
                     Z2,
                     Z3);
+}
             }
 
             Array rotatedSolution(capletNumber+2,0.0);

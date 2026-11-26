@@ -163,7 +163,7 @@ namespace QuantLib {
         // f_x_2n <= 0 means that we ran out of iterations before
         // the error bound could even be computed
         if (f_x_2n <= 0 || bound > errmax) QL_FAIL("didn't converge");
-        return (ans);
+        return ans;
 
     }
 
