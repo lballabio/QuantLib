@@ -92,8 +92,9 @@ namespace QuantLib {
             }
             rho[n_][n_] = 1.0;
         }
-        else
+        else {
             rho = rho_;
+}
 
         const Real strike = std::max(0.0, payoff->strike());
 
@@ -170,9 +171,9 @@ namespace QuantLib {
         const Real callValue
             = DengLiZhouBasketEngine::calculate_vanilla_call(Log(_s), dr0, _dq, _v, nRho, strike);
 
-        if (payoff->optionType() == Option::Call)
+        if (payoff->optionType() == Option::Call) {
             results_.value = std::max(0.0, callValue);
-        else {
+        } else {
             const Real fwd = _s[0]*_dq[0] - dr0*strike
                 - std::inner_product(_s.begin()+1, _s.end(), _dq.begin()+1, Real(0.0));
             results_.value = std::max(0.0, callValue - fwd);

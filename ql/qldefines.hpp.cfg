@@ -43,7 +43,7 @@
     // cppcheck-suppress preprocessorErrorDirective
     #error using an old version of Boost, please update.
 #endif
-#if !defined(BOOST_ENABLE_ASSERT_HANDLER)
+#ifndef BOOST_ENABLE_ASSERT_HANDLER
     #define BOOST_ENABLE_ASSERT_HANDLER
 #endif
 
@@ -130,7 +130,7 @@
 
 
 // import global functions into std namespace
-#if defined(BOOST_NO_STDC_NAMESPACE)
+#ifdef BOOST_NO_STDC_NAMESPACE
     #include <cmath>
     namespace std {
         using ::sqrt; using ::abs; using ::fabs;

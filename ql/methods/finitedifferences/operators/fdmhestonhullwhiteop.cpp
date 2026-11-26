@@ -132,8 +132,9 @@ namespace QuantLib {
         else if (direction == 2) {
             return hullWhiteOp_.solve_splitting(2, r, a);
         }
-        else
+        else {
             QL_FAIL("direction too large");
+}
     }
     
     Array FdmHestonHullWhiteOp::preconditioner(const Array& r, 

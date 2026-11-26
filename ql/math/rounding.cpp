@@ -74,7 +74,7 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown rounding method");
         }
-        return (neg) ? Real(-(lvalue / mult)) : Real(lvalue / mult);
+        return neg ? Real(-(lvalue / mult)) : Real(lvalue / mult);
     }
 
 }

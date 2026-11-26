@@ -262,9 +262,9 @@ namespace QuantLib {
             } else if (lowestRoot) {
                 root = (-linearPart-std::sqrt(disc))/(2.0*quadraticPart);
             } else {
-                if (minimum>1.0)
+                if (minimum>1.0) {
                     root = (-linearPart-std::sqrt(disc))/(2.0*quadraticPart);
-                else {
+                } else {
                     rightUsed = true;
                     root = (-linearPart+std::sqrt(disc))/(2.0*quadraticPart);
                 }

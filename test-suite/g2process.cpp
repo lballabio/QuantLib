@@ -245,7 +245,7 @@ BOOST_AUTO_TEST_CASE(testG2ProcessObservesTermStructure) {
 
     const Real a = 0.1, sigma = 0.01, b = 0.2, eta = 0.013, rho = -0.5;
 
-    ext::shared_ptr<SimpleQuote> rate = ext::make_shared<SimpleQuote>(0.02);
+    auto rate = ext::make_shared<SimpleQuote>(0.02);
     Handle<YieldTermStructure> curve(ext::make_shared<FlatForward>(
         0, TARGET(), Handle<Quote>(rate), Actual365Fixed()));
 

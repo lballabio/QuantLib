@@ -58,9 +58,9 @@ namespace QuantLib {
                    "use one or the other");
 
         Date startDate;
-        if (effectiveDate_ != Date())
+        if (effectiveDate_ != Date()) {
             startDate = effectiveDate_;
-        else {
+        } else {
             // settlement days: override if set, else fallback to default by index name
             Natural settlementDays = settlementDays_;
             if (settlementDays == Null<Natural>()) {
@@ -90,10 +90,10 @@ namespace QuantLib {
         }
 
         bool fixedEndOfMonth, overnightEndOfMonth, maturityEndOfMonth;
-        if (isDefaultEOM_)
+        if (isDefaultEOM_) {
             fixedEndOfMonth = overnightEndOfMonth = maturityEndOfMonth =
                 overnightCalendar_.isEndOfMonth(startDate);
-        else {
+        } else {
             fixedEndOfMonth = fixedEndOfMonth_;
             overnightEndOfMonth = overnightEndOfMonth_;
             maturityEndOfMonth = maturityEndOfMonth_ ? *maturityEndOfMonth_ : overnightEndOfMonth_;
@@ -163,8 +163,9 @@ namespace QuantLib {
                 ext::shared_ptr<PricingEngine> engine(new
                     DiscountingSwapEngine(disc, includeSettlementDateFlows));
                 temp.setPricingEngine(engine);
-            } else
+            } else {
                 temp.setPricingEngine(engine_);
+}
 
             usedFixedRate = temp.fairRate();
         }
@@ -188,8 +189,9 @@ namespace QuantLib {
             ext::shared_ptr<PricingEngine> engine(new
                 DiscountingSwapEngine(disc, includeSettlementDateFlows));
             ois->setPricingEngine(engine);
-        } else
+        } else {
             ois->setPricingEngine(engine_);
+}
 
         return ois;
     }

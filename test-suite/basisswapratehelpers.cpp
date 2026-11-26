@@ -485,7 +485,7 @@ BOOST_AUTO_TEST_CASE(testBasisSwapRateHelpersRejectNullIndexes) {
 BOOST_AUTO_TEST_CASE(testIborIborIndexedCouponOverride) {
     BOOST_TEST_MESSAGE("Testing the indexed-coupon override for IBOR-IBOR basis-swap rate helpers...");
 
-    struct IborCouponSettingsRestorer {
+    struct IborCouponSettingsRestorer {  // NOLINT(cppcoreguidelines-special-member-functions)
         bool initiallyUsingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
         ~IborCouponSettingsRestorer() {
             if (initiallyUsingAtParCoupons)
@@ -553,7 +553,7 @@ BOOST_AUTO_TEST_CASE(testOvernightIborIndexedCouponOverride) {
     BOOST_TEST_MESSAGE(
         "Testing the indexed-coupon override for overnight-IBOR basis-swap rate helpers...");
 
-    struct IborCouponSettingsRestorer {
+    struct IborCouponSettingsRestorer {  // NOLINT(cppcoreguidelines-special-member-functions)
         bool initiallyUsingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
         ~IborCouponSettingsRestorer() {
             if (initiallyUsingAtParCoupons)

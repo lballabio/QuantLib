@@ -434,7 +434,7 @@ BOOST_AUTO_TEST_CASE(testDividendsSpanningSettlementDate) {
     const Real expected =
         futureAmount * vars.riskFreeRate->discount(afterSettlement);
     BOOST_CHECK_EQUAL(convertible.dividendValues().size(), 1);
-    BOOST_CHECK_CLOSE(convertible.dividendValues()[0], expected, 1.0e-12);
+    QL_CHECK_CLOSE(convertible.dividendValues()[0], expected, 1.0e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testDividendBetweenEvaluationAndSettlement) {
@@ -573,7 +573,7 @@ BOOST_AUTO_TEST_CASE(testRegression) {
                                  tomorrow, NullCalendar(), 21.685235548092248,
                                  Thirty360(Thirty360::BondBasis)));
 
-    ext::shared_ptr<BlackProcess> process =
+    auto process =
         ext::make_shared<BlackProcess>(u,r,sigma);
 
     Handle<Quote> spread(ext::make_shared<SimpleQuote>(0.11498700678012874));

@@ -22,7 +22,7 @@
 
 namespace {
 
-    #if defined(_MSC_VER)
+    #ifdef _MSC_VER
     // allow Visual Studio integration
     std::string format_error(
                        #ifdef QL_ERROR_LINES

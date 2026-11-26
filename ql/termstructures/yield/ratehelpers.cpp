@@ -464,10 +464,10 @@ namespace QuantLib {
             }
         }
 
-        if (useIndexedCoupon_)
+        if (useIndexedCoupon_) {
             // latest relevant date is calculated from earliestDate_
             latestRelevantDate_ = iborIndex_->maturityDate(earliestDate_);
-        else {
+        } else {
             latestRelevantDate_ = maturityDate_;
             spanningTime_ = iborIndex_->dayCounter().yearFraction(earliestDate_, maturityDate_);
         }
@@ -517,12 +517,13 @@ namespace QuantLib {
                                    Date customPillarDate,
                                    bool endOfMonth,
                                    const std::optional<bool>& useIndexedCoupons,
-                                   const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer)
+                                   const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer,
+                                   DateGeneration::Rule rule)
     : SwapRateHelper(rate, swapIndex->tenor(), swapIndex->fixingCalendar(),
         swapIndex->fixedLegTenor().frequency(), swapIndex->fixedLegConvention(),
         swapIndex->dayCounter(), swapIndex->iborIndex(), std::move(spread), fwdStart,
         std::move(discount), Null<Natural>(), pillarChoice, customPillarDate, endOfMonth,
-        useIndexedCoupons, std::nullopt, couponPricer) {}
+        useIndexedCoupons, std::nullopt, couponPricer, rule) {}
 
     SwapRateHelper::SwapRateHelper(const std::variant<Rate, Handle<Quote>>& rate,
                                    const Period& tenor,
@@ -540,14 +541,15 @@ namespace QuantLib {
                                    bool endOfMonth,
                                    const std::optional<bool>& useIndexedCoupons,
                                    const std::optional<BusinessDayConvention>& floatConvention,
-                                   const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer)
+                                   const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer,
+                                   DateGeneration::Rule rule)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays), tenor_(tenor),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
       fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(std::move(discount)),
       useIndexedCoupons_(useIndexedCoupons), floatConvention_(floatConvention),
-      couponPricer_(couponPricer) {
+      couponPricer_(couponPricer), rule_(rule) {
         initialize(iborIndex, customPillarDate);
     }
 
@@ -566,13 +568,14 @@ namespace QuantLib {
                                    bool endOfMonth,
                                    const std::optional<bool>& useIndexedCoupons,
                                    const std::optional<BusinessDayConvention>& floatConvention,
-                                   const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer)
+                                   const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer,
+                                   DateGeneration::Rule rule)
     : RelativeDateRateHelper(rate, false), startDate_(startDate), endDate_(endDate),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
       fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
       discountHandle_(std::move(discount)), useIndexedCoupons_(useIndexedCoupons),
-      floatConvention_(floatConvention), couponPricer_(couponPricer) {
+      floatConvention_(floatConvention), couponPricer_(couponPricer), rule_(rule) {
         QL_REQUIRE(fixedFrequency != Once,
             "fixedFrequency == Once is not supported when passing explicit "
             "startDate and endDate");
@@ -608,6 +611,7 @@ namespace QuantLib {
             .withForwardStart(fwdStart_)
             .withEffectiveDate(startDate_)
             .withTerminationDate(endDate_)
+            .withRule(rule_)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withFixedLegDayCount(fixedDayCount_)
             .withFixedLegTenor(fixedFrequency_ == Once ? tenor_ : Period(fixedFrequency_))

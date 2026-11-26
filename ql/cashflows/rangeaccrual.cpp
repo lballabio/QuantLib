@@ -290,8 +290,9 @@ namespace QuantLib {
         if (startTime_>0) {
             Real q = (endTime_-U)/accrualFactor_;
             return q;
-        } else
+        } else {
             return 0.0;
+}
 
     }
 
@@ -321,8 +322,9 @@ namespace QuantLib {
         if (startTime_>0) {
             Real p = (U-startTime_)/accrualFactor_;
             return p;
-        } else
+        } else {
             return 0.0;
+}
 
     }
 

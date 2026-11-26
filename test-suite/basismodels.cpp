@@ -28,6 +28,7 @@
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionlet.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
@@ -125,7 +126,7 @@ Handle<OptionletVolatilityStructure> getOptionletTS() {
     ext::shared_ptr<StrippedOptionletBase> tmp1(
             new StrippedOptionlet(2, TARGET(), Following, index, dates, capletStrikes,
                                   capletVolQuotes, Actual365Fixed(), Normal, 0.0));
-    ext::shared_ptr<StrippedOptionletAdapter> tmp2(new StrippedOptionletAdapter(tmp1));
+    auto tmp2 = ext::make_shared<StrippedOptionletAdapter>(tmp1);
     return RelinkableHandle<OptionletVolatilityStructure>(tmp2);
 }
 
@@ -307,8 +308,8 @@ BOOST_AUTO_TEST_CASE(testTenoroptionletvts) {
                     optionletVTS6m->volatility(capletTerms[i], capletStrike + spread, true);
                 // for perfect correlation shifted 6m vols should coincide with 3m vols
                 Real tol =
-                    (i < 3) ? (0.001) :
-                              (0.0001); // 10bp tol for smaller tenors and 1bp tol for larger tenors
+                    (i < 3) ? 0.001 :
+                              0.0001; // 10bp tol for smaller tenors and 1bp tol for larger tenors
                 if (fabs(vol6mShifted - vol3m) > tol)
                     BOOST_ERROR("Shifted 6m vol does not match 3m vol for perfect correlation at\n"
                                 << "expiry term: " << capletTerms[i] << ", strike: " << capletStrike

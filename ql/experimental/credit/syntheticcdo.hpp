@@ -189,13 +189,13 @@ namespace QuantLib {
 
     class SyntheticCDO::arguments : public virtual PricingEngine::arguments {
     public:
-        arguments() : side(Protection::Side(-1)),
+        arguments() : 
                       upfrontRate(Null<Real>()),
                       runningRate(Null<Real>()) {}
         void validate() const override;
 
         ext::shared_ptr<Basket> basket;
-        Protection::Side side;
+        Protection::Side side = Protection::Side(-1);
         Leg normalizedLeg;
 
         Rate upfrontRate;

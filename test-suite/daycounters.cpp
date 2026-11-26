@@ -652,9 +652,9 @@ BOOST_AUTO_TEST_CASE(testActualActualWithLongFirstAndShortLastCoupon) {
         DateGeneration::Backward, false, {false, true, true, false});
     const ActualActual dayCounter(ActualActual::ISMA, schedule);
 
-    BOOST_CHECK_CLOSE(dayCounter.yearFraction(Date(15, December, 2025),
+    QL_CHECK_CLOSE(dayCounter.yearFraction(Date(15, December, 2025),
                                              Date(15, June, 2026)), 0.5, 1.0e-10);
-    BOOST_CHECK_CLOSE(dayCounter.yearFraction(Date(15, June, 2026),
+    QL_CHECK_CLOSE(dayCounter.yearFraction(Date(15, June, 2026),
                                              Date(15, October, 2026)), 1.0 / 3.0, 1.0e-10);
 }
 
@@ -775,6 +775,35 @@ BOOST_AUTO_TEST_CASE(testBusiness252) {
                             << "    calculated: " << calculated << "\n"
                             << "    expected:   " << expected[i-1]);
         }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testBusiness252FullYears) {
+
+    BOOST_TEST_MESSAGE("Testing business/252 day counter over full years...");
+
+    // weekdays in the year minus weekday holidays in the Brazil settlement calendar
+    struct {
+        Year year;
+        Date::serial_type businessDays;
+    } testCases[] = {
+        {2022, 251}, // 260 - 9
+        {2023, 249}, // 260 - 11
+        {2024, 253}, // 262 - 9
+        {2025, 252}, // 261 - 9
+        {2026, 249}, // 261 - 12
+    };
+
+    Calendar calendar = Brazil(Brazil::Settlement);
+    DayCounter dayCounter = Business252(calendar);
+
+    for (const auto& testCase : testCases) {
+        Date start(1, January, testCase.year);
+        Date end(1, January, testCase.year + 1);
+
+        BOOST_CHECK_EQUAL(calendar.businessDaysBetween(start, end), testCase.businessDays);
+        BOOST_CHECK_EQUAL(dayCounter.dayCount(start, end), testCase.businessDays);
+        QL_CHECK_CLOSE(dayCounter.yearFraction(start, end), testCase.businessDays / 252.0, 1e-12);
     }
 }
 

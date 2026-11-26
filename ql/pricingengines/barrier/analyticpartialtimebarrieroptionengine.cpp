@@ -121,7 +121,7 @@ namespace QuantLib {
         {
           Real spotSq = spot * spot;
           Real callStrike = spotSq / payoff->strike();
-          ext::shared_ptr<PlainVanillaPayoff> callPayoff =
+          auto callPayoff =
             ext::make_shared<PlainVanillaPayoff>(Option::Call, callStrike);
           tmp_arguments_.barrierType = getSymmetricBarrierType(arguments_.barrierType);
           tmp_arguments_.barrier = spotSq / arguments_.barrier;
@@ -134,8 +134,9 @@ namespace QuantLib {
             );
 
           results_.value = payoff->strike() / spot * calculate(tmp_arguments_, callPayoff, callProcess);
-        } else
+        } else {
           results_.value = calculate(tmp_arguments_, payoff, process_);
+}
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::CoB2(

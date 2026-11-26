@@ -71,6 +71,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/methods/montecarlo/genericlsregression.hpp>
 #include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
@@ -273,8 +274,8 @@ simulate(const ext::shared_ptr<MarketModelEvolver>& evolver,
     Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
     AccountingEngine engine(evolver, product, initialNumeraireValue);
-    ext::shared_ptr<SequenceStatisticsInc> stats(
-            new SequenceStatisticsInc(product.numberOfProducts()));
+    auto stats = ext::make_shared<SequenceStatisticsInc>(
+            product.numberOfProducts());
     engine.multiplePathValues(*stats, paths_);
     return stats;
 }
@@ -1192,7 +1193,7 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
         const Matrix& forwardsCovariance = marketModel->totalCovariance(i);
         Matrix cotSwapsCovariance =
             jacobian * forwardsCovariance * transpose(jacobian);
-        ext::shared_ptr<PlainVanillaPayoff> payoff(new PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, todaysForwards[i]+displacement);
 
         Real expectedSwaption =
             BlackCalculator(payoff,
@@ -4137,7 +4138,7 @@ BOOST_AUTO_TEST_CASE(testAbcdVolatilityIntegration) {
     const Size N = 10;
     const Real precision = 1e-04;
 
-    ext::shared_ptr<AbcdFunction> instVol(new AbcdFunction(a,b,c,d));
+    auto instVol = ext::make_shared<AbcdFunction>(a,b,c,d);
     SegmentIntegral SI(20000);
     for (Size i=0; i<N; i++) {
         Time T1 = 0.5*(1+i);     // expiry of forward 1: after T1 AbcdVol = 0
@@ -4202,7 +4203,7 @@ BOOST_AUTO_TEST_CASE(testAbcdVolatilityCompare) {
 
     ext::shared_ptr<LmVolatilityModel> lmAbcd(
         new LmExtLinearExponentialVolModel(rateTimes,b,c,d,a));
-    ext::shared_ptr<AbcdFunction> abcd(new AbcdFunction(a,b,c,d));
+    auto abcd = ext::make_shared<AbcdFunction>(a,b,c,d);
     for (i1=0; i1<rateTimes.size(); i1++ ) {
         for (i2=0; i2<rateTimes.size(); i2++ ) {
             Time T = 0.;

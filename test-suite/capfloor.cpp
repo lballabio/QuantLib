@@ -24,6 +24,7 @@
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -586,7 +587,7 @@ BOOST_AUTO_TEST_CASE(testCachedValueFromOptionLets) {
     Date cachedToday(14,March,2002),
          cachedSettlement(18,March,2002);
     Settings::instance().evaluationDate() = cachedToday;
-    ext::shared_ptr<YieldTermStructure> baseCurve = flatRate(cachedSettlement, 
+    auto baseCurve = flatRate(cachedSettlement, 
                                                              0.05, Actual360());                                              
     vars.termStructure.linkTo(baseCurve);
     Date startDate = vars.termStructure->referenceDate();
@@ -653,13 +654,13 @@ BOOST_AUTO_TEST_CASE(testOptionLetsDelta) {
     Date cachedToday(14,March,2002),
          cachedSettlement(18,March,2002);
     Settings::instance().evaluationDate() = cachedToday;
-    ext::shared_ptr<YieldTermStructure> baseCurve = flatRate(cachedSettlement, 
+    auto baseCurve = flatRate(cachedSettlement, 
                                                              0.05, Actual360());
     RelinkableHandle<YieldTermStructure> baseCurveHandle(baseCurve);
 
     // Define spreaded curve with eps as spread used for FD sensitivities
     Real eps = 1.0e-6;
-    ext::shared_ptr<SimpleQuote> spread(new SimpleQuote(0.0));
+    auto spread = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
                                                             baseCurveHandle,
                                                             Handle<Quote>(spread),
@@ -772,13 +773,13 @@ BOOST_AUTO_TEST_CASE(testBachelierOptionLetsDelta) {
     Date cachedToday(14,March,2002),
          cachedSettlement(18,March,2002);
     Settings::instance().evaluationDate() = cachedToday;
-    ext::shared_ptr<YieldTermStructure> baseCurve = flatRate(cachedSettlement, 
+    auto baseCurve = flatRate(cachedSettlement, 
                                                              0.05, Actual360());
     RelinkableHandle<YieldTermStructure> baseCurveHandle(baseCurve);
 
     // Define spreaded curve with eps as spread used for FD sensitivities
     Real eps = 1.0e-6;
-    ext::shared_ptr<SimpleQuote> spread(new SimpleQuote(0.0));
+    auto spread = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
                                                             baseCurveHandle,
                                                             Handle<Quote>(spread),

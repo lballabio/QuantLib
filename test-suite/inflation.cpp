@@ -110,7 +110,7 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
 
     // 1) Monthly seasonality with all elements equal to 1 <=> no seasonality
     vector<Rate> seasonalityFactors(12, 1.0);
-    ext::shared_ptr<MultiplicativePriceSeasonality> unitSeasonality =
+    auto unitSeasonality =
         ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
 
     // 2) Seasonality with factors != 1.0
@@ -127,7 +127,7 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
     seasonalityFactors[10] = 1.003705;
     seasonalityFactors[11] = 1.004186;
 
-    ext::shared_ptr<MultiplicativePriceSeasonality> nonUnitSeasonality =
+    auto nonUnitSeasonality =
         ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
 
     // Create dates on which we will check fixings
@@ -386,7 +386,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
 
     Date baseDate = ii->lastFixingDate();
 
-    ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS =
+    auto pZITS =
         ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
             evaluationDate, baseDate, frequency, dc, helpers);
 
@@ -484,7 +484,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
         1.004186
     };
 
-    ext::shared_ptr<MultiplicativePriceSeasonality> nonUnitSeasonality =
+    auto nonUnitSeasonality =
         ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
 
     pZITS->setSeasonality(nonUnitSeasonality);
@@ -752,6 +752,55 @@ BOOST_AUTO_TEST_CASE(testInterpolatedZeroTermStructure) {
         BOOST_CHECK_MESSAGE(dates[i] == nodes[i].first,
                             "node " << i << " at " << nodes[i].first << "; " << dates[i] << " expected");
     }
+}
+
+BOOST_AUTO_TEST_CASE(testLaggedZeroRateLinearInterpolation) {
+    BOOST_TEST_MESSAGE("Testing linear interpolation on the lagged zeroRate overload...");
+
+    Date today = Date(15, January, 2020);
+    Settings::instance().evaluationDate() = today;
+
+    Date baseDate = Date(1, October, 2019);
+
+    std::vector<Date> dates = {
+        baseDate,
+        today + 6 * Months,
+        today + 1 * Years,
+        today + 2 * Years,
+        today + 5 * Years,
+        today + 10 * Years
+    };
+    std::vector<Rate> rates = { 0.02, 0.021, 0.022, 0.024, 0.026, 0.028 };
+
+    auto curve = ext::make_shared<InterpolatedZeroInflationCurve<Linear>>(
+        today, dates, rates, Monthly, Actual360());
+
+    Period observationLag = Period(91, Days);
+    Date d = today + 3 * Months;
+
+    QL_DEPRECATED_DISABLE_WARNING
+    Rate interpolated = curve->zeroRate(d, observationLag, true);
+    QL_DEPRECATED_ENABLE_WARNING
+
+    // manual within-period interpolation on the period containing the lagged date
+    std::pair<Date, Date> period = inflationPeriod(d - observationLag, curve->frequency());
+    period.second = period.second + Period(1, Days);
+    Real dp = period.second - period.first;
+    Real dt = (d - observationLag) - period.first;
+    Time t1 = curve->timeFromReference(period.first);
+    Time t2 = curve->timeFromReference(period.second);
+    Rate z1 = curve->zeroRate(t1);
+    Rate z2 = curve->zeroRate(t2);
+    Rate expected = z1 + (z2 - z1) * (dt / dp);
+
+    Real tolerance = 1e-12;
+    BOOST_CHECK_MESSAGE(std::fabs(interpolated - expected) < tolerance,
+                        "lagged zeroRate with forceLinearInterpolation does not "
+                        "interpolate within the period containing the lagged date"
+                        << "\n    date:          " << d
+                        << "\n    lag:           " << observationLag
+                        << "\n    interpolated:  " << interpolated
+                        << "\n    expected:      " << expected);
 }
 
 //===========================================================================================
@@ -1648,7 +1697,7 @@ BOOST_AUTO_TEST_CASE(testExtrapolationRegression) {
 
     Date baseDate = rpi->lastFixingDate();
 
-    ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS =
+    auto pZITS =
         ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
             evaluationDate, baseDate, frequency, dc, helpers);
     pZITS->enableExtrapolation();

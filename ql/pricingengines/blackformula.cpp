@@ -161,10 +161,10 @@ namespace QuantLib {
         Real stdDev;
         forward = forward + displacement;
         strike = strike + displacement;
-        if (strike==forward)
+        if (strike==forward) {
             // Brenner-Subrahmanyan (1988) and Feinstein (1988) ATM approx.
             stdDev = blackPrice/discount*std::sqrt(2.0 * M_PI)/forward;
-        else {
+        } else {
             // Corrado and Miller extended moneyness approximation
             Real moneynessDelta = Integer(optionType) * (forward-strike);
             Real moneynessDelta_2 = moneynessDelta/2.0;
@@ -305,7 +305,7 @@ namespace QuantLib {
             gamma = -M_PI_2 * std::log1p(-num / (B + D));
         }
 
-        const auto sqrtDiff = [](Real g, Real yy) {
+        const auto sqrtDiff = [](Real g, Real yy) -> Real {
             return std::isfinite(g) ? Real(std::sqrt(g + yy) - std::sqrt(g - yy))
                                     : Real(0.0);
         };
@@ -313,7 +313,7 @@ namespace QuantLib {
         if (y >= 0.0) {
             const Real M0 = K*df*(
                 (type == Option::Call) ? Real(ey*Af(std::sqrt(2*y)) - 0.5)
-                                       : 0.5-ey*Af(-std::sqrt(2*y)));
+                                       : Real(0.5-ey*Af(-std::sqrt(2*y))));
 
             if (marketValue <= M0)
                 return sqrtDiff(gamma, y);
@@ -323,7 +323,7 @@ namespace QuantLib {
         else {
             const Real M0 = K*df*(
                 (type == Option::Call) ? Real(0.5*ey - Af(-std::sqrt(-2*y)))
-                                       : Af(std::sqrt(-2*y)) - 0.5*ey);
+                                       : Real(Af(std::sqrt(-2*y)) - 0.5*ey));
 
             if (marketValue <= M0)
                 return sqrtDiff(gamma, -y);
@@ -362,7 +362,7 @@ namespace QuantLib {
         }
 
         Real operator()(Real stdDev) const {
-            #if defined(QL_EXTRA_SAFETY_CHECKS)
+            #ifdef QL_EXTRA_SAFETY_CHECKS
             QL_REQUIRE(stdDev>=0.0,
                        "stdDev (" << stdDev << ") must be non-negative");
             #endif
@@ -379,7 +379,7 @@ namespace QuantLib {
             return std::max(Real(0.0), result) - undiscountedBlackPrice_;
         }
         Real derivative(Real stdDev) const {
-            #if defined(QL_EXTRA_SAFETY_CHECKS)
+            #ifdef QL_EXTRA_SAFETY_CHECKS
             QL_REQUIRE(stdDev>=0.0,
                        "stdDev (" << stdDev << ") must be non-negative");
             #endif

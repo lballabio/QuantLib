@@ -66,6 +66,7 @@
 #include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -155,8 +156,8 @@ ext::shared_ptr<HybridHestonHullWhiteProcess> createHestonHullWhite(Time maturit
     ext::shared_ptr<HestonProcess> hestonProcess(
             new HestonProcess(rTS, qTS, s0, v0, 1.0, v0*0.75, 0.4, -0.7));
 
-    ext::shared_ptr<HullWhiteForwardProcess> hwFwdProcess(
-            new HullWhiteForwardProcess(rTS, 0.00883, 0.01));
+    auto hwFwdProcess = ext::make_shared<HullWhiteForwardProcess>(
+            rTS, 0.00883, 0.01);
     hwFwdProcess->setForwardMeasureTime(maturity);
 
     const Real equityShortRateCorr = -0.7;
@@ -1098,9 +1099,9 @@ BOOST_AUTO_TEST_CASE(testFdmHestonHullWhiteOp) {
     ext::shared_ptr<HullWhiteForwardProcess> hwFwdProcess
                                             = jointProcess->hullWhiteProcess();
 
-    ext::shared_ptr<HullWhiteProcess> hwProcess(
-        new HullWhiteProcess(jointProcess->hestonProcess()->riskFreeRate(),
-                             hwFwdProcess->a(), hwFwdProcess->sigma()));
+    auto hwProcess = ext::make_shared<HullWhiteProcess>(
+        jointProcess->hestonProcess()->riskFreeRate(),
+                             hwFwdProcess->a(), hwFwdProcess->sigma());
 
     ext::shared_ptr<FdmLinearOpComposite> linearOp(
         new FdmHestonHullWhiteOp(mesher,
@@ -1296,10 +1297,10 @@ BOOST_AUTO_TEST_CASE(testCrankNicolsonWithDamping) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, 0.06, dc);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.06, dc);
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, 0.35, dc);
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto qTS = flatRate(today, 0.06, dc);
+    auto rTS = flatRate(today, 0.06, dc);
+    auto volTS = flatVol(today, 0.35, dc);
 
     ext::shared_ptr<StrikedTypePayoff> payoff(
                              new CashOrNothingPayoff(Option::Put, 100, 10.0));
@@ -1504,7 +1505,7 @@ BOOST_AUTO_TEST_CASE(testHighInterestRateBlackScholesMesher) {
     const Rate q = 0.02;
     const Volatility v = 0.25;
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+    const auto process =
         ext::make_shared<GeneralizedBlackScholesProcess>(
             Handle<Quote>(ext::make_shared<SimpleQuote>(spot)),
             Handle<YieldTermStructure>(flatRate(today, q, dc)),
@@ -1567,7 +1568,7 @@ BOOST_AUTO_TEST_CASE(testLowVolatilityHighDiscreteDividendBlackScholesMesher) {
     const Handle<YieldTermStructure> rTS(flatRate(today, 0.16, dc));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.0, dc));
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+    const auto process =
         ext::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, volTS);
 

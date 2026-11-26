@@ -71,7 +71,7 @@ namespace QuantLib {
 
         struct Settings {
 
-            Settings() : lowerRateBound_(defaultLowerBound), upperRateBound_(defaultUpperBound) {}
+            Settings()  {}  // NOLINT(modernize-use-equals-default)
 
             Settings &withRateBound(const Real lowerRateBound = defaultLowerBound,
                                     const Real upperRateBound = defaultUpperBound) {
@@ -153,7 +153,7 @@ namespace QuantLib {
             Real vegaRatio_ = 0.01;
             Real priceThreshold_ = 1.0E-8;
             Real stdDevs_ = 3.0;
-            Real lowerRateBound_, upperRateBound_;
+            Real lowerRateBound_ = defaultLowerBound, upperRateBound_ = defaultUpperBound;
             bool defaultBounds_ = true;
         };
 

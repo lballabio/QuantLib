@@ -154,9 +154,9 @@ BOOST_AUTO_TEST_CASE(testFdmSabrOp) {
     const ext::shared_ptr<Exercise> exercise =
         ext::make_shared<EuropeanExercise>(maturityDate);
 
-    const ext::shared_ptr<PlainVanillaPayoff> putPayoff =
+    const auto putPayoff =
         ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
-    const ext::shared_ptr<PlainVanillaPayoff> callPayoff =
+    const auto callPayoff =
         ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
 
     VanillaOption optionPut(putPayoff, exercise);
@@ -172,7 +172,7 @@ BOOST_AUTO_TEST_CASE(testFdmSabrOp) {
 
     const Real betas[] = { 0.25, 0.6 };
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
+    const auto bsProcess =
         ext::make_shared<GeneralizedBlackScholesProcess>(
             Handle<Quote>(ext::make_shared<SimpleQuote>(f0)),
             rTS, rTS, Handle<BlackVolTermStructure>(flatVol(0.2, dc)));
@@ -262,7 +262,7 @@ BOOST_AUTO_TEST_CASE(testFdmSabrCevPricing) {
 
     for (auto optionType : optionTypes) {
         for (Real strike : strikes) {
-            const ext::shared_ptr<PlainVanillaPayoff> payoff =
+            const auto payoff =
                 ext::make_shared<PlainVanillaPayoff>(optionType, strike);
 
             VanillaOption option(payoff, exercise);
@@ -311,7 +311,7 @@ BOOST_AUTO_TEST_CASE(testFdmSabrVsVolApproximation) {
 
     const Real f0 = 100;
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
+    const auto bsProcess =
         ext::make_shared<GeneralizedBlackScholesProcess>(
             Handle<Quote>(ext::make_shared<SimpleQuote>(f0)),
             rTS, rTS, Handle<BlackVolTermStructure>(flatVol(0.2, dc)));

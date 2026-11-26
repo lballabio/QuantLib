@@ -24,6 +24,7 @@
 #include <ql/pricingengines/cliquet/analyticperformanceengine.hpp>
 #include <ql/pricingengines/cliquet/mcperformanceengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/forwardcurve.hpp>
@@ -64,13 +65,13 @@ BOOST_AUTO_TEST_CASE(testValues) {
     Date today = Date::todaysDate();
     DayCounter dc = Actual360();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(60.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.08));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.30));
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    auto spot = ext::make_shared<SimpleQuote>(60.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.04);
+    auto qTS = flatRate(today, qRate, dc);
+    auto rRate = ext::make_shared<SimpleQuote>(0.08);
+    auto rTS = flatRate(today, rRate, dc);
+    auto vol = ext::make_shared<SimpleQuote>(0.30);
+    auto volTS = flatVol(today, vol, dc);
 
     ext::shared_ptr<BlackScholesMertonProcess> process(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
@@ -85,10 +86,10 @@ BOOST_AUTO_TEST_CASE(testValues) {
     Option::Type type = Option::Call;
     Real moneyness = 1.1;
 
-    ext::shared_ptr<PercentageStrikePayoff> payoff(
-                                 new PercentageStrikePayoff(type, moneyness));
-    ext::shared_ptr<EuropeanExercise> exercise(
-                                              new EuropeanExercise(maturity));
+    auto payoff = ext::make_shared<PercentageStrikePayoff>(
+                                 type, moneyness);
+    auto exercise = ext::make_shared<EuropeanExercise>(
+                                              maturity);
 
     CliquetOption option(payoff, exercise, reset);
     option.setPricingEngine(engine);
@@ -130,12 +131,12 @@ void testOptionGreeks() {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     ext::shared_ptr<BlackScholesMertonProcess> process(
@@ -150,8 +151,8 @@ void testOptionGreeks() {
                     ext::shared_ptr<EuropeanExercise> maturity(
                             new EuropeanExercise(today + length * Years));
 
-                    ext::shared_ptr<PercentageStrikePayoff> payoff(
-                            new PercentageStrikePayoff(type, moneynes));
+                    auto payoff = ext::make_shared<PercentageStrikePayoff>(
+                            type, moneynes);
 
                     std::vector<Date> reset;
                     for (Date d = today + Period(frequencie); d < maturity->lastDate();
@@ -377,12 +378,12 @@ BOOST_AUTO_TEST_CASE(testMcPerformance) {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     ext::shared_ptr<BlackScholesMertonProcess> process(
@@ -398,8 +399,8 @@ BOOST_AUTO_TEST_CASE(testMcPerformance) {
                     ext::shared_ptr<EuropeanExercise> maturity(
                         new EuropeanExercise(today + length * tenor));
 
-                    ext::shared_ptr<PercentageStrikePayoff> payoff(
-                        new PercentageStrikePayoff(type, moneynes));
+                    auto payoff = ext::make_shared<PercentageStrikePayoff>(
+                        type, moneynes);
 
                     std::vector<Date> reset;
                     for (Date d = today + tenor; d < maturity->lastDate(); d += tenor)
