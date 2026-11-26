@@ -119,15 +119,15 @@ namespace QuantLib {
                 prod *= 1 + r * dayCounter.yearFraction(d1, d2);
                 fixingDate = d1 = d2;
             }
-            // here d1 == today, and we might have today's fixing already
-            if (today < maturityDate_) {
-                Real r = history[today];
-                if (r != Null<Real>()) {
-                    Date tomorrow = calendar.advance(today, 1, Days);
-                    Date accrualEnd = std::min(tomorrow, maturityDate_);
-                    prod *= 1 + r * dayCounter.yearFraction(today, accrualEnd);
-                    forwardDiscountStart = accrualEnd;
-                }
+        }
+        // Today's fixing can also be known on the first day of the reference period.
+        if (today >= valueDate_ && today < maturityDate_) {
+            Real r = overnightIndex_->timeSeries()[today];
+            if (r != Null<Real>()) {
+                Date tomorrow = calendar.advance(today, 1, Days);
+                Date accrualEnd = std::min(tomorrow, maturityDate_);
+                prod *= 1 + r * dayCounter.yearFraction(today, accrualEnd);
+                forwardDiscountStart = accrualEnd;
             }
         }
         // the telescopic part goes from the end of the last known fixing to the maturity
