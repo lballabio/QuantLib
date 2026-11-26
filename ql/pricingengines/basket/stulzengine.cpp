@@ -58,8 +58,8 @@ namespace QuantLib {
 
             // with perfect correlation, rounding can push the modified
             // correlations slightly outside [-1, 1]
-            Real modRho1 = std::clamp((rho * stdDev2 - stdDev1) / stdDev, Real(-1.0), Real(1.0));
-            Real modRho2 = std::clamp((rho * stdDev1 - stdDev2) / stdDev, Real(-1.0), Real(1.0));
+            Real modRho1 = std::clamp<Real>((rho * stdDev2 - stdDev1) / stdDev, -1.0, 1.0);
+            Real modRho2 = std::clamp<Real>((rho * stdDev1 - stdDev2) / stdDev, -1.0, 1.0);
 
             Real D1 = (std::log(forward1/forward2) + 0.5*variance) / stdDev;
 
