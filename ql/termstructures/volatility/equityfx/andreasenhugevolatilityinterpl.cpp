@@ -530,8 +530,7 @@ namespace QuantLib {
         calculate();
 
 
-        ext::shared_ptr<Array> prices(
-            ext::make_shared<Array>(gridPoints_));
+        auto prices = ext::make_shared<Array>(gridPoints_);
 
         switch (calibrationType_) {
           case Put:
@@ -598,8 +597,7 @@ namespace QuantLib {
 
         calculate();
 
-        ext::shared_ptr<Array> localVol(
-            ext::make_shared<Array>(gridPoints_.size()));
+        auto localVol = ext::make_shared<Array>(gridPoints_.size());
 
         switch (calibrationType_) {
           case CallPut: {

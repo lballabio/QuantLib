@@ -140,8 +140,7 @@ BOOST_AUTO_TEST_CASE(testRadoicicStefanicaImpliedVol) {
 
     for (Real strike : strikes) {
         for (auto type : types) {
-            const ext::shared_ptr<PlainVanillaPayoff> payoff(
-                ext::make_shared<PlainVanillaPayoff>(type, strike));
+            const auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
 
             const Real marketValue = blackFormula(payoff, forward, stdDev, df);
 
@@ -217,8 +216,8 @@ BOOST_AUTO_TEST_CASE(testImpliedVolAdaptiveSuccessiveOverRelaxation) {
     const Date exerciseDate = today + Period(15, Months);
     const Time exerciseTime = dc.yearFraction(today, exerciseDate);
 
-    const ext::shared_ptr<YieldTermStructure> rTS = flatRate(0.10, dc);
-    const ext::shared_ptr<YieldTermStructure> qTS = flatRate(0.06, dc);
+    const auto rTS = flatRate(0.10, dc);
+    const auto qTS = flatRate(0.06, dc);
 
     const DiscountFactor df = rTS->discount(exerciseDate);
 
@@ -236,8 +235,7 @@ BOOST_AUTO_TEST_CASE(testImpliedVolAdaptiveSuccessiveOverRelaxation) {
 
     for (Real strike : strikes) {
         for (auto type : types) {
-            const ext::shared_ptr<PlainVanillaPayoff> payoff(
-                ext::make_shared<PlainVanillaPayoff>(type, strike));
+            const auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
 
             for (Real displacement : displacements) {
 

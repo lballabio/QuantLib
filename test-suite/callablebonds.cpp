@@ -383,7 +383,7 @@ BOOST_AUTO_TEST_CASE(testObservability) {
 
     Globals vars;
 
-    ext::shared_ptr<SimpleQuote> observable = ext::make_shared<SimpleQuote>(0.03);
+    auto observable = ext::make_shared<SimpleQuote>(0.03);
     Handle<Quote> h(observable);
     vars.termStructure.linkTo(vars.makeFlatCurve(h));
     vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));
@@ -579,14 +579,14 @@ BOOST_AUTO_TEST_CASE(testCached) {
 
     std::vector<Date> callabilityDates = vars.evenYears();
     for (auto& callabilityDate : callabilityDates) {
-        ext::shared_ptr<Callability> exercise = ext::make_shared<Callability>(
+        auto exercise = ext::make_shared<Callability>(
             Bond::Price(110.0, Bond::Price::Clean), Callability::Call, callabilityDate);
         callabilities.push_back(exercise);
         all_exercises.push_back(exercise);
     }
     std::vector<Date> puttabilityDates = vars.oddYears();
     for (auto& puttabilityDate : puttabilityDates) {
-        ext::shared_ptr<Callability> exercise = ext::make_shared<Callability>(
+        auto exercise = ext::make_shared<Callability>(
             Bond::Price(100.0, Bond::Price::Clean), Callability::Put, puttabilityDate);
         puttabilities.push_back(exercise);
         all_exercises.push_back(exercise);

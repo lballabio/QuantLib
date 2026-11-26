@@ -142,11 +142,11 @@ BOOST_AUTO_TEST_CASE(testReplicatingVarianceSwap) {
     DayCounter dc = Actual365Fixed();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto qTS = flatRate(today, qRate, dc);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rTS = flatRate(today, rRate, dc);
 
     for (auto& value : values) {
         Date exDate = today + timeToDays(value.t, 365);
@@ -296,11 +296,11 @@ BOOST_AUTO_TEST_CASE(testMCVarianceSwap) {
     DayCounter dc = Actual365Fixed();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto qTS = flatRate(today, qRate, dc);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rTS = flatRate(today, rRate, dc);
     std::vector<Volatility> vols(2);
     std::vector<Date> dates(2);
 

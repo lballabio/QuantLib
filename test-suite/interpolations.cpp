@@ -1509,7 +1509,7 @@ BOOST_AUTO_TEST_CASE(testSabrInterpolation){
         ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8))
     };
     // Initialize end criteria
-    ext::shared_ptr<EndCriteria> endCriteria = ext::make_shared<EndCriteria>(100000, 100, 1e-8, 1e-8, 1e-8);
+    auto endCriteria = ext::make_shared<EndCriteria>(100000, 100, 1e-8, 1e-8, 1e-8);
     // Test looping over all possibilities
     for (auto& method : methods_) {
         for (bool i : vegaWeighted) {
@@ -2152,7 +2152,7 @@ BOOST_AUTO_TEST_CASE(testNoArbSabrInterpolation){
         ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8))
     };
     // Initialize end criteria
-    ext::shared_ptr<EndCriteria> endCriteria = ext::make_shared<EndCriteria>(100000, 100, 1e-8, 1e-8, 1e-8);
+    auto endCriteria = ext::make_shared<EndCriteria>(100000, 100, 1e-8, 1e-8, 1e-8);
     // Test looping over all possibilities
     for (Size j=1; j<methods_.size(); ++j) { // skip simplex (gets caught in some cases)
         for (bool i : vegaWeighted) {

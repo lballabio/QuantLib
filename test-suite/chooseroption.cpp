@@ -64,15 +64,15 @@ BOOST_AUTO_TEST_CASE(testAnalyticSimpleChooserEngine){
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(50.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.08);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    auto spot = ext::make_shared<SimpleQuote>(50.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto qTS = flatRate(today, qRate, dc);
+    auto rRate = ext::make_shared<SimpleQuote>(0.08);
+    auto rTS = flatRate(today, rRate, dc);
+    auto vol = ext::make_shared<SimpleQuote>(0.25);
+    auto volTS = flatVol(today, vol, dc);
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
+    auto stochProcess =
         ext::make_shared<BlackScholesMertonProcess>(
                                   Handle<Quote>(spot),
                                   Handle<YieldTermStructure>(qTS),
@@ -113,15 +113,15 @@ BOOST_AUTO_TEST_CASE(testAnalyticComplexChooserEngine){
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(50.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.05);
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.10);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.35);
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    auto spot = ext::make_shared<SimpleQuote>(50.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.05);
+    auto qTS = flatRate(today, qRate, dc);
+    auto rRate = ext::make_shared<SimpleQuote>(0.10);
+    auto rTS = flatRate(today, rRate, dc);
+    auto vol = ext::make_shared<SimpleQuote>(0.35);
+    auto volTS = flatVol(today, vol, dc);
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
+    auto stochProcess =
         ext::make_shared<BlackScholesMertonProcess>(
                                   Handle<Quote>(spot),
                                   Handle<YieldTermStructure>(qTS),
@@ -165,12 +165,12 @@ BOOST_AUTO_TEST_CASE(testComplexChooserWithEqualTermsMatchesSimpleChooser) {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
+    auto stochProcess =
         ext::make_shared<BlackScholesMertonProcess>(
                                   Handle<Quote>(spot),
                                   Handle<YieldTermStructure>(flatRate(today, qRate, dc)),

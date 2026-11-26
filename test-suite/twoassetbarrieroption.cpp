@@ -77,13 +77,13 @@ BOOST_AUTO_TEST_CASE(testHaugValues) {
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
 
     ext::shared_ptr<SimpleQuote> r(new SimpleQuote);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, r, dc);
+    auto rTS = flatRate(today, r, dc);
 
     ext::shared_ptr<SimpleQuote> s1(new SimpleQuote);
     ext::shared_ptr<SimpleQuote> q1(new SimpleQuote);
-    ext::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, q1, dc);
+    auto qTS1 = flatRate(today, q1, dc);
     ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote);
-    ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
+    auto volTS1 = flatVol(today, vol1, dc);
 
     ext::shared_ptr<BlackScholesMertonProcess> process1(
         new BlackScholesMertonProcess(Handle<Quote>(s1),
@@ -93,9 +93,9 @@ BOOST_AUTO_TEST_CASE(testHaugValues) {
 
     ext::shared_ptr<SimpleQuote> s2(new SimpleQuote);
     ext::shared_ptr<SimpleQuote> q2(new SimpleQuote);
-    ext::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, q2, dc);
+    auto qTS2 = flatRate(today, q2, dc);
     ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote);
-    ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
+    auto volTS2 = flatVol(today, vol2, dc);
 
     ext::shared_ptr<BlackScholesMertonProcess> process2(
         new BlackScholesMertonProcess(Handle<Quote>(s2),
@@ -151,11 +151,11 @@ BOOST_AUTO_TEST_CASE(testInOutParityWithDividends) {
     Settings::instance().evaluationDate() = today;
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(today + 365));
 
-    ext::shared_ptr<SimpleQuote> s1 = ext::make_shared<SimpleQuote>(100.0);
+    auto s1 = ext::make_shared<SimpleQuote>(100.0);
     ext::shared_ptr<SimpleQuote> q1(new SimpleQuote);
-    ext::shared_ptr<SimpleQuote> s2 = ext::make_shared<SimpleQuote>(100.0);
+    auto s2 = ext::make_shared<SimpleQuote>(100.0);
     ext::shared_ptr<SimpleQuote> rho(new SimpleQuote);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.05, dc);
+    auto rTS = flatRate(today, 0.05, dc);
 
     auto process1 = ext::make_shared<BlackScholesMertonProcess>(
         Handle<Quote>(s1), Handle<YieldTermStructure>(flatRate(today, q1, dc)),

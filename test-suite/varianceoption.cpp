@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(testIntegralHeston) {
 
     Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.0));
     Handle<YieldTermStructure> qTS;
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
 
     Real v0 = 2.0;

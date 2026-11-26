@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(testConstructionWithoutACurve) {
                                                           Period(3, Years), index,
                                                           Pillar::LastRelevantDate, Date(),
                                                           useIndexedFra));
-        ext::shared_ptr<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> > curve =
+        auto curve =
             ext::make_shared<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> >(
                 today, helpers, index->dayCounter());
 

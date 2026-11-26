@@ -167,7 +167,7 @@ simulate(const ext::shared_ptr<MarketModelEvolver>& evolver,
     Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
     AccountingEngine engine(evolver, product, initialNumeraireValue);
-    ext::shared_ptr<SequenceStatisticsInc> stats = ext::make_shared<SequenceStatisticsInc>(
+    auto stats = ext::make_shared<SequenceStatisticsInc>(
                           product.numberOfProducts());
     engine.multiplePathValues(*stats, paths_);
     return stats;

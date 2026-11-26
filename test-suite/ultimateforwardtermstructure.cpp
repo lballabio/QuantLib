@@ -318,9 +318,9 @@ BOOST_AUTO_TEST_CASE(testObservability) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> llfr = ext::make_shared<SimpleQuote>(0.0125);
+    auto llfr = ext::make_shared<SimpleQuote>(0.0125);
     Handle<Quote> llfr_quote(llfr);
-    ext::shared_ptr<SimpleQuote> ufr = ext::make_shared<SimpleQuote>(0.02);
+    auto ufr = ext::make_shared<SimpleQuote>(0.02);
     Handle<Quote> ufr_handle(ufr);
     ext::shared_ptr<YieldTermStructure> ufrTs(new UltimateForwardTermStructure(
         vars.ftkCurveHandle, llfr_quote, ufr_handle, vars.fsp, vars.alpha));

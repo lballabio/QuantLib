@@ -126,7 +126,7 @@ Handle<OptionletVolatilityStructure> getOptionletTS() {
     ext::shared_ptr<StrippedOptionletBase> tmp1(
             new StrippedOptionlet(2, TARGET(), Following, index, dates, capletStrikes,
                                   capletVolQuotes, Actual365Fixed(), Normal, 0.0));
-    ext::shared_ptr<StrippedOptionletAdapter> tmp2 = ext::make_shared<StrippedOptionletAdapter>(tmp1);
+    auto tmp2 = ext::make_shared<StrippedOptionletAdapter>(tmp1);
     return RelinkableHandle<OptionletVolatilityStructure>(tmp2);
 }
 

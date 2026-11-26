@@ -200,12 +200,11 @@ namespace QuantLib {
             mesher, boundaries, conditions, calculator, maturity, tGrid_, dampingSteps_
         };
 
-        const ext::shared_ptr<FdmBlackScholesSolver> solver(
-            ext::make_shared<FdmBlackScholesSolver>(
+        const auto solver = ext::make_shared<FdmBlackScholesSolver>(
                 Handle<GeneralizedBlackScholesProcess>(process_),
                 payoff->strike(), solverDesc, schemeDesc_,
                 localVol_, illegalLocalVolOverwrite_,
-                Handle<FdmQuantoHelper>(quantoHelper_)));
+                Handle<FdmQuantoHelper>(quantoHelper_));
 
         const Real spot = process_->x0() + spotAdjustment;
 
