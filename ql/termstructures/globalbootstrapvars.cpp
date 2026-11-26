@@ -44,6 +44,8 @@ namespace QuantLib {
 
     Real SimpleQuoteVariables::transformInverse(Real x, Size i) const {
         const Real lb = detail::get(lowerBounds_, i, Null<Real>());
+        if (lb != Null<Real>())
+            QL_REQUIRE(x > lb, "guess " << x << " is not strictly greater than lower bound " << lb);
         return lb == Null<Real>() ? x : std::log(x - lb);
     }
 }
