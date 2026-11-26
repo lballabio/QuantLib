@@ -58,13 +58,13 @@ BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
     Handle<BlackVolTermStructure> blackVolTS2(flatVol(today, 0.3, dc));
     Handle<Quote> correlation(ext::make_shared<SimpleQuote>(0.75));
 
-    ext::shared_ptr<BlackScholesMertonProcess> process1 =
+    auto process1 =
         ext::make_shared<BlackScholesMertonProcess>(underlying1,
                                                       dividendTS1,
                                                       riskFreeTS,
                                                       blackVolTS1);
 
-    ext::shared_ptr<BlackScholesMertonProcess> process2 =
+    auto process2 =
         ext::make_shared<BlackScholesMertonProcess>(underlying2,
                                                       dividendTS2,
                                                       riskFreeTS,

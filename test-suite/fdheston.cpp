@@ -107,14 +107,13 @@ BOOST_AUTO_TEST_CASE(testFdmHestonVarianceMesher) {
     const DayCounter dc = Actual365Fixed();
     Settings::instance().evaluationDate() = today;
 
-    const ext::shared_ptr<HestonProcess> process(
-        ext::make_shared<HestonProcess>(
+    const auto process = ext::make_shared<HestonProcess>(
             Handle<YieldTermStructure>(flatRate(0.02, dc)),
             Handle<YieldTermStructure>(flatRate(0.02, dc)),
             Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
-            0.09, 1.0, 0.09, 0.2, -0.5));
+            0.09, 1.0, 0.09, 0.2, -0.5);
 
-    const ext::shared_ptr<FdmHestonVarianceMesher> mesher
+    const auto mesher
         = ext::make_shared<FdmHestonVarianceMesher>(5, process, 1.0);
 
     const std::vector<Real> locations = mesher->locations();
@@ -140,7 +139,7 @@ BOOST_AUTO_TEST_CASE(testFdmHestonVarianceMesher) {
     const ext::shared_ptr<LocalVolTermStructure> lVol =
         ext::make_shared<LocalConstantVol>(today, 2.5, dc);
 
-    const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> constSlvMesher
+    const auto constSlvMesher
         = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>
               (5, process, lVol, 1.0);
 
@@ -162,7 +161,7 @@ BOOST_AUTO_TEST_CASE(testFdmHestonVarianceMesher) {
     const ext::shared_ptr<LocalVolTermStructure> leverageFct
         = ext::make_shared<ParableLocalVolatility>(today, 100.0, alpha, dc);
 
-    const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> slvMesher
+    const auto slvMesher
         = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>(
               5, process, leverageFct, 0.5, 1, 0.01);
 
@@ -293,11 +292,11 @@ BOOST_AUTO_TEST_CASE(testFdmHestonBarrierVsBlackScholes) {
 
     Handle<Quote> spot(
             ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     ext::shared_ptr<BlackScholesMertonProcess> bsProcess(
@@ -771,10 +770,9 @@ BOOST_AUTO_TEST_CASE(testMethodOfLinesAndCN) {
 
     const Date maturity = today + Period(3, Months);
 
-    const ext::shared_ptr<HestonModel> model(
-        ext::make_shared<HestonModel>(
+    const auto model = ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
-                rTS, qTS, spot, v0, kappa, theta, sigma, rho)));
+                rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
     const Size xGrid = 21;
     const Size vGrid = 7;
@@ -786,7 +784,7 @@ BOOST_AUTO_TEST_CASE(testMethodOfLinesAndCN) {
         ext::make_shared<FdHestonVanillaEngine>(
             model, 10, xGrid, vGrid, 0, FdmSchemeDesc::MethodOfLines()));
 
-    const ext::shared_ptr<PlainVanillaPayoff> payoff =
+    const auto payoff =
         ext::make_shared<PlainVanillaPayoff>(Option::Put, spot->value());
 
     VanillaOption option(
@@ -888,16 +886,15 @@ BOOST_AUTO_TEST_CASE(testSpuriousOscillations) {
 
     const Date maturity = today + Period(1, Years);
 
-    const ext::shared_ptr<HestonProcess> process =
+    const auto process =
         ext::make_shared<HestonProcess>(
             rTS, qTS, spot, v0, kappa, theta, sigma, rho);
 
-    const ext::shared_ptr<HestonModel> model =
+    const auto model =
         ext::make_shared<HestonModel>(process);
 
-    const ext::shared_ptr<FdHestonVanillaEngine> hestonEngine(
-        ext::make_shared<FdHestonVanillaEngine>(
-            model, 6, 200, 13, 0, FdmSchemeDesc::TrBDF2()));
+    const auto hestonEngine = ext::make_shared<FdHestonVanillaEngine>(
+            model, 6, 200, 13, 0, FdmSchemeDesc::TrBDF2());
 
     VanillaOption option(
         ext::make_shared<PlainVanillaPayoff>(Option::Call, spot->value()),
@@ -916,7 +913,7 @@ BOOST_AUTO_TEST_CASE(testSpuriousOscillations) {
     };
 
     for (const auto & [desc, name, spurious] : descs) {
-        const ext::shared_ptr<FdmHestonSolver> solver = ext::make_shared<FdmHestonSolver>(
+        const auto solver = ext::make_shared<FdmHestonSolver>(
             Handle<HestonProcess>(process), hestonEngine->getSolverDesc(1.0), desc);
 
         std::vector<Real> gammas;

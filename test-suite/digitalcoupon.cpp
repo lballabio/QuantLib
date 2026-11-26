@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE(testAssetOrNothing) {
 
     Real gap = 1e-7; /* low, in order to compare digital option value
                         with black formula result */
-    ext::shared_ptr<DigitalReplication>
+    auto
         replication = ext::make_shared<DigitalReplication>(Replication::Central, gap);
     for (Real capletVol : vols) {
         RelinkableHandle<OptionletVolatilityStructure> vol;
@@ -152,12 +152,12 @@ BOOST_AUTO_TEST_CASE(testAssetOrNothing) {
                         ext::shared_ptr<Exercise>
                             exercise(new EuropeanExercise(exerciseDate));
                         Real discountAtFixing = vars.termStructure->discount(exerciseDate);
-                        ext::shared_ptr<SimpleQuote>
+                        auto
                             fwd = ext::make_shared<SimpleQuote>(effFwd*discountAtFixing);
-                        ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+                        auto qRate = ext::make_shared<SimpleQuote>(0.0);
                         ext::shared_ptr<YieldTermStructure>
                             qTS = flatRate(vars.today, qRate, Actual360());
-                        ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
+                        auto vol = ext::make_shared<SimpleQuote>(0.0);
                         ext::shared_ptr<BlackVolTermStructure>
                             volTS = flatVol(vars.today, capletVol, Actual360());
                         ext::shared_ptr<StrikedTypePayoff>
@@ -215,12 +215,12 @@ BOOST_AUTO_TEST_CASE(testAssetOrNothing) {
                         ext::shared_ptr<Exercise>
                             exercise(new EuropeanExercise(exerciseDate));
                         Real discountAtFixing = vars.termStructure->discount(exerciseDate);
-                        ext::shared_ptr<SimpleQuote>
+                        auto
                             fwd = ext::make_shared<SimpleQuote>(effFwd*discountAtFixing);
-                        ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+                        auto qRate = ext::make_shared<SimpleQuote>(0.0);
                         ext::shared_ptr<YieldTermStructure>
                             qTS = flatRate(vars.today, qRate, Actual360());
-                        ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
+                        auto vol = ext::make_shared<SimpleQuote>(0.0);
                         ext::shared_ptr<BlackVolTermStructure>
                             volTS = flatVol(vars.today, capletVol, Actual360());
                         ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
@@ -487,7 +487,7 @@ BOOST_AUTO_TEST_CASE(testCashOrNothing) {
 
     Real gap = 1e-08; /* very low, in order to compare digital option value
                                      with black formula result */
-    ext::shared_ptr<DigitalReplication> replication = ext::make_shared<DigitalReplication>(Replication::Central, gap);
+    auto replication = ext::make_shared<DigitalReplication>(Replication::Central, gap);
 
     for (Real capletVol : vols) {
         RelinkableHandle<OptionletVolatilityStructure> vol;
@@ -540,10 +540,10 @@ BOOST_AUTO_TEST_CASE(testCashOrNothing) {
                 // Check digital option price vs N(d2) price using Vanilla Option class
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
                 Real discountAtFixing = vars.termStructure->discount(exerciseDate);
-                ext::shared_ptr<SimpleQuote> fwd = ext::make_shared<SimpleQuote>(effFwd*discountAtFixing);
-                ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+                auto fwd = ext::make_shared<SimpleQuote>(effFwd*discountAtFixing);
+                auto qRate = ext::make_shared<SimpleQuote>(0.0);
                 ext::shared_ptr<YieldTermStructure> qTS = flatRate(vars.today, qRate, Actual360());
-                ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
+                auto vol = ext::make_shared<SimpleQuote>(0.0);
                 ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(vars.today, capletVol,
                                                                          Actual360());
                 ext::shared_ptr<StrikedTypePayoff> callPayoff(new CashOrNothingPayoff(
@@ -932,9 +932,9 @@ BOOST_AUTO_TEST_CASE(testReplicationType) {
     Real spread = 0.0;
 
     Real gap = 1e-04;
-    ext::shared_ptr<DigitalReplication> subReplication = ext::make_shared<DigitalReplication>(Replication::Sub, gap);
-    ext::shared_ptr<DigitalReplication> centralReplication = ext::make_shared<DigitalReplication>(Replication::Central, gap);
-    ext::shared_ptr<DigitalReplication> superReplication = ext::make_shared<DigitalReplication>(Replication::Super, gap);
+    auto subReplication = ext::make_shared<DigitalReplication>(Replication::Sub, gap);
+    auto centralReplication = ext::make_shared<DigitalReplication>(Replication::Central, gap);
+    auto superReplication = ext::make_shared<DigitalReplication>(Replication::Super, gap);
 
     for (Real capletVolatility : vols) {
         RelinkableHandle<OptionletVolatilityStructure> volatility;

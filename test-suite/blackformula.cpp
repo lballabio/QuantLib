@@ -140,8 +140,7 @@ BOOST_AUTO_TEST_CASE(testRadoicicStefanicaImpliedVol) {
 
     for (Real strike : strikes) {
         for (auto type : types) {
-            const ext::shared_ptr<PlainVanillaPayoff> payoff(
-                ext::make_shared<PlainVanillaPayoff>(type, strike));
+            const auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
 
             const Real marketValue = blackFormula(payoff, forward, stdDev, df);
 
@@ -236,8 +235,7 @@ BOOST_AUTO_TEST_CASE(testImpliedVolAdaptiveSuccessiveOverRelaxation) {
 
     for (Real strike : strikes) {
         for (auto type : types) {
-            const ext::shared_ptr<PlainVanillaPayoff> payoff(
-                ext::make_shared<PlainVanillaPayoff>(type, strike));
+            const auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
 
             for (Real displacement : displacements) {
 

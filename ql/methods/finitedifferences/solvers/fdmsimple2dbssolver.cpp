@@ -39,8 +39,8 @@ namespace QuantLib {
     }
 
     void FdmSimple2dBSSolver::performCalculations() const {
-        ext::shared_ptr<FdmBlackScholesOp> op(ext::make_shared<FdmBlackScholesOp>(
-                solverDesc_.mesher, process_.currentLink(), strike_));
+        auto op = ext::make_shared<FdmBlackScholesOp>(
+                solverDesc_.mesher, process_.currentLink(), strike_);
 
         solver_ = ext::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
     }

@@ -110,7 +110,7 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
 
     // 1) Monthly seasonality with all elements equal to 1 <=> no seasonality
     vector<Rate> seasonalityFactors(12, 1.0);
-    ext::shared_ptr<MultiplicativePriceSeasonality> unitSeasonality =
+    auto unitSeasonality =
         ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
 
     // 2) Seasonality with factors != 1.0
@@ -127,7 +127,7 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
     seasonalityFactors[10] = 1.003705;
     seasonalityFactors[11] = 1.004186;
 
-    ext::shared_ptr<MultiplicativePriceSeasonality> nonUnitSeasonality =
+    auto nonUnitSeasonality =
         ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
 
     // Create dates on which we will check fixings
@@ -386,7 +386,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
 
     Date baseDate = ii->lastFixingDate();
 
-    ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS =
+    auto pZITS =
         ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
             evaluationDate, baseDate, frequency, dc, helpers);
 
@@ -484,7 +484,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
         1.004186
     };
 
-    ext::shared_ptr<MultiplicativePriceSeasonality> nonUnitSeasonality =
+    auto nonUnitSeasonality =
         ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
 
     pZITS->setSeasonality(nonUnitSeasonality);
@@ -1697,7 +1697,7 @@ BOOST_AUTO_TEST_CASE(testExtrapolationRegression) {
 
     Date baseDate = rpi->lastFixingDate();
 
-    ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS =
+    auto pZITS =
         ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
             evaluationDate, baseDate, frequency, dc, helpers);
     pZITS->enableExtrapolation();

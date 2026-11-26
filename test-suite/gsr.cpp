@@ -461,7 +461,7 @@ BOOST_AUTO_TEST_CASE(testGsrProcess) {
         ext::shared_ptr<StochasticProcess1D> gsrProcess2 =
             model2->stateProcess();
 
-        ext::shared_ptr<HullWhiteForwardProcess> hwProcess = ext::make_shared<HullWhiteForwardProcess>(
+        auto hwProcess = ext::make_shared<HullWhiteForwardProcess>(
             yts0, reversion, modelvol);
         hwProcess->setForwardMeasureTime(T);
 
@@ -560,7 +560,7 @@ BOOST_AUTO_TEST_CASE(testGsrModel) {
         new Gsr(yts, stepDates, vols, reversions, 50.0));
     ext::shared_ptr<Gsr> model2(
         new Gsr(yts, stepDates1, vols1, reversions1, 50.0));
-    ext::shared_ptr<HullWhite> hw = ext::make_shared<HullWhite>(yts, reversion, modelvol);
+    auto hw = ext::make_shared<HullWhite>(yts, reversion, modelvol);
 
     // test zerobond prices against existing HullWhite model
     // technically we test two representations of the same constant reversion
@@ -623,7 +623,7 @@ BOOST_AUTO_TEST_CASE(testGsrModel) {
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(expiry));
     ext::shared_ptr<Swaption> stdswaption(
         new Swaption(underlyingFixed, exercise));
-    ext::shared_ptr<NonstandardSwaption> nonstdswaption = ext::make_shared<NonstandardSwaption>(
+    auto nonstdswaption = ext::make_shared<NonstandardSwaption>(
         *stdswaption);
 
     stdswaption->setPricingEngine(ext::shared_ptr<PricingEngine>(

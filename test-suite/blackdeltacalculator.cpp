@@ -196,20 +196,20 @@ BOOST_AUTO_TEST_CASE(testDeltaPriceConsistency) {
     Real calculatedVal  =0.0;
     Real error          =0.0;
 
-    ext::shared_ptr<SimpleQuote> spotQuote = ext::make_shared<SimpleQuote>(0.0);
+    auto spotQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> spotHandle(spotQuote);
 
-    ext::shared_ptr<SimpleQuote> qQuote = ext::make_shared<SimpleQuote>(0.0);
+    auto qQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> qHandle(qQuote);
     ext::shared_ptr<YieldTermStructure> qTS(
                                          new FlatForward(today, qHandle, dc));
 
-    ext::shared_ptr<SimpleQuote> rQuote = ext::make_shared<SimpleQuote>(0.0);
+    auto rQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> rHandle(qQuote);
     ext::shared_ptr<YieldTermStructure> rTS(
                                          new FlatForward(today, rHandle, dc));
 
-    ext::shared_ptr<SimpleQuote> volQuote = ext::make_shared<SimpleQuote>(0.0);
+    auto volQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> volHandle(volQuote);
     ext::shared_ptr<BlackVolTermStructure> volTS(
                         new BlackConstantVol(today, calendar, volHandle, dc));
@@ -384,19 +384,19 @@ BOOST_AUTO_TEST_CASE(testPutCallParity){
     Real error          =0.0;
     Real forward        =0.0;
 
-    ext::shared_ptr<SimpleQuote> spotQuote = ext::make_shared<SimpleQuote>(0.0);
+    auto spotQuote = ext::make_shared<SimpleQuote>(0.0);
 
-    ext::shared_ptr<SimpleQuote> qQuote = ext::make_shared<SimpleQuote>(0.0);
+    auto qQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> qHandle(qQuote);
     ext::shared_ptr<YieldTermStructure> qTS(
                                          new FlatForward(today, qHandle, dc));
 
-    ext::shared_ptr<SimpleQuote> rQuote = ext::make_shared<SimpleQuote>(0.0);
+    auto rQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> rHandle(qQuote);
     ext::shared_ptr<YieldTermStructure> rTS(
                                          new FlatForward(today, rHandle, dc));
 
-    ext::shared_ptr<SimpleQuote> volQuote = ext::make_shared<SimpleQuote>(0.0);
+    auto volQuote = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> volHandle(volQuote);
     ext::shared_ptr<BlackVolTermStructure> volTS(
                         new BlackConstantVol(today, calendar, volHandle, dc));

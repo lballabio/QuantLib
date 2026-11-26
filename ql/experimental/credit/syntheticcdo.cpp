@@ -232,7 +232,7 @@ namespace QuantLib {
         Real targetNPV,
         Real accuracy) const
     {
-        ext::shared_ptr<SimpleQuote> correl = ext::make_shared<SimpleQuote>(0.0);
+        auto correl = ext::make_shared<SimpleQuote>(0.0);
 
         ext::shared_ptr<GaussianLHPLossModel> lhp(new
             GaussianLHPLossModel(Handle<Quote>(correl), recoveries));

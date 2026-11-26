@@ -514,7 +514,7 @@ Array priceReport(const GridSetup& setup, const Array& strikes) {
     const Real sig = 0.2;
     const Real rho = -0.75;
 
-    const ext::shared_ptr<HestonProcess> hestonProcess
+    const auto hestonProcess
         = ext::make_shared<HestonProcess>(
                   Handle<YieldTermStructure>(rTS),
                   Handle<YieldTermStructure>(qTS),
@@ -556,7 +556,7 @@ Array priceReport(const GridSetup& setup, const Array& strikes) {
                 break;
             }
 
-        const ext::shared_ptr<FdmMesherComposite> mesher =
+        const auto mesher =
             ext::make_shared<FdmMesherComposite>(
                     ext::make_shared<Predefined1dMesher>(loc),
                     ext::make_shared<FdmHestonVarianceMesher>(
@@ -567,7 +567,7 @@ Array priceReport(const GridSetup& setup, const Array& strikes) {
 
         Array rhs(mesher->layout()->size());
 
-        const ext::shared_ptr<PlainVanillaPayoff> payoff =
+        const auto payoff =
             ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
 
         for (const auto& iter : *mesher->layout()) {
@@ -594,7 +594,7 @@ Array priceReport(const GridSetup& setup, const Array& strikes) {
 }
         }
 
-        const ext::shared_ptr<FdmHestonNthOrderOp> heatEqn =
+        const auto heatEqn =
             ext::make_shared<FdmHestonNthOrderOp>(
                     setup.nPoints, hestonProcess, mesher);
 
@@ -616,7 +616,7 @@ Array priceReport(const GridSetup& setup, const Array& strikes) {
         Matrix resultValues_(mesher->layout()->dim()[1], mesher->layout()->dim()[0]);
         std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
 
-        const ext::shared_ptr<BicubicSpline> interpolation =
+        const auto interpolation =
             ext::make_shared<BicubicSpline>(
                     x.begin(), x.end(), v.begin(), v.end(), resultValues_);
 
@@ -763,10 +763,10 @@ BOOST_AUTO_TEST_CASE(testCompareFirstDerivativeOpNonUniformGrid) {
     const ext::shared_ptr<FdmMesher> m1d(
         ext::make_shared<FdmMesherComposite>(m));
 
-    const ext::shared_ptr<FirstDerivativeOp> fx
+    const auto fx
         = ext::make_shared<FirstDerivativeOp>(0, m1d);
 
-    const ext::shared_ptr<NthOrderDerivativeOp> dx
+    const auto dx
         = ext::make_shared<NthOrderDerivativeOp>(0, 1, 3, m1d);
 
     const SparseMatrix fm = fx->toMatrix();

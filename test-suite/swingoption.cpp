@@ -480,7 +480,7 @@ BOOST_AUTO_TEST_CASE(testKlugeChFVanillaPricing) {
     const Real alpha = 4.0;
     const Real sig = 1.0;
 
-    const ext::shared_ptr<ExtOUWithJumpsProcess> klugeProcess =
+    const auto klugeProcess =
         ext::make_shared<ExtOUWithJumpsProcess>(
             ext::make_shared<ExtendedOrnsteinUhlenbeckProcess>(
                     alpha, sig, x0, constant_b(0.0)),
@@ -488,13 +488,13 @@ BOOST_AUTO_TEST_CASE(testKlugeChFVanillaPricing) {
 
     const Real strike = f0;
 
-    const ext::shared_ptr<VanillaOption> option =
+    const auto option =
         ext::make_shared<VanillaOption>(
             ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
             ext::make_shared<EuropeanExercise>(maturityDate));
 
     typedef FdSimpleExtOUJumpSwingEngine::Shape Shape;
-    const ext::shared_ptr<Shape> shape(ext::make_shared<Shape>());
+    const auto shape = ext::make_shared<Shape>();
 
     const Real ps = std::log(f0)
         - sig*sig/(4*alpha)*(1-std::exp(-2*alpha*t))

@@ -278,7 +278,7 @@ namespace QuantLib {
     Handle<BlackVolTermStructure> vol(ext::make_shared<BlackConstantVol>(0, TARGET(), volVal, Actual360()));
 
 
-    ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+    auto process =
         ext::make_shared<GeneralizedBlackScholesProcess>(spot, q, r, vol);
     tempOption.setPricingEngine(ext::make_shared<AnalyticBarrierEngine>(process));
 

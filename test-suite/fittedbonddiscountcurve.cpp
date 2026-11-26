@@ -143,10 +143,10 @@ BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
 
     // build the fitted bond curves
 
-    ext::shared_ptr<FittedBondDiscountCurve> curve1 = ext::make_shared<FittedBondDiscountCurve>(
+    auto curve1 = ext::make_shared<FittedBondDiscountCurve>(
         asof, helpers, Actual365Fixed(), method1, 1E-10, 10000, guess);
 
-    ext::shared_ptr<FittedBondDiscountCurve> curve2 = ext::make_shared<FittedBondDiscountCurve>(
+    auto curve2 = ext::make_shared<FittedBondDiscountCurve>(
         asof, helpers, Actual365Fixed(), method2, 1E-10, 10000, guess);
 
     curve1->enableExtrapolation();

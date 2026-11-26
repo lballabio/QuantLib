@@ -151,9 +151,9 @@ BOOST_AUTO_TEST_CASE(testInOutParityWithDividends) {
     Settings::instance().evaluationDate() = today;
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(today + 365));
 
-    ext::shared_ptr<SimpleQuote> s1 = ext::make_shared<SimpleQuote>(100.0);
+    auto s1 = ext::make_shared<SimpleQuote>(100.0);
     ext::shared_ptr<SimpleQuote> q1(new SimpleQuote);
-    ext::shared_ptr<SimpleQuote> s2 = ext::make_shared<SimpleQuote>(100.0);
+    auto s2 = ext::make_shared<SimpleQuote>(100.0);
     ext::shared_ptr<SimpleQuote> rho(new SimpleQuote);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.05, dc);
 

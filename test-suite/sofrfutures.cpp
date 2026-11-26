@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE(testBootstrap) {
             sofrQuote.price, sofrQuote.month, sofrQuote.year, sofrQuote.freq));
     }
 
-    ext::shared_ptr<PiecewiseYieldCurve<Discount, Linear> > curve =
+    auto curve =
         ext::make_shared<PiecewiseYieldCurve<Discount, Linear> >(today, helpers,
                                                                  Actual365Fixed());
 
@@ -152,7 +152,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithJuneteenth) {
             sofrQuote.price, sofrQuote.month, sofrQuote.year, sofrQuote.freq));
     }
 
-    ext::shared_ptr<PiecewiseYieldCurve<Discount, Linear> > curve =
+    auto curve =
         ext::make_shared<PiecewiseYieldCurve<Discount, Linear> >(today, helpers,
                                                                  Actual365Fixed());
 

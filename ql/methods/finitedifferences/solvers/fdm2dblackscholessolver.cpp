@@ -43,14 +43,13 @@ namespace QuantLib {
 
     void Fdm2dBlackScholesSolver::performCalculations() const {
         
-        ext::shared_ptr<Fdm2dBlackScholesOp> op(
-			ext::make_shared<Fdm2dBlackScholesOp>(solverDesc_.mesher,
+        auto op = ext::make_shared<Fdm2dBlackScholesOp>(solverDesc_.mesher,
                                         p1_.currentLink(), 
                                         p2_.currentLink(), 
                                         correlation_,
                                         solverDesc_.maturity,
                                         localVol_,
-                                        illegalLocalVolOverwrite_));
+                                        illegalLocalVolOverwrite_);
 
         solver_ = ext::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
     }

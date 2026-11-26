@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE(testCached) {
     BigNatural seed = 86421;
     Size fixedSamples = 1023;
 
-    ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(
+    auto process = ext::make_shared<StochasticProcessArray>(
                           processes, correlation);
 
     option.setPricingEngine(MakeMCPagodaEngine<PseudoRandom>(process)

@@ -49,10 +49,10 @@ BOOST_AUTO_TEST_CASE(testAnalyticHolderExtensibleOptionEngine) {
     Date exDate2 = today + 270;
     Real premium = 1.0;
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(100.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.08);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.08);
+    auto vol = ext::make_shared<SimpleQuote>(0.25);
 
     ext::shared_ptr<StrikedTypePayoff> payoff =
         ext::make_shared<PlainVanillaPayoff>(type, strike1);
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticHolderExtensibleOptionEngine) {
     Handle<YieldTermStructure> riskFreeTS(flatRate(today, rRate, dc));
     Handle<BlackVolTermStructure> blackVolTS(flatVol(today, vol, dc));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> process =
+    const auto process =
         ext::make_shared<BlackScholesMertonProcess>(underlying,
                                                       dividendTS,
                                                       riskFreeTS,
@@ -100,19 +100,19 @@ BOOST_AUTO_TEST_CASE(testAnalyticWriterExtensibleOptionEngine) {
     Date exDate1 = today + 180;
     Date exDate2 = today + 270;
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(80.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto spot = ext::make_shared<SimpleQuote>(80.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> dividendTS =
         flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.10);
+    auto rRate = ext::make_shared<SimpleQuote>(0.10);
     ext::shared_ptr<YieldTermStructure> riskFreeTS =
         flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.30);
+    auto vol = ext::make_shared<SimpleQuote>(0.30);
     ext::shared_ptr<BlackVolTermStructure> blackVolTS =
         flatVol(today, vol, dc);
 
     // B&S process (needed for the engine):
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+    const auto process =
         ext::make_shared<GeneralizedBlackScholesProcess>(
                     Handle<Quote>(spot),
                     Handle<YieldTermStructure>(dividendTS),
@@ -124,11 +124,11 @@ BOOST_AUTO_TEST_CASE(testAnalyticWriterExtensibleOptionEngine) {
         ext::make_shared<AnalyticWriterExtensibleOptionEngine>(process);
 
     // Create the arguments:
-    ext::shared_ptr<PlainVanillaPayoff> payoff1 =
+    auto payoff1 =
         ext::make_shared<PlainVanillaPayoff>(type, strike1);
     ext::shared_ptr<Exercise> exercise1 =
         ext::make_shared<EuropeanExercise>(exDate1);
-    ext::shared_ptr<PlainVanillaPayoff> payoff2 =
+    auto payoff2 =
         ext::make_shared<PlainVanillaPayoff>(type, strike2);
     ext::shared_ptr<Exercise> exercise2 =
         ext::make_shared<EuropeanExercise>(exDate2);
@@ -161,13 +161,13 @@ BOOST_AUTO_TEST_CASE(testHolderExtensibleOptionCriticalPrices) {
     Date exDate1 = today + 180;
     Date exDate2 = today + 270;
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(100.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> dividendTS(flatRate(today, qRate, dc));
     Handle<YieldTermStructure> riskFreeTS(flatRate(today, 0.08, dc));
     Handle<BlackVolTermStructure> blackVolTS(flatVol(today, 0.25, dc));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> process =
+    const auto process =
         ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot), dividendTS,
                                                     riskFreeTS, blackVolTS);
     ext::shared_ptr<PricingEngine> engine =

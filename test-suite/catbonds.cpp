@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(testEventSetForIrregularPeriods) {
 BOOST_AUTO_TEST_CASE(testEventSetForNoEvents) {
     BOOST_TEST_MESSAGE("Testing that catastrophe events are split correctly when there are no simulated events...");
 
-    ext::shared_ptr<std::vector<std::pair<Date, Real> > > emptyEvents = ext::make_shared<std::vector<std::pair<Date, Real> >>();
+    auto emptyEvents = ext::make_shared<std::vector<std::pair<Date, Real> >>();
     EventSet catRisk(emptyEvents, eventsStart, eventsEnd);
     ext::shared_ptr<CatSimulation> simulation = catRisk.newSimulation(Date(2, January, 2015), Date(5, January, 2016));
 
@@ -392,7 +392,7 @@ BOOST_AUTO_TEST_CASE(testCatBondInDoomScenario) {
                  ModifiedFollowing, ModifiedFollowing,
                  DateGeneration::Backward, false);
 
-    ext::shared_ptr<std::vector<std::pair<Date, Real> > > events = ext::make_shared<std::vector<std::pair<Date, Real> >>();
+    auto events = ext::make_shared<std::vector<std::pair<Date, Real> >>();
     events->emplace_back(Date(30,November,2004), 1000);
     ext::shared_ptr<CatRisk> doomCatRisk(new EventSet(
         events, 
@@ -454,7 +454,7 @@ BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYears) {
                  ModifiedFollowing, ModifiedFollowing,
                  DateGeneration::Backward, false);
 
-    ext::shared_ptr<std::vector<std::pair<Date, Real> > > events = ext::make_shared<std::vector<std::pair<Date, Real> >>();
+    auto events = ext::make_shared<std::vector<std::pair<Date, Real> >>();
     events->emplace_back(Date(30,November,2008), 1000);
     ext::shared_ptr<CatRisk> doomCatRisk(new EventSet(
         events, 
@@ -535,7 +535,7 @@ BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYearsProportional) {
                  ModifiedFollowing, ModifiedFollowing,
                  DateGeneration::Backward, false);
 
-    ext::shared_ptr<std::vector<std::pair<Date, Real> > > events = ext::make_shared<std::vector<std::pair<Date, Real> >>();
+    auto events = ext::make_shared<std::vector<std::pair<Date, Real> >>();
     events->emplace_back(Date(30,November,2008), 1000);
     ext::shared_ptr<CatRisk> doomCatRisk(new EventSet(
         events, 

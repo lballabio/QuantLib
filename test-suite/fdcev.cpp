@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE(testFdmCevOp) {
         ext::make_shared<EuropeanExercise>(maturityDate);
 
     for (auto optionType : optionTypes) {
-        const ext::shared_ptr<PlainVanillaPayoff> payoff =
+        const auto payoff =
             ext::make_shared<PlainVanillaPayoff>(optionType, strike);
 
         const ext::shared_ptr<YieldTermStructure> rTS =

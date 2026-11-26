@@ -271,17 +271,17 @@ BOOST_AUTO_TEST_CASE(testMerton76) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    ext::shared_ptr<SimpleQuote> jumpIntensity = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> meanLogJump = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> jumpVol = ext::make_shared<SimpleQuote>(0.0);
+    auto jumpIntensity = ext::make_shared<SimpleQuote>(0.0);
+    auto meanLogJump = ext::make_shared<SimpleQuote>(0.0);
+    auto jumpVol = ext::make_shared<SimpleQuote>(0.0);
 
     ext::shared_ptr<Merton76Process> stochProcess(
            new Merton76Process(Handle<Quote>(spot),
@@ -370,17 +370,17 @@ BOOST_AUTO_TEST_CASE(testGreeks) {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    ext::shared_ptr<SimpleQuote> jumpIntensity = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> meanLogJump = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> jumpVol = ext::make_shared<SimpleQuote>(0.0);
+    auto jumpIntensity = ext::make_shared<SimpleQuote>(0.0);
+    auto meanLogJump = ext::make_shared<SimpleQuote>(0.0);
+    auto jumpVol = ext::make_shared<SimpleQuote>(0.0);
 
     ext::shared_ptr<Merton76Process> stochProcess(
           new Merton76Process(Handle<Quote>(spot), qTS, rTS, volTS,

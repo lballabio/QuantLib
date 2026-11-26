@@ -84,7 +84,7 @@ namespace QuantLib {
     }
 
     void GridModelLocalVolSurface::generateArguments() {
-        const ext::shared_ptr<Matrix> localVolMatrix = ext::make_shared<Matrix>(
+        const auto localVolMatrix = ext::make_shared<Matrix>(
             strikes_.front()->size(), times_.size());
 
         std::transform(arguments_.begin(), arguments_.end(),
