@@ -10,6 +10,48 @@ using namespace clang::tidy;
 
 namespace {
 
+void emitAutoFix(ClangTidyCheck &Check, const VarDecl *VD, const CallExpr *CE,
+                 const SourceManager &SM, const LangOptions &LangOpts,
+                 StringRef Message) {
+  TypeSourceInfo *TSI = VD->getTypeSourceInfo();
+  if (!TSI)
+    return;
+
+  auto Diag = Check.diag(VD->getLocation(), Message);
+  Diag << FixItHint::CreateReplacement(TSI->getTypeLoc().getSourceRange(),
+                                       "auto");
+
+  if (VD->getInitStyle() == VarDecl::CallInit) {
+    SourceLocation AfterName =
+        Lexer::getLocForEndOfToken(VD->getLocation(), 0, SM, LangOpts);
+    SourceLocation RParen = VD->getEndLoc();
+
+    if (AfterName.isValid() && RParen.isValid()) {
+      Diag << FixItHint::CreateReplacement(
+          CharSourceRange::getCharRange(AfterName, CE->getBeginLoc()), " = ");
+      Diag << FixItHint::CreateRemoval(
+          CharSourceRange::getTokenRange(RParen, RParen));
+    }
+  }
+}
+
+bool isValidSingleNonMacroVar(const VarDecl *VD, const CallExpr *CE,
+                              ASTContext &Ctx) {
+  if (!VD || !CE)
+    return false;
+  if (VD->getBeginLoc().isMacroID() || CE->getBeginLoc().isMacroID())
+    return false;
+
+  auto Parents = Ctx.getParents(*VD);
+  if (!Parents.empty()) {
+    if (const auto *DS = Parents[0].get<DeclStmt>()) {
+      if (!DS->isSingleDecl())
+        return false;
+    }
+  }
+  return true;
+}
+
 class UseAutoMakeSharedCheck : public ClangTidyCheck {
 public:
   UseAutoMakeSharedCheck(StringRef Name, ClangTidyContext *Context)
@@ -31,22 +73,9 @@ public:
   void check(const MatchFinder::MatchResult &Result) override {
     const auto *VD = Result.Nodes.getNodeAs<VarDecl>("var");
     const auto *CE = Result.Nodes.getNodeAs<CallExpr>("call");
-    if (!VD || !CE)
+    if (!isValidSingleNonMacroVar(VD, CE, *Result.Context))
       return;
 
-    if (VD->getBeginLoc().isMacroID() || CE->getBeginLoc().isMacroID())
-      return;
-
-    // Skip multi-variable declarations like `ext::shared_ptr<Foo> a = ..., b = ...;`
-    auto Parents = Result.Context->getParents(*VD);
-    if (!Parents.empty()) {
-      if (const auto *DS = Parents[0].get<DeclStmt>()) {
-        if (!DS->isSingleDecl())
-          return;
-      }
-    }
-
-    // Ensure shared_ptr<T> and make_shared<T> use the exact same type T
     const auto *PtrSpec = VD->getType()->getAs<TemplateSpecializationType>();
     const auto *FuncDecl = CE->getDirectCallee();
     if (!PtrSpec || !FuncDecl || !FuncDecl->getTemplateSpecializationArgs())
@@ -63,33 +92,47 @@ public:
     if (PtrArgType.getCanonicalType() != FuncArgType.getCanonicalType())
       return;
 
-    TypeSourceInfo *TSI = VD->getTypeSourceInfo();
-    if (!TSI)
+    emitAutoFix(*this, VD, CE, *Result.SourceManager,
+                Result.Context->getLangOpts(),
+                "use 'auto' when initializing with 'make_shared'");
+  }
+};
+
+class UseAutoFlatRateVolCheck : public ClangTidyCheck {
+public:
+  UseAutoFlatRateVolCheck(StringRef Name, ClangTidyContext *Context)
+      : ClangTidyCheck(Name, Context) {}
+
+  void registerMatchers(MatchFinder *Finder) override {
+    Finder->addMatcher(
+        varDecl(
+            unless(hasType(autoType())),
+            hasType(hasCanonicalType(recordType(hasDeclaration(
+                classTemplateSpecializationDecl(hasName("::std::shared_ptr")))))),
+            hasInitializer(ignoringImplicit(
+                callExpr(callee(functionDecl(hasAnyName("flatRate", "flatVol"))))
+                    .bind("call"))))
+            .bind("var"),
+        this);
+  }
+
+  void check(const MatchFinder::MatchResult &Result) override {
+    const auto *VD = Result.Nodes.getNodeAs<VarDecl>("var");
+    const auto *CE = Result.Nodes.getNodeAs<CallExpr>("call");
+    if (!isValidSingleNonMacroVar(VD, CE, *Result.Context))
       return;
 
-    auto Diag = diag(VD->getLocation(),
-                     "use 'auto' when initializing with 'make_shared'");
+    const auto *FuncDecl = CE->getDirectCallee();
+    if (!FuncDecl)
+      return;
 
-    // 1. Replace `ext::shared_ptr<Foo>` with `auto`
-    Diag << FixItHint::CreateReplacement(TSI->getTypeLoc().getSourceRange(),
-                                         "auto");
+    if (VD->getType().getCanonicalType().getUnqualifiedType() !=
+        FuncDecl->getReturnType().getCanonicalType().getUnqualifiedType())
+      return;
 
-    // 2. If direct-initialized `x(ext::make_shared<Foo>(...))`, convert `(...)` to ` = ...`
-    if (VD->getInitStyle() == VarDecl::CallInit) {
-      SourceLocation AfterName = Lexer::getLocForEndOfToken(
-          VD->getLocation(), 0, *Result.SourceManager, getLangOpts());
-      SourceLocation RParen = VD->getEndLoc();
-
-      if (AfterName.isValid() && RParen.isValid()) {
-        // Replace everything between `x` and `ext::make_shared` (i.e. `(`) with ` = `
-        Diag << FixItHint::CreateReplacement(
-            CharSourceRange::getCharRange(AfterName, CE->getBeginLoc()),
-            " = ");
-        // Remove the trailing `)`
-        Diag << FixItHint::CreateRemoval(
-            CharSourceRange::getTokenRange(RParen, RParen));
-      }
-    }
+    emitAutoFix(*this, VD, CE, *Result.SourceManager,
+                Result.Context->getLangOpts(),
+                "use 'auto' when initializing with 'flatRate' or 'flatVol'");
   }
 };
 
@@ -98,6 +141,8 @@ public:
   void addCheckFactories(ClangTidyCheckFactories &CheckFactories) override {
     CheckFactories.registerCheck<UseAutoMakeSharedCheck>(
         "custom-use-auto-make-shared");
+    CheckFactories.registerCheck<UseAutoFlatRateVolCheck>(
+        "custom-use-auto-flat-rate-vol");
   }
 };
 
